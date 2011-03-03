@@ -3241,7 +3241,7 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
   Matrix pos = init_pos;
   graphics_object obj = gh_manager::get_object (get_parent ());
   Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
-  Matrix ext = get_extent (true);
+  Matrix ext = get_extent (true, true);
   ext(1) = parent_bb(3) - ext(1) - ext(3);
   ext(0)++;
   ext(1)++;
@@ -4718,7 +4718,7 @@ axes::properties::get_boundingbox (bool internal) const
 }
 
 Matrix
-axes::properties::get_extent (bool with_text) const
+axes::properties::get_extent (bool with_text, bool only_text_height) const
 {
   graphics_xform xform = get_transform ();
 
@@ -4763,10 +4763,28 @@ axes::properties::get_extent (bool with_text) const
               Matrix text_pos = text_props.get_position ().matrix_value ();
               text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
 
-              ext(0) = std::min (ext(0), text_pos(0)+text_ext(0));
-              ext(1) = std::min (ext(1), text_pos(1)-text_ext(1)-text_ext(3));
-              ext(2) = std::max (ext(2), text_pos(0)+text_ext(0)+text_ext(2));
-              ext(3) = std::max (ext(3), text_pos(1)-text_ext(1));
+              bool ignore_horizontal = false;
+              bool ignore_vertical = false;
+              if (only_text_height)
+                {
+                  double text_rotation = text_props.get_rotation();
+                  if (text_rotation == 0. || text_rotation == 180.)
+                      ignore_horizontal = true;
+                  else if (text_rotation == 90. || text_rotation == 270.)
+                      ignore_vertical = true;
+                }
+
+              if (! ignore_horizontal)
+                {
+                  ext(0) = std::min (ext(0), text_pos(0)+text_ext(0));
+                  ext(2) = std::max (ext(2), text_pos(0)+text_ext(0)+text_ext(2));
+                }
+
+              if (! ignore_vertical)
+                {
+                  ext(1) = std::min (ext(1), text_pos(1)-text_ext(1)-text_ext(3));
+                  ext(3) = std::max (ext(3), text_pos(1)-text_ext(1));
+                }
             }
         }
     }

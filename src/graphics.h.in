@@ -3077,7 +3077,7 @@ public:
     const scaler& get_z_scaler (void) const { return sz; }
 
     Matrix get_boundingbox (bool internal = false) const;
-    Matrix get_extent (bool with_text = false) const;
+    Matrix get_extent (bool with_text = false, bool only_text_height=false) const;
 
     void update_boundingbox (void)
       {

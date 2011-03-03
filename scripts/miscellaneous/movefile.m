@@ -110,7 +110,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       endwhile
     else
       if (ispc () && ! isunix ()
-          && ! isempty (file_in_path (getenv_path ("PATH"), "cp.exe")))
+          && ! isempty (file_in_path (getenv ("PATH"), "cp.exe")))
         p1 = strrep (p1, "\\", "/");
         p2 = strrep (p2, "\\", "/");
       endif

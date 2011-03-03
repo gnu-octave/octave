@@ -11,6 +11,7 @@ deprecated_FCN_FILES = \
   deprecated/gammai.m \
   deprecated/glpkmex.m \
   deprecated/intwarning.m \
+  deprecated/is_duplicate_entry.m \
   deprecated/is_global.m \
   deprecated/isstr.m \
   deprecated/krylovb.m \

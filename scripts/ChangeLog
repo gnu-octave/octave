@@ -1,5 +1,9 @@
 2010-03-03  Rik  <octave@nomad.inbox5.com>
 
+	* deprecated/module.mk, general/module.mk: Deprecate is_duplicate_entry.
+
+2010-03-03  Rik  <octave@nomad.inbox5.com>
+
 	* miscellaneous/movefile.m: Fix copy&paste bug affecting Windows
 	platform.  (bug #32443)
 

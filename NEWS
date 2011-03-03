@@ -4,6 +4,7 @@ Summary of important user-visible changes for version 3.6:
  ** The PCRE library is now required to build Octave.
 
  ** New functions added.
+
     iscolumn
     issrow
  
@@ -23,6 +24,13 @@ Summary of important user-visible changes for version 3.6:
       spatan2             spkron       str2mat
       spchol              splchol      unmark_command
       spchol2inv          split        unmark_rawcommand
+
+    The following functions have been deprecated in Octave 3.6 and will
+    be removed from Octave 3.10 (or whatever version is the second major
+    release after 3.6):
+
+      is_duplicate_entry
+      
 
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------

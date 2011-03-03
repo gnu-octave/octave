@@ -1,3 +1,7 @@
+2011-03-03  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Deprecate is_duplicate_entry.
+
 2011-03-01  Ben Abbott  <bpabbott@mac.com>
 
 	* README.MacOS: Add Fink packages needed to support print output.

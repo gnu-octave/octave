@@ -42,7 +42,6 @@ general_FCN_FILES = \
   general/interp3.m \
   general/interpn.m \
   general/interpft.m \
-  general/is_duplicate_entry.m \
   general/isa.m \
   general/iscolumn.m \
   general/isdir.m \

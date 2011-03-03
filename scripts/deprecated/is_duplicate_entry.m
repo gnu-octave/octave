@@ -27,6 +27,14 @@
 
 function retval = is_duplicate_entry (x)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "is_duplicate_entry is obsolete and will be removed from a future version of Octave; see the function unique for equivalent functionality");
+  endif
+
+
   if (nargin == 1)
     if (ismatrix (x))
       lx = numel (x);

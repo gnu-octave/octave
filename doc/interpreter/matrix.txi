@@ -67,8 +67,6 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(xor)
 
-@DOCSTRING(is_duplicate_entry)
-
 @DOCSTRING(diff)
 
 @DOCSTRING(isinf)

@@ -63,7 +63,6 @@ function h = colorbar (varargin)
   i = 1;
   while (i <= nargin)
     arg = varargin {i++};
-
     if (ischar(arg))
       if (strcmpi (arg, "peer"))
         if (i > nargin)
@@ -80,6 +79,8 @@ function h = colorbar (varargin)
               || strcmpi (arg, "northoutside") || strcmpi (arg, "southoutside")
               || strcmpi (arg, "eastoutside") || strcmpi (arg, "westoutside"))
         loc = tolower (arg);
+      elseif (strcmpi (arg, "location") && i <= nargin)
+        loc = tolower (varargin{i++});
       elseif (strcmpi (arg, "off") || strcmpi (arg, "none"))
         deleting = true;
       else

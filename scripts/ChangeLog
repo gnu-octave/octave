@@ -1,3 +1,7 @@
+2011-03-05  Ben Abbott <bpabbott@mac.com>
+
+	* plot/colorbar.m: Allow location to be specified as a property.
+
 2010-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/bunzip2.m, miscellaneous/bzip2.m,

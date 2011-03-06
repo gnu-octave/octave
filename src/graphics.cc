@@ -4234,10 +4234,12 @@ axes::properties::update_xlabel_position (void)
   text::properties& xlabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_xlabel ()).get_properties ());
 
-  if (! xlabel_props.get_string ().empty ())
-    {
-      xlabel_props.set_autopos_tag ("none");
+  bool is_empty = xlabel_props.get_string ().empty ();
 
+  xlabel_props.set_autopos_tag ("none");
+
+  if (! is_empty)
+    {
       if (xlabel_props.horizontalalignmentmode_is ("auto"))
         {
           xlabel_props.set_horizontalalignment
@@ -4254,62 +4256,62 @@ axes::properties::update_xlabel_position (void)
 
           xlabel_props.set_verticalalignmentmode ("auto");
         }
+    }
 
-      if (xlabel_props.positionmode_is ("auto")
-          || xlabel_props.rotationmode_is ("auto"))
+  if (xlabel_props.positionmode_is ("auto")
+      || xlabel_props.rotationmode_is ("auto"))
+    {
+      graphics_xform xform = get_transform ();
+
+      Matrix ext (1, 2, 0.0);
+      ext = get_ticklabel_extents (get_xtick ().matrix_value (),
+                                   get_xticklabel ().all_strings (),
+                                   get_xlim ().matrix_value ());
+
+      double wmax = ext(0), hmax = ext(1), angle = 0;
+      ColumnVector p =
+        graphics_xform::xform_vector ((xpTickN+xpTick)/2, ypTick, zpTick);
+
+      bool tick_along_z = nearhoriz || xisinf (fy);
+      if (tick_along_z)
+        p(2) += (signum(zpTick-zpTickN)*fz*xtickoffset);
+      else
+        p(1) += (signum(ypTick-ypTickN)*fy*xtickoffset);
+
+      p = xform.transform (p(0), p(1), p(2), false);
+
+      switch (xstate)
         {
-          graphics_xform xform = get_transform ();
+          case AXE_ANY_DIR:
+            p(0) += (xyzSym ? wmax : -wmax);
+            p(1) += hmax;
+            break;
 
-          Matrix ext (1, 2, 0.0);
-          ext = get_ticklabel_extents (get_xtick ().matrix_value (),
-                                       get_xticklabel ().all_strings (),
-                                       get_xlim ().matrix_value ());
+          case AXE_VERT_DIR:
+            p(0) -= wmax;
+            angle = 90;
+            break;
 
-          double wmax = ext(0), hmax = ext(1), angle = 0;
-          ColumnVector p =
-            graphics_xform::xform_vector ((xpTickN+xpTick)/2, ypTick, zpTick);
-
-          bool tick_along_z = nearhoriz || xisinf (fy);
-          if (tick_along_z)
-            p(2) += (signum(zpTick-zpTickN)*fz*xtickoffset);
-          else
-            p(1) += (signum(ypTick-ypTickN)*fy*xtickoffset);
-
-          p = xform.transform (p(0), p(1), p(2), false);
-
-          switch (xstate)
-            {
-              case AXE_ANY_DIR:
-                p(0) += (xyzSym ? wmax : -wmax);
-                p(1) += hmax;
-                break;
-
-              case AXE_VERT_DIR:
-                p(0) -= wmax;
-                angle = 90;
-                break;
-
-              case AXE_HORZ_DIR:
-                p(1) += (x2Dtop ? -hmax : hmax);
-                break;
-            }
-
-          if (xlabel_props.positionmode_is ("auto"))
-            {
-              p = xform.untransform (p(0), p(1), p(2), true);
-              xlabel_props.set_position (p.extract_n (0, 3).transpose ());
-              xlabel_props.set_positionmode ("auto");
-            }
-
-          if (xlabel_props.rotationmode_is ("auto"))
-            {
-              xlabel_props.set_rotation (angle);
-              xlabel_props.set_rotationmode ("auto");
-            }
+          case AXE_HORZ_DIR:
+            p(1) += (x2Dtop ? -hmax : hmax);
+            break;
         }
 
-      xlabel_props.set_autopos_tag ("xlabel");
+      if (xlabel_props.positionmode_is ("auto"))
+        {
+          p = xform.untransform (p(0), p(1), p(2), true);
+          xlabel_props.set_position (p.extract_n (0, 3).transpose ());
+          xlabel_props.set_positionmode ("auto");
+        }
+
+      if (! is_empty && xlabel_props.rotationmode_is ("auto"))
+        {
+          xlabel_props.set_rotation (angle);
+          xlabel_props.set_rotationmode ("auto");
+        }
     }
+
+  xlabel_props.set_autopos_tag ("xlabel");
 }
 
 void
@@ -4318,10 +4320,12 @@ axes::properties::update_ylabel_position (void)
   text::properties& ylabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_ylabel ()).get_properties ());
 
-  if (! ylabel_props.get_string ().empty ())
-    {
-      ylabel_props.set_autopos_tag ("none");
+  bool is_empty = ylabel_props.get_string ().empty ();
 
+  ylabel_props.set_autopos_tag ("none");
+
+  if (! is_empty)
+    {
       if (ylabel_props.horizontalalignmentmode_is ("auto"))
         {
           ylabel_props.set_horizontalalignment
@@ -4338,62 +4342,62 @@ axes::properties::update_ylabel_position (void)
 
           ylabel_props.set_verticalalignmentmode ("auto");
         }
+    }
 
-      if (ylabel_props.positionmode_is ("auto")
-          || ylabel_props.rotationmode_is ("auto"))
+  if (ylabel_props.positionmode_is ("auto")
+      || ylabel_props.rotationmode_is ("auto"))
+    {
+      graphics_xform xform = get_transform ();
+
+      Matrix ext (1, 2, 0.0);
+      ext = get_ticklabel_extents (get_ytick ().matrix_value (),
+                                   get_yticklabel ().all_strings (),
+                                   get_ylim ().matrix_value ());
+
+      double wmax = ext(0), hmax = ext(1), angle = 0;
+      ColumnVector p =
+        graphics_xform::xform_vector (xpTick, (ypTickN+ypTick)/2, zpTick);
+
+      bool tick_along_z = nearhoriz || xisinf (fx);
+      if (tick_along_z)
+        p(2) += (signum(zpTick-zpTickN)*fz*ytickoffset);
+      else
+        p(0) += (signum(xpTick-xpTickN)*fx*ytickoffset);
+
+      p = xform.transform (p(0), p(1), p(2), false);
+
+      switch (ystate)
         {
-          graphics_xform xform = get_transform ();
+          case AXE_ANY_DIR:
+            p(0) += (!xyzSym ? wmax : -wmax);
+            p(1) += hmax;
+            break;
 
-          Matrix ext (1, 2, 0.0);
-          ext = get_ticklabel_extents (get_ytick ().matrix_value (),
-                                       get_yticklabel ().all_strings (),
-                                       get_ylim ().matrix_value ());
+          case AXE_VERT_DIR:
+            p(0) += (y2Dright ? wmax : -wmax);
+            angle = 90;
+            break;
 
-          double wmax = ext(0), hmax = ext(1), angle = 0;
-          ColumnVector p =
-            graphics_xform::xform_vector (xpTick, (ypTickN+ypTick)/2, zpTick);
-
-          bool tick_along_z = nearhoriz || xisinf (fx);
-          if (tick_along_z)
-            p(2) += (signum(zpTick-zpTickN)*fz*ytickoffset);
-          else
-            p(0) += (signum(xpTick-xpTickN)*fx*ytickoffset);
-
-          p = xform.transform (p(0), p(1), p(2), false);
-
-          switch (ystate)
-            {
-              case AXE_ANY_DIR:
-                p(0) += (!xyzSym ? wmax : -wmax);
-                p(1) += hmax;
-                break;
-
-              case AXE_VERT_DIR:
-                p(0) += (y2Dright ? wmax : -wmax);
-                angle = 90;
-                break;
-
-              case AXE_HORZ_DIR:
-                p(1) += hmax;
-                break;
-            }
-
-          if (ylabel_props.positionmode_is ("auto"))
-            {
-              p = xform.untransform (p(0), p(1), p(2), true);
-              ylabel_props.set_position (p.extract_n (0, 3).transpose ());
-              ylabel_props.set_positionmode ("auto");
-            }
-
-          if (ylabel_props.rotationmode_is ("auto"))
-            {
-              ylabel_props.set_rotation (angle);
-              ylabel_props.set_rotationmode ("auto");
-            }
+          case AXE_HORZ_DIR:
+            p(1) += hmax;
+            break;
         }
 
-      ylabel_props.set_autopos_tag ("ylabel");
+      if (ylabel_props.positionmode_is ("auto"))
+        {
+          p = xform.untransform (p(0), p(1), p(2), true);
+          ylabel_props.set_position (p.extract_n (0, 3).transpose ());
+          ylabel_props.set_positionmode ("auto");
+        }
+
+      if (! is_empty && ylabel_props.rotationmode_is ("auto"))
+        {
+          ylabel_props.set_rotation (angle);
+          ylabel_props.set_rotationmode ("auto");
+        }
     }
+
+  ylabel_props.set_autopos_tag ("ylabel");
 }
 
 void
@@ -4402,12 +4406,13 @@ axes::properties::update_zlabel_position (void)
   text::properties& zlabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_zlabel ()).get_properties ());
 
-  if (! zlabel_props.get_string ().empty ())
+  bool camAuto = cameraupvectormode_is ("auto");
+  bool is_empty = zlabel_props.get_string ().empty ();
+
+  zlabel_props.set_autopos_tag ("none");
+
+  if (! is_empty)
     {
-      zlabel_props.set_autopos_tag ("none");
-
-      bool camAuto = cameraupvectormode_is ("auto");
-
       if (zlabel_props.horizontalalignmentmode_is ("auto"))
         {
           zlabel_props.set_horizontalalignment
@@ -4424,83 +4429,83 @@ axes::properties::update_zlabel_position (void)
 
           zlabel_props.set_verticalalignmentmode ("auto");
         }
+    }
 
-      if (zlabel_props.positionmode_is ("auto")
-          || zlabel_props.rotationmode_is ("auto"))
+  if (zlabel_props.positionmode_is ("auto")
+      || zlabel_props.rotationmode_is ("auto"))
+    {
+      graphics_xform xform = get_transform ();
+
+      Matrix ext (1, 2, 0.0);
+      ext = get_ticklabel_extents (get_ztick ().matrix_value (),
+                                   get_zticklabel ().all_strings (),
+                                   get_zlim ().matrix_value ());
+
+      double wmax = ext(0), hmax = ext(1), angle = 0;
+      ColumnVector p;
+
+      if (xySym)
         {
-          graphics_xform xform = get_transform ();
-
-          Matrix ext (1, 2, 0.0);
-          ext = get_ticklabel_extents (get_ztick ().matrix_value (),
-                                       get_zticklabel ().all_strings (),
-                                       get_zlim ().matrix_value ());
-
-          double wmax = ext(0), hmax = ext(1), angle = 0;
-          ColumnVector p;
-
-          if (xySym)
-            {
-              p = graphics_xform::xform_vector (xPlaneN, yPlane,
-                                                (zpTickN+zpTick)/2);
-              if (xisinf (fy))
-                p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
-              else
-                p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
-            }
+          p = graphics_xform::xform_vector (xPlaneN, yPlane,
+                                            (zpTickN+zpTick)/2);
+          if (xisinf (fy))
+            p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
           else
-            {
-              p = graphics_xform::xform_vector (xPlane, yPlaneN,
-                                                (zpTickN+zpTick)/2);
-              if (xisinf (fx))
-                p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
-              else
-                p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
-            }
-
-          p = xform.transform (p(0), p(1), p(2), false);
-
-          switch (zstate)
-            {
-              case AXE_ANY_DIR:
-                if (camAuto)
-                  {
-                    p(0) -= wmax;
-                    angle = 90;
-                  }
-
-                // FIXME -- what's the correct offset?
-                //
-                //   p[0] += (!xySym ? wmax : -wmax);
-                //   p[1] += (zSign ? hmax : -hmax);
-
-                break;
-
-              case AXE_VERT_DIR:
-                p(0) -= wmax;
-                angle = 90;
-                break;
-
-              case AXE_HORZ_DIR:
-                p(1) += hmax;
-                break;
-            }
-
-          if (zlabel_props.positionmode_is ("auto"))
-            {
-              p = xform.untransform (p(0), p(1), p(2), true);
-              zlabel_props.set_position (p.extract_n (0, 3).transpose ());
-              zlabel_props.set_positionmode ("auto");
-            }
-
-          if (zlabel_props.rotationmode_is ("auto"))
-            {
-              zlabel_props.set_rotation (angle);
-              zlabel_props.set_rotationmode ("auto");
-            }
+            p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
+        }
+      else
+        {
+          p = graphics_xform::xform_vector (xPlane, yPlaneN,
+                                            (zpTickN+zpTick)/2);
+          if (xisinf (fx))
+            p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
+          else
+            p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
         }
 
-      zlabel_props.set_autopos_tag ("zlabel");
+      p = xform.transform (p(0), p(1), p(2), false);
+
+      switch (zstate)
+        {
+          case AXE_ANY_DIR:
+            if (camAuto)
+              {
+                p(0) -= wmax;
+                angle = 90;
+              }
+
+            // FIXME -- what's the correct offset?
+            //
+            //   p[0] += (!xySym ? wmax : -wmax);
+            //   p[1] += (zSign ? hmax : -hmax);
+
+            break;
+
+          case AXE_VERT_DIR:
+            p(0) -= wmax;
+            angle = 90;
+            break;
+
+          case AXE_HORZ_DIR:
+            p(1) += hmax;
+            break;
+        }
+
+      if (zlabel_props.positionmode_is ("auto"))
+        {
+          p = xform.untransform (p(0), p(1), p(2), true);
+          zlabel_props.set_position (p.extract_n (0, 3).transpose ());
+          zlabel_props.set_positionmode ("auto");
+        }
+
+      if (! is_empty && zlabel_props.rotationmode_is ("auto"))
+        {
+          zlabel_props.set_rotation (angle);
+          zlabel_props.set_rotationmode ("auto");
+        }
     }
+
+  zlabel_props.set_autopos_tag ("zlabel");
 }
 
 void
@@ -4509,25 +4514,22 @@ axes::properties::update_title_position (void)
   text::properties& title_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_title ()).get_properties ());
 
-  if (! title_props.get_string ().empty ())
+  title_props.set_autopos_tag ("none");
+
+  if (title_props.positionmode_is ("auto"))
     {
-      title_props.set_autopos_tag ("none");
+      graphics_xform xform = get_transform ();
 
-      if (title_props.positionmode_is ("auto"))
-        {
-          graphics_xform xform = get_transform ();
+      // FIXME: bbox should be stored in axes::properties
+      Matrix bbox = get_extent (false);
+      ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
+                                          (x_zlim(0)+x_zlim(1))/2, true);
 
-          // FIXME: bbox should be stored in axes::properties
-          Matrix bbox = get_extent (false);
-          ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
-                                              (x_zlim(0)+x_zlim(1))/2, true);
-
-          title_props.set_position (p.extract_n(0, 3).transpose ());
-          title_props.set_positionmode ("auto");
-        }
-
-      title_props.set_autopos_tag ("title");
+      title_props.set_position (p.extract_n(0, 3).transpose ());
+      title_props.set_positionmode ("auto");
     }
+
+  title_props.set_autopos_tag ("title");
 }
 
 void
@@ -4757,11 +4759,18 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
           text::properties& text_props = reinterpret_cast<text::properties&>
             (gh_manager::get_object (text_handle).get_properties ());
 
-          if (! text_props.get_string ().empty ())
+          Matrix text_pos = text_props.get_position ().matrix_value ();
+          text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
+          if (text_props.get_string ().empty ())
+            {
+              ext(0) = std::min (ext(0), text_pos(0));
+              ext(1) = std::min (ext(1), text_pos(1));
+              ext(2) = std::max (ext(2), text_pos(0));
+              ext(3) = std::max (ext(3), text_pos(1));
+            }
+          else
             {
               Matrix text_ext = text_props.get_extent_matrix ();
-              Matrix text_pos = text_props.get_position ().matrix_value ();
-              text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
 
               bool ignore_horizontal = false;
               bool ignore_vertical = false;

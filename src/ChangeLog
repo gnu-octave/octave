@@ -1,3 +1,14 @@
+2011-03-06  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.cc (axes::properties::update_xlabel_position,
+	axes::properties::update_ylabel_position,
+	axes::properties::update_zlabel_position,
+	axes::properties::update_title_position):
+	Determine position also for empty axes labels/titles in order
+	to improve the tightinset calculation.
+	(axes::properties::get_extent): Take position of empty strings
+	into account for the calculation of axes extents.
+
 2011-03-03  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in (axes::properties::get_extent): Add new optional

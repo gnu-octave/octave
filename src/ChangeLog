@@ -1,3 +1,12 @@
+2011-03-07  Konstantinos Poulios  <logari81@googlemail.com>
+
+	Bug #32482.
+
+	* graphics.h.in (axes::properties::update_yaxislocation,
+	axes::properties::update_yaxislocation):
+	Hook update_ylabel_position and update_xlabel_position
+	respectively.
+
 2011-03-06  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.cc (axes::properties::update_xlabel_position,

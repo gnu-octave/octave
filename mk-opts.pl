@@ -1,4 +1,4 @@
-#! /usr/bin/perl
+#! /usr/bin/perl -w
 #
 # Copyright (C) 2002-2011 John W. Eaton
 #
@@ -47,49 +47,49 @@
 #
 # END_* must appear at beginning of line (whitespace ignored).
 
+################################################################################
+# Load packages to
+# 1) process command line options
+################################################################################
 use Getopt::Long;
 
-$opt_emit_opt_class_header = 0;
-$opt_emit_opt_handler_fcns = 0;
-$opt_debug = 0;
+################################################################################
+# Extract command line arguments
+&parse_options;
 
-GetOptions ("opt-class-header" => \$opt_emit_opt_class_header,
-            "opt-handler-fcns" => \$opt_emit_opt_handler_fcns,
-            "debug" => \$opt_debug);
+$DEFN_FILE = shift @ARGV;
+open (DEFN_FILE) or die "unable to open input definition file $DEFN_FILE";
 
-if (@ARGV == 1)
-  {
-    $INFILE = shift @ARGV;
-    open (INFILE) || die "unable to open input file $INFILE";
-  }
-else
-  {
-    die "usage: mk-opts.pl [options] FILE";
-  }
+################################################################################
+# Initialize variables
+$BLANK_LINE = qr/^\s*$/;
+$COMMENT = qr/^\s*#/;
 
-$opt_num = 0;
+################################################################################
+# Process file
+$OPT_NUM = 0;
 
 &parse_input;
 
 &process_data;
 
-FOO:
-  {
-    $opt_emit_opt_class_header && do { &emit_opt_class_header; last FOO; };
+# Produce desired style of output
+&emit_opt_class_header if $opt_class_header;
+&emit_opt_handler_fcns if $opt_handler_fcns;
+&emit_options_debug if $opt_debug;
 
-    $opt_emit_opt_handler_fcns && do { &emit_opt_handler_fcns; last FOO; };
+# End of main code
 
-    $opt_debug && do { &emit_options_debug; last FOO; };
-  }
+################################################################################
+# Subroutines
+################################################################################
 
 sub parse_input
 {
-  local ($have_doc_string);
-
-  while (<INFILE>)
+  LINE: while (<DEFN_FILE>)
     {
-      next if (/^\s*$/);
-      next if (/^\s*#.*$/);
+      next LINE if /$BLANK_LINE/;
+      next LINE if /$COMMENT/;
 
       if (/^\s*OPTION\s*$/)
         {
@@ -97,26 +97,29 @@ sub parse_input
         }
       elsif (/^\s*CLASS\s*=\s*"(\w+)"\s*$/)
         {
-          die "duplicate CLASS" if ($class ne "");
+          die "duplicate CLASS" if defined $CLASS;
           $CLASS = $1;
-          $class_name = "${CLASS}_options";
-          $struct_name = "${class_name}_struct";
-          $static_table_name = "${class_name}_table";
+          $CLASS_NAME = "${CLASS}_options";
+          $STRUCT_NAME = "${CLASS_NAME}_struct";
+          $STATIC_TABLE_NAME = "${CLASS_NAME}_table";
         }
       elsif (/^\s*FCN_NAME\s*=\s*"(\w+)"\s*$/)
         {
-          die "duplicate FCN_NAME" if ($fcn_name ne "");
-          $fcn_name = $1;
+          die "duplicate FCN_NAME" if defined $FCN_NAME;
+          $FCN_NAME = $1;
         }
       elsif (/^\s*INCLUDE\s*=\s*"(\S+)"\s*$/)
         {
-          $include = "${include}#include <$1>\n";
+          $INCLUDE .= "#include <$1>\n";
         }
       elsif (/^\s*DOC_STRING\s*$/)
         {
-          die "duplicate DOC_STRING" if ($have_doc_string);
-          &parse_doc_string;
-          $have_doc_string = 1;
+          die "duplicate DOC_STRING" if defined $DOC_STRING;
+          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_DOC_STRING\s*$/)
+          {
+            $DOC_STRING .= $_;
+          }
+          $DOC_STRING =~ s/\n/\\n\\\n/g;
         }
       else
         {
@@ -127,154 +130,160 @@ sub parse_input
 
 sub parse_option_block
 {
-  local ($have_doc_item, $have_init_body, $have_set_body, $have_set_code);
-
-  while (<INFILE>)
+  while (<DEFN_FILE>)
     {
-      next if (/^\s*$/);
+      next if /$BLANK_LINE/;
 
-      die "missing END_OPTION" if (/^\s*OPTION\s*$/);
+      die "missing END_OPTION" if /^\s*OPTION\s*$/;
 
-      last if (/^\s*END_OPTION\s*$/);
+      last if /^\s*END_OPTION\s*$/;
 
       if (/^\s*NAME\s*=\s*"(.*)"\s*$/)
         {
-          die "duplicate NAME" if ($name[$opt_num] ne "");
-          $name[$opt_num] = $1;
-          ($opt[$opt_num] = $name[$opt_num]) =~ s/\s+/_/g;
-          $optvar[$opt_num] = "x_$opt[$opt_num]";
-          $kw_tok[$opt_num] = [ split (/\s+/, $name[$opt_num]) ];
-          $n_toks[$opt_num] = @{$kw_tok[$opt_num]};
+          die "duplicate NAME" if defined $NAME[$OPT_NUM];
+          $NAME[$OPT_NUM] = $1;
+          ($OPT[$OPT_NUM] = $NAME[$OPT_NUM]) =~ s/\s+/_/g;
+          $OPTVAR[$OPT_NUM] = 'x_' . $OPT[$OPT_NUM];
+          $KW_TOK[$OPT_NUM] = [ split (' ', $NAME[$OPT_NUM]) ];
+          $N_TOKS[$OPT_NUM] = @{$KW_TOK[$OPT_NUM]};
         }
       elsif (/^\s*DOC_ITEM\s*$/)
         {
-          die "duplicate DOC_ITEM" if ($have_doc_item);
-          &parse_doc_item;
-          $have_doc_item = 1;
+          die "duplicate DOC_ITEM" if defined $DOC_ITEM[$OPT_NUM];
+          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_DOC_ITEM\s*$/)
+          {
+            $DOC_ITEM[$OPT_NUM] .= $_;
+          }
+          $DOC_ITEM[$OPT_NUM] =~ s/\n/\\n\\\n/g;
         }
       elsif (/^\s*TYPE\s*=\s*"(.*)"\s*$/)
         {
-          die "duplicate TYPE" if ($type[$opt_num] ne "");
-          $type[$opt_num] = $1;
+          die "duplicate TYPE" if defined $TYPE[$OPT_NUM];
+          $TYPE[$OPT_NUM] = $1;
         }
       elsif (/^\s*SET_ARG_TYPE\s*=\s*"(.*)"\s*$/)
         {
-          die "duplicate SET_ARG_TYPE" if ($set_arg_type[$opt_num] ne "");
-          $set_arg_type[$opt_num] = $1;
+          die "duplicate SET_ARG_TYPE" if defined $SET_ARG_TYPE[$OPT_NUM];
+          $SET_ARG_TYPE[$OPT_NUM] = $1;
         }
       elsif (/^\s*INIT_VALUE\s*=\s*"(.*)"\s*$/)
         {
-          die "duplicate INIT_VALUE" if ($init_value[$opt_num] ne "");
-          $init_value[$opt_num] = $1;
+          die "duplicate INIT_VALUE" if defined $INIT_VALUE[$OPT_NUM];
+          $INIT_VALUE[$OPT_NUM] = $1;
         }
       elsif (/^\s*SET_EXPR\s*=\s*"(.*)"\s*$/)
         {
-          die "duplicate SET_EXPR" if ($set_expr[$opt_num] ne "");
-          $set_expr[$opt_num] = $1;
+          die "duplicate SET_EXPR" if defined $SET_EXPR[$OPT_NUM];
+          $SET_EXPR[$OPT_NUM] = $1;
         }
       elsif (/^\s*INIT_BODY\s*$/)
         {
-          die "duplicate INIT_BODY" if ($have_init_body);
-          &parse_init_body;
-          $have_init_body = 1;
+          die "duplicate INIT_BODY" if defined $INIT_BODY[$OPT_NUM];
+          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_INIT_BODY\s*$/)
+          {
+            $INIT_BODY[$OPT_NUM] .= $_;
+          }
         }
       elsif (/^\s*SET_BODY\s*$/)
         {
-          die "duplicate SET_BODY" if ($have_set_body);
-          &parse_set_body;
-          $have_set_body = 1;
+          die "duplicate SET_BODY" if defined $INIT_BODY[$OPT_NUM];
+          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_SET_BODY\s*$/)
+          {
+            $SET_BODY[$OPT_NUM] .= $_;
+          }
         }
       elsif (/^\s*SET_CODE\s*$/)
         {
-          die "duplicate SET_CODE" if ($have_set_code);
-          &parse_set_code;
-          $have_set_code = 1;
+          die "duplicate SET_CODE" if defined $SET_CODE[$OPT_NUM];
+          while (defined ($_ = <DEFN_FILE>) and not /^\s*END_SET_CODE\s*$/)
+          {
+            $SET_CODE[$OPT_NUM] .= $_;
+          }
         }
     }
 
-  if ($set_arg_type[$opt_num] eq "")
+  if (not defined $SET_ARG_TYPE[$OPT_NUM])
     {
-      $set_arg_type[$opt_num] = $type[$opt_num]
+      $SET_ARG_TYPE[$OPT_NUM] = $TYPE[$OPT_NUM];
     }
   else
     {
-      $set_arg_type[$opt_num]
-        = &substopt ($set_arg_type[$opt_num], $optvar[$opt_num],
-                     $opt[$opt_num], $type[$opt_num]);
+      $SET_ARG_TYPE[$OPT_NUM]
+        = substopt ($SET_ARG_TYPE[$OPT_NUM], $OPTVAR[$OPT_NUM],
+                    $OPT[$OPT_NUM], $TYPE[$OPT_NUM]);
     }
 
-  $opt_num++;
+  $OPT_NUM++;
 }
 
 sub process_data
 {
-  $max_tokens = &max (@n_toks);
+  $MAX_TOKENS = max (@N_TOKS);
 
-  &get_min_match_len_info ($max_tokens);
+  &get_min_match_len_info;
 
-  $fcn_name = lc ($CLASS) if ($fcn_name eq "");
+  $FCN_NAME = lc ($CLASS) if not defined $FCN_NAME;
 
-  $opt_fcn_name = "${fcn_name}_options" if ($opt_fcn_name eq "");
+  $OPT_FCN_NAME = "${FCN_NAME}_options" if not defined $OPT_FCN_NAME;
 
-  $static_object_name = "${fcn_name}_opts";
+  $STATIC_OBJECT_NAME = "${FCN_NAME}_opts";
 
-  if ($doc_string eq "")
+  if (not defined $DOC_STRING)
     {
-      $doc_string = "When called with two arguments, this function\\n\\
-allows you set options parameters for the function \@code{$fcn_name}.\\n\\
-Given one argument, \@code{$opt_fcn_name} returns the value of the\\n\\
+      $DOC_STRING = "When called with two arguments, this function\\n\\
+allows you set options parameters for the function \@code{$FCN_NAME}.\\n\\
+Given one argument, \@code{$OPT_FCN_NAME} returns the value of the\\n\\
 corresponding option.  If no arguments are supplied, the names of all\\n\\
 the available options and their current values are displayed.\\n\\\n";
     }
 }
 
+#FIXME: What does this routine do?  And can it be simpler to understand?
 sub get_min_match_len_info
 {
-  local ($max_tokens) = @_;
+  my ($i, $j, $k);
 
-  local ($i, $j, $k);
-
-  for ($i = 0; $i < $opt_num; $i++)
+  for ($i = 0; $i < $OPT_NUM; $i++)
     {
-      for ($j = 0; $j < $max_tokens; $j++)
+      for ($j = 0; $j < $MAX_TOKENS; $j++)
         {
-          $min_tok_len_to_match[$i][$j] = 0;
+          $MIN_TOK_LEN_TO_MATCH[$i][$j] = 0;
         }
 
-      $min_toks_to_match[$i] = 1;
+      $MIN_TOKS_TO_MATCH[$i] = 1;
 
-    L1: for ($k = 0; $k < $opt_num; $k++)
+    L1: for ($k = 0; $k < $OPT_NUM; $k++)
         {
-          local ($duplicate) = 1;
+          my $duplicate = 1;
 
           if ($i != $k)
             {
-            L2: for ($j = 0; $j < $max_tokens; $j++)
+            L2: for ($j = 0; $j < $MAX_TOKENS; $j++)
                 {
-                  if ($j < $n_toks[$i])
+                  if ($j < $N_TOKS[$i])
                     {
-                      if ($kw_tok[$i][$j] eq $kw_tok[$k][$j])
+                      if ($KW_TOK[$i][$j] eq $KW_TOK[$k][$j])
                         {
-                          if ($min_tok_len_to_match[$i][$j] == 0)
+                          if ($MIN_TOK_LEN_TO_MATCH[$i][$j] == 0)
                             {
-                              $min_tok_len_to_match[$i][$j] = 1;
+                              $MIN_TOK_LEN_TO_MATCH[$i][$j] = 1;
                             }
 
-                          $min_toks_to_match[$i]++;
+                          $MIN_TOKS_TO_MATCH[$i]++;
                         }
                       else
                         {
                           $duplicate = 0;
 
-                          if ($min_tok_len_to_match[$i][$j] == 0)
+                          if ($MIN_TOK_LEN_TO_MATCH[$i][$j] == 0)
                             {
-                              $min_tok_len_to_match[$i][$j] = 1;
+                              $MIN_TOK_LEN_TO_MATCH[$i][$j] = 1;
                             }
 
-                          local (@s) = split (//, $kw_tok[$i][$j]);
-                          local (@t) = split (//, $kw_tok[$k][$j]);
+                          my @s = split (//, $KW_TOK[$i][$j]);
+                          my @t = split (//, $KW_TOK[$k][$j]);
 
-                          local ($n, $ii);
+                          my ($n, $ii);
                           $n = scalar (@s);
                           $n = scalar (@t) if (@t < $n);
 
@@ -282,9 +291,9 @@ sub get_min_match_len_info
                             {
                               if ("$s[$ii]" eq "$t[$ii]")
                                 {
-                                  if ($ii + 2 > $min_tok_len_to_match[$i][$j])
+                                  if ($ii + 2 > $MIN_TOK_LEN_TO_MATCH[$i][$j])
                                     {
-                                      $min_tok_len_to_match[$i][$j]++;
+                                      $MIN_TOK_LEN_TO_MATCH[$i][$j]++;
                                     }
                                 }
                               else
@@ -298,75 +307,22 @@ sub get_min_match_len_info
                     }
                   else
                     {
-                      die "ambiguous options \"$name[$i]\" and \"$name[$k]\"" if ($duplicate);
+                      die qq|ambiguous options "$NAME[$i]" and "$NAME[$k]"| if $duplicate;
                     }
                 }
             }
         }
     }
-}
+}  # end of get_min_match_len_info
 
-sub parse_doc_string
-{
-  while (<INFILE>)
-    {
-      last if (/^\s*END_DOC_STRING\s*$/);
-
-      $doc_string .= $_;
-    }
-
-  $doc_string =~ s/\n/\\n\\\n/g;
-}
-
-sub parse_doc_item
-{
-  while (<INFILE>)
-    {
-      last if (/^\s*END_DOC_ITEM\s*$/);
-
-      $doc_item[$opt_num] .= $_;
-    }
-
-  $doc_item[$opt_num] =~ s/\n/\\n\\\n/g;
-}
-
-sub parse_init_body
-{
-  while (<INFILE>)
-    {
-      last if (/^\s*END_INIT_BODY\s*$/);
-
-      $init_body[$opt_num] .= $_;
-    }
-}
-
-sub parse_set_body
-{
-  while (<INFILE>)
-    {
-      last if (/^\s*END_SET_BODY\s*$/);
-
-      $set_body[$opt_num] .= $_;
-    }
-}
-
-sub parse_set_code
-{
-  while (<INFILE>)
-    {
-      last if (/^\s*END_SET_CODE\s*$/);
-
-      $set_code[$opt_num] .= $_;
-    }
-}
 
 sub emit_copy_body
 {
-  local ($pfx, $var) = @_;
+  my ($pfx, $var) = @_;
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      print "${pfx}$optvar[$i] = ${var}.$optvar[$i];\n";
+      print "${pfx}$OPTVAR[$i] = ${var}.$OPTVAR[$i];\n";
     }
 
   print "${pfx}reset = ${var}.reset;\n";
@@ -377,20 +333,13 @@ sub emit_copy_body
 
 sub emit_default_init_list
 {
-  local ($prefix) = @_;
+  my ($prefix) = @_;
 
-  for ($i = 0; $i < $opt_num; $i++)
+  print "$OPTVAR[0] (),\n" unless ($OPT_NUM == 0);
+
+  for (my $i = 1; $i < $OPT_NUM; $i++)
     {
-      if ($i == 0)
-        {
-          $pfx = "";
-        }
-      else
-        {
-          $pfx = $prefix;
-        }
-
-      print "${pfx}$optvar[$i] (),\n";
+      print "${prefix}$OPTVAR[$i] (),\n";
     }
 
   print "${prefix}reset ()\n";
@@ -398,20 +347,13 @@ sub emit_default_init_list
 
 sub emit_copy_ctor_init_list
 {
-  local ($prefix, $var) = @_;
+  my ($prefix, $var) = @_;
 
-  for ($i = 0; $i < $opt_num; $i++)
+  print "$OPTVAR[0] ($var.$OPTVAR[0]),\n" unless ($OPT_NUM == 0);
+
+  for (my $i = 1; $i < $OPT_NUM; $i++)
     {
-      if ($i == 0)
-        {
-          $pfx = "";
-        }
-      else
-        {
-          $pfx = $prefix;
-        }
-
-      print "${pfx}$optvar[$i] ($var.$optvar[$i]),\n";
+      print "${prefix}$OPTVAR[$i] ($var.$OPTVAR[$i]),\n";
     }
 
   print "${prefix}reset ($var.reset)\n";
@@ -419,123 +361,125 @@ sub emit_copy_ctor_init_list
 
 sub emit_opt_class_header
 {
-  local ($i, $s);
+  my ($i, $s);
 
-  print "// DO NOT EDIT!
-// Generated automatically from $INFILE.
+  print <<"_END_EMIT_OPT_CLASS_HEADER_";
+// DO NOT EDIT!
+// Generated automatically from $DEFN_FILE.
 
-#if !defined (octave_${class_name}_h)
-#define octave_${class_name}_h 1
+#if !defined (octave_${CLASS_NAME}_h)
+#define octave_${CLASS_NAME}_h 1
 
 #include <cfloat>
 #include <cmath>
 
-${include}
+$INCLUDE
 
 class
-${class_name}
+$CLASS_NAME
 {
 public:
 
-  ${class_name} (void)
-    : ";
+  $CLASS_NAME (void)
+_END_EMIT_OPT_CLASS_HEADER_
 
-  &emit_default_init_list ("      ");
+  print '    : ';
+  emit_default_init_list ("      ");
 
   print "    {
       init ();
     }
 
-  ${class_name} (const ${class_name}& opt)
+  $CLASS_NAME (const ${CLASS_NAME}& opt)
     : ";
 
-  &emit_copy_ctor_init_list ("      ", "opt");
+  emit_copy_ctor_init_list ("      ", "opt");
 
   print "    { }
 
-  ${class_name}& operator = (const ${class_name}& opt)
+  ${CLASS_NAME}& operator = (const ${CLASS_NAME}& opt)
     {
       if (this != &opt)
         {\n";
 
-  &emit_copy_body ("          ", "opt");
+  emit_copy_body ('          ', 'opt');
 
   print "        }
 
       return *this;
     }
 
-  ~${class_name} (void) { }\n";
+  ~$CLASS_NAME (void) { }\n";
 
   print "\n  void init (void)\n    {\n";
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for ($i = 0; $i < $OPT_NUM; $i++)
     {
-      if ($init_value[$i])
+      if ($INIT_VALUE[$i])
         {
-          print "      $optvar[$i] = $init_value[$i];\n";
+          print "      $OPTVAR[$i] = $INIT_VALUE[$i];\n";
         }
-      elsif ($init_body[$i])
+      elsif ($INIT_BODY[$i])
         {
-          $s = &substopt ($init_body[$i], $optvar[$i], $opt[$i], $type[$i]);
-          chop ($s);
+          $s = substopt ($INIT_BODY[$i], $OPTVAR[$i], $OPT[$i], $TYPE[$i]);
+          chomp ($s);
           $s =~ s/^\s*/      /g;
           $s =~ s/\n\s*/\n      /g;
-          print "$s\n";
+          print $s,"\n";
         }
     }
 
-  print "      reset = true;
-    }\n";
+  print "      reset = true;\n",
+        "    }\n";
 
   ## For backward compatibility and because set_options is probably
   ## a better name in some contexts:
 
-  print "\n  void set_options (const ${class_name}& opt)
-    {\n";
+  print "\n  void set_options (const ${CLASS_NAME}& opt)\n",
+        "    {\n";
 
-  &emit_copy_body ("      ", "opt");
+  emit_copy_body ('      ', 'opt');
 
   print "    }\n\n  void set_default_options (void) { init (); }\n";
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for ($i = 0; $i < $OPT_NUM; $i++)
     {
-      if ($set_expr[$i])
+      if ($SET_EXPR[$i])
         {
-          &emit_set_decl ($i);
+          emit_set_decl ($i);
 
-          print "\n    { $optvar[$i] = $set_expr[$i]; reset = true; }\n";
+          print "\n    { $OPTVAR[$i] = $SET_EXPR[$i]; reset = true; }\n";
         }
-      elsif ($set_body[$i])
+      elsif ($SET_BODY[$i])
         {
-          &emit_set_decl ($i);
+          emit_set_decl ($i);
 
-          $s = &substopt ($set_body[$i], $optvar[$i], $opt[$i], $type[$i]);
-          chop ($s);
-          $s =~ s/^/  /g;
+          $s = substopt ($SET_BODY[$i], $OPTVAR[$i], $OPT[$i], $TYPE[$i]);
+          chomp ($s);
+          $s = '  ' . $s;
           $s =~ s/\n/\n  /g;
           print "\n    {\n$s\n      reset = true;\n    }\n";
         }
-      elsif ($set_code[$i])
+      elsif ($SET_CODE[$i])
         {
-          $s = &substopt ($set_code[$i], $optvar[$i], $opt[$i], $type[$i]);
-          chop ($s);
+          $s = substopt ($SET_CODE[$i], $OPTVAR[$i], $OPT[$i], $TYPE[$i]);
+          chomp ($s);
           $s =~ s/^  //g;
           $s =~ s/\n  /\n/g;
-          print "\n$s\n";
+          print "\n",$s,"\n";
         }
     }
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for ($i = 0; $i < $OPT_NUM; $i++)
     {
-      print "  $type[$i] $opt[$i] (void) const\n    { return $optvar[$i]; }\n\n";
+      print "  $TYPE[$i] $OPT[$i] (void) const\n    { return $OPTVAR[$i]; }\n\n";
     }
 
   print "private:\n\n";
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for ($i = 0; $i < $OPT_NUM; $i++)
     {
-      print "  $type[$i] $optvar[$i];\n";
+      print "  $TYPE[$i] $OPTVAR[$i];\n";
     }
 
   print "\nprotected:\n\n  bool reset;\n};\n\n#endif\n";
@@ -543,38 +487,40 @@ public:
 
 sub emit_set_decl
 {
-  local ($i) = @_;
+  my ($i) = @_;
 
-  print "
-  void set_$opt[$i] ($set_arg_type[$i] val)";
+  print "\n  void set_$OPT[$i] ($SET_ARG_TYPE[$i] val)";
 }
 
 sub emit_opt_handler_fcns
 {
-  local ($i);
-  my $header = $INFILE;
-  $header =~ s/[.]\w*$/.h/; # replace .in with .h
+  my $header = $DEFN_FILE;
+  $header =~ s/[.]\w*$/.h/;      # replace .in with .h
   $header =~ s|^.*/([^/]*)$|$1|; # strip directory part
 
-  print "// DO NOT EDIT!\n// Generated automatically from $INFILE.\n\n";
+  print <<"_END_EMIT_OPT_HANDLER_FCNS_";
+// DO NOT EDIT!
+// Generated automatically from $DEFN_FILE.
 
-  print "#ifdef HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include <iomanip>
 #include <iostream>
 
-#include \"$header\"
+#include "$header"
 
-#include \"defun-dld.h\"
-#include \"pr-output.h\"
+#include "defun-dld.h"
+#include "pr-output.h"
 
-#include \"oct-obj.h\"
-#include \"utils.h\"
-#include \"pager.h\"
+#include "oct-obj.h"
+#include "utils.h"
+#include "pager.h"
 
-static ${class_name} ${static_object_name};\n\n";
+static $CLASS_NAME $STATIC_OBJECT_NAME;
+
+_END_EMIT_OPT_HANDLER_FCNS_
 
   &emit_struct_decl;
 
@@ -591,46 +537,43 @@ static ${class_name} ${static_object_name};\n\n";
 
 sub emit_struct_decl
 {
-  local ($i);
+  print <<"_END_PRINT_STRUCT_DECL_";
+#define MAX_TOKENS $MAX_TOKENS
 
-  print "#define MAX_TOKENS $max_tokens\n\n";
+struct $STRUCT_NAME
+{
+  const char *keyword;
+  const char *kw_tok[MAX_TOKENS + 1];
+  int min_len[MAX_TOKENS + 1];
+  int min_toks_to_match;
+};
 
-  print "struct ${struct_name}\n{\n";
-
-  print "  const char *keyword;\n";
-  print "  const char *kw_tok[MAX_TOKENS + 1];\n";
-  print "  int min_len[MAX_TOKENS + 1];\n";
-  print "  int min_toks_to_match;\n";
-
-  print "};\n\n";
+_END_PRINT_STRUCT_DECL_
 }
 
 sub emit_struct_def
 {
-  local ($i);
+  my $i;
 
-  print "#define NUM_OPTIONS $opt_num\n\n";
+  print "#define NUM_OPTIONS $OPT_NUM\n\n";
 
-  print "static ${struct_name} ${static_table_name} [] =\n{\n";
+  print "static $STRUCT_NAME $STATIC_TABLE_NAME [] =\n{\n";
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for ($i = 0; $i < ($OPT_NUM - 1); $i++)
     {
-      &emit_option_table_entry ($i, 0);
-
-      if ($i < $opt_num - 1)
-        {
-          print "\n";
-        }
+      emit_option_table_entry ($i, 0);
+      print "\n";
     }
+  emit_option_table_entry ($i, 0);
 
   print "};\n\n";
 }
 
 sub emit_option_table_entry
 {
-  local ($i, $empty) = @_;
+  my ($i, $empty) = @_;
 
-  local ($k);
+  my $k;
 
   if ($empty)
     {
@@ -638,89 +581,88 @@ sub emit_option_table_entry
     }
   else
     {
-      print "  { \"$name[$i]\",\n";
+      print "  { \"$NAME[$i]\",\n";
     }
 
-  local ($n) = scalar $#{$kw_tok[$i]};
+  my $n = scalar $#{$KW_TOK[$i]};
   print "    {";
-  for $k (0 .. $max_tokens)
+  for $k (0 .. $MAX_TOKENS)
     {
-      if ($empty || $k > $n)
+      if ($empty or $k > $n)
         {
           print " 0,";
         }
       else
         {
-          print " \"$kw_tok[$i][$k]\",";
+          print " \"$KW_TOK[$i][$k]\",";
         }
     }
   print " },\n";
 
   print "    {";
-  for $k (0 .. $max_tokens)
+  for $k (0 .. $MAX_TOKENS)
     {
-      if ($empty || $k > $n)
+      if ($empty or $k > $n)
         {
           print " 0,";
         }
       else
         {
-          print " $min_tok_len_to_match[$i][$k],";
+          print " $MIN_TOK_LEN_TO_MATCH[$i][$k],";
         }
     }
-  print " }, $min_toks_to_match[$i], ";
+  print " }, $MIN_TOKS_TO_MATCH[$i], ";
 
   print "},\n";
 }
 
 sub emit_print_function
 {
-  local ($i);
-
   ## FIXME -- determine the width of the table automatically.
 
-  print "static void
-print_${class_name} (std::ostream& os)
+  print qq|static void
+print_$CLASS_NAME (std::ostream& os)
 {
   std::ostringstream buf;
 
-  os << \"\\n\"
-     << \"Options for $CLASS include:\\n\\n\"
-     << \"  keyword                                             value\\n\"
-     << \"  -------                                             -----\\n\";
+  os << "\\n"
+     << "Options for $CLASS include:\\n\\n"
+     << "  keyword                                             value\\n"
+     << "  -------                                             -----\\n";
 
-  $struct_name *list = $static_table_name;\n\n";
+  $STRUCT_NAME *list = $STATIC_TABLE_NAME;\n\n|;
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      print "  {\n    os << \"  \"
+      print qq|  {\n    os << "  "
         << std::setiosflags (std::ios::left) << std::setw (50)
         << list[$i].keyword
         << std::resetiosflags (std::ios::left)
-        << \"  \";\n\n";
+        << "  ";\n\n|;
 
-      if ($type[$i] eq "double")
+      if ($TYPE[$i] eq "double")
         {
-          print "    double val = $static_object_name.$opt[$i] ();\n\n";
-          print "    os << val << \"\\n\";\n";
+          print qq|    double val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
+          print qq|    os << val << "\\n";\n|;
         }
-      elsif ($type[$i] eq "float")
+      elsif ($TYPE[$i] eq "float")
         {
-          print "    float val = $static_object_name.$opt[$i] ();\n\n";
-          print "    os << val << \"\\n\";\n";
+          print qq|    float val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
+          print qq|    os << val << "\\n";\n|;
         }
-      elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
+      elsif ($TYPE[$i] eq "int" or $TYPE[$i] eq "octave_idx_type")
         {
-          print "    int val = $static_object_name.$opt[$i] ();\n\n";
-          print "    os << val << \"\\n\";\n";
+          print qq|    int val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
+          print qq|    os << val << "\\n";\n|;
         }
-      elsif ($type[$i] eq "std::string")
+      elsif ($TYPE[$i] eq "std::string")
         {
-          print "    os << $static_object_name.$opt[$i] () << \"\\n\";\n";
+          print qq|    os << $STATIC_OBJECT_NAME.$OPT[$i] () << "\\n";\n|;
         }
-      elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
+      elsif ($TYPE[$i] eq "Array<int>" or $TYPE[$i] eq "Array<octave_idx_type>")
         {
-          if ($type[$i] eq "Array<int>")
+          my $elt_type;
+          if ($TYPE[$i] eq "Array<int>")
             {
               $elt_type = "int";
             }
@@ -728,73 +670,73 @@ print_${class_name} (std::ostream& os)
             {
               $elt_type = "octave_idx_type";
             }
-          print "    Array<$elt_type> val = $static_object_name.$opt[$i] ();\n\n";
-          print "    if (val.length () == 1)
+          print qq|    Array<$elt_type> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
+          print qq|    if (val.length () == 1)
       {
-        os << val(0) << \"\\n\";
+        os << val(0) << "\\n";
       }
     else
       {
-        os << \"\\n\\n\";
+        os << "\\n\\n";
         octave_idx_type len = val.length ();
         Matrix tmp (len, 1);
         for (octave_idx_type i = 0; i < len; i++)
           tmp(i,0) = val(i);
         octave_print_internal (os, tmp, false, 2);
-        os << \"\\n\\n\";
-      }\n";
+        os << "\\n\\n";
+      }\n|;
         }
-      elsif ($type[$i] eq "Array<double>")
+      elsif ($TYPE[$i] eq "Array<double>")
         {
-          print "    Array<double> val = $static_object_name.$opt[$i] ();\n\n";
-          print "    if (val.length () == 1)
+          print qq|    Array<double> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
+          print qq|    if (val.length () == 1)
       {
-        os << val(0) << \"\\n\";
+        os << val(0) << "\\n";
       }
     else
       {
-        os << \"\\n\\n\";
+        os << "\\n\\n";
         Matrix tmp = Matrix (ColumnVector (val));
         octave_print_internal (os, tmp, false, 2);
-        os << \"\\n\\n\";
-      }\n";
+        os << "\\n\\n";
+      }\n|;
         }
-      elsif ($type[$i] eq "Array<float>")
+      elsif ($TYPE[$i] eq "Array<float>")
         {
-          print "    Array<float> val = $static_object_name.$opt[$i] ();\n\n";
-          print "    if (val.length () == 1)
+          print qq|    Array<float> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n|;
+          print qq|    if (val.length () == 1)
       {
-        os << val(0) << \"\\n\";
+        os << val(0) << "\\n";
       }
     else
       {
-        os << \"\\n\\n\";
+        os << "\\n\\n";
         FloatMatrix tmp = FloatMatrix (FloatColumnVector (val));
         octave_print_internal (os, tmp, false, 2);
-        os << \"\\n\\n\";
-      }\n";
+        os << "\\n\\n";
+      }\n|;
         }
       else
         {
-          die ("unknown type $type[$i]");
+          die ("unknown type $TYPE[$i]");
         }
 
       print "  }\n\n";
     }
 
-  print "  os << \"\\n\";\n}\n\n";
+  print qq|  os << "\\n";\n}\n\n|;
 }
 
 sub emit_set_functions
 {
   print "static void
-set_${class_name} (const std::string& keyword, const octave_value& val)
+set_$CLASS_NAME (const std::string& keyword, const octave_value& val)
 {
-  $struct_name *list = $static_table_name;\n\n";
+  $STRUCT_NAME *list = $STATIC_TABLE_NAME;\n\n";
 
-  $iftok = "if";
+  my $iftok = "if";
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for (my $i = 0; $i < $OPT_NUM; $i++)
     {
       $iftok = "else if" if ($i > 0);
 
@@ -802,77 +744,75 @@ set_${class_name} (const std::string& keyword, const octave_value& val)
            keyword, list[$i].min_toks_to_match, MAX_TOKENS))
     {\n";
 
-      if ($type[$i] eq "double")
+      if ($TYPE[$i] eq "double")
         {
           print "      double tmp = val.double_value ();\n\n";
           print "      if (! error_state)
-        $static_object_name.set_$opt[$i] (tmp);\n";
+        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "float")
+      elsif ($TYPE[$i] eq "float")
         {
           print "      float tmp = val.float_value ();\n\n";
           print "      if (! error_state)
-        $static_object_name.set_$opt[$i] (tmp);\n";
+        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
+      elsif ($TYPE[$i] eq "int" or $TYPE[$i] eq "octave_idx_type")
         {
           print "      int tmp = val.int_value ();\n\n";
           print "      if (! error_state)
-        $static_object_name.set_$opt[$i] (tmp);\n";
+        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "std::string")
+      elsif ($TYPE[$i] eq "std::string")
         {
           print "      std::string tmp = val.string_value ();\n\n";
           print "      if (! error_state)
-        $static_object_name.set_$opt[$i] (tmp);\n";
+        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
+      elsif ($TYPE[$i] eq "Array<int>" or $TYPE[$i] eq "Array<octave_idx_type>")
         {
           print "      Array<int> tmp = val.int_vector_value ();\n\n";
           print "      if (! error_state)
-        $static_object_name.set_$opt[$i] (tmp);\n";
+        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "Array<double>")
+      elsif ($TYPE[$i] eq "Array<double>")
         {
           print "      Array<double> tmp = val.vector_value ();\n\n";
           print "      if (! error_state)
-        $static_object_name.set_$opt[$i] (tmp);\n";
+        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
-      elsif ($type[$i] eq "Array<float>")
+      elsif ($TYPE[$i] eq "Array<float>")
         {
           print "      Array<float> tmp = val.float_vector_value ();\n\n";
           print "      if (! error_state)
-        $static_object_name.set_$opt[$i] (tmp);\n";
+        $STATIC_OBJECT_NAME.set_$OPT[$i] (tmp);\n";
         }
       else
         {
-          die ("unknown type $type[$i]");
+          die ("unknown type $TYPE[$i]");
         }
 
       print "    }\n";
     }
 
-  print "  else
+  print qq|  else
     {
-      warning (\"$opt_fcn_name: no match for `%s'\", keyword.c_str ());
+      warning ("$OPT_FCN_NAME: no match for `%s'", keyword.c_str ());
     }
-}\n\n";
+}\n\n|;
 }
 
 sub emit_show_function
 {
-  local ($i, $iftok);
-
   print "static octave_value_list
-show_${class_name} (const std::string& keyword)
+show_$CLASS_NAME (const std::string& keyword)
 {
   octave_value retval;
 
-  $struct_name *list = $static_table_name;\n\n";
+  $STRUCT_NAME *list = $STATIC_TABLE_NAME;\n\n";
 
-  $iftok = "if";
+  my $iftok = "if";
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for (my $i = 0; $i < $OPT_NUM; $i++)
     {
       $iftok = "else if" if ($i > 0);
 
@@ -880,28 +820,29 @@ show_${class_name} (const std::string& keyword)
            keyword, list[$i].min_toks_to_match, MAX_TOKENS))
     {\n";
 
-      if ($type[$i] eq "double")
+      if ($TYPE[$i] eq "double")
         {
-          print "      double val = $static_object_name.$opt[$i] ();\n\n";
+          print "      double val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
           print "      retval = val;\n";
         }
-      elsif ($type[$i] eq "float")
+      elsif ($TYPE[$i] eq "float")
         {
-          print "      float val = $static_object_name.$opt[$i] ();\n\n";
+          print "      float val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
           print "      retval = val;\n";
         }
-      elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
+      elsif ($TYPE[$i] eq "int" or $TYPE[$i] eq "octave_idx_type")
         {
-          print "      int val = $static_object_name.$opt[$i] ();\n\n";
+          print "      int val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
           print "      retval = static_cast<double> (val);\n";
         }
-      elsif ($type[$i] eq "std::string")
+      elsif ($TYPE[$i] eq "std::string")
         {
-          print "      retval = $static_object_name.$opt[$i] ();\n";
+          print "      retval = $STATIC_OBJECT_NAME.$OPT[$i] ();\n";
         }
-      elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
+      elsif ($TYPE[$i] eq "Array<int>" or $TYPE[$i] eq "Array<octave_idx_type>")
         {
-          if ($type[$i] eq "Array<int>")
+          my $elt_type;
+          if ($TYPE[$i] eq "Array<int>")
             {
               $elt_type = "int";
             }
@@ -909,7 +850,7 @@ show_${class_name} (const std::string& keyword)
             {
               $elt_type = "octave_idx_type";
             }
-          print "      Array<$elt_type> val = $static_object_name.$opt[$i] ();\n\n";
+          print "      Array<$elt_type> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
           print "      if (val.length () == 1)
         {
           retval = static_cast<double> (val(0));
@@ -923,9 +864,9 @@ show_${class_name} (const std::string& keyword)
           retval = tmp;
         }\n";
         }
-      elsif ($type[$i] eq "Array<double>")
+      elsif ($TYPE[$i] eq "Array<double>")
         {
-          print "      Array<double> val = $static_object_name.$opt[$i] ();\n\n";
+          print "      Array<double> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
           print "      if (val.length () == 1)
         {
           retval = val(0);
@@ -935,9 +876,9 @@ show_${class_name} (const std::string& keyword)
           retval = ColumnVector (val);
         }\n";
         }
-      elsif ($type[$i] eq "Array<float>")
+      elsif ($TYPE[$i] eq "Array<float>")
         {
-          print "      Array<float> val = $static_object_name.$opt[$i] ();\n\n";
+          print "      Array<float> val = $STATIC_OBJECT_NAME.$OPT[$i] ();\n\n";
           print "      if (val.length () == 1)
         {
           retval = val(0);
@@ -949,40 +890,42 @@ show_${class_name} (const std::string& keyword)
         }
       else
         {
-          die ("unknown type $type[$i]");
+          die ("unknown type $TYPE[$i]");
         }
 
       print "    }\n";
     }
 
-  print "  else
+  print qq|  else
     {
-      warning (\"$opt_fcn_name: no match for `%s'\", keyword.c_str ());
+      warning ("$OPT_FCN_NAME: no match for `%s'", keyword.c_str ());
     }
 
-  return retval;\n}\n\n";
+  return retval;\n}\n\n|;
 }
 
 sub emit_options_function
 {
-  print "DEFUN_DLD ($opt_fcn_name, args, ,
-  \"-*- texinfo -*-\\n\\
-\@deftypefn {Loadable Function} {} $opt_fcn_name (\@var{opt}, \@var{val})\\n\\
-$doc_string\\n\\
+  print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
+DEFUN_DLD ($OPT_FCN_NAME, args, ,
+  "-*- texinfo -*-\\n\\
+\@deftypefn {Loadable Function} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
+$DOC_STRING\\n\\
 Options include\\n\\
 \\n\\
-\@table \@code\\n\\\n";
+\@table \@code\\n\\
+_END_EMIT_OPTIONS_FUNCTION_HDR_
+# FIXME: Add extra newline above
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      print "\@item \\\"$name[$i]\\\"\\n\\\n";
-      if ($doc_item[$i] ne "")
-        {
-          print "$doc_item[$i]";
-        }
+      print '@item \"', $NAME[$i], '\"\n\\', "\n";
+      print $DOC_ITEM[$i] if $DOC_ITEM[$i];
     }
 
-  print "\@end table\\n\\\n\@end deftypefn\")
+  print <<"_END_EMIT_OPTIONS_FUNCTION_BODY_";
+\@end table\\n\\
+\@end deftypefn")
 {
   octave_value_list retval;
 
@@ -990,7 +933,7 @@ Options include\\n\\
 
   if (nargin == 0)
     {
-      print_${class_name} (octave_stdout);
+      print_$CLASS_NAME (octave_stdout);
     }
   else if (nargin == 1 || nargin == 2)
     {
@@ -999,62 +942,59 @@ Options include\\n\\
       if (! error_state)
         {
           if (nargin == 1)
-            retval = show_${class_name} (keyword);
+            retval = show_$CLASS_NAME (keyword);
           else
-            set_${class_name} (keyword, args(1));
+            set_$CLASS_NAME (keyword, args(1));
         }
       else
-        error (\"$opt_fcn_name: expecting keyword as first argument\");
+        error ("$OPT_FCN_NAME: expecting keyword as first argument");
     }
   else
     print_usage ();
 
   return retval;
-}\n";
+}
+_END_EMIT_OPTIONS_FUNCTION_BODY_
+
 }
 
 sub emit_options_debug
 {
-  print "CLASS = \"$class\"\n";
+  print qq|CLASS = "$CLASS"\n|;
 
-  for ($i = 0; $i < $opt_num; $i++)
+  for (my $i = 0; $i < $OPT_NUM; $i++)
     {
-      $NAME = $name[$i];
-      ($OPT = $NAME) =~ s/\s+/_/g;
-      $OPTVAR = "x_$OPT";
-      $TYPE = $type[$i];
-      print "\n";
-      print "OPTION\n";
-      print "  NAME = \"$NAME\"\n";
-      print "  TYPE = \"$TYPE\"\n";
-      if ($set_arg_type[$i])
+      print "\nOPTION\n";
+      print qq|  NAME = "$NAME[$i]"\n|;
+      print qq|  TYPE = "$TYPE[$i]"\n|;
+      if ($SET_ARG_TYPE[$i])
         {
-          print eval ("\"  SET_ARG_TYPE = \\\"$set_arg_type[$i]\\\"\"") . "\n";
+          print eval ("\"  SET_ARG_TYPE = \\\"$SET_ARG_TYPE[$i]\\\"\"") . "\n";
         }
-      if ($init_value[$i])
+      if ($INIT_VALUE[$i])
         {
-          print "  INIT_VALUE = \"$init_value[$i]\"\n";
+          print qq|  INIT_VALUE = "$INIT_VALUE[$i]"\n|;
         }
-      if ($init_body[$i])
+      if ($INIT_BODY[$i])
         {
           print "  INIT_BODY\n";
-          print &substopt ($init_body[$i]);
+          print &substopt ($INIT_BODY[$i]);
           print "  END_INIT_BODY\n";
         }
-      if ($set_expr[$i])
+      if ($SET_EXPR[$i])
         {
-          print "  SET_EXPR = \"$set_expr[$i]\"\n";
+          print qq|  SET_EXPR = "$SET_EXPR[$i]"\n|;
         }
-      if ($set_body[$i])
+      if ($SET_BODY[$i])
         {
           print "  SET_BODY\n";
-          print &substopt ($set_body[$i]);
+          print &substopt ($SET_BODY[$i]);
           print "  END_SET_BODY\n";
         }
-      if ($set_code[$i])
+      if ($SET_CODE[$i])
         {
           print "  SET_CODE\n";
-          print &substopt ($set_code[$i]);
+          print &substopt ($SET_CODE[$i]);
           print "  END_SET_CODE\n";
         }
       print "END_OPTION\n";
@@ -1063,35 +1003,69 @@ sub emit_options_debug
 
 sub substopt
 {
-  local ($string, $OPTVAR, $OPT, $TYPE) = @_;
+  my ($string, $optvar, $opt, $type) = @_;
 
-  $string =~ s/\$OPTVAR/$OPTVAR/g;
-  $string =~ s/\$OPT/$OPT/g;
-  $string =~ s/\$TYPE/$TYPE/g;
+  $string =~ s/\$OPTVAR/$optvar/g;
+  $string =~ s/\$OPT/$opt/g;
+  $string =~ s/\$TYPE/$type/g;
 
-  $string;
-}
-
-sub print_assoc_array
-{
-  local (%t) = @_;
-
-  local ($k);
-
-  foreach $k (keys (%t))
-    {
-      print "$k: $t{$k}\n";
-    }
+  return $string;
 }
 
 sub max
 {
-  local ($max) = shift;
+  my $max = shift;
 
   foreach (@_)
     {
       $max = $_ if $max < $_;
     }
 
-  $max;
+  return $max;
 }
+
+################################################################################
+# Subroutine processes any command line arguments
+################################################################################
+sub parse_options
+{
+  my $result;
+
+  $opt_help = 0;
+  $opt_class_header = 0;
+  $opt_handler_fcns = 0;
+  $opt_debug = 0;
+
+  $result = GetOptions ("opt-class-header" => \$opt_class_header,
+                        "opt-handler-fcns" => \$opt_handler_fcns,
+                        "debug" => \$opt_debug,
+                        "help"  => \$opt_help);
+
+  # give user info if options incorrect or -h(elp) given
+  &usage_info if (!$result or (@ARGV != 1) or $opt_help);
+  if ($opt_class_header and $opt_handler_fcns)
+  {
+    die "Only one of [-opt-class-header | -opt-handler-fcns ] may be specified";
+  }
+
+}
+
+################################################################################
+# Subroutine displays usage information
+################################################################################
+sub usage_info
+{
+   warn <<_END_OF_USAGE_;
+//////////////////////////////////////////////////////////////////////////////
+USAGE : mk-opts.pl -opt-class-header|-opt-handler-fcns [-debug] [-help] DEFN_FILE
+//////////////////////////////////////////////////////////////////////////////
+
+Automatically generate C++ code for option handling code (DASSL, DASRT, etc.)
+from definition file.
+
+See the head of mk-opts.pl for a description of the format that is parsed.
+_END_OF_USAGE_
+
+  exit(1);    # exit with error code
+}
+

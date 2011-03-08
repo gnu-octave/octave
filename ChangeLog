@@ -1,3 +1,13 @@
+2011-03-08  Rik  <octave@nomad.inbox5.com>
+
+	* mk-opts.pl: Recode using more modern Perl syntax.
+	Use my, not local, for lexically-scoped variables.
+	Use ALL_CAPITALS for global variable names.
+	Change code to remove any warnings from Perl lint (-w).
+	Inline small subroutines for better readability.
+	Use here documents and qq operator to avoid excessive backlashing of ".
+	Add more informative usage() information.
+
 2011-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Deprecate is_duplicate_entry.

@@ -7768,7 +7768,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 
   octave_value retval;
 
-  if (args.length () == 3)
+  if (args.length () >= 3 && args.length () <= 4)
     {
       double h = args(0).double_value ();
 
@@ -7785,6 +7785,13 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
                   graphics_object go = gh_manager::get_object (gh);
 
                   go.add_property_listener (pname, args(2), POSTSET);
+
+                  if (args.length () == 4)
+                    {
+                      caseless_str persistent = args(3).string_value ();
+                      if (persistent.compare ("persistent"))
+                        go.add_property_listener (pname, args(2), PERSISTENT);
+                    }
                 }
               else
                 error ("addlistener: invalid graphics object (= %g)",
@@ -7852,7 +7859,16 @@ dellistener (gcf, \"position\", c);\n\
                   if (args.length () == 2)
                     go.delete_property_listener (pname, octave_value (), POSTSET);
                   else
-                    go.delete_property_listener (pname, args(2), POSTSET);
+                    {
+                      caseless_str persistent = args(2).string_value ();
+                      if (persistent.compare ("persistent"))
+                        {
+                          go.delete_property_listener (pname, octave_value (), PERSISTENT);
+                          go.delete_property_listener (pname, octave_value (), POSTSET);
+                        }
+                      else
+                        go.delete_property_listener (pname, args(2), POSTSET);
+                    }
                 }
               else
                 error ("dellistener: invalid graphics object (= %g)",

@@ -318,7 +318,7 @@ private:
 
 class property;
 
-enum listener_mode { POSTSET };
+enum listener_mode { POSTSET, PERSISTENT };
 
 class base_property
 {
@@ -423,7 +423,27 @@ public:
             }
         }
       else
-        l.resize (0);
+        {
+          if (mode == PERSISTENT)
+            l.resize (0);
+          else
+            {
+              octave_value_list lnew (0);
+              octave_value_list& lp = listeners[PERSISTENT];
+              for (int i = l.length () - 1; i >= 0 ; i--)
+                {
+                  for (int j = 0; j < lp.length (); j++)
+                    {
+                      if (l(i).internal_rep () == lp(j).internal_rep ())
+                        {
+                          lnew.resize (lnew.length () + 1, l(i));
+                          break;
+                        }
+                    }
+                }
+              l = lnew;
+            }
+        }
 
     }
 

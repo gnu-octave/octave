@@ -1,3 +1,11 @@
+2011-03-10  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* graphics.h.in: Add PERSISTENT mode to listener_mode.
+	(base_property::delete_listener): Take into account persistent
+	mode of a listener.
+	* graphics.cc (addlistener, dellistener): Accept a new optional
+	argument for persistent listeners.
+
 2011-03-07  Konstantinos Poulios  <logari81@googlemail.com>
 
 	Bug #32482.

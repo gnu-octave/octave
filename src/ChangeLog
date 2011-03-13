@@ -1,3 +1,8 @@
+2011-03-13  Konstantinos Poulios  <logari81@googlemail.com>
+
+	* DLD-FUNCTIONS/__init_fltk__.cc (plot_window::plot_window):
+	Revert changes from 2011-02-26.
+
 2011-03-10  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* graphics.h.in: Add PERSISTENT mode to listener_mode.
@@ -97,7 +102,7 @@
 
 	Bug #32319.
 
-	* __init_fltk__.cc: Include sysdep.h.
+	* DLD-FUNCTIONS/__init_fltk__.cc: Include sysdep.h.
 	(class OpenGL_fltk): Replace integer print_fid member with
 	boolean print_mode. New class member print_cmd of type string.
 	(OpenGL_fltk::print): Accept command string argument instead of

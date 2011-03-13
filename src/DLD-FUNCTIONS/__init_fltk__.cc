@@ -720,6 +720,17 @@ public:
       status->textfont (FL_COURIER);
       status->textsize (10);
       status->box (FL_ENGRAVED_BOX);
+
+      // This allows us to have a valid OpenGL context right away.
+      canvas->mode (FL_DEPTH | FL_DOUBLE );
+      if (fp.is_visible ())
+        {
+          show ();
+          if (fp.get_currentaxes ().ok())
+            show_canvas ();
+          else
+            hide_canvas ();
+        }
     }
     end ();
 
@@ -737,21 +748,6 @@ public:
       show_menubar ();
     else
       hide_menubar ();
-
-    begin ();
-    {
-      // This allows us to have a valid OpenGL context right away.
-      canvas->mode (FL_DEPTH | FL_DOUBLE );
-      if (fp.is_visible ())
-        {
-          show ();
-          if (fp.get_currentaxes ().ok())
-            show_canvas ();
-          else
-            hide_canvas ();
-        }
-    }
-    end ();
   }
 
   ~plot_window (void)

@@ -4,6 +4,12 @@
 	SM octinternal_do_mul_colpm_sm (const octave_idx_type *,
 	const SM&)): Ensure that the row indices are sorted.
 
+2011-03-14  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* Sparse.cc (Sparse<T>::alloc) Change std::copy_backward to
+	std::copy, since the destination is at the back and not the
+	front. Bug #32747, cf. entry from 2010-11-25
+
 2011-02-08  John W. Eaton  <jwe@octave.org>
 
 	* oct-alloc.h: Include <cstddef>.

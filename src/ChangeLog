@@ -185,6 +185,11 @@
 	* load-path.cc (strip_trailing_separators): Declare K as size_t
 	rather than octave_idx_type.
 
+2011-02-10 Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* DLD-FUNCTIONS/mgorth.cc: New file implementing modified
+	Gram-Schmidt orthogonalization.
+
 2011-02-10  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Avoid deprecated

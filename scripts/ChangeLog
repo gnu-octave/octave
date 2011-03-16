@@ -192,6 +192,11 @@
 
 	* statistics/base/mean.m: Also accept logical values.
 
+2011-02-10 Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* linear-algebra/gmres.m: New file implementing the GMRES
+	iterative method for solving linear systems.
+
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Properly set fontspec for legends.

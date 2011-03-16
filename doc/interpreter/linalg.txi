@@ -106,6 +106,8 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(orth)
 
+@DOCSTRING(mgorth)
+
 @DOCSTRING(pinv)
 
 @DOCSTRING(rank)
@@ -188,3 +190,5 @@ flag a non-Hermitian matrix.
 @DOCSTRING(bicgstab)
 
 @DOCSTRING(cgs)
+
+@DOCSTRING(gmres)

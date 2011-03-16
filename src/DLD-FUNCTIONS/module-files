@@ -54,6 +54,7 @@ luinc.cc
 matrix_type.cc
 max.cc
 md5sum.cc
+mgorth.cc
 onCleanup.cc
 pinv.cc
 qr.cc

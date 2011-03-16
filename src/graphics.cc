@@ -4976,8 +4976,8 @@ check_limit_vals (double& min_val, double& max_val, double& min_pos,
     }
 }
 
-// magform(x) Returns (a, b), where x = a * 10^b, a >= 1., and b is
-// integral.
+// magform(x) Returns (a, b), where x = a * 10^b, abs (a) >= 1., and b is
+// integer.
 
 static void
 magform (double x, double& a, int& b)
@@ -4989,18 +4989,8 @@ magform (double x, double& a, int& b)
     }
   else
     {
-      double l = std::log10 (std::abs (x));
-      double r = std::fmod (l, 1.);
-      a = std::pow (10.0, r);
-      b = static_cast<int> (l-r);
-      if (a < 1)
-        {
-          a *= 10;
-          b -= 1;
-        }
-
-      if (x < 0)
-        a = -a;
+      b = static_cast<int> (gnulib::floor (std::log10 (std::abs (x)))); 
+      a = x / std::pow (10.0, b); 
     }
 }
 

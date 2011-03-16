@@ -1,3 +1,8 @@
+2010-03-15  Marco Caliari  <marco.caliari@univr.it>
+
+	* graphics.cc: Simplify calculation of number of tick labels.  Fixes
+	bug #32692.
+
 2011-03-13  Konstantinos Poulios  <logari81@googlemail.com>
 
 	* DLD-FUNCTIONS/__init_fltk__.cc (plot_window::plot_window):

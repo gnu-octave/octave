@@ -470,6 +470,10 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(uname)
 
+@DOCSTRING(nprocs)
+
+@DOCSTRING(nprocs_conf)
+
 @DOCSTRING(ispc)
 
 @DOCSTRING(isunix)

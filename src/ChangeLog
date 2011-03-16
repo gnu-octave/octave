@@ -1,3 +1,9 @@
+2011-03-16  Iain Murray  <iain@iainmurray.net>
+
+	* DLD-FUNCTIONS/nprocs.cc: New file.
+	* DLD-FUNCTIONS/module-files: Add nprocs.cc.
+	Expose nprocs and nprocs_conf from gnulib.
+
 2010-03-15  Marco Caliari  <marco.caliari@univr.it>
 
 	* graphics.cc: Simplify calculation of number of tick labels.  Fixes

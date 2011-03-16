@@ -1,3 +1,8 @@
+2010-03-16  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/system.txi: Add nproc and nproc_conf functions to
+	documentation.
+
 2010-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/matrix.txi: Deprecate is_duplicate_entry.

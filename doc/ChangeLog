@@ -1,3 +1,8 @@
+2011-03-17  Iain Murray  <iain@iainmurray.net>
+
+	* interpreter/system.txi: Remove nprocs and nprocs_conf functions
+	from documentation and replace with nproc.
+
 2010-03-16  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/system.txi: Add nproc and nproc_conf functions to

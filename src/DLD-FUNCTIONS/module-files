@@ -55,7 +55,7 @@ matrix_type.cc
 max.cc
 md5sum.cc
 mgorth.cc
-nprocs.cc
+nproc.cc
 onCleanup.cc
 pinv.cc
 qr.cc

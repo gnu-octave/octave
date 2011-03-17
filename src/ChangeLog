@@ -1,3 +1,10 @@
+2011-03-17  Iain Murray  <iain@iainmurray.net>
+
+	* DLD-FUNCTIONS/nprocs.cc: Delete file.
+	* DLD-FUNCTIONS/nproc.cc: New file.  New function nproc provided by
+	gnulib.
+	* DLD-FUNCTIONS/module-files: Add nproc.cc.
+
 2011-03-16  Iain Murray  <iain@iainmurray.net>
 
 	* DLD-FUNCTIONS/nprocs.cc: New file.

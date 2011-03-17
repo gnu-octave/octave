@@ -1,3 +1,7 @@
+2011-03-17  Iain Murray  <iain@iainmurray.net>
+
+	* bootstrap.conf (gnulib_modules): Include nproc in the list.
+
 2011-03-08  Rik  <octave@nomad.inbox5.com>
 
 	* mk-opts.pl: Recode using more modern Perl syntax.

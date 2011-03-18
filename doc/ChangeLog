@@ -1,3 +1,9 @@
+2010-03-17  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/doccheck/mk_undocumented_list: Add fmod,
+	octave_tmp_file_name to list of exceptions which are already
+	documented.
+
 2011-03-17  Iain Murray  <iain@iainmurray.net>
 
 	* interpreter/system.txi: Remove nprocs and nprocs_conf functions

@@ -387,6 +387,18 @@ found.
 
 @DOCSTRING(suppress_verbose_help_message)
 
+The following functions are principally used internally by Octave for
+generating the documentation.  They are documented here for completeness
+and because they may occasionally be useful for users.
+
+@DOCSTRING(gen_doc_cache)
+
+@DOCSTRING(get_help_text)
+
+@DOCSTRING(get_help_text_from_file)
+
+@DOCSTRING(get_first_help_sentence)
+
 @node Command Line Editing
 @section Command Line Editing
 @cindex command-line editing

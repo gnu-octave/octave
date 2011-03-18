@@ -719,16 +719,11 @@ do_get_help_text (const std::string& name, std::string& text,
 
 DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
-Return the help text of a given function.\n\
+Return the raw help text of function @var{name}.\n\
 \n\
-This function returns the raw help text @var{text} and an indication of\n\
-its format for the function @var{name}.  The format indication @var{format}\n\
-is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
+The raw help text is returned in @var{text} and the format in @var{format}\n\
+The format is a string which is one of @t{\"texinfo\"}, @t{\"html\"}, or\n\
 @t{\"plain text\"}.\n\
-\n\
-To convert the help text to other formats, use the @code{makeinfo} function.\n\
-\n\
-@seealso{makeinfo}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -793,16 +788,11 @@ do_get_help_text_from_file (const std::string& fname, std::string& text,
 DEFUN (get_help_text_from_file, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
-Return the help text from the given file.\n\
+Return the raw help text from the file @var{fname}.\n\
 \n\
-This function returns the raw help text @var{text} and an indication of\n\
-its format for the function @var{name}.  The format indication @var{format}\n\
-is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
+The raw help text is returned in @var{text} and the format in @var{format}\n\
+The format is a string which is one of @t{\"texinfo\"}, @t{\"html\"}, or\n\
 @t{\"plain text\"}.\n\
-\n\
-To convert the help text to other formats, use the @code{makeinfo} function.\n\
-\n\
-@seealso{makeinfo}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -1,3 +1,7 @@
+2010-03-18  Rik  <octave@nomad.inbox5.com>
+
+	* help/get_first_help_sentence.m: Improve docstring.  Add tests.
+
 2010-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* scripts/sparse/svds.m: Fix bug #32818, nonconformant arguments

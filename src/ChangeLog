@@ -1,3 +1,7 @@
+2010-03-18  Rik  <octave@nomad.inbox5.com>
+
+	* help.cc (get_help_text, get_help_text_from_file): Improve docstrings.
+
 2011-03-17  John W. Eaton  <jwe@octave.org>
 
 	* ov-float.cc (octave_float_scalar::do_index_op): Widen to float

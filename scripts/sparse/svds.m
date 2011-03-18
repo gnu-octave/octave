@@ -173,10 +173,10 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     if (nargout > 1)
       [V, s, flag] = eigs ([sparse(m,m), b; b', sparse(n,n)],
                            b_k, b_sigma, b_opts);
+      s = diag (s);
     else
       s = eigs ([sparse(m,m), b; b', sparse(n,n)], b_k, b_sigma, b_opts);
     endif
-    s = diag (s);
 
     if (ischar (sigma))
       norma = max (s);
@@ -224,11 +224,11 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   else
     if (max_a == 0)
       u = eye (m, k);
-      s = diag(s);
+      s = diag (s);
       v = eye (n, k);
     else
       u = root2 * V(1:m,ind);
-      s = diag(s);
+      s = diag (s);
       v = root2 * V(m+1:end,ind);
     endif
 
@@ -273,4 +273,7 @@ endfunction
 %! assert(s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), 1e-10);
 %!test
 %! [u2,s2,v2,flag] = svds(zeros (10), k);
-%! assert (isequal(u2, eye (10, k)) && isequal (s2, zeros(k)) && isequal (v2, eye(10, 7)))
+%! assert (isequal(u2, eye (10, k)) && isequal (s2, zeros(k)) && isequal (v2, eye(10, 7)));
+%!test
+%! s = svds (speye (10));
+%! assert (s, ones (6, 1), 2*eps);

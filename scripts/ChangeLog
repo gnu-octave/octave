@@ -1,5 +1,10 @@
 2010-03-17  Rik  <octave@nomad.inbox5.com>
 
+	* scripts/sparse/svds.m: Fix bug #32818, nonconformant arguments
+	in svds.
+
+2010-03-17  Rik  <octave@nomad.inbox5.com>
+
 	* io/fileread.m: Add seealso reference to sscanf.
 
 2011-03-05  Ben Abbott <bpabbott@mac.com>

@@ -1,3 +1,8 @@
+2011-03-17  John W. Eaton  <jwe@octave.org>
+
+	* ov-float.cc (octave_float_scalar::do_index_op): Widen to float
+	matrix, not double.
+
 2010-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* syscalls.cc (gethostname): Redo documentation string.

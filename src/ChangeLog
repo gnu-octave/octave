@@ -1,3 +1,7 @@
+2010-03-17  Rik  <octave@nomad.inbox5.com>
+
+	* syscalls.cc (gethostname): Redo documentation string.
+
 2011-03-17  Iain Murray  <iain@iainmurray.net>
 
 	* DLD-FUNCTIONS/nprocs.cc: Delete file.

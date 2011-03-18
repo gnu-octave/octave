@@ -1182,8 +1182,8 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
 DEFUN (gethostname, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{uts}, @var{err}, @var{msg}] =} uname ()\n\
-Return the hostname of the system on which Octave is running\n\
+@deftypefn {Built-in Function} {} gethostname ()\n\
+Return the hostname of the system where Octave is running.\n\
 @end deftypefn")
 {
   octave_value retval;

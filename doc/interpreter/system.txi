@@ -260,6 +260,8 @@ status information on files; and for manipulating file and path names.
 * URL Manipulation::
 @end menu
 
+@DOCSTRING(gethostname)
+
 @node FTP Objects
 @subsection FTP Objects
 

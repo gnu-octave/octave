@@ -176,6 +176,8 @@ A
 
 @DOCSTRING(load)
 
+@DOCSTRING(fileread)
+
 There are three functions that modify the behavior of @code{save}.
 
 @DOCSTRING(default_save_options)

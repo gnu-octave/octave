@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{str} =} fileread (@var{filename})
-## Read the contents of a file and return it as a string.
-## @seealso{fread, textread}
+## Read the contents of @var{filename} and return it as a string.
+## @seealso{fread, textread, sscanf}
 ## @end deftypefn
 
 function str = fileread (filename)

@@ -2447,11 +2447,13 @@ returns a list of factory defaults.
 @node Advanced Plotting
 @section Advanced Plotting
 
+
 @menu
 * Colors::                      
 * Line Styles::                 
 * Marker Styles::               
 * Callbacks::                   
+* Application-defined Data::
 * Object Groups::               
 * Graphics Toolkits::           
 @end menu
@@ -2593,6 +2595,22 @@ functions.
 
 Callbacks can equally be added to properties with the @code{addlistener}
 function described below.
+
+@node Application-defined Data
+@subsection Application-defined Data 
+@cindex Application-defined Data
+
+Octave has a provision for attaching application-defined data to a graphics
+handle.  The data can be anything which is meaningful to the application, and
+will be completely ignored by Octave.
+
+@DOCSTRING(setappdata)
+
+@DOCSTRING(getappdata)
+
+@DOCSTRING(rmappdata)
+
+@DOCSTRING(isappdata)
 
 @node Object Groups
 @subsection Object Groups

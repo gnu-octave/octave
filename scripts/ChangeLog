@@ -1,3 +1,7 @@
+2011-03-19  Ben Abbott  <bpabbott@mac.com>
+
+	* geometry/trisurf.m: Set default edgecolor as Matlab does. Add demos.
+
 2010-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* plot/uigetdir.m, plot/uigetfile.m, plot/uimenu.m, plot/uiputfile.m:

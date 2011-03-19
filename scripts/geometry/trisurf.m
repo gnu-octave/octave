@@ -27,7 +27,7 @@
 ## @seealso{triplot, trimesh, delaunay3}
 ## @end deftypefn
 
-function h = trisurf (tri, x, y, z, varargin)
+function varargout = trisurf (tri, x, y, z, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -44,18 +44,22 @@ function h = trisurf (tri, x, y, z, varargin)
     else
       c = z;
     endif
-
-    newplot ();
-    if (nargout > 0)
-      h = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
-             "FaceVertexCData", reshape (c, numel (c), 1),
-             "FaceColor", "flat", "EdgeColor", "none",
-             varargin{:});
+    if (! any (strcmpi (varargin, "FaceColor")))
+      nfc = numel (varargin) + 1;
+      varargin(nfc+(0:1)) = {"FaceColor", "flat"};
     else
-      patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
-             "FaceVertexCData", reshape (c, numel (c), 1),
-             "FaceColor", "flat", "EdgeColor", "none",
-             varargin{:});
+      nfc = find (any (strcmpi (varargin, "FaceColor")), 1);
+    endif
+    if (! any (strcmpi (varargin, "EdgeColor"))
+        && strcmpi (varargin{nfc+1}, "interp"))
+      varargin(end+(1:2)) = {"EdgeColor", "none"};
+    endif
+    newplot ();
+    h = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
+               "FaceVertexCData", reshape (c, numel (c), 1),
+               varargin{:});
+    if (nargout > 0)
+      varargout = {h};
     endif
 
     if (! ishold ())
@@ -73,3 +77,26 @@ endfunction
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
 %! trisurf (tri, x(:), y(:), z(:));
+
+%!demo
+%! x = rand (100, 1);
+%! y = rand (100, 1);
+%! z = x.^2 + y.^2; 
+%! tri = delaunay (x, y); 
+%! trisurf (tri, x, y, z)
+
+%!demo
+%! x = rand (100, 1);
+%! y = rand (100, 1);
+%! z = x.^2 + y.^2; 
+%! tri = delaunay (x, y); 
+%! trisurf (tri, x, y, z, "facecolor", "interp")
+
+%!demo
+%! x = rand (100, 1);
+%! y = rand (100, 1);
+%! z = x.^2 + y.^2; 
+%! tri = delaunay (x, y); 
+%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k")
+
+

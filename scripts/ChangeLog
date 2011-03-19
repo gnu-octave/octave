@@ -1,5 +1,14 @@
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
+	* statistics/models/logistic_regression.m: Do not split function
+	declaration with line continuation.
+	* statistics/models/private/logistic_regression_likelihood.m,
+	statistics/models/private/logistic_regression_derivatives.m: Make
+	helper functions private.
+	* statistics/models/module.mk: Make helper functions private.
+
+2010-03-19  Rik  <octave@nomad.inbox5.com>
+
 	* plot/isocolors.m, plot/isonormals.m, plot/isosurface.m: Improve
 	docstrings.
 

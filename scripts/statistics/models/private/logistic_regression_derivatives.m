@@ -18,8 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{dl}, @var{d2l}] =} logistic_regression_derivatives (@var{x}, @var{z}, @var{z1}, @var{g}, @var{g1}, @var{p})
-## Called by logistic_regression.  Calculates derivates of the
-## log-likelihood for ordinal logistic regression model.
+## Calculate derivatives of the log-likelihood for ordinal logistic regression
+## model.
+## Private function called by @code{logistic_regression}.
+## @seealso{logistic_regression}
 ## @end deftypefn
 
 ## Author: Gordon K. Smyth <gks@maths.uq.oz.au>

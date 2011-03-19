@@ -136,3 +136,19 @@ endfunction
 %! patch('Vertices', vertices, 'Faces', faces, ...
 %!       'FaceVertexCData', jet(4), 'FaceColor', 'flat')
 %! view (-37.5, 30)
+
+%!demo
+%! clf
+%! vertices = [0, 0, 0;
+%!             1, 0, 0;
+%!             1, 1, 0;
+%!             0, 1, 0;
+%!             0.5, 0.5, 1];
+%! faces = [1, 2, 5;
+%!          2, 3, 5;
+%!          3, 4, 5;
+%!          4, 1, 5];
+%! patch('Vertices', vertices, 'Faces', faces, ...
+%!       'FaceVertexCData', jet(5), 'FaceColor', 'interp')
+%! view (-37.5, 30)
+

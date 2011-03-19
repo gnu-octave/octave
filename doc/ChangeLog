@@ -1,5 +1,9 @@
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/stats.txi: Add runlength function to documentation.
+
+2010-03-19  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/plot.txi: Add isocolors, isonormals, isosurface functions
 	to documentation.
 

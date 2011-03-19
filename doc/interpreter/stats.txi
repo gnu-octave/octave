@@ -127,6 +127,8 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(run_count)
 
+@DOCSTRING(runlength)
+
 @DOCSTRING(probit)
 
 @DOCSTRING(logit)

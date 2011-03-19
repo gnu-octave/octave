@@ -70,7 +70,6 @@ general_FCN_FILES = \
   general/repmat.m \
   general/rot90.m \
   general/rotdim.m \
-  general/runlength.m \
   general/saveobj.m \
   general/shift.m \
   general/shiftdim.m \

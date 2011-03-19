@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} runlength (@var{x})
+## @deftypefn {Function File} {[count, value] =} runlength (@var{x})
 ## Find the lengths of all sequences of common values.  Return the
 ## vector of lengths and the value that was repeated.
 ##
@@ -30,9 +30,34 @@
 ## @end deftypefn
 
 function [count, value] = runlength (x)
+  if (nargin != 1)
+    print_usage ();
+  endif
+
+  if (!isnumeric (x) || !isvector (x))
+    error ("runlength: X must be a numeric vector");
+  endif
+
+  if (iscolumn (x))
+    x = x.';
+  endif
+
   idx = [find(x(1:end-1) != x(2:end)), length(x)];
-  value = x(idx);
   count = diff ([0 idx]);
+  if (nargout == 2)
+    value = x(idx);
+  endif
 endfunction
 
 %!assert (runlength([2 2 0 4 4 4 0 1 1 1 1]), [2 1 3 1 4]);
+%!assert (runlength([2 2 0 4 4 4 0 1 1 1 1]'), [2 1 3 1 4]);
+%!test
+%! [c, v] = runlength ([2 2 0 4 4 4 0 1 1 1 1]);
+%! assert (c, [2 1 3 1 4]);
+%! assert (v, [2 0 4 0 1]);
+
+%% Test input validation
+%!error runlength ()
+%!error runlength (1, 2)
+%!error runlength (true(1,2))
+%!error runlength (ones(2,2))

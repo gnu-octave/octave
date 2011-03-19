@@ -28,6 +28,7 @@ statistics_base_FCN_FILES = \
   statistics/base/range.m \
   statistics/base/ranks.m \
   statistics/base/run_count.m \
+  statistics/base/runlength.m \
   statistics/base/skewness.m \
   statistics/base/spearman.m \
   statistics/base/statistics.m \

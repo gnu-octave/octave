@@ -1,5 +1,12 @@
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
+	* general/module.mk, statistics/base/module.mk: Move runlength.m
+	to statistics/base directory.
+	* statistics/base/runlength.m: Add input validation and tests.
+	Improve docstring.
+
+2010-03-19  Rik  <octave@nomad.inbox5.com>
+
 	* statistics/models/logistic_regression.m: Do not split function
 	declaration with line continuation.
 	* statistics/models/private/logistic_regression_likelihood.m,

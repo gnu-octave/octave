@@ -510,7 +510,7 @@ Plotting
 High-Level Plotting
 
 * Two-Dimensional Plots::       
-* Three-Dimensional Plotting::  
+* Three-Dimensional Plots::  
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
@@ -520,10 +520,12 @@ High-Level Plotting
 
 Two-Dimensional Plots
 
+* Axis Configuration::  
 * Two-dimensional Function Plotting::  
 
-Three-Dimensional Plotting
+Three-Dimensional Plots
 
+* Aspect Ratio::  
 * Three-dimensional Function Plotting::  
 * Three-dimensional Geometric Shapes::  
 

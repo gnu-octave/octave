@@ -17,16 +17,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} daspect (@var{data_aspect_ratio})
+## @deftypefn  {Function File} {} daspect (@var{data_aspect_ratio})
 ## Set the data aspect ratio of the current axes.  The aspect ratio is
 ## a normalized 3-element vector representing the span of the x, y, and
 ## z-axes limits.
+##
 ## @deftypefnx {Function File} {@var{data_aspect_ratio} =} daspect ( )
 ## Return the data aspect ratio of the current axes.
+##
 ## @deftypefnx {Function File} {} daspect (@var{mode})
 ## Set the data aspect ratio mode of the current axes.
+##
 ## @deftypefnx {Function File} {@var{data_aspect_ratio_mode} =} daspect ("mode")
 ## Return the data aspect ratio mode of the current axes.
+##
 ## @deftypefnx {Function File} {} daspect (@var{hax}, @dots{})
 ## Uses the axes, with handle @var{hax}, instead of the current axes.
 ##

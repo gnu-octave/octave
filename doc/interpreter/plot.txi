@@ -54,7 +54,7 @@ and @ref{Advanced Plotting}.
 
 @menu
 * Two-Dimensional Plots::       
-* Three-Dimensional Plotting::  
+* Three-Dimensional Plots::  
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
@@ -65,6 +65,11 @@ and @ref{Advanced Plotting}.
 
 @node Two-Dimensional Plots
 @subsection Two-Dimensional Plots
+
+@menu
+* Axis Configuration::  
+* Two-dimensional Function Plotting::  
+@end menu
 
 The @code{plot} function allows you to create simple x-y plots with
 linear axes.  For example,
@@ -219,6 +224,9 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(comet3)
 
+@node Axis Configuration
+@subsubsection Axis Configuration
+
 The axis function may be used to change the axis limits of an existing
 plot and various other axis properties, such as the aspect ratio and the
 appearance of tic marks.
@@ -236,10 +244,6 @@ get or set individual axis limits.  Each has the same form.
 @anchor{doc-ylim}
 @anchor{doc-zlim}
 @DOCSTRING(xlim)
-
-@menu
-* Two-dimensional Function Plotting::  
-@end menu
 
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
@@ -275,8 +279,8 @@ function include @code{ezplot}, @code{ezcontour}, @code{ezcontourf} and
 
 @DOCSTRING(ezpolar)
 
-@node Three-Dimensional Plotting
-@subsection Three-Dimensional Plotting
+@node Three-Dimensional Plots
+@subsection Three-Dimensional Plots
 
 The function @code{mesh} produces mesh surface plots.  For example,
 
@@ -364,9 +368,22 @@ three-dimensional plots.
 @DOCSTRING(scatter3)
 
 @menu
+* Aspect Ratio::
 * Three-dimensional Function Plotting::  
 * Three-dimensional Geometric Shapes::  
 @end menu
+
+@node Aspect Ratio
+@subsubsection Aspect Ratio
+
+For three-dimensional plots the aspect ratio can be set for data with
+@code{daspect} and for the plot box with @code{pbaspect}.  
+See @ref{Axis Configuration} for controlling the x-, y-, and z-limits for
+plotting.
+
+@DOCSTRING(daspect)
+
+@DOCSTRING(pbaspect)
 
 @node Three-dimensional Function Plotting
 @subsubsection Three-dimensional Function Plotting

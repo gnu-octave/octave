@@ -347,6 +347,12 @@ three-dimensional plots.
 
 @DOCSTRING(surfnorm)
 
+@DOCSTRING(isosurface)
+
+@DOCSTRING(isonormals)
+
+@DOCSTRING(isocolors)
+
 @DOCSTRING(diffuse)
 
 @DOCSTRING(specular)

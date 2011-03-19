@@ -26,7 +26,7 @@
 ## @deftypefnx {Function File} {} isosurface (@var{x}, @var{y}, @var{z}, @var{val}, @var{iso}, @var{col}, @var{opt})
 ##
 ## If called with one output argument and the first input argument
-## @var{val} is a three--dimensional array that contains the data of an
+## @var{val} is a three-dimensional array that contains the data of an
 ## isosurface geometry and the second input argument @var{iso} keeps the
 ## isovalue as a scalar value then return a structure array @var{fv}
 ## that contains the fields @var{Faces} and @var{Vertices} at computed
@@ -108,8 +108,7 @@
 ## # light ("Position", [1 1 5]);
 ## @end example
 ##
-## @seealso{isocolors, isonormals, isocaps}
-##
+## @seealso{isonormals, isocolors}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>

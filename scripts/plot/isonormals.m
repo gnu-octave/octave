@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} isonormals (@dots{}, @var{p})
 ##
 ## If called with one output argument and the first input argument
-## @var{val} is a three--dimensional array that contains the data for an
+## @var{val} is a three-dimensional array that contains the data for an
 ## isosurface geometry and the second input argument @var{v} keeps the
 ## vertices of an isosurface then return the normals @var{n} in form of
 ## a matrix with the same size than @var{v} at computed points
@@ -88,8 +88,7 @@
 ## isofinish (p);
 ## @end example
 ##
-## @seealso {isosurface, isocolors, isocaps, marching_cube}
-##
+## @seealso{isosurface, isocolors}
 ## @end deftypefn
 
 ## Author: Martin Helm <martin@mhelm.de>

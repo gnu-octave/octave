@@ -1,5 +1,10 @@
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
+	* plot/isocolors.m, plot/isonormals.m, plot/isosurface.m: Improve
+	docstrings.
+
+2010-03-19  Rik  <octave@nomad.inbox5.com>
+
 	* miscellaneous/dump_prefs.m: Close @deftypefn macro left open.
 
 2010-03-19  Rik  <octave@nomad.inbox5.com>

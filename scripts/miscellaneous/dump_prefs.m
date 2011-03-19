@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dump_prefs ()
-## @deftypefn {Function File} {} dump_prefs (@var{fid})
+## @deftypefn  {Function File} {} dump_prefs ()
+## @deftypefnx {Function File} {} dump_prefs (@var{fid})
 ## Dump all of the current user preference variables in a format that can be
 ## parsed by Octave later.  @var{fid} is a file descriptor as returned by
 ## @code{fopen}.  If @var{file} is omitted, the listing is printed to stdout.

@@ -1,5 +1,9 @@
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/basics.txi: Add dump_prefs to documentation.
+
+2010-03-19  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/octave.texi, interpreter/plot.txi: Add daspect, pbaspect
 	functions to documentation.
 

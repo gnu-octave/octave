@@ -1,5 +1,9 @@
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/dump_prefs.m: Improve docstring.
+
+2010-03-19  Rik  <octave@nomad.inbox5.com>
+
 	* plot/daspect.m, plot/pbaspect.m: Use newline between @deftypefnx
 	macros to get correct appearance.
 

@@ -20,14 +20,19 @@
 ## @deftypefn  {Function File} {@var{dirname} =} uigetdir ()
 ## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path})
 ## @deftypefnx {Function File} {@var{dirname} =} uigetdir (@var{init_path}, @var{dialog_name})
-## Open a GUI dialog to select a directory.  If @var{init_path} is not given
-## the current working directory is used.  @var{dialog_name} optionally be
+## Open a GUI dialog for selecting a directory.  If @var{init_path} is not 
+## given the current working directory is used.  @var{dialog_name} may be
 ## used to customize the dialog title.
+## @seealso{uigetfile}
 ## @end deftypefn
 
 ## Author: Kai Habel
 
 function dirname = uigetdir (init_path = pwd, dialog_name = "Choose directory?")
+
+  if (exist("__fltk_uigetfile__") != 3)
+    error ("uigetfile: fltk graphics toolkit required");
+  endif
 
   if (nargin > 2)
     print_usage ();
@@ -37,14 +42,10 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Choose directory?")
     error ("uigetdir: INIT_PATH and DIALOG_NAME must be string arguments");
   endif
 
-  if (exist ("__fltk_uigetfile__") == 3)
-      if (!isdir (init_path))
-        init_path = fileparts (init_path);
-      endif
-      dirname = __fltk_uigetfile__ ("", dialog_name, init_path, [240, 120], "dir");
-  else
-    error ("uigetdir: fltk graphics toolkit required");
+  if (!isdir (init_path))
+    init_path = fileparts (init_path);
   endif
+  dirname = __fltk_uigetfile__ ("", dialog_name, init_path, [240, 120], "dir");
 
 endfunction
 

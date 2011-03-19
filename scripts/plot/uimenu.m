@@ -19,15 +19,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} uimenu (@var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
-## Create an uimenu object and return a handle to it.  If @var{h} is ommited
-## then a top level menu entry for the current figure is created.  If @var{h}
+## Create a uimenu object and return a handle to it.  If @var{h} is ommited
+## then a top-level menu for the current figure is created.  If @var{h}
 ## is given then a submenu relative to @var{h} is created.
 ##
-## Uimenu objects have the following specific properties:
+## uimenu objects have the following specific properties:
 ##
 ## @table @asis
 ## @item "accelerator"
-## A string containg the key combination together with CTRL to execute this
+## A string containing the key combination together with CTRL to execute this
 ## menu entry (e.g., "x" for CTRL+x).
 ##
 ## @item "callback"
@@ -48,7 +48,7 @@
 ##
 ## @item "label"
 ## A string containing the label for this menu entry.  A "&"-symbol can be
-## used to mark the "accelerator" character (e.g., "E&xit")
+## used to mark the "accelerator" character (e.g., @nospell{"E&xit"})
 ##
 ## @item "position"
 ## An scalar value containing the relative menu position.  The entry with the
@@ -57,7 +57,6 @@
 ## @item "separator"
 ## Can be set "on" or "off".  If enabled it draws a separator line above the
 ## current position.  It is ignored for top level entries.
-##
 ##
 ## @end table
 ##

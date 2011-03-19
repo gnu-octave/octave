@@ -20,6 +20,7 @@ ANOVA
 Anymap
 API
 approximant
+arg
 ARMA
 arpack
 ascii
@@ -151,6 +152,7 @@ CPLEX
 CreateFcn
 csymamd
 ctranspose
+CTRL
 CTS
 cURL
 Cuthill
@@ -273,6 +275,7 @@ fltk
 fontconfig
 fontname
 forall
+foregroundcolor
 formfeed
 Fortran
 fpdf
@@ -535,8 +538,10 @@ Multi
 multi
 multibyte
 multiline
+MultiSelect
 mxArray
 myclass
+myfun
 nabla
 NaN
 NaNs
@@ -794,6 +799,7 @@ sublicenses
 Sublicensing
 submatrices
 submatrix
+submenu
 subprocess
 subprocesses
 Subprocesses
@@ -863,7 +869,9 @@ ub
 UB
 uchar
 UID
+uimenu
 uint
+uiputfile
 ulong
 Ultrix
 umfpack

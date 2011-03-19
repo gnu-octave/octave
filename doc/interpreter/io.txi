@@ -28,6 +28,7 @@ after the C standard library are also provided by Octave.
 @menu
 * Basic Input and Output::      
 * C-Style I/O Functions::       
+* GUI Dialogs for I/O::       
 @end menu
 
 @node Basic Input and Output
@@ -1059,4 +1060,17 @@ fourch = fgets (myfile, 4);
 fseek (myfile, marker, SEEK_SET);
 @end group
 @end example
+
+@node GUI Dialogs for I/O
+@section GUI Dialogs for I/O
+
+Simple dialog menus are available for choosing directories or files.  They
+return a string variable which can then be used when calling any command
+requiring a file name.
+
+@DOCSTRING(uigetdir)
+
+@DOCSTRING(uigetfile)
+
+@DOCSTRING(uiputfile)
 

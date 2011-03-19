@@ -1,5 +1,11 @@
 2010-03-18  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/doccheck/aspell-octave.en.pws, interpreter/io.txi,
+	interpreter/octave.texi, interpreter/plot.txi: Add uimenu, uigetdir,
+	uigetfile, and uiputfile to documentation.
+
+2010-03-18  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/nonlin.txi, interpreter/octave.texi: Add fminbnd,
 	fminunc functions to documentation.
 

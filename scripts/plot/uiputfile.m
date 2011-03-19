@@ -17,18 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
+## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ()
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ())
-## Open a GUI dialog to select a file.  @var{flt} contains a (list of) file
+## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
+## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
+## Open a GUI dialog for selecting a file.  @var{flt} contains a (list of) file
 ## filter string(s) in one of the following formats:
 ##
 ## @table @code
 ## @item "/path/to/filename.ext"
 ## If a filename is given the file extension is
 ## extracted and used as filter.
-## In addtion the path is selected as current path and the filname is selected
+## In addition the path is selected as current path and the filename is selected
 ## as default file.
 ## Example: uiputfile("myfun.m");
 ##
@@ -48,51 +48,49 @@
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.
-## If in addtion a path is given it is also used as current path.
+## If, in addition, a path is given it is also used as current path.
 ## @end deftypefn
 
 ## Author: Kai Habel
 
 function [retfile, retpath, retindex] = uiputfile (varargin)
 
-  if (nargin <= 3)
-
-    defaultvals = {"All Files(*)", #FLTK File Filter
-                   "Save File?",   #Dialog Title
-                   pwd,            #FLTK default file name
-                   [240, 120],     #Dialog Position (pixel x/y)
-                   "create"};
-
-    outargs = cell(5, 1);
-    for i = 1 : 5
-      outargs{i} = defaultvals{i};
-    endfor
-
-    if (nargin > 0)
-      file_filter = varargin{1};
-      outargs{1} = __fltk_file_filter__ (file_filter);
-      if (ischar (file_filter))
-        outargs{3} = file_filter;
-      endif
-    endif
-
-    if (nargin > 1)
-      outargs{2} = varargin{2};
-    endif
-
-    if (nargin > 2)
-      outargs{3} = varargin{3};
-    endif
-
-  else
-    error ("uiputfile: number of input arguments must be less than four");
-  endif
-
-  if (exist("__fltk_uigetfile__") == 3)
-    [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
-  else
+  if (exist("__fltk_uigetfile__") != 3)
     error ("uiputfile: fltk graphics toolkit required");
   endif
+
+  if (nargin > 3)
+    print_usage ();
+  endif
+
+  defaultvals = {"All Files(*)", #FLTK File Filter
+                 "Save File?",   #Dialog Title
+                 pwd,            #FLTK default file name
+                 [240, 120],     #Dialog Position (pixel x/y)
+                 "create"};
+
+  outargs = cell(5, 1);
+  for i = 1 : 5
+    outargs{i} = defaultvals{i};
+  endfor
+
+  if (nargin > 0)
+    file_filter = varargin{1};
+    outargs{1} = __fltk_file_filter__ (file_filter);
+    if (ischar (file_filter))
+      outargs{3} = file_filter;
+    endif
+  endif
+
+  if (nargin > 1)
+    outargs{2} = varargin{2};
+  endif
+
+  if (nargin > 2)
+    outargs{3} = varargin{3};
+  endif
+
+  [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
 
 endfunction
 

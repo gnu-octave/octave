@@ -141,6 +141,8 @@ a (i, :)
 @end group
 @end example
 
+@DOCSTRING(nth_element)
+
 @anchor{doc-triu}
 @DOCSTRING(tril)
 

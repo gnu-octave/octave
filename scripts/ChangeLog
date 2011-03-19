@@ -1,5 +1,10 @@
 2010-03-18  Rik  <octave@nomad.inbox5.com>
 
+	* general/curl.m, general/divergence.m, linear-algebra/cross.m:
+	Update seealso cross references.
+
+2010-03-18  Rik  <octave@nomad.inbox5.com>
+
 	* help/get_first_help_sentence.m: Improve docstring.  Add tests.
 
 2010-03-17  Rik  <octave@nomad.inbox5.com>

@@ -198,31 +198,13 @@ cos (pi/2)
 
 @DOCSTRING(ceil)
 
-@DOCSTRING(curl)
-
-@DOCSTRING(cross)
-
-@DOCSTRING(del2)
-
-@DOCSTRING(divergence)
-
-@DOCSTRING(factor)
-
-@DOCSTRING(factorial)
-
 @DOCSTRING(fix)
 
 @DOCSTRING(floor)
 
-@DOCSTRING(gcd)
+@DOCSTRING(round)
 
-@DOCSTRING(gradient)
-
-@DOCSTRING(hypot)
-
-@DOCSTRING(lcm)
-
-@DOCSTRING(list_primes)
+@DOCSTRING(roundb)
 
 @DOCSTRING(max)
 
@@ -232,15 +214,37 @@ cos (pi/2)
 
 @DOCSTRING(cummin)
 
+@DOCSTRING(hypot)
+
+@DOCSTRING(gradient)
+
+@DOCSTRING(dot)
+
+@DOCSTRING(cross)
+
+@DOCSTRING(divergence)
+
+@DOCSTRING(curl)
+
+@DOCSTRING(del2)
+
+@DOCSTRING(factorial)
+
+@DOCSTRING(factor)
+
+@DOCSTRING(gcd)
+
+@DOCSTRING(lcm)
+
+@DOCSTRING(chop)
+
+@DOCSTRING(rem)
+
 @DOCSTRING(mod)
 
 @DOCSTRING(primes)
 
-@DOCSTRING(rem)
-
-@DOCSTRING(round)
-
-@DOCSTRING(roundb)
+@DOCSTRING(list_primes)
 
 @DOCSTRING(sign)
 

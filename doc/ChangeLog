@@ -1,5 +1,11 @@
 2010-03-18  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/arith.txi, interpreter/linalg.txi: Add function chop
+	to documentation.  Re-order Utility Functions and move function dot
+	from linear algebra section to be with other utility functions.
+
+2010-03-18  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/basics.txi: Add gen_doc_cache, get_help_text, 
 	get_help_text_from_file, get_first_help_sentence to documentation.
 

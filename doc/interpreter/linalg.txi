@@ -88,8 +88,6 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(det)
 
-@DOCSTRING(dot)
-
 @DOCSTRING(eig)
 
 @DOCSTRING(givens)

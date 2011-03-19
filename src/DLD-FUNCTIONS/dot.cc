@@ -116,7 +116,7 @@ This is equivalent to\n\
 but avoids forming a temporary array and is faster.  When @var{X} and\n\
 @var{Y} are column vectors, the result is equivalent to\n\
 @code{@var{X}' * @var{Y}}.\n\
-@seealso{cross}\n\
+@seealso{cross, divergence}\n\
 @end deftypefn")
 {
   octave_value retval;

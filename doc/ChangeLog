@@ -1,5 +1,10 @@
 2010-03-18  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/nonlin.txi, interpreter/octave.texi: Add fminbnd,
+	fminunc functions to documentation.
+
+2010-03-18  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/arith.txi, interpreter/linalg.txi: Add function chop
 	to documentation.  Re-order Utility Functions and move function dot
 	from linear algebra section to be with other utility functions.

@@ -600,6 +600,11 @@ Linear Algebra
 * Functions of a Matrix::       
 * Specialized Solvers::
 
+Nonlinear Equations
+
+* Solvers::
+* Minimizers::
+
 Diagonal and Permutation Matrices
 
 * Basic Usage::          Creation and Manipulation of Diagonal and Permutation Matrices

@@ -292,6 +292,8 @@ The equivalent functionality for subscripted assignments uses the
 
 @DOCSTRING(subsasgn)
 
+@DOCSTRING(optimize_subsasgn_calls)
+
 Note that the @code{subsref} and @code{subsasgn} methods always receive the
 whole index chain, while they usually handle only the first element.  It is the
 responsibility of these methods to handle the rest of the chain (if needed),

@@ -1,5 +1,9 @@
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/container.txi: Add cellindexmat function to documentation.
+
+2010-03-19  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/oop.txi: Add optimize_subsasgn_calls function to 
 	documentation.
 

@@ -779,6 +779,12 @@ x@{1, :@} = []
 @end group
 @end example
 
+The indexing operations operate on the the cell array and not on the objects
+within the cell array.  By contrast, @code{cellindexmat} applies matrix indexing
+to the objects within each cell array entry and returns the requested values.
+
+@DOCSTRING(cellindexmat)
+
 @node Cell Arrays of Strings
 @subsection Cell Arrays of Strings
 

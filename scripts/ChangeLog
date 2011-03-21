@@ -1,3 +1,7 @@
+2010-03-21  Rik  <octave@nomad.inbox5.com>
+
+	* signal/ifftshift.m: Fix bug #32873, ifftshift fails.
+
 2010-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* general/module.mk, statistics/base/module.mk: Move runlength.m

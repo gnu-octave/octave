@@ -1,8 +1,8 @@
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* dot.cc: Improve seealso cross references in docstring.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* help.cc (get_help_text, get_help_text_from_file): Improve docstrings.
 
@@ -11,7 +11,7 @@
 	* ov-float.cc (octave_float_scalar::do_index_op): Widen to float
 	matrix, not double.
 
-2010-03-17  Rik  <octave@nomad.inbox5.com>
+2011-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* syscalls.cc (gethostname): Redo documentation string.
 
@@ -28,7 +28,7 @@
 	* DLD-FUNCTIONS/module-files: Add nprocs.cc.
 	Expose nprocs and nprocs_conf from gnulib.
 
-2010-03-15  Marco Caliari  <marco.caliari@univr.it>
+2011-03-15  Marco Caliari  <marco.caliari@univr.it>
 
 	* graphics.cc: Simplify calculation of number of tick labels.  Fixes
 	bug #32692.
@@ -122,7 +122,7 @@
 
 	* DLD-FUNCTIONS/regexp.cc: Assume we have PCRE.
 
-2010-02-19  Rik  <octave@nomad.inbox5.com>
+2011-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* src/DLD-FUNCTIONS/regexp.cc: Use PCRE regular expressions everywhere
 	now that Octave requires library for building.  Remove testif PCRE
@@ -323,7 +323,7 @@
 	converted to mxArray object, then simply create a clone of the
 	mxArray_octave_value container.
 
-2010-02-02  Rik  <octave@nomad.inbox5.com>
+2011-02-02  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/eigs.cc, DLD-FUNCTIONS/qr.cc: Use testif to only run
 	some sparse tests when necessary libraries are installed.

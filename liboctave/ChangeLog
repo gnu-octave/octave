@@ -20,7 +20,7 @@
 	* PermMatrix.cc (operator*): Fix mixed row/column permutation
 	case.  Bug #32346.
 
-2010-02-04  Rik  <octave@nomad.inbox5.com>
+2011-02-04  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Undo accidental checkin
 

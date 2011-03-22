@@ -1,15 +1,15 @@
-2010-03-21  Rik  <octave@nomad.inbox5.com>
+2011-03-21  Rik  <octave@nomad.inbox5.com>
 
 	* signal/ifftshift.m: Fix bug #32873, ifftshift fails.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* general/module.mk, statistics/base/module.mk: Move runlength.m
 	to statistics/base directory.
 	* statistics/base/runlength.m: Add input validation and tests.
 	Improve docstring.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* statistics/models/logistic_regression.m: Do not split function
 	declaration with line continuation.
@@ -18,20 +18,20 @@
 	helper functions private.
 	* statistics/models/module.mk: Make helper functions private.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* plot/isocolors.m, plot/isonormals.m, plot/isosurface.m: Improve
 	docstrings.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/dump_prefs.m: Close @deftypefn macro left open.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/dump_prefs.m: Improve docstring.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* plot/daspect.m, plot/pbaspect.m: Use newline between @deftypefnx
 	macros to get correct appearance.
@@ -41,27 +41,27 @@
 	* plot/patch.m: Add demo.
 	* geometry/trisurf.m: Set default edgecolor as Matlab does. Add demos.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* plot/uigetdir.m, plot/uigetfile.m, plot/uimenu.m, plot/uiputfile.m:
 	Improve docstrings.  Check for error conditions (missing FLTK, wrong
 	number of arguments) at top of code.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* general/curl.m, general/divergence.m, linear-algebra/cross.m:
 	Update seealso cross references.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* help/get_first_help_sentence.m: Improve docstring.  Add tests.
 
-2010-03-17  Rik  <octave@nomad.inbox5.com>
+2011-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* scripts/sparse/svds.m: Fix bug #32818, nonconformant arguments
 	in svds.
 
-2010-03-17  Rik  <octave@nomad.inbox5.com>
+2011-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* io/fileread.m: Add seealso reference to sscanf.
 
@@ -69,7 +69,7 @@
 
 	* plot/colorbar.m: Allow location to be specified as a property.
 
-2010-03-03  Rik  <octave@nomad.inbox5.com>
+2011-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/bunzip2.m, miscellaneous/bzip2.m,
 	miscellaneous/gunzip.m, miscellaneous/gzip.m, miscellaneous/unpack.m,
@@ -78,7 +78,7 @@
 	* miscellaneous/tar.m, miscellaneous/zip.m: Check for invalid arguments
 	at the top, rather than bottom, of code.
 
-2010-03-03  Rik  <octave@nomad.inbox5.com>
+2011-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/gzip.m: Use same functional form as bzip, zip, etc.
 	* miscellaneous/private/__xzip__.m: Allow use of character arrays of
@@ -88,16 +88,16 @@
 	Fix bug where unzip returned the archive name in addition to the list
 	of files unzipped.
 
-2010-03-03  Rik  <octave@nomad.inbox5.com>
+2011-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* deprecated/module.mk, general/module.mk: Deprecate is_duplicate_entry.
 
-2010-03-03  Rik  <octave@nomad.inbox5.com>
+2011-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/movefile.m: Fix copy&paste bug affecting Windows
 	platform.  (bug #32443)
 
-2010-03-02  Rik  <octave@nomad.inbox5.com>
+2011-03-02  Rik  <octave@nomad.inbox5.com>
 
 	* statistics/distributions/unidcdf.m,
 	statistics/distributions/unidinv.m, statistics/distributions/unidpdf.m,
@@ -109,21 +109,21 @@
 	* plot/subplot.m: Remove redundant calls.
 	For gnuplot set "activepositionproperty" to "position" always.
 
-2010-03-01  Rik  <octave@nomad.inbox5.com>
+2011-03-01  Rik  <octave@nomad.inbox5.com>
 
 	* general/isscalar.m, general/isvector.m: Use modern warning function
 	rather than deprecated built-in variable to set warning state.
 
-2010-02-28  Rik  <octave@nomad.inbox5.com>
+2011-02-28  Rik  <octave@nomad.inbox5.com>
 
 	* general/iscolumn.m, general/isrow.m: Add 2 new utility functions
 	to check for row or column vector.
 
-2010-02-28  Rik  <octave@nomad.inbox5.com>
+2011-02-28  Rik  <octave@nomad.inbox5.com>
 
 	* sparse/treeplot.m: Use 'o' plot style as default for nodes
 
-2010-02-27  Rik  <octave@nomad.inbox5.com>
+2011-02-27  Rik  <octave@nomad.inbox5.com>
 
 	* special-matrix/pascal.m: Fix incorrect statement in documentation
 	for pascal.m.  Bug #32523.
@@ -141,7 +141,7 @@
 
 	* polynomial/polyval.m: Minor simplification in polynomial evaluation.
 
-2010-02-22  Rik  <octave@nomad.inbox5.com>
+2011-02-22  Rik  <octave@nomad.inbox5.com>
 
 	* general/bitcmp.m, general/bitget.m, general/bitset.m,
 	miscellaneous/license.m, special-matrix/pascal.m,
@@ -172,16 +172,16 @@
 	12467. Decrease spacing between subplots rows / columns. Clean up and
 	add comments.
 
-2010-02-22  Rik  <octave@nomad.inbox5.com>
+2011-02-22  Rik  <octave@nomad.inbox5.com>
 
 	* io/strread.m, plot/whitebg.m, strings/regexptranslate.m,
 	testfun/runtests.m: Use single quotes around regexp patterns.
 
-2010-02-20  Karsten Trulsen  <karstent@math.uio.no>
+2011-02-20  Karsten Trulsen  <karstent@math.uio.no>
 
 	* signal/fftshift.m: Fix broken function.  Bug 32442.
 
-2010-02-21  Carlo de Falco  <kingcrimson@tiscali.it>
+2011-02-21  Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* pkg/get_forge_pkg.m: Fix typo in new PCRE style regular expression.
 
@@ -190,7 +190,7 @@
 	* miscellaneous/warning_ids.m: Document
 	Octave::autoload-relative-file-name warning.
 
-2010-02-19  Rik  <octave@nomad.inbox5.com>
+2011-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* io/dlmwrite.m, pkg/get_forge_pkg.m, plot/__gnuplot_ginput__.m,
 	plot/__go_draw_axes__.m, testfun/runtests.m: Use PCRE regular
@@ -225,7 +225,7 @@
 	* plot/__fltk_print__.m: Forward pipeline to drawnow instead of
 	invoking a process here.  Bug #32319.
 
-2010-02-14  Rik  <octave@nomad.inbox5.com>
+2011-02-14  Rik  <octave@nomad.inbox5.com>
 
 	* plot/semilogxerr.m, plot/semilogyerr.m, special-matrix/pascal.m,
 	special-matrix/rosser.m, special-matrix/wilkinson.m: Add missing
@@ -314,11 +314,11 @@
 
 	* general/circshift.m: New tests.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/version.m, path/matlabroot.m: Correct spelling.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* help/help.m, linear-algebra/onenormest.m, plot/graphics_toolkit.m,
 	plot/pie3.m, plot/view.m, signal/periodogram.m: Grammarcheck docstrings.
@@ -341,7 +341,7 @@
 	* plot/private/__plt__.m: Set initial values of hlgnd and tlgnd
 	if a legend exists already.
 
-2010-02-02  Rik  <octave@nomad.inbox5.com>
+2011-02-02  Rik  <octave@nomad.inbox5.com>
 
 	* sparse/svds.m: Use testif to only run some sparse tests when
 	necessary libraries are installed.
@@ -364,12 +364,12 @@
 	* plot/__fltk_ginput__.m: Remove line that should have been
 	removed in previous change.
 
-2010-01-31  Rik  <octave@nomad.inbox5.com>
+2011-01-31  Rik  <octave@nomad.inbox5.com>
 
 	* plot/private/__gnuplot_has_terminal__.m: Simplify regular expression
 	to eliminate word-boundary assertion.
 
-2010-01-30  Rik  <octave@nomad.inbox5.com>
+2011-01-30  Rik  <octave@nomad.inbox5.com>
 
 	* deprecated/module.mk, optimization/module.mk: Deprecate glpkmex
 	function.
@@ -386,24 +386,24 @@
 	Change all uses.
 	(ginput_keypressfcn): Save keypress info.
 
-2010-01-29  Rik  <octave@nomad.inbox5.com>
+2011-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* plot/gnuplot_binary.in: Improve docstring
 
-2010-01-29  Rik  <octave@nomad.inbox5.com>
+2011-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* general/accumarray.m: Add seealso reference to accumdim.
 
-2010-01-29  Rik  <octave@nomad.inbox5.com>
+2011-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* set/powerset.m: Improve docstring.
 
-2010-01-29  Rik  <octave@nomad.inbox5.com>
+2011-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* miscellaneous/copyfile.m, miscellaneous/movefile.m,
 	miscellaneous/tempname.m: Improve docstrings
 
-2010-01-29  Rik  <octave@nomad.inbox5.com>
+2011-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* deprecated/module.mk, image/module.mk: Deprecate saveimage.m.
 
@@ -785,7 +785,7 @@
 
 	* statistics/distributions/betapdf.m: Untabify.
 
-2010-01-20  Petr Mikulik  <mikulik@physics.muni.cz>
+2011-01-20  Petr Mikulik  <mikulik@physics.muni.cz>
 
 	* plot/uigetdir.m: Use correct variable name for argument check.
 	Remove unneeded white spaces.

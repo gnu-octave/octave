@@ -1,21 +1,21 @@
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* test_parser.m: Add operatore precedence tests.
 
-2010-03-01  Rik  <octave@nomad.inbox5.com>
+2011-03-01  Rik  <octave@nomad.inbox5.com>
 
 	* test/test_index-wfi-t.m: Use modern warning function
 	rather than deprecated built-in variable to set warning state.
 
-2010-02-22  Rik  <octave@nomad.inbox5.com>
+2011-02-22  Rik  <octave@nomad.inbox5.com>
 
 	* fntests.m: Use single quotes around regexp patterns.
 
-2010-02-19  Rik  <octave@nomad.inbox5.com>
+2011-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* fntests.m: Use PCRE regular expressions to simplify script.
 
-2010-02-02  Rik  <octave@nomad.inbox5.com>
+2011-02-02  Rik  <octave@nomad.inbox5.com>
 
 	* build_sparse_tests.sh: Use testif to only run some sparse tests when
 	necessary libraries are installed.

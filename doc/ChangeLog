@@ -1,70 +1,70 @@
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/container.txi: Add cellindexmat function to documentation.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/oop.txi: Add optimize_subsasgn_calls function to 
 	documentation.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/stats.txi: Add runlength function to documentation.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/plot.txi: Add isocolors, isonormals, isosurface functions
 	to documentation.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/basics.txi: Add dump_prefs to documentation.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/octave.texi, interpreter/plot.txi: Add daspect, pbaspect
 	functions to documentation.
 
-2010-03-19  Rik  <octave@nomad.inbox5.com>
+2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/octave.texi, interpreter/plot.txi: Add getappdata,
 	setappdata, isappdata, rmappdata functions to documentation.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/matrix.txi: Add nth_element function to documentation.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/aspell-octave.en.pws, interpreter/io.txi,
 	interpreter/octave.texi, interpreter/plot.txi: Add uimenu, uigetdir,
 	uigetfile, and uiputfile to documentation.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/nonlin.txi, interpreter/octave.texi: Add fminbnd,
 	fminunc functions to documentation.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/arith.txi, interpreter/linalg.txi: Add function chop
 	to documentation.  Re-order Utility Functions and move function dot
 	from linear algebra section to be with other utility functions.
 
-2010-03-18  Rik  <octave@nomad.inbox5.com>
+2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/basics.txi: Add gen_doc_cache, get_help_text, 
 	get_help_text_from_file, get_first_help_sentence to documentation.
 
-2010-03-17  Rik  <octave@nomad.inbox5.com>
+2011-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/io.txi: Add fileread to documentation.
 
-2010-03-17  Rik  <octave@nomad.inbox5.com>
+2011-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/system.txi: Add gethostname to documentation
 
-2010-03-17  Rik  <octave@nomad.inbox5.com>
+2011-03-17  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/mk_undocumented_list: Add fmod,
 	octave_tmp_file_name to list of exceptions which are already
@@ -75,16 +75,16 @@
 	* interpreter/system.txi: Remove nprocs and nprocs_conf functions
 	from documentation and replace with nproc.
 
-2010-03-16  Rik  <octave@nomad.inbox5.com>
+2011-03-16  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/system.txi: Add nproc and nproc_conf functions to
 	documentation.
 
-2010-03-03  Rik  <octave@nomad.inbox5.com>
+2011-03-03  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/matrix.txi: Deprecate is_duplicate_entry.
 
-2010-03-02  Rik  <octave@nomad.inbox5.com>
+2011-03-02  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/stats.txi: Correctly refer to discrete uniform 
 	distribution in documentation. 
@@ -111,7 +111,7 @@
 	Mention 3D patches in the OpenGL backend. Clarify Matlab-style
 	short-circuiting. Specify that Octave also onCleanup.
 
-2010-02-28  Rik  <octave@nomad.inbox5.com>
+2011-02-28  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/numbers.txi: Add isrow, iscolumn functions to manual.
 
@@ -122,11 +122,11 @@
 	proofreading like removing trailing spaces and some minor
 	spellchecking.
 
-2010-02-19  Rik  <octave@nomad.inbox5.com>
+2011-02-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/install.txi: Remove reference to POSIX regex library.
 
-2010-02-14  Rik  <octave@nomad.inbox5.com>
+2011-02-14  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/arith.txi, interpreter/io.txi, interpreter/oop.txi:
 	Remove functions which have no DOCSTRING entries.
@@ -140,30 +140,30 @@
 
 	* interpreter/contributors.in: Add Fotios Kasolis to the list.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/mk_undocumented_list: Add dbnext, alias for
 	dbstep, to functions not requiring a docstring.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/aspell-octave.en.pws: Add new spelling
 	exceptions to Octave private dictionary.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/octave.texi: Update copyright on manual to 2011.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/mkoctfile.1, interpreter/octave-config.1,
 	interpreter/octave.1: Overhaul man pages for release 3.4.
 
-2010-02-04  Rik  <octave@nomad.inbox5.com>
+2011-02-04  Rik  <octave@nomad.inbox5.com>
 
 	* icons/octave-logo.ico: Add logo format left out of last changeset.
 
-2010-02-04  Rik  <octave@nomad.inbox5.com>
+2011-02-04  Rik  <octave@nomad.inbox5.com>
 
 	* icons/: New directory for icons and .desktop files.
 	* icons/octave-logo.png, icons/octave-logo.svg: Add new Octave O logo

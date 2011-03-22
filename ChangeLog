@@ -66,7 +66,7 @@
 
 	* README.MacOS: Fix FFTW CCFLAGS.
 
-2010-02-08  Rik  <octave@nomad.inbox5.com>
+2011-02-08  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Use indentation of 2 spaces rather than 3 in code examples.
 
@@ -88,21 +88,21 @@
 	* PROJECTS, README.devel: Use maintainers@octave.org instead of
 	octave-maintainers@octave.org.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* PROJECTS: Point to maintained list on Octave Wiki.
 
-2010-02-05  Rik  <octave@nomad.inbox5.com>
+2011-02-05  Rik  <octave@nomad.inbox5.com>
 
 	* mkoctfile.in, octave-config.in: Update usage strings.
 
-2010-02-04  Rik  <octave@nomad.inbox5.com>
+2011-02-04  Rik  <octave@nomad.inbox5.com>
 
 	* configure.ac: Add new doc/icons/Makefile to list of Makefiles to build
 	* examples/Makefile.am: Move building of .desktop files and distribution
 	of icons to doc/icons directory.
 
-2010-01-30  Rik  <octave@nomad.inbox5.com>
+2011-01-30  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Deprecate glpkmex function.
 
@@ -115,7 +115,7 @@
 	* configure.ac: Remove code to print warning for missing ARPACK.
 	* README.MacOS: Remove arpack from list of prerequisite software.
 
-2010-01-29  Rik  <octave@nomad.inbox5.com>
+2011-01-29  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Deprecate saveimage function.
 
@@ -163,7 +163,7 @@
 	* acinclude.m4 (OPENGL_LIBS): Don't add -L/usr/X11R6/LIB to
 	LDFLAGS in test.  Bug #32160.
 
-2010-01-25  Rik  <octave@nomad.inbox5.com>
+2011-01-25  Rik  <octave@nomad.inbox5.com>
 
 	* Makefile.am: Directly run makefile rules in doc/interpreter directory
 	for AUTHORS, BUGS, INSTALL.OCTAVE files.
@@ -178,7 +178,7 @@
 
 	* Makefile.am (EXTRA_DIST): Remove ROADMAP from the list.
 
-2010-01-24  Rik  <octave@nomad.inbox5.com>
+2011-01-24  Rik  <octave@nomad.inbox5.com>
 
 	* AUTHORS: Remove.  File now auto-generated from contributors.texi.
 	* Makefile.am: Add rule for AUTHORS file.
@@ -187,20 +187,20 @@
 
 	* NEWS: Note change in audio/mu2lin.
 
-2010-01-22  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
+2011-01-22  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
 
 	* README.MinGW: Small corrections to documentation.
 
-2010-01-22  Rik  <octave@nomad.inbox5.com>
+2011-01-22  Rik  <octave@nomad.inbox5.com>
 
 	* README.devel: Update for 3.4 release.
 
-2010-01-22  Rik  <octave@nomad.inbox5.com>
+2011-01-22  Rik  <octave@nomad.inbox5.com>
 
 	* HACKING: Revise and incorporate all of file ROADMAP.
 	* ROADMAP: Deleted.
 
-2010-01-22  Rik  <octave@nomad.inbox5.com>
+2011-01-22  Rik  <octave@nomad.inbox5.com>
 
 	* README.Windows: Reference README.MinGW
 	* README.MinGW: Replace placeholder with actual instructions
@@ -212,7 +212,7 @@
 	(OCTAVE_RELEASE_DATE): Now 2011-01-22.
 	(OCTAVE_COPYRIGHT): Update year.
 
-2010-01-20  Rik  <octave@nomad.inbox5.com>
+2011-01-20  Rik  <octave@nomad.inbox5.com>
 
 	* README.Cygwin, README.MacOS, README.Windows, README.ftp: Update
 	documentation files for 3.4 release.
@@ -227,7 +227,7 @@
 
 	* configure.ac, NEWS: Update for backend -> graphics_toolkit change.
 
-2010-01-17  Rik  <octave@nomad.inbox5.com>
+2011-01-17  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Add quadcc to list of new functions added.
 
@@ -245,7 +245,7 @@
 
 	* NEWS: Add krylovb to deprecated function list.
 
-2010-01-14  Rik  <octave@nomad.inbox5.com>
+2011-01-14  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Add replot to deprecated function list.
 
@@ -293,15 +293,15 @@
 	* mk-opts.pl: Generate initialization lists and in-line code for
 	copying.
 
-2010-01-11  Rik  <octave@nomad.inbox5.com>
+2011-01-11  Rik  <octave@nomad.inbox5.com>
 
 	* ROADMAP: Update guide to Octave directory structure.
 
-2010-01-11  Rik  <octave@nomad.inbox5.com>
+2011-01-11  Rik  <octave@nomad.inbox5.com>
 
 	* README.mirrors: Update ftp links.
 
-2010-01-06  Rik  <octave@nomad.inbox5.com>
+2011-01-06  Rik  <octave@nomad.inbox5.com>
 
 	* README: Update links and disk space requirements.
 
@@ -315,15 +315,15 @@
 	* mkoctfile.in, mkoctfile.cc.in: Substitute and use LAPACK_LIBS.
 	Bug #32009.
 
-2010-01-04  Rik  <octave@nomad.inbox5.com>
+2011-01-04  Rik  <octave@nomad.inbox5.com>
 
 	* README.MacOS: Update CFLAGS recommendation to use -O2.
 
-2010-01-04  Rik  <octave@nomad.inbox5.com>
+2011-01-04  Rik  <octave@nomad.inbox5.com>
 
 	* README.gnuplot: Update recommendation to version 4.4.
 
-2010-01-04  Marco Atzeri  <marco_atzeri@yahoo.it>
+2011-01-04  Marco Atzeri  <marco_atzeri@yahoo.it>
 
 	* README.Cygmin: Update build instructions before 3.4 release.
 

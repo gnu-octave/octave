@@ -3,6 +3,7 @@ EXTRA_DIST += \
   misc/d1mach-tst.for 
 
 libcruft_la_SOURCES += \
+  misc/blaswrap.c \
   misc/cquit.c \
   misc/d1mach.f \
   misc/f77-extern.cc \

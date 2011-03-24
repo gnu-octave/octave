@@ -962,6 +962,63 @@ AX_LAPACK([:], [:])
 ## Restore FFLAGS.
 FFLAGS="$save_FFLAGS"
 
+## Try again with -ff2c in FFLAGS
+if test "x$ax_blas_f77_func_ok" = "xno"; then
+  save_FFLAGS="$FFLAGS"
+  FFLAGS="-ff2c $FFLAGS $F77_INTEGER_8_FLAG"
+
+  AX_BLAS_WITH_F77_FUNC([:], [:])
+  AX_LAPACK([:], [:])
+
+  ## Restore FFLAGS, with -ff2c if that was helpful
+
+  if test "x$ax_blas_f77_func_ok" = "xno"; then
+    FFLAGS="$save_FFLAGS"
+  else
+    FFLAGS="-ff2c $save_FFLAGS"
+  fi
+fi
+
+## On OSX, try again with a wrapper library (without -ff2c!)
+if test "x$ax_blas_f77_func_ok" = "xno"; then
+  case "$canonical_host_type" in
+    *-*-darwin*)
+      ## test if wrapper functions help
+      octave_blaswrap_save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS -DUSE_BLASWRAP"
+      AC_LANG_PUSH(C)
+      AC_COMPILE_IFELSE(
+       [#include "libcruft/misc/blaswrap.c"],
+       [mv conftest.$ac_objext blaswrap.$ac_objext
+        octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
+        BLAS_LIBS="blaswrap.$ac_objext -framework vecLib"
+
+        save_FFLAGS="$FFLAGS"
+        FFLAGS="$FFLAGS $F77_INTEGER_8_FLAG"
+
+        AX_BLAS_WITH_F77_FUNC([:], [:])
+        AX_LAPACK([:], [:])
+
+        ## Restore FFLAGS.
+        FFLAGS="$save_FFLAGS"
+
+        ## remove temp file
+        rm -f blaswrap.$ac_objext],
+       [AC_MSG_FAILURE([cannot compile libcruft/misc/blaswrap.c])])
+      AC_LANG_POP(C)
+      CFLAGS="$octave_blaswrap_save_CFLAGS"
+
+      if test "x$ax_blas_f77_func_ok" = "xno"; then
+        BLAS_LIBS="$octave_blaswrap_save_BLAS_LIBS"
+      else
+        ## wrapper in libcruft, remove from BLAS_LIBS
+        BLAS_LIBS="`echo $BLAS_LIBS | sed -e 's/blaswrap.[[^ ]]* //g'`"
+        AC_DEFINE(USE_BLASWRAP, [1], [Define this if BLAS functions need to be wrapped (potentially needed for 64-bit OSX only).])
+      fi
+    ;;
+  esac
+fi
+
 if test "x$ax_blas_f77_func_ok" = "xno"; then
   if $USE_64_BIT_IDX_T && test "$ax_blas_integer_size_ok" = "no" ; then
     ## Attempt to be more informative.

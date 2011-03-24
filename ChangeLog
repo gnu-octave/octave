@@ -1,3 +1,9 @@
+2011-03-24  Jarno Rajahalme  <jarno.rajahalme@gmail.com>
+
+	* configure.ac: Try again with "-ff2c" if fortran compiler is
+	found incompatible. On OSX, try again with
+	libcruft/misc/blaswrap.c, if "-ff2c" also fails.
+
 2011-03-17  Iain Murray  <iain@iainmurray.net>
 
 	* bootstrap.conf (gnulib_modules): Include nproc in the list.

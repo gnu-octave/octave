@@ -1,3 +1,8 @@
+2011-03-24  Jarno Rajahalme  <jarno.rajahalme@gmail.com>
+
+	* misc/blaswrap.c: New file.
+	* misc/module.mk (EXTRA_DIST): Add it to the list.
+
 2011-01-31  Rik  <octave@nomad.inbox5.com>
 
 	* arpack/src/dseupd.f, arpack/src/sseupd.f: Change GOTO target

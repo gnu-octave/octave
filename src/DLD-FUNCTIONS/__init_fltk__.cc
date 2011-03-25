@@ -443,9 +443,12 @@ public:
           if (item != NULL)
             {
               Matrix rgb = uimenup.get_foregroundcolor_rgb ();
-              item->labelcolor(fl_rgb_color(static_cast<uchar>(floor (rgb(0)*255)),
-                                            static_cast<uchar>(floor (rgb(1)*255)),
-                                            static_cast<uchar>(floor (rgb(2)*255))));
+
+              uchar r = static_cast<uchar> (gnulib::floor (rgb (0) * 255));
+              uchar g = static_cast<uchar> (gnulib::floor (rgb (1) * 255));
+              uchar b = static_cast<uchar> (gnulib::floor (rgb (2) * 255));
+
+              item->labelcolor (fl_rgb_color (r, g, b));
             }
         }
     }

@@ -1,3 +1,8 @@
+2011-03-25  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (Fmkstemp): Use gnulib::mkstemp.
+	* DLD-FUNCTIONS/__init_fltk__.cc (f): Use gnulib::floor.
+
 2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* dot.cc: Improve seealso cross references in docstring.

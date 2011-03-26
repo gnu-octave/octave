@@ -1,5 +1,9 @@
 2011-03-26  Robert T. Short  <octave@phaselockedsystems.com.com>
 
+	* signal/ifftshift.m: Add tests.
+
+2011-03-26  Robert T. Short  <octave@phaselockedsystems.com.com>
+
 	* signal/fftshift.m: Add tests.
 
 2011-03-21  Rik  <octave@nomad.inbox5.com>

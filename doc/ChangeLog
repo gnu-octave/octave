@@ -1,3 +1,8 @@
+2011-03-26  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/doccheck/mk_undocumented_list: Add error_text to list
+	of functions not requiring a docstring.
+
 2011-03-19  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/container.txi: Add cellindexmat function to documentation.

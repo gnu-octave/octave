@@ -82,6 +82,7 @@ chdir
 comma
 debug
 dbnext
+error_text
 exit
 F_DUPFD
 F_GETFD

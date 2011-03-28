@@ -400,7 +400,7 @@ DEFUN_DLD (triu, args, ,
 @deftypefn  {Function File} {} triu (@var{A})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
-@xref{tril}.\n\
+See the documentation for the @code{tril} function (@pxref{tril}).\n\
 @end deftypefn")
 {
   return do_trilu ("triu", args);

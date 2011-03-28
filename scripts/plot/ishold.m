@@ -17,9 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} ishold
+## @deftypefn  {Command} {} ishold
+## @deftypefnx {Function File} {} ishold (@var{h})
 ## Return true if the next plot will be added to the current plot, or
 ## false if the plot device will be cleared before drawing the next plot.
+##
+## Optionally, operate on the graphics handle @var{h} rather than the current
+## plot.
 ## @seealso{hold}
 ## @end deftypefn
 

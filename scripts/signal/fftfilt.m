@@ -26,6 +26,7 @@
 ## overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
 ##
 ## If @var{x} is a matrix, filter each column of the matrix.
+## @seealso{filter, filter2}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>

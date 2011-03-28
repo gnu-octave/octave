@@ -1,5 +1,13 @@
 2011-03-28  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/expr.txi: Eliminate space between variable and
+	parenthesis when using indexing.
+	* interpreter/intro.txi, interpreter/io.txi: Fix typos in docstring.
+	* interpreter/tips.txi: Add new recommendations for double spaces at
+	start of sentences and suggested variable names.
+
+2011-03-28  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/basics.txi: Add do_braindead_shortcircuit_evaluation to
 	the list of variables set by --traditional option.
 

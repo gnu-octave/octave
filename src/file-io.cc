@@ -345,7 +345,8 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
 DEFUN (fgets, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})\n\
+@deftypefn  {Built-in Function} {} fgets (@var{fid})\n\
+@deftypefnx {Built-in Function} {} fgets (@var{fid}, @var{len})\n\
 Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, including\n\
 the possible trailing newline, are returned as a string.\n\

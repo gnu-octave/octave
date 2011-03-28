@@ -21,7 +21,7 @@
 
 Octave supports several ways of reading and writing data to or from the
 prompt or a file.  The simplest functions for data Input and Output
-(I/O) are easy to use, but only provides limited control of how
+(I/O) are easy to use, but only provide limited control of how
 data is processed.  For more control, a set of functions modelled
 after the C standard library are also provided by Octave.
 

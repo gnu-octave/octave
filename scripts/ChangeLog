@@ -1,3 +1,8 @@
+2011-03-28  Rik  <octave@nomad.inbox5.com>
+
+	* linear-algebra/cross.m, plot/ishold.m, signal/fftfilt.m: Improve
+	docstrings.
+
 2011-03-26  Robert T. Short  <octave@phaselockedsystems.com.com>
 
 	* signal/ifftshift.m: Add tests.

@@ -1,3 +1,10 @@
+2011-03-28  Rik  <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/inv.cc (inv, inverse), DLD-FUNCTIONS/tril.cc (tril),
+	data.cc (cumsum, szie), file-io.cc (fgets), ov-typeinfo.cc (typeinfo),
+	ov-usr-fcn.cc (nargout), utils.cc (make_absolute_filename), 
+	variables.cc (who): Improve docstrings
+
 2011-03-25  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (Fmkstemp): Use gnulib::mkstemp.

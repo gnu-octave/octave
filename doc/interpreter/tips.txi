@@ -463,16 +463,21 @@ returned.''
 
 @item
 Avoid using the word ``cause'' (or its equivalents) unnecessarily.
-Instead of, ``Cause Octave to display text in boldface,'' write just
+Instead of, ``Cause Octave to display text in boldface,'' just write
 ``Display text in boldface.''
+
+@item
+Use two spaces between the period marking the end of a sentence and the
+word which opens the next sentence.  This convention has no effect for
+typeset formats like @TeX{}, but improves the readability of the documentation
+in fixed-width environments such as the Info reader.
 
 @item
 Do not start or end a documentation string with whitespace.
 
 @item
-Format the documentation string so that it fits in an Emacs window on an
-80-column screen.  It is a good idea for most lines to be no wider than
-60 characters.
+Format the documentation string so that it fits within an 80-column screen.
+It is a good idea for most lines to be no wider than 60 characters.
 
 However, rather than simply filling the entire documentation string, you
 can make it much more readable by choosing line breaks with care.
@@ -484,6 +489,26 @@ that the text is lined up in the source code with the text of the first
 line.  This looks nice in the source code, but looks bizarre when users
 view the documentation.  Remember that the indentation before the
 starting double-quote is not part of the string!
+
+@item
+When choosing variable names try to adhere to the following guidelines.
+
+@table @asis
+@item 
+vectors : x,y,z,t,w
+
+@item
+matrices : A,B,M
+
+@item
+strings : str,s
+
+@item
+filenames : fname
+
+@item
+cells,cellstrs : c,cstr
+@end table
 
 @item
 The documentation string for a variable that is a yes-or-no flag should
@@ -650,7 +675,7 @@ example
 @example
 @group
 -*- texinfo -*-
-@@deftypefn@{Function File@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
+@@deftypefn @{Function File@} @{@@var@{a@} =@} fn (@@var@{x@}, @dots{})
 @@deftypefnx@{Function File@} @{@@var@{a@} =@} fn (@@var@{y@}, @dots{})
 Help text in Texinfo format.
 @@end deftypefn

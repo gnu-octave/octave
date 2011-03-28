@@ -33,7 +33,7 @@
 ## along the first dimension with 3 elements.  The optional argument
 ## @var{dim} forces the cross product to be calculated along
 ## the specified dimension.
-## @seealso{dot, curl}
+## @seealso{dot, curl, divergence}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>

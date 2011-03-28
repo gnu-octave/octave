@@ -681,7 +681,7 @@ will cause @code{nargout} to return 2 inside the function\n\
 @code{f}.\n\
 \n\
 At the top level, @code{nargout} is undefined.\n\
-@seealso{nargin, varargin, varargout}\n\
+@seealso{nargin, isargout, varargin, varargout}\n\
 @end deftypefn")
 {
   octave_value retval;

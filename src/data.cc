@@ -1076,12 +1076,13 @@ DEFUN (cumsum, args, ,
 @deftypefn  {Built-in Function} {} cumsum (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, 'native')\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'double')\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'extra')\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-The \"native\" argument implies the summation is performed in native type.\n\
- See @code{sum} for a complete description and example of the use of\n\
-\"native\".\n\
+See @code{sum} for an explanation of the optional parameters 'native',\n\
+'double', and 'extra'.\n\
 @seealso{sum, cumprod}\n\
 @end deftypefn")
 {
@@ -2039,7 +2040,7 @@ DEFUN (size, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} size (@var{a})\n\
 @deftypefnx {Built-in Function} {} size (@var{a}, @var{dim})\n\
-Return the number rows and columns of @var{a}.\n\
+Return the number of rows and columns of @var{a}.\n\
 \n\
 With one input argument and one output argument, the result is returned\n\
 in a row vector.  If there are multiple output arguments, the number of\n\
@@ -2255,7 +2256,6 @@ sum ([true, true], 'native')\n\
 @end group\n\
 @end example\n\
 \n\
-  \n\
 On the contrary, if 'double' is given, the sum is performed in double\n\
 precision even for single precision inputs.\n\
 \n\

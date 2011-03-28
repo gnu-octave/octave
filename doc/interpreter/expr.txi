@@ -63,9 +63,9 @@ example,
 
 @example
 @group
-a (2)       # a scalar
-a (1:2)     # a row vector
-a ([1; 2])  # a column vector
+a(2)       # a scalar
+a(1:2)     # a row vector
+a([1; 2])  # a column vector
 @end group
 @end example
 
@@ -74,7 +74,7 @@ is a column vector containing all the elements of the vector or matrix.
 For example:
 
 @example
-a (:)       # a column vector
+a(:)       # a column vector
 @end example
 
 Given the matrix
@@ -88,9 +88,9 @@ all of the following expressions are equivalent
 
 @example
 @group
-a (1, [1, 2])
-a (1, 1:2)
-a (1, :)
+a(1, [1, 2])
+a(1, 1:2)
+a(1, :)
 @end group
 @end example
 
@@ -114,7 +114,7 @@ the value of the original scalar.  For example, the following statements
 @example
 @group
 a = 13;
-a (ones (1, 4))
+a(ones (1, 4))
 @end group
 @end example
 
@@ -127,7 +127,7 @@ create a matrix.  For example the following statements
 @example
 @group
 a = 13;
-a (ones (1, 2), ones (1, 3))
+a(ones (1, 2), ones (1, 3))
 @end group
 @end example
 

@@ -1755,7 +1755,7 @@ from a file.\n\
 \n\
 If called as a function, return a cell array of defined variable names\n\
 matching the given patterns.\n\
-@seealso{whos, regexp}\n\
+@seealso{whos, isglobal, isvarname, exist, regexp}\n\
 @end deftypefn")
 {
   octave_value retval;

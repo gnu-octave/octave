@@ -769,6 +769,7 @@ DEFUN (make_absolute_filename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} make_absolute_filename (@var{file})\n\
 Return the full name of @var{file}, relative to the current directory.\n\
+@seealso{is_absolute_filename, is_rooted_relative_filename, isdir}\n\
 @end deftypefn")
 {
   octave_value retval = std::string ();

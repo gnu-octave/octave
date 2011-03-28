@@ -907,8 +907,16 @@ would result in an error if @code{f} were called with one or two
 arguments because Octave would be forced to try to evaluate both of the
 operands for the operator @samp{&}.
 
-The ternary operator (?:) is not supported in Octave.  If short-circuiting is
-not important, it can be replaced by the @code{ifelse} function.
+@sc{matlab} has special behavior that allows the operators @samp{&} and
+@samp{|} to short-circuit when used in the truth expression for @code{if} and 
+@code{while} statements.  The Octave parser may be instructed to behave in the
+same manner, but it's use is strongly discouraged.
+
+@DOCSTRING(do_braindead_shortcircuit_evaluation)
+
+Finally, the ternary operator (?:) is not supported in Octave.  If
+short-circuiting is not important, it can be replaced by the @code{ifelse}
+function.
 
 @DOCSTRING(merge)
 

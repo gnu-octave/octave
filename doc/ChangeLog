@@ -1,3 +1,8 @@
+2011-03-27  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/expr.txi: Add do_braindead_shortcircuit_evaluation to 
+	documentation.
+
 2011-03-26  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/doccheck/mk_undocumented_list: Add error_text to list

@@ -215,6 +215,7 @@ beep_on_error                   = true
 confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
 default_save_options            = "-mat-binary"
+do_braindead_shortcircuit_evaluation = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
 page_screen_output              = false

@@ -230,6 +230,8 @@ repeatedly resize the result.
 
 @DOCSTRING(isindex)
 
+@DOCSTRING(allow_noninteger_range_as_index)
+
 @node Calling Functions
 @section Calling Functions
 

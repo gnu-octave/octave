@@ -1,6 +1,11 @@
 2011-03-27  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/expr.txi: Add do_braindead_shortcircuit_evaluation to 
+	* interpreter/expr.txi: Add allow_noninteger_range_as_index to
+	documentation.
+
+2011-03-27  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/expr.txi: Add do_braindead_shortcircuit_evaluation to
 	documentation.
 
 2011-03-26  Rik  <octave@nomad.inbox5.com>

@@ -1,7 +1,7 @@
-2011-03-29  Michael Creel <michael.creel@uab.es>
+2011-03-29  Michael Creel  <michael.creel@uab.es>
 
 	* statistics/base/ols.m: Fix erroneous degrees of freedom when
-	computing the covariance estimator.
+	computing the covariance estimator (closes: bug #32892).
 
 2011-03-28  Rik  <octave@nomad.inbox5.com>
 

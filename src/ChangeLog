@@ -1,3 +1,8 @@
+2011-03-29  Ben Abbott  <bpabbott@mac.com>
+
+	* graphics.cc: Prevent ticks from being cropped by round-off errors
+	when limmode == auto (bug #32701).
+
 2011-03-28  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/inv.cc (inv, inverse), DLD-FUNCTIONS/tril.cc (tril),

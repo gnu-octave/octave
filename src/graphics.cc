@@ -5082,8 +5082,11 @@ axes::properties::get_axis_limits (double xmin, double xmax,
             }
 
           double tick_sep = calc_tick_sep (min_val , max_val);
-          min_val = tick_sep * gnulib::floor (min_val / tick_sep);
-          max_val = tick_sep * std::ceil (max_val / tick_sep);
+          double min_tick = gnulib::floor (min_val / tick_sep);
+          double max_tick = std::ceil (max_val / tick_sep);
+          // Prevent round-off from cropping ticks
+          min_val = std::min (min_val, tick_sep * min_tick);
+          max_val = std::max (max_val, tick_sep * max_tick);
         }
     }
 
@@ -5132,8 +5135,8 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     {
       // adjust limits to include min and max tics
       Matrix tmp_lims (1,2);
-      tmp_lims(0) = tick_sep * i1;
-      tmp_lims(1) = tick_sep * i2;
+      tmp_lims(0) = std::min (tick_sep * i1, lo);
+      tmp_lims(1) = std::max (tick_sep * i2, hi);
 
       if (is_logscale)
         {

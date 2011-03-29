@@ -101,9 +101,9 @@ function [beta, sigma, r] = ols (y, x)
   endif
 
   z = x' * x;
-  r = rank (z);
+  rnk = rank (z);
 
-  if (r == nc)
+  if (rnk == nc)
     beta = inv (z) * x' * y;
   else
     beta = pinv (x) * y;
@@ -113,7 +113,7 @@ function [beta, sigma, r] = ols (y, x)
     r = y - x * beta;
   endif
   if (isargout (2))
-    sigma = r' * r / (nr - r);
+    sigma = r' * r / (nr - rnk);
   endif
 
 endfunction

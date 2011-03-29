@@ -1,3 +1,8 @@
+2011-03-29  Michael Creel <michael.creel@uab.es>
+
+	* statistics/base/ols.m: Fix erroneous degrees of freedom when
+	computing the covariance estimator.
+
 2011-03-28  Rik  <octave@nomad.inbox5.com>
 
 	* linear-algebra/cross.m, plot/ishold.m, signal/fftfilt.m: Improve

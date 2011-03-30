@@ -1,3 +1,8 @@
+2011-03-29  Rik  <octave@nomad.inbox5.com>
+
+	* Array.cc (diag): Treat empty vector (1x0 or 0x1) as valid input.
+	Improves Matlab compatibility (bug #32901).
+
 2011-02-13  David Bateman  <dbateman@free.fr>
 
 	* Sparse-perm-op-defs.h (template <typename SM>

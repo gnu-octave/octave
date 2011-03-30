@@ -2447,10 +2447,11 @@ Array<T>::diag (octave_idx_type k) const
       octave_idx_type nnr = dv (0);
       octave_idx_type nnc = dv (1);
 
-      if (nnr == 0 || nnc == 0)
-        ; // do nothing
+      if (nnr == 0 && nnc == 0)
+        ; // do nothing for empty matrix
       else if (nnr != 1 && nnc != 1)
         {
+          // Extract diag from matrix
           if (k > 0)
             nnc -= k;
           else if (k < 0)
@@ -2482,8 +2483,9 @@ Array<T>::diag (octave_idx_type k) const
             (*current_liboctave_error_handler)
               ("diag: requested diagonal out of range");
         }
-      else if (nnr != 0 && nnc != 0)
+      else
         {
+          // Create diag matrix from vector  
           octave_idx_type roff = 0;
           octave_idx_type coff = 0;
           if (k > 0)

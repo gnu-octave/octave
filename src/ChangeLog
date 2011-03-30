@@ -1,3 +1,7 @@
+2011-03-30  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* file-io.cc: Document the "all" parameter to fclose.
+
 2011-03-29  Ben Abbott  <bpabbott@mac.com>
 
 	* graphics.cc: Prevent ticks from being cropped by round-off errors

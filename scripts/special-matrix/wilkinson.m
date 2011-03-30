@@ -35,8 +35,8 @@ function retval = wilkinson (n)
     print_usage ();
   endif
 
-  if (! (isscalar (n) && (n == fix (n)) && n > 0))
-    error ("wilkinson: N must be an integer greater than 0");
+  if (! (isscalar (n) && (n == fix (n)) && n >= 0))
+    error ("wilkinson: N must be a non-negative integer");
   endif
 
   side = ones (n-1, 1);
@@ -45,7 +45,8 @@ function retval = wilkinson (n)
 
 endfunction
 
-%!assert (wilkinson(1), [])
+%!assert (wilkinson(0), [])
+%!assert (wilkinson(1), 0)
 %!assert (wilkinson(2), [0.5,1;1,0.5])
 %!assert (wilkinson(3), [1,1,0;1,0,1;0,1,1])
 %!assert (wilkinson(4), [1.5,1,0,0;1,0.5,1,0;0,1,0.5,1;0,0,1,1.5])

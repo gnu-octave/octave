@@ -6,6 +6,7 @@ deprecated_FCN_FILES = \
   deprecated/betai.m \
   deprecated/cellidx.m \
   deprecated/clg.m \
+  deprecated/cquad.m \
   deprecated/dispatch.m \
   deprecated/fstat.m \
   deprecated/gammai.m \

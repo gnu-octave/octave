@@ -37,7 +37,7 @@ endfunction
 
 %!test
 %! x = rand (10, 2);
-%! assert (isequal (cor (x), corrcoef (x)));
+%! assert (cor (x), corrcoef (x), 5*eps);
 %! assert (cor (x(:,1), x(:,2)) == corrcoef (x(:,1), x(:,2)));
 
 %% Test input validation

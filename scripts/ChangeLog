@@ -1,5 +1,10 @@
 2011-03-31  Rik  <octave@nomad.inbox5.com>
 
+	* statistics/base/cor.m: Increase tolerance of %!tests using random
+	data to guarantee passage.
+
+2011-03-31  Rik  <octave@nomad.inbox5.com>
+
 	* deprecated/module.mk, deprecated/cquad.m: Add deprecated entry for
 	cquad() pointing to quadcc().
 

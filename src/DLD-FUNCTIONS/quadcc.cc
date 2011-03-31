@@ -1481,14 +1481,13 @@ DEFUN_DLD (quadcc, args, nargout,
 "-*- texinfo -*-\n\
 @deftypefn  {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
 @deftypefnx {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-Numerically evaluates an integral using the doubly-adaptive\n\
-quadrature described by P. Gonnet in @cite{Increasing the\n\
-Reliability of Adaptive Quadrature Using Explicit Interpolants},\n\
-ACM Transactions on Mathematical Software, in Press, 2010.\n\
+Numerically evaluate an integral using the doubly-adaptive\n\
+Clenshaw-Curtis quadrature described by P. Gonnet in @cite{Increasing the\n\
+Reliability of Adaptive Quadrature Using Explicit Interpolants}.\n\
 The algorithm uses Clenshaw-Curtis quadrature rules of increasing\n\
 degree in each interval and bisects the interval if either the\n\
 function does not appear to be smooth or a rule of maximum\n\
-degree has been reached. The error estimate is computed from the\n\
+degree has been reached.  The error estimate is computed from the\n\
 L2-norm of the difference between two successive interpolations\n\
 of the integrand over the nodes of the respective quadrature rules.\n\
 \n\
@@ -1533,8 +1532,8 @@ integrates @var{f} by substituting the variable of integration\n\
 with @code{x=tan(pi/2*u)}.\n\
 \n\
 @code{quadcc} is capable of dealing with non-numeric\n\
-values of the integrand such as @code{NaN}, @code{Inf}\n\
-or @code{-Inf}, as in the above example at x=0.\n\
+values of the integrand such as @code{NaN} or @code{Inf}\n\
+, as in the above example at x=0.\n\
 If the integral diverges and @code{quadcc} detects this, \n\
 a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
 \n\
@@ -1543,6 +1542,9 @@ and as such may be less efficient for smooth or otherwise\n\
 well-behaved integrand than other methods such as\n\
 @code{quadgk} or @code{trapz}.\n\
 \n\
+Reference: P. Gonnet, @cite{Increasing the Reliability of Adaptive\n\
+Quadrature Using Explicit Interpolants}, ACM Transactions on\n\
+Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {

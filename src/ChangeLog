@@ -1,3 +1,7 @@
+2011-03-31  Rik  <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/quadcc.cc: Add reference to original paper in docstring.
+
 2011-03-30  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* file-io.cc: Document the "all" parameter to fclose.

@@ -1,3 +1,7 @@
+2011-03-31  Marco Caliari  <marco.caliari@univr.it>
+
+	* sparse/spdiags.m: Treat empty vector (1x0 or 0x1) the same as diag().
+
 2011-03-31  Rik  <octave@nomad.inbox5.com>
 
 	* statistics/base/cor.m: Increase tolerance of %!tests using random

@@ -1,6 +1,7 @@
 2011-03-31  Rik  <octave@nomad.inbox5.com>
 
-	* plot/private/__quiver__.m: Revamp autoscaling algorithm (bug #32836).
+	* statistics/base/cor.m: Fix operation with only single input
+	(bug #32961)
 
 2011-03-29  John W. Eaton  <jwe@octave.org>
 

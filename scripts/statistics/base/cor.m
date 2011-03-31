@@ -25,7 +25,7 @@
 ## @seealso{corrcoef}
 ## @end deftypefn
 
-function retval = cor (x, y = [])
+function retval = cor (x, y = x)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -34,4 +34,13 @@ function retval = cor (x, y = [])
   retval = corrcoef (x, y);
 
 endfunction
+
+%!test
+%! x = rand (10, 2);
+%! assert (isequal (cor (x), corrcoef (x)));
+%! assert (cor (x(:,1), x(:,2)) == corrcoef (x(:,1), x(:,2)));
+
+%% Test input validation
+%!error corrcoef ();
+%!error corrcoef (1, 2, 3);
 

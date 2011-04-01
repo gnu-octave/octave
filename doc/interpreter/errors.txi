@@ -49,6 +49,7 @@ described in @ref{The @code{try} Statement}.
 @menu
 * Raising Errors::
 * Catching Errors::
+* Recovering From Errors::
 @end menu
 
 @node Raising Errors
@@ -211,6 +212,38 @@ endfor
 @DOCSTRING(errno)
 
 @DOCSTRING(errno_list)
+
+@node Recovering From Errors
+@subsection Recovering From Errors
+
+Octave provides several ways of recovering from errors.  There are
+@code{try}/@code{catch} blocks, 
+@code{unwind_protect}/@code{unwind_protect_cleanup} blocks, 
+and finally the @code{onCleanup} command.
+
+The @code{onCleanup} command associates an ordinary Octave variable (the
+trigger) with an arbitrary function (the action).  Whenever the Octave variable
+ceases to exist---whether due to a function return, an error, or simply because
+the variable has been removed with @code{clear}---then the assigned function
+is executed.
+
+The function can do anything necessary for cleanup such as closing open file
+handles, printing an error message, or restoring global variables to their
+initial values.  The last example is a very convenient idiom for Octave code.
+For example:
+
+@example
+@group
+function rand42
+  old_state = rand ('state');
+  restore_state = onCleanup (@@() rand ('state', old_state);
+  rand ('state', 42);
+  @dots{}
+endfunction  # rand generator state restored by onCleanup
+@end group
+@end example
+
+@DOCSTRING(onCleanup)
 
 @node Handling Warnings
 @section Handling Warnings

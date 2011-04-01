@@ -443,6 +443,7 @@ Handling Errors
 
 * Raising Errors::
 * Catching Errors::
+* Recovering From Errors::
 
 Handling Warnings
 

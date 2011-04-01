@@ -1,5 +1,10 @@
 2011-03-31  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/errors.txi, interpreter/octave.texi: Add onCleanup
+	function to documentation.
+
+2011-03-31  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/contrib.txi: Add recommended format for commit messages
 	which reference the bug tracker.
 

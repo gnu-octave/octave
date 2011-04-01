@@ -1,3 +1,8 @@
+2011-04-01  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
+
+	* MatrixType (MatrixType::operator =): Plug memory leak due to
+	improper handling of perm array (bug #32804).
+
 2011-03-29  Rik  <octave@nomad.inbox5.com>
 
 	* Array.cc (diag): Treat empty vector (1x0 or 0x1) as valid input.

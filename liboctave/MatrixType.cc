@@ -921,14 +921,20 @@ MatrixType::operator = (const MatrixType& a)
       lower_band = a.lower_band;
       dense = a.dense;
       full = a.full;
-      nperm = a.nperm;
 
-      if (nperm != 0)
+      if (a.nperm != 0)
         {
-          perm = new octave_idx_type [nperm];
-          for (octave_idx_type i = 0; i < nperm; i++)
+          if (nperm)
+            {
+              delete[] perm;
+            }
+
+          perm = new octave_idx_type [a.nperm];
+          for (octave_idx_type i = 0; i < a.nperm; i++)
             perm[i] = a.perm[i];
         }
+
+      nperm = a.nperm;
     }
 
   return *this;

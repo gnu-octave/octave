@@ -922,13 +922,13 @@ MatrixType::operator = (const MatrixType& a)
       dense = a.dense;
       full = a.full;
 
+      if (nperm)
+        {
+          delete[] perm;
+        }
+
       if (a.nperm != 0)
         {
-          if (nperm)
-            {
-              delete[] perm;
-            }
-
           perm = new octave_idx_type [a.nperm];
           for (octave_idx_type i = 0; i < a.nperm; i++)
             perm[i] = a.perm[i];

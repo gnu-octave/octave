@@ -1,5 +1,10 @@
 2011-03-31  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/io.txi: Add list_in_columns, terminal_size functions
+	to documentation.
+
+2011-03-31  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/errors.txi, interpreter/octave.texi: Add onCleanup
 	function to documentation.
 

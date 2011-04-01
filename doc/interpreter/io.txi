@@ -67,6 +67,10 @@ values with @code{disp} and through the normal echoing mechanism.
 
 @DOCSTRING(disp)
 
+@DOCSTRING(list_in_columns)
+
+@DOCSTRING(terminal_size)
+
 @DOCSTRING(format)
 
 @menu

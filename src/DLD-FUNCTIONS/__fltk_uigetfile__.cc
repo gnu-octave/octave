@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_FLTK)
 
 #include <FL/Fl.H>
-#include <Fl/Fl_File_Chooser.H>
+#include <FL/Fl_File_Chooser.H>
 
 // FLTK headers may include X11/X.h which defines Complex, and that
 // conflicts with Octave's Complex typedef.  We don't need the X11

@@ -44,7 +44,7 @@ To initialize:
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Choice.H>
-#include <Fl/Fl_File_Chooser.H>
+#include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Button.H>

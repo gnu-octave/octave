@@ -58,6 +58,10 @@
 ## @item -global
 ## A global installation is forced, even if the user doesn't normally have
 ## system privileges
+## 
+## @item -forge
+## Install a package directly from the Octave-Forge repository.  This
+## requires an internet connection and the cURL library.
 ##
 ## @item -verbose
 ## The package manager will print the output of all of the commands that are
@@ -117,6 +121,9 @@
 ## @noindent
 ## splits the list of installed packages into those who are installed by
 ## the current user, and those installed by the system administrator.
+##
+## The option '-forge' lists packages available at the Octave-Forge repository.
+## This requires an internet connection and the cURL library.
 ##
 ## @item describe
 ## Show a short description of the named installed packages, with the option

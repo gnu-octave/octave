@@ -160,9 +160,9 @@
 %! n = 7;
 %! mn = min (m, n);
 %! d1 = rand (mn, 1) + I () * rand (mn, 1);
-%! D1 = diag (d1, m, n);
+%! D1 = resize (diag (d1), m, n);
 %! d2 = rand (mn, 1);
-%! D2 = diag (d2, m, n);
+%! D2 = resize (diag (d2), m, n);
 %! D1D2 = D1 + D2;
 %! assert (typeinfo (D1D2), "complex diagonal matrix");
 %! assert (diag (D1D2), d1 + d2);
@@ -176,7 +176,7 @@
 %! n = 6;
 %! mn = min (m, n);
 %! d = rand (mn, 1);
-%! D = diag (d, m, n);
+%! D = resize (diag (d), m, n);
 %! Dslice = D (1:(m-3), 1:(n-2));
 %! assert (typeinfo (Dslice), "diagonal matrix");
 
@@ -218,7 +218,7 @@
 %! n = 8;
 %! A = sprand (n, n, .5);
 %! scalefact = rand (n-2, 1);
-%! Dr = diag (scalefact, n, n-2);
+%! Dr = resize (diag (scalefact), n, n-2);
 %! assert (full (Dr \ A), Dr \ full(A))
 
 ## sparse inverse column scaling with a zero factor
@@ -236,7 +236,7 @@
 %! n = 7;
 %! A = sprand (n, n, .5);
 %! scalefact = rand (1, n-2) + I () * rand(1, n-2);
-%! Dc = diag (scalefact, n-2, n);
+%! Dc = resize (diag (scalefact), n-2, n);
 %! assert (full (A / Dc), full(A) / Dc)
 
 ## adding sparse and diagonal stays sparse

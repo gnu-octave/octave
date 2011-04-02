@@ -1,3 +1,8 @@
+2011-04-01  Rik  <octave@nomad.inbox5.com>
+
+	* test_diag_perm.m: Update diag tests to reflect removal of archaic
+	3-input form of diag().
+
 2011-03-18  Rik  <octave@nomad.inbox5.com>
 
 	* test_parser.m: Add operatore precedence tests.

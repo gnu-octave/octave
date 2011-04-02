@@ -1,5 +1,10 @@
 2011-04-01  Rik  <octave@nomad.inbox5.com>
 
+	* data.cc (diag): Remove archaic 3-input argument form of function.
+	Add all calling forms of function to docstring.
+
+2011-04-01  Rik  <octave@nomad.inbox5.com>
+
 	* DLD-FUNCTIONS/filter.cc: Fix orientation of initial conditions vector
 	(bug #32741).  Revamp test vectors.
 

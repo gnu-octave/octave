@@ -1224,7 +1224,10 @@ See @code{sum} for an explanation of the optional parameters 'native',\n\
 
 DEFUN (diag, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} diag (@var{v}, @var{k})\n\
+@deftypefn  {Built-in Function} {@var{M} =} diag (@var{v})\n\
+@deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{k})\n\
+@deftypefnx {Built-in Function} {@var{v} =} diag (@var{M})\n\
+@deftypefnx {Built-in Function} {@var{v} =} diag (@var{M}, @var{k})\n\
 Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
 second argument is optional.  If it is positive, the vector is placed on\n\
 the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n\
@@ -1261,20 +1264,6 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
       else
         retval = args(0).diag(k);
     }
-  else if (nargin == 3)
-    {
-      octave_value arg0 = args(0);
-      if (arg0.ndims () == 2 && (args(0).rows () == 1 || args(0).columns () == 1))
-        {
-          octave_idx_type m = args(1).int_value (), n = args(2).int_value ();
-          if (! error_state)
-            retval = arg0.diag ().resize (dim_vector (m, n));
-          else
-            error ("diag: invalid dimensions");
-        }
-      else
-        error ("diag: V must be a vector");
-    }
   else
     print_usage ();
 
@@ -1292,6 +1281,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag ([1, 0, 0; 0, 2, 0; 0, 0, 3]), [1; 2; 3]);
 %!assert(diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3]);
 %!assert(diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3]);
+%!assert(diag (ones(1, 0), 2), zeros (2));
 
 %!assert(full (diag (single([1; 2; 3]))), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
 %!assert(diag (single([1; 2; 3]), 1), single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]));
@@ -1314,6 +1304,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
 
 %!error <Invalid call to diag.*> diag ();
+%!error <Invalid call to diag.*> diag (ones(3, 1),0,1);
 
  */
 

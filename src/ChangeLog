@@ -1,5 +1,10 @@
 2011-04-01  Rik  <octave@nomad.inbox5.com>
 
+	* DLD-FUNCTIONS/filter.cc: Fix orientation of initial conditions vector
+	(bug #32741).  Revamp test vectors.
+
+2011-04-01  Rik  <octave@nomad.inbox5.com>
+
 	* DLD-FUNCTIONS/__fltk_uigetfile__.cc, DLD-FUNCTIONS/__init_fltk__.cc:
 	Correct typo in #include path (bug #32972).
 

@@ -1,3 +1,8 @@
+2011-04-02  Rik  <octave@nomad.inbox5.com>
+
+	* statistics/base/prctile.m, statistics/base/quantile.m: Improve 
+	docstrings.
+
 2011-03-31  Rik  <octave@nomad.inbox5.com>
 
 	* pkg/module.mk, pkg/pkg.m, pkg/private/get_forge_pkg.m: Add

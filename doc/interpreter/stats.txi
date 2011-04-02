@@ -96,6 +96,10 @@ measures to be developed.
 
 @DOCSTRING(moment)
 
+@DOCSTRING(quantile)
+
+@DOCSTRING(prctile)
+
 A summary view of a data set can be generated quickly with the
 @code{statistics} function.
 

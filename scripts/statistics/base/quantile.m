@@ -87,6 +87,16 @@
 ## @item R: A Language and Environment for Statistical Computing;
 ## @url{http://cran.r-project.org/doc/manuals/fullrefman.pdf}.
 ## @end itemize
+##
+## Examples:
+##
+## @example
+## @group
+## x = randi (1000, [10, 1]);  # Create random empirical data in range 1-1000
+## q = quantile (x, [0, 1]);   # Return minimum, maximum of empirical distribution
+## q = quantile (x, [0.25 0.5 0.75]); # Return quartiles of empirical distribution
+## @end group
+## @end example
 ## @seealso{prctile}
 ## @end deftypefn
 

@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{y} =} prctile (@var{x}, @var{p})
+## @deftypefn  {Function File} {@var{q} =} prctile (@var{x})
+## @deftypefnx {Function File} {@var{q} =} prctile (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{q} =} prctile (@var{x}, @var{p}, @var{dim})
-## For a sample @var{x}, compute the quantiles, @var{y}, corresponding
+## For a sample @var{x}, compute the quantiles, @var{q}, corresponding
 ## to the cumulative probability values, @var{p}, in percent.  All non-numeric
 ## values (NaNs) of @var{x} are ignored.
 ##
@@ -27,6 +28,7 @@
 ## return them in a matrix, such that the i-th row of @var{y} contains the
 ## @var{p}(i)th percentiles of each column of @var{x}.
 ##
+## If @var{p} is unspecified, return the quantiles for @code{[0 25 50 75 100]}.
 ## The optional argument @var{dim} determines the dimension along which
 ## the percentiles are calculated.  If @var{dim} is omitted, and @var{x} is
 ## a vector or matrix, it defaults to 1 (column-wise quantiles).  When

@@ -1,5 +1,10 @@
 2011-04-02  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/stats.txi: Add quantile, prctile functions to
+	documentation.
+
+2011-04-02  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/system.txi: Add isdeployed function to documentation.
 
 2011-03-31  Rik  <octave@nomad.inbox5.com>

@@ -482,6 +482,8 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(isieee)
 
+@DOCSTRING(isdeployed)
+
 @DOCSTRING(OCTAVE_HOME)
 
 @DOCSTRING(matlabroot)

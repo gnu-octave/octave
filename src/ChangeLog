@@ -1,6 +1,11 @@
 2011-04-03  Rik  <octave@nomad.inbox5.com>
 
-	* data.cc: Reverse previous changeset.  Return 3-input form
+	* data.cc (diag): Add documentation for 3-input form of diag.  Add new
+	tests.
+
+2011-04-03  Rik  <octave@nomad.inbox5.com>
+
+	* data.cc (diag): Reverse previous changeset.  Return 3-input form
 	of diag().
 
 2011-04-01  Rik  <octave@nomad.inbox5.com>

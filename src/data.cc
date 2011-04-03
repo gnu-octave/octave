@@ -1226,6 +1226,7 @@ DEFUN (diag, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{M} =} diag (@var{v})\n\
 @deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{k})\n\
+@deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {@var{v} =} diag (@var{M})\n\
 @deftypefnx {Built-in Function} {@var{v} =} diag (@var{M}, @var{k})\n\
 Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
@@ -1245,6 +1246,10 @@ diag ([1, 2, 3], 1)\n\
 @end example\n\
 \n\
 @noindent\n\
+The 3-input form returns a diagonal matrix with vector @var{v} on the main\n\
+diagonal and the resulting matrix being of size @var{m} rows x @var{n}\n\
+columns.\n\
+\n\
 Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 @var{k}-th diagonal of the matrix.\n\
 @end deftypefn")
@@ -1296,6 +1301,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3]);
 %!assert(diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3]);
 %!assert(diag (ones(1, 0), 2), zeros (2));
+%!assert(diag (1:3, 4, 2), [1, 0; 0, 2; 0, 0; 0, 0]);
 
 %!assert(full (diag (single([1; 2; 3]))), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
 %!assert(diag (single([1; 2; 3]), 1), single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]));
@@ -1317,7 +1323,11 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag (int8([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8([1; 2; 3]));
 %!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
 
+%% Test input validation
 %!error <Invalid call to diag.*> diag ();
+%!error <Invalid call to diag.*> diag (1,2,3,4);
+%!error diag (ones (2), 3, 3);
+%!error diag (1:3, -4, 3);
 
  */
 

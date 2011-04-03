@@ -1264,6 +1264,20 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
       else
         retval = args(0).diag(k);
     }
+  else if (nargin == 3)
+    {
+      octave_value arg0 = args(0);
+      if (arg0.ndims () == 2 && (args(0).rows () == 1 || args(0).columns () == 1))
+        {
+          octave_idx_type m = args(1).int_value (), n = args(2).int_value ();
+          if (! error_state)
+            retval = arg0.diag ().resize (dim_vector (m, n));
+          else
+            error ("diag: invalid dimensions");
+        }
+      else
+        error ("diag: V must be a vector");
+    }
   else
     print_usage ();
 
@@ -1304,7 +1318,6 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
 
 %!error <Invalid call to diag.*> diag ();
-%!error <Invalid call to diag.*> diag (ones(3, 1),0,1);
 
  */
 

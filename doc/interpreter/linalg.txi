@@ -180,6 +180,8 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(kron)
 
+@DOCSTRING(blkmm)
+
 @DOCSTRING(syl)
 
 @node Specialized Solvers

@@ -242,17 +242,17 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 
 DEFUN_DLD (blkmm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} blkmm (@var{x}, @var{y})\n\
+@deftypefn {Loadable Function} {} blkmm (@var{A}, @var{B})\n\
 Compute products of matrix blocks.  The blocks are given as\n\
-2-dimensional subarrays of the arrays @var{x}, @var{y}.\n\
-The size of @var{x} must have the form @code{[m,k,@dots{}]} and\n\
-size of @var{y} must be @code{[k,n,@dots{}]}.  The result is\n\
+2-dimensional subarrays of the arrays @var{A}, @var{B}.\n\
+The size of @var{A} must have the form @code{[m,k,@dots{}]} and\n\
+size of @var{B} must be @code{[k,n,@dots{}]}.  The result is\n\
 then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
 \n\
 @example\n\
 @group\n\
-  for i = 1:prod (size (@var{x})(3:end))\n\
-    @var{z}(:,:,i) = @var{x}(:,:,i) * @var{y}(:,:,i)\n\
+  for i = 1:prod (size (@var{A})(3:end))\n\
+    @var{C}(:,:,i) = @var{A}(:,:,i) * @var{B}(:,:,i)\n\
   endfor\n\
 @end group\n\
 @end example\n\
@@ -335,12 +335,12 @@ then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
             }
         }
       else
-        error ("blkmm: X and Y dimensions don't match: (%s) and (%s)",
+        error ("blkmm: A and B dimensions don't match: (%s) and (%s)",
                dimx.str ().c_str (), dimy.str ().c_str ());
 
     }
   else
-    error ("blkmm: X and Y must be numeric");
+    error ("blkmm: A and B must be numeric");
 
   return retval;
 }

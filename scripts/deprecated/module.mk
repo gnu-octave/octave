@@ -16,11 +16,13 @@ deprecated_FCN_FILES = \
   deprecated/is_global.m \
   deprecated/isstr.m \
   deprecated/krylovb.m \
+  deprecated/perror.m \
   deprecated/replot.m \
   deprecated/saveimage.m \
   deprecated/setstr.m \
   deprecated/sphcat.m \
   deprecated/spvcat.m \
+  deprecated/strerror.m \
   deprecated/values.m \
   deprecated/weibcdf.m \
   deprecated/weibinv.m \

@@ -57,7 +57,6 @@ general_FCN_FILES = \
   general/nargoutchk.m \
   general/nextpow2.m \
   general/num2str.m \
-  general/perror.m \
   general/pol2cart.m \
   general/polyarea.m \
   general/postpad.m \
@@ -75,7 +74,6 @@ general_FCN_FILES = \
   general/shiftdim.m \
   general/sortrows.m \
   general/sph2cart.m \
-  general/strerror.m \
   general/structfun.m \
   general/subsindex.m \
   general/triplequad.m \

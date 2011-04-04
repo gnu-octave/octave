@@ -1,3 +1,8 @@
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/grammar.txi: Remove reference to deprecated function
+	perror().
+
 2011-04-03  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/grammar.txi, interpreter/octave.texi: Add new section

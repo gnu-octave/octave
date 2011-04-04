@@ -113,16 +113,6 @@ info = 1
 @noindent
 A value of @code{info = 1} indicates that the solution has converged.
 
-The function @code{perror} may be used to print English messages
-corresponding to the numeric error codes.  For example:
-
-@example
-@group
-perror ("fsolve", 1)
-     @print{} solution converged to requested tolerance
-@end group
-@end example
-
 When no Jacobian is supplied (as in the example above) it is approximated
 numerically.  This requires more function evaluations, and hence is
 less efficient.  In the example above we could compute the Jacobian 

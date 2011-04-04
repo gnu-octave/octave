@@ -29,6 +29,13 @@
 
 function perror (funcname, num)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "perror is obsolete and will be removed from a future version of Octave.");
+  endif
+
   if (nargin != 2)
     print_usage ();
   else

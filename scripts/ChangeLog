@@ -1,3 +1,8 @@
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
+	* deprecated/module.mk, general/module.mk: Deprecate perror, strerror
+	functions.
+
 2011-04-02  Rik  <octave@nomad.inbox5.com>
 
 	* statistics/base/prctile.m, statistics/base/quantile.m: Improve 

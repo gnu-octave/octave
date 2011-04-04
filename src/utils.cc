@@ -94,7 +94,7 @@ DEFUN (isvarname, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isvarname (@var{name})\n\
 Return true if @var{name} is a valid variable name.\n\
-@seealso{exist, who}\n\
+@seealso{iskeyword, exist, who}\n\
 @end deftypefn")
 {
   octave_value retval;

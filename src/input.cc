@@ -1277,7 +1277,8 @@ input_event_hook (void)
 
 DEFUN (add_input_event_hook, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} add_input_event_hook (@var{fcn}, @var{data})\n\
+@deftypefn  {Built-in Function} {} add_input_event_hook (@var{fcn})\n\
+@deftypefnx {Built-in Function} {} add_input_event_hook (@var{fcn}, @var{data})\n\
 Add the named function @var{fcn} to the list of functions to call\n\
 periodically when Octave is waiting for input.  The function should\n\
 have the form\n\
@@ -1323,7 +1324,7 @@ arguments.\n\
 DEFUN (remove_input_event_hook, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} remove_input_event_hook (@var{fcn})\n\
-Remove the named function @var{fcn} to the list of functions to call\n\
+Remove the named function @var{fcn} from the list of functions to call\n\
 periodically when Octave is waiting for input.\n\
 @seealso{add_input_event_hook}\n\
 @end deftypefn")

@@ -209,7 +209,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
 * Emacs Octave Support::                       
-@c * Grammar::                     
+* Grammar and Parser::                     
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Function Index::              An item for each documented function.
@@ -854,6 +854,12 @@ Emacs Octave Support
 * Using Octave Mode::           
 * Running Octave from Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
+
+Grammar and Parser
+
+* Keywords::                    
+* Parser::                    
+
 @end detailmenu
 @end menu
 
@@ -912,7 +918,7 @@ Emacs Octave Support
 @include bugs.texi
 @include install.texi
 @include emacs.texi
-@c @include grammar.texi
+@include grammar.texi
 @include gpl.texi
 
 @c ------------------------------------------------------------------------

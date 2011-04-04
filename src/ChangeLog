@@ -1,5 +1,12 @@
 2011-04-03  Rik  <octave@nomad.inbox5.com>
 
+	* input.cc (add_input_event_hook, remove_input_event_hook): Improve
+	docstring.
+	* utils.cc (isvarname): Add seealso link to iskeyword().
+	* variables.cc (missing_function_hook): Improve docstring.
+
+2011-04-03  Rik  <octave@nomad.inbox5.com>
+
 	* DLD-FUNCTIONS/dot.cc (blkmm): Improve docstring.
 
 2011-04-03  Rik  <octave@nomad.inbox5.com>

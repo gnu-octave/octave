@@ -1,5 +1,11 @@
 2011-04-03  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/grammar.txi, interpreter/octave.texi: Add new section
+	on parsing to documentation.  Add functions add_input_event_hook,
+	remove_input_event_hook, missing_function_hook to documentation.
+
+2011-04-03  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/linalg.txi: Add blkmm function to documentation.
 
 2011-04-02  Rik  <octave@nomad.inbox5.com>

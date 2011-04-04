@@ -2521,8 +2521,8 @@ DEFUN (missing_function_hook, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
-Query or set the internal variable that allows setting a custom hook function\n\
-called when an uknown identifier is requested.\n\
+Query or set the internal variable that specifies the function to call when\n\
+an unknown identifier is requested.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);

@@ -501,13 +501,13 @@ vectors : x,y,z,t,w
 matrices : A,B,M
 
 @item
-strings : str,s
+strings : @nospell{str},s
 
 @item
-filenames : fname
+filenames : @nospell{fname}
 
 @item
-cells,cellstrs : c,cstr
+cells,@nospell{cellstrs} : c,@nospell{cstr}
 @end table
 
 @item

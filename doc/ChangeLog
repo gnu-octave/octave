@@ -1,5 +1,10 @@
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/doccheck/aspell-octave.en.pws, interpreter/nonlin.txi, 
+	interpreter/tips.txi: Spellcheck documentation for 3.4.1 release.
+
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/container.txi, interpreter/dynamic.txi,
 	interpreter/install.txi, interpreter/system.txi, interpreter/tips.txi:
 	Grammarcheck files for 3.4.1 release.

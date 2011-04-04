@@ -1,5 +1,10 @@
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/symvar.m, miscellaneous/warning_ids.m,
+	optimization/fminunc.m: Spellcheck documentation for 3.4.1 release.
+
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
 	* @ftp/mget.m, audio/loadaudio.m, audio/playaudio.m, audio/record.m,
 	audio/saveaudio.m, general/circshift.m, general/cumtrapz.m,
 	general/dblquad.m, general/quadgk.m, general/quadl.m,

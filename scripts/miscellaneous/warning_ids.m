@@ -216,7 +216,7 @@
 ## Octave.  Note that the @code{&&} and @code{||} operators always short
 ## circuit in both Octave and @sc{matlab}, so it's only necessary to
 ## enable @sc{matlab}-style short-circuiting it's too arduous to modify
-## existing code that relies on this behaviour.
+## existing code that relies on this behavior.
 ##
 ## @item Octave:precedence-change
 ## If the @code{Octave:precedence-change} warning is enabled, Octave

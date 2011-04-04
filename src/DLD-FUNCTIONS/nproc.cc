@@ -43,7 +43,8 @@ total number of processors.\n\
 processors available to the current process.\n\
 \n\
 @item overridable\n\
-likewise, but overridable through the OMP_NUM_THREADS environment variable.\n\
+likewise, but overridable through the @w{@env{OMP_NUM_THREADS}} environment\n\
+variable.\n\
 @end table\n\
 @end deftypefn")
 {

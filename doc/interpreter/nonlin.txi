@@ -173,7 +173,7 @@ the zeroes where it crosses the x-axis.  @code{fminbnd} is designed for the
 simpler, but very common, case of a univariate function where the interval
 to search is bounded.  For unbounded minimization of a function with
 potentially many variables use @code{fminunc}.  @xref{Optimization}, for
-minimzation with the presence of constraint functions.  Note that searches
+minimization with the presence of constraint functions.  Note that searches
 can be made for maxima by simply inverting the objective function
 @tex
 ($F_{max} = -F_{min}$).

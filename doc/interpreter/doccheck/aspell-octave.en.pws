@@ -272,6 +272,7 @@ FIXME
 FlashPix
 FLTK
 fltk
+fminunc
 fontconfig
 fontname
 forall
@@ -361,9 +362,11 @@ Hodel
 holomorphic
 Horner's
 horzcat
+hostname
 hotelling
 Hotelling's
 HSV
+html
 Hudak
 Huhdanpaa
 hygecdf
@@ -391,6 +394,7 @@ init
 inline
 Inline
 inpolygon
+internet
 interp
 interpderiv
 interpft
@@ -403,6 +407,8 @@ ipermute
 ishandle
 ishghandle
 isolines
+isosurface
+isovalue
 isreal
 issparse
 isvector
@@ -514,6 +520,7 @@ mex
 Michelsen
 Microsystems
 minima
+Minimizers
 Minitab
 minval
 MIP
@@ -577,6 +584,7 @@ normpdf
 normrnd
 NorthOutside
 noscal
+noshare
 notin
 NTSC
 nul
@@ -586,15 +594,18 @@ oct
 octaverc
 ODEPACK
 OLS
+onCleanup
 online
 OpenGL
 oplus
 Oppenheim
 oregonator
+Orthogonalize
 oslash
 otimes
 OutputFcn
 outputfcn
+overridable
 paperorientation
 paperposition
 papersize

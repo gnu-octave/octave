@@ -59,7 +59,7 @@
 ## Last relative step size was less that TolX.
 ##
 ## @item 3
-## Last relative decrease in func value was less than TolF.
+## Last relative decrease in function value was less than TolF.
 ##
 ## @item 0
 ## Iteration limit exceeded.

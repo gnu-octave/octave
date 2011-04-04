@@ -127,7 +127,7 @@ operations.)  Use this option to specify a particular @sc{lapack}
 library that Octave should use.
 
 @item --with-magick=<lib>
-Select the library to use for image I/O.  The two possible values are
+Select the library to use for image I/O@.  The two possible values are
 "GraphicsMagick" (default) or "ImageMagick".
 
 @item --with-sepchar=<char>
@@ -220,7 +220,7 @@ worth your time; instead, we simply recommend installing GNU Make.
 
 There are currently two options for plotting in Octave: (1) the external
 program gnuplot, or (2) the internal graphics engine using OpenGL and
-FLTK.  Gnuplot is a command-driven interactive function plotting
+FLTK@.  Gnuplot is a command-driven interactive function plotting
 program.  Gnuplot is copyrighted, but freely distributable.  As of
 Octave release 3.4, gnuplot is the default option for plotting.  But,
 the internal graphics engine is nearly 100% compatibile, certainly for
@@ -548,7 +548,7 @@ Octave's 64-bit index support is activated with the configure option
 You must ensure that all Fortran sources except those in the
 @file{libcruft/ranlib} directory are compiled such that INTEGERS are
 8-bytes wide.  If you are using gfortan, the configure script should
-automatically set the Makefile variable @code{F77_INTEGER_8_FLAG} to 
+automatically set the Makefile variable @w{@env{F77_INTEGER_8_FLAG}} to 
 @option{-fdefault-integer-8}.  If you are using another compiler, you
 must set this variable yourself.  You should NOT set this flag in
 @env{FFLAGS}, otherwise the files in @file{libcruft/ranlib} will be

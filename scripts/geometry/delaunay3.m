@@ -26,7 +26,7 @@
 ## A fourth optional argument, which must be a string or cell array of strings,
 ## contains extra options passed to the underlying qhull command.  See the
 ## documentation for the Qhull library for details.
-## @seealso{delaunay,delaunayn}
+## @seealso{delaunay, delaunayn}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

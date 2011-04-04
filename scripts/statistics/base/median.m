@@ -44,7 +44,7 @@
 ## If @var{x} is a matrix, compute the median value for each
 ## column and return them in a row vector.  If the optional @var{dim}
 ## argument is given, operate along this dimension.
-## @seealso{mean,mode}
+## @seealso{mean, mode}
 ## @end deftypefn
 
 ## Author: jwe

@@ -25,7 +25,7 @@
 ## permutation.
 ## The complexity of the algorithm is O(n) in
 ## terms of time and memory requirements.
-## @seealso{etreeplot, gplot,treeplot}
+## @seealso{etreeplot, gplot, treeplot}
 ## @end deftypefn
 
 function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation)

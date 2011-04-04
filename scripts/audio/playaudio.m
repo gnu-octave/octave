@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} playaudio (@var{name}, @var{ext})
 ## @deftypefnx {Function File} {} playaudio (@var{x})
-## Plays the audio file @file{@var{name}.@var{ext}} or the audio data
+## Play the audio file @file{@var{name}.@var{ext}} or the audio data
 ## stored in the vector @var{x}.
 ## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, setaudio, record}
 ## @end deftypefn

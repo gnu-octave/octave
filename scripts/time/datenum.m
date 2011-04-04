@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
 ## @deftypefnx {Function File} {} datenum (@code{"date"})
 ## @deftypefnx {Function File} {} datenum (@code{"date"}, @var{p})
-## Returns the specified local time as a day number, with Jan 1, 0000
+## Return the specified local time as a day number, with Jan 1, 0000
 ## being day 1.  By this reckoning, Jan 1, 1970 is day number 719529.
 ## The fractional portion, @var{p}, corresponds to the portion of the
 ## specified day.

@@ -53,7 +53,7 @@
 ##
 ## Both @var{dim} and @var{opt} are optional.  If both are supplied,
 ## either may appear first.
-## @seealso{median,mode}
+## @seealso{median, mode}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

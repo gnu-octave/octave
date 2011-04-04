@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{value} =} getappdata (@var{h}, @var{name})
-## Returns the @var{value} for named application data for the object(s) with
+## Return the @var{value} for named application data for the object(s) with
 ## handle(s) @var{h}.
 ## @end deftypefn
 

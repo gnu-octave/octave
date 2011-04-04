@@ -41,7 +41,7 @@
 ## stdnormal distribution and is sometimes referred to as "excess kurtosis".
 ## To calculate kurtosis without the normalization factor of @math{-3} use
 ## @code{moment (@var{x}, 4, 'c') / std (@var{x})^4}.
-## @seealso{var,skewness,moment}
+## @seealso{var, skewness, moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

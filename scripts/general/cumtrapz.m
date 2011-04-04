@@ -28,7 +28,7 @@
 ## (@var{x}, @var{y})} evaluates the cumulative integral with respect
 ## to @var{x}.
 ##
-## @seealso{trapz,cumsum}
+## @seealso{trapz, cumsum}
 ## @end deftypefn
 
 ## Author:      Kai Habel <kai.habel@gmx.de>

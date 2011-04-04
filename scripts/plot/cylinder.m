@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} cylinder (@var{r}, @var{n})
 ## @deftypefnx {Function File} {[@var{x}, @var{y}, @var{z}] =} cylinder (@dots{})
 ## @deftypefnx {Function File} {} cylinder (@var{ax}, @dots{})
-## Generates three matrices in @code{meshgrid} format, such that
+## Generate three matrices in @code{meshgrid} format, such that
 ## @code{surf (@var{x}, @var{y}, @var{z})} generates a unit cylinder.
 ## The matrices are of size @code{@var{n}+1}-by-@code{@var{n}+1}.
 ## @var{r} is a vector containing the radius along the z-axis.

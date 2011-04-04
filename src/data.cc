@@ -4663,7 +4663,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 DEFUN (full, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
- returns a full storage matrix from a sparse, diagonal, permutation matrix\n\
+Return a full storage matrix from a sparse, diagonal, permutation matrix\n\
 or a range.\n\
 @seealso{sparse}\n\
 @end deftypefn")

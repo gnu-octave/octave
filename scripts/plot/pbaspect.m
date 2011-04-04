@@ -32,7 +32,7 @@
 ## Return the plot box aspect ratio mode of the current axes.
 ##
 ## @deftypefnx {Function File} {} pbaspect (@var{hax}, @dots{})
-## Uses the axes, with handle @var{hax}, instead of the current axes.
+## Use the axes, with handle @var{hax}, instead of the current axes.
 ##
 ## @seealso{axis, daspect, xlim, ylim, zlim}
 ## @end deftypefn

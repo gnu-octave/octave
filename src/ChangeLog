@@ -1,3 +1,8 @@
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
+	* DLD-FUNCTIONS/colamd.cc, data.cc, file-io.cc: Grammarcheck files
+	for 3.4.1 release.
+
 2011-04-03  Rik  <octave@nomad.inbox5.com>
 
 	* input.cc (add_input_event_hook, remove_input_event_hook): Improve

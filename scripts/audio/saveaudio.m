@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} saveaudio (@var{name}, @var{x}, @var{ext}, @var{bps})
-## Saves a vector @var{x} of audio data to the file
+## Save a vector @var{x} of audio data to the file
 ## @file{@var{name}.@var{ext}}.  The optional parameters @var{ext} and
 ## @var{bps} determine the encoding and the number of bits per sample used
 ## in the audio file (see @code{loadaudio}); defaults are @file{lin} and

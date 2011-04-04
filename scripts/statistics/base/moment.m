@@ -99,7 +99,7 @@
 ## If the optional argument @var{dim} is given, operate along this dimension.
 ##
 ## If both @var{type} and @var{dim} are given they may appear in any order.
-## @seealso{var,skewness,kurtosis}
+## @seealso{var, skewness, kurtosis}
 ## @end deftypefn
 
 ## Can easily be made to work for continuous distributions (using quad)

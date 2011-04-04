@@ -1,5 +1,11 @@
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/container.txi, interpreter/dynamic.txi,
+	interpreter/install.txi, interpreter/system.txi, interpreter/tips.txi:
+	Grammarcheck files for 3.4.1 release.
+
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/grammar.txi: Remove reference to deprecated function
 	perror().
 

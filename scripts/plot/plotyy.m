@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} plotyy (@dots{}, @var{fun1}, @var{fun2})
 ## @deftypefnx {Function File} {} plotyy (@var{h}, @dots{})
 ## @deftypefnx {Function File} {[@var{ax}, @var{h1}, @var{h2}] =} plotyy (@dots{})
-## Plots two sets of data with independent y-axes.  The arguments @var{x1} and
+## Plot two sets of data with independent y-axes.  The arguments @var{x1} and
 ## @var{y1} define the arguments for the first plot and @var{x1} and @var{y2}
 ## for the second.
 ##

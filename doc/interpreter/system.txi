@@ -149,7 +149,8 @@ useful.
 @node Filesystem Utilities
 @section Filesystem Utilities
 
-Octave includes many utility functions for copying, moving, renaming, and deleting files; for creating, reading, and deleting directories; for retrieving
+Octave includes many utility functions for copying, moving, renaming, and
+deleting files; for creating, reading, and deleting directories; for retrieving
 status information on files; and for manipulating file and path names.
 
 @DOCSTRING(movefile)

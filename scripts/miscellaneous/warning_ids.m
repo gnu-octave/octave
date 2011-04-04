@@ -112,7 +112,7 @@
 ## @item Octave:autoload-relative-file-name
 ## If the @code{Octave:autoload-relative-file-name} is enabled,
 ## Octave will warn when parsing autoload() function calls with relative
-## paths to function files. This usually happens when using autoload()
+## paths to function files.  This usually happens when using autoload()
 ## calls in PKG_ADD files, when the PKG_ADD file is not in the same
 ## directory as the .oct file referred to by the autoload() command.
 ## By default, the @code{Octave:autoload-relative-file-name}
@@ -201,8 +201,8 @@
 ## If the @code{Octave:possible-matlab-short-circuit-operator} warning
 ## is enabled, Octave will warn about using the not short circuiting
 ## operators @code{&} and @code{|} inside @code{if} or @code{while}
-## conditions. They normally never short circuit, but @sc{Matlab} always
-## short circuits if any logical operators are used in a condition. You
+## conditions.  They normally never short circuit, but @sc{matlab} always
+## short circuits if any logical operators are used in a condition.  You
 ## can turn on the option
 ##
 ## @example
@@ -213,9 +213,9 @@
 ##
 ## @noindent
 ## if you would like to enable this short-circuit evaluation in
-## Octave. Note that the @code{&&} and @code{||} operators always short
-## circuit in both Octave and @sc{Matlab}, so it's only necessary to
-## enable @sc{Matlab}-style short-circuiting it's too arduous to modify
+## Octave.  Note that the @code{&&} and @code{||} operators always short
+## circuit in both Octave and @sc{matlab}, so it's only necessary to
+## enable @sc{matlab}-style short-circuiting it's too arduous to modify
 ## existing code that relies on this behaviour.
 ##
 ## @item Octave:precedence-change

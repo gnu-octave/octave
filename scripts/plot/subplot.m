@@ -52,8 +52,8 @@
 ## @end group
 ## @end example
 ##
-## @var{index} may be a vector. In which case, the new axis will enclose
-## the grid locations specified. The first demo illustrates an example.
+## @var{index} may be a vector.  In which case, the new axis will enclose
+## the grid locations specified.  The first demo illustrates an example:
 ##
 ## @example
 ## @code{demo ("subplot", 1)}

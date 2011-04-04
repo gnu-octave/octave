@@ -38,7 +38,7 @@
 ## If @var{x} is a matrix, return the skewness along the
 ## first non-singleton dimension of the matrix.  If the optional
 ## @var{dim} argument is given, operate along this dimension.
-## @seealso{var,kurtosis,moment}
+## @seealso{var, kurtosis, moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

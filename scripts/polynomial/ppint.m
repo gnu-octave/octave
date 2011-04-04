@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{ppi} =} ppint (@var{pp}, @var{c})
 ## Compute the integral of the piecewise polynomial struct @var{pp}.
 ## @var{c}, if given, is the constant of integration.
-## @seealso{mkpp,ppval,ppder}
+## @seealso{mkpp, ppval, ppder}
 ## @end deftypefn
 
 function ppi = ppint (pp, c)

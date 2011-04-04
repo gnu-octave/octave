@@ -232,7 +232,7 @@ completely dense rows or columns are removed if @code{@var{knobs}(1)} and\n\
 @code{@var{knobs}(2)} are < 0, respectively.  If @code{@var{knobs}(3)} is\n\
 nonzero, @var{stats} and @var{knobs} are printed.  The default is\n\
 @code{@var{knobs} = [10 10 0]}.  Note that @var{knobs} differs from earlier\n\
-versions of colamd\n\
+versions of colamd.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
 about the ordering and the validity of the input matrix @var{S}.  Ordering\n\

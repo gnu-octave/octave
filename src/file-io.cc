@@ -209,10 +209,10 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
 DEFUN (fclose, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fclose (@var{fid})\n\
+@deftypefn  {Built-in Function} {} fclose (@var{fid})\n\
 @deftypefnx {Built-in Function} {} fclose (\"all\")\n\
 Close the specified file.  If successful, @code{fclose} returns 0,\n\
-otherwise, it returns -1. The second form of the @code{fclose} call closes\n\
+otherwise, it returns -1.  The second form of the @code{fclose} call closes\n\
 all open files except @code{stdout}, @code{stderr}, and @code{stdin}.\n\
 @seealso{fopen, fseek, ftell}\n\
 @end deftypefn")

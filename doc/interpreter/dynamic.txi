@@ -108,11 +108,11 @@ Consider the short C++ example:
 @end example
 
 This example although short introduces the basics of writing a C++
-function that can be dynamically linked to Octave. The easiest way to
+function that can be dynamically linked to Octave.  The easiest way to
 make available most of the definitions that might be necessary for a C++
 oct-file in Octave is to use the @code{#include <octave/oct.h>} header.
 Note that @file{octave/oct.h} is a C++ header and cannot be directly
-@code{#include}'ed in a C source file, nor any other language. What
+@code{#include}'ed in a C source file, nor any other language.  What
 follows is mostly C++, with a discussion of other languages in section
 @ref{Calling External Code from Oct-Files}.
 

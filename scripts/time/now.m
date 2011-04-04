@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {t =} now ()
-## Returns the current local time as the number of days since Jan 1, 0000.
+## Return the current local time as the number of days since Jan 1, 0000.
 ## By this reckoning, Jan 1, 1970 is day number 719529.
 ##
 ## The integral part, @code{floor (now)} corresponds to 00:00:00 today.

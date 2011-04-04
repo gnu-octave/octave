@@ -21,7 +21,7 @@
 ## Return the ranks of @var{x} along the first non-singleton dimension
 ## adjusted for ties.  If the optional argument @var{dim} is
 ## given, operate along this dimension.
-## @seealso{spearman,kendall}
+## @seealso{spearman, kendall}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

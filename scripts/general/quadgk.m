@@ -112,7 +112,7 @@
 ## approximate bounds on the error in the integral @code{abs (@var{q} -
 ## @var{i})}, where @var{i} is the exact value of the integral.
 ##
-## @seealso{quad,quadv,quadl,quadcc,trapz,dblquad,triplequad}
+## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad}
 ## @end deftypefn
 
 function [q, err] = quadgk (f, a, b, varargin)

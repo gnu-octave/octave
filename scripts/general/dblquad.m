@@ -29,7 +29,7 @@
 ##
 ## Additional arguments, are passed directly to @var{f}.  To use the default
 ## value for @var{tol} one may pass an empty matrix.
-## @seealso{triplequad,quad,quadv,quadl,quadgk,quadcc,trapz}
+## @seealso{triplequad, quad, quadv, quadl, quadgk, quadcc, trapz}
 ## @end deftypefn
 
 function q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin)

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{H} =} convhull (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{H} =} convhull (@var{x}, @var{y}, @var{opt})
-## Returns the index vector to the points of the enclosing convex hull.  The
+## Return the index vector to the points of the enclosing convex hull.  The
 ## data points are defined by the x and y vectors.
 ##
 ## A third optional argument, which must be a string, contains extra options

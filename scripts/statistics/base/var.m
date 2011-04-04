@@ -52,7 +52,7 @@
 ## @end table
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
-## @seealso{cov,std,skewness,kurtosis,moment}
+## @seealso{cov, std, skewness, kurtosis, moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

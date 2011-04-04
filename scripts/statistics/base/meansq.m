@@ -40,7 +40,7 @@
 ## of each column.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
-## @seealso{var,std,moment}
+## @seealso{var, std, moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

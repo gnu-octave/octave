@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} clabel (@var{c}, @var{h})
 ## @deftypefnx {Function File} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} clabel (@dots{})
-## Adds labels to the contours of a contour plot.  The contour plot is specified
+## Add labels to the contours of a contour plot.  The contour plot is specified
 ## by the contour matrix @var{c} and optionally the contourgroup object @var{h}
 ## that are returned by @code{contour}, @code{contourf} and @code{contour3}.
 ## The contour labels are rotated and placed in the contour itself.

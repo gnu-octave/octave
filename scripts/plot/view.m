@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{azimuth}, @var{elevation}] =} view ()
-## @deftypefnx  {Function File} {} view (@var{azimuth}, @var{elevation})
+## @deftypefnx {Function File} {} view (@var{azimuth}, @var{elevation})
 ## @deftypefnx {Function File} {} view ([@var{azimuth}, @var{elevation}])
 ## @deftypefnx {Function File} {} view ([@var{x}, @var{y}, @var{z}])
 ## @deftypefnx {Function File} {} view (@var{dims})

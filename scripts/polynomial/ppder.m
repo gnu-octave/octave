@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{ppd} =} ppder (@var{pp})
 ## Compute the piecewise derivative of the piecewise polynomial struct @var{pp}.
-## @seealso{mkpp,ppval,ppint}
+## @seealso{mkpp, ppval, ppint}
 ## @end deftypefn
 
 function ppd = ppder (pp)

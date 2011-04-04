@@ -18,12 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{C} =} textscan (@var{fid}, @var{format})
-## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @
-## @var{n})
-## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @
-## @var{param}, @var{value}, @dots{})
-## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @
-## @var{n}, @var{param}, @var{value}, @dots{})
+## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{n})
+## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})
+## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{n}, @var{param}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {@var{C} =} textscan (@var{str}, @dots{})
 ## @deftypefnx {Function File} {[@var{C}, @var{position}] =} textscan (@dots{})
 ## Read data from a text file.

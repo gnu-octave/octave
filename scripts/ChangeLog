@@ -1,5 +1,31 @@
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
+	* @ftp/mget.m, audio/loadaudio.m, audio/playaudio.m, audio/record.m,
+	audio/saveaudio.m, general/circshift.m, general/cumtrapz.m,
+	general/dblquad.m, general/quadgk.m, general/quadl.m,
+	general/shiftdim.m, general/triplequad.m, geometry/convhull.m,
+	geometry/delaunay3.m, geometry/dsearch.m, geometry/dsearchn.m,
+	geometry/tsearchn.m, geometry/voronoi.m, image/brighten.m,
+	io/textscan.m, miscellaneous/getappdata.m,
+	miscellaneous/namelengthmax.m, miscellaneous/rmappdata.m,
+	miscellaneous/setappdata.m, miscellaneous/swapbytes.m,
+	miscellaneous/symvar.m, miscellaneous/warning_ids.m,
+	pkg/private/get_forge_pkg.m, plot/clabel.m, plot/colorbar.m,
+	plot/cylinder.m, plot/daspect.m, plot/linkprop.m, plot/pbaspect.m,
+	plot/plotyy.m, plot/private/__add_default_menu__.m, plot/sphere.m,
+	plot/subplot.m, plot/view.m, polynomial/polyreduce.m,
+	polynomial/ppder.m, polynomial/ppint.m, signal/periodogram.m,
+	sparse/colperm.m, sparse/nonzeros.m, sparse/spaugment.m,
+	sparse/speye.m, sparse/treelayout.m, sparse/treeplot.m,
+	statistics/base/kurtosis.m, statistics/base/mean.m,
+	statistics/base/meansq.m, statistics/base/median.m,
+	statistics/base/mode.m, statistics/base/moment.m,
+	statistics/base/ranks.m, statistics/base/skewness.m,
+	statistics/base/statistics.m, statistics/base/var.m, time/datenum.m,
+	time/datetick.m, time/now.m: Grammarcheck m-files for 3.4.1 release.
+
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
 	* deprecated/module.mk, general/module.mk: Deprecate perror, strerror
 	functions.
 

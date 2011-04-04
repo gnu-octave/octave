@@ -30,7 +30,7 @@
 ## The return variable @var{f} is the number of occurrences of the mode in
 ## in the dataset.  The cell array @var{c} contains all of the elements
 ## with the maximum frequency.
-## @seealso{mean,median}
+## @seealso{mean, median}
 ## @end deftypefn
 
 function [m, f, c] = mode (x, dim)

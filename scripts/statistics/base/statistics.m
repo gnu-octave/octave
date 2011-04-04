@@ -26,7 +26,7 @@
 ## If @var{x} is a matrix, calculate statistics over the first
 ## non-singleton dimension.
 ## If the optional argument @var{dim} is given, operate along this dimension.
-## @seealso{min,max,median,mean,std,skewness,kurtosis}
+## @seealso{min, max, median, mean, std, skewness, kurtosis}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

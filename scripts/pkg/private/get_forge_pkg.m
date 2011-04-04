@@ -18,10 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{ver}, @var{url}] =} get_forge_pkg (@var{name})
-## Tries to discover the current version of an OctaveForge package from the web,
+## Try to discover the current version of an OctaveForge package from the web,
 ## using a working internet connection and the urlread function.
-## If two output arguments are requested, returns also an address to download
-## the file.
+## If two output arguments are requested, also return an address from which
+## to download the file.
 ## @end deftypefn
 
 function [ver, url] = get_forge_pkg (name)

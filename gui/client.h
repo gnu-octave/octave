@@ -18,6 +18,7 @@ public:
 signals:
     void dataAvailable();
     void errorAvailable();
+    void lostConnection();
 
 protected:
     Client(QString command);
@@ -25,8 +26,11 @@ protected:
 private slots:
     void reemitDataAvailable();
     void reemitErrorAvailable();
+    void handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void handleProcessStatusChange(QProcess::ProcessState processState);
 
 private:
+    QString m_command;
     QProcess m_process;
     QMutex m_clientInRequest;
 };

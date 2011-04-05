@@ -27,6 +27,8 @@ OctaveTerminal::OctaveTerminal(QWidget *parent) :
     blockUserInput();
     connect(m_commandLine, SIGNAL(returnPressed()), this, SLOT(sendCommand()));
     connect(showEnvironmentButton, SIGNAL(clicked()), this, SLOT(showEnvironment()));
+
+    m_terminalHighlighter = new TerminalHighlighter(m_octaveOutput->document());
 }
 
 void OctaveTerminal::sendCommand() {

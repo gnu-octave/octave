@@ -10,6 +10,7 @@
 #include <QToolBar>
 
 #include "client.h"
+#include "terminalhighlighter.h"
 
 class OctaveTerminal : public QMdiSubWindow {
     Q_OBJECT
@@ -35,6 +36,7 @@ private:
     QTextBrowser *m_octaveOutput;
     QLineEdit *m_commandLine;
     Client *m_client;
+    TerminalHighlighter *m_terminalHighlighter;
 };
 
 #endif // OCTAVETERMINAL_H

@@ -14,9 +14,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     octaveterminal.cpp \
     clientmanager.cpp \
-    client.cpp
+    client.cpp \
+    terminalhighlighter.cpp
 
 HEADERS  += mainwindow.h \
     octaveterminal.h \
     clientmanager.h \
-    client.h
+    client.h \
+    terminalhighlighter.h

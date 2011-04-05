@@ -1,5 +1,9 @@
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/plot.txi: Add warning about single precision in FLTK.
+
+2011-04-04  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/doccheck/aspell-octave.en.pws, interpreter/nonlin.txi, 
 	interpreter/tips.txi: Spellcheck documentation for 3.4.1 release.
 

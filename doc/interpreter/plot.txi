@@ -42,6 +42,10 @@ FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
 gnuplot system.  The two systems may be used selectively through the use
 of the @code{graphics_toolkit} property of the graphics handle for each
 figure.  This is explained in @ref{Graphics Data Structures}.
+@strong{Caution:} The FLTK toolkit uses single precision variables internally
+which limits the maximum value that can be displayed to approximately
+@math{10^{38}}.  If your data contains larger values you must use the gnuplot
+toolkit which supports values up to @math{10^{308}}.
 
 @node High-Level Plotting
 @section High-Level Plotting

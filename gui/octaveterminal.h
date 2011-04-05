@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QMenuBar>
 #include <QMenu>
+#include <QToolBar>
 
 #include "client.h"
 
@@ -30,7 +31,7 @@ protected slots:
     void fetchErrorFromClient();
 
 private:
-    QMenuBar *m_menuBar;
+    QToolBar *m_mainToolBar;
     QTextBrowser *m_octaveOutput;
     QLineEdit *m_commandLine;
     Client *m_client;

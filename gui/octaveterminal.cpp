@@ -1,6 +1,6 @@
 #include "octaveterminal.h"
 #include <QVBoxLayout>
-
+#include <QPushButton>
 
 OctaveTerminal::OctaveTerminal(QWidget *parent) :
     QMdiSubWindow(parent),
@@ -8,25 +8,25 @@ OctaveTerminal::OctaveTerminal(QWidget *parent) :
     setWindowTitle("Octave Terminal");
 
     setWidget(new QWidget(this));
-    m_menuBar = new QMenuBar(widget());
+    m_mainToolBar = new QToolBar(widget());
     m_octaveOutput = new QTextBrowser(widget());
     m_commandLine = new QLineEdit(widget());
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(m_menuBar);
+    layout->addWidget(m_mainToolBar);
     layout->addWidget(m_octaveOutput);
     layout->addWidget(m_commandLine);
     widget()->setLayout(layout);
 
-    QMenu *octaveMenu = m_menuBar->addMenu("Octave");
-    QAction *showEnvironmentAction = octaveMenu->addAction("Show Environment (who)");
+    QPushButton *showEnvironmentButton = new QPushButton("Show Environment (who)");
+    m_mainToolBar->addWidget(showEnvironmentButton);
 
     m_octaveOutput->setFontFamily("Monospace");
     m_octaveOutput->setReadOnly(true);
 
     blockUserInput();
     connect(m_commandLine, SIGNAL(returnPressed()), this, SLOT(sendCommand()));
-    connect(showEnvironmentAction, SIGNAL(triggered()), this, SLOT(showEnvironment()));
+    connect(showEnvironmentButton, SIGNAL(clicked()), this, SLOT(showEnvironment()));
 }
 
 void OctaveTerminal::sendCommand() {

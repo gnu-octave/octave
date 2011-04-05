@@ -3,9 +3,10 @@
 Client::Client(QString command)
     : m_command(command) {
     m_process.start(m_command, QProcess::ReadWrite);
-    connect(&m_process, SIGNAL(readyRead()), this, SLOT(reemitDataAvailable()));
+    connect(&m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(reemitDataAvailable()));
     connect(&m_process, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(handleProcessStatusChange(QProcess::ProcessState)));
     connect(&m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(handleProcessFinished(int,QProcess::ExitStatus)));
+    connect(&m_process, SIGNAL(readyReadStandardError()), this, SLOT(reemitErrorAvailable()));
 }
 
 void Client::send(QString content) {

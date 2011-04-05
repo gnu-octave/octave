@@ -3340,11 +3340,10 @@ skip_white_space (stream_reader& reader)
           break;
 
         case '\n':
-          current_input_column = 0;
+          current_input_column = 1;
           break;
 
         default:
-          current_input_column--;
           reader.ungetc (c);
           goto done;
         }

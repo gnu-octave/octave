@@ -10,7 +10,7 @@ OctaveTerminal::OctaveTerminal(QWidget *parent) :
     setWidget(new QWidget(this));
     m_mainToolBar = new QToolBar(widget());
     m_octaveOutput = new QTextBrowser(widget());
-    m_commandLine = new QLineEdit(widget());
+    m_commandLine = new TerminalCommandLine(widget());
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(m_mainToolBar);
@@ -25,21 +25,16 @@ OctaveTerminal::OctaveTerminal(QWidget *parent) :
     m_octaveOutput->setReadOnly(true);
 
     blockUserInput();
-    connect(m_commandLine, SIGNAL(returnPressed()), this, SLOT(sendCommand()));
+    connect(m_commandLine, SIGNAL(claimCommand(QString)), this, SLOT(sendCommand(QString)));
     connect(showEnvironmentButton, SIGNAL(clicked()), this, SLOT(showEnvironment()));
 
     m_terminalHighlighter = new TerminalHighlighter(m_octaveOutput->document());
 }
 
-void OctaveTerminal::sendCommand() {
-    QString command = m_commandLine->text();
+void OctaveTerminal::sendCommand(QString command) {
     m_octaveOutput->setFontUnderline(true);
     m_octaveOutput->append(command);
-    command.append("\n");
-
     QMetaObject::invokeMethod(m_client, "send", Q_ARG(QString, command));
-
-    m_commandLine->clear();
 }
 
 void OctaveTerminal::blockUserInput() {

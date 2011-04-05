@@ -8,9 +8,35 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QToolBar>
+#include <QKeyEvent>
 
 #include "client.h"
 #include "terminalhighlighter.h"
+
+class TerminalCommandLine : public QLineEdit {
+    Q_OBJECT
+public:
+    TerminalCommandLine(QWidget *parent = 0)
+        : QLineEdit(parent) {
+    }
+
+signals:
+    void claimCommand(QString command);
+
+protected:
+    void keyPressEvent(QKeyEvent *keyEvent) {
+        switch(keyEvent->key()) {
+            case Qt::Key_Return:
+                emit claimCommand(text() + "\n");
+                setText("");
+                break;
+
+            default:
+                QLineEdit::keyPressEvent(keyEvent);
+                break;
+        }
+    }
+};
 
 class OctaveTerminal : public QMdiSubWindow {
     Q_OBJECT
@@ -20,7 +46,7 @@ public:
 signals:
 
 public slots:
-    void sendCommand();
+    void sendCommand(QString command);
     void blockUserInput();
     void allowUserInput();
 
@@ -34,7 +60,7 @@ protected slots:
 private:
     QToolBar *m_mainToolBar;
     QTextBrowser *m_octaveOutput;
-    QLineEdit *m_commandLine;
+    TerminalCommandLine *m_commandLine;
     Client *m_client;
     TerminalHighlighter *m_terminalHighlighter;
 };

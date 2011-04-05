@@ -36,7 +36,9 @@ void OctaveTerminal::sendCommand() {
     m_octaveOutput->setFontUnderline(true);
     m_octaveOutput->append(command);
     command.append("\n");
-    m_client->send(command);
+
+    QMetaObject::invokeMethod(m_client, "send", Q_ARG(QString, command));
+
     m_commandLine->clear();
 }
 
@@ -51,8 +53,8 @@ void OctaveTerminal::allowUserInput() {
 
 void OctaveTerminal::assignClient(Client *client) {
     m_client = client;
-    connect(client, SIGNAL(dataAvailable()), this, SLOT(fetchDataFromClient()));
-    connect(client, SIGNAL(errorAvailable()), this, SLOT(fetchErrorFromClient()));
+    connect(client, SIGNAL(dataAvailable(QString)), this, SLOT(handleDataFromClient(QString)));
+    connect(client, SIGNAL(errorAvailable(QString)), this, SLOT(handleErrorFromClient(QString)));
     allowUserInput();
 }
 
@@ -60,14 +62,12 @@ void OctaveTerminal::showEnvironment() {
     m_client->send("who\n");
 }
 
-void OctaveTerminal::fetchDataFromClient() {
-    QString fetchedData = m_client->fetch();
+void OctaveTerminal::handleDataFromClient(QString data) {
     m_octaveOutput->setFontUnderline(false);
-    m_octaveOutput->append(fetchedData);
+    m_octaveOutput->append(data);
 }
 
-void OctaveTerminal::fetchErrorFromClient() {
-    QString error = m_client->errorMessage();
+void OctaveTerminal::handleErrorFromClient(QString error) {
     m_octaveOutput->setFontUnderline(false);
     m_octaveOutput->append(error);
 }

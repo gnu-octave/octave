@@ -4,20 +4,18 @@
 #include "clientmanager.h"
 #include <QProcess>
 #include <QObject>
-#include <QMutex>
+#include <QThread>
 
 class Client : public QObject {
     Q_OBJECT
     friend class ClientManager;
 
-public:
+public slots:
     void send(QString content);
-    QString fetch();
-    QString errorMessage();
 
 signals:
-    void dataAvailable();
-    void errorAvailable();
+    void dataAvailable(QString data);
+    void errorAvailable(QString error);
     void lostConnection();
 
 protected:
@@ -32,7 +30,7 @@ private slots:
 private:
     QString m_command;
     QProcess m_process;
-    QMutex m_clientInRequest;
+    QThread m_thread;
 };
 
 #endif // CLIENT_H

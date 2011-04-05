@@ -28,8 +28,8 @@ public slots:
     void showEnvironment();
 
 protected slots:
-    void fetchDataFromClient();
-    void fetchErrorFromClient();
+    void handleDataFromClient(QString data);
+    void handleErrorFromClient(QString error);
 
 private:
     QToolBar *m_mainToolBar;

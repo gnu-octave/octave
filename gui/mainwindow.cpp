@@ -1,10 +1,11 @@
-#include "mainwindow.h"
-#include "octaveterminal.h"
 
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
 #include <QtWebKit/QWebView>
+
+#include "mainwindow.h"
+#include "octaveterminal.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {

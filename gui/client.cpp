@@ -1,11 +1,15 @@
 #include "client.h"
 
 Client::Client(QString command)
-    : m_command(command) {
+    : QObject(),
+      m_command(command) {
+    m_thread.start();
+    moveToThread(&m_thread);
+
     m_process.start(m_command, QProcess::ReadWrite);
-    connect(&m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(reemitDataAvailable()));
     connect(&m_process, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(handleProcessStatusChange(QProcess::ProcessState)));
     connect(&m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(handleProcessFinished(int,QProcess::ExitStatus)));
+    connect(&m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(reemitDataAvailable()));
     connect(&m_process, SIGNAL(readyReadStandardError()), this, SLOT(reemitErrorAvailable()));
 }
 
@@ -13,22 +17,12 @@ void Client::send(QString content) {
     m_process.write(content.toLocal8Bit());
 }
 
-QString Client::fetch() {
-    QString fetchedInput(m_process.readAllStandardOutput());
-    return fetchedInput;
-}
-
-QString Client::errorMessage() {
-    QString error(m_process.readAllStandardError());
-    return error;
-}
-
 void Client::reemitDataAvailable() {
-    emit dataAvailable();
+    emit dataAvailable(m_process.readAllStandardOutput());
 }
 
 void Client::reemitErrorAvailable() {
-    emit errorAvailable();
+    emit errorAvailable(m_process.readAllStandardError());
 }
 
 void Client::handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {

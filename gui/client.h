@@ -25,7 +25,6 @@ private slots:
     void reemitDataAvailable();
     void reemitErrorAvailable();
     void handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
-    void handleProcessStatusChange(QProcess::ProcessState processState);
 
 private:
     QString m_command;

@@ -7,7 +7,6 @@ Client::Client(QString command)
     moveToThread(&m_thread);
 
     m_process.start(m_command, QProcess::ReadWrite);
-    connect(&m_process, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(handleProcessStatusChange(QProcess::ProcessState)));
     connect(&m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(handleProcessFinished(int,QProcess::ExitStatus)));
     connect(&m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(reemitDataAvailable()));
     connect(&m_process, SIGNAL(readyReadStandardError()), this, SLOT(reemitErrorAvailable()));
@@ -27,15 +26,4 @@ void Client::reemitErrorAvailable() {
 
 void Client::handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     m_process.start(m_command, QProcess::ReadWrite);
-}
-
-void Client::handleProcessStatusChange(QProcess::ProcessState processState) {
-    switch(processState) {
-        case QProcess::NotRunning:
-            break;
-        case QProcess::Starting:
-            break;
-        case QProcess::Running:
-            break;
-    };
 }

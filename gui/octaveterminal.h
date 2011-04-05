@@ -35,7 +35,8 @@ class TerminalCommandLine : public QLineEdit {
     Q_OBJECT
 public:
     TerminalCommandLine(QWidget *parent = 0)
-        : QLineEdit(parent) {
+        : QLineEdit(parent),
+          m_commandHistoryIndex(0) {
     }
 
 signals:
@@ -43,10 +44,49 @@ signals:
 
 protected:
     void keyPressEvent(QKeyEvent *keyEvent) {
+        QString command;
         switch(keyEvent->key()) {
             case Qt::Key_Return:
-                emit claimCommand(text() + "\n");
+                command = text();
+                emit claimCommand(command);
+                m_commandHistory.append(command);
+                m_commandHistoryIndex = m_commandHistory.size();
+                m_currentlyEditedCommand = "";
                 setText("");
+                break;
+
+            case Qt::Key_Up:
+                if(!m_commandHistory.empty())
+                {
+                    if(m_commandHistoryIndex == m_commandHistory.size())
+                        m_currentlyEditedCommand = text();
+
+                    m_commandHistoryIndex--;
+                    if(m_commandHistoryIndex < 0)
+                        m_commandHistoryIndex = m_commandHistory.size();
+
+                    if(m_commandHistoryIndex == m_commandHistory.size())
+                        setText(m_currentlyEditedCommand);
+                    else
+                        setText(m_commandHistory.at(m_commandHistoryIndex));
+                }
+                break;
+
+            case Qt::Key_Down:
+                if(!m_commandHistory.empty())
+                {
+                    if(m_commandHistoryIndex == m_commandHistory.size())
+                        m_currentlyEditedCommand = text();
+
+                    m_commandHistoryIndex++;
+                    if(m_commandHistoryIndex > m_commandHistory.size())
+                        m_commandHistoryIndex = 0;
+
+                    if(m_commandHistoryIndex == m_commandHistory.size())
+                        setText(m_currentlyEditedCommand);
+                    else
+                        setText(m_commandHistory.at(m_commandHistoryIndex));
+                }
                 break;
 
             default:
@@ -54,6 +94,11 @@ protected:
                 break;
         }
     }
+
+private:
+    QList<QString> m_commandHistory;
+    QString m_currentlyEditedCommand;
+    int m_commandHistoryIndex;
 };
 
 class OctaveTerminal : public QMdiSubWindow {

@@ -52,7 +52,7 @@ OctaveTerminal::OctaveTerminal(QWidget *parent) :
 void OctaveTerminal::sendCommand(QString command) {
     m_octaveOutput->setFontUnderline(true);
     m_octaveOutput->append(command);
-    QMetaObject::invokeMethod(m_client, "send", Q_ARG(QString, command));
+    QMetaObject::invokeMethod(m_client, "send", Q_ARG(QString, command + "\n"));
 }
 
 void OctaveTerminal::blockUserInput() {

@@ -21,7 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} fminunc (@var{fcn}, @var{x0})
 ## @deftypefnx {Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}]} = fminunc (@var{fcn}, @dots{})
+## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,

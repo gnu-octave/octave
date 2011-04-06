@@ -2625,7 +2625,7 @@ function described below.
 
 @node Application-defined Data
 @subsection Application-defined Data 
-@cindex Application-defined Data
+@cindex application-defined data
 
 Octave has a provision for attaching application-defined data to a graphics
 handle.  The data can be anything which is meaningful to the application, and

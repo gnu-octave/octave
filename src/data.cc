@@ -4577,8 +4577,8 @@ by an empty argument.\n\
 
 DEFUN (vec, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} @var{v} = vec (@var{x})\n\
-@deftypefnx {Built-in Function} {} @var{v} = vec (@var{x}, @var{dim})\n\
+@deftypefn  {Built-in Function} {@var{v} =} vec (@var{x})\n\
+@deftypefnx {Built-in Function} {@var{v} =} vec (@var{x}, @var{dim})\n\
 Return the vector obtained by stacking the columns of the matrix @var{x}\n\
 one above the other.  Without @var{dim} this is equivalent to\n\
 @code{@var{x}(:)}.  If @var{dim} is supplied, the dimensions of @var{v}\n\

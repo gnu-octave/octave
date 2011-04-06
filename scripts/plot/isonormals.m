@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{v})
 ## @deftypefnx {Function File} {[@var{n}] =} isonormals (@var{x}, @var{y}, @var{z}, @var{val}, @var{p})
 ## @deftypefnx {Function File} {[@var{n}] =} isonormals (@dots{}, "negate")
-## @deftypefnx {Function File} isonormals (@dots{}, @var{p})
+## @deftypefnx {Function File} {} isonormals (@dots{}, @var{p})
 ##
 ## If called with one output argument and the first input argument
 ## @var{val} is a three-dimensional array that contains the data for an

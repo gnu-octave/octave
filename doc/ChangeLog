@@ -1,3 +1,8 @@
+2011-04-06  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/diffeq.txi, interpreter/eval.txi, interpreter/plot.txi,
+	interpreter/var.txi: Clean up operator and function indices.
+
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/plot.txi: Add warning about single precision in FLTK.

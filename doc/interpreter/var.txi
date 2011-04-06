@@ -28,10 +28,6 @@ with a digit.  Octave does not enforce a limit on the length of variable
 names, but it is seldom useful to have variables with names longer than
 about 30 characters.  The following are all valid variable names
 
-@cindex job hunting
-@cindex getting a good job
-@cindex flying high and fast
-
 @example
 @group
 x

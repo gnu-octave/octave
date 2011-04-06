@@ -32,6 +32,11 @@
 #include "client.h"
 #include "terminalhighlighter.h"
 
+/**
+  * \class TerminalCommandLine
+  *
+  * Extends the QLineEdit by a history function.
+  */
 class TerminalCommandLine : public QLineEdit {
     Q_OBJECT
 public:
@@ -102,6 +107,12 @@ private:
     int m_commandHistoryIndex;
 };
 
+/**
+  * \class OctaveTerminal
+  *
+  * Provides a complete OctaveTerminal. Unless there is no octave client assigned to
+  * this terminal it will be not functional.
+  */
 class OctaveTerminal : public QMdiSubWindow {
     Q_OBJECT
 public:

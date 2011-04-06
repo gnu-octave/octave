@@ -25,6 +25,13 @@
 #include <QThread>
 #include <QMutex>
 
+/**
+  * \class Client
+  *
+  * A client is a representation of another external unit Quint is communicating with.
+  * Usually this will be the octave process. A client is launched by providing a command
+  * that will be executed. It will handle the process itself.
+  */
 class Client : public QObject {
     Q_OBJECT
     friend class ClientManager;
@@ -41,6 +48,7 @@ signals:
     void lostConnection();
 
 protected:
+    /** Clients may only be created by the client manager. */
     Client(QString command);
 
 private slots:
@@ -55,6 +63,15 @@ private:
     QMutex m_access;
 };
 
+/**
+  * \class PendingRequest
+  *
+  * The PendingRequest class helps to communicate with clients. It automatically locks
+  * the client until the PendingRequest is deleted. As soon as the request is being
+  * answered, it will send out the answered()-Signal. It buffers all input and delivers
+  * it by offering the fetchData() and fetchError()-methods. A request is considered
+  * as answered, when the termination string is found in the buffer.
+  */
 class PendingRequest : public QObject {
     Q_OBJECT
 public:

@@ -20,6 +20,12 @@
 #define TERMINALHIGHLIGHTER_H
 
 #include <QSyntaxHighlighter>
+
+/**
+  * \class TerminalHighlighter
+  *
+  * Subclass Qt's QSyntaxHighlighter-class to provide syntac highlighting.
+  */
 class QTextDocument;
 class TerminalHighlighter : public QSyntaxHighlighter {
     Q_OBJECT

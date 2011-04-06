@@ -22,6 +22,11 @@
 #include <QtGui/QMainWindow>
 #include <QMdiArea>
 
+/**
+  * \class MainWindow
+  *
+  * Represents the main window.
+  */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

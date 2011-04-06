@@ -23,11 +23,18 @@
 #include <QObject>
 #include "client.h"
 
+/**
+  * \class ClientManager
+  *
+  * The client manager is a singleton that keeps track of all current clients.
+  */
 class Client;
 class ClientManager : public QObject {
     Q_OBJECT
 public:
     static ClientManager& clientManager();
+
+    /** Factory function to produce new clients. */
     Client *startProcess(QString command);
 
 private:

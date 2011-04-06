@@ -50,9 +50,7 @@ OctaveTerminal::OctaveTerminal(QWidget *parent) :
 }
 
 void OctaveTerminal::sendCommand(QString command) {
-    m_octaveOutput->setFontUnderline(true);
-    m_octaveOutput->append(command);
-    QMetaObject::invokeMethod(m_client, "send", Q_ARG(QString, command + "\n"));
+    addRequest(command + "\n");
 }
 
 void OctaveTerminal::blockUserInput() {
@@ -66,21 +64,25 @@ void OctaveTerminal::allowUserInput() {
 
 void OctaveTerminal::assignClient(Client *client) {
     m_client = client;
-    connect(client, SIGNAL(dataAvailable(QString)), this, SLOT(handleDataFromClient(QString)));
-    connect(client, SIGNAL(errorAvailable(QString)), this, SLOT(handleErrorFromClient(QString)));
     allowUserInput();
 }
 
 void OctaveTerminal::showEnvironment() {
-    m_client->send("who\n");
+    addRequest("who\n");
 }
 
-void OctaveTerminal::handleDataFromClient(QString data) {
-    m_octaveOutput->setFontUnderline(false);
+void OctaveTerminal::handleAnsweredRequest() {
+    allowUserInput();
+    QString data = m_pendingRequest->fetchData();
+    QString error = m_pendingRequest->fetchError();
     m_octaveOutput->append(data);
+    m_octaveOutput->append(error);
+    delete m_pendingRequest;
 }
 
-void OctaveTerminal::handleErrorFromClient(QString error) {
-    m_octaveOutput->setFontUnderline(false);
-    m_octaveOutput->append(error);
+void OctaveTerminal::addRequest(QString command) {
+    blockUserInput();
+    m_pendingRequest = new PendingRequest(m_client);
+    connect(m_pendingRequest, SIGNAL(dataIncome()), this, SLOT(handleAnsweredRequest()));
+    m_pendingRequest->query(command);
 }

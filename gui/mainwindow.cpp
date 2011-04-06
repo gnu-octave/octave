@@ -42,7 +42,7 @@ MainWindow::~MainWindow() {
 void MainWindow::addOctaveTerminal() {
     OctaveTerminal *octaveTerminal = new OctaveTerminal;
     m_mdiArea->addSubWindow(octaveTerminal);
-    Client *octaveClient = ClientManager::clientManager().startProcess("octave --interactive");
+    Client *octaveClient = ClientManager::clientManager().startProcess("octave --interactive --verbose");
     octaveTerminal->assignClient(octaveClient);
 }
 

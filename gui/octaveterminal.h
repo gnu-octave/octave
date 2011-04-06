@@ -27,6 +27,7 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QKeyEvent>
+#include <QQueue>
 
 #include "client.h"
 #include "terminalhighlighter.h"
@@ -115,17 +116,17 @@ public slots:
 
     void assignClient(Client* client);
     void showEnvironment();
-
-protected slots:
-    void handleDataFromClient(QString data);
-    void handleErrorFromClient(QString error);
+    void handleAnsweredRequest();
 
 private:
+    void addRequest(QString command);
+
     QToolBar *m_mainToolBar;
     QTextBrowser *m_octaveOutput;
     TerminalCommandLine *m_commandLine;
     Client *m_client;
     TerminalHighlighter *m_terminalHighlighter;
+    PendingRequest *m_pendingRequest;
 };
 
 #endif // OCTAVETERMINAL_H

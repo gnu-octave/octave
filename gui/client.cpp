@@ -30,6 +30,10 @@ Client::Client(QString command)
     connect(&m_process, SIGNAL(readyReadStandardError()), this, SLOT(reemitErrorAvailable()));
 }
 
+QMutex *Client::accessMutex() {
+    return &m_access;
+}
+
 void Client::send(QString content) {
     m_process.write(content.toLocal8Bit());
 }

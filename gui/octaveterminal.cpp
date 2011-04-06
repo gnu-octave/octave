@@ -50,6 +50,7 @@ OctaveTerminal::OctaveTerminal(QWidget *parent) :
 }
 
 void OctaveTerminal::sendCommand(QString command) {
+    m_octaveOutput->append(">" + command);
     addRequest(command + "\n");
 }
 

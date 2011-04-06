@@ -37,7 +37,7 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
 
     numberFormat.setForeground(Qt::darkGreen);
     numberFormat.setFontWeight(QFont::Bold);
-    rule.pattern = QRegExp("\\b[0-9\\.]+\\b");
+    rule.pattern = QRegExp("\\b[0-9\\.]+[i]?\\b");
     rule.format = numberFormat;
     highlightingRules.append(rule);
 

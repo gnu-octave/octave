@@ -47,6 +47,8 @@ private:
     QTextCharFormat quotationFormat;
     QTextCharFormat numberFormat;
     QTextCharFormat urlFormat;
+    QTextCharFormat errorFormat;
+    QTextCharFormat promptFormat;
 };
 
 #endif // TERMINALHIGHLIGHTER_H

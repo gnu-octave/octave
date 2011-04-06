@@ -25,7 +25,6 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
     HighlightingRule rule;
 
     keywordFormat.setForeground(Qt::darkRed);
-    keywordFormat.setFontWeight(QFont::Bold);
     QStringList keywordPatterns;
     keywordPatterns << "\\bOctave\\b" << "\\bGNU\\b";
 
@@ -34,6 +33,17 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
         rule.format = keywordFormat;
         highlightingRules.append(rule);
     }
+
+    promptFormat.setForeground(Qt::darkGreen);
+    rule.pattern = QRegExp("\\boctave:[0-9]+>");
+    rule.format = promptFormat;
+    highlightingRules.append(rule);
+
+    errorFormat.setForeground(Qt::red);
+    errorFormat.setFontWeight(QFont::Bold);
+    rule.pattern = QRegExp("\\berror:");
+    rule.format = errorFormat;
+    highlightingRules.append(rule);
 
     numberFormat.setForeground(Qt::darkGreen);
     numberFormat.setFontWeight(QFont::Bold);

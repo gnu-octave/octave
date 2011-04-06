@@ -65,6 +65,7 @@ void OctaveTerminal::allowUserInput() {
 void OctaveTerminal::assignClient(Client *client) {
     m_client = client;
     allowUserInput();
+    addRequest("info\n");
 }
 
 void OctaveTerminal::showEnvironment() {

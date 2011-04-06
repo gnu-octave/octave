@@ -28,7 +28,7 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
     QStringList keywordPatterns;
     keywordPatterns << "\\bOctave\\b" << "\\bGNU\\b";
 
-    foreach (const QString &pattern, keywordPatterns) {
+    foreach(const QString &pattern, keywordPatterns) {
         rule.pattern = QRegExp(pattern);
         rule.format = keywordFormat;
         highlightingRules.append(rule);
@@ -64,10 +64,10 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
 
 void TerminalHighlighter::highlightBlock(const QString &text)
 {
-    foreach (const HighlightingRule &rule, highlightingRules) {
+    foreach(const HighlightingRule &rule, highlightingRules) {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text);
-        while (index >= 0) {
+        while(index >= 0) {
             int length = expression.matchedLength();
             setFormat(index, length, rule.format);
             index = expression.indexIn(text, index + length);

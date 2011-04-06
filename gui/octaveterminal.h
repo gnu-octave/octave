@@ -27,6 +27,7 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QKeyEvent>
+#include <QFocusEvent>
 #include <QQueue>
 
 #include "client.h"
@@ -49,6 +50,10 @@ signals:
     void claimCommand(QString command);
 
 protected:
+    void focusOutEvent(QFocusEvent *focusEvent) {
+        setFocus();
+    }
+
     void keyPressEvent(QKeyEvent *keyEvent) {
         QString command;
         switch(keyEvent->key()) {
@@ -59,6 +64,10 @@ protected:
                 m_commandHistoryIndex = m_commandHistory.size();
                 m_currentlyEditedCommand = "";
                 setText("");
+                break;
+
+            case Qt::Key_Tab:
+                emit claimCommand("\t");
                 break;
 
             case Qt::Key_Up:

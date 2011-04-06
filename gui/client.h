@@ -82,26 +82,25 @@ public:
         return content;
     }
 
-    void query(QString request) {
+    void query(QString request, QRegExp terminator = QRegExp("(\r\n | \n\r | \n)+")) {
+        m_terminator = terminator;
         QMetaObject::invokeMethod(m_client, "send", Q_ARG(QString, request));
     }
 
 signals:
-    void dataIncome();
+    void answered();
 
 private slots:
     void receiveData(QString data) {
-        QRegExp octavePrompt("octave:[0-9]+>");
         m_dataBuffer += data;
-        if(octavePrompt.indexIn(m_dataBuffer) != -1)
-            emit dataIncome();
+        if(m_terminator.indexIn(m_dataBuffer) != -1)
+            emit answered();
     }
 
     void receiveError(QString error) {
-        QRegExp octavePrompt("octave:[0-9]+>");
         m_errorBuffer += error;
-        if(octavePrompt.indexIn(m_dataBuffer) != -1)
-            emit dataIncome();
+        if(m_terminator.indexIn(m_dataBuffer) != -1)
+            emit answered();
     }
 
 private:
@@ -109,6 +108,7 @@ private:
     QString m_dataBuffer;
     QString m_errorBuffer;
     QString m_request;
+    QRegExp m_terminator;
 };
 
 #endif // CLIENT_H

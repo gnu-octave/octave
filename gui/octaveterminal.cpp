@@ -66,11 +66,21 @@ void OctaveTerminal::allowUserInput() {
 void OctaveTerminal::assignClient(Client *client) {
     m_client = client;
     allowUserInput();
-    addRequest("info\n");
+
+    // Sends an empty command to make the welcome message show up.
+    addRequest("\n");
 }
 
 void OctaveTerminal::showEnvironment() {
     addRequest("who\n");
+}
+
+
+void OctaveTerminal::addRequest(QString command) {
+    blockUserInput();
+    m_pendingRequest = new PendingRequest(m_client);
+    connect(m_pendingRequest, SIGNAL(answered()), this, SLOT(handleAnsweredRequest()));
+    m_pendingRequest->query(command, QRegExp("octave:[0-9]+>"));
 }
 
 void OctaveTerminal::handleAnsweredRequest() {
@@ -80,11 +90,4 @@ void OctaveTerminal::handleAnsweredRequest() {
     m_octaveOutput->append(data);
     m_octaveOutput->append(error);
     delete m_pendingRequest;
-}
-
-void OctaveTerminal::addRequest(QString command) {
-    blockUserInput();
-    m_pendingRequest = new PendingRequest(m_client);
-    connect(m_pendingRequest, SIGNAL(dataIncome()), this, SLOT(handleAnsweredRequest()));
-    m_pendingRequest->query(command);
 }

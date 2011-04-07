@@ -11,7 +11,6 @@ TEMPLATE = app
 DEFINES += HAVE_POSIX_OPENPT
 SOURCES += main.cpp\
         mainwindow.cpp \
-        terminal.cpp \
         TerminalCharacterDecoder.cpp \
         KeyboardTranslator.cpp \
         Screen.cpp \
@@ -29,10 +28,10 @@ SOURCES += main.cpp\
         k3processcontroller.cpp \
         Session.cpp \
         ShellCommand.cpp \
-        QTerminalWidget.cpp
+        QTerminalWidget.cpp \
+        TerminalMdiSubWindow.cpp
 
 HEADERS += mainwindow.h \
-        terminal.h \
         TerminalCharacterDecoder.h \
         Character.h \
         CharacterColor.h \
@@ -55,4 +54,5 @@ HEADERS += mainwindow.h \
         k3processcontroller.h \
         Session.h \
         ShellCommand.h \
-        QTerminalWidget.h
+        QTerminalWidget.h \
+        TerminalMdiSubWindow.h

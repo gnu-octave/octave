@@ -22,7 +22,7 @@
 #include <QtWebKit/QWebView>
 
 #include "mainwindow.h"
-#include "terminal.h"
+#include "TerminalMdiSubWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
@@ -41,7 +41,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::addTerminalWindow() {
-    Terminal *terminal = new Terminal;
+    TerminalMdiSubWindow *terminal = new TerminalMdiSubWindow;
     m_mdiArea->addSubWindow(terminal);
 }
 

@@ -1,6 +1,6 @@
-#include "terminal.h"
+#include "TerminalMdiSubWindow.h"
 
-Terminal::Terminal()
+TerminalMdiSubWindow::TerminalMdiSubWindow()
     : QMdiSubWindow(),
       m_terminalWidget(0) {
     setWindowTitle("Terminal Session");
@@ -8,7 +8,7 @@ Terminal::Terminal()
     launchTerminal();
 }
 
-void Terminal::launchTerminal() {
+void TerminalMdiSubWindow::launchTerminal() {
     delete m_terminalWidget;
     m_terminalWidget = new QTerminalWidget(0, this);
     m_terminalWidget->setScrollBarPosition(QTerminalWidget::ScrollBarRight);

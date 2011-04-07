@@ -37,28 +37,29 @@ SOURCES +=\
         src/Quint.cpp
 
 HEADERS += \
-        TerminalCharacterDecoder.h \
-        Character.h \
-        CharacterColor.h \
-        KeyboardTranslator.h \
-        ExtendedDefaultTranslator.h \
-        Screen.h \
-        History.h \
-        BlockArray.h \
-        konsole_wcwidth.h \
-        ScreenWindow.h \
-        Emulation.h \
-        Vt102Emulation.h \
-        TerminalDisplay.h \
-        Filter.h \
-        LineFont.h \
-        Pty.h \
-        kpty.h \
-        kpty_p.h \
-        k3process.h \
-        k3processcontroller.h \
-        Session.h \
-        ShellCommand.h \
-        QTerminalWidget.h \
-        TerminalMdiSubWindow.h \
-    MainWindow.h
+        src/TerminalCharacterDecoder.h \
+        src/Character.h \
+        src/CharacterColor.h \
+        src/KeyboardTranslator.h \
+        src/ExtendedDefaultTranslator.h \
+        src/Screen.h \
+        src/History.h \
+        src/BlockArray.h \
+        src/konsole_wcwidth.h \
+        src/ScreenWindow.h \
+        src/Emulation.h \
+        src/Vt102Emulation.h \
+        src/TerminalDisplay.h \
+        src/Filter.h \
+        src/LineFont.h \
+        src/Pty.h \
+        src/kpty.h \
+        src/kpty_p.h \
+        src/k3process.h \
+        src/k3processcontroller.h \
+        src/Session.h \
+        src/ShellCommand.h \
+        src/QTerminalWidget.h \
+        src/TerminalMdiSubWindow.h \
+    	src/MainWindow.h
+

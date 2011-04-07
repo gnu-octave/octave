@@ -48,7 +48,7 @@ Session *TermWidgetImpl::createSession()
     session->setFlowControlEnabled(true);
     session->setHistoryType(HistoryTypeBuffer(1000));
     session->setDarkBackground(true);
-    session->setKeyBindings("");	    
+    session->setKeyBindings("");
     return session;
 }
 
@@ -97,8 +97,8 @@ void QTerminalWidget::initialize()
     font.setPointSize(10);
     font.setStyleHint(QFont::TypeWriter);
     setTerminalFont(font);
-    setScrollBarPosition(NoScrollBar);    
-        
+    setScrollBarPosition(NoScrollBar);
+
     m_impl->m_session->addView(m_impl->m_terminalDisplay);
     
     connect(m_impl->m_session, SIGNAL(finished()), this, SLOT(sessionFinished()));
@@ -116,7 +116,7 @@ void QTerminalWidget::setTerminalFont(QFont &font)
     m_impl->m_terminalDisplay->setVTFont(font);
 }
 
-void QTerminalWidget::setShellProgram(QString &progname)
+void QTerminalWidget::setShellProgram(QString progname)
 {
     if (!m_impl->m_session)
 	return;
@@ -182,9 +182,8 @@ void QTerminalWidget::sendText(QString &text)
 void QTerminalWidget::resizeEvent(QResizeEvent*)
 {
     m_impl->m_terminalDisplay->resize(this->size());
+    m_impl->m_terminalDisplay->update();
 }
-
-
 
 void QTerminalWidget::sessionFinished()
 {

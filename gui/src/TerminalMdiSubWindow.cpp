@@ -1,23 +1,40 @@
 #include "TerminalMdiSubWindow.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
-TerminalMdiSubWindow::TerminalMdiSubWindow()
-    : QMdiSubWindow(),
+TerminalMdiSubWindow::TerminalMdiSubWindow(QWidget *parent)
+    : QMdiSubWindow(parent),
       m_terminalWidget(0) {
-    setWindowTitle("Terminal Session");
-    resize(800, 400);
-    launchTerminal();
+    constructWindow();
 }
 
-void TerminalMdiSubWindow::launchTerminal() {
-    delete m_terminalWidget;
-    m_terminalWidget = new QTerminalWidget(0, this);
-    m_terminalWidget->setScrollBarPosition(QTerminalWidget::ScrollBarRight);
-    setWidget(m_terminalWidget);
+void TerminalMdiSubWindow::constructWindow() {
+    setWindowTitle("Octave Session");
+    resize(800, 400);
+    setWidget(new QWidget(this));
 
-    QString programName = "octave";
-    m_terminalWidget->setShellProgram(programName);
-    m_terminalWidget->startShellProgram();
-    setFocus();
+    QVBoxLayout *vBoxLayout = new QVBoxLayout();
 
-    connect(m_terminalWidget, SIGNAL(finished()), this, SLOT(launchTerminal()));
+        QWidget *hWidget = new QWidget();
+        QHBoxLayout *hBoxLayout = new QHBoxLayout();
+
+        m_terminalWidget = new QTerminalWidget(0, hWidget);
+        m_terminalWidget->setScrollBarPosition(QTerminalWidget::ScrollBarRight);
+        m_terminalWidget->setShellProgram("octave");
+        m_terminalWidget->startShellProgram();
+        m_terminalWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        m_variableView = new QTreeView(hWidget);
+        m_variableView->setMaximumWidth(200);
+
+        hBoxLayout->addWidget(m_terminalWidget);
+        hBoxLayout->addWidget(m_variableView);
+        hWidget->setLayout(hBoxLayout);
+
+        m_statusBar = new QStatusBar();
+
+    vBoxLayout->addWidget(hWidget);
+    vBoxLayout->addWidget(m_statusBar);
+    widget()->setLayout(vBoxLayout);
+
+    m_statusBar->showMessage("Ready.");
 }

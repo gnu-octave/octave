@@ -60,7 +60,7 @@ public:
     void setTerminalFont(QFont &font); 
     
     /**	Shell program, default is /bin/bash. */
-    void setShellProgram(QString &progname);
+    void setShellProgram(QString progname);
     
     /** Shell program args, default is none. */
     void setArgs(QStringList &args);

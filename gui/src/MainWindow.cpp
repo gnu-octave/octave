@@ -26,15 +26,9 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
-    m_mdiArea = new QMdiArea();
-    setWindowTitle("Quint");
-    setCentralWidget(m_mdiArea);
-
     constructWindow();
 
     loadWebPage("Online Manual", "http://www.gnu.org/software/octave/doc/interpreter/");
-    //addTerminalWindow();
-    m_mdiArea->setViewMode(QMdiArea::SubWindowView);
 }
 
 MainWindow::~MainWindow() {
@@ -42,7 +36,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::addTerminalWindow() {
-    TerminalMdiSubWindow *terminal = new TerminalMdiSubWindow;
+    TerminalMdiSubWindow *terminal = new TerminalMdiSubWindow(this);
     m_mdiArea->addSubWindow(terminal);
     terminal->show();
 }
@@ -56,8 +50,14 @@ void MainWindow::loadWebPage(QString title, QString url) {
 }
 
 void MainWindow::constructWindow() {
+    m_mdiArea = new QMdiArea();
+    setWindowTitle("Quint");
+    setCentralWidget(m_mdiArea);
+
     QMenu *viewsMenu = menuBar()->addMenu("Views");
     QAction *addOctaveTerminalAction = viewsMenu->addAction("Add Octave Terminal");
+
+    m_mdiArea->setViewMode(QMdiArea::SubWindowView);
 
     connect(addOctaveTerminalAction, SIGNAL(triggered()), this, SLOT(addTerminalWindow()));
 }

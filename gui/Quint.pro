@@ -9,8 +9,7 @@ OBJECTS_DIR = object-files
 TARGET = Quint
 TEMPLATE = app
 DEFINES += HAVE_POSIX_OPENPT
-SOURCES += main.cpp\
-        mainwindow.cpp \
+SOURCES +=\
         TerminalCharacterDecoder.cpp \
         KeyboardTranslator.cpp \
         Screen.cpp \
@@ -29,9 +28,11 @@ SOURCES += main.cpp\
         Session.cpp \
         ShellCommand.cpp \
         QTerminalWidget.cpp \
-        TerminalMdiSubWindow.cpp
+        TerminalMdiSubWindow.cpp \
+    MainWindow.cpp \
+    Quint.cpp
 
-HEADERS += mainwindow.h \
+HEADERS += \
         TerminalCharacterDecoder.h \
         Character.h \
         CharacterColor.h \
@@ -55,4 +56,5 @@ HEADERS += mainwindow.h \
         Session.h \
         ShellCommand.h \
         QTerminalWidget.h \
-        TerminalMdiSubWindow.h
+        TerminalMdiSubWindow.h \
+    MainWindow.h

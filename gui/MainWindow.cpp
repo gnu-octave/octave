@@ -21,7 +21,7 @@
 #include <QAction>
 #include <QtWebKit/QWebView>
 
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "TerminalMdiSubWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)

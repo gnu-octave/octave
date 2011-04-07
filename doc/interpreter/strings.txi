@@ -517,26 +517,26 @@ isalpha ("!Q@@WERT^Y&")
 
 @DOCSTRING(isalpha)
 
-@DOCSTRING(isascii)
-
-@DOCSTRING(iscntrl)
-
-@DOCSTRING(isdigit)
-
-@DOCSTRING(isgraph)
-
 @DOCSTRING(isletter)
 
 @DOCSTRING(islower)
 
-@DOCSTRING(isprint)
+@DOCSTRING(isupper)
+
+@DOCSTRING(isdigit)
+
+@DOCSTRING(isxdigit)
 
 @DOCSTRING(ispunct)
 
 @DOCSTRING(isspace)
 
-@DOCSTRING(isupper)
+@DOCSTRING(iscntrl)
 
-@DOCSTRING(isxdigit)
+@DOCSTRING(isgraph)
+
+@DOCSTRING(isprint)
+
+@DOCSTRING(isascii)
 
 @DOCSTRING(isstrprop)

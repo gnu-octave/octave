@@ -809,9 +809,9 @@ variable.
 
 @DOCSTRING(isnumeric)
 
-@DOCSTRING(isreal)
-
 @DOCSTRING(isfloat)
+
+@DOCSTRING(isreal)
 
 @DOCSTRING(iscomplex)
 

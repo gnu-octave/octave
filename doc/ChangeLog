@@ -1,5 +1,10 @@
 2011-04-06  Rik  <octave@nomad.inbox5.com>
 
+	* interpreter/system.txi, interpreter/var.txi: Move pack() function to
+	proper place in documentation.
+
+2011-04-06  Rik  <octave@nomad.inbox5.com>
+
 	* interpreter/diffeq.txi, interpreter/eval.txi, interpreter/plot.txi,
 	interpreter/var.txi: Clean up operator and function indices.
 

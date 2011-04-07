@@ -358,6 +358,8 @@ function allows this.
 
 @DOCSTRING(clear)
 
+@DOCSTRING(pack)
+
 Information about a function or variable such as its location in the
 file system can also be acquired from within Octave.  This is usually
 only useful during development of programs, and not within a program.

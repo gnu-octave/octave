@@ -1,5 +1,9 @@
 2011-04-06  Rik  <octave@nomad.inbox5.com>
 
+	* miscellaneous/pack.m: Improve docstring.
+
+2011-04-06  Rik  <octave@nomad.inbox5.com>
+
 	* signal/module.mk: Make spectral density helper functions private.
 	(rectangle_sw, rectangle_lw, triangle_sw, triangle_lw)
 

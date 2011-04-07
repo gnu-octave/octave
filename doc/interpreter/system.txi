@@ -247,8 +247,6 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(unzip)
 
-@DOCSTRING(pack)
-
 @DOCSTRING(unpack)
 
 @DOCSTRING(bzip2)

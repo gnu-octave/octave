@@ -30,15 +30,17 @@
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
     void addTerminalWindow();
     void loadWebPage(QString title, QString url);
 
 private:
+    void constructWindow();
+
     QMdiArea *m_mdiArea;
 };
 

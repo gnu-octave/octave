@@ -3,6 +3,7 @@
 Terminal::Terminal()
     : QMdiSubWindow(),
       m_terminalWidget(0) {
+    setWindowTitle("Terminal Session");
     launchTerminal();
 }
 

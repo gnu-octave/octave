@@ -32,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(m_mdiArea);
 
     //addOctaveTerminal();
-    addTerminalWindow();
     loadWebPage("Online Manual", "http://www.gnu.org/software/octave/doc/interpreter/");
+    addTerminalWindow();
     m_mdiArea->setViewMode(QMdiArea::TabbedView);
 }
 

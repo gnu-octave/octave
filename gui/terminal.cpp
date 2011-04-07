@@ -18,5 +18,6 @@ void Terminal::launchTerminal() {
     m_terminalWidget->setShellProgram(programName);
     m_terminalWidget->startShellProgram();
     setFocus();
+
     connect(m_terminalWidget, SIGNAL(finished()), this, SLOT(launchTerminal()));
 }

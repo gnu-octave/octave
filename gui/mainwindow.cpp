@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     //addOctaveTerminal();
     loadWebPage("Online Manual", "http://www.gnu.org/software/octave/doc/interpreter/");
     addTerminalWindow();
-
+    addTerminalWindow();
     m_mdiArea->setViewMode(QMdiArea::SubWindowView);
     showMaximized();
 }

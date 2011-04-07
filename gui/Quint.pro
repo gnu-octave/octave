@@ -12,18 +12,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    octaveterminal.cpp \
-    clientmanager.cpp \
-    client.cpp \
-    terminalhighlighter.cpp \
-    terminal.cpp
+        terminal.cpp
 
-HEADERS  += mainwindow.h \
-    octaveterminal.h \
-    clientmanager.h \
-    client.h \
-    terminalhighlighter.h \
-    terminal.h
+HEADERS += mainwindow.h \
+        terminal.h
 
 LIBS += ../Quint/qtermwidget/libqtermwidget.a
 

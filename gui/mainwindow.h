@@ -35,7 +35,6 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void addOctaveTerminal();
     void addTerminalWindow();
     void loadWebPage(QString title, QString url);
 

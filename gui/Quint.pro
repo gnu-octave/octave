@@ -5,32 +5,36 @@
 #-------------------------------------------------
 
 QT       += core gui webkit
+UI_DIR = ui-files
+MOC_DIR = moc-files
 OBJECTS_DIR = object-files
 TARGET = Quint
 TEMPLATE = app
 DEFINES += HAVE_POSIX_OPENPT
+INCLUDEPATH += src
+DESTDIR = bin
 SOURCES +=\
-        TerminalCharacterDecoder.cpp \
-        KeyboardTranslator.cpp \
-        Screen.cpp \
-        History.cpp \
-        BlockArray.cpp \
-        konsole_wcwidth.cpp \
-        ScreenWindow.cpp \
-        Emulation.cpp \
-        Vt102Emulation.cpp \
-        TerminalDisplay.cpp \
-        Filter.cpp \
-        Pty.cpp \
-        kpty.cpp \
-        k3process.cpp \
-        k3processcontroller.cpp \
-        Session.cpp \
-        ShellCommand.cpp \
-        QTerminalWidget.cpp \
-        TerminalMdiSubWindow.cpp \
-    MainWindow.cpp \
-    Quint.cpp
+        src/TerminalCharacterDecoder.cpp \
+        src/KeyboardTranslator.cpp \
+        src/Screen.cpp \
+        src/History.cpp \
+        src/BlockArray.cpp \
+        src/konsole_wcwidth.cpp \
+        src/ScreenWindow.cpp \
+        src/Emulation.cpp \
+        src/Vt102Emulation.cpp \
+        src/TerminalDisplay.cpp \
+        src/Filter.cpp \
+        src/Pty.cpp \
+        src/kpty.cpp \
+        src/k3process.cpp \
+        src/k3processcontroller.cpp \
+        src/Session.cpp \
+        src/ShellCommand.cpp \
+        src/QTerminalWidget.cpp \
+        src/TerminalMdiSubWindow.cpp \
+        src/MainWindow.cpp \
+        src/Quint.cpp
 
 HEADERS += \
         TerminalCharacterDecoder.h \

@@ -17,42 +17,33 @@
 */
 						    
 
-#ifndef _Q_TERM_WIDGET
-#define _Q_TERM_WIDGET
+#ifndef QTERMINALWIDGET_H
+#define QTERMINALWIDGET_H
 
 #include <QtGui>
 
 struct TermWidgetImpl;
-
-enum COLOR_SCHEME {     COLOR_SCHEME_WHITE_ON_BLACK	= 1,
-		        COLOR_SCHEME_GREEN_ON_BLACK,
-		        COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW };
-
 class QTerminalWidget : public QWidget
 {
     Q_OBJECT
 public:
-    
-    enum ScrollBarPosition
-    {
-        /** Do not show the scroll bar. */
-        NoScrollBar=0,
-        /** Show the scroll bar on the left side of the display. */
-        ScrollBarLeft=1,
-        /** Show the scroll bar on the right side of the display. */
-        ScrollBarRight=2
+    enum ColorScheme {
+        WhiteOnBlack,
+        GreenOnBlack,
+        BlackOnLightYellow
     };
 
+    enum ScrollBarPosition
+    {
+        NoScrollBar,
+        ScrollBarLeft,
+        ScrollBarRight
+    };
 
-    //Creation of widget
-    QTerminalWidget(int startnow = 1, //start shell programm immediatelly
-		QWidget *parent = 0);
+    QTerminalWidget(int startnow = 1, QWidget *parent = 0);
     ~QTerminalWidget();
 
-    //start shell program if it was not started in constructor
     void startShellProgram();
-    
-    //look-n-feel, if you don`t like defaults
 
     //	Terminal font
     // Default is application font with family Monospace, size 10
@@ -68,7 +59,7 @@ public:
     void setTextCodec(QTextCodec *codec);
 
     //Color scheme, default is white on black
-    void setColorScheme(int scheme);
+    void setColorScheme(ColorScheme scheme);
     
     //set size
     void setSize(int h, int v);
@@ -92,17 +83,8 @@ protected slots:
     void sessionFinished();        
     
 private:
-    void init();    
+    void initialize();
     TermWidgetImpl *m_impl;
 };
 
-
-//Maybe useful, maybe not
-
-#ifdef __cplusplus
-extern "C"
-#endif
-void *createTermWidget(int startnow, void *parent); 
-
-#endif
-
+#endif // QTERMINALWIDGET_H

@@ -23,18 +23,12 @@
 
 using namespace Konsole;
 
-void *createTermWidget(int startnow, void *parent)
-{ 
-    return (void*) new QTerminalWidget(startnow, (QWidget*)parent);
-}
-
 struct TermWidgetImpl
 {
     TermWidgetImpl(QWidget* parent = 0);
 
     TerminalDisplay *m_terminalDisplay;
     Session *m_session;
-    
     Session* createSession();
     TerminalDisplay* createTerminalDisplay(Session *session, QWidget* parent);
 };
@@ -45,50 +39,38 @@ TermWidgetImpl::TermWidgetImpl(QWidget* parent)
     this->m_terminalDisplay = createTerminalDisplay(this->m_session, parent);
 }
 
-
 Session *TermWidgetImpl::createSession()
 {
     Session *session = new Session();
-
-    session->setTitle(Session::NameRole, "QTermWidget");
+    session->setTitle(Session::NameRole, "QTerminalWidget");
     session->setProgram("/bin/bash");
-    QStringList args("");
-    session->setArguments(args);
+    session->setArguments(QStringList());
     session->setAutoClose(true);
-		    
     session->setCodec(QTextCodec::codecForName("UTF-8"));
-			
     session->setFlowControlEnabled(true);
     session->setHistoryType(HistoryTypeBuffer(1000));
-    
     session->setDarkBackground(true);
-	    
     session->setKeyBindings("");	    
     return session;
 }
 
 TerminalDisplay *TermWidgetImpl::createTerminalDisplay(Session *session, QWidget* parent)
 {
-//    TerminalDisplay* display = new TerminalDisplay(this);
     TerminalDisplay* display = new TerminalDisplay(parent);
-    
     display->setBellMode(TerminalDisplay::NotifyBell);
     display->setTerminalSizeHint(true);
     display->setTripleClickMode(TerminalDisplay::SelectWholeLine);
     display->setTerminalSizeStartup(true);
-
     display->setRandomSeed(session->sessionId() * 31);
-    
     return display;
 }
 
-
 QTerminalWidget::QTerminalWidget(int startnow, QWidget *parent)
-:QWidget(parent)
+    :QWidget(parent)
 {
     m_impl = new TermWidgetImpl(this);
     
-    init();
+    initialize();
 
     if (startnow && m_impl->m_session) {
 	m_impl->m_session->run();
@@ -108,7 +90,7 @@ void QTerminalWidget::startShellProgram()
     m_impl->m_session->run();
 }
 
-void QTerminalWidget::init()
+void QTerminalWidget::initialize()
 {    
     m_impl->m_terminalDisplay->setSize(80, 40);
     
@@ -124,12 +106,10 @@ void QTerminalWidget::init()
     connect(m_impl->m_session, SIGNAL(finished()), this, SLOT(sessionFinished()));
 }
 
-
 QTerminalWidget::~QTerminalWidget()
 {
     emit destroyed();
 }
-
 
 void QTerminalWidget::setTerminalFont(QFont &font)
 {
@@ -159,20 +139,18 @@ void QTerminalWidget::setTextCodec(QTextCodec *codec)
     m_impl->m_session->setCodec(codec);	
 }
 
-void QTerminalWidget::setColorScheme(int scheme)
+void QTerminalWidget::setColorScheme(ColorScheme scheme)
 {
     switch(scheme) {
-	case COLOR_SCHEME_WHITE_ON_BLACK:
+        case WhiteOnBlack:
 		m_impl->m_terminalDisplay->setColorTable(whiteonblack_color_table);
 		break;		
-	case COLOR_SCHEME_GREEN_ON_BLACK:
+        case GreenOnBlack:
 		m_impl->m_terminalDisplay->setColorTable(greenonblack_color_table);
 		break;
-	case COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW:
+        case BlackOnLightYellow:
 		m_impl->m_terminalDisplay->setColorTable(blackonlightyellow_color_table);
 		break;
-	default: //do nothing
-	    break;
     };
 }
 
@@ -205,7 +183,6 @@ void QTerminalWidget::sendText(QString &text)
 
 void QTerminalWidget::resizeEvent(QResizeEvent*)
 {
-//qDebug("global window resizing...with %d %d", this->size().width(), this->size().height());
     m_impl->m_terminalDisplay->resize(this->size());
 }
 
@@ -216,6 +193,4 @@ void QTerminalWidget::sessionFinished()
     emit finished();
 }
 
-	
-//#include "moc_consoleq.cpp"
 

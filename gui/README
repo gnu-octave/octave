@@ -1,3 +1,5 @@
+Quint is using the QTermWidget to emulate a terminal, this enabling readline support for Octave. This is the original README file from the author:
+
 QTermWidget
 version 0.1.0
 

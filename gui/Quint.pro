@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui webkit
-
+OBJECTS_DIR = object-files
 TARGET = Quint
 TEMPLATE = app
 DEFINES += HAVE_POSIX_OPENPT

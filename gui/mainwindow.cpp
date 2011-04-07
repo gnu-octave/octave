@@ -22,7 +22,6 @@
 #include <QtWebKit/QWebView>
 
 #include "mainwindow.h"
-#include "octaveterminal.h"
 #include "terminal.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -30,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_mdiArea = new QMdiArea();
     setCentralWidget(m_mdiArea);
 
-    //addOctaveTerminal();
     loadWebPage("Online Manual", "http://www.gnu.org/software/octave/doc/interpreter/");
     addTerminalWindow();
     addTerminalWindow();
@@ -40,13 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow() {
 
-}
-
-void MainWindow::addOctaveTerminal() {
-    OctaveTerminal *octaveTerminal = new OctaveTerminal;
-    m_mdiArea->addSubWindow(octaveTerminal);
-    Client *octaveClient = ClientManager::clientManager().startProcess("octave --interactive --verbose");
-    octaveTerminal->assignClient(octaveClient);
 }
 
 void MainWindow::addTerminalWindow() {

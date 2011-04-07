@@ -3,6 +3,7 @@
 
 #include <QMdiSubWindow>
 #include <QTreeView>
+#include <QListView>
 #include <QStatusBar>
 #include "QTerminalWidget.h"
 
@@ -17,6 +18,7 @@ private:
     void constructWindow();
     QTerminalWidget *m_terminalWidget;
     QTreeView *m_variableView;
+    QListView *m_commandHistoryView;
     QStatusBar *m_statusBar;
 };
 

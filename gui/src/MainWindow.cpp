@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     constructWindow();
 
     loadWebPage("Online Manual", "http://www.gnu.org/software/octave/doc/interpreter/");
+    showMaximized();
 }
 
 MainWindow::~MainWindow() {

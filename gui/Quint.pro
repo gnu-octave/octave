@@ -29,7 +29,7 @@ SOURCES += main.cpp\
         k3processcontroller.cpp \
         Session.cpp \
         ShellCommand.cpp \
-        qtermwidget.cpp
+        QTerminalWidget.cpp
 
 HEADERS += mainwindow.h \
         terminal.h \
@@ -55,4 +55,4 @@ HEADERS += mainwindow.h \
         k3processcontroller.h \
         Session.h \
         ShellCommand.h \
-        qtermwidget.h
+        QTerminalWidget.h

@@ -10,8 +10,8 @@ Terminal::Terminal()
 
 void Terminal::launchTerminal() {
     delete m_terminalWidget;
-    m_terminalWidget = new QTermWidget(0, this);
-    m_terminalWidget->setScrollBarPosition(QTermWidget::ScrollBarRight);
+    m_terminalWidget = new QTerminalWidget(0, this);
+    m_terminalWidget->setScrollBarPosition(QTerminalWidget::ScrollBarRight);
     setWidget(m_terminalWidget);
 
     QString programName = "octave";

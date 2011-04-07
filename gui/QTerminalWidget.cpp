@@ -17,8 +17,7 @@
 */
 						
 
-#include "qtermwidget.h"
-
+#include "QTerminalWidget.h"
 #include "Session.h"
 #include "TerminalDisplay.h"
 
@@ -26,7 +25,7 @@ using namespace Konsole;
 
 void *createTermWidget(int startnow, void *parent)
 { 
-    return (void*) new QTermWidget(startnow, (QWidget*)parent); 
+    return (void*) new QTerminalWidget(startnow, (QWidget*)parent);
 }
 
 struct TermWidgetImpl
@@ -84,7 +83,7 @@ TerminalDisplay *TermWidgetImpl::createTerminalDisplay(Session *session, QWidget
 }
 
 
-QTermWidget::QTermWidget(int startnow, QWidget *parent)
+QTerminalWidget::QTerminalWidget(int startnow, QWidget *parent)
 :QWidget(parent)
 {
     m_impl = new TermWidgetImpl(this);
@@ -101,7 +100,7 @@ QTermWidget::QTermWidget(int startnow, QWidget *parent)
     this->setFocusProxy(m_impl->m_terminalDisplay);
 }
 
-void QTermWidget::startShellProgram()
+void QTerminalWidget::startShellProgram()
 {
     if ( m_impl->m_session->isRunning() )
 	return;
@@ -109,7 +108,7 @@ void QTermWidget::startShellProgram()
     m_impl->m_session->run();
 }
 
-void QTermWidget::init()
+void QTerminalWidget::init()
 {    
     m_impl->m_terminalDisplay->setSize(80, 40);
     
@@ -126,41 +125,41 @@ void QTermWidget::init()
 }
 
 
-QTermWidget::~QTermWidget()
+QTerminalWidget::~QTerminalWidget()
 {
     emit destroyed();
 }
 
 
-void QTermWidget::setTerminalFont(QFont &font)
+void QTerminalWidget::setTerminalFont(QFont &font)
 {
     if (!m_impl->m_terminalDisplay)
 	return;
     m_impl->m_terminalDisplay->setVTFont(font);
 }
 
-void QTermWidget::setShellProgram(QString &progname)
+void QTerminalWidget::setShellProgram(QString &progname)
 {
     if (!m_impl->m_session)
 	return;
     m_impl->m_session->setProgram(progname);	
 }
 
-void QTermWidget::setArgs(QStringList &args)
+void QTerminalWidget::setArgs(QStringList &args)
 {
     if (!m_impl->m_session)
 	return;
     m_impl->m_session->setArguments(args);	
 }
 
-void QTermWidget::setTextCodec(QTextCodec *codec)
+void QTerminalWidget::setTextCodec(QTextCodec *codec)
 {
     if (!m_impl->m_session)
 	return;
     m_impl->m_session->setCodec(codec);	
 }
 
-void QTermWidget::setColorScheme(int scheme)
+void QTerminalWidget::setColorScheme(int scheme)
 {
     switch(scheme) {
 	case COLOR_SCHEME_WHITE_ON_BLACK:
@@ -177,14 +176,14 @@ void QTermWidget::setColorScheme(int scheme)
     };
 }
 
-void QTermWidget::setSize(int h, int v)
+void QTerminalWidget::setSize(int h, int v)
 {
     if (!m_impl->m_terminalDisplay)
 	return;
     m_impl->m_terminalDisplay->setSize(h, v);
 }
 
-void QTermWidget::setHistorySize(int lines)
+void QTerminalWidget::setHistorySize(int lines)
 {
     if (lines < 0)
         m_impl->m_session->setHistoryType(HistoryTypeFile());
@@ -192,19 +191,19 @@ void QTermWidget::setHistorySize(int lines)
 	m_impl->m_session->setHistoryType(HistoryTypeBuffer(lines));
 }
 
-void QTermWidget::setScrollBarPosition(ScrollBarPosition pos)
+void QTerminalWidget::setScrollBarPosition(ScrollBarPosition pos)
 {
     if (!m_impl->m_terminalDisplay)
 	return;
     m_impl->m_terminalDisplay->setScrollBarPosition((TerminalDisplay::ScrollBarPosition)pos);
 }
 
-void QTermWidget::sendText(QString &text)
+void QTerminalWidget::sendText(QString &text)
 {
     m_impl->m_session->sendText(text); 
 }
 
-void QTermWidget::resizeEvent(QResizeEvent*)
+void QTerminalWidget::resizeEvent(QResizeEvent*)
 {
 //qDebug("global window resizing...with %d %d", this->size().width(), this->size().height());
     m_impl->m_terminalDisplay->resize(this->size());
@@ -212,7 +211,7 @@ void QTermWidget::resizeEvent(QResizeEvent*)
 
 
 
-void QTermWidget::sessionFinished()
+void QTerminalWidget::sessionFinished()
 {
     emit finished();
 }

@@ -28,7 +28,7 @@ enum COLOR_SCHEME {     COLOR_SCHEME_WHITE_ON_BLACK	= 1,
 		        COLOR_SCHEME_GREEN_ON_BLACK,
 		        COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW };
 
-class QTermWidget : public QWidget
+class QTerminalWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -45,9 +45,9 @@ public:
 
 
     //Creation of widget
-    QTermWidget(int startnow = 1, //start shell programm immediatelly
+    QTerminalWidget(int startnow = 1, //start shell programm immediatelly
 		QWidget *parent = 0);
-    ~QTermWidget();
+    ~QTerminalWidget();
 
     //start shell program if it was not started in constructor
     void startShellProgram();

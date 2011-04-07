@@ -2,7 +2,7 @@
 #define TERMINAL_H
 
 #include <QMdiSubWindow>
-#include "qtermwidget.h"
+#include "QTerminalWidget.h"
 
 class Terminal : public QMdiSubWindow {
     Q_OBJECT
@@ -13,7 +13,7 @@ private slots:
     void launchTerminal();
 
 private:
-    QTermWidget *m_terminalWidget;
+    QTerminalWidget *m_terminalWidget;
 };
 
 #endif // TERMINAL_H

@@ -1,5 +1,11 @@
 FCN_FILE_DIRS += signal
 
+signal_PRIVATE_FCN_FILES = \
+  signal/private/rectangle_lw.m  \
+  signal/private/rectangle_sw.m  \
+  signal/private/triangle_lw.m  \
+  signal/private/triangle_sw.m 
+
 signal_FCN_FILES = \
   signal/arch_fit.m \
   signal/arch_rnd.m \
@@ -23,8 +29,6 @@ signal_FCN_FILES = \
   signal/hurst.m \
   signal/ifftshift.m \
   signal/periodogram.m \
-  signal/rectangle_lw.m \
-  signal/rectangle_sw.m \
   signal/sinc.m \
   signal/sinetone.m \
   signal/sinewave.m \
@@ -33,10 +37,9 @@ signal_FCN_FILES = \
   signal/spencer.m \
   signal/stft.m \
   signal/synthesis.m \
-  signal/triangle_lw.m \
-  signal/triangle_sw.m \
   signal/unwrap.m \
-  signal/yulewalker.m
+  signal/yulewalker.m \
+  $(signal_PRIVATE_FCN_FILES)
 
 FCN_FILES += $(signal_FCN_FILES)
 

@@ -1,5 +1,10 @@
 2011-04-06  Rik  <octave@nomad.inbox5.com>
 
+	* signal/module.mk: Make spectral density helper functions private.
+	(rectangle_sw, rectangle_lw, triangle_sw, triangle_lw)
+
+2011-04-06  Rik  <octave@nomad.inbox5.com>
+
 	* optimization/fminunc.m, plot/isocolors.m, plot/isonormals.m:
 	Clean up operator and function indices.
 

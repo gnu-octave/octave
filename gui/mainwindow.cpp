@@ -27,14 +27,15 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
-    showMaximized();
     m_mdiArea = new QMdiArea();
     setCentralWidget(m_mdiArea);
 
     //addOctaveTerminal();
     loadWebPage("Online Manual", "http://www.gnu.org/software/octave/doc/interpreter/");
     addTerminalWindow();
-    m_mdiArea->setViewMode(QMdiArea::TabbedView);
+
+    m_mdiArea->setViewMode(QMdiArea::SubWindowView);
+    showMaximized();
 }
 
 MainWindow::~MainWindow() {

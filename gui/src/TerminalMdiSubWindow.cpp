@@ -23,6 +23,7 @@ void TerminalMdiSubWindow::constructWindow() {
         m_terminalWidget->setShellProgram("octave");
         m_terminalWidget->startShellProgram();
         m_terminalWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        m_terminalWidget->setColorScheme(QTerminalWidget::BlackOnLightYellow);
 
             QWidget *hvWidget = new QWidget();
             QVBoxLayout *hvBoxLayout = new QVBoxLayout();

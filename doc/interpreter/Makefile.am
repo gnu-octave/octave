@@ -224,6 +224,24 @@ undocumented_list:
 .PHONY: undocumented_list
 
 
+SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
+
+%.scheck: %.texi
+	$(srcdir)/doccheck/spellcheck $< > $@-t
+	mv $@-t $@
+	[ -s $@ ] || rm -f $@
+
+spellcheck: $(SPELLCHECK_FILES) 
+	@if ls *.scheck >/dev/null 2>&1 ; then \
+		echo "Spellcheck failed"; \
+		echo "Review the following files:"; \
+		ls *.scheck ; \
+		exit 1 ; \
+	else \
+		echo "Spellcheck passed"; \
+	fi
+.PHONY: spellcheck
+
 EXTRA_DIST = \
   config-images.sh \
   contributors.in \

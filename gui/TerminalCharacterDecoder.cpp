@@ -27,9 +27,6 @@
 // Qt
 #include <QtCore/QTextStream>
 
-
-using namespace Konsole;
-
 PlainTextDecoder::PlainTextDecoder()
  : _output(0)
  , _includeTrailingWhitespace(true)
@@ -124,8 +121,7 @@ void HTMLDecoder::end()
 }
 
 //TODO: Support for LineProperty (mainly double width , double height)
-void HTMLDecoder::decodeLine(const Character* const characters, int count, LineProperty /*properties*/
-							)
+void HTMLDecoder::decodeLine(const Character* const characters, int count, LineProperty)
 {
     Q_ASSERT( _output );
 

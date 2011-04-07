@@ -21,8 +21,6 @@
 #include "Session.h"
 #include "TerminalDisplay.h"
 
-using namespace Konsole;
-
 struct TermWidgetImpl
 {
     TermWidgetImpl(QWidget* parent = 0);

@@ -22,9 +22,6 @@
     02110-1301  USA.
 */
 
-// Own
-#include "Session.h"
-
 // Standard
 #include <assert.h>
 #include <stdlib.h>
@@ -38,12 +35,12 @@
 #include <QtCore/QStringList>
 #include <QtCore>
 
+// Own
+#include "Session.h"
 #include "Pty.h"
 #include "TerminalDisplay.h"
 #include "ShellCommand.h"
 #include "Vt102Emulation.h"
-
-using namespace Konsole;
 
 int Session::lastSessionId = 0;
 
@@ -64,16 +61,9 @@ Session::Session() :
    , _flowControl(true)
    , _fullScripting(false)
    , _sessionId(0)
-//   , _zmodemBusy(false)
-//   , _zmodemProc(0)
-//   , _zmodemProgress(0)
    , _hasDarkBackground(false)
 {
-    //prepare DBus communication
-//    new SessionAdaptor(this);
     _sessionId = ++lastSessionId;
-//    QDBusConnection::sessionBus().registerObject(QLatin1String("/Sessions/")+QString::number(_sessionId), this);
-
     //create teletype for I/O with shell process
     _shellProcess = new Pty();
 
@@ -84,16 +74,10 @@ Session::Session() :
            this, SLOT( setUserTitle( int, const QString & ) ) );
     connect( _emulation, SIGNAL( stateSet(int) ),
            this, SLOT( activityStateSet(int) ) );
-//    connect( _emulation, SIGNAL( zmodemDetected() ), this ,
-//            SLOT( fireZModemDetected() ) );
     connect( _emulation, SIGNAL( changeTabTextColorRequest( int ) ),
            this, SIGNAL( changeTabTextColorRequest( int ) ) );
     connect( _emulation, SIGNAL(profileChangeCommandReceived(const QString&)),
            this, SIGNAL( profileChangeCommandReceived(const QString&)) );
-    // TODO
-    // connect( _emulation,SIGNAL(imageSizeChanged(int,int)) , this ,
-    //        SLOT(onEmulationSizeChange(int,int)) );
-
     //connect teletype to emulation backend
     _shellProcess->setUtf8Mode(_emulation->utf8());
 
@@ -103,8 +87,6 @@ Session::Session() :
             SLOT(sendData(const char*,int)) );
     connect( _emulation,SIGNAL(lockPtyRequest(bool)),_shellProcess,SLOT(lockPty(bool)) );
     connect( _emulation,SIGNAL(useUtf8Request(bool)),_shellProcess,SLOT(setUtf8Mode(bool)) );
-
-
     connect( _shellProcess,SIGNAL(done(int)), this, SLOT(done(int)) );
 
     //setup timer for monitoring session activity
@@ -210,7 +192,7 @@ void Session::addView(TerminalDisplay* widget)
 
     QObject::connect( widget ,SIGNAL(destroyed(QObject*)) , this ,
                     SLOT(viewDestroyed(QObject*)) );
-//slot for close
+
     QObject::connect(this, SIGNAL(finished()), widget, SLOT(close()));		    
     
 }
@@ -412,19 +394,8 @@ QString Session::tabTitleFormat(TabTitleContext context) const
 
 void Session::monitorTimerDone()
 {
-  //FIXME: The idea here is that the notification popup will appear to tell the user than output from
-  //the terminal has stopped and the popup will disappear when the user activates the session.
-  //
-  //This breaks with the addition of multiple views of a session.  The popup should disappear
-  //when any of the views of the session becomes active
-  
-
-  //FIXME: Make message text for this notification and the activity notification more descriptive.	
   if (_monitorSilence) {
-//    KNotification::event("Silence", ("Silence in session '%1'", _nameTitle), QPixmap(),
-//                    QApplication::activeWindow(),
-//                    KNotification::CloseWhenWidgetActivated);
-    emit stateChanged(NOTIFYSILENCE);
+  emit stateChanged(NOTIFYSILENCE);
   }
   else
   {
@@ -556,7 +527,6 @@ Session::~Session()
 {
   delete _emulation;
   delete _shellProcess;
-//  delete _zmodemProc;
 }
 
 void Session::setProfileKey(const QString& key)
@@ -594,10 +564,6 @@ void Session::done(int exitStatus)
     else
         message.sprintf ("Session '%s' exited unexpectedly.", _nameTitle.toAscii().data());
 
-    //FIXME: See comments in Session::monitorTimerDone()
-//    KNotification::event("Finished", message , QPixmap(),
-//                         QApplication::activeWindow(),
-//                         KNotification::CloseWhenWidgetActivated);
   }
   emit finished();
 }
@@ -667,7 +633,6 @@ void Session::setIconName(const QString& iconName)
 void Session::setIconText(const QString& iconText)
 {
   _iconText = iconText;
-  //kDebug(1211)<<"Session setIconText " <<  _iconText;
 }
 
 QString Session::iconName() const
@@ -763,119 +728,7 @@ bool Session::flowControlEnabled() const
 {
 	return _flowControl;
 }
-//void Session::fireZModemDetected()
-//{
-//  if (!_zmodemBusy)
-//  {
-//    QTimer::singleShot(10, this, SIGNAL(zmodemDetected()));
-//    _zmodemBusy = true;
-//  }
-//}
 
-//void Session::cancelZModem()
-//{
-//  _shellProcess->sendData("\030\030\030\030", 4); // Abort
-//  _zmodemBusy = false;
-//}
-
-//void Session::startZModem(const QString &zmodem, const QString &dir, const QStringList &list)
-//{
-//  _zmodemBusy = true;
-//  _zmodemProc = new KProcess();
-//  _zmodemProc->setOutputChannelMode( KProcess::SeparateChannels );
-//
-//  *_zmodemProc << zmodem << "-v" << list;
-//
-//  if (!dir.isEmpty())
-//     _zmodemProc->setWorkingDirectory(dir);
-//
-//  _zmodemProc->start();
-//
-//  connect(_zmodemProc,SIGNAL (readyReadStandardOutput()),
-//          this, SLOT(zmodemReadAndSendBlock()));
-//  connect(_zmodemProc,SIGNAL (readyReadStandardError()),
-//          this, SLOT(zmodemReadStatus()));
-//  connect(_zmodemProc,SIGNAL (finished(int,QProcess::ExitStatus)),
-//          this, SLOT(zmodemFinished()));
-//
-//  disconnect( _shellProcess,SIGNAL(block_in(const char*,int)), this, SLOT(onReceiveBlock(const char*,int)) );
-//  connect( _shellProcess,SIGNAL(block_in(const char*,int)), this, SLOT(zmodemRcvBlock(const char*,int)) );
-//
-//  _zmodemProgress = new ZModemDialog(QApplication::activeWindow(), false,
-//                                    i18n("ZModem Progress"));
-//
-//  connect(_zmodemProgress, SIGNAL(user1Clicked()),
-//          this, SLOT(zmodemDone()));
-//
-//  _zmodemProgress->show();
-//}
-
-/*void Session::zmodemReadAndSendBlock()
-{
-  _zmodemProc->setReadChannel( QProcess::StandardOutput );
-  QByteArray data = _zmodemProc->readAll();
-
-  if ( data.count() == 0 )
-      return;
-
-  _shellProcess->sendData(data.constData(),data.count());
-}
-*/
-/*
-void Session::zmodemReadStatus()
-{
-  _zmodemProc->setReadChannel( QProcess::StandardError );
-  QByteArray msg = _zmodemProc->readAll();
-  while(!msg.isEmpty())
-  {
-     int i = msg.indexOf('\015');
-     int j = msg.indexOf('\012');
-     QByteArray txt;
-     if ((i != -1) && ((j == -1) || (i < j)))
-     {
-       msg = msg.mid(i+1);
-     }
-     else if (j != -1)
-     {
-       txt = msg.left(j);
-       msg = msg.mid(j+1);
-     }
-     else
-     {
-       txt = msg;
-       msg.truncate(0);
-     }
-     if (!txt.isEmpty())
-       _zmodemProgress->addProgressText(QString::fromLocal8Bit(txt));
-  }
-}
-*/
-/*
-void Session::zmodemRcvBlock(const char *data, int len)
-{
-  QByteArray ba( data, len );
-
-  _zmodemProc->write( ba );
-}
-*/
-/*
-void Session::zmodemFinished()
-{
-  if (_zmodemProc)
-  {
-    delete _zmodemProc;
-    _zmodemProc = 0;
-    _zmodemBusy = false;
-
-    disconnect( _shellProcess,SIGNAL(block_in(const char*,int)), this ,SLOT(zmodemRcvBlock(const char*,int)) );
-    connect( _shellProcess,SIGNAL(block_in(const char*,int)), this, SLOT(onReceiveBlock(const char*,int)) );
-
-    _shellProcess->sendData("\030\030\030\030", 4); // Abort
-    _shellProcess->sendData("\001\013\n", 3); // Try to get prompt back
-    _zmodemProgress->transferDone();
-  }
-}
-*/
 void Session::onReceiveBlock( const char* buf, int len )
 {
     _emulation->receiveData( buf, len );
@@ -1007,8 +860,6 @@ void SessionGroup::connectPair(Session* master , Session* other)
 }
 void SessionGroup::disconnectPair(Session* master , Session* other)
 {
-//    qDebug() << k_funcinfo;
-
     if ( _masterMode & CopyInputToAll )
     {
         qDebug() << "Disconnecting session " << master->nameTitle() << "from" << other->nameTitle();
@@ -1017,5 +868,3 @@ void SessionGroup::disconnectPair(Session* master , Session* other)
                 SLOT(sendString(const char*,int)) );
     }
 }
-
-//#include "moc_Session.cpp"

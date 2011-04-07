@@ -47,11 +47,6 @@ class QShowEvent;
 class QHideEvent;
 class QWidget;
 
-//class KMenu;
-
-namespace Konsole
-{
-
 extern unsigned short vt100_graphics[32];
 
 class ScreenWindow;
@@ -748,7 +743,4 @@ public:
         HAVE_TRANSPARENCY = enable;
     }
 };
-
-}
-
 #endif // TERMINALDISPLAY_H

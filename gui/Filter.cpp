@@ -34,14 +34,8 @@
 #include <QtCore/QSharedData>
 #include <QtCore>
 
-// KDE
-//#include <KLocale>
-//#include <KRun>
-
 // Konsole
 #include "TerminalCharacterDecoder.h"
-
-using namespace Konsole;
 
 FilterChain::~FilterChain()
 {
@@ -239,13 +233,6 @@ void Filter::getLineColumn(int position , int& startLine , int& startColumn)
         }
     }
 }
-    
-
-/*void Filter::addLine(const QString& text)
-{
-    _linePositions << _buffer.length();
-    _buffer.append(text);
-}*/
 
 const QString* Filter::buffer()
 {
@@ -363,10 +350,7 @@ QRegExp RegExpFilter::regExp() const
 {
     return _searchText;
 }
-/*void RegExpFilter::reset(int)
-{
-    _buffer = QString();
-}*/
+
 void RegExpFilter::process()
 {
     int pos = 0;
@@ -559,4 +543,3 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     return list; 
 }
 
-//#include "moc_Filter.cpp"

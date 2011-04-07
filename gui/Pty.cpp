@@ -32,14 +32,7 @@
 
 // Qt
 #include <QtCore>
-
-// KDE
-//#include <KStandardDirs>
-//#include <KLocale>
-//#include <KDebug>
 #include "kpty.h"
-
-using namespace Konsole;
 
 void Pty::donePty()
 {

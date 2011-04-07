@@ -46,10 +46,6 @@
 #include <QtGui/QKeyEvent>
 #include <QtCore/QByteRef>
 
-// KDE
-//#include <kdebug.h>
-//#include <klocale.h>
-
 // Konsole
 #include "KeyboardTranslator.h"
 #include "Screen.h"
@@ -58,8 +54,6 @@
 void scrolllock_set_off();
 void scrolllock_set_on();
 #endif
-
-using namespace Konsole;
 
 /* VT102 Terminal Emulation
 
@@ -1252,15 +1246,9 @@ void Vt102Emulation::scan_buffer_report()
   printf("token: "); hexdump(pbuf,ppos); printf("\n");
 }
 
-/*!
-*/
-
 void Vt102Emulation::ReportErrorToken()
 {
 #ifndef NDEBUG
   printf("undecodable "); scan_buffer_report();
 #endif
 }
-
-//#include "moc_Vt102Emulation.cpp"
-

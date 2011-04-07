@@ -30,9 +30,6 @@
 // Konsole
 #include "Character.h"
 
-namespace Konsole
-{
-
 class Screen;
 
 /**
@@ -251,6 +248,4 @@ private:
     int  _scrollCount; // count of lines which the window has been scrolled by since
                        // the last call to resetScrollCount()
 };
-
-}
 #endif // SCREENWINDOW_H

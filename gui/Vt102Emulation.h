@@ -47,9 +47,6 @@
 #define MODE_Ansi      (MODES_SCREEN+7)
 #define MODE_total     (MODES_SCREEN+8)
 
-namespace Konsole
-{
-
 struct DECpar
 {
   bool mode[MODE_total];
@@ -186,7 +183,4 @@ private:
   QTimer* _titleUpdateTimer;
   
 };
-
-}
-
 #endif // VT102EMULATION_H

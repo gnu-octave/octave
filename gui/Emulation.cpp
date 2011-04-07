@@ -49,8 +49,6 @@
 #include "TerminalCharacterDecoder.h"
 #include "ScreenWindow.h"
 
-using namespace Konsole;
-
 /* ------------------------------------------------------------------------- */
 /*                                                                           */
 /*                               Emulation                                  */

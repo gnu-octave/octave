@@ -33,9 +33,6 @@
 #include <unistd.h>
 #include <stdio.h>
 
-
-using namespace Konsole;
-
 static int blocksize = 0;
 
 BlockArray::BlockArray()

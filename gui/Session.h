@@ -34,14 +34,9 @@
 #include "History.h"
 
 class KProcess;
-
-namespace Konsole
-{
-
 class Emulation;
 class Pty;
 class TerminalDisplay;
-//class ZModemDialog;
 
 /**
  * Represents a terminal session consisting of a pseudo-teletype and a terminal emulation.
@@ -358,11 +353,6 @@ public:
    * shell to redraw the prompt line.
    */
   void refresh();
-
-//  void startZModem(const QString &rz, const QString &dir, const QStringList &list);
-//  void cancelZModem();
-//  bool isZModemBusy() { return _zmodemBusy; }
-
 public slots:
 
   /**
@@ -435,9 +425,6 @@ signals:
   /** TODO: Document me. */
   void openUrlRequest(const QString& url);
 
-  /** TODO: Document me. */
-//  void zmodemDetected();
-
   /**
    * Emitted when the terminal process requests a change
    * in the size of the terminal window.
@@ -464,8 +451,6 @@ signals:
 private slots:
   void done(int);
 
-//  void fireZModemDetected();
-
   void onReceiveBlock( const char* buffer, int len );
   void monitorTimerDone();
 
@@ -476,11 +461,6 @@ private slots:
 
   //automatically detach views from sessions when view is destroyed
   void viewDestroyed(QObject* view);
-
-//  void zmodemReadStatus();
-//  void zmodemReadAndSendBlock();
-//  void zmodemRcvBlock(const char *data, int len);
-//  void zmodemFinished();
 
 private:
 
@@ -524,13 +504,6 @@ private:
   int            _sessionId;
 
   QString        _initialWorkingDir;
-
-  // ZModem
-//  bool           _zmodemBusy;
-//  KProcess*      _zmodemProc;
-//  ZModemDialog*  _zmodemProgress;
-
-  // Color/Font Changes by ESC Sequences
 
   QColor         _modifiedBackground; // as set by: echo -en '\033]11;Color\007
 
@@ -615,7 +588,4 @@ private:
 
     int _masterMode;
 };
-
-}
-
 #endif

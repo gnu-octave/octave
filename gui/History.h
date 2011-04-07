@@ -20,8 +20,8 @@
     02110-1301  USA.
 */
 
-#ifndef TEHISTORY_H
-#define TEHISTORY_H
+#ifndef HISTORY_H
+#define HISTORY_H
 
 // Qt
 #include <QtCore/QBitRef>
@@ -31,14 +31,6 @@
 // Konsole
 #include "BlockArray.h"
 #include "Character.h"
-
-namespace Konsole
-{
-
-#if 1
-/*
-   An extendable tmpfile(1) based buffer.
-*/
 
 class HistoryFile
 {
@@ -75,7 +67,6 @@ private:
   //when readWriteBalance goes below this threshold, the file will be mmap'ed automatically
   static const int MAP_THRESHOLD = -1000;
 };
-#endif
 
 //////////////////////////////////////////////////////////////////////
 
@@ -124,7 +115,7 @@ protected:
 
 };
 
-#if 1
+
 
 //////////////////////////////////////////////////////////////////////
 // File-based history (e.g. file log, no limitation in length)
@@ -186,30 +177,7 @@ private:
   int _maxLineCount;
   int _usedLines;  
   int _head;
-  
-  //QVector<histline*> m_histBuffer;
-  //QBitArray m_wrappedLine;
-  //unsigned int m_maxNbLines;
-  //unsigned int m_nbLines;
-  //unsigned int m_arrayIndex;
-  //bool         m_buffFilled;
 };
-
-/*class HistoryScrollBufferV2 : public HistoryScroll
-{
-public:
-  virtual int  getLines();
-  virtual int  getLineLen(int lineno);
-  virtual void getCells(int lineno, int colno, int count, Character res[]);
-  virtual bool isWrappedLine(int lineno);
-
-  virtual void addCells(const Character a[], int count);
-  virtual void addCells(const QVector<Character>& cells);
-  virtual void addLine(bool previousWrapped=false);
-
-};*/
-
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Nothing-based history (no history :-)
@@ -306,7 +274,6 @@ protected:
   size_t m_size;
 };
 
-#if 1 
 class HistoryTypeFile : public HistoryType
 {
 public:
@@ -337,8 +304,4 @@ protected:
   unsigned int m_nbLines;
 };
 
-#endif
-
-}
-
-#endif // TEHISTORY_H
+#endif // HISTORY_H

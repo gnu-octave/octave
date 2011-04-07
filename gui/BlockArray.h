@@ -30,15 +30,11 @@
 #define BlockSize (1 << 12)
 #define ENTRIES   ((BlockSize - sizeof(size_t) ) / sizeof(unsigned char))
 
-namespace Konsole
-{
-
 struct Block {
     Block() { size = 0; }
     unsigned char data[ENTRIES];
     size_t size;
 };
-
 // ///////////////////////////////////////////////////////
 
 class BlockArray {
@@ -117,9 +113,5 @@ private:
 
     int ion;
     size_t length;
-
 };
-
-}
-
 #endif

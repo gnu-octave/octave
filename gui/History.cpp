@@ -37,8 +37,6 @@
 // Reasonable line size
 #define LINE_SIZE	1024
 
-using namespace Konsole;
-
 /*
    An arbitrary long scroll.
 

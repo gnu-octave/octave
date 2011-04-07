@@ -39,8 +39,6 @@
 #include "konsole_wcwidth.h"
 #include "TerminalCharacterDecoder.h"
 
-using namespace Konsole;
-
 //FIXME: this is emulation specific. Use false for xterm, true for ANSI.
 //FIXME: see if we can get this from terminfo.
 #define BS_CLEARS false

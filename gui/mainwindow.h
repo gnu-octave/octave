@@ -36,6 +36,7 @@ public:
     ~MainWindow();
 
     void addOctaveTerminal();
+    void addTerminalWindow();
     void loadWebPage(QString title, QString url);
 
 private:

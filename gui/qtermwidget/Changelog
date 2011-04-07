@@ -1,0 +1,19 @@
+31.07.2008
+Interface class from c-style conversions rewritten with pimpl support.
+
+
+16.07.2008 
+Added optional scrollbar 
+
+
+06.06.2008 
+Some artefacts were removed, some added...
+Also added support for color schemes, and 3 color schemes provided (classical - white on black, green on black, black on light yellow). Is it enough or not? 
+
+
+26.05.2008 
+Added file release as an archive with source code. But preferrable way is still getting code from CVS, cause file release can be outdated. 
+
+
+11.05.2008 
+Initial CVS import - first version comes with number 0.0.1

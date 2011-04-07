@@ -23,6 +23,7 @@
 
 #include "mainwindow.h"
 #include "octaveterminal.h"
+#include "terminal.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
@@ -30,7 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_mdiArea = new QMdiArea();
     setCentralWidget(m_mdiArea);
 
-    addOctaveTerminal();
+    //addOctaveTerminal();
+    addTerminalWindow();
     loadWebPage("Online Manual", "http://www.gnu.org/software/octave/doc/interpreter/");
     m_mdiArea->setViewMode(QMdiArea::TabbedView);
 }
@@ -44,6 +46,11 @@ void MainWindow::addOctaveTerminal() {
     m_mdiArea->addSubWindow(octaveTerminal);
     Client *octaveClient = ClientManager::clientManager().startProcess("octave --interactive --verbose");
     octaveTerminal->assignClient(octaveClient);
+}
+
+void MainWindow::addTerminalWindow() {
+    Terminal *terminal = new Terminal;
+    m_mdiArea->addSubWindow(terminal);
 }
 
 void MainWindow::loadWebPage(QString title, QString url) {

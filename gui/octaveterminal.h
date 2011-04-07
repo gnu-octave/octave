@@ -54,6 +54,19 @@ protected:
         setFocus();
     }
 
+    bool event(QEvent *event)
+      {
+          if (event->type() == QEvent::KeyPress) {
+              QKeyEvent *ke = static_cast<QKeyEvent *>(event);
+              if (ke->key() == Qt::Key_Tab) {
+                  emit claimCommand("\t");
+                  return true;
+              }
+          }
+
+          return QWidget::event(event);
+      }
+
     void keyPressEvent(QKeyEvent *keyEvent) {
         QString command;
         switch(keyEvent->key()) {
@@ -64,10 +77,6 @@ protected:
                 m_commandHistoryIndex = m_commandHistory.size();
                 m_currentlyEditedCommand = "";
                 setText("");
-                break;
-
-            case Qt::Key_Tab:
-                emit claimCommand("\t");
                 break;
 
             case Qt::Key_Up:

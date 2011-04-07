@@ -15,10 +15,16 @@ SOURCES += main.cpp\
     octaveterminal.cpp \
     clientmanager.cpp \
     client.cpp \
-    terminalhighlighter.cpp
+    terminalhighlighter.cpp \
+    terminal.cpp
 
 HEADERS  += mainwindow.h \
     octaveterminal.h \
     clientmanager.h \
     client.h \
-    terminalhighlighter.h
+    terminalhighlighter.h \
+    terminal.h
+
+LIBS += ../Quint/qtermwidget/libqtermwidget.a
+
+INCLUDEPATH += qtermwidget/lib

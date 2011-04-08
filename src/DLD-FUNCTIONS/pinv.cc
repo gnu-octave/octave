@@ -43,7 +43,7 @@ DEFUN_DLD (pinv, args, ,
 Return the pseudoinverse of @var{x}.  Singular values less than\n\
 @var{tol} are ignored.  \n\
 \n\
-If the second argument is omitted, it is assumed that\n\
+If the second argument is omitted, it is taken to be\n\
 \n\
 @example\n\
 tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,\n\

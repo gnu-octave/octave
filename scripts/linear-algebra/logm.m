@@ -32,7 +32,7 @@
 ## The optional argument @var{opt_iters} is the maximum number of square roots
 ## to compute and defaults to 100.  The optional output @var{iters} is the
 ## number of square roots actually computed.
-##
+## @seealso{expm, sqrtm}
 ## @end deftypefn
 
 ## Reference: N. J. Higham, Functions of Matrices: Theory and Computation

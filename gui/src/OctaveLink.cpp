@@ -117,7 +117,7 @@ int server_rl_event_hook_function(void)
   // TODO: No need to run too quickly.  The documentation says it will run
   // at most 10 times per second.  This may be too fast and we will need to
   // artificially slow it down somehow.  Not sure at this time how.
-  oct_octave_server.process_octave_server_data();
+  oct_octave_server.processOctaveServerData();
 
   return 0;
 }
@@ -131,12 +131,12 @@ bool server_rl_is_processing(void)
 OctaveLink::OctaveLink()
 {
   // Create the mutexes 
-  pthread_mutex_init(&server_mutex,NULL);
-  pthread_mutex_init(&octave_lock_mutex,NULL);
+  pthread_mutex_init(&m_serverMutex,NULL);
+  pthread_mutex_init(&m_octaveLockMutex,NULL);
 
-  prevHistLen = 0;
+  m_previousHistoryLength = 0;
 
-  is_processing_server_data = false;
+  m_isProcessingServerData = false;
 }
 
 
@@ -153,166 +153,166 @@ OctaveLink::~OctaveLink()
  *******************************************************************************/
 
 //*************************************************************************
-std::vector<OctaveLink::VariableMetaData> OctaveLink::get_variable_info_list(void)
+std::vector<OctaveLink::VariableMetaData> OctaveLink::variableInfoList(void)
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return std::vector<VariableMetaData>();
 
   // Copy the list of variable information
-  std::vector<VariableMetaData> retval( variable_symtab_list.size() );
-  std::copy( variable_symtab_list.begin(), variable_symtab_list.end(), retval.begin() );
-  variable_symtab_list = std::vector<VariableMetaData>();
+  std::vector<VariableMetaData> retval( m_variableSymbolTableList.size() );
+  std::copy( m_variableSymbolTableList.begin(), m_variableSymbolTableList.end(), retval.begin() );
+  m_variableSymbolTableList = std::vector<VariableMetaData>();
 
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return retval;
 }
 
 
 //*************************************************************************
-std::vector<OctaveLink::RequestedVariable> OctaveLink::get_requested_variables(void)
+std::vector<OctaveLink::RequestedVariable> OctaveLink::requestedVariables(void)
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return std::vector<RequestedVariable>();
 
   // Copy the list of requested variables
-  std::vector<RequestedVariable> retval( requested_variables.size() );
-  std::copy( requested_variables.begin(), requested_variables.end(), retval.begin() );
-  requested_variables = std::vector<RequestedVariable>();
+  std::vector<RequestedVariable> retval( m_requestedVariables.size() );
+  std::copy( m_requestedVariables.begin(), m_requestedVariables.end(), retval.begin() );
+  m_requestedVariables = std::vector<RequestedVariable>();
   
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return retval;
 }
 
 
 //*************************************************************************
-int OctaveLink::set_requested_variables_names( std::vector<std::string> variables_names )
+int OctaveLink::setRequestedVariableNames( std::vector<std::string> variables_names )
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return -1;
 
   // Set the list of requested variables
-  variables_request_list = std::vector<std::string>( variables_names.size() );
-  std::copy( variables_names.begin(), variables_names.end(), variables_request_list.begin() );
+  m_variablesRequestList = std::vector<std::string>( variables_names.size() );
+  std::copy( variables_names.begin(), variables_names.end(), m_variablesRequestList.begin() );
 
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return 0;
 }
 
 
 //*************************************************************************
-string_vector OctaveLink::get_history_list(void)
+string_vector OctaveLink::getHistoryList(void)
 {
   // Acquire mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return string_vector();
 
   // Copy the list of command history items
-  string_vector retval( history_list );
-  history_list = string_vector();
+  string_vector retval( m_historyList );
+  m_historyList = string_vector();
 
   // Release mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return retval;
 }
 
-std::vector<OctaveLink::BreakPoint> OctaveLink::get_breakpoint_list(int& status)
+std::vector<OctaveLink::BreakPoint> OctaveLink::breakPointList(int& status)
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
   {
     status = -1;
     return std::vector<BreakPoint>();
   }
 
   // Copy the list of variable information
-  std::vector<BreakPoint> retval (current_breakpoints.size());
-  std::copy( current_breakpoints.begin(), current_breakpoints.end(), retval.begin() );
+  std::vector<BreakPoint> retval (m_currentBreakpoints.size());
+  std::copy( m_currentBreakpoints.begin(), m_currentBreakpoints.end(), retval.begin() );
 
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   status = 0;
   return retval;
 }
 
-bool OctaveLink::is_breakpoint_reached (int& status)
+bool OctaveLink::isBreakpointReached (int& status)
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
   {
     status = -1;
     return false;
   }
 
   // Copy the list of variable information
-  bool retval = (breakpoint_reached.size()>0);
+  bool retval = (m_reachedBreakpoints.size()>0);
 
   //if (retval)
   //  octave_stdout << "Breakpoint reached" << std::endl;
 
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   status = 0;
   return retval;
 }
 
 
-std::vector<OctaveLink::BreakPoint> OctaveLink::get_breakpoint_reached()
+std::vector<OctaveLink::BreakPoint> OctaveLink::reachedBreakpoint()
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return std::vector<BreakPoint>();
 
   // Copy the list of variable information
-  std::vector<BreakPoint> retval (breakpoint_reached.size());
-  std::copy (breakpoint_reached.begin(), breakpoint_reached.end(), retval.begin() );
+  std::vector<BreakPoint> retval (m_reachedBreakpoints.size());
+  std::copy (m_reachedBreakpoints.begin(), m_reachedBreakpoints.end(), retval.begin() );
 
   //if (breakpoint_reached.size()>0)
   //  octave_stdout << "Breakpoint reached" << std::endl;
 
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return retval;
 }
 
-int OctaveLink::add_breakpoint( BreakPoint bp_info )
+int OctaveLink::addBreakpoint( BreakPoint bp_info )
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return -1;
 
   // Copy the list of variable information
-  added_breakpoints.push_back (bp_info);
+  m_addedBreakpoints.push_back (bp_info);
 
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return 0;
 }
 
-int OctaveLink::remove_breakpoint( BreakPoint bp_info )
+int OctaveLink::removeBreakpoint( BreakPoint bp_info )
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return -1;
 
   // Copy the list of variable information
-  removed_breakpoints.push_back (bp_info);
+  m_removedBreakpoints.push_back (bp_info);
 
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return 0;
 }
@@ -321,16 +321,16 @@ int OctaveLink::remove_breakpoint( BreakPoint bp_info )
     status_t		   modify_breakpoint( bp_info_t old_bp_info, bp_info_t new_bp_info );
 */
 
-int OctaveLink::set_breakpoint_action (BreakPointAction action)
+int OctaveLink::setBreakpointAction (BreakPointAction action)
 {
   // Acquire the mutex
-  if( pthread_mutex_trylock( &server_mutex ) != 0 )
+  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
     return -1;
 
-  bp_action = action;
+  m_breakPointAction = action;
   
   // Release the mutex
-  pthread_mutex_unlock( &server_mutex );
+  pthread_mutex_unlock( &m_serverMutex );
 
   return 0;
 }
@@ -343,7 +343,7 @@ int OctaveLink::set_breakpoint_action (BreakPointAction action)
  *******************************************************************************/
 
 //*************************************************************************
-int OctaveLink::process_octave_server_data(void)
+int OctaveLink::processOctaveServerData(void)
 {
   struct timeval start, stop;
 #ifndef __WIN32__
@@ -351,23 +351,23 @@ int OctaveLink::process_octave_server_data(void)
 #endif
 
   // Acquire mutex
-  if( pthread_mutex_lock( &server_mutex ) != 0 )
+  if( pthread_mutex_lock( &m_serverMutex ) != 0 )
   {
     octave_stdout << "Error acquiring the octave_server data lock mutex" << std::endl;
     return -1;
   }
-  is_processing_server_data = true;
+  m_isProcessingServerData = true;
   
   process_breakpoint_action();
-  process_breakpoint_add_remove_modify();
-  process_requested_variables();
-  set_variable_info_list();
-  set_history_list();
-  set_breakpoint_list();
+  processBreakpointAndRemoveModify();
+  processRequestedVariables();
+  setVariableInfoList();
+  setHistoryList();
+  setBreakPointList();
 
   // Release mutex
-  pthread_mutex_unlock( &server_mutex );
-  is_processing_server_data = false;
+  pthread_mutex_unlock( &m_serverMutex );
+  m_isProcessingServerData = false;
 
 #ifndef __WIN32__
   gettimeofday(&stop, NULL);
@@ -381,7 +381,7 @@ int OctaveLink::process_octave_server_data(void)
 
 
 //*************************************************************************
-int OctaveLink::set_variable_info_list( void )
+int OctaveLink::setVariableInfoList( void )
 {
   static std::vector<VariableMetaData> lastVars;
   std::vector<VariableMetaData> currVars;
@@ -398,11 +398,11 @@ int OctaveLink::set_variable_info_list( void )
     dim_vector dims = varval.dims ();
 
     VariableMetaData tempVar;
-    tempVar.variable_name = it->name();
-    tempVar.size.push_back( varval.rows() );
-    tempVar.size.push_back( varval.columns() );
-    tempVar.byte_size = varval.byte_size();
-    tempVar.type_name = varval.type_name();
+    tempVar.variableName = it->name();
+    tempVar.dimensionalSize.push_back( varval.rows() );
+    tempVar.dimensionalSize.push_back( varval.columns() );
+    tempVar.byteSize = varval.byte_size();
+    tempVar.typeName = varval.type_name();
 
     currVars.push_back(tempVar);
   }
@@ -412,9 +412,9 @@ int OctaveLink::set_variable_info_list( void )
     lastVars = currVars;
     
     // Copy currVars into octave_server::variable_symtab_list
-    variable_symtab_list = std::vector<VariableMetaData>( currVars.size() );
+    m_variableSymbolTableList = std::vector<VariableMetaData>( currVars.size() );
 
-    std::copy( currVars.begin(), currVars.end(), variable_symtab_list.begin() );
+    std::copy( currVars.begin(), currVars.end(), m_variableSymbolTableList.begin() );
   }
 
   
@@ -423,7 +423,7 @@ int OctaveLink::set_variable_info_list( void )
 
 
 //*************************************************************************
-int OctaveLink::process_requested_variables( void )
+int OctaveLink::processRequestedVariables( void )
 {
   /*
 
@@ -482,26 +482,26 @@ int OctaveLink::process_requested_variables( void )
 
 
 //*************************************************************************
-int OctaveLink::set_history_list( void )
+int OctaveLink::setHistoryList( void )
 {
   
   // Build up the current list
   int currentLen = command_history::length();
-  if ( currentLen != prevHistLen )
+  if ( currentLen != m_previousHistoryLength )
   {
-    for( int i = prevHistLen ; i < currentLen ; i++ )
-      history_list.append( command_history::get_entry(i) );
-    prevHistLen = currentLen;
+    for( int i = m_previousHistoryLength ; i < currentLen ; i++ )
+      m_historyList.append( command_history::get_entry(i) );
+    m_previousHistoryLength = currentLen;
   }
 
   return 0;
 }
 
 //*************************************************************************
-int OctaveLink::set_breakpoint_list( void )
+int OctaveLink::setBreakPointList( void )
 {
   // Set the list of breakpoints
-  current_breakpoints = std::vector<BreakPoint>();
+  m_currentBreakpoints = std::vector<BreakPoint>();
 
   octave_value_list zz;
   
@@ -514,15 +514,15 @@ int OctaveLink::set_breakpoint_list( void )
 
     {
       BreakPoint tmp;
-      tmp.filename = it->first;
-      tmp.line_number = m[j];
+      tmp.fileName = it->first;
+      tmp.lineNumber = m[j];
 
-      current_breakpoints.push_back (tmp);
+      m_currentBreakpoints.push_back (tmp);
     }
   }
 
   // If in debug mode, set the location of the break
-  breakpoint_reached = std::vector<BreakPoint>();
+  m_reachedBreakpoints = std::vector<BreakPoint>();
 
   octave_user_code *dbg_fcn = get_user_code ();
 
@@ -560,12 +560,12 @@ int OctaveLink::set_breakpoint_list( void )
 	    {
 	      funcName = shortName.substr (0,dot);
 	    }
-	  tmp.filename = funcName;
-	  tmp.line_number = l;
+          tmp.fileName = funcName;
+          tmp.lineNumber = l;
 	  
 	  //	  octave_stdout << "BP reached at " << tmp.filename << ":" << tmp.line_number << std::endl;
 
-	  breakpoint_reached.push_back (tmp);
+          m_reachedBreakpoints.push_back (tmp);
         }
       else
         octave_stdout << " <unknown line>" << std::endl;
@@ -582,7 +582,7 @@ int OctaveLink::process_breakpoint_action (void)
 
   if (Vdebugging)
   {
-    if (bp_action==StepInto)
+    if (m_breakPointAction==StepInto)
     {
       Vdebugging = false;
       tree_evaluator::dbstep_flag = -1;
@@ -592,7 +592,7 @@ int OctaveLink::process_breakpoint_action (void)
       rl_done = 1;
       rl_forced_update_display ();
     }
-    else if (bp_action==StepOver)
+    else if (m_breakPointAction==StepOver)
     {
       Vdebugging = false;
       tree_evaluator::dbstep_flag = 1;
@@ -602,7 +602,7 @@ int OctaveLink::process_breakpoint_action (void)
       rl_done = 1;
       rl_forced_update_display ();
     }
-    else if (bp_action==StepOut)
+    else if (m_breakPointAction==StepOut)
     {
       Vdebugging = false;
       tree_evaluator::dbstep_flag = -2;
@@ -614,7 +614,7 @@ int OctaveLink::process_breakpoint_action (void)
 
       
     }
-    else if (bp_action==Continue)
+    else if (m_breakPointAction==Continue)
     {
       Vdebugging = false;
       tree_evaluator::dbstep_flag = 0;
@@ -624,7 +624,7 @@ int OctaveLink::process_breakpoint_action (void)
       rl_done = 1;
       rl_forced_update_display ();
     }
-    else if (bp_action==Break)
+    else if (m_breakPointAction==Break)
     {
       tree_evaluator::dbstep_flag = 0;
       octave_throw_interrupt_exception ();
@@ -634,37 +634,37 @@ int OctaveLink::process_breakpoint_action (void)
       rl_done = 1;
       rl_forced_update_display ();
     }
-    bp_action = None;
+    m_breakPointAction = None;
   }
 
   return 0;
 }
 
 //*************************************************************************
-int OctaveLink::process_breakpoint_add_remove_modify(void)
+int OctaveLink::processBreakpointAndRemoveModify(void)
 {
   //octave_stdout << "Processing breakpoints changes" << std::endl;
   // Process added breakpoints
-  for (int i = 0 ; i < added_breakpoints.size() ; i++)
+  for (int i = 0 ; i < m_addedBreakpoints.size() ; i++)
   {
-    std::string funcName = added_breakpoints[i].filename;
+    std::string funcName = m_addedBreakpoints[i].fileName;
     bp_table::intmap lines;
-    lines[0] = added_breakpoints[i].line_number;
+    lines[0] = m_addedBreakpoints[i].lineNumber;
     bp_table::add_breakpoint (funcName,lines);
     octave_stdout << "Adding breakpoint: " << funcName << " : " << lines[0] << std::endl; 
   }
-  added_breakpoints = std::vector<BreakPoint>();
+  m_addedBreakpoints = std::vector<BreakPoint>();
 
   // Process removed breakpoints
-  for (int i = 0 ; i < removed_breakpoints.size() ; i++)
+  for (int i = 0 ; i < m_removedBreakpoints.size() ; i++)
   {
-    std::string funcName = removed_breakpoints[i].filename;
+    std::string funcName = m_removedBreakpoints[i].fileName;
     bp_table::intmap lines;
-    lines[0] = removed_breakpoints[i].line_number;
+    lines[0] = m_removedBreakpoints[i].lineNumber;
     bp_table::remove_breakpoint (funcName,lines);
     //octave_stdout << "Removing breakpoint: " << funcName << " : " << lines[0] << std::endl; 
   }
-  removed_breakpoints = std::vector<BreakPoint>();
+  m_removedBreakpoints = std::vector<BreakPoint>();
 
   // Process modified breakpoints
   // TODO:

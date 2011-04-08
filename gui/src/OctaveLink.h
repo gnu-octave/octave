@@ -220,11 +220,6 @@ private:
      */
     pthread_mutex_t octave_lock_mutex;
 
-    /**
-      * Debugging/***********************************************************************
-     * HISTORY RELATED VARIABLES
-     **********************************************************************/ related member variables.
-      */
     std::vector<BreakPoint> current_breakpoints;
     std::vector<BreakPoint> breakpoint_reached;
     std::vector<BreakPoint> added_breakpoints;

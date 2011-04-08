@@ -34,7 +34,8 @@ SOURCES +=\
         src/QTerminalWidget.cpp \
         src/TerminalMdiSubWindow.cpp \
         src/MainWindow.cpp \
-        src/Quint.cpp
+        src/Quint.cpp \
+	src/OctaveLink.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -61,5 +62,11 @@ HEADERS += \
         src/ShellCommand.h \
         src/QTerminalWidget.h \
         src/TerminalMdiSubWindow.h \
-    	src/MainWindow.h
+    	src/MainWindow.h \
+	src/OctaveLink.h
+
+INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
+LFLAGS = $$system(mkoctfile -p LFLAGS) $$system(mkoctfile -p OCTAVE_LIBS) $$system(mkoctfile -p LIBS)
+LIBS    += $$LFLAGS -loctave -loctinterp -lreadline
+QMAKE_CXXFLAGS  += $$INCFLAGS
 

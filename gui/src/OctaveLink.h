@@ -21,8 +21,8 @@
  *
  * */
 
-#if !defined (octave_server_h)
-#define octave_server_h 1
+#ifndef OCTAVELINK_H
+#define OCTAVELINK_H
 
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
@@ -59,94 +59,92 @@ inline int pthread_mutex_trylock(pthread_mutex_t *x)
 typedef HANDLE pthread_t;
 #endif
 
-
-typedef int status_t;
-
-/**
- * Enumeration used to identify breakpoint actions
- */
-typedef enum bp_action_enum
-{
-  BP_ACTION_NONE	= 0,
-  BP_ACTION_STEP_INTO	= 1,
-  BP_ACTION_STEP_OVER	= 2,
-  BP_ACTION_STEP_OUT    = 3,
-  BP_ACTION_CONTINUE	= 3,
-  BP_ACTION_BREAK	= 4,
-} bp_action_t;
-
-/**
- * Structure used to store breakpoint info.
- *
- * Notes: used for add, remove, list operations, as well as for the BreakpointReached event.
- */
-typedef struct bp_info_struct
-{
-  /**
-   * The full path and filename where the breakpoint resides.
-   */
-  std::string filename;   
-
-  /**
-   * The line number where the breakpoint resides.
-   * In the future, -1 can indicate an existing but disabled breakpoint.  This
-   * assumes that no one will ever have an M file longer than 2Million lines.
-   */
-  int line_number;
-} bp_info_t;
-
 /**
  * Structure used to store variable information similar to that returned by
  * the 'whos' function.
  */
 typedef struct variable_info_struct variable_info_t;
-typedef struct variable_info_struct
+
+
+class OctaveLink
 {
-  /**
-   * The name of the variable
-   */
-  std::string variable_name;
+public:
+    /**
+     * Enumeration used to identify breakpoint actions
+     */
+    enum BreakPointAction
+    {
+        None,
+        StepInto,
+        StepOver,
+        StepOut,
+        Continue,
+        Break
+    };
 
-  /**
-   * The dimensional size of the variable.
-   */
-  std::vector<int> size;
+    /**
+     * Structure used to store breakpoint info.
+     *
+     * Notes: used for add, remove, list operations, as well as for the BreakpointReached event.
+     */
+    typedef struct BreakPoint
+    {
+      /**
+       * The full path and filename where the breakpoint resides.
+       */
+      std::string filename;
 
-  /**
-   * The size of the variable in bytes.
-   */
-  unsigned long long byte_size;
+      /**
+       * The line number where the breakpoint resides.
+       * In the future, -1 can indicate an existing but disabled breakpoint.  This
+       * assumes that no one will ever have an M file longer than 2Million lines.
+       */
+      int line_number;
+    } BreakPoint;
 
-  /**
-   * The name of the variable type.
-   */
-  std::string type_name;
-  
-  friend int operator==(const variable_info_t& left,
-                        const variable_info_t& right)
-  {
-    return (left.variable_name==right.variable_name) &&
-         (left.size==right.size) &&
-         (left.byte_size==right.byte_size) &&
-         (left.type_name==right.type_name);
-  }
-  
-} variable_info_t;
+    typedef struct RequestedVariable
+    {
+        std::string name;
+        octave_value ov;
+    } RequestedVariable;
 
-typedef struct requested_variable_struct
-{
-  std::string name;
-  octave_value ov;
-} requested_variable_t;
+    typedef struct VariableMetaData
+    {
+        /**
+        * The name of the variable
+        */
+        std::string variable_name;
 
-class octave_server
-{
+        /**
+        * The dimensional size of the variable.
+        */
+        std::vector<int> size;
+
+        /**
+        * The size of the variable in bytes.
+        */
+        unsigned long long byte_size;
+
+        /**
+        * The name of the variable type.
+        */
+        std::string type_name;
+
+        friend int operator==(const VariableMetaData& left,
+                            const VariableMetaData& right)
+        {
+        return (left.variable_name==right.variable_name) &&
+             (left.size==right.size) &&
+             (left.byte_size==right.byte_size) &&
+             (left.type_name==right.type_name);
+        }
+    } VariableMetaData;
+
   private:
     /**
      * Mutex variable used to protect access to internal class data.
      */
     pthread_mutex_t server_mutex;
-    
     
     /**
      * Mutex variable used to protect access to octave internals on asynchronous requests.
@@ -156,29 +154,28 @@ class octave_server
      * main window, etc.
      */
     pthread_mutex_t octave_lock_mutex;
-	  
-	  
+
     /***********************************************************************
      * DEBUGGING RELATED VARIABLE
      **********************************************************************/
-    std::vector<bp_info_t> current_breakpoints;
-    std::vector<bp_info_t> breakpoint_reached;
-    std::vector<bp_info_t> added_breakpoints;
-    std::vector<bp_info_t> removed_breakpoints;
-    std::vector<bp_info_t> modify_breakpoints_old;
-    std::vector<bp_info_t> modify_breakpoints_new;
-    bp_action_t 	   bp_action;
+    std::vector<BreakPoint> current_breakpoints;
+    std::vector<BreakPoint> breakpoint_reached;
+    std::vector<BreakPoint> added_breakpoints;
+    std::vector<BreakPoint> removed_breakpoints;
+    std::vector<BreakPoint> modify_breakpoints_old;
+    std::vector<BreakPoint> modify_breakpoints_new;
+    BreakPointAction   	    bp_action;
    
     /***********************************************************************
      * VARIABLE INTERROGATION RELATED VARIABLES
      **********************************************************************/
-    std::vector<variable_info_t> variable_symtab_list;
+    std::vector<VariableMetaData> variable_symtab_list;
     std::vector<std::string>     variables_request_list;
 
     // NOTE: Create an overloaded operator<< for octave_value to do the
     // flattening.  This will allow us to append easily to an ostringstream
     // for output.
-    std::vector<requested_variable_t>    requested_variables;    
+    std::vector<RequestedVariable>    requested_variables;
     
     /***********************************************************************
      * HISTORY RELATED VARIABLES
@@ -190,8 +187,8 @@ class octave_server
     
   public:
 
-    octave_server();
-    ~octave_server();
+    OctaveLink();
+    ~OctaveLink();
 
     bool isProcessing(void) {return is_processing_server_data;};
 
@@ -204,20 +201,20 @@ class octave_server
     /***********************************************************************
      * DEBUGGING RELATED FUNCTIONS
      **********************************************************************/ 
-    std::vector<bp_info_t> get_breakpoint_list(int& status);
+    std::vector<BreakPoint> get_breakpoint_list(int& status);
     bool                   is_breakpoint_reached(int& status);
-    std::vector<bp_info_t> get_breakpoint_reached();    
-    status_t 		   add_breakpoint( bp_info_t bp_info );
-    status_t		   remove_breakpoint( bp_info_t bp_info );
-    status_t		   modify_breakpoint( bp_info_t old_bp_info, bp_info_t new_bp_info );
-    status_t		   set_breakpoint_action( bp_action_t action );
+    std::vector<BreakPoint> get_breakpoint_reached();
+    int 		   add_breakpoint( BreakPoint bp_info );
+    int		   remove_breakpoint( BreakPoint bp_info );
+    int		   modify_breakpoint( BreakPoint old_bp_info, BreakPoint new_bp_info );
+    int		   set_breakpoint_action( BreakPointAction action );
    
     /***********************************************************************
      * VARIABLES RELATED FUNCTIONS
      **********************************************************************/
-    std::vector<variable_info_t>	get_variable_info_list(void);
-    std::vector<requested_variable_t>  	get_requested_variables(void);
-    status_t				set_requested_variables_names( std::vector<std::string> variable_names );
+    std::vector<VariableMetaData>	get_variable_info_list(void);
+    std::vector<RequestedVariable>  	get_requested_variables(void);
+    int				set_requested_variables_names( std::vector<std::string> variable_names );
 
     /***********************************************************************
      * HISTORY RELATED FUNCTIONS
@@ -251,33 +248,33 @@ class octave_server
      *   ...
      *   Release lock
      */
-    status_t process_octave_server_data(void);
+    int process_octave_server_data(void);
  
     /***********************************************************************
      * DEBUGGING RELATED FUNCTIONS
      **********************************************************************/   
-    status_t set_breakpoint_list(void);
-    status_t set_current_breakpoint(std::string filename, int line_number); // duplicate of process_breakpoint_action or helper function???
-    status_t process_breakpoint_add_remove_modify(void);
-    status_t process_breakpoint_action(void);
+    int set_breakpoint_list(void);
+    int set_current_breakpoint(std::string filename, int line_number); // duplicate of process_breakpoint_action or helper function???
+    int process_breakpoint_add_remove_modify(void);
+    int process_breakpoint_action(void);
 
     /***********************************************************************
      * VARIABLES INTERROGATION RELATED FUNCTIONS
      **********************************************************************/
-    status_t set_variable_info_list(void);
-    status_t process_requested_variables(void);
+    int set_variable_info_list(void);
+    int process_requested_variables(void);
     
     /***********************************************************************
      * HISTORY RELATED FUNCTIONS
      **********************************************************************/    
-    status_t set_history_list(void);
+    int set_history_list(void);
 
 };
 
 int server_rl_event_hook_function(void);
 bool server_rl_is_processing(void);
 
-extern octave_server oct_octave_server;
+extern OctaveLink oct_octave_server;
 
-#endif // octave_server_h
+#endif // OCTAVELINK_H
 

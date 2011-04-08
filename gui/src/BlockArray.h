@@ -1,8 +1,6 @@
 /*
     This file is part of Konsole, an X terminal.
-    Copyright (C) 2000 by Stephan Kulow <coolo@kde.org>
-   
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2000 by Stephan Kulow <coolo@kde.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,6 +33,7 @@ struct Block {
     unsigned char data[ENTRIES];
     size_t size;
 };
+
 // ///////////////////////////////////////////////////////
 
 class BlockArray {
@@ -54,7 +53,7 @@ public:
     * adds the Block at the end of history.
     * This may drop other blocks.
     *
-    * The ownership on the block is transfered.
+    * The ownership on the block is transferred.
     * An unique index number is returned for accessing
     * it later (if not yet dropped then)
     *
@@ -113,5 +112,6 @@ private:
 
     int ion;
     size_t length;
+
 };
 #endif

@@ -2,8 +2,6 @@
 
     Copyright (C) 2003,2007 Oswald Buddenhagen <ossi@kde.org>
 
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
-
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
     License as published by the Free Software Foundation; either
@@ -22,8 +20,8 @@
 
 #ifndef kpty_h
 #define kpty_h
-
-#include <QtCore>
+#include <QtCore/qglobal.h>
+//#include "kpty_export.h"
 
 struct KPtyPrivate;
 struct termios;
@@ -58,6 +56,16 @@ public:
   bool open();
 
   /**
+   * Open using an existing pty master.
+   *
+   * @param fd an open pty master file descriptor.
+   *   The ownership of the fd remains with the caller;
+   *   it will not be automatically closed at any point.
+   * @return true if a pty pair was successfully opened
+   */
+  bool open(int fd);
+
+  /**
    * Close the pty master/slave pair.
    */
   void close();
@@ -75,6 +83,15 @@ public:
    * used.
    */
   void closeSlave();
+
+  /**
+   * Open the pty slave descriptor.
+   *
+   * This undoes the effect of closeSlave().
+   *
+   * @return true if the pty slave was successfully opened
+   */
+  bool openSlave();
 
   /**
    * Creates a new session and process group and makes this pty the

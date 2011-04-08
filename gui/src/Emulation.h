@@ -1,10 +1,8 @@
 /*
     This file is part of Konsole, an X terminal.
     
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
-    Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2007-2008 by Robert Knight <robertknight@gmail.com>
+    Copyright 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,9 +28,13 @@
 
 // Qt 
 #include <QtGui/QKeyEvent>
+//#include <QPointer>
 #include <QtCore/QTextCodec>
 #include <QtCore/QTextStream>
 #include <QtCore/QTimer>
+
+// Konsole
+#include "konsole_export.h"
 
 class KeyboardTranslator;
 class HistoryType;
@@ -114,7 +116,7 @@ enum
  * how long the emulation has been active/idle for and also respond to
  * a 'bell' event in different ways.
  */
-class Emulation : public QObject
+class KONSOLEPRIVATE_EXPORT Emulation : public QObject
 { 
 Q_OBJECT
 
@@ -132,14 +134,13 @@ public:
   ScreenWindow* createWindow();
 
   /** Returns the size of the screen image which the emulation produces */
-  QSize imageSize();
+  QSize imageSize() const;
 
   /**
    * Returns the total number of lines, including those stored in the history.
    */ 
-  int lineCount();
+  int lineCount() const;
 
-  
   /** 
    * Sets the history store used by this emulation.  When new lines
    * are added to the output, older lines at the top of the screen are transferred to a history
@@ -150,7 +151,7 @@ public:
    */
   void setHistory(const HistoryType&);
   /** Returns the history store used by this emulation.  See setHistory() */
-  const HistoryType& history();
+  const HistoryType& history() const;
   /** Clears the history scroll. */
   void clearHistory();
 
@@ -162,13 +163,13 @@ public:
    * @param decoder A decoder which converts lines of terminal characters with 
    * appearance attributes into output text.  PlainTextDecoder is the most commonly
    * used decoder.
-   * @param startLine The first
+   * @param startLine Index of first line to copy
+   * @param endLine Index of last line to copy
    */
   virtual void writeToStream(TerminalCharacterDecoder* decoder,int startLine,int endLine);
   
-  
   /** Returns the codec used to decode incoming characters.  See setCodec() */
-  const QTextCodec* codec() { return _codec; }
+  const QTextCodec* codec() const { return _codec; }
   /** Sets the codec used to decode incoming characters.  */
   void setCodec(const QTextCodec*);
 
@@ -177,11 +178,12 @@ public:
    * Returns true if the current codec used to decode incoming
    * characters is UTF-8
    */
-  bool utf8() { Q_ASSERT(_codec); return _codec->mibEnum() == 106; }
+  bool utf8() const
+  { Q_ASSERT(_codec); return _codec->mibEnum() == 106; }
   
 
   /** TODO Document me */
-  virtual char getErase() const;
+  virtual char eraseChar() const;
 
   /** 
    * Sets the key bindings used to key events
@@ -193,7 +195,7 @@ public:
    * Returns the name of the emulation's current key bindings.
    * See setKeyBindings()
    */
-  QString keyBindings();
+  QString keyBindings() const;
 
   /** 
    * Copies the current image into the history and clears the screen.
@@ -265,7 +267,7 @@ signals:
    * standard input of the terminal.
    *
    * @param data The buffer of data ready to be sent
-   * @paran len The length of @p data in bytes
+   * @param len The length of @p data in bytes
    */
   void sendData(const char* data,int len);
 
@@ -352,7 +354,7 @@ signals:
    * <li>1 - Set window icon text to @p newTitle</li>
    * <li>2 - Set session title to @p newTitle</li>
    * <li>11 - Set the session's default background color to @p newTitle,
-   *         where @p newTitle can be an HTML-style string (#RRGGBB) or a named
+   *         where @p newTitle can be an HTML-style string ("#RRGGBB") or a named
    *         color (eg 'red', 'blue').  
    *         See http://doc.trolltech.com/4.2/qcolor.html#setNamedColor for more
    *         details.
@@ -386,11 +388,18 @@ signals:
    */
   void profileChangeCommandReceived(const QString& text);
 
+  /** 
+   * Emitted when a flow control key combination ( Ctrl+S or Ctrl+Q ) is pressed.
+   * @param suspendKeyPressed True if Ctrl+S was pressed to suspend output or Ctrl+Q to
+   * resume output.
+   */
+  void flowControlKeyPressed(bool suspendKeyPressed);
+
 protected:
-  virtual void setMode  (int mode) = 0;
+  virtual void setMode(int mode) = 0;
   virtual void resetMode(int mode) = 0;
    
- /** 
+  /** 
    * Processes an incoming character.  See receiveData()
    * @p ch A unicode character code. 
    */
@@ -428,7 +437,6 @@ protected:
   //the current text codec.  (this allows for rendering of non-ASCII characters in text files etc.)
   const QTextCodec* _codec;
   QTextDecoder* _decoder;
-
   const KeyboardTranslator* _keyTranslator; // the keyboard layout
 
 protected slots:
@@ -448,7 +456,6 @@ private slots:
   void usesMouseChanged(bool usesMouse);
 
 private:
-
   bool _usesMouse;
   QTimer _bulkTimer1;
   QTimer _bulkTimer2;

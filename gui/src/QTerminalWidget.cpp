@@ -123,6 +123,14 @@ void QTerminalWidget::setShellProgram(QString progname)
     m_impl->m_session->setProgram(progname);	
 }
 
+void QTerminalWidget::openTeletype(int fd)
+{
+  if ( m_impl->m_session->isRunning() )
+    return;
+
+  m_impl->m_session->openTeletype(fd);
+}
+
 void QTerminalWidget::setArgs(QStringList &args)
 {
     if (!m_impl->m_session)
@@ -139,6 +147,7 @@ void QTerminalWidget::setTextCodec(QTextCodec *codec)
 
 void QTerminalWidget::setColorScheme(ColorScheme scheme)
 {
+    /*
     switch(scheme) {
         case WhiteOnBlack:
 		m_impl->m_terminalDisplay->setColorTable(whiteonblack_color_table);
@@ -149,7 +158,7 @@ void QTerminalWidget::setColorScheme(ColorScheme scheme)
         case BlackOnLightYellow:
 		m_impl->m_terminalDisplay->setColorTable(blackonlightyellow_color_table);
 		break;
-    };
+    };*/
 }
 
 void QTerminalWidget::setSize(int h, int v)

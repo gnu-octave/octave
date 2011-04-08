@@ -1,10 +1,8 @@
 /*
     This file is part of Konsole, KDE's terminal emulator. 
     
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
-    Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2007-2008 by Robert Knight <robertknight@gmail.com>
+    Copyright 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,9 +27,15 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
 #include <QtCore/QList>
-#include <QtCore>
+#include <QtCore/QSize>
 
-#include "k3process.h"
+// KDE
+//#include <KPtyProcess>
+#include "kprocess.h"
+#include "kptyprocess.h"
+
+// Konsole
+#include "konsole_export.h"
 
 /**
  * The Pty class is used to start the terminal process, 
@@ -46,7 +50,8 @@
  * To start the terminal process, call the start() method
  * with the program name and appropriate arguments. 
  */
-class Pty: public K3Process
+//class KONSOLEPRIVATE_EXPORT Pty: public KPtyProcess
+class KONSOLEPRIVATE_EXPORT Pty: public KPtyProcess
 {
 Q_OBJECT
 
@@ -61,7 +66,14 @@ Q_OBJECT
      * To start the terminal process, call the run() method with the 
      * name of the program to start and appropriate arguments.
      */
-    Pty();
+    explicit Pty(QObject* parent = 0);
+
+    /** 
+     * Construct a process using an open pty master.
+     * See KPtyProcess::KPtyProcess()
+     */
+    explicit Pty(int ptyMasterFd, QObject* parent = 0);
+
     ~Pty();
 
     /**
@@ -88,18 +100,23 @@ Q_OBJECT
                const QStringList& arguments, 
                const QStringList& environment, 
                ulong winid, 
-               bool addToUtmp
-//               const QString& dbusService,
-//               const QString& dbusSession
+               bool addToUtmp,
+               const QString& dbusService,
+               const QString& dbusSession
              );
 
     /** TODO: Document me */
     void setWriteable(bool writeable);
 
     /** 
-     * Enables or disables Xon/Xoff flow control.
+     * Enables or disables Xon/Xoff flow control.  The flow control setting
+     * may be changed later by a terminal application, so flowControlEnabled()
+     * may not equal the value of @p on in the previous call to setFlowControlEnabled()
      */
-    void setXonXoff(bool on);
+    void setFlowControlEnabled(bool on);
+
+    /** Queries the terminal state and returns true if Xon/Xoff flow control is enabled. */
+    bool flowControlEnabled() const;
 
     /** 
      * Sets the size of the window (in lines and columns of characters) 
@@ -113,8 +130,8 @@ Q_OBJECT
     /** TODO Document me */
     void setErase(char erase);
 
-	/** */
-	char erase() const;
+    /** */
+    char erase() const;
 
     /**
      * Returns the process id of the teletype's current foreground
@@ -126,13 +143,6 @@ Q_OBJECT
      */
     int foregroundProcessGroup() const;
    
-    /**
-     * Returns whether the buffer used to send data to the
-     * terminal process is full.
-     */
-    bool bufferFull() const { return _bufferFull; }
-
-
   public slots:
 
     /**
@@ -163,13 +173,6 @@ Q_OBJECT
   signals:
 
     /**
-     * Emitted when the terminal process terminates.
-     *
-     * @param exitCode The status code which the process exited with.
-     */
-    void done(int exitCode);
-
-    /**
      * Emitted when a new block of data is received from
      * the teletype.
      *
@@ -177,60 +180,26 @@ Q_OBJECT
      * @param length Length of @p buffer
      */
     void receivedData(const char* buffer, int length);
-    
-    /**
-     * Emitted when the buffer used to send data to the terminal
-     * process becomes empty, i.e. all data has been sent.
-     */
-    void bufferEmpty();
-    
+   
+  protected:
+      void setupChildProcess();
 
   private slots:
-    
-    // called when terminal process exits
-    void donePty();
     // called when data is received from the terminal process 
-    void dataReceived(K3Process*, char* buffer, int length);
-    // sends the first enqueued buffer of data to the
-    // terminal process
-    void doSendJobs();
-    // called when the terminal process is ready to
-    // receive more data
-    void writeReady();
-
+    void dataReceived(); 
+    
   private:
+      void init();
+
     // takes a list of key=value pairs and adds them
     // to the environment for the process
     void addEnvironmentVariables(const QStringList& environment);
-
-    // enqueues a buffer of data to be sent to the 
-    // terminal process
-    void appendSendJob(const char* buffer, int length);
-   
-    // a buffer of data in the queue to be sent to the 
-    // terminal process 
-    class SendJob {
-	public:
-      		SendJob() {}
-      		SendJob(const char* b, int len) : buffer(len)
-		{
-			memcpy( buffer.data() , b , len );
-        }
-	
-		const char* data() const { return buffer.constData(); }
-		int length() const { return buffer.size(); }	
-	private:
-      		QVector<char> buffer;
-    };
-
-    QList<SendJob> _pendingSendJobs;
-    bool _bufferFull;
 
     int  _windowColumns; 
     int  _windowLines;
     char _eraseChar;
     bool _xonXoff;
     bool _utf8;
-    KPty *_pty;
 };
+
 #endif // PTY_H

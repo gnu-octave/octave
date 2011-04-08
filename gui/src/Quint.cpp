@@ -19,6 +19,18 @@
 #include <QtGui/QApplication>
 #include "MainWindow.h"
 
+// System
+#include <termios.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+#include <iostream>
+#include "pty.h"
+#include <assert.h>
+#include "QTerminalWidget.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

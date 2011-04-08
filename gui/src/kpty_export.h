@@ -1,6 +1,5 @@
-/* This file is part of the KDE libraries
-
-    Copyright (C) 2003,2007 Oswald Buddenhagen <ossi@kde.org>
+/*  This file is part of the KDE project
+    Copyright (C) 2007 David Faure <faure@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -18,42 +17,30 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef kpty_p_h
-#define kpty_p_h
+#ifndef KPTY_EXPORT_H
+#define KPTY_EXPORT_H
 
-#include "kpty.h"
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+//#include <kdemacros.h>
+#include <QtCore/qglobal.h>
+#define KDE_EXPORT
+#define KDE_IMPORT
 
-//#include <config-pty.h>
-#if defined(Q_OS_MAC)
-#define HAVE_UTIL_H
-#define HAVE_UTMPX
-#define _UTMPX_COMPAT
-#define HAVE_PTSNAME
-#define HAVE_SYS_TIME_H
-#else
-#define HAVE_PTY_H
+#ifndef KPTY_EXPORT
+# if defined(KDELIBS_STATIC_LIBS)
+   /* No export/import for static libraries */
+#  define KPTY_EXPORT
+# elif defined(MAKE_KDECORE_LIB)
+   /* We are building this library */ 
+#  define KPTY_EXPORT KDE_EXPORT
+# else
+   /* We are using this library */ 
+#  define KPTY_EXPORT KDE_IMPORT
+# endif
 #endif
 
-#define HAVE_OPENPTY
-
-#include <QtCore/QByteArray>
-
-struct KPtyPrivate {
-    Q_DECLARE_PUBLIC(KPty)
-
-    KPtyPrivate(KPty* parent);
-    virtual ~KPtyPrivate();
-#ifndef HAVE_OPENPTY
-    bool chownpty(bool grant);
-#endif
-
-    int masterFd;
-    int slaveFd;
-    bool ownMaster:1;
-
-    QByteArray ttyName;
-
-    KPty *q_ptr;
-};
+# ifndef KPTY_EXPORT_DEPRECATED
+#  define KPTY_EXPORT_DEPRECATED KDE_DEPRECATED KPTY_EXPORT
+# endif
 
 #endif

@@ -1,10 +1,8 @@
 /*
     This file is part of Konsole, KDE's terminal.
     
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
-    Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2007-2008 by Robert Knight <robertknight@gmail.com>
+    Copyright 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,10 +31,10 @@
 
 typedef unsigned char LineProperty;
 
-static const int LINE_DEFAULT		= 0;
-static const int LINE_WRAPPED 	 	= (1 << 0);
-static const int LINE_DOUBLEWIDTH  	= (1 << 1);
-static const int LINE_DOUBLEHEIGHT	= (1 << 2);
+static const int LINE_DEFAULT        = 0;
+static const int LINE_WRAPPED          = (1 << 0);
+static const int LINE_DOUBLEWIDTH      = (1 << 1);
+static const int LINE_DOUBLEHEIGHT    = (1 << 2);
 
 #define DEFAULT_RENDITION  0
 #define RE_BOLD            (1 << 0)
@@ -101,8 +99,13 @@ public:
    * it is drawn with the specified @p palette, independent of whether
    * or not the character has the RE_BOLD rendition flag. 
    */
-  bool   isBold(const ColorEntry* base) const;
+  ColorEntry::FontWeight fontWeight(const ColorEntry* base) const;
   
+  /** 
+   * returns true if the format (color, rendition flag) of the compared characters is equal
+   */
+  bool equalsFormat(const Character &other) const;
+
   /** 
    * Compares two characters and returns true if they have the same unicode character value,
    * rendition and colors.
@@ -139,12 +142,22 @@ inline bool Character::isTransparent(const ColorEntry* base) const
           base[backgroundColor._u+2+(backgroundColor._v?BASE_COLORS:0)].transparent);
 }
 
-inline bool Character::isBold(const ColorEntry* base) const
+inline bool Character::equalsFormat(const Character& other) const
 {
-  return ((backgroundColor._colorSpace == COLOR_SPACE_DEFAULT) &&
-            base[backgroundColor._u+0+(backgroundColor._v?BASE_COLORS:0)].bold)
-      || ((backgroundColor._colorSpace == COLOR_SPACE_SYSTEM) &&
-            base[backgroundColor._u+2+(backgroundColor._v?BASE_COLORS:0)].bold);
+  return 
+    backgroundColor==other.backgroundColor &&
+    foregroundColor==other.foregroundColor &&
+    rendition==other.rendition;
+}	
+
+inline ColorEntry::FontWeight Character::fontWeight(const ColorEntry* base) const
+{
+    if (backgroundColor._colorSpace == COLOR_SPACE_DEFAULT)
+        return base[backgroundColor._u+0+(backgroundColor._v?BASE_COLORS:0)].fontWeight;
+    else if (backgroundColor._colorSpace == COLOR_SPACE_SYSTEM)
+        return base[backgroundColor._u+2+(backgroundColor._v?BASE_COLORS:0)].fontWeight;
+    else
+        return ColorEntry::UseCurrentFormat;
 }
 
 extern unsigned short vt100_graphics[32];
@@ -200,6 +213,8 @@ private:
     // themselves.
     QHash<ushort,ushort*> extendedCharTable;
 };
+
+Q_DECLARE_TYPEINFO(Character, Q_MOVABLE_TYPE);
 
 #endif // CHARACTER_H
 

@@ -55,6 +55,7 @@ public:
     ~QTerminalWidget();
 
     void startShellProgram();
+    void openTeletype(int fd);
 
     /** Default is application font with family Monospace, size 10. */
     void setTerminalFont(QFont &font); 

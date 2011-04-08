@@ -64,7 +64,8 @@
 #include <QtCore/QMap>
 #include <QtCore/QFile>
 #include <QtCore/QSocketNotifier>
-
+#include <QStringList>
+#include <QDebug>
 //#include <kdebug.h>
 //#include <kstandarddirs.h>
 //#include <kuser.h>

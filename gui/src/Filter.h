@@ -1,7 +1,5 @@
 /*
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2007-2008 by Robert Knight <robertknight@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,6 +30,7 @@
 
 // Local
 #include "Character.h"
+
 
 /**
  * A filter processes blocks of text looking for certain patterns (such as URLs or keywords from a list)
@@ -367,12 +366,14 @@ public:
      * @param image The terminal image
      * @param lines The number of lines in the terminal image
      * @param columns The number of columns in the terminal image
+     * @param lineProperties The line properties to set for image
      */
     void setImage(const Character* const image , int lines , int columns,
-				  const QVector<LineProperty>& lineProperties);  
+                  const QVector<LineProperty>& lineProperties);  
 
 private:
     QString* _buffer;
     QList<int>* _linePositions;
 };
+
 #endif //FILTER_H

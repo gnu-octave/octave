@@ -128,22 +128,14 @@ bool server_rl_is_processing(void)
 }
 
 //*************************************************************************
-OctaveLink::OctaveLink()
-{
-  // Create the mutexes 
+OctaveLink::OctaveLink() {
   pthread_mutex_init(&m_serverMutex,NULL);
   pthread_mutex_init(&m_octaveLockMutex,NULL);
-
   m_previousHistoryLength = 0;
-
   m_isProcessingServerData = false;
 }
 
-
-//*************************************************************************
-OctaveLink::~OctaveLink()
-{
-
+OctaveLink::~OctaveLink() {
 }
 
 /*******************************************************************************
@@ -153,21 +145,19 @@ OctaveLink::~OctaveLink()
  *******************************************************************************/
 
 //*************************************************************************
-std::vector<OctaveLink::VariableMetaData> OctaveLink::variableInfoList(void)
-{
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return std::vector<VariableMetaData>();
+std::vector<OctaveLink::VariableMetaData> OctaveLink::variableInfoList(void) {
+    // Acquire the mutex
+    if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
+        return std::vector<VariableMetaData>();
 
-  // Copy the list of variable information
-  std::vector<VariableMetaData> retval( m_variableSymbolTableList.size() );
-  std::copy( m_variableSymbolTableList.begin(), m_variableSymbolTableList.end(), retval.begin() );
-  m_variableSymbolTableList = std::vector<VariableMetaData>();
+    // Copy the list of variable information
+    std::vector<VariableMetaData> retval( m_variableSymbolTableList.size() );
+    std::copy( m_variableSymbolTableList.begin(), m_variableSymbolTableList.end(), retval.begin() );
+    m_variableSymbolTableList = std::vector<VariableMetaData>();
 
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  return retval;
+    // Release the mutex
+    pthread_mutex_unlock( &m_serverMutex );
+    return retval;
 }
 
 
@@ -374,8 +364,6 @@ int OctaveLink::processOctaveServerData(void)
   double elapsed = stop.tv_sec - start.tv_sec + 1E-6 * (stop.tv_usec - start.tv_usec);
   //octave_stdout << "SERVER ELAPSED: " << elapsed << std::endl;
 #endif
-
-
   return 0;
 }
 
@@ -570,9 +558,6 @@ int OctaveLink::setBreakPointList( void )
       else
         octave_stdout << " <unknown line>" << std::endl;
     }
-
-  
-
   return 0;
 }
 
@@ -665,11 +650,5 @@ int OctaveLink::processBreakpointAndRemoveModify(void)
     //octave_stdout << "Removing breakpoint: " << funcName << " : " << lines[0] << std::endl; 
   }
   m_removedBreakpoints = std::vector<BreakPoint>();
-
-  // Process modified breakpoints
-  // TODO:
-
-
-
   return 0;
 }

@@ -1,8 +1,6 @@
 /*
     This file is part of Konsole, an X terminal.
-    Copyright (C) 2000 by Stephan Kulow <coolo@kde.org>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2000 by Stephan Kulow <coolo@kde.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,13 +16,10 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     02110-1301  USA.
-
 */
 
 // Own
 #include "BlockArray.h"
-
-#include <QtCore>
 
 // System
 #include <assert.h>
@@ -32,6 +27,13 @@
 #include <sys/param.h>
 #include <unistd.h>
 #include <stdio.h>
+
+// KDE
+//#include <kde_file.h>
+//#include <kdebug.h>
+
+#define KDE_fseek ::fseek
+#define KDE_lseek ::lseek
 
 static int blocksize = 0;
 
@@ -65,7 +67,7 @@ size_t BlockArray::append(Block *block)
     if (current >= size) current = 0;
 
     int rc;
-    rc = lseek(ion, current * blocksize, SEEK_SET); if (rc < 0) { perror("HistoryBuffer::add.seek"); setHistorySize(0); return size_t(-1); }
+    rc = KDE_lseek(ion, current * blocksize, SEEK_SET); if (rc < 0) { perror("HistoryBuffer::add.seek"); setHistorySize(0); return size_t(-1); }
     rc = write(ion, block, blocksize); if (rc < 0) { perror("HistoryBuffer::add.write"); setHistorySize(0); return size_t(-1); }
 
     length++;
@@ -113,7 +115,7 @@ const Block* BlockArray::at(size_t i)
         return lastmap;
 
     if (i > index) {
-        qDebug() << "BlockArray::at() i > index\n";
+        //kDebug(1211) << "BlockArray::at() i > index\n";
         return 0;
     }
     
@@ -197,7 +199,8 @@ bool BlockArray::setHistorySize(size_t newsize)
         return false;
     } else {
         decreaseBuffer(newsize);
-        ftruncate(ion, length*blocksize);
+        if (ftruncate(ion, length*blocksize) == -1)
+            perror("ftruncate");
         size = newsize;
 
         return true;
@@ -206,14 +209,14 @@ bool BlockArray::setHistorySize(size_t newsize)
 
 void moveBlock(FILE *fion, int cursor, int newpos, char *buffer2)
 {
-    int res = fseek(fion, cursor * blocksize, SEEK_SET);
+    int res = KDE_fseek(fion, cursor * blocksize, SEEK_SET);
     if (res)
         perror("fseek");
     res = fread(buffer2, blocksize, 1, fion);
     if (res != 1)
         perror("fread");
 
-    res = fseek(fion, newpos * blocksize, SEEK_SET);
+    res = KDE_fseek(fion, newpos * blocksize, SEEK_SET);
     if (res)
         perror("fseek");
     res = fwrite(buffer2, blocksize, 1, fion);
@@ -292,8 +295,8 @@ void BlockArray::increaseBuffer()
     FILE *fion = fdopen(dup(ion), "w+b");
     if (!fion) {
         perror("fdopen/dup");
-	delete [] buffer1;
-	delete [] buffer2;
+    delete [] buffer1;
+    delete [] buffer2;
         return;
     }
 
@@ -302,7 +305,7 @@ void BlockArray::increaseBuffer()
     {
         // free one block in chain
         int firstblock = (offset + i) % size;
-        res = fseek(fion, firstblock * blocksize, SEEK_SET);
+        res = KDE_fseek(fion, firstblock * blocksize, SEEK_SET);
         if (res)
             perror("fseek");
         res = fread(buffer1, blocksize, 1, fion);
@@ -315,7 +318,7 @@ void BlockArray::increaseBuffer()
             newpos = (cursor - offset + size) % size;
             moveBlock(fion, cursor, newpos, buffer2);
         }
-        res = fseek(fion, i * blocksize, SEEK_SET);
+        res = KDE_fseek(fion, i * blocksize, SEEK_SET);
         if (res)
             perror("fseek");
         res = fwrite(buffer1, blocksize, 1, fion);

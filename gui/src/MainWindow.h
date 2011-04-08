@@ -22,6 +22,7 @@
 #include <QtGui/QMainWindow>
 #include <QMdiArea>
 
+
 /**
   * \class MainWindow
   *

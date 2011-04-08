@@ -2,9 +2,9 @@
 
    This file is part of the KDE libraries
    Copyright (C) 2002 Waldo Bastian <bastian@kde.org>
-   Copyright (C) 2002-2003,2007 Oswald Buddenhagen <ossi@kde.org>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+   Copyright (C) 2002-2003,2007-2008 Oswald Buddenhagen <ossi@kde.org>
+   Copyright (C) 2010 KDE e.V. <kde-ev-board@kde.org>
+     Author Adriaan de Groot <groot@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -23,6 +23,8 @@
 */
 
 #include "kpty_p.h"
+
+//#include <config.h>
 
 #ifdef __sgi
 #define __svr4__
@@ -71,6 +73,9 @@
 # include <util.h>
 #endif
 
+#define HAVE_UTMPX
+#define _UTMPX_COMPAT
+
 #ifdef HAVE_UTEMPTER
 extern "C" {
 # include <utempter.h>
@@ -110,7 +115,7 @@ extern "C" {
 #if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
 # define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__)
+# if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__) || defined(__sun)
 #  define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
 # else
 #  define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
@@ -120,7 +125,7 @@ extern "C" {
 #if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
 # define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__CYGWIN__)
+# if defined(_HPUX_SOURCE) || defined(__CYGWIN__) || defined(__sun)
 #  define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
 # else
 #  define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
@@ -129,15 +134,19 @@ extern "C" {
 
 //#include <kdebug.h>
 //#include <kstandarddirs.h>	// findExe
+//#include <kde_file.h>
 
-#include <QtCore>
-
-// not defined on HP-UX for example
-#ifndef CTRL
-# define CTRL(x) ((x) & 037)
-#endif
+#include <QtCore/Q_PID>
 
 #define TTY_GROUP "tty"
+
+#ifndef PATH_MAX
+# ifdef MAXPATHLEN
+#  define PATH_MAX MAXPATHLEN
+# else
+#  define PATH_MAX 1024
+# endif
+#endif
 
 ///////////////////////
 // private functions //
@@ -147,26 +156,30 @@ extern "C" {
 // private data //
 //////////////////
 
-KPtyPrivate::KPtyPrivate() :
-    masterFd(-1), slaveFd(-1)
+KPtyPrivate::KPtyPrivate(KPty* parent) :
+    masterFd(-1), slaveFd(-1), ownMaster(true), q_ptr(parent)
 {
 }
 
-bool KPtyPrivate::chownpty(bool)
+KPtyPrivate::~KPtyPrivate()
 {
-//    return !QProcess::execute(KStandardDirs::findExe("kgrantpty"),
-//        QStringList() << (grant?"--grant":"--revoke") << QString::number(masterFd));
-    return true;
 }
+
+#ifndef HAVE_OPENPTY
+bool KPtyPrivate::chownpty(bool grant)
+{
+    return !QProcess::execute(KStandardDirs::findExe("kgrantpty"),
+        QStringList() << (grant?"--grant":"--revoke") << QString::number(masterFd));
+}
+#endif
 
 /////////////////////////////
 // public member functions //
 /////////////////////////////
 
 KPty::KPty() :
-    d_ptr(new KPtyPrivate)
+    d_ptr(new KPtyPrivate(this))
 {
-    d_ptr->q_ptr = this;
 }
 
 KPty::KPty(KPtyPrivate *d) :
@@ -188,6 +201,8 @@ bool KPty::open()
   if (d->masterFd >= 0)
     return true;
 
+  d->ownMaster = true;
+
   QByteArray ptyName;
 
   // Find a master pty that we can open ////////////////////////////////
@@ -204,7 +219,7 @@ bool KPty::open()
   {
     d->masterFd = -1;
     d->slaveFd = -1;
-    kWarning(175) << "Can't open a pseudo teletype";
+    //kWarning(175) << "Can't open a pseudo teletype";
     return false;
   }
   d->ttyName = ptsn;
@@ -226,14 +241,13 @@ bool KPty::open()
 #elif defined(HAVE_GETPT)
   d->masterFd = ::getpt();
 #elif defined(PTM_DEVICE)
-  d->masterFd = ::open(PTM_DEVICE, O_RDWR|O_NOCTTY);
+  //d->masterFd = KDE_open(PTM_DEVICE, O_RDWR|O_NOCTTY);
+d->masterFd = ::open(PTM_DEVICE, O_RDWR|O_NOCTTY);
 #else
 # error No method to open a PTY master detected.
 #endif
-
   if (d->masterFd >= 0)
   {
- 
 #ifdef HAVE_PTSNAME
     char *ptsn = ptsname(d->masterFd);
     if (ptsn) {
@@ -241,13 +255,14 @@ bool KPty::open()
 #else
     int ptyno;
     if (!ioctl(d->masterFd, TIOCGPTN, &ptyno)) {
-        d->ttyName = QByteArray("/dev/pts/") + QByteArray::number(ptyno);
+        char buf[32];
+        sprintf(buf, "/dev/pts/%d", ptyno);
+        d->ttyName = buf;
 #endif
 #ifdef HAVE_GRANTPT
         if (!grantpt(d->masterFd))
            goto grantedpt;
 #else
-
         goto gotpty;
 #endif
     }
@@ -299,28 +314,27 @@ bool KPty::open()
     }
   }
 
-  qWarning() << "Can't open a pseudo teletype";
+  //kWarning(175) << "Can't open a pseudo teletype";
   return false;
 
  gotpty:
-  struct stat st;
-  if (stat(d->ttyName.data(), &st)) {
+  KDE_struct_stat st;
+  if (KDE_stat(d->ttyName.data(), &st))
     return false; // this just cannot happen ... *cough*  Yeah right, I just
                   // had it happen when pty #349 was allocated.  I guess
                   // there was some sort of leak?  I only had a few open.
-    }
   if (((st.st_uid != getuid()) ||
        (st.st_mode & (S_IRGRP|S_IXGRP|S_IROTH|S_IWOTH|S_IXOTH))) &&
       !d->chownpty(true))
   {
-    qWarning()
+
+    /*kWarning(175)
       << "chownpty failed for device " << ptyName << "::" << d->ttyName
       << "\nThis means the communication can be eavesdropped." << endl;
-  }
+*/  
+}
 
-#if defined (HAVE__GETPTY) || defined (HAVE_GRANTPT)
  grantedpt:
-#endif 
 
 #ifdef HAVE_REVOKE
   revoke(d->ttyName.data());
@@ -336,16 +350,25 @@ bool KPty::open()
   d->slaveFd = ::open(d->ttyName.data(), O_RDWR | O_NOCTTY);
   if (d->slaveFd < 0)
   {
-    qWarning() << "Can't open slave pseudo teletype";
+    //kWarning(175) << "Can't open slave pseudo teletype";
     ::close(d->masterFd);
     d->masterFd = -1;
     return false;
   }
 
-#if (defined(__svr4__) || defined(__sgi__))
-  // Solaris
-  ioctl(d->slaveFd, I_PUSH, "ptem");
-  ioctl(d->slaveFd, I_PUSH, "ldterm");
+#if (defined(__svr4__) || defined(__sgi__) || defined(Q_OS_SOLARIS))
+  // Solaris uses STREAMS for terminal handling. It is possible
+  // for the pty handling modules to be left off the stream; in that
+  // case push them on. ioctl(fd, I_FIND, ...) is documented to return
+  // 1 if the module is on the stream already.
+  {
+    static const char *pt = "ptem";
+    static const char *ld = "ldterm";
+    if (ioctl(d->slaveFd, I_FIND, pt) == 0)
+      ioctl(d->slaveFd, I_PUSH, pt);
+    if (ioctl(d->slaveFd, I_FIND, ld) == 0)
+      ioctl(d->slaveFd, I_PUSH, ld);
+  }
 #endif
 
 #endif /* HAVE_OPENPTY */
@@ -354,6 +377,47 @@ bool KPty::open()
   fcntl(d->slaveFd, F_SETFD, FD_CLOEXEC);
 
   return true;
+}
+
+bool KPty::open(int fd)
+{
+#if !defined(HAVE_PTSNAME) && !defined(TIOCGPTN)
+    //kWarning(175) << "Unsupported attempt to open pty with fd" << fd;
+    return false;
+#else
+    Q_D(KPty);
+
+    if (d->masterFd >= 0) {
+        //kWarning(175) << "Attempting to open an already open pty";
+        return false;
+    }
+
+    d->ownMaster = false;
+
+# ifdef HAVE_PTSNAME
+    char *ptsn = ptsname(fd);
+    if (ptsn) {
+        d->ttyName = ptsn;
+# else
+    int ptyno;
+    if (!ioctl(fd, TIOCGPTN, &ptyno)) {
+        char buf[32];
+        sprintf(buf, "/dev/pts/%d", ptyno);
+        d->ttyName = buf;
+# endif
+    } else {
+        //kWarning(175) << "Failed to determine pty slave device for fd" << fd;
+        return false;
+    }
+
+    d->masterFd = fd;
+    if (!openSlave()) {
+        d->masterFd = -1;
+        return false;
+    }
+
+    return true;
+#endif
 }
 
 void KPty::closeSlave()
@@ -366,28 +430,51 @@ void KPty::closeSlave()
     d->slaveFd = -1;
 }
 
+bool KPty::openSlave()
+{
+    Q_D(KPty);
+
+    if (d->slaveFd >= 0)
+        return true;
+    if (d->masterFd < 0) {
+        //kWarning(175) << "Attempting to open pty slave while master is closed";
+        return false;
+    }
+    d->slaveFd = ::open(d->ttyName.data(), O_RDWR | O_NOCTTY);
+    if (d->slaveFd < 0) {
+        //kWarning(175) << "Can't open slave pseudo teletype";
+        return false;
+    }
+    fcntl(d->slaveFd, F_SETFD, FD_CLOEXEC);
+    return true;
+}
+
 void KPty::close()
 {
-   Q_D(KPty);
+    Q_D(KPty);
 
-   if (d->masterFd < 0)
-      return;
-   closeSlave();
-   // don't bother resetting unix98 pty, it will go away after closing master anyway.
-   if (memcmp(d->ttyName.data(), "/dev/pts/", 9)) {
-      if (!geteuid()) {
-         struct stat st;
-         if (!stat(d->ttyName.data(), &st)) {
-            chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1);
-            chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
-         }
-      } else {
-         fcntl(d->masterFd, F_SETFD, 0);
-         d->chownpty(false);
-      }
-   }
-   ::close(d->masterFd);
-   d->masterFd = -1;
+    if (d->masterFd < 0)
+        return;
+    closeSlave();
+    if (d->ownMaster) {
+#ifndef HAVE_OPENPTY
+        // don't bother resetting unix98 pty, it will go away after closing master anyway.
+        if (memcmp(d->ttyName.data(), "/dev/pts/", 9)) {
+            if (!geteuid()) {
+                struct stat st;
+                if (!stat(d->ttyName.data(), &st)) {
+                    chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1);
+                    chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
+                }
+            } else {
+                fcntl(d->masterFd, F_SETFD, 0);
+                d->chownpty(false);
+            }
+        }
+#endif
+        ::close(d->masterFd);
+    }
+    d->masterFd = -1;
 }
 
 void KPty::setCTty()
@@ -405,7 +492,7 @@ void KPty::setCTty()
     ioctl(d->slaveFd, TIOCSCTTY, 0);
 #else
     // __svr4__ hack: the first tty opened after setsid() becomes controlling tty
-    ::close(::open(d->ttyName, O_WRONLY, 0));
+    ::close(open(d->ttyName, O_WRONLY, 0));
 #endif
 
     // make our new process group the foreground group on the pty
@@ -457,7 +544,8 @@ void KPty::login(const char *user, const char *remotehost)
 # endif
 
 # ifdef HAVE_UTMPX
-    gettimeofday(&l_struct.ut_tv, 0);
+    //gettimeofday(&l_struct.ut_tv, 0);
+    gettimeofday((struct timeval *)&l_struct.ut_tv, 0);
 # else
     l_struct.ut_time = time(0);
 # endif
@@ -483,7 +571,7 @@ void KPty::login(const char *user, const char *remotehost)
     setutxent();
     pututxline(&l_struct);
     endutxent();
-    updwtmpx(_PATH_WTMPX, &l_struct);
+    //updwtmpx(_PATH_WTMPX, &l_struct);
 #  else
     utmpname(_PATH_UTMP);
     setutent();
@@ -548,7 +636,8 @@ void KPty::logout()
         ut->ut_type = DEAD_PROCESS;
 #  endif
 #  ifdef HAVE_UTMPX
-        gettimeofday(ut->ut_tv, 0);
+        //gettimeofday(&(ut->ut_tv), 0);
+	gettimeofday((struct timeval *)&(ut->ut_tv), 0);
         pututxline(ut);
     }
     endutxent();
@@ -562,13 +651,13 @@ void KPty::logout()
 #endif
 }
 
-// XXX Supposedly, tc[gs]etattr do not work with the master on Solaris.
-// Please verify.
-
 bool KPty::tcGetAttr(struct ::termios *ttmode) const
 {
     Q_D(const KPty);
 
+#ifdef Q_OS_SOLARIS
+    if (_tcgetattr(d->slaveFd, ttmode) == 0) return true;
+#endif
     return _tcgetattr(d->masterFd, ttmode) == 0;
 }
 
@@ -576,6 +665,9 @@ bool KPty::tcSetAttr(struct ::termios *ttmode)
 {
     Q_D(KPty);
 
+#ifdef Q_OS_SOLARIS
+    if (_tcsetattr(d->slaveFd, ttmode) == 0) return true;
+#endif
     return _tcsetattr(d->masterFd, ttmode) == 0;
 }
 

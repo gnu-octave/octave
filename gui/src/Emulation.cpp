@@ -1,11 +1,7 @@
 /*
-    This file is part of Konsole, an X terminal.
-
-    Copyright (C) 2007 Robert Knight <robertknight@gmail.com> 
-    Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
-    Copyright (C) 1996 by Matthias Ettrich <ettrich@kde.org>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2007-2008 Robert Knight <robertknight@gmail.com> 
+    Copyright 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
+    Copyright 1996 by Matthias Ettrich <ettrich@kde.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -43,22 +39,14 @@
 
 #include <QtCore/QTime>
 
+// KDE
+//#include <kdebug.h>
+
 // Konsole
 #include "KeyboardTranslator.h"
 #include "Screen.h"
 #include "TerminalCharacterDecoder.h"
 #include "ScreenWindow.h"
-
-/* ------------------------------------------------------------------------- */
-/*                                                                           */
-/*                               Emulation                                  */
-/*                                                                           */
-/* ------------------------------------------------------------------------- */
-
-//#define CNTL(c) ((c)-'@')
-
-/*!
-*/
 
 Emulation::Emulation() :
   _currentScreen(0),
@@ -67,7 +55,6 @@ Emulation::Emulation() :
   _keyTranslator(0),
   _usesMouse(false)
 {
-
   // create screens with a default size
   _screen[0] = new Screen(40,80);
   _screen[1] = new Screen(40,80);
@@ -105,9 +92,6 @@ ScreenWindow* Emulation::createWindow()
     return window;
 }
 
-/*!
-*/
-
 Emulation::~Emulation()
 {
   QListIterator<ScreenWindow*> windowIter(_windows);
@@ -122,23 +106,15 @@ Emulation::~Emulation()
   delete _decoder;
 }
 
-/*! change between primary and alternate _screen
-*/
-
 void Emulation::setScreen(int n)
 {
   Screen *old = _currentScreen;
-  _currentScreen = _screen[n&1];
+  _currentScreen = _screen[n & 1];
   if (_currentScreen != old) 
   {
-     old->setBusySelecting(false);
-
-     // tell all windows onto this emulation to switch to the newly active _screen
-     QListIterator<ScreenWindow*> windowIter(_windows);
-     while ( windowIter.hasNext() )
-     {
-         windowIter.next()->setScreen(_currentScreen);
-     }
+     // tell all windows onto this emulation to switch to the newly active screen
+     foreach(ScreenWindow* window,_windows)
+         window->setScreen(_currentScreen);
   }
 }
 
@@ -153,16 +129,18 @@ void Emulation::setHistory(const HistoryType& t)
   showBulk();
 }
 
-const HistoryType& Emulation::history()
+const HistoryType& Emulation::history() const
 {
   return _screen[0]->getScroll();
 }
 
 void Emulation::setCodec(const QTextCodec * qtc)
 {
-  Q_ASSERT( qtc );
+  if (qtc)
+      _codec = qtc;
+  else
+     setCodec(LocaleCodec);
 
-  _codec = qtc;
   delete _decoder;
   _decoder = _codec->makeDecoder();
 
@@ -180,25 +158,16 @@ void Emulation::setCodec(EmulationCodec codec)
 void Emulation::setKeyBindings(const QString& name)
 {
   _keyTranslator = KeyboardTranslatorManager::instance()->findTranslator(name);
+  if (!_keyTranslator)
+  {
+      _keyTranslator = KeyboardTranslatorManager::instance()->defaultTranslator();
+  }
 }
 
-QString Emulation::keyBindings()
+QString Emulation::keyBindings() const
 {
   return _keyTranslator->name();
 }
-
-
-// Interpreting Codes ---------------------------------------------------------
-
-/*
-   This section deals with decoding the incoming character stream.
-   Decoding means here, that the stream is first separated into `tokens'
-   which are then mapped to a `meaning' provided as operations by the
-   `Screen' class.
-*/
-
-/*!
-*/
 
 void Emulation::receiveChar(int c)
 // process application unicode input to terminal
@@ -207,24 +176,15 @@ void Emulation::receiveChar(int c)
   c &= 0xff;
   switch (c)
   {
-    case '\b'      : _currentScreen->BackSpace();                 break;
-    case '\t'      : _currentScreen->Tabulate();                  break;
-    case '\n'      : _currentScreen->NewLine();                   break;
-    case '\r'      : _currentScreen->Return();                    break;
+    case '\b'      : _currentScreen->backspace();                 break;
+    case '\t'      : _currentScreen->tab();                       break;
+    case '\n'      : _currentScreen->newLine();                   break;
+    case '\r'      : _currentScreen->toStartOfLine();             break;
     case 0x07      : emit stateSet(NOTIFYBELL);
                      break;
-    default        : _currentScreen->ShowCharacter(c);            break;
+    default        : _currentScreen->displayCharacter(c);         break;
   };
 }
-
-/* ------------------------------------------------------------------------- */
-/*                                                                           */
-/*                             Keyboard Handling                             */
-/*                                                                           */
-/* ------------------------------------------------------------------------- */
-
-/*!
-*/
 
 void Emulation::sendKeyEvent( QKeyEvent* ev )
 {
@@ -233,9 +193,7 @@ void Emulation::sendKeyEvent( QKeyEvent* ev )
   if (!ev->text().isEmpty())
   { // A block of text
     // Note that the text is proper unicode.
-    // We should do a conversion here, but since this
-    // routine will never be used, we simply emit plain ascii.
-    //emit sendBlock(ev->text().toAscii(),ev->text().length());
+    // We should do a conversion here
     emit sendData(ev->text().toUtf8(),ev->text().length());
   }
 }
@@ -250,8 +208,6 @@ void Emulation::sendMouseEvent(int /*buttons*/, int /*column*/, int /*row*/, int
     // default implementation does nothing
 }
 
-// Unblocking, Byte to Unicode translation --------------------------------- --
-
 /*
    We are doing code conversion from locale to unicode first.
 TODO: Character composition from the old code.  See #96536
@@ -259,36 +215,34 @@ TODO: Character composition from the old code.  See #96536
 
 void Emulation::receiveData(const char* text, int length)
 {
-	emit stateSet(NOTIFYACTIVITY);
+    emit stateSet(NOTIFYACTIVITY);
 
-	bufferedUpdate();
-    	
+    bufferedUpdate();
+        
     QString unicodeText = _decoder->toUnicode(text,length);
 
-	//send characters to terminal emulator
-	for (int i=0;i<unicodeText.length();i++)
-	{
-		receiveChar(unicodeText[i].unicode());
-	}
+    //send characters to terminal emulator
+    for (int i=0;i<unicodeText.length();i++)
+        receiveChar(unicodeText[i].unicode());
 
-	//look for z-modem indicator
-	//-- someone who understands more about z-modems that I do may be able to move
-	//this check into the above for loop?
-	for (int i=0;i<length;i++)
-	{
-		if (text[i] == '\030')
-    		{
-      			if ((length-i-1 > 3) && (strncmp(text+i+1, "B00", 3) == 0))
-      				emit zmodemDetected();
-    		}
-	}
+    //look for z-modem indicator
+    //-- someone who understands more about z-modems that I do may be able to move
+    //this check into the above for loop?
+    for (int i=0;i<length;i++)
+    {
+        if (text[i] == '\030')
+        {
+            if ((length-i-1 > 3) && (strncmp(text+i+1, "B00", 3) == 0))
+                emit zmodemDetected();
+        }
+    }
 }
 
 //OLDER VERSION
 //This version of onRcvBlock was commented out because
-//	a)  It decoded incoming characters one-by-one, which is slow in the current version of Qt (4.2 tech preview)
-//	b)  It messed up decoding of non-ASCII characters, with the result that (for example) chinese characters
-//	    were not printed properly.
+//    a)  It decoded incoming characters one-by-one, which is slow in the current version of Qt (4.2 tech preview)
+//    b)  It messed up decoding of non-ASCII characters, with the result that (for example) chinese characters
+//        were not printed properly.
 //
 //There is something about stopping the _decoder if "we get a control code halfway a multi-byte sequence" (see below)
 //which hasn't been ported into the newer function (above).  Hopefully someone who understands this better
@@ -328,72 +282,27 @@ void Emulation::receiveData(const char* text, int length)
     if (s[i] == '\030')
     {
       if ((len-i-1 > 3) && (strncmp(s+i+1, "B00", 3) == 0))
-      	emit zmodemDetected();
+          emit zmodemDetected();
     }
   }
 }*/
-
-// Selection --------------------------------------------------------------- --
-
-#if 0
-void Emulation::onSelectionBegin(const int x, const int y, const bool columnmode) {
-  if (!connected) return;
-  _currentScreen->setSelectionStart( x,y,columnmode);
-  showBulk();
-}
-
-void Emulation::onSelectionExtend(const int x, const int y) {
-  if (!connected) return;
-  _currentScreen->setSelectionEnd(x,y);
-  showBulk();
-}
-
-void Emulation::setSelection(const bool preserve_line_breaks) {
-  if (!connected) return;
-  QString t = _currentScreen->selectedText(preserve_line_breaks);
-  if (!t.isNull()) 
-  {
-    QListIterator< TerminalDisplay* > viewIter(_views);
-
-    while (viewIter.hasNext())    
-        viewIter.next()->setSelection(t);
-  }
-}
-
-void Emulation::testIsSelected(const int x, const int y, bool &selected)
-{
-  if (!connected) return;
-  selected=_currentScreen->isSelected(x,y);
-}
-
-void Emulation::clearSelection() {
-  if (!connected) return;
-  _currentScreen->clearSelection();
-  showBulk();
-}
-
-#endif 
 
 void Emulation::writeToStream( TerminalCharacterDecoder* _decoder , 
                                int startLine ,
                                int endLine) 
 {
-  _currentScreen->writeToStream(_decoder,startLine,endLine);
+  _currentScreen->writeLinesToStream(_decoder,startLine,endLine);
 }
 
-int Emulation::lineCount()
+int Emulation::lineCount() const
 {
     // sum number of lines currently on _screen plus number of lines in history
     return _currentScreen->getLines() + _currentScreen->getHistLines();
 }
 
-// Refreshing -------------------------------------------------------------- --
-
 #define BULK_TIMEOUT1 10
 #define BULK_TIMEOUT2 40
 
-/*!
-*/
 void Emulation::showBulk()
 {
     _bulkTimer1.stop();
@@ -416,16 +325,24 @@ void Emulation::bufferedUpdate()
    }
 }
 
-char Emulation::getErase() const
+char Emulation::eraseChar() const
 {
   return '\b';
 }
 
 void Emulation::setImageSize(int lines, int columns)
 {
-  //kDebug() << "Resizing image to: " << lines << "by" << columns << QTime::currentTime().msec();
-  Q_ASSERT( lines > 0 );
-  Q_ASSERT( columns > 0 );
+  if ((lines < 1) || (columns < 1)) 
+    return;
+
+  QSize screenSize[2] = { QSize(_screen[0]->getColumns(),
+                                _screen[0]->getLines()),
+                          QSize(_screen[1]->getColumns(),
+                                _screen[1]->getLines()) };
+  QSize newSize(columns,lines);
+
+  if (newSize == screenSize[0] && newSize == screenSize[1])
+    return;    
 
   _screen[0]->resizeImage(lines,columns);
   _screen[1]->resizeImage(lines,columns);
@@ -435,7 +352,7 @@ void Emulation::setImageSize(int lines, int columns)
   bufferedUpdate();
 }
 
-QSize Emulation::imageSize()
+QSize Emulation::imageSize() const
 {
   return QSize(_currentScreen->getColumns(), _currentScreen->getLines());
 }
@@ -536,6 +453,4 @@ ExtendedCharTable::~ExtendedCharTable()
 // global instance
 ExtendedCharTable ExtendedCharTable::instance;
 
-
-//#include "moc_Emulation.cpp"
 

@@ -12,7 +12,7 @@ TARGET = Quint
 TEMPLATE = app
 DEFINES += HAVE_POSIX_OPENPT
 INCLUDEPATH += src
-DESTDIR = bin
+DESTDIR = ../Quint/bin
 SOURCES +=\
         src/TerminalCharacterDecoder.cpp \
         src/KeyboardTranslator.cpp \
@@ -27,6 +27,9 @@ SOURCES +=\
         src/Filter.cpp \
         src/Pty.cpp \
         src/kpty.cpp \
+        src/kptyprocess.cpp \
+        src/kprocess.cpp \
+        src/kptydevice.cpp \
         src/k3process.cpp \
         src/k3processcontroller.cpp \
         src/Session.cpp \
@@ -35,7 +38,8 @@ SOURCES +=\
         src/TerminalMdiSubWindow.cpp \
         src/MainWindow.cpp \
         src/Quint.cpp \
-	src/OctaveLink.cpp
+        src/OctaveLink.cpp \
+        src/ProcessInfo.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -56,6 +60,10 @@ HEADERS += \
         src/Pty.h \
         src/kpty.h \
         src/kpty_p.h \
+        src/kptyprocess.h \
+        src/kprocess.h \
+        src/kprocess_p.h \
+        src/kptydevice.h \
         src/k3process.h \
         src/k3processcontroller.h \
         src/Session.h \
@@ -63,7 +71,11 @@ HEADERS += \
         src/QTerminalWidget.h \
         src/TerminalMdiSubWindow.h \
     	src/MainWindow.h \
-	src/OctaveLink.h
+        src/OctaveLink.h \
+        src/konsole_export.h \
+        src/ProcessInfo.h \
+        src/kpty_export.h \
+        src/kdecore_export.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \

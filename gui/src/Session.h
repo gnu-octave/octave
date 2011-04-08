@@ -1,10 +1,9 @@
 /*
     This file is part of Konsole, an X terminal.
 
-    Copyright (C) 2007 by Robert Knight <robertknight@gmail.com>
-    Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
-
-    Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright 2007-2008 by Robert Knight <robertknight@gmail.com>
+    Copyright 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
+    Copyright 2009 by Thomas Dreibholz <dreibh@iem.uni-due.de>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,17 +26,26 @@
 
 // Qt
 #include <QtCore/QStringList>
-#include <QtCore>
+#include <QtCore/QByteRef>
+#include <QtCore/QSize>
+#include <QUuid>
 #include <QWidget>
+
+// KDE
+//#include <KApplication>
+//#include <KMainWindow>
+#include "konsole_export.h"
 
 // Konsole
 #include "History.h"
 
 class KProcess;
+class KUrl;
 class Emulation;
 class Pty;
+class ProcessInfo;
 class TerminalDisplay;
-
+  //class ZModemDialog;
 /**
  * Represents a terminal session consisting of a pseudo-teletype and a terminal emulation.
  * The pseudo-teletype (or PTY) handles I/O between the terminal process and Konsole.
@@ -52,6 +60,7 @@ class TerminalDisplay;
 class Session : public QObject
 {
 Q_OBJECT
+Q_CLASSINFO("D-Bus Interface", "org.kde.konsole.Session")
 
 public:
   Q_PROPERTY(QString name READ nameTitle)
@@ -70,28 +79,26 @@ public:
    * falls back to using the program specified in the SHELL environment
    * variable.
    */
-  Session();
+  explicit Session(QObject* parent = 0);
   ~Session();
+
+  /** 
+   * Connect to an existing terminal.  When a new Session() is constructed it 
+   * automatically searches for and opens a new teletype.  If you want to 
+   * use an existing teletype (given its file descriptor) call this after
+   * constructing the session.
+   *
+   * Calling openTeletype() while a session is running has no effect.
+   *
+   * @param masterFd The file descriptor of the pseudo-teletype master (See KPtyProcess::KPtyProcess())
+   */
+  void openTeletype(int masterFd);
 
   /**
    * Returns true if the session is currently running.  This will be true
    * after run() has been called successfully.
    */
   bool isRunning() const;
-
-  /**
-   * Sets the profile associated with this session.
-   *
-   * @param profileKey A key which can be used to obtain the current
-   * profile settings from the SessionManager
-   */
-  void setProfileKey(const QString& profileKey);
-  /**
-   * Returns the profile key associated with this session.
-   * This can be passed to the SessionManager to obtain the current
-   * profile settings.
-   */
-  QString profileKey() const;
 
   /**
    * Adds a new view for this session.
@@ -124,26 +131,8 @@ public:
    */
   Emulation*  emulation() const;
 
-  /**
-   * Returns the environment of this session as a list of strings like
-   * VARIABLE=VALUE
-   */
-  QStringList environment() const;
-  /**
-   * Sets the environment for this session.
-   * @p environment should be a list of strings like
-   * VARIABLE=VALUE
-   */
-  void setEnvironment(const QStringList& environment);
-
   /** Returns the unique ID for this session. */
   int sessionId() const;
-
-  /**
-   * Return the session title set by the user (ie. the program running
-   * in the terminal), or an empty string if the user has not set a custom title
-   */
-  QString userTitle() const;
 
   /**
    * This enum describes the contexts for which separate
@@ -159,6 +148,13 @@ public:
      */
     RemoteTabTitle
   };
+
+  /**
+   * Returns true if the session currently contains a connection to a 
+   * remote computer.  It currently supports ssh.
+   */
+  bool isRemote();
+
   /**
    * Sets the format used by this session for tab titles.
    *
@@ -196,6 +192,11 @@ public:
   void setInitialWorkingDirectory( const QString& dir );
 
   /**
+   * Returns the current directory of the foreground process in the session
+   */
+  QString currentWorkingDirectory();
+
+  /**
    * Sets the type of history store used by this session.
    * Lines of output produced by the terminal are added
    * to the history store.  The type of history store
@@ -212,32 +213,6 @@ public:
    * Clears the history store used by this session.
    */
   void clearHistory();
-
-  /**
-   * Enables monitoring for activity in the session.
-   * This will cause notifySessionState() to be emitted
-   * with the NOTIFYACTIVITY state flag when output is
-   * received from the terminal.
-   */
-  void setMonitorActivity(bool);
-  /** Returns true if monitoring for activity is enabled. */
-  bool isMonitorActivity() const;
-
-  /**
-   * Enables monitoring for silence in the session.
-   * This will cause notifySessionState() to be emitted
-   * with the NOTIFYSILENCE state flag when output is not
-   * received from the terminal for a certain period of
-   * time, specified with setMonitorSilenceSeconds()
-   */
-  void setMonitorSilence(bool);
-  /**
-   * Returns true if monitoring for inactivity (silence)
-   * in the session is enabled.
-   */
-  bool isMonitorSilence()  const;
-  /** See setMonitorSilence() */
-  void setMonitorSilenceSeconds(int seconds);
 
   /**
    * Sets the key bindings used by this session.  The bindings
@@ -263,28 +238,41 @@ public:
       DisplayedTitleRole
   };
 
-  /** Sets the session's title for the specified @p role to @p title. */
-  void setTitle(TitleRole role , const QString& title);
-  /** Returns the session's title for the specified @p role. */
-  QString title(TitleRole role) const;
+  /**
+   * Return the session title set by the user (ie. the program running
+   * in the terminal), or an empty string if the user has not set a custom title
+   */
+  QString userTitle() const;
+
   /** Convenience method used to read the name property.  Returns title(Session::NameRole). */
   QString nameTitle() const { return title(Session::NameRole); }
+  /** Returns a title generated from tab format and process information. */
+  QString getDynamicTitle();
 
   /** Sets the name of the icon associated with this session. */
   void setIconName(const QString& iconName);
   /** Returns the name of the icon associated with this session. */
   QString iconName() const;
 
+  /** Return URL for the session. */
+  //KUrl getUrl();
+
   /** Sets the text of the icon associated with this session. */
   void setIconText(const QString& iconText);
   /** Returns the text of the icon associated with this session. */
   QString iconText() const;
 
-  /** Specifies whether a utmp entry should be created for the pty used by this session. */
-  void setAddToUtmp(bool);
+  /** Sets the session's title for the specified @p role to @p title. */
+  void setTitle(TitleRole role , const QString& title);
 
-  /** Sends the specified @p signal to the terminal process. */
-  bool sendSignal(int signal);
+  /** Returns the session's title for the specified @p role. */
+  QString title(TitleRole role) const;
+
+  /** 
+   * Specifies whether a utmp entry should be created for the pty used by this session.
+   * If true, KPty::login() is called when the session is started.
+   */
+  void setAddToUtmp(bool);
 
   /**
    * Specifies whether to close the session automatically when the terminal
@@ -292,32 +280,11 @@ public:
    */
   void setAutoClose(bool b) { _autoClose = b; }
 
-  /**
-   * Sets whether flow control is enabled for this terminal
-   * session.
-   */
-  void setFlowControlEnabled(bool enabled);
+  /** Returns true if the user has started a program in the session. */
+  bool isForegroundProcessActive();
 
-  /** Returns whether flow control is enabled for this terminal session. */
-  bool flowControlEnabled() const;
-
-  /**
-   * Sends @p text to the current foreground terminal program.
-   */
-  void sendText(const QString& text) const;
-
-  /**
-   * Returns the process id of the terminal process.
-   * This is the id used by the system API to refer to the process.
-   */
-  int processId() const;
-
-  /**
-   * Returns the process id of the terminal's foreground process.
-   * This is initially the same as processId() but can change
-   * as the user starts other programs inside the terminal.
-   */
-  int foregroundProcessId() const;
+  /** Returns the name of the current foreground process. */
+  QString foregroundProcessName();
 
   /** Returns the terminal session's window size in lines and columns. */
   QSize size();
@@ -328,9 +295,6 @@ public:
    * @param size The size in lines and columns to request.
    */
   void setSize(const QSize& size);
-
-  /** Sets the text codec used by this session's terminal emulation. */
-  void setCodec(QTextCodec* codec);
 
   /**
    * Sets whether the session has a dark background or not.  The session
@@ -353,6 +317,33 @@ public:
    * shell to redraw the prompt line.
    */
   void refresh();
+
+  //  void startZModem(const QString &rz, const QString &dir, const QStringList &list);
+  //  void cancelZModem();
+  //  bool isZModemBusy() { return _zmodemBusy; }
+
+ /** 
+   * Possible values of the @p what parameter for setUserTitle()
+   * See "Operating System Controls" section on http://rtfm.etla.org/xterm/ctlseq.html 
+   */
+  enum UserTitleChange
+  {
+      IconNameAndWindowTitle     = 0,
+    IconName                 = 1,
+    WindowTitle                = 2,
+    TextColor                = 10,
+    BackgroundColor            = 11,
+    SessionName                = 30,
+    ProfileChange            = 50     // this clashes with Xterm's font change command
+  };
+
+  // Sets the text codec used by this sessions terminal emulation.
+  void setCodec(QTextCodec* codec);
+
+  // session management
+  //void saveSession(KConfigGroup& group);
+  //void restoreSession(KConfigGroup& group);
+
 public slots:
 
   /**
@@ -363,18 +354,145 @@ public slots:
   void run();
 
   /**
-   * Closes the terminal session.  This sends a hangup signal
-   * (SIGHUP) to the terminal process and causes the done(Session*)
-   * signal to be emitted.
+   * Returns the environment of this session as a list of strings like
+   * VARIABLE=VALUE
    */
-  void close();
+  Q_SCRIPTABLE QStringList environment() const;
+
+  /**
+   * Sets the environment for this session.
+   * @p environment should be a list of strings like
+   * VARIABLE=VALUE
+   */
+  Q_SCRIPTABLE void setEnvironment(const QStringList& environment);
+
+  /**
+   * Closes the terminal session.  This sends a hangup signal
+   * (SIGHUP) to the terminal process and causes the finished()  
+   * signal to be emitted.  If the process does not respond to the SIGHUP signal
+   * then the terminal connection (the pty) is closed and Konsole waits for the 
+   * process to exit.
+   */
+  Q_SCRIPTABLE void close();
 
   /**
    * Changes the session title or other customizable aspects of the terminal
    * emulation display. For a list of what may be changed see the
    * Emulation::titleChanged() signal.
+   *
+   * @param what The feature being changed.  Value is one of UserTitleChange
+   * @param caption The text part of the terminal command
    */
-  void setUserTitle( int, const QString &caption );
+  void setUserTitle( int what , const QString &caption );
+
+  /**
+   * Enables monitoring for activity in the session.
+   * This will cause notifySessionState() to be emitted
+   * with the NOTIFYACTIVITY state flag when output is
+   * received from the terminal.
+   */
+  Q_SCRIPTABLE void setMonitorActivity(bool);
+
+  /** Returns true if monitoring for activity is enabled. */
+  Q_SCRIPTABLE bool isMonitorActivity() const;
+
+  /**
+   * Enables monitoring for silence in the session.
+   * This will cause notifySessionState() to be emitted
+   * with the NOTIFYSILENCE state flag when output is not
+   * received from the terminal for a certain period of
+   * time, specified with setMonitorSilenceSeconds()
+   */
+  Q_SCRIPTABLE void setMonitorSilence(bool);
+
+  /**
+   * Returns true if monitoring for inactivity (silence)
+   * in the session is enabled.
+   */
+  Q_SCRIPTABLE bool isMonitorSilence() const;
+
+  /** See setMonitorSilence() */
+  Q_SCRIPTABLE void setMonitorSilenceSeconds(int seconds);
+
+  /**
+   * Sets whether flow control is enabled for this terminal
+   * session.
+   */
+  Q_SCRIPTABLE void setFlowControlEnabled(bool enabled);
+
+  /** Returns whether flow control is enabled for this terminal session. */
+  Q_SCRIPTABLE bool flowControlEnabled() const;
+
+  /**
+   * Sends @p text to the current foreground terminal program.
+   */
+  Q_SCRIPTABLE void sendText(const QString& text) const;
+
+   /**
+    * Sends a mouse event of type @p eventType emitted by button
+    * @p buttons on @p column/@p line to the current foreground
+    * terminal program
+    */
+   Q_SCRIPTABLE void sendMouseEvent(int buttons, int column, int line, int eventType);
+
+   /**
+   * Returns the process id of the terminal process.
+   * This is the id used by the system API to refer to the process.
+   */
+  Q_SCRIPTABLE int processId() const;
+
+  /**
+   * Returns the process id of the terminal's foreground process.
+   * This is initially the same as processId() but can change
+   * as the user starts other programs inside the terminal.
+   */
+  Q_SCRIPTABLE int foregroundProcessId();
+
+  /** Sets the text codec used by this sessions terminal emulation.
+    * Overloaded to accept a QByteArray for convenience since DBus
+    * does not accept QTextCodec directky.
+    */
+  Q_SCRIPTABLE bool setCodec(QByteArray codec);
+
+  /** Returns the codec used to decode incoming characters in this
+   * terminal emulation
+   */
+  Q_SCRIPTABLE QByteArray codec();
+
+  /** Sets the session's title for the specified @p role to @p title.
+   *  This is an overloaded member function for setTitle(TitleRole, QString)
+   *  provided for convenience since enum data types may not be
+   *  exported directly through DBus
+   */
+  Q_SCRIPTABLE void setTitle(int role, const QString& title);
+
+  /** Returns the session's title for the specified @p role.
+   * This is an overloaded member function for  setTitle(TitleRole)
+   * provided for convenience since enum data types may not be
+   * exported directly through DBus
+   */
+  Q_SCRIPTABLE QString title(int role) const;
+
+  /** Returns the "friendly" version of the QUuid of this session.
+  * This is a QUuid with the braces and dashes removed, so it cannot be
+  * used to construct a new QUuid. The same text appears in the
+  * SHELL_SESSION_ID environment variable.
+  */
+  Q_SCRIPTABLE QString shellSessionId() const;
+
+  /** Sets the session's tab title format for the specified @p context to @p format.
+   *  This is an overloaded member function for setTabTitleFormat(TabTitleContext, QString)
+   *  provided for convenience since enum data types may not be
+   *  exported directly through DBus
+   */
+  Q_SCRIPTABLE void setTabTitleFormat(int context, const QString& format);
+
+  /** Returns the session's tab title format for the specified @p context.
+   * This is an overloaded member function for tabTitleFormat(TitleRole)
+   * provided for convenience since enum data types may not be
+   * exported directly through DBus
+   */
+  Q_SCRIPTABLE QString tabTitleFormat(int context) const;
 
 signals:
 
@@ -393,9 +511,6 @@ signals:
 
   /** Emitted when the session's title has changed. */
   void titleChanged();
-
-  /** Emitted when the session's profile has changed. */
-  void profileChanged(const QString& profile);
 
   /**
    * Emitted when the activity state of this session changes.
@@ -421,9 +536,17 @@ signals:
    * should be changed.
    */
   void changeBackgroundColorRequest(const QColor&);
+  /** 
+   * Requests that the text color of views on this session should
+   * be changed to @p color.
+   */
+  void changeForegroundColorRequest(const QColor&);
 
   /** TODO: Document me. */
   void openUrlRequest(const QString& url);
+
+  /** TODO: Document me. */
+  //void zmodemDetected();
 
   /**
    * Emitted when the terminal process requests a change
@@ -451,23 +574,43 @@ signals:
 private slots:
   void done(int);
 
+  //  void fireZModemDetected();
+
   void onReceiveBlock( const char* buffer, int len );
   void monitorTimerDone();
 
   void onViewSizeChange(int height, int width);
-  void onEmulationSizeChange(int lines , int columns);
 
   void activityStateSet(int);
 
   //automatically detach views from sessions when view is destroyed
   void viewDestroyed(QObject* view);
 
+  //void zmodemReadStatus();
+  //void zmodemReadAndSendBlock();
+  //void zmodemRcvBlock(const char *data, int len);
+  //void zmodemFinished();
+
+  void updateFlowControlState(bool suspended);
+  void updateWindowSize(int lines, int columns);
 private:
 
   void updateTerminalSize();
   WId windowId() const;
+  bool kill(int signal);
+  // print a warning message in the terminal.  This is used
+  // if the program fails to start, or if the shell exits in 
+  // an unsuccessful manner
+  void terminalWarning(const QString& message);
+  // checks that the binary 'program' is available and can be executed
+  // returns the binary name if available or an empty string otherwise
+  QString checkProgram(const QString& program) const;
+  ProcessInfo* getProcessInfo();
+  void updateSessionProcessInfo();
+  bool updateForegroundProcessInfo();
+  ProcessInfo* updateWorkingDirectory();
 
-  int            _uniqueIdentifier;
+  QUuid            _uniqueIdentifier; // SHELL_SESSION_ID
 
   Pty*          _shellProcess;
   Emulation*    _emulation;
@@ -504,6 +647,18 @@ private:
   int            _sessionId;
 
   QString        _initialWorkingDir;
+  QString        _currentWorkingDir;
+
+  ProcessInfo*   _sessionProcessInfo;
+  ProcessInfo*   _foregroundProcessInfo;
+  int            _foregroundPid;
+
+  // ZModem
+  //  bool           _zmodemBusy;
+  //  KProcess*      _zmodemProc;
+  //  ZModemDialog*  _zmodemProgress;
+
+  // Color/Font Changes by ESC Sequences
 
   QColor         _modifiedBackground; // as set by: echo -en '\033]11;Color\007
 
@@ -527,7 +682,7 @@ Q_OBJECT
 
 public:
     /** Constructs an empty session group. */
-    SessionGroup();
+    SessionGroup(QObject* parent);
     /** Destroys the session group and removes all connections between master and slave sessions. */
     ~SessionGroup();
 
@@ -577,10 +732,11 @@ public:
      */
     int masterMode() const;
 
+private slots:
+    void sessionFinished();
+    void forwardData(const char* data, int size);
+
 private:
-    void connectPair(Session* master , Session* other);
-    void disconnectPair(Session* master , Session* other);
-    void connectAll(bool connect);
     QList<Session*> masters() const;
 
     // maps sessions to their master status
@@ -588,4 +744,14 @@ private:
 
     int _masterMode;
 };
+
 #endif
+
+/*
+  Local Variables:
+  mode: c++
+  c-file-style: "stroustrup"
+  indent-tabs-mode: nil
+  tab-width: 4
+  End:
+*/

@@ -24,6 +24,7 @@
 #include "MainWindow.h"
 #include "TerminalMdiSubWindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     constructWindow();

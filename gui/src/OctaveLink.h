@@ -20,7 +20,6 @@
  * 02110-1301, USA.
  *
  * */
-
 #ifndef OCTAVELINK_H
 #define OCTAVELINK_H
 
@@ -33,11 +32,8 @@
 #include "octave/config.h"
 #include "octave/Range.h"
 #include "octave/ov.h"
-
-
 class octave_value;
 class octave_value_list;
-
 
 #include <cstdio>
 #include <string>
@@ -60,12 +56,9 @@ typedef HANDLE pthread_t;
 #endif
 
 /**
- * Structure used to store variable information similar to that returned by
- * the 'whos' function.
- */
-typedef struct variable_info_struct variable_info_t;
-
-
+  * \class OctaveLink
+  * Manages a link to an octave instance.
+  */
 class OctaveLink
 {
 public:
@@ -89,17 +82,17 @@ public:
      */
     typedef struct BreakPoint
     {
-      /**
-       * The full path and filename where the breakpoint resides.
-       */
-      std::string filename;
+        /**
+        * The full path and filename where the breakpoint resides.
+        */
+        std::string filename;
 
-      /**
-       * The line number where the breakpoint resides.
-       * In the future, -1 can indicate an existing but disabled breakpoint.  This
-       * assumes that no one will ever have an M file longer than 2Million lines.
-       */
-      int line_number;
+        /**
+        * The line number where the breakpoint resides.
+        * In the future, -1 can indicate an existing but disabled breakpoint.  This
+        * assumes that no one will ever have an M file longer than 2Million lines.
+        */
+        int line_number;
     } BreakPoint;
 
     typedef struct RequestedVariable
@@ -140,67 +133,15 @@ public:
         }
     } VariableMetaData;
 
-  private:
-    /**
-     * Mutex variable used to protect access to internal class data.
-     */
-    pthread_mutex_t server_mutex;
-    
-    /**
-     * Mutex variable used to protect access to octave internals on asynchronous requests.
-     * 
-     * Notes: This is necessary for asynchronous requests like detailed variable information
-     * in a debugger mouse-over, inspection of matrix variables by double-clicking in the 
-     * main window, etc.
-     */
-    pthread_mutex_t octave_lock_mutex;
-
-    /***********************************************************************
-     * DEBUGGING RELATED VARIABLE
-     **********************************************************************/
-    std::vector<BreakPoint> current_breakpoints;
-    std::vector<BreakPoint> breakpoint_reached;
-    std::vector<BreakPoint> added_breakpoints;
-    std::vector<BreakPoint> removed_breakpoints;
-    std::vector<BreakPoint> modify_breakpoints_old;
-    std::vector<BreakPoint> modify_breakpoints_new;
-    BreakPointAction   	    bp_action;
-   
-    /***********************************************************************
-     * VARIABLE INTERROGATION RELATED VARIABLES
-     **********************************************************************/
-    std::vector<VariableMetaData> variable_symtab_list;
-    std::vector<std::string>     variables_request_list;
-
-    // NOTE: Create an overloaded operator<< for octave_value to do the
-    // flattening.  This will allow us to append easily to an ostringstream
-    // for output.
-    std::vector<RequestedVariable>    requested_variables;
-    
-    /***********************************************************************
-     * HISTORY RELATED VARIABLES
-     **********************************************************************/
-    int 			 prevHistLen;
-    string_vector                history_list;
-
-    bool                         is_processing_server_data;
-    
-  public:
-
     OctaveLink();
     ~OctaveLink();
 
     bool isProcessing(void) {return is_processing_server_data;};
 
-    /*************************************************************************
-     *************************************************************************
-     * FUNCTIONS USED TO ACCESS DATA FROM THE CLIENT SIDE
-     *************************************************************************
-     *************************************************************************/
-
-    /***********************************************************************
-     * DEBUGGING RELATED FUNCTIONS
-     **********************************************************************/ 
+    // Functions used to access data form the client side.
+    /**
+      * Debugging related methods.
+      */
     std::vector<BreakPoint> get_breakpoint_list(int& status);
     bool                   is_breakpoint_reached(int& status);
     std::vector<BreakPoint> get_breakpoint_reached();
@@ -208,34 +149,29 @@ public:
     int		   remove_breakpoint( BreakPoint bp_info );
     int		   modify_breakpoint( BreakPoint old_bp_info, BreakPoint new_bp_info );
     int		   set_breakpoint_action( BreakPointAction action );
-   
-    /***********************************************************************
-     * VARIABLES RELATED FUNCTIONS
-     **********************************************************************/
+
+    /**
+      * Variable related methods.
+      */
     std::vector<VariableMetaData>	get_variable_info_list(void);
     std::vector<RequestedVariable>  	get_requested_variables(void);
     int				set_requested_variables_names( std::vector<std::string> variable_names );
 
-    /***********************************************************************
-     * HISTORY RELATED FUNCTIONS
-     **********************************************************************/
+    /**
+      * History related methods.
+      */
     string_vector	get_history_list(void);
 
-    /*************************************************************************
-     *************************************************************************
-     * FUNCTIONS USED TO ACCESS DATA FROM THE OCTAVE SERVER SIDE
-     *
-     * NOTE: THIS IMPLIES THAT THESE ARE ONLY CALLED FROM
-     * OCTAVE DURING A TIME IN WHICH THINGS ARE KNOWN TO
-     * BE "THREAD-SAFE".  PROPOSED LOCATIONS:
-     *     src/toplev.cc - main_loop() at the end of the do...while
-     *     src/pt-bp.h   - MAYBE_DO_BREAKPOINT just prior to the do_keyboard
-     * Most of these will call octave API functions to "pull" the data, rather
-     * than having octave pass in the data.  This will help make changes 
-     * exlusive to this class if/when the Octave API changes.
-     *************************************************************************
-     *************************************************************************/
-    
+// FUNCTIONS USED TO ACCESS DATA FROM THE OCTAVE SERVER SIDE
+
+// NOTE: THIS IMPLIES THAT THESE ARE ONLY CALLED FROM
+// OCTAVE DURING A TIME IN WHICH THINGS ARE KNOWN TO
+// BE "THREAD-SAFE".  PROPOSED LOCATIONS:
+//   src/toplev.cc - main_loop() at the end of the do...while
+//   src/pt-bp.h   - MAYBE_DO_BREAKPOINT just prior to the do_keyboard
+// Most of these will call octave API functions to "pull" the data, rather
+// than having octave pass in the data.  This will help make changes
+// exlusive to this class if/when the Octave API changes.
     /**
      * Calls all the appropriate functions that follow to update Octave
      * according to the data sent from the client in a thread-safe manner.
@@ -249,26 +185,72 @@ public:
      *   Release lock
      */
     int process_octave_server_data(void);
- 
-    /***********************************************************************
-     * DEBUGGING RELATED FUNCTIONS
-     **********************************************************************/   
+
+    /**
+      * Debugging related methods.
+      */
     int set_breakpoint_list(void);
     int set_current_breakpoint(std::string filename, int line_number); // duplicate of process_breakpoint_action or helper function???
     int process_breakpoint_add_remove_modify(void);
     int process_breakpoint_action(void);
 
-    /***********************************************************************
-     * VARIABLES INTERROGATION RELATED FUNCTIONS
-     **********************************************************************/
+    /**
+      * Variable related methods.
+      */
     int set_variable_info_list(void);
     int process_requested_variables(void);
-    
-    /***********************************************************************
-     * HISTORY RELATED FUNCTIONS
-     **********************************************************************/    
+
+    /**
+      * History related methods.
+      */
     int set_history_list(void);
 
+private:
+    /**
+     * Mutex variable used to protect access to internal class data.
+     */
+    pthread_mutex_t server_mutex;
+
+    /**
+     * Mutex variable used to protect access to octave internals on asynchronous requests.
+     *
+     * Notes: This is necessary for asynchronous requests like detailed variable information
+     * in a debugger mouse-over, inspection of matrix variables by double-clicking in the
+     * main window, etc.
+     */
+    pthread_mutex_t octave_lock_mutex;
+
+    /**
+      * Debugging/***********************************************************************
+     * HISTORY RELATED VARIABLES
+     **********************************************************************/ related member variables.
+      */
+    std::vector<BreakPoint> current_breakpoints;
+    std::vector<BreakPoint> breakpoint_reached;
+    std::vector<BreakPoint> added_breakpoints;
+    std::vector<BreakPoint> removed_breakpoints;
+    std::vector<BreakPoint> modify_breakpoints_old;
+    std::vector<BreakPoint> modify_breakpoints_new;
+    BreakPointAction   	    bp_action;
+
+    /**
+      * Variable related member variables.
+      */
+    std::vector<VariableMetaData> variable_symtab_list;
+    std::vector<std::string>     variables_request_list;
+
+    // NOTE: Create an overloaded operator<< for octave_value to do the
+    // flattening.  This will allow us to append easily to an ostringstream
+    // for output.
+    std::vector<RequestedVariable>    requested_variables;
+
+    /**
+      * History related member variables.
+      */
+    int 			 prevHistLen;
+    string_vector                history_list;
+
+    bool                         is_processing_server_data;
 };
 
 int server_rl_event_hook_function(void);

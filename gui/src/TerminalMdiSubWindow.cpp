@@ -1,22 +1,26 @@
+/* Quint - A graphical user interface for Octave
+ * Copyright (C) 2011 Jacob Dawid
+ * jacob.dawid@googlemail.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "TerminalMdiSubWindow.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QStringListModel>
 #include <QStringList>
-
-void * octave_main_wrapper(void *ptr)
-{
-  //MainWindow *mainWindow = (MainWindow*)ptr;
-
-  int argc = 3;
-  const char* argv[] = {"octave", "--interactive", "--line-editing"};
-  octave_main(argc,(char**)argv,1);
-  switch_to_buffer (create_buffer (get_input_from_stdin ()));
-
-  main_loop();
-  clean_up_and_exit(0);
-  return 0;
-}
 
 TerminalMdiSubWindow::TerminalMdiSubWindow(QWidget *parent)
     : QMdiSubWindow(parent),
@@ -33,13 +37,13 @@ TerminalMdiSubWindow::~TerminalMdiSubWindow() {
 
 void TerminalMdiSubWindow::establishOctaveLink() {
     m_octaveLink = new OctaveLink();
-    pthread_create(&octave_thread, NULL, octave_main_wrapper, (void*)this);
-    pthread_create(&octave_monitor_thread, 0, TerminalMdiSubWindow::octaveCallback, this);
+    pthread_create(&m_octaveThread, 0, TerminalMdiSubWindow::octaveMainWrapper, this);
+    pthread_create(&m_octaveCallbackThread, 0, TerminalMdiSubWindow::octaveCallback, this);
     command_editor::add_event_hook(server_rl_event_hook_function);
 
     int fdm, fds;
     if(openpty(&fdm, &fds, 0, 0, 0) < 0) {
-        fprintf (stderr, "oops!\n");
+        assert(0);
     }
     dup2 (fds, 0);
     dup2 (fds, 1);
@@ -102,8 +106,20 @@ void TerminalMdiSubWindow::updateHistory(string_vector historyEntries) {
     model->setStringList(stringList);
 }
 
-void* TerminalMdiSubWindow::octaveCallback(void *window) {
-    TerminalMdiSubWindow* terminalWindow = (TerminalMdiSubWindow*)window;
+void* TerminalMdiSubWindow::octaveMainWrapper(void *widget) {
+    //MainWindow *mainWindow = (MainWindow*)ptr;
+
+    int argc = 3;
+    const char* argv[] = {"octave", "--interactive", "--line-editing"};
+    octave_main(argc, (char**)argv,1);
+    switch_to_buffer(create_buffer(get_input_from_stdin()));
+    main_loop();
+    clean_up_and_exit(0);
+    return 0;
+}
+
+void* TerminalMdiSubWindow::octaveCallback(void *widget) {
+    TerminalMdiSubWindow* terminalWindow = (TerminalMdiSubWindow*)widget;
 
     while(terminalWindow->isRunning) {
 

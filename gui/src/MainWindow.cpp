@@ -34,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-
 }
 
 void MainWindow::addTerminalWindow() {

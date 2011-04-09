@@ -16,7 +16,6 @@
     Boston, MA 02110-1301, USA.
 */
 						
-
 #include "QTerminalWidget.h"
 #include "Session.h"
 #include "TerminalDisplay.h"
@@ -70,11 +69,11 @@ QTerminalWidget::QTerminalWidget(int startnow, QWidget *parent)
     
     initialize();
 
-    if (startnow && m_impl->m_session) {
+    if(startnow && m_impl->m_session) {
 	m_impl->m_session->run();
     }
     
-    this->setFocus( Qt::OtherFocusReason );
+    this->setFocus(Qt::OtherFocusReason);
     m_impl->m_terminalDisplay->resize(this->size());
     
     this->setFocusProxy(m_impl->m_terminalDisplay);
@@ -82,7 +81,7 @@ QTerminalWidget::QTerminalWidget(int startnow, QWidget *parent)
 
 void QTerminalWidget::startShellProgram()
 {
-    if ( m_impl->m_session->isRunning() )
+    if(m_impl->m_session->isRunning())
 	return;
 	
     m_impl->m_session->run();

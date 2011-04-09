@@ -1,3 +1,21 @@
+/* Quint - A graphical user interface for Octave
+ * Copyright (C) 2011 Jacob Dawid
+ * jacob.dawid@googlemail.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef TERMINALMDISUBWINDOW_H
 #define TERMINALMDISUBWINDOW_H
 
@@ -7,7 +25,6 @@
 #include <QStatusBar>
 #include "QTerminalWidget.h"
 #include "OctaveLink.h"
-
 
 // Octave includes
 #undef PACKAGE_BUGREPORT
@@ -48,7 +65,6 @@ extern OCTINTERP_API FILE *get_input_from_stdin (void);
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
 #include <iostream>
 #include <vector>
 #include "pty.h"
@@ -56,8 +72,10 @@ extern OCTINTERP_API FILE *get_input_from_stdin (void);
 class TerminalMdiSubWindow : public QMdiSubWindow {
     Q_OBJECT
 public:
+    static void* octaveMainWrapper(void *widget);
+    static void* octaveCallback(void *widget);
+
     void updateHistory(string_vector historyEntries);
-    static void* octaveCallback(void *octaveUI);
     TerminalMdiSubWindow(QWidget *parent = 0);
     ~TerminalMdiSubWindow();
 
@@ -72,9 +90,9 @@ private:
     QStatusBar *m_statusBar;
     OctaveLink *m_octaveLink;
 
-    // Threads for running octave and managing the data interaction
-    pthread_t octave_thread;
-    pthread_t octave_monitor_thread;
+    // Threads for running octave and managing the data interaction.
+    pthread_t m_octaveThread;
+    pthread_t m_octaveCallbackThread;
     bool isRunning;
 };
 #endif // TERMINALMDISUBWINDOW_H

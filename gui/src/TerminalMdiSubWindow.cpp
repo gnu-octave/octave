@@ -47,7 +47,7 @@ void TerminalMdiSubWindow::establishOctaveLink() {
 }
 
 void TerminalMdiSubWindow::constructWindow() {
-/*
+
     int fdm;
     int fds;
 
@@ -59,7 +59,7 @@ void TerminalMdiSubWindow::constructWindow() {
     dup2 (fds, 0);
     dup2 (fds, 1);
     dup2 (fds, 2);
-*/
+
     setWindowTitle("Octave Session");
     resize(900, 600);
     setWidget(new QWidget(this));
@@ -72,7 +72,8 @@ void TerminalMdiSubWindow::constructWindow() {
         m_terminalWidget = new QTerminalWidget(0, hWidget);
         m_terminalWidget->setScrollBarPosition(QTerminalWidget::ScrollBarRight);
         m_terminalWidget->setShellProgram("octave");
-        m_terminalWidget->startShellProgram();
+       // m_terminalWidget->startShellProgram();
+        m_terminalWidget->openTeletype(fdm);
         m_terminalWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         m_terminalWidget->setColorScheme(QTerminalWidget::BlackOnLightYellow);
 

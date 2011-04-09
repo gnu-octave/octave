@@ -35,7 +35,12 @@ TerminalMdiSubWindow::~TerminalMdiSubWindow() {
     isRunning = false;
 }
 
+void TerminalMdiSubWindow::setStatus(QString message) {
+    m_statusBar->showMessage(message, 1000);
+}
+
 void TerminalMdiSubWindow::establishOctaveLink() {
+    QMetaObject::invokeMethod(this, "setStatus", Q_ARG(QString, QString("Establishing Octave link..")));
     m_octaveLink = new OctaveLink();
     pthread_create(&m_octaveThread, 0, TerminalMdiSubWindow::octaveMainWrapper, this);
     pthread_create(&m_octaveCallbackThread, 0, TerminalMdiSubWindow::octaveCallback, this);
@@ -90,20 +95,25 @@ void TerminalMdiSubWindow::constructWindow() {
     vBoxLayout->addWidget(m_statusBar);
     vBoxLayout->setMargin(2);
     widget()->setLayout(vBoxLayout);
-
-    m_statusBar->showMessage("Ready.");
 }
 
 void TerminalMdiSubWindow::updateHistory(string_vector historyEntries) {
     QStringListModel * model = dynamic_cast<QStringListModel*>(m_commandHistoryView->model());
     if(!model)
         return;
-
+    QMetaObject::invokeMethod(this, "setStatus", Q_ARG(QString, QString("Updating history..")));
     QStringList stringList = model->stringList();
-    for(size_t i = 0; i < historyEntries.length(); i++)
-        stringList.append(QString(historyEntries[i].c_str()));
-
+    for(size_t i = 0; i < historyEntries.length(); i++) {
+        QString command(historyEntries[i].c_str());
+        if(!command.startsWith("#"))
+            stringList.push_front(QString("%1: ").arg(stringList.size() + 1) + command);
+    }
     model->setStringList(stringList);
+}
+
+void TerminalMdiSubWindow::updateVariables(std::vector<OctaveLink::VariableMetaData> variables) {
+    QMetaObject::invokeMethod(this, "setStatus", Q_ARG(QString, QString("Updating variables..")));
+    // TODO: Update variable view.
 }
 
 void* TerminalMdiSubWindow::octaveMainWrapper(void *widget) {
@@ -125,9 +135,8 @@ void* TerminalMdiSubWindow::octaveCallback(void *widget) {
 
     // Get a full variable list.
     std::vector<OctaveLink::VariableMetaData> variables = oct_octave_server.variableInfoList();
-    if(variables.size()) {
-        // TODO: Update variable list model data.
-    }
+    if(variables.size())
+        terminalWindow->updateVariables(variables);
 
     // Check whether any requested variables have been returned.
     std::vector<OctaveLink::RequestedVariable> reqVars = oct_octave_server.requestedVariables();

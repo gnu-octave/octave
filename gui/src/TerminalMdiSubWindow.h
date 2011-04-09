@@ -76,10 +76,12 @@ public:
     static void* octaveCallback(void *widget);
 
     void updateHistory(string_vector historyEntries);
+    void updateVariables(std::vector<OctaveLink::VariableMetaData> variables);
     TerminalMdiSubWindow(QWidget *parent = 0);
     ~TerminalMdiSubWindow();
 
-private slots:
+public slots:
+    void setStatus(QString message);
 
 private:
     void establishOctaveLink();

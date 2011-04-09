@@ -56,18 +56,8 @@ extern OCTINTERP_API FILE *get_input_from_stdin (void);
 class TerminalMdiSubWindow : public QMdiSubWindow {
     Q_OBJECT
 public:
-    /**
-     * Stops the monitor thread.
-     */
-    void stopMonitorRunning(void) { this->isRunning = false; }
-
-    /**
-     * Checks if the monitor thread is currently running.
-     */
-    bool isMonitorRunning() { return this->isRunning; }
-
     void updateHistory(string_vector historyEntries);
-    static void* octave_monitor(void *octaveUI);
+    static void* octaveCallback(void *octaveUI);
     TerminalMdiSubWindow(QWidget *parent = 0);
     ~TerminalMdiSubWindow();
 

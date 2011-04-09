@@ -66,6 +66,7 @@ public:
      */
     bool isMonitorRunning() { return this->isRunning; }
 
+    void updateHistory(string_vector historyEntries);
     static void* octave_monitor(void *octaveUI);
     TerminalMdiSubWindow(QWidget *parent = 0);
     ~TerminalMdiSubWindow();

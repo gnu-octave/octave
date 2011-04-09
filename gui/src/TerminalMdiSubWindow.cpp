@@ -1,7 +1,8 @@
 #include "TerminalMdiSubWindow.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-
+#include <QStringListModel>
+#include <QStringList>
 bool is_inside_main_loop = false;
 bool is_cleanup_complete = false;
 
@@ -72,7 +73,7 @@ void TerminalMdiSubWindow::constructWindow() {
         m_terminalWidget = new QTerminalWidget(0, hWidget);
         m_terminalWidget->setScrollBarPosition(QTerminalWidget::ScrollBarRight);
         m_terminalWidget->setShellProgram("octave");
-       // m_terminalWidget->startShellProgram();
+        // m_terminalWidget->startShellProgram();
         m_terminalWidget->openTeletype(fdm);
         m_terminalWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         m_terminalWidget->setColorScheme(QTerminalWidget::BlackOnLightYellow);
@@ -81,7 +82,8 @@ void TerminalMdiSubWindow::constructWindow() {
             QVBoxLayout *hvBoxLayout = new QVBoxLayout();
             m_variableView = new QTreeView(hWidget);
             m_commandHistoryView = new QListView(hWidget);
-            hvWidget->setMaximumWidth(250);
+            m_commandHistoryView->setModel(new QStringListModel());
+            hvWidget->setMaximumWidth(300);
             hvBoxLayout->addWidget(new QLabel("Variables", hWidget));
             hvBoxLayout->addWidget(m_variableView);
             hvBoxLayout->addWidget(new QLabel("Command History", hWidget));
@@ -104,9 +106,20 @@ void TerminalMdiSubWindow::constructWindow() {
     m_statusBar->showMessage("Ready.");
 }
 
+void TerminalMdiSubWindow::updateHistory(string_vector historyEntries) {
+    QStringListModel * model = dynamic_cast<QStringListModel*>(m_commandHistoryView->model());
+    if(!model)
+        return;
+
+    QStringList stringList = model->stringList();
+    for(size_t i = 0; i < historyEntries.length(); i++)
+        stringList.append(QString(historyEntries[i].c_str()));
+
+    model->setStringList(stringList);
+}
+
 bool ui_can_interrupt = true;
-void* TerminalMdiSubWindow::octave_monitor(void *octaveUI)
-{
+void* TerminalMdiSubWindow::octave_monitor(void *octaveUI) {
   TerminalMdiSubWindow* oui = (TerminalMdiSubWindow*)octaveUI;
 
   while ( oui->isRunning )
@@ -115,9 +128,7 @@ void* TerminalMdiSubWindow::octave_monitor(void *octaveUI)
     std::vector<OctaveLink::VariableMetaData> variables = oct_octave_server.variableInfoList();
     if ( variables.size() > 0 )
     {
-      qDebug("Update variables.");
-      //oui->mVariablesTreeView.clearRows();
-      //oui->mVariablesTreeView.addVariables(variables);
+      //qDebug("Update variables.");
     }
 
     // Check whether any requested variables have been returned
@@ -133,9 +144,8 @@ void* TerminalMdiSubWindow::octave_monitor(void *octaveUI)
     string_vector historyList = oct_octave_server.getHistoryList();
     if( historyList.length() > 0 )
     {
-      qDebug("Update history.");
-      //oui->mHistoryTreeView.addRows(historyList);
-      //oui->historyListWidget->addRows(historyList);
+      //qDebug("Update history.");
+        oui->updateHistory(historyList);
     }
 
     // Put a marker in each buffer at the proper location

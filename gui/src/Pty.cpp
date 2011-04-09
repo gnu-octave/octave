@@ -19,7 +19,7 @@
 */
 
 // Own
-#include "kprocess.h"
+#include "kprocess_p.h"
 #include "kptyprocess.h"
 #include "Pty.h"
 

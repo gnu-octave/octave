@@ -81,6 +81,6 @@ INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \
          $$system(mkoctfile -p OCTAVE_LIBS) \
          $$system(mkoctfile -p LIBS)
-LIBS    += $$LFLAGS -loctave -loctinterp -lreadline
+LIBS    += $$LFLAGS -loctave -loctinterp -lreadline -lutil
 QMAKE_CXXFLAGS  += $$INCFLAGS
 

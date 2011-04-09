@@ -21,9 +21,10 @@
 
 #ifndef KPROCESS_P_H
 #define KPROCESS_P_H
+class KProcess;
+class KProcessPrivate;
 
 #include "kprocess.h"
-
 class KProcessPrivate {
     Q_DECLARE_PUBLIC(KProcess)
 protected:

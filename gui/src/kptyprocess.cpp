@@ -20,7 +20,7 @@
     Boston, MA 02110-1301, USA.
 */
 #include "kptyprocess.h"
-#include "kprocess_p.h"
+#include "kprocess.h"
 
 //#include <kuser.h>
 #include "kptydevice.h"
@@ -32,23 +32,7 @@
 // private data //
 //////////////////
 
-struct KPtyProcessPrivate : KProcessPrivate {
-    KPtyProcessPrivate() :
-        ptyChannels(KPtyProcess::NoChannels),
-        addUtmp(false)
-    {
-    }
 
-    void _k_onStateChanged(QProcess::ProcessState newState)
-    {
-        if (newState == QProcess::NotRunning && addUtmp)
-            pty->logout();
-    }
-
-    KPtyDevice *pty;
-    KPtyProcess::PtyChannels ptyChannels;
-    bool addUtmp : 1;
-};
 
 KPtyProcess::KPtyProcess(QObject *parent) :
     KProcess(new KPtyProcessPrivate, parent)

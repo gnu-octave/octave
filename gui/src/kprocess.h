@@ -25,8 +25,9 @@
 #include "kdecore_export.h"
 
 #include <QtCore/QProcess>
-
+class KProcess;
 class KProcessPrivate;
+
 
 /**
  * \class KProcess kprocess.h <KProcess>
@@ -336,6 +337,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _k_forwardStdout())
     Q_PRIVATE_SLOT(d_func(), void _k_forwardStderr())
 };
+
+#include "kprocess_p.h"
 
 #endif
 

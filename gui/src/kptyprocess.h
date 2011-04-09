@@ -23,12 +23,14 @@
 #define KPTYPROCESS_H
 
 #include "kprocess.h"
-
+#include "kprocess_p.h"
+#include "kptydevice.h"
 #include "kpty_export.h"
 
 class KPtyDevice;
-
+class KPtyProcess;
 struct KPtyProcessPrivate;
+
 /**
  * This class extends KProcess by support for PTYs (pseudo TTYs).
  *
@@ -131,6 +133,24 @@ protected:
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _k_onStateChanged(QProcess::ProcessState))
+};
+
+struct KPtyProcessPrivate : KProcessPrivate {
+    KPtyProcessPrivate() :
+        ptyChannels(KPtyProcess::NoChannels),
+        addUtmp(false)
+    {
+    }
+
+    void _k_onStateChanged(QProcess::ProcessState newState)
+    {
+        if (newState == QProcess::NotRunning && addUtmp)
+            pty->logout();
+    }
+
+    KPtyDevice *pty;
+    KPtyProcess::PtyChannels ptyChannels;
+    bool addUtmp : 1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(KPtyProcess::PtyChannels)

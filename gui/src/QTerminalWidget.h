@@ -68,9 +68,6 @@ public:
     
     /** Text codec, default is UTF-8. */
     void setTextCodec(QTextCodec *codec);
-
-    /** Color scheme, default is white on black. */
-    void setColorScheme(ColorScheme scheme);
     
     /** Resize terminal widget. */
     void setSize(int h, int v);

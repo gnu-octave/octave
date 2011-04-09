@@ -85,7 +85,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 OctaveLink oct_octave_server;
 
-
 static octave_user_code *
 get_user_code (const std::string& fname = std::string ())
 {

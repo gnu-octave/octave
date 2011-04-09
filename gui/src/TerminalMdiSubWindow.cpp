@@ -69,7 +69,6 @@ void TerminalMdiSubWindow::constructWindow() {
         m_terminalWidget = new QTerminalWidget(0, hWidget);
         m_terminalWidget->setScrollBarPosition(QTerminalWidget::ScrollBarRight);
         m_terminalWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        m_terminalWidget->setColorScheme(QTerminalWidget::BlackOnLightYellow);
 
             QWidget *hvWidget = new QWidget();
             QVBoxLayout *hvBoxLayout = new QVBoxLayout();

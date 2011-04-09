@@ -32,8 +32,10 @@ struct TermWidgetImpl
 
 TermWidgetImpl::TermWidgetImpl(QWidget* parent)
 {
-    this->m_session = createSession();
-    this->m_terminalDisplay = createTerminalDisplay(this->m_session, parent);
+    m_session = createSession();
+    m_terminalDisplay = createTerminalDisplay(this->m_session, parent);
+    m_terminalDisplay->setBackgroundColor(QColor(255, 255, 255));
+    m_terminalDisplay->setForegroundColor(QColor(0, 0, 0));
 }
 
 Session *TermWidgetImpl::createSession()
@@ -142,22 +144,6 @@ void QTerminalWidget::setTextCodec(QTextCodec *codec)
     if (!m_impl->m_session)
 	return;
     m_impl->m_session->setCodec(codec);	
-}
-
-void QTerminalWidget::setColorScheme(ColorScheme scheme)
-{
-    /*
-    switch(scheme) {
-        case WhiteOnBlack:
-		m_impl->m_terminalDisplay->setColorTable(whiteonblack_color_table);
-		break;		
-        case GreenOnBlack:
-		m_impl->m_terminalDisplay->setColorTable(greenonblack_color_table);
-		break;
-        case BlackOnLightYellow:
-		m_impl->m_terminalDisplay->setColorTable(blackonlightyellow_color_table);
-		break;
-    };*/
 }
 
 void QTerminalWidget::setSize(int h, int v)

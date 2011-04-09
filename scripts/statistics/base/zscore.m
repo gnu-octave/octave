@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} studentize (@var{x})
-## @deftypefnx {Function File} {} studentize (@var{x}, @var{dim})
+## @deftypefn  {Function File} {} zscore (@var{x})
+## @deftypefnx {Function File} {} zscore (@var{x}, @var{dim})
 ## If @var{x} is a vector, subtract its mean and divide by its standard
 ## deviation.
 ##
@@ -31,14 +31,14 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Subtract mean and divide by standard deviation
 
-function t = studentize (x, dim)
+function t = zscore (x, dim)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
   if (! isnumeric(x))
-    error ("studentize: X must be a numeric vector or matrix");
+    error ("zscore: X must be a numeric vector or matrix");
   endif
 
   if (isinteger (x))
@@ -56,7 +56,7 @@ function t = studentize (x, dim)
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
-      error ("studentize: DIM must be an integer and a valid dimension");
+      error ("zscore: DIM must be an integer and a valid dimension");
     endif
   endif
 
@@ -72,17 +72,17 @@ function t = studentize (x, dim)
 
 endfunction
 
-%!assert(studentize ([1,2,3]), [-1,0,1])
-%!assert(studentize (int8 ([1,2,3])), [-1,0,1])
-#%!assert(studentize (ones (3,2,0,2)), zeros (3,2,0,2))
-%!assert(studentize ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
+%!assert(zscore ([1,2,3]), [-1,0,1])
+%!assert(zscore (int8 ([1,2,3])), [-1,0,1])
+#%!assert(zscore (ones (3,2,0,2)), zeros (3,2,0,2))
+%!assert(zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
 
 %% Test input validation
-%!error studentize ()
-%!error studentize (1, 2, 3)
-%!error studentize ([true true])
-%!error studentize (1, ones(2,2))
-%!error studentize (1, 1.5)
-%!error studentize (1, 0)
-%!error studentize (1, 3)
+%!error zscore ()
+%!error zscore (1, 2, 3)
+%!error zscore ([true true])
+%!error zscore (1, ones(2,2))
+%!error zscore (1, 1.5)
+%!error zscore (1, 0)
+%!error zscore (1, 3)
 

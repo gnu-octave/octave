@@ -114,7 +114,7 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(center)
 
-@DOCSTRING(studentize)
+@DOCSTRING(zscore)
 
 @DOCSTRING(histc)
 

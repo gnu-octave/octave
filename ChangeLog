@@ -1,3 +1,7 @@
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Deprecate studentize(), add new function zscore().
+
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Add perror, strerror to list of functions deprecated in 3.4

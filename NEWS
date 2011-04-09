@@ -7,7 +7,8 @@ Summary of important user-visible changes for version 3.6:
 
     iscolumn
     issrow
- 
+    zscore
+
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.2 and have been
@@ -30,7 +31,8 @@ Summary of important user-visible changes for version 3.6:
     release after 3.6):
 
       is_duplicate_entry
-      
+      studentize
+
 
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------

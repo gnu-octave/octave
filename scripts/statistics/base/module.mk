@@ -33,9 +33,9 @@ statistics_base_FCN_FILES = \
   statistics/base/spearman.m \
   statistics/base/statistics.m \
   statistics/base/std.m \
-  statistics/base/studentize.m \
   statistics/base/table.m \
-  statistics/base/var.m
+  statistics/base/var.m \
+  statistics/base/zscore.m
 
 FCN_FILES += $(statistics_base_FCN_FILES)
 

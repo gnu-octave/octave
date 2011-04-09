@@ -1,3 +1,8 @@
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/stats.txi: Deprecate studentize(), replace with
+	zscore().
+
 2011-04-06  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/numbers.txi, interpreter/strings.txi: Group commonly used

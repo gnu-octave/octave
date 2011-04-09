@@ -1,5 +1,11 @@
 2011-04-08  Rik  <octave@nomad.inbox5.com>
 
+	* scripts/deprecated/module.mk, statistics/base/center.m,
+	statistics/base/module.mk: Deprecate studentize(), replace with
+	zscore().
+
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
 	* statistics/base/mode.m, statistics/base/quantile.m: Return output
 	of same class as input.
 

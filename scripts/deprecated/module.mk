@@ -23,6 +23,7 @@ deprecated_FCN_FILES = \
   deprecated/sphcat.m \
   deprecated/spvcat.m \
   deprecated/strerror.m \
+  deprecated/studentize.m \
   deprecated/values.m \
   deprecated/weibcdf.m \
   deprecated/weibinv.m \

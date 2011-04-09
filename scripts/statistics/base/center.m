@@ -23,7 +23,7 @@
 ## If @var{x} is a vector, subtract its mean.
 ## If @var{x} is a matrix, do the above for each column.
 ## If the optional argument @var{dim} is given, operate along this dimension.
-## @seealso{studentize}
+## @seealso{zscore}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

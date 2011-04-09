@@ -308,6 +308,10 @@ function inv = __quantile__ (x, p, method = 5)
     error ("quantile: X must be a numeric vector or matrix");
   endif
 
+  if (isinteger (x))
+    x = double (x);
+  endif
+
   ## Save length and set shape of quantiles.
   n = numel (p);
   p = p(:);
@@ -320,7 +324,7 @@ function inv = __quantile__ (x, p, method = 5)
   nx = size (x, 2);
 
   ## Initialize output values.
-  inv = Inf*(-(p < 0) + (p > 1));
+  inv = Inf(class (x)) * (-(p < 0) + (p > 1));
   inv = repmat (inv, 1, nx);
 
   ## Do the work.

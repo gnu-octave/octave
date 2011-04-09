@@ -90,7 +90,7 @@ function [m, f, c] = mode (x, dim)
   if (issparse (x))
     m = sparse (sz2(1), sz2(2));
   else
-    m = zeros (sz2);
+    m = zeros (sz2, class (x));
   endif
   for i = 1 : prod (sz2)
     c{i} = xs (t2 (:, i) == f(i), i);

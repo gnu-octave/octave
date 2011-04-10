@@ -2011,23 +2011,18 @@ is_handle (const octave_value& val)
 
   if (val.is_real_scalar () && is_handle (val.double_value ()))
     retval = true;
-  else if (val.is_real_matrix ())
+  else if (val.is_numeric_type () && val.is_real_type ())
     {
-      if (val.is_string ())
-        retval = boolNDArray (val.dims (), false);
-      else
+      const NDArray handles = val.array_value ();
+
+      if (! error_state)
         {
-          const NDArray handles = val.array_value ();
+          boolNDArray result (handles.dims ());
 
-          if (! error_state)
-            {
-              boolNDArray result (handles.dims ());
+          for (octave_idx_type i = 0; i < handles.numel (); i++)
+            result.xelem (i) = is_handle (handles (i));
 
-              for (octave_idx_type i = 0; i < handles.numel (); i++)
-                result.xelem (i) = is_handle (handles (i));
-
-              retval = result;
-            }
+          retval = result;
         }
     }
 

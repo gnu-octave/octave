@@ -5,6 +5,10 @@
 	DLD-FUNCTIONS/sqrtm.cc, DLD-FUNCTIONS/svd.cc, data.cc: Improve
 	docstrings.
 
+2011-04-10  John Eaton  <jwe@octave.org>
+
+	* graphics.cc: Allow ishandle() to accept vector of handles (bug 33025).
+
 2011-04-06  Rik  <octave@nomad.inbox5.com>
 
 	* DLD-FUNCTIONS/dmperm.cc, data.cc: Clean up operator and function

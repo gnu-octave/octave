@@ -16,34 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "TerminalMdiSubWindow.h"
+#include "OctaveTerminal.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QStringListModel>
 #include <QStringList>
 
-TerminalMdiSubWindow::TerminalMdiSubWindow(QWidget *parent)
-    : QMdiSubWindow(parent),
+OctaveTerminal::OctaveTerminal(QWidget *parent)
+    : QWidget(parent),
       m_terminalWidget(0),
       isRunning(true) {
     constructWindow();
     establishOctaveLink();
 }
 
-TerminalMdiSubWindow::~TerminalMdiSubWindow() {
+OctaveTerminal::~OctaveTerminal() {
     delete m_octaveLink;
     isRunning = false;
 }
 
-void TerminalMdiSubWindow::setStatus(QString message) {
+void OctaveTerminal::setStatus(QString message) {
     m_statusBar->showMessage(message, 1000);
 }
 
-void TerminalMdiSubWindow::establishOctaveLink() {
+void OctaveTerminal::establishOctaveLink() {
     QMetaObject::invokeMethod(this, "setStatus", Q_ARG(QString, QString("Establishing Octave link..")));
     m_octaveLink = new OctaveLink();
-    pthread_create(&m_octaveThread, 0, TerminalMdiSubWindow::octaveMainWrapper, this);
-    pthread_create(&m_octaveCallbackThread, 0, TerminalMdiSubWindow::octaveCallback, this);
+    pthread_create(&m_octaveThread, 0, OctaveTerminal::octaveMainWrapper, this);
+    pthread_create(&m_octaveCallbackThread, 0, OctaveTerminal::octaveCallback, this);
     command_editor::add_event_hook(server_rl_event_hook_function);
 
     int fdm, fds;
@@ -56,11 +56,7 @@ void TerminalMdiSubWindow::establishOctaveLink() {
     m_terminalWidget->openTeletype(fdm);
 }
 
-void TerminalMdiSubWindow::constructWindow() {
-    setWindowTitle("Octave Session");
-    resize(900, 600);
-    setWidget(new QWidget(this));
-
+void OctaveTerminal::constructWindow() {
     QVBoxLayout *vBoxLayout = new QVBoxLayout();
 
         QWidget *hWidget = new QWidget();
@@ -93,10 +89,10 @@ void TerminalMdiSubWindow::constructWindow() {
     vBoxLayout->addWidget(hWidget);
     vBoxLayout->addWidget(m_statusBar);
     vBoxLayout->setMargin(2);
-    widget()->setLayout(vBoxLayout);
+    setLayout(vBoxLayout);
 }
 
-void TerminalMdiSubWindow::updateHistory(string_vector historyEntries) {
+void OctaveTerminal::updateHistory(string_vector historyEntries) {
     QStringListModel * model = dynamic_cast<QStringListModel*>(m_commandHistoryView->model());
     if(!model)
         return;
@@ -110,12 +106,12 @@ void TerminalMdiSubWindow::updateHistory(string_vector historyEntries) {
     model->setStringList(stringList);
 }
 
-void TerminalMdiSubWindow::updateVariables(std::vector<OctaveLink::VariableMetaData> variables) {
+void OctaveTerminal::updateVariables(std::vector<OctaveLink::VariableMetaData> variables) {
     QMetaObject::invokeMethod(this, "setStatus", Q_ARG(QString, QString("Updating variables..")));
     // TODO: Update variable view.
 }
 
-void* TerminalMdiSubWindow::octaveMainWrapper(void *widget) {
+void* OctaveTerminal::octaveMainWrapper(void *widget) {
     //MainWindow *mainWindow = (MainWindow*)ptr;
 
     int argc = 3;
@@ -127,8 +123,8 @@ void* TerminalMdiSubWindow::octaveMainWrapper(void *widget) {
     return 0;
 }
 
-void* TerminalMdiSubWindow::octaveCallback(void *widget) {
-    TerminalMdiSubWindow* terminalWindow = (TerminalMdiSubWindow*)widget;
+void* OctaveTerminal::octaveCallback(void *widget) {
+    OctaveTerminal* terminalWindow = (OctaveTerminal*)widget;
 
     while(terminalWindow->isRunning) {
 

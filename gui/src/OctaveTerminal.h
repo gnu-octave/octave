@@ -69,7 +69,7 @@ extern OCTINTERP_API FILE *get_input_from_stdin (void);
 #include <vector>
 #include "pty.h"
 
-class TerminalMdiSubWindow : public QMdiSubWindow {
+class OctaveTerminal : public QWidget {
     Q_OBJECT
 public:
     static void* octaveMainWrapper(void *widget);
@@ -77,8 +77,8 @@ public:
 
     void updateHistory(string_vector historyEntries);
     void updateVariables(std::vector<OctaveLink::VariableMetaData> variables);
-    TerminalMdiSubWindow(QWidget *parent = 0);
-    ~TerminalMdiSubWindow();
+    OctaveTerminal(QWidget *parent = 0);
+    ~OctaveTerminal();
 
 public slots:
     void setStatus(QString message);

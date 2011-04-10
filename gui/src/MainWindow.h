@@ -20,8 +20,7 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
-#include <QMdiArea>
-
+#include "OctaveTerminal.h"
 
 /**
   * \class MainWindow
@@ -36,13 +35,9 @@ public:
     ~MainWindow();
 
 public slots:
-    void addTerminalWindow();
-    void loadWebPage(QString title, QString url);
-
 private:
     void constructWindow();
-
-    QMdiArea *m_mdiArea;
+    OctaveTerminal *m_octaveTerminal;
 };
 
 #endif // MAINWINDOW_H

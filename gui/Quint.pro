@@ -35,11 +35,11 @@ SOURCES +=\
         src/Session.cpp \
         src/ShellCommand.cpp \
         src/QTerminalWidget.cpp \
-        src/TerminalMdiSubWindow.cpp \
         src/MainWindow.cpp \
         src/Quint.cpp \
         src/OctaveLink.cpp \
-        src/ProcessInfo.cpp
+        src/ProcessInfo.cpp \
+    src/OctaveTerminal.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -69,13 +69,13 @@ HEADERS += \
         src/Session.h \
         src/ShellCommand.h \
         src/QTerminalWidget.h \
-        src/TerminalMdiSubWindow.h \
     	src/MainWindow.h \
         src/OctaveLink.h \
         src/konsole_export.h \
         src/ProcessInfo.h \
         src/kpty_export.h \
-        src/kdecore_export.h
+        src/kdecore_export.h \
+    src/OctaveTerminal.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \
@@ -83,4 +83,3 @@ LFLAGS = $$system(mkoctfile -p LFLAGS) \
          $$system(mkoctfile -p LIBS)
 LIBS    += $$LFLAGS -loctave -loctinterp -lreadline -lutil
 QMAKE_CXXFLAGS  += $$INCFLAGS
-

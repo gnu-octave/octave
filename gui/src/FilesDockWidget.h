@@ -27,51 +27,35 @@
 #include "octave/cmd-hist.h"
 #include <QDockWidget>
 
-class FilesDockWidget :  public QDockWidget  {
+class FilesDockWidget : public QDockWidget {
   Q_OBJECT
-    
 public :
   FilesDockWidget(QWidget *parent = 0);
-
-  void setDirectory (QString dir);
+  void setDirectory(QString dir);
   
 public slots:
-  /**
-   * Slot for handling a change in directory via double click
-   */
+  /** Slot for handling a change in directory via double click. */
   void itemDoubleClicked(const QModelIndex &index);
 
-  /**
-   * Slot for handling the up-directory button in the toolbar
-   */
-  void onUpDirectory(void);
+  /** Slot for handling the up-directory button in the toolbar. */
+  void onUpDirectory();
     
 private:
-  // Layout widget for packing the toolbar and treeview widgets
-  QVBoxLayout *layout;
 
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
 
-  /**
-   * Toolbar for file and directory manipulation
-   */
+  /** Toolbar for file and directory manipulation. */
   QToolBar *toolbar;
 
-  /**
-   * Variables for the up-directory action.
-   */
+  /** Variables for the up-directory action. */
   QIcon dirIcon;
   QAction *dirAction;
   QToolButton *upDirectoryButton;
 
-  /**
-   * The file system model.
-   */
+  /** The file system model. */
   QFileSystemModel *fileSystemModel;
 
-  /**
-   * The file system view.
-   */
+  /** The file system view. */
   QTreeView *fileTreeView;
 };
 

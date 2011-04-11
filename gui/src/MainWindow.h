@@ -25,6 +25,7 @@
 #include <QMdiArea>
 #include <QStatusBar>
 #include <QToolBar>
+#include <QtWebKit/QWebView>
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
@@ -98,6 +99,7 @@ public:
 public slots:
     void handleOpenFileRequest(QString fileName);
     void reportStatusMessage(QString statusMessage);
+    void openWebPage(QString url);
 
 protected:
     void closeEvent(QCloseEvent *closeEvent);
@@ -113,6 +115,8 @@ private:
     QTabWidget *m_centralTabWidget;
     QStatusBar *m_statusBar;
     QToolBar *m_generalPurposeToolbar;
+    QWebView *m_webView;
+    QString m_settingsFile;
 
     // Threads for running octave and managing the data interaction.
     OctaveMainThread *m_octaveMainThread;

@@ -19,13 +19,15 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
-#include <QtWebKit/QWebView>
 #include <QSettings>
+#include <QDesktopServices>
 #include "MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_isRunning(true) {
+    QDesktopServices desktopServices;
+    m_settingsFile = desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/setting.ini";
     constructWindow();
     establishOctaveLink();
 }
@@ -42,9 +44,13 @@ void MainWindow::reportStatusMessage(QString statusMessage) {
     m_statusBar->showMessage(statusMessage, 1000);
 }
 
+void MainWindow::openWebPage(QString url) {
+    m_webView->load(QUrl(url));
+}
+
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {
     reportStatusMessage("Saving data and shutting down.");
-    QSettings settings("~/.quint/settings.ini", QSettings::IniFormat);
+    QSettings settings(m_settingsFile, QSettings::IniFormat);
     settings.setValue("MainWindow/geometry", saveGeometry());
     settings.setValue("MainWindow/windowState", saveState());
     QMainWindow::closeEvent(closeEvent);
@@ -59,9 +65,11 @@ void MainWindow::constructWindow() {
     m_filesDockWidget = new FilesDockWidget(this);
     m_openedFiles = new QMdiArea(this);
     m_statusBar = new QStatusBar(this);
+    m_webView = new QWebView(this);
     m_centralTabWidget = new QTabWidget(this);
     m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
     m_centralTabWidget->addTab(m_openedFiles, "Editor");
+    m_centralTabWidget->addTab(m_webView, "Documentation");
 
     // TODO: Add meaningfull toolbar items.
     QAction *commandAction = new QAction(style->standardIcon(QStyle::SP_CommandLink),
@@ -79,12 +87,14 @@ void MainWindow::constructWindow() {
     addDockWidget(Qt::RightDockWidgetArea, m_filesDockWidget);
     setStatusBar(m_statusBar);
 
-    QSettings settings("~/.quint/settings.ini", QSettings::IniFormat);
+    QSettings settings(m_settingsFile, QSettings::IniFormat);
     restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
     restoreState(settings.value("MainWindow/windowState").toByteArray());
 
     connect(m_filesDockWidget, SIGNAL(openFile(QString)), this, SLOT(handleOpenFileRequest(QString)));
     connect(m_historyDockWidget, SIGNAL(information(QString)), this, SLOT(reportStatusMessage(QString)));
+
+    openWebPage("http://www.gnu.org/software/octave/doc/interpreter/");
 }
 
 void MainWindow::establishOctaveLink() {

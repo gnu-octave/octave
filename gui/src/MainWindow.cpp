@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QDesktopServices>
 #include "MainWindow.h"
+#include "FileEditorMdiSubWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -37,7 +38,9 @@ MainWindow::~MainWindow() {
 
 void MainWindow::handleOpenFileRequest(QString fileName) {
     reportStatusMessage("Opening file.");
-    // TODO: Open mdi subwindow.
+    FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow(m_openedFiles);
+    subWindow->loadFile(fileName);
+    m_openedFiles->addSubWindow(subWindow);
 }
 
 void MainWindow::reportStatusMessage(QString statusMessage) {

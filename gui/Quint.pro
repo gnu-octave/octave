@@ -44,7 +44,8 @@ SOURCES +=\
     src/HistoryDockWidget.cpp \
     src/FilesDockWidget.cpp \
     src/CodeEdit.cpp \
-    src/Syntax.cpp
+    src/Syntax.cpp \
+    src/FileEditorMdiSubWindow.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -85,7 +86,8 @@ HEADERS += \
     src/HistoryDockWidget.h \
     src/FilesDockWidget.h \
     src/CodeEdit.h \
-    src/Syntax.h
+    src/Syntax.h \
+    src/FileEditorMdiSubWindow.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \

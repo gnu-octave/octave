@@ -38,6 +38,7 @@ class octave_value_list;
 #include <cstdio>
 #include <string>
 #include <vector>
+#include <QMutex>
 
 /**
   * \class OctaveLink
@@ -47,6 +48,8 @@ class OctaveLink
 {
 public:
     static OctaveLink *instance() { return &m_singleton; }
+    static int readlineEventHook(void);
+
     /**
      * Enumeration used to identify breakpoint actions
      */
@@ -203,16 +206,7 @@ private:
     ~OctaveLink();
 
     /** Mutex variable used to protect access to internal class data. */
-    pthread_mutex_t m_serverMutex;
-
-    /**
-     * Mutex variable used to protect access to octave internals on asynchronous requests.
-     *
-     * Notes: This is necessary for asynchronous requests like detailed variable information
-     * in a debugger mouse-over, inspection of matrix variables by double-clicking in the
-     * main window, etc.
-     */
-    pthread_mutex_t m_octaveLockMutex;
+    QMutex m_internalAccessMutex;
 
     std::vector<BreakPoint> m_currentBreakpoints;
     std::vector<BreakPoint> m_reachedBreakpoints;
@@ -238,9 +232,5 @@ private:
     bool m_isProcessingServerData;
     static OctaveLink m_singleton;
 };
-
-int server_rl_event_hook_function(void);
-bool server_rl_is_processing(void);
-
 #endif // OCTAVELINK_H
 

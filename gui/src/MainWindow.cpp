@@ -53,7 +53,7 @@ void MainWindow::establishOctaveLink() {
     m_octaveCallbackThread = new OctaveCallbackThread(this, this);
     m_octaveCallbackThread->start();
 
-    command_editor::add_event_hook(server_rl_event_hook_function);
+    command_editor::add_event_hook(OctaveLink::readlineEventHook);
 
     int fdm, fds;
     if(openpty(&fdm, &fds, 0, 0, 0) < 0) {

@@ -82,6 +82,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "OctaveLink.h"
 
 #include <QFileInfo>
+#include <QMutexLocker>
 
 OctaveLink OctaveLink::m_singleton;
 
@@ -104,34 +105,18 @@ get_user_code (const std::string& fname = std::string ())
 }
 
 //*************************************************************************
-int server_rl_event_hook_function(void)
-{
-  static int rl_event_count = 0;
-  rl_event_count++;
-
-  //if (rl_event_count%10 == 0)
-  //  octave_stdout << "rl_event_count:" << rl_event_count << std::endl;
-
-
+int OctaveLink::readlineEventHook() {
   // TODO: No need to run too quickly.  The documentation says it will run
   // at most 10 times per second.  This may be too fast and we will need to
   // artificially slow it down somehow.  Not sure at this time how.
   OctaveLink::instance()->processOctaveServerData();
-
   return 0;
 }
 
-bool server_rl_is_processing(void)
-{
-  return OctaveLink::instance()->isProcessing();
-}
-
 //*************************************************************************
-OctaveLink::OctaveLink() {
-  pthread_mutex_init(&m_serverMutex,NULL);
-  pthread_mutex_init(&m_octaveLockMutex,NULL);
-  m_previousHistoryLength = 0;
-  m_isProcessingServerData = false;
+OctaveLink::OctaveLink()
+    : m_previousHistoryLength(0),
+      m_isProcessingServerData(false) {
 }
 
 OctaveLink::~OctaveLink() {
@@ -145,17 +130,13 @@ OctaveLink::~OctaveLink() {
 
 //*************************************************************************
 std::vector<OctaveLink::VariableMetaData> OctaveLink::variableInfoList(void) {
-    // Acquire the mutex
-    if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-        return std::vector<VariableMetaData>();
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
     // Copy the list of variable information
     std::vector<VariableMetaData> retval( m_variableSymbolTableList.size() );
     std::copy( m_variableSymbolTableList.begin(), m_variableSymbolTableList.end(), retval.begin() );
     m_variableSymbolTableList = std::vector<VariableMetaData>();
 
-    // Release the mutex
-    pthread_mutex_unlock( &m_serverMutex );
     return retval;
 }
 
@@ -163,167 +144,96 @@ std::vector<OctaveLink::VariableMetaData> OctaveLink::variableInfoList(void) {
 //*************************************************************************
 std::vector<OctaveLink::RequestedVariable> OctaveLink::requestedVariables(void)
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return std::vector<RequestedVariable>();
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  // Copy the list of requested variables
-  std::vector<RequestedVariable> retval( m_requestedVariables.size() );
-  std::copy( m_requestedVariables.begin(), m_requestedVariables.end(), retval.begin() );
-  m_requestedVariables = std::vector<RequestedVariable>();
-  
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
+    // Copy the list of requested variables
+    std::vector<RequestedVariable> retval( m_requestedVariables.size() );
+    std::copy( m_requestedVariables.begin(), m_requestedVariables.end(), retval.begin() );
+    m_requestedVariables = std::vector<RequestedVariable>();
 
-  return retval;
+    return retval;
 }
-
 
 //*************************************************************************
 int OctaveLink::setRequestedVariableNames( std::vector<std::string> variables_names )
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return -1;
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  // Set the list of requested variables
-  m_variablesRequestList = std::vector<std::string>( variables_names.size() );
-  std::copy( variables_names.begin(), variables_names.end(), m_variablesRequestList.begin() );
+    // Set the list of requested variables
+    m_variablesRequestList = std::vector<std::string>( variables_names.size() );
+    std::copy( variables_names.begin(), variables_names.end(), m_variablesRequestList.begin() );
 
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  return 0;
+    return 0;
 }
-
 
 //*************************************************************************
 string_vector OctaveLink::getHistoryList(void)
 {
-  // Acquire mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return string_vector();
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  // Copy the list of command history items
-  string_vector retval( m_historyList );
-  m_historyList = string_vector();
+    // Copy the list of command history items
+    string_vector retval( m_historyList );
+    m_historyList = string_vector();
 
-  // Release mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  return retval;
+    return retval;
 }
 
 std::vector<OctaveLink::BreakPoint> OctaveLink::breakPointList(int& status)
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-  {
-    status = -1;
-    return std::vector<BreakPoint>();
-  }
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  // Copy the list of variable information
-  std::vector<BreakPoint> retval (m_currentBreakpoints.size());
-  std::copy( m_currentBreakpoints.begin(), m_currentBreakpoints.end(), retval.begin() );
+    // Copy the list of variable information
+    std::vector<BreakPoint> retval (m_currentBreakpoints.size());
+    std::copy( m_currentBreakpoints.begin(), m_currentBreakpoints.end(), retval.begin() );
 
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  status = 0;
-  return retval;
+    status = 0;
+    return retval;
 }
 
 bool OctaveLink::isBreakpointReached (int& status)
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-  {
-    status = -1;
-    return false;
-  }
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  // Copy the list of variable information
-  bool retval = (m_reachedBreakpoints.size()>0);
-
-  //if (retval)
-  //  octave_stdout << "Breakpoint reached" << std::endl;
-
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  status = 0;
-  return retval;
+    // Copy the list of variable information
+    bool retval = (m_reachedBreakpoints.size()>0);
+    return retval;
 }
-
 
 std::vector<OctaveLink::BreakPoint> OctaveLink::reachedBreakpoint()
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return std::vector<BreakPoint>();
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  // Copy the list of variable information
-  std::vector<BreakPoint> retval (m_reachedBreakpoints.size());
-  std::copy (m_reachedBreakpoints.begin(), m_reachedBreakpoints.end(), retval.begin() );
+    // Copy the list of variable information
+    std::vector<BreakPoint> retval (m_reachedBreakpoints.size());
+    std::copy (m_reachedBreakpoints.begin(), m_reachedBreakpoints.end(), retval.begin() );
 
-  //if (breakpoint_reached.size()>0)
-  //  octave_stdout << "Breakpoint reached" << std::endl;
-
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  return retval;
+    return retval;
 }
 
 int OctaveLink::addBreakpoint( BreakPoint bp_info )
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return -1;
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  // Copy the list of variable information
-  m_addedBreakpoints.push_back (bp_info);
+    // Copy the list of variable information
+    m_addedBreakpoints.push_back (bp_info);
 
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  return 0;
+    return 0;
 }
 
 int OctaveLink::removeBreakpoint( BreakPoint bp_info )
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return -1;
-
-  // Copy the list of variable information
-  m_removedBreakpoints.push_back (bp_info);
-
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  return 0;
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
+    // Copy the list of variable information
+    m_removedBreakpoints.push_back (bp_info);
+    return 0;
 }
-
-/*
-    status_t		   modify_breakpoint( bp_info_t old_bp_info, bp_info_t new_bp_info );
-*/
 
 int OctaveLink::setBreakpointAction (BreakPointAction action)
 {
-  // Acquire the mutex
-  if( pthread_mutex_trylock( &m_serverMutex ) != 0 )
-    return -1;
-
-  m_breakPointAction = action;
-  
-  // Release the mutex
-  pthread_mutex_unlock( &m_serverMutex );
-
-  return 0;
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
+    m_breakPointAction = action;
+    return 0;
 }
-
 
 /*******************************************************************************
  *******************************************************************************
@@ -339,12 +249,8 @@ int OctaveLink::processOctaveServerData(void)
   gettimeofday(&start, NULL);
 #endif
 
-  // Acquire mutex
-  if( pthread_mutex_lock( &m_serverMutex ) != 0 )
-  {
-    octave_stdout << "Error acquiring the octave_server data lock mutex" << std::endl;
-    return -1;
-  }
+  QMutexLocker mutexLocker(&m_internalAccessMutex);
+
   m_isProcessingServerData = true;
   
   process_breakpoint_action();
@@ -354,8 +260,6 @@ int OctaveLink::processOctaveServerData(void)
   setHistoryList();
   setBreakPointList();
 
-  // Release mutex
-  pthread_mutex_unlock( &m_serverMutex );
   m_isProcessingServerData = false;
 
 #ifndef __WIN32__
@@ -372,8 +276,6 @@ int OctaveLink::setVariableInfoList( void )
 {
   static std::vector<VariableMetaData> lastVars;
   std::vector<VariableMetaData> currVars;
-
-
   std::list<symbol_table::symbol_record> lvars = symbol_table::all_variables();
   std::list<symbol_table::symbol_record>::iterator it;
 
@@ -403,8 +305,6 @@ int OctaveLink::setVariableInfoList( void )
 
     std::copy( currVars.begin(), currVars.end(), m_variableSymbolTableList.begin() );
   }
-
-  
   return 0;
 }
 
@@ -471,7 +371,6 @@ int OctaveLink::processRequestedVariables( void )
 //*************************************************************************
 int OctaveLink::setHistoryList( void )
 {
-  
   // Build up the current list
   int currentLen = command_history::length();
   if ( currentLen != m_previousHistoryLength )

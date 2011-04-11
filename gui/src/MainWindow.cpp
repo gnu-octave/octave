@@ -20,7 +20,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QtWebKit/QWebView>
-
+#include <QSettings>
 #include "MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -32,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    QSettings settings("GNU", "Quint");
+    settings.setValue("MainWindow/geometry", saveGeometry());
+    settings.setValue("MainWindow/windowState", saveState());
 }
 
 void MainWindow::constructWindow() {
@@ -46,6 +49,10 @@ void MainWindow::constructWindow() {
     addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);
     addDockWidget(Qt::RightDockWidgetArea, m_filesDockWidget);
+
+    QSettings settings("GNU", "Quint");
+    restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
+    restoreState(settings.value("MainWindow/windowState").toByteArray());
 }
 
 void MainWindow::establishOctaveLink() {

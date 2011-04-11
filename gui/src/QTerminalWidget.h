@@ -69,7 +69,7 @@ public:
     void setScrollBarPosition(ScrollBarPosition);
     
     /** Send some text to the terminal. */
-    void sendText(QString &text);
+    void sendText(const QString &text);
             
 signals:
     /** Emitted, when the current program has finished. */

@@ -168,7 +168,7 @@ void QTerminalWidget::setScrollBarPosition(ScrollBarPosition pos)
     m_impl->m_terminalDisplay->setScrollBarPosition((TerminalDisplay::ScrollBarPosition)pos);
 }
 
-void QTerminalWidget::sendText(QString &text)
+void QTerminalWidget::sendText(const QString &text)
 {
     m_impl->m_session->sendText(text); 
 }

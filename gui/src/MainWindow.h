@@ -20,6 +20,7 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QMainWindow>
+#include <QThread>
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
@@ -67,6 +68,10 @@ extern OCTINTERP_API FILE *get_input_from_stdin (void);
 #include <iostream>
 #include <vector>
 #include "pty.h"
+
+class OctaveMainThread;
+class OctaveCallbackThread;
+
 /**
   * \class MainWindow
   *
@@ -76,11 +81,13 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    static void* octaveMainWrapper(void *widget);
-    static void* octaveCallback(void *widget);
-
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    bool isRunning() { return m_isRunning; }
+    OctaveTerminal *octaveTerminal() { return m_octaveTerminal; }
+    VariablesDockWidget *variablesDockWidget() { return m_variablesDockWidget; }
+    HistoryDockWidget *historyDockWidget() { return m_historyDockWidget; }
 
 public slots:
 private:
@@ -92,9 +99,88 @@ private:
 
     // Threads for running octave and managing the data interaction.
     OctaveLink *m_octaveLink;
-    pthread_t m_octaveThread;
-    pthread_t m_octaveCallbackThread;
-    bool isRunning;
+    OctaveMainThread *m_octaveMainThread;
+    OctaveCallbackThread *m_octaveCallbackThread;
+    bool m_isRunning;
+};
+
+class OctaveMainThread : public QThread {
+    Q_OBJECT
+public:
+    OctaveMainThread(QObject *parent)
+        : QThread(parent) {
+    }
+protected:
+    void run() {
+        int argc = 3;
+        const char* argv[] = {"octave", "--interactive", "--line-editing"};
+        octave_main(argc, (char**)argv,1);
+        switch_to_buffer(create_buffer(get_input_from_stdin()));
+        main_loop();
+        clean_up_and_exit(0);
+    }
+};
+
+class OctaveCallbackThread : public QThread {
+    Q_OBJECT
+public:
+    OctaveCallbackThread(QObject *parent, MainWindow *mainWindow)
+        : QThread(parent),
+          m_mainWindow(mainWindow) {
+    }
+
+protected:
+    void run() {
+        while(m_mainWindow->isRunning()) {
+
+        // Get a full variable list.
+        std::vector<OctaveLink::VariableMetaData> variables = oct_octave_server.variableInfoList();
+        if(variables.size()) {
+            // TODO: Update variables view.
+        }
+
+        // Check whether any requested variables have been returned.
+        std::vector<OctaveLink::RequestedVariable> reqVars = oct_octave_server.requestedVariables();
+        for(std::vector<OctaveLink::RequestedVariable>::iterator it = reqVars.begin();
+            it != reqVars.end(); it++ ) {
+            // TODO: Process requested variables.
+        }
+
+        // Collect history list.
+        string_vector historyList = oct_octave_server.getHistoryList();
+        if(historyList.length()) {
+            m_mainWindow->historyDockWidget()->updateHistory(historyList);
+        }
+
+        // Put a marker in each buffer at the proper location.
+        int status = 0;
+        std::vector<OctaveLink::BreakPoint> breakPoints = oct_octave_server.breakPointList(status);
+        if(status==0) {
+            //MEditor::GetInstance()->process_breakpoint_list (bps);
+        }
+
+        // Find out if a breakpoint is hit
+        static bool lineNumber = -1;
+        bool hitBreakPoint = oct_octave_server.isBreakpointReached(status);
+        if((status==0) && hitBreakPoint) {
+            std::vector<OctaveLink::BreakPoint> hit_breakpoint = oct_octave_server.reachedBreakpoint();
+
+            if(hit_breakpoint.size() > 0 && (hit_breakpoint[0].lineNumber != lineNumber)) {
+                //MEditor::GetInstance()->remove_hit_breakpoint_marker ();
+                //MEditor::GetInstance()->add_breakpoint_marker(hit_breakpoint[0], BP_MARKER_TYPE_HIT);
+                lineNumber = hit_breakpoint[0].lineNumber;
+            }
+        }
+        else if((status==0) && lineNumber>0) {
+            //MEditor::GetInstance()->remove_hit_breakpoint_marker ();
+            lineNumber = -1;
+        }
+
+            usleep(100000);
+        }
+    }
+private:
+    MainWindow *m_mainWindow;
 };
 
 #endif // MAINWINDOW_H

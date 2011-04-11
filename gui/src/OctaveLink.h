@@ -46,6 +46,7 @@ class octave_value_list;
 class OctaveLink
 {
 public:
+    static OctaveLink *instance() { return &m_singleton; }
     /**
      * Enumeration used to identify breakpoint actions
      */
@@ -107,9 +108,6 @@ public:
                    (left.typeName == right.typeName);
         }
     } VariableMetaData;
-
-    OctaveLink();
-    ~OctaveLink();
 
     bool isProcessing(void) { return m_isProcessingServerData; }
 
@@ -201,6 +199,9 @@ public:
     int setHistoryList(void);
 
 private:
+    OctaveLink();
+    ~OctaveLink();
+
     /** Mutex variable used to protect access to internal class data. */
     pthread_mutex_t m_serverMutex;
 
@@ -235,12 +236,11 @@ private:
     int m_previousHistoryLength;
 
     bool m_isProcessingServerData;
+    static OctaveLink m_singleton;
 };
 
 int server_rl_event_hook_function(void);
 bool server_rl_is_processing(void);
-
-extern OctaveLink oct_octave_server;
 
 #endif // OCTAVELINK_H
 

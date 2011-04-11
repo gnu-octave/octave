@@ -98,7 +98,6 @@ private:
     HistoryDockWidget *m_historyDockWidget;
 
     // Threads for running octave and managing the data interaction.
-    OctaveLink *m_octaveLink;
     OctaveMainThread *m_octaveMainThread;
     OctaveCallbackThread *m_octaveCallbackThread;
     bool m_isRunning;
@@ -134,36 +133,39 @@ protected:
         while(m_mainWindow->isRunning()) {
 
         // Get a full variable list.
-        std::vector<OctaveLink::VariableMetaData> variables = oct_octave_server.variableInfoList();
+        std::vector<OctaveLink::VariableMetaData> variables
+                = OctaveLink::instance()->variableInfoList();
         if(variables.size()) {
             // TODO: Update variables view.
         }
 
         // Check whether any requested variables have been returned.
-        std::vector<OctaveLink::RequestedVariable> reqVars = oct_octave_server.requestedVariables();
+        std::vector<OctaveLink::RequestedVariable> reqVars
+                = OctaveLink::instance()->requestedVariables();
+
         for(std::vector<OctaveLink::RequestedVariable>::iterator it = reqVars.begin();
             it != reqVars.end(); it++ ) {
             // TODO: Process requested variables.
         }
 
         // Collect history list.
-        string_vector historyList = oct_octave_server.getHistoryList();
+        string_vector historyList = OctaveLink::instance()->getHistoryList();
         if(historyList.length()) {
             m_mainWindow->historyDockWidget()->updateHistory(historyList);
         }
 
         // Put a marker in each buffer at the proper location.
         int status = 0;
-        std::vector<OctaveLink::BreakPoint> breakPoints = oct_octave_server.breakPointList(status);
+        std::vector<OctaveLink::BreakPoint> breakPoints = OctaveLink::instance()->breakPointList(status);
         if(status==0) {
             //MEditor::GetInstance()->process_breakpoint_list (bps);
         }
 
         // Find out if a breakpoint is hit
         static bool lineNumber = -1;
-        bool hitBreakPoint = oct_octave_server.isBreakpointReached(status);
+        bool hitBreakPoint = OctaveLink::instance()->isBreakpointReached(status);
         if((status==0) && hitBreakPoint) {
-            std::vector<OctaveLink::BreakPoint> hit_breakpoint = oct_octave_server.reachedBreakpoint();
+            std::vector<OctaveLink::BreakPoint> hit_breakpoint = OctaveLink::instance()->reachedBreakpoint();
 
             if(hit_breakpoint.size() > 0 && (hit_breakpoint[0].lineNumber != lineNumber)) {
                 //MEditor::GetInstance()->remove_hit_breakpoint_marker ();

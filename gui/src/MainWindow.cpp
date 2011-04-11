@@ -47,8 +47,6 @@ void MainWindow::constructWindow() {
 
 void MainWindow::establishOctaveLink() {
     //QMetaObject::invokeMethod(this, "setStatus", Q_ARG(QString, QString("Establishing Octave link..")));
-    m_octaveLink = new OctaveLink();
-
     m_octaveMainThread = new OctaveMainThread(this);
     m_octaveMainThread->start();
 

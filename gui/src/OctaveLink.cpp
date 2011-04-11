@@ -83,7 +83,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <QFileInfo>
 
-OctaveLink oct_octave_server;
+OctaveLink OctaveLink::m_singleton;
 
 static octave_user_code *
 get_user_code (const std::string& fname = std::string ())
@@ -116,14 +116,14 @@ int server_rl_event_hook_function(void)
   // TODO: No need to run too quickly.  The documentation says it will run
   // at most 10 times per second.  This may be too fast and we will need to
   // artificially slow it down somehow.  Not sure at this time how.
-  oct_octave_server.processOctaveServerData();
+  OctaveLink::instance()->processOctaveServerData();
 
   return 0;
 }
 
 bool server_rl_is_processing(void)
 {
-  return oct_octave_server.isProcessing();
+  return OctaveLink::instance()->isProcessing();
 }
 
 //*************************************************************************

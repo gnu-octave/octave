@@ -26,7 +26,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_isRunning(true) {
-    resize(1000, 600);
+    showMaximized();
     constructWindow();
     establishOctaveLink();
 }
@@ -42,9 +42,12 @@ void MainWindow::constructWindow() {
     m_variablesDockWidget = new VariablesDockWidget(this);
     m_historyDockWidget = new HistoryDockWidget(this);
     m_filesDockWidget = new FilesDockWidget(this);
+    m_centralTabWidget = new QTabWidget(this);
 
     setWindowTitle("Octave");
-    setCentralWidget(m_octaveTerminal);
+    setCentralWidget(m_centralTabWidget);
+
+    m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
 
     addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);

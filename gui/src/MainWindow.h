@@ -21,6 +21,7 @@
 
 #include <QtGui/QMainWindow>
 #include <QThread>
+#include <QTabWidget>
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
@@ -99,6 +100,7 @@ private:
     VariablesDockWidget *m_variablesDockWidget;
     HistoryDockWidget *m_historyDockWidget;
     FilesDockWidget *m_filesDockWidget;
+    QTabWidget *m_centralTabWidget;
 
     // Threads for running octave and managing the data interaction.
     OctaveMainThread *m_octaveMainThread;

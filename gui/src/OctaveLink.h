@@ -39,22 +39,6 @@ class octave_value_list;
 #include <string>
 #include <vector>
 
-#if defined (HAVE_PTHREAD_H)
-    #include <pthread.h>
-#elif defined (__WIN32__)
-    #include <windows.h>
-        typedef CRITICAL_SECTION pthread_mutex_t;
-        #define pthread_mutex_init(x,a) InitializeCriticalSection(x)
-        inline int pthread_mutex_trylock(pthread_mutex_t *x)
-        {
-            EnterCriticalSection(x);
-            return 0;
-        }
-        #define pthread_mutex_lock(x) pthread_mutex_trylock(x)
-        #define pthread_mutex_unlock(x) LeaveCriticalSection(x)
-        typedef HANDLE pthread_t;
-#endif
-
 /**
   * \class OctaveLink
   * Manages a link to an octave instance.

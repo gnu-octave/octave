@@ -42,14 +42,14 @@ void MainWindow::constructWindow() {
     m_variablesDockWidget = new VariablesDockWidget(this);
     m_historyDockWidget = new HistoryDockWidget(this);
     m_filesDockWidget = new FilesDockWidget(this);
-    m_codeEdit = new QCodeEdit(this);
+    m_codeEdit = new CodeEdit(this);
     m_centralTabWidget = new QTabWidget(this);
 
     setWindowTitle("Octave");
     setCentralWidget(m_centralTabWidget);
 
     m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
-    m_centralTabWidget->addTab(m_codeEdit->editor(), "Editor");
+    m_centralTabWidget->addTab(m_codeEdit, "Editor");
 
     addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);

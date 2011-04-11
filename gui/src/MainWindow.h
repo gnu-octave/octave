@@ -27,7 +27,7 @@
 #include "VariablesDockWidget.h"
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
-#include "qcodeedit.h"
+#include "CodeEdit.h"
 
 // Octave includes
 #undef PACKAGE_BUGREPORT
@@ -92,7 +92,7 @@ public:
     VariablesDockWidget *variablesDockWidget() { return m_variablesDockWidget; }
     HistoryDockWidget *historyDockWidget() { return m_historyDockWidget; }
     FilesDockWidget *filesDockWidget() { return m_filesDockWidget; }
-    QCodeEdit *codeEdit() { return m_codeEdit; }
+    CodeEdit *codeEdit() { return m_codeEdit; }
 
 public slots:
 private:
@@ -102,7 +102,7 @@ private:
     VariablesDockWidget *m_variablesDockWidget;
     HistoryDockWidget *m_historyDockWidget;
     FilesDockWidget *m_filesDockWidget;
-    QCodeEdit *m_codeEdit;
+    CodeEdit *m_codeEdit;
     QTabWidget *m_centralTabWidget;
 
     // Threads for running octave and managing the data interaction.

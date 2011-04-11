@@ -42,7 +42,9 @@ SOURCES +=\
     src/OctaveTerminal.cpp \
     src/VariablesDockWidget.cpp \
     src/HistoryDockWidget.cpp \
-    src/FilesDockWidget.cpp
+    src/FilesDockWidget.cpp \
+    src/CodeEdit.cpp \
+    src/Syntax.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -81,11 +83,13 @@ HEADERS += \
     src/OctaveTerminal.h \
     src/VariablesDockWidget.h \
     src/HistoryDockWidget.h \
-    src/FilesDockWidget.h
+    src/FilesDockWidget.h \
+    src/CodeEdit.h \
+    src/Syntax.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \
          $$system(mkoctfile -p OCTAVE_LIBS) \
          $$system(mkoctfile -p LIBS)
-LIBS    += $$LFLAGS -loctave -loctinterp -lreadline -lutil -L../Quint -lqcodeedit
+LIBS    += $$LFLAGS -loctave -loctinterp -lreadline -lutil
 QMAKE_CXXFLAGS  += $$INCFLAGS

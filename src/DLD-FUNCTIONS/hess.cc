@@ -37,8 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (hess, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{h} =} hess (@var{A})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{h}] =} hess (@var{A})\n\
+@deftypefn  {Loadable Function} {@var{H} =} hess (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{P}, @var{H}] =} hess (@var{A})\n\
 @cindex Hessenberg decomposition\n\
 Compute the Hessenberg decomposition of the matrix @var{A}.\n\
 \n\
@@ -51,8 +51,8 @@ where $P$ is a square unitary matrix ($P^TP = I$), and $H$\n\
 is upper Hessenberg ($H_{i,j} = 0, \\forall i \\ge j+1$).\n\
 @end tex\n\
 @ifnottex\n\
-@code{@var{P} * @var{H} * @var{P}' = @var{A}} where @var{p} is a square\n\
-unitary matrix (@code{@var{p}' * @var{p} = I}, using complex-conjugate\n\
+@code{@var{P} * @var{H} * @var{P}' = @var{A}} where @var{P} is a square\n\
+unitary matrix (@code{@var{P}' * @var{P} = I}, using complex-conjugate\n\
 transposition) and @var{H} is upper Hessenberg\n\
 (@code{@var{H}(i, j) = 0 forall i >= j+1)}.\n\
 @end ifnottex\n\

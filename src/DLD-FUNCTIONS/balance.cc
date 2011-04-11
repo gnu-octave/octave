@@ -62,9 +62,9 @@ equilibration to be computed without round-off.  Results of eigenvalue\n\
 calculation are typically improved by balancing first.\n\
 \n\
 If two output values are requested, @code{balance} returns \n\
-the diagonal @var{D} and the permutation @var{P} separately as vectors.  \n\
-In this case, @code{@var{DD} = eye(n)(:,@var{P}) * diag (@var{D})}, where n\n\
-@t{n} is the matrix size.  \n\
+the diagonal @var{D} and the permutation @var{P} separately as vectors.\n\
+In this case, @code{@var{DD} = eye(n)(:,@var{P}) * diag (@var{D})}, where\n\
+@math{n} is the matrix size.  \n\
 \n\
 If four output values are requested, compute @code{@var{AA} =\n\
 @var{CC}*@var{A}*@var{DD}} and @code{@var{BB} = @var{CC}*@var{B}*@var{DD}},\n\

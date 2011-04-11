@@ -4682,51 +4682,51 @@ or a range.\n\
 
 DEFUN (norm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} norm (@var{a})\n\
-@deftypefnx {Built-in Function} {} norm (@var{a}, @var{p})\n\
-@deftypefnx {Built-in Function} {} norm (@var{a}, @var{p}, @var{opt})\n\
-Compute the p-norm of the matrix @var{a}.  If the second argument is\n\
+@deftypefn  {Built-in Function} {} norm (@var{A})\n\
+@deftypefnx {Built-in Function} {} norm (@var{A}, @var{p})\n\
+@deftypefnx {Built-in Function} {} norm (@var{A}, @var{p}, @var{opt})\n\
+Compute the p-norm of the matrix @var{A}.  If the second argument is\n\
 missing, @code{p = 2} is assumed.\n\
 \n\
-If @var{a} is a matrix (or sparse matrix):\n\
+If @var{A} is a matrix (or sparse matrix):\n\
 \n\
 @table @asis\n\
 @item @var{p} = @code{1}\n\
-1-norm, the largest column sum of the absolute values of @var{a}.\n\
+1-norm, the largest column sum of the absolute values of @var{A}.\n\
 \n\
 @item @var{p} = @code{2}\n\
-Largest singular value of @var{a}.\n\
+Largest singular value of @var{A}.\n\
 \n\
 @item @var{p} = @code{Inf} or @code{\"inf\"}\n\
 @cindex infinity norm\n\
-Infinity norm, the largest row sum of the absolute values of @var{a}.\n\
+Infinity norm, the largest row sum of the absolute values of @var{A}.\n\
 \n\
 @item @var{p} = @code{\"fro\"}\n\
 @cindex Frobenius norm\n\
-Frobenius norm of @var{a}, @code{sqrt (sum (diag (@var{a}' * @var{a})))}.\n\
+Frobenius norm of @var{A}, @code{sqrt (sum (diag (@var{A}' * @var{A})))}.\n\
 \n\
 @item other @var{p}, @code{@var{p} > 1}\n\
 @cindex general p-norm \n\
 maximum @code{norm (A*x, p)} such that @code{norm (x, p) == 1}\n\
 @end table\n\
 \n\
-If @var{a} is a vector or a scalar:\n\
+If @var{A} is a vector or a scalar:\n\
 \n\
 @table @asis\n\
 @item @var{p} = @code{Inf} or @code{\"inf\"}\n\
-@code{max (abs (@var{a}))}.\n\
+@code{max (abs (@var{A}))}.\n\
 \n\
 @item @var{p} = @code{-Inf}\n\
-@code{min (abs (@var{a}))}.\n\
+@code{min (abs (@var{A}))}.\n\
 \n\
 @item @var{p} = @code{\"fro\"}\n\
-Frobenius norm of @var{a}, @code{sqrt (sumsq (abs (a)))}.\n\
+Frobenius norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.\n\
 \n\
 @item @var{p} = 0\n\
 Hamming norm - the number of nonzero elements.\n\
 \n\
 @item other @var{p}, @code{@var{p} > 1}\n\
-p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
+p-norm of @var{A}, @code{(sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})}.\n\
 \n\
 @item other @var{p} @code{@var{p} < 1}\n\
 the p-pseudonorm defined as above.\n\

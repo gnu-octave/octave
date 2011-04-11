@@ -214,7 +214,8 @@ do_sqrtm (const octave_value& arg)
 
 DEFUN_DLD (sqrtm, args, nargout,
  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{result}, @var{error_estimate}] =} sqrtm (@var{A})\n\
+@deftypefn  {Loadable Function} {@var{s} =} sqrtm (@var{A})\n\
+@deftypefnx {Loadable Function} {[@var{s}, @var{error_estimate}] =} sqrtm (@var{A})\n\
 Compute the matrix square root of the square matrix @var{A}.\n\
 \n\
 Ref: N.J. Higham.  @cite{A New sqrtm for @sc{matlab}}.  Numerical\n\

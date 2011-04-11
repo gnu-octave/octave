@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{r}, @var{k}] =} rref (@var{A}, @var{tol})
-##
-## Returns the reduced row echelon form of @var{A}.  @var{tol} defaults
+## @deftypefn  {Function File} {} rref (@var{A})
+## @deftypefnx {Function File} {} rref (@var{A}, @var{tol})
+## @deftypefnx {Function File} {[@var{r}, @var{k}] =} rref (@dots{})
+## Return the reduced row echelon form of @var{A}.  @var{tol} defaults
 ## to @code{eps * max (size (@var{A})) * norm (@var{A}, inf)}.
 ##
 ## Called with two return arguments, @var{k} returns the vector of

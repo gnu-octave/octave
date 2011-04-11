@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rank (@var{A}, @var{tol})
+## @deftypefn  {Function File} {} rank (@var{A})
+## @deftypefnx {Function File} {} rank (@var{A}, @var{tol})
 ## Compute the rank of @var{A}, using the singular value decomposition.
 ## The rank is taken to be the number of singular values of @var{A} that
 ## are greater than the specified tolerance @var{tol}.  If the second

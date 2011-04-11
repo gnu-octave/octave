@@ -68,6 +68,7 @@
 ## @code{Dq(A)}
 ## @end ifnottex
 ## is ill-conditioned.
+## @seealso{logm, sqrtm}
 ## @end deftypefn
 
 function r = expm (A)

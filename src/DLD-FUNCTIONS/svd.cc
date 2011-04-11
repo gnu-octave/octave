@@ -48,7 +48,7 @@ DEFUN_DLD (svd, args, nargout,
 Compute the singular value decomposition of @var{A}\n\
 @tex\n\
 $$\n\
- A = U S V^H\n\
+ A = U S V^{\\dagger}\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
@@ -406,8 +406,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 
 DEFUN_DLD (svd_driver, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{old} =} svd_driver (@var{new})\n\
-Set or query the underlying @sc{lapack} driver used by @code{svd}.\n\
+@deftypefn  {Loadable Function} {@var{val} =} svd_driver ()\n\
+@deftypefnx {Loadable Function} {@var{old_val} =} svd_driver (@var{new_val})\n\
+Query or set the underlying @sc{lapack} driver used by @code{svd}.\n\
 Currently recognized values are \"gesvd\" and \"gesdd\".  The default\n\
 is \"gesvd\".\n\
 @seealso{svd}\n\

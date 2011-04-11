@@ -45,18 +45,18 @@ private:
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
 
   /** Toolbar for file and directory manipulation. */
-  QToolBar *toolbar;
+  QToolBar *m_navigationToolBar;
 
   /** Variables for the up-directory action. */
-  QIcon dirIcon;
-  QAction *dirAction;
+  QIcon m_directoryIcon;
+  QAction *m_directoryUpAction;
   QToolButton *upDirectoryButton;
 
   /** The file system model. */
-  QFileSystemModel *fileSystemModel;
+  QFileSystemModel *m_fileSystemModel;
 
   /** The file system view. */
-  QTreeView *fileTreeView;
+  QTreeView *m_fileTreeView;
 };
 
 #endif // FILESDOCKWIDGET_H

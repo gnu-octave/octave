@@ -8,19 +8,19 @@ FilesDockWidget::FilesDockWidget(QWidget *parent)
     setWidget(new QWidget(this));
 
     // Create a toolbar
-    toolbar = new QToolBar("", widget());
-    toolbar->setAllowedAreas(Qt::TopToolBarArea);
-    toolbar->setMovable(false);
-    toolbar->setIconSize(QSize (20,20));
+    m_navigationToolBar = new QToolBar("", widget());
+    m_navigationToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    m_navigationToolBar->setMovable(false);
+    m_navigationToolBar->setIconSize(QSize (20,20));
 
     // Add a button to the toolbar with the QT standard icon for up-directory
     // TODO: Maybe change this to be an up-directory icon that is OS specific???
     QStyle *style = QApplication::style();
-    dirIcon = style->standardIcon(QStyle::SP_FileDialogToParent);
-    dirAction = new QAction(dirIcon, "", toolbar);
+    m_directoryIcon = style->standardIcon(QStyle::SP_FileDialogToParent);
+    m_directoryUpAction = new QAction(m_directoryIcon, "", m_navigationToolBar);
 
-    toolbar->addAction(dirAction);
-    connect(dirAction, SIGNAL(triggered()), this, SLOT(onUpDirectory()));
+    m_navigationToolBar->addAction(m_directoryUpAction);
+    connect(m_directoryUpAction, SIGNAL(triggered()), this, SLOT(onUpDirectory()));
 
     // TODO: Add other buttons for creating directories
 
@@ -28,33 +28,33 @@ FilesDockWidget::FilesDockWidget(QWidget *parent)
     QString homePath = QDir::homePath();
     // TODO: This should occur after Octave has been initialized and the startup directory of Octave is established
 
-    fileSystemModel = new QFileSystemModel(this);
-    fileSystemModel->setFilter(QDir::NoDotAndDotDot | QDir::AllEntries);
-    QModelIndex rootPathIndex = fileSystemModel->setRootPath(homePath);
+    m_fileSystemModel = new QFileSystemModel(this);
+    m_fileSystemModel->setFilter(QDir::NoDotAndDotDot | QDir::AllEntries);
+    QModelIndex rootPathIndex = m_fileSystemModel->setRootPath(homePath);
 
     // Attach the model to the QTreeView and set the root index
-    fileTreeView = new QTreeView(widget());
-    fileTreeView->setModel(fileSystemModel);
-    fileTreeView->setRootIndex(rootPathIndex);
-    fileTreeView->setSortingEnabled(true);
+    m_fileTreeView = new QTreeView(widget());
+    m_fileTreeView->setModel(m_fileSystemModel);
+    m_fileTreeView->setRootIndex(rootPathIndex);
+    m_fileTreeView->setSortingEnabled(true);
 
-    connect(fileTreeView, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(itemDoubleClicked(const QModelIndex &)));
+    connect(m_fileTreeView, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(itemDoubleClicked(const QModelIndex &)));
 
     // Layout the widgets vertically with the toolbar on top
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setSpacing(0);
-    layout->addWidget(toolbar);
-    layout->addWidget(fileTreeView);
+    layout->addWidget(m_navigationToolBar);
+    layout->addWidget(m_fileTreeView);
     widget()->setLayout(layout);
     // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 }
 
 void FilesDockWidget::itemDoubleClicked(const QModelIndex &index)
 {
-    QFileInfo fileInfo = fileSystemModel->fileInfo(index);
+    QFileInfo fileInfo = m_fileSystemModel->fileInfo(index);
     if (fileInfo.isDir()) {
-      fileSystemModel->setRootPath(fileInfo.absolutePath());
-      fileTreeView->setRootIndex(index);
+      m_fileSystemModel->setRootPath(fileInfo.absolutePath());
+      m_fileTreeView->setRootIndex(index);
     } else {
       // TODO: Open the file appropriately based on the mime type
     }
@@ -63,8 +63,8 @@ void FilesDockWidget::itemDoubleClicked(const QModelIndex &index)
 void FilesDockWidget::onUpDirectory(void)
 {
     // Move up an index node
-    QDir dir = QDir(fileSystemModel->filePath(fileTreeView->rootIndex()));
+    QDir dir = QDir(m_fileSystemModel->filePath(m_fileTreeView->rootIndex()));
     dir.cdUp();
-    fileTreeView->setRootIndex(fileSystemModel->index(dir.absolutePath()));
+    m_fileTreeView->setRootIndex(m_fileSystemModel->index(dir.absolutePath()));
 }
 

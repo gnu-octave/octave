@@ -32,10 +32,11 @@ struct TermWidgetImpl
 
 TermWidgetImpl::TermWidgetImpl(QWidget* parent)
 {
+    QPalette palette = QApplication::palette();
     m_session = createSession();
     m_terminalDisplay = createTerminalDisplay(this->m_session, parent);
-    m_terminalDisplay->setBackgroundColor(QColor(255, 255, 255));
-    m_terminalDisplay->setForegroundColor(QColor(0, 0, 0));
+    m_terminalDisplay->setBackgroundColor(palette.color(QPalette::Base));
+    m_terminalDisplay->setForegroundColor(palette.color(QPalette::Text));
 }
 
 Session *TermWidgetImpl::createSession()

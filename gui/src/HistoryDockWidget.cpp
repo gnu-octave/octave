@@ -31,4 +31,5 @@ void HistoryDockWidget::updateHistory(string_vector historyEntries) {
             stringList.push_front(QString("%1: ").arg(stringList.size() + 1) + command);
     }
     m_historyListModel->setStringList(stringList);
+    emit information("History updated.");
 }

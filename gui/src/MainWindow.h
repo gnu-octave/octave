@@ -23,6 +23,8 @@
 #include <QThread>
 #include <QTabWidget>
 #include <QMdiArea>
+#include <QStatusBar>
+#include <QToolBar>
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
@@ -93,6 +95,10 @@ public:
     HistoryDockWidget *historyDockWidget() { return m_historyDockWidget; }
     FilesDockWidget *filesDockWidget() { return m_filesDockWidget; }
 
+public slots:
+    void handleOpenFileRequest(QString fileName);
+    void reportStatusMessage(QString statusMessage);
+
 protected:
     void closeEvent(QCloseEvent *closeEvent);
 
@@ -105,6 +111,8 @@ private:
     FilesDockWidget *m_filesDockWidget;
     QMdiArea *m_openedFiles;
     QTabWidget *m_centralTabWidget;
+    QStatusBar *m_statusBar;
+    QToolBar *m_generalPurposeToolbar;
 
     // Threads for running octave and managing the data interaction.
     OctaveMainThread *m_octaveMainThread;

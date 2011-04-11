@@ -33,7 +33,17 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {
 }
 
+void MainWindow::handleOpenFileRequest(QString fileName) {
+    reportStatusMessage("Opening file.");
+    // TODO: Open mdi subwindow.
+}
+
+void MainWindow::reportStatusMessage(QString statusMessage) {
+    m_statusBar->showMessage(statusMessage, 1000);
+}
+
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {
+    reportStatusMessage("Saving data and shutting down.");
     QSettings settings("~/.quint/settings.ini", QSettings::IniFormat);
     settings.setValue("MainWindow/geometry", saveGeometry());
     settings.setValue("MainWindow/windowState", saveState());
@@ -41,24 +51,40 @@ void MainWindow::closeEvent(QCloseEvent *closeEvent) {
 }
 
 void MainWindow::constructWindow() {
+    QStyle *style = QApplication::style();
     m_octaveTerminal = new OctaveTerminal(this);
+    m_generalPurposeToolbar = new QToolBar("Octave Toolbar", this);
     m_variablesDockWidget = new VariablesDockWidget(this);
     m_historyDockWidget = new HistoryDockWidget(this);
     m_filesDockWidget = new FilesDockWidget(this);
     m_openedFiles = new QMdiArea(this);
+    m_statusBar = new QStatusBar(this);
     m_centralTabWidget = new QTabWidget(this);
     m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
     m_centralTabWidget->addTab(m_openedFiles, "Editor");
 
+    // TODO: Add meaningfull toolbar items.
+    QAction *commandAction = new QAction(style->standardIcon(QStyle::SP_CommandLink),
+        "", m_generalPurposeToolbar);
+    QAction *computerAction = new QAction(style->standardIcon(QStyle::SP_ComputerIcon),
+        "", m_generalPurposeToolbar);
+    m_generalPurposeToolbar->addAction(commandAction);
+    m_generalPurposeToolbar->addAction(computerAction);
+
     setWindowTitle("Octave");
     setCentralWidget(m_centralTabWidget);
+    addToolBar(m_generalPurposeToolbar);
     addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);
     addDockWidget(Qt::RightDockWidgetArea, m_filesDockWidget);
+    setStatusBar(m_statusBar);
 
     QSettings settings("~/.quint/settings.ini", QSettings::IniFormat);
     restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
     restoreState(settings.value("MainWindow/windowState").toByteArray());
+
+    connect(m_filesDockWidget, SIGNAL(openFile(QString)), this, SLOT(handleOpenFileRequest(QString)));
+    connect(m_historyDockWidget, SIGNAL(information(QString)), this, SLOT(reportStatusMessage(QString)));
 }
 
 void MainWindow::establishOctaveLink() {
@@ -78,4 +104,5 @@ void MainWindow::establishOctaveLink() {
     dup2 (fds, 1);
     dup2 (fds, 2);
     m_octaveTerminal->openTeletype(fdm);
+    reportStatusMessage("Established link to Octave.");
 }

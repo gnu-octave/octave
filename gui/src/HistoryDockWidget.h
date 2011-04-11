@@ -33,11 +33,14 @@
 #include "octave/symtab.h"
 #include "cmd-edit.h"
 
-class HistoryDockWidget : public QDockWidget
-{
+class HistoryDockWidget : public QDockWidget {
+    Q_OBJECT
 public:
     HistoryDockWidget(QWidget *parent = 0);
     void updateHistory(string_vector historyEntries);
+
+signals:
+    void information(QString message);
 
 private:
     void construct();

@@ -21,7 +21,6 @@
 
 #include "QTerminalWidget.h"
 
-
 class OctaveTerminal : public QTerminalWidget {
     Q_OBJECT
 public:
@@ -31,5 +30,4 @@ public:
 private:
     void construct();
 };
-
 #endif // OCTAVETERMINAL_H

@@ -5,6 +5,7 @@
 FilesDockWidget::FilesDockWidget(QWidget *parent)
   : QDockWidget(parent)
 {
+    setWindowTitle("Files");
     setWidget(new QWidget(this));
 
     // Create a toolbar
@@ -53,10 +54,10 @@ void FilesDockWidget::itemDoubleClicked(const QModelIndex &index)
 {
     QFileInfo fileInfo = m_fileSystemModel->fileInfo(index);
     if (fileInfo.isDir()) {
-      m_fileSystemModel->setRootPath(fileInfo.absolutePath());
-      m_fileTreeView->setRootIndex(index);
+        m_fileSystemModel->setRootPath(fileInfo.absolutePath());
+        m_fileTreeView->setRootIndex(index);
     } else {
-      // TODO: Open the file appropriately based on the mime type
+        emit openFile(m_fileSystemModel->fileName(index));
     }
 }
 

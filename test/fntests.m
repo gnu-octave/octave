@@ -97,6 +97,17 @@ function retval = has_tests (f)
   endif
 endfunction
 
+function retval = has_demos (f)
+  fid = fopen (f);
+  if (fid >= 0)
+    str = fread (fid, "*char")';
+    fclose (fid);
+    retval = ! isempty (regexp (str, '^%!demo', "lineanchors"));
+  else
+    error ("fopen failed: %s", f);
+  endif
+endfunction
+
 function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   global files_with_tests;
   global files_with_no_tests;
@@ -112,6 +123,8 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
         print_test_file_name (nm);
         [p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
         print_pass_fail (n, p);
+        files_with_tests(end+1) = ffnm;
+      elseif (has_demos (ffnm))
         files_with_tests(end+1) = ffnm;
       else
         files_with_no_tests(end+1) = ffnm;
@@ -164,6 +177,8 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         dxf += xf;
         dsk += sk;
         files_with_tests(end+1) = f;
+      elseif (has_demos (f))
+        files_with_tests(end+1) = f;
       elseif (has_functions (f))
         ## To reduce the list length, only mark .cc files that contain
         ## DEFUN definitions.
@@ -192,20 +207,15 @@ function ret = prog_output_assert (str)
 endfunction
 
 function n = num_elts_matching_pattern (lst, pat)
-  n = 0;
-  for i = 1:length (lst)
-    if (! isempty (regexp (lst{i}, pat, "once")))
-      n++;
-    endif
-  endfor
+  n = sum (cellfun (@(x) !isempty (x), regexp (lst, pat, 'once')));
 endfunction
 
 function report_files_with_no_tests (with, without, typ)
-  pat = cstrcat ("\\", typ, "$");
+  pat = cstrcat ('\', typ, "$");
   n_with = num_elts_matching_pattern (with, pat);
   n_without = num_elts_matching_pattern (without, pat);
   n_tot = n_with + n_without;
-  printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
+  printf ("\n%d (of %d) %s files have no tests or demos.\n", n_without, n_tot, typ);
 endfunction
 
 pso = page_screen_output ();
@@ -257,6 +267,12 @@ try
     puts ("Skipped tests are features that are disabled in this version of Octave\n");
     puts ("because the needed libraries were not present when Octave was built.\n");
   endif
+
+  ## Weed out deprecated and private functions
+  weed_idx = cellfun (@isempty, regexp (files_with_tests, '\bdeprecated\b|\bprivate\b', 'once'));
+  files_with_tests = files_with_tests(weed_idx);
+  weed_idx = cellfun (@isempty, regexp (files_with_no_tests, '\bdeprecated\b|\bprivate\b', 'once'));
+  files_with_no_tests = files_with_no_tests(weed_idx);
 
   report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
   report_files_with_no_tests (files_with_tests, files_with_no_tests, ".cc");

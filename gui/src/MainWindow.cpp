@@ -26,15 +26,18 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_isRunning(true) {
-    showMaximized();
     constructWindow();
     establishOctaveLink();
 }
 
 MainWindow::~MainWindow() {
-    QSettings settings("GNU", "Quint");
+}
+
+void MainWindow::closeEvent(QCloseEvent *closeEvent) {
+    QSettings settings("~/.quint/settings.ini", QSettings::IniFormat);
     settings.setValue("MainWindow/geometry", saveGeometry());
     settings.setValue("MainWindow/windowState", saveState());
+    QMainWindow::closeEvent(closeEvent);
 }
 
 void MainWindow::constructWindow() {
@@ -42,26 +45,23 @@ void MainWindow::constructWindow() {
     m_variablesDockWidget = new VariablesDockWidget(this);
     m_historyDockWidget = new HistoryDockWidget(this);
     m_filesDockWidget = new FilesDockWidget(this);
-    m_codeEdit = new CodeEdit(this);
+    m_openedFiles = new QMdiArea(this);
     m_centralTabWidget = new QTabWidget(this);
+    m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
+    m_centralTabWidget->addTab(m_openedFiles, "Editor");
 
     setWindowTitle("Octave");
     setCentralWidget(m_centralTabWidget);
-
-    m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
-    m_centralTabWidget->addTab(m_codeEdit, "Editor");
-
     addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);
     addDockWidget(Qt::RightDockWidgetArea, m_filesDockWidget);
 
-    QSettings settings("GNU", "Quint");
+    QSettings settings("~/.quint/settings.ini", QSettings::IniFormat);
     restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
     restoreState(settings.value("MainWindow/windowState").toByteArray());
 }
 
 void MainWindow::establishOctaveLink() {
-    //QMetaObject::invokeMethod(this, "setStatus", Q_ARG(QString, QString("Establishing Octave link..")));
     m_octaveMainThread = new OctaveMainThread(this);
     m_octaveMainThread->start();
 

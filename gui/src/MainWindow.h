@@ -22,6 +22,7 @@
 #include <QtGui/QMainWindow>
 #include <QThread>
 #include <QTabWidget>
+#include <QMdiArea>
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
@@ -80,8 +81,7 @@ class OctaveCallbackThread;
   *
   * Represents the main window.
   */
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     MainWindow(QWidget *parent = 0);
@@ -92,9 +92,10 @@ public:
     VariablesDockWidget *variablesDockWidget() { return m_variablesDockWidget; }
     HistoryDockWidget *historyDockWidget() { return m_historyDockWidget; }
     FilesDockWidget *filesDockWidget() { return m_filesDockWidget; }
-    CodeEdit *codeEdit() { return m_codeEdit; }
 
-public slots:
+protected:
+    void closeEvent(QCloseEvent *closeEvent);
+
 private:
     void constructWindow();
     void establishOctaveLink();
@@ -102,7 +103,7 @@ private:
     VariablesDockWidget *m_variablesDockWidget;
     HistoryDockWidget *m_historyDockWidget;
     FilesDockWidget *m_filesDockWidget;
-    CodeEdit *m_codeEdit;
+    QMdiArea *m_openedFiles;
     QTabWidget *m_centralTabWidget;
 
     // Threads for running octave and managing the data interaction.

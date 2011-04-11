@@ -112,8 +112,6 @@ public:
         }
     } VariableMetaData;
 
-    bool isProcessing(void) { return m_isProcessingServerData; }
-
     // Functions used to access data form the client side.
     /** Debugging related methods. */
 
@@ -228,8 +226,6 @@ private:
     /** History related member variables. */
     string_vector m_historyList;
     int m_previousHistoryLength;
-
-    bool m_isProcessingServerData;
     static OctaveLink m_singleton;
 };
 #endif // OCTAVELINK_H

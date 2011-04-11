@@ -115,8 +115,7 @@ int OctaveLink::readlineEventHook() {
 
 //*************************************************************************
 OctaveLink::OctaveLink()
-    : m_previousHistoryLength(0),
-      m_isProcessingServerData(false) {
+    : m_previousHistoryLength(0) {
 }
 
 OctaveLink::~OctaveLink() {
@@ -251,16 +250,12 @@ int OctaveLink::processOctaveServerData(void)
 
   QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  m_isProcessingServerData = true;
-  
   process_breakpoint_action();
   processBreakpointAndRemoveModify();
   processRequestedVariables();
   setVariableInfoList();
   setHistoryList();
   setBreakPointList();
-
-  m_isProcessingServerData = false;
 
 #ifndef __WIN32__
   gettimeofday(&stop, NULL);

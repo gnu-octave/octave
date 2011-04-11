@@ -25,6 +25,7 @@
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
 #include "HistoryDockWidget.h"
+#include "FilesDockWidget.h"
 
 // Octave includes
 #undef PACKAGE_BUGREPORT
@@ -88,6 +89,7 @@ public:
     OctaveTerminal *octaveTerminal() { return m_octaveTerminal; }
     VariablesDockWidget *variablesDockWidget() { return m_variablesDockWidget; }
     HistoryDockWidget *historyDockWidget() { return m_historyDockWidget; }
+    FilesDockWidget *filesDockWidget() { return m_filesDockWidget; }
 
 public slots:
 private:
@@ -96,6 +98,7 @@ private:
     OctaveTerminal *m_octaveTerminal;
     VariablesDockWidget *m_variablesDockWidget;
     HistoryDockWidget *m_historyDockWidget;
+    FilesDockWidget *m_filesDockWidget;
 
     // Threads for running octave and managing the data interaction.
     OctaveMainThread *m_octaveMainThread;

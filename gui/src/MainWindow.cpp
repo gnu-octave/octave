@@ -38,11 +38,14 @@ void MainWindow::constructWindow() {
     m_octaveTerminal = new OctaveTerminal(this);
     m_variablesDockWidget = new VariablesDockWidget(this);
     m_historyDockWidget = new HistoryDockWidget(this);
-    setWindowTitle("Quint");
+    m_filesDockWidget = new FilesDockWidget(this);
+
+    setWindowTitle("Octave");
     setCentralWidget(m_octaveTerminal);
 
     addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
     addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);
+    addDockWidget(Qt::RightDockWidgetArea, m_filesDockWidget);
 }
 
 void MainWindow::establishOctaveLink() {

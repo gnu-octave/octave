@@ -41,7 +41,8 @@ SOURCES +=\
         src/ProcessInfo.cpp \
     src/OctaveTerminal.cpp \
     src/VariablesDockWidget.cpp \
-    src/HistoryDockWidget.cpp
+    src/HistoryDockWidget.cpp \
+    src/FilesDockWidget.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -79,7 +80,8 @@ HEADERS += \
         src/kdecore_export.h \
     src/OctaveTerminal.h \
     src/VariablesDockWidget.h \
-    src/HistoryDockWidget.h
+    src/HistoryDockWidget.h \
+    src/FilesDockWidget.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \

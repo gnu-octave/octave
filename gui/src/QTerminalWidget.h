@@ -31,16 +31,6 @@ class QTerminalWidget : public QWidget
     Q_OBJECT
 public:
     /**
-      * \enum ColorScheme
-      * Different color schemes for the terminal.
-      */
-    enum ColorScheme {
-        WhiteOnBlack,
-        GreenOnBlack,
-        BlackOnLightYellow
-    };
-
-    /**
       * \enum ScrollBarPosition
       * Defines the scrollbar position of the terminal.
       */

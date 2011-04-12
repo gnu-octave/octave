@@ -47,4 +47,7 @@ void FileEditorMdiSubWindow::construct() {
     layout->addWidget(m_statusBar);
     layout->setMargin(2);
     widget()->setLayout(layout);
+
+    connect(undoAction, SIGNAL(triggered()), m_codeEdit, SLOT(undo()));
+    connect(redoAction, SIGNAL(triggered()), m_codeEdit, SLOT(redo()));
 }

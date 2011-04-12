@@ -36,74 +36,71 @@ struct UndoRedoItem
 };
 
 /**TextEdit that supports highlited syntax and autocompletion.*/
-class CodeEdit: public QTextEdit
-{
-  Q_OBJECT
-
-  bool auto_indent;
-  QCompleter completion;
-  QStringListModel *completion_model;
-  QTimer braketsTimer, octaveCommandTimer, completionTimer;
-  QStringList completion_list;
-  int completionPosition;
-  
-  /**Builds auto completion list from block blockInit to blockEnd.*/
-  void buildAutoCompletionListSlide(QStringList &list, QTextBlock blockInit, QTextBlock blockEnd, QString word_to_complete, QString actual_word);
-
-  bool text_modified_stop_ok; //Stops emit of text_modified signal
-  bool context_changed_ok;
-
-  //Editor properties
-
-  /**Automatic indention for while, if, for, switch, do and try statements.*/
-  bool automatic_indention_statement_ok;
-  /**Auto completion*/
-  bool autocompletion_ok;
-   /**Brackets Macth*/
-  bool brakets_match_ok;
-
- protected:
-  Syntax *syntax;
-  QMenu  contextMenu;
-
-  void contextMenuEvent(QContextMenuEvent *e);
-  bool event( QEvent * e );
-
- public slots:
-  void undo();
-  void redo();
-  void deleteSelection();
-  void toggleBreakpoint();
-  void braketsMatch(bool rehigh=true);
-  void cursorChanged_cb();
-  void buildAutoCompletionList(int pos, int charsRemoved, int charsAdded );
-  void buildAutoCompletionList();
-  void doCompletion(const QModelIndex &index);
-  void octaveCommandCompletion();
-  void textModified_cb(bool ok);
-
- public:
-  CodeEdit(QWidget *parent = 0, QString syntaxF = QString());
-  ~CodeEdit();
-  void setAutoindent(bool ai_ok);
-  bool getAutoindent();
-
-  bool getbraketsMatchOk();
+class CodeEdit: public QTextEdit {
+    Q_OBJECT
+public:
+    CodeEdit(QWidget *parent = 0, QString syntaxF = QString());
+    ~CodeEdit();
+    void setAutoindent(bool ai_ok);
+    bool getAutoindent();
+    bool getbraketsMatchOk();
  
-  /**List of y top left positions of bounding rects of each visible block of text.
-   * @param list List of top left positions.
-   * @param first_line First visible block in TextEdit.
-   */
-  void publicBlockBoundingRectList(QVector<qreal>  &list, int &first_line);
+    /**List of y top left positions of bounding rects of each visible block of text.
+    * @param list List of top left positions.
+    * @param first_line First visible block in TextEdit.
+    */
+    void publicBlockBoundingRectList(QVector<qreal>  &list, int &first_line);
 
- signals:
-  void toggleBreakpoint(int lineno);
+public slots:
+    void undo();
+    void redo();
+    void deleteSelection();
+    void toggleBreakpoint();
+    void braketsMatch(bool rehigh=true);
+    void cursorChanged_cb();
+    void buildAutoCompletionList(int pos, int charsRemoved, int charsAdded );
+    void buildAutoCompletionList();
+    void doCompletion(const QModelIndex &index);
+    void octaveCommandCompletion();
+    void textModified_cb(bool ok);
 
-  /**Dinamic help required.*/
-  void dynamic_help_required(const QString &text);
+signals:
+    void toggleBreakpoint(int lineno);
 
-  /**Text modified.*/
-  void text_modified(bool ok);
+    /**Dinamic help required.*/
+    void dynamic_help_required(const QString &text);
+
+    /**Text modified.*/
+    void text_modified(bool ok);
+
+protected:
+    Syntax *syntax;
+    QMenu  contextMenu;
+
+    void contextMenuEvent(QContextMenuEvent *e);
+    bool event( QEvent * e );
+
+private:
+    bool auto_indent;
+    QCompleter completion;
+    QStringListModel *completion_model;
+    QTimer braketsTimer, octaveCommandTimer, completionTimer;
+    QStringList completion_list;
+    int completionPosition;
+
+    /**Builds auto completion list from block blockInit to blockEnd.*/
+    void buildAutoCompletionListSlide(QStringList &list, QTextBlock blockInit, QTextBlock blockEnd, QString word_to_complete, QString actual_word);
+
+    bool text_modified_stop_ok; //Stops emit of text_modified signal
+    bool context_changed_ok;
+
+    //Editor properties
+
+    /**Automatic indention for while, if, for, switch, do and try statements.*/
+    bool automatic_indention_statement_ok;
+    /**Auto completion*/
+    bool autocompletion_ok;
+    /**Brackets Macth*/
+    bool brakets_match_ok;
 };
-
 #endif

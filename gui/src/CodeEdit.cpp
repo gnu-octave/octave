@@ -78,8 +78,6 @@ CodeEdit::CodeEdit(QWidget *parent)
 
     connect(&completionTimer, SIGNAL(timeout ()), this, SLOT(buildAutoCompletionList()));
 
-    connect(this, SIGNAL( cursorPositionChanged() ), this, SLOT( cursorChanged_cb() ) );
-
     auto_indent=true;
     setAcceptDrops(false);
     if(autocompletion_ok)

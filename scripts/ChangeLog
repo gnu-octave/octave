@@ -1,3 +1,8 @@
+2011-04-11  Ben Abbott  <bpabbott@mac.com>
+
+	* miscellaneous/getappdata.m: If appdata propery does not exist, return
+	an empty matrix.
+
 2011-04-08  Rik  <octave@nomad.inbox5.com>
 
 	* linear-algebra/cond.m, linear-algebra/expm.m, linear-algebra/logm.m,

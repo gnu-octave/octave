@@ -29,14 +29,20 @@ function val = getappdata (h, name)
     error ("getappdata: invalid input");
   endif
 
-  appdata(numel(h)) = struct();
+  ## FIXME - Is there a better way to handle non-existent appdata
+  ## and missing fields?
+  val = cell (numel (h), 1);
+  appdata = struct();
   for nh = 1:numel(h)
-    appdata(nh) = get (h(nh), "__appdata__");
+    try
+      appdata = get (h(nh), "__appdata__");
+    catch
+      appdata.(name) = [];
+    end_try_catch
+    val(nh) = {appdata.(name)};
   end
-  if (nh > 1)
-    val = {appdata.(name)};
-  else
-    val = appdata.(name);
+  if (nh == 1)
+    val = val{1};
   endif
 
 endfunction

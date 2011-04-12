@@ -14,6 +14,9 @@ public:
 
 public slots:
     void saveFile();
+    void showToolTipSave();
+    void showToolTipUndo();
+    void showToolTipRedo();
 
 private:
     void construct();

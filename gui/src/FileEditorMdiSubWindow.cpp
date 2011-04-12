@@ -28,6 +28,18 @@ void FileEditorMdiSubWindow::saveFile() {
     file.close();
 }
 
+void FileEditorMdiSubWindow::showToolTipSave() {
+    m_statusBar->showMessage("Save the file.", 2000);
+}
+
+void FileEditorMdiSubWindow::showToolTipUndo() {
+    m_statusBar->showMessage("Revert previous changes.", 2000);
+}
+
+void FileEditorMdiSubWindow::showToolTipRedo() {
+    m_statusBar->showMessage("Append previous changes.", 2000);
+}
+
 void FileEditorMdiSubWindow::construct() {
     QStyle *style = QApplication::style();
     setWidget(new QWidget());
@@ -36,6 +48,7 @@ void FileEditorMdiSubWindow::construct() {
     m_statusBar = new QStatusBar(this);
 
     m_codeEdit->setFontFamily("Courier");
+    m_codeEdit->setLineWrapMode(QTextEdit::NoWrap);
 
     QAction *newAction = new QAction(style->standardIcon(QStyle::SP_FileIcon),
         "", m_toolBar);
@@ -61,4 +74,8 @@ void FileEditorMdiSubWindow::construct() {
     connect(undoAction, SIGNAL(triggered()), m_codeEdit, SLOT(undo()));
     connect(redoAction, SIGNAL(triggered()), m_codeEdit, SLOT(redo()));
     connect(saveAction, SIGNAL(triggered()), this, SLOT(saveFile()));
+
+    connect(undoAction, SIGNAL(hovered()), this, SLOT(showToolTipUndo()));
+    connect(redoAction, SIGNAL(hovered()), this, SLOT(showToolTipRedo()));
+    connect(saveAction, SIGNAL(hovered()), this, SLOT(showToolTipSave()));
 }

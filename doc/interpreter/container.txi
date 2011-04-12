@@ -28,13 +28,13 @@ input arguments and return values of functions are organized as
 another data container, the comma separated list.
 
 @menu
-* Data Structures::
+* Structures::
 * Cell Arrays::
 * Comma Separated Lists::
 @end menu
 
-@node Data Structures
-@section Data Structures
+@node Structures
+@section Structures
 @cindex structures
 @cindex data structures
 
@@ -370,12 +370,50 @@ in.call1
 
 @node Creating Structures
 @subsection Creating Structures
+@cindex dynamic naming
 
-As well as indexing a structure with ".", Octave can create a structure
-with the @code{struct} command.  @code{struct} takes pairs of arguments,
-where the first argument in the pair is the fieldname to include in the
-structure and the second is a scalar or cell array, representing the
-values to include in the structure or structure array.  For example:
+Besides the index operator ".", Octave can use dynamic naming "(var)" or the
+@code{struct} function to create structures.  Dynamic naming uses the string
+value of a variable as the field name.  For example,
+@example
+@group
+a = "field2";
+x.a = 1;
+x.(a) = 2;
+x
+     @result{} x =
+        @{
+          a =  1
+          field2 =  2
+        @}
+@end group
+@end example
+
+More realistically, all of the functions that operate on strings can be used
+to build the correct field name before it is entered into the data structure.
+
+@example
+@group
+names = ["Bill"; "Mary"; "John"];
+ages  = [37; 26; 31];
+for i = 1:rows (names)
+  database.(names(i,:)) = ages(i);
+endfor
+database
+     @result{} database =
+        @{
+          Bill =  37
+          Mary =  26
+          John =  31
+        @}
+@end group
+@end example
+
+The third way to create structures is the @code{struct} command.  @code{struct}
+takes pairs of arguments, where the first argument in the pair is the fieldname
+to include in the structure and the second is a scalar or cell array,
+representing the values to include in the structure or structure array.  For
+example:
 
 @example
 @group
@@ -414,7 +452,7 @@ s.field3
 @end example
 
 If you want to create a struct which contains a cell array as an
-individual field, you have to put it into another cell array like in
+individual field, you must wrap it in another cell array as shown in
 the following example:
 
 @example

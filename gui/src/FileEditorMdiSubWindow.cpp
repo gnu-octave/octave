@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
+#include <QFileDialog>
 
 FileEditorMdiSubWindow::FileEditorMdiSubWindow(QWidget *parent)
     : QMdiSubWindow(parent) {
@@ -9,12 +10,21 @@ FileEditorMdiSubWindow::FileEditorMdiSubWindow(QWidget *parent)
 }
 
 void FileEditorMdiSubWindow::loadFile(QString fileName) {
+    m_fileName = fileName;
     setWindowTitle(fileName);
     QFile file(fileName);
     file.open(QFile::ReadOnly);
 
     m_codeEdit->setPlainText(file.readAll());
 
+    file.close();
+}
+
+void FileEditorMdiSubWindow::saveFile() {
+    QString saveFileName = QFileDialog::getSaveFileName(this, "Save File", m_fileName);
+    QFile file(saveFileName);
+    file.open(QFile::WriteOnly);
+    file.write(m_codeEdit->toPlainText().toLocal8Bit());
     file.close();
 }
 
@@ -50,4 +60,5 @@ void FileEditorMdiSubWindow::construct() {
 
     connect(undoAction, SIGNAL(triggered()), m_codeEdit, SLOT(undo()));
     connect(redoAction, SIGNAL(triggered()), m_codeEdit, SLOT(redo()));
+    connect(saveAction, SIGNAL(triggered()), this, SLOT(saveFile()));
 }

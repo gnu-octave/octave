@@ -1,3 +1,8 @@
+2011-04-11  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/func.txi: Add discussion of isargout to Ignoring
+	Arguments section of documentation.
+
 2011-04-07  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/Makefile.am: Add spellcheck target to documentation

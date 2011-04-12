@@ -342,8 +342,6 @@ along with a warning.
 
 @DOCSTRING(nargoutchk)
 
-@DOCSTRING(isargout)
-
 @anchor{doc-varargin} @anchor{doc-varargout}
 @node Variable-length Argument Lists
 @section Variable-length Argument Lists
@@ -455,6 +453,26 @@ endfunction
 @end example
 
 The value of @code{nargin} is not affected by using this declaration.
+
+Return arguments can also be ignored using the same syntax.  Functions may
+take advantage of ignored outputs to reduce the number of calculations
+performed.  To do so, use the @code{isargout} function to query whether the
+output argument is wanted.  For example:
+
+@example
+@group
+function [out1, out2] = long_function (x, y, z)
+  if (isargout (1))
+    ## Long calculation
+    @dots{}
+    out1 = result;
+  endif
+  @dots{}
+endfunction
+@end group
+@end example
+
+@DOCSTRING(isargout)
 
 @node Variable-length Return Lists
 @section Variable-length Return Lists

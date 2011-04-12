@@ -223,9 +223,9 @@ function [q, err] = quadgk (f, a, b, varargin)
       if (!isempty (waypoints))
         tmp = sqrt (b - waypoints);
         trans = @(x)  - x ./ (x + 1);
-        subs = [0; trans(tmp); 1];
+        subs = [-1; trans(tmp); 0];
       else
-        subs = linspace (0, 1, 11)';
+        subs = linspace (-1, 0, 11)';
       endif
       h = 1;
       h0 = b - a;
@@ -449,3 +449,4 @@ endfunction
 %!assert (quadgk (@(z) log (z), 1+1i, 1+1i, 'WayPoints', [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
 
 %!assert (quadgk (@(x) exp(-x .^ 2), -Inf, Inf), sqrt(pi), 1e-6)
+%!assert (quadgk (@(x) exp(-x .^ 2), -Inf, 0), sqrt(pi)/2, 1e-6)

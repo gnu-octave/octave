@@ -19,7 +19,7 @@
 #ifndef CODEEDIT_H
 #define CODEEDIT_H
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QMenu>
 #include <QTextCursor>
 #include "SyntaxHighlighter.h"
@@ -36,7 +36,7 @@ struct UndoRedoItem
 };
 
 /**TextEdit that supports highlited syntax and autocompletion.*/
-class CodeEdit: public QTextEdit {
+class CodeEdit: public QPlainTextEdit {
     Q_OBJECT
 public:
     CodeEdit(QWidget *parent = 0);

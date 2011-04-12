@@ -20,7 +20,7 @@
 #include "CodeEdit.h"
 
 CodeEdit::CodeEdit(QWidget *parent)
-    : QTextEdit(parent),
+    : QPlainTextEdit(parent),
       contextMenu(this) {
 
     m_syntaxHighlighter=new SyntaxHighlighter(document());
@@ -154,12 +154,12 @@ bool CodeEdit::event(QEvent * event) {
                 cursor.insertText(start_blank);
                 setTextCursor(cursor);
             } else {
-                return QTextEdit::event(event);
+                return QPlainTextEdit::event(event);
             }
             return true;
         }
     }
-    return QTextEdit::event(event);
+    return QPlainTextEdit::event(event);
 }
 
 void CodeEdit::buildAutoCompletionList(int pos, int charsRemoved, int charsAdded) {
@@ -297,7 +297,7 @@ void CodeEdit::textModified_cb(bool ok) {
 }
 
 void CodeEdit::publicBlockBoundingRectList(QVector<qreal> &list, int &first_line){
-    /*
+
     qreal pageBottom = viewport()->height();
     QPointF offset=contentOffset();
     QTextBlock block=firstVisibleBlock();
@@ -312,6 +312,5 @@ void CodeEdit::publicBlockBoundingRectList(QVector<qreal> &list, int &first_line
             if(y>pageBottom) break;
 
             list.append(y);
-    }
-    */
+    }  
 }

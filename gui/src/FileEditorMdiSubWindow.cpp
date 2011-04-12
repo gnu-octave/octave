@@ -66,8 +66,8 @@ void FileEditorMdiSubWindow::construct() {
     m_statusBar = new QStatusBar(this);
     m_numberedTextView = new NumberedTextView(this, m_codeEdit);
 
-    m_codeEdit->setFontFamily("Courier");
-    m_codeEdit->setLineWrapMode(QTextEdit::NoWrap);
+    m_codeEdit->setFont(QFont("Courier"));
+    m_codeEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
 
     QAction *newAction = new QAction(style->standardIcon(QStyle::SP_FileIcon),
         "", m_toolBar);

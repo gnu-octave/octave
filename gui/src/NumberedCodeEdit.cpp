@@ -38,6 +38,7 @@ NumberBar::NumberBar( QWidget *parent )
     stopMarker = QPixmap(); //QString(ICON_PATH) + "/stop.png" );
     currentMarker = QPixmap(); // QString(ICON_PATH) + "/bookmark.png" );
     bugMarker = QPixmap(); // QString(ICON_PATH) + "/bug.png" );
+    setFont(QFont("Courier"));
 }
 
 NumberBar::~NumberBar()
@@ -86,7 +87,7 @@ void NumberBar::paintEvent( QPaintEvent * )
     edit->publicBlockBoundingRectList(lines_list, first_line_no);
     
     const QFontMetrics fm = edit->fontMetrics();
-    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
+    const int ascent = fontMetrics().ascent(); // height = ascent + descent + 1
    
     QPainter p(this);
     p.setPen(palette().windowText().color());
@@ -106,7 +107,7 @@ void NumberBar::paintEvent( QPaintEvent * )
     	lineCount=first_line_no+i;
     	
     	const QString txt = QString::number( lineCount );
-        p.drawText( width() - fm.width(txt), position_y+ascent, txt );
+        p.drawText( width() - fm.width(txt) - 2, position_y+ascent, txt );
         
         // Bug marker
 	if ( bugLine == lineCount ) {

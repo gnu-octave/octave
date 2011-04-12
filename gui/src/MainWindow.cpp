@@ -39,8 +39,9 @@ MainWindow::~MainWindow() {
 void MainWindow::handleOpenFileRequest(QString fileName) {
     reportStatusMessage("Opening file.");
     FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow(m_openedFiles);
-    subWindow->loadFile(fileName);
     m_openedFiles->addSubWindow(subWindow);
+    subWindow->loadFile(fileName);
+    subWindow->showMaximized();
 }
 
 void MainWindow::reportStatusMessage(QString statusMessage) {

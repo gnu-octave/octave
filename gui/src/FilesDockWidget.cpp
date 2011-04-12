@@ -57,7 +57,8 @@ void FilesDockWidget::itemDoubleClicked(const QModelIndex &index)
         m_fileSystemModel->setRootPath(fileInfo.absolutePath());
         m_fileTreeView->setRootIndex(index);
     } else {
-        emit openFile(m_fileSystemModel->fileName(index));
+        QFileInfo fileInfo = m_fileSystemModel->fileInfo(index);
+        emit openFile(fileInfo.filePath());
     }
 }
 

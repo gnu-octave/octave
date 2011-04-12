@@ -10,7 +10,12 @@ FileEditorMdiSubWindow::FileEditorMdiSubWindow(QWidget *parent)
 
 void FileEditorMdiSubWindow::loadFile(QString fileName) {
     setWindowTitle(fileName);
-    // TODO: Load file.
+    QFile file(fileName);
+    file.open(QFile::ReadOnly);
+
+    m_codeEdit->setPlainText(file.readAll());
+
+    file.close();
 }
 
 void FileEditorMdiSubWindow::construct() {
@@ -19,6 +24,8 @@ void FileEditorMdiSubWindow::construct() {
     m_toolBar = new QToolBar(this);
     m_codeEdit = new CodeEdit(this);
     m_statusBar = new QStatusBar(this);
+
+    m_codeEdit->setFontFamily("Courier");
 
     QAction *newAction = new QAction(style->standardIcon(QStyle::SP_FileIcon),
         "", m_toolBar);
@@ -38,5 +45,6 @@ void FileEditorMdiSubWindow::construct() {
     layout->addWidget(m_toolBar);
     layout->addWidget(m_codeEdit);
     layout->addWidget(m_statusBar);
+    layout->setMargin(2);
     widget()->setLayout(layout);
 }

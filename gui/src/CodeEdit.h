@@ -19,16 +19,15 @@
 #ifndef __CODEEDIT_H__
 #define __CODEEDIT_H__
 
-#include <QPlainTextEdit>
+#include <QTextEdit>
 #include <QMenu>
 #include <QTextCursor>
-#include "Syntax.h"
+#include "SyntaxHighlighter.h"
 #include <QCompleter>
 #include <QStringListModel>
 #include <QTimer>
 #include "config.h"
 #include <QUndoStack>
-
 
 struct UndoRedoItem
 {
@@ -36,9 +35,8 @@ struct UndoRedoItem
 	QString text;
 };
 
-
 /**TextEdit that supports highlited syntax and autocompletion.*/
-class CodeEdit: public QPlainTextEdit
+class CodeEdit: public QTextEdit
 {
   Q_OBJECT
 

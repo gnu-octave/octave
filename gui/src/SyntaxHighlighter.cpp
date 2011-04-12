@@ -16,15 +16,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "Syntax.h"
+#include "SyntaxHighlighter.h"
 #include <iostream>
 #include <QtXml/QXmlSimpleReader>
 #include <QtXml/QXmlDefaultHandler>
 #include <QTextBlockUserData>
 #include <QHash>
 #include <QDir>
-
-//QMap<QString, QVector<Syntax::Rule> > Syntax::instances;
 
 QList<Syntax::Rule*> Syntax::rules;
 QStringList Syntax::octave_comands;

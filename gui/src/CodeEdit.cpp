@@ -19,7 +19,7 @@
 #include <QContextMenuEvent>
 #include "CodeEdit.h"
 
-CodeEdit::CodeEdit(QWidget *parent, QString syntaxF): QPlainTextEdit(parent)
+CodeEdit::CodeEdit(QWidget *parent, QString syntaxF): QTextEdit(parent)
 , contextMenu(this)
 {
   syntax=new Syntax(document());
@@ -188,12 +188,12 @@ bool CodeEdit::event( QEvent * e )
 			}
 			else
 			{
-				return QPlainTextEdit::event(e);
+                                return QTextEdit::event(e);
 			}
 			return true;
 		}
 	}
-	return QPlainTextEdit::event(e);
+        return QTextEdit::event(e);
 }
 
 void CodeEdit::setAutoindent(bool ai_ok)
@@ -413,8 +413,8 @@ void CodeEdit::textModified_cb(bool ok)
 }
 
 void CodeEdit::publicBlockBoundingRectList(QVector<qreal> &list, int &first_line)
-{
-	qreal pageBottom = /*viewport()->*/height();
+{/*
+        qreal pageBottom = viewport()->height();
 	QPointF offset=contentOffset();
 	QTextBlock block=firstVisibleBlock();
 	first_line=block.blockNumber()+1;
@@ -429,5 +429,6 @@ void CodeEdit::publicBlockBoundingRectList(QVector<qreal> &list, int &first_line
 		
 		list.append(y);
 	}
+        */
 }
 

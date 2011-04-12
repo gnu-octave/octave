@@ -26,12 +26,12 @@
 #include "config.h"
 
 /**SyntaxHighlighter for Octave code.*/
-class Syntax: public QSyntaxHighlighter
+class SyntaxHighlighter: public QSyntaxHighlighter
 {
  Q_OBJECT
  public:
-  Syntax(QTextDocument *parent);
-  ~Syntax();
+  SyntaxHighlighter(QTextDocument *parent);
+  ~SyntaxHighlighter();
   void highlightBlock(const QString &str);
   void load(const QString &file);
 
@@ -46,9 +46,6 @@ class Syntax: public QSyntaxHighlighter
   static QStringList octave_comands;
   
  public slots:
- 
- void braketsMacth(int pos, int &start, int &end, bool rehigh=true);
- 
  /**Return true or false if brackets are been macthed*/
  inline bool getIsActiveBraketsMacth() {return braketsMacth_ok;}
  

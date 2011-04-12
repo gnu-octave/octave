@@ -24,14 +24,14 @@
 #include <QHash>
 #include <QDir>
 
-QList<Syntax::Rule*> Syntax::rules;
-QStringList Syntax::octave_comands;
+QList<SyntaxHighlighter::Rule*> SyntaxHighlighter::rules;
+QStringList SyntaxHighlighter::octave_comands;
 
 /*** Xml Handler ***/
 class SyntaxXmlHandler:public QXmlDefaultHandler
 {
 private:
-  Syntax *syntax;
+  SyntaxHighlighter *syntax;
   QString type_name, text;
   struct Tag
   {
@@ -44,7 +44,7 @@ private:
   QStringList *octave_comands;
 public:
   	// Constructor
-  	SyntaxXmlHandler(Syntax *s, QStringList *octave_comands): QXmlDefaultHandler(), syntax(s)
+  	SyntaxXmlHandler(SyntaxHighlighter *s, QStringList *octave_comands): QXmlDefaultHandler(), syntax(s)
   	{
   		this->octave_comands=octave_comands;
   	}
@@ -141,7 +141,7 @@ class BlockData:public QTextBlockUserData
 
 /*** Syntax ***/
 
-Syntax::Syntax(QTextDocument *parent): QSyntaxHighlighter(parent)
+SyntaxHighlighter::SyntaxHighlighter(QTextDocument *parent): QSyntaxHighlighter(parent)
 {
   QTextCharFormat f;
 
@@ -203,7 +203,7 @@ Syntax::Syntax(QTextDocument *parent): QSyntaxHighlighter(parent)
 }
 
 
-Syntax::~Syntax()
+SyntaxHighlighter::~SyntaxHighlighter()
 {
 	//foreach(Rule *value, rules_map)
 	//{
@@ -214,7 +214,7 @@ Syntax::~Syntax()
 	setDocument(NULL);
 }
 
-void Syntax::load(const QString &path)
+void SyntaxHighlighter::load(const QString &path)
 {
 	if(octave_comands.isEmpty())
 	{
@@ -287,7 +287,7 @@ void Syntax::load(const QString &path)
 //   }
 // }
 
-void Syntax::setItem(const QString &item, const QString &type, const QString parent)
+void SyntaxHighlighter::setItem(const QString &item, const QString &type, const QString parent)
 {
 	Rule *r;
 	if(!item.isEmpty())
@@ -304,7 +304,7 @@ void Syntax::setItem(const QString &item, const QString &type, const QString par
 	}
 }
 
-void Syntax::setComment(const QString &start, const QString &end, const QString &type)
+void SyntaxHighlighter::setComment(const QString &start, const QString &end, const QString &type)
 {
 	Rule *r;
 	if(!type.isEmpty())
@@ -318,12 +318,12 @@ void Syntax::setComment(const QString &start, const QString &end, const QString 
 	}
 }
 
-void Syntax::setType(const QString &type, const QTextCharFormat &f)
+void SyntaxHighlighter::setType(const QString &type, const QTextCharFormat &f)
 {
   _format[type] = f;
 }
 
-void Syntax::highlightBlock(const QString &str)
+void SyntaxHighlighter::highlightBlock(const QString &str)
 {
   //Para aumentar el rendimiento se hace una tabla i_aux con la posición de lo
   //que ha encontrado cada expresión regular rules.at(n)->pattern.
@@ -442,7 +442,7 @@ void Syntax::highlightBlock(const QString &str)
 }
 
 
-int Syntax::forward_search(QTextBlock & block, int pos, char bracket_start, char bracket_end)
+int SyntaxHighlighter::forward_search(QTextBlock & block, int pos, char bracket_start, char bracket_end)
 {
 	int i=pos,  open=0;
 
@@ -499,7 +499,7 @@ int Syntax::forward_search(QTextBlock & block, int pos, char bracket_start, char
 	return -1;
 }
 
-int Syntax::backward_search(QTextBlock & block, int pos, char bracket_start, char bracket_end)
+int SyntaxHighlighter::backward_search(QTextBlock & block, int pos, char bracket_start, char bracket_end)
 {
 	int i=pos,  open=0;
 
@@ -604,101 +604,7 @@ static void clear_block_data(QTextDocument *doc, bool rehigh )
 	}
 }
 
-void Syntax::braketsMacth(int pos, int &start, int &end, bool rehigh)
-{
-	QTextDocument *doc=document();
-
-	if(!rehigh)
-	{
-		clear_block_data(doc, true);
-		return;
-	}
-
-	QTextBlock block0=doc->findBlock(pos), block1;
-	if(!block0.isValid() || block0.text().length()<=0)
-	{
-		return;
-	}
-
-
-	pos=pos-block0.position();
-	if (block0.text().size()<=pos) pos=block0.text().size()-1;
-	if(pos<0) pos=0;
-
-	QChar ch=block0.text().at(pos);
-
-	BlockData *dat=(BlockData *)block0.userData();
-	if(dat!=NULL)
-	{
-		if( !dat->bracket.contains(pos) ) ch=' ';
-	}
-
-
-	block1=block0;
-
-	int i=-1;
-	if(ch=='(')
-	{
-		i=forward_search(block1,pos,'(', ')');
-	}
-	else if(ch==')')
-	{
-		i=backward_search(block1,pos,'(', ')');
-	}
-	else if(ch=='[')
-	{
-		i=forward_search(block1,pos,'[', ']');
-	}
-	else if(ch==']')
-	{
-		i=backward_search(block1,pos,'[', ']');
-	}
-	else if(ch=='{')
-	{
-		i=forward_search(block1,pos,'{', '}');
-	}
-	else if(ch=='}')
-	{
-		i=backward_search(block1,pos,'{', '}');
-	}
-	else
-	{
-		if( braketsMacth_ok )
-		{
-			clear_block_data(doc, rehigh);
-			braketsMacth_ok=false;
-		}
-
-		return;
-	}
-
-	if(i>=0)
-	{
-		clear_block_data(doc, true);
-		//set_block_data(block0, block1, pos, i);
-		start=pos+block0.position();
-		end=i+block1.position();
-		//braketsMacth_ok=true;
-		//if(rehigh) rehighlight();
-		
-		/*
-		QTextCursor cursor(doc);
-
-		cursor.beginEditBlock();
-		cursor.setPosition(block0.position()+pos);
-		cursor.setBlockFormat(block0.blockFormat());
-		if(block1!=block0)
-		{
-			cursor.setPosition(block1.position()+i);
-			cursor.setBlockFormat(block1.blockFormat());
-		}
-		cursor.endEditBlock();
-		*/
-	}
-}
-
-
-void Syntax::setActive(bool active)
+void SyntaxHighlighter::setActive(bool active)
 {
 	active_ok=active;
 }

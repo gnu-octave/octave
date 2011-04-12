@@ -16,8 +16,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __CODEEDIT_H__
-#define __CODEEDIT_H__
+#ifndef CODEEDIT_H
+#define CODEEDIT_H
 
 #include <QTextEdit>
 #include <QMenu>
@@ -39,12 +39,9 @@ struct UndoRedoItem
 class CodeEdit: public QTextEdit {
     Q_OBJECT
 public:
-    CodeEdit(QWidget *parent = 0, QString syntaxF = QString());
+    CodeEdit(QWidget *parent = 0);
     ~CodeEdit();
-    void setAutoindent(bool ai_ok);
-    bool getAutoindent();
-    bool getbraketsMatchOk();
- 
+
     /**List of y top left positions of bounding rects of each visible block of text.
     * @param list List of top left positions.
     * @param first_line First visible block in TextEdit.
@@ -56,8 +53,6 @@ public slots:
     void redo();
     void deleteSelection();
     void toggleBreakpoint();
-    void braketsMatch(bool rehigh=true);
-    void cursorChanged_cb();
     void buildAutoCompletionList(int pos, int charsRemoved, int charsAdded );
     void buildAutoCompletionList();
     void doCompletion(const QModelIndex &index);
@@ -67,16 +62,15 @@ public slots:
 signals:
     void toggleBreakpoint(int lineno);
 
-    /**Dinamic help required.*/
-    void dynamic_help_required(const QString &text);
+    /** Dynamic help required. */
+    void dynamicHelpRequired(const QString &text);
 
-    /**Text modified.*/
-    void text_modified(bool ok);
+    /** Text modified. */
+    void textModified(bool ok);
 
 protected:
-    Syntax *syntax;
-    QMenu  contextMenu;
-
+    SyntaxHighlighter *m_syntaxHighlighter;
+    QMenu contextMenu;
     void contextMenuEvent(QContextMenuEvent *e);
     bool event( QEvent * e );
 
@@ -88,19 +82,16 @@ private:
     QStringList completion_list;
     int completionPosition;
 
-    /**Builds auto completion list from block blockInit to blockEnd.*/
+    /** Builds auto completion list from block blockInit to blockEnd. */
     void buildAutoCompletionListSlide(QStringList &list, QTextBlock blockInit, QTextBlock blockEnd, QString word_to_complete, QString actual_word);
 
     bool text_modified_stop_ok; //Stops emit of text_modified signal
     bool context_changed_ok;
 
-    //Editor properties
-
-    /**Automatic indention for while, if, for, switch, do and try statements.*/
+    /** Automatic indention for while, if, for, switch, do and try statements. */
     bool automatic_indention_statement_ok;
-    /**Auto completion*/
+    /** Auto completion. */
     bool autocompletion_ok;
-    /**Brackets Macth*/
-    bool brakets_match_ok;
 };
-#endif
+
+#endif // CODEEDIT_H

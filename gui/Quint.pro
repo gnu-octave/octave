@@ -45,7 +45,8 @@ SOURCES +=\
     src/FilesDockWidget.cpp \
     src/CodeEdit.cpp \
     src/FileEditorMdiSubWindow.cpp \
-    src/SyntaxHighlighter.cpp
+    src/SyntaxHighlighter.cpp \
+    src/BrowserWidget.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -87,7 +88,8 @@ HEADERS += \
     src/FilesDockWidget.h \
     src/CodeEdit.h \
     src/FileEditorMdiSubWindow.h \
-    src/SyntaxHighlighter.h
+    src/SyntaxHighlighter.h \
+    src/BrowserWidget.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \

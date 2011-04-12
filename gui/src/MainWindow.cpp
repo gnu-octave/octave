@@ -49,7 +49,7 @@ void MainWindow::reportStatusMessage(QString statusMessage) {
 }
 
 void MainWindow::openWebPage(QString url) {
-    m_webView->load(QUrl(url));
+    m_browserWidget->load(QUrl(url));
 }
 
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {
@@ -69,11 +69,11 @@ void MainWindow::constructWindow() {
     m_filesDockWidget = new FilesDockWidget(this);
     m_openedFiles = new QMdiArea(this);
     m_statusBar = new QStatusBar(this);
-    m_webView = new QWebView(this);
+    m_browserWidget = new BrowserWidget(this);
     m_centralTabWidget = new QTabWidget(this);
     m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
     m_centralTabWidget->addTab(m_openedFiles, "Editor");
-    m_centralTabWidget->addTab(m_webView, "Documentation");
+    m_centralTabWidget->addTab(m_browserWidget, "Documentation");
 
     // TODO: Add meaningfull toolbar items.
     QAction *commandAction = new QAction(style->standardIcon(QStyle::SP_CommandLink),

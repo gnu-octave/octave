@@ -25,13 +25,13 @@
 #include <QMdiArea>
 #include <QStatusBar>
 #include <QToolBar>
-#include <QtWebKit/QWebView>
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
 #include "CodeEdit.h"
+#include "BrowserWidget.h"
 
 // Octave includes
 #undef PACKAGE_BUGREPORT
@@ -115,7 +115,7 @@ private:
     QTabWidget *m_centralTabWidget;
     QStatusBar *m_statusBar;
     QToolBar *m_generalPurposeToolbar;
-    QWebView *m_webView;
+    BrowserWidget *m_browserWidget;
     QString m_settingsFile;
 
     // Threads for running octave and managing the data interaction.

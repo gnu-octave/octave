@@ -64,6 +64,7 @@ void FileEditorMdiSubWindow::construct() {
     m_toolBar = new QToolBar(this);
     m_codeEdit = new CodeEdit(this);
     m_statusBar = new QStatusBar(this);
+    m_numberedTextView = new NumberedTextView(this, m_codeEdit);
 
     m_codeEdit->setFontFamily("Courier");
     m_codeEdit->setLineWrapMode(QTextEdit::NoWrap);
@@ -84,7 +85,7 @@ void FileEditorMdiSubWindow::construct() {
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(m_toolBar);
-    layout->addWidget(m_codeEdit);
+    layout->addWidget(m_numberedTextView);
     layout->addWidget(m_statusBar);
     layout->setMargin(2);
     widget()->setLayout(layout);

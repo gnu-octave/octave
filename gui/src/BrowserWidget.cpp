@@ -54,7 +54,7 @@ void BrowserWidget::construct() {
     connect(forwardAction, SIGNAL(triggered()), m_webView, SLOT(forward()));
     connect(m_webView, SIGNAL(urlChanged(QUrl)), this, SLOT(setUrl(QUrl)));
     connect(m_urlLineEdit, SIGNAL(returnPressed()), this, SLOT(jumpToWebsite()));
-    connect(m_webView, SIGNAL(statusBarMessage(QString)), m_statusBar, SLOT(showMessage(QString)));
+    connect(m_webView, SIGNAL(statusBarMessage(QString)), this, SLOT(showMessage(QString)));
 }
 
 void BrowserWidget::setUrl(QUrl url) {
@@ -66,6 +66,10 @@ void BrowserWidget::jumpToWebsite() {
     if(!url.startsWith("http://"))
         url = "http://" + url;
     load(url);
+}
+
+void BrowserWidget::showStatusMessage(QString message) {
+    m_statusBar->showMessage(message, 1000);
 }
 
 void BrowserWidget::load(QUrl url) {

@@ -34,6 +34,7 @@ public:
 public slots:
     void setUrl(QUrl url);
     void jumpToWebsite();
+    void showStatusMessage(QString message);
 
 private:
     void construct();

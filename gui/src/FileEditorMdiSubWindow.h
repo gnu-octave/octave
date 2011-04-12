@@ -23,6 +23,7 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include "CodeEdit.h"
+#include "NumberedCodeEdit.h"
 
 class FileEditorMdiSubWindow : public QMdiSubWindow {
     Q_OBJECT
@@ -40,6 +41,7 @@ private:
     void construct();
     QToolBar *m_toolBar;
     CodeEdit *m_codeEdit;
+    NumberedTextView *m_numberedTextView;
     QStatusBar *m_statusBar;
     QString m_fileName;
 };

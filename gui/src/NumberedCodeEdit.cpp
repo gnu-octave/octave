@@ -127,55 +127,6 @@ void NumberBar::paintEvent( QPaintEvent * )
 	    currentRect = QRect( 1, position_y, currentMarker.width(), currentMarker.height() );
 	}
     }
-    
-    /*
-    
-    int contentsY = edit->verticalScrollBar()->value();
-    qreal pageBottom = contentsY + edit->viewport()->height();
-    const QFontMetrics fm = fontMetrics();
-    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
-    int lineCount = 1;
-
-    QPainter p(this);
-    p.setPen(palette().windowText().color());
-
-    bugRect = QRect();
-    stopRect = QRect();
-    currentRect = QRect();
-
-    for ( QTextBlock block = edit->document()->begin();
-	  block.isValid(); block = block.next(), ++lineCount ) {
-
-        const QRectF boundingRect = edit->publicBlockBoundingRect( block );
-
-        QPointF position = boundingRect.topLeft();
-        if ( position.y() + boundingRect.height() < contentsY )
-            continue;
-        if ( position.y() > pageBottom )
-            break;
-
-        const QString txt = QString::number( lineCount );
-        p.drawText( width() - fm.width(txt), qRound( position.y() ) - contentsY + ascent, txt );
-
-	// Bug marker
-	if ( bugLine == lineCount ) {
-	    p.drawPixmap( 1, qRound( position.y() ) - contentsY, bugMarker );
-	    bugRect = QRect( 1, qRound( position.y() ) - contentsY, bugMarker.width(), bugMarker.height() );
-	}
-
-	// Stop marker
-	if ( breakpoints.contains(lineCount) ) {
-	    p.drawPixmap( 19, qRound( position.y() ) - contentsY, stopMarker );
-	    stopRect = QRect( 19, qRound( position.y() ) - contentsY, stopMarker.width(), stopMarker.height() );
-	}
-
-	// Current line marker
-	if ( currentLine == lineCount ) {
-	    p.drawPixmap( 19, qRound( position.y() ) - contentsY, currentMarker );
-	    currentRect = QRect( 19, qRound( position.y() ) - contentsY, currentMarker.width(), currentMarker.height() );
-	}
-    }
-    */
 }
 
 bool NumberBar::event( QEvent *event )
@@ -242,10 +193,6 @@ NumberedTextView::NumberedTextView( QWidget *parent, CodeEdit *textEdit )
 	vbox->addLayout(messages_layout);
 	messages_layout->setSpacing( 0 );
 	messages_layout->setMargin( 0 );
-	
-	line_column_label=new QLabel("Line: 1 Col: 1", this);
-	messages_layout->addWidget(line_column_label);
-	line_column_label->show();
 }
 
 
@@ -288,38 +235,8 @@ void NumberedTextView::setBugLine( int lineno )
 
 void NumberedTextView::textChanged( int /*pos*/, int removed, int added )
 {
-    //Q_UNUSED( pos );
-
     if ( removed == 0 && added == 0 )
 	return;
-
-    //QTextBlock block = highlight.block();
-    //QTextBlock block = view->document()->begin();
-    //QTextBlockFormat fmt = block.blockFormat();
-    //QColor bg = view->palette().base().color();
-    //fmt.setBackground( bg );
-    //highlight.setBlockFormat( fmt );
-    /*
-    QTextBlockFormat fmt;
-
-    int lineCount = 1;
-    for ( QTextBlock block = view->document()->begin();
-	  block.isValid() && block!=view->document()->end(); block = block.next(), ++lineCount ) {
-
-	if ( lineCount == currentLine )
-	{
-	    fmt = block.blockFormat();
-	    QColor bg = view->palette().highlight().color();
-	    fmt.setBackground( bg );
-
-	    highlight = QTextCursor( block );
-	    highlight.movePosition( QTextCursor::EndOfBlock, QTextCursor::KeepAnchor );
-	    highlight.setBlockFormat( fmt );
-
-	    break;
-	}
-    }
-    */
     
     if( !textModifiedOk && view->document()->isModified() )
     {
@@ -343,8 +260,6 @@ bool NumberedTextView::eventFilter( QObject *obj, QEvent *event )
 	QString word = cursor.selectedText();
 	emit mouseHover( word );
 	emit mouseHover( helpEvent->pos(), word );
-
-	// QToolTip::showText( helpEvent->globalPos(), word ); // For testing
     }
 
     return false;
@@ -397,7 +312,6 @@ void NumberedTextView::save(QString path)
     throw path;
   }
   
-
     QString repository=path+"~~";
     QString command("simplercs \""+repository+"\" \""+path+"\"");
     QProcess::startDetached(command);
@@ -433,10 +347,7 @@ void NumberedTextView::cursor_moved_cb()
 	QTextBlock block = view->document()->begin();
 	
 	for ( ;block.isValid() && actual_block!=block; block = block.next()) lineCount++ ;
-	
-	int col= cursor.position() - block.position() + 1;
-	
-	line_column_label->setText("Line: "+QString::number(lineCount)+" Col: "+QString::number(col) );
+
 }
 
 static QString startLineInsertText(QString str, QString textToInsert)

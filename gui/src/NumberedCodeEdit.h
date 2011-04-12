@@ -151,7 +151,6 @@ public slots:
 
 private:
     QString filePath;
-    QLabel *line_column_label;
     CodeEdit *view;
     NumberBar *numbers;
     QHBoxLayout *hbox;

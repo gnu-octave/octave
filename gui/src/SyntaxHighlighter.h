@@ -16,8 +16,8 @@
  * Boston, MA 02111-1307, USA. 
  */
 
-#ifndef __SYNTAX_H__
-#define __SYNTAX_H__
+#ifndef SYNTAXHIGHLIGHTER_H
+#define SYNTAXHIGHLIGHTER_H
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
 #include <QVector>
@@ -26,55 +26,54 @@
 #include "config.h"
 
 /**SyntaxHighlighter for Octave code.*/
-class SyntaxHighlighter: public QSyntaxHighlighter
-{
- Q_OBJECT
- public:
-  SyntaxHighlighter(QTextDocument *parent);
-  ~SyntaxHighlighter();
-  void highlightBlock(const QString &str);
-  void load(const QString &file);
+class SyntaxHighlighter: public QSyntaxHighlighter {
+    Q_OBJECT
+public:
+    SyntaxHighlighter(QTextDocument *parent);
+    ~SyntaxHighlighter();
+    void highlightBlock(const QString &str);
+    void load(const QString &file);
 
-  //void setItem(const QString &item, const QString &type);
-  void setItem(const QString &item, const QString &type, const QString parent=QString() );
-  void setComment(const QString &start, const QString &end, const QString &type);
-  void setType(const QString &type, const QTextCharFormat &format);
-  
-  /**Stops syntax highlight*/
-  void setActive(bool active);
-  
-  static QStringList octave_comands;
-  
- public slots:
- /**Return true or false if brackets are been macthed*/
- inline bool getIsActiveBraketsMacth() {return braketsMacth_ok;}
+    //void setItem(const QString &item, const QString &type);
+    void setItem(const QString &item, const QString &type, const QString parent=QString() );
+    void setComment(const QString &start, const QString &end, const QString &type);
+    void setType(const QString &type, const QTextCharFormat &format);
+
+    /**Stops syntax highlight*/
+    void setActive(bool active);
+
+    static QStringList octave_comands;
+
+public slots:
+    /**Return true or false if brackets are been macthed*/
+    inline bool getIsActiveBraketsMacth() {return braketsMacth_ok;}
  
   
- private:
-  struct Rule
-  {
-    QRegExp pattern;
-    QString type;
-    QTextCharFormat format;
-    QList<Rule*> rules;
-  };
-  
-  int backward_search(QTextBlock & block, int pos, char bracket_start, char bracket_end);
-  int forward_search(QTextBlock & block, int pos, char bracket_start, char bracket_end);
+private:
+    struct Rule
+    {
+        QRegExp pattern;
+        QString type;
+        QTextCharFormat format;
+        QList<Rule*> rules;
+    };
 
-  //static QMap<QString, QList<Rule> > instances;
-  
-  QMap<QString, Rule *> rules_map;
+    int backwardSearch(QTextBlock &textBlock, int position, char bracketStart, char bracketEnd);
+    int forwardSearch(QTextBlock &textBlock, int position, char bracketStart, char bracketEnd);
 
-  static QList<Rule*> rules;
-  QMap<QString, QTextCharFormat> _format;
-  
-  //Next two properties are used inside highlightBlock method
-  QVector<int> __i_aux; //Auxiliar positions
-  QVector<QRegExp> __re; //Regular expresions
-  
-  bool active_ok;
-  bool braketsMacth_ok;
+    //static QMap<QString, QList<Rule> > instances;
+
+    QMap<QString, Rule *> rules_map;
+
+    static QList<Rule*> rules;
+    QMap<QString, QTextCharFormat> _format;
+
+    //Next two properties are used inside highlightBlock method
+    QVector<int> __i_aux; //Auxiliar positions
+    QVector<QRegExp> __re; //Regular expresions
+
+    bool active_ok;
+    bool braketsMacth_ok;
 };
 
-#endif
+#endif // SYNTAXHIGHLIGHTER_H

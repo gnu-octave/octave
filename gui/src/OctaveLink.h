@@ -39,6 +39,9 @@ class octave_value_list;
 #include <string>
 #include <vector>
 #include <QMutex>
+#include <QList>
+#include <QString>
+#include <QVector>
 
 /**
   * \class OctaveLink
@@ -92,16 +95,16 @@ public:
     typedef struct VariableMetaData
     {
         /** The name of the variable. */
-        std::string variableName;
+        QString variableName;
 
         /** The dimensional size of the variable. */
-        std::vector<int> dimensionalSize;
+        QVector<int> dimensionalSize;
 
         /** The size of the variable in bytes. */
         unsigned long long byteSize;
 
         /** The name of the variable type. */
-        std::string typeName;
+        QString typeName;
 
         friend int operator==(const VariableMetaData& left,
                               const VariableMetaData& right) {
@@ -137,13 +140,13 @@ public:
     int	setBreakpointAction(BreakPointAction action);
 
     /** Variable related methods. */
-    std::vector<VariableMetaData> variableInfoList(void);
+    QList<VariableMetaData> variableInfoList(void);
 
     /** TODO: Describe. */
-    std::vector<RequestedVariable> requestedVariables(void);
+    QList<RequestedVariable> requestedVariables(void);
 
     /** TODO: Describe. */
-    int	setRequestedVariableNames(std::vector<std::string> variableNames);
+    int	setRequestedVariableNames(QList<QString> variableNames);
 
     /**
       * History related methods.
@@ -189,8 +192,8 @@ public:
     int process_breakpoint_action(void);
 
     /** Variable related methods. */
-    /** TODO: Describe. */
-    int setVariableInfoList(void);
+    /** Retrieves all variables from Octave. */
+    void retrieveVariables(void);
 
     /** TODO: Describe. */
     int processRequestedVariables(void);
@@ -215,13 +218,13 @@ private:
     BreakPointAction m_breakPointAction;
 
     /** Variable related member variables. */
-    std::vector<VariableMetaData> m_variableSymbolTableList;
-    std::vector<std::string> m_variablesRequestList;
+    QList<VariableMetaData> m_variableSymbolTableList;
+    QList<QString> m_variablesRequestList;
 
     // NOTE: Create an overloaded operator<< for octave_value to do the
     // flattening.  This will allow us to append easily to an ostringstream
     // for output.
-    std::vector<RequestedVariable> m_requestedVariables;
+    QList<RequestedVariable> m_requestedVariables;
 
     /** History related member variables. */
     string_vector m_historyList;

@@ -83,6 +83,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <QFileInfo>
 #include <QMutexLocker>
+#include <QList>
 
 OctaveLink OctaveLink::m_singleton;
 
@@ -128,40 +129,22 @@ OctaveLink::~OctaveLink() {
  *******************************************************************************/
 
 //*************************************************************************
-std::vector<OctaveLink::VariableMetaData> OctaveLink::variableInfoList(void) {
+QList<OctaveLink::VariableMetaData> OctaveLink::variableInfoList() {
     QMutexLocker mutexLocker(&m_internalAccessMutex);
-
-    // Copy the list of variable information
-    std::vector<VariableMetaData> retval( m_variableSymbolTableList.size() );
-    std::copy( m_variableSymbolTableList.begin(), m_variableSymbolTableList.end(), retval.begin() );
-    m_variableSymbolTableList = std::vector<VariableMetaData>();
-
-    return retval;
+    return m_variableSymbolTableList;
 }
 
 
 //*************************************************************************
-std::vector<OctaveLink::RequestedVariable> OctaveLink::requestedVariables(void)
-{
+QList<OctaveLink::RequestedVariable> OctaveLink::requestedVariables() {
     QMutexLocker mutexLocker(&m_internalAccessMutex);
-
-    // Copy the list of requested variables
-    std::vector<RequestedVariable> retval( m_requestedVariables.size() );
-    std::copy( m_requestedVariables.begin(), m_requestedVariables.end(), retval.begin() );
-    m_requestedVariables = std::vector<RequestedVariable>();
-
-    return retval;
+    return m_requestedVariables;
 }
 
 //*************************************************************************
-int OctaveLink::setRequestedVariableNames( std::vector<std::string> variables_names )
-{
+int OctaveLink::setRequestedVariableNames(QList<QString> variablesNames) {
     QMutexLocker mutexLocker(&m_internalAccessMutex);
-
-    // Set the list of requested variables
-    m_variablesRequestList = std::vector<std::string>( variables_names.size() );
-    std::copy( variables_names.begin(), variables_names.end(), m_variablesRequestList.begin() );
-
+    m_variablesRequestList = variablesNames;
     return 0;
 }
 
@@ -253,7 +236,7 @@ int OctaveLink::processOctaveServerData(void)
   process_breakpoint_action();
   processBreakpointAndRemoveModify();
   processRequestedVariables();
-  setVariableInfoList();
+  retrieveVariables();
   setHistoryList();
   setBreakPointList();
 
@@ -267,40 +250,24 @@ int OctaveLink::processOctaveServerData(void)
 
 
 //*************************************************************************
-int OctaveLink::setVariableInfoList( void )
-{
-  static std::vector<VariableMetaData> lastVars;
-  std::vector<VariableMetaData> currVars;
-  std::list<symbol_table::symbol_record> lvars = symbol_table::all_variables();
-  std::list<symbol_table::symbol_record>::iterator it;
+void OctaveLink::retrieveVariables() {
+    QList<VariableMetaData> currentVariables;
+    std::list<symbol_table::symbol_record> allVariables = symbol_table::all_variables();
+    std::list<symbol_table::symbol_record>::iterator iterator;
 
-  for ( it = lvars.begin() ; it != lvars.end() ; it++ )
-  {
-    octave_value varval( it->varval() );
-    std::string nm = (*it).name();
+    for(iterator = allVariables.begin(); iterator != allVariables.end(); iterator++) {
+        octave_value octaveVariableValue(iterator->varval());
 
-    dim_vector dims = varval.dims ();
+        VariableMetaData variableMetaData;
+        variableMetaData.variableName = QString(iterator->name().c_str());
+        variableMetaData.dimensionalSize.push_back(octaveVariableValue.rows());
+        variableMetaData.dimensionalSize.push_back(octaveVariableValue.columns());
+        variableMetaData.byteSize = octaveVariableValue.byte_size();
+        variableMetaData.typeName = QString(octaveVariableValue.type_name().c_str());
+        currentVariables.append(variableMetaData);
+    }
 
-    VariableMetaData tempVar;
-    tempVar.variableName = it->name();
-    tempVar.dimensionalSize.push_back( varval.rows() );
-    tempVar.dimensionalSize.push_back( varval.columns() );
-    tempVar.byteSize = varval.byte_size();
-    tempVar.typeName = varval.type_name();
-
-    currVars.push_back(tempVar);
-  }
-
-  if ( lastVars != currVars )
-  {
-    lastVars = currVars;
-    
-    // Copy currVars into octave_server::variable_symtab_list
-    m_variableSymbolTableList = std::vector<VariableMetaData>( currVars.size() );
-
-    std::copy( currVars.begin(), currVars.end(), m_variableSymbolTableList.begin() );
-  }
-  return 0;
+    m_variableSymbolTableList = currentVariables;
 }
 
 

@@ -157,20 +157,20 @@ protected:
         while(m_mainWindow->isRunning()) {
 
         // Get a full variable list.
-        std::vector<OctaveLink::VariableMetaData> variables
+        QList<OctaveLink::VariableMetaData> variables
                 = OctaveLink::instance()->variableInfoList();
         if(variables.size()) {
-            // TODO: Update variables view.
+            m_mainWindow->variablesDockWidget()->setVariablesList(variables);
         }
 
         // Check whether any requested variables have been returned.
-        std::vector<OctaveLink::RequestedVariable> reqVars
+        QList<OctaveLink::RequestedVariable> reqVars
                 = OctaveLink::instance()->requestedVariables();
 
-        for(std::vector<OctaveLink::RequestedVariable>::iterator it = reqVars.begin();
-            it != reqVars.end(); it++ ) {
+        //for(std::vector<OctaveLink::RequestedVariable>::iterator it = reqVars.begin();
+        //   it != reqVars.end(); it++ ) {
             // TODO: Process requested variables.
-        }
+        //}
 
         // Collect history list.
         string_vector historyList = OctaveLink::instance()->getHistoryList();

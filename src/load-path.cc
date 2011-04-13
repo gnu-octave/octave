@@ -2037,7 +2037,7 @@ Return the command line path variable.\n\
 DEFUN (restoredefaultpath, , ,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} restoredefaultpath (@dots{})\n\
-Restore Octave's path to it's initial state at startup.\n\
+Restore Octave's path to its initial state at startup.\n\
 \n\
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")

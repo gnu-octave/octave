@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_isRunning(true) {
     QDesktopServices desktopServices;
-    m_settingsFile = desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/setting.ini";
+    m_settingsFile = desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/settings.ini";
     constructWindow();
     establishOctaveLink();
 }

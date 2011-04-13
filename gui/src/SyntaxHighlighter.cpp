@@ -373,7 +373,6 @@ void SyntaxHighlighter::highlightBlock(const QString &str) {
 }
 }
 
-
 int SyntaxHighlighter::forwardSearch(QTextBlock &textBlock, int position, char bracketStart, char bracketEnd) {
     int i=position,  open=0;
 

@@ -42,6 +42,7 @@ void MainWindow::handleOpenFileRequest(QString fileName) {
     m_openedFiles->addSubWindow(subWindow);
     subWindow->loadFile(fileName);
     subWindow->showMaximized();
+    m_centralTabWidget->setCurrentWidget(m_openedFiles);
 }
 
 void MainWindow::reportStatusMessage(QString statusMessage) {

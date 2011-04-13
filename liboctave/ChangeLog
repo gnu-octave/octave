@@ -1,3 +1,7 @@
+2011-04-12  Rik  <octave@nomad.inbox5.com>
+
+	* LSODE.cc: Add semicolon to error messages to prevent run-together text.
+
 2011-04-01  Jordi Gutiérrez Hermoso  <jordigh@gmail.com>
 
 	* MatrixType (MatrixType::operator =): Plug memory leak due to

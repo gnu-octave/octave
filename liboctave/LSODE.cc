@@ -292,7 +292,7 @@ LSODE::do_integrate (double tout)
     case -2:  // excess accuracy requested (tolerances too small).
     case -3:  // invalid input detected (see printed message).
     case -4:  // repeated error test failures (check all inputs).
-    case -5:  // repeated convergence failures (perhaps bad jacobian
+    case -5:  // repeated convergence failures (perhaps bad Jacobian
               // supplied or wrong choice of mf or tolerances).
     case -6:  // error weight became zero during problem. (solution
               // component i vanished, and atol or atol(i) = 0.)
@@ -349,13 +349,13 @@ LSODE::error_message (void) const
 
     case -4:
       retval = std::string ("repeated error test failures (t = ")
-        + t_curr + "check all inputs)";
+        + t_curr + "; check all inputs)";
       break;
 
     case -5:
       retval = std::string ("repeated convergence failures (t = ")
         + t_curr
-        + "perhaps bad jacobian supplied or wrong choice of integration method or tolerances)";
+        + "; perhaps bad Jacobian supplied or wrong choice of integration method or tolerances)";
       break;
 
     case -6:

@@ -1,5 +1,16 @@
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 
+	* general/isdir.m, general/isequal.m, general/isequalwithequalnans.m,
+	general/isscalar.m, general/issquare.m, general/isvector.m: Refactor
+	code to put input validation first.
+
+	* general/iscolumn.m, general/isrow.m : Remove useless initialization
+	of output variable.
+
+	* general/isa.m: Add additional tests for various classes.
+
+2011-04-13  Rik  <octave@nomad.inbox5.com>
+
 	* ChangeLog: Remove results of bad merge in ChangeLog.
 
 2011-04-12  Ben Abbott  <bpabbott@mac.com>

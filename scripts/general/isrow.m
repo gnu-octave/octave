@@ -26,8 +26,6 @@
 
 function retval = isrow (x)
 
-  retval = false;
-
   if (nargin != 1)
     print_usage ();
   endif

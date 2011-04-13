@@ -326,11 +326,11 @@ Creating Strings
 
 Data Containers
 
-* Data Structures::
+* Structures::
 * Cell Arrays::
 * Comma Separated Lists::
 
-Data Structures
+Structures
 
 * Basic Usage and Examples::
 * Structure Arrays::

@@ -1,3 +1,13 @@
+2011-04-12  Ben Abbott  <bpabbott@mac.com>
+
+	* interpreter/data.txi: Replace xref{Data Structures} with
+	xref{Structures}.
+
+2011-04-11  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/func.txi: Add discussion of isargout to Ignoring
+	Arguments section of documentation.
+
 2011-04-08  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/stats.txi: Deprecate studentize(), replace with

@@ -1,6 +1,6 @@
 2011-04-10  John Eaton  <jwe@octave.org>
 
-	* graphics.cc: Allow ishandle() to accept vector of handles (bug 33025).
+	* graphics.cc (Fishandle) Accept vector of handles (bug #33025).
 
 2011-04-08  Rik  <octave@nomad.inbox5.com>
 

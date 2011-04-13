@@ -18,6 +18,9 @@
 ## @deftypefn {Function File} {@var{value} =} getappdata (@var{h}, @var{name})
 ## Return the @var{value} for named application data for the object(s) with
 ## handle(s) @var{h}.
+## @deftypefnx {Function File} {@var{appdata} =} getappdata (@var{h})
+## Returns a structure, @var{appdata}, whose fields correspond to the appdata
+## properties.
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
@@ -25,18 +28,30 @@
 
 function val = getappdata (h, name)
 
-  if (! (all (ishandle (h)) && ischar (name)))
-    error ("getappdata: invalid input");
-  endif
-
-  appdata(numel(h)) = struct();
-  for nh = 1:numel(h)
-    appdata(nh) = get (h(nh), "__appdata__");
-  end
-  if (nh > 1)
-    val = {appdata.(name)};
+  if (all (ishandle (h)) && nargin == 2 && ischar (name))
+    ## FIXME - Is there a better way to handle non-existent appdata
+    ## and missing fields?
+    val = cell (numel (h), 1);
+    appdata = struct();
+    for nh = 1:numel(h)
+      try
+        appdata = get (h(nh), "__appdata__");
+      catch
+        appdata.(name) = [];
+      end_try_catch
+      val(nh) = {appdata.(name)};
+    end
+    if (nh == 1)
+      val = val{1};
+    endif
+  elseif (ishandle (h) && numel (h) == 1 && nargin == 1)
+    try
+      val = get (h, "__appdata__");
+    catch
+      val = struct ();
+    end_try_catch
   else
-    val = appdata.(name);
+    error ("getappdata: invalid input");
   endif
 
 endfunction

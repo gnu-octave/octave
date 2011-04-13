@@ -1,3 +1,18 @@
+2011-04-12  Ben Abbott  <bpabbott@mac.com>
+
+	* miscellaneous/getappdata.m: If no property name is provided, return
+	a structure representing the appdata.
+
+2011-04-12  Marco Caliari  <marco.caliari@univr.it>
+
+	* general/quadgk.m: Fix problem with -Inf bound on integral (bug
+	#33055). 
+
+2011-04-11  Ben Abbott  <bpabbott@mac.com>
+
+	* miscellaneous/getappdata.m: If appdata propery does not exist, return
+	an empty matrix.
+
 2011-04-08  Rik  <octave@nomad.inbox5.com>
 
 <<<<<<< local

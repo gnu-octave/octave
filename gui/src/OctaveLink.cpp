@@ -264,7 +264,9 @@ void OctaveLink::retrieveVariables() {
         variableMetaData.dimensionalSize.push_back(octaveVariableValue.columns());
         variableMetaData.byteSize = octaveVariableValue.byte_size();
         variableMetaData.typeName = QString(octaveVariableValue.type_name().c_str());
-        currentVariables.append(variableMetaData);
+
+        if(!variableMetaData.variableName.startsWith("."))
+            currentVariables.append(variableMetaData);
     }
 
     m_variableSymbolTableList = currentVariables;

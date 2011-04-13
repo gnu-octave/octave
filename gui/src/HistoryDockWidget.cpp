@@ -31,7 +31,7 @@ void HistoryDockWidget::construct() {
 
     QHBoxLayout *layout = new QHBoxLayout();
 
-    setWindowTitle("History");
+    setWindowTitle("Command History");
     setWidget(new QWidget());
 
     layout->addWidget(m_historyListView);

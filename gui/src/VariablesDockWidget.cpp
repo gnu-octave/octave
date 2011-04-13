@@ -11,7 +11,7 @@ void VariablesDockWidget::construct() {
 
     QHBoxLayout *layout = new QHBoxLayout();
 
-    setWindowTitle("Variables");
+    setWindowTitle("Workspace");
     setWidget(new QWidget());
 
     layout->addWidget(m_variablesTreeView);

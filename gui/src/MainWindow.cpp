@@ -83,8 +83,8 @@ void MainWindow::constructWindow() {
     m_statusBar = new QStatusBar(this);
     m_browserWidget = new BrowserWidget(this);
     m_centralTabWidget = new QTabWidget(this);
-    m_centralTabWidget->addTab(m_octaveTerminal, "Terminal");
-    m_centralTabWidget->addTab(m_openedFiles, "Editor");
+    m_centralTabWidget->addTab(m_octaveTerminal, "Command Window");
+    m_centralTabWidget->addTab(m_openedFiles, "File Editor");
     m_centralTabWidget->addTab(m_browserWidget, "Documentation");
 
     // TODO: Add meaningfull toolbar items.

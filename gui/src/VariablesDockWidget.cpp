@@ -63,5 +63,20 @@ void VariablesDockWidget::setVariablesList(QList<OctaveLink::VariableMetaData> v
         }
     }
 
-    // TODO: Check the tree against the list for deleted variables.
+    // Check the tree against the list for deleted variables.
+    for(int i = 0; i < topLevelItem->childCount(); i++) {
+        bool existsInVariableList = false;
+        QTreeWidgetItem *child = topLevelItem->child(i);
+        foreach(OctaveLink::VariableMetaData variable, variablesList) {
+            if(variable.variableName == child->data(0, 0).toString()) {
+                existsInVariableList = true;
+            }
+        }
+
+        if(!existsInVariableList) {
+            topLevelItem->removeChild(child);
+            delete child;
+            i--;
+        }
+    }
 }

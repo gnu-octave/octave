@@ -118,6 +118,7 @@ private:
     QStatusBar *m_statusBar;
     QToolBar *m_generalPurposeToolbar;
     BrowserWidget *m_browserWidget;
+    BrowserWidget *m_serviceWidget;
     QString m_settingsFile;
 
     // Threads for running octave and managing the data interaction.

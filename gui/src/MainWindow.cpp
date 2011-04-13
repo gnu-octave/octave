@@ -82,10 +82,12 @@ void MainWindow::constructWindow() {
     m_openedFiles = new QMdiArea(this);
     m_statusBar = new QStatusBar(this);
     m_browserWidget = new BrowserWidget(this);
+    m_serviceWidget = new BrowserWidget(this);
     m_centralTabWidget = new QTabWidget(this);
     m_centralTabWidget->addTab(m_octaveTerminal, "Command Window");
     m_centralTabWidget->addTab(m_openedFiles, "File Editor");
     m_centralTabWidget->addTab(m_browserWidget, "Documentation");
+    m_centralTabWidget->addTab(m_serviceWidget, "Service");
 
     // TODO: Add meaningfull toolbar items.
     QAction *commandAction = new QAction(style->standardIcon(QStyle::SP_CommandLink),
@@ -109,6 +111,7 @@ void MainWindow::constructWindow() {
     connect(m_historyDockWidget, SIGNAL(information(QString)), this, SLOT(reportStatusMessage(QString)));
 
     openWebPage("http://www.gnu.org/software/octave/doc/interpreter/");
+    m_serviceWidget->load(QUrl("https://github.com/jacobdawid/Quint/issues"));
 }
 
 void MainWindow::establishOctaveLink() {

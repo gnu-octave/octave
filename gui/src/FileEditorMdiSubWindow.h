@@ -32,11 +32,15 @@ public:
     void loadFile(QString fileName);
 
 public slots:
+    void newFile();
     void saveFile();
+
+    void showToolTipNew();
     void showToolTipSave();
     void showToolTipUndo();
     void showToolTipRedo();
 
+    void registerModified(bool modified);
 private:
     void construct();
     QToolBar *m_toolBar;
@@ -44,6 +48,7 @@ private:
     NumberedTextView *m_numberedTextView;
     QStatusBar *m_statusBar;
     QString m_fileName;
+    bool m_modified;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

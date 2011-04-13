@@ -21,6 +21,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QFileDialog>
+#include <QMessageBox>
 
 FileEditorMdiSubWindow::FileEditorMdiSubWindow(QWidget *parent)
     : QMdiSubWindow(parent) {
@@ -38,12 +39,47 @@ void FileEditorMdiSubWindow::loadFile(QString fileName) {
     file.close();
 }
 
+void FileEditorMdiSubWindow::newFile() {
+    if(m_modified) {
+        int decision
+                = QMessageBox::question(this,
+                                        "Open New File",
+                                        "Do you want to save the current file?",
+                                        QMessageBox::Yes, QMessageBox::No);
+
+        if(decision == QMessageBox::Yes) {
+            saveFile();
+            if(m_modified) {
+                // If the user attempted to save the file, but it's still
+                // modified, then probably something went wrong, so we quit here.
+                return;
+            }
+        }
+    }
+
+    m_fileName = "<unnamed>";
+    setWindowTitle(m_fileName);
+    m_codeEdit->setPlainText("");
+}
+
 void FileEditorMdiSubWindow::saveFile() {
     QString saveFileName = QFileDialog::getSaveFileName(this, "Save File", m_fileName);
     QFile file(saveFileName);
     file.open(QFile::WriteOnly);
-    file.write(m_codeEdit->toPlainText().toLocal8Bit());
+
+    if(file.write(m_codeEdit->toPlainText().toLocal8Bit()) == -1) {
+        QMessageBox::warning(this,
+                             "Error Saving File",
+                             QString("The file could not be saved: %1.").arg(file.errorString()));
+    } else {
+        m_codeEdit->document()->setModified(false);
+    }
+
     file.close();
+}
+
+void FileEditorMdiSubWindow::showToolTipNew() {
+    m_statusBar->showMessage("Create a new file.", 2000);
 }
 
 void FileEditorMdiSubWindow::showToolTipSave() {
@@ -56,6 +92,10 @@ void FileEditorMdiSubWindow::showToolTipUndo() {
 
 void FileEditorMdiSubWindow::showToolTipRedo() {
     m_statusBar->showMessage("Append previous changes.", 2000);
+}
+
+void FileEditorMdiSubWindow::registerModified(bool modified) {
+    m_modified = modified;
 }
 
 void FileEditorMdiSubWindow::construct() {
@@ -90,11 +130,18 @@ void FileEditorMdiSubWindow::construct() {
     layout->setMargin(2);
     widget()->setLayout(layout);
 
+    connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
     connect(undoAction, SIGNAL(triggered()), m_codeEdit, SLOT(undo()));
     connect(redoAction, SIGNAL(triggered()), m_codeEdit, SLOT(redo()));
     connect(saveAction, SIGNAL(triggered()), this, SLOT(saveFile()));
 
+    connect(newAction, SIGNAL(hovered()), this, SLOT(showToolTipNew()));
     connect(undoAction, SIGNAL(hovered()), this, SLOT(showToolTipUndo()));
     connect(redoAction, SIGNAL(hovered()), this, SLOT(showToolTipRedo()));
     connect(saveAction, SIGNAL(hovered()), this, SLOT(showToolTipSave()));
+
+    connect(m_codeEdit, SIGNAL(modificationChanged(bool)), this, SLOT(registerModified(bool)));
+
+    m_fileName = "";
+    setWindowTitle(m_fileName);
 }

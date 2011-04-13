@@ -103,6 +103,8 @@ public slots:
 
 protected:
     void closeEvent(QCloseEvent *closeEvent);
+    void readSettings();
+    void writeSettings();
 
 private:
     void constructWindow();

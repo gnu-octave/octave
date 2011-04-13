@@ -54,10 +54,21 @@ void MainWindow::openWebPage(QString url) {
 
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {
     reportStatusMessage("Saving data and shutting down.");
+    writeSettings();
+    QMainWindow::closeEvent(closeEvent);
+}
+
+void MainWindow::readSettings() {
+    QSettings settings(m_settingsFile, QSettings::IniFormat);
+    restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
+    restoreState(settings.value("MainWindow/windowState").toByteArray());
+
+}
+
+void MainWindow::writeSettings() {
     QSettings settings(m_settingsFile, QSettings::IniFormat);
     settings.setValue("MainWindow/geometry", saveGeometry());
     settings.setValue("MainWindow/windowState", saveState());
-    QMainWindow::closeEvent(closeEvent);
 }
 
 void MainWindow::constructWindow() {
@@ -91,9 +102,7 @@ void MainWindow::constructWindow() {
     addDockWidget(Qt::RightDockWidgetArea, m_filesDockWidget);
     setStatusBar(m_statusBar);
 
-    QSettings settings(m_settingsFile, QSettings::IniFormat);
-    restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
-    restoreState(settings.value("MainWindow/windowState").toByteArray());
+    readSettings();
 
     connect(m_filesDockWidget, SIGNAL(openFile(QString)), this, SLOT(handleOpenFileRequest(QString)));
     connect(m_historyDockWidget, SIGNAL(information(QString)), this, SLOT(reportStatusMessage(QString)));

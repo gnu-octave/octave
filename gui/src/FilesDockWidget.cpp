@@ -38,6 +38,8 @@ FilesDockWidget::FilesDockWidget(QWidget *parent)
     m_fileTreeView->setModel(m_fileSystemModel);
     m_fileTreeView->setRootIndex(rootPathIndex);
     m_fileTreeView->setSortingEnabled(true);
+    m_fileTreeView->setAlternatingRowColors(true);
+    m_fileTreeView->setAnimated(true);
 
     connect(m_fileTreeView, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(itemDoubleClicked(const QModelIndex &)));
 

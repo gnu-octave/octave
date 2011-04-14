@@ -29,6 +29,7 @@ void HistoryDockWidget::construct() {
     m_historyListModel = new QStringListModel();
     m_historyListView = new QListView(this);
     m_historyListView->setModel(m_historyListModel);
+    m_historyListView->setAlternatingRowColors(true);
 
     QHBoxLayout *layout = new QHBoxLayout();
 

@@ -40,6 +40,8 @@ void VariablesDockWidget::construct() {
     m_variablesTreeWidget->insertTopLevelItem(3, treeWidgetItem);
 
     m_variablesTreeWidget->expandAll();
+    m_variablesTreeWidget->setAlternatingRowColors(true);
+    m_variablesTreeWidget->setAnimated(true);
 }
 
 void VariablesDockWidget::updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecord symbolRecord) {

@@ -57,9 +57,35 @@ void VariablesDockWidget::updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecor
 }
 
 void VariablesDockWidget::setVariablesList(QList<SymbolRecord> symbolTable) {
+
+    // Split the symbol table into its different scopes.
+    QList<SymbolRecord> localSymbolTable;
+    QList<SymbolRecord> globalSymbolTable;
+    QList<SymbolRecord> persistentSymbolTable;
+
+    foreach(SymbolRecord symbolRecord, symbolTable) {
+        if(symbolRecord.is_local()) {
+            localSymbolTable.append(symbolRecord);
+        }
+
+        if(symbolRecord.is_global()) {
+            globalSymbolTable.append(symbolRecord);
+        }
+
+        if(symbolRecord.is_persistent()) {
+            persistentSymbolTable.append(symbolRecord);
+        }
+    }
+
+    updateScope(0, localSymbolTable);
+    updateScope(1, globalSymbolTable);
+    updateScope(2, persistentSymbolTable);
+}
+
+void VariablesDockWidget::updateScope(int topLevelItemIndex, QList<SymbolRecord> symbolTable) {
     // This method may be a little bit confusing; variablesList is a complete list of all
     // variables that are in the workspace currently.
-    QTreeWidgetItem *topLevelItem = m_variablesTreeWidget->topLevelItem(0);
+    QTreeWidgetItem *topLevelItem = m_variablesTreeWidget->topLevelItem(topLevelItemIndex);
 
     // First we check, if any variables that exist in the model tree have to be updated
     // or created. So we walk the variablesList check against the tree.

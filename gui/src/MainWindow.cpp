@@ -23,6 +23,7 @@
 #include <QDesktopServices>
 #include "MainWindow.h"
 #include "FileEditorMdiSubWindow.h"
+#include "ImageViewerMdiSubWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -38,10 +39,17 @@ MainWindow::~MainWindow() {
 
 void MainWindow::handleOpenFileRequest(QString fileName) {
     reportStatusMessage("Opening file.");
-    FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow(m_openedFiles);
-    m_openedFiles->addSubWindow(subWindow);
-    subWindow->loadFile(fileName);
-    subWindow->showMaximized();
+    QPixmap pixmap;
+    if(pixmap.load(fileName)) {
+        ImageViewerMdiSubWindow *subWindow = new ImageViewerMdiSubWindow(pixmap, this);
+        m_openedFiles->addSubWindow(subWindow);
+        subWindow->showMaximized();
+    } else {
+        FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow(m_openedFiles);
+        m_openedFiles->addSubWindow(subWindow);
+        subWindow->loadFile(fileName);
+        subWindow->showMaximized();
+    }
     m_centralTabWidget->setCurrentWidget(m_openedFiles);
 }
 

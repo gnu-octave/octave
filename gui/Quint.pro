@@ -47,7 +47,8 @@ SOURCES +=\
     src/SyntaxHighlighter.cpp \
     src/BrowserWidget.cpp \
     src/NumberedCodeEdit.cpp \
-    src/SimpleEditor.cpp
+    src/SimpleEditor.cpp \
+    src/ImageViewerMdiSubWindow.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -91,7 +92,8 @@ HEADERS += \
     src/SyntaxHighlighter.h \
     src/BrowserWidget.h \
     src/NumberedCodeEdit.h \
-    src/SimpleEditor.h
+    src/SimpleEditor.h \
+    src/ImageViewerMdiSubWindow.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \

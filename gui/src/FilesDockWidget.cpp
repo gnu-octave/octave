@@ -3,8 +3,8 @@
 #include <QApplication>
 
 FilesDockWidget::FilesDockWidget(QWidget *parent)
-  : QDockWidget(parent)
-{
+  : QDockWidget(parent) {
+    setObjectName("FilesDockWidget");
     setWindowTitle("Current Folder");
     setWidget(new QWidget(this));
 

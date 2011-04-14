@@ -21,6 +21,7 @@
 
 HistoryDockWidget::HistoryDockWidget(QWidget *parent)
     : QDockWidget(parent) {
+    setObjectName("HistoryDockWidget");
     construct();
 }
 
@@ -39,7 +40,6 @@ void HistoryDockWidget::construct() {
 
     widget()->setLayout(layout);
 }
-
 
 void HistoryDockWidget::updateHistory(string_vector historyEntries) {
     QStringList stringList = m_historyListModel->stringList();

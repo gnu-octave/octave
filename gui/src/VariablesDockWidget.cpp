@@ -3,6 +3,7 @@
 
 VariablesDockWidget::VariablesDockWidget(QWidget *parent)
     : QDockWidget(parent) {
+    setObjectName("VariablesDockWidget");
     construct();
 }
 

@@ -1,5 +1,10 @@
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 
+	* help/__makeinfo__.m: Simplify function by using regular expressions.
+	Eliminate third input argument see_also function.
+
+2011-04-13  Rik  <octave@nomad.inbox5.com>
+
 	* general/isdir.m, general/isequal.m, general/isequalwithequalnans.m,
 	general/isscalar.m, general/issquare.m, general/isvector.m: Refactor
 	code to put input validation first.

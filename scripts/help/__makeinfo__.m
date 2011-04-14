@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
-## @deftypefnx {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{see_also})
+## @deftypefn  {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text})
+## @deftypefnx {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -32,13 +32,6 @@
 ## @t{"html"}, @t{"texinfo"}, or @t{"plain text"}. By default this is
 ## @t{"plain text"}. If @var{output_type} is @t{"texinfo"}, the @t{@@seealso}
 ## macro is expanded, but otherwise the text is unaltered.
-##
-## If the optional argument @var{see_also} is present, it is used to expand the
-## Octave specific @t{@@seealso} macro. This argument must be a function handle,
-## that accepts a cell array of strings as input argument (each elements of the
-## array corresponds to the arguments to the @t{@@seealso} macro), and return
-## the expanded string. If this argument is not given, the @t{@@seealso} macro
-## will be expanded to the text
 ##
 ## @example
 ## See also: arg1, arg2@, ...
@@ -60,7 +53,7 @@
 function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_also = [])
 
   ## Check input
-  if (nargin == 0)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
@@ -72,72 +65,18 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
     error ("__makeinfo__: second input argument must be a string");
   endif
 
-  ## Define the function which expands @seealso macro
-  if (isempty (see_also))
-    if (strcmpi (output_type, "plain text"))
-      see_also = @simple_see_also;
-    else
-      see_also = @simple_see_also_with_refs;
-    endif
-  endif
-
-  if (!isa (see_also, "function_handle"))
-    error ("__makeinfo__: third input argument must be the empty matrix, or a function handle");
-  endif
-
   ## It seems like makeinfo sometimes gets angry if the first character
   ## on a line is a space, so we remove these.
   text = strrep (text, "\n ", "\n");
 
   ## Handle @seealso macro
-  SEE_ALSO = "@seealso";
-  starts = strfind (text, SEE_ALSO);
-  for start = fliplr (starts)
-    if (start == 1 || (text (start-1) != "@"))
-      bracket_start = find (text (start:end) == "{", 1);
-      stop = find (text (start:end) == "}", 1);
-      if (!isempty (stop) && !isempty (bracket_start))
-        stop += start - 1;
-        bracket_start += start - 1;
-      else
-        bracket_start = start + length (SEE_ALSO);
-        stop = find (text (start:end) == "\n", 1);
-        if (isempty (stop))
-          stop = length (text);
-        else
-          stop += start - 1;
-        endif
-      endif
-      see_also_args = text (bracket_start+1:(stop-1));
-      see_also_args = strtrim (strsplit (see_also_args, ","));
-      expanded = see_also (see_also_args);
-      text = strcat (text (1:start-1), expanded, text (stop+1:end));
-    endif
-  endfor
-
+  if (strcmpi (output_type, "plain text")) 
+    text = regexprep (text, '@seealso *\{([^}]*)\}', "\nSee also: $1.\n\n");
+  else
+    text = regexprep (text, '@seealso *\{([^}]*)\}', "\nSee also: @ref{$1}.\n\n");
+  endif
   ## Handle @nospell macro
-  NOSPELL = "@nospell";
-  starts = strfind (text, NOSPELL);
-  for start = fliplr (starts)
-    if (start == 1 || (text (start-1) != "@"))
-      bracket_start = find (text (start:end) == "{", 1);
-      stop = find (text (start:end) == "}", 1);
-      if (!isempty (stop) && !isempty (bracket_start))
-        stop += start - 1;
-        bracket_start += start - 1;
-      else
-        bracket_start = start + length (NOSPELL);
-        stop = find (text (start:end) == "\n", 1);
-        if (isempty (stop))
-          stop = length (text);
-        else
-          stop += start - 1;
-        endif
-      endif
-      text(stop) = [];
-      text(start:bracket_start) = [];
-    endif
-  endfor
+  text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
 
   if (strcmpi (output_type, "texinfo"))
     status = 0;
@@ -180,12 +119,3 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_
   end_unwind_protect
 endfunction
 
-function expanded = simple_see_also (args)
-  expanded = strcat ("\nSee also:", sprintf (" %s,", args {:}));
-  expanded = strcat (expanded (1:end-1), "\n\n");
-endfunction
-
-function expanded = simple_see_also_with_refs (args)
-  expanded = strcat ("\nSee also:", sprintf (" @ref{%s},", args {:}));
-  expanded = strcat (expanded (1:end-1), "\n\n");
-endfunction

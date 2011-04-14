@@ -6,7 +6,6 @@
 ImageViewerMdiSubWindow::ImageViewerMdiSubWindow(QPixmap pixmap, QWidget *parent)
     : QMdiSubWindow(parent),
       m_pixmap(pixmap) {
-    setWindowTitle("Picture");
     construct();
 }
 

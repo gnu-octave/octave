@@ -43,6 +43,7 @@ void MainWindow::handleOpenFileRequest(QString fileName) {
     if(pixmap.load(fileName)) {
         ImageViewerMdiSubWindow *subWindow = new ImageViewerMdiSubWindow(pixmap, this);
         m_openedFiles->addSubWindow(subWindow);
+        subWindow->setWindowTitle(fileName);
         subWindow->showMaximized();
     } else {
         FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow(m_openedFiles);

@@ -195,13 +195,11 @@ int OctaveLink::processOctaveServerData(void)
 
 //*************************************************************************
 void OctaveLink::retrieveVariables() {
-    QList<SymbolRecord> currentVariables;
+    m_variableSymbolTableList.clear();
     std::list<SymbolRecord> allVariables = symbol_table::all_variables();
     std::list<SymbolRecord>::iterator iterator;
     for(iterator = allVariables.begin(); iterator != allVariables.end(); iterator++)
-        currentVariables.append(*iterator);
-
-    m_variableSymbolTableList = currentVariables;
+        m_variableSymbolTableList.append(*iterator);
 }
 
 

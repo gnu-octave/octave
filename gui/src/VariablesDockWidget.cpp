@@ -56,9 +56,9 @@ void VariablesDockWidget::updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecor
         double scalarValue = symbolRecord.varval().scalar_value();
         treeItem->setData(2, 0, QString("%1").arg(scalarValue));
     } else if(type == "matrix") {
-        Matrix matrixValue = symbolRecord.varval().matrix_value();
+        // Matrix matrixValue = symbolRecord.varval().matrix_value();
         // TODO: Display matrix values.
-        treeItem->setData(2, 0, QString("{%1 x %2}").arg(matrixValue.rows()).arg(matrixValue.cols()));
+        //treeItem->setData(2, 0, QString("{%1 x %2}").arg(matrixValue.rows()).arg(matrixValue.cols()));
     } else {
         treeItem->setData(2, 0, QString("<Type not recognized>"));
     }

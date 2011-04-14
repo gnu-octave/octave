@@ -25,6 +25,15 @@ void VariablesDockWidget::construct() {
     QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem();
     treeWidgetItem->setData(0, 0, QString("Local"));
     m_variablesTreeWidget->insertTopLevelItem(0, treeWidgetItem);
+
+    treeWidgetItem = new QTreeWidgetItem();
+    treeWidgetItem->setData(0, 0, QString("Global"));
+    m_variablesTreeWidget->insertTopLevelItem(1, treeWidgetItem);
+
+    treeWidgetItem = new QTreeWidgetItem();
+    treeWidgetItem->setData(0, 0, QString("Persistent"));
+    m_variablesTreeWidget->insertTopLevelItem(2, treeWidgetItem);
+
     m_variablesTreeWidget->expandAll();
 }
 

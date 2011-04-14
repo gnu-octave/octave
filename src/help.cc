@@ -356,7 +356,7 @@ endfor\n\
 
   pair_type ("function",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} function @var{outputs} = function (@var{input}, @dots{})\n\
+@deftypefn  {Keyword} {} function @var{outputs} = function (@var{input}, @dots{})\n\
 @deftypefnx {Keyword} {} function {} function (@var{input}, @dots{})\n\
 @deftypefnx {Keyword} {} function @var{outputs} = function\n\
 Begin a function body with @var{outputs} as results and @var{inputs} as\n\
@@ -382,7 +382,7 @@ endif\n\
 
   pair_type ("if",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} if (@var{cond}) @dots{} endif\n\
+@deftypefn  {Keyword} {} if (@var{cond}) @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} else @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
@@ -473,7 +473,7 @@ If an error occurs within a try block, then the catch code will be run and\n\
 execution will proceed after the catch block (though it is often\n\
 recommended to use the lasterr function to re-throw the error after cleanup\n\
 is completed).\n\
-@seealso{catch,unwind_protect}\n\
+@seealso{catch, unwind_protect}\n\
 @end deftypefn"),
 
   pair_type ("until",
@@ -494,7 +494,7 @@ the error is thrown.  If an error is not thrown, then the\n\
 unwind_protect_cleanup block is still executed (in other words, the\n\
 unwind_protect_cleanup will be run with or without an error in the\n\
 unwind_protect block).\n\
-@seealso{unwind_protect_cleanup,try}\n\
+@seealso{unwind_protect_cleanup, try}\n\
 @end deftypefn"),
 
   pair_type ("unwind_protect_cleanup",

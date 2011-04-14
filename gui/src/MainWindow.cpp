@@ -63,7 +63,6 @@ void MainWindow::readSettings() {
     QSettings settings(m_settingsFile, QSettings::IniFormat);
     restoreGeometry(settings.value("MainWindow/geometry").toByteArray());
     restoreState(settings.value("MainWindow/windowState").toByteArray());
-
 }
 
 void MainWindow::writeSettings() {

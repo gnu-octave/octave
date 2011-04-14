@@ -1,4 +1,4 @@
-/* Copyright (C) 2006 P.L. Lucas
+/* Copyright (C) 2010 P.L. Lucas
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,68 +12,96 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, 
- * Boston, MA 02111-1307, USA. 
+ * Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
-#ifndef SYNTAXHIGHLIGHTER_H
-#define SYNTAXHIGHLIGHTER_H
-#include <QPlainTextEdit>
+#ifndef __SYNTAX_H__
+#define __SYNTAX_H__
+
 #include <QSyntaxHighlighter>
+#include <QTextBlockUserData>
 #include <QVector>
-#include <QTextCharFormat>
-#include <QMap>
-#include "config.h"
+#include <QPlainTextEdit>
 
-/**SyntaxHighlighter for Octave code.*/
-class SyntaxHighlighter: public QSyntaxHighlighter {
-    Q_OBJECT
-public:
-    SyntaxHighlighter(QTextDocument *parent);
-    ~SyntaxHighlighter();
-    void highlightBlock(const QString &str);
-    void load(const QString &file);
-
-    //void setItem(const QString &item, const QString &type);
-    void setItem(const QString &item, const QString &type, const QString parent=QString() );
-    void setComment(const QString &start, const QString &end, const QString &type);
-    void setType(const QString &type, const QTextCharFormat &format);
-
-    /**Stops syntax highlight*/
-    void setActive(bool active);
-
-    static QStringList octave_comands;
-
-public slots:
-    /**Return true or false if brackets are been macthed*/
-    inline bool getIsActiveBraketsMacth() {return braketsMacth_ok;}
- 
-  
-private:
-    struct Rule
-    {
-        QRegExp pattern;
-        QString type;
-        QTextCharFormat format;
-        QList<Rule*> rules;
-    };
-
-    int backwardSearch(QTextBlock &textBlock, int position, char bracketStart, char bracketEnd);
-    int forwardSearch(QTextBlock &textBlock, int position, char bracketStart, char bracketEnd);
-
-    //static QMap<QString, QList<Rule> > instances;
-
-    QMap<QString, Rule *> rules_map;
-
-    static QList<Rule*> rules;
-    QMap<QString, QTextCharFormat> _format;
-
-    //Next two properties are used inside highlightBlock method
-    QVector<int> __i_aux; //Auxiliar positions
-    QVector<QRegExp> __re; //Regular expresions
-
-    bool active_ok;
-    bool braketsMacth_ok;
+class BlockData:public QTextBlockUserData
+{
+	public:
+	BlockData();
+	
+	struct Bracket
+	{
+		int type;	//Type of bracket
+		int pos;	//Position of bracket
+		int length;	//Number of chars of bracket
+		bool startBracketOk;	//Is it a start or end bracket?
+	};
+	
+	QVector <Bracket> brackets;
 };
 
-#endif // SYNTAXHIGHLIGHTER_H
+class SyntaxHighlighter:public QSyntaxHighlighter
+{
+	Q_OBJECT
+	
+	struct HighlightingRule
+	{
+		QRegExp pattern;
+		QTextCharFormat format;
+		int ruleOrder;
+		int lastFound;
+	};
+	
+	QVector<HighlightingRule> highlightingRules;
+	
+	struct HighlightingBlockRule
+	{
+		QRegExp startPattern, endPattern;
+		QTextCharFormat format;
+		int ruleOrder;
+	};
+	
+	QVector<HighlightingBlockRule> highlightingBlockRules;
+	QVector<HighlightingBlockRule> highlightingBracketsRules;
+	
+	struct Rule1st
+	{
+		int rule;
+		int startIndex;
+		int length;
+		int ruleOrder;
+	};
+	
+	/**1st rule to apply from startIndex.
+	 */
+	Rule1st highlight1stRule(const QString & text, int startIndex);
+	
+	/**1st block rule to apply from startIndex.
+	 */
+	Rule1st highlight1stBlockRule(const QString & text, int startIndex);
+	
+	/** Set format using rule.
+	 */
+	int ruleSetFormat(Rule1st rule);
+	
+	/** Set format using block rule.
+	 */
+	int blockRuleSetFormat(const QString & text, Rule1st rule1st);
+	
+	/** Finds brackets and put them in BlockData.
+	 */
+	void findBrackets(const QString & text, int start, int end, BlockData *blockData);
+	
+	public:
+	
+        SyntaxHighlighter(QObject * parent = 0);
+	bool load(QString file);
+	
+	/**Formats pair of brackets
+	 */
+	void setFormatPairBrackets(QPlainTextEdit *textEdit);
+	
+	protected:
+	void highlightBlock ( const QString & text );
+};
+#endif

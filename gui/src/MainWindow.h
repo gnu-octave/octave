@@ -30,7 +30,7 @@
 #include "VariablesDockWidget.h"
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
-#include "CodeEdit.h"
+#include "SimpleEditor.h"
 #include "BrowserWidget.h"
 
 // Octave includes

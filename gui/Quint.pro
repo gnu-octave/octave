@@ -43,11 +43,11 @@ SOURCES +=\
     src/VariablesDockWidget.cpp \
     src/HistoryDockWidget.cpp \
     src/FilesDockWidget.cpp \
-    src/CodeEdit.cpp \
     src/FileEditorMdiSubWindow.cpp \
     src/SyntaxHighlighter.cpp \
     src/BrowserWidget.cpp \
-    src/NumberedCodeEdit.cpp
+    src/NumberedCodeEdit.cpp \
+    src/SimpleEditor.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -87,11 +87,11 @@ HEADERS += \
     src/VariablesDockWidget.h \
     src/HistoryDockWidget.h \
     src/FilesDockWidget.h \
-    src/CodeEdit.h \
     src/FileEditorMdiSubWindow.h \
     src/SyntaxHighlighter.h \
     src/BrowserWidget.h \
-    src/NumberedCodeEdit.h
+    src/NumberedCodeEdit.h \
+    src/SimpleEditor.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \

@@ -26,6 +26,9 @@
 #include <QToolTip>
 #include <QTextStream>
 #include <QProcess>
+#include <QRegExp>
+#include <QMessageBox>
+#include <QFileInfo>
 
 #include "NumberedCodeEdit.h"
 #include "config.h"
@@ -35,10 +38,9 @@ NumberBar::NumberBar( QWidget *parent )
 {
     // Make room for 4 digits and the breakpoint icon
     setFixedWidth( fontMetrics().width( QString("0000") + 10 + 32 ) );
-    stopMarker = QPixmap(); //QString(ICON_PATH) + "/stop.png" );
-    currentMarker = QPixmap(); // QString(ICON_PATH) + "/bookmark.png" );
-    bugMarker = QPixmap(); // QString(ICON_PATH) + "/bug.png" );
-    setFont(QFont("Courier"));
+    stopMarker = QPixmap();// QString(ICON_PATH) + "/stop.png" );
+    currentMarker = QPixmap();// QString(ICON_PATH) + "/bookmark.png" );
+    bugMarker = QPixmap();// QString(ICON_PATH) + "/bug.png" );
 }
 
 NumberBar::~NumberBar()
@@ -70,7 +72,7 @@ void NumberBar::toggleBreakpoint( int lineno )
   update();
 }
 
-void NumberBar::setTextEdit( CodeEdit *edit )
+void NumberBar::setTextEdit( SimpleEditor *edit )
 {
     this->edit = edit;
     setFixedWidth( edit->fontMetrics().width( QString("0000") + 10 + 32 ) );
@@ -87,7 +89,7 @@ void NumberBar::paintEvent( QPaintEvent * )
     edit->publicBlockBoundingRectList(lines_list, first_line_no);
     
     const QFontMetrics fm = edit->fontMetrics();
-    const int ascent = fontMetrics().ascent(); // height = ascent + descent + 1
+    const int ascent = fontMetrics().ascent(); // height = ascent + descent
    
     QPainter p(this);
     p.setPen(palette().windowText().color());
@@ -107,7 +109,7 @@ void NumberBar::paintEvent( QPaintEvent * )
     	lineCount=first_line_no+i;
     	
     	const QString txt = QString::number( lineCount );
-        p.drawText( width() - fm.width(txt) - 2, position_y+ascent, txt );
+        p.drawText( width() - fm.width(txt)- 2, position_y+ascent, txt );
         
         // Bug marker
 	if ( bugLine == lineCount ) {
@@ -127,6 +129,55 @@ void NumberBar::paintEvent( QPaintEvent * )
 	    currentRect = QRect( 1, position_y, currentMarker.width(), currentMarker.height() );
 	}
     }
+    
+    /*
+    
+    int contentsY = edit->verticalScrollBar()->value();
+    qreal pageBottom = contentsY + edit->viewport()->height();
+    const QFontMetrics fm = fontMetrics();
+    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
+    int lineCount = 1;
+
+    QPainter p(this);
+    p.setPen(palette().windowText().color());
+
+    bugRect = QRect();
+    stopRect = QRect();
+    currentRect = QRect();
+
+    for ( QTextBlock block = edit->document()->begin();
+	  block.isValid(); block = block.next(), ++lineCount ) {
+
+        const QRectF boundingRect = edit->publicBlockBoundingRect( block );
+
+        QPointF position = boundingRect.topLeft();
+        if ( position.y() + boundingRect.height() < contentsY )
+            continue;
+        if ( position.y() > pageBottom )
+            break;
+
+        const QString txt = QString::number( lineCount );
+        p.drawText( width() - fm.width(txt), qRound( position.y() ) - contentsY + ascent, txt );
+
+	// Bug marker
+	if ( bugLine == lineCount ) {
+	    p.drawPixmap( 1, qRound( position.y() ) - contentsY, bugMarker );
+	    bugRect = QRect( 1, qRound( position.y() ) - contentsY, bugMarker.width(), bugMarker.height() );
+	}
+
+	// Stop marker
+	if ( breakpoints.contains(lineCount) ) {
+	    p.drawPixmap( 19, qRound( position.y() ) - contentsY, stopMarker );
+	    stopRect = QRect( 19, qRound( position.y() ) - contentsY, stopMarker.width(), stopMarker.height() );
+	}
+
+	// Current line marker
+	if ( currentLine == lineCount ) {
+	    p.drawPixmap( 19, qRound( position.y() ) - contentsY, currentMarker );
+	    currentRect = QRect( 19, qRound( position.y() ) - contentsY, currentMarker.width(), currentMarker.height() );
+	}
+    }
+    */
 }
 
 bool NumberBar::event( QEvent *event )
@@ -155,7 +206,7 @@ QList<int> *NumberBar::getBreakpoints()
 
 
 
-NumberedTextView::NumberedTextView( QWidget *parent, CodeEdit *textEdit )
+NumberedCodeEdit::NumberedCodeEdit( QWidget *parent, SimpleEditor *textEdit )
     : QFrame( parent )
 {
 	setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -193,16 +244,16 @@ NumberedTextView::NumberedTextView( QWidget *parent, CodeEdit *textEdit )
 	vbox->addLayout(messages_layout);
 	messages_layout->setSpacing( 0 );
 	messages_layout->setMargin( 0 );
-}
+	}
 
 
-NumberedTextView::~NumberedTextView()
+NumberedCodeEdit::~NumberedCodeEdit()
 {
 	hide();
 	//printf("Borrado ntv\n");
 }
 
-void NumberedTextView::setCurrentLine( int lineno )
+void NumberedCodeEdit::setCurrentLine( int lineno )
 {
 	currentLine = lineno;
 	if(numbers!=NULL) numbers->setCurrentLine( lineno );
@@ -223,20 +274,50 @@ void NumberedTextView::setCurrentLine( int lineno )
 	textChanged( 0, 0, 1 );
 }
 
-void NumberedTextView::toggleBreakpoint( int lineno )
+void NumberedCodeEdit::toggleBreakpoint( int lineno )
 {
 	if(numbers!=NULL) numbers->toggleBreakpoint( lineno );
 }
 
-void NumberedTextView::setBugLine( int lineno )
+void NumberedCodeEdit::setBugLine( int lineno )
 {
 	if(numbers!=NULL) numbers->setBugLine( lineno );
 }
 
-void NumberedTextView::textChanged( int /*pos*/, int removed, int added )
+void NumberedCodeEdit::textChanged( int /*pos*/, int removed, int added )
 {
+    //Q_UNUSED( pos );
+
     if ( removed == 0 && added == 0 )
 	return;
+
+    //QTextBlock block = highlight.block();
+    //QTextBlock block = view->document()->begin();
+    //QTextBlockFormat fmt = block.blockFormat();
+    //QColor bg = view->palette().base().color();
+    //fmt.setBackground( bg );
+    //highlight.setBlockFormat( fmt );
+    /*
+    QTextBlockFormat fmt;
+
+    int lineCount = 1;
+    for ( QTextBlock block = view->document()->begin();
+	  block.isValid() && block!=view->document()->end(); block = block.next(), ++lineCount ) {
+
+	if ( lineCount == currentLine )
+	{
+	    fmt = block.blockFormat();
+	    QColor bg = view->palette().highlight().color();
+	    fmt.setBackground( bg );
+
+	    highlight = QTextCursor( block );
+	    highlight.movePosition( QTextCursor::EndOfBlock, QTextCursor::KeepAnchor );
+	    highlight.setBlockFormat( fmt );
+
+	    break;
+	}
+    }
+    */
     
     if( !textModifiedOk && view->document()->isModified() )
     {
@@ -245,7 +326,7 @@ void NumberedTextView::textChanged( int /*pos*/, int removed, int added )
     }
 }
 
-bool NumberedTextView::eventFilter( QObject *obj, QEvent *event )
+bool NumberedCodeEdit::eventFilter( QObject *obj, QEvent *event )
 {
     if ( obj != view )
 	return QFrame::eventFilter(obj, event);
@@ -260,48 +341,74 @@ bool NumberedTextView::eventFilter( QObject *obj, QEvent *event )
 	QString word = cursor.selectedText();
 	emit mouseHover( word );
 	emit mouseHover( helpEvent->pos(), word );
+
+	// QToolTip::showText( helpEvent->globalPos(), word ); // For testing
     }
 
     return false;
 }
 
-QList<int> *NumberedTextView::getBreakpoints()
+QList<int> *NumberedCodeEdit::getBreakpoints()
 {
 	QList<int> *br=NULL;
 	if(numbers!=NULL) br=numbers->getBreakpoints();
 	return br;
 }
 
-void NumberedTextView::open(QString path)
+void NumberedCodeEdit::open(QString path)
 {
   FILE *fl;
 
   fl = fopen(path.toLocal8Bit().constData(), "rt");
   if(fl)
   {
-    filePath = path;
-    QTextStream stream(fl);
-    textEdit()->document()->setPlainText(stream.readAll());
-    fclose(fl);
-    textModifiedOk=false;
-     textEdit()->document()->setModified(false);
+	fclose(fl);
+	filePath = path;
+	
+	textEdit()->load(path);
+	
+	textModifiedOk=false;
+	textEdit()->document()->setModified(false);
   }else{
     throw path;
   }
 }
 
-void NumberedTextView::save(QString path)
+bool NumberedCodeEdit::save(QString path)
 {
   FILE *fl;
 
-  if(path.isEmpty())
-    path = filePath;
-  else
-    filePath = path;
-
+  if(path.isEmpty()) path = filePath;
+  QRegExp re("[A-Za-z_][A-Za-z0-9_]*\\.m");
+  
+  if( ! re.exactMatch( QFileInfo(path).fileName() ) )
+  {
+	QMessageBox msgBox;
+	msgBox.setText( tr("This file name is not valid.") );
+	msgBox.setInformativeText(tr("Octave doesn't understand this file name:\n")+path+tr("\nPlease, change it.\n Do you want to save your changes?"));
+	msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Cancel);
+	msgBox.setDefaultButton(QMessageBox::Save);
+	int ret = msgBox.exec();
+	switch (ret)
+	{
+		case QMessageBox::Save:
+		    // Save was clicked
+		    break;
+		case QMessageBox::Cancel:
+		    // Cancel was clicked
+		    	return false;
+		    break;
+		default:
+		    // should never be reached
+		    break;
+	}
+  }
+  
+  
   fl = fopen(path.toLocal8Bit().constData(), "wt");
   if(fl)
   {
+    filePath = path;
     QTextStream *stream = new QTextStream(fl);
     (*stream) << textEdit()->document()->toPlainText();
     delete stream;
@@ -309,37 +416,47 @@ void NumberedTextView::save(QString path)
     textModifiedOk=false;
     view->document()->setModified(false);
   }else{
-    throw path;
+    return false;
   }
   
-    QString repository=path+"~~";
-    QString command("simplercs \""+repository+"\" \""+path+"\"");
-    QProcess::startDetached(command);
-    //QProcess::execute(command);
-
+  /*if(get_config("simple_rcs")=="true")
+  {
+  	QString repository=path+"~~";
+  	QString command("simplercs \""+repository+"\" \""+path+"\"");
+  	QProcess::startDetached(command);
+  	//QProcess::execute(command);
+  	printf("[NumberedTextView::save] Comando: %s\n", command.toLocal8Bit().data() );
+  }
+  else
+  {
+  	//printf("[NumberedTextView::save] No rcs\n");
+  }*/
+  
+  return true;
 }
 
-QString NumberedTextView::path()
+QString NumberedCodeEdit::path()
 {
   return filePath;
 }
 
-void NumberedTextView::setPath(QString path)
+void NumberedCodeEdit::setPath(QString path)
 {
 	filePath=path;
+	textEdit()->setFile(path);
 }
 
-void NumberedTextView::setModified(bool modify)
+void NumberedCodeEdit::setModified(bool modify)
 {
 	textModifiedOk=modify;
 }
 
-bool NumberedTextView::modified()
+bool NumberedCodeEdit::modified()
 {
 	return textModifiedOk;
 }
 
-void NumberedTextView::cursor_moved_cb()
+void NumberedCodeEdit::cursor_moved_cb()
 {
 	QTextCursor cursor=view->textCursor();
 	QTextBlock actual_block=cursor.block();
@@ -347,7 +464,6 @@ void NumberedTextView::cursor_moved_cb()
 	QTextBlock block = view->document()->begin();
 	
 	for ( ;block.isValid() && actual_block!=block; block = block.next()) lineCount++ ;
-
 }
 
 static QString startLineInsertText(QString str, QString textToInsert)
@@ -419,7 +535,7 @@ static QString startLineRemoveText(QString str, QStringList textToRemove)
 	return list.join("\n");
 }
 
-void NumberedTextView::indent()
+void NumberedCodeEdit::indent()
 {
 	//QTextDocument *doc=textEdit()->document();
 	
@@ -436,7 +552,7 @@ void NumberedTextView::indent()
 	textEdit()->setTextCursor(cursor);
 }
 
-void NumberedTextView::unindent()
+void NumberedCodeEdit::unindent()
 {
 	//QTextDocument *doc=textEdit()->document();
 	
@@ -455,7 +571,7 @@ void NumberedTextView::unindent()
 	textEdit()->setTextCursor(cursor);
 }
 
-void NumberedTextView::comment()
+void NumberedCodeEdit::comment()
 {
 	//QTextDocument *doc=textEdit()->document();
 	
@@ -472,7 +588,7 @@ void NumberedTextView::comment()
 	textEdit()->setTextCursor(cursor);
 }
 
-void NumberedTextView::uncomment()
+void NumberedCodeEdit::uncomment()
 {
 	//QTextDocument *doc=textEdit()->document();
 	

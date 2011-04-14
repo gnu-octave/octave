@@ -1,4 +1,4 @@
-/* Copyright (C) 2006-2008 P.L. Lucas
+/* Copyright (C) 2010 P.L. Lucas
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,453 +16,503 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
 #include "SyntaxHighlighter.h"
-#include <iostream>
-#include <QtXml/QXmlSimpleReader>
-#include <QtXml/QXmlDefaultHandler>
-#include <QTextBlockUserData>
-#include <QHash>
-#include <QDir>
-
-QList<SyntaxHighlighter::Rule*> SyntaxHighlighter::rules;
-QStringList SyntaxHighlighter::octave_comands;
-
-/*** Xml Handler ***/
-class SyntaxXmlHandler:public QXmlDefaultHandler {
-private:
-    SyntaxHighlighter *syntax;
-    QString type_name, text;
-    struct Tag
-    {
-        QString tag, type;
-        QStringList items;
-        QList<Tag> childs;
-    };
-    QList<Tag> stack;
-    QStringList *octave_comands;
-
-public:
-    // Constructor
-    SyntaxXmlHandler(SyntaxHighlighter *s, QStringList *octave_comands)
-        : QXmlDefaultHandler(), syntax(s) {
-            this->octave_comands=octave_comands;
-    }
-
-    bool startElement(const QString &/*namespaceURI*/, const QString &/*localName*/,
-                    const QString &qname, const QXmlAttributes &atts) {
-        Tag tag;
-        tag.tag=qname;
-
-        if(qname == "list")
-        {// List block. Get the type name.
-            tag.type = atts.value("name").trimmed();
-            if(tag.type=="functions")
-            {
-                    tag.items << (*octave_comands);
-            }
-        }
-        //else if(qname == "item")
-        //{// Item. Next string is an item.
-        //}
-        else if(qname == "comment")
-        {// Comments.
-            syntax->setComment(atts.value("start"), "$", atts.value("name"));
-        }
-
-        stack.append(tag);
-        return true;
-    }
 
 
-    bool characters(const QString &ch) {
-        text+=ch;
-        return true;
-    }
+#include <QXmlStreamReader>
+#include <QStack>
+#include <QFile>
+#include <stdio.h>
 
-    bool endElement(const QString & /*namespaceURI*/,
-                    const QString & /*localName*/,
-                    const QString & qname ) {
-        Tag tag;
-
-        if(stack.isEmpty()) return true;
-
-        tag=stack.last();
-        stack.removeLast();
-
-        if(tag.tag!=qname) {
-            printf("Error reading XML syntax\n");
-            return false;
-        }
-
-        if(qname == "list") {// List block. Get the type name.
-            if(stack.last().tag=="list") {
-                stack.last().childs.append(tag);
-            } else {
-                syntax->setItem(tag.items.join("|"), tag.type);
-                for(int i=0;i<tag.childs.size();i++) {
-                    syntax->setItem(tag.childs[i].items.join("|"), tag.childs[i].type,tag.type);
-                }
-            }
-        } else if(qname == "item") {
-            // Item. Next string is an item.
-            if(! text.trimmed().isEmpty() )
-                    stack.last().items << text.trimmed();
-        }
-
-        text="";
-        return true;
-    }
-};
-
-/*** Block data ***/
-class BlockData:public QTextBlockUserData {
-public:
-    BlockData() {braket_start_pos=braket_end_pos=-1;}
-    ~BlockData (){}
-    int braket_start_pos, braket_end_pos;
-    QHash<int,QString> bracket;
-};
-
-/*** Syntax ***/
-SyntaxHighlighter::SyntaxHighlighter(QTextDocument *parent)
-    : QSyntaxHighlighter(parent) {
-    QTextCharFormat f;
-
-    QFont text_edit_font;
-    QString font_name="Monospace";//get_config("textEditFont");
-    QString font_size="10";//get_config("textEditFontSize");
-    if(font_name.isEmpty()) {
-        font_name=text_edit_font.family();
-    }
-
-    if(font_size.isEmpty()) {
-        font_size=QString::number(text_edit_font.pointSize());
-    }
-
-    text_edit_font.setFamily(font_name);
-    text_edit_font.setPointSize(font_size.toInt());
-
-    f.setFont(text_edit_font);
-    f.setFontWeight(QFont::Bold);
-    _format["keywords"] = f;
-    _format["commands"] = f;
-    f.setFontWeight(QFont::Normal);
-    f.setForeground(Qt::darkGreen);
-    _format["builtin"] = f;
-    f.setForeground(Qt::blue);
-    _format["functions"] = f;
-    // operators
-    f.setForeground(Qt::black);
-    _format["variables"] = f;
-    f.setForeground(Qt::darkMagenta);
-    _format["numbers"] = f;
-    f.setForeground(Qt::red);
-    _format["strings"] = f;
-    // delimiters
-    f.setForeground(Qt::darkGray);
-    _format["singleLine"] = f;
-    //Brackets matched
-    f.setForeground(Qt::black);
-    //f.setFontWeight(QFont::Bold);
-    f.setBackground(Qt::yellow);
-    _format["bracket match"]=f;
-
-    active_ok=true;
-
-    braketsMacth_ok=false;
-
-    //printf("Syntax Builded\n");
-
-    //Add rules to vectors to help to highlightBlock method
-    __re.clear();
-    __i_aux.clear();
-    for(int n=0;n<rules.size();n++) {
-        __re.append(rules[n]->pattern);
-        __i_aux.append(-1);
-        //printf("%s %d %d\n", rules.at(n)->type.toLocal8Bit().data(), __re.size(), __i_aux[n]);
-    }
+SyntaxHighlighter::SyntaxHighlighter(QObject * parent):QSyntaxHighlighter(parent)
+{
 }
 
-SyntaxHighlighter::~SyntaxHighlighter() {
-	//foreach(Rule *value, rules_map)
+
+bool SyntaxHighlighter::load(QString file)
+{
+	QXmlStreamReader xml;
+	QStack <QString> stack;
+	QFile fileDevice(file);
+	if (!fileDevice.open(QFile::ReadOnly | QFile::Text)) {
+	         printf("Error al abrir el archivo\n");
+	         return false;
+	}
+	
+	xml.setDevice(&fileDevice);
+	
+	QMap <QString,QString> values;
+	
+	QVector<QString> xmlMainItems;
+	xmlMainItems << "item" << "block" << "bracket";
+	
+	int ruleOrder=0;
+	
+	while (!xml.atEnd())
+	{
+		QXmlStreamReader::TokenType tokenType=xml.readNext();
+		switch(tokenType)
+		{
+			case QXmlStreamReader::StartElement:
+				if(xml.name()!="syntax")
+				{
+					if( xmlMainItems.contains(xml.name().toString()) )
+						stack.push(xml.name().toString());
+					else
+						values[xml.name().toString()]=xml.readElementText().trimmed();
+				}
+			break;
+			case QXmlStreamReader::EndElement:
+				if(stack.isEmpty()) break;
+				QString name=stack.top();
+				if(name==xml.name()) stack.pop();
+				if(stack.isEmpty())
+				{
+					QTextCharFormat format;
+					if(values.contains("bold") && values["bold"]=="true") format.setFontWeight(QFont::Bold);
+					if(values.contains("underline") && values["underline"]=="true") format.setFontUnderline(true);
+					if(values.contains("italic") && values["italic"]=="true") format.setFontItalic(true);
+					if(values.contains("foreground")) format.setForeground(QBrush(QColor(values["foreground"])));
+					if(values.contains("background")) format.setBackground(QBrush(QColor(values["background"])));
+					if(name=="item")
+					{
+						HighlightingRule rule;
+						rule.format=format;
+						rule.pattern=QRegExp(values["pattern"]);
+						rule.ruleOrder=ruleOrder++;
+						highlightingRules.append(rule);
+						values.clear();
+					}
+					else if(name=="block" || name=="bracket")
+					{
+						HighlightingBlockRule rule;
+						rule.format=format;
+						rule.startPattern=QRegExp(values["startPattern"]);
+						rule.endPattern=QRegExp(values["endPattern"]);
+						rule.ruleOrder=ruleOrder++;
+						if(name=="block") highlightingBlockRules.append(rule);
+						else highlightingBracketsRules.append(rule); //Bracket rule
+						values.clear();
+					}
+				}
+			break;
+		}
+	}
+	if (xml.hasError())
+	{
+		// do error handling
+		printf("Error %s: %ld:%ld %s\n", file.toLocal8Bit().data(), xml.lineNumber(), xml.columnNumber(), xml.errorString().toLocal8Bit().data() );
+		return false;
+	}
+	
+	return true;
+}
+
+SyntaxHighlighter::Rule1st SyntaxHighlighter::highlight1stRule(const QString & text, int startIndex)
+{
+	Rule1st rule1st;
+	rule1st.startIndex=text.length();
+	rule1st.rule=-1;
+	
+	for(int i=0; i<highlightingRules.size(); i++)
+	{
+		HighlightingRule *rule=&(highlightingRules[i]);
+		
+		QRegExp *expression = &(rule->pattern);
+		int index = rule->lastFound;
+		//printf("[Syntax::highlight1stRule] i=%d pos=%d startIndex=%d\n", i, index, startIndex);
+		if(index>-1 && index<startIndex)
+		{
+			rule->lastFound = index = expression->indexIn(text, startIndex);
+		}
+		if ( index>-1 && index<rule1st.startIndex )
+		{
+			rule1st.startIndex=index;
+			rule1st.length=expression->matchedLength();
+			rule1st.rule=i;
+			rule1st.ruleOrder=rule->ruleOrder;
+		}
+		
+		if(index==startIndex) break;
+	}
+	
+	if(rule1st.rule==-1) rule1st.startIndex=-1;
+	
+	return rule1st;
+}
+
+SyntaxHighlighter::Rule1st SyntaxHighlighter::highlight1stBlockRule(const QString & text, int startIndex)
+{
+	Rule1st rule1st;
+	rule1st.startIndex=text.length();
+	rule1st.rule=-1;
+	
+	for(int i=0; i<highlightingBlockRules.size(); i++)
+	{
+		HighlightingBlockRule rule=highlightingBlockRules[i];
+		
+		int index = rule.startPattern.indexIn(text, startIndex);
+		
+		if ( index>-1 && index<rule1st.startIndex )
+		{
+			rule1st.startIndex=index;
+			rule1st.rule=i;
+			rule1st.ruleOrder=rule.ruleOrder;
+		}
+		
+		if(index==startIndex) break;
+	}
+	
+	if(rule1st.rule==-1) rule1st.startIndex=-1;
+	
+	return rule1st;
+}
+
+/**Inserts brackets in position order in blockData->brackets
+ */
+static void insertInOrder(BlockData *blockData, BlockData::Bracket &bracket)
+{
+	if(blockData->brackets.isEmpty()) blockData->brackets.append(bracket);
+	else
+	{
+		int j=0;
+		
+		for(;j<blockData->brackets.size();j++)
+		{
+			if(blockData->brackets[j].pos>bracket.pos)
+			{
+				blockData->brackets.insert(j,bracket);
+				break;
+			}
+		}
+		if(j>=blockData->brackets.size())
+		{
+			blockData->brackets.append(bracket);
+		}
+	}
+}
+
+
+void SyntaxHighlighter::findBrackets(const QString & text, int start, int end, BlockData *blockData)
+{
+	//blockData->brackets.clear();
+	
+	if( end<0 || end>text.length() ) end=text.length();
+	
+	if(start>end) return;
+	
+	for(int i=0; i<highlightingBracketsRules.size(); i++)
+	{
+		HighlightingBlockRule rule=highlightingBracketsRules[i];
+		
+		int startIndex=start;
+		
+		int index = rule.startPattern.indexIn(text, startIndex);
+		
+		while( index>-1 && index<end )
+		{
+			BlockData::Bracket bracket;
+			bracket.pos=index;
+			bracket.type=i;
+			bracket.length=rule.startPattern.matchedLength();
+			bracket.startBracketOk=true;
+			
+			startIndex=index+bracket.length;
+			
+			insertInOrder(blockData, bracket);
+			
+			//printf("[Syntax::findBrackets] bracket.pos=%d bracket.type=%d bracket.len=%d bracket.start=%d startIndex=%d\n", bracket.pos, bracket.type, bracket.length, (bracket.startBracketOk), startIndex );
+			
+			index = rule.startPattern.indexIn(text, startIndex);
+		}
+		
+		startIndex=start;
+		
+		index = rule.endPattern.indexIn(text, startIndex);
+		
+		
+		
+		while( index>-1 && index<end )
+		{
+			BlockData::Bracket bracket;
+			bracket.pos=index;
+			bracket.type=i;
+			bracket.length=rule.endPattern.matchedLength();
+			bracket.startBracketOk=false;
+			insertInOrder(blockData, bracket);
+			startIndex=index+bracket.length;
+			index = rule.endPattern.indexIn(text, startIndex);
+		}
+	}
+}
+
+
+int SyntaxHighlighter::ruleSetFormat(Rule1st rule1st)
+{
+	HighlightingRule rule=highlightingRules[rule1st.rule];
+	
+	setFormat(rule1st.startIndex, rule1st.length, rule.format);
+	
+	return rule1st.startIndex + rule1st.length;
+}
+
+
+int SyntaxHighlighter::blockRuleSetFormat(const QString & text, Rule1st rule1st)
+{
+	HighlightingBlockRule rule=highlightingBlockRules[rule1st.rule];
+		
+	int endIndex = rule.endPattern.indexIn(text, rule1st.startIndex);
+	int commentLength;
+	if (endIndex == -1)
+	{
+	    setCurrentBlockState(rule1st.rule);
+	    commentLength = text.length() - rule1st.startIndex;
+	    setFormat(rule1st.startIndex, commentLength, rule.format);
+	    return text.length();
+	}
+	else
+	{
+	    commentLength = endIndex - rule1st.startIndex
+	                    + rule.endPattern.matchedLength();
+	    setFormat(rule1st.startIndex, commentLength, rule.format);
+	    
+	    return endIndex+1;
+	}
+}
+
+
+void SyntaxHighlighter::highlightBlock ( const QString & text )
+{
+
+	setCurrentBlockState(-1);
+	
+	int startIndex = 0;
+	
+	//Checks previous block state
+	if (previousBlockState() >= 0)
+	{
+		Rule1st rule1st;
+		rule1st.rule=previousBlockState();
+		rule1st.startIndex=0;
+		
+		startIndex=blockRuleSetFormat(text,rule1st);
+		
+		//TODO: Posible fallo al establecer el estado del bloque
+		
+		if(startIndex==text.length()) return;
+	}
+	
+	//Gets BlockData
+	BlockData *blockData=new BlockData();
+	
+	//Finds first rule to apply. 
+
+	Rule1st rule1st, blockRule1st;
+	
+	//Find initial matches
+	for(int i=0; i<highlightingRules.size(); i++)
+	{
+		HighlightingRule *rule= &(highlightingRules[i]);
+		QRegExp *expression = &(rule->pattern);
+		int index = expression->indexIn(text, startIndex);
+		rule->lastFound = index;
+		//printf("[Syntax::highlightBlock] index=%d pos=%d \n", index, expression->pos(0));
+	}
+	
+	//printf("[Syntax::highlightBlock] Find initial matches \n");
+	
+	rule1st=highlight1stRule( text, startIndex);
+	blockRule1st=highlight1stBlockRule( text, startIndex);
+	
+	//if(rule1st.rule<0 && blockRule1st.rule<0)
 	//{
-	//	delete value;
+	//	findBrackets(text, startIndex, -1, blockData);
 	//}
-
-	//This line is added because sometimes Qt try rehighlight text at destroy
-	setDocument(NULL);
+	//else 
+	while(rule1st.rule>=0 || blockRule1st.rule>=0)
+	{
+		if(rule1st.rule>=0 && blockRule1st.rule>=0)
+		{
+			if
+				( 
+					rule1st.startIndex<blockRule1st.startIndex
+					|| 
+					(
+						rule1st.startIndex==blockRule1st.startIndex
+						&&
+						rule1st.ruleOrder<blockRule1st.ruleOrder
+					)
+				)
+			{
+				findBrackets(text, startIndex, rule1st.startIndex, blockData);
+				startIndex=ruleSetFormat(rule1st);
+				rule1st=highlight1stRule( text, startIndex);
+			}
+			else
+			{
+				findBrackets(text, startIndex, blockRule1st.startIndex, blockData);
+				startIndex=blockRuleSetFormat(text,blockRule1st);
+				blockRule1st=highlight1stBlockRule( text, startIndex);
+			}
+		}
+		else if(rule1st.rule>=0)
+		{
+			findBrackets(text, startIndex, rule1st.startIndex, blockData);
+			startIndex=ruleSetFormat(rule1st);
+			rule1st=highlight1stRule( text, startIndex);
+		}
+		else
+		{
+			findBrackets(text, startIndex, blockRule1st.startIndex, blockData);
+			startIndex=blockRuleSetFormat(text,blockRule1st);
+			blockRule1st=highlight1stBlockRule( text, startIndex);
+		}
+		
+		//Finds next 1st rule
+		//rule1st=highlight1stRule( text, startIndex);
+		//blockRule1st=highlight1stBlockRule( text, startIndex);
+	}
+	
+	findBrackets(text,startIndex, -1, blockData);
+	
+	setCurrentBlockUserData(blockData);
 }
 
-void SyntaxHighlighter::load(const QString &path) {
-    if(octave_comands.isEmpty()) {
-        QString home=QDir::home().path()+"/.qtoctave/commands.txt";
-
-        QFile file(home);
-
-        if(file.open(QFile::ReadOnly)) {
-            char buf[1024];
-
-            while(file.readLine(buf, sizeof(buf))>=0) {
-                octave_comands.append(QString(buf).trimmed());
-            }
-            file.close();
-        }
-    }
-
-    //rules = &(instances[path]);
-    if(rules.isEmpty()) {
-        // Load from file
-        FILE *fl;
-
-        fl = fopen(path.toLocal8Bit().constData(), "rt");
-        if(!fl) {
-            std::cerr << "[Syntax::load] Can not load the syntax file" << std::endl;
-            return;
-        }
-
-        QFile file(path);
-        QXmlSimpleReader parser;
-        QXmlInputSource source(&file);
-        SyntaxXmlHandler handler(this, &octave_comands);
-
-        file.open(fl, QIODevice::ReadOnly);
-
-        parser.setContentHandler(&handler);
-        parser.setErrorHandler(&handler);
-
-        parser.parse(&source);
-
-        file.close();
-
-        fclose(fl);
-
-        std::cout << "[Sytax::load] "
-                << path.toLocal8Bit().constData()
-                << " loaded"
-                << std::endl;
-    }
+/**Search brackets in one QTextBlock.*/
+static BlockData::Bracket *searchBracket(int i, int increment, int &bracketsCount, BlockData *blockData, BlockData::Bracket *bracket1)
+{
+	if(blockData==NULL) return NULL;
+	
+	if(i==-1) i=blockData->brackets.size()-1;
+	
+	for(; i>=0 && i<blockData->brackets.size(); i+=increment)
+	{
+		BlockData::Bracket *bracket=&(blockData->brackets[i]);
+		if(bracket->type==bracket1->type)
+		{
+			if(bracket->startBracketOk!=bracket1->startBracketOk)
+				bracketsCount--;
+			else
+				bracketsCount++;
+			
+			if(bracketsCount==0)
+				return bracket;
+		}
+	}
+	
+	//printf("[searchBracket] bracketsCount=%d\n", bracketsCount);
+	
+	return NULL;
 }
 
-void SyntaxHighlighter::setItem(const QString &item, const QString &type, const QString parent) {
-    Rule *r;
-    if(!item.isEmpty()) {
-        r=new Rule;
-        r->pattern = QRegExp(item);
-        r->type = type;
-        r->format = _format[type];
-        rules_map[type]=r;
-        if(parent.isEmpty() || !rules_map.contains(parent))
-            rules.push_back(r);
-        else
-            rules_map[parent]->rules.push_back(r);
-    }
+void SyntaxHighlighter::setFormatPairBrackets(QPlainTextEdit *textEdit)
+{
+	QList<QTextEdit::ExtraSelection> selections;
+	
+	textEdit->setExtraSelections(selections);
+	
+	QTextCursor cursor=textEdit->textCursor();
+	QTextBlock block=cursor.block();
+	BlockData *blockData=(BlockData *)block.userData();
+	if(blockData==NULL) return;
+	
+	int pos=cursor.position()-block.position();
+	
+	BlockData::Bracket *bracket1;
+	QTextBlock block_bracket1=block;
+	
+	int i=blockData->brackets.size()-1;
+	
+	/*
+	printf("[Syntax::setFormatPairBrackets] brackets.size=%d\n", i+1);
+	for(int x=0;x<blockData->brackets.size();x++)
+	{
+		BlockData::Bracket *bracket=&(blockData->brackets[x]);
+		printf("[Syntax::setFormatPairBrackets] bracket.pos=%d bracket.type=%d bracket.len=%d bracket.start=%d\n", bracket->pos, bracket->type, bracket->length, (bracket->startBracketOk) );
+	}
+	*/
+	
+	
+	for(; i>=0; i--)
+	{
+		BlockData::Bracket *bracket=&(blockData->brackets[i]);
+		if(bracket->pos==pos)
+		{
+			bracket1=bracket;
+			break;
+		}
+	}
+	
+	if(i<0) return;
+	
+	int increment=(bracket1->startBracketOk) ? +1:-1;
+	int bracketsCount=0;
+	//i+=increment;
+	
+	//Looks in this block the other bracket
+	BlockData::Bracket *bracket2=NULL;
+	QTextBlock block_bracket2=block;
+	
+	bracket2=searchBracket( i, increment, bracketsCount, blockData, bracket1);
+	
+	{ //Search brackets in other blocks
+		while( bracket2==NULL )
+		{
+			if(increment>0)
+			{
+				block_bracket2=block_bracket2.next();
+				i=0;
+			}
+			else
+			{
+				block_bracket2=block_bracket2.previous();
+				i=-1;
+			}
+			
+			if(!block_bracket2.isValid()) break;
+			
+			blockData=(BlockData *)block_bracket2.userData();
+			/*
+			printf("[Syntax::setFormatPairBrackets] Interno brackets.size=%d\n", blockData->brackets.size());
+			for(int x=0;x<blockData->brackets.size();x++)
+			{
+				BlockData::Bracket *bracket=&(blockData->brackets[x]);
+				printf("[Syntax::setFormatPairBrackets] bracket.pos=%d bracket.type=%d bracket.len=%d bracket.start=%d\n", bracket->pos, bracket->type, bracket->length, (bracket->startBracketOk) );
+			}
+			*/
+			
+			bracket2=searchBracket( i, increment, bracketsCount, blockData, bracket1);
+		}
+		
+		if(bracket2==NULL) return;
+	}
+	
+	pos=cursor.position();
+	
+	QTextEdit::ExtraSelection selection1;
+	
+	cursor.setPosition(pos+bracket1->length, QTextCursor::KeepAnchor);
+	selection1.cursor=cursor;
+	selection1.format=highlightingBracketsRules[bracket1->type].format;
+	
+	pos=bracket2->pos+block_bracket2.position();
+	QTextEdit::ExtraSelection selection2;
+	cursor.setPosition(pos);
+	cursor.setPosition(pos+bracket2->length, QTextCursor::KeepAnchor);
+	selection2.cursor=cursor;
+	selection2.format=highlightingBracketsRules[bracket2->type].format;
+	
+	selections.append(selection1); selections.append(selection2);
+	
+	textEdit->setExtraSelections(selections);
+	
 }
 
-void SyntaxHighlighter::setComment(const QString &start, const QString &end, const QString &type) {
-    Rule *r;
-    if(!type.isEmpty()) {
-        r=new Rule;
-        r->pattern = QRegExp(/*QString("^") +*/ start + ".*" + end);
-        r->type = type;
-        r->format = _format[type];
-        rules_map[type]=r;
-        rules.push_back(r);
-    }
+
+
+BlockData::BlockData():QTextBlockUserData()
+{
 }
 
-void SyntaxHighlighter::setType(const QString &type, const QTextCharFormat &f) {
-      _format[type] = f;
-}
 
-void SyntaxHighlighter::highlightBlock(const QString &str) {
-    //Para aumentar el rendimiento se hace una tabla i_aux con la posición de lo
-    //que ha encontrado cada expresión regular rules.at(n)->pattern.
-    //Se aplicará el formato debido a la Rule que tenga la i_aux más pequeña
-    if(!str.isEmpty() && !rules.isEmpty() && active_ok) {
-
-    int i=0, len=0; //Actual position
-    int n_min; //Minimal position
-
-    BlockData *dat=(BlockData *)currentBlockUserData();
-    if(dat!=NULL) {
-            dat->bracket.clear();
-    }
-
-    for(int n=0;n<__re.size();n++) {
-        //re[n]=rules.at(n)->pattern;
-        __i_aux[n] = __re[n].indexIn( str, i);
-        //printf("%s %d %d\n", rules.at(n)->type.toLocal8Bit().data(), n, __i_aux[n]);
-    }
-
-    while(i >= 0) {
-            n_min=-1;
-            for(int n=0;n<__re.size();n++)
-            {
-                    if(__i_aux[n]<0) continue;
-                    if(__i_aux[n]<i ) __i_aux[n] = __re[n].indexIn( str, i);
-                    //printf("%s n=%d i_aux=%d n_min=%d i=%d\n", rules.at(n)->type.toLocal8Bit().data(), n, i_aux[n], n_min, i);
-                    if( n_min<0 || __i_aux[n_min]<0 || (__i_aux[n]>=0 && __i_aux[n]<__i_aux[n_min]) )
-                    {
-                            n_min=n;
-                            if(__i_aux[n]==i) break;
-                    }
-            }
-            //printf("n_min=%d elegido\n", n_min);
-            if(n_min>=0) i=__i_aux[n_min];
-            else break;
-            if( i<0 ) break;
-            len = __re[n_min].matchedLength();
-
-            //QStringList list=re[n_min].capturedTexts ();
-            //printf("\n");
-            //for(int n=0;n<list.size();n++)
-            //{
-            //	printf("%d >%s<\n", n, list.at(n).toLocal8Bit().data() );
-            //}
-            //printf("Aplicando %s i=%d len=%d\n", rules.at(n_min)->type.toLocal8Bit().data(), i, len);
-            if(len<1) break;
-            //QTextCharFormat i_format=format(i);
-            //if( !(i_format==strings) )
-
-            if(rules.at(n_min)->rules.isEmpty())
-            {
-                    setFormat(i, len, rules.at(n_min)->format);
-
-                    if( rules.at(n_min)->type=="delimiters" )
-                    {
-                            QString bracket_found=__re[n_min].cap();
-
-                            if(dat==NULL)
-                            {
-                                    dat=new BlockData();
-                                    setCurrentBlockUserData(dat);
-                            }
-                            dat->bracket[i]=bracket_found;
-
-                            //Do brackets macth
-                            if( braketsMacth_ok && dat != NULL )
-                            {
-                                    if(dat->braket_start_pos>=0)
-                                            setFormat(dat->braket_start_pos, 1, _format["bracket match"]);
-                                    if(dat->braket_end_pos>=0)
-                                            setFormat(dat->braket_end_pos, 1, _format["bracket match"]);
-                            }
-                    }
-
-            }
-            else
-            {
-                    //Rules can contains another rules
-                    QString text=str.mid(i,len);
-                    //printf("text=%s\n", text.toLocal8Bit().data() );
-                    bool format_ok=true;
-                    for(int n=0;n<rules.at(n_min)->rules.size(); n++)
-                    {
-                            if(rules.at(n_min)->rules.at(n)->pattern.exactMatch(text))
-                            {
-                                    setFormat(i, len, rules.at(n_min)->rules.at(n)->format);
-                                    format_ok=false;
-                                    break;
-                            }
-                    }
-                    if(format_ok) setFormat(i, len, rules.at(n_min)->format);
-            }
-            i+=len;
-
-    }
-}
-}
-
-int SyntaxHighlighter::forwardSearch(QTextBlock &textBlock, int position, char bracketStart, char bracketEnd) {
-    int i=position,  open=0;
-
-    while(textBlock.isValid()) {
-        BlockData *dat=(BlockData *)textBlock.userData();
-        if(dat!=NULL) {
-            QList<int> positions=dat->bracket.keys();
-            qSort(positions);
-            for(int k=0;k<positions.size();k++) {
-                int b_pos=positions[k];
-                if(b_pos<i) continue;
-
-                QChar ch=dat->bracket[b_pos].at(0);
-
-                if(ch==bracketEnd) {
-                        open--;
-                        if(open==0) return b_pos;
-                }
-                else if(ch==bracketStart) open++;
-            }
-        }
-        textBlock=textBlock.next();
-        i=0;
-    }
-    return -1;
-}
-
-int SyntaxHighlighter::backwardSearch(QTextBlock & textBlock, int position, char bracketStart, char bracketEnd) {
-    int i=position,  open=0;
-    while(textBlock.isValid()) {
-        BlockData *dat=(BlockData *)textBlock.userData();
-        if(dat!=NULL) {
-            QList<int> positions=dat->bracket.keys();
-            qSort(positions);
-            for(int k=positions.size()-1;k>=0;k--) {
-                int b_pos=positions[k];
-                if(b_pos>i) continue;
-
-                QChar ch=dat->bracket[b_pos].at(0);
-
-                if(ch==bracketStart) {
-                    open--;
-                    if(open==0) return b_pos;
-                }
-                else if(ch==bracketEnd) open++;
-            }
-        }
-
-        textBlock=textBlock.previous();
-        if(textBlock.isValid() && !textBlock.text().isEmpty()) i=textBlock.length()-1;
-    }
-    return -1;
-}
-
-static void set_block_data(QTextBlock & block0, QTextBlock & block1, int start, int end) {
-    BlockData *udat=(BlockData *)block0.userData();
-    if(udat==NULL) {
-        udat=new BlockData();
-        block0.setUserData(udat);
-    }
-    udat->braket_start_pos=start;
-
-    if(block0==block1) {
-        udat->braket_end_pos=end;
-    } else {
-        BlockData *udat=(BlockData *)block1.userData();
-        if(udat==NULL) {
-            udat=new BlockData();
-            block1.setUserData(udat);
-        }
-        udat->braket_end_pos=end;
-    }
-}
-
-static void clear_block_data(QTextDocument *doc, bool rehigh) {
-    QTextBlock block=doc->findBlock(0);
-    while(block.isValid()) {
-        BlockData *udat=(BlockData *)block.userData();
-        if(udat!=NULL && (udat->braket_end_pos!=-1 || udat->braket_start_pos!=-1)) {
-            udat->braket_end_pos=-1; udat->braket_start_pos=-1;
-            if(rehigh) {
-                //QTextCursor cursor(doc);
-                //cursor.setPosition(block.position());
-                //cursor.setBlockFormat(block.blockFormat());
-            }
-        }
-        block=block.next();
-    }
-}
-
-void SyntaxHighlighter::setActive(bool active) {
-    active_ok=active;
-}

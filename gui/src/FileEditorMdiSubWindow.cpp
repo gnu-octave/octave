@@ -22,6 +22,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QAction>
 
 FileEditorMdiSubWindow::FileEditorMdiSubWindow(QWidget *parent)
     : QMdiSubWindow(parent) {
@@ -34,7 +35,7 @@ void FileEditorMdiSubWindow::loadFile(QString fileName) {
     QFile file(fileName);
     file.open(QFile::ReadOnly);
 
-    m_codeEdit->setPlainText(file.readAll());
+    m_simpleEditor->setPlainText(file.readAll());
 
     file.close();
 }
@@ -59,7 +60,7 @@ void FileEditorMdiSubWindow::newFile() {
 
     m_fileName = "<unnamed>";
     setWindowTitle(m_fileName);
-    m_codeEdit->setPlainText("");
+    m_simpleEditor->setPlainText("");
 }
 
 void FileEditorMdiSubWindow::saveFile() {
@@ -67,12 +68,12 @@ void FileEditorMdiSubWindow::saveFile() {
     QFile file(saveFileName);
     file.open(QFile::WriteOnly);
 
-    if(file.write(m_codeEdit->toPlainText().toLocal8Bit()) == -1) {
+    if(file.write(m_simpleEditor->toPlainText().toLocal8Bit()) == -1) {
         QMessageBox::warning(this,
                              "Error Saving File",
                              QString("The file could not be saved: %1.").arg(file.errorString()));
     } else {
-        m_codeEdit->document()->setModified(false);
+        m_simpleEditor->document()->setModified(false);
     }
 
     file.close();
@@ -102,12 +103,12 @@ void FileEditorMdiSubWindow::construct() {
     QStyle *style = QApplication::style();
     setWidget(new QWidget());
     m_toolBar = new QToolBar(this);
-    m_codeEdit = new CodeEdit(this);
+    m_simpleEditor = new SimpleEditor(this);
     m_statusBar = new QStatusBar(this);
-    m_numberedTextView = new NumberedTextView(this, m_codeEdit);
+    m_numberedTextView = new NumberedCodeEdit(this, m_simpleEditor);
 
-    m_codeEdit->setFont(QFont("Courier"));
-    m_codeEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
+    m_simpleEditor->setFont(QFont("Courier"));
+    m_simpleEditor->setLineWrapMode(QPlainTextEdit::NoWrap);
 
     QAction *newAction = new QAction(style->standardIcon(QStyle::SP_FileIcon),
         "", m_toolBar);
@@ -131,8 +132,8 @@ void FileEditorMdiSubWindow::construct() {
     widget()->setLayout(layout);
 
     connect(newAction, SIGNAL(triggered()), this, SLOT(newFile()));
-    connect(undoAction, SIGNAL(triggered()), m_codeEdit, SLOT(undo()));
-    connect(redoAction, SIGNAL(triggered()), m_codeEdit, SLOT(redo()));
+    connect(undoAction, SIGNAL(triggered()), m_simpleEditor, SLOT(undo()));
+    connect(redoAction, SIGNAL(triggered()), m_simpleEditor, SLOT(redo()));
     connect(saveAction, SIGNAL(triggered()), this, SLOT(saveFile()));
 
     connect(newAction, SIGNAL(hovered()), this, SLOT(showToolTipNew()));
@@ -140,7 +141,7 @@ void FileEditorMdiSubWindow::construct() {
     connect(redoAction, SIGNAL(hovered()), this, SLOT(showToolTipRedo()));
     connect(saveAction, SIGNAL(hovered()), this, SLOT(showToolTipSave()));
 
-    connect(m_codeEdit, SIGNAL(modificationChanged(bool)), this, SLOT(registerModified(bool)));
+    connect(m_simpleEditor, SIGNAL(modificationChanged(bool)), this, SLOT(registerModified(bool)));
 
     m_fileName = "";
     setWindowTitle(m_fileName);

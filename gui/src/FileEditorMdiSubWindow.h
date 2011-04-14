@@ -22,7 +22,7 @@
 #include <QMdiSubWindow>
 #include <QToolBar>
 #include <QStatusBar>
-#include "CodeEdit.h"
+#include "SimpleEditor.h"
 #include "NumberedCodeEdit.h"
 
 class FileEditorMdiSubWindow : public QMdiSubWindow {
@@ -44,8 +44,8 @@ public slots:
 private:
     void construct();
     QToolBar *m_toolBar;
-    CodeEdit *m_codeEdit;
-    NumberedTextView *m_numberedTextView;
+    SimpleEditor *m_simpleEditor;
+    NumberedCodeEdit *m_numberedTextView;
     QStatusBar *m_statusBar;
     QString m_fileName;
     bool m_modified;

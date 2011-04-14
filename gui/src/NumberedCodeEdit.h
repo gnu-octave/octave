@@ -27,9 +27,9 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include "CodeEdit.h"
+#include "SimpleEditor.h"
 
-class CodeEdit;
+class SimpleEditor;
 class QHBoxLayout;
 
 /**
@@ -48,14 +48,14 @@ public:
     void toggleBreakpoint( int lineno );
     QList<int> *getBreakpoints();
 
-    void setTextEdit( CodeEdit *edit );
+    void setTextEdit( SimpleEditor *edit );
     void paintEvent( QPaintEvent *ev );
 
 protected:
     bool event( QEvent *ev );
 
 private:
-    CodeEdit *edit;
+    SimpleEditor *edit;
     QPixmap stopMarker;
     QPixmap currentMarker;
     QPixmap bugMarker;
@@ -70,18 +70,20 @@ private:
 /**
  * Displays a CodeEdit with line numbers.
  */
-class NumberedTextView : public QFrame
+class NumberedCodeEdit : public QFrame
 {
     Q_OBJECT
 
 public:
-    NumberedTextView( QWidget *parent = 0 , CodeEdit *textEdit=new CodeEdit() );
-    ~NumberedTextView();
+    NumberedCodeEdit( QWidget *parent = 0 , SimpleEditor *textEdit=new SimpleEditor() );
+    ~NumberedCodeEdit();
 
     QList<int> *getBreakpoints();
 
     void open(QString path);
-    void save(QString path = QString());
+    
+    /**Saves file to path. @return true if all is OK.*/
+    bool save(QString path = QString());
 
     QString path();
     void setPath(QString path);
@@ -90,7 +92,7 @@ public:
     void setModified(bool modify);
 
     /** Returns the CodeEdit of the main view. */
-    CodeEdit *textEdit() const { return view; }
+    SimpleEditor *textEdit() const { return view; }
 
     /**
      * Sets the line that should have the current line indicator.
@@ -151,7 +153,8 @@ public slots:
 
 private:
     QString filePath;
-    CodeEdit *view;
+    QLabel *line_column_label;
+    SimpleEditor *view;
     NumberBar *numbers;
     QHBoxLayout *hbox;
     QVBoxLayout *vbox;

@@ -23,7 +23,7 @@ void VariablesDockWidget::construct() {
     widget()->setLayout(layout);
 
     QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem();
-    treeWidgetItem->setData(0, 0, QString("Global"));
+    treeWidgetItem->setData(0, 0, QString("Persistent"));
     m_variablesTreeWidget->insertTopLevelItem(0, treeWidgetItem);
     m_variablesTreeWidget->expandAll();
 }

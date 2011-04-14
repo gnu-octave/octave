@@ -89,11 +89,11 @@ void SimpleEditor::loadSyntaxXMLDescription()
 	QFileInfo xml(installPath+suffix+".xml");
 	if(xml.exists())
 	{
-		printf("[SimpleEditor::loadSyntaxXMLDescription] Loading syntax\n");
+                //printf("[SimpleEditor::loadSyntaxXMLDescription] Loading syntax\n");
                 syntaxHighlighter=new SyntaxHighlighter( document() );
                 syntaxHighlighter->load(xml.absoluteFilePath());
                 syntaxHighlighter->setDocument(document());
-	}
+        }
 }
 
 bool SimpleEditor::load(QString file)

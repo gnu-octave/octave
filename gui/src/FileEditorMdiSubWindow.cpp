@@ -32,12 +32,7 @@ FileEditorMdiSubWindow::FileEditorMdiSubWindow(QWidget *parent)
 void FileEditorMdiSubWindow::loadFile(QString fileName) {
     m_fileName = fileName;
     setWindowTitle(fileName);
-    QFile file(fileName);
-    file.open(QFile::ReadOnly);
-
-    m_simpleEditor->setPlainText(file.readAll());
-
-    file.close();
+    m_simpleEditor->load(fileName);
 }
 
 void FileEditorMdiSubWindow::newFile() {

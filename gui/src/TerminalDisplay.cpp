@@ -1138,7 +1138,7 @@ void TerminalDisplay::showResizeNotification()
         _resizeTimer->setSingleShot(true);
         connect(_resizeTimer, SIGNAL(timeout()), _resizeWidget, SLOT(hide()));
      }
-     QString sizeStr = i18n("Size: %1 x %2", _columns, _lines);
+     QString sizeStr = QString("Size: %1 x %2").arg(_columns).arg(_lines);
      _resizeWidget->setText(sizeStr);
      _resizeWidget->move((width()-_resizeWidget->width())/2,
                          (height()-_resizeWidget->height())/2+20);

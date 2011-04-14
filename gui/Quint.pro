@@ -10,8 +10,7 @@ MOC_DIR = moc-files
 OBJECTS_DIR = object-files
 TARGET = Quint
 TEMPLATE = app
-DEFINES += HAVE_POSIX_OPENPT
-INCLUDEPATH += src qcodeedit-2.2.3
+INCLUDEPATH += src
 DESTDIR = bin
 SOURCES +=\
         src/TerminalCharacterDecoder.cpp \
@@ -99,5 +98,6 @@ INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \
          $$system(mkoctfile -p OCTAVE_LIBS) \
          $$system(mkoctfile -p LIBS)
-LIBS    += $$LFLAGS -loctave -loctinterp -lreadline -lutil
+#LIBS    += $$LFLAGS -lutil
+QMAKE_LFLAGS += $$LFLAGS -lutil
 QMAKE_CXXFLAGS  += $$INCFLAGS

@@ -1,5 +1,6 @@
 Quint is using the QTermWidget to emulate a terminal, this enabling readline support for Octave. This is the original README file from the author:
 
+###########################################################################################
 QTermWidget
 version 0.1.0
 
@@ -20,4 +21,26 @@ back somehow), and the result is quite useful, I suppose.
 This library was compiled and tested on three linux systems,
 based on 2.4.32, 2.6.20, 2.6.23 kernels, x86 and amd64.
 Please inform about its behaviour on other systems.
+###########################################################################################
+
+If you cannot launch Quint because it fails to find octave's shared libraries and you are sure that you have them installed, you will need
+to do an
+
+export LD_LIBRARY_PATH=/usr/lib/octave-x.x.x/:$LD_LIBRARY_PATH && bin/Quint
+
+and replace x.x.x by the specific octave version you have installed to run Quint. If you don't want to do that each time you launch Quint,
+do the following:
+
+sudo gedit /etc/ld.so.conf 
+
+and append the line:
+
+/usr/lib/octave-x.x.x/
+
+Save the file and do:
+
+sudo ldconfig
+
+Now Quint should not complain about missing shared libraries. If you have any problems, suggestions or ideas, feel free to drop me a mail at
+jacob.dawid@googlemail.com - Jacob Dawid
 

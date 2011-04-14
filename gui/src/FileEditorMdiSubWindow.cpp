@@ -60,6 +60,9 @@ void FileEditorMdiSubWindow::newFile() {
 
 void FileEditorMdiSubWindow::saveFile() {
     QString saveFileName = QFileDialog::getSaveFileName(this, "Save File", m_fileName);
+    if(saveFileName.isEmpty())
+        return;
+
     QFile file(saveFileName);
     file.open(QFile::WriteOnly);
 

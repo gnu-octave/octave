@@ -198,10 +198,8 @@ void OctaveLink::retrieveVariables() {
     QList<SymbolRecord> currentVariables;
     std::list<SymbolRecord> allVariables = symbol_table::all_variables();
     std::list<SymbolRecord>::iterator iterator;
-    for(iterator = allVariables.begin(); iterator != allVariables.end(); iterator++) {
-        if(!QString(iterator->name().c_str()).startsWith("."))
-            currentVariables.append(*iterator);
-    }
+    for(iterator = allVariables.begin(); iterator != allVariables.end(); iterator++)
+        currentVariables.append(*iterator);
 
     m_variableSymbolTableList = currentVariables;
 }

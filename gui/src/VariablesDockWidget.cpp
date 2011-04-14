@@ -34,6 +34,10 @@ void VariablesDockWidget::construct() {
     treeWidgetItem->setData(0, 0, QString("Persistent"));
     m_variablesTreeWidget->insertTopLevelItem(2, treeWidgetItem);
 
+    treeWidgetItem = new QTreeWidgetItem();
+    treeWidgetItem->setData(0, 0, QString("Hidden"));
+    m_variablesTreeWidget->insertTopLevelItem(3, treeWidgetItem);
+
     m_variablesTreeWidget->expandAll();
 }
 
@@ -43,14 +47,15 @@ void VariablesDockWidget::updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecor
 
     QString type = QString(symbolRecord.varval().type_name().c_str());
     if(type == "string") {
-        QString stringValue(symbolRecord.varval().string_value().c_str());
+        QString stringValue = QString("\"%1\"").arg(symbolRecord.varval().string_value().c_str());
         treeItem->setData(2, 0, stringValue);
     } else if(type == "scalar") {
         double scalarValue = symbolRecord.varval().scalar_value();
         treeItem->setData(2, 0, QString("%1").arg(scalarValue));
     } else if(type == "matrix") {
         Matrix matrixValue = symbolRecord.varval().matrix_value();
-        // TODO: Display matrix.
+        // TODO: Display matrix values.
+        treeItem->setData(2, 0, QString("{%1 x %2}").arg(matrixValue.rows()).arg(matrixValue.cols()));
     } else {
         treeItem->setData(2, 0, QString("<Type not recognized>"));
     }
@@ -62,9 +67,12 @@ void VariablesDockWidget::setVariablesList(QList<SymbolRecord> symbolTable) {
     QList<SymbolRecord> localSymbolTable;
     QList<SymbolRecord> globalSymbolTable;
     QList<SymbolRecord> persistentSymbolTable;
+    QList<SymbolRecord> hiddenSymbolTable;
 
     foreach(SymbolRecord symbolRecord, symbolTable) {
-        if(symbolRecord.is_local()) {
+        // It's true that being global or hidden includes it's can mean it's also locally visible,
+        // but we want to distinguish that here.
+        if(symbolRecord.is_local() && !symbolRecord.is_global() && !symbolRecord.is_hidden()) {
             localSymbolTable.append(symbolRecord);
         }
 
@@ -75,11 +83,16 @@ void VariablesDockWidget::setVariablesList(QList<SymbolRecord> symbolTable) {
         if(symbolRecord.is_persistent()) {
             persistentSymbolTable.append(symbolRecord);
         }
+
+        if(symbolRecord.is_hidden()) {
+            hiddenSymbolTable.append(symbolRecord);
+        }
     }
 
     updateScope(0, localSymbolTable);
     updateScope(1, globalSymbolTable);
     updateScope(2, persistentSymbolTable);
+    updateScope(3, hiddenSymbolTable);
 }
 
 void VariablesDockWidget::updateScope(int topLevelItemIndex, QList<SymbolRecord> symbolTable) {

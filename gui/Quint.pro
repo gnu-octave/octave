@@ -12,7 +12,7 @@ TARGET = Quint
 TEMPLATE = app
 DEFINES += HAVE_POSIX_OPENPT
 INCLUDEPATH += src qcodeedit-2.2.3
-DESTDIR = ../Quint/bin
+DESTDIR = bin
 SOURCES +=\
         src/TerminalCharacterDecoder.cpp \
         src/KeyboardTranslator.cpp \

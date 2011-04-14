@@ -73,7 +73,7 @@ OctaveLink::~OctaveLink() {
  *******************************************************************************/
 
 //*************************************************************************
-QList<SymbolRecord> OctaveLink::variableInfoList() {
+QList<SymbolRecord> OctaveLink::workspace() {
     QMutexLocker mutexLocker(&m_internalAccessMutex);
     return m_variableSymbolTableList;
 }

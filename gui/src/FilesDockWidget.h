@@ -44,19 +44,22 @@
 #include "octave/str-vec.h"
 #include "octave/cmd-hist.h"
 #include <QDockWidget>
+#include <QLineEdit>
 
 class FilesDockWidget : public QDockWidget {
     Q_OBJECT
 public :
     FilesDockWidget(QWidget *parent = 0);
-    void setDirectory(QString dir);
-
 public slots:
     /** Slot for handling a change in directory via double click. */
     void itemDoubleClicked(const QModelIndex &index);
 
     /** Slot for handling the up-directory button in the toolbar. */
     void onUpDirectory();
+
+    void setCurrentDirectory(QString currentDirectory);
+
+    void currentDirectoryEntered();
 
 signals:
     void openFile(QString fileName);
@@ -77,6 +80,7 @@ private:
 
     /** The file system view. */
     QTreeView *m_fileTreeView;
+    QLineEdit *m_currentDirectory;
 };
 
 #endif // FILESDOCKWIDGET_H

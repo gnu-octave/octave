@@ -1,6 +1,7 @@
 #include "FilesDockWidget.h"
 
 #include <QApplication>
+#include <QFileInfo>
 
 FilesDockWidget::FilesDockWidget(QWidget *parent)
   : QDockWidget(parent) {
@@ -19,8 +20,10 @@ FilesDockWidget::FilesDockWidget(QWidget *parent)
     QStyle *style = QApplication::style();
     m_directoryIcon = style->standardIcon(QStyle::SP_FileDialogToParent);
     m_directoryUpAction = new QAction(m_directoryIcon, "", m_navigationToolBar);
+    m_currentDirectory = new QLineEdit(m_navigationToolBar);
 
     m_navigationToolBar->addAction(m_directoryUpAction);
+    m_navigationToolBar->addWidget(m_currentDirectory);
     connect(m_directoryUpAction, SIGNAL(triggered()), this, SLOT(onUpDirectory()));
 
     // TODO: Add other buttons for creating directories
@@ -40,6 +43,7 @@ FilesDockWidget::FilesDockWidget(QWidget *parent)
     m_fileTreeView->setSortingEnabled(true);
     m_fileTreeView->setAlternatingRowColors(true);
     m_fileTreeView->setAnimated(true);
+    setCurrentDirectory(m_fileSystemModel->fileInfo(rootPathIndex).absoluteFilePath());
 
     connect(m_fileTreeView, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(itemDoubleClicked(const QModelIndex &)));
 
@@ -50,6 +54,9 @@ FilesDockWidget::FilesDockWidget(QWidget *parent)
     layout->addWidget(m_fileTreeView);
     widget()->setLayout(layout);
     // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
+
+    connect(m_currentDirectory, SIGNAL(returnPressed()), this, SLOT(currentDirectoryEntered()));
+    //m_currentDirectory->setEnabled(false);
 }
 
 void FilesDockWidget::itemDoubleClicked(const QModelIndex &index)
@@ -58,17 +65,34 @@ void FilesDockWidget::itemDoubleClicked(const QModelIndex &index)
     if (fileInfo.isDir()) {
         m_fileSystemModel->setRootPath(fileInfo.absolutePath());
         m_fileTreeView->setRootIndex(index);
+        setCurrentDirectory(m_fileSystemModel->fileInfo(index).absoluteFilePath());
     } else {
         QFileInfo fileInfo = m_fileSystemModel->fileInfo(index);
         emit openFile(fileInfo.filePath());
     }
 }
 
-void FilesDockWidget::onUpDirectory(void)
-{
-    // Move up an index node
-    QDir dir = QDir(m_fileSystemModel->filePath(m_fileTreeView->rootIndex()));
-    dir.cdUp();
-    m_fileTreeView->setRootIndex(m_fileSystemModel->index(dir.absolutePath()));
+void FilesDockWidget::setCurrentDirectory(QString currentDirectory) {
+    m_currentDirectory->setText(currentDirectory);
 }
 
+void FilesDockWidget::onUpDirectory(void) {
+    // Move up an inm_fileTreeView->setRootIndex(m_fileSystemModel->index(dir.absolutePath()));dex node
+    QDir dir = QDir(m_fileSystemModel->filePath(m_fileTreeView->rootIndex()));
+    dir.cdUp();
+    m_fileSystemModel->setRootPath(dir.absolutePath());
+    m_fileTreeView->setRootIndex(m_fileSystemModel->index(dir.absolutePath()));
+    setCurrentDirectory(dir.absolutePath());
+}
+
+void FilesDockWidget::currentDirectoryEntered() {
+    QFileInfo fileInfo(m_currentDirectory->text());
+    if (fileInfo.isDir()) {
+        m_fileTreeView->setRootIndex(m_fileSystemModel->index(fileInfo.absolutePath()));
+        m_fileSystemModel->setRootPath(fileInfo.absolutePath());
+        setCurrentDirectory(fileInfo.absoluteFilePath());
+    } else {
+        if(QFile::exists(fileInfo.absoluteFilePath()))
+            emit openFile(fileInfo.absoluteFilePath());
+    }
+}

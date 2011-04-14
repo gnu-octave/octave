@@ -175,7 +175,7 @@ public:
     int	setBreakpointAction(BreakPointAction action);
 
     /** Variable related methods. */
-    QList<SymbolRecord> variableInfoList(void);
+    QList<SymbolRecord> workspace(void);
 
     /** TODO: Describe. */
     QList<RequestedVariable> requestedVariables(void);

@@ -9,10 +9,11 @@ class VariablesDockWidget : public QDockWidget
 {
 public:
     VariablesDockWidget(QWidget *parent = 0);
-    void setVariablesList(QList<OctaveLink::VariableMetaData> variablesList);
+    void setVariablesList(QList<SymbolRecord> variablesList);
 
 private:
     void construct();
+    void updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecord symbolRecord);
 
     QTreeWidget *m_variablesTreeWidget;
 };

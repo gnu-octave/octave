@@ -21,63 +21,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Born July 13, 2007.
 
-//#ifdef HAVE_CONFIG_H
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef PACKAGE_URL
-#include <octave/config.h>
-//#endif
 
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
-#include <fstream>
-#include <iostream>
-
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#include <unistd.h>
-#endif
-#include <sys/time.h>
-
-#include <sys/time.h>
-
-#include "octave/cmd-edit.h"
-#include "octave/error.h"
-#include "octave/file-io.h"
-#include "octave/input.h"
-#include "octave/lex.h"
-#include "octave/load-path.h"
-#include "octave/octave.h"
-#include "octave/oct-hist.h"
-#include "octave/oct-map.h"
-#include "octave/oct-obj.h"
-#include "octave/ops.h"
-#include "octave/ov.h"
-#include "octave/ov-usr-fcn.h"
-#include "octave/symtab.h"
-#include "octave/pt.h"
-#include "octave/pt-eval.h"
-
-#include "octave/toplev.h"
-#include "octave/procstream.h"
-//#include "octave/prog-args.h"
-#include "octave/sighandlers.h"
-#include "octave/debug.h"
-#include "octave/sysdep.h"
-#include "octave/ov.h"
-#include "octave/unwind-prot.h"
-#include "octave/utils.h"
-#include "octave/variables.h"
-
-#include <readline/readline.h>
 
 #include "OctaveLink.h"
 
@@ -129,7 +73,7 @@ OctaveLink::~OctaveLink() {
  *******************************************************************************/
 
 //*************************************************************************
-QList<OctaveLink::VariableMetaData> OctaveLink::variableInfoList() {
+QList<SymbolRecord> OctaveLink::variableInfoList() {
     QMutexLocker mutexLocker(&m_internalAccessMutex);
     return m_variableSymbolTableList;
 }
@@ -251,22 +195,12 @@ int OctaveLink::processOctaveServerData(void)
 
 //*************************************************************************
 void OctaveLink::retrieveVariables() {
-    QList<VariableMetaData> currentVariables;
-    std::list<symbol_table::symbol_record> allVariables = symbol_table::all_variables();
-    std::list<symbol_table::symbol_record>::iterator iterator;
-
+    QList<SymbolRecord> currentVariables;
+    std::list<SymbolRecord> allVariables = symbol_table::all_variables();
+    std::list<SymbolRecord>::iterator iterator;
     for(iterator = allVariables.begin(); iterator != allVariables.end(); iterator++) {
-        octave_value octaveVariableValue(iterator->varval());
-
-        VariableMetaData variableMetaData;
-        variableMetaData.variableName = QString(iterator->name().c_str());
-        variableMetaData.dimensionalSize.push_back(octaveVariableValue.rows());
-        variableMetaData.dimensionalSize.push_back(octaveVariableValue.columns());
-        variableMetaData.byteSize = octaveVariableValue.byte_size();
-        variableMetaData.typeName = QString(octaveVariableValue.type_name().c_str());
-
-        if(!variableMetaData.variableName.startsWith("."))
-            currentVariables.append(variableMetaData);
+        if(!QString(iterator->name().c_str()).startsWith("."))
+            currentVariables.append(*iterator);
     }
 
     m_variableSymbolTableList = currentVariables;

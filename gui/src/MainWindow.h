@@ -157,10 +157,9 @@ protected:
         while(m_mainWindow->isRunning()) {
 
         // Get a full variable list.
-        QList<OctaveLink::VariableMetaData> variables
-                = OctaveLink::instance()->variableInfoList();
-        if(variables.size()) {
-            m_mainWindow->variablesDockWidget()->setVariablesList(variables);
+        QList<SymbolRecord> symbolTable = OctaveLink::instance()->variableInfoList();
+        if(symbolTable.size()) {
+            m_mainWindow->variablesDockWidget()->setVariablesList(symbolTable);
         }
 
         // Check whether any requested variables have been returned.

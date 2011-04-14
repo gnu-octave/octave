@@ -22,7 +22,63 @@
  * */
 #ifndef OCTAVELINK_H
 #define OCTAVELINK_H
+//#ifdef HAVE_CONFIG_H
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_URL
+#include <octave/config.h>
+//#endif
 
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
+#include <fstream>
+#include <iostream>
+
+#ifdef HAVE_UNISTD_H
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#include <unistd.h>
+#endif
+#include <sys/time.h>
+
+#include <sys/time.h>
+
+#include "octave/cmd-edit.h"
+#include "octave/error.h"
+#include "octave/file-io.h"
+#include "octave/input.h"
+#include "octave/lex.h"
+#include "octave/load-path.h"
+#include "octave/octave.h"
+#include "octave/oct-hist.h"
+#include "octave/oct-map.h"
+#include "octave/oct-obj.h"
+#include "octave/ops.h"
+#include "octave/ov.h"
+#include "octave/ov-usr-fcn.h"
+#include "octave/symtab.h"
+#include "octave/pt.h"
+#include "octave/pt-eval.h"
+
+#include "octave/toplev.h"
+#include "octave/procstream.h"
+//#include "octave/prog-args.h"
+#include "octave/sighandlers.h"
+#include "octave/debug.h"
+#include "octave/sysdep.h"
+#include "octave/ov.h"
+#include "octave/unwind-prot.h"
+#include "octave/utils.h"
+#include "octave/variables.h"
+
+#include <readline/readline.h>
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
@@ -42,6 +98,8 @@ class octave_value_list;
 #include <QList>
 #include <QString>
 #include <QVector>
+
+typedef symbol_table::symbol_record SymbolRecord;
 
 /**
   * \class OctaveLink
@@ -92,29 +150,6 @@ public:
         octave_value ov;
     } RequestedVariable;
 
-    typedef struct VariableMetaData
-    {
-        /** The name of the variable. */
-        QString variableName;
-
-        /** The dimensional size of the variable. */
-        QVector<int> dimensionalSize;
-
-        /** The size of the variable in bytes. */
-        unsigned long long byteSize;
-
-        /** The name of the variable type. */
-        QString typeName;
-
-        friend int operator==(const VariableMetaData& left,
-                              const VariableMetaData& right) {
-            return (left.variableName == right.variableName) &&
-                   (left.dimensionalSize == right.dimensionalSize) &&
-                   (left.byteSize == right.byteSize) &&
-                   (left.typeName == right.typeName);
-        }
-    } VariableMetaData;
-
     // Functions used to access data form the client side.
     /** Debugging related methods. */
 
@@ -140,7 +175,7 @@ public:
     int	setBreakpointAction(BreakPointAction action);
 
     /** Variable related methods. */
-    QList<VariableMetaData> variableInfoList(void);
+    QList<SymbolRecord> variableInfoList(void);
 
     /** TODO: Describe. */
     QList<RequestedVariable> requestedVariables(void);
@@ -218,7 +253,7 @@ private:
     BreakPointAction m_breakPointAction;
 
     /** Variable related member variables. */
-    QList<VariableMetaData> m_variableSymbolTableList;
+    QList<SymbolRecord> m_variableSymbolTableList;
     QList<QString> m_variablesRequestList;
 
     // NOTE: Create an overloaded operator<< for octave_value to do the

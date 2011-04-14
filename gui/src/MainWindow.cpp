@@ -111,7 +111,7 @@ void MainWindow::constructWindow() {
     connect(m_historyDockWidget, SIGNAL(information(QString)), this, SLOT(reportStatusMessage(QString)));
 
     openWebPage("http://www.gnu.org/software/octave/doc/interpreter/");
-    m_serviceWidget->load(QUrl("https://github.com/jacobdawid/Quint/issues"));
+    m_serviceWidget->load(QUrl("http://savannah.gnu.org/bugs/?group=octave"));
 }
 
 void MainWindow::establishOctaveLink() {

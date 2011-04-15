@@ -1,4 +1,3 @@
-#ifndef __SIMPLEEDITOR_H__
 /* Copyright (C) 2010 P.L. Lucas
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,71 +16,46 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
-#define __SIMPLEEDITOR_H__
+#ifndef SIMPLEEDITOR_H
+#define SIMPLEEDITOR_H
 
 #include <QPlainTextEdit>
 #include <QCompleter>
 #include <QStringListModel>
 #include "SyntaxHighlighter.h"
 
-class SimpleEditor : public QPlainTextEdit
-{
-	Q_OBJECT
-	QString fileName;
-	QTextCharFormat charFormat;
-	QCompleter *completer;
-	QStringListModel *completerModel;
-        SyntaxHighlighter *syntaxHighlighter;
-	QStringList comands_completion_list;
-	
-	bool auto_indent, automatic_indention_statement_ok;
-	
-	void loadSyntaxXMLDescription();
-	
-	public:
-	bool firtsTimeUsedOk;
-	
-        SimpleEditor(QWidget * parent = 0);
-	
-	bool load(QString file);
-	bool save();
-	QString getFileName();
-	void setFile(QString file);
-	
-	void setCharFormat(QTextCharFormat charFormat);
-	
-	
-	
-	/**List of y top left positions of bounding rects of each visible block of text.
-	 * @param list List of top left positions.
-	 * @param first_line First visible block in TextEdit.
-	 */
-	void publicBlockBoundingRectList(QVector<qreal>  &list, int &first_line);
-	
-	public slots:
-	
-	void activated( const QString & text );
-	void cursorPositionChangedCallBack();
-	void autoComplete(int size=3);
-	void autoComplete(int position, int charsRemoved, int charsAdded);
-	
-	protected:
-	virtual void keyPressEvent(QKeyEvent * e);
-	//virtual void focusInEvent(QFocusEvent  * event);
-	
+class SimpleEditor : public QPlainTextEdit {
+    Q_OBJECT
+public:
+    SimpleEditor(QWidget * parent = 0);
+    bool load(QString file);
+    bool save();
+    QString getFileName();
+    void setFile(QString file);
+    void setCharFormat(QTextCharFormat m_charFormat);
+    void publicBlockBoundingRectList(QVector<qreal>  &list, int &firstLine);
+    void loadSyntaxXMLDescription();
 
-	signals:
-	/**Dinamic help required.*/
-	void dynamic_help_required(const QString &text);
-	
-	///**Text modified.*/
-	//void text_modified(bool ok);
-	
-	//void toggleBreakpoint(int lineno);
-	
-	//void focusChanged(QWidget *);
-}
-;
-#endif
+public slots:
+    void activated(const QString& text);
+    void cursorPositionChangedCallBack();
+    void autoComplete(int size = 3);
+    void autoComplete(int position, int charsRemoved, int charsAdded);
+
+protected:
+    virtual void keyPressEvent(QKeyEvent * e);
+
+private:
+    bool m_firstTimeUse;
+    QString m_currentFileName;
+    QTextCharFormat m_charFormat;
+    QCompleter *m_completer;
+    QStringListModel *m_completerModel;
+    SyntaxHighlighter *m_syntaxHighlighter;
+    QStringList m_commandsCompletionList;
+    bool m_autoIndentation;
+    bool m_automaticIndentationStatement;
+};
+
+#endif // SIMPLEEDITOR_H
 

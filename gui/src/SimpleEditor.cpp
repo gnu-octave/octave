@@ -16,7 +16,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "config.h"
 #include "SimpleEditor.h"
 #include <QFile>
 #include <QTextStream>
@@ -24,340 +23,267 @@
 #include <QFileInfo>
 #include <QDir>
 
-SimpleEditor::SimpleEditor(QWidget *parent):QPlainTextEdit(parent)
-{
-        syntaxHighlighter=NULL;
-	firtsTimeUsedOk=true;
-	completerModel=new QStringListModel ();
-	completer= new QCompleter(completerModel, this);
-	completer->setCompletionMode(QCompleter::PopupCompletion);
-	completer->setWidget(this);
-	connect(completer, SIGNAL(activated ( const QString &)), this, SLOT(activated ( const QString &)));
-        //if(get_config("bracketsMatch")!="false")
-        connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedCallBack()));
-        //if((get_config("autoCompletion")!="false"))
-        connect(document(), SIGNAL(contentsChange(int, int, int)), this, SLOT(autoComplete(int, int, int)));
-	
-        auto_indent=true;//("false"!=get_config("autoindent"));
-        automatic_indention_statement_ok =true;// (get_config("autoindent_statements")=="true");
-	
-	//Set editor's font
-		
-	QFont text_edit_font;
-        QString font_name="Courier";//get_config("textEditFont");
-        QString font_size="10";//get_config("textEditFontSize");
-	if(font_name.isEmpty())
-	{
-		font_name=text_edit_font.family();
-	}
-	if(font_size.isEmpty())
-	{
-		font_size=QString::number(text_edit_font.pointSize());
-	}
-	text_edit_font.setFamily(font_name);
-	text_edit_font.setPointSize(font_size.toInt());
-	setFont(text_edit_font);
+SimpleEditor::SimpleEditor(QWidget *parent)
+    : QPlainTextEdit(parent),
+      m_syntaxHighlighter(0),
+      m_firstTimeUse(true) {
+
+    m_completerModel = new QStringListModel ();
+    m_completer = new QCompleter(m_completerModel, this);
+    m_completer->setCompletionMode(QCompleter::PopupCompletion);
+    m_completer->setWidget(this);
+    m_autoIndentation = true;
+    m_automaticIndentationStatement = true;
+
+    QFont font;
+    font.setFamily("Courier");
+    font.setPointSize(10);
+    setFont(font);
+
+    connect(m_completer, SIGNAL(activated(const QString &)), this, SLOT(activated(const QString &)));
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedCallBack()));
+    connect(document(), SIGNAL(contentsChange(int, int, int)), this, SLOT(autoComplete(int, int, int)));
 }
 
-void SimpleEditor::loadSyntaxXMLDescription()
-{
-        QString installPath=QString("syntax_files")+QDir::separator();
-	QFileInfo file(fileName);
-	QString suffix=file.suffix();
-	
-	if(comands_completion_list.isEmpty())
-	{
-		QString home=QDir::home().path()+QDir::separator()+".qtoctave"+QDir::separator()+"commands.txt";
+void SimpleEditor::loadSyntaxXMLDescription() {
+    QString installPath = QString("syntax_files")
+        + QDir::separator();
 
-		QFile file(home);
+    QFileInfo file(m_currentFileName);
+    QString suffix = file.suffix();
 
-		if (file.open(QFile::ReadOnly))
-		{
-			char buf[1024];
+    if(m_commandsCompletionList.isEmpty()) {
+        QString home = QDir::home().path()
+            + QDir::separator()
+            + ".qtoctave"
+            + QDir::separator()
+            + "commands.txt";
 
-			while(file.readLine(buf, sizeof(buf))>=0)
-			{
-				comands_completion_list.append(QString(buf).trimmed());
-			}
+        QFile file(home);
 
-			file.close();
-		}
-	}
-	
-        //if(get_config("syntaxHighlighting")!="true") return;
-	
-	QFileInfo xml(installPath+suffix+".xml");
-	if(xml.exists())
-	{
-                //printf("[SimpleEditor::loadSyntaxXMLDescription] Loading syntax\n");
-                syntaxHighlighter=new SyntaxHighlighter( document() );
-                syntaxHighlighter->load(xml.absoluteFilePath());
-                syntaxHighlighter->setDocument(document());
+        if(file.open(QFile::ReadOnly)) {
+            char buf[1024];
+            while(file.readLine(buf, sizeof(buf)) >= 0) {
+                m_commandsCompletionList.append(QString(buf).trimmed());
+            }
+            file.close();
         }
+    }
+
+    QFileInfo xml(installPath + suffix + ".xml");
+    if(xml.exists()) {
+        m_syntaxHighlighter = new SyntaxHighlighter(document());
+        m_syntaxHighlighter->load(xml.absoluteFilePath());
+        m_syntaxHighlighter->setDocument(document());
+    }
 }
 
-bool SimpleEditor::load(QString file)
-{
-	if(file.isEmpty())
-	{
-		setPlainText("");
-		fileName=file;
-		return true;
-	}
-	
-	FILE *input=fopen(file.toLocal8Bit().data(),"r");
-	if(input==NULL) return false;
-	fclose(input);
-	QFile in(file);
-	if (!in.open(QIODevice::ReadOnly | QIODevice::Text))
-		return false;
-	QByteArray data=in.readAll();
-	
-	setPlainText( QString::fromLocal8Bit(data) );
-	fileName=file;
-	
-	firtsTimeUsedOk=false;
-	
-	loadSyntaxXMLDescription();
-	
-	return true;
+bool SimpleEditor::load(QString file) {
+    if(file.isEmpty()) {
+        setPlainText("");
+        m_currentFileName = file;
+        return true;
+    }
+
+    FILE *input = fopen(file.toLocal8Bit().data(),"r");
+    if(!input)
+        return false;
+    fclose(input);
+    QFile in(file);
+    if(!in.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return false;
+    }
+    QByteArray data = in.readAll();
+    setPlainText(QString::fromLocal8Bit(data));
+    m_currentFileName = file;
+    m_firstTimeUse = false;
+
+    loadSyntaxXMLDescription();
+
+    return true;
 }
 
-bool SimpleEditor::save()
-{
-	QFile::remove(fileName+"~");
-	QFile::copy(fileName, fileName+"~");
-	FILE *out=fopen(fileName.toLocal8Bit().data(),"w");
-	if(out==NULL) return false;
-	fprintf( out, "%s", toPlainText().toLocal8Bit().data() );
-	fclose(out);
-	document()->setModified(false);
-	return true;
+bool SimpleEditor::save() {
+    QFile::remove(m_currentFileName + "~");
+    QFile::copy(m_currentFileName, m_currentFileName + "~");
+    FILE *out=fopen(m_currentFileName.toLocal8Bit().data(),"w");
+    if(!out)
+        return false;
+    fprintf(out, "%s", toPlainText().toLocal8Bit().data());
+    fclose(out);
+    document()->setModified(false);
+    return true;
 }
 
-void SimpleEditor::keyPressEvent(QKeyEvent * e)
-{
-	//printf("%d %s\n",e->key(), e->text().toLocal8Bit().data());
-	
-	//In all cases completer popup must been hided.
-	if(e->key()!=Qt::Key_Return && e->key()!=Qt::Key_Enter )
-	{
-		QAbstractItemView *view=completer->popup();
-		if(view->isVisible()) view->hide();
-		//completer->setWidget(NULL);
-	}
-	
-	if(e->key()==Qt::Key_Return || e->key()==Qt::Key_Enter )
-	{
-		QAbstractItemView *view=completer->popup();
-		if(view->isVisible())
-		{
-			QString word=view->currentIndex().data().toString();
-			if( word.isEmpty() ) word=completer->currentCompletion();
-			activated( word );
-			return;
-		}
-		else if(auto_indent)
-		{
-			QTextCursor cursor=textCursor();
-			QString line=cursor.block().text();
-			QString line2=line;
-			for(int i=0;i<line.length();i++)
-			{
-				if(line[i]!=' ' && line[i]!='\t') { line.resize(i); break;}
-			}
-			cursor.insertText("\n"+line);
-			if( automatic_indention_statement_ok )
-			{
-				
-				printf("[SimpleEditor::keyPressEvent] automatic_indention_statement_ok=%s\n", line2.toLocal8Bit().data() );
-				
-				QRegExp re("^while .*|^if .*|^for .*|^switch .*|^do$|^try|^function .*|^else$|^elseif .*");
-				
-				if(re.exactMatch( line2.trimmed() ) )
-				{
-					cursor.insertText("\t");
-				}
-			}
-			setTextCursor(cursor);
-		}
-		else
-			QPlainTextEdit::keyPressEvent(e);
-	}
-	//else if( e->key()==(Qt::Key_B) && Qt::ControlModifier==e->modifiers() )
-	//{
-	//	autoComplete();
-	//	return;
-	//}
-	else if(e->key()==Qt::Key_Tab)
-	{
-		QTextCursor cursor=textCursor();
-		int start=cursor.selectionStart();
-		int end=cursor.selectionEnd();
-		if(start==end)
-		{
-			QPlainTextEdit::keyPressEvent(e);
-			return;
-		}
-		cursor.beginEditBlock();
-		cursor.setPosition(end);
-		end=cursor.blockNumber();
-		cursor.setPosition(start);
-		cursor.movePosition(QTextCursor::StartOfBlock);
-		while(true)
-		{
-			cursor.insertText("\t");
-			if(cursor.blockNumber()>=end) break;
-			cursor.movePosition(QTextCursor::NextBlock);
-		}
-		cursor.endEditBlock();
-	}
-	else if(e->key()==Qt::Key_Backtab )
-	{
-		QTextCursor cursor=textCursor();
-		int start=cursor.selectionStart();
-		int end=cursor.selectionEnd();
-		if(start==end)
-		{
-			QPlainTextEdit::keyPressEvent(e);
-			return;
-		}
-		cursor.beginEditBlock();
-		cursor.setPosition(end);
-		end=cursor.blockNumber();
-		cursor.setPosition(start);
-		cursor.movePosition(QTextCursor::StartOfBlock);
-		while( true )
-		{
-			QString line=cursor.block().text();
-			if(line.length()>0 && (line[0]==' ' || line[0]
-				=='\t') )
-			{
-				cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
-				cursor.removeSelectedText();
-			}
-			if(cursor.blockNumber()>=end) break;
-			cursor.movePosition(QTextCursor::NextBlock);
-			cursor.movePosition(QTextCursor::StartOfBlock);
-		}
-		cursor.endEditBlock();
-	}
-	else
-	{
-		if( e->key()==(Qt::Key_B) && Qt::ControlModifier==e->modifiers() )
-		{
-			autoComplete(0);
-			return;
-		}
-		
-		QPlainTextEdit::keyPressEvent(e);
-		
-	}
-	
-	
+void SimpleEditor::keyPressEvent(QKeyEvent * keyEvent) {
+    //In all cases completer popup must been hided.
+    if(keyEvent->key() != Qt::Key_Return && keyEvent->key() != Qt::Key_Enter) {
+        QAbstractItemView *view = m_completer->popup();
+        if(view->isVisible()) view->hide();
+    }
+
+    if(keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter) {
+        QAbstractItemView *view = m_completer->popup();
+        if(view->isVisible()) {
+            QString word = view->currentIndex().data().toString();
+            if(word.isEmpty()) {
+                word = m_completer->currentCompletion();
+            }
+            activated(word);
+            return;
+        } else if(m_autoIndentation) {
+            QTextCursor cursor = textCursor();
+            QString line = cursor.block().text();
+            QString line2 = line;
+            for(int i=0;i<line.length();i++) {
+                if(line[i] != ' ' && line[i] != '\t') {
+                    line.resize(i);
+                    break;
+                }
+            }
+
+            cursor.insertText("\n" + line);
+            if(m_automaticIndentationStatement) {
+                    printf("[SimpleEditor::keyPressEvent] automatic_indention_statement_ok=%s\n", line2.toLocal8Bit().data() );
+                    QRegExp re("^while .*|^if .*|^for .*|^switch .*|^do$|^try|^function .*|^else$|^elseif .*");
+                    if(re.exactMatch(line2.trimmed())) {
+                            cursor.insertText("\t");
+                    }
+            }
+            setTextCursor(cursor);
+        } else {
+            QPlainTextEdit::keyPressEvent(keyEvent);
+        }
+    } else if(keyEvent->key() == Qt::Key_Tab) {
+            QTextCursor cursor=textCursor();
+            int start=cursor.selectionStart();
+            int end=cursor.selectionEnd();
+            if(start == end) {
+                QPlainTextEdit::keyPressEvent(keyEvent);
+                return;
+            }
+            cursor.beginEditBlock();
+            cursor.setPosition(end);
+            end=cursor.blockNumber();
+            cursor.setPosition(start);
+            cursor.movePosition(QTextCursor::StartOfBlock);
+            while(true) {
+                cursor.insertText("\t");
+                if(cursor.blockNumber()>=end) {
+                    break;
+                }
+                cursor.movePosition(QTextCursor::NextBlock);
+            }
+            cursor.endEditBlock();
+    } else if(keyEvent->key()==Qt::Key_Backtab) {
+        QTextCursor cursor=textCursor();
+        int start=cursor.selectionStart();
+        int end=cursor.selectionEnd();
+        if(start==end) {
+            QPlainTextEdit::keyPressEvent(keyEvent);
+            return;
+        }
+        cursor.beginEditBlock();
+        cursor.setPosition(end);
+        end=cursor.blockNumber();
+        cursor.setPosition(start);
+        cursor.movePosition(QTextCursor::StartOfBlock);
+        while(true) {
+            QString line=cursor.block().text();
+            if(line.length()>0 && (line[0]==' ' || line[0] =='\t')) {
+                cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+                cursor.removeSelectedText();
+            }
+            if(cursor.blockNumber()>=end) break;
+            cursor.movePosition(QTextCursor::NextBlock);
+            cursor.movePosition(QTextCursor::StartOfBlock);
+        }
+        cursor.endEditBlock();
+    } else {
+        if(keyEvent->key()==(Qt::Key_B) && Qt::ControlModifier==keyEvent->modifiers()) {
+            autoComplete(0);
+            return;
+        }
+        QPlainTextEdit::keyPressEvent(keyEvent);
+    }
 }
 
-void SimpleEditor::setCharFormat(QTextCharFormat charFormat)
-{
-	this->charFormat=charFormat;
-	QTextCursor cursor=textCursor();
-	cursor.movePosition(QTextCursor::Start);
-	cursor.setCharFormat(charFormat);
-	cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-	setFont(charFormat.font());
-	
-	QFontMetrics fm(charFormat.font());
-	int textWidthInPixels = fm.width("        ");
-	setTabStopWidth(textWidthInPixels);
+void SimpleEditor::setCharFormat(QTextCharFormat charFormat) {
+    this->m_charFormat=charFormat;
+    QTextCursor cursor=textCursor();
+    cursor.movePosition(QTextCursor::Start);
+    cursor.setCharFormat(charFormat);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    setFont(charFormat.font());
+
+    QFontMetrics fm(charFormat.font());
+    int textWidthInPixels = fm.width("        ");
+    setTabStopWidth(textWidthInPixels);
 }
 
-void SimpleEditor::activated( const QString & text )
-{
-	QAbstractItemView *view=completer->popup();
-	QTextCursor cursor=textCursor();
-	cursor.movePosition( 
-		QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
-	cursor.insertText(text);
-	view->hide();
+void SimpleEditor::activated(const QString& text) {
+    QAbstractItemView *view=m_completer->popup();
+    QTextCursor cursor=textCursor();
+    cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
+    cursor.insertText(text);
+    view->hide();
 }
 
-void SimpleEditor::autoComplete(int position, int charsRemoved, int charsAdded)
-{
-	//printf("[SimpleEditor::autoComplete] charsAdded=%d\n", charsAdded);
-	if(charsAdded==1)
-		autoComplete();
+void SimpleEditor::autoComplete(int position, int charsRemoved, int charsAdded) {
+    if(charsAdded==1)
+            autoComplete();
 }
 
-void SimpleEditor::autoComplete(int size)
-{
-	QTextCursor cursor=textCursor();
-	
-	cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
-	
-	//printf("[SimpleEditor::autoComplete] >%s<\n", cursor.selectedText().toLocal8Bit().data());
-	
-	if( cursor.selectedText().endsWith(" ") || cursor.selectedText().trimmed().length()<size ) return;
-	
-	QStringList list=toPlainText().split(QRegExp("\\W+"));
-	
-	list.removeDuplicates();
-	list.removeOne(cursor.selectedText());
-	list.sort();
-	
-	list.append(comands_completion_list);
-	
-	completerModel->setStringList( list );
-	
-	completer->setCompletionPrefix(cursor.selectedText());
-	
-	//printf("[SimpleEditor::autoComplete] >%d<\n", completer->completionCount());
-	
-	if (completer->completionCount()>0 )
-	{
-		//completer->setWidget(this);
-		QRect r=cursorRect(cursor);
-		r.setWidth(200);
-		completer->complete(r);
-	}
+void SimpleEditor::autoComplete(int size) {
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
+    if(cursor.selectedText().endsWith(" ")
+            || cursor.selectedText().trimmed().length() < size) {
+        return;
+    }
+
+    QStringList list=toPlainText().split(QRegExp("\\W+"));
+    list.removeDuplicates();
+    list.removeOne(cursor.selectedText());
+    list.sort();
+    list.append(m_commandsCompletionList);
+
+    m_completerModel->setStringList(list);
+    m_completer->setCompletionPrefix(cursor.selectedText());
+
+    if(m_completer->completionCount() > 0) {
+            QRect r=cursorRect(cursor);
+            r.setWidth(200);
+            m_completer->complete(r);
+    }
 }
 
-
-QString SimpleEditor::getFileName()
-{
-	return fileName;
+QString SimpleEditor::getFileName() {
+    return m_currentFileName;
 }
 
-
-void SimpleEditor::setFile(QString file)
-{
-	fileName=file;
-	loadSyntaxXMLDescription();
+void SimpleEditor::setFile(QString file) {
+    m_currentFileName = file;
+    loadSyntaxXMLDescription();
 }
 
-
-void SimpleEditor::cursorPositionChangedCallBack()
-{
-	//Hightlight brackets
-        if(syntaxHighlighter!=NULL)
-                syntaxHighlighter->setFormatPairBrackets(this);
+void SimpleEditor::cursorPositionChangedCallBack() {
+    if(m_syntaxHighlighter)
+            m_syntaxHighlighter->setFormatPairBrackets(this);
 }
 
-void SimpleEditor::publicBlockBoundingRectList(QVector<qreal> &list, int &first_line)
-{
-	qreal pageBottom = /*viewport()->*/height();
-	QPointF offset=contentOffset();
-	QTextBlock block=firstVisibleBlock();
-	first_line=block.blockNumber()+1;
-	qreal first_position=blockBoundingGeometry(block).topLeft().y();
-	
-	for ( ; block.isValid(); block = block.next() )
-	{
-		QRectF position=blockBoundingGeometry(block);
-		qreal y=position.topLeft().y()+offset.y()-first_position;
-		
-		if(y>pageBottom) break;
-		
-		list.append(y);
-	}
+void SimpleEditor::publicBlockBoundingRectList(QVector<qreal> &list, int &firstLine) {
+    qreal pageBottom = height();
+    QPointF offset = contentOffset();
+    QTextBlock block = firstVisibleBlock();
+    firstLine = block.blockNumber() + 1;
+    qreal first_position = blockBoundingGeometry(block).topLeft().y();
+    for(; block.isValid(); block = block.next()) {
+        QRectF position = blockBoundingGeometry(block);
+        qreal y = position.topLeft().y() + offset.y() - first_position;
+        if(y > pageBottom)
+            break;
+        list.append(y);
+    }
 }
 

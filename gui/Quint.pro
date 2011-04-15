@@ -52,7 +52,6 @@ HEADERS += \
         src/Character.h \
         src/CharacterColor.h \
         src/KeyboardTranslator.h \
-        src/ExtendedDefaultTranslator.h \
         src/Screen.h \
         src/History.h \
         src/BlockArray.h \
@@ -78,7 +77,6 @@ HEADERS += \
         src/konsole_export.h \
         src/ProcessInfo.h \
         src/kpty_export.h \
-        src/kdecore_export.h \
     src/OctaveTerminal.h \
     src/VariablesDockWidget.h \
     src/HistoryDockWidget.h \

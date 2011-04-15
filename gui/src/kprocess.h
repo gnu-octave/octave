@@ -22,8 +22,6 @@
 #ifndef KPROCESS_H
 #define KPROCESS_H
 
-#include "kdecore_export.h"
-
 #include <QtCore/QProcess>
 class KProcess;
 class KProcessPrivate;

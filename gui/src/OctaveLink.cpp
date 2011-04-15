@@ -21,13 +21,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Born July 13, 2007.
 
-
-
 #include "OctaveLink.h"
-
-#include <QFileInfo>
-#include <QMutexLocker>
-#include <QList>
 
 OctaveLink OctaveLink::m_singleton;
 
@@ -116,7 +110,7 @@ std::vector<OctaveLink::BreakPoint> OctaveLink::breakPointList(int& status)
     return retval;
 }
 
-bool OctaveLink::isBreakpointReached (int& status)
+bool OctaveLink::isBreakpointReached()
 {
     QMutexLocker mutexLocker(&m_internalAccessMutex);
 
@@ -322,8 +316,8 @@ int OctaveLink::setBreakPointList( void )
 	  //std::string shortName = Glib::path_get_basename(name);
 	  std::string shortName = fileName.toStdString ();
 	  std::string funcName;
-	  int dot = shortName.find_first_of(".");
-	  if (dot!=std::string::npos)
+          int dot = shortName.find_first_of(".");
+          if (dot!=(signed)std::string::npos)
 	    {
 	      funcName = shortName.substr (0,dot);
 	    }
@@ -409,7 +403,7 @@ int OctaveLink::processBreakpointAndRemoveModify(void)
 {
   //octave_stdout << "Processing breakpoints changes" << std::endl;
   // Process added breakpoints
-  for (int i = 0 ; i < m_addedBreakpoints.size() ; i++)
+  for (int i = 0 ; i < (signed)m_addedBreakpoints.size() ; i++)
   {
     std::string funcName = m_addedBreakpoints[i].fileName;
     bp_table::intmap lines;
@@ -420,7 +414,7 @@ int OctaveLink::processBreakpointAndRemoveModify(void)
   m_addedBreakpoints = std::vector<BreakPoint>();
 
   // Process removed breakpoints
-  for (int i = 0 ; i < m_removedBreakpoints.size() ; i++)
+  for (int i = 0 ; i < (signed)m_removedBreakpoints.size() ; i++)
   {
     std::string funcName = m_removedBreakpoints[i].fileName;
     bp_table::intmap lines;

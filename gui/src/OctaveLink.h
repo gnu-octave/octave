@@ -22,7 +22,8 @@
  * */
 #ifndef OCTAVELINK_H
 #define OCTAVELINK_H
-//#ifdef HAVE_CONFIG_H
+
+// Octave includes
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
@@ -30,26 +31,6 @@
 #undef PACKAGE_VERSION
 #undef PACKAGE_URL
 #include <octave/config.h>
-//#endif
-
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
-#include <fstream>
-#include <iostream>
-
-#ifdef HAVE_UNISTD_H
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#include <unistd.h>
-#endif
-#include <sys/time.h>
-
-#include <sys/time.h>
-
 #include "octave/cmd-edit.h"
 #include "octave/error.h"
 #include "octave/file-io.h"
@@ -66,10 +47,10 @@
 #include "octave/symtab.h"
 #include "octave/pt.h"
 #include "octave/pt-eval.h"
-
+#include "octave/config.h"
+#include "octave/Range.h"
 #include "octave/toplev.h"
 #include "octave/procstream.h"
-//#include "octave/prog-args.h"
 #include "octave/sighandlers.h"
 #include "octave/debug.h"
 #include "octave/sysdep.h"
@@ -78,23 +59,16 @@
 #include "octave/utils.h"
 #include "octave/variables.h"
 
-#include <readline/readline.h>
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef PACKAGE_URL
-#include "octave/config.h"
-#include "octave/Range.h"
-#include "octave/ov.h"
-class octave_value;
-class octave_value_list;
-
-#include <cstdio>
+// Standard includes
+#include <iostream>
 #include <string>
 #include <vector>
+#include <readline/readline.h>
+
+// Qt includes
+#include <QMutexLocker>
 #include <QMutex>
+#include <QFileInfo>
 #include <QList>
 #include <QString>
 #include <QVector>
@@ -160,7 +134,7 @@ public:
     std::vector<BreakPoint> reachedBreakpoint();
 
     /** TODO: Describe. */
-    bool isBreakpointReached(int& status);
+    bool isBreakpointReached();
 
     /** TODO: Describe. */
     int addBreakpoint(BreakPoint bp_info);

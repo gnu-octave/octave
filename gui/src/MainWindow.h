@@ -177,30 +177,6 @@ protected:
             m_mainWindow->historyDockWidget()->updateHistory(historyList);
         }
 
-        // Put a marker in each buffer at the proper location.
-        int status = 0;
-        std::vector<OctaveLink::BreakPoint> breakPoints = OctaveLink::instance()->breakPointList(status);
-        if(status==0) {
-            //MEditor::GetInstance()->process_breakpoint_list (bps);
-        }
-
-        // Find out if a breakpoint is hit
-        static bool lineNumber = -1;
-        bool hitBreakPoint = OctaveLink::instance()->isBreakpointReached(status);
-        if((status==0) && hitBreakPoint) {
-            std::vector<OctaveLink::BreakPoint> hit_breakpoint = OctaveLink::instance()->reachedBreakpoint();
-
-            if(hit_breakpoint.size() > 0 && (hit_breakpoint[0].lineNumber != lineNumber)) {
-                //MEditor::GetInstance()->remove_hit_breakpoint_marker ();
-                //MEditor::GetInstance()->add_breakpoint_marker(hit_breakpoint[0], BP_MARKER_TYPE_HIT);
-                lineNumber = hit_breakpoint[0].lineNumber;
-            }
-        }
-        else if((status==0) && lineNumber>0) {
-            //MEditor::GetInstance()->remove_hit_breakpoint_marker ();
-            lineNumber = -1;
-        }
-
             usleep(100000);
         }
     }

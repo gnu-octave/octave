@@ -29,8 +29,6 @@ SOURCES +=\
         src/kptyprocess.cpp \
         src/kprocess.cpp \
         src/kptydevice.cpp \
-        src/k3process.cpp \
-        src/k3processcontroller.cpp \
         src/Session.cpp \
         src/ShellCommand.cpp \
         src/QTerminalWidget.cpp \
@@ -72,8 +70,6 @@ HEADERS += \
         src/kprocess.h \
         src/kprocess_p.h \
         src/kptydevice.h \
-        src/k3process.h \
-        src/k3processcontroller.h \
         src/Session.h \
         src/ShellCommand.h \
         src/QTerminalWidget.h \

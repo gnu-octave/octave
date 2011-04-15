@@ -60,7 +60,7 @@ class ScreenWindow;
  *
  * TODO More documentation
  */
-class KONSOLEPRIVATE_EXPORT TerminalDisplay : public QWidget
+class TerminalDisplay : public QWidget
 {
    Q_OBJECT
 

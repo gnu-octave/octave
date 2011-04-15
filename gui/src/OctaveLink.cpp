@@ -168,30 +168,17 @@ int OctaveLink::setBreakpointAction (BreakPointAction action)
  *******************************************************************************/
 
 //*************************************************************************
-int OctaveLink::processOctaveServerData(void)
-{
-  struct timeval start, stop;
-#ifndef __WIN32__
-  gettimeofday(&start, NULL);
-#endif
+int OctaveLink::processOctaveServerData(void) {
+    QMutexLocker mutexLocker(&m_internalAccessMutex);
 
-  QMutexLocker mutexLocker(&m_internalAccessMutex);
-
-  process_breakpoint_action();
-  processBreakpointAndRemoveModify();
-  processRequestedVariables();
-  retrieveVariables();
-  setHistoryList();
-  setBreakPointList();
-
-#ifndef __WIN32__
-  gettimeofday(&stop, NULL);
-  double elapsed = stop.tv_sec - start.tv_sec + 1E-6 * (stop.tv_usec - start.tv_usec);
-  //octave_stdout << "SERVER ELAPSED: " << elapsed << std::endl;
-#endif
-  return 0;
+    process_breakpoint_action();
+    processBreakpointAndRemoveModify();
+    processRequestedVariables();
+    retrieveVariables();
+    setHistoryList();
+    setBreakPointList();
+    return 0;
 }
-
 
 //*************************************************************************
 void OctaveLink::retrieveVariables() {

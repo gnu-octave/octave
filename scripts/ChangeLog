@@ -6,6 +6,7 @@
 	Make functions more compatible with respect to handling of
 	picewise polynoms (pp). Rename pp-struct elements.
 	Handle nD-arguments correctly. Tests added.
+	(bugs #32040, #32045)
 
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 
@@ -422,6 +423,11 @@
 2011-02-10  John W. Eaton  <jwe@octave.org>
 
 	* statistics/base/mean.m: Also accept logical values.
+
+2011-02-10 Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* linear-algebra/gmres.m: New file implementing the GMRES
+	iterative method for solving linear systems.
 
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 

@@ -67,6 +67,7 @@ plot_FCN_FILES = \
   plot/close.m \
   plot/closereq.m \
   plot/colorbar.m \
+  plot/colstyle.m \
   plot/comet.m \
   plot/comet3.m \
   plot/compass.m \

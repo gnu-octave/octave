@@ -47,21 +47,7 @@ void VariablesDockWidget::construct() {
 void VariablesDockWidget::updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecord symbolRecord) {
     treeItem->setData(0, 0, QString(symbolRecord.name().c_str()));
     treeItem->setData(1, 0, QString(symbolRecord.varval().type_name().c_str()));
-
-    QString type = QString(symbolRecord.varval().type_name().c_str());
-    if(type == "string") {
-        QString stringValue = QString("\"%1\"").arg(symbolRecord.varval().string_value().c_str());
-        treeItem->setData(2, 0, stringValue);
-    } else if(type == "scalar") {
-        double scalarValue = symbolRecord.varval().scalar_value();
-        treeItem->setData(2, 0, QString("%1").arg(scalarValue));
-    } else if(type == "matrix") {
-        //Matrix matrixValue = symbolRecord.varval().matrix_value();
-        // TODO: Display matrix values.
-        treeItem->setData(2, 0, QString("{matrix}"));
-    } else {
-        treeItem->setData(2, 0, QString("<Type not recognized>"));
-    }
+    treeItem->setData(2, 0, OctaveLink::octaveValueAsQString(symbolRecord.varval()));
 }
 
 void VariablesDockWidget::setVariablesList(QList<SymbolRecord> symbolTable) {

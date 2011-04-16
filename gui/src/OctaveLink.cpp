@@ -52,6 +52,35 @@ int OctaveLink::readlineEventHook() {
   return 0;
 }
 
+QString OctaveLink::octaveValueAsQString(OctaveValue octaveValue) {
+    // Convert string.
+    if(octaveValue.is_string()) {
+        return QString("\"%1\"").arg(octaveValue.string_value().c_str());
+
+    // Convert real scalar.
+    } else if(octaveValue.is_real_scalar()) {
+        return QString("%1").arg(octaveValue.scalar_value());
+
+    // Convert complex scalar.
+    } else if(octaveValue.is_complex_scalar()) {
+        return QString("%1 + %2i").arg(octaveValue.scalar_value()).arg(octaveValue.complex_value().imag());
+
+    // Convert real matrix.
+    } else if(octaveValue.is_real_matrix()) {
+        // TODO: Convert real matrix into a string.
+        return QString("{matrix}");
+
+    // Convert complex matrix.
+    } else if(octaveValue.is_complex_matrix()) {
+        // TODO: Convert complex matrix into a string.
+        return QString("{complex matrix}");
+
+    // If everything else does not fit, we could not recognize the type.
+    } else {
+        return QString("<Type not recognized>");
+    }
+}
+
 //*************************************************************************
 OctaveLink::OctaveLink()
     : m_previousHistoryLength(0) {

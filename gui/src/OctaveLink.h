@@ -74,6 +74,7 @@
 #include <QVector>
 
 typedef symbol_table::symbol_record SymbolRecord;
+typedef octave_value OctaveValue;
 
 /**
   * \class OctaveLink
@@ -84,6 +85,7 @@ class OctaveLink
 public:
     static OctaveLink *instance() { return &m_singleton; }
     static int readlineEventHook(void);
+    static QString octaveValueAsQString(OctaveValue octaveValue);
 
     /**
      * Enumeration used to identify breakpoint actions

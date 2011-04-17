@@ -28,7 +28,7 @@
 ## scalar then both real and imaginary parts of the matrix are printed
 ## to the same precision.  Otherwise @code{@var{n} (1)} defines the
 ## precision of the real part and @code{@var{n} (2)} defines the
-## precision of the imaginary part.  The default for @var{n} is 17.
+## precision of the imaginary part.  The default for @var{n} is 15.
 ##
 ## If the argument 'class' is given, then the class of @var{x} is
 ## included in the string in such a way that the eval will result in the
@@ -56,13 +56,13 @@ function s = mat2str (x, n, cls)
 
   if (nargin < 2 || isempty (n))
     ## Default precision
-    n = 17;
+    n = 15;
   endif
 
   if (nargin < 3)
     if (ischar (n))
       cls = n;
-      n = 17;
+      n = 15;
     else
       cls = "";
     endif
@@ -137,3 +137,4 @@ endfunction
 %!assert (mat2str (true), "true");
 %!assert (mat2str (false), "false");
 %!assert (mat2str (logical (eye (2))), "[true,false;false,true]");
+%!assert (mat2str (0.7), "0.7")

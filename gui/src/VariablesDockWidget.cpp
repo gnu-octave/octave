@@ -1,5 +1,7 @@
 #include "VariablesDockWidget.h"
 #include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 VariablesDockWidget::VariablesDockWidget(QWidget *parent)
     : QDockWidget(parent) {
@@ -14,15 +16,31 @@ void VariablesDockWidget::construct() {
     m_variablesTreeWidget = new QTreeWidget(this);
     m_variablesTreeWidget->setHeaderHidden(false);
     m_variablesTreeWidget->setHeaderLabels(headerLabels);
-    QHBoxLayout *layout = new QHBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
 
     setWindowTitle("Workspace");
     setWidget(new QWidget());
 
     layout->addWidget(m_variablesTreeWidget);
-    layout->setMargin(2);
+    QWidget *buttonBar = new QWidget(this);
+    layout->addWidget(buttonBar);
 
+        QHBoxLayout *buttonBarLayout = new QHBoxLayout();
+        QPushButton *saveWorkspaceButton = new QPushButton("Save", buttonBar);
+        QPushButton *loadWorkspaceButton = new QPushButton("Load", buttonBar);
+        QPushButton *clearWorkspaceButton = new QPushButton("Clear", buttonBar);
+        buttonBarLayout->addWidget(saveWorkspaceButton);
+        buttonBarLayout->addWidget(loadWorkspaceButton);
+        buttonBarLayout->addWidget(clearWorkspaceButton);
+        buttonBarLayout->setMargin(2);
+        buttonBar->setLayout(buttonBarLayout);
+
+    layout->setMargin(2);
     widget()->setLayout(layout);
+
+    connect(saveWorkspaceButton, SIGNAL(clicked()), this, SLOT(emitSaveWorkspace()));
+    connect(loadWorkspaceButton, SIGNAL(clicked()), this, SLOT(emitLoadWorkspace()));
+    connect(clearWorkspaceButton, SIGNAL(clicked()), this, SLOT(emitClearWorkspace()));
 
     QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem();
     treeWidgetItem->setData(0, 0, QString("Local"));
@@ -42,7 +60,7 @@ void VariablesDockWidget::construct() {
 
     m_variablesTreeWidget->expandAll();
     m_variablesTreeWidget->setAlternatingRowColors(true);
-    m_variablesTreeWidget->setAnimated(true);
+    m_variablesTreeWidget->setAnimated(true);    
 }
 
 void VariablesDockWidget::updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecord symbolRecord) {
@@ -135,4 +153,16 @@ void VariablesDockWidget::updateScope(int topLevelItemIndex, QList<SymbolRecord>
             i--;
         }
     }
+}
+
+void VariablesDockWidget::emitSaveWorkspace() {
+    emit saveWorkspace();
+}
+
+void VariablesDockWidget::emitLoadWorkspace() {
+    emit loadWorkspace();
+}
+
+void VariablesDockWidget::emitClearWorkspace() {
+    emit clearWorkspace();
 }

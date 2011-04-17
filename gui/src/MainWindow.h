@@ -100,6 +100,10 @@ public slots:
     void handleOpenFileRequest(QString fileName);
     void reportStatusMessage(QString statusMessage);
     void openWebPage(QString url);
+    void handleSaveWorkspaceRequest();
+    void handleLoadWorkspaceRequest();
+    void handleClearWorkspaceRequest();
+    void handleCommandDoubleClicked(QString command);
 
 protected:
     void closeEvent(QCloseEvent *closeEvent);

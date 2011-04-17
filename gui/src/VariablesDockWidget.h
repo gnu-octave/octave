@@ -8,9 +8,20 @@
 
 class VariablesDockWidget : public QDockWidget
 {
+    Q_OBJECT
 public:
     VariablesDockWidget(QWidget *parent = 0);
     void setVariablesList(QList<SymbolRecord> symbolTable);
+
+signals:
+    void saveWorkspace();
+    void loadWorkspace();
+    void clearWorkspace();
+
+private slots:
+    void emitSaveWorkspace();
+    void emitLoadWorkspace();
+    void emitClearWorkspace();
 
 private:
     void construct();

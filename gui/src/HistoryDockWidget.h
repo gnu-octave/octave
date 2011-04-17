@@ -41,6 +41,10 @@ public:
 
 signals:
     void information(QString message);
+    void commandDoubleClicked(QString command);
+
+private slots:
+    void handleListViewItemDoubleClicked(QModelIndex modelIndex);
 
 private:
     void construct();

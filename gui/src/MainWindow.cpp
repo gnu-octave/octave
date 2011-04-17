@@ -62,6 +62,22 @@ void MainWindow::openWebPage(QString url) {
     m_browserWidget->load(QUrl(url));
 }
 
+void MainWindow::handleSaveWorkspaceRequest() {
+    // TODO: Handle saving of workspace.
+}
+
+void MainWindow::handleLoadWorkspaceRequest() {
+    // TODO: Handle loading of workspace.
+}
+
+void MainWindow::handleClearWorkspaceRequest() {
+    // TODO: Handle clearing of workspace.
+}
+
+void MainWindow::handleCommandDoubleClicked(QString command) {
+    m_octaveTerminal->sendText(command);
+}
+
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {
     m_isRunning = false;
     reportStatusMessage("Saving data and shutting down.");
@@ -123,6 +139,10 @@ void MainWindow::constructWindow() {
 
     connect(m_filesDockWidget, SIGNAL(openFile(QString)), this, SLOT(handleOpenFileRequest(QString)));
     connect(m_historyDockWidget, SIGNAL(information(QString)), this, SLOT(reportStatusMessage(QString)));
+    connect(m_historyDockWidget, SIGNAL(commandDoubleClicked(QString)), this, SLOT(handleCommandDoubleClicked(QString)));
+    connect(m_variablesDockWidget, SIGNAL(saveWorkspace()), this, SLOT(handleSaveWorkspaceRequest()));
+    connect(m_variablesDockWidget, SIGNAL(loadWorkspace()), this, SLOT(handleLoadWorkspaceRequest()));
+    connect(m_variablesDockWidget, SIGNAL(clearWorkspace()), this, SLOT(handleClearWorkspaceRequest()));
 
     openWebPage("http://www.gnu.org/software/octave/doc/interpreter/");
     m_serviceWidget->load(QUrl("http://savannah.gnu.org/bugs/?group=octave"));

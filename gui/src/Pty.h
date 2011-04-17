@@ -30,12 +30,8 @@
 #include <QtCore/QSize>
 
 // KDE
-//#include <KPtyProcess>
 #include "kprocess.h"
 #include "kptyprocess.h"
-
-// Konsole
-#include "konsole_export.h"
 
 /**
  * The Pty class is used to start the terminal process, 
@@ -51,7 +47,7 @@
  * with the program name and appropriate arguments. 
  */
 //class KONSOLEPRIVATE_EXPORT Pty: public KPtyProcess
-class KONSOLEPRIVATE_EXPORT Pty: public KPtyProcess
+class Pty: public KPtyProcess
 {
 Q_OBJECT
 

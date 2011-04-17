@@ -1127,8 +1127,8 @@ void TerminalDisplay::showResizeNotification()
      }
      if (!_resizeWidget)
      {
-        _resizeWidget = new QLabel(i18n("Size: XXX x XXX"), this);
-        _resizeWidget->setMinimumWidth(_resizeWidget->fontMetrics().width(i18n("Size: XXX x XXX")));
+        _resizeWidget = new QLabel(QString("Size: XXX x XXX"), this);
+        _resizeWidget->setMinimumWidth(_resizeWidget->fontMetrics().width(QString("Size: XXX x XXX")));
         _resizeWidget->setMinimumHeight(_resizeWidget->sizeHint().height());
         _resizeWidget->setAlignment(Qt::AlignCenter);
 
@@ -2884,7 +2884,7 @@ void TerminalDisplay::outputSuspended(bool suspended)
             //all terminal emulators.
             //If there isn't a suitable article available in the target language the link
             //can simply be removed.
-            _outputSuspendedLabel = new QLabel( i18n("<qt>Output has been "
+            _outputSuspendedLabel = new QLabel( QString("<qt>Output has been "
                                                 "<a href=\"http://en.wikipedia.org/wiki/Flow_control\">suspended</a>"
                                                 " by pressing Ctrl+S."
                                                "  Press <b>Ctrl+Q</b> to resume.</qt>"),

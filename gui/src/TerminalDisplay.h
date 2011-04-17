@@ -29,7 +29,6 @@
 // Konsole
 #include "Filter.h"
 #include "Character.h"
-#include "konsole_export.h"
 
 class QDrag;
 class QDragEnterEvent;

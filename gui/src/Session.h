@@ -31,11 +31,6 @@
 #include <QUuid>
 #include <QWidget>
 
-// KDE
-//#include <KApplication>
-//#include <KMainWindow>
-#include "konsole_export.h"
-
 // Konsole
 #include "History.h"
 

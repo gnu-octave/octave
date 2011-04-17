@@ -37,13 +37,6 @@
 #include <QtCore/QDebug>
 #include <QtCore/QDataStream>
 
-// KDE
-#include "konsole_export.h"
-//#include <KDebug>
-//#include <KLocale>
-//#include <KStandardDirs>
-//#include "kdebug.h"
-
 const QByteArray KeyboardTranslatorManager::defaultTranslatorText(
 "keyboard \"Fallback Key Translator\"\n"
 "key Tab : \"\\t\""
@@ -241,7 +234,7 @@ KeyboardTranslatorReader::KeyboardTranslatorReader( QIODevice* source )
    {
         QList<Token> tokens = tokenize( QString(source->readLine()) );
         if ( !tokens.isEmpty() && tokens.first().type == Token::TitleKeyword )
-            _description = i18n(tokens[1].text.toLatin1().data());
+            _description = QString(tokens[1].text.toLatin1().data());
    }
    // read first entry (if any)
    readNext();

@@ -958,7 +958,7 @@ void Vt102Emulation::sendKeyEvent( QKeyEvent* event )
     {
         // print an error message to the terminal if no key translator has been
         // set
-        QString translatorError =  i18n("No keyboard translator available.  "
+        QString translatorError =  QString("No keyboard translator available.  "
                                          "The information needed to convert key presses "
                                          "into characters to send to the terminal " 
                                          "is missing.");

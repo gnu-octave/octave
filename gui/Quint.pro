@@ -74,7 +74,6 @@ HEADERS += \
         src/QTerminalWidget.h \
     	src/MainWindow.h \
         src/OctaveLink.h \
-        src/konsole_export.h \
         src/ProcessInfo.h \
         src/kpty_export.h \
     src/OctaveTerminal.h \

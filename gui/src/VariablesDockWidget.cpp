@@ -8,6 +8,7 @@ VariablesDockWidget::VariablesDockWidget(QWidget *parent)
 }
 
 void VariablesDockWidget::construct() {
+    m_updateSemaphore = new QSemaphore(1);
     QStringList headerLabels;
     headerLabels << "Name" << "Type" << "Value";
     m_variablesTreeWidget = new QTreeWidget(this);
@@ -51,7 +52,7 @@ void VariablesDockWidget::updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecor
 }
 
 void VariablesDockWidget::setVariablesList(QList<SymbolRecord> symbolTable) {
-
+    m_updateSemaphore->acquire();
     // Split the symbol table into its different scopes.
     QList<SymbolRecord> localSymbolTable;
     QList<SymbolRecord> globalSymbolTable;
@@ -82,6 +83,7 @@ void VariablesDockWidget::setVariablesList(QList<SymbolRecord> symbolTable) {
     updateScope(1, globalSymbolTable);
     updateScope(2, persistentSymbolTable);
     updateScope(3, hiddenSymbolTable);
+    m_updateSemaphore->release();
 }
 
 void VariablesDockWidget::updateScope(int topLevelItemIndex, QList<SymbolRecord> symbolTable) {

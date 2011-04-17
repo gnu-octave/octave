@@ -3,6 +3,7 @@
 
 #include <QDockWidget>
 #include <QTreeWidget>
+#include <QSemaphore>
 #include "OctaveLink.h"
 
 class VariablesDockWidget : public QDockWidget
@@ -16,6 +17,7 @@ private:
     void updateTreeEntry(QTreeWidgetItem *treeItem, SymbolRecord symbolRecord);
     void updateScope(int topLevelItemIndex, QList<SymbolRecord> symbolTable);
     QTreeWidget *m_variablesTreeWidget;
+    QSemaphore *m_updateSemaphore;
 };
 
 #endif // VARIABLESDOCKWIDGET_H

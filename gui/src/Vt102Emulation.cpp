@@ -888,6 +888,7 @@ void Vt102Emulation::sendText( const QString& text )
                     0, 
                     Qt::NoModifier, 
                     text);
+
     sendKeyEvent(&event); // expose as a big fat keypress event
   }
 }

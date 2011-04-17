@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QSettings>
 #include <QDesktopServices>
+#include <QFileDialog>
 #include "MainWindow.h"
 #include "FileEditorMdiSubWindow.h"
 #include "ImageViewerMdiSubWindow.h"
@@ -63,15 +64,24 @@ void MainWindow::openWebPage(QString url) {
 }
 
 void MainWindow::handleSaveWorkspaceRequest() {
-    // TODO: Handle saving of workspace.
+    QDesktopServices desktopServices;
+    QString selectedFile = QFileDialog::getSaveFileName(this, "Save Workspace",
+        desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/workspace");
+    m_octaveTerminal->sendText(QString("save \'%1\'\n").arg(selectedFile));
+    m_octaveTerminal->setFocus();
 }
 
 void MainWindow::handleLoadWorkspaceRequest() {
-    // TODO: Handle loading of workspace.
+    QDesktopServices desktopServices;
+    QString selectedFile = QFileDialog::getOpenFileName(this, "Load Workspace",
+        desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/workspace");
+    m_octaveTerminal->sendText(QString("load \'%1\'\n").arg(selectedFile));
+    m_octaveTerminal->setFocus();
 }
 
 void MainWindow::handleClearWorkspaceRequest() {
-    // TODO: Handle clearing of workspace.
+    m_octaveTerminal->sendText("clear\n");
+    m_octaveTerminal->setFocus();
 }
 
 void MainWindow::handleCommandDoubleClicked(QString command) {

@@ -596,7 +596,7 @@ void Session::monitorTimerDone()
 
   //FIXME: Make message text for this notification and the activity notification more descriptive.    
   if (_monitorSilence) {
-    //KNotification::event("Silence", i18n("Silence in session '%1'", _nameTitle), QPixmap(),
+    //KNotification::event("Silence", i18n("Silence in session '%1'", _nameTitle)propagateSize, QPixmap(),
     //                QApplication::activeWindow(),
     //                KNotification::CloseWhenWidgetActivated);
     emit stateChanged(NOTIFYSILENCE);

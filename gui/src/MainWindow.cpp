@@ -66,11 +66,11 @@ void MainWindow::closeEvent(QCloseEvent *closeEvent) {
     m_isRunning = false;
     reportStatusMessage("Saving data and shutting down.");
     writeSettings();
+
     m_octaveCallbackThread->terminate();
     m_octaveCallbackThread->wait();
 
     m_octaveMainThread->terminate();
-    m_octaveMainThread->wait();
     QMainWindow::closeEvent(closeEvent);
 }
 

@@ -46,7 +46,7 @@ SimpleEditor::SimpleEditor(QWidget *parent)
 }
 
 void SimpleEditor::loadSyntaxXMLDescription() {
-    QString installPath = QString("syntax_files")
+    QString installPath = QString("../syntax_files")
         + QDir::separator();
 
     QFileInfo file(m_currentFileName);

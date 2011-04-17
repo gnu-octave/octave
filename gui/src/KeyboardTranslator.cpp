@@ -52,7 +52,7 @@ KeyboardTranslatorManager::~KeyboardTranslatorManager()
 }
 QString KeyboardTranslatorManager::findTranslatorPath(const QString& name)
 {
-  return QString("kb-layouts/" + name + ".keytab");
+  return QString("../kb-layouts/" + name + ".keytab");
   // return KGlobal::dirs()->findResource("data","konsole/"+name+".keytab");
 }
 void KeyboardTranslatorManager::findTranslators()
@@ -61,7 +61,7 @@ void KeyboardTranslatorManager::findTranslators()
   //                                                     "konsole/*.keytab",
   //                                                     KStandardDirs::NoDuplicates);
 
-    QDir dir("kb-layouts/");
+    QDir dir("../kb-layouts/");
     QStringList filters;
     filters << "*.keytab";
     dir.setNameFilters(filters);

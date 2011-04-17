@@ -25,7 +25,6 @@
 #include "kprocess.h"
 #include "kprocess_p.h"
 #include "kptydevice.h"
-#include "kpty_export.h"
 
 class KPtyDevice;
 class KPtyProcess;

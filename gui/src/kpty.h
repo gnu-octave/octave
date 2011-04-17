@@ -21,7 +21,6 @@
 #ifndef kpty_h
 #define kpty_h
 #include <QtCore/qglobal.h>
-//#include "kpty_export.h"
 
 struct KPtyPrivate;
 struct termios;

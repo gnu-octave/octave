@@ -75,7 +75,6 @@ HEADERS += \
     	src/MainWindow.h \
         src/OctaveLink.h \
         src/ProcessInfo.h \
-        src/kpty_export.h \
     src/OctaveTerminal.h \
     src/VariablesDockWidget.h \
     src/HistoryDockWidget.h \

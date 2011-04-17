@@ -884,7 +884,7 @@ void Vt102Emulation::sendText( const QString& text )
 {
   if (!text.isEmpty()) 
   {
-    QKeyEvent event(QEvent::KeyPress, 
+    QKeyEvent event(QEvent::KeyPress,
                     0, 
                     Qt::NoModifier, 
                     text);

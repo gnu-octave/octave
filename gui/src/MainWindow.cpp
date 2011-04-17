@@ -86,6 +86,7 @@ void MainWindow::handleClearWorkspaceRequest() {
 
 void MainWindow::handleCommandDoubleClicked(QString command) {
     m_octaveTerminal->sendText(command);
+    m_octaveTerminal->setFocus();
 }
 
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {

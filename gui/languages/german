@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
+<context>
+    <name>FilesDockWidget</name>
+    <message>
+        <location filename="../src/FilesDockWidget.cpp" line="9"/>
+        <source>Current Folder</source>
+        <translation>Aktuelles Verzeichnis</translation>
+    </message>
+</context>
+<context>
+    <name>HistoryDockWidget</name>
+    <message>
+        <location filename="../src/HistoryDockWidget.cpp" line="41"/>
+        <source>Command History</source>
+        <translation>Befehlshistorie</translation>
+    </message>
+    <message>
+        <location filename="../src/HistoryDockWidget.cpp" line="60"/>
+        <source>History updated.</source>
+        <translation>Befehlshistorie aktualisiert.</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="42"/>
+        <source>Opening file.</source>
+        <translation>Öffne Datei.</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="68"/>
+        <source>Save Workspace</source>
+        <translation>Speichere Arbeitsumgebung</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="76"/>
+        <source>Load Workspace</source>
+        <translation>Lade Arbeitsumgebung</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="94"/>
+        <source>Saving data and shutting down.</source>
+        <translation>Speichere Daten und schließe.</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="119"/>
+        <source>Octave Toolbar</source>
+        <translation>Octave Werkzeugleiste</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="128"/>
+        <source>Command Window</source>
+        <translation>Konsolenfenster</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="129"/>
+        <source>File Editor</source>
+        <translation>Dateieditor</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="130"/>
+        <source>Documentation</source>
+        <translation>Dokumentation</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="131"/>
+        <source>Service</source>
+        <translation>Service</translation>
+    </message>
+    <message>
+        <location filename="../src/MainWindow.cpp" line="179"/>
+        <source>Established link to Octave.</source>
+        <translation>Verbindung zu Octave hergestellt.</translation>
+    </message>
+</context>
+<context>
+    <name>NumberBar</name>
+    <message>
+        <location filename="../src/NumberedCodeEdit.cpp" line="189"/>
+        <source>Stop Here</source>
+        <translation>Stoppe hier</translation>
+    </message>
+    <message>
+        <location filename="../src/NumberedCodeEdit.cpp" line="192"/>
+        <source>Current Line</source>
+        <translation>Aktuelle Zeile</translation>
+    </message>
+    <message>
+        <location filename="../src/NumberedCodeEdit.cpp" line="195"/>
+        <source>Error Line</source>
+        <translation>Fehlerzeile</translation>
+    </message>
+</context>
+<context>
+    <name>NumberedCodeEdit</name>
+    <message>
+        <location filename="../src/NumberedCodeEdit.cpp" line="387"/>
+        <source>This file name is not valid.</source>
+        <translation>Dieser Dateiname ist nicht gültig.</translation>
+    </message>
+    <message>
+        <location filename="../src/NumberedCodeEdit.cpp" line="388"/>
+        <source>Octave doesn&apos;t understand this file name:
+</source>
+        <translation>Octave versteht diesen Dateityp nicht:</translation>
+    </message>
+    <message>
+        <location filename="../src/NumberedCodeEdit.cpp" line="388"/>
+        <source>
+Please, change it.
+ Do you want to save your changes?</source>
+        <translation>Bitte ändern Sie dies. Möchten Sie Ihre Änderungen sichern?</translation>
+    </message>
+</context>
+<context>
+    <name>VariablesDockWidget</name>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="15"/>
+        <source>Name</source>
+        <translation>Bezeichner</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="15"/>
+        <source>Type</source>
+        <translation>Typ</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="15"/>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="21"/>
+        <source>Workspace</source>
+        <translation>Arbeitsumgebung</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="29"/>
+        <source>Save</source>
+        <translation>Sichern</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="30"/>
+        <source>Load</source>
+        <translation>Laden</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="31"/>
+        <source>Clear</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="46"/>
+        <source>Local</source>
+        <translation>Lokal</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="50"/>
+        <source>Global</source>
+        <translation>Global</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="54"/>
+        <source>Persistent</source>
+        <translation>Persistent</translation>
+    </message>
+    <message>
+        <location filename="../src/VariablesDockWidget.cpp" line="58"/>
+        <source>Hidden</source>
+        <translation>Versteckt</translation>
+    </message>
+</context>
+</TS>

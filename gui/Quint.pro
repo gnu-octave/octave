@@ -93,3 +93,5 @@ LFLAGS = $$system(mkoctfile -p LFLAGS) \
 #LIBS    += $$LFLAGS -lutil
 QMAKE_LFLAGS += $$LFLAGS -lutil
 QMAKE_CXXFLAGS  += $$INCFLAGS
+
+TRANSLATIONS += languages/german

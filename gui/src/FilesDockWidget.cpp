@@ -6,7 +6,7 @@
 FilesDockWidget::FilesDockWidget(QWidget *parent)
   : QDockWidget(parent) {
     setObjectName("FilesDockWidget");
-    setWindowTitle("Current Folder");
+    setWindowTitle(tr("Current Folder"));
     setWidget(new QWidget(this));
 
     // Create a toolbar

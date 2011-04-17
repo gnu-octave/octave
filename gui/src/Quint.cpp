@@ -17,13 +17,25 @@
  */
 
 #include <QtGui/QApplication>
+#include <QTranslator>
+#include <QSettings>
 #include "MainWindow.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication application(argc, argv);
+
+    QDesktopServices desktopServices;
+    QSettings settings(
+                desktopServices.storageLocation(QDesktopServices::HomeLocation)
+                + "/.quint/settings.ini", QSettings::IniFormat);
+
+    QTranslator translator;
+    translator.load(QString("../languages/%1.qm").arg(settings.value("application/language").toString()));
+    application.installTranslator(&translator);
+
     MainWindow w;
     w.show();
 
-    return a.exec();
+    return application.exec();
 }

@@ -12,13 +12,13 @@ VariablesDockWidget::VariablesDockWidget(QWidget *parent)
 void VariablesDockWidget::construct() {
     m_updateSemaphore = new QSemaphore(1);
     QStringList headerLabels;
-    headerLabels << "Name" << "Type" << "Value";
+    headerLabels << tr("Name") << tr("Type") << tr("Value");
     m_variablesTreeWidget = new QTreeWidget(this);
     m_variablesTreeWidget->setHeaderHidden(false);
     m_variablesTreeWidget->setHeaderLabels(headerLabels);
     QVBoxLayout *layout = new QVBoxLayout();
 
-    setWindowTitle("Workspace");
+    setWindowTitle(tr("Workspace"));
     setWidget(new QWidget());
 
     layout->addWidget(m_variablesTreeWidget);
@@ -26,9 +26,9 @@ void VariablesDockWidget::construct() {
     layout->addWidget(buttonBar);
 
         QHBoxLayout *buttonBarLayout = new QHBoxLayout();
-        QPushButton *saveWorkspaceButton = new QPushButton("Save", buttonBar);
-        QPushButton *loadWorkspaceButton = new QPushButton("Load", buttonBar);
-        QPushButton *clearWorkspaceButton = new QPushButton("Clear", buttonBar);
+        QPushButton *saveWorkspaceButton = new QPushButton(tr("Save"), buttonBar);
+        QPushButton *loadWorkspaceButton = new QPushButton(tr("Load"), buttonBar);
+        QPushButton *clearWorkspaceButton = new QPushButton(tr("Clear"), buttonBar);
         buttonBarLayout->addWidget(saveWorkspaceButton);
         buttonBarLayout->addWidget(loadWorkspaceButton);
         buttonBarLayout->addWidget(clearWorkspaceButton);
@@ -43,19 +43,19 @@ void VariablesDockWidget::construct() {
     connect(clearWorkspaceButton, SIGNAL(clicked()), this, SLOT(emitClearWorkspace()));
 
     QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem();
-    treeWidgetItem->setData(0, 0, QString("Local"));
+    treeWidgetItem->setData(0, 0, QString(tr("Local")));
     m_variablesTreeWidget->insertTopLevelItem(0, treeWidgetItem);
 
     treeWidgetItem = new QTreeWidgetItem();
-    treeWidgetItem->setData(0, 0, QString("Global"));
+    treeWidgetItem->setData(0, 0, QString(tr("Global")));
     m_variablesTreeWidget->insertTopLevelItem(1, treeWidgetItem);
 
     treeWidgetItem = new QTreeWidgetItem();
-    treeWidgetItem->setData(0, 0, QString("Persistent"));
+    treeWidgetItem->setData(0, 0, QString(tr("Persistent")));
     m_variablesTreeWidget->insertTopLevelItem(2, treeWidgetItem);
 
     treeWidgetItem = new QTreeWidgetItem();
-    treeWidgetItem->setData(0, 0, QString("Hidden"));
+    treeWidgetItem->setData(0, 0, QString(tr("Hidden")));
     m_variablesTreeWidget->insertTopLevelItem(3, treeWidgetItem);
 
     m_variablesTreeWidget->expandAll();

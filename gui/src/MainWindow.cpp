@@ -39,7 +39,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::handleOpenFileRequest(QString fileName) {
-    reportStatusMessage("Opening file.");
+    reportStatusMessage(tr("Opening file."));
     QPixmap pixmap;
     if(pixmap.load(fileName)) {
         ImageViewerMdiSubWindow *subWindow = new ImageViewerMdiSubWindow(pixmap, this);
@@ -65,7 +65,7 @@ void MainWindow::openWebPage(QString url) {
 
 void MainWindow::handleSaveWorkspaceRequest() {
     QDesktopServices desktopServices;
-    QString selectedFile = QFileDialog::getSaveFileName(this, "Save Workspace",
+    QString selectedFile = QFileDialog::getSaveFileName(this, tr("Save Workspace"),
         desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/workspace");
     m_octaveTerminal->sendText(QString("save \'%1\'\n").arg(selectedFile));
     m_octaveTerminal->setFocus();
@@ -73,7 +73,7 @@ void MainWindow::handleSaveWorkspaceRequest() {
 
 void MainWindow::handleLoadWorkspaceRequest() {
     QDesktopServices desktopServices;
-    QString selectedFile = QFileDialog::getOpenFileName(this, "Load Workspace",
+    QString selectedFile = QFileDialog::getOpenFileName(this, tr("Load Workspace"),
         desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/workspace");
     m_octaveTerminal->sendText(QString("load \'%1\'\n").arg(selectedFile));
     m_octaveTerminal->setFocus();
@@ -91,7 +91,7 @@ void MainWindow::handleCommandDoubleClicked(QString command) {
 
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {
     m_isRunning = false;
-    reportStatusMessage("Saving data and shutting down.");
+    reportStatusMessage(tr("Saving data and shutting down."));
     writeSettings();
 
     m_octaveCallbackThread->terminate();
@@ -116,7 +116,7 @@ void MainWindow::writeSettings() {
 void MainWindow::constructWindow() {
     QStyle *style = QApplication::style();
     m_octaveTerminal = new OctaveTerminal(this);
-    m_generalPurposeToolbar = new QToolBar("Octave Toolbar", this);
+    m_generalPurposeToolbar = new QToolBar(tr("Octave Toolbar"), this);
     m_variablesDockWidget = new VariablesDockWidget(this);
     m_historyDockWidget = new HistoryDockWidget(this);
     m_filesDockWidget = new FilesDockWidget(this);
@@ -125,10 +125,10 @@ void MainWindow::constructWindow() {
     m_browserWidget = new BrowserWidget(this);
     m_serviceWidget = new BrowserWidget(this);
     m_centralTabWidget = new QTabWidget(this);
-    m_centralTabWidget->addTab(m_octaveTerminal, "Command Window");
-    m_centralTabWidget->addTab(m_openedFiles, "File Editor");
-    m_centralTabWidget->addTab(m_browserWidget, "Documentation");
-    m_centralTabWidget->addTab(m_serviceWidget, "Service");
+    m_centralTabWidget->addTab(m_octaveTerminal, tr("Command Window"));
+    m_centralTabWidget->addTab(m_openedFiles, tr("File Editor"));
+    m_centralTabWidget->addTab(m_browserWidget, tr("Documentation"));
+    m_centralTabWidget->addTab(m_serviceWidget, tr("Service"));
 
     // TODO: Add meaningfull toolbar items.
     QAction *commandAction = new QAction(style->standardIcon(QStyle::SP_CommandLink),
@@ -176,5 +176,5 @@ void MainWindow::establishOctaveLink() {
     dup2 (fds, 1);
     dup2 (fds, 2);
     m_octaveTerminal->openTeletype(fdm);
-    reportStatusMessage("Established link to Octave.");
+    reportStatusMessage(tr("Established link to Octave."));
 }

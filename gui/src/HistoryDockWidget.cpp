@@ -38,7 +38,7 @@ void HistoryDockWidget::construct() {
     m_historyListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     QHBoxLayout *layout = new QHBoxLayout();
 
-    setWindowTitle("Command History");
+    setWindowTitle(tr("Command History"));
     setWidget(new QWidget());
 
     layout->addWidget(m_historyListView);
@@ -50,12 +50,12 @@ void HistoryDockWidget::construct() {
 
 void HistoryDockWidget::updateHistory(string_vector historyEntries) {
     QStringList stringList = m_historyListModel->stringList();
-    for(size_t i = 0; i < historyEntries.length(); i++) {
+    for(int i = 0; i < historyEntries.length(); i++) {
         QString command(historyEntries[i].c_str());
         if(!command.startsWith("#")) {
             stringList.push_front(command);
         }
     }
     m_historyListModel->setStringList(stringList);
-    emit information("History updated.");
+    emit information(tr("History updated."));
 }

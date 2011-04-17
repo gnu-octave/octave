@@ -1,3 +1,8 @@
+2011-04-17  Patrick Häcker  <magicmuscleman>
+
+	* strings/mat2str.m: Limit the number of digits to one less than
+	available for double.
+
 2011-04-15  Kai Habel  <kai.habel@gmx.de>
 
 	* general/interp1.m, polynomial/mkpp.m, polynomial/pchip.m,

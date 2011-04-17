@@ -1,3 +1,8 @@
+2011-04-16  Ben Abbott  <bpabbott@mac.com>
+
+	* interpreter/plot.txi: Clarify that inheritance of default property
+	values only applies to the named object type.
+
 2011-04-12  Ben Abbott  <bpabbott@mac.com>
 
 	* interpreter/data.txi: Replace xref{Data Structures} with

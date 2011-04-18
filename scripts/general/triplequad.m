@@ -44,14 +44,17 @@
 ## @seealso{dblquad, quad, quadv, quadl, quadgk, quadcc, trapz}
 ## @end deftypefn
 
-function q = triplequad(f, xa, xb, ya, yb, za, zb, tol, quadf, varargin)
+function q = triplequad (f, xa, xb, ya, yb, za, zb, tol = 1e-6, quadf = @quadgk, varargin)
+
   if (nargin < 7)
     print_usage ();
   endif
-  if (nargin < 8 || isempty (tol))
+
+  ## Allow use of empty matrix ([]) to indicate default 
+  if (isempty (tol))
     tol = 1e-6;
   endif
-  if (nargin < 9 || isempty (quadf))
+  if (isempty (quadf))
     quadf = @quadgk;
   endif
 
@@ -61,7 +64,8 @@ function q = triplequad(f, xa, xb, ya, yb, za, zb, tol, quadf, varargin)
     varargin = {};
   endif
 
-  q = dblquad(@(y, z) inner (y, z, f, xa, xb, tol, quadf, varargin{:}),ya, yb, za, zb, tol);
+  q = dblquad (@(y, z) inner (y, z, f, xa, xb, tol, quadf, varargin{:}), ya, yb, za, zb, tol);
+
 endfunction
 
 function q = __triplequad_inner__ (y, z, f, xa, xb, tol, quadf, varargin)
@@ -71,8 +75,12 @@ function q = __triplequad_inner__ (y, z, f, xa, xb, tol, quadf, varargin)
   endfor
 endfunction
 
-%% These tests are too expensive to run normally. Disable them
-% !#assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadgk), pi ^ (3/2) * erf(1).^3, 1e-6)
-% !#assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadl), pi ^ (3/2) * erf(1).^3, 1e-6)
-% !#assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadv), pi ^ (3/2) * erf(1).^3, 1e-6)
+ 
+%% Very simple calculation of volume of a rectangular box (~3 sec)
+%!assert (triplequad (@(x,y,z) ones(length(x),1,1), 0,1, 0,2, 0,3, 1e-1, @quadcc), 6, 1e-1)
+
+%% These tests are too expensive to run normally (~30 sec each). Disable them
+#%!assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadgk), pi ^ (3/2) * erf(1).^3, 1e-6)
+#%!#assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadl), pi ^ (3/2) * erf(1).^3, 1e-6)
+#%!#assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadv), pi ^ (3/2) * erf(1).^3, 1e-6)
 

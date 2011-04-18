@@ -1,3 +1,12 @@
+2011-04-13  Rik  <octave@nomad.inbox5.com>
+
+	* help.cc: Add spaces after commas in @seealso blocks.
+
+2011-04-12  Rik  <octave@nomad.inbox5.com>
+
+	* load-path.cc (restoredefaultpath): Correct use of it's -> its in 
+	documentation.
+
 2011-04-10  John Eaton  <jwe@octave.org>
 
 	* graphics.cc (Fishandle) Accept vector of handles (bug #33025).

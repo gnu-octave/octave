@@ -22,21 +22,28 @@
 ## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
 ## @deftypefnx {Function File} {@var{q} =} quadl (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
 ##
-## Numerically evaluate integral using adaptive Lobatto rule.
-## @code{quadl (@var{f}, @var{a}, @var{b})} approximates the integral of
-## @code{@var{f}(@var{x})} to machine precision.  @var{f} is either a
-## function handle, inline function or string containing the name of
-## the function to evaluate.  The function @var{f} must return a vector
-## of output values if given a vector of input values.
+## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
+## using an adaptive Lobatto rule.
+## @var{f} is a function handle, inline function, or string
+## containing the name of the function to evaluate.
+## The function @var{f} must be vectorized and return a vector of output values
+## if given a vector of input values.
 ##
-## If defined, @var{tol} defines the relative tolerance to which to
-## which to integrate @code{@var{f}(@var{x})}.  While if @var{trace} is
-## defined, displays the left end point of the current interval, the
-## interval length, and the partial integral.
+## @var{a} and @var{b} are the lower and upper limits of integration.  Both
+## limits must be finite.
 ##
-## Additional arguments @var{p1}, etc., are passed directly to @var{f}.
-## To use default values for @var{tol} and @var{trace}, one may pass
-## empty matrices.
+## The optional argument @var{tol} defines the relative tolerance with which
+## to perform the integration.  The default value is @code{eps}.
+##
+## The algorithm used by @code{quadl} involves recursively subdividing the
+## integration interval.
+## If @var{trace} is defined then for each subinterval display: (1) the left
+## end of the subinterval, (2) the length of the subinterval, (3) the
+## approximation of the integral over the subinterval. 
+##
+## Additional arguments @var{p1}, etc., are passed directly to the function
+## @var{f}.  To use default values for @var{tol} and @var{trace}, one may pass
+## empty matrices ([]).
 ##
 ## Reference: W. Gander and W. Gautschi, @cite{Adaptive Quadrature -
 ## Revisited}, BIT Vol. 40, No. 1, March 2000, pp. 84--101.
@@ -55,7 +62,7 @@
 ##   * replace global variable terminate2 with local function need_warning
 ##   * add paper ref to docs
 
-function Q = quadl (f, a, b, tol, trace, varargin)
+function q = quadl (f, a, b, tol, trace, varargin)
   need_warning (1);
   if (nargin < 4)
     tol = [];
@@ -128,7 +135,7 @@ function Q = quadl (f, a, b, tol, trace, varargin)
   if (is == 0)
     is = b-a;
   endif
-  Q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin{:});
+  q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin{:});
 endfunction
 
 ## ADAPTLOBSTP  Recursive function used by QUADL.
@@ -141,7 +148,7 @@ endfunction
 ##
 ##   Walter Gautschi, 08/03/98
 
-function Q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin)
+function q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin)
   h = (b-a)/2;
   m = (a+b)/2;
   alpha = sqrt(2/3);
@@ -165,12 +172,12 @@ function Q = adaptlobstp (f, a, b, fa, fb, is, trace, varargin)
       warning ("quadl: required tolerance may not be met");
       need_warning (0);
     endif
-    Q = i1;
+    q = i1;
     if (trace)
-      disp ([a, b-a, Q]);
+      disp ([a, b-a, q]);
     endif
   else
-    Q = (adaptlobstp (f, a, mll, fa, fmll, is, trace, varargin{:})
+    q = (adaptlobstp (f, a, mll, fa, fmll, is, trace, varargin{:})
          + adaptlobstp (f, mll, ml, fmll, fml, is, trace, varargin{:})
          + adaptlobstp (f, ml, m, fml, fm, is, trace, varargin{:})
          + adaptlobstp (f, m, mr, fm, fmr, is, trace, varargin{:})

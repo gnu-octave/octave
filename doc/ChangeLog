@@ -2,6 +2,13 @@
 
 	* interpreter/plot.txi: Clarify that inheritance of default property
 	values only applies to the named object type.
+2011-04-14  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/plot.txi: Add colstyle function to documentation.
+
+2011-04-12  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/expr.txi: Correct use of it's -> its in documentation.
 
 2011-04-12  Ben Abbott  <bpabbott@mac.com>
 

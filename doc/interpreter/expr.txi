@@ -912,7 +912,7 @@ operands for the operator @samp{&}.
 @sc{matlab} has special behavior that allows the operators @samp{&} and
 @samp{|} to short-circuit when used in the truth expression for @code{if} and 
 @code{while} statements.  The Octave parser may be instructed to behave in the
-same manner, but it's use is strongly discouraged.
+same manner, but its use is strongly discouraged.
 
 @DOCSTRING(do_braindead_shortcircuit_evaluation)
 

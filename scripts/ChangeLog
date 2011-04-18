@@ -13,6 +13,11 @@
 	Handle nD-arguments correctly. Tests added.
 	(bugs #32040, #32045)
 
+2011-04-13  David Bateman  <dbateman@free.fr>
+
+	* plot/colstyle.m : New function.
+	* plot/module.mk plot_FCN_FILES) : Add it here.
+	
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 
 	* help/__makeinfo__.m: Simplify function by using regular expressions.

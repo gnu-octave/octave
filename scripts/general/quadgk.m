@@ -17,25 +17,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
-## @deftypefnx {Function File} {} quadgk (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
+## @deftypefn  {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b})
+## @deftypefnx {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol})
+## @deftypefnx {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{abstol}, @var{trace})
+## @deftypefnx {Function File} {@var{q} =} quadgk (@var{f}, @var{a}, @var{b}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {[@var{q}, @var{err}] =} quadgk (@dots{})
-## Numerically evaluate integral using adaptive Gauss-Konrod quadrature.
+##
+## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
+## using adaptive Gauss-Konrod quadrature.
+## @var{f} is a function handle, inline function, or string
+## containing the name of the function to evaluate.
 ## The formulation is based on a proposal by L.F. Shampine,
 ## @cite{"Vectorized adaptive quadrature in @sc{matlab}", Journal of
 ## Computational and Applied Mathematics, pp131-140, Vol 211, Issue 2,
 ## Feb 2008} where all function evaluations at an iteration are
-## calculated with a single call to @var{f}.  Therefore the function
-## @var{f} must be of the form @code{@var{f} (@var{x})} and accept
-## vector values of @var{x} and return a vector of the same length
-## representing the function evaluations at the given values of @var{x}.
-## The function @var{f} can be defined in terms of a function handle,
-## inline function or string.
+## calculated with a single call to @var{f}.  Therefore, the function
+## @var{f} must be vectorized and must accept a vector of input values @var{x}
+## and return an output vector representing the function evaluations at the
+## given values of @var{x}.
 ##
-## The bounds of the quadrature @code{[@var{a}, @var{b}]} can be finite
-## or infinite and contain weak end singularities.  Variable
-## transformation will be used to treat infinite intervals and weaken
-## the singularities.  For example:
+## @var{a} and @var{b} are the lower and upper limits of integration.  Either
+## or both limits may be infinite or contain weak end singularities.
+## Variable transformation will be used to treat any infinite intervals and
+## weaken the singularities.  For example:
 ##
 ## @example
 ## quadgk(@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
@@ -46,53 +50,57 @@
 ## element-by-element operator @code{./} and all user functions to
 ## @code{quadgk} should do the same.
 ##
-## The absolute tolerance can be passed as a fourth argument in a manner
-## compatible with @code{quadv}.  Equally the user can request that
-## information on the convergence can be printed is the fifth argument
-## is logically true.
+## The optional argument @var{tol} defines the absolute tolerance used to stop
+## the integration procedure.  The default value is @math{1e^{-10}}.
+## 
+## The algorithm used by @code{quadgk} involves subdividing the
+## integration interval and evaluating each subinterval.
+## If @var{trace} is true then after computing each of these partial
+## integrals display: (1) the number of subintervals at this step, 
+## (2) the current estimate of the error @var{err}, (3) the current estimate
+## for the integral @var{q}.
 ##
-## Alternatively, certain properties of @code{quadgk} can be passed as
-## pairs @code{@var{prop}, @var{val}}.  Valid properties are
+## Alternatively, properties of @code{quadgk} can be passed to the function as
+## pairs @code{"@var{prop}", @var{val}}.  Valid properties are
 ##
 ## @table @code
 ## @item AbsTol
-## Defines the absolute error tolerance for the quadrature.  The default
+## Define the absolute error tolerance for the quadrature.  The default
 ## absolute tolerance is 1e-10.
 ##
 ## @item RelTol
-## Defines the relative error tolerance for the quadrature.  The default
+## Define the relative error tolerance for the quadrature.  The default
 ## relative tolerance is 1e-5.
 ##
 ## @item MaxIntervalCount
 ## @code{quadgk} initially subdivides the interval on which to perform
-## the quadrature into 10 intervals.  Sub-intervals that have an
-## unacceptable error are sub-divided and re-evaluated.  If the number of
-## sub-intervals exceeds at any point 650 sub-intervals then a poor
+## the quadrature into 10 intervals.  Subintervals that have an
+## unacceptable error are subdivided and re-evaluated.  If the number of
+## subintervals exceeds 650 subintervals at any point then a poor
 ## convergence is signaled and the current estimate of the integral is
 ## returned.  The property 'MaxIntervalCount' can be used to alter the
-## number of sub-intervals that can exist before exiting.
+## number of subintervals that can exist before exiting.
 ##
 ## @item WayPoints
-## If there exists discontinuities in the first derivative of the
-## function to integrate, then these can be flagged with the
-## @code{"WayPoints"} property.  This forces the ends of a sub-interval
-## to fall on the breakpoints of the function and can result in
+## Discontinuities in the first derivative of the function to integrate can be
+## flagged with the  @code{"WayPoints"} property.  This forces the ends of
+## a subinterval to fall on the breakpoints of the function and can result in
 ## significantly improved estimation of the error in the integral, faster
-## computation or both.  For example,
+## computation, or both.  For example,
 ##
 ## @example
-## quadgk (@@(x) abs (1 - x .^ 2), 0, 2, 'Waypoints', 1)
+## quadgk (@@(x) abs (1 - x.^2), 0, 2, 'Waypoints', 1)
 ## @end example
 ##
 ## @noindent
 ## signals the breakpoint in the integrand at @code{@var{x} = 1}.
 ##
 ## @item Trace
-## If logically true, then @code{quadgk} prints information on the
+## If logically true @code{quadgk} prints information on the
 ## convergence of the quadrature at each iteration.
-##@end table
+## @end table
 ##
-## If any of @var{a}, @var{b} or @var{waypoints} is complex, then the
+## If any of @var{a}, @var{b}, or @var{waypoints} is complex then the
 ## quadrature is treated as a contour integral along a piecewise
 ## continuous path defined by the above.  In this case the integral is
 ## assumed to have no edge singularities.  For example,
@@ -108,9 +116,10 @@
 ## integrates @code{log (z)} along the square defined by @code{[1+1i,
 ##  1-1i, -1-1i, -1+1i]}
 ##
-## If two output arguments are requested, then @var{err} returns the
-## approximate bounds on the error in the integral @code{abs (@var{q} -
-## @var{i})}, where @var{i} is the exact value of the integral.
+## The result of the integration is returned in @var{q}.  
+## @var{err} is an approximate bound on the error in the integral 
+## @code{abs (@var{q} - @var{I})}, where @var{I} is the exact value of the
+## integral.
 ##
 ## @seealso{quad, quadv, quadl, quadcc, trapz, dblquad, triplequad}
 ## @end deftypefn
@@ -281,7 +290,7 @@ function [q, err] = quadgk (f, a, b, varargin)
            3 .* (b - a) ./ 4 .* (1 - t.^2);
     endif
 
-    ## Split interval into at least 10 sub-interval with a 15 point
+    ## Split interval into at least 10 subinterval with a 15 point
     ## Gauss-Kronrod rule giving a minimum of 150 function evaluations
     while (length (subs) < 11)
       subs = [subs' ; subs(1:end-1)' + diff(subs') ./ 2, NaN](:)(1 : end - 1);
@@ -294,7 +303,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## Singularity will cause divide by zero warnings
       warning ("off", "Octave:divide-by-zero");
 
-      ## Initial evaluation of the integrand on the sub-intervals
+      ## Initial evaluation of the integrand on the subintervals
       [q_subs, q_errs] = __quadgk_eval__ (f, subs);
       q0 = sum (q_subs);
       err0 = sum (q_errs);
@@ -307,8 +316,8 @@ function [q, err] = quadgk (f, a, b, varargin)
 
       first = true;
       while (true)
-        ## Check for sub-intervals that are too small. Test must be
-        ## performed in untransformed sub-intervals. What is a good
+        ## Check for subintervals that are too small. Test must be
+        ## performed in untransformed subintervals. What is a good
         ## value for this test. Shampine suggests 100*eps
         if (any (abs (diff (trans (subs), [], 2) / h0) < 100 * myeps))
           q = q0;
@@ -333,7 +342,7 @@ function [q, err] = quadgk (f, a, b, varargin)
           break;
         endif
 
-        ## Accept the sub-intervals that meet the convergence criteria
+        ## Accept the subintervals that meet the convergence criteria
         idx = find (abs (q_errs) < tol .* abs(diff (subs, [], 2)) ./ h);
         if (first)
           q = sum (q_subs (idx));
@@ -347,7 +356,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         endif
         subs(idx,:) = [];
 
-        ## If no remaining sub-intervals exit
+        ## If no remaining subintervals exit
         if (rows (subs) == 0)
           break;
         endif
@@ -356,12 +365,12 @@ function [q, err] = quadgk (f, a, b, varargin)
           disp([rows(subs), err, q0]);
         endif
 
-        ## Split remaining sub-intervals in two
+        ## Split remaining subintervals in two
         mid = (subs(:,2) + subs(:,1)) ./ 2;
         subs = [subs(:,1), mid; mid, subs(:,2)];
 
-        ## If the maximum sub-interval count is met accept remaining
-        ## sub-interval and exit
+        ## If the maximum subinterval count is met accept remaining
+        ## subinterval and exit
         if (rows (subs) > maxint)
           warning ("quadgk: maximum interval count (%d) met", maxint);
           q += sum (q_subs);
@@ -369,7 +378,7 @@ function [q, err] = quadgk (f, a, b, varargin)
           break;
         endif
 
-        ## Evaluation of the integrand on the remaining sub-intervals
+        ## Evaluation of the integrand on the remaining subintervals
         [q_subs, q_errs] = __quadgk_eval__ (f, subs);
       endwhile
 

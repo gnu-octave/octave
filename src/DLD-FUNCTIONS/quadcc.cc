@@ -1479,68 +1479,65 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 
 DEFUN_DLD (quadcc, args, nargout,
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-Numerically evaluate an integral using the doubly-adaptive\n\
-Clenshaw-Curtis quadrature described by P. Gonnet in @cite{Increasing the\n\
-Reliability of Adaptive Quadrature Using Explicit Interpolants}.\n\
+@deftypefn  {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})\n\
+@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefnx {Function File} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
+Numerically evaluate the integral of @var{f} from @var{a} to @var{b}\n\
+using the doubly-adaptive Clenshaw-Curtis quadrature described by P. Gonnet\n\
+in @cite{Increasing the Reliability of Adaptive Quadrature Using Explicit\n\
+Interpolants}.\n\
+@var{f} is a function handle, inline function, or string\n\
+containing the name of the function to evaluate.\n\
+The function @var{f} must be vectorized and must return a vector of output\n\
+values if given a vector of input values.  For example,\n\
+\n\
+@example\n\
+   f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
+@end example\n\
+\n\
+@noindent\n\
+which uses the element-by-element `dot' form for all operators.\n\
+\n\
+@var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
+or both limits may be infinite.  @code{quadcc} handles an inifinite limit\n\
+by substituting the variable of integration with @code{x=tan(pi/2*u)}.\n\
+\n\
+The optional argument @var{tol} defines the relative tolerance used to stop\n\
+the integration procedure.  The default value is @math{1e^{-6}}.\n\
+\n\
+The optional argument @var{sing} contains a list of points where the\n\
+integrand has known singularities, or discontinuities\n\
+in any of its derivatives, inside the integration interval.\n\
+For the example above, which has a discontinuity at x=1, the call to\n\
+@code{quadcc} would be as follows\n\
+\n\
+@example\n\
+   int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
+@end example\n\
+\n\
+The result of the integration is returned in @var{q}.\n\
+@var{err} is an estimate of the absolute integration error and\n\
+@var{nr_points} is the number of points at which the integrand was evaluated.\n\
+If the adaptive integration did not converge, the value of\n\
+@var{err} will be larger than the requested tolerance.  Therefore, it is\n\
+recommended to verify this value for difficult integrands.\n\
+\n\
+@code{quadcc} is capable of dealing with non-numeric\n\
+values of the integrand such as @code{NaN} or @code{Inf}.\n\
+If the integral diverges, and @code{quadcc} detects this, \n\
+then a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
+\n\
+Note: @code{quadcc} is a general purpose quadrature algorithm\n\
+and, as such, may be less efficient for a smooth or otherwise\n\
+well-behaved integrand than other methods such as @code{quadgk}.\n\
+\n\
 The algorithm uses Clenshaw-Curtis quadrature rules of increasing\n\
 degree in each interval and bisects the interval if either the\n\
 function does not appear to be smooth or a rule of maximum\n\
 degree has been reached.  The error estimate is computed from the\n\
 L2-norm of the difference between two successive interpolations\n\
 of the integrand over the nodes of the respective quadrature rules.\n\
-\n\
-For example,\n\
-\n\
-@example\n\
-   int = quadcc (f, a, b, 1.0e-6);\n\
-@end example\n\
-\n\
-@noindent\n\
-computes the integral of a function @var{f} in the interval\n\
-[@var{a}, @var{b}] to the relative precision of six\n\
-decimal digits.\n\
-The integrand @var{f} should accept a vector argument and return a vector\n\
-result containing the integrand evaluated at each element of the\n\
-argument, for example:\n\
-\n\
-@example\n\
-   f = @@(x) x .* sin (1 ./ x) .* sqrt (abs (1 - x));\n\
-@end example\n\
-\n\
-If the integrand has known singularities or discontinuities\n\
-in any of its derivatives inside the interval,\n\
-as does the above example at x=1, these can be specified in\n\
-the additional argument @var{sing} as follows\n\
-\n\
-@example\n\
-   int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
-@end example\n\
-\n\
-The two additional output variables @var{err} and @var{nr_points}\n\
-return an estimate of the absolute integration error and\n\
-the number of points at which the integrand was evaluated\n\
-respectively.\n\
-If the adaptive integration did not converge, the value of\n\
-@var{err} will be larger than the requested tolerance.  It is\n\
-therefore recommended to verify this value for difficult\n\
-integrands.\n\
-\n\
-If either @var{a} or @var{b} are @code{+/-Inf}, @code{quadcc}\n\
-integrates @var{f} by substituting the variable of integration\n\
-with @code{x=tan(pi/2*u)}.\n\
-\n\
-@code{quadcc} is capable of dealing with non-numeric\n\
-values of the integrand such as @code{NaN} or @code{Inf}\n\
-, as in the above example at x=0.\n\
-If the integral diverges and @code{quadcc} detects this, \n\
-a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
-\n\
-Note that @code{quadcc} is a general purpose quadrature algorithm\n\
-and as such may be less efficient for smooth or otherwise\n\
-well-behaved integrand than other methods such as\n\
-@code{quadgk} or @code{trapz}.\n\
 \n\
 Reference: P. Gonnet, @cite{Increasing the Reliability of Adaptive\n\
 Quadrature Using Explicit Interpolants}, ACM Transactions on\n\

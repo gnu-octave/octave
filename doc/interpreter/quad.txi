@@ -20,19 +20,19 @@
 @chapter Numerical Integration
 
 Octave comes with several built-in functions for computing the integral
-of a function numerically.  These functions all solve 1-dimensional
-integration problems.
+of a function numerically (termed quadrature).  These functions all solve
+1-dimensional integration problems.
 
 @menu
 * Functions of One Variable:: 
-* Functions of Multiple Variables:: 
 * Orthogonal Collocation::      
+* Functions of Multiple Variables:: 
 @end menu
 
 @node Functions of One Variable
 @section Functions of One Variable
 
-Octave supports three different algorithms for computing the integral
+Octave supports five different algorithms for computing the integral
 @tex
 $$
  \int_a^b f(x) d x
@@ -45,30 +45,42 @@ These are
 @item quad
 Numerical integration based on Gaussian quadrature.
 
+@item quadv
+Numerical integration using an adaptive vectorized Simpson's rule.
+
 @item quadl
 Numerical integration using an adaptive Lobatto rule.
 
 @item quadgk
 Numerical integration using an adaptive Gauss-Konrod rule.
 
-@item quadv
-Numerical integration using an adaptive vectorized Simpson's rule.
-
 @item quadcc
 Numerical integration using adaptive Clenshaw-Curtis rules.
 
-@item trapz
-Numerical integration using the trapezoidal method.
+@item trapz, cumtrapz
+Numerical integration of data using the trapezoidal method.
 @end table
 
 @noindent
-Besides these functions Octave also allows you to perform cumulative
-numerical integration using the trapezoidal method through the
-@code{cumtrapz} function.
+The best quadrature algorithm to use depends on the integrand.  If you have
+empirical data, rather than a function, the choice is @code{trapz} or
+@code{cumtrapz}.  If you are uncertain about the characteristics of the
+integrand, @code{quadcc} will be the most robust as it can handle
+discontinuities, singularities, oscillatory functions, and infinite intervals.
+When the integrand is smooth @code{quadgk} may be the fastest of the
+algorithms.
 
-@DOCSTRING(quad)
+@multitable @columnfractions 0.05 0.15 .80
+@headitem @tab Function @tab Characteristics
+@item @tab quad   @tab Low accuracy with nonsmooth integrands
+@item @tab quadv  @tab Medium accuracy with smooth integrands
+@item @tab quadl  @tab Medium accuracy with smooth integrands.  Slower than quadgk.
+@item @tab quadgk @tab Medium accuracy (@math{1e^{-6}}--@math{1e^{-9}}) with smooth integrands.
+@item @tab        @tab Handles oscillatory functions and infinite bounds
+@item @tab quadcc @tab Low to High accuracy with nonsmooth/smooth integrands
+@item @tab        @tab Handles oscillatory functions, singularities, and infinite bounds
+@end multitable
 
-@DOCSTRING(quad_options)
 
 Here is an example of using @code{quad} to integrate the function
 @tex
@@ -95,21 +107,22 @@ The first step is to define the function:
 @example
 @group
 function y = f (x)
-  y = x .* sin (1 ./ x) .* sqrt (abs (1 - x));
+  y = x .* sin (1./x) .* sqrt (abs (1 - x));
 endfunction
 @end group
 @end example
 
-Note the use of the `dot' forms of the operators.  This is not necessary
-for the call to @code{quad}, but it makes it much easier to generate a
-set of points for plotting (because it makes it possible to call the
-function with a vector argument to produce a vector result).
+Note the use of the `dot' forms of the operators.  This is not necessary for
+the @code{quad} integrator, but is required by the other integrators.  In any
+case, it makes it much easier to generate a set of points for plotting because
+it is possible to call the function with a vector argument to produce a vector
+result.
 
-Then we simply call quad:
+The second step is to call quad with the limits of integration:
 
 @example
 @group
-[v, ier, nfun, err] = quad ("f", 0, 3)
+[q, ier, nfun, err] = quad ("f", 0, 3)
      @result{} 1.9819
      @result{} 1
      @result{} 5061
@@ -121,13 +134,83 @@ Although @code{quad} returns a nonzero value for @var{ier}, the result
 is reasonably accurate (to see why, examine what happens to the result
 if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
+The function "f" can be the string name of a function, a function handle, or
+an inline function.  These options make it quite easy to do integration
+without having to fully define a function in an m-file.  For example:
+
+@example
+@group
+# Verify integral (x^3) = x^4/4
+f = inline ("x.^3");
+quadgk (f, 0, 1)
+     @result{} 0.25000
+
+# Verify gamma function = (n-1)! for n = 4
+f = @@(x) x.^3 .* exp (-x);
+quadcc (f, 0, Inf)
+     @result{} 6.0000
+@end group
+@end example
+
+@DOCSTRING(quad)
+
+@DOCSTRING(quad_options)
+
+@DOCSTRING(quadv)
+
 @DOCSTRING(quadl)
 
 @DOCSTRING(quadgk)
 
-@DOCSTRING(quadv)
-
 @DOCSTRING(quadcc)
+
+Sometimes one does not have the function, but only the raw (x, y) points from
+which to perform an integration.  This can occur when collecting data in an
+experiment.  The @code{trapz} function can integrate these values as shown in
+the following example where "data" has been collected on the cosine function
+over the range [0, pi/2). 
+
+@example
+@group
+x = 0:0.1:pi/2;  # Uniformly spaced points
+y = cos (x);
+trapz (x, y)
+     @result{} 0.99666
+@end group
+@end example
+
+The answer is reasonably close to the exact value of 1.  Ordinary quadrature
+is sensitive to the characteristics of the integrand.  Empirical integration 
+depends not just on the integrand, but also on the particular points chosen to
+represent the function.  Repeating the example above with the sine function
+over the range [0, pi/2) produces far inferior results.
+
+@example
+@group
+x = 0:0.1:pi/2;  # Uniformly spaced points
+y = sin (x);
+trapz (x, y)
+     @result{} 0.92849
+@end group
+@end example
+
+However, a slightly different choice of data points can change the result
+significantly.  The same integration, with the same number of points, but
+spaced differently produces a more accurate answer.
+
+@example
+@group
+x = linspace (0, pi/2, 16);  # Uniformly spaced, but including endpoint
+y = sin (x);
+trapz (x, y)
+     @result{} 0.99909
+@end group
+@end example
+
+In general there may be no way of knowing the best distribution of points ahead
+of time.  Or the points may come from an experiment where there is no freedom to
+select the best distribution.  In any case, one must remain aware of this
+issue when using @code{trapz}.
 
 @DOCSTRING(trapz)
 
@@ -183,9 +266,9 @@ u = [ 0; (at - alpha * bt) \ rhs; 1]
 @section Functions of Multiple Variables
 
 Octave does not have built-in functions for computing the integral of
-functions of multiple variables directly.  It is however possible to
+functions of multiple variables directly.  It is possible, however, to
 compute the integral of a function of multiple variables using the
-functions for one-dimensional integrals.
+existing functions for one-dimensional integrals.
 
 To illustrate how the integration can be performed, we will integrate
 the function
@@ -205,23 +288,23 @@ for @math{x} and @math{y} between 0 and 1.
 
 The first approach creates a function that integrates @math{f} with
 respect to @math{x}, and then integrates that function with respect to
-@math{y}.  Since @code{quad} is written in Fortran it cannot be called
+@math{y}.  Because @code{quad} is written in Fortran it cannot be called
 recursively.  This means that @code{quad} cannot integrate a function
 that calls @code{quad}, and hence cannot be used to perform the double
-integration.  It is however possible with @code{quadl}, which is what
-the following code does.
+integration.  Any of the other integrators, however, can be used which is
+what the following code demonstrates.
 
 @example
 @group
-function I = g(y)
-  I = ones(1, length(y));
-  for i = 1:length(y)
-    f = @@(x) sin(pi.*x.*y(i)).*sqrt(x.*y(i));
-    I(i) = quadl(f, 0, 1);
+function q = g(y)
+  q = ones (size (y));
+  for i = 1:length (y)
+    f = @@(x) sin (pi*x.*y(i)) .* sqrt (x.*y(i));
+    q(i) = quadgk (f, 0, 1);
   endfor
 endfunction
 
-I = quadl("g", 0, 1)
+I = quadgk ("g", 0, 1)
       @result{} 0.30022
 @end group
 @end example
@@ -232,7 +315,7 @@ variables.  For example:
 
 @example
 @group
-I =  dblquad (@@(x, y) sin(pi.*x.*y).*sqrt(x.*y), 0, 1, 0, 1)
+I = dblquad (@@(x, y) sin (pi*x.*y) .* sqrt (x.*y), 0, 1, 0, 1)
       @result{} 0.30022
 @end group
 @end example
@@ -241,12 +324,12 @@ I =  dblquad (@@(x, y) sin(pi.*x.*y).*sqrt(x.*y), 0, 1, 0, 1)
 
 @DOCSTRING(triplequad)
 
-The above mentioned approach works but is fairly slow, and that problem
-increases exponentially with the dimensionality the problem.  Another
+The above mentioned approach works, but is fairly slow, and that problem
+increases exponentially with the dimensionality of the integral.  Another
 possible solution is to use Orthogonal Collocation as described in the
-previous section.  The integral of a function @math{f(x,y)} for
-@math{x} and @math{y} between 0 and 1 can be approximated using @math{n}
-points by
+previous section (@pxref{Orthogonal Collocation}).  The integral of a function
+@math{f(x,y)} for @math{x} and @math{y} between 0 and 1 can be approximated
+using @math{n} points by
 @tex
 $$
  \int_0^1 \int_0^1 f(x,y) d x d y \approx \sum_{i=1}^n \sum_{j=1}^n q_i q_j f(r_i, r_j),
@@ -257,13 +340,13 @@ the sum over @code{i=1:n} and @code{j=1:n} of @code{q(i)*q(j)*f(r(i),r(j))},
 @end ifnottex
 where @math{q} and @math{r} is as returned by @code{colloc(n)}.  The
 generalization to more than two variables is straight forward.  The
-following code computes the studied integral using @math{n=7} points.
+following code computes the studied integral using @math{n=8} points.
 
 @example
 @group
-f = @@(x,y) sin(pi*x*y').*sqrt(x*y');
-n = 7;
-[t, A, B, q] = colloc(n);
+f = @@(x,y) sin (pi*x*y') .* sqrt (x*y');
+n = 8;
+[t, ~, ~, q] = colloc (n);
 I = q'*f(t,t)*q;
       @result{} 0.30022
 @end group
@@ -272,7 +355,5 @@ I = q'*f(t,t)*q;
 @noindent
 It should be noted that the number of points determines the quality
 of the approximation.  If the integration needs to be performed between
-@math{a} and @math{b} instead of 0 and 1, a change of variables is needed.
-
-
+@math{a} and @math{b}, instead of 0 and 1, then a change of variables is needed.
 

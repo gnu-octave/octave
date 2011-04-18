@@ -657,8 +657,8 @@ Operators and Functions
 Numerical Integration
 
 * Functions of One Variable:: 
-* Functions of Multiple Variables:: 
 * Orthogonal Collocation::      
+* Functions of Multiple Variables:: 
 
 Differential Equations
 

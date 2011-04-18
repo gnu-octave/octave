@@ -1,3 +1,7 @@
+2011-04-18  Paul Boven  <p.boven@xs4all.nl>
+
+	* image/image.m: Fixed naming of variables in texinfo
+
 2011-04-17  Patrick Häcker  <magicmuscleman>
 
 	* strings/mat2str.m: Limit the number of digits to one less than

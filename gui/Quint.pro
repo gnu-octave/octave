@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webkit xml
+QT       += core gui webkit xml opengl
 UI_DIR = ui-files
 MOC_DIR = moc-files
 OBJECTS_DIR = object-files
@@ -45,7 +45,9 @@ SOURCES +=\
     src/BrowserWidget.cpp \
     src/NumberedCodeEdit.cpp \
     src/SimpleEditor.cpp \
-    src/ImageViewerMdiSubWindow.cpp
+    src/ImageViewerMdiSubWindow.cpp \
+    src/PlotterWidget.cpp \
+    src/Plot2dWidget.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -84,7 +86,9 @@ HEADERS += \
     src/BrowserWidget.h \
     src/NumberedCodeEdit.h \
     src/SimpleEditor.h \
-    src/ImageViewerMdiSubWindow.h
+    src/ImageViewerMdiSubWindow.h \
+    src/PlotterWidget.h \
+    src/Plot2dWidget.h
 
 INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
 LFLAGS = $$system(mkoctfile -p LFLAGS) \

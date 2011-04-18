@@ -32,6 +32,7 @@
 #include "FilesDockWidget.h"
 #include "SimpleEditor.h"
 #include "BrowserWidget.h"
+#include "PlotterWidget.h"
 
 // Octave includes
 #undef PACKAGE_BUGREPORT
@@ -123,6 +124,7 @@ private:
     QToolBar *m_generalPurposeToolbar;
     BrowserWidget *m_browserWidget;
     BrowserWidget *m_serviceWidget;
+    PlotterWidget *m_plotterWidget;
     QString m_settingsFile;
 
     // Threads for running octave and managing the data interaction.

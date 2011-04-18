@@ -86,6 +86,7 @@ void MainWindow::handleClearWorkspaceRequest() {
 
 void MainWindow::handleCommandDoubleClicked(QString command) {
     m_octaveTerminal->sendText(command);
+    m_centralTabWidget->setCurrentWidget(m_octaveTerminal);
     m_octaveTerminal->setFocus();
 }
 
@@ -124,9 +125,11 @@ void MainWindow::constructWindow() {
     m_statusBar = new QStatusBar(this);
     m_browserWidget = new BrowserWidget(this);
     m_serviceWidget = new BrowserWidget(this);
+    m_plotterWidget = new PlotterWidget(this);
     m_centralTabWidget = new QTabWidget(this);
     m_centralTabWidget->addTab(m_octaveTerminal, tr("Command Window"));
     m_centralTabWidget->addTab(m_openedFiles, tr("File Editor"));
+    m_centralTabWidget->addTab(m_plotterWidget, tr("Plotter"));
     m_centralTabWidget->addTab(m_browserWidget, tr("Documentation"));
     m_centralTabWidget->addTab(m_serviceWidget, tr("Service"));
 

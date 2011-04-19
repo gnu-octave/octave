@@ -648,12 +648,12 @@ public:
     begin ();
     {
 
+      canvas = new
+        OpenGL_fltk (0, 0, ww , hh - status_h, number ());
+
       uimenu = new
         fltk_uimenu(0, 0, ww, menu_h);
       uimenu->hide ();
-
-      canvas = new
-        OpenGL_fltk (0, 0, ww , hh - status_h, number ());
 
       bottom = new
         Fl_Box (0,

@@ -1,3 +1,8 @@
+2011-04-19  Kai Habel  <kai.habel@gmx.de>
+
+	* src/DLD-FUNCTIONS/__init_fltk__.cc(plot_window::plot_window):
+	Instantiate canvas before uimenu.
+
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 
 	* help.cc: Add spaces after commas in @seealso blocks.

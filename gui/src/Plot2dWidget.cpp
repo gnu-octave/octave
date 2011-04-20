@@ -98,8 +98,8 @@ void Plot2dView::mouseReleaseEvent(QMouseEvent *mouseEvent) {
 
 void Plot2dView::mouseMoveEvent(QMouseEvent *mouseEvent) {
     if(m_leftMouseButtonDown) {
-        m_scrollX -= ((double)mouseEvent->x() - m_lastMouseButtonDownX) / 100;
-        m_scrollY += ((double)mouseEvent->y() - m_lastMouseButtonDownY) / 100;
+        m_scrollX -= ((double)mouseEvent->x() - m_lastMouseButtonDownX) / (100 * m_zoom);
+        m_scrollY += ((double)mouseEvent->y() - m_lastMouseButtonDownY) / (100 * m_zoom);
         m_lastMouseButtonDownX = (double)mouseEvent->x();
         m_lastMouseButtonDownY = (double)mouseEvent->y();
     }

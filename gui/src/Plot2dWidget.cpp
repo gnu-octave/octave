@@ -15,6 +15,7 @@ void Plot2dView::construct() {
     animationTimer->setInterval(20);
     animationTimer->start();
     m_zoom = 1.0;
+    m_zoomAcceleration = 0.0;
     m_scrollX = 0.0;
     m_scrollY = 0.0;
     m_leftMouseButtonDown = false;
@@ -74,7 +75,7 @@ void Plot2dView::resizeGL(int w, int h) {
 }
 
 void Plot2dView::wheelEvent(QWheelEvent *wheelEvent) {
-    m_zoomAcceleration += ((double)wheelEvent->delta()) / 5000;
+    m_zoomAcceleration += ((double)wheelEvent->delta()) / 1000;
     wheelEvent->accept();
     updateGL();
 }
@@ -109,9 +110,9 @@ void Plot2dView::animate() {
     m_zoom += m_zoomAcceleration;
     if(m_zoom < 0)
         m_zoom = 0;
-    m_zoomAcceleration *= 0.2;
-    if(abs(m_zoomAcceleration) < 0.01)
-        m_zoomAcceleration = 0;
+    m_zoomAcceleration *= 0.5;
+    //if(abs(m_zoomAcceleration) < 0.001)
+    //    m_zoomAcceleration = 0;
     updateGL();
 }
 

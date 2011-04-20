@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QLabel>
+#include <QColorDialog>
 #include <math.h>
 
 Plot2dView::Plot2dView(QWidget *parent)
@@ -20,7 +21,20 @@ void Plot2dView::construct() {
     m_scrollX = 0.0;
     m_scrollY = 0.0;
     m_leftMouseButtonDown = false;
+    setBackgroundColor(QColor(0, 0, 0));
     connect(animationTimer, SIGNAL(timeout()), this, SLOT(animate()));
+}
+
+QColor Plot2dView::backgroundColor() {
+    return m_backgroundColor;
+}
+
+void Plot2dView::setBackgroundColor(QColor color) {
+    m_backgroundColor = color;
+    glClearColor((double)color.red() / 255.0,
+                 (double)color.green() / 255.0,
+                 (double)color.blue() / 255.0, 0.0);
+    updateGL();
 }
 
 void Plot2dView::initializeGL() {
@@ -130,6 +144,14 @@ void Plot2dWidget::dataSourceTypeChanged(QString type) {
     }
 }
 
+void Plot2dWidget::selectBackgroundColor() {
+    QColorDialog dialog(this);
+    dialog.setCurrentColor(m_plot2dView->backgroundColor());
+    dialog.setOption(QColorDialog::NoButtons);
+    connect(&dialog, SIGNAL(currentColorChanged(QColor)), m_plot2dView, SLOT(setBackgroundColor(QColor)));
+    dialog.exec();
+}
+
 void Plot2dWidget::construct() {
     QVBoxLayout *layout = new QVBoxLayout();
     m_plot2dView = new Plot2dView(this);
@@ -142,15 +164,17 @@ void Plot2dWidget::construct() {
 
     m_generalTab = new QWidget(this);
     m_dataSourceTab = new QWidget(this);
-    m_verticalAxisTab = new QWidget(this);
-    m_horizontalAxisTab = new QWidget(this);
+    m_seriesTab = new QWidget(this);
     m_tabWidget->addTab(m_generalTab, tr("General"));
     m_tabWidget->addTab(m_dataSourceTab, tr("Data Source"));
-    m_tabWidget->addTab(m_verticalAxisTab, tr("Vertical Axis"));
-    m_tabWidget->addTab(m_horizontalAxisTab, tr("Horizontal Axis"));
+    m_tabWidget->addTab(m_seriesTab, tr("Series"));
 
         // Build general tab.
         QHBoxLayout *generalTabLayout = new QHBoxLayout();
+        m_backgroundColorSelectionButton = new QPushButton(tr("Change"), this);
+        generalTabLayout->addWidget(new QLabel(tr("Background Color:"), this));
+        generalTabLayout->addWidget(m_backgroundColorSelectionButton);
+        generalTabLayout->addStretch();
         m_generalTab->setLayout(generalTabLayout);
 
         // Build data source tab.
@@ -204,4 +228,5 @@ void Plot2dWidget::construct() {
     setLayout(layout);
 
     connect(m_dataSourceTypeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(dataSourceTypeChanged(QString)));
+    connect(m_backgroundColorSelectionButton, SIGNAL(clicked()), this, SLOT(selectBackgroundColor()));
 }

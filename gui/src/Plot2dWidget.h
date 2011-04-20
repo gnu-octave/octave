@@ -10,11 +10,16 @@
 #include <QMouseEvent>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QColor>
 
 class Plot2dView : public QGLWidget {
     Q_OBJECT
 public:
     explicit Plot2dView(QWidget *parent = 0);
+    QColor backgroundColor();
+
+public slots:
+    void setBackgroundColor(QColor color);
 
 protected:
     void initializeGL();
@@ -37,6 +42,7 @@ private:
     double m_scrollY;
     double m_zoom;
     double m_zoomAcceleration;
+    QColor m_backgroundColor;
 };
 
 class Plot2dWidget : public QWidget
@@ -49,6 +55,7 @@ signals:
 
 public slots:
     void dataSourceTypeChanged(QString type);
+    void selectBackgroundColor();
 
 private:
     void construct();
@@ -57,8 +64,8 @@ private:
     QTabWidget *m_tabWidget;
     QWidget *m_generalTab;
     QWidget *m_dataSourceTab;
-    QWidget *m_verticalAxisTab;
-    QWidget *m_horizontalAxisTab;
+    QWidget *m_seriesTab;
+    QPushButton *m_backgroundColorSelectionButton;
     QComboBox *m_dataSourceTypeComboBox;
     QStackedWidget *m_dataSourceStackedWidget;
     QLineEdit *m_sampledFromLineEdit;

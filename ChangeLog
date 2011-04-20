@@ -1,10 +1,10 @@
-2011-04-08  Rik  <octave@nomad.inbox5.com>
-
-	* NEWS: Deprecate studentize(), add new function zscore().
-
 2011-04-14  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Add colstyle to list of new functions for 3.4
+
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Deprecate studentize(), add new function zscore().
 
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 

@@ -39,24 +39,28 @@ void Plot2dView::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_LINES);
         glColor3d(1.0, 1.0, 1.0);
-        glVertex2d(0.1, 0.1);
-        glVertex2d(0.9, 0.1);
-        glVertex2d(0.1, 0.1);
-        glVertex2d(0.1, 0.9);
+        glVertex2d(0.0, 0.0);
+        glVertex2d(1.0, 0.0);
+        glVertex2d(0.0, 0.0);
+        glVertex2d(0.0, 1.0);
     glEnd();
 
-    glBegin(GL_POLYGON);
-        glVertex2d(0.092, 0.9);
-        glVertex2d(0.108, 0.9);
-        glVertex2d(0.1, 0.92);
-    glEnd();
-    glBegin(GL_POLYGON);
-        glVertex2d(0.9, 0.092);
-        glVertex2d(0.9, 0.108);
-        glVertex2d(0.92, 0.1);
-    glEnd();
+    for(double phi = 0.0; phi < 2*3.141; phi += 2*3.141 / 3) {
+        glBegin(GL_LINES);
+            glColor3d(phi / (2 * 3.141), 1.0, 1.0 - phi / (2 * 3.141));
+            for(double d = 0.0; d < 1.0; d +=0.01)
+                glVertex2d(d, sin(d*2*3.141 + phi) / 2 + 0.5);
+        glEnd();
+    }
 
-    renderText(0.8, 0.05, 0.0, "axis");
+    glMatrixMode(GL_MODELVIEW_MATRIX);
+    glLoadIdentity();
+
+    glColor3d(1.0, 1.0, 1.0);
+    renderText(-0.9, -0.9, 0.0, QString("Scaling: %1, Translation: (%2/%3)")
+                                .arg(m_zoom)
+                                .arg(m_scrollX)
+                                .arg(m_scrollY));
 }
 
 void Plot2dView::resizeGL(int w, int h) {

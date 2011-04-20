@@ -3,6 +3,7 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QTimer>
+#include <QLabel>
 #include <math.h>
 
 Plot2dView::Plot2dView(QWidget *parent)
@@ -121,6 +122,14 @@ Plot2dWidget::Plot2dWidget(QWidget *parent)
     construct();
 }
 
+void Plot2dWidget::dataSourceTypeChanged(QString type) {
+    if(type == "Sampled") {
+        m_dataSourceStackedWidget->setCurrentIndex(0);
+    } else if(type == "Parameterized") {
+        m_dataSourceStackedWidget->setCurrentIndex(1);
+    }
+}
+
 void Plot2dWidget::construct() {
     QVBoxLayout *layout = new QVBoxLayout();
     m_plot2dView = new Plot2dView(this);
@@ -131,24 +140,68 @@ void Plot2dWidget::construct() {
     m_tabWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     layout->addWidget(m_tabWidget);
 
+    m_generalTab = new QWidget(this);
     m_dataSourceTab = new QWidget(this);
     m_verticalAxisTab = new QWidget(this);
     m_horizontalAxisTab = new QWidget(this);
+    m_tabWidget->addTab(m_generalTab, tr("General"));
     m_tabWidget->addTab(m_dataSourceTab, tr("Data Source"));
     m_tabWidget->addTab(m_verticalAxisTab, tr("Vertical Axis"));
     m_tabWidget->addTab(m_horizontalAxisTab, tr("Horizontal Axis"));
 
+        // Build general tab.
+        QHBoxLayout *generalTabLayout = new QHBoxLayout();
+        m_generalTab->setLayout(generalTabLayout);
+
         // Build data source tab.
         QHBoxLayout *dataSourceTabLayout = new QHBoxLayout();
-
         m_dataSourceTypeComboBox = new QComboBox(this);
-        m_dataSourceTypeComboBox->addItem(tr("Parameterized"));
         m_dataSourceTypeComboBox->addItem(tr("Sampled"));
+        m_dataSourceTypeComboBox->addItem(tr("Parameterized"));
+
+        m_dataSourceStackedWidget = new QStackedWidget(this);
+        m_sampledFromLineEdit = new QLineEdit("0", this);
+        m_sampledToLineEdit = new QLineEdit("4096", this);
+        m_parameterizedFromLineEdit = new QLineEdit("0.0", this);
+        m_parameterizedToLineEdit = new QLineEdit("1.0", this);
+
+        m_sampledFromLineEdit->setAlignment(Qt::AlignRight);
+        m_sampledToLineEdit->setAlignment(Qt::AlignRight);
+        m_parameterizedFromLineEdit->setAlignment(Qt::AlignRight);
+        m_parameterizedToLineEdit->setAlignment(Qt::AlignRight);
+
+        QWidget *sampledDataSourceRange = new QWidget(this);
+        QHBoxLayout *sampledDataSourceLayout = new QHBoxLayout();
+        sampledDataSourceLayout->addWidget(new QLabel(tr("From sample"), this));
+        sampledDataSourceLayout->addWidget(m_sampledFromLineEdit);
+        sampledDataSourceLayout->addWidget(new QLabel(tr("to sample"), this));
+        sampledDataSourceLayout->addWidget(m_sampledToLineEdit);
+        sampledDataSourceLayout->addWidget(new QLabel(".", this));
+        sampledDataSourceLayout->setMargin(0);
+        sampledDataSourceRange->setLayout(sampledDataSourceLayout);
+
+        QWidget *parameterizedDataSourceRange = new QWidget(this);
+        QHBoxLayout *parameterizedDataSourceLayout = new QHBoxLayout();
+        parameterizedDataSourceLayout->addWidget(new QLabel(tr("From value"), this));
+        parameterizedDataSourceLayout->addWidget(m_parameterizedFromLineEdit);
+        parameterizedDataSourceLayout->addWidget(new QLabel(tr("to value"), this));
+        parameterizedDataSourceLayout->addWidget(m_parameterizedToLineEdit);
+        parameterizedDataSourceLayout->addWidget(new QLabel(".", this));
+        parameterizedDataSourceLayout->setMargin(0);
+        parameterizedDataSourceRange->setLayout(parameterizedDataSourceLayout);
+
+        m_dataSourceStackedWidget->addWidget(sampledDataSourceRange);
+        m_dataSourceStackedWidget->addWidget(parameterizedDataSourceRange);
+
+        m_refreshDataRangeButton = new QPushButton(tr("Refresh"), this);
+        dataSourceTabLayout->addWidget(new QLabel(tr("Type:"), this));
         dataSourceTabLayout->addWidget(m_dataSourceTypeComboBox);
-        dataSourceTabLayout->addStretch();
+        dataSourceTabLayout->addWidget(m_dataSourceStackedWidget);
+        dataSourceTabLayout->addWidget(m_refreshDataRangeButton);
         m_dataSourceTab->setLayout(dataSourceTabLayout);
 
     layout->setMargin(0);
     setLayout(layout);
 
+    connect(m_dataSourceTypeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(dataSourceTypeChanged(QString)));
 }

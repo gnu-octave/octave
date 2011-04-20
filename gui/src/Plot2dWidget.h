@@ -4,9 +4,12 @@
 #include <QWidget>
 #include <QGLWidget>
 #include <QTabWidget>
+#include <QStackedWidget>
 #include <QComboBox>
 #include <QWheelEvent>
 #include <QMouseEvent>
+#include <QLineEdit>
+#include <QPushButton>
 
 class Plot2dView : public QGLWidget {
     Q_OBJECT
@@ -45,17 +48,24 @@ public:
 signals:
 
 public slots:
+    void dataSourceTypeChanged(QString type);
 
 private:
     void construct();
 
     Plot2dView *m_plot2dView;
     QTabWidget *m_tabWidget;
+    QWidget *m_generalTab;
     QWidget *m_dataSourceTab;
     QWidget *m_verticalAxisTab;
     QWidget *m_horizontalAxisTab;
     QComboBox *m_dataSourceTypeComboBox;
-
+    QStackedWidget *m_dataSourceStackedWidget;
+    QLineEdit *m_sampledFromLineEdit;
+    QLineEdit *m_sampledToLineEdit;
+    QLineEdit *m_parameterizedFromLineEdit;
+    QLineEdit *m_parameterizedToLineEdit;
+    QPushButton *m_refreshDataRangeButton;
 };
 
 #endif // PLOT2DWIDGET_H

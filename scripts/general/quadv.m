@@ -21,32 +21,43 @@
 ## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol})
 ## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace})
 ## @deftypefnx {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b}, @var{tol}, @var{trace}, @var{p1}, @var{p2}, @dots{})
-## @deftypefnx {Function File} {[@var{q}, @var{fcnt}] =} quadv (@dots{})
+## @deftypefnx {Function File} {[@var{q}, @var{nfun}] =} quadv (@dots{})
 ##
 ## Numerically evaluate the integral of @var{f} from @var{a} to @var{b}
-## using adaptive Simpson's rule.
-## @var{f} is either a function handle, inline function or string
+## using an adaptive Simpson's rule.
+## @var{f} is a function handle, inline function, or string
 ## containing the name of the function to evaluate.
-## The function defined by @var{f} may be a scalar, vector or array-valued.
+## @code{quadv} is a vectorized version of @code{quad} and the function
+## defined by @var{f} must accept a scalar or vector as input and return a
+## scalar, vector, or array as output.
 ##
-## If a value for @var{tol} is given, it defines the tolerance used to stop
-## the adaptation procedure, otherwise the default value of 1e-6 is used.
+## @var{a} and @var{b} are the lower and upper limits of integration.  Both
+## limits must be finite.
+## 
+## The optional argument @var{tol} defines the tolerance used to stop
+## the adaptation procedure.  The default value is @math{1e^{-6}}.
 ##
-## The algorithm used by @code{quadv}, involves recursively subdividing the
-## integration interval and applying Simpson's rule on each sub-interval.
-## If @var{trace} is @var{true}, after computing each of these partial
-## integrals, display the total number of function evaluations, the left end
-## of the sub-interval, the length of the sub-interval and the approximation
-## of the integral over the sub-interval.
+## The algorithm used by @code{quadv} involves recursively subdividing the
+## integration interval and applying Simpson's rule on each subinterval.
+## If @var{trace} is true then after computing each of these partial
+## integrals display: (1) the total number of function evaluations,
+## (2) the left end of the subinterval, (3) the length of the subinterval,
+## (4) the approximation of the integral over the subinterval.
 ##
-## Additional arguments @var{p1}, etc., are passed directly to @var{f}.
-## To use default values for @var{tol} and @var{trace}, one may pass
-## empty matrices.
+## Additional arguments @var{p1}, etc., are passed directly to the function
+## @var{f}.  To use default values for @var{tol} and @var{trace}, one may pass
+## empty matrices ([]).
 ##
-##@seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad}
+## The result of the integration is returned in @var{q}.  @var{nfun} indicates
+## the number of function evaluations that were made.
+##
+## Note: @code{quadv} is written in Octave's scripting language and can be
+## used recursively in @code{dblquad} and @code{triplequad}, unlike the 
+## similar @code{quad} function.
+## @seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad}
 ## @end deftypefn
 
-function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
+function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
   if (nargin < 3)
     print_usage ();
   endif
@@ -73,7 +84,7 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   fa = feval (f, a, varargin{:});
   fc = feval (f, c, varargin{:});
   fb = feval (f, b, varargin{:});
-  fcnt = 3;
+  nfun = 3;
 
   ## If have edge singularities, move edge point by eps*(b-a) as
   ## discussed in Shampine paper used to implement quadgk
@@ -87,10 +98,10 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   h = (b - a);
   q = (b - a) / 6 * (fa + 4 * fc + fb);
 
-  [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, fcnt, abs (h),
+  [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q, nfun, abs (h),
                                 tol, trace, varargin{:});
 
-  if (fcnt > 10000)
+  if (nfun > 10000)
     warning ("maximum iteration count reached");
   elseif (isnan (q) || isinf (q))
     warning ("infinite or NaN function evaluations were returned");
@@ -99,16 +110,16 @@ function [q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   endif
 endfunction
 
-function [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
-                                       fcnt, hmin, tol, trace, varargin)
-  if (fcnt > 10000)
+function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
+                                       nfun, hmin, tol, trace, varargin)
+  if (nfun > 10000)
     q = q0;
   else
     d = (a + c) / 2;
     e = (c + b) / 2;
     fd = feval (f, d, varargin{:});
     fe = feval (f, e, varargin{:});
-    fcnt += 2;
+    nfun += 2;
     q1 = (c - a) / 6 * (fa + 4 * fd + fc);
     q2 = (b - c) / 6 * (fc + 4 * fe + fb);
     q = q1 + q2;
@@ -118,14 +129,14 @@ function [q, fcnt, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
     endif
 
     if (trace)
-      disp ([fcnt, a, b-a, q]);
+      disp ([nfun, a, b-a, q]);
     endif
 
     ## Force at least one adpative step.
-    if (fcnt == 5 || abs (q - q0) > tol)
-      [q1, fcnt, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, fcnt, hmin,
+    if (nfun == 5 || abs (q - q0) > tol)
+      [q1, nfun, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, nfun, hmin,
                                     tol, trace, varargin{:});
-      [q2, fcnt, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, fcnt, hmin,
+      [q2, nfun, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, nfun, hmin,
                                      tol, trace, varargin{:});
       q = q1 + q2;
     endif

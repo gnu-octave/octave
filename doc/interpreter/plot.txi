@@ -2553,6 +2553,11 @@ A number specifying the size of the marker.  The default is 1.  A value
 of 2 is twice as large as the default, etc.
 @end table
 
+The @code{colstyle} function will parse a @code{plot}-style specification
+and will return the color, line, and marker values that would result.
+
+@DOCSTRING(colstyle)
+
 @node Callbacks
 @subsection Callbacks
 @cindex callbacks

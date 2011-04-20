@@ -121,12 +121,15 @@ octave_class::get_current_method_class (void)
 {
   std::string retval = class_name ();
 
-  octave_function *fcn = octave_call_stack::current ();
+  if (nparents () > 0)
+    {
+      octave_function *fcn = octave_call_stack::current ();
 
-  // Here we are just looking to see if FCN is a method or constructor
-  // for any class, not specifically this one.
-  if (fcn->is_class_method () || fcn->is_class_constructor ())
-    retval = fcn->dispatch_class ();
+      // Here we are just looking to see if FCN is a method or constructor
+      // for any class, not specifically this one.
+      if (fcn && (fcn->is_class_method () || fcn->is_class_constructor ()))
+        retval = fcn->dispatch_class ();
+    }
 
   return retval;
 }

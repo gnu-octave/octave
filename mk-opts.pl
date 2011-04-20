@@ -126,6 +126,7 @@ sub parse_input
           die "mk-opts.pl: unknown command: $_\n"
         }
     }
+  $INCLUDE = "" if not defined $INCLUDE;   # Initialize value if required
 }
 
 sub parse_option_block
@@ -230,11 +231,12 @@ sub process_data
 
   if (not defined $DOC_STRING)
     {
-      $DOC_STRING = "When called with two arguments, this function\\n\\
-allows you set options parameters for the function \@code{$FCN_NAME}.\\n\\
-Given one argument, \@code{$OPT_FCN_NAME} returns the value of the\\n\\
-corresponding option.  If no arguments are supplied, the names of all\\n\\
-the available options and their current values are displayed.\\n\\\n";
+      $DOC_STRING = "Query or set options for the function \@code{$FCN_NAME}.\\n\\
+When called with no arguments, the names of all available options and\\n\\
+their current values are displayed.\\n\\
+Given one argument, return the value of the corresponding option.\\n\\
+When called with two arguments, \@code{$OPT_FCN_NAME} set the option\\n\\
+\@var{opt} to value \@var{val}.";
     }
 }
 
@@ -909,8 +911,11 @@ sub emit_options_function
   print <<"_END_EMIT_OPTIONS_FUNCTION_HDR_";
 DEFUN_DLD ($OPT_FCN_NAME, args, ,
   "-*- texinfo -*-\\n\\
-\@deftypefn {Loadable Function} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
+\@deftypefn  {Loadable Function} {} $OPT_FCN_NAME ()\\n\\
+\@deftypefnx {Loadable Function} {val =} $OPT_FCN_NAME (\@var{opt})\\n\\
+\@deftypefnx {Loadable Function} {} $OPT_FCN_NAME (\@var{opt}, \@var{val})\\n\\
 $DOC_STRING\\n\\
+\\n\\
 Options include\\n\\
 \\n\\
 \@table \@code\\n\\

@@ -26,20 +26,27 @@ include common.mk
 
 ACLOCAL_AMFLAGS = -I m4
 
-BUILT_DISTFILES = AUTHORS BUGS INSTALL.OCTAVE
+BUILT_DISTFILES = AUTHORS BUGS ChangeLog INSTALL.OCTAVE
 
 EXTRA_DIST = \
   AUTHORS \
   BUGS \
   COPYING \
   ChangeLog \
-  ChangeLog.1 \
   INSTALL \
   INSTALL.OCTAVE \
   NEWS \
   NEWS.1 \
   NEWS.2 \
   NEWS.3 \
+  OLD-ChangeLogs/ChangeLog \
+  OLD-ChangeLogs/ChangeLog.1 \
+  OLD-ChangeLogs/doc-ChangeLog \
+  OLD-ChangeLogs/libcruft-ChangeLog \
+  OLD-ChangeLogs/liboctave-ChangeLog \
+  OLD-ChangeLogs/scripts-ChangeLog \
+  OLD-ChangeLogs/src-ChangeLog \
+  OLD-ChangeLogs/test-ChangeLog \
   PROJECTS \
   README \
   README.Cygwin \
@@ -155,6 +162,11 @@ run-octave: run-octave.in Makefile
 AUTHORS BUGS INSTALL.OCTAVE:
 	$(MAKE) -C doc/interpreter ../../$@
 .PHONY: AUTHORS BUGS INSTALL.OCTAVE
+
+ChangeLog:
+	(cd $(srcdir); hg log --style=changelog.tmpl --prune=b0e60ad4ae26ec2ca3567a17b29a53e0cd2051d8 --branch=`hg branch`; echo ""; echo "See the files in the OLD-ChangeLogs directory for older changes") > $@.t
+	mv $@.t $@
+.PHONY: ChangeLog
 
 octetc_DATA = NEWS
 

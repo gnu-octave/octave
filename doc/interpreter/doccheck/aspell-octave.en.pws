@@ -179,6 +179,7 @@ Delaunay
 delaunayn
 DeleteFcn
 delim
+deltaX
 demi
 Demmel
 DeskJet
@@ -575,6 +576,7 @@ nnz
 nocompute
 nolabel
 noncommercially
+nonsmooth
 nonzeros
 noperm
 normcdf
@@ -674,7 +676,11 @@ QP
 QQ
 QRUPDATE
 qrupdate
+quadcc
+quadgk
+quadl
 quadpack
+quadv
 Quantile
 quantile
 quantiles
@@ -806,6 +812,8 @@ Subfunction
 Subfunctions
 subfunctions
 subinterval
+Subintervals
+subintervals
 sublicenses
 Sublicensing
 submatrices
@@ -866,6 +874,7 @@ Toolkits
 tp
 tpdf
 traceback
+trapz
 treelayout
 treeplot
 tridiagonal

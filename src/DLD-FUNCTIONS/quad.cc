@@ -174,36 +174,31 @@ quad_float_user_function (float x)
 
 DEFUN_DLD (quad, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{v} =} quad (@var{f}, @var{a}, @var{b})\n\
-@deftypefnx {Loadable Function} {@var{v} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {Loadable Function} {@var{v} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-@deftypefnx {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
-Integrate a nonlinear function of one variable using @sc{quadpack}.\n\
-The first argument is the name of the function, the function handle, or\n\
-the inline function to call to compute the value of the integrand.  It\n\
-must have the form\n\
+@deftypefn  {Loadable Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b})\n\
+@deftypefnx {Loadable Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefnx {Loadable Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefnx {Loadable Function} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
+Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using\n\
+Fortran routines from @w{@sc{quadpack}}.  @var{f} is a function handle, inline\n\
+function, or a string containing the name of the function to evaluate.\n\
+The function must have the form @code{y = f (x)} where @var{y} and @var{x}\n\
+are scalars.\n\
 \n\
-@example\n\
-y = f (x)\n\
-@end example\n\
-\n\
-@noindent\n\
-where @var{y} and @var{x} are scalars.\n\
-\n\
-The second and third arguments are limits of integration.  Either or\n\
-both may be infinite.\n\
+@var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
+or both may be infinite.\n\
 \n\
 The optional argument @var{tol} is a vector that specifies the desired\n\
 accuracy of the result.  The first element of the vector is the desired\n\
 absolute tolerance, and the second element is the desired relative\n\
 tolerance.  To choose a relative test only, set the absolute\n\
 tolerance to zero.  To choose an absolute test only, set the relative\n\
-tolerance to zero.\n\
+tolerance to zero.  Both tolerances default to @code{sqrt(eps)} or\n\
+approximately @math{1.5e^{-8}}.\n\
 \n\
 The optional argument @var{sing} is a vector of values at which the\n\
 integrand is known to be singular.\n\
 \n\
-The result of the integration is returned in @var{v}.  @var{ier}\n\
+The result of the integration is returned in @var{q}.  @var{ier}\n\
 contains an integer error code (0 indicates a successful integration).\n\
 @var{nfun} indicates the number of function evaluations that were\n\
 made, and @var{err} contains an estimate of the error in the\n\
@@ -212,8 +207,9 @@ solution.\n\
 The function @code{quad_options} can set other optional\n\
 parameters for @code{quad}.\n\
 \n\
-Note: because @code{quad} is written in Fortran it\n\
-cannot be called recursively.\n\
+Note: because @code{quad} is written in Fortran it cannot be called\n\
+recursively.  This prevents its use in integrating over more than one\n\
+variable by routines @code{dblquad} and @code{triplequad}.\n\
 @seealso{quad_options, quadv, quadl, quadgk, quadcc, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {

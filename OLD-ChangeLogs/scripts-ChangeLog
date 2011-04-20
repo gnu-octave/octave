@@ -1,3 +1,7 @@
+2011-04-18  Paul Boven  <p.boven@xs4all.nl>
+
+	* image/image.m: Fixed naming of variables in texinfo
+
 2011-04-17  Patrick Häcker  <magicmuscleman>
 
 	* strings/mat2str.m: Limit the number of digits to one less than
@@ -12,6 +16,11 @@
 	picewise polynoms (pp). Rename pp-struct elements.
 	Handle nD-arguments correctly. Tests added.
 	(bugs #32040, #32045)
+
+2011-04-13  David Bateman  <dbateman@free.fr>
+
+	* plot/colstyle.m : New function.
+	* plot/module.mk plot_FCN_FILES) : Add it here.
 
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 

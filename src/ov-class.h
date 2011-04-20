@@ -127,10 +127,18 @@ public:
   size_t nparents (void) const { return parent_list.size (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return map.reshape (new_dims); }
+    { 
+      octave_class retval = octave_class (*this);
+      retval.map = retval.map_value().reshape (new_dims);
+      return octave_value (new octave_class (retval));
+    }
 
   octave_value resize (const dim_vector& dv, bool = false) const
-    { octave_map tmap = map; tmap.resize (dv); return tmap; }
+    { 
+      octave_class retval = octave_class (*this);
+      retval.map.resize (dv);
+      return octave_value (new octave_class (retval));
+    }
 
   bool is_defined (void) const { return true; }
 

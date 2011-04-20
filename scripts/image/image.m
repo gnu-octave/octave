@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
-## Display a matrix as a color image.  The elements of @var{x} are indices
+## Display a matrix as a color image.  The elements of @var{img} are indices
 ## into the current colormap, and the colormap will be scaled so that the
-## extremes of @var{x} are mapped to the extremes of the colormap.
+## extremes of @var{img} are mapped to the extremes of the colormap.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these

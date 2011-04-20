@@ -35,7 +35,7 @@ void Plot2dView::initializeGL() {
 void Plot2dView::paintGL() {
     glMatrixMode(GL_MODELVIEW_MATRIX);
     glLoadIdentity();
-    glScaled(m_zoom, m_zoom, 0.0);
+    glScaled(m_zoom * 1.5, m_zoom * 1.5, 0.0);
     glTranslated(-0.5 - m_scrollX, -0.5 - m_scrollY, 0.0);
 
     glClear(GL_COLOR_BUFFER_BIT);
@@ -59,8 +59,8 @@ void Plot2dView::paintGL() {
     glLoadIdentity();
 
     glColor3d(1.0, 1.0, 1.0);
-    renderText(-0.9, -0.9, 0.0, QString("Scaling: %1, Translation: (%2/%3)")
-                                .arg(m_zoom)
+    renderText(-0.9, -0.9, 0.0, QString("Scaling: %1%, Translation: (%2/%3)")
+                                .arg(m_zoom * 100)
                                 .arg(m_scrollX)
                                 .arg(m_scrollY));
 }

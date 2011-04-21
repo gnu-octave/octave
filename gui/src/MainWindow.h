@@ -167,17 +167,8 @@ protected:
             m_mainWindow->variablesDockWidget()->setVariablesList(symbolTable);
         }
 
-        // Check whether any requested variables have been returned.
-        QList<OctaveLink::RequestedVariable> reqVars
-                = OctaveLink::instance()->requestedVariables();
-
-        //for(std::vector<OctaveLink::RequestedVariable>::iterator it = reqVars.begin();
-        //   it != reqVars.end(); it++ ) {
-            // TODO: Process requested variables.
-        //}
-
         // Collect history list.
-        string_vector historyList = OctaveLink::instance()->getHistoryList();
+        string_vector historyList = OctaveLink::instance()->currentHistory();
         if(historyList.length()) {
             m_mainWindow->historyDockWidget()->updateHistory(historyList);
         }

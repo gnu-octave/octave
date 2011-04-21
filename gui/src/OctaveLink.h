@@ -91,161 +91,48 @@ public:
     static QString octaveValueAsQString(OctaveValue octaveValue);
 
     /**
-     * Enumeration used to identify breakpoint actions
-     */
-    enum BreakPointAction
-    {
-        None,
-        StepInto,
-        StepOver,
-        StepOut,
-        Continue,
-        Break
-    };
-
-    /**
-     * Structure used to store breakpoint info.
-     *
-     * Notes: used for add, remove, list operations, as well as for the BreakpointReached event.
-     */
-    typedef struct BreakPoint
-    {
-        /**
-        * The full path and filename where the breakpoint resides.
-        */
-        std::string fileName;
-
-        /**
-        * The line number where the breakpoint resides.
-        * In the future, -1 can indicate an existing but disabled breakpoint.  This
-        * assumes that no one will ever have an M file longer than 2Million lines.
-        */
-        int lineNumber;
-    } BreakPoint;
-
-    typedef struct RequestedVariable
-    {
-        std::string name;
-        octave_value ov;
-    } RequestedVariable;
-
-    // Functions used to access data form the client side.
-    /** Debugging related methods. */
-
-    /** TODO: Describe. */
-    std::vector<BreakPoint> breakPointList(int& status);
-
-    /** TODO: Describe. */
-    std::vector<BreakPoint> reachedBreakpoint();
-
-    /** TODO: Describe. */
-    bool isBreakpointReached();
-
-    /** TODO: Describe. */
-    int addBreakpoint(BreakPoint bp_info);
-
-    /** TODO: Describe. */
-    int	removeBreakpoint(BreakPoint bp_info);
-
-    /** TODO: Describe. */
-    int	modifyBreakpoint(BreakPoint old_bp_info, BreakPoint new_bp_info);
-
-    /** TODO: Describe. */
-    int	setBreakpointAction(BreakPointAction action);
-
+      * Returns a copy of the current symbol table buffer.
+      * \return Copy of the current symbol table buffer.
+      */
     QList<SymbolRecord> currentSymbolTable();
 
-    /** TODO: Describe. */
-    QList<RequestedVariable> requestedVariables(void);
-
-    /** TODO: Describe. */
-    int	setRequestedVariableNames(QList<QString> variableNames);
-
     /**
-      * History related methods.
+      * Returns a copy of the current history buffer.
+      * \return Copy of the current history buffer.
       */
-    string_vector getHistoryList(void);
+    string_vector currentHistory();
 
-    // FUNCTIONS USED TO ACCESS DATA FROM THE OCTAVE SERVER SIDE
+    void processOctaveServerData();
 
-    // NOTE: THIS IMPLIES THAT THESE ARE ONLY CALLED FROM
-    // OCTAVE DURING A TIME IN WHICH THINGS ARE KNOWN TO
-    // BE "THREAD-SAFE".  PROPOSED LOCATIONS:
-    //   src/toplev.cc - main_loop() at the end of the do...while
-    //   src/pt-bp.h   - MAYBE_DO_BREAKPOINT just prior to the do_keyboard
-    // Most of these will call octave API functions to "pull" the data, rather
-    // than having octave pass in the data.  This will help make changes
-    // exlusive to this class if/when the Octave API changes.
     /**
-     * Calls all the appropriate functions that follow to update Octave
-     * according to the data sent from the client in a thread-safe manner.
-     *
-     * Algorithm:
-     *   Acquire lock
-     *   process_breakpoint_add_remove_modify
-     *   set_current_breakpoint
-     *   set_breakpoint_list
-     *   ...http://oregano.gforge.lug.fi.uba.ar/
-     *   Release lock
-     */
-    int processOctaveServerData(void);
+      * Updates the current symbol table with new data
+      * from octave.
+      */
+    void fetchSymbolTable();
 
-    /** Debugging related methods. */
-    /** TODO: Describe. */
-    int setBreakPointList(void);
-
-    /** TODO: Describe. */
-    // duplicate of process_breakpoint_action or helper function???
-    int setCurrentBreakpoint(std::string filename, int line_number);
-
-    /** TODO: Describe. */
-    int processBreakpointAndRemoveModify(void);
-
-    /** TODO: Describe. */
-    int process_breakpoint_action(void);
-
-    /** Variable related methods. */
-    /** Retrieves all variables from Octave. */
-    void fetchSymbolTable(void);
-
-    /** TODO: Describe. */
-    int processRequestedVariables(void);
-
-    /** History related methods. */
-    /** TODO: Describe. */
-    int setHistoryList(void);
+    /**
+      * Updates the current history buffer with new data
+      * from octave.
+      */
+    void fetchHistory();
 
 signals:
     void symbolTableChanged();
+    void historyChanged();
 
 private:
     OctaveLink();
     ~OctaveLink();
 
-    /** Mutex variable used to protect access to internal class data. */
-    QMutex m_internalAccessMutex;
-
-    std::vector<BreakPoint> m_currentBreakpoints;
-    std::vector<BreakPoint> m_reachedBreakpoints;
-    std::vector<BreakPoint> m_addedBreakpoints;
-    std::vector<BreakPoint> m_removedBreakpoints;
-    std::vector<BreakPoint> m_modifiedBreakpointsOld;
-    std::vector<BreakPoint> m_modifiedBreakpointsNew;
-    BreakPointAction m_breakPointAction;
-
     /** Variable related member variables. */
     QSemaphore *m_symbolTableSemaphore;
     QList<SymbolRecord> m_symbolTableBuffer;
-    QList<QString> m_variablesRequestList;
-
-    // NOTE: Create an overloaded operator<< for octave_value to do the
-    // flattening.  This will allow us to append easily to an ostringstream
-    // for output.
-    QList<RequestedVariable> m_requestedVariables;
 
     /** History related member variables. */
-    string_vector m_historyList;
+    QSemaphore *m_historySemaphore;
+    string_vector m_historyBuffer;
     int m_previousHistoryLength;
+
     static OctaveLink m_singleton;
 };
 #endif // OCTAVELINK_H

@@ -162,7 +162,7 @@ protected:
         while(m_mainWindow->isRunning()) {
 
         // Get a full variable list.
-        QList<SymbolRecord> symbolTable = OctaveLink::instance()->workspace();
+        QList<SymbolRecord> symbolTable = OctaveLink::instance()->currentSymbolTable();
         if(symbolTable.size()) {
             m_mainWindow->variablesDockWidget()->setVariablesList(symbolTable);
         }

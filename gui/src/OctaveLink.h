@@ -72,6 +72,8 @@
 #include <QList>
 #include <QString>
 #include <QVector>
+#include <QSemaphore>
+#include <QObject>
 
 typedef symbol_table::symbol_record SymbolRecord;
 typedef octave_value OctaveValue;
@@ -80,8 +82,9 @@ typedef octave_value OctaveValue;
   * \class OctaveLink
   * Manages a link to an octave instance.
   */
-class OctaveLink
+class OctaveLink : QObject
 {
+    Q_OBJECT
 public:
     static OctaveLink *instance() { return &m_singleton; }
     static int readlineEventHook(void);
@@ -150,8 +153,7 @@ public:
     /** TODO: Describe. */
     int	setBreakpointAction(BreakPointAction action);
 
-    /** Variable related methods. */
-    QList<SymbolRecord> workspace(void);
+    QList<SymbolRecord> currentSymbolTable();
 
     /** TODO: Describe. */
     QList<RequestedVariable> requestedVariables(void);
@@ -183,7 +185,7 @@ public:
      *   process_breakpoint_add_remove_modify
      *   set_current_breakpoint
      *   set_breakpoint_list
-     *   ...
+     *   ...http://oregano.gforge.lug.fi.uba.ar/
      *   Release lock
      */
     int processOctaveServerData(void);
@@ -204,7 +206,7 @@ public:
 
     /** Variable related methods. */
     /** Retrieves all variables from Octave. */
-    void retrieveVariables(void);
+    void fetchSymbolTable(void);
 
     /** TODO: Describe. */
     int processRequestedVariables(void);
@@ -212,6 +214,9 @@ public:
     /** History related methods. */
     /** TODO: Describe. */
     int setHistoryList(void);
+
+signals:
+    void symbolTableChanged();
 
 private:
     OctaveLink();
@@ -229,7 +234,8 @@ private:
     BreakPointAction m_breakPointAction;
 
     /** Variable related member variables. */
-    QList<SymbolRecord> m_variableSymbolTableList;
+    QSemaphore *m_symbolTableSemaphore;
+    QList<SymbolRecord> m_symbolTableBuffer;
     QList<QString> m_variablesRequestList;
 
     // NOTE: Create an overloaded operator<< for octave_value to do the

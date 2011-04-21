@@ -83,22 +83,34 @@ QString OctaveLink::octaveValueAsQString(OctaveValue octaveValue) {
 
 //*************************************************************************
 OctaveLink::OctaveLink()
-    : m_previousHistoryLength(0) {
+    : QObject(),
+      m_previousHistoryLength(0) {
+    m_symbolTableSemaphore = new QSemaphore(1);
 }
 
 OctaveLink::~OctaveLink() {
 }
 
-/*******************************************************************************
- *******************************************************************************
- * CLIENT SIDE FUNCTIONS
- *******************************************************************************
- *******************************************************************************/
+void OctaveLink::fetchSymbolTable() {
+    m_symbolTableSemaphore->acquire();
+    m_symbolTableBuffer.clear();
+    std::list<SymbolRecord> allVariables = symbol_table::all_variables();
+    std::list<SymbolRecord>::iterator iterator;
+    for(iterator = allVariables.begin(); iterator != allVariables.end(); iterator++)
+        m_symbolTableBuffer.append(*iterator);
+    m_symbolTableSemaphore->release();
+}
 
-//*************************************************************************
-QList<SymbolRecord> OctaveLink::workspace() {
-    QMutexLocker mutexLocker(&m_internalAccessMutex);
-    return m_variableSymbolTableList;
+QList<SymbolRecord> OctaveLink::currentSymbolTable() {
+    QList<SymbolRecord> m_symbolTableCopy;
+
+    // Generate a deep copy of the current symbol table.
+    m_symbolTableSemaphore->acquire();
+    foreach(SymbolRecord symbolRecord, m_symbolTableBuffer)
+        m_symbolTableCopy.append(symbolRecord);
+    m_symbolTableSemaphore->release();
+
+    return m_symbolTableCopy;
 }
 
 
@@ -193,24 +205,16 @@ int OctaveLink::setBreakpointAction (BreakPointAction action)
 //*************************************************************************
 int OctaveLink::processOctaveServerData(void) {
     QMutexLocker mutexLocker(&m_internalAccessMutex);
-
     process_breakpoint_action();
     processBreakpointAndRemoveModify();
     processRequestedVariables();
-    retrieveVariables();
+    fetchSymbolTable();
     setHistoryList();
     setBreakPointList();
     return 0;
 }
 
-//*************************************************************************
-void OctaveLink::retrieveVariables() {
-    m_variableSymbolTableList.clear();
-    std::list<SymbolRecord> allVariables = symbol_table::all_variables();
-    std::list<SymbolRecord>::iterator iterator;
-    for(iterator = allVariables.begin(); iterator != allVariables.end(); iterator++)
-        m_variableSymbolTableList.append(*iterator);
-}
+
 
 
 //*************************************************************************

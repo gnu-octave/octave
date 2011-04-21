@@ -736,7 +736,7 @@ $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 
 ## We require Bison.
 #parse.cc : parse.y
-#	@echo "expect 14 shift/reduce conflicts"
+#	@echo "expect 16 shift/reduce conflicts"
 #	$(YACC) $(YFLAGS) --output=$@ --defines=y.tab.h $<
 
 #lex.cc : lex.l

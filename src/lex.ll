@@ -164,17 +164,32 @@ along with Octave; see the file COPYING.  If not, see
     } \
   while (0)
 
-#define BIN_OP_RETURN(tok, convert, bos) \
+#define BIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
   do \
     { \
       yylval.tok_val = new token (input_line_number, current_input_column); \
       token_stack.push (yylval.tok_val); \
       current_input_column += yyleng; \
-      lexer_flags.quote_is_transpose = false; \
+      lexer_flags.quote_is_transpose = qit; \
       lexer_flags.convert_spaces_to_comma = convert; \
       lexer_flags.looking_for_object_index = false; \
       lexer_flags.at_beginning_of_statement = bos; \
       COUNT_TOK_AND_RETURN (tok); \
+    } \
+  while (0)
+
+#define XBIN_OP_RETURN_INTERNAL(tok, convert, bos, qit) \
+  do \
+    { \
+      gripe_matlab_incompatible_operator (yytext); \
+      BIN_OP_RETURN_INTERNAL (tok, convert, bos, qit); \
+    } \
+  while (0)
+
+#define BIN_OP_RETURN(tok, convert, bos) \
+  do \
+    { \
+      BIN_OP_RETURN_INTERNAL (tok, convert, bos, false); \
     } \
   while (0)
 
@@ -896,8 +911,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 ".^"    { LEXER_DEBUG (".^"); BIN_OP_RETURN (EPOW, false, false); }
 ".**"   { LEXER_DEBUG (".**"); XBIN_OP_RETURN (EPOW, false, false); }
 ".'"    { LEXER_DEBUG (".'"); do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, true, false); }
-"++"    { LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN (PLUS_PLUS, true, false); }
-"--"    { LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN (MINUS_MINUS, true, false); }
+"++"    { LEXER_DEBUG ("++"); do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (PLUS_PLUS, true, false, true); }
+"--"    { LEXER_DEBUG ("--"); do_comma_insert_check (); XBIN_OP_RETURN_INTERNAL (MINUS_MINUS, true, false, true); }
 "<="    { LEXER_DEBUG ("<="); BIN_OP_RETURN (EXPR_LE, false, false); }
 "=="    { LEXER_DEBUG ("=="); BIN_OP_RETURN (EXPR_EQ, false, false); }
 "~="    { LEXER_DEBUG ("~="); BIN_OP_RETURN (EXPR_NE, false, false); }

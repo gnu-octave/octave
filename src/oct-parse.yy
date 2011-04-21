@@ -471,7 +471,7 @@ make_statement (T *arg)
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
 %type <tree_expression_type> matrix cell
-%type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
+%type <tree_expression_type> primary_expr oper_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_identifier_type> superclass_identifier meta_identifier
@@ -514,7 +514,6 @@ make_statement (T *arg)
 %type <dummy_type> class_body
 
 // Precedence and associativity.
-%left ';' ',' '\n'
 %right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
 %left EXPR_OR_OR
 %left EXPR_AND_AND
@@ -525,8 +524,9 @@ make_statement (T *arg)
 %left ':'
 %left '-' '+' EPLUS EMINUS
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
-%left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
+%right UNARY EXPR_NOT
 %left POW EPOW QUOTE TRANSPOSE
+%right PLUS_PLUS MINUS_MINUS
 %left '(' '.' '{'
 
 // Where to start.
@@ -796,69 +796,61 @@ indirect_ref_op : '.'
                   { lexer_flags.looking_at_indirect_ref = true; }
                 ;
 
-postfix_expr    : primary_expr
+oper_expr       : primary_expr
                   { $$ = $1; }
-                | postfix_expr '(' ')'
-                  { $$ = make_index_expression ($1, 0, '('); }
-                | postfix_expr '(' arg_list ')'
-                  { $$ = make_index_expression ($1, $3, '('); }
-                | postfix_expr '{' '}'
-                  { $$ = make_index_expression ($1, 0, '{'); }
-                | postfix_expr '{' arg_list '}'
-                  { $$ = make_index_expression ($1, $3, '{'); }
-                | postfix_expr PLUS_PLUS
+                | oper_expr PLUS_PLUS
                   { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
-                | postfix_expr MINUS_MINUS
+                | oper_expr MINUS_MINUS
                   { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
-                | postfix_expr QUOTE
+                | oper_expr '(' ')'
+                  { $$ = make_index_expression ($1, 0, '('); }
+                | oper_expr '(' arg_list ')'
+                  { $$ = make_index_expression ($1, $3, '('); }
+                | oper_expr '{' '}'
+                  { $$ = make_index_expression ($1, 0, '{'); }
+                | oper_expr '{' arg_list '}'
+                  { $$ = make_index_expression ($1, $3, '{'); }
+                | oper_expr QUOTE
                   { $$ = make_postfix_op (QUOTE, $1, $2); }
-                | postfix_expr TRANSPOSE
+                | oper_expr TRANSPOSE
                   { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
-                | postfix_expr indirect_ref_op STRUCT_ELT
+                | oper_expr indirect_ref_op STRUCT_ELT
                   { $$ = make_indirect_ref ($1, $3->text ()); }
-                | postfix_expr indirect_ref_op '(' expression ')'
+                | oper_expr indirect_ref_op '(' expression ')'
                   { $$ = make_indirect_ref ($1, $4); }
-                ;
-
-prefix_expr     : postfix_expr
-                  { $$ = $1; }
-                | binary_expr
-                  { $$ = $1; }
-                | PLUS_PLUS prefix_expr %prec UNARY
+                | PLUS_PLUS oper_expr %prec UNARY
                   { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
-                | MINUS_MINUS prefix_expr %prec UNARY
+                | MINUS_MINUS oper_expr %prec UNARY
                   { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
-                | EXPR_NOT prefix_expr %prec UNARY
+                | EXPR_NOT oper_expr %prec UNARY
                   { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
-                | '+' prefix_expr %prec UNARY
+                | '+' oper_expr %prec UNARY
                   { $$ = make_prefix_op ('+', $2, $1); }
-                | '-' prefix_expr %prec UNARY
+                | '-' oper_expr %prec UNARY
                   { $$ = make_prefix_op ('-', $2, $1); }
-                ;
-
-binary_expr     : prefix_expr POW prefix_expr
+                | oper_expr POW oper_expr
                   { $$ = make_binary_op (POW, $1, $2, $3); }
-                | prefix_expr EPOW prefix_expr
+                | oper_expr EPOW oper_expr
                   { $$ = make_binary_op (EPOW, $1, $2, $3); }
-                | prefix_expr '+' prefix_expr
+                | oper_expr '+' oper_expr
                   { $$ = make_binary_op ('+', $1, $2, $3); }
-                | prefix_expr '-' prefix_expr
+                | oper_expr '-' oper_expr
                   { $$ = make_binary_op ('-', $1, $2, $3); }
-                | prefix_expr '*' prefix_expr
+                | oper_expr '*' oper_expr
                   { $$ = make_binary_op ('*', $1, $2, $3); }
-                | prefix_expr '/' prefix_expr
+                | oper_expr '/' oper_expr
                   { $$ = make_binary_op ('/', $1, $2, $3); }
-                | prefix_expr EPLUS prefix_expr
+                | oper_expr EPLUS oper_expr
                   { $$ = make_binary_op ('+', $1, $2, $3); }
-                | prefix_expr EMINUS prefix_expr
+                | oper_expr EMINUS oper_expr
                   { $$ = make_binary_op ('-', $1, $2, $3); }
-                | prefix_expr EMUL prefix_expr
+                | oper_expr EMUL oper_expr
                   { $$ = make_binary_op (EMUL, $1, $2, $3); }
-                | prefix_expr EDIV prefix_expr
+                | oper_expr EDIV oper_expr
                   { $$ = make_binary_op (EDIV, $1, $2, $3); }
-                | prefix_expr LEFTDIV prefix_expr
+                | oper_expr LEFTDIV oper_expr
                   { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
-                | prefix_expr ELEFTDIV prefix_expr
+                | oper_expr ELEFTDIV oper_expr
                   { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
                 ;
 
@@ -866,9 +858,9 @@ colon_expr      : colon_expr1
                   { $$ = finish_colon_expression ($1); }
                 ;
 
-colon_expr1     : prefix_expr
+colon_expr1     : oper_expr
                   { $$ = new tree_colon_expression ($1); }
-                | colon_expr1 ':' prefix_expr
+                | colon_expr1 ':' oper_expr
                   {
                     if (! ($$ = $1->append ($3)))
                       ABORT_PARSE;

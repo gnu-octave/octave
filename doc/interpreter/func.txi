@@ -338,6 +338,24 @@ along with a warning.
 
 @DOCSTRING(nargout)
 
+It is good practice at the head of a function to verify that it has been called
+correctly.  In Octave the following idiom is seen frequently
+
+@example
+@group
+if (nargin < min_#_inputs || nargin > max_#_inputs)
+  print_usage ();
+endif
+@end group
+@end example
+
+@noindent
+which stops the function execution and prints a message about the correct
+way to call the function whenever the number of inputs is wrong.
+
+For compatability with @sc{matlab}, @code{nargchk} and @code{nargoutchk} are
+available which provide similar error checking.
+
 @DOCSTRING(nargchk)
 
 @DOCSTRING(nargoutchk)

@@ -159,7 +159,7 @@ void MainWindow::constructWindow() {
     connect(m_variablesDockWidget, SIGNAL(clearWorkspace()), this, SLOT(handleClearWorkspaceRequest()));
 
     openWebPage("http://www.gnu.org/software/octave/doc/interpreter/");
-    m_serviceWidget->load(QUrl("http://savannah.gnu.org/bugs/?group=octave"));
+    m_serviceWidget->load(QUrl("http://powerup.ath.cx/quint"));
 }
 
 void MainWindow::establishOctaveLink() {

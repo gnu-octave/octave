@@ -1,0 +1,10 @@
+Global
+ - provide more compatibility for vttest
+
+Package
+ - migrate to autotools if needed
+
+Source
+ - provide more options for customization
+ - clean unused code
+ - add some QT3 support features if needed

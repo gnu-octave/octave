@@ -7,6 +7,7 @@ specfun_FCN_FILES = \
   specfun/factor.m \
   specfun/factorial.m \
   specfun/isprime.m \
+  specfun/lcm.m \
   specfun/legendre.m \
   specfun/nchoosek.m \
   specfun/nthroot.m \

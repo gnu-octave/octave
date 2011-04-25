@@ -879,6 +879,17 @@ DEFUN (vectorize, args, ,
 Create a vectorized version of the inline function @var{fun}\n\
 by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 @code{.*}, @code{./}, etc.\n\
+\n\
+This may be useful, for example, when using inline functions with\n\
+numerical integration or optimization where a vector-valued function\n\
+is expected.\n\
+\n\
+@example\n\
+fcn = vectorize (inline (\"x^2 - 1\"))\n\
+   @result{} fcn = f(x) = x.^2 - 1\n\
+quadv (fcn, 0, 3)\n\
+   @result{} 6\n\
+@end example\n\
 @end deftypefn")
 {
   octave_value retval;

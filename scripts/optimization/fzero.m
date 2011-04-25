@@ -24,10 +24,12 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fzero (@dots{})
 ## Find a zero of a univariate function.
 ##
-## @var{fun} should be a function handle or name.  @var{x0} should be a
-## two-element vector specifying two points which bracket a zero.  In
-## other words, there must be a change in sign of the function between
-## @var{x0}(1) and @var{x0}(2).  More mathematically, the following must hold
+## @var{fun} is a function handle, inline function, or string
+## containing the name of the function to evaluate.
+## @var{x0} should be a two-element vector specifying two points which
+## bracket a zero.  In other words, there must be a change in sign of the
+## function between @var{x0}(1) and @var{x0}(2).  More mathematically, the
+## following must hold
 ##
 ## @example
 ## sign (@var{fun}(@var{x0}(1))) * sign (@var{fun}(@var{x0}(2))) <= 0

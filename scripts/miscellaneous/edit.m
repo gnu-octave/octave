@@ -76,7 +76,7 @@
 ## In place of the function name.  For example,
 ## @table @samp
 ## @item [EDITOR, " %s"]
-## Use the editor which Octave uses for @code{bug_report}.
+## Use the editor which Octave uses for @code{edit_history}.
 ##
 ## @item "xedit %s &"
 ## pop up simple X11 editor in a separate window

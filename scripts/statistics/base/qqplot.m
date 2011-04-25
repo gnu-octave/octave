@@ -20,6 +20,7 @@
 ## @deftypefn  {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x})
 ## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{dist})
 ## @deftypefnx {Function File} {[@var{q}, @var{s}] =} qqplot (@var{x}, @var{dist}, @var{params})
+## @deftypefnx {Function File} {} qqplot (@dots{})
 ## Perform a QQ-plot (quantile plot).
 ##
 ## If F is the CDF of the distribution @var{dist} with parameters
@@ -37,7 +38,7 @@
 ## distribution on [2,4] and @var{x}, use
 ##
 ## @example
-## qqplot (x, "uniform", 2, 4)
+## qqplot (x, "unif", 2, 4)
 ## @end example
 ##
 ## @noindent

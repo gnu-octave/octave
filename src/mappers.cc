@@ -879,11 +879,11 @@ $$\n\
 \n\
 @example\n\
 @group\n\
-            infinity\n\
-            /\n\
+             infinity\n\
+             /\n\
 gamma (z) = | t^(z-1) exp (-t) dt.\n\
-            /\n\
-         t=0\n\
+             /\n\
+          t=0\n\
 @end group\n\
 @end example\n\
 \n\

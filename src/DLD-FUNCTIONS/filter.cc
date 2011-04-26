@@ -64,6 +64,14 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 
+  // FIXME: The two lines below should be unecessary because
+  //        this template is called with a and b as column vectors
+  //        already.  However the a.resize line is currently (2011/04/26)
+  //        necessary to stop bug #33164.
+  b.resize (dim_vector (ab_len, 1), 0.0);
+  if (a_len > 1)
+    a.resize (dim_vector (ab_len, 1), 0.0);
+
   T norm = a (0);
 
   if (norm == static_cast<T>(0.0))

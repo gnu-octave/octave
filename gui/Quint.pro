@@ -1,17 +1,43 @@
-#-------------------------------------------------
+# Quint - A graphical user interface for Octave
+# Copyright (C) 2011 Jacob Dawid
+# jacob.dawid@googlemail.com
 #
-# Project created by QtCreator 2011-04-04T12:17:52
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#-------------------------------------------------
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-QT       += core gui webkit xml opengl
-UI_DIR = ui-files
-MOC_DIR = moc-files
-OBJECTS_DIR = object-files
-TARGET = Quint
-TEMPLATE = app
-INCLUDEPATH += src
-DESTDIR = bin
+
+# Basic settings:
+QT                  += core gui webkit xml opengl   # Qt modules
+TEMPLATE            = app                           # Build as application
+TARGET              = Quint                         # Name of the target binary
+
+DESTDIR             = bin                           # Destination of the output
+UI_DIR              = ui-files                      # Folder for ui files
+MOC_DIR             = moc-files                     # Folder for moc files
+OBJECTS_DIR         = object-files                  # Folder for object files
+
+TRANSLATIONS        += languages/german             # Available translations
+
+# Includepaths and libraries to link against:
+INCLUDEPATH         += src
+INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
+LFLAGS              += $$system(mkoctfile -p LFLAGS) \
+                       $$system(mkoctfile -p OCTAVE_LIBS) \
+                       $$system(mkoctfile -p LIBS)
+QMAKE_LFLAGS        += $$LFLAGS -lutil $$system(mkoctfile -p RLD_FLAG)
+QMAKE_CXXFLAGS      += $$INCFLAGS
+
+# Files associated with the project:
 SOURCES +=\
         src/TerminalCharacterDecoder.cpp \
         src/KeyboardTranslator.cpp \
@@ -90,12 +116,3 @@ HEADERS += \
     src/PlotterWidget.h \
     src/Plot2dWidget.h
 
-INCFLAGS = -g3 $$system(mkoctfile -p INCFLAGS)
-LFLAGS = $$system(mkoctfile -p LFLAGS) \
-         $$system(mkoctfile -p OCTAVE_LIBS) \
-         $$system(mkoctfile -p LIBS)
-#LIBS    += $$LFLAGS -lutil
-QMAKE_LFLAGS += $$LFLAGS -lutil
-QMAKE_CXXFLAGS  += $$INCFLAGS
-
-TRANSLATIONS += languages/german

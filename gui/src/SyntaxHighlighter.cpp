@@ -34,7 +34,6 @@ bool SyntaxHighlighter::load(QString file)
 	QStack <QString> stack;
 	QFile fileDevice(file);
 	if (!fileDevice.open(QFile::ReadOnly | QFile::Text)) {
-	         printf("Error al abrir el archivo\n");
 	         return false;
 	}
 	
@@ -119,7 +118,6 @@ SyntaxHighlighter::Rule1st SyntaxHighlighter::highlight1stRule(const QString & t
 		
 		QRegExp *expression = &(rule->pattern);
 		int index = rule->lastFound;
-		//printf("[Syntax::highlight1stRule] i=%d pos=%d startIndex=%d\n", i, index, startIndex);
 		if(index>-1 && index<startIndex)
 		{
 			rule->lastFound = index = expression->indexIn(text, startIndex);
@@ -219,9 +217,6 @@ void SyntaxHighlighter::findBrackets(const QString & text, int start, int end, B
 			startIndex=index+bracket.length;
 			
 			insertInOrder(blockData, bracket);
-			
-			//printf("[Syntax::findBrackets] bracket.pos=%d bracket.type=%d bracket.len=%d bracket.start=%d startIndex=%d\n", bracket.pos, bracket.type, bracket.length, (bracket.startBracketOk), startIndex );
-			
 			index = rule.startPattern.indexIn(text, startIndex);
 		}
 		
@@ -314,20 +309,12 @@ void SyntaxHighlighter::highlightBlock ( const QString & text )
 		HighlightingRule *rule= &(highlightingRules[i]);
 		QRegExp *expression = &(rule->pattern);
 		int index = expression->indexIn(text, startIndex);
-		rule->lastFound = index;
-		//printf("[Syntax::highlightBlock] index=%d pos=%d \n", index, expression->pos(0));
+                rule->lastFound = index;
 	}
-	
-	//printf("[Syntax::highlightBlock] Find initial matches \n");
-	
+
 	rule1st=highlight1stRule( text, startIndex);
 	blockRule1st=highlight1stBlockRule( text, startIndex);
-	
-	//if(rule1st.rule<0 && blockRule1st.rule<0)
-	//{
-	//	findBrackets(text, startIndex, -1, blockData);
-	//}
-	//else 
+
 	while(rule1st.rule>=0 || blockRule1st.rule>=0)
 	{
 		if(rule1st.rule>=0 && blockRule1st.rule>=0)
@@ -366,10 +353,6 @@ void SyntaxHighlighter::highlightBlock ( const QString & text )
 			startIndex=blockRuleSetFormat(text,blockRule1st);
 			blockRule1st=highlight1stBlockRule( text, startIndex);
 		}
-		
-		//Finds next 1st rule
-		//rule1st=highlight1stRule( text, startIndex);
-		//blockRule1st=highlight1stBlockRule( text, startIndex);
 	}
 	
 	findBrackets(text,startIndex, -1, blockData);
@@ -421,17 +404,6 @@ void SyntaxHighlighter::setFormatPairBrackets(QPlainTextEdit *textEdit)
 	QTextBlock block_bracket1=block;
 	
 	int i=blockData->brackets.size()-1;
-	
-	/*
-	printf("[Syntax::setFormatPairBrackets] brackets.size=%d\n", i+1);
-	for(int x=0;x<blockData->brackets.size();x++)
-	{
-		BlockData::Bracket *bracket=&(blockData->brackets[x]);
-		printf("[Syntax::setFormatPairBrackets] bracket.pos=%d bracket.type=%d bracket.len=%d bracket.start=%d\n", bracket->pos, bracket->type, bracket->length, (bracket->startBracketOk) );
-	}
-	*/
-	
-	
 	for(; i>=0; i--)
 	{
 		BlockData::Bracket *bracket=&(blockData->brackets[i]);
@@ -446,8 +418,6 @@ void SyntaxHighlighter::setFormatPairBrackets(QPlainTextEdit *textEdit)
 	
 	int increment=(bracket1->startBracketOk) ? +1:-1;
 	int bracketsCount=0;
-	//i+=increment;
-	
 	//Looks in this block the other bracket
 	BlockData::Bracket *bracket2=NULL;
 	QTextBlock block_bracket2=block;

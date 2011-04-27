@@ -218,7 +218,6 @@ void moveBlock(FILE *fion, int cursor, int newpos, char *buffer2)
     res = fwrite(buffer2, blocksize, 1, fion);
     if (res != 1)
         perror("fwrite");
-    //    printf("moving block %d to %d\n", cursor, newpos);
 }
 
 void BlockArray::decreaseBuffer(size_t newsize)

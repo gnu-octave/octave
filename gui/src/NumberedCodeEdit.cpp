@@ -419,19 +419,6 @@ bool NumberedCodeEdit::save(QString path)
     return false;
   }
   
-  /*if(get_config("simple_rcs")=="true")
-  {
-  	QString repository=path+"~~";
-  	QString command("simplercs \""+repository+"\" \""+path+"\"");
-  	QProcess::startDetached(command);
-  	//QProcess::execute(command);
-  	printf("[NumberedTextView::save] Comando: %s\n", command.toLocal8Bit().data() );
-  }
-  else
-  {
-  	//printf("[NumberedTextView::save] No rcs\n");
-  }*/
-  
   return true;
 }
 
@@ -485,8 +472,7 @@ static QString startLineInsertText(QString str, QString textToInsert)
 		}
 		
 		QString s1=s.left(x);
-		QString s2=s.right(s.size()-x);
-		//printf("s1=%s s2=%s\n", s1.toLocal8Bit().data(), s2.toLocal8Bit().data() );
+                QString s2=s.right(s.size()-x);
 		list[i]=s1+textToInsert+s2;
 	}
 	
@@ -496,7 +482,6 @@ static QString startLineInsertText(QString str, QString textToInsert)
 static QString startLineRemoveText(QString str, QStringList textToRemove)
 {
 	str.replace(QChar(0x2029), "\n");
-	//printf("str=%s\n", str.toLocal8Bit().data() );
 	
 	QStringList list = str.split("\n");
 	
@@ -537,8 +522,6 @@ static QString startLineRemoveText(QString str, QStringList textToRemove)
 
 void NumberedCodeEdit::indent()
 {
-	//QTextDocument *doc=textEdit()->document();
-	
 	QTextCursor cursor(textEdit()->textCursor());
 	
 	if( !cursor.hasSelection() ) return;

@@ -144,7 +144,6 @@ void SimpleEditor::keyPressEvent(QKeyEvent * keyEvent) {
 
             cursor.insertText("\n" + line);
             if(m_automaticIndentationStatement) {
-                    printf("[SimpleEditor::keyPressEvent] automatic_indention_statement_ok=%s\n", line2.toLocal8Bit().data() );
                     QRegExp re("^while .*|^if .*|^for .*|^switch .*|^do$|^try|^function .*|^else$|^elseif .*");
                     if(re.exactMatch(line2.trimmed())) {
                             cursor.insertText("\t");

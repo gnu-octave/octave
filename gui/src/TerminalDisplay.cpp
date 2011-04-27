@@ -746,8 +746,6 @@ void TerminalDisplay::setCursorPos(const int curx, const int cury)
     int xpos, ypos;
     ypos = _topMargin + tLy + _fontHeight*(cury-1) + _fontAscent;
     xpos = _leftMargin + tLx + _fontWidth*curx;
-    //setMicroFocusHint(xpos, ypos, 0, _fontHeight); //### ???
-    // fprintf(stderr, "x/y = %d/%d\txpos/ypos = %d/%d\n", curx, cury, xpos, ypos);
     _cursorLine = cury;
     _cursorCol = curx;
 }

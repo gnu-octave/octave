@@ -42,8 +42,12 @@ int OctaveLink::readlineEventHook() {
 }
 
 QString OctaveLink::octaveValueAsQString(OctaveValue octaveValue) {
-    // Convert string.
-    if(octaveValue.is_string()) {
+    // Convert single qouted string.
+    if(octaveValue.is_sq_string()) {
+        return QString("\'%1\'").arg(octaveValue.string_value().c_str());
+
+    // Convert double qouted string.
+    } else if(octaveValue.is_dq_string()) {
         return QString("\"%1\"").arg(octaveValue.string_value().c_str());
 
     // Convert real scalar.

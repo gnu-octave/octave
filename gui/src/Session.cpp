@@ -1129,33 +1129,6 @@ QString Session::foregroundProcessName()
     return name;
 }
 
-/*
-void Session::saveSession(KConfigGroup& group)
-{
-    group.writePathEntry("WorkingDir", currentWorkingDirectory());
-    group.writeEntry("LocalTab",       tabTitleFormat(LocalTabTitle));
-    group.writeEntry("RemoteTab",      tabTitleFormat(RemoteTabTitle));
-    group.writeEntry("SessionGuid",    _uniqueIdentifier.toString());
-    group.writeEntry("Encoding",       QString(codec()));
-}
-
-void Session::restoreSession(KConfigGroup& group)
-{
-    QString value;
-
-    value = group.readPathEntry("WorkingDir", QString());
-    if (!value.isEmpty()) setInitialWorkingDirectory(value);
-    value = group.readEntry("LocalTab");
-    if (!value.isEmpty()) setTabTitleFormat(LocalTabTitle, value);
-    value = group.readEntry("RemoteTab");
-    if (!value.isEmpty()) setTabTitleFormat(RemoteTabTitle, value);
-    value = group.readEntry("SessionGuid");
-    if (!value.isEmpty()) _uniqueIdentifier = QUuid(value);
-    value = group.readEntry("Encoding");
-    if (!value.isEmpty()) setCodec(value.toUtf8());
-}
-*/
-
 SessionGroup::SessionGroup(QObject* parent)
     : QObject(parent), _masterMode(0)
 {

@@ -2469,9 +2469,17 @@ void TerminalDisplay::keyPressEvent( QKeyEvent* event )
 {
     bool emitKeyPressSignal = true;
 
-    // Keyboard-based navigation
-    if ( event->modifiers() == Qt::ShiftModifier )
+    if(event->modifiers() == Qt::ControlModifier | Qt::ControlModifier)
     {
+        switch(event->key()) {
+            case Qt::Key_C:
+                copyClipboard();
+                break;
+            case Qt::Key_V:
+                //pasteClipboard();
+                break;
+        };
+    } else if ( event->modifiers() == Qt::ShiftModifier ) {
         bool update = true;
 
         if ( event->key() == Qt::Key_PageUp )

@@ -54,6 +54,12 @@ QString OctaveLink::octaveValueAsQString(OctaveValue octaveValue) {
     } else if(octaveValue.is_complex_scalar()) {
         return QString("%1 + %2i").arg(octaveValue.scalar_value()).arg(octaveValue.complex_value().imag());
 
+    // Convert range.
+    } else if(octaveValue.is_range()) {
+        return QString("%1 : %2 : %3").arg(octaveValue.range_value().base())
+                                      .arg(octaveValue.range_value().inc())
+                                      .arg(octaveValue.range_value().limit());
+
     // Convert real matrix.
     } else if(octaveValue.is_real_matrix()) {
         // TODO: Convert real matrix into a string.

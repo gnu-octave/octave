@@ -19,7 +19,6 @@
 
 // Own
 #include "ProcessInfo.h"
-//#include <config-konsole.h>
 
 // Unix
 #include <sys/socket.h>
@@ -29,21 +28,15 @@
 #include <pwd.h>
 
 // Qt
-//#include <KDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QRegExp>
 #include <QtCore/QTextStream>
 #include <QtCore/QStringList>
 #include <QtCore/QSet>
-//#include "kdebug.h"
 
 // KDE
 #include "konsole_export.h"
-//#include <KConfigGroup>
-//#include <KGlobal>
-//#include <KSharedConfig>
-//#include <KUser>
 
 #if defined(Q_OS_MAC)
 #include <sys/sysctl.h>
@@ -139,7 +132,7 @@ QString ProcessInfo::format(const QString& input) const
       }
       output.replace("%D", tempDir);
    }
-   output.replace("%d",formatShortDir(dir));
+   output.replace("%d", dir);
    
    // remove any remaining %[LETTER] sequences
    // output.replace(QRegExp("%\\w"), QString());
@@ -156,66 +149,6 @@ QString ProcessInfo::formatCommand(const QString& name,
 
     // TODO Implement me
     return QStringList(QList<QString>::fromVector(arguments)).join(" ");
-}
-
-QSet<QString> ProcessInfo::_commonDirNames;
-
-QSet<QString> ProcessInfo::commonDirNames() 
-{
-  // JPS: Don't know of a good replacement for this in QT
-  /*
-    if ( _commonDirNames.isEmpty() )
-    {
-        KSharedConfigPtr config = KGlobal::config();
-        KConfigGroup configGroup = config->group("ProcessInfo");
-
-        QStringList defaults = QStringList() 
-                             << "src" << "build" << "debug" << "release" 
-                             << "bin" << "lib"   << "libs"  << "tmp" 
-                             << "doc" << "docs"  << "data"  << "share"
-                             << "examples" << "icons" << "pics" << "plugins" 
-                             << "tests" << "media" << "l10n" << "include" 
-                             << "includes" << "locale" << "ui";
-
-        _commonDirNames = QSet<QString>::fromList(configGroup.readEntry("CommonDirNames",defaults));
-
-    }
-  */
-    return _commonDirNames;
-}
-
-QString ProcessInfo::formatShortDir(const QString& input) const
-{
-    QString result;
-
-    QStringList parts = input.split( QDir::separator() );
-
-    // temporarily hard-coded
-    QSet<QString> dirNamesToShorten = commonDirNames();
-
-    QListIterator<QString> iter(parts);
-    iter.toBack();
-
-    // go backwards through the list of the path's parts
-    // adding abbreviations of common directory names
-    // and stopping when we reach a dir name which is not
-    // in the commonDirNames set
-    while ( iter.hasPrevious() )
-    {
-        QString part = iter.previous();
-
-        if ( dirNamesToShorten.contains(part) )
-        {
-            result.prepend(QDir::separator() + part[0]);
-        }
-        else
-        {
-            result.prepend(part);
-            break;
-        }
-    }
-
-    return result;
 }
 
 QVector<QString> ProcessInfo::arguments(bool* ok) const

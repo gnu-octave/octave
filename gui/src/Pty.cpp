@@ -34,16 +34,6 @@
 // Qt
 #include <QtCore/QStringList>
 
-// KDE
-//#include <KStandardDirs>
-//#include <KLocale>
-//#include <KDebug>
-//#include <KPty>
-//#include <KPtyDevice>
-//#include <kde_file.h>
-
-//#include "kdebug.h"
-
 #include "kpty.h"
 #include "kptydevice.h"
 

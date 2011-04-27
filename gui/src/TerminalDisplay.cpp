@@ -42,21 +42,6 @@
 #include <QtGui/QToolTip>
 #include <QtCore/QTextStream>
 
-// KDE
-//#include <kshell.h>
-//#include <KColorScheme>
-//#include <KCursor>
-//#include <kdebug.h>
-//#include <KLocale>
-//#include <KMenu>
-//#include <KNotification>
-//#include <KGlobalSettings>
-//#include <KShortcut>
-//#include <KIO/NetAccess>
-//#include "kdebug.h"
-
-// Konsole
-//#include <config-apps.h>
 #include "Filter.h"
 #include "konsole_wcwidth.h"
 #include "ScreenWindow.h"

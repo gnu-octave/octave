@@ -23,8 +23,6 @@
 // Own
 #include "Vt102Emulation.h"
 
-// XKB
-//#include <config-konsole.h>
 
 // this allows konsole to be compiled without XKB and XTEST extensions
 // even though it might be available on a particular system.
@@ -46,10 +44,6 @@
 #include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
 #include <QtCore/QByteRef>
-
-// KDE
-//#include <kdebug.h>
-//#include <klocale.h>
 
 // Konsole
 #include "KeyboardTranslator.h"

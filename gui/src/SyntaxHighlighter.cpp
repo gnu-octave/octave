@@ -18,8 +18,6 @@
 
 
 #include "SyntaxHighlighter.h"
-
-
 #include <QXmlStreamReader>
 #include <QStack>
 #include <QFile>

@@ -32,10 +32,6 @@
 #include <QtCore/QSharedData>
 #include <QtCore/QFile>
 
-// KDE
-//#include <KLocale>
-//#include <KRun>
-
 // Konsole
 #include "TerminalCharacterDecoder.h"
 #include "konsole_wcwidth.h"

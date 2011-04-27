@@ -28,10 +28,6 @@
 #include <unistd.h>
 #include <stdio.h>
 
-// KDE
-//#include <kde_file.h>
-//#include <kdebug.h>
-
 #define KDE_fseek ::fseek
 #define KDE_lseek ::lseek
 

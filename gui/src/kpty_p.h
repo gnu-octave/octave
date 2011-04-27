@@ -23,7 +23,6 @@
 
 #include "kpty.h"
 
-//#include <config-pty.h>
 #if defined(Q_OS_MAC)
 #define HAVE_UTIL_H
 #define HAVE_UTMPX

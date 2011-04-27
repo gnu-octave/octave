@@ -272,11 +272,6 @@ protected:
     void addEnvironmentBinding(const QString& name , const QString& value);
 
 private:
-    // takes a full directory path and returns a
-    // shortened version suitable for display in 
-    // space-constrained UI elements (eg. tabs)
-    QString formatShortDir(const QString& dirPath) const;
-
     enum CommandFormat
     {
         ShortCommandFormat,
@@ -320,9 +315,6 @@ private:
 
     QVector<QString> _arguments;
     QMap<QString,QString> _environment;
-
-    static QSet<QString> commonDirNames();
-    static QSet<QString> _commonDirNames;
 };
 
 /** 

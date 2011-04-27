@@ -24,8 +24,6 @@
 
 #include "kpty_p.h"
 
-//#include <config.h>
-
 #ifdef __sgi
 #define __svr4__
 #endif
@@ -131,10 +129,6 @@ extern "C" {
 #  define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
 # endif
 #endif
-
-//#include <kdebug.h>
-//#include <kstandarddirs.h>	// findExe
-//#include <kde_file.h>
 
 #include <QtCore/Q_PID>
 

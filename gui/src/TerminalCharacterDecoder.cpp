@@ -25,9 +25,6 @@
 // Qt
 #include <QtCore/QTextStream>
 
-// KDE
-//#include <kdebug.h>
-
 // Konsole
 #include "konsole_wcwidth.h"
 

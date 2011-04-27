@@ -36,35 +36,16 @@
 #include <QtCore/QFile>
 #include <QtCore/QRegExp>
 #include <QtCore/QStringList>
-//#include <QtDBus/QtDBus>
 #include <QtCore/QDate>
 
-
-// KDE
-//#include <KDebug>
-//#include <KLocale>
-//#include <KMessageBox>
-//#include <KNotification>
-//#include <KProcess>
-//#include <KRun>
-//#include <kshell.h>
-//#include <KStandardDirs>
-//#include <KPtyDevice>
-//#include <KUrl>
 #include "kprocess.h"
 #include "kptydevice.h"
-//#include "kdebug.h"
-
-// Konsole
-//#include <config-konsole.h>
-//#include <sessionadaptor.h>
 
 #include "ProcessInfo.h"
 #include "Pty.h"
 #include "TerminalDisplay.h"
 #include "ShellCommand.h"
 #include "Vt102Emulation.h"
-//#include "ZModemDialog.h"
 
 int Session::lastSessionId = 0;
 
@@ -363,20 +344,6 @@ QString Session::checkProgram(const QString& program) const
       exec = qgetenv("SHELL");
   if ( exec.isEmpty() )
         exec = "/bin/sh";
-
-  // JPS: commented out to get rid of KShell and KRun
-  /*
-  exec = KRun::binaryName(exec, false);
-  exec = KShell::tildeExpand(exec);
-  QString pexec = KGlobal::dirs()->findExe(exec);
-  if ( pexec.isEmpty() ) 
-  {
-      kError() << i18n("Could not find binary: ") << exec;
-    return QString();
-  }
-
-  return exec;
-  */
   return program;
 }
 

@@ -22,7 +22,6 @@
 #include "kptyprocess.h"
 #include "kprocess.h"
 
-//#include <kuser.h>
 #include "kptydevice.h"
 
 #include <stdlib.h>
@@ -31,8 +30,6 @@
 //////////////////
 // private data //
 //////////////////
-
-
 
 KPtyProcess::KPtyProcess(QObject *parent) :
     KProcess(new KPtyProcessPrivate, parent)

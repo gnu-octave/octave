@@ -23,15 +23,9 @@
 
 #include "kptydevice.h"
 #include "kpty_p.h"
-
-//#include <config.h>
-//#include <config-pty.h>
-
 #define i18n
 
 #include <QtCore/QSocketNotifier>
-
-//#include <klocale.h>
 
 #include <unistd.h>
 #include <errno.h>

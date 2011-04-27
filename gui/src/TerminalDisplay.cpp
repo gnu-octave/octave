@@ -2467,14 +2467,14 @@ void TerminalDisplay::keyPressEvent( QKeyEvent* event )
 {
     bool emitKeyPressSignal = true;
 
-    if(event->modifiers() == Qt::ControlModifier | Qt::ControlModifier)
+    if(event->modifiers() == Qt::ControlModifier)
     {
         switch(event->key()) {
             case Qt::Key_C:
                 copyClipboard();
                 break;
             case Qt::Key_V:
-                //pasteClipboard();
+                pasteClipboard();
                 break;
         };
     } else if ( event->modifiers() == Qt::ShiftModifier ) {

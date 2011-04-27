@@ -71,9 +71,7 @@ SOURCES +=\
     src/BrowserWidget.cpp \
     src/NumberedCodeEdit.cpp \
     src/SimpleEditor.cpp \
-    src/ImageViewerMdiSubWindow.cpp \
-    src/PlotterWidget.cpp \
-    src/Plot2dWidget.cpp
+    src/ImageViewerMdiSubWindow.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -112,7 +110,4 @@ HEADERS += \
     src/BrowserWidget.h \
     src/NumberedCodeEdit.h \
     src/SimpleEditor.h \
-    src/ImageViewerMdiSubWindow.h \
-    src/PlotterWidget.h \
-    src/Plot2dWidget.h
-
+    src/ImageViewerMdiSubWindow.h

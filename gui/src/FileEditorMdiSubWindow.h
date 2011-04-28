@@ -31,6 +31,8 @@ public:
     FileEditorMdiSubWindow(QWidget *parent = 0);
     void loadFile(QString fileName);
 
+    void installEventFilter(QObject *object);
+
 public slots:
     void newFile();
     void saveFile();

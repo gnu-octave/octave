@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_isRunning(true) {
     QDesktopServices desktopServices;
     m_settingsFile = desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/settings.ini";
-    constructWindow();
+    construct();
     establishOctaveLink();
 }
 
@@ -46,11 +46,13 @@ void MainWindow::handleOpenFileRequest(QString fileName) {
         m_openedFiles->addSubWindow(subWindow);
         subWindow->setWindowTitle(fileName);
         subWindow->showMaximized();
+        subWindow->installEventFilter(m_centralTabWidget);
     } else {
         FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow(m_openedFiles);
         m_openedFiles->addSubWindow(subWindow);
         subWindow->loadFile(fileName);
         subWindow->showMaximized();
+        subWindow->installEventFilter(m_centralTabWidget);
     }
     m_centralTabWidget->setCurrentWidget(m_openedFiles);
 }
@@ -114,10 +116,11 @@ void MainWindow::writeSettings() {
     settings.setValue("MainWindow/windowState", saveState());
 }
 
-void MainWindow::constructWindow() {
+void MainWindow::construct() {
     setWindowIcon(QIcon("../media/quint_icon_small.png"));
 
     QStyle *style = QApplication::style();
+    m_centralTabWidget = new TabWidgetWithShortcuts(this);
     m_octaveTerminal = new OctaveTerminal(this);
     m_generalPurposeToolbar = new QToolBar(tr("Octave Toolbar"), this);
     m_variablesDockWidget = new VariablesDockWidget(this);
@@ -127,11 +130,17 @@ void MainWindow::constructWindow() {
     m_statusBar = new QStatusBar(this);
     m_browserWidget = new BrowserWidget(this);
     m_serviceWidget = new BrowserWidget(this);
-    m_centralTabWidget = new QTabWidget(this);
+
     m_centralTabWidget->addTab(m_octaveTerminal, tr("Command Window"));
     m_centralTabWidget->addTab(m_openedFiles, tr("File Editor"));
     m_centralTabWidget->addTab(m_browserWidget, tr("Documentation"));
     m_centralTabWidget->addTab(m_serviceWidget, tr("Service"));
+
+    m_octaveTerminal->installEventFilter(m_centralTabWidget);
+    m_octaveTerminal->installEventFilterOnDisplay(m_centralTabWidget);
+    m_openedFiles->installEventFilter(m_centralTabWidget);
+    m_browserWidget->installEventFilter(m_centralTabWidget);
+    m_serviceWidget->installEventFilter(m_centralTabWidget);
 
     // TODO: Add meaningfull toolbar items.
     QAction *commandAction = new QAction(style->standardIcon(QStyle::SP_CommandLink),

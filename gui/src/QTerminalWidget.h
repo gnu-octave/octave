@@ -70,6 +70,9 @@ public:
     
     /** Send some text to the terminal. */
     void sendText(const QString &text);
+
+    /** Installs an event filter onto the display. */
+    void installEventFilterOnDisplay(QObject *object);
             
 signals:
     /** Emitted, when the current program has finished. */

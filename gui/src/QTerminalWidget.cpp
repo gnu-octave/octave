@@ -75,11 +75,10 @@ QTerminalWidget::QTerminalWidget(int startnow, QWidget *parent)
     if(startnow && m_impl->m_session) {
 	m_impl->m_session->run();
     }
-    
-    this->setFocus(Qt::OtherFocusReason);
+
+    setFocus(Qt::OtherFocusReason);
     m_impl->m_terminalDisplay->resize(this->size());
-    
-    this->setFocusProxy(m_impl->m_terminalDisplay);
+    setFocusProxy(m_impl->m_terminalDisplay);
 }
 
 void QTerminalWidget::startShellProgram()
@@ -172,6 +171,10 @@ void QTerminalWidget::setScrollBarPosition(ScrollBarPosition pos)
 void QTerminalWidget::sendText(const QString &text)
 {
     m_impl->m_session->sendText(text); 
+}
+
+void QTerminalWidget::installEventFilterOnDisplay(QObject *object) {
+    m_impl->m_terminalDisplay->installEventFilter(object);
 }
 
 void QTerminalWidget::resizeEvent(QResizeEvent*)

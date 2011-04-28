@@ -35,6 +35,12 @@ void FileEditorMdiSubWindow::loadFile(QString fileName) {
     m_simpleEditor->load(fileName);
 }
 
+void FileEditorMdiSubWindow::installEventFilter(QObject *object) {
+    QMdiSubWindow::installEventFilter(object);
+    m_numberedTextView->installEventFilter(object);
+    m_simpleEditor->installEventFilter(object);
+}
+
 void FileEditorMdiSubWindow::newFile() {
     if(m_modified) {
         int decision

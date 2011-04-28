@@ -213,7 +213,7 @@ NumberedCodeEdit::NumberedCodeEdit( QWidget *parent, SimpleEditor *textEdit )
 	setLineWidth( 2 );
 	
 	view=textEdit;
-	view->installEventFilter( this );
+        view->installEventFilter( this );
 	
 	connect( view->document(), SIGNAL(contentsChange(int,int,int)), this, SLOT(textChanged(int,int,int)) );
 	

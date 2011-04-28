@@ -25,6 +25,7 @@
 #include <QMdiArea>
 #include <QStatusBar>
 #include <QToolBar>
+#include <QQueue>
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
@@ -79,6 +80,65 @@ extern OCTINTERP_API FILE *get_input_from_stdin (void);
 class OctaveMainThread;
 class OctaveCallbackThread;
 
+class TabWidgetWithShortcuts : public QTabWidget {
+public:
+    TabWidgetWithShortcuts(QWidget *parent = 0)
+        : QTabWidget(parent),
+          m_showingShortcuts(false) {
+        setFocusPolicy(Qt::NoFocus);
+    }
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event) {
+        if(event->type() == QEvent::KeyPress) {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            if(keyEvent->modifiers() == Qt::ControlModifier) {
+                showShortcuts();
+                switch(keyEvent->key()) {
+                case Qt::Key_1: setCurrentIndex(0); return true;
+                case Qt::Key_2: setCurrentIndex(1); return true;
+                case Qt::Key_3: setCurrentIndex(2); return true;
+                case Qt::Key_4: setCurrentIndex(3); return true;
+                };
+            }
+        } else if(event->type() == QEvent::KeyRelease) {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            if(keyEvent->modifiers() != Qt::ControlModifier) {
+                hideShortcuts();
+            }
+        }
+        return QTabWidget::eventFilter(object, event);
+    }
+
+private:
+    void showShortcuts() {
+        if(m_showingShortcuts)
+            return;
+
+        int tabCount = count();
+        for(int tabIndex = 0; tabIndex < tabCount; tabIndex++) {
+            m_backuppedTabTitles.push_back(tabText(tabIndex));
+            setTabText(tabIndex, QString("%1 [%2]").arg(tabText(tabIndex)).arg(tabIndex + 1));
+        }
+
+        m_showingShortcuts = true;
+    }
+
+    void hideShortcuts() {
+        if(!m_showingShortcuts)
+            return;
+        int tabCount = count();
+        for(int tabIndex = 0; tabIndex < tabCount; tabIndex++) {
+            setTabText(tabIndex, m_backuppedTabTitles.front());
+            m_backuppedTabTitles.pop_front();
+        }
+        m_showingShortcuts = false;
+    }
+
+    bool m_showingShortcuts;
+    QQueue<QString> m_backuppedTabTitles;
+};
+
 /**
   * \class MainWindow
   *
@@ -111,14 +171,14 @@ protected:
     void writeSettings();
 
 private:
-    void constructWindow();
+    void construct();
     void establishOctaveLink();
     OctaveTerminal *m_octaveTerminal;
     VariablesDockWidget *m_variablesDockWidget;
     HistoryDockWidget *m_historyDockWidget;
     FilesDockWidget *m_filesDockWidget;
     QMdiArea *m_openedFiles;
-    QTabWidget *m_centralTabWidget;
+    TabWidgetWithShortcuts *m_centralTabWidget;
     QStatusBar *m_statusBar;
     QToolBar *m_generalPurposeToolbar;
     BrowserWidget *m_browserWidget;

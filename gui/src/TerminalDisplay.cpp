@@ -2920,7 +2920,7 @@ AutoScrollHandler::AutoScrollHandler(QWidget* parent)
 : QObject(parent)
 , _timerId(0)
 {
-    parent->installEventFilter(this);
+    //parent->installEventFilter(this);
 }
 void AutoScrollHandler::timerEvent(QTimerEvent* event)
 {

@@ -115,6 +115,8 @@ void MainWindow::writeSettings() {
 }
 
 void MainWindow::constructWindow() {
+    setWindowIcon(QIcon("../media/quint_icon_small.png"));
+
     QStyle *style = QApplication::style();
     m_octaveTerminal = new OctaveTerminal(this);
     m_generalPurposeToolbar = new QToolBar(tr("Octave Toolbar"), this);
@@ -158,6 +160,7 @@ void MainWindow::constructWindow() {
 
     openWebPage("http://www.gnu.org/software/octave/doc/interpreter/");
     m_serviceWidget->load(QUrl("http://powerup.ath.cx/quint"));
+
 }
 
 void MainWindow::establishOctaveLink() {

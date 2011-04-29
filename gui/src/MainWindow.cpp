@@ -23,12 +23,14 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include "MainWindow.h"
-#include "FileEditorMdiSubWindow.h"
-#include "ImageViewerMdiSubWindow.h"
+#include "FileEditorDockWidget.h"
+#include "ImageViewerDockWidget.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       m_isRunning(true) {
+    setObjectName("MainWindow");
+
     QDesktopServices desktopServices;
     m_settingsFile = desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/settings.ini";
     construct();
@@ -42,54 +44,44 @@ void MainWindow::handleOpenFileRequest(QString fileName) {
     reportStatusMessage(tr("Opening file."));
     QPixmap pixmap;
     if(pixmap.load(fileName)) {
-        ImageViewerMdiSubWindow *subWindow = new ImageViewerMdiSubWindow(pixmap, this);
-        m_openedFiles->addSubWindow(subWindow);
-        subWindow->setWindowTitle(fileName);
-        subWindow->showMaximized();
-        subWindow->installEventFilter(m_centralTabWidget);
+        ImageViewerDockWidget *imageViewerDockWidget = new ImageViewerDockWidget(pixmap, this);
+        imageViewerDockWidget->setWindowTitle(fileName);
+        addDockWidget(Qt::RightDockWidgetArea, imageViewerDockWidget);
     } else {
-        FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow(m_openedFiles);
-        m_openedFiles->addSubWindow(subWindow);
-        subWindow->loadFile(fileName);
-        subWindow->showMaximized();
-        subWindow->installEventFilter(m_centralTabWidget);
+        FileEditorDockWidget *fileEditorDockWidget = new FileEditorDockWidget(this);
+        fileEditorDockWidget->loadFile(fileName);
+        addDockWidget(Qt::RightDockWidgetArea, fileEditorDockWidget);
     }
-    m_centralTabWidget->setCurrentWidget(m_openedFiles);
 }
 
 void MainWindow::reportStatusMessage(QString statusMessage) {
     m_statusBar->showMessage(statusMessage, 1000);
 }
 
-void MainWindow::openWebPage(QString url) {
-    m_browserWidget->load(QUrl(url));
-}
-
 void MainWindow::handleSaveWorkspaceRequest() {
     QDesktopServices desktopServices;
     QString selectedFile = QFileDialog::getSaveFileName(this, tr("Save Workspace"),
         desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/workspace");
-    m_octaveTerminal->sendText(QString("save \'%1\'\n").arg(selectedFile));
-    m_octaveTerminal->setFocus();
+    m_octaveTerminalDockWidget->octaveTerminal()->sendText(QString("save \'%1\'\n").arg(selectedFile));
+    m_octaveTerminalDockWidget->octaveTerminal()->setFocus();
 }
 
 void MainWindow::handleLoadWorkspaceRequest() {
     QDesktopServices desktopServices;
     QString selectedFile = QFileDialog::getOpenFileName(this, tr("Load Workspace"),
         desktopServices.storageLocation(QDesktopServices::HomeLocation) + "/.quint/workspace");
-    m_octaveTerminal->sendText(QString("load \'%1\'\n").arg(selectedFile));
-    m_octaveTerminal->setFocus();
+    m_octaveTerminalDockWidget->octaveTerminal()->sendText(QString("load \'%1\'\n").arg(selectedFile));
+    m_octaveTerminalDockWidget->octaveTerminal()->setFocus();
 }
 
 void MainWindow::handleClearWorkspaceRequest() {
-    m_octaveTerminal->sendText("clear\n");
-    m_octaveTerminal->setFocus();
+    m_octaveTerminalDockWidget->octaveTerminal()->sendText("clear\n");
+    m_octaveTerminalDockWidget->octaveTerminal()->setFocus();
 }
 
 void MainWindow::handleCommandDoubleClicked(QString command) {
-    m_octaveTerminal->sendText(command);
-    m_centralTabWidget->setCurrentWidget(m_octaveTerminal);
-    m_octaveTerminal->setFocus();
+    m_octaveTerminalDockWidget->octaveTerminal()->sendText(command);
+    m_octaveTerminalDockWidget->octaveTerminal()->setFocus();
 }
 
 void MainWindow::closeEvent(QCloseEvent *closeEvent) {
@@ -117,45 +109,50 @@ void MainWindow::writeSettings() {
 }
 
 void MainWindow::construct() {
+    setWindowTitle("Octave");
     setWindowIcon(QIcon("../media/quint_icon_small.png"));
-
     QStyle *style = QApplication::style();
-    m_centralTabWidget = new TabWidgetWithShortcuts(this);
-    m_octaveTerminal = new OctaveTerminal(this);
-    m_generalPurposeToolbar = new QToolBar(tr("Octave Toolbar"), this);
+    resize(800, 600);
+
+    m_octaveTerminalDockWidget = new OctaveTerminalDockWidget(this, new OctaveTerminal(this));
     m_variablesDockWidget = new VariablesDockWidget(this);
     m_historyDockWidget = new HistoryDockWidget(this);
     m_filesDockWidget = new FilesDockWidget(this);
-    m_openedFiles = new QMdiArea(this);
-    m_statusBar = new QStatusBar(this);
-    m_browserWidget = new BrowserWidget(this);
-    m_serviceWidget = new BrowserWidget(this);
+    m_browserDockWidget = new BrowserDockWidget(this, new BrowserWidget(this));
+    m_serviceDockWidget = new BrowserDockWidget(this, new BrowserWidget(this));
 
-    m_centralTabWidget->addTab(m_octaveTerminal, tr("Command Window"));
-    m_centralTabWidget->addTab(m_openedFiles, tr("File Editor"));
-    m_centralTabWidget->addTab(m_browserWidget, tr("Documentation"));
-    m_centralTabWidget->addTab(m_serviceWidget, tr("Service"));
+    m_browserDockWidget->setObjectName("BrowserWidget");
+    m_browserDockWidget->setWindowTitle(tr("Documentation"));
+    m_serviceDockWidget->setObjectName("ServiceWidget");
+    m_serviceDockWidget->setWindowTitle(tr("Service"));
 
-    m_octaveTerminal->installEventFilter(m_centralTabWidget);
-    m_octaveTerminal->installEventFilterOnDisplay(m_centralTabWidget);
-    m_openedFiles->installEventFilter(m_centralTabWidget);
-    m_browserWidget->installEventFilter(m_centralTabWidget);
-    m_serviceWidget->installEventFilter(m_centralTabWidget);
+    // This is needed, since a QMainWindow without a central widget is not supported.
+    setCentralWidget(new QWidget(this));
+    centralWidget()->setObjectName("CentralWidget");
+    centralWidget()->hide();
+
+    setDockOptions(QMainWindow::AllowTabbedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AnimatedDocks);
+
+    addDockWidget(Qt::RightDockWidgetArea, m_octaveTerminalDockWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, m_filesDockWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, m_browserDockWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, m_serviceDockWidget);
 
     // TODO: Add meaningfull toolbar items.
+    m_generalPurposeToolbar = new QToolBar(tr("Octave Toolbar"), this);
     QAction *commandAction = new QAction(style->standardIcon(QStyle::SP_CommandLink),
         "", m_generalPurposeToolbar);
     QAction *computerAction = new QAction(style->standardIcon(QStyle::SP_ComputerIcon),
         "", m_generalPurposeToolbar);
     m_generalPurposeToolbar->addAction(commandAction);
     m_generalPurposeToolbar->addAction(computerAction);
-
-    setWindowTitle("Octave");
-    setCentralWidget(m_centralTabWidget);
     addToolBar(m_generalPurposeToolbar);
-    addDockWidget(Qt::LeftDockWidgetArea, m_variablesDockWidget);
-    addDockWidget(Qt::LeftDockWidgetArea, m_historyDockWidget);
-    addDockWidget(Qt::RightDockWidgetArea, m_filesDockWidget);
+
+    // Create status bar.
+
+    m_statusBar = new QStatusBar(this);
     setStatusBar(m_statusBar);
 
     readSettings();
@@ -167,8 +164,8 @@ void MainWindow::construct() {
     connect(m_variablesDockWidget, SIGNAL(loadWorkspace()), this, SLOT(handleLoadWorkspaceRequest()));
     connect(m_variablesDockWidget, SIGNAL(clearWorkspace()), this, SLOT(handleClearWorkspaceRequest()));
 
-    openWebPage("http://www.gnu.org/software/octave/doc/interpreter/");
-    m_serviceWidget->load(QUrl("http://powerup.ath.cx/bugtracker"));
+    m_browserDockWidget->browserWidget()->load(QUrl("http://www.gnu.org/software/octave/doc/interpreter/"));
+    m_serviceDockWidget->browserWidget()->load(QUrl("http://powerup.ath.cx/bugtracker"));
 
 }
 
@@ -188,6 +185,6 @@ void MainWindow::establishOctaveLink() {
     dup2 (fds, 0);
     dup2 (fds, 1);
     dup2 (fds, 2);
-    m_octaveTerminal->openTeletype(fdm);
+    m_octaveTerminalDockWidget->octaveTerminal()->openTeletype(fdm);
     reportStatusMessage(tr("Established link to Octave."));
 }

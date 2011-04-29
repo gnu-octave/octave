@@ -22,6 +22,19 @@
 #include <QStyle>
 #include <QApplication>
 
+BrowserDockWidget::BrowserDockWidget(QWidget *parent, BrowserWidget *browserWidget)
+    : QDockWidget(parent) {
+    m_browserWidget = browserWidget;
+    setWidget(m_browserWidget);
+}
+
+BrowserDockWidget::~BrowserDockWidget() {
+}
+
+BrowserWidget *BrowserDockWidget::browserWidget() {
+    return m_browserWidget;
+}
+
 BrowserWidget::BrowserWidget(QWidget *parent)
     : QWidget(parent) {
     construct();

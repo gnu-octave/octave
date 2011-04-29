@@ -24,6 +24,19 @@
 #include <QLineEdit>
 #include <QtWebKit/QWebView>
 #include <QStatusBar>
+#include <QDockWidget>
+
+class BrowserWidget;
+class BrowserDockWidget : public QDockWidget {
+public:
+    BrowserDockWidget(QWidget *parent, BrowserWidget *browserWidget);
+    ~BrowserDockWidget();
+
+    BrowserWidget *browserWidget();
+
+private:
+    BrowserWidget *m_browserWidget;
+};
 
 class BrowserWidget : public QWidget {
     Q_OBJECT

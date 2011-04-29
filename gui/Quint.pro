@@ -66,12 +66,12 @@ SOURCES +=\
     src/VariablesDockWidget.cpp \
     src/HistoryDockWidget.cpp \
     src/FilesDockWidget.cpp \
-    src/FileEditorMdiSubWindow.cpp \
+    src/FileEditorDockWidget.cpp \
     src/SyntaxHighlighter.cpp \
     src/BrowserWidget.cpp \
     src/NumberedCodeEdit.cpp \
     src/SimpleEditor.cpp \
-    src/ImageViewerMdiSubWindow.cpp
+    src/ImageViewerDockWidget.cpp
 
 HEADERS += \
         src/TerminalCharacterDecoder.h \
@@ -105,9 +105,9 @@ HEADERS += \
     src/VariablesDockWidget.h \
     src/HistoryDockWidget.h \
     src/FilesDockWidget.h \
-    src/FileEditorMdiSubWindow.h \
+    src/FileEditorDockWidget.h \
     src/SyntaxHighlighter.h \
     src/BrowserWidget.h \
     src/NumberedCodeEdit.h \
     src/SimpleEditor.h \
-    src/ImageViewerMdiSubWindow.h
+    src/ImageViewerDockWidget.h

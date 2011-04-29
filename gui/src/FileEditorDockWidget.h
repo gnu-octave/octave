@@ -16,31 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OCTAVETERMINAL_H
-#define OCTAVETERMINAL_H
+#ifndef FILEEDITORDOCKWIDGET_H
+#define FILEEDITORDOCKWIDGET_H
 
-#include "QTerminalWidget.h"
 #include <QDockWidget>
+#include <QToolBar>
+#include <QStatusBar>
+#include "SimpleEditor.h"
+#include "NumberedCodeEdit.h"
 
-class OctaveTerminal;
-class OctaveTerminalDockWidget : public QDockWidget {
-public:
-    OctaveTerminalDockWidget(QWidget *parent, OctaveTerminal *octaveTerminal);
-    ~OctaveTerminalDockWidget();
-
-    OctaveTerminal *octaveTerminal();
-
-private:
-    OctaveTerminal *m_octaveTerminal;
-};
-
-class OctaveTerminal : public QTerminalWidget {
+class FileEditorDockWidget : public QDockWidget {
     Q_OBJECT
 public:
-    OctaveTerminal(QWidget *parent = 0);
-    ~OctaveTerminal();
+    FileEditorDockWidget(QWidget *parent = 0);
+    void loadFile(QString fileName);
 
+public slots:
+    void newFile();
+    void saveFile();
+
+    void showToolTipNew();
+    void showToolTipSave();
+    void showToolTipUndo();
+    void showToolTipRedo();
+
+    void registerModified(bool modified);
 private:
     void construct();
+    QToolBar *m_toolBar;
+    SimpleEditor *m_simpleEditor;
+    NumberedCodeEdit *m_numberedTextView;
+    QStatusBar *m_statusBar;
+    QString m_fileName;
+    bool m_modified;
 };
-#endif // OCTAVETERMINAL_H
+
+#endif // FILEEDITORDOCKWIDGET_H

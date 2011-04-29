@@ -22,6 +22,21 @@
 #include <QStringListModel>
 #include <QStringList>
 
+OctaveTerminalDockWidget::OctaveTerminalDockWidget(QWidget *parent, OctaveTerminal *octaveTerminal)
+    : QDockWidget(parent) {
+    setObjectName("OctaveTerminalDockWidget");
+    setWindowTitle(tr("Octave terminal"));
+    m_octaveTerminal = octaveTerminal;
+    setWidget(m_octaveTerminal);
+}
+
+OctaveTerminalDockWidget::~OctaveTerminalDockWidget() {
+}
+
+OctaveTerminal *OctaveTerminalDockWidget::octaveTerminal() {
+    return m_octaveTerminal;
+}
+
 OctaveTerminal::OctaveTerminal(QWidget *parent)
     : QTerminalWidget(0, parent) {
     construct();

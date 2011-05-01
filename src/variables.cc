@@ -546,6 +546,7 @@ Check only for files.\n\
 @item \"dir\"\n\
 Check only for directories.\n\
 @end table\n\
+@seealso{file_in_loadpath}\n\
 @end deftypefn")
 {
   octave_value retval = false;

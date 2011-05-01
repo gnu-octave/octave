@@ -30,9 +30,9 @@
 ## accept array arguments it is better to call the function directly.
 ##
 ## The first input argument @var{func} can be a string, a function
-## handle, an inline function or an anonymous function.  The input
+## handle, an inline function, or an anonymous function.  The input
 ## argument @var{A} can be a logic array, a numeric array, a string
-## array, a structure array or a cell array.  By a call of the function
+## array, a structure array, or a cell array.  By a call of the function
 ## @command{arrayfun} all elements of @var{A} are passed on to the named
 ## function @var{func} individually.
 ##
@@ -96,7 +96,7 @@
 ##
 ## If the parameter @var{errfunc} after a further string input argument
 ## "ErrorHandler" is another string, a function handle, an inline
-## function or an anonymous function, then @var{errfunc} defines a
+## function, or an anonymous function, then @var{errfunc} defines a
 ## function to call in the case that @var{func} generates an error.
 ## The definition of the function must be of the form
 ##
@@ -107,8 +107,8 @@
 ## @noindent
 ## where there is an additional input argument to @var{errfunc}
 ## relative to @var{func}, given by @var{s}.  This is a structure with
-## the elements "identifier", "message" and "index", giving
-## respectively the error identifier, the error message and the index of
+## the elements "identifier", "message", and "index" giving,
+## respectively, the error identifier, the error message, and the index of
 ## the array elements that caused the error.  The size of the output
 ## argument of @var{errfunc} must have the same size as the output
 ## argument of @var{func}, otherwise a real error is thrown.  For

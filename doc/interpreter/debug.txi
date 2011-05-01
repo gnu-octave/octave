@@ -89,7 +89,7 @@ function.  For example:
 @example
 @group
 dbstop ("asind", 1)
-@result{} 27
+@result{} 28
 @end group
 @end example
 
@@ -102,7 +102,7 @@ be queried with the @code{dbstatus} function.
 
 @noindent
 Taking the above as an example, @code{dbstatus ("asind")} should return
-27.  The breakpoints can then be cleared with the @code{dbclear} function
+28.  The breakpoints can then be cleared with the @code{dbclear} function
 
 @DOCSTRING(dbclear)
 

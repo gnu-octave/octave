@@ -338,6 +338,24 @@ along with a warning.
 
 @DOCSTRING(nargout)
 
+It is good practice at the head of a function to verify that it has been called
+correctly.  In Octave the following idiom is seen frequently
+
+@example
+@group
+if (nargin < min_#_inputs || nargin > max_#_inputs)
+  print_usage ();
+endif
+@end group
+@end example
+
+@noindent
+which stops the function execution and prints a message about the correct
+way to call the function whenever the number of inputs is wrong.
+
+For compatability with @sc{matlab}, @code{nargchk} and @code{nargoutchk} are
+available which provide similar error checking.
+
 @DOCSTRING(nargchk)
 
 @DOCSTRING(nargoutchk)
@@ -1277,20 +1295,25 @@ types of functions you will find there.
 @item audio
 Functions for playing and recording sounds.
 
-@item control
-Functions for design and simulation of automatic control systems.
+@item deprecated
+Out-of-date functions which will eventually be removed from Octave.
 
 @item elfun
-Elementary functions.
+Elementary functions, principally trigonometric.
 
-@item finance
-Functions for computing interest payments, investment values, and rates
-of return.
+@item @@ftp
+Class functions for the FTP object.
 
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
 @code{ismatrix}, @code{nargchk}, etc.
+
+@item geometry
+Functions related to Delaunay triangulation.
+
+@item help
+Functions for Octave's built-in help system.
 
 @item image
 Image processing tools.  These functions require the X Window System.
@@ -1305,13 +1328,13 @@ Functions for linear algebra.
 Functions that don't really belong anywhere else.
 
 @item optimization
-Minimization of functions.
+Functions related to minimzation, optimization, and root finding.
 
 @item path
 Functions to manage the directory path Octave uses to find functions.
 
 @item pkg
-Install external packages of functions in Octave.
+Package manager for installing external packages of functions in Octave.
 
 @item plot
 Functions for displaying and printing two- and three-dimensional graphs.
@@ -1329,10 +1352,11 @@ Functions for signal processing applications.
 Functions for handling sparse matrices.
 
 @item specfun
-Special functions.
+Special functions such as @code{bessel} or @code{factor}.
 
 @item special-matrix
-Functions that create special matrix forms.
+Functions that create special matrix forms such as Hilbert or Vandermonde
+matrices.
 
 @item startup
 Octave's system-wide startup file.
@@ -1344,8 +1368,8 @@ Statistical functions.
 Miscellaneous string-handling functions.
 
 @item testfun
-Perform unit tests on other functions.
+Functions for performing unit tests on other functions.
 
 @item time
-Functions related to time keeping.
+Functions related to time and date processing.
 @end table

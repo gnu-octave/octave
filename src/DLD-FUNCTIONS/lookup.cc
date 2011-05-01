@@ -188,13 +188,14 @@ do_numeric_lookup (const ArrayT& array, const ArrayT& values,
 
 DEFUN_DLD (lookup, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
+@deftypefn  {Loadable Function} {@var{idx} =} lookup (@var{table}, @var{y})\n\
+@deftypefnx {Loadable Function} {@var{idx} =} lookup (@var{table}, @var{y}, @var{opt})\n\
 Lookup values in a sorted table.  Usually used as a prelude to\n\
 interpolation.\n\
 \n\
 If table is increasing and @code{idx = lookup (table, y)}, then\n\
 @code{table(idx(i)) <= y(i) < table(idx(i+1))} for all @code{y(i)}\n\
-within the table.  If @code{y(i) < table (1)} then\n\
+within the table.  If @code{y(i) < table(1)} then\n\
 @code{idx(i)} is 0. If @code{y(i) >= table(end)} or @code{isnan (y(i))} then\n\
 @code{idx(i)} is @code{n}.\n\
 \n\
@@ -211,7 +212,7 @@ is also sorted, the complexity is O(min(M*log(N),M+N)).\n\
 (or @var{y} can be a single string).  In this case, string lookup\n\
 is performed using lexicographical comparison.\n\
 \n\
-If @var{opts} is specified, it shall be a string with letters indicating\n\
+If @var{opts} is specified, it must be a string with letters indicating\n\
 additional options.\n\
 \n\
 @table @code\n\

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} blkdiag (@var{A}, @var{B}, @var{C}, @dots{})
-## Build a block diagonal matrix from @var{A}, @var{B}, @var{C}, @dots{}.
+## Build a block diagonal matrix from @var{A}, @var{B}, @var{C}, @dots{}
 ## All the arguments must be numeric and are two-dimensional matrices or
 ## scalars.
 ## @seealso{diag, horzcat, vertcat}

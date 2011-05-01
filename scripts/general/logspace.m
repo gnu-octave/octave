@@ -17,18 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} logspace (@var{base}, @var{limit})
-## @deftypefnx {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
-## Similar to @code{linspace} except that the values are logarithmically
-## spaced from
+## @deftypefn  {Function File} {} logspace (@var{a}, @var{b})
+## @deftypefnx {Function File} {} logspace (@var{b}, @var{b}, @var{n})
+## @deftypefnx {Function File} {} logspace (@var{a}, pi, @var{n})
+## Return a row vector with @var{n} elements logarithmically spaced from
 ## @tex
-## $10^{base}$ to $10^{limit}$.
+## $10^{a}$ to $10^{b}$.
 ## @end tex
 ## @ifnottex
-## 10^base to 10^limit.
+## 10^@var{a} to 10^@var{b}.
 ## @end ifnottex
+## If @var{n} is unspecified it defaults to 50.
 ##
-## If @var{limit} is equal to
+## If @var{b} is equal to
 ## @tex
 ## $\pi$,
 ## @end tex
@@ -37,24 +38,22 @@
 ## @end ifnottex
 ## the points are between
 ## @tex
-## $10^{base}$ and $\pi$,
+## $10^{a}$ and $\pi$,
 ## @end tex
 ## @ifnottex
-## 10^base and pi,
+## 10^@var{a} and pi,
 ## @end ifnottex
 ## @emph{not}
 ## @tex
-## $10^{base}$ and $10^{\pi}$,
+## $10^{a}$ and $10^{\pi}$,
 ## @end tex
 ## @ifnottex
-## 10^base and 10^pi,
+## 10^@var{a} and 10^pi,
 ## @end ifnottex
-## in order to be compatible with the corresponding @sc{matlab}
-## function.
-## If @var{n} is unspecified it defaults to 50.
+## in order to be compatible with the corresponding @sc{matlab} function.
 ##
-## Also for compatibility with @sc{matlab}, return the second argument if
-## fewer than two values are requested.
+## Also for compatibility with @sc{matlab}, return the second argument @var{b}
+## if fewer than two values are requested.
 ## @seealso{linspace}
 ## @end deftypefn
 

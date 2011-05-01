@@ -20,7 +20,8 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fail (@var{code}, @var{pattern})
+## @deftypefn  {Function File} {} fail (@var{code})
+## @deftypefnx {Function File} {} fail (@var{code}, @var{pattern})
 ## @deftypefnx {Function File} {} fail (@var{code}, 'warning', @var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
@@ -45,7 +46,7 @@
 ## Called with three arguments, the behavior is similar to
 ## @code{fail(@var{code}, @var{pattern})}, but produces an error if no
 ## warning is given during code execution or if the code fails.
-##
+## @seealso{assert}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>

@@ -51,7 +51,7 @@
 ## @var{expected})}.  If @var{expected} is zero @var{tol} will always be used as
 ## an absolute tolerance.
 ## @end table
-## @seealso{test}
+## @seealso{test, fail}
 ## @end deftypefn
 
 ## FIXME: Output throttling: don't print out the entire 100x100 matrix,

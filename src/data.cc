@@ -106,10 +106,25 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (all, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} all (@var{x}, @var{dim})\n\
-The function @code{all} behaves like the function @code{any}, except\n\
-that it returns true only if all the elements of a vector, or all the\n\
-elements along dimension @var{dim} of a matrix, are nonzero.\n\
+@deftypefn  {Built-in Function} {} all (@var{x})\n\
+@deftypefnx {Built-in Function} {} all (@var{x}, @var{dim})\n\
+For a vector argument, return true (logical 1) if all elements of the vector\n\
+are nonzero.\n\
+\n\
+For a matrix argument, return a row vector of logical ones and\n\
+zeros with each element indicating whether all of the elements of the\n\
+corresponding column of the matrix are nonzero.  For example:\n\
+\n\
+@example\n\
+@group\n\
+all ([2, 3; 1, 0]))\n\
+     @result{} [ 1, 0 ]\n\
+@end group\n\
+@end example\n\
+\n\
+If the optional argument @var{dim} is supplied, work along dimension\n\
+@var{dim}.\n\
+@seealso{any}\n\
 @end deftypefn")
 {
   ANY_ALL (all);
@@ -140,11 +155,12 @@ elements along dimension @var{dim} of a matrix, are nonzero.\n\
 
 DEFUN (any, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} any (@var{x}, @var{dim})\n\
-For a vector argument, return 1 if any element of the vector is\n\
-nonzero.\n\
+@deftypefn  {Built-in Function} {} any (@var{x})\n\
+@deftypefnx {Built-in Function} {} any (@var{x}, @var{dim})\n\
+For a vector argument, return true (logical 1) if any element of the vector\n\
+is nonzero.\n\
 \n\
-For a matrix argument, return a row vector of ones and\n\
+For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether any of the elements of the\n\
 corresponding column of the matrix are nonzero.  For example:\n\
 \n\
@@ -164,6 +180,7 @@ any (eye (2, 4), 2)\n\
      @result{} [ 1; 1 ]\n\
 @end group\n\
 @end example\n\
+@seealso{all}\n\
 @end deftypefn")
 {
   ANY_ALL (any);
@@ -1686,8 +1703,15 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
 DEFUN (horzcat, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} horzcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the horizontal concatenation of N-d array objects, @var{array1},\n\
+Return the horizontal concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension 2.\n\
+\n\
+Arrays may also be concatenated horizontally using the syntax for creating\n\
+new matrices.  For example:\n\
+\n\
+@example\n\
+@var{hcat} = [ @var{array1}, @var{array2}, @dots{} ];\n\
+@end example\n\
 @seealso{cat, vertcat}\n\
 @end deftypefn")
 {
@@ -1697,8 +1721,15 @@ Return the horizontal concatenation of N-d array objects, @var{array1},\n\
 DEFUN (vertcat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the vertical concatenation of N-d array objects, @var{array1},\n\
+Return the vertical concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension 1.\n\
+\n\
+Arrays may also be concatenated vertically using the syntax for creating\n\
+new matrices.  For example:\n\
+\n\
+@example\n\
+@var{vcat} = [ @var{array1}; @var{array2}; @dots{} ];\n\
+@end example\n\
 @seealso{cat, horzcat}\n\
 @end deftypefn")
 {
@@ -1708,7 +1739,7 @@ Return the vertical concatenation of N-d array objects, @var{array1},\n\
 DEFUN (cat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the concatenation of N-d array objects, @var{array1},\n\
+Return the concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.\n\
 \n\
 @example\n\
@@ -1716,10 +1747,8 @@ Return the concatenation of N-d array objects, @var{array1},\n\
 A = ones (2, 2);\n\
 B = zeros (2, 2);\n\
 cat (2, A, B)\n\
-@result{} ans =\n\
-\n\
-     1 1 0 0\n\
-     1 1 0 0\n\
+    @result{} 1 1 0 0\n\
+       1 1 0 0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1732,23 +1761,23 @@ second dimension the following way:\n\
 @end group\n\
 @end example\n\
 \n\
-@var{dim} can be larger than the dimensions of the N-d array objects\n\
+@var{dim} can be larger than the dimensions of the N-D array objects\n\
 and the result will thus have @var{dim} dimensions as the\n\
 following example shows:\n\
 \n\
 @example\n\
 @group\n\
-cat (4, ones(2, 2), zeros (2, 2))\n\
-@result{} ans =\n\
+cat (4, ones (2, 2), zeros (2, 2))\n\
+    @result{} ans =\n\
 \n\
-   ans(:,:,1,1) =\n\
+       ans(:,:,1,1) =\n\
 \n\
-     1 1\n\
-     1 1\n\
+         1 1\n\
+         1 1\n\
 \n\
-   ans(:,:,1,2) =\n\
-     0 0\n\
-     0 0\n\
+       ans(:,:,1,2) =\n\
+         0 0\n\
+         0 0\n\
 @end group\n\
 @end example\n\
 @seealso{horzcat, vertcat}\n\
@@ -1946,10 +1975,10 @@ do_permute (const octave_value_list& args, bool inv)
 
 DEFUN (permute, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} permute (@var{a}, @var{perm})\n\
-Return the generalized transpose for an N-d array object @var{a}.\n\
+@deftypefn {Built-in Function} {} permute (@var{A}, @var{perm})\n\
+Return the generalized transpose for an N-D array object @var{A}.\n\
 The permutation vector @var{perm} must contain the elements\n\
-@code{1:ndims(a)} (in any order, but each element must appear just once).\n\
+@code{1:ndims(A)} (in any order, but each element must appear only once).\n\
 @seealso{ipermute}\n\
 @end deftypefn")
 {
@@ -1958,15 +1987,15 @@ The permutation vector @var{perm} must contain the elements\n\
 
 DEFUN (ipermute, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ipermute (@var{a}, @var{iperm})\n\
+@deftypefn {Built-in Function} {} ipermute (@var{A}, @var{iperm})\n\
 The inverse of the @code{permute} function.  The expression\n\
 \n\
 @example\n\
-ipermute (permute (a, perm), perm)\n\
+ipermute (permute (A, perm), perm)\n\
 @end example\n\
 \n\
 @noindent\n\
-returns the original array @var{a}.\n\
+returns the original array @var{A}.\n\
 @seealso{permute}\n\
 @end deftypefn")
 {
@@ -3433,28 +3462,29 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
 DEFUN (ones, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} ones (@var{x})\n\
-@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})\n\
-@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefn  {Built-in Function} {} ones (@var{n})\n\
+@deftypefnx {Built-in Function} {} ones (@var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {} ones (@var{m}, @var{n}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} ones ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {} ones (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 1.\n\
-If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.  If invoked with two or more scalar\n\
+If invoked with a single scalar integer argument @var{n}, return a square\n\
+@nospell{NxN} matrix.  If invoked with two or more scalar\n\
 integer arguments, or a vector of integer values, return an array with\n\
-given dimensions.\n\
+the given dimensions.\n\
 \n\
 If you need to create a matrix whose values are all the same, you should\n\
 use an expression like\n\
 \n\
 @example\n\
-val_matrix = val * ones (n, m)\n\
+val_matrix = val * ones (m, n)\n\
 @end example\n\
 \n\
 The optional argument @var{class} specifies the class of the return array\n\
 and defaults to double.  For example:\n\
 \n\
 @example\n\
-val = ones (n,m, \"uint8\")\n\
+val = ones (m,n, \"uint8\")\n\
 @end example\n\
 @seealso{zeros}\n\
 @end deftypefn")
@@ -3483,21 +3513,22 @@ val = ones (n,m, \"uint8\")\n\
 
 DEFUN (zeros, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} zeros (@var{x})\n\
-@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})\n\
-@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefn  {Built-in Function} {} zeros (@var{n})\n\
+@deftypefnx {Built-in Function} {} zeros (@var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {} zeros (@var{m}, @var{n}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} zeros ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {} zeros (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 0.\n\
 If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.  If invoked with two or more scalar\n\
+@nospell{NxN} matrix.  If invoked with two or more scalar\n\
 integer arguments, or a vector of integer values, return an array with\n\
-given dimensions.\n\
+the given dimensions.\n\
 \n\
 The optional argument @var{class} specifies the class of the return array\n\
 and defaults to double.  For example:\n\
 \n\
 @example\n\
-val = zeros (n,m, \"uint8\")\n\
+val = zeros (m,n, \"uint8\")\n\
 @end example\n\
 @seealso{ones}\n\
 @end deftypefn")
@@ -4113,14 +4144,15 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 
 DEFUN (eye, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} eye (@var{x})\n\
-@deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})\n\
+@deftypefn  {Built-in Function} {} eye (@var{n})\n\
+@deftypefnx {Built-in Function} {} eye (@var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {} eye ([@var{m} @var{n}])\n\
 @deftypefnx {Built-in Function} {} eye (@dots{}, @var{class})\n\
-Return an identity matrix.  If invoked with a single scalar argument,\n\
-@code{eye} returns a square matrix with the dimension specified.  If you\n\
-supply two scalar arguments, @code{eye} takes them to be the number of\n\
-rows and columns.  If given a vector with two elements, @code{eye} uses\n\
-the values of the elements as the number of rows and columns,\n\
+Return an identity matrix.  If invoked with a single scalar argument @var{n},\n\
+return a square @nospell{NxN} identity matrix.  If\n\
+supplied two scalar arguments (@var{m}, @var{n}), @code{eye} takes them to be\n\
+the number of rows and columns.  If given a vector with two elements,\n\
+@code{eye} uses the values of the elements as the number of rows and columns,\n\
 respectively.  For example:\n\
 \n\
 @example\n\
@@ -4154,6 +4186,7 @@ val = zeros (n,m, \"uint8\")\n\
 Calling @code{eye} with no arguments is equivalent to calling it\n\
 with an argument of 1.  This odd definition is for compatibility\n\
 with @sc{matlab}.\n\
+@seealso{speye}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4271,20 +4304,21 @@ do_linspace (const octave_value& base, const octave_value& limit,
 
 DEFUN (linspace, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
+@deftypefn  {Built-in Function} {} linspace (@var{base}, @var{limit})\n\
+@deftypefnx {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
 Return a row vector with @var{n} linearly spaced elements between\n\
 @var{base} and @var{limit}.  If the number of elements is greater than one,\n\
-then the @var{base} and @var{limit} are always included in\n\
+then the endpoints @var{base} and @var{limit} are always included in\n\
 the range.  If @var{base} is greater than @var{limit}, the elements are\n\
 stored in decreasing order.  If the number of points is not specified, a\n\
 value of 100 is used.\n\
 \n\
 The @code{linspace} function always returns a row vector if both\n\
-@var{base} and @var{limit} are scalars.  If one of them or both are column\n\
+@var{base} and @var{limit} are scalars.  If one, or both, of them are column\n\
 vectors, @code{linspace} returns a matrix.\n\
 \n\
-For compatibility with @sc{matlab}, return the second argument if\n\
-fewer than two values are requested.\n\
+For compatibility with @sc{matlab}, return the second argument (@var{limit})\n\
+if fewer than two values are requested.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4357,8 +4391,8 @@ fewer than two values are requested.\n\
 DEFUN (resize, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} resize (@var{x}, @var{m})\n\
-@deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} resize (@var{x}, [@var{m} @var{n} @dots{}])\n\
 Resize @var{x} cutting off elements as necessary.\n\
 \n\
 In the result, element with certain indices is equal to the corresponding\n\
@@ -4386,11 +4420,12 @@ is equivalent to the following code:\n\
 @noindent\n\
 but is performed more efficiently.\n\
 \n\
-If only @var{m} is supplied and it is a scalar, the dimension of the\n\
-result is @var{m}-by-@var{m}.  If @var{m} is a vector, then the\n\
-dimensions of the result are given by the elements of @var{m}.\n\
-If both @var{m} and @var{n} are scalars, then the dimensions of\n\
-the result are @var{m}-by-@var{n}.\n\
+If only @var{m} is supplied, and it is a scalar, the dimension of the\n\
+result is @var{m}-by-@var{m}.\n\
+If @var{m}, @var{n}, @dots{} are all scalars, then the dimensions of\n\
+the result are @var{m}-by-@var{n}-by-@dots{}.\n\
+If given a vector as input, then the\n\
+dimensions of the result are given by the elements of that vector.\n\
 \n\
 An object can be resized to more dimensions than it has;\n\
 in such case the missing dimensions are assumed to be 1.\n\
@@ -4443,13 +4478,16 @@ Resizing an object to fewer dimensions is not possible.\n\
 
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} reshape (@var{a}, @var{size})\n\
-Return a matrix with the given dimensions whose elements are taken\n\
-from the matrix @var{a}.  The elements of the matrix are accessed in\n\
-column-major order (like Fortran arrays are stored).\n\
+@deftypefn  {Built-in Function} {} reshape (@var{A}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} reshape (@var{A}, [@var{m} @var{n} @dots{}])\n\
+@deftypefnx {Built-in Function} {} reshape (@var{A}, @dots{}, [], @dots{})\n\
+@deftypefnx {Built-in Function} {} reshape (@var{A}, @var{size})\n\
+Return a matrix with the specified dimensions (@var{m}, @var{n}, @dots{})\n\
+whose elements are taken from the matrix @var{A}.  The elements of the\n\
+matrix are accessed in column-major order (like Fortran arrays are stored).\n\
 \n\
-For example:\n\
+The following code demonstrates reshaping a 1x4 row vector into a 2x2 square\n\
+matrix.\n\
 \n\
 @example\n\
 @group\n\
@@ -4461,10 +4499,13 @@ reshape ([1, 2, 3, 4], 2, 2)\n\
 \n\
 @noindent\n\
 Note that the total number of elements in the original\n\
-matrix must match the total number of elements in the new matrix.\n\
+matrix (@code{prod (size (@var{A}))}) must match the total number of elements\n\
+in the new matrix (@code{prod ([@var{m} @var{n} @dots{}])}).\n\
 \n\
-A single dimension of the return matrix can be unknown and is flagged\n\
-by an empty argument.\n\
+A single dimension of the return matrix may be left unspecified and Octave\n\
+will determine its size automatically.  An empty matrix ([]) is used to flag\n\
+the unspecified dimension.\n\
+@seealso{resize}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4584,6 +4625,7 @@ one above the other.  Without @var{dim} this is equivalent to\n\
 @code{@var{x}(:)}.  If @var{dim} is supplied, the dimensions of @var{v}\n\
 are set to @var{dim} with all elements along the last dimension.\n\
 This is equivalent to @code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
+@seealso{vech}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4871,7 +4913,7 @@ DEFUN (not, args, ,
 @deftypefn {Built-in Function} {} not (@var{x})\n\
 Return the logical NOT of @var{x}.  This function is equivalent to\n\
 @code{! x}.\n\
-@seealso{and, or}\n\
+@seealso{and, or, xor}\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_not, args);
@@ -5214,7 +5256,7 @@ cumulatively from left to right:\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
-@seealso{or, not}\n\
+@seealso{or, not, xor}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_and,
@@ -5235,7 +5277,7 @@ cumulatively from left to right:\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
-@seealso{and, not}\n\
+@seealso{and, not, xor}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_or,
@@ -5425,7 +5467,7 @@ DEFUN (sort, args, nargout,
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
 Return a copy of @var{x} with the elements arranged in increasing\n\
-order.  For matrices, @code{sort} orders the elements in each column.\n\
+order.  For matrices, @code{sort} orders the elements within columns\n\
 \n\
 For example:\n\
 \n\
@@ -5437,6 +5479,11 @@ sort ([1, 2; 2, 3; 3, 1])\n\
          3  3\n\
 @end group\n\
 @end example\n\
+\n\
+If the optional argument @var{dim} is given, then the matrix is sorted\n\
+along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
+defines the order in which the values will be sorted.  Valid values of\n\
+@code{mode} are `ascend' or `descend'.\n\
 \n\
 The @code{sort} function may also be used to produce a matrix\n\
 containing the original row indices of the elements in the sorted\n\
@@ -5454,16 +5501,27 @@ matrix.  For example:\n\
 @end group\n\
 @end example\n\
 \n\
-If the optional argument @var{dim} is given, then the matrix is sorted\n\
-along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
-defines the order in which the values will be sorted.  Valid values of\n\
-@code{mode} are `ascend' or `descend'.\n\
+For equal elements, the indices are such that equal elements are listed\n\
+in the order in which they appeared in the original list.\n\
 \n\
-For equal elements, the indices are such that the equal elements are listed\n\
-in the order that appeared in the original list.\n\
+Sorting of complex entries is done first by magnitude (@code{abs (@var{z})})\n\
+and for any ties by phase angle (@code{angle (z)}).  For example:\n\
+\n\
+@example\n\
+@group\n\
+sort ([1+i; 1; 1-i])\n\
+     @result{} 1 + 0i\n\
+        1 - 1i\n\
+        1 + 1i\n\
+@end group\n\
+@end example\n\
+\n\
+NaN values are treated as being greater than any other value and are sorted\n\
+to the end of the list.\n\
 \n\
 The @code{sort} function may also be used to sort strings and cell arrays\n\
-of strings, in which case the dictionary order of the strings is used.\n\
+of strings, in which case ASCII dictionary order (uppercase 'A' precedes\n\
+lowercase 'a') of the strings is used.\n\
 \n\
 The algorithm used in @code{sort} is optimized for the sorting of partially\n\
 ordered lists.\n\
@@ -5813,7 +5871,8 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
 
 DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
+@deftypefn  {Built-in Function} {} issorted (@var{a})\n\
+@deftypefnx {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
 @deftypefnx {Built-in Function} {} issorted (@var{a}, @code{\"rows\"}, @var{mode})\n\
 Return true if the array is sorted according to @var{mode}, which\n\
 may be either \"ascending\", \"descending\", or \"either\".  By default,\n\
@@ -5936,7 +5995,8 @@ not given.\n\
 \n\
 nth_element encapsulates the C++ standard library algorithms nth_element and\n\
 partial_sort.  On average, the complexity of the operation is O(M*log(K)),\n\
-where @code{M = size(@var{x}, @var{dim})} and @code{K = length (@var{n})}.\n\
+where @w{@code{M = size (@var{x}, @var{dim})}} and\n\
+@w{@code{K = length (@var{n})}}.\n\
 This function is intended for cases where the ratio K/M is small; otherwise,\n\
 it may be better to use @code{sort}.\n\
 @seealso{sort, min, max}\n\
@@ -6550,8 +6610,10 @@ do_diff (const octave_value& array, octave_idx_type order,
 
 DEFUN (diff, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} diff (@var{x}, @var{k}, @var{dim})\n\
-If @var{x} is a vector of length @var{n}, @code{diff (@var{x})} is the\n\
+@deftypefn  {Built-in Function} {} diff (@var{x})\n\
+@deftypefnx {Built-in Function} {} diff (@var{x}, @var{k})\n\
+@deftypefnx {Built-in Function} {} diff (@var{x}, @var{k}, @var{dim})\n\
+If @var{x} is a vector of length @math{n}, @code{diff (@var{x})} is the\n\
 vector of first differences\n\
 @tex\n\
  $x_2 - x_1, \\ldots{}, x_n - x_{n-1}$.\n\
@@ -6566,15 +6628,15 @@ differences along the first non-singleton dimension.\n\
 The second argument is optional.  If supplied, @code{diff (@var{x},\n\
 @var{k})}, where @var{k} is a non-negative integer, returns the\n\
 @var{k}-th differences.  It is possible that @var{k} is larger than\n\
-then first non-singleton dimension of the matrix.  In this case,\n\
+the first non-singleton dimension of the matrix.  In this case,\n\
 @code{diff} continues to take the differences along the next\n\
 non-singleton dimension.\n\
 \n\
 The dimension along which to take the difference can be explicitly\n\
-stated with the optional variable @var{dim}.  In this case the \n\
+stated with the optional variable @var{dim}.  In this case the\n\
 @var{k}-th order differences are calculated along this dimension.\n\
 In the case where @var{k} exceeds @code{size (@var{x}, @var{dim})}\n\
-then an empty matrix is returned.\n\
+an empty matrix is returned.\n\
 @end deftypefn")
 {
   int nargin = args.length ();

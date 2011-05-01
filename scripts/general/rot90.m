@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rot90 (@var{A}, @var{k})
+## @deftypefn  {Function File} {} rot90 (@var{A})
+## @deftypefnx {Function File} {} rot90 (@var{A}, @var{k})
 ## Return a copy of @var{A} with the elements rotated counterclockwise in
 ## 90-degree increments.  The second argument is optional, and specifies
 ## how many 90-degree rotations are to be applied (the default value is 1).
@@ -44,8 +45,7 @@
 ## @end group
 ## @end example
 ##
-## Due to the difficulty of defining an axis about which to rotate the
-## matrix @code{rot90} only work with 2-D arrays.  To rotate N-d arrays
+## Note that @code{rot90} only works with 2-D arrays.  To rotate N-D arrays
 ## use @code{rotdim} instead.
 ## @seealso{rotdim, flipud, fliplr, flipdim}
 ## @end deftypefn

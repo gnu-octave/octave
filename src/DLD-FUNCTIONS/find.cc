@@ -341,11 +341,11 @@ DEFUN_DLD (find, args, nargout,
 @deftypefnx {Loadable Function} {@var{idx} =} find (@var{x}, @var{n})\n\
 @deftypefnx {Loadable Function} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\
 @deftypefnx {Loadable Function} {[i, j] =} find (@dots{})\n\
-@deftypefnx {Loadable Function} {[i, j, v]] =} find (@dots{})\n\
+@deftypefnx {Loadable Function} {[i, j, v] =} find (@dots{})\n\
 Return a vector of indices of nonzero elements of a matrix, as a row if\n\
-@var{x} is a row or as a column otherwise.  To obtain a single index for\n\
-each matrix element, Octave pretends that the columns of a matrix form one\n\
-long vector (like Fortran arrays are stored).  For example:\n\
+@var{x} is a row vector or as a column otherwise.  To obtain a single index\n\
+for each matrix element, Octave pretends that the columns of a matrix form\n\
+one long vector (like Fortran arrays are stored).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -390,9 +390,9 @@ create the original matrix.  For example:\n\
 \n\
 @example\n\
 @group\n\
-sz = size(a);\n\
+sz = size (a);\n\
 [i, j, v] = find (a);\n\
-b = sparse(i, j, v, sz(1), sz(2));\n\
+b = sparse (i, j, v, sz(1), sz(2));\n\
 @end group\n\
 @end example\n\
 @seealso{nonzeros}\n\

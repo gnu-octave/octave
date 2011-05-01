@@ -75,11 +75,11 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(isfinite)
 
+@DOCSTRING(common_size)
+
 @DOCSTRING(find)
         
 @DOCSTRING(lookup)
-        
-@DOCSTRING(common_size)
 
 @node Rearranging Matrices
 @section Rearranging Matrices
@@ -110,36 +110,15 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(circshift)
 
-@DOCSTRING(shiftdim)
-
 @DOCSTRING(shift)
+
+@DOCSTRING(shiftdim)
 
 @DOCSTRING(sort)
 
 @DOCSTRING(sortrows)
 
 @DOCSTRING(issorted)
-
-Since the @code{sort} function does not allow sort keys to be specified,
-it can't be used to order the rows of a matrix according to the values
-of the elements in various columns@footnote{For example, to first sort
-based on the values in column 1, and then, for any values that are
-repeated in column 1, sort based on the values found in column 2, etc.}
-in a single call.  Using the second output, however, it is possible to
-sort all rows based on the values in a given column.  Here's an example
-that sorts the rows of a matrix based on the values in the second
-column.
-
-@example
-@group
-a = [1, 2; 2, 3; 3, 1];
-[s, i] = sort (a (:, 2));
-a (i, :)
-     @result{}  3  1
-         1  2
-         2  3
-@end group
-@end example
 
 @DOCSTRING(nth_element)
 
@@ -177,6 +156,14 @@ a (i, :)
 @DOCSTRING(repmat)
 
 @DOCSTRING(repelems)
+
+The functions @code{linspace} and @code{logspace} make it very easy to
+create vectors with evenly or logarithmically spaced elements.
+@xref{Ranges}.
+
+@DOCSTRING(linspace)
+
+@DOCSTRING(logspace)
 
 @DOCSTRING(rand)
 
@@ -247,14 +234,6 @@ Biomathematics at The University of Texas, M.D. Anderson Cancer Center,
 Houston, TX 77030.
 
 @DOCSTRING(randperm)
-
-The functions @code{linspace} and @code{logspace} make it very easy to
-create vectors with evenly or logarithmically spaced elements.
-@xref{Ranges}.
-
-@DOCSTRING(linspace)
-
-@DOCSTRING(logspace)
 
 @node Famous Matrices
 @section Famous Matrices

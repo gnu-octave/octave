@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} randi (@var{imax})
 ## @deftypefnx {Function File} {} randi (@var{imax}, @var{n})
 ## @deftypefnx {Function File} {} randi (@var{imax}, @var{m}, @var{n}, @dots{})
-## @deftypefnx {Function File} {} randi ([@var{imin}, @var{imax}], @dots{})
+## @deftypefnx {Function File} {} randi ([@var{imin} @var{imax}], @dots{})
 ## @deftypefnx {Function File} {} randi (@dots{}, "@var{class}")
 ## Return random integers in the range 1:@var{imax}.
 ##
@@ -47,7 +47,7 @@
 ## uses class "double" to represent numbers.  This limits the maximum
 ## integer (@var{imax}) and range (@var{imax} - @var{imin}) to the value
 ## returned by the @code{bitmax} function.  For IEEE floating point numbers
-## this value is @w{@code{2^53 - 1}}.
+## this value is @w{@math{2^{53} - 1}}.
 ##
 ## @seealso{rand}
 ## @end deftypefn

@@ -20,9 +20,8 @@
 ## @deftypefn  {Function File} {} prepad (@var{x}, @var{l})
 ## @deftypefnx {Function File} {} prepad (@var{x}, @var{l}, @var{c})
 ## @deftypefnx {Function File} {} prepad (@var{x}, @var{l}, @var{c}, @var{dim})
-## Prepend the scalar value @var{c} to the vector @var{x}
-## until it is of length @var{l}.  If the third argument is not
-## supplied, a value of 0 is used.
+## Prepend the scalar value @var{c} to the vector @var{x} until it is of length
+## @var{l}.  If @var{c} is not given, a value of 0 is used.
 ##
 ## If @code{length (@var{x}) > @var{l}}, elements from the beginning of
 ## @var{x} are removed until a vector of length @var{l} is obtained.

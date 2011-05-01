@@ -47,7 +47,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## @seealso{hankel, sylvester_matrix, hilb, invhilb, toeplitz}
+## @seealso{polyfit}
 ## @end deftypefn
 
 ## Author: jwe

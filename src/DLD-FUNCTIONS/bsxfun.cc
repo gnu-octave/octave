@@ -313,9 +313,10 @@ DEFUN_DLD (bsxfun, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
 Apply a binary function @var{f} element-by-element to two matrix arguments\n\
-@var{A} and @var{B}.  The function @var{f} must be capable of accepting\n\
-two column-vector arguments of equal length, or one column vector\n\
-argument and a scalar.\n\
+@var{A} and @var{B}.  @var{f} is a function handle, inline function, or\n\
+string containing the name of the function to evaluate.\n\
+The function @var{f} must be capable of accepting two column-vector\n\
+arguments of equal length, or one column vector argument and a scalar.\n\
 \n\
 The dimensions of @var{A} and @var{B} must be equal or singleton.  The\n\
 singleton dimensions of the matrices will be expanded to the same\n\

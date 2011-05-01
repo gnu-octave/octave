@@ -18,7 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} flipud (@var{x})
-## Return a copy of @var{x} with the order of the rows reversed.  For
+## Return a copy of @var{x} with the order of the rows reversed.  In
+## other words, @var{x} is flipped upside-down about a horizontal axis.  For
 ## example:
 ##
 ## @example
@@ -29,8 +30,7 @@
 ## @end group
 ## @end example
 ##
-## Due to the difficulty of defining which axis about which to flip the
-## matrix @code{flipud} only work with 2-d arrays.  To flip N-d arrays
+## Note that @code{flipud} only works with 2-D arrays.  To flip N-D arrays
 ## use @code{flipdim} instead.
 ## @seealso{fliplr, flipdim, rot90, rotdim}
 ## @end deftypefn

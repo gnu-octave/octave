@@ -17,14 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rotdim (@var{x}, @var{n}, @var{plane})
+## @deftypefn  {Function File} {} rotdim (@var{x})
+## @deftypefnx {Function File} {} rotdim (@var{x}, @var{n})
+## @deftypefnx {Function File} {} rotdim (@var{x}, @var{n}, @var{plane})
 ## Return a copy of @var{x} with the elements rotated counterclockwise in
-## 90-degree increments.  The second argument is optional, and specifies
-## how many 90-degree rotations are to be applied (the default value is 1).
+## 90-degree increments.
+## The second argument @var{n} is optional, and specifies how many 90-degree
+## rotations are to be applied (the default value is 1).
 ## The third argument is also optional and defines the plane of the
-## rotation.  As such @var{plane} is a two element vector containing two
-## different valid dimensions of the matrix.  If @var{plane} is not given
-## Then the first two non-singleton dimensions are used.
+## rotation.  If present, @var{plane} is a two element vector containing two
+## different valid dimensions of the matrix.  When @var{plane} is not given
+## the first two non-singleton dimensions are used.
 ##
 ## Negative values of @var{n} rotate the matrix in a clockwise direction.
 ## For example,

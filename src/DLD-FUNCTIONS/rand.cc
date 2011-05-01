@@ -326,8 +326,9 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
 DEFUN_DLD (rand, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} rand (@var{x})\n\
-@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} rand (@var{n})\n\
+@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} rand ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} rand (\"state\")\n\
 @deftypefnx {Loadable Function} {} rand (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rand (\"state\", \"reset\")\n\
@@ -359,13 +360,13 @@ length @leq{} 625 for @var{v}.  This new state will be a hash based on the\n\
 value of @var{v}, not @var{v} itself.\n\
 \n\
 By default, the generator is initialized from @code{/dev/urandom} if it is\n\
-available, otherwise from CPU time, wall clock time and the current\n\
+available, otherwise from CPU time, wall clock time, and the current\n\
 fraction of a second.\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
 Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and\n\
 T. Nishimura,\n\
-@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform \n\
+@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform\n\
 pseudorandom number generator}, ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, pp. 3-30, January 1998,\n\
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\
@@ -490,8 +491,9 @@ static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN_DLD (randn, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} randn (@var{x})\n\
-@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} randn (@var{n})\n\
+@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} randn ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} randn (\"state\")\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", \"reset\")\n\
@@ -555,8 +557,9 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN_DLD (rande, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} rande (@var{x})\n\
-@deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} rande (@var{n})\n\
+@deftypefnx {Loadable Function} {} rande (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} rande ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} rande (\"state\")\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", \"reset\")\n\
@@ -621,8 +624,9 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN_DLD (randg, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} randg (@var{a}, @var{x})\n\
-@deftypefnx {Loadable Function} {} randg (@var{a}, @var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} randg (@var{n})\n\
+@deftypefnx {Loadable Function} {} randg (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} randg ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} randg (\"state\")\n\
 @deftypefnx {Loadable Function} {} randg (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randg (\"state\", \"reset\")\n\
@@ -663,7 +667,7 @@ r = a * randg (n)\n\
 r = 2 * randg (df / 2)\n\
 @end example\n\
 \n\
-@item @code{t(df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
+@item @code{t (df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
 \n\
 @example\n\
 r = randn () / sqrt (2 * randg (df / 2) / df)\n\
@@ -877,8 +881,9 @@ r = r / sum (r)\n\
 
 DEFUN_DLD (randp, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} randp (@var{l}, @var{x})\n\
-@deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} randp (@var{l}, @var{n})\n\
+@deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} randp (@var{l}, [@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} randp (\"state\")\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", \"reset\")\n\
@@ -1022,7 +1027,7 @@ DEFUN_DLD (randperm, args, ,
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
 If @var{m} is supplied, return @var{m} permutations,\n\
-one in each row of an @nospell{NxM} matrix.  The complexity is O(M*N) in both\n\
+one in each row of an @nospell{MxN} matrix.  The complexity is O(M*N) in both\n\
 time and memory.  The randomization is performed using rand().\n\
 All permutations are equally likely.\n\
 @seealso{perms}\n\

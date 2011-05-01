@@ -389,7 +389,7 @@ tril (ones (3), 1)\n\
 If the option \"pack\" is given as third argument, the extracted elements\n\
 are not inserted into a matrix, but rather stacked column-wise one above\n\
 other.\n\
-@seealso{triu, diag}\n\
+@seealso{diag}\n\
 @end deftypefn")
 {
   return do_trilu ("tril", args);

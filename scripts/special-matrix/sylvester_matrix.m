@@ -23,9 +23,10 @@
 ## $n = 2^k$.
 ## @end tex
 ## @ifnottex
-## n = 2^k.
+## n = 2^@var{k}.
 ## @end ifnottex
-## @seealso{hankel, vander, hilb, invhilb, toeplitz}
+##
+## @seealso{toeplitz, hankel}
 ## @end deftypefn
 
 ## Author: jwe

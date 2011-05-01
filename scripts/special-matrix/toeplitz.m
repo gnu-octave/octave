@@ -20,9 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} toeplitz (@var{c})
 ## @deftypefnx {Function File} {} toeplitz (@var{c}, @var{r})
-## Return the Toeplitz matrix constructed given the first column @var{c},
-## and (optionally) the first row @var{r}.  If the first element of @var{c}
-## is not the same as the first element of @var{r}, the first element of
+## Return the Toeplitz matrix constructed from the first column @var{c},
+## and (optionally) the first row @var{r}.  If the first element of @var{r}
+## is not the same as the first element of @var{c}, the first element of
 ## @var{c} is used.  If the second argument is omitted, the first row is
 ## taken to be the same as the first column.
 ##
@@ -51,7 +51,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb}
+## @seealso{hankel}
 ## @end deftypefn
 
 ## Author: jwe && jh

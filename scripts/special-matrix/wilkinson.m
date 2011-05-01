@@ -20,10 +20,10 @@
 ## @deftypefn {Function File} {} wilkinson (@var{n})
 ## Return the Wilkinson matrix of order @var{n}.  Wilkinson matrices are
 ## symmetric and tridiagonal with pairs of nearly, but not exactly, equal
-## eigenvalues.
+## eigenvalues.  They are useful in testing the behavior and performance
+## of eigenvalue solvers.
 ##
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz,
-##          hadamard, rosser, compan, pascal}
+## @seealso{rosser, eig}
 ## @end deftypefn
 
 ## Author: Peter Ekberg

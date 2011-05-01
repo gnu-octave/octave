@@ -21,8 +21,7 @@
 ## Return the Rosser matrix.  This is a difficult test case used to evaluate
 ## eigenvalue algorithms.
 ##
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz,
-##          hadamard, wilkinson, compan, pascal}
+## @seealso{wilkinson, eig}
 ## @end deftypefn
 
 ## Author: Peter Ekberg
@@ -42,6 +41,7 @@ function retval = rosser ()
             -52,   -43,    49,    44,  -599,   411,   208,   208;
             -49,    -8,     8,    59,   208,   208,    99,  -911;
              29,   -44,    52,   -23,   208,   208,  -911,    99];
+
 endfunction
 
 %!assert (size(rosser()), [8,8])

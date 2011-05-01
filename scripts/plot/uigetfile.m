@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt})
 ## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name})
 ## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px}, @var{py}])
+## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "Position", [@var{px} @var{py}])
 ## @deftypefnx {Function File} {[@dots{}] =} uigetfile (@dots{}, "MultiSelect", @var{mode})
 ##
 ## Open a GUI dialog for selecting a file.  It returns the filename @var{fname},

@@ -107,7 +107,7 @@ DEFUN_DLD (dot, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dot (@var{x}, @var{y}, @var{dim})\n\
 Compute the dot product of two vectors.  If @var{x} and @var{y}\n\
-are matrices, calculate the dot products along the first \n\
+are matrices, calculate the dot products along the first\n\
 non-singleton dimension.  If the optional argument @var{dim} is\n\
 given, calculate the dot products along this dimension.\n\
 \n\

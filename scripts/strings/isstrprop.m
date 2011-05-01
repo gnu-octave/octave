@@ -43,10 +43,10 @@
 ## True for characters that are alphabetic or digits.
 ##
 ## @item "lower"
-## True for lower-case letters.
+## True for lowercase letters.
 ##
 ## @item "upper"
-## True for upper-case letters.
+## True for uppercase letters.
 ##
 ## @item "digit"
 ## True for decimal digits (0-9).

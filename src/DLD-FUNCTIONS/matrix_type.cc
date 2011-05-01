@@ -45,7 +45,7 @@ DEFUN_DLD (matrix_type, args, ,
 @deftypefnx {Loadable Function} {@var{A} =} matrix_type (@var{A}, 'lower', @var{perm})\n\
 @deftypefnx {Loadable Function} {@var{A} =} matrix_type (@var{A}, 'banded', @var{nl}, @var{nu})\n\
 Identify the matrix type or mark a matrix as a particular type.  This allows\n\
-more rapid solutions of linear equations involving @var{A} to be performed.  \n\
+more rapid solutions of linear equations involving @var{A} to be performed.\n\
 Called with a single argument, @code{matrix_type} returns the type of the\n\
 matrix and caches it for future use.  Called with more than one argument,\n\
 @code{matrix_type} allows the type of the matrix to be defined.\n\
@@ -99,7 +99,7 @@ solution.\n\
 \n\
 Note that the matrix type will be discovered automatically on the first\n\
 attempt to solve a linear equation involving @var{A}.  Therefore\n\
-@code{matrix_type} is only useful to give Octave hints of the matrix type.  \n\
+@code{matrix_type} is only useful to give Octave hints of the matrix type.\n\
 Incorrectly defining the matrix type will result in incorrect results from\n\
 solutions of linear equations; it is entirely @strong{the responsibility of\n\
 the user} to correctly identify the matrix type.\n\

@@ -260,7 +260,7 @@ default is @code{1:@var{n}}.\n\
 @end table\n\
 It is also possible to represent @var{A} by a function denoted @var{af}.\n\
 @var{af} must be followed by a scalar argument @var{n} defining the length\n\
-of the vector argument accepted by @var{af}.  @var{af} can be \n\
+of the vector argument accepted by @var{af}.  @var{af} can be\n\
 a function handle, an inline function, or a string.  When @var{af} is a\n\
 string it holds the name of the function to use.\n\
 \n\

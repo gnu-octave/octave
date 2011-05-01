@@ -387,7 +387,7 @@ Compute Bessel or Hankel functions of various kinds:\n\
 \n\
 @table @code\n\
 @item besselj\n\
-Bessel functions of the first kind.  If the argument @var{opt} is supplied, \n\
+Bessel functions of the first kind.  If the argument @var{opt} is supplied,\n\
 the result is multiplied by @code{exp(-abs(imag(@var{x})))}.\n\
 \n\
 @item bessely\n\

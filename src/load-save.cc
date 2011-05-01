@@ -1441,7 +1441,7 @@ If the @option{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
 of the scalar structure @var{STRUCT} are saved as if they were variables\n\
 with corresponding names.\n\
 Valid options for the @code{save} command are listed in the following table.\n\
-Options that modify the output format override the format specified by \n\
+Options that modify the output format override the format specified by\n\
 @code{default_save_options}.\n\
 \n\
 If save is invoked using the functional form\n\
@@ -1522,7 +1522,7 @@ Match zero or more characters.\n\
 Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will\n\
-match all lower and upper case alphabetic characters.  \n\
+match all lower and uppercase alphabetic characters.\n\
 \n\
 Wildcards may also be used in the field name specifications when using\n\
 the @option{-struct} modifier (but not in the struct name itself).\n\

@@ -545,7 +545,7 @@ a breakpoint.  If you get the wrong line nothing will happen.\n\
 DEFUN (dbstatus, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {lst =} dbstatus (@var{func})\n\
-Return a vector containing the lines on which a function has \n\
+Return a vector containing the lines on which a function has\n\
 breakpoints set.\n\
 @table @code\n\
 @item func\n\

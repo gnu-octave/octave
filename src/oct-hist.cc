@@ -559,7 +559,7 @@ If invoked with no arguments, @code{edit_history} allows you to edit the\n\
 history list using the editor named by the variable @w{@env{EDITOR}}.  The\n\
 commands to be edited are first copied to a temporary file.  When you\n\
 exit the editor, Octave executes the commands that remain in the file.\n\
-It is often more convenient to use @code{edit_history} to define functions \n\
+It is often more convenient to use @code{edit_history} to define functions\n\
 rather than attempting to enter them directly on the command line.\n\
 By default, the block of commands is executed as soon as you exit the\n\
 editor.  To avoid executing any commands, simply delete all the lines\n\
@@ -615,7 +615,7 @@ Write the current history to the file @var{file}.  If the name is\n\
 omitted, use the default history file (normally @file{~/.octave_hist}).\n\
 \n\
 @item -r @var{file}\n\
-Read the file @var{file}, appending its contents to the current \n\
+Read the file @var{file}, appending its contents to the current\n\
 history list.  If the name is omitted, use the default history file\n\
 (normally @file{~/.octave_hist}).\n\
 \n\

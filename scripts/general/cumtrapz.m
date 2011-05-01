@@ -27,7 +27,7 @@
 ## along the first non-singleton dimension.  Where @code{trapz} reports
 ## only the overall integral sum, @code{cumtrapz} reports the current partial
 ## sum value at each point of @var{y}.  When the argument @var{x} is omitted
-## an equally spaced @var{x} vector with unit spacing (1) is assumed. 
+## an equally spaced @var{x} vector with unit spacing (1) is assumed.
 ## @code{cumtrapz (@var{x}, @var{y})} evaluates the integral with respect to
 ## the spacing in @var{x} and the values in @var{y}.  This is useful if the
 ## points in @var{y} have been sampled unevenly.  If the optional @var{dim}

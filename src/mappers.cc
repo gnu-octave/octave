@@ -1114,7 +1114,7 @@ DEFUNX ("islower", Fislower, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} islower (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
-lower case letters and false where they are not.\n\
+lowercase letters and false where they are not.\n\
 @seealso{isupper, isalpha, isletter, isalnum}\n\
 @end deftypefn")
 {
@@ -1266,7 +1266,7 @@ DEFUNX ("isupper", Fisupper, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isupper (@var{s})\n\
 Return a logical array which is true where the elements of @var{s} are\n\
-upper case letters and false where they are not.\n\
+uppercase letters and false where they are not.\n\
 @seealso{islower, isalpha, isletter, isalnum}\n\
 @end deftypefn")
 {
@@ -1781,8 +1781,8 @@ DEFUNX ("tolower", Ftolower, args, ,
     "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} tolower (@var{s})\n\
 @deftypefnx {Mapping Function} {} lower (@var{s})\n\
-Return a copy of the string or cell string @var{s}, with each upper-case\n\
-character replaced by the corresponding lower-case one; non-alphabetic\n\
+Return a copy of the string or cell string @var{s}, with each uppercase\n\
+character replaced by the corresponding lowercase one; non-alphabetic\n\
 characters are left unchanged.  For example:\n\
 \n\
 @example\n\
@@ -1827,8 +1827,8 @@ DEFUNX ("toupper", Ftoupper, args, ,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} toupper (@var{s})\n\
 @deftypefnx {Built-in Function} {} upper (@var{s})\n\
-Return a copy of the string or cell string @var{s}, with each lower-case\n\
-character replaced by the corresponding upper-case one; non-alphabetic\n\
+Return a copy of the string or cell string @var{s}, with each lowercase\n\
+character replaced by the corresponding uppercase one; non-alphabetic\n\
 characters are left unchanged.  For example:\n\
 \n\
 @example\n\

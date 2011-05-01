@@ -58,7 +58,7 @@ reimported as follows\n\
 \n\
 @example\n\
 fftw ('dwisdom', @var{wisdom})\n\
-@end example \n\
+@end example\n\
 \n\
 If @var{wisdom} is an empty matrix, then the wisdom used is cleared.\n\
 \n\

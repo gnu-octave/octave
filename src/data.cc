@@ -518,7 +518,7 @@ DEFUN (rem, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} rem (@var{x}, @var{y})\n\
 @deftypefnx {Mapping Function} {} fmod (@var{x}, @var{y})\n\
-Return the remainder of the division @code{@var{x} / @var{y}}, computed \n\
+Return the remainder of the division @code{@var{x} / @var{y}}, computed\n\
 using the expression\n\
 \n\
 @example\n\
@@ -4748,7 +4748,7 @@ Infinity norm, the largest row sum of the absolute values of @var{A}.\n\
 Frobenius norm of @var{A}, @code{sqrt (sum (diag (@var{A}' * @var{A})))}.\n\
 \n\
 @item other @var{p}, @code{@var{p} > 1}\n\
-@cindex general p-norm \n\
+@cindex general p-norm\n\
 maximum @code{norm (A*x, p)} such that @code{norm (x, p) == 1}\n\
 @end table\n\
 \n\
@@ -6398,7 +6398,7 @@ is true, otherwise @var{fval} is returned.\n\
 \n\
 In the array mask case, both @var{tval} and @var{fval} must be either\n\
 scalars or arrays with dimensions equal to @var{mask}.  The result is\n\
-constructed as follows: \n\
+constructed as follows:\n\
 \n\
 @example\n\
 @group\n\

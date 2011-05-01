@@ -937,7 +937,7 @@ Ignore case when matching the pattern to the string.\n\
 Alternatively, use (?i) in the pattern.\n\
 \n\
 @item stringanchors\n\
-Match the anchor characters at the beginning and end of the string.  \n\
+Match the anchor characters at the beginning and end of the string.\n\
 (default)\n\
 \n\
 Alternatively, use (?-m) in the pattern.\n\

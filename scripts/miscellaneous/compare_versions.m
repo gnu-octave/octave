@@ -66,7 +66,7 @@
 ## Note that version "1.1-test2" will compare as greater than
 ## "1.1-test10".  Also, since the numeric part is compared first, "a"
 ## compares less than "1a" because the second string starts with a
-## numeric part even though @code{double("a")} is greater than 
+## numeric part even though @code{double("a")} is greater than
 ## @code{double("1").}
 ## @end deftypefn
 

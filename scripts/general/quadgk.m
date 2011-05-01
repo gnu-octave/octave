@@ -52,11 +52,11 @@
 ##
 ## The optional argument @var{tol} defines the absolute tolerance used to stop
 ## the integration procedure.  The default value is @math{1e^{-10}}.
-## 
+##
 ## The algorithm used by @code{quadgk} involves subdividing the
 ## integration interval and evaluating each subinterval.
 ## If @var{trace} is true then after computing each of these partial
-## integrals display: (1) the number of subintervals at this step, 
+## integrals display: (1) the number of subintervals at this step,
 ## (2) the current estimate of the error @var{err}, (3) the current estimate
 ## for the integral @var{q}.
 ##
@@ -116,8 +116,8 @@
 ## integrates @code{log (z)} along the square defined by @code{[1+1i,
 ##  1-1i, -1-1i, -1+1i]}
 ##
-## The result of the integration is returned in @var{q}.  
-## @var{err} is an approximate bound on the error in the integral 
+## The result of the integration is returned in @var{q}.
+## @var{err} is an approximate bound on the error in the integral
 ## @code{abs (@var{q} - @var{I})}, where @var{I} is the exact value of the
 ## integral.
 ##

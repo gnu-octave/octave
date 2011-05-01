@@ -2750,8 +2750,8 @@ val = magic(3)\n\
 idx.type = \"()\";\n\
 idx.subs = @{\":\", 1:2@};\n\
 subsref(val, idx)\n\
-     @result{} [ 8   1 \n\
-          3   5 \n\
+     @result{} [ 8   1\n\
+          3   5\n\
           4   9 ]\n\
 @end group\n\
 @end example\n\

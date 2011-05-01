@@ -428,8 +428,8 @@ bitshift (eye (3), 1)\n\
 bitshift (10, [-2, -1, 0, 1, 2])\n\
 @result{} 2   5  10  20  40\n\
 @c FIXME -- restore this example when third arg is allowed to be an array.\n\
-@c \n\
-@c \n\
+@c\n\
+@c\n\
 @c bitshift ([1, 10], 2, [3,4])\n\
 @c @result{} 4  8\n\
 @end group\n\
@@ -518,7 +518,7 @@ DEFUN (bitmax, args, ,
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
 Return the largest integer that can be represented within a floating point\n\
-value.  The default class is \"double\", but \"single\" is a valid option.  \n\
+value.  The default class is \"double\", but \"single\" is a valid option.\n\
 On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}}.\n\
 @end deftypefn")
 {

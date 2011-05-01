@@ -342,14 +342,19 @@
 ## @table @asis
 ## @item 180 (@w{@code{LPX_OPT}})
 ## Solution is optimal.
+##
 ## @item 181 (@w{@code{LPX_FEAS}})
 ## Solution is feasible.
+##
 ## @item 182 (@w{@code{LPX_INFEAS}})
 ## Solution is infeasible.
+##
 ## @item 183 (@w{@code{LPX_NOFEAS}})
 ## Problem has no feasible solution.
+##
 ## @item 184 (@w{@code{LPX_UNBND}})
 ## Problem has no unbounded solution.
+##
 ## @item 185 (@w{@code{LPX_UNDEF}})
 ## Solution status is undefined.
 ## @end table
@@ -357,6 +362,7 @@
 ## @table @asis
 ## @item 150 (@w{@code{LPX_T_UNDEF}})
 ## The interior point method is undefined.
+##
 ## @item 151 (@w{@code{LPX_T_OPT}})
 ## The interior point method is optimal.
 ## @end table
@@ -364,10 +370,13 @@
 ## @table @asis
 ## @item 170 (@w{@code{LPX_I_UNDEF}})
 ## The status is undefined.
+##
 ## @item 171 (@w{@code{LPX_I_OPT}})
 ## The solution is integer optimal.
+##
 ## @item 172 (@w{@code{LPX_I_FEAS}})
 ## Solution integer feasible but its optimality has not been proven
+##
 ## @item 173 (@w{@code{LPX_I_NOFEAS}})
 ## No integer feasible solution.
 ## @end table
@@ -378,24 +387,34 @@
 ## @table @asis
 ## @item 204 (@w{@code{LPX_E_FAULT}})
 ## Unable to start the search.
+##
 ## @item 205 (@w{@code{LPX_E_OBJLL}})
 ## Objective function lower limit reached.
+##
 ## @item 206 (@w{@code{LPX_E_OBJUL}})
 ## Objective function upper limit reached.
+##
 ## @item 207 (@w{@code{LPX_E_ITLIM}})
 ## Iterations limit exhausted.
+##
 ## @item 208 (@w{@code{LPX_E_TMLIM}})
 ## Time limit exhausted.
+##
 ## @item 209 (@w{@code{LPX_E_NOFEAS}})
 ## No feasible solution.
+##
 ## @item 210 (@w{@code{LPX_E_INSTAB}})
 ## Numerical instability.
+##
 ## @item 211 (@w{@code{LPX_E_SING}})
 ## Problems with basis matrix.
+##
 ## @item 212 (@w{@code{LPX_E_NOCONV}})
 ## No convergence (interior).
+##
 ## @item 213 (@w{@code{LPX_E_NOPFS}})
 ## No primal feasible solution (LP presolver).
+##
 ## @item 214 (@w{@code{LPX_E_NODFS}})
 ## No dual feasible solution (LP presolver).
 ## @end table

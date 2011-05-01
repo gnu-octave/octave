@@ -25,7 +25,7 @@
 ## method.
 ## @w{@code{trapz (@var{y})}} computes the integral of @var{y} along the first
 ## non-singleton dimension.  When the argument @var{x} is omitted an
-## equally spaced @var{x} vector with unit spacing (1) is assumed.  
+## equally spaced @var{x} vector with unit spacing (1) is assumed.
 ## @code{trapz (@var{x}, @var{y})} evaluates the integral with respect
 ## to the spacing in @var{x} and the values in @var{y}.  This is useful if
 ## the points in @var{y} have been sampled unevenly.
@@ -45,7 +45,7 @@
 ##   @result{} q = 2.525   # No scaling
 ## q * 0.1
 ##   @result{} q = 0.2525  # Approximation to integral by scaling
-## trapz (x, y) 
+## trapz (x, y)
 ##   @result{} q = 0.2525  # Same result by specifying @var{x}
 ## @end group
 ## @end example

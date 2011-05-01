@@ -353,7 +353,7 @@ endif
 which stops the function execution and prints a message about the correct
 way to call the function whenever the number of inputs is wrong.
 
-For compatability with @sc{matlab}, @code{nargchk} and @code{nargoutchk} are
+For compatibility with @sc{matlab}, @code{nargchk} and @code{nargoutchk} are
 available which provide similar error checking.
 
 @DOCSTRING(nargchk)
@@ -1328,7 +1328,7 @@ Functions for linear algebra.
 Functions that don't really belong anywhere else.
 
 @item optimization
-Functions related to minimzation, optimization, and root finding.
+Functions related to minimization, optimization, and root finding.
 
 @item path
 Functions to manage the directory path Octave uses to find functions.

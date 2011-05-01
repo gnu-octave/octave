@@ -690,7 +690,7 @@ Download a remote file specified by its @var{url} and save it as\n\
 \n\
 @example\n\
 @group\n\
-urlwrite (\"ftp://ftp.octave.org/pub/octave/README\", \n\
+urlwrite (\"ftp://ftp.octave.org/pub/octave/README\",\n\
           \"README.txt\");\n\
 @end group\n\
 @end example\n\

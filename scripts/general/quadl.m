@@ -39,7 +39,7 @@
 ## integration interval.
 ## If @var{trace} is defined then for each subinterval display: (1) the left
 ## end of the subinterval, (2) the length of the subinterval, (3) the
-## approximation of the integral over the subinterval. 
+## approximation of the integral over the subinterval.
 ##
 ## Additional arguments @var{p1}, etc., are passed directly to the function
 ## @var{f}.  To use default values for @var{tol} and @var{trace}, one may pass

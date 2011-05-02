@@ -8,7 +8,6 @@ special_matrix_FCN_FILES = \
   special-matrix/magic.m \
   special-matrix/pascal.m \
   special-matrix/rosser.m \
-  special-matrix/sylvester_matrix.m \
   special-matrix/toeplitz.m \
   special-matrix/vander.m \
   special-matrix/wilkinson.m

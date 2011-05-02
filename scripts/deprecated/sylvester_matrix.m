@@ -33,6 +33,13 @@
 
 function retval = sylvester_matrix (k)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "sylvester_matrix is obsolete and will be removed from a future version of Octave; please use hadamard(2^k) instead");
+  endif
+
   if (nargin != 1)
     print_usage ();
   endif

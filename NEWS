@@ -32,6 +32,7 @@ Summary of important user-visible changes for version 3.6:
 
       is_duplicate_entry
       studentize
+      sylvester_matrix
 
 
 Summary of important user-visible changes for version 3.4:

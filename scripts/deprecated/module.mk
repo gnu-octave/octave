@@ -24,6 +24,7 @@ deprecated_FCN_FILES = \
   deprecated/spvcat.m \
   deprecated/strerror.m \
   deprecated/studentize.m \
+  deprecated/sylvester_matrix.m \
   deprecated/values.m \
   deprecated/weibcdf.m \
   deprecated/weibinv.m \

@@ -132,7 +132,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     __rundemo = 0;
     __verbose = 0;
     __demo_code = "";
-    __demo_idx = 1;
+    __demo_idx = [];
   elseif (strcmp (__flag, "explain"))
     fprintf (__fid, "# %s new test file\n", __signal_file);
     fprintf (__fid, "# %s no tests in file\n", __signal_empty);

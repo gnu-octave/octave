@@ -34,7 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // struct ops.
 
-DEFUNOP (transpose, cell)
+DEFUNOP (transpose, struct)
 {
   CAST_UNOP_ARG (const octave_struct&);
 
@@ -45,6 +45,13 @@ DEFUNOP (transpose, cell)
     }
   else
     return octave_value (v.map_value().transpose ());
+}
+
+DEFUNOP (scalar_transpose, scalar_struct)
+{
+  CAST_UNOP_ARG (const octave_scalar_struct&);
+
+  return octave_value (v.scalar_map_value ());
 }
 
 DEFNDCATOP_FN (struct_struct, struct, struct, map, map, concat)
@@ -84,6 +91,9 @@ install_struct_ops (void)
 {
   INSTALL_UNOP (op_transpose, octave_struct, transpose);
   INSTALL_UNOP (op_hermitian, octave_struct, transpose);
+
+  INSTALL_UNOP (op_transpose, octave_scalar_struct, scalar_transpose);
+  INSTALL_UNOP (op_hermitian, octave_scalar_struct, scalar_transpose);
 
   INSTALL_CATOP (octave_struct, octave_struct, struct_struct);
   INSTALL_CATOP (octave_struct, octave_matrix, struct_matrix);

@@ -150,6 +150,8 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     ## Scale everything by the 1-norm to make things more stable.
     b = A / max_a;
     b_opts = opts;
+    ## Call to eigs is always a symmetric matrix by construction
+    b_opts.issym = true;
     b_opts.tol = opts.tol / max_a;
     b_sigma = sigma;
     if (!ischar (b_sigma))

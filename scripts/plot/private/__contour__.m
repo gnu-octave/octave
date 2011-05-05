@@ -530,7 +530,7 @@ function lvl_eps = get_lvl_eps (lev)
   ## it be an absolute or relative tolerance, or switch from one to the
   ## other depending on the value of lev?
   if (isscalar (lev))
-    lvl_eps = abs (lev) * sqrt (eps);
+    lvl_eps = abs (lev) * sqrt (eps) + sqrt (eps);
   else
     tmp = min (abs (diff (lev)));
     if (tmp < 10*eps)

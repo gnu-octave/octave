@@ -885,10 +885,12 @@ numerical integration or optimization where a vector-valued function\n\
 is expected.\n\
 \n\
 @example\n\
+@group\n\
 fcn = vectorize (inline (\"x^2 - 1\"))\n\
    @result{} fcn = f(x) = x.^2 - 1\n\
 quadv (fcn, 0, 3)\n\
    @result{} 6\n\
+@end group\n\
 @end example\n\
 @end deftypefn")
 {

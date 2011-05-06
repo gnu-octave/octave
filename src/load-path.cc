@@ -1956,7 +1956,7 @@ DEFUN (genpath, args, ,
 @deftypefn  {Built-in Function} {} genpath (@var{dir})\n\
 @deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
 Return a path constructed from @var{dir} and all its subdirectories.\n\
-If additional string parameters are given, the resulting path will \n\
+If additional string parameters are given, the resulting path will\n\
 exclude directories with those names.\n\
 @end deftypefn")
 {

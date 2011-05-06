@@ -307,7 +307,7 @@ of @math{(A - s B)}.\n\
 \n\
 @item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}\n\
 \n\
-Computes QZ@tie{}decomposition, generalized eigenvectors, and \n\
+Computes QZ@tie{}decomposition, generalized eigenvectors, and\n\
 generalized eigenvalues of @math{(A - s B)}\n\
 @tex\n\
 $$ AV = BV{ \\rm diag }(\\lambda) $$\n\
@@ -343,13 +343,13 @@ for ordering eigenvalues of the GEP pencil.  The leading block\n\
 of the revised pencil contains all eigenvalues that satisfy:\n\
 @table @asis\n\
 @item \"N\"\n\
-= unordered (default) \n\
+= unordered (default)\n\
 \n\
 @item \"S\"\n\
-= small: leading block has all |lambda| @leq{} 1 \n\
+= small: leading block has all |lambda| @leq{} 1\n\
 \n\
 @item \"B\"\n\
-= big: leading block has all |lambda| @geq{} 1 \n\
+= big: leading block has all |lambda| @geq{} 1\n\
 \n\
 @item \"-\"\n\
 = negative real part: leading block has all eigenvalues\n\

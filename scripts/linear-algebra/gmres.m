@@ -24,25 +24,25 @@
 ## with restart, a.k.a. PGMRES(m).
 ##
 ## @itemize @minus
-## @item @var{rtol} is the relative tolerance, 
+## @item @var{rtol} is the relative tolerance,
 ## if not given or set to [] the default value 1e-6 is used.
 ##
 ## @item @var{maxit} is the maximum number of outer iterations,
-## if not given or set to [] the default value 
+## if not given or set to [] the default value
 ## @code{min (10, numel (b) / restart)} is used.
 ##
 ## @item @var{x0} is the initial guess,
-## if not given or set to [] the default value @code{zeros(size (b))} is used. 
+## if not given or set to [] the default value @code{zeros(size (b))} is used.
 ##
 ## @item @var{m} is the restart parameter,
 ## if not given or set to [] the default value @code{numel (b)} is used.
 ## @end itemize
 ##
-## Argument @var{A} can be passed as a matrix, function handle, or 
+## Argument @var{A} can be passed as a matrix, function handle, or
 ## inline function @code{f} such that @code{f(x) = A*x}.
 ##
-## The preconditioner @var{P} is given as @code{P = M1 * M2}. 
-## Both @var{M1} and @var{M2} can be passed as a matrix, function handle, or 
+## The preconditioner @var{P} is given as @code{P = M1 * M2}.
+## Both @var{M1} and @var{M2} can be passed as a matrix, function handle, or
 ## inline function @code{g} such that @code{g(x) = M1\x} or @code{g(x) = M2\x}.
 ##
 ## Besides the vector @var{x}, additional outputs are:
@@ -63,7 +63,7 @@
 ## @item @var{relres} is the final value of the relative residual.
 ##
 ## @item @var{iter} is a vector containing the number of outer iterations and
-## total iterations performed. 
+## total iterations performed.
 ##
 ## @item @var{resvec} is a vector containing the relative residual at each
 ## iteration.

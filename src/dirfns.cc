@@ -545,7 +545,7 @@ DEFUN (glob, args, ,
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
 Given an array of pattern strings (as a char array or a cell array) in\n\
 @var{pattern}, return a cell array of file names that match any of\n\
-them, or an empty cell array if no patterns match.  The pattern strings are \n\
+them, or an empty cell array if no patterns match.  The pattern strings are\n\
 interpreted as filename globbing patterns (as they are used by Unix shells).\n\
 Within a pattern\n\
 @table @code\n\
@@ -565,7 +565,7 @@ names.  For example:\n\
 @example\n\
 ls\n\
      @result{}\n\
-        file1  file2  file3  myfile1 myfile1b \n\
+        file1  file2  file3  myfile1 myfile1b\n\
 glob (\"*file1\")\n\
      @result{}\n\
         @{\n\

@@ -102,3 +102,14 @@ endfunction
 %! assert (issparse (sx));
 %! assert (x, full (sx));
 %! assert (idx, sidx);
+
+%!test
+%! m = [1, 0, 0, 4];
+%! c = 1;
+%! [x, idx] = sortrows (m, c);
+%! [sx, sidx] = sortrows (sparse (m), c);
+%! assert (x, m);
+%! assert (idx, 1);
+%! assert (issparse (sx));
+%! assert (x, full (sx));
+%! assert (idx, sidx);

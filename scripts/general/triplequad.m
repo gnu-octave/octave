@@ -32,7 +32,7 @@
 ## and upper limits of integration for x, y, and z respectively.  The
 ## underlying integrator determines whether infinite bounds are accepted.
 ##
-## The optional argument @var{tol} defines the absolute tolerance used to 
+## The optional argument @var{tol} defines the absolute tolerance used to
 ## integrate each sub-integral.  The default value is @math{1e^{-6}}.
 ##
 ## The optional argument @var{quadf} specifies which underlying integrator

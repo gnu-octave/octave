@@ -159,7 +159,7 @@ function [a, b] = twoouts (x)\n\
 endfunction\n\
 [aa, bb] = cellfun(@@twoouts, @{1, 2, 3@})\n\
      @result{}\n\
-        aa = \n\
+        aa =\n\
            1 2 3\n\
         bb =\n\
            1 4 9\n\

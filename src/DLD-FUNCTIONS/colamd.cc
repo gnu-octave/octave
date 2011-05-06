@@ -459,7 +459,7 @@ For a symmetric positive definite matrix @var{S}, returns the permutation\n\
 vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a\n\
 sparser Cholesky@tie{}factor than @var{S}.  Sometimes @code{symamd} works\n\
 well for symmetric indefinite matrices too.  The matrix @var{S} is assumed\n\
-to be symmetric; only the strictly lower triangular part is referenced.  \n\
+to be symmetric; only the strictly lower triangular part is referenced.\n\
 @var{S} must be square.\n\
 \n\
 @var{knobs} is an optional one- to two-element input vector.  If @var{S} is\n\
@@ -467,7 +467,7 @@ n-by-n, then rows and columns with more than\n\
 @code{max(16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,\n\
 and ordered last in the output permutation @var{p}.  No rows/columns are\n\
 removed if @code{@var{knobs}(1) < 0}.  If @code{@var{knobs} (2)} is nonzero,\n\
-@code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs} \n\
+@code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs}\n\
 = [10 0]}.  Note that @var{knobs} differs from earlier versions of symamd.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\

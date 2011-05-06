@@ -58,7 +58,7 @@
 ## @item -global
 ## A global installation is forced, even if the user doesn't normally have
 ## system privileges
-## 
+##
 ## @item -forge
 ## Install a package directly from the Octave-Forge repository.  This
 ## requires an internet connection and the cURL library.

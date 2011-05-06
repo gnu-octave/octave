@@ -131,7 +131,7 @@ DEFUN_DLD (gmtime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{tm_struct} =} gmtime (@var{t})\n\
 Given a value returned from @code{time}, or any non-negative integer,\n\
-return a time structure corresponding to CUT (Coordinated Universal Time).  \n\
+return a time structure corresponding to CUT (Coordinated Universal Time).\n\
 For example:\n\
 \n\
 @example\n\

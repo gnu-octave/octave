@@ -1837,7 +1837,7 @@ the function @code{whos_line_format}.\n\
 \n\
 If @code{whos} is called as a function, return a struct array of defined\n\
 variable names matching the given patterns.  Fields in the structure\n\
-describing each variable are: name, size, bytes, class, global, sparse, \n\
+describing each variable are: name, size, bytes, class, global, sparse,\n\
 complex, nesting, persistent.\n\
 @seealso{who, whos_line_format}\n\
 @end deftypefn")
@@ -2272,7 +2272,7 @@ Match zero or more characters.\n\
 Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
-match all lower and upper case alphabetic characters.\n\
+match all lowercase and uppercase alphabetic characters.\n\
 @end table\n\
 \n\
 For example, the command\n\
@@ -2320,7 +2320,7 @@ Clears the class structure table and clears all objects.\n\
 The arguments are treated as regular expressions as any variables that\n\
 match will be cleared.\n\
 @end table\n\
-With the exception of @code{exclusive}, all long options can be used \n\
+With the exception of @code{exclusive}, all long options can be used\n\
 without the dash as well.\n\
 @end deftypefn")
 {

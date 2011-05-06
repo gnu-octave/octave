@@ -293,7 +293,7 @@ DEFUN_DLD (rsf2csf, args, nargout,
 Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a complex,\n\
 upper triangular Schur@tie{}form @var{T}.\n\
 \n\
-Note that the following relations hold: \n\
+Note that the following relations hold:\n\
 \n\
 @tex\n\
 $UR \\cdot TR \\cdot {UR}^T = U T U^{\\dagger}$ and\n\

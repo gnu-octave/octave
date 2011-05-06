@@ -968,7 +968,7 @@ For example:\n\
           dev = 2049\n\
         @}\n\
      @result{} err = 0\n\
-     @result{} msg = \n\
+     @result{} msg =\n\
 @end example\n\
 @end deftypefn")
 {

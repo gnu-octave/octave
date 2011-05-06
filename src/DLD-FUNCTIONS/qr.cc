@@ -150,7 +150,7 @@ returns\n\
 \n\
 @example\n\
 @group\n\
-@var{Q} = \n\
+@var{Q} =\n\
 \n\
   -0.44721  -0.89443\n\
   -0.89443   0.44721\n\

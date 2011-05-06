@@ -19,7 +19,7 @@
 ## Return the @var{value} for named application data for the object(s) with
 ## handle(s) @var{h}.
 ## @deftypefnx {Function File} {@var{appdata} =} getappdata (@var{h})
-## Returns a structure, @var{appdata}, whose fields correspond to the appdata
+## Return a structure, @var{appdata}, whose fields correspond to the appdata
 ## properties.
 ## @end deftypefn
 

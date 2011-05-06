@@ -1522,7 +1522,7 @@ recommended to verify this value for difficult integrands.\n\
 \n\
 @code{quadcc} is capable of dealing with non-numeric\n\
 values of the integrand such as @code{NaN} or @code{Inf}.\n\
-If the integral diverges, and @code{quadcc} detects this, \n\
+If the integral diverges, and @code{quadcc} detects this,\n\
 then a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
 \n\
 Note: @code{quadcc} is a general purpose quadrature algorithm\n\

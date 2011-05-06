@@ -33,7 +33,7 @@
 ##
 ## @var{a} and @var{b} are the lower and upper limits of integration.  Both
 ## limits must be finite.
-## 
+##
 ## The optional argument @var{tol} defines the tolerance used to stop
 ## the adaptation procedure.  The default value is @math{1e^{-6}}.
 ##
@@ -52,7 +52,7 @@
 ## the number of function evaluations that were made.
 ##
 ## Note: @code{quadv} is written in Octave's scripting language and can be
-## used recursively in @code{dblquad} and @code{triplequad}, unlike the 
+## used recursively in @code{dblquad} and @code{triplequad}, unlike the
 ## similar @code{quad} function.
 ## @seealso{quad, quadl, quadgk, quadcc, trapz, dblquad, triplequad}
 ## @end deftypefn

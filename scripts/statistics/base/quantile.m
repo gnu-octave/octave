@@ -31,7 +31,7 @@
 ## The optional argument @var{dim} determines the dimension along which
 ## the quantiles are calculated.  If @var{dim} is omitted, and @var{x} is
 ## a vector or matrix, it defaults to 1 (column-wise quantiles).  If
-## @var{x} is an N-d array, @var{dim} defaults to the first non-singleton
+## @var{x} is an N-D array, @var{dim} defaults to the first non-singleton
 ## dimension.
 ##
 ## The methods available to calculate sample quantiles are the nine methods

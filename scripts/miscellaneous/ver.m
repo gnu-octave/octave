@@ -42,7 +42,7 @@
 ##
 ## @deftypefnx {Function File} {v =} ver (@code{"Octave"})
 ## Return version information for Octave only.
-## 
+##
 ## @deftypefnx {Function File} {v =} ver (@var{package})
 ## Return version information for @var{package}.
 ##

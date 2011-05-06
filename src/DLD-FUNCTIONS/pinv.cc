@@ -41,7 +41,7 @@ DEFUN_DLD (pinv, args, ,
 @deftypefn  {Loadable Function} {} pinv (@var{x})\n\
 @deftypefnx {Loadable Function} {} pinv (@var{x}, @var{tol})\n\
 Return the pseudoinverse of @var{x}.  Singular values less than\n\
-@var{tol} are ignored.  \n\
+@var{tol} are ignored.\n\
 \n\
 If the second argument is omitted, it is taken to be\n\
 \n\

@@ -179,10 +179,10 @@ DEFUN_DLD (quad, args, nargout,
 @deftypefnx {Loadable Function} {@var{q} =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
 @deftypefnx {Loadable Function} {[@var{q}, @var{ier}, @var{nfun}, @var{err}] =} quad (@dots{})\n\
 Numerically evaluate the integral of @var{f} from @var{a} to @var{b} using\n\
-Fortran routines from @w{@sc{quadpack}}.  @var{f} is a function handle, inline\n\
-function, or a string containing the name of the function to evaluate.\n\
-The function must have the form @code{y = f (x)} where @var{y} and @var{x}\n\
-are scalars.\n\
+Fortran routines from @w{@sc{quadpack}}.  @var{f} is a function handle,\n\
+inline function, or a string containing the name of the function to\n\
+evaluate.  The function must have the form @code{y = f (x)} where @var{y} and\n\
+@var{x} are scalars.\n\
 \n\
 @var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
 or both may be infinite.\n\

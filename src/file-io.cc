@@ -733,7 +733,7 @@ for reading, writing, or both.  For example:\n\
 freport ()\n\
 \n\
      @print{}  number  mode  name\n\
-     @print{} \n\
+     @print{}\n\
      @print{}       0     r  stdin\n\
      @print{}       1     w  stdout\n\
      @print{}       2     w  stderr\n\

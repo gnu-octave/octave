@@ -5,6 +5,7 @@ sparse_FCN_FILES = \
   sparse/cgs.m \
   sparse/colperm.m \
   sparse/etreeplot.m \
+  sparse/gmres.m \
   sparse/gplot.m \
   sparse/nonzeros.m \
   sparse/pcg.m \

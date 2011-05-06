@@ -1043,11 +1043,12 @@ private:
                  const std::string& expr_str = std::string (),
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
+        varval (expr_val.is_undefined () ? sr.varval () : expr_val),
         is_automatic (sr.is_automatic ()),
+        is_complex (varval.is_complex_type ()),
         is_formal (sr.is_formal ()),
         is_global (sr.is_global ()),
-        is_persistent (sr.is_persistent ()),
-        varval (expr_val.is_undefined () ? sr.varval () : expr_val)
+        is_persistent (sr.is_persistent ())
     { }
 
     void display_line (std::ostream& os,
@@ -1117,13 +1118,14 @@ private:
                 {
                 case 'a':
                   {
-                    char tmp[5];
+                    char tmp[6];
 
                     tmp[0] = (is_automatic ? 'a' : ' ');
-                    tmp[1] = (is_formal ? 'f' : ' ');
-                    tmp[2] = (is_global ? 'g' : ' ');
-                    tmp[3] = (is_persistent ? 'p' : ' ');
-                    tmp[4] = 0;
+                    tmp[1] = (is_complex ? 'c' : ' ');
+                    tmp[2] = (is_formal ? 'f' : ' ');
+                    tmp[3] = (is_global ? 'g' : ' ');
+                    tmp[4] = (is_persistent ? 'p' : ' ');
+                    tmp[5] = 0;
 
                     os << tmp;
                   }
@@ -1172,11 +1174,12 @@ private:
     }
 
     std::string name;
+    octave_value varval;
     bool is_automatic;
+    bool is_complex;
     bool is_formal;
     bool is_global;
     bool is_persistent;
-    octave_value varval;
   };
 
 public:
@@ -1332,6 +1335,9 @@ public:
 
     for (size_t i = 0; i < param_string.length (); i++)
       param_length(i) = param_names(i) . length ();
+
+    // The attribute column needs size 5.
+    param_length(pos_a) = 5;
 
     // Calculating necessary spacing for name column,
     // bytes column, elements column and class column
@@ -1797,6 +1803,9 @@ Variable in local scope\n\
 @item @code{a}\n\
 Automatic variable.  An automatic variable is one created by the\n\
 interpreter, for example @code{argn}.\n\
+\n\
+@item @code{c}\n\
+Variable of complex type.\n\
 \n\
 @item @code{f}\n\
 Formal parameter (function argument).\n\

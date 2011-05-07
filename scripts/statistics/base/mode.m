@@ -39,18 +39,15 @@ function [m, f, c] = mode (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("mode: X must be a numeric vector or matrix");
   endif
 
   nd = ndims (x);
   sz = size (x);
-  if (nargin != 2)
+  if (nargin < 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == round (dim))
         || !(1 <= dim && dim <= nd))
@@ -78,11 +75,11 @@ function [m, f, c] = mode (x, dim)
   t = cat (dim, true (sz2), diff (xs, 1, dim) != 0);
 
   if (dim != 1)
-    t2 (permute (t != 0, perm)) = diff ([find(permute (t, perm))(:); prod(sz)+1]);
+    t2(permute (t != 0, perm)) = diff ([find(permute (t, perm))(:); prod(sz)+1]);
     f = max (ipermute (t2, perm), [], dim);
     xs = permute (xs, perm);
   else
-    t2 (t) = diff ([find(t)(:); prod(sz)+1]);
+    t2(t) = diff ([find(t)(:); prod(sz)+1]);
     f = max (t2, [], dim);
   endif
 
@@ -93,10 +90,11 @@ function [m, f, c] = mode (x, dim)
     m = zeros (sz2, class (x));
   endif
   for i = 1 : prod (sz2)
-    c{i} = xs (t2 (:, i) == f(i), i);
-    m (i) = c{i}(1);
+    c{i} = xs(t2(:, i) == f(i), i);
+    m(i) = c{i}(1);
   endfor
 endfunction
+
 
 %!test
 %! [m, f, c] = mode (toeplitz (1:5));
@@ -116,13 +114,15 @@ endfunction
 %! assert (f, sparse (f2));
 %! assert (c, cellfun (@(x) sparse (0), c2, 'uniformoutput', false));
 
-%!assert(mode([2,3,1,2,3,4],1),[2,3,1,2,3,4])
-%!assert(mode([2,3,1,2,3,4],2),2)
-%!assert(mode([2,3,1,2,3,4]),2)
+%!assert(mode ([2,3,1,2,3,4],1),[2,3,1,2,3,4]);
+%!assert(mode ([2,3,1,2,3,4],2),2);
+%!assert(mode ([2,3,1,2,3,4]),2);
+%!assert(mode (single([2,3,1,2,3,4])), single(2));
+%!assert(mode (int8([2,3,1,2,3,4])), int8(2));
 
-%!assert(mode([2;3;1;2;3;4],1),2)
-%!assert(mode([2;3;1;2;3;4],2),[2;3;1;2;3;4])
-%!assert(mode([2;3;1;2;3;4]),2)
+%!assert(mode ([2;3;1;2;3;4],1),2);
+%!assert(mode ([2;3;1;2;3;4],2),[2;3;1;2;3;4]);
+%!assert(mode ([2;3;1;2;3;4]),2);
 
 %!shared x
 %! x(:,:,1) = toeplitz (1:3);
@@ -157,7 +157,7 @@ endfunction
 %!error mode ()
 %!error mode (1, 2, 3)
 %!error mode ({1 2 3})
-%!error mode (true(1,3))
+%!error mode (['A'; 'B'])
 %!error mode (1, ones(2,2))
 %!error mode (1, 1.5)
 %!error mode (1, 0)

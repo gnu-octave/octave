@@ -38,7 +38,7 @@ function stats = statistics (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("statistics: X must be a numeric vector or matrix");
   endif
 
@@ -46,10 +46,7 @@ function stats = statistics (x, dim)
   sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == round (dim))
         || !(1 <= dim && dim <= nd))
@@ -68,16 +65,22 @@ function stats = statistics (x, dim)
 
 endfunction
 
+
 %!test
-%! x = rand(7,5);
+%! x = rand (7,5);
 %! s = statistics (x);
-%! m = median (x);
-%! assert (m, s(3,:), eps);
+%! assert (min (x), s(1,:), eps);
+%! assert (median (x), s(3,:), eps);
+%! assert (max (x), s(5,:), eps);
+%! assert (mean (x), s(6,:), eps);
+%! assert (std (x), s(7,:), eps);
+%! assert (skewness (x), s(8,:), eps);
+%! assert (kurtosis (x), s(9,:), eps);
 
 %% Test input validation
 %!error statistics ()
 %!error statistics (1, 2, 3)
-%!error statistics ([true true])
+%!error statistics (['A'; 'B'])
 %!error statistics (1, ones(2,2))
 %!error statistics (1, 1.5)
 %!error statistics (1, 0)

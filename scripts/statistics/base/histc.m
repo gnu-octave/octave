@@ -61,7 +61,7 @@ function [n, idx] = histc (x, edges, dim)
     error ("histc: EDGES must be real-valued, not complex");
   else
     ## Make sure 'edges' is sorted
-    edges = edges (:);
+    edges = edges(:);
     if (!issorted (edges) || edges(1) > edges(end))
       warning ("histc: edge values not sorted on input");
       edges = sort (edges);
@@ -72,10 +72,7 @@ function [n, idx] = histc (x, edges, dim)
   sz = size (x);
   if (nargin < 3)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -103,25 +100,25 @@ function [n, idx] = histc (x, edges, dim)
     ## Prepare indices
     idx1 = cell (1, dim-1);
     for k = 1:length (idx1)
-      idx1 {k} = 1:sz(k);
+      idx1{k} = 1:sz(k);
     endfor
     idx2 = cell (length (sz) - dim);
     for k = 1:length (idx2)
-      idx2 {k} = 1:sz(k+dim);
+      idx2{k} = 1:sz(k+dim);
     endfor
 
     ## Compute the histograms
     for k = 1:num_edges-1
       b = (edges (k) <= x & x < edges (k+1));
-      n (idx1 {:}, k, idx2 {:}) = sum (b, dim);
+      n(idx1{:}, k, idx2{:}) = sum (b, dim);
       if (nargout > 1)
-        idx (b) = k;
+        idx(b) = k;
       endif
     endfor
     b = (x == edges (end));
-    n (idx1 {:}, num_edges, idx2 {:}) = sum (b, dim);
+    n(idx1{:}, num_edges, idx2{:}) = sum (b, dim);
     if (nargout > 1)
-      idx (b) = num_edges;
+      idx(b) = num_edges;
     endif
 
   else
@@ -159,6 +156,7 @@ function [n, idx] = histc (x, edges, dim)
   endif
 
 endfunction
+
 
 %!test
 %! x = linspace (0, 10, 1001);

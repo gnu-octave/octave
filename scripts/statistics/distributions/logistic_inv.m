@@ -31,7 +31,11 @@ function inv = logistic_inv (x)
     print_usage ();
   endif
 
-  inv = zeros (size (x));
+  if (isa (x, 'single'))
+    inv = zeros (size (x), 'single');
+  else
+    inv = zeros (size (x));
+  endif
 
   k = find ((x < 0) | (x > 1) | isnan (x));
   if (any (k))

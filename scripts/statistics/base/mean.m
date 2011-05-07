@@ -69,15 +69,15 @@ function y = mean (x, opt1, opt2)
     error ("mean: X must be a numeric vector or matrix");
   endif
 
-  need_dim = 0;
+  need_dim = false;
 
   if (nargin == 1)
     opt = "a";
-    need_dim = 1;
+    need_dim = true;
   elseif (nargin == 2)
     if (ischar (opt1))
       opt = opt1;
-      need_dim = 1;
+      need_dim = true;
     else
       dim = opt1;
       opt = "a";
@@ -100,22 +100,15 @@ function y = mean (x, opt1, opt2)
   sz = size (x);
   if (need_dim)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
+    (dim = find (sz > 1, 1)) || (dim = 1);
+  else
+    if (!(isscalar (dim) && dim == fix (dim))
+      || !(1 <= dim && dim <= nd))
+      error ("mean: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  if (!(isscalar (dim) && dim == fix (dim))
-      || !(1 <= dim && dim <= nd))
-    error ("mean: DIM must be an integer and a valid dimension");
-  endif
-
-  if (dim > nd)
-    n = 1;
-  else
-    n = sz(dim);
-  endif
+  n = sz(dim);
 
   if (strcmp (opt, "a"))
     y = sum (x, dim) / n;
@@ -129,6 +122,7 @@ function y = mean (x, opt1, opt2)
 
 endfunction
 
+
 %!test
 %! x = -10:10;
 %! y = x';
@@ -137,9 +131,12 @@ endfunction
 %! assert(mean (y) == 0);
 %! assert(mean (z) == [0, 10]);
 
+%!assert(mean (magic(3), 1), [5, 5, 5]);
+%!assert(mean (magic(3), 2), [5; 5; 5]);
 %!assert(mean ([2 8], 'g'), 4);
 %!assert(mean ([4 4 2], 'h'), 3);
 %!assert(mean (logical ([1 0 1 1])), 0.75);
+%!assert(mean (single ([1 0 1 1])), single (0.75));
 
 %% Test input validation
 %!error mean ();

@@ -64,7 +64,7 @@ function retval = var (x, opt = 0, dim)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("var: X must be a numeric vector or matrix");
   endif
 
@@ -75,16 +75,25 @@ function retval = var (x, opt = 0, dim)
     error ("var: normalization OPT must be 0 or 1");
   endif
 
+  nd = ndims (x);
+  sz = size (x);
   if (nargin < 3)
-    dim = find (size (x) > 1, 1);
-    if (isempty (dim))
-      dim = 1;
+    ## Find the first non-singleton dimension.
+    (dim = find (sz > 1, 1)) || (dim = 1);
+  else
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
+      error ("var: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  n = size (x, dim);
+  n = sz(dim);
   if (n == 1)
-    retval = zeros (size (x), class (x));
+    if (isa (x, 'single'))
+      retval = zeros (sz, 'single');
+    else
+      retval = zeros (sz);
+    endif
   elseif (numel (x) > 0)
     retval = sumsq (center (x, dim), dim) / (n - 1 + opt);
   else
@@ -93,15 +102,17 @@ function retval = var (x, opt = 0, dim)
 
 endfunction
 
-%!assert (var (13), 0)
-%!assert (var ([1,2,3]), 1)
-%!assert (var ([1,2,3], 1), 2/3, eps)
-%!assert (var ([1,2,3], [], 1), [0,0,0])
+
+%!assert(var (13), 0);
+%!assert(var (single(13)), single(0));
+%!assert(var ([1,2,3]), 1);
+%!assert(var ([1,2,3], 1), 2/3, eps);
+%!assert(var ([1,2,3], [], 1), [0,0,0]);
 
 %% Test input validation
 %!error var ()
 %!error var (1,2,3,4)
-%!error var (true(1,2))
+%!error var (['A'; 'B'])
 %!error var (1, -1);
 %!error var ([],1)
 

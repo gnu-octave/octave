@@ -52,16 +52,15 @@ function retval = corrcoef (x, y = [])
     print_usage ();
   endif
 
-  if (! (isnumeric (x) && isnumeric (y)))
-    error ("corrcoef: X and Y must be numeric matrices or vectors");
-  endif
+  ## Input validation is done by cov.m.  Don't repeat tests here
 
-  if (ndims (x) != 2 || ndims (y) != 2)
-    error ("corrcoef: X and Y must be 2-D matrices or vectors");
-  endif
-
+  ## Special case, scalar is always 100% correlated with itself
   if (isscalar (x))
-    retval = 1;
+    if (isa (x, 'single'))
+      retval = single (1);
+    else
+      retval = 1;
+    endif
     return;
   endif
 
@@ -79,20 +78,35 @@ function retval = corrcoef (x, y = [])
 
 endfunction
 
+
 %!test
 %! x = rand (10);
 %! cc1 = corrcoef (x);
 %! cc2 = corrcoef (x, x);
-%! assert((size (cc1) == [10, 10] && size (cc2) == [10, 10]
-%! && abs (cc1 - cc2) < sqrt (eps)));
+%! assert (size (cc1) == [10, 10] && size (cc2) == [10, 10]);
+%! assert (cc1, cc2, sqrt (eps));
 
-%!assert(corrcoef (5), 1);
+%!test
+%! x = [1:3]';
+%! y = [3:-1:1]';
+%! assert (corrcoef (x,y), -1, 5*eps)
+%! assert (corrcoef (x,flipud (y)), 1, 5*eps)
+%! assert (corrcoef ([x, y]), [1 -1; -1 1], 5*eps)
+
+%!test
+%! x = single ([1:3]');
+%! y = single ([3:-1:1]');
+%! assert (corrcoef (x,y), single (-1), 5*eps)
+%! assert (corrcoef (x,flipud (y)), single (1), 5*eps)
+%! assert (corrcoef ([x, y]), single ([1 -1; -1 1]), 5*eps)
+
+%!assert (corrcoef (5), 1);
+%!assert (corrcoef (single(5)), single(1));
 
 %% Test input validation
 %!error corrcoef ();
 %!error corrcoef (1, 2, 3);
-%!error corrcoef ([true, true]);
-%!error corrcoef ([1, 2], [true, true]);
+%!error corrcoef ([1; 2], ["A", "B"]);
 %!error corrcoef (ones (2,2,2));
 %!error corrcoef (ones (2,2), ones (2,2,2));
 

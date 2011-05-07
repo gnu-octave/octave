@@ -39,11 +39,12 @@
 
 function rho = spearman (x, y = [])
 
-  if ((nargin < 1) || (nargin > 2))
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) && isnumeric (y)))
+  if (   ! (isnumeric (x) || islogical (x))
+      || ! (isnumeric (y) || islogical (y)))
     error ("spearman: X and Y must be numeric matrices or vectors");
   endif
 
@@ -51,30 +52,43 @@ function rho = spearman (x, y = [])
     error ("spearman: X and Y must be 2-D matrices or vectors");
   endif
 
-  if (rows (x) == 1)
-    x = x';
+  if (isrow (x))
+    x = x.';
   endif
-  n = rows (x);
 
   if (nargin == 1)
     rho = corrcoef (ranks (x));
   else
-    if (rows (y) == 1)
-      y = y';
+    if (isrow (y))
+      y = y.';
     endif
-    if (rows (y) != n)
+    if (rows (x) != rows (y))
       error ("spearman: X and Y must have the same number of observations");
     endif
     rho = corrcoef (ranks (x), ranks (y));
   endif
 
+  ## Restore class cleared by ranks
+  if (isa (x, 'single') || isa (y, 'single'))
+    rho = single (rho);
+  endif
+
 endfunction
+
+
+%!test
+%! x = 1:10;
+%! y = exp (x);
+%! assert (spearman (x,y), 1, 5*eps);
+%! assert (spearman (x,-y), -1, 5*eps);
+
+%!assert(spearman ([1 2 3], [-1 1 -2]), -0.5, 5*eps)
 
 %% Test input validation
 %!error spearman ();
 %!error spearman (1, 2, 3);
-%!error spearman ([true, true]);
-%!error spearman (ones(1,2), [true, true]);
+%!error spearman (['A'; 'B']);
+%!error spearman (ones(1,2), {1, 2});
 %!error spearman (ones (2,2,2));
 %!error spearman (ones (2,2), ones (2,2,2));
 %!error spearman (ones (2,2), ones (3,2));

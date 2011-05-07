@@ -37,7 +37,7 @@ function y = ranks (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("ranks: X must be a numeric vector or matrix");
   endif
 
@@ -45,10 +45,7 @@ function y = ranks (x, dim)
   sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -89,18 +86,18 @@ function y = ranks (x, dim)
 endfunction
 
 
-%!assert(ranks (1:2:10), 1:5)
-%!assert(ranks (10:-2:1), 5:-1:1)
-%!assert(ranks ([2, 1, 2, 4]), [2.5, 1, 2.5, 4])
-%!assert(ranks (ones(1, 5)), 3*ones(1, 5))
-%!assert(ranks (1e6*ones(1, 5)), 3*ones(1, 5))
-%!assert(ranks (rand (1, 5), 1), ones(1, 5))
+%!assert(ranks (1:2:10), 1:5);
+%!assert(ranks (10:-2:1), 5:-1:1);
+%!assert(ranks ([2, 1, 2, 4]), [2.5, 1, 2.5, 4]);
+%!assert(ranks (ones(1, 5)), 3*ones(1, 5));
+%!assert(ranks (1e6*ones(1, 5)), 3*ones(1, 5));
+%!assert(ranks (rand (1, 5), 1), ones(1, 5));
 
 %% Test input validation
 %!error ranks ()
 %!error ranks (1, 2, 3)
 %!error ranks ({1, 2})
-%!error ranks (true(2,1))
+%!error ranks (['A'; 'B'])
 %!error ranks (1, 1.5)
 %!error ranks (1, 0)
 %!error ranks (1, 3)

@@ -35,7 +35,7 @@ function retval = center (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("center: X must be a numeric vector or matrix");
   endif
 
@@ -47,10 +47,7 @@ function retval = center (x, dim)
   sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -58,25 +55,28 @@ function retval = center (x, dim)
     endif
   endif
 
-  n = size (x, dim);
+  n = sz(dim);
 
   if (n == 0)
     retval = x;
   else
-    retval = bsxfun (@minus, x, sum (x, dim) / n);
+    retval = bsxfun (@minus, x, mean (x, dim));
   endif
 
 endfunction
 
 %!assert(center ([1,2,3]), [-1,0,1])
+%!assert(center (single([1,2,3])), single([-1,0,1]))
 %!assert(center (int8 ([1,2,3])), [-1,0,1])
+%!assert(center (logical ([1, 0, 0, 1])), [0.5, -0.5, -0.5, 0.5])
 %!assert(center (ones (3,2,0,2)), zeros (3,2,0,2))
+%!assert(center (ones (3,2,0,2, 'single')), zeros (3,2,0,2, 'single'))
 %!assert(center (magic (3)), [3,-4,1;-2,0,2;-1,4,-3])
+%!assert(center ([1 2 3; 6 5 4], 2), [-1 0 1; 1 0 -1])
 
 %% Test input validation
 %!error center ()
 %!error center (1, 2, 3)
-%!error center ([true true])
 %!error center (1, ones(2,2))
 %!error center (1, 1.5)
 %!error center (1, 0)

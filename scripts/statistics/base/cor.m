@@ -35,6 +35,7 @@ function retval = cor (x, y = x)
 
 endfunction
 
+
 %!test
 %! x = rand (10, 2);
 %! assert (cor (x), corrcoef (x), 5*eps);

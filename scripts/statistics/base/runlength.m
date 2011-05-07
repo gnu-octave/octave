@@ -30,11 +30,12 @@
 ## @end deftypefn
 
 function [count, value] = runlength (x)
+
   if (nargin != 1)
     print_usage ();
   endif
 
-  if (!isnumeric (x) || !isvector (x))
+  if (!(isnumeric (x) || islogical (x)) || !isvector (x))
     error ("runlength: X must be a numeric vector");
   endif
 
@@ -47,7 +48,9 @@ function [count, value] = runlength (x)
   if (nargout == 2)
     value = x(idx);
   endif
+
 endfunction
+
 
 %!assert (runlength([2 2 0 4 4 4 0 1 1 1 1]), [2 1 3 1 4]);
 %!assert (runlength([2 2 0 4 4 4 0 1 1 1 1]'), [2 1 3 1 4]);
@@ -59,5 +62,5 @@ endfunction
 %% Test input validation
 %!error runlength ()
 %!error runlength (1, 2)
-%!error runlength (true(1,2))
+%!error runlength (['A'; 'B'])
 %!error runlength (ones(2,2))

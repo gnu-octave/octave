@@ -40,51 +40,47 @@
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Description: Matlab style prctile function.
 
-function q = prctile (x, p, dim)
+function q = prctile (x, p = [], dim)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (!isnumeric(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("prctile: X must be a numeric vector or matrix");
   endif
-  if (!isnumeric(p))
-    error ("prctile: P must be a numeric vector");
+
+  if (isempty (p))
+    p = [0, 25, 50, 75, 100];
   endif
 
-  if (nargin == 1)
-    p = [0, 25, 50, 75, 100];
+  if (! (isnumeric (p) && isvector (p)))
+    error ("prctile: P must be a numeric vector");
   endif
 
   nd = ndims (x);
   if (nargin == 2)
     if (nd == 2)
-      ## If a matrix or vector, use the 1st dimension.
+      ## If a matrix or vector, always use 1st dimension.
       dim = 1;
     else
       ## If an N-d array, find the first non-singleton dimension.
-      dim = find (size(v) > 1, 1);
-      if (isempty (dim))
-        dim = 1;
-      endif
+      (dim = find (sz > 1, 1)) || (dim = 1);
     endif
   else
-    if (!(isscalar (dim) && dim == fix (dim)) ||
-        !(1 <= dim && dim <= nd))
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
       error ("prctile: DIM must be an integer and a valid dimension");
     endif
   endif
 
   ## Convert from percent to decimal.
-  p = p / 100;
+  p /= 100;
 
-  ## The 5th method is compatible with Matlab.
-  method = 5;
-
-  q = quantile (x, p, dim, method);
+  q = quantile (x, p, dim);
 
 endfunction
+
 
 %!test
 %! pct = 50;
@@ -171,8 +167,9 @@ endfunction
 %% Test input validation
 %!error prctile ()
 %!error prctile (1, 2, 3, 4)
-%!error prctile ([true, false], 10)
+%!error prctile (['A'; 'B'], 10)
 %!error prctile (1:10, [true, false])
+%!error prctile (1:10, ones (2,2))
 %!error prctile (1, 1, 1.5)
 %!error prctile (1, 1, 0)
 %!error prctile (1, 1, 3)

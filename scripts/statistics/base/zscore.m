@@ -31,28 +31,21 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Subtract mean and divide by standard deviation
 
-function t = zscore (x, dim)
+function z = zscore (x, dim)
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
-  if (! isnumeric(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("zscore: X must be a numeric vector or matrix");
-  endif
-
-  if (isinteger (x))
-    x = double (x);
   endif
 
   nd = ndims (x);
   sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -60,27 +53,30 @@ function t = zscore (x, dim)
     endif
   endif
 
-  c = sz(dim);
-  if (c == 0)
-    t = x;
+  n = sz(dim);
+  if (n == 0)
+    z = x;
   else
-    idx = ones (1, nd);
-    idx(dim) = c;
-    t = x - repmat (mean (x, dim), idx);
-    t = t ./ repmat (max (cat (dim, std(t, [], dim), ! any (t, dim)), [], dim), idx);
+    x = center (x, dim); # center also promotes integer to double for next line
+    z = zeros (sz, class (x));
+    s = std (x, [], dim);
+    s(s==0) = 1;
+    z = bsxfun (@rdivide, x, s);
   endif
 
 endfunction
 
+
 %!assert(zscore ([1,2,3]), [-1,0,1])
-%!assert(zscore (int8 ([1,2,3])), [-1,0,1])
-#%!assert(zscore (ones (3,2,0,2)), zeros (3,2,0,2))
+%!assert(zscore (single([1,2,3])), single([-1,0,1]))
+%!assert(zscore (int8([1,2,3])), [-1,0,1])
+%!assert(zscore (ones (3,2,2,2)), zeros (3,2,2,2))
 %!assert(zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
 
 %% Test input validation
 %!error zscore ()
 %!error zscore (1, 2, 3)
-%!error zscore ([true true])
+%!error zscore (['A'; 'B'])
 %!error zscore (1, ones(2,2))
 %!error zscore (1, 1.5)
 %!error zscore (1, 0)

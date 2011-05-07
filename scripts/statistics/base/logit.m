@@ -47,6 +47,7 @@ function y = logit (p)
 
 endfunction
 
+
 %!test
 %! p = [0.01:0.01:0.99];
 %! assert(logit (p), log (p ./ (1-p)), 25*eps)

@@ -672,10 +672,16 @@ DEFUN (erfcx, args, ,
 @deftypefn {Mapping Function} {} erfcx (@var{z})\n\
 Compute the scaled complementary error function,\n\
 @tex\n\
-$z^2 (1 - {\\rm erf} (z))$.\n\
+$$\n\
+ e^{z^2} {\\rm erfc} (z) \\equiv e^{z^2} (1 - {\\rm erf} (z))\n\
+$$\n\
 @end tex\n\
 @ifnottex\n\
-@w{@code{z^2*(1 - erf (@var{z}))}}.\n\
+\n\
+@example\n\
+exp (z^2) * erfc (x)\n\
+@end example\n\
+\n\
 @end ifnottex\n\
 @seealso{erfc, erf, erfinv}\n\
 @end deftypefn")

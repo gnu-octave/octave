@@ -550,11 +550,12 @@ $$\n\
 \n\
 @example\n\
 @group\n\
-                         z\n\
-                        /\n\
+@c spacing appears odd here, but is correct after Makeinfo\n\
+                          z\n\
+                         /\n\
 erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
-                        /\n\
-                     t=0\n\
+                         /\n\
+                      t=0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -607,7 +608,7 @@ DEFUN (erfinv, args, ,
 Compute the inverse error function, i.e., @var{y} such that\n\
 \n\
 @example\n\
-  erf(@var{y}) == @var{x}\n\
+  erf (@var{y}) == @var{x}\n\
 @end example\n\
 @seealso{erf, erfc, erfcx}\n\
 @end deftypefn")
@@ -644,7 +645,7 @@ Compute the complementary error function,\n\
 $1 - {\\rm erf} (z)$.\n\
 @end tex\n\
 @ifnottex\n\
-@code{1 - erf (@var{z})}.\n\
+@w{@code{1 - erf (@var{z})}}.\n\
 @end ifnottex\n\
 @seealso{erfcx, erf, erfinv}\n\
 @end deftypefn")
@@ -671,10 +672,16 @@ DEFUN (erfcx, args, ,
 @deftypefn {Mapping Function} {} erfcx (@var{z})\n\
 Compute the scaled complementary error function,\n\
 @tex\n\
-$z^2 (1 - {\\rm erf} (z))$.\n\
+$$\n\
+ e^{z^2} {\\rm erfc} (z) \\equiv e^{z^2} (1 - {\\rm erf} (z))\n\
+$$\n\
 @end tex\n\
 @ifnottex\n\
-@code{z^2*(1 - erf (@var{z}))}.\n\
+\n\
+@example\n\
+exp (z^2) * erfc (x)\n\
+@end example\n\
+\n\
 @end ifnottex\n\
 @seealso{erfc, erf, erfinv}\n\
 @end deftypefn")
@@ -879,7 +886,8 @@ $$\n\
 \n\
 @example\n\
 @group\n\
-             infinity\n\
+@c spacing appears odd here, but is correct after Makeinfo\n\
+              infinity\n\
              /\n\
 gamma (z) = | t^(z-1) exp (-t) dt.\n\
              /\n\

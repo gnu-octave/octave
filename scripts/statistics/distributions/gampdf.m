@@ -48,7 +48,7 @@ function pdf = gampdf (x, a, b)
     pdf (k) = NaN;
   endif
 
-  k = find ((x > 0) & (a > 0) & (a <= 1) & (b > 0));
+  k = find ((x >= 0) & (a > 0) & (a <= 1) & (b > 0));
   if (any (k))
     if (isscalar(a) && isscalar(b))
       pdf(k) = (x(k) .^ (a - 1)) ...
@@ -59,7 +59,7 @@ function pdf = gampdf (x, a, b)
     endif
   endif
 
-  k = find ((x > 0) & (a > 1) & (b > 0));
+  k = find ((x >= 0) & (a > 1) & (b > 0));
   if (any (k))
     if (isscalar(a) && isscalar(b))
       pdf(k) = exp (- a .* log (b) + (a-1) .* log (x(k))

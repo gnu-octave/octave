@@ -46,6 +46,29 @@ public:
 
   operator std::string (void) const { return *this; }
 
+  bool operator < (const std::string& s) const
+  {
+    bool same = true;
+    const_iterator p1 = begin ();
+    const_iterator p2 = s.begin ();
+
+    while (p1 != end () && p2 != s.end ())
+      {
+        if (std::tolower (*p2) < std::tolower (*p1))
+          return false;
+        if (same && (std::tolower (*p2) != std::tolower (*p1)))
+	  same = false;
+
+        *p1++;
+        *p2++;
+      }
+
+    if (same && (length() >= s.length ()))
+      return false;
+    else
+      return true;
+  }
+
   // Case-insensitive comparison.
   bool compare (const std::string& s, size_t limit = std::string::npos) const
   {

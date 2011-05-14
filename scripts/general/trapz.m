@@ -64,60 +64,75 @@ function z = trapz (x, y, dim)
     print_usage ();
   endif
 
-  nd = ndims (x);
-  sz = size (x);
+  have_xy = have_dim = false;
 
-  have_x = false;
-  have_dim = false;
   if (nargin == 3)
-    have_x = true;
+    have_xy = true;
     have_dim = true;
-  endif
-  if (nargin == 2)
+  elseif (nargin == 2)
     if (! size_equal (x, y) && isscalar (y))
       dim = y;
       have_dim = true;
     else
-      have_x = true;
+      have_xy = true;
     endif
+  endif
+
+  if (have_xy)
+    nd = ndims (y);
+    sz = size (y);
+  else
+    nd = ndims (x);
+    sz = size (x);
   endif
 
   if (! have_dim)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    dim = floor (dim);
-    if (dim < 1 || dim > nd)
-      error ("trapz: invalid dimension DIM along which to sort");
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
+      error ("trapz: DIM must be an integer and a valid dimension");
     endif
   endif
 
   n = sz(dim);
-  idx1 = cell ();
-  for i = 1:nd
-    idx1{i} = 1:sz(i);
-  endfor
-  idx2 = idx1;
+  idx1 = idx2 = repmat ({:}, [nd, 1]);
   idx1{dim} = 2 : n;
   idx2{dim} = 1 : (n - 1);
 
-  if (! have_x)
+  if (! have_xy)
     z = 0.5 * sum (x(idx1{:}) + x(idx2{:}), dim);
   else
-    if (! size_equal (x, y))
-      error ("trapz: X and Y must have same shape");
+    if (isvector (x) && !isvector (y))
+      if (length (x) != sz(dim))
+        error ("trapz: length of X and length of Y along DIM must match");
+      endif
+      ## Reshape vector to point along dimension DIM
+      shape = ones (nd, 1);
+      shape(dim) = sz(dim);
+      x = reshape (x, shape);
+      z = 0.5 * sum (bsxfun (@times, diff (x), y(idx1{:}) + y(idx2{:})), dim);
+    else
+      if (! size_equal (x, y))
+        error ("trapz: X and Y must have same shape");
+      endif
+      z = 0.5 * sum (diff (x, 1, dim) .* (y(idx1{:}) + y(idx2{:})), dim);
     endif
-    z = 0.5 * sum ((x(idx1{:}) - x(idx2{:})) .*
-                   (y(idx1{:}) + y(idx2{:})), dim);
   endif
 endfunction
 
+
 %!assert (trapz(1:5), 12)
 %!assert (trapz(0:0.5:2,1:5), 6)
-%!assert (trapz([1:5;1:5],2),[12;12])
-%!assert (trapz([1:5;1:5].',1),[12,12])
-%!assert (trapz([0:0.5:2;0:0.5:2],[1:5;1:5],2),[6;6])
-%!assert (trapz([0:0.5:2;0:0.5:2].',[1:5;1:5].',1),[6,6])
+%!assert (trapz([1:5;1:5].',1), [12,12])
+%!assert (trapz([1:5;1:5],2), [12;12])
+%!assert (trapz(repmat(reshape(1:5,1,1,5),2,2), 3), [12 12; 12 12])
+%!assert (trapz([0:0.5:2;0:0.5:2].',[1:5;1:5].',1), [6, 6])
+%!assert (trapz([0:0.5:2;0:0.5:2],[1:5;1:5],2), [6; 6])
+%!assert (trapz(repmat(reshape([0:0.5:2],1,1,5),2,2), ...
+%!              repmat(reshape(1:5,1,1,5),2,2), 3), [6 6; 6 6])
+%!assert (trapz(0:0.5:2,[(1:5)',(1:5)']), [6, 6])
+%!assert (trapz(0:0.5:2,[(1:5);(1:5)],2), [6; 6])
+%!assert (trapz(0:0.5:2,repmat(reshape(1:5,1,1,5),2,2),3), [6 6; 6 6])
+

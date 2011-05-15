@@ -48,22 +48,23 @@ public:
 
   bool operator < (const std::string& s) const
   {
-    bool same = true;
     const_iterator p1 = begin ();
     const_iterator p2 = s.begin ();
 
     while (p1 != end () && p2 != s.end ())
       {
-        if (std::tolower (*p2) < std::tolower (*p1))
-          return false;
-        if (same && (std::tolower (*p2) != std::tolower (*p1)))
-	  same = false;
+        char lp1 = std::tolower (*p1), lp2 = std::tolower (*p2);
 
-        *p1++;
-        *p2++;
+        if ( lp1 > lp2 )
+          return false;
+        if ( lp1 < lp2)
+          return true;
+
+        p1++;
+        p2++;
       }
 
-    if (same && (length() >= s.length ()))
+    if ( length () >= s.length ())
       return false;
     else
       return true;
@@ -82,8 +83,8 @@ public:
         if (std::tolower (*p1) != std::tolower (*p2))
           return false;
 
-        *p1++;
-        *p2++;
+        p1++;
+        p2++;
       }
 
     return (limit == std::string::npos) ? size () == s.size () : k == limit;

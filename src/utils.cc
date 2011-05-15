@@ -791,7 +791,8 @@ Return the full name of @var{file}, relative to the current directory.\n\
 
 DEFUN (find_dir_in_path, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} find_dir_in_path (@var{dir}, \"all\")\n\
+@deftypefn  {Built-in Function} {} find_dir_in_path (@var{dir})\n\
+@deftypefnx {Built-in Function} {} find_dir_in_path (@var{dir}, \"all\")\n\
 Return the full name of the path element matching @var{dir}.  The\n\
 match is performed at the end of each path element.  For example, if\n\
 @var{dir} is @code{\"foo/bar\"}, it matches the path element\n\
@@ -799,7 +800,7 @@ match is performed at the end of each path element.  For example, if\n\
 or @code{\"/some/dir/allfoo/bar\"}.\n\
 \n\
 The second argument is optional.  If it is supplied, return a cell array\n\
-containing all the directory names that match.\n\
+containing all name matches rather than just the first.\n\
 @end deftypefn")
 {
   octave_value retval = std::string ();

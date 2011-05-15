@@ -17,8 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} runtests (@var{directory})
+## @deftypefn  {Function File} {} runtests ()
+## @deftypefnx {Function File} {} runtests (@var{directory})
 ## Execute built-in tests for all function files in the specified directory.
+## If no directory is specified, operate on all directories in Octave's
+## search path for functions.
+## @seealso{rundemos, path}
 ## @end deftypefn
 
 ## Author: jwe

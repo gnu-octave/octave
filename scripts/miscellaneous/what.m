@@ -20,10 +20,9 @@
 ## @deftypefn  {Command} {} what
 ## @deftypefnx {Command} {} what @var{dir}
 ## @deftypefnx {Function File} {w =} what (@var{dir})
-## List the Octave specific files in a directory.  If the variable @var{dir}
-## is given then check that directory rather than the current directory.  If
-## a return argument is requested, the files found are returned in the
-## structure @var{w}.
+## List the Octave specific files in directory @var{dir}.  If @var{dir} is
+## not specified then the current directory is used.  If a return argument is
+## requested, the files found are returned in the structure @var{w}.
 ## @seealso{which}
 ## @end deftypefn
 

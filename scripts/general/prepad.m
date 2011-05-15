@@ -53,11 +53,8 @@ function y = prepad (x, l, c, dim)
   nd = ndims (x);
   sz = size (x);
   if (nargin < 4)
-    ## Find the first non-singleton dimension
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    ## Find the first non-singleton dimension.
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))

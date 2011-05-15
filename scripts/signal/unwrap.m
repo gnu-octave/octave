@@ -55,11 +55,8 @@ function retval = unwrap (x, tol, dim)
       error ("unwrap: DIM must be an integer and a valid dimension");
     endif
   else
-    ## Find the first non-singleton dimension
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    ## Find the first non-singleton dimension.
+    (dim = find (sz > 1, 1)) || (dim = 1);
   endif
 
   rng = 2*pi;

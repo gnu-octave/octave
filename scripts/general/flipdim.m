@@ -45,7 +45,7 @@ function y = flipdim (x, dim)
   nd = ndims (x);
   if (nargin == 1)
     ## Find the first non-singleton dimension.
-    [~, dim] = min (size (x) != 1);
+    (dim = find (sz > 1, 1)) || (dim = 1);
   elseif (! (isscalar (dim) && isindex (dim)))
     error ("flipdim: DIM must be a positive integer");
   endif

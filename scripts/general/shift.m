@@ -51,10 +51,7 @@ function y = shift (x, b, dim)
     endif
   else
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   endif
 
   if (numel (x) < 1)

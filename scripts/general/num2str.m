@@ -111,10 +111,7 @@ function retval = num2str (x, arg)
     nd = ndims (x);
     perm = fix ([1:0.5:nc+0.5]);
     perm(2:2:2*nc) = perm(2:2:2*nc) + nc;
-    idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{2} = perm;
     x = horzcat (real (x), imag (x));
     x = x(idx{:});

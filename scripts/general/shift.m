@@ -60,10 +60,7 @@ function y = shift (x, b, dim)
 
   d = sz (dim);
 
-  idx = cell ();
-  for i = 1:nd
-    idx{i} = 1:sz(i);
-  endfor
+  idx = repmat ({':'}, nd, 1);
   if (b >= 0)
     b = rem (b, d);
     idx{dim} = [d-b+1:d, 1:d-b];

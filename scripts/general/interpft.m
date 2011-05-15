@@ -76,10 +76,8 @@ function z = interpft (x, n, dim)
   k = floor (m / 2);
   sz = size (x);
   sz(1) = n * inc - m;
-  idx = cell (nd, 1);
-  for i = 2:nd
-    idx{i} = 1:sz(i);
-  endfor
+
+  idx = repmat ({':'}, nd, 1);
   idx{1} = 1:k;
   z = cat (1, y(idx{:}), zeros (sz));
   idx{1} = k+1:m;

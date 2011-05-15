@@ -55,10 +55,7 @@ function retval = int2str (n)
     nd = ndims (n);
     nc = columns (n);
     if (nc > 1)
-      idx = cell ();
-      for i = 1:nd
-        idx{i} = 1:sz(i);
-      endfor
+      idx = repmat ({':'}, nd, 1);
       idx(2) = 1;
       ifmt = get_fmt (n(idx{:}), 0);
       idx(2) = 2:sz(2);

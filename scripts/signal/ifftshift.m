@@ -45,10 +45,7 @@ function retval = ifftshift (x, dim)
     nd = ndims (x);
     sz = size (x);
     sz2 = floor (sz(dim) / 2);
-    idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{dim} = [sz2+1:sz(dim), 1:sz2];
     retval = x(idx{:});
   else

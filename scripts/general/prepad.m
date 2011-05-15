@@ -73,10 +73,7 @@ function y = prepad (x, l, c, dim)
   d = sz (dim);
 
   if (d >= l)
-    idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{dim} = d-l+1:d;
     y = x(idx{:});
   else

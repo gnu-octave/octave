@@ -73,10 +73,7 @@ function y = postpad (x, l, c, dim)
   d = sz (dim);
 
   if (d >= l)
-    idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{dim} = 1:l;
     y = x(idx{:});
   else

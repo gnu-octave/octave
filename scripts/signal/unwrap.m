@@ -71,10 +71,7 @@ function retval = unwrap (x, tol, dim)
 
   ## Take first order difference to see so that wraps will show up
   ## as large values, and the sign will show direction.
-  idx = cell ();
-  for i = 1:nd
-    idx{i} = 1:sz(i);
-  endfor
+  idx = repmat ({':'}, nd, 1);
   idx{dim} = [1,1:m-1];
   d = x(idx{:}) - x;
 

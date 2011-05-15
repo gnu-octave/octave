@@ -99,133 +99,331 @@ size (T const (&)[z])
   return z;
 }
 
-// FIXME -- The descriptions could easily be in texinfo -- should they?
 const static pair_type operators[] =
 {
   pair_type ("!",
-    "Logical not operator.  See also `~'.\n"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} !\n\
+Logical 'not' operator.\n\
+@seealso{~, not}\n\
+@end deftypefn"),
+
+  pair_type ("~",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ~\n\
+Logical 'not' operator.\n\
+@seealso{!, not}\n\
+@end deftypefn"),
 
   pair_type ("!=",
-    "Logical not equals operator.  See also `~='.\n"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} !=\n\
+Logical 'not equals' operator.\n\
+@seealso{~=, ne}\n\
+@end deftypefn"),
+
+  pair_type ("~=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ~=\n\
+Logical 'not equals' operator.\n\
+@seealso{!=, ne}\n\
+@end deftypefn"),
 
   pair_type ("\"",
-    "String delimiter.\n"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} \"\n\
+String delimiter.\n\
+@end deftypefn"),
 
   pair_type ("#",
-    "Begin comment character.  See also `%'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} #\n\
+Begin comment character.\n\
+@seealso{%, #@{}\n\
+@end deftypefn"),
 
   pair_type ("%",
-    "Begin comment charcter.  See also `#'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} %\n\
+Begin comment character.\n\
+@seealso{#, %@{}\n\
+@end deftypefn"),
+
+  pair_type ("#{",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} #@{\n\
+Begin block comment. There must be nothing else other than\n\
+whitespace in the line, both before and after @code{#@{}. Also,\n\
+it is possible to nest block comments.\n\
+@seealso{#, #@}, %@{}\n\
+@end deftypefn"),
+
+  pair_type ("%{",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} %@{\n\
+Begin block comment. There must be nothing else other than\n\
+whitespace in the line, both before and after @code{%@{}. Also,\n\
+it is possible to nest block comments.\n\
+@seealso{%, %@}, #@{}\n\
+@end deftypefn"),
+
+  pair_type ("#}",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} #@}\n\
+Close block comment. There must be nothing else other than\n\
+whitespace in the line, both before and after @code{#@}}. Also,\n\
+it is possible to nest block comments.\n\
+@seealso{#, #@{, %@}}\n\
+@end deftypefn"),
+
+  pair_type ("%}",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} %@}\n\
+Close block comment. There must be nothing else other than\n\
+whitespace in the line, both before and after @code{%@}}. Also,\n\
+it is possible to nest block comments.\n\
+@seealso{%, %@{, #@}}\n\
+@end deftypefn"),
+
+  pair_type ("...",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ...\n\
+Continuation marker. Joins current line with following line.\n\
+@end deftypefn"),
 
   pair_type ("&",
-    "Element by element logical and operator.  See also `&&'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} &\n\
+Element by element logical 'and' operator.\n\
+@seealso{&&, and}\n\
+@end deftypefn"),
 
   pair_type ("&&",
-    "Logical and operator (with short-circuit evaluation).  See also `&'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} &&\n\
+Logical 'and' operator (with short-circuit evaluation).\n\
+@seealso{&, and}\n\
+@end deftypefn"),
 
   pair_type ("'",
-    "Matrix transpose operator.  For complex matrices, computes the\n\
-complex conjugate (Hermitian) transpose.  See also `.''\n\
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} '\n\
+Matrix transpose operator. For complex matrices, computes the\n\
+complex conjugate (Hermitian) transpose.\n\
 \n\
 The single quote character may also be used to delimit strings, but\n\
 it is better to use the double quote character, since that is never\n\
-ambiguous"),
+ambiguous\n\
+@seealso{.', transpose}\n\
+@end deftypefn"),
 
   pair_type ("(",
-    "Array index or function argument delimiter."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} (\n\
+Array index or function argument delimiter.\n\
+@end deftypefn"),
 
   pair_type (")",
-    "Array index or function argument delimiter."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} )\n\
+Array index or function argument delimiter.\n\
+@end deftypefn"),
 
   pair_type ("*",
-    "Multiplication operator.  See also `.*'"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} *\n\
+Multiplication operator.\n\
+@seealso{.*, times}\n\
+@end deftypefn"),
 
   pair_type ("**",
-    "Power operator.  See also `^', `.**', and `.^'"),
-
-  pair_type ("+",
-    "Addition operator."),
-
-  pair_type ("++",
-    "Increment operator.  As in C, may be applied as a prefix or postfix\n\
-operator."),
-
-  pair_type (",",
-    "Array index, function argument, or command separator."),
-
-  pair_type ("-",
-    "Subtraction or unary negation operator."),
-
-  pair_type ("--",
-    "Decrement operator.  As in C, may be applied as a prefix or postfix\n\
-operator."),
-
-  pair_type (".'",
-    "Matrix transpose operator.  For complex matrices, computes the\n\
-transpose, *not* the complex conjugate transpose.  See also `''."),
-
-  pair_type (".*",
-    "Element by element multiplication operator.  See also `*'."),
-
-  pair_type (".**",
-    "Element by element power operator.  See also `**', `^', and `.^'."),
-
-  pair_type ("./",
-    "Element by element division operator.  See also `/' and `\\'."),
-
-  pair_type (".^",
-    "Element by element power operator.  See also `**', `^', and `.^'."),
-
-  pair_type ("/",
-    "Right division.  See also `\\' and `./'."),
-
-  pair_type (":",
-    "Select entire rows or columns of matrices."),
-
-  pair_type (";",
-    "Array row or command separator.  See also `,'."),
-
-  pair_type ("<",
-    "Less than operator."),
-
-  pair_type ("<=",
-    "Less than or equals operator."),
-
-  pair_type ("=",
-    "Assignment operator."),
-
-  pair_type ("==",
-    "Equality test operator."),
-
-  pair_type (">",
-    "Greater than operator."),
-
-  pair_type (">=",
-    "Greater than or equals operator."),
-
-  pair_type ("[",
-    "Return list delimiter.  See also `]'."),
-
-  pair_type ("\\",
-    "Left division operator.  See also `/' and `./'."),
-
-  pair_type ("]",
-    "Return list delimiter.  See also `['."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} **\n\
+Power operator.\n\
+@seealso{power, ^, .**, .^}\n\
+@end deftypefn"),
 
   pair_type ("^",
-    "Power operator.  See also `**', `.^', and `.**.'"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ^\n\
+Power operator.\n\
+@seealso{power, **, .^, .**}\n\
+@end deftypefn"),
+
+  pair_type ("+",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} +\n\
+Addition operator.\n\
+@seealso{plus}\n\
+@end deftypefn"),
+
+  pair_type ("++",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ++\n\
+Increment operator. As in C, may be applied as a prefix or postfix\n\
+operator.\n\
+@seealso{--}\n\
+@end deftypefn"),
+
+  pair_type (",",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ,\n\
+Array index, function argument, or command separator.\n\
+@end deftypefn"),
+
+  pair_type ("-",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} -\n\
+Subtraction or unary negation operator.\n\
+@seealso{minus}\n\
+@end deftypefn"),
+
+  pair_type ("--",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} --\n\
+Decrement operator. As in C, may be applied as a prefix or postfix\n\
+operator.\n\
+@seealso{++}\n\
+@end deftypefn"),
+
+  pair_type (".'",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .'\n\
+Matrix transpose operator. For complex matrices, computes the\n\
+transpose, @emph{not} the complex conjugate transpose.\n\
+@seealso{', transpose}\n\
+@end deftypefn"),
+
+  pair_type (".*",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .*\n\
+Element by element multiplication operator.\n\
+@seealso{*, times}\n\
+@end deftypefn"),
+
+  pair_type (".**",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .*\n\
+Element by element power operator.\n\
+@seealso{**, ^, .^, power}\n\
+@end deftypefn"),
+
+  pair_type (".^",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .^\n\
+Element by element power operator.\n\
+@seealso{.**, ^, **, power}\n\
+@end deftypefn"),
+
+  pair_type ("./",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ./\n\
+Element by element right division operator.\n\
+@seealso{/, .\\, rdivide, mrdivide}\n\
+@end deftypefn"),
+
+  pair_type ("/",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} /\n\
+Right division operator.\n\
+@seealso{./, \\, rdivide, mrdivide}\n\
+@end deftypefn"),
+
+  pair_type (".\\",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .\\\n\
+Element by element left division operator.\n\
+@seealso{\\, ./, rdivide, mrdivide}\n\
+@end deftypefn"),
+
+  pair_type ("\\",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} \\\n\
+Left division operator.\n\
+@seealso{.\\, /, ldivide, mldivide}\n\
+@end deftypefn"),
+
+  pair_type (":",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} :\n\
+Select entire rows or columns of matrices.\n\
+@end deftypefn"),
+
+  pair_type (";",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ;\n\
+Array row or command separator.\n\
+@seealso{,}\n\
+@end deftypefn"),
+
+  pair_type ("<",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} <\n\
+'Less than' operator.\n\
+@seealso{lt}\n\
+@end deftypefn"),
+
+  pair_type ("<=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} <=\n\
+'Less than' or 'equals' operator.\n\
+@seealso{le}\n\
+@end deftypefn"),
+
+  pair_type ("=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} =\n\
+Assignment operator.\n\
+@end deftypefn"),
+
+  pair_type ("==",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ==\n\
+Equality test operator.\n\
+@seealso{eq}\n\
+@end deftypefn"),
+
+  pair_type (">",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} >\n\
+'Greater than' operator.\n\
+@seealso{gt}\n\
+@end deftypefn"),
+
+  pair_type (">=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} >=\n\
+'Greater than' or 'equals' operator.\n\
+@seealso{ge}\n\
+@end deftypefn"),
+
+  pair_type ("[",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} [\n\
+Return list delimiter.\n\
+@seealso{]}\n\
+@end deftypefn"),
+
+  pair_type ("]",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ]\n\
+Return list delimiter.\n\
+@seealso{[}\n\
+@end deftypefn"),
 
   pair_type ("|",
-    "Element by element logical or operator.  See also `||'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} |\n\
+Element by element logical 'or' operator.\n\
+@seealso{||, or}\n\
+@end deftypefn"),
 
   pair_type ("||",
-    "Logical or operator (with short-circuit evaluation).  See also `|'."),
-
-  pair_type ("~",
-    "Logical not operator.  See also `!' and `~'."),
-
-  pair_type ("~=",
-    "Logical not equals operator.  See also `!='."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ||\n\
+Logical 'or' (with short-circuit evaluation) operator.\n\
+@seealso{|, or}\n\
+@end deftypefn"),
 };
 
 const static pair_type keywords[] =

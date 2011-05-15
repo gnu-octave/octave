@@ -686,8 +686,8 @@ Return the system-dependent character used to separate directory names.\n\
 \n\
 If 'all' is given, the function returns all valid file separators in\n\
 the form of a string.  The list of file separators is system-dependent.\n\
-It is @samp{/} (forward slash) under UNIX or Mac OS X, @samp{/} and @samp{\\}\n\
-(forward and backward slashes) under Windows.\n\
+It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
+@samp{\\} (forward and backward slashes) under Windows.\n\
 @seealso{pathsep}\n\
 @end deftypefn")
 {

@@ -50,7 +50,7 @@ function pdf = exppdf (x, lambda)
     pdf(k) = NaN;
   endif
 
-  k = find ((x > 0) & (x < Inf) & (lambda > 0));
+  k = find ((x >= 0) & (x < Inf) & (lambda > 0));
   if (any (k))
     if isscalar (lambda)
       pdf(k) = exp (- x(k) ./ lambda) ./ lambda;

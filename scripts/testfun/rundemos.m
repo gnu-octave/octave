@@ -17,7 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rundemos (@var{directory})
+## @deftypefn  {Function File} {} rundemos ()
+## @deftypefnx {Function File} {} rundemos (@var{directory})
+## Execute built-in demos for all function files in the specified directory.
+## If no directory is specified, operate on all directories in Octave's
+## search path for functions.
+## @seealso{runtests, path}
 ## @end deftypefn
 
 ## Author: jwe

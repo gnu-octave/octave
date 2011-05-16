@@ -6909,6 +6909,12 @@ values or lists respectively.\n\
 
   if (nargin == 1 || nargin == 2)
     {
+      if (args(0).is_empty())
+        {
+          retval = Matrix ();
+          return retval;
+        }
+
       ColumnVector hcv (args(0).vector_value ());
 
       if (! error_state)

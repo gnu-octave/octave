@@ -1058,6 +1058,9 @@ endfunction
 will produce a very quick countdown from '3' to 'Blast Off' as the
 lines "@code{disp(2);}" and "@code{disp(1);}" won't be executed.
 
+The block comment markers must appear alone as the only characters on a line
+(excepting whitepsace) in order to to be parsed correctly.
+
 @node Comments and the Help System
 @subsection Comments and the Help System
 @cindex documenting functions

@@ -283,7 +283,7 @@ message identifier.\n\
 DEFUNX ("rmdir", Frmdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{\"s\"})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, \"s\")\n\
 Remove the directory named @var{dir}.\n\
 \n\
 If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\

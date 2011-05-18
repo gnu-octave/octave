@@ -1833,8 +1833,8 @@ DEFALIAS (lower, tolower);
 
 DEFUNX ("toupper", Ftoupper, args, ,
     "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} toupper (@var{s})\n\
-@deftypefnx {Built-in Function} {} upper (@var{s})\n\
+@deftypefn  {Mapping Function} {} toupper (@var{s})\n\
+@deftypefnx {Mapping Function} {} upper (@var{s})\n\
 Return a copy of the string or cell string @var{s}, with each lowercase\n\
 character replaced by the corresponding uppercase one; non-alphabetic\n\
 characters are left unchanged.  For example:\n\

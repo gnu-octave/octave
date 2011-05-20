@@ -665,7 +665,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
                                    double p1, double p1N,
                                    double p2, double p2N,
                                    double dx, double dy, double dz,
-                                   int xyz, bool doubleside)
+                                   int xyz, bool mirror)
 {
   glBegin (GL_LINES);
 
@@ -679,7 +679,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
             {
               glVertex3d (val, p1, p2);
               glVertex3d (val, p1+dy, p2+dz);
-              if (doubleside)
+              if (mirror)
                 {
                   glVertex3d (val, p1N, p2N);
                   glVertex3d (val, p1N-dy, p2N-dz);
@@ -689,7 +689,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
             {
               glVertex3d (p1, val, p2);
               glVertex3d (p1+dx, val, p2+dz);
-              if (doubleside)
+              if (mirror)
                 {
                   glVertex3d (p1N, val, p2N);
                   glVertex3d (p1N-dx, val, p2N-dz);
@@ -699,7 +699,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
             {
               glVertex3d (p1, p2, val);
               glVertex3d (p1+dx, p2+dy, val);
-              if (doubleside)
+              if (mirror)
                 {
                   glVertex3d (p1N, p2N, val);
                   glVertex3d (p1N-dx, p2N-dy, val);
@@ -966,7 +966,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       string_vector xticklabels = props.get_xticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fy);
-      bool box = props.is_box ();
+      bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
       set_color (props.get_xcolor_rgb ());
 
@@ -982,14 +982,14 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTick,
                             zpTick, zpTickN, 0., 0.,
                             signum(zpTick-zpTickN)*fz*xticklen,
-                            0, (box && xstate != AXE_ANY_DIR));
+                            0, mirror);
         }
       else
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN,
                             zpTick, zpTick, 0.,
                             signum(ypTick-ypTickN)*fy*xticklen,
-                            0., 0, (box && xstate != AXE_ANY_DIR));
+                            0., 0, mirror);
         }
 
       // tick texts
@@ -1021,12 +1021,12 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
                               zpTick, zpTickN, 0., 0.,
                               signum(zpTick-zpTickN)*fz*xticklen/2,
-                              0, (box && xstate != AXE_ANY_DIR));
+                              0, mirror);
           else
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
                               zpTick, zpTick, 0.,
                               signum(ypTick-ypTickN)*fy*xticklen/2,
-                              0., 0, (box && xstate != AXE_ANY_DIR));
+                              0., 0, mirror);
         }
 
       gh_manager::get_object (props.get_xlabel ()).set ("visible", "on");
@@ -1073,7 +1073,8 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       string_vector yticklabels = props.get_yticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fx);
-      bool box = props.is_box ();
+      bool mirror = props.is_box () && ystate != AXE_ANY_DIR
+                    && (props.get_tag () != "plotyy");
 
       set_color (props.get_ycolor_rgb ());
 
@@ -1088,12 +1089,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTick,
                           zpTick, zpTickN, 0., 0.,
                           signum(zpTick-zpTickN)*fz*yticklen,
-                          1, (box && ystate != AXE_ANY_DIR));
+                          1, mirror);
       else
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN,
                           zpTick, zpTick,
                           signum(xPlaneN-xPlane)*fx*yticklen,
-                          0., 0., 1, (box && ystate != AXE_ANY_DIR));
+                          0., 0., 1, mirror);
 
       // tick texts
       if (yticklabels.numel () > 0)
@@ -1125,12 +1126,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
                               zpTick, zpTickN, 0., 0.,
                               signum(zpTick-zpTickN)*fz*yticklen/2,
-                              1, (box && ystate != AXE_ANY_DIR));
+                              1, mirror);
           else
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
                               zpTick, zpTick,
                               signum(xpTick-xpTickN)*fx*yticklen/2,
-                              0., 0., 1, (box && ystate != AXE_ANY_DIR));
+                              0., 0., 1, mirror);
         }
 
       gh_manager::get_object (props.get_ylabel ()).set ("visible", "on");
@@ -1169,7 +1170,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
       string_vector zticklabels = props.get_zticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
-      bool box = props.is_box ();
+      bool mirror = props.is_box () && zstate != AXE_ANY_DIR;
 
       set_color (props.get_zcolor_rgb ());
 
@@ -1185,7 +1186,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlane, yPlane,
                               signum(xPlaneN-xPlane)*fx*zticklen,
-                              0., 0., 2, (box && zstate != AXE_ANY_DIR));
+                              0., 0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
                               yPlane, yPlane, 0.,
@@ -1198,7 +1199,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlaneN, yPlane, 0.,
                               signum(yPlaneN-yPlane)*fy*zticklen,
-                              0., 2, (box && zstate != AXE_ANY_DIR));
+                              0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
                               yPlaneN, yPlane,
@@ -1250,7 +1251,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
                                   yPlane, yPlane,
                                   signum(xPlaneN-xPlane)*fx*zticklen/2,
-                                  0., 0., 2, (box && zstate != AXE_ANY_DIR));
+                                  0., 0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
                                   yPlane, yPlane, 0.,
@@ -1263,7 +1264,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlane, 0.,
                                   signum(yPlaneN-yPlane)*fy*zticklen/2,
-                                  0., 2, (box && zstate != AXE_ANY_DIR));
+                                  0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlaneN,

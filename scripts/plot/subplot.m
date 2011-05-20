@@ -124,7 +124,22 @@ function h = subplot (rows, cols, index, varargin)
     units = "normalized";
     set (0, "defaultaxesunits", units);
     set (cf, "units", "pixels");
-    pos = subplot_position (rows, cols, index, "position");
+
+    ## FIXME: At the moment we force gnuplot to use the aligned mode
+    ##        which will set "activepositionproperty" to "position".
+    ##        Τhis can yield to text overlap between labels and titles
+    ##        see bug #31610
+    if (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
+      align_axes = true;
+    endif
+
+    if (align_axes)
+      pos = subplot_position (rows, cols, index, "position");
+    elseif (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
+      pos = subplot_position (rows, cols, index, "outerpositiontight");
+    else
+      pos = subplot_position (rows, cols, index, "outerposition");
+    endif
 
     set (cf, "nextplot", "add");
 
@@ -144,7 +159,11 @@ function h = subplot (rows, cols, index, varargin)
             || strcmp (get (child, "tag"), "colorbar"))
           continue;
         endif
-        objpos = get (child, "position");
+        if (align_axes)
+          objpos = get (child, "position");
+        else
+          objpos = get (child, "outerposition");
+        endif
         if (all (objpos == pos) && ! replace_axes)
           ## If the new axes are in exactly the same position as an
           ## existing axes object, use the existing axes.
@@ -170,14 +189,13 @@ function h = subplot (rows, cols, index, varargin)
 
     if (found)
       set (cf, "currentaxes", tmp);
+    elseif (align_axes)
+      tmp = axes ("box", "off", "position", pos);
+    elseif (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
+      tmp = axes ("box", "off", "outerposition", pos);
     else
-      outpos = subplot_position (rows, cols, index, "outerposition");
-      tmp = axes ("looseinset", [0 0 0 0], "box", "off",
-                  "outerposition", outpos, "position", pos);
-    endif
-
-    if (align_axes || strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
-      set (tmp, "activepositionproperty", "position");
+      tmp = axes ("looseinset", [0 0 0 0], "box", "off", "outerposition", pos,
+                  "autopos_tag", "subplot");
     endif
 
   unwind_protect_cleanup
@@ -193,67 +211,55 @@ endfunction
 
 function pos = subplot_position (rows, cols, index, position_property)
 
-  defaultaxesposition = get (0, "defaultaxesposition");
-  defaultaxesouterposition = get (0, "defaultaxesouterposition");
-
   if (rows == 1 && cols == 1)
     ## Trivial result for subplot (1,1,1)
     if (strcmpi (position_property, "position"))
-      pos = defaultaxesposition;
+      pos = get (0, "defaultaxesposition");
     else
-      pos = defaultaxesouterposition;
+      pos = get (0, "defaultaxesouterposition");
     endif
     return
   endif
 
-  ## The outer margins surrounding all subplot "positions" are independent of
-  ## the number of rows and/or columns
-  margins.left   = defaultaxesposition(1);
-  margins.bottom = defaultaxesposition(2);
-  margins.right  = 1.0 - margins.left - defaultaxesposition(3);
-  margins.top    = 1.0 - margins.bottom - defaultaxesposition(4);
-
-  ## Fit from Matlab experiments
-  pc = 1 ./ [0.1860, (margins.left + margins.right - 1)];
-  margins.column = 1 ./ polyval (pc , cols);
-  pr = 1 ./ [0.2282, (margins.top + margins.bottom - 1)];
-  margins.row    = 1 ./ polyval (pr , rows);
-
-  ## Calculate the width/height of the subplot axes "position".
-  ## This is also consistent with Matlab
-  width = 1 - margins.left - margins.right - (cols-1)*margins.column;
-  width = width / cols;
-  height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
-  height = height / rows;
-
-  if (strcmp (position_property, "outerposition") )
-    ## Calculate the inset of the position relative to the outerposition
-    ## The outerpositions are assumed to be tiled. Matlab's implementation
-    ## has outerposition overlap.
-    if (rows > 1)
-      ## Title on top and xlabel & xticks on bottom
-      inset.top = margins.row * (1/3);
-      inset.bottom = margins.row * (2/3);
-      ## Matlab behavior is approximately ...
-      % inset.bottom = margins.row;
+  if (strcmp (position_property, "outerposition")
+      || strcmp (position_property, "outerpositiontight"))
+    margins.left   = 0.05;
+    margins.bottom = 0.05;
+    margins.right  = 0.05;
+    margins.top    = 0.05;
+    if (strcmp (position_property, "outerpositiontight"))
+      margins.column = 0.;
+      margins.row = 0.;
     else
-      inset.bottom = margins.bottom;
-      inset.top = margins.top;
+      margins.column = 0.04 / cols;
+      margins.row = 0.04 / rows;
     endif
-    if (cols > 1)
-      ## ylabel & yticks on left and some overhang for xticks on right
-      x = 0.1;
-      inset.right = x * margins.column;
-      inset.left = (1 - x) * margins.column;
-    else
-      inset.left  = margins.left;
-      inset.right = margins.right;
-    endif
-    ## Apply the inset to the geometries for the "position" property.
-    margins.column = margins.column - inset.right - inset.left;
-    margins.row = margins.row - inset.top - inset.bottom;
-    width = width + inset.right + inset.left;
-    height = height + inset.top + inset.bottom;
+    width = 1 - margins.left - margins.right - (cols-1)*margins.column;
+    width = width / cols;
+    height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
+    height = height / rows;
+  else
+    defaultaxesposition = get (0, "defaultaxesposition");
+
+    ## The outer margins surrounding all subplot "positions" are independent
+    ## of the number of rows and/or columns
+    margins.left   = defaultaxesposition(1);
+    margins.bottom = defaultaxesposition(2);
+    margins.right  = 1.0 - margins.left - defaultaxesposition(3);
+    margins.top    = 1.0 - margins.bottom - defaultaxesposition(4);
+
+    ## Fit from Matlab experiments
+    pc = 1 ./ [0.1860, (margins.left + margins.right - 1)];
+    margins.column = 1 ./ polyval (pc , cols);
+    pr = 1 ./ [0.2282, (margins.top + margins.bottom - 1)];
+    margins.row    = 1 ./ polyval (pr , rows);
+
+    ## Calculate the width/height of the subplot axes "position".
+    ## This is also consistent with Matlab
+    width = 1 - margins.left - margins.right - (cols-1)*margins.column;
+    width = width / cols;
+    height = 1 - margins.top - margins.bottom - (rows-1)*margins.row;
+    height = height / rows;
   endif
 
   ## Index offsets from the lower left subplot
@@ -264,12 +270,6 @@ function pos = subplot_position (rows, cols, index, position_property)
   ## Lower left corner of the subplot, i.e. position(1:2)
   x0 = xi .* (width + margins.column) + margins.left;
   y0 = yi .* (height + margins.row) + margins.bottom;
-
-  if (strcmp (position_property, "outerposition") )
-    ## Shift from position(1:2) to outerposition(1:2)
-    x0 = x0 - inset.left;
-    y0 = y0 - inset.bottom;
-  endif
 
   if (numel(x0) > 1)
     ## subplot (row, col, m:n)

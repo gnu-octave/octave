@@ -3318,6 +3318,8 @@ public:
       row_vector_property zmtick h , Matrix ()
       // hidden properties for inset
       array_property looseinset hu , Matrix (1, 4, 0.0)
+      // hidden properties for alignment of subplots
+      radio_property autopos_tag h , "{none}|subplot"
    END_PROPERTIES
 
   protected:
@@ -3411,7 +3413,9 @@ public:
           calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
       }
 
+    void sync_positions (const Matrix& linset);
     void sync_positions (void);
+
     void update_outerposition (void)
     {
       set_activepositionproperty ("outerposition");

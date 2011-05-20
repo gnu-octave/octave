@@ -3263,13 +3263,119 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
 void
 axes::properties::sync_positions (void)
 {
+  Matrix ref_linset = looseinset.get ().matrix_value ();
+  if (autopos_tag_is ("subplot"))
+    {
+      graphics_object parent_obj = gh_manager::get_object (get_parent ());
+      if (parent_obj.isa ("figure"))
+        {
+           // FIXME: temporarily changed units should be protected
+           //        from interrupts
+           std::string fig_units = parent_obj.get ("units").string_value ();
+           parent_obj.set ("units", "pixels");
+
+           Matrix ref_outbox = outerposition.get ().matrix_value ();
+           ref_outbox(2) += ref_outbox(0);
+           ref_outbox(3) += ref_outbox(1);
+
+           // Find those subplots that are left, right, bottom and top aligned
+           // with the current subplot
+           Matrix kids = parent_obj.get_properties ().get_children ();
+           std::vector<octave_value> aligned;
+           std::vector<bool> l_aligned, b_aligned, r_aligned, t_aligned;
+           for (octave_idx_type i = 0; i < kids.numel (); i++)
+             {
+               graphics_object go = gh_manager::get_object (kids(i));
+               if (go.isa ("axes"))
+                 {
+                   axes::properties& props =
+                     dynamic_cast<axes::properties&> (go.get_properties ());
+                   if (props.autopos_tag_is("subplot"))
+                     {
+                       Matrix outpos = go.get ("outerposition").matrix_value ();
+                       bool l_align=(std::abs (outpos(0)-ref_outbox(0)) < 1e-15);
+                       bool b_align=(std::abs (outpos(1)-ref_outbox(1)) < 1e-15);
+                       bool r_align=(std::abs (outpos(0)+outpos(2)-ref_outbox(2)) < 1e-15);
+                       bool t_align=(std::abs (outpos(1)+outpos(3)-ref_outbox(3)) < 1e-15);
+                       if (l_align || b_align || r_align || t_align)
+                         {
+                           aligned.push_back(kids(i));
+                           l_aligned.push_back(l_align);
+                           b_aligned.push_back(b_align);
+                           r_aligned.push_back(r_align);
+                           t_aligned.push_back(t_align);
+                           // FIXME: the temporarily deleted tags should be
+                           //        protected from interrupts
+                           props.set_autopos_tag ("none");
+                         }
+                     }
+                 }
+             }
+           // Determine a minimum box which aligns the subplots
+           Matrix ref_box(1, 4, 0.);
+           ref_box(2) = 1.;
+           ref_box(3) = 1.;
+           for (size_t i = 0; i < aligned.size (); i++)
+             {
+               graphics_object go = gh_manager::get_object (aligned[i]);
+               axes::properties& props =
+                 dynamic_cast<axes::properties&> (go.get_properties ());
+               Matrix linset = props.get_looseinset ().matrix_value ();
+               if (l_aligned[i])
+                 linset(0) = std::min (0., linset(0)-0.01);
+               if (b_aligned[i])
+                 linset(1) = std::min (0., linset(1)-0.01);
+               if (r_aligned[i])
+                 linset(2) = std::min (0., linset(2)-0.01);
+               if (t_aligned[i])
+                 linset(3) = std::min (0., linset(3)-0.01);
+               props.set_looseinset (linset);
+               Matrix pos = props.get_position ().matrix_value ();
+               if (l_aligned[i])
+                 ref_box(0) = std::max (ref_box(0), pos(0));
+               if (b_aligned[i])
+                 ref_box(1) = std::max (ref_box(1), pos(1));
+               if (r_aligned[i])
+                 ref_box(2) = std::min (ref_box(2), pos(0)+pos(2));
+               if (t_aligned[i])
+                 ref_box(3) = std::min (ref_box(3), pos(1)+pos(3));
+             }
+           // Set common looseinset values for all aligned subplots and
+           // revert their tag values
+           for (size_t i = 0; i < aligned.size (); i++)
+             {
+               graphics_object go = gh_manager::get_object (aligned[i]);
+               axes::properties& props =
+                 dynamic_cast<axes::properties&> (go.get_properties ());
+               Matrix outpos = props.get_outerposition ().matrix_value ();
+               Matrix linset = props.get_looseinset ().matrix_value ();
+               if (l_aligned[i])
+                 linset(0) = (ref_box(0)-outpos(0))/outpos(2);
+               if (b_aligned[i])
+                 linset(1) = (ref_box(1)-outpos(1))/outpos(3);
+               if (r_aligned[i])
+                 linset(2) = (outpos(0)+outpos(2)-ref_box(2))/outpos(2);
+               if (t_aligned[i])
+                 linset(3) = (outpos(1)+outpos(3)-ref_box(3))/outpos(3);
+               props.set_looseinset (linset);
+               props.set_autopos_tag ("subplot");
+             }
+           parent_obj.set ("units", fig_units);
+        }
+    }
+  else
+    sync_positions (ref_linset);
+}
+
+void
+axes::properties::sync_positions (const Matrix& linset)
+{
   Matrix pos = position.get ().matrix_value ();
   Matrix outpos = outerposition.get ().matrix_value ();
-  Matrix lins = looseinset.get ().matrix_value ();
-  double lratio = lins(0);
-  double bratio = lins(1);
-  double wratio = 1-lins(0)-lins(2);
-  double hratio = 1-lins(1)-lins(3);
+  double lratio = linset(0);
+  double bratio = linset(1);
+  double wratio = 1-linset(0)-linset(2);
+  double hratio = 1-linset(1)-linset(3);
   if (activepositionproperty.is ("outerposition"))
     {
       pos = outpos;

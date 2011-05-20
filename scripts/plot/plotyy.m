@@ -78,7 +78,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     ca = get (f, "currentaxes");
     if (isempty (ca))
       ax = [];
-    elseif (strcmp (get (ca, "tag"), "plotyy"));
+    elseif (strcmp (get (ca, "tag"), "plotyy"))
       ax = get (ca, "__plotyy_axes__");
     else
       ax = ca;
@@ -112,8 +112,6 @@ function [Ax, H1, H2] = plotyy (varargin)
       axes (oldh);
     endif
   end_unwind_protect
-
-  set (ax, "activepositionproperty", "position");
 
   if (nargout > 0)
     Ax = ax;
@@ -162,10 +160,24 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   colors = get (ax(1), "colororder");
   set (ax(2), "colororder", [colors(2:end,:); colors(1,:)]);
 
+  if (strcmp (get (ax(1), "autopos_tag"), "subplot"))
+    set (ax(2), "autopos_tag", "subplot");
+  else
+    set (ax, "activepositionproperty", "position");
+  endif
+
   h2 = feval (fun2, x2, y2);
   set (ax(2), "yaxislocation", "right");
   set (ax(2), "ycolor", getcolor (h2(1)));
-  set (ax(2), "position", get (ax(1), "position"));
+
+
+  if (strcmp (get(ax(1), "activepositionproperty"), "position"))
+    set (ax(2), "position", get (ax(1), "position"));
+  else
+    set (ax(2), "outerposition", get (ax(1), "outerposition"));
+    set (ax(2), "looseinset", get (ax(1), "looseinset"));
+  endif
+
   set (ax(2), "xlim", xlim);
   set (ax(2), "color", "none");
   set (ax(2), "box", "off");
@@ -184,6 +196,10 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   addlistener (ax(1), "position", {@update_position, ax(2)});
   addlistener (ax(2), "position", {@update_position, ax(1)});
+  addlistener (ax(1), "outerposition", {@update_position, ax(2)});
+  addlistener (ax(2), "outerposition", {@update_position, ax(1)});
+  addlistener (ax(1), "looseinset", {@update_position, ax(2)});
+  addlistener (ax(2), "looseinset", {@update_position, ax(1)});
   addlistener (ax(1), "view", {@update_position, ax(2)});
   addlistener (ax(2), "view", {@update_position, ax(1)});
   addlistener (ax(1), "plotboxaspectratio", {@update_position, ax(2)});
@@ -257,17 +273,27 @@ function update_position (h, d, ax2)
   if (! recursion)
     unwind_protect
       recursion = true;
-      position = get (h, "position");
       view = get (h, "view");
-      plotboxaspectratio = get (h, "plotboxaspectratio");
-      plotboxaspectratiomode = get (h, "plotboxaspectratiomode");
-      oldposition = get (ax2, "position");
       oldview = get (ax2, "view");
+      plotboxaspectratio = get (h, "plotboxaspectratio");
       oldplotboxaspectratio = get (ax2, "plotboxaspectratio");
+      plotboxaspectratiomode = get (h, "plotboxaspectratiomode");
       oldplotboxaspectratiomode = get (ax2, "plotboxaspectratiomode");
-      if (! (isequal (position, oldposition) && isequal (view, oldview)))
-        set (ax2, "position", position, "view", view);
+
+      if (strcmp (get(h, "activepositionproperty"), "position"))
+        position = get (h, "position");
+        oldposition = get (ax2, "position");
+        if (! (isequal (position, oldposition) && isequal (view, oldview)))
+          set (ax2, "position", position, "view", view);
+        endif
+      else
+        outerposition = get (h, "outerposition");
+        oldouterposition = get (ax2, "outerposition");
+        if (! (isequal (outerposition, oldouterposition) && isequal (view, oldview)))
+          set (ax2, "outerposition", outerposition, "view", view);
+        endif
       endif
+
       if (! (isequal (plotboxaspectratio, oldplotboxaspectratio)
              && isequal (plotboxaspectratiomode, oldplotboxaspectratiomode)))
         set (ax2, "plotboxaspectratio", plotboxaspectratio);

@@ -40,7 +40,7 @@
 ## Date respecting the version/revision.
 ## @end table
 ##
-## @deftypefnx {Function File} {v =} ver (@code{"Octave"})
+## @deftypefnx {Function File} {v =} ver ("Octave")
 ## Return version information for Octave only.
 ##
 ## @deftypefnx {Function File} {v =} ver (@var{package})

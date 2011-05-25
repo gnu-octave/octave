@@ -71,7 +71,7 @@ function rnd = frnd (m, n, r, c)
       error ("frnd: M and N must be scalar or of size SZ");
     endif
   elseif (nargin == 2)
-    sz = size(a);
+    sz = size(m);
   else
     print_usage ();
   endif

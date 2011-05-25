@@ -1271,13 +1271,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           if (nd == 3)
             ## This produces the desired vertical alignment in 3D.
             fprintf (plot_stream,
-                     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f offset character %f,%f %s %s front %s;\n",
+                     "set label \"%s\" at %s %.15e,%.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
                      undo_string_escapes (label), units, lpos(1),
                      lpos(2), lpos(3), halign, angle, dx_and_dy, fontspec,
                      __do_enhanced_option__ (enhanced, obj), colorspec);
           else
             fprintf (plot_stream,
-                     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f offset character %f,%f %s %s front %s;\n",
+                     "set label \"%s\" at %s %.15e,%.15e %s rotate by %f offset character %f,%f %s %s front %s;\n",
                      undo_string_escapes (label), units,
                      lpos(1), lpos(2), halign, angle, dx_and_dy, fontspec,
                      __do_enhanced_option__ (enhanced, obj), colorspec);

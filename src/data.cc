@@ -5873,7 +5873,7 @@ DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} issorted (@var{a})\n\
 @deftypefnx {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
-@deftypefnx {Built-in Function} {} issorted (@var{a}, @code{\"rows\"}, @var{mode})\n\
+@deftypefnx {Built-in Function} {} issorted (@var{a}, \"rows\", @var{mode})\n\
 Return true if the array is sorted according to @var{mode}, which\n\
 may be either \"ascending\", \"descending\", or \"either\".  By default,\n\
  @var{mode} is \"ascending\".  NaNs are treated in the same manner as\n\

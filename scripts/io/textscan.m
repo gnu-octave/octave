@@ -81,8 +81,11 @@ function [C, p] = textscan (fid, format, varargin)
         ## Maybe skip header lines
         headerlines = find (strcmpi (args, "headerlines"), 1);
         if (! isempty (headerlines))
-          fskipl (fid, headerlines);
-          args(headerlines:headerlines+1) = [];
+          hdr_lines = floor (varargin{headerlines + 1});
+          ## Beware of zero valued headerline, fskipl will count lines to EOF
+          if (hdr_lines > 0)
+            fskipl (fid, hdr_lines);
+          endif
         endif
         if (isfinite (nlines))
           str = "";

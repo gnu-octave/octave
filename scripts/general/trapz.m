@@ -97,7 +97,7 @@ function z = trapz (x, y, dim)
   endif
 
   n = sz(dim);
-  idx1 = idx2 = repmat ({:}, [nd, 1]);
+  idx1 = idx2 = repmat ({':'}, [nd, 1]);
   idx1{dim} = 2 : n;
   idx2{dim} = 1 : (n - 1);
 

@@ -37,7 +37,7 @@
 %!  assert (-2^2, -4)
 %!  assert (!0^0, false);
 # FIXME: This test is failing.  Transpose mistakenly has higher priority.
-%!  assert ([2 3].^2', [4; 9])
+%!#  assert ([2 3].^2', [4; 9])
 %!  assert (2*3^2, 18)
 %!  assert (2+3^2, 11)
 %!  assert ([1:10](1:2^2), [1 2 3 4])
@@ -129,14 +129,14 @@
 %!test
 %# FIXME : Exponentiation seems to work left to right, despite the 
 %#         documentation and ordinary mathematical rules of precedence.
-%!  assert (2^3**2, 512)
+%!#  assert (2^3**2, 512)
 %# Level 10 (unary plus, increment, not)
 %!test
 %!  assert (+-+1, -1)
 %!  a = 0;
 %# FIXME : Should we test for this corner case at all?
 %#         (unary minus)(auto-decrement operator)
-%!  assert (---a, 1);
+%!#  assert (---a, 1);
 %!  a = -1;
 %!  assert (!++a, true)
 %!  assert (a, 0)

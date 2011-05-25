@@ -286,7 +286,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
           input ("Press <enter> to continue: ", "s");
         catch
           __success = 0;
-          __msg = sprintf ("%sdemo failed\n%s",  __signal_fail, __error_text__);
+          __msg = sprintf ("%sdemo failed\n%s",  __signal_fail, lasterr ());
         end_try_catch
         clear __test__;
 
@@ -359,7 +359,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         catch
           __success = 0;
           __msg = sprintf ("%stest failed: syntax error\n%s",
-                           __signal_fail, __error_text__);
+                           __signal_fail, lasterr ());
         end_try_catch
       endif
       __code = "";
@@ -389,7 +389,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       catch
         __success = 0;
         __msg = sprintf ("%stest failed: syntax error\n%s",
-                         __signal_fail, __error_text__);
+                         __signal_fail, lasterr ());
       end_try_catch
 
       if (__success)
@@ -488,13 +488,13 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
       catch
         if (strcmp (__type, "xtest"))
-           __msg = sprintf ("%sknown failure\n%s", __signal_fail, __error_text__);
+           __msg = sprintf ("%sknown failure\n%s", __signal_fail, lasterr ());
            __xfail++;
         else
-           __msg = sprintf ("%stest failed\n%s", __signal_fail, __error_text__);
+           __msg = sprintf ("%stest failed\n%s", __signal_fail, lasterr ());
            __success = 0;
         endif
-        if (isempty (__error_text__))
+        if (isempty (lasterr ()))
           error ("empty error text, probably Ctrl-C --- aborting");
         endif
       end_try_catch

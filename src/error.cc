@@ -1681,10 +1681,6 @@ also set the last message identifier.\n\
   return retval;
 }
 
-// For backward compatibility.
-DEFALIAS (error_text, lasterr);
-DEFALIAS (__error_text__, lasterr);
-
 DEFUN (lastwarn, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn (@var{msg}, @var{msgid})\n\

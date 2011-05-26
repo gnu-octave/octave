@@ -1955,8 +1955,9 @@ Lock the current function into memory so that it can't be cleared.\n\
 
 DEFUN (munlock, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} munlock (@var{fcn})\n\
-Unlock the named function.  If no function is named\n\
+@deftypefn  {Built-in Function} {} munlock ()\n\
+@deftypefnx {Built-in Function} {} munlock (@var{fcn})\n\
+Unlock the named function @var{fcn}.  If no function is named\n\
 then unlock the current function.\n\
 @seealso{mlock, mislocked, persistent}\n\
 @end deftypefn")
@@ -1990,9 +1991,10 @@ then unlock the current function.\n\
 
 DEFUN (mislocked, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mislocked (@var{fcn})\n\
-Return true if the named function is locked.  If no function is named\n\
-then return true if the current function is locked.\n\
+@deftypefn  {Built-in Function} {} mislocked ()\n\
+@deftypefnx {Built-in Function} {} mislocked (@var{fcn})\n\
+Return true if the named function @var{fcn} is locked.  If no function is\n\
+named then return true if the current function is locked.\n\
 @seealso{mlock, munlock, persistent}\n\
 @end deftypefn")
 {

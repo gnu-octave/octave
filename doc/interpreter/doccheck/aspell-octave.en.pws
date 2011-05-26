@@ -50,6 +50,7 @@ BDF
 bdf
 betacdf
 betainv
+betaln
 betapdf
 betarnd
 BFGS
@@ -233,6 +234,7 @@ eq
 equidistributed
 equispaced
 erf
+erfc
 errno
 Errorbar
 errorbar

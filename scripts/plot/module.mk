@@ -141,6 +141,7 @@ plot_FCN_FILES = \
   plot/print.m \
   plot/quiver.m \
   plot/quiver3.m \
+  plot/rectangle.m \
   plot/refresh.m \
   plot/refreshdata.m \
   plot/ribbon.m \

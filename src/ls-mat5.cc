@@ -1225,21 +1225,29 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             else
               {
                 octave_class* cls = new octave_class (m, classname);
-                cls->reconstruct_exemplar ();
 
-                if (! cls->reconstruct_parents ())
-                  warning ("load: unable to reconstruct object inheritance");
-
-                tc = cls;
-                if (load_path::find_method (classname, "loadobj") !=
-                    std::string())
+                if (cls->reconstruct_exemplar ())
                   {
-                    octave_value_list tmp = feval ("loadobj", tc, 1);
 
-                    if (! error_state)
-                      tc = tmp(0);
-                    else
-                      goto data_read_error;
+                    if (! cls->reconstruct_parents ())
+                      warning ("load: unable to reconstruct object inheritance");
+
+                    tc = cls;
+                    if (load_path::find_method (classname, "loadobj") !=
+                        std::string())
+                      {
+                        octave_value_list tmp = feval ("loadobj", tc, 1);
+
+                        if (! error_state)
+                          tc = tmp(0);
+                        else
+                          goto data_read_error;
+                      }
+                  }
+                else
+                  {
+                    tc = m;
+                    warning ("load: element has been converted to a structure");
                   }
               }
           }

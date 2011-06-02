@@ -553,7 +553,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   OCTAVE_LOCAL_BUFFER (char, ctmp1, tmp+1);
-  is.get (ctmp1, tmp+1, 0);
+  // is.get (ctmp1, tmp+1, 0); caused is.eof () to be true though
+  // effectively not reading over file end
+  is.read (ctmp1, tmp);
+  ctmp1[tmp] = 0;
   nm = std::string (ctmp1);
 
   if (! is)
@@ -578,7 +581,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
         swap_bytes<4> (&tmp);
 
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
-      is.get (ctmp2, tmp+1, 0);
+      // is.get (ctmp2, tmp+1, 0); caused is.eof () to be true though
+      // effectively not reading over file end
+      is.read (ctmp2, tmp);
+      ctmp2[tmp] = 0;
 
       unwind_protect_safe frame;
 
@@ -658,7 +664,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       success = set_fcn (octaveroot, fpath);
      }
 
- return success;
+  return success;
 }
 
 #if defined (HAVE_HDF5)

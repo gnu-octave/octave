@@ -17,16 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} rectangle ()
+## @deftypefn  {Function File} {} rectangle ()
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "Position", @var{pos})
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "Curvature", @var{curv})
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "EdgeColor", @var{ec})
 ## @deftypefnx {Function File} {} rectangle (@dots{}, "FaceColor", @var{fc})
 ## @deftypefnx {Function File} {@var{h} =} rectangle (@dots{})
 ##
-## Draw rectangular patch defined by @var{pos} and @var{curv}. The variable
+## Draw rectangular patch defined by @var{pos} and @var{curv}.  The variable
 ## @code{@var{pos}(1 : 2)} defines the lower left-hand corner of the patch
-## and @code{@var{pos}(3 : 4)} its width and height. By default the value of
+## and @code{@var{pos}(3 : 4)} its width and height.  By default the value of
 ## @var{pos} is @var{[0, 0, 1, 1]}.
 ##
 ## The variable @var{curv} defines the curvature of the sides of the rectangle
@@ -44,7 +44,7 @@
 ## min (pos (1: 2)) / max (pos (1:2)) * curv
 ## @end example
 ##
-## Other properties are passed to the underlying patch command. If called 
+## Other properties are passed to the underlying patch command.  If called 
 ## with an output argument, @code{rectangle} returns the handle to the 
 ## rectangle.
 ## @end deftypefn
@@ -201,6 +201,7 @@ function update_props (h, d)
        "linestyle", get (h, "linestyle"),
        "facecolor", get (h, "facecolor"));
 endfunction
+
 
 %!demo
 %! close all

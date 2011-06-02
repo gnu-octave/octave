@@ -34,8 +34,18 @@ libcruft_la_CPPFLAGS = \
   @CRUFT_DLL_DEFS@ \
   $(AM_CPPFLAGS)
 
+# Increment these as needed and according to the rules in the libtool
+# manual:
+libcruft_current = 0
+libcruft_revision = 0
+libcruft_age = 0
+
+libcruft_version_info = $(libcruft_current):$(libcruft_revision):$(libcruft_age)
+
 libcruft_la_LDFLAGS = \
-  -release $(version) $(NO_UNDEFINED_LDFLAG) @XTRA_CRUFT_SH_LDFLAGS@ \
+  -version-info $(libcruft_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
+  @XTRA_CRUFT_SH_LDFLAGS@ \
   -bindir $(bindir)
 
 libcruft_la_LIBADD = \

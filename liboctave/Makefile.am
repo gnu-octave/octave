@@ -526,7 +526,17 @@ liboctave_la_CPPFLAGS = \
   $(ARPACK_CPPFLAGS) \
   $(AM_CPPFLAGS)
 
-liboctave_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
+# Increment these as needed and according to the rules in the libtool
+# manual:
+liboctave_current = 0
+liboctave_revision = 0
+liboctave_age = 0
+
+liboctave_version_info = $(liboctave_current):$(liboctave_revision):$(liboctave_age)
+
+liboctave_la_LDFLAGS = \
+  -version-info $(liboctave_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
   $(SPARSE_XLDFLAGS) \
   $(ARPACK_LDFLAGS) \

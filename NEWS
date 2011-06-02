@@ -1,36 +1,44 @@
-Summary of important user-visible changes for version 3.6:
----------------------------------------------------------
+Summary of important user-visible changes for version 3.4.1:
+-----------------------------------------------------------
 
- ** The PCRE library is now required to build Octave.
+ ** Octave 3.4.1 is primarily a bug fixing release.
 
- ** New functions added.
+ ** IMPORTANT note about binary incompatibility in this release:
 
-    iscolumn
-    issrow
- 
- ** Deprecated functions.
+    The original goal was to ensure binary compatibility for all 3.4.x
+    releases but this is impossible for the 3.4.1 release due to a bug
+    in the way shared libraries were built in Octave 3.4.0.  Because of
+    this bug, .oct files built for Octave 3.4.0 must be recompiled
+    before they will work with Octave 3.4.1.
 
-    The following functions were deprecated in Octave 3.2 and have been
-    removed from Octave 3.6.
-                                           
-      create_set          spcholinv    splu   
-      dmult               spcumprod    spmax
-      iscommand           spcumsum     spmin
-      israwcommand        spdet        spprod
-      lchol               spdiag       spqr
-      loadimage           spfind       spsum
-      mark_as_command     sphcat       spsumsq
-      mark_as_rawcommand  spinv        spvcat 
-      spatan2             spkron       str2mat
-      spchol              splchol      unmark_command
-      spchol2inv          split        unmark_rawcommand
+    Given that there would be binary incompatibilities with shared
+    libraries going from Octave 3.4.0 to 3.4.1, we also made the
+    following incompatible changes in this release:
 
-    The following functions have been deprecated in Octave 3.6 and will
-    be removed from Octave 3.10 (or whatever version is the second major
-    release after 3.6):
+      * The Perl Compatible Regular Expression (PCRE) library is now
+        required to build Octave.
 
-      is_duplicate_entry
-      
+    Any future Octave 3.4.x release versions should remain binary
+    compatible with Octave 3.4.1 as we are now using proper library
+    versioning as recommended by the libtool manual.
+
+ ** The following functions have been deprecated in Octave 3.4.1 and will
+    be removed from Octave 3.8 (or whatever version is the second major
+    release after 3.4):
+
+      cquad  is_duplicate_entry  perror  strerror
+
+ ** The following functions are new in 3.4.1:
+
+      colstyle  iscolumn  isrow
+
+ ** The get_forge_pkg function is now private.
+
+ ** The rectangle_lw, rectangle_sw, triangle_lw, and triangle_sw
+    functions are now private.
+
+ ** The logistic_regression_derivatives and logistic_regression_likelihood
+    functions are now private.
 
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------

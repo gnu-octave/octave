@@ -1066,6 +1066,10 @@ error: nargin != 1\n\
 
           octave_scalar_map m = args(0).scalar_map_value ();
 
+          // empty struct is not an error.  return and resume calling function.
+          if (m.nfields () == 0)
+            return retval;
+
           if (m.contains ("message"))
             {
               octave_value c = m.getfield ("message");

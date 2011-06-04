@@ -56,10 +56,11 @@ function msg = nargchk (minargs, maxargs, nargs, outtype)
   if (strcmpi (outtype, "string"))
     msg = msg.message;
   elseif (isempty (msg.message))
-    msg = struct ([]);
+    msg = struct ();
   endif
 
 endfunction
+
 
 ## Tests
 %!shared stmin, stmax
@@ -73,7 +74,7 @@ endfunction
 %!assert (nargchk (0, 1, 2), "too many input arguments")
 %!assert (nargchk (0, 1, 2, "string"), "too many input arguments")
 ## Struct outputs
-%!assert (nargchk (0, 1, 0, "struct"), struct([]))
-%!assert (nargchk (0, 1, 1, "struct"), struct([]))
+%!assert (nargchk (0, 1, 0, "struct"), struct())
+%!assert (nargchk (0, 1, 1, "struct"), struct())
 %!assert (nargchk (1, 1, 0, "struct"), stmin)
 %!assert (nargchk (0, 1, 2, "struct"), stmax)

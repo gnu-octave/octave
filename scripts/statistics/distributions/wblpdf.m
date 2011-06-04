@@ -62,12 +62,12 @@ function pdf = wblpdf (x, scale, shape)
   pdf = NaN (size (x));
   ok = ((scale > 0) & (scale < Inf) & (shape > 0) & (shape < Inf));
 
-  k = find ((x > -Inf) & (x <= 0) & ok);
+  k = find ((x > -Inf) & (x < 0) & ok);
   if (any (k))
     pdf(k) = 0;
   endif
 
-  k = find ((x > 0) & (x < Inf) & ok);
+  k = find ((x >= 0) & (x < Inf) & ok);
   if (any (k))
     if (isscalar (scale) && isscalar (shape))
       pdf(k) = (shape .* (scale .^ -shape)

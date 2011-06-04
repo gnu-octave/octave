@@ -223,7 +223,7 @@ program gnuplot, or (2) the internal graphics engine using OpenGL and
 FLTK@.  Gnuplot is a command-driven interactive function plotting
 program.  Gnuplot is copyrighted, but freely distributable.  As of
 Octave release 3.4, gnuplot is the default option for plotting.  But,
-the internal graphics engine is nearly 100% compatibile, certainly for
+the internal graphics engine is nearly 100% compatible, certainly for
 most ordinary plots, and users are encouraged to test it.  It is
 anticipated that the internal engine will become the default option at
 the next major release of Octave.

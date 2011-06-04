@@ -53,7 +53,7 @@ function inv = wblinv (x, scale, shape)
 
   k = find ((x == 0) & ok);
   if (any (k))
-    inv(k) = -Inf;
+    inv(k) = 0;
   endif
 
   k = find ((x > 0) & (x < 1) & ok);

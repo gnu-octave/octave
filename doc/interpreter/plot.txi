@@ -2512,16 +2512,19 @@ Line styles are specified by the following properties:
 May be one of
 @table @code
 @item "-"
-Solid lines.
+Solid line.  [default]
 
 @item "--"
-Dashed lines.
+Dashed line.
 
 @item ":"
-Points.
+Dotted line.
 
 @item "-."
 A dash-dot line.
+
+@item "none"
+No line.  Points will still be marked using the current Marker Style.
 @end table
 
 @item linewidth

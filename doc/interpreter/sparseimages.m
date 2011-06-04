@@ -200,7 +200,7 @@ function femimages (nm, typ)
 
     E = size(elems,1);  #No. of elements
     N = size(nodes,1);  #No. of elements
-    D = size(elems,2);  #dimentions+1
+    D = size(elems,2);  #dimensions+1
 
     ## Plot FEM Geometry
     elemx = elems(:,[1,2,3,1])';

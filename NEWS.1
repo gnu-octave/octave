@@ -143,9 +143,9 @@ Summary of changes for version 1.1.0:
       <structure: s u v>
 
     This feature should be considered experimental, but it seems to
-    work ok.  Suggestions for ways to improve it are welcome.
+    work OK.  Suggestions for ways to improve it are welcome.
 
-  * Octave now supports a limited form of exception handling modelled
+  * Octave now supports a limited form of exception handling modeled
     after the unwind-protect form of Lisp:
 
       unwind_protect
@@ -198,7 +198,7 @@ Summary of changes for version 1.1.0:
 
   * Both `...{whitespace}\n' and `\{whitespace}\n' can be used to
     introduce continuation lines, where {whitespace} may include
-    spaces, tabs and comemnts.
+    spaces, tabs and comments.
 
   * The script directory has been split up by topic.
 
@@ -214,7 +214,7 @@ Summary of changes for version 1.1.0:
        make nonessential built-in functions dynamically loaded, but
        there also seem to be some problems.  For example, fsolve seems
        to always return info == 3.  This is difficult to debug since
-       gdb won't seem to allow breakpoints to be set inside
+       GDB doesn't appear to allow breakpoints to be set inside
        dynamically loaded functions.
 
     -- Octave uses a lot of memory if the dynamically linked functions
@@ -349,7 +349,7 @@ Summary of changes for version 1.1.0:
       rgb2ntsc  -- image format conversion
       saveimage -- save an image to a file
 
-  * New time and date funcitons:
+  * New time and date functions:
 
       tic          -- set wall-clock timer
       toc          -- get elapsed wall-clock time, since timer last set
@@ -452,7 +452,7 @@ Summary of changes for version 1.1.0:
     within functions that take a variable number of arguments.
 
   * If given a second argument, svd now returns an economy-sized
-    decomposition, eliminating the unecessary rows or columns of U or
+    decomposition, eliminating the unnecessary rows or columns of U or
     V.
 
   * The max and min functions correctly handle complex matrices in
@@ -935,7 +935,7 @@ Summary of changes for version 0.77:
 
   * Improved help.  The command `help -i topic' now uses the GNU Info
     browser to display help for the given topic directly from the
-    Texinfo documenation.
+    Texinfo documentation.
 
   * New function: chol -- Cholesky factorization.
 
@@ -1286,7 +1286,7 @@ Summary of changes for version 0.71:
     prefer_column_vectors.
 
   * Things like [[1,2][3,4]] no longer cause core dumps, and invalid
-    input like [1,2;3,4,[5,6]] now produces a diagnositic message.
+    input like [1,2;3,4,[5,6]] now produces a diagnostic message.
 
   * The cd, save, and load commands now do tilde expansion.
 
@@ -1380,7 +1380,7 @@ Summary of changes for version 0.67:
       a = [1,2,3,4];
       b = a([1,0,0,1])
 
-    sets b to the first and fourth elememnts of a.
+    sets b to the first and fourth elements of a.
 
     Zero-one style indexing also works for indexing the left hand side
     of an assignment.  For example,
@@ -1401,7 +1401,7 @@ Summary of changes for version 0.67:
     'false'.
 
   * Using the new global variable `propagate_empty_matrices', it is
-    possible to have unary andy binary operations on empty matrices
+    possible to have unary and binary operations on empty matrices
     return an empty matrix.  The default value of this variable is
     'warn', so that empty matrices are propagated but you get a
     warning.  Some functions, like eig and svd have also been changed
@@ -1594,7 +1594,7 @@ Summary of changes for version 0.50:
 
   * New files:
 
-      THANKS -- A list of people and organazations who have supported
+      THANKS -- A list of people and organizations who have supported
                 the development of Octave.
 
       NEWS   -- This file, listing recent changes.

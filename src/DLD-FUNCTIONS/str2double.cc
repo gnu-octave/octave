@@ -244,8 +244,11 @@ repeated for each row.  Or @var{s} may be a cell array of strings, in which\n\
 case each element is converted and an array of the same dimensions is\n\
 returned.\n\
 \n\
-@code{str2double} can replace @code{str2num}, and it avoids the use of\n\
-@code{eval} on unknown data.\n\
+@code{str2double} returns NaN for elements of @var{s} which cannot be\n\
+converted.\n\
+\n\
+@code{str2double} can replace @code{str2num}, and it avoids the security\n\
+risk of using @code{eval} on unknown data.\n\
 @seealso{str2num}\n\
 @end deftypefn")
 {

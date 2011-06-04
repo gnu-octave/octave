@@ -22,9 +22,9 @@
 ## in vector @var{y}.  If the file contains multichannel data, then
 ## @var{y} is a matrix with the channels represented as columns.
 ##
-## @deftypefnx {Function File} {[@var{y}, @var{Fs}, @var{bits}] =} wavread (@var{filename})
+## @deftypefnx {Function File} {[@var{y}, @var{Fs}, @var{bps}] =} wavread (@var{filename})
 ## Additionally return the sample rate (@var{fs}) in Hz and the number of bits
-## per sample (@var{bits}).
+## per sample (@var{bps}).
 ##
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
 ## Read only the first @var{n} samples from each channel.
@@ -75,7 +75,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   endif
 
   riff_type = char (fread (fid, 4))';
-  if(! strcmp (riff_type, "WAVE"))
+  if (! strcmp (riff_type, "WAVE"))
     fclose (fid);
     error ("wavread: file contains no WAVE signature");
   endif
@@ -157,7 +157,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   if (nargin == 1)
     length = 8 * data_size / bits_per_sample;
   else
-    nparams = size (param, 2);
+    nparams = numel (param);
     if (nparams == 1)
       ## Number of samples is given.
       length = param * channels;
@@ -174,7 +174,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       return;
     else
       fclose (fid);
-      error ("wavread: invalid argument 2");
+      error ("wavread: invalid PARAM argument");
     endif
   endif
 
@@ -201,13 +201,13 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     ## Normalize samples.
     switch (bits_per_sample)
       case 8
-        yi = (yi - 128)/127;
+        yi = (yi - 128)/128;
       case 16
-        yi /= 32767;
+        yi /= 32768;
       case 24
-        yi /= 8388607;
+        yi /= 8388608;
       case 32
-        yi /= 2147483647;
+        yi /= 2147483648;
     endswitch
   endif
 
@@ -239,3 +239,8 @@ function chunk_size = find_chunk (fid, chunk_id, size)
     chunk_size = -1;
   endif
 endfunction
+
+
+%% Tests for wavread/wavwrite pair are in wavrite.m
+%!assert(1)  # stop fntests.m from reporting no tests for wavread
+

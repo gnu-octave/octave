@@ -255,7 +255,7 @@ function [local_packages, global_packages] = pkg (varargin)
   if (prefix == -1)
     if (global_install)
       prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-      archprefix = fullfile (octave_config_info ("libexecdir"),
+      archprefix = fullfile (octave_config_info ("libdir"),
                              "octave", "packages");
     else
       prefix = fullfile ("~", "octave");
@@ -300,7 +300,7 @@ function [local_packages, global_packages] = pkg (varargin)
         global_install = true;
         if (! user_prefix)
           prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-          archprefix = fullfile (octave_config_info ("libexecdir"),
+          archprefix = fullfile (octave_config_info ("libdir"),
                                  "octave", "packages");
         endif
       case available_actions
@@ -2219,14 +2219,14 @@ function emp = dirempty (nm, ign)
 endfunction
 
 function arch = getarch ()
-  persistent _arch = cstrcat (octave_config_info("canonical_host_type"), ...
-                             "-", octave_config_info("api_version"));
+  persistent _arch = cstrcat (octave_config_info ("canonical_host_type"),
+                              "-", octave_config_info ("api_version"));
   arch = _arch;
 endfunction
 
 function archprefix = getarchprefix (desc, global_install)
   if ((nargin == 2 && global_install) || (nargin < 2 && issuperuser ()))
-    archprefix = fullfile (octave_config_info ("libexecdir"), "octave",
+    archprefix = fullfile (octave_config_info ("libdir"), "octave",
                            "packages", cstrcat(desc.name, "-", desc.version));
   else
     archprefix = desc.dir;

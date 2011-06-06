@@ -18,6 +18,9 @@ Summary of important user-visible changes for version 3.4.1:
       * The Perl Compatible Regular Expression (PCRE) library is now
         required to build Octave.
 
+      * Octave's libraries and .oct files are now installed in
+        subdirectories of $libdir instead of $libexecdir.
+
     Any future Octave 3.4.x release versions should remain binary
     compatible with Octave 3.4.1 as we are now using proper library
     versioning as recommended by the libtool manual.

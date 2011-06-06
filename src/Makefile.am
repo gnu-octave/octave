@@ -591,7 +591,17 @@ nodist_liboctinterp_la_SOURCES = \
 
 liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
-liboctinterp_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
+# Increment these as needed and according to the rules in the libtool
+# manual:
+liboctinterp_current = 0
+liboctinterp_revision = 0
+liboctinterp_age = 0
+
+liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
+
+liboctinterp_la_LDFLAGS = \
+  -version-info $(liboctinterp_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir)
 
 CLEANFILES = \

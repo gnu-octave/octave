@@ -125,7 +125,7 @@ OCTAVE_SET_DEFAULT(localapifcnfiledir,
   '$(datadir)/octave/site/$(api_version)/m')
 OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
 OCTAVE_SET_DEFAULT(octetcdir, '$(datadir)/octave/$(version)/etc')
-OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave-$(version)')
+OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave/$(version)')
 OCTAVE_SET_DEFAULT(archlibdir,
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localarchlibdir,
@@ -135,13 +135,13 @@ OCTAVE_SET_DEFAULT(localapiarchlibdir,
 OCTAVE_SET_DEFAULT(localverarchlibdir,
   '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(octfiledir,
-  '$(libexecdir)/octave/$(version)/oct/$(canonical_host_type)')
+  '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localoctfiledir,
-  '$(libexecdir)/octave/site/oct/$(canonical_host_type)')
+  '$(libdir)/octave/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localapioctfiledir,
-  '$(libexecdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
+  '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localveroctfiledir,
-  '$(libexecdir)/octave/$(version)/site/oct/$(canonical_host_type)')
+  '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
 
 ### Find pkg-config executable (sets $PKG_CONFIG)

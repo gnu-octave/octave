@@ -57,14 +57,9 @@ function [y, ns]  = shiftdim (x, n)
   orig_dims = size (x);
 
   if (nargin == 1)
-    ## Find the first singleton dimension.
-    n = 0;
-    while (n < nd && orig_dims(n+1) == 1)
-      n++;
-    endwhile
-  endif
-
-  if (! isscalar (n) || floor (n) != n)
+    ## Find the first non-singleton dimension.
+    (n = find (orig_dims != 1, 1) - 1) || (n = nd);
+  elseif (! (isscalar (n) && n == fix (n)))
     error ("shiftdim: N must be a scalar integer");
   endif
 
@@ -78,7 +73,7 @@ function [y, ns]  = shiftdim (x, n)
   elseif (n > 0)
     ## We need permute here instead of reshape to shift values in a
     ## compatible way.
-    y = permute (x, [n+1:ndims(x) 1:n]);
+    y = permute (x, [n+1:nd 1:n]);
   else
     y = x;
   endif
@@ -86,3 +81,20 @@ function [y, ns]  = shiftdim (x, n)
   ns = n;
 
 endfunction
+
+
+%!test
+%! x = rand (1, 1, 4, 2);
+%! [y, ns] = shiftdim (x);
+%! assert (size (y), [4 2]);
+%! assert (ns, 2);
+%! assert (shiftdim (y, -2), x);
+%! assert (size (shiftdim (x, 2)), [4 2]);
+%!assert (size (shiftdim (rand (0, 1, 2))), [0 1 2]);
+
+%% Test input validation
+%!error(shiftdim ());
+%!error(shiftdim (1,2,3));
+%!error(shiftdim (1, ones (2)));
+%!error(shiftdim (1, 1.5));
+

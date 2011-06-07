@@ -262,6 +262,11 @@ Summary of important user-visible changes for version 3.4:
     of `strcat' has been vectorized and is now much more efficient when
     many strings are concatenated.  The `strcmpi' and `strncmpi'
     functions are now built-in functions, providing better performance.
+
+ ** 'str2double' now has a compiled implementation and the API conforms
+    to Matlab.  The additional Octave-specific features of returning a
+    boolean matrix indicating which elements were successfully converted
+    has been removed.
  
  ** Matlab-style ignoring input and output function arguments using
     tilde (~) is now supported.  Ignored output arguments may be

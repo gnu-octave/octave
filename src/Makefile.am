@@ -69,7 +69,6 @@ BUILT_NODISTFILES = \
   builtins.cc
 
 EXTRA_DIST = \
-  ChangeLog \
   Makefile.in \
   defaults.h.in \
   DOCSTRINGS \

@@ -25,7 +25,6 @@ include $(top_srcdir)/common.mk
 .NOTPARALLEL:
 
 EXTRA_DIST = \
-  ChangeLog \
   Makefile.am \
   texinfo.tex \
   texmf.cnf

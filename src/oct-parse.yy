@@ -4021,8 +4021,8 @@ source_file (const std::string& file_name, const std::string& context,
 DEFUN (mfilename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mfilename ()\n\
-@deftypefnx {Built-in Function} {} mfilename (@code{\"fullpath\"})\n\
-@deftypefnx {Built-in Function} {} mfilename (@code{\"fullpathext\"})\n\
+@deftypefnx {Built-in Function} {} mfilename (\"fullpath\")\n\
+@deftypefnx {Built-in Function} {} mfilename (\"fullpathext\")\n\
 Return the name of the currently executing file.  At the top-level,\n\
 return the empty string.  Given the argument @code{\"fullpath\"},\n\
 include the directory part of the file name, but not the extension.\n\

@@ -20,9 +20,6 @@
 
 include $(top_srcdir)/common.mk
 
-octlib_LTLIBRARIES = \
-  liboctinterp.la
-
 AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
@@ -30,6 +27,8 @@ AM_CPPFLAGS = \
   -I. -I$(srcdir) 
 
 AUTOMAKE_OPTIONS = subdir-objects
+
+octlib_LTLIBRARIES = liboctinterp.la
 
 ## Order matters here.  Leave builtins.cc last, because it depends on 
 ## $(DEF_FILES), and building those requires all the sources
@@ -52,9 +51,8 @@ BUILT_DISTFILES = \
   oct-gperf.h \
   oct-parse.h
 
-## FIXME -- These files don't need to be distributed.  Some of them
-## do need to be installed.  So we need to add them to a list somewhere
-## so that happens correctly.
+## Files that are created during build process and installed,
+## BUT not distributed in tarball.
 BUILT_NODISTFILES = \
   defaults.h \
   graphics.h \
@@ -208,6 +206,13 @@ PT_INCLUDES = \
   pt-walk.h \
   pt.h
 
+nodist_octinclude_HEADERS = \
+  defaults.h \
+  graphics.h \
+  oct-conf.h \
+  mxarray.h \
+  version.h
+
 octinclude_HEADERS = \
   Cell.h \
   base-list.h \
@@ -216,7 +221,6 @@ octinclude_HEADERS = \
   comment-list.h \
   cutils.h \
   debug.h \
-  defaults.h \
   defun-dld.h \
   defun-int.h \
   defun.h \
@@ -228,7 +232,6 @@ octinclude_HEADERS = \
   gl-render.h \
   gl2ps.h \
   gl2ps-renderer.h \
-  graphics.h \
   graphics-props.cc \
   gripes.h \
   help.h \
@@ -246,8 +249,6 @@ octinclude_HEADERS = \
   ls-utils.h \
   mex.h \
   mexproto.h \
-  mxarray.h \
-  oct-conf.h \
   oct-errno.h \
   oct-fstrm.h \
   oct-gperf.h \
@@ -282,7 +283,6 @@ octinclude_HEADERS = \
   unwind-prot.h \
   utils.h \
   variables.h \
-  version.h \
   xdiv.h \
   xnorm.h \
   xpow.h \

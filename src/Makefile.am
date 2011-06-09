@@ -87,15 +87,6 @@ EXTRA_DIST = \
   version.h.in \
   $(BUILT_DISTFILES)
 
-DLL_CDEFS = @OCTINTERP_DLL_DEFS@
-DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
-
-%.df: %.cc
-	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
-	mv $@-t $@
-
 OPT_HANDLERS = \
   DASPK-opts.cc \
   DASRT-opts.cc \
@@ -206,13 +197,6 @@ PT_INCLUDES = \
   pt-walk.h \
   pt.h
 
-nodist_octinclude_HEADERS = \
-  defaults.h \
-  graphics.h \
-  oct-conf.h \
-  mxarray.h \
-  version.h
-
 octinclude_HEADERS = \
   Cell.h \
   base-list.h \
@@ -290,6 +274,13 @@ octinclude_HEADERS = \
   $(OV_INCLUDES) \
   $(OV_SPARSE_INCLUDES) \
   $(PT_INCLUDES)
+
+nodist_octinclude_HEADERS = \
+  defaults.h \
+  graphics.h \
+  oct-conf.h \
+  mxarray.h \
+  version.h
 
 OV_INTTYPE_SRC = \
   ov-int16.cc \
@@ -473,20 +464,17 @@ liboctinterp_la_SOURCES = \
   $(OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
 
-DLD_DYNAMIC_DEF_FILES = $(DLD_DYNAMIC_SRC:.cc=.df)
-DLD_STATIC_DEF_FILES = $(DLD_STATIC_SRC:.cc=.df)
+nodist_liboctinterp_la_SOURCES = \
+  builtins.cc \
+  defaults.h \
+  graphics.h \
+  mxarray.h \
+  oct-conf.h \
+  oct-errno.cc \
+  ops.cc \
+  version.h \
+  $(OPT_INC)
 
-SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
-
-## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
-## .df files that correspond to sources included in liboctave.
-DEF_FILES = $(SRC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
-
-ALL_DEF_FILES = $(DEF_FILES) $(DLD_DYNAMIC_DEF_FILES)
-
-$(DEF_FILES) $(DYNAMIC_DLD_DEF_FILES): mkdefs Makefile
-
-$(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCTAVE_LIBS = \
@@ -558,33 +546,9 @@ OCTINTERP_LINK_DEPS = \
 
 liboctinterp_la_LIBADD = $(OCTINTERP_LINK_DEPS)
 
-OCT_LINK_DEPS = \
-  $(RLD_FLAG) $(LDFLAGS) \
-  ./liboctinterp.la \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
-  ../libcruft/libranlib.la \
-  ../libgnu/libgnu.la
-
-bin_PROGRAMS = octave
-
-octave_SOURCES = main.c
-
-nodist_liboctinterp_la_SOURCES = \
-  builtins.cc \
-  defaults.h \
-  graphics.h \
-  mxarray.h \
-  oct-conf.h \
-  oct-errno.cc \
-  ops.cc \
-  version.h \
-  $(OPT_INC)
-
 liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
-# Increment these as needed and according to the rules in the libtool
-# manual:
+# Increment these as needed and according to the rules in the libtool manual:
 liboctinterp_current = 0
 liboctinterp_revision = 0
 liboctinterp_age = 0
@@ -595,189 +559,6 @@ liboctinterp_la_LDFLAGS = \
   -version-info $(liboctinterp_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir)
-
-CLEANFILES = \
-  DLD-FUNCTIONS/PKG_ADD \
-  doc-files \
-  gendoc.cc \
-  gendoc$(BUILD_EXEEXT) \
-  graphics-props.cc \
-  oct-parse.output
-
-DISTCLEANFILES = \
-  .DOCSTRINGS \
-  DOCSTRINGS \
-  $(BUILT_NODISTFILES) \
-  $(OCT_FILES) \
-  $(OCT_STAMP_FILES)
-
-MAINTAINERCLEANFILES = \
-  $(BUILT_DISTFILES)
-
-octave_LDADD = $(OCTAVE_LIBS)
-
-all-local: $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
-
-lex.lo lex.o oct-parse.lo oct-parse.o: \
-  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
-
-__fltk_uigetfile__.lo __fltk_uigetfile__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
-
-__init_fltk__.lo __init_fltk__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
-
-# XERBLA = ../libcruft/blas-xtra/xerbla.o
-
-builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
-	mv $@-t $@
-
-mxarray.h: mxarray.h.in Makefile
-	$(SED) < $< \
-	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
-	mv $@-t $@
-
-version.h: version.h.in Makefile
-	$(SED) < $< \
-	  -e "s|%OCTAVE_API_VERSION_NUMBER%|${OCTAVE_API_VERSION_NUMBER}|" \
-	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
-	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \
-	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
-	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
-	mv $@-t $@
-
-graphics.h: graphics.h.in genprops.awk Makefile
-	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
-	mv $@-t $@
-
-graphics-props.cc: graphics.h.in genprops.awk Makefile
-	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
-	mv $@-t $@
-
-DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(DLD_DYNAMIC_DEF_FILES) > $@-t
-	mv $@-t $@
-
-.DOCSTRINGS: gendoc$(BUILD_EXEEXT)
-	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
-		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
-		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
-	fi
-	@echo "creating .DOCSTRINGS from .cc source files"
-	@./gendoc > $@
-	$(top_srcdir)/move-if-change $@ DOCSTRINGS
-	touch $@
-
-doc-files: $(ALL_DEF_FILES)
-	echo $(ALL_DEF_FILES) > $@-t
-	mv $@-t $@
-
-gendoc.cc: doc-files mkgendoc
-	$(srcdir)/mkgendoc doc-files > $@-t
-	mv $@-t $@
-
-gendoc$(BUILD_EXEEXT): gendoc.cc
-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
-
-ops.cc: $(OPERATORS_SRC) mkops
-	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
-	mv $@-t $@
-
-install-exec-hook: make-version-links
-
-install-data-hook: install-oct
-
-uninstall-local: remove-version-links uninstall-oct
-
-make-version-links:
-	cd $(DESTDIR)$(bindir) && \
-	mv octave$(EXEEXT) octave-$(version)$(EXEEXT) && \
-	$(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
-.PHONY: make-version-links
-
-remove-version-links:
-	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
-.PHONY: remove-version-links
-
-if AMCOND_ENABLE_DYNAMIC_LINKING
-install-oct:
-	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
-	if [ -n "`cat DLD-FUNCTIONS/PKG_ADD`" ]; then \
-	  $(INSTALL_DATA) DLD-FUNCTIONS/PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
-	fi
-	cd $(DESTDIR)$(octlibdir) && \
-	for ltlib in $(DLD_FUNCTIONS_LIBS); do \
-	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
-	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
-	  if [ -n "$$dl" ]; then \
-	    $(INSTALL_PROGRAM) $$dl $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,^lib,,; s,\.la$$,.oct,'`; \
-	  else \
-	    echo "error: dlname is empty in $$ltlib!"; \
-	    exit 1; \
-	  fi; \
-	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
-	  if [ -n "$$lnames" ]; then \
-	    rm -f $$f $$lnames $$dl; \
-	  fi \
-	done
-
-uninstall-oct:
-	for f in $(notdir $(OCT_FILES)); do \
-	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
-	done
-	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
-endif
-.PHONY: install-oct uninstall-oct
-
-# Special rules -- these files need special things to be defined.
-
-$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
-	$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
-	mv $@-t $@
-
-## We require Bison.
-#parse.cc : parse.y
-#	@echo "expect 16 shift/reduce conflicts"
-#	$(YACC) $(YFLAGS) --output=$@ --defines=y.tab.h $<
-
-#lex.cc : lex.l
-#	$(LEX) $(LFLAGS) $< > $(@F)-t
-#	@mv $(@F)-t $@
-
-
-$(OPT_INC) : %.h : %.in
-	$(MAKE) -C $(@D) $(@F)
-
-## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
-## may change default/config values.  However, calling configure will also
-## regenerate the Makefiles from Makefile.am and trigger the rules below.
-
-defaults.h: defaults.h.in Makefile
-	@$(do_subst_default_vals)
-
-oct-conf.h: oct-conf.h.in Makefile
-	@$(do_subst_config_vals)
-
-oct-errno.cc: oct-errno.cc.in Makefile
-	if test -n "$(PERL)"; then \
-	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
-	elif test -n "$(PYTHON)"; then \
-	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
-	else \
-	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
-	fi
-	mv $@-t $@
-
-## Don't use a pipeline to process gperf output since if gperf
-## is missing but sed is not, the exit status of the pipeline
-## will still be success and we will end up creating an empty
-## oct-gperf.h file.
-oct-gperf.h: octave.gperf
-	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
-	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
-	mv $@-t $@
-	rm -f $@-t1
 
 display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
@@ -871,3 +652,209 @@ DLD_FUNCTIONS_fftn_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
 DLD-FUNCTIONS/fftw.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
 DLD_FUNCTIONS_fftw_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
 DLD_FUNCTIONS_fftw_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
+
+
+bin_PROGRAMS = octave
+
+octave_SOURCES = main.c
+
+octave_LDADD = $(OCTAVE_LIBS)
+
+
+## Section for defining and creating DEF_FILES
+SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
+
+DLD_STATIC_DEF_FILES  = $(DLD_STATIC_SRC:.cc=.df)
+DLD_DYNAMIC_DEF_FILES = $(DLD_DYNAMIC_SRC:.cc=.df)
+
+## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
+## .df files that correspond to sources included in liboctave.
+DEF_FILES = $(SRC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
+
+ALL_DEF_FILES = $(DEF_FILES) $(DLD_DYNAMIC_DEF_FILES)
+
+$(DEF_FILES) $(DYNAMIC_DLD_DEF_FILES): mkdefs Makefile
+
+$(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
+
+DLL_CDEFS = @OCTINTERP_DLL_DEFS@
+DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
+
+## Rule to build a DEF file from a .cc file
+%.df: %.cc
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
+	mv $@-t $@
+
+## Special rules:  
+## Mostly for sources which must be built before rest of compilation.
+
+## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
+## may change default/config values.  However, calling configure will also
+## regenerate the Makefiles from Makefile.am and trigger the rules below.
+defaults.h: defaults.h.in Makefile
+	@$(do_subst_default_vals)
+
+graphics.h: graphics.h.in genprops.awk Makefile
+	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
+	mv $@-t $@
+
+oct-conf.h: oct-conf.h.in Makefile
+	@$(do_subst_config_vals)
+
+## Don't use a pipeline to process gperf output since if gperf
+## is missing but sed is not, the exit status of the pipeline
+## will still be success and we will end up creating an empty
+## oct-gperf.h file.
+oct-gperf.h: octave.gperf
+	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
+	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
+	mv $@-t $@
+	rm -f $@-t1
+
+mxarray.h: mxarray.h.in Makefile
+	$(SED) < $< \
+	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
+	mv $@-t $@
+
+version.h: version.h.in Makefile
+	$(SED) < $< \
+	  -e "s|%OCTAVE_API_VERSION_NUMBER%|${OCTAVE_API_VERSION_NUMBER}|" \
+	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
+	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \
+	  -e "s|%OCTAVE_RELEASE_DATE%|\"${OCTAVE_RELEASE_DATE}\"|" \
+	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
+	mv $@-t $@
+
+builtins.cc: $(DEF_FILES) mkbuiltins
+	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
+	mv $@-t $@
+
+graphics-props.cc: graphics.h.in genprops.awk Makefile
+	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
+	mv $@-t $@
+
+ops.cc: $(OPERATORS_SRC) mkops
+	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
+	mv $@-t $@
+
+oct-errno.cc: oct-errno.cc.in Makefile
+	if test -n "$(PERL)"; then \
+	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
+	elif test -n "$(PYTHON)"; then \
+	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
+	else \
+	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
+	fi
+	mv $@-t $@
+
+$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
+	$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
+	mv $@-t $@
+
+$(OPT_INC) : %.h : %.in
+	$(MAKE) -C $(@D) $(@F)
+
+DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(DLD_DYNAMIC_DEF_FILES) > $@-t
+	mv $@-t $@
+
+lex.lo lex.o oct-parse.lo oct-parse.o: \
+  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+
+__fltk_uigetfile__.lo __fltk_uigetfile__.o: \
+  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
+
+__init_fltk__.lo __init_fltk__.o: \
+  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
+
+.DOCSTRINGS: gendoc$(BUILD_EXEEXT)
+	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
+		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
+		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
+	fi
+	@echo "creating .DOCSTRINGS from .cc source files"
+	@./gendoc > $@
+	$(top_srcdir)/move-if-change $@ DOCSTRINGS
+	touch $@
+
+doc-files: $(ALL_DEF_FILES)
+	echo $(ALL_DEF_FILES) > $@-t
+	mv $@-t $@
+
+gendoc.cc: doc-files mkgendoc
+	$(srcdir)/mkgendoc doc-files > $@-t
+	mv $@-t $@
+
+gendoc$(BUILD_EXEEXT): gendoc.cc
+	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
+
+
+all-local: $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
+
+install-exec-hook: make-version-links
+
+install-data-hook: install-oct
+
+uninstall-local: remove-version-links uninstall-oct
+
+make-version-links:
+	cd $(DESTDIR)$(bindir) && \
+	mv octave$(EXEEXT) octave-$(version)$(EXEEXT) && \
+	$(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
+.PHONY: make-version-links
+
+remove-version-links:
+	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
+.PHONY: remove-version-links
+
+if AMCOND_ENABLE_DYNAMIC_LINKING
+install-oct:
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
+	if [ -n "`cat DLD-FUNCTIONS/PKG_ADD`" ]; then \
+	  $(INSTALL_DATA) DLD-FUNCTIONS/PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
+	fi
+	cd $(DESTDIR)$(octlibdir) && \
+	for ltlib in $(DLD_FUNCTIONS_LIBS); do \
+	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
+	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
+	  if [ -n "$$dl" ]; then \
+	    $(INSTALL_PROGRAM) $$dl $(DESTDIR)$(octfiledir)/`echo $$f | $(SED) 's,^lib,,; s,\.la$$,.oct,'`; \
+	  else \
+	    echo "error: dlname is empty in $$ltlib!"; \
+	    exit 1; \
+	  fi; \
+	  lnames=`$(SED) -n -e "s/library_names='\([^']*\)'/\1/p" < $$f`; \
+	  if [ -n "$$lnames" ]; then \
+	    rm -f $$f $$lnames $$dl; \
+	  fi \
+	done
+
+uninstall-oct:
+	for f in $(notdir $(OCT_FILES)); do \
+	  rm -f $(DESTDIR)$(octfiledir)/$$f; \
+	done
+	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
+endif
+.PHONY: install-oct uninstall-oct
+
+
+CLEANFILES = \
+  DLD-FUNCTIONS/PKG_ADD \
+  doc-files \
+  gendoc.cc \
+  gendoc$(BUILD_EXEEXT) \
+  graphics-props.cc \
+  oct-parse.output
+
+DISTCLEANFILES = \
+  .DOCSTRINGS \
+  DOCSTRINGS \
+  $(BUILT_NODISTFILES) \
+  $(OCT_FILES) \
+  $(OCT_STAMP_FILES)
+
+MAINTAINERCLEANFILES = \
+  $(BUILT_DISTFILES)
+

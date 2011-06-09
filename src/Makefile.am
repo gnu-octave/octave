@@ -20,9 +20,6 @@
 
 include $(top_srcdir)/common.mk
 
-octlib_LTLIBRARIES = \
-  liboctinterp.la
-
 AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
@@ -30,6 +27,8 @@ AM_CPPFLAGS = \
   -I. -I$(srcdir) 
 
 AUTOMAKE_OPTIONS = subdir-objects
+
+octlib_LTLIBRARIES = liboctinterp.la
 
 ## Order matters here.  Leave builtins.cc last, because it depends on 
 ## $(DEF_FILES), and building those requires all the sources
@@ -52,9 +51,8 @@ BUILT_DISTFILES = \
   oct-gperf.h \
   oct-parse.h
 
-## FIXME -- These files don't need to be distributed.  Some of them
-## do need to be installed.  So we need to add them to a list somewhere
-## so that happens correctly.
+## Files that are created during build process and installed,
+## BUT not distributed in tarball.
 BUILT_NODISTFILES = \
   defaults.h \
   graphics.h \
@@ -65,11 +63,10 @@ BUILT_NODISTFILES = \
   version.h \
   $(OPT_HANDLERS) \
   $(OPT_INC) \
-  $(DEF_FILES) \
+  $(ALL_DEF_FILES) \
   builtins.cc
 
 EXTRA_DIST = \
-  ChangeLog \
   Makefile.in \
   defaults.h.in \
   DOCSTRINGS \
@@ -93,7 +90,7 @@ EXTRA_DIST = \
 DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
-.cc.df:	
+%.df: %.cc
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
@@ -105,13 +102,6 @@ OPT_HANDLERS = \
   DASSL-opts.cc \
   LSODE-opts.cc \
   Quad-opts.cc
-
-OPT_IN = \
-  ../liboctave/DASPK-opts.in \
-  ../liboctave/DASRT-opts.in \
-  ../liboctave/DASSL-opts.in \
-  ../liboctave/LSODE-opts.in \
-  ../liboctave/Quad-opts.in
 
 OPT_INC = \
   ../liboctave/DASPK-opts.h \
@@ -216,6 +206,13 @@ PT_INCLUDES = \
   pt-walk.h \
   pt.h
 
+nodist_octinclude_HEADERS = \
+  defaults.h \
+  graphics.h \
+  oct-conf.h \
+  mxarray.h \
+  version.h
+
 octinclude_HEADERS = \
   Cell.h \
   base-list.h \
@@ -224,7 +221,6 @@ octinclude_HEADERS = \
   comment-list.h \
   cutils.h \
   debug.h \
-  defaults.h \
   defun-dld.h \
   defun-int.h \
   defun.h \
@@ -236,7 +232,6 @@ octinclude_HEADERS = \
   gl-render.h \
   gl2ps.h \
   gl2ps-renderer.h \
-  graphics.h \
   graphics-props.cc \
   gripes.h \
   help.h \
@@ -254,8 +249,6 @@ octinclude_HEADERS = \
   ls-utils.h \
   mex.h \
   mexproto.h \
-  mxarray.h \
-  oct-conf.h \
   oct-errno.h \
   oct-fstrm.h \
   oct-gperf.h \
@@ -290,7 +283,6 @@ octinclude_HEADERS = \
   unwind-prot.h \
   utils.h \
   variables.h \
-  version.h \
   xdiv.h \
   xnorm.h \
   xpow.h \
@@ -610,12 +602,12 @@ CLEANFILES = \
   gendoc.cc \
   gendoc$(BUILD_EXEEXT) \
   graphics-props.cc \
-  oct-parse.output \
-  $(BUILT_NODISTFILES)
+  oct-parse.output
 
 DISTCLEANFILES = \
   .DOCSTRINGS \
   DOCSTRINGS \
+  $(BUILT_NODISTFILES) \
   $(OCT_FILES) \
   $(OCT_STAMP_FILES)
 
@@ -755,7 +747,7 @@ $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 
 
 $(OPT_INC) : %.h : %.in
-	$(MAKE) -C $(@D) $@
+	$(MAKE) -C $(@D) $(@F)
 
 ## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
 ## may change default/config values.  However, calling configure will also

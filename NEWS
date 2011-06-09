@@ -56,6 +56,9 @@ Summary of important user-visible changes for version 3.4.1:
       * The Perl Compatible Regular Expression (PCRE) library is now
         required to build Octave.
 
+      * Octave's libraries and .oct files are now installed in
+        subdirectories of $libdir instead of $libexecdir.
+
     Any future Octave 3.4.x release versions should remain binary
     compatible with Octave 3.4.1 as we are now using proper library
     versioning as recommended by the libtool manual.
@@ -68,7 +71,7 @@ Summary of important user-visible changes for version 3.4.1:
 
  ** The following functions are new in 3.4.1:
 
-      colstyle  iscolumn  isrow
+      colstyle  gmres  iscolumn  isrow  mgorth  nproc  rectangle
 
  ** The get_forge_pkg function is now private.
 
@@ -297,6 +300,11 @@ Summary of important user-visible changes for version 3.4:
     of `strcat' has been vectorized and is now much more efficient when
     many strings are concatenated.  The `strcmpi' and `strncmpi'
     functions are now built-in functions, providing better performance.
+
+ ** 'str2double' now has a compiled implementation and the API conforms
+    to Matlab.  The additional Octave-specific features of returning a
+    boolean matrix indicating which elements were successfully converted
+    has been removed.
  
  ** Matlab-style ignoring input and output function arguments using
     tilde (~) is now supported.  Ignored output arguments may be
@@ -396,15 +404,15 @@ Summary of important user-visible changes for version 3.4:
     exponent where the exponent is a multiple of 3.
 
  ** The following functions are new in Octave 3.4:
-      accumdim   divergence   merge        ppjumps    strread 
-      bitpack    erfcx        nfields      pqpnonneg  textread
-      bitunpack  fileread     nth_element  quadcc     uigetdir
-      blkmm      fminbnd      onCleanup    randi      uigetfile
-      cbrt       fskipl       pbaspect     rectangle  uiputfile
-      curl       ifelse       pie3         repelems   uimenu
-      chop       ishermitian  powerset     reset      whitebg  
-      colstyle   isindex      ppder        rsf2csf  
-      daspect    luupdate     ppint        saveas  
+      accumdim    erfcx        nfields      pqpnonneg  uigetdir
+      bitpack     fileread     nth_element  quadcc     uigetfile
+      bitunpack   fminbnd      onCleanup    randi      uiputfile
+      blkmm       fskipl       pbaspect     repelems   uimenu           
+      cbrt        ifelse       pie3         reset      whitebg          
+      curl        ishermitian  powerset     rsf2csf            
+      chop        isindex      ppder        saveas             
+      daspect     luupdate     ppint        strread                     
+      divergence  merge        ppjumps      textread             
 
  ** Using the image function to view images with external programs such
     as display, xv, and xloadimage is no longer supported.  The
@@ -506,9 +514,9 @@ Summary of important user-visible changes for version 3.4:
     be removed from Octave 3.8 (or whatever version is the second major
     release after 3.4):
 
-      autocor  cellidx   fstat    is_global  replot     values
-      autocov  cquad     gammai   krylovb    saveimage  
-      betai    dispatch  glpkmex  perror     strerror 
+      autocor  cellidx   gammai     krylovb  saveimage 
+      autocov  dispatch  glpkmex    perror   strerror  
+      betai    fstat     is_global  replot   values    
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------

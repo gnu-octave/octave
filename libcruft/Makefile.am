@@ -92,7 +92,7 @@ ranlib.def: $(libranlib_la_SOURCES) mkf77def
 	./mkf77def $(srcdir) $(libranlib_la_SOURCES) > $@-t
 	mv $@-t $@
 
-EXTRA_DIST += ChangeLog mkf77def.in
+EXTRA_DIST += mkf77def.in
 
 DISTCLEANFILES = cruft.def ranlib.def
 

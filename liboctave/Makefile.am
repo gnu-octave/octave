@@ -25,7 +25,6 @@ AM_CPPFLAGS = \
   -I$(top_srcdir)/libcruft/misc
 
 EXTRA_DIST = \
-  ChangeLog \
   config-ops.sh \
   mk-ops.awk \
   mx-op-inc.mk \

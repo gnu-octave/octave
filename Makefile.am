@@ -50,8 +50,10 @@ EXTRA_DIST = \
   PROJECTS \
   README \
   README.Cygwin \
+  README.gnuplot \
   README.Linux \
   README.MacOS \
+  README.MinGW \
   README.Windows \
   README.kpathsea \
   autogen.sh \

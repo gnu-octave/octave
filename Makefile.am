@@ -116,7 +116,7 @@ INFO_FILES = \
 
 CLEANFILES = $(bin_PROGRAMS) $(bin_SCRIPTS) $(BUILT_SOURCES)
 
-DISTCLEANFILES = $(INFO_FILES) .gdbinit 
+DISTCLEANFILES = $(INFO_FILES) ChangeLog .gdbinit 
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 

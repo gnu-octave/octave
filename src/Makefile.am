@@ -65,7 +65,7 @@ BUILT_NODISTFILES = \
   version.h \
   $(OPT_HANDLERS) \
   $(OPT_INC) \
-  $(DEF_FILES) \
+  $(ALL_DEF_FILES) \
   builtins.cc
 
 EXTRA_DIST = \
@@ -92,7 +92,7 @@ EXTRA_DIST = \
 DLL_CDEFS = @OCTINTERP_DLL_DEFS@
 DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
-.cc.df:	
+%.df: %.cc
 	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
@@ -104,13 +104,6 @@ OPT_HANDLERS = \
   DASSL-opts.cc \
   LSODE-opts.cc \
   Quad-opts.cc
-
-OPT_IN = \
-  ../liboctave/DASPK-opts.in \
-  ../liboctave/DASRT-opts.in \
-  ../liboctave/DASSL-opts.in \
-  ../liboctave/LSODE-opts.in \
-  ../liboctave/Quad-opts.in
 
 OPT_INC = \
   ../liboctave/DASPK-opts.h \
@@ -609,12 +602,12 @@ CLEANFILES = \
   gendoc.cc \
   gendoc$(BUILD_EXEEXT) \
   graphics-props.cc \
-  oct-parse.output \
-  $(BUILT_NODISTFILES)
+  oct-parse.output
 
 DISTCLEANFILES = \
   .DOCSTRINGS \
   DOCSTRINGS \
+  $(BUILT_NODISTFILES) \
   $(OCT_FILES) \
   $(OCT_STAMP_FILES)
 
@@ -754,7 +747,7 @@ $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 
 
 $(OPT_INC) : %.h : %.in
-	$(MAKE) -C $(@D) $@
+	$(MAKE) -C $(@D) $(@F)
 
 ## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
 ## may change default/config values.  However, calling configure will also

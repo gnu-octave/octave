@@ -1,5 +1,3 @@
-SHELL = /bin/sh
-
 AWK = @AWK@
 export AWK
 

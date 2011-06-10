@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 FCN_FILES = \
   fntests.m \

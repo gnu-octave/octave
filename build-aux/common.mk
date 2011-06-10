@@ -421,7 +421,7 @@ NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 
 define simple_move_if_change_rule
 if [ -s $@-t ]; then \
-  $(top_srcdir)/move-if-change $@-t $@; \
+  $(top_srcdir)/build-aux/move-if-change $@-t $@; \
 else \
   echo "$@-t is empty!" 1>&2; \
   rm -f $@-t; \
@@ -645,7 +645,7 @@ $(simple_move_if_change_rule)
 endef
 
 define do_script_install
-$(top_srcdir)/mkinstalldirs $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
+$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)
 for f in $(FCN_FILES); do \
   fbase=`basename $$f`; \
   rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$fbase; \

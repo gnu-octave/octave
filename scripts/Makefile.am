@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 AUTOMAKE_OPTIONS = subdir-objects
 
@@ -324,7 +324,7 @@ gethelp_SOURCES = gethelp.cc
 	fi
 	@echo "creating .DOCSTRINGS from .m script files"
 	@$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
-	$(top_srcdir)/move-if-change $@ DOCSTRINGS
+	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
 
 $(GEN_FCN_FILES) : %.m : %.in Makefile

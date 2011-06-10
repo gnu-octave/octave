@@ -36,4 +36,4 @@ echo "generating src/DLD-FUNCTIONS/module.mk..."
 
 echo "bootstrapping..."
 
-./bootstrap "$@"
+build-aux/bootstrap "$@"

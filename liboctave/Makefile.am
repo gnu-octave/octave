@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
@@ -551,9 +551,9 @@ octinclude_HEADERS = \
 nodist_octinclude_HEADERS = \
   $(BUILT_INCS)
 
-$(OPT_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
+$(OPT_INC) : %.h : %.in $(top_srcdir)/build-aux/mk-opts.pl
 	@echo making $@ from $<
-	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
+	@$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t
 	mv $@-t $@
 
 $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops

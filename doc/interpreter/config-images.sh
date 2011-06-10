@@ -10,8 +10,10 @@ else
   top_srcdir="../.."
 fi
 
+move_if_change="$top_srcdir/build-aux/move-if-change"
+
 interp_dir=$top_srcdir/doc/interpreter
 
 $AWK -f $interp_dir/images.awk < $interp_dir/images > $interp_dir/images.mk-t
 
-$top_srcdir/move-if-change $interp_dir/images.mk-t $interp_dir/images.mk
+$move_if_change $interp_dir/images.mk-t $interp_dir/images.mk

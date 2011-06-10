@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
@@ -30,10 +30,35 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 octlib_LTLIBRARIES = liboctinterp.la
 
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+bin_PROGRAMS = \
+  mkoctfile \
+  octave \
+  octave-config
+
+mkoctfile_SOURCES =
+nodist_mkoctfile_SOURCES = mkoctfile.cc
+
+octave_config_SOURCES =
+nodist_octave_config_SOURCES = octave-config.cc
+
+BUILT_SOURCES_EXTRA = \
+  mkoctfile.cc \
+  octave-config.cc
+else
+bin_PROGRAMS = \
+  octave
+
+bin_SCRIPTS = \
+  mkoctfile \
+  octave-config
+endif
+
 ## Order matters here.  Leave builtins.cc last, because it depends on 
 ## $(DEF_FILES), and building those requires all the sources
 ## (except builtins.cc) to be available.
 BUILT_SOURCES = \
+  $(BUILT_SOURCES_EXTRA) \
   defaults.h \
   graphics.h \
   graphics-props.cc \
@@ -79,10 +104,14 @@ EXTRA_DIST = \
   mkbuiltins \
   mkdefs \
   mkgendoc \
+  mkoctfile.cc.in \
+  mkoctfile.in \
   mkops \
   mxarray.h.in \
   oct-conf.h.in \
   oct-errno.cc.in \
+  octave-config.cc.in \
+  octave-config.in \
   octave.gperf \
   version.h.in \
   $(BUILT_DISTFILES)
@@ -654,8 +683,6 @@ DLD_FUNCTIONS_fftw_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
 DLD_FUNCTIONS_fftw_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
 
 
-bin_PROGRAMS = octave
-
 octave_SOURCES = main.c
 
 octave_LDADD = $(OCTAVE_LIBS)
@@ -749,8 +776,8 @@ oct-errno.cc: oct-errno.cc.in Makefile
 	fi
 	mv $@-t $@
 
-$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
-	$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
+$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/build-aux/mk-opts.pl
+	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
 	mv $@-t $@
 
 $(OPT_INC) : %.h : %.in
@@ -776,7 +803,7 @@ __init_fltk__.lo __init_fltk__.o: \
 	fi
 	@echo "creating .DOCSTRINGS from .cc source files"
 	@./gendoc > $@
-	$(top_srcdir)/move-if-change $@ DOCSTRINGS
+	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
 
 doc-files: $(ALL_DEF_FILES)
@@ -792,6 +819,22 @@ gendoc$(BUILD_EXEEXT): gendoc.cc
 
 
 all-local: $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
+
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+octave-config.cc: octave-config.cc.in Makefile
+	@$(do_subst_default_vals)
+
+mkoctfile.cc: mkoctfile.cc.in Makefile
+	@$(do_subst_config_vals)
+else
+octave-config: octave-config.in Makefile
+	@$(do_subst_default_vals)
+	chmod a+rx $@
+
+mkoctfile: mkoctfile.in Makefile
+	@$(do_subst_config_vals)
+	chmod a+rx $@
+endif
 
 install-exec-hook: make-version-links
 
@@ -811,7 +854,7 @@ remove-version-links:
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
-	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
+	$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(octfiledir)
 	if [ -n "`cat DLD-FUNCTIONS/PKG_ADD`" ]; then \
 	  $(INSTALL_DATA) DLD-FUNCTIONS/PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi

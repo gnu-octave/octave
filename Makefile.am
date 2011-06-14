@@ -87,7 +87,9 @@ INFO_FILES = \
 
 CLEANFILES = $(bin_PROGRAMS) $(bin_SCRIPTS) $(BUILT_SOURCES)
 
-DISTCLEANFILES = $(INFO_FILES) ChangeLog .gdbinit 
+DISTCLEANFILES = .gdbinit 
+
+MAINTAINERCLEANFILES = $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 

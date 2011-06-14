@@ -87,7 +87,9 @@ INFO_FILES = \
 
 CLEANFILES = $(bin_PROGRAMS) $(bin_SCRIPTS) $(BUILT_SOURCES)
 
-DISTCLEANFILES = $(INFO_FILES) ChangeLog .gdbinit 
+DISTCLEANFILES = .gdbinit 
+
+MAINTAINERCLEANFILES = $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
@@ -110,9 +112,10 @@ run-octave: run-octave.in Makefile
 	chmod a+rx "$@"
 
 .gdbinit: etc/gdbinit
-	if [ -f .gdbinit ]; then \
+	@if [ -f .gdbinit ]; then \
 	  echo "refusing to overwrite .gdbinit with newer version from $<" 1>&2; \
 	else \
+	  echo "Installing .gdbinit from version at $<" ; \
 	  cp $< $@; \
 	fi
 
@@ -121,7 +124,7 @@ AUTHORS BUGS INSTALL.OCTAVE:
 .PHONY: AUTHORS BUGS INSTALL.OCTAVE
 
 ChangeLog:
-	(cd $(srcdir); hg log --style=changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; echo ""; echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19") > $@.t
+	(cd $(srcdir); hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; echo ""; echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19") > $@.t
 	mv $@.t $@
 .PHONY: ChangeLog
 

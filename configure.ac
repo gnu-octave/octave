@@ -80,10 +80,11 @@ case "$canonical_host_type" in
   ;;
   *-*-mingw*)
     AC_MSG_CHECKING([for MSVC compiler])
-    AC_PREPROC_IFELSE([
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([
 #ifndef _MSC_VER
 #error "Not MSVC compiler"
-#endif], have_msvc=yes, have_msvc=no)
+#endif
+])], have_msvc=yes, have_msvc=no)
     AC_MSG_RESULT([$have_msvc])
   ;;
 esac
@@ -899,7 +900,7 @@ if test -n "$OPENGL_LIBS"; then
     save_CFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS $FLTK_CFLAGS"
     AC_COMPILE_IFELSE(
-      AC_LANG_PROGRAM([[#include <FL/gl.h>]], [[int nothing = 0;]]),
+      [AC_LANG_PROGRAM([[#include <FL/gl.h>]], [[int nothing = 0;]])],
         [
          AC_MSG_RESULT([no])
          warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
@@ -987,8 +988,9 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
       octave_blaswrap_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DUSE_BLASWRAP"
       AC_LANG_PUSH(C)
-      AC_COMPILE_IFELSE(
-       [#include "libcruft/misc/blaswrap.c"],
+      AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+#include "libcruft/misc/blaswrap.c"
+])],
        [mv conftest.$ac_objext blaswrap.$ac_objext
         octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
         BLAS_LIBS="blaswrap.$ac_objext -framework vecLib"
@@ -1642,17 +1644,17 @@ OCTAVE_SMART_PUTENV
 case "$canonical_host_type" in
   *-*-msdosmsvc | *-*-mingw*)
     AC_MSG_CHECKING([for required _WIN32_WINNT])
-    AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <windows.h>
 #if _WIN32_WINNT < 0x0403
 #error "Wrong version"
-#endif]], []),
+#endif]], [])],
       AC_MSG_RESULT([none]), [
         AC_DEFINE(_WIN32_WINNT, 0x0403, [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount])
         AC_MSG_RESULT([0x0403])])
     AC_MSG_CHECKING([whether _USE_MATH_DEFINES needs to be defined])
-    AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[#include <math.h>]],
-[[int x = M_LN2;]]),
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]],
+[[int x = M_LN2;]])],
       AC_MSG_RESULT([no]), [
         AC_DEFINE(_USE_MATH_DEFINES, 1, [Define if your system needs it to define math constants like M_LN2])
         AC_MSG_RESULT([yes])])

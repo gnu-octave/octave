@@ -43,6 +43,12 @@ Summary of important user-visible changes for version 3.4.1:
  ** The logistic_regression_derivatives and logistic_regression_likelihood
     functions are now private.
 
+ ** ChangeLog files in the Octave sources are no longer maintained
+    by hand.  Instead, there is a single ChangeLog file generated from
+    the Mercurial version control commit messages.  Older ChangeLog
+    information can be found in the etc/OLD-ChangeLogs directory in the
+    source distribution.
+
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------
 

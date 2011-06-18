@@ -50,18 +50,18 @@ function cdf = normcdf (x, m, s)
   cdf = zeros (sz);
 
   if (isscalar (m) && isscalar(s))
-    if (find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf)))
+    if (find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf)))
       cdf = NaN (sz);
     else
       cdf =  stdnormal_cdf ((x - m) ./ s);
     endif
   else
-    k = find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf));
+    k = find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf));
     if (any (k))
       cdf(k) = NaN;
     endif
 
-    k = find (!isinf (m) & !isnan (m) & (s >= 0) & (s < Inf));
+    k = find (!isinf (m) & !isnan (m) & (s > 0) & (s < Inf));
     if (any (k))
       cdf(k) = stdnormal_cdf ((x(k) - m(k)) ./ s(k));
     endif

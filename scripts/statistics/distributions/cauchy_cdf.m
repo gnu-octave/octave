@@ -48,8 +48,8 @@ function cdf = cauchy_cdf (x, location, scale)
   sz = size (x);
   cdf = NaN (sz);
 
-  k = find ((x > -Inf) & (x < Inf) & (location > -Inf) &
-            (location < Inf) & (scale > 0) & (scale < Inf));
+  k = find ((location > -Inf) & (location < Inf)
+            & (scale > 0) & (scale < Inf));
   if (any (k))
     if (isscalar (location) && isscalar (scale))
       cdf(k) = 0.5 + atan ((x(k) - location) ./ scale) / pi;

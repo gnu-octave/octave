@@ -818,7 +818,7 @@ gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 
-all-local: $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
+all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.cc.in Makefile
@@ -844,13 +844,29 @@ uninstall-local: remove-version-links uninstall-oct
 
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \
-	mv octave$(EXEEXT) octave-$(version)$(EXEEXT) && \
-	$(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
-.PHONY: make-version-links
+	for f in $(basename $(bin_PROGRAMS)); do \
+	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
+	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
+	done
+if ! AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+	cd $(DESTDIR)$(bindir) && \
+	for f in $(basename $(bin_SCRIPTS)); do \
+	  mv $$f $$f-$(version) && \
+	    $(LN_S) $$f-$(version) $$f; \
+	done
+endif
 
 remove-version-links:
-	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
-.PHONY: remove-version-links
+	for f in $(basename $(bin_PROGRAMS)); do \
+	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
+	done
+if ! AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+	for f in $(basename $(bin_SCRIPTS)); do \
+	  rm -f $(DESTDIR)$(bindir)/$$f-$(version); \
+	done
+endif
+
+.PHONY: make-version-links remove-version-links
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
@@ -882,8 +898,9 @@ uninstall-oct:
 endif
 .PHONY: install-oct uninstall-oct
 
-
 CLEANFILES = \
+  $(bin_PROGRAMS) \
+  $(bin_SCRIPTS) \
   DLD-FUNCTIONS/PKG_ADD \
   doc-files \
   gendoc.cc \
@@ -900,4 +917,3 @@ DISTCLEANFILES = \
 
 MAINTAINERCLEANFILES = \
   $(BUILT_DISTFILES)
-

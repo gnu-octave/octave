@@ -818,7 +818,7 @@ gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 
-all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
+all-local: $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.cc.in Makefile
@@ -899,7 +899,6 @@ endif
 .PHONY: install-oct uninstall-oct
 
 CLEANFILES = \
-  $(bin_PROGRAMS) \
   $(bin_SCRIPTS) \
   DLD-FUNCTIONS/PKG_ADD \
   doc-files \

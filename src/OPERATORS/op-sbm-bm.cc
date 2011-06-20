@@ -43,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "ov-str-mat.h"
 #include "ops.h"
+#include "ov-null-mat.h"
 #include "ov-re-sparse.h"
 #include "ov-bool-sparse.h"
 #include "smx-bm-sbm.h"
@@ -87,6 +88,8 @@ DEFASSIGNOP (assign, sparse_bool_matrix, bool_matrix)
   v1.assign (idx, SparseBoolMatrix (v2.bool_matrix_value ()));
   return octave_value ();
 }
+
+DEFNULLASSIGNOP_FN (null_assign, sparse_bool_matrix, delete_elements)
 
 static octave_value
 oct_assignop_conv_and_assign (octave_base_value& a1,
@@ -154,4 +157,11 @@ install_sbm_bm_ops (void)
                     conv_and_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_uint64_matrix,
                     conv_and_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_null_matrix,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_null_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_null_sq_str,
+                    null_assign);
 }

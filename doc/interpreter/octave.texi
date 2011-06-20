@@ -523,6 +523,7 @@ Two-Dimensional Plots
 
 * Axis Configuration::  
 * Two-dimensional Function Plotting::  
+* Two-dimensional Geometric Shapes::  
 
 Three-Dimensional Plots
 

@@ -102,7 +102,7 @@
 #    gen_assembly_tests
 #        test for sparse constructors with 'sum' vs. 'unique'
 #    gen_select_tests
-#        indexing tests
+#        indexing and assignment tests
 #    gen_solver_tests
 #        Tests the solve function with triangular/banded, etc matrices
 

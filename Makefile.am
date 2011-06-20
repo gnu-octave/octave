@@ -85,7 +85,7 @@ INFO_FILES = \
   BUGS \
   INSTALL.OCTAVE
 
-CLEANFILES = $(bin_PROGRAMS) $(bin_SCRIPTS) $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)
 
 DISTCLEANFILES = .gdbinit 
 
@@ -95,7 +95,7 @@ CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 nodist_octinclude_HEADERS = config.h
 
-all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
+all-local: $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""
@@ -145,36 +145,3 @@ installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
 install-data-local: installdirs-local
-
-install-exec-hook: make-version-links
-
-uninstall-local: remove-version-links
-
-if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-make-version-links:
-	cd $(DESTDIR)$(bindir) && \
-	for f in $(basename $(bin_PROGRAMS)); do \
-	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
-	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
-	done
-
-remove-version-links:
-	for f in $(basename $(bin_PROGRAMS)); do \
-	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
-	done
-else
-make-version-links:
-	cd $(DESTDIR)$(bindir) && \
-	for f in $(basename $(bin_SCRIPTS)); do \
-	  mv $$f $$f-$(version) && \
-	    $(LN_S) $$f-$(version) $$f; \
-	done
-
-remove-version-links:
-	for f in $(basename $(bin_SCRIPTS)); do \
-	  rm -f $(DESTDIR)$(bindir)/$$f-$(version); \
-	done
-endif
-
-.PHONY: make-version-links remove-version-links
-

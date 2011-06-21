@@ -575,6 +575,15 @@ OCTINTERP_LINK_DEPS = \
 
 liboctinterp_la_LIBADD = $(OCTINTERP_LINK_DEPS)
 
+## Additional library dependencies used by module.mk files
+OCT_LINK_DEPS = \
+  $(RLD_FLAG) $(LDFLAGS) \
+  ./liboctinterp.la \
+  ../liboctave/liboctave.la \
+  ../libcruft/libcruft.la \
+  ../libcruft/libranlib.la \
+  ../libgnu/libgnu.la
+
 liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
 # Increment these as needed and according to the rules in the libtool manual:

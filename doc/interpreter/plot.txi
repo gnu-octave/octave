@@ -73,6 +73,7 @@ and @ref{Advanced Plotting}.
 @menu
 * Axis Configuration::  
 * Two-dimensional Function Plotting::  
+* Two-dimensional Geometric Shapes::  
 @end menu
 
 The @code{plot} function allows you to create simple x-y plots with
@@ -282,6 +283,11 @@ function include @code{ezplot}, @code{ezcontour}, @code{ezcontourf} and
 @DOCSTRING(ezcontourf)
 
 @DOCSTRING(ezpolar)
+
+@node Two-dimensional Geometric Shapes
+@subsubsection Two-dimensional Geometric Shapes
+
+@DOCSTRING(rectangle)
 
 @node Three-Dimensional Plots
 @subsection Three-Dimensional Plots

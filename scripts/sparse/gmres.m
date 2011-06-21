@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
-  
+
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} gmres (@var{A}, @var{b}, @var{m}, @var{rtol}, @var{maxit}, @var{P})
@@ -69,7 +69,7 @@
 ## iteration.
 ## @end itemize
 ##
-## @seealso{pcg, cgs, bigcstab}
+## @seealso{pcg, cgs, bicgstab}
 ## @end deftypefn
 
 function [x, flag, prec_res_norm, itcnt] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)

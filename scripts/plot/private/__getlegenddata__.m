@@ -45,7 +45,7 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
           if (isfield (hgobj, "displayname")
               && ! isempty (hgobj.displayname))
             hplots = [hplots, hgkids(j)];
-            text_strings = {text_strings{:}, hbobj.displayname};
+            text_strings = {text_strings{:}, hgobj.displayname};
             break;
           endif
         endfor

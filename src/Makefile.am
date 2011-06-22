@@ -38,9 +38,11 @@ bin_PROGRAMS = \
 
 mkoctfile_SOURCES =
 nodist_mkoctfile_SOURCES = mkoctfile.cc
+mkoctfile_LDADD = ../libgnu/libgnu.la $(LIBS)
 
 octave_config_SOURCES =
 nodist_octave_config_SOURCES = octave-config.cc
+octave_config_LDADD = ../libgnu/libgnu.la $(LIBS)
 
 BUILT_SOURCES_EXTRA = \
   mkoctfile.cc \

@@ -36,6 +36,12 @@ Summary of important user-visible changes for version 3.6:
       studentize
       sylvester_matrix
 
+Summary of important user-visible changes for version 3.4.2:
+-----------------------------------------------------------
+
+ ** Octave 3.2.4 fixes some minor installation problems that affected
+    version 3.4.1.
+
 Summary of important user-visible changes for version 3.4.1:
 -----------------------------------------------------------
 

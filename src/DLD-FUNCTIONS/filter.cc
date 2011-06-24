@@ -104,16 +104,17 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
       return y;
     }
 
-  octave_idx_type si_dim = 0;
-  for (octave_idx_type i = 0; i < x_dims.length (); i++)
+  for (octave_idx_type i = 1; i < dim; i++)
     {
-      if (i == dim)
-        continue;
-
-      if (x_dims(i) == 1)
-        continue;
-
-      if (si_dims(++si_dim) != x_dims(i))
+      if (si_dims(i) != x_dims(i-1))
+        {
+          error ("filter: dimensionality of SI and X must agree");
+          return y;
+        }
+    }
+  for (octave_idx_type i = dim+1; i < x_dims.length (); i++)
+    {
+      if (si_dims(i) != x_dims(i))
         {
           error ("filter: dimensionality of SI and X must agree");
           return y;
@@ -720,6 +721,13 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int
 %!assert(filter([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]), [5 7; 6 10; 14 18]);
 %!error (filter([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]'));
 %!assert(filter([1, 3, 2], [1], [1 2; 3 4; 5 6], [1 0 0; 1 0 0], 2), [2 6; 3 13; 5 21]);
-%%  Should put some tests of the "DIM" parameter in here.
+%% Test of DIM parameter
+%!test
+%! x = ones (2, 1, 3, 4);
+%! x(1,1,:,:) = [1 2 3 4; 5 6 7 8; 9 10 11 12];
+%! y0 = [1 1 6 2 15 3 2 1 8 2 18 3 3 1 10 2 21 3 4 1 12 2 24 3];
+%! y0 = reshape (y0, size (x));
+%! y = filter([1 1 1], 1, x, [], 3); 
+%! assert (y, y0);
 
 */

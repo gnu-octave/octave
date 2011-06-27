@@ -60,7 +60,7 @@ function rnd = geornd (p, r, c)
       error ("geornd: n must be scalar or of size SZ");
     endif
   elseif (nargin == 1)
-    sz = size(n);
+    sz = size(p);
   elseif (nargin != 1)
     print_usage ();
   endif

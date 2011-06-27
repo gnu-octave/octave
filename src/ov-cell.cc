@@ -1271,14 +1271,15 @@ Return true if @var{x} is a cell array object.\n\
 
 DEFUN (cell, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} cell (@var{x})\n\
-@deftypefnx {Built-in Function} {} cell (@var{n}, @var{m})\n\
-Create a new cell array object.  If invoked with a single scalar\n\
-argument, @code{cell} returns a square cell array with the dimension\n\
-specified.  If you supply two scalar arguments, @code{cell} takes\n\
-them to be the number of rows and columns.  If given a vector with two\n\
-elements, @code{cell} uses the values of the elements as the number of\n\
-rows and columns, respectively.\n\
+@deftypefn  {Built-in Function} {} cell (@var{n})\n\
+@deftypefnx {Built-in Function} {} cell (@var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {} cell (@var{m}, @var{n}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} cell ([@var{m} @var{n} @dots{}])\n\
+Create a new cell array object.\n\
+If invoked with a single scalar integer argument, return a square\n\
+@nospell{NxN} cell array.  If invoked with two or more scalar\n\
+integer arguments, or a vector of integer values, return an array with\n\
+the given dimensions.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -269,7 +269,7 @@ be installed.
 
 After installing each of the dependencies, the sources are compiled by
 setting the proper environment variables and then following the standard build
-sequence.  The following is an example set of variables to for a 32-bit build
+sequence.  The following is an example set of variables for a 32-bit build
 using gcc-4.2.  When building from the sources obtained from the mercurial
 archive, ./autogen.sh must be run prior to ./configure.
 

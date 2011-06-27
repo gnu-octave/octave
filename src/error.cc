@@ -1066,6 +1066,10 @@ error: nargin != 1\n\
 
           octave_scalar_map m = args(0).scalar_map_value ();
 
+          // empty struct is not an error.  return and resume calling function.
+          if (m.nfields () == 0)
+            return retval;
+
           if (m.contains ("message"))
             {
               octave_value c = m.getfield ("message");
@@ -1480,9 +1484,9 @@ DEFUN (lasterror, args, ,
 @deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
 @deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror ('reset')\n\
-Query or set the last error message.  Called without any arguments\n\
-returns a structure containing the last error message, as well as other\n\
-information related to this error.  The elements of this structure are:\n\
+Query or set the last error message structure.  When called without arguments\n\
+, return a structure containing the last error message and other\n\
+information related to this error.  The elements of the structure are:\n\
 \n\
 @table @asis\n\
 @item 'message'\n\
@@ -1492,9 +1496,9 @@ The text of the last error message\n\
 The message identifier of this error message\n\
 \n\
 @item 'stack'\n\
-A structure containing information on where the message occurred.  This might\n\
-be an empty structure if this in the case where this information cannot\n\
-be obtained.  The fields of this structure are:\n\
+A structure containing information on where the message occurred.  This may\n\
+be an empty structure if the information cannot\n\
+be obtained.  The fields of the structure are:\n\
 \n\
 @table @asis\n\
 @item 'file'\n\
@@ -1511,14 +1515,13 @@ An optional field with the column number at which the error occurred\n\
 @end table\n\
 @end table\n\
 \n\
-The @var{err} structure may also be passed to @code{lasterror} to set the\n\
-information about the last error.  The only constraint on @var{err} in that\n\
-case is that it is a scalar structure.  Any fields of @var{err} that match\n\
-the above are set to the value passed in @var{err}, while other fields are\n\
-set to their default values.\n\
+The last error structure may be set by passing a scalar structure, @var{err},\n\
+as input.  Any fields of @var{err} that match those above are set while any\n\
+unspecified fields are initialized with default values.\n\
 \n\
-If @code{lasterror} is called with the argument 'reset', all values take\n\
-their default values.\n\
+If @code{lasterror} is called with the argument 'reset', all fields are\n\
+set to their default values.\n\
+@seealso{lasterr}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1636,10 +1639,14 @@ their default values.\n\
 
 DEFUN (lasterr, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lasterr (@var{msg}, @var{msgid})\n\
-Without any arguments, return the last error message.  With one\n\
+@deftypefn  {Built-in Function} {[@var{msg}, @var{msgid}] =} lasterr ()\n\
+@deftypefnx {Built-in Function} {} lasterr (@var{msg})\n\
+@deftypefnx {Built-in Function} {} lasterr (@var{msg}, @var{msgid})\n\
+Query or set the last error message.  When called without input arguments,\n\
+return the last error message and message identifier.  With one\n\
 argument, set the last error message to @var{msg}.  With two arguments,\n\
 also set the last message identifier.\n\
+@seealso{lasterror}\n\
 @end deftypefn")
 {
   octave_value_list retval;

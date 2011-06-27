@@ -244,38 +244,49 @@ repeated for each row.  Or @var{s} may be a cell array of strings, in which\n\
 case each element is converted and an array of the same dimensions is\n\
 returned.\n\
 \n\
-@code{str2double} can replace @code{str2num}, and it avoids the use of\n\
-@code{eval} on unknown data.\n\
+@code{str2double} returns NaN for elements of @var{s} which cannot be\n\
+converted.\n\
+\n\
+@code{str2double} can replace @code{str2num}, and it avoids the security\n\
+risk of using @code{eval} on unknown data.\n\
 @seealso{str2num}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  if (args.length () != 1)
+    print_usage ();
+  else if (args(0).is_string ())
     {
-      if (args(0).is_string ())
+      if (args(0).rows () == 1 && args(0).ndims () == 2)
         {
-          if (args(0).rows () == 1 && args(0).ndims () == 2)
-            {
-              retval = str2double1 (args(0).string_value ());
-            }
-          else
-            {
-              const string_vector sv = args(0).all_strings ();
-              if (! error_state)
-                retval = sv.map<Complex> (str2double1);
-            }
-        }
-      else if (args(0).is_cellstr ())
-        {
-          Array<std::string> sa = args(0).cellstr_value ();
-          retval = sa.map<Complex> (str2double1);
+          retval = str2double1 (args(0).string_value ());
         }
       else
-        gripe_wrong_type_arg ("str2double", args(0));
+        {
+          const string_vector sv = args(0).all_strings ();
+          if (! error_state)
+            retval = sv.map<Complex> (str2double1);
+        }
+    }
+  else if (args(0).is_cell ())
+    {
+      const Cell cell = args(0).cell_value (); 
+
+      if (! error_state)
+      {
+        ComplexNDArray output (cell.dims (), octave_NaN);
+        for (octave_idx_type i = 0; i < cell.numel (); i++)
+        {
+          if (cell(i).is_string ())
+            output(i) = str2double1 (cell(i).string_value ());
+        }
+        retval = output;
+      }
     }
   else
-    print_usage ();
+    retval = NDArray (args(0).dims (), octave_NaN);
+  
 
   return retval;
 }
@@ -293,6 +304,7 @@ returned.\n\
 %!assert (str2double ("1e-3 + i*.25"), 1e-3 + 0.25i)
 %!assert (str2double (["2 + j";"1.25e-3";"-05"]), [2+i; 1.25e-3; -5])
 %!assert (str2double ({"2 + j","1.25e-3","-05"}), [2+i, 1.25e-3, -5])
+%!assert (str2double (1), NaN)
 %!assert (str2double ("Hello World"), NaN)
 %!assert (str2double ("NaN"), NaN)
 %!assert (str2double ("NA"), NA)
@@ -302,5 +314,8 @@ returned.\n\
 %!assert (str2double ("NaN + Inf*i"), complex (NaN, Inf))
 %!assert (str2double ("Inf - Inf*i"), complex (Inf, -Inf))
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
+%!assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i])
+%!assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!assert (str2double (zeros(3,1,2)), NaN (3,1,2))
 
 */

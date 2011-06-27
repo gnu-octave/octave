@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include common.mk
+include build-aux/common.mk
 
 ## Avoid making multiple subdirs in parallel which can lead 
 ## to a confusing error message stream
@@ -36,37 +36,33 @@ EXTRA_DIST = \
   INSTALL \
   INSTALL.OCTAVE \
   NEWS \
-  NEWS.1 \
-  NEWS.2 \
-  NEWS.3 \
-  OLD-ChangeLogs/ChangeLog \
-  OLD-ChangeLogs/ChangeLog.1 \
-  OLD-ChangeLogs/doc-ChangeLog \
-  OLD-ChangeLogs/libcruft-ChangeLog \
-  OLD-ChangeLogs/liboctave-ChangeLog \
-  OLD-ChangeLogs/scripts-ChangeLog \
-  OLD-ChangeLogs/src-ChangeLog \
-  OLD-ChangeLogs/test-ChangeLog \
-  PROJECTS \
   README \
-  README.Cygwin \
-  README.Linux \
-  README.MacOS \
-  README.Windows \
-  README.kpathsea \
   autogen.sh \
-  bootstrap \
-  bootstrap.conf \
-  gdbinit \
-  missing \
-  mk-opts.pl \
-  mkinstalldirs \
-  mkoctfile.cc.in \
-  mkoctfile.in \
-  move-if-change \
-  octave-config.cc.in \
-  octave-config.in \
-  octave-sh \
+  build-aux/bootstrap \
+  build-aux/bootstrap.conf \
+  build-aux/mk-opts.pl \
+  build-aux/mkinstalldirs \
+  build-aux/move-if-change \
+  etc/NEWS.1 \
+  etc/NEWS.2 \
+  etc/NEWS.3 \
+  etc/OLD-ChangeLogs/ChangeLog \
+  etc/OLD-ChangeLogs/ChangeLog.1 \
+  etc/OLD-ChangeLogs/doc-ChangeLog \
+  etc/OLD-ChangeLogs/libcruft-ChangeLog \
+  etc/OLD-ChangeLogs/liboctave-ChangeLog \
+  etc/OLD-ChangeLogs/scripts-ChangeLog \
+  etc/OLD-ChangeLogs/src-ChangeLog \
+  etc/OLD-ChangeLogs/test-ChangeLog \
+  etc/PROJECTS \
+  etc/README.Cygwin \
+  etc/README.Linux \
+  etc/README.MacOS \
+  etc/README.MinGW \
+  etc/README.Windows \
+  etc/README.gnuplot \
+  etc/README.kpathsea \
+  etc/gdbinit \
   run-octave.in
 
 include m4/module.mk
@@ -80,30 +76,7 @@ dist-hook:
 	echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
 endif
 
-if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-bin_PROGRAMS = \
-  mkoctfile \
-  octave-config
-
-mkoctfile_SOURCES =
-nodist_mkoctfile_SOURCES = mkoctfile.cc
-
-octave_config_SOURCES =
-nodist_octave_config_SOURCES = octave-config.cc
-
-BUILT_SOURCES = \
-  mkoctfile.cc \
-  octave-config.cc \
-  run-octave
-
-else
-bin_SCRIPTS = \
-  mkoctfile \
-  octave-config
-
-BUILT_SOURCES = \
-  run-octave
-endif
+BUILT_SOURCES = run-octave
 
 noinst_SCRIPTS = run-octave
 
@@ -112,15 +85,17 @@ INFO_FILES = \
   BUGS \
   INSTALL.OCTAVE
 
-CLEANFILES = $(bin_PROGRAMS) $(bin_SCRIPTS) $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES)
 
-DISTCLEANFILES = $(INFO_FILES) .gdbinit 
+DISTCLEANFILES = .gdbinit 
+
+MAINTAINERCLEANFILES = $(BUILT_DISTFILES)
 
 CONFIG_FILES = @ac_config_headers@ @ac_config_files@
 
 nodist_octinclude_HEADERS = config.h
 
-all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
+all-local: $(noinst_SCRIPTS) $(INFO_FILES) .gdbinit
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""
@@ -132,30 +107,15 @@ all-local: $(bin_PROGRAMS) $(bin_SCRIPTS) $(noinst_SCRIPTS) $(INFO_FILES) .gdbin
 check: all
 	$(MAKE) -C test check
 
-if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-octave-config.cc: octave-config.cc.in Makefile
-	@$(do_subst_default_vals)
-
-mkoctfile.cc: mkoctfile.cc.in Makefile
-	@$(do_subst_config_vals)
-else
-octave-config: octave-config.in Makefile
-	@$(do_subst_default_vals)
-	chmod a+rx $@
-
-mkoctfile: mkoctfile.in Makefile
-	@$(do_subst_config_vals)
-	chmod a+rx $@
-endif
-
 run-octave: run-octave.in Makefile
 	@$(do_subst_script_vals)
 	chmod a+rx "$@"
 
-.gdbinit: gdbinit
-	if [ -f .gdbinit ]; then \
+.gdbinit: etc/gdbinit
+	@if [ -f .gdbinit ]; then \
 	  echo "refusing to overwrite .gdbinit with newer version from $<" 1>&2; \
 	else \
+	  echo "Installing .gdbinit from version at $<" ; \
 	  cp $< $@; \
 	fi
 
@@ -164,7 +124,7 @@ AUTHORS BUGS INSTALL.OCTAVE:
 .PHONY: AUTHORS BUGS INSTALL.OCTAVE
 
 ChangeLog:
-	(cd $(srcdir); hg log --style=changelog.tmpl --prune=b0e60ad4ae26ec2ca3567a17b29a53e0cd2051d8 --branch=`hg branch`; echo ""; echo "See the files in the OLD-ChangeLogs directory for older changes") > $@.t
+	(cd $(srcdir); hg log --style=build-aux/changelog.tmpl --prune=b0e60ad4ae26 --only-branch=`hg branch`; echo ""; echo "See the files in the directory etc/OLD-ChangeLogs for changes before 2011-04-19") > $@.t
 	mv $@.t $@
 .PHONY: ChangeLog
 
@@ -185,36 +145,3 @@ installdirs-local:
 	$(MKDIR_P) $(addprefix $(DESTDIR), $(DIRS_TO_MAKE))
 
 install-data-local: installdirs-local
-
-install-exec-hook: make-version-links
-
-uninstall-local: remove-version-links
-
-if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-make-version-links:
-	cd $(DESTDIR)$(bindir) && \
-	for f in $(basename $(bin_PROGRAMS)); do \
-	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
-	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
-	done
-
-remove-version-links:
-	for f in $(basename $(bin_PROGRAMS)); do \
-	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
-	done
-else
-make-version-links:
-	cd $(DESTDIR)$(bindir) && \
-	for f in $(basename $(bin_SCRIPTS)); do \
-	  mv $$f $$f-$(version) && \
-	    $(LN_S) $$f-$(version) $$f; \
-	done
-
-remove-version-links:
-	for f in $(basename $(bin_SCRIPTS)); do \
-	  rm -f $(DESTDIR)$(bindir)/$$f-$(version); \
-	done
-endif
-
-.PHONY: make-version-links remove-version-links
-

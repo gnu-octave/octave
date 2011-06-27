@@ -36,6 +36,62 @@ Summary of important user-visible changes for version 3.6:
       studentize
       sylvester_matrix
 
+Summary of important user-visible changes for version 3.4.2:
+-----------------------------------------------------------
+
+ ** Octave 3.2.4 fixes some minor installation problems that affected
+    version 3.4.1.
+
+Summary of important user-visible changes for version 3.4.1:
+-----------------------------------------------------------
+
+ ** Octave 3.4.1 is primarily a bug fixing release.
+
+ ** IMPORTANT note about binary incompatibility in this release:
+
+    Binary compatibility for all 3.4.x releases was originally planned,
+    but this is impossible for the 3.4.1 release due to a bug in the way
+    shared libraries were built in Octave 3.4.0.  Because of this bug,
+    .oct files built for Octave 3.4.0 must be recompiled before they
+    will work with Octave 3.4.1.
+
+    Given that there would be binary incompatibilities with shared
+    libraries going from Octave 3.4.0 to 3.4.1, the following
+    incompatible changes were also made in this release:
+
+      * The Perl Compatible Regular Expression (PCRE) library is now
+        required to build Octave.
+
+      * Octave's libraries and .oct files are now installed in
+        subdirectories of $libdir instead of $libexecdir.
+
+    Any future Octave 3.4.x release versions should remain binary
+    compatible with Octave 3.4.1 as proper library versioning is now
+    being used as recommended by the libtool manual.
+
+ ** The following functions have been deprecated in Octave 3.4.1 and will
+    be removed from Octave 3.8 (or whatever version is the second major
+    release after 3.4):
+
+      cquad  is_duplicate_entry  perror  strerror
+
+ ** The following functions are new in 3.4.1:
+
+      colstyle  gmres  iscolumn  isrow  mgorth  nproc  rectangle
+
+ ** The get_forge_pkg function is now private.
+
+ ** The rectangle_lw, rectangle_sw, triangle_lw, and triangle_sw
+    functions are now private.
+
+ ** The logistic_regression_derivatives and logistic_regression_likelihood
+    functions are now private.
+
+ ** ChangeLog files in the Octave sources are no longer maintained
+    by hand.  Instead, there is a single ChangeLog file generated from
+    the Mercurial version control commit messages.  Older ChangeLog
+    information can be found in the etc/OLD-ChangeLogs directory in the
+    source distribution.
 
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------
@@ -167,7 +223,7 @@ Summary of important user-visible changes for version 3.4:
 
     Moreover, when unary operators occur in expressions, Octave will
     also try to do the operation in-place if it's argument is a
-    temporary expresssion.
+    temporary expression.
 
  ** The effect of comparison operators (<, >, <=, and >=) applied to
     complex numbers has changed to be consistent with the strict
@@ -256,6 +312,11 @@ Summary of important user-visible changes for version 3.4:
     of `strcat' has been vectorized and is now much more efficient when
     many strings are concatenated.  The `strcmpi' and `strncmpi'
     functions are now built-in functions, providing better performance.
+
+ ** 'str2double' now has a compiled implementation and the API conforms
+    to Matlab.  The additional Octave-specific features of returning a
+    boolean matrix indicating which elements were successfully converted
+    has been removed.
  
  ** Matlab-style ignoring input and output function arguments using
     tilde (~) is now supported.  Ignored output arguments may be
@@ -355,15 +416,15 @@ Summary of important user-visible changes for version 3.4:
     exponent where the exponent is a multiple of 3.
 
  ** The following functions are new in Octave 3.4:
-      accumdim   divergence   merge        ppjumps    textread
-      bitpack    erfcx        nfields      pqpnonneg  uigetdir
-      bitunpack  fileread     nth_element  quadcc     uigetfile
-      blkmm      fminbnd      onCleanup    randi      uiputfile
-      cbrt       fskipl       pbaspect     repelems   uimenu
-      curl       ifelse       pie3         reset      whitebg
-      chop       ishermitian  powerset     rsf2csf 
-      colstyle   isindex      ppder        saveas  
-      daspect    luupdate     ppint        strread 
+      accumdim    erfcx        nfields      pqpnonneg  uigetdir
+      bitpack     fileread     nth_element  quadcc     uigetfile
+      bitunpack   fminbnd      onCleanup    randi      uiputfile
+      blkmm       fskipl       pbaspect     repelems   uimenu           
+      cbrt        ifelse       pie3         reset      whitebg          
+      curl        ishermitian  powerset     rsf2csf            
+      chop        isindex      ppder        saveas             
+      daspect     luupdate     ppint        strread                     
+      divergence  merge        ppjumps      textread             
 
  ** Using the image function to view images with external programs such
     as display, xv, and xloadimage is no longer supported.  The
@@ -465,9 +526,9 @@ Summary of important user-visible changes for version 3.4:
     be removed from Octave 3.8 (or whatever version is the second major
     release after 3.4):
 
-      autocor  cellidx   fstat    is_global  replot     values
-      autocov  cquad     gammai   krylovb    saveimage  
-      betai    dispatch  glpkmex  perror     strerror 
+      autocor  cellidx   gammai     krylovb  saveimage 
+      autocov  dispatch  glpkmex    perror   strerror  
+      betai    fstat     is_global  replot   values    
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
@@ -691,7 +752,7 @@ Summary of important user-visible changes for version 3.2:
     The performance of sort has been improved, especially when sorting
     indices are requested.  An efficient built-in issorted
     implementation was added.  The sortrows function now uses a more
-    efficient algorithm, especially in the homegeneous case.  The lookup
+    efficient algorithm, especially in the homogeneous case.  The lookup
     function is now a built-in function performing a binary search,
     optimized for long runs of close elements.  Lookup also works with
     cell arrays of strings.

@@ -27,7 +27,7 @@ dnl Copyright (C) 1993-2011 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT([GNU Octave], [3.5.0+], [bug@octave.org], [octave])
+AC_INIT([GNU Octave], [3.5.0+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
@@ -80,10 +80,11 @@ case "$canonical_host_type" in
   ;;
   *-*-mingw*)
     AC_MSG_CHECKING([for MSVC compiler])
-    AC_PREPROC_IFELSE([
+    AC_PREPROC_IFELSE([AC_LANG_SOURCE([
 #ifndef _MSC_VER
 #error "Not MSVC compiler"
-#endif], have_msvc=yes, have_msvc=no)
+#endif
+])], have_msvc=yes, have_msvc=no)
     AC_MSG_RESULT([$have_msvc])
   ;;
 esac
@@ -125,7 +126,7 @@ OCTAVE_SET_DEFAULT(localapifcnfiledir,
   '$(datadir)/octave/site/$(api_version)/m')
 OCTAVE_SET_DEFAULT(localverfcnfiledir, '$(datadir)/octave/$(version)/site/m')
 OCTAVE_SET_DEFAULT(octetcdir, '$(datadir)/octave/$(version)/etc')
-OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave-$(version)')
+OCTAVE_SET_DEFAULT(octlibdir, '$(libdir)/octave/$(version)')
 OCTAVE_SET_DEFAULT(archlibdir,
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localarchlibdir,
@@ -135,13 +136,13 @@ OCTAVE_SET_DEFAULT(localapiarchlibdir,
 OCTAVE_SET_DEFAULT(localverarchlibdir,
   '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(octfiledir,
-  '$(libexecdir)/octave/$(version)/oct/$(canonical_host_type)')
+  '$(libdir)/octave/$(version)/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localoctfiledir,
-  '$(libexecdir)/octave/site/oct/$(canonical_host_type)')
+  '$(libdir)/octave/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localapioctfiledir,
-  '$(libexecdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
+  '$(libdir)/octave/site/oct/$(api_version)/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localveroctfiledir,
-  '$(libexecdir)/octave/$(version)/site/oct/$(canonical_host_type)')
+  '$(libdir)/octave/$(version)/site/oct/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
 
 ### Find pkg-config executable (sets $PKG_CONFIG)
@@ -899,7 +900,7 @@ if test -n "$OPENGL_LIBS"; then
     save_CFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS $FLTK_CFLAGS"
     AC_COMPILE_IFELSE(
-      AC_LANG_PROGRAM([[#include <FL/gl.h>]], [[int nothing = 0;]]),
+      [AC_LANG_PROGRAM([[#include <FL/gl.h>]], [[int nothing = 0;]])],
         [
          AC_MSG_RESULT([no])
          warn_fltk_opengl="FLTK does not have OpenGL support.  Native graphics will be disabled."
@@ -987,8 +988,9 @@ if test "x$ax_blas_f77_func_ok" = "xno"; then
       octave_blaswrap_save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS -DUSE_BLASWRAP"
       AC_LANG_PUSH(C)
-      AC_COMPILE_IFELSE(
-       [#include "libcruft/misc/blaswrap.c"],
+      AC_COMPILE_IFELSE([AC_LANG_SOURCE([
+#include "libcruft/misc/blaswrap.c"
+])],
        [mv conftest.$ac_objext blaswrap.$ac_objext
         octave_blaswrap_save_BLAS_LIBS="$BLAS_LIBS"
         BLAS_LIBS="blaswrap.$ac_objext -framework vecLib"
@@ -1642,17 +1644,17 @@ OCTAVE_SMART_PUTENV
 case "$canonical_host_type" in
   *-*-msdosmsvc | *-*-mingw*)
     AC_MSG_CHECKING([for required _WIN32_WINNT])
-    AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <windows.h>
 #if _WIN32_WINNT < 0x0403
 #error "Wrong version"
-#endif]], []),
+#endif]], [])],
       AC_MSG_RESULT([none]), [
         AC_DEFINE(_WIN32_WINNT, 0x0403, [Define to 0x0403 to access InitializeCriticalSectionAndSpinCount])
         AC_MSG_RESULT([0x0403])])
     AC_MSG_CHECKING([whether _USE_MATH_DEFINES needs to be defined])
-    AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[#include <math.h>]],
-[[int x = M_LN2;]]),
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <math.h>]],
+[[int x = M_LN2;]])],
       AC_MSG_RESULT([no]), [
         AC_DEFINE(_USE_MATH_DEFINES, 1, [Define if your system needs it to define math constants like M_LN2])
         AC_MSG_RESULT([yes])])

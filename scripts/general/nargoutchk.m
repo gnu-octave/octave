@@ -55,16 +55,12 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 
   if (strcmpi (outtype, "string"))
     msg = msg.message;
-  else
-    if (isempty (msg.message))
-      msg = struct ([]);
-    endif
-    ## FIXME: remove the error below if error is modified to accept
-    ## struct inputs
-    error ("nargoutchk: error does not yet support struct inputs");
+  elseif (isempty (msg.message))
+    msg = struct ();
   endif
 
 endfunction
+
 
 ## Tests
 %!shared stmin, stmax
@@ -78,7 +74,7 @@ endfunction
 %!assert (nargoutchk (0, 1, 2), "too many output arguments")
 %!assert (nargoutchk (0, 1, 2, "string"), "too many output arguments")
 ## Struct outputs
-#%!assert (nargoutchk (0, 1, 0, "struct"), struct([]))
-#%!assert (nargoutchk (0, 1, 1, "struct"), struct([]))
+#%!assert (nargoutchk (0, 1, 0, "struct"), struct())
+#%!assert (nargoutchk (0, 1, 1, "struct"), struct())
 #%!assert (nargoutchk (1, 1, 0, "struct"), stmin)
 #%!assert (nargoutchk (0, 1, 2, "struct"), stmax)

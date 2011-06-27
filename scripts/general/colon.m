@@ -34,5 +34,7 @@
 ## @end deftypefn
 
 function r = colon (varargin)
-  error ("colon: not defined for class \"%s\"", class(varargin{1}));
+  if (nargin != 0)
+    error ("colon: not defined for class \"%s\"", class(varargin{1}));
+  endif
 endfunction

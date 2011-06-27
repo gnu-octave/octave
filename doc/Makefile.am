@@ -18,14 +18,13 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 ## Avoid making multiple subdirs in parallel which can lead 
 ## to a confusing error message stream
 .NOTPARALLEL:
 
 EXTRA_DIST = \
-  ChangeLog \
   Makefile.am \
   texinfo.tex \
   texmf.cnf

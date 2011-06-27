@@ -54,7 +54,10 @@ DEFUNOP (scalar_transpose, scalar_struct)
   return octave_value (v.scalar_map_value ());
 }
 
-DEFNDCATOP_FN (struct_struct, struct, struct, map, map, concat)
+DEFNDCATOP_FN (s_s_concat, struct, struct, map, map, concat)
+DEFNDCATOP_FN (s_ss_concat, struct, scalar_struct, map, map, concat)
+DEFNDCATOP_FN (ss_s_concat, scalar_struct, struct, map, map, concat)
+DEFNDCATOP_FN (ss_ss_concat, scalar_struct, scalar_struct, map, map, concat)
 
 static octave_value
 oct_catop_struct_matrix (octave_base_value& a1, const octave_base_value& a2,
@@ -95,7 +98,11 @@ install_struct_ops (void)
   INSTALL_UNOP (op_transpose, octave_scalar_struct, scalar_transpose);
   INSTALL_UNOP (op_hermitian, octave_scalar_struct, scalar_transpose);
 
-  INSTALL_CATOP (octave_struct, octave_struct, struct_struct);
+  INSTALL_CATOP (octave_struct, octave_struct, s_s_concat);
+  INSTALL_CATOP (octave_struct, octave_scalar_struct, s_ss_concat)
+  INSTALL_CATOP (octave_scalar_struct, octave_struct, ss_s_concat)
+  INSTALL_CATOP (octave_scalar_struct, octave_scalar_struct, ss_ss_concat)
+
   INSTALL_CATOP (octave_struct, octave_matrix, struct_matrix);
   INSTALL_CATOP (octave_matrix, octave_struct, matrix_struct);
 }

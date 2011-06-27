@@ -18,14 +18,13 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc
 
 EXTRA_DIST = \
-  ChangeLog \
   config-ops.sh \
   mk-ops.awk \
   mx-op-inc.mk \
@@ -526,7 +525,17 @@ liboctave_la_CPPFLAGS = \
   $(ARPACK_CPPFLAGS) \
   $(AM_CPPFLAGS)
 
-liboctave_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
+# Increment these as needed and according to the rules in the libtool
+# manual:
+liboctave_current = 0
+liboctave_revision = 0
+liboctave_age = 0
+
+liboctave_version_info = $(liboctave_current):$(liboctave_revision):$(liboctave_age)
+
+liboctave_la_LDFLAGS = \
+  -version-info $(liboctave_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
   $(SPARSE_XLDFLAGS) \
   $(ARPACK_LDFLAGS) \
@@ -542,9 +551,9 @@ octinclude_HEADERS = \
 nodist_octinclude_HEADERS = \
   $(BUILT_INCS)
 
-$(OPT_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
+$(OPT_INC) : %.h : %.in $(top_srcdir)/build-aux/mk-opts.pl
 	@echo making $@ from $<
-	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
+	@$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t
 	mv $@-t $@
 
 $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops

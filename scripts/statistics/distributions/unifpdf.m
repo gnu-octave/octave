@@ -53,7 +53,7 @@ function pdf = unifpdf (x, a, b)
     pdf(k) = NaN;
   endif
 
-  k = find ((x > a) & (x < b));
+  k = find ((x >= a) & (x <= b));
   if (any (k))
     if (isscalar (a) && isscalar(b))
       pdf(k) = 1 ./ (b - a);

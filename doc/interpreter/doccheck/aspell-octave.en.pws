@@ -50,6 +50,7 @@ BDF
 bdf
 betacdf
 betainv
+betaln
 betapdf
 betarnd
 BFGS
@@ -233,6 +234,7 @@ eq
 equidistributed
 equispaced
 erf
+erfc
 errno
 Errorbar
 errorbar
@@ -631,6 +633,7 @@ perp
 Petzold's
 PGF
 pgm
+PGMRES
 PHP
 pict
 pinv

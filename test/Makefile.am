@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 FCN_FILES = \
   fntests.m \
@@ -72,7 +72,6 @@ test_bc_overloads.m: build_bc_overload_tests.sh bc_overloads_expected
 	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
 
 EXTRA_DIST = \
-  ChangeLog \
   build_sparse_tests.sh \
   build_bc_overload_tests.sh \
   bc_overloads_expected \

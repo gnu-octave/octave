@@ -50,18 +50,18 @@ function pdf = normpdf (x, m, s)
   pdf = zeros (sz);
 
   if (isscalar (m) && isscalar (s))
-    if (find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf)))
+    if (find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf)))
       pdf = NaN (sz);
     else
       pdf = stdnormal_pdf ((x - m) ./ s) ./ s;
     endif
   else
-    k = find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf));
+    k = find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf));
     if (any (k))
       pdf(k) = NaN;
     endif
 
-    k = find (!isinf (m) & !isnan (m) & (s >= 0) & (s < Inf));
+    k = find (!isinf (m) & !isnan (m) & (s > 0) & (s < Inf));
     if (any (k))
       pdf(k) = stdnormal_pdf ((x(k) - m(k)) ./ s(k)) ./ s(k);
     endif

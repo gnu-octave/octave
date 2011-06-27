@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 AM_CPPFLAGS = @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu
 
@@ -34,8 +34,18 @@ libcruft_la_CPPFLAGS = \
   @CRUFT_DLL_DEFS@ \
   $(AM_CPPFLAGS)
 
+# Increment these as needed and according to the rules in the libtool
+# manual:
+libcruft_current = 0
+libcruft_revision = 0
+libcruft_age = 0
+
+libcruft_version_info = $(libcruft_current):$(libcruft_revision):$(libcruft_age)
+
 libcruft_la_LDFLAGS = \
-  -release $(version) $(NO_UNDEFINED_LDFLAG) @XTRA_CRUFT_SH_LDFLAGS@ \
+  -version-info $(libcruft_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
+  @XTRA_CRUFT_SH_LDFLAGS@ \
   -bindir $(bindir)
 
 libcruft_la_LIBADD = \
@@ -82,7 +92,7 @@ ranlib.def: $(libranlib_la_SOURCES) mkf77def
 	./mkf77def $(srcdir) $(libranlib_la_SOURCES) > $@-t
 	mv $@-t $@
 
-EXTRA_DIST += ChangeLog mkf77def.in
+EXTRA_DIST += mkf77def.in
 
 DISTCLEANFILES = cruft.def ranlib.def
 

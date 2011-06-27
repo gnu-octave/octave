@@ -10,8 +10,10 @@ else
   top_srcdir="../.."
 fi
 
+move_if_change="$top_srcdir/build-aux/move-if-change"
+
 dld_dir=$top_srcdir/src/DLD-FUNCTIONS
 
 $AWK -f $dld_dir/config-module.awk < $dld_dir/module-files > $dld_dir/module.mk-t
 
-$top_srcdir/move-if-change $dld_dir/module.mk-t $dld_dir/module.mk
+$move_if_change $dld_dir/module.mk-t $dld_dir/module.mk

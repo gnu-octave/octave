@@ -3206,6 +3206,11 @@ public:
     bool x2Dtop, y2Dright, layer2Dtop;
     bool xySym, xyzSym, zSign, nearhoriz;
 
+#if HAVE_FREETYPE
+    // freetype renderer, used for calculation of text (tick labels) size
+    ft_render text_renderer;
+#endif
+
     void set_text_child (handle_property& h, const std::string& who,
                          const octave_value& v);
 
@@ -3288,11 +3293,11 @@ public:
       radio_property cameraviewanglemode , "{auto}|manual"
       array_property currentpoint , Matrix (2, 3, 0.0)
       radio_property drawmode , "{normal}|fast"
-      radio_property fontangle , "{normal}|italic|oblique"
-      string_property fontname , OCTAVE_DEFAULT_FONTNAME
-      double_property fontsize , 10
+      radio_property fontangle u , "{normal}|italic|oblique"
+      string_property fontname u , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize u , 10
       radio_property fontunits SU , "{points}|normalized|inches|centimeters|pixels"
-      radio_property fontweight , "{normal}|light|demi|bold"
+      radio_property fontweight u , "{normal}|light|demi|bold"
       radio_property gridlinestyle , "-|--|{:}|-.|none"
       string_array_property linestyleorder , "-"
       double_property linewidth , 0.5
@@ -3412,6 +3417,12 @@ public:
         if (zticklabelmode.is ("auto"))
           calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
       }
+
+    void update_font (void);
+    void update_fontname (void) { update_font (); }
+    void update_fontsize (void) { update_font (); }
+    void update_fontangle (void) { update_font (); }
+    void update_fontweight (void) { update_font (); }
 
     void sync_positions (const Matrix& linset);
     void sync_positions (void);
@@ -3716,7 +3727,7 @@ public:
     Matrix get_extent_matrix (void) const;
     const uint8NDArray& get_pixels (void) const { return pixels; }
 #if HAVE_FREETYPE
-    // freetype render, used for text rendering
+    // freetype renderer, used for calculation of text size
     ft_render renderer;
 #endif
 
@@ -3726,6 +3737,7 @@ public:
         position.add_constraint (dim_vector (1, 2));
         position.add_constraint (dim_vector (1, 3));
         cached_units = get_units ();
+        update_font ();
       }
 
   private:
@@ -3761,13 +3773,14 @@ public:
     void update_horizontalalignmentmode (void) { request_autopos (); }
     void update_verticalalignmentmode (void) { request_autopos (); }
 
+    void update_font (void);
     void update_string (void) { request_autopos (); update_text_extent (); }
     void update_rotation (void) { update_text_extent (); }
-    void update_color (void) { update_text_extent (); }
-    void update_fontname (void) { update_text_extent (); }
-    void update_fontsize (void) { update_text_extent (); }
-    void update_fontangle (void) { update_text_extent (); }
-    void update_fontweight (void) { update_text_extent (); }
+    void update_color (void) { update_font (); }
+    void update_fontname (void) { update_font (); update_text_extent (); }
+    void update_fontsize (void) { update_font (); update_text_extent (); }
+    void update_fontangle (void) { update_font (); update_text_extent (); }
+    void update_fontweight (void) { update_font (); update_text_extent (); }
     void update_interpreter (void) { update_text_extent (); }
     void update_horizontalalignment (void) { update_text_extent (); }
     void update_verticalalignment (void) { update_text_extent (); }

@@ -127,6 +127,7 @@ tree_anon_fcn_handle::rvalue1 (int)
     }
 
   uf->mark_as_inline_function ();
+  uf->stash_fcn_location (line (), column ());
 
   octave_value ov_fcn (uf);
 

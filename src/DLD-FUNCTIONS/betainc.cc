@@ -57,7 +57,7 @@ betainc (x, a, b) = -----------    | t^(a-1) (1-t)^(b-1) dt.\n\
 \n\
 @end ifnottex\n\
 \n\
-If x has more than one component, both @var{a} and @var{b} must be\n\
+If @var{x} has more than one component, both @var{a} and @var{b} must be\n\
 scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of\n\
 compatible dimensions.\n\
 @end deftypefn")

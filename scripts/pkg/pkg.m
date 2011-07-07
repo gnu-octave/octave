@@ -266,8 +266,9 @@ function [local_packages, global_packages] = pkg (varargin)
   endif
 
   available_actions = {"list", "install", "uninstall", "load", ...
-                       "unload", "prefix", "local_list", ...
-                       "global_list", "rebuild", "build","describe"};
+                      "unload", "prefix", "local_list", ...
+                       "global_list", "rebuild", "build", ...
+                       "describe", "update"};
   ## Handle input
   if (length (varargin) == 0 || ! iscellstr (varargin))
     print_usage ();
@@ -491,6 +492,21 @@ function [local_packages, global_packages] = pkg (varargin)
         otherwise
           error ("you can request at most two outputs when calling 'pkg describe'");
       endswitch
+
+    case "update"
+      if (nargout == 0)
+        installed_pkgs_lst = installed_packages (local_list, global_list);
+        for i = 1:length (installed_pkgs_lst)
+          installed_pkg_name = installed_pkgs_lst{i}.name;
+          installed_pkg_version = installed_pkgs_lst{i}.version;
+          forge_pkg_version = get_forge_pkg (installed_pkg_name);
+          if (compare_versions (forge_pkg_version, installed_pkg_version, ">"))
+            feval (@pkg, "install", "-forge", installed_pkg_name);
+          endif
+        endfor
+      else
+        error ("no output arguments available");
+      endif
 
     otherwise
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");

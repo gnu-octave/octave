@@ -439,6 +439,8 @@ w32_sigint_handler (DWORD sig)
         break;
 
       case CTRL_CLOSE_EVENT:
+        clean_up_and_exit (0);
+        break;
       case CTRL_LOGOFF_EVENT:
       case CTRL_SHUTDOWN_EVENT:
       default:

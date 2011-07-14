@@ -61,6 +61,7 @@ general_FCN_FILES = \
   general/polyarea.m \
   general/postpad.m \
   general/prepad.m \
+  general/profile.m \
   general/quadgk.m \
   general/quadl.m \
   general/quadv.m \

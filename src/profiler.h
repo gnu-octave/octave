@@ -23,11 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_profiler_h)
 #define octave_profiler_h 1
 
-#include <stack>
 #include <map>
+#include <set>
+#include <vector>
 
 class octave_function;
-class Cell;
+class octave_value;
 
 class
 OCTAVE_API
@@ -68,16 +69,43 @@ public:
 
   void reset (void);
 
-  Cell get_data (void) const;
+  octave_value get_data (void) const;
 
 private:
 
+  typedef std::set<std::string> function_set;
+  typedef std::map<std::string, octave_idx_type> fcn_index_map;
+
+  // Store some statistics data collected for a function.
+  class stats
+  {
+    private:
+
+      double time;
+      unsigned calls;
+
+      bool recursive;
+
+      function_set parents;
+      function_set children;
+
+    public:
+
+      stats ();
+
+      static octave_value
+      function_set_value (const function_set&, const fcn_index_map&);
+
+      friend class profile_data_accumulator;
+  };
+
   bool enabled;
 
-  std::stack<const octave_function*> call_stack;
+  typedef std::vector<const octave_function*> call_stack_type;
+  call_stack_type call_stack;
 
-  typedef std::map<std::string, double> timing_map;
-  timing_map times;
+  typedef std::map<std::string, stats> stats_map;
+  stats_map data;
 
   // Store last timestamp we had, when the currently active function was called.
   double last_time;

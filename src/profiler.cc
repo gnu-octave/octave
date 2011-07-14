@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
-#include "Cell.h"
 #include "defun.h"
 #include "oct-time.h"
 #include "ov-fcn.h"
@@ -53,8 +52,35 @@ profile_data_accumulator::enter::~enter ()
     acc.exit_function (*fcn);
 }
 
+profile_data_accumulator::stats::stats ()
+  : time (0.0), calls (0), recursive (false),
+    parents (), children ()
+{}
+
+// With the help of a mapping name -> index, convert a function_set list
+// to an Octave array of indices.
+octave_value
+profile_data_accumulator::stats::function_set_value (const function_set& list,
+                                                     const fcn_index_map& idx)
+{
+  const octave_idx_type n = list.size ();
+
+  RowVector retval (n);
+  octave_idx_type i = 0;
+  for (function_set::const_iterator p = list.begin (); p != list.end (); ++p)
+    {
+      fcn_index_map::const_iterator q = idx.find (*p);
+      assert (q != idx.end ());
+      retval (i) = q->second;
+      ++i;
+    }
+  assert (i == n);
+
+  return retval;
+}
+
 profile_data_accumulator::profile_data_accumulator ()
-  : enabled (false), call_stack (), times (), last_time (-1.0)
+  : enabled (false), call_stack (), data (), last_time (-1.0)
 {}
 
 void
@@ -65,7 +91,7 @@ profile_data_accumulator::set_active (bool value)
   if (value)
     {
       while (!call_stack.empty ())
-        call_stack.pop ();
+        call_stack.pop_back ();
     }
 
   enabled = value;
@@ -82,7 +108,26 @@ profile_data_accumulator::enter_function (const octave_function& fcn)
   if (!call_stack.empty ())
     add_current_time ();
 
-  call_stack.push (&fcn);
+  // Update non-timing related data for the function entered.
+  const std::string name = fcn.profiler_name ();
+  stats& entry = data[name];
+  ++entry.calls;
+  if (!call_stack.empty ())
+    {
+      const std::string parent_name = call_stack.back ()->profiler_name ();
+      entry.parents.insert (parent_name);
+      data[parent_name].children.insert (name);
+    }
+  if (!entry.recursive)
+    for (call_stack_type::iterator i = call_stack.begin ();
+         i != call_stack.end (); ++i)
+      if (*i == &fcn)
+        {
+          entry.recursive = true;
+          break;
+        }
+
+  call_stack.push_back (&fcn);
   last_time = query_time ();
 }
 
@@ -90,7 +135,7 @@ void
 profile_data_accumulator::exit_function (const octave_function& fcn)
 {
   assert (!call_stack.empty ());
-  assert (&fcn == call_stack.top ());
+  assert (&fcn == call_stack.back ());
 
   // Usually, if we are disabled this function is not even called.  But the
   // call disabling the profiler is an exception.  So also check here
@@ -98,7 +143,7 @@ profile_data_accumulator::exit_function (const octave_function& fcn)
   if (is_active ())
     add_current_time ();
 
-  call_stack.pop ();
+  call_stack.pop_back ();
 
   // If this was an "inner call", we resume executing the parent function
   // up the stack.  So note the start-time for this!
@@ -114,27 +159,58 @@ profile_data_accumulator::reset (void)
       return;
     }
 
-  times.clear ();
+  data.clear ();
   last_time = -1.0;
 }
 
-Cell
+octave_value
 profile_data_accumulator::get_data (void) const
 {
-  const int n = times.size ();
+  const octave_idx_type n = data.size ();
 
-  Cell retval (1, n);
-  int i = 0;
-  for (timing_map::const_iterator p = times.begin (); p != times.end (); ++p)
+  // For the parent/child data, we need to map function key-names
+  // to the indices they correspond to in the output array.  Find them out
+  // in a preparation step.
+  fcn_index_map fcn_indices;
+  octave_idx_type i = 0;
+  for (stats_map::const_iterator p = data.begin (); p != data.end (); ++p)
     {
-      octave_scalar_map entry;
-
-      entry.contents ("name") = octave_value (p->first);
-      entry.contents ("time") = octave_value (p->second);
-
-      retval (i++) = entry;
+      fcn_indices[p->first] = i + 1;
+      ++i;
     }
   assert (i == n);
+
+  Cell rv_names (n, 1);
+  Cell rv_times (n, 1);
+  Cell rv_calls (n, 1);
+  Cell rv_recursive (n, 1);
+  Cell rv_parents (n, 1);
+  Cell rv_children (n, 1);
+
+  i = 0;
+  for (stats_map::const_iterator p = data.begin (); p != data.end (); ++p)
+    {
+      const stats& entry = p->second;
+
+      rv_names (i) = octave_value (p->first);
+      rv_times (i) = octave_value (entry.time);
+      rv_calls (i) = octave_value (entry.calls);
+      rv_recursive (i) = octave_value (entry.recursive);
+      rv_parents (i) = stats::function_set_value (entry.parents, fcn_indices);
+      rv_children (i) = stats::function_set_value (entry.children, fcn_indices);
+
+      ++i;
+    }
+  assert (i == n);
+
+  Octave_map retval;
+
+  retval.assign ("FunctionName", rv_names);
+  retval.assign ("TotalTime", rv_times);
+  retval.assign ("NumCalls", rv_calls);
+  retval.assign ("IsRecursive", rv_recursive);
+  retval.assign ("Parents", rv_parents);
+  retval.assign ("Children", rv_children);
 
   return retval;
 }
@@ -153,19 +229,21 @@ profile_data_accumulator::add_current_time (void)
   assert (last_time >= 0.0 && last_time <= t);
 
   assert (!call_stack.empty ());
-  const std::string name = call_stack.top ()->profiler_name ();
+  const std::string name = call_stack.back ()->profiler_name ();
 
-  // If the key is not yet present in the map, it is constructed
-  // with default value 0.
-  times[name] += t - last_time;
+  // The entry for this function should already be created; namely
+  // when entering the function via the non-timing data collection!
+  stats_map::iterator pos = data.find (name);
+  assert (pos != data.end ());
+  pos->second.time += t - last_time;
 }
 
 profile_data_accumulator profiler;
 
-DEFUN (profiler_enable, args, nargout,
+DEFUN (__profiler_enable, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} profiler_enable (enabled)\n\
-Enable or disable the profiler data collection.\n\
+@deftypefn {Function File} __profiler_enable ()\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -187,10 +265,10 @@ Enable or disable the profiler data collection.\n\
   return retval;
 }
 
-DEFUN (profiler_reset, args, nargout,
+DEFUN (__profiler_reset, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} profiler_reset ()\n\
-Clear all collected profiling data.\n\
+@deftypefn {Function File} __profiler_reset ()\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -204,10 +282,10 @@ Clear all collected profiling data.\n\
   return retval;
 }
 
-DEFUN (profiler_data, args, nargout,
+DEFUN (__profiler_data, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} data = profiler_data ()\n\
-Query the timings collected by the profiler.\n\
+@deftypefn {Function File} __profiler_data ()\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;

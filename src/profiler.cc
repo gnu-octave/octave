@@ -123,7 +123,7 @@ profile_data_accumulator::get_data (void) const
 {
   const int n = times.size ();
 
-  Cell result (1, n);
+  Cell retval (1, n);
   int i = 0;
   for (timing_map::const_iterator p = times.begin (); p != times.end (); ++p)
     {
@@ -132,11 +132,11 @@ profile_data_accumulator::get_data (void) const
       entry.contents ("name") = octave_value (p->first);
       entry.contents ("time") = octave_value (p->second);
 
-      result (i++) = entry;
+      retval (i++) = entry;
     }
   assert (i == n);
 
-  return result;
+  return retval;
 }
 
 double
@@ -168,28 +168,23 @@ DEFUN (profiler_enable, args, nargout,
 Enable or disable the profiler data collection.\n\
 @end deftypefn")
 {
-  // If there is an output argument, return current (if we change the old)
-  // status of the profiler.
-  octave_value_list result;
-  if (nargout > 0)
-    {
-      if (nargout > 1)
-        error ("profiler_enable: too many output arguments requested");
+  octave_value_list retval;
 
-      result(0) = profiler.is_active ();
-    }
-
-  // If there is an input argument, set the status.
   const int nargin = args.length ();
   if (nargin > 0)
     {
       if (nargin > 1)
-        error ("profiler_enable: too many arguments specified");
+        {
+          print_usage ();
+          return retval;
+        }
 
       profiler.set_active (args(0).bool_value ());
     }
 
-  return result;
+  retval(0) = profiler.is_active ();
+
+  return retval;
 }
 
 DEFUN (profiler_reset, args, nargout,
@@ -198,17 +193,15 @@ DEFUN (profiler_reset, args, nargout,
 Clear all collected profiling data.\n\
 @end deftypefn")
 {
-  octave_value_list result;
+  octave_value_list retval;
   const int nargin = args.length ();
 
   if (nargin > 0)
-    error ("profiler_reset: no arguments expected");
-  if (nargout > 0)
-    error ("profiler_reset: no output argument possible");
+    warning ("profiler_reset: ignoring extra arguments");
 
   profiler.reset ();
 
-  return result;
+  return retval;
 }
 
 DEFUN (profiler_data, args, nargout,
@@ -217,15 +210,13 @@ DEFUN (profiler_data, args, nargout,
 Query the timings collected by the profiler.\n\
 @end deftypefn")
 {
-  octave_value_list result;
+  octave_value_list retval;
   const int nargin = args.length ();
 
   if (nargin > 0)
-    error ("profiler_data: no arguments expected");
-  if (nargout != 1)
-    error ("profiler_reset: expected exactly one output argument");
+    warning ("profiler_data: ignoring extra arguments");
 
-  result(0) = profiler.get_data ();
+  retval(0) = profiler.get_data ();
 
-  return result;
+  return retval;
 }

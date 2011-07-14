@@ -52,7 +52,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <curl/curl.h>
 #include <curl/curlver.h>
-#include <curl/types.h>
 #include <curl/easy.h>
 
 static int

@@ -91,16 +91,14 @@ function retval = std (x, opt = 0, dim)
   endif
 
   n = sz(dim);
-  if (n == 1)
+  if (n == 1 || isempty (x))
     if (isa (x, 'single'))
       retval = zeros (sz, 'single');
     else
       retval = zeros (sz);
     endif
-  elseif (numel (x) > 0)
-    retval = sqrt (sumsq (center (x, dim), dim) / (n - 1 + opt));
   else
-    error ("std: X must not be empty");
+    retval = sqrt (sumsq (center (x, dim), dim) / (n - 1 + opt));
   endif
 
 endfunction
@@ -118,11 +116,12 @@ endfunction
 %!assert(std ([1 2], 1), 0.5, 5*eps);
 %!assert(std(1), 0);
 %!assert(std(single(1)), single(0));
+%!assert(std([]), []);
+%!assert(std(ones (1,3,0,2)), ones (1,3,0,2));
 
 %% Test input validation
 %!error std ();
 %!error std (1, 2, 3, 4);
 %!error std (['A'; 'B'])
 %!error std (1, -1);
-%!error std ([], 1);
 

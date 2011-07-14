@@ -20,8 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} pkg @var{command} @var{pkg_name}
 ## @deftypefnx {Command} {} pkg @var{command} @var{option} @var{pkg_name}
-## This command interacts with the package manager.  Different actions will
-## be taken depending on the value of @var{command}.
+## Manage packages (groups of add-on functions) for Octave.  Different actions
+## are available depending on the value of @var{command}.  
+##
+## Available commands:
 ##
 ## @table @samp
 ##
@@ -40,33 +42,43 @@
 ##
 ## @table @code
 ## @item -nodeps
-## The package manager will disable the dependency checking.  That way it
-## is possible to install a package even if it depends on another package
-## that's not installed on the system.  @strong{Use this option with care.}
+## The package manager will disable dependency checking.  With this option it
+## is possible to install a package even when it depends on another package
+## which is not installed on the system.  @strong{Use this option with care.}
 ##
 ## @item -noauto
 ## The package manager will not automatically load the installed package
-## when starting Octave, even if the package requests that it is.
+## when starting Octave.  This overrides any setting within the package.
 ##
 ## @item -auto
 ## The package manager will automatically load the installed package when
-## starting Octave, even if the package requests that it isn't.
+## starting Octave.  This overrides any setting within the package.
 ##
 ## @item -local
-## A local installation is forced, even if the user has system privileges.
+## A local installation (package available only to current user) is forced, 
+## even if the user has system privileges.
 ##
 ## @item -global
-## A global installation is forced, even if the user doesn't normally have
-## system privileges
+## A global installation (package available to all users) is forced, even if
+## the user doesn't normally have system privileges.
 ##
 ## @item -forge
 ## Install a package directly from the Octave-Forge repository.  This
 ## requires an internet connection and the cURL library.
 ##
 ## @item -verbose
-## The package manager will print the output of all of the commands that are
-## performed.
+## The package manager will print the output of all commands as
+## they are performed.
 ## @end table
+##
+## @item update
+## Check installed Octave-Forge pacakages against repository and update any
+## outdated items.  This requires an internet connection and the cURL library.
+## Usage:
+##
+## @example
+## pkg update
+## @end example
 ##
 ## @item uninstall
 ## Uninstall named packages.  For example,
@@ -90,47 +102,53 @@
 ##
 ## @noindent
 ## adds the @code{image} package to the path.  It is possible to load all
-## installed packages at once with the command
+## installed packages at once with the keyword @samp{all}.  Usage:
 ##
 ## @example
 ## pkg load all
 ## @end example
 ##
 ## @item unload
-## Removes named packages from the path.  After unloading a package it is
-## no longer possible to use the functions provided by the package.
-## This command behaves like the @code{load} command.
-##
-## @item list
-## Show a list of the currently installed packages.  By requesting one or two
-## output argument it is possible to get a list of the currently installed
-## packages.  For example,
+## Remove named packages from the path.  After unloading a package it is
+## no longer possible to use the functions provided by the package.  It is
+## possible to unload all installed packages at once with the keyword
+## @samp{all}.  Usage:
 ##
 ## @example
-## installed_packages = pkg list;
+## pkg unload all
+## @end example
+##
+## @item list
+## Show the list of currently installed packages.  For example,
+##
+## @example
+## installed_packages = pkg ("list")
 ## @end example
 ##
 ## @noindent
 ## returns a cell array containing a structure for each installed package.
-## The command
 ##
+## If two output arguments are requested @code{pkg} splits the list of
+## installed packages into those which were installed by the current user,
+## and those which were installed by the system administrator.
+## 
 ## @example
-## [@var{user_packages}, @var{system_packages}] = pkg list
+## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## @noindent
-## splits the list of installed packages into those who are installed by
-## the current user, and those installed by the system administrator.
-##
 ## The option '-forge' lists packages available at the Octave-Forge repository.
-## This requires an internet connection and the cURL library.
+## This requires an internet connection and the cURL library.  For example:
+##
+## @example
+## oct_forge_pkgs = pkg ("list", "-forge")
+## @end example
 ##
 ## @item describe
 ## Show a short description of the named installed packages, with the option
-## '-verbose' also list functions provided by the package, e.g.:
+## '-verbose' also list functions provided by the package.  For example,
 ##
 ## @example
-##  pkg describe -verbose all
+## pkg describe -verbose all
 ## @end example
 ##
 ## @noindent
@@ -140,7 +158,7 @@
 ## output rather than printed on screen:
 ##
 ## @example
-##  desc = pkg ("describe", "secs1d", "image")
+## desc = pkg ("describe", "secs1d", "image")
 ## @end example
 ##
 ## @noindent
@@ -148,7 +166,7 @@
 ## error, unless a second output is requested:
 ##
 ## @example
-##  [ desc, flag] = pkg ("describe", "secs1d", "image")
+## [desc, flag] = pkg ("describe", "secs1d", "image")
 ## @end example
 ##
 ## @noindent
@@ -170,20 +188,20 @@
 ## output argument.  For example:
 ##
 ## @example
-## p = pkg prefix
+## pfx = pkg ("prefix")
 ## @end example
 ##
 ## The location in which to install the architecture dependent files can be
-## independent specified with an addition argument.  For example:
+## independently specified with an addition argument.  For example:
 ##
 ## @example
 ## pkg prefix ~/my_octave_packages ~/my_arch_dep_pkgs
 ## @end example
 ##
 ## @item local_list
-## Set the file in which to look for information on the locally
+## Set the file in which to look for information on locally
 ## installed packages.  Locally installed packages are those that are
-## typically available only to the current user.  For example:
+## available only to the current user.  For example:
 ##
 ## @example
 ## pkg local_list ~/.octave_packages
@@ -196,9 +214,9 @@
 ## @end example
 ##
 ## @item global_list
-## Set the file in which to look for, for information on the globally
+## Set the file in which to look for information on globally
 ## installed packages.  Globally installed packages are those that are
-## typically available to all users.  For example:
+## available to all users.  For example:
 ##
 ## @example
 ## pkg global_list /usr/share/octave/octave_packages
@@ -210,21 +228,8 @@
 ## pkg global_list
 ## @end example
 ##
-## @item rebuild
-## Rebuilds the package database from the installed directories.  This can
-## be used in cases where for some reason the package database is corrupted.
-## It can also take the @option{-auto} and @option{-noauto} options to allow the
-## autoloading state of a package to be changed.  For example,
-##
-## @example
-## pkg rebuild -noauto image
-## @end example
-##
-## @noindent
-## will remove the autoloading status of the image package.
-##
 ## @item build
-## Builds a binary form of a package or packages.  The binary file produced
+## Build a binary form of a package or packages.  The binary file produced
 ## will itself be an Octave package that can be installed normally with
 ## @code{pkg}.  The form of the command to build a binary package is
 ##
@@ -236,7 +241,21 @@
 ## where @code{builddir} is the name of a directory where the temporary
 ## installation will be produced and the binary packages will be found.
 ## The options @option{-verbose} and @option{-nodeps} are respected, while
-## the other options are ignored.
+## all other options are ignored.
+##
+## @item rebuild
+## Rebuild the package database from the installed directories.  This can
+## be used in cases where the package database has been corrupted.
+## It can also take the @option{-auto} and @option{-noauto} options to allow the
+## autoloading state of a package to be changed.  For example,
+##
+## @example
+## pkg rebuild -noauto image
+## @end example
+##
+## @noindent
+## will remove the autoloading status of the image package.
+##
 ## @end table
 ## @end deftypefn
 
@@ -266,7 +285,7 @@ function [local_packages, global_packages] = pkg (varargin)
   endif
 
   available_actions = {"list", "install", "uninstall", "load", ...
-                      "unload", "prefix", "local_list", ...
+                       "unload", "prefix", "local_list", ...
                        "global_list", "rebuild", "build", ...
                        "describe", "update"};
   ## Handle input

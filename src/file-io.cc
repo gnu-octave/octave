@@ -1922,7 +1922,7 @@ system-dependent error message.\n\
 
   if (nargin == 0)
     {
-      FILE *fid = tmpfile ();
+      FILE *fid = gnulib::tmpfile ();
 
       if (fid)
         {

@@ -1001,6 +1001,20 @@ command shell that is started to run the command.\n\
 
 DEFALIAS (shell_cmd, system);
 
+/*
+%!error (system ());
+%!error (system (1, 2, 3));
+%!test
+%! if (ispc ())
+%!   cmd = "dir";
+%! else
+%!   cmd = "ls";
+%! endif
+%! [status, output] = system (cmd);
+%! assert (ischar (output));
+%! assert (! isempty (output));
+*/
+
 // FIXME -- this should really be static, but that causes
 // problems on some systems.
 std::list<std::string> octave_atexit_functions;
@@ -1438,6 +1452,15 @@ specified option.\n\
 
   return retval;
 }
+
+/*
+%!error octave_config_info (1, 2);
+%!assert (ischar (octave_config_info ("version")));
+%!test
+%! x = octave_config_info ();
+%! assert (isstruct (x));
+%! assert (! isempty (x));
+*/
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)
 

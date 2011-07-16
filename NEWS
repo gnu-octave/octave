@@ -34,6 +34,7 @@ Summary of important user-visible changes for version 3.6:
       __error_text__
       error_text
       is_duplicate_entry
+      polyderiv
       studentize
       sylvester_matrix
 

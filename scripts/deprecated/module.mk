@@ -18,6 +18,7 @@ deprecated_FCN_FILES = \
   deprecated/isstr.m \
   deprecated/krylovb.m \
   deprecated/perror.m \
+  deprecated/polyderiv.m \
   deprecated/replot.m \
   deprecated/saveimage.m \
   deprecated/setstr.m \

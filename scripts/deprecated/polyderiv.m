@@ -36,6 +36,13 @@
 
 function [q, d] = polyderiv (p, a)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "polyderiv is obsolete and will be removed from a future version of Octave; please use polyder instead");
+  endif
+
   if (nargin == 1 || nargin == 2)
     if (! isvector (p))
       error ("polyderiv: argument must be a vector");

@@ -36,3 +36,7 @@ function news ()
   endif
 
 endfunction
+
+
+## Remove from test statistics.  No real tests possible
+%!assert (1)

@@ -279,3 +279,19 @@ you should always use the @samp{&&} and @samp{||} operators.\n\
 {
   return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);
 }
+
+/*
+
+%!test
+%! x = 0;
+%! do_braindead_shortcircuit_evaluation (0);
+%! if (1 | (x = 1)) 
+%! endif
+%! assert (x, 1);
+%! do_braindead_shortcircuit_evaluation (1);
+%! if (1 | (x = 0)) 
+%! endif
+%! assert (x, 1);
+
+*/
+

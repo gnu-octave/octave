@@ -171,6 +171,9 @@ plot_FCN_FILES = \
   plot/surfnorm.m \
   plot/text.m \
   plot/title.m \
+  plot/trimesh.m \
+  plot/triplot.m \
+  plot/trisurf.m \
   plot/uigetdir.m \
   plot/uigetfile.m \
   plot/uimenu.m \

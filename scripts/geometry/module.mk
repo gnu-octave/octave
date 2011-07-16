@@ -12,9 +12,6 @@ geometry_FCN_FILES = \
   geometry/griddatan.m \
   geometry/inpolygon.m \
   geometry/rectint.m \
-  geometry/trimesh.m \
-  geometry/triplot.m \
-  geometry/trisurf.m \
   geometry/tsearchn.m \
   geometry/voronoi.m \
   geometry/voronoin.m

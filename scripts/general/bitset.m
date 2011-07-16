@@ -92,3 +92,31 @@ function C = bitset (A, n, val)
   endif
 
 endfunction
+
+%!error bitset (1);
+%!error bitset (1, 2, 3, 4);
+
+%!test
+%! assert (bitset ([0, 10], [3, 3]), [4, 14]);
+%! pfx = {"", "u"};
+%! for i = 1:2
+%!   for prec = [8, 16, 32, 64]
+%!     fcn = str2func (sprintf ("%sint%d", pfx{i}, prec));
+%!     assert (bitset (fcn ([0, 10]), [3, 3]), fcn ([4, 14]));
+%!   endfor
+%! endfor
+
+%!error bitset (0, 0);
+%!error bitset (0, 55);
+
+%!error bitset (int8 (0), 9);
+%!error bitset (uint8 (0), 9);
+
+%!error bitset (int16 (0), 17);
+%!error bitset (uint16 (0), 17);
+
+%!error bitset (int32 (0), 33);
+%!error bitset (uint32 (0), 33);
+
+%!error bitset (int64 (0), 65);
+%!error bitset (uint64 (0), 65);

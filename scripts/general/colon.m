@@ -38,3 +38,7 @@ function r = colon (varargin)
     error ("colon: not defined for class \"%s\"", class(varargin{1}));
   endif
 endfunction
+
+%!error colon (1)
+
+## FIXME -- what does colon () mean since it doesn't set a return value?

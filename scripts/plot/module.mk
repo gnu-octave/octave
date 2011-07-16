@@ -20,38 +20,38 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__errplot__.m \
   plot/private/__ezplot__.m \
   plot/private/__fltk_file_filter__.m \
-  plot/private/__ghostscript__.m \
+  plot/private/__fltk_ginput__.m \
+  plot/private/__fltk_print__.m \
   plot/private/__getlegenddata__.m \
+  plot/private/__ghostscript__.m \
+  plot/private/__gnuplot_drawnow__.m \
+  plot/private/__gnuplot_get_var__.m \
+  plot/private/__gnuplot_ginput__.m \
+  plot/private/__gnuplot_has_feature__.m \
   plot/private/__gnuplot_has_terminal__.m\
+  plot/private/__gnuplot_open_stream__.m \
+  plot/private/__gnuplot_print__.m \
+  plot/private/__gnuplot_version__.m \
+  plot/private/__go_draw_axes__.m \
+  plot/private/__go_draw_figure__.m \
   plot/private/__interp_cube__.m \
   plot/private/__line__.m \
+  plot/private/__marching_cube__.m \
+  plot/private/__next_line_color__.m \
+  plot/private/__next_line_style__.m \
   plot/private/__patch__.m \
   plot/private/__pie__.m \
   plot/private/__plt__.m \
   plot/private/__pltopt__.m \
+  plot/private/__print_parse_opts__.m \
   plot/private/__quiver__.m \
   plot/private/__scatter__.m \
   plot/private/__stem__.m \
   plot/private/__tight_eps_bbox__.m
 
 plot_FCN_FILES = \
-  plot/__fltk_ginput__.m \
-  plot/__fltk_print__.m \
-  plot/__gnuplot_drawnow__.m \
-  plot/__gnuplot_get_var__.m \
-  plot/__gnuplot_ginput__.m \
-  plot/__gnuplot_has_feature__.m \
-  plot/__gnuplot_open_stream__.m \
-  plot/__gnuplot_print__.m \
-  plot/__gnuplot_version__.m \
   plot/__go_close_all__.m \
-  plot/__go_draw_axes__.m \
-  plot/__go_draw_figure__.m \
-  plot/__marching_cube__.m \
-  plot/__next_line_color__.m \
-  plot/__next_line_style__.m \
   plot/__plt_get_axis_arg__.m \
-  plot/__print_parse_opts__.m \
   plot/allchild.m \
   plot/ancestor.m \
   plot/area.m \

@@ -166,3 +166,13 @@ function [vvx, vvy] = voronoi (varargin)
   endif
 
 endfunction
+
+%!testif HAVE_QHULL
+%! phi=linspace(-pi,3/4*pi,8);
+%! [x,y]=pol2cart(phi,1);
+%! [vx,vy]=voronoi(x,y);
+%! assert(vx(2,:),zeros(1,size(vx,2)),eps);
+%! assert(vy(2,:),zeros(1,size(vy,2)),eps);
+
+%!demo
+%! voronoi (rand(10,1), rand(10,1));

@@ -91,3 +91,4 @@ function bessel ()
   error ("bessel: you must use besselj, bessely, besseli, or besselk");
 endfunction
 
+%!error bessel ()

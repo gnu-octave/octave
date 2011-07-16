@@ -241,5 +241,5 @@ function chunk_size = find_chunk (fid, chunk_id, size)
 endfunction
 
 ## Mark file as being tested.  Tests for wavread/wavwrite pair are in
-## wavrite.m
+## wavwrite.m
 %!assert(1)

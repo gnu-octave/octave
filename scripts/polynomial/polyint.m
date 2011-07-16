@@ -61,3 +61,18 @@ function retval = polyint (p, k)
   retval = [(p ./ [lp:-1:1]), k];
 
 endfunction
+
+%!test
+%! A = [3, 2, 1];
+%! assert (polyint(A),polyint(A,0));
+%! assert (polyint(A),polyint(A'));
+%! assert (polyint(A),[1, 1, 1, 0]);
+%! assert (polyint(A,1),ones(1,4));
+
+%!test
+%! A = ones(1,8);
+%! B = [length(A):-1:1];
+%! assert (polyint(A),[1./B, 0]);
+
+%!error polyint()
+%!error polyint(ones(2,2))

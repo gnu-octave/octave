@@ -586,7 +586,15 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
   return retval;
 }
+
 DEFALIAS (setenv, putenv);
+
+/*
+%!assert (ischar (getenv ("OCTAVE_HOME")));
+%!test
+%! setenv ("dummy_variable_that_cannot_matter", "foobar");
+%! assert (getenv ("dummy_variable_that_cannot_matter"), "foobar");
+*/
 
 // FIXME -- perhaps kbhit should also be able to print a prompt?
 
@@ -695,6 +703,12 @@ clc;\n\
   return retval;
 }
 
+/*
+%!error (pause (1, 2));
+%!test
+%! pause (1);
+*/
+
 DEFUN (sleep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sleep (@var{seconds})\n\
@@ -723,6 +737,13 @@ Suspend the execution of the program for the given number of seconds.\n\
 
   return retval;
 }
+
+/*
+%!error (sleep ());
+%!error (sleep (1, 2));
+%!test
+%! sleep (1);
+*/
 
 DEFUN (usleep, args, ,
   "-*- texinfo -*-\n\
@@ -760,6 +781,13 @@ of time less than one second, @code{usleep} will pause the execution for\n\
   return retval;
 }
 
+/*
+%!error (usleep ());
+%!error (usleep (1, 2));
+%!test
+%! usleep (1000);
+*/
+
 // FIXME -- maybe this should only return 1 if IEEE floating
 // point functions really work.
 
@@ -776,6 +804,10 @@ for floating point calculations.  No actual tests are performed.\n\
                        || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 }
 
+/*
+%!assert (islogical (isieee ()));
+*/
+
 DEFUN (native_float_format, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} native_float_format ()\n\
@@ -786,6 +818,10 @@ Return the native floating point format as a string\n\
 
   return octave_value (oct_mach_info::float_format_as_string (flt_fmt));
 }
+
+/*
+%!assert (ischar (native_float_format ()));
+*/
 
 DEFUN (tilde_expand, args, ,
   "-*- texinfo -*-\n\
@@ -835,3 +871,14 @@ tilde_expand (\"~/bin\")\n\
 
   return retval;
 }
+
+/*
+%!test
+%! if (isempty (getenv ("HOME")))
+%!   setenv ("HOME", "foobar");
+%! endif
+%! home = getenv ("HOME");
+%! assert (tilde_expand ("~/foobar"), fullfile (home, "foobar"));
+%! assert (tilde_expand ("/foo/bar"), "/foo/bar");
+%! assert (tilde_expand ("foo/bar"), "foo/bar");
+*/

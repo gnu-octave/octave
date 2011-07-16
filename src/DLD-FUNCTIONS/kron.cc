@@ -264,3 +264,15 @@ kron (1:4, ones (3, 1))\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! x = ones(2);
+%! assert( kron (x, x), ones (4));
+
+%!test
+%! z =  [1,  2,  3,  4; 1,  2,  3,  4; 1,  2,  3,  4];
+%! assert( kron (1:4, ones (3, 1)), z)
+
+*/

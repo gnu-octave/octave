@@ -155,3 +155,5 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   endif
 
 endfunction
+
+%!assert (1)

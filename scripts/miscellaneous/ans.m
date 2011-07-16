@@ -28,3 +28,7 @@
 ## @noindent
 ## is evaluated, the value returned by @code{ans} is 25.
 ## @end defvr
+
+## Mark file as being tested.  No real test needed for a documentation .m file
+%!assert (1)
+

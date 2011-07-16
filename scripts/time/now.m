@@ -56,6 +56,6 @@ function t = now ()
 endfunction
 
 %!error now (1);
-%!assert (isnumeric (now ());
+%!assert (isnumeric (now ()));
 %!assert (now () > 0);
-%!assert (now () >= now ());
+%!assert (now () <= now ());

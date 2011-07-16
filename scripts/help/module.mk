@@ -13,6 +13,7 @@ help_FCN_FILES = \
   help/lookfor.m \
   help/print_usage.m \
   help/type.m \
+  help/unimplemented.m \
   help/which.m \
   $(help_PRIVATE_FCN_FILES)
 

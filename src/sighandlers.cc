@@ -945,6 +945,12 @@ Return a structure containing Unix signal names and their defined values.\n\
   return retval;
 }
 
+/*
+%!error SIG (1);
+%!assert (isstruct (SIG ()));
+%!assert (! isempty (SIG ()));
+*/
+
 DEFUN (debug_on_interrupt, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
@@ -958,6 +964,15 @@ before reaching the debugging mode, a normal interrupt will occur.\n\
   return SET_INTERNAL_VARIABLE (debug_on_interrupt);
 }
 
+/*
+%!error (debug_on_interrupt (1, 2));
+%!test
+%! old_val = debug_on_interrupt (false);
+%! debug_on_interrupt (true);
+%! assert (debug_on_interrupt (true));
+%! debug_on_interrupt (old_val);
+*/
+
 DEFUN (sighup_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
@@ -970,6 +985,15 @@ a hangup signal.\n\
   return SET_INTERNAL_VARIABLE (sighup_dumps_octave_core);
 }
 
+/*
+%!error (sighup_dumps_octave_core (1, 2));
+%!test
+%! old_val = sighup_dumps_octave_core (false);
+%! sighup_dumps_octave_core (true);
+%! assert (sighup_dumps_octave_core (true));
+%! sighup_dumps_octave_core (old_val);
+*/
+
 DEFUN (sigterm_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
@@ -981,3 +1005,12 @@ a terminate signal.\n\
 {
   return SET_INTERNAL_VARIABLE (sigterm_dumps_octave_core);
 }
+
+/*
+%!error (sigterm_dumps_octave_core (1, 2));
+%!test
+%! old_val = sigterm_dumps_octave_core (false);
+%! sigterm_dumps_octave_core (true);
+%! assert (sigterm_dumps_octave_core (true));
+%! sigterm_dumps_octave_core (old_val);
+*/

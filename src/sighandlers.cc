@@ -967,10 +967,12 @@ before reaching the debugging mode, a normal interrupt will occur.\n\
 /*
 %!error (debug_on_interrupt (1, 2));
 %!test
-%! old_val = debug_on_interrupt (false);
-%! debug_on_interrupt (true);
-%! assert (debug_on_interrupt (true));
-%! debug_on_interrupt (old_val);
+%! orig_val = debug_on_interrupt ();
+%! old_val = debug_on_interrupt (! orig_val);
+%! assert (orig_val, old_val);
+%! assert (debug_on_interrupt (), ! orig_val);
+%! debug_on_interrupt (orig_val);
+%! assert (debug_on_interrupt (), orig_val);
 */
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
@@ -988,10 +990,12 @@ a hangup signal.\n\
 /*
 %!error (sighup_dumps_octave_core (1, 2));
 %!test
-%! old_val = sighup_dumps_octave_core (false);
-%! sighup_dumps_octave_core (true);
-%! assert (sighup_dumps_octave_core (true));
-%! sighup_dumps_octave_core (old_val);
+%! orig_val = sighup_dumps_octave_core ();
+%! old_val = sighup_dumps_octave_core (! orig_val);
+%! assert (orig_val, old_val);
+%! assert (sighup_dumps_octave_core (), ! orig_val);
+%! sighup_dumps_octave_core (orig_val);
+%! assert (sighup_dumps_octave_core (), orig_val);
 */
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
@@ -1009,8 +1013,10 @@ a terminate signal.\n\
 /*
 %!error (sigterm_dumps_octave_core (1, 2));
 %!test
-%! old_val = sigterm_dumps_octave_core (false);
-%! sigterm_dumps_octave_core (true);
-%! assert (sigterm_dumps_octave_core (true));
-%! sigterm_dumps_octave_core (old_val);
+%! orig_val = sigterm_dumps_octave_core ();
+%! old_val = sigterm_dumps_octave_core (! orig_val);
+%! assert (orig_val, old_val);
+%! assert (sigterm_dumps_octave_core (), ! orig_val);
+%! sigterm_dumps_octave_core (orig_val);
+%! assert (sigterm_dumps_octave_core (), orig_val);
 */

@@ -1146,3 +1146,15 @@ string_fill_char (\"X\");\n\
 {
   return SET_INTERNAL_VARIABLE (string_fill_char);
 }
+
+/*
+%!error (string_fill_char (1, 2));
+%!test
+%! orig_val = string_fill_char ();
+%! old_val = string_fill_char ("X");
+%! assert (orig_val, old_val);
+%! assert (string_fill_char (), "X");
+%! assert (["these"; "are"; "strings"], ["theseXX"; "areXXXX"; "strings"]);
+%! string_fill_char (orig_val);
+%! assert (string_fill_char (), orig_val);
+*/

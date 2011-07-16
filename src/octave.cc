@@ -971,6 +971,11 @@ for an example of how to create an executable Octave script.\n\
   return retval;
 }
 
+/*
+%!error argv (1);
+%!assert (iscellstr (argv ());
+*/
+
 DEFUN (program_invocation_name, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_invocation_name ()\n\
@@ -993,6 +998,11 @@ how to create an executable Octave script.\n\
   return retval;
 }
 
+/*
+%!error program_invocation_name (1);
+%!assert (ischar (program_invocation_name ());
+*/
+
 DEFUN (program_name, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_name ()\n\
@@ -1010,3 +1020,8 @@ Return the last component of the value returned by\n\
 
   return retval;
 }
+
+/*
+%!error program_name (1);
+%!assert (ischar (program_name ());
+*/

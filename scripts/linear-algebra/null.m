@@ -77,3 +77,35 @@ function retval = null (A, tol)
   endif
 
 endfunction
+
+%!test
+%! A = 0;
+%! assert(null(A), 1);
+
+%!test
+%! A = 1;
+%! assert(null(A), zeros(1,0))
+
+%!test
+%! A = [1 0; 0 1];
+%! assert(null(A), zeros(2,0));
+
+%!test
+%! A = [1 0; 1 0];
+%! assert(null(A), [0 1]')
+
+%!test
+%! A = [1 1; 0 0];
+%! assert(null(A), [-1/sqrt(2) 1/sqrt(2)]')
+
+%!test
+%! tol = 1e-4;
+%! A = [1 0; 0 tol-eps];
+%! assert(null(A,tol), [0 1]')
+
+%!test
+%! tol = 1e-4;
+%! A = [1 0; 0 tol+eps];
+%! assert(null(A,tol), zeros(2,0));
+
+%!error null()

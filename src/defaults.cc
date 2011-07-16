@@ -419,6 +419,17 @@ environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
 }
 
+/*
+%!error (EDITOR (1, 2));
+%!test
+%! orig_val = EDITOR ();
+%! old_val = EDITOR ("X");
+%! assert (orig_val, old_val);
+%! assert (EDITOR (), "X");
+%! EDITOR (orig_val);
+%! assert (EDITOR (), orig_val);
+*/
+
 DEFUN (EXEC_PATH, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
@@ -438,6 +449,17 @@ the command line argument @option{--exec-path PATH}.\n\
   return retval;
 }
 
+/*
+%!error (EXEC_PATH (1, 2));
+%!test
+%! orig_val = EXEC_PATH ();
+%! old_val = EXEC_PATH ("X");
+%! assert (orig_val, old_val);
+%! assert (EXEC_PATH (), "X");
+%! EXEC_PATH (orig_val);
+%! assert (EXEC_PATH (), orig_val);
+*/
+
 DEFUN (IMAGE_PATH, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
@@ -448,6 +470,17 @@ list of directories in which to search for image files.\n\
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
 }
+
+/*
+%!error (IMAGE_PATH (1, 2));
+%!test
+%! orig_val = IMAGE_PATH ();
+%! old_val = IMAGE_PATH ("X");
+%! assert (orig_val, old_val);
+%! assert (IMAGE_PATH (), "X");
+%! IMAGE_PATH (orig_val);
+%! assert (IMAGE_PATH (), orig_val);
+*/
 
 DEFUN (OCTAVE_HOME, args, ,
   "-*- texinfo -*-\n\
@@ -464,6 +497,11 @@ Return the name of the top-level Octave installation directory.\n\
 
   return retval;
 }
+
+/*
+%!error OCTAVE_HOME (1);
+%!assert (ischar (OCTAVE_HOME ());
+*/
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
   "-*- texinfo -*-\n\
@@ -482,3 +520,8 @@ Return the version number of Octave, as a string.\n\
 
   return retval;
 }
+
+/*
+%!error OCTAVE_VERSION (1);
+%!assert (ischar (OCTAVE_VERSION ());
+*/

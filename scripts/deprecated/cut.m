@@ -37,6 +37,13 @@
 
 function group = cut (x, breaks)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "cut is obsolete and will be removed from a future version of Octave; please use histc instead");
+  endif
+
   if (nargin != 2)
     print_usage ();
   endif

@@ -6,7 +6,6 @@ statistics_base_FCN_FILES = \
   statistics/base/cor.m \
   statistics/base/corrcoef.m \
   statistics/base/cov.m \
-  statistics/base/cut.m \
   statistics/base/gls.m \
   statistics/base/histc.m \
   statistics/base/iqr.m \

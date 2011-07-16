@@ -284,3 +284,6 @@
 function warning_ids ()
   help ("warning_ids");
 endfunction
+
+## Remove from test statistics.  No real tests possible
+%!assert (1)

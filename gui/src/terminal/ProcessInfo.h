@@ -83,31 +83,33 @@ public:
      * of reading the (potentially large) environment data when it
      * is not required. 
      */
-    static ProcessInfo* newInstance(int pid,bool readEnvironment = false);
+  static ProcessInfo *newInstance (int pid, bool readEnvironment = false);
 
-    virtual ~ProcessInfo() {}
+    virtual ~ ProcessInfo ()
+  {
+  }
 
     /** 
      * Updates the information about the process.  This must
      * be called before attempting to use any of the accessor methods.
      */
-    void update();
+  void update ();
 
-    /** Returns true if the process state was read successfully. */ 
-    bool isValid() const;
+    /** Returns true if the process state was read successfully. */
+  bool isValid () const;
     /** 
      * Returns the process id.  
      *
      * @param ok Set to true if the process id was read successfully or false otherwise 
      */
-    int pid(bool* ok) const;
+  int pid (bool * ok) const;
     /** 
      * Returns the id of the parent process id was read successfully or false otherwise
      * 
      * @param ok Set to true if the parent process id
      */
-    int parentPid(bool* ok) const;
-    
+  int parentPid (bool * ok) const;
+
     /** 
      * Returns the id of the current foreground process 
      *
@@ -117,20 +119,20 @@ public:
      *
      * @param ok Set to true if the foreground process id was read successfully or false otherwise
      */
-    int foregroundPid(bool* ok) const;
-    
-    /* Returns the user id of the process */
-    int userId(bool* ok) const;
+  int foregroundPid (bool * ok) const;
+
+  /* Returns the user id of the process */
+  int userId (bool * ok) const;
 
     /** Returns the user's name of the process */
-    QString userName() const;
-   
+  QString userName () const;
+
     /** Returns the user's home directory of the process */
-    QString userHomeDir() const;
+  QString userHomeDir () const;
 
     /** Returns the name of the current process */
-    QString name(bool* ok) const;
-   
+  QString name (bool * ok) const;
+
     /** 
      * Returns the command-line arguments which the process
      * was started with.
@@ -139,7 +141,7 @@ public:
      *
      * @param ok Set to true if the arguments were read successfully or false otherwise.
      */
-    QVector<QString> arguments(bool* ok) const;
+  QVector < QString > arguments (bool * ok) const;
     /**
      * Returns the environment bindings which the process
      * was started with.
@@ -148,22 +150,22 @@ public:
      *
      * @param ok Set to true if the environment bindings were read successfully or false otherwise
      */
-    QMap<QString,QString> environment(bool* ok) const;
+  QMap < QString, QString > environment (bool * ok) const;
 
     /**
      * Returns the current working directory of the process
      *
      * @param ok Set to true if the current working directory was read successfully or false otherwise
      */
-    QString currentDir(bool* ok) const;
+  QString currentDir (bool * ok) const;
 
     /**
      * Returns the current working directory of the process (or its parent)
      */
-    QString validCurrentDir() const;
+  QString validCurrentDir () const;
 
     /** Forces the user home directory to be calculated */
-    void setUserHomeDir();
+  void setUserHomeDir ();
 
     /**
      * Parses an input string, looking for markers beginning with a '%' 
@@ -183,26 +185,26 @@ public:
      * <li> %D - Replaced with the current working directory of the process. </li>
      * </ul>
      */
-    QString format(const QString& text) const;
+  QString format (const QString & text) const;
 
     /** 
      * This enum describes the errors which can occur when trying to read 
      * a process's information.
      */
-    enum Error
-    {
-        /** No error occurred. */
-        NoError,
-        /** The nature of the error is unknown. */
-        UnknownError,
-        /** Konsole does not have permission to obtain the process information. */
-        PermissionsError
-    };
+  enum Error
+  {
+	/** No error occurred. */
+    NoError,
+	/** The nature of the error is unknown. */
+    UnknownError,
+	/** Konsole does not have permission to obtain the process information. */
+    PermissionsError
+  };
 
     /**
      * Returns the last error which occurred.
      */
-    Error error() const;
+  Error error () const;
 
 protected:
     /**
@@ -210,8 +212,8 @@ protected:
      * of ProcessInfo or its subclasses directly.  Instead use the 
      * static ProcessInfo::newInstance() method which will return
      * a suitable ProcessInfo instance for the current platform.
-     */ 
-    explicit ProcessInfo(int pid , bool readEnvironment = false);
+     */
+  explicit ProcessInfo (int pid, bool readEnvironment = false);
 
     /** 
      * This is called on construction to read the process state 
@@ -231,37 +233,37 @@ protected:
      * @param readEnvironment Specifies whether the environment bindings
      *                        for the process should be read
      */
-    virtual bool readProcessInfo(int pid , bool readEnvironment) = 0;
+  virtual bool readProcessInfo (int pid, bool readEnvironment) = 0;
 
-    /* Read the user name */
-    virtual void readUserName(void) = 0;
+  /* Read the user name */
+  virtual void readUserName (void) = 0;
 
     /** Sets the process id associated with this ProcessInfo instance */
-    void setPid(int pid);
+  void setPid (int pid);
     /** Sets the parent process id as returned by parentPid() */
-    void setParentPid(int pid);
+  void setParentPid (int pid);
     /** Sets the foreground process id as returend by foregroundPid() */
-    void setForegroundPid(int pid);
+  void setForegroundPid (int pid);
     /** Sets the user id associated with this ProcessInfo instance */
-    void setUserId(int uid);
+  void setUserId (int uid);
     /** Sets the user name of the process as set by readUserName() */
-    void setUserName(const QString& name);
+  void setUserName (const QString & name);
     /** Sets the name of the process as returned by name() */
-    void setName(const QString& name);
+  void setName (const QString & name);
     /** Sets the current working directory for the process */
-    void setCurrentDir(const QString& dir);
+  void setCurrentDir (const QString & dir);
 
     /** Sets the error */
-    void setError( Error error );
+  void setError (Error error);
 
-    /** Convenience method.  Sets the error based on a QFile error code. */ 
-    void setFileError( QFile::FileError error ); 
+    /** Convenience method.  Sets the error based on a QFile error code. */
+  void setFileError (QFile::FileError error);
 
     /** 
      * Adds a commandline argument for the process, as returned
      * by arguments()
      */
-    void addArgument(const QString& argument);
+  void addArgument (const QString & argument);
     /**
      * Adds an environment binding for the process, as returned by
      * environment()
@@ -269,52 +271,53 @@ protected:
      * @param name The name of the environment variable, eg. "PATH"
      * @param value The value of the environment variable, eg. "/bin"
      */
-    void addEnvironmentBinding(const QString& name , const QString& value);
+  void addEnvironmentBinding (const QString & name, const QString & value);
 
 private:
-    enum CommandFormat
-    {
-        ShortCommandFormat,
-        LongCommandFormat
-    };
-    // takes a process name and its arguments and produces formatted output
-    QString formatCommand(const QString& name , const QVector<QString>& arguments , 
-                          CommandFormat format) const;
+  enum CommandFormat
+  {
+    ShortCommandFormat,
+    LongCommandFormat
+  };
+  // takes a process name and its arguments and produces formatted output
+  QString formatCommand (const QString & name,
+			 const QVector < QString > &arguments,
+			 CommandFormat format) const;
 
-    // valid bits for _fields variable, ensure that
-    // _fields is changed to an int if more than 8 fields are added
-    enum FIELD_BITS
-    {
-        PROCESS_ID          = 1,
-        PARENT_PID          = 2,
-        FOREGROUND_PID      = 4,
-        ARGUMENTS           = 8,
-        ENVIRONMENT         = 16,
-        NAME                = 32,
-        CURRENT_DIR         = 64,
-        UID                 =128 
-    };
+  // valid bits for _fields variable, ensure that
+  // _fields is changed to an int if more than 8 fields are added
+  enum FIELD_BITS
+  {
+    PROCESS_ID = 1,
+    PARENT_PID = 2,
+    FOREGROUND_PID = 4,
+    ARGUMENTS = 8,
+    ENVIRONMENT = 16,
+    NAME = 32,
+    CURRENT_DIR = 64,
+    UID = 128
+  };
 
-    char _fields; // a bitmap indicating which fields are valid
-                  // used to set the "ok" parameters for the public
-                  // accessor functions
+  char _fields;			// a bitmap indicating which fields are valid
+  // used to set the "ok" parameters for the public
+  // accessor functions
 
-    bool _enableEnvironmentRead; // specifies whether to read the environment
-                                 // bindings when update() is called
-    int _pid;  
-    int _parentPid;
-    int _foregroundPid;
-    int _userId;  
+  bool _enableEnvironmentRead;	// specifies whether to read the environment
+  // bindings when update() is called
+  int _pid;
+  int _parentPid;
+  int _foregroundPid;
+  int _userId;
 
-    Error _lastError;
+  Error _lastError;
 
-    QString _name;
-    QString _userName;
-    QString _userHomeDir;
-    QString _currentDir;
+  QString _name;
+  QString _userName;
+  QString _userHomeDir;
+  QString _currentDir;
 
-    QVector<QString> _arguments;
-    QMap<QString,QString> _environment;
+  QVector < QString > _arguments;
+  QMap < QString, QString > _environment;
 };
 
 /** 
@@ -324,40 +327,40 @@ private:
  *
  * isValid() will always return false for instances of NullProcessInfo
  */
-class NullProcessInfo : public ProcessInfo
+class NullProcessInfo:public ProcessInfo
 {
 public:
     /** 
      * Constructs a new NullProcessInfo instance.
      * See ProcessInfo::newInstance()
      */
-    explicit NullProcessInfo(int pid,bool readEnvironment = false);
+  explicit NullProcessInfo (int pid, bool readEnvironment = false);
 protected:
-    virtual bool readProcessInfo(int pid,bool readEnvironment);
-    virtual void readUserName(void);
+    virtual bool readProcessInfo (int pid, bool readEnvironment);
+  virtual void readUserName (void);
 };
 
 /**
  * Implementation of ProcessInfo for Unix platforms which uses
  * the /proc filesystem
  */
-class UnixProcessInfo : public ProcessInfo
+class UnixProcessInfo:public ProcessInfo
 {
 public:
     /** 
      * Constructs a new instance of UnixProcessInfo.
      * See ProcessInfo::newInstance()
      */
-    explicit UnixProcessInfo(int pid,bool readEnvironment = false);
+  explicit UnixProcessInfo (int pid, bool readEnvironment = false);
 
 protected:
     /** 
      * Implementation of ProcessInfo::readProcessInfo(); calls the
      * four private methods below in turn.
      */
-    virtual bool readProcessInfo(int pid , bool readEnvironment);
+    virtual bool readProcessInfo (int pid, bool readEnvironment);
 
-    virtual void readUserName(void);
+  virtual void readUserName (void);
 
 private:
     /**
@@ -365,28 +368,28 @@ private:
      * @param pid process ID to use
      * @return true on success
      */
-    virtual bool readProcInfo(int pid)=0;
+    virtual bool readProcInfo (int pid) = 0;
 
     /**
      * Read the environment of the process. Sets _environment.
      * @param pid process ID to use
      * @return true on success
      */
-    virtual bool readEnvironment(int pid)=0;
+  virtual bool readEnvironment (int pid) = 0;
 
     /**
      * Determine what arguments were passed to the process. Sets _arguments.
      * @param pid process ID to use
      * @return true on success
      */
-    virtual bool readArguments(int pid)=0;
+  virtual bool readArguments (int pid) = 0;
 
     /**
      * Determine the current directory of the process.
      * @param pid process ID to use
      * @return true on success
      */
-    virtual bool readCurrentDir(int pid)=0;
+  virtual bool readCurrentDir (int pid) = 0;
 };
 
 /** 
@@ -401,24 +404,24 @@ public:
      *
      * @param process A ProcessInfo instance for a SSH process.
      */
-    SSHProcessInfo(const ProcessInfo& process);
+  SSHProcessInfo (const ProcessInfo & process);
 
     /** 
      * Returns the user name which the user initially logged into on
      * the remote computer.
      */
-    QString userName() const;
+  QString userName () const;
 
     /**
      * Returns the host which the user has connected to.
      */
-    QString host() const;
+  QString host () const;
 
     /** 
      * Returns the command which the user specified to execute on the 
      * remote computer when starting the SSH process.
      */
-    QString command() const;
+  QString command () const;
 
     /**
      * Operates in the same way as ProcessInfo::format(), except
@@ -433,13 +436,13 @@ public:
      * %c - Replaced with the command which the user specified
      *      to execute when starting the SSH process.
      */
-    QString format(const QString& input) const;
+  QString format (const QString & input) const;
 
 private:
-    const ProcessInfo& _process;
-    QString _user;
-    QString _host;
-    QString _command;
+  const ProcessInfo & _process;
+  QString _user;
+  QString _host;
+  QString _command;
 };
 
 #endif //PROCESSINFO_H

@@ -20,13 +20,13 @@
 #define OCTAVETERMINAL_H
 #include "QTerminalWidget.h"
 
-class OctaveTerminal : public QTerminalWidget {
-    Q_OBJECT
-public:
-    OctaveTerminal(QWidget *parent = 0);
-    ~OctaveTerminal();
+class OctaveTerminal:public QTerminalWidget
+{
+Q_OBJECT public:
+  OctaveTerminal (QWidget * parent = 0);
+  ~OctaveTerminal ();
 
 private:
-    void construct();
+  void construct ();
 };
 #endif // OCTAVETERMINAL_H

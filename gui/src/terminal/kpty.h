@@ -29,15 +29,14 @@ struct termios;
  * Provides primitives for opening & closing a pseudo TTY pair, assigning the
  * controlling TTY, utmp registration and setting various terminal attributes.
  */
-class KPty {
-    Q_DECLARE_PRIVATE(KPty)
-
-public:
+class KPty
+{
+Q_DECLARE_PRIVATE (KPty) public:
 
   /**
    * Constructor
    */
-  KPty();
+  KPty ();
 
   /**
    * Destructor:
@@ -45,14 +44,14 @@ public:
    *  If the pty is still open, it will be closed. Note, however, that
    *  an utmp registration is @em not undone.
   */
-  ~KPty();
+  ~KPty ();
 
   /**
    * Create a pty master/slave pair.
    *
    * @return true if a pty pair was successfully opened
    */
-  bool open();
+  bool open ();
 
   /**
    * Open using an existing pty master.
@@ -62,12 +61,12 @@ public:
    *   it will not be automatically closed at any point.
    * @return true if a pty pair was successfully opened
    */
-  bool open(int fd);
+  bool open (int fd);
 
   /**
    * Close the pty master/slave pair.
    */
-  void close();
+  void close ();
 
   /**
    * Close the pty slave descriptor.
@@ -81,7 +80,7 @@ public:
    * After this function was called, slaveFd() and setCTty() cannot be
    * used.
    */
-  void closeSlave();
+  void closeSlave ();
 
   /**
    * Open the pty slave descriptor.
@@ -90,13 +89,13 @@ public:
    *
    * @return true if the pty slave was successfully opened
    */
-  bool openSlave();
+  bool openSlave ();
 
   /**
    * Creates a new session and process group and makes this pty the
    * controlling tty.
    */
-  void setCTty();
+  void setCTty ();
 
   /**
    * Creates an utmp entry for the tty.
@@ -108,12 +107,12 @@ public:
    *  of the client. For local logins from inside an X session it should
    *  be the name of the X display. Otherwise it should be empty.
    */
-  void login(const char *user = 0, const char *remotehost = 0);
+  void login (const char *user = 0, const char *remotehost = 0);
 
   /**
    * Removes the utmp entry for this tty.
    */
-  void logout();
+  void logout ();
 
   /**
    * Wrapper around tcgetattr(3).
@@ -128,7 +127,7 @@ public:
    *  the struct in your class, in your method.
    * @return @c true on success, false otherwise
    */
-  bool tcGetAttr(struct ::termios *ttmode) const;
+  bool tcGetAttr (struct::termios * ttmode) const;
 
   /**
    * Wrapper around tcsetattr(3) with mode TCSANOW.
@@ -139,7 +138,7 @@ public:
    * @return @c true on success, false otherwise. Note that success means
    *  that @em at @em least @em one attribute could be set.
    */
-  bool tcSetAttr(struct ::termios *ttmode);
+  bool tcSetAttr (struct::termios * ttmode);
 
   /**
    * Change the logical (screen) size of the pty.
@@ -151,7 +150,7 @@ public:
    * @param columns the number of columns
    * @return @c true on success, false otherwise
    */
-  bool setWinSize(int lines, int columns);
+  bool setWinSize (int lines, int columns);
 
   /**
    * Set whether the pty should echo input.
@@ -165,40 +164,39 @@ public:
    * @param echo true if input should be echoed.
    * @return @c true on success, false otherwise
    */
-  bool setEcho(bool echo);
+  bool setEcho (bool echo);
 
   /**
    * @return the name of the slave pty device.
    *
    * This function should be called only while the pty is open.
    */
-  const char *ttyName() const;
+  const char *ttyName () const;
 
   /**
    * @return the file descriptor of the master pty
    *
    * This function should be called only while the pty is open.
    */
-  int masterFd() const;
+  int masterFd () const;
 
   /**
    * @return the file descriptor of the slave pty
    *
    * This function should be called only while the pty slave is open.
    */
-  int slaveFd() const;
+  int slaveFd () const;
 
 protected:
   /**
    * @internal
    */
-  KPty(KPtyPrivate *d);
+    KPty (KPtyPrivate * d);
 
   /**
    * @internal
    */
-  KPtyPrivate * const d_ptr;
+  KPtyPrivate *const d_ptr;
 };
 
 #endif
-

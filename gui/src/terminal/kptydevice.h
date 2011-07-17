@@ -37,16 +37,14 @@ struct KPtyDevicePrivate;
 /**
  * Encapsulates KPty into a QIODevice, so it can be used with Q*Stream, etc.
  */
-class KPtyDevice : public QIODevice, public KPty { //krazy:exclude=dpointer (via macro)
-    Q_OBJECT
-    Q_DECLARE_PRIVATE_MI(KPtyDevice, KPty)
-
-public:
+class KPtyDevice:public QIODevice, public KPty
+{				//krazy:exclude=dpointer (via macro)
+Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
 
     /**
      * Constructor
      */
-    KPtyDevice(QObject *parent = 0);
+  KPtyDevice (QObject * parent = 0);
 
     /**
      * Destructor:
@@ -54,14 +52,14 @@ public:
      *  If the pty is still open, it will be closed. Note, however, that
      *  an utmp registration is @em not undone.
      */
-    virtual ~KPtyDevice();
+  virtual ~ KPtyDevice ();
 
     /**
      * Create a pty master/slave pair.
      *
      * @return true if a pty pair was successfully opened
      */
-    virtual bool open(OpenMode mode = ReadWrite | Unbuffered);
+  virtual bool open (OpenMode mode = ReadWrite | Unbuffered);
 
     /**
      * Open using an existing pty master. The ownership of the fd
@@ -76,12 +74,12 @@ public:
      * @param mode the device mode to open the pty with.
      * @return true if a pty pair was successfully opened
      */
-    bool open(int fd, OpenMode mode = ReadWrite | Unbuffered);
+  bool open (int fd, OpenMode mode = ReadWrite | Unbuffered);
 
     /**
      * Close the pty master/slave pair.
      */
-    virtual void close();
+  virtual void close ();
 
     /**
      * Sets whether the KPtyDevice monitors the pty for incoming data.
@@ -95,7 +93,7 @@ public:
      * ensure that no data is read, call this function before the main loop
      * is entered again (i.e., immediately after opening the pty).
      */
-    void setSuspended(bool suspended);
+  void setSuspended (bool suspended);
 
     /**
      * Returns true if the KPtyDevice is not monitoring the pty for incoming
@@ -105,54 +103,53 @@ public:
      *
      * See setSuspended()
      */
-    bool isSuspended() const;
+  bool isSuspended () const;
 
     /**
      * @return always true
      */
-    virtual bool isSequential() const;
+  virtual bool isSequential () const;
 
     /**
      * @reimp
      */
-    bool canReadLine() const;
+  bool canReadLine () const;
 
     /**
      * @reimp
      */
-    bool atEnd() const;
+  bool atEnd () const;
 
     /**
      * @reimp
      */
-    qint64 bytesAvailable() const;
+  qint64 bytesAvailable () const;
 
     /**
      * @reimp
      */
-    qint64 bytesToWrite() const;
+  qint64 bytesToWrite () const;
 
-    bool waitForBytesWritten(int msecs = -1);
-    bool waitForReadyRead(int msecs = -1);
+  bool waitForBytesWritten (int msecs = -1);
+  bool waitForReadyRead (int msecs = -1);
 
 
-Q_SIGNALS:
+    Q_SIGNALS:
     /**
      * Emitted when EOF is read from the PTY.
      *
      * Data may still remain in the buffers.
      */
-    void readEof();
+  void readEof ();
 
 protected:
-    virtual qint64 readData(char *data, qint64 maxSize);
-    virtual qint64 readLineData(char *data, qint64 maxSize);
-    virtual qint64 writeData(const char *data, qint64 maxSize);
+    virtual qint64 readData (char *data, qint64 maxSize);
+  virtual qint64 readLineData (char *data, qint64 maxSize);
+  virtual qint64 writeData (const char *data, qint64 maxSize);
 
 private:
-    Q_PRIVATE_SLOT(d_func(), bool _k_canRead())
-    Q_PRIVATE_SLOT(d_func(), bool _k_canWrite())
-};
+  Q_PRIVATE_SLOT (d_func (), bool _k_canRead ())
+    Q_PRIVATE_SLOT (d_func (), bool _k_canWrite ())};
 
 #define KMAXINT ((int)(~0U >> 1))
 
@@ -168,186 +165,193 @@ private:
 class KRingBuffer
 {
 public:
-    KRingBuffer()
+  KRingBuffer ()
+  {
+    clear ();
+  }
+
+  void clear ()
+  {
+    buffers.clear ();
+    QByteArray tmp;
+    tmp.resize (CHUNKSIZE);
+    buffers << tmp;
+    head = tail = 0;
+    totalSize = 0;
+  }
+
+  inline bool isEmpty () const
+  {
+    return buffers.count () == 1 && !tail;
+  }
+
+  inline int size () const
+  {
+    return totalSize;
+  }
+
+  inline int readSize () const
+  {
+    return (buffers.count () == 1 ? tail : buffers.first ().size ()) - head;
+  }
+
+  inline const char *readPointer () const
+  {
+    Q_ASSERT (totalSize > 0);
+    return buffers.first ().constData () + head;
+  }
+
+  void free (int bytes)
+  {
+    totalSize -= bytes;
+    Q_ASSERT (totalSize >= 0);
+
+    forever
     {
-        clear();
-    }
+      int nbs = readSize ();
 
-    void clear()
+      if (bytes < nbs)
+	{
+	  head += bytes;
+	  if (head == tail && buffers.count () == 1)
+	    {
+	      buffers.first ().resize (CHUNKSIZE);
+	      head = tail = 0;
+	    }
+	  break;
+	}
+
+      bytes -= nbs;
+      if (buffers.count () == 1)
+	{
+	  buffers.first ().resize (CHUNKSIZE);
+	  head = tail = 0;
+	  break;
+	}
+
+      buffers.removeFirst ();
+      head = 0;
+    }
+  }
+
+  char *reserve (int bytes)
+  {
+    totalSize += bytes;
+
+    char *ptr;
+    if (tail + bytes <= buffers.last ().size ())
+      {
+	ptr = buffers.last ().data () + tail;
+	tail += bytes;
+      }
+    else
+      {
+	buffers.last ().resize (tail);
+	QByteArray tmp;
+	tmp.resize (qMax (CHUNKSIZE, bytes));
+	ptr = tmp.data ();
+	buffers << tmp;
+	tail = bytes;
+      }
+    return ptr;
+  }
+
+  // release a trailing part of the last reservation
+  inline void unreserve (int bytes)
+  {
+    totalSize -= bytes;
+    tail -= bytes;
+  }
+
+  inline void write (const char *data, int len)
+  {
+    memcpy (reserve (len), data, len);
+  }
+
+  // Find the first occurrence of c and return the index after it.
+  // If c is not found until maxLength, maxLength is returned, provided
+  // it is smaller than the buffer size. Otherwise -1 is returned.
+  int indexAfter (char c, int maxLength = KMAXINT) const
+  {
+    int index = 0;
+    int start = head;
+      QLinkedList < QByteArray >::ConstIterator it = buffers.begin ();
+      forever
     {
-        buffers.clear();
-        QByteArray tmp;
-        tmp.resize(CHUNKSIZE);
-        buffers << tmp;
-        head = tail = 0;
-        totalSize = 0;
+      if (!maxLength)
+	return index;
+      if (index == size ())
+	return -1;
+      const QByteArray & buf = *it;
+      ++it;
+      int len = qMin ((it == buffers.end ()? tail : buf.size ()) - start,
+		      maxLength);
+      const char *ptr = buf.data () + start;
+      if (const char *rptr = (const char *)memchr (ptr, c, len))
+	return index + (rptr - ptr) + 1;
+        index += len;
+        maxLength -= len;
+        start = 0;
     }
+  }
 
-    inline bool isEmpty() const
-    {
-        return buffers.count() == 1 && !tail;
-    }
+  inline int lineSize (int maxLength = KMAXINT) const
+  {
+    return indexAfter ('\n', maxLength);
+  }
 
-    inline int size() const
-    {
-        return totalSize;
-    }
+  inline bool canReadLine () const
+  {
+    return lineSize () != -1;
+  }
 
-    inline int readSize() const
-    {
-        return (buffers.count() == 1 ? tail : buffers.first().size()) - head;
-    }
+  int read (char *data, int maxLength)
+  {
+    int bytesToRead = qMin (size (), maxLength);
+    int readSoFar = 0;
+    while (readSoFar < bytesToRead)
+      {
+	const char *ptr = readPointer ();
+	int bs = qMin (bytesToRead - readSoFar, readSize ());
+	memcpy (data + readSoFar, ptr, bs);
+	readSoFar += bs;
+	free (bs);
+      }
+    return readSoFar;
+  }
 
-    inline const char *readPointer() const
-    {
-        Q_ASSERT(totalSize > 0);
-        return buffers.first().constData() + head;
-    }
-
-    void free(int bytes)
-    {
-        totalSize -= bytes;
-        Q_ASSERT(totalSize >= 0);
-
-        forever {
-            int nbs = readSize();
-
-            if (bytes < nbs) {
-                head += bytes;
-                if (head == tail && buffers.count() == 1) {
-                    buffers.first().resize(CHUNKSIZE);
-                    head = tail = 0;
-                }
-                break;
-            }
-
-            bytes -= nbs;
-            if (buffers.count() == 1) {
-                buffers.first().resize(CHUNKSIZE);
-                head = tail = 0;
-                break;
-            }
-
-            buffers.removeFirst();
-            head = 0;
-        }
-    }
-
-    char *reserve(int bytes)
-    {
-        totalSize += bytes;
-
-        char *ptr;
-        if (tail + bytes <= buffers.last().size()) {
-            ptr = buffers.last().data() + tail;
-            tail += bytes;
-        } else {
-            buffers.last().resize(tail);
-            QByteArray tmp;
-            tmp.resize(qMax(CHUNKSIZE, bytes));
-            ptr = tmp.data();
-            buffers << tmp;
-            tail = bytes;
-        }
-        return ptr;
-    }
-
-    // release a trailing part of the last reservation
-    inline void unreserve(int bytes)
-    {
-        totalSize -= bytes;
-        tail -= bytes;
-    }
-
-    inline void write(const char *data, int len)
-    {
-        memcpy(reserve(len), data, len);
-    }
-
-    // Find the first occurrence of c and return the index after it.
-    // If c is not found until maxLength, maxLength is returned, provided
-    // it is smaller than the buffer size. Otherwise -1 is returned.
-    int indexAfter(char c, int maxLength = KMAXINT) const
-    {
-        int index = 0;
-        int start = head;
-        QLinkedList<QByteArray>::ConstIterator it = buffers.begin();
-        forever {
-            if (!maxLength)
-                return index;
-            if (index == size())
-                return -1;
-            const QByteArray &buf = *it;
-            ++it;
-            int len = qMin((it == buffers.end() ? tail : buf.size()) - start,
-                           maxLength);
-            const char *ptr = buf.data() + start;
-            if (const char *rptr = (const char *)memchr(ptr, c, len))
-                return index + (rptr - ptr) + 1;
-            index += len;
-            maxLength -= len;
-            start = 0;
-        }
-    }
-
-    inline int lineSize(int maxLength = KMAXINT) const
-    {
-        return indexAfter('\n', maxLength);
-    }
-
-    inline bool canReadLine() const
-    {
-        return lineSize() != -1;
-    }
-
-    int read(char *data, int maxLength)
-    {
-        int bytesToRead = qMin(size(), maxLength);
-        int readSoFar = 0;
-        while (readSoFar < bytesToRead) {
-            const char *ptr = readPointer();
-            int bs = qMin(bytesToRead - readSoFar, readSize());
-            memcpy(data + readSoFar, ptr, bs);
-            readSoFar += bs;
-            free(bs);
-        }
-        return readSoFar;
-    }
-
-    int readLine(char *data, int maxLength)
-    {
-        return read(data, lineSize(qMin(maxLength, size())));
-    }
+  int readLine (char *data, int maxLength)
+  {
+    return read (data, lineSize (qMin (maxLength, size ())));
+  }
 
 private:
-    QLinkedList<QByteArray> buffers;
-    int head, tail;
-    int totalSize;
+  QLinkedList < QByteArray > buffers;
+  int head, tail;
+  int totalSize;
 };
 
-struct KPtyDevicePrivate : public KPtyPrivate {
-    Q_DECLARE_PUBLIC(KPtyDevice)
+struct KPtyDevicePrivate:public KPtyPrivate
+{
+  Q_DECLARE_PUBLIC (KPtyDevice)
+    KPtyDevicePrivate (KPty * parent):KPtyPrivate (parent),
+    emittedReadyRead (false), emittedBytesWritten (false),
+    readNotifier (0), writeNotifier (0)
+  {
+  }
 
-    KPtyDevicePrivate(KPty* parent) :
-        KPtyPrivate(parent),
-        emittedReadyRead(false), emittedBytesWritten(false),
-        readNotifier(0), writeNotifier(0)
-    {
-    }
+  bool _k_canRead ();
+  bool _k_canWrite ();
 
-    bool _k_canRead();
-    bool _k_canWrite();
+  bool doWait (int msecs, bool reading);
+  void finishOpen (QIODevice::OpenMode mode);
 
-    bool doWait(int msecs, bool reading);
-    void finishOpen(QIODevice::OpenMode mode);
-
-    bool emittedReadyRead;
-    bool emittedBytesWritten;
-    QSocketNotifier *readNotifier;
-    QSocketNotifier *writeNotifier;
-    KRingBuffer readBuffer;
-    KRingBuffer writeBuffer;
+  bool emittedReadyRead;
+  bool emittedBytesWritten;
+  QSocketNotifier *readNotifier;
+  QSocketNotifier *writeNotifier;
+  KRingBuffer readBuffer;
+  KRingBuffer writeBuffer;
 };
 
 #endif
-

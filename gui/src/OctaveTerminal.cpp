@@ -22,16 +22,18 @@
 #include <QStringListModel>
 #include <QStringList>
 
-OctaveTerminal::OctaveTerminal(QWidget *parent)
-    : QTerminalWidget(0, parent) {
-    construct();
+OctaveTerminal::OctaveTerminal (QWidget * parent):QTerminalWidget (0, parent)
+{
+  construct ();
 }
 
-OctaveTerminal::~OctaveTerminal() {
+OctaveTerminal::~OctaveTerminal ()
+{
 }
 
-void OctaveTerminal::construct() {
-    setScrollBarPosition(QTerminalWidget::ScrollBarRight);
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+void
+OctaveTerminal::construct ()
+{
+  setScrollBarPosition (QTerminalWidget::ScrollBarRight);
+  setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
-

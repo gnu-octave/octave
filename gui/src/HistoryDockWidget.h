@@ -51,23 +51,21 @@
 #include "octave/symtab.h"
 #include "cmd-edit.h"
 
-class HistoryDockWidget : public QDockWidget {
-    Q_OBJECT
-public:
-    HistoryDockWidget(QWidget *parent = 0);
-    void updateHistory(string_vector historyEntries);
+class HistoryDockWidget:public QDockWidget
+{
+Q_OBJECT public:
+  HistoryDockWidget (QWidget * parent = 0);
+  void updateHistory (string_vector historyEntries);
 
-signals:
-    void information(QString message);
-    void commandDoubleClicked(QString command);
+    signals:void information (QString message);
+  void commandDoubleClicked (QString command);
 
-private slots:
-    void handleListViewItemDoubleClicked(QModelIndex modelIndex);
+  private slots:void handleListViewItemDoubleClicked (QModelIndex modelIndex);
 
 private:
-    void construct();
-    QListView *m_historyListView;
-    QStringListModel *m_historyListModel;
+  void construct ();
+  QListView *m_historyListView;
+  QStringListModel *m_historyListModel;
 };
 
 #endif // HISTORYDOCKWIDGET_H

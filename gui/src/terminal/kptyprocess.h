@@ -45,27 +45,24 @@ struct KPtyProcessPrivate;
  *
  * @author Oswald Buddenhagen <ossi@kde.org>
  */
-class KPtyProcess : public KProcess
+class KPtyProcess:public KProcess
 {
-    Q_OBJECT
-    Q_DECLARE_PRIVATE(KPtyProcess)
+Q_OBJECT Q_DECLARE_PRIVATE (KPtyProcess) public:
+  enum PtyChannelFlag
+  {
+    NoChannels = 0,	/**< The PTY is not connected to any channel. */
+    StdinChannel = 1,	  /**< Connect PTY to stdin. */
+    StdoutChannel = 2,	   /**< Connect PTY to stdout. */
+    StderrChannel = 4,	   /**< Connect PTY to stderr. */
+    AllOutputChannels = 6,     /**< Connect PTY to all output channels. */
+    AllChannels = 7	/**< Connect PTY to all channels. */
+  };
 
-public:
-    enum PtyChannelFlag {
-        NoChannels = 0, /**< The PTY is not connected to any channel. */
-        StdinChannel = 1, /**< Connect PTY to stdin. */
-        StdoutChannel = 2, /**< Connect PTY to stdout. */
-        StderrChannel = 4, /**< Connect PTY to stderr. */
-        AllOutputChannels = 6, /**< Connect PTY to all output channels. */
-        AllChannels = 7 /**< Connect PTY to all channels. */
-    };
-
-    Q_DECLARE_FLAGS(PtyChannels, PtyChannelFlag)
-
+    Q_DECLARE_FLAGS (PtyChannels, PtyChannelFlag)
     /**
      * Constructor
      */
-    explicit KPtyProcess(QObject *parent = 0);
+  explicit KPtyProcess (QObject * parent = 0);
 
     /**
      * Construct a process using an open pty master.
@@ -74,12 +71,12 @@ public:
      *   The process does not take ownership of the descriptor;
      *   it will not be automatically closed at any point.
      */
-    KPtyProcess(int ptyMasterFd, QObject *parent = 0);
+    KPtyProcess (int ptyMasterFd, QObject * parent = 0);
 
     /**
      * Destructor
      */
-    virtual ~KPtyProcess();
+    virtual ~ KPtyProcess ();
 
     /**
      * Set to which channels the PTY should be assigned.
@@ -88,14 +85,14 @@ public:
      *
      * @param channels the output channel handling mode
      */
-    void setPtyChannels(PtyChannels channels);
+  void setPtyChannels (PtyChannels channels);
 
     /**
      * Query to which channels the PTY is assigned.
      *
      * @return the output channel handling mode
      */
-    PtyChannels ptyChannels() const;
+  PtyChannels ptyChannels () const;
 
     /**
      * Set whether to register the process as a TTY login in utmp.
@@ -108,50 +105,48 @@ public:
      *
      * @param value whether to register in utmp.
      */
-    void setUseUtmp(bool value);
+  void setUseUtmp (bool value);
 
     /**
      * Get whether to register the process as a TTY login in utmp.
      *
      * @return whether to register in utmp
      */
-    bool isUseUtmp() const;
+  bool isUseUtmp () const;
 
     /**
      * Get the PTY device of this process.
      *
      * @return the PTY device
      */
-    KPtyDevice *pty() const;
+  KPtyDevice *pty () const;
 
 protected:
     /**
      * @reimp
      */
-    virtual void setupChildProcess();
+    virtual void setupChildProcess ();
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void _k_onStateChanged(QProcess::ProcessState))
+  Q_PRIVATE_SLOT (d_func (),
+		    void _k_onStateChanged (QProcess::ProcessState))};
+
+struct KPtyProcessPrivate:KProcessPrivate
+{
+  KPtyProcessPrivate ():ptyChannels (KPtyProcess::NoChannels), addUtmp (false)
+  {
+  }
+
+  void _k_onStateChanged (QProcess::ProcessState newState)
+  {
+    if (newState == QProcess::NotRunning && addUtmp)
+      pty->logout ();
+  }
+
+  KPtyDevice *pty;
+  KPtyProcess::PtyChannels ptyChannels;
+  bool addUtmp:1;
 };
 
-struct KPtyProcessPrivate : KProcessPrivate {
-    KPtyProcessPrivate() :
-        ptyChannels(KPtyProcess::NoChannels),
-        addUtmp(false)
-    {
-    }
-
-    void _k_onStateChanged(QProcess::ProcessState newState)
-    {
-        if (newState == QProcess::NotRunning && addUtmp)
-            pty->logout();
-    }
-
-    KPtyDevice *pty;
-    KPtyProcess::PtyChannels ptyChannels;
-    bool addUtmp : 1;
-};
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(KPtyProcess::PtyChannels)
-
+Q_DECLARE_OPERATORS_FOR_FLAGS (KPtyProcess::PtyChannels)
 #endif

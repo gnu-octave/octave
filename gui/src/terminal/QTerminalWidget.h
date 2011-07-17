@@ -26,68 +26,66 @@ struct TermWidgetImpl;
   * \class QTerminalWidget
   * This class forms a widget class that can be inserted into other widgets.
   */
-class QTerminalWidget : public QWidget
+class QTerminalWidget:public QWidget
 {
-    Q_OBJECT
-public:
+Q_OBJECT public:
     /**
       * \enum ScrollBarPosition
       * Defines the scrollbar position of the terminal.
       */
-    enum ScrollBarPosition
-    {
-        NoScrollBar,
-        ScrollBarLeft,
-        ScrollBarRight
-    };
+  enum ScrollBarPosition
+  {
+    NoScrollBar,
+    ScrollBarLeft,
+    ScrollBarRight
+  };
 
-    QTerminalWidget(int startnow = 1, QWidget *parent = 0);
-    ~QTerminalWidget();
+    QTerminalWidget (int startnow = 1, QWidget * parent = 0);
+   ~QTerminalWidget ();
 
-    void startShellProgram();
-    void openTeletype(int fd);
+  void startShellProgram ();
+  void openTeletype (int fd);
 
     /** Default is application font with family Monospace, size 10. */
-    void setTerminalFont(QFont &font); 
-    
+  void setTerminalFont (QFont & font);
+
     /**	Shell program, default is /bin/bash. */
-    void setShellProgram(QString progname);
-    
+  void setShellProgram (QString progname);
+
     /** Shell program args, default is none. */
-    void setArgs(QStringList &args);
-    
+  void setArgs (QStringList & args);
+
     /** Text codec, default is UTF-8. */
-    void setTextCodec(QTextCodec *codec);
-    
+  void setTextCodec (QTextCodec * codec);
+
     /** Resize terminal widget. */
-    void setSize(int h, int v);
-    
+  void setSize (int h, int v);
+
     /** History size for scrolling, values below zero mean infinite. */
-    void setHistorySize(int lines);
+  void setHistorySize (int lines);
 
     /** Presence of scrollbar. By default, there is no scrollbar present. */
-    void setScrollBarPosition(ScrollBarPosition);
-    
+  void setScrollBarPosition (ScrollBarPosition);
+
     /** Send some text to the terminal. */
-    void sendText(const QString &text);
+  void sendText (const QString & text);
 
     /** Installs an event filter onto the display. */
-    void installEventFilterOnDisplay(QObject *object);
-            
-signals:
+  void installEventFilterOnDisplay (QObject * object);
+
+    signals:
     /** Emitted, when the current program has finished. */
-    void finished();
-        
-protected: 
-    virtual void resizeEvent(QResizeEvent *);
-    
-protected slots:
-    void sessionFinished();        
-    
+  void finished ();
+
+protected:
+    virtual void resizeEvent (QResizeEvent *);
+
+  protected slots:void sessionFinished ();
+
 private:
     /** Performs initial operations on this widget. */
-    void initialize();
-    TermWidgetImpl *m_impl;
+  void initialize ();
+  TermWidgetImpl *m_impl;
 };
 
 #endif // QTERMINALWIDGET_H

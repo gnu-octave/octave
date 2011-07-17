@@ -28,13 +28,13 @@
 #define KDE_IMPORT
 
 #ifndef KONSOLEPRIVATE_EXPORT
-# if defined(MAKE_KONSOLEPRIVATE_LIB)
+#if defined(MAKE_KONSOLEPRIVATE_LIB)
    /* We are building this library */
-#  define KONSOLEPRIVATE_EXPORT KDE_EXPORT
-# else
+#define KONSOLEPRIVATE_EXPORT KDE_EXPORT
+#else
    /* We are using this library */
-#  define KONSOLEPRIVATE_EXPORT KDE_IMPORT
-# endif
+#define KONSOLEPRIVATE_EXPORT KDE_IMPORT
+#endif
 #endif
 
 #include <iostream>
@@ -43,21 +43,22 @@
 #include <stdio.h>
 
 //#define i18n 
-inline QString tr(char *buff,...)
+inline QString
+tr (char *buff, ...)
 {
   char msg[2048];
-    va_list arglist;
+  va_list arglist;
 
-    va_start(arglist,buff);
+  va_start (arglist, buff);
 
-    snprintf(msg,2048,buff, arglist);
+  snprintf (msg, 2048, buff, arglist);
 
-    va_end(arglist);
+  va_end (arglist);
 
-    return QString(msg);
+  return QString (msg);
 }
 
-#define i18nc 
+#define i18nc
 
 
 //#define KDE_fseek ::fseek

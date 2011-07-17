@@ -45,23 +45,23 @@ class TerminalCharacterDecoder;
  *
  * These are the values used by Emulation::stateChanged() 
  */
-enum 
-{ 
+enum
+{
     /** The emulation is currently receiving user input. */
-    NOTIFYNORMAL=0, 
+  NOTIFYNORMAL = 0,
     /** 
      * The terminal program has triggered a bell event
      * to get the user's attention.
      */
-    NOTIFYBELL=1, 
+  NOTIFYBELL = 1,
     /** 
      * The emulation is currently receiving data from its 
      * terminal input.
      */
-    NOTIFYACTIVITY=2,
+  NOTIFYACTIVITY = 2,
 
-    // unused here? 
-    NOTIFYSILENCE=3 
+  // unused here? 
+  NOTIFYSILENCE = 3
 };
 
 /**
@@ -113,30 +113,28 @@ enum
  * how long the emulation has been active/idle for and also respond to
  * a 'bell' event in different ways.
  */
-class Emulation : public QObject
-{ 
-Q_OBJECT
+class Emulation:public QObject
+{
+Q_OBJECT public:
 
-public:
- 
-   /** Constructs a new terminal emulation */ 
-   Emulation();
-  ~Emulation();
+   /** Constructs a new terminal emulation */
+  Emulation ();
+  ~Emulation ();
 
   /**
    * Creates a new window onto the output from this emulation.  The contents
    * of the window are then rendered by views which are set to use this window using the
    * TerminalDisplay::setScreenWindow() method.
    */
-  ScreenWindow* createWindow();
+  ScreenWindow *createWindow ();
 
   /** Returns the size of the screen image which the emulation produces */
-  QSize imageSize() const;
+  QSize imageSize () const;
 
   /**
    * Returns the total number of lines, including those stored in the history.
-   */ 
-  int lineCount() const;
+   */
+  int lineCount () const;
 
   /** 
    * Sets the history store used by this emulation.  When new lines
@@ -146,11 +144,11 @@ public:
    * The number of lines which are kept and the storage location depend on the 
    * type of store.
    */
-  void setHistory(const HistoryType&);
+  void setHistory (const HistoryType &);
   /** Returns the history store used by this emulation.  See setHistory() */
-  const HistoryType& history() const;
+  const HistoryType & history () const;
   /** Clears the history scroll. */
-  void clearHistory();
+  void clearHistory ();
 
   /** 
    * Copies the output history from @p startLine to @p endLine 
@@ -163,44 +161,51 @@ public:
    * @param startLine Index of first line to copy
    * @param endLine Index of last line to copy
    */
-  virtual void writeToStream(TerminalCharacterDecoder* decoder,int startLine,int endLine);
-  
+  virtual void writeToStream (TerminalCharacterDecoder * decoder,
+			      int startLine, int endLine);
+
   /** Returns the codec used to decode incoming characters.  See setCodec() */
-  const QTextCodec* codec() const { return _codec; }
+  const QTextCodec *codec () const
+  {
+    return _codec;
+  }
   /** Sets the codec used to decode incoming characters.  */
-  void setCodec(const QTextCodec*);
+  void setCodec (const QTextCodec *);
 
   /** 
    * Convenience method.  
    * Returns true if the current codec used to decode incoming
    * characters is UTF-8
    */
-  bool utf8() const
-  { Q_ASSERT(_codec); return _codec->mibEnum() == 106; }
-  
+  bool utf8 () const
+  {
+    Q_ASSERT (_codec);
+    return _codec->mibEnum () == 106;
+  }
+
 
   /** TODO Document me */
-  virtual char eraseChar() const;
+  virtual char eraseChar () const;
 
   /** 
    * Sets the key bindings used to key events
    * ( received through sendKeyEvent() ) into character
    * streams to send to the terminal.
    */
-  void setKeyBindings(const QString& name);
+  void setKeyBindings (const QString & name);
   /** 
    * Returns the name of the emulation's current key bindings.
    * See setKeyBindings()
    */
-  QString keyBindings() const;
+  QString keyBindings () const;
 
   /** 
    * Copies the current image into the history and clears the screen.
    */
-  virtual void clearEntireScreen() =0;
+  virtual void clearEntireScreen () = 0;
 
   /** Resets the state of the terminal. */
-  virtual void reset() =0;
+  virtual void reset () = 0;
 
   /** 
    * Returns true if the active terminal program wants
@@ -209,31 +214,31 @@ public:
    * The programUsesMouseChanged() signal is emitted when this
    * changes.
    */
-  bool programUsesMouse() const;
+  bool programUsesMouse () const;
 
-public slots: 
-
+  public slots:
   /** Change the size of the emulation's image */
-  virtual void setImageSize(int lines, int columns);
-  
+    virtual void setImageSize (int lines, int columns);
+
   /** 
    * Interprets a sequence of characters and sends the result to the terminal.
    * This is equivalent to calling sendKeyEvent() for each character in @p text in succession.
    */
-  virtual void sendText(const QString& text) = 0;
+  virtual void sendText (const QString & text) = 0;
 
   /** 
    * Interprets a key press event and emits the sendData() signal with
    * the resulting character stream. 
    */
-  virtual void sendKeyEvent(QKeyEvent*);
- 
+  virtual void sendKeyEvent (QKeyEvent *);
+
   /** 
    * Converts information about a mouse event into an xterm-compatible escape
    * sequence and emits the character sequence via sendData()
    */
-  virtual void sendMouseEvent(int buttons, int column, int line, int eventType);
-  
+  virtual void sendMouseEvent (int buttons, int column, int line,
+			       int eventType);
+
   /**
    * Sends a string of characters to the foreground terminal process. 
    *
@@ -241,7 +246,7 @@ public slots:
    * @param length Length of @p string or if set to a negative value, @p string will
    * be treated as a null-terminated string and its length will be determined automatically.
    */
-  virtual void sendString(const char* string, int length = -1) = 0;
+  virtual void sendString (const char *string, int length = -1) = 0;
 
   /** 
    * Processes an incoming stream of characters.  receiveData() decodes the incoming
@@ -255,10 +260,9 @@ public slots:
    * @param buffer A string of characters received from the terminal program.
    * @param len The length of @p buffer
    */
-  void receiveData(const char* buffer,int len);
+  void receiveData (const char *buffer, int len);
 
-signals:
-
+    signals:
   /** 
    * Emitted when a buffer of data is ready to send to the 
    * standard input of the terminal.
@@ -266,7 +270,7 @@ signals:
    * @param data The buffer of data ready to be sent
    * @param len The length of @p data in bytes
    */
-  void sendData(const char* data,int len);
+  void sendData (const char *data, int len);
 
   /** 
    * Requests that sending of input to the emulation
@@ -277,7 +281,7 @@ signals:
    * suspended.  Otherwise requests that sending of
    * input be resumed. 
    */
-  void lockPtyRequest(bool suspend);
+  void lockPtyRequest (bool suspend);
 
   /**
    * Requests that the pty used by the terminal process
@@ -285,7 +289,7 @@ signals:
    *
    * TODO: More documentation
    */
-  void useUtf8Request(bool);
+  void useUtf8Request (bool);
 
   /**
    * Emitted when the activity state of the emulation is set.
@@ -293,7 +297,7 @@ signals:
    * @param state The new activity state, one of NOTIFYNORMAL, NOTIFYACTIVITY
    * or NOTIFYBELL
    */
-  void stateSet(int state);
+  void stateSet (int state);
 
   /**
    * Requests that the color of the text used
@@ -303,7 +307,7 @@ signals:
    *
    * TODO: Document how the parameter works.
    */
-  void changeTabTextColorRequest(int color);
+  void changeTabTextColorRequest (int color);
 
   /** 
    * This is emitted when the program running in the shell indicates whether or
@@ -312,7 +316,7 @@ signals:
    * @param usesMouse This will be true if the program wants to be informed about
    * mouse events or false otherwise.
    */
-  void programUsesMouseChanged(bool usesMouse);
+  void programUsesMouseChanged (bool usesMouse);
 
   /** 
    * Emitted when the contents of the screen image change.
@@ -326,7 +330,7 @@ signals:
    * ScreenWindow objects created using createWindow() will emit their
    * own outputChanged() signal in response to this signal. 
    */
-  void outputChanged();
+  void outputChanged ();
 
   /**
    * Emitted when the program running in the terminal wishes to update the 
@@ -360,13 +364,13 @@ signals:
    * @param newTitle Specifies the new title 
    */
 
-  void titleChanged(int title,const QString& newTitle);
+  void titleChanged (int title, const QString & newTitle);
 
   /**
    * Emitted when the program running in the terminal changes the
    * screen size.
    */
-  void imageSizeChanged(int lineCount , int columnCount);
+  void imageSizeChanged (int lineCount, int columnCount);
 
   /** 
    * Emitted when the terminal program requests to change various properties
@@ -379,24 +383,24 @@ signals:
    * @param text A string expected to contain a series of key and value pairs in
    * the form:  name=value;name2=value2 ...
    */
-  void profileChangeCommandReceived(const QString& text);
+  void profileChangeCommandReceived (const QString & text);
 
   /** 
    * Emitted when a flow control key combination ( Ctrl+S or Ctrl+Q ) is pressed.
    * @param suspendKeyPressed True if Ctrl+S was pressed to suspend output or Ctrl+Q to
    * resume output.
    */
-  void flowControlKeyPressed(bool suspendKeyPressed);
+  void flowControlKeyPressed (bool suspendKeyPressed);
 
 protected:
-  virtual void setMode(int mode) = 0;
-  virtual void resetMode(int mode) = 0;
-   
+    virtual void setMode (int mode) = 0;
+  virtual void resetMode (int mode) = 0;
+
   /** 
    * Processes an incoming character.  See receiveData()
    * @p ch A unicode character code. 
    */
-  virtual void receiveChar(int ch);
+  virtual void receiveChar (int ch);
 
   /** 
    * Sets the active screen.  The terminal has two screens, primary and alternate.
@@ -405,54 +409,53 @@ protected:
    *
    * @param index 0 to switch to the primary screen, or 1 to switch to the alternate screen
    */
-  void setScreen(int index); 
+  void setScreen (int index);
 
   enum EmulationCodec
   {
-      LocaleCodec = 0,
-      Utf8Codec   = 1
+    LocaleCodec = 0,
+    Utf8Codec = 1
   };
-  void setCodec(EmulationCodec codec); // codec number, 0 = locale, 1=utf8
+  void setCodec (EmulationCodec codec);	// codec number, 0 = locale, 1=utf8
 
 
-  QList<ScreenWindow*> _windows;
-  
-  Screen* _currentScreen;  // pointer to the screen which is currently active, 
-                            // this is one of the elements in the screen[] array
+    QList < ScreenWindow * >_windows;
 
-  Screen* _screen[2];      // 0 = primary screen ( used by most programs, including the shell
-                            //                      scrollbars are enabled in this mode )
-                            // 1 = alternate      ( used by vi , emacs etc.
-                            //                      scrollbars are not enabled in this mode )
-                            
-  
+  Screen *_currentScreen;	// pointer to the screen which is currently active, 
+  // this is one of the elements in the screen[] array
+
+  Screen *_screen[2];		// 0 = primary screen ( used by most programs, including the shell
+  //                      scrollbars are enabled in this mode )
+  // 1 = alternate      ( used by vi , emacs etc.
+  //                      scrollbars are not enabled in this mode )
+
+
   //decodes an incoming C-style character stream into a unicode QString using 
   //the current text codec.  (this allows for rendering of non-ASCII characters in text files etc.)
-  const QTextCodec* _codec;
-  QTextDecoder* _decoder;
-  const KeyboardTranslator* _keyTranslator; // the keyboard layout
+  const QTextCodec *_codec;
+  QTextDecoder *_decoder;
+  const KeyboardTranslator *_keyTranslator;	// the keyboard layout
 
-protected slots:
+  protected slots:
   /** 
    * Schedules an update of attached views.
    * Repeated calls to bufferedUpdate() in close succession will result in only a single update,
    * much like the Qt buffered update of widgets. 
    */
-  void bufferedUpdate();
+  void bufferedUpdate ();
 
-private slots: 
+  private slots:
+    // triggered by timer, causes the emulation to send an updated screen image to each
+    // view
+  void showBulk ();
 
-  // triggered by timer, causes the emulation to send an updated screen image to each
-  // view
-  void showBulk(); 
-
-  void usesMouseChanged(bool usesMouse);
+  void usesMouseChanged (bool usesMouse);
 
 private:
-  bool _usesMouse;
+    bool _usesMouse;
   QTimer _bulkTimer1;
   QTimer _bulkTimer2;
-  
+
 };
 
 #endif // ifndef EMULATION_H

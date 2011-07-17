@@ -21,14 +21,14 @@
 
 #include <QMdiSubWindow>
 
-class ImageViewerMdiSubWindow : public QMdiSubWindow
+class ImageViewerMdiSubWindow:public QMdiSubWindow
 {
 public:
-    ImageViewerMdiSubWindow(QPixmap pixmap, QWidget *parent = 0);
+  ImageViewerMdiSubWindow (QPixmap pixmap, QWidget * parent = 0);
 
 private:
-    void construct();
-    QPixmap m_pixmap;
+  void construct ();
+  QPixmap m_pixmap;
 };
 
 #endif // IMAGEVIEWERMDISUBWINDOW_H

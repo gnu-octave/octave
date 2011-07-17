@@ -3,21 +3,20 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class SettingsDialog;
+namespace Ui
+{
+  class SettingsDialog;
 }
 
-class SettingsDialog : public QDialog
+class SettingsDialog:public QDialog
 {
-    Q_OBJECT
-
-public:
-    explicit SettingsDialog(QWidget *parent, QString settingsFile);
-    ~SettingsDialog();
+Q_OBJECT public:
+  explicit SettingsDialog (QWidget * parent, QString settingsFile);
+  ~SettingsDialog ();
 
 private:
-    Ui::SettingsDialog *ui;
-    QString m_settingsFile;
+  Ui::SettingsDialog * ui;
+  QString m_settingsFile;
 };
 
 #endif // SETTINGSDIALOG_H

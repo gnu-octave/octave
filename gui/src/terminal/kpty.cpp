@@ -40,9 +40,9 @@
 // __USE_XOPEN isn't defined by default in ICC
 // (needed for ptsname(), grantpt() and unlockpt())
 #ifdef __INTEL_COMPILER
-#  ifndef __USE_XOPEN
-#    define __USE_XOPEN
-#  endif
+#ifndef __USE_XOPEN
+#define __USE_XOPEN
+#endif
 #endif
 
 #include <sys/types.h>
@@ -62,72 +62,74 @@
 #include <grp.h>
 
 #if defined(HAVE_PTY_H)
-# include <pty.h>
+#include <pty.h>
 #endif
 
 #ifdef HAVE_LIBUTIL_H
-# include <libutil.h>
+#include <libutil.h>
 #elif defined(HAVE_UTIL_H)
-# include <util.h>
+#include <util.h>
 #endif
 
 #define HAVE_UTMPX
 #define _UTMPX_COMPAT
 
 #ifdef HAVE_UTEMPTER
-extern "C" {
-# include <utempter.h>
+extern "C"
+{
+#include <utempter.h>
 }
 #else
-# include <utmp.h>
-# ifdef HAVE_UTMPX
-#  include <utmpx.h>
-# endif
-# if !defined(_PATH_UTMPX) && defined(_UTMPX_FILE)
-#  define _PATH_UTMPX _UTMPX_FILE
-# endif
-# if !defined(_PATH_WTMPX) && defined(_WTMPX_FILE)
-#  define _PATH_WTMPX _WTMPX_FILE
-# endif
+#include <utmp.h>
+#ifdef HAVE_UTMPX
+#include <utmpx.h>
+#endif
+#if !defined(_PATH_UTMPX) && defined(_UTMPX_FILE)
+#define _PATH_UTMPX _UTMPX_FILE
+#endif
+#if !defined(_PATH_WTMPX) && defined(_WTMPX_FILE)
+#define _PATH_WTMPX _WTMPX_FILE
+#endif
 #endif
 
 /* for HP-UX (some versions) the extern C is needed, and for other
    platforms it doesn't hurt */
-extern "C" {
+extern "C"
+{
 #include <termios.h>
 #if defined(HAVE_TERMIO_H)
-# include <termio.h> // struct winsize on some systems
+#include <termio.h>		// struct winsize on some systems
 #endif
 }
 
 #if defined (_HPUX_SOURCE)
-# define _TERMIOS_INCLUDED
-# include <bsdtty.h>
+#define _TERMIOS_INCLUDED
+#include <bsdtty.h>
 #endif
 
 #ifdef HAVE_SYS_STROPTS_H
-# include <sys/stropts.h>	// Defines I_PUSH
-# define _NEW_TTY_CTRL
+#include <sys/stropts.h>	// Defines I_PUSH
+#define _NEW_TTY_CTRL
 #endif
 
 #if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
-# define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
+#define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__) || defined(__sun)
-#  define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
-# else
-#  define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
-# endif
+#if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__) || defined(__sun)
+#define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
+#else
+#define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
+#endif
 #endif
 
 #if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
-# define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
+#define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__CYGWIN__) || defined(__sun)
-#  define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
-# else
-#  define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
-# endif
+#if defined(_HPUX_SOURCE) || defined(__CYGWIN__) || defined(__sun)
+#define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
+#else
+#define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
+#endif
 #endif
 
 #include <QtCore/Q_PID>
@@ -135,11 +137,11 @@ extern "C" {
 #define TTY_GROUP "tty"
 
 #ifndef PATH_MAX
-# ifdef MAXPATHLEN
-#  define PATH_MAX MAXPATHLEN
-# else
-#  define PATH_MAX 1024
-# endif
+#ifdef MAXPATHLEN
+#define PATH_MAX MAXPATHLEN
+#else
+#define PATH_MAX 1024
+#endif
 #endif
 
 ///////////////////////
@@ -150,20 +152,26 @@ extern "C" {
 // private data //
 //////////////////
 
-KPtyPrivate::KPtyPrivate(KPty* parent) :
-    masterFd(-1), slaveFd(-1), ownMaster(true), q_ptr(parent)
+KPtyPrivate::KPtyPrivate (KPty * parent):
+masterFd (-1),
+slaveFd (-1),
+ownMaster (true),
+q_ptr (parent)
 {
 }
 
-KPtyPrivate::~KPtyPrivate()
+KPtyPrivate::~KPtyPrivate ()
 {
 }
 
 #ifndef HAVE_OPENPTY
-bool KPtyPrivate::chownpty(bool grant)
+bool
+KPtyPrivate::chownpty (bool grant)
 {
-    return !QProcess::execute(KStandardDirs::findExe("kgrantpty"),
-        QStringList() << (grant?"--grant":"--revoke") << QString::number(masterFd));
+  return !QProcess::execute (KStandardDirs::findExe ("kgrantpty"),
+			     QStringList () << (grant ? "--grant" :
+						"--revoke") << QString::
+			     number (masterFd));
 }
 #endif
 
@@ -171,26 +179,27 @@ bool KPtyPrivate::chownpty(bool grant)
 // public member functions //
 /////////////////////////////
 
-KPty::KPty() :
-    d_ptr(new KPtyPrivate(this))
+KPty::KPty ():
+d_ptr (new KPtyPrivate (this))
 {
 }
 
-KPty::KPty(KPtyPrivate *d) :
-    d_ptr(d)
+KPty::KPty (KPtyPrivate * d):
+d_ptr (d)
 {
-    d_ptr->q_ptr = this;
+  d_ptr->q_ptr = this;
 }
 
-KPty::~KPty()
+KPty::~KPty ()
 {
-    close();
-    delete d_ptr;
+  close ();
+  delete d_ptr;
 }
 
-bool KPty::open()
+bool
+KPty::open ()
 {
-  Q_D(KPty);
+  Q_D (KPty);
 
   if (d->masterFd >= 0)
     return true;
@@ -209,146 +218,153 @@ bool KPty::open()
 #ifdef HAVE_OPENPTY
 
   char ptsn[PATH_MAX];
-  if (::openpty( &d->masterFd, &d->slaveFd, ptsn, 0, 0))
-  {
-    d->masterFd = -1;
-    d->slaveFd = -1;
-    //kWarning(175) << "Can't open a pseudo teletype";
-    return false;
-  }
+  if (::openpty (&d->masterFd, &d->slaveFd, ptsn, 0, 0))
+    {
+      d->masterFd = -1;
+      d->slaveFd = -1;
+      //kWarning(175) << "Can't open a pseudo teletype";
+      return false;
+    }
   d->ttyName = ptsn;
 
 #else
 
-#ifdef HAVE__GETPTY // irix
+#ifdef HAVE__GETPTY		// irix
 
-  char *ptsn = _getpty(&d->masterFd, O_RDWR|O_NOCTTY, S_IRUSR|S_IWUSR, 0);
-  if (ptsn) {
-    d->ttyName = ptsn;
-    goto grantedpt;
-  }
+  char *ptsn =
+    _getpty (&d->masterFd, O_RDWR | O_NOCTTY, S_IRUSR | S_IWUSR, 0);
+  if (ptsn)
+    {
+      d->ttyName = ptsn;
+      goto grantedpt;
+    }
 
 #elif defined(HAVE_PTSNAME) || defined(TIOCGPTN)
 
 #ifdef HAVE_POSIX_OPENPT
-  d->masterFd = ::posix_openpt(O_RDWR|O_NOCTTY);
+  d->masterFd =::posix_openpt (O_RDWR | O_NOCTTY);
 #elif defined(HAVE_GETPT)
-  d->masterFd = ::getpt();
+  d->masterFd =::getpt ();
 #elif defined(PTM_DEVICE)
   //d->masterFd = KDE_open(PTM_DEVICE, O_RDWR|O_NOCTTY);
-d->masterFd = ::open(PTM_DEVICE, O_RDWR|O_NOCTTY);
+  d->masterFd =::open (PTM_DEVICE, O_RDWR | O_NOCTTY);
 #else
-# error No method to open a PTY master detected.
+#error No method to open a PTY master detected.
 #endif
   if (d->masterFd >= 0)
-  {
+    {
 #ifdef HAVE_PTSNAME
-    char *ptsn = ptsname(d->masterFd);
-    if (ptsn) {
-        d->ttyName = ptsn;
+      char *ptsn = ptsname (d->masterFd);
+      if (ptsn)
+	{
+	  d->ttyName = ptsn;
 #else
-    int ptyno;
-    if (!ioctl(d->masterFd, TIOCGPTN, &ptyno)) {
-        char buf[32];
-        sprintf(buf, "/dev/pts/%d", ptyno);
-        d->ttyName = buf;
+      int ptyno;
+      if (!ioctl (d->masterFd, TIOCGPTN, &ptyno))
+	{
+	  char buf[32];
+	  sprintf (buf, "/dev/pts/%d", ptyno);
+	  d->ttyName = buf;
 #endif
 #ifdef HAVE_GRANTPT
-        if (!grantpt(d->masterFd))
-           goto grantedpt;
+	  if (!grantpt (d->masterFd))
+	    goto grantedpt;
 #else
-        goto gotpty;
+	  goto gotpty;
 #endif
+	}
+      ::close (d->masterFd);
+      d->masterFd = -1;
     }
-    ::close(d->masterFd);
-    d->masterFd = -1;
-  }
 #endif // HAVE_PTSNAME || TIOCGPTN
 
   // Linux device names, FIXME: Trouble on other systems?
-  for (const char* s3 = "pqrstuvwxyzabcde"; *s3; s3++)
-  {
-    for (const char* s4 = "0123456789abcdef"; *s4; s4++)
+  for (const char *s3 = "pqrstuvwxyzabcde"; *s3; s3++)
     {
-      ptyName = QString().sprintf("/dev/pty%c%c", *s3, *s4).toAscii();
-      d->ttyName = QString().sprintf("/dev/tty%c%c", *s3, *s4).toAscii();
+      for (const char *s4 = "0123456789abcdef"; *s4; s4++)
+	{
+	  ptyName = QString ().sprintf ("/dev/pty%c%c", *s3, *s4).toAscii ();
+	  d->ttyName =
+	    QString ().sprintf ("/dev/tty%c%c", *s3, *s4).toAscii ();
 
-      d->masterFd = ::open(ptyName.data(), O_RDWR);
-      if (d->masterFd >= 0)
-      {
+	  d->masterFd =::open (ptyName.data (), O_RDWR);
+	  if (d->masterFd >= 0)
+	    {
 #ifdef Q_OS_SOLARIS
-        /* Need to check the process group of the pty.
-         * If it exists, then the slave pty is in use,
-         * and we need to get another one.
-         */
-        int pgrp_rtn;
-        if (ioctl(d->masterFd, TIOCGPGRP, &pgrp_rtn) == 0 || errno != EIO) {
-          ::close(d->masterFd);
-          d->masterFd = -1;
-          continue;
-        }
+	      /* Need to check the process group of the pty.
+	       * If it exists, then the slave pty is in use,
+	       * and we need to get another one.
+	       */
+	      int pgrp_rtn;
+	      if (ioctl (d->masterFd, TIOCGPGRP, &pgrp_rtn) == 0
+		  || errno != EIO)
+		{
+		  ::close (d->masterFd);
+		  d->masterFd = -1;
+		  continue;
+		}
 #endif /* Q_OS_SOLARIS */
-        if (!access(d->ttyName.data(),R_OK|W_OK)) // checks availability based on permission bits
-        {
-          if (!geteuid())
-          {
-            struct group* p = getgrnam(TTY_GROUP);
-            if (!p)
-              p = getgrnam("wheel");
-            gid_t gid = p ? p->gr_gid : getgid ();
+	      if (!access (d->ttyName.data (), R_OK | W_OK))	// checks availability based on permission bits
+		{
+		  if (!geteuid ())
+		    {
+		      struct group *p = getgrnam (TTY_GROUP);
+		      if (!p)
+			p = getgrnam ("wheel");
+		      gid_t gid = p ? p->gr_gid : getgid ();
 
-            chown(d->ttyName.data(), getuid(), gid);
-            chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IWGRP);
-          }
-          goto gotpty;
-        }
-        ::close(d->masterFd);
-        d->masterFd = -1;
-      }
+		      chown (d->ttyName.data (), getuid (), gid);
+		      chmod (d->ttyName.data (), S_IRUSR | S_IWUSR | S_IWGRP);
+		    }
+		  goto gotpty;
+		}
+	      ::close (d->masterFd);
+	      d->masterFd = -1;
+	    }
+	}
     }
-  }
 
   //kWarning(175) << "Can't open a pseudo teletype";
   return false;
 
- gotpty:
+gotpty:
   KDE_struct_stat st;
-  if (KDE_stat(d->ttyName.data(), &st))
-    return false; // this just cannot happen ... *cough*  Yeah right, I just
-                  // had it happen when pty #349 was allocated.  I guess
-                  // there was some sort of leak?  I only had a few open.
-  if (((st.st_uid != getuid()) ||
-       (st.st_mode & (S_IRGRP|S_IXGRP|S_IROTH|S_IWOTH|S_IXOTH))) &&
-      !d->chownpty(true))
-  {
+  if (KDE_stat (d->ttyName.data (), &st))
+    return false;		// this just cannot happen ... *cough*  Yeah right, I just
+  // had it happen when pty #349 was allocated.  I guess
+  // there was some sort of leak?  I only had a few open.
+  if (((st.st_uid != getuid ()) ||
+       (st.st_mode & (S_IRGRP | S_IXGRP | S_IROTH | S_IWOTH | S_IXOTH))) &&
+      !d->chownpty (true))
+    {
 
-    /*kWarning(175)
-      << "chownpty failed for device " << ptyName << "::" << d->ttyName
-      << "\nThis means the communication can be eavesdropped." << endl;
-*/  
-}
+      /*kWarning(175)
+         << "chownpty failed for device " << ptyName << "::" << d->ttyName
+         << "\nThis means the communication can be eavesdropped." << endl;
+       */
+    }
 
- grantedpt:
+grantedpt:
 
 #ifdef HAVE_REVOKE
-  revoke(d->ttyName.data());
+  revoke (d->ttyName.data ());
 #endif
 
 #ifdef HAVE_UNLOCKPT
-  unlockpt(d->masterFd);
+  unlockpt (d->masterFd);
 #elif defined(TIOCSPTLCK)
   int flag = 0;
-  ioctl(d->masterFd, TIOCSPTLCK, &flag);
+  ioctl (d->masterFd, TIOCSPTLCK, &flag);
 #endif
 
-  d->slaveFd = ::open(d->ttyName.data(), O_RDWR | O_NOCTTY);
+  d->slaveFd =::open (d->ttyName.data (), O_RDWR | O_NOCTTY);
   if (d->slaveFd < 0)
-  {
-    //kWarning(175) << "Can't open slave pseudo teletype";
-    ::close(d->masterFd);
-    d->masterFd = -1;
-    return false;
-  }
+    {
+      //kWarning(175) << "Can't open slave pseudo teletype";
+      ::close (d->masterFd);
+      d->masterFd = -1;
+      return false;
+    }
 
 #if (defined(__svr4__) || defined(__sgi__) || defined(Q_OS_SOLARIS))
   // Solaris uses STREAMS for terminal handling. It is possible
@@ -358,353 +374,391 @@ d->masterFd = ::open(PTM_DEVICE, O_RDWR|O_NOCTTY);
   {
     static const char *pt = "ptem";
     static const char *ld = "ldterm";
-    if (ioctl(d->slaveFd, I_FIND, pt) == 0)
-      ioctl(d->slaveFd, I_PUSH, pt);
-    if (ioctl(d->slaveFd, I_FIND, ld) == 0)
-      ioctl(d->slaveFd, I_PUSH, ld);
+    if (ioctl (d->slaveFd, I_FIND, pt) == 0)
+      ioctl (d->slaveFd, I_PUSH, pt);
+    if (ioctl (d->slaveFd, I_FIND, ld) == 0)
+      ioctl (d->slaveFd, I_PUSH, ld);
   }
 #endif
 
 #endif /* HAVE_OPENPTY */
 
-  fcntl(d->masterFd, F_SETFD, FD_CLOEXEC);
-  fcntl(d->slaveFd, F_SETFD, FD_CLOEXEC);
+  fcntl (d->masterFd, F_SETFD, FD_CLOEXEC);
+  fcntl (d->slaveFd, F_SETFD, FD_CLOEXEC);
 
   return true;
 }
 
-bool KPty::open(int fd)
+bool
+KPty::open (int fd)
 {
 #if !defined(HAVE_PTSNAME) && !defined(TIOCGPTN)
-    //kWarning(175) << "Unsupported attempt to open pty with fd" << fd;
-    return false;
+  //kWarning(175) << "Unsupported attempt to open pty with fd" << fd;
+  return false;
 #else
-    Q_D(KPty);
+  Q_D (KPty);
 
-    if (d->masterFd >= 0) {
-        //kWarning(175) << "Attempting to open an already open pty";
-        return false;
+  if (d->masterFd >= 0)
+    {
+      //kWarning(175) << "Attempting to open an already open pty";
+      return false;
     }
 
-    d->ownMaster = false;
+  d->ownMaster = false;
 
-# ifdef HAVE_PTSNAME
-    char *ptsn = ptsname(fd);
-    if (ptsn) {
-        d->ttyName = ptsn;
-# else
-    int ptyno;
-    if (!ioctl(fd, TIOCGPTN, &ptyno)) {
-        char buf[32];
-        sprintf(buf, "/dev/pts/%d", ptyno);
-        d->ttyName = buf;
-# endif
-    } else {
-        //kWarning(175) << "Failed to determine pty slave device for fd" << fd;
-        return false;
+#ifdef HAVE_PTSNAME
+  char *ptsn = ptsname (fd);
+  if (ptsn)
+    {
+      d->ttyName = ptsn;
+#else
+  int ptyno;
+  if (!ioctl (fd, TIOCGPTN, &ptyno))
+    {
+      char buf[32];
+      sprintf (buf, "/dev/pts/%d", ptyno);
+      d->ttyName = buf;
+#endif
+    }
+  else
+    {
+      //kWarning(175) << "Failed to determine pty slave device for fd" << fd;
+      return false;
     }
 
-    d->masterFd = fd;
-    if (!openSlave()) {
-        d->masterFd = -1;
-        return false;
+  d->masterFd = fd;
+  if (!openSlave ())
+    {
+      d->masterFd = -1;
+      return false;
     }
 
-    return true;
+  return true;
 #endif
 }
 
-void KPty::closeSlave()
+void
+KPty::closeSlave ()
 {
-    Q_D(KPty);
+  Q_D (KPty);
 
-    if (d->slaveFd < 0)
-        return;
-    ::close(d->slaveFd);
-    d->slaveFd = -1;
+  if (d->slaveFd < 0)
+    return;
+  ::close (d->slaveFd);
+  d->slaveFd = -1;
 }
 
-bool KPty::openSlave()
+bool
+KPty::openSlave ()
 {
-    Q_D(KPty);
+  Q_D (KPty);
 
-    if (d->slaveFd >= 0)
-        return true;
-    if (d->masterFd < 0) {
-        //kWarning(175) << "Attempting to open pty slave while master is closed";
-        return false;
-    }
-    d->slaveFd = ::open(d->ttyName.data(), O_RDWR | O_NOCTTY);
-    if (d->slaveFd < 0) {
-        //kWarning(175) << "Can't open slave pseudo teletype";
-        return false;
-    }
-    fcntl(d->slaveFd, F_SETFD, FD_CLOEXEC);
+  if (d->slaveFd >= 0)
     return true;
+  if (d->masterFd < 0)
+    {
+      //kWarning(175) << "Attempting to open pty slave while master is closed";
+      return false;
+    }
+  d->slaveFd =::open (d->ttyName.data (), O_RDWR | O_NOCTTY);
+  if (d->slaveFd < 0)
+    {
+      //kWarning(175) << "Can't open slave pseudo teletype";
+      return false;
+    }
+  fcntl (d->slaveFd, F_SETFD, FD_CLOEXEC);
+  return true;
 }
 
-void KPty::close()
+void
+KPty::close ()
 {
-    Q_D(KPty);
+  Q_D (KPty);
 
-    if (d->masterFd < 0)
-        return;
-    closeSlave();
-    if (d->ownMaster) {
+  if (d->masterFd < 0)
+    return;
+  closeSlave ();
+  if (d->ownMaster)
+    {
 #ifndef HAVE_OPENPTY
-        // don't bother resetting unix98 pty, it will go away after closing master anyway.
-        if (memcmp(d->ttyName.data(), "/dev/pts/", 9)) {
-            if (!geteuid()) {
-                struct stat st;
-                if (!stat(d->ttyName.data(), &st)) {
-                    chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1);
-                    chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
-                }
-            } else {
-                fcntl(d->masterFd, F_SETFD, 0);
-                d->chownpty(false);
-            }
-        }
+      // don't bother resetting unix98 pty, it will go away after closing master anyway.
+      if (memcmp (d->ttyName.data (), "/dev/pts/", 9))
+	{
+	  if (!geteuid ())
+	    {
+	      struct stat st;
+	      if (!stat (d->ttyName.data (), &st))
+		{
+		  chown (d->ttyName.data (), 0,
+			 st.st_gid == getgid ()? 0 : -1);
+		  chmod (d->ttyName.data (),
+			 S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH |
+			 S_IWOTH);
+		}
+	    }
+	  else
+	    {
+	      fcntl (d->masterFd, F_SETFD, 0);
+	      d->chownpty (false);
+	    }
+	}
 #endif
-        ::close(d->masterFd);
+      ::close (d->masterFd);
     }
-    d->masterFd = -1;
+  d->masterFd = -1;
 }
 
-void KPty::setCTty()
+void
+KPty::setCTty ()
 {
-    Q_D(KPty);
+  Q_D (KPty);
 
-    // Setup job control //////////////////////////////////
+  // Setup job control //////////////////////////////////
 
-    // Become session leader, process group leader,
-    // and get rid of the old controlling terminal.
-    setsid();
+  // Become session leader, process group leader,
+  // and get rid of the old controlling terminal.
+  setsid ();
 
-    // make our slave pty the new controlling terminal.
+  // make our slave pty the new controlling terminal.
 #ifdef TIOCSCTTY
-    ioctl(d->slaveFd, TIOCSCTTY, 0);
+  ioctl (d->slaveFd, TIOCSCTTY, 0);
 #else
-    // __svr4__ hack: the first tty opened after setsid() becomes controlling tty
-    ::close(open(d->ttyName, O_WRONLY, 0));
+  // __svr4__ hack: the first tty opened after setsid() becomes controlling tty
+  ::close (open (d->ttyName, O_WRONLY, 0));
 #endif
 
-    // make our new process group the foreground group on the pty
-    int pgrp = getpid();
+  // make our new process group the foreground group on the pty
+  int pgrp = getpid ();
 #if defined(_POSIX_VERSION) || defined(__svr4__)
-    tcsetpgrp(d->slaveFd, pgrp);
+  tcsetpgrp (d->slaveFd, pgrp);
 #elif defined(TIOCSPGRP)
-    ioctl(d->slaveFd, TIOCSPGRP, (char *)&pgrp);
+  ioctl (d->slaveFd, TIOCSPGRP, (char *) &pgrp);
 #endif
 }
 
-void KPty::login(const char *user, const char *remotehost)
+void
+KPty::login (const char *user, const char *remotehost)
 {
 #ifdef HAVE_UTEMPTER
-    Q_D(KPty);
+  Q_D (KPty);
 
-    addToUtmp(d->ttyName, remotehost, d->masterFd);
-    Q_UNUSED(user);
+  addToUtmp (d->ttyName, remotehost, d->masterFd);
+  Q_UNUSED (user);
 #else
-# ifdef HAVE_UTMPX
-    struct utmpx l_struct;
-# else
-    struct utmp l_struct;
-# endif
-    memset(&l_struct, 0, sizeof(l_struct));
-    // note: strncpy without terminators _is_ correct here. man 4 utmp
+#ifdef HAVE_UTMPX
+  struct utmpx l_struct;
+#else
+  struct utmp l_struct;
+#endif
+  memset (&l_struct, 0, sizeof (l_struct));
+  // note: strncpy without terminators _is_ correct here. man 4 utmp
 
-    if (user)
-      strncpy(l_struct.ut_name, user, sizeof(l_struct.ut_name));
+  if (user)
+    strncpy (l_struct.ut_name, user, sizeof (l_struct.ut_name));
 
-    if (remotehost) {
-      strncpy(l_struct.ut_host, remotehost, sizeof(l_struct.ut_host));
-# ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
-      l_struct.ut_syslen = qMin(strlen(remotehost), sizeof(l_struct.ut_host));
-# endif
+  if (remotehost)
+    {
+      strncpy (l_struct.ut_host, remotehost, sizeof (l_struct.ut_host));
+#ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
+      l_struct.ut_syslen =
+	qMin (strlen (remotehost), sizeof (l_struct.ut_host));
+#endif
     }
 
-# ifndef __GLIBC__
-    Q_D(KPty);
-    const char *str_ptr = d->ttyName.data();
-    if (!memcmp(str_ptr, "/dev/", 5))
-        str_ptr += 5;
-    strncpy(l_struct.ut_line, str_ptr, sizeof(l_struct.ut_line));
-#  ifdef HAVE_STRUCT_UTMP_UT_ID
-    strncpy(l_struct.ut_id,
-            str_ptr + strlen(str_ptr) - sizeof(l_struct.ut_id),
-            sizeof(l_struct.ut_id));
-#  endif
-# endif
+#ifndef __GLIBC__
+  Q_D (KPty);
+  const char *str_ptr = d->ttyName.data ();
+  if (!memcmp (str_ptr, "/dev/", 5))
+    str_ptr += 5;
+  strncpy (l_struct.ut_line, str_ptr, sizeof (l_struct.ut_line));
+#ifdef HAVE_STRUCT_UTMP_UT_ID
+  strncpy (l_struct.ut_id,
+	   str_ptr + strlen (str_ptr) - sizeof (l_struct.ut_id),
+	   sizeof (l_struct.ut_id));
+#endif
+#endif
 
-# ifdef HAVE_UTMPX
-    //gettimeofday(&l_struct.ut_tv, 0);
-    gettimeofday((struct timeval *)&l_struct.ut_tv, 0);
-# else
-    l_struct.ut_time = time(0);
-# endif
+#ifdef HAVE_UTMPX
+  //gettimeofday(&l_struct.ut_tv, 0);
+  gettimeofday ((struct timeval *) &l_struct.ut_tv, 0);
+#else
+  l_struct.ut_time = time (0);
+#endif
 
-# ifdef HAVE_LOGIN
-#  ifdef HAVE_LOGINX
-    ::loginx(&l_struct);
-#  else
-    ::login(&l_struct);
-#  endif
-# else
-#  ifdef HAVE_STRUCT_UTMP_UT_TYPE
-    l_struct.ut_type = USER_PROCESS;
-#  endif
-#  ifdef HAVE_STRUCT_UTMP_UT_PID
-    l_struct.ut_pid = getpid();
-#   ifdef HAVE_STRUCT_UTMP_UT_SESSION
-    l_struct.ut_session = getsid(0);
-#   endif
-#  endif
-#  ifdef HAVE_UTMPX
-    utmpxname(_PATH_UTMPX);
-    setutxent();
-    pututxline(&l_struct);
-    endutxent();
-    //updwtmpx(_PATH_WTMPX, &l_struct);
-#  else
-    utmpname(_PATH_UTMP);
-    setutent();
-    pututline(&l_struct);
-    endutent();
-    updwtmp(_PATH_WTMP, &l_struct);
-#  endif
-# endif
+#ifdef HAVE_LOGIN
+#ifdef HAVE_LOGINX
+  ::loginx (&l_struct);
+#else
+  ::login (&l_struct);
+#endif
+#else
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
+  l_struct.ut_type = USER_PROCESS;
+#endif
+#ifdef HAVE_STRUCT_UTMP_UT_PID
+  l_struct.ut_pid = getpid ();
+#ifdef HAVE_STRUCT_UTMP_UT_SESSION
+  l_struct.ut_session = getsid (0);
+#endif
+#endif
+#ifdef HAVE_UTMPX
+  utmpxname (_PATH_UTMPX);
+  setutxent ();
+  pututxline (&l_struct);
+  endutxent ();
+  //updwtmpx(_PATH_WTMPX, &l_struct);
+#else
+  utmpname (_PATH_UTMP);
+  setutent ();
+  pututline (&l_struct);
+  endutent ();
+  updwtmp (_PATH_WTMP, &l_struct);
+#endif
+#endif
 #endif
 }
 
-void KPty::logout()
+void
+KPty::logout ()
 {
 #ifdef HAVE_UTEMPTER
-    Q_D(KPty);
+  Q_D (KPty);
 
-    removeLineFromUtmp(d->ttyName, d->masterFd);
+  removeLineFromUtmp (d->ttyName, d->masterFd);
 #else
-    Q_D(KPty);
+  Q_D (KPty);
 
-    const char *str_ptr = d->ttyName.data();
-    if (!memcmp(str_ptr, "/dev/", 5))
-        str_ptr += 5;
-# ifdef __GLIBC__
-    else {
-        const char *sl_ptr = strrchr(str_ptr, '/');
-        if (sl_ptr)
-            str_ptr = sl_ptr + 1;
+  const char *str_ptr = d->ttyName.data ();
+  if (!memcmp (str_ptr, "/dev/", 5))
+    str_ptr += 5;
+#ifdef __GLIBC__
+  else
+    {
+      const char *sl_ptr = strrchr (str_ptr, '/');
+      if (sl_ptr)
+	str_ptr = sl_ptr + 1;
     }
-# endif
-# ifdef HAVE_LOGIN
-#  ifdef HAVE_LOGINX
-    ::logoutx(str_ptr, 0, DEAD_PROCESS);
-#  else
-    ::logout(str_ptr);
-#  endif
-# else
-#  ifdef HAVE_UTMPX
-    struct utmpx l_struct, *ut;
-#  else
-    struct utmp l_struct, *ut;
-#  endif
-    memset(&l_struct, 0, sizeof(l_struct));
+#endif
+#ifdef HAVE_LOGIN
+#ifdef HAVE_LOGINX
+  ::logoutx (str_ptr, 0, DEAD_PROCESS);
+#else
+  ::logout (str_ptr);
+#endif
+#else
+#ifdef HAVE_UTMPX
+  struct utmpx l_struct, *ut;
+#else
+  struct utmp l_struct, *ut;
+#endif
+  memset (&l_struct, 0, sizeof (l_struct));
 
-    strncpy(l_struct.ut_line, str_ptr, sizeof(l_struct.ut_line));
+  strncpy (l_struct.ut_line, str_ptr, sizeof (l_struct.ut_line));
 
-#  ifdef HAVE_UTMPX
-    utmpxname(_PATH_UTMPX);
-    setutxent();
-    if ((ut = getutxline(&l_struct))) {
-#  else
-    utmpname(_PATH_UTMP);
-    setutent();
-    if ((ut = getutline(&l_struct))) {
-#  endif
-        memset(ut->ut_name, 0, sizeof(*ut->ut_name));
-        memset(ut->ut_host, 0, sizeof(*ut->ut_host));
-#  ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
-        ut->ut_syslen = 0;
-#  endif
-#  ifdef HAVE_STRUCT_UTMP_UT_TYPE
-        ut->ut_type = DEAD_PROCESS;
-#  endif
-#  ifdef HAVE_UTMPX
-        //gettimeofday(&(ut->ut_tv), 0);
-	gettimeofday((struct timeval *)&(ut->ut_tv), 0);
-        pututxline(ut);
+#ifdef HAVE_UTMPX
+  utmpxname (_PATH_UTMPX);
+  setutxent ();
+  if ((ut = getutxline (&l_struct)))
+    {
+#else
+  utmpname (_PATH_UTMP);
+  setutent ();
+  if ((ut = getutline (&l_struct)))
+    {
+#endif
+      memset (ut->ut_name, 0, sizeof (*ut->ut_name));
+      memset (ut->ut_host, 0, sizeof (*ut->ut_host));
+#ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
+      ut->ut_syslen = 0;
+#endif
+#ifdef HAVE_STRUCT_UTMP_UT_TYPE
+      ut->ut_type = DEAD_PROCESS;
+#endif
+#ifdef HAVE_UTMPX
+      //gettimeofday(&(ut->ut_tv), 0);
+      gettimeofday ((struct timeval *) &(ut->ut_tv), 0);
+      pututxline (ut);
     }
-    endutxent();
-#  else
-        ut->ut_time = time(0);
-        pututline(ut);
+  endutxent ();
+#else
+      ut->ut_time = time (0);
+      pututline (ut);
     }
-    endutent();
-#  endif
-# endif
+  endutent ();
+#endif
+#endif
 #endif
 }
 
-bool KPty::tcGetAttr(struct ::termios *ttmode) const
+bool
+KPty::tcGetAttr (struct::termios * ttmode) const
 {
-    Q_D(const KPty);
+  Q_D (const KPty);
 
 #ifdef Q_OS_SOLARIS
-    if (_tcgetattr(d->slaveFd, ttmode) == 0) return true;
+  if (_tcgetattr (d->slaveFd, ttmode) == 0)
+    return true;
 #endif
-    return _tcgetattr(d->masterFd, ttmode) == 0;
+  return _tcgetattr (d->masterFd, ttmode) == 0;
 }
 
-bool KPty::tcSetAttr(struct ::termios *ttmode)
+bool
+KPty::tcSetAttr (struct::termios * ttmode)
 {
-    Q_D(KPty);
+  Q_D (KPty);
 
 #ifdef Q_OS_SOLARIS
-    if (_tcsetattr(d->slaveFd, ttmode) == 0) return true;
+  if (_tcsetattr (d->slaveFd, ttmode) == 0)
+    return true;
 #endif
-    return _tcsetattr(d->masterFd, ttmode) == 0;
+  return _tcsetattr (d->masterFd, ttmode) == 0;
 }
 
-bool KPty::setWinSize(int lines, int columns)
+bool
+KPty::setWinSize (int lines, int columns)
 {
-    Q_D(KPty);
+  Q_D (KPty);
 
-    struct winsize winSize;
-    memset(&winSize, 0, sizeof(winSize));
-    winSize.ws_row = (unsigned short)lines;
-    winSize.ws_col = (unsigned short)columns;
-    return ioctl(d->masterFd, TIOCSWINSZ, (char *)&winSize) == 0;
+  struct winsize winSize;
+  memset (&winSize, 0, sizeof (winSize));
+  winSize.ws_row = (unsigned short) lines;
+  winSize.ws_col = (unsigned short) columns;
+  return ioctl (d->masterFd, TIOCSWINSZ, (char *) &winSize) == 0;
 }
 
-bool KPty::setEcho(bool echo)
+bool
+KPty::setEcho (bool echo)
 {
-    struct ::termios ttmode;
-    if (!tcGetAttr(&ttmode))
-        return false;
-    if (!echo)
-        ttmode.c_lflag &= ~ECHO;
-    else
-        ttmode.c_lflag |= ECHO;
-    return tcSetAttr(&ttmode);
+  struct::termios ttmode;
+  if (!tcGetAttr (&ttmode))
+    return false;
+  if (!echo)
+    ttmode.c_lflag &= ~ECHO;
+  else
+    ttmode.c_lflag |= ECHO;
+  return tcSetAttr (&ttmode);
 }
 
-const char *KPty::ttyName() const
+const char *
+KPty::ttyName () const
 {
-    Q_D(const KPty);
+  Q_D (const KPty);
 
-    return d->ttyName.data();
+  return d->ttyName.data ();
 }
 
-int KPty::masterFd() const
+int
+KPty::masterFd () const
 {
-    Q_D(const KPty);
+  Q_D (const KPty);
 
-    return d->masterFd;
+  return d->masterFd;
 }
 
-int KPty::slaveFd() const
+int
+KPty::slaveFd () const
 {
-    Q_D(const KPty);
+  Q_D (const KPty);
 
-    return d->slaveFd;
+  return d->slaveFd;
 }

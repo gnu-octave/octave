@@ -47,12 +47,10 @@
  * with the program name and appropriate arguments. 
  */
 //class KONSOLEPRIVATE_EXPORT Pty: public KPtyProcess
-class Pty: public KPtyProcess
+class Pty:public KPtyProcess
 {
-Q_OBJECT
+Q_OBJECT public:
 
-  public:
-    
     /** 
      * Constructs a new Pty.
      * 
@@ -62,15 +60,15 @@ Q_OBJECT
      * To start the terminal process, call the run() method with the 
      * name of the program to start and appropriate arguments.
      */
-    explicit Pty(QObject* parent = 0);
+  explicit Pty (QObject * parent = 0);
 
     /** 
      * Construct a process using an open pty master.
      * See KPtyProcess::KPtyProcess()
      */
-    explicit Pty(int ptyMasterFd, QObject* parent = 0);
+  explicit Pty (int ptyMasterFd, QObject * parent = 0);
 
-    ~Pty();
+   ~Pty ();
 
     /**
      * Starts the terminal process.  
@@ -92,42 +90,40 @@ Q_OBJECT
      * @param dbusSession Specifies the value of the KONSOLE_DBUS_SESSION
      * environment variable in the process's environment. 
      */
-    int start( const QString& program, 
-               const QStringList& arguments, 
-               const QStringList& environment, 
-               ulong winid, 
-               bool addToUtmp,
-               const QString& dbusService,
-               const QString& dbusSession
-             );
+  int start (const QString & program,
+	     const QStringList & arguments,
+	     const QStringList & environment,
+	     ulong winid,
+	     bool addToUtmp,
+	     const QString & dbusService, const QString & dbusSession);
 
     /** TODO: Document me */
-    void setWriteable(bool writeable);
+  void setWriteable (bool writeable);
 
     /** 
      * Enables or disables Xon/Xoff flow control.  The flow control setting
      * may be changed later by a terminal application, so flowControlEnabled()
      * may not equal the value of @p on in the previous call to setFlowControlEnabled()
      */
-    void setFlowControlEnabled(bool on);
+  void setFlowControlEnabled (bool on);
 
     /** Queries the terminal state and returns true if Xon/Xoff flow control is enabled. */
-    bool flowControlEnabled() const;
+  bool flowControlEnabled () const;
 
     /** 
      * Sets the size of the window (in lines and columns of characters) 
      * used by this teletype.
      */
-    void setWindowSize(int lines, int cols);
-    
+  void setWindowSize (int lines, int cols);
+
     /** Returns the size of the window used by this teletype.  See setWindowSize() */
-    QSize windowSize() const;
+  QSize windowSize () const;
 
     /** TODO Document me */
-    void setErase(char erase);
+  void setErase (char erase);
 
     /** */
-    char erase() const;
+  char erase () const;
 
     /**
      * Returns the process id of the teletype's current foreground
@@ -137,14 +133,13 @@ Q_OBJECT
      * If there is a problem reading the foreground process group,
      * 0 will be returned.
      */
-    int foregroundProcessGroup() const;
-   
-  public slots:
+  int foregroundProcessGroup () const;
 
+  public slots:
     /**
      * Put the pty into UTF-8 mode on systems which support it.
      */
-    void setUtf8Mode(bool on);
+  void setUtf8Mode (bool on);
 
     /**
      * Suspend or resume processing of data from the standard 
@@ -155,8 +150,8 @@ Q_OBJECT
      * @param lock If true, processing of output is suspended,
      * otherwise processing is resumed.
      */
-    void lockPty(bool lock);
-    
+  void lockPty (bool lock);
+
     /** 
      * Sends data to the process currently controlling the 
      * teletype ( whose id is returned by foregroundProcessGroup() )
@@ -164,10 +159,9 @@ Q_OBJECT
      * @param buffer Pointer to the data to send.
      * @param length Length of @p buffer.
      */
-    void sendData(const char* buffer, int length);
+  void sendData (const char *buffer, int length);
 
-  signals:
-
+    signals:
     /**
      * Emitted when a new block of data is received from
      * the teletype.
@@ -175,27 +169,27 @@ Q_OBJECT
      * @param buffer Pointer to the data received.
      * @param length Length of @p buffer
      */
-    void receivedData(const char* buffer, int length);
-   
-  protected:
-      void setupChildProcess();
+  void receivedData (const char *buffer, int length);
+
+protected:
+  void setupChildProcess ();
 
   private slots:
     // called when data is received from the terminal process 
-    void dataReceived(); 
-    
-  private:
-      void init();
+  void dataReceived ();
 
-    // takes a list of key=value pairs and adds them
-    // to the environment for the process
-    void addEnvironmentVariables(const QStringList& environment);
+private:
+  void init ();
 
-    int  _windowColumns; 
-    int  _windowLines;
-    char _eraseChar;
-    bool _xonXoff;
-    bool _utf8;
+  // takes a list of key=value pairs and adds them
+  // to the environment for the process
+  void addEnvironmentVariables (const QStringList & environment);
+
+  int _windowColumns;
+  int _windowLines;
+  char _eraseChar;
+  bool _xonXoff;
+  bool _utf8;
 };
 
 #endif // PTY_H

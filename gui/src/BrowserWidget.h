@@ -25,24 +25,23 @@
 #include <QtWebKit/QWebView>
 #include <QStatusBar>
 
-class BrowserWidget : public QWidget {
-    Q_OBJECT
-public:
-    BrowserWidget(QWidget *parent = 0);
-    void load(QUrl url);
+class BrowserWidget:public QWidget
+{
+Q_OBJECT public:
+  BrowserWidget (QWidget * parent = 0);
+  void load (QUrl url);
 
-public slots:
-    void setUrl(QUrl url);
-    void jumpToWebsite();
-    void showStatusMessage(QString message);
+  public slots:void setUrl (QUrl url);
+  void jumpToWebsite ();
+  void showStatusMessage (QString message);
 
 private:
-    void construct();
+  void construct ();
 
-    QLineEdit *m_urlLineEdit;
-    QToolBar *m_navigationToolBar;
-    QWebView *m_webView;
-    QStatusBar *m_statusBar;
+  QLineEdit *m_urlLineEdit;
+  QToolBar *m_navigationToolBar;
+  QWebView *m_webView;
+  QStatusBar *m_statusBar;
 };
 
 #endif // BROWSERMDISUBWINDOW_H

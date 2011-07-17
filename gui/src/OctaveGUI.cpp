@@ -21,24 +21,32 @@
 #include <QSettings>
 #include "MainWindow.h"
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
-    QApplication application(argc, argv);
-    QDesktopServices desktopServices;
-    QSettings settings(
-                desktopServices.storageLocation(QDesktopServices::HomeLocation)
-                + "/.quint/settings.ini", QSettings::IniFormat);
+  QApplication application (argc, argv);
+  QDesktopServices desktopServices;
+  QSettings settings (desktopServices.
+		      storageLocation (QDesktopServices::HomeLocation) +
+		      "/.quint/settings.ini", QSettings::IniFormat);
 
-    QTranslator translator;
-    QString translatorFile = QString("../languages/%1.qm").arg(settings.value("application/language").toString());
-    if(!QFile::exists(translatorFile))
-        translatorFile =  QString("/usr/share/octave/quint/languages/%1.qm").arg(settings.value("application/language").toString());
+  QTranslator translator;
+  QString translatorFile =
+    QString ("../languages/%1.qm").arg (settings.
+					value ("application/language").
+					toString ());
+  if (!QFile::exists (translatorFile))
+    translatorFile =
+      QString ("/usr/share/octave/quint/languages/%1.qm").arg (settings.
+							       value
+							       ("application/language").
+							       toString ());
 
-    translator.load(translatorFile);
-    application.installTranslator(&translator);
+  translator.load (translatorFile);
+  application.installTranslator (&translator);
 
-    MainWindow w;
-    w.show();
+  MainWindow w;
+  w.show ();
 
-    return application.exec();
+  return application.exec ();
 }

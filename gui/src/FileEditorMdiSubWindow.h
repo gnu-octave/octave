@@ -27,33 +27,32 @@
 // #include <Qsci/qscilexeroctave.h>
 #include <Qsci/qsciapis.h>
 
-class FileEditorMdiSubWindow : public QMdiSubWindow {
-    Q_OBJECT
-public:
-    FileEditorMdiSubWindow(QWidget *parent = 0);
-    ~FileEditorMdiSubWindow();
-    void loadFile(QString fileName);
+class FileEditorMdiSubWindow:public QMdiSubWindow
+{
+Q_OBJECT public:
+  FileEditorMdiSubWindow (QWidget * parent = 0);
+  ~FileEditorMdiSubWindow ();
+  void loadFile (QString fileName);
 
-public slots:
-    void newFile();
-    void saveFile();
-    void saveFileAs();
+  public slots:void newFile ();
+  void saveFile ();
+  void saveFileAs ();
 
-    void showToolTipNew();
-    void showToolTipSave();
-    void showToolTipSaveAs();
-    void showToolTipUndo();
-    void showToolTipRedo();
+  void showToolTipNew ();
+  void showToolTipSave ();
+  void showToolTipSaveAs ();
+  void showToolTipUndo ();
+  void showToolTipRedo ();
 
-    void registerModified(bool modified);
+  void registerModified (bool modified);
 private:
-    int checkFileModified(QString msg);
-    void construct();
-    QToolBar *m_toolBar;
-    QsciScintilla *m_editor;
-    QStatusBar *m_statusBar;
-    QString m_fileName;
-    bool m_modified;
+  int checkFileModified (QString msg);
+  void construct ();
+  QToolBar *m_toolBar;
+  QsciScintilla *m_editor;
+  QStatusBar *m_statusBar;
+  QString m_fileName;
+  bool m_modified;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

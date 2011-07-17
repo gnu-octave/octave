@@ -27,20 +27,20 @@
 #define KDE_IMPORT
 
 #ifndef KPTY_EXPORT
-# if defined(KDELIBS_STATIC_LIBS)
+#if defined(KDELIBS_STATIC_LIBS)
    /* No export/import for static libraries */
-#  define KPTY_EXPORT
-# elif defined(MAKE_KDECORE_LIB)
-   /* We are building this library */ 
-#  define KPTY_EXPORT KDE_EXPORT
-# else
-   /* We are using this library */ 
-#  define KPTY_EXPORT KDE_IMPORT
-# endif
+#define KPTY_EXPORT
+#elif defined(MAKE_KDECORE_LIB)
+   /* We are building this library */
+#define KPTY_EXPORT KDE_EXPORT
+#else
+   /* We are using this library */
+#define KPTY_EXPORT KDE_IMPORT
+#endif
 #endif
 
-# ifndef KPTY_EXPORT_DEPRECATED
-#  define KPTY_EXPORT_DEPRECATED KDE_DEPRECATED KPTY_EXPORT
-# endif
+#ifndef KPTY_EXPORT_DEPRECATED
+#define KPTY_EXPORT_DEPRECATED KDE_DEPRECATED KPTY_EXPORT
+#endif
 
 #endif

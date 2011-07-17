@@ -33,36 +33,36 @@
 class IClientSocket
 {
 private:
-    int handler;
-    in_addr ip;
-    unsigned int puerto;
+  int handler;
+  in_addr ip;
+  unsigned int puerto;
 
-    int lastError, lastErrnoValue;
+  int lastError, lastErrnoValue;
 
-    bool conectado;
-    bool socketCreado;
-    bool blocking;
+  bool conectado;
+  bool socketCreado;
+  bool blocking;
 
-    void inicializar();
-    int connect();
+  void inicializar ();
+  int connect ();
 
 public:
-    IClientSocket();
-    ~IClientSocket();
+    IClientSocket ();
+   ~IClientSocket ();
 
-    int getSocket();
-    const char *strError();
+  int getSocket ();
+  const char *strError ();
 
-    int connect(int socket, bool block = true);
-    int connect(in_addr addr, unsigned int puerto, bool blocking = true);
-    int connect(const char * server, unsigned int puerto, bool blocking = true);
+  int connect (int socket, bool block = true);
+  int connect (in_addr addr, unsigned int puerto, bool blocking = true);
+  int connect (const char *server, unsigned int puerto, bool blocking = true);
 
-    long int read(char *, long count);
-    long int write(const char *, long count);
+  long int read (char *, long count);
+  long int write (const char *, long count);
 
-    void close();
+  void close ();
 
-    int resolv(const char * fqdn, in_addr * ip);
+  int resolv (const char *fqdn, in_addr * ip);
 };
 
 #endif

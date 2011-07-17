@@ -17,4 +17,4 @@
 
 LANG=en_US.UTF-8
 cd bin
-./Quint
+./octave-gui

@@ -19,7 +19,7 @@
 # Basic settings:
 QT                  += core gui webkit xml opengl   # Qt modules
 TEMPLATE            = app                           # Build as application
-TARGET              = Quint                         # Name of the target binary
+TARGET              = octave-gui                    # Name of the target binary
 
 DESTDIR             = bin                           # Destination of the output
 UI_DIR              = ui-files                      # Folder for ui files

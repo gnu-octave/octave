@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<syntax>
+	<item name="comment">
+		<pattern>#[^ ]*</pattern>
+		<foreground>#00AA00</foreground>
+	</item>
+	
+	<item name="quotes">
+		<pattern>"[^"]*"</pattern>
+		<foreground>#FF0000</foreground>
+	</item>
+	
+	<item name="single-quotes">
+		<pattern>'[^']*'</pattern>
+		<foreground>#FF0000</foreground>
+	</item>
+</syntax>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<syntax>
+	<item name="keywords">
+		<pattern>
+			\b(auto|const|double|float|int|short|struct|unsigned|break|continue|else|for|long|signed|switch|void|case|default|enum|goto|register|sizeof|typedef|volatile|char|do|extern|if|return|static|union|while|asm|dynamic_cast|namespace|reinterpret_cast|try|bool|explicit|new|static_cast|typeid|catch|false|operator|template|typename|class|friend|private|this|using|const_cast|inline|public|throw|virtual|delete|mutable|protected|true|wchar_t|and|bitand|compl|not_eq|or_eq|xor_eq|and_eq|bitor|not|or|xor)\b	
+		</pattern>
+		<bold>true</bold>
+		<foreground>#0000AA</foreground>
+	</item>
+	
+	<item name="defines">
+		<pattern>#[^ ]*</pattern>
+		<foreground>#00AA00</foreground>
+	</item>
+	
+	<item name="quotes">
+		<pattern>"([^"]|\\")*"</pattern>
+		<foreground>#FF0000</foreground>
+	</item>
+	
+	<item name="single-quotes">
+		<pattern>'[^']*'</pattern>
+		<foreground>#FF0000</foreground>
+	</item>
+	
+	<item name="single-line comment">
+		<pattern>//.*</pattern>
+		<foreground>#555555</foreground>
+	</item>
+	
+	<block name="multi-line comment">
+		<startPattern>(?!//)/\*</startPattern>
+		<endPattern>\*/</endPattern>
+		<foreground>#555555</foreground>
+	</block>
+	
+	<bracket name="{}bracket">
+		<startPattern>\{</startPattern>
+		<endPattern>\}</endPattern>
+		<background>#ffff00</background>
+	</bracket>
+	
+	<bracket name="()bracket">
+		<startPattern>\(</startPattern>
+		<endPattern>\)</endPattern>
+		<background>#ffff00</background>
+	</bracket>
+	
+	<bracket name="[]bracket">
+		<startPattern>\[</startPattern>
+		<endPattern>\]</endPattern>
+		<background>#ffff00</background>
+	</bracket>
+	
+	
+</syntax>

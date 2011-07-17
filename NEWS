@@ -30,11 +30,11 @@ Summary of important user-visible changes for version 3.6:
     be removed from Octave 3.10 (or whatever version is the second major
     release after 3.6):
 
-      __error_text__
+      cut                is_duplicate_entry
+      cor                polyderiv
+      corrcoef           studentize
+      __error_text__     sylvester_matrix
       error_text
-      is_duplicate_entry
-      studentize
-      sylvester_matrix
 
 Summary of important user-visible changes for version 3.4.2:
 -----------------------------------------------------------

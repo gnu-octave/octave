@@ -57,7 +57,7 @@ function rho = spearman (x, y = [])
   endif
 
   if (nargin == 1)
-    rho = corrcoef (ranks (x));
+    rho = corr (ranks (x));
   else
     if (isrow (y))
       y = y.';
@@ -65,7 +65,7 @@ function rho = spearman (x, y = [])
     if (rows (x) != rows (y))
       error ("spearman: X and Y must have the same number of observations");
     endif
-    rho = corrcoef (ranks (x), ranks (y));
+    rho = corr (ranks (x), ranks (y));
   endif
 
   ## Restore class cleared by ranks

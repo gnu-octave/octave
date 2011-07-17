@@ -3450,6 +3450,14 @@ is omitted, return a list of keywords.\n\
   return retval;
 }
 
+/*
+
+%!assert (iskeyword ("for"))
+%!assert (iskeyword ("fort"), false)
+%!assert (iskeyword ("fft"), false)
+
+*/
+
 void
 prep_lexer_for_script_file (void)
 {

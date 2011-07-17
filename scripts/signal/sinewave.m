@@ -43,3 +43,13 @@ function x = sinewave (m, n, d)
   endif
 
 endfunction
+
+%!assert (sinewave (1), 0);
+%!assert (sinewave (1, 4, 1), 1);
+%!assert (sinewave (1, 12, 1), 1/2, 1e-6);
+%!assert (sinewave (1, 12, 2), sqrt (3)/2, 1e-6);
+%!assert (sinewave (1, 20, 1), (sqrt (5)-1)/4, 1e-6);
+%!assert (sinewave (1), sinewave (1, 1,0));
+%!assert (sinewave (3, 4), sinewave(3, 4, 0));
+
+%!error sinewave ();

@@ -1202,6 +1202,17 @@ printed and control returns to the top level.\n\
   return SET_INTERNAL_VARIABLE (max_recursion_depth);
 }
 
+/*
+%!error (max_recursion_depth (1, 2));
+%!test
+%! orig_val = max_recursion_depth ();
+%! old_val = max_recursion_depth (2*orig_val);
+%! assert (orig_val, old_val);
+%! assert (max_recursion_depth (), 2*orig_val);
+%! max_recursion_depth (orig_val);
+%! assert (max_recursion_depth (), orig_val);
+*/
+
 DEFUN (silent_functions, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} silent_functions ()\n\
@@ -1214,3 +1225,14 @@ within a function body that are not terminated with a semicolon.\n\
 {
   return SET_INTERNAL_VARIABLE (silent_functions);
 }
+
+/*
+%!error (silent_functions (1, 2));
+%!test
+%! orig_val = silent_functions ();
+%! old_val = silent_functions (! orig_val);
+%! assert (orig_val, old_val);
+%! assert (silent_functions (), ! orig_val);
+%! silent_functions (orig_val);
+%! assert (silent_functions (), orig_val);
+*/

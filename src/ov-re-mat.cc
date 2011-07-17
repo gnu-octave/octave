@@ -979,3 +979,36 @@ Convert @var{x} to double precision type.\n\
 
   return octave_value ();
 }
+
+/*
+
+%!assert (class (double (single (1))), "double")
+%!assert (class (double (single (1 + i))), "double")
+%!assert (class (double (int8 (1))), "double")
+%!assert (class (double (uint8 (1))), "double")
+%!assert (class (double (int16 (1))), "double")
+%!assert (class (double (uint16 (1))), "double")
+%!assert (class (double (int32 (1))), "double")
+%!assert (class (double (uint32 (1))), "double")
+%!assert (class (double (int64 (1))), "double")
+%!assert (class (double (uint64 (1))), "double")
+%!assert (class (double (true)), "double")
+%!assert (class (double ("A")), "double")
+%!test
+%! x = sparse (logical ([1 0; 0 1]));
+%! y = double (x);
+%! assert (class (x), "logical");
+%! assert (class (y), "double");
+%! assert (issparse (y));
+%!test
+%! x = diag (single ([1 3 2]));
+%! y = double (x);
+%! assert (class (x), "single");
+%! assert (class (y), "double");
+%!test
+%! x = diag (single ([i 3 2]));
+%! y = double (x);
+%! assert (class (x), "single");
+%! assert (class (y), "double");
+
+*/

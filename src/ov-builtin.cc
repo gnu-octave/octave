@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov-builtin.h"
 #include "ov.h"
+#include "profiler.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 
@@ -125,6 +126,8 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 
       try
         {
+          profile_data_accumulator::enter pe (profiler, *this);
+
           retval = (*f) (args, nargout);
           // Do not allow null values to be returned from functions.
           // FIXME -- perhaps true builtins should be allowed?

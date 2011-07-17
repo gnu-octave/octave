@@ -361,7 +361,8 @@ function arg_st = __print_parse_opts__ (varargin)
 
 endfunction
 
-%!test
+## Test blocks are not allowed (and not needed) for private functions
+#%!test
 %! opts = __print_parse_opts__ ();
 %! assert (opts.devopt, "pswrite");
 %! assert (opts.use_color, 1);
@@ -369,11 +370,11 @@ endfunction
 %! assert (opts.canvas_size, [576, 432]);
 %! assert (opts.ghostscript.device, "pswrite")
 
-%!test
+#%!test
 %! opts = __print_parse_opts__ ("test.pdf", "-S640,480");
 %! assert (opts.canvas_size, [307.2, 230.4], 0.1);
 
-%!test
+#%!test
 %! opts = __print_parse_opts__ ("-dpsc", "-append", "-loose");
 %! assert (opts.devopt, "pswrite");
 %! assert (opts.send_to_printer, true);
@@ -382,14 +383,14 @@ endfunction
 %! assert (opts.ghostscript.device, "pswrite")
 %! assert (opts.ghostscript.epscrop, false);
 
-%!test
+#%!test
 %! opts = __print_parse_opts__ ("-deps", "-tight");
 %! assert (opts.tight_flag, true);
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, -1);
 %! assert (opts.ghostscript.device, "")
 
-%!test
+#%!test
 %! opts = __print_parse_opts__ ("-djpg", "foobar", "-mono", "-loose");
 %! assert (opts.devopt, "jpeg")
 %! assert (opts.name, "foobar.jpg")
@@ -401,7 +402,7 @@ endfunction
 %! assert (opts.printer, "");
 %! assert (opts.use_color, -1);
 
-%!test
+#%!test
 %! opts = __print_parse_opts__ ("-ddeskjet", "foobar", "-mono", "-Pmyprinter");
 %! assert (opts.ghostscript.output, "foobar.deskjet")
 %! assert (opts.ghostscript.device, "deskjet")
@@ -410,7 +411,7 @@ endfunction
 %! assert (opts.printer, "-Pmyprinter");
 %! assert (opts.use_color, -1);
 
-%!test
+#%!test
 %! opts = __print_parse_opts__ ("-f5", "-dljet3");
 %! assert (opts.ghostscript.device, "ljet3")
 %! assert (strfind (opts.ghostscript.output, ".ljet3"))

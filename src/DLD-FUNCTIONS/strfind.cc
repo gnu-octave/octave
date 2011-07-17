@@ -50,7 +50,7 @@ qs_preprocess (const Array<char>& needle,
   const char *x = needle.data ();
   octave_idx_type m = needle.numel ();
 
-   for (octave_idx_type i = 0; i < UCHAR_MAX; i++)
+   for (octave_idx_type i = 0; i < TABSIZE; i++)
       table[i] = m + 1;
    for (octave_idx_type i = 0; i < m; i++)
       table[ORD(x[i])] = m - i;
@@ -203,7 +203,7 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
       if (argpat.is_string ())
         {
           Array<char> needle = argpat.char_array_value ();
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, table, UCHAR_MAX);
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, table, TABSIZE);
           qs_preprocess (needle, table);
 
           if (argstr.is_string ())
@@ -367,7 +367,7 @@ done for each element and a cell array is returned.\n\
           const Array<char> pat = argpat.char_array_value ();
           const Array<char> rep = argrep.char_array_value ();
 
-          OCTAVE_LOCAL_BUFFER (octave_idx_type, table, UCHAR_MAX);
+          OCTAVE_LOCAL_BUFFER (octave_idx_type, table, TABSIZE);
           qs_preprocess (pat, table);
 
           if (argstr.is_string ())

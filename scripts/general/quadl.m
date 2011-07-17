@@ -194,3 +194,25 @@ function r = need_warning (v)
     w = v;
   endif
 endfunction
+
+
+## basic functionality
+%!assert( quadl (@(x) sin (x), 0, pi, [], []), 2, -3e-16)
+
+## the values here are very high so it may be unavoidable that this fails
+%!assert ( quadl (@(x) sin (3*x).*cosh (x).*sinh (x),10,15),
+%!         2.588424538641647e+10, -9e-15)
+
+## extra parameters
+%!assert (quadl (@(x,a,b) sin (a + b*x), 0, 1, [], [], 2, 3),
+%!        cos(2)/3 - cos(5)/3, - 3e-16)
+
+## test different tolerances. This test currently fails for a very high
+## tolerances.
+%!assert ( quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.3, []),
+%!        (60 + sin(4) - sin(64))/12, -0.3)
+
+
+## for lower tolerances the test passes.
+%!assert ( quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.1, []),
+%!        (60 + sin(4) - sin(64))/12, -0.1)

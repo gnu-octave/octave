@@ -1548,3 +1548,16 @@ typeinfo (s)\n\
 {
   return SET_INTERNAL_VARIABLE (sparse_auto_mutate);
 }
+
+/*
+
+%!test
+ s = speye(3);
+ sparse_auto_mutate (false);
+ s(:, 1) = 1;
+ assert (typeinfo (s), "sparse matrix");
+ sparse_auto_mutate (true);
+ s(1, :) = 1;
+ assert (typeinfo (s), "matrix");
+
+*/

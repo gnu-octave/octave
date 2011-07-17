@@ -111,4 +111,14 @@ function retval = type (varargin)
   endfor
 endfunction
 
+%!test
+%! var = 1;
+%! typestr = type ("var");
+%! typestr = typestr{1}(1:17);
+%! assert (typestr, "var is a variable");
 
+%!assert (type ('dot'){1}, "dot is a dynamically-linked function")
+%!assert (type ('cat'){1}, "cat is a built-in function")
+%!assert (type ('+'){1}, "+ is an operator")
+%!assert (type ('end'){1}, "end is a keyword")
+%!error (type ('NO_NAME'))

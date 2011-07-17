@@ -839,3 +839,32 @@ Convert @var{x} to single precision type.\n\
 
   return octave_value ();
 }
+
+/*
+
+%!assert (class (single(1)), "single")
+%!assert (class (single(1 + i)), "single")
+%!assert (class (single (int8 (1))), "single")
+%!assert (class (single (uint8 (1))), "single")
+%!assert (class (single (int16 (1))), "single")
+%!assert (class (single (uint16 (1))), "single")
+%!assert (class (single (int32 (1))), "single")
+%!assert (class (single (uint32 (1))), "single")
+%!assert (class (single (int64 (1))), "single")
+%!assert (class (single (uint64 (1))), "single")
+%!assert (class (single (true)), "single")
+%!assert (class (single ("A")), "single")
+%!error (single (sparse (1)))
+%!test
+%! x = diag ([1 3 2]);
+%! y = single (x);
+%! assert (class (x), "double");
+%! assert (class (y), "single");
+%!test
+%! x = diag ([i 3 2]);
+%! y = single (x);
+%! assert (class (x), "double");
+%! assert (class (y), "single");
+
+*/
+

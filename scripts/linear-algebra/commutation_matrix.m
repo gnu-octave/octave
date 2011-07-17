@@ -95,3 +95,25 @@ function k = commutation_matrix (m, n)
   endfor
 
 endfunction
+
+%!test
+%! c = commutation_matrix(1,1);
+%! assert(c,1);
+
+%!test
+%! A = rand(3,5);
+%! vc = vec(A);
+%! vr = vec(A');
+%! c = commutation_matrix(3,5);
+%! assert(c*vc,vr);
+
+%!test
+%! A = rand(4,6);
+%! vc = vec(A);
+%! vr = vec(A');
+%! c = commutation_matrix(4,6);
+%! assert(c*vc,vr);
+
+%!error commutation_matrix(0,0);
+%!error commutation_matrix(1,0);
+%!error commutation_matrix(0,1);

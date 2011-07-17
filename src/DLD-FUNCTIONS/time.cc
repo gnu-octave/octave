@@ -340,13 +340,13 @@ field specifiers.\n\
 Literal character fields:\n\
 \n\
 @table @code\n\
-@item %\n\
+@item %%\n\
 % character.\n\
 \n\
-@item n\n\
+@item %n\n\
 Newline character.\n\
 \n\
-@item t\n\
+@item %t\n\
 Tab character.\n\
 @end table\n\
 \n\

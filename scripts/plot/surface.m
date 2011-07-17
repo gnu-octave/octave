@@ -155,3 +155,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   endif
 
 endfunction
+
+## Mark file as being tested.  Tests for surface are in
+## surf.m, surfc.m, surfl.m, and pcolor.m
+%!assert(1)

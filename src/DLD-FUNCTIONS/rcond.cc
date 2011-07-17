@@ -85,3 +85,12 @@ instead.\n\
 
   return retval;
 }
+
+/*
+
+%!assert( rcond (eye (2)), 1)
+%!assert( rcond (ones (2)), 0)
+%!assert( rcond ([1 1; 2 1]), 1/9)
+%!assert( rcond (magic (4)), 0, eps)
+
+*/

@@ -43,6 +43,7 @@ function y = flipdim (x, dim)
   endif
 
   nd = ndims (x);
+  sz = size (x);
   if (nargin == 1)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
@@ -55,3 +56,12 @@ function y = flipdim (x, dim)
   y = x(idx{:});
 
 endfunction
+
+%!error flipdim ();
+%!error flipdim (1, 2, 3);
+
+%!assert (flipdim ([1,2;3,4]), flipdim ([1,2 ; 3,4], 1));
+%!assert (flipdim ([1,2;3,4], 2), [2,1;4,3]);
+%!assert (flipdim ([1,2;3,4], 3), [1,2;3,4]);
+
+## FIXME -- we need tests for multidimensional arrays.

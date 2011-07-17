@@ -310,6 +310,7 @@ nodist_octinclude_HEADERS = \
   defaults.h \
   graphics.h \
   oct-conf.h \
+  profiler.h \
   mxarray.h \
   version.h
 
@@ -446,6 +447,7 @@ DIST_SRC = \
   pager.cc \
   pr-output.cc \
   procstream.cc \
+  profiler.cc \
   sighandlers.cc \
   siglist.c \
   sparse.cc \

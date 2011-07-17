@@ -55,7 +55,7 @@
 ## @item 1:
 ##   normalize with @math{N}, this provides the second moment around the mean
 ## @end table
-## @seealso{corrcoef, cor}
+## @seealso{corr}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

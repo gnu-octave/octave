@@ -21,3 +21,7 @@
 ## @deftypefnx {Operator} {} )
 ## Array index or function argument delimeter.
 ## @end deftypefn
+
+## Mark file as being tested.  No real test needed for a documentation .m file
+%!assert (1)
+

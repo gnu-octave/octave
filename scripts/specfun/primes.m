@@ -92,3 +92,11 @@ function x = primes (n)
   endif
 
 endfunction
+
+%!error primes ();
+%!error primes (1, 2);
+
+%!assert (size (primes (350)), [1, 70]);
+%!assert (size (primes (350)), [1, 70]);
+
+%!assert (primes (357)(end), 353);

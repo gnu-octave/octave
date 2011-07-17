@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov-mex-fcn.h"
 #include "ov.h"
+#include "profiler.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 
@@ -147,6 +148,7 @@ octave_mex_function::do_multi_index_op (int nargout,
 
       try
         {
+          profile_data_accumulator::enter pe (profiler, *this);
           retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
         }
       catch (octave_execution_exception)

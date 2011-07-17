@@ -24,7 +24,6 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__fltk_print__.m \
   plot/private/__getlegenddata__.m \
   plot/private/__ghostscript__.m \
-  plot/private/__gnuplot_drawnow__.m \
   plot/private/__gnuplot_get_var__.m \
   plot/private/__gnuplot_ginput__.m \
   plot/private/__gnuplot_has_feature__.m \
@@ -50,6 +49,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__tight_eps_bbox__.m
 
 plot_FCN_FILES = \
+  plot/__gnuplot_drawnow__.m \
   plot/__go_close_all__.m \
   plot/__plt_get_axis_arg__.m \
   plot/allchild.m \

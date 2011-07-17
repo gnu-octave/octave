@@ -973,7 +973,7 @@ for an example of how to create an executable Octave script.\n\
 
 /*
 %!error argv (1);
-%!assert (iscellstr (argv ());
+%!assert (iscellstr (argv ()));
 */
 
 DEFUN (program_invocation_name, args, ,
@@ -1000,7 +1000,7 @@ how to create an executable Octave script.\n\
 
 /*
 %!error program_invocation_name (1);
-%!assert (ischar (program_invocation_name ());
+%!assert (ischar (program_invocation_name ()));
 */
 
 DEFUN (program_name, args, ,
@@ -1023,5 +1023,5 @@ Return the last component of the value returned by\n\
 
 /*
 %!error program_name (1);
-%!assert (ischar (program_name ());
+%!assert (ischar (program_name ()));
 */

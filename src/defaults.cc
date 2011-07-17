@@ -500,7 +500,7 @@ Return the name of the top-level Octave installation directory.\n\
 
 /*
 %!error OCTAVE_HOME (1);
-%!assert (ischar (OCTAVE_HOME ());
+%!assert (ischar (OCTAVE_HOME ()));
 */
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
@@ -523,5 +523,5 @@ Return the version number of Octave, as a string.\n\
 
 /*
 %!error OCTAVE_VERSION (1);
-%!assert (ischar (OCTAVE_VERSION ());
+%!assert (ischar (OCTAVE_VERSION ()));
 */

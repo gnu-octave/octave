@@ -1,4 +1,4 @@
-/* Quint - A graphical user interface for Octave
+/* OctaveGUI - A graphical user interface for Octave
  * Copyright (C) 2011 Jacob Dawid
  * jacob.dawid@googlemail.com
  *

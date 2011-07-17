@@ -1,4 +1,4 @@
-# Quint - A graphical user interface for Octave
+# OctaveGUI - A graphical user interface for Octave
 # Copyright (C) 2011 Jacob Dawid
 # jacob.dawid@googlemail.com
 #
@@ -72,7 +72,6 @@ SOURCES +=\
         src/terminal/ShellCommand.cpp \
         src/terminal/QTerminalWidget.cpp \
         src/MainWindow.cpp \
-        src/Quint.cpp \
         src/OctaveLink.cpp \
         src/terminal/ProcessInfo.cpp \
     	  src/OctaveTerminal.cpp \
@@ -85,7 +84,8 @@ SOURCES +=\
     src/IRCWidget.cpp \
     src/qirc/IRCClient.cpp \
     src/qirc/IClientSocket.cpp \
-    src/SettingsDialog.cpp
+    src/SettingsDialog.cpp \
+    src/OctaveGUI.cpp
 
 HEADERS += \
         src/terminal/TerminalCharacterDecoder.h \

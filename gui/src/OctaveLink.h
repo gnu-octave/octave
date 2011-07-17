@@ -2,7 +2,7 @@
  *
  * Copyright (C) 2007, 2008, 2009 John P. Swensen
  *
- * Quint - A graphical user interface for Octave
+ * OctaveGUI - A graphical user interface for Octave
  * Copyright (C) 2011 Jacob Dawid
  * jacob.dawid@googlemail.com
  * This file is as a part of OctaveDE.

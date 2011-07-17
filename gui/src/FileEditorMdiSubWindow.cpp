@@ -54,6 +54,7 @@ void FileEditorMdiSubWindow::loadFile(QString fileName) {
     m_fileName = fileName;
     setWindowTitle(fileName);
     m_statusBar->showMessage(tr("File loaded."), 2000);
+    m_editor->setModified(false);
 }
 
 void FileEditorMdiSubWindow::newFile() {
@@ -62,11 +63,12 @@ void FileEditorMdiSubWindow::newFile() {
     }
     m_fileName = "<unnamed>";
     setWindowTitle(m_fileName);
-    //m_simpleEditor->setPlainText("");
+    m_editor->setText("");
+    m_editor->setModified(false);
 }
 
 int FileEditorMdiSubWindow::checkFileModified(QString msg) {
-    if(m_modified) {
+    if(m_editor->isModified()) {
         int decision
                 = QMessageBox::question(this,
                                         msg,
@@ -75,7 +77,7 @@ int FileEditorMdiSubWindow::checkFileModified(QString msg) {
 
         if(decision == QMessageBox::Yes) {
             saveFile();
-            if(m_modified) {
+            if(m_editor->isModified()) {
                 // If the user attempted to save the file, but it's still
                 // modified, then probably something went wrong, so return error
                 return(1);
@@ -158,8 +160,28 @@ void FileEditorMdiSubWindow::construct() {
     m_toolBar = new QToolBar(this);
     m_statusBar = new QStatusBar(this);
     m_editor = new QsciScintilla(this);
-    m_editor->setMarginLineNumbers(QsciScintilla::TextMargin, true);
-    m_editor->setMarginWidth(QsciScintilla::TextMargin, "xxxx");
+
+// Not available in the Debian repos yet!
+/*
+    m_lexer = new QsciLexerOctave(m_editor);
+    m_lexer->setDefaultFont(QFont("Monospace",9));
+    m_lexer->setAutoIndentStyle(QsciScintilla::AiMaintain ||
+                                QsciScintilla::AiOpening  ||
+                                QsciScintilla::AiClosing);
+    m_editor->setLexer(m_lexer);
+*/
+
+    m_editor->setMarginType(1,QsciScintilla::TextMargin);
+    m_editor->setMarginType(2,QsciScintilla::SymbolMargin);
+    m_editor->setFolding(QsciScintilla::BoxedTreeFoldStyle,2);
+    m_editor->setMarginLineNumbers(1, true);
+    m_editor->setMarginWidth(1, "99999");
+
+    m_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    m_editor->setAutoIndent(true);
+    m_editor->setIndentationWidth(2);
+    m_editor->setIndentationsUseTabs(false);
+    m_editor->setAutoCompletionThreshold(2);
 
     QAction *newAction = new QAction(style->standardIcon(QStyle::SP_FileIcon),
         "", m_toolBar);

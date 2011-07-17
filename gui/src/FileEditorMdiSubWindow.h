@@ -23,6 +23,9 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include <Qsci/qsciscintilla.h>
+// Not available in the Debian repos yet!
+// #include <Qsci/qscilexeroctave.h>
+#include <Qsci/qsciapis.h>
 
 class FileEditorMdiSubWindow : public QMdiSubWindow {
     Q_OBJECT

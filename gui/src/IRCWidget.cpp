@@ -146,6 +146,7 @@ void IRCWidget::showNickChange(const char *oldNick, const char *newNick) {
     m_chatWindow->append(QString("%1 is now known as %2.").arg(oldNick).arg(newNick));
     m_nickList.removeAll(QString(oldNick));
     m_nickList.append(QString(newNick));
+    updateNickCompleter();
 }
 
 void IRCWidget::nickPopup() {
@@ -159,10 +160,14 @@ void IRCWidget::nickPopup() {
 
 void IRCWidget::showJoin(const char *nick, const char *channel) {
     m_chatWindow->append(QString("<i>%1 has joined %2.</i>").arg(nick).arg(channel));
+    m_nickList.append(QString(nick));
+    updateNickCompleter();
 }
 
 void IRCWidget::showQuit(const char *nick, const char *reason) {
     m_chatWindow->append(QString("<i>%1 has quit.(%2).</i>").arg(nick).arg(reason));
+    m_nickList.removeAll(QString(nick));
+    updateNickCompleter();
 }
 
 void IRCWidget::sendMessage(QString message) {

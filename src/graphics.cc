@@ -3172,6 +3172,7 @@ axes::properties::init (void)
   ticklength.add_constraint (dim_vector (1, 2));
   tightinset.add_constraint (dim_vector (1, 4));
   looseinset.add_constraint (dim_vector (1, 4));
+  update_font ();
 
   x_zlim.resize (1, 2);
 
@@ -4799,6 +4800,19 @@ axes::properties::update_aspectratios (void)
     }
 }
 
+void
+axes::properties::update_font (void)
+{
+#ifdef HAVE_FREETYPE
+#ifdef HAVE_FONTCONFIG
+  text_renderer.set_font (get ("fontname").string_value (),
+                          get ("fontweight").string_value (),
+                          get ("fontangle").string_value (),
+                          get ("fontsize").double_value ());
+#endif
+#endif
+}
+
 // The INTERNAL flag defines whether position or outerposition is used.
 
 Matrix
@@ -5302,14 +5316,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
                                          const string_vector& ticklabels,
                                          const Matrix& limits)
 {
-#ifdef HAVE_FREETYPE
-  //FIXME: text_renderer could be cached
-  ft_render text_renderer;
-  text_renderer.set_font (get ("fontname").string_value (),
-                          get ("fontweight").string_value (),
-                          get ("fontangle").string_value (),
-                          get ("fontsize").double_value ());
-#else
+#ifndef HAVE_FREETYPE
   double fontsize = get ("fontsize").double_value ();
 #endif
 
@@ -5962,11 +5969,9 @@ text::properties::get_extent (void) const
 }
 
 void
-text::properties::update_text_extent (void)
+text::properties::update_font (void)
 {
 #ifdef HAVE_FREETYPE
-
-  // FIXME: font and color should be set only when modified, for efficiency
 #ifdef HAVE_FONTCONFIG
   renderer.set_font (get ("fontname").string_value (),
                      get ("fontweight").string_value (),
@@ -5974,7 +5979,13 @@ text::properties::update_text_extent (void)
                      get ("fontsize").double_value ());
 #endif
   renderer.set_color (get_color_rgb ());
+#endif
+}
 
+void
+text::properties::update_text_extent (void)
+{
+#ifdef HAVE_FREETYPE
   int halign = 0, valign = 0;
 
   if (horizontalalignment_is ("center"))

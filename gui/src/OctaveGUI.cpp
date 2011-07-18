@@ -41,12 +41,10 @@ main (int argc, char *argv[])
 							       value
 							       ("application/language").
 							       toString ());
-
   translator.load (translatorFile);
   application.installTranslator (&translator);
 
   MainWindow w;
   w.show ();
-
   return application.exec ();
 }

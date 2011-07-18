@@ -65,7 +65,8 @@ QWidget (parent)
   m_nickButton->setEnabled (false);
   m_inputLine->setEnabled (false);
 
-  m_chatWindow->setFocusProxy (m_inputLine);
+  //m_chatWindow->setFocusProxy (m_inputLine);
+  this->setFocusProxy (m_inputLine);
   m_nickButton->setFocusProxy (m_inputLine);
 
   QFont font;

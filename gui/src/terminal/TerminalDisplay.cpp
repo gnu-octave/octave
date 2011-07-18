@@ -430,100 +430,6 @@ enum LineEncode
   BotR = (1 << 23)
 };
 
-#include "LineFont.h"
-
-static void
-drawLineChar (QPainter & paint, int x, int y, int w, int h, uchar code)
-{
-  //Calculate cell midpoints, end points.
-  int cx = x + w / 2;
-  int cy = y + h / 2;
-  int ex = x + w - 1;
-  int ey = y + h - 1;
-
-  quint32 toDraw = LineChars[code];
-
-  //Top _lines:
-  if (toDraw & TopL)
-    paint.drawLine (cx - 1, y, cx - 1, cy - 2);
-  if (toDraw & TopC)
-    paint.drawLine (cx, y, cx, cy - 2);
-  if (toDraw & TopR)
-    paint.drawLine (cx + 1, y, cx + 1, cy - 2);
-
-  //Bot _lines:
-  if (toDraw & BotL)
-    paint.drawLine (cx - 1, cy + 2, cx - 1, ey);
-  if (toDraw & BotC)
-    paint.drawLine (cx, cy + 2, cx, ey);
-  if (toDraw & BotR)
-    paint.drawLine (cx + 1, cy + 2, cx + 1, ey);
-
-  //Left _lines:
-  if (toDraw & LeftT)
-    paint.drawLine (x, cy - 1, cx - 2, cy - 1);
-  if (toDraw & LeftC)
-    paint.drawLine (x, cy, cx - 2, cy);
-  if (toDraw & LeftB)
-    paint.drawLine (x, cy + 1, cx - 2, cy + 1);
-
-  //Right _lines:
-  if (toDraw & RightT)
-    paint.drawLine (cx + 2, cy - 1, ex, cy - 1);
-  if (toDraw & RightC)
-    paint.drawLine (cx + 2, cy, ex, cy);
-  if (toDraw & RightB)
-    paint.drawLine (cx + 2, cy + 1, ex, cy + 1);
-
-  //Intersection points.
-  if (toDraw & Int11)
-    paint.drawPoint (cx - 1, cy - 1);
-  if (toDraw & Int12)
-    paint.drawPoint (cx, cy - 1);
-  if (toDraw & Int13)
-    paint.drawPoint (cx + 1, cy - 1);
-
-  if (toDraw & Int21)
-    paint.drawPoint (cx - 1, cy);
-  if (toDraw & Int22)
-    paint.drawPoint (cx, cy);
-  if (toDraw & Int23)
-    paint.drawPoint (cx + 1, cy);
-
-  if (toDraw & Int31)
-    paint.drawPoint (cx - 1, cy + 1);
-  if (toDraw & Int32)
-    paint.drawPoint (cx, cy + 1);
-  if (toDraw & Int33)
-    paint.drawPoint (cx + 1, cy + 1);
-
-}
-
-void
-TerminalDisplay::drawLineCharString (QPainter & painter, int x, int y,
-				     const QString & str,
-				     const Character * attributes)
-{
-  const QPen & currentPen = painter.pen ();
-
-  if ((attributes->rendition & RE_BOLD) && _boldIntense)
-    {
-      QPen boldPen (currentPen);
-      boldPen.setWidth (3);
-      painter.setPen (boldPen);
-    }
-
-  for (int i = 0; i < str.length (); i++)
-    {
-      uchar code = str[i].cell ();
-      if (LineChars[code])
-	drawLineChar (painter, x + (_fontWidth * i), y, _fontWidth,
-		      _fontHeight, code);
-    }
-
-  painter.setPen (currentPen);
-}
-
 void
 TerminalDisplay::setKeyboardCursorShape (KeyboardCursorShape shape)
 {
@@ -533,46 +439,6 @@ TerminalDisplay::setKeyboardCursorShape (KeyboardCursorShape shape)
 TerminalDisplay::KeyboardCursorShape TerminalDisplay::keyboardCursorShape () const
 {
   return _cursorShape;
-}
-
-void
-TerminalDisplay::setKeyboardCursorColor (bool useForegroundColor,
-					 const QColor & color)
-{
-  if (useForegroundColor)
-    _cursorColor = QColor ();	// an invalid color means that
-  // the foreground color of the
-  // current character should
-  // be used
-
-  else
-    _cursorColor = color;
-}
-
-QColor
-TerminalDisplay::keyboardCursorColor () const
-{
-  return _cursorColor;
-}
-
-void
-TerminalDisplay::setOpacity (qreal opacity)
-{
-  QColor color (_blendColor);
-  color.setAlphaF (opacity);
-
-  // enable automatic background filling to prevent the display
-  // flickering if there is no transparency
-  /*if ( color.alpha() == 255 ) 
-     {
-     setAutoFillBackground(true);
-     }
-     else
-     {
-     setAutoFillBackground(false);
-     } */
-
-  _blendColor = color.rgba ();
 }
 
 void
@@ -703,22 +569,10 @@ TerminalDisplay::drawCharacters (QPainter & painter,
       painter.setPen (color);
     }
 
-  // draw text
-  if (isLineCharString (text))
-    drawLineCharString (painter, rect.x (), rect.y (), text, style);
+  if (_bidiEnabled)
+    painter.drawText (rect, 0, text);
   else
-    {
-      // the drawText(rect,flags,string) overload is used here with null flags
-      // instead of drawText(rect,string) because the (rect,string) overload causes 
-      // the application's default layout direction to be used instead of 
-      // the widget-specific layout direction, which should always be
-      // Qt::LeftToRight for this widget
-      // This was discussed in: http://lists.kde.org/?t=120552223600002&r=1&w=2
-      if (_bidiEnabled)
-	painter.drawText (rect, 0, text);
-      else
-	painter.drawText (rect, 0, LTR_OVERRIDE_CHAR + text);
-    }
+    painter.drawText (rect, 0, LTR_OVERRIDE_CHAR + text);
 }
 
 void

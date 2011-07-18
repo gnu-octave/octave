@@ -287,6 +287,7 @@ MainWindow::establishOctaveLink ()
   dup2 (fds, 0);
   dup2 (fds, 1);
   dup2 (fds, 2);
+
   m_octaveTerminal->openTeletype (fdm);
   reportStatusMessage (tr ("Established link to Octave."));
 }

@@ -44,8 +44,6 @@ class QHideEvent;
 class QTimerEvent;
 class QWidget;
 
-class KMenu;
-
 extern unsigned short vt100_graphics[32];
 
 class ScreenWindow;
@@ -80,9 +78,6 @@ Q_OBJECT public:
      * (in color schemes that support them).
      */
   uint randomSeed () const;
-
-    /** Sets the opacity of the terminal display. */
-  void setOpacity (qreal opacity);
 
     /** 
      * This enum describes the location where the scroll bar is positioned in the display widget.
@@ -226,28 +221,6 @@ Q_OBJECT public:
      * Returns the shape of the keyboard cursor.  See setKeyboardCursorShape()
      */
   KeyboardCursorShape keyboardCursorShape () const;
-
-    /**
-     * Sets the color used to draw the keyboard cursor.  
-     *
-     * The keyboard cursor defaults to using the foreground color of the character
-     * underneath it.
-     *
-     * @param useForegroundColor If true, the cursor color will change to match
-     * the foreground color of the character underneath it as it is moved, in this
-     * case, the @p color parameter is ignored and the color of the character
-     * under the cursor is inverted to ensure that it is still readable.
-     * @param color The color to use to draw the cursor.  This is only taken into
-     * account if @p useForegroundColor is false.
-     */
-  void setKeyboardCursorColor (bool useForegroundColor, const QColor & color);
-
-    /** 
-     * Returns the color of the keyboard cursor, or an invalid color if the keyboard
-     * cursor color is set to change according to the foreground color of the character
-     * underneath it. 
-     */
-  QColor keyboardCursorColor () const;
 
     /**
      * Returns the number of lines of text which can be displayed in the widget.
@@ -681,9 +654,6 @@ private:
   void drawCharacters (QPainter & painter, const QRect & rect,
 		       const QString & text, const Character * style,
 		       bool invertCharacterColor);
-  // draws a string of line graphics
-  void drawLineCharString (QPainter & painter, int x, int y,
-			   const QString & str, const Character * attributes);
 
   // draws the preedit string for input methods
   void drawInputMethodPreeditString (QPainter & painter, const QRect & rect);
@@ -803,7 +773,6 @@ private:
   QTimer *_blinkTimer;		// active when hasBlinker
   QTimer *_blinkCursorTimer;	// active when hasBlinkingCursor
 
-  KMenu *_drop;
   QString _dropText;
   int _dndFileCount;
 

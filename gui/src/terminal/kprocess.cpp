@@ -158,21 +158,7 @@ KProcess::OutputChannelMode KProcess::outputChannelMode () const
   return d->outputChannelMode;
 }
 
-void
-KProcess::setNextOpenMode (QIODevice::OpenMode mode)
-{
-  Q_D (KProcess);
-
-  d->openMode = mode;
-}
-
 #define DUMMYENV "_KPROCESS_DUMMY_="
-
-void
-KProcess::clearEnvironment ()
-{
-  setEnvironment (QStringList () << QString::fromLatin1 (DUMMYENV));
-}
 
 void
 KProcess::setEnv (const QString & name, const QString & value, bool overwrite)
@@ -278,15 +264,6 @@ KProcess::clearProgram ()
 #ifdef Q_OS_WIN
   setNativeArguments (QString ());
 #endif
-}
-
-void
-KProcess::setShellCommand (const QString & cmd)
-{
-  Q_D (KProcess);
-  d->args.clear ();
-  d->prog = QString::fromLatin1 ("/bin/sh");
-  d->args << QString::fromLatin1 ("-c") << cmd;
 }
 
 QStringList

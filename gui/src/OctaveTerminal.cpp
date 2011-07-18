@@ -34,6 +34,5 @@ OctaveTerminal::~OctaveTerminal ()
 void
 OctaveTerminal::construct ()
 {
-  setScrollBarPosition (QTerminalWidget::ScrollBarRight);
   setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 }

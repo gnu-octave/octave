@@ -103,7 +103,6 @@ HEADERS += \
         src/terminal/Vt102Emulation.h \
         src/terminal/TerminalDisplay.h \
         src/terminal/Filter.h \
-        src/terminal/LineFont.h \
         src/terminal/Pty.h \
         src/terminal/kpty.h \
         src/terminal/kpty_p.h \

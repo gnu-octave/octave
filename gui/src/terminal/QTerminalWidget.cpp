@@ -86,15 +86,6 @@ QTerminalWidget::QTerminalWidget (int startnow, QWidget * parent):QWidget
 }
 
 void
-QTerminalWidget::startShellProgram ()
-{
-  if (m_impl->m_session->isRunning ())
-    return;
-
-  m_impl->m_session->run ();
-}
-
-void
 QTerminalWidget::initialize ()
 {
   m_impl->m_terminalDisplay->setSize (80, 40);
@@ -103,8 +94,8 @@ QTerminalWidget::initialize ()
   font.setFamily ("Monospace");
   font.setPointSize (10);
   font.setStyleHint (QFont::TypeWriter);
-  setTerminalFont (font);
-  setScrollBarPosition (NoScrollBar);
+  m_impl->m_terminalDisplay->setVTFont (font);
+  m_impl->m_terminalDisplay->setScrollBarPosition (TerminalDisplay::ScrollBarRight);
 
   m_impl->m_session->addView (m_impl->m_terminalDisplay);
 
@@ -118,36 +109,12 @@ QTerminalWidget::~QTerminalWidget ()
 }
 
 void
-QTerminalWidget::setTerminalFont (QFont & font)
-{
-  if (!m_impl->m_terminalDisplay)
-    return;
-  m_impl->m_terminalDisplay->setVTFont (font);
-}
-
-void
-QTerminalWidget::setShellProgram (QString progname)
-{
-  if (!m_impl->m_session)
-    return;
-  m_impl->m_session->setProgram (progname);
-}
-
-void
 QTerminalWidget::openTeletype (int fd)
 {
   if (m_impl->m_session->isRunning ())
     return;
 
   m_impl->m_session->openTeletype (fd);
-}
-
-void
-QTerminalWidget::setArgs (QStringList & args)
-{
-  if (!m_impl->m_session)
-    return;
-  m_impl->m_session->setArguments (args);
 }
 
 void
@@ -176,24 +143,9 @@ QTerminalWidget::setHistorySize (int lines)
 }
 
 void
-QTerminalWidget::setScrollBarPosition (ScrollBarPosition pos)
-{
-  if (!m_impl->m_terminalDisplay)
-    return;
-  m_impl->m_terminalDisplay->
-    setScrollBarPosition ((TerminalDisplay::ScrollBarPosition) pos);
-}
-
-void
 QTerminalWidget::sendText (const QString & text)
 {
   m_impl->m_session->sendText (text);
-}
-
-void
-QTerminalWidget::installEventFilterOnDisplay (QObject * object)
-{
-  m_impl->m_terminalDisplay->installEventFilter (object);
 }
 
 void

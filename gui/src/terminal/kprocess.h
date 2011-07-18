@@ -94,17 +94,6 @@ Q_OBJECT Q_DECLARE_PRIVATE (KProcess) public:
   OutputChannelMode outputChannelMode () const;
 
     /**
-     * Set the QIODevice open mode the process will be opened in.
-     *
-     * This function must be called before starting the process, obviously.
-     *
-     * @param mode the open mode. Note that this mode is automatically
-     *   "reduced" according to the channel modes and redirections.
-     *   The default is QIODevice::ReadWrite.
-     */
-  void setNextOpenMode (QIODevice::OpenMode mode);
-
-    /**
      * Adds the variable @p name to the process' environment.
      *
      * This function must be called before starting the process.
@@ -125,16 +114,6 @@ Q_OBJECT Q_DECLARE_PRIVATE (KProcess) public:
      * @param name the name of the environment variable
      */
   void unsetEnv (const QString & name);
-
-    /**
-     * Empties the process' environment.
-     *
-     * Note that LD_LIBRARY_PATH/DYLD_LIBRARY_PATH is automatically added
-     * on *NIX.
-     *
-     * This function must be called before starting the process.
-     */
-  void clearEnvironment ();
 
     /**
      * Set the program and the command line arguments.
@@ -187,28 +166,6 @@ Q_OBJECT Q_DECLARE_PRIVATE (KProcess) public:
      * Clear the program and command line argument list.
      */
   void clearProgram ();
-
-    /**
-     * Set a command to execute through a shell (a POSIX sh on *NIX
-     * and cmd.exe on Windows).
-     *
-     * Using this for anything but user-supplied commands is usually a bad
-     * idea, as the command's syntax depends on the platform.
-     * Redirections including pipes, etc. are better handled by the
-     * respective functions provided by QProcess.
-     *
-     * If KProcess determines that the command does not really need a
-     * shell, it will trasparently execute it without one for performance
-     * reasons.
-     *
-     * This function must be called before starting the process, obviously.
-     *
-     * @param cmd the command to execute through a shell.
-     *   The caller must make sure that all filenames etc. are properly
-     *   quoted when passed as argument. Failure to do so often results in
-     *   serious security holes. See KShell::quoteArg().
-     */
-  void setShellCommand (const QString & cmd);
 
     /**
      * Obtain the currently set program and arguments.

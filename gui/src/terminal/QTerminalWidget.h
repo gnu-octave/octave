@@ -28,32 +28,12 @@ struct TermWidgetImpl;
   */
 class QTerminalWidget:public QWidget
 {
-Q_OBJECT public:
-    /**
-      * \enum ScrollBarPosition
-      * Defines the scrollbar position of the terminal.
-      */
-  enum ScrollBarPosition
-  {
-    NoScrollBar,
-    ScrollBarLeft,
-    ScrollBarRight
-  };
-
+Q_OBJECT
+  public:
     QTerminalWidget (int startnow = 1, QWidget * parent = 0);
    ~QTerminalWidget ();
 
-  void startShellProgram ();
   void openTeletype (int fd);
-
-    /** Default is application font with family Monospace, size 10. */
-  void setTerminalFont (QFont & font);
-
-    /**	Shell program, default is /bin/bash. */
-  void setShellProgram (QString progname);
-
-    /** Shell program args, default is none. */
-  void setArgs (QStringList & args);
 
     /** Text codec, default is UTF-8. */
   void setTextCodec (QTextCodec * codec);
@@ -64,14 +44,8 @@ Q_OBJECT public:
     /** History size for scrolling, values below zero mean infinite. */
   void setHistorySize (int lines);
 
-    /** Presence of scrollbar. By default, there is no scrollbar present. */
-  void setScrollBarPosition (ScrollBarPosition);
-
     /** Send some text to the terminal. */
   void sendText (const QString & text);
-
-    /** Installs an event filter onto the display. */
-  void installEventFilterOnDisplay (QObject * object);
 
     signals:
     /** Emitted, when the current program has finished. */

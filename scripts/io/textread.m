@@ -24,8 +24,7 @@
 ##
 ## The file @var{filename} is read and parsed according to @var{format}.  The
 ## function behaves like @code{strread} except it works by parsing a file
-## instead
-## of a string.  See the documentation of @code{strread} for details.
+## instead of a string.  See the documentation of @code{strread} for details.
 ## In addition to the options supported by @code{strread}, this function
 ## supports one more:
 ## @itemize
@@ -36,13 +35,14 @@
 ## @end deftypefn
 
 function varargout = textread (filename, format = "%f", varargin)
+
   ## Check input
   if (nargin < 1)
     print_usage ();
   endif
 
   if (!ischar (filename) || !ischar (format))
-    error ("textread: first and second input arguments must be strings");
+    error ("textread: FILENAME and FORMAT arguments must be strings");
   endif
 
   ## Read file
@@ -69,3 +69,20 @@ function varargout = textread (filename, format = "%f", varargin)
   [varargout{1:max (nargout, 1)}] = strread (str, format, varargin {:});
 
 endfunction
+
+
+%!test
+%! f = tmpnam();
+%! d = rand (5, 3);
+%! dlmwrite (f, d, 'precision', '%5.2f');
+%! [a, b, c] = textread (f, "%f %f %f", "delimiter", ",", "headerlines", 3);
+%! unlink(f);
+%! assert (a, d(4:5, 1), 1e-2);
+%! assert (b, d(4:5, 2), 1e-2);
+%! assert (c, d(4:5, 3), 1e-2);
+
+%% Test input validation
+%!error textread ()
+%!error textread (1)
+%!error textread ("fname", 1)
+

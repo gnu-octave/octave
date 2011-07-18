@@ -1943,6 +1943,10 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4]);
 %!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4]);
 
+%%% for this bug: http://savannah.gnu.org/bugs/?32683
+%!assert ([zeros(3,2,2); ones(1,2,2)], repmat([0;0;0;1],[1,2,2]) );
+%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat(zeros(3,2,2), ones(1,2,2)) );
+
 */
 
 static octave_value

@@ -284,7 +284,7 @@ void
 IRCClient::sendPublicMessage (QString message)
 {
   sendCommand (2, COMMAND_PRIVMSG, m_recentChannel.toStdString ().c_str (),
-	       message.toStdString ().c_str ());
+               message.toStdString ().c_str ());
 }
 
 void

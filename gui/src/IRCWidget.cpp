@@ -160,6 +160,8 @@ IRCWidget::showPrivateMessage (const char *nick, const char *destination,
 {
   Q_UNUSED (destination);
   QString msg (message);
+  msg.replace ("<", "&lt;");
+  msg.replace (">", "&gt;");
   if (msg.contains (m_ircClient->nickInUse ()))
     {
       msg =
@@ -189,8 +191,11 @@ void
 IRCWidget::showTopic (const char *nick, const char *channel,
 		      const char *message)
 {
+  QString msg (message);
+  msg.replace ("<", "&lt;");
+  msg.replace (">", "&gt;");
   m_chatWindow->append (QString ("Topic for %2 was set by %1: %3").arg (nick).
-			arg (channel).arg (message));
+                        arg (channel).arg (msg));
 }
 
 void
@@ -275,8 +280,10 @@ IRCWidget::sendMessage (QString message)
   else
     {
       m_ircClient->sendPublicMessage (message);
+      message.replace ("<", "&lt;");
+      message.replace (">", "&gt;");
       m_chatWindow->append (QString ("<b>%1:</b> %2").
-			    arg (m_ircClient->nickInUse ()).arg (message));
+                            arg (m_ircClient->nickInUse ()).arg (message));
     }
 }
 

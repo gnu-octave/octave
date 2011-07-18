@@ -242,7 +242,8 @@ MainWindow::construct ()
   connect (reportBugAction, SIGNAL (triggered ()), this,
 	   SLOT (openBugTrackerPage ()));
 
-  setWindowTitle ("Octave");
+  setWindowTitle (QString ("Octave GUI (0.0.1)"));
+
   setCentralWidget (m_centralMdiArea);
   addDockWidget (Qt::LeftDockWidgetArea, m_variablesDockWidget);
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);

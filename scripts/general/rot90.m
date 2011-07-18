@@ -52,43 +52,40 @@
 
 ## Author: jwe
 
-function B = rot90 (A, k)
+function B = rot90 (A, k = 1)
 
-  if (nargin == 1 || nargin == 2)
-    if (nargin < 2)
-      k = 1;
-    endif
-
-    if (ndims (A) > 2)
-      error ("rot90: Only works with 2-D arrays");
-    endif
-
-    if (imag (k) != 0 || fix (k) != k)
-      error ("rot90: K must be an integer");
-    endif
-
-    k = rem (k, 4);
-
-    if (k < 0)
-      k = k + 4;
-    endif
-
-    if (k == 0)
-      B = A;
-    elseif (k == 1)
-      B = flipud (A.');
-    elseif (k == 2)
-      B = flipud (fliplr (A));
-    elseif (k == 3)
-      B = (flipud (A)).';
-    else
-      error ("rot90: internal error!");
-    endif
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
+  if (ndims (A) > 2)
+    error ("rot90: A must be a 2-D array");
+  endif
+
+  if (! (isscalar (k) && isreal (k) && fix (k) == k))
+    error ("rot90: K must be a single real integer");
+  endif
+
+  k = rem (k, 4);
+
+  if (k < 0)
+    k = k + 4;
+  endif
+
+  if (k == 0)
+    B = A;
+  elseif (k == 1)
+    B = flipud (A.');
+  elseif (k == 2)
+    B = flipud (fliplr (A));
+  elseif (k == 3)
+    B = (flipud (A)).';
+  else
+    error ("rot90: internal error!");
+  endif
+
 endfunction
+
 
 %!test
 %! x1 = [1, 2; 3, 4];
@@ -106,4 +103,6 @@ endfunction
 %% Test input validation
 %!error rot90 ();
 %!error rot90 (1, 2, 3);
-
+%!error rot90 (1, ones(2));
+%!error rot90 (1, 1.5);
+%!error rot90 (1, 1+i);

@@ -146,19 +146,13 @@ private:
   ~OctaveLink ();
 
     /** Variable related member variables. */
-  QSemaphore *
-    m_symbolTableSemaphore;
+  QSemaphore * m_symbolTableSemaphore;
   QList < SymbolRecord > m_symbolTableBuffer;
 
     /** History related member variables. */
-  QSemaphore *
-    m_historySemaphore;
-  string_vector
-    m_historyBuffer;
-  int
-    m_previousHistoryLength;
-
-  static OctaveLink
-    m_singleton;
+  QSemaphore *m_historySemaphore;
+  string_vector m_historyBuffer;
+  int m_previousHistoryLength;
+  static OctaveLink m_singleton;
 };
 #endif // OCTAVELINK_H

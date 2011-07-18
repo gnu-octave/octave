@@ -17,27 +17,27 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} corrcoef (@var{x})
-## @deftypefnx {Function File} {} corrcoef (@var{x}, @var{y})
+## @deftypefn  {Function File} {} corr (@var{x})
+## @deftypefnx {Function File} {} corr (@var{x}, @var{y})
 ## Compute matrix of correlation coefficients.
 ##
 ## If each row of @var{x} and @var{y} is an observation and each column is
 ## a variable, then the @w{(@var{i}, @var{j})-th} entry of
-## @code{corrcoef (@var{x}, @var{y})} is the correlation between the
+## @code{corr (@var{x}, @var{y})} is the correlation between the
 ## @var{i}-th variable in @var{x} and the @var{j}-th variable in @var{y}.
 ## @tex
 ## $$
-## {\rm corrcoef}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) {\rm std}(y)}
+## {\rm corr}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) {\rm std}(y)}
 ## $$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
-## corrcoef(x,y) = cov(x,y)/(std(x)*std(y))
+## corr(x,y) = cov(x,y)/(std(x)*std(y))
 ## @end example
 ##
 ## @end ifnottex
-## If called with one argument, compute @code{corrcoef (@var{x}, @var{x})},
+## If called with one argument, compute @code{corr (@var{x}, @var{x})},
 ## the correlation between the columns of @var{x}.
 ## @seealso{cov}
 ## @end deftypefn
@@ -46,7 +46,7 @@
 ## Created: March 1993
 ## Adapted-By: jwe
 
-function retval = corrcoef (x, y = [])
+function retval = corr (x, y = [])
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -81,32 +81,32 @@ endfunction
 
 %!test
 %! x = rand (10);
-%! cc1 = corrcoef (x);
-%! cc2 = corrcoef (x, x);
+%! cc1 = corr (x);
+%! cc2 = corr (x, x);
 %! assert (size (cc1) == [10, 10] && size (cc2) == [10, 10]);
 %! assert (cc1, cc2, sqrt (eps));
 
 %!test
 %! x = [1:3]';
 %! y = [3:-1:1]';
-%! assert (corrcoef (x,y), -1, 5*eps)
-%! assert (corrcoef (x,flipud (y)), 1, 5*eps)
-%! assert (corrcoef ([x, y]), [1 -1; -1 1], 5*eps)
+%! assert (corr (x,y), -1, 5*eps)
+%! assert (corr (x,flipud (y)), 1, 5*eps)
+%! assert (corr ([x, y]), [1 -1; -1 1], 5*eps)
 
 %!test
 %! x = single ([1:3]');
 %! y = single ([3:-1:1]');
-%! assert (corrcoef (x,y), single (-1), 5*eps)
-%! assert (corrcoef (x,flipud (y)), single (1), 5*eps)
-%! assert (corrcoef ([x, y]), single ([1 -1; -1 1]), 5*eps)
+%! assert (corr (x,y), single (-1), 5*eps)
+%! assert (corr (x,flipud (y)), single (1), 5*eps)
+%! assert (corr ([x, y]), single ([1 -1; -1 1]), 5*eps)
 
-%!assert (corrcoef (5), 1);
-%!assert (corrcoef (single(5)), single(1));
+%!assert (corr (5), 1);
+%!assert (corr (single(5)), single(1));
 
 %% Test input validation
-%!error corrcoef ();
-%!error corrcoef (1, 2, 3);
-%!error corrcoef ([1; 2], ["A", "B"]);
-%!error corrcoef (ones (2,2,2));
-%!error corrcoef (ones (2,2), ones (2,2,2));
+%!error corr ();
+%!error corr (1, 2, 3);
+%!error corr ([1; 2], ["A", "B"]);
+%!error corr (ones (2,2,2));
+%!error corr (ones (2,2), ones (2,2,2));
 

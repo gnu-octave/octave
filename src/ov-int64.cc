@@ -82,3 +82,15 @@ Convert @var{x} to 64-bit integer type.\n\
 {
   OCTAVE_TYPE_CONV_BODY (int64);
 }
+
+/*
+
+%!assert (class (int64 (1)), "int64")
+%!assert (int64 (1.25), int64 (1))
+%!assert (int64 (1.5), int64 (2))
+%!assert (int64 (-1.5), int64 (-2))
+%!assert (int64 (2^65), int64 (2^64-1))
+%!assert (int64 (-2^65), int64 (-2^64))
+
+*/
+

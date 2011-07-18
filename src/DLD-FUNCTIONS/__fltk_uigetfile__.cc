@@ -130,4 +130,11 @@ Undocumented internal function.\n\
   return retval;
 }
 
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
+
 #endif

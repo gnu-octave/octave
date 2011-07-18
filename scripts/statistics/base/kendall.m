@@ -106,7 +106,7 @@ function tau = kendall (x, y = [])
   endif
   r   = ranks (x);
   m   = sign (kron (r, ones (n, 1, cls)) - kron (ones (n, 1, cls), r));
-  tau = corrcoef (m);
+  tau = corr (m);
 
   if (nargin == 2)
     tau = tau(1 : c, (c + 1) : columns (x));

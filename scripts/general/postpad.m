@@ -82,3 +82,16 @@ function y = postpad (x, l, c, dim)
   endif
 
 endfunction
+
+%!error postpad ();
+%!error postpad (1);
+%!error postpad (1,2,3,4,5);
+%!error postpad ([1,2], 2, 2,3);
+
+%!assert (postpad ([1,2], 4), [1,2,0,0]);
+%!assert (postpad ([1;2], 4), [1;2;0;0]);
+
+%!assert (postpad ([1,2], 4, 2), [1,2,2,2]);
+%!assert (postpad ([1;2], 4, 2), [1;2;2;2]);
+
+%!assert (postpad ([1,2], 2, 2, 1), [1,2;2,2]);

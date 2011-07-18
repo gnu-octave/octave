@@ -211,3 +211,15 @@ function retval = __plr2__ (h, theta, rho, fmt)
   endif
 
 endfunction
+
+
+%!demo
+%! theta = linspace (0, 2*pi, 1000);
+%! rho = sin (7*theta);
+%! polar (theta, rho);
+
+%!demo
+%! theta = linspace (0, 10*pi, 1000);
+%! rho = sin (5/4*theta);
+%! polar (theta, rho);
+

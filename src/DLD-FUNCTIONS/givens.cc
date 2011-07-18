@@ -203,3 +203,13 @@ givens (1, 1)\n\
 
   return retval;
 }
+
+/*
+
+%!assert (givens (1,1), [1, 1; -1, 1]/sqrt(2));
+%!assert (givens (1,0), eye(2));
+%!assert (givens (0,1), [0, 1; -1 0]);
+%!error givens(1);
+%!error givens()
+
+*/

@@ -27,6 +27,13 @@
 
 function retval = cor (x, y = x)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "cor is obsolete and will be removed from a future version of Octave; please use corr instead");
+  endif
+
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif

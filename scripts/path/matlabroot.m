@@ -31,5 +31,5 @@ function val = matlabroot ()
 
 endfunction
 
-
+%!assert (matlabroot(), OCTAVE_HOME())
 

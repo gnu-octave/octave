@@ -189,6 +189,12 @@ public:
 
   void stash_fcn_file_name (const std::string& nm);
 
+  void stash_fcn_location (int line, int col)
+    {
+      location_line = line;
+      location_column = col;
+    }
+
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
   void stash_parent_fcn_scope (symbol_table::scope_id ps) { parent_scope = ps; }
@@ -206,6 +212,8 @@ public:
     }
 
   std::string fcn_file_name (void) const { return file_name; }
+
+  std::string profiler_name (void) const;
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
@@ -343,6 +351,10 @@ private:
 
   // The name of the file we parsed.
   std::string file_name;
+
+  // Location where this function was defined.
+  int location_line;
+  int location_column;
 
   // The name of the parent function, if any.
   std::string parent_name;

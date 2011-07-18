@@ -2900,6 +2900,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
     }
 
   fcn->stash_function_name (id_name);
+  fcn->stash_fcn_location (input_line_number, current_input_column);
 
   if (! help_buf.empty () && current_function_depth == 1
       && ! parsing_subfunctions)

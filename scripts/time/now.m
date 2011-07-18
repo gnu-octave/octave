@@ -37,7 +37,11 @@
 
 function t = now ()
 
-  t = datenum (clock ());
+  if (nargin == 0)
+    t = datenum (clock ());
+  else
+    print_usage ();
+  endif
 
   ## The following doesn't work (e.g., one hour off on 2005-10-04):
   ##
@@ -50,3 +54,8 @@ function t = now ()
   ## changing by an hour the offset from CUT for part of the year.
 
 endfunction
+
+%!error now (1);
+%!assert (isnumeric (now ()));
+%!assert (now () > 0);
+%!assert (now () <= now ());

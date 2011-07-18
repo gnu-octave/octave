@@ -91,7 +91,7 @@ function t = cor_test (x, y, alt, method)
   m = method (1);
 
   if (m == "p")
-    r = cor (x, y);
+    r = corr (x, y);
     df = n - 2;
     t.method = "Pearson's product moment correlation";
     t.params = df;

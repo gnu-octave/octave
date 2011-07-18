@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <sstream>
+
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -47,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "parse.h"
+#include "profiler.h"
 #include "variables.h"
 
 // Whether to optimize subsasgn method calls.
@@ -131,7 +134,10 @@ octave_user_script::do_multi_index_op (int nargout,
                   frame.protect_var (tree_evaluator::statement_context);
                   tree_evaluator::statement_context = tree_evaluator::script;
 
-                  cmd_list->accept (*current_evaluator);
+                  {
+                    profile_data_accumulator::enter pe (profiler, *this);
+                    cmd_list->accept (*current_evaluator);
+                  }
 
                   if (tree_return_command::returning)
                     tree_return_command::returning = 0;
@@ -176,6 +182,7 @@ octave_user_function::octave_user_function
   : octave_user_code (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
+    location_line (0), location_column (0),
     parent_name (), t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (-1),
@@ -215,6 +222,22 @@ void
 octave_user_function::stash_fcn_file_name (const std::string& nm)
 {
   file_name = nm;
+}
+
+std::string
+octave_user_function::profiler_name (void) const
+{
+  std::ostringstream result;
+
+  if (is_inline_function ())
+    result << "anonymous@" << fcn_file_name ()
+           << ":" << location_line << ":" << location_column;
+  else if (is_subfunction ())
+    result << parent_fcn_name () << ">" << name ();
+  else
+    result << name ();
+
+  return result.str ();
 }
 
 void
@@ -431,22 +454,26 @@ octave_user_function::do_multi_index_op (int nargout,
   bool special_expr = (is_inline_function ()
                        || cmd_list->is_anon_function_body ());
 
-  if (special_expr)
-    {
-      assert (cmd_list->length () == 1);
+  {
+    profile_data_accumulator::enter pe (profiler, *this);
 
-      tree_statement *stmt = 0;
+    if (special_expr)
+      {
+        assert (cmd_list->length () == 1);
 
-      if ((stmt = cmd_list->front ())
-          && stmt->is_expression ())
-        {
-          tree_expression *expr = stmt->expression ();
+        tree_statement *stmt = 0;
 
-          retval = expr->rvalue (nargout);
-        }
-    }
-  else
-    cmd_list->accept (*current_evaluator);
+        if ((stmt = cmd_list->front ())
+            && stmt->is_expression ())
+          {
+            tree_expression *expr = stmt->expression ();
+
+            retval = expr->rvalue (nargout);
+          }
+      }
+    else
+      cmd_list->accept (*current_evaluator);
+  }
 
   if (echo_commands)
     print_code_function_trailer ();

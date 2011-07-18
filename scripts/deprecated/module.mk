@@ -6,7 +6,10 @@ deprecated_FCN_FILES = \
   deprecated/betai.m \
   deprecated/cellidx.m \
   deprecated/clg.m \
+  deprecated/cor.m \
+  deprecated/corrcoef.m \
   deprecated/cquad.m \
+  deprecated/cut.m \
   deprecated/dispatch.m \
   deprecated/fstat.m \
   deprecated/gammai.m \
@@ -17,6 +20,7 @@ deprecated_FCN_FILES = \
   deprecated/isstr.m \
   deprecated/krylovb.m \
   deprecated/perror.m \
+  deprecated/polyderiv.m \
   deprecated/replot.m \
   deprecated/saveimage.m \
   deprecated/setstr.m \

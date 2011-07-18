@@ -3,10 +3,8 @@ FCN_FILE_DIRS += statistics/base
 statistics_base_FCN_FILES = \
   statistics/base/center.m \
   statistics/base/cloglog.m \
-  statistics/base/cor.m \
-  statistics/base/corrcoef.m \
+  statistics/base/corr.m \
   statistics/base/cov.m \
-  statistics/base/cut.m \
   statistics/base/gls.m \
   statistics/base/histc.m \
   statistics/base/iqr.m \

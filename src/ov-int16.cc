@@ -82,3 +82,15 @@ Convert @var{x} to 16-bit integer type.\n\
 {
   OCTAVE_TYPE_CONV_BODY (int16);
 }
+
+/*
+
+%!assert (class (int16 (1)), "int16")
+%!assert (int16 (1.25), int16 (1))
+%!assert (int16 (1.5), int16 (2))
+%!assert (int16 (-1.5), int16 (-2))
+%!assert (int16 (2^17), int16 (2^16-1))
+%!assert (int16 (-2^17), int16 (-2^16))
+
+*/
+

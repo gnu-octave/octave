@@ -531,6 +531,13 @@ function.  Instead use @code{imread}.\n\
   return output;
 }
 
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
+
 #ifdef HAVE_MAGICK
 
 static void
@@ -917,6 +924,13 @@ function.  Instead use @code{imwrite}.\n\
 return retval;
 }
 
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
+
 #ifdef HAVE_MAGICK
 
 template<class T>
@@ -1135,6 +1149,13 @@ not be using this function.  Instead use @code{imfinfo}.\n\
   return retval;
 }
 
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
+
 #undef GET_PARAM
 
 // Determine the file formats supported by GraphicsMagick.  This is
@@ -1194,3 +1215,10 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/

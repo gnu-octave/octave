@@ -79,3 +79,31 @@ function C = bitget (A, n)
   C = bitand (A, bitshift (_conv (1), uint8 (n) - uint8 (1))) != _conv (0);
 
 endfunction
+
+%!error bitget (1);
+%!error bitget (1, 2, 3);
+
+%!test
+%! assert (bitget ([4, 14], [3, 3]), logical ([1, 1]));
+%! pfx = {"", "u"};
+%! for i = 1:2
+%!   for prec = [8, 16, 32, 64]
+%!     fcn = str2func (sprintf ("%sint%d", pfx{i}, prec));
+%!     assert (bitget (fcn ([4, 14]), [3, 3]), logical ([1, 1]));
+%!   endfor
+%! endfor
+
+%!error bitget (0, 0);
+%!error bitget (0, 55);
+
+%!error bitget (int8 (0), 9);
+%!error bitget (uint8 (0), 9);
+
+%!error bitget (int16 (0), 17);
+%!error bitget (uint16 (0), 17);
+
+%!error bitget (int32 (0), 33);
+%!error bitget (uint32 (0), 33);
+
+%!error bitget (int64 (0), 65);
+%!error bitget (uint64 (0), 65);

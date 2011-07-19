@@ -655,3 +655,16 @@ compatibility; however, it is still not entirely compatible because\n\
 {
   return SET_INTERNAL_VARIABLE (allow_noninteger_range_as_index);
 }
+
+/*
+%!test
+%! x = 0:10;
+%! save = allow_noninteger_range_as_index (0);
+%! fail ('x(2.1:5)');
+%! assert (x(2:5), 1:4);
+%! allow_noninteger_range_as_index (1);
+%! assert (x(2.49:5), 1:3);
+%! assert (x(2.5:5), 2:4);
+%! assert (x(2.51:5), 2:4);
+%! allow_noninteger_range_as_index (save);
+*/

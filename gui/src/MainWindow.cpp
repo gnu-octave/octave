@@ -257,8 +257,6 @@ MainWindow::construct ()
 	   SLOT (handleOpenFileRequest (QString)));
   connect (m_historyDockWidget, SIGNAL (information (QString)), this,
 	   SLOT (reportStatusMessage (QString)));
-  connect (m_historyDockWidget, SIGNAL (commandDoubleClicked (QString)), this,
-	   SLOT (handleCommandDoubleClicked (QString)));
   connect (m_variablesDockWidget, SIGNAL (saveWorkspace ()), this,
 	   SLOT (handleSaveWorkspaceRequest ()));
   connect (m_variablesDockWidget, SIGNAL (loadWorkspace ()), this,

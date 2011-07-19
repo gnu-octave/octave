@@ -26,18 +26,10 @@ HistoryDockWidget::HistoryDockWidget (QWidget * parent):QDockWidget (parent)
 }
 
 void
-HistoryDockWidget::handleListViewItemDoubleClicked (QModelIndex modelIndex)
-{
-  QString command = m_historyListModel->data (modelIndex, 0).toString ();
-  emit commandDoubleClicked (command);
-}
-
-void
 HistoryDockWidget::construct ()
 {
-  m_historyListModel = new QStringListModel ();
   m_historyListView = new QListView (this);
-  m_historyListView->setModel (m_historyListModel);
+  m_historyListView->setModel (OctaveLink::instance ()->historyModel());
   m_historyListView->setAlternatingRowColors (true);
   m_historyListView->setEditTriggers (QAbstractItemView::NoEditTriggers);
   QHBoxLayout *layout = new QHBoxLayout ();
@@ -49,14 +41,4 @@ HistoryDockWidget::construct ()
   layout->setMargin (2);
 
   widget ()->setLayout (layout);
-  //connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this,
-  //	   SLOT (handleListViewItemDoubleClicked (QModelIndex)));
-}
-
-void
-HistoryDockWidget::updateHistory (QStringList history)
-{/*
-  m_historyListModel->setStringList (history);
-  emit information (tr ("History updated."));
-  */
 }

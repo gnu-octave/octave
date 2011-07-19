@@ -21,7 +21,7 @@
 
 #include <QDockWidget>
 #include <QListView>
-#include <QStringListModel>
+#include "OctaveLink.h"
 
 class HistoryDockWidget:public QDockWidget
 {
@@ -32,15 +32,10 @@ public:
 
 signals:
   void information (QString message);
-  void commandDoubleClicked (QString command);
-
-private slots:
-  void handleListViewItemDoubleClicked (QModelIndex modelIndex);
 
 private:
   void construct ();
   QListView *m_historyListView;
-  QStringListModel *m_historyListModel;
 };
 
 #endif // HISTORYDOCKWIDGET_H

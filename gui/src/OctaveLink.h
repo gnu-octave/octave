@@ -79,6 +79,7 @@
 #include <QVector>
 #include <QSemaphore>
 #include <QObject>
+#include <QStringListModel>
 
 typedef symbol_table::symbol_record SymbolRecord;
 typedef octave_value OctaveValue;
@@ -107,12 +108,11 @@ public:
     */
   QList < SymbolRecord > currentSymbolTable ();
 
-  /**
-    * Returns a copy of the current history buffer.
-    * \return Copy of the current history buffer.
-    */
-  QStringList
-  currentHistory ();
+  void
+  updateHistoryModel ();
+
+  QStringListModel *
+  historyModel ();
 
   void
   processOctaveServerData ();
@@ -124,18 +124,9 @@ public:
   void
   fetchSymbolTable ();
 
-  /**
-    * Updates the current history buffer with new data
-    * from octave.
-    */
-  void
-  fetchHistory ();
-
 signals:
   void
   symbolTableChanged ();
-  void
-  historyChanged ();
 
 private:
   OctaveLink ();
@@ -146,6 +137,7 @@ private:
   QList < SymbolRecord > m_symbolTableBuffer;
 
   /** History related member variables. */
+  QStringListModel *m_historyModel;
   QSemaphore *m_historySemaphore;
   QStringList m_historyBuffer;
   int m_previousHistoryLength;

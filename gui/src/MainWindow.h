@@ -156,13 +156,7 @@ protected:
 	      setVariablesList (symbolTable);
 	  }
 
-	// Collect history list.
-        QStringList history = OctaveLink::instance ()->currentHistory ();
-        if (history.length ())
-	  {
-            m_mainWindow->historyDockWidget ()->updateHistory (history);
-	  }
-
+        OctaveLink::instance ()->updateHistoryModel ();
 	usleep (100000);
       }
   }

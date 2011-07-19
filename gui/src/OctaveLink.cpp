@@ -32,6 +32,7 @@ OctaveLink::OctaveLink ():QObject (), m_previousHistoryLength (0)
 {
   m_symbolTableSemaphore = new QSemaphore (1);
   m_historySemaphore = new QSemaphore (1);
+  m_historyModel = new QStringListModel (this);
 }
 
 OctaveLink::~OctaveLink ()
@@ -118,26 +119,6 @@ OctaveLink::fetchSymbolTable ()
   emit symbolTableChanged ();
 }
 
-
-void
-OctaveLink::fetchHistory ()
-{
-  int currentLen = command_history::length ();
-  if (currentLen != m_previousHistoryLength)
-    {
-      m_historySemaphore->acquire ();
-      for (int i = m_previousHistoryLength; i < currentLen; i++)
-	{
-          QString entry = QString(command_history::get_entry (i).c_str());
-          if (!entry.startsWith ("#"))
-            m_historyBuffer.append (entry);
-	}
-      m_historySemaphore->release ();
-      m_previousHistoryLength = currentLen;
-      emit historyChanged ();
-    }
-}
-
 QList < SymbolRecord > OctaveLink::currentSymbolTable ()
 {
   QList < SymbolRecord > m_symbolTableCopy;
@@ -151,18 +132,36 @@ QList < SymbolRecord > OctaveLink::currentSymbolTable ()
   return m_symbolTableCopy;
 }
 
-QStringList
-OctaveLink::currentHistory ()
+
+void
+OctaveLink::updateHistoryModel ()
 {
-  m_historySemaphore->acquire ();
-  QStringList historyBuffer = m_historyBuffer;
-  m_historySemaphore->release ();
-  return historyBuffer;
+  // TODO: Use the following code to update the history model.
+  /*
+  int currentLen = command_history::length ();
+  if (currentLen != m_previousHistoryLength)
+    {
+      m_historySemaphore->acquire ();
+      for (int i = m_previousHistoryLength; i < currentLen; i++)
+        {
+          QString entry = QString(command_history::get_entry (i).c_str());
+          if (!entry.startsWith ("#"))
+            m_historyBuffer.append (entry);
+        }
+      m_historySemaphore->release ();
+      m_previousHistoryLength = currentLen;
+    }
+    */
+}
+
+QStringListModel *
+OctaveLink::historyModel ()
+{
+  return m_historyModel;
 }
 
 void
 OctaveLink::processOctaveServerData ()
 {
   fetchSymbolTable ();
-  fetchHistory ();
 }

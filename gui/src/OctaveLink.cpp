@@ -28,10 +28,9 @@ OctaveLink
   OctaveLink::m_singleton;
 
 
-OctaveLink::OctaveLink ():QObject (), m_previousHistoryLength (0)
+OctaveLink::OctaveLink ():QObject ()
 {
   m_symbolTableSemaphore = new QSemaphore (1);
-  m_historySemaphore = new QSemaphore (1);
   m_historyModel = new QStringListModel (this);
 }
 
@@ -136,22 +135,21 @@ QList < SymbolRecord > OctaveLink::currentSymbolTable ()
 void
 OctaveLink::updateHistoryModel ()
 {
-  // TODO: Use the following code to update the history model.
-  /*
-  int currentLen = command_history::length ();
-  if (currentLen != m_previousHistoryLength)
+  // Determine the client's (our) history length and the one of the server.
+  int clientHistoryLength = m_history.length ();
+  int serverHistoryLength = command_history::length ();
+
+  // If were behind the server, iterate through all new entries and add them to our history.
+  if (clientHistoryLength < serverHistoryLength)
     {
-      m_historySemaphore->acquire ();
-      for (int i = m_previousHistoryLength; i < currentLen; i++)
+      for (int i = clientHistoryLength; i < serverHistoryLength; i++)
         {
-          QString entry = QString(command_history::get_entry (i).c_str());
-          if (!entry.startsWith ("#"))
-            m_historyBuffer.append (entry);
+          m_history.insert (0, QString (command_history::get_entry (i).c_str ()));
         }
-      m_historySemaphore->release ();
-      m_previousHistoryLength = currentLen;
     }
-    */
+
+  // Update the model by setting the new history.
+  m_historyModel->setStringList (m_history);
 }
 
 QStringListModel *

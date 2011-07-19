@@ -23,10 +23,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // Born July 13, 2007.
 
 #include "OctaveLink.h"
+#include <QDebug>
 
-OctaveLink
-  OctaveLink::m_singleton;
-
+OctaveLink OctaveLink::m_singleton;
 
 OctaveLink::OctaveLink ():QObject ()
 {
@@ -136,7 +135,7 @@ void
 OctaveLink::updateHistoryModel ()
 {
   // Determine the client's (our) history length and the one of the server.
-  int clientHistoryLength = m_history.length ();
+  int clientHistoryLength = m_historyModel->rowCount ();
   int serverHistoryLength = command_history::length ();
 
   // If were behind the server, iterate through all new entries and add them to our history.
@@ -144,12 +143,10 @@ OctaveLink::updateHistoryModel ()
     {
       for (int i = clientHistoryLength; i < serverHistoryLength; i++)
         {
-          m_history.insert (0, QString (command_history::get_entry (i).c_str ()));
+          m_historyModel->insertRow (0);
+          m_historyModel->setData (m_historyModel->index (0), QString (command_history::get_entry (i).c_str ()));
         }
     }
-
-  // Update the model by setting the new history.
-  m_historyModel->setStringList (m_history);
 }
 
 QStringListModel *

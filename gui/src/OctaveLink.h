@@ -138,7 +138,6 @@ private:
 
   /** History related member variables. */
   QStringListModel *m_historyModel;
-  QStringList m_history;
 
   static OctaveLink m_singleton;
 };

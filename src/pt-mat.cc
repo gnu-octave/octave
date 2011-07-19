@@ -1149,9 +1149,12 @@ string_fill_char (\"X\");\n\
 
 /*
 %!error (string_fill_char (1, 2));
-%!test
+%% string_fill_char() function call must be outside of %!test block
+%% due to the way a %!test block is wrapped inside a function
+%!shared orig_val, old_val
 %! orig_val = string_fill_char ();
-%! old_val = string_fill_char ("X");
+%! old_val  = string_fill_char ("X");
+%!test
 %! assert (orig_val, old_val);
 %! assert (string_fill_char (), "X");
 %! assert (["these"; "are"; "strings"], ["theseXX"; "areXXXX"; "strings"]);

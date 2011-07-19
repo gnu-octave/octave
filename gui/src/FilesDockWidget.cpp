@@ -36,11 +36,9 @@ FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
 
   // Add a button to the toolbar with the QT standard icon for up-directory
   // TODO: Maybe change this to be an up-directory icon that is OS specific???
-  QStyle *
-    style = QApplication::style ();
+  QStyle *style = QApplication::style ();
   m_directoryIcon = style->standardIcon (QStyle::SP_FileDialogToParent);
-  m_directoryUpAction =
-    new QAction (m_directoryIcon, "", m_navigationToolBar);
+  m_directoryUpAction = new QAction (m_directoryIcon, "", m_navigationToolBar);
   m_currentDirectory = new QLineEdit (m_navigationToolBar);
 
   m_navigationToolBar->addAction (m_directoryUpAction);

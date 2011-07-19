@@ -243,7 +243,7 @@ MainWindow::construct ()
   connect (reportBugAction, SIGNAL (triggered ()), this,
 	   SLOT (openBugTrackerPage ()));
 
-  setWindowTitle (QString ("Octave GUI (0.0.3)"));
+  setWindowTitle (QString ("Octave GUI (0.0.4)"));
 
   setCentralWidget (m_centralMdiArea);
   addDockWidget (Qt::LeftDockWidgetArea, m_variablesDockWidget);
@@ -276,7 +276,6 @@ MainWindow::establishOctaveLink ()
   m_octaveCallbackThread = new OctaveCallbackThread (this, this);
   m_octaveCallbackThread->start ();
 
-  command_editor::add_event_hook (OctaveLink::readlineEventHook);
   m_octaveTerminal->openTerminal ();
   reportStatusMessage (tr ("Established link to Octave."));
 }

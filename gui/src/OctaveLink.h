@@ -97,8 +97,6 @@ public:
   {
     return &m_singleton;
   }
-  static int
-  readlineEventHook (void);
   static QString
   octaveValueAsQString (OctaveValue octaveValue);
 
@@ -113,9 +111,6 @@ public:
 
   QStringListModel *
   historyModel ();
-
-  void
-  processOctaveServerData ();
 
   /**
     * Updates the current symbol table with new data

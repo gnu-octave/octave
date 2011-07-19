@@ -50,7 +50,7 @@ Q_OBJECT public:
 
   void updateNickCompleter ();
 private:
-    IRCClient * m_ircClient;
+  IRCClient * m_ircClient;
   QTextEdit *m_chatWindow;
   QPushButton *m_nickButton;
   QLineEdit *m_inputLine;

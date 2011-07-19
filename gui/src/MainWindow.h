@@ -146,6 +146,8 @@ protected:
   {
     while (m_mainWindow->isRunning ())
       {
+        OctaveLink::instance ()->fetchSymbolTable ();
+
 	// Get a full variable list.
 	QList < SymbolRecord > symbolTable =
           OctaveLink::instance ()->copyCurrentSymbolTable ();

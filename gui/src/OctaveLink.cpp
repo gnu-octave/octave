@@ -37,13 +37,6 @@ OctaveLink::~OctaveLink ()
 {
 }
 
-int
-OctaveLink::readlineEventHook ()
-{
-  OctaveLink::instance ()->processOctaveServerData ();
-  return 0;
-}
-
 QString
 OctaveLink::octaveValueAsQString (OctaveValue octaveValue)
 {
@@ -153,10 +146,4 @@ QStringListModel *
 OctaveLink::historyModel ()
 {
   return m_historyModel;
-}
-
-void
-OctaveLink::processOctaveServerData ()
-{
-  fetchSymbolTable ();
 }

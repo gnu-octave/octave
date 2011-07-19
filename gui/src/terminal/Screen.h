@@ -312,7 +312,7 @@ public:
      * Resets the state of the screen.  This resets the various screen modes
      * back to their default states.  The cursor style and colors are reset
      * (as if setDefaultRendition() had been called)
-     *
+     *setDefaultRendition
      * <ul>
      * <li>Line wrapping is enabled.</li>
      * <li>Origin mode is disabled.</li>

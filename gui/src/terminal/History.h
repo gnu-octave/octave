@@ -29,7 +29,6 @@
 #include <QtCore>
 
 // Konsole
-#include "BlockArray.h"
 #include "Character.h"
 
 class HistoryFile
@@ -229,7 +228,7 @@ public:
   virtual void addLine (bool previousWrapped = false);
 
 protected:
-    BlockArray m_blockArray;
+    //BlockArray m_blockArray;
     QHash < int, size_t > m_lineLengths;
 };
 

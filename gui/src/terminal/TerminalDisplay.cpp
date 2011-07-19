@@ -540,7 +540,7 @@ TerminalDisplay::drawCharacters (QPainter & painter,
   if (_blinking && (style->rendition & RE_BLINK))
     return;
 
-  // setup bold and underline
+  // setup boldJ and underline
   bool useBold;
   ColorEntry::FontWeight weight = style->fontWeight (_colorTable);
   if (weight == ColorEntry::UseCurrentFormat)

@@ -56,7 +56,6 @@ SOURCES +=\
         src/terminal/KeyboardTranslator.cpp \
         src/terminal/Screen.cpp \
         src/terminal/History.cpp \
-        src/terminal/BlockArray.cpp \
         src/terminal/konsole_wcwidth.cpp \
         src/terminal/ScreenWindow.cpp \
         src/terminal/Emulation.cpp \
@@ -95,7 +94,6 @@ HEADERS += \
         src/terminal/KeyboardTranslator.h \
         src/terminal/Screen.h \
         src/terminal/History.h \
-        src/terminal/BlockArray.h \
         src/terminal/konsole_wcwidth.h \
 		  src/terminal/konsole_export.h \
         src/terminal/ScreenWindow.h \

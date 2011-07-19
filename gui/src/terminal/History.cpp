@@ -515,7 +515,7 @@ HistoryScrollBlockArray::HistoryScrollBlockArray (size_t size):HistoryScroll (ne
 	       HistoryTypeBlockArray
 	       (size))
 {
-  m_blockArray.setHistorySize (size);	// nb. of lines.
+  //m_blockArray.setHistorySize (size);	// nb. of lines.
 }
 
 HistoryScrollBlockArray::~HistoryScrollBlockArray ()
@@ -547,6 +547,7 @@ void
 HistoryScrollBlockArray::getCells (int lineno, int colno,
 				   int count, Character res[])
 {
+  /*
   if (!count)
     return;
 
@@ -561,11 +562,13 @@ HistoryScrollBlockArray::getCells (int lineno, int colno,
   assert (((colno + count) * sizeof (Character)) < ENTRIES);
   memcpy (res, b->data + (colno * sizeof (Character)),
 	  count * sizeof (Character));
+          */
 }
 
 void
 HistoryScrollBlockArray::addCells (const Character a[], int count)
 {
+  /*
   Block *b = m_blockArray.lastBlock ();
 
   if (!b)
@@ -584,6 +587,7 @@ HistoryScrollBlockArray::addCells (const Character a[], int count)
   Q_UNUSED (res);
 
   m_lineLengths.insert (m_blockArray.getCurrent (), count);
+  */
 }
 
 void

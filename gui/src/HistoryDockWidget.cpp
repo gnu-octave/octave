@@ -49,22 +49,14 @@ HistoryDockWidget::construct ()
   layout->setMargin (2);
 
   widget ()->setLayout (layout);
-  connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this,
-	   SLOT (handleListViewItemDoubleClicked (QModelIndex)));
+  //connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this,
+  //	   SLOT (handleListViewItemDoubleClicked (QModelIndex)));
 }
 
 void
-HistoryDockWidget::updateHistory (string_vector historyEntries)
-{
-  QStringList stringList = m_historyListModel->stringList ();
-  for (int i = 0; i < historyEntries.length (); i++)
-    {
-      QString command (historyEntries[i].c_str ());
-      if (!command.startsWith ("#"))
-	{
-	  stringList.push_front (command);
-	}
-    }
-  m_historyListModel->setStringList (stringList);
+HistoryDockWidget::updateHistory (QStringList history)
+{/*
+  m_historyListModel->setStringList (history);
   emit information (tr ("History updated."));
+  */
 }

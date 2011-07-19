@@ -22,7 +22,11 @@
 #include <QStringListModel>
 #include <QStringList>
 
-OctaveTerminal::OctaveTerminal (QWidget * parent):QTerminalWidget (0, parent)
+#include "pty.h"
+#include "unistd.h"
+#include <assert.h>
+
+OctaveTerminal::OctaveTerminal (QWidget * parent):QWidget (parent)
 {
   construct ();
 }
@@ -34,5 +38,26 @@ OctaveTerminal::~OctaveTerminal ()
 void
 OctaveTerminal::construct ()
 {
-  setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+  m_terminalWidget = new QTerminalWidget (0, this);
+  m_terminalWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+  setFocusProxy (m_terminalWidget);
+
+  QVBoxLayout *layout = new QVBoxLayout ();
+  layout->addWidget (m_terminalWidget);
+  setLayout (layout);
+}
+
+void
+OctaveTerminal::openTerminal ()
+{
+  int fdm, fds;
+  if (openpty (&fdm, &fds, 0, 0, 0) < 0)
+    {
+      assert (0);
+    }
+  dup2 (fds, 0);
+  dup2 (fds, 1);
+  dup2 (fds, 2);
+
+  m_terminalWidget->openTeletype (fdm);
 }

@@ -75,23 +75,19 @@
 #include <QFileInfo>
 #include <QList>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 #include <QSemaphore>
 #include <QObject>
 
-typedef
-  symbol_table::symbol_record
-  SymbolRecord;
-typedef octave_value
-  OctaveValue;
+typedef symbol_table::symbol_record SymbolRecord;
+typedef octave_value OctaveValue;
 
 /**
   * \class OctaveLink
   * Manages a link to an octave instance.
   */
-class
-  OctaveLink:
-  QObject
+class OctaveLink:QObject
 {
   Q_OBJECT
 public:
@@ -105,33 +101,33 @@ public:
   static QString
   octaveValueAsQString (OctaveValue octaveValue);
 
-    /**
-      * Returns a copy of the current symbol table buffer.
-      * \return Copy of the current symbol table buffer.
-      */
+  /**
+    * Returns a copy of the current symbol table buffer.
+    * \return Copy of the current symbol table buffer.
+    */
   QList < SymbolRecord > currentSymbolTable ();
 
-    /**
-      * Returns a copy of the current history buffer.
-      * \return Copy of the current history buffer.
-      */
-  string_vector
+  /**
+    * Returns a copy of the current history buffer.
+    * \return Copy of the current history buffer.
+    */
+  QStringList
   currentHistory ();
 
   void
   processOctaveServerData ();
 
-    /**
-      * Updates the current symbol table with new data
-      * from octave.
-      */
+  /**
+    * Updates the current symbol table with new data
+    * from octave.
+    */
   void
   fetchSymbolTable ();
 
-    /**
-      * Updates the current history buffer with new data
-      * from octave.
-      */
+  /**
+    * Updates the current history buffer with new data
+    * from octave.
+    */
   void
   fetchHistory ();
 
@@ -145,13 +141,13 @@ private:
   OctaveLink ();
   ~OctaveLink ();
 
-    /** Variable related member variables. */
+  /** Variable related member variables. */
   QSemaphore * m_symbolTableSemaphore;
   QList < SymbolRecord > m_symbolTableBuffer;
 
-    /** History related member variables. */
+  /** History related member variables. */
   QSemaphore *m_historySemaphore;
-  string_vector m_historyBuffer;
+  QStringList m_historyBuffer;
   int m_previousHistoryLength;
   static OctaveLink m_singleton;
 };

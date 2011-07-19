@@ -18,15 +18,20 @@
 
 #ifndef OCTAVETERMINAL_H
 #define OCTAVETERMINAL_H
+#include <QWidget>
 #include "QTerminalWidget.h"
 
-class OctaveTerminal:public QTerminalWidget
+class OctaveTerminal:public QWidget
 {
-Q_OBJECT public:
+Q_OBJECT
+public:
   OctaveTerminal (QWidget * parent = 0);
   ~OctaveTerminal ();
 
+  void sendText (QString text) { m_terminalWidget->sendText(text); }
+  void openTerminal ();
 private:
   void construct ();
+  QTerminalWidget *m_terminalWidget;
 };
 #endif // OCTAVETERMINAL_H

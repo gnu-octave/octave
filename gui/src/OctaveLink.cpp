@@ -128,7 +128,9 @@ OctaveLink::fetchHistory ()
       m_historySemaphore->acquire ();
       for (int i = m_previousHistoryLength; i < currentLen; i++)
 	{
-	  m_historyBuffer.append (command_history::get_entry (i));
+          QString entry = QString(command_history::get_entry (i).c_str());
+          if (!entry.startsWith ("#"))
+            m_historyBuffer.append (entry);
 	}
       m_historySemaphore->release ();
       m_previousHistoryLength = currentLen;
@@ -149,14 +151,13 @@ QList < SymbolRecord > OctaveLink::currentSymbolTable ()
   return m_symbolTableCopy;
 }
 
-string_vector
+QStringList
 OctaveLink::currentHistory ()
 {
   m_historySemaphore->acquire ();
-  string_vector retval (m_historyBuffer);
-  m_historyBuffer = string_vector ();
+  QStringList historyBuffer = m_historyBuffer;
   m_historySemaphore->release ();
-  return retval;
+  return historyBuffer;
 }
 
 void

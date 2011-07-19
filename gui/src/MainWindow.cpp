@@ -26,6 +26,7 @@
 #include "FileEditorMdiSubWindow.h"
 #include "ImageViewerMdiSubWindow.h"
 #include "SettingsDialog.h"
+#include "cmd-edit.h"
 
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent),
 m_isRunning (true)
@@ -278,16 +279,6 @@ MainWindow::establishOctaveLink ()
   m_octaveCallbackThread->start ();
 
   command_editor::add_event_hook (OctaveLink::readlineEventHook);
-
-  int fdm, fds;
-  if (openpty (&fdm, &fds, 0, 0, 0) < 0)
-    {
-      assert (0);
-    }
-  dup2 (fds, 0);
-  dup2 (fds, 1);
-  dup2 (fds, 2);
-
-  m_octaveTerminal->openTeletype (fdm);
+  m_octaveTerminal->openTerminal ();
   reportStatusMessage (tr ("Established link to Octave."));
 }

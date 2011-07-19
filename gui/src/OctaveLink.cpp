@@ -117,7 +117,7 @@ OctaveLink::fetchSymbolTable ()
   emit symbolTableChanged ();
 }
 
-QList < SymbolRecord > OctaveLink::currentSymbolTable ()
+QList < SymbolRecord > OctaveLink::copyCurrentSymbolTable ()
 {
   QList < SymbolRecord > m_symbolTableCopy;
 

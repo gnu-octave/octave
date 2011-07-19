@@ -106,7 +106,7 @@ public:
     * Returns a copy of the current symbol table buffer.
     * \return Copy of the current symbol table buffer.
     */
-  QList < SymbolRecord > currentSymbolTable ();
+  QList < SymbolRecord > copyCurrentSymbolTable ();
 
   void
   updateHistoryModel ();

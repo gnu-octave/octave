@@ -146,10 +146,9 @@ protected:
   {
     while (m_mainWindow->isRunning ())
       {
-
 	// Get a full variable list.
 	QList < SymbolRecord > symbolTable =
-	  OctaveLink::instance ()->currentSymbolTable ();
+          OctaveLink::instance ()->copyCurrentSymbolTable ();
 	if (symbolTable.size ())
 	  {
 	    m_mainWindow->variablesDockWidget ()->
@@ -157,7 +156,7 @@ protected:
 	  }
 
         OctaveLink::instance ()->updateHistoryModel ();
-	usleep (100000);
+        usleep (500000);
       }
   }
 private:

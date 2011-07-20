@@ -100,4 +100,5 @@ endfunction
 %! profile ('resume');
 %! C = sqrtm (A);
 %! profile ('off');
-%! T = profile ('info')
+%! T = profile ('info');
+%! profshow (T);

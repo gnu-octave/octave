@@ -61,8 +61,6 @@ MainWindow::handleOpenFileRequest (QString fileName)
       FileEditorMdiSubWindow *subWindow =
 	new FileEditorMdiSubWindow (m_centralMdiArea);
       subWindow->setAttribute (Qt::WA_DeleteOnClose);
-// addSubWindow uncommented to avoid "QMdiArea::addSubWindow: window is already added"
-//        m_centralMdiArea->addSubWindow(subWindow);
       subWindow->loadFile (fileName);
     }
 }
@@ -276,12 +274,12 @@ MainWindow::construct ()
 void
 MainWindow::establishOctaveLink ()
 {
+  m_octaveTerminal->openTerminal ();
+
   m_octaveMainThread = new OctaveMainThread (this);
   m_octaveMainThread->start ();
 
   m_octaveCallbackThread = new OctaveCallbackThread (this, this);
   m_octaveCallbackThread->start ();
-
-  m_octaveTerminal->openTerminal ();
   reportStatusMessage (tr ("Established link to Octave."));
 }

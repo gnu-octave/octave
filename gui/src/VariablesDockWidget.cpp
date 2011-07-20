@@ -31,41 +31,20 @@ VariablesDockWidget::VariablesDockWidget (QWidget * parent):QDockWidget
 void
 VariablesDockWidget::construct ()
 {
+  setWindowTitle (tr ("Workspace"));
+
   m_updateSemaphore = new QSemaphore (1);
   QStringList headerLabels;
   headerLabels << tr ("Name") << tr ("Type") << tr ("Value");
   m_variablesTreeWidget = new QTreeWidget (this);
   m_variablesTreeWidget->setHeaderHidden (false);
   m_variablesTreeWidget->setHeaderLabels (headerLabels);
+
+  setWidget (new QWidget (this));
   QVBoxLayout *layout = new QVBoxLayout ();
-
-  setWindowTitle (tr ("Workspace"));
-  setWidget (new QWidget ());
-
   layout->addWidget (m_variablesTreeWidget);
-  QWidget *buttonBar = new QWidget (this);
-  layout->addWidget (buttonBar);
-
-  QHBoxLayout *buttonBarLayout = new QHBoxLayout ();
-  QPushButton *saveWorkspaceButton = new QPushButton (tr ("Save"), buttonBar);
-  QPushButton *loadWorkspaceButton = new QPushButton (tr ("Load"), buttonBar);
-  QPushButton *clearWorkspaceButton =
-    new QPushButton (tr ("Clear"), buttonBar);
-  buttonBarLayout->addWidget (saveWorkspaceButton);
-  buttonBarLayout->addWidget (loadWorkspaceButton);
-  buttonBarLayout->addWidget (clearWorkspaceButton);
-  buttonBarLayout->setMargin (2);
-  buttonBar->setLayout (buttonBarLayout);
-
   layout->setMargin (2);
   widget ()->setLayout (layout);
-
-  connect (saveWorkspaceButton, SIGNAL (clicked ()), this,
-	   SLOT (emitSaveWorkspace ()));
-  connect (loadWorkspaceButton, SIGNAL (clicked ()), this,
-	   SLOT (emitLoadWorkspace ()));
-  connect (clearWorkspaceButton, SIGNAL (clicked ()), this,
-	   SLOT (emitClearWorkspace ()));
 
   QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem ();
   treeWidgetItem->setData (0, 0, QString (tr ("Local")));
@@ -208,22 +187,4 @@ VariablesDockWidget::updateScope (int topLevelItemIndex,
 	  i--;
 	}
     }
-}
-
-void
-VariablesDockWidget::emitSaveWorkspace ()
-{
-  emit saveWorkspace ();
-}
-
-void
-VariablesDockWidget::emitLoadWorkspace ()
-{
-  emit loadWorkspace ();
-}
-
-void
-VariablesDockWidget::emitClearWorkspace ()
-{
-  emit clearWorkspace ();
 }

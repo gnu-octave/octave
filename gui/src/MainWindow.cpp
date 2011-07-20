@@ -232,6 +232,12 @@ MainWindow::construct ()
   QAction *alignWindowsAction =
     interfaceMenu->addAction (tr ("Align Windows"));
 
+  QMenu *workspaceMenu = menuBar ()->addMenu (tr ("Workspace"));
+  QAction *loadWorkspaceAction = workspaceMenu->addAction (tr ("Load"));
+  QAction *saveWorkspaceAction = workspaceMenu->addAction (tr ("Save"));
+  workspaceMenu->addSeparator ();
+  QAction *clearWorkspaceAction = workspaceMenu->addAction (tr ("Clear"));
+
   QMenu *communityMenu = menuBar ()->addMenu (tr ("Community"));
   QAction *reportBugAction = communityMenu->addAction (tr ("Report Bug"));
 
@@ -243,7 +249,7 @@ MainWindow::construct ()
   connect (reportBugAction, SIGNAL (triggered ()), this,
 	   SLOT (openBugTrackerPage ()));
 
-  setWindowTitle (QString ("Octave GUI (0.0.4)"));
+  setWindowTitle (QString ("Octave GUI (0.1.1)"));
 
   setCentralWidget (m_centralMdiArea);
   addDockWidget (Qt::LeftDockWidgetArea, m_variablesDockWidget);
@@ -257,11 +263,11 @@ MainWindow::construct ()
 	   SLOT (handleOpenFileRequest (QString)));
   connect (m_historyDockWidget, SIGNAL (information (QString)), this,
 	   SLOT (reportStatusMessage (QString)));
-  connect (m_variablesDockWidget, SIGNAL (saveWorkspace ()), this,
+  connect (saveWorkspaceAction, SIGNAL (triggered ()), this,
 	   SLOT (handleSaveWorkspaceRequest ()));
-  connect (m_variablesDockWidget, SIGNAL (loadWorkspace ()), this,
+  connect (loadWorkspaceAction, SIGNAL (triggered ()), this,
 	   SLOT (handleLoadWorkspaceRequest ()));
-  connect (m_variablesDockWidget, SIGNAL (clearWorkspace ()), this,
+  connect (clearWorkspaceAction, SIGNAL (triggered ()), this,
 	   SLOT (handleClearWorkspaceRequest ()));
 
   openWebPage ("http://www.gnu.org/software/octave/doc/interpreter/");

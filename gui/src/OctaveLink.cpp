@@ -132,6 +132,9 @@ OctaveLink::updateHistoryModel ()
   int serverHistoryLength = command_history::length ();
 
   // If were behind the server, iterate through all new entries and add them to our history.
+
+  // TODO: command_history::get_entry crashes, find out why.
+  /*
   if (clientHistoryLength < serverHistoryLength)
     {
       for (int i = clientHistoryLength; i < serverHistoryLength; i++)
@@ -139,7 +142,7 @@ OctaveLink::updateHistoryModel ()
           m_historyModel->insertRow (0);
           m_historyModel->setData (m_historyModel->index (0), QString (command_history::get_entry (i).c_str ()));
         }
-    }
+    }*/
 }
 
 QStringListModel *

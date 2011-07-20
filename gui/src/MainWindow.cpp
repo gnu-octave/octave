@@ -280,6 +280,6 @@ MainWindow::establishOctaveLink ()
   m_octaveMainThread->start ();
 
   m_octaveCallbackThread = new OctaveCallbackThread (this, this);
-  m_octaveCallbackThread->start ();
+  connect (m_octaveMainThread, SIGNAL(ready()), m_octaveCallbackThread, SLOT(start()));
   reportStatusMessage (tr ("Established link to Octave."));
 }

@@ -117,16 +117,22 @@ private:
 
 class OctaveMainThread:public QThread
 {
-Q_OBJECT public:
+Q_OBJECT
+public:
   OctaveMainThread (QObject * parent):QThread (parent)
   {
   }
+
+signals:
+  void ready();
+
 protected:
   void run ()
   {
     int argc = 3;
     const char *argv[] = { "octave", "--interactive", "--line-editing" };
     octave_main (argc, (char **) argv, 1);
+    emit ready();
     main_loop ();
     clean_up_and_exit (0);
   }

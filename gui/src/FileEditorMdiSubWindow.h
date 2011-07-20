@@ -22,6 +22,7 @@
 #include <QMdiSubWindow>
 #include <QToolBar>
 #include <QStatusBar>
+#include <QCloseEvent>
 #include <Qsci/qsciscintilla.h>
 // Not available in the Debian repos yet!
 // #include <Qsci/qscilexeroctave.h>
@@ -34,7 +35,9 @@ Q_OBJECT public:
   ~FileEditorMdiSubWindow ();
   void loadFile (QString fileName);
 
-  public slots:void newFile ();
+  public slots:
+
+  void newFile ();
   void saveFile ();
   void saveFileAs ();
 
@@ -45,6 +48,10 @@ Q_OBJECT public:
   void showToolTipRedo ();
 
   void registerModified (bool modified);
+
+protected:
+  void closeEvent(QCloseEvent *event);
+
 private:
   int checkFileModified (QString msg);
   void construct ();

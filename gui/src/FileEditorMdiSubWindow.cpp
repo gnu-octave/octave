@@ -34,9 +34,21 @@ FileEditorMdiSubWindow::FileEditorMdiSubWindow (QWidget * parent):QMdiSubWindow
 
 FileEditorMdiSubWindow::~FileEditorMdiSubWindow ()
 {
-  while (checkFileModified ("Close File"))
+}
+
+void
+FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
+{
+  // ignore close event if file is not saved and user cancels closing this window
+  // TODO: This does not work if the main window is closed!
+  if (checkFileModified ("Close File")==QMessageBox::Cancel)
     {
-    }				// don't close if something went wrong while saving the file
+      event->ignore();
+    }
+  else
+    {
+      event->accept();
+    }
 }
 
 void
@@ -59,45 +71,50 @@ FileEditorMdiSubWindow::loadFile (QString fileName)
   m_fileName = fileName;
   setWindowTitle (fileName);
   m_statusBar->showMessage (tr ("File loaded."), 2000);
-  m_editor->setModified (false);
+  m_editor->setModified (false); // loaded file is not modified yet
 }
 
 void
 FileEditorMdiSubWindow::newFile ()
 {
-  if (checkFileModified ("Open New File"))
-    {
-      return;			// something went wrong while saving the old file
-    }
-  m_fileName = "<unnamed>";
-  setWindowTitle (m_fileName);
-  m_editor->setText ("");
-  m_editor->setModified (false);
+    if (checkFileModified ("Open New File")==QMessageBox::Cancel)
+      {
+        return; // existing file not saved and creating new file canceled by user
+      }
+    m_fileName = "<unnamed>";
+    setWindowTitle (m_fileName);
+    m_editor->setText ("");
+    m_editor->setModified (false); // new file is not modified yet
 }
 
 int
 FileEditorMdiSubWindow::checkFileModified (QString msg)
 {
+  int decision = QMessageBox::Yes;
   if (m_editor->isModified ())
     {
-      int decision = QMessageBox::question (this,
-					    msg,
-					    "Do you want to save the current file?",
-					    QMessageBox::Yes,
-					    QMessageBox::No);
+      // file is modified but not saved, aks user what to do
+      decision = QMessageBox::question (this,
+                                        msg,
+                                        tr ("Do you want to save the current file\n%1 ?").
+                                          arg (m_fileName),
+                                        QMessageBox::Cancel,
+                                        QMessageBox::No,
+                                        QMessageBox::Yes);
 
       if (decision == QMessageBox::Yes)
-	{
-	  saveFile ();
-	  if (m_editor->isModified ())
-	    {
-	      // If the user attempted to save the file, but it's still
-	      // modified, then probably something went wrong, so return error
-	      return (1);
-	    }
-	}
+        {
+          saveFile ();
+          if (m_editor->isModified ())
+            {
+              // If the user attempted to save the file, but it's still
+              // modified, then probably something went wrong, so return cancel
+              // for cancel this operation
+              return (QMessageBox::Cancel);
+            }
+        }
     }
-  return (0);
+  return (decision);
 }
 
 void
@@ -125,6 +142,7 @@ FileEditorMdiSubWindow::saveFile ()
   out << m_editor->text ();
   QApplication::restoreOverrideCursor ();
   m_statusBar->showMessage (tr ("File saved"), 2000);
+  m_editor->setModified (false); // files is save -> not modified
 }
 
 void

@@ -28,6 +28,9 @@
 // #include <Qsci/qscilexeroctave.h>
 #include <Qsci/qsciapis.h>
 
+const char UNNAMED_FILE[]     = "<unnamed>";
+const char SAVE_FILE_FILTER[] = "Octave Files  *.m(*.m);;All Files   *.*(*.*)";
+
 class FileEditorMdiSubWindow:public QMdiSubWindow
 {
 Q_OBJECT public:
@@ -39,6 +42,7 @@ Q_OBJECT public:
 
   void newFile ();
   void saveFile ();
+  void saveFile (QString fileName);
   void saveFileAs ();
 
   void showToolTipNew ();

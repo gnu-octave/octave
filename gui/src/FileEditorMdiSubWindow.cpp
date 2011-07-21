@@ -81,7 +81,7 @@ FileEditorMdiSubWindow::newFile ()
       {
         return; // existing file not saved and creating new file canceled by user
       }
-    m_fileName = "<unnamed>";
+    m_fileName = UNNAMED_FILE;
     setWindowTitle (m_fileName);
     m_editor->setText ("");
     m_editor->setModified (false); // new file is not modified yet
@@ -120,40 +120,72 @@ FileEditorMdiSubWindow::checkFileModified (QString msg)
 void
 FileEditorMdiSubWindow::saveFile ()
 {
-  if (m_fileName.isEmpty ())
+  saveFile(m_fileName);
+}
+
+void
+FileEditorMdiSubWindow::saveFile (QString fileName)
+{
+  // it is a new file with the name "<unnamed>" -> call saveFielAs
+  if (fileName==UNNAMED_FILE)
     {
-      m_fileName =
-	QFileDialog::getSaveFileName (this, "Save File", m_fileName);
-      if (m_fileName.isEmpty ())
-	return;
+      saveFileAs();
+      return;
     }
 
-  QFile file (m_fileName);
+  // check for a valid file name to save the contents
+  QString saveFileName;
+  if (fileName.isEmpty ())
+    {
+      saveFileName = QFileDialog::getSaveFileName (this, "Save File", fileName);
+      if (saveFileName.isEmpty ())
+        return;
+    }
+  else
+    {
+    saveFileName = fileName;
+    }
+
+  // open the file
+  QFile file (saveFileName);
   if (!file.open (QFile::WriteOnly))
     {
       QMessageBox::warning (this, tr ("File Editor"),
 			    tr ("Cannot write file %1:\n%2.").
-			    arg (m_fileName).arg (file.errorString ()));
+          arg (saveFileName).arg (file.errorString ()));
       return;
     }
 
+  // save the contents into the file
   QTextStream out (&file);
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << m_editor->text ();
   QApplication::restoreOverrideCursor ();
-  m_statusBar->showMessage (tr ("File saved"), 2000);
+  m_fileName = saveFileName;     // save file name for later use
+  setWindowTitle(m_fileName);    // set the window title to actual file name
+  m_statusBar->showMessage (tr ("File %1 saved").arg(m_fileName), 2000);
   m_editor->setModified (false); // files is save -> not modified
 }
 
 void
 FileEditorMdiSubWindow::saveFileAs ()
-{				/*
-				   QString saveFileName = QFileDialog::getSaveFileName(this, "Save File", m_fileName);
-				   if(saveFileName.isEmpty())
-				   return;
-
-				   QFile file(saveFileName);
-				   file.open(QFile::WriteOnly);
+{
+  QString saveDir(m_fileName);
+  if (saveDir==UNNAMED_FILE)
+    saveDir = QDir::homePath();
+  QString saveFileName = QFileDialog::getSaveFileName(
+        this, "Save File", saveDir,SAVE_FILE_FILTER);
+  if(saveFileName.isEmpty())
+    return;
+  saveFile(saveFileName);
+/*	QFile file(saveFileName);
+  if (!file.open (QFile::WriteOnly))
+    {
+      QMessageBox::warning (this, tr ("File Editor"),
+          tr ("Cannot write file %1:\n%2.").
+          arg (m_fileName).arg (file.errorString ()));
+      return;
+    }
 
 				   if(file.write(m_simpleEditor->toPlainText().toLocal8Bit()) == -1) {
 				   QMessageBox::warning(this,

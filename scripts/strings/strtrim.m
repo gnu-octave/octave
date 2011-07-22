@@ -55,7 +55,7 @@ function s = strtrim (s)
 
   elseif (iscell(s))
 
-    s = cellfun (@strtrim, s, "uniformoutput", false);
+    s = regexprep (s, '^\s+|\s+$', '');
 
   else
     error ("strtrim: expecting string argument");

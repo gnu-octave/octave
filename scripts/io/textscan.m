@@ -142,6 +142,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Beware of zero valued headerline, fskipl would skip to EOF
     if (! isempty (headerlines) && (args{headerlines + 1} > 0))
       fskipl (fid, varargin{headerlines + 1});
+      args(headerlines:headerlines+1) = []; 
     endif
     if (isfinite (nlines))
       str = "";

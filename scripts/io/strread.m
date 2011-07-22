@@ -529,7 +529,7 @@ function varargout = strread (str, format = "%f", varargin)
           k++;
         case {"%0", "%1", "%2", "%3", "%4", "%5", "%6", "%7", "%8", "%9"}
           nfmt = strsplit (fmt_words{m}(2:end-1), '.');
-          swidth = str2num (nfmt{1});
+          swidth = str2double (nfmt{1});
           switch fmt_words{m}(end)
             case {"d", "u", "f", "n%"}
               n = cellfun ("isempty", data);
@@ -541,7 +541,7 @@ function varargout = strread (str, format = "%f", varargin)
                 data(end+1:num_lines) = numeric_fill_value;
               endif
               if (numel (nfmt) > 1)
-                sprec = str2num (nfmt{2});
+                sprec = str2double (nfmt{2});
                 data = 10^-sprec * round (10^sprec * data);
               endif
               varargout{k} = data.';

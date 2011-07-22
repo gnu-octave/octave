@@ -58,8 +58,7 @@ MainWindow::handleOpenFileRequest (QString fileName)
     }
   else
     {
-      FileEditorMdiSubWindow *subWindow =
-	new FileEditorMdiSubWindow (m_centralMdiArea);
+      FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow (m_centralMdiArea);
       subWindow->setAttribute (Qt::WA_DeleteOnClose);
       subWindow->loadFile (fileName);
     }
@@ -123,6 +122,14 @@ void
 MainWindow::alignMdiWindows ()
 {
   m_centralMdiArea->tileSubWindows ();
+}
+
+void
+MainWindow::openEditor ()
+{
+  FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow (m_centralMdiArea);
+  subWindow->setAttribute (Qt::WA_DeleteOnClose);
+  subWindow->newFile ();
 }
 
 void
@@ -229,6 +236,8 @@ MainWindow::construct ()
   QMenu *interfaceMenu = menuBar ()->addMenu (tr ("Interface"));
   QAction *alignWindowsAction =
     interfaceMenu->addAction (tr ("Align Windows"));
+  QAction *openEditorAction =
+    interfaceMenu->addAction (tr ("Open New Editor Window"));
 
   QMenu *workspaceMenu = menuBar ()->addMenu (tr ("Workspace"));
   QAction *loadWorkspaceAction = workspaceMenu->addAction (tr ("Load"));
@@ -244,6 +253,8 @@ MainWindow::construct ()
   connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));
   connect (alignWindowsAction, SIGNAL (triggered ()), this,
 	   SLOT (alignMdiWindows ()));
+  connect (openEditorAction, SIGNAL (triggered ()), this,
+     SLOT (openEditor ()));
   connect (reportBugAction, SIGNAL (triggered ()), this,
 	   SLOT (openBugTrackerPage ()));
 

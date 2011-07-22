@@ -52,6 +52,25 @@ FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
 }
 
 void
+FileEditorMdiSubWindow::openFile ()
+{
+    if (checkFileModified ("Open File")==QMessageBox::Cancel)
+      {
+        return; // existing file not saved and opening another file canceled by user
+      }
+    QString openFileName =
+        QFileDialog::getOpenFileName (this, "Open File", QDir::homePath(), SAVE_FILE_FILTER);
+    if (openFileName.isEmpty ())
+      {
+        return;
+      }
+    else
+      {
+        loadFile(openFileName);
+      }
+}
+
+void
 FileEditorMdiSubWindow::loadFile (QString fileName)
 {
   QFile file (fileName);
@@ -137,7 +156,7 @@ FileEditorMdiSubWindow::saveFile (QString fileName)
   QString saveFileName;
   if (fileName.isEmpty ())
     {
-      saveFileName = QFileDialog::getSaveFileName (this, "Save File", fileName);
+      saveFileName = QFileDialog::getSaveFileName (this, "Save File", fileName,SAVE_FILE_FILTER);
       if (saveFileName.isEmpty ())
         return;
     }
@@ -178,56 +197,42 @@ FileEditorMdiSubWindow::saveFileAs ()
   if(saveFileName.isEmpty())
     return;
   saveFile(saveFileName);
-/*	QFile file(saveFileName);
-  if (!file.open (QFile::WriteOnly))
-    {
-      QMessageBox::warning (this, tr ("File Editor"),
-          tr ("Cannot write file %1:\n%2.").
-          arg (m_fileName).arg (file.errorString ()));
-      return;
-    }
-
-				   if(file.write(m_simpleEditor->toPlainText().toLocal8Bit()) == -1) {
-				   QMessageBox::warning(this,
-				   "Error Saving File",
-				   QString("The file could not be saved: %1.").arg(file.errorString()));
-				   } else {
-				   m_simpleEditor->document()->setModified(false);
-				   m_fileName = saveFileName;
-				   setWindowTitle(m_fileName);
-				   }
-
-				   file.close(); */
 }
 
 void
 FileEditorMdiSubWindow::showToolTipNew ()
 {
-  m_statusBar->showMessage ("Create a new file.", 2000);
+  m_statusBar->showMessage ("Create a new file", 2000);
+}
+
+void
+FileEditorMdiSubWindow::showToolTipOpen ()
+{
+  m_statusBar->showMessage ("Open a file", 2000);
 }
 
 void
 FileEditorMdiSubWindow::showToolTipSave ()
 {
-  m_statusBar->showMessage ("Save the file.", 2000);
+  m_statusBar->showMessage ("Save the file", 2000);
 }
 
 void
 FileEditorMdiSubWindow::showToolTipSaveAs ()
 {
-  m_statusBar->showMessage ("Save the file as.", 2000);
+  m_statusBar->showMessage ("Save the file as", 2000);
 }
 
 void
 FileEditorMdiSubWindow::showToolTipUndo ()
 {
-  m_statusBar->showMessage ("Revert previous changes.", 2000);
+  m_statusBar->showMessage ("Revert previous changes", 2000);
 }
 
 void
 FileEditorMdiSubWindow::showToolTipRedo ()
 {
-  m_statusBar->showMessage ("Append previous changes.", 2000);
+  m_statusBar->showMessage ("Append previous changes", 2000);
 }
 
 void
@@ -269,6 +274,8 @@ FileEditorMdiSubWindow::construct ()
 
   QAction *newAction = new QAction (style->standardIcon (QStyle::SP_FileIcon),
 				    "", m_toolBar);
+  QAction *openAction = new QAction (style->standardIcon (QStyle::SP_DirOpenIcon),
+            "", m_toolBar);
   QAction *saveAction =
     new QAction (style->standardIcon (QStyle::SP_DriveHDIcon),
 		 "", m_toolBar);
@@ -283,6 +290,7 @@ FileEditorMdiSubWindow::construct ()
 		 "", m_toolBar);
 
   m_toolBar->addAction (newAction);
+  m_toolBar->addAction (openAction);
   m_toolBar->addAction (saveAction);
   m_toolBar->addAction (saveActionAs);
   m_toolBar->addAction (undoAction);
@@ -296,12 +304,14 @@ FileEditorMdiSubWindow::construct ()
   widget ()->setLayout (layout);
 
   connect (newAction, SIGNAL (triggered ()), this, SLOT (newFile ()));
+  connect (openAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
   connect (undoAction, SIGNAL (triggered ()), m_editor, SLOT (undo ()));
   connect (redoAction, SIGNAL (triggered ()), m_editor, SLOT (redo ()));
   connect (saveAction, SIGNAL (triggered ()), this, SLOT (saveFile ()));
   connect (saveActionAs, SIGNAL (triggered ()), this, SLOT (saveFileAs ()));
 
   connect (newAction, SIGNAL (hovered ()), this, SLOT (showToolTipNew ()));
+  connect (openAction, SIGNAL (hovered ()), this, SLOT (showToolTipOpen ()));
   connect (undoAction, SIGNAL (hovered ()), this, SLOT (showToolTipUndo ()));
   connect (redoAction, SIGNAL (hovered ()), this, SLOT (showToolTipRedo ()));
   connect (saveAction, SIGNAL (hovered ()), this, SLOT (showToolTipSave ()));

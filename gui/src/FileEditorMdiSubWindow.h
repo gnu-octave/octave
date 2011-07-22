@@ -41,11 +41,13 @@ Q_OBJECT public:
   public slots:
 
   void newFile ();
+  void openFile ();
   void saveFile ();
   void saveFile (QString fileName);
   void saveFileAs ();
 
   void showToolTipNew ();
+  void showToolTipOpen ();
   void showToolTipSave ();
   void showToolTipSaveAs ();
   void showToolTipUndo ();

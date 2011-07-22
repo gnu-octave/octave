@@ -77,6 +77,7 @@ Q_OBJECT public:
   void handleClearWorkspaceRequest ();
   void handleCommandDoubleClicked (QString command);
   void alignMdiWindows ();
+  void openEditor ();
   void openBugTrackerPage ();
   void processSettingsDialogRequest ();
 

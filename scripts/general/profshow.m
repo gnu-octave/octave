@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} profshow (@var{data})
+## @deftypefn  {Function File} {} profshow (@var{data})
 ## @deftypefnx {Function File} {} profshow (@var{data}, @var{n})
 ## Show flat profiler results.
 ##
@@ -32,27 +32,30 @@
 ## Built-in profiler.
 ## Author: Daniel Kraft <d@domob.eu>
 
-function profshow (data, n)
+function profshow (data, n = 20)
 
-  if (nargin < 2)
-    n = 20;
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
+  n = fix (n);
+  if (! isscalar (n) || ! isreal (n) || ! (n > 0))
+    error ("profile: N must be a positive integer"); 
   endif
 
   m = length (data.FunctionTable);
   n = min (n, m);
 
-  % We want to sort by times in descending order.  For this, extract the
-  % times to an array, then sort this, and use the resulting index permutation
-  % to print out our table.
-  times = NA (1, m);
-  for i = 1 : m
-    times(i) = - data.FunctionTable(i).TotalTime;
-  endfor
+  ## We want to sort by times in descending order.  For this, extract the
+  ## times to an array, then sort this, and use the resulting index permutation
+  ## to print out our table.
+  times = -[ data.FunctionTable.TotalTime ];
+
   [~, p] = sort (times);
 
-  % For printing the table, find out the maximum length of a function name
-  % so that we can proportion the table accordingly.  Based on this,
-  % we can build the format used for printing table rows.
+  ## For printing the table, find out the maximum length of a function name
+  ## so that we can proportion the table accordingly.  Based on this,
+  ## we can build the format used for printing table rows.
   nameLen = length ('Function');
   for i = 1 : n
     nameLen = max (nameLen, length (data.FunctionTable(p(i)).FunctionName));
@@ -61,16 +64,14 @@ function profshow (data, n)
   rowFormat = sprintf ('%%%ds%%13.3f%%13d\n', nameLen);
 
   printf (headerFormat, 'Function', 'Time (s)', 'Calls');
-  for i = 1 : nameLen + 2 * 13
-    printf ('-');
-  endfor
-  printf ('\n');
+  printf ("%s\n", repmat ('-', 1, nameLen + 2 * 13));
   for i = 1 : n
     row = data.FunctionTable(p(i));
     printf (rowFormat, row.FunctionName, row.TotalTime, row.NumCalls);
   endfor
 
 endfunction
+
 
 %!demo
 %! profile ('on');

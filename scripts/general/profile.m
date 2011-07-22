@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} profile on
+## @deftypefn  {Function File} {} profile on
 ## @deftypefnx {Function File} {} profile off
 ## @deftypefnx {Function File} {} profile resume
 ## @deftypefnx {Function File} {} profile clear
@@ -59,6 +59,10 @@
 
 function retval = profile (option)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   switch (option)
     case 'on'
       __profiler_reset ();
@@ -87,10 +91,13 @@ function retval = profile (option)
       retval = struct ('FunctionTable', data);
 
     otherwise
+      warning ("profile: Unrecognized option '%s'", option);
       print_usage ();
+
   endswitch
 
 endfunction
+
 
 %!demo
 %! profile ('on');

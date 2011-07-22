@@ -25,13 +25,21 @@
 ## The file @var{filename} is read and parsed according to @var{format}.  The
 ## function behaves like @code{strread} except it works by parsing a file
 ## instead of a string.  See the documentation of @code{strread} for details.
+##
 ## In addition to the options supported by @code{strread}, this function
-## supports one more:
+## supports two more:
+##
 ## @itemize
 ## @item "headerlines":
+## The first @var{value} number of lines of @var{filename} are skipped.
+##
+## @item "endofline":
+## Specify a single character or "\r\n".  If no value is given, it will be
+## inferred from the file.  If set to "" (empty string) EOLs are ignored as
+## delimiters.
 ## @end itemize
-## The first @var{value} number of lines of @var{str} are skipped.
-## @seealso{strread, load, dlmread, fscanf}
+##
+## @seealso{strread, load, dlmread, fscanf, textscan}
 ## @end deftypefn
 
 function varargout = textread (filename, format = "%f", varargin)
@@ -51,22 +59,55 @@ function varargout = textread (filename, format = "%f", varargin)
     error ("textread: could not open '%s' for reading", filename);
   endif
 
-  ## Maybe skip header lines
+  ## Skip header lines if requested
   headerlines = find (strcmpi (varargin, "headerlines"), 1);
-  if (! isempty (headerlines))
-    hdr_lines = floor (varargin{headerlines + 1});
-    ## Beware of zero valued headerline, fskipl will count lines to EOF then
-    if (hdr_lines > 0)
-      fskipl (fid, hdr_lines);
-    endif
+  ## Beware of zero valued headerline, fskipl would skip to EOF
+  if (! isempty (headerlines) && (varargin{headerlines + 1} > 0))
+    fskipl (fid, varargin{headerlines + 1});
     varargin(headerlines:headerlines+1) = [];
   endif
 
   str = fread (fid, "char=>char").';
   fclose (fid);
 
-  ## Call strread to make it do the real work
-  [varargout{1:max (nargout, 1)}] = strread (str, format, varargin {:});
+  if (isempty (str))
+    warning ("textread: empty file");
+  else
+    endofline = find (strcmpi (varargin, "endofline"), 1);
+    if (! isempty (endofline))
+      ## 'endofline' option set by user.  
+      endofline = find (strcmpi (varargin, "endofline"), 1);
+      if (! ischar (varargin{endofline + 1})); 
+        error ("textscan: character value required for EndOfLine"); 
+      endif
+    else
+      ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
+      eol_srch_len = min (length (str), 3000);
+      ## First try DOS (CRLF)
+      if (! isempty (findstr ("\r\n", str(1 : eol_srch_len))))
+        eol_char = "\r\n";
+      ## Perhaps old Macintosh? (CR)
+      elseif (! isempty (findstr ("\r", str(1 : eol_srch_len))))
+        eol_char = "\r";
+      ## Otherwise, use plain UNIX (LF)
+      else
+        eol_char = "\n";
+      endif
+      ## Set up default endofline param value
+      nargs = numel (varargin);
+      varargin(nargs+1:nargs+2) = {'endofline', eol_char};
+    endif
+
+    ## Set up default whitespace param value if needed
+    if (isempty (find (strcmpi ('whitespace', varargin))))
+      nargs = numel (varargin);
+      varargin(nargs+1:nargs+2) = {'whitespace', " \b\t"};
+    endif
+
+    ## Call strread to make it do the real work
+    [varargout{1:max (nargout, 1)}] = strread (str, format, varargin {:});
+
+  endif
 
 endfunction
 

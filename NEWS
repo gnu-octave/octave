@@ -3,6 +3,16 @@ Summary of important user-visible changes for version 3.6:
 
  ** The PCRE library is now required to build Octave.
 
+ ** strread, textscan, and textread have been completely revamped.
+
+    They now support nearly all Matlab functionality including:
+
+    * ML-compatible whitespace and delimiter defaults
+
+    * ML-compatible options: 'whitespace', treatasempty',
+    format string repeat count, user-specified comment style, uneven-length
+    output arrays, %n and %u conversion specifiers (provisionally)
+ 
  ** New functions added.
 
     iscolumn

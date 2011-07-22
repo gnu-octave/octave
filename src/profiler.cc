@@ -240,6 +240,7 @@ profile_data_accumulator::add_current_time (void)
 
 profile_data_accumulator profiler;
 
+// Enable or disable the profiler data collection.
 DEFUN (__profiler_enable, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} __profiler_enable ()\n\
@@ -265,6 +266,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
+// Clear all collected profiling data.
 DEFUN (__profiler_reset, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} __profiler_reset ()\n\
@@ -282,6 +284,7 @@ Undocumented internal function.\n\
   return retval;
 }
 
+// Query the timings collected by the profiler.
 DEFUN (__profiler_data, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} __profiler_data ()\n\

@@ -60,3 +60,20 @@ function retval = surf (varargin)
   endif
 
 endfunction
+
+%!demo
+%! clf
+%! [~,~,Z]=peaks;
+%! surf(Z);
+
+%!demo
+%! [~,~,Z]=sombrero;
+%! [Fx,Fy] = gradient(Z);
+%! surf(Z,Fx+Fy);
+%! shading interp;
+
+%!demo
+%! [X,Y,Z]=sombrero;
+%! [~,Fy] = gradient(Z);
+%! surf(X,Y,Z,Fy);
+%! shading interp;

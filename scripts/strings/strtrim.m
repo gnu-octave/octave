@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strtrim (@var{s})
-## Remove leading and trailing whitespace and nulls from @var{s}.  If
+## Remove leading and trailing whitespace from @var{s}.  If
 ## @var{s} is a matrix, @var{strtrim} trims each row to the length of
 ## longest string.  If @var{s} is a cell array, operate recursively on
 ## each element of the cell array.  For example:
@@ -46,7 +46,7 @@ function s = strtrim (s)
 
   if (ischar (s))
 
-    k = find (! isspace (s) & s != "\0");
+    k = find (! isspace (s));
     if (isempty (s) || isempty (k))
       s = "";
     else
@@ -55,7 +55,7 @@ function s = strtrim (s)
 
   elseif (iscell(s))
 
-    s = regexprep (s, "^[\\s\v\\0]+|[\\s\v\\0]+$", '');
+    s = regexprep (s, "^[\\s\v]+|[\\s\v]+$", '');
 
   else
     error ("strtrim: S argument must be a string");

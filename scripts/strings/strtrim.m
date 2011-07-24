@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strtrim (@var{s})
-## Remove leading and trailing blanks and nulls from @var{s}.  If
+## Remove leading and trailing whitespace and nulls from @var{s}.  If
 ## @var{s} is a matrix, @var{strtrim} trims each row to the length of
 ## longest string.  If @var{s} is a cell array, operate recursively on
 ## each element of the cell array.  For example:
@@ -50,20 +50,27 @@ function s = strtrim (s)
     if (isempty (s) || isempty (k))
       s = "";
     else
-      s = s(:,ceil (min (k) / rows (s)):ceil (max (k) / rows (s)));
+      s = s(:, ceil (min (k) / rows (s)):ceil (max (k) / rows (s)));
     endif
 
   elseif (iscell(s))
 
-    s = regexprep (s, '^\s+|\s+$', '');
+    s = regexprep (s, "^[\\s\v\\0]+|[\\s\v\\0]+$", '');
 
   else
-    error ("strtrim: expecting string argument");
+    error ("strtrim: S argument must be a string");
   endif
 
 endfunction
 
-%!error <Invalid call to strtrim> strtrim();
-%!error <Invalid call to strtrim> strtrim("abc", "def");
+
 %!assert (strtrim ("    abc  "), "abc");
+%!assert (strtrim ("  "), "");
+%!assert (strtrim ("abc"), "abc");
 %!assert (strtrim ([" abc   "; "   def   "]), ["abc  "; "  def"]);
+%!assert (strtrim ({" abc   "; "   def   "}), {"abc"; "def"});
+
+%!error <Invalid call to strtrim> strtrim ();
+%!error <Invalid call to strtrim> strtrim ("abc", "def");
+%!error <argument must be a string> strtrim (1);
+

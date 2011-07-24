@@ -21,6 +21,9 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QCompleter>
+#include <QSettings>
+#include <QProcess>
+#include <QDesktopServices>
 
 FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
 {
@@ -90,7 +93,10 @@ FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
 void
 FilesDockWidget::itemDoubleClicked (const QModelIndex & index)
 {
+  // Retrieve the file info associated with the model index.
   QFileInfo fileInfo = m_fileSystemModel->fileInfo (index);
+
+  // If it is a directory, cd into it.
   if (fileInfo.isDir ())
     {
       m_fileSystemModel->setRootPath (fileInfo.absolutePath ());
@@ -98,10 +104,26 @@ FilesDockWidget::itemDoubleClicked (const QModelIndex & index)
       setCurrentDirectory (m_fileSystemModel->fileInfo (index).
 			   absoluteFilePath ());
     }
+  // Otherwise attempt to open it.
   else
     {
-      QFileInfo fileInfo = m_fileSystemModel->fileInfo (index);
-      emit openFile (fileInfo.filePath ());
+      // Check if the user wants to use a custom file editor.
+      QDesktopServices desktopServices;
+      QString settingsFile =
+        desktopServices.storageLocation (QDesktopServices::HomeLocation) +
+        "/.quint/settings.ini";
+      QSettings settings (settingsFile, QSettings::IniFormat);
+      if (settings.value ("useCustomFileEditor").toBool ())
+        {
+          QString editor = settings.value ("customFileEditor").toString ();
+          QStringList arguments;
+          arguments << fileInfo.filePath ();
+          QProcess::execute (editor, arguments);
+        }
+      else
+        {
+          emit openFile (fileInfo.filePath ());
+        }
     }
 }
 

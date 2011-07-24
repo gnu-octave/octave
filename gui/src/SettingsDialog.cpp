@@ -9,26 +9,24 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->setupUi (this);
 
   QSettings settings (m_settingsFile, QSettings::IniFormat);
-  ui->connectOnStartup->setChecked (settings.value ("connectOnStartup").
-				    toBool ());
-  ui->showMessageOfTheDay->setChecked (settings.value ("showMessageOfTheDay").
-				       toBool ());
+  ui->connectOnStartup->setChecked (settings.value ("connectOnStartup").toBool ());
+  ui->showMessageOfTheDay->setChecked (settings.value ("showMessageOfTheDay").toBool ());
   ui->showTopic->setChecked (settings.value ("showTopic").toBool ());
-  ui->autoIdentification->setChecked (settings.value ("autoIdentification").
-				      toBool ());
-  ui->nickServPassword->setText (settings.value ("nickServPassword").
-				 toString ());
+  ui->autoIdentification->setChecked (settings.value ("autoIdentification").toBool ());
+  ui->nickServPassword->setText (settings.value ("nickServPassword").toString ());
+  ui->useCustomFileEditor->setChecked (settings.value ("useCustomFileEditor").toBool ());
+  ui->customFileEditor->setText (settings.value ("customFileEditor").toString ());
 }
 
 SettingsDialog::~SettingsDialog ()
 {
   QSettings settings (m_settingsFile, QSettings::IniFormat);
   settings.setValue ("connectOnStartup", ui->connectOnStartup->isChecked ());
-  settings.setValue ("showMessageOfTheDay",
-		     ui->showMessageOfTheDay->isChecked ());
+  settings.setValue ("showMessageOfTheDay", ui->showMessageOfTheDay->isChecked ());
   settings.setValue ("showTopic", ui->showTopic->isChecked ());
-  settings.setValue ("autoIdentification",
-		     ui->autoIdentification->isChecked ());
+  settings.setValue ("autoIdentification", ui->autoIdentification->isChecked ());
   settings.setValue ("nickServPassword", ui->nickServPassword->text ());
+  settings.setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
+  settings.setValue ("customFileEditor", ui->customFileEditor->text ());
   delete ui;
 }

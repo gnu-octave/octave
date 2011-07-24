@@ -26,9 +26,10 @@
 ##
 ## The string @var{str} is split into words that are repeatedly matched to the
 ## specifiers in @var{format}.  The first word is matched to the first
-## specifier, the second to the second specifier and so forth.  If there are
-## more words than specifiers, the process is repeated until all words have
-## been processed.
+## specifier,
+## the second to the second specifier and so forth.  If there are more words
+## than
+## specifiers, the process is repeated until all words have been processed.
 ##
 ## The string @var{format} describes how the words in @var{str} should be
 ## parsed.
@@ -223,12 +224,9 @@ function varargout = strread (str, format = "%f", varargin)
       case "returnonerror"
         err_action = varargin{n+1};
       case "treatasempty"
-        if (iscellstr (varargin{n+1}))
-          empty_str = varargin{n+1};
-        elseif (ischar (varargin{n+1}))
-          empty_str = varargin(n+1);
-        else
-          error ('strread: "treatasempty" value must be string or cellstr');
+        empty_str = varargin{n+1};
+        if (ischar (empty_str))
+          empty_str = {empty_str};
         endif
       otherwise
         warning ('strread: unknown property "%s"', varargin{n});
@@ -236,7 +234,11 @@ function varargout = strread (str, format = "%f", varargin)
   endfor
 
   ## Parse format string to compare nr. of conversion fields and nargout
-  nfields = length (strfind (format, "%")) - length (strfind (format, "%*"));
+  idx = strfind (format, "%")';
+  specif = format([idx, idx+1]);
+  nspecif = length (idx);
+  idx_star = strfind (format, "%*");
+  nfields = length (idx) - length (idx_star);
   ## If str only has numeric fields, a (default) format ("%f") will do.
   ## Otherwise:
   if ((max (nargout, 1) != nfields) && ! strcmp (format, "%f"))
@@ -298,7 +300,6 @@ function varargout = strread (str, format = "%f", varargin)
 
   if (! isempty (white_spaces))
     ## Check for overlapping whitespaces and delimiters & trim whitespace
-    ## FIXME: Can this section be replaced by call to setdiff() ?
     if (! isempty (delimiter_str))
       [ovlp, iw] = intersect (white_spaces, delimiter_str);
       if (! isempty (ovlp))
@@ -356,12 +357,15 @@ function varargout = strread (str, format = "%f", varargin)
   endif
   num_words = numel (words);
   ## First guess at number of lines in file (ignoring leading/trailing literals)
-  num_lines = ceil (num_words / num_words_per_line);
+  if (format_repeat_count > 0)
+    num_lines = format_repeat_count;
+  else
+    num_lines = ceil (num_words / num_words_per_line);
+  endif
 
   ## Replace TreatAsEmpty char sequences by empty strings
   if (! isempty (empty_str))
     ## FIXME: There should be a simpler way to do this with cellfun
-    ##        or possibly with regexprep
     for ii = 1:numel (empty_str)
       idz = strmatch (empty_str{ii}, words, "exact");
       words(idz) = {""};
@@ -393,7 +397,7 @@ function varargout = strread (str, format = "%f", varargin)
       ## 1. Assess "period" in the split-up words array ( < num_words_per_line).
       ## Could be done using EndOfLine but that prohibits EndOfLine = "" option.
       fmt_in_word = cell (num_words_per_line, 1);
-      words_period = litptr = 1;
+      words_period = 1;
       ## For each literal in turn
       for ii = 1:numel (idy)
         fmt_in_word(idy(ii)) = num_words;
@@ -407,7 +411,9 @@ function varargout = strread (str, format = "%f", varargin)
         endif
       endfor
       words_period = max (words_period, litptr);
-      num_lines = ceil (num_words / words_period);
+      if (format_repeat_count < 0)
+        num_lines = ceil (num_words / words_period);
+      endif
 
       ## 2. Pad words array so that it can be reshaped
       tmp_lines = ceil (num_words / words_period);
@@ -492,7 +498,7 @@ function varargout = strread (str, format = "%f", varargin)
 
     end_try_catch
   endif
-  
+ 
   ## For each specifier, process corresponding column
   k = 1;
   for m = 1:num_words_per_line
@@ -690,4 +696,6 @@ endfunction
 %! str = "Text1Text2Text\nTextText4Text\nText57Text";
 %! c = textscan (str, "Text%*dText%dText");
 %! assert (c{1}, [2; 4; NaN]);
+
+%!assert (isequal (strread ("1 2 3 4", "%d", 2), [1; 2]))
 

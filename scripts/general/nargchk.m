@@ -30,16 +30,14 @@
 
 ## Author: Bill Denney <bill@denney.ws>
 
-function msg = nargchk (minargs, maxargs, nargs, outtype)
+function msg = nargchk (minargs, maxargs, nargs, outtype = "string")
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
   elseif (minargs > maxargs)
     error ("nargchk: MINARGS must be <= MAXARGS");
-  elseif (nargin == 3)
-    outtype = "string";
   elseif (! any (strcmpi (outtype, {"string", "struct"})))
-    error ("nargchk: output type must be either string or struct");
+    error ('nargchk: output type must be either "string" or "struct"');
   elseif (! (isscalar (minargs) && isscalar (maxargs) && isscalar (nargs)))
     error ("nargchk: MINARGS, MAXARGS, and NARGS must be scalars");
   endif
@@ -55,6 +53,9 @@ function msg = nargchk (minargs, maxargs, nargs, outtype)
 
   if (strcmpi (outtype, "string"))
     msg = msg.message;
+  elseif (isempty (msg.message))
+    ## Compatability: Matlab returns a 0x1 empty struct when nargchk passes
+    msg = resize (msg, 0, 1);
   endif
 
 endfunction
@@ -62,8 +63,7 @@ endfunction
 
 ## Tests
 %!shared stnul, stmin, stmax
-%!  stnul = struct ("message", "",
-%!                  "identifier", "");
+%!  stnul = resize (struct ("message", "", "identifier", ""), 0, 1);
 %!  stmin = struct ("message", "not enough input arguments",
 %!                  "identifier", "Octave:nargchk:not-enough-inputs");
 %!  stmax = struct ("message", "too many input arguments",
@@ -74,7 +74,7 @@ endfunction
 %!assert (nargchk (0, 1, 2), "too many input arguments")
 %!assert (nargchk (0, 1, 2, "string"), "too many input arguments")
 ## Struct outputs
-%!assert (nargchk (0, 1, 0, "struct"), stnul)
-%!assert (nargchk (0, 1, 1, "struct"), stnul)
+%!assert (isequal (nargchk (0, 1, 0, "struct"), stnul))
+%!assert (isequal (nargchk (0, 1, 1, "struct"), stnul))
 %!assert (nargchk (1, 1, 0, "struct"), stmin)
 %!assert (nargchk (0, 1, 2, "struct"), stmax)

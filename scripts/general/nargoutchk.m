@@ -55,6 +55,9 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 
   if (strcmpi (outtype, "string"))
     msg = msg.message;
+  elseif (isempty (msg.message))
+    ## Compatability: Matlab returns a 0x1 empty struct when nargchk passes
+    msg = resize (msg, 0, 1);
   endif
 
 endfunction
@@ -62,8 +65,7 @@ endfunction
 
 ## Tests
 %!shared stnul, stmin, stmax
-%!  stnul = struct ("message", "",
-%!                  "identifier", "");
+%!  stnul = resize (struct ("message", "", "identifier", ""), 0, 1);
 %!  stmin = struct ("message", "not enough output arguments",
 %!                  "identifier", "Octave:nargoutchk:not-enough-outputs");
 %!  stmax = struct ("message", "too many output arguments",
@@ -74,8 +76,8 @@ endfunction
 %!assert (nargoutchk (0, 1, 2), "too many output arguments")
 %!assert (nargoutchk (0, 1, 2, "string"), "too many output arguments")
 ## Struct outputs
-%!assert (nargoutchk (0, 1, 0, "struct"), stnul)
-%!assert (nargoutchk (0, 1, 1, "struct"), stnul)
+%!assert (isequal (nargoutchk (0, 1, 0, "struct"), stnul))
+%!assert (isequal (nargoutchk (0, 1, 1, "struct"), stnul))
 %!assert (nargoutchk (1, 1, 0, "struct"), stmin)
 %!assert (nargoutchk (0, 1, 2, "struct"), stmax)
 

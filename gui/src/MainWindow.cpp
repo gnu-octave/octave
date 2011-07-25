@@ -28,6 +28,8 @@
 #include "SettingsDialog.h"
 #include "cmd-edit.h"
 
+#define VERSION_STRING "Octave GUI (0.6.0)"
+
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent),
 m_isRunning (true)
 {
@@ -233,10 +235,20 @@ MainWindow::construct ()
   QAction *exitAction = controlMenu->addAction (tr ("Exit"));
 
   QMenu *interfaceMenu = menuBar ()->addMenu (tr ("Interface"));
-  QAction *alignWindowsAction =
-    interfaceMenu->addAction (tr ("Align Windows"));
-  QAction *openEditorAction =
-    interfaceMenu->addAction (tr ("Open New Editor Window"));
+
+  QAction *alignWindowsAction = interfaceMenu->addAction (tr ("Align Windows"));
+  interfaceMenu->addSeparator ();
+  QAction *showWorkspaceAction = interfaceMenu->addAction (tr ("Workspace"));
+  showWorkspaceAction->setCheckable (true);
+
+  QAction *showHistoryAction = interfaceMenu->addAction (tr ("History"));
+  showHistoryAction->setCheckable (true);
+
+  QAction *showFileBrowserAction = interfaceMenu->addAction (tr ("File Browser"));
+  showFileBrowserAction->setCheckable (true);
+
+  interfaceMenu->addSeparator ();
+  QAction *openEditorAction = interfaceMenu->addAction (tr ("Open New Editor Window"));
 
   QMenu *workspaceMenu = menuBar ()->addMenu (tr ("Workspace"));
   QAction *loadWorkspaceAction = workspaceMenu->addAction (tr ("Load"));
@@ -247,17 +259,19 @@ MainWindow::construct ()
   QMenu *communityMenu = menuBar ()->addMenu (tr ("Community"));
   QAction *reportBugAction = communityMenu->addAction (tr ("Report Bug"));
 
-  connect (settingsAction, SIGNAL (triggered ()), this,
-	   SLOT (processSettingsDialogRequest ()));
+  connect (settingsAction, SIGNAL (triggered ()), this, SLOT (processSettingsDialogRequest ()));
   connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));
-  connect (alignWindowsAction, SIGNAL (triggered ()), this,
-	   SLOT (alignMdiWindows ()));
-  connect (openEditorAction, SIGNAL (triggered ()), this,
-     SLOT (openEditor ()));
-  connect (reportBugAction, SIGNAL (triggered ()), this,
-	   SLOT (openBugTrackerPage ()));
+  connect (alignWindowsAction, SIGNAL (triggered ()), this, SLOT (alignMdiWindows ()));
+  connect (openEditorAction, SIGNAL (triggered ()), this, SLOT (openEditor ()));
+  connect (reportBugAction, SIGNAL (triggered ()), this, SLOT (openBugTrackerPage ()));
+  connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_variablesDockWidget, SLOT (setShown (bool)));
+  connect (m_variablesDockWidget, SIGNAL (visibilityChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
+  connect (showHistoryAction, SIGNAL (toggled (bool)), m_historyDockWidget, SLOT (setShown (bool)));
+  connect (m_variablesDockWidget, SIGNAL (visibilityChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
+  connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
+  connect (m_filesDockWidget, SIGNAL (visibilityChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
 
-  setWindowTitle (QString ("Octave GUI (0.1.1)"));
+  setWindowTitle (QString (VERSION_STRING));
 
   setCentralWidget (m_centralMdiArea);
   addDockWidget (Qt::LeftDockWidgetArea, m_variablesDockWidget);

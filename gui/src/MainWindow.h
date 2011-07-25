@@ -69,7 +69,8 @@ Q_OBJECT public:
     return m_filesDockWidget;
   }
 
-  public slots:void handleOpenFileRequest (QString fileName);
+  public slots:
+  void handleOpenFileRequest (QString fileName);
   void reportStatusMessage (QString statusMessage);
   void openWebPage (QString url);
   void handleSaveWorkspaceRequest ();

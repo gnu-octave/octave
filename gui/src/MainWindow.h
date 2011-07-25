@@ -80,6 +80,8 @@ Q_OBJECT public:
   void alignMdiWindows ();
   void openEditor ();
   void openBugTrackerPage ();
+  void openAgoraPage ();
+  void openOctaveForgePage ();
   void processSettingsDialogRequest ();
 
 protected:

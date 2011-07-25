@@ -141,6 +141,20 @@ MainWindow::openBugTrackerPage ()
 }
 
 void
+MainWindow::openAgoraPage ()
+{
+  QDesktopServices::
+    openUrl (QUrl ("http://agora.panocha.org.mx/"));
+}
+
+void
+MainWindow::openOctaveForgePage ()
+{
+  QDesktopServices::
+    openUrl (QUrl ("http://octave.sourceforge.net/"));
+}
+
+void
 MainWindow::processSettingsDialogRequest ()
 {
   SettingsDialog settingsDialog (this, m_settingsFile);
@@ -258,12 +272,17 @@ MainWindow::construct ()
 
   QMenu *communityMenu = menuBar ()->addMenu (tr ("Community"));
   QAction *reportBugAction = communityMenu->addAction (tr ("Report Bug"));
+  QAction *agoraAction = communityMenu->addAction (tr ("Agora"));
+  QAction *octaveForgeAction = communityMenu->addAction (tr ("Octave Forge"));
 
   connect (settingsAction, SIGNAL (triggered ()), this, SLOT (processSettingsDialogRequest ()));
   connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));
   connect (alignWindowsAction, SIGNAL (triggered ()), this, SLOT (alignMdiWindows ()));
   connect (openEditorAction, SIGNAL (triggered ()), this, SLOT (openEditor ()));
   connect (reportBugAction, SIGNAL (triggered ()), this, SLOT (openBugTrackerPage ()));
+  connect (agoraAction, SIGNAL (triggered ()), this, SLOT (openAgoraPage ()));
+  connect (octaveForgeAction, SIGNAL (triggered ()), this, SLOT (openOctaveForgePage ()));
+
   connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_variablesDockWidget, SLOT (setShown (bool)));
   connect (m_variablesDockWidget, SIGNAL (visibilityChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
   connect (showHistoryAction, SIGNAL (toggled (bool)), m_historyDockWidget, SLOT (setShown (bool)));

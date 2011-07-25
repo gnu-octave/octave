@@ -78,7 +78,7 @@ function varargout = textread (filename, format = "%f", varargin)
     nlines = Inf;
   endif
 
-  if (isfinite (nlines))
+  if (isfinite (nlines) && (nlines >= 0))
     str = tmp_str = "";
     n = 0;
     ## FIXME: Can this be done without slow loop?

@@ -139,7 +139,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       fskipl (fid, varargin{headerlines + 1});
       args(headerlines:headerlines+1) = []; 
     endif
-    if (isfinite (nlines))
+    if (isfinite (nlines) && (nlines >= 0))
       str = tmp_str = "";
       n = 0;
       ## FIXME: Can this be done without slow loop?

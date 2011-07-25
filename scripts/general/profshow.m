@@ -27,6 +27,9 @@
 ## sorted in descending order by total time spent in them.  If there are more
 ## than @var{n} included in the profile, those will not be shown.  @var{n}
 ## defaults to 20.
+##
+## The attribute column shows @samp{R} for recursive functions and nothing
+## otherwise.
 ## @end deftypefn
 
 ## Built-in profiler.
@@ -60,18 +63,21 @@ function profshow (data, n = 20)
   for i = 1 : n
     nameLen = max (nameLen, length (data.FunctionTable(p(i)).FunctionName));
   endfor
-  headerFormat = sprintf ('%%%ds %%12s %%12s\n', nameLen);
-  rowFormat = sprintf ('%%%ds%%13.3f%%13d\n', nameLen);
+  headerFormat = sprintf ('%%%ds %%4s %%12s %%12s\n', nameLen);
+  rowFormat = sprintf ('%%%ds %%4s %%12.3f %%12d\n', nameLen);
 
-  printf (headerFormat, 'Function', 'Time (s)', 'Calls');
-  printf ("%s\n", repmat ('-', 1, nameLen + 2 * 13));
+  printf (headerFormat, 'Function', 'Attr', 'Time (s)', 'Calls');
+  printf ("%s\n", repmat ('-', 1, nameLen + 2 * 13 + 5));
   for i = 1 : n
     row = data.FunctionTable(p(i));
-    printf (rowFormat, row.FunctionName, row.TotalTime, row.NumCalls);
+    attr = '';
+    if (row.IsRecursive)
+      attr = 'R';
+    endif
+    printf (rowFormat, row.FunctionName, attr, row.TotalTime, row.NumCalls);
   endfor
 
 endfunction
-
 
 %!demo
 %! profile ('on');
@@ -80,3 +86,16 @@ endfunction
 %! profile ('off');
 %! T = profile ('info');
 %! profshow (T, 10);
+
+%!demo
+%! function f = myfib (n)
+%!   if (n <= 2)
+%!     f = 1;
+%!   else
+%!     f = myfib (n - 1) + myfib (n - 2);
+%!   endif
+%! endfunction
+%! profile ('on');
+%! myfib (20);
+%! profile ('off');
+%! profshow (profile ('info'), 5);

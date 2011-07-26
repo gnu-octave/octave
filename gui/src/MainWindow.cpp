@@ -283,12 +283,14 @@ MainWindow::construct ()
   connect (agoraAction, SIGNAL (triggered ()), this, SLOT (openAgoraPage ()));
   connect (octaveForgeAction, SIGNAL (triggered ()), this, SLOT (openOctaveForgePage ()));
 
+  // TODO: Visibility cannot be taken as a signal, because it will be emitted even then
+  // the dock widget is tabbed or minimized.
   connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_variablesDockWidget, SLOT (setShown (bool)));
-  connect (m_variablesDockWidget, SIGNAL (visibilityChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
+  //connect (m_variablesDockWidget, SIGNAL (visibilityChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
   connect (showHistoryAction, SIGNAL (toggled (bool)), m_historyDockWidget, SLOT (setShown (bool)));
-  connect (m_variablesDockWidget, SIGNAL (visibilityChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
+  //connect (m_historyDockWidget, SIGNAL (visibilityChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
   connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
-  connect (m_filesDockWidget, SIGNAL (visibilityChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
+  //connect (m_filesDockWidget, SIGNAL (visibilityChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
 
   setWindowTitle (QString (VERSION_STRING));
 

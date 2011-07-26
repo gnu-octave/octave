@@ -26,9 +26,14 @@
 
 class VariablesDockWidget:public QDockWidget
 {
-Q_OBJECT public:
+  Q_OBJECT
+public:
   VariablesDockWidget (QWidget * parent = 0);
   void setVariablesList (QList < SymbolRecord > symbolTable);
+
+public slots:
+  /** Tells the widget to notice settings that are probably new. */
+  void noticeSettings ();
 
 private:
   void construct ();

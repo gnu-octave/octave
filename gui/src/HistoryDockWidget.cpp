@@ -42,3 +42,9 @@ HistoryDockWidget::construct ()
 
   widget ()->setLayout (layout);
 }
+
+void
+HistoryDockWidget::noticeSettings ()
+{
+
+}

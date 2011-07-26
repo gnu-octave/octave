@@ -188,3 +188,9 @@ VariablesDockWidget::updateScope (int topLevelItemIndex,
 	}
     }
 }
+
+void
+VariablesDockWidget::noticeSettings ()
+{
+
+}

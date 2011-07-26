@@ -34,9 +34,7 @@ MainWindow::MainWindow (QWidget * parent):QMainWindow (parent),
 m_isRunning (true)
 {
   QDesktopServices desktopServices;
-  m_settingsFile =
-    desktopServices.storageLocation (QDesktopServices::HomeLocation) +
-    "/.quint/settings.ini";
+  m_settingsFile = desktopServices.storageLocation (QDesktopServices::HomeLocation) + "/.quint/settings.ini";
   construct ();
   establishOctaveLink ();
 }
@@ -85,8 +83,7 @@ MainWindow::handleSaveWorkspaceRequest ()
     QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
 				  desktopServices.
 				  storageLocation (QDesktopServices::
-						   HomeLocation) +
-				  "/.quint/workspace");
+                                                   HomeLocation));
   m_octaveTerminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
   m_octaveTerminal->setFocus ();
 }
@@ -99,8 +96,7 @@ MainWindow::handleLoadWorkspaceRequest ()
     QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
 				  desktopServices.
 				  storageLocation (QDesktopServices::
-						   HomeLocation) +
-				  "/.quint/workspace");
+                                                   HomeLocation));
   m_octaveTerminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
   m_octaveTerminal->setFocus ();
 }
@@ -136,22 +132,19 @@ MainWindow::openEditor ()
 void
 MainWindow::openBugTrackerPage ()
 {
-  QDesktopServices::
-    openUrl (QUrl ("http://savannah.gnu.org/bugs/?group=octave"));
+  QDesktopServices::openUrl (QUrl ("http://savannah.gnu.org/bugs/?group=octave"));
 }
 
 void
 MainWindow::openAgoraPage ()
 {
-  QDesktopServices::
-    openUrl (QUrl ("http://agora.panocha.org.mx/"));
+  QDesktopServices::openUrl (QUrl ("http://agora.panocha.org.mx/"));
 }
 
 void
 MainWindow::openOctaveForgePage ()
 {
-  QDesktopServices::
-    openUrl (QUrl ("http://octave.sourceforge.net/"));
+  QDesktopServices::openUrl (QUrl ("http://octave.sourceforge.net/"));
 }
 
 void
@@ -159,6 +152,7 @@ MainWindow::processSettingsDialogRequest ()
 {
   SettingsDialog settingsDialog (this, m_settingsFile);
   settingsDialog.exec ();
+  emit settingsChanged ();
 }
 
 void
@@ -181,6 +175,8 @@ MainWindow::readSettings ()
   QSettings settings (m_settingsFile, QSettings::IniFormat);
   restoreGeometry (settings.value ("MainWindow/geometry").toByteArray ());
   restoreState (settings.value ("MainWindow/windowState").toByteArray ());
+  m_centralMdiArea->restoreGeometry (settings.value ("MdiArea/geometry").toByteArray ());
+  emit settingsChanged ();
 }
 
 void
@@ -189,6 +185,7 @@ MainWindow::writeSettings ()
   QSettings settings (m_settingsFile, QSettings::IniFormat);
   settings.setValue ("MainWindow/geometry", saveGeometry ());
   settings.setValue ("MainWindow/windowState", saveState ());
+  settings.setValue ("MdiArea/geometry", m_centralMdiArea->saveGeometry ());
 }
 
 void
@@ -292,6 +289,16 @@ MainWindow::construct ()
   connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
   //connect (m_filesDockWidget, SIGNAL (visibilityChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
 
+  connect (this, SIGNAL (settingsChanged ()), m_variablesDockWidget, SLOT (noticeSettings ()));
+  connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
+  connect (this, SIGNAL (settingsChanged ()), m_filesDockWidget, SLOT (noticeSettings ()));
+
+  connect (m_filesDockWidget, SIGNAL (openFile (QString)), this, SLOT (handleOpenFileRequest (QString)));
+  connect (m_historyDockWidget, SIGNAL (information (QString)), this, SLOT (reportStatusMessage (QString)));
+  connect (saveWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleSaveWorkspaceRequest ()));
+  connect (loadWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleLoadWorkspaceRequest ()));
+  connect (clearWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleClearWorkspaceRequest ()));
+
   setWindowTitle (QString (VERSION_STRING));
 
   setCentralWidget (m_centralMdiArea);
@@ -301,18 +308,6 @@ MainWindow::construct ()
   setStatusBar (m_statusBar);
 
   readSettings ();
-
-  connect (m_filesDockWidget, SIGNAL (openFile (QString)), this,
-	   SLOT (handleOpenFileRequest (QString)));
-  connect (m_historyDockWidget, SIGNAL (information (QString)), this,
-	   SLOT (reportStatusMessage (QString)));
-  connect (saveWorkspaceAction, SIGNAL (triggered ()), this,
-	   SLOT (handleSaveWorkspaceRequest ()));
-  connect (loadWorkspaceAction, SIGNAL (triggered ()), this,
-	   SLOT (handleLoadWorkspaceRequest ()));
-  connect (clearWorkspaceAction, SIGNAL (triggered ()), this,
-	   SLOT (handleClearWorkspaceRequest ()));
-
   openWebPage ("http://www.gnu.org/software/octave/doc/interpreter/");
 }
 

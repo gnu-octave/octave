@@ -165,3 +165,9 @@ FilesDockWidget::currentDirectoryEntered ()
 	emit openFile (fileInfo.absoluteFilePath ());
     }
 }
+
+void
+FilesDockWidget::noticeSettings ()
+{
+
+}

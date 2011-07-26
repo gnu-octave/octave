@@ -48,19 +48,26 @@
 
 class FilesDockWidget:public QDockWidget
 {
-  Q_OBJECT public:FilesDockWidget (QWidget * parent = 0);
-  public slots:
-    /** Slot for handling a change in directory via double click. */
+  Q_OBJECT
+public:
+  FilesDockWidget (QWidget * parent = 0);
+
+public slots:
+  /** Slot for handling a change in directory via double click. */
   void itemDoubleClicked (const QModelIndex & index);
 
-    /** Slot for handling the up-directory button in the toolbar. */
+  /** Slot for handling the up-directory button in the toolbar. */
   void onUpDirectory ();
 
   void setCurrentDirectory (QString currentDirectory);
 
   void currentDirectoryEntered ();
 
-    signals:void openFile (QString fileName);
+  /** Tells the widget to notice settings that are probably new. */
+  void noticeSettings ();
+
+signals:
+  void openFile (QString fileName);
 
 private:
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc

@@ -161,6 +161,55 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>File Browser</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QCheckBox" name="showFilenames">
+         <property name="text">
+          <string>Show filenames</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="showFileSize">
+         <property name="text">
+          <string>Show file size</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="showFileType">
+         <property name="text">
+          <string>Show file type</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="showLastModified">
+         <property name="text">
+          <string>Show date of last modification</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="showHiddenFiles">
+         <property name="text">
+          <string>Show hidden files</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="useAlternatingRowColors">
+         <property name="text">
+          <string>Alternating row colors</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>

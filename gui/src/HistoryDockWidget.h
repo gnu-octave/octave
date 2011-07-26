@@ -30,6 +30,10 @@ public:
   HistoryDockWidget (QWidget *parent = 0);
   void updateHistory (QStringList history);
 
+public slots:
+  /** Tells the widget to notice settings that are probably new. */
+  void noticeSettings ();
+
 signals:
   void information (QString message);
 

@@ -27,11 +27,13 @@
 
 class BrowserWidget:public QWidget
 {
-Q_OBJECT public:
+  Q_OBJECT
+public:
   BrowserWidget (QWidget * parent = 0);
   void load (QUrl url);
 
-  public slots:void setUrl (QUrl url);
+public slots:
+  void setUrl (QUrl url);
   void jumpToWebsite ();
   void showStatusMessage (QString message);
 

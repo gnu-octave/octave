@@ -547,47 +547,17 @@ void
 HistoryScrollBlockArray::getCells (int lineno, int colno,
 				   int count, Character res[])
 {
-  /*
-  if (!count)
-    return;
-
-  const Block *b = m_blockArray.at (lineno);
-
-  if (!b)
-    {
-      memset (res, 0, count * sizeof (Character));	// still better than random data
-      return;
-    }
-
-  assert (((colno + count) * sizeof (Character)) < ENTRIES);
-  memcpy (res, b->data + (colno * sizeof (Character)),
-	  count * sizeof (Character));
-          */
+  Q_UNUSED(lineno);
+  Q_UNUSED(colno);
+  Q_UNUSED(count);
+  Q_UNUSED(res);
 }
 
 void
 HistoryScrollBlockArray::addCells (const Character a[], int count)
 {
-  /*
-  Block *b = m_blockArray.lastBlock ();
-
-  if (!b)
-    return;
-
-  // put cells in block's data
-  assert ((count * sizeof (Character)) < ENTRIES);
-
-  memset (b->data, 0, ENTRIES);
-
-  memcpy (b->data, a, count * sizeof (Character));
-  b->size = count * sizeof (Character);
-
-  size_t res = m_blockArray.newBlock ();
-  assert (res > 0);
-  Q_UNUSED (res);
-
-  m_lineLengths.insert (m_blockArray.getCurrent (), count);
-  */
+  Q_UNUSED(a);
+  Q_UNUSED(count);
 }
 
 void

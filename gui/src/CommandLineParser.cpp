@@ -43,5 +43,6 @@ CommandLineParser::registerOption (QString longOption, QString shortOption, QStr
 void
 CommandLineParser::parse (int argc, char** argv)
 {
-
+  Q_UNUSED(argc);
+  Q_UNUSED(argv);
 }

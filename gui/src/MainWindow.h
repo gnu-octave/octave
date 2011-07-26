@@ -35,8 +35,8 @@
 #include "BrowserWidget.h"
 #include "IRCWidget.h"
 
-class OctaveMainThread;
 class OctaveCallbackThread;
+#include "OctaveMainThread.h"
 
 /**
   * \class MainWindow
@@ -118,62 +118,6 @@ private:
   OctaveMainThread *m_octaveMainThread;
   OctaveCallbackThread *m_octaveCallbackThread;
   bool m_isRunning;
-};
-
-class OctaveMainThread:public QThread
-{
-Q_OBJECT
-public:
-  OctaveMainThread (QObject * parent):QThread (parent)
-  {
-  }
-
-signals:
-  void ready();
-
-protected:
-  void run ()
-  {
-    int argc = 3;
-    const char *argv[] = { "octave", "--interactive", "--line-editing" };
-    octave_main (argc, (char **) argv, 1);
-    emit ready();
-    main_loop ();
-    clean_up_and_exit (0);
-  }
-};
-
-class OctaveCallbackThread:public QThread
-{
-Q_OBJECT public:
-  OctaveCallbackThread (QObject * parent,
-			MainWindow * mainWindow):QThread (parent),
-    m_mainWindow (mainWindow)
-  {
-  }
-
-protected:
-  void run ()
-  {
-    while (m_mainWindow->isRunning ())
-      {
-        OctaveLink::instance ()->fetchSymbolTable ();
-
-	// Get a full variable list.
-	QList < SymbolRecord > symbolTable =
-          OctaveLink::instance ()->copyCurrentSymbolTable ();
-	if (symbolTable.size ())
-	  {
-	    m_mainWindow->variablesDockWidget ()->
-	      setVariablesList (symbolTable);
-	  }
-
-        OctaveLink::instance ()->updateHistoryModel ();
-        usleep (500000);
-      }
-  }
-private:
-  MainWindow * m_mainWindow;
 };
 
 #endif // MAINWINDOW_H

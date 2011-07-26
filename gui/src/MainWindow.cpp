@@ -26,6 +26,7 @@
 #include "FileEditorMdiSubWindow.h"
 #include "ImageViewerMdiSubWindow.h"
 #include "SettingsDialog.h"
+#include "OctaveCallbackThread.h"
 #include "cmd-edit.h"
 
 #define VERSION_STRING "Octave GUI (0.6.0)"

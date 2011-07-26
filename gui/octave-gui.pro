@@ -86,7 +86,9 @@ SOURCES +=\
     src/SettingsDialog.cpp \
     src/OctaveGUI.cpp \
     src/ResourceManager.cpp \
-    src/CommandLineParser.cpp
+    src/CommandLineParser.cpp \
+    src/OctaveMainThread.cpp \
+    src/OctaveCallbackThread.cpp
 
 HEADERS += \
         src/terminal/TerminalCharacterDecoder.h \
@@ -130,7 +132,9 @@ HEADERS += \
     src/qirc/IClientSocket.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
-    src/CommandLineParser.h
+    src/CommandLineParser.h \
+    src/OctaveMainThread.h \
+    src/OctaveCallbackThread.h
 
 FORMS += \
     src/SettingsDialog.ui

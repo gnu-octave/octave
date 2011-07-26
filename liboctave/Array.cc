@@ -1500,7 +1500,7 @@ Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
       Array<idx_vector> idx (dim_vector (a.ndims (), 1));
       idx(0) = i;
       idx(1) = j;
-      for (int k = 0; k < a.ndims (); k++)
+      for (int k = 2; k < a.ndims (); k++)
         idx(k) = idx_vector (0, a.dimensions(k));
       assign (idx, a);
     }

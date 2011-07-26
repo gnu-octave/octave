@@ -75,7 +75,7 @@
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Warning: Your password will be stored in ~/.quint/ in human-readable format. Do not enter your password if you worry about security issues.</string>
+            <string>Warning: Your password will be stored in ~/.octavegui in human-readable format. Do not enter your password if you worry about security issues.</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>

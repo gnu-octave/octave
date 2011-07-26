@@ -84,7 +84,8 @@ SOURCES +=\
     src/qirc/IRCClient.cpp \
     src/qirc/IClientSocket.cpp \
     src/SettingsDialog.cpp \
-    src/OctaveGUI.cpp
+    src/OctaveGUI.cpp \
+    src/ResourceManager.cpp
 
 HEADERS += \
         src/terminal/TerminalCharacterDecoder.h \
@@ -126,7 +127,8 @@ HEADERS += \
     src/qirc/IRCCodes.h \
     src/qirc/IRCClient.h \
     src/qirc/IClientSocket.h \
-    src/SettingsDialog.h
+    src/SettingsDialog.h \
+    src/ResourceManager.h
 
 FORMS += \
     src/SettingsDialog.ui

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ResourceManager.h"
 #include "IRCWidget.h"
 #include <QMessageBox>
 #include <QHBoxLayout>
@@ -24,17 +25,16 @@
 #include <QSettings>
 #include <QInputDialog>
 
-IRCWidget::IRCWidget (QWidget * parent, QString settingsFile):
+IRCWidget::IRCWidget (QWidget * parent):
 QWidget (parent)
 {
-  m_settingsFile = settingsFile;
   m_alternatingColor = false;
-  QSettings settings (m_settingsFile, QSettings::IniFormat);
-  bool connectOnStartup = settings.value ("connectOnStartup").toBool ();
-  m_autoIdentification = settings.value ("autoIdentification").toBool ();
-  m_nickServPassword = settings.value ("nickServPassword").toString ();
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  bool connectOnStartup = settings->value ("connectOnStartup").toBool ();
+  m_autoIdentification = settings->value ("autoIdentification").toBool ();
+  m_nickServPassword = settings->value ("nickServPassword").toString ();
 
-  m_initialNick = settings.value ("IRCNick").toString ();
+  m_initialNick = settings->value ("IRCNick").toString ();
 
   if (m_initialNick.isEmpty ())
     m_initialNick = "OctaveGUI-User";
@@ -298,14 +298,14 @@ void
 IRCWidget::handleNickInUseChanged ()
 {
   m_nickButton->setText (m_ircClient->nickInUse ());
-  QSettings settings (m_settingsFile, QSettings::IniFormat);
-  settings.setValue ("IRCNick", m_ircClient->nickInUse ());
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  settings->setValue ("IRCNick", m_ircClient->nickInUse ());
 }
 
 void
 IRCWidget::handleReplyCode (IRCEvent * event)
 {
-  QSettings settings (m_settingsFile, QSettings::IniFormat);
+  QSettings *settings = ResourceManager::instance ()->settings ();
 
   switch (event->getNumeric ())
     {
@@ -313,13 +313,13 @@ IRCWidget::handleReplyCode (IRCEvent * event)
     case RPL_MOTD:
     case ERR_NOMOTD:
     case RPL_ENDOFMOTD:
-      if (settings.value ("showMessageOfTheDay").toBool ())
+      if (settings->value ("showMessageOfTheDay").toBool ())
 	m_chatWindow->append (QString ("<font color=\"#777777\">%1</font>").
 			      arg (event->getParam (1)));
       break;
     case RPL_NOTOPIC:
     case RPL_TOPIC:
-      if (settings.value ("showTopic").toBool ())
+      if (settings->value ("showTopic").toBool ())
 	m_chatWindow->
 	  append (QString ("<font color=\"#000088\"><b>%1</b></font>").
 		  arg (event->getParam (2)));

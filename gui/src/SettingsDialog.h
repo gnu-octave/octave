@@ -11,12 +11,11 @@ namespace Ui
 class SettingsDialog:public QDialog
 {
 Q_OBJECT public:
-  explicit SettingsDialog (QWidget * parent, QString settingsFile);
+  explicit SettingsDialog (QWidget * parent);
   ~SettingsDialog ();
 
 private:
   Ui::SettingsDialog * ui;
-  QString m_settingsFile;
 };
 
 #endif // SETTINGSDIALOG_H

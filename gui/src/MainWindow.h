@@ -26,6 +26,7 @@
 #include <QStatusBar>
 #include <QToolBar>
 #include <QQueue>
+#include "ResourceManager.h"
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
@@ -112,8 +113,6 @@ private:
 
   // Toolbars.
   QStatusBar *m_statusBar;
-
-  QString m_settingsFile;
 
   // Threads for running octave and managing the data interaction.
   OctaveMainThread *m_octaveMainThread;

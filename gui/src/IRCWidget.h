@@ -29,7 +29,7 @@
 class IRCWidget:public QWidget
 {
 Q_OBJECT public:
-  explicit IRCWidget (QWidget * parent, QString settingsFile);
+  explicit IRCWidget (QWidget * parent);
   void connectToServer ();
 
     signals:public slots:void showStatusMessage (const char *);

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ResourceManager.h"
 #include "FilesDockWidget.h"
 
 #include <QApplication>
@@ -23,7 +24,6 @@
 #include <QCompleter>
 #include <QSettings>
 #include <QProcess>
-#include <QDesktopServices>
 
 FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
 {
@@ -111,14 +111,10 @@ FilesDockWidget::itemDoubleClicked (const QModelIndex & index)
   else
     {
       // Check if the user wants to use a custom file editor.
-      QDesktopServices desktopServices;
-      QString settingsFile =
-        desktopServices.storageLocation (QDesktopServices::HomeLocation) +
-        "/.quint/settings.ini";
-      QSettings settings (settingsFile, QSettings::IniFormat);
-      if (settings.value ("useCustomFileEditor").toBool ())
+      QSettings *settings = ResourceManager::instance ()->settings ();
+      if (settings->value ("useCustomFileEditor").toBool ())
         {
-          QString editor = settings.value ("customFileEditor").toString ();
+          QString editor = settings->value ("customFileEditor").toString ();
           QStringList arguments;
           arguments << fileInfo.filePath ();
           QProcess::execute (editor, arguments);
@@ -169,5 +165,11 @@ FilesDockWidget::currentDirectoryEntered ()
 void
 FilesDockWidget::noticeSettings ()
 {
-
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  m_fileTreeView->setColumnHidden (0, !settings->value ("showFilenames").toBool ());
+  m_fileTreeView->setColumnHidden (1, !settings->value ("showFileSize").toBool ());
+  m_fileTreeView->setColumnHidden (2, !settings->value ("showFileType").toBool ());
+  m_fileTreeView->setColumnHidden (3, !settings->value ("showLastModified").toBool ());
+  m_fileTreeView->setAlternatingRowColors (settings->value ("useAlternatingRowColors").toBool ());
+  //if (settings.value ("showHiddenFiles").toBool ())
 }

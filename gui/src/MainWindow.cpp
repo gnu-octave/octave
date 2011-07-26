@@ -33,8 +33,6 @@
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent),
 m_isRunning (true)
 {
-  QDesktopServices desktopServices;
-  m_settingsFile = desktopServices.storageLocation (QDesktopServices::HomeLocation) + "/.quint/settings.ini";
   construct ();
   establishOctaveLink ();
 }
@@ -78,12 +76,9 @@ MainWindow::openWebPage (QString url)
 void
 MainWindow::handleSaveWorkspaceRequest ()
 {
-  QDesktopServices desktopServices;
   QString selectedFile =
     QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
-				  desktopServices.
-				  storageLocation (QDesktopServices::
-                                                   HomeLocation));
+                                  ResourceManager::instance ()->homePath ());
   m_octaveTerminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
   m_octaveTerminal->setFocus ();
 }
@@ -91,12 +86,9 @@ MainWindow::handleSaveWorkspaceRequest ()
 void
 MainWindow::handleLoadWorkspaceRequest ()
 {
-  QDesktopServices desktopServices;
   QString selectedFile =
     QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
-				  desktopServices.
-				  storageLocation (QDesktopServices::
-                                                   HomeLocation));
+                                  ResourceManager::instance ()->homePath ());
   m_octaveTerminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
   m_octaveTerminal->setFocus ();
 }
@@ -150,7 +142,7 @@ MainWindow::openOctaveForgePage ()
 void
 MainWindow::processSettingsDialogRequest ()
 {
-  SettingsDialog settingsDialog (this, m_settingsFile);
+  SettingsDialog settingsDialog (this);
   settingsDialog.exec ();
   emit settingsChanged ();
 }
@@ -172,20 +164,20 @@ MainWindow::closeEvent (QCloseEvent * closeEvent)
 void
 MainWindow::readSettings ()
 {
-  QSettings settings (m_settingsFile, QSettings::IniFormat);
-  restoreGeometry (settings.value ("MainWindow/geometry").toByteArray ());
-  restoreState (settings.value ("MainWindow/windowState").toByteArray ());
-  m_centralMdiArea->restoreGeometry (settings.value ("MdiArea/geometry").toByteArray ());
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
+  restoreState (settings->value ("MainWindow/windowState").toByteArray ());
+  m_centralMdiArea->restoreGeometry (settings->value ("MdiArea/geometry").toByteArray ());
   emit settingsChanged ();
 }
 
 void
 MainWindow::writeSettings ()
 {
-  QSettings settings (m_settingsFile, QSettings::IniFormat);
-  settings.setValue ("MainWindow/geometry", saveGeometry ());
-  settings.setValue ("MainWindow/windowState", saveState ());
-  settings.setValue ("MdiArea/geometry", m_centralMdiArea->saveGeometry ());
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  settings->setValue ("MainWindow/geometry", saveGeometry ());
+  settings->setValue ("MainWindow/windowState", saveState ());
+  settings->setValue ("MdiArea/geometry", m_centralMdiArea->saveGeometry ());
 }
 
 void
@@ -211,7 +203,7 @@ MainWindow::construct ()
   // Setup essential MDI Windows.
   m_octaveTerminal = new OctaveTerminal (this);
   m_documentationWidget = new BrowserWidget (this);
-  m_ircWidget = new IRCWidget (this, m_settingsFile);
+  m_ircWidget = new IRCWidget (this);
 
   m_documentationWidgetSubWindow =
     m_centralMdiArea->addSubWindow (m_documentationWidget,

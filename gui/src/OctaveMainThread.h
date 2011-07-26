@@ -2,8 +2,6 @@
 #define OCTAVEMAINTHREAD_H
 
 #include <QThread>
-#include "OctaveLink.h"
-
 class OctaveMainThread:public QThread
 {
   Q_OBJECT

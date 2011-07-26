@@ -34,6 +34,7 @@ public:
 public slots:
   /** Tells the widget to notice settings that are probably new. */
   void noticeSettings ();
+  void fetchSymbolTable ();
 
 private:
   void construct ();

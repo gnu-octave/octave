@@ -1,4 +1,5 @@
 #include "OctaveMainThread.h"
+#include "OctaveLink.h"
 
 OctaveMainThread::OctaveMainThread (QObject * parent):QThread (parent)
 {

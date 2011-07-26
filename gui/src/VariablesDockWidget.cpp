@@ -26,6 +26,8 @@ VariablesDockWidget::VariablesDockWidget (QWidget * parent):QDockWidget
 {
   setObjectName ("VariablesDockWidget");
   construct ();
+
+  connect (OctaveLink::instance(), SIGNAL (symbolTableChanged()), this, SLOT (fetchSymbolTable()));
 }
 
 void
@@ -193,4 +195,11 @@ void
 VariablesDockWidget::noticeSettings ()
 {
 
+}
+
+void
+VariablesDockWidget::fetchSymbolTable ()
+{
+  QList < SymbolRecord > symbolTable = OctaveLink::instance ()->copyCurrentSymbolTable ();
+  setVariablesList (symbolTable);
 }

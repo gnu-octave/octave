@@ -35,9 +35,6 @@
 #include "BrowserWidget.h"
 #include "IRCWidget.h"
 
-class OctaveCallbackThread;
-#include "OctaveMainThread.h"
-
 /**
   * \class MainWindow
   *
@@ -49,10 +46,6 @@ Q_OBJECT public:
   MainWindow (QWidget * parent = 0);
   ~MainWindow ();
 
-  bool isRunning ()
-  {
-    return m_isRunning;
-  }
   OctaveTerminal *octaveTerminal ()
   {
     return m_octaveTerminal;
@@ -113,11 +106,6 @@ private:
 
   // Toolbars.
   QStatusBar *m_statusBar;
-
-  // Threads for running octave and managing the data interaction.
-  OctaveMainThread *m_octaveMainThread;
-  OctaveCallbackThread *m_octaveCallbackThread;
-  bool m_isRunning;
 };
 
 #endif // MAINWINDOW_H

@@ -26,16 +26,14 @@
 #include "FileEditorMdiSubWindow.h"
 #include "ImageViewerMdiSubWindow.h"
 #include "SettingsDialog.h"
-#include "OctaveCallbackThread.h"
 #include "cmd-edit.h"
 
 #define VERSION_STRING "Octave GUI (0.6.0)"
 
-MainWindow::MainWindow (QWidget * parent):QMainWindow (parent),
-m_isRunning (true)
+MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {
   construct ();
-  establishOctaveLink ();
+  OctaveLink::instance ()->launchOctave();
 }
 
 MainWindow::~MainWindow ()
@@ -151,14 +149,10 @@ MainWindow::processSettingsDialogRequest ()
 void
 MainWindow::closeEvent (QCloseEvent * closeEvent)
 {
-  m_isRunning = false;
   reportStatusMessage (tr ("Saving data and shutting down."));
   writeSettings ();
 
-  m_octaveCallbackThread->terminate ();
-  m_octaveCallbackThread->wait ();
-
-  m_octaveMainThread->terminate ();
+  OctaveLink::instance ()->terminateOctave();
   QMainWindow::closeEvent (closeEvent);
 }
 
@@ -205,6 +199,8 @@ MainWindow::construct ()
   m_octaveTerminal = new OctaveTerminal (this);
   m_documentationWidget = new BrowserWidget (this);
   m_ircWidget = new IRCWidget (this);
+
+  m_octaveTerminal->openTerminal ();
 
   m_documentationWidgetSubWindow =
     m_centralMdiArea->addSubWindow (m_documentationWidget,
@@ -304,15 +300,3 @@ MainWindow::construct ()
   openWebPage ("http://www.gnu.org/software/octave/doc/interpreter/");
 }
 
-void
-MainWindow::establishOctaveLink ()
-{
-  m_octaveTerminal->openTerminal ();
-
-  m_octaveMainThread = new OctaveMainThread (this);
-  m_octaveMainThread->start ();
-
-  m_octaveCallbackThread = new OctaveCallbackThread (this, this);
-  connect (m_octaveMainThread, SIGNAL(ready()), m_octaveCallbackThread, SLOT(start()));
-  reportStatusMessage (tr ("Established link to Octave."));
-}

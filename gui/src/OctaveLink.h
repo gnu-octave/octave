@@ -81,6 +81,9 @@
 #include <QObject>
 #include <QStringListModel>
 
+#include "OctaveCallbackThread.h"
+#include "OctaveMainThread.h"
+
 typedef symbol_table::symbol_record SymbolRecord;
 typedef octave_value OctaveValue;
 
@@ -88,7 +91,7 @@ typedef octave_value OctaveValue;
   * \class OctaveLink
   * Manages a link to an octave instance.
   */
-class OctaveLink:QObject
+class OctaveLink:public QObject
 {
   Q_OBJECT
 public:
@@ -99,6 +102,9 @@ public:
   }
   static QString
   octaveValueAsQString (OctaveValue octaveValue);
+
+  void launchOctave ();
+  void terminateOctave ();
 
   /**
     * Returns a copy of the current symbol table buffer.
@@ -133,6 +139,10 @@ private:
 
   /** History related member variables. */
   QStringListModel *m_historyModel;
+
+  // Threads for running octave and managing the data interaction.
+  OctaveMainThread *m_octaveMainThread;
+  OctaveCallbackThread *m_octaveCallbackThread;
 
   static OctaveLink m_singleton;
 };

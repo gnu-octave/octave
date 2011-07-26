@@ -20,10 +20,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 */
 
-// Born July 13, 2007.
-
 #include "OctaveLink.h"
-#include <QDebug>
 
 OctaveLink OctaveLink::m_singleton;
 
@@ -94,6 +91,26 @@ OctaveLink::octaveValueAsQString (OctaveValue octaveValue)
     {
       return QString ("<Type not recognized>");
     }
+}
+
+void
+OctaveLink::launchOctave ()
+{
+  m_octaveMainThread = new OctaveMainThread (this);
+  m_octaveMainThread->start ();
+
+  m_octaveCallbackThread = new OctaveCallbackThread (this);
+  connect (m_octaveMainThread, SIGNAL(ready()), m_octaveCallbackThread, SLOT(start()));
+}
+
+void
+OctaveLink::terminateOctave ()
+{
+  m_octaveCallbackThread->terminate ();
+  m_octaveCallbackThread->wait ();
+
+  m_octaveMainThread->terminate ();
+  m_octaveMainThread->wait();
 }
 
 void

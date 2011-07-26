@@ -125,9 +125,8 @@ function assert (cond, varargin)
               error ();
             endif
             if (empty)
-              v = cell (1, 0);
-            endif
-            if (normal)
+              v = {};
+            elseif (normal)
               v = {v};
             else
               v = v(:)';
@@ -307,13 +306,19 @@ endfunction
 %!error assert (x,y)
 %!error assert (3, x);
 %!error assert (x, 3);
-
-## check usage statements
-%!error assert
-%!error assert(1,2,3,4,5)
+%!test
+%! # Empty structures
+%! x = resize (x, 0, 1);
+%! y = resize (y, 0, 1);
+%! assert (x, y);
 
 ## strings
 %!assert("dog","dog")
 %!error assert("dog","cat")
 %!error assert("dog",3);
 %!error assert(3,"dog");
+
+## check input validation
+%!error assert
+%!error assert (1,2,3,4,5)
+

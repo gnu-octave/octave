@@ -19,6 +19,7 @@
 #include <QtGui/QApplication>
 #include <QTranslator>
 #include <QSettings>
+#include "CommandLineParser.h"
 #include "ResourceManager.h"
 #include "MainWindow.h"
 
@@ -26,6 +27,10 @@ int
 main (int argc, char *argv[])
 {
   QApplication application (argc, argv);
+  CommandLineParser commandLineParser;
+  commandLineParser.registerOption ("--config", "-c", "Tells OctaveGUI to use that configuration file.", true);
+  commandLineParser.parse (argc, argv);
+
   // QSettings *settings = ResourceManager::instance ()->instance ();
 
   // TODO: reimplement translation.

@@ -16,32 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCEMANAGER_H
-#define RESOURCEMANAGER_H
+#include "CommandLineParser.h"
 
-#include <QSettings>
-#include <QDesktopServices>
-
-class ResourceManager
+CommandLineParser::CommandLineParser ()
 {
-public:
-  ~ResourceManager ();
+}
 
-  static ResourceManager *
-  instance ()
-  {
-    return &m_singleton;
-  }
+void
+CommandLineParser::registerOption (CommandLineOption commandLineOption)
+{
+  if (m_registeredCommandLineOptions.contains(commandLineOption))
+    m_registeredCommandLineOptions.append(commandLineOption);
+}
 
-  QSettings *settings ();
-  QString homePath ();
-  void setSettings (QString file);
-private:
-  ResourceManager ();
+void
+CommandLineParser::registerOption (QString longOption, QString shortOption, QString description, bool withArgument)
+{
+  CommandLineOption commandLineOption;
+  commandLineOption.longOption = longOption;
+  commandLineOption.shortOption = shortOption;
+  commandLineOption.description = description;
+  commandLineOption.withArgument = withArgument;
+  registerOption (commandLineOption);
+}
 
-  QSettings *m_settings;
-  QString m_homePath;
-  static ResourceManager m_singleton;
-};
+void
+CommandLineParser::parse (int argc, char** argv)
+{
 
-#endif // RESOURCEMANAGER_H
+}

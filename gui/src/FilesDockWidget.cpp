@@ -24,6 +24,7 @@
 #include <QCompleter>
 #include <QSettings>
 #include <QProcess>
+#include <QDebug>
 
 FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
 {
@@ -172,4 +173,5 @@ FilesDockWidget::noticeSettings ()
   m_fileTreeView->setColumnHidden (3, !settings->value ("showLastModified").toBool ());
   m_fileTreeView->setAlternatingRowColors (settings->value ("useAlternatingRowColors").toBool ());
   //if (settings.value ("showHiddenFiles").toBool ())
+  // TODO: React on option for hidden files.
 }

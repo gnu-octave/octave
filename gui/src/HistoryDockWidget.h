@@ -24,7 +24,6 @@
 #include <QListView>
 #include <QSortFilterProxyModel>
 #include "OctaveLink.h"
-#include <QThread>
 
 class HistoryDockWidget:public QDockWidget
 {
@@ -36,7 +35,6 @@ public:
 public slots:
   /** Tells the widget to notice settings that are probably new. */
   void noticeSettings ();
-  void setFilter (QString filter);
 
 signals:
   void information (QString message);

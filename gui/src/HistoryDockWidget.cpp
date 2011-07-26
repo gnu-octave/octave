@@ -46,6 +46,7 @@ HistoryDockWidget::construct ()
   widget ()->setLayout (layout);
 
   connect (m_filterLineEdit, SIGNAL (textEdited (QString)), this, SLOT (setFilter (QString)));
+  connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this, SLOT (handleDoubleClick (QModelIndex)));
 }
 
 void
@@ -55,9 +56,15 @@ HistoryDockWidget::noticeSettings ()
 }
 
 void
-HistoryDockWidget::setFilter(QString filter)
+HistoryDockWidget::setFilter (QString filter)
 {
   m_historyListView->setEnabled (false);
   m_sortFilterProxyModel.setFilterWildcard ( QString ("*%1*").arg (filter));
   m_historyListView->setEnabled (true);
+}
+
+void
+HistoryDockWidget::handleDoubleClick (QModelIndex modelIndex)
+{
+  emit commandDoubleClicked (modelIndex.data().toString());
 }

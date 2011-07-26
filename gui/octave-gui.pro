@@ -34,7 +34,7 @@ mac {
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += src src/terminal src/qirc
+INCLUDEPATH         += src src/terminal src/qirc src/backend
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
     INCFLAGS += -I/opt/local-native/include
@@ -71,7 +71,6 @@ SOURCES +=\
         src/terminal/ShellCommand.cpp \
         src/terminal/QTerminalWidget.cpp \
         src/MainWindow.cpp \
-        src/OctaveLink.cpp \
         src/terminal/ProcessInfo.cpp \
     	  src/OctaveTerminal.cpp \
     	  src/VariablesDockWidget.cpp \
@@ -87,8 +86,9 @@ SOURCES +=\
     src/OctaveGUI.cpp \
     src/ResourceManager.cpp \
     src/CommandLineParser.cpp \
-    src/OctaveMainThread.cpp \
-    src/OctaveCallbackThread.cpp
+    src/backend/OctaveCallbackThread.cpp \
+    src/backend/OctaveLink.cpp \
+    src/backend/OctaveMainThread.cpp
 
 HEADERS += \
         src/terminal/TerminalCharacterDecoder.h \
@@ -117,7 +117,6 @@ HEADERS += \
         src/terminal/ShellCommand.h \
         src/terminal/QTerminalWidget.h \
     	  src/MainWindow.h \
-        src/OctaveLink.h \
         src/terminal/ProcessInfo.h \
     	  src/OctaveTerminal.h \
     	  src/VariablesDockWidget.h \
@@ -133,8 +132,9 @@ HEADERS += \
     src/SettingsDialog.h \
     src/ResourceManager.h \
     src/CommandLineParser.h \
-    src/OctaveMainThread.h \
-    src/OctaveCallbackThread.h
+    src/backend/OctaveCallbackThread.h \
+    src/backend/OctaveLink.h \
+    src/backend/OctaveMainThread.h
 
 FORMS += \
     src/SettingsDialog.ui

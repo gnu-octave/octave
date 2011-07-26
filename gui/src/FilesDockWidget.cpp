@@ -68,6 +68,9 @@ FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
   m_fileTreeView->setSortingEnabled (true);
   m_fileTreeView->setAlternatingRowColors (true);
   m_fileTreeView->setAnimated (true);
+  m_fileTreeView->setColumnHidden (1, true);
+  m_fileTreeView->setColumnHidden (2, true);
+  m_fileTreeView->setColumnHidden (3, true);
   setCurrentDirectory (m_fileSystemModel->fileInfo (rootPathIndex).
 		       absoluteFilePath ());
 

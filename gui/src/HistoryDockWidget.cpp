@@ -17,7 +17,7 @@
  */
 
 #include "HistoryDockWidget.h"
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 HistoryDockWidget::HistoryDockWidget (QWidget * parent):QDockWidget (parent)
 {
@@ -28,23 +28,36 @@ HistoryDockWidget::HistoryDockWidget (QWidget * parent):QDockWidget (parent)
 void
 HistoryDockWidget::construct ()
 {
+  m_sortFilterProxyModel.setSourceModel(OctaveLink::instance ()->historyModel());
   m_historyListView = new QListView (this);
-  m_historyListView->setModel (OctaveLink::instance ()->historyModel());
+  m_historyListView->setModel (&m_sortFilterProxyModel);
   m_historyListView->setAlternatingRowColors (true);
   m_historyListView->setEditTriggers (QAbstractItemView::NoEditTriggers);
-  QHBoxLayout *layout = new QHBoxLayout ();
+  m_filterLineEdit = new QLineEdit (this);
+  QVBoxLayout *layout = new QVBoxLayout ();
 
   setWindowTitle (tr ("Command History"));
   setWidget (new QWidget ());
 
   layout->addWidget (m_historyListView);
+  layout->addWidget (m_filterLineEdit);
   layout->setMargin (2);
 
   widget ()->setLayout (layout);
+
+  connect (m_filterLineEdit, SIGNAL (textEdited (QString)), this, SLOT (setFilter (QString)));
 }
 
 void
 HistoryDockWidget::noticeSettings ()
 {
 
+}
+
+void
+HistoryDockWidget::setFilter(QString filter)
+{
+  m_historyListView->setEnabled (false);
+  m_sortFilterProxyModel.setFilterWildcard ( QString ("*%1*").arg (filter));
+  m_historyListView->setEnabled (true);
 }

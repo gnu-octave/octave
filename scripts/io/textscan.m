@@ -22,8 +22,8 @@
 ## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{param}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {@var{C} =} textscan (@var{fid}, @var{format}, @var{n}, @var{param}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {@var{C} =} textscan (@var{str}, @dots{})
-## @deftypefnx {Function File} {[@var{C}, @var{position}] =} textscan (@dots{})
-## Read data from a text file.
+## @deftypefnx {Function File} {[@var{C}, @var{position}] =} textscan (@var{fid}, @dots{})
+## Read data from a text file or string.
 ##
 ## The file associated with @var{fid} is read and parsed according to
 ## @var{format}.  The function behaves like @code{strread} except it works by
@@ -35,7 +35,7 @@
 ##
 ## @itemize
 ## @item "headerlines":
-## The first @var{value} number of lines of @var{str} are skipped.
+## The first @var{value} number of lines of @var{fid} are skipped.
 ##
 ## @item "endofline":
 ## Specify a single character or "\r\n".  If no value is given, it will be
@@ -47,10 +47,10 @@
 ## have been encountered.  If set to 0 or false, return an error and no data.
 ## @end itemize
 ##
-## The optional input, @var{n}, specifes the number of lines to be read from
-## the file, associated with @var{fid}.
+## The optional input @var{n} specifes the number of times to use 
+## @var{format} when parsing, i.e., the format repeat count.
 ##
-## The output, @var{C}, is a cell array whose length is given by the number
+## The output @var{C} is a cell array whose length is given by the number
 ## of format specifiers.
 ##
 ## The second output, @var{position}, provides the position, in characters,
@@ -75,21 +75,19 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
 
   if (! ischar (format))
-    error ("textscan: FORMAT must be a valid specification");
+    error ("textscan: FORMAT must be a string");
   endif
 
-  if (nargin > 2 && isnumeric (varargin{1}))
-    nlines = varargin{1};
-    args = varargin(2:end);
+  args = varargin;
+  if (nargin > 2 && isnumeric (args{1}))
+    nlines = args{1};
   else
     nlines = Inf;
-    args = varargin;
   endif
 
   if (! any (strcmpi (args, "emptyvalue")))
     ## Matlab returns NaNs for missing values
-    args{end+1} = "emptyvalue";
-    args{end+1} = NaN;
+    args(end+1:end+2) = {'emptyvalue', NaN};
   endif
 
   ## Check default parameter values that differ for strread & textread
@@ -97,37 +95,34 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   ipos = find (strcmpi (args, "whitespace"));
   if (isempty (ipos))
     ## Matlab default whitespace = " \b\t"
-    args{end+1} = "whitespace";
-    args{end+1} = " \b\t";
+    args(end+1:end+2) = {'whitespace', " \b\t"};
     whitespace = " \b\t";
   else
     ## Check if there's at least one string format specifier
     fmt = strrep (format, "%", " %");
-    [~, ~, ~, fmt] = regexp (fmt, '[^ ]+');
+    fmt = regexp (fmt, '[^ ]+', 'match');
     fmt = strtrim (fmt(strmatch ("%", fmt)))
     has_str_fmt = all (cellfun ("isempty", strfind (strtrim (fmt(strmatch ("%", fmt))), 's')));
     ## If there is a format, AND whitespace value = empty, 
     ## don't add a space (char(32)) to whitespace
     if (! (isempty (args{ipos+1}) &&  has_str_fmt))
-      args {ipos+1} = unique ([" " whitespace]);
+      args{ipos+1} = unique ([" ", whitespace]);
     endif
   endif
 
   if (! any (strcmpi (args, "delimiter")))
     ## Matlab says default delimiter = whitespace.  
     ## strread() will pick this up further
-    args{end+1} = "delimiter";
-    args{end+1} = "";
+    args(end+1:end+2) = {'delimiter', ""};
   endif
 
   if (any (strcmpi (args, "returnonerror")))
     ## Because of the way strread() reads data (columnwise) this parameter
     ## can't be neatly implemented.  strread() will pick it up anyway
-    warning ('ReturnOnError is not fully implemented');
+    warning ('textscan: ReturnOnError is not fully implemented');
   else
     ## Set default value (=true)
-    args{end+1} = "returnonerror";
-    args{end+1} = 1;
+    args(end+1:end+2) = {"returnonerror", 1};
   endif
 
   if (ischar (fid))
@@ -144,12 +139,14 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       fskipl (fid, varargin{headerlines + 1});
       args(headerlines:headerlines+1) = []; 
     endif
-    if (isfinite (nlines))
-      str = "";
-      ## FIXME: Can this be done without slow for loop?
-      for n = 1:nlines
-        str = strcat (str, fgets (fid));
-      endfor
+    if (isfinite (nlines) && (nlines >= 0))
+      str = tmp_str = "";
+      n = 0;
+      ## FIXME: Can this be done without slow loop?
+      while (ischar (tmp_str) && n++ <= nlines)
+        str = strcat (str, tmp_str);
+        tmp_str = fgets (fid);
+      endwhile
     else
       str = fread (fid, "char=>char").';
     endif
@@ -159,53 +156,48 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   if (isempty (str))
     warning ("textscan: no data read");
     C = [];
-  else
-    ## Check value of 'endofline'.  String or file doesn't seem to matter
-    endofline = find (strcmpi (args, "endofline"), 1);
-    if (! isempty (endofline))
-      if (! ischar (args{endofline + 1})) 
-        error ("textscan: character value required for EndOfLine"); 
-      endif
+    return;
+  endif
+
+  ## Check value of 'endofline'.  String or file doesn't seem to matter
+  endofline = find (strcmpi (args, "endofline"), 1);
+  if (! isempty (endofline))
+    if (ischar (args{endofline + 1})) 
+      eol_char = args{endofline + 1};
     else
-      ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
-      BUFLEN = 3000;
-      ## First try DOS (CRLF)
-      eol_srch_len = min (length (str), 3000);
-      if (! isempty (findstr ("\r\n", str(1 : eol_srch_len))))
-        eol_char = "\r\n";
-      ## Perhaps old Macintosh? (CR)
-      elseif (! isempty (findstr ("\r", str(1 : eol_srch_len))))
-        eol_char = "\r";
-      ## Otherwise, use plain UNIX (LF)
-      else
-        eol_char = "\n";
-      endif
-      ## Set up the default endofline param value
-      args{end+1} = "endofline";
-      args{end+1} = eol_char;
+      error ("textscan: character value required for EndOfLine"); 
     endif
-
-    ## Determine the number of data fields
-    num_fields = numel (strfind (format, "%")) - ...
-                 numel (idx_star = strfind (format, "%*"));
-
-    ## Strip trailing EOL to avoid returning stray missing values (f. strread)
-    if (strcmp (str(end-length (eol_char) + 1 : end), eol_char));
-      str = str(1 : end-length (eol_char)); 
+  else
+    ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
+    eol_srch_len = min (length (str), 3000);
+    ## First try DOS (CRLF)
+    if (! isempty (findstr ("\r\n", str(1 : eol_srch_len))))
+      eol_char = "\r\n";
+    ## Perhaps old Macintosh? (CR)
+    elseif (! isempty (findstr ("\r", str(1 : eol_srch_len))))
+      eol_char = "\r";
+    ## Otherwise, use plain UNIX (LF)
+    else
+      eol_char = "\n";
     endif
+    ## Set up the default endofline param value
+    args(end+1:end+2) = {'endofline', eol_char};
+  endif
 
-    ## Call strread to make it do the real work
-    C = cell (1, num_fields);
-    [C{:}] = strread (str, format, args{:});
+  ## Determine the number of data fields
+  num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
 
-    if (ischar (fid) && isfinite (nlines))
-      C = cellfun (@(x) x(1:nlines), C, "uniformoutput", false);
-    endif
+  ## Strip trailing EOL to avoid returning stray missing values (f. strread)
+  if (strcmp (str(end-length (eol_char) + 1 : end), eol_char));
+    str(end-length (eol_char) + 1 : end) = "";
+  endif
 
-    if (nargout == 2)
-      position = ftell (fid);
-    endif
+  ## Call strread to make it do the real work
+  C = cell (1, num_fields);
+  [C{:}] = strread (str, format, args{:});
 
+  if (nargout == 2)
+    position = ftell (fid);
   endif
 
 endfunction
@@ -249,3 +241,10 @@ endfunction
 %! assert (a{2}', {'B' 'J' 'R' 'Z'});
 %! assert (a{3}', [16 241 3 NaN], 1e-5);
 
+%% Test input validation
+%!error textscan ()
+%!error textscan (single (4))
+%!error textscan ({4})
+%!error <must be a string> textscan ("Hello World", 2)
+%!error <cannot provide position information> [C, pos] = textscan ("Hello World")
+%!error <character value required> textscan ("Hello World", '%s', 'EndOfLine', 3)

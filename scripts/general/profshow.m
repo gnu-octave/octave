@@ -59,20 +59,20 @@ function profshow (data, n = 20)
   ## For printing the table, find out the maximum length of a function name
   ## so that we can proportion the table accordingly.  Based on this,
   ## we can build the format used for printing table rows.
-  nameLen = length ('Function');
+  nameLen = length ("Function");
   for i = 1 : n
     nameLen = max (nameLen, length (data.FunctionTable(p(i)).FunctionName));
   endfor
-  headerFormat = sprintf ('%%%ds %%4s %%12s %%12s\n', nameLen);
-  rowFormat = sprintf ('%%%ds %%4s %%12.3f %%12d\n', nameLen);
+  headerFormat = sprintf ("%%%ds %%4s %%12s %%12s\n", nameLen);
+  rowFormat = sprintf ("%%%ds %%4s %%12.3f %%12d\n", nameLen);
 
-  printf (headerFormat, 'Function', 'Attr', 'Time (s)', 'Calls');
-  printf ("%s\n", repmat ('-', 1, nameLen + 2 * 13 + 5));
+  printf (headerFormat, "Function", "Attr", "Time (s)", "Calls");
+  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 13 + 5));
   for i = 1 : n
     row = data.FunctionTable(p(i));
-    attr = '';
+    attr = "";
     if (row.IsRecursive)
-      attr = 'R';
+      attr = "R";
     endif
     printf (rowFormat, row.FunctionName, attr, row.TotalTime, row.NumCalls);
   endfor
@@ -80,11 +80,11 @@ function profshow (data, n = 20)
 endfunction
 
 %!demo
-%! profile ('on');
+%! profile ("on");
 %! A = rand (100);
 %! B = expm (A);
-%! profile ('off');
-%! T = profile ('info');
+%! profile ("off");
+%! T = profile ("info");
 %! profshow (T, 10);
 
 %!demo
@@ -95,7 +95,7 @@ endfunction
 %!     f = myfib (n - 1) + myfib (n - 2);
 %!   endif
 %! endfunction
-%! profile ('on');
+%! profile ("on");
 %! myfib (20);
-%! profile ('off');
-%! profshow (profile ('info'), 5);
+%! profile ("off");
+%! profshow (profile ("info"), 5);

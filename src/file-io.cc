@@ -666,14 +666,14 @@ however, conversions are currently only supported for @samp{native}\n\
 
   if (nargin == 1)
     {
-      if (nargout < 2 && args(0).is_string ())
+      if (args(0).is_string ())
         {
           // If there is only one argument and it is a string but it
           // is not the string "all", we assume it is a file to open
           // with MODE = "r".  To open a file called "all", you have
           // to supply more than one argument.
 
-          if (args(0).string_value () == "all")
+          if (nargout < 2 && args(0).string_value () == "all")
             return octave_stream_list::open_file_numbers ();
         }
       else

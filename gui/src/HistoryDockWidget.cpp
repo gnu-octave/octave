@@ -33,7 +33,9 @@ HistoryDockWidget::construct ()
   m_historyListView->setModel (&m_sortFilterProxyModel);
   m_historyListView->setAlternatingRowColors (true);
   m_historyListView->setEditTriggers (QAbstractItemView::NoEditTriggers);
+  m_historyListView->setStatusTip (tr ("Doubleclick a command to transfer it to the terminal."));
   m_filterLineEdit = new QLineEdit (this);
+  m_filterLineEdit->setStatusTip (tr ("Enter text to filter the command history."));
   QVBoxLayout *layout = new QVBoxLayout ();
 
   setWindowTitle (tr ("Command History"));

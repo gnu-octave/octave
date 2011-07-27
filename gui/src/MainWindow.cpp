@@ -222,8 +222,11 @@ MainWindow::construct ()
 
   // Setup dockable widgets and the status bar.
   m_variablesDockWidget = new VariablesDockWidget (this);
+  m_variablesDockWidget->setStatusTip (tr ("View the variables in the active workspace."));
   m_historyDockWidget = new HistoryDockWidget (this);
+  m_historyDockWidget->setStatusTip (tr ("Browse and search the command history."));
   m_filesDockWidget = new FilesDockWidget (this);
+  m_filesDockWidget->setStatusTip (tr ("Browse your files."));
   m_statusBar = new QStatusBar (this);
 
   // Setup essential MDI Windows.
@@ -237,11 +240,10 @@ MainWindow::construct ()
     m_centralMdiArea->addSubWindow (m_documentationWidget,
 				    Qt::WindowTitleHint | Qt::
 				    WindowMinMaxButtonsHint);
-  m_documentationWidgetSubWindow->
-    setObjectName ("DocumentationWidgetSubWindow");
+  m_documentationWidgetSubWindow->setObjectName ("DocumentationWidgetSubWindow");
   m_documentationWidgetSubWindow->setWindowTitle (tr ("Documentation"));
-  m_documentationWidgetSubWindow->
-    setWindowIcon (QIcon ("../media/help_index.png"));
+  m_documentationWidgetSubWindow->setWindowIcon (QIcon ("../media/help_index.png"));
+  m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
 
   m_octaveTerminalSubWindow =
     m_centralMdiArea->addSubWindow (m_octaveTerminal,
@@ -250,6 +252,7 @@ MainWindow::construct ()
   m_octaveTerminalSubWindow->setObjectName ("OctaveTerminalSubWindow");
   m_octaveTerminalSubWindow->setWindowTitle (tr ("Terminal"));
   m_octaveTerminalSubWindow->setWindowIcon (QIcon ("../media/terminal.png"));
+  m_octaveTerminalSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
 
   m_ircWidgetSubWindow = m_centralMdiArea->addSubWindow (m_ircWidget,
 							 Qt::
@@ -259,6 +262,7 @@ MainWindow::construct ()
   m_ircWidgetSubWindow->setObjectName ("ChatWidgetSubWindow");
   m_ircWidgetSubWindow->setWindowTitle (tr ("Chat"));
   m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/chat.png"));
+  m_ircWidgetSubWindow->setStatusTip(tr ("Instantly chat with other Octave users for help."));
 
   QMenu *controlMenu = menuBar ()->addMenu (tr ("Octave"));
   QAction *settingsAction = controlMenu->addAction (tr ("Settings"));

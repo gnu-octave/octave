@@ -43,7 +43,10 @@ FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
   QStyle *style = QApplication::style ();
   m_directoryIcon = style->standardIcon (QStyle::SP_FileDialogToParent);
   m_directoryUpAction = new QAction (m_directoryIcon, "", m_navigationToolBar);
+  m_directoryUpAction->setStatusTip (tr ("Move up one directory."));
+
   m_currentDirectory = new QLineEdit (m_navigationToolBar);
+  m_currentDirectory->setStatusTip (tr ("Enter the path or filename."));
 
   m_navigationToolBar->addAction (m_directoryUpAction);
   m_navigationToolBar->addWidget (m_currentDirectory);
@@ -72,6 +75,8 @@ FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
   m_fileTreeView->setColumnHidden (1, true);
   m_fileTreeView->setColumnHidden (2, true);
   m_fileTreeView->setColumnHidden (3, true);
+  m_fileTreeView->setStatusTip (tr ("Doubleclick a file to open it."));
+
   setCurrentDirectory (m_fileSystemModel->fileInfo (rootPathIndex).
 		       absoluteFilePath ());
 

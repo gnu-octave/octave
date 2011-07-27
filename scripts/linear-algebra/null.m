@@ -96,7 +96,7 @@ endfunction
 
 %!test
 %! A = [1 1; 0 0];
-%! assert(null(A), [-1/sqrt(2) 1/sqrt(2)]')
+%! assert(null(A), [-1/sqrt(2) 1/sqrt(2)]', eps)
 
 %!test
 %! tol = 1e-4;

@@ -170,6 +170,7 @@ DEFUN (strvcat, args, ,
 @deftypefnx {Built-in Function} {} strvcat (@var{x}, @dots{})\n\
 @deftypefnx {Built-in Function} {} strvcat (@var{s1}, @var{s2}, @dots{})\n\
 @deftypefnx {Built-in Function} {} strvcat (@var{cell_array})\n\
+@deftypefnx {Built-in Function} {} strvcat ()\n\
 Create a character array from one or more numeric matrices, character\n\
 matrices, or cell arrays.  Arguments are concatenated vertically.\n\
 The returned values are padded with blanks as needed to make each row\n\
@@ -196,6 +197,9 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
          \"half   \"]\n\
 @end group\n\
 @end example\n\
+\n\
+For compatibility with @sc{Matlab}, calling @code{strvcat} without arguments\n\
+returns the empty string.\n\
 @seealso{char, strcat, cstrcat}\n\
 @end deftypefn")
 {
@@ -273,7 +277,7 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
       retval = octave_value (result, '\'');
     }
   else
-    print_usage ();
+    retval = octave_value ("");
 
   return retval;
 }

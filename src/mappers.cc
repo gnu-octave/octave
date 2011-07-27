@@ -1777,13 +1777,10 @@ toascii (\"ASCII\")\n\
 @end deftypefn")
 {
   octave_value retval;
-
-  if (args.length () != 1)
-    print_usage ();
-  else if (! (args(0).is_string () || args(0).is_cellstr ()))
-    error ("toascii: S input must be a string or cellstr");
-  else
+  if (args.length () == 1)
     retval = args(0).xtoascii ();
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1806,13 +1803,10 @@ tolower (\"MiXeD cAsE 123\")\n\
 @end deftypefn")
 {
   octave_value retval;
-
-  if (args.length () != 1)
-    print_usage ();
-  else if (! (args(0).is_string () || args(0).is_cellstr ()))
-    error ("tolower: S input must be a string or cellstr");
-  else
+  if (args.length () == 1)
     retval = args(0).xtolower ();
+  else
+    print_usage ();
 
   return retval;
 }
@@ -1855,13 +1849,10 @@ toupper (\"MiXeD cAsE 123\")\n\
 @end deftypefn")
 {
   octave_value retval;
-
-  if (args.length () != 1)
-    print_usage ();
-  else if (! (args(0).is_string () || args(0).is_cellstr ()))
-    error ("toupper: S input must be a string or cellstr");
-  else
+  if (args.length () == 1)
     retval = args(0).xtoupper ();
+  else
+    print_usage ();
 
   return retval;
 }

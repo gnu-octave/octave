@@ -28,7 +28,7 @@
 #include "SettingsDialog.h"
 #include "cmd-edit.h"
 
-#define VERSION_STRING "Octave GUI (0.6.5)"
+#define VERSION_STRING "Octave GUI (0.6.9)"
 
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {
@@ -147,6 +147,37 @@ MainWindow::processSettingsDialogRequest ()
 }
 
 void
+MainWindow::showAboutOctave ()
+{
+  QString message =
+      "GNU Octave\n"
+      "Copyright (C) 2009 John W. Eaton and others.\n"
+      "This is free software; see the source code for copying conditions."
+      "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or"
+      "FITNESS FOR A PARTICULAR PURPOSE.  For details, type `warranty'.\n"
+      "\n"
+      "Octave was configured for \"x86_64-pc-linux-gnu\".\n"
+      "\n"
+      "Additional information about Octave is available at http://www.octave.org.\n"
+      "\n"
+      "Please contribute if you find this software useful."
+      "For more information, visit http://www.octave.org/help-wanted.html\n"
+      "\n"
+      "Report bugs to <bug@octave.org> (but first, please read"
+      "http://www.octave.org/bugs.html to learn how to write a helpful report).\n"
+      "\n"
+      "For information about changes from previous versions, type `news'.\n";
+
+  QMessageBox::about (this, tr ("About Octave"), message);
+}
+
+void
+MainWindow::showAboutQt ()
+{
+  QMessageBox::aboutQt (this);
+}
+
+void
 MainWindow::closeEvent (QCloseEvent * closeEvent)
 {
   reportStatusMessage (tr ("Saving data and shutting down."));
@@ -260,6 +291,9 @@ MainWindow::construct ()
   QAction *reportBugAction = communityMenu->addAction (tr ("Report Bug"));
   QAction *agoraAction = communityMenu->addAction (tr ("Agora"));
   QAction *octaveForgeAction = communityMenu->addAction (tr ("Octave Forge"));
+  communityMenu->addSeparator ();
+  QAction *aboutOctaveAction = communityMenu->addAction (tr ("About Octave"));
+  QAction *aboutQt = communityMenu->addAction (tr ("About Qt"));
 
   connect (settingsAction, SIGNAL (triggered ()), this, SLOT (processSettingsDialogRequest ()));
   connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));
@@ -268,6 +302,8 @@ MainWindow::construct ()
   connect (reportBugAction, SIGNAL (triggered ()), this, SLOT (openBugTrackerPage ()));
   connect (agoraAction, SIGNAL (triggered ()), this, SLOT (openAgoraPage ()));
   connect (octaveForgeAction, SIGNAL (triggered ()), this, SLOT (openOctaveForgePage ()));
+  connect (aboutOctaveAction, SIGNAL (triggered ()), this, SLOT (showAboutOctave ()));
+  connect (aboutQt, SIGNAL (triggered ()), this, SLOT (showAboutQt ()));
 
   // TODO: Visibility cannot be taken as a signal, because it will be emitted even then
   // the dock widget is tabbed or minimized.

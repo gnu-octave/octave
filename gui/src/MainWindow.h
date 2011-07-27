@@ -79,6 +79,8 @@ public slots:
   void openAgoraPage ();
   void openOctaveForgePage ();
   void processSettingsDialogRequest ();
+  void showAboutOctave ();
+  void showAboutQt ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);

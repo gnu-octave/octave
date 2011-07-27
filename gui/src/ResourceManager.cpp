@@ -51,3 +51,10 @@ ResourceManager::setSettings (QString file)
   delete m_settings;
   m_settings = new QSettings (file, QSettings::IniFormat);
 }
+
+QString
+ResourceManager::findTranslatorFile (QString language)
+{
+  // TODO: Quick hack to be able to test language files.
+  return QString("../languages/%1.qm").arg(language);
+}

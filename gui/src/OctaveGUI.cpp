@@ -31,11 +31,13 @@ main (int argc, char *argv[])
   commandLineParser.registerOption ("--config", "-c", "Tells OctaveGUI to use that configuration file.", true);
   commandLineParser.parse (argc, argv);
 
-  // QSettings *settings = ResourceManager::instance ()->instance ();
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  QString language = settings->value ("language").toString ();
 
-  // TODO: reimplement translation.
-  // translator.load (translatorFile);
-  // application.installTranslator (&translator);
+  QString translatorFile = ResourceManager::instance ()->findTranslatorFile (language);
+  QTranslator translator;
+  translator.load (translatorFile);
+  application.installTranslator (&translator);
 
   MainWindow w;
   w.show ();

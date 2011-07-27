@@ -241,6 +241,16 @@ endfunction
 %! assert (a{2}', {'B' 'J' 'R' 'Z'});
 %! assert (a{3}', [16 241 3 NaN], 1e-5);
 
+%% Test with default endofline parameter
+%!test
+%! c = textscan ("L1\nL2", "%s");
+%! assert (c{:}, {"L1"; "L2"});
+
+%% Test with endofline parameter set to '' (empty) - newline should be in word
+%!test
+%! c = textscan ("L1\nL2", "%s", 'endofline', '');
+%! assert (int8(c{:}{:}), int8([ 76,  49,  10,  76,  50 ]));
+
 %% Test input validation
 %!error textscan ()
 %!error textscan (single (4))

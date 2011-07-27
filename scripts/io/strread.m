@@ -37,7 +37,7 @@
 ## @item %s
 ## The word is parsed as a string.
 ##
-## @item %d
+## @item  %d
 ## @itemx %f
 ## @itemx %u
 ## @itemx %n
@@ -100,16 +100,16 @@
 ## @var{value} is the comment style and can be any of the following.
 ## @itemize
 ## @item "shell"
-## Everything from @code{#} characters to the nearest end-line is skipped.
+## Everything from @code{#} characters to the nearest end-of-line is skipped.
 ##
 ## @item "c"
 ## Everything between @code{/*} and @code{*/} is skipped.
 ##
 ## @item "c++"
-## Everything from @code{//} characters to the nearest end-line is skipped.
+## Everything from @code{//} characters to the nearest end-of-line is skipped.
 ##
 ## @item "matlab"
-## Everything from @code{%} characters to the nearest end-line is skipped.
+## Everything from @code{%} characters to the nearest end-of-line is skipped.
 ##
 ## @item user-supplied.  Two options:
 ## (1) One string, or 1x1 cell string: Skip everything to the right of it;
@@ -121,14 +121,13 @@
 ## Any character in @var{value} will be used to split @var{str} into words 
 ## (default value = any whitespace).
 ##
-## @item "whitespace"
-## Any character in @var{value} will be interpreted as whitespace and
-## trimmed; the string defining whitespace must be enclosed in double
-## quotes for proper processing of special characters like \t.
-## The default value for whitespace = " \b\r\n\t" (note the space).
-##
 ## @item "emptyvalue"
 ## Parts of the output where no word is available is filled with @var{value}.
+##
+## @item "multipledelimsasone"
+## Treat a series of consecutive delimiters, without whitespace in between,
+## as a single delimiter.  Consecutive delimiter series need not be vertically 
+## "aligned".
 ##
 ## @item "treatasempty"
 ## Treat single occurrences (surrounded by delimiters or whitespace) of the
@@ -137,6 +136,12 @@
 ## @item "returnonerror"
 ## If @var{value} true (1, default), ignore read errors and return normally.
 ## If false (0), return an error.
+##
+## @item "whitespace"
+## Any character in @var{value} will be interpreted as whitespace and
+## trimmed; the string defining whitespace must be enclosed in double
+## quotes for proper processing of special characters like \t.
+## The default value for whitespace = " \b\r\n\t" (note the space).
 ## 
 ## @end table
 ##
@@ -158,6 +163,14 @@ function varargout = strread (str, format = "%f", varargin)
     error ("strread: STR and FORMAT arguments must be strings");
   endif
 
+  ## Parse format string to compare number of conversion fields and nargout
+  nfields = length (strfind (format, "%")) - length (strfind (format, "%*"));
+  ## If str only has numeric fields, a (default) format ("%f") will do.
+  ## Otherwise:
+  if ((max (nargout, 1) != nfields) && ! strcmp (format, "%f"))
+    error ("strread: the number of output variables must match that specified by FORMAT");
+  endif
+
   ## Check for format string repeat count
   format_repeat_count = -1;
   if (nargin > 2 && isnumeric (varargin{1}))
@@ -173,12 +186,13 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Parse options.  First initialize defaults
   comment_flag = false;
+  delimiter_str = "";
+  empty_str = "";
+  eol_char = "";
+  err_action = 0;
+  mult_dlms_s1 = false;
   numeric_fill_value = NaN;
   white_spaces = " \b\r\n\t";
-  delimiter_str = "";
-  eol_char = "";
-  empty_str = "";
-  err_action = 0;
   for n = 1:2:length (varargin)
     switch (lower (varargin{n}))
       case "bufsize"
@@ -190,16 +204,15 @@ function varargout = strread (str, format = "%f", varargin)
           case "c"
             [comment_start, comment_end] = deal ("/*", "*/");
           case "c++"
-            [comment_start, comment_end] = deal ("//", "\n");
+            [comment_start, comment_end] = deal ("//", "eol_char");
           case "shell"
-            [comment_start, comment_end] = deal ("#", "\n");
+            [comment_start, comment_end] = deal ("#" , "eol_char");
           case "matlab"
-            [comment_start, comment_end] = deal ("%", "\n");
+            [comment_start, comment_end] = deal ("%" , "eol_char");
           otherwise
             if (ischar (varargin{n+1}) ||
                (numel (varargin{n+1}) == 1 && iscellstr (varargin{n+1})))
-              tmp = char (varargin{n+1});
-              [comment_start, comment_end] = deal (tmp, "\n");
+              [comment_start, comment_end] = deal (char (varargin{n+1}), "eol_char");
             elseif (iscellstr (varargin{n+1}) && numel (varargin{n+1}) == 2)
               [comment_start, comment_end] = deal (varargin{n+1}{:});
             else
@@ -222,6 +235,8 @@ function varargout = strread (str, format = "%f", varargin)
         eol_char = varargin{n+1};
       case "returnonerror"
         err_action = varargin{n+1};
+      case "multipledelimsasone"
+        mult_dlms_s1 = varargin{n+1};
       case "treatasempty"
         if (iscellstr (varargin{n+1}))
           empty_str = varargin{n+1};
@@ -235,48 +250,14 @@ function varargout = strread (str, format = "%f", varargin)
     endswitch
   endfor
 
-  ## Parse format string to compare nr. of conversion fields and nargout
-  nfields = length (strfind (format, "%")) - length (strfind (format, "%*"));
-  ## If str only has numeric fields, a (default) format ("%f") will do.
-  ## Otherwise:
-  if ((max (nargout, 1) != nfields) && ! strcmp (format, "%f"))
-    error ("strread: the number of output variables must match that specified by FORMAT");
-  endif
-
-  ## Remove comments
-  if (comment_flag)
-    cstart = strfind (str, comment_start);
-    cstop  = strfind (str, comment_end);
-    if (length (cstart) > 0)
-      ## Ignore nested openers.
-      [idx, cidx] = unique (lookup (cstop, cstart), "first");
-      if (idx(end) == length (cstop))
-        cidx(end) = []; # Drop the last one if orphaned.
-      endif
-      cstart = cstart(cidx);
-    endif
-    if (length (cstop) > 0)
-      ## Ignore nested closers.
-      [idx, cidx] = unique (lookup (cstart, cstop), "first");
-      if (idx(1) == 0)
-        cidx(1) = []; # Drop the first one if orphaned.
-      endif
-      cstop = cstop(cidx);
-    endif
-    len = length (str);
-    c2len = length (comment_end);
-    str = cellslices (str, [1, cstop + c2len], [cstart - 1, len]);
-    str = [str{:}];
-  endif
-
+  ## First parse of FORMAT
   if (strcmpi (strtrim (format), "%f"))
     ## Default format specified.  Expand it (to desired nargout)
-    num_words_per_line = nargout;
     fmt_words = cell (nargout, 1);
     fmt_words (1:nargout) = format;
   else
     ## Determine the number of words per line as a first guess.  Forms
-    ## like %f<literal) (w/o delimiter in between) are fixed further on
+    ## like %f<literal>) (w/o delimiter in between) are fixed further on
     format = strrep (format, "%", " %");
     fmt_words = regexp (format, '[^ ]+', 'match');
     ## Format conversion specifiers following literals w/o space/delim
@@ -296,36 +277,63 @@ function varargout = strread (str, format = "%f", varargin)
   endif
   num_words_per_line = numel (fmt_words);
 
-  if (! isempty (white_spaces))
-    ## Check for overlapping whitespaces and delimiters & trim whitespace
-    ## FIXME: Can this section be replaced by call to setdiff() ?
-    if (! isempty (delimiter_str))
-      [ovlp, iw] = intersect (white_spaces, delimiter_str);
-      if (! isempty (ovlp))
-        ## Remove delimiter chars from white_spaces
-        white_spaces = cell2mat (strsplit (white_spaces, white_spaces(iw)));
-      endif
-    endif
+  ## Special handling for CRLF EOL character in str
+  if (! isempty (eol_char) && strcmp (eol_char, "\r\n"))
+    ## Strip CR from CRLF sequences
+    str = strrep (str, "\r\n", "\n");
+    ## CR serves no further purpose in function
+    eol_char = "\n";
   endif
 
+  ## Remove comments in str
+  if (comment_flag)
+    ## Expand 'eol_char' here, after option processing which may have set value
+    comment_end = regexprep (comment_end, 'eol_char', eol_char); 
+    cstart = strfind (str, comment_start);
+    cstop  = strfind (str, comment_end);
+    ## Treat end of string as additional comment stop
+    if (isempty (cstop) || cstop(end) != length (str))
+      cstop(end+1) = length (str);
+    endif
+    if (! isempty (cstart))
+      ## Ignore nested openers.
+      [idx, cidx] = unique (lookup (cstop, cstart), "first");
+      if (idx(end) == length (cstop))
+        cidx(end) = []; # Drop the last one if orphaned.
+      endif
+      cstart = cstart(cidx);
+    endif
+    if (! isempty (cstop))
+      ## Ignore nested closers.
+      [idx, cidx] = unique (lookup (cstart, cstop), "first");
+      if (idx(1) == 0)
+        cidx(1) = []; # Drop the first one if orphaned.
+      endif
+      cstop = cstop(cidx);
+    endif
+    len = length (str);
+    c2len = length (comment_end);
+    str = cellslices (str, [1, cstop + c2len], [cstart - 1, len]);
+    str = [str{:}];
+  endif
+
+  if (! isempty (white_spaces))
+    ## Remove any delimiter chars from white_spaces list
+    white_spaces = setdiff (white_spaces, delimiter_str);
+  endif
   if (isempty (delimiter_str))
     delimiter_str = " ";
   endif
-
   if (! isempty (eol_char))
-    ## eol_char is delimiter by default. First separate CRLF from single CR & LF
-    if (strcmp (eol_char, "\r\n"))
-      ## Strip CR from CRLF sequences
-      str = strrep (str, "\r\n", "\n");
-      ## CR serves no further purpose in function
-      eol_char = "\n";  
-    endif
     ## Add eol_char to delimiter collection
     delimiter_str = unique ([delimiter_str eol_char]);
+    ## .. and remove it from whitespace collection
+    white_spaces = strrep (white_spaces, eol_char, '');
   endif
 
   pad_out = 0;
-  ## If needed, trim whitespace
+  ## Trim whitespace if needed
+  ## FIXME: This is very complicated.  Can this be simplified with regexprep?
   if (! isempty (white_spaces))
     ## Check if trailing "\n" might signal padding output arrays to equal size
     ## before it is trimmed away below
@@ -349,9 +357,11 @@ function varargout = strread (str, format = "%f", varargin)
   endif
 
   ## Split 'str' into words
-  words = split_by (str, delimiter_str);
+  words = split_by (str, delimiter_str, mult_dlms_s1);
   if (! isempty (white_spaces))
     ## Trim leading and trailing white_spaces
+    ## FIXME: Is this correct?  strtrim clears what matches isspace(), not
+    ## necessarily what is in white_spaces.
     words = strtrim (words);
   endif
   num_words = numel (words);
@@ -360,8 +370,6 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Replace TreatAsEmpty char sequences by empty strings
   if (! isempty (empty_str))
-    ## FIXME: There should be a simpler way to do this with cellfun
-    ##        or possibly with regexprep
     for ii = 1:numel (empty_str)
       idz = strmatch (empty_str{ii}, words, "exact");
       words(idz) = {""};
@@ -379,34 +387,81 @@ function varargout = strread (str, format = "%f", varargin)
 
   ## Find indices and pointers to possible literals in fmt_words
   idf = cellfun ("isempty", strfind (fmt_words, "%"));
-  ## Find indices and pointers to "%*" (skip) conversion specifiers
-  idg = ! cellfun ("isempty", strfind (fmt_words, "%*"));
-  ## Unselect those with specified width ("%*N")
-  st = regexp (fmt_words, '\d');
-  idy = find (idf);
+  ## Find indices and pointers to conversion specifiers with fixed width
+  idg = ! cellfun ("isempty", regexp (fmt_words, '%\*?\d'));
+  idy = find (idf | idg); 
 
   ## If needed, split up columns in three steps:
   if (! isempty (idy))
     ## Try-catch because complexity of strings to read can be infinite    
-    try
+    #try
 
       ## 1. Assess "period" in the split-up words array ( < num_words_per_line).
       ## Could be done using EndOfLine but that prohibits EndOfLine = "" option.
-      fmt_in_word = cell (num_words_per_line, 1);
-      words_period = litptr = 1;
-      ## For each literal in turn
-      for ii = 1:numel (idy)
-        fmt_in_word(idy(ii)) = num_words;
-        ## Find *current* "return period" for fmt_word{idy(ii)} in words 
-        ## Search in first num_words_per_line of words
-        litptrs = find (! cellfun ("isempty", strfind ...
-                   (words(1:min (10*num_words_per_line, num_words)), ...
-                   fmt_words{idy(ii)})));
-        if (length (litptrs) > 1)
-          litptr = sum (unique (litptrs(2:end) .- litptrs(1:end-1)));
+      ## Alternative below goes by simply parsing the first "line" of words:
+      iwrd = 1; iwrdp = 0; iwrdl = length (words{iwrd});
+      for ii = 1:numel (fmt_words)
+
+        if (idf(ii))
+          ## Literal expected
+          if (isempty (strfind (fmt_words{ii}, words(iwrd))))
+            ## Not found in current word; supposed to be in next word
+            ++iwrd; iwrdp = 0;
+            if (ii < numel (fmt_words))
+              iwrdl = length (words{iwrd});
+            endif
+          else
+            ## Found it in current word.  Subtract literal length
+            iwrdp += length (fmt_words{ii});
+            if (iwrdp > iwrdl)
+              ## Parse error.  Literal extends beyond delimiter (word boundary)
+              error ("strread: Literal '%s' (fmt spec # %d) does not match data", fmt_words{ii}, ii);
+            elseif (iwrdp == iwrdl)
+              ## Word completely "used up". Next word
+              ++iwrd; iwrdp = 0;
+              if (ii < numel (fmt_words))
+                iwrdl = length (words{iwrd});
+              endif
+            endif
+          endif
+
+        elseif (idg(ii))
+          ## Fixed width specifier (%N or %*N): read just a part of word
+            iwrdp += floor ...
+             (str2double (fmt_words{ii}(regexp(fmt_words{ii}, '\d') : end-1)));
+            if (iwrdp > iwrdl)
+              ## Error. Field extends beyond word boundary.
+              error ("strread: Field width '%s' (fmt spec # %d) extends beyond word limit", fmt_words{ii}, ii);
+            elseif (iwrdp == iwrdl)
+              ## Word completely "used up".  Next word
+              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
+            endif
+   
+        else
+          ## A simple format conv. specifier. Either (1) uses rest of word, or
+          ## (2) is squeezed between current iwrdp and next literal, or (3) uses
+          ## next word. (3) is already taken care of.  So just check (1) & (2)
+          if (ii < numel (fmt_words) && idf(ii+1))
+            ## Next fmt_word is a literal...
+            if (! index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}))
+              ## ...but not found in current word => field uses rest of word
+              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
+            else
+              ## ..or it IS found.  Add inferred width of current conversion field
+              iwrdp += index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}) - 1;
+            endif
+          elseif (iwrdp < iwrdl)
+            ## No bordering literal to the right => field occupies (rest of) word
+            ++iwrd; iwrdp = 0; 
+            if (ii < numel (fmt_words))
+              iwrdl = length (words{iwrd});
+            endif
+          endif
+
         endif
       endfor
-      words_period = max (words_period, litptr);
+      ## Done
+      words_period = iwrd - 1;
       num_lines = ceil (num_words / words_period);
 
       ## 2. Pad words array so that it can be reshaped
@@ -421,50 +476,59 @@ function varargout = strread (str, format = "%f", varargin)
       icol = 1; ii = 1;    # icol = current column, ii = current fmt_word
       while (ii <= num_words_per_line)
 
-        ## Check if fmt_words(ii) contains a literal
-        if (idf(ii))             # Yes, fmt_words(ii) = literal
-          [s, e] = regexp (words{icol, 1}, fmt_words{ii});
-          if (isempty (s))
-            warning ("Literal '%s' not found in column %d", fmt_words{ii}, icol);
-          else
-            if (! strcmp (fmt_words{ii}, words{icol, 1}))
-              ## Column doesn't exactly match literal => split needed.  Add a column
-              words(icol+1:end+1, :) = words(icol:end, :); 
-              ## Watch out for empty cells
-              jptr = find (! cellfun ("isempty", words(icol, :)));
+        ## Check if fmt_words(ii) contains a literal or fixed-width
+        if ((idf(ii) || idg(ii)) && (rows(words) < num_words_per_line))
+          if (idf(ii))
+            s = strfind (words(icol, 1), fmt_words{ii});
+            if (isempty (s))
+              error ("strread: Literal '%s' not found in column %d", fmt_words{ii}, icol);
+            endif
+            s = s{:}(1);
+            e = s(1) + length (fmt_words{ii}) - 1;
+          endif
+          if (! strcmp (fmt_words{ii}, words{icol, 1}))
+            ## Column doesn't exactly match literal => split needed.  Insert a column
+            words(icol+1:end+1, :) = words(icol:end, :); 
+            ## Watch out for empty cells
+            jptr = find (! cellfun ("isempty", words(icol, :)));
 
-              ## Distinguish leading or trailing literals
-              if (!isempty (s) && s(1) == 1)
-                ## Leading literal.  Assign literal to icol, paste rest in icol + 1
-                ## Apply only to those cells that do have something beyond literal
-                jptr = find ([cellfun(@(x) length(x), words(icol+1, jptr), ...
-                              "UniformOutput", false){:}] > e(1));
-                words(icol+1, jptr) = cellfun ...
-                  (@(x) substr(x, e(1)+1, length(x)-e(1)), words(icol, jptr), ...
-                  "UniformOutput", false);
-                words(icol, jptr) = fmt_words{ii};
+            ## Distinguish leading or trailing literals
+            if (! idg(ii) && ! isempty (s) && s(1) == 1)
+              ## Leading literal.  Assign literal to icol, paste rest in icol + 1
+              ## Apply only to those cells that do have something beyond literal
+              jptr = find ([cellfun(@(x) length(x), words(icol+1, jptr), ...
+                            "UniformOutput", false){:}] > e(1));
+              words(icol+1, :) = {""};
+              words(icol+1, jptr) = cellfun ...
+                (@(x) substr(x, e(1)+1, length(x)-e(1)), words(icol, jptr), ...
+                "UniformOutput", false);
+              words(icol, jptr) = fmt_words{ii};
 
-              else
+            else
+              if (! idg(ii) && ! isempty (strfind (fmt_words{ii-1}, "%s")))
                 ## Trailing literal.  If preceding format == '%s' this is an error
-                if (! isempty (strfind (fmt_words{ii-1}, "%s")))
-                  warning ("Ambiguous '%s' specifier next to literal in column %d", icol);
-                else
-                  ## Some invoked code to avoid regexp which seems demanding
-                  ## on large files
-                  ## FIXME: this assumes char(254)/char(255) won't occur in input!
-                  clear wrds;
-                  wrds(1:2:2*numel (words(icol, jptr))) = ...
-                       strrep (words(icol, jptr), fmt_words{ii}, ...
-                       [char(255) char(254)]);
-                  wrds(2:2:2*numel (words(icol, jptr))-1) = char(255);
-                  wrds = strsplit ([wrds{:}], char(255));
-                  words(icol, jptr) = ...
-                    wrds(find (cellfun ("isempty", strfind (wrds, char(254)))));
-                  wrds(find (cellfun ("isempty", strfind (wrds, char(254))))) ...
-                     = char(255);
-                  words(icol+1, jptr) = strsplit (strrep ([wrds{2:end}], ...
-                     char(254), fmt_words{ii}), char(255));
-                endif
+                warning ("Ambiguous '%s' specifier next to literal in column %d", icol);
+              elseif (idg(ii))
+                ## Current field = fixed width. Strip into icol, rest in icol+1
+                wdth = floor (str2double (fmt_words{ii}(regexp(fmt_words{ii}, ...
+                              '\d') : end-1)));
+                words(icol+1, jptr) = cellfun (@(x) x(wdth+1:end),
+                     words(icol,jptr), "UniformOutput", false);                 
+                words(icol, jptr) = strtrunc (words(icol, jptr), wdth);
+              else
+                ## FIXME: this assumes char(254)/char(255) won't occur in input!
+                clear wrds;
+                wrds(1:2:2*numel (words(icol, jptr))) = ...
+                     strrep (words(icol, jptr), fmt_words{ii}, ...
+                     [char(255) char(254)]);
+                wrds(2:2:2*numel (words(icol, jptr))-1) = char(255);
+                wrds = strsplit ([wrds{:}], char(255));
+                words(icol, jptr) = ...
+                  wrds(find (cellfun ("isempty", strfind (wrds, char(254)))));
+                wrds(find (cellfun ("isempty", strfind (wrds, char(254))))) ...
+                   = char(255);
+                words(icol+1, jptr) = strsplit (strrep ([wrds{2:end}], ...
+                   char(254), fmt_words{ii}), char(255));
                 ## Former trailing literal may now be leading for next specifier
                 --ii;
               endif
@@ -486,11 +550,11 @@ function varargout = strread (str, format = "%f", varargin)
       ## Done.  Reshape words back into 1 long vector and strip padded empty words
       words = reshape (words, 1, numel (words))(1 : end-num_words_padded);
 
-    catch
-      warning ("strread: unable to parse text or file with given format string");
-      return;
+    #catch
+    #  warning ("strread: unable to parse text or file with given format string");
+    #  return;
 
-    end_try_catch
+    #end_try_catch
   endif
   
   ## For each specifier, process corresponding column
@@ -557,8 +621,10 @@ function varargout = strread (str, format = "%f", varargin)
         case {"%*", "%*s"}
           ## skip the word
         otherwise
-          ## Ensure descriptive content is consistent
-          if (numel (unique (data)) > 1
+          ## Ensure descriptive content is consistent.
+          ## Test made a bit lax to accomodate for incomplete last lines
+          n = find (! cellfun ("isempty", data));
+          if (numel (unique (data(n))) > 1
               || ! strcmpi (unique (data), fmt_words{m}))
             error ("strread: FORMAT does not match data");
           endif
@@ -577,9 +643,31 @@ function varargout = strread (str, format = "%f", varargin)
 
 endfunction
 
-function out = split_by (text, sep)
-  out = strsplit (text, sep);
+function out = split_by (text, sep, mult_dlms_s1)
+
+  ## Check & if needed, process MultipleDelimsAsOne parameter
+  if (mult_dlms_s1)
+    mult_dlms_s1 = true;
+    ## If \n is in sep collection we need to enclose it in spaces in text
+    ## to avoid it being included in consecutive delim series
+    ## FIXME: This only works if eol is LF or CRLF.  Won't work on Mac
+    ##        Should probably use eol_char in this case.
+    ##        Also unlikely to work if <space> is not in white_space
+    text = strrep (text, "\n", " \n ");
+  else
+    mult_dlms_s1 = false;
+  endif
+
+  ## Split text string along delimiters
+  out = strsplit (text, sep, mult_dlms_s1);
+  ## In case of trailing delimiter, strip stray last empty word
+  if (any (sep == text(end)))
+    out(end) = [];
+  endif
+  
+  ## Empty cells converted to empty cellstrings.
   out(cellfun ("isempty", out)) = {""};
+
 endfunction
 
 
@@ -589,7 +677,7 @@ endfunction
 
 %!test
 %! str = "# comment\n# comment\n1 2 3";
-%! [a, b] = strread (str, '%d %s', 'commentstyle', 'shell');
+%! [a, b] = strread (str, '%d %s', 'commentstyle', 'shell', 'endofline', "\n");
 %! assert (a, [1; 3]);
 %! assert (b, {"2"});
 
@@ -640,9 +728,8 @@ endfunction
 
 %!test
 %! # Bug #33536
-%! a = strread ("[SomeText]", "%s", "delimiter", "]");
-%! assert (a{1}, "[SomeText");
-%! assert (a{2}, '');
+%! a = strread ("[SomeText]", "[%s", "delimiter", "]");
+%! assert (a{1}, "SomeText");
 
 %!test
 %! dat = "Data file.\r\n=  =  =  =  =\r\nCOMPANY    : <Company name>\r\n";
@@ -690,4 +777,13 @@ endfunction
 %! str = "Text1Text2Text\nTextText4Text\nText57Text";
 %! c = textscan (str, "Text%*dText%dText");
 %! assert (c{1}, [2; 4; NaN]);
+
+%% MultipleDelimsAsOne
+%!test
+%! str = "11, 12, 13,, 15\n21,, 23, 24, 25\n,, 33, 34, 35";
+%! [a b c d] = strread (str, "%f %f %f %f", 'delimiter', ',', 'multipledelimsasone', 1, 'endofline', "\n");
+%! assert (a', [11, 21, NaN]);
+%! assert (b', [12, 23, 33]);
+%! assert (c', [13, 24, 34]);
+%! assert (d', [15, 25, 35]);
 

@@ -545,6 +545,9 @@ DEFUN (load, args, nargout,
 @deftypefnx {Command} {} load options file\n\
 @deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
 @deftypefnx {Command} {S =} load (\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
+@deftypefnx {Command} {} load file options\n\
+@deftypefnx {Command} {} load file options v1 v2 @dots{}\n\
+@deftypefnx {Command} {S =} load (\"file\", \"options\", \"v1\", \"v2\", @dots{})\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
 @var{file}.  If no variables are specified then all variables found in the\n\
 file will be loaded.  As with @code{save}, the list of variables to extract\n\
@@ -642,6 +645,16 @@ Force Octave to assume the file is in Octave's text format.\n\
   if (error_state)
     return retval;
 
+  int i = 1;
+  std::string orig_fname = "";
+
+  // Function called with Matlab-style ["filename", options] syntax
+  if (argv[1].at(0) != '-')
+    {
+      orig_fname = argv[1];
+      i++;
+    }
+
   // It isn't necessary to have the default load format stored in a
   // user preference variable since we can determine the type of file
   // as we are reading.
@@ -651,8 +664,7 @@ Force Octave to assume the file is in Octave's text format.\n\
   bool list_only = false;
   bool verbose = false;
 
-  int i;
-  for (i = 1; i < argc; i++)
+  for (i; i < argc; i++)
     {
       if (argv[i] == "-force" || argv[i] == "-f")
         {
@@ -710,19 +722,24 @@ Force Octave to assume the file is in Octave's text format.\n\
         break;
     }
 
-  if (i == argc)
+  if (orig_fname == "")
     {
-      print_usage ();
-      return retval;
+      if (i == argc)
+        {
+          print_usage ();
+          return retval;
+        }
+      else
+        orig_fname = argv[i];
     }
-
-  std::string orig_fname = argv[i];
+  else
+    i--;
 
   oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
 
   bool swap = false;
 
-  if (argv[i] == "-")
+  if (orig_fname == "-")
     {
       i++;
 
@@ -747,7 +764,7 @@ Force Octave to assume the file is in Octave's text format.\n\
     }
   else
     {
-      std::string fname = file_ops::tilde_expand (argv[i]);
+      std::string fname = file_ops::tilde_expand (orig_fname);
 
       fname = find_file_to_load (fname, orig_fname);
 

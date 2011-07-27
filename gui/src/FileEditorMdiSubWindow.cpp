@@ -272,23 +272,15 @@ FileEditorMdiSubWindow::construct ()
   m_editor->setIndentationsUseTabs (false);
   m_editor->setAutoCompletionThreshold (2);
 
-  QAction *newAction = new QAction (style->standardIcon (QStyle::SP_FileIcon),
-				    "", m_toolBar);
-  QAction *openAction = new QAction (style->standardIcon (QStyle::SP_DirOpenIcon),
-            "", m_toolBar);
-  QAction *saveAction =
-    new QAction (style->standardIcon (QStyle::SP_DriveHDIcon),
-		 "", m_toolBar);
-  QAction *saveActionAs =
-    new QAction (style->standardIcon (QStyle::SP_DriveFDIcon),
-		 "", m_toolBar);
-  QAction *undoAction =
-    new QAction (style->standardIcon (QStyle::SP_ArrowLeft),
-		 "", m_toolBar);
-  QAction *redoAction =
-    new QAction (style->standardIcon (QStyle::SP_ArrowRight),
-		 "", m_toolBar);
+  QAction *closeAction = new QAction (style->standardIcon (QStyle::SP_DialogCloseButton), "", m_toolBar);
+  QAction *newAction = new QAction (style->standardIcon (QStyle::SP_FileIcon), "", m_toolBar);
+  QAction *openAction = new QAction (style->standardIcon (QStyle::SP_DirOpenIcon), "", m_toolBar);
+  QAction *saveAction = new QAction (style->standardIcon (QStyle::SP_DriveHDIcon), "", m_toolBar);
+  QAction *saveActionAs = new QAction (style->standardIcon (QStyle::SP_DriveFDIcon), "", m_toolBar);
+  QAction *undoAction = new QAction (style->standardIcon (QStyle::SP_ArrowLeft), "", m_toolBar);
+  QAction *redoAction = new QAction (style->standardIcon (QStyle::SP_ArrowRight), "", m_toolBar);
 
+  m_toolBar->addAction (closeAction);
   m_toolBar->addAction (newAction);
   m_toolBar->addAction (openAction);
   m_toolBar->addAction (saveAction);
@@ -303,6 +295,7 @@ FileEditorMdiSubWindow::construct ()
   layout->setMargin (2);
   widget ()->setLayout (layout);
 
+  connect (closeAction, SIGNAL (triggered()), this, SLOT (close()));
   connect (newAction, SIGNAL (triggered ()), this, SLOT (newFile ()));
   connect (openAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
   connect (undoAction, SIGNAL (triggered ()), m_editor, SLOT (undo ()));

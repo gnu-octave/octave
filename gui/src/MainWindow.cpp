@@ -236,15 +236,7 @@ MainWindow::construct ()
 
   m_octaveTerminal->openTerminal ();
 
-  m_documentationWidgetSubWindow =
-    m_centralMdiArea->addSubWindow (m_documentationWidget,
-				    Qt::WindowTitleHint | Qt::
-				    WindowMinMaxButtonsHint);
-  m_documentationWidgetSubWindow->setObjectName ("DocumentationWidgetSubWindow");
-  m_documentationWidgetSubWindow->setWindowTitle (tr ("Documentation"));
-  m_documentationWidgetSubWindow->setWindowIcon (QIcon ("../media/help_index.png"));
-  m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
-
+  // Octave Terminal subwindow.
   m_octaveTerminalSubWindow =
     m_centralMdiArea->addSubWindow (m_octaveTerminal,
 				    Qt::WindowTitleHint | Qt::
@@ -254,11 +246,22 @@ MainWindow::construct ()
   m_octaveTerminalSubWindow->setWindowIcon (QIcon ("../media/terminal.png"));
   m_octaveTerminalSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
 
+  // Documentation subwindow.
+  m_documentationWidgetSubWindow =
+    m_centralMdiArea->addSubWindow (m_documentationWidget,
+                                    Qt::WindowTitleHint | Qt::
+                                    WindowMinMaxButtonsHint);
+  m_documentationWidgetSubWindow->setObjectName ("DocumentationWidgetSubWindow");
+  m_documentationWidgetSubWindow->setWindowTitle (tr ("Documentation"));
+  m_documentationWidgetSubWindow->setWindowIcon (QIcon ("../media/help_index.png"));
+  m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
+
+  // Chat subwindow.
   m_ircWidgetSubWindow = m_centralMdiArea->addSubWindow (m_ircWidget,
-							 Qt::
-							 WindowTitleHint |
-							 Qt::
-							 WindowMinMaxButtonsHint);
+                                                         Qt::
+                                                         WindowTitleHint |
+                                                         Qt::
+                                                         WindowMinMaxButtonsHint);
   m_ircWidgetSubWindow->setObjectName ("ChatWidgetSubWindow");
   m_ircWidgetSubWindow->setWindowTitle (tr ("Chat"));
   m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/chat.png"));

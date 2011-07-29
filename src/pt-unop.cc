@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "oct-lvalue.h"
 #include "ov.h"
+#include "profiler.h"
 #include "pt-bp.h"
 #include "pt-unop.h"
 #include "pt-walk.h"
@@ -72,6 +73,9 @@ tree_prefix_expression::rvalue1 (int)
 
           if (! error_state)
             {
+              profile_data_accumulator::enter pe (profiler,
+                                                  "prefix " + oper ());
+              
               ref.do_unary_op (etype);
 
               if (! error_state)
@@ -84,6 +88,9 @@ tree_prefix_expression::rvalue1 (int)
 
           if (! error_state && val.is_defined ())
             {
+              profile_data_accumulator::enter pe (profiler,
+                                                  "prefix " + oper ());
+
               // Attempt to do the operation in-place if it is unshared
               // (a temporary expression).
               if (val.get_count () == 1)
@@ -153,6 +160,9 @@ tree_postfix_expression::rvalue1 (int)
             {
               retval = ref.value ();
 
+              profile_data_accumulator::enter pe (profiler,
+                                                  "postfix " + oper ());
+
               ref.do_unary_op (etype);
             }
         }
@@ -162,6 +172,9 @@ tree_postfix_expression::rvalue1 (int)
 
           if (! error_state && val.is_defined ())
             {
+              profile_data_accumulator::enter pe (profiler,
+                                                  "postfix " + oper ());
+
               retval = ::do_unary_op (etype, val);
 
               if (error_state)

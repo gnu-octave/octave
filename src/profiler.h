@@ -25,9 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <map>
 #include <set>
+#include <string>
 #include <vector>
 
-class octave_function;
 class octave_value;
 
 class
@@ -44,11 +44,11 @@ public:
 
       profile_data_accumulator& acc;
 
-      const octave_function* fcn;
+      std::string fcn;
 
     public:
 
-      enter (profile_data_accumulator&, const octave_function& fcn);
+      enter (profile_data_accumulator&, const std::string&);
 
       virtual ~enter (void);
 
@@ -101,7 +101,7 @@ private:
 
   bool enabled;
 
-  typedef std::vector<const octave_function*> call_stack_type;
+  typedef std::vector<std::string> call_stack_type;
   call_stack_type call_stack;
 
   typedef std::map<std::string, stats> stats_map;
@@ -112,8 +112,8 @@ private:
 
   // These are private as only the unwind-protecting inner class enter
   // should be allowed to call them.
-  void enter_function (const octave_function&);
-  void exit_function (const octave_function&);
+  void enter_function (const std::string&);
+  void exit_function (const std::string&);
 
   // Query a timestamp, used for timing calls (obviously).
   // This is not static because in the future, maybe we want a flag

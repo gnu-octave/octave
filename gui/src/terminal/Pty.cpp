@@ -67,8 +67,7 @@ Pty::setFlowControlEnabled (bool enable)
 	ttmode.c_iflag &= ~(IXOFF | IXON);
       else
 	ttmode.c_iflag |= (IXOFF | IXON);
-      //if (!pty()->tcSetAttr(&ttmode))
-      //  kWarning() << "Unable to set terminal attributes.";
+      pty()->tcSetAttr(&ttmode);
     }
 }
 
@@ -81,14 +80,13 @@ Pty::flowControlEnabled () const
       pty ()->tcGetAttr (&ttmode);
       return ttmode.c_iflag & IXOFF && ttmode.c_iflag & IXON;
     }
-  //kWarning() << "Unable to get flow control status, terminal not connected.";
   return false;
 }
 
 void
 Pty::setUtf8Mode (bool enable)
 {
-#ifdef IUTF8			// XXX not a reasonable place to check it.
+#ifdef IUTF8
   _utf8 = enable;
 
   if (pty ()->masterFd () >= 0)
@@ -99,8 +97,7 @@ Pty::setUtf8Mode (bool enable)
 	ttmode.c_iflag &= ~IUTF8;
       else
 	ttmode.c_iflag |= IUTF8;
-      // if (!pty()->tcSetAttr(&ttmode))
-      //  kWarning() << "Unable to set terminal attributes.";
+      pty()->tcSetAttr(&ttmode);
     }
 #endif
 }
@@ -115,8 +112,7 @@ Pty::setErase (char erase)
       struct::termios ttmode;
       pty ()->tcGetAttr (&ttmode);
       ttmode.c_cc[VERASE] = erase;
-      //if (!pty()->tcSetAttr(&ttmode))
-      //  kWarning() << "Unable to set terminal attributes.";
+      pty()->tcSetAttr(&ttmode);
     }
 }
 
@@ -149,7 +145,7 @@ Pty::addEnvironmentVariables (const QStringList & environment)
 	  QString variable = pair.left (pos);
 	  QString value = pair.mid (pos + 1);
 
-	  setEnv (variable, value);
+          setEnvironmentVariable (variable, value);
 	}
     }
 }
@@ -162,6 +158,9 @@ Pty::start (const QString & program,
 	    bool addToUtmp,
 	    const QString & dbusService, const QString & dbusSession)
 {
+  Q_UNUSED(dbusService);
+  Q_UNUSED(dbusSession);
+  Q_UNUSED(winid);
   clearProgram ();
 
   // For historical reasons, the first argument in programArguments is the 
@@ -172,12 +171,12 @@ Pty::start (const QString & program,
 
   addEnvironmentVariables (environment);
 
-  if (!dbusService.isEmpty ())
-    setEnv ("KONSOLE_DBUS_SERVICE", dbusService);
-  if (!dbusSession.isEmpty ())
-    setEnv ("KONSOLE_DBUS_SESSION", dbusSession);
+  //if (!dbusService.isEmpty ())
+  //  setEnv ("KONSOLE_DBUS_SERVICE", dbusService);
+  //if (!dbusSession.isEmpty ())
+  //  setEnv ("KONSOLE_DBUS_SESSION", dbusSession);
 
-  setEnv ("WINDOWID", QString::number (winid));
+  //setEnv ("WINDOWID", QString::number (winid));
 
   // unless the LANGUAGE environment variable has been set explicitly
   // set it to a null string
@@ -190,10 +189,10 @@ Pty::start (const QString & program,
   // does not have a translation for
   //
   // BR:149300
-  setEnv ("LANGUAGE", QString (),
-	  false /* do not overwrite existing value if any */ );
-
+  setEnvironmentVariable ("LANGUAGE", QString (),
+          false /* do not overwrite existing value if any */ );
   setUseUtmp (addToUtmp);
+
 
   struct::termios ttmode;
   pty ()->tcGetAttr (&ttmode);
@@ -211,25 +210,20 @@ Pty::start (const QString & program,
   if (_eraseChar != 0)
     ttmode.c_cc[VERASE] = _eraseChar;
 
-  //if (!pty()->tcSetAttr(&ttmode))
-  //  kWarning() << "Unable to set terminal attributes.";
-
+  pty()->tcSetAttr(&ttmode);
   pty ()->setWinSize (_windowLines, _windowColumns);
 
   KProcess::start ();
 
   if (!waitForStarted ())
     return -1;
-
   return 0;
 }
 
 void
 Pty::setWriteable (bool writeable)
 {
-  //KDE_struct_stat sbuf;
   struct stat sbuf;
-  //KDE_stat(pty()->ttyName(), &sbuf);
   ::stat (pty ()->ttyName (), &sbuf);
   if (writeable)
     chmod (pty ()->ttyName (), sbuf.st_mode | S_IWGRP);
@@ -270,12 +264,7 @@ Pty::sendData (const char *data, int length)
 {
   if (!length)
     return;
-
-  if (!pty ()->write (data, length))
-    {
-      //kWarning() << "Pty::doSendJobs - Could not send input data to terminal process.";
-      return;
-    }
+  pty ()->write (data, length);
 }
 
 void
@@ -283,18 +272,6 @@ Pty::dataReceived ()
 {
   QByteArray data = pty ()->readAll ();
   emit receivedData (data.constData (), data.count ());
-}
-
-void
-Pty::lockPty (bool lock)
-{
-  Q_UNUSED (lock);
-
-// TODO: Support for locking the Pty
-  //if (lock)
-  //suspend();
-  //else
-  //resume();
 }
 
 int

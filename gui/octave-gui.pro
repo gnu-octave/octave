@@ -71,7 +71,6 @@ SOURCES +=\
         src/terminal/ShellCommand.cpp \
         src/terminal/QTerminalWidget.cpp \
         src/MainWindow.cpp \
-        src/terminal/ProcessInfo.cpp \
     	  src/OctaveTerminal.cpp \
     	  src/VariablesDockWidget.cpp \
     	  src/HistoryDockWidget.cpp \
@@ -117,7 +116,6 @@ HEADERS += \
         src/terminal/ShellCommand.h \
         src/terminal/QTerminalWidget.h \
     	  src/MainWindow.h \
-        src/terminal/ProcessInfo.h \
     	  src/OctaveTerminal.h \
     	  src/VariablesDockWidget.h \
     	  src/HistoryDockWidget.h \

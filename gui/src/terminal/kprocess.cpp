@@ -161,7 +161,7 @@ KProcess::OutputChannelMode KProcess::outputChannelMode () const
 #define DUMMYENV "_KPROCESS_DUMMY_="
 
 void
-KProcess::setEnv (const QString & name, const QString & value, bool overwrite)
+KProcess::setEnvironmentVariable (const QString & name, const QString & value, bool overwrite)
 {
   QStringList env = environment ();
   if (env.isEmpty ())
@@ -186,7 +186,7 @@ KProcess::setEnv (const QString & name, const QString & value, bool overwrite)
 }
 
 void
-KProcess::unsetEnv (const QString & name)
+KProcess::unsetEnvironmentVariable (const QString & name)
 {
   QStringList env = environment ();
   if (env.isEmpty ())

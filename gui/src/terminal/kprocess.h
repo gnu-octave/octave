@@ -103,7 +103,7 @@ Q_OBJECT Q_DECLARE_PRIVATE (KProcess) public:
      * @param overwrite if @c false and the environment variable is already
      *   set, the old value will be preserved
      */
-  void setEnv (const QString & name, const QString & value, bool overwrite =
+  void setEnvironmentVariable (const QString & name, const QString & value, bool overwrite =
 	       true);
 
     /**
@@ -113,7 +113,7 @@ Q_OBJECT Q_DECLARE_PRIVATE (KProcess) public:
      *
      * @param name the name of the environment variable
      */
-  void unsetEnv (const QString & name);
+  void unsetEnvironmentVariable (const QString & name);
 
     /**
      * Set the program and the command line arguments.

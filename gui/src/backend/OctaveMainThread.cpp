@@ -27,7 +27,7 @@ void
 OctaveMainThread::run ()
 {
   int argc = 3;
-  const char *argv[] = { "octave", "--interactive", "--line-editing" };
+  const char *argv[] = { "OctaveGUI", "--interactive", "--line-editing" };
   octave_main (argc, (char **) argv, 1);
   emit ready();
   main_loop ();

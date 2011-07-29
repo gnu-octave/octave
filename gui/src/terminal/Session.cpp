@@ -41,7 +41,7 @@
 #include "kprocess.h"
 #include "kptydevice.h"
 
-#include "ProcessInfo.h"
+//#include "ProcessInfo.h"
 #include "Pty.h"
 #include "TerminalDisplay.h"
 #include "ShellCommand.h"
@@ -100,7 +100,7 @@ QObject (parent), _shellProcess (0), _emulation (0), _monitorActivity (false),
 _monitorSilence (false), _notifiedActivity (false), _autoClose (true),
 _wantedClose (false), _silenceSeconds (10), _addToUtmp (true),
 _flowControl (true), _fullScripting (false), _sessionId (0),
-_sessionProcessInfo (0), _foregroundProcessInfo (0), _foregroundPid (0)
+/*_sessionProcessInfo (0), _foregroundProcessInfo (0),*/ _foregroundPid (0)
   //, _zmodemBusy(false)
   //, _zmodemProc(0)
   //, _zmodemProgress(0)
@@ -163,8 +163,6 @@ Session::openTeletype (int fd)
 	   SLOT (onReceiveBlock (const char *, int)));
   connect (_emulation, SIGNAL (sendData (const char *, int)), _shellProcess,
 	   SLOT (sendData (const char *, int)));
-  connect (_emulation, SIGNAL (lockPtyRequest (bool)), _shellProcess,
-	   SLOT (lockPty (bool)));
   connect (_emulation, SIGNAL (useUtf8Request (bool)), _shellProcess,
 	   SLOT (setUtf8Mode (bool)));
   connect (_shellProcess, SIGNAL (finished (int, QProcess::ExitStatus)), this,
@@ -264,22 +262,24 @@ Session::setArguments (const QStringList & arguments)
   _arguments = ShellCommand::expand (arguments);
 }
 
+/*
 QString
 Session::currentWorkingDirectory ()
 {
   // only returned cached value
-  if (_currentWorkingDir.isEmpty ())
-    updateWorkingDirectory ();
+  //if (_currentWorkingDir.isEmpty ())
+  //  updateWorkingDirectory ();
   return _currentWorkingDir;
 }
-
+*/
+/*
 ProcessInfo *
 Session::updateWorkingDirectory ()
 {
   ProcessInfo *process = getProcessInfo ();
   _currentWorkingDir = process->validCurrentDir ();
   return process;
-}
+}*/
 
 QList < TerminalDisplay * >Session::views () const
 {
@@ -818,10 +818,10 @@ Session::sendMouseEvent (int buttons, int column, int line, int eventType)
 
 Session::~Session ()
 {
-  if (_foregroundProcessInfo)
-    delete _foregroundProcessInfo;
-  if (_sessionProcessInfo)
-    delete _sessionProcessInfo;
+  //if (_foregroundProcessInfo)
+  //  delete _foregroundProcessInfo;
+  //if (_sessionProcessInfo)
+  //  delete _sessionProcessInfo;
   delete _emulation;
   delete _shellProcess;
   //delete _zmodemProc;
@@ -928,6 +928,7 @@ Session::title (TitleRole role) const
     return QString ();
 }
 
+/*
 ProcessInfo *
 Session::getProcessInfo ()
 {
@@ -942,23 +943,26 @@ Session::getProcessInfo ()
     }
 
   return process;
-}
+}*/
+
 
 void
 Session::updateSessionProcessInfo ()
 {
+  /*
   Q_ASSERT (_shellProcess);
   if (!_sessionProcessInfo)
     {
       _sessionProcessInfo = ProcessInfo::newInstance (processId ());
       _sessionProcessInfo->setUserHomeDir ();
     }
-  _sessionProcessInfo->update ();
+  _sessionProcessInfo->update ();*/
 }
 
 bool
 Session::updateForegroundProcessInfo ()
 {
+  /*
   bool valid = (_foregroundProcessInfo != 0);
 
   // has foreground process changed?
@@ -979,21 +983,24 @@ Session::updateForegroundProcessInfo ()
       valid = _foregroundProcessInfo->isValid ();
     }
 
-  return valid;
+  return valid;*/
+  return true;
 }
 
 bool
 Session::isRemote ()
-{
+{/*
   ProcessInfo *process = getProcessInfo ();
 
   bool ok = false;
   return (process->name (&ok) == "ssh" && ok);
+  */
+  return false;
 }
 
 QString
 Session::getDynamicTitle ()
-{
+{/*
   // update current directory from process
   ProcessInfo *process = updateWorkingDirectory ();
 
@@ -1008,7 +1015,8 @@ Session::getDynamicTitle ()
   else
     title = process->format (tabTitleFormat (Session::LocalTabTitle));
 
-  return title;
+  return title;*/
+  return "";
 }
 
 void
@@ -1228,6 +1236,7 @@ Session::tabTitleFormat (int context) const
     }
 }
 
+/*
 int
 Session::foregroundProcessId ()
 {
@@ -1239,7 +1248,7 @@ Session::foregroundProcessId ()
     pid = -1;
 
   return pid;
-}
+}*/
 
 bool
 Session::isForegroundProcessActive ()
@@ -1248,6 +1257,7 @@ Session::isForegroundProcessActive ()
   return updateForegroundProcessInfo () && (processId () != _foregroundPid);
 }
 
+/*
 QString
 Session::foregroundProcessName ()
 {
@@ -1262,7 +1272,7 @@ Session::foregroundProcessName ()
     }
 
   return name;
-}
+}*/
 
 SessionGroup::SessionGroup (QObject * parent):QObject (parent), _masterMode (0)
 {

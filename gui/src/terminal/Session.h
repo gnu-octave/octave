@@ -38,7 +38,7 @@ class KProcess;
 class KUrl;
 class Emulation;
 class Pty;
-class ProcessInfo;
+//class ProcessInfo;
 class TerminalDisplay;
   //class ZModemDialog;
 /**
@@ -188,7 +188,7 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
   /**
    * Returns the current directory of the foreground process in the session
    */
-  QString currentWorkingDirectory ();
+  //QString currentWorkingDirectory ();
 
   /**
    * Sets the type of history store used by this session.
@@ -284,7 +284,7 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
   bool isForegroundProcessActive ();
 
   /** Returns the name of the current foreground process. */
-  QString foregroundProcessName ();
+  //QString foregroundProcessName ();
 
   /** Returns the terminal session's window size in lines and columns. */
   QSize size ();
@@ -446,7 +446,7 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
    * This is initially the same as processId() but can change
    * as the user starts other programs inside the terminal.
    */
-  Q_SCRIPTABLE int foregroundProcessId ();
+  //Q_SCRIPTABLE int foregroundProcessId ();
 
   /** Sets the text codec used by this sessions terminal emulation.
     * Overloaded to accept a QByteArray for convenience since DBus
@@ -602,10 +602,10 @@ private:
   // checks that the binary 'program' is available and can be executed
   // returns the binary name if available or an empty string otherwise
   QString checkProgram (const QString & program) const;
-  ProcessInfo *getProcessInfo ();
+  //ProcessInfo *getProcessInfo ();
   void updateSessionProcessInfo ();
   bool updateForegroundProcessInfo ();
-  ProcessInfo *updateWorkingDirectory ();
+  //ProcessInfo *updateWorkingDirectory ();
 
   QUuid _uniqueIdentifier;	// SHELL_SESSION_ID
 
@@ -646,8 +646,8 @@ private:
   QString _initialWorkingDir;
   QString _currentWorkingDir;
 
-  ProcessInfo *_sessionProcessInfo;
-  ProcessInfo *_foregroundProcessInfo;
+  //ProcessInfo *_sessionProcessInfo;
+  //ProcessInfo *_foregroundProcessInfo;
   int _foregroundPid;
 
   // ZModem

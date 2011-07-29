@@ -47,7 +47,10 @@ function playaudio (name, ext)
       num = fopen (file, "wb");
       c = fwrite (num, X, "uchar");
       fclose (num);
-      system (sprintf ("cat \"%s\" > /dev/dsp", file));
+      [status, out] = system (sprintf ("cat \"%s\" > /dev/dsp", file));
+      if (status != 0)
+        system (sprintf ("paplay --raw \"%s\"", file))
+      endif
     unwind_protect_cleanup
       unlink (file);
     end_unwind_protect
@@ -61,10 +64,16 @@ function playaudio (name, ext)
       print_usage ();
     endif
     if (strcmp (ext, "lin") || strcmp (ext, "raw"))
-      system (sprintf ("cat \"%s\" > /dev/dsp", name));
+      [status, out] = system (sprintf ("cat \"%s\" > /dev/dsp", name));
+      if (status != 0)
+        system (sprintf ("paplay --raw \"%s\"", name))
+      endif
     elseif (strcmp (ext, "mu") || strcmp (ext, "au")
             || strcmp (ext, "snd") || strcmp (ext, "ul"))
-      system (sprintf ("cat \"%s\" > /dev/audio", name));
+      [status, out] = system (sprintf ("cat \"%s\" > /dev/audio", name));
+      if (status != 0)
+        system (sprintf ("paplay \"%s\"", name))
+      endif
     else
       error ("playaudio: unsupported extension");
     endif

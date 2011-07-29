@@ -38,7 +38,6 @@ class KProcess;
 class KUrl;
 class Emulation;
 class Pty;
-//class ProcessInfo;
 class TerminalDisplay;
   //class ZModemDialog;
 /**
@@ -602,10 +601,6 @@ private:
   // checks that the binary 'program' is available and can be executed
   // returns the binary name if available or an empty string otherwise
   QString checkProgram (const QString & program) const;
-  //ProcessInfo *getProcessInfo ();
-  void updateSessionProcessInfo ();
-  bool updateForegroundProcessInfo ();
-  //ProcessInfo *updateWorkingDirectory ();
 
   QUuid _uniqueIdentifier;	// SHELL_SESSION_ID
 
@@ -646,8 +641,6 @@ private:
   QString _initialWorkingDir;
   QString _currentWorkingDir;
 
-  //ProcessInfo *_sessionProcessInfo;
-  //ProcessInfo *_foregroundProcessInfo;
   int _foregroundPid;
 
   // ZModem

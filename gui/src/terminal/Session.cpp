@@ -41,7 +41,6 @@
 #include "kprocess.h"
 #include "kptydevice.h"
 
-//#include "ProcessInfo.h"
 #include "Pty.h"
 #include "TerminalDisplay.h"
 #include "ShellCommand.h"
@@ -261,25 +260,6 @@ Session::setArguments (const QStringList & arguments)
 {
   _arguments = ShellCommand::expand (arguments);
 }
-
-/*
-QString
-Session::currentWorkingDirectory ()
-{
-  // only returned cached value
-  //if (_currentWorkingDir.isEmpty ())
-  //  updateWorkingDirectory ();
-  return _currentWorkingDir;
-}
-*/
-/*
-ProcessInfo *
-Session::updateWorkingDirectory ()
-{
-  ProcessInfo *process = getProcessInfo ();
-  _currentWorkingDir = process->validCurrentDir ();
-  return process;
-}*/
 
 QList < TerminalDisplay * >Session::views () const
 {
@@ -928,97 +908,6 @@ Session::title (TitleRole role) const
     return QString ();
 }
 
-/*
-ProcessInfo *
-Session::getProcessInfo ()
-{
-  ProcessInfo *process;
-
-  if (isForegroundProcessActive ())
-    process = _foregroundProcessInfo;
-  else
-    {
-      updateSessionProcessInfo ();
-      process = _sessionProcessInfo;
-    }
-
-  return process;
-}*/
-
-
-void
-Session::updateSessionProcessInfo ()
-{
-  /*
-  Q_ASSERT (_shellProcess);
-  if (!_sessionProcessInfo)
-    {
-      _sessionProcessInfo = ProcessInfo::newInstance (processId ());
-      _sessionProcessInfo->setUserHomeDir ();
-    }
-  _sessionProcessInfo->update ();*/
-}
-
-bool
-Session::updateForegroundProcessInfo ()
-{
-  /*
-  bool valid = (_foregroundProcessInfo != 0);
-
-  // has foreground process changed?
-  Q_ASSERT (_shellProcess);
-  int pid = _shellProcess->foregroundProcessGroup ();
-  if (pid != _foregroundPid)
-    {
-      if (valid)
-	delete _foregroundProcessInfo;
-      _foregroundProcessInfo = ProcessInfo::newInstance (pid);
-      _foregroundPid = pid;
-      valid = true;
-    }
-
-  if (valid)
-    {
-      _foregroundProcessInfo->update ();
-      valid = _foregroundProcessInfo->isValid ();
-    }
-
-  return valid;*/
-  return true;
-}
-
-bool
-Session::isRemote ()
-{/*
-  ProcessInfo *process = getProcessInfo ();
-
-  bool ok = false;
-  return (process->name (&ok) == "ssh" && ok);
-  */
-  return false;
-}
-
-QString
-Session::getDynamicTitle ()
-{/*
-  // update current directory from process
-  ProcessInfo *process = updateWorkingDirectory ();
-
-  // format tab titles using process info
-  bool ok = false;
-  QString title;
-  if (process->name (&ok) == "ssh" && ok)
-    {
-      SSHProcessInfo sshInfo (*process);
-      title = sshInfo.format (tabTitleFormat (Session::RemoteTabTitle));
-    }
-  else
-    title = process->format (tabTitleFormat (Session::LocalTabTitle));
-
-  return title;*/
-  return "";
-}
-
 void
 Session::setIconName (const QString & iconName)
 {
@@ -1235,44 +1124,6 @@ Session::tabTitleFormat (int context) const
       return QString ();
     }
 }
-
-/*
-int
-Session::foregroundProcessId ()
-{
-  int pid;
-
-  bool ok = false;
-  pid = getProcessInfo ()->pid (&ok);
-  if (!ok)
-    pid = -1;
-
-  return pid;
-}*/
-
-bool
-Session::isForegroundProcessActive ()
-{
-  // foreground process info is always updated after this
-  return updateForegroundProcessInfo () && (processId () != _foregroundPid);
-}
-
-/*
-QString
-Session::foregroundProcessName ()
-{
-  QString name;
-
-  if (updateForegroundProcessInfo ())
-    {
-      bool ok = false;
-      name = _foregroundProcessInfo->name (&ok);
-      if (!ok)
-	name.clear ();
-    }
-
-  return name;
-}*/
 
 SessionGroup::SessionGroup (QObject * parent):QObject (parent), _masterMode (0)
 {

@@ -17,7 +17,7 @@
 
 
 # Basic settings:
-QT                  += core gui webkit xml opengl   # Qt modules
+QT                  += core gui webkit		    # Qt modules
 TEMPLATE            = app                           # Build as application
 TARGET              = octave-gui                    # Name of the target binary
 

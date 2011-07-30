@@ -52,6 +52,18 @@ FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
 }
 
 void
+FileEditorMdiSubWindow::handleModificationChanged(bool modified)
+{
+  if ( modified )
+    {
+      QString title(m_fileName);
+      setWindowTitle(title.prepend("* "));
+    }
+  else
+     setWindowTitle (m_fileName);
+}
+
+void
 FileEditorMdiSubWindow::openFile ()
 {
     if (checkFileModified ("Open File")==QMessageBox::Cancel)
@@ -338,6 +350,9 @@ FileEditorMdiSubWindow::construct ()
   connect (redoAction, SIGNAL (hovered ()), this, SLOT (showToolTipRedo ()));
   connect (saveAction, SIGNAL (hovered ()), this, SLOT (showToolTipSave ()));
   connect (saveAsAction, SIGNAL (hovered ()), this,SLOT (showToolTipSaveAs ()));
+
+  // connect modified signal
+  connect (m_editor, SIGNAL (modificationChanged(bool)), this, SLOT (handleModificationChanged(bool)) );
 
   m_fileName = "";
   setWindowTitle (m_fileName);

@@ -52,7 +52,6 @@ Q_OBJECT public:
   void showToolTipSaveAs ();
   void showToolTipUndo ();
   void showToolTipRedo ();
-
   void registerModified (bool modified);
 
 protected:
@@ -66,6 +65,10 @@ private:
   QStatusBar *m_statusBar;
   QString m_fileName;
   bool m_modified;
+
+private slots:
+  void handleModificationChanged(bool modified);
+
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

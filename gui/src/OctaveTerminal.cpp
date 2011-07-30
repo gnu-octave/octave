@@ -1,0 +1,63 @@
+/* OctaveGUI - A graphical user interface for Octave
+ * Copyright (C) 2011 Jacob Dawid
+ * jacob.dawid@googlemail.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "OctaveTerminal.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QStringListModel>
+#include <QStringList>
+
+#include "pty.h"
+#include "unistd.h"
+#include <assert.h>
+
+OctaveTerminal::OctaveTerminal (QWidget * parent):QWidget (parent)
+{
+  construct ();
+}
+
+OctaveTerminal::~OctaveTerminal ()
+{
+}
+
+void
+OctaveTerminal::construct ()
+{
+  m_terminalWidget = new QTerminalWidget (0, this);
+  m_terminalWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+  setFocusProxy (m_terminalWidget);
+
+  QVBoxLayout *layout = new QVBoxLayout ();
+  layout->addWidget (m_terminalWidget);
+  setLayout (layout);
+}
+
+void
+OctaveTerminal::openTerminal ()
+{
+  int fdm, fds;
+  if (openpty (&fdm, &fds, 0, 0, 0) < 0)
+    {
+      assert (0);
+    }
+  dup2 (fds, 0);
+  dup2 (fds, 1);
+  dup2 (fds, 2);
+
+  m_terminalWidget->openTeletype (fdm);
+}

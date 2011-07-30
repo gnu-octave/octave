@@ -193,7 +193,7 @@ FileEditorMdiSubWindow::saveFileAs ()
   if (saveDir==UNNAMED_FILE)
     saveDir = QDir::homePath();
   QString saveFileName = QFileDialog::getSaveFileName(
-        this, "Save File", saveDir,SAVE_FILE_FILTER);
+        this, "Save File As", saveDir,SAVE_FILE_FILTER);
   if(saveFileName.isEmpty())
     return;
   saveFile(saveFileName);
@@ -288,7 +288,7 @@ FileEditorMdiSubWindow::construct ()
   QAction *saveAction = new QAction (
         QIcon::fromTheme("document-save",style->standardIcon (QStyle::SP_DriveHDIcon)),
         tr("&Save File"), m_toolBar);
-  QAction *saveActionAs = new QAction (
+  QAction *saveAsAction = new QAction (
         QIcon::fromTheme("document-save-as",style->standardIcon (QStyle::SP_DriveFDIcon)),
         tr("Save File &As"), m_toolBar);
   QAction *undoAction = new QAction (
@@ -298,11 +298,20 @@ FileEditorMdiSubWindow::construct ()
         QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
         tr("&Redo"), m_toolBar);
 
+  // short cuts
+  closeAction->setShortcut(QKeySequence::Close);
+  newAction->setShortcut(QKeySequence::New);
+  openAction->setShortcut(QKeySequence::Open);
+  saveAction->setShortcut(QKeySequence::Save);
+  saveAsAction->setShortcut(QKeySequence::SaveAs);
+  undoAction->setShortcut(QKeySequence::Undo);
+  redoAction->setShortcut(QKeySequence::Redo);
+
   m_toolBar->addAction (closeAction);
   m_toolBar->addAction (newAction);
   m_toolBar->addAction (openAction);
   m_toolBar->addAction (saveAction);
-  m_toolBar->addAction (saveActionAs);
+  m_toolBar->addAction (saveAsAction);
   m_toolBar->addAction (undoAction);
   m_toolBar->addAction (redoAction);
 
@@ -319,7 +328,7 @@ FileEditorMdiSubWindow::construct ()
   connect (undoAction, SIGNAL (triggered ()), m_editor, SLOT (undo ()));
   connect (redoAction, SIGNAL (triggered ()), m_editor, SLOT (redo ()));
   connect (saveAction, SIGNAL (triggered ()), this, SLOT (saveFile ()));
-  connect (saveActionAs, SIGNAL (triggered ()), this, SLOT (saveFileAs ()));
+  connect (saveAsAction, SIGNAL (triggered ()), this, SLOT (saveFileAs ()));
 
   // TODO: Do we still need tool tips in the status bar? Tool tips are now
   //       shown directly at the theme icons
@@ -328,9 +337,10 @@ FileEditorMdiSubWindow::construct ()
   connect (undoAction, SIGNAL (hovered ()), this, SLOT (showToolTipUndo ()));
   connect (redoAction, SIGNAL (hovered ()), this, SLOT (showToolTipRedo ()));
   connect (saveAction, SIGNAL (hovered ()), this, SLOT (showToolTipSave ()));
-  connect (saveActionAs, SIGNAL (hovered ()), this,SLOT (showToolTipSaveAs ()));
+  connect (saveAsAction, SIGNAL (hovered ()), this,SLOT (showToolTipSaveAs ()));
 
   m_fileName = "";
   setWindowTitle (m_fileName);
+  setWindowIcon(QIcon::fromTheme("accessories-text-editor",style->standardIcon (QStyle::SP_FileIcon)));
   show ();
 }

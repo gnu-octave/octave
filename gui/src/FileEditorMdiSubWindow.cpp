@@ -199,6 +199,8 @@ FileEditorMdiSubWindow::saveFileAs ()
   saveFile(saveFileName);
 }
 
+// TODO: Do we still need tool tips in the status bar? Tool tips are now
+//       shown directly at the theme icons
 void
 FileEditorMdiSubWindow::showToolTipNew ()
 {
@@ -272,13 +274,29 @@ FileEditorMdiSubWindow::construct ()
   m_editor->setIndentationsUseTabs (false);
   m_editor->setAutoCompletionThreshold (2);
 
-  QAction *closeAction = new QAction (style->standardIcon (QStyle::SP_DialogCloseButton), "", m_toolBar);
-  QAction *newAction = new QAction (style->standardIcon (QStyle::SP_FileIcon), "", m_toolBar);
-  QAction *openAction = new QAction (style->standardIcon (QStyle::SP_DirOpenIcon), "", m_toolBar);
-  QAction *saveAction = new QAction (style->standardIcon (QStyle::SP_DriveHDIcon), "", m_toolBar);
-  QAction *saveActionAs = new QAction (style->standardIcon (QStyle::SP_DriveFDIcon), "", m_toolBar);
-  QAction *undoAction = new QAction (style->standardIcon (QStyle::SP_ArrowLeft), "", m_toolBar);
-  QAction *redoAction = new QAction (style->standardIcon (QStyle::SP_ArrowRight), "", m_toolBar);
+  // Theme icons with QStyle icons as fallback
+  m_toolBar->setIconSize(QSize(20,20)); // smaller icons (make configurable in user settings?)
+  QAction *closeAction = new QAction (
+        QIcon::fromTheme("window-close",style->standardIcon (QStyle::SP_DialogCloseButton)),
+        tr("&Close File"), m_toolBar);
+  QAction *newAction = new QAction (
+        QIcon::fromTheme("document-new",style->standardIcon (QStyle::SP_FileIcon)),
+        tr("&New File"), m_toolBar);
+  QAction *openAction = new QAction (
+        QIcon::fromTheme("document-open",style->standardIcon (QStyle::SP_DirOpenIcon)),
+        tr("&Open File"), m_toolBar);
+  QAction *saveAction = new QAction (
+        QIcon::fromTheme("document-save",style->standardIcon (QStyle::SP_DriveHDIcon)),
+        tr("&Save File"), m_toolBar);
+  QAction *saveActionAs = new QAction (
+        QIcon::fromTheme("document-save-as",style->standardIcon (QStyle::SP_DriveFDIcon)),
+        tr("Save File &As"), m_toolBar);
+  QAction *undoAction = new QAction (
+        QIcon::fromTheme("edit-undo",style->standardIcon (QStyle::SP_ArrowLeft)),
+        tr("&Undo"), m_toolBar);
+  QAction *redoAction = new QAction (
+        QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
+        tr("&Redo"), m_toolBar);
 
   m_toolBar->addAction (closeAction);
   m_toolBar->addAction (newAction);
@@ -303,13 +321,14 @@ FileEditorMdiSubWindow::construct ()
   connect (saveAction, SIGNAL (triggered ()), this, SLOT (saveFile ()));
   connect (saveActionAs, SIGNAL (triggered ()), this, SLOT (saveFileAs ()));
 
+  // TODO: Do we still need tool tips in the status bar? Tool tips are now
+  //       shown directly at the theme icons
   connect (newAction, SIGNAL (hovered ()), this, SLOT (showToolTipNew ()));
   connect (openAction, SIGNAL (hovered ()), this, SLOT (showToolTipOpen ()));
   connect (undoAction, SIGNAL (hovered ()), this, SLOT (showToolTipUndo ()));
   connect (redoAction, SIGNAL (hovered ()), this, SLOT (showToolTipRedo ()));
   connect (saveAction, SIGNAL (hovered ()), this, SLOT (showToolTipSave ()));
-  connect (saveActionAs, SIGNAL (hovered ()), this,
-	   SLOT (showToolTipSaveAs ()));
+  connect (saveActionAs, SIGNAL (hovered ()), this,SLOT (showToolTipSaveAs ()));
 
   m_fileName = "";
   setWindowTitle (m_fileName);

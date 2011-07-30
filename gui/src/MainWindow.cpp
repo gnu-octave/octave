@@ -54,11 +54,55 @@ MainWindow::handleOpenFileRequest (QString fileName)
     }
   else
     {
-      FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow (m_centralMdiArea);
-      subWindow->setAttribute (Qt::WA_DeleteOnClose);
-      subWindow->loadFile (fileName);
+      openEditorFile(fileName);
     }
 }
+
+void
+MainWindow::openEditor ()
+{
+  openEditorFile(QString());
+}
+void
+MainWindow::openEditorFile (QString fileName)
+{
+  FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow (m_centralMdiArea);
+  subWindow->setAttribute (Qt::WA_DeleteOnClose);
+  // check whether lexer is already prepared and prepare it if not
+  if ( m_lexer == NULL )
+    {
+      // this has to be done only once, not for each editor
+      m_lexer = new LexerOctaveGui();
+      m_lexer->setDefaultFont(QFont("Monospace",10));
+      // TODO: Autoindent not working as it should
+      m_lexer->setAutoIndentStyle(QsciScintilla::AiMaintain ||
+                                  QsciScintilla::AiOpening  ||
+                                  QsciScintilla::AiClosing);
+      // The API info that is used for auto completion
+      // TODO: Where to store a file with API info (raw or prepared?)?
+      // TODO: Also provide infos on octave-forge functions?
+      // TODO: Also provide infos on function parameters?
+      // By now, use the keywords-list from syntax highlighting
+       m_lexerAPI = new QsciAPIs(m_lexer);
+       QString keyword;
+       QStringList keywordList;
+       keyword     = m_lexer->keywords(1);  // get whole string with all keywords
+       keywordList = keyword.split(QRegExp("\\s+"));  // split into single strings
+       int i;
+       for ( i=0; i<keywordList.size(); i++ )
+         {
+           m_lexerAPI->add(keywordList.at(i));  // add single strings to the API
+         }
+       m_lexerAPI->prepare();           // prepare API info ... this make take some time
+    }
+  subWindow->setEditorLexer(m_lexer);   // set the already prepared lexer
+
+  if ( fileName.isEmpty() )
+    subWindow->newFile ();
+  else
+    subWindow->loadFile (fileName);
+}
+
 
 void
 MainWindow::reportStatusMessage (QString statusMessage)
@@ -110,14 +154,6 @@ void
 MainWindow::alignMdiWindows ()
 {
   m_centralMdiArea->tileSubWindows ();
-}
-
-void
-MainWindow::openEditor ()
-{
-  FileEditorMdiSubWindow *subWindow = new FileEditorMdiSubWindow (m_centralMdiArea);
-  subWindow->setAttribute (Qt::WA_DeleteOnClose);
-  subWindow->newFile ();
 }
 
 void
@@ -266,6 +302,8 @@ MainWindow::construct ()
   m_ircWidgetSubWindow->setWindowTitle (tr ("Chat"));
   m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/chat.png"));
   m_ircWidgetSubWindow->setStatusTip(tr ("Instantly chat with other Octave users for help."));
+
+  m_lexer = NULL;  // initialise the empty lexer for the edtiors
 
   QMenu *controlMenu = menuBar ()->addMenu (tr ("Octave"));
   QAction *settingsAction = controlMenu->addAction (tr ("Settings"));

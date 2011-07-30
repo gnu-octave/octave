@@ -211,6 +211,12 @@ FileEditorMdiSubWindow::saveFileAs ()
   saveFile(saveFileName);
 }
 
+void
+FileEditorMdiSubWindow::setEditorLexer (LexerOctaveGui* lexer)
+{
+  m_editor->setLexer(lexer);
+}
+
 // TODO: Do we still need tool tips in the status bar? Tool tips are now
 //       shown directly at the theme icons
 void
@@ -264,27 +270,22 @@ FileEditorMdiSubWindow::construct ()
   m_statusBar = new QStatusBar (this);
   m_editor = new QsciScintilla (this);
 
-// Not available in the Debian repos yet!
-/*
-    m_lexer = new QsciLexerOctave(m_editor);
-    m_lexer->setDefaultFont(QFont("Monospace",9));
-    m_lexer->setAutoIndentStyle(QsciScintilla::AiMaintain ||
-                                QsciScintilla::AiOpening  ||
-                                QsciScintilla::AiClosing);
-    m_editor->setLexer(m_lexer);
-*/
-
-  m_editor->setMarginType (1, QsciScintilla::TextMargin);
-  m_editor->setMarginType (2, QsciScintilla::SymbolMargin);
-  m_editor->setFolding (QsciScintilla::BoxedTreeFoldStyle, 2);
-  m_editor->setMarginLineNumbers (1, true);
-  m_editor->setMarginWidth (1, "99999");
+  m_editor->setMarginType (1, QsciScintilla::SymbolMargin);
+  m_editor->setMarginType (2, QsciScintilla::TextMargin);
+  m_editor->setMarginType (3, QsciScintilla::SymbolMargin);
+  m_editor->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
+  m_editor->setMarginLineNumbers (2, true);
+  m_editor->setMarginWidth (2, "99999");
+  m_editor->setMarginsForegroundColor (QColor(96,96,96));
+  m_editor->setMarginsBackgroundColor (QColor(224,224,224));
 
   m_editor->setBraceMatching (QsciScintilla::SloppyBraceMatch);
   m_editor->setAutoIndent (true);
   m_editor->setIndentationWidth (2);
   m_editor->setIndentationsUseTabs (false);
-  m_editor->setAutoCompletionThreshold (2);
+  m_editor->autoCompleteFromAll();
+  m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
+  m_editor->setAutoCompletionThreshold (3);
 
   // Theme icons with QStyle icons as fallback
   m_toolBar->setIconSize(QSize(20,20)); // smaller icons (make configurable in user settings?)
@@ -311,7 +312,6 @@ FileEditorMdiSubWindow::construct ()
         tr("&Redo"), m_toolBar);
 
   // short cuts
-  closeAction->setShortcut(QKeySequence::Close);
   newAction->setShortcut(QKeySequence::New);
   openAction->setShortcut(QKeySequence::Open);
   saveAction->setShortcut(QKeySequence::Save);

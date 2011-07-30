@@ -26,6 +26,7 @@
 #include <QStatusBar>
 #include <QToolBar>
 #include <QQueue>
+#include <Qsci/qsciapis.h>
 #include "ResourceManager.h"
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"
@@ -34,6 +35,7 @@
 #include "FilesDockWidget.h"
 #include "BrowserWidget.h"
 #include "IRCWidget.h"
+#include "lexer/lexeroctavegui.h"
 
 /**
   * \class MainWindow
@@ -75,6 +77,7 @@ public slots:
   void handleCommandDoubleClicked (QString command);
   void alignMdiWindows ();
   void openEditor ();
+  void openEditorFile (QString fileName);
   void openBugTrackerPage ();
   void openAgoraPage ();
   void openOctaveForgePage ();
@@ -105,6 +108,10 @@ private:
   VariablesDockWidget *m_variablesDockWidget;
   HistoryDockWidget *m_historyDockWidget;
   FilesDockWidget *m_filesDockWidget;
+
+  // Editor's lexer
+  LexerOctaveGui *m_lexer;
+  QsciAPIs *m_lexerAPI;
 
   // Toolbars.
   QStatusBar *m_statusBar;

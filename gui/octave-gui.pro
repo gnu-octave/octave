@@ -52,6 +52,7 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 
 # Files associated with the project:
 SOURCES +=\
+        src/lexer/lexeroctavegui.cpp \
         src/terminal/TerminalCharacterDecoder.cpp \
         src/terminal/KeyboardTranslator.cpp \
         src/terminal/Screen.cpp \
@@ -90,6 +91,7 @@ SOURCES +=\
     src/backend/OctaveMainThread.cpp
 
 HEADERS += \
+        src/lexer/lexeroctavegui.h \
         src/terminal/TerminalCharacterDecoder.h \
         src/terminal/Character.h \
         src/terminal/CharacterColor.h \

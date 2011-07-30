@@ -26,7 +26,7 @@
 #include <Qsci/qsciscintilla.h>
 // Not available in the Debian repos yet!
 // #include <Qsci/qscilexeroctave.h>
-#include <Qsci/qsciapis.h>
+#include "lexer/lexeroctavegui.h"
 
 const char UNNAMED_FILE[]     = "<unnamed>";
 const char SAVE_FILE_FILTER[] = "Octave Files  *.m(*.m);;All Files   *.*(*.*)";
@@ -37,8 +37,9 @@ Q_OBJECT public:
   FileEditorMdiSubWindow (QWidget * parent = 0);
   ~FileEditorMdiSubWindow ();
   void loadFile (QString fileName);
+  void setEditorLexer (LexerOctaveGui *lexer);
 
-  public slots:
+public slots:
 
   void newFile ();
   void openFile ();

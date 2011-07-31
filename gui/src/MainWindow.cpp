@@ -28,7 +28,7 @@
 #include "SettingsDialog.h"
 #include "cmd-edit.h"
 
-#define VERSION_STRING "Octave GUI (0.6.9)"
+#define VERSION_STRING "Octave GUI (0.7.1)"
 
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {

@@ -7,105 +7,107 @@
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
         <source>File Editor</source>
-        <translation type="unfinished">Dateieditor</translation>
+        <translation>Dateieditor</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="93"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht lesen:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="105"/>
         <source>File loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei geladen.</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="131"/>
         <source>Do you want to save the current file
 %1 ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie die Datei %1 sichern ?</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="186"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei %1 nicht schreiben:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="198"/>
         <source>File %1 saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei %1 gesichert</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="312"/>
         <source>&amp;Close File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datei schließen</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="315"/>
         <source>&amp;New File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Neue Datei</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="318"/>
         <source>&amp;Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Öffne Datei</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="321"/>
         <source>&amp;Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sichere Datei</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="324"/>
         <source>Save File &amp;As</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichere Datei &amp;als</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="327"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rückgängig</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="330"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wiederholen</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="331"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopieren</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="332"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="333"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Einfügen</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="336"/>
         <source>&amp;Run File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ausführen</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="367"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datei</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="375"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Editieren</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="383"/>
         <source>&amp;Run</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ausführen</translation>
     </message>
 </context>
 <context>
@@ -118,17 +120,17 @@
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="46"/>
         <source>Move up one directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Verzeichnis höher wechseln.</translation>
     </message>
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="49"/>
         <source>Enter the path or filename.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie einen Pfad oder Dateinamen ein.</translation>
     </message>
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="78"/>
         <source>Doubleclick a file to open it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Führen Sie einen Doppelklick aus, um eine Datei zu öffnen.</translation>
     </message>
 </context>
 <context>
@@ -136,12 +138,12 @@
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="36"/>
         <source>Doubleclick a command to transfer it to the terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Führen Sie einen Doppelklick aus, um den Befehl in das Terminal zu übertragen.</translation>
     </message>
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="38"/>
         <source>Enter text to filter the command history.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie Text ein, um die Befehlshistorie zu filtern.</translation>
     </message>
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="41"/>
@@ -158,47 +160,47 @@
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="111"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="113"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommentar</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="115"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehl</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="117"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Zahl</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="119"/>
         <source>Keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Schlüsselwort</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="121"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichenkette in einfachen Hochkommata</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="123"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Operator</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="125"/>
         <source>Identifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezeichner</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="127"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichenkette in doppelten Hochkommata</translation>
     </message>
 </context>
 <context>
@@ -222,7 +224,7 @@
         <location filename="../src/MainWindow.cpp" line="207"/>
         <location filename="../src/MainWindow.cpp" line="340"/>
         <source>About Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Octave</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="219"/>
@@ -232,128 +234,128 @@
     <message>
         <location filename="../src/MainWindow.cpp" line="261"/>
         <source>View the variables in the active workspace.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sehen Sie die Variablen ein, die sich in der aktiven Arbeitsumgebung befinden.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="263"/>
         <source>Browse and search the command history.</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen Sie die Befehlshistorie.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="265"/>
         <source>Browse your files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen Sie Ihre Dateien.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="281"/>
         <source>Terminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminal</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="283"/>
         <source>Enter your commands into the Octave terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie Ihre Befehle in das Octave Terminal ein.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="293"/>
         <source>Browse the Octave documentation for help.</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen Sie die Octave Dokumentation, um Hilfe zu erhalten.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="302"/>
         <source>Chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Chat</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="304"/>
         <source>Instantly chat with other Octave users for help.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tauschen Sie sich direkt mit anderen Octave Benutzern aus, um Hilfe zu erhalten.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="308"/>
         <source>Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="309"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="311"/>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="313"/>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Oberfläche</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="315"/>
         <source>Align Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Fenster ausrichten</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="317"/>
         <location filename="../src/MainWindow.cpp" line="329"/>
         <source>Workspace</source>
-        <translation type="unfinished">Arbeitsumgebung</translation>
+        <translation>Arbeitsumgebung</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="320"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehlshistorie</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="323"/>
         <source>File Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateibrowser</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="327"/>
         <source>Open New Editor Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Neues Editorfenster öffnen</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="330"/>
         <source>Load</source>
-        <translation type="unfinished">Laden</translation>
+        <translation>Laden</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="331"/>
         <source>Save</source>
-        <translation type="unfinished">Sichern</translation>
+        <translation>Sichern</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="333"/>
         <source>Clear</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="335"/>
         <source>Community</source>
-        <translation type="unfinished"></translation>
+        <translation>Gemeinschaft</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="336"/>
         <source>Report Bug</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler melden</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="337"/>
         <source>Agora</source>
-        <translation type="unfinished"></translation>
+        <translation>Agora</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="338"/>
         <source>Octave Forge</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave Forge</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="341"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Qt</translation>
     </message>
     <message>
         <source>Octave Toolbar</source>
@@ -419,107 +421,107 @@ Please, change it.
     <message>
         <location filename="../src/SettingsDialog.ui" line="29"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="39"/>
         <source>Chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Char</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="47"/>
         <source>Connect to #octave on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Beim Start mit #octave verbinden</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="57"/>
         <source>Show message of the day</source>
-        <translation type="unfinished"></translation>
+        <translation>Nachricht des Tages anzeigen (MOTD)</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="64"/>
         <source>Show topic</source>
-        <translation type="unfinished"></translation>
+        <translation>Thema des Chatkanals anzeigen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="71"/>
         <source>Automatically identify on NickServ</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch bei NickServ identifizieren</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="78"/>
         <source>Warning: Your password will be stored in ~/.octavegui in human-readable format. Do not enter your password if you worry about security issues.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnung: Ihre Passwort wird unter ~/.octave-gui in einem menschenlesbaren Format gesichert. Hinterlegen Sie nicht Ihr Password, wenn Sie Bedenken über die Sicherheit haben.</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="103"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort:</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="125"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="133"/>
         <source>Use custom file editor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierten Editor verwenden:</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="143"/>
         <source>emacs</source>
-        <translation type="unfinished"></translation>
+        <translation>emacs</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="166"/>
         <source>File Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateibrowser</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="172"/>
         <source>Show filenames</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateinamen anzeigen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="179"/>
         <source>Show file size</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateigröße anzeigen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="186"/>
         <source>Show file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateityp anzeigen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="193"/>
         <source>Show date of last modification</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum der letzten Änderung anzeigen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="200"/>
         <source>Show hidden files</source>
-        <translation type="unfinished"></translation>
+        <translation>Versteckte Dateien anzeigen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="207"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Alternierende Farben verwenden</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="223"/>
         <source>Reset to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardeinstellungen wiederherstellen</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="246"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportieren</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="256"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importieren</translation>
     </message>
 </context>
 <context>

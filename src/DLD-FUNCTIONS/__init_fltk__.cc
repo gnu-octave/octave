@@ -861,8 +861,11 @@ public:
 
   void show_canvas (void)
   {
-    canvas->show ();
-    canvas->make_current ();
+    if (fp.is_visible ())
+      {
+        canvas->show ();
+        canvas->make_current ();
+      }
   }
 
   void hide_canvas (void)

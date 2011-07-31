@@ -75,10 +75,10 @@ function retval = unwrap (x, tol, dim)
   idx{dim} = [1,1:m-1];
   d = x(idx{:}) - x;
 
-  ## Find only the peaks, and multiply them by the range so that there
-  ## are kronecker deltas at each wrap point multiplied by the range
-  ## value.
-  p =  rng * (((d > tol) > 0) - ((d < -tol) > 0));
+  ## Find only the peaks, and multiply them by the appropriate amount
+  ## of ranges so that there are kronecker deltas at each wrap point
+  ## multiplied by the appropriate amount of range values.
+  p =  ceil(abs(d)./rng) .* rng .* (((d > tol) > 0) - ((d < -tol) > 0));
 
   ## Now need to "integrate" this so that the deltas become steps.
   r = cumsum (p, dim);
@@ -128,4 +128,28 @@ endfunction
 %! t(++i) = xassert(any(abs(r - unwrap(w,0.8)) > 100));
 %!
 %! assert(all(t));
-
+%!
+%!test
+%! A = [pi*(-4), pi*(-2+1/6), pi/4, pi*(2+1/3), pi*(4+1/2), pi*(8+2/3), pi*(16+1), pi*(32+3/2), pi*64];
+%! assert (unwrap(A), unwrap(A, pi));
+%! assert (unwrap(A, pi), unwrap(A, pi, 2));
+%! assert (unwrap(A', pi), unwrap(A', pi, 1));
+%!
+%!test
+%! A = [pi*(-4); pi*(2+1/3); pi*(16+1)];
+%! B = [pi*(-2+1/6); pi*(4+1/2); pi*(32+3/2)];
+%! C = [pi/4; pi*(8+2/3); pi*64];
+%! D = [pi*(-2+1/6); pi*(2+1/3); pi*(8+2/3)];
+%! E(:, :, 1) = [A, B, C, D];
+%! E(:, :, 2) = [A+B, B+C, C+D, D+A];
+%! F(:, :, 1) = [unwrap(A), unwrap(B), unwrap(C), unwrap(D)];
+%! F(:, :, 2) = [unwrap(A+B), unwrap(B+C), unwrap(C+D), unwrap(D+A)];
+%! assert (unwrap(E), F);
+%!
+%!test
+%! A = [0, 2*pi, 4*pi, 8*pi, 16*pi, 65536*pi];
+%! B = [pi*(-2+1/6), pi/4, pi*(2+1/3), pi*(4+1/2), pi*(8+2/3), pi*(16+1), pi*(32+3/2), pi*64];
+%! assert (unwrap(A), zeros(1, length(A)));
+%! assert (diff(unwrap(B), 1)<2*pi, true(1, length(B)-1));
+%!
+%!error unwrap()

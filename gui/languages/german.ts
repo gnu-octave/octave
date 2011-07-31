@@ -4,37 +4,72 @@
 <context>
     <name>FileEditorMdiSubWindow</name>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="79"/>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="172"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="91"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="184"/>
         <source>File Editor</source>
         <translation type="unfinished">Dateieditor</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="80"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="104"/>
         <source>File loaded.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="118"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="130"/>
         <source>Do you want to save the current file
 %1 ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="173"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="197"/>
         <source>File %1 saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="294"/>
+        <source>&amp;Close File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="297"/>
+        <source>&amp;New File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="300"/>
+        <source>&amp;Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="303"/>
+        <source>&amp;Save File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="306"/>
+        <source>Save File &amp;As</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="309"/>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="312"/>
+        <source>&amp;Redo</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -84,6 +119,54 @@
     </message>
 </context>
 <context>
+    <name>LexerOctaveGui</name>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="111"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="113"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="115"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="117"/>
+        <source>Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="119"/>
+        <source>Keyword</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="121"/>
+        <source>Single-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="123"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="125"/>
+        <source>Identifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lexer/lexeroctavegui.cpp" line="127"/>
+        <source>Double-quoted string</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../src/MainWindow.cpp" line="46"/>
@@ -91,149 +174,149 @@
         <translation>Öffne Datei.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="79"/>
+        <location filename="../src/MainWindow.cpp" line="123"/>
         <source>Save Workspace</source>
         <translation>Speichere Arbeitsumgebung</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="89"/>
+        <location filename="../src/MainWindow.cpp" line="133"/>
         <source>Load Workspace</source>
         <translation>Lade Arbeitsumgebung</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="171"/>
-        <location filename="../src/MainWindow.cpp" line="302"/>
+        <location filename="../src/MainWindow.cpp" line="207"/>
+        <location filename="../src/MainWindow.cpp" line="340"/>
         <source>About Octave</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="183"/>
+        <location filename="../src/MainWindow.cpp" line="219"/>
         <source>Saving data and shutting down.</source>
         <translation>Speichere Daten und schließe.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="225"/>
+        <location filename="../src/MainWindow.cpp" line="261"/>
         <source>View the variables in the active workspace.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="227"/>
+        <location filename="../src/MainWindow.cpp" line="263"/>
         <source>Browse and search the command history.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="229"/>
+        <location filename="../src/MainWindow.cpp" line="265"/>
         <source>Browse your files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="245"/>
+        <location filename="../src/MainWindow.cpp" line="281"/>
         <source>Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="247"/>
+        <location filename="../src/MainWindow.cpp" line="283"/>
         <source>Enter your commands into the Octave terminal.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="257"/>
+        <location filename="../src/MainWindow.cpp" line="293"/>
         <source>Browse the Octave documentation for help.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="266"/>
+        <location filename="../src/MainWindow.cpp" line="302"/>
         <source>Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="268"/>
+        <location filename="../src/MainWindow.cpp" line="304"/>
         <source>Instantly chat with other Octave users for help.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="270"/>
+        <location filename="../src/MainWindow.cpp" line="308"/>
         <source>Octave</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="271"/>
+        <location filename="../src/MainWindow.cpp" line="309"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="273"/>
+        <location filename="../src/MainWindow.cpp" line="311"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="275"/>
+        <location filename="../src/MainWindow.cpp" line="313"/>
         <source>Interface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="277"/>
+        <location filename="../src/MainWindow.cpp" line="315"/>
         <source>Align Windows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="279"/>
-        <location filename="../src/MainWindow.cpp" line="291"/>
+        <location filename="../src/MainWindow.cpp" line="317"/>
+        <location filename="../src/MainWindow.cpp" line="329"/>
         <source>Workspace</source>
         <translation type="unfinished">Arbeitsumgebung</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="282"/>
+        <location filename="../src/MainWindow.cpp" line="320"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="285"/>
+        <location filename="../src/MainWindow.cpp" line="323"/>
         <source>File Browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="289"/>
+        <location filename="../src/MainWindow.cpp" line="327"/>
         <source>Open New Editor Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="292"/>
+        <location filename="../src/MainWindow.cpp" line="330"/>
         <source>Load</source>
         <translation type="unfinished">Laden</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="293"/>
+        <location filename="../src/MainWindow.cpp" line="331"/>
         <source>Save</source>
         <translation type="unfinished">Sichern</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="295"/>
+        <location filename="../src/MainWindow.cpp" line="333"/>
         <source>Clear</source>
         <translation type="unfinished">Löschen</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="297"/>
+        <location filename="../src/MainWindow.cpp" line="335"/>
         <source>Community</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="298"/>
+        <location filename="../src/MainWindow.cpp" line="336"/>
         <source>Report Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="299"/>
+        <location filename="../src/MainWindow.cpp" line="337"/>
         <source>Agora</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="300"/>
+        <location filename="../src/MainWindow.cpp" line="338"/>
         <source>Octave Forge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="303"/>
+        <location filename="../src/MainWindow.cpp" line="341"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -250,7 +333,7 @@
         <translation type="obsolete">Dateieditor</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="255"/>
+        <location filename="../src/MainWindow.cpp" line="291"/>
         <source>Documentation</source>
         <translation>Dokumentation</translation>
     </message>

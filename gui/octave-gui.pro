@@ -26,7 +26,8 @@ UI_DIR              = ui-files                      # Folder for ui files
 MOC_DIR             = moc-files                     # Folder for moc files
 OBJECTS_DIR         = object-files                  # Folder for object files
 
-TRANSLATIONS        += languages/german             # Available translations
+TRANSLATIONS        += languages/generic.ts \
+                       languages/german.ts          # Available translations
 LIBS                += -lqscintilla2
 
 mac {

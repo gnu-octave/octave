@@ -19,8 +19,10 @@
 #ifndef FILEEDITORMDISUBWINDOW_H
 #define FILEEDITORMDISUBWINDOW_H
 
+#include "OctaveTerminal.h"
 #include <QMdiSubWindow>
 #include <QToolBar>
+#include <QMenuBar>
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <Qsci/qsciscintilla.h>
@@ -37,7 +39,7 @@ Q_OBJECT public:
   FileEditorMdiSubWindow (QWidget * parent = 0);
   ~FileEditorMdiSubWindow ();
   void loadFile (QString fileName);
-  void setEditorLexer (LexerOctaveGui *lexer);
+  void initEditor (OctaveTerminal *terminal, LexerOctaveGui *lexer);
 
 public slots:
 
@@ -61,14 +63,17 @@ protected:
 private:
   int checkFileModified (QString msg);
   void construct ();
+  QMenuBar *m_menuBar;
   QToolBar *m_toolBar;
   QsciScintilla *m_editor;
   QStatusBar *m_statusBar;
   QString m_fileName;
+  OctaveTerminal* m_octave;
   bool m_modified;
 
 private slots:
   void handleModificationChanged(bool modified);
+  void runFile();
 
 };
 

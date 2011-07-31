@@ -115,6 +115,7 @@ private:
 
   // Toolbars.
   QStatusBar *m_statusBar;
+
 };
 
 #endif // MAINWINDOW_H

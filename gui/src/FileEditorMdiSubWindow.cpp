@@ -17,6 +17,7 @@
  */
 
 #include "FileEditorMdiSubWindow.h"
+#include "MainWindow.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
@@ -211,10 +212,24 @@ FileEditorMdiSubWindow::saveFileAs ()
   saveFile(saveFileName);
 }
 
+// handle the run command
 void
-FileEditorMdiSubWindow::setEditorLexer (LexerOctaveGui* lexer)
+FileEditorMdiSubWindow::runFile ()
+{
+  if (m_editor->isModified ())
+    saveFile(m_fileName);
+  m_octave->sendText (QString ("run \'%1\'\n").arg (m_fileName));
+  m_octave->setFocus ();
+}
+
+// function for setting the already existing lexer from MainWindow
+void
+FileEditorMdiSubWindow::initEditor (OctaveTerminal* terminal,
+                                    LexerOctaveGui* lexer)
 {
   m_editor->setLexer(lexer);
+  m_octave = terminal; // for sending commands to octave
+                       // TODO: make a global commandOctave function?
 }
 
 // TODO: Do we still need tool tips in the status bar? Tool tips are now
@@ -266,6 +281,7 @@ FileEditorMdiSubWindow::construct ()
 {
   QStyle *style = QApplication::style ();
   setWidget (new QWidget ());
+  m_menuBar = new QMenuBar (this);
   m_toolBar = new QToolBar (this);
   m_statusBar = new QStatusBar (this);
   m_editor = new QsciScintilla (this);
@@ -287,8 +303,9 @@ FileEditorMdiSubWindow::construct ()
   m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
   m_editor->setAutoCompletionThreshold (3);
 
+  // The Actions
+
   // Theme icons with QStyle icons as fallback
-  m_toolBar->setIconSize(QSize(20,20)); // smaller icons (make configurable in user settings?)
   QAction *closeAction = new QAction (
         QIcon::fromTheme("window-close",style->standardIcon (QStyle::SP_DialogCloseButton)),
         tr("&Close File"), m_toolBar);
@@ -310,6 +327,12 @@ FileEditorMdiSubWindow::construct ()
   QAction *redoAction = new QAction (
         QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
         tr("&Redo"), m_toolBar);
+  QAction *copyAction = new QAction (QIcon::fromTheme("edit-copy"),tr("&Copy"),m_toolBar);
+  QAction *cutAction = new QAction (QIcon::fromTheme("edit-cut"),tr("Cu&t"),m_toolBar);
+  QAction *pasteAction = new QAction (QIcon::fromTheme("edit-paste"),tr("&Paste"),m_toolBar);
+  QAction *runAction = new QAction (
+        QIcon::fromTheme("media-play",style->standardIcon (QStyle::SP_MediaPlay)),
+        tr("&Run File"), m_toolBar);
 
   // short cuts
   newAction->setShortcut(QKeySequence::New);
@@ -318,16 +341,50 @@ FileEditorMdiSubWindow::construct ()
   saveAsAction->setShortcut(QKeySequence::SaveAs);
   undoAction->setShortcut(QKeySequence::Undo);
   redoAction->setShortcut(QKeySequence::Redo);
+  copyAction->setShortcut(QKeySequence::Copy);
+  cutAction->setShortcut(QKeySequence::Cut);
+  pasteAction->setShortcut(QKeySequence::Paste);
+  runAction->setShortcut(Qt::Key_F5);
 
+  // toolbar
+  m_toolBar->setIconSize(QSize(20,20)); // smaller icons (make configurable in user settings?)
   m_toolBar->addAction (closeAction);
   m_toolBar->addAction (newAction);
   m_toolBar->addAction (openAction);
   m_toolBar->addAction (saveAction);
   m_toolBar->addAction (saveAsAction);
+  m_toolBar->addSeparator();
   m_toolBar->addAction (undoAction);
   m_toolBar->addAction (redoAction);
+  m_toolBar->addAction (copyAction);
+  m_toolBar->addAction (cutAction);
+  m_toolBar->addAction (pasteAction);
+  m_toolBar->addSeparator();
+  m_toolBar->addAction (runAction);
+
+  // menu bar
+  QMenu *fileMenu = new QMenu(tr("&File"),m_menuBar);
+  fileMenu->addAction(newAction);
+  fileMenu->addAction(openAction);
+  fileMenu->addAction(saveAction);
+  fileMenu->addAction(saveAsAction);
+  fileMenu->addSeparator();
+  fileMenu->addAction (closeAction);
+  m_menuBar->addMenu(fileMenu);
+  QMenu *editMenu = new QMenu(tr("&Edit"),m_menuBar);
+  editMenu->addAction(undoAction);
+  editMenu->addAction(redoAction);
+  fileMenu->addSeparator();
+  editMenu->addAction(copyAction);
+  editMenu->addAction(cutAction);
+  editMenu->addAction(pasteAction);
+  m_menuBar->addMenu(editMenu);
+  QMenu *runMenu = new QMenu(tr("&Run"),m_menuBar);
+  runMenu->addAction(runAction);
+  m_menuBar->addMenu(runMenu);
 
   QVBoxLayout *layout = new QVBoxLayout ();
+  layout->addWidget (m_menuBar);
   layout->addWidget (m_toolBar);
   layout->addWidget (m_editor);
   layout->addWidget (m_statusBar);
@@ -339,8 +396,12 @@ FileEditorMdiSubWindow::construct ()
   connect (openAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
   connect (undoAction, SIGNAL (triggered ()), m_editor, SLOT (undo ()));
   connect (redoAction, SIGNAL (triggered ()), m_editor, SLOT (redo ()));
+  connect (copyAction, SIGNAL (triggered ()), m_editor, SLOT (copy ()));
+  connect (cutAction, SIGNAL (triggered ()), m_editor, SLOT (cut ()));
+  connect (pasteAction, SIGNAL (triggered ()), m_editor, SLOT (paste ()));
   connect (saveAction, SIGNAL (triggered ()), this, SLOT (saveFile ()));
   connect (saveAsAction, SIGNAL (triggered ()), this, SLOT (saveFileAs ()));
+  connect (runAction, SIGNAL (triggered ()), this, SLOT (runFile ()));
 
   // TODO: Do we still need tool tips in the status bar? Tool tips are now
   //       shown directly at the theme icons

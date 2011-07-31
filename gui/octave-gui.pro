@@ -27,7 +27,8 @@ MOC_DIR             = moc-files                     # Folder for moc files
 OBJECTS_DIR         = object-files                  # Folder for object files
 
 TRANSLATIONS        += languages/generic.ts \
-                       languages/german.ts          # Available translations
+                       languages/german.ts \
+                       languages/pt-br.ts           # Available translations
 LIBS                += -lqscintilla2
 
 mac {

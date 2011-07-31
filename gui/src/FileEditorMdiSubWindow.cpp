@@ -281,6 +281,7 @@ FileEditorMdiSubWindow::construct ()
 {
   QStyle *style = QApplication::style ();
   setWidget (new QWidget ());
+
   m_menuBar = new QMenuBar (this);
   m_toolBar = new QToolBar (this);
   m_statusBar = new QStatusBar (this);
@@ -362,7 +363,7 @@ FileEditorMdiSubWindow::construct ()
   m_toolBar->addSeparator();
   m_toolBar->addAction (runAction);
 
-  // menu bar
+  // menu bar  
   QMenu *fileMenu = new QMenu(tr("&File"),m_menuBar);
   fileMenu->addAction(newAction);
   fileMenu->addAction(openAction);
@@ -382,6 +383,7 @@ FileEditorMdiSubWindow::construct ()
   QMenu *runMenu = new QMenu(tr("&Run"),m_menuBar);
   runMenu->addAction(runAction);
   m_menuBar->addMenu(runMenu);
+
 
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (m_menuBar);

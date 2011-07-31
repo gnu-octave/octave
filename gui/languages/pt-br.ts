@@ -4,73 +4,108 @@
 <context>
     <name>FileEditorMdiSubWindow</name>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="91"/>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="184"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
         <source>File Editor</source>
         <translation>Editor de Arquivos</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="93"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Não foi possível ler o arquivo %1: %2.</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="104"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="105"/>
         <source>File loaded.</source>
         <translation>Arquivo carregado.</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="130"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="131"/>
         <source>Do you want to save the current file
 %1 ?</source>
         <translation>Você deseja salvar o arquivo atual %1 ?</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="186"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Não foi possível escrever no arquivo %1: %2.</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="197"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="198"/>
         <source>File %1 saved</source>
         <translation>Arquivo %1 salvo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="294"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="312"/>
         <source>&amp;Close File</source>
         <translation>&amp;Fechar Arquivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="297"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="315"/>
         <source>&amp;New File</source>
         <translation>&amp;Novo Arquivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="300"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="318"/>
         <source>&amp;Open File</source>
         <translation>&amp;Abrir Arquivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="303"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="321"/>
         <source>&amp;Save File</source>
         <translation>&amp;Salvar Arquivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="306"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="324"/>
         <source>Save File &amp;As</source>
         <translation>Salvar Arquivo &amp;Como</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="309"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="327"/>
         <source>&amp;Undo</source>
         <translation>&amp;Desfazer</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="312"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="330"/>
         <source>&amp;Redo</source>
         <translation>&amp;Refazer</translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="331"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="332"/>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="333"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="336"/>
+        <source>&amp;Run File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="367"/>
+        <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="375"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="383"/>
+        <source>&amp;Run</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

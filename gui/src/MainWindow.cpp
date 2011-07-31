@@ -95,7 +95,7 @@ MainWindow::openEditorFile (QString fileName)
          }
        m_lexerAPI->prepare();           // prepare API info ... this make take some time
     }
-  subWindow->setEditorLexer(m_lexer);   // set the already prepared lexer
+  subWindow->initEditor(m_octaveTerminal,m_lexer);   // init necessary informations for editor
 
   if ( fileName.isEmpty() )
     subWindow->newFile ();

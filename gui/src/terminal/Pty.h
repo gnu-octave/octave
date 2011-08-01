@@ -81,21 +81,9 @@ Q_OBJECT public:
      * @param environment A list of key=value pairs which will be added
      * to the environment for the new process.  At the very least this
      * should include an assignment for the TERM environment variable.
-     * @param winid Specifies the value of the WINDOWID environment variable
-     * in the process's environment.
-     * @param addToUtmp Specifies whether a utmp entry should be created for
-     * the pty used.  See K3Process::setUsePty() 
-     * @param dbusService Specifies the value of the KONSOLE_DBUS_SERVICE 
-     * environment variable in the process's environment.
-     * @param dbusSession Specifies the value of the KONSOLE_DBUS_SESSION
-     * environment variable in the process's environment. 
      */
   int start (const QString & program,
-	     const QStringList & arguments,
-	     const QStringList & environment,
-	     ulong winid,
-	     bool addToUtmp,
-	     const QString & dbusService, const QString & dbusSession);
+             const QStringList & arguments);
 
     /** TODO: Document me */
   void setWriteable (bool writeable);
@@ -124,16 +112,6 @@ Q_OBJECT public:
 
     /** */
   char erase () const;
-
-    /**
-     * Returns the process id of the teletype's current foreground
-     * process.  This is the process which is currently reading
-     * input sent to the terminal via. sendData()
-     *
-     * If there is a problem reading the foreground process group,
-     * 0 will be returned.
-     */
-  int foregroundProcessGroup () const;
 
   public slots:
     /**
@@ -169,10 +147,6 @@ protected:
 
 private:
   void init ();
-
-  // takes a list of key=value pairs and adds them
-  // to the environment for the process
-  void addEnvironmentVariables (const QStringList & environment);
 
   int _windowColumns;
   int _windowLines;

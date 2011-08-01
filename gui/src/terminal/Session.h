@@ -35,11 +35,9 @@
 #include "History.h"
 
 class KProcess;
-class KUrl;
 class Emulation;
 class Pty;
 class TerminalDisplay;
-  //class ZModemDialog;
 /**
  * Represents a terminal session consisting of a pseudo-teletype and a terminal emulation.
  * The pseudo-teletype (or PTY) handles I/O between the terminal process and Konsole.
@@ -53,11 +51,8 @@ class TerminalDisplay;
  */
 class Session:public QObject
 {
-Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
-  Q_PROPERTY (QString name READ nameTitle)
-    Q_PROPERTY (int processId READ processId)
-    Q_PROPERTY (QString keyBindings READ keyBindings WRITE setKeyBindings)
-    Q_PROPERTY (QSize size READ size WRITE setSize)
+Q_OBJECT
+public:
   /**
    * Constructs a new session.
    *
@@ -121,44 +116,6 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
    */
   Emulation *emulation () const;
 
-  /** Returns the unique ID for this session. */
-  int sessionId () const;
-
-  /**
-   * This enum describes the contexts for which separate
-   * tab title formats may be specified.
-   */
-  enum TabTitleContext
-  {
-    /** Default tab title format */
-    LocalTabTitle,
-    /**
-     * Tab title format used session currently contains
-     * a connection to a remote computer (via SSH)
-     */
-    RemoteTabTitle
-  };
-
-  /**
-   * Returns true if the session currently contains a connection to a 
-   * remote computer.  It currently supports ssh.
-   */
-  bool isRemote ();
-
-  /**
-   * Sets the format used by this session for tab titles.
-   *
-   * @param context The context whoose format should be set.
-   * @param format The tab title format.  This may be a mixture
-   * of plain text and dynamic elements denoted by a '%' character
-   * followed by a letter.  (eg. %d for directory).  The dynamic
-   * elements available depend on the @p context
-   */
-  void setTabTitleFormat (TabTitleContext context, const QString & format);
-  /** Returns the format used by this session for tab titles. */
-  QString tabTitleFormat (TabTitleContext context) const;
-
-
   /** Returns the arguments passed to the shell process when run() is called. */
   QStringList arguments () const;
   /** Returns the program name of the shell process started when run() is called. */
@@ -183,11 +140,6 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
    * This has no effect once the session has been started.
    */
   void setInitialWorkingDirectory (const QString & dir);
-
-  /**
-   * Returns the current directory of the foreground process in the session
-   */
-  //QString currentWorkingDirectory ();
 
   /**
    * Sets the type of history store used by this session.
@@ -242,16 +194,12 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
   {
     return title (Session::NameRole);
   }
-  /** Returns a title generated from tab format and process information. */
-  QString getDynamicTitle ();
 
   /** Sets the name of the icon associated with this session. */
   void setIconName (const QString & iconName);
   /** Returns the name of the icon associated with this session. */
   QString iconName () const;
 
-  /** Return URL for the session. */
-  //KUrl getUrl();
 
   /** Sets the text of the icon associated with this session. */
   void setIconText (const QString & iconText);
@@ -264,12 +212,6 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
   /** Returns the session's title for the specified @p role. */
   QString title (TitleRole role) const;
 
-  /** 
-   * Specifies whether a utmp entry should be created for the pty used by this session.
-   * If true, KPty::login() is called when the session is started.
-   */
-  void setAddToUtmp (bool);
-
   /**
    * Specifies whether to close the session automatically when the terminal
    * process terminates.
@@ -281,9 +223,6 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
 
   /** Returns true if the user has started a program in the session. */
   bool isForegroundProcessActive ();
-
-  /** Returns the name of the current foreground process. */
-  //QString foregroundProcessName ();
 
   /** Returns the terminal session's window size in lines and columns. */
   QSize size ();
@@ -317,10 +256,6 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
    */
   void refresh ();
 
-  //  void startZModem(const QString &rz, const QString &dir, const QStringList &list);
-  //  void cancelZModem();
-  //  bool isZModemBusy() { return _zmodemBusy; }
-
  /** 
    * Possible values of the @p what parameter for setUserTitle()
    * See "Operating System Controls" section on http://rtfm.etla.org/xterm/ctlseq.html 
@@ -339,10 +274,6 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
   // Sets the text codec used by this sessions terminal emulation.
   void setCodec (QTextCodec * codec);
 
-  // session management
-  //void saveSession(KConfigGroup& group);
-  //void restoreSession(KConfigGroup& group);
-
   public slots:
   /**
    * Starts the terminal session.
@@ -355,14 +286,14 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
    * Returns the environment of this session as a list of strings like
    * VARIABLE=VALUE
    */
-  Q_SCRIPTABLE QStringList environment () const;
+  QStringList environment () const;
 
   /**
    * Sets the environment for this session.
    * @p environment should be a list of strings like
    * VARIABLE=VALUE
    */
-  Q_SCRIPTABLE void setEnvironment (const QStringList & environment);
+  void setEnvironment (const QStringList & environment);
 
   /**
    * Closes the terminal session.  This sends a hangup signal
@@ -371,7 +302,7 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
    * then the terminal connection (the pty) is closed and Konsole waits for the 
    * process to exit.
    */
-  Q_SCRIPTABLE void close ();
+  void close ();
 
   /**
    * Changes the session title or other customizable aspects of the terminal
@@ -384,114 +315,51 @@ Q_OBJECT Q_CLASSINFO ("D-Bus Interface", "org.kde.konsole.Session") public:
   void setUserTitle (int what, const QString & caption);
 
   /**
-   * Enables monitoring for activity in the session.
-   * This will cause notifySessionState() to be emitted
-   * with the NOTIFYACTIVITY state flag when output is
-   * received from the terminal.
-   */
-  Q_SCRIPTABLE void setMonitorActivity (bool);
-
-  /** Returns true if monitoring for activity is enabled. */
-  Q_SCRIPTABLE bool isMonitorActivity () const;
-
-  /**
-   * Enables monitoring for silence in the session.
-   * This will cause notifySessionState() to be emitted
-   * with the NOTIFYSILENCE state flag when output is not
-   * received from the terminal for a certain period of
-   * time, specified with setMonitorSilenceSeconds()
-   */
-  Q_SCRIPTABLE void setMonitorSilence (bool);
-
-  /**
-   * Returns true if monitoring for inactivity (silence)
-   * in the session is enabled.
-   */
-  Q_SCRIPTABLE bool isMonitorSilence () const;
-
-  /** See setMonitorSilence() */
-  Q_SCRIPTABLE void setMonitorSilenceSeconds (int seconds);
-
-  /**
    * Sets whether flow control is enabled for this terminal
    * session.
    */
-  Q_SCRIPTABLE void setFlowControlEnabled (bool enabled);
+  void setFlowControlEnabled (bool enabled);
 
   /** Returns whether flow control is enabled for this terminal session. */
-  Q_SCRIPTABLE bool flowControlEnabled () const;
+  bool flowControlEnabled () const;
 
   /**
    * Sends @p text to the current foreground terminal program.
    */
-  Q_SCRIPTABLE void sendText (const QString & text) const;
+  void sendText (const QString & text) const;
 
    /**
     * Sends a mouse event of type @p eventType emitted by button
     * @p buttons on @p column/@p line to the current foreground
     * terminal program
     */
-  Q_SCRIPTABLE void sendMouseEvent (int buttons, int column, int line,
+  void sendMouseEvent (int buttons, int column, int line,
 				    int eventType);
-
-   /**
-   * Returns the process id of the terminal process.
-   * This is the id used by the system API to refer to the process.
-   */
-  Q_SCRIPTABLE int processId () const;
-
-  /**
-   * Returns the process id of the terminal's foreground process.
-   * This is initially the same as processId() but can change
-   * as the user starts other programs inside the terminal.
-   */
-  //Q_SCRIPTABLE int foregroundProcessId ();
 
   /** Sets the text codec used by this sessions terminal emulation.
     * Overloaded to accept a QByteArray for convenience since DBus
     * does not accept QTextCodec directky.
     */
-  Q_SCRIPTABLE bool setCodec (QByteArray codec);
+  bool setCodec (QByteArray codec);
 
   /** Returns the codec used to decode incoming characters in this
    * terminal emulation
    */
-  Q_SCRIPTABLE QByteArray codec ();
+  QByteArray codec ();
 
   /** Sets the session's title for the specified @p role to @p title.
    *  This is an overloaded member function for setTitle(TitleRole, QString)
    *  provided for convenience since enum data types may not be
    *  exported directly through DBus
    */
-  Q_SCRIPTABLE void setTitle (int role, const QString & title);
+  void setTitle (int role, const QString & title);
 
   /** Returns the session's title for the specified @p role.
    * This is an overloaded member function for  setTitle(TitleRole)
    * provided for convenience since enum data types may not be
    * exported directly through DBus
    */
-  Q_SCRIPTABLE QString title (int role) const;
-
-  /** Returns the "friendly" version of the QUuid of this session.
-  * This is a QUuid with the braces and dashes removed, so it cannot be
-  * used to construct a new QUuid. The same text appears in the
-  * SHELL_SESSION_ID environment variable.
-  */
-  Q_SCRIPTABLE QString shellSessionId () const;
-
-  /** Sets the session's tab title format for the specified @p context to @p format.
-   *  This is an overloaded member function for setTabTitleFormat(TabTitleContext, QString)
-   *  provided for convenience since enum data types may not be
-   *  exported directly through DBus
-   */
-  Q_SCRIPTABLE void setTabTitleFormat (int context, const QString & format);
-
-  /** Returns the session's tab title format for the specified @p context.
-   * This is an overloaded member function for tabTitleFormat(TitleRole)
-   * provided for convenience since enum data types may not be
-   * exported directly through DBus
-   */
-  Q_SCRIPTABLE QString tabTitleFormat (int context) const;
+  QString title (int role) const;
 
 signals:
 
@@ -518,9 +386,6 @@ signals:
    * of NOTIFYNORMAL, NOTIFYSILENCE or NOTIFYACTIVITY
    */
   void stateChanged (int state);
-
-  /** Emitted when a bell event occurs in the session. */
-  void bellRequest (const QString & message);
 
   /**
    * Requests that the color the text for any tabs associated with
@@ -568,9 +433,8 @@ signals:
   */
   void flowControlEnabledChanged (bool enabled);
 
-  private slots:void done (int);
-
-  //  void fireZModemDetected();
+private slots:
+  void done (int);
 
   void onReceiveBlock (const char *buffer, int len);
   void monitorTimerDone ();
@@ -582,17 +446,11 @@ signals:
   //automatically detach views from sessions when view is destroyed
   void viewDestroyed (QObject * view);
 
-  //void zmodemReadStatus();
-  //void zmodemReadAndSendBlock();
-  //void zmodemRcvBlock(const char *data, int len);
-  //void zmodemFinished();
-
   void updateFlowControlState (bool suspended);
   void updateWindowSize (int lines, int columns);
 private:
 
   void updateTerminalSize ();
-  WId windowId () const;
   bool kill (int signal);
   // print a warning message in the terminal.  This is used
   // if the program fails to start, or if the shell exits in 
@@ -628,7 +486,6 @@ private:
 
   QString _iconName;
   QString _iconText;		// as set by: echo -en '\033]1;IconText\007
-  bool _addToUtmp;
   bool _flowControl;
   bool _fullScripting;
 
@@ -642,13 +499,6 @@ private:
   QString _currentWorkingDir;
 
   int _foregroundPid;
-
-  // ZModem
-  //  bool           _zmodemBusy;
-  //  KProcess*      _zmodemProc;
-  //  ZModemDialog*  _zmodemProgress;
-
-  // Color/Font Changes by ESC Sequences
 
   QColor _modifiedBackground;	// as set by: echo -en '\033]11;Color\007
 
@@ -733,12 +583,3 @@ private:
 };
 
 #endif
-
-/*
-  Local Variables:
-  mode: c++
-  c-file-style: "stroustrup"
-  indent-tabs-mode: nil
-  tab-width: 4
-  End:
-*/

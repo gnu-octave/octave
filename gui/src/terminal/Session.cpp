@@ -97,13 +97,9 @@ createUuid ()
 Session::Session (QObject * parent):
 QObject (parent), _shellProcess (0), _emulation (0), _monitorActivity (false),
 _monitorSilence (false), _notifiedActivity (false), _autoClose (true),
-_wantedClose (false), _silenceSeconds (10), _addToUtmp (true),
+_wantedClose (false), _silenceSeconds (10),
 _flowControl (true), _fullScripting (false), _sessionId (0),
-/*_sessionProcessInfo (0), _foregroundProcessInfo (0),*/ _foregroundPid (0)
-  //, _zmodemBusy(false)
-  //, _zmodemProc(0)
-  //, _zmodemProgress(0)
-  , _hasDarkBackground (false)
+_hasDarkBackground (false)
 {
   _uniqueIdentifier = createUuid ();
 
@@ -168,36 +164,6 @@ Session::openTeletype (int fd)
 	   SLOT (done (int)));
   connect (_emulation, SIGNAL (imageSizeChanged (int, int)), this,
 	   SLOT (updateWindowSize (int, int)));
-}
-
-WId
-Session::windowId () const
-{
-  // Returns a window ID for this session which is used
-  // to set the WINDOWID environment variable in the shell
-  // process.
-  //
-  // Sessions can have multiple views or no views, which means
-  // that a single ID is not always going to be accurate.
-  //
-  // If there are no views, the window ID is just 0.  If
-  // there are multiple views, then the window ID for the
-  // top-level window which contains the first view is
-  // returned
-
-  if (_views.count () == 0)
-    return 0;
-  else
-    {
-      QWidget *window = _views.first ();
-
-      Q_ASSERT (window);
-
-      while (window->parentWidget () != 0)
-	window = window->parentWidget ();
-
-      return window->winId ();
-    }
 }
 
 void
@@ -378,15 +344,6 @@ Session::terminalWarning (const QString & message)
   _emulation->receiveData (redPenOff, strlen (redPenOff));
 }
 
-QString
-Session::shellSessionId () const
-{
-  QString friendlyUuid (_uniqueIdentifier.toString ());
-  friendlyUuid.remove ('-').remove ('{').remove ('}');
-
-  return friendlyUuid;
-}
-
 void
 Session::run ()
 {
@@ -439,8 +396,6 @@ Session::run ()
   QStringList arguments = _arguments.join (QChar (' ')).isEmpty ()?
     QStringList () << exec : _arguments;
 
-  // JPS: commented out for lack of DBUS support by default on OSX
-  QString dbusService = "";	//QDBusConnection::sessionBus().baseService();
   if (!_initialWorkingDir.isEmpty ())
     _shellProcess->setWorkingDirectory (_initialWorkingDir);
   else
@@ -456,16 +411,9 @@ Session::run ()
   QString backgroundColorHint =
     _hasDarkBackground ? "COLORFGBG=15;0" : "COLORFGBG=0;15";
   _environment << backgroundColorHint;
-  _environment << QString ("SHELL_SESSION_ID=%1").arg (shellSessionId ());
 
   int result = _shellProcess->start (exec,
-				     arguments,
-				     _environment,
-				     windowId (),
-				     _addToUtmp,
-				     dbusService,
-				     (QLatin1String ("/Sessions/") +
-				      QString::number (_sessionId)));
+                                     arguments);
 
   if (result < 0)
     {
@@ -565,26 +513,6 @@ Session::userTitle () const
 }
 
 void
-Session::setTabTitleFormat (TabTitleContext context, const QString & format)
-{
-  if (context == LocalTabTitle)
-    _localTabTitleFormat = format;
-  else if (context == RemoteTabTitle)
-    _remoteTabTitleFormat = format;
-}
-
-QString
-Session::tabTitleFormat (TabTitleContext context) const
-{
-  if (context == LocalTabTitle)
-    return _localTabTitleFormat;
-  else if (context == RemoteTabTitle)
-    return _remoteTabTitleFormat;
-
-  return QString ();
-}
-
-void
 Session::monitorTimerDone ()
 {
   //FIXME: The idea here is that the notification popup will appear to tell the user than output from
@@ -636,8 +564,7 @@ Session::activityStateSet (int state)
 {
   if (state == NOTIFYBELL)
     {
-      emit bellRequest (QString ("Bell in session '%1'").
-			arg (_nameTitle.toLatin1 ().data ()));
+      // empty
     }
   else if (state == NOTIFYACTIVITY)
     {
@@ -871,12 +798,6 @@ Session::setEnvironment (const QStringList & environment)
   _environment = environment;
 }
 
-int
-Session::sessionId () const
-{
-  return _sessionId;
-}
-
 void
 Session::setKeyBindings (const QString & id)
 {
@@ -966,62 +887,6 @@ Session::program () const
   return _program;
 }
 
-// unused currently
-bool
-Session::isMonitorActivity () const
-{
-  return _monitorActivity;
-}
-
-// unused currently
-bool
-Session::isMonitorSilence () const
-{
-  return _monitorSilence;
-}
-
-void
-Session::setMonitorActivity (bool _monitor)
-{
-  _monitorActivity = _monitor;
-  _notifiedActivity = false;
-
-  activityStateSet (NOTIFYNORMAL);
-}
-
-void
-Session::setMonitorSilence (bool _monitor)
-{
-  if (_monitorSilence == _monitor)
-    return;
-
-  _monitorSilence = _monitor;
-  if (_monitorSilence)
-    {
-      _monitorTimer->start (_silenceSeconds * 1000);
-    }
-  else
-    _monitorTimer->stop ();
-
-  activityStateSet (NOTIFYNORMAL);
-}
-
-void
-Session::setMonitorSilenceSeconds (int seconds)
-{
-  _silenceSeconds = seconds;
-  if (_monitorSilence)
-    {
-      _monitorTimer->start (_silenceSeconds * 1000);
-    }
-}
-
-void
-Session::setAddToUtmp (bool set)
-{
-  _addToUtmp = set;
-}
-
 void
 Session::setFlowControlEnabled (bool enabled)
 {
@@ -1063,12 +928,6 @@ Session::setSize (const QSize & size)
   emit resizeRequest (size);
 }
 
-int
-Session::processId () const
-{
-  return _shellProcess->pid ();
-}
-
 void
 Session::setTitle (int role, const QString & title)
 {
@@ -1092,34 +951,6 @@ Session::title (int role) const
       return this->title (Session::NameRole);
     case (1):
       return this->title (Session::DisplayedTitleRole);
-    default:
-      return QString ();
-    }
-}
-
-void
-Session::setTabTitleFormat (int context, const QString & format)
-{
-  switch (context)
-    {
-    case (0):
-      this->setTabTitleFormat (Session::LocalTabTitle, format);
-      break;
-    case (1):
-      this->setTabTitleFormat (Session::RemoteTabTitle, format);
-      break;
-    }
-}
-
-QString
-Session::tabTitleFormat (int context) const
-{
-  switch (context)
-    {
-    case (0):
-      return this->tabTitleFormat (Session::LocalTabTitle);
-    case (1):
-      return this->tabTitleFormat (Session::RemoteTabTitle);
     default:
       return QString ();
     }

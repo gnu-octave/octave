@@ -129,70 +129,12 @@ Pty::erase () const
   return _eraseChar;
 }
 
-void
-Pty::addEnvironmentVariables (const QStringList & environment)
-{
-  QListIterator < QString > iter (environment);
-  while (iter.hasNext ())
-    {
-      QString pair = iter.next ();
-
-      // split on the first '=' character
-      int pos = pair.indexOf ('=');
-
-      if (pos >= 0)
-	{
-	  QString variable = pair.left (pos);
-	  QString value = pair.mid (pos + 1);
-
-          setEnvironmentVariable (variable, value);
-	}
-    }
-}
-
 int
 Pty::start (const QString & program,
-	    const QStringList & programArguments,
-	    const QStringList & environment,
-	    ulong winid,
-	    bool addToUtmp,
-	    const QString & dbusService, const QString & dbusSession)
+            const QStringList & programArguments)
 {
-  Q_UNUSED(dbusService);
-  Q_UNUSED(dbusSession);
-  Q_UNUSED(winid);
   clearProgram ();
-
-  // For historical reasons, the first argument in programArguments is the 
-  // name of the program to execute, so create a list consisting of all
-  // but the first argument to pass to setProgram()
-  Q_ASSERT (programArguments.count () >= 1);
   setProgram (program.toLatin1 (), programArguments.mid (1));
-
-  addEnvironmentVariables (environment);
-
-  //if (!dbusService.isEmpty ())
-  //  setEnv ("KONSOLE_DBUS_SERVICE", dbusService);
-  //if (!dbusSession.isEmpty ())
-  //  setEnv ("KONSOLE_DBUS_SESSION", dbusSession);
-
-  //setEnv ("WINDOWID", QString::number (winid));
-
-  // unless the LANGUAGE environment variable has been set explicitly
-  // set it to a null string
-  // this fixes the problem where KCatalog sets the LANGUAGE environment
-  // variable during the application's startup to something which
-  // differs from LANG,LC_* etc. and causes programs run from
-  // the terminal to display messages in the wrong language
-  //
-  // this can happen if LANG contains a language which KDE
-  // does not have a translation for
-  //
-  // BR:149300
-  setEnvironmentVariable ("LANGUAGE", QString (),
-          false /* do not overwrite existing value if any */ );
-  setUseUtmp (addToUtmp);
-
 
   struct::termios ttmode;
   pty ()->tcGetAttr (&ttmode);
@@ -210,7 +152,7 @@ Pty::start (const QString & program,
   if (_eraseChar != 0)
     ttmode.c_cc[VERASE] = _eraseChar;
 
-  pty()->tcSetAttr(&ttmode);
+  pty ()->tcSetAttr(&ttmode);
   pty ()->setWinSize (_windowLines, _windowColumns);
 
   KProcess::start ();
@@ -272,19 +214,6 @@ Pty::dataReceived ()
 {
   QByteArray data = pty ()->readAll ();
   emit receivedData (data.constData (), data.count ());
-}
-
-int
-Pty::foregroundProcessGroup () const
-{
-  int pid = tcgetpgrp (pty ()->masterFd ());
-
-  if (pid != -1)
-    {
-      return pid;
-    }
-
-  return 0;
 }
 
 void

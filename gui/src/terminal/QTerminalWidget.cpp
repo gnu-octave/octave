@@ -27,15 +27,14 @@ struct TermWidgetImpl
   TerminalDisplay *m_terminalDisplay;
   Session *m_session;
   Session *createSession ();
-  TerminalDisplay *createTerminalDisplay (Session * session,
-					  QWidget * parent);
+  TerminalDisplay *createTerminalDisplay (QWidget * parent);
 };
 
 TermWidgetImpl::TermWidgetImpl (QWidget * parent)
 {
   QPalette palette = QApplication::palette ();
   m_session = createSession ();
-  m_terminalDisplay = createTerminalDisplay (this->m_session, parent);
+  m_terminalDisplay = createTerminalDisplay (parent);
   m_terminalDisplay->setBackgroundColor (palette.color (QPalette::Base));
   m_terminalDisplay->setForegroundColor (palette.color (QPalette::Text));
 }
@@ -57,14 +56,13 @@ TermWidgetImpl::createSession ()
 }
 
 TerminalDisplay *
-TermWidgetImpl::createTerminalDisplay (Session * session, QWidget * parent)
+TermWidgetImpl::createTerminalDisplay (QWidget * parent)
 {
   TerminalDisplay *display = new TerminalDisplay (parent);
   display->setBellMode (TerminalDisplay::NotifyBell);
   display->setTerminalSizeHint (true);
   display->setTripleClickMode (TerminalDisplay::SelectWholeLine);
   display->setTerminalSizeStartup (true);
-  display->setRandomSeed (session->sessionId () * 31);
   return display;
 }
 
@@ -111,8 +109,8 @@ QTerminalWidget::~QTerminalWidget ()
 void
 QTerminalWidget::openTeletype (int fd)
 {
-  if (m_impl->m_session->isRunning ())
-    return;
+  //if (m_impl->m_session->isRunning ())
+  //  return;
 
   m_impl->m_session->openTeletype (fd);
 }

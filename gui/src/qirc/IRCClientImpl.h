@@ -28,12 +28,20 @@ public slots:
 
   const QString& nickname ();
 
-private:
-  QString     m_server;
-  int         m_port;
-  QString     m_nickname;
+private slots:
+  void handleConnected ();
+  void handleDisconnected ();
+  void handleReadyRead ();
 
-  QTcpSocket m_tcpSocket;
+private:
+  void handleIncomingLine (const QString& line);
+
+  QHostAddress  m_host;
+  int           m_port;
+  QString       m_nickname;
+  bool          m_connected;
+
+  QTcpSocket    m_tcpSocket;
 };
 
 #endif // IRCCLIENTIMPL_H

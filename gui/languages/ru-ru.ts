@@ -12,7 +12,7 @@
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished">Невозможно прочитать файл %1:
+        <translation type="unfinished">Не удалось прочитать файл %1:
 %2.</translation>
     </message>
     <message>
@@ -32,7 +32,7 @@
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">Невозможно сохранить файл %1:
+        <translation type="unfinished">Не удалось сохранить файл %1:
 %2.</translation>
     </message>
     <message>
@@ -423,12 +423,12 @@
     <message>
         <location filename="../src/SettingsDialog.ui" line="246"/>
         <source>Export</source>
-        <translation type="unfinished">Экспорт</translation>
+        <translation type="unfinished">Экспортировать</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="256"/>
         <source>Import</source>
-        <translation type="unfinished">Импорт</translation>
+        <translation type="unfinished">Импортировать</translation>
     </message>
 </context>
 <context>
@@ -475,4 +475,3 @@
     </message>
 </context>
 </TS>
-

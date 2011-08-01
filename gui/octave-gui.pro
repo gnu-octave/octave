@@ -28,7 +28,8 @@ OBJECTS_DIR         = object-files                  # Folder for object files
 
 TRANSLATIONS        += languages/generic.ts \
                        languages/de-de.ts \
-                       languages/pt-br.ts           # Available translations
+                       languages/pt-br.ts \
+                       languages/es-es.ts           # Available translations
 LIBS                += -lqscintilla2
 
 mac {

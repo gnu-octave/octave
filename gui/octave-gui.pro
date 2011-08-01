@@ -17,7 +17,7 @@
 
 
 # Basic settings:
-QT                  += core gui webkit		    # Qt modules
+QT                  += core gui webkit network	    # Qt modules
 TEMPLATE            = app                           # Build as application
 TARGET              = octave-gui                    # Name of the target binary
 
@@ -93,7 +93,8 @@ SOURCES +=\
     src/CommandLineParser.cpp \
     src/backend/OctaveCallbackThread.cpp \
     src/backend/OctaveLink.cpp \
-    src/backend/OctaveMainThread.cpp
+    src/backend/OctaveMainThread.cpp \
+    src/qirc/IRCClientImpl.cpp
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
@@ -139,7 +140,9 @@ HEADERS += \
     src/CommandLineParser.h \
     src/backend/OctaveCallbackThread.h \
     src/backend/OctaveLink.h \
-    src/backend/OctaveMainThread.h
+    src/backend/OctaveMainThread.h \
+    src/qirc/IRCClientInterface.h \
+    src/qirc/IRCClientImpl.h
 
 FORMS += \
     src/SettingsDialog.ui

@@ -159,7 +159,7 @@ IRCWidget::showPrivateMessage (const char *nick, const char *destination,
 			       const char *message)
 {
   Q_UNUSED (destination);
-  QString msg (message);
+  QString msg(message);
   msg.replace ("<", "&lt;");
   msg.replace (">", "&gt;");
   if (msg.contains (m_ircClient->nickInUse ()))

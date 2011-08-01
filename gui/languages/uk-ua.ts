@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="uk_UA">
-<defaultcodec></defaultcodec>
+<!DOCTYPE TS>
+<TS version="2.0" language="uk_UA">
 <context>
     <name>FileEditorMdiSubWindow</name>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="184"/>
         <source>File Editor</source>
-        <translation type="unfinished">Редактор файлів</translation>
+        <translation>Редактор файлів</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished">Не вдалося прочитати файл%1:￼
+        <translation>Не вдалося прочитати файл %1:￼
 %2.</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="104"/>
         <source>File loaded.</source>
-        <translation type="unfinished">Файл завантажено.</translation>
+        <translation>Файл завантажено.</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="130"/>
         <source>Do you want to save the current file
 %1 ?</source>
-        <translation type="unfinished">Справді зберегти поточний файл
+        <translation>Справді зберегти поточний файл
 %1 ?</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">Не вдалося зберегти файл %1:
+        <translation>Не вдалося зберегти файл %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="197"/>
         <source>File %1 saved</source>
-        <translation type="unfinished">Файл %1 збережено</translation>
+        <translation>Файл %1 збережено</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="294"/>
         <source>&amp;Close File</source>
-        <translation type="unfinished">&amp;Закрити файл</translation>
+        <translation>&amp;Закрити файл</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="297"/>
         <source>&amp;New File</source>
-        <translation type="unfinished">&amp;Створити файл</translation>
+        <translation>&amp;Створити файл</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="300"/>
         <source>&amp;Open File</source>
-        <translation type="unfinished">&amp;Відкрити файл</translation>
+        <translation>&amp;Відкрити файл</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="303"/>
         <source>&amp;Save File</source>
-        <translation type="unfinished">&amp;Зберегти файл</translation>
+        <translation>&amp;Зберегти файл</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="306"/>
         <source>Save File &amp;As</source>
-        <translation type="unfinished">Зберегти файл &amp;як</translation>
+        <translation>Зберегти файл &amp;як</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="309"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Відмінити</translation>
+        <translation>&amp;Вернути</translation>
     </message>
     <message>
         <location filename="../src/FileEditorMdiSubWindow.cpp" line="312"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторити</translation>
+        <translation>&amp;Повторити</translation>
     </message>
 </context>
 <context>
@@ -80,22 +80,22 @@
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="32"/>
         <source>Current Folder</source>
-        <translation type="unfinished">Поточний каталог</translation>
+        <translation>Поточний каталог</translation>
     </message>
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="46"/>
         <source>Move up one directory.</source>
-        <translation type="unfinished">Перейти на рівень вище</translation>
+        <translation>Перейти вверх по дереву каталогів.</translation>
     </message>
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="49"/>
         <source>Enter the path or filename.</source>
-        <translation type="unfinished">Введіть повний шлях до файлу або назву файлу.</translation>
+        <translation>Введіть повний шлях до файлу або назву файлу.</translation>
     </message>
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="78"/>
         <source>Doubleclick a file to open it.</source>
-        <translation type="unfinished">Зробіть подвійний клік на файлі аби відкрити його.</translation>
+        <translation>Відкрийте файл подвійним клацанням.</translation>
     </message>
 </context>
 <context>
@@ -103,17 +103,17 @@
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="36"/>
         <source>Doubleclick a command to transfer it to the terminal.</source>
-        <translation type="unfinished">Зробіть подвійний клік на команді аби перенести її до командного рядку.</translation>
+        <translation>Перенесіть команду до командного рядку подвійний клацанням.</translation>
     </message>
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="38"/>
         <source>Enter text to filter the command history.</source>
-        <translation type="unfinished">Введіть текст для фільтрування серед історії введених команд.</translation>
+        <translation>Введіть текст для фільтрування історії введених команд.</translation>
     </message>
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="41"/>
         <source>Command History</source>
-        <translation type="unfinished">Історія введених команд</translation>
+        <translation>Історія введених команд</translation>
     </message>
 </context>
 <context>
@@ -121,47 +121,47 @@
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="111"/>
         <source>Default</source>
-        <translation type="unfinished">Стандартні налаштування</translation>
+        <translation>Стандартні налаштування</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="113"/>
         <source>Comment</source>
-        <translation type="unfinished">Коментар</translation>
+        <translation>Коментар</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="115"/>
         <source>Command</source>
-        <translation type="unfinished">Команда</translation>
+        <translation>Команда</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="117"/>
         <source>Number</source>
-        <translation type="unfinished">Число</translation>
+        <translation>Число</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="119"/>
         <source>Keyword</source>
-        <translation type="unfinished">Зарезервоване слово</translation>
+        <translation>Зарезервоване слово</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="121"/>
         <source>Single-quoted string</source>
-        <translation type="unfinished">Рядок в одинарних лапках</translation>
+        <translation>Рядок в одинарних лапках</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="123"/>
         <source>Operator</source>
-        <translation type="unfinished">Оператор</translation>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="125"/>
         <source>Identifier</source>
-        <translation type="unfinished">Змінна</translation>
+        <translation>Змінна</translation>
     </message>
     <message>
         <location filename="../src/lexer/lexeroctavegui.cpp" line="127"/>
         <source>Double-quoted string</source>
-        <translation type="unfinished">Рядок у подвійних лапках</translation>
+        <translation>Рядок у подвійних лапках</translation>
     </message>
 </context>
 <context>
@@ -169,157 +169,157 @@
     <message>
         <location filename="../src/MainWindow.cpp" line="46"/>
         <source>Opening file.</source>
-        <translation type="unfinished">Відкрити файл.</translation>
+        <translation>Відкрити файл.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="123"/>
         <source>Save Workspace</source>
-        <translation type="unfinished">Зберегти область змінних</translation>
+        <translation>Зберегти область змінних</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="133"/>
         <source>Load Workspace</source>
-        <translation type="unfinished">Завантажити область змінних</translation>
+        <translation>Завантажити область змінних</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="340"/>
         <source>About Octave</source>
-        <translation type="unfinished">Про Octave</translation>
+        <translation>Про Octave</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="219"/>
         <source>Saving data and shutting down.</source>
-        <translation type="unfinished">Зберегти дані і завершити роботу.</translation>
+        <translation>Зберегти дані і завершити роботу.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="261"/>
         <source>View the variables in the active workspace.</source>
-        <translation type="unfinished">Переглянути зміст поточної області змінних.</translation>
+        <translation>Переглянути зміст поточної області змінних.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="263"/>
         <source>Browse and search the command history.</source>
-        <translation type="unfinished">Перегляд і пошук серед історії введених команд.</translation>
+        <translation>Перегляд і пошук серед історії введених команд.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="265"/>
         <source>Browse your files.</source>
-        <translation type="unfinished">Переглянути файли.</translation>
+        <translation>Переглянути файли.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="281"/>
         <source>Terminal</source>
-        <translation type="unfinished">Командний рядок</translation>
+        <translation>Командний рядок</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="283"/>
         <source>Enter your commands into the Octave terminal.</source>
-        <translation type="unfinished">Введіть команди до командного рядку Octave.</translation>
+        <translation>Введіть команди до командного рядка Octave.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="291"/>
         <source>Documentation</source>
-        <translation type="unfinished">Документація</translation>
+        <translation>Документація</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="293"/>
         <source>Browse the Octave documentation for help.</source>
-        <translation type="unfinished">Переглянути документацію до Octave.</translation>
+        <translation>Переглянути документацію до Octave.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="302"/>
         <source>Chat</source>
-        <translation type="unfinished">Чат</translation>
+        <translation>Чат</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="304"/>
         <source>Instantly chat with other Octave users for help.</source>
-        <translation type="unfinished">Чат з користувачами Octave.</translation>
+        <translation>Чат з користувачами Octave.</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="308"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="309"/>
         <source>Settings</source>
-        <translation type="unfinished">Налаштування</translation>
+        <translation>Налаштування</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="311"/>
         <source>Exit</source>
-        <translation type="unfinished">Вийти</translation>
+        <translation>Вийти</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="313"/>
         <source>Interface</source>
-        <translation type="unfinished">Інтерфейс</translation>
+        <translation>Інтерфейс</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="315"/>
         <source>Align Windows</source>
-        <translation type="unfinished">Вирівняти вікна</translation>
+        <translation>Вирівняти вікна</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="329"/>
         <source>Workspace</source>
-        <translation type="unfinished">Область змінних</translation>
+        <translation>Область змінних</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="320"/>
         <source>History</source>
-        <translation type="unfinished">Історія</translation>
+        <translation>Історія</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="323"/>
         <source>File Browser</source>
-        <translation type="unfinished">Файловий менеджер</translation>
+        <translation>Файловий менеджер</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="327"/>
         <source>Open New Editor Window</source>
-        <translation type="unfinished">Відкрити нове вікно редактора</translation>
+        <translation>Відкрити нове вікно редактора</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="330"/>
         <source>Load</source>
-        <translation type="unfinished">Завантажити</translation>
+        <translation>Завантажити</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="331"/>
         <source>Save</source>
-        <translation type="unfinished">Зберегти</translation>
+        <translation>Зберегти</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="333"/>
         <source>Clear</source>
-        <translation type="unfinished">Очистити</translation>
+        <translation>Очистити</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="335"/>
         <source>Community</source>
-        <translation type="unfinished">Спільнота</translation>
+        <translation>Спільнота</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="336"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Повідомити про помилку</translation>
+        <translation>Повідомити про помилку</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="337"/>
         <source>Agora</source>
-        <translation type="unfinished">Agora</translation>
+        <translation>Agora</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="338"/>
         <source>Octave Forge</source>
-        <translation type="unfinished">Octave Forge</translation>
+        <translation>Octave Forge</translation>
     </message>
     <message>
         <location filename="../src/MainWindow.cpp" line="341"/>
         <source>About Qt</source>
-        <translation type="unfinished">Про Qt</translation>
+        <translation>Про Qt</translation>
     </message>
 </context>
 <context>
@@ -327,107 +327,107 @@
     <message>
         <location filename="../src/SettingsDialog.ui" line="29"/>
         <source>Settings</source>
-        <translation type="unfinished">Налаштування</translation>
+        <translation>Налаштування</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="39"/>
         <source>Chat</source>
-        <translation type="unfinished">Чат</translation>
+        <translation>Чат</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="47"/>
         <source>Connect to #octave on startup</source>
-        <translation type="unfinished">З&apos;єднатися з #octave при запуску</translation>
+        <translation>З&apos;єднатися з #octave при запуску</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="57"/>
         <source>Show message of the day</source>
-        <translation type="unfinished">Показувати пораду дня</translation>
+        <translation>Показувати пораду дня</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="64"/>
         <source>Show topic</source>
-        <translation type="unfinished">Показувати тему чату при з&apos;єднанні</translation>
+        <translation>Показувати тему чату при з&apos;єднанні</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="71"/>
         <source>Automatically identify on NickServ</source>
-        <translation type="unfinished">Автоматично ідентифікуватися в NickServ</translation>
+        <translation>Автоматично ідентифікуватися в NickServ</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="78"/>
         <source>Warning: Your password will be stored in ~/.octavegui in human-readable format. Do not enter your password if you worry about security issues.</source>
-        <translation type="unfinished">Попередження: Ваш пароль буде збережено в ~/.octavegui звичайним текстом. Не вводьте ваш пароль, якщо турбуєтесь про можливі проблеми в безпеці програми.</translation>
+        <translation>Попередження: Ваш пароль буде збережено в ~/.octavegui звичайним текстом. Не вводьте ваш пароль, якщо переймаєтесь потенційними проблемами із захистом даних в програмі.</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="103"/>
         <source>Password:</source>
-        <translation type="unfinished">Пароль:</translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="125"/>
         <source>Editor</source>
-        <translation type="unfinished">Редактор</translation>
+        <translation>Редактор</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="133"/>
         <source>Use custom file editor:</source>
-        <translation type="unfinished">Використовувати інший редактор:</translation>
+        <translation>Використовувати інший редактор:</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="143"/>
         <source>emacs</source>
-        <translation type="unfinished">emacs</translation>
+        <translation>emacs</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="166"/>
         <source>File Browser</source>
-        <translation type="unfinished">Файловий менеджер</translation>
+        <translation>Файловий менеджер</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="172"/>
         <source>Show filenames</source>
-        <translation type="unfinished">Показувати назви файлів</translation>
+        <translation>Показувати назви файлів</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="179"/>
         <source>Show file size</source>
-        <translation type="unfinished">Показувати розмір файлів</translation>
+        <translation>Показувати розмір файлів</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="186"/>
         <source>Show file type</source>
-        <translation type="unfinished">Показувати тип файлів</translation>
+        <translation>Показувати тип файлів</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="193"/>
         <source>Show date of last modification</source>
-        <translation type="unfinished">Показувати дату останньої зміни</translation>
+        <translation>Показувати дату останньої зміни</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="200"/>
         <source>Show hidden files</source>
-        <translation type="unfinished">Показувати приховані файли</translation>
+        <translation>Показувати приховані файли</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="207"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Чергувати колір рядків</translation>
+        <translation>Чергувати колір рядків</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="223"/>
         <source>Reset to defaults</source>
-        <translation type="unfinished">Встановити стандартні налаштування</translation>
+        <translation>Встановити стандартні налаштування</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="246"/>
         <source>Export</source>
-        <translation type="unfinished">Експортувати</translation>
+        <translation>Експортувати</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="256"/>
         <source>Import</source>
-        <translation type="unfinished">Імпортувати</translation>
+        <translation>Імпортувати</translation>
     </message>
 </context>
 <context>
@@ -435,42 +435,42 @@
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="36"/>
         <source>Workspace</source>
-        <translation type="unfinished">Область змінних</translation>
+        <translation>Область змінних</translation>
     </message>
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="40"/>
         <source>Name</source>
-        <translation type="unfinished">Ідентифікатор</translation>
+        <translation>Ідентифікатор</translation>
     </message>
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="40"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="40"/>
         <source>Value</source>
-        <translation type="unfinished">Значення</translation>
+        <translation>Значення</translation>
     </message>
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="52"/>
         <source>Local</source>
-        <translation type="unfinished">Локальна</translation>
+        <translation>Локальна</translation>
     </message>
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="56"/>
         <source>Global</source>
-        <translation type="unfinished">Глобальна</translation>
+        <translation>Глобальна</translation>
     </message>
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="60"/>
         <source>Persistent</source>
-        <translation type="unfinished">Статична</translation>
+        <translation>Статична</translation>
     </message>
     <message>
         <location filename="../src/VariablesDockWidget.cpp" line="64"/>
         <source>Hidden</source>
-        <translation type="unfinished">Прихована</translation>
+        <translation>Прихована</translation>
     </message>
 </context>
 </TS>

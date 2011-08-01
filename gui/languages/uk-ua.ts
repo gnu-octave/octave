@@ -108,7 +108,7 @@
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="38"/>
         <source>Enter text to filter the command history.</source>
-        <translation type="unfinished">Введіть текст для фильтрування серед історії введених команд.</translation>
+        <translation type="unfinished">Введіть текст для фільтрування серед історії введених команд.</translation>
     </message>
     <message>
         <location filename="../src/HistoryDockWidget.cpp" line="41"/>
@@ -347,7 +347,7 @@
     <message>
         <location filename="../src/SettingsDialog.ui" line="64"/>
         <source>Show topic</source>
-        <translation type="unfinished">Показувати тему чату при підключенні</translation>
+        <translation type="unfinished">Показувати тему чату при з&apos;єднанні</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="71"/>
@@ -357,7 +357,7 @@
     <message>
         <location filename="../src/SettingsDialog.ui" line="78"/>
         <source>Warning: Your password will be stored in ~/.octavegui in human-readable format. Do not enter your password if you worry about security issues.</source>
-        <translation type="unfinished">Попередження: Ваш пароль буде збережено в ~/.octavegui звичайним текстом. Не вводьте ваш пароль, якщо турбуєтесь про можливі проблеми в безпеці додатку.</translation>
+        <translation type="unfinished">Попередження: Ваш пароль буде збережено в ~/.octavegui звичайним текстом. Не вводьте ваш пароль, якщо турбуєтесь про можливі проблеми в безпеці програми.</translation>
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="103"/>
@@ -474,4 +474,3 @@
     </message>
 </context>
 </TS>
-

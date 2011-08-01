@@ -12,11 +12,11 @@ showFileType=false
 showLastModified=false
 showHiddenFiles=false
 useAlternatingRowColors=true
-IRCNick=User
+IRCNick=User1
 language=en-en
 
 [MainWindow]
-geometry=@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\0\x18\0\0\x4\xff\0\0\x3\a\0\0\0\0\0\0\0\0\xff\xff\xff\xfe\xff\xff\xff\xfe\0\0\0\0\x2\0)
+geometry="@ByteArray(\x1\xd9\xd0\xcb\0\x1\0\0\0\0\0\0\0\0\0\x18\0\0\x4\xff\0\0\x3\a\0\0\0\0\0\0\0,\0\0\x5v\0\0\x3\x1c\0\0\0\0\x2\0)"
 windowState="@ByteArray(\0\0\0\xff\0\0\0\0\xfd\0\0\0\x2\0\0\0\0\0\0\x1;\0\0\x2\xa3\xfc\x2\0\0\0\x2\xfb\0\0\0&\0V\0\x61\0r\0i\0\x61\0\x62\0l\0\x65\0s\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\0\x19\0\0\x1\xe\0\0\0k\0\xff\xff\xff\xfb\0\0\0\"\0H\0i\0s\0t\0o\0r\0y\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\x1-\0\0\x1\x8f\0\0\0\x8c\0\xff\xff\xff\0\0\0\x1\0\0\x1,\0\0\x2\xa3\xfc\x2\0\0\0\x1\xfb\0\0\0\x1e\0\x46\0i\0l\0\x65\0s\0\x44\0o\0\x63\0k\0W\0i\0\x64\0g\0\x65\0t\x1\0\0\0\x19\0\0\x2\xa3\0\0\0\x9d\0\xff\xff\xff\0\0\x2\x8d\0\0\x2\xa3\0\0\0\x4\0\0\0\x4\0\0\0\b\0\0\0\b\xfc\0\0\0\0)"
 
 [MdiArea]

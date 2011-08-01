@@ -51,7 +51,9 @@ ResourceManager::setSettings (QString file)
 {
   delete m_settings;
   if (!QFile::exists (file))
-    file = "../default-settings/.octave-gui";
+    {
+      QFile::copy("../default-settings/.octave-gui", file);
+    }
   m_settings = new QSettings (file, QSettings::IniFormat);
 }
 

@@ -1,4 +1,4 @@
-/* Quint - A graphical user interface for Octave
+/* Octave GUI - A graphical user interface for Octave
  * Copyright (C) 2011 Jacob Dawid
  * jacob.dawid@googlemail.com
  *
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Quint is a graphical user interface for Octave with readline support.
+Octave GUI is a graphical user interface for Octave with readline support.
 
 If you have any problems, suggestions or ideas, feel free to drop me a mail at
 jacob.dawid@googlemail.com or visit the official channel #octave on FreeNode.

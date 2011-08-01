@@ -35,11 +35,15 @@ public:
 public slots:
   /** Tells the widget to notice settings that are probably new. */
   void noticeSettings ();
+  void handleVisibilityChanged (bool visible);
 
 signals:
   void information (QString message);
   void commandDoubleClicked (QString command);
-
+  /** Custom signal that tells if a user has clicke away that dock widget. */
+  void activeChanged (bool active);
+protected:
+  void closeEvent (QCloseEvent *event);
 private slots:
   void handleDoubleClick (QModelIndex modelIndex);
 

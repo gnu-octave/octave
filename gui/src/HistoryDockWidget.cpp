@@ -49,6 +49,7 @@ HistoryDockWidget::construct ()
 
   connect (m_filterLineEdit, SIGNAL (textEdited (QString)), &m_sortFilterProxyModel, SLOT (setFilterWildcard(QString)));
   connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this, SLOT (handleDoubleClick (QModelIndex)));
+  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
 }
 
 void
@@ -61,4 +62,18 @@ void
 HistoryDockWidget::handleDoubleClick (QModelIndex modelIndex)
 {
   emit commandDoubleClicked (modelIndex.data().toString());
+}
+
+void
+HistoryDockWidget::handleVisibilityChanged (bool visible)
+{
+  if (visible)
+    emit activeChanged (true);
+}
+
+void
+HistoryDockWidget::closeEvent (QCloseEvent *event)
+{
+  emit activeChanged (false);
+  QDockWidget::closeEvent (event);
 }

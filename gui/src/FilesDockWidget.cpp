@@ -97,6 +97,8 @@ FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
   QCompleter *
     completer = new QCompleter (m_fileSystemModel, this);
   m_currentDirectory->setCompleter (completer);
+
+  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
 }
 
 void
@@ -179,4 +181,18 @@ FilesDockWidget::noticeSettings ()
   m_fileTreeView->setAlternatingRowColors (settings->value ("useAlternatingRowColors").toBool ());
   //if (settings.value ("showHiddenFiles").toBool ())
   // TODO: React on option for hidden files.
+}
+
+void
+FilesDockWidget::handleVisibilityChanged (bool visible)
+{
+  if (visible)
+    emit activeChanged (true);
+}
+
+void
+FilesDockWidget::closeEvent (QCloseEvent *event)
+{
+  emit activeChanged (false);
+  QDockWidget::closeEvent (event);
 }

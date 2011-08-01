@@ -65,9 +65,16 @@ public slots:
 
   /** Tells the widget to notice settings that are probably new. */
   void noticeSettings ();
+  void handleVisibilityChanged (bool visible);
 
 signals:
   void openFile (QString fileName);
+
+  /** Custom signal that tells if a user has clicke away that dock widget. */
+  void activeChanged (bool active);
+
+protected:
+  void closeEvent (QCloseEvent *event);
 
 private:
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc

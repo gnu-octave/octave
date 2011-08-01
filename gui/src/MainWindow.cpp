@@ -28,7 +28,7 @@
 #include "SettingsDialog.h"
 #include "cmd-edit.h"
 
-#define VERSION_STRING "Octave GUI (0.7.2)"
+#define VERSION_STRING "Octave GUI (0.7.3)"
 
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {
@@ -350,14 +350,12 @@ MainWindow::construct ()
   connect (aboutOctaveAction, SIGNAL (triggered ()), this, SLOT (showAboutOctave ()));
   connect (aboutQt, SIGNAL (triggered ()), this, SLOT (showAboutQt ()));
 
-  // TODO: Visibility cannot be taken as a signal, because it will be emitted even then
-  // the dock widget is tabbed or minimized.
   connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_variablesDockWidget, SLOT (setShown (bool)));
-  //connect (m_variablesDockWidget, SIGNAL (visibilityChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
+  connect (m_variablesDockWidget, SIGNAL (activeChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
   connect (showHistoryAction, SIGNAL (toggled (bool)), m_historyDockWidget, SLOT (setShown (bool)));
-  //connect (m_historyDockWidget, SIGNAL (visibilityChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
+  connect (m_historyDockWidget, SIGNAL (activeChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
   connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
-  //connect (m_filesDockWidget, SIGNAL (visibilityChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
+  connect (m_filesDockWidget, SIGNAL (activeChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
 
   connect (this, SIGNAL (settingsChanged ()), m_variablesDockWidget, SLOT (noticeSettings ()));
   connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));

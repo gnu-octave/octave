@@ -35,7 +35,12 @@ public slots:
   /** Tells the widget to notice settings that are probably new. */
   void noticeSettings ();
   void fetchSymbolTable ();
-
+  void handleVisibilityChanged (bool visible);
+signals:
+  /** Custom signal that tells if a user has clicke away that dock widget. */
+  void activeChanged (bool active);
+protected:
+  void closeEvent (QCloseEvent *event);
 private:
   void construct ();
   void updateTreeEntry (QTreeWidgetItem * treeItem,

@@ -67,6 +67,8 @@ VariablesDockWidget::construct ()
   m_variablesTreeWidget->expandAll ();
   m_variablesTreeWidget->setAlternatingRowColors (true);
   m_variablesTreeWidget->setAnimated (true);
+
+  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
 }
 
 void
@@ -202,4 +204,18 @@ VariablesDockWidget::fetchSymbolTable ()
 {
   QList < SymbolRecord > symbolTable = OctaveLink::instance ()->copyCurrentSymbolTable ();
   setVariablesList (symbolTable);
+}
+
+void
+VariablesDockWidget::handleVisibilityChanged (bool visible)
+{
+  if (visible)
+    emit activeChanged (true);
+}
+
+void
+VariablesDockWidget::closeEvent (QCloseEvent *event)
+{
+  emit activeChanged (false);
+  QDockWidget::closeEvent (event);
 }

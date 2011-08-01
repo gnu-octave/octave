@@ -17,6 +17,7 @@
  */
 
 #include "ResourceManager.h"
+#include <QFile>
 
 ResourceManager ResourceManager::m_singleton;
 
@@ -49,6 +50,8 @@ void
 ResourceManager::setSettings (QString file)
 {
   delete m_settings;
+  if (!QFile::exists (file))
+    file = "../default-settings/.octave-gui";
   m_settings = new QSettings (file, QSettings::IniFormat);
 }
 

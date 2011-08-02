@@ -24,7 +24,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QCompleter>
-#include "IRCClient.h"
+#include "IRCClientImpl.h"
 
 class IRCWidget:public QWidget
 {
@@ -32,37 +32,30 @@ Q_OBJECT public:
   explicit IRCWidget (QWidget * parent);
   void connectToServer ();
 
-    signals:public slots:void showStatusMessage (const char *);
-  void joinOctaveChannel (const char *);
-  void loginSuccessful (const char *);
-  void showPrivateMessage (const char *, const char *, const char *);
-  void showNotice (const char *, const char *, const char *);
-  void showTopic (const char *, const char *, const char *);
-  void showJoin (const char *, const char *);
-  void showQuit (const char *, const char *);
-  void showNickChange (const char *, const char *);
+public slots:
+  void showStatusMessage (const QString&);
+  void showErrorMessage (const QString&);
+  void showMessage (const QString& channel, const QString& sender, const QString& message);
+  void showNotification (const QString& sender, const QString& message);
+
+  void handleConnected (const QString& host);
+  void joinOctaveChannel (const QString& nick);
+
+  void handleLoggedIn (const QString& nick);
+  void handleNickChange (const QString& oldNick, const QString& newNick);
+  void handleUserJoined (const QString& nick, const QString& channel);
+  void handleUserQuit (const QString& nick, const QString& reason);
+
   void nickPopup ();
   void sendMessage (QString);
   void sendInputLine ();
-
-  void handleNickInUseChanged ();
-  void handleReplyCode (IRCEvent * event);
-
   void updateNickCompleter ();
+
 private:
-  IRCClient * m_ircClient;
+  IRCClientImpl * m_ircClientImpl;
   QTextEdit *m_chatWindow;
   QPushButton *m_nickButton;
   QLineEdit *m_inputLine;
-  bool m_alternatingColor;
-
-  QString getAlternatingColor ()
-  {
-    m_alternatingColor = !m_alternatingColor;
-    if (m_alternatingColor)
-      return "#000077";
-    return "#005533";
-  }
 
   QString m_initialNick;
   bool m_autoIdentification;

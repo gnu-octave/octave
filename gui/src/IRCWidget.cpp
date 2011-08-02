@@ -28,7 +28,6 @@
 IRCWidget::IRCWidget (QWidget * parent):
 QWidget (parent)
 {
-  m_alternatingColor = false;
   QSettings *settings = ResourceManager::instance ()->settings ();
   bool connectOnStartup = settings->value ("connectOnStartup").toBool ();
   m_autoIdentification = settings->value ("autoIdentification").toBool ();
@@ -52,16 +51,17 @@ QWidget (parent)
 
   QHBoxLayout *bottomLayout = new QHBoxLayout ();
   m_nickButton = new QPushButton (bottomWidget);
-  m_nickButton->
-    setStatusTip (tr ((char *) "Click here to change your nick."));
+  m_nickButton->setStatusTip (tr ((char *) "Click here to change your nick."));
   m_nickButton->setText (m_initialNick);
   m_inputLine = new QLineEdit (bottomWidget);
   m_inputLine->setStatusTip (tr ((char *) "Enter your message here."));
+
   bottomLayout->addWidget (m_nickButton);
   bottomLayout->addWidget (new QLabel (":", this));
   bottomLayout->addWidget (m_inputLine);
   bottomLayout->setMargin (0);
   bottomWidget->setLayout (bottomLayout);
+
   m_nickButton->setEnabled (false);
   m_inputLine->setEnabled (false);
 
@@ -73,41 +73,27 @@ QWidget (parent)
   font.setFamily ("Courier");
   font.setPointSize (11);
   m_chatWindow->setFont (font);
-  m_ircClient = new IRCClient ();
+  m_ircClientImpl = new IRCClientImpl ();
 
+  connect (m_ircClientImpl, SIGNAL (connected (QString)),
+           this, SLOT (handleConnected (QString)));
+  connect (m_ircClientImpl, SIGNAL(loggedIn(QString)),
+           this, SLOT (joinOctaveChannel (QString)));
+  connect (m_ircClientImpl, SIGNAL (error (QString)),
+           this, SLOT (showErrorMessage (QString)));
+  connect (m_ircClientImpl, SIGNAL (debugMessage (QString)),
+           this, SLOT (showStatusMessage (QString)));
+  connect (m_ircClientImpl, SIGNAL (message (QString, QString, QString)),
+           this, SLOT (showMessage (QString, QString, QString )));
+  connect (m_ircClientImpl, SIGNAL (nicknameChanged (QString,QString)),
+           this, SLOT (handleNickChange (QString,QString)));
+  connect (m_ircClientImpl, SIGNAL (notification (QString,QString)),
+           this, SLOT (showNotification (QString,QString)));
+  connect (m_ircClientImpl, SIGNAL (loggedIn(QString)),
+           this, SLOT (handleLoggedIn(QString)));
   connect (m_nickButton, SIGNAL (clicked ()), this, SLOT (nickPopup ()));
   connect (m_inputLine, SIGNAL (returnPressed ()), this,
 	   SLOT (sendInputLine ()));
-
-  connect (m_ircClient, SIGNAL (nickInUseChanged ()), this,
-	   SLOT (handleNickInUseChanged ()));
-  connect (m_ircClient, SIGNAL (connectionStatus (const char *)), this,
-	   SLOT (showStatusMessage (const char *)));
-  connect (m_ircClient, SIGNAL (error (const char *)), this,
-	   SLOT (showStatusMessage (const char *)));
-  connect (m_ircClient, SIGNAL (completedLogin (const char *)), this,
-	   SLOT (loginSuccessful (const char *)));
-  connect (m_ircClient, SIGNAL (completedLogin (const char *)), this,
-	   SLOT (joinOctaveChannel (const char *)));
-  connect (m_ircClient,
-	   SIGNAL (topic (const char *, const char *, const char *)), this,
-	   SLOT (showTopic (const char *, const char *, const char *)));
-  connect (m_ircClient, SIGNAL (join (const char *, const char *)), this,
-	   SLOT (showJoin (const char *, const char *)));
-  connect (m_ircClient, SIGNAL (quit (const char *, const char *)), this,
-	   SLOT (showQuit (const char *, const char *)));
-  connect (m_ircClient,
-	   SIGNAL (privateMessage (const char *, const char *, const char *)),
-	   this,
-	   SLOT (showPrivateMessage
-		 (const char *, const char *, const char *)));
-  connect (m_ircClient,
-	   SIGNAL (notice (const char *, const char *, const char *)), this,
-	   SLOT (showNotice (const char *, const char *, const char *)));
-  connect (m_ircClient, SIGNAL (nick (const char *, const char *)), this,
-	   SLOT (showNickChange (const char *, const char *)));
-  connect (m_ircClient, SIGNAL (replyCode (IRCEvent *)), this,
-	   SLOT (handleReplyCode (IRCEvent *)));
 
   if (connectOnStartup)
     connectToServer ();
@@ -116,96 +102,74 @@ QWidget (parent)
 void
 IRCWidget::connectToServer ()
 {
-  m_ircClient->connectToServer ("irc.freenode.net", 6667,
-				m_initialNick.toStdString ().c_str (),
-				m_initialNick.toStdString ().c_str (),
-				"Unknown", "Unknown", 0, 0);
+  showStatusMessage ("<font color=\"#990000\"><b>IMPORTANT: THE BACKEND FOR THE IRC CHAT HAS BEEN REWRITTEN COMPLETELY TO MAKE IT PLATFORM-INDEPENDENT.</b></font>");
+  showStatusMessage ("<font color=\"#990000\"><b>IT WILL PROBABLY NOT WORK AS IT SHOULD UNTIL ALL BUGS HAVE BEEN FIXED.</b></font>");
+  showStatusMessage ("Looking up irc.freenode.net.");
+  QHostInfo hostInfo = QHostInfo::fromName ("irc.freenode.net");
+  QList<QHostAddress> hostAddresses = hostInfo.addresses();
+  if (hostAddresses.isEmpty ())
+    {
+      showStatusMessage ("Failed to lookup irc.freenode.net.");
+    }
+  else
+    {
+      showStatusMessage (QString ("Attempting to connect to %1.")
+                         .arg (hostAddresses.at (0).toString ()));
+      m_ircClientImpl->connectToHost(hostAddresses.at (0), 6667, m_initialNick);
+    }
 }
 
 void
-IRCWidget::showStatusMessage (const char *message)
+IRCWidget::showStatusMessage (const QString& message)
 {
   m_chatWindow->append (QString ("<i>%1</i>").arg (message));
 }
 
 void
-IRCWidget::joinOctaveChannel (const char *)
+IRCWidget::showErrorMessage (const QString& message)
 {
-  m_ircClient->joinChannel ("#octave");
+  m_chatWindow->append (QString ("<i>Error: %1</i>").arg (message));
 }
 
 void
-IRCWidget::loginSuccessful (const char *nick)
+IRCWidget::handleConnected (const QString &host)
 {
-  m_chatWindow->
-    append (QString
-	    ("<i><font color=\"#00AA00\"><b>Successfully logged in as %1.</b></font></i>").
-	    arg (nick));
-  m_nickButton->setEnabled (true);
-  m_inputLine->setEnabled (true);
-  m_chatWindow->setEnabled (true);
-  m_inputLine->setFocus ();
-
-  if (m_autoIdentification)
-    m_ircClient->sendCommand (2, COMMAND_PRIVMSG,
-			      "NickServ",
-			      QString ("identify %1").
-			      arg (m_nickServPassword).toStdString ().
-			      c_str ());
+  showStatusMessage (QString ("Connected to server %1.").arg (host));
 }
 
 void
-IRCWidget::showPrivateMessage (const char *nick, const char *destination,
-			       const char *message)
+IRCWidget::joinOctaveChannel (const QString& nick)
 {
-  Q_UNUSED (destination);
-  QString msg(message);
-  msg.replace ("<", "&lt;");
-  msg.replace (">", "&gt;");
-  if (msg.contains (m_ircClient->nickInUse ()))
+  Q_UNUSED (nick);
+  showStatusMessage (QString ("Joining channel #octave."));
+  m_ircClientImpl->sendJoinRequest ("#octave");
+}
+
+void
+IRCWidget::showMessage (const QString& channel, const QString& sender, const QString& message)
+{
+  Q_UNUSED (channel);
+  QString output;
+  if (message.contains (m_ircClientImpl->nickname ()))
     {
-      msg =
-	QString ("<font color=\"#990000\"><b>%1:</b> %2</font>").arg (nick).
-	arg (msg);
+      output =
+        QString ("<font color=\"#990000\"><b>%1:</b> %2</font>").arg (sender).
+        arg (message);
     }
   else
     {
-      msg =
-	QString ("<font color=\"%3\"><b>%1:</b> %2</font>").arg (nick).
-	arg (msg).arg (getAlternatingColor ());
+      output =
+        QString ("<b>%1:</b> %2").arg (sender).
+        arg (message);
     }
-  m_chatWindow->append (msg);
+  m_chatWindow->append (output);
 }
 
 void
-IRCWidget::showNotice (const char *nick, const char *destination,
-		       const char *message)
+IRCWidget::showNotification (const QString& sender, const QString& message)
 {
-  Q_UNUSED (nick);
-  Q_UNUSED (destination);
-  m_chatWindow->append (QString ("<font color=\"#007700\">%1</font>").
-			arg (message));
-}
-
-void
-IRCWidget::showTopic (const char *nick, const char *channel,
-		      const char *message)
-{
-  QString msg (message);
-  msg.replace ("<", "&lt;");
-  msg.replace (">", "&gt;");
-  m_chatWindow->append (QString ("Topic for %2 was set by %1: %3").arg (nick).
-                        arg (channel).arg (msg));
-}
-
-void
-IRCWidget::showNickChange (const char *oldNick, const char *newNick)
-{
-  m_chatWindow->append (QString ("%1 is now known as %2.").arg (oldNick).
-			arg (newNick));
-  m_nickList.removeAll (QString (oldNick));
-  m_nickList.append (QString (newNick));
-  updateNickCompleter ();
+  Q_UNUSED (sender);
+  m_chatWindow->append (QString ("<font color=\"#007700\">%1</font>").arg (message));
 }
 
 void
@@ -215,29 +179,11 @@ IRCWidget::nickPopup ()
   QString newNick =
     QInputDialog::getText (this, QString ("Nickname"),
 			   QString ("Type in your nickname:"),
-			   QLineEdit::Normal, m_ircClient->nickInUse (), &ok);
+                           QLineEdit::Normal, m_ircClientImpl->nickname (), &ok);
   if (ok)
     {
-      m_ircClient->sendNickChange (newNick);
+      m_ircClientImpl->sendNicknameChangeRequest (newNick);
     }
-}
-
-void
-IRCWidget::showJoin (const char *nick, const char *channel)
-{
-  m_chatWindow->append (QString ("<i>%1 has joined %2.</i>").arg (nick).
-			arg (channel));
-  m_nickList.append (QString (nick));
-  updateNickCompleter ();
-}
-
-void
-IRCWidget::showQuit (const char *nick, const char *reason)
-{
-  m_chatWindow->append (QString ("<i>%1 has quit.(%2).</i>").arg (nick).
-			arg (reason));
-  m_nickList.removeAll (QString (nick));
-  updateNickCompleter ();
 }
 
 void
@@ -256,11 +202,11 @@ IRCWidget::sendMessage (QString message)
 	message.split (QRegExp ("\\s+"), QString::SkipEmptyParts);
       if (line.at (0) == "/join")
 	{
-	  m_ircClient->joinChannel (line.at (1));
+          m_ircClientImpl->sendJoinRequest (line.at (1));
 	}
       else if (line.at (0) == "/nick")
 	{
-	  m_ircClient->sendNickChange (line.at (1));
+          m_ircClientImpl->sendNicknameChangeRequest (line.at (1));
 	}
       else if (line.at (0) == "/msg")
 	{
@@ -272,18 +218,16 @@ IRCWidget::sendMessage (QString message)
 	      pmsg += line.at (i);
 	      pmsg += " ";
 	    }
-	  m_ircClient->sendCommand (2, COMMAND_PRIVMSG,
-				    recipient.toStdString ().c_str (),
-				    pmsg.toStdString ().c_str ());
+          m_ircClientImpl->sendPrivateMessage(recipient, pmsg);
 	}
     }
   else
     {
-      m_ircClient->sendPublicMessage (message);
+      m_ircClientImpl->sendPublicMessage (message);
       message.replace ("<", "&lt;");
       message.replace (">", "&gt;");
       m_chatWindow->append (QString ("<b>%1:</b> %2").
-                            arg (m_ircClient->nickInUse ()).arg (message));
+                            arg (m_ircClientImpl->nickname ()).arg (message));
     }
 }
 
@@ -295,51 +239,55 @@ IRCWidget::sendInputLine ()
 }
 
 void
-IRCWidget::handleNickInUseChanged ()
+IRCWidget::handleLoggedIn (const QString &nick)
 {
-  m_nickButton->setText (m_ircClient->nickInUse ());
-  QSettings *settings = ResourceManager::instance ()->settings ();
-  settings->setValue ("IRCNick", m_ircClient->nickInUse ());
+  m_chatWindow->
+    append (QString
+            ("<i><font color=\"#00AA00\"><b>Successfully logged in as %1.</b></font></i>").
+            arg (nick));
+  m_nickButton->setEnabled (true);
+  m_inputLine->setEnabled (true);
+  m_chatWindow->setEnabled (true);
+  m_inputLine->setFocus ();
+
+
+  if (m_autoIdentification)
+    {
+      m_ircClientImpl->sendPrivateMessage("NickServ", QString ("identify %1").
+                                          arg (m_nickServPassword));
+    }
 }
 
 void
-IRCWidget::handleReplyCode (IRCEvent * event)
+IRCWidget::handleNickChange (const QString &oldNick, const QString &newNick)
 {
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  m_chatWindow->append (QString ("%1 is now known as %2.").arg (oldNick).arg (newNick));
+  m_nickList.removeAll (QString (oldNick));
+  m_nickList.append (QString (newNick));
+  updateNickCompleter ();
 
-  switch (event->getNumeric ())
-    {
-    case RPL_MOTDSTART:
-    case RPL_MOTD:
-    case ERR_NOMOTD:
-    case RPL_ENDOFMOTD:
-      if (settings->value ("showMessageOfTheDay").toBool ())
-	m_chatWindow->append (QString ("<font color=\"#777777\">%1</font>").
-			      arg (event->getParam (1)));
-      break;
-    case RPL_NOTOPIC:
-    case RPL_TOPIC:
-      if (settings->value ("showTopic").toBool ())
-	m_chatWindow->
-	  append (QString ("<font color=\"#000088\"><b>%1</b></font>").
-		  arg (event->getParam (2)));
-      break;
-    case RPL_NAMREPLY:
-      m_chatWindow->
-	append (QString ("<font color=\"#000088\">Users online: %1</font>").
-		arg (event->getParam (3)));
-      m_nickList =
-	event->getParam (3).split (QRegExp ("\\s+"), QString::SkipEmptyParts);
-      updateNickCompleter ();
-      break;
-    case ERR_NICKNAMEINUSE:
-    case ERR_NICKCOLLISION:
-      m_chatWindow->
-	append (QString ("<font color=\"#AA0000\">Nickname in use.</font>"));
-      break;
-    };
+  //m_nickButton->setText (m_ircClient->nickInUse ());
+  //QSettings *settings = ResourceManager::instance ()->settings ();
+  //settings->setValue ("IRCNick", m_ircClient->nickInUse ());
 }
 
+void
+IRCWidget::handleUserJoined (const QString &nick, const QString &channel)
+{
+  m_chatWindow->append (QString ("<i>%1 has joined %2.</i>").arg (nick).
+                        arg (channel));
+  m_nickList.append (QString (nick));
+  updateNickCompleter ();
+}
+
+void
+IRCWidget::handleUserQuit (const QString &nick, const QString &reason)
+{
+  m_chatWindow->append (QString ("<i>%1 has quit.(%2).</i>").arg (nick).
+                        arg (reason));
+  m_nickList.removeAll (QString (nick));
+  updateNickCompleter ();
+}
 
 void
 IRCWidget::updateNickCompleter ()

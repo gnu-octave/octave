@@ -85,8 +85,6 @@ SOURCES +=\
     	  src/BrowserWidget.cpp \
     	  src/ImageViewerMdiSubWindow.cpp \
     src/IRCWidget.cpp \
-    src/qirc/IRCClient.cpp \
-    src/qirc/IClientSocket.cpp \
     src/SettingsDialog.cpp \
     src/OctaveGUI.cpp \
     src/ResourceManager.cpp \
@@ -133,8 +131,6 @@ HEADERS += \
     	  src/ImageViewerMdiSubWindow.h \
     src/IRCWidget.h \
     src/qirc/IRCCodes.h \
-    src/qirc/IRCClient.h \
-    src/qirc/IClientSocket.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
     src/CommandLineParser.h \

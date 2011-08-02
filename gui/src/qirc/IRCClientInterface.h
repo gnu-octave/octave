@@ -38,7 +38,7 @@ public:
 
 public slots:
   // Connection state:
-  virtual void connectToServer (const QHostAddress& host, int port) = 0;
+  virtual void connectToHost (const QHostAddress& host, int port, const QString& initialNick) = 0;
   virtual void disconnect () = 0;
   virtual void reconnect () = 0;
 
@@ -46,21 +46,27 @@ public slots:
   virtual const QHostAddress& host() = 0;
   virtual int port() = 0;
 
-  virtual void enterChannel (const QString& channel) = 0;
+  virtual void sendJoinRequest (const QString& channel) = 0;
   virtual void leaveChannel (const QString& channel, const QString& reason) = 0;
 
   // Messaging:
   virtual void focusChannel (const QString& channel) = 0;
   virtual void sendNicknameChangeRequest (const QString& nickname) = 0;
-  virtual void sendMessage (const QString& message) = 0;
-
+  virtual void sendPublicMessage (const QString& message) = 0;
+  virtual void sendPrivateMessage (const QString& recipient, const QString& message) = 0;
   virtual const QString& nickname () = 0;
 
 signals:
   void newMessage (const QString& channel, const QString& sender, const QString& message);
   void connected (const QString& server);
   void disconnected ();
-
+  void error (const QString& message);
+  void notification (const QString& sender, const QString& message);
+  void message (const QString& channel, const QString& sender, const QString& message);
+  void nicknameChanged (const QString& oldNick, const QString& newNick);
+  void userJoined (const QString& nick, const QString& channel);
+  void userQuit (const QString& nick, const QString& reason);
+  void loggedIn (const QString& nick);
 };
 
 #endif // IRCCLIENTINTERFACE_H

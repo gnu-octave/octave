@@ -686,93 +686,88 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
-  if (stdin_is_tty)
+  if (! (interactive || forced_interactive)
+      || (reading_fcn_file
+          || reading_classdef_file
+          || reading_script_file
+          || get_input_from_eval_string
+          || input_from_startup_file
+          || input_from_command_line_file))
     {
-      if (! (interactive || forced_interactive)
-          || (reading_fcn_file
-              || reading_classdef_file
-              || reading_script_file
-              || get_input_from_eval_string
-              || input_from_startup_file
-              || input_from_command_line_file))
-        {
-          frame.protect_var (forced_interactive);
-          forced_interactive = true;
+      frame.protect_var (forced_interactive);
+      forced_interactive = true;
 
-          frame.protect_var (reading_fcn_file);
-          reading_fcn_file = false;
+      frame.protect_var (reading_fcn_file);
+      reading_fcn_file = false;
 
-          frame.protect_var (reading_classdef_file);
-          reading_classdef_file = false;
+      frame.protect_var (reading_classdef_file);
+      reading_classdef_file = false;
 
-          frame.protect_var (reading_script_file);
-          reading_script_file = false;
+      frame.protect_var (reading_script_file);
+      reading_script_file = false;
 
-          frame.protect_var (input_from_startup_file);
-          input_from_startup_file = false;
+      frame.protect_var (input_from_startup_file);
+      input_from_startup_file = false;
 
-          frame.protect_var (input_from_command_line_file);
-          input_from_command_line_file = false;
+      frame.protect_var (input_from_command_line_file);
+      input_from_command_line_file = false;
 
-          frame.protect_var (get_input_from_eval_string);
-          get_input_from_eval_string = false;
+      frame.protect_var (get_input_from_eval_string);
+      get_input_from_eval_string = false;
 
-          YY_BUFFER_STATE old_buf = current_buffer ();
-          YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
+      YY_BUFFER_STATE old_buf = current_buffer ();
+      YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
 
-          // FIXME: are these safe?
-          frame.add_fcn (switch_to_buffer, old_buf);
-          frame.add_fcn (delete_buffer, new_buf);
+      // FIXME: are these safe?
+      frame.add_fcn (switch_to_buffer, old_buf);
+      frame.add_fcn (delete_buffer, new_buf);
 
-          switch_to_buffer (new_buf);
-        }
-
-      while (Vdebugging)
-        {
-          reset_error_handler ();
-
-          reset_parser ();
-
-          // Save current value of global_command.
-          frame.protect_var (global_command);
-
-          global_command = 0;
-
-          // Do this with an unwind-protect cleanup function so that the
-          // forced variables will be unmarked in the event of an interrupt.
-          symbol_table::scope_id scope = symbol_table::top_scope ();
-          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
-
-          // This is the same as yyparse in parse.y.
-          int retval = octave_parse ();
-
-          if (retval == 0 && global_command)
-            {
-              global_command->accept (*current_evaluator);
-
-              // FIXME -- To avoid a memory leak, global_command should be
-              // deleted, I think.  But doing that here causes trouble if
-              // an error occurs while executing a debugging command
-              // (dbstep, for example). It's not clear to me why that
-              // happens.
-              //
-              // delete global_command;
-              //
-              // global_command = 0;
-
-              if (octave_completion_matches_called)
-                octave_completion_matches_called = false;
-            }
-
-          // Unmark forced variables.
-          // Restore previous value of global_command.
-          frame.run_top (2);
-
-          octave_quit ();
-        }
+      switch_to_buffer (new_buf);
     }
-  else
-    warning ("invalid attempt to debug script read from stdin");
+
+  while (Vdebugging)
+    {
+      reset_error_handler ();
+
+      reset_parser ();
+
+      // Save current value of global_command.
+      frame.protect_var (global_command);
+
+      global_command = 0;
+
+      // Do this with an unwind-protect cleanup function so that the
+      // forced variables will be unmarked in the event of an interrupt.
+      symbol_table::scope_id scope = symbol_table::top_scope ();
+      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+
+      // This is the same as yyparse in parse.y.
+      int retval = octave_parse ();
+
+      if (retval == 0 && global_command)
+        {
+          global_command->accept (*current_evaluator);
+
+          // FIXME -- To avoid a memory leak, global_command should be
+          // deleted, I think.  But doing that here causes trouble if
+          // an error occurs while executing a debugging command
+          // (dbstep, for example). It's not clear to me why that
+          // happens.
+          //
+          // delete global_command;
+          //
+          // global_command = 0;
+
+          if (octave_completion_matches_called)
+            octave_completion_matches_called = false;
+        }
+
+      // Unmark forced variables.
+      // Restore previous value of global_command.
+      frame.run_top (2);
+
+      octave_quit ();
+    }
 }
 
 // If the user simply hits return, this will produce an empty matrix.

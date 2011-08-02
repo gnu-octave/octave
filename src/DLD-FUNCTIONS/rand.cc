@@ -179,18 +179,16 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                 octave_idx_type incr = NINTbig (r.inc ());
                 octave_idx_type lim = NINTbig (r.limit ());
 
-                if (base < 0 || lim < 0)
-                  error ("%s: all dimensions must be positive", fcn);
-                else
+                for (octave_idx_type i = 0; i < n; i++)
                   {
-                    for (octave_idx_type i = 0; i < n; i++)
-                      {
-                        dims(i) = base;
-                        base += incr;
-                      }
-
-                    goto gen_matrix;
+                    //Negative dimensions are treated as zero for Matlab
+                    //compatibility
+                    dims(i) = base >= 0 ? base : 0;
+                    base += incr;
                   }
+
+                goto gen_matrix;
+
               }
             else
               error ("%s: all elements of range must be integers",
@@ -208,15 +206,10 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
                 for (octave_idx_type i = 0; i < len; i++)
                   {
+                    //Negative dimensions are treated as zero for Matlab
+                    //compatibility
                     octave_idx_type elt = iv(i);
-
-                    if (elt < 0)
-                      {
-                        error ("%s: all dimensions must be positive", fcn);
-                        goto done;
-                      }
-
-                    dims(i) = iv(i);
+                    dims(i) = elt >=0 ? elt : 0;
                   }
 
                 goto gen_matrix;
@@ -278,13 +271,14 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (int i = 0; i < nargin; i++)
               {
-                dims(i) = args(idx+i).int_value ();
-
+                octave_idx_type elt = args(idx+i).int_value ();
                 if (error_state)
                   {
                     error ("%s: expecting integer arguments", fcn);
                     goto done;
                   }
+                //Negative is zero for Matlab compatibility
+                dims(i) = elt >= 0 ? elt : 0;
               }
 
             goto gen_matrix;

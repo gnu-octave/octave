@@ -4187,8 +4187,8 @@ val = zeros (n,m, \"uint8\")\n\
 @end example\n\
 \n\
 Calling @code{eye} with no arguments is equivalent to calling it\n\
-with an argument of 1.  This odd definition is for compatibility\n\
-with @sc{matlab}.\n\
+with an argument of 1.  Any negative dimensions are treated as zero. \n\
+These odd definitions are for compatibility with @sc{matlab}.\n\
 @seealso{speye}\n\
 @end deftypefn")
 {

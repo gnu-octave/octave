@@ -39,6 +39,11 @@ function retval = orth (A, tol)
 
   if (nargin == 1 || nargin == 2)
 
+    if (isempty (A))
+      retval = [];
+      return;
+    endif
+
     [U, S, V] = svd (A);
 
     [rows, cols] = size (A);

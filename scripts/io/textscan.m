@@ -162,9 +162,11 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       str = tmp_str = "";
       n = 0;
       ## FIXME: Can this be done without slow loop?
-      while (ischar (tmp_str) && n++ <= nlines)
-        str = strcat (str, tmp_str);
+      while (ischar (tmp_str) && n++ < nlines)
         tmp_str = fgets (fid);
+        if (ischar (tmp_str))
+          str = strcat (str, tmp_str);
+        endif
       endwhile
     else
       str = fread (fid, "char=>char").';

@@ -55,6 +55,7 @@ FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
 void
 FileEditorMdiSubWindow::handleMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
 {
+  Q_UNUSED (state);
   if ( margin == 1 )  // marker margin
     {
       unsigned int mask = m_editor->markersAtLine (line);

@@ -23,13 +23,15 @@
 #include <QObject>
 #include <QHostAddress>
 #include <QTextDocument>
+#include <QStringListModel>
 #include "IRCCodes.h"
 
 class IRCChannelProxyInterface
 {
 public:
   IRCChannelProxyInterface () { }
-  virtual QTextDocument *conversation () = 0;
+  virtual QTextDocument *conversationModel () = 0;
+  virtual QStringListModel *userListModel () = 0;
 };
 
 /**

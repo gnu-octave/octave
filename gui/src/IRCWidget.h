@@ -52,7 +52,8 @@ public slots:
   void updateNickCompleter ();
 
 private:
-  IRCClientInterface * m_ircClientInterface;
+  IRCClientInterface *m_ircClientInterface;
+  IRCChannelProxyInterface *m_octaveChannel;
   QTextEdit *m_chatWindow;
   QPushButton *m_nickButton;
   QLineEdit *m_inputLine;

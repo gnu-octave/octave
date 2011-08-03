@@ -1,222 +1,223 @@
-/***************************************************************************
-                          IRCCodes.h  -  description
-                             -------------------
-    begin                : Mon Sep 18 2000
-    copyright            : (C) 2000 by gerardo Puga
-    email                : gere@mailroom.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/* OctaveGUI - A graphical user interface for Octave
+ * Copyright (C) 2011 Jacob Dawid
+ * jacob.dawid@googlemail.com
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef IRCCODES_H
 #define IRCCODES_H
+#include <QString>
 
-// *********                                                     ***********
-// ************************  as seen on the RFC 2812 ***********************
-// *********                                                     ***********
+namespace IRCCommand
+{
+  const QString Password = "PASS";
+  const QString Nick = "NICK";
+  const QString User = "USER";
+  const QString Operation = "OPER";
+  const QString Service = "SERVICE";
+  const QString Quit = "QUIT";
+  const QString ServerQuit = "SQUIT";
 
-// COMMAND STRINGS
-// - connection registration
-#define COMMAND_PASS		 "PASS"
-#define COMMAND_NICK 		 "NICK"
-#define COMMAND_USER		 "USER"
-#define COMMAND_OPER		 "OPER"
-#define COMMAND_SERVICE  "SERVICE"
-#define COMMAND_QUIT		 "QUIT"
-#define COMMAND_SQUIT		 "SQUIT"
-// - channel operations
-#define COMMAND_JOIN		 "JOIN"
-#define COMMAND_PART 		 "PART"
-#define COMMAND_MODE		 "MODE"
-#define COMMAND_TOPIC		 "TOPIC"
-#define COMMAND_NAMES		 "NAMES"
-#define COMMAND_LIST		 "LIST"
-#define COMMAND_INVITE	 "INVITE"
-#define COMMAND_KICK		 "KICK"
-// - sending messages
-#define COMMAND_PRIVMSG  "PRIVMSG"
-#define COMMAND_NOTICE   "NOTICE"
-// - server queries and commands
-#define COMMAND_MOTD		 "MOTD"
-#define COMMAND_LUSERS	 "LUSERS"
-#define COMMAND_VERSION	 "VERSION"
-#define COMMAND_STATS		 "STATS"
-#define COMMAND_LINKS		 "LINKS"
-#define COMMAND_TIME		 "TIME"
-#define COMMAND_CONNECT  "CONNECT"
-#define COMMAND_TRACE    "TRACE"
-#define COMMAND_ADMIN    "ADMIN"
-#define COMMAND_INFO		 "INFO"
-// - service query and commands
-#define COMMAND_SERVLIST "SERVLIST"
-#define COMMAND_SQUERY	 "SQUERY"
-// - user based queries
-#define COMMAND_WHO			 "WHO"
-#define COMMAND_WHOIS		 "WHOIS"
-#define COMMAND_WHOWAS	 "WHOWAS"
-// - miscellaneous messages
-#define COMMAND_KILL		 "KILL"
-#define COMMAND_PING		 "PING"
-#define COMMAND_PONG		 "PONG"
-#define COMMAND_ERROR		 "ERROR"
-// - optional features
-#define COMMAND_AWAY		 "AWAY"
-#define COMMAND_REHASH	 "REHASH"
-#define COMMAND_DIE			 "DIE"
-#define COMMAND_RESTART  "RESTART"
-#define COMMAND_SUMMON	 "SUMMON"
-#define COMMAND_USERS		 "USERS"
-#define COMMAND_OPERWALL "OPERWALL"
-#define COMMAND_USERHOST "USERHOST"
-#define COMMAND_ISON		 "ISON"
+  const QString Join = "JOIN";
+  const QString Part = "PART";
+  const QString Mode = "MODE";
+  const QString Topic = "TOPIC";
+  const QString Names = "NAMES";
+  const QString List = "LIST";
+  const QString Invite = "INVITE";
+  const QString Kick = "KICK";
 
-// COMMAND REPLIES
+  const QString PrivateMessage = "PRIVMSG";
+  const QString Notice = "NOTICE";
 
-#define RPL_WELCOME				1
-#define RPL_YOURHOST			2
-#define RPL_CREATED				3
-#define RPL_MYINFO        4
-#define RPL_RPLBOUNCE     5
-#define RPL_USERHOST      302
-#define RPL_ISON          303
-#define RPL_AWAY          301
-#define RPL_UNAWAY        305
-#define RPL_NOWAWAY       306
-#define RPL_HWOISUSER     311
-#define RPL_WHOISSERVER   312
-#define RPL_WHOISOPERATOR 313
-#define RPL_WHOISIDLE     317
-#define RPL_ENOFWHOIS     318
-#define RPL_WHOISCHANNELS 319
-#define RPL_WHOWASUSER    314
-#define RPL_ENDOFWHOWAS   369
-#define RPL_LISTSTART     321
-#define RPL_LIST          322
-#define RPL_LISTEND       323
-#define RPL_UNIQOPIS      325
-#define RPL_CHANNELMODEIS 324
-#define RPL_NOTOPIC       331
-#define RPL_TOPIC         332
-#define RPL_INVITING      341
-#define RPL_SUMMONING     342
-#define RPL_INVITELIST    346
-#define RPL_ENDOFINVITELIST 347
-#define RPL_EXCEPTLIST    348
-#define RPL_ENDOFEXCEPTLIST 349
-#define RPL_VERSION       351
-#define RPL_WHOREPLY      352
-#define RPL_ENDOFWHO      315
-#define RPL_NAMREPLY      353
-#define RPL_ENDOFNAMES    366
-#define RPL_LINKS         364
-#define RPL_ENDOFLINKS    367
-#define RPL_BANLIST       368
-#define RPL_INFO          371
-#define RPL_ENDOFINFO     374
-#define RPL_MOTDSTART     375
-#define RPL_MOTD          372
-#define RPL_ENDOFMOTD     376
-#define RPL_YOUREOPER     381
-#define RPL_REHASHING     382
-#define RPL_YOURESERVICE  383
-#define RPL_TIME          391
-#define RPL_USERSSTART    392
-#define RPL_USERS         393
-#define RPL_ENDOFUSERS    394
-#define RPL_NOUSERS       395
-#define RPL_TRACELINK				200
-#define RPL_TRACECONNECTING 201
-#define RPL_TRACEHANDSHAKE	202
-#define RPL_TRACEUNKNOWN    203
-#define RPL_TRACEOPERATOR   204
-#define RPL_TRACEUSER       205
-#define RPL_TRACESERVER     206
-#define RPL_TRACESERVICE    207
-#define RPL_TRACENEWTYPE    208
-#define RPL_TRACECLASS      209
-#define RPL_TRACECONNECT    210
-#define RPL_TRACELOG        261
-#define RPL_TRACEEND        262
-#define RPL_STATSLINKINFO   211
-#define RPL_STATSCOMMANDS   212
-#define RPL_ENDOFSTATS      219
-#define RPL_STATSUPTIME     242
-#define RPL_STATSONLINE     243
-#define RPL_UMODEIS         221
-#define RPL_SERVLIST        234
-#define RPL_SERVLISTEND     235
-#define RPL_LUSERCLIENT     251
-#define RPL_LUSEROP         252
-#define RPL_LUSERUNKNOWN    253
-#define RPL_LUSERCHANNELS   254
-#define RPL_LUSERME         255
-#define RPL_ADMINME         256
-#define RPL_ADMINLOC1       257
-#define RPL_ADMINLOC2       258
-#define RPL_ADMINEMAIL      259
-#define RPL_TRYAGAIN        263
+  const QString MessageOfTheDay = "MOTD";
+  const QString ListUsers = "LUSERS";
+  const QString Version = "VERSION";
+  const QString Stats = "STATS";
+  const QString Links = "LINKS";
+  const QString Time = "TIME";
+  const QString Command = "CONNECT";
+  const QString Trace = "TRACE";
+  const QString Admin = "ADMIN";
+  const QString Info = "INFO";
 
-// ERRROR REPLIES
+  const QString ServerList = "SERVLIST";
+  const QString ServerQuery = "SQUERY";
 
-#define ERR_NOSUCHNICK      401
-#define ERR_NOSUCHSERVER    402
-#define ERR_NOSUCHCHANNEL   403
-#define ERR_CANNOTSENDTOCHAN 404
-#define ERR_TOOMANYCHANNELS 405
-#define ERR_WASNOSUCHNICK   406
-#define ERR_TOOMANYTARGETS  407
-#define ERR_NOSUCHSERVICE   408
-#define ERR_NOORIGIN        409
-#define ERR_NORECPIENT      411
-#define ERR_NOTEXTTOSEND    412
-#define ERR_NOTOPLEVEL      413
-#define ERR_WILDTOPLEVEL    414
-#define ERR_BADMASK         415
-#define ERR_UNKNOWNCOMMAND  421
-#define ERR_NOMOTD          422
-#define ERR_NOADMININFO     423
-#define ERR_FILEERROR       424
-#define ERR_NONICKNAMEGIVEN 431
-#define ERR_ERRONEUSNICKNAME 432
-#define ERR_NICKNAMEINUSE   433
-#define ERR_NICKCOLLISION   436
-#define ERR_UNAVAILRESOURCE 437
-#define ERR_USERNOTINCHANNEL 441
-#define ERR_NOTONCHANNEL    442
-#define ERR_USERONCHANNEL   443
-#define ERR_NOLOGIN         444
-#define ERR_SUMMONDISABLED  445
-#define ERR_USERSDISABLED   446
-#define ERR_NOTREGISTERED   451
-#define ERR_NEEDMOREPARAMS  461
-#define ERR_ALREADYREGISTRED 462
-#define ERR_NOPERMFORHOST   463
-#define ERR_PASSWDMISMATCH  464
-#define ERR_YOUREBANNEDCREEP 465
-#define ERR_YOUWILLBEBANNED 466
-#define ERR_KEYSET          467
-#define ERR_CHANNELISFULL   471
-#define ERR_UNKNOWNMODE     472
-#define ERR_INVITEONLYCHANNEL 473
-#define ERR_BANNEDFROMCHAN  474
-#define ERR_BADCHANNELKEY   475
-#define ERR_BADCHANMASK     476
-#define ERR_NOCHANMODES     477
-#define ERR_BANLISTFULL     478
-#define ERR_NOPRIVILEGES    481
-#define ERR_CHANOPPRIVNEEDED 482
-#define ERR_CANTKILLSERVER  483
-#define ERR_RESTRICTED      484
-#define ERR_UNIQOPPRIVSNEEDED 485
-#define ERR_NOOPERHOST      491
-#define ERR_UMODELUNKNOWNFLAG 501
-#define ERR_USERSDONTMATCH  502
+  const QString Who = "WHO";
+  const QString WhoIs = "WHOIS";
+  const QString WhoWas = "WHOWAS";
+
+  const QString Kill = "KILL";
+  const QString Ping = "PING";
+  const QString Pong = "PONG";
+  const QString Error = "ERROR";
+
+  const QString Away = "AWAY";
+  const QString Rehash = "REHASH";
+  const QString Die = "DIE";
+  const QString Restart = "RESTART";
+  const QString Summon = "SUMMON";
+  const QString Users = "USERS";
+  const QString OperatorWall = "OPERWALL";
+  const QString UserHost = "USERHOST";
+  const QString IsOn = "ISON";
+};
+
+namespace IRCReply
+{
+  const int Welcome = 1;
+  const int YourHost = 2;
+  const int Created = 3;
+  const int MyInfo = 4;
+  const int ReplyBounce = 5;
+  const int UserHost = 302;
+  const int IsOn = 303;
+  const int Away = 301;
+  const int UnAway = 305;
+  const int NoAway = 306;
+  const int WhoIsUser = 311;
+  const int WhoIsServer = 312;
+  const int WhoIsOperator = 313;
+  const int WhoIsIdle = 317;
+  const int EndOfWhoIs = 318;
+  const int WhoIsChannels = 319;
+  const int WhoWasUser = 314;
+  const int EndOfWhoWas = 369;
+  const int ListStart = 321;
+  const int List = 322;
+  const int ListEnd = 323;
+  const int UniqueOpIs = 325;
+  const int ChannelModeIs = 324;
+  const int NoTopic = 331;
+  const int Topic = 332;
+  const int Inviting = 341;
+  const int Summoning = 342;
+  const int InviteList = 346;
+  const int EndOfInviteList = 347;
+  const int ExceptList = 348;
+  const int EndOfExceptList = 349;
+  const int Version = 351;
+  const int WhoReply = 352;
+  const int EndOfWho = 315;
+  const int NameReply = 353;
+  const int EndOfNames = 366;
+  const int Links = 364;
+  const int EndOfLinks = 367;
+  const int BanList = 368;
+  const int Info = 371;
+  const int EndOfInfo = 374;
+  const int MessageOfTheDayStart = 375;
+  const int MessageOfTheDay = 372;
+  const int MessageOfTheDayEnd = 376;
+  const int YouAreOperator = 381;
+  const int Rehashing = 382;
+  const int YouAreService = 383;
+  const int Time = 391;
+  const int UserStart = 392;
+  const int Users = 393;
+  const int EndOfUsers = 394;
+  const int NoUsers = 395;
+  const int TraceLink = 200;
+  const int TraceConnecting = 201;
+  const int TraceHandshake = 202;
+  const int TraceUnknown = 203;
+  const int TraceOperator = 204;
+  const int TraceUser = 205;
+  const int TraceServer = 206;
+  const int TraceService = 207;
+  const int TraceNewType = 208;
+  const int TraceClass = 209;
+  const int TraceConnect = 210;
+  const int TraceLog = 261;
+  const int TraceEnd = 262;
+  const int StatsLinkInfo = 211;
+  const int StatsCommands = 212;
+  const int EndOfStats = 219;
+  const int StatsUptime = 242;
+  const int StatsOnline = 243;
+  const int UModeIs = 221;
+  const int ServerList = 234;
+  const int ServerListEnd = 235;
+  const int ListUserClient = 251;
+  const int ListUserOperator = 252;
+  const int ListUserUnknown = 253;
+  const int ListUserChannels = 254;
+  const int ListUserMe = 255;
+  const int AdminMe = 256;
+  const int AdminLoc1 = 257;
+  const int AdminLoc2 = 258;
+  const int AdminEmail = 259;
+  const int TryAgain = 263;
+};
+
+namespace IRCError
+{
+  const int NoSuchNick = 401;
+  const int NoSuchServer = 402;
+  const int NoSuchChannel = 403;
+  const int CannotSendToChannel = 404;
+  const int TooManyChannels = 405;
+  const int WasNoSuchNick = 406;
+  const int TooManyTargets = 407;
+  const int NoSuchService = 408;
+  const int NoOrigin = 409;
+  const int NoRecipient = 411;
+  const int NoTextToSend = 412;
+  const int NoTopLevel = 413;
+  const int WildTopLevel = 414;
+  const int BasMask = 415;
+  const int UnknownCommand = 421;
+  const int NoMessageOfTheDay = 422;
+  const int NoAdminInfo = 423;
+  const int FileError = 424;
+  const int NoNickNameGiven = 431;
+  const int ErroneusNick = 432;
+  const int NicknameInUse = 433;
+  const int NickCollision = 436;
+  const int UnavailResource = 437;
+  const int UserNotInChannel = 441;
+  const int NotOnChannel = 442;
+  const int UserOnChannel = 443;
+  const int NoLogin = 444;
+  const int SummonDisabled = 445;
+  const int UsersDisabled = 446;
+  const int NotRegistered = 451;
+  const int NeedMoreParams = 461;
+  const int AlreadyRegistered = 462;
+  const int NoPermissionForHost = 463;
+  const int PasswordMismatch = 464;
+  const int YouAreBannedCreep = 465;
+  const int YouWillBeBanned = 466;
+  const int KeySet = 467;
+  const int ChannelIsFull = 471;
+  const int UnknownMode = 472;
+  const int InviteOnlyChannel = 473;
+  const int BannedFromChannel = 474;
+  const int BadChannelKey = 475;
+  const int BadChannelMask = 476;
+  const int NoChannelModes = 477;
+  const int BanListFull = 478;
+  const int NoPrivileges = 481;
+  const int ChannelOperatorPrivilegesNeeded = 482;
+  const int CannotKillServer = 483;
+  const int Restricted = 484;
+  const int UniqueOperatorPrivilegesNeeded = 485;
+  const int NoOperatorHost = 491;
+  const int YourModeListUnknownFlag = 501;
+  const int UsersDontMatch = 502;
+};
 
 #endif

@@ -165,9 +165,15 @@ IRCChannelProxy::IRCChannelProxy ()
 }
 
 QTextDocument *
-IRCChannelProxy::conversation ()
+IRCChannelProxy::conversationModel ()
 {
-  return &m_conversation;
+  return &m_conversationModel;
+}
+
+QStringListModel *
+IRCChannelProxy::userListModel ()
+{
+  return &m_userListModel;
 }
 
 IRCClientImpl::IRCClientImpl ()
@@ -227,7 +233,7 @@ IRCClientImpl::ircChannelProxy (const QString &channel)
 void
 IRCClientImpl::sendJoinRequest (const QString& channel)
 {
-  sendCommand (1, COMMAND_JOIN, channel.toStdString ().c_str ());
+  sendCommand (1, IRCCommand::Join, channel.toStdString ().c_str ());
 }
 
 void
@@ -246,20 +252,20 @@ IRCClientImpl::focusChannel (const QString& channel)
 void
 IRCClientImpl::sendNicknameChangeRequest (const QString &nickname)
 {
-  sendCommand (1, COMMAND_NICK, nickname.toStdString ().c_str ());
+  sendCommand (1, IRCCommand::Nick, nickname.toStdString ().c_str ());
 }
 
 void
 IRCClientImpl::sendPublicMessage (const QString& message)
 {
-  sendCommand (2, COMMAND_PRIVMSG, m_focussedChannel.toStdString ().c_str (),
+  sendCommand (2, IRCCommand::PrivateMessage, m_focussedChannel.toStdString ().c_str (),
                 message.toStdString ().c_str ());
 }
 
 void
 IRCClientImpl::sendPrivateMessage (const QString &recipient, const QString &message)
 {
-  sendCommand (2, COMMAND_PRIVMSG,
+  sendCommand (2, IRCCommand::PrivateMessage,
                   recipient.toStdString ().c_str (),
                   message.toStdString ().c_str ());
 }
@@ -274,7 +280,7 @@ void
 IRCClientImpl::handleConnected ()
 {
   m_connected = true;
-  sendCommand (4, COMMAND_USER, "na", "0", "0", "na");
+  sendCommand (4, IRCCommand::User, "na", "0", "0", "na");
   sendNicknameChangeRequest (m_nickname);
   emit connected (m_host.toString ());
 }
@@ -329,25 +335,25 @@ IRCClientImpl::handleIncomingLine (const QString &line)
         {
           switch (ircEvent.numericValue ())
             {
-              case RPL_WELCOME:
+              case IRCReply::Welcome:
                 emit loggedIn (nickname ());
                 break;
-              case ERR_NICKNAMEINUSE:
-              case ERR_NICKCOLLISION:
+              case IRCError::NicknameInUse:
+              case IRCError::NickCollision:
                 emit debugMessage ("FIXME: Received nickname in use reply.");
                 break;
-              case ERR_PASSWDMISMATCH:
+              case IRCError::PasswordMismatch:
                 emit debugMessage ("FIXME: Received password mismatch reply.");
                 break;
-              case RPL_MOTDSTART:
-              case RPL_MOTD:
-              case ERR_NOMOTD:
-              case RPL_ENDOFMOTD:
+              case IRCReply::MessageOfTheDayStart:
+              case IRCReply::MessageOfTheDay:
+              case IRCReply::MessageOfTheDayEnd:
+              case IRCError::NoMessageOfTheDay:
                 break;
-              case RPL_NOTOPIC:
-              case RPL_TOPIC:
+              case IRCReply::NoTopic:
+              case IRCReply::Topic:
                 break;
-              case RPL_NAMREPLY:
+              case IRCReply::NameReply:
 
                 //m_nickList = event->getParam (3).split (QRegExp ("\\s+"), QString::SkipEmptyParts);
                 break;
@@ -356,38 +362,38 @@ IRCClientImpl::handleIncomingLine (const QString &line)
       else
         {
           QString command = ircEvent.command ();
-          if (command == COMMAND_NICK)
+          if (command == IRCCommand::Nick)
             {
               handleNicknameChanged (ircEvent.parameter (0), ircEvent.parameter (1));
             }
-          else if (command == COMMAND_QUIT)
+          else if (command == IRCCommand::Quit)
             {
               handleUserQuit (ircEvent.nick (), ircEvent.parameter (0));
             }
-          else if (command == COMMAND_JOIN)
+          else if (command == IRCCommand::Join)
             {
               handleUserJoined(ircEvent.nick (), ircEvent.parameter (0));
             }
-          else if (command == COMMAND_PART)
+          else if (command == IRCCommand::Part)
             {
               emit debugMessage ("WRITEME: Received part.");
               //emit part (ircEvent.getNick ().toStdString ().c_str (),
               //           ircEvent.getParam (0).toStdString ().c_str (),
               //           ircEvent.getParam (1).toStdString ().c_str ());
             }
-          else if (command == COMMAND_MODE)
+          else if (command == IRCCommand::Mode)
             {
               emit debugMessage ("WRITEME: Received mode.");
               //emit mode (&ircEvent);
             }
-          else if (command == COMMAND_TOPIC)
+          else if (command == IRCCommand::Topic)
             {
               emit debugMessage ("WRITEME: Received topic.");
               //emit topic (ircEvent.getNick ().toStdString ().c_str (),
               //            ircEvent.getParam (0).toStdString ().c_str (),
               //            ircEvent.getParam (1).toStdString ().c_str ());
             }
-          else if (command == COMMAND_KICK)
+          else if (command == IRCCommand::Kick)
             {
               emit debugMessage ("WRITEME: Received kick.");
               //emit kick (ircEvent.getNick ().toStdString ().c_str (),
@@ -395,26 +401,26 @@ IRCClientImpl::handleIncomingLine (const QString &line)
               //           ircEvent.getParam (1).toStdString ().c_str (),
               //           ircEvent.getParam (2).toStdString ().c_str ());
             }
-          else if (command == COMMAND_INVITE)
+          else if (command == IRCCommand::Invite)
             {
               emit debugMessage ("WRITEME: Received invite.");
               //emit invite (ircEvent.getNick ().toStdString ().c_str (),
               //             ircEvent.getParam (1).toStdString ().c_str ());
             }
-          else if (command == COMMAND_PRIVMSG)
+          else if (command == IRCCommand::PrivateMessage)
             {
               emit message (ircEvent.parameter (0), ircEvent.nick (), ircEvent.parameter (1));
             }
-          else if (command == COMMAND_NOTICE)
+          else if (command == IRCCommand::Notice)
             {
               emit notification (ircEvent.nick ().toStdString ().c_str (),
                                  ircEvent.parameter (1).toStdString ().c_str ());
             }
-          else if (command == COMMAND_PING)
+          else if (command == IRCCommand::Ping)
             {
-              sendCommand (1, COMMAND_PONG, m_nickname.toStdString ().c_str ());
+              sendCommand (1, IRCCommand::Pong, m_nickname.toStdString ().c_str ());
             }
-          else if (command == COMMAND_ERROR)
+          else if (command == IRCCommand::Error)
             {
               emit error (ircEvent.parameter (0));
             }
@@ -435,15 +441,17 @@ IRCClientImpl::sendLine (const QString &line)
 }
 
 void
-IRCClientImpl::sendCommand (int numberOfCommands, const char *command, ...)
+IRCClientImpl::sendCommand (int numberOfCommands, const QString& command, ...)
 {
+  // TODO: Change this. We are coding C++, not C ;)
   char linea[513];
   char *parametro;
+  const char *cmd = command.toStdString().c_str();
   va_list lp;
 
-  strncpy (linea, command, 512);
+  strncpy (linea, cmd, 512);
   linea[512] = 0;
-  va_start (lp, command);
+  va_start (lp, cmd);
   for (int i = 0; i < numberOfCommands; i++)
     {
       if (i == 15)

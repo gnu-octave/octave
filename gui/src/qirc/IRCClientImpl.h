@@ -23,6 +23,7 @@
 #include <QHostInfo>
 #include <QStringList>
 #include <QTextDocument>
+#include <QStringListModel>
 #include "IRCClientInterface.h"
 
 class IRCServerMessage
@@ -78,10 +79,12 @@ class IRCChannelProxy : public IRCChannelProxyInterface
 {
 public:
   IRCChannelProxy ();
-  QTextDocument *conversation ();
+  QTextDocument *conversationModel ();
+  QStringListModel *userListModel ();
 private:
   QStringList m_userList;
-  QTextDocument m_conversation;
+  QStringListModel m_userListModel;
+  QTextDocument m_conversationModel;
 };
 
 class IRCClientImpl : public IRCClientInterface
@@ -123,7 +126,7 @@ private:
   void handleUserQuit (const QString& nick, const QString& reason);
   void handleIncomingLine (const QString& line);
   void sendLine (const QString& line);
-  void sendCommand (int numberOfCommands, const char *command, ...);
+  void sendCommand (int numberOfCommands, const QString& command, ...);
 
   QHostAddress                    m_host;
   int                             m_port;

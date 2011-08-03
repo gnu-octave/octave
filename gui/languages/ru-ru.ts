@@ -4,84 +4,139 @@
 <context>
     <name>FileEditorMdiSubWindow</name>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="184"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="114"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="207"/>
         <source>File Editor</source>
         <translation>Редактор файлов</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="92"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="115"/>
         <source>Cannot read file %1:
 %2.</source>
         <translation>Не удалось прочитать файл %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="104"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="127"/>
         <source>File loaded.</source>
         <translation>Файл загружен.
 </translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="130"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="153"/>
         <source>Do you want to save the current file
 %1 ?</source>
         <translation>Хотите ли вы сохранить текущий файл
 %1 ?</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="185"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="208"/>
         <source>Cannot write file %1:
 %2.</source>
         <translation>Не удалось сохранить файл %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="197"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="220"/>
         <source>File %1 saved</source>
         <translation>Файл %1 сохранён</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="294"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="382"/>
         <source>&amp;Close File</source>
         <translation>&amp;Закрыть файл</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="297"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="385"/>
         <source>&amp;New File</source>
         <translation>&amp;Создать файл</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="300"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="388"/>
         <source>&amp;Open File</source>
         <translation>&amp;Открыть файл</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="303"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="391"/>
         <source>&amp;Save File</source>
         <translation>&amp;Сохранить файл</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="306"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="394"/>
         <source>Save File &amp;As</source>
         <translation>Сохранить файл &amp;как</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="309"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="397"/>
         <source>&amp;Undo</source>
         <translation>&amp;Отменить</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="312"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="400"/>
         <source>&amp;Redo</source>
         <translation>&amp;Повторить</translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="401"/>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="402"/>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="403"/>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="404"/>
+        <source>&amp;Next Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="405"/>
+        <source>Pre&amp;vious Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="406"/>
+        <source>Toggle &amp;Bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="409"/>
+        <source>&amp;Run File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="448"/>
+        <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="456"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="468"/>
+        <source>&amp;Run</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>FilesDockWidget</name>
     <message>
-        <location filename="../src/FilesDockWidget.cpp" line="32"/>
         <source>Current Folder</source>
-        <translation>Текущий каталог</translation>
+        <translation type="obsolete">Текущий каталог</translation>
+    </message>
+    <message>
+        <location filename="../src/FilesDockWidget.cpp" line="32"/>
+        <source>Current Directory</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/FilesDockWidget.cpp" line="46"/>
@@ -183,6 +238,7 @@
         <translation>Загрузить область переменных</translation>
     </message>
     <message>
+        <location filename="../src/MainWindow.cpp" line="207"/>
         <location filename="../src/MainWindow.cpp" line="340"/>
         <source>About Octave</source>
         <translation>Об Octave</translation>
@@ -263,6 +319,7 @@
         <translation>Выровнять окна</translation>
     </message>
     <message>
+        <location filename="../src/MainWindow.cpp" line="317"/>
         <location filename="../src/MainWindow.cpp" line="329"/>
         <source>Workspace</source>
         <translation>Область переменных</translation>

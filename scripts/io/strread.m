@@ -37,18 +37,20 @@
 ## @item %s
 ## The word is parsed as a string.
 ##
-## @item  %d
 ## @itemx %f
-## @itemx %u
 ## @itemx %n
-## The word is parsed as a number (and converted to double).
+## The word is parsed as a number and converted to double.
+##
+## @item  %d
+## @itemx %u
+## The word is parsed as a number and converted to int32.
 ##
 ## @item %*', '%*f', '%*s
 ## The word is skipped.
 ##
 ## For %s and %d, %f, %n, %u and the associated %*s @dots{} specifiers an
 ## optional width can be specified as %Ns, etc. where N is an integer > 1.
-## For %f, formats like %N.Mf are allowed.
+## For %f, format specifiers like %N.Mf are allowed.
 ##
 ## @item literals
 ## In addition the format may contain literal character strings; these will be
@@ -354,10 +356,17 @@ function varargout = strread (str, format = "%f", varargin)
     str = cell2mat (str);
     ## Remove leading & trailing space, but preserve delimiters.
     str = strtrim (str);
+    ## FIXME: Double strrep on str is enormously expensive of CPU time.
+    ## Can this be eliminated
+    ## Wipe leading and trailing whitespace on each line (it may be delimiter too)
+    if (! isempty (eol_char))
+      str = strrep (str, [eol_char " "], eol_char);
+      str = strrep (str, [" " eol_char], eol_char);
+    endif
   endif
 
   ## Split 'str' into words
-  words = split_by (str, delimiter_str, mult_dlms_s1);
+  words = split_by (str, delimiter_str, mult_dlms_s1, eol_char);
   if (! isempty (white_spaces))
     ## Trim leading and trailing white_spaces
     ## FIXME: Is this correct?  strtrim clears what matches isspace(), not
@@ -398,7 +407,8 @@ function varargout = strread (str, format = "%f", varargin)
 
       ## 1. Assess "period" in the split-up words array ( < num_words_per_line).
       ## Could be done using EndOfLine but that prohibits EndOfLine = "" option.
-      ## Alternative below goes by simply parsing the first "line" of words:
+      ## Alternative below goes by simply parsing a first grab of words
+      ## and counting words until the fmt_words array is exhausted:
       iwrd = 1; iwrdp = 0; iwrdl = length (words{iwrd});
       for ii = 1:numel (fmt_words)
 
@@ -480,7 +490,7 @@ function varargout = strread (str, format = "%f", varargin)
         if ((idf(ii) || idg(ii)) && (rows(words) < num_words_per_line))
           if (idf(ii))
             s = strfind (words(icol, 1), fmt_words{ii});
-            if (isempty (s))
+            if (isempty (s{:}))
               error ("strread: Literal '%s' not found in column %d", fmt_words{ii}, icol);
             endif
             s = s{:}(1);
@@ -585,6 +595,11 @@ function varargout = strread (str, format = "%f", varargin)
           n = cellfun ("isempty", data);
           ### FIXME - erroneously formatted data lead to NaN, not an error
           data = str2double (data);
+          if (! isempty (regexp (fmt_words{m}, "%[du]")))
+            ## Cast to integer 
+            ## FIXME: NaNs will be transformed into zeros
+            data = int32 (data);
+          end
           data(n) = numeric_fill_value;
           if (pad_out)
             data(end+1:num_lines) = numeric_fill_value;
@@ -607,7 +622,11 @@ function varargout = strread (str, format = "%f", varargin)
               if (numel (nfmt) > 1)
                 sprec = str2double (nfmt{2});
                 data = 10^-sprec * round (10^sprec * data);
-              endif
+              elseif (! isempty (regexp (fmt_words{m}, "[du]")))
+                ## Cast to integer 
+                ## FIXME: NaNs will be transformed into zeros
+                data = int32 (data);
+              end
               varargout{k} = data.';
               k++;
             case "s"
@@ -643,17 +662,16 @@ function varargout = strread (str, format = "%f", varargin)
 
 endfunction
 
-function out = split_by (text, sep, mult_dlms_s1)
+function out = split_by (text, sep, mult_dlms_s1, eol_char)
 
   ## Check & if needed, process MultipleDelimsAsOne parameter
   if (mult_dlms_s1)
     mult_dlms_s1 = true;
+    ## FIXME: Should re-implement strsplit() function here in order
+    ## to avoid strrep on megabytes of data.
     ## If \n is in sep collection we need to enclose it in spaces in text
     ## to avoid it being included in consecutive delim series
-    ## FIXME: This only works if eol is LF or CRLF.  Won't work on Mac
-    ##        Should probably use eol_char in this case.
-    ##        Also unlikely to work if <space> is not in white_space
-    text = strrep (text, "\n", " \n ");
+    text = strrep (text, eol_char, [" " eol_char " "]);
   else
     mult_dlms_s1 = false;
   endif
@@ -661,7 +679,7 @@ function out = split_by (text, sep, mult_dlms_s1)
   ## Split text string along delimiters
   out = strsplit (text, sep, mult_dlms_s1);
   ## In case of trailing delimiter, strip stray last empty word
-  if (any (sep == text(end)))
+  if (!isempty (out) && any (sep == text(end)))
     out(end) = [];
   endif
   
@@ -673,13 +691,8 @@ endfunction
 
 %!test
 %! [a, b] = strread ("1 2", "%f%f");
-%! assert (a == 1 && b == 2);
-
-%!test
-%! str = "# comment\n# comment\n1 2 3";
-%! [a, b] = strread (str, '%d %s', 'commentstyle', 'shell', 'endofline', "\n");
-%! assert (a, [1; 3]);
-%! assert (b, {"2"});
+%! assert (a, 1);
+%! assert (b, 2);
 
 %!test
 %! str = '';
@@ -689,7 +702,7 @@ endfunction
 %!   str = sprintf ('%s %.6f %s\n', str, a(k), b(k));
 %! endfor
 %! [aa, bb] = strread (str, '%f %s');
-%! assert (a, aa, 1e-5);
+%! assert (a, aa, 1e-6);
 %! assert (cellstr (b), bb);
 
 %!test
@@ -700,12 +713,18 @@ endfunction
 %!   str = sprintf ('%s %.6f %s\n', str, a(k), b(k));
 %! endfor
 %! aa = strread (str, '%f %*s');
-%! assert (a, aa, 1e-5);
+%! assert (a, aa, 1e-6);
 
 %!test
 %! str = sprintf ('/* this is\nacomment*/ 1 2 3');
 %! a = strread (str, '%f', 'commentstyle', 'c');
 %! assert (a, [1; 2; 3]);
+
+%!test
+%! str = "# comment\n# comment\n1 2 3";
+%! [a, b] = strread (str, '%n %s', 'commentstyle', 'shell', 'endofline', "\n");
+%! assert (a, [1; 3]);
+%! assert (b, {"2"});
 
 %!test
 %! str = sprintf ("Tom 100 miles/hr\nDick 90 miles/hr\nHarry 80 miles/hr");
@@ -738,14 +757,14 @@ endfunction
 %! assert (double (a{3}(end-5:end)), [32 110 97 109 101 62]);
 
 %!test
-%! [a, b, c, d] = strread ("1,2,3,,5,6", "%d%d%d%d", 'delimiter', ',');
-%! assert (c, 3);
+%! [a, b, c, d] = strread ("1,2,3,,5,6", "%d%f%d%f", 'delimiter', ',');
+%! assert (c, int32 (3));
 %! assert (d, NaN);
 
 %!test
-%! [a, b, c, d] = strread ("1,2,3,,5,6\n", "%d%d%d%d", 'delimiter', ',');
+%! [a, b, c, d] = strread ("1,2,3,,5,6\n", "%d%d%f%d", 'delimiter', ',');
 %! assert (c, [3; NaN]);
-%! assert (d, [NaN; NaN]);
+%! assert (d, int32 ([0; 0]));
 
 %!test
 %! # Default format (= %f)
@@ -760,23 +779,17 @@ endfunction
 
 %!test
 %! # TreatAsEmpty
-%! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%d", 'delimiter', ',', 'TreatAsEmpty', 'NN');
-%! assert (c, [3; NaN]);
+%! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", 'delimiter', ',', 'TreatAsEmpty', 'NN');
+%! assert (c, int32 ([3; 0]));
 %! assert (d, [NaN; NaN]);
 
 %!test
 %! # No delimiters at all besides EOL.  Plain reading numbers & strings
 %! str = "Text1Text2Text\nText398Text4Text\nText57Text";
 %! c = textscan (str, "Text%dText%1sText");
-%! assert (c{1}, [1; 398; 57]);
+%! assert (c{1}, int32 ([1; 398; 57]));
 %! assert (c{2}(1:2), {'2'; '4'});
 %! assert (isempty (c{2}{3}), true);
-
-%!test
-%! # No delimiters at all besides EOL.  Skip fields, even empty fields
-%! str = "Text1Text2Text\nTextText4Text\nText57Text";
-%! c = textscan (str, "Text%*dText%dText");
-%! assert (c{1}, [2; 4; NaN]);
 
 %% MultipleDelimsAsOne
 %!test

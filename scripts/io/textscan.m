@@ -34,13 +34,18 @@
 ## @code{strread}, this function supports a few more:
 ##
 ## @itemize
-## @item "headerlines":
-## The first @var{value} number of lines of @var{fid} are skipped.
+## @item "collectoutput":
+## A value of 1 or true instructs textscan to concatenate consecutive columns
+## of the same class in the output cell array.  A value of 0 or false (default)
+## leaves output in distinct columns.
 ##
 ## @item "endofline":
-## Specify a single character or "\r\n".  If no value is given, it will be
-## inferred from the file.  If set to "" (empty string) EOLs are ignored as
-## delimiters.
+## Specify "\r", "\n" or "\r\n" (for CR, LF, or CRLF).  If no value is given,
+## it will be inferred from the file.  If set to "" (empty string) EOLs are
+## ignored as delimiters and added to whitespace.
+##
+## @item "headerlines":
+## The first @var{value} number of lines of @var{fid} are skipped.
 ##
 ## @item "returnonerror":
 ## If set to numerical 1 or true (default), return normally when read errors
@@ -116,6 +121,20 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     args(end+1:end+2) = {'delimiter', ""};
   endif
 
+  collop = false;
+  ipos = find (strcmpi (args, "collectoutput"));
+  if (! isempty (ipos))
+    ## Search & concatenate consecutive columns of same class requested
+    if (isscalar (args{ipos+1})
+        && (islogical (args{ipos+1}) || isnumeric (args{ipos+1})))
+      collop = args{ipos+1};
+    else
+      warning ("textscan: illegal value for CollectOutput parameter - ignored");
+    endif
+    ## Remove argument before call to strread() below
+    args(ipos:ipos+1) = [];
+  endif
+
   if (any (strcmpi (args, "returnonerror")))
     ## Because of the way strread() reads data (columnwise) this parameter
     ## can't be neatly implemented.  strread() will pick it up anyway
@@ -164,6 +183,9 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   if (! isempty (endofline))
     if (ischar (args{endofline + 1})) 
       eol_char = args{endofline + 1};
+      if (isempty (strmatch (eol_char, {"", "\n", "\r", "\r\n"}, 'exact')))
+        error ("textscan: illegal EndOfLine character value specified");
+      endif
     else
       error ("textscan: character value required for EndOfLine"); 
     endif
@@ -195,6 +217,11 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   ## Call strread to make it do the real work
   C = cell (1, num_fields);
   [C{:}] = strread (str, format, args{:});
+  
+  ## If requested, collect output columns of same class
+  if (collop)
+    C = colloutp (C);
+  endif
 
   if (nargout == 2)
     position = ftell (fid);
@@ -202,6 +229,32 @@ function [C, position] = textscan (fid, format = "%f", varargin)
 
 endfunction
 
+
+## Collect consecutive columns of same class into one cell column
+function C = colloutp (C)
+
+  ## Start at rightmost column and work backwards to avoid ptr mixup
+  ii = numel (C);
+  while ii > 1
+    clss1 = class (C{ii});
+    jj = ii;
+    while  (jj > 1 && strcmp (clss1, class (C{jj - 1})))
+      ## Column to the left is still same class; check next column to the left
+      --jj;
+    endwhile
+    if (jj < ii)
+      ## Concatenate columns into current column
+      C{jj} = [C{jj : ii}];
+      ## Wipe concatenated columns to the right, resume search to the left
+      C(jj+1 : ii) = [];
+      ii = jj - 1;
+    else
+      ## No similar class in column to the left, search from there
+      --ii;
+    endif
+  endwhile
+
+endfunction
 
 %!test
 %! str = "1,  2,  3,  4\n 5,  ,  ,  8\n 9, 10, 11, 12";
@@ -218,13 +271,13 @@ endfunction
 %! str = sprintf ("%g miles/hr = %g kilometers/hr\n", b);
 %! fmt = "%f miles/hr = %f kilometers/hr";
 %! c = textscan (str, fmt);
-%! assert (b(1,:)', c{1});
-%! assert (b(2,:)', c{2});
+%! assert (b(1,:)', c{1}, 1e-5);
+%! assert (b(2,:)', c{2}, 1e-5);
 
 #%!test
 #%! str = "13, 72, NA, str1, 25\r\n// Middle line\r\n36, na, 05, str3, 6";
 #%! a = textscan(str, '%d %n %f %s %n', 'delimiter', ',','treatAsEmpty', {'NA', 'na'},'commentStyle', '//');
-#%! assert (a{1}, [13; 36]);
+#%! assert (a{1}, int32([13; 36]));
 #%! assert (a{2}, [72; NaN]);
 #%! assert (a{3}, [NaN; 5]);
 #%! assert (a{4}, {"str1"; "str3"});
@@ -237,9 +290,9 @@ endfunction
 %! str = [str "Km:25 = hhhZ\r\n"];
 %! fmt = "Km:%d = hhh%1sjjj miles%dhour";
 %! a = textscan (str, fmt, 'delimiter', ' ');
-%! assert (a{1}', [10 15 2 25], 1e-5);
+%! assert (a{1}', int32([10 15 2 25]));
 %! assert (a{2}', {'B' 'J' 'R' 'Z'});
-%! assert (a{3}', [16 241 3 NaN], 1e-5);
+%! assert (a{3}', int32([16 241 3 0]));
 
 %% Test with default endofline parameter
 %!test
@@ -251,6 +304,22 @@ endfunction
 %! c = textscan ("L1\nL2", "%s", 'endofline', '');
 %! assert (int8(c{:}{:}), int8([ 76,  49,  10,  76,  50 ]));
 
+%!test
+%! # No delimiters at all besides EOL.  Skip fields, even empty fields
+%! str = "Text1Text2Text\nTextText4Text\nText57Text";
+%! c = textscan (str, "Text%*dText%dText");
+%! assert (c{1}, int32 ([2; 4; 0]));
+
+%!test
+%% CollectOutput test
+%! b = [10:10:100];
+%! b = [b; 8*b/5; 8*b*1000/5];
+%! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
+%! fmt = "%f miles%s %s %f (%f) kilometers %*s";
+%! c = textscan (str, fmt, 'collectoutput', 1);
+%! assert (size(c{3}), [10, 2]);
+%! assert (size(c{2}), [10, 2]);
+
 %% Test input validation
 %!error textscan ()
 %!error textscan (single (4))
@@ -258,3 +327,4 @@ endfunction
 %!error <must be a string> textscan ("Hello World", 2)
 %!error <cannot provide position information> [C, pos] = textscan ("Hello World")
 %!error <character value required> textscan ("Hello World", '%s', 'EndOfLine', 3)
+

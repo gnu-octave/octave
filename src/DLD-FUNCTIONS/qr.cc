@@ -76,6 +76,8 @@ DEFUN_DLD (qr, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}, '0')\n\
+@deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})\n\
+@deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B}, '0')\n\
 @cindex QR factorization\n\
 Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}\n\
 subroutines.  For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},\n\
@@ -188,7 +190,7 @@ as\n\
 \n\
 @example\n\
 @group\n\
-[@var{C},@var{R}] = spqr (@var{A},@var{B})\n\
+[@var{C}, @var{R}] = qr (@var{A}, @var{B})\n\
 x = @var{R} \\ @var{C}\n\
 @end group\n\
 @end example\n\

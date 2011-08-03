@@ -29,7 +29,7 @@
 FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
 {
   setObjectName ("FilesDockWidget");
-  setWindowTitle (tr ("Current Folder"));
+  setWindowTitle (tr ("Current Directory"));
   setWidget (new QWidget (this));
 
   // Create a toolbar

@@ -24,7 +24,6 @@
 #include <QHostAddress>
 #include <QTextDocument>
 #include <QStringListModel>
-#include "IRCCodes.h"
 
 class IRCChannelProxyInterface
 {

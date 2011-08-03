@@ -130,7 +130,6 @@ HEADERS += \
     	  src/BrowserWidget.h \
     	  src/ImageViewerMdiSubWindow.h \
     src/IRCWidget.h \
-    src/qirc/IRCCodes.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
     src/CommandLineParser.h \

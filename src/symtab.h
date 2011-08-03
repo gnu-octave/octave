@@ -790,6 +790,11 @@ public:
       return rep->built_in_function;
     }
 
+    octave_value find_cmdline_function (void) const
+    {
+      return rep->cmdline_function;
+    }
+
     octave_value find_autoload (void)
     {
       return rep->find_autoload ();
@@ -1776,6 +1781,25 @@ public:
          p != fcn_table.end (); p++)
       {
         octave_value fcn = p->second.find_built_in_function ();
+
+        if (fcn.is_defined ())
+          retval.push_back (p->first);
+      }
+
+    if (! retval.empty ())
+      retval.sort ();
+
+    return retval;
+  }
+
+  static std::list<std::string> cmdline_function_names (void)
+  {
+    std::list<std::string> retval;
+
+    for (fcn_table_const_iterator p = fcn_table.begin ();
+         p != fcn_table.end (); p++)
+      {
+        octave_value fcn = p->second.find_cmdline_function ();
 
         if (fcn.is_defined ())
           retval.push_back (p->first);

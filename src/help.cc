@@ -749,6 +749,9 @@ make_name_list (void)
   const string_vector bif = symbol_table::built_in_function_names ();
   const int bif_len = bif.length ();
 
+  const string_vector cfl = symbol_table::cmdline_function_names ();
+  const int cfl_len = cfl.length ();
+
   const string_vector lcl = symbol_table::variable_names ();
   const int lcl_len = lcl.length ();
 
@@ -758,7 +761,8 @@ make_name_list (void)
   const string_vector afl = autoloaded_functions ();
   const int afl_len = afl.length ();
 
-  const int total_len = key_len + bif_len + lcl_len + ffl_len + afl_len;
+  const int total_len
+    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len;
 
   string_vector list (total_len);
 
@@ -771,6 +775,9 @@ make_name_list (void)
 
   for (i = 0; i < bif_len; i++)
     list[j++] = bif[i];
+
+  for (i = 0; i < cfl_len; i++)
+    list[j++] = cfl[i];
 
   for (i = 0; i < lcl_len; i++)
     list[j++] = lcl[i];

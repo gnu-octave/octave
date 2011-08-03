@@ -21,9 +21,9 @@
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
+#include <QFont>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QAction>
 #include <QStyle>
 #include <QTextStream>
 
@@ -53,6 +53,19 @@ FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
 }
 
 void
+FileEditorMdiSubWindow::handleMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
+{
+  if ( margin == 1 )  // marker margin
+    {
+      unsigned int mask = m_editor->markersAtLine (line);
+      if (mask && (1 << MARKER_BOOKMARK))
+        m_editor->markerDelete(line,MARKER_BOOKMARK);
+      else
+        m_editor->markerAdd(line,MARKER_BOOKMARK);
+    }
+}
+
+void
 FileEditorMdiSubWindow::handleModificationChanged(bool modified)
 {
   if ( modified )
@@ -63,6 +76,14 @@ FileEditorMdiSubWindow::handleModificationChanged(bool modified)
   else
      setWindowTitle (m_fileName);
 }
+
+void
+FileEditorMdiSubWindow::handleCopyAvailable(bool enableCopy)
+{
+  m_copyAction->setEnabled(enableCopy);
+  m_cutAction->setEnabled(enableCopy);
+}
+
 
 void
 FileEditorMdiSubWindow::openFile ()
@@ -222,6 +243,40 @@ FileEditorMdiSubWindow::runFile ()
   m_octave->setFocus ();
 }
 
+// toggle bookmark
+void
+FileEditorMdiSubWindow::toggleBookmark ()
+{
+  int line,cur;
+  m_editor->getCursorPosition(&line,&cur);
+  if ( m_editor->markersAtLine (line) && (1 << MARKER_BOOKMARK) )
+    m_editor->markerDelete(line,MARKER_BOOKMARK);
+  else
+    m_editor->markerAdd(line,MARKER_BOOKMARK);
+}
+// goto next bookmark
+void
+FileEditorMdiSubWindow::nextBookmark ()
+{
+  int line,cur,nextline;
+  m_editor->getCursorPosition(&line,&cur);
+  if ( m_editor->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
+    line++; // we have a bookmark here, so start search from next line
+  nextline = m_editor->markerFindNext(line,(1 << MARKER_BOOKMARK));
+  m_editor->setCursorPosition(nextline,0);
+}
+// goto previous bookmark
+void
+FileEditorMdiSubWindow::prevBookmark ()
+{
+  int line,cur,prevline;
+  m_editor->getCursorPosition(&line,&cur);
+  if ( m_editor->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
+    line--; // we have a bookmark here, so start search from prev line
+  prevline = m_editor->markerFindPrevious(line,(1 << MARKER_BOOKMARK));
+  m_editor->setCursorPosition(prevline,0);
+}
+
 // function for setting the already existing lexer from MainWindow
 void
 FileEditorMdiSubWindow::initEditor (OctaveTerminal* terminal,
@@ -287,15 +342,29 @@ FileEditorMdiSubWindow::construct ()
   m_statusBar = new QStatusBar (this);
   m_editor = new QsciScintilla (this);
 
+  // markers
   m_editor->setMarginType (1, QsciScintilla::SymbolMargin);
+  m_editor->setMarginSensitivity(1,true);
+  m_editor->markerDefine(QsciScintilla::RightTriangle,MARKER_BOOKMARK);
+  connect(m_editor,SIGNAL(marginClicked(int,int,Qt::KeyboardModifiers)),
+          this,SLOT(handleMarginClicked(int,int,Qt::KeyboardModifiers)));
+
+  // line numbers
+  QFont marginFont("Monospace",9);
+  m_editor->setMarginsFont(marginFont);
+  QFontMetrics metrics(marginFont);
+  m_editor->setMarginsForegroundColor(QColor(96,96,96));
+  m_editor->setMarginsBackgroundColor(QColor(232,232,220));
   m_editor->setMarginType (2, QsciScintilla::TextMargin);
+  m_editor->setMarginWidth(2, metrics.width("99999"));
+  m_editor->setMarginLineNumbers(2, true);
+
+  // code folding
   m_editor->setMarginType (3, QsciScintilla::SymbolMargin);
   m_editor->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
-  m_editor->setMarginLineNumbers (2, true);
-  m_editor->setMarginWidth (2, "99999");
-  m_editor->setMarginsForegroundColor (QColor(96,96,96));
-  m_editor->setMarginsBackgroundColor (QColor(224,224,224));
 
+  m_editor->setCaretLineVisible(true);
+  m_editor->setCaretLineBackgroundColor(QColor(255,255,200));
   m_editor->setBraceMatching (QsciScintilla::SloppyBraceMatch);
   m_editor->setAutoIndent (true);
   m_editor->setIndentationWidth (2);
@@ -328,12 +397,20 @@ FileEditorMdiSubWindow::construct ()
   QAction *redoAction = new QAction (
         QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
         tr("&Redo"), m_toolBar);
-  QAction *copyAction = new QAction (QIcon::fromTheme("edit-copy"),tr("&Copy"),m_toolBar);
-  QAction *cutAction = new QAction (QIcon::fromTheme("edit-cut"),tr("Cu&t"),m_toolBar);
+  m_copyAction = new QAction (QIcon::fromTheme("edit-copy"),tr("&Copy"),m_toolBar);
+  m_cutAction = new QAction (QIcon::fromTheme("edit-cut"),tr("Cu&t"),m_toolBar);
   QAction *pasteAction = new QAction (QIcon::fromTheme("edit-paste"),tr("&Paste"),m_toolBar);
+  QAction *nextBookmarkAction = new QAction (tr("&Next Bookmark"),m_toolBar);
+  QAction *prevBookmarkAction = new QAction (tr("Pre&vious Bookmark"),m_toolBar);
+  QAction *toggleBookmarkAction = new QAction (tr("Toggle &Bookmark"),m_toolBar);
   QAction *runAction = new QAction (
         QIcon::fromTheme("media-play",style->standardIcon (QStyle::SP_MediaPlay)),
         tr("&Run File"), m_toolBar);
+
+  // some actions are disabled from the beginning
+  m_copyAction->setEnabled(false);
+  m_cutAction->setEnabled(false);
+  connect(m_editor,SIGNAL(copyAvailable(bool)),this,SLOT(handleCopyAvailable(bool)));
 
   // short cuts
   newAction->setShortcut(QKeySequence::New);
@@ -342,13 +419,16 @@ FileEditorMdiSubWindow::construct ()
   saveAsAction->setShortcut(QKeySequence::SaveAs);
   undoAction->setShortcut(QKeySequence::Undo);
   redoAction->setShortcut(QKeySequence::Redo);
-  copyAction->setShortcut(QKeySequence::Copy);
-  cutAction->setShortcut(QKeySequence::Cut);
+  m_copyAction->setShortcut(QKeySequence::Copy);
+  m_cutAction->setShortcut(QKeySequence::Cut);
   pasteAction->setShortcut(QKeySequence::Paste);
   runAction->setShortcut(Qt::Key_F5);
+  nextBookmarkAction->setShortcut(Qt::Key_F2);
+  prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
+  toggleBookmarkAction->setShortcut(Qt::CTRL + Qt::Key_F2);
 
   // toolbar
-  m_toolBar->setIconSize(QSize(20,20)); // smaller icons (make configurable in user settings?)
+  m_toolBar->setIconSize(QSize(16,16)); // smaller icons (make configurable in user settings?)
   m_toolBar->addAction (closeAction);
   m_toolBar->addAction (newAction);
   m_toolBar->addAction (openAction);
@@ -357,8 +437,8 @@ FileEditorMdiSubWindow::construct ()
   m_toolBar->addSeparator();
   m_toolBar->addAction (undoAction);
   m_toolBar->addAction (redoAction);
-  m_toolBar->addAction (copyAction);
-  m_toolBar->addAction (cutAction);
+  m_toolBar->addAction (m_copyAction);
+  m_toolBar->addAction (m_cutAction);
   m_toolBar->addAction (pasteAction);
   m_toolBar->addSeparator();
   m_toolBar->addAction (runAction);
@@ -375,10 +455,14 @@ FileEditorMdiSubWindow::construct ()
   QMenu *editMenu = new QMenu(tr("&Edit"),m_menuBar);
   editMenu->addAction(undoAction);
   editMenu->addAction(redoAction);
-  fileMenu->addSeparator();
-  editMenu->addAction(copyAction);
-  editMenu->addAction(cutAction);
+  editMenu->addSeparator();
+  editMenu->addAction(m_copyAction);
+  editMenu->addAction(m_cutAction);
   editMenu->addAction(pasteAction);
+  editMenu->addSeparator();
+  editMenu->addAction(toggleBookmarkAction);
+  editMenu->addAction(nextBookmarkAction);
+  editMenu->addAction(prevBookmarkAction);
   m_menuBar->addMenu(editMenu);
   QMenu *runMenu = new QMenu(tr("&Run"),m_menuBar);
   runMenu->addAction(runAction);
@@ -398,12 +482,15 @@ FileEditorMdiSubWindow::construct ()
   connect (openAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
   connect (undoAction, SIGNAL (triggered ()), m_editor, SLOT (undo ()));
   connect (redoAction, SIGNAL (triggered ()), m_editor, SLOT (redo ()));
-  connect (copyAction, SIGNAL (triggered ()), m_editor, SLOT (copy ()));
-  connect (cutAction, SIGNAL (triggered ()), m_editor, SLOT (cut ()));
+  connect (m_copyAction, SIGNAL (triggered ()), m_editor, SLOT (copy ()));
+  connect (m_cutAction, SIGNAL (triggered ()), m_editor, SLOT (cut ()));
   connect (pasteAction, SIGNAL (triggered ()), m_editor, SLOT (paste ()));
   connect (saveAction, SIGNAL (triggered ()), this, SLOT (saveFile ()));
   connect (saveAsAction, SIGNAL (triggered ()), this, SLOT (saveFileAs ()));
   connect (runAction, SIGNAL (triggered ()), this, SLOT (runFile ()));
+  connect (toggleBookmarkAction, SIGNAL (triggered ()), this, SLOT (toggleBookmark ()));
+  connect (nextBookmarkAction, SIGNAL (triggered ()), this, SLOT (nextBookmark ()));
+  connect (prevBookmarkAction, SIGNAL (triggered ()), this, SLOT (prevBookmark ()));
 
   // TODO: Do we still need tool tips in the status bar? Tool tips are now
   //       shown directly at the theme icons

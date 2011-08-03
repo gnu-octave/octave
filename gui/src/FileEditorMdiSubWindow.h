@@ -22,6 +22,7 @@
 #include "OctaveTerminal.h"
 #include <QMdiSubWindow>
 #include <QToolBar>
+#include <QAction>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QCloseEvent>
@@ -32,6 +33,11 @@
 
 const char UNNAMED_FILE[]     = "<unnamed>";
 const char SAVE_FILE_FILTER[] = "Octave Files  *.m(*.m);;All Files   *.*(*.*)";
+enum MARKER
+  {
+    MARKER_BOOKMARK,
+    MARKER_BREAKPOINT
+  };
 
 class FileEditorMdiSubWindow:public QMdiSubWindow
 {
@@ -69,11 +75,19 @@ private:
   QStatusBar *m_statusBar;
   QString m_fileName;
   OctaveTerminal* m_octave;
+  QAction* m_copyAction;
+  QAction* m_cutAction;
+  int m_markerBookmark;
   bool m_modified;
 
 private slots:
   void handleModificationChanged(bool modified);
+  void handleMarginClicked(int line, int margin, Qt::KeyboardModifiers state);
+  void handleCopyAvailable(bool enableCopy);
   void runFile();
+  void toggleBookmark ();
+  void nextBookmark();
+  void prevBookmark();
 
 };
 

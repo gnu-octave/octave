@@ -21,83 +21,85 @@
 
 #include <QTcpSocket>
 #include <QHostInfo>
+#include <QStringList>
+#include <QTextDocument>
 #include "IRCClientInterface.h"
 
-#define MAX_LINE_LEN 512
-#define PARAM_MAX_COUNT 15
-#define CHR_COLON ':'
-#define CHR_SPACE ' '
-#define CHR_ZERO '\0'
-#ifdef Q_OS_LINUX
-#define CRLF "\n"
-#else
-#define CRLF "\r\n"
-#endif
-#define DIGITS	"0123456789"
-
-class IRCEvent
+class IRCServerMessage
 {
+  #define MAX_LINE_LEN 512
+  #define PARAM_MAX_COUNT 15
+  #define CHR_COLON ':'
+  #define CHR_SPACE ' '
+  #define CHR_ZERO '\0'
+  #ifdef Q_OS_LINUX
+  #define CRLF "\n"
+  #else
+  #define CRLF "\r\n"
+  #endif
+  #define DIGITS	"0123456789"
+
+public:
+  IRCServerMessage (const char *serverMessage);
+
+  bool isNumericValue ()
+  {
+    return n_numeric;
+  }
+
+  QString nick ()
+  {
+    return n_nick;
+  }
+
+  QString command ()
+  {
+    return m_command;
+  }
+
+  int numericValue ();
+  QString parameter (int index);
+
 private:
-  int codeNumber;
-  bool numeric;
-
-  QString nick, user, host;
-  QString command;
-  int paramCount;
-  QString param[PARAM_MAX_COUNT];
-
-protected:
   int skipSpaces (const char *linea, int &index);
   QString getStringToken (const char *linea, int &index);
   QString getStringToken (QString linea, int &index);
 
+  int m_codeNumber;
+  bool n_numeric;
+
+  QString n_nick, m_user, m_host;
+  QString m_command;
+  int m_parameterCount;
+  QString m_parameter[PARAM_MAX_COUNT];
+};
+
+class IRCChannelProxy : public IRCChannelProxyInterface
+{
 public:
-    IRCEvent (const char *serverMessage);
-
-  bool isNumeric ()
-  {
-    return numeric;
-  }
-
-  QString getNick ()
-  {
-    return nick;
-  }
-  QString getUser ()
-  {
-    return user;
-  }
-  QString getHost ()
-  {
-    return host;
-  }
-  QString getCommand ()
-  {
-    return command;
-  }
-  int getNumeric ();
-
-  int getParamCount ()
-  {
-    return paramCount;
-  }
-  QString getParam (int index);
+  IRCChannelProxy ();
+  QTextDocument *conversation ();
+private:
+  QStringList m_userList;
+  QTextDocument m_conversation;
 };
 
 class IRCClientImpl : public IRCClientInterface
 {
   Q_OBJECT
 public:
-  IRCClientImpl();
+  IRCClientImpl ();
+
+  const QString& nickname ();
+  bool isConnected ();
+  const QHostAddress& host();
+  int port();
+  IRCChannelProxyInterface *ircChannelProxy(const QString& channel);
 
 public slots:
   void connectToHost (const QHostAddress& host, int port, const QString& initialNick);
   void disconnect ();
   void reconnect ();
-
-  bool isConnected ();
-  const QHostAddress& host();
-  int port();
 
   void sendJoinRequest (const QString& channel);
   void leaveChannel (const QString& channel, const QString& reason);
@@ -106,8 +108,6 @@ public slots:
   void sendNicknameChangeRequest (const QString &nickname);
   void sendPublicMessage (const QString& message);
   void sendPrivateMessage (const QString &recipient, const QString &message);
-
-  const QString& nickname ();
 
 signals:
   void debugMessage (const QString& message);
@@ -118,17 +118,21 @@ private slots:
   void handleReadyRead ();
 
 private:
+  void handleNicknameChanged (const QString& oldNick, const QString& newNick);
+  void handleUserJoined (const QString& nick, const QString& channel);
+  void handleUserQuit (const QString& nick, const QString& reason);
   void handleIncomingLine (const QString& line);
   void sendLine (const QString& line);
   void sendCommand (int numberOfCommands, const char *command, ...);
 
-  QHostAddress  m_host;
-  int           m_port;
-  QString       m_nickname;
-  bool          m_connected;
-  QString       m_focussedChannel;
+  QHostAddress                    m_host;
+  int                             m_port;
+  QString                         m_nickname;
+  bool                            m_connected;
+  QString                         m_focussedChannel;
 
-  QTcpSocket    m_tcpSocket;
+  QTcpSocket                      m_tcpSocket;
+  QMap<QString, IRCChannelProxyInterface*> m_channels;
 };
 
 #endif // IRCCLIENTIMPL_H

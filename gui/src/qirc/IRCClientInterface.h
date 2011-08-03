@@ -22,8 +22,15 @@
 #include <QString>
 #include <QObject>
 #include <QHostAddress>
-
+#include <QTextDocument>
 #include "IRCCodes.h"
+
+class IRCChannelProxyInterface
+{
+public:
+  IRCChannelProxyInterface () { }
+  virtual QTextDocument *conversation () = 0;
+};
 
 /**
   * \class IRCClientInterface
@@ -36,15 +43,17 @@ public:
   IRCClientInterface () { }
   virtual ~IRCClientInterface () { }
 
+  virtual const QString& nickname () = 0;
+  virtual bool isConnected () = 0;
+  virtual const QHostAddress& host() = 0;
+  virtual int port() = 0;
+  virtual IRCChannelProxyInterface *ircChannelProxy(const QString& channel) = 0;
+
 public slots:
   // Connection state:
   virtual void connectToHost (const QHostAddress& host, int port, const QString& initialNick) = 0;
   virtual void disconnect () = 0;
   virtual void reconnect () = 0;
-
-  virtual bool isConnected () = 0;
-  virtual const QHostAddress& host() = 0;
-  virtual int port() = 0;
 
   virtual void sendJoinRequest (const QString& channel) = 0;
   virtual void leaveChannel (const QString& channel, const QString& reason) = 0;
@@ -54,7 +63,6 @@ public slots:
   virtual void sendNicknameChangeRequest (const QString& nickname) = 0;
   virtual void sendPublicMessage (const QString& message) = 0;
   virtual void sendPrivateMessage (const QString& recipient, const QString& message) = 0;
-  virtual const QString& nickname () = 0;
 
 signals:
   void newMessage (const QString& channel, const QString& sender, const QString& message);
@@ -67,6 +75,7 @@ signals:
   void userJoined (const QString& nick, const QString& channel);
   void userQuit (const QString& nick, const QString& reason);
   void loggedIn (const QString& nick);
+  void userList (const QString& channel, const QStringList& list);
 };
 
 #endif // IRCCLIENTINTERFACE_H

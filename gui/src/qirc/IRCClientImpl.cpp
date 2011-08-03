@@ -18,17 +18,17 @@
 
 #include "IRCClientImpl.h"
 
-IRCEvent::IRCEvent (const char *serverMessage)
+IRCServerMessage::IRCServerMessage (const char *serverMessage)
 {
   char prefix[MAX_LINE_LEN];
   int index = 0;
 
-  nick = "";
-  user = "";
-  host = "";
+  n_nick = "";
+  m_user = "";
+  m_host = "";
   for (int i = 0; i < 15; i++)
     {
-      param[i] = "";
+      m_parameter[i] = "";
     }
 
   if (serverMessage[0] == CHR_COLON)
@@ -52,26 +52,26 @@ IRCEvent::IRCEvent (const char *serverMessage)
               switch (etapa)
                 {
                 case 0:
-                  nick += prefix[i];
+                  n_nick += prefix[i];
                   break;
                 case 1:
-                  user += prefix[i];
+                  m_user += prefix[i];
                   break;
                 default:
-                  host += prefix[i];
+                  m_host += prefix[i];
                   break;
                 }
             }
         }
     }
 
-  command = getStringToken (serverMessage, index);
-  command = command.toUpper ();
+  m_command = getStringToken (serverMessage, index);
+  m_command = m_command.toUpper ();
 
-  paramCount = 0;
+  m_parameterCount = 0;
   while (serverMessage[index] != 0)
     {
-      if ((serverMessage[index] == CHR_COLON) || (paramCount == 14))
+      if ((serverMessage[index] == CHR_COLON) || (m_parameterCount == 14))
         {
 
           if (serverMessage[index] == CHR_COLON)
@@ -79,43 +79,43 @@ IRCEvent::IRCEvent (const char *serverMessage)
               index++;
             }
 
-          param[paramCount] = (const char *) (serverMessage + index);
+          m_parameter[m_parameterCount] = (const char *) (serverMessage + index);
           index += strlen (serverMessage + index);
         }
       else
         {
-          param[paramCount] = getStringToken (serverMessage, index);
+          m_parameter[m_parameterCount] = getStringToken (serverMessage, index);
         }
-      paramCount++;
+      m_parameterCount++;
     }
 
-  if (strlen (command.toStdString ().c_str ()) ==
-      strspn (command.toStdString ().c_str (), DIGITS))
+  if (strlen (m_command.toStdString ().c_str ()) ==
+      strspn (m_command.toStdString ().c_str (), DIGITS))
     {
-      numeric = true;
-      codeNumber = atoi (command.toStdString ().c_str ());
+      n_numeric = true;
+      m_codeNumber = atoi (m_command.toStdString ().c_str ());
     }
   else
     {
-      numeric = false;
+      n_numeric = false;
     }
 }
 
 int
-IRCEvent::getNumeric ()
+IRCServerMessage::numericValue ()
 {
-  if (!numeric)
+  if (!n_numeric)
     {
       return -1;
     }
   else
     {
-      return codeNumber;
+      return m_codeNumber;
     }
 }
 
 QString
-IRCEvent::getParam (int index)
+IRCServerMessage::parameter (int index)
 {
   if ((index < 0) || (index > 14))
     {
@@ -123,12 +123,12 @@ IRCEvent::getParam (int index)
     }
   else
     {
-      return param[index];
+      return m_parameter[index];
     }
 }
 
 int
-IRCEvent::skipSpaces (const char *line, int &index)
+IRCServerMessage::skipSpaces (const char *line, int &index)
 {
   while (line[index] == CHR_SPACE)
     {
@@ -138,7 +138,7 @@ IRCEvent::skipSpaces (const char *line, int &index)
 }
 
 QString
-IRCEvent::getStringToken (const char *line, int &index)
+IRCServerMessage::getStringToken (const char *line, int &index)
 {
   QString token ("");
   skipSpaces (line, index);
@@ -153,9 +153,21 @@ IRCEvent::getStringToken (const char *line, int &index)
 }
 
 QString
-IRCEvent::getStringToken (QString line, int &index)
+IRCServerMessage::getStringToken (QString line, int &index)
 {
   return getStringToken (line.toStdString ().c_str (), index);
+}
+
+IRCChannelProxy::IRCChannelProxy ()
+  : IRCChannelProxyInterface ()
+{
+
+}
+
+QTextDocument *
+IRCChannelProxy::conversation ()
+{
+  return &m_conversation;
 }
 
 IRCClientImpl::IRCClientImpl ()
@@ -204,11 +216,18 @@ IRCClientImpl::port()
   return m_port;
 }
 
+IRCChannelProxyInterface *
+IRCClientImpl::ircChannelProxy (const QString &channel)
+{
+  if (m_channels.contains (channel))
+    return m_channels[channel];
+  return 0;
+}
+
 void
 IRCClientImpl::sendJoinRequest (const QString& channel)
 {
   sendCommand (1, COMMAND_JOIN, channel.toStdString ().c_str ());
-  focusChannel (channel);
 }
 
 void
@@ -283,14 +302,32 @@ IRCClientImpl::handleReadyRead ()
 }
 
 void
+IRCClientImpl::handleNicknameChanged (const QString &oldNick, const QString &newNick)
+{
+  emit nicknameChanged (oldNick, newNick);
+}
+
+void
+IRCClientImpl::handleUserJoined (const QString &nick, const QString &channel)
+{
+  emit userJoined (nick, channel);
+}
+
+void
+IRCClientImpl::handleUserQuit (const QString &nick, const QString &reason)
+{
+  emit userQuit (nick, reason);
+}
+
+void
 IRCClientImpl::handleIncomingLine (const QString &line)
 {
   if (m_connected && !line.isEmpty())
     {
-      IRCEvent ircEvent(line.toStdString().c_str());
-      if (ircEvent.isNumeric () == true)
+      IRCServerMessage ircEvent(line.toStdString().c_str());
+      if (ircEvent.isNumericValue () == true)
         {
-          switch (ircEvent.getNumeric ())
+          switch (ircEvent.numericValue ())
             {
               case RPL_WELCOME:
                 emit loggedIn (nickname ());
@@ -311,27 +348,25 @@ IRCClientImpl::handleIncomingLine (const QString &line)
               case RPL_TOPIC:
                 break;
               case RPL_NAMREPLY:
-                /*
-                m_nickList =
-                  event->getParam (3).split (QRegExp ("\\s+"), QString::SkipEmptyParts);
-                updateNickCompleter ();*/
+
+                //m_nickList = event->getParam (3).split (QRegExp ("\\s+"), QString::SkipEmptyParts);
                 break;
             }
         }
       else
         {
-          QString command = ircEvent.getCommand ();
+          QString command = ircEvent.command ();
           if (command == COMMAND_NICK)
             {
-              emit nicknameChanged (ircEvent.getParam(0), ircEvent.getParam(1));
+              handleNicknameChanged (ircEvent.parameter (0), ircEvent.parameter (1));
             }
           else if (command == COMMAND_QUIT)
             {
-              emit userQuit (ircEvent.getNick (), ircEvent.getParam (0));
+              handleUserQuit (ircEvent.nick (), ircEvent.parameter (0));
             }
           else if (command == COMMAND_JOIN)
             {
-              emit userJoined (ircEvent.getNick (), ircEvent.getParam (0));
+              handleUserJoined(ircEvent.nick (), ircEvent.parameter (0));
             }
           else if (command == COMMAND_PART)
             {
@@ -368,12 +403,12 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             }
           else if (command == COMMAND_PRIVMSG)
             {
-              emit message (ircEvent.getParam (0), ircEvent.getNick (), ircEvent.getParam (1));
+              emit message (ircEvent.parameter (0), ircEvent.nick (), ircEvent.parameter (1));
             }
           else if (command == COMMAND_NOTICE)
             {
-              emit notification (ircEvent.getNick ().toStdString ().c_str (),
-                                 ircEvent.getParam (1).toStdString ().c_str ());
+              emit notification (ircEvent.nick ().toStdString ().c_str (),
+                                 ircEvent.parameter (1).toStdString ().c_str ());
             }
           else if (command == COMMAND_PING)
             {
@@ -381,7 +416,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             }
           else if (command == COMMAND_ERROR)
             {
-              emit error (ircEvent.getParam (0));
+              emit error (ircEvent.parameter (0));
             }
           else
             {

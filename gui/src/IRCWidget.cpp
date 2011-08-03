@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QSettings>
 #include <QInputDialog>
+#include "IRCClientImpl.h"
 
 IRCWidget::IRCWidget (QWidget * parent):
 QWidget (parent)
@@ -73,23 +74,23 @@ QWidget (parent)
   font.setFamily ("Courier");
   font.setPointSize (11);
   m_chatWindow->setFont (font);
-  m_ircClientImpl = new IRCClientImpl ();
+  m_ircClientInterface = new IRCClientImpl ();
 
-  connect (m_ircClientImpl, SIGNAL (connected (QString)),
+  connect (m_ircClientInterface, SIGNAL (connected (QString)),
            this, SLOT (handleConnected (QString)));
-  connect (m_ircClientImpl, SIGNAL(loggedIn(QString)),
+  connect (m_ircClientInterface, SIGNAL(loggedIn(QString)),
            this, SLOT (joinOctaveChannel (QString)));
-  connect (m_ircClientImpl, SIGNAL (error (QString)),
+  connect (m_ircClientInterface, SIGNAL (error (QString)),
            this, SLOT (showErrorMessage (QString)));
-  connect (m_ircClientImpl, SIGNAL (debugMessage (QString)),
+  connect (m_ircClientInterface, SIGNAL (debugMessage (QString)),
            this, SLOT (showStatusMessage (QString)));
-  connect (m_ircClientImpl, SIGNAL (message (QString, QString, QString)),
+  connect (m_ircClientInterface, SIGNAL (message (QString, QString, QString)),
            this, SLOT (showMessage (QString, QString, QString )));
-  connect (m_ircClientImpl, SIGNAL (nicknameChanged (QString,QString)),
+  connect (m_ircClientInterface, SIGNAL (nicknameChanged (QString,QString)),
            this, SLOT (handleNickChange (QString,QString)));
-  connect (m_ircClientImpl, SIGNAL (notification (QString,QString)),
+  connect (m_ircClientInterface, SIGNAL (notification (QString,QString)),
            this, SLOT (showNotification (QString,QString)));
-  connect (m_ircClientImpl, SIGNAL (loggedIn(QString)),
+  connect (m_ircClientInterface, SIGNAL (loggedIn(QString)),
            this, SLOT (handleLoggedIn(QString)));
   connect (m_nickButton, SIGNAL (clicked ()), this, SLOT (nickPopup ()));
   connect (m_inputLine, SIGNAL (returnPressed ()), this,
@@ -115,7 +116,7 @@ IRCWidget::connectToServer ()
     {
       showStatusMessage (QString ("Attempting to connect to %1.")
                          .arg (hostAddresses.at (0).toString ()));
-      m_ircClientImpl->connectToHost(hostAddresses.at (0), 6667, m_initialNick);
+      m_ircClientInterface->connectToHost(hostAddresses.at (0), 6667, m_initialNick);
     }
 }
 
@@ -142,7 +143,8 @@ IRCWidget::joinOctaveChannel (const QString& nick)
 {
   Q_UNUSED (nick);
   showStatusMessage (QString ("Joining channel #octave."));
-  m_ircClientImpl->sendJoinRequest ("#octave");
+  m_ircClientInterface->sendJoinRequest ("#octave");
+  m_ircClientInterface->focusChannel ("#octave");
 }
 
 void
@@ -150,7 +152,7 @@ IRCWidget::showMessage (const QString& channel, const QString& sender, const QSt
 {
   Q_UNUSED (channel);
   QString output;
-  if (message.contains (m_ircClientImpl->nickname ()))
+  if (message.contains (m_ircClientInterface->nickname ()))
     {
       output =
         QString ("<font color=\"#990000\"><b>%1:</b> %2</font>").arg (sender).
@@ -179,10 +181,10 @@ IRCWidget::nickPopup ()
   QString newNick =
     QInputDialog::getText (this, QString ("Nickname"),
 			   QString ("Type in your nickname:"),
-                           QLineEdit::Normal, m_ircClientImpl->nickname (), &ok);
+                           QLineEdit::Normal, m_ircClientInterface->nickname (), &ok);
   if (ok)
     {
-      m_ircClientImpl->sendNicknameChangeRequest (newNick);
+      m_ircClientInterface->sendNicknameChangeRequest (newNick);
     }
 }
 
@@ -202,11 +204,11 @@ IRCWidget::sendMessage (QString message)
 	message.split (QRegExp ("\\s+"), QString::SkipEmptyParts);
       if (line.at (0) == "/join")
 	{
-          m_ircClientImpl->sendJoinRequest (line.at (1));
+          m_ircClientInterface->sendJoinRequest (line.at (1));
 	}
       else if (line.at (0) == "/nick")
 	{
-          m_ircClientImpl->sendNicknameChangeRequest (line.at (1));
+          m_ircClientInterface->sendNicknameChangeRequest (line.at (1));
 	}
       else if (line.at (0) == "/msg")
 	{
@@ -218,16 +220,16 @@ IRCWidget::sendMessage (QString message)
 	      pmsg += line.at (i);
 	      pmsg += " ";
 	    }
-          m_ircClientImpl->sendPrivateMessage(recipient, pmsg);
+          m_ircClientInterface->sendPrivateMessage(recipient, pmsg);
 	}
     }
   else
     {
-      m_ircClientImpl->sendPublicMessage (message);
+      m_ircClientInterface->sendPublicMessage (message);
       message.replace ("<", "&lt;");
       message.replace (">", "&gt;");
       m_chatWindow->append (QString ("<b>%1:</b> %2").
-                            arg (m_ircClientImpl->nickname ()).arg (message));
+                            arg (m_ircClientInterface->nickname ()).arg (message));
     }
 }
 
@@ -253,7 +255,7 @@ IRCWidget::handleLoggedIn (const QString &nick)
 
   if (m_autoIdentification)
     {
-      m_ircClientImpl->sendPrivateMessage("NickServ", QString ("identify %1").
+      m_ircClientInterface->sendPrivateMessage("NickServ", QString ("identify %1").
                                           arg (m_nickServPassword));
     }
 }

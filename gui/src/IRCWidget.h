@@ -24,7 +24,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QCompleter>
-#include "IRCClientImpl.h"
+#include "IRCClientInterface.h"
 
 class IRCWidget:public QWidget
 {
@@ -52,7 +52,7 @@ public slots:
   void updateNickCompleter ();
 
 private:
-  IRCClientImpl * m_ircClientImpl;
+  IRCClientInterface * m_ircClientInterface;
   QTextEdit *m_chatWindow;
   QPushButton *m_nickButton;
   QLineEdit *m_inputLine;

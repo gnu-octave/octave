@@ -4330,15 +4330,22 @@ axes::properties::update_ticklengths (void)
   update_title_position ();
 }
 
+static bool updating_xlabel_position = false;
+
 void
 axes::properties::update_xlabel_position (void)
 {
+  if (updating_xlabel_position)
+    return;
+
   text::properties& xlabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_xlabel ()).get_properties ());
 
   bool is_empty = xlabel_props.get_string ().empty ();
 
-  xlabel_props.set_autopos_tag ("none");
+  unwind_protect frame;
+  frame.protect_var (updating_xlabel_position);
+  updating_xlabel_position = true;
 
   if (! is_empty)
     {
@@ -4412,19 +4419,24 @@ axes::properties::update_xlabel_position (void)
           xlabel_props.set_rotationmode ("auto");
         }
     }
-
-  xlabel_props.set_autopos_tag ("xlabel");
 }
+
+static bool updating_ylabel_position = false;
 
 void
 axes::properties::update_ylabel_position (void)
 {
+  if (updating_ylabel_position)
+    return;
+
   text::properties& ylabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_ylabel ()).get_properties ());
 
   bool is_empty = ylabel_props.get_string ().empty ();
 
-  ylabel_props.set_autopos_tag ("none");
+  unwind_protect frame;
+  frame.protect_var (updating_ylabel_position);
+  updating_ylabel_position = true;
 
   if (! is_empty)
     {
@@ -4498,20 +4510,25 @@ axes::properties::update_ylabel_position (void)
           ylabel_props.set_rotationmode ("auto");
         }
     }
-
-  ylabel_props.set_autopos_tag ("ylabel");
 }
+
+static bool updating_zlabel_position = false;
 
 void
 axes::properties::update_zlabel_position (void)
 {
+  if (updating_zlabel_position)
+    return;
+
   text::properties& zlabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_zlabel ()).get_properties ());
 
   bool camAuto = cameraupvectormode_is ("auto");
   bool is_empty = zlabel_props.get_string ().empty ();
 
-  zlabel_props.set_autopos_tag ("none");
+  unwind_protect frame;
+  frame.protect_var (updating_zlabel_position);
+  updating_zlabel_position = true;
 
   if (! is_empty)
     {
@@ -4606,17 +4623,22 @@ axes::properties::update_zlabel_position (void)
           zlabel_props.set_rotationmode ("auto");
         }
     }
-
-  zlabel_props.set_autopos_tag ("zlabel");
 }
+
+static bool updating_title_position = false;
 
 void
 axes::properties::update_title_position (void)
 {
+  if (updating_title_position)
+    return;
+
   text::properties& title_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_title ()).get_properties ());
 
-  title_props.set_autopos_tag ("none");
+  unwind_protect frame;
+  frame.protect_var (updating_title_position);
+  updating_title_position = true;
 
   if (title_props.positionmode_is ("auto"))
     {
@@ -4630,8 +4652,6 @@ axes::properties::update_title_position (void)
       title_props.set_position (p.extract_n(0, 3).transpose ());
       title_props.set_positionmode ("auto");
     }
-
-  title_props.set_autopos_tag ("title");
 }
 
 void

@@ -18,24 +18,22 @@
 
 #include "IRCClientImpl.h"
 
-IRCServerMessage::IRCServerMessage (const char *serverMessage)
+IRCServerMessage::IRCServerMessage (const QString& serverMessage)
 {
-  char prefix[MAX_LINE_LEN];
+  const char *message = serverMessage.toStdString().c_str();
+  char prefix[512];
   int index = 0;
 
-  n_nick = "";
+  m_nick = "";
   m_user = "";
   m_host = "";
-  for (int i = 0; i < 15; i++)
-    {
-      m_parameter[i] = "";
-    }
+  m_parameters.reserve (16);
 
-  if (serverMessage[0] == CHR_COLON)
+  if (message[0] == CHR_COLON)
     {
       index++;
       strcpy (prefix,
-              getStringToken (serverMessage, index).toStdString ().c_str ());
+              getStringToken (message, index).toStdString ().c_str ());
 
       int etapa = 0;
       for (unsigned int i = 0; i < strlen (prefix); i++)
@@ -52,7 +50,7 @@ IRCServerMessage::IRCServerMessage (const char *serverMessage)
               switch (etapa)
                 {
                 case 0:
-                  n_nick += prefix[i];
+                  m_nick += prefix[i];
                   break;
                 case 1:
                   m_user += prefix[i];
@@ -65,66 +63,54 @@ IRCServerMessage::IRCServerMessage (const char *serverMessage)
         }
     }
 
-  m_command = getStringToken (serverMessage, index);
+  m_command = getStringToken (message, index);
   m_command = m_command.toUpper ();
 
-  m_parameterCount = 0;
-  while (serverMessage[index] != 0)
+  while (message[index] != 0)
     {
-      if ((serverMessage[index] == CHR_COLON) || (m_parameterCount == 14))
+      if ((message[index] == CHR_COLON))
         {
 
-          if (serverMessage[index] == CHR_COLON)
+          if (message[index] == CHR_COLON)
             {
               index++;
             }
 
-          m_parameter[m_parameterCount] = (const char *) (serverMessage + index);
-          index += strlen (serverMessage + index);
+          m_parameters.append ( (const char *) (message + index));
+          index += strlen (message + index);
         }
       else
         {
-          m_parameter[m_parameterCount] = getStringToken (serverMessage, index);
+          m_parameters.append (getStringToken (message, index));
         }
-      m_parameterCount++;
     }
 
   if (strlen (m_command.toStdString ().c_str ()) ==
       strspn (m_command.toStdString ().c_str (), DIGITS))
     {
-      n_numeric = true;
+      m_isNumeric = true;
       m_codeNumber = atoi (m_command.toStdString ().c_str ());
     }
   else
     {
-      n_numeric = false;
+      m_isNumeric = false;
     }
 }
 
 int
 IRCServerMessage::numericValue ()
 {
-  if (!n_numeric)
-    {
-      return -1;
-    }
-  else
-    {
-      return m_codeNumber;
-    }
+  if (m_isNumeric)
+    return m_codeNumber;
+  return -1;
 }
 
 QString
 IRCServerMessage::parameter (int index)
 {
-  if ((index < 0) || (index > 14))
-    {
-      return QString ();
-    }
-  else
-    {
-      return m_parameter[index];
-    }
+  if (index >= 0 && index < m_parameters.size ())
+    return m_parameters.at (index);
+  return "";
 }
 
 int
@@ -195,13 +181,14 @@ IRCClientImpl::connectToHost (const QHostAddress& host, int port, const QString&
 void
 IRCClientImpl::disconnect ()
 {
-
+  m_tcpSocket.disconnect ();
 }
 
 void
 IRCClientImpl::reconnect ()
 {
-
+  disconnect ();
+  connectToHost (m_host, m_port, m_nickname);
 }
 
 bool
@@ -233,7 +220,7 @@ IRCClientImpl::ircChannelProxy (const QString &channel)
 void
 IRCClientImpl::sendJoinRequest (const QString& channel)
 {
-  sendCommand (1, IRCCommand::Join, channel.toStdString ().c_str ());
+  sendIRCCommand (IRCCommand::Join, QStringList (channel));
 }
 
 void
@@ -252,22 +239,25 @@ IRCClientImpl::focusChannel (const QString& channel)
 void
 IRCClientImpl::sendNicknameChangeRequest (const QString &nickname)
 {
-  sendCommand (1, IRCCommand::Nick, nickname.toStdString ().c_str ());
+  sendIRCCommand (IRCCommand::Nick, QStringList (nickname));
 }
 
 void
 IRCClientImpl::sendPublicMessage (const QString& message)
 {
-  sendCommand (2, IRCCommand::PrivateMessage, m_focussedChannel.toStdString ().c_str (),
-                message.toStdString ().c_str ());
+  QStringList arguments;
+  arguments << m_focussedChannel;
+  arguments << message;
+  sendIRCCommand (IRCCommand::PrivateMessage, arguments);
 }
 
 void
 IRCClientImpl::sendPrivateMessage (const QString &recipient, const QString &message)
 {
-  sendCommand (2, IRCCommand::PrivateMessage,
-                  recipient.toStdString ().c_str (),
-                  message.toStdString ().c_str ());
+  QStringList arguments;
+  arguments << recipient;
+  arguments << message;
+  sendIRCCommand (IRCCommand::PrivateMessage, arguments);
 }
 
 const QString&
@@ -280,7 +270,9 @@ void
 IRCClientImpl::handleConnected ()
 {
   m_connected = true;
-  sendCommand (4, IRCCommand::User, "na", "0", "0", "na");
+  QStringList arguments;
+  arguments << "na" << "0" << "0" << "na";
+  sendIRCCommand (IRCCommand::User, arguments);
   sendNicknameChangeRequest (m_nickname);
   emit connected (m_host.toString ());
 }
@@ -330,7 +322,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
 {
   if (m_connected && !line.isEmpty())
     {
-      IRCServerMessage ircEvent(line.toStdString().c_str());
+      IRCServerMessage ircEvent(line);
       if (ircEvent.isNumericValue () == true)
         {
           switch (ircEvent.numericValue ())
@@ -418,7 +410,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             }
           else if (command == IRCCommand::Ping)
             {
-              sendCommand (1, IRCCommand::Pong, m_nickname.toStdString ().c_str ());
+              sendIRCCommand (IRCCommand::Pong, QStringList (m_nickname));
             }
           else if (command == IRCCommand::Error)
             {
@@ -441,44 +433,21 @@ IRCClientImpl::sendLine (const QString &line)
 }
 
 void
-IRCClientImpl::sendCommand (int numberOfCommands, const QString& command, ...)
+IRCClientImpl::sendIRCCommand (const QString &command, const QStringList &arguments)
 {
-  // TODO: Change this. We are coding C++, not C ;)
-  char linea[513];
-  char *parametro;
-  const char *cmd = command.toStdString().c_str();
-  va_list lp;
-
-  strncpy (linea, cmd, 512);
-  linea[512] = 0;
-  va_start (lp, cmd);
-  for (int i = 0; i < numberOfCommands; i++)
+  QString line = command;
+  for (int i = 0; i < arguments.size (); i++)
     {
-      if (i == 15)
-        break;
-      parametro = va_arg (lp, char *);
-      if (i == numberOfCommands - 1)
-        {
-          if (strlen (linea) + strlen (parametro) + 2 > 512)
-            break;
-          if (strchr (parametro, ' ') != NULL)
-            {
-              strcat (linea, " :");
-            }
-          else
-            {
-              strcat (linea, " ");
-            }
-          strcat (linea, parametro);
-        }
-      else
-        {
-          if (strlen (linea) + strlen (parametro) + 1 > 512)
-            break;
-          strcat (linea, " ");
-          strcat (linea, parametro);
-        }
+      bool applyColon = false;
+      // Usually all parameters are separated by spaces.
+      // The last parameter of the message may contain spaces, it is usually used
+      // to transmit messages. In order to parse it correctly, if needs to be prefixed
+      // with a colon, so the server knows to ignore all forthcoming spaces and has to treat
+      // all remaining characters as a single parameter. If we detect any whitespace in the
+      // last argument, prefix it with a colon:
+      if ((i == arguments.size () - 1) && arguments.at (i).contains (QRegExp("\\s")))
+        applyColon = true;
+      line += QString (" %1%2").arg (applyColon ? ":" : "").arg (arguments.at (i));
     }
-  va_end (lp);
-  sendLine (linea);
+  sendLine (line);
 }

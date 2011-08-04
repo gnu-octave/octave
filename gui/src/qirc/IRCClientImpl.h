@@ -228,29 +228,27 @@ namespace IRCError
 
 class IRCServerMessage
 {
-  #define MAX_LINE_LEN 512
-  #define PARAM_MAX_COUNT 15
   #define CHR_COLON ':'
   #define CHR_SPACE ' '
   #define CHR_ZERO '\0'
   #ifdef Q_OS_LINUX
-  #define CRLF "\n"
+  # define CRLF "\n"
   #else
-  #define CRLF "\r\n"
+  # define CRLF "\r\n"
   #endif
   #define DIGITS	"0123456789"
 
 public:
-  IRCServerMessage (const char *serverMessage);
+  IRCServerMessage (const QString& serverMessage);
 
   bool isNumericValue ()
   {
-    return n_numeric;
+    return m_isNumeric;
   }
 
   QString nick ()
   {
-    return n_nick;
+    return m_nick;
   }
 
   QString command ()
@@ -267,12 +265,10 @@ private:
   QString getStringToken (QString linea, int &index);
 
   int m_codeNumber;
-  bool n_numeric;
-
-  QString n_nick, m_user, m_host;
+  bool m_isNumeric;
+  QString m_nick, m_user, m_host;
   QString m_command;
-  int m_parameterCount;
-  QString m_parameter[PARAM_MAX_COUNT];
+  QStringList m_parameters;
 };
 
 class IRCChannelProxy : public IRCChannelProxyInterface
@@ -326,7 +322,7 @@ private:
   void handleUserQuit (const QString& nick, const QString& reason);
   void handleIncomingLine (const QString& line);
   void sendLine (const QString& line);
-  void sendCommand (int numberOfCommands, const QString& command, ...);
+  void sendIRCCommand (const QString& command, const QStringList& arguments);
 
   QHostAddress                    m_host;
   int                             m_port;

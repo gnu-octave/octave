@@ -124,7 +124,7 @@ octave_fgets (FILE *f, bool& eof)
 
   do
     {
-      if (fgets (bufptr, grow_size, f))
+      if (gnulib::fgets (bufptr, grow_size, f))
         {
           len = strlen (bufptr);
 

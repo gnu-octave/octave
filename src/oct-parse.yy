@@ -3287,13 +3287,13 @@ looks_like_copyright (const std::string& s)
 static int
 text_getc (FILE *f)
 {
-  int c = getc (f);
+  int c = gnulib::getc (f);
 
   // Convert CRLF into just LF and single CR into LF.
 
   if (c == '\r')
     {
-      c = getc (f);
+      c = gnulib::getc (f);
 
       if (c != '\n')
         {
@@ -3368,16 +3368,16 @@ looking_at_classdef_keyword (FILE *ffile)
 {
   bool status = false;
 
-  long pos = ftell (ffile);
+  long pos = gnulib::ftell (ffile);
 
   char buf [10];
-  fgets (buf, 10, ffile);
+  gnulib::fgets (buf, 10, ffile);
   size_t len = strlen (buf);
   if (len > 8 && strncmp (buf, "classdef", 8) == 0
       && ! (isalnum (buf[8]) || buf[8] == '_'))
     status = true;
 
-  fseek (ffile, pos, SEEK_SET);
+  gnulib::fseek (ffile, pos, SEEK_SET);
 
   return status;
  }
@@ -3428,16 +3428,16 @@ looking_at_function_keyword (FILE *ffile)
 {
   bool status = false;
 
-  long pos = ftell (ffile);
+  long pos = gnulib::ftell (ffile);
 
   char buf [10];
-  fgets (buf, 10, ffile);
+  gnulib::fgets (buf, 10, ffile);
   size_t len = strlen (buf);
   if (len > 8 && strncmp (buf, "function", 8) == 0
       && ! (isalnum (buf[8]) || buf[8] == '_'))
     status = true;
 
-  fseek (ffile, pos, SEEK_SET);
+  gnulib::fseek (ffile, pos, SEEK_SET);
 
   return status;
 }

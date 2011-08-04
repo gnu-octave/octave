@@ -429,7 +429,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
 void
 IRCClientImpl::sendLine (const QString &line)
 {
-  emit debugMessage (QString ("<<<send: \"%1\"").arg (line));
+  emit debugMessage (QString (">>>send: \"%1\"").arg (line));
   if (m_connected)
     m_tcpSocket.write ((line + "\r\n").toStdString ().c_str ());
 }

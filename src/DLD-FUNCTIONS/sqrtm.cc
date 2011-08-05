@@ -259,7 +259,9 @@ Mathematics, Manchester, England, January 1999.\n\
 
 ## The following two tests are from the reference in the docstring above.
 
-%!assert (any (isnan (sqrtm (x))(:) ))
+%!test
+%! x = [0 1; 0 0];
+%! assert (any (isnan (sqrtm (x))(:) ))
 
 %!test
 %! x = eye (4); x(2,2) = x(3,3) = 2^-26; x(1,4) = 1;

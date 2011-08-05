@@ -148,7 +148,7 @@ octave_mex_function::do_multi_index_op (int nargout,
 
       try
         {
-          profile_data_accumulator::enter pe (profiler, *this);
+          profile_data_accumulator::enter pe (profiler, profiler_name ());
           retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
         }
       catch (octave_execution_exception)

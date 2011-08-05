@@ -135,7 +135,8 @@ octave_user_script::do_multi_index_op (int nargout,
                   tree_evaluator::statement_context = tree_evaluator::script;
 
                   {
-                    profile_data_accumulator::enter pe (profiler, *this);
+                    profile_data_accumulator::enter pe (profiler,
+                                                        profiler_name ());
                     cmd_list->accept (*current_evaluator);
                   }
 
@@ -455,7 +456,7 @@ octave_user_function::do_multi_index_op (int nargout,
                        || cmd_list->is_anon_function_body ());
 
   {
-    profile_data_accumulator::enter pe (profiler, *this);
+    profile_data_accumulator::enter pe (profiler, profiler_name ());
 
     if (special_expr)
       {

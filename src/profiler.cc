@@ -28,28 +28,27 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "oct-time.h"
-#include "ov-fcn.h"
 #include "ov-struct.h"
 #include "pager.h"
 #include "profiler.h"
 
 profile_data_accumulator::enter::enter (profile_data_accumulator& a,
-                                        const octave_function& f)
+                                        const std::string& f)
   : acc (a)
 {
   if (acc.is_active ())
     {
-      fcn = &f;
-      acc.enter_function (*fcn);
+      fcn = f;
+      acc.enter_function (fcn);
     }
   else
-    fcn = NULL;
+    fcn = "";
 }
 
 profile_data_accumulator::enter::~enter ()
 {
-  if (fcn)
-    acc.exit_function (*fcn);
+  if (fcn != "")
+    acc.exit_function (fcn);
 }
 
 profile_data_accumulator::stats::stats ()
@@ -98,7 +97,7 @@ profile_data_accumulator::set_active (bool value)
 }
 
 void
-profile_data_accumulator::enter_function (const octave_function& fcn)
+profile_data_accumulator::enter_function (const std::string& fcn)
 {
   // The enter class will check and only call us if the profiler is active.
   assert (is_active ());
@@ -109,33 +108,32 @@ profile_data_accumulator::enter_function (const octave_function& fcn)
     add_current_time ();
 
   // Update non-timing related data for the function entered.
-  const std::string name = fcn.profiler_name ();
-  stats& entry = data[name];
+  stats& entry = data[fcn];
   ++entry.calls;
   if (!call_stack.empty ())
     {
-      const std::string parent_name = call_stack.back ()->profiler_name ();
+      const std::string parent_name = call_stack.back ();
       entry.parents.insert (parent_name);
-      data[parent_name].children.insert (name);
+      data[parent_name].children.insert (fcn);
     }
   if (!entry.recursive)
     for (call_stack_type::iterator i = call_stack.begin ();
          i != call_stack.end (); ++i)
-      if (*i == &fcn)
+      if (*i == fcn)
         {
           entry.recursive = true;
           break;
         }
 
-  call_stack.push_back (&fcn);
+  call_stack.push_back (fcn);
   last_time = query_time ();
 }
 
 void
-profile_data_accumulator::exit_function (const octave_function& fcn)
+profile_data_accumulator::exit_function (const std::string& fcn)
 {
   assert (!call_stack.empty ());
-  assert (&fcn == call_stack.back ());
+  assert (fcn == call_stack.back ());
 
   // Usually, if we are disabled this function is not even called.  But the
   // call disabling the profiler is an exception.  So also check here
@@ -229,7 +227,7 @@ profile_data_accumulator::add_current_time (void)
   assert (last_time >= 0.0 && last_time <= t);
 
   assert (!call_stack.empty ());
-  const std::string name = call_stack.back ()->profiler_name ();
+  const std::string name = call_stack.back ();
 
   // The entry for this function should already be created; namely
   // when entering the function via the non-timing data collection!

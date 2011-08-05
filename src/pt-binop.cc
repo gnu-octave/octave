@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "profiler.h"
 #include "pt-binop.h"
 #include "pt-bp.h"
 #include "pt-walk.h"
@@ -120,6 +121,15 @@ tree_binary_expression::rvalue1 (int)
 
           if (! error_state && b.is_defined ())
             {
+              profile_data_accumulator::enter pe (profiler,
+                                                  "binary " + oper ());
+
+              // Note: The profiler does not catch the braindead
+              // short-circuit evaluation code above, but that should be
+              // ok. The evaluation of operands and the operator itself
+              // is entangled and it's not clear where to start/stop
+              // timing the operator to make it reasonable.
+
               retval = ::do_binary_op (etype, a, b);
 
               if (error_state)
@@ -182,6 +192,11 @@ tree_boolean_expression::rvalue1 (int)
     return retval;
 
   bool result = false;
+
+  // This evaluation is not caught by the profiler, since we can't find
+  // a reasonable place where to time. Note that we don't want to
+  // include evaluation of LHS or RHS into the timing, but this is
+  // entangled together with short-circuit evaluation here.
 
   if (op_lhs)
     {

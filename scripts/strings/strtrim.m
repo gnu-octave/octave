@@ -53,12 +53,12 @@ function s = strtrim (s)
       s = s(:, ceil (min (k) / rows (s)):ceil (max (k) / rows (s)));
     endif
 
-  elseif (iscell(s))
+  elseif (iscell (s))
 
     s = regexprep (s, "^[\\s\v]+|[\\s\v]+$", '');
 
   else
-    error ("strtrim: S argument must be a string");
+    error ("strtrim: S argument must be a string or cellstring");
   endif
 
 endfunction

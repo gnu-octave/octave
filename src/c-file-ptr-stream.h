@@ -74,10 +74,9 @@ public:
 
   int file_number () const { return f ? fileno (f) : -1; }
 
-  int seek (long offset, int origin)
-    { return f ? gnulib::fseek (f, offset, origin) : -1; }
+  int seek (long offset, int origin);
 
-  long tell (void) { return f ? gnulib::ftell (f) : -1; }
+  long tell (void);
 
   void clear (void) { if (f) clearerr (f); }
 

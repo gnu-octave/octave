@@ -2060,6 +2060,16 @@ return the number of elements that would result from the indexing\n\
   @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
 @end example\n\
 \n\
+Note that the indices do not have to be numerical. For example\n\
+\n\
+@example\n\
+  @var{a} = 1;\n\
+  @var{b} = ones (2, 3);\n\
+  numel (@var{a}, @var{b});\n\
+@end example\n\
+\n\
+will return 6, as this is the number of ways to index with @var{b}.\n\
+\n\
 This method is also called when an object appears as lvalue with cs-list\n\
 indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 @seealso{size}\n\

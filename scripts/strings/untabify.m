@@ -52,64 +52,72 @@
 
 function s = untabify (t, tw = 8, dblank = false)
 
- if (nargin > 0 && nargin < 4 && (ischar (t) || iscellstr (t)))
-   if (ischar (t))
-     s = replace_tabs (t, tw);
-   else
-     s = cellfun (@(str) replace_tabs (str, tw), t, "uniformoutput", false);
-   endif
-   if (dblank)
-     s = deblank (s);
-   endif
- else
-   print_usage ();
- endif
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  elseif (! (ischar (t) || iscellstr (t)))
+    error ("untabify: T must be a string or cellstring");
+  endif
+ 
+  if (ischar (t))
+    s = replace_tabs (t, tw);
+  else
+    s = cellfun (@(str) replace_tabs (str, tw), t, "uniformoutput", false);
+  endif
+ 
+  if (dblank)
+    s = deblank (s);
+  endif
 
 endfunction
 
 function s = replace_tabs (t, tw)
- if (ndims (t) == 2)
-   if (isempty (t))
-     s = t;
-   else
-     nr = rows (t);
-     sc = cell (nr, 1);
-     for j = 1:nr
-       n = 1:numel(t(j,:));
-       m = find (t(j,:) == "\t");
-       t(j,m) = " ";
-       for i = 1:numel(m)
-         k = tw * ceil (n(m(i)) / tw);
-         dn = k - n(m(i));
-         n(m(i):end) += dn;
-       endfor
-       sc{j} = blanks (n(end));
-       sc{j}(n) = t(j,:);
-     endfor
-     s = char (sc);
-   endif
- else
-   error ("untabify: character strings to untabify must have 2 dimensions");
- endif
+
+  if (ndims (t) != 2)
+    error ("untabify: character strings to untabify must have 2 dimensions");
+  endif
+
+  if (isempty (t))
+    s = t;
+  else
+    nr = rows (t);
+    sc = cell (nr, 1);
+    for j = 1:nr
+      n = 1:numel(t(j,:));
+      m = find (t(j,:) == "\t");
+      t(j,m) = " ";
+      for i = 1:numel(m)
+        k = tw * ceil (n(m(i)) / tw);
+        dn = k - n(m(i));
+        n(m(i):end) += dn;
+      endfor
+      sc{j} = blanks (n(end));
+      sc{j}(n) = t(j,:);
+    endfor
+    s = char (sc);
+  endif
+
 endfunction
+
 
 %!test
 %! s = untabify ("\thello\t");
-%! assert (isequal (s, horzcat (blanks(8), "hello   ")))
+%! assert (s, [blanks(8) "hello" blanks(3)]);
+
+%!test
+%! s = untabify ("\thello\t", 2);
+%! assert (s, [blanks(2) "hello" blanks(1)]);
 
 %!test
 %! s = untabify ("\thello\t", 4, true);
-%! assert (isequal (s, horzcat (blanks(4), "hello")))
+%! assert (s, [blanks(4) "hello"]);
+
+%!assert (isempty (untabify ("")))
 
 %!test
-%! s = untabify ("\thello\t", 2, true);
-%! assert (isequal (s, horzcat (blanks(2), "hello")))
+%! s = char (randi ([97 97+25], 3, 3));
+%! assert (untabify (s), char (untabify (cellstr (s))));
 
-%!test
-%! s = untabify ("");
-%! assert (isempty (s))
-
-%!test
-%! s = char (fix (100 + 10*rand (3,3)));
-%! assert (isequal (untabify (s), untabify ({s}){1}))
+%!error untabify ()
+%!error untabify (1,2,3,4)
+%!error <must be a string> untabify (1)
 

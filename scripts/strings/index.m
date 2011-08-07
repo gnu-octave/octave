@@ -62,13 +62,13 @@ function n = index (s, t, direction)
 
   if (strcmp (direction, "last"))
     if (iscell (f))
-      n = cellfun (@min, f);
+      n = cellfun ("min", f);
     else
       n = f(end);
     endif
   elseif (strcmp (direction, "first"))
     if (iscell (f))
-      n = cellfun (@max, f);
+      n = cellfun ("max", f);
     else
       n = f(1);
     endif

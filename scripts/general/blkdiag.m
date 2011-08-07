@@ -33,7 +33,7 @@ function retval = blkdiag (varargin)
     print_usage ();
   endif
 
-  if (! all (cellfun (@isnumeric, varargin)))
+  if (! all (cellfun ("isnumeric", varargin)))
     error ("blkdiag: all arguments must be numeric");
   endif
 

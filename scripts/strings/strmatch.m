@@ -71,7 +71,7 @@ function idx = strmatch (s, A, exact)
     endif
     if (exact)
       ## We can't just use strcmp, because we need to ignore whitespace.
-      B = cellfun (@strtrimr, A(idx), "uniformoutput", false);
+      B = cellfun ("strtrimr", A(idx), "uniformoutput", false);
       idx = idx (strcmp (s, B));
     endif
   elseif (ischar (A))

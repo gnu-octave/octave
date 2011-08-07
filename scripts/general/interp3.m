@@ -92,7 +92,7 @@ function vi = interp3 (varargin)
       error ("interp3: expect 3-dimensional array of values");
     endif
     x = varargin (2:4);
-    if (any (! cellfun (@isvector, x)))
+    if (any (! cellfun ("isvector", x)))
       for i = 2 : 3
         if (! size_equal (x{1}, x{i}))
           error ("interp3: dimensional mismatch");
@@ -109,7 +109,7 @@ function vi = interp3 (varargin)
       error ("interp3: expect 3-dimensional array of values");
     endif
     x = varargin (1:3);
-    if (any (! cellfun (@isvector, x)))
+    if (any (! cellfun ("isvector", x)))
       for i = 2 : 3
         if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
           error ("interp3: dimensional mismatch");
@@ -119,7 +119,7 @@ function vi = interp3 (varargin)
       x{1} = permute (x{1}, [2, 1, 3]);
     endif
     y = varargin (5:7);
-    if (any (! cellfun (@isvector, y)))
+    if (any (! cellfun ("isvector", y)))
       for i = 2 : 3
         if (! size_equal (y{1}, y{i}))
           error ("interp3: dimensional mismatch");

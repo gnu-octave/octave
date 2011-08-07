@@ -72,7 +72,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
   endif
 
   if (iscell (subs))
-    subs = cellfun (@vec, subs, "uniformoutput", false);
+    subs = cellfun ("vec", subs, "uniformoutput", false);
     ndims = numel (subs);
     if (ndims == 1)
       subs = subs{1};
@@ -149,7 +149,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     if (ndims > 1)
       if (isempty (sz))
         if (iscell (subs))
-          sz = cellfun (@max, subs);
+          sz = cellfun ("max", subs);
         else
           sz = max (subs, [], 1);
         endif

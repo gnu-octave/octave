@@ -110,10 +110,10 @@ function entries = __xzip__ (commandname, extension,
 endfunction
 
 function [d, f] = myfileparts (files)
-  [d, f, ext] = cellfun (@(x) fileparts (x), files, "uniformoutput", false);
+  [d, f, ext] = cellfun ("fileparts", files, "uniformoutput", false);
   f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
                "uniformoutput", false);
-  idx = cellfun (@isdir, files);
+  idx = cellfun ("isdir", files);
   d(idx) = "";
   f(idx) = files(idx);
 endfunction

@@ -34,7 +34,7 @@ function l = lcm (varargin)
   if (nargin > 1)
     if (common_size (varargin{:}) != 0)
       error ("lcm: all args must be of the same size or scalar");
-    elseif (! all (cellfun (@isnumeric, varargin)))
+    elseif (! all (cellfun ("isnumeric", varargin)))
       error ("lcm: all arguments must be numeric");
     endif
 

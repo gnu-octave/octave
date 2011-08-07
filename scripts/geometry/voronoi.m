@@ -129,7 +129,7 @@ function [vvx, vvy] = voronoi (varargin)
   idx = find (!infi);
   ll = length (idx);
   c = c(idx).';
-  k = sum (cellfun ('length', c));
+  k = sum (cellfun ("length", c));
   edges = cell2mat(cellfun (@(x) [x ; [x(end), x(1:end-1)]], c,
                             "uniformoutput", false));
 

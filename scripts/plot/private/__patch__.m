@@ -134,7 +134,7 @@ function [h, failed] = __patch__ (p, varargin)
     endif
   else
     args = varargin;
-    if (any(cellfun (@(x) strcmpi(x,"faces") || strcmpi(x, "vertices"), args)))
+    if (any (strcmpi (args, "faces") | strcmpi (args, "vertices")))
       args = setdata (args);
     else
       args = setvertexdata (args);

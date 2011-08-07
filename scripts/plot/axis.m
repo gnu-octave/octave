@@ -323,10 +323,10 @@ function lims = __get_tight_lims__ (ca, ax)
       data(data<=0) = NaN;
     end
     if (iscell (data))
-      data = data (find (! cellfun (@isempty, data)));
+      data = data (find (! cellfun ("isempty", data)));
       if (! isempty (data))
-        lims_min = min (cellfun (@min, cellfun (@min, data, 'uniformoutput', false)(:)));
-        lims_max = max (cellfun (@max, cellfun (@max, data, 'uniformoutput', false)(:)));
+        lims_min = min (cellfun ("min", cellfun ("min", data, 'uniformoutput', false)(:)));
+        lims_max = max (cellfun ("max", cellfun ("max", data, 'uniformoutput', false)(:)));
         lims = [lims_min, lims_max];
       else
         lims = [0, 1];

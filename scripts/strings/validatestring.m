@@ -118,7 +118,7 @@ function str = validatestring (str, strarray, varargin)
     ## are the matches a substring of each other, if so, choose the
     ## shortest.  If not, raise an error.
     match_idx = find (matches);
-    match_l = cellfun (@length, strarray(match_idx));
+    match_l = cellfun ("length", strarray(match_idx));
     longest_idx = find (match_l == max (match_l), 1);
     shortest_idx = find (match_l == min (match_l), 1);
     longest = strarray(match_idx)(longest_idx);

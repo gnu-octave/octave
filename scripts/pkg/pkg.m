@@ -369,8 +369,8 @@ function [local_packages, global_packages] = pkg (varargin)
       unwind_protect
 
         if (octave_forge)
-          [urls, local_files] = cellfun (@get_forge_download, files, "uniformoutput", false);
-          [files, succ] = cellfun (@urlwrite, urls, local_files, "uniformoutput", false);
+          [urls, local_files] = cellfun ("get_forge_download", files, "uniformoutput", false);
+          [files, succ] = cellfun ("urlwrite", urls, local_files, "uniformoutput", false);
           succ = [succ{:}];
           if (! all (succ))
             i = find (! succ, 1);
@@ -382,7 +382,7 @@ function [local_packages, global_packages] = pkg (varargin)
                  global_list, global_install);
 
       unwind_protect_cleanup
-        cellfun (@unlink, local_files);
+        cellfun ("unlink", local_files);
       end_unwind_protect
 
     case "uninstall"
@@ -1418,7 +1418,7 @@ function configure_make (desc, packdir, verbose)
     if (isempty (filenames))
       idx = [];
     else
-      idx = cellfun (@is_architecture_dependent, filenames);
+      idx = cellfun ("is_architecture_dependent", filenames);
     endif
     archdependent = filenames (idx);
     archindependent = filenames (!idx);

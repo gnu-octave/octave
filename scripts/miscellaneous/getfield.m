@@ -50,8 +50,8 @@ function obj = getfield (s, varargin)
     print_usage ();
   endif
   subs = varargin;
-  flds = cellfun (@ischar, subs);
-  idxs = cellfun (@iscell, subs);
+  flds = cellfun ("isclass", subs, "char");
+  idxs = cellfun ("isclass", subs, "cell");
   if (all (flds | idxs))
     typs = merge (flds, {"."}, {"()"});
     obj = subsref (s, struct ("type", typs, "subs", subs));

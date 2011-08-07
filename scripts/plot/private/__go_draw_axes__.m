@@ -1312,7 +1312,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fputs (plot_stream, "unset hidden3d;\n");
     endif
 
-    have_data = (! (isempty (data) || all (cellfun (@isempty, data))));
+    have_data = (! (isempty (data) || all (cellfun ("isempty", data))));
 
     ## Note we don't use the [xy]2range of gnuplot as we don't use the
     ## dual axis plotting features of gnuplot.
@@ -2328,7 +2328,7 @@ function l = length_string (s)
   l = length (s) - length (strfind(s,'{')) - length (strfind(s,'}'));
   m = regexp (s, '/([\w-]+|[\w-]+=\d+)', 'matches');
   if (!isempty (m))
-    l = l - sum (cellfun (@length, m));
+    l = l - sum (cellfun ("length", m));
   endif
 endfunction
 

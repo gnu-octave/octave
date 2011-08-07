@@ -249,8 +249,8 @@ endfunction
 %! s = s(idx);
 %! u = u(:,idx);
 %! v = v(:,idx);
-%! randn('state',42);      % Initialize to make normest function reproducible
-%! rand('state',42)
+%! randn ('state', 43);      % Initialize to make normest function reproducible
+%! rand ('state', 43)
 %! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
 %!                         % to guarantee reproducible results
 %!test

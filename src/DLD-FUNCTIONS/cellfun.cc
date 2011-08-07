@@ -122,8 +122,10 @@ Return a vector of the lengths of cell elements.\n\
 @item ndims\n\
 Return the number of dimensions of each element.\n\
 \n\
-@item prodofsize\n\
-Return the product of dimensions of each element.\n\
+@item numel\n\
+@itemx prodofsize\n\
+Return the number of elements contained within each cell element.  The\n\
+number is the product of the dimensions of the object at each cell element.\n\
 \n\
 @item size\n\
 Return the size along the @var{k}-th dimension.\n\
@@ -142,7 +144,7 @@ function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
 @group\n\
-cellfun (@@atan2, @{1, 0@}, @{0, 1@})\n\
+cellfun (\"atan2\", @{1, 0@}, @{0, 1@})\n\
      @result{}ans = [1.57080   0.00000]\n\
 @end group\n\
 @end example\n\
@@ -177,7 +179,7 @@ cell array (or cell arrays).  For example:\n\
 \n\
 @example\n\
 @group\n\
-cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
+cellfun (\"tolower\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
          \"UniformOutput\",false)\n\
 @result{} ans = @{\"foo\", \"bar\", \"foobar\"@}\n\
 @end group\n\
@@ -200,7 +202,7 @@ of the element that caused the error.  For example:\n\
 @example\n\
 @group\n\
 function y = foo (s, x), y = NaN; endfunction\n\
-cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
+cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 @result{} ans = [NaN 2]\n\
 @end group\n\
 @end example\n\

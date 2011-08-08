@@ -244,6 +244,8 @@ read_inf_nan_na (std::istream& is, char c, char sign = '+')
   return d;
 }
 
+// Read a double value.  Discard any sign on NaN and NA.
+
 template <>
 double
 octave_read_value (std::istream& is)
@@ -261,7 +263,7 @@ octave_read_value (std::istream& is)
       {
         char c2 = 0;
         c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I')
+        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
           d = read_inf_nan_na (is, c2, c1);
         else
           {
@@ -276,7 +278,7 @@ octave_read_value (std::istream& is)
       {
         char c2 = 0;
         c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I')
+        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
           d = read_inf_nan_na (is, c2, c1);
         else
           {
@@ -392,6 +394,8 @@ read_float_inf_nan_na (std::istream& is, char c, char sign = '+')
   return d;
 }
 
+// Read a float value.  Discard any sign on NaN and NA.
+
 template <>
 float
 octave_read_value (std::istream& is)
@@ -409,7 +413,7 @@ octave_read_value (std::istream& is)
       {
         char c2 = 0;
         c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I')
+        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
           d = read_float_inf_nan_na (is, c2, c1);
         else
           {
@@ -424,7 +428,7 @@ octave_read_value (std::istream& is)
       {
         char c2 = 0;
         c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I')
+        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
           d = read_float_inf_nan_na (is, c2, c1);
         else
           {

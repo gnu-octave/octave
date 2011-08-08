@@ -25,7 +25,7 @@
 ## The second argument @var{A} must be a string, character matrix, or a cell
 ## array of strings.  If the third argument @code{"exact"} is not given, then
 ## @var{s} only needs to match @var{A} up to the length of @var{s}.
-## Trailing spaces and nulls in @var{A} are ignored even with the @code{"exact"}
+## Trailing spaces and nulls in @var{s} and @var{A} are ignored when matching.
 ## option.
 ## 
 ## For example:
@@ -63,6 +63,8 @@ function idx = strmatch (s, A, exact)
     error ("strmatch: A must be a string or cell array of strings");
   endif
 
+  ## Trim blanks and nulls from search string
+  s = regexprep (s, "[ \\0]+$", '');
   len = length (s);
 
   exact = nargin == 3 && ischar (exact) && strcmp (exact, "exact");
@@ -100,7 +102,7 @@ endfunction
 %!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]), [1; 2]);
 %!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}), [1; 2]);
 %!assert (strmatch ("apple pie", "apple"), []);
-%!assert (strmatch ("a ", "a"), []);
+%!assert (strmatch ("a ", "a"), 1);
 %!assert (strmatch ("a", "a \0", "exact"), 1);
 %!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1);
 %!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4]);

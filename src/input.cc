@@ -428,7 +428,7 @@ get_input_from_file (const std::string& name, int warn)
   FILE *instream = 0;
 
   if (name.length () > 0)
-    instream = fopen (name.c_str (), "rb");
+    instream = gnulib::fopen (name.c_str (), "rb");
 
   if (! instream && warn)
     warning ("%s: no such file or directory", name.c_str ());

@@ -494,7 +494,7 @@ do_stream_open (const std::string& name, const std::string& mode,
                 {
                   tmode.erase (pos, 1);
 
-                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
 
                   int fd = fileno (fptr);
 
@@ -509,7 +509,7 @@ do_stream_open (const std::string& name, const std::string& mode,
               else
 #endif
                 {
-                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
 
                   retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 

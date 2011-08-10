@@ -195,9 +195,7 @@ c_file_ptr_buf::buf_close (void)
 int
 c_file_ptr_buf::seek (long offset, int origin)
 {
-  // gnulib::fseek doesn't seem to work, so don't use it until problem
-  // can be properly diagnosed and fixed.
-  return f ? fseek (f, offset, origin) : -1;
+  return f ? gnulib::fseek (f, offset, origin) : -1;
 }
 
 long

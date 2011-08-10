@@ -40,7 +40,7 @@ mac {
 
 # Includepaths and libraries to link against:
 INCLUDEPATH         += src src/terminal src/qirc src/backend
-INCFLAGS            += $$system(mkoctfile -p RLD_FLAG) $$system(mkoctfile -p INCFLAGS)
+INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
     INCFLAGS += -I/opt/local-native/include
 }

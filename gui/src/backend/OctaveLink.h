@@ -34,7 +34,7 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 #undef PACKAGE_URL
-#include <octave/config.h>
+#include "octave/config.h"
 #include "octave/cmd-edit.h"
 #include "octave/error.h"
 #include "octave/file-io.h"

@@ -42,7 +42,7 @@ function entries = tar (tarfile, files, root = ".")
     files = cellstr (files);
   endif
 
-  if (ischar (tarfile) && iscellstr (files) && ischar (root))
+  if (! (ischar (tarfile) && iscellstr (files) && ischar (root)))
     error ("tar: all arguments must be character strings");
   endif
 

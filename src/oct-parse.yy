@@ -4215,26 +4215,12 @@ feval (\"acos\", -1)\n\
 @noindent\n\
 calls the function @code{acos} with the argument @samp{-1}.\n\
 \n\
-The function @code{feval} can also be used with function handles of\n\
-any sort. @xref{Function Handles} Historically, @code{feval} was\n\
-the only way to call user-supplied functions in strings, but\n\
-function handles are now preferred due to the cleaner syntax they\n\
-offer. For example,\n\
-\n\
-@example\n\
-@group\n\
-@var{f} = @@exp;\n\
-feval (@var{f}, 1)\n\
-     @result{} 2.7183\n\
-@var{f} (1)\n\
-     @result{} 2.7183\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-are equivalent ways to call the function referred to by @var{f}. If it\n\
-cannot be predicted beforehand that @var{f} is a function handle or the\n\
-function name in a string, @code{feval} can be used instead.\n\
+The function @code{feval} is necessary in order to be able to write\n\
+functions that call user-supplied functions, because Octave does not\n\
+have a way to declare a pointer to a function (like C) or to declare a\n\
+special kind of variable that can be used to hold the name of a function\n\
+(like @code{EXTERNAL} in Fortran).  Instead, you must refer to functions\n\
+by name, and use @code{feval} to call them.\n\
 @end deftypefn")
 {
   octave_value_list retval;

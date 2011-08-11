@@ -222,6 +222,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
     }
 
   octave_value func = args(0);
+  bool symbol_table_lookup = false;
 
   if (! args(1).is_cell ())
     {
@@ -339,6 +340,8 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
               func = symbol_table::find_function (name);
               if (func.is_undefined ())
                 error ("cellfun: invalid function NAME: %s", name.c_str ());
+
+              symbol_table_lookup = true;
             }
         }
     }
@@ -349,6 +352,19 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
+
+      // The following is an optimisation because the symbol table can
+      // give a more specific function class, so this can result in
+      // fewer polymorphic function calls as the function gets called
+      // for each value of the array.
+      if (! symbol_table_lookup )
+        {
+          octave_value f = symbol_table::find_function ( func.function_value ()
+                                                         -> name ());
+          if (f.is_defined ())
+            func = f;
+        }
+
       unwind_protect frame;
       frame.protect_var (buffer_error_messages);
 

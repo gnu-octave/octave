@@ -65,20 +65,20 @@ function retval = profile (option)
 
   switch (option)
     case 'on'
-      __profiler_reset ();
-      __profiler_enable (true);
+      __profiler_reset__ ();
+      __profiler_enable__ (true);
 
     case 'off'
-      __profiler_enable (false);
+      __profiler_enable__ (false);
 
     case 'clear'
-      __profiler_reset ();
+      __profiler_reset__ ();
 
     case 'resume'
-      __profiler_enable (true);
+      __profiler_enable__ (true);
 
     case 'status'
-      enabled = __profiler_enable ();
+      enabled = __profiler_enable__ ();
       if (enabled)
         enabled = 'on';
       else
@@ -87,7 +87,7 @@ function retval = profile (option)
       retval = struct ('ProfilerStatus', enabled);
 
     case 'info'
-      data = __profiler_data ();
+      data = __profiler_data__ ();
       retval = struct ('FunctionTable', data);
 
     otherwise

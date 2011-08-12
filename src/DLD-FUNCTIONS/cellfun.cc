@@ -58,6 +58,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-uint32.h"
 #include "ov-uint64.h"
 
+#include "ov-fcn-handle.h"
+
 static octave_value_list
 get_output_list (octave_idx_type count, octave_idx_type nargout,
                  const octave_value_list& inputlist,
@@ -222,6 +224,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
     }
 
   octave_value func = args(0);
+  bool symbol_table_lookup = false;
 
   if (! args(1).is_cell ())
     {
@@ -339,6 +342,8 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
               func = symbol_table::find_function (name);
               if (func.is_undefined ())
                 error ("cellfun: invalid function NAME: %s", name.c_str ());
+
+              symbol_table_lookup = true;
             }
         }
     }
@@ -349,6 +354,30 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
+
+      // The following is an optimisation because the symbol table can
+      // give a more specific function class, so this can result in
+      // fewer polymorphic function calls as the function gets called
+      // for each value of the array.
+      if (! symbol_table_lookup )
+        {
+          if (func.is_function_handle ())
+            {
+              octave_fcn_handle* f = func.fcn_handle_value ();
+
+              // Overloaded function handles need to check the type of
+              // the arguments for each element of the array, so they
+              // cannot be optimised this way.
+              if (f -> is_overloaded ())
+                goto nevermind;
+            }
+          octave_value f = symbol_table::find_function (func.function_value ()
+                                                         -> name ());
+          if (f.is_defined ())
+            func = f;
+        }
+      nevermind:
+
       unwind_protect frame;
       frame.protect_var (buffer_error_messages);
 

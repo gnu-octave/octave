@@ -80,14 +80,16 @@ function entries = __xzip__ (commandname, extension,
              commandname, status);
     endif
 
-    if (nargout > 0)
-      if (nargin == 5)
+    if (nargin == 5)
+      if (nargout > 0)
         entries = cellfun(
             @(x) fullfile (outdir, sprintf ("%s.%s", x, extension)),
             f, "uniformoutput", false);
-      else
-        movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f,
-                          "uniformoutput", false), cwd);
+      endif
+    else
+      movefile (cellfun(@(x) sprintf ("%s.%s", x, extension), f,
+                        "uniformoutput", false), cwd);
+      if (nargout > 0)
         ## FIXME this does not work when you try to compress directories
         entries  = cellfun(@(x) sprintf ("%s.%s", x, extension),
                            files, "uniformoutput", false);

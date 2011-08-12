@@ -578,8 +578,8 @@ width 0.6pt \tabskip=0pt\cr
 @item @tab a / b @tab mrdivide (a, b) @tab Matrix right division operator @tab
 @item @tab a .\ b @tab ldivide (a, b) @tab Element-wise left division operator @tab
 @item @tab a \ b @tab mldivide (a, b) @tab Matrix left division operator @tab
-@item @tab a .^ b @tab ldivide (a, b) @tab Element-wise power operator @tab
-@item @tab a ^ b @tab mldivide (a, b) @tab Matrix power operator @tab
+@item @tab a .^ b @tab power (a, b) @tab Element-wise power operator @tab
+@item @tab a ^ b @tab mpower (a, b) @tab Matrix power operator @tab
 @item @tab a < b @tab lt (a, b) @tab Less than operator @tab
 @item @tab a <= b @tab le (a, b) @tab Less than or equal to operator @tab
 @item @tab a > b @tab gt (a, b) @tab Greater than operator @tab

@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} str2num (@var{s})
+## @deftypefn {Function File} {@var{x} =} str2num (@var{s})
+## @deftypefnx {Function File} {[@var{x}, @var{state}] =} str2num (@var{s})
 ## Convert the string (or character array) @var{s} to a number (or an
 ## array).  Examples:
 ##
@@ -33,6 +34,10 @@
 ## @end group
 ## @end example
 ##
+## The optional second output, @var{state}, is logically true when the
+## coversion is successful. If the conversion fails the numeric output,
+## @var{n}, is empty and @var{state} is false.
+##
 ## @strong{Caution:} As @code{str2num} uses the @code{eval} function
 ## to do the conversion, @code{str2num} will execute any code contained
 ## in the string @var{s}.  Use @code{str2double} instead if you want to
@@ -42,16 +47,18 @@
 
 ## Author: jwe
 
-function m = str2num (s)
+function [m, state] = str2num (s)
 
   if (nargin == 1 && ischar (s))
     [nr, nc] = size (s);
     sep = ";";
     sep = sep (ones (nr, 1), 1);
     s = sprintf ("m = [%s];", reshape ([s, sep]', 1, nr * (nc + 1)));
-    eval (s, "m = [];");
+    state = true;
+    eval (s, "m = []; state = false;");
     if (ischar (m))
       m = [];
+      state = false;
     endif
   else
     print_usage ();
@@ -65,3 +72,8 @@ endfunction
 
 %!error str2num ("string", 1);
 
+%!test
+%! [x, state] = str2num ("pi");
+%! assert (state)
+%! [x, state] = str2num (tmpnam);
+%! assert (! state)

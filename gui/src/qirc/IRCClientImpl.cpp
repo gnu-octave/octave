@@ -144,10 +144,11 @@ IRCServerMessage::getStringToken (QString line, int &index)
   return getStringToken (line.toStdString ().c_str (), index);
 }
 
-IRCChannelProxy::IRCChannelProxy ()
-  : IRCChannelProxyInterface ()
+IRCChannelProxy::IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName)
+  : IRCChannelProxyInterface (clientInterface, channelName),
+    m_clientInterface (clientInterface)
 {
-
+  m_channelName = channelName;
 }
 
 QTextDocument *
@@ -160,6 +161,32 @@ QStringListModel *
 IRCChannelProxy::userListModel ()
 {
   return &m_userListModel;
+}
+
+QString
+IRCChannelProxy::channelName ()
+{
+  return m_channelName;
+}
+
+void
+IRCChannelProxy::sendMessage (const QString& message)
+{
+  Q_UNUSED (message);
+  // TODO: implement.
+}
+
+void
+IRCChannelProxy::sendJoinRequest ()
+{
+  //sendIRCCommand (IRCCommand::Join, QStringList (channel));
+}
+
+
+void
+IRCChannelProxy::leave (const QString& reason)
+{
+  Q_UNUSED (reason);
 }
 
 IRCClientImpl::IRCClientImpl ()
@@ -212,22 +239,9 @@ IRCClientImpl::port()
 IRCChannelProxyInterface *
 IRCClientImpl::ircChannelProxy (const QString &channel)
 {
-  if (m_channels.contains (channel))
-    return m_channels[channel];
-  return 0;
-}
-
-void
-IRCClientImpl::sendJoinRequest (const QString& channel)
-{
-  sendIRCCommand (IRCCommand::Join, QStringList (channel));
-}
-
-void
-IRCClientImpl::leaveChannel (const QString& channel, const QString& reason)
-{
-  Q_UNUSED (channel);
-  Q_UNUSED (reason);
+  if (!m_channels.contains (channel))
+      m_channels[channel] = new IRCChannelProxy(this, channel);
+  return m_channels[channel];
 }
 
 void

@@ -25,12 +25,17 @@
 #include <QTextDocument>
 #include <QStringListModel>
 
+class IRCClientInterface;
 class IRCChannelProxyInterface
 {
 public:
-  IRCChannelProxyInterface () { }
+  IRCChannelProxyInterface (IRCClientInterface *, const QString&) { }
   virtual QTextDocument *conversationModel () = 0;
   virtual QStringListModel *userListModel () = 0;
+  virtual QString channelName () = 0;
+  virtual void sendMessage (const QString& message) = 0;
+  virtual void sendJoinRequest () = 0;
+  virtual void leave (const QString& reason) = 0;
 };
 
 /**
@@ -55,9 +60,6 @@ public slots:
   virtual void connectToHost (const QHostAddress& host, int port, const QString& initialNick) = 0;
   virtual void disconnect () = 0;
   virtual void reconnect () = 0;
-
-  virtual void sendJoinRequest (const QString& channel) = 0;
-  virtual void leaveChannel (const QString& channel, const QString& reason) = 0;
 
   // Messaging:
   virtual void focusChannel (const QString& channel) = 0;

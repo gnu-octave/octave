@@ -274,13 +274,21 @@ private:
 class IRCChannelProxy : public IRCChannelProxyInterface
 {
 public:
-  IRCChannelProxy ();
+  IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName);
   QTextDocument *conversationModel ();
   QStringListModel *userListModel ();
+  QString channelName ();
+
+  void sendMessage (const QString& message);
+  void sendJoinRequest ();
+  void leave (const QString &reason);
+
 private:
+  QString m_channelName;
   QStringList m_userList;
   QStringListModel m_userListModel;
   QTextDocument m_conversationModel;
+  IRCClientInterface *m_clientInterface;
 };
 
 class IRCClientImpl : public IRCClientInterface
@@ -299,9 +307,6 @@ public slots:
   void connectToHost (const QHostAddress& host, int port, const QString& initialNick);
   void disconnect ();
   void reconnect ();
-
-  void sendJoinRequest (const QString& channel);
-  void leaveChannel (const QString& channel, const QString& reason);
 
   void focusChannel (const QString& channel);
   void sendNicknameChangeRequest (const QString &nickname);

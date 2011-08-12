@@ -134,11 +134,9 @@ octave_user_script::do_multi_index_op (int nargout,
                   frame.protect_var (tree_evaluator::statement_context);
                   tree_evaluator::statement_context = tree_evaluator::script;
 
-                  {
-                    profile_data_accumulator::enter pe (profiler,
-                                                        profiler_name ());
-                    cmd_list->accept (*current_evaluator);
-                  }
+                  BEGIN_PROFILER_BLOCK (profiler_name ())
+                  cmd_list->accept (*current_evaluator);
+                  END_PROFILER_BLOCK
 
                   if (tree_return_command::returning)
                     tree_return_command::returning = 0;
@@ -455,26 +453,26 @@ octave_user_function::do_multi_index_op (int nargout,
   bool special_expr = (is_inline_function ()
                        || cmd_list->is_anon_function_body ());
 
-  {
-    profile_data_accumulator::enter pe (profiler, profiler_name ());
+  BEGIN_PROFILER_BLOCK (profiler_name ())
 
-    if (special_expr)
-      {
-        assert (cmd_list->length () == 1);
+  if (special_expr)
+    {
+      assert (cmd_list->length () == 1);
 
-        tree_statement *stmt = 0;
+      tree_statement *stmt = 0;
 
-        if ((stmt = cmd_list->front ())
-            && stmt->is_expression ())
-          {
-            tree_expression *expr = stmt->expression ();
+      if ((stmt = cmd_list->front ())
+          && stmt->is_expression ())
+        {
+          tree_expression *expr = stmt->expression ();
 
-            retval = expr->rvalue (nargout);
-          }
-      }
-    else
-      cmd_list->accept (*current_evaluator);
-  }
+          retval = expr->rvalue (nargout);
+        }
+    }
+  else
+    cmd_list->accept (*current_evaluator);
+
+  END_PROFILER_BLOCK
 
   if (echo_commands)
     print_code_function_trailer ();

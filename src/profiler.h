@@ -175,4 +175,11 @@ private:
 // The instance used.
 extern profile_data_accumulator profiler;
 
+// Helper macro to profile a block of code.
+#define BEGIN_PROFILER_BLOCK(name) \
+  { \
+    profile_data_accumulator::enter pe (profiler, (name));
+#define END_PROFILER_BLOCK \
+  }
+
 #endif

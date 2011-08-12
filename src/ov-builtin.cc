@@ -126,7 +126,7 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
 
       try
         {
-          profile_data_accumulator::enter pe (profiler, profiler_name ());
+          BEGIN_PROFILER_BLOCK (profiler_name ())
 
           retval = (*f) (args, nargout);
           // Do not allow null values to be returned from functions.
@@ -140,6 +140,8 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
           // the idiom is very common, so we solve that here.
           if (retval.length () == 1 && retval.xelem (0).is_undefined ())
             retval.clear ();
+
+          END_PROFILER_BLOCK
         }
       catch (octave_execution_exception)
         {

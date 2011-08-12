@@ -539,7 +539,7 @@ else
     ../libcruft/libcruft.la \
     ../libcruft/libranlib.la \
     ../libgnu/libgnu.la \
-    $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
+    $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
     $(QHULL_LDFLAGS) $(QHULL_LIBS) \
     $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
     $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \

@@ -48,9 +48,13 @@
 ##
 ## @item @var{T} = profile ('info')
 ## Return the collected profiling statistics in the structure @var{T}.
-## Currently, the only field is @code{FunctionTable} which is an array
-## of structures, each entry corresponding to a function which was called
-## and for which profiling statistics are present.
+## The flat profile is returned in the field @code{FunctionTable} which is an
+## array of structures, each entry corresponding to a function which was called
+## and for which profiling statistics are present.  Furthermore, the field
+## @code{Hierarchical} contains the hierarchical call-tree.  Each node
+## has an index into the @code{FunctionTable} identifying the function it
+## corresponds to as well as data fields for number of calls and time spent
+## at this level in the call-tree.
 ## @end table
 ## @end deftypefn
 
@@ -87,8 +91,8 @@ function retval = profile (option)
       retval = struct ('ProfilerStatus', enabled);
 
     case 'info'
-      data = __profiler_data__ ();
-      retval = struct ('FunctionTable', data);
+      [flat, tree] = __profiler_data__ ();
+      retval = struct ('FunctionTable', flat, 'Hierarchical', tree);
 
     otherwise
       warning ("profile: Unrecognized option '%s'", option);

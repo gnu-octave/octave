@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <map>
 #include <set>
+#include <sstream>
 #include <string>
 
 #include "caseless-str.h"
@@ -688,6 +689,170 @@ private:
   desired_enum desired_type;
   char separator;
   string_vector str;
+};
+
+// ---------------------------------------------------------------------
+
+class text_label_property : public base_property
+{
+public:
+  enum type { char_t, cellstr_t };
+
+  text_label_property (const std::string& s, const graphics_handle& h,
+                       const std::string& val = "")
+    : base_property (s, h), value (val), stored_type (char_t)
+  { }
+
+  text_label_property (const std::string& s, const graphics_handle& h,
+                       const NDArray& nda)
+    : base_property (s, h), stored_type (char_t)
+  {
+    octave_idx_type nel = nda.numel ();
+
+    value.resize (nel);
+
+    for (octave_idx_type i = 0; i < nel; i++)
+      {
+        std::ostringstream buf;
+        buf << nda(i);
+        value[i] = buf.str ();
+      }
+  }
+
+  text_label_property (const std::string& s, const graphics_handle& h,
+                       const Cell& c)
+    : base_property (s, h), stored_type (cellstr_t)
+  {
+    octave_idx_type nel = c.numel ();
+
+    value.resize (nel);
+
+    for (octave_idx_type i = 0; i < nel; i++)
+      {
+        octave_value tmp = c(i);
+
+        if (tmp.is_string ())
+          value[i] = c(i).string_value ();
+        else
+          {
+            double d = c(i).double_value ();
+
+            if (! error_state)
+              {
+                std::ostringstream buf;
+                buf << d;
+                value[i] = buf.str ();
+              }
+            else
+              break;
+          }
+      }
+  }
+
+  text_label_property (const text_label_property& p)
+    : base_property (p), value (p.value), stored_type (p.stored_type)
+  { }
+
+  octave_value get (void) const
+  {
+    if (stored_type == char_t)
+      return octave_value (char_value ());
+    else
+      return octave_value (cell_value ());
+  }
+
+  std::string string_value (void) const
+  {
+    return value.empty () ? std::string () : value[0];
+  }
+
+  string_vector string_vector_value (void) const { return value; }
+
+  charMatrix char_value (void) const { return charMatrix (value, ' '); }
+
+  Cell cell_value (void) const {return Cell (value); }
+
+  text_label_property& operator = (const octave_value& val)
+  {
+    set (val);
+    return *this;
+  }
+
+  base_property* clone (void) const { return new text_label_property (*this); }
+
+protected:
+
+  bool do_set (const octave_value& val)
+  {
+    if (val.is_string ())
+      {
+        value = val.all_strings ();
+
+        stored_type = char_t;
+      }
+    else if (val.is_cell ())
+      {
+        Cell c = val.cell_value ();
+
+        octave_idx_type nel = c.numel ();
+
+        value.resize (nel);
+
+        for (octave_idx_type i = 0; i < nel; i++)
+          {
+            octave_value tmp = c(i);
+
+            if (tmp.is_string ())
+              value[i] = c(i).string_value ();
+            else
+              {
+                double d = c(i).double_value ();
+
+                if (! error_state)
+                  {
+                    std::ostringstream buf;
+                    buf << d;
+                    value[i] = buf.str ();
+                  }
+                else
+                  return false;
+              }
+          }
+      }
+    else
+      {
+        NDArray nda = val.array_value ();
+
+        if (! error_state)
+          {
+            octave_idx_type nel = nda.numel ();
+
+            value.resize (nel);
+
+            for (octave_idx_type i = 0; i < nel; i++)
+              {
+                std::ostringstream buf;
+                buf << nda(i);
+                value[i] = buf.str ();
+              }
+
+            stored_type = char_t;
+          }
+        else
+          {
+            error ("set: invalid string property value for \"%s\"",
+                   get_name ().c_str ());
+
+            return false;
+          }
+      }
+
+    return true;
+  }
+
+private:
+  string_vector value;
+  type stored_type;
 };
 
 // ---------------------------------------------------------------------
@@ -3686,7 +3851,7 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES (text)
-      string_property string u , ""
+      text_label_property string gu , ""
       radio_property units u , "{data}|pixels|normalized|inches|centimeters|points"
       array_property position mu , Matrix (1, 3, 0.0)
       double_property rotation mu , 0
@@ -3722,6 +3887,8 @@ public:
       radio_property verticalalignmentmode hu , "{auto}|manual"
       radio_property autopos_tag h , "{none}|xlabel|ylabel|zlabel|title"
     END_PROPERTIES
+
+    std::string get_string (void) const { return string.string_value (); }
 
     Matrix get_data_position (void) const;
     Matrix get_extent_matrix (void) const;

@@ -273,8 +273,9 @@ private:
 
 class IRCChannelProxy : public IRCChannelProxyInterface
 {
+  Q_OBJECT
 public:
-  IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName);
+  IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent = 0);
   QTextDocument *conversationModel ();
   QStringListModel *userListModel ();
   QString channelName ();
@@ -295,22 +296,22 @@ class IRCClientImpl : public IRCClientInterface
 {
   Q_OBJECT
 public:
-  IRCClientImpl ();
+  IRCClientImpl (QObject *parent = 0);
+  ~IRCClientImpl ();
 
   const QString& nickname ();
   bool isConnected ();
   const QHostAddress& host();
   int port();
   IRCChannelProxyInterface *ircChannelProxy(const QString& channel);
+  void sendIRCCommand (const QString& command, const QStringList& arguments);
 
 public slots:
   void connectToHost (const QHostAddress& host, int port, const QString& initialNick);
   void disconnect ();
   void reconnect ();
 
-  void focusChannel (const QString& channel);
   void sendNicknameChangeRequest (const QString &nickname);
-  void sendPublicMessage (const QString& message);
   void sendPrivateMessage (const QString &recipient, const QString &message);
 
 signals:
@@ -327,14 +328,11 @@ private:
   void handleUserQuit (const QString& nick, const QString& reason);
   void handleIncomingLine (const QString& line);
   void sendLine (const QString& line);
-  void sendIRCCommand (const QString& command, const QStringList& arguments);
 
   QHostAddress                    m_host;
   int                             m_port;
   QString                         m_nickname;
   bool                            m_connected;
-  QString                         m_focussedChannel;
-
   QTcpSocket                      m_tcpSocket;
   QMap<QString, IRCChannelProxyInterface*> m_channels;
 };

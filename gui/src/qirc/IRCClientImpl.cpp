@@ -144,8 +144,8 @@ IRCServerMessage::getStringToken (QString line, int &index)
   return getStringToken (line.toStdString ().c_str (), index);
 }
 
-IRCChannelProxy::IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName)
-  : IRCChannelProxyInterface (clientInterface, channelName),
+IRCChannelProxy::IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent)
+  : IRCChannelProxyInterface (clientInterface, channelName, parent),
     m_clientInterface (clientInterface)
 {
   m_channelName = channelName;
@@ -172,14 +172,16 @@ IRCChannelProxy::channelName ()
 void
 IRCChannelProxy::sendMessage (const QString& message)
 {
-  Q_UNUSED (message);
-  // TODO: implement.
+  QStringList arguments;
+  arguments << m_channelName;
+  arguments << message;
+  m_clientInterface->sendIRCCommand (IRCCommand::PrivateMessage, arguments);
 }
 
 void
 IRCChannelProxy::sendJoinRequest ()
 {
-  //sendIRCCommand (IRCCommand::Join, QStringList (channel));
+  m_clientInterface->sendIRCCommand (IRCCommand::Join, QStringList (m_channelName));
 }
 
 
@@ -189,12 +191,20 @@ IRCChannelProxy::leave (const QString& reason)
   Q_UNUSED (reason);
 }
 
-IRCClientImpl::IRCClientImpl ()
-  : IRCClientInterface ()
+IRCClientImpl::IRCClientImpl (QObject *parent)
+  : IRCClientInterface (parent)
 {
   connect (&m_tcpSocket, SIGNAL (connected ()), this, SLOT (handleConnected ()));
   connect (&m_tcpSocket, SIGNAL (disconnected ()), this, SLOT (handleDisconnected ()));
   connect (&m_tcpSocket, SIGNAL (readyRead ()), this, SLOT (handleReadyRead ()));
+}
+
+IRCClientImpl::~IRCClientImpl ()
+{
+  foreach (IRCChannelProxyInterface *ircChannelProxy, m_channels)
+    {
+      delete ircChannelProxy;
+    }
 }
 
 void
@@ -245,24 +255,9 @@ IRCClientImpl::ircChannelProxy (const QString &channel)
 }
 
 void
-IRCClientImpl::focusChannel (const QString& channel)
-{
-  m_focussedChannel = channel;
-}
-
-void
 IRCClientImpl::sendNicknameChangeRequest (const QString &nickname)
 {
   sendIRCCommand (IRCCommand::Nick, QStringList (nickname));
-}
-
-void
-IRCClientImpl::sendPublicMessage (const QString& message)
-{
-  QStringList arguments;
-  arguments << m_focussedChannel;
-  arguments << message;
-  sendIRCCommand (IRCCommand::PrivateMessage, arguments);
 }
 
 void

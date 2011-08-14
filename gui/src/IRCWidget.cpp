@@ -74,7 +74,8 @@ QWidget (parent)
   font.setFamily ("Courier");
   font.setPointSize (11);
   m_chatWindow->setFont (font);
-  m_ircClientInterface = new IRCClientImpl ();
+  m_ircClientInterface = new IRCClientImpl (this);
+  m_octaveChannel = m_ircClientInterface->ircChannelProxy ("#octave");
 
   connect (m_ircClientInterface, SIGNAL (connected (QString)),
            this, SLOT (handleConnected (QString)));
@@ -143,8 +144,7 @@ IRCWidget::joinOctaveChannel (const QString& nick)
 {
   Q_UNUSED (nick);
   showStatusMessage (QString ("Joining channel #octave."));
-  m_ircClientInterface->sendJoinRequest ("#octave");
-  m_ircClientInterface->focusChannel ("#octave");
+  m_octaveChannel->sendJoinRequest ();
 }
 
 void
@@ -204,7 +204,8 @@ IRCWidget::sendMessage (QString message)
 	message.split (QRegExp ("\\s+"), QString::SkipEmptyParts);
       if (line.at (0) == "/join")
 	{
-          m_ircClientInterface->sendJoinRequest (line.at (1));
+          IRCChannelProxyInterface *ircChannel = m_ircClientInterface->ircChannelProxy (line.at (1));
+          ircChannel->sendJoinRequest ();
 	}
       else if (line.at (0) == "/nick")
 	{
@@ -225,7 +226,7 @@ IRCWidget::sendMessage (QString message)
     }
   else
     {
-      m_ircClientInterface->sendPublicMessage (message);
+      m_octaveChannel->sendMessage (message);
       message.replace ("<", "&lt;");
       message.replace (">", "&gt;");
       m_chatWindow->append (QString ("<b>%1:</b> %2").

@@ -26,10 +26,13 @@
 #include <QStringListModel>
 
 class IRCClientInterface;
-class IRCChannelProxyInterface
+class IRCChannelProxyInterface : public QObject
 {
+  Q_OBJECT
 public:
-  IRCChannelProxyInterface (IRCClientInterface *, const QString&) { }
+  IRCChannelProxyInterface (IRCClientInterface *, const QString&, QObject *parent = 0) : QObject (parent) { }
+  virtual ~IRCChannelProxyInterface () { }
+
   virtual QTextDocument *conversationModel () = 0;
   virtual QStringListModel *userListModel () = 0;
   virtual QString channelName () = 0;
@@ -46,7 +49,7 @@ class IRCClientInterface : public QObject
 {
   Q_OBJECT
 public:
-  IRCClientInterface () { }
+  IRCClientInterface (QObject *parent = 0) : QObject (parent) { }
   virtual ~IRCClientInterface () { }
 
   virtual const QString& nickname () = 0;
@@ -54,6 +57,7 @@ public:
   virtual const QHostAddress& host() = 0;
   virtual int port() = 0;
   virtual IRCChannelProxyInterface *ircChannelProxy(const QString& channel) = 0;
+  virtual void sendIRCCommand (const QString& command, const QStringList& arguments) = 0;
 
 public slots:
   // Connection state:
@@ -61,10 +65,7 @@ public slots:
   virtual void disconnect () = 0;
   virtual void reconnect () = 0;
 
-  // Messaging:
-  virtual void focusChannel (const QString& channel) = 0;
   virtual void sendNicknameChangeRequest (const QString& nickname) = 0;
-  virtual void sendPublicMessage (const QString& message) = 0;
   virtual void sendPrivateMessage (const QString& recipient, const QString& message) = 0;
 
 signals:

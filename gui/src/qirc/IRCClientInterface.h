@@ -36,6 +36,7 @@ public:
   virtual QTextDocument *conversationModel () = 0;
   virtual QStringListModel *userListModel () = 0;
   virtual QString channelName () = 0;
+  virtual void setNickList (const QStringList& nickList) = 0;
   virtual void sendMessage (const QString& message) = 0;
   virtual void sendJoinRequest () = 0;
   virtual void leave (const QString& reason) = 0;

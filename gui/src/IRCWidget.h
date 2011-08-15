@@ -26,7 +26,34 @@
 #include <QCompleter>
 #include "IRCClientInterface.h"
 
-class IRCWidget:public QWidget
+class ChatMessageTextEdit : public QTextEdit
+{
+  Q_OBJECT
+public:
+  explicit ChatMessageTextEdit(QWidget *parent = 0);
+  ~ChatMessageTextEdit();
+
+  void setCompleter(QCompleter *m_completer);
+  QCompleter *completer() const;
+
+signals:
+  void sendMessage (const QString& message);
+
+protected:
+  void keyPressEvent(QKeyEvent *e);
+  void focusInEvent(QFocusEvent *e);
+
+private slots:
+  void insertCompletion(const QString &completion);
+
+private:
+  QString textUnderCursor() const;
+
+private:
+  QCompleter *m_completer;
+};
+
+class IRCWidget : public QWidget
 {
 Q_OBJECT public:
   explicit IRCWidget (QWidget * parent);
@@ -47,23 +74,20 @@ public slots:
   void handleUserQuit (const QString& nick, const QString& reason);
   void handleUserNicknameChanged (const QString& nick);
 
-  void nickPopup ();
+  void showChangeUserNickPopup ();
   void sendMessage (QString);
-  void sendInputLine ();
-  void updateNickCompleter ();
 
 private:
   IRCClientInterface *m_ircClientInterface;
   IRCChannelProxyInterface *m_octaveChannel;
   QTextEdit *m_chatWindow;
   QPushButton *m_nickButton;
-  QLineEdit *m_inputLine;
+  ChatMessageTextEdit *m_chatMessageTextEdit;
 
   QString m_initialNick;
   bool m_autoIdentification;
   QString m_nickServPassword;
   QString m_settingsFile;
-  QStringList m_nickList;
 };
 
 #endif // IRCWIDGET_H

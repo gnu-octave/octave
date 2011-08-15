@@ -24,7 +24,108 @@
 #include <QLabel>
 #include <QSettings>
 #include <QInputDialog>
+#include <QKeyEvent>
+#include <QScrollBar>
 #include "IRCClientImpl.h"
+
+ChatMessageTextEdit::ChatMessageTextEdit (QWidget *parent)
+  : QTextEdit (parent), m_completer (0)
+{
+  setMaximumHeight (50);
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+}
+
+ChatMessageTextEdit::~ChatMessageTextEdit ()
+{
+}
+
+void
+ChatMessageTextEdit::setCompleter (QCompleter *completer)
+{
+  if (m_completer)
+    QObject::disconnect (m_completer, 0, this, 0);
+
+  m_completer = completer;
+
+  if (!m_completer)
+    return;
+
+  m_completer->setWidget (this);
+  m_completer->setCompletionMode (QCompleter::InlineCompletion);
+  m_completer->setCaseSensitivity (Qt::CaseInsensitive);
+  QObject::connect (m_completer, SIGNAL (activated (QString)),
+                    this, SLOT (insertCompletion (QString)));
+}
+
+QCompleter *
+ChatMessageTextEdit::completer () const
+{
+  return m_completer;
+}
+
+void
+ChatMessageTextEdit::insertCompletion(const QString& completion)
+{
+
+  if (m_completer->widget() != this)
+    return;
+  QTextCursor tc = textCursor();
+  int extra = completion.length() - m_completer->completionPrefix().length();
+  tc.movePosition(QTextCursor::Left);
+  tc.movePosition(QTextCursor::EndOfWord);
+  tc.insertText(completion.right(extra));
+  setTextCursor(tc);
+}
+
+QString
+ChatMessageTextEdit::textUnderCursor () const
+{
+  QTextCursor tc = textCursor ();
+  tc.select (QTextCursor::WordUnderCursor);
+  return tc.selectedText ();
+}
+
+void
+ChatMessageTextEdit::focusInEvent (QFocusEvent *e)
+{
+  if (m_completer)
+    m_completer->setWidget (this);
+  QTextEdit::focusInEvent (e);
+}
+
+void
+ChatMessageTextEdit::keyPressEvent (QKeyEvent *keyPressEvent)
+{
+  if (m_completer) {
+    switch (keyPressEvent->key ()) {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+      if (! (keyPressEvent->modifiers () & Qt::ShiftModifier))
+        {
+          emit sendMessage (toPlainText ());
+          setText ("");
+        }
+      else
+        {
+          QTextEdit::keyPressEvent (keyPressEvent);
+        }
+      break;
+    case Qt::Key_Escape:
+    case Qt::Key_Tab:
+    case Qt::Key_Backtab:
+      keyPressEvent->ignore ();
+      return;
+    default:
+      QTextEdit::keyPressEvent(keyPressEvent);
+      break;
+      }
+
+    QString completionPrefix = textUnderCursor ();
+    if (completionPrefix != m_completer->completionPrefix ())
+      m_completer->setCompletionPrefix(completionPrefix);
+    m_completer->complete ();
+   }
+}
 
 IRCWidget::IRCWidget (QWidget * parent):
 QWidget (parent)
@@ -54,21 +155,21 @@ QWidget (parent)
   m_nickButton = new QPushButton (bottomWidget);
   m_nickButton->setStatusTip (tr ((char *) "Click here to change your nick."));
   m_nickButton->setText (m_initialNick);
-  m_inputLine = new QLineEdit (bottomWidget);
-  m_inputLine->setStatusTip (tr ((char *) "Enter your message here."));
+  m_chatMessageTextEdit = new ChatMessageTextEdit (bottomWidget);
+  m_chatMessageTextEdit->setStatusTip (tr ((char *) "Enter your message here."));
 
   bottomLayout->addWidget (m_nickButton);
   bottomLayout->addWidget (new QLabel (":", this));
-  bottomLayout->addWidget (m_inputLine);
+  bottomLayout->addWidget (m_chatMessageTextEdit);
   bottomLayout->setMargin (0);
   bottomWidget->setLayout (bottomLayout);
 
   m_nickButton->setEnabled (false);
-  m_inputLine->setEnabled (false);
+  m_chatMessageTextEdit->setEnabled (false);
 
   //m_chatWindow->setFocusProxy (m_inputLine);
-  this->setFocusProxy (m_inputLine);
-  m_nickButton->setFocusProxy (m_inputLine);
+  this->setFocusProxy (m_chatMessageTextEdit);
+  m_nickButton->setFocusProxy (m_chatMessageTextEdit);
 
   QFont font;
   font.setFamily ("Courier");
@@ -96,9 +197,12 @@ QWidget (parent)
   connect (m_ircClientInterface, SIGNAL (userNicknameChanged (QString)),
            this, SLOT (handleUserNicknameChanged (QString)));
 
-  connect (m_nickButton, SIGNAL (clicked ()), this, SLOT (nickPopup ()));
-  connect (m_inputLine, SIGNAL (returnPressed ()), this,
-	   SLOT (sendInputLine ()));
+  connect (m_nickButton, SIGNAL (clicked ()), this, SLOT (showChangeUserNickPopup ()));
+  connect (m_chatMessageTextEdit, SIGNAL (sendMessage (QString)),
+           this, SLOT (sendMessage (QString)));
+
+  m_chatMessageTextEdit->setCompleter
+      (new QCompleter (m_ircClientInterface->ircChannelProxy ("#octave")->userListModel (), this));
 
   if (connectOnStartup)
     connectToServer ();
@@ -178,7 +282,7 @@ IRCWidget::showNotification (const QString& sender, const QString& message)
 }
 
 void
-IRCWidget::nickPopup ()
+IRCWidget::showChangeUserNickPopup ()
 {
   bool ok;
   QString newNick =
@@ -238,13 +342,6 @@ IRCWidget::sendMessage (QString message)
 }
 
 void
-IRCWidget::sendInputLine ()
-{
-  sendMessage (m_inputLine->text ());
-  m_inputLine->setText ("");
-}
-
-void
 IRCWidget::handleLoggedIn (const QString &nick)
 {
   m_chatWindow->
@@ -252,9 +349,9 @@ IRCWidget::handleLoggedIn (const QString &nick)
             ("<i><font color=\"#00AA00\"><b>Successfully logged in as %1.</b></font></i>").
             arg (nick));
   m_nickButton->setEnabled (true);
-  m_inputLine->setEnabled (true);
+  m_chatMessageTextEdit->setEnabled (true);
   m_chatWindow->setEnabled (true);
-  m_inputLine->setFocus ();
+  m_chatMessageTextEdit->setFocus ();
 
 
   if (m_autoIdentification)
@@ -268,27 +365,18 @@ void
 IRCWidget::handleNickChange (const QString &oldNick, const QString &newNick)
 {
   m_chatWindow->append (QString ("%1 is now known as %2.").arg (oldNick).arg (newNick));
-  m_nickList.removeAll (QString (oldNick));
-  m_nickList.append (QString (newNick));
-  updateNickCompleter ();
 }
 
 void
 IRCWidget::handleUserJoined (const QString &nick, const QString &channel)
 {
-  m_chatWindow->append (QString ("<i>%1 has joined %2.</i>").arg (nick).
-                        arg (channel));
-  m_nickList.append (QString (nick));
-  updateNickCompleter ();
+  m_chatWindow->append (QString ("<i>%1 has joined %2.</i>").arg (nick).arg (channel));
 }
 
 void
 IRCWidget::handleUserQuit (const QString &nick, const QString &reason)
 {
-  m_chatWindow->append (QString ("<i>%1 has quit.(%2).</i>").arg (nick).
-                        arg (reason));
-  m_nickList.removeAll (QString (nick));
-  updateNickCompleter ();
+  m_chatWindow->append (QString ("<i>%1 has quit.(%2).</i>").arg (nick).arg (reason));
 }
 
 void
@@ -297,12 +385,4 @@ IRCWidget::handleUserNicknameChanged (const QString &nick)
   m_nickButton->setText (nick);
   QSettings *settings = ResourceManager::instance ()->settings ();
   settings->setValue ("IRCNick", nick);
-}
-
-void
-IRCWidget::updateNickCompleter ()
-{
-  QCompleter *completer = new QCompleter (m_nickList, this);
-  completer->setCompletionMode (QCompleter::InlineCompletion);
-  m_inputLine->setCompleter (completer);
 }

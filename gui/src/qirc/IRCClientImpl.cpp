@@ -20,6 +20,9 @@
 
 IRCServerMessage::IRCServerMessage (const QString& serverMessage)
 {
+  if (serverMessage.isEmpty ())
+    return;
+
   int position = 0;
   QString buffer;
 
@@ -31,50 +34,55 @@ IRCServerMessage::IRCServerMessage (const QString& serverMessage)
   // a prefix. A prefix has the format:
   // :nick!user@host
   // followed by a space character.
-  if (serverMessage.startsWith(":"))
+  if (serverMessage.startsWith (":"))
     {
       position++;
-      while ((serverMessage.at (position) != '!') && !serverMessage.at (position).isSpace ())
+      while ((position < serverMessage.size ())
+             &&(serverMessage.at (position) != '!')
+             && !serverMessage.at (position).isSpace ())
         {
           buffer.append (serverMessage.at (position));
           position++;
         }
-      m_nick = buffer, buffer.clear(), position++;
+      m_nick = buffer, buffer.clear (), position++;
 
       // If it belongs to the prefix, it must be concatenanted neatlessly without
       // any spaces.
       if (!serverMessage.at (position - 1).isSpace ())
         {
-          while (serverMessage.at (position) != '@')
+          while ((position < serverMessage.size ())
+                 && serverMessage.at (position) != '@')
             {
               buffer.append (serverMessage.at (position));
               position++;
             }
-          m_user = buffer, buffer.clear(), position++;
+          m_user = buffer, buffer.clear (), position++;
         }
 
       // If it belongs to the prefix, it must be concatenanted neatlessly without
       // any spaces.
       if (!serverMessage.at (position - 1).isSpace ())
         {
-          while (serverMessage.at (position) != ' ')
+          while ((position < serverMessage.size ())
+                 && serverMessage.at (position) != ' ')
             {
               buffer.append (serverMessage.at (position));
               position++;
             }
-          m_host = buffer, buffer.clear(), position++;
+          m_host = buffer, buffer.clear (), position++;
         }
     }
 
   // The next part is the command. The command can either be numeric
   // or a written command.
-  while (!serverMessage.at (position).isSpace ())
+  while ((position < serverMessage.size ())
+         && !serverMessage.at (position).isSpace ())
     {
       buffer.append (serverMessage.at (position));
       position++;
     }
-  m_command = buffer.toUpper(), buffer.clear(), position++;
-  m_codeNumber = m_command.toInt(&m_isNumeric);
+  m_command = buffer.toUpper (), buffer.clear (), position++;
+  m_codeNumber = m_command.toInt (&m_isNumeric);
 
   // Next: a list of parameters. If any of these parameters
   // starts with a colon, we have to read everything that follows
@@ -155,6 +163,13 @@ QString
 IRCChannelProxy::channelName ()
 {
   return m_channelName;
+}
+
+void
+IRCChannelProxy::setNickList (const QStringList &nickList)
+{
+  m_userList = nickList;
+  m_userListModel.setStringList (nickList);
 }
 
 void
@@ -330,7 +345,6 @@ IRCClientImpl::handleUserQuit (const QString &nick, const QString &reason)
 void
 IRCClientImpl::handleIncomingLine (const QString &line)
 {
-  //emit debugMessage (QString (">>>recv: \"%1\"").arg (line));
   if (m_connected && !line.isEmpty())
     {
       IRCServerMessage ircServerMessage(line);
@@ -372,8 +386,9 @@ IRCClientImpl::handleIncomingLine (const QString &line)
               case IRCReply::Topic:
                 break;
               case IRCReply::NameReply:
-                emit debugMessage (QString ("LINKME: (NameReply) \'%1\'").arg (ircServerMessage.parameter(2)));
-                //m_nickList = event->getParam (3).split (QRegExp ("\\s+"), QString::SkipEmptyParts);
+                QString channel = ircServerMessage.parameter (2);
+                QString nickList = ircServerMessage.parameter (3);
+                ircChannelProxy (channel)->setNickList (nickList.split (QRegExp ("\\s+"), QString::SkipEmptyParts));
                 break;
             }
         }
@@ -454,7 +469,6 @@ IRCClientImpl::handleIncomingLine (const QString &line)
 void
 IRCClientImpl::sendLine (const QString &line)
 {
-  //emit debugMessage (QString (">>>send: \"%1\"").arg (line));
   if (m_connected)
     m_tcpSocket.write ((line + "\r\n").toStdString ().c_str ());
 }

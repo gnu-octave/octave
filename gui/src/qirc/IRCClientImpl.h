@@ -262,6 +262,7 @@ public:
   QStringListModel *userListModel ();
   QString channelName ();
 
+  void setNickList (const QStringList &nickList);
   void sendMessage (const QString& message);
   void sendJoinRequest ();
   void leave (const QString &reason);

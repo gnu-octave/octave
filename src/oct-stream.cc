@@ -3002,50 +3002,37 @@ octave_stream::seek (long offset, int origin)
     {
       clearerr ();
 
-      // Find current position so we can return to it if needed.
-
       long orig_pos = rep->tell ();
 
-      // Move to end of file.  If successful, find the offset of the end.
-
-      status = rep->seek (0, SEEK_END);
+      status = rep->seek (offset, origin);
 
       if (status == 0)
         {
-          long eof_pos = rep->tell ();
+          long save_pos = rep->tell ();
 
-          // Attempt to move to desired position; may be outside bounds
-          // of existing file.
+          rep->seek (0, SEEK_END);
 
-          status = rep->seek (offset, origin);
+          long pos_eof = rep->tell ();
 
-          if (status == 0)
+          // I don't think save_pos can be less than zero, but we'll
+          // check anyway...
+
+          if (save_pos > pos_eof || save_pos < 0)
             {
-              // Where are we after moving to desired position?
-
-              long desired_pos = rep->tell ();
-
-              // I don't think desired_pos can be less than zero, but
-              // we'll check anyway...
-
-              if (desired_pos > eof_pos || desired_pos < 0)
-                {
-                  // Seek outside bounds of file.  Failure should leave
-                  // position unchanged.
-
-                  rep->seek (orig_pos, SEEK_SET);
-
-                  status = -1;
-                }
-            }
-          else
-            {
-              // Seeking to the desired position failed.  Move back to
-              // original position and return failure status.
+              // Seek outside bounds of file.  Failure should leave
+              // position unchanged.
 
               rep->seek (orig_pos, SEEK_SET);
 
               status = -1;
+            }
+          else
+            {
+              // Is it possible for this to fail?  We are just
+              // returning to a position after the first successful
+              // seek.
+
+              rep->seek (save_pos, SEEK_SET);
             }
         }
     }

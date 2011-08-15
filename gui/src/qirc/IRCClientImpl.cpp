@@ -88,17 +88,23 @@ IRCServerMessage::IRCServerMessage (const QString& serverMessage)
         }
       else
         {
-
           if (readUntilEnd)
             {
               buffer.append (serverMessage.at (position));
             }
           else
             {
-              if (serverMessage.at (position) == ' ')
+              if (serverMessage.at (position).isSpace ())
                 {
-                  m_parameters.append (buffer);
-                  buffer.clear ();
+                  if (!buffer.isEmpty ())
+                    {
+                      m_parameters.append (buffer);
+                      buffer.clear ();
+                    }
+                }
+              else
+                {
+                  buffer.append (serverMessage.at (position));
                 }
             }
         }
@@ -324,7 +330,7 @@ IRCClientImpl::handleUserQuit (const QString &nick, const QString &reason)
 void
 IRCClientImpl::handleIncomingLine (const QString &line)
 {
-  emit debugMessage (QString (">>>recv: \"%1\"").arg (line));
+  //emit debugMessage (QString (">>>recv: \"%1\"").arg (line));
   if (m_connected && !line.isEmpty())
     {
       IRCServerMessage ircServerMessage(line);
@@ -355,7 +361,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
                   }
                 break;
               case IRCError::PasswordMismatch:
-                emit debugMessage ("FIXME: Received password mismatch reply.");
+                emit error ("The password you provided is not correct.");
                 break;
               case IRCReply::MessageOfTheDayStart:
               case IRCReply::MessageOfTheDay:
@@ -366,7 +372,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
               case IRCReply::Topic:
                 break;
               case IRCReply::NameReply:
-                emit debugMessage (QString ("LINKME: (NameReply) \'%1\'").arg (ircServerMessage.parameter (3)));
+                emit debugMessage (QString ("LINKME: (NameReply) \'%1\'").arg (ircServerMessage.parameter(2)));
                 //m_nickList = event->getParam (3).split (QRegExp ("\\s+"), QString::SkipEmptyParts);
                 break;
             }
@@ -448,7 +454,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
 void
 IRCClientImpl::sendLine (const QString &line)
 {
-  emit debugMessage (QString (">>>send: \"%1\"").arg (line));
+  //emit debugMessage (QString (">>>send: \"%1\"").arg (line));
   if (m_connected)
     m_tcpSocket.write ((line + "\r\n").toStdString ().c_str ());
 }

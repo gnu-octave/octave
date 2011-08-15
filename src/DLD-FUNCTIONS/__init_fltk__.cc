@@ -1840,10 +1840,10 @@ public:
                 case figure::properties::ID_MENUBAR:
                   figure_manager::toggle_menubar_visibility (ov.string_value (), fp.menubar_is("figure"));
                   break;
-                case figure::properties::ID_NAME:
                 case figure::properties::ID_CURRENTAXES:
                   figure_manager::update_canvas (go.get_handle (), fp.get_currentaxes ());
                   break;
+                case figure::properties::ID_NAME:
                 case figure::properties::ID_NUMBERTITLE:
                   figure_manager::set_name (ov.string_value ());
                   break;

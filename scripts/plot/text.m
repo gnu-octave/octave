@@ -47,15 +47,33 @@ function h = text (varargin)
     endif
 
     label = varargin{offset};
-    if (ischar (label) || iscellstr (label))
-      varargin(1:offset) = [];
-      if (ischar (label))
+    varargin(1:offset) = [];
+
+    nx = numel (x);
+    ny = numel (y);
+    nz = numel (z);
+    if (ischar (label) || isnumeric (label))
+      nt = size (label, 1);
+      if (nx > 1 && nt == 1)
+        ## Mutiple text objects with same string
+        label = repmat ({label}, [nx, 1]);
+        nt = nx;
+      elseif (nx > 1 && nt == nx)
+        ## Mutiple text objects with different strings
         label = cellstr (label);
+      elseif (ischar (label))
+        ## Single text object with one or more lines
+        label = {label};
       endif
-      n = numel (label);
-      nx = numel (x);
-      ny = numel (y);
-      nz = numel (z);
+    elseif (iscell (label))
+      nt = numel (label);
+      if (nx > 1 && nt == 1)
+        label = repmat ({label}, [nx, 1]);
+        nt = nx;
+      elseif (nx > 1 && nt == nx)
+      else
+        label = {label};
+      endif
     else
       error ("text: expecting LABEL to be a character string or cell array of character strings");
     endif
@@ -63,7 +81,7 @@ function h = text (varargin)
     x = y = z = 0;
     nx = ny = nz = 1;
     label = {""};
-    n = 1;
+    nt = 1;
   endif
 
   if (rem (numel (varargin), 2) == 0)
@@ -71,20 +89,18 @@ function h = text (varargin)
     if (nx == ny && nx == nz)
       pos = [x(:), y(:), z(:)];
       ca = gca ();
-      tmp = zeros (n, 1);
-      if (n == 1)
-        label = label{1};
-        for i = 1:nx
-          tmp(i) = __go_text__ (ca, "string", label,
+      tmp = zeros (nt, 1);
+      if (nx == 1)
+        ## TODO - Modify __go_text__() to accept cell-strings
+        tmp = __go_text__ (ca, "string", "foobar",
+                           varargin{:},
+                           "position", pos);
+        set (tmp, "string", label{1});
+      elseif (nt == nx)
+        for n = 1:nt
+          tmp(n) = __go_text__ (ca, "string", label{n},
                                 varargin{:},
-                                "position", pos(i,:));
-        endfor
-        __request_drawnow__ ();
-      elseif (n == nx)
-        for i = 1:nx
-          tmp(i) = __go_text__ (ca, "string", label{i},
-                                varargin{:},
-                                "position", pos(i,:));
+                                "position", pos(n,:));
         endfor
         __request_drawnow__ ();
       else
@@ -142,3 +158,54 @@ endfunction
 %! endfor
 %! caxis ([-100 100])
 %! title ("Vertically Aligned at Bottom")
+
+%!demo
+%! clf
+%! axis ([0 8 0 8])
+%! title (["First title";"Second title"])
+%! xlabel (["First xlabel";"Second xlabel"])
+%! ylabel (["First ylabel";"Second ylabel"])
+%! text (4, 4, {"Hello", "World"}, ...
+%!       "horizontalalignment", "center", ...
+%!       "verticalalignment", "middle")
+%! grid on
+
+%!demo
+%! clf
+%! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
+%!                  "facecolor", "none", ...
+%!                  "facealpha", 0);
+%! title (["First title";"Second title"])
+%! xlabel (["First xlabel";"Second xlabel"])
+%! ylabel (["First ylabel";"Second ylabel"])
+%! zlabel (["First zlabel";"Second zlabel"])
+%! text (0, 0, 5, {"Hello", "World"}, ...
+%!       "horizontalalignment", "center", ...
+%!       "verticalalignment", "middle")
+%! hold on
+%! plot3 (0, 0, 5, "+k")
+%!
+
+%!demo
+%! clf
+%! h = text (0.6, 0.3, "char");
+%! assert ("char", class (get (h, "string")))
+%! h = text (0.6, 0.4, ["char row 1"; "char row 2"]);
+%! assert ("char", class (get (h, "string")))
+%! h = text (0.6, 0.6, {"cell2str (1,1)", "cell2str (1,2)"; "cell2str (2,1)", "cell2str (2,2)"});
+%! assert ("cell", class (get (h, "string")))
+%! h = text (0.6, 0.8, "foobar");
+%! set (h, "string", 1:3)
+%! h = text ([0.2, 0.2], [0.3, 0.4], "one string & two objects");
+%! assert ("char", class (get (h(1), "string")))
+%! assert ("char", class (get (h(2), "string")))
+%! h = text ([0.2, 0.2], [0.5, 0.6], {"one cellstr & two objects"});
+%! assert ("cell", class (get (h(1), "string")))
+%! assert ("cell", class (get (h(2), "string")))
+%! h = text ([0.2, 0.2], [0.7, 0.8], {"cellstr 1 object 1", "cellstr 2 object 2"});
+%! assert ("char", class (get (h(1), "string")))
+%! assert ("char", class (get (h(2), "string")))
+%! xlabel (1:2)
+%! ylabel (1:2)
+%! title (1:2)
+

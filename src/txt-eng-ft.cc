@@ -270,6 +270,7 @@ ft_render::visit (text_element_string& e)
 {
   if (face)
     {
+      FT_UInt box_line_width = 0;
       std::string str = e.string_value ();
       FT_UInt glyph_index, previous = 0;
 
@@ -277,8 +278,9 @@ ft_render::visit (text_element_string& e)
         {
           glyph_index = FT_Get_Char_Index (face, str[i]);
 
-          if (! glyph_index
-              || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+          if (str[i] != '\n' 
+              && (! glyph_index
+              || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
             ::warning ("ft_render: skipping missing glyph for character `%c'",
                        str[i]);
           else
@@ -286,7 +288,20 @@ ft_render::visit (text_element_string& e)
               switch (mode)
                 {
                 case MODE_RENDER:
-                  if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
+                  if (str[i] == '\n')
+                    {
+                    glyph_index = FT_Get_Char_Index(face, ' ');
+                    if (!glyph_index || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+                      {
+                        ::warning ("ft_render: skipping missing glyph for character ` '");
+                      } 
+                    else 
+                      {
+                        xoffset = 0;
+                        yoffset -= (face->size->metrics.height >> 6);
+                      }
+                  } 
+                  else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
                     ::warning ("ft_render: unable to render glyph for character `%c'",
                                str[i]);
                   else
@@ -304,6 +319,14 @@ ft_render::visit (text_element_string& e)
 
                       x0 = xoffset+face->glyph->bitmap_left;
                       y0 = yoffset+face->glyph->bitmap_top;
+
+                      // 'w' seems to have a negative -1
+                      // face->glyph->bitmap_left, this is so we don't
+                      // index out of bound, and assumes we we allocated
+                      // the right amount of horizontal space in the bbox.
+                      if (x0 < 0)
+                        x0 = 0;
+
                       for (int r = 0; r < bitmap.rows; r++)
                         for (int c = 0; c < bitmap.width; c++)
                           {
@@ -327,43 +350,70 @@ ft_render::visit (text_element_string& e)
                   break;
 
                 case MODE_BBOX:
-                  // width
-                  if (previous)
+                  if (str[i] == '\n')
                     {
-                      FT_Vector delta;
-
-                      FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
-                      bbox(2) += (delta.x >> 6);
-                    }
-                  bbox(2) += (face->glyph->advance.x >> 6);
-
-                  int asc, desc;
-
-                  if (false /*tight*/)
+                      glyph_index = FT_Get_Char_Index(face, ' ');
+                      if (! glyph_index
+                          || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+                      {
+                        ::warning ("ft_render: skipping missing glyph for character ` '");
+                      }
+                    else
+                      {
+                        // Reset the pixel width for this newline, so we don't
+                        // allocate a bounding box larger than the horizontal
+                        // width of the multi-line
+                        box_line_width = 0; 
+                        bbox(1) -= (face->size->metrics.height >> 6);
+                      }
+                    } 
+                  else 
                     {
-                      desc = face->glyph->metrics.horiBearingY - face->glyph->metrics.height;
-                      asc = face->glyph->metrics.horiBearingY;
-                    }
-                  else
-                    {
-                      asc = face->size->metrics.ascender;
-                      desc = face->size->metrics.descender;
-                    }
+                    // width
+                    if (previous)
+                      {
+                        FT_Vector delta;
 
-                  asc = yoffset + (asc >> 6);
-                  desc = yoffset + (desc >> 6);
+                        FT_Get_Kerning (face, previous, glyph_index,
+                                        FT_KERNING_DEFAULT, &delta);
 
-                  if (desc < bbox(1))
-                    {
-                      bbox(3) += (bbox(1) - desc);
-                      bbox(1) = desc;
-                    }
-                  if (asc > (bbox(3)+bbox(1)))
-                    bbox(3) = asc-bbox(1);
+                        box_line_width += (delta.x >> 6);
+                      }
+
+                    box_line_width += (face->glyph->advance.x >> 6);
+
+                    int asc, desc;
+
+                    if (false /*tight*/)
+                      {
+                        desc = face->glyph->metrics.horiBearingY - face->glyph->metrics.height;
+                        asc = face->glyph->metrics.horiBearingY;
+                      }
+                    else
+                      {
+                        asc = face->size->metrics.ascender;
+                        desc = face->size->metrics.descender;
+                      }
+
+                    asc = yoffset + (asc >> 6);
+                    desc = yoffset + (desc >> 6);
+
+                    if (desc < bbox(1))
+                      {
+                        bbox(3) += (bbox(1) - desc);
+                        bbox(1) = desc;
+                      }
+                    if (asc > (bbox(3)+bbox(1)))
+                      bbox(3) = asc-bbox(1);
+                    if (bbox(2) < box_line_width)
+                      bbox(2) = box_line_width;
+                  }
                   break;
                 }
-
-              previous = glyph_index;
+                if (str[i] == '\n')
+                  previous = 0;
+                else
+                  previous = glyph_index;
             }
         }
     }

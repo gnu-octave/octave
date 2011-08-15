@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #if HAVE_FREETYPE
 
+#include <vector>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -94,6 +96,8 @@ private:
   uint8NDArray pixels;
   int xoffset;
   int yoffset;
+  int multiline_halign;
+  std::vector<int> multiline_align_xoffsets;
   int mode;
   uint8_t red, green, blue;
 };

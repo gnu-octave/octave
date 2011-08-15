@@ -202,7 +202,8 @@ ft_manager* ft_manager::instance = 0;
 
 ft_render::ft_render (void)
     : text_processor (), face (0), bbox (1, 4, 0.0),
-      xoffset (0), yoffset (0), mode (MODE_BBOX),
+      xoffset (0), yoffset (0), multiline_halign (0), 
+      multiline_align_xoffsets(), mode (MODE_BBOX),
       red (0), green (0), blue (0)
 {
 }
@@ -270,9 +271,15 @@ ft_render::visit (text_element_string& e)
 {
   if (face)
     {
+      int line_index = 0;
       FT_UInt box_line_width = 0;
       std::string str = e.string_value ();
       FT_UInt glyph_index, previous = 0;
+
+      if (mode == MODE_BBOX)
+        multiline_align_xoffsets.clear();
+      else if (mode == MODE_RENDER)
+        xoffset += multiline_align_xoffsets[line_index];
 
       for (size_t i = 0; i < str.length (); i++)
         {
@@ -297,7 +304,8 @@ ft_render::visit (text_element_string& e)
                       } 
                     else 
                       {
-                        xoffset = 0;
+                        line_index++;
+                        xoffset = multiline_align_xoffsets[line_index];
                         yoffset -= (face->size->metrics.height >> 6);
                       }
                   } 
@@ -360,6 +368,7 @@ ft_render::visit (text_element_string& e)
                       }
                     else
                       {
+                        multiline_align_xoffsets.push_back(box_line_width);
                         // Reset the pixel width for this newline, so we don't
                         // allocate a bounding box larger than the horizontal
                         // width of the multi-line
@@ -414,6 +423,24 @@ ft_render::visit (text_element_string& e)
                   previous = 0;
                 else
                   previous = glyph_index;
+            }
+        }
+      if (mode == MODE_BBOX)
+        {
+          /* Push last the width associated with the last line */ 
+          multiline_align_xoffsets.push_back(box_line_width);
+
+          for (unsigned int i = 0; i < multiline_align_xoffsets.size(); i++)
+            {
+            /* Center align */
+            if (multiline_halign == 1) 
+              multiline_align_xoffsets[i] = (bbox(2) - multiline_align_xoffsets[i])/2;
+            /* Right align */
+            else if (multiline_halign == 2)
+              multiline_align_xoffsets[i] = (bbox(2) - multiline_align_xoffsets[i]);
+            /* Left align */
+            else 
+              multiline_align_xoffsets[i] = 0;
             }
         }
     }
@@ -556,6 +583,8 @@ ft_render::text_to_pixels (const std::string& txt,
 {
   // FIXME: clip "rotation" between 0 and 360
   int rot_mode = rotation_to_mode (rotation);
+  
+  multiline_halign = halign;
 
   text_element *elt = text_parser_none ().parse (txt);
   pixels_ = render (elt, box, rot_mode);

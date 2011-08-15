@@ -26,6 +26,7 @@
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QScrollBar>
+#include <QApplication>
 #include "IRCClientImpl.h"
 
 ChatMessageTextEdit::ChatMessageTextEdit (QWidget *parent)
@@ -262,6 +263,8 @@ IRCWidget::showMessage (const QString& channel, const QString& sender, const QSt
       output =
         QString ("<font color=\"#990000\"><b>%1:</b> %2</font>").arg (sender).
         arg (message);
+
+      QApplication::alert (this);
     }
   else
     {

@@ -176,6 +176,7 @@ IRCChannelProxy::leave (const QString& reason)
 IRCClientImpl::IRCClientImpl (QObject *parent)
   : IRCClientInterface (parent)
 {
+  m_loggedIn = false;
   connect (&m_tcpSocket, SIGNAL (connected ()), this, SLOT (handleConnected ()));
   connect (&m_tcpSocket, SIGNAL (disconnected ()), this, SLOT (handleDisconnected ()));
   connect (&m_tcpSocket, SIGNAL (readyRead ()), this, SLOT (handleReadyRead ()));
@@ -214,6 +215,12 @@ bool
 IRCClientImpl::isConnected ()
 {
   return m_connected;
+}
+
+bool
+IRCClientImpl::isLoggedIn ()
+{
+  return m_loggedIn;
 }
 
 const QHostAddress&
@@ -293,6 +300,12 @@ IRCClientImpl::handleReadyRead ()
 void
 IRCClientImpl::handleNicknameChanged (const QString &oldNick, const QString &newNick)
 {
+  // Check if our nickname changed.
+  if (oldNick == m_nickname)
+    {
+      m_nickname = newNick;
+      emit userNicknameChanged (m_nickname);
+    }
   emit nicknameChanged (oldNick, newNick);
 }
 
@@ -311,7 +324,7 @@ IRCClientImpl::handleUserQuit (const QString &nick, const QString &reason)
 void
 IRCClientImpl::handleIncomingLine (const QString &line)
 {
-  //emit debugMessage (QString (">>>recv: \"%1\"").arg (line));
+  emit debugMessage (QString (">>>recv: \"%1\"").arg (line));
   if (m_connected && !line.isEmpty())
     {
       IRCServerMessage ircServerMessage(line);
@@ -320,11 +333,26 @@ IRCClientImpl::handleIncomingLine (const QString &line)
           switch (ircServerMessage.numericValue ())
             {
               case IRCReply::Welcome:
+                m_loggedIn = true;
+                emit userNicknameChanged (nickname ());
                 emit loggedIn (nickname ());
                 break;
               case IRCError::NicknameInUse:
               case IRCError::NickCollision:
-                emit debugMessage ("FIXME: Received nickname in use reply.");
+                // If we are already logged in, the user attempted to
+                // switch to a username that is already existing.
+                // In that case warn him.
+                if (isLoggedIn ())
+                  {
+                    emit error ("The nickname is already in use.");
+                  }
+                // Otherwise we are attempting to log in to the server.
+                // Change the nick so that we can at least log in.
+                else
+                  {
+                    m_nickname += "_";
+                    sendNicknameChangeRequest (m_nickname);
+                  }
                 break;
               case IRCError::PasswordMismatch:
                 emit debugMessage ("FIXME: Received password mismatch reply.");
@@ -420,7 +448,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
 void
 IRCClientImpl::sendLine (const QString &line)
 {
-  //emit debugMessage (QString (">>>send: \"%1\"").arg (line));
+  emit debugMessage (QString (">>>send: \"%1\"").arg (line));
   if (m_connected)
     m_tcpSocket.write ((line + "\r\n").toStdString ().c_str ());
 }

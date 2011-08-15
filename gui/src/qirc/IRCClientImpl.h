@@ -283,6 +283,7 @@ public:
 
   const QString& nickname ();
   bool isConnected ();
+  bool isLoggedIn ();
   const QHostAddress& host();
   int port();
   IRCChannelProxyInterface *ircChannelProxy(const QString& channel);
@@ -315,6 +316,7 @@ private:
   int                                       m_port;
   QString                                   m_nickname;
   bool                                      m_connected;
+  bool                                      m_loggedIn;
   QTcpSocket                                m_tcpSocket;
   QMap<QString, IRCChannelProxyInterface*>  m_channels;
 };

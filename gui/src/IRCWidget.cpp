@@ -91,8 +91,11 @@ QWidget (parent)
            this, SLOT (handleNickChange (QString,QString)));
   connect (m_ircClientInterface, SIGNAL (notification (QString,QString)),
            this, SLOT (showNotification (QString,QString)));
-  connect (m_ircClientInterface, SIGNAL (loggedIn(QString)),
+  connect (m_ircClientInterface, SIGNAL (loggedIn (QString)),
            this, SLOT (handleLoggedIn(QString)));
+  connect (m_ircClientInterface, SIGNAL (userNicknameChanged (QString)),
+           this, SLOT (handleUserNicknameChanged (QString)));
+
   connect (m_nickButton, SIGNAL (clicked ()), this, SLOT (nickPopup ()));
   connect (m_inputLine, SIGNAL (returnPressed ()), this,
 	   SLOT (sendInputLine ()));
@@ -268,10 +271,6 @@ IRCWidget::handleNickChange (const QString &oldNick, const QString &newNick)
   m_nickList.removeAll (QString (oldNick));
   m_nickList.append (QString (newNick));
   updateNickCompleter ();
-
-  //m_nickButton->setText (m_ircClient->nickInUse ());
-  //QSettings *settings = ResourceManager::instance ()->settings ();
-  //settings->setValue ("IRCNick", m_ircClient->nickInUse ());
 }
 
 void
@@ -290,6 +289,14 @@ IRCWidget::handleUserQuit (const QString &nick, const QString &reason)
                         arg (reason));
   m_nickList.removeAll (QString (nick));
   updateNickCompleter ();
+}
+
+void
+IRCWidget::handleUserNicknameChanged (const QString &nick)
+{
+  m_nickButton->setText (nick);
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  settings->setValue ("IRCNick", nick);
 }
 
 void

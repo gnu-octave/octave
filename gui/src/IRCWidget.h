@@ -45,6 +45,7 @@ public slots:
   void handleNickChange (const QString& oldNick, const QString& newNick);
   void handleUserJoined (const QString& nick, const QString& channel);
   void handleUserQuit (const QString& nick, const QString& reason);
+  void handleUserNicknameChanged (const QString& nick);
 
   void nickPopup ();
   void sendMessage (QString);

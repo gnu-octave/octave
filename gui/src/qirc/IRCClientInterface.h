@@ -54,6 +54,7 @@ public:
 
   virtual const QString& nickname () = 0;
   virtual bool isConnected () = 0;
+  virtual bool isLoggedIn () = 0;
   virtual const QHostAddress& host() = 0;
   virtual int port() = 0;
   virtual IRCChannelProxyInterface *ircChannelProxy(const QString& channel) = 0;
@@ -76,6 +77,7 @@ signals:
   void notification (const QString& sender, const QString& message);
   void message (const QString& channel, const QString& sender, const QString& message);
   void nicknameChanged (const QString& oldNick, const QString& newNick);
+  void userNicknameChanged (const QString& nick);
   void userJoined (const QString& nick, const QString& channel);
   void userQuit (const QString& nick, const QString& reason);
   void loggedIn (const QString& nick);

@@ -211,8 +211,6 @@ QWidget (parent)
 void
 IRCWidget::connectToServer ()
 {
-  showStatusMessage ("<font color=\"#990000\"><b>IMPORTANT: THE BACKEND FOR THE IRC CHAT HAS BEEN REWRITTEN COMPLETELY TO MAKE IT PLATFORM-INDEPENDENT.</b></font>");
-  showStatusMessage ("<font color=\"#990000\"><b>IT WILL PROBABLY NOT WORK AS IT SHOULD UNTIL ALL BUGS HAVE BEEN FIXED.</b></font>");
   showStatusMessage ("Looking up irc.freenode.net.");
   QHostInfo hostInfo = QHostInfo::fromName ("irc.freenode.net");
   QList<QHostAddress> hostAddresses = hostInfo.addresses();

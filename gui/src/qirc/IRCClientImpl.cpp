@@ -120,7 +120,11 @@ IRCServerMessage::IRCServerMessage (const QString& serverMessage)
     }
 
   if (!buffer.isEmpty ())
-    m_parameters.append (buffer);
+    {
+      // We need to chop off \r\n here.
+      buffer.chop (2);
+      m_parameters.append (buffer);
+    }
 }
 
 int
@@ -388,6 +392,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
               case IRCReply::NameReply:
                 QString channel = ircServerMessage.parameter (2);
                 QString nickList = ircServerMessage.parameter (3);
+                emit debugMessage (nickList);
                 ircChannelProxy (channel)->setNickList (nickList.split (QRegExp ("\\s+"), QString::SkipEmptyParts));
                 break;
             }
@@ -397,7 +402,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
           QString command = ircServerMessage.command ();
           if (command == IRCCommand::Nick)
             {
-              handleNicknameChanged (ircServerMessage.parameter (0), ircServerMessage.parameter (1));
+              handleNicknameChanged (ircServerMessage.nick(), ircServerMessage.parameter (0));
             }
           else if (command == IRCCommand::Quit)
             {
@@ -421,24 +426,18 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             }
           else if (command == IRCCommand::Topic)
             {
-              emit debugMessage ("WRITEME: Received topic.");
-              //emit topic (ircEvent.getNick ().toStdString ().c_str (),
-              //            ircEvent.getParam (0).toStdString ().c_str (),
-              //            ircEvent.getParam (1).toStdString ().c_str ());
+              emit debugMessage
+                (QString("WRITEME: Received topic: %1")
+                  .arg (ircServerMessage.parameter (0)));
             }
           else if (command == IRCCommand::Kick)
             {
-              emit debugMessage ("WRITEME: Received kick.");
-              //emit kick (ircEvent.getNick ().toStdString ().c_str (),
-              //           ircEvent.getParam (0).toStdString ().c_str (),
-              //           ircEvent.getParam (1).toStdString ().c_str (),
-              //           ircEvent.getParam (2).toStdString ().c_str ());
+              emit debugMessage ("WRITEME: Received kick command.");
             }
           else if (command == IRCCommand::Invite)
             {
-              emit debugMessage ("WRITEME: Received invite.");
-              //emit invite (ircEvent.getNick ().toStdString ().c_str (),
-              //             ircEvent.getParam (1).toStdString ().c_str ());
+              emit debugMessage ("WRITEME: Received invite command.");
+
             }
           else if (command == IRCCommand::PrivateMessage)
             {
@@ -460,7 +459,6 @@ IRCClientImpl::handleIncomingLine (const QString &line)
           else
             {
               emit debugMessage (QString("FIXME: Received unknown reply: %1").arg(command));
-              // not recognized.
             }
         }
     }

@@ -20,81 +20,93 @@
 
 IRCServerMessage::IRCServerMessage (const QString& serverMessage)
 {
-  const char *message = serverMessage.toStdString().c_str();
-  char prefix[512];
-  int index = 0;
+  int position = 0;
+  QString buffer;
 
   m_nick = "";
   m_user = "";
   m_host = "";
-  m_parameters.reserve (16);
 
-  if (message[0] == CHR_COLON)
+  // A server message starting with a prefix indicates
+  // a prefix. A prefix has the format:
+  // :nick!user@host
+  // followed by a space character.
+  if (serverMessage.startsWith(":"))
     {
-      index++;
-      strcpy (prefix,
-              getStringToken (message, index).toStdString ().c_str ());
-
-      int etapa = 0;
-      for (unsigned int i = 0; i < strlen (prefix); i++)
+      position++;
+      while ((serverMessage.at (position) != '!') && !serverMessage.at (position).isSpace ())
         {
-          switch (prefix[i])
+          buffer.append (serverMessage.at (position));
+          position++;
+        }
+      m_nick = buffer, buffer.clear(), position++;
+
+      // If it belongs to the prefix, it must be concatenanted neatlessly without
+      // any spaces.
+      if (!serverMessage.at (position - 1).isSpace ())
+        {
+          while (serverMessage.at (position) != '@')
             {
-            case '!':
-              etapa = 1;
-              break;
-            case '@':
-              etapa = 2;
-              break;
-            default:
-              switch (etapa)
-                {
-                case 0:
-                  m_nick += prefix[i];
-                  break;
-                case 1:
-                  m_user += prefix[i];
-                  break;
-                default:
-                  m_host += prefix[i];
-                  break;
-                }
+              buffer.append (serverMessage.at (position));
+              position++;
             }
+          m_user = buffer, buffer.clear(), position++;
+        }
+
+      // If it belongs to the prefix, it must be concatenanted neatlessly without
+      // any spaces.
+      if (!serverMessage.at (position - 1).isSpace ())
+        {
+          while (serverMessage.at (position) != ' ')
+            {
+              buffer.append (serverMessage.at (position));
+              position++;
+            }
+          m_host = buffer, buffer.clear(), position++;
         }
     }
 
-  m_command = getStringToken (message, index);
-  m_command = m_command.toUpper ();
-
-  while (message[index] != 0)
+  // The next part is the command. The command can either be numeric
+  // or a written command.
+  while (!serverMessage.at (position).isSpace ())
     {
-      if ((message[index] == CHR_COLON))
+      buffer.append (serverMessage.at (position));
+      position++;
+    }
+  m_command = buffer.toUpper(), buffer.clear(), position++;
+  m_codeNumber = m_command.toInt(&m_isNumeric);
+
+  // Next: a list of parameters. If any of these parameters
+  // starts with a colon, we have to read everything that follows
+  // as a single parameter.
+  bool readUntilEnd = false;
+  while (position < serverMessage.size ())
+    {
+      if (buffer.isEmpty () && !readUntilEnd && (serverMessage.at (position) == ':'))
         {
-
-          if (message[index] == CHR_COLON)
-            {
-              index++;
-            }
-
-          m_parameters.append ( (const char *) (message + index));
-          index += strlen (message + index);
+          readUntilEnd = true;
         }
       else
         {
-          m_parameters.append (getStringToken (message, index));
+
+          if (readUntilEnd)
+            {
+              buffer.append (serverMessage.at (position));
+            }
+          else
+            {
+              if (serverMessage.at (position) == ' ')
+                {
+                  m_parameters.append (buffer);
+                  buffer.clear ();
+                }
+            }
         }
+      position++;
     }
 
-  if (strlen (m_command.toStdString ().c_str ()) ==
-      strspn (m_command.toStdString ().c_str (), DIGITS))
-    {
-      m_isNumeric = true;
-      m_codeNumber = atoi (m_command.toStdString ().c_str ());
-    }
-  else
-    {
-      m_isNumeric = false;
-    }
+  if (!buffer.isEmpty ())
+    m_parameters.append (buffer);
 }
 
 int
@@ -113,36 +125,6 @@ IRCServerMessage::parameter (int index)
   return "";
 }
 
-int
-IRCServerMessage::skipSpaces (const char *line, int &index)
-{
-  while (line[index] == CHR_SPACE)
-    {
-      index++;
-    }
-  return index;
-}
-
-QString
-IRCServerMessage::getStringToken (const char *line, int &index)
-{
-  QString token ("");
-  skipSpaces (line, index);
-  while ((line[index] != CHR_SPACE) && (line[index] != CHR_ZERO))
-    {
-      token += line[index];
-      index++;
-    }
-
-  skipSpaces (line, index);
-  return token;
-}
-
-QString
-IRCServerMessage::getStringToken (QString line, int &index)
-{
-  return getStringToken (line.toStdString ().c_str (), index);
-}
 
 IRCChannelProxy::IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent)
   : IRCChannelProxyInterface (clientInterface, channelName, parent),
@@ -329,13 +311,13 @@ IRCClientImpl::handleUserQuit (const QString &nick, const QString &reason)
 void
 IRCClientImpl::handleIncomingLine (const QString &line)
 {
-  emit debugMessage (QString (">>>recv: \"%1\"").arg (line));
+  //emit debugMessage (QString (">>>recv: \"%1\"").arg (line));
   if (m_connected && !line.isEmpty())
     {
-      IRCServerMessage ircEvent(line);
-      if (ircEvent.isNumericValue () == true)
+      IRCServerMessage ircServerMessage(line);
+      if (ircServerMessage.isNumeric () == true)
         {
-          switch (ircEvent.numericValue ())
+          switch (ircServerMessage.numericValue ())
             {
               case IRCReply::Welcome:
                 emit loggedIn (nickname ());
@@ -356,25 +338,25 @@ IRCClientImpl::handleIncomingLine (const QString &line)
               case IRCReply::Topic:
                 break;
               case IRCReply::NameReply:
-                emit debugMessage (QString ("LINKME: (NameReply) \'%1\'").arg (ircEvent.parameter (3)));
+                emit debugMessage (QString ("LINKME: (NameReply) \'%1\'").arg (ircServerMessage.parameter (3)));
                 //m_nickList = event->getParam (3).split (QRegExp ("\\s+"), QString::SkipEmptyParts);
                 break;
             }
         }
       else
         {
-          QString command = ircEvent.command ();
+          QString command = ircServerMessage.command ();
           if (command == IRCCommand::Nick)
             {
-              handleNicknameChanged (ircEvent.parameter (0), ircEvent.parameter (1));
+              handleNicknameChanged (ircServerMessage.parameter (0), ircServerMessage.parameter (1));
             }
           else if (command == IRCCommand::Quit)
             {
-              handleUserQuit (ircEvent.nick (), ircEvent.parameter (0));
+              handleUserQuit (ircServerMessage.nick (), ircServerMessage.parameter (0));
             }
           else if (command == IRCCommand::Join)
             {
-              handleUserJoined(ircEvent.nick (), ircEvent.parameter (0));
+              handleUserJoined(ircServerMessage.nick (), ircServerMessage.parameter (0));
             }
           else if (command == IRCCommand::Part)
             {
@@ -411,12 +393,12 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             }
           else if (command == IRCCommand::PrivateMessage)
             {
-              emit message (ircEvent.parameter (0), ircEvent.nick (), ircEvent.parameter (1));
+              emit message (ircServerMessage.parameter (0), ircServerMessage.nick (), ircServerMessage.parameter (1));
             }
           else if (command == IRCCommand::Notice)
             {
-              emit notification (ircEvent.nick ().toStdString ().c_str (),
-                                 ircEvent.parameter (1).toStdString ().c_str ());
+              emit notification (ircServerMessage.nick ().toStdString ().c_str (),
+                                 ircServerMessage.parameter (1).toStdString ().c_str ());
             }
           else if (command == IRCCommand::Ping)
             {
@@ -424,7 +406,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
             }
           else if (command == IRCCommand::Error)
             {
-              emit error (ircEvent.parameter (0));
+              emit error (ircServerMessage.parameter (0));
             }
           else
             {
@@ -438,7 +420,7 @@ IRCClientImpl::handleIncomingLine (const QString &line)
 void
 IRCClientImpl::sendLine (const QString &line)
 {
-  emit debugMessage (QString (">>>send: \"%1\"").arg (line));
+  //emit debugMessage (QString (">>>send: \"%1\"").arg (line));
   if (m_connected)
     m_tcpSocket.write ((line + "\r\n").toStdString ().c_str ());
 }

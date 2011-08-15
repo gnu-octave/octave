@@ -228,46 +228,28 @@ namespace IRCError
 
 class IRCServerMessage
 {
-  #define CHR_COLON ':'
-  #define CHR_SPACE ' '
-  #define CHR_ZERO '\0'
-  #ifdef Q_OS_LINUX
-  # define CRLF "\n"
-  #else
-  # define CRLF "\r\n"
-  #endif
-  #define DIGITS	"0123456789"
-
 public:
   IRCServerMessage (const QString& serverMessage);
 
-  bool isNumericValue ()
-  {
-    return m_isNumeric;
-  }
+  bool isNumeric ()
+  { return m_isNumeric; }
 
   QString nick ()
-  {
-    return m_nick;
-  }
+  { return m_nick; }
 
   QString command ()
-  {
-    return m_command;
-  }
+  { return m_command; }
 
   int numericValue ();
   QString parameter (int index);
 
 private:
-  int skipSpaces (const char *linea, int &index);
-  QString getStringToken (const char *linea, int &index);
-  QString getStringToken (QString linea, int &index);
-
-  int m_codeNumber;
-  bool m_isNumeric;
-  QString m_nick, m_user, m_host;
-  QString m_command;
+  int         m_codeNumber;
+  bool        m_isNumeric;
+  QString     m_nick;
+  QString     m_user;
+  QString     m_host;
+  QString     m_command;
   QStringList m_parameters;
 };
 
@@ -285,10 +267,10 @@ public:
   void leave (const QString &reason);
 
 private:
-  QString m_channelName;
-  QStringList m_userList;
-  QStringListModel m_userListModel;
-  QTextDocument m_conversationModel;
+  QString             m_channelName;
+  QStringList         m_userList;
+  QStringListModel    m_userListModel;
+  QTextDocument       m_conversationModel;
   IRCClientInterface *m_clientInterface;
 };
 
@@ -329,12 +311,12 @@ private:
   void handleIncomingLine (const QString& line);
   void sendLine (const QString& line);
 
-  QHostAddress                    m_host;
-  int                             m_port;
-  QString                         m_nickname;
-  bool                            m_connected;
-  QTcpSocket                      m_tcpSocket;
-  QMap<QString, IRCChannelProxyInterface*> m_channels;
+  QHostAddress                              m_host;
+  int                                       m_port;
+  QString                                   m_nickname;
+  bool                                      m_connected;
+  QTcpSocket                                m_tcpSocket;
+  QMap<QString, IRCChannelProxyInterface*>  m_channels;
 };
 
 #endif // IRCCLIENTIMPL_H

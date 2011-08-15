@@ -105,6 +105,8 @@ public:
 
   string_vector& append (const string_vector& sv);
 
+  std::string join (const std::string& sep = std::string ()) const;
+
   char **c_str_vec (void) const;
 
   static void delete_c_str_vec (const char * const*);

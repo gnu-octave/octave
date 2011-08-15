@@ -110,7 +110,7 @@ OctaveLink::terminateOctave ()
   m_octaveCallbackThread->wait ();
 
   m_octaveMainThread->terminate ();
-  m_octaveMainThread->wait();
+  //m_octaveMainThread->wait();
 }
 
 void

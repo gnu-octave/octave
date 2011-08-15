@@ -70,9 +70,9 @@ function h = text (varargin)
       if (nx > 1 && nt == 1)
         label = repmat ({label}, [nx, 1]);
         nt = nx;
-      elseif (nx > 1 && nt == nx)
-      else
+      elseif (! (nx > 1 && nt == nx))
         label = {label};
+        nt = 1;
       endif
     else
       error ("text: expecting LABEL to be a character string or cell array of character strings");
@@ -86,7 +86,7 @@ function h = text (varargin)
 
   if (rem (numel (varargin), 2) == 0)
 
-    if (nx == ny && nx == nz)
+    if (nx == ny && nx == nz && (nt == nx || nt == 1 || nx == 1))
       pos = [x(:), y(:), z(:)];
       ca = gca ();
       tmp = zeros (nt, 1);
@@ -106,8 +106,10 @@ function h = text (varargin)
       else
         error ("text: dimension mismatch for coordinates and LABEL");
       endif
-    else
+    elseif (nt == nx || nt == 1 || nx == 1)
       error ("text: dimension mismatch for coordinates");
+    else
+      error ("text: mismatch betwween coordinates and strings");
     endif
 
     if (nargout > 0)
@@ -188,23 +190,30 @@ endfunction
 
 %!demo
 %! clf
-%! h = text (0.6, 0.3, "char");
+%! h = text (0.5, 0.3, "char");
 %! assert ("char", class (get (h, "string")))
-%! h = text (0.6, 0.4, ["char row 1"; "char row 2"]);
+%! h = text (0.5, 0.4, ["char row 1"; "char row 2"]);
 %! assert ("char", class (get (h, "string")))
-%! h = text (0.6, 0.6, {"cell2str (1,1)", "cell2str (1,2)"; "cell2str (2,1)", "cell2str (2,2)"});
+%! h = text (0.5, 0.6, {"cell2str (1,1)", "cell2str (1,2)"; "cell2str (2,1)", "cell2str (2,2)"});
 %! assert ("cell", class (get (h, "string")))
-%! h = text (0.6, 0.8, "foobar");
+%! h = text (0.5, 0.8, "foobar");
 %! set (h, "string", 1:3)
-%! h = text ([0.2, 0.2], [0.3, 0.4], "one string & two objects");
+%! h = text ([0.1, 0.1], [0.3, 0.4], "one string & two objects");
 %! assert ("char", class (get (h(1), "string")))
 %! assert ("char", class (get (h(2), "string")))
-%! h = text ([0.2, 0.2], [0.5, 0.6], {"one cellstr & two objects"});
+%! h = text ([0.1, 0.1], [0.5, 0.6], {"one cellstr & two objects"});
 %! assert ("cell", class (get (h(1), "string")))
 %! assert ("cell", class (get (h(2), "string")))
-%! h = text ([0.2, 0.2], [0.7, 0.8], {"cellstr 1 object 1", "cellstr 2 object 2"});
+%! h = text ([0.1, 0.1], [0.7, 0.8], {"cellstr 1 object 1", "cellstr 2 object 2"});
 %! assert ("char", class (get (h(1), "string")))
 %! assert ("char", class (get (h(2), "string")))
+%! h = text ([0.1, 0.1], [0.1, 0.2], ["1st string & 1st object"; "2nd string & 2nd object"]);
+%! assert ("char", class (get (h(1), "string")))
+%! assert ("char", class (get (h(2), "string")))
+%! h = text (0.7, 0.6, "single string");
+%! assert ("char", class (get (h, "string")))
+%! h = text (0.7, 0.5, {"single cell-string"});
+%! assert ("cell", class (get (h, "string")))
 %! xlabel (1:2)
 %! ylabel (1:2)
 %! title (1:2)

@@ -34,6 +34,8 @@ QDialog (parent), ui (new Ui::SettingsDialog)
     }
 
   ui->proxyPort->setText (settings->value ("proxyPort").toString ());
+  ui->proxyUserName->setText (settings->value ("proxyUserName").toString ());
+  ui->proxyPassword->setText (settings->value ("proxyPassword").toString ());
 }
 
 SettingsDialog::~SettingsDialog ()
@@ -56,5 +58,7 @@ SettingsDialog::~SettingsDialog ()
   settings->setValue ("proxyType", ui->proxyType->currentText ());
   settings->setValue ("proxyHostName", ui->proxyHostName->text ());
   settings->setValue ("proxyPort", ui->proxyPort->text ());
+  settings->setValue ("proxyUserName", ui->proxyUserName->text ());
+  settings->setValue ("proxyPassword", ui->proxyPassword->text ());
   delete ui;
 }

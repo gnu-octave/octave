@@ -241,32 +241,12 @@
            </property>
            <item>
             <property name="text">
-             <string>NoProxy</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>DefaultProxy</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>HttpProxy</string>
             </property>
            </item>
            <item>
             <property name="text">
              <string>Socks5Proxy</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>HttpCachingProxy</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>FtpCachingProxy</string>
             </property>
            </item>
           </widget>
@@ -302,6 +282,43 @@
           <widget class="QLineEdit" name="proxyPort">
            <property name="enabled">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_6">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Username:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="proxyUserName">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Password:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="proxyPassword">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
            </property>
           </widget>
          </item>
@@ -487,6 +504,70 @@
     <hint type="destinationlabel">
      <x>37</x>
      <y>157</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyUserName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyPassword</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_6</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>56</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_7</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>55</x>
+     <y>223</y>
     </hint>
    </hints>
   </connection>

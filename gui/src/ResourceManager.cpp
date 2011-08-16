@@ -72,15 +72,7 @@ ResourceManager::updateNetworkSettings ()
   if (m_settings->value ("useProxyServer").toBool ())
     {
       QString proxyTypeString = m_settings->value ("proxyType").toString ();
-      if (proxyTypeString == "NoProxy")
-        {
-          proxyType = QNetworkProxy::NoProxy;
-        }
-      else if (proxyTypeString == "DefaultProxy")
-        {
-          proxyType = QNetworkProxy::DefaultProxy;
-        }
-      else if (proxyTypeString == "Socks5Proxy")
+      if (proxyTypeString == "Socks5Proxy")
         {
           proxyType = QNetworkProxy::Socks5Proxy;
         }
@@ -88,19 +80,13 @@ ResourceManager::updateNetworkSettings ()
         {
           proxyType = QNetworkProxy::HttpProxy;
         }
-      else if (proxyTypeString == "HttpCachingProxy")
-        {
-          proxyType = QNetworkProxy::HttpCachingProxy;
-        }
-      else if (proxyTypeString == "FtpCachingProxy")
-        {
-          proxyType = QNetworkProxy::FtpCachingProxy;
-        }
     }
 
   QNetworkProxy proxy;
   proxy.setType (proxyType);
   proxy.setHostName (m_settings->value ("proxyHostName").toString ());
   proxy.setPort (m_settings->value ("proxyPort").toInt ());
+  proxy.setUser (m_settings->value ("proxyUserName").toString ());
+  proxy.setPassword (m_settings->value ("proxyPassword").toString ());
   QNetworkProxy::setApplicationProxy (proxy);
 }

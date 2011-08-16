@@ -26,6 +26,10 @@
 #include <QStringListModel>
 #include "IRCClientInterface.h"
 
+/**
+  * \namespace IRCCommand
+  * This namespace includes all IRC commands.
+  */
 namespace IRCCommand
 {
   const QString Password = "PASS";
@@ -82,6 +86,10 @@ namespace IRCCommand
   const QString IsOn = "ISON";
 };
 
+/**
+  * \namespace IRCReply
+  * This namespace includes all numeric IRC replies.
+  */
 namespace IRCReply
 {
   const int Welcome = 1;
@@ -169,6 +177,10 @@ namespace IRCReply
   const int TryAgain = 263;
 };
 
+/**
+  * \namespace IRCError
+  * This namespace includes all numeric IRC errors.
+  */
 namespace IRCError
 {
   const int NoSuchNick = 401;
@@ -226,6 +238,12 @@ namespace IRCError
   const int UsersDontMatch = 502;
 };
 
+/**
+  * \class IRCServerMessage
+  * The IRCServerMessage class is a wrapper for server messages.
+  * It parses the server message into its single bits and makes these
+  * available through Getter-methods.
+  */
 class IRCServerMessage
 {
 public:
@@ -253,11 +271,16 @@ private:
   QStringList m_parameters;
 };
 
-class IRCChannelProxy : public IRCChannelProxyInterface
+/**
+  * \class IRCChannelProxyImpl
+  * Implements a handle to an IRC channel. This is usually provided by the
+  * the IRC client class.
+  */
+class IRCChannelProxyImpl : public IRCChannelProxyInterface
 {
   Q_OBJECT
 public:
-  IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent = 0);
+  IRCChannelProxyImpl (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent = 0);
   QTextDocument *conversationModel ();
   QStringListModel *userListModel ();
   QString channelName ();
@@ -275,6 +298,12 @@ private:
   IRCClientInterface *m_clientInterface;
 };
 
+/**
+  * \class IRCClientImpl
+  * Implements an IRC client. This class can maintain a connection to one server.
+  * In order to interface an IRC channel, use the ircChannelProxy-method to retrieve
+  * a handle.
+  */
 class IRCClientImpl : public IRCClientInterface
 {
   Q_OBJECT

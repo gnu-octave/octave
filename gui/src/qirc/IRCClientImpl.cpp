@@ -144,7 +144,7 @@ IRCServerMessage::parameter (int index)
 }
 
 
-IRCChannelProxy::IRCChannelProxy (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent)
+IRCChannelProxyImpl::IRCChannelProxyImpl (IRCClientInterface *clientInterface, const QString& channelName, QObject *parent)
   : IRCChannelProxyInterface (clientInterface, channelName, parent),
     m_clientInterface (clientInterface)
 {
@@ -152,32 +152,32 @@ IRCChannelProxy::IRCChannelProxy (IRCClientInterface *clientInterface, const QSt
 }
 
 QTextDocument *
-IRCChannelProxy::conversationModel ()
+IRCChannelProxyImpl::conversationModel ()
 {
   return &m_conversationModel;
 }
 
 QStringListModel *
-IRCChannelProxy::userListModel ()
+IRCChannelProxyImpl::userListModel ()
 {
   return &m_userListModel;
 }
 
 QString
-IRCChannelProxy::channelName ()
+IRCChannelProxyImpl::channelName ()
 {
   return m_channelName;
 }
 
 void
-IRCChannelProxy::setNickList (const QStringList &nickList)
+IRCChannelProxyImpl::setNickList (const QStringList &nickList)
 {
   m_userList = nickList;
   m_userListModel.setStringList (nickList);
 }
 
 void
-IRCChannelProxy::sendMessage (const QString& message)
+IRCChannelProxyImpl::sendMessage (const QString& message)
 {
   QStringList arguments;
   arguments << m_channelName;
@@ -186,14 +186,14 @@ IRCChannelProxy::sendMessage (const QString& message)
 }
 
 void
-IRCChannelProxy::sendJoinRequest ()
+IRCChannelProxyImpl::sendJoinRequest ()
 {
   m_clientInterface->sendIRCCommand (IRCCommand::Join, QStringList (m_channelName));
 }
 
 
 void
-IRCChannelProxy::leave (const QString& reason)
+IRCChannelProxyImpl::leave (const QString& reason)
 {
   Q_UNUSED (reason);
 }
@@ -264,7 +264,7 @@ IRCChannelProxyInterface *
 IRCClientImpl::ircChannelProxy (const QString &channel)
 {
   if (!m_channels.contains (channel))
-      m_channels[channel] = new IRCChannelProxy(this, channel);
+      m_channels[channel] = new IRCChannelProxyImpl(this, channel);
   return m_channels[channel];
 }
 

@@ -37,6 +37,8 @@ public:
   QString homePath ();
   void setSettings (QString file);
   QString findTranslatorFile (QString language);
+  void updateNetworkSettings ();
+
 private:
   ResourceManager ();
 

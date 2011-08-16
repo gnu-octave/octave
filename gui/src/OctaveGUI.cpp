@@ -39,6 +39,7 @@ main (int argc, char *argv[])
   translator.load (translatorFile);
   application.installTranslator (&translator);
 
+  ResourceManager::instance ()->updateNetworkSettings ();
   MainWindow w;
   w.show ();
   return application.exec ();

@@ -22,6 +22,18 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->showLastModified->setChecked (settings->value ("showLastModified").toBool());
   ui->showHiddenFiles->setChecked (settings->value ("showHiddenFiles").toBool());
   ui->useAlternatingRowColors->setChecked (settings->value ("useAlternatingRowColors").toBool());
+  ui->useProxyServer->setChecked (settings->value ("useProxyServer").toBool ());
+  ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
+
+  int currentIndex = 0;
+  QString proxyTypeString = settings->value ("proxyType").toString ();
+  while ( (currentIndex < ui->proxyType->count ()) && (ui->proxyType->currentText () != proxyTypeString))
+    {
+      currentIndex++;
+      ui->proxyType->setCurrentIndex (currentIndex);
+    }
+
+  ui->proxyPort->setText (settings->value ("proxyPort").toString ());
 }
 
 SettingsDialog::~SettingsDialog ()
@@ -40,5 +52,9 @@ SettingsDialog::~SettingsDialog ()
   settings->setValue ("showLastModified", ui->showLastModified->isChecked ());
   settings->setValue ("showHiddenFiles", ui->showHiddenFiles->isChecked ());
   settings->setValue ("useAlternatingRowColors", ui->useAlternatingRowColors->isChecked ());
+  settings->setValue ("useProxyServer", ui->useProxyServer->isChecked ());
+  settings->setValue ("proxyType", ui->proxyType->currentText ());
+  settings->setValue ("proxyHostName", ui->proxyHostName->text ());
+  settings->setValue ("proxyPort", ui->proxyPort->text ());
   delete ui;
 }

@@ -180,6 +180,7 @@ MainWindow::processSettingsDialogRequest ()
   SettingsDialog settingsDialog (this);
   settingsDialog.exec ();
   emit settingsChanged ();
+  ResourceManager::instance ()->updateNetworkSettings ();
 }
 
 void

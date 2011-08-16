@@ -18,6 +18,7 @@
 
 #include "ResourceManager.h"
 #include <QFile>
+#include <QNetworkProxy>
 
 ResourceManager ResourceManager::m_singleton;
 
@@ -62,4 +63,44 @@ ResourceManager::findTranslatorFile (QString language)
 {
   // TODO: Quick hack to be able to test language files.
   return QString("../languages/%1.qm").arg(language);
+}
+
+void
+ResourceManager::updateNetworkSettings ()
+{
+  QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+  if (m_settings->value ("useProxyServer").toBool ())
+    {
+      QString proxyTypeString = m_settings->value ("proxyType").toString ();
+      if (proxyTypeString == "NoProxy")
+        {
+          proxyType = QNetworkProxy::NoProxy;
+        }
+      else if (proxyTypeString == "DefaultProxy")
+        {
+          proxyType = QNetworkProxy::DefaultProxy;
+        }
+      else if (proxyTypeString == "Socks5Proxy")
+        {
+          proxyType = QNetworkProxy::Socks5Proxy;
+        }
+      else if (proxyTypeString == "HttpProxy")
+        {
+          proxyType = QNetworkProxy::HttpProxy;
+        }
+      else if (proxyTypeString == "HttpCachingProxy")
+        {
+          proxyType = QNetworkProxy::HttpCachingProxy;
+        }
+      else if (proxyTypeString == "FtpCachingProxy")
+        {
+          proxyType = QNetworkProxy::FtpCachingProxy;
+        }
+    }
+
+  QNetworkProxy proxy;
+  proxy.setType (proxyType);
+  proxy.setHostName (m_settings->value ("proxyHostName").toString ());
+  proxy.setPort (m_settings->value ("proxyPort").toInt ());
+  QNetworkProxy::setApplicationProxy (proxy);
 }

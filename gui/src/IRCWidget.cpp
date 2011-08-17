@@ -265,11 +265,15 @@ IRCWidget::showMessage (const QString& channel, const QString& sender, const QSt
     }
 
   QString output;
+  QString htmlMessage = message;
+  htmlMessage.replace ("<", "&lt;");
+  htmlMessage.replace (">", "&gt;");
+  htmlMessage.replace ("\n", "<br>");
   if (message.contains (m_ircClientInterface->nickname ()))
     {
       output =
         QString ("<font color=\"#990000\"><b>%1:</b> %2</font>").arg (sender).
-        arg (message);
+        arg (htmlMessage);
 
       QApplication::alert (this);
     }
@@ -277,7 +281,7 @@ IRCWidget::showMessage (const QString& channel, const QString& sender, const QSt
     {
       output =
         QString ("<b>%1:</b> %2").arg (sender).
-        arg (message);
+        arg (htmlMessage);
     }
   m_chatWindow->append (output);
 }
@@ -344,6 +348,7 @@ IRCWidget::sendMessage (QString message)
       m_octaveChannel->sendMessage (message);
       message.replace ("<", "&lt;");
       message.replace (">", "&gt;");
+      message.replace ("\n", "<br>");
       m_chatWindow->append (QString ("<b>%1:</b> %2").
                             arg (m_ircClientInterface->nickname ()).arg (message));
     }

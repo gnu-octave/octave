@@ -42,12 +42,12 @@
 ##
 ## An example of the use of @code{accumdim} is:
 ##
-## @example
+## @smallexample
 ## @group
 ## accumdim ([1, 2, 1, 2, 1], [7,-10,4;-5,-12,8;-12,2,8;-10,9,-3;-5,-3,-13])
 ## @result{} ans = [-10,-11,-1;-15,-3,5]
 ## @end group
-## @end example
+## @end smallexample
 ##
 ## @seealso{accumarray}
 ## @end deftypefn

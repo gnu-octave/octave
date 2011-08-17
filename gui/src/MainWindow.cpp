@@ -151,6 +151,19 @@ MainWindow::handleCommandDoubleClicked (QString command)
 }
 
 void
+MainWindow::handleUnreadMessages (bool yes)
+{
+  if (yes)
+    {
+      m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/jabber_protocol.png"));
+    }
+  else
+    {
+      m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/chat.png"));
+    }
+}
+
+void
 MainWindow::alignMdiWindows ()
 {
   m_centralMdiArea->tileSubWindows ();
@@ -281,6 +294,7 @@ MainWindow::construct ()
   m_octaveTerminalSubWindow->setObjectName ("OctaveTerminalSubWindow");
   m_octaveTerminalSubWindow->setWindowTitle (tr ("Terminal"));
   m_octaveTerminalSubWindow->setWindowIcon (QIcon ("../media/terminal.png"));
+  m_octaveTerminalSubWindow->setFocusProxy (m_octaveTerminal);
   m_octaveTerminalSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
 
   // Documentation subwindow.
@@ -291,6 +305,7 @@ MainWindow::construct ()
   m_documentationWidgetSubWindow->setObjectName ("DocumentationWidgetSubWindow");
   m_documentationWidgetSubWindow->setWindowTitle (tr ("Documentation"));
   m_documentationWidgetSubWindow->setWindowIcon (QIcon ("../media/help_index.png"));
+  m_documentationWidgetSubWindow->setFocusProxy (m_documentationWidget);
   m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
 
   // Chat subwindow.
@@ -303,6 +318,8 @@ MainWindow::construct ()
   m_ircWidgetSubWindow->setWindowTitle (tr ("Chat"));
   m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/chat.png"));
   m_ircWidgetSubWindow->setStatusTip(tr ("Instantly chat with other Octave users for help."));
+  m_ircWidgetSubWindow->setFocusProxy (m_ircWidget);
+  connect (m_ircWidget, SIGNAL (unreadMessages (bool)), this, SLOT (handleUnreadMessages (bool)));
 
   m_lexer = NULL;  // initialise the empty lexer for the edtiors
 

@@ -75,6 +75,7 @@ public slots:
   void handleLoadWorkspaceRequest ();
   void handleClearWorkspaceRequest ();
   void handleCommandDoubleClicked (QString command);
+  void handleUnreadMessages (bool yes);
   void alignMdiWindows ();
   void openEditor ();
   void openEditorFile (QString fileName);

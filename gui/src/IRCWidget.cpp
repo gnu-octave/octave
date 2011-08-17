@@ -168,8 +168,7 @@ QWidget (parent)
   m_nickButton->setEnabled (false);
   m_chatMessageTextEdit->setEnabled (false);
 
-  //m_chatWindow->setFocusProxy (m_inputLine);
-  this->setFocusProxy (m_chatMessageTextEdit);
+  //setFocusProxy (m_chatMessageTextEdit);
   m_nickButton->setFocusProxy (m_chatMessageTextEdit);
 
   QFont font;
@@ -257,6 +256,14 @@ void
 IRCWidget::showMessage (const QString& channel, const QString& sender, const QString& message)
 {
   Q_UNUSED (channel);
+  if (!hasFocus()
+      && !m_chatMessageTextEdit->hasFocus ()
+      && !m_nickButton->hasFocus ()
+      && !m_chatWindow->hasFocus ())
+    {
+      emit unreadMessages (true);
+    }
+
   QString output;
   if (message.contains (m_ircClientInterface->nickname ()))
     {
@@ -340,6 +347,16 @@ IRCWidget::sendMessage (QString message)
       m_chatWindow->append (QString ("<b>%1:</b> %2").
                             arg (m_ircClientInterface->nickname ()).arg (message));
     }
+}
+
+void
+IRCWidget::focusInEvent (QFocusEvent *focusEvent)
+{
+  Q_UNUSED (focusEvent);
+  emit unreadMessages (false);
+  QWidget::focusInEvent (focusEvent);
+
+  m_chatMessageTextEdit->setFocus ();
 }
 
 void

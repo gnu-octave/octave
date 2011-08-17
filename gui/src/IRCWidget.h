@@ -77,6 +77,12 @@ public slots:
   void showChangeUserNickPopup ();
   void sendMessage (QString);
 
+signals:
+  void unreadMessages (bool yes);
+
+protected:
+  void focusInEvent (QFocusEvent *focusEvent);
+
 private:
   IRCClientInterface *m_ircClientInterface;
   IRCChannelProxyInterface *m_octaveChannel;

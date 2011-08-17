@@ -287,10 +287,10 @@ MainWindow::construct ()
   m_octaveTerminal->openTerminal ();
 
   // Octave Terminal subwindow.
-  m_octaveTerminalSubWindow =
-    m_centralMdiArea->addSubWindow (m_octaveTerminal,
-                                    Qt::WindowTitleHint | Qt::
-				    WindowMinMaxButtonsHint);
+  m_octaveTerminalSubWindow = new NonClosableMdiSubWindow (this);
+  m_octaveTerminalSubWindow->setWidget (m_octaveTerminal);
+  m_centralMdiArea->addSubWindow (m_octaveTerminalSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
+
   m_octaveTerminalSubWindow->setObjectName ("OctaveTerminalSubWindow");
   m_octaveTerminalSubWindow->setWindowTitle (tr ("Terminal"));
   m_octaveTerminalSubWindow
@@ -299,10 +299,10 @@ MainWindow::construct ()
   m_octaveTerminalSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
 
   // Documentation subwindow.
-  m_documentationWidgetSubWindow =
-    m_centralMdiArea->addSubWindow (m_documentationWidget,
-                                    Qt::WindowTitleHint | Qt::
-                                    WindowMinMaxButtonsHint);
+  m_documentationWidgetSubWindow = new NonClosableMdiSubWindow (this);
+  m_documentationWidgetSubWindow->setWidget (m_documentationWidget);
+  m_centralMdiArea->addSubWindow (m_documentationWidgetSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
+
   m_documentationWidgetSubWindow->setObjectName ("DocumentationWidgetSubWindow");
   m_documentationWidgetSubWindow->setWindowTitle (tr ("Documentation"));
   m_documentationWidgetSubWindow
@@ -311,11 +311,10 @@ MainWindow::construct ()
   m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
 
   // Chat subwindow.
-  m_ircWidgetSubWindow = m_centralMdiArea->addSubWindow (m_ircWidget,
-                                                         Qt::
-                                                         WindowTitleHint |
-                                                         Qt::
-                                                         WindowMinMaxButtonsHint);
+  m_ircWidgetSubWindow = new NonClosableMdiSubWindow (this);
+  m_ircWidgetSubWindow->setWidget (m_ircWidget);
+  m_centralMdiArea->addSubWindow (m_ircWidgetSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
+
   m_ircWidgetSubWindow->setObjectName ("ChatWidgetSubWindow");
   m_ircWidgetSubWindow->setWindowTitle (tr ("Chat"));
   m_ircWidgetSubWindow

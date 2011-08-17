@@ -37,6 +37,20 @@
 #include "IRCWidget.h"
 #include "lexer/lexeroctavegui.h"
 
+class NonClosableMdiSubWindow : public QMdiSubWindow
+{
+  Q_OBJECT
+public:
+  explicit NonClosableMdiSubWindow (QWidget *parent = 0)
+    : QMdiSubWindow (parent) { }
+  virtual ~NonClosableMdiSubWindow () { }
+protected:
+  void closeEvent (QCloseEvent *closeEvent)
+  {
+    closeEvent->ignore ();
+  }
+};
+
 /**
   * \class MainWindow
   *
@@ -101,9 +115,9 @@ private:
   BrowserWidget *m_documentationWidget;
   IRCWidget *m_ircWidget;
 
-  QMdiSubWindow *m_octaveTerminalSubWindow;
-  QMdiSubWindow *m_documentationWidgetSubWindow;
-  QMdiSubWindow *m_ircWidgetSubWindow;
+  NonClosableMdiSubWindow *m_octaveTerminalSubWindow;
+  NonClosableMdiSubWindow *m_documentationWidgetSubWindow;
+  NonClosableMdiSubWindow *m_ircWidgetSubWindow;
 
   // Dock widgets.
   VariablesDockWidget *m_variablesDockWidget;

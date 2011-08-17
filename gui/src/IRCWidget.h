@@ -77,6 +77,8 @@ public slots:
   void showChangeUserNickPopup ();
   void sendMessage (QString);
 
+  void maybeIdentifyOnNickServ ();
+
 signals:
   void unreadMessages (bool yes);
 

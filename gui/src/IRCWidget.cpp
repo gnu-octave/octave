@@ -360,6 +360,16 @@ IRCWidget::sendMessage (QString message)
 }
 
 void
+IRCWidget::maybeIdentifyOnNickServ ()
+{
+  if (m_autoIdentification)
+    {
+      m_ircClientInterface->sendPrivateMessage("NickServ", QString ("identify %1").
+                                          arg (m_nickServPassword));
+    }
+}
+
+void
 IRCWidget::focusInEvent (QFocusEvent *focusEvent)
 {
   Q_UNUSED (focusEvent);
@@ -380,13 +390,6 @@ IRCWidget::handleLoggedIn (const QString &nick)
   m_chatMessageTextEdit->setEnabled (true);
   m_chatWindow->setEnabled (true);
   m_chatMessageTextEdit->setFocus ();
-
-
-  if (m_autoIdentification)
-    {
-      m_ircClientInterface->sendPrivateMessage("NickServ", QString ("identify %1").
-                                          arg (m_nickServPassword));
-    }
 }
 
 void
@@ -413,4 +416,5 @@ IRCWidget::handleUserNicknameChanged (const QString &nick)
   m_nickButton->setText (nick);
   QSettings *settings = ResourceManager::instance ()->settings ();
   settings->setValue ("IRCNick", nick);
+  maybeIdentifyOnNickServ ();
 }

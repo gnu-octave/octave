@@ -66,6 +66,10 @@ public:
     * \arg reason Reason for leaving the channel.
     */
   virtual void leave (const QString& reason) = 0;
+
+public slots:
+  virtual void handleNickChange (const QString& oldNick, const QString& newNick) = 0;
+  virtual void handleJoin (const QString& nick) = 0;
 };
 
 /**

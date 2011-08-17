@@ -149,6 +149,8 @@ IRCChannelProxyImpl::IRCChannelProxyImpl (IRCClientInterface *clientInterface, c
     m_clientInterface (clientInterface)
 {
   m_channelName = channelName;
+  connect (clientInterface, SIGNAL (nicknameChanged (QString,QString)),
+           this, SLOT (handleNickChange (QString,QString)));
 }
 
 QTextDocument *
@@ -196,6 +198,23 @@ void
 IRCChannelProxyImpl::leave (const QString& reason)
 {
   Q_UNUSED (reason);
+}
+
+void
+IRCChannelProxyImpl::handleNickChange (const QString &oldNick, const QString &newNick)
+{
+  m_userList = m_userListModel.stringList ();
+  m_userList.removeAll (oldNick);
+  m_userList.append (newNick);
+  m_userListModel.setStringList (m_userList);
+}
+
+void
+IRCChannelProxyImpl::handleJoin (const QString &nick)
+{
+  m_userList = m_userListModel.stringList ();
+  m_userList.append (nick);
+  m_userListModel.setStringList (m_userList);
 }
 
 IRCClientImpl::IRCClientImpl (QObject *parent)
@@ -315,7 +334,7 @@ IRCClientImpl::handleReadyRead ()
     {
       line = m_tcpSocket.readLine();
       if (line.size ())
-        handleIncomingLine(QString(line));
+        handleIncomingLine(QString (line).toLocal8Bit ());
       else
         break;
     }
@@ -337,6 +356,7 @@ IRCClientImpl::handleNicknameChanged (const QString &oldNick, const QString &new
 void
 IRCClientImpl::handleUserJoined (const QString &nick, const QString &channel)
 {
+  ircChannelProxy (channel)->handleJoin (nick);
   emit userJoined (nick, channel);
 }
 
@@ -468,7 +488,7 @@ void
 IRCClientImpl::sendLine (const QString &line)
 {
   if (m_connected)
-    m_tcpSocket.write ((line + "\r\n").toStdString ().c_str ());
+    m_tcpSocket.write ( (line +  + "\r\n").toUtf8 ());
 }
 
 void

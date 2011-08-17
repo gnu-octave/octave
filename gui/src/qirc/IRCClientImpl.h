@@ -289,7 +289,9 @@ public:
   void sendMessage (const QString& message);
   void sendJoinRequest ();
   void leave (const QString &reason);
-
+public slots:
+  void handleNickChange (const QString& oldNick, const QString& newNick);
+  void handleJoin (const QString& nick);
 private:
   QString             m_channelName;
   QStringList         m_userList;

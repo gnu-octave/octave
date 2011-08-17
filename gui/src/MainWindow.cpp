@@ -155,11 +155,15 @@ MainWindow::handleUnreadMessages (bool yes)
 {
   if (yes)
     {
-      m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/jabber_protocol.png"));
+      m_ircWidgetSubWindow
+        ->setWindowIcon
+          (ResourceManager::instance ()->icon (ResourceManager::ChatNewMessage));
     }
   else
     {
-      m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/chat.png"));
+      m_ircWidgetSubWindow
+        ->setWindowIcon
+          (ResourceManager::instance ()->icon (ResourceManager::Chat));
     }
 }
 
@@ -259,11 +263,7 @@ MainWindow::writeSettings ()
 void
 MainWindow::construct ()
 {
-
-  if (QFile::exists ("../media/logo.png"))
-    setWindowIcon (QIcon ("../media/logo.png"));
-  else
-    setWindowIcon (QIcon ("/usr/share/octave/quint/media/logo.png"));
+  setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Octave));
 
   // Initialize MDI area.
   m_centralMdiArea = new QMdiArea (this);
@@ -289,11 +289,12 @@ MainWindow::construct ()
   // Octave Terminal subwindow.
   m_octaveTerminalSubWindow =
     m_centralMdiArea->addSubWindow (m_octaveTerminal,
-				    Qt::WindowTitleHint | Qt::
+                                    Qt::WindowTitleHint | Qt::
 				    WindowMinMaxButtonsHint);
   m_octaveTerminalSubWindow->setObjectName ("OctaveTerminalSubWindow");
   m_octaveTerminalSubWindow->setWindowTitle (tr ("Terminal"));
-  m_octaveTerminalSubWindow->setWindowIcon (QIcon ("../media/terminal.png"));
+  m_octaveTerminalSubWindow
+      ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Terminal));
   m_octaveTerminalSubWindow->setFocusProxy (m_octaveTerminal);
   m_octaveTerminalSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
 
@@ -304,7 +305,8 @@ MainWindow::construct ()
                                     WindowMinMaxButtonsHint);
   m_documentationWidgetSubWindow->setObjectName ("DocumentationWidgetSubWindow");
   m_documentationWidgetSubWindow->setWindowTitle (tr ("Documentation"));
-  m_documentationWidgetSubWindow->setWindowIcon (QIcon ("../media/help_index.png"));
+  m_documentationWidgetSubWindow
+      ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Documentation));
   m_documentationWidgetSubWindow->setFocusProxy (m_documentationWidget);
   m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
 
@@ -316,7 +318,8 @@ MainWindow::construct ()
                                                          WindowMinMaxButtonsHint);
   m_ircWidgetSubWindow->setObjectName ("ChatWidgetSubWindow");
   m_ircWidgetSubWindow->setWindowTitle (tr ("Chat"));
-  m_ircWidgetSubWindow->setWindowIcon (QIcon ("../media/chat.png"));
+  m_ircWidgetSubWindow
+      ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Chat));
   m_ircWidgetSubWindow->setStatusTip(tr ("Instantly chat with other Octave users for help."));
   m_ircWidgetSubWindow->setFocusProxy (m_ircWidget);
   connect (m_ircWidget, SIGNAL (unreadMessages (bool)), this, SLOT (handleUnreadMessages (bool)));

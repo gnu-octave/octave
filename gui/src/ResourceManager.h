@@ -21,10 +21,21 @@
 
 #include <QSettings>
 #include <QDesktopServices>
+#include <QMap>
+#include <QIcon>
 
 class ResourceManager
 {
 public:
+  enum Icon
+  {
+    Octave,
+    Terminal,
+    Documentation,
+    Chat,
+    ChatNewMessage
+  };
+
   ~ResourceManager ();
 
   static ResourceManager *
@@ -38,12 +49,15 @@ public:
   void setSettings (QString file);
   QString findTranslatorFile (QString language);
   void updateNetworkSettings ();
+  void loadIcons ();
+  QIcon icon (Icon icon);
 
 private:
   ResourceManager ();
 
   QSettings *m_settings;
   QString m_homePath;
+  QMap <Icon, QIcon> m_icons;
   static ResourceManager m_singleton;
 };
 

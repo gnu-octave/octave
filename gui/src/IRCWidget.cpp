@@ -256,10 +256,15 @@ void
 IRCWidget::showMessage (const QString& channel, const QString& sender, const QString& message)
 {
   Q_UNUSED (channel);
-  if (!hasFocus()
-      && !m_chatMessageTextEdit->hasFocus ()
-      && !m_nickButton->hasFocus ()
-      && !m_chatWindow->hasFocus ())
+
+  // TODO: This doesn't work properly!
+  // Every message makes it emit unreadMessage (true),
+  // though it should inly be emitted when this window
+  // does not have focus, ie. is not the active window.
+  if (!(hasFocus()
+      || m_chatMessageTextEdit->hasFocus ()
+      || m_nickButton->hasFocus ()
+      || m_chatWindow->hasFocus () ))
     {
       emit unreadMessages (true);
     }

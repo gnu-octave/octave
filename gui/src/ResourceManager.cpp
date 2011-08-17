@@ -65,6 +65,16 @@ ResourceManager::findTranslatorFile (QString language)
   return QString("../languages/%1.qm").arg(language);
 }
 
+QIcon
+ResourceManager::icon (Icon icon)
+{
+  if (m_icons.contains (icon))
+    {
+      return m_icons [icon];
+    }
+  return QIcon ();
+}
+
 void
 ResourceManager::updateNetworkSettings ()
 {
@@ -89,4 +99,14 @@ ResourceManager::updateNetworkSettings ()
   proxy.setUser (m_settings->value ("proxyUserName").toString ());
   proxy.setPassword (m_settings->value ("proxyPassword").toString ());
   QNetworkProxy::setApplicationProxy (proxy);
+}
+
+void
+ResourceManager::loadIcons ()
+{
+  m_icons [ResourceManager::Octave] = QIcon ("../media/logo.png");
+  m_icons [ResourceManager::Terminal] = QIcon ("../media/terminal.png");
+  m_icons [ResourceManager::Documentation] = QIcon ("../media/help_index.png");
+  m_icons [ResourceManager::Chat] = QIcon ("../media/chat.png");
+  m_icons [ResourceManager::ChatNewMessage] = QIcon ("../media/jabber_protocol.png");
 }

@@ -40,6 +40,8 @@ main (int argc, char *argv[])
   application.installTranslator (&translator);
 
   ResourceManager::instance ()->updateNetworkSettings ();
+  ResourceManager::instance ()->loadIcons ();
+
   MainWindow w;
   w.show ();
   return application.exec ();

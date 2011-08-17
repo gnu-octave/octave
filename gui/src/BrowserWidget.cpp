@@ -35,6 +35,8 @@ BrowserWidget::construct ()
   m_webView = new QWebView (this);
   m_urlLineEdit = new QLineEdit (this);
   m_statusBar = new QStatusBar (this);
+  m_progressBar = new QProgressBar (this);
+  m_progressBar->setMaximumWidth (150);
 
   m_webView->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
   QAction *backAction =
@@ -51,7 +53,15 @@ BrowserWidget::construct ()
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (m_navigationToolBar);
   layout->addWidget (m_webView);
-  layout->addWidget (m_statusBar);
+
+    QWidget *bottomWidget = new QWidget (this);
+    QHBoxLayout *bottomLineLayout = new QHBoxLayout ();
+    bottomLineLayout->addWidget (m_statusBar);
+    bottomLineLayout->addWidget (m_progressBar);
+    bottomLineLayout->setMargin (0);
+    bottomWidget->setLayout (bottomLineLayout);
+
+  layout->addWidget (bottomWidget);
   layout->setMargin (2);
   setLayout (layout);
 
@@ -61,6 +71,11 @@ BrowserWidget::construct ()
   connect (m_webView, SIGNAL (urlChanged (QUrl)), this, SLOT (setUrl (QUrl)));
   connect (m_urlLineEdit, SIGNAL (returnPressed ()), this,
 	   SLOT (jumpToWebsite ()));
+
+  connect (m_webView, SIGNAL (statusBarMessage(QString)),
+           m_statusBar, SLOT (showMessage(QString)));
+  connect (m_webView, SIGNAL (loadProgress(int)),
+           m_progressBar, SLOT (setValue(int)));
 }
 
 void
@@ -73,7 +88,7 @@ void
 BrowserWidget::jumpToWebsite ()
 {
   QString url = m_urlLineEdit->text ();
-  if (!url.startsWith ("http://"))
+  if (!url.startsWith ("http://") && !url.startsWith ("https://"))
     url = "http://" + url;
   load (url);
 }

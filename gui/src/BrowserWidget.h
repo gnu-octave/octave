@@ -24,6 +24,7 @@
 #include <QLineEdit>
 #include <QtWebKit/QWebView>
 #include <QStatusBar>
+#include <QProgressBar>
 
 class BrowserWidget:public QWidget
 {
@@ -44,6 +45,7 @@ private:
   QToolBar *m_navigationToolBar;
   QWebView *m_webView;
   QStatusBar *m_statusBar;
+  QProgressBar *m_progressBar;
 };
 
 #endif // BROWSERMDISUBWINDOW_H

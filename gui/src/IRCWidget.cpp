@@ -214,6 +214,7 @@ QWidget (parent)
 
   m_chatMessageTextEdit->setCompleter
       (new QCompleter (m_ircClientInterface->ircChannelProxy ("#octave")->userListModel (), this));
+  m_chatWindow->setDocument (m_octaveChannel->conversationModel ());
 
   if (connectOnStartup)
     connectToServer ();

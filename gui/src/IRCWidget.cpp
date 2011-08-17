@@ -30,7 +30,7 @@
 #include "IRCClientImpl.h"
 
 ChatMessageTextEdit::ChatMessageTextEdit (QWidget *parent)
-  : QTextEdit (parent), m_completer (0)
+  : QPlainTextEdit (parent), m_completer (0)
 {
   setMaximumHeight (50);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -91,7 +91,7 @@ ChatMessageTextEdit::focusInEvent (QFocusEvent *e)
 {
   if (m_completer)
     m_completer->setWidget (this);
-  QTextEdit::focusInEvent (e);
+  QPlainTextEdit::focusInEvent (e);
 }
 
 void
@@ -103,12 +103,12 @@ ChatMessageTextEdit::keyPressEvent (QKeyEvent *keyPressEvent)
     case Qt::Key_Return:
       if (! (keyPressEvent->modifiers () & Qt::ShiftModifier))
         {
-          emit sendMessage (toPlainText ());
-          setText ("");
+          emit sendMessage (document ()->toPlainText ());
+          document ()->setPlainText ("");
         }
       else
         {
-          QTextEdit::keyPressEvent (keyPressEvent);
+          QPlainTextEdit::keyPressEvent (keyPressEvent);
         }
       break;
     case Qt::Key_Escape:
@@ -117,7 +117,7 @@ ChatMessageTextEdit::keyPressEvent (QKeyEvent *keyPressEvent)
       keyPressEvent->ignore ();
       return;
     default:
-      QTextEdit::keyPressEvent(keyPressEvent);
+      QPlainTextEdit::keyPressEvent(keyPressEvent);
       break;
       }
 

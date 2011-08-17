@@ -20,13 +20,13 @@
 #define IRCWIDGET_H
 
 #include <QWidget>
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QCompleter>
 #include "IRCClientInterface.h"
 
-class ChatMessageTextEdit : public QTextEdit
+class ChatMessageTextEdit : public QPlainTextEdit
 {
   Q_OBJECT
 public:

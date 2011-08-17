@@ -52,7 +52,7 @@ ChatMessageTextEdit::setCompleter (QCompleter *completer)
     return;
 
   m_completer->setWidget (this);
-  m_completer->setCompletionMode (QCompleter::InlineCompletion);
+  m_completer->setCompletionMode (QCompleter::PopupCompletion);
   m_completer->setCaseSensitivity (Qt::CaseInsensitive);
   QObject::connect (m_completer, SIGNAL (activated (QString)),
                     this, SLOT (insertCompletion (QString)));
@@ -123,9 +123,20 @@ ChatMessageTextEdit::keyPressEvent (QKeyEvent *keyPressEvent)
 
     QString completionPrefix = textUnderCursor ();
     if (completionPrefix != m_completer->completionPrefix ())
-      m_completer->setCompletionPrefix(completionPrefix);
-    m_completer->complete ();
-   }
+      {
+        m_completer->setCompletionPrefix(completionPrefix);
+      }
+
+    if (completionPrefix.length() > 0)
+      {
+        m_completer->popup ()->setCurrentIndex (m_completer->completionModel ()->index (0, 0));
+        m_completer->complete ();
+      }
+    else
+      {
+        m_completer->popup ()->hide ();
+      }
+  }
 }
 
 IRCWidget::IRCWidget (QWidget * parent):

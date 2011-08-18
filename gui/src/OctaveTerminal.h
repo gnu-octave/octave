@@ -34,6 +34,9 @@ public:
 protected:
   void keyPressEvent (QKeyEvent *keyEvent);
 
+protected slots:
+  void handleReceivedData (const QByteArray& data);
+
 private:
   void construct ();
   Session *m_session;

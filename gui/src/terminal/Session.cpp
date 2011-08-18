@@ -138,12 +138,6 @@ _hasDarkBackground (false)
 void
 Session::openTeletype (int fd)
 {
-  if (_shellProcess && isRunning ())
-    {
-      //kWarning() << "Attempted to open teletype in a running session.";
-      return;
-    }
-
   delete _shellProcess;
 
   if (fd < 0)
@@ -151,19 +145,10 @@ Session::openTeletype (int fd)
   else
     _shellProcess = new Pty (fd);
 
-  //_shellProcess->setUtf8Mode (_emulation->utf8 ());
-
-  //connect teletype to emulation backend
   connect (_shellProcess, SIGNAL (receivedData (const char *, int)), this,
-	   SLOT (onReceiveBlock (const char *, int)));
-  //connect (_emulation, SIGNAL (sendData (const char *, int)), _shellProcess,
-//	   SLOT (sendData (const char *, int)));
-  //connect (_emulation, SIGNAL (useUtf8Request (bool)), _shellProcess,
-        //   SLOT (setUtf8Mode (bool)));
+           SLOT (onReceiveBlock (const char *, int)));
   connect (_shellProcess, SIGNAL (finished (int, QProcess::ExitStatus)), this,
-	   SLOT (done (int)));
-  //connect (_emulation, SIGNAL (imageSizeChanged (int, int)), this,
-        //   SLOT (updateWindowSize (int, int)));
+           SLOT (done (int)));
 }
 
 void
@@ -185,30 +170,6 @@ Session::isRunning () const
 }
 
 void
-Session::setCodec (QTextCodec * codec)
-{
-  //emulation ()->setCodec (codec);
-}
-
-bool
-Session::setCodec (QByteArray name)
-{
-  QTextCodec *codec = QTextCodec::codecForName (name);
-  if (codec)
-    {
-      setCodec (codec);
-      return true;
-    }
-  return false;
-}
-
-QByteArray
-Session::codec ()
-{
-  return QByteArray(); //_emulation->codec ()->name ();
-}
-
-void
 Session::setProgram (const QString & program)
 {
   _program = ShellCommand::expand (program);
@@ -227,88 +188,6 @@ Session::setArguments (const QStringList & arguments)
   _arguments = ShellCommand::expand (arguments);
 }
 
-/*
-QList < TerminalDisplay * >Session::views () const
-{
-  return _views;
-}*/
-
-/*
-void
-Session::addView (TerminalDisplay * widget)
-{
-  Q_ASSERT (!_views.contains (widget));
-
-  _views.append (widget);
-
-  if (_emulation != 0)
-    {
-      // connect emulation - view signals and slots
-      connect (widget, SIGNAL (keyPressedSignal (QKeyEvent *)), _emulation,
-	       SLOT (sendKeyEvent (QKeyEvent *)));
-      connect (widget, SIGNAL (mouseSignal (int, int, int, int)), _emulation,
-	       SLOT (sendMouseEvent (int, int, int, int)));
-      connect (widget, SIGNAL (sendStringToEmu (const char *)), _emulation,
-	       SLOT (sendString (const char *)));
-
-      // allow emulation to notify view when the foreground process
-      // indicates whether or not it is interested in mouse signals
-      connect (_emulation, SIGNAL (programUsesMouseChanged (bool)), widget,
-	       SLOT (setUsesMouse (bool)));
-
-      widget->setUsesMouse (_emulation->programUsesMouse ());
-
-      widget->setScreenWindow (_emulation->createWindow ());
-    }
-
-  //connect view signals and slots
-  QObject::connect (widget, SIGNAL (changedContentSizeSignal (int, int)),
-		    this, SLOT (onViewSizeChange (int, int)));
-
-  QObject::connect (widget, SIGNAL (destroyed (QObject *)), this,
-		    SLOT (viewDestroyed (QObject *)));
-}*/
-
-/*
-void
-Session::viewDestroyed (QObject * view)
-{
-  TerminalDisplay *display = (TerminalDisplay *) view;
-
-  Q_ASSERT (_views.contains (display));
-
-  removeView (display);
-}*/
-
-/*
-void
-Session::removeView (TerminalDisplay * widget)
-{
-  _views.removeAll (widget);
-
-  disconnect (widget, 0, this, 0);
-
-  if (_emulation != 0)
-    {
-      // disconnect
-      //  - key presses signals from widget
-      //  - mouse activity signals from widget
-      //  - string sending signals from widget
-      //
-      //  ... and any other signals connected in addView()
-      disconnect (widget, 0, _emulation, 0);
-
-      // disconnect state change signals emitted by emulation
-      disconnect (_emulation, 0, widget, 0);
-    }
-
-  // close the session automatically when the last view is removed
-  if (_views.count () == 0)
-    {
-      close ();
-    }
-}
-*/
 QString
 Session::checkProgram (const QString & program) const
 {
@@ -329,40 +208,8 @@ Session::checkProgram (const QString & program) const
 }
 
 void
-Session::terminalWarning (const QString & message)
-{
-  /*
-  static const QByteArray warningText =
-    QByteArray ("@info:shell Alert the user with red color text");
-  QByteArray messageText = message.toLocal8Bit ();
-
-  static const char redPenOn[] = "\033[1m\033[31m";
-  static const char redPenOff[] = "\033[0m";
-
-
-  _emulation->receiveData (redPenOn, strlen (redPenOn));
-  _emulation->receiveData ("\n\r\n\r", 4);
-  _emulation->receiveData (warningText.constData (),
-			   strlen (warningText.constData ()));
-  _emulation->receiveData (messageText.constData (),
-			   strlen (messageText.constData ()));
-  _emulation->receiveData ("\n\r\n\r", 4);
-  _emulation->receiveData (redPenOff, strlen (redPenOff));
-*/
-}
-
-void
 Session::run ()
 {
-  //check that everything is in place to run the session
-  if (_program.isEmpty ())
-    {
-      //kWarning() << "Session::run() - program to run not set.";
-    }
-  if (_arguments.isEmpty ())
-    {
-      //kWarning() << "Session::run() - no command line arguments specified.";
-    }
   if (_uniqueIdentifier.isNull ())
     {
       _uniqueIdentifier = createUuid ();
@@ -379,24 +226,6 @@ Session::run ()
 	choice++;
       else
 	break;
-    }
-
-  // if a program was specified via setProgram(), but it couldn't be found, print a warning
-  if (choice != 0 && choice < CHOICE_COUNT && !_program.isEmpty ())
-    {
-      QString msg;
-      QTextStream msgStream (&msg);
-      msgStream << "Could not find '" << _program << "', starting '" << exec
-	<< "' instead. Please check your profile settings.";
-      terminalWarning (msg);
-      //terminalWarning(i18n("Could not find '%1', starting '%2' instead.  Please check your profile settings.",_program.toLatin1().data(),exec.toLatin1().data())); 
-    }
-  // if none of the choices are available, print a warning
-  else if (choice == CHOICE_COUNT)
-    {
-      terminalWarning (QString
-		       ("Could not find an interactive shell to start."));
-      return;
     }
 
   // if no arguments are specified, fall back to program name
@@ -419,23 +248,8 @@ Session::run ()
     _hasDarkBackground ? "COLORFGBG=15;0" : "COLORFGBG=0;15";
   _environment << backgroundColorHint;
 
-  int result = _shellProcess->start (exec,
-                                     arguments);
-
-  if (result < 0)
-    {
-      QString msg;
-      QTextStream msgStream (&msg);
-      msgStream << QString ("Could not start program '") << exec <<
-	QString ("' with arguments '") << arguments.
-	join (" ") << QString ("'.");
-      terminalWarning (msg);
-      //      terminalWarning(i18n("Could not start program '%1' with arguments '%2'.", exec.toLatin1().data(), arguments.join(" ").toLatin1().data()));
-      return;
-    }
-
-  _shellProcess->setWriteable (false);	// We are reachable via kwrited.
-
+  _shellProcess->start (exec, arguments);
+  _shellProcess->setWriteable (false);
   emit started ();
 }
 
@@ -489,7 +303,7 @@ Session::setUserTitle (int what, const QString & caption)
     {
       QString cwd = caption;
       cwd = cwd.replace (QRegExp ("^~"), QDir::homePath ());
-      emit openUrlRequest (cwd);
+      //emit openUrlRequest (cwd);
     }
 
   // change icon via \033]32;Icon\007
@@ -604,75 +418,8 @@ Session::activityStateSet (int state)
 }
 
 void
-Session::onViewSizeChange (int /*height */ , int /*width */ )
-{
-  updateTerminalSize ();
-}
-
-void
-Session::updateTerminalSize ()
-{/*
-  QListIterator < TerminalDisplay * >viewIter (_views);
-
-  int minLines = -1;
-  int minColumns = -1;
-
-  // minimum number of lines and columns that views require for
-  // their size to be taken into consideration ( to avoid problems
-  // with new view widgets which haven't yet been set to their correct size )
-  const int VIEW_LINES_THRESHOLD = 2;
-  const int VIEW_COLUMNS_THRESHOLD = 2;
-
-  //select largest number of lines and columns that will fit in all visible views
-
-  while (viewIter.hasNext ())
-    {
-      TerminalDisplay *view = viewIter.next ();
-      if (view->isHidden () == false &&
-	  view->lines () >= VIEW_LINES_THRESHOLD &&
-	  view->columns () >= VIEW_COLUMNS_THRESHOLD)
-	{
-	  minLines =
-	    (minLines == -1) ? view->lines () : qMin (minLines,
-						      view->lines ());
-	  minColumns =
-	    (minColumns == -1) ? view->columns () : qMin (minColumns,
-							  view->columns ());
-	  view->processFilters ();
-	}
-    }
-
-  // backend emulation must have a _terminal of at least 1 column x 1 line in size
-  if (minLines > 0 && minColumns > 0)
-    {
-      _emulation->setImageSize (minLines, minColumns);
-    }*/
-}
-
-void
-Session::updateWindowSize (int lines, int columns)
-{
-  Q_ASSERT (lines > 0 && columns > 0);
-  _shellProcess->setWindowSize (lines, columns);
-}
-
-void
 Session::refresh ()
 {
-  // attempt to get the shell process to redraw the display
-  //
-  // this requires the program running in the shell
-  // to cooperate by sending an update in response to
-  // a window size change
-  //
-  // the window size is changed twice, first made slightly larger and then
-  // resized back to its normal size so that there is actually a change
-  // in the window size (some shells do nothing if the
-  // new and old sizes are the same)
-  //
-  // if there is a more 'correct' way to do this, please
-  // send an email with method or patches to konsole-devel@kde.org
-
   const QSize existingSize = _shellProcess->windowSize ();
   _shellProcess->setWindowSize (existingSize.height (),
 				existingSize.width () + 1);
@@ -704,19 +451,10 @@ Session::close ()
     {
       if (isRunning ())
 	{
-	  //kWarning() << "Process" << _shellProcess->pid() << "did not respond to SIGHUP";
-
-	  // close the pty and wait to see if the process finishes.  If it does,
-	  // the done() slot will have been called so we can return.  Otherwise,
-	  // emit the finished() signal regardless
 	  _shellProcess->pty ()->close ();
 	  if (_shellProcess->waitForFinished (3000))
-	    return;
-
-	  //kWarning() << "Unable to kill process" << _shellProcess->pid();
-	}
-
-      // Forced close.
+            return;
+        }
       QTimer::singleShot (1, this, SIGNAL (finished ()));
     }
 }
@@ -725,7 +463,6 @@ void
 Session::sendText (const QString & text) const
 {
   _shellProcess->sendData (text.toStdString().c_str(), text.length ());
-  //_emulation->sendText (text);
 }
 
 void
@@ -736,13 +473,7 @@ Session::sendMouseEvent (int buttons, int column, int line, int eventType)
 
 Session::~Session ()
 {
-  //if (_foregroundProcessInfo)
-  //  delete _foregroundProcessInfo;
-  //if (_sessionProcessInfo)
-  //  delete _sessionProcessInfo;
-  //delete _emulation;
   delete _shellProcess;
-  //delete _zmodemProc;
 }
 
 void
@@ -761,28 +492,15 @@ Session::done (int exitStatus)
     {
       if (_shellProcess->exitStatus () == QProcess::NormalExit)
 	{
-	  msgStream << "Program '" << _program << "' exited with statis " <<
+          msgStream << "Program '" << _program << "' exited with status " <<
 	    exitStatus << ".";
-	  //message = i18n("Program '%1' exited with status %2.", _program.toLatin1().data(), exitStatus);
-
 	}
       else
 	{
 	  msgStream << "Program '" << _program << "' crashed.";
-	  //message = i18n("Program '%1' crashed.", _program.toLatin1().data());
-
 	}
-
-      //FIXME: See comments in Session::monitorTimerDone()
-      //KNotification::event("Finished", message , QPixmap(),
-      //                     QApplication::activeWindow(),
-      //                     KNotification::CloseWhenWidgetActivated);
-    }
-
-  if (!_wantedClose && _shellProcess->exitStatus () != QProcess::NormalExit)
-    terminalWarning (message);
-  else
-    emit finished ();
+      }
+  emit finished ();
 }
 
 QStringList
@@ -884,17 +602,7 @@ Session::flowControlEnabled () const
 void
 Session::onReceiveBlock (const char *buf, int len)
 {
-  //_emulation->receiveData (buf, len);
-  emit receivedData (QString::fromLatin1 (buf, len));
-}
-
-void
-Session::setSize (const QSize & size)
-{
-  if ((size.width () <= 1) || (size.height () <= 1))
-    return;
-
-  emit resizeRequest (size);
+  emit receivedData (QByteArray (buf, len));
 }
 
 void

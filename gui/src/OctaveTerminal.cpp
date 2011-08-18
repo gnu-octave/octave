@@ -21,6 +21,7 @@
 #include <QVBoxLayout>
 #include <QStringListModel>
 #include <QStringList>
+#include <QScrollBar>
 
 #include "pty.h"
 #include "unistd.h"
@@ -50,12 +51,10 @@ OctaveTerminal::openTerminal ()
   m_session->setProgram ("/bin/bash");
   m_session->setArguments (QStringList ());
   m_session->setAutoClose (true);
-  m_session->setCodec (QTextCodec::codecForName ("UTF-8"));
   m_session->setFlowControlEnabled (true);
   m_session->setDarkBackground (true);
 
-  connect (m_session, SIGNAL(receivedData(QString)), this, SLOT(appendPlainText(QString)));
-
+  connect (m_session, SIGNAL(receivedData(QByteArray)), this, SLOT(handleReceivedData(QByteArray)));
   int fdm, fds;
   if (openpty (&fdm, &fds, 0, 0, 0) < 0)
     {
@@ -75,7 +74,6 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
 
   //textToSend += QString::fromUtf8());
   m_session->sendText(keyEvent->text ());
-  keyEvent->accept ();
 
   /*
   bool emitKeyPressSignal = true;
@@ -213,4 +211,17 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
       receiveData (translatorError.toAscii ().constData (),
            translatorError.count ());
     }*/
+    keyEvent->accept ();
+}
+
+void OctaveTerminal::handleReceivedData (const QByteArray& data)
+{
+  QTextCursor tc = textCursor ();
+  tc.movePosition (QTextCursor::End);
+  tc.insertText (data);
+
+  if (verticalScrollBar ())
+    {
+      verticalScrollBar ()->setValue (verticalScrollBar ()->maximum ());
+    }
 }

@@ -239,9 +239,6 @@ public:
     ProfileChange = 50		// this clashes with Xterm's font change command
   };
 
-  // Sets the text codec used by this sessions terminal emulation.
-  void setCodec (QTextCodec * codec);
-
   public slots:
   /**
    * Starts the terminal session.
@@ -304,17 +301,6 @@ public:
   void sendMouseEvent (int buttons, int column, int line,
 				    int eventType);
 
-  /** Sets the text codec used by this sessions terminal emulation.
-    * Overloaded to accept a QByteArray for convenience since DBus
-    * does not accept QTextCodec directky.
-    */
-  bool setCodec (QByteArray codec);
-
-  /** Returns the codec used to decode incoming characters in this
-   * terminal emulation
-   */
-  QByteArray codec ();
-
   /** Sets the session's title for the specified @p role to @p title.
    *  This is an overloaded member function for setTitle(TitleRole, QString)
    *  provided for convenience since enum data types may not be
@@ -342,7 +328,7 @@ signals:
   /**
    * Emitted when output is received from the terminal process.
    */
-  void receivedData (const QString & text);
+  void receivedData (const QByteArray& data);
 
   /** Emitted when the session's title has changed. */
   void titleChanged ();
@@ -374,18 +360,6 @@ signals:
    */
   void changeForegroundColorRequest (const QColor &);
 
-  /** TODO: Document me. */
-  void openUrlRequest (const QString & url);
-
-
-  /**
-   * Emitted when the terminal process requests a change
-   * in the size of the terminal window.
-   *
-   * @param size The requested window size in terms of lines and columns.
-   */
-  void resizeRequest (const QSize & size);
-
   /**
    * Emitted when a profile change command is received from the terminal.
    *
@@ -407,23 +381,16 @@ private slots:
   void onReceiveBlock (const char *buffer, int len);
   void monitorTimerDone ();
 
-  void onViewSizeChange (int height, int width);
-
   void activityStateSet (int);
 
   //automatically detach views from sessions when view is destroyed
   //void viewDestroyed (QObject * view);
 
   void updateFlowControlState (bool suspended);
-  void updateWindowSize (int lines, int columns);
 private:
 
-  void updateTerminalSize ();
   bool kill (int signal);
-  // print a warning message in the terminal.  This is used
-  // if the program fails to start, or if the shell exits in 
-  // an unsuccessful manner
-  void terminalWarning (const QString & message);
+
   // checks that the binary 'program' is available and can be executed
   // returns the binary name if available or an empty string otherwise
   QString checkProgram (const QString & program) const;

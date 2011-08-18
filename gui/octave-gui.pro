@@ -58,7 +58,6 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 # Files associated with the project:
 SOURCES +=\
         src/lexer/lexeroctavegui.cpp \
-        src/terminal/konsole_wcwidth.cpp \
         src/terminal/Pty.cpp \
         src/terminal/kpty.cpp \
         src/terminal/kptyprocess.cpp \
@@ -86,8 +85,6 @@ SOURCES +=\
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
-        src/terminal/konsole_wcwidth.h \
-		  src/terminal/konsole_export.h \
         src/terminal/Pty.h \
         src/terminal/kpty.h \
         src/terminal/kpty_p.h \

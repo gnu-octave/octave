@@ -56,8 +56,8 @@ BrowserWidget::construct ()
 
     QWidget *bottomWidget = new QWidget (this);
     QHBoxLayout *bottomLineLayout = new QHBoxLayout ();
-    bottomLineLayout->addWidget (m_statusBar);
     bottomLineLayout->addWidget (m_progressBar);
+    bottomLineLayout->addWidget (m_statusBar);
     bottomLineLayout->setMargin (0);
     bottomWidget->setLayout (bottomLineLayout);
 

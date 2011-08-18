@@ -44,6 +44,7 @@ OctaveTerminal::construct ()
 
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (m_terminalWidget);
+  layout->setMargin (3);
   setLayout (layout);
 }
 

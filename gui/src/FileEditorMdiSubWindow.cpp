@@ -373,6 +373,7 @@ FileEditorMdiSubWindow::construct ()
   m_editor->autoCompleteFromAll();
   m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
   m_editor->setAutoCompletionThreshold (3);
+  m_editor->setUtf8 (true);
 
   // The Actions
 

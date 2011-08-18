@@ -55,6 +55,7 @@ OctaveTerminal::openTerminal ()
   m_session->setDarkBackground (true);
 
   connect (m_session, SIGNAL(receivedData(QByteArray)), this, SLOT(handleReceivedData(QByteArray)));
+
   int fdm, fds;
   if (openpty (&fdm, &fds, 0, 0, 0) < 0)
     {
@@ -85,7 +86,7 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
   //QByteArray textToSend;
 
   //textToSend += QString::fromUtf8());
-  m_session->sendText(keyEvent->text ());
+  m_session->sendText (keyEvent->text ());
 
   /*
   bool emitKeyPressSignal = true;

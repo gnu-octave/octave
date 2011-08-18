@@ -81,9 +81,6 @@ QTerminalWidget::QTerminalWidget (int startnow, QWidget * parent):QWidget
   setFocus (Qt::OtherFocusReason);
   m_impl->m_terminalDisplay->resize (this->size ());
   setFocusProxy (m_impl->m_terminalDisplay);
-
-  connect (m_impl->m_terminalDisplay, SIGNAL (keyPressedSignal (QKeyEvent*)),
-           this, SLOT (terminalKeyPressed (QKeyEvent*)));
 }
 
 void
@@ -112,9 +109,6 @@ QTerminalWidget::~QTerminalWidget ()
 void
 QTerminalWidget::openTeletype (int fd)
 {
-  //if (m_impl->m_session->isRunning ())
-  //  return;
-
   m_impl->m_session->openTeletype (fd);
 }
 
@@ -160,11 +154,4 @@ void
 QTerminalWidget::sessionFinished ()
 {
   emit finished ();
-}
-
-void
-QTerminalWidget::terminalKeyPressed (QKeyEvent *keyEvent)
-{
-  Q_UNUSED (keyEvent);
-  emit scrollToBottomRequest ();
 }

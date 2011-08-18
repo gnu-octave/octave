@@ -78,6 +78,7 @@ public slots:
   void sendMessage (QString);
 
   void maybeIdentifyOnNickServ ();
+  void scrollToBottom ();
 
 signals:
   void unreadMessages (bool yes);

@@ -51,14 +51,11 @@ signals:
   /** Emitted, when the current program has finished. */
   void finished ();
 
-  void scrollToBottomRequest ();
-
 protected:
   virtual void resizeEvent (QResizeEvent *);
 
 protected slots:
   void sessionFinished ();
-  void terminalKeyPressed (QKeyEvent *keyEvent);
 
 private:
   /** Performs initial operations on this widget. */

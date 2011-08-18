@@ -301,6 +301,7 @@ IRCWidget::showMessage (const QString& channel, const QString& sender, const QSt
         arg (htmlMessage);
     }
   m_chatWindow->append (output);
+  scrollToBottom ();
 }
 
 void
@@ -308,6 +309,7 @@ IRCWidget::showNotification (const QString& sender, const QString& message)
 {
   Q_UNUSED (sender);
   m_chatWindow->append (QString ("<font color=\"#007700\">%1</font>").arg (message));
+  scrollToBottom ();
 }
 
 void
@@ -370,7 +372,7 @@ IRCWidget::sendMessage (QString message)
                             arg (m_ircClientInterface->nickname ()).arg (message));
     }
 
-  m_chatWindow->verticalScrollBar ()->setValue (m_chatWindow->verticalScrollBar ()->maximum ());
+  scrollToBottom ();
 }
 
 void
@@ -380,6 +382,15 @@ IRCWidget::maybeIdentifyOnNickServ ()
     {
       m_ircClientInterface->sendPrivateMessage("NickServ", QString ("identify %1").
                                           arg (m_nickServPassword));
+    }
+}
+
+void
+IRCWidget::scrollToBottom ()
+{
+  if (m_chatWindow->verticalScrollBar ())
+    {
+      m_chatWindow->verticalScrollBar ()->setValue (m_chatWindow->verticalScrollBar ()->maximum ());
     }
 }
 
@@ -410,18 +421,21 @@ void
 IRCWidget::handleNickChange (const QString &oldNick, const QString &newNick)
 {
   m_chatWindow->append (QString ("%1 is now known as %2.").arg (oldNick).arg (newNick));
+  scrollToBottom ();
 }
 
 void
 IRCWidget::handleUserJoined (const QString &nick, const QString &channel)
 {
   m_chatWindow->append (QString ("<i>%1 has joined %2.</i>").arg (nick).arg (channel));
+  scrollToBottom ();
 }
 
 void
 IRCWidget::handleUserQuit (const QString &nick, const QString &reason)
 {
   m_chatWindow->append (QString ("<i>%1 has quit.(%2).</i>").arg (nick).arg (reason));
+  scrollToBottom ();
 }
 
 void

@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "MainWindow.h"
 #include "FileEditorMdiSubWindow.h"
 #include "ImageViewerMdiSubWindow.h"

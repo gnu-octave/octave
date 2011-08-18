@@ -58,16 +58,9 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 # Files associated with the project:
 SOURCES +=\
         src/lexer/lexeroctavegui.cpp \
-        src/terminal/TerminalCharacterDecoder.cpp \
         src/terminal/KeyboardTranslator.cpp \
-        src/terminal/Screen.cpp \
         src/terminal/History.cpp \
         src/terminal/konsole_wcwidth.cpp \
-        src/terminal/ScreenWindow.cpp \
-        src/terminal/Emulation.cpp \
-        src/terminal/Vt102Emulation.cpp \
-        src/terminal/TerminalDisplay.cpp \
-        src/terminal/Filter.cpp \
         src/terminal/Pty.cpp \
         src/terminal/kpty.cpp \
         src/terminal/kptyprocess.cpp \
@@ -75,7 +68,6 @@ SOURCES +=\
         src/terminal/kptydevice.cpp \
         src/terminal/Session.cpp \
         src/terminal/ShellCommand.cpp \
-        src/terminal/QTerminalWidget.cpp \
         src/MainWindow.cpp \
     	  src/OctaveTerminal.cpp \
     	  src/VariablesDockWidget.cpp \
@@ -96,20 +88,13 @@ SOURCES +=\
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
-        src/terminal/TerminalCharacterDecoder.h \
         src/terminal/Character.h \
         src/terminal/CharacterColor.h \
 		  src/terminal/ColorTables.h \
         src/terminal/KeyboardTranslator.h \
-        src/terminal/Screen.h \
         src/terminal/History.h \
         src/terminal/konsole_wcwidth.h \
 		  src/terminal/konsole_export.h \
-        src/terminal/ScreenWindow.h \
-        src/terminal/Emulation.h \
-        src/terminal/Vt102Emulation.h \
-        src/terminal/TerminalDisplay.h \
-        src/terminal/Filter.h \
         src/terminal/Pty.h \
         src/terminal/kpty.h \
         src/terminal/kpty_p.h \
@@ -120,7 +105,6 @@ HEADERS += \
         src/terminal/kptydevice.h \
         src/terminal/Session.h \
         src/terminal/ShellCommand.h \
-        src/terminal/QTerminalWidget.h \
     	  src/MainWindow.h \
     	  src/OctaveTerminal.h \
     	  src/VariablesDockWidget.h \

@@ -18,20 +18,24 @@
 
 #ifndef OCTAVETERMINAL_H
 #define OCTAVETERMINAL_H
-#include <QWidget>
-#include "QTerminalWidget.h"
+#include <QPlainTextEdit>
+#include "Session.h"
 
-class OctaveTerminal:public QWidget
+class OctaveTerminal:public QPlainTextEdit
 {
 Q_OBJECT
 public:
   OctaveTerminal (QWidget * parent = 0);
   ~OctaveTerminal ();
 
-  void sendText (QString text) { m_terminalWidget->sendText(text); }
+  void sendText (QString text) { m_session->sendText (text); }
   void openTerminal ();
+
+protected:
+  void keyPressEvent (QKeyEvent *keyEvent);
+
 private:
   void construct ();
-  QTerminalWidget *m_terminalWidget;
+  Session *m_session;
 };
 #endif // OCTAVETERMINAL_H

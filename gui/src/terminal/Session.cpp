@@ -42,9 +42,7 @@
 #include "kptydevice.h"
 
 #include "Pty.h"
-#include "TerminalDisplay.h"
 #include "ShellCommand.h"
-#include "Vt102Emulation.h"
 
 int
   Session::lastSessionId = 0;
@@ -95,7 +93,7 @@ createUuid ()
 }
 
 Session::Session (QObject * parent):
-QObject (parent), _shellProcess (0), _emulation (0), _monitorActivity (false),
+QObject (parent), _shellProcess (0),/* _emulation (0),*/ _monitorActivity (false),
 _monitorSilence (false), _notifiedActivity (false), _autoClose (true),
 _wantedClose (false), _silenceSeconds (10),
 _flowControl (true), _fullScripting (false), _sessionId (0),
@@ -111,8 +109,8 @@ _hasDarkBackground (false)
   //QDBusConnection::sessionBus().registerObject(QLatin1String("/Sessions/")+QString::number(_sessionId), this);
 
   //create emulation backend
-  _emulation = new Vt102Emulation ();
-
+  //_emulation = new Vt102Emulation ();
+  /*
   connect (_emulation, SIGNAL (titleChanged (int, const QString &)),
 	   this, SLOT (setUserTitle (int, const QString &)));
   connect (_emulation, SIGNAL (stateSet (int)),
@@ -124,7 +122,7 @@ _hasDarkBackground (false)
 	   SIGNAL (profileChangeCommandReceived (const QString &)));
   connect (_emulation, SIGNAL (flowControlKeyPressed (bool)), this,
 	   SLOT (updateFlowControlState (bool)));
-
+*/
   //create new teletype for I/O with shell process
   openTeletype (-1);
 
@@ -151,19 +149,19 @@ Session::openTeletype (int fd)
   else
     _shellProcess = new Pty (fd);
 
-  _shellProcess->setUtf8Mode (_emulation->utf8 ());
+  //_shellProcess->setUtf8Mode (_emulation->utf8 ());
 
   //connect teletype to emulation backend
   connect (_shellProcess, SIGNAL (receivedData (const char *, int)), this,
 	   SLOT (onReceiveBlock (const char *, int)));
-  connect (_emulation, SIGNAL (sendData (const char *, int)), _shellProcess,
-	   SLOT (sendData (const char *, int)));
-  connect (_emulation, SIGNAL (useUtf8Request (bool)), _shellProcess,
-	   SLOT (setUtf8Mode (bool)));
+  //connect (_emulation, SIGNAL (sendData (const char *, int)), _shellProcess,
+//	   SLOT (sendData (const char *, int)));
+  //connect (_emulation, SIGNAL (useUtf8Request (bool)), _shellProcess,
+        //   SLOT (setUtf8Mode (bool)));
   connect (_shellProcess, SIGNAL (finished (int, QProcess::ExitStatus)), this,
 	   SLOT (done (int)));
-  connect (_emulation, SIGNAL (imageSizeChanged (int, int)), this,
-	   SLOT (updateWindowSize (int, int)));
+  //connect (_emulation, SIGNAL (imageSizeChanged (int, int)), this,
+        //   SLOT (updateWindowSize (int, int)));
 }
 
 void
@@ -187,7 +185,7 @@ Session::isRunning () const
 void
 Session::setCodec (QTextCodec * codec)
 {
-  emulation ()->setCodec (codec);
+  //emulation ()->setCodec (codec);
 }
 
 bool
@@ -205,7 +203,7 @@ Session::setCodec (QByteArray name)
 QByteArray
 Session::codec ()
 {
-  return _emulation->codec ()->name ();
+  return QByteArray(); //_emulation->codec ()->name ();
 }
 
 void
@@ -227,11 +225,13 @@ Session::setArguments (const QStringList & arguments)
   _arguments = ShellCommand::expand (arguments);
 }
 
+/*
 QList < TerminalDisplay * >Session::views () const
 {
   return _views;
-}
+}*/
 
+/*
 void
 Session::addView (TerminalDisplay * widget)
 {
@@ -265,8 +265,9 @@ Session::addView (TerminalDisplay * widget)
 
   QObject::connect (widget, SIGNAL (destroyed (QObject *)), this,
 		    SLOT (viewDestroyed (QObject *)));
-}
+}*/
 
+/*
 void
 Session::viewDestroyed (QObject * view)
 {
@@ -275,8 +276,9 @@ Session::viewDestroyed (QObject * view)
   Q_ASSERT (_views.contains (display));
 
   removeView (display);
-}
+}*/
 
+/*
 void
 Session::removeView (TerminalDisplay * widget)
 {
@@ -304,7 +306,7 @@ Session::removeView (TerminalDisplay * widget)
       close ();
     }
 }
-
+*/
 QString
 Session::checkProgram (const QString & program) const
 {
@@ -327,12 +329,14 @@ Session::checkProgram (const QString & program) const
 void
 Session::terminalWarning (const QString & message)
 {
+  /*
   static const QByteArray warningText =
     QByteArray ("@info:shell Alert the user with red color text");
   QByteArray messageText = message.toLocal8Bit ();
 
   static const char redPenOn[] = "\033[1m\033[31m";
   static const char redPenOff[] = "\033[0m";
+
 
   _emulation->receiveData (redPenOn, strlen (redPenOn));
   _emulation->receiveData ("\n\r\n\r", 4);
@@ -342,6 +346,7 @@ Session::terminalWarning (const QString & message)
 			   strlen (messageText.constData ()));
   _emulation->receiveData ("\n\r\n\r", 4);
   _emulation->receiveData (redPenOff, strlen (redPenOff));
+*/
 }
 
 void
@@ -402,7 +407,7 @@ Session::run ()
     _shellProcess->setWorkingDirectory (QDir::homePath ());
 
   _shellProcess->setFlowControlEnabled (_flowControl);
-  _shellProcess->setErase (_emulation->eraseChar ());
+  //_shellProcess->setErase (_emulation->eraseChar ());
 
   // this is not strictly accurate use of the COLORFGBG variable.  This does not
   // tell the terminal exactly which colors are being used, but instead approximates
@@ -528,11 +533,11 @@ Session::monitorTimerDone ()
       //KNotification::event("Silence", i18n("Silence in session '%1'", _nameTitle)propagateSize, QPixmap(),
       //                QApplication::activeWindow(),
       //                KNotification::CloseWhenWidgetActivated);
-      emit stateChanged (NOTIFYSILENCE);
+      //emit stateChanged (NOTIFYSILENCE);
     }
   else
     {
-      emit stateChanged (NOTIFYNORMAL);
+      //emit stateChanged (NOTIFYNORMAL);
     }
 
   _notifiedActivity = false;
@@ -541,6 +546,7 @@ Session::monitorTimerDone ()
 void
 Session::updateFlowControlState (bool suspended)
 {
+  /*
   if (suspended)
     {
       if (flowControlEnabled ())
@@ -556,12 +562,12 @@ Session::updateFlowControlState (bool suspended)
     {
       foreach (TerminalDisplay * display, _views)
 	display->outputSuspended (false);
-    }
+    }*/
 }
 
 void
 Session::activityStateSet (int state)
-{
+{/*
   if (state == NOTIFYBELL)
     {
       // empty
@@ -592,6 +598,7 @@ Session::activityStateSet (int state)
     state = NOTIFYNORMAL;
 
   emit stateChanged (state);
+  */
 }
 
 void
@@ -602,7 +609,7 @@ Session::onViewSizeChange (int /*height */ , int /*width */ )
 
 void
 Session::updateTerminalSize ()
-{
+{/*
   QListIterator < TerminalDisplay * >viewIter (_views);
 
   int minLines = -1;
@@ -615,6 +622,7 @@ Session::updateTerminalSize ()
   const int VIEW_COLUMNS_THRESHOLD = 2;
 
   //select largest number of lines and columns that will fit in all visible views
+
   while (viewIter.hasNext ())
     {
       TerminalDisplay *view = viewIter.next ();
@@ -636,7 +644,7 @@ Session::updateTerminalSize ()
   if (minLines > 0 && minColumns > 0)
     {
       _emulation->setImageSize (minLines, minColumns);
-    }
+    }*/
 }
 
 void
@@ -714,13 +722,14 @@ Session::close ()
 void
 Session::sendText (const QString & text) const
 {
-  _emulation->sendText (text);
+  _shellProcess->sendData (text.toStdString().c_str(), text.length ());
+  //_emulation->sendText (text);
 }
 
 void
 Session::sendMouseEvent (int buttons, int column, int line, int eventType)
 {
-  _emulation->sendMouseEvent (buttons, column, line, eventType);
+  //_emulation->sendMouseEvent (buttons, column, line, eventType);
 }
 
 Session::~Session ()
@@ -729,7 +738,7 @@ Session::~Session ()
   //  delete _foregroundProcessInfo;
   //if (_sessionProcessInfo)
   //  delete _sessionProcessInfo;
-  delete _emulation;
+  //delete _emulation;
   delete _shellProcess;
   //delete _zmodemProc;
 }
@@ -774,18 +783,6 @@ Session::done (int exitStatus)
     emit finished ();
 }
 
-Emulation *
-Session::emulation () const
-{
-  return _emulation;
-}
-
-QString
-Session::keyBindings () const
-{
-  return _emulation->keyBindings ();
-}
-
 QStringList
 Session::environment () const
 {
@@ -796,12 +793,6 @@ void
 Session::setEnvironment (const QStringList & environment)
 {
   _environment = environment;
-}
-
-void
-Session::setKeyBindings (const QString & id)
-{
-  _emulation->setKeyBindings (id);
 }
 
 void
@@ -857,24 +848,6 @@ Session::iconText () const
   return _iconText;
 }
 
-void
-Session::setHistoryType (const HistoryType & hType)
-{
-  _emulation->setHistory (hType);
-}
-
-const HistoryType &
-Session::historyType () const
-{
-  return _emulation->history ();
-}
-
-void
-Session::clearHistory ()
-{
-  _emulation->clearHistory ();
-}
-
 QStringList
 Session::arguments () const
 {
@@ -909,14 +882,8 @@ Session::flowControlEnabled () const
 void
 Session::onReceiveBlock (const char *buf, int len)
 {
-  _emulation->receiveData (buf, len);
+  //_emulation->receiveData (buf, len);
   emit receivedData (QString::fromLatin1 (buf, len));
-}
-
-QSize
-Session::size ()
-{
-  return _emulation->imageSize ();
 }
 
 void
@@ -1029,14 +996,14 @@ SessionGroup::setMasterStatus (Session * session, bool master)
 
   if (master)
     {
-      connect (session->emulation (), SIGNAL (sendData (const char *, int)),
-	       this, SLOT (forwardData (const char *, int)));
+      //connect (session->emulation (), SIGNAL (sendData (const char *, int)),
+        //       this, SLOT (forwardData (const char *, int)));
     }
   else
     {
-      disconnect (session->emulation (),
-		  SIGNAL (sendData (const char *, int)), this,
-		  SLOT (forwardData (const char *, int)));
+      //disconnect (session->emulation (),
+        //	  SIGNAL (sendData (const char *, int)), this,
+        //	  SLOT (forwardData (const char *, int)));
     }
 }
 
@@ -1060,7 +1027,7 @@ SessionGroup::forwardData (const char *data, int size)
       Session *other = iter.next ();
       if (!_sessions[other])
 	{
-	  other->emulation ()->sendString (data, size);
+          //other->emulation ()->sendString (data, size);
 	}
     }
   _inForwardData = false;

@@ -27,6 +27,7 @@
 #include <QToolBar>
 #include <QQueue>
 #include <Qsci/qsciapis.h>
+#include <QMdiSubWindow>
 #include "ResourceManager.h"
 #include "OctaveTerminal.h"
 #include "OctaveLink.h"

@@ -35,9 +35,8 @@
 #include "History.h"
 
 class KProcess;
-class Emulation;
 class Pty;
-class TerminalDisplay;
+
 /**
  * Represents a terminal session consisting of a pseudo-teletype and a terminal emulation.
  * The pseudo-teletype (or PTY) handles I/O between the terminal process and Konsole.
@@ -95,7 +94,7 @@ public:
    * Views can be removed using removeView().  The session is automatically
    * closed when the last view is removed.
    */
-  void addView (TerminalDisplay * widget);
+  //void addView (TerminalDisplay * widget);
   /**
    * Removes a view from this session.  When the last view is removed,
    * the session will be closed automatically.
@@ -103,18 +102,18 @@ public:
    * @p widget will no longer display output from or send input
    * to the terminal
    */
-  void removeView (TerminalDisplay * widget);
+  //void removeView (TerminalDisplay * widget);
 
   /**
    * Returns the views connected to this session
    */
-    QList < TerminalDisplay * >views () const;
+   // QList < TerminalDisplay * >views () const;
 
   /**
    * Returns the terminal emulation instance being used to encode / decode
    * characters to / from the process.
    */
-  Emulation *emulation () const;
+  //Emulation *emulation () const;
 
   /** Returns the arguments passed to the shell process when run() is called. */
   QStringList arguments () const;
@@ -141,36 +140,6 @@ public:
    */
   void setInitialWorkingDirectory (const QString & dir);
 
-  /**
-   * Sets the type of history store used by this session.
-   * Lines of output produced by the terminal are added
-   * to the history store.  The type of history store
-   * used affects the number of lines which can be
-   * remembered before they are lost and the storage
-   * (in memory, on-disk etc.) used.
-   */
-  void setHistoryType (const HistoryType & type);
-  /**
-   * Returns the type of history store used by this session.
-   */
-  const HistoryType & historyType () const;
-  /**
-   * Clears the history store used by this session.
-   */
-  void clearHistory ();
-
-  /**
-   * Sets the key bindings used by this session.  The bindings
-   * specify how input key sequences are translated into
-   * the character stream which is sent to the terminal.
-   *
-   * @param id The name of the key bindings to use.  The
-   * names of available key bindings can be determined using the
-   * KeyboardTranslatorManager class.
-   */
-  void setKeyBindings (const QString & id);
-  /** Returns the name of the key bindings used by this session. */
-  QString keyBindings () const;
 
   /**
    * This enum describes the available title roles.
@@ -444,7 +413,7 @@ private slots:
   void activityStateSet (int);
 
   //automatically detach views from sessions when view is destroyed
-  void viewDestroyed (QObject * view);
+  //void viewDestroyed (QObject * view);
 
   void updateFlowControlState (bool suspended);
   void updateWindowSize (int lines, int columns);
@@ -463,9 +432,9 @@ private:
   QUuid _uniqueIdentifier;	// SHELL_SESSION_ID
 
   Pty *_shellProcess;
-  Emulation *_emulation;
+  //Emulation *_emulation;
 
-  QList < TerminalDisplay * >_views;
+  //QList < TerminalDisplay * >_views;
 
   bool _monitorActivity;
   bool _monitorSilence;

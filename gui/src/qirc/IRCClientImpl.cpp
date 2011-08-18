@@ -334,7 +334,7 @@ IRCClientImpl::handleReadyRead ()
     {
       line = m_tcpSocket.readLine();
       if (line.size ())
-        handleIncomingLine(QString (line).toLocal8Bit ());
+        handleIncomingLine(QString::fromUtf8(line.data ()));
       else
         break;
     }

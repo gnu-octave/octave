@@ -127,7 +127,7 @@ ChatMessageTextEdit::keyPressEvent (QKeyEvent *keyPressEvent)
         m_completer->setCompletionPrefix(completionPrefix);
       }
 
-    if (completionPrefix.length() > 0)
+    if (completionPrefix.length() > 2)
       {
         m_completer->popup ()->setCurrentIndex (m_completer->completionModel ()->index (0, 0));
         m_completer->complete ();

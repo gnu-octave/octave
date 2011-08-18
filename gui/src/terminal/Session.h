@@ -30,9 +30,8 @@
 #include <QtCore/QSize>
 #include <QUuid>
 #include <QWidget>
-
-// Konsole
-#include "History.h"
+#include <QHash>
+#include <QTextCodec>
 
 class KProcess;
 class Pty;

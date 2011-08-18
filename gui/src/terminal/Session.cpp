@@ -37,6 +37,8 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QStringList>
 #include <QtCore/QDate>
+#include <QTimer>
+#include <QTextStream>
 
 #include "kprocess.h"
 #include "kptydevice.h"

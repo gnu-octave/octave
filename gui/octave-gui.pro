@@ -58,8 +58,6 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 # Files associated with the project:
 SOURCES +=\
         src/lexer/lexeroctavegui.cpp \
-        src/terminal/KeyboardTranslator.cpp \
-        src/terminal/History.cpp \
         src/terminal/konsole_wcwidth.cpp \
         src/terminal/Pty.cpp \
         src/terminal/kpty.cpp \
@@ -88,11 +86,6 @@ SOURCES +=\
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
-        src/terminal/Character.h \
-        src/terminal/CharacterColor.h \
-		  src/terminal/ColorTables.h \
-        src/terminal/KeyboardTranslator.h \
-        src/terminal/History.h \
         src/terminal/konsole_wcwidth.h \
 		  src/terminal/konsole_export.h \
         src/terminal/Pty.h \

@@ -199,7 +199,25 @@ void OctaveTerminal::handleReceivedData (const QByteArray& data)
 {
   QTextCursor tc = textCursor ();
   tc.movePosition (QTextCursor::End);
-  tc.insertText (data);
+
+  // Decode data into cursor actions.
+  foreach(QChar character, data)
+    {
+      unsigned short unicode = character.unicode ();
+      switch (unicode)
+        {
+          case 0: // Null
+            break;
+          case 7: // Bell
+            break;
+          case 8: // Backspace
+            tc.deletePreviousChar ();
+            break;
+          default:
+            tc.insertText (character);
+            break;
+        }
+    }
   setTextCursor (tc);
 
   if (verticalScrollBar ())

@@ -70,6 +70,18 @@ OctaveTerminal::openTerminal ()
 void
 OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
 {
+  switch (keyEvent->key ())
+    {
+      case Qt::Key_PageUp:
+        if (verticalScrollBar ())
+          verticalScrollBar ()->setValue (verticalScrollBar ()->value () - 10);
+        break;
+      case Qt::Key_PageDown:
+        if (verticalScrollBar ())
+          verticalScrollBar ()->setValue (verticalScrollBar ()->value () + 10);
+        break;
+    }
+
   //QByteArray textToSend;
 
   //textToSend += QString::fromUtf8());
@@ -94,44 +106,13 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
     {
       bool update = true;
 
-      if (event->key () == Qt::Key_PageUp)
-    {
-      _screenWindow->scrollBy (ScreenWindow::ScrollPages, -1);
-    }
-      else if (event->key () == Qt::Key_PageDown)
-    {
-      _screenWindow->scrollBy (ScreenWindow::ScrollPages, 1);
-    }
-      else if (event->key () == Qt::Key_Up)
-    {
-      _screenWindow->scrollBy (ScreenWindow::ScrollLines, -1);
-    }
-      else if (event->key () == Qt::Key_Down)
-    {
-      _screenWindow->scrollBy (ScreenWindow::ScrollLines, 1);
-    }
+
       else
     update = false;
 
     }
 
-  _actSel = 0;          // Key stroke implies a screen update, so TerminalDisplay won't
-  // know where the current selection is.
 
-  if (_hasBlinkingCursor)
-    {
-      _blinkCursorTimer->start (QApplication::cursorFlashTime () / 2);
-      if (_cursorBlinking)
-    blinkCursorEvent ();
-      else
-    _cursorBlinking = false;
-    }
-
-  if (emitKeyPressSignal)
-    emit keyPressedSignal (event);
-
-  event->accept ();
-  _scrollBar->setValue (_scrollBar->maximum ());
   Qt::KeyboardModifiers modifiers = keyEvent->modifiers ();
   KeyboardTranslator::States states = KeyboardTranslator::NoState;
 
@@ -219,6 +200,7 @@ void OctaveTerminal::handleReceivedData (const QByteArray& data)
   QTextCursor tc = textCursor ();
   tc.movePosition (QTextCursor::End);
   tc.insertText (data);
+  setTextCursor (tc);
 
   if (verticalScrollBar ())
     {

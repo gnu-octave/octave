@@ -2612,6 +2612,7 @@ TerminalDisplay::keyPressEvent (QKeyEvent * event)
     emit keyPressedSignal (event);
 
   event->accept ();
+  _scrollBar->setValue (_scrollBar->maximum ());
 }
 
 void

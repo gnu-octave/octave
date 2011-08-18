@@ -369,6 +369,8 @@ IRCWidget::sendMessage (QString message)
       m_chatWindow->append (QString ("<b>%1:</b> %2").
                             arg (m_ircClientInterface->nickname ()).arg (message));
     }
+
+  m_chatWindow->verticalScrollBar ()->setValue (m_chatWindow->verticalScrollBar ()->maximum ());
 }
 
 void

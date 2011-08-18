@@ -1095,6 +1095,7 @@ TerminalDisplay::focusOutEvent (QFocusEvent *)
 void
 TerminalDisplay::focusInEvent (QFocusEvent *)
 {
+  updateImage ();
   if (_hasBlinkingCursor)
     {
       _blinkCursorTimer->start ();

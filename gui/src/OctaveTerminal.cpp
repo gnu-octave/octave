@@ -232,7 +232,7 @@ void OctaveTerminal::handleReceivedData (const QByteArray& data)
           qDebug ("ACK");
           break;
         case 7: // Bell (BEL)
-          qDebug ("BEL");
+          emit bell ();
           break;
         case 8: // Backspace (BS)
           tc.deletePreviousChar ();

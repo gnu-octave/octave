@@ -31,6 +31,9 @@ public:
   void sendText (QString text) { m_session->sendText (text); }
   void openTerminal ();
 
+signals:
+  void bell ();
+
 protected:
   void keyPressEvent (QKeyEvent *keyEvent);
 

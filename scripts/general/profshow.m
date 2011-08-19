@@ -63,18 +63,19 @@ function profshow (data, n = 20)
   for i = 1 : n
     nameLen = max (nameLen, length (data.FunctionTable(p(i)).FunctionName));
   endfor
-  headerFormat = sprintf ("%%%ds %%4s %%12s %%12s\n", nameLen);
-  rowFormat = sprintf ("%%%ds %%4s %%12.3f %%12d\n", nameLen);
+  headerFormat = sprintf ("%%4s %%%ds %%4s %%12s %%12s\n", nameLen);
+  rowFormat = sprintf ("%%4d %%%ds %%4s %%12.3f %%12d\n", nameLen);
 
-  printf (headerFormat, "Function", "Attr", "Time (s)", "Calls");
-  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 13 + 5));
+  printf (headerFormat, "#", "Function", "Attr", "Time (s)", "Calls");
+  printf ("%s\n", repmat ("-", 1, nameLen + 2 * 5 + 2 * 13));
   for i = 1 : n
     row = data.FunctionTable(p(i));
     attr = "";
     if (row.IsRecursive)
       attr = "R";
     endif
-    printf (rowFormat, row.FunctionName, attr, row.TotalTime, row.NumCalls);
+    printf (rowFormat, p(i), row.FunctionName, attr, ...
+            row.TotalTime, row.NumCalls);
   endfor
 
 endfunction

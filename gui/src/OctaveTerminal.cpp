@@ -91,9 +91,15 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
       case Qt::Key_Left:
       m_shellProcess->sendData ("\EOF");
       break;
-    }
 
-  m_shellProcess->sendData (keyEvent->text ().toLocal8Bit ());
+      case Qt::Key_Backslash:
+      m_shellProcess->sendData ("\008");
+      break;
+
+      default:
+      m_shellProcess->sendData (keyEvent->text ().toLocal8Bit ());
+      break;
+    }
 
   /*
   bool emitKeyPressSignal = true;

@@ -63,8 +63,6 @@ SOURCES +=\
         src/terminal/kptyprocess.cpp \
         src/terminal/kprocess.cpp \
         src/terminal/kptydevice.cpp \
-        src/terminal/Session.cpp \
-        src/terminal/ShellCommand.cpp \
         src/MainWindow.cpp \
     	  src/OctaveTerminal.cpp \
     	  src/VariablesDockWidget.cpp \
@@ -93,8 +91,6 @@ HEADERS += \
         src/terminal/kprocess.h \
         src/terminal/kprocess_p.h \
         src/terminal/kptydevice.h \
-        src/terminal/Session.h \
-        src/terminal/ShellCommand.h \
     	  src/MainWindow.h \
     	  src/OctaveTerminal.h \
     	  src/VariablesDockWidget.h \

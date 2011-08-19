@@ -48,16 +48,6 @@ OctaveTerminal::construct ()
 void
 OctaveTerminal::openTerminal ()
 {
-  m_session = new Session ();
-  m_session->setTitle (Session::NameRole, "QTerminalWidget");
-  m_session->setProgram ("/bin/bash");
-  m_session->setArguments (QStringList ());
-  m_session->setAutoClose (true);
-  m_session->setFlowControlEnabled (true);
-  m_session->setDarkBackground (true);
-
-  connect (m_session, SIGNAL(receivedData(QByteArray)), this, SLOT(handleReceivedData(QByteArray)));
-
   int fdm, fds;
   if (openpty (&fdm, &fds, 0, 0, 0) < 0)
     {
@@ -67,7 +57,9 @@ OctaveTerminal::openTerminal ()
   dup2 (fds, 1);
   dup2 (fds, 2);
 
-  m_session->openTeletype (fdm);
+  m_shellProcess = new Pty (fdm);
+  connect (m_shellProcess, SIGNAL(receivedData(QByteArray)),
+           this, SLOT(handleReceivedData(QByteArray)));
 }
 
 void
@@ -75,20 +67,33 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
 {
   switch (keyEvent->key ())
     {
-  case Qt::Key_PageUp:
+      case Qt::Key_PageUp:
       if (verticalScrollBar ())
         verticalScrollBar ()->setValue (verticalScrollBar ()->value () - 10);
-      break;
-    case Qt::Key_PageDown:
+      return;
+      case Qt::Key_PageDown:
       if (verticalScrollBar ())
         verticalScrollBar ()->setValue (verticalScrollBar ()->value () + 10);
+      return;
+
+      case Qt::Key_Up:
+      m_shellProcess->sendData ("\EOA");
+      break;
+
+      case Qt::Key_Down:
+      m_shellProcess->sendData ("\EOB");
+      break;
+
+      case Qt::Key_Right:
+      m_shellProcess->sendData ("\EOC");
+      break;
+
+      case Qt::Key_Left:
+      m_shellProcess->sendData ("\EOF");
       break;
     }
 
-  //QByteArray textToSend;
-
-  //textToSend += QString::fromUtf8());
-  m_session->sendText (keyEvent->text ());
+  m_shellProcess->sendData (keyEvent->text ().toLocal8Bit ());
 
   /*
   bool emitKeyPressSignal = true;
@@ -207,7 +212,7 @@ void OctaveTerminal::handleReceivedData (const QByteArray& data)
   // Decode data into cursor actions.
   foreach(QChar character, data)
     {
-      unsigned short unicode = character.toAscii();
+      unsigned short unicode = character.unicode ();
       switch (unicode)
         {
         case 0: // Null (NUL)

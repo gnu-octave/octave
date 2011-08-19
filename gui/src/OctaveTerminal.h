@@ -19,7 +19,7 @@
 #ifndef OCTAVETERMINAL_H
 #define OCTAVETERMINAL_H
 #include <QPlainTextEdit>
-#include "Session.h"
+#include "Pty.h"
 
 class OctaveTerminal:public QPlainTextEdit
 {
@@ -28,7 +28,7 @@ public:
   OctaveTerminal (QWidget * parent = 0);
   ~OctaveTerminal ();
 
-  void sendText (QString text) { m_session->sendText (text); }
+  void sendText (QString text) { m_shellProcess->sendData (text.toLocal8Bit ()); }
   void openTerminal ();
 
 signals:
@@ -42,6 +42,6 @@ protected slots:
 
 private:
   void construct ();
-  Session *m_session;
+  Pty *m_shellProcess;
 };
 #endif // OCTAVETERMINAL_H

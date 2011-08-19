@@ -123,20 +123,16 @@ Q_OBJECT public:
      * Sends data to the process currently controlling the 
      * teletype ( whose id is returned by foregroundProcessGroup() )
      *
-     * @param buffer Pointer to the data to send.
-     * @param length Length of @p buffer.
      */
-  void sendData (const char *buffer, int length);
+  void sendData (const QByteArray& data);
 
     signals:
     /**
      * Emitted when a new block of data is received from
      * the teletype.
      *
-     * @param buffer Pointer to the data received.
-     * @param length Length of @p buffer
      */
-  void receivedData (const char *buffer, int length);
+  void receivedData (const QByteArray& data);
 
 protected:
   void setupChildProcess ();

@@ -202,18 +202,17 @@ Pty::~Pty ()
 }
 
 void
-Pty::sendData (const char *data, int length)
+Pty::sendData (const QByteArray& data)
 {
-  if (!length)
+  if (!data.length ())
     return;
-  pty ()->write (data, length);
+  pty ()->write (data);
 }
 
 void
 Pty::dataReceived ()
 {
-  QByteArray data = pty ()->readAll ();
-  emit receivedData (data.constData (), data.count ());
+  emit receivedData (pty ()->readAll ());
 }
 
 void

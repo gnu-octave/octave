@@ -53,7 +53,7 @@ function s = strtrim (s)
       s = s(:, ceil (min (k) / rows (s)):ceil (max (k) / rows (s)));
     endif
 
-  elseif (iscell (s))
+  elseif (iscellstr (s))
 
     s = regexprep (s, "^[\\s\v]+|[\\s\v]+$", '');
 

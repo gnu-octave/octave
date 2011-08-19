@@ -42,7 +42,7 @@ function s = deblank (s)
       s = s(:,1:ceil (max (k) / rows (s)));
     endif
 
-  elseif (iscell (s))
+  elseif (iscellstr (s))
 
     s = regexprep (s, "[\\s\v\\0]+$", '');
 

@@ -27,6 +27,8 @@
 #include "unistd.h"
 #include <assert.h>
 
+#include <cstdio>
+
 OctaveTerminal::OctaveTerminal (QWidget * parent)
   : QPlainTextEdit (parent)
 {
@@ -73,14 +75,14 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
 {
   switch (keyEvent->key ())
     {
-      case Qt::Key_PageUp:
-        if (verticalScrollBar ())
-          verticalScrollBar ()->setValue (verticalScrollBar ()->value () - 10);
-        break;
-      case Qt::Key_PageDown:
-        if (verticalScrollBar ())
-          verticalScrollBar ()->setValue (verticalScrollBar ()->value () + 10);
-        break;
+  case Qt::Key_PageUp:
+      if (verticalScrollBar ())
+        verticalScrollBar ()->setValue (verticalScrollBar ()->value () - 10);
+      break;
+    case Qt::Key_PageDown:
+      if (verticalScrollBar ())
+        verticalScrollBar ()->setValue (verticalScrollBar ()->value () + 10);
+      break;
     }
 
   //QByteArray textToSend;
@@ -193,11 +195,12 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
       receiveData (translatorError.toAscii ().constData (),
            translatorError.count ());
     }*/
-    keyEvent->accept ();
+  keyEvent->accept ();
 }
 
 void OctaveTerminal::handleReceivedData (const QByteArray& data)
 {
+  int position;
   QTextCursor tc = textCursor ();
   tc.movePosition (QTextCursor::End);
 
@@ -207,16 +210,111 @@ void OctaveTerminal::handleReceivedData (const QByteArray& data)
       unsigned short unicode = character.unicode ();
       switch (unicode)
         {
-          case 0: // Null
-            break;
-          case 7: // Bell
-            break;
-          case 8: // Backspace
-            tc.deletePreviousChar ();
-            break;
-          default:
-            tc.insertText (character);
-            break;
+        case 0: // Null (NUL)
+          qDebug ("NUL");
+          break;
+        case 1: // Start Of Heading (SOH)
+          qDebug ("SOH");
+          break;
+        case 2: // Start Of Text (STX)
+          qDebug ("STX");
+          break;
+        case 3: // End Of Text (ETX)
+          qDebug ("ETX");
+          break;
+        case 4: // End Of Transmission (EOT)
+          qDebug ("EOT");
+          break;
+        case 5: // Enquiry (ENQ)
+          qDebug ("ENQ");
+          break;
+        case 6: // Acknowledgement (ACK)
+          qDebug ("ACK");
+          break;
+        case 7: // Bell (BEL)
+          qDebug ("BEL");
+          break;
+        case 8: // Backspace (BS)
+          tc.deletePreviousChar ();
+          break;
+        case 9: // Horizontal Tab (HT)
+          qDebug ("HT");
+          break;
+        case 10: // Line Feed (LF)
+          position = tc.position ();
+          tc.movePosition (QTextCursor::EndOfLine);
+          tc.insertText ("\n");
+          tc.setPosition (position);
+          tc.movePosition (QTextCursor::Down);
+          break;
+        case 11: // Vertical Tab (VT)
+          qDebug ("VT");
+          break;
+        case 12: // Form Feed (FF)
+          qDebug ("FF");
+          break;
+        case 13: // Carriage Return (CR)
+          tc.movePosition (QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
+          break;
+        case 14: // Shift Out (SO)
+          qDebug ("SO");
+          break;
+        case 15: // Shift In (SI)
+          qDebug ("SI");
+          break;
+        case 16: // Data Link Escape (DLE)
+          qDebug ("DLE");
+          break;
+        case 17: // Device Control 1 (DC1, XON)
+          qDebug ("DC1");
+          break;
+        case 18: // Device Control 2 (DC2)
+          qDebug ("DC2");
+          break;
+        case 19: // Device Control 3 (DC3, XOFF)
+          qDebug ("DC3");
+          break;
+        case 20: // Device Control 4 (DC4)
+          qDebug ("DC4");
+          break;
+        case 21: // Negative Acknowledgement (NAK)
+          qDebug ("NAK");
+          break;
+        case 22: // Synchronous Idle (SYN)
+          qDebug ("SYN");
+          break;
+        case 23: // End Of Transmission Block (ETB)
+          qDebug ("ETB");
+          break;
+        case 24: // Cancel (CAN)
+          qDebug ("CAN");
+          break;
+        case 25: // End of Medium (EM)
+          qDebug ("EM");
+          break;
+        case 26: // Substitute (SUB)
+          qDebug ("SUB");
+          break;
+        case 27: // Escape (ESC)
+          qDebug ("ESC");
+          break;
+        case 28: // File Separator (FS)
+          qDebug ("FS");
+          break;
+        case 29: // Group Separator (GS)
+          qDebug ("GS");
+          break;
+        case 30: // Record Separator (RS)
+          qDebug ("RS");
+          break;
+        case 31: // Unit Separator (US)
+          qDebug ("US");
+          break;
+        case 127: // Delete (DEL)
+          break;
+        default:
+          tc.insertText (character);
+          break;
         }
     }
   setTextCursor (tc);

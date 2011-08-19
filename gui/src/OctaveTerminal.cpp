@@ -207,7 +207,7 @@ void OctaveTerminal::handleReceivedData (const QByteArray& data)
   // Decode data into cursor actions.
   foreach(QChar character, data)
     {
-      unsigned short unicode = character.unicode ();
+      unsigned short unicode = character.toAscii();
       switch (unicode)
         {
         case 0: // Null (NUL)

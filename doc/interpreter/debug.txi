@@ -190,51 +190,53 @@ the commands @code{dbstep}.
 @cindex profiler
 @cindex code profiling
 
-Octave supports profiling of code-execution on a per-function level.  If
+Octave supports profiling of code execution on a per-function level. If
 profiling is enabled, each call to a function (supporting built-ins,
-operators, functions in oct- and mex- files, user-defined functions
-in Octave code and anonymous functions) is recorded while running
-Octave code.  After that, this data can aid in analyzing the code-behaviour,
-and is in particular helpful for finding ``hot spots'' in the code
-which use up a lot of computation time and are the best targets to spend
+operators, functions in oct- and mex-files, user-defined functions in
+Octave code and anonymous functions) is recorded while running Octave
+code. After that, this data can aid in analyzing the code behaviour, and
+is in particular helpful for finding ``hot spots'' in the code which use
+up a lot of computation time and are the best targets to spend
 optimization efforts on.
 
-The main command for profiling is @code{profile}, which can be used
-to start / stop the profiler and also to query collected data afterwards.
-The data is returned in an Octave data-structure which can then be
+The main command for profiling is @code{profile}, which can be used to
+start or stop the profiler and also to query collected data afterwards.
+The data is returned in an Octave data structure which can then be
 examined or further processed by other routines or tools.
 
 @DOCSTRING(profile)
 
-An easy way to get an overview over the collected data is @code{profshow}.
-This function takes the profiler-data returned by @code{profile} as input
-and prints a flat profile, for instance:
+An easy way to get an overview over the collected data is
+@code{profshow}. This function takes the profiler data returned by
+@code{profile} as input and prints a flat profile, for instance:
 
 @example
+@group
  Function Attr     Time (s)        Calls
 ----------------------------------------
    >myfib    R        2.195        13529
 binary <=             0.061        13529
  binary -             0.050        13528
  binary +             0.026         6764
+@end group
 @end example
 
 This shows that most of the runtime was spent executing the function
-@samp{myfib}, and some minor proportion evaluating the listed binary operators.
-Furthermore, it is shown how often the function was called and the profiler
-also found out that it is recursive.
+@samp{myfib}, and some minor proportion evaluating the listed binary
+operators. Furthermore, it is shown how often the function was called
+and the profiler also records that it is recursive.
 
 @DOCSTRING(profshow)
 
 @node Profiler Example
 @section Profiler Example
 
-Below, we will give a short example of a profiler session.
-See also @ref{Profiling}
-for the documentation of the profiler functions in detail.
-Consider the code:
+Below, we will give a short example of a profiler session. See also
+@ref{Profiling} for the documentation of the profiler functions in
+detail. Consider the code:
 
 @example
+@group
 global N A;
 
 N = 300;
@@ -270,35 +272,41 @@ function fib = bar (N)
     fib = bar (N - 1) + bar (N - 2);
   endif
 endfunction
+@end group
 @end example
 
-If we execute the two ``main'' functions, we get:
+If we execute the two main functions, we get:
 
 @example
+@group
 tic; foo; toc;
 @result{} Elapsed time is 2.37338 seconds.
 
 tic; bar (20); toc;
 @result{} Elapsed time is 2.04952 seconds.
+@end group
 @end example
 
 But this does not give much information about where this time is spent;
-for instance, whether the single call to @code{expm} is more expensive or
-the recursive time-stepping itself.  To get a more detailed picture,
+for instance, whether the single call to @code{expm} is more expensive
+or the recursive time-stepping itself. To get a more detailed picture,
 we can use the profiler.
 
 @example
+@group
 profile on;
 foo;
 profile off;
 
 data = profile ('info');
 profshow (data, 10);
+@end group
 @end example
 
 This prints a table like:
 
 @example
+@group
    #  Function Attr     Time (s)        Calls
 ---------------------------------------------
    7      expm             1.034            1
@@ -311,34 +319,37 @@ This prints a table like:
   34      norm             0.011            1
   40  binary -             0.004          101
   33   balance             0.003            1
+@end group
 @end example
 
-The entries are the individual functions which have been executed (only the
-10 most important ones), together with some information for each of them.
-The entries like @samp{binary *} denote operators, while other
-entries are ordinary functions --- they include both built-ins like @code{expm}
-and our own routines (for instance @code{timesteps}).  From this profile, we can
-immediately deduce that @code{expm} uses up the largest proportion of the
-processing time, even though it is only called once.  The second expensive
-operation is the matrix-vector product in the routine @code{timesteps}.
-(We only know it is the binary multiplication operator, but fortunately this
-operator appears only at one place in the code and thus we know which
-occurance takes so much time.  If there were multiple places, we would have
-to use the hierarchical profile to find out the exact place which
-uses up the time --- which is not covered in this example.)
+The entries are the individual functions which have been executed (only
+the 10 most important ones), together with some information for each of
+them. The entries like @samp{binary *} denote operators, while other
+entries are ordinary functions. They include both built-ins like
+@code{expm} and our own routines (for instance @code{timesteps}). From
+this profile, we can immediately deduce that @code{expm} uses up the
+largest proportion of the processing time, even though it is only called
+once. The second expensive operation is the matrix-vector product in the
+routine @code{timesteps}. @footnote{We only know it is the binary
+multiplication operator, but fortunately this operator appears only at
+one place in the code and thus we know which occurence takes so much
+time. If there were multiple places, we would have to use the
+hierarchical profile to find out the exact place which uses up the time
+which is not covered in this example.}
 
-But timing is not the only information available from the profile --- the
-attribute column shows us that @code{timesteps} calls itself recursively.
-This may not be that exciting in this example (since it's clear anyway),
-but could be helpful in a more complex setting.  If you wonder why
-there appears a @samp{binary \} in the output, we can easily shed some light
-on that, too.  Note that @code{data} is an Octave structure which contains
-the field @code{FunctionTable}.  This stores the ``raw data'' for the profile
-shown.  The number in the first column of the table gives the index under which
-the shown function can be found there.  Looking up @code{data.FunctionTable(41)}
-gives:
+Timing, however, is not the only information available from the profile.
+The attribute column shows us that @code{timesteps} calls itself
+recursively. This may not be that remarkable in this example (since it's
+clear anyway), but could be helpful in a more complex setting. As to the
+question of why is there a @samp{binary \} in the output, we can easily
+shed some light on that too. Note that @code{data} is a structure array
+(@ref{Structure Arrays}) which contains the field @code{FunctionTable}.
+This stores the raw data for the profile shown. The number in the first
+column of the table gives the index under which the shown function can
+be found there. Looking up @code{data.FunctionTable(41)} gives:
 
 @example
+@group
   scalar structure containing the fields:
 
     FunctionName = binary \
@@ -347,25 +358,28 @@ gives:
     IsRecursive = 0
     Parents =  7
     Children = [](1x0)
+@end group
 @end example
 
-Here we see the information from the table again, but have additional fields
-@code{Parents} and @code{Children}.  Those are both arrays, which contain
-the indices of functions which have directly called the function in question
-(which is entry 7, @code{expm}, in this case) or been called by it (no
-functions).  Hence, the backslash operator has been used internally
-by @code{expm}.
+Here we see the information from the table again, but have additional
+fields @code{Parents} and @code{Children}. Those are both arrays, which
+contain the indices of functions which have directly called the function
+in question (which is entry 7, @code{expm}, in this case) or been called
+by it (no functions). Hence, the backslash operator has been used
+internally by @code{expm}.
 
-Ok, now let's take a look at @code{bar}.  For this, we start a fresh
-profiling session (@code{profile on} does this, the old data is removed before
-the profiler is restarted):
+Now let's take a look at @code{bar}. For this, we start a fresh
+profiling session (@code{profile on} does this; the old data is removed
+before the profiler is restarted):
 
 @example
+@group
 profile on;
 bar (20);
 profile off;
 
 profshow (profile ('info'));
+@end group
 @end example
 
 This gives:
@@ -384,26 +398,31 @@ This gives:
    9 __profiler_enable__             0.000            1
 @end example
 
-Unsurprisingly, @code{bar} is also recursive.  It has been called 13,529 times
-in the course of recursively calculating the Fibonacci number in a
-not-that-optimal way, and most of the time was spent in @code{bar} itself.
+Unsurprisingly, @code{bar} is also recursive. It has been called 13,529
+times in the course of recursively calculating the Fibonacci number in a
+suboptimal way, and most of the time was spent in @code{bar} itself.
 
 Finally, let's say we want to profile the execution of both @code{foo}
-and @code{bar} together.  Since we already have the runtime data collected
-for @code{bar}, we can restart the profiler without clearing the existing
-data and collect the missing statistics about @code{foo}.  This is done by:
+and @code{bar} together. Since we already have the runtime data
+collected for @code{bar}, we can restart the profiler without clearing
+the existing data and collect the missing statistics about @code{foo}.
+This is done by:
 
 @example
+@group
 profile resume;
 foo;
 profile off;
 
 profshow (profile ('info'), 10);
+@end group
 @end example
 
-As you can see in the table below, now we have both profiles ``mixed together''.
+As you can see in the table below, now we have both profiles mixed
+together.
 
 @example
+@group
    #  Function Attr     Time (s)        Calls
 ---------------------------------------------
    1       bar    R        2.091        13529
@@ -416,4 +435,5 @@ As you can see in the table below, now we have both profiles ``mixed together''.
    3  binary -             0.045        13629
    4  binary +             0.041         6772
   49        NA             0.036          101
+@end group
 @end example

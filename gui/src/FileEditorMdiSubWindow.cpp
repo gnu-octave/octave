@@ -194,6 +194,8 @@ FileEditorMdiSubWindow::saveFile (QString fileName)
       saveFileName = QFileDialog::getSaveFileName (this, "Save File", fileName,SAVE_FILE_FILTER);
       if (saveFileName.isEmpty ())
         return;
+      if(!saveFileName.endsWith(".m"))
+        saveFileName.append(".m");
     }
   else
     {

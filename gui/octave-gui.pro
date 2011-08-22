@@ -86,7 +86,6 @@ HEADERS += \
         src/terminal/Pty.h \
         src/terminal/kpty.h \
         src/terminal/kpty_p.h \
-		  src/terminal/kpty_export.h \
         src/terminal/kptyprocess.h \
         src/terminal/kprocess.h \
         src/terminal/kptydevice.h \

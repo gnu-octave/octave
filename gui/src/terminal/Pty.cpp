@@ -19,7 +19,6 @@
 */
 
 // Own
-#include "kprocess_p.h"
 #include "kptyprocess.h"
 #include "Pty.h"
 
@@ -37,98 +36,6 @@
 #include "kpty.h"
 #include "kptydevice.h"
 
-
-void
-Pty::setWindowSize (int lines, int cols)
-{
-  _windowColumns = cols;
-  _windowLines = lines;
-
-  if (pty ()->masterFd () >= 0)
-    pty ()->setWinSize (lines, cols);
-}
-
-QSize
-Pty::windowSize () const
-{
-  return QSize (_windowColumns, _windowLines);
-}
-
-void
-Pty::setFlowControlEnabled (bool enable)
-{
-  _xonXoff = enable;
-
-  if (pty ()->masterFd () >= 0)
-    {
-      struct::termios ttmode;
-      pty ()->tcGetAttr (&ttmode);
-      if (!enable)
-	ttmode.c_iflag &= ~(IXOFF | IXON);
-      else
-	ttmode.c_iflag |= (IXOFF | IXON);
-      pty()->tcSetAttr(&ttmode);
-    }
-}
-
-bool
-Pty::flowControlEnabled () const
-{
-  if (pty ()->masterFd () >= 0)
-    {
-      struct::termios ttmode;
-      pty ()->tcGetAttr (&ttmode);
-      return ttmode.c_iflag & IXOFF && ttmode.c_iflag & IXON;
-    }
-  return false;
-}
-
-void
-Pty::setUtf8Mode (bool enable)
-{
-#ifdef IUTF8
-  _utf8 = enable;
-
-  if (pty ()->masterFd () >= 0)
-    {
-      struct::termios ttmode;
-      pty ()->tcGetAttr (&ttmode);
-      if (!enable)
-	ttmode.c_iflag &= ~IUTF8;
-      else
-	ttmode.c_iflag |= IUTF8;
-      pty()->tcSetAttr(&ttmode);
-    }
-#endif
-}
-
-void
-Pty::setErase (char erase)
-{
-  _eraseChar = erase;
-
-  if (pty ()->masterFd () >= 0)
-    {
-      struct::termios ttmode;
-      pty ()->tcGetAttr (&ttmode);
-      ttmode.c_cc[VERASE] = erase;
-      pty()->tcSetAttr(&ttmode);
-    }
-}
-
-char
-Pty::erase () const
-{
-  if (pty ()->masterFd () >= 0)
-    {
-      struct::termios ttyAttributes;
-      pty ()->tcGetAttr (&ttyAttributes);
-      return ttyAttributes.c_cc[VERASE];
-    }
-
-  return _eraseChar;
-}
-
 int
 Pty::start (const QString & program,
             const QStringList & programArguments)
@@ -142,35 +49,15 @@ Pty::start (const QString & program,
     ttmode.c_iflag &= ~(IXOFF | IXON);
   else
     ttmode.c_iflag |= (IXOFF | IXON);
-#ifdef IUTF8			// XXX not a reasonable place to check it.
-  if (!_utf8)
-    ttmode.c_iflag &= ~IUTF8;
-  else
-    ttmode.c_iflag |= IUTF8;
-#endif
 
-  if (_eraseChar != 0)
-    ttmode.c_cc[VERASE] = _eraseChar;
 
   pty ()->tcSetAttr(&ttmode);
-  pty ()->setWinSize (_windowLines, _windowColumns);
 
   KProcess::start ();
 
   if (!waitForStarted ())
     return -1;
   return 0;
-}
-
-void
-Pty::setWriteable (bool writeable)
-{
-  struct stat sbuf;
-  ::stat (pty ()->ttyName (), &sbuf);
-  if (writeable)
-    chmod (pty ()->ttyName (), sbuf.st_mode | S_IWGRP);
-  else
-    chmod (pty ()->ttyName (), sbuf.st_mode & ~(S_IWGRP | S_IWOTH));
 }
 
 Pty::Pty (int masterFd, QObject * parent):
@@ -187,11 +74,7 @@ Pty::Pty (QObject * parent):KPtyProcess (parent)
 void
 Pty::init ()
 {
-  _windowColumns = 0;
-  _windowLines = 0;
-  _eraseChar = 0;
   _xonXoff = true;
-  _utf8 = true;
 
   connect (pty (), SIGNAL (readyRead ()), this, SLOT (dataReceived ()));
   setPtyChannels (KPtyProcess::AllChannels);

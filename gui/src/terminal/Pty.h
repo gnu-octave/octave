@@ -30,7 +30,6 @@
 #include <QtCore/QSize>
 
 // KDE
-#include "kprocess.h"
 #include "kptyprocess.h"
 
 /**
@@ -46,7 +45,6 @@
  * To start the terminal process, call the start() method
  * with the program name and appropriate arguments. 
  */
-//class KONSOLEPRIVATE_EXPORT Pty: public KPtyProcess
 class Pty:public KPtyProcess
 {
 Q_OBJECT public:
@@ -85,40 +83,7 @@ Q_OBJECT public:
   int start (const QString & program,
              const QStringList & arguments);
 
-    /** TODO: Document me */
-  void setWriteable (bool writeable);
-
-    /** 
-     * Enables or disables Xon/Xoff flow control.  The flow control setting
-     * may be changed later by a terminal application, so flowControlEnabled()
-     * may not equal the value of @p on in the previous call to setFlowControlEnabled()
-     */
-  void setFlowControlEnabled (bool on);
-
-    /** Queries the terminal state and returns true if Xon/Xoff flow control is enabled. */
-  bool flowControlEnabled () const;
-
-    /** 
-     * Sets the size of the window (in lines and columns of characters) 
-     * used by this teletype.
-     */
-  void setWindowSize (int lines, int cols);
-
-    /** Returns the size of the window used by this teletype.  See setWindowSize() */
-  QSize windowSize () const;
-
-    /** TODO Document me */
-  void setErase (char erase);
-
-    /** */
-  char erase () const;
-
   public slots:
-    /**
-     * Put the pty into UTF-8 mode on systems which support it.
-     */
-  void setUtf8Mode (bool on);
-
     /** 
      * Sends data to the process currently controlling the 
      * teletype ( whose id is returned by foregroundProcessGroup() )
@@ -137,18 +102,13 @@ Q_OBJECT public:
 protected:
   void setupChildProcess ();
 
-  private slots:
-    // called when data is received from the terminal process 
+private slots:
+  // called when data is received from the terminal process
   void dataReceived ();
 
 private:
   void init ();
-
-  int _windowColumns;
-  int _windowLines;
-  char _eraseChar;
   bool _xonXoff;
-  bool _utf8;
 };
 
 #endif // PTY_H

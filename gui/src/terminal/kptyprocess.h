@@ -23,7 +23,6 @@
 #define KPTYPROCESS_H
 
 #include "kprocess.h"
-#include "kprocess_p.h"
 #include "kptydevice.h"
 
 class KPtyDevice;

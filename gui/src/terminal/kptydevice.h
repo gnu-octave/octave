@@ -38,7 +38,7 @@ struct KPtyDevicePrivate;
  * Encapsulates KPty into a QIODevice, so it can be used with Q*Stream, etc.
  */
 class KPtyDevice:public QIODevice, public KPty
-{				//krazy:exclude=dpointer (via macro)
+{
 Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
 
     /**

@@ -19,41 +19,18 @@
     Boston, MA 02110-1301, USA.
 */
 
-#include "kprocess_p.h"
+#include "kprocess.h"
 
 #include <qfile.h>
-
-#ifdef Q_OS_WIN
-#include <windows.h>
-#else
 #include <unistd.h>
 #include <errno.h>
-#endif
 
-#ifndef Q_OS_WIN
 #define STD_OUTPUT_HANDLE 1
 #define STD_ERROR_HANDLE 2
-#endif
-
-#ifdef _WIN32_WCE
-#include <stdio.h>
-#endif
 
 void
 KProcessPrivate::writeAll (const QByteArray & buf, int fd)
 {
-#ifdef Q_OS_WIN
-#ifndef _WIN32_WCE
-  HANDLE h = GetStdHandle (fd);
-  if (h)
-    {
-      DWORD wr;
-      WriteFile (h, buf.data (), buf.size (), &wr, 0);
-    }
-#else
-  fwrite (buf.data (), 1, buf.size (), (FILE *) fd);
-#endif
-#else
   int off = 0;
   do
     {
@@ -69,7 +46,6 @@ KProcessPrivate::writeAll (const QByteArray & buf, int fd)
 	}
     }
   while (off < buf.size ());
-#endif
 }
 
 void
@@ -86,21 +62,13 @@ KProcessPrivate::forwardStd (KProcess::ProcessChannel good, int fd)
 void
 KProcessPrivate::_k_forwardStdout ()
 {
-#ifndef _WIN32_WCE
   forwardStd (KProcess::StandardOutput, STD_OUTPUT_HANDLE);
-#else
-  forwardStd (KProcess::StandardOutput, (int) stdout);
-#endif
 }
 
 void
 KProcessPrivate::_k_forwardStderr ()
 {
-#ifndef _WIN32_WCE
   forwardStd (KProcess::StandardError, STD_ERROR_HANDLE);
-#else
-  forwardStd (KProcess::StandardError, (int) stderr);
-#endif
 }
 
 /////////////////////////////
@@ -214,9 +182,6 @@ KProcess::setProgram (const QString & exe, const QStringList & args)
 
   d->prog = exe;
   d->args = args;
-#ifdef Q_OS_WIN
-  setNativeArguments (QString ());
-#endif
 }
 
 void
@@ -227,9 +192,6 @@ KProcess::setProgram (const QStringList & argv)
   Q_ASSERT (!argv.isEmpty ());
   d->args = argv;
   d->prog = d->args.takeFirst ();
-#ifdef Q_OS_WIN
-  setNativeArguments (QString ());
-#endif
 }
 
 KProcess & KProcess::operator<< (const QString & arg)
@@ -261,9 +223,6 @@ KProcess::clearProgram ()
 
   d->prog.clear ();
   d->args.clear ();
-#ifdef Q_OS_WIN
-  setNativeArguments (QString ());
-#endif
 }
 
 QStringList
@@ -348,9 +307,5 @@ KProcess::startDetached (const QStringList & argv)
 int
 KProcess::pid () const
 {
-#ifdef Q_OS_UNIX
   return (int) QProcess::pid ();
-#else
-  return QProcess::pid ()? QProcess::pid ()->dwProcessId : 0;
-#endif
 }

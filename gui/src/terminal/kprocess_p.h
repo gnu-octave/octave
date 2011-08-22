@@ -21,28 +21,7 @@
 
 #ifndef KPROCESS_P_H
 #define KPROCESS_P_H
-class KProcess;
-class KProcessPrivate;
 
-#include "kprocess.h"
-class KProcessPrivate
-{
-Q_DECLARE_PUBLIC (KProcess) protected:
-  KProcessPrivate ():openMode (QIODevice::ReadWrite)
-  {
-  }
-  void writeAll (const QByteArray & buf, int fd);
-  void forwardStd (KProcess::ProcessChannel good, int fd);
-  void _k_forwardStdout ();
-  void _k_forwardStderr ();
-
-  QString prog;
-  QStringList args;
-  KProcess::OutputChannelMode outputChannelMode;
-  QIODevice::OpenMode openMode;
-
-  KProcess *q_ptr;
-};
 
 
 #endif

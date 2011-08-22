@@ -43,6 +43,7 @@ void
 OctaveTerminal::construct ()
 {
   setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+  m_textCodec = QTextCodec::codecForLocale ();
 }
 
 void
@@ -77,27 +78,27 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
       return;
 
       case Qt::Key_Up:
-      m_shellProcess->sendData ("\EOA");
+      m_shellProcess->sendData ("\033OA");
       break;
 
       case Qt::Key_Down:
-      m_shellProcess->sendData ("\EOB");
+      m_shellProcess->sendData ("\033OB");
       break;
 
       case Qt::Key_Right:
-      m_shellProcess->sendData ("\EOC");
+      m_shellProcess->sendData ("\033OC");
       break;
 
       case Qt::Key_Left:
-      m_shellProcess->sendData ("\EOF");
+      m_shellProcess->sendData ("\033OF");
       break;
 
       case Qt::Key_Backslash:
-      m_shellProcess->sendData ("\008");
+      m_shellProcess->sendData ("\03308");
       break;
 
       default:
-      m_shellProcess->sendData (keyEvent->text ().toLocal8Bit ());
+      m_shellProcess->sendData (keyEvent->text ().toUtf8 ());
       break;
     }
 
@@ -192,19 +193,6 @@ OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
       else
     textToSend += _codec->fromUnicode (event->text ());
 
-      sendData (textToSend.constData (), textToSend.length ());
-    }
-  else
-    {
-      // print an error message to the terminal if no key translator has been
-      // set
-      QString translatorError = QString ("No keyboard translator available.  "
-                     "The information needed to convert key presses "
-                     "into characters to send to the terminal "
-                     "is missing.");
-      reset ();
-      receiveData (translatorError.toAscii ().constData (),
-           translatorError.count ());
     }*/
   keyEvent->accept ();
 }

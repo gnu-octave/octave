@@ -19,6 +19,7 @@
 #ifndef OCTAVETERMINAL_H
 #define OCTAVETERMINAL_H
 #include <QPlainTextEdit>
+#include <QTextCodec>
 #include "Pty.h"
 
 class OctaveTerminal:public QPlainTextEdit
@@ -42,6 +43,7 @@ protected slots:
 
 private:
   void construct ();
+  QTextCodec *m_textCodec;
   Pty *m_shellProcess;
 };
 #endif // OCTAVETERMINAL_H

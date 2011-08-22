@@ -292,8 +292,26 @@ private:
   using QProcess::processChannelMode;
 
   Q_PRIVATE_SLOT (d_func (), void _k_forwardStdout ())
-    Q_PRIVATE_SLOT (d_func (), void _k_forwardStderr ())};
+  Q_PRIVATE_SLOT (d_func (), void _k_forwardStderr ())
+};
 
-#include "kprocess_p.h"
+class KProcessPrivate
+{
+Q_DECLARE_PUBLIC (KProcess) protected:
+  KProcessPrivate ():openMode (QIODevice::ReadWrite)
+  {
+  }
+  void writeAll (const QByteArray & buf, int fd);
+  void forwardStd (KProcess::ProcessChannel good, int fd);
+  void _k_forwardStdout ();
+  void _k_forwardStderr ();
+
+  QString prog;
+  QStringList args;
+  KProcess::OutputChannelMode outputChannelMode;
+  QIODevice::OpenMode openMode;
+
+  KProcess *q_ptr;
+};
 
 #endif

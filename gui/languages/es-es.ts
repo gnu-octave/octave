@@ -41,88 +41,88 @@
         <translation>Archivo %1 guardado</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="382"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="383"/>
         <source>&amp;Close File</source>
         <translation>&amp;Cerrar archivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="385"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="386"/>
         <source>&amp;New File</source>
         <translation>Archivo &amp;nuevo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="388"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="389"/>
         <source>&amp;Open File</source>
         <translation>&amp;Abrir archivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="391"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="392"/>
         <source>&amp;Save File</source>
         <translation>&amp;Guardar archivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="394"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="395"/>
         <source>Save File &amp;As</source>
         <translatorcomment>Search for proper shortcut for this command</translatorcomment>
         <translation>Guardar archivo &amp;como</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="397"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="398"/>
         <source>&amp;Undo</source>
         <translation>&amp;Deshacer</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="400"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="401"/>
         <source>&amp;Redo</source>
         <translation>&amp;Rehacer</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="401"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="402"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copiar</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="402"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="403"/>
         <source>Cu&amp;t</source>
         <translation>Cor&amp;tar</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="403"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="404"/>
         <source>&amp;Paste</source>
         <translation>&amp;Pegar</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="404"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="405"/>
         <source>&amp;Next Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="405"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="406"/>
         <source>Pre&amp;vious Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="406"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="407"/>
         <source>Toggle &amp;Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="409"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="410"/>
         <source>&amp;Run File</source>
         <translation>&amp;Ejecutar archivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="448"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="449"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="456"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="457"/>
         <source>&amp;Edit</source>
         <translation>&amp;Editar</translation>
     </message>
     <message>
-        <location filename="../src/FileEditorMdiSubWindow.cpp" line="468"/>
+        <location filename="../src/FileEditorMdiSubWindow.cpp" line="469"/>
         <source>&amp;Run</source>
         <translation>&amp;Ejecutar</translation>
     </message>
@@ -223,159 +223,159 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/MainWindow.cpp" line="46"/>
+        <location filename="../src/MainWindow.cpp" line="47"/>
         <source>Opening file.</source>
         <translation>Abriendo archivo.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="123"/>
+        <location filename="../src/MainWindow.cpp" line="124"/>
         <source>Save Workspace</source>
         <translation>Guardar espacio de trabajo</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="133"/>
+        <location filename="../src/MainWindow.cpp" line="134"/>
         <source>Load Workspace</source>
         <translation>Cargar espacio de trabajo</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="207"/>
-        <location filename="../src/MainWindow.cpp" line="340"/>
+        <location filename="../src/MainWindow.cpp" line="226"/>
+        <location filename="../src/MainWindow.cpp" line="362"/>
         <source>About Octave</source>
         <translation>Acerca de Octave</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="219"/>
+        <location filename="../src/MainWindow.cpp" line="238"/>
         <source>Saving data and shutting down.</source>
         <translation>Guardando datos y cerrando el sistema.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="261"/>
+        <location filename="../src/MainWindow.cpp" line="276"/>
         <source>View the variables in the active workspace.</source>
         <translation>Ver variables en el espacio de trabajo activo.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="263"/>
+        <location filename="../src/MainWindow.cpp" line="278"/>
         <source>Browse and search the command history.</source>
         <translation>Navegar y buscar en el historial de comandos.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="265"/>
+        <location filename="../src/MainWindow.cpp" line="280"/>
         <source>Browse your files.</source>
         <translation>Explorar sus archivos.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="281"/>
+        <location filename="../src/MainWindow.cpp" line="294"/>
         <source>Terminal</source>
         <translation>Terminal</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="283"/>
+        <location filename="../src/MainWindow.cpp" line="298"/>
         <source>Enter your commands into the Octave terminal.</source>
         <translation>Introducir su comando a la terminal de Octave.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="291"/>
+        <location filename="../src/MainWindow.cpp" line="307"/>
         <source>Documentation</source>
         <translation>Documentación</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="293"/>
+        <location filename="../src/MainWindow.cpp" line="311"/>
         <source>Browse the Octave documentation for help.</source>
         <translation>Consultar la documentación de Octave para obtener ayuda.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="302"/>
+        <location filename="../src/MainWindow.cpp" line="320"/>
         <source>Chat</source>
         <translation>Chat/conversación instantanea</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="304"/>
+        <location filename="../src/MainWindow.cpp" line="323"/>
         <source>Instantly chat with other Octave users for help.</source>
         <translation>Coversación instantanea con otros usuarios de octave para obtener ayuda.</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="308"/>
+        <location filename="../src/MainWindow.cpp" line="330"/>
         <source>Octave</source>
         <translation>Octave</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="309"/>
+        <location filename="../src/MainWindow.cpp" line="331"/>
         <source>Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="311"/>
+        <location filename="../src/MainWindow.cpp" line="333"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="313"/>
+        <location filename="../src/MainWindow.cpp" line="335"/>
         <source>Interface</source>
         <translation>Interfase</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="315"/>
+        <location filename="../src/MainWindow.cpp" line="337"/>
         <source>Align Windows</source>
         <translation>Alinear ventanas</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="317"/>
-        <location filename="../src/MainWindow.cpp" line="329"/>
+        <location filename="../src/MainWindow.cpp" line="339"/>
+        <location filename="../src/MainWindow.cpp" line="351"/>
         <source>Workspace</source>
         <translation>Espacio de trabajo</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="320"/>
+        <location filename="../src/MainWindow.cpp" line="342"/>
         <source>History</source>
         <translation>Historial</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="323"/>
+        <location filename="../src/MainWindow.cpp" line="345"/>
         <source>File Browser</source>
         <translation>Explorador de archivos</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="327"/>
+        <location filename="../src/MainWindow.cpp" line="349"/>
         <source>Open New Editor Window</source>
         <translation>Abrir nueva ventana de editor</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="330"/>
+        <location filename="../src/MainWindow.cpp" line="352"/>
         <source>Load</source>
         <translation>Cargar</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="331"/>
+        <location filename="../src/MainWindow.cpp" line="353"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="333"/>
+        <location filename="../src/MainWindow.cpp" line="355"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="335"/>
+        <location filename="../src/MainWindow.cpp" line="357"/>
         <source>Community</source>
         <translation>Comunidad</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="336"/>
+        <location filename="../src/MainWindow.cpp" line="358"/>
         <source>Report Bug</source>
         <translation>Reportar error de software/Bug</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="337"/>
+        <location filename="../src/MainWindow.cpp" line="359"/>
         <source>Agora</source>
         <translation>Ágora</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="338"/>
+        <location filename="../src/MainWindow.cpp" line="360"/>
         <source>Octave Forge</source>
         <translation>Octave Forge</translation>
     </message>
     <message>
-        <location filename="../src/MainWindow.cpp" line="341"/>
+        <location filename="../src/MainWindow.cpp" line="363"/>
         <source>About Qt</source>
         <translation>Acerca de Qt</translation>
     </message>
@@ -420,6 +420,7 @@
     </message>
     <message>
         <location filename="../src/SettingsDialog.ui" line="103"/>
+        <location filename="../src/SettingsDialog.ui" line="311"/>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
@@ -474,17 +475,57 @@
         <translation>Colores alternos de filas</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.ui" line="223"/>
+        <location filename="../src/SettingsDialog.ui" line="215"/>
+        <source>Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="221"/>
+        <source>Use proxy server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="233"/>
+        <source>Proxy Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="244"/>
+        <source>HttpProxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="249"/>
+        <source>Socks5Proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="260"/>
+        <source>Hostname:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="277"/>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="294"/>
+        <source>Username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/SettingsDialog.ui" line="339"/>
         <source>Reset to defaults</source>
         <translation>Restaurar los valores predeterminados</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.ui" line="246"/>
+        <location filename="../src/SettingsDialog.ui" line="362"/>
         <source>Export</source>
         <translation>Exportar</translation>
     </message>
     <message>
-        <location filename="../src/SettingsDialog.ui" line="256"/>
+        <location filename="../src/SettingsDialog.ui" line="372"/>
         <source>Import</source>
         <translation>Importar</translation>
     </message>

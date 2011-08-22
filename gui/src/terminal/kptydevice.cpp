@@ -33,23 +33,8 @@
 #include <termios.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#ifdef HAVE_SYS_FILIO_H
-#include <sys/filio.h>
-#endif
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
 
-#if defined(Q_OS_FREEBSD) || defined(Q_OS_MAC)
-  // "the other end's output queue size" - kinda braindead, huh?
-#define PTY_BYTES_AVAILABLE TIOCOUTQ
-#elif defined(TIOCINQ)
-  // "our end's input queue size"
 #define PTY_BYTES_AVAILABLE TIOCINQ
-#else
-  // likewise. more generic ioctl (theoretically)
-#define PTY_BYTES_AVAILABLE FIONREAD
-#endif
 
 //////////////////
 // private data //
@@ -78,48 +63,11 @@ KPtyDevicePrivate::_k_canRead ()
   Q_Q (KPtyDevice);
   qint64 readBytes = 0;
 
-#ifdef Q_OS_IRIX		// this should use a config define, but how to check it?
-  size_t available;
-#else
+
   int available;
-#endif
   if (!::ioctl (q->masterFd (), PTY_BYTES_AVAILABLE, (char *) &available))
     {
-#ifdef Q_OS_SOLARIS
-      // A Pty is a STREAMS module, and those can be activated
-      // with 0 bytes available. This happens either when ^C is
-      // pressed, or when an application does an explicit write(a,b,0)
-      // which happens in experiments fairly often. When 0 bytes are
-      // available, you must read those 0 bytes to clear the STREAMS
-      // module, but we don't want to hit the !readBytes case further down.
-      if (!available)
-	{
-	  char c;
-	  // Read the 0-byte STREAMS message
-	  NO_INTR (readBytes, read (q->masterFd (), &c, 0));
-	  // Should return 0 bytes read; -1 is error
-	  if (readBytes < 0)
-	    {
-	      readNotifier->setEnabled (false);
-	      emit q->readEof ();
-	      return false;
-	    }
-	  return true;
-	}
-#endif
-
       char *ptr = readBuffer.reserve (available);
-#ifdef Q_OS_SOLARIS
-      // Even if available > 0, it is possible for read()
-      // to return 0 on Solaris, due to 0-byte writes in the stream.
-      // Ignore them and keep reading until we hit *some* data.
-      // In Solaris it is possible to have 15 bytes available
-      // and to (say) get 0, 0, 6, 0 and 9 bytes in subsequent reads.
-      // Because the stream is set to O_NONBLOCK in finishOpen(),
-      // an EOF read will return -1.
-      readBytes = 0;
-      while (!readBytes)
-#endif
 	// Useless block braces except in Solaris
 	{
 	  NO_INTR (readBytes, read (q->masterFd (), ptr, available));
@@ -210,9 +158,6 @@ bool
 KPtyDevicePrivate::doWait (int msecs, bool reading)
 {
   Q_Q (KPtyDevice);
-#ifndef __linux__
-  struct timeval etv;
-#endif
   struct timeval tv, *tvp;
 
   if (msecs < 0)
@@ -221,10 +166,6 @@ KPtyDevicePrivate::doWait (int msecs, bool reading)
     {
       tv.tv_sec = msecs / 1000;
       tv.tv_usec = (msecs % 1000) * 1000;
-#ifndef __linux__
-      gettimeofday (&etv, 0);
-      timeradd (&tv, &etv, &etv);
-#endif
       tvp = &tv;
     }
 
@@ -240,16 +181,6 @@ KPtyDevicePrivate::doWait (int msecs, bool reading)
 	FD_SET (q->masterFd (), &rfds);
       if (!writeBuffer.isEmpty ())
 	FD_SET (q->masterFd (), &wfds);
-
-#ifndef __linux__
-      if (tvp)
-	{
-	  gettimeofday (&tv, 0);
-	  timersub (&etv, &tv, &tv);
-	  if (tv.tv_sec < 0)
-	    tv.tv_sec = tv.tv_usec = 0;
-	}
-#endif
 
       switch (select (q->masterFd () + 1, &rfds, &wfds, 0, tvp))
 	{
@@ -297,10 +228,6 @@ KPtyDevicePrivate::finishOpen (QIODevice::OpenMode mode)
 		    SLOT (_k_canWrite ()));
   readNotifier->setEnabled (true);
 }
-
-/////////////////////////////
-// public member functions //
-/////////////////////////////
 
 KPtyDevice::KPtyDevice (QObject * parent):
 QIODevice (parent), KPty (new KPtyDevicePrivate (this))
@@ -364,12 +291,6 @@ KPtyDevice::close ()
 }
 
 bool
-KPtyDevice::isSequential () const
-{
-  return true;
-}
-
-bool
 KPtyDevice::canReadLine () const
 {
   Q_D (const KPtyDevice);
@@ -395,20 +316,6 @@ KPtyDevice::bytesToWrite () const
 {
   Q_D (const KPtyDevice);
   return d->writeBuffer.size ();
-}
-
-bool
-KPtyDevice::waitForReadyRead (int msecs)
-{
-  Q_D (KPtyDevice);
-  return d->doWait (msecs, true);
-}
-
-bool
-KPtyDevice::waitForBytesWritten (int msecs)
-{
-  Q_D (KPtyDevice);
-  return d->doWait (msecs, false);
 }
 
 void

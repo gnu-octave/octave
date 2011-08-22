@@ -285,8 +285,6 @@ MainWindow::construct ()
   m_documentationWidget = new BrowserWidget (this);
   m_ircWidget = new IRCWidget (this);
 
-  m_octaveTerminal->openTerminal ();
-
   // Octave Terminal subwindow.
   m_octaveTerminalSubWindow = new NonClosableMdiSubWindow (this);
   m_octaveTerminalSubWindow->setWidget (m_octaveTerminal);

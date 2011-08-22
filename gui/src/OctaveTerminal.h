@@ -19,31 +19,26 @@
 #ifndef OCTAVETERMINAL_H
 #define OCTAVETERMINAL_H
 #include <QPlainTextEdit>
-#include <QTextCodec>
-#include "Pty.h"
+#include "TerminalEmulation.h"
 
-class OctaveTerminal:public QPlainTextEdit
+class OctaveTerminal:public QPlainTextEdit, Terminal
 {
 Q_OBJECT
 public:
   OctaveTerminal (QWidget * parent = 0);
   ~OctaveTerminal ();
 
-  void sendText (QString text) { m_shellProcess->sendData (text.toLocal8Bit ()); }
-  void openTerminal ();
+  void sendText (QString text) { m_terminalEmulation->transmitText(text); }
 
-signals:
+  // Terminal Interface
+  QTextCursor textCursor();
+  void setTextCursor (const QTextCursor &cursor);
   void bell ();
 
 protected:
   void keyPressEvent (QKeyEvent *keyEvent);
 
-protected slots:
-  void handleReceivedData (const QByteArray& data);
-
 private:
-  void construct ();
-  QTextCodec *m_textCodec;
-  Pty *m_shellProcess;
+  TerminalEmulation *m_terminalEmulation;
 };
 #endif // OCTAVETERMINAL_H

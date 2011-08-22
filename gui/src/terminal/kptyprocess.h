@@ -93,25 +93,6 @@ Q_OBJECT Q_DECLARE_PRIVATE (KPtyProcess) public:
      */
   PtyChannels ptyChannels () const;
 
-    /**
-     * Set whether to register the process as a TTY login in utmp.
-     *
-     * Utmp is disabled by default.
-     * It should enabled for interactively fed processes, like terminal
-     * emulations.
-     *
-     * This function must be called before starting the process.
-     *
-     * @param value whether to register in utmp.
-     */
-  void setUseUtmp (bool value);
-
-    /**
-     * Get whether to register the process as a TTY login in utmp.
-     *
-     * @return whether to register in utmp
-     */
-  bool isUseUtmp () const;
 
     /**
      * Get the PTY device of this process.

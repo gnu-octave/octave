@@ -105,10 +105,6 @@ Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
      */
   bool isSuspended () const;
 
-    /**
-     * @return always true
-     */
-  virtual bool isSequential () const;
 
     /**
      * @reimp
@@ -130,11 +126,7 @@ Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
      */
   qint64 bytesToWrite () const;
 
-  bool waitForBytesWritten (int msecs = -1);
-  bool waitForReadyRead (int msecs = -1);
-
-
-    Q_SIGNALS:
+signals:
     /**
      * Emitted when EOF is read from the PTY.
      *
@@ -143,13 +135,13 @@ Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
   void readEof ();
 
 protected:
-    virtual qint64 readData (char *data, qint64 maxSize);
+  virtual qint64 readData (char *data, qint64 maxSize);
   virtual qint64 readLineData (char *data, qint64 maxSize);
   virtual qint64 writeData (const char *data, qint64 maxSize);
 
 private:
   Q_PRIVATE_SLOT (d_func (), bool _k_canRead ())
-    Q_PRIVATE_SLOT (d_func (), bool _k_canWrite ())};
+  Q_PRIVATE_SLOT (d_func (), bool _k_canWrite ())};
 
 #define KMAXINT ((int)(~0U >> 1))
 

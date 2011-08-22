@@ -79,7 +79,9 @@ SOURCES +=\
     src/backend/OctaveCallbackThread.cpp \
     src/backend/OctaveLink.cpp \
     src/backend/OctaveMainThread.cpp \
-    src/qirc/IRCClientImpl.cpp
+    src/qirc/IRCClientImpl.cpp \
+    src/terminal/TerminalEmulation.cpp \
+    src/terminal/LinuxTerminalEmulation.cpp
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
@@ -105,7 +107,9 @@ HEADERS += \
     src/backend/OctaveLink.h \
     src/backend/OctaveMainThread.h \
     src/qirc/IRCClientInterface.h \
-    src/qirc/IRCClientImpl.h
+    src/qirc/IRCClientImpl.h \
+    src/terminal/TerminalEmulation.h \
+    src/terminal/LinuxTerminalEmulation.h
 
 FORMS += \
     src/SettingsDialog.ui

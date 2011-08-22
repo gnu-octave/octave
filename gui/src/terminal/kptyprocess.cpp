@@ -81,22 +81,6 @@ KPtyProcess::PtyChannels KPtyProcess::ptyChannels () const
   return d->ptyChannels;
 }
 
-void
-KPtyProcess::setUseUtmp (bool value)
-{
-  Q_D (KPtyProcess);
-
-  d->addUtmp = value;
-}
-
-bool
-KPtyProcess::isUseUtmp () const
-{
-  Q_D (const KPtyProcess);
-
-  return d->addUtmp;
-}
-
 KPtyDevice *
 KPtyProcess::pty () const
 {

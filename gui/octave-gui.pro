@@ -89,7 +89,6 @@ HEADERS += \
 		  src/terminal/kpty_export.h \
         src/terminal/kptyprocess.h \
         src/terminal/kprocess.h \
-        src/terminal/kprocess_p.h \
         src/terminal/kptydevice.h \
     	  src/MainWindow.h \
     	  src/OctaveTerminal.h \

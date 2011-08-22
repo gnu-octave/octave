@@ -12,6 +12,16 @@ Summary of important user-visible changes for version 3.6:
     * ML-compatible options: 'whitespace', treatasempty',
     format string repeat count, user-specified comment style, uneven-length
     output arrays, %n and %u conversion specifiers (provisionally)
+
+ ** Certain string functions have been modified for greater Matlab compatibility
+    and for 15X greater performance when operating on cell array of strings.
+
+    deblank : Now requires character or cellstr input
+    strtrim : Now requires character or cellstr input.
+              No longer trims nulls ("\0") from string for ML compatibility.
+    strmatch: Follows documentation precisely and ignores trailing spaces
+              in pattern and in string.  Note that Matlab documents this 
+              behavior but the implementation does *not* always follow it.
  
  ** New functions added.
 

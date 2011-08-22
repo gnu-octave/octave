@@ -20,18 +20,19 @@
 ## @deftypefn {Function File} {} strtrim (@var{s})
 ## Remove leading and trailing whitespace from @var{s}.  If
 ## @var{s} is a matrix, @var{strtrim} trims each row to the length of
-## longest string.  If @var{s} is a cell array, operate recursively on
-## each element of the cell array.  For example:
+## longest string.  If @var{s} is a cell array of strings, operate recursively
+## on each string element.  For example:
 ##
 ## @example
 ## @group
 ## strtrim ("    abc  ")
-##      @result{} "abc"
+##      @result{}  "abc"
 ##
 ## strtrim ([" abc   "; "   def   "])
-##      @result{} ["abc  "; "  def"]
+##      @result{}  ["abc  "  ; "  def"]
 ## @end group
 ## @end example
+## @seealso{deblank}
 ## @end deftypefn
 
 ## Author: John Swensen <jpswensen@jhu.edu>
@@ -73,4 +74,5 @@ endfunction
 %!error <Invalid call to strtrim> strtrim ();
 %!error <Invalid call to strtrim> strtrim ("abc", "def");
 %!error <argument must be a string> strtrim (1);
+%!error <argument must be a string> strtrim ({[]});
 

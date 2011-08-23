@@ -29,6 +29,7 @@
 #include <pty.h>
 #include <utmp.h>
 
+#define PATH_MAX 1024
 
 /* for HP-UX (some versions) the extern C is needed, and for other
    platforms it doesn't hurt */
@@ -99,8 +100,6 @@ KPty::open ()
     return true;
 
   d->ownMaster = true;
-
-  QByteArray ptyName;
 
   // Find a master pty that we can open ////////////////////////////////
 

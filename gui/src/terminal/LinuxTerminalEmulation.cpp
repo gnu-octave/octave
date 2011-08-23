@@ -12,14 +12,16 @@ LinuxTerminalEmulation::LinuxTerminalEmulation ()
   dup2 (fds, STDOUT_FILENO);
   dup2 (fds, STDERR_FILENO);
 
-  m_pty = new Pty (fdm);
-  connect (m_pty, SIGNAL(receivedData(QByteArray)),
-           this, SLOT(handleReceivedData(QByteArray)));
+  m_pty = new KPtyDevice ();
+  m_pty->open (fdm);
+  //m_pty->setPtyChannels (KPtyProcess::AllChannels);
+  connect (m_pty, SIGNAL(readyRead ()),
+           this, SLOT (handleReadyRead ()));
 }
 
 LinuxTerminalEmulation::~LinuxTerminalEmulation ()
 {
-  m_pty->terminate ();
+  //m_pty->terminate ();
 }
 
 void LinuxTerminalEmulation::processKeyEvent (QKeyEvent *keyEvent)
@@ -36,19 +38,19 @@ void LinuxTerminalEmulation::processKeyEvent (QKeyEvent *keyEvent)
       return;
 
       case Qt::Key_Up:
-      m_pty->sendData ("\033OA");
+      m_pty->write ("\033OA");
       break;
 
       case Qt::Key_Down:
-      m_pty->sendData ("\033OB");
+      m_pty->write ("\033OB");
       break;
 
       case Qt::Key_Right:
-      m_pty->sendData ("\033OC");
+      m_pty->write ("\033OC");
       break;
 
       case Qt::Key_Left:
-      m_pty->sendData ("\033OF");
+      m_pty->write ("\033OF");
       break;
 
       //case Qt::Key_Backspace:
@@ -56,7 +58,7 @@ void LinuxTerminalEmulation::processKeyEvent (QKeyEvent *keyEvent)
       //break;
 
       default:
-      m_pty->sendData (keyEvent->text ().toAscii ());
+      m_pty->write (keyEvent->text ().toAscii ());
       break;
     }
   keyEvent->accept ();
@@ -65,12 +67,14 @@ void LinuxTerminalEmulation::processKeyEvent (QKeyEvent *keyEvent)
 void
 LinuxTerminalEmulation::transmitText (const QString &text)
 {
-  m_pty->sendData (text.toLocal8Bit ());
+  m_pty->write (text.toLocal8Bit ());
 }
 
 void
-LinuxTerminalEmulation::handleReceivedData (const QByteArray& data)
+LinuxTerminalEmulation::handleReadyRead ()
 {
+  QByteArray data = m_pty->readAll ();
+
   int position;
   QTextCursor tc = m_terminal->textCursor ();
   tc.movePosition (QTextCursor::End);

@@ -58,10 +58,7 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 # Files associated with the project:
 SOURCES +=\
         src/lexer/lexeroctavegui.cpp \
-        src/terminal/Pty.cpp \
         src/terminal/kpty.cpp \
-        src/terminal/kptyprocess.cpp \
-        src/terminal/kprocess.cpp \
         src/terminal/kptydevice.cpp \
         src/MainWindow.cpp \
     	  src/OctaveTerminal.cpp \
@@ -86,11 +83,8 @@ SOURCES +=\
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
-        src/terminal/Pty.h \
         src/terminal/kpty.h \
         src/terminal/kpty_p.h \
-        src/terminal/kptyprocess.h \
-        src/terminal/kprocess.h \
         src/terminal/kptydevice.h \
     	  src/MainWindow.h \
     	  src/OctaveTerminal.h \

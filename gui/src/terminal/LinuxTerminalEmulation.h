@@ -2,12 +2,11 @@
 #define LINUXTERMINALEMULATION_H
 
 #include "TerminalEmulation.h"
-#include "Pty.h"
-
 #include "pty.h"
 #include "unistd.h"
 #include <assert.h>
 #include <cstdio>
+#include "kptydevice.h"
 
 class LinuxTerminalEmulation : public TerminalEmulation
 {
@@ -20,10 +19,10 @@ public:
   void transmitText (const QString &text);
 
 private slots:
-  void handleReceivedData (const QByteArray& data);
+  void handleReadyRead ();
 
 private:
-  Pty *m_pty;
+  KPtyDevice *m_pty;
 };
 
 #endif // LINUXTERMINALEMULATION_H

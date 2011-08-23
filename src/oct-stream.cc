@@ -1521,7 +1521,9 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
     tmp[n++] = static_cast<char> (c); \
  \
   if (n > 0 && c == EOF) \
-    is.clear ()
+    is.clear (); \
+ \
+  tmp.resize (n)
 
 // For a `%s' format, skip initial whitespace and then read until the
 // next whitespace character or until WIDTH characters have been read.

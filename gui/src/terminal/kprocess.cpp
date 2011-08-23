@@ -126,54 +126,8 @@ KProcess::OutputChannelMode KProcess::outputChannelMode () const
   return d->outputChannelMode;
 }
 
-#define DUMMYENV "_KPROCESS_DUMMY_="
 
-void
-KProcess::setEnvironmentVariable (const QString & name, const QString & value, bool overwrite)
-{
-  QStringList env = environment ();
-  if (env.isEmpty ())
-    {
-      env = systemEnvironment ();
-      env.removeAll (QString::fromLatin1 (DUMMYENV));
-    }
-  QString fname (name);
-  fname.append (QLatin1Char ('='));
-  for (QStringList::Iterator it = env.begin (); it != env.end (); ++it)
-    if ((*it).startsWith (fname))
-      {
-	if (overwrite)
-	  {
-	    *it = fname.append (value);
-	    setEnvironment (env);
-	  }
-	return;
-      }
-  env.append (fname.append (value));
-  setEnvironment (env);
-}
 
-void
-KProcess::unsetEnvironmentVariable (const QString & name)
-{
-  QStringList env = environment ();
-  if (env.isEmpty ())
-    {
-      env = systemEnvironment ();
-      env.removeAll (QString::fromLatin1 (DUMMYENV));
-    }
-  QString fname (name);
-  fname.append (QLatin1Char ('='));
-  for (QStringList::Iterator it = env.begin (); it != env.end (); ++it)
-    if ((*it).startsWith (fname))
-      {
-	env.erase (it);
-	if (env.isEmpty ())
-	  env.append (QString::fromLatin1 (DUMMYENV));
-	setEnvironment (env);
-	return;
-      }
-}
 
 void
 KProcess::setProgram (const QString & exe, const QStringList & args)

@@ -8,9 +8,9 @@ LinuxTerminalEmulation::LinuxTerminalEmulation ()
     {
       assert (0);
     }
-  dup2 (fds, 0);
-  dup2 (fds, 1);
-  dup2 (fds, 2);
+  dup2 (fds, STDIN_FILENO);
+  dup2 (fds, STDOUT_FILENO);
+  dup2 (fds, STDERR_FILENO);
 
   m_pty = new Pty (fdm);
   connect (m_pty, SIGNAL(receivedData(QByteArray)),

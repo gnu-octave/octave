@@ -50,38 +50,11 @@ class Pty:public KPtyProcess
 Q_OBJECT public:
 
     /** 
-     * Constructs a new Pty.
-     * 
-     * Connect to the sendData() slot and receivedData() signal to prepare
-     * for sending and receiving data from the terminal process.
-     *
-     * To start the terminal process, call the run() method with the 
-     * name of the program to start and appropriate arguments.
-     */
-  explicit Pty (QObject * parent = 0);
-
-    /** 
      * Construct a process using an open pty master.
      * See KPtyProcess::KPtyProcess()
      */
   explicit Pty (int ptyMasterFd, QObject * parent = 0);
-
    ~Pty ();
-
-    /**
-     * Starts the terminal process.  
-     *
-     * Returns 0 if the process was started successfully or non-zero
-     * otherwise.
-     *
-     * @param program Path to the program to start
-     * @param arguments Arguments to pass to the program being started
-     * @param environment A list of key=value pairs which will be added
-     * to the environment for the new process.  At the very least this
-     * should include an assignment for the TERM environment variable.
-     */
-  int start (const QString & program,
-             const QStringList & arguments);
 
   public slots:
     /** 
@@ -99,16 +72,10 @@ Q_OBJECT public:
      */
   void receivedData (const QByteArray& data);
 
-protected:
-  void setupChildProcess ();
-
 private slots:
   // called when data is received from the terminal process
   void dataReceived ();
 
-private:
-  void init ();
-  bool _xonXoff;
 };
 
 #endif // PTY_H

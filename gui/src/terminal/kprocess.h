@@ -93,27 +93,6 @@ Q_OBJECT Q_DECLARE_PRIVATE (KProcess) public:
      */
   OutputChannelMode outputChannelMode () const;
 
-    /**
-     * Adds the variable @p name to the process' environment.
-     *
-     * This function must be called before starting the process.
-     *
-     * @param name the name of the environment variable
-     * @param value the new value for the environment variable
-     * @param overwrite if @c false and the environment variable is already
-     *   set, the old value will be preserved
-     */
-  void setEnvironmentVariable (const QString & name, const QString & value, bool overwrite =
-	       true);
-
-    /**
-     * Removes the variable @p name from the process' environment.
-     *
-     * This function must be called before starting the process.
-     *
-     * @param name the name of the environment variable
-     */
-  void unsetEnvironmentVariable (const QString & name);
 
     /**
      * Set the program and the command line arguments.

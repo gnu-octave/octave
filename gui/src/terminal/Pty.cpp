@@ -36,46 +36,10 @@
 #include "kpty.h"
 #include "kptydevice.h"
 
-int
-Pty::start (const QString & program,
-            const QStringList & programArguments)
-{
-  clearProgram ();
-  setProgram (program.toLatin1 (), programArguments.mid (1));
-
-  struct::termios ttmode;
-  pty ()->tcGetAttr (&ttmode);
-  if (!_xonXoff)
-    ttmode.c_iflag &= ~(IXOFF | IXON);
-  else
-    ttmode.c_iflag |= (IXOFF | IXON);
-
-
-  pty ()->tcSetAttr(&ttmode);
-
-  KProcess::start ();
-
-  if (!waitForStarted ())
-    return -1;
-  return 0;
-}
 
 Pty::Pty (int masterFd, QObject * parent):
 KPtyProcess (masterFd, parent)
 {
-  init ();
-}
-
-Pty::Pty (QObject * parent):KPtyProcess (parent)
-{
-  init ();
-}
-
-void
-Pty::init ()
-{
-  _xonXoff = true;
-
   connect (pty (), SIGNAL (readyRead ()), this, SLOT (dataReceived ()));
   setPtyChannels (KPtyProcess::AllChannels);
 }
@@ -96,21 +60,4 @@ void
 Pty::dataReceived ()
 {
   emit receivedData (pty ()->readAll ());
-}
-
-void
-Pty::setupChildProcess ()
-{
-  KPtyProcess::setupChildProcess ();
-
-  // reset all signal handlers
-  // this ensures that terminal applications respond to 
-  // signals generated via key sequences such as Ctrl+C
-  // (which sends SIGINT)
-  struct sigaction action;
-  sigemptyset (&action.sa_mask);
-  action.sa_handler = SIG_DFL;
-  action.sa_flags = 0;
-  for (int signal = 1; signal < NSIG; signal++)
-    sigaction (signal, &action, 0L);
 }

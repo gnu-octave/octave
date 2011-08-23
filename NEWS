@@ -3,6 +3,10 @@ Summary of important user-visible changes for version 3.6:
 
  ** The PCRE library is now required to build Octave.
 
+ ** Octave now features a profiler, thanks to the work of Daniel Kraft
+    under the Google Summer of Code mentorship program. The manual has
+    been updated to reflect this addition.
+
  ** strread, textscan, and textread have been completely revamped.
 
     They now support nearly all Matlab functionality including:
@@ -28,6 +32,8 @@ Summary of important user-visible changes for version 3.6:
     iscolumn
     issrow
     zscore
+    profile
+    profshow
 
  ** Deprecated functions.
 

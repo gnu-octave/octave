@@ -20,9 +20,26 @@
 
 #ifndef kpty_h
 #define kpty_h
-#include <QtCore/qglobal.h>
 
-struct KPtyPrivate;
+#include <QtCore/qglobal.h>
+#include <QByteArray>
+
+class KPty;
+struct KPtyPrivate
+{
+  Q_DECLARE_PUBLIC (KPty) KPtyPrivate (KPty * parent);
+  virtual ~ KPtyPrivate ();
+  bool chownpty (bool grant);
+
+  int masterFd;
+  int slaveFd;
+  bool ownMaster:1;
+
+  QByteArray ttyName;
+
+  KPty *q_ptr;
+};
+
 struct termios;
 
 /**

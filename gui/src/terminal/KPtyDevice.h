@@ -21,11 +21,9 @@
 #ifndef kptydev_h
 #define kptydev_h
 
-struct KPtyPrivate;
 struct KPtyDevicePrivate;
 
-#include "kpty.h"
-#include "kpty_p.h"
+#include "KPty.h"
 #include <QtCore/QIODevice>
 #include <QSocketNotifier>
 

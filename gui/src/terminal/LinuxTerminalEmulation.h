@@ -6,7 +6,7 @@
 #include "unistd.h"
 #include <assert.h>
 #include <cstdio>
-#include "kptydevice.h"
+#include "KPtyDevice.h"
 
 class LinuxTerminalEmulation : public TerminalEmulation
 {

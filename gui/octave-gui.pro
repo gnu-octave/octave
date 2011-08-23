@@ -58,8 +58,6 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 # Files associated with the project:
 SOURCES +=\
         src/lexer/lexeroctavegui.cpp \
-        src/terminal/kpty.cpp \
-        src/terminal/kptydevice.cpp \
         src/MainWindow.cpp \
     	  src/OctaveTerminal.cpp \
     	  src/VariablesDockWidget.cpp \
@@ -79,13 +77,12 @@ SOURCES +=\
     src/qirc/IRCClientImpl.cpp \
     src/terminal/TerminalEmulation.cpp \
     src/terminal/LinuxTerminalEmulation.cpp \
-    src/backend/ReadlineAdapter.cpp
+    src/backend/ReadlineAdapter.cpp \
+    src/terminal/KPty.cpp \
+    src/terminal/KPtyDevice.cpp
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
-        src/terminal/kpty.h \
-        src/terminal/kpty_p.h \
-        src/terminal/kptydevice.h \
     	  src/MainWindow.h \
     	  src/OctaveTerminal.h \
     	  src/VariablesDockWidget.h \
@@ -105,7 +102,9 @@ HEADERS += \
     src/qirc/IRCClientImpl.h \
     src/terminal/TerminalEmulation.h \
     src/terminal/LinuxTerminalEmulation.h \
-    src/backend/ReadlineAdapter.h
+    src/backend/ReadlineAdapter.h \
+    src/terminal/KPtyDevice.h \
+    src/terminal/KPty.h
 
 FORMS += \
     src/SettingsDialog.ui

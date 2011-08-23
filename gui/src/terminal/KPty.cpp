@@ -22,11 +22,13 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "kpty_p.h"
+#include "KPty.h"
 #include <fcntl.h>
 #include <stdio.h>
+
 #include <pty.h>
 #include <utmp.h>
+
 
 /* for HP-UX (some versions) the extern C is needed, and for other
    platforms it doesn't hurt */

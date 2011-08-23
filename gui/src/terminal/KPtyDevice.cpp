@@ -21,9 +21,7 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "kptydevice.h"
-#include "kpty_p.h"
-#define i18n
+#include "KPtyDevice.h"
 
 #include <QtCore/QSocketNotifier>
 
@@ -75,7 +73,6 @@ KPtyDevicePrivate::_k_canRead ()
       if (readBytes < 0)
 	{
 	  readBuffer.unreserve (available);
-	  q->setErrorString (i18n ("Error reading from PTY"));
 	  return false;
 	}
       readBuffer.unreserve (available - readBytes);	// *should* be a no-op
@@ -114,7 +111,6 @@ KPtyDevicePrivate::_k_canWrite ()
 		  writeBuffer.readPointer (), writeBuffer.readSize ()));
   if (wroteBytes < 0)
     {
-      q->setErrorString (i18n ("Error writing to PTY"));
       return false;
     }
   writeBuffer.free (wroteBytes);
@@ -188,7 +184,6 @@ KPtyDevicePrivate::doWait (int msecs, bool reading)
 	    break;
 	  return false;
 	case 0:
-	  q->setErrorString (i18n ("PTY operation timed out"));
 	  return false;
 	default:
 	  if (FD_ISSET (q->masterFd (), &rfds))
@@ -248,7 +243,6 @@ KPtyDevice::open (OpenMode mode)
 
   if (!KPty::open ())
     {
-      setErrorString (i18n ("Error opening PTY"));
       return false;
     }
 
@@ -264,7 +258,6 @@ KPtyDevice::open (int fd, OpenMode mode)
 
   if (!KPty::open (fd))
     {
-      setErrorString (i18n ("Error opening PTY"));
       return false;
     }
 

@@ -247,6 +247,12 @@ FileEditorMdiSubWindow::runFile ()
   //m_terminalEmulation->setFocus ();
 }
 
+// remove bookmarks
+void
+FileEditorMdiSubWindow::removeBookmark ()
+{
+  m_editor->markerDeleteAll(MARKER_BOOKMARK);
+}
 // toggle bookmark
 void
 FileEditorMdiSubWindow::toggleBookmark ()
@@ -408,6 +414,7 @@ FileEditorMdiSubWindow::construct ()
   QAction *nextBookmarkAction = new QAction (tr("&Next Bookmark"),m_toolBar);
   QAction *prevBookmarkAction = new QAction (tr("Pre&vious Bookmark"),m_toolBar);
   QAction *toggleBookmarkAction = new QAction (tr("Toggle &Bookmark"),m_toolBar);
+  QAction *removeBookmarkAction = new QAction (tr("&Remove All &Bookmarks"),m_toolBar);
   QAction *runAction = new QAction (
         QIcon::fromTheme("media-play",style->standardIcon (QStyle::SP_MediaPlay)),
         tr("&Run File"), m_toolBar);
@@ -430,7 +437,7 @@ FileEditorMdiSubWindow::construct ()
   runAction->setShortcut(Qt::Key_F5);
   nextBookmarkAction->setShortcut(Qt::Key_F2);
   prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
-  toggleBookmarkAction->setShortcut(Qt::CTRL + Qt::Key_F2);
+  toggleBookmarkAction->setShortcut(Qt::Key_F7);
 
   // toolbar
   m_toolBar->setIconSize(QSize(16,16)); // smaller icons (make configurable in user settings?)
@@ -468,6 +475,7 @@ FileEditorMdiSubWindow::construct ()
   editMenu->addAction(toggleBookmarkAction);
   editMenu->addAction(nextBookmarkAction);
   editMenu->addAction(prevBookmarkAction);
+  editMenu->addAction(removeBookmarkAction);
   m_menuBar->addMenu(editMenu);
   QMenu *runMenu = new QMenu(tr("&Run"),m_menuBar);
   runMenu->addAction(runAction);
@@ -496,6 +504,7 @@ FileEditorMdiSubWindow::construct ()
   connect (toggleBookmarkAction, SIGNAL (triggered ()), this, SLOT (toggleBookmark ()));
   connect (nextBookmarkAction, SIGNAL (triggered ()), this, SLOT (nextBookmark ()));
   connect (prevBookmarkAction, SIGNAL (triggered ()), this, SLOT (prevBookmark ()));
+  connect (removeBookmarkAction, SIGNAL (triggered ()), this, SLOT (removeBookmark ()));
 
   // TODO: Do we still need tool tips in the status bar? Tool tips are now
   //       shown directly at the theme icons

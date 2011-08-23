@@ -85,6 +85,7 @@ private slots:
   void handleMarginClicked(int line, int margin, Qt::KeyboardModifiers state);
   void handleCopyAvailable(bool enableCopy);
   void runFile();
+  void removeBookmark ();
   void toggleBookmark ();
   void nextBookmark();
   void prevBookmark();

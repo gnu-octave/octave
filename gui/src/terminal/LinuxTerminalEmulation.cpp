@@ -52,9 +52,28 @@ void LinuxTerminalEmulation::processKeyEvent (QKeyEvent *keyEvent)
       m_pty->write ("\033OF");
       break;
 
-      //case Qt::Key_Backspace:
-      //m_pty->sendData ("\03308");
-      //break;
+      case Qt::Key_C:
+      if (keyEvent->modifiers() & Qt::ControlModifier)
+        {
+          // TODO: Lookup and implement Control + C.
+        }
+      else
+        {
+          m_pty->write (keyEvent->text ().toAscii ());
+        }
+      break;
+
+      case Qt::Key_D:
+      if (keyEvent->modifiers() & Qt::ControlModifier)
+        {
+          // Do not send EOT, because this will crash
+          // the program.
+        }
+      else
+        {
+          m_pty->write (keyEvent->text ().toAscii ());
+        }
+      break;
 
       default:
       m_pty->write (keyEvent->text ().toAscii ());

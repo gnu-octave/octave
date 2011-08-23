@@ -93,14 +93,16 @@ FileEditorMdiSubWindow::openFile ()
       {
         return; // existing file not saved and opening another file canceled by user
       }
-    QString openFileName =
-        QFileDialog::getOpenFileName (this, "Open File", QDir::homePath(), SAVE_FILE_FILTER);
-    if (openFileName.isEmpty ())
+    QString openFileName;
+    QFileDialog dlg(this);
+    dlg.setNameFilter(SAVE_FILE_FILTER);
+    dlg.setAcceptMode(QFileDialog::AcceptOpen);
+    dlg.setViewMode(QFileDialog::Detail);
+    if ( dlg.exec() )
       {
-        return;
-      }
-    else
-      {
+        openFileName = dlg.selectedFiles().at(0);
+        if (openFileName.isEmpty ())
+          return;
         loadFile(openFileName);
       }
 }
@@ -178,31 +180,16 @@ FileEditorMdiSubWindow::saveFile ()
 }
 
 void
-FileEditorMdiSubWindow::saveFile (QString fileName)
+FileEditorMdiSubWindow::saveFile (QString saveFileName)
 {
   // it is a new file with the name "<unnamed>" -> call saveFielAs
-  if (fileName==UNNAMED_FILE)
+  if (saveFileName==UNNAMED_FILE || saveFileName.isEmpty ())
     {
       saveFileAs();
       return;
     }
 
-  // check for a valid file name to save the contents
-  QString saveFileName;
-  if (fileName.isEmpty ())
-    {
-      saveFileName = QFileDialog::getSaveFileName (this, "Save File", fileName,SAVE_FILE_FILTER);
-      if (saveFileName.isEmpty ())
-        return;
-      if(!saveFileName.endsWith(".m"))
-        saveFileName.append(".m");
-    }
-  else
-    {
-    saveFileName = fileName;
-    }
-
-  // open the file
+  // open the file for writing
   QFile file (saveFileName);
   if (!file.open (QFile::WriteOnly))
     {
@@ -226,14 +213,28 @@ FileEditorMdiSubWindow::saveFile (QString fileName)
 void
 FileEditorMdiSubWindow::saveFileAs ()
 {
-  QString saveDir(m_fileName);
-  if (saveDir==UNNAMED_FILE)
-    saveDir = QDir::homePath();
-  QString saveFileName = QFileDialog::getSaveFileName(
-        this, "Save File As", saveDir,SAVE_FILE_FILTER);
-  if(saveFileName.isEmpty())
-    return;
-  saveFile(saveFileName);
+  QString saveFileName(m_fileName);
+  QFileDialog dlg(this);
+  if (saveFileName==UNNAMED_FILE || saveFileName.isEmpty ())
+    {
+      saveFileName = QDir::homePath();
+      dlg.setDirectory(saveFileName);
+    }
+  else
+    {
+      dlg.selectFile(saveFileName);
+    }
+  dlg.setNameFilter(SAVE_FILE_FILTER);
+  dlg.setDefaultSuffix("m");
+  dlg.setAcceptMode(QFileDialog::AcceptSave);
+  dlg.setViewMode(QFileDialog::Detail);
+  if ( dlg.exec() )
+    {
+      saveFileName = dlg.selectedFiles().at(0);
+      if (saveFileName.isEmpty ())
+        return;
+      saveFile(saveFileName);
+    }
 }
 
 // handle the run command
@@ -246,6 +247,12 @@ FileEditorMdiSubWindow::runFile ()
   //m_terminalEmulation->setFocus ();
 }
 
+// remove bookmarks
+void
+FileEditorMdiSubWindow::removeBookmark ()
+{
+  m_editor->markerDeleteAll(MARKER_BOOKMARK);
+}
 // toggle bookmark
 void
 FileEditorMdiSubWindow::toggleBookmark ()
@@ -407,6 +414,7 @@ FileEditorMdiSubWindow::construct ()
   QAction *nextBookmarkAction = new QAction (tr("&Next Bookmark"),m_toolBar);
   QAction *prevBookmarkAction = new QAction (tr("Pre&vious Bookmark"),m_toolBar);
   QAction *toggleBookmarkAction = new QAction (tr("Toggle &Bookmark"),m_toolBar);
+  QAction *removeBookmarkAction = new QAction (tr("&Remove All &Bookmarks"),m_toolBar);
   QAction *runAction = new QAction (
         QIcon::fromTheme("media-play",style->standardIcon (QStyle::SP_MediaPlay)),
         tr("&Run File"), m_toolBar);
@@ -429,7 +437,7 @@ FileEditorMdiSubWindow::construct ()
   runAction->setShortcut(Qt::Key_F5);
   nextBookmarkAction->setShortcut(Qt::Key_F2);
   prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
-  toggleBookmarkAction->setShortcut(Qt::CTRL + Qt::Key_F2);
+  toggleBookmarkAction->setShortcut(Qt::Key_F7);
 
   // toolbar
   m_toolBar->setIconSize(QSize(16,16)); // smaller icons (make configurable in user settings?)
@@ -467,6 +475,7 @@ FileEditorMdiSubWindow::construct ()
   editMenu->addAction(toggleBookmarkAction);
   editMenu->addAction(nextBookmarkAction);
   editMenu->addAction(prevBookmarkAction);
+  editMenu->addAction(removeBookmarkAction);
   m_menuBar->addMenu(editMenu);
   QMenu *runMenu = new QMenu(tr("&Run"),m_menuBar);
   runMenu->addAction(runAction);
@@ -495,6 +504,7 @@ FileEditorMdiSubWindow::construct ()
   connect (toggleBookmarkAction, SIGNAL (triggered ()), this, SLOT (toggleBookmark ()));
   connect (nextBookmarkAction, SIGNAL (triggered ()), this, SLOT (nextBookmark ()));
   connect (prevBookmarkAction, SIGNAL (triggered ()), this, SLOT (prevBookmark ()));
+  connect (removeBookmarkAction, SIGNAL (triggered ()), this, SLOT (removeBookmark ()));
 
   // TODO: Do we still need tool tips in the status bar? Tool tips are now
   //       shown directly at the theme icons

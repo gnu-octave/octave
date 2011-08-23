@@ -32,7 +32,7 @@
 #include "lexer/lexeroctavegui.h"
 
 const char UNNAMED_FILE[]     = "<unnamed>";
-const char SAVE_FILE_FILTER[] = "Octave Files  *.m(*.m);;All Files   *.*(*.*)";
+const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";
 enum MARKER
   {
     MARKER_BOOKMARK,
@@ -85,6 +85,7 @@ private slots:
   void handleMarginClicked(int line, int margin, Qt::KeyboardModifiers state);
   void handleCopyAvailable(bool enableCopy);
   void runFile();
+  void removeBookmark ();
   void toggleBookmark ();
   void nextBookmark();
   void prevBookmark();

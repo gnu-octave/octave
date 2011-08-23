@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <unistd.h>
 
 #include "cmd-edit.h"
+#include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
@@ -1053,7 +1054,7 @@ do_octave_atexit (void)
 
       SAFE_CALL (octave_history_write_timestamp, ())
 
-      if (Vsaving_history)
+      if (! command_history::ignoring_entries ())
         SAFE_CALL (command_history::clean_up_and_save, ())
 
       SAFE_CALL (close_files, ())

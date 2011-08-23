@@ -3471,17 +3471,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   parsing_subfunctions = false;
   endfunction_found = false;
 
-  // The next four lines must be in this order.
-  frame.add_fcn (command_history::ignore_entries, ! Vsaving_history);
+  frame.add_fcn (command_history::ignore_entries,
+                 command_history::ignoring_entries ());
 
-  // FIXME -- we shouldn't need both the
-  // command_history object and the
-  // Vsaving_history variable...
   command_history::ignore_entries ();
-
-  frame.protect_var (Vsaving_history);
-
-  Vsaving_history = false;
 
   FILE *ffile = get_input_from_file (ff, 0);
 

@@ -88,9 +88,6 @@ default_history_file (void)
   return file;
 }
 
-// Where history is saved.
-static std::string Vhistory_file = default_history_file ();
-
 static int
 default_history_size (void)
 {
@@ -109,27 +106,6 @@ default_history_size (void)
   return size;
 }
 
-// The number of lines to keep in the history file.
-static int Vhistory_size = default_history_size ();
-
-static std::string
-default_history_control (void)
-{
-  std::string retval;
-
-  std::string env_histcontrol = octave_env::getenv ("OCTAVE_HISTCONTROL");
-
-  if (! env_histcontrol.empty ())
-    {
-      return env_histcontrol;
-    }
-
-  return retval;
-}
-
-// The number of lines to keep in the history file.
-static std::string Vhistory_control = default_history_control ();
-
 static std::string
 default_history_timestamp_format (void)
 {
@@ -145,9 +121,6 @@ default_history_timestamp_format (void)
 // Octave exits.
 static std::string Vhistory_timestamp_format_string
   = default_history_timestamp_format ();
-
-// TRUE if we are saving history.
-bool Vsaving_history = true;
 
 // Display, save, or load history.  Stolen and modified from bash.
 //
@@ -537,8 +510,10 @@ do_run_history (int argc, const string_vector& argv)
 void
 initialize_history (bool read_history_file)
 {
-  command_history::initialize (read_history_file, Vhistory_file, Vhistory_size,
-                               Vhistory_control);
+  command_history::initialize (read_history_file,
+                               default_history_file (),
+                               default_history_size (),
+                               octave_env::getenv ("OCTAVE_HISTCONTROL"));
 }
 
 void
@@ -691,12 +666,15 @@ the history list, subject to the value of @code{saving_history}.\n\
 @seealso{history_file, history_size, history_timestamp_format_string, saving_history}\n\
 @end deftypefn")
 {
-  std::string saved_history_control = Vhistory_control;
+  std::string old_history_control = command_history::histcontrol ();
 
-  octave_value retval = SET_INTERNAL_VARIABLE (history_control);
+  std::string tmp = old_history_control;
 
-  if (Vhistory_control != saved_history_control)
-    command_history::process_histcontrol (Vhistory_control);
+  octave_value retval = set_internal_variable (tmp, args, nargout,
+                                               "history_control");
+
+  if (tmp != old_history_control)
+    command_history::process_histcontrol (tmp);
 
   return retval;
 }
@@ -711,13 +689,15 @@ but may be overridden by the environment variable @w{@env{OCTAVE_HISTSIZE}}.\n\
 @seealso{history_file, history_timestamp_format_string, saving_history}\n\
 @end deftypefn")
 {
-  int saved_history_size = Vhistory_size;
+  int old_history_size = command_history::size ();
 
-  octave_value retval
-    = SET_INTERNAL_VARIABLE_WITH_LIMITS (history_size, -1, INT_MAX);
+  int tmp = old_history_size;
 
-  if (Vhistory_size != saved_history_size)
-    command_history::set_size (Vhistory_size);
+  octave_value retval = set_internal_variable (tmp, args, nargout,
+                                               "history_size", -1, INT_MAX);
+
+  if (tmp != old_history_size)
+    command_history::set_size (tmp);
 
   return retval;
 }
@@ -733,12 +713,15 @@ variable @w{@env{OCTAVE_HISTFILE}}.\n\
 @seealso{history_size, saving_history, history_timestamp_format_string}\n\
 @end deftypefn")
 {
-  std::string saved_history_file = Vhistory_file;
+  std::string old_history_file = command_history::file ();
 
-  octave_value retval = SET_INTERNAL_VARIABLE (history_file);
+  std::string tmp = old_history_file;
 
-  if (Vhistory_file != saved_history_file)
-    command_history::set_file (Vhistory_file);
+  octave_value retval = set_internal_variable (tmp, args, nargout,
+                                               "history_file");
+
+  if (tmp != old_history_file)
+    command_history::set_file (tmp);
 
   return retval;
 }
@@ -770,9 +753,15 @@ on the command line are saved in the history file.\n\
 @seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
 @end deftypefn")
 {
-  octave_value retval = SET_INTERNAL_VARIABLE (saving_history);
+  bool old_saving_history = ! command_history::ignoring_entries ();
 
-  command_history::ignore_entries (! Vsaving_history);
+  bool tmp = old_saving_history;
+
+  octave_value retval = set_internal_variable (tmp, args, nargout,
+                                               "saving_history");
+
+  if (tmp != old_saving_history)
+    command_history::ignore_entries (! tmp);
 
   return retval;
 }

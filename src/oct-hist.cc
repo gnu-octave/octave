@@ -133,6 +133,10 @@ do_history (int argc, const string_vector& argv)
 {
   int numbered_output = 1;
 
+  unwind_protect frame;
+
+  frame.add_fcn (command_history::set_file, command_history::file ());
+
   int i;
   for (i = 1; i < argc; i++)
     {

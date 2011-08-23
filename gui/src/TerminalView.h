@@ -16,44 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "OctaveTerminal.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QStringListModel>
-#include <QStringList>
-#include <QScrollBar>
+#ifndef OCTAVETERMINAL_H
+#define OCTAVETERMINAL_H
+#include <QPlainTextEdit>
+#include "TerminalEmulation.h"
 
-OctaveTerminal::OctaveTerminal (QWidget * parent)
-  : QPlainTextEdit (parent), Terminal ()
+class TerminalView:public QPlainTextEdit, Terminal
 {
-    setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_terminalEmulation = TerminalEmulation::newTerminalEmulation (this);
-}
+Q_OBJECT
+public:
+  TerminalView (QWidget * parent = 0);
+  ~TerminalView ();
 
-OctaveTerminal::~OctaveTerminal ()
-{
-}
+  TerminalEmulation *terminalEmulation ()
+  {
+    return m_terminalEmulation;
+  }
 
-QTextCursor
-OctaveTerminal::textCursor ()
-{
-  return QPlainTextEdit::textCursor();
-}
+  void sendText (QString text) { m_terminalEmulation->transmitText(text); }
 
-void
-OctaveTerminal::setTextCursor (const QTextCursor &cursor)
-{
-  QPlainTextEdit::setTextCursor (cursor);
-}
+  // Terminal Interface
+  QTextCursor textCursor();
+  void setTextCursor (const QTextCursor &cursor);
+  void bell ();
 
-void
-OctaveTerminal::bell ()
-{
+protected:
+  void keyPressEvent (QKeyEvent *keyEvent);
 
-}
-
-void
-OctaveTerminal::keyPressEvent (QKeyEvent * keyEvent)
-{
-  m_terminalEmulation->processKeyEvent (keyEvent);
-}
+private:
+  TerminalEmulation *m_terminalEmulation;
+};
+#endif // OCTAVETERMINAL_H

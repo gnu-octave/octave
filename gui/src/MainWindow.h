@@ -29,7 +29,7 @@
 #include <Qsci/qsciapis.h>
 #include <QMdiSubWindow>
 #include "ResourceManager.h"
-#include "OctaveTerminal.h"
+#include "TerminalView.h"
 #include "OctaveLink.h"
 #include "VariablesDockWidget.h"
 #include "HistoryDockWidget.h"
@@ -63,9 +63,9 @@ Q_OBJECT public:
   MainWindow (QWidget * parent = 0);
   ~MainWindow ();
 
-  OctaveTerminal *octaveTerminal ()
+  TerminalView *terminalView ()
   {
-    return m_octaveTerminal;
+    return m_terminalView;
   }
   VariablesDockWidget *variablesDockWidget ()
   {
@@ -112,11 +112,11 @@ private:
   QMdiArea *m_centralMdiArea;
 
   // Mdi sub windows.
-  OctaveTerminal *m_octaveTerminal;
+  TerminalView *m_terminalView;
   BrowserWidget *m_documentationWidget;
   IRCWidget *m_ircWidget;
 
-  NonClosableMdiSubWindow *m_octaveTerminalSubWindow;
+  NonClosableMdiSubWindow *m_terminalViewSubWindow;
   NonClosableMdiSubWindow *m_documentationWidgetSubWindow;
   NonClosableMdiSubWindow *m_ircWidgetSubWindow;
 

@@ -59,7 +59,6 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 SOURCES +=\
         src/lexer/lexeroctavegui.cpp \
         src/MainWindow.cpp \
-    	  src/OctaveTerminal.cpp \
     	  src/VariablesDockWidget.cpp \
     	  src/HistoryDockWidget.cpp \
     	  src/FilesDockWidget.cpp \
@@ -79,12 +78,12 @@ SOURCES +=\
     src/terminal/LinuxTerminalEmulation.cpp \
     src/backend/ReadlineAdapter.cpp \
     src/terminal/KPty.cpp \
-    src/terminal/KPtyDevice.cpp
+    src/terminal/KPtyDevice.cpp \
+    src/TerminalView.cpp
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
     	  src/MainWindow.h \
-    	  src/OctaveTerminal.h \
     	  src/VariablesDockWidget.h \
     	  src/HistoryDockWidget.h \
     	  src/FilesDockWidget.h \
@@ -104,7 +103,8 @@ HEADERS += \
     src/terminal/LinuxTerminalEmulation.h \
     src/backend/ReadlineAdapter.h \
     src/terminal/KPtyDevice.h \
-    src/terminal/KPty.h
+    src/terminal/KPty.h \
+    src/TerminalView.h
 
 FORMS += \
     src/SettingsDialog.ui

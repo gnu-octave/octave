@@ -242,8 +242,8 @@ FileEditorMdiSubWindow::runFile ()
 {
   if (m_editor->isModified ())
     saveFile(m_fileName);
-  m_octave->sendText (QString ("run \'%1\'\n").arg (m_fileName));
-  m_octave->setFocus ();
+  m_terminalEmulation->transmitText (QString ("run \'%1\'\n").arg (m_fileName));
+  //m_terminalEmulation->setFocus ();
 }
 
 // toggle bookmark
@@ -282,11 +282,11 @@ FileEditorMdiSubWindow::prevBookmark ()
 
 // function for setting the already existing lexer from MainWindow
 void
-FileEditorMdiSubWindow::initEditor (OctaveTerminal* terminal,
+FileEditorMdiSubWindow::initEditor (TerminalEmulation* terminalEmulation,
                                     LexerOctaveGui* lexer)
 {
   m_editor->setLexer(lexer);
-  m_octave = terminal; // for sending commands to octave
+  m_terminalEmulation = terminalEmulation; // for sending commands to octave
                        // TODO: make a global commandOctave function?
 }
 

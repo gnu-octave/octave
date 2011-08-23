@@ -19,7 +19,7 @@
 #ifndef FILEEDITORMDISUBWINDOW_H
 #define FILEEDITORMDISUBWINDOW_H
 
-#include "OctaveTerminal.h"
+#include "TerminalEmulation.h"
 #include <QMdiSubWindow>
 #include <QToolBar>
 #include <QAction>
@@ -45,7 +45,7 @@ Q_OBJECT public:
   FileEditorMdiSubWindow (QWidget * parent = 0);
   ~FileEditorMdiSubWindow ();
   void loadFile (QString fileName);
-  void initEditor (OctaveTerminal *terminal, LexerOctaveGui *lexer);
+  void initEditor (TerminalEmulation *terminalEmulation, LexerOctaveGui *lexer);
 
 public slots:
 
@@ -74,7 +74,7 @@ private:
   QsciScintilla *m_editor;
   QStatusBar *m_statusBar;
   QString m_fileName;
-  OctaveTerminal* m_octave;
+  TerminalEmulation* m_terminalEmulation;
   QAction* m_copyAction;
   QAction* m_cutAction;
   int m_markerBookmark;

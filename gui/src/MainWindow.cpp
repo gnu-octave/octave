@@ -96,7 +96,7 @@ MainWindow::openEditorFile (QString fileName)
          }
        m_lexerAPI->prepare();           // prepare API info ... this make take some time
     }
-  subWindow->initEditor(m_octaveTerminal,m_lexer);   // init necessary informations for editor
+  subWindow->initEditor(m_terminalView->terminalEmulation(), m_lexer);   // init necessary informations for editor
 
   if ( fileName.isEmpty() )
     subWindow->newFile ();
@@ -123,8 +123,8 @@ MainWindow::handleSaveWorkspaceRequest ()
   QString selectedFile =
     QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
                                   ResourceManager::instance ()->homePath ());
-  m_octaveTerminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
-  m_octaveTerminal->setFocus ();
+  m_terminalView->sendText (QString ("save \'%1\'\n").arg (selectedFile));
+  m_terminalView->setFocus ();
 }
 
 void
@@ -133,22 +133,22 @@ MainWindow::handleLoadWorkspaceRequest ()
   QString selectedFile =
     QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
                                   ResourceManager::instance ()->homePath ());
-  m_octaveTerminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
-  m_octaveTerminal->setFocus ();
+  m_terminalView->sendText (QString ("load \'%1\'\n").arg (selectedFile));
+  m_terminalView->setFocus ();
 }
 
 void
 MainWindow::handleClearWorkspaceRequest ()
 {
-  m_octaveTerminal->sendText ("clear\n");
-  m_octaveTerminal->setFocus ();
+  m_terminalView->sendText ("clear\n");
+  m_terminalView->setFocus ();
 }
 
 void
 MainWindow::handleCommandDoubleClicked (QString command)
 {
-  m_octaveTerminal->sendText (command);
-  m_octaveTerminal->setFocus ();
+  m_terminalView->sendText (command);
+  m_terminalView->setFocus ();
 }
 
 void
@@ -281,22 +281,22 @@ MainWindow::construct ()
   m_statusBar = new QStatusBar (this);
 
   // Setup essential MDI Windows.
-  m_octaveTerminal = new OctaveTerminal (this);
+  m_terminalView = new TerminalView (this);
   m_documentationWidget = new BrowserWidget (this);
   m_ircWidget = new IRCWidget (this);
 
   // Octave Terminal subwindow.
-  m_octaveTerminalSubWindow = new NonClosableMdiSubWindow (this);
-  m_octaveTerminalSubWindow->setWidget (m_octaveTerminal);
-  m_centralMdiArea->addSubWindow (m_octaveTerminalSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
+  m_terminalViewSubWindow = new NonClosableMdiSubWindow (this);
+  m_terminalViewSubWindow->setWidget (m_terminalView);
+  m_centralMdiArea->addSubWindow (m_terminalViewSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
 
-  m_octaveTerminalSubWindow->setObjectName ("OctaveTerminalSubWindow");
-  m_octaveTerminalSubWindow->setWindowTitle (tr ("Terminal"));
-  m_octaveTerminalSubWindow
+  m_terminalViewSubWindow->setObjectName ("OctaveTerminalSubWindow");
+  m_terminalViewSubWindow->setWindowTitle (tr ("Terminal"));
+  m_terminalViewSubWindow
       ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Terminal));
-  m_octaveTerminalSubWindow->setFocusProxy (m_octaveTerminal);
-  m_octaveTerminalSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
-  m_octaveTerminalSubWindow->setMinimumSize (300, 300);
+  m_terminalViewSubWindow->setFocusProxy (m_terminalView);
+  m_terminalViewSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
+  m_terminalViewSubWindow->setMinimumSize (300, 300);
 
   // Documentation subwindow.
   m_documentationWidgetSubWindow = new NonClosableMdiSubWindow (this);

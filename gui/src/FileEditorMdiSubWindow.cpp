@@ -93,14 +93,16 @@ FileEditorMdiSubWindow::openFile ()
       {
         return; // existing file not saved and opening another file canceled by user
       }
-    QString openFileName =
-        QFileDialog::getOpenFileName (this, "Open File", QDir::homePath(), SAVE_FILE_FILTER);
-    if (openFileName.isEmpty ())
+    QString openFileName;
+    QFileDialog dlg(this);
+    dlg.setNameFilter(SAVE_FILE_FILTER);
+    dlg.setAcceptMode(QFileDialog::AcceptOpen);
+    dlg.setViewMode(QFileDialog::Detail);
+    if ( dlg.exec() )
       {
-        return;
-      }
-    else
-      {
+        openFileName = dlg.selectedFiles().at(0);
+        if (openFileName.isEmpty ())
+          return;
         loadFile(openFileName);
       }
 }
@@ -178,31 +180,16 @@ FileEditorMdiSubWindow::saveFile ()
 }
 
 void
-FileEditorMdiSubWindow::saveFile (QString fileName)
+FileEditorMdiSubWindow::saveFile (QString saveFileName)
 {
   // it is a new file with the name "<unnamed>" -> call saveFielAs
-  if (fileName==UNNAMED_FILE)
+  if (saveFileName==UNNAMED_FILE || saveFileName.isEmpty ())
     {
       saveFileAs();
       return;
     }
 
-  // check for a valid file name to save the contents
-  QString saveFileName;
-  if (fileName.isEmpty ())
-    {
-      saveFileName = QFileDialog::getSaveFileName (this, "Save File", fileName,SAVE_FILE_FILTER);
-      if (saveFileName.isEmpty ())
-        return;
-      if(!saveFileName.endsWith(".m"))
-        saveFileName.append(".m");
-    }
-  else
-    {
-    saveFileName = fileName;
-    }
-
-  // open the file
+  // open the file for writing
   QFile file (saveFileName);
   if (!file.open (QFile::WriteOnly))
     {
@@ -226,14 +213,28 @@ FileEditorMdiSubWindow::saveFile (QString fileName)
 void
 FileEditorMdiSubWindow::saveFileAs ()
 {
-  QString saveDir(m_fileName);
-  if (saveDir==UNNAMED_FILE)
-    saveDir = QDir::homePath();
-  QString saveFileName = QFileDialog::getSaveFileName(
-        this, "Save File As", saveDir,SAVE_FILE_FILTER);
-  if(saveFileName.isEmpty())
-    return;
-  saveFile(saveFileName);
+  QString saveFileName(m_fileName);
+  QFileDialog dlg(this);
+  if (saveFileName==UNNAMED_FILE || saveFileName.isEmpty ())
+    {
+      saveFileName = QDir::homePath();
+      dlg.setDirectory(saveFileName);
+    }
+  else
+    {
+      dlg.selectFile(saveFileName);
+    }
+  dlg.setNameFilter(SAVE_FILE_FILTER);
+  dlg.setDefaultSuffix("m");
+  dlg.setAcceptMode(QFileDialog::AcceptSave);
+  dlg.setViewMode(QFileDialog::Detail);
+  if ( dlg.exec() )
+    {
+      saveFileName = dlg.selectedFiles().at(0);
+      if (saveFileName.isEmpty ())
+        return;
+      saveFile(saveFileName);
+    }
 }
 
 // handle the run command

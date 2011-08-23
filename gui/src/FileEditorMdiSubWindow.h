@@ -32,7 +32,7 @@
 #include "lexer/lexeroctavegui.h"
 
 const char UNNAMED_FILE[]     = "<unnamed>";
-const char SAVE_FILE_FILTER[] = "Octave Files  *.m(*.m);;All Files   *.*(*.*)";
+const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";
 enum MARKER
   {
     MARKER_BOOKMARK,

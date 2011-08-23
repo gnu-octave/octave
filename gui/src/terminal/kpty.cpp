@@ -23,26 +23,10 @@
 */
 
 #include "kpty_p.h"
-
-#include <sys/types.h>
-#include <sys/ioctl.h>#include <sys/time.h>
-#include <sys/resource.h>
-#include <sys/stat.h>
-#include <sys/param.h>
-
-#include <errno.h>
 #include <fcntl.h>
-#include <time.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <grp.h>
-
 #include <pty.h>
-#define _UTMPX_COMPAT
 #include <utmp.h>
-#include <utmpx.h>
 
 /* for HP-UX (some versions) the extern C is needed, and for other
    platforms it doesn't hurt */

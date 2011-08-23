@@ -82,31 +82,6 @@ Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
   virtual void close ();
 
     /**
-     * Sets whether the KPtyDevice monitors the pty for incoming data.
-     *
-     * When the KPtyDevice is suspended, it will no longer attempt to buffer
-     * data that becomes available from the pty and it will not emit any
-     * signals.
-     *
-     * Do not use on closed ptys.
-     * After a call to open(), the pty is not suspended. If you need to
-     * ensure that no data is read, call this function before the main loop
-     * is entered again (i.e., immediately after opening the pty).
-     */
-  void setSuspended (bool suspended);
-
-    /**
-     * Returns true if the KPtyDevice is not monitoring the pty for incoming
-     * data.
-     *
-     * Do not use on closed ptys.
-     *
-     * See setSuspended()
-     */
-  bool isSuspended () const;
-
-
-    /**
      * @reimp
      */
   bool canReadLine () const;
@@ -125,14 +100,6 @@ Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
      * @reimp
      */
   qint64 bytesToWrite () const;
-
-signals:
-    /**
-     * Emitted when EOF is read from the PTY.
-     *
-     * Data may still remain in the buffers.
-     */
-  void readEof ();
 
 protected:
   virtual qint64 readData (char *data, qint64 maxSize);

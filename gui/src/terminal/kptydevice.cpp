@@ -84,7 +84,6 @@ KPtyDevicePrivate::_k_canRead ()
   if (!readBytes)
     {
       readNotifier->setEnabled (false);
-      emit q->readEof ();
       return false;
     }
   else
@@ -316,20 +315,6 @@ KPtyDevice::bytesToWrite () const
 {
   Q_D (const KPtyDevice);
   return d->writeBuffer.size ();
-}
-
-void
-KPtyDevice::setSuspended (bool suspended)
-{
-  Q_D (KPtyDevice);
-  d->readNotifier->setEnabled (!suspended);
-}
-
-bool
-KPtyDevice::isSuspended () const
-{
-  Q_D (const KPtyDevice);
-  return !d->readNotifier->isEnabled ();
 }
 
 // protected

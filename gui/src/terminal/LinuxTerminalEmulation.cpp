@@ -14,14 +14,13 @@ LinuxTerminalEmulation::LinuxTerminalEmulation ()
 
   m_pty = new KPtyDevice ();
   m_pty->open (fdm);
-  //m_pty->setPtyChannels (KPtyProcess::AllChannels);
   connect (m_pty, SIGNAL(readyRead ()),
            this, SLOT (handleReadyRead ()));
 }
 
 LinuxTerminalEmulation::~LinuxTerminalEmulation ()
 {
-  //m_pty->terminate ();
+  m_pty->close ();
 }
 
 void LinuxTerminalEmulation::processKeyEvent (QKeyEvent *keyEvent)

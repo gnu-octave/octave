@@ -296,7 +296,7 @@ MainWindow::construct ()
       ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Terminal));
   m_octaveTerminalSubWindow->setFocusProxy (m_octaveTerminal);
   m_octaveTerminalSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
-  m_octaveTerminalSubWindow->setMinimumSize (670, 300);
+  m_octaveTerminalSubWindow->setMinimumSize (300, 300);
 
   // Documentation subwindow.
   m_documentationWidgetSubWindow = new NonClosableMdiSubWindow (this);
@@ -309,7 +309,7 @@ MainWindow::construct ()
       ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Documentation));
   m_documentationWidgetSubWindow->setFocusProxy (m_documentationWidget);
   m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
-  m_documentationWidgetSubWindow->setMinimumSize (670, 300);
+  m_documentationWidgetSubWindow->setMinimumSize (300, 300);
 
   // Chat subwindow.
   m_ircWidgetSubWindow = new NonClosableMdiSubWindow (this);
@@ -322,7 +322,7 @@ MainWindow::construct ()
       ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Chat));
   m_ircWidgetSubWindow->setStatusTip(tr ("Instantly chat with other Octave users for help."));
   m_ircWidgetSubWindow->setFocusProxy (m_ircWidget);
-  m_ircWidgetSubWindow->setMinimumSize (670, 300);
+  m_ircWidgetSubWindow->setMinimumSize (300, 300);
   connect (m_ircWidget, SIGNAL (unreadMessages (bool)), this, SLOT (handleUnreadMessages (bool)));
 
   m_lexer = NULL;  // initialise the empty lexer for the edtiors

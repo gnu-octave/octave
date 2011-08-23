@@ -81,7 +81,8 @@ SOURCES +=\
     src/backend/OctaveMainThread.cpp \
     src/qirc/IRCClientImpl.cpp \
     src/terminal/TerminalEmulation.cpp \
-    src/terminal/LinuxTerminalEmulation.cpp
+    src/terminal/LinuxTerminalEmulation.cpp \
+    src/backend/ReadlineAdapter.cpp
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
@@ -109,7 +110,8 @@ HEADERS += \
     src/qirc/IRCClientInterface.h \
     src/qirc/IRCClientImpl.h \
     src/terminal/TerminalEmulation.h \
-    src/terminal/LinuxTerminalEmulation.h
+    src/terminal/LinuxTerminalEmulation.h \
+    src/backend/ReadlineAdapter.h
 
 FORMS += \
     src/SettingsDialog.ui

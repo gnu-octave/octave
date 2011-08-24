@@ -1176,11 +1176,13 @@ complete description of the syntax of the template string.\n\
 
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
+@deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
 @deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
-string is treated as an end-of-file condition.\n\
+string is treated as an end-of-file condition.  In addition to the values\n\
+returned by @code{fscanf}, the index of the next character to be read\n\
+is returned in in @var{pos}.\n\
 @seealso{fscanf, scanf, sprintf}\n\
 @end deftypefn")
 {

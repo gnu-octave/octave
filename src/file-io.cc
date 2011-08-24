@@ -1249,7 +1249,8 @@ is returned in in @var{pos}.\n\
                           // position will clear it.
                           std::string errmsg = os.error ();
 
-                          retval(3) = os.tell () + 1;
+                          retval(3)
+                            = (os.eof () ? data.length () : os.tell ()) + 1;
                           retval(2) = errmsg;
                           retval(1) = count;
                           retval(0) = tmp;

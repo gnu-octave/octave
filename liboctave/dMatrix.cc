@@ -3118,10 +3118,10 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 %! rv = randn(1,10);
 %! rvt = rv';
 %!assert([M*cv,M*cv],M*[cv,cv],1e-14)
-%!assert([M'*cv,M'*cv],M'*[cv,cv],3e-14)
-%!assert([rv*M;rv*M],[rv;rv]*M,3e-14)
-%!assert([rv*M';rv*M'],[rv;rv]*M',3e-14)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],3e-14)
+%!assert([M'*cv,M'*cv],M'*[cv,cv],1e-13)
+%!assert([rv*M;rv*M],[rv;rv]*M,1e-13)
+%!assert([rv*M';rv*M'],[rv;rv]*M',1e-13)
+%!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-13)
 %!assert(M'\cv,Mt\cv,1e-14)
 %!assert(M'\rv',Mt\rvt,1e-14)
 */

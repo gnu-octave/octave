@@ -155,7 +155,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
 
   ## Parse arguments.
   if (nargin == 1)
-    length = 8 * data_size / bits_per_sample;
+    length = idivide (8 * data_size, bits_per_sample);
   else
     nparams = numel (param);
     if (nparams == 1)
@@ -170,7 +170,8 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     elseif (nparams == 4 && char (param) == "size")
       ## Size of the file is requested.
       fclose (fid);
-      y = [data_size/channels/(bits_per_sample/8), channels];
+      tmp = idivide (8 * data_size, channels * bits_per_sample);
+      y = [tmp, channels];
       return;
     else
       fclose (fid);

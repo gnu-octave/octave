@@ -1352,17 +1352,24 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
                                 is.putback (c3);
                                 is.putback (c2);
                                 is.putback (c1);
-
+                                
                                 is >> ref;
                               }
-                        }
-                      else
-                        {
-                          is.putback (c2);
-                          is.putback (c1);
-
-                          is >> ref;
-                        }
+                          }
+                        else
+                          {
+                            is.putback (c2);
+                            is.putback (c1);
+                            
+                            is >> ref;
+                          }
+                      }
+                    else
+                      {
+                        is.putback (c2);
+                        is.putback (c1);
+                        
+                        is >> ref;
                       }
                   }
               }

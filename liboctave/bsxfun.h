@@ -19,6 +19,8 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
+#if !defined (bsxfun_h)
+#define bsxfun_h 1
 
 #include <algorithm>
 
@@ -38,3 +40,5 @@ is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
     }
   return true;
 }
+
+#endif

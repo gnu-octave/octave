@@ -925,3 +925,5 @@ BSXFUN_STDREL_DEFS_MXLOOP (NDArray)
 BSXFUN_OP_DEF_MXLOOP (pow, NDArray, mx_inline_pow)
 BSXFUN_OP2_DEF_MXLOOP (pow, ComplexNDArray, ComplexNDArray,
                        NDArray, mx_inline_pow)
+BSXFUN_OP2_DEF_MXLOOP (pow, ComplexNDArray, NDArray,
+                       ComplexNDArray, mx_inline_pow)

@@ -288,7 +288,10 @@ template <class R, class X, class Y> \
 inline void F (size_t n, R *r, X x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
-DEFMXMAPPER2X (mx_inline_pow, std::pow)
+// Let the compiler decide which pow to use, whichever best matches the
+// arguments provided.
+using std::pow;
+DEFMXMAPPER2X (mx_inline_pow, pow)
 
 // Arbitrary function appliers. The function is a template parameter to enable
 // inlining.

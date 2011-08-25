@@ -27,8 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "dim-vector.h"
 
-#include "bsxfun-defs.cc"
-
 inline
 bool
 is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
@@ -40,5 +38,7 @@ is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
     }
   return true;
 }
+
+#include "bsxfun-defs.cc"
 
 #endif

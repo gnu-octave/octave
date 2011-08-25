@@ -3117,7 +3117,7 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 %! cv = randn(10,1);
 %! rv = randn(1,10);
 %! rvt = rv';
-%!assert([M*cv,M*cv],M*[cv,cv],1e-14)
+%!assert([M*cv,M*cv],M*[cv,cv],1e-13)
 %!assert([M'*cv,M'*cv],M'*[cv,cv],1e-13)
 %!assert([rv*M;rv*M],[rv;rv]*M,1e-13)
 %!assert([rv*M';rv*M'],[rv;rv]*M',1e-13)

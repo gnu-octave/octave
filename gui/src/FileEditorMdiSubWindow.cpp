@@ -247,6 +247,45 @@ FileEditorMdiSubWindow::runFile ()
   //m_terminalEmulation->setFocus ();
 }
 
+
+// (un)comment selected text
+void
+FileEditorMdiSubWindow::commentSelectedText ()
+{
+  doCommentSelectedText (true);
+}
+void
+FileEditorMdiSubWindow::uncommentSelectedText ()
+{
+  doCommentSelectedText (false);
+}
+void
+FileEditorMdiSubWindow::doCommentSelectedText (bool comment)
+{
+  if ( m_editor->hasSelectedText() )
+    {
+      int lineFrom, lineTo, colFrom, colTo, i;
+      m_editor->getSelection (&lineFrom,&colFrom,&lineTo,&colTo);
+      if ( colTo == 0 )  // the beginning of last line is not selected
+        lineTo--;        // stop at line above
+      for ( i=lineFrom; i<=lineTo; i++ )
+        {
+          if ( comment )
+            m_editor->insertAt("%",i,0);
+          else
+            {
+              QString line(m_editor->text(i));
+              if ( line.startsWith("%") )
+                {
+                  m_editor->setSelection(i,0,i,1);
+                  m_editor->removeSelectedText();
+                }
+            }
+        }
+    }
+}
+
+
 // remove bookmarks
 void
 FileEditorMdiSubWindow::removeBookmark ()
@@ -414,7 +453,9 @@ FileEditorMdiSubWindow::construct ()
   QAction *nextBookmarkAction = new QAction (tr("&Next Bookmark"),m_toolBar);
   QAction *prevBookmarkAction = new QAction (tr("Pre&vious Bookmark"),m_toolBar);
   QAction *toggleBookmarkAction = new QAction (tr("Toggle &Bookmark"),m_toolBar);
-  QAction *removeBookmarkAction = new QAction (tr("&Remove All &Bookmarks"),m_toolBar);
+  QAction *removeBookmarkAction = new QAction (tr("&Remove All Bookmarks"),m_toolBar);
+  QAction *commentSelectedAction = new QAction (tr("&Comment Selected Text"),m_toolBar);
+  QAction *uncommentSelectedAction = new QAction (tr("&Uncomment Selected Text"),m_toolBar);
   QAction *runAction = new QAction (
         QIcon::fromTheme("media-play",style->standardIcon (QStyle::SP_MediaPlay)),
         tr("&Run File"), m_toolBar);
@@ -438,6 +479,8 @@ FileEditorMdiSubWindow::construct ()
   nextBookmarkAction->setShortcut(Qt::Key_F2);
   prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
   toggleBookmarkAction->setShortcut(Qt::Key_F7);
+  commentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);
+  uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_U);
 
   // toolbar
   m_toolBar->setIconSize(QSize(16,16)); // smaller icons (make configurable in user settings?)
@@ -472,6 +515,9 @@ FileEditorMdiSubWindow::construct ()
   editMenu->addAction(m_cutAction);
   editMenu->addAction(pasteAction);
   editMenu->addSeparator();
+  editMenu->addAction(commentSelectedAction);
+  editMenu->addAction(uncommentSelectedAction);
+  editMenu->addSeparator();
   editMenu->addAction(toggleBookmarkAction);
   editMenu->addAction(nextBookmarkAction);
   editMenu->addAction(prevBookmarkAction);
@@ -505,6 +551,8 @@ FileEditorMdiSubWindow::construct ()
   connect (nextBookmarkAction, SIGNAL (triggered ()), this, SLOT (nextBookmark ()));
   connect (prevBookmarkAction, SIGNAL (triggered ()), this, SLOT (prevBookmark ()));
   connect (removeBookmarkAction, SIGNAL (triggered ()), this, SLOT (removeBookmark ()));
+  connect (commentSelectedAction, SIGNAL (triggered ()), this, SLOT (commentSelectedText ()));
+  connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (uncommentSelectedText ()));
 
   // TODO: Do we still need tool tips in the status bar? Tool tips are now
   //       shown directly at the theme icons

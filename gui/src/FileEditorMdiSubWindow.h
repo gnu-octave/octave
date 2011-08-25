@@ -69,6 +69,7 @@ protected:
 private:
   int checkFileModified (QString msg);
   void construct ();
+  void doCommentSelectedText (bool comment);
   QMenuBar *m_menuBar;
   QToolBar *m_toolBar;
   QsciScintilla *m_editor;
@@ -89,6 +90,8 @@ private slots:
   void toggleBookmark ();
   void nextBookmark();
   void prevBookmark();
+  void commentSelectedText();
+  void uncommentSelectedText();
 
 };
 

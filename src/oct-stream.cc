@@ -1379,7 +1379,9 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
     tmp[n++] = static_cast<char> (c); \
  \
   if (n > 0 && c == EOF) \
-    is.clear ()
+    is.clear (); \
+ \
+  tmp.resize (n)
 
 // For a `%s' format, skip initial whitespace and then read until the
 // next whitespace character or until WIDTH characters have been read.
@@ -2860,37 +2862,59 @@ octave_stream::seek (long offset, int origin)
     {
       clearerr ();
 
+      // Find current position so we can return to it if needed.
+
       long orig_pos = rep->tell ();
 
-      status = rep->seek (offset, origin);
+      // Move to end of file.  If successful, find the offset of the end.
+
+      status = rep->seek (0, SEEK_END);
 
       if (status == 0)
         {
-          long save_pos = rep->tell ();
+          long eof_pos = rep->tell ();
 
-          rep->seek (0, SEEK_END);
-
-          long pos_eof = rep->tell ();
-
-          // I don't think save_pos can be less than zero, but we'll
-          // check anyway...
-
-          if (save_pos > pos_eof || save_pos < 0)
+          if (origin == SEEK_CUR)
             {
-              // Seek outside bounds of file.  Failure should leave
-              // position unchanged.
+              // Move back to original position, otherwise we will be
+              // seeking from the end of file which is probably not the
+              // original location.
+
+              rep->seek (orig_pos, SEEK_SET);
+            }
+
+          // Attempt to move to desired position; may be outside bounds
+          // of existing file.
+
+          status = rep->seek (offset, origin);
+
+          if (status == 0)
+            {
+              // Where are we after moving to desired position?
+
+              long desired_pos = rep->tell ();
+
+              // I don't think save_pos can be less than zero, but we'll
+              // check anyway...
+
+              if (desired_pos > eof_pos || desired_pos < 0)
+                {
+                  // Seek outside bounds of file.  Failure should leave
+                  // position unchanged.
+
+                  rep->seek (orig_pos, SEEK_SET);
+
+                  status = -1;
+                }
+            }
+          else
+            {
+              // Seeking to the desired position failed.  Move back to
+              // original position and return failure status.
 
               rep->seek (orig_pos, SEEK_SET);
 
               status = -1;
-            }
-          else
-            {
-              // Is it possible for this to fail?  We are just
-              // returning to a position after the first successful
-              // seek.
-
-              rep->seek (save_pos, SEEK_SET);
             }
         }
     }

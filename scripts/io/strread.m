@@ -471,7 +471,7 @@ function varargout = strread (str, format = "%f", varargin)
         endif
       endfor
       ## Done
-      words_period = iwrd - 1;
+      words_period = max (iwrd - 1, 1);
       num_lines = ceil (num_words / words_period);
 
       ## 2. Pad words array so that it can be reshaped
@@ -633,7 +633,7 @@ function varargout = strread (str, format = "%f", varargin)
               if (pad_out)
                 data(end+1:num_lines) = {""}
               endif
-              varargout{k} = strtrunc (data, 3)';
+              varargout{k} = strtrunc (data, swidth)';
               k++;
             otherwise
           endswitch

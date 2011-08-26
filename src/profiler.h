@@ -40,72 +40,113 @@ public:
   // functions in a manner protected from stack unwinding.
   class enter
   {
-    private:
+  private:
 
-      profile_data_accumulator& acc;
+    profile_data_accumulator& acc;
+    std::string fcn;
 
-      std::string fcn;
+  public:
 
-    public:
+    enter (profile_data_accumulator&, const std::string&);
+    virtual ~enter (void);
 
-      enter (profile_data_accumulator&, const std::string&);
+  private:
 
-      virtual ~enter (void);
-
-    private:
-
-      // No copying!
-
-      enter (const enter&);
-
-      enter& operator = (const enter&);
+    // No copying!
+    enter (const enter&);
+    enter& operator = (const enter&);
   };
 
   profile_data_accumulator (void);
+  virtual ~profile_data_accumulator ();
 
   bool is_active (void) const { return enabled; }
-
   void set_active (bool);
 
   void reset (void);
 
-  octave_value get_data (void) const;
+  octave_value get_flat (void) const;
+  octave_value get_hierarchical (void) const;
 
 private:
 
-  typedef std::set<std::string> function_set;
+  // One entry in the flat profile (i.e., a collection of data for a single
+  // function).  This is filled in when building the flat profile from the
+  // hierarchical call tree.
+  struct stats
+  {
+    stats ();
+
+    double time;
+    unsigned calls;
+
+    bool recursive;
+
+    typedef std::set<octave_idx_type> function_set;
+    function_set parents;
+    function_set children;
+
+    // Convert a function_set list to an Octave array of indices.
+    static octave_value function_set_value (const function_set&);
+  };
+
+  typedef std::vector<stats> flat_profile;
+  
+  // Store data for one node in the call-tree of the hierarchical profiler
+  // data we collect.
+  class tree_node
+  {
+  public:
+
+    tree_node (tree_node*, octave_idx_type);
+    virtual ~tree_node ();
+
+    void add_time (double dt) { time += dt; }
+
+    // Enter a child function.  It is created in the list of children if it
+    // wasn't already there.  The now-active child node is returned.
+    tree_node* enter (octave_idx_type);
+
+    // Exit function.  As a sanity-check, it is verified that the currently
+    // active function actually is the one handed in here.  Returned is the
+    // then-active node, which is our parent.
+    tree_node* exit (octave_idx_type);
+
+    void build_flat (flat_profile&) const;
+    octave_value get_hierarchical (void) const;
+
+  private:
+
+    tree_node* parent;
+    octave_idx_type fcn_id;
+
+    typedef std::map<octave_idx_type, tree_node*> child_map;
+    child_map children;
+
+    // This is only time spent *directly* on this level, excluding children!
+    double time;
+
+    unsigned calls;
+
+    // No copying!
+    tree_node (const tree_node&);
+    tree_node& operator = (const tree_node&);
+  };
+
+  // Each function we see in the profiler is given a unique index (which
+  // simply counts starting from 1).  We thus have to map profiler-names to
+  // those indices.  For all other stuff, we identify functions by their index.
+
+  typedef std::vector<std::string> function_set;
   typedef std::map<std::string, octave_idx_type> fcn_index_map;
 
-  // Store some statistics data collected for a function.
-  class stats
-  {
-    private:
-
-      double time;
-      unsigned calls;
-
-      bool recursive;
-
-      function_set parents;
-      function_set children;
-
-    public:
-
-      stats ();
-
-      static octave_value
-      function_set_value (const function_set&, const fcn_index_map&);
-
-      friend class profile_data_accumulator;
-  };
+  function_set known_functions;
+  fcn_index_map fcn_index;
 
   bool enabled;
 
-  typedef std::vector<std::string> call_stack_type;
-  call_stack_type call_stack;
-
-  typedef std::map<std::string, stats> stats_map;
-  stats_map data;
+  tree_node* call_tree;
+  tree_node* active_fcn;
 
   // Store last timestamp we had, when the currently active function was called.
   double last_time;
@@ -117,23 +158,28 @@ private:
 
   // Query a timestamp, used for timing calls (obviously).
   // This is not static because in the future, maybe we want a flag
-  // in the profiler or something to choose between cputime, wall-time
+  // in the profiler or something to choose between cputime, wall-time,
   // user-time, system-time, ...
   double query_time () const;
 
-  // Add the time elapsed since last_time to the function on the top
-  // of our call-stack.  This is called from two different positions,
-  // thus it is useful to have it as a seperate function.
+  // Add the time elapsed since last_time to the function we're currently in.
+  // This is called from two different positions, thus it is useful to have
+  // it as a seperate function.
   void add_current_time (void);
 
   // No copying!
-
   profile_data_accumulator (const profile_data_accumulator&);
-
   profile_data_accumulator& operator = (const profile_data_accumulator&);
 };
 
 // The instance used.
 extern profile_data_accumulator profiler;
+
+// Helper macro to profile a block of code.
+#define BEGIN_PROFILER_BLOCK(name) \
+  { \
+    profile_data_accumulator::enter pe (profiler, (name));
+#define END_PROFILER_BLOCK \
+  }
 
 #endif

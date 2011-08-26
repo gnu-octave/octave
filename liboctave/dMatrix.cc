@@ -3111,15 +3111,19 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 */
 
 /* Test some simple identities
-%!shared M, cv, rv
-%! M = randn(10,10);
+%!shared M, cv, rv, Mt, rvt
+%! M = randn(10,10)+100*eye(10,10);
+%! Mt = M';
 %! cv = randn(10,1);
 %! rv = randn(1,10);
+%! rvt = rv';
 %!assert([M*cv,M*cv],M*[cv,cv],1e-14)
-%!assert([M'*cv,M'*cv],M'*[cv,cv],1e-14)
-%!assert([rv*M;rv*M],[rv;rv]*M,1e-14)
-%!assert([rv*M';rv*M'],[rv;rv]*M',1e-14)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
+%!assert([M'*cv,M'*cv],M'*[cv,cv],3e-14)
+%!assert([rv*M;rv*M],[rv;rv]*M,3e-14)
+%!assert([rv*M';rv*M'],[rv;rv]*M',3e-14)
+%!assert(2*rv*cv,[rv,rv]*[cv;cv],3e-14)
+%!assert(M'\cv,Mt\cv,1e-14)
+%!assert(M'\rv',Mt\rvt,1e-14)
 */
 
 static inline char

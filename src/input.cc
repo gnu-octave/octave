@@ -428,7 +428,7 @@ get_input_from_file (const std::string& name, int warn)
   FILE *instream = 0;
 
   if (name.length () > 0)
-    instream = fopen (name.c_str (), "rb");
+    instream = gnulib::fopen (name.c_str (), "rb");
 
   if (! instream && warn)
     warning ("%s: no such file or directory", name.c_str ());
@@ -951,14 +951,11 @@ do_keyboard (const octave_value_list& args)
 
   unwind_protect frame;
 
-  // FIXME -- we shouldn't need both the
-  // command_history object and the
-  // Vsaving_history variable...
+  frame.add_fcn (command_history::ignore_entries,
+                 command_history::ignoring_entries ());
+
   command_history::ignore_entries (false);
 
-  frame.add_fcn (command_history::ignore_entries, ! Vsaving_history);
-
-  frame.protect_var (Vsaving_history);
   frame.protect_var (Vdebugging);
 
   frame.add_fcn (octave_call_stack::restore_frame,
@@ -970,7 +967,6 @@ do_keyboard (const octave_value_list& args)
   // tree_print_code tpc (octave_stdout);
   // stmt.accept (tpc);
 
-  Vsaving_history = true;
   Vdebugging = true;
 
   std::string prompt = "debug> ";

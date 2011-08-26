@@ -188,6 +188,7 @@ INCS = \
   base-dae.h \
   base-de.h \
   base-min.h \
+  bsxfun.h \
   byte-swap.h \
   caseless-str.h \
   cmd-edit.h \

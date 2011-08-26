@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 2011 Jordi Gutiérrez Hermoso <jordigh@octave.org>
 
 This file is part of Octave.
 
@@ -19,20 +19,26 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
+#if !defined (bsxfun_h)
+#define bsxfun_h 1
 
-#if !defined (octave_octave_hist_h)
-#define octave_octave_hist_h 1
+#include <algorithm>
 
-#include <string>
+#include "Array.h"
+#include "dim-vector.h"
 
-#include "cmd-hist.h"
+inline
+bool
+is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
+{
+  for (int i = 0; i < std::min (dx.length (), dy.length ()); i++)
+    {
+      if ( dx(i) > 1 && dy(i) > 1 && dx(i) != dy(i))
+        return false;
+    }
+  return true;
+}
 
-extern void initialize_history (bool read_history_file = false);
-
-// Write timestamp to history file.
-extern void octave_history_write_timestamp (void);
-
-// TRUE means input is coming from temporary history file.
-extern bool input_from_tmp_history_file;
+#include "bsxfun-defs.cc"
 
 #endif

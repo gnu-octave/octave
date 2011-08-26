@@ -112,11 +112,11 @@ private:
           {
             BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-            CURLcode res = curl_easy_perform (curl);
-            if (res != CURLE_OK)
+            errnum = curl_easy_perform (curl);
+            if (errnum != CURLE_OK)
               {
                 if (curlerror)
-                  error ("%s", curl_easy_strerror (res));
+                  error ("%s", curl_easy_strerror (errnum));
               }
             else
               retval = true;
@@ -145,6 +145,7 @@ private:
     std::string host;
     bool valid;
     bool ascii;
+    mutable CURLcode errnum;
 
   private:
     CURL *curl;
@@ -250,11 +251,7 @@ public:
 
   std::string lasterror (void) const
     {
-      CURLcode errnum;
-
-      curl_easy_getinfo (rep->handle(), CURLINFO_OS_ERRNO, &errnum);
-
-      return std::string (curl_easy_strerror (errnum));
+      return std::string (curl_easy_strerror (rep->errnum));
     }
 
   void set_ostream (std::ostream& os) const

@@ -25,24 +25,20 @@
 
 function retval = __axis_label__ (caller, txt, varargin)
 
-  if (ischar (txt))
-    ca = gca ();
+  ca = gca ();
 
-    h = get (gca (), caller);
+  h = get (gca (), caller);
 
-    set (h, "fontangle", get (ca, "fontangle"),
-         "fontname", get (ca, "fontname"),
-         "fontsize", get (ca, "fontsize"),
-         "fontunits", get (ca, "fontunits"),
-         "fontweight", get (ca, "fontweight"),
-         "string", txt,
-         varargin{:});
+  set (h, "fontangle", get (ca, "fontangle"),
+       "fontname", get (ca, "fontname"),
+       "fontsize", get (ca, "fontsize"),
+       "fontunits", get (ca, "fontunits"),
+       "fontweight", get (ca, "fontweight"),
+       "string", txt,
+       varargin{:});
 
-    if (nargout > 0)
-      retval = h;
-    endif
-  else
-    error ("%s: expecting first argument to be character string", caller);
+  if (nargout > 0)
+    retval = h;
   endif
 
 endfunction

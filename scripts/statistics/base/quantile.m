@@ -90,13 +90,14 @@
 ##
 ## Examples:
 ##
-## @example
+## @c Set example in small font to prevent overfull line
+## @smallexample
 ## @group
-## x = randi (1000, [10, 1]);  # Create random empirical data in range 1-1000
-## q = quantile (x, [0, 1]);   # Return minimum, maximum of empirical distribution
-## q = quantile (x, [0.25 0.5 0.75]); # Return quartiles of empirical distribution
+## x = randi (1000, [10, 1]);  # Create empirical data in range 1-1000
+## q = quantile (x, [0, 1]);   # Return minimum, maximum of distribution
+## q = quantile (x, [0.25 0.5 0.75]); # Return quartiles of distribution
 ## @end group
-## @end example
+## @end smallexample
 ## @seealso{prctile}
 ## @end deftypefn
 

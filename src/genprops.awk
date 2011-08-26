@@ -300,8 +300,9 @@ function emit_declarations ()
         emit_get_accessor(i, "graphics_handle", "handle_value");
       else if (type[i] == "string_property")
         emit_get_accessor(i, "std::string", "string_value");
-      else if (type[i] == "string_array_property")
-          emit_get_accessor(i, "octave_value", "get");
+      else if (type[i] == "string_array_property" \
+               || type[i] == "text_label_property")
+        emit_get_accessor(i, "octave_value", "get");
       else if (type[i] == "double_property")
         emit_get_accessor(i, "double", "double_value");
       else if (type[i] == "double_radio_property")

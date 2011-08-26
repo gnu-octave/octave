@@ -242,6 +242,30 @@
 %% test/octave.test/io/puts-4.m
 %!error <Invalid call to puts.*> puts (1, 2);
 
+%!assert (sscanf ('123456', '%10c'), '123456')
+%!assert (sscanf ('123456', '%10s'), '123456')
+
+%!test
+%! [val, count, msg, pos] = sscanf ("3I2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!test
+%! [val, count, msg, pos] = sscanf ("3In2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!test
+%! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
+%! assert (val, [3; Inf; 2]);
+%! assert (count, 3);
+%! assert (msg, "");
+%! assert (pos, 6);
+
 %% test/octave.test/io/sscanf-1.m
 %!test
 %! [a, b, c] = sscanf ("1.2 3 foo", "%f%d%s", "C");

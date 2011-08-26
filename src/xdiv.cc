@@ -64,14 +64,14 @@ solve_singularity_warning (double rcond)
 
 template <class T1, class T2>
 bool
-mx_leftdiv_conform (const T1& a, const T2& b)
+mx_leftdiv_conform (const T1& a, const T2& b, blas_trans_type blas_trans)
 {
-  octave_idx_type a_nr = a.rows ();
+  octave_idx_type a_nr = blas_trans == blas_no_trans ? a.rows () : a.cols ();
   octave_idx_type b_nr = b.rows ();
 
   if (a_nr != b_nr)
     {
-      octave_idx_type a_nc = a.cols ();
+      octave_idx_type a_nc = blas_trans == blas_no_trans ? a.cols () : a.rows ();
       octave_idx_type b_nc = b.cols ();
 
       gripe_nonconformant ("operator \\", a_nr, a_nc, b_nr, b_nc);
@@ -82,7 +82,7 @@ mx_leftdiv_conform (const T1& a, const T2& b)
 }
 
 #define INSTANTIATE_MX_LEFTDIV_CONFORM(T1, T2) \
-  template bool mx_leftdiv_conform (const T1&, const T2&)
+  template bool mx_leftdiv_conform (const T1&, const T2&, blas_trans_type)
 
 INSTANTIATE_MX_LEFTDIV_CONFORM (Matrix, Matrix);
 INSTANTIATE_MX_LEFTDIV_CONFORM (Matrix, ComplexMatrix);
@@ -352,7 +352,7 @@ x_el_div (const Complex a, const ComplexNDArray& b)
 Matrix
 xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return Matrix ();
 
   octave_idx_type info;
@@ -364,7 +364,7 @@ xleftdiv (const Matrix& a, const Matrix& b, MatrixType &typ, blas_trans_type tra
 ComplexMatrix
 xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return ComplexMatrix ();
 
   octave_idx_type info;
@@ -377,7 +377,7 @@ xleftdiv (const Matrix& a, const ComplexMatrix& b, MatrixType &typ, blas_trans_t
 ComplexMatrix
 xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return ComplexMatrix ();
 
   octave_idx_type info;
@@ -389,7 +389,7 @@ xleftdiv (const ComplexMatrix& a, const Matrix& b, MatrixType &typ, blas_trans_t
 ComplexMatrix
 xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return ComplexMatrix ();
 
   octave_idx_type info;
@@ -650,7 +650,7 @@ x_el_div (const FloatComplex a, const FloatComplexNDArray& b)
 FloatMatrix
 xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return FloatMatrix ();
 
   octave_idx_type info;
@@ -662,7 +662,7 @@ xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ, blas_tran
 FloatComplexMatrix
 xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return FloatComplexMatrix ();
 
   octave_idx_type info;
@@ -675,7 +675,7 @@ xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b, MatrixType &typ, bl
 FloatComplexMatrix
 xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return FloatComplexMatrix ();
 
   octave_idx_type info;
@@ -687,7 +687,7 @@ xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b, MatrixType &typ, bl
 FloatComplexMatrix
 xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b, MatrixType &typ, blas_trans_type transt)
 {
-  if (! mx_leftdiv_conform (a, b))
+  if (! mx_leftdiv_conform (a, b, transt))
     return FloatComplexMatrix ();
 
   octave_idx_type info;
@@ -782,7 +782,7 @@ template <class MT, class DMT>
 MT
 dmm_leftdiv_impl (const DMT& d, const MT& a)
 {
-  if (! mx_leftdiv_conform (d, a))
+  if (! mx_leftdiv_conform (d, a, blas_no_trans))
     return MT ();
 
   octave_idx_type m = d.cols (), n = a.cols (), k = a.rows (), l = d.length ();
@@ -931,7 +931,7 @@ template <class MT, class DMT>
 MT
 dmdm_leftdiv_impl (const DMT& d, const MT& a)
 {
-  if (! mx_leftdiv_conform (d, a))
+  if (! mx_leftdiv_conform (d, a, blas_no_trans))
     return MT ();
 
   octave_idx_type m = d.cols (), n = a.cols (), k = d.rows ();

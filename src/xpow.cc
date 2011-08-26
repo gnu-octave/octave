@@ -49,6 +49,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "xpow.h"
 
+#include "bsxfun.h"
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -1243,8 +1245,21 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          //Potentially complex results
+          NDArray xa = octave_value_extract<NDArray> (a);
+          NDArray xb = octave_value_extract<NDArray> (b);
+          if (! xb.all_integers () && xa.any_element_is_negative ())
+            return octave_value (bsxfun_pow (ComplexNDArray (xa), xb));
+          else
+            return octave_value (bsxfun_pow (xa, xb));
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   int len = a.length ();
@@ -1318,8 +1333,15 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   ComplexNDArray result (a_dims);
@@ -1410,8 +1432,15 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   ComplexNDArray result (a_dims);
@@ -1453,8 +1482,15 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   ComplexNDArray result (a_dims);

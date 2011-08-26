@@ -43,7 +43,7 @@
 ## @end group
 ## @end example
 ##
-## @strong{Note:} @code{strmatch} is scheduled for deprecation.  Use
+## @strong{Caution:} @code{strmatch} is scheduled for deprecation.  Use
 ## @code{strcmpi} or @code{strncmpi} in all new code.
 ## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn

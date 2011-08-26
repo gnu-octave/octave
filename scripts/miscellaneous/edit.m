@@ -54,7 +54,7 @@
 ## filename.  If @file{name.ext} is not modifiable, it will be copied to
 ## @env{HOME} before editing.
 ##
-## @strong{WARNING!} You may need to clear name before the new definition
+## @strong{Warning:} You may need to clear name before the new definition
 ## is available.  If you are editing a .cc file, you will need
 ## to mkoctfile @file{name.cc} before the definition will be available.
 ## @end itemize

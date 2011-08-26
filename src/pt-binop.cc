@@ -121,8 +121,7 @@ tree_binary_expression::rvalue1 (int)
 
           if (! error_state && b.is_defined ())
             {
-              profile_data_accumulator::enter pe (profiler,
-                                                  "binary " + oper ());
+              BEGIN_PROFILER_BLOCK ("binary " + oper ())
 
               // Note: The profiler does not catch the braindead
               // short-circuit evaluation code above, but that should be
@@ -134,6 +133,8 @@ tree_binary_expression::rvalue1 (int)
 
               if (error_state)
                 retval = octave_value ();
+
+              END_PROFILER_BLOCK
             }
         }
     }

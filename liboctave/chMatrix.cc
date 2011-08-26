@@ -74,8 +74,8 @@ charMatrix::charMatrix (const std::string& s)
     elem (0, i) = s[i];
 }
 
-charMatrix::charMatrix (const string_vector& s)
-  : Array<char> (dim_vector (s.length (), s.max_length ()), 0)
+charMatrix::charMatrix (const string_vector& s, char fill_value)
+  : Array<char> (dim_vector (s.length (), s.max_length ()), fill_value)
 {
   octave_idx_type nr = rows ();
 

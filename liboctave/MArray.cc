@@ -339,7 +339,7 @@ MARRAY_SND_OP (/, mx_inline_div)
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
   { \
-    return do_mm_binary_op<T, T, T> (a, b, FN, #FCN); \
+    return do_mm_binary_op<T, T, T> (a, b, FN, FN, FN, #FCN); \
   }
 
 MARRAY_NDND_OP (operator +, +, mx_inline_add)

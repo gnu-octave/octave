@@ -62,7 +62,7 @@ public:
 
   charMatrix (const std::string& s);
 
-  charMatrix (const string_vector& s);
+  charMatrix (const string_vector& s, char fill_value = '\0');
 
   charMatrix& operator = (const charMatrix& a)
     {

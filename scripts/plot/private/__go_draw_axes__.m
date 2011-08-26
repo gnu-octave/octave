@@ -1250,6 +1250,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             colorspec = get_text_colorspec (color, mono);
           endif
 
+          if (ischar (obj.string))
+            num_lines = size (obj.string, 1);
+          else
+            num_lines = numel (obj.string);
+          endif
           switch valign
             ## Text offset in characters. This relies on gnuplot for font metrics.
             case "top"
@@ -1257,17 +1262,18 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             case "cap"
               dy = -0.5;
             case "middle"
-              dy = 0;
+              dy = 0.5 * (num_lines - 1);
             case "baseline"
-              dy = 0.5;
+              dy = 0.5 + (num_lines - 1);
             case "bottom"
-              dy = 0.5;
+              dy = 0.5 + (num_lines - 1);
           endswitch
           ## Gnuplot's Character units are different for x/y and vary with fontsize. The aspect ratio
           ## of 1:1.7 was determined by experiment to work for eps/ps/etc. For the MacOS aqua terminal
           ## a value of 2.5 is needed. However, the difference is barely noticable.
           dx_and_dy = [(-dy * sind (angle)), (dy * cosd(angle))] .* [1.7 1];
 
+          ## FIXME - Multiline text produced the gnuplot "warning: ft_render: skipping glyph"
           if (nd == 3)
             ## This produces the desired vertical alignment in 3D.
             fprintf (plot_stream,
@@ -2129,10 +2135,31 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
     bld = false;
   endif
 
+  ## The text object maybe multiline, and may be of any class
   str = getfield (obj, fld);
+  if (ischar (str) && size (str, 1) > 1)
+    str = cellstr (str);
+  elseif (isnumeric (str))
+    str = cellstr (num2str (str(:)));
+  endif
+  if (iscellstr (str))
+    for n = 1:numel(str)
+      if (isnumeric (str{n}))
+        str{n} = num2str (str{n});
+      endif
+    endfor
+    str = sprintf ("%s\n", str{:})(1:end-1);
+  endif
+
   if (enhanced)
     if (strcmpi (obj.interpreter, "tex"))
-      str = __tex2enhanced__ (str, fnt, it, bld);
+      if (iscellstr (str))
+        for n = 1:numel(str)
+          str{n} = __tex2enhanced__ (str{n}, fnt, it, bld);
+        endfor
+      else
+        str = __tex2enhanced__ (str, fnt, it, bld);
+      endif
     elseif (strcmpi (obj.interpreter, "latex"))
       if (! warned_latex)
         warning ("latex markup not supported for text objects");

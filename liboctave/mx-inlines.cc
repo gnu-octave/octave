@@ -37,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array-util.h"
 
+#include "bsxfun.h"
+
 // Provides some commonly repeated, basic loop templates.
 
 template <class R, class S>
@@ -286,7 +288,10 @@ template <class R, class X, class Y> \
 inline void F (size_t n, R *r, X x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
-DEFMXMAPPER2X (mx_inline_pow, std::pow)
+// Let the compiler decide which pow to use, whichever best matches the
+// arguments provided.
+using std::pow;
+DEFMXMAPPER2X (mx_inline_pow, pow)
 
 // Arbitrary function appliers. The function is a template parameter to enable
 // inlining.
@@ -336,11 +341,12 @@ do_mx_inplace_op (Array<R>& r,
   return r;
 }
 
-
 template <class R, class X, class Y>
 inline Array<R>
 do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
                  void (*op) (size_t, R *, const X *, const Y *) throw (),
+                 void (*op1) (size_t, R *, X, const Y *) throw (),
+                 void (*op2) (size_t, R *, const X *, Y) throw (),
                  const char *opname)
 {
   dim_vector dx = x.dims (), dy = y.dims ();
@@ -349,6 +355,10 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
       Array<R> r (dx);
       op (r.length (), r.fortran_vec (), x.data (), y.data ());
       return r;
+    }
+  else if (is_valid_bsxfun (dx, dy))
+    {
+      return do_bsxfun_op (x, y, op, op1, op2);
     }
   else
     {

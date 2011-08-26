@@ -2422,7 +2422,7 @@ opengl_renderer::draw_hggroup (const hggroup::properties &props)
 void
 opengl_renderer::draw_text (const text::properties& props)
 {
-  if (props.get_string ().empty ())
+  if (props.get_string ().is_empty ())
     return;
 
   const Matrix pos = xform.scale (props.get_data_position ());

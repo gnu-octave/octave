@@ -54,3 +54,5 @@ MINMAX_FCNS (uint32NDArray, octave_uint32)
 
 BSXFUN_STDOP_DEFS_MXLOOP (uint32NDArray)
 BSXFUN_STDREL_DEFS_MXLOOP (uint32NDArray)
+
+BSXFUN_OP_DEF_MXLOOP (pow, uint32NDArray, mx_inline_pow)

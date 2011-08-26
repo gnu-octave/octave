@@ -334,67 +334,83 @@ With MacPorts building the developer's sources is convenient.  MacPorts
 includes a port file for octave-devel.  To build and run the most recent
 development snapshots, enter the commands below.
 
-    sudo port selfupdate
-    sudo port install octave-devel
+  sudo port selfupdate
+  sudo port install octave-devel
 
 To build the developers sources in one's own way, or if MacPorts' version is
 outdated, a custom port file can be added.  This requires setting up a local
 port file repository (link below).
 
-    http://guide.macports.org/#development.local-repositories
+  http://guide.macports.org/#development.local-repositories
 
 The octave-devel port file may be used as an initial starting point.  The port
 file is accessible from the web at the link below.
 
-    http://trac.macports.org/browser/trunk/dports/math/octave-devel/Portfile
+  http://trac.macports.org/browser/trunk/dports/math/octave-devel/Portfile
 
 It is also available locally at the location below.  The parameter ${prefix} is
 corresponds to where MacPorts is install, which by default is "/opt/local".
 
-    ${prefix}/var/macports/sources/rsync.macports.org/release/ports/math/octave-devel/Portfile
+  ${prefix}/var/macports/sources/rsync.macports.org/release/ports/math/octave-devel/Portfile
+
+If the Portfile is missing the dependencies, epstools, epstoedit, and transfig,
+those should be installed manually or added to the Portfile. To install
+manually, type the command below.
+
+  sudo port install epstools epstoedit transfig
 
 The local source tarball must be placed in the location below, where ${name}
 and ${distname} are each specified in the port file.
 
-    ${prefix}/var/macports/distfiles/${name}/${disname}.tar.gz
+  ${prefix}/var/macports/distfiles/${name}/${disname}.tar.gz
 
 
 2.4.2 Building for Active Development of Octave
 -----------------------------------------------
 
-To satisfy Octave's dependencies, first install the octave-devel port.
+To satisfy most of Octave's dependencies, first install the octave-devel port.
 
-    sudo port selfupdate
-    sudo port install octave-devel
-
-Next run octave to determine the configure options needed to build Octave
-using MacPorts.  At Octave's prompt type the command below and make note of
-the result, ${config_opts}.
-
-    octave:1> octave_config_info.config_opts
+  sudo port selfupdate
+  sudo port install octave-devel
 
 Now uninstall the Octave port.
 
-    sudo port deactivate octave-devel
+  sudo port deactivate octave-devel
 
-This will remove Octave and leave its dependencies in place.  Now Octave may
-be built from the local mercurial archive by typing the commands below, where
-the configure options mentioned above are substituted for the parameter
-${config_opts}.  If the sources being built are from the mercurial archive,
-then ./autogen.sh must be run prior to ./configure.
+This will remove Octave and leave its dependencies in place. Some additional
+dependencies may be needed.
 
-    ./configure ${config_opts}
-    make
+  sudo port install epstools epstoedit transfig
+
+Octave may now be built from a local mercurial archive by typing the commands
+below (these assume gcc-4.4 is installed by macports).
+
+  ./autogen.sh
+  export PREFIX=/opt/local
+  export CC=/opt/local/bin/gcc-mp-4.4
+  export CXX=/opt/local/bin/g++-mp-4.4
+  export CXXCPP="/opt/local/bin/g++-mp-4.4 -E"
+  export F77=/opt/local/bin/gfortran-mp-4.4
+  export FC=/opt/local/bin/gfortran-mp-4.4
+  export CXXFLAGS="-pipe -O2 -m64"
+  export FFLAGS="$CXXFLAGS -D_THREAD_SAFE -pthread"
+  export CFLAGS="$FFLAGS -lstdc++"
+  export LDFLAGS=-L$PREFIX/lib
+  export CPPFLAGS=-I$PREFIX/include
+  export BLAS_LIBS="-lcblas -lf77blas -latlas"
+  export LAPACK_LIBS=-llapack
+  ./configure --prefix="/opt/local" --without-framework-carbon --with-x
+  make
 
 Octave's integrated tests may be run.
 
-    make check
+  make check
 
-However, "make install" should not be run as it may damage or corrupt the
-MacPorts installation.  To run Octave, type the command below from the root of
-the mercurial archive.
+"make install" should not be run as it will bypass the macports package 
+management.  To run Octave, type the command below from the root of the
+mercurial archive.
 
-    ./run-octave
+  ./run-octave
 
 
 John W. Eaton

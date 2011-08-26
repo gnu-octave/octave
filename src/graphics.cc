@@ -4341,7 +4341,7 @@ axes::properties::update_xlabel_position (void)
   text::properties& xlabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_xlabel ()).get_properties ());
 
-  bool is_empty = xlabel_props.get_string ().empty ();
+  bool is_empty = xlabel_props.get_string ().is_empty ();
 
   unwind_protect frame;
   frame.protect_var (updating_xlabel_position);
@@ -4432,7 +4432,7 @@ axes::properties::update_ylabel_position (void)
   text::properties& ylabel_props = reinterpret_cast<text::properties&>
     (gh_manager::get_object (get_ylabel ()).get_properties ());
 
-  bool is_empty = ylabel_props.get_string ().empty ();
+  bool is_empty = ylabel_props.get_string ().is_empty ();
 
   unwind_protect frame;
   frame.protect_var (updating_ylabel_position);
@@ -4524,7 +4524,7 @@ axes::properties::update_zlabel_position (void)
     (gh_manager::get_object (get_zlabel ()).get_properties ());
 
   bool camAuto = cameraupvectormode_is ("auto");
-  bool is_empty = zlabel_props.get_string ().empty ();
+  bool is_empty = zlabel_props.get_string ().is_empty ();
 
   unwind_protect frame;
   frame.protect_var (updating_zlabel_position);
@@ -4896,7 +4896,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
 
           Matrix text_pos = text_props.get_position ().matrix_value ();
           text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
-          if (text_props.get_string ().empty ())
+          if (text_props.get_string ().is_empty ())
             {
               ext(0) = std::min (ext(0), text_pos(0));
               ext(1) = std::min (ext(1), text_pos(1));
@@ -6006,6 +6006,7 @@ void
 text::properties::update_text_extent (void)
 {
 #ifdef HAVE_FREETYPE
+
   int halign = 0, valign = 0;
 
   if (horizontalalignment_is ("center"))
@@ -6021,11 +6022,17 @@ text::properties::update_text_extent (void)
     valign = 1;
 
   Matrix bbox;
-  // FIXME: string should be parsed only when modified, for efficiency
-  renderer.text_to_pixels (get_string (), pixels, bbox,
-                           halign, valign, get_rotation ());
 
+  // FIXME: string should be parsed only when modified, for efficiency
+
+  octave_value string_prop = get_string ();
+
+  string_vector sv = string_prop.all_strings ();
+
+  renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
+                           halign, valign, get_rotation ());
   set_extent (bbox);
+
 #endif
 
   if (autopos_tag_is ("xlabel") || autopos_tag_is ("ylabel") ||

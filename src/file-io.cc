@@ -494,7 +494,7 @@ do_stream_open (const std::string& name, const std::string& mode,
                 {
                   tmode.erase (pos, 1);
 
-                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
 
                   int fd = fileno (fptr);
 
@@ -509,7 +509,7 @@ do_stream_open (const std::string& name, const std::string& mode,
               else
 #endif
                 {
-                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
 
                   retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 
@@ -1176,11 +1176,13 @@ complete description of the syntax of the template string.\n\
 
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
+@deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
 @deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
-string is treated as an end-of-file condition.\n\
+string is treated as an end-of-file condition.  In addition to the values\n\
+returned by @code{fscanf}, the index of the next character to be read\n\
+is returned in in @var{pos}.\n\
 @seealso{fscanf, scanf, sprintf}\n\
 @end deftypefn")
 {
@@ -1247,7 +1249,8 @@ string is treated as an end-of-file condition.\n\
                           // position will clear it.
                           std::string errmsg = os.error ();
 
-                          retval(3) = os.tell () + 1;
+                          retval(3)
+                            = (os.eof () ? data.length () : os.tell ()) + 1;
                           retval(2) = errmsg;
                           retval(1) = count;
                           retval(0) = tmp;

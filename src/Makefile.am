@@ -480,20 +480,15 @@ include OPERATORS/module.mk
 include TEMPLATE-INST/module.mk
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
-  DLD_DYNAMIC_SRC = $(DLD_FUNCTIONS_SRC)
-  DLD_STATIC_SRC =
   OCT_FILES = $(DLD_FUNCTIONS_LIBS:.la=.oct)
   OCT_STAMP_FILES = $(subst DLD-FUNCTIONS/,DLD-FUNCTIONS/$(am__leading_dot),$(DLD_FUNCTIONS_LIBS:.la=.oct-stamp))
 else
-  DLD_DYNAMIC_SRC =
-  DLD_STATIC_SRC = $(DLD_FUNCTIONS_SRC)
   OCT_FILES =
   OCT_STAMP_FILES =
 endif
 
 liboctinterp_la_SOURCES = \
   $(DIST_SRC) \
-  $(DLD_STATIC_SRC) \
   $(OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
 
@@ -508,87 +503,11 @@ nodist_liboctinterp_la_SOURCES = \
   version.h \
   $(OPT_INC)
 
-
-if AMCOND_ENABLE_DYNAMIC_LINKING
-  OCTAVE_LIBS = \
-    ./liboctinterp.la \
-    ../liboctave/liboctave.la \
-    ../libcruft/libcruft.la \
-    ../libcruft/libranlib.la \
-    ../libgnu/libgnu.la \
-    $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \
-    $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
-    $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
-    $(LAPACK_LIBS) $(BLAS_LIBS) \
-    $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
-    $(FT2_LDFLAGS) $(FT2_LIBS) \
-    $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
-    $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
-    $(READLINE_LIBS) $(TERM_LIBS) \
-    $(LIBGLOB) \
-    $(REGEX_LDFLAGS) $(REGEX_LIBS) \
-    $(LAPACK_LIBS) $(BLAS_LIBS) \
-    $(DL_LIBS) $(PTHREAD_LIBS) \
-    $(LIBS) \
-    $(FLIBS)
-else
-  ## FIXME -- this list is probably not complete now.  It may not even
-  ## be possible to build a statically linked copy of Octave that is
-  ## fully functional.
-  OCTAVE_LIBS = \
-    ./liboctinterp.la \
-    ../liboctave/liboctave.la \
-    ../libcruft/libcruft.la \
-    ../libcruft/libranlib.la \
-    ../libgnu/libgnu.la \
-    $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
-    $(QHULL_LDFLAGS) $(QHULL_LIBS) \
-    $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
-    $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \
-    $(REGEX_LDFLAGS) $(REGEX_LIBS) \
-    $(CURL_LDFLAGS) $(CURL_LIBS) \
-    $(GLPK_LDFLAGS) $(GLPK_LIBS) \
-    $(MAGICK_LDFLAGS) $(MAGICK_LIBS) \
-    $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
-    $(FT2_LDFLAGS) $(FT2_LIBS) \
-    $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
-    $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
-    $(READLINE_LIBS) $(TERM_LIBS) \
-    $(LIBGLOB) \
-    $(LAPACK_LIBS) $(BLAS_LIBS) \
-    $(DL_LIBS) $(PTHREAD_LIBS) \
-    $(LIBS) \
-    $(FLIBS)
-endif
-
-OCTINTERP_LINK_DEPS = \
-  $(RLD_FLAG) \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
-  ../libcruft/libranlib.la \
-  ../libgnu/libgnu.la \
-  $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
-  $(FT2_LDFLAGS) $(FT2_LIBS) \
-  $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
-  $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
-  $(READLINE_LIBS) $(TERM_LIBS) \
-  $(LIBGLOB) \
-  $(LAPACK_LIBS) $(BLAS_LIBS) \
-  $(LIBS) \
-  $(FLIBS)
-
-liboctinterp_la_LIBADD = $(OCTINTERP_LINK_DEPS)
-
-## Additional library dependencies used by module.mk files
-OCT_LINK_DEPS = \
-  $(RLD_FLAG) $(LDFLAGS) \
-  ./liboctinterp.la \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
-  ../libcruft/libranlib.la \
-  ../libgnu/libgnu.la
-
 liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
+
+include link-deps.mk
+
+liboctinterp_la_LIBADD = $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
 liboctinterp_current = 0
@@ -598,122 +517,36 @@ liboctinterp_age = 0
 liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
 
 liboctinterp_la_LDFLAGS = \
+  $(RLD_FLAG) \
   -version-info $(liboctinterp_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
-  -bindir $(bindir)
+  -bindir $(bindir) \
+  $(LIBOCTINTERP_LINK_OPTS)
 
 display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
-DLD-FUNCTIONS/__magick_read__.df: CPPFLAGS += $(MAGICK_CPPFLAGS)
-DLD_FUNCTIONS___magick_read___la_CPPFLAGS = $(AM_CPPFLAGS) $(MAGICK_CPPFLAGS)
-DLD_FUNCTIONS___magick_read___la_LIBADD += $(MAGICK_LDFLAGS) $(MAGICK_LIBS)
-
-DLD-FUNCTIONS/convhulln.df: CPPFLAGS += $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS_convhulln_la_CPPFLAGS = $(AM_CPPFLAGS) $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS_convhulln_la_LIBADD += $(QHULL_LDFLAGS) $(QHULL_LIBS)
-
-DLD-FUNCTIONS/__delaunayn__.df: CPPFLAGS += $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___delaunayn___la_CPPFLAGS = $(AM_CPPFLAGS) $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___delaunayn___la_LIBADD += $(QHULL_LDFLAGS) $(QHULL_LIBS)
-
-DLD-FUNCTIONS/__voronoi__.df: CPPFLAGS += $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___voronoi___la_CPPFLAGS = $(AM_CPPFLAGS) $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___voronoi___la_LIBADD += $(QHULL_LDFLAGS) $(QHULL_LIBS)
-
-DLD-FUNCTIONS/eigs.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_eigs_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_eigs_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) $(LAPACK_LIBS) $(BLAS_LIBS)
-
-#DLD-FUNCTIONS/qz.df DLD-FUNCTIONS/qz.lo:
-DLD_FUNCTIONS_qz_la_LIBADD += $(LAPACK_LIBS) $(BLAS_LIBS)
-
-DLD-FUNCTIONS/qr.df: CPPFLAGS += $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_qr_la_CPPFLAGS = $(AM_CPPFLAGS) $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_qr_la_LIBADD += $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/chol.df: CPPFLAGS += $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_chol_la_CPPFLAGS = $(AM_CPPFLAGS) $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_chol_la_LIBADD += $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/regexp.df: CPPFLAGS += $(REGEX_CPPFLAGS)
-DLD_FUNCTIONS_regexp_la_CPPFLAGS = $(AM_CPPFLAGS) $(REGEX_CPPFLAGS)
-DLD_FUNCTIONS_regexp_la_LIBADD += $(REGEX_LDFLAGS) $(REGEX_LIBS)
-
-DLD-FUNCTIONS/urlwrite.df: CPPFLAGS += $(CURL_CPPFLAGS)
-DLD_FUNCTIONS_urlwrite_la_CPPFLAGS = $(AM_CPPFLAGS) $(CURL_CPPFLAGS)
-DLD_FUNCTIONS_urlwrite_la_LIBADD += $(CURL_LDFLAGS) $(CURL_LIBS)
-
-DLD-FUNCTIONS/__fltk_uigetfile__.df: CPPFLAGS += $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___fltk_uigetfile___la_CPPFLAGS = $(AM_CPPFLAGS) $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___fltk_uigetfile___la_LIBADD += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
-
-DLD-FUNCTIONS/__glpk__.df: CPPFLAGS += $(GLPK_CPPFLAGS)
-DLD_FUNCTIONS___glpk___la_CPPFLAGS = $(AM_CPPFLAGS) $(GLPK_CPPFLAGS)
-DLD_FUNCTIONS___glpk___la_LIBADD += $(GLPK_LDFLAGS) $(GLPK_LIBS)
-
-DLD-FUNCTIONS/__init_fltk__.df: CPPFLAGS += $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___init_fltk___la_CPPFLAGS = $(AM_CPPFLAGS) $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___init_fltk___la_LIBADD += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
-
-DLD-FUNCTIONS/amd.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_amd_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_amd_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/colamd.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_colamd_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_colamd_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/ccolamd.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_ccolamd_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_ccolamd_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/symbfact.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symbfact_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symbfact_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/dmperm.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_dmperm_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_dmperm_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/symrcm.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symrcm_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symrcm_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/fft.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-
-DLD-FUNCTIONS/fft2.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft2_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft2_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-
-DLD-FUNCTIONS/fftn.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftn_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftn_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-
-DLD-FUNCTIONS/fftw.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftw_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftw_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-
-
 octave_SOURCES = main.c
 
-octave_LDADD = $(OCTAVE_LIBS)
+octave_LDADD = liboctinterp.la $(OCTAVE_LINK_DEPS)
 
+octave_LDFLAGS = $(OCTAVE_LINK_OPTS)
 
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 
-DLD_STATIC_DEF_FILES  = $(DLD_STATIC_SRC:.cc=.df)
-DLD_DYNAMIC_DEF_FILES = $(DLD_DYNAMIC_SRC:.cc=.df)
+DLD_FUNCTIONS_DEF_FILES = $(DLD_FUNCTIONS_SRC:.cc=.df)
 
 ## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
 ## .df files that correspond to sources included in liboctave.
-DEF_FILES = $(SRC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
+if AMCOND_ENABLE_DYNAMIC_LINKING
+  DEF_FILES = $(SRC_DEF_FILES)
+else
+  DEF_FILES = $(SRC_DEF_FILES) $(DLD_FUNCTIONS_DEF_FILES)
+endif
 
-ALL_DEF_FILES = $(DEF_FILES) $(DLD_DYNAMIC_DEF_FILES)
+ALL_DEF_FILES = $(SRC_DEF_FILES) $(DLD_FUNCTIONS_DEF_FILES)
 
-$(DEF_FILES) $(DYNAMIC_DLD_DEF_FILES): mkdefs Makefile
+$(SRC_DEF_FILES): mkdefs Makefile
 
 $(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
 
@@ -796,9 +629,13 @@ $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/build-aux/mk
 $(OPT_INC) : %.h : %.in
 	$(MAKE) -C $(@D) $(@F)
 
-DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(DLD_DYNAMIC_DEF_FILES) > $@-t
+if AMCOND_ENABLE_DYNAMIC_LINKING
+DLD_FUNCTIONS_PKG_ADD_FILE = DLD-FUNCTIONS/PKG_ADD
+
+DLD-FUNCTIONS/PKG_ADD: $(DLD_FUNCTIONS_DEF_FILES) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(DLD_FUNCTIONS_DEF_FILES) > $@-t
 	mv $@-t $@
+endif
 
 lex.lo lex.o oct-parse.lo oct-parse.o: \
   AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
@@ -830,8 +667,7 @@ gendoc.cc: doc-files mkgendoc
 gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
-
-all-local: $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
+all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE) .DOCSTRINGS
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.cc.in Makefile
@@ -884,8 +720,8 @@ endif
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
 	$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(octfiledir)
-	if [ -n "`cat DLD-FUNCTIONS/PKG_ADD`" ]; then \
-	  $(INSTALL_DATA) DLD-FUNCTIONS/PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
+	if [ -n "`cat $(DLD_FUNCTIONS_PKG_ADD_FILE)`" ]; then \
+	  $(INSTALL_DATA) $(DLD_FUNCTIONS_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
 	cd $(DESTDIR)$(octlibdir) && \
 	for ltlib in $(DLD_FUNCTIONS_LIBS); do \
@@ -913,7 +749,7 @@ endif
 
 CLEANFILES = \
   $(bin_SCRIPTS) \
-  DLD-FUNCTIONS/PKG_ADD \
+  $(DLD_FUNCTIONS_PKG_ADD_FILE) \
   doc-files \
   gendoc.cc \
   gendoc$(BUILD_EXEEXT) \

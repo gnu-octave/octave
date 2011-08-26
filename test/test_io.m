@@ -246,22 +246,22 @@
 %!assert (sscanf ('123456', '%10s'), '123456')
 
 %!test
-%! [val, count, msg, pos] = sscanf ("3I2", "%f")
+%! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "");
 %! assert (pos, 2);
 
 %!test
-%! [val, count, msg, pos] = sscanf ("3In2", "%f")
+%! [val, count, msg, pos] = sscanf ("3In2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "");
 %! assert (pos, 2);
 
 %!test
-%! [val, count, msg, pos] = sscanf ("3Inf2", "%f")
-%! assert (val, [3; Inf, 2);
+%! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
+%! assert (val, [3; Inf; 2]);
 %! assert (count, 3);
 %! assert (msg, "");
 %! assert (pos, 6);

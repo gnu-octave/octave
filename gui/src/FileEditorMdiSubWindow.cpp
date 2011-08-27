@@ -17,7 +17,6 @@
  */
 
 #include "FileEditorMdiSubWindow.h"
-#include "MainWindow.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
@@ -40,15 +39,18 @@ FileEditorMdiSubWindow::~FileEditorMdiSubWindow ()
 void
 FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
 {
-  // ignore close event if file is not saved and user cancels closing this window
-  // TODO: This does not work if the main window is closed!
-  if (checkFileModified ("Close File")==QMessageBox::Cancel)
+  if ( m_mainWindow->isCloseApplication() )
     {
-      event->ignore();
+      // close wohle application: save file or not if modified
+      checkFileModified ("Close Octave GUI",0); // no cancel possible
     }
   else
     {
-      event->accept();
+      // ignore close event if file is not saved and user cancels closing this window
+      if (checkFileModified ("Close File",QMessageBox::Cancel)==QMessageBox::Cancel)
+        event->ignore();
+      else
+        event->accept();
     }
 }
 
@@ -89,7 +91,7 @@ FileEditorMdiSubWindow::handleCopyAvailable(bool enableCopy)
 void
 FileEditorMdiSubWindow::openFile ()
 {
-    if (checkFileModified ("Open File")==QMessageBox::Cancel)
+    if (checkFileModified ("Open File",QMessageBox::Cancel)==QMessageBox::Cancel)
       {
         return; // existing file not saved and opening another file canceled by user
       }
@@ -133,7 +135,7 @@ FileEditorMdiSubWindow::loadFile (QString fileName)
 void
 FileEditorMdiSubWindow::newFile ()
 {
-    if (checkFileModified ("Open New File")==QMessageBox::Cancel)
+    if (checkFileModified ("Create New File",QMessageBox::Cancel)==QMessageBox::Cancel)
       {
         return; // existing file not saved and creating new file canceled by user
       }
@@ -144,29 +146,31 @@ FileEditorMdiSubWindow::newFile ()
 }
 
 int
-FileEditorMdiSubWindow::checkFileModified (QString msg)
+FileEditorMdiSubWindow::checkFileModified (QString msg, int cancelButton)
 {
   int decision = QMessageBox::Yes;
   if (m_editor->isModified ())
     {
       // file is modified but not saved, aks user what to do
-      decision = QMessageBox::question (this,
+      decision = QMessageBox::warning (this,
                                         msg,
-                                        tr ("Do you want to save the current file\n%1 ?").
+                                        tr ("The file %1\n"
+                                            "has been modified. Do you want to save the changes?").
                                           arg (m_fileName),
-                                        QMessageBox::Cancel,
-                                        QMessageBox::No,
-                                        QMessageBox::Yes);
-
-      if (decision == QMessageBox::Yes)
+                                        QMessageBox::Save, QMessageBox::Discard, cancelButton );
+      if (decision == QMessageBox::Save)
         {
           saveFile ();
           if (m_editor->isModified ())
             {
               // If the user attempted to save the file, but it's still
               // modified, then probably something went wrong, so return cancel
-              // for cancel this operation
-              return (QMessageBox::Cancel);
+              // for cancel this operation or try to save files as if cancel not
+              // possible
+              if ( cancelButton )
+                return (QMessageBox::Cancel);
+              else
+                saveFileAs ();
             }
         }
     }
@@ -331,11 +335,13 @@ FileEditorMdiSubWindow::prevBookmark ()
 // function for setting the already existing lexer from MainWindow
 void
 FileEditorMdiSubWindow::initEditor (TerminalEmulation* terminalEmulation,
-                                    LexerOctaveGui* lexer)
+                                    LexerOctaveGui* lexer,
+                                    MainWindow* mainWindow)
 {
   m_editor->setLexer(lexer);
   m_terminalEmulation = terminalEmulation; // for sending commands to octave
                        // TODO: make a global commandOctave function?
+  m_mainWindow = mainWindow;  // get the MainWindow for chekcing state at subwindow close
 }
 
 // TODO: Do we still need tool tips in the status bar? Tool tips are now

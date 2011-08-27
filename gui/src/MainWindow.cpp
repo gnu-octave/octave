@@ -96,7 +96,7 @@ MainWindow::openEditorFile (QString fileName)
          }
        m_lexerAPI->prepare();           // prepare API info ... this make take some time
     }
-  subWindow->initEditor(m_terminalView->terminalEmulation(), m_lexer);   // init necessary informations for editor
+  subWindow->initEditor(m_terminalView->terminalEmulation(), m_lexer, this);   // init necessary informations for editor
 
   if ( fileName.isEmpty() )
     subWindow->newFile ();
@@ -237,8 +237,10 @@ MainWindow::closeEvent (QCloseEvent * closeEvent)
 {
   reportStatusMessage (tr ("Saving data and shutting down."));
   writeSettings ();
-
+  m_closeApplication = true;  // inform editor window that whole application is closed
   OctaveLink::instance ()->terminateOctave();
+  m_centralMdiArea->closeAllSubWindows();   // send close events to subwindows
+                                            // (editor files can be saved!)
   QMainWindow::closeEvent (closeEvent);
 }
 
@@ -264,6 +266,7 @@ MainWindow::writeSettings ()
 void
 MainWindow::construct ()
 {
+  m_closeApplication = false;   // flag for editor files when closed
   setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Octave));
 
   // Initialize MDI area.

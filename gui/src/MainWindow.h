@@ -79,6 +79,11 @@ Q_OBJECT public:
   {
     return m_filesDockWidget;
   }
+  bool isCloseApplication ()
+  {
+    return m_closeApplication;
+  }
+
 signals:
   void settingsChanged ();
 
@@ -131,6 +136,9 @@ private:
 
   // Toolbars.
   QStatusBar *m_statusBar;
+
+  // Flag for closing whole application
+  bool m_closeApplication;
 
 };
 

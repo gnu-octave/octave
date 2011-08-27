@@ -19,6 +19,7 @@
 #ifndef FILEEDITORMDISUBWINDOW_H
 #define FILEEDITORMDISUBWINDOW_H
 
+#include "MainWindow.h"
 #include "TerminalEmulation.h"
 #include <QMdiSubWindow>
 #include <QToolBar>
@@ -45,7 +46,9 @@ Q_OBJECT public:
   FileEditorMdiSubWindow (QWidget * parent = 0);
   ~FileEditorMdiSubWindow ();
   void loadFile (QString fileName);
-  void initEditor (TerminalEmulation *terminalEmulation, LexerOctaveGui *lexer);
+  void initEditor (TerminalEmulation *terminalEmulation,
+                   LexerOctaveGui *lexer,
+                   MainWindow *mainWindow);
 
 public slots:
 
@@ -67,7 +70,7 @@ protected:
   void closeEvent(QCloseEvent *event);
 
 private:
-  int checkFileModified (QString msg);
+  int checkFileModified (QString msg, int cancelButton);
   void construct ();
   void doCommentSelectedText (bool comment);
   QMenuBar *m_menuBar;
@@ -78,6 +81,7 @@ private:
   TerminalEmulation* m_terminalEmulation;
   QAction* m_copyAction;
   QAction* m_cutAction;
+  MainWindow* m_mainWindow;
   int m_markerBookmark;
   bool m_modified;
 

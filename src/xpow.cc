@@ -2598,8 +2598,21 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          //Potentially complex results
+          FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
+          FloatNDArray xb = octave_value_extract<FloatNDArray> (b);
+          if (! xb.all_integers () && xa.any_element_is_negative ())
+            return octave_value (bsxfun_pow (FloatComplexNDArray (xa), xb));
+          else
+            return octave_value (bsxfun_pow (xa, xb));
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   int len = a.length ();
@@ -2673,8 +2686,15 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2765,8 +2785,15 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2808,8 +2835,15 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun (a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   FloatComplexNDArray result (a_dims);

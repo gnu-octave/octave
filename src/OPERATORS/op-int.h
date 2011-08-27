@@ -732,7 +732,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
       { \
         if (is_valid_bsxfun (a_dims, b_dims)) \
           { \
-            return bsxfun_pow (a, static_cast<T1 ## NDArray> (b)); \
+            return bsxfun_pow (a, b); \
           } \
         else \
           { \
@@ -758,7 +758,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
       { \
         if (is_valid_bsxfun (a_dims, b_dims)) \
           { \
-            return bsxfun_pow (static_cast<T2 ## NDArray> (a), b); \
+            return bsxfun_pow (a, b); \
           } \
         else \
           { \
@@ -784,7 +784,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
       { \
         if (is_valid_bsxfun (a_dims, b_dims)) \
           { \
-            return bsxfun_pow (a, static_cast<T1 ## NDArray> (b)); \
+            return bsxfun_pow (a, b); \
           } \
         else \
           { \
@@ -810,7 +810,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
       { \
         if (is_valid_bsxfun (a_dims, b_dims)) \
           { \
-            return bsxfun_pow (static_cast<T1 ## NDArray> (a), b); \
+            return bsxfun_pow (a, b); \
           } \
         else \
           { \

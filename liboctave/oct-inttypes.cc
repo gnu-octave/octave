@@ -578,6 +578,23 @@ pow (const octave_int<T>& a, const double& b)
 
 template <class T>
 octave_int<T>
+pow (const float& a, const octave_int<T>& b)
+{ return octave_int<T> (pow (a, b.float_value ())); }
+
+template <class T>
+octave_int<T>
+pow (const octave_int<T>& a, const float& b)
+{
+  return ((b >= 0 && b < std::numeric_limits<T>::digits && b == xround (b))
+          ? pow (a, octave_int<T> (static_cast<T> (b)))
+          : octave_int<T> (pow (a.double_value (), static_cast<double> (b))));
+}
+
+// FIXME: Do we really need a differently named single-precision
+//        function integer power function here instead of an overloaded
+//        one?
+template <class T>
+octave_int<T>
 powf (const float& a, const octave_int<T>& b)
 { return octave_int<T> (pow (a, b.float_value ())); }
 
@@ -595,6 +612,8 @@ powf (const octave_int<T>& a, const float& b)
   template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> pow (const double&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const double&); \
+  template OCTAVE_API octave_int<T> pow (const float&, const octave_int<T>&);  \
+  template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const float&);  \
   template OCTAVE_API octave_int<T> powf (const float&, const octave_int<T>&); \
   template OCTAVE_API octave_int<T> powf (const octave_int<T>&, const float&); \
   template OCTAVE_API octave_int<T> \

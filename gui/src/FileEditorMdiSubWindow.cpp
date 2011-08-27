@@ -268,6 +268,7 @@ FileEditorMdiSubWindow::doCommentSelectedText (bool comment)
       m_editor->getSelection (&lineFrom,&colFrom,&lineTo,&colTo);
       if ( colTo == 0 )  // the beginning of last line is not selected
         lineTo--;        // stop at line above
+      m_editor->beginUndoAction ();
       for ( i=lineFrom; i<=lineTo; i++ )
         {
           if ( comment )
@@ -282,6 +283,7 @@ FileEditorMdiSubWindow::doCommentSelectedText (bool comment)
                 }
             }
         }
+      m_editor->endUndoAction ();
     }
 }
 
@@ -479,8 +481,8 @@ FileEditorMdiSubWindow::construct ()
   nextBookmarkAction->setShortcut(Qt::Key_F2);
   prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
   toggleBookmarkAction->setShortcut(Qt::Key_F7);
-  commentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);
-  uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_U);
+  commentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_R);
+  uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);
 
   // toolbar
   m_toolBar->setIconSize(QSize(16,16)); // smaller icons (make configurable in user settings?)

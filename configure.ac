@@ -1157,7 +1157,7 @@ fi
 
 AC_ARG_ENABLE([dl],
   [AS_HELP_STRING([--enable-dl],
-    [create shared libraries (not all systems)])], [
+    [allow loading of dynamically linked modules (not all systems)])], [
   case "${enableval}" in
     yes) ENABLE_DYNAMIC_LINKING=true ;;
     no) ENABLE_DYNAMIC_LINKING=false ;;
@@ -1509,6 +1509,7 @@ case "$canonical_host_type" in
   ;;
 esac
 AC_SUBST(NO_UNDEFINED_LDFLAG)
+AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test -n "$NO_UNDEFINED_LDFLAG"])
 
 ### Type stuff.
 
@@ -1685,7 +1686,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
       OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
     ;;
     shl_load)
-      shl_load_api=true
+      shl_load_api=truenn
       DL_API_MSG="(shl_load)"
       AC_DEFINE(HAVE_SHL_LOAD_API, 1, [Define if your system has shl_load and shl_findsym for dynamic linking])
     ;;
@@ -1704,10 +1705,16 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
   DL_LIBS="$lt_cv_dlopen_libs"
   AC_SUBST(DL_LIBS)
 
+  ## Disable dynamic linking if capability is not present.
   if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
-    ENABLE_DYNAMIC_LINKING=true
-    AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define if using dynamic linking])
+    true
+  else
+    ENABLE_DYNAMIC_LINKING=false
   fi
+fi
+
+if $ENABLE_DYNAMIC_LINKING; then
+  AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define if using dynamic linking])
 fi
 
 AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],

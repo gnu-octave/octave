@@ -52,7 +52,7 @@ libcruft_la_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   @XTRA_CRUFT_SH_LDFLAGS@ \
   -bindir $(bindir) \
-  $(LIBCRUFT_LDFLAGS)
+  $(LIBCRUFT_LINK_OPTS)
 
 libcruft_la_DEPENDENCIES = cruft.def
 

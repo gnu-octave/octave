@@ -456,10 +456,6 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_REGEX_LIBS %OCTAVE_CONF_REGEX_LIBS%
 #endif
 
-#ifndef OCTAVE_CONF_RLD_FLAG
-#define OCTAVE_CONF_RLD_FLAG %OCTAVE_CONF_RLD_FLAG%
-#endif
-
 #ifndef OCTAVE_CONF_SED
 #define OCTAVE_CONF_SED %OCTAVE_CONF_SED%
 #endif

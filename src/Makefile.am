@@ -517,7 +517,6 @@ liboctinterp_age = 0
 liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
 
 liboctinterp_la_LDFLAGS = \
-  $(RLD_FLAG) \
   -version-info $(liboctinterp_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
@@ -527,7 +526,7 @@ display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
 octave_SOURCES = main.c
 
-octave_LDADD = liboctinterp.la $(OCTAVE_LINK_DEPS)
+octave_LDADD = liboctinterp.la ../liboctave/liboctave.la ../libcruft/libcruft.la $(OCTAVE_LINK_DEPS)
 
 octave_LDFLAGS = $(OCTAVE_LINK_OPTS)
 

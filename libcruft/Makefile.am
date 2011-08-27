@@ -47,7 +47,6 @@ libcruft_age = 0
 libcruft_version_info = $(libcruft_current):$(libcruft_revision):$(libcruft_age)
 
 libcruft_la_LDFLAGS = \
-  $(RLD_FLAG) \
   -version-info $(libcruft_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   @XTRA_CRUFT_SH_LDFLAGS@ \

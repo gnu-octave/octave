@@ -523,7 +523,6 @@ liboctave_age = 0
 liboctave_version_info = $(liboctave_current):$(liboctave_revision):$(liboctave_age)
 
 liboctave_la_LDFLAGS = \
-  $(RLD_FLAG) \
   -version-info $(liboctave_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \

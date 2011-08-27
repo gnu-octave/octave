@@ -1170,16 +1170,6 @@ else
   AC_MSG_ERROR([You can't disable building static AND shared libraries!])
 fi
 
-AC_ARG_ENABLE(rpath,
-  [AS_HELP_STRING([--enable-rpath],
-     [override the default link options for rpath; e.g., --enable-rpath='-rpath $(octlibdir)'])],
-  [ if test "$enableval" = no; then use_rpath=false;
-    else
-      use_rpath=true
-      if test "$enableval" = yes; then true;
-      else enable_rpath_arg="$enableval"; fi
-    fi], [use_rpath=true])
-
 CPICFLAG=-fPIC
 CXXPICFLAG=-fPIC
 FPICFLAG=-fPIC
@@ -1200,7 +1190,6 @@ DL_LD='$(SH_LD)'
 DL_LDFLAGS='$(SH_LDFLAGS)'
 MKOCTFILE_DL_LDFLAGS='$(DL_LDFLAGS)'
 SONAME_FLAGS=
-RLD_FLAG=
 NO_OCT_FILE_STRIP=false
 TEMPLATE_AR='$(AR)'
 TEMPLATE_ARFLAGS="$ARFLAGS"
@@ -1221,14 +1210,12 @@ case "$canonical_host_type" in
   ;;
   *-*-freebsd*)
     SH_LDFLAGS="-shared -Wl,-x"
-    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   alpha*-dec-osf*)
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
     SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
-    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   *-*-darwin*)
     DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/src/octave $(LDFLAGS)'
@@ -1335,11 +1322,9 @@ case "$canonical_host_type" in
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
     SONAME_FLAGS='-Wl,-soname -Wl,$@'
-    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   i[[3456]]86-*-sco3.2v5*)
     SONAME_FLAGS='-Wl,-h -Wl,$@'
-    RLD_FLAG=
     SH_LDFLAGS=-G
   ;;
   rs6000-ibm-aix* | powerpc-ibm-aix*)
@@ -1356,7 +1341,6 @@ case "$canonical_host_type" in
     fi
     SHLEXT=sl
     SH_LDFLAGS="-shared -fPIC"
-    RLD_FLAG='-Wl,+b -Wl,$(octlibdir)'
     library_path_var=SHLIB_PATH
   ;;
   ia64*-hp-hpux*)
@@ -1366,13 +1350,11 @@ case "$canonical_host_type" in
       FPICFLAG=+Z
     fi
     SH_LDFLAGS="-shared -fPIC"
-    RLD_FLAG='-Wl,+b -Wl,$(octlibdir)'
   ;;
   *-sgi-*)
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
-    RLD_FLAG='-rpath $(octlibdir)'
   ;;
   sparc-sun-sunos4*)
     if test "$ac_cv_f77_compiler_gnu" = yes; then
@@ -1382,7 +1364,6 @@ case "$canonical_host_type" in
     fi
     SH_LD=ld
     SH_LDFLAGS="-assert nodefinitions"
-    RLD_FLAG='-L$(octlibdir)'
   ;;
   sparc-sun-solaris2* | i386-pc-solaris2*)
     if test "$ac_cv_f77_compiler_gnu" = yes; then
@@ -1402,7 +1383,6 @@ case "$canonical_host_type" in
       CXXPICFLAG=-KPIC
       SH_LDFLAGS=-G
     fi
-    RLD_FLAG='-R $(octlibdir)'
     ## Template closures in archive libraries need a different mechanism.
     if test "$GXX" = yes; then
       true
@@ -1415,14 +1395,6 @@ esac
 
 AM_CONDITIONAL([AMCOND_BUILD_COMPILED_AUX_PROGRAMS],
   [test x$BUILD_COMPILED_AUX_PROGRAMS = xtrue])
-
-if $use_rpath; then
-  if test -n "$enable_rpath_arg"; then
-    RLD_FLAG="$enable_rpath_arg"
-  fi
-else
-  RLD_FLAG=""
-fi
 
 AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
 AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
@@ -1445,7 +1417,6 @@ AC_MSG_NOTICE([defining DL_LDFLAGS to be $DL_LDFLAGS])
 AC_MSG_NOTICE([defining MKOCTFILE_DL_LDFLAGS to be $MKOCTFILE_DL_LDFLAGS])
 AC_MSG_NOTICE([defining SONAME_FLAGS to be $SONAME_FLAGS])
 AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
-AC_MSG_NOTICE([defining RLD_FLAG to be $RLD_FLAG])
 AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
 AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
@@ -1474,7 +1445,6 @@ AC_SUBST(DL_LDFLAGS)
 AC_SUBST(MKOCTFILE_DL_LDFLAGS)
 AC_SUBST(SONAME_FLAGS)
 AC_SUBST(NO_OCT_FILE_STRIP)
-AC_SUBST(RLD_FLAG)
 AC_SUBST(TEMPLATE_AR)
 AC_SUBST(TEMPLATE_ARFLAGS)
 AC_SUBST(CRUFT_DLL_DEFS)

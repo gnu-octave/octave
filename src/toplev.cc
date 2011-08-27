@@ -1317,7 +1317,6 @@ specified option.\n\
       { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
       { false, "READLINE_LIBS", OCTAVE_CONF_READLINE_LIBS },
       { false, "REGEX_LIBS", OCTAVE_CONF_REGEX_LIBS },
-      { false, "RLD_FLAG", OCTAVE_CONF_RLD_FLAG },
       { false, "SED", OCTAVE_CONF_SED },
       { false, "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS },
       { false, "SHLEXT", OCTAVE_CONF_SHLEXT },

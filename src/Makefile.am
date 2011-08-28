@@ -507,7 +507,10 @@ liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
 include link-deps.mk
 
-liboctinterp_la_LIBADD = $(LIBOCTINTERP_LINK_DEPS)
+liboctinterp_la_LIBADD = \
+  ../liboctave/liboctave.la \
+  ../libcruft/libcruft.la \
+  $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
 liboctinterp_current = 0
@@ -526,7 +529,11 @@ display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
 octave_SOURCES = main.c
 
-octave_LDADD = liboctinterp.la ../liboctave/liboctave.la ../libcruft/libcruft.la $(OCTAVE_LINK_DEPS)
+octave_LDADD = \
+  liboctinterp.la \
+  ../liboctave/liboctave.la \
+  ../libcruft/libcruft.la \
+  $(OCTAVE_LINK_DEPS)
 
 octave_LDFLAGS = $(OCTAVE_LINK_OPTS)
 

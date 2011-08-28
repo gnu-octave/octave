@@ -7,7 +7,6 @@ else
 endif
 
 LIBOCTINTERP_LINK_DEPS += \
-  ../liboctave/liboctave.la \
   $(GRAPHICS_LIBS) \
   $(FT2_LIBS) \
   $(HDF5_LIBS) \

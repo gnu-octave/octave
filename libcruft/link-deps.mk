@@ -12,8 +12,6 @@
 ##   $(TRUNC_LIBM)
 
 LIBCRUFT_LINK_DEPS = \
-  libranlib.la \
-  ../libgnu/libgnu.la \
   $(COPYSIGN_LIBM) \
   $(FLOOR_LIBM) \
   $(GETHOSTNAME_LIB) \

@@ -505,6 +505,7 @@ nodist_liboctave_la_SOURCES = \
 include link-deps.mk
 
 liboctave_la_LIBADD = \
+  ../libcruft/libcruft.la \
   $(LIBOCTAVE_LINK_DEPS)
 
 liboctave_la_CPPFLAGS = \

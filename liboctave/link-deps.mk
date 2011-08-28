@@ -1,7 +1,6 @@
 include ../libcruft/link-deps.mk
 
 LIBOCTAVE_LINK_DEPS = \
-  ../libcruft/libcruft.la \
   $(SPARSE_XLIBS) \
   $(ARPACK_LIBS) \
   $(QRUPDATE_LIBS) \

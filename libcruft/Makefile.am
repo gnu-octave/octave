@@ -36,7 +36,10 @@ libcruft_la_CPPFLAGS = \
 
 include link-deps.mk
 
-libcruft_la_LIBADD = $(LIBCRUFT_LINK_DEPS)
+libcruft_la_LIBADD = \
+  libranlib.la \
+  ../libgnu/libgnu.la \
+  $(LIBCRUFT_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool
 # manual:

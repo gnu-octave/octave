@@ -391,6 +391,7 @@ FileEditorMdiSubWindow::registerModified (bool modified)
 void
 FileEditorMdiSubWindow::construct ()
 {
+  QSettings *settings = ResourceManager::instance ()->settings ();
   QStyle *style = QApplication::style ();
   setWidget (new QWidget ());
 
@@ -407,28 +408,37 @@ FileEditorMdiSubWindow::construct ()
           this,SLOT(handleMarginClicked(int,int,Qt::KeyboardModifiers)));
 
   // line numbers
-  QFont marginFont("Monospace",9);
-  m_editor->setMarginsFont(marginFont);
-  QFontMetrics metrics(marginFont);
   m_editor->setMarginsForegroundColor(QColor(96,96,96));
   m_editor->setMarginsBackgroundColor(QColor(232,232,220));
-  m_editor->setMarginType (2, QsciScintilla::TextMargin);
-  m_editor->setMarginWidth(2, metrics.width("99999"));
-  m_editor->setMarginLineNumbers(2, true);
-
+  if ( settings->value ("editor/showLineNumbers",true).toBool () )
+    {
+      QFont marginFont( settings->value ("editor/fontName","Courier").toString () ,
+                        settings->value ("editor/fontSize",10).toInt () );
+      m_editor->setMarginsFont( marginFont );
+      QFontMetrics metrics(marginFont);
+      m_editor->setMarginType (2, QsciScintilla::TextMargin);
+      m_editor->setMarginWidth(2, metrics.width("99999"));
+      m_editor->setMarginLineNumbers(2, true);
+    }
   // code folding
   m_editor->setMarginType (3, QsciScintilla::SymbolMargin);
   m_editor->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
-
-  m_editor->setCaretLineVisible(true);
-  m_editor->setCaretLineBackgroundColor(QColor(255,255,200));
+  // other features
+  if ( settings->value ("editor/highlightActualLine",true).toBool () )
+    {
+      m_editor->setCaretLineVisible(true);
+      m_editor->setCaretLineBackgroundColor(QColor(255,255,200));
+    }
   m_editor->setBraceMatching (QsciScintilla::SloppyBraceMatch);
   m_editor->setAutoIndent (true);
   m_editor->setIndentationWidth (2);
   m_editor->setIndentationsUseTabs (false);
-  m_editor->autoCompleteFromAll();
-  m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
-  m_editor->setAutoCompletionThreshold (3);
+  if ( settings->value ("editor/codeCompletion",true).toBool () )
+    {
+      m_editor->autoCompleteFromAll();
+      m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
+      m_editor->setAutoCompletionThreshold (3);
+    }
   m_editor->setUtf8 (true);
 
   // The Actions

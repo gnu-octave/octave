@@ -32,7 +32,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="chatTab">
       <attribute name="title">
@@ -125,28 +125,7 @@
        <string>Editor</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QCheckBox" name="useCustomFileEditor">
-           <property name="text">
-            <string>Use custom file editor:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="customFileEditor">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>emacs</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
+       <item row="3" column="0">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -158,6 +137,124 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="1" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_7">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QCheckBox" name="useCustomFileEditor">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Use custom file editor:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="customFileEditor">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>emacs</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="editor_showLineNumbers">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Show line numbers</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="editor_highlightActualLine">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Highlight actual line</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="editor_codeCompletion">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Code completion</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Font</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFontComboBox" name="editor_fontName">
+           <property name="editable">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Font Size</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="editor_fontSize">
+           <property name="minimum">
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <number>96</number>
+           </property>
+           <property name="value">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -402,8 +499,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>249</x>
-     <y>144</y>
+     <x>261</x>
+     <y>139</y>
     </hint>
     <hint type="destinationlabel">
      <x>384</x>
@@ -454,8 +551,8 @@
      <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>291</x>
-     <y>157</y>
+     <x>364</x>
+     <y>154</y>
     </hint>
    </hints>
   </connection>
@@ -486,8 +583,8 @@
      <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>57</x>
-     <y>124</y>
+     <x>69</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
@@ -502,8 +599,8 @@
      <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>37</x>
-     <y>157</y>
+     <x>44</x>
+     <y>152</y>
     </hint>
    </hints>
   </connection>
@@ -518,8 +615,8 @@
      <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>291</x>
-     <y>190</y>
+     <x>364</x>
+     <y>184</y>
     </hint>
    </hints>
   </connection>
@@ -534,8 +631,8 @@
      <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>291</x>
-     <y>223</y>
+     <x>364</x>
+     <y>214</y>
     </hint>
    </hints>
   </connection>
@@ -550,8 +647,8 @@
      <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>56</x>
-     <y>190</y>
+     <x>68</x>
+     <y>182</y>
     </hint>
    </hints>
   </connection>
@@ -566,8 +663,56 @@
      <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>55</x>
-     <y>223</y>
+     <x>67</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_showLineNumbers</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_showLineNumbers</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>87</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_highlightActualLine</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_highlightActualLine</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>112</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>editor_codeCompletion</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editor_codeCompletion</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>137</y>
     </hint>
    </hints>
   </connection>

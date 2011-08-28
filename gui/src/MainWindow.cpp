@@ -74,7 +74,11 @@ MainWindow::openEditorFile (QString fileName)
     {
       // this has to be done only once, not for each editor
       m_lexer = new LexerOctaveGui();
-      m_lexer->setDefaultFont(QFont("Monospace",10));
+      // Editor font (default or from settings)
+      QSettings *settings = ResourceManager::instance ()->settings ();
+      m_lexer->setDefaultFont( QFont(
+                  settings->value ("editor/fontName","Courier").toString (),
+                  settings->value ("editor/fontSize",10).toInt () ) );
       // TODO: Autoindent not working as it should
       m_lexer->setAutoIndentStyle(QsciScintilla::AiMaintain ||
                                   QsciScintilla::AiOpening  ||

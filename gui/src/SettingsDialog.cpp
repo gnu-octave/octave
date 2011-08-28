@@ -16,6 +16,11 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->nickServPassword->setText (settings->value ("nickServPassword").toString ());
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor").toBool ());
   ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
+  ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
+  ui->editor_highlightActualLine->setChecked (settings->value ("editor/highlightActualLine",true).toBool () );
+  ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
+  ui->editor_fontName->setCurrentFont (QFont (settings->value ("editor/fontName","Courier").toString()) );
+  ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());
   ui->showFilenames->setChecked (settings->value ("showFilenames").toBool());
   ui->showFileSize->setChecked (settings->value ("showFileSize").toBool());
   ui->showFileType->setChecked (settings->value ("showFileType").toBool());
@@ -48,6 +53,11 @@ SettingsDialog::~SettingsDialog ()
   settings->setValue ("nickServPassword", ui->nickServPassword->text ());
   settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
+  settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());
+  settings->setValue ("editor/highlightActualLine", ui->editor_highlightActualLine->isChecked ());
+  settings->setValue ("editor/codeCompletion", ui->editor_codeCompletion->isChecked ());
+  settings->setValue ("editor/fontName", ui->editor_fontName->currentFont().family());
+  settings->setValue ("editor/fontSize", ui->editor_fontSize->value());
   settings->setValue ("showFilenames", ui->showFilenames->isChecked ());
   settings->setValue ("showFileSize", ui->showFileSize->isChecked ());
   settings->setValue ("showFileType", ui->showFileType->isChecked ());

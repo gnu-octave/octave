@@ -4224,10 +4224,10 @@ feval (\"acos\", -1)\n\
 calls the function @code{acos} with the argument @samp{-1}.\n\
 \n\
 The function @code{feval} can also be used with function handles of\n\
-any sort. @xref{Function Handles} Historically, @code{feval} was\n\
+any sort (@pxref{Function Handles}).  Historically, @code{feval} was\n\
 the only way to call user-supplied functions in strings, but\n\
 function handles are now preferred due to the cleaner syntax they\n\
-offer. For example,\n\
+offer.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -4240,7 +4240,7 @@ feval (@var{f}, 1)\n\
 @end example\n\
 \n\
 @noindent\n\
-are equivalent ways to call the function referred to by @var{f}. If it\n\
+are equivalent ways to call the function referred to by @var{f}.  If it\n\
 cannot be predicted beforehand that @var{f} is a function handle or the\n\
 function name in a string, @code{feval} can be used instead.\n\
 @end deftypefn")

@@ -839,4 +839,4 @@ variable.
 
 If instead of knowing properties of variables, you wish to know which
 variables are defined and to gather other information about the
-workspace itself, see @ref{Status of variables}.
+workspace itself, see @ref{Status of Variables}.

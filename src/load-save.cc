@@ -664,7 +664,8 @@ Force Octave to assume the file is in Octave's text format.\n\
   bool list_only = false;
   bool verbose = false;
 
-  for (i; i < argc; i++)
+  //for (i; i < argc; i++)
+  for (; i < argc; i++)
     {
       if (argv[i] == "-force" || argv[i] == "-f")
         {

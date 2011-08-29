@@ -177,7 +177,6 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
                 octave_idx_type base = NINTbig (r.base ());
                 octave_idx_type incr = NINTbig (r.inc ());
-                octave_idx_type lim = NINTbig (r.limit ());
 
                 for (octave_idx_type i = 0; i < n; i++)
                   {

@@ -108,7 +108,8 @@
 ## @end table
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("qp");
+## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
+## PKG_ADD: [~] = __all_opts__ ("qp");
 
 function [x, obj, INFO, lambda] = qp (x0, H, varargin)
 

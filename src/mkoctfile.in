@@ -85,7 +85,6 @@ fi
 : ${DL_LD=%OCTAVE_CONF_DL_LD%}
 : ${DL_LDFLAGS=%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%}
 
-: ${RLD_FLAG=%OCTAVE_CONF_RLD_FLAG%}
 : ${RDYNAMIC_FLAG=%OCTAVE_CONF_RDYNAMIC_FLAG%}
 : ${LIBOCTAVE=-loctave}
 : ${LIBOCTINTERP=-loctinterp}
@@ -253,10 +252,10 @@ Options:
                             DL_LDFLAGS                OCT_LINK_DEPS
                             EXEEXT                    RDYNAMIC_FLAG
                             F77                       READLINE_LIBS
-                            F77_INTEGER_8_FLAG        RLD_FLAG
-                            FFLAGS                    SED
-                            FFTW3_LDFLAGS             XTRA_CFLAGS
-                            FFTW3_LIBS                XTRA_CXXFLAGS
+                            F77_INTEGER_8_FLAG        SED
+                            FFLAGS                    XTRA_CFLAGS
+                            FFTW3_LDFLAGS             XTRA_CXXFLAGS
+                            FFTW3_LIBS
                             FFTW3F_LDFLAGS
 
   -v, --verbose           Echo commands as they are executed.
@@ -534,7 +533,7 @@ fi
 if $link && [ -n "$objfiles" ]; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $RLD_FLAG $OCTAVE_LINK_OPTS $OCTAVE_LINK_DEPS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $OCTAVE_LINK_OPTS $OCTAVE_LINK_DEPS"
       $dbg $cmd
       eval $cmd
     else

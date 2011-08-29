@@ -101,8 +101,8 @@ fi
 : ${FLIBS=%OCTAVE_CONF_FLIBS%}
 : ${OCTAVE_LINK_DEPS=%OCTAVE_CONF_OCTAVE_LINK_DEPS%}
 : ${OCTAVE_LINK_DEPS=%OCTAVE_CONF_OCTAVE_LINK_OPTS%}
-: ${OCT_LINK_DEPS=%OCTAVE_CONF_OCT_LINK_DEPS%}
-: ${OCT_LINK_DEPS=%OCTAVE_CONF_OCT_LINK_OPTS%}
+: ${OCT_LINK_DEPS=%OCTAVE_CONF_MKOCTFILE_OCT_LINK_DEPS%}
+: ${OCT_LINK_DEPS=%OCTAVE_CONF_MKOCTFILE_OCT_LINK_OPTS%}
 : ${LD_CXX=%OCTAVE_CONF_LD_CXX%}
 : ${LDFLAGS=%OCTAVE_CONF_LDFLAGS%}
 : ${LD_STATIC_FLAG=%OCTAVE_CONF_LD_STATIC_FLAG%}
@@ -534,7 +534,7 @@ fi
 if $link && [ -n "$objfiles" ]; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LINK_OPTS $OCTAVE_LINK_DEPS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $RLD_FLAG $OCTAVE_LINK_OPTS $OCTAVE_LINK_DEPS"
       $dbg $cmd
       eval $cmd
     else
@@ -542,7 +542,7 @@ if $link && [ -n "$objfiles" ]; then
       exit 1
     fi
   else
-    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LFLAGS $OCT_LINK_OPTS $OCT_LINK_DEPS"
+    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $OCT_LINK_OPTS $OCT_LINK_DEPS"
     $dbg $cmd
     eval $cmd
   fi

@@ -535,7 +535,9 @@ octave_LDADD = \
   ../libcruft/libcruft.la \
   $(OCTAVE_LINK_DEPS)
 
-octave_LDFLAGS = $(OCTAVE_LINK_OPTS)
+octave_LDFLAGS = \
+  $(NO_UNDEFINED_LDFLAG) \
+  $(OCTAVE_LINK_OPTS)
 
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))

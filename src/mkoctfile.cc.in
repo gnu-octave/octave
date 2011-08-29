@@ -751,7 +751,8 @@ main (int argc, char **argv)
                 + vars["ALL_CXXFLAGS"] + " " + vars["RDYNAMIC_FLAG"]
                 + " " + vars["ALL_LDFLAGS"] + " " +  pass_on_options
                 + " " + output_option + " " + objfiles + " " + libfiles
-                + " " + ldflags + " " + vars["LFLAGS"] + " "
+                + " " + ldflags + " " + vars["LFLAGS"]
+                + " -loctinterp -loctave -lcruft "
                 + " " + vars["OCT_LINK_OPTS"]
                 + " " + vars["OCTAVE_LINK_DEPS"];
               result = run_command (cmd);
@@ -767,7 +768,8 @@ main (int argc, char **argv)
         {
           string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
             + pass_on_options + " -o " + octfile + " " + objfiles + " "
-            + libfiles + " " + ldflags + " " + vars["LFLAGS"] + " "
+            + libfiles + " " + ldflags + " " + vars["LFLAGS"]
+            + " -loctinterp -loctave -lcruft "
             + vars["OCT_LINK_OPTS"] + " " + vars["OCT_LINK_DEPS"];
           result = run_command (cmd);
         }

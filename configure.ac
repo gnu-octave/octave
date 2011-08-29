@@ -1458,28 +1458,41 @@ AC_SUBST(ldpreloadsep)
 
 AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
-NO_UNDEFINED_LDFLAG=
 case "$canonical_host_type" in
   *-*-mingw*)
     if test "$have_msvc" = "yes"; then
       AC_CHECK_LIB(dirent, opendir)
       LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
-      NO_UNDEFINED_LDFLAG=-no-undefined
     else
       LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
-      NO_UNDEFINED_LDFLAG=-no-undefined
     fi
     LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
-    NO_UNDEFINED_LDFLAG=-no-undefined
   ;;
   *-*-msdosmsvc*)
     AC_CHECK_LIB(dirent, opendir)
     LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
-    NO_UNDEFINED_LDFLAG=-no-undefined
   ;;
 esac
+
+AC_ARG_ENABLE([no-undefined],
+  [AS_HELP_STRING([--enable-no-undefined],
+    [pass -no-undefined to libtool when linking linking Octave and its shared libraries (on by default)])],
+  [case "${enableval}" in
+    yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
+    no)  NO_UNDEFINED_LDFLAG="" ;;
+    *) AC_MSG_ERROR([bad value ${enableval} for --enable-link-all-depenencies]) ;;
+   esac], [NO_UNDEFINED_LDFLAG="-no-undefined"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
-AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test -n "$NO_UNDEFINED_LDFLAG"])
+
+AC_ARG_ENABLE([link-all-dependencies],
+  [AS_HELP_STRING([--enable-link-all-dependencies],
+    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
+  [case "${enableval}" in
+    yes) link_all_deps=true ;;
+    no)  link_all_deps=false ;;
+    *) AC_MSG_ERROR([bad value ${enableval} for --enable-link-all-depenencies]) ;;
+   esac], [link_all_deps=false])
+AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test x$link_all_deps = xtrue])
 
 ### Type stuff.
 

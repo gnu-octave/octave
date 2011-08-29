@@ -1,4 +1,7 @@
 BEGIN {
+  FS = "|";
+  nfiles = 0;
+
   print "## DO NOT EDIT -- generated from module-files by config-module.awk";
   print ""
   print "EXTRA_DIST += \\"
@@ -6,16 +9,14 @@ BEGIN {
   print "  DLD-FUNCTIONS/config-module.awk \\"
   print "  DLD-FUNCTIONS/module-files"
   print ""
-  nfiles = 0;
 }
 /^#.*/ { next; }
 {
-  split ($1, fields, "|");
   nfiles++;
-  files[nfiles] = fields[1];
-  cppflags[nfiles] = fields[2];
-  ldflags[nfiles] = fields[3];
-  libraries[nfiles] = fields[4];
+  files[nfiles] = $1;
+  cppflags[nfiles] = $2;
+  ldflags[nfiles] = $3;
+  libraries[nfiles] = $4;
 } END {
   sep = " \\\n";
   print "DLD_FUNCTIONS_SRC = \\";
@@ -69,7 +70,7 @@ BEGIN {
       }
     printf ("DLD_FUNCTIONS_%s_la_LDFLAGS = -avoid-version -module %s $(OCT_LINK_OPTS)\n",
             basename, ldflags[i]);
-    printf ("DLD_FUNCTIONS_%s_la_LIBADD = %s $(OCT_LINK_DEPS)\n",
+    printf ("DLD_FUNCTIONS_%s_la_LIBADD = liboctinterp.la ../liboctave/liboctave.la ../libcruft/libcruft.la %s $(OCT_LINK_DEPS)\n",
             basename, libraries[i]);
   }
 }

@@ -41,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-mem.h"
 
 class idx_vector;
+class PermMatrix;
 
 // Two dimensional sparse class.  Handles the reference counting for
 // all the derived classes.
@@ -194,6 +195,10 @@ public:
   Sparse (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz)
     : rep (new typename Sparse<T>::SparseRep (nr, nc, nz)),
       dimensions (dim_vector (nr, nc)) { }
+
+  // Both SparseMatrix and SparseBoolMatrix need this ctor, and this
+  // is their only common ancestor.
+  explicit Sparse (const PermMatrix& a);
 
   // Type conversion case. Preserves capacity ().
   template <class U>

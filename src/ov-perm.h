@@ -160,6 +160,8 @@ public:
 
   SparseMatrix sparse_matrix_value (bool = false) const;
 
+  SparseBoolMatrix sparse_bool_matrix_value (bool = false) const;
+
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
   int8NDArray

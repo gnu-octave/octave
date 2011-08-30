@@ -2029,7 +2029,7 @@ Trailing singleton dimensions are not counted.\n\
 \n\
 @example\n\
 @group\n\
-  ndims (ones (4, 1, 2, 1)\n\
+  ndims (ones (4, 1, 2, 1))\n\
      @result{} 3\n\
 @end group\n\
 @end example\n\

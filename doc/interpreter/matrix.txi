@@ -81,6 +81,9 @@ Note that in conditional contexts (like the test clause of @code{if} and
         
 @DOCSTRING(lookup)
 
+If you wish to check if a variable exists at all, instead of properties
+its elements may have, consult @ref{Status of Variables}.
+
 @node Rearranging Matrices
 @section Rearranging Matrices
 

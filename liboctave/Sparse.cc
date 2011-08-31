@@ -78,10 +78,6 @@ Sparse<T>::Sparse (const PermMatrix& a)
     data (i) = 1.0;
 }
 
-// SparseMatrix and SparseBoolMatrix both need this ctor
-template Sparse<double>::Sparse (const PermMatrix& a);
-template Sparse<bool>::Sparse (const PermMatrix& a);
-
 template <class T>
 T&
 Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)

@@ -24,24 +24,24 @@
 ##
 ## @example
 ## @group
-## str2num("3.141596")
-##      @result{} 3.141596
+## str2num ("3.141596")
+##       @result{} 3.141596
 ##
-## str2num(["1, 2, 3"; "4, 5, 6"]);
-##      @result{} ans =
-##         1  2  3
-##         4  5  6
+## str2num (["1, 2, 3"; "4, 5, 6"]);
+##       @result{} ans =
+##          1  2  3
+##          4  5  6
 ## @end group
 ## @end example
 ##
 ## The optional second output, @var{state}, is logically true when the
 ## coversion is successful. If the conversion fails the numeric output,
-## @var{n}, is empty and @var{state} is false.
+## @var{x}, is empty and @var{state} is false.
 ##
 ## @strong{Caution:} As @code{str2num} uses the @code{eval} function
 ## to do the conversion, @code{str2num} will execute any code contained
-## in the string @var{s}.  Use @code{str2double} instead if you want to
-## avoid the use of @code{eval}.
+## in the string @var{s}.  Use @code{str2double} for a safer and faster
+## conversion.
 ## @seealso{str2double, eval}
 ## @end deftypefn
 

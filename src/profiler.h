@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 class octave_value;
 
 class
-OCTAVE_API
+OCTINTERP_API
 profile_data_accumulator
 {
 public:
@@ -173,7 +173,7 @@ private:
 };
 
 // The instance used.
-extern profile_data_accumulator profiler;
+extern OCTINTERP_API profile_data_accumulator profiler;
 
 // Helper macro to profile a block of code.
 #define BEGIN_PROFILER_BLOCK(name) \

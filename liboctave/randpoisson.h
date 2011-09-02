@@ -29,8 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 extern "C" {
 #endif
 
-extern double oct_randp (double L);
-extern void oct_fill_randp (double L, octave_idx_type n, double *p);
+extern OCTAVE_API double oct_randp (double L);
+extern OCTAVE_API void oct_fill_randp (double L, octave_idx_type n, double *p);
 
 #ifdef  __cplusplus
 }

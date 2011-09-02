@@ -759,7 +759,8 @@ main (int argc, char **argv)
       else
         {
           string LINK_DEPS = vars["LFLAGS"] + " " + vars["OCTAVE_LIBS"]
-            + " " + vars["LDFLAGS"] + " " + vars["BLAS_LIBS"] + " "
+            + " " + vars["LDFLAGS"] + " "
+	    + vars["LAPACK_LIBS"] + " " +  vars["BLAS_LIBS"] + " "
             + vars["FFTW_LIBS"] + " " + vars["LIBS"] + " " + vars["FLIBS"];
           string cmd = vars["DL_LD"] + " " + vars["DL_LDFLAGS"] + " "
             + pass_on_options + " -o " + octfile + " " + objfiles + " "

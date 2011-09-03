@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += linear-algebra
 
 linear_algebra_FCN_FILES = \
-	linear-algebra/bicg.m \
   linear-algebra/commutation_matrix.m \
   linear-algebra/cond.m \
   linear-algebra/condest.m \

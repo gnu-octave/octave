@@ -171,21 +171,21 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 }
 
 /*
-%!shared a, b, hitol, d, u, x, y, tolmult
+%!shared a, b, tol, hitol, d, u, x, y
 %! a = reshape (rand*[1:16], 4, 4);   ## Rank 2 matrix
 %! b = pinv (a);
-%! hitol = sqrt(eps);
+%! tol = 1e-14;
+%! hitol = 15*sqrt(eps);
 %! d = diag ([rand, rand, hitol, hitol]);
 %! u = rand (4);                      ## Could be singular by freak accident
 %! x = inv (u)*d*u;
 %! y = pinv (x, sqrt(eps));
-%! tolmult = 15;
-%!assert(a*b*a, a, tolmult*eps);
-%!assert(b*a*b, b, tolmult*eps);
-%!assert((b*a)', b*a, tolmult*eps);
-%!assert((a*b)', a*b, tolmult*eps);
-%!assert(x*y*x, x, tolmult*hitol);
-%!assert(y*x*y, y, tolmult*hitol);
-%!assert((x*y)', x*y, tolmult*hitol);
-%!assert((y*x)', y*x, tolmult*hitol);
+%!assert(a*b*a, a, tol);
+%!assert(b*a*b, b, tol);
+%!assert((b*a)', b*a, tol);
+%!assert((a*b)', a*b, tol);
+%!assert(x*y*x, x, -hitol);
+%!assert(y*x*y, y, -hitol);
+%!assert((x*y)', x*y, hitol);
+%!assert((y*x)', y*x, hitol);
 */

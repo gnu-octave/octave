@@ -124,8 +124,8 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
         [p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
         print_pass_fail (n, p);
         files_with_tests(end+1) = ffnm;
-      elseif (has_demos (ffnm))
-        files_with_tests(end+1) = ffnm;
+      ##elseif (has_demos (ffnm))
+      ##  files_with_tests(end+1) = ffnm;
       else
         files_with_no_tests(end+1) = ffnm;
       endif
@@ -177,8 +177,8 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         dxf += xf;
         dsk += sk;
         files_with_tests(end+1) = f;
-      elseif (has_demos (f))
-        files_with_tests(end+1) = f;
+      ##elseif (has_demos (f))
+      ##  files_with_tests(end+1) = f;
       elseif (has_functions (f))
         ## To reduce the list length, only mark .cc files that contain
         ## DEFUN definitions.

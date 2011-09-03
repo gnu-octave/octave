@@ -215,7 +215,7 @@ function report_files_with_no_tests (with, without, typ)
   n_with = num_elts_matching_pattern (with, pat);
   n_without = num_elts_matching_pattern (without, pat);
   n_tot = n_with + n_without;
-  printf ("\n%d (of %d) %s files have no tests or demos.\n", n_without, n_tot, typ);
+  printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
 endfunction
 
 pso = page_screen_output ();

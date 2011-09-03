@@ -79,3 +79,12 @@ function retval = orth (A, tol)
   endif
 
 endfunction
+
+%!test
+%! for ii=1:20
+%!   A = rand (10, 10);
+%!   V = orth (A);
+%!   if (det (A) != 0)
+%!     assert (V'*V, eye (10), 100*eps)
+%!   endif
+%! endfor

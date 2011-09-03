@@ -93,7 +93,7 @@ endfunction
 %% Test 1-input calling form
 %!test
 %! s = sprandn (sparse ([1 2 3], [3 2 3], [2 2 2]));
-%! [i, j, v] = find (s);
+%! [i, j] = find (s);
 %! assert (sort (i), [1 2 3]');
 %! assert (sort (j), [2 3 3]');
 

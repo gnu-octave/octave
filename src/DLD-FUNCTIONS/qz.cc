@@ -1256,10 +1256,12 @@ compatibility with @sc{matlab}.\n\
 %! b = reshape(1:9,3,3);
 %! [aa, bb, q, z, v, w, lambda] = qz (a, b);
 %! sz = length(lambda);
-%! assert ( (a*v) (:, 1:sz), (b * v * diag ([lambda;0])) (:, 1:sz), 1e-14);
-%! assert ( (w'*a) (1:sz, :) , (diag ([lambda;0]) * w' * b) (1:sz, :), 1e-14);
-%! assert (q * a * z, aa, 1e-14);
-%! assert (q * b * z, bb, 1e-14);
+%! observed =  (b * v * diag ([lambda;0])) (:, 1:sz);
+%! assert ( (a*v) (:, 1:sz), observed, norm (observed) * 1e-14);
+%! observed = (diag ([lambda;0]) * w' * b) (1:sz, :);
+%! assert ( (w'*a) (1:sz, :) , observed, norm (observed) * 1e-13);
+%! assert (q * a * z, aa, norm (aa) * 1e-14);
+%! assert (q * b * z, bb, norm (bb) * 1e-14);
 
 %% FIXME: Still need a test for third form of calling qz
 

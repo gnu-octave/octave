@@ -46,3 +46,18 @@ function c = blackman (m)
   endif
 
 endfunction
+
+%!assert (blackman (1), 1);
+%!assert (blackman (2), zeros(2,1), 1e-6);
+%!assert (blackman (16), fliplr (blackman (16)));
+%!assert (blackman (15), fliplr (blackman (15)));
+%!test
+%! N = 9;
+%! A = blackman (N);
+%! assert (A (ceil (N/2)), 1, 1e-6);
+%! assert ([A(1), A(length (A))], zeros (1, 2), 1e-6);
+
+%!error blackman ();
+%!error blackman (0.5);
+%!error blackman (-1);
+%!error blackman (ones(1,4));

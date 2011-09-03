@@ -90,3 +90,52 @@ function [aa, bb, q, z] = qzhess (A, B)
   endfor
 
 endfunction
+
+%!test
+%! a = [1 2 1 3;
+%!      2 5 3 2;
+%!      5 5 1 0;
+%!      4 0 3 2];
+%! b = [0 4 2 1;
+%!      2 3 1 1;
+%!      1 0 2 1;
+%!      2 5 3 2];
+%! mask = [0 0 0 0;
+%!         0 0 0 0;
+%!         1 0 0 0;
+%!         1 1 0 0];
+%! [aa, bb, q, z] = qzhess(a, b);
+%! assert(inv(q) - q', zeros(4), 2e-8);
+%! assert(inv(z) - z', zeros(4), 2e-8);
+%! assert(q * a * z, aa, 2e-8);
+%! assert(aa .* mask, zeros(4), 2e-8);
+%! assert(q * b * z, bb, 2e-8);
+%! assert(bb .* mask, zeros(4), 2e-8);
+
+%!test
+%! a = [1 2 3 4 5;
+%!      3 2 3 1 0;
+%!      4 3 2 1 1;
+%!      0 1 0 1 0;
+%!      3 2 1 0 5];
+%! b = [5 0 4 0 1;
+%!      1 1 1 2 5;
+%!      0 3 2 1 0;
+%!      4 3 0 3 5;
+%!      2 1 2 1 3];
+%! mask = [0 0 0 0 0;
+%!         0 0 0 0 0;
+%!         1 0 0 0 0;
+%!         1 1 0 0 0;
+%!         1 1 1 0 0];
+%! [aa, bb, q, z] = qzhess(a, b);
+%! assert(inv(q) - q', zeros(5), 2e-8);
+%! assert(inv(z) - z', zeros(5), 2e-8);
+%! assert(q * a * z, aa, 2e-8);
+%! assert(aa .* mask, zeros(5), 2e-8);
+%! assert(q * b * z, bb, 2e-8);
+%! assert(bb .* mask, zeros(5), 2e-8);
+
+%!error qzhess([0]);
+%!error qzhess();
+

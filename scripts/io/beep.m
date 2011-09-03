@@ -26,10 +26,13 @@
 
 function beep ()
 
-  if (nargin == 0)
-    puts ("\a");
-  else
+  if (nargin != 0)
     print_usage ();
   endif
 
+  puts ("\a");
+
 endfunction
+
+
+%!error (beep (1))

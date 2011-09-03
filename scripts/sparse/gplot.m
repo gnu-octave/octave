@@ -54,3 +54,31 @@ function [x, y] = gplot (A, xy, line_style)
   endif
 
 endfunction
+
+
+%!demo
+%! ## Binary Tree Representation
+%! A = [0 1 0 0 0 0 0
+%!      1 0 1 1 0 0 0
+%!      0 1 0 0 0 0 0
+%!      0 1 0 0 1 0 0
+%!      0 0 0 1 0 1 1
+%!      0 0 0 0 1 0 0
+%!      0 0 0 0 1 0 0];
+%!
+%! xy = [1, 0
+%!       1.5, 1
+%!       2, 0
+%!       2.5, 2
+%!       3.5, 1
+%!       3, 0
+%!       4, 0];
+%!
+%! clf;
+%! gplot (A, xy, "o-");
+%! set (get (gca, ("children")), "markersize", 12);
+%! title ("gplot() of Binary Tree Adjacency matrix");
+
+%% Mark graphical function as tested by demo block
+%!assert (1);
+

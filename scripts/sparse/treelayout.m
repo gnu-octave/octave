@@ -202,10 +202,26 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
   endif
 endfunction
 
-%!demo
+%!test
 %! % Compute a simple tree layout
-%! [x,y,h,s]=treelayout([0 1 2 2])
+%! [x, y, h, s] = treelayout ([0, 1, 2, 2]);
+%! assert (x, [1.5, 1.5, 2, 1]);
+%! assert (y, [3, 2, 1, 1]);
+%! assert (h, 2);
+%! assert (s, 2);
 
-%!demo
+%!test
 %! % Compute a simple tree layout with defined postorder permutation
-%! [x,y,h,s]=treelayout([0 1 2 2],[1 2 3 4])
+%! [x, y, h, s] = treelayout ([0, 1, 2, 2], [1, 2, 4, 3]);
+%! assert (x, [1.5, 1.5, 1, 2]);
+%! assert (y, [3, 2, 1, 1]);
+%! assert (h, 2);
+%! assert (s, 2);
+
+%!test
+%! % Compute a simple tree layout with defined postorder permutation
+%! [x, y, h, s] = treelayout ([0, 1, 2, 2], [4, 2, 3, 1]);
+%! assert (x, [0, 0, 0, 1]);
+%! assert (y, [0, 0, 0, 3]);
+%! assert (h, 0);
+%! assert (s, 1);

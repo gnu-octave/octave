@@ -81,3 +81,5 @@ function retval = has_demos (f)
     retval = findstr (str, "%!demo");
   endif
 endfunction
+
+%!error rundemos ("foo", 1);

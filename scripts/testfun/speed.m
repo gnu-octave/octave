@@ -25,7 +25,8 @@
 ## each @var{n}, an initialization expression (@var{init}) is computed to
 ## create any data needed for the test.  If a second expression (@var{f2}) is
 ## given then the execution times of the two expressions are compared.  When
-## called without output arguments the results are displayed graphically.
+## called without output arguments the results are printed to stdout and
+## displayed graphically.
 ##
 ## @table @code
 ## @item @var{f}
@@ -115,7 +116,7 @@
 ##
 ## @example
 ## @group
-## speed ("v = sum (x)", "", [10000, 100000], ...
+## speed ("sum (x)", "", [10000, 100000], ...
 ##        "v = 0; for i = 1:length (x), v += x(i); end")
 ## @end group
 ## @end example
@@ -127,10 +128,10 @@
 ##
 ## @example
 ## @group
-## speed ("v = xcorr (x, n)", "x = rand (128, 1);", 100,
-##        "v2 = xcorr_orig (x, n)", -100*eps)
-## speed ("v = xcorr (x, 15)", "x = rand (20+n, 1);", 100,
-##        "v2 = xcorr_orig (x, n)", -100*eps)
+## speed ("xcorr (x, n)", "x = rand (128, 1);", 100,
+##        "xcorr_orig (x, n)", -100*eps)
+## speed ("xcorr (x, 15)", "x = rand (20+n, 1);", 100,
+##        "xcorr_orig (x, n)", -100*eps)
 ## @end group
 ## @end example
 ##
@@ -191,7 +192,12 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
 
   __torig = __tnew = zeros (size (__test_n));
 
-  disp (cstrcat ("testing ", __f1, "\ninit: ", __init));
+  ## Print and plot the data if no output is requested.
+  do_display = (nargout == 0);
+
+  if (do_display)
+    disp (cstrcat ("testing ", __f1, "\ninit: ", __init));
+  endif
 
   ## Make sure the functions are freshly loaded by evaluating them at
   ## test_n(1); first have to initialize the args though.
@@ -208,8 +214,10 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
     n = __test_n(k);
     eval (cstrcat (__init, ";"));
 
-    printf ("n%i = %i  ",k, n);
-    fflush (stdout);
+    if (do_display)
+      printf ("n%i = %i  ",k, n);
+      fflush (stdout);
+    endif
     eval (cstrcat ("__t = time();", __f1, "; __v1=ans; __t = time()-__t;"));
     if (__t < 0.25)
       eval (cstrcat ("__t2 = time();", __f1, "; __t2 = time()-__t2;"));
@@ -251,14 +259,12 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
     __order.a = exp (p(2));
   endif
 
-  ## Plot the data if no output is requested.
-  doplot = (nargout == 0);
-
-  if (doplot)
+  if (do_display)
     figure;
   endif
 
-  if (doplot && ! isempty (__f2))
+  if (do_display && ! isempty (__f2))
+
     subplot (1, 2, 1);
     semilogx (__test_n, __torig./__tnew,
               cstrcat ("-*r;", strrep (__f1, ";", "."), "/",
@@ -284,7 +290,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
     printf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n",
             ratio, __f2, __f1);
 
-  elseif (doplot)
+  elseif (do_display)
 
     loglog (__test_n, __tnew*1000, "*-g;execution time;");
     xlabel ("test length");
@@ -293,7 +299,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
 
   endif
 
-  if (doplot)
+  if (do_display)
 
     ## Plot time complexity approximation (using milliseconds).
     order = sprintf ("O(n^%g)", round (10*p(1))/10);
@@ -314,10 +320,12 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
       time = sprintf ("%g ns", dt*1e9);
     endif
 
-    ## Display nicely formatted complexity.
-    printf ("\nFor %s:\n", __f1);
-    printf ("  asymptotic power: %s\n", order);
-    printf ("  approximate time per operation: %s\n", time);
+    if (do_display)
+      ## Display nicely formatted complexity.
+      printf ("\nFor %s:\n", __f1);
+      printf ("  asymptotic power: %s\n", order);
+      printf ("  approximate time per operation: %s\n", time);
+    endif
 
   endif
 
@@ -378,3 +386,30 @@ endfunction
 %!  disp("This time, the for loop is done away with entirely.");
 %!  disp("Notice how much bigger the speedup is than in example 1.");
 %! endif
+
+%!error speed ();
+%!error speed (1, 2, 3, 4, 5, 6, 7);
+
+%!test
+%! [order, n, T_f1, T_f2] = speed ("airy (x)", "x = rand (n, 10)", [100, 1000]);
+%! assert (isstruct (order));
+%! assert (size (order), [1, 1]);
+%! assert (fieldnames (order), {"p"; "a"});
+%! assert (isnumeric (n));
+%! assert (size (n), [1, 15]);
+%! assert (isnumeric (T_f1));
+%! assert (size (T_f1), [1, 15]);
+%! assert (isnumeric (T_f1));
+%! assert (size (T_f2), [1, 15]);
+
+%!test
+%! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); end");
+%! assert (isstruct (order));
+%! assert (size (order), [1, 1]);
+%! assert (fieldnames (order), {"p"; "a"});
+%! assert (isnumeric (n));
+%! assert (size (n), [1, 15]);
+%! assert (isnumeric (T_f1));
+%! assert (size (T_f1), [1, 15]);
+%! assert (isnumeric (T_f1));
+%! assert (size (T_f2), [1, 15]);

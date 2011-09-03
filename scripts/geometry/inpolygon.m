@@ -130,3 +130,14 @@ endfunction
 %! disp("Green points are inside polygon, magenta are outside,");
 %! disp("and blue are on boundary.");
 
+%!error inpolygon ();
+%!error inpolygon (1, 2);
+%!error inpolygon (1, 2, 3);
+
+%!error inpolygon (1, [1,2], [3, 4], [5, 6]);
+%!error inpolygon ([1,2], [3, 4], [5, 6], 1);
+
+%!test
+%! [in, on] = inpolygon ([1, 0], [1, 0], [-1, -1, 1, 1], [-1, 1, 1, -1]);
+%! assert (in, [false, true]);
+%! assert (on, [true, false]);

@@ -203,11 +203,7 @@ endfunction
 %! tol = 1e-8; 
 %! maxit = 15;
 %!
-%! function y = afun (x, a)
-%!     y = a * x;
-%! endfunction
-%!
-%! [x, flag, relres, iter, resvec] = cgs (@(x) afun (x, A), b, tol, maxit, M);
+%! [x, flag, relres, iter, resvec] = cgs (@(x) A * x, b, tol, maxit, M);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test

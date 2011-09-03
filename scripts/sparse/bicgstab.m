@@ -22,53 +22,48 @@
 ## @deftypefn {Function File} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicgstab (@var{A}, @var{b}, ...)
+## Solve @code{A x = b} using the stabilizied Bi-conjugate gradient iterative method.
 ##
-##   Solve @code{A x = b} using the stabilizied Bi-conjugate gradient iterative method.
+## @itemize @minus
+## @item @var{rtol} is the relative tolerance, if not given or set to
+## [] the default value 1e-6 is used.
+## @item @var{maxit} the maximum number of outer iterations, if not
+## given or set to [] the default value @code{min (20, numel (b))} is
+## used.
+## @item @var{x0} the initial guess, if not given or set to [] the
+## default value @code{zeros (size (b))} is used.
+## @end itemize
 ##
-##   @itemize @minus
+## @var{A} can be passed as a matrix or as a function handle or 
+## inline function @code{f} such that @code{f(x) = A*x}.
 ##
-##   @item @var{rtol} is the relative tolerance, if not given or set to
-##   [] the default value 1e-6 is used.
+## The preconditioner @var{P} is given as @code{P = M1 * M2}. 
+## Both @var{M1} and @var{M2} can be passed as a matrix or as a function handle or 
+## inline function @code{g} such that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.
 ##
-##   @item @var{maxit} the maximum number of outer iterations, if not
-##   given or set to [] the default value @code{min (20, numel (b))} is
-##   used.
+## If called with more than one output parameter
 ##
-##   @item @var{x0} the initial guess, if not given or set to [] the
-##   default value @code{zeros (size (b))} is used.
+## @itemize @minus
+## @item @var{flag} indicates the exit status:
+## @itemize @minus
+## @item 0: iteration converged to the within the chosen tolerance
+## @item 1: the maximum number of iterations was reached before convergence
+## @item 3: the algorithm reached stagnation
+## @end itemize
+## (the value 2 is unused but skipped for compatibility).
+## @item @var{relres} is the final value of the relative residual.
+## @item @var{iter} is the number of iterations performed. 
+## @item @var{resvec} is a vector containing the relative residual at each iteration.
+## @end itemize
 ##
-##   @end itemize
-##
-##   @var{A} can be passed as a matrix or as a function handle or 
-##   inline function @code{f} such that @code{f(x) = A*x}.
-##
-##   The preconditioner @var{P} is given as @code{P = M1 * M2}. 
-##   Both @var{M1} and @var{M2} can be passed as a matrix or as a function handle or 
-##   inline function @code{g} such that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.
-##
-##   If called with more than one output parameter
-##
-##   @itemize @minus
-##   @item @var{flag} indicates the exit status:
-##   @itemize @minus
-##     @item 0: iteration converged to the within the chosen tolerance
-##     @item 1: the maximum number of iterations was reached before convergence
-##     @item 3: the algorithm reached stagnation
-##   @end itemize
-##   (the value 2 is unused but skipped for compatibility).
-##   @item @var{relres} is the final value of the relative residual.
-##   @item @var{iter} is the number of iterations performed. 
-##   @item @var{resvec} is a vector containing the relative residual at each iteration.
-##   @end itemize
-##
-##   @seealso{pcg,cgs,bicg,gmres}
+## @seealso{bicg,cgs,gmres,pcg}
 ##
 ## @end deftypefn
 
 function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, 
                                                      M1, M2, x0)
 
-  if ((nargin >= 2) && (nargin <= 7) && isvector (full (b)))
+  if (nargin >= 2 && nargin <= 7 && isvector (full (b)))
     
     if (ischar (A))
       A = str2func (A);
@@ -81,47 +76,46 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
               "to be a function or a square matrix"]);
     endif
     
-    if ((nargin < 3) || (isempty (tol)))
+    if (nargin < 3 || isempty (tol))
       tol = 1e-6;
     endif
 
-    if ((nargin < 4) || (isempty (maxit)))
+    if (nargin < 4 || isempty (maxit))
       maxit = min (rows (b), 20);
     endif
 
-    if ((nargin < 5) || isempty (M1))
+    if (nargin < 5 || isempty (M1))
       M1m1x = @(x) x;
     elseif (ischar (M1))
       M1m1x = str2func (M1);
     elseif (ismatrix (M1))
-      M1m1x  = @(x) M1  \ x;
+      M1m1x = @(x) M1  \ x;
     elseif (isa (M1, "function_handle"))
-      M1m1x  = @(x) feval (M1, x);
+      M1m1x = @(x) feval (M1, x);
     else
       error (["bicgstab: preconditioner is " ...
               "expected to be a function or matrix"]);
     endif
     
-    if ((nargin < 6) || isempty (M2))
+    if (nargin < 6 || isempty (M2))
       M2m1x = @(x) x;
     elseif (ischar (M2))
       M2m1x = str2func (M2);
     elseif (ismatrix (M2))
-      M2m1x  = @(x) M2  \ x;
+      M2m1x = @(x) M2  \ x;
     elseif (isa (M2, "function_handle"))
-      M2m1x  = @(x) feval (M2, x);
+      M2m1x = @(x) feval (M2, x);
     else
       error (["bicgstab: preconditioner is "...
               "expected to be a function or matrix"]);
     endif
 
-    precon  = @(x) M2m1x (M1m1x (x));
+    precon = @(x) M2m1x (M1m1x (x));
 
-    if ((nargin < 7) || (isempty (x0)))
+    if (nargin < 7 || isempty (x0))
       x0 = zeros (size (b));
     endif
-
-
+    
     ## specifies initial estimate x0
     if (nargin < 7)
       x = zeros (rows (b), 1);

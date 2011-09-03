@@ -49,30 +49,23 @@
 ##
 ## @itemize @minus
 ## @item @var{flag} indicates the exit status:
-##
 ## @table @asis
-##   @item 0 : iteration converged to within the specified tolerance
-##
-##   @item 1 : maximum number of iterations exceeded
-##
-##   @item 2 : unused, but skipped for compatibility
-##
-##   @item 3 : algorithm reached stagnation
+## @item 0 : iteration converged to within the specified tolerance
+## @item 1 : maximum number of iterations exceeded
+## @item 2 : unused, but skipped for compatibility
+## @item 3 : algorithm reached stagnation
 ## @end table
-##
 ## @item @var{relres} is the final value of the relative residual.
-##
 ## @item @var{iter} is a vector containing the number of outer iterations and
 ## total iterations performed.
-##
 ## @item @var{resvec} is a vector containing the relative residual at each
 ## iteration.
 ## @end itemize
 ##
-## @seealso{pcg, cgs, bicgstab}
+## @seealso{bicg, bicgstab, cgs, pcg}
 ## @end deftypefn
 
-function [x, flag, prec_res_norm, itcnt] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
+function [x, flag, presn, it] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
 
   if (nargin < 2 || nargin > 8)
     print_usage ();    
@@ -133,7 +126,7 @@ function [x, flag, prec_res_norm, itcnt] = gmres (A, b, restart, rtol, maxit, M1
   x_old = x0; 
   x = x_old;
   prec_res = Pm1x (b - Ax (x_old));
-  prec_res_norm = norm (prec_res, 2);
+  presn = norm (prec_res, 2);
   
   B = zeros (restart + 1, 1);
   V = zeros (rows (x), restart);
@@ -143,49 +136,54 @@ function [x, flag, prec_res_norm, itcnt] = gmres (A, b, restart, rtol, maxit, M1
   iter = 1;
   restart_it  = restart + 1; 
   resids      = zeros (maxit, 1);
-  resids(1)   = prec_res_norm;
+  resids(1)   = presn;
   prec_b_norm = norm (Pm1x (b), 2);
   flag        = 1;
 
-  while ((iter <= maxit * restart) && (prec_res_norm > rtol * prec_b_norm))
+  while (iter <= maxit * restart && presn > rtol * prec_b_norm)
   
     ## restart
     if (restart_it > restart)
       restart_it = 1;
       x_old = x;	      
       prec_res = Pm1x (b - Ax (x_old));
-      prec_res_norm = norm (prec_res, 2);
-      B(1) = prec_res_norm;
+      presn = norm (prec_res, 2);
+      B(1) = presn;
       H(:) = 0;
-      V(:, 1) = prec_res / prec_res_norm;
+      V(:, 1) = prec_res / presn;
     endif  
     
     ## basic iteration
     tmp = Pm1x (Ax (V(:, restart_it)));
-    [V(:,restart_it+1), H(1:restart_it+1, restart_it)] = mgorth (tmp, V(:,1:restart_it));
+    [V(:,restart_it+1), H(1:restart_it+1, restart_it)] = ...
+        mgorth (tmp, V(:,1:restart_it));
     
     Y = (H(1:restart_it+1, 1:restart_it) \ B (1:restart_it+1));
 	      
-    little_res = B(1:restart_it+1) - H(1:restart_it+1, 1:restart_it) * Y(1:restart_it);
-    prec_res_norm = norm (little_res, 2);
+    little_res = B(1:restart_it+1) - ...
+        H(1:restart_it+1, 1:restart_it) * Y(1:restart_it);
+
+    presn = norm (little_res, 2);
 	      
     x = x_old + V(:, 1:restart_it) * Y(1:restart_it);
     
-    resids(iter) = prec_res_norm ;
+    resids(iter) = presn;
     if (norm (x - x_old, inf) <= eps)
       flag = 3;
       break
     endif
 
-    restart_it++ ; iter++;
+    restart_it++ ; 
+    iter++;
   endwhile
 
-  if (prec_res_norm > rtol * prec_b_norm)
+  if (presn > rtol * prec_b_norm)
     flag = 0;
   endif
 
   resids = resids(1:iter-1);
-  itcnt = [floor(maxit/restart), rem(maxit, restart)];
+  it = [floor(maxit/restart), rem(maxit, restart)];
+
 endfunction
 
 

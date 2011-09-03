@@ -60,3 +60,11 @@ function retval = semilogy (varargin)
   end_unwind_protect
 
 endfunction
+
+%!demo
+%! x = 1:0.01:10;
+%! y = (x .* (1 + rand (size (x)))) .^ 2;
+%! semilogy (x, y);
+
+## Remove from test statistics.  No real tests possible.
+%!assert (1)

@@ -26,3 +26,7 @@
 function __go_close_all__ ()
   close ("all", "hidden");
 endfunction
+
+
+## No test needed for internal helper function.
+%!assert (1)

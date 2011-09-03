@@ -1463,7 +1463,7 @@ need to recompiled.\n\
 {
   octave_value retval;
 
-  if (nargout > 0)
+  if (nargout > 0 || nargin == 0)
     {
       switch (Vignore_function_time_stamp)
         {
@@ -1506,6 +1506,25 @@ need to recompiled.\n\
 
   return retval;
 }
+
+/*
+%!shared old_state
+%! old_state = ignore_function_time_stamp ();
+%!test
+%! state = ignore_function_time_stamp ("all");  
+%! assert (state, old_state);
+%! assert (ignore_function_time_stamp (), "all");
+%! state = ignore_function_time_stamp ("system");  
+%! assert (state, "all");
+%! assert (ignore_function_time_stamp (), "system");
+%! ignore_function_time_stamp (old_state);
+
+%% Test input validation
+%!error (ignore_function_time_stamp ("all", "all"))
+%!error (ignore_function_time_stamp ("UNKNOWN_VALUE"))
+%!error (ignore_function_time_stamp (42))
+
+*/
 
 DEFUN (__current_scope__, , ,
   "-*- texinfo -*-\n\

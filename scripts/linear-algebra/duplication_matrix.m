@@ -87,7 +87,7 @@ function d = duplication_matrix (n)
 
 endfunction
 
-!test
+%!test
 %! N = 2;
 %! A = rand(N);
 %! B = A * A';

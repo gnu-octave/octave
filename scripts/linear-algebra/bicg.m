@@ -51,7 +51,7 @@
 ##   @item @var{resvec} is a vector containing the relative residual at each iteration.
 ##   @end itemize
 ##
-##   @seealso{pcg,cgs,bigcstab,gmres}
+##   @seealso{pcg,cgs,bicgstab,gmres}
 ##
 ## @end deftypefn
 

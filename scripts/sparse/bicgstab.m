@@ -26,9 +26,17 @@
 ##   Solve @code{A x = b} using the stabilizied Bi-conjugate gradient iterative method.
 ##
 ##   @itemize @minus
-##   @item @var{rtol} is the relative tolerance, if not given or set to [] the default value 1e-6 is used.
-##   @item @var{maxit} the maximum number of outer iterations, if not given or set to [] the default value @code{min (20, numel (b))} is used.
-##   @item @var{x0} the initial guess, if not given or set to [] the default value @code{zeros (size (b))} is used. 
+##
+##   @item @var{rtol} is the relative tolerance, if not given or set to
+##   [] the default value 1e-6 is used.
+##
+##   @item @var{maxit} the maximum number of outer iterations, if not
+##   given or set to [] the default value @code{min (20, numel (b))} is
+##   used.
+##
+##   @item @var{x0} the initial guess, if not given or set to [] the
+##   default value @code{zeros (size (b))} is used.
+##
 ##   @end itemize
 ##
 ##   @var{A} can be passed as a matrix or as a function handle or 
@@ -53,7 +61,7 @@
 ##   @item @var{resvec} is a vector containing the relative residual at each iteration.
 ##   @end itemize
 ##
-##   @seealso{pcg,cgs,bigc,gmres}
+##   @seealso{pcg,cgs,bicg,gmres}
 ##
 ## @end deftypefn
 

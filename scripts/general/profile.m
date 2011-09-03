@@ -113,3 +113,38 @@ endfunction
 %! profile ('off');
 %! T = profile ('info');
 %! profshow (T);
+
+%!error profile ();
+%!error profile ('on', 2);
+
+%!test
+%! on_struct.ProfilerStatus = "on";
+%! off_struct.ProfilerStatus = "off";
+%! profile ('on');
+%! result = logm (rand (200) + 10 * eye (200));
+%! assert (profile ('status'), on_struct);
+%! profile ('off');
+%! assert (profile ('status'), off_struct);
+%! profile ('resume');
+%! result = logm (rand (200) + 10 * eye (200));
+%! profile ('off');
+%! assert (profile ('status'), off_struct);
+%! info = profile ('info');
+%! assert (isstruct (info));
+%! assert (size (info), [1, 1]);
+%! assert (fieldnames (info), {'FunctionTable'; 'Hierarchical'});
+%! ftbl = info.FunctionTable;
+%! assert (fieldnames (ftbl), {'FunctionName'; 'TotalTime'; 'NumCalls'; 'IsRecursive'; 'Parents'; 'Children'});
+%! hier = info.Hierarchical;
+%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'NumCalls'; 'Children'});
+%! profile ('clear');
+%! info = profile ('info');
+%! assert (isstruct (info));
+%! assert (size (info), [1, 1]);
+%! assert (fieldnames (info), {'FunctionTable'; 'Hierarchical'});
+%! ftbl = info.FunctionTable;
+%! assert (size (ftbl), [0, 1]);
+%! assert (fieldnames (ftbl), {'FunctionName'; 'TotalTime'; 'NumCalls'; 'IsRecursive'; 'Parents'; 'Children'});
+%! hier = info.Hierarchical;
+%! assert (size (hier), [0, 1]);
+%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'NumCalls'; 'Children'});

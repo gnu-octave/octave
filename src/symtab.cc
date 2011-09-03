@@ -1463,6 +1463,8 @@ need to recompiled.\n\
 {
   octave_value retval;
 
+  int nargin = args.length ();
+
   if (nargout > 0 || nargin == 0)
     {
       switch (Vignore_function_time_stamp)
@@ -1480,8 +1482,6 @@ need to recompiled.\n\
           break;
         }
     }
-
-  int nargin = args.length ();
 
   if (nargin == 1)
     {

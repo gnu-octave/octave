@@ -52,9 +52,9 @@ function S = sprand (m, n, d)
   endif
 
   if (nargin == 1)
-    [i, j, v] = find (m);
+    [i, j] = find (m);
     [nr, nc] = size (m);
-    S = sparse (i, j, rand (size (v)), nr, nc);
+    S = sparse (i, j, rand (size (i)), nr, nc);
     return;
   endif
 

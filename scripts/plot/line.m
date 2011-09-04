@@ -42,3 +42,17 @@ function h = line (varargin)
   endif
 
 endfunction
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   h = line;
+%!   assert (get (h, "xdata"), [0 1], eps);
+%!   assert (get (h, "ydata"), [0 1], eps);
+%!   assert (get (h, "type"), "line");
+%!   assert (get (h, "color"), [0 0 0]);
+%!   assert (get (h, "linestyle"), "-");
+%!   assert (get (h, "linewidth"), 0.5, eps);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

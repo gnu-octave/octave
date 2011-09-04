@@ -73,5 +73,24 @@ endfunction
 %! title ("xlim is auto");
 %! assert (xlim ("mode"), "auto");
 
-## Remove from test statistics.  No real tests possible.
-%!assert (1)
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   xlim ([0, 1.1]);
+%!   assert (get (gca, "xlim"), [0, 1.1], eps);
+%!   assert (xlim ("mode"), "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   h = plot3 ([0,1.1], [0,1], [0, 1]);
+%!   assert (get (gca, "xlim"), [0, 1.4], eps);
+%!   assert (xlim ("mode"), "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

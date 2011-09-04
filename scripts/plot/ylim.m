@@ -73,5 +73,24 @@ endfunction
 %! title ("ylim is auto");
 %! assert (ylim ("mode"), "auto");
 
-## Remove from test statistics.  No real tests possible.
-%!assert (1)
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   limy = [0, 1.1];
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   ylim (limy);
+%!   assert (get (gca, "ylim"), limy, eps);
+%!   assert (ylim ("mode"), "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   plot3 ([0,1], [0,1.1], [0, 1]);
+%!   assert (get (gca, "ylim"), [0, 1.4], eps);
+%!   assert (ylim ("mode"), "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

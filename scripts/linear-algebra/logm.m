@@ -63,10 +63,13 @@ function [s, iters] = logm (A, opt_iters = 100)
     [u, s] = rsf2csf (u, s);
   endif
 
-  if (any (diag (s) < 0))
+  eigv = diag (s);
+  if (any (eigv < 0))
     warning ("Octave:logm:non-principal",
              "logm: principal matrix logarithm is not defined for matrices with negative eigenvalues; computing non-principal logarithm");
   endif
+
+  real_eig = all (eigv >= 0);
 
   k = 0;
   ## Algorithm 11.9 in "Function of matrices", by N. Higham
@@ -99,6 +102,11 @@ function [s, iters] = logm (A, opt_iters = 100)
   endif
 
   s = 2^k * u * s * u';
+
+  ## Remove small complex values (O(eps)) which may have entered calculation
+  if (real_eig)
+    s = real (s);
+  endif
 
   if (nargout == 2)
     iters = k;

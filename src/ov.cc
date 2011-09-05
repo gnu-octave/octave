@@ -2690,25 +2690,6 @@ install_types (void)
   octave_lazy_index::register_type ();
 }
 
-#if 0
-DEFUN (cast, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cast (@var{val}, @var{type})\n\
-Convert @var{val} to the new data type @var{type}.\n\
-@seealso{class, typeinfo}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 2)
-    error ("cast: not implemented");
-  else
-    print_usage ();
-
-  return retval;
-}
-#endif
-
 DEFUN (sizeof, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizeof (@var{val})\n\

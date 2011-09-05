@@ -44,3 +44,53 @@ function retval = zlim (varargin)
     retval = ret;
   endif
 endfunction
+
+%!demo
+%! clf ();
+%! line ();
+%! zlim ([0.2, 0.8]);
+%! title ("zlim is [0.2, 0.8]");
+%! assert (zlim (), [0.2, 0.8]);
+
+%!demo
+%! clf ();
+%! line ();
+%! zlim ('auto');
+%! title ("zlim is auto");
+%! assert (zlim ("mode"), "auto");
+
+%!demo
+%! clf ();
+%! plot3 ([0,1], [0,1], [0,1]);
+%! zlim ([0.2, 0.8]);
+%! title ("zlim is [0.2, 0.8]");
+%! assert (zlim (), [0.2, 0.8]);
+
+%!demo
+%! clf ();
+%! plot3 ([0,1], [0,1], [0,1]);
+%! zlim ('auto');
+%! title ("zlim is auto");
+%! assert (zlim ("mode"), "auto");
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   limz = [0, 1.1];
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   zlim (limz);
+%!   assert (get (gca, "zlim"), limz, eps);
+%!   assert (zlim ("mode"), "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   plot3 ([0,1], [0,1], [0, 1.1]);
+%!   assert (get (gca, "zlim"), [0, 1.4], eps);
+%!   assert (zlim ("mode"), "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

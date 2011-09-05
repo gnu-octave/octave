@@ -492,21 +492,6 @@ LIBOCT_READLINE_C_SOURCES = oct-rl-edit.c oct-rl-hist.c
 
 LIBOCT_READLINE_SOURCES = $(LIBOCT_READLINE_CXX_SOURCES) $(LIBOCT_READLINE_C_SOURCES)
 
-LINK_DEPS = \
-  $(RLD_FLAG) \
-  ../libcruft/libcruft.la \
-  ../libcruft/libranlib.la \
-  ../libgnu/libgnu.la \
-  $(SPARSE_XLIBS) \
-  $(ARPACK_LIBS) \
-  $(QRUPDATE_LIBS) \
-  $(FFTW_XLIBS) \
-  $(LAPACK_LIBS) $(BLAS_LIBS) \
-  $(READLINE_LIBS) $(TERM_LIBS) \
-  $(LIBGLOB) $(REGEX_LIBS) $(DL_LIBS) \
-  $(FLIBS) \
-  $(PTHREAD_LIBS) $(LIBS)
-
 liboctave_la_SOURCES = \
   $(LIBOCTAVE_CXX_SOURCES) \
   $(LIBOCTAVE_C_SOURCES) \
@@ -517,7 +502,11 @@ liboctave_la_SOURCES = \
 nodist_liboctave_la_SOURCES = \
   $(BUILT_LIBOCTAVE_CXX_SOURCES)
 
-liboctave_la_LIBADD = $(LINK_DEPS)
+include link-deps.mk
+
+liboctave_la_LIBADD = \
+  ../libcruft/libcruft.la \
+  $(LIBOCTAVE_LINK_DEPS)
 
 liboctave_la_CPPFLAGS = \
   @OCTAVE_DLL_DEFS@ \
@@ -538,10 +527,7 @@ liboctave_la_LDFLAGS = \
   -version-info $(liboctave_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
-  $(SPARSE_XLDFLAGS) \
-  $(ARPACK_LDFLAGS) \
-  $(QRUPDATE_LDFLAGS) \
-  $(FFTW_XLDFLAGS)
+  $(LIBOCTAVE_LINK_OPTS)
 
 octinclude_HEADERS = \
   $(INCS) \

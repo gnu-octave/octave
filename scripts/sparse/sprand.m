@@ -52,9 +52,9 @@ function S = sprand (m, n, d)
   endif
 
   if (nargin == 1)
-    [i, j, v] = find (m);
+    [i, j] = find (m);
     [nr, nc] = size (m);
-    S = sparse (i, j, rand (size (v)), nr, nc);
+    S = sparse (i, j, rand (size (i)), nr, nc);
     return;
   endif
 
@@ -91,4 +91,31 @@ function S = sprand (m, n, d)
   endif
 
 endfunction
+
+## FIXME: Test for density can't happen until code of sprand is improved
+%!test
+%! s = sprand (4, 10, 0.1);
+%! assert (size (s), [4, 10]);
+##%! assert (nnz (s) / numel (s), 0.1, .01);
+
+%% Test 1-input calling form
+%!test
+%! s = sprand (sparse ([1 2 3], [3 2 3], [2 2 2]));
+%! [i, j, v] = find (s);
+%! assert (sort (i), [1 2 3]');
+%! assert (sort (j), [2 3 3]');
+%! assert (all (v > 0 & v < 1));
+
+%% Test input validation
+%!error sprand ()
+%!error sprand (1, 2)
+%!error sprand (1, 2, 3, 4)
+%!error sprand (ones(3), 3, 0.5)
+%!error sprand (3.5, 3, 0.5)
+%!error sprand (0, 3, 0.5)
+%!error sprand (3, ones(3), 0.5)
+%!error sprand (3, 3.5, 0.5)
+%!error sprand (3, 0, 0.5)
+%!error sprand (3, 3, -1)
+%!error sprand (3, 3, 2)
 

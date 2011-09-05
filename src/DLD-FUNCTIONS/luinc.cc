@@ -110,7 +110,7 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
       bool udiag = false;
       Matrix thresh;
       double droptol = -1.;
-      bool vecout;
+      bool vecout = false;
 
       if (args(1).is_string ())
         {
@@ -236,7 +236,7 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                             if (vecout)
                               retval(2) = fact.Pr_vec ();
                             else
-                              retval(2) = fact.Pr ();
+                              retval(2) = fact.Pr_mat ();
                             retval(1) = octave_value (fact.U (),
                                                       MatrixType (MatrixType::Upper));
                             retval(0) = octave_value (fact.L (),
@@ -260,8 +260,8 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                               }
                             else
                               {
-                                retval(3) = fact.Pc ();
-                                retval(2) = fact.Pr ();
+                                retval(3) = fact.Pc_mat ();
+                                retval(2) = fact.Pr_mat ();
                               }
                             retval(1) = octave_value (fact.U (),
                                                       MatrixType (MatrixType::Upper));
@@ -319,7 +319,7 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                             if (vecout)
                               retval(2) = fact.Pr_vec ();
                             else
-                              retval(2) = fact.Pr ();
+                              retval(2) = fact.Pr_mat ();
                             retval(1) = octave_value (fact.U (),
                                                       MatrixType (MatrixType::Upper));
                             retval(0) = octave_value (fact.L (),
@@ -343,8 +343,8 @@ Given the string argument 'vector', @code{luinc} returns the values of\n\
                               }
                             else
                               {
-                                retval(3) = fact.Pc ();
-                                retval(2) = fact.Pr ();
+                                retval(3) = fact.Pc_mat ();
+                                retval(2) = fact.Pr_mat ();
                               }
                             retval(1) = octave_value (fact.U (),
                                                       MatrixType (MatrixType::Upper));

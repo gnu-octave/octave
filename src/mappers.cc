@@ -212,7 +212,13 @@ arg (3 + 4i)\n\
 
 %!assert(arg (single(1)), single(0));
 %!assert(arg (single(i)), single(pi/2));
-%!assert(arg (single(-1)), single(pi));
+%!test
+%! if (ismac ())
+%!   ## Avoid failing for a MacOS feature
+%!   assert(arg (single(-1)), single(pi), 2*eps(single(1)));
+%! else
+%!   assert(arg (single(-1)), single(pi));
+%! endif
 %!assert(arg (single(-i)), single(-pi/2));
 %!assert(arg (single([1, i; -1, -i])), single([0, pi/2; pi, -pi/2]), 2e1*eps('single'));
 

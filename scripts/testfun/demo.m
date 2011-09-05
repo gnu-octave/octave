@@ -141,3 +141,6 @@ endfunction
 %! plot (t,x)
 %! %-------------------------------------------------
 %! % the figure window shows one cycle of a sine wave
+
+%!error demo ();
+%!error demo (1, 2, 3);

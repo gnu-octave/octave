@@ -874,6 +874,17 @@ pow (const octave_int<T>& a, const double& b);
 
 template <class T>
 extern OCTAVE_API octave_int<T>
+pow (const float& a, const octave_int<T>& b);
+
+template <class T>
+extern OCTAVE_API octave_int<T>
+pow (const octave_int<T>& a, const float& b);
+
+// FIXME: Do we really need a differently named single-precision
+//        function integer power function here instead of an overloaded
+//        one?
+template <class T>
+extern OCTAVE_API octave_int<T>
 powf (const float& a, const octave_int<T>& b);
 
 template <class T>

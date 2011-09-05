@@ -37,3 +37,19 @@ function dirname = tempdir ()
   endif
 
 endfunction
+
+
+%!assert (ischar (tempdir ()))
+
+%!test
+%! old_wstate = warning ("query");
+%! warning ("off");
+%! old_tmpdir = getenv ("TMPDIR");
+%! unwind_protect
+%!   setenv ("TMPDIR", "__MY_TMP_DIR__");
+%!   assert (tempdir (), ["__MY_TMP_DIR__" filesep()]); 
+%! unwind_protect_cleanup
+%!   setenv ("TMPDIR", old_tmpdir);
+%!   warning (old_wstate);
+%! end_unwind_protect 
+

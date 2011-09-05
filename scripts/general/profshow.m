@@ -100,3 +100,7 @@ endfunction
 %! myfib (20);
 %! profile ("off");
 %! profshow (profile ("info"), 5);
+
+%!error profshow ();
+%!error profshow (1, 2, 3);
+%!error profshow (struct (), 1.2);

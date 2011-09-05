@@ -217,6 +217,12 @@ octave_perm_matrix::sparse_matrix_value (bool) const
   return SparseMatrix (matrix);
 }
 
+SparseBoolMatrix
+octave_perm_matrix::sparse_bool_matrix_value (bool) const
+{
+  return SparseBoolMatrix (matrix);
+}
+
 SparseComplexMatrix
 octave_perm_matrix::sparse_complex_matrix_value (bool) const
 {

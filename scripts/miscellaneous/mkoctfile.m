@@ -75,26 +75,30 @@
 ## Print the configuration variable VAR@.  Recognized variables are:
 ##
 ## @example
-##    ALL_CFLAGS                FFTW_LIBS
+##    ALL_CFLAGS                FFTW3F_LIBS
 ##    ALL_CXXFLAGS              FLIBS
 ##    ALL_FFLAGS                FPICFLAG
 ##    ALL_LDFLAGS               INCFLAGS
-##    BLAS_LIBS                 LDFLAGS
-##    CC                        LD_CXX
-##    CFLAGS                    LD_STATIC_FLAG
-##    CPICFLAG                  LFLAGS
-##    CPPFLAGS                  LIBCRUFT
-##    CXX                       LIBOCTAVE
-##    CXXFLAGS                  LIBOCTINTERP
-##    CXXPICFLAG                LIBREADLINE
+##    BLAS_LIBS                 LAPACK_LIBS
+##    CC                        LDFLAGS
+##    CFLAGS                    LD_CXX
+##    CPICFLAG                  LD_STATIC_FLAG
+##    CPPFLAGS                  LFLAGS
+##    CXX                       LIBCRUFT
+##    CXXFLAGS                  LIBOCTAVE
+##    CXXPICFLAG                LIBOCTINTERP
 ##    DEPEND_EXTRA_SED_PATTERN  LIBS
 ##    DEPEND_FLAGS              OCTAVE_LIBS
-##    DL_LD                     RDYNAMIC_FLAG
-##    DL_LDFLAGS                RLD_FLAG
-##    F2C                       SED
-##    F2CFLAGS                  XTRA_CFLAGS
-##    F77                       XTRA_CXXFLAGS
-##    FFLAGS
+##    DL_LD                     OCTAVE_LINK_DEPS
+##    DL_LDFLAGS                OCT_LINK_DEPS
+##    EXEEXT                    RDYNAMIC_FLAG
+##    F77                       READLINE_LIBS
+##    F77_INTEGER_8_FLAG        SED
+##    FFLAGS                    XTRA_CFLAGS
+##    FFTW3_LDFLAGS             XTRA_CXXFLAGS
+##    FFTW3_LIBS
+##    FFTW3F_LDFLAGS
+##
 ## @end example
 ##
 ## @item --link-stand-alone

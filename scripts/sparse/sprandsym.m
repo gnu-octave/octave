@@ -34,44 +34,83 @@
 ## @end deftypefn
 
 function S = sprandsym (n, d)
-  if (nargin == 1)
-    [i, j, v] = find (tril (n));
-    [nr, nc] = size (n);
-    S = sparse (i, j, randn (size (v)), nr, nc);
-    S = S + tril (S, -1)';
-  elseif (nargin == 2)
-    m1 = floor (n/2);
-    n1 = m1 + rem (n, 2);
-    mn1 = m1*n1;
-    k1 = round (d*mn1);
-    idx1 = unique (fix (rand (min (k1*1.01, k1+10), 1) * mn1)) + 1;
-    ## idx contains random numbers in [1,mn] generate 1% or 10 more
-    ## random values than necessary in order to reduce the probability
-    ## that there are less than k distinct values; maybe a better
-    ## strategy could be used but I don't think it's worth the price.
 
-    ## Actual number of entries in S.
-    k1 = min (length (idx1), k1);
-    j1 = floor ((idx1(1:k1)-1)/m1);
-    i1 = idx1(1:k1) - j1*m1;
-
-    n2 = ceil (n/2);
-    nn2 = n2*n2;
-    k2 = round (d*nn2);
-    idx2 = unique (fix (rand (min (k2*1.01, k1+10), 1) * nn2)) + 1;
-    k2 = min (length (idx2), k2);
-    j2 = floor ((idx2(1:k2)-1)/n2);
-    i2 = idx2(1:k2) - j2*n2;
-
-    if (isempty (i1) && isempty (i2))
-      S = sparse (n, n);
-    else
-      S1 = sparse (i1, j1+1, randn (k1, 1), m1, n1);
-      S = [tril(S1), sparse(m1,m1); ...
-           sparse(i2,j2+1,randn(k2,1),n2,n2), triu(S1,1)'];
-      S = S + tril (S, -1)';
-    endif
-  else
+  if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
+
+  if (nargin == 1)
+    [i, j] = find (tril (n));
+    [nr, nc] = size (n);
+    S = sparse (i, j, randn (size (i)), nr, nc);
+    S = S + tril (S, -1)';
+    return;
+  endif
+
+  if (!(isscalar (n) && n == fix (n) && n > 0))
+    error ("sprand: N must be an integer greater than 0");
+  endif
+
+  if (d < 0 || d > 1)
+    error ("sprand: density D must be between 0 and 1");
+  endif
+
+  m1 = floor (n/2);
+  n1 = m1 + rem (n, 2);
+  mn1 = m1*n1;
+  k1 = round (d*mn1);
+  idx1 = unique (fix (rand (min (k1*1.01, k1+10), 1) * mn1)) + 1;
+  ## idx contains random numbers in [1,mn] generate 1% or 10 more
+  ## random values than necessary in order to reduce the probability
+  ## that there are less than k distinct values; maybe a better
+  ## strategy could be used but I don't think it's worth the price.
+
+  ## Actual number of entries in S.
+  k1 = min (length (idx1), k1);
+  j1 = floor ((idx1(1:k1)-1)/m1);
+  i1 = idx1(1:k1) - j1*m1;
+
+  n2 = ceil (n/2);
+  nn2 = n2*n2;
+  k2 = round (d*nn2);
+  idx2 = unique (fix (rand (min (k2*1.01, k1+10), 1) * nn2)) + 1;
+  k2 = min (length (idx2), k2);
+  j2 = floor ((idx2(1:k2)-1)/n2);
+  i2 = idx2(1:k2) - j2*n2;
+
+  if (isempty (i1) && isempty (i2))
+    S = sparse (n, n);
+  else
+    S1 = sparse (i1, j1+1, randn (k1, 1), m1, n1);
+    S = [tril(S1), sparse(m1,m1); ...
+         sparse(i2,j2+1,randn(k2,1),n2,n2), triu(S1,1)'];
+    S = S + tril (S, -1)';
+  endif
+
 endfunction
+
+
+## FIXME: Test for density can't happen until code of sprandsym is improved
+%!test
+%! s = sprandsym (10, 0.1);
+%! assert (issparse (s));
+%! assert (issymmetric (s));
+%! assert (size (s), [10, 10]);
+##%! assert (nnz (s) / numel (s), 0.1, .01);
+
+%% Test 1-input calling form
+%!test
+%! s = sprandsym (sparse ([1 2 3], [3 2 3], [2 2 2]));
+%! [i, j] = find (s);
+%! assert (sort (i), [2 3]');
+%! assert (sort (j), [2 3]');
+
+%% Test input validation
+%!error sprandsym ()
+%!error sprandsym (1, 2, 3)
+%!error sprandsym (ones(3), 0.5)
+%!error sprandsym (3.5, 0.5)
+%!error sprandsym (0, 0.5)
+%!error sprandsym (3, -1)
+%!error sprandsym (3, 2)
+

@@ -182,5 +182,7 @@ BSXFUN_STDREL_DECLS (FloatNDArray, OCTAVE_API)
 BSXFUN_OP_DECL (pow, FloatNDArray, OCTAVE_API)
 BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatComplexNDArray,
                  FloatNDArray, OCTAVE_API)
+BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatNDArray,
+                 FloatComplexNDArray, OCTAVE_API)
 
 #endif

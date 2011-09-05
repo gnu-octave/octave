@@ -169,3 +169,23 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
   return retval;
 }
+
+/*
+%!shared a, b, tol, hitol, d, u, x, y
+%! a = reshape (rand*[1:16], 4, 4);   ## Rank 2 matrix
+%! b = pinv (a);
+%! tol = 1e-14;
+%! hitol = 15*sqrt(eps);
+%! d = diag ([rand, rand, hitol, hitol]);
+%! u = rand (4);                      ## Could be singular by freak accident
+%! x = inv (u)*d*u;
+%! y = pinv (x, sqrt(eps));
+%!assert(a*b*a, a, tol);
+%!assert(b*a*b, b, tol);
+%!assert((b*a)', b*a, tol);
+%!assert((a*b)', a*b, tol);
+%!assert(x*y*x, x, -hitol);
+%!assert(y*x*y, y, -hitol);
+%!assert((x*y)', x*y, hitol);
+%!assert((y*x)', y*x, hitol);
+*/

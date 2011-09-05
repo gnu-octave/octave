@@ -37,3 +37,20 @@ function h = title (string, varargin)
   endif
 
 endfunction
+
+%!demo
+%! clf ();
+%! ax=axes();
+%! xl = get(ax,"title");
+%! title("Testing title")
+%! assert(get(xl,"string"),"Testing title")
+
+%!demo
+%! clf ();
+%! plot3 ([0,1], [0,1], [0,1]);
+%! xl = get(gca (), "title");
+%! title("Testing title")
+%! assert(get(xl,"string"),"Testing title")
+
+## Remove from test statistics.  No real tests possible.
+%!assert (1)

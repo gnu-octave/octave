@@ -242,3 +242,18 @@ function h = findobj (varargin)
   h = h (keepers != 0);
   h = reshape (h, [numel(h), 1]);
 endfunction
+
+%!test
+%! fign = 1232;
+%! hf = figure (fign, "visible", "off");
+%! unwind_protect  
+%!   l = line;
+%!   obj = findobj ("type", "line");
+%!   assert (l, obj);
+%!   assert (gca, findobj ("type", "axes"));
+%!   assert (fign, findobj ("type", "figure"));
+%!   assert (0, findobj ("type", "root"));
+%!   assert (isempty (findobj ("type", "xyzxyz")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

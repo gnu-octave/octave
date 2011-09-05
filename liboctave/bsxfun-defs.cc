@@ -174,4 +174,11 @@ boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
   BSXFUN_REL_DEF_MXLOOP (gt, ARRAY, mx_inline_gt) \
   BSXFUN_REL_DEF_MXLOOP (ge, ARRAY, mx_inline_ge)
 
+//For bsxfun power with mixed integer/float types
+#define BSXFUN_POW_MIXED_MXLOOP(INT_TYPE)                              \
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, NDArray, mx_inline_pow) \
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, FloatNDArray, mx_inline_pow)\
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, NDArray, INT_TYPE,  mx_inline_pow) \
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, FloatNDArray, INT_TYPE, mx_inline_pow)
+
 #endif

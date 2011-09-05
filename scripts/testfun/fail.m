@@ -129,15 +129,16 @@ function ret = fail (code, pattern, warning_pattern)
 
 endfunction
 
-%!fail ('[1,2]*[2,3]','nonconformant')
-%!fail ("fail('[1,2]*[2;3]','nonconformant')","expected error <nonconformant> but got none")
-%!fail ("fail('[1,2]*[2,3]','usage:')","expected error <usage:>\nbut got.*nonconformant")
-%!fail ("warning('test warning')",'warning','test warning');
 
-%!# fail ("warning('next test')",'warning','next test');  ## only allowed one warning test?!?
+%!fail ('[1,2]*[2,3]', 'nonconformant')
+%!fail ("fail('[1,2]*[2;3]', 'nonconformant')", "expected error <nonconformant> but got none")
+%!fail ("fail('[1,2]*[2,3]','usage:')", "expected error <usage:>\nbut got.*nonconformant")
+%!fail ("warning('test warning')", 'warning','test warning');
 
-## Comment out the following tests if you don't want to see what
-## errors look like
-% !fail ('a*[2;3]', 'nonconformant')
-% !fail ('a*[2,3]', 'usage:')
-% !fail ("warning('warning failure')", 'warning', 'success')
+##% !fail ("warning('next test')",'warning','next test');  ## only allowed one warning test?!?
+
+%% Test that fail() itself will generate an error
+%!error fail ("1");
+%!error <undefined> fail ('a*[2;3]', 'nonconformant')
+%!error <expected error>  fail ('a*[2,3]', 'usage:')
+%!error <warning failure> fail ("warning('warning failure')", 'warning', 'success')

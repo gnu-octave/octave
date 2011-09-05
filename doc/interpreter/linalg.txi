@@ -187,6 +187,8 @@ flag a non-Hermitian matrix.
 @node Specialized Solvers
 @section Specialized Solvers
 
+@DOCSTRING(bicg)
+
 @DOCSTRING(bicgstab)
 
 @DOCSTRING(cgs)

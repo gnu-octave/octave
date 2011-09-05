@@ -76,3 +76,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
   narg = length (varargin);
 
 endfunction
+
+
+## No test needed for internal helper function.
+%!assert (1)

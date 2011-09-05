@@ -91,7 +91,7 @@ function retval = has_tests (f)
   if (fid >= 0)
     str = fread (fid, "*char")';
     fclose (fid);
-    retval = ! isempty (regexp (str, '^%!(test|assert|error|warning)', "lineanchors"));
+    retval = ! isempty (regexp (str, '^%!(assert|error|fail|test|warning)', "lineanchors"));
   else
     error ("fopen failed: %s", f);
   endif
@@ -124,8 +124,8 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
         [p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
         print_pass_fail (n, p);
         files_with_tests(end+1) = ffnm;
-      elseif (has_demos (ffnm))
-        files_with_tests(end+1) = ffnm;
+      ##elseif (has_demos (ffnm))
+      ##  files_with_tests(end+1) = ffnm;
       else
         files_with_no_tests(end+1) = ffnm;
       endif
@@ -177,8 +177,8 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
         dxf += xf;
         dsk += sk;
         files_with_tests(end+1) = f;
-      elseif (has_demos (f))
-        files_with_tests(end+1) = f;
+      ##elseif (has_demos (f))
+      ##  files_with_tests(end+1) = f;
       elseif (has_functions (f))
         ## To reduce the list length, only mark .cc files that contain
         ## DEFUN definitions.
@@ -215,7 +215,7 @@ function report_files_with_no_tests (with, without, typ)
   n_with = num_elts_matching_pattern (with, pat);
   n_without = num_elts_matching_pattern (without, pat);
   n_tot = n_with + n_without;
-  printf ("\n%d (of %d) %s files have no tests or demos.\n", n_without, n_tot, typ);
+  printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
 endfunction
 
 pso = page_screen_output ();

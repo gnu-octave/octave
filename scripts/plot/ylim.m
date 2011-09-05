@@ -44,3 +44,53 @@ function retval = ylim (varargin)
     retval = ret;
   endif
 endfunction
+
+%!demo
+%! clf ();
+%! line ();
+%! ylim ([0.2, 0.8]);
+%! title ("ylim is [0.2, 0.8]");
+%! assert (ylim (), [0.2, 0.8]);
+
+%!demo
+%! clf ();
+%! line ();
+%! ylim ('auto');
+%! title ("ylim is auto");
+%! assert (ylim ("mode"), "auto");
+
+%!demo
+%! clf ();
+%! plot3 ([0,1], [0,1], [0,1]);
+%! ylim ([0.2, 0.8]);
+%! title ("ylim is [0.2, 0.8]");
+%! assert (ylim (), [0.2, 0.8]);
+
+%!demo
+%! clf ();
+%! plot3 ([0,1], [0,1], [0,1]);
+%! ylim ('auto');
+%! title ("ylim is auto");
+%! assert (ylim ("mode"), "auto");
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   limy = [0, 1.1];
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   ylim (limy);
+%!   assert (get (gca, "ylim"), limy, eps);
+%!   assert (ylim ("mode"), "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   plot3 ([0,1], [0,1.1], [0, 1]);
+%!   assert (get (gca, "ylim"), [0, 1.4], eps);
+%!   assert (ylim ("mode"), "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

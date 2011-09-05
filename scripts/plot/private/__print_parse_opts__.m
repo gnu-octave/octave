@@ -570,7 +570,7 @@ function value = convert2points (value, units)
     case "inches"
       value = value * 72;
     case "centimeters"
-      value = value * 72 / 25.4;
+      value = value * 72 / 2.54;
     case "normalized"
       error ("print:customnormalized",
              "print.m: papersize=='<custom>' and paperunits='normalized' may not be combined");

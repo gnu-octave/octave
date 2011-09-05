@@ -127,7 +127,8 @@
 ## @end example
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("fsolve");
+## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
+## PKG_ADD: [~] = __all_opts__ ("fsolve");
 
 function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 

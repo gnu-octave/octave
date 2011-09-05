@@ -56,3 +56,29 @@ function jumps = ppjumps (pp)
   rlim = shiftdim (ppval (pp, x(2:end-1)), nd - 1);
   jumps = shiftdim (rlim - llim, 1);
 endfunction
+
+
+%!test
+%! p = [1 6 11 6];
+%! x = linspace (5, 6, 4);
+%! y = polyval (p, x);
+%! pp = spline (x, y);
+%! jj = ppjumps (pp);
+%! assert (jj, [0 0], eps)
+
+%!test
+%!
+%! breaks = [0 1 2];
+%! pp1 = poly (-[1 2 3]);
+%! pp2 = poly (-([1 2 3]+1));
+%! pp = mkpp (breaks, [pp1;pp2]);
+%! assert (ppjumps (pp), 0, eps)
+
+%!test
+%!
+%! breaks = [0 1 2];
+%! pp1 = poly (-[1 2 3]);
+%! pp2 = poly (([1 2 3]+1));
+%! pp = mkpp (breaks, [pp1;pp2]);
+%! j  = - 2 * polyval (pp1, 1);
+%! assert (ppjumps (pp), j, eps)

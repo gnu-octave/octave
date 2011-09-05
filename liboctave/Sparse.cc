@@ -50,6 +50,34 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-spparms.h"
 #include "mx-inlines.cc"
 
+#include "PermMatrix.h"
+
+template <class T>
+Sparse<T>::Sparse (const PermMatrix& a)
+  : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
+         dimensions (dim_vector (a.rows (), a.cols()))
+{
+  octave_idx_type n = a.rows ();
+  for (octave_idx_type i = 0; i <= n; i++)
+    cidx (i) = i;
+
+  const Array<octave_idx_type> pv = a.pvec ();
+
+  if (a.is_row_perm ())
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        ridx (pv (i)) = i;
+    }
+  else
+    {
+      for (octave_idx_type i = 0; i < n; i++)
+        ridx (i) = pv (i);
+    }
+
+  for (octave_idx_type i = 0; i < n; i++)
+    data (i) = 1.0;
+}
+
 template <class T>
 T&
 Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)

@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += sparse
 
 sparse_FCN_FILES = \
+  sparse/bicg.m \
   sparse/bicgstab.m \
   sparse/cgs.m \
   sparse/colperm.m \

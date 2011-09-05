@@ -386,3 +386,7 @@ function retval = have_non_legend_axes (h)
     endif
   endif
 endfunction
+
+
+## No test needed for internal helper function.
+%!assert (1)

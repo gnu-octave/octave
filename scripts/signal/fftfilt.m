@@ -54,8 +54,12 @@ function y = fftfilt (b, x, n)
   [r_x, c_x] = size (x);
   [r_b, c_b] = size (b);
 
-  if min ([r_b, c_b]) != 1
-    error ("fftfilt: B should be a vector");
+  if (! isvector (b))
+    error ("fftfilt: B must be a vector");
+  endif
+
+  if (ndims (x) != 2)
+    error ("fftfilt: X must be a 1-D or 2-D array");
   endif
 
   l_b = r_b * c_b;
@@ -64,18 +68,18 @@ function y = fftfilt (b, x, n)
   if (nargin == 2)
     ## Use FFT with the smallest power of 2 which is >= length (x) +
     ## length (b) - 1 as number of points ...
-    n = 2 ^ (ceil (log (r_x + l_b - 1) / log (2)));
+    n = 2 ^ nextpow2 (r_x + l_b - 1);
     B = fft (b, n);
-    y = ifft (fft (x, n) .* B(:,ones (1, c_x)));
+    y = ifft (fft (x, n) .* B(:, ones (1, c_x)));
   else
     ## Use overlap-add method ...
     if (! (isscalar (n)))
       error ("fftfilt: N has to be a scalar");
     endif
-    n = 2 ^ (ceil (log (max ([n, l_b])) / log (2)));
+    n = 2 ^ nextpow2 (max ([n, l_b]));
     L = n - l_b + 1;
     B = fft (b, n);
-    B = B(:,ones (c_x,1));
+    B = B(:, ones (c_x,1));
     R = ceil (r_x / L);
     y = zeros (r_x, c_x);
     for r = 1:R;
@@ -89,20 +93,59 @@ function y = fftfilt (b, x, n)
     endfor
   endif
 
-  y = y(1:r_x,:);
+  y = y(1:r_x, :);
   if (transpose)
     y = y.';
   endif
 
-  ## Final cleanups: if both x and b are real respectively integer, y
-  ## should also be
+  ## Final cleanups: If both x and b are real, y should be real.
+  ## If both x and b are integer, y should be integer.
 
   if (isreal (b) && isreal (x))
     y = real (y);
   endif
-  if (! any (b - round (b)))
-    idx = !any (x - round (x));
-    y(:,idx) = round (y(:,idx));
+  if (! any (b - fix (b)))
+    idx = !any (x - fix (x));
+    y(:, idx) = round (y(:, idx));
   endif
 
 endfunction
+
+
+%!shared b, x, r
+%!test
+%!  b = [1 1];
+%!  x = [1, zeros(1,9)];
+%!  assert(fftfilt(b,  x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
+%!  assert(fftfilt(b,  x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
+%!  assert(fftfilt(b.',x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
+%!  assert(fftfilt(b.',x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
+
+%!test
+%!  r = sqrt(1/2) * (1+i);
+%!  b = b*r;
+%!  assert(fftfilt(b, x  ), r*[1 1 0 0 0 0 0 0 0 0]  , eps);
+%!  assert(fftfilt(b, r*x), r*r*[1 1 0 0 0 0 0 0 0 0], eps);
+%!  assert(fftfilt(b, x.'), r*[1 1 0 0 0 0 0 0 0 0].', eps);
+
+%!test
+%!  b = [1 1];
+%!  x = zeros (10,3); x(1,1)=-1; x(1,2)=1;
+%!  y0 = zeros (10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
+%!  y = fftfilt (b, x);
+%!  assert (y,y0);
+
+%!test
+%!  b  = rand (10, 1);
+%!  x  = rand (10, 1);
+%!  y0 = filter (b, 1, x);
+%!  y  = filter (b, 1, x);
+%!  assert (y, y0);
+
+%% Test input validation
+%!error fftfilt (1)
+%!error fftfilt (1, 2, 3, 4)
+%!error fftfilt (ones (2), 1)
+%!error fftfilt (2, ones (3,3,3))
+%!error fftfilt (2, 1, ones (2))
+

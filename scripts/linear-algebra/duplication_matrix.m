@@ -86,3 +86,35 @@ function d = duplication_matrix (n)
   endfor
 
 endfunction
+
+%!test
+%! N = 2;
+%! A = rand(N);
+%! B = A * A';
+%! C = A + A';
+%! D = duplication_matrix (N);
+%! assert (D * vech (B), vec (B), 1e-6);
+%! assert (D * vech (C), vec (C), 1e-6);
+
+%!test
+%! N = 3;
+%! A = rand(N);
+%! B = A * A';
+%! C = A + A';
+%! D = duplication_matrix (N);
+%! assert (D * vech (B), vec (B), 1e-6);
+%! assert (D * vech (C), vec (C), 1e-6);
+
+%!test
+%! N = 4;
+%! A = rand(N);
+%! B = A * A';
+%! C = A + A';
+%! D = duplication_matrix (N);
+%! assert (D * vech (B), vec (B), 1e-6);
+%! assert (D * vech (C), vec (C), 1e-6);
+
+%!error duplication_matrix ();
+%!error duplication_matrix (0.5);
+%!error duplication_matrix (-1);
+%!error duplication_matrix (ones(1,4));

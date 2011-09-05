@@ -61,3 +61,11 @@ function spy (x, varargin)
   axis ([0, n+1, 0, m+1], "ij");
 
 endfunction
+
+
+%!demo
+%! clf;
+%! spy (sprand (10,10, 0.2));
+
+%% Mark graphical function as tested by demo block
+%!assert (1);

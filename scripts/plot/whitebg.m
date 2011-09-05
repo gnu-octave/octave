@@ -143,3 +143,21 @@ function whitebg (varargin)
     endif
   endif
 endfunction
+
+%!test
+%! set (0, "defaultaxescolor", [1 1 1]);
+%! set (0, "defaultfigurecolor", [1 1 1]);
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   l = line;
+%!   assert (get (hf, "color"), [1 1 1]);
+%!   assert (get (gca, "color"), [1 1 1]);
+%!   whitebg;
+%!   assert (get (hf, "color"), [0 0 0]);
+%!   assert (get (gca, "color"), [0 0 0]);
+%!   whitebg([0.2 0.2 0.2])
+%!   assert (get (hf, "color"), [0 0 0]);
+%!   assert (get (gca, "color"), [0.2 0.2 0.2]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

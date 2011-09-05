@@ -67,6 +67,9 @@ endfunction
 %! datetick(2,'keepticks')
 %! set(ax,'ytick',12:16)
 
+## Remove from test statistics.  No real tests possible.
+%!assert (1)
+
 function __datetick__ (varargin)
 
   keeplimits = false;

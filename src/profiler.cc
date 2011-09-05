@@ -174,7 +174,7 @@ profile_data_accumulator::tree_node::get_hierarchical (void) const
     }
   assert (i == n);
 
-  Octave_map retval;
+  octave_map retval;
 
   retval.assign ("Index", rv_indices);
   retval.assign ("SelfTime", rv_times);
@@ -290,37 +290,61 @@ profile_data_accumulator::reset (void)
 octave_value
 profile_data_accumulator::get_flat (void) const
 {
+  octave_value retval;
+
   const octave_idx_type n = known_functions.size ();
 
   flat_profile flat (n);
-  assert (call_tree);
-  call_tree->build_flat (flat);
 
-  Cell rv_names (n, 1);
-  Cell rv_times (n, 1);
-  Cell rv_calls (n, 1);
-  Cell rv_recursive (n, 1);
-  Cell rv_parents (n, 1);
-  Cell rv_children (n, 1);
-
-  for (octave_idx_type i = 0; i != n; ++i)
+  if (call_tree)
     {
-      rv_names(i) = octave_value (known_functions[i]);
-      rv_times(i) = octave_value (flat[i].time);
-      rv_calls(i) = octave_value (flat[i].calls);
-      rv_recursive(i) = octave_value (flat[i].recursive);
-      rv_parents(i) = stats::function_set_value (flat[i].parents);
-      rv_children(i) = stats::function_set_value (flat[i].children);
+      call_tree->build_flat (flat);
+
+      Cell rv_names (n, 1);
+      Cell rv_times (n, 1);
+      Cell rv_calls (n, 1);
+      Cell rv_recursive (n, 1);
+      Cell rv_parents (n, 1);
+      Cell rv_children (n, 1);
+
+      for (octave_idx_type i = 0; i != n; ++i)
+        {
+          rv_names(i) = octave_value (known_functions[i]);
+          rv_times(i) = octave_value (flat[i].time);
+          rv_calls(i) = octave_value (flat[i].calls);
+          rv_recursive(i) = octave_value (flat[i].recursive);
+          rv_parents(i) = stats::function_set_value (flat[i].parents);
+          rv_children(i) = stats::function_set_value (flat[i].children);
+        }
+
+      octave_map m;
+
+      m.assign ("FunctionName", rv_names);
+      m.assign ("TotalTime", rv_times);
+      m.assign ("NumCalls", rv_calls);
+      m.assign ("IsRecursive", rv_recursive);
+      m.assign ("Parents", rv_parents);
+      m.assign ("Children", rv_children);
+
+      retval = m;
     }
+  else
+    {
+      static const char *fn[] =
+        {
+          "FunctionName",
+          "TotalTime",
+          "NumCalls",
+          "IsRecursive",
+          "Parents",
+          "Children",
+          0
+        };
 
-  Octave_map retval;
+      static octave_map m (dim_vector (0, 1), string_vector (fn));
 
-  retval.assign ("FunctionName", rv_names);
-  retval.assign ("TotalTime", rv_times);
-  retval.assign ("NumCalls", rv_calls);
-  retval.assign ("IsRecursive", rv_recursive);
-  retval.assign ("Parents", rv_parents);
-  retval.assign ("Children", rv_children);
+      retval = m;
+    }
 
   return retval;
 }
@@ -328,8 +352,27 @@ profile_data_accumulator::get_flat (void) const
 octave_value
 profile_data_accumulator::get_hierarchical (void) const
 {
-  assert (call_tree);
-  return call_tree->get_hierarchical ();
+  octave_value retval;
+
+  if (call_tree)
+    retval = call_tree->get_hierarchical ();
+  else
+    {
+      static const char *fn[] =
+        {
+          "Index",
+          "SelfTime",
+          "NumCalls",
+          "Children",
+          0
+        };
+
+      static octave_map m (dim_vector (0, 1), string_vector (fn));
+
+      retval = m;
+    }
+
+  return retval;
 }
 
 double

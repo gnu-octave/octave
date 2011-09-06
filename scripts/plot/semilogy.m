@@ -66,5 +66,44 @@ endfunction
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogy (x, y);
 
-## Remove from test statistics.  No real tests possible.
-%!assert (1)
+%!demo
+%! clf ();
+%! a = logspace (-5, 1, 10);
+%! b =-logspace (-5, 1, 10);
+%! 
+%! subplot (1, 2, 1)
+%! semilogy (a, b)
+%! xlabel ('semilogy (a, b)')
+%! 
+%! subplot (1, 2, 2)
+%! semilogy (a, abs (b))
+%! set (gca, 'ydir', 'reverse')
+%! xlabel ('semilogy (a, abs (b))')
+%! 
+%! fprintf ('the two plots should look the same except for the sign in y tick labels')
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   a = logspace (-5, 1, 10);
+%!   b = logspace (-5, 1, 10);
+%!   semilogy (a, b)
+%!   assert (get (gca, "yscale"), "log");
+%!   assert (get (gca, "xscale"), "linear");
+%! unwind_protect_cleanup
+%! close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   a = logspace (-5, 1, 10);
+%!   b =-logspace (-5, 1, 10);
+%!   semilogy (a, b)
+%!   axis tight
+%!   assert (all (get (gca, "ytick") < 0));
+%! unwind_protect_cleanup
+%! close (hf);
+%! end_unwind_protect
+
+

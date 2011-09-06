@@ -78,8 +78,6 @@ endfunction
 %! semilogx (abs (b), a)
 %! set (gca, 'ydir', 'reverse')
 %! xlabel ('semilogx (a, abs (b))')
-%! 
-%! fprintf ('the two plots should look the same except for the sign in x tick labels')
 
 %!test
 %! hf = figure (1232, "visible", "off");

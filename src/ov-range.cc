@@ -370,7 +370,9 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
     {
       os << name << " =";
       newline (os);
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 

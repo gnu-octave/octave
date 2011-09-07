@@ -103,7 +103,7 @@ static int hex_format = 0;
 static int bit_format = 0;
 
 // TRUE means don't put newlines around the column number headers.
-static bool compact_format = false;
+bool Vcompact_format = false;
 
 // TRUE means use an e format.
 static bool print_e = false;
@@ -1658,7 +1658,7 @@ pr_scale_header (std::ostream& os, double scale)
          << std::resetiosflags (std::ios::scientific|std::ios::left)
          << " *\n";
 
-      if (! compact_format)
+      if (! Vcompact_format)
         os << "\n";
     }
 }
@@ -1671,7 +1671,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
     {
       if (col != 0)
         {
-          if (compact_format)
+          if (Vcompact_format)
             os << "\n";
           else
             os << "\n\n";
@@ -1688,7 +1688,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
       else
         os << " Columns " << col + 1 << " through " << lim << ":\n";
 
-      if (! compact_format)
+      if (! Vcompact_format)
         os << "\n";
     }
 }
@@ -1956,7 +1956,10 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
         }
       else
         {
-          os << "Diagonal Matrix\n\n";
+          os << "Diagonal Matrix\n";
+          if (! Vcompact_format)
+            os << "\n";
+
           pr_scale_header (os, scale);
 
           // kluge. Get the true width of a number.
@@ -2369,7 +2372,10 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
         }
       else
         {
-          os << "Diagonal Matrix\n\n";
+          os << "Diagonal Matrix\n";
+          if (! Vcompact_format)
+            os << "\n";
+
           pr_scale_header (os, scale);
 
           // kluge. Get the true width of a number.
@@ -2514,7 +2520,9 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
         }
       else
         {
-          os << "Permutation Matrix\n\n";
+          os << "Permutation Matrix\n";
+          if (! Vcompact_format)
+            os << "\n";
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
@@ -2909,7 +2917,9 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
           octave_idx_type n_rows = page.rows ();
           octave_idx_type n_cols = page.cols ();
 
-          os << nm << " =\n\n";
+          os << nm << " =\n";
+          if (! Vcompact_format)
+            os << "\n";
 
           for (octave_idx_type ii = 0; ii < n_rows; ii++)
             {
@@ -3157,7 +3167,9 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
               nm += buf.str ();
 
-              os << nm << " =\n\n";
+              os << nm << " =\n";
+              if (! Vcompact_format)
+                os << "\n";
             }
 
           Array<idx_vector> idx (dim_vector (ndims, 1));
@@ -3262,7 +3274,9 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
               nm += buf.str ();
 
-              os << nm << " =\n\n";
+              os << nm << " =\n";
+              if (! Vcompact_format)
+                os << "\n";
             }
 
           Array<idx_vector> idx (dim_vector (ndims, 1));
@@ -3544,7 +3558,7 @@ init_format_state (void)
   bank_format = false;
   hex_format = 0;
   bit_format = 0;
-  compact_format = false;
+  Vcompact_format = false;
   print_e = false;
   print_big_e = false;
   print_g = false;
@@ -3719,11 +3733,11 @@ set_format_style (int argc, const string_vector& argv)
         }
       else if (arg == "compact")
         {
-          compact_format = true;
+          Vcompact_format = true;
         }
       else if (arg == "loose")
         {
-          compact_format = false;
+          Vcompact_format = false;
         }
       else
         error ("format: unrecognized format state `%s'", arg.c_str ());
@@ -3895,12 +3909,12 @@ The following two options affect the display of all matrices.\n\
 \n\
 @table @code\n\
 @item compact\n\
-Remove extra blank space around column number labels producing more compact\n\
-output with more data per page.\n\
+Remove blank lines around column number labels and between\n\
+matrices producing more compact output with more data per page.\n\
 \n\
 @item loose\n\
-Insert blank lines above and below column number labels to produce a more\n\
-readable output with less data per page.  (default).\n\
+Insert blank lines above and below column number labels and between matrices\n\
+to produce a more readable output with less data per page.  (default).\n\
 @end table\n\
 @seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, rats}\n\
 @end deftypefn")

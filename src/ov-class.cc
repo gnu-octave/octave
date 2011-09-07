@@ -1020,7 +1020,8 @@ octave_class::print_name_tag (std::ostream& os, const std::string& name) const
   indent (os);
   os << name << " =";
   newline (os);
-  newline (os);
+  if (! Vcompact_format)
+    newline (os);
 
   return retval;
 }

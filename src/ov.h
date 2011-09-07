@@ -987,9 +987,8 @@ public:
   bool print_name_tag (std::ostream& os, const std::string& name) const
     { return rep->print_name_tag (os, name); }
 
-  void print_with_name (std::ostream& os, const std::string& name,
-                        bool print_padding = true) const
-    { rep->print_with_name (os, name, print_padding); }
+  void print_with_name (std::ostream& os, const std::string& name) const
+  { rep->print_with_name (os, name, true); }
 
   int type_id (void) const { return rep->type_id (); }
 

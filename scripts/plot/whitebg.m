@@ -147,21 +147,18 @@ endfunction
 %!test
 %! dac = get (0, "defaultaxescolor");
 %! dfc = get (0, "defaultfigurecolor");
-%! set (0, "defaultaxescolor", [1 1 1]);
-%! set (0, "defaultfigurecolor", [1 1 1]);
 %! hf = figure (1232, "visible", "off");
 %! unwind_protect  
 %!   l = line;
-%!   assert (get (hf, "color"), [1 1 1]);
-%!   assert (get (gca, "color"), [1 1 1]);
+%!   assert (get (hf, "color"), dfc);
+%!   assert (get (gca, "color"), dac);
 %!   whitebg;
-%!   assert (get (hf, "color"), [0 0 0]);
-%!   assert (get (gca, "color"), [0 0 0]);
-%!   whitebg([0.2 0.2 0.2])
-%!   assert (get (hf, "color"), [0 0 0]);
-%!   assert (get (gca, "color"), [0.2 0.2 0.2]);
+%!   assert (get (hf, "color"), 1 - dfc);
+%!   assert (get (gca, "color"), 1 - dac);
+%!   c = [0.2 0.2 0.2];
+%!   whitebg (c);
+%!   assert (get (hf, "color"), 1 - dfc);
+%!   assert (get (gca, "color"), c);
 %! unwind_protect_cleanup
 %!   close (hf);
-%!   set (0, "defaultaxescolor", dac);
-%!   set (0, "defaultfigurecolor", dfc);
 %! end_unwind_protect

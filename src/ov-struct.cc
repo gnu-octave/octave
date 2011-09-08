@@ -1335,11 +1335,14 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       indent (os);
       os << "scalar structure containing the fields:";
       newline (os);
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
 
       increment_indent_level ();
 

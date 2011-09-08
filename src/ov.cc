@@ -2690,25 +2690,6 @@ install_types (void)
   octave_lazy_index::register_type ();
 }
 
-#if 0
-DEFUN (cast, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cast (@var{val}, @var{type})\n\
-Convert @var{val} to the new data type @var{type}.\n\
-@seealso{class, typeinfo}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 2)
-    error ("cast: not implemented");
-  else
-    print_usage ();
-
-  return retval;
-}
-#endif
-
 DEFUN (sizeof, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sizeof (@var{val})\n\
@@ -2725,6 +2706,12 @@ Return the size of @var{val} in bytes.\n\
 
   return retval;
 }
+
+/*
+%!assert (sizeof (uint64 (ones (3))), 72)
+%!assert (sizeof (double (zeros (2,4))), 64)
+%!assert (sizeof ({"foo", "bar", "baaz"}), 10)
+*/
 
 DEFUN (subsref, args, nargout,
   "-*- texinfo -*-\n\
@@ -2834,3 +2821,63 @@ Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
 
   return retval;
 }
+
+/*
+%!test
+%! a = reshape ([1:25], 5,5);
+%! idx1 = substruct ( "()", {3, 3});
+%! idx2 = substruct ( "()", {2:2:5, 2:2:5});
+%! idx3 = substruct ( "()", {":", [1,5]});
+%! assert (subsref (a, idx1), 13)
+%! assert (subsref (a, idx2), [7 17; 9 19])
+%! assert (subsref (a, idx3), [1:5; 21:25]')
+%! a = subsasgn (a, idx1, 0);
+%! a = subsasgn (a, idx2, 0);
+%! a = subsasgn (a, idx3, 0);
+%! b = [0    6   11   16    0
+%!      0    0   12    0    0
+%!      0    8    0   18    0
+%!      0    0   14    0    0
+%!      0   10   15   20    0];
+%! assert (a,b);
+
+%!test
+%! c = num2cell (reshape ([1:25],5,5));
+%! idx1 = substruct  ( "{}", {3, 3});
+%! idx2 = substruct  ( "()", {2:2:5, 2:2:5});
+%! idx3 = substruct  ( "()", {":", [1,5]});
+%! idx2p = substruct  ( "{}", {2:2:5, 2:2:5});
+%! idx3p = substruct  ( "{}", {":", [1,5]});
+%! assert ({ subsref(c, idx1) }, {13})
+%! assert ({ subsref(c, idx2p) }, {7 9 17 19})
+%! assert ({ subsref(c, idx3p) }, num2cell ([1:5, 21:25]))
+%! c = subsasgn (c, idx1, 0);
+%! c = subsasgn (c, idx2, 0);
+%! c = subsasgn (c, idx3, 0);
+%! d = {0    6   11   16    0
+%!      0    0   12    0    0
+%!      0    8    0   18    0
+%!      0    0   14    0    0
+%!      0   10   15   20    0};
+%! assert (c,d);
+
+%!test
+%! s.a = "ohai";
+%! s.b = "dere";
+%! s.c = 42;
+%! idx1 = substruct (".", "a");
+%! idx2 = substruct (".", "b");
+%! idx3 = substruct (".", "c");
+%! assert (subsref (s, idx1), "ohai")
+%! assert (subsref (s, idx2), "dere")
+%! assert (subsref (s, idx3), 42)
+%! s = subsasgn (s, idx1, "Hello");
+%! s = subsasgn (s, idx2, "There");
+%! s = subsasgn (s, idx3, 163);
+%! t.a = "Hello";
+%! t.b = "There";
+%! t.c = 163;
+%! assert (s, t)
+
+*/
+

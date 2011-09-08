@@ -65,5 +65,42 @@ endfunction
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogx (y, x);
 
-## Remove from test statistics.  No real tests possible.
-%!assert (1)
+%!demo
+%! clf ();
+%! a = logspace (-5, 1, 10);
+%! b =-logspace (-5, 1, 10);
+%! 
+%! subplot (1, 2, 1)
+%! semilogx (b, a)
+%! xlabel ('semilogx (a, b)')
+%! 
+%! subplot (1, 2, 2)
+%! semilogx (abs (b), a)
+%! set (gca, 'ydir', 'reverse')
+%! xlabel ('semilogx (a, abs (b))')
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   a = logspace (-5, 1, 10);
+%!   b = logspace (-5, 1, 10);
+%!   semilogx (a, b)
+%!   assert (get (gca, "xscale"), "log");
+%!   assert (get (gca, "yscale"), "linear");
+%! unwind_protect_cleanup
+%! close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   a = logspace (-5, 1, 10);
+%!   b =-logspace (-5, 1, 10);
+%!   semilogx (a, b)
+%!   axis tight
+%!   assert (all (get (gca, "ytick") < 0));
+%! unwind_protect_cleanup
+%! close (hf);
+%! end_unwind_protect
+
+

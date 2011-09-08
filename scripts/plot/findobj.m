@@ -248,12 +248,11 @@ endfunction
 %! hf = figure (fign, "visible", "off");
 %! unwind_protect  
 %!   l = line;
-%!   obj = findobj ("type", "line");
+%!   obj = findobj (hf, "type", "line");
 %!   assert (l, obj);
-%!   assert (gca, findobj ("type", "axes"));
-%!   assert (fign, findobj ("type", "figure"));
-%!   assert (0, findobj ("type", "root"));
-%!   assert (isempty (findobj ("type", "xyzxyz")));
+%!   assert (gca, findobj (hf, "type", "axes"));
+%!   assert (fign, findobj (hf, "type", "figure"));
+%!   assert (isempty (findobj (hf, "type", "xyzxyz")));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

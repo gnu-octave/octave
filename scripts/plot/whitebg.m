@@ -145,6 +145,8 @@ function whitebg (varargin)
 endfunction
 
 %!test
+%! dac = get (0, "defaultaxescolor");
+%! dfc = get (0, "defaultfigurecolor");
 %! set (0, "defaultaxescolor", [1 1 1]);
 %! set (0, "defaultfigurecolor", [1 1 1]);
 %! hf = figure (1232, "visible", "off");
@@ -160,4 +162,6 @@ endfunction
 %!   assert (get (gca, "color"), [0.2 0.2 0.2]);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   set (0, "defaultaxescolor", dac);
+%!   set (0, "defaultfigurecolor", dfc);
 %! end_unwind_protect

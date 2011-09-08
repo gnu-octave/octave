@@ -103,7 +103,7 @@ static int hex_format = 0;
 static int bit_format = 0;
 
 // TRUE means don't put newlines around the column number headers.
-static bool compact_format = false;
+bool Vcompact_format = false;
 
 // TRUE means use an e format.
 static bool print_e = false;
@@ -1658,7 +1658,7 @@ pr_scale_header (std::ostream& os, double scale)
          << std::resetiosflags (std::ios::scientific|std::ios::left)
          << " *\n";
 
-      if (! compact_format)
+      if (! Vcompact_format)
         os << "\n";
     }
 }
@@ -1671,7 +1671,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
     {
       if (col != 0)
         {
-          if (compact_format)
+          if (Vcompact_format)
             os << "\n";
           else
             os << "\n\n";
@@ -1688,7 +1688,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
       else
         os << " Columns " << col + 1 << " through " << lim << ":\n";
 
-      if (! compact_format)
+      if (! Vcompact_format)
         os << "\n";
     }
 }
@@ -1956,7 +1956,10 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
         }
       else
         {
-          os << "Diagonal Matrix\n\n";
+          os << "Diagonal Matrix\n";
+          if (! Vcompact_format)
+            os << "\n";
+
           pr_scale_header (os, scale);
 
           // kluge. Get the true width of a number.
@@ -1999,80 +2002,82 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
         }
     }
 }
-#define PRINT_ND_ARRAY(os, nda, NDA_T, ELT_T, MAT_T) \
-  do \
-    { \
-      if (nda.is_empty ()) \
-        print_empty_nd_array (os, nda.dims (), pr_as_read_syntax); \
-      else \
-        { \
- \
-          int ndims = nda.ndims (); \
- \
-          dim_vector dims = nda.dims (); \
- \
-          Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);\
- \
-          octave_idx_type m = 1; \
- \
-          for (int i = 2; i < ndims; i++) \
-            m *= dims(i); \
- \
-          octave_idx_type nr = dims(0); \
-          octave_idx_type nc = dims(1); \
- \
-          for (octave_idx_type i = 0; i < m; i++) \
-            { \
-              octave_quit (); \
- \
-              std::string nm = "ans"; \
- \
-              if (m > 1) \
-                { \
-                  nm += "(:,:,"; \
- \
-                  std::ostringstream buf; \
- \
-                  for (int k = 2; k < ndims; k++) \
-                    { \
-                      buf << ra_idx(k) + 1; \
- \
-                      if (k < ndims - 1) \
-                        buf << ","; \
-                      else \
-                        buf << ")"; \
-                    } \
- \
-                  nm += buf.str (); \
-                } \
- \
-              Array<idx_vector> idx (dim_vector (ndims, 1)); \
- \
-              idx(0) = idx_vector (':'); \
-              idx(1) = idx_vector (':'); \
- \
-              for (int k = 2; k < ndims; k++) \
-                idx(k) = idx_vector (ra_idx(k)); \
- \
-              octave_value page \
-                = MAT_T (Array<ELT_T> (nda.index (idx), dim_vector (nr, nc))); \
- \
-              if (i != m - 1) \
-                { \
-                  page.print_with_name (os, nm); \
-                } \
-              else \
-                { \
-                  page.print_name_tag (os, nm); \
-                  page.print_raw (os); \
-                } \
-              \
-              if (i < m) \
-                NDA_T::increment_index (ra_idx, dims, 2); \
-            } \
-        } \
-    } \
-  while (0)
+
+template <typename NDA_T, typename ELT_T, typename MAT_T>
+void print_nd_array(std::ostream& os, const NDA_T& nda,
+                    bool pr_as_read_syntax)
+{
+
+  if (nda.is_empty ())
+    print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
+  else
+    {
+
+      int ndims = nda.ndims ();
+
+      dim_vector dims = nda.dims ();
+
+      Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
+
+      octave_idx_type m = 1;
+
+      for (int i = 2; i < ndims; i++)
+        m *= dims(i);
+
+      octave_idx_type nr = dims(0);
+      octave_idx_type nc = dims(1);
+
+      for (octave_idx_type i = 0; i < m; i++)
+        {
+          octave_quit ();
+
+          std::string nm = "ans";
+
+          if (m > 1)
+            {
+              nm += "(:,:,";
+
+              std::ostringstream buf;
+
+              for (int k = 2; k < ndims; k++)
+                {
+                  buf << ra_idx(k) + 1;
+
+                  if (k < ndims - 1)
+                    buf << ",";
+                  else
+                    buf << ")";
+                }
+
+              nm += buf.str ();
+            }
+
+          Array<idx_vector> idx (dim_vector (ndims, 1));
+
+          idx(0) = idx_vector (':');
+          idx(1) = idx_vector (':');
+
+          for (int k = 2; k < ndims; k++)
+            idx(k) = idx_vector (ra_idx(k));
+
+          octave_value page
+            = MAT_T (Array<ELT_T> (nda.index (idx), dim_vector (nr, nc)));
+
+          if (i != m - 1)
+            {
+              page.print_with_name (os, nm);
+            }
+          else
+            {
+              page.print_name_tag (os, nm);
+              page.print_raw (os);
+            }
+
+          if (i < m)
+            NDA_T::increment_index (ra_idx, dims, 2);
+        }
+    }
+}
 
 void
 octave_print_internal (std::ostream& os, const NDArray& nda,
@@ -2087,7 +2092,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
       break;
 
     default:
-      PRINT_ND_ARRAY (os, nda, NDArray, double, Matrix);
+      print_nd_array <NDArray, double, Matrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2367,7 +2372,10 @@ octave_print_internal (std::ostream& os, const ComplexDiagMatrix& cm,
         }
       else
         {
-          os << "Diagonal Matrix\n\n";
+          os << "Diagonal Matrix\n";
+          if (! Vcompact_format)
+            os << "\n";
+
           pr_scale_header (os, scale);
 
           // kluge. Get the true width of a number.
@@ -2512,7 +2520,9 @@ octave_print_internal (std::ostream& os, const PermMatrix& m,
         }
       else
         {
-          os << "Permutation Matrix\n\n";
+          os << "Permutation Matrix\n";
+          if (! Vcompact_format)
+            os << "\n";
 
           for (octave_idx_type col = 0; col < nc; col += inc)
             {
@@ -2555,7 +2565,8 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
       break;
 
     default:
-      PRINT_ND_ARRAY (os, nda, ComplexNDArray, Complex, ComplexMatrix);
+      print_nd_array <ComplexNDArray, Complex,
+                      ComplexMatrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2756,7 +2767,8 @@ octave_print_internal (std::ostream& os, const boolNDArray& nda,
       break;
 
     default:
-      PRINT_ND_ARRAY (os, nda, boolNDArray, bool, boolMatrix);
+      print_nd_array<boolNDArray, bool,
+                     boolMatrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2822,7 +2834,8 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
       break;
 
     default:
-      PRINT_ND_ARRAY (os, nda, charNDArray, char, charMatrix);
+      print_nd_array <charNDArray, char,
+                      charMatrix> (os, nda, pr_as_read_syntax);
       break;
     }
 }
@@ -2840,8 +2853,8 @@ void
 octave_print_internal (std::ostream& os, const Array<std::string>& nda,
                        bool pr_as_read_syntax, int /* extra_indent */)
 {
-  // FIXME -- this mostly duplicates the code in the
-  // PRINT_ND_ARRAY macro.
+  // FIXME -- this mostly duplicates the code in the print_nd_array<>
+  // function. Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
@@ -2904,7 +2917,9 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
           octave_idx_type n_rows = page.rows ();
           octave_idx_type n_cols = page.cols ();
 
-          os << nm << " =\n\n";
+          os << nm << " =\n";
+          if (! Vcompact_format)
+            os << "\n";
 
           for (octave_idx_type ii = 0; ii < n_rows; ii++)
             {
@@ -3109,8 +3124,8 @@ template <class T>
 octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
                                 bool pr_as_read_syntax, int extra_indent)
 {
-  // FIXME -- this mostly duplicates the code in the
-  // PRINT_ND_ARRAY macro.
+  // FIXME -- this mostly duplicates the code in the print_nd_array<>
+  // function. Can fix this with std::is_same from C++11.
 
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
@@ -3152,7 +3167,9 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
               nm += buf.str ();
 
-              os << nm << " =\n\n";
+              os << nm << " =\n";
+              if (! Vcompact_format)
+                os << "\n";
             }
 
           Array<idx_vector> idx (dim_vector (ndims, 1));
@@ -3257,7 +3274,9 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
               nm += buf.str ();
 
-              os << nm << " =\n\n";
+              os << nm << " =\n";
+              if (! Vcompact_format)
+                os << "\n";
             }
 
           Array<idx_vector> idx (dim_vector (ndims, 1));
@@ -3539,7 +3558,7 @@ init_format_state (void)
   bank_format = false;
   hex_format = 0;
   bit_format = 0;
-  compact_format = false;
+  Vcompact_format = false;
   print_e = false;
   print_big_e = false;
   print_g = false;
@@ -3714,11 +3733,11 @@ set_format_style (int argc, const string_vector& argv)
         }
       else if (arg == "compact")
         {
-          compact_format = true;
+          Vcompact_format = true;
         }
       else if (arg == "loose")
         {
-          compact_format = false;
+          Vcompact_format = false;
         }
       else
         error ("format: unrecognized format state `%s'", arg.c_str ());
@@ -3890,12 +3909,12 @@ The following two options affect the display of all matrices.\n\
 \n\
 @table @code\n\
 @item compact\n\
-Remove extra blank space around column number labels producing more compact\n\
-output with more data per page.\n\
+Remove blank lines around column number labels and between\n\
+matrices producing more compact output with more data per page.\n\
 \n\
 @item loose\n\
-Insert blank lines above and below column number labels to produce a more\n\
-readable output with less data per page.  (default).\n\
+Insert blank lines above and below column number labels and between matrices\n\
+to produce a more readable output with less data per page.  (default).\n\
 @end table\n\
 @seealso{fixed_point_format, output_max_field_width, output_precision, split_long_rows, rats}\n\
 @end deftypefn")

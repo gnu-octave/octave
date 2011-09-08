@@ -5184,8 +5184,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
         {
           if (xisinf (min_pos))
             {
-              // warning ("axis: logscale with no positive values to plot");
-              return retval;
+              // FIXME -- need to handle log plots with all negative data.
+              return default_lim ();
             }
 
           if (min_val <= 0)

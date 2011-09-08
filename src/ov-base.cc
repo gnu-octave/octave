@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-str-mat.h"
 #include "ov-fcn-handle.h"
 #include "parse.h"
+#include "pr-output.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -419,7 +420,9 @@ octave_base_value::print_name_tag (std::ostream& os, const std::string& name) co
     {
       os << name << " =";
       newline (os);
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 
@@ -435,7 +438,7 @@ octave_base_value::print_with_name (std::ostream& output_buf,
 
   print (output_buf);
 
-  if (print_padding && pad_after)
+  if (print_padding  && pad_after && ! Vcompact_format)
     newline (output_buf);
 }
 

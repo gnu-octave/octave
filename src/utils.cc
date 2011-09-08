@@ -1368,7 +1368,9 @@ octave_vsnprintf (const char *fmt, va_list args)
 
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-      if (nchars > -1 && nchars < size)
+      // Cast to avoid signed/unsigned comparison is safe due to
+      // short-circuiting
+      if (nchars > -1 && static_cast<size_t>(nchars) < size)
         break;
       else
         {

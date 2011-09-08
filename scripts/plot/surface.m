@@ -136,6 +136,10 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     else
       error ("surface: Z argument must be a matrix");
     endif
+  elseif (firststring == 1)
+    x = 1:3;
+    y = (x).';
+    c = z = eye(3);
   else
     bad_usage = true;
   endif
@@ -158,4 +162,21 @@ endfunction
 
 ## Mark file as being tested.  Tests for surface are in
 ## surf.m, surfc.m, surfl.m, and pcolor.m
-%!assert(1)
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   h = surface;
+%!   assert (findobj (hf, "type", "surface"), h);
+%!   assert (get (h, "xdata"), 1:3, eps);
+%!   assert (get (h, "ydata"), (1:3)', eps);
+%!   assert (get (h, "zdata"), eye(3));
+%!   assert (get (h, "cdata"), eye(3));
+%!   assert (get (h, "type"), "surface");
+%!   assert (get (h, "linestyle"), get (0, "defaultsurfacelinestyle"));
+%!   assert (get (h, "linewidth"), get (0, "defaultsurfacelinewidth"), eps);
+%!   assert (get (h, "marker"), get (0, "defaultsurfacemarker"));
+%!   assert (get (h, "markersize"), get (0, "defaultsurfacemarkersize"));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

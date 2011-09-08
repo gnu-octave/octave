@@ -31,7 +31,10 @@ function [h, failed] = __patch__ (p, varargin)
 
   failed = false;
 
-  if (isstruct (varargin{1}))
+  if (isempty (varargin))
+    args = {"xdata", [0; 1; 1], "ydata", [0; 0; 1], "facecolor", "blue"};
+    args = setvertexdata (args);
+  elseif (isstruct (varargin{1}))
     if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))
       args{1} = "faces";
       args{2} = getfield(varargin{1}, "faces");

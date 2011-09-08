@@ -47,12 +47,13 @@ endfunction
 %! hf = figure (1232, "visible", "off");
 %! unwind_protect  
 %!   h = line;
+%!   assert (findobj (hf, "type", "line"), h);
 %!   assert (get (h, "xdata"), [0 1], eps);
 %!   assert (get (h, "ydata"), [0 1], eps);
 %!   assert (get (h, "type"), "line");
-%!   assert (get (h, "color"), get(0,'defaultlinecolor'));
-%!   assert (get (h, "linestyle"), get(0,'defaultlinelinestyle'));
-%!   assert (get (h, "linewidth"), get(0,'defaultlinelinewidth'), eps);
+%!   assert (get (h, "color"), get (0, "defaultlinecolor"));
+%!   assert (get (h, "linestyle"), get (0, "defaultlinelinestyle"));
+%!   assert (get (h, "linewidth"), get (0, "defaultlinelinewidth"), eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

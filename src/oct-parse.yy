@@ -2071,9 +2071,8 @@ static tree_anon_fcn_handle *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
-
-  int l = -1;
-  int c = -1;
+  int l = input_line_number;
+  int c = current_input_column;
 
   tree_parameter_list *ret_list = 0;
 
@@ -2094,6 +2093,9 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   tree_anon_fcn_handle *retval
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
+  // FIXME: Stash the filename.  This does not work and produces
+  // errors when executed.
+  //retval->stash_file_name (curr_fcn_file_name);
 
   return retval;
 }

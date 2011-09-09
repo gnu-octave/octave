@@ -53,7 +53,7 @@
 function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_also = [])
 
   ## Check input
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 

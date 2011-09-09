@@ -50,10 +50,10 @@
 ## The optional output argument @var{status} contains the exit status of the
 ## @code{makeinfo} program as returned by @code{system}.
 
-function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_also = [])
+function [retval, status] = __makeinfo__ (text, output_type = "plain text")
 
   ## Check input
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 

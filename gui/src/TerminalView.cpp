@@ -26,8 +26,9 @@
 TerminalView::TerminalView (QWidget * parent)
   : QPlainTextEdit (parent), Terminal ()
 {
-    setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-    m_terminalEmulation = TerminalEmulation::newTerminalEmulation (this);
+  setFont (QFont("Monospace", 10));
+  setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+  m_terminalEmulation = TerminalEmulation::newTerminalEmulation (this);
 }
 
 TerminalView::~TerminalView ()

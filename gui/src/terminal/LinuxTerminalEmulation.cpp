@@ -63,6 +63,17 @@ void LinuxTerminalEmulation::processKeyEvent (QKeyEvent *keyEvent)
         }
       break;
 
+      case Qt::Key_V:
+      if (keyEvent->modifiers() & Qt::ControlModifier)
+        {
+          // TODO: Lookup and implement Control + V.
+        }
+      else
+        {
+          m_pty->write (keyEvent->text ().toAscii ());
+        }
+      break;
+
       case Qt::Key_D:
       if (keyEvent->modifiers() & Qt::ControlModifier)
         {

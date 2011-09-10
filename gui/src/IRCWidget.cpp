@@ -161,6 +161,7 @@ QWidget (parent)
 
   layout->addWidget (m_chatWindow);
   layout->addWidget (bottomWidget);
+  layout->setMargin (0);
   setLayout (layout);
 
   QHBoxLayout *bottomLayout = new QHBoxLayout ();

@@ -89,6 +89,7 @@ FilesDockWidget::FilesDockWidget (QWidget * parent):QDockWidget (parent)
   layout->setSpacing (0);
   layout->addWidget (m_navigationToolBar);
   layout->addWidget (m_fileTreeView);
+  layout->setMargin (1);
   widget ()->setLayout (layout);
   // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 

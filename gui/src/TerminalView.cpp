@@ -69,3 +69,17 @@ TerminalView::mousePressEvent (QMouseEvent *mouseEvent)
   // TODO: Pass mouse events to the terminal emulation.
   mouseEvent->accept();
 }
+
+void
+TerminalView::mouseDoubleClickEvent (QMouseEvent *mouseEvent)
+{
+  // TODO: Pass mouse events to the terminal emulation.
+  mouseEvent->accept();
+}
+
+void
+TerminalView::wheelEvent (QWheelEvent *wheelEvent)
+{
+  // TODO: Pass mouse events to the terminal emulation.
+  wheelEvent->accept();
+}

@@ -43,6 +43,8 @@ public:
 protected:
   void keyPressEvent (QKeyEvent *keyEvent);
   void mousePressEvent (QMouseEvent *mouseEvent);
+  void mouseDoubleClickEvent (QMouseEvent *mouseEvent);
+  void wheelEvent (QWheelEvent *wheelEvent);
 
 private:
   TerminalEmulation *m_terminalEmulation;

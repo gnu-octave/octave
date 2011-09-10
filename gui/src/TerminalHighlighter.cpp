@@ -27,7 +27,7 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
   keywordFormat.setForeground(Qt::darkBlue);
   QStringList keywordPatterns
       = QString(ResourceManager::instance ()->octaveKeywords ()).split(" ", QString::SkipEmptyParts);
-  keywordPatterns << "GNU" << "Octave" << "OctaveGUI";
+   keywordPatterns << "GNU" << "Octave" << "OctaveGUI";
 
   for (int i = 0; i < keywordPatterns.size (); i++)
     keywordPatterns.replace(i, QString("\\b%1\\b").arg(keywordPatterns.at (i)));
@@ -71,7 +71,6 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
   rule.pattern = QRegExp("^\\s+\\*\\*.+$");
   rule.format = captionFormat;
   highlightingRules.append(rule);
-
 }
 
 void TerminalHighlighter::highlightBlock(const QString &text)

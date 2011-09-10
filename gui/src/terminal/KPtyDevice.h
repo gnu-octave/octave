@@ -21,6 +21,7 @@
 #ifndef kptydev_h
 #define kptydev_h
 
+struct KPtyPrivate;
 struct KPtyDevicePrivate;
 
 #include "KPty.h"
@@ -36,7 +37,7 @@ struct KPtyDevicePrivate;
  * Encapsulates KPty into a QIODevice, so it can be used with Q*Stream, etc.
  */
 class KPtyDevice:public QIODevice, public KPty
-{
+{				//krazy:exclude=dpointer (via macro)
 Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
 
     /**
@@ -80,6 +81,35 @@ Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
   virtual void close ();
 
     /**
+     * Sets whether the KPtyDevice monitors the pty for incoming data.
+     *
+     * When the KPtyDevice is suspended, it will no longer attempt to buffer
+     * data that becomes available from the pty and it will not emit any
+     * signals.
+     *
+     * Do not use on closed ptys.
+     * After a call to open(), the pty is not suspended. If you need to
+     * ensure that no data is read, call this function before the main loop
+     * is entered again (i.e., immediately after opening the pty).
+     */
+  void setSuspended (bool suspended);
+
+    /**
+     * Returns true if the KPtyDevice is not monitoring the pty for incoming
+     * data.
+     *
+     * Do not use on closed ptys.
+     *
+     * See setSuspended()
+     */
+  bool isSuspended () const;
+
+    /**
+     * @return always true
+     */
+  virtual bool isSequential () const;
+
+    /**
      * @reimp
      */
   bool canReadLine () const;
@@ -99,14 +129,26 @@ Q_OBJECT Q_DECLARE_PRIVATE_MI (KPtyDevice, KPty) public:
      */
   qint64 bytesToWrite () const;
 
+  bool waitForBytesWritten (int msecs = -1);
+  bool waitForReadyRead (int msecs = -1);
+
+
+    Q_SIGNALS:
+    /**
+     * Emitted when EOF is read from the PTY.
+     *
+     * Data may still remain in the buffers.
+     */
+  void readEof ();
+
 protected:
-  virtual qint64 readData (char *data, qint64 maxSize);
+    virtual qint64 readData (char *data, qint64 maxSize);
   virtual qint64 readLineData (char *data, qint64 maxSize);
   virtual qint64 writeData (const char *data, qint64 maxSize);
 
 private:
   Q_PRIVATE_SLOT (d_func (), bool _k_canRead ())
-  Q_PRIVATE_SLOT (d_func (), bool _k_canWrite ())};
+    Q_PRIVATE_SLOT (d_func (), bool _k_canWrite ())};
 
 #define KMAXINT ((int)(~0U >> 1))
 
@@ -168,23 +210,23 @@ public:
       int nbs = readSize ();
 
       if (bytes < nbs)
-	{
-	  head += bytes;
-	  if (head == tail && buffers.count () == 1)
-	    {
-	      buffers.first ().resize (CHUNKSIZE);
-	      head = tail = 0;
-	    }
-	  break;
-	}
+        {
+          head += bytes;
+          if (head == tail && buffers.count () == 1)
+            {
+              buffers.first ().resize (CHUNKSIZE);
+              head = tail = 0;
+            }
+          break;
+        }
 
       bytes -= nbs;
       if (buffers.count () == 1)
-	{
-	  buffers.first ().resize (CHUNKSIZE);
-	  head = tail = 0;
-	  break;
-	}
+        {
+          buffers.first ().resize (CHUNKSIZE);
+          head = tail = 0;
+          break;
+        }
 
       buffers.removeFirst ();
       head = 0;
@@ -198,17 +240,17 @@ public:
     char *ptr;
     if (tail + bytes <= buffers.last ().size ())
       {
-	ptr = buffers.last ().data () + tail;
-	tail += bytes;
+        ptr = buffers.last ().data () + tail;
+        tail += bytes;
       }
     else
       {
-	buffers.last ().resize (tail);
-	QByteArray tmp;
-	tmp.resize (qMax (CHUNKSIZE, bytes));
-	ptr = tmp.data ();
-	buffers << tmp;
-	tail = bytes;
+        buffers.last ().resize (tail);
+        QByteArray tmp;
+        tmp.resize (qMax (CHUNKSIZE, bytes));
+        ptr = tmp.data ();
+        buffers << tmp;
+        tail = bytes;
       }
     return ptr;
   }
@@ -236,16 +278,16 @@ public:
       forever
     {
       if (!maxLength)
-	return index;
+        return index;
       if (index == size ())
-	return -1;
+        return -1;
       const QByteArray & buf = *it;
       ++it;
       int len = qMin ((it == buffers.end ()? tail : buf.size ()) - start,
-		      maxLength);
+                      maxLength);
       const char *ptr = buf.data () + start;
       if (const char *rptr = (const char *)memchr (ptr, c, len))
-	return index + (rptr - ptr) + 1;
+        return index + (rptr - ptr) + 1;
         index += len;
         maxLength -= len;
         start = 0;
@@ -268,11 +310,11 @@ public:
     int readSoFar = 0;
     while (readSoFar < bytesToRead)
       {
-	const char *ptr = readPointer ();
-	int bs = qMin (bytesToRead - readSoFar, readSize ());
-	memcpy (data + readSoFar, ptr, bs);
-	readSoFar += bs;
-	free (bs);
+        const char *ptr = readPointer ();
+        int bs = qMin (bytesToRead - readSoFar, readSize ());
+        memcpy (data + readSoFar, ptr, bs);
+        readSoFar += bs;
+        free (bs);
       }
     return readSoFar;
   }

@@ -104,9 +104,18 @@ LinuxTerminalEmulation::handleReadyRead ()
 {
   QByteArray data = m_pty->readAll ();
 
+  data.replace("\033[K", "");
+  data.replace("\033[9", "");
+  data.replace("\033[A", "");
+  data.replace("\033[B", "");
+  data.replace("\033[C", "");
+  data.replace("\033[D", "");
+  data.replace("\033[1", "");
+  data.replace("\033[H", "");
+  data.replace("\033[2J", "");
   int position;
   QTextCursor tc = m_terminal->textCursor ();
-  tc.movePosition (QTextCursor::End);
+  tc.beginEditBlock ();
 
   // Decode data into cursor actions.
   foreach(QChar character, data)
@@ -215,11 +224,14 @@ LinuxTerminalEmulation::handleReadyRead ()
           qDebug ("US");
           break;
         case 127: // Delete (DEL)
+          qDebug ("DEL");
           break;
         default:
           tc.insertText (character);
           break;
         }
     }
+
+  tc.endEditBlock ();
   m_terminal->setTextCursor (tc);
 }

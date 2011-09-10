@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text})
-## @deftypefnx {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
+## @deftypefn  {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type})
+## @deftypefnx {Function File} {[@var{retval}, @var{status}] =} __makeinfo__ (@var{text}, @var{output_type}, @var{see_also})
 ## Undocumented internal function.
 ## @end deftypefn
 
@@ -32,6 +32,13 @@
 ## @t{"html"}, @t{"texinfo"}, or @t{"plain text"}. By default this is
 ## @t{"plain text"}. If @var{output_type} is @t{"texinfo"}, the @t{@@seealso}
 ## macro is expanded, but otherwise the text is unaltered.
+##
+## If the optional argument @var{see_also} is present, it is used to expand the
+## Octave specific @t{@@seealso} macro. This argument must be a function handle,
+## that accepts a cell array of strings as input argument (each elements of the
+## array corresponds to the arguments to the @t{@@seealso} macro), and return
+## the expanded string. If this argument is not given, the @t{@@seealso} macro
+## will be expanded to the text
 ##
 ## @example
 ## See also: arg1, arg2@, ...
@@ -50,10 +57,10 @@
 ## The optional output argument @var{status} contains the exit status of the
 ## @code{makeinfo} program as returned by @code{system}.
 
-function [retval, status] = __makeinfo__ (text, output_type = "plain text")
+function [retval, status] = __makeinfo__ (text, output_type = "plain text", see_also = [])
 
   ## Check input
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
@@ -65,16 +72,32 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text")
     error ("__makeinfo__: second input argument must be a string");
   endif
 
+  if (isempty (see_also))  
+    if (strcmpi (output_type, "plain text"))
+      see_also = @simple_see_also;
+    else    
+      see_also = @simple_see_also_with_refs;
+    endif
+  endif
+
+  if (!isa (see_also, "function_handle"))
+    error (["__makeinfo__: third input argument must ", ...
+            "be the empty matrix, or a function handle"]);
+  endif
+  
+
   ## It seems like makeinfo sometimes gets angry if the first character
   ## on a line is a space, so we remove these.
-  text = strrep (text, "\n ", "\n");
+  text = strrep (text, "\n ", "\n"); 
 
   ## Handle @seealso macro
-  if (strcmpi (output_type, "plain text")) 
-    text = regexprep (text, '@seealso *\{([^}]*)\}', "\nSee also: $1.\n\n");
-  else
-    text = regexprep (text, '@seealso *\{([^}]*)\}', "\nSee also: @ref{$1}.\n\n");
-  endif
+  see_also_pat = '@seealso *\{([^}]*)\}';
+  args = regexp (text, see_also_pat, 'tokens');
+  for ii = 1:numel (args)
+    expanded = feval (see_also, strtrim (strsplit (args{ii}{:}, ',', true)));
+    text = regexprep (text, see_also_pat, expanded);
+  endfor
+
   ## Handle @nospell macro
   text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
 
@@ -100,11 +123,11 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text")
     ## Take action depending on output type
     switch (lower (output_type))
       case "plain text"
-         cmd = sprintf ("%s --no-headers --no-warn --force --no-validate %s",
-                        makeinfo_program (), name);
+        cmd = sprintf ("%s --no-headers --no-warn --force --no-validate %s",
+                       makeinfo_program (), name);
       case "html"
-         cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force %s",
-                        makeinfo_program (), name);
+        cmd = sprintf ("%s --no-headers --html --no-warn --no-validate --force %s",
+                       makeinfo_program (), name);
       otherwise
         error ("__makeinfo__: unsupported output type: '%s'", output_type);
     endswitch
@@ -117,6 +140,16 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text")
       delete (name);
     endif
   end_unwind_protect
+endfunction
+
+function expanded = simple_see_also_with_refs (args)
+  expanded = strcat ("\nSee also:", sprintf (" @ref{%s},", args {:}));
+  expanded = strcat (expanded (1:end-1), "\n\n");
+endfunction
+
+function expanded = simple_see_also (args)
+  expanded = strcat ("\nSee also:", sprintf (" %s,", args {:}));
+  expanded = strcat (expanded (1:end-1), "\n\n");
 endfunction
 
 ## No test needed for internal helper function.

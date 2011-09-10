@@ -21,6 +21,12 @@
 #ifndef kpty_h
 #define kpty_h
 
+#ifdef __APPLE__
+#ifndef Q_OS_MAC
+#define Q_OS_MAC
+#endif
+#endif
+
 #if defined(Q_OS_MAC)
 #define HAVE_UTIL_H
 #define HAVE_UTMPX

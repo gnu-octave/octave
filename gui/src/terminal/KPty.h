@@ -21,6 +21,128 @@
 #ifndef kpty_h
 #define kpty_h
 
+#if defined(Q_OS_MAC)
+#define HAVE_UTIL_H
+#define HAVE_UTMPX
+#define _UTMPX_COMPAT
+#define HAVE_PTSNAME
+#define HAVE_SYS_TIME_H
+#else
+#define HAVE_PTY_H
+#endif
+
+#define HAVE_OPENPTY
+
+#include <QtCore/QByteArray>
+
+#ifdef __sgi
+#define __svr4__
+#endif
+
+#ifdef __osf__
+#define _OSF_SOURCE
+#include <float.h>
+#endif
+
+#ifdef _AIX
+#define _ALL_SOURCE
+#endif
+
+// __USE_XOPEN isn't defined by default in ICC
+// (needed for ptsname(), grantpt() and unlockpt())
+#ifdef __INTEL_COMPILER
+#ifndef __USE_XOPEN
+#define __USE_XOPEN
+#endif
+#endif
+
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <sys/param.h>
+
+#include <errno.h>
+#include <fcntl.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <grp.h>
+
+#if defined(HAVE_PTY_H)
+#include <pty.h>
+#endif
+
+#ifdef HAVE_LIBUTIL_H
+#include <libutil.h>
+#elif defined(HAVE_UTIL_H)
+#include <util.h>
+#endif
+
+#define HAVE_UTMPX
+#define _UTMPX_COMPAT
+
+#ifdef HAVE_UTEMPTER
+extern "C"
+{
+#include <utempter.h>
+}
+#else
+#include <utmp.h>
+#ifdef HAVE_UTMPX
+#include <utmpx.h>
+#endif
+#if !defined(_PATH_UTMPX) && defined(_UTMPX_FILE)
+#define _PATH_UTMPX _UTMPX_FILE
+#endif
+#if !defined(_PATH_WTMPX) && defined(_WTMPX_FILE)
+#define _PATH_WTMPX _WTMPX_FILE
+#endif
+#endif
+
+/* for HP-UX (some versions) the extern C is needed, and for other
+   platforms it doesn't hurt */
+extern "C"
+{
+#include <termios.h>
+#if defined(HAVE_TERMIO_H)
+#include <termio.h>		// struct winsize on some systems
+#endif
+}
+
+#if defined (_HPUX_SOURCE)
+#define _TERMIOS_INCLUDED
+#include <bsdtty.h>
+#endif
+
+#ifdef HAVE_SYS_STROPTS_H
+#include <sys/stropts.h>	// Defines I_PUSH
+#define _NEW_TTY_CTRL
+#endif
+
+#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
+#else
+#if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__) || defined(__sun)
+#define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
+#else
+#define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
+#endif
+#endif
+
+#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
+#else
+#if defined(_HPUX_SOURCE) || defined(__CYGWIN__) || defined(__sun)
+#define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
+#else
+#define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
+#endif
+#endif
+
 #include <QtCore/qglobal.h>
 #include <QByteArray>
 

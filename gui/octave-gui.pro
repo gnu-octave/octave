@@ -80,7 +80,8 @@ SOURCES +=\
     src/terminal/KPty.cpp \
     src/terminal/KPtyDevice.cpp \
     src/TerminalView.cpp \
-    src/TerminalHighlighter.cpp
+    src/TerminalHighlighter.cpp \
+    src/WelcomeWizard.cpp
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
@@ -106,7 +107,9 @@ HEADERS += \
     src/terminal/KPtyDevice.h \
     src/terminal/KPty.h \
     src/TerminalView.h \
-    src/TerminalHighlighter.h
+    src/TerminalHighlighter.h \
+    src/WelcomeWizard.h
 
 FORMS += \
-    src/SettingsDialog.ui
+    src/SettingsDialog.ui \
+    src/WelcomeWizard.ui

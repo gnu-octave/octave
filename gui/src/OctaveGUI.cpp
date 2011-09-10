@@ -20,6 +20,7 @@
 #include <QTranslator>
 #include <QSettings>
 #include "CommandLineParser.h"
+#include "WelcomeWizard.h"
 #include "ResourceManager.h"
 #include "MainWindow.h"
 
@@ -27,23 +28,68 @@ int
 main (int argc, char *argv[])
 {
   QApplication application (argc, argv);
-  CommandLineParser commandLineParser;
-  commandLineParser.registerOption ("--config", "-c", "Tells OctaveGUI to use that configuration file.", true);
-  commandLineParser.parse (argc, argv);
+  while (true)
+    {
+      if (ResourceManager::instance ()->isFirstRun ())
+        {
+          WelcomeWizard welcomeWizard;
+          int returnCode = welcomeWizard.exec ();
 
-  QSettings *settings = ResourceManager::instance ()->settings ();
-  QString language = settings->value ("language").toString ();
+          QSettings *settings = ResourceManager::instance ()->settings ();
+          settings->setValue ("connectOnStartup", true);
+          settings->setValue ("showMessageOfTheDay", true);
+          settings->setValue ("showTopic", true);
+          settings->setValue ("autoIdentification", false);
+          settings->setValue ("nickServPassword", "");
+          settings->setValue ("useCustomFileEditor", false);
+          settings->setValue ("customFileEditor", "emacs");
+          settings->setValue ("editor/showLineNumbers", true);
+          settings->setValue ("editor/highlightActualLine", true);
+          settings->setValue ("editor/codeCompletion", true);
+          settings->setValue ("editor/fontName", "Monospace");
+          settings->setValue ("editor/fontSize", 10);
+          settings->setValue ("showFilenames", true);
+          settings->setValue ("showFileSize", false);
+          settings->setValue ("showFileType", false);
+          settings->setValue ("showLastModified", false);
+          settings->setValue ("showHiddenFiles", false);
+          settings->setValue ("useAlternatingRowColors", true);
+          settings->setValue ("useProxyServer", false);
+          settings->setValue ("proxyType", "Sock5Proxy");
+          settings->setValue ("proxyHostName", "none");
+          settings->setValue ("proxyPort", 8080);
+          settings->setValue ("proxyUserName", "");
+          settings->setValue ("proxyPassword", "");
+          settings->sync ();
+          ResourceManager::instance ()->reloadSettings ();
 
-  QString translatorFile = ResourceManager::instance ()->findTranslatorFile (language);
-  QTranslator translator;
-  translator.load (translatorFile);
-  application.installTranslator (&translator);
+          application.quit ();
+          // We are in an infinite loop, so everything else than a return
+          // will cause the application to restart from the very beginning.
+          if (returnCode == QDialog::Rejected)
+            return 0;
+        }
+      else
+        {
+          CommandLineParser commandLineParser;
+          commandLineParser.registerOption ("--config", "-c", "Tells OctaveGUI to use that configuration file.", true);
+          commandLineParser.parse (argc, argv);
 
-  ResourceManager::instance ()->updateNetworkSettings ();
-  ResourceManager::instance ()->loadIcons ();
+          QSettings *settings = ResourceManager::instance ()->settings ();
+          QString language = settings->value ("language").toString ();
 
-  MainWindow w;
-  w.show ();
-  w.activateWindow();
-  return application.exec ();
+          QString translatorFile = ResourceManager::instance ()->findTranslatorFile (language);
+          QTranslator translator;
+          translator.load (translatorFile);
+          application.installTranslator (&translator);
+
+          ResourceManager::instance ()->updateNetworkSettings ();
+          ResourceManager::instance ()->loadIcons ();
+
+          MainWindow w;
+          w.show ();
+          w.activateWindow();
+          return application.exec ();
+        }
+    }
 }

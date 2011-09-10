@@ -25,9 +25,7 @@ ResourceManager ResourceManager::m_singleton;
 ResourceManager::ResourceManager ()
 {
   m_settings = 0;
-  QDesktopServices desktopServices;
-  m_homePath = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  setSettings(m_homePath + "/.octave-gui");
+  reloadSettings ();
 }
 
 ResourceManager::~ResourceManager ()
@@ -48,13 +46,25 @@ ResourceManager::homePath ()
 }
 
 void
+ResourceManager::reloadSettings ()
+{
+  QDesktopServices desktopServices;
+  m_homePath = desktopServices.storageLocation (QDesktopServices::HomeLocation);
+  setSettings(m_homePath + "/.octave-gui");
+}
+
+void
 ResourceManager::setSettings (QString file)
 {
   delete m_settings;
+
+  m_firstRun = false;
   if (!QFile::exists (file))
-    {
-      QFile::copy("../default-settings/.octave-gui", file);
-    }
+    m_firstRun = true;
+
+  // If the settings file does not exist, QSettings automatically creates it.
+  // Therefore we have to check if it exists before instantiating the settings object.
+  // That way we can detect if the user ran this application before.
   m_settings = new QSettings (file, QSettings::IniFormat);
 }
 
@@ -73,6 +83,12 @@ ResourceManager::icon (Icon icon)
       return m_icons [icon];
     }
   return QIcon ();
+}
+
+bool
+ResourceManager::isFirstRun ()
+{
+  return m_firstRun;
 }
 
 void

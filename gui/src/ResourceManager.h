@@ -46,11 +46,13 @@ public:
 
   QSettings *settings ();
   QString homePath ();
+  void reloadSettings ();
   void setSettings (QString file);
   QString findTranslatorFile (QString language);
   void updateNetworkSettings ();
   void loadIcons ();
   QIcon icon (Icon icon);
+  bool isFirstRun ();
 
   const char *octaveKeywords ();
 private:
@@ -60,6 +62,7 @@ private:
   QString m_homePath;
   QMap <Icon, QIcon> m_icons;
   static ResourceManager m_singleton;
+  bool m_firstRun;
 };
 
 #endif // RESOURCEMANAGER_H

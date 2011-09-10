@@ -16,50 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RESOURCEMANAGER_H
-#define RESOURCEMANAGER_H
+#ifndef TERMINALHIGHLIGHTER_H
+#define TERMINALHIGHLIGHTER_H
 
-#include <QSettings>
-#include <QDesktopServices>
-#include <QMap>
-#include <QIcon>
+#include <QSyntaxHighlighter>
 
-class ResourceManager
+#include <QHash>
+#include <QTextCharFormat>
+
+class QTextDocument;
+
+class TerminalHighlighter : public QSyntaxHighlighter
 {
+    Q_OBJECT
+
 public:
-  enum Icon
-  {
-    Octave,
-    Terminal,
-    Documentation,
-    Chat,
-    ChatNewMessage
-  };
+    TerminalHighlighter(QTextDocument *parent = 0);
 
-  ~ResourceManager ();
+protected:
+    void highlightBlock(const QString &text);
 
-  static ResourceManager *
-  instance ()
-  {
-    return &m_singleton;
-  }
-
-  QSettings *settings ();
-  QString homePath ();
-  void setSettings (QString file);
-  QString findTranslatorFile (QString language);
-  void updateNetworkSettings ();
-  void loadIcons ();
-  QIcon icon (Icon icon);
-
-  const char *octaveKeywords ();
 private:
-  ResourceManager ();
+    struct HighlightingRule
+    {
+        QRegExp pattern;
+        QTextCharFormat format;
+    };
 
-  QSettings *m_settings;
-  QString m_homePath;
-  QMap <Icon, QIcon> m_icons;
-  static ResourceManager m_singleton;
+    QVector<HighlightingRule> highlightingRules;
+    QTextCharFormat keywordFormat;
+    QTextCharFormat doubleQouteFormat;
+    QTextCharFormat functionFormat;
+    QTextCharFormat urlFormat;
 };
 
-#endif // RESOURCEMANAGER_H
+
+#endif // TERMINALHIGHLIGHTER_H

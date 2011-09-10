@@ -31,5 +31,6 @@ OctaveMainThread::run ()
   octave_main (argc, (char **) argv, 1);
   emit ready();
   main_loop ();
+  // TODO: Close application on quit.
   clean_up_and_exit (0);
 }

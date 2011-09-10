@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "TerminalHighlighter.h"
 #include "TerminalView.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -26,9 +27,12 @@
 TerminalView::TerminalView (QWidget * parent)
   : QPlainTextEdit (parent), Terminal ()
 {
-  setFont (QFont("Monospace", 10));
+  setFont (QFont ("Monospace", 10));
   setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
   m_terminalEmulation = TerminalEmulation::newTerminalEmulation (this);
+
+  TerminalHighlighter *terminalHighlighter = new TerminalHighlighter ();
+  terminalHighlighter->setDocument (document ());
 }
 
 TerminalView::~TerminalView ()

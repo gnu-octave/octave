@@ -79,7 +79,8 @@ SOURCES +=\
     src/backend/ReadlineAdapter.cpp \
     src/terminal/KPty.cpp \
     src/terminal/KPtyDevice.cpp \
-    src/TerminalView.cpp
+    src/TerminalView.cpp \
+    src/TerminalHighlighter.cpp
 
 HEADERS += \
         src/lexer/lexeroctavegui.h \
@@ -104,7 +105,8 @@ HEADERS += \
     src/backend/ReadlineAdapter.h \
     src/terminal/KPtyDevice.h \
     src/terminal/KPty.h \
-    src/TerminalView.h
+    src/TerminalView.h \
+    src/TerminalHighlighter.h
 
 FORMS += \
     src/SettingsDialog.ui

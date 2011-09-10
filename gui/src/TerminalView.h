@@ -42,6 +42,7 @@ public:
 
 protected:
   void keyPressEvent (QKeyEvent *keyEvent);
+  void mousePressEvent (QMouseEvent *mouseEvent);
 
 private:
   TerminalEmulation *m_terminalEmulation;

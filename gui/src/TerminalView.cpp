@@ -62,3 +62,10 @@ TerminalView::keyPressEvent (QKeyEvent * keyEvent)
 {
   m_terminalEmulation->processKeyEvent (keyEvent);
 }
+
+void
+TerminalView::mousePressEvent (QMouseEvent *mouseEvent)
+{
+  // TODO: Pass mouse events to the terminal emulation.
+  mouseEvent->accept();
+}

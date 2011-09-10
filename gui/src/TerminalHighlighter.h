@@ -48,6 +48,9 @@ private:
     QTextCharFormat doubleQouteFormat;
     QTextCharFormat functionFormat;
     QTextCharFormat urlFormat;
+    QTextCharFormat captionFormat;
+    QTextCharFormat subCaptionFormat;
+    QTextCharFormat numberFormat;
 };
 
 

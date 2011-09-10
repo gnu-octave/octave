@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <QTextCursor>
 
 class Terminal

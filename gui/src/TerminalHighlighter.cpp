@@ -27,7 +27,7 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
   keywordFormat.setForeground(Qt::darkBlue);
   QStringList keywordPatterns
       = QString(ResourceManager::instance ()->octaveKeywords ()).split(" ", QString::SkipEmptyParts);
-  keywordPatterns << "GNU" << "Octave";
+  keywordPatterns << "GNU" << "Octave" << "OctaveGUI";
 
   for (int i = 0; i < keywordPatterns.size (); i++)
     keywordPatterns.replace(i, QString("\\b%1\\b").arg(keywordPatterns.at (i)));
@@ -38,6 +38,11 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
       rule.format = keywordFormat;
       highlightingRules.append(rule);
     }
+
+  numberFormat.setForeground(Qt::darkRed);
+  rule.pattern = QRegExp("\\b[0-9\\.\\+\\-\\^]+\\b");
+  rule.format = numberFormat;
+  highlightingRules.append(rule);
 
   doubleQouteFormat.setForeground(Qt::darkGreen);
   rule.pattern = QRegExp("\"[^\"]*\"");
@@ -54,6 +59,19 @@ TerminalHighlighter::TerminalHighlighter(QTextDocument *parent)
   rule.pattern = QRegExp("((?:https?|ftp)://\\S+)");
   rule.format = urlFormat;
   highlightingRules.append(rule);
+
+  subCaptionFormat.setForeground (Qt::black);
+  subCaptionFormat.setFontItalic (true);
+  rule.pattern = QRegExp("^\\s+\\*.+$");
+  rule.format = subCaptionFormat;
+  highlightingRules.append(rule);
+
+  captionFormat.setForeground(Qt::black);
+  captionFormat.setFontWeight(QFont::Bold);
+  rule.pattern = QRegExp("^\\s+\\*\\*.+$");
+  rule.format = captionFormat;
+  highlightingRules.append(rule);
+
 }
 
 void TerminalHighlighter::highlightBlock(const QString &text)

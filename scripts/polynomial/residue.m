@@ -410,3 +410,22 @@ endfunction
 %! [br, ar] = residue (r, p, k);
 %! assert ((abs (br - b) < 1e-12
 %!   && abs (ar - a) < 1e-12));
+
+## The following test is due to Bernard Grung (bug #34266)
+%!xtest
+%! z1 =  7.0372976777e6;
+%! p1 = -3.1415926536e9;
+%! p2 = -4.9964813512e8;
+%! r1 = -(1 + z1/p1)/(1 - p1/p2)/p2/p1;
+%! r2 = -(1 + z1/p2)/(1 - p2/p1)/p2/p1;
+%! r3 = (1 + (p2 + p1)/p2/p1*z1)/p2/p1;
+%! r4 = z1/p2/p1;
+%! r = [r1; r2; r3; r4];
+%! p = [p1; p2; 0; 0];
+%! k = [];
+%! e = [1; 1; 1; 2];
+%! b = [1, z1];
+%! a = [1, -(p1 + p2), p1*p2, 0, 0];
+%! [br, ar] = residue (r, p, k, e);
+%! assert (br, b, 1e-8);
+%! assert (ar, a, 1e-8);

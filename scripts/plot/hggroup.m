@@ -41,3 +41,13 @@ function h = hggroup (varargin)
   endif
 
 endfunction
+
+%!test
+%! hf = figure (1232, "visible", "off");
+%! unwind_protect  
+%!   h = hggroup;
+%!   assert (findobj (hf, "type", "hggroup"), h);
+%!   assert (get (h, "type"), "hggroup");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

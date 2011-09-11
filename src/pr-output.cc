@@ -3547,6 +3547,21 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 %!   endfor
 %! endfor
 %! fclose (fd);
+
+%!test
+%! foo.real = pi * ones (3,20,3);
+%! foo.complex = pi * ones (3,20,3) + 1i;
+%! foo.char = repmat ("- Hello World -", [3, 20]);
+%! foo.cell = {foo.real, foo.complex, foo.char};
+%! fields = fieldnames (foo);
+%! for f = 1:numel(fields)
+%!   format loose
+%!   loose = disp (foo.(fields{f}));
+%!   format compact
+%!   compact = disp (foo.(fields{f}));
+%!   expected = strrep (loose, "\n\n", "\n");
+%!   assert (expected, compact)
+%! endfor
 */
 
 static void

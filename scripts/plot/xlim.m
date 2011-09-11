@@ -75,7 +75,7 @@ endfunction
 
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   plot3 ([0,1], [0,1], [0,1]);
 %!   xlim ([0, 1.1]);
@@ -86,7 +86,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   h = plot3 ([0,1.1], [0,1], [0, 1]);
 %!   assert (get (gca, "xlim"), [0, 1.4], eps);

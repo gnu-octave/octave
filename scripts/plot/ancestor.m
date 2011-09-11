@@ -76,7 +76,7 @@ function p = ancestor (h, type, toplevel)
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   l = line;
 %!   assert (ancestor (l, "axes"), gca);

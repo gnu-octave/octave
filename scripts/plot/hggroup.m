@@ -43,7 +43,7 @@ function h = hggroup (varargin)
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   h = hggroup;
 %!   assert (findobj (hf, "type", "hggroup"), h);

@@ -44,7 +44,7 @@ function h = line (varargin)
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   h = line;
 %!   assert (findobj (hf, "type", "line"), h);

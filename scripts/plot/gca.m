@@ -51,7 +51,7 @@ function h = gca ()
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! ax = axes;
 %! unwind_protect  
 %!   assert (gca, ax);

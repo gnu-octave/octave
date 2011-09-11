@@ -81,13 +81,13 @@ function close_all_figures (close_hidden_figs)
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect
-%!   close (1232);
+%!   close (hf);
 %!   objs = findobj ("type", "figure");
-%!   assert (isempty (intersect (objs, 1232)));
+%!   assert (isempty (intersect (objs, hf)));
 %! unwind_protect_cleanup
-%!   if (isfigure (1232))
+%!   if (isfigure (hf))
 %!     close (hf);
 %!   endif
 %! end_unwind_protect

@@ -277,8 +277,8 @@ function curr_axis = __axis__ (ca, ax, varargin)
     endif
 
     for i = 1:2:len
-      if (ax(i) == ax(i+1))
-        error ("axis: limits(%d) cannot equal limits(%d)", i, i+1);
+      if (ax(i) >= ax(i+1))
+        error ("axis: limits(%d) must be less than limits(%d)", i, i+1);
       endif
     endfor
 

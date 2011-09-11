@@ -71,21 +71,21 @@ extern "C" {
 #endif
 
 /* === Mersenne Twister === */
-extern void oct_init_by_int (uint32_t s);
-extern void oct_init_by_array (uint32_t init_key[], int key_length);
-extern void oct_init_by_entropy (void);
-extern void oct_set_state (uint32_t save[]);
-extern void oct_get_state (uint32_t save[]);
+extern OCTAVE_API void oct_init_by_int (uint32_t s);
+extern OCTAVE_API void oct_init_by_array (uint32_t init_key[], int key_length);
+extern OCTAVE_API void oct_init_by_entropy (void);
+extern OCTAVE_API void oct_set_state (uint32_t save[]);
+extern OCTAVE_API void oct_get_state (uint32_t save[]);
 
 /* === Array generators === */
-extern double oct_randu (void);
-extern double oct_randn (void);
-extern double oct_rande (void);
+extern OCTAVE_API double oct_randu (void);
+extern OCTAVE_API double oct_randn (void);
+extern OCTAVE_API double oct_rande (void);
 
 /* === Array generators === */
-extern void oct_fill_randu (octave_idx_type n, double *p);
-extern void oct_fill_randn (octave_idx_type n, double *p);
-extern void oct_fill_rande (octave_idx_type n, double *p);
+extern OCTAVE_API void oct_fill_randu (octave_idx_type n, double *p);
+extern OCTAVE_API void oct_fill_randn (octave_idx_type n, double *p);
+extern OCTAVE_API void oct_fill_rande (octave_idx_type n, double *p);
 
 #ifdef  __cplusplus
 }

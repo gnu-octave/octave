@@ -164,7 +164,7 @@ endfunction
 ## surf.m, surfc.m, surfl.m, and pcolor.m
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   h = surface;
 %!   assert (findobj (hf, "type", "surface"), h);

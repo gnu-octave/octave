@@ -95,8 +95,7 @@ function [azimuth, elevation] = view (varargin)
 endfunction
 
 %!test
-%! fign = 1232;
-%! hf = figure (fign, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   plot3 ([0,1], [0,1], [0,1]);
 %!   [az, el] = view;
@@ -112,8 +111,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! fign = 1232;
-%! hf = figure (fign, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   line;
 %!   [az, el] = view;

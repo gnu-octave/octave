@@ -50,7 +50,7 @@ function h = allchild (handles)
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   l = line;
 %!   assert(get(allchild(hf),'type'),{'axes'; 'uimenu'; 'uimenu'; 'uimenu'})

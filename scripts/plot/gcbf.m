@@ -31,3 +31,6 @@ function fig = gcbf ()
   [dummy, fig] = gcbo ();
 
 endfunction
+
+%!test
+%! assert (isempty (gcbf ));

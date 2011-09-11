@@ -42,3 +42,7 @@ function varargout = ginput (n)
   endif
 
 endfunction
+
+## Remove from test statistics.  No real tests possible.
+%!test
+%! assert (1);

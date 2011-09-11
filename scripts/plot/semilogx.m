@@ -80,7 +80,7 @@ endfunction
 %! xlabel ('semilogx (a, abs (b))')
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   a = logspace (-5, 1, 10);
 %!   b = logspace (-5, 1, 10);
@@ -92,7 +92,7 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   a = logspace (-5, 1, 10);
 %!   b =-logspace (-5, 1, 10);
@@ -102,5 +102,3 @@ endfunction
 %! unwind_protect_cleanup
 %! close (hf);
 %! end_unwind_protect
-
-

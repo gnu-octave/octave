@@ -153,7 +153,7 @@ endfunction
 %! view (-37.5, 30)
 
 %!test
-%! hf = figure (1232, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   h = patch;
 %!   assert (findobj (hf, "type", "patch"), h);

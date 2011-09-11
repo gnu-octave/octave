@@ -244,14 +244,13 @@ function h = findobj (varargin)
 endfunction
 
 %!test
-%! fign = 1232;
-%! hf = figure (fign, "visible", "off");
+%! hf = figure ("visible", "off");
 %! unwind_protect  
 %!   l = line;
 %!   obj = findobj (hf, "type", "line");
 %!   assert (l, obj);
 %!   assert (gca, findobj (hf, "type", "axes"));
-%!   assert (fign, findobj (hf, "type", "figure"));
+%!   assert (hf, findobj (hf, "type", "figure"));
 %!   assert (isempty (findobj (hf, "type", "xyzxyz")));
 %! unwind_protect_cleanup
 %!   close (hf);

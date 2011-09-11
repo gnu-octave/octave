@@ -319,7 +319,7 @@ function lims = __get_tight_lims__ (ca, ax)
   else
     data = get (kids, strcat (ax, "data"));
     scale = get (ca, strcat (ax, "scale"));
-    if (strcmp (scale, "log"))
+    if (strcmp (scale, "log") && any (data > 0))
       data(data<=0) = NaN;
     end
     if (iscell (data))

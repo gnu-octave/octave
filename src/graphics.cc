@@ -657,7 +657,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
 template<class T>
 static void
 get_array_limits (const Array<T>& m, double& emin, double& emax,
-                  double& eminp)
+                  double& eminp, double& emaxp)
 {
   const T *data = m.data ();
   octave_idx_type n = m.numel ();
@@ -677,6 +677,9 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
 
           if (e > 0 && e < eminp)
             eminp = e;
+
+          if (e < 0 && e > emaxp)
+            emaxp = e;
         }
     }
 }
@@ -1130,31 +1133,31 @@ void
 array_property::get_data_limits (void)
 {
   xmin = xminp = octave_Inf;
-  xmax = -octave_Inf;
+  xmax = xmaxp = -octave_Inf;
 
   if (! data.is_empty ())
     {
       if (data.is_integer_type ())
         {
           if (data.is_int8_type ())
-            get_array_limits (data.int8_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.int8_array_value (), xmin, xmax, xminp, xmaxp);
           else if (data.is_uint8_type ())
-            get_array_limits (data.uint8_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.uint8_array_value (), xmin, xmax, xminp, xmaxp);
           else if (data.is_int16_type ())
-            get_array_limits (data.int16_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.int16_array_value (), xmin, xmax, xminp, xmaxp);
           else if (data.is_uint16_type ())
-            get_array_limits (data.uint16_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.uint16_array_value (), xmin, xmax, xminp, xmaxp);
           else if (data.is_int32_type ())
-            get_array_limits (data.int32_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.int32_array_value (), xmin, xmax, xminp, xmaxp);
           else if (data.is_uint32_type ())
-            get_array_limits (data.uint32_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.uint32_array_value (), xmin, xmax, xminp, xmaxp);
           else if (data.is_int64_type ())
-            get_array_limits (data.int64_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.int64_array_value (), xmin, xmax, xminp, xmaxp);
           else if (data.is_uint64_type ())
-            get_array_limits (data.uint64_array_value (), xmin, xmax, xminp);
+            get_array_limits (data.uint64_array_value (), xmin, xmax, xminp, xmaxp);
         }
       else
-        get_array_limits (data.array_value (), xmin, xmax, xminp);
+        get_array_limits (data.array_value (), xmin, xmax, xminp, xmaxp);
     }
 }
 
@@ -4693,7 +4696,8 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
       double minval = octave_Inf;
       double maxval = -octave_Inf;
       double min_pos = octave_Inf;
-      get_children_limits (minval, maxval, min_pos, kids, limit_type);
+      double max_neg = -octave_Inf;
+      get_children_limits (minval, maxval, min_pos, max_neg, kids, limit_type);
       if (!xisinf (minval) && !xisnan (minval)
           && !xisinf (maxval) && !xisnan (maxval))
         {
@@ -5069,7 +5073,8 @@ axes::get_default (const caseless_str& name) const
 // FIXME -- maybe this should go into array_property class?
 /*
 static void
-check_limit_vals (double& min_val, double& max_val, double& min_pos,
+check_limit_vals (double& min_val, double& max_val,
+                  double& min_pos, double& max_neg,
                   const array_property& data)
 {
   double val = data.min_val ();
@@ -5081,18 +5086,22 @@ check_limit_vals (double& min_val, double& max_val, double& min_pos,
   val = data.min_pos ();
   if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
     min_pos = val;
+  val = data.max_neg ();
+  if (! (xisinf (val) || xisnan (val)) && val < 0 && val > max_neg)
+    max_neg = val;
 }
 */
 
 static void
-check_limit_vals (double& min_val, double& max_val, double& min_pos,
+check_limit_vals (double& min_val, double& max_val,
+                  double& min_pos, double& max_neg,
                   const octave_value& data)
 {
   if (data.is_matrix_type ())
     {
       Matrix m = data.matrix_value ();
 
-      if (! error_state && m.numel () == 3)
+      if (! error_state && m.numel () == 4)
         {
           double val;
 
@@ -5107,6 +5116,10 @@ check_limit_vals (double& min_val, double& max_val, double& min_pos,
           val = m(2);
           if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
             min_pos = val;
+
+          val = m(3);
+          if (! (xisinf (val) || xisnan (val)) && val < 0 && val > max_neg)
+            max_neg = val;
         }
     }
 }
@@ -5171,7 +5184,8 @@ axes::properties::calc_tick_sep (double lo, double hi)
 
 Matrix
 axes::properties::get_axis_limits (double xmin, double xmax,
-                                   double min_pos, bool logscale)
+                                   double min_pos, double max_neg,
+                                   bool logscale)
 {
   Matrix retval;
 
@@ -5182,13 +5196,17 @@ axes::properties::get_axis_limits (double xmin, double xmax,
     {
       if (logscale)
         {
-          if (xisinf (min_pos))
+          if (xisinf (min_pos) && xisinf (max_neg))
             {
-              // FIXME -- need to handle log plots with all negative data.
-              return default_lim ();
+              // TODO -- max_neg is needed for "loglog ([0 -Inf])"
+              //         This is the only place where max_neg is needed.
+              //         Is there another way?
+              retval = default_lim ();
+              retval(0) = pow (10., retval(0));
+              retval(1) = pow (10., retval(1));
+              return retval;
             }
-
-          if (min_val <= 0)
+          if ((min_val <= 0 && max_val >= 0))
             {
               warning ("axis: omitting nonpositive data in log plot");
               min_val = min_pos;
@@ -5199,8 +5217,18 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               min_val *= 0.9;
               max_val *= 1.1;
             }
-          min_val = pow (10, gnulib::floor (log10 (min_val)));
-          max_val = pow (10, std::ceil (log10 (max_val)));
+          if (min_val > 0)
+            {
+              // Log plots with all positive data
+              min_val = pow (10, gnulib::floor (log10 (min_val)));
+              max_val = pow (10, std::ceil (log10 (max_val)));
+            }
+          else
+            {
+              // Log plots with all negative data
+              min_val = -pow (10, gnulib::floor (log10 (-min_val)));
+              max_val = -pow (10, std::ceil (log10 (-max_val)));
+            }
         }
       else
         {
@@ -5246,19 +5274,29 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
   double lo = (lims.get ().matrix_value ()) (0);
   double hi = (lims.get ().matrix_value ()) (1);
+  bool is_negative = lo < 0 && hi < 0;
+  double tmp;
   // FIXME should this be checked for somewhere else? (i.e. set{x,y,z}lim)
   if (hi < lo)
     {
-      double tmp = hi;
+      tmp = hi;
       hi = lo;
       lo = tmp;
     }
 
   if (is_logscale)
     {
-      // FIXME we should check for negtives here
-      hi = std::log10 (hi);
-      lo = std::log10 (lo);
+      if (is_negative)
+        {
+          tmp = hi;
+          hi = std::log10 (-lo);
+          lo = std::log10 (-tmp);
+        }
+      else
+        {
+          hi = std::log10 (hi);
+          lo = std::log10 (lo);
+        }
     }
 
   double tick_sep = calc_tick_sep (lo , hi);
@@ -5287,6 +5325,12 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
           tmp_lims(1) = std::pow (10.,tmp_lims(1));
           if (tmp_lims(0) <= 0)
             tmp_lims(0) = std::pow (10., lo);
+          if (is_negative)
+            {
+              tmp = tmp_lims(0);
+              tmp_lims(0) = -tmp_lims(1);
+              tmp_lims(1) = -tmp;
+            }
         }
       lims = tmp_lims;
     }
@@ -5303,6 +5347,13 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
       tmp_ticks (i) = tick_sep * (i+i1);
       if (is_logscale)
         tmp_ticks (i) = std::pow (10., tmp_ticks (i));
+    }
+  if (is_logscale && is_negative)
+    {
+      Matrix rev_ticks (1, i2-i1+1);
+      rev_ticks = -tmp_ticks;
+      for (int i = 0; i <= i2-i1; i++)
+        tmp_ticks (i) = rev_ticks (i2-i1-i);
     }
 
   ticks = tmp_ticks;
@@ -5375,7 +5426,8 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
 }
 
 void
-get_children_limits (double& min_val, double& max_val, double& min_pos,
+get_children_limits (double& min_val, double& max_val,
+                     double& min_pos, double& max_neg,
                      const Matrix& kids, char limit_type)
 {
   octave_idx_type n = kids.numel ();
@@ -5391,7 +5443,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             {
               octave_value lim = obj.get_xlim ();
 
-              check_limit_vals (min_val, max_val, min_pos, lim);
+              check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
         }
       break;
@@ -5405,7 +5457,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             {
               octave_value lim = obj.get_ylim ();
 
-              check_limit_vals (min_val, max_val, min_pos, lim);
+              check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
         }
       break;
@@ -5419,7 +5471,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             {
               octave_value lim = obj.get_zlim ();
 
-              check_limit_vals (min_val, max_val, min_pos, lim);
+              check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
         }
       break;
@@ -5433,7 +5485,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             {
               octave_value lim = obj.get_clim ();
 
-              check_limit_vals (min_val, max_val, min_pos, lim);
+              check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
         }
       break;
@@ -5447,7 +5499,7 @@ get_children_limits (double& min_val, double& max_val, double& min_pos,
             {
               octave_value lim = obj.get_alim ();
 
-              check_limit_vals (min_val, max_val, min_pos, lim);
+              check_limit_vals (min_val, max_val, min_pos, max_neg, lim);
             }
         }
       break;
@@ -5471,6 +5523,7 @@ axes::update_axis_limits (const std::string& axis_type,
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
+  double max_neg = -octave_Inf;
 
   char update_type = 0;
 
@@ -5478,7 +5531,7 @@ axes::update_axis_limits (const std::string& axis_type,
   double val;
 
 #define FIX_LIMITS \
-  if (limits.numel() == 3) \
+  if (limits.numel() == 4) \
     { \
       val = limits(0); \
       if (! (xisinf (val) || xisnan (val))) \
@@ -5489,13 +5542,17 @@ axes::update_axis_limits (const std::string& axis_type,
       val = limits(2); \
       if (! (xisinf (val) || xisnan (val))) \
         min_pos = val; \
+      val = limits(3); \
+      if (! (xisinf (val) || xisnan (val))) \
+        max_neg = val; \
     } \
   else \
     { \
-      limits.resize(3, 1); \
+      limits.resize(4, 1); \
       limits(0) = min_val; \
       limits(1) = max_val; \
       limits(2) = min_pos; \
+      limits(3) = max_neg; \
     }
 
   if (axis_type == "xdata" || axis_type == "xscale"
@@ -5507,9 +5564,10 @@ axes::update_axis_limits (const std::string& axis_type,
           limits = xproperties.get_xlim ().matrix_value ();
           FIX_LIMITS ;
 
-          get_children_limits (min_val, max_val, min_pos, kids, 'x');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
 
-          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+          limits = xproperties.get_axis_limits (min_val, max_val,
+                                                min_pos, max_neg,
                                                 xproperties.xscale_is ("log"));
 
           update_type = 'x';
@@ -5524,9 +5582,10 @@ axes::update_axis_limits (const std::string& axis_type,
           limits = xproperties.get_ylim ().matrix_value ();
           FIX_LIMITS ;
 
-          get_children_limits (min_val, max_val, min_pos, kids, 'y');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
 
-          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+          limits = xproperties.get_axis_limits (min_val, max_val,
+                                                min_pos, max_neg,
                                                 xproperties.yscale_is ("log"));
 
           update_type = 'y';
@@ -5541,9 +5600,10 @@ axes::update_axis_limits (const std::string& axis_type,
           limits = xproperties.get_zlim ().matrix_value ();
           FIX_LIMITS ;
 
-          get_children_limits (min_val, max_val, min_pos, kids, 'z');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
-          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+          limits = xproperties.get_axis_limits (min_val, max_val,
+                                                min_pos, max_neg,
                                                 xproperties.zscale_is ("log"));
 
           update_type = 'z';
@@ -5558,7 +5618,7 @@ axes::update_axis_limits (const std::string& axis_type,
           limits = xproperties.get_clim ().matrix_value ();
           FIX_LIMITS ;
 
-          get_children_limits (min_val, max_val, min_pos, kids, 'c');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'c');
 
           if (min_val > max_val)
             {
@@ -5586,7 +5646,7 @@ axes::update_axis_limits (const std::string& axis_type,
           limits = xproperties.get_alim ().matrix_value ();
           FIX_LIMITS ;
 
-          get_children_limits (min_val, max_val, min_pos, kids, 'a');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'a');
 
           if (min_val > max_val)
             {
@@ -5662,6 +5722,7 @@ axes::update_axis_limits (const std::string& axis_type)
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
+  double max_neg = -octave_Inf;
 
   char update_type = 0;
 
@@ -5673,9 +5734,10 @@ axes::update_axis_limits (const std::string& axis_type)
     {
       if (xproperties.xlimmode_is ("auto"))
         {
-          get_children_limits (min_val, max_val, min_pos, kids, 'x');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
 
-          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+          limits = xproperties.get_axis_limits (min_val, max_val,
+                                                min_pos, max_neg,
                                                 xproperties.xscale_is ("log"));
 
           update_type = 'x';
@@ -5687,9 +5749,10 @@ axes::update_axis_limits (const std::string& axis_type)
     {
       if (xproperties.ylimmode_is ("auto"))
         {
-          get_children_limits (min_val, max_val, min_pos, kids, 'y');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
 
-          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+          limits = xproperties.get_axis_limits (min_val, max_val,
+                                                min_pos, max_neg,
                                                 xproperties.yscale_is ("log"));
 
           update_type = 'y';
@@ -5701,9 +5764,10 @@ axes::update_axis_limits (const std::string& axis_type)
     {
       if (xproperties.zlimmode_is ("auto"))
         {
-          get_children_limits (min_val, max_val, min_pos, kids, 'z');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
-          limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+          limits = xproperties.get_axis_limits (min_val, max_val,
+                                                min_pos, max_neg,
                                                 xproperties.zscale_is ("log"));
 
           update_type = 'z';
@@ -5715,7 +5779,7 @@ axes::update_axis_limits (const std::string& axis_type)
     {
       if (xproperties.climmode_is ("auto"))
         {
-          get_children_limits (min_val, max_val, min_pos, kids, 'c');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'c');
 
           if (min_val > max_val)
             {
@@ -5740,7 +5804,7 @@ axes::update_axis_limits (const std::string& axis_type)
     {
       if (xproperties.alimmode_is ("auto"))
         {
-          get_children_limits (min_val, max_val, min_pos, kids, 'a');
+          get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'a');
 
           if (min_val > max_val)
             {
@@ -5826,12 +5890,14 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   double minx = octave_Inf;
   double maxx = -octave_Inf;
   double min_pos_x = octave_Inf;
-  get_children_limits (minx, maxx, min_pos_x, kids, 'x');
+  double max_neg_x = -octave_Inf;
+  get_children_limits (minx, maxx, min_pos_x, max_neg_x, kids, 'x');
 
   double miny = octave_Inf;
   double maxy = -octave_Inf;
   double min_pos_y = octave_Inf;
-  get_children_limits (miny, maxy, min_pos_y, kids, 'y');
+  double max_neg_y = -octave_Inf;
+  get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
   // Perform the zooming
   xlims (0) = x + factor * (xlims (0) - x);
@@ -5875,12 +5941,14 @@ axes::properties::translate_view (double delta_x, double delta_y)
   double minx = octave_Inf;
   double maxx = -octave_Inf;
   double min_pos_x = octave_Inf;
-  get_children_limits (minx, maxx, min_pos_x, kids, 'x');
+  double max_neg_x = -octave_Inf;
+  get_children_limits (minx, maxx, min_pos_x, max_neg_x, kids, 'x');
 
   double miny = octave_Inf;
   double maxy = -octave_Inf;
   double min_pos_y = octave_Inf;
-  get_children_limits (miny, maxy, min_pos_y, kids, 'y');
+  double max_neg_y = -octave_Inf;
+  get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
   xlims (0) += delta_x;
   xlims (1) += delta_x;
@@ -5948,11 +6016,12 @@ axes::reset_default_properties (void)
 Matrix
 line::properties::compute_xlim (void) const
 {
-  Matrix m (1, 3);
+  Matrix m (1, 4);
 
   m(0) = xdata.min_val ();
   m(1) = xdata.max_val ();
   m(2) = xdata.min_pos ();
+  m(3) = xdata.max_neg ();
 
   return m;
 }
@@ -5960,11 +6029,12 @@ line::properties::compute_xlim (void) const
 Matrix
 line::properties::compute_ylim (void) const
 {
-  Matrix m (1, 3);
+  Matrix m (1, 4);
 
   m(0) = ydata.min_val ();
   m(1) = ydata.max_val ();
   m(2) = ydata.min_pos ();
+  m(3) = ydata.max_neg ();
 
   return m;
 }
@@ -6246,6 +6316,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
+  double max_neg = -octave_Inf;
 
   Matrix limits;
   double val;
@@ -6278,7 +6349,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
       update_type = 'a';
     }
 
-  if (limits.numel() == 3)
+  if (limits.numel() == 4)
     {
       val = limits(0);
       if (! (xisinf (val) || xisnan (val)))
@@ -6289,27 +6360,33 @@ hggroup::update_axis_limits (const std::string& axis_type,
       val = limits(2);
       if (! (xisinf (val) || xisnan (val)))
         min_pos = val;
+      val = limits(3);
+      if (! (xisinf (val) || xisnan (val)))
+        max_neg = val;
     }
   else
     {
-      limits.resize(3,1);
+      limits.resize(4,1);
       limits(0) = min_val;
       limits(1) = max_val;
       limits(2) = min_pos;
+      limits(3) = max_neg;
     }
 
-  get_children_limits (min_val, max_val, min_pos, kids, update_type);
+  get_children_limits (min_val, max_val, min_pos, max_neg, kids, update_type);
 
   unwind_protect frame;
   frame.protect_var (updating_hggroup_limits);
 
   updating_hggroup_limits = true;
 
-  if (limits(0) != min_val || limits(1) != max_val || limits(2) != min_pos)
+  if (limits(0) != min_val || limits(1) != max_val
+      || limits(2) != min_pos || limits(3) != max_neg)
     {
       limits(0) = min_val;
       limits(1) = max_val;
       limits(2) = min_pos;
+      limits(3) = max_neg;
 
       switch (update_type)
         {
@@ -6352,36 +6429,37 @@ hggroup::update_axis_limits (const std::string& axis_type)
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
+  double max_neg = -octave_Inf;
 
   char update_type = 0;
 
   if (axis_type == "xlim" || axis_type == "xliminclude")
     {
-      get_children_limits (min_val, max_val, min_pos, kids, 'x');
+      get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'x');
 
       update_type = 'x';
     }
   else if (axis_type == "ylim" || axis_type == "yliminclude")
     {
-      get_children_limits (min_val, max_val, min_pos, kids, 'y');
+      get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'y');
 
       update_type = 'y';
     }
   else if (axis_type == "zlim" || axis_type == "zliminclude")
     {
-      get_children_limits (min_val, max_val, min_pos, kids, 'z');
+      get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'z');
 
       update_type = 'z';
     }
   else if (axis_type == "clim" || axis_type == "climinclude")
     {
-      get_children_limits (min_val, max_val, min_pos, kids, 'c');
+      get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'c');
 
       update_type = 'c';
     }
   else if (axis_type == "alim" || axis_type == "aliminclude")
     {
-      get_children_limits (min_val, max_val, min_pos, kids, 'a');
+      get_children_limits (min_val, max_val, min_pos, max_neg, kids, 'a');
 
       update_type = 'a';
     }
@@ -6391,11 +6469,12 @@ hggroup::update_axis_limits (const std::string& axis_type)
 
   updating_hggroup_limits = true;
 
-  Matrix limits (1, 3, 0.0);
+  Matrix limits (1, 4, 0.0);
 
   limits(0) = min_val;
   limits(1) = max_val;
   limits(2) = min_pos;
+  limits(3) = max_neg;
 
   switch (update_type)
     {

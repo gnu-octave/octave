@@ -21,6 +21,7 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
   ui->editor_fontName->setCurrentFont (QFont (settings->value ("editor/fontName","Courier").toString()) );
   ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());
+  ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",true).toBool ());
   ui->showFilenames->setChecked (settings->value ("showFilenames").toBool());
   ui->showFileSize->setChecked (settings->value ("showFileSize").toBool());
   ui->showFileType->setChecked (settings->value ("showFileType").toBool());
@@ -58,6 +59,7 @@ SettingsDialog::~SettingsDialog ()
   settings->setValue ("editor/codeCompletion", ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/fontName", ui->editor_fontName->currentFont().family());
   settings->setValue ("editor/fontSize", ui->editor_fontSize->value());
+  settings->setValue ("editor/longWindowTitle", ui->editor_longWindowTitle->isChecked());
   settings->setValue ("showFilenames", ui->showFilenames->isChecked ());
   settings->setValue ("showFileSize", ui->showFileSize->isChecked ());
   settings->setValue ("showFileType", ui->showFileType->isChecked ());

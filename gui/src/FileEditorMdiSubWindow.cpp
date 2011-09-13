@@ -69,15 +69,20 @@ FileEditorMdiSubWindow::handleMarginClicked(int margin, int line, Qt::KeyboardMo
 }
 
 void
-FileEditorMdiSubWindow::handleModificationChanged(bool modified)
+FileEditorMdiSubWindow::newWindowTitle(bool modified)
 {
+  QString title(m_fileName);
+  if ( !m_longTitle )
+    {
+      QFileInfo file(m_fileName);
+      title = file.fileName();
+    }
   if ( modified )
     {
-      QString title(m_fileName);
       setWindowTitle(title.prepend("* "));
     }
   else
-     setWindowTitle (m_fileName);
+     setWindowTitle (title);
 }
 
 void
@@ -127,7 +132,7 @@ FileEditorMdiSubWindow::loadFile (QString fileName)
   QApplication::restoreOverrideCursor ();
 
   m_fileName = fileName;
-  setWindowTitle (fileName);
+  newWindowTitle (false); // window title (no modification)
   m_statusBar->showMessage (tr ("File loaded."), 2000);
   m_editor->setModified (false); // loaded file is not modified yet
 }
@@ -140,7 +145,7 @@ FileEditorMdiSubWindow::newFile ()
         return; // existing file not saved and creating new file canceled by user
       }
     m_fileName = UNNAMED_FILE;
-    setWindowTitle (m_fileName);
+    newWindowTitle (false); // window title (no modification)
     m_editor->setText ("");
     m_editor->setModified (false); // new file is not modified yet
 }
@@ -208,8 +213,8 @@ FileEditorMdiSubWindow::saveFile (QString saveFileName)
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << m_editor->text ();
   QApplication::restoreOverrideCursor ();
-  m_fileName = saveFileName;     // save file name for later use
-  setWindowTitle(m_fileName);    // set the window title to actual file name
+  m_fileName = saveFileName;  // save file name for later use
+  newWindowTitle(false);      // set the window title to actual file name (not modified)
   m_statusBar->showMessage (tr ("File %1 saved").arg(m_fileName), 2000);
   m_editor->setModified (false); // files is save -> not modified
 }
@@ -279,8 +284,8 @@ FileEditorMdiSubWindow::doCommentSelectedText (bool comment)
             m_editor->insertAt("%",i,0);
           else
             {
-              QString line(m_editor->text(i));
-              if ( line.startsWith("%") )
+               QString line(m_editor->text(i));
+               if ( line.startsWith("%") )
                 {
                   m_editor->setSelection(i,0,i,1);
                   m_editor->removeSelectedText();
@@ -440,6 +445,7 @@ FileEditorMdiSubWindow::construct ()
       m_editor->setAutoCompletionThreshold (3);
     }
   m_editor->setUtf8 (true);
+  m_longTitle = settings->value ("editor/longWindowTitle",true).toBool ();
 
   // The Actions
 
@@ -582,10 +588,10 @@ FileEditorMdiSubWindow::construct ()
   connect (saveAsAction, SIGNAL (hovered ()), this,SLOT (showToolTipSaveAs ()));
 
   // connect modified signal
-  connect (m_editor, SIGNAL (modificationChanged(bool)), this, SLOT (handleModificationChanged(bool)) );
+  connect (m_editor, SIGNAL (modificationChanged(bool)), this, SLOT (newWindowTitle(bool)) );
 
   m_fileName = "";
-  setWindowTitle (m_fileName);
+  newWindowTitle (false);
   setWindowIcon(QIcon::fromTheme("accessories-text-editor",style->standardIcon (QStyle::SP_FileIcon)));
   show ();
 }

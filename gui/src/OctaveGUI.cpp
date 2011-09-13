@@ -48,6 +48,7 @@ main (int argc, char *argv[])
           settings->setValue ("editor/codeCompletion", true);
           settings->setValue ("editor/fontName", "Monospace");
           settings->setValue ("editor/fontSize", 10);
+          settings->setValue ("editor/shortWindowTitle", true);
           settings->setValue ("showFilenames", true);
           settings->setValue ("showFileSize", false);
           settings->setValue ("showFileType", false);

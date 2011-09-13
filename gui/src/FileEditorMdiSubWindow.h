@@ -78,15 +78,17 @@ private:
   QsciScintilla *m_editor;
   QStatusBar *m_statusBar;
   QString m_fileName;
+  QString m_fileNameShort;
   TerminalEmulation* m_terminalEmulation;
   QAction* m_copyAction;
   QAction* m_cutAction;
   MainWindow* m_mainWindow;
   int m_markerBookmark;
   bool m_modified;
+  bool m_longTitle;
 
 private slots:
-  void handleModificationChanged(bool modified);
+  void newWindowTitle(bool modified);
   void handleMarginClicked(int line, int margin, Qt::KeyboardModifiers state);
   void handleCopyAvailable(bool enableCopy);
   void runFile();

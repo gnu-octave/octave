@@ -80,10 +80,12 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
+    retval = "";
+  else if (nargin == 1)
     retval = args(0).convert_to_str (true, true,
                                      args(0).is_dq_string () ? '"' : '\'');
-  else if (nargin > 1)
+  else
     {
       int n_elts = 0;
 
@@ -144,14 +146,12 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
       retval = octave_value (result, '\'');
     }
-  else
-    print_usage ();
 
   return retval;
 }
 
 /*
-%!error <Invalid call to char> char()
+%!assert (char (), '');
 %!assert (char (100) == "d");
 %!assert (all(char (100,100) == ["d";"d"]));
 %!assert (all(char ({100,100}) == ["d";"d"]));

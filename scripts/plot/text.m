@@ -164,9 +164,9 @@ endfunction
 %!demo
 %! clf
 %! axis ([0 8 0 8])
-%! title (["First title";"Second title"])
-%! xlabel (["First xlabel";"Second xlabel"])
-%! ylabel (["First ylabel";"Second ylabel"])
+%! title (["1st title";"2nd title"])
+%! xlabel (["1st xlabel";"2nd xlabel"])
+%! ylabel (["1st ylabel";"2nd ylabel"])
 %! text (4, 4, {"Hello", "World"}, ...
 %!       "horizontalalignment", "center", ...
 %!       "verticalalignment", "middle")
@@ -177,10 +177,10 @@ endfunction
 %! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
 %!                  "facecolor", "none", ...
 %!                  "facealpha", 0);
-%! title (["First title";"Second title"])
-%! xlabel (["First xlabel";"Second xlabel"])
-%! ylabel (["First ylabel";"Second ylabel"])
-%! zlabel (["First zlabel";"Second zlabel"])
+%! title (["1st title";"2nd title"])
+%! xlabel (["1st xlabel";"2nd xlabel"])
+%! ylabel (["1st ylabel";"2nd ylabel"])
+%! zlabel (["1st zlabel";"2nd zlabel"])
 %! text (0, 0, 5, {"Hello", "World"}, ...
 %!       "horizontalalignment", "center", ...
 %!       "verticalalignment", "middle")

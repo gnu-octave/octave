@@ -40,7 +40,7 @@ function whitebg (varargin)
   h = 0;
   color = NaN;
 
-  if (nargin > 0 && nargin < 2)
+  if (nargin > 0 && nargin < 3)
     if (ishandle (varargin{1}))
       h = varargin{1};
       if (nargin == 2)
@@ -152,11 +152,11 @@ endfunction
 %!   l = line;
 %!   assert (get (hf, "color"), dfc);
 %!   assert (get (gca, "color"), dac);
-%!   whitebg;
+%!   whitebg (hf);
 %!   assert (get (hf, "color"), 1 - dfc);
 %!   assert (get (gca, "color"), 1 - dac);
 %!   c = [0.2 0.2 0.2];
-%!   whitebg (c);
+%!   whitebg (hf, c);
 %!   assert (get (hf, "color"), 1 - dfc);
 %!   assert (get (gca, "color"), c);
 %! unwind_protect_cleanup

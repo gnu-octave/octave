@@ -52,5 +52,24 @@ endfunction
 %! title("Testing title")
 %! assert(get(xl,"string"),"Testing title")
 
-## Remove from test statistics.  No real tests possible.
-%!assert (1)
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect  
+%!   ax=axes();
+%!   xl = get(ax,"title");
+%!   title("Testing title")
+%!   assert(get(xl,"string"),"Testing title")
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect  
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   xl = get(gca (), "title");
+%!   title("Testing title")
+%!   assert(get(xl,"string"),"Testing title")
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

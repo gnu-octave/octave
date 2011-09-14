@@ -47,3 +47,28 @@ function retval = zlabel (varargin)
   endif
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect  
+%!   z = zlabel ("zlabel_string");
+%!   assert (get(gca, "zlabel"), z);
+%!   assert (get(z, "type"), "text");
+%!   assert (get(z, "visible"), "off");
+%!   assert (get(z, "string"), "zlabel_string");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! plot3 (0, 0, 0);
+%! unwind_protect  
+%!   z = zlabel ("zlabel_string");
+%!   assert (get(gca, "zlabel"), z);
+%!   assert (get(z, "type"), "text");
+%!   assert (get(z, "visible"), "off");
+%!   assert (get(z, "string"), "zlabel_string");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

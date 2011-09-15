@@ -332,12 +332,70 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       fputs (plot_stream, "unset grid;\n");
     endif
 
-    do_tics (axis_obj, plot_stream, ymirror, mono, gnuplot_term);
-
-    fputs (plot_stream, "unset logscale;\n");
     xlogscale = strcmpi (axis_obj.xscale, "log");
     ylogscale = strcmpi (axis_obj.yscale, "log");
     zlogscale = strcmpi (axis_obj.zscale, "log");
+
+    ## Detect logscale and negative lims
+    if (xlogscale && all (axis_obj.xlim < 0))
+      xsgn = -1;
+      if (strcmp (axis_obj.xdir, "reverse"))
+        axis_obj.xdir = "normal";
+      else
+        axis_obj.xdir = "reverse";
+      endif
+      axis_obj.xtick = -flip (axis_obj.xtick);
+      axis_obj.xticklabel = flip (axis_obj.xticklabel);
+      axis_obj.xticklabelmode = "manual";
+      axis_obj.xlim = -flip (axis_obj.xlim);
+    else
+      xsgn = 1;
+    endif
+    if (ylogscale && all (axis_obj.ylim < 0))
+      ysgn = -1;
+      if (strcmp (axis_obj.ydir, "reverse"))
+        axis_obj.ydir = "normal";
+      else
+        axis_obj.ydir = "reverse";
+      endif
+      axis_obj.ytick = -flip (axis_obj.ytick);
+      axis_obj.yticklabel = flip (axis_obj.yticklabel);
+      axis_obj.yticklabelmode = "manual";
+      axis_obj.ylim = -flip (axis_obj.ylim);
+    else
+      ysgn = 1;
+    endif
+    if (zlogscale && all (axis_obj.zlim < 0))
+      zsgn = -1;
+      if (strcmp (axis_obj.zdir, "reverse"))
+        axis_obj.zdir = "normal";
+      else
+        axis_obj.zdir = "reverse";
+      endif
+      axis_obj.ztick = -flip (axis_obj.ztick);
+      axis_obj.zticklabel = flip (axis_obj.zticklabel);
+      axis_obj.zticklabelmode = "manual";
+      axis_obj.zlim = -flip (axis_obj.zlim);
+    else
+      zsgn = 1;
+    endif
+
+    if (ylogscale && false)
+      disp ('yscale is "log"')
+      ylim = axis_obj.ylim
+      ytick = axis_obj.ytick
+      yticklabel = axis_obj.yticklabel
+      yticklabelmode = axis_obj.yticklabelmode
+    end
+
+    xlim = axis_obj.xlim;
+    ylim = axis_obj.ylim;
+    zlim = axis_obj.zlim;
+    clim = axis_obj.clim;
+
+    do_tics (axis_obj, plot_stream, ymirror, mono, gnuplot_term);
+
+    fputs (plot_stream, "unset logscale;\n");
     if (xlogscale)
       fprintf (plot_stream, "set logscale %s;\n", xaxisloc);
     endif
@@ -377,11 +435,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     hidden_removal = NaN;
     view_map = false;
 
-    xlim = axis_obj.xlim;
-    ylim = axis_obj.ylim;
-    zlim = axis_obj.zlim;
-    clim = axis_obj.clim;
-
     if (! cautoscale && clim(1) == clim(2))
       clim(2)++;
     endif
@@ -409,12 +462,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       endif
 
       if (xlogscale && isfield (obj, "xdata"))
+        obj.xdata = xsgn * obj.xdata;
         obj.xdata(obj.xdata<=0) = NaN;
       endif
       if (ylogscale && isfield (obj, "ydata"))
+        obj.ydata = ysgn * obj.ydata;
         obj.ydata(obj.ydata<=0) = NaN;
       endif
       if (zlogscale && isfield (obj, "zdata"))
+        obj.zdata = zsgn * obj.zdata;
         obj.zdata(obj.zdata<=0) = NaN;
       endif
 
@@ -1610,6 +1666,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     print_usage ();
   endif
 
+endfunction
+
+function x = flip (x)
+  if (size (x, 1) == 1)
+    x = fliplr (x);
+  elseif (size (x, 2) == 1 || ischar (x))
+    x = flipup (x);
+  else
+    x = flipud (fliplr (x));
+  endif
 endfunction
 
 function fontspec = create_fontspec (f, s, gp_term)

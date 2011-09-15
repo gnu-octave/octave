@@ -44,7 +44,6 @@ FCN_FILES = \
   test_recursion.m \
   test_return.m \
   test_slice.m \
-  test_string.m \
   test_struct.m \
   test_switch.m \
   test_system.m \

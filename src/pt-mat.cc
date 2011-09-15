@@ -1125,6 +1125,12 @@ tree_matrix::accept (tree_walker& tw)
   tw.visit_matrix (*this);
 }
 
+/*
+%% test concatenation with all zero matrices
+%!assert([ '' 65*ones(1,10) ], 'AAAAAAAAAA');
+%!assert([ 65*ones(1,10) '' ], 'AAAAAAAAAA');
+*/
+
 DEFUN (string_fill_char, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} string_fill_char ()\n\

@@ -162,6 +162,13 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 %!assert (all(char ({100,{100, {""}}}) == ["d";"d";" "]))
 %!assert (all(char (["a";"be"], {"c", 100}) == ["a";"be";"c";"d"]))
 %!assert(strcmp (char ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
+%!assert(strcmp (char ([65, 83, 67, 73, 73]), "ASCII"));
+
+%!test
+%! x = char ("foo", "bar", "foobar");
+%! assert((strcmp (x(1,:), "foo   ")
+%! && strcmp (x(2,:), "bar   ")
+%! && strcmp (x(3,:), "foobar")));
 */
 
 DEFUN (strvcat, args, ,
@@ -314,14 +321,20 @@ Return true if @var{x} is a character array.\n\
 }
 
 /*
-
 %!assert (ischar ("a"), logical (1));
 %!assert (ischar (["ab";"cd"]), logical (1));
 %!assert (ischar ({"ab"}), logical (0));
 %!assert (ischar (1), logical (0));
+%!assert(ischar ([1, 2]), logical (0));
+%!assert(ischar ([]), logical (0));
+%!assert(ischar ([1, 2; 3, 4]), logical (0));
+%!assert(ischar (""), logical (1));
+%!assert(ischar ("test"), logical (1));
+%!assert(ischar (["test"; "ing"]), logical (1));
+%!assert(ischar (struct ("foo", "bar")), logical (0));
 %!error <Invalid call to ischar.*> ischar ();
-
- */
+%!error <Invalid call to ischar.*> ischar ("test", 1);
+*/
 
 static octave_value
 do_strcmp_fun (const octave_value& arg0, const octave_value& arg1,
@@ -576,12 +589,15 @@ This is just the opposite of the corresponding C library function.\n\
 }
 
 /*
+%!error <Invalid call to strcmp.*> strcmp ();
+%!error <Invalid call to strcmp.*> strcmp ("foo", "bar", 3);
+%!
 %!shared x
 %!  x = char (zeros (0, 2));
 %!assert (strcmp ('', x) == false);
 %!assert (strcmp (x, '') == false);
 %!assert (strcmp (x, x) == true);
-## %!assert (strcmp ({''}, x) == false);
+## %!assert (strcmp ({''}, x) == true);
 ## %!assert (strcmp ({x}, '') == false);
 ## %!assert (strcmp ({x}, x) == true);
 ## %!assert (strcmp ('', {x}) == false);
@@ -608,14 +624,16 @@ This is just the opposite of the corresponding C library function.\n\
 %!assert (all (strcmp ('', {y}) == [true; true]));
 %!assert (all (strcmp (y, {''}) == [true; true]));
 %!assert (all (strcmp (y, {y}) == [true; true]));
-## %!assert (all (strcmp ({y; y}, '') == [false; false]));
-## %!assert (all (strcmp ({y; y}, {''}) == [false; false]));
-## %!assert (all (strcmp ('', {y; y}) == [false; false]));
-## %!assert (all (strcmp ({''}, {y; y}) == [false; false]));
+%!assert (all (strcmp ({y; y}, '') == [true; true]));
+%!assert (all (strcmp ({y; y}, {''}) == [true; true]));
+%!assert (all (strcmp ('', {y; y}) == [true; true]));
+%!assert (all (strcmp ({''}, {y; y}) == [true; true]));
 %!assert (all (strcmp ({'foo'}, y) == [false; false]));
 %!assert (all (strcmp ({'foo'}, y) == [false; false]));
 %!assert (all (strcmp (y, {'foo'}) == [false; false]));
 %!assert (all (strcmp (y, {'foo'}) == [false; false]));
+%!assert (strcmp ("foobar", "foobar"), true);
+%!assert (strcmp ("fooba", "foobar"), false);
 */
 
 // Apparently, Matlab ignores the dims with strncmp. It also

@@ -68,15 +68,17 @@ private:
       : count (1), dv (0, 0), all_str (false),
         all_sq_str (false), all_dq_str (false),
         some_str (false), all_real (false), all_cmplx (false),
-        all_mt (true), any_sparse (false), any_class (false),
-        all_1x1 (false), class_nm (), ok (false)
+        all_mt (true), any_cell (false), any_sparse (false),
+        any_class (false), all_1x1 (false),
+        first_elem_is_struct (false), class_nm (), ok (false)
     { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : count (1), dv (0, 0), all_str (false), all_sq_str (false),
         some_str (false), all_real (false), all_cmplx (false),
-        all_mt (true), any_sparse (false), any_class (false),
-        all_1x1 (! row.empty ()), class_nm (), ok (false)
+        all_mt (true), any_cell (false), any_sparse (false),
+        any_class (false), all_1x1 (! row.empty ()),
+        first_elem_is_struct (false), class_nm (), ok (false)
     { init (row); }
 
     ~tm_row_const_rep (void) { }
@@ -92,15 +94,17 @@ private:
     bool all_real;
     bool all_cmplx;
     bool all_mt;
+    bool any_cell;
     bool any_sparse;
     bool any_class;
     bool all_1x1;
+    bool first_elem_is_struct;
 
     std::string class_nm;
 
     bool ok;
 
-    bool do_init_element (tree_expression *, const octave_value&, bool&);
+    void do_init_element (const octave_value&, bool&);
 
     void init (const tree_argument_list&);
 
@@ -169,6 +173,7 @@ public:
   bool all_real_p (void) const { return rep->all_real; }
   bool all_complex_p (void) const { return rep->all_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
+  bool any_cell_p (void) const { return rep->any_cell; }
   bool any_sparse_p (void) const { return rep->any_sparse; }
   bool any_class_p (void) const { return rep->any_class; }
   bool all_1x1_p (void) const { return rep->all_1x1; }
@@ -199,6 +204,8 @@ get_concat_class (const std::string& c1, const std::string& c2)
     retval = c2;
   else if (c2.empty ())
     retval = c1;
+  else if (c1 == "class" || c2 == "class")
+    retval = "class";
   else
     {
       bool c1_is_int = (c1 == "int8" || c1 == "uint8"
@@ -232,7 +239,11 @@ get_concat_class (const std::string& c1, const std::string& c2)
 
       // Order is important here...
 
-      if (c1_is_char && c2_is_built_in_type)
+      if (c1 == "struct" && c2 == c1)
+        retval = c1;
+      else if (c1 == "cell" || c2 == "cell")
+        retval = "cell";
+      else if (c1_is_char && c2_is_built_in_type)
         retval = c1;
       else if (c2_is_char && c1_is_built_in_type)
         retval = c2;
@@ -250,40 +261,27 @@ get_concat_class (const std::string& c1, const std::string& c2)
         retval = c2;
       else if (c1_is_logical && c2_is_logical)
         retval = c1;
-      else if (c1 == "struct" && c2 == c1)
-        retval = c1;
-      else if (c1 == "cell" && c2 == c1)
-        retval = c1;
     }
 
   return retval;
 }
 
 static void
-eval_error (const char *msg, int l, int c,
-            const dim_vector& x, const dim_vector& y)
+eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 {
-  if (l == -1 && c == -1)
-    {
-      ::error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
-    }
-  else
-    {
-      ::error ("%s (%s vs %s) near line %d, column %d", msg,
-               x.str ().c_str (), y.str ().c_str (), l, c);
-    }
+  ::error ("%s (%s vs %s)", msg, x.str ().c_str (), y.str ().c_str ());
 }
 
-bool
-tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
-                                                 const octave_value& val,
+void
+tm_row_const::tm_row_const_rep::do_init_element (const octave_value& val,
                                                  bool& first_elem)
 {
-  std::string this_elt_class_nm = val.class_name ();
-
-  dim_vector this_elt_dv = val.dims ();
+  std::string this_elt_class_nm
+    = val.is_object () ? std::string ("class") : val.class_name ();
 
   class_nm = get_concat_class (class_nm, this_elt_class_nm);
+
+  dim_vector this_elt_dv = val.dims ();
 
   if (! this_elt_dv.zero_by_zero ())
     {
@@ -291,13 +289,10 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 
       if (first_elem)
         {
+          if (val.is_map ())
+            first_elem_is_struct = true;
+
           first_elem = false;
-          dv = this_elt_dv;
-        }
-      else if (! dv.hvcat (this_elt_dv, 1))
-        {
-          eval_error ("horizontal dimensions mismatch", elt->line (), elt->column (), dv, this_elt_dv);
-          return false;
         }
     }
 
@@ -321,6 +316,9 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
   if (all_cmplx && ! (val.is_complex_type () || val.is_real_type ()))
     all_cmplx = false;
 
+  if (!any_cell && val.is_cell ())
+    any_cell = true;
+
   if (!any_sparse && val.is_sparse_type ())
     any_sparse = true;
 
@@ -328,8 +326,6 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
     any_class = true;
 
   all_1x1 = all_1x1 && val.numel () == 1;
-
-  return true;
 }
 
 void
@@ -340,6 +336,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
   all_dq_str = true;
   all_real = true;
   all_cmplx = true;
+  any_cell = false;
   any_sparse = false;
   any_class = false;
 
@@ -356,7 +353,10 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
       octave_value tmp = elt->rvalue1 ();
 
       if (error_state || tmp.is_undefined ())
-        break;
+        {
+          ok = ! error_state;
+          return;
+        }
       else
         {
           if (tmp.is_cs_list ())
@@ -367,19 +367,47 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
                 {
                   octave_quit ();
 
-                  if (! do_init_element (elt, tlst(i), first_elem))
-                    goto done;
+                  do_init_element (tlst(i), first_elem);
                 }
             }
           else
-            {
-              if (! do_init_element (elt, tmp, first_elem))
-                goto done;
-            }
+            do_init_element (tmp, first_elem);
         }
     }
 
- done:
+  if (any_cell && ! any_class && ! first_elem_is_struct)
+    {
+      for (iterator p = begin (); p != end (); p++)
+        {
+          if (! p->is_cell ())
+            *p = Cell (*p);
+        }
+    }
+
+  first_elem = true;
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      octave_value val = *p;
+
+      dim_vector this_elt_dv = val.dims ();
+
+      if (! this_elt_dv.zero_by_zero ())
+        {
+          all_mt = false;
+
+          if (first_elem)
+            {
+              first_elem = false;
+              dv = this_elt_dv;
+            }
+          else if (! dv.hvcat (this_elt_dv, 1))
+            {
+              eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
+              break;
+            }
+        }
+    }
 
   ok = ! error_state;
 }
@@ -556,8 +584,7 @@ tm_const::init (const tree_matrix& tm)
             }
           else if (! dv.hvcat (this_elt_dv, 0))
             {
-              eval_error ("vertical dimensions mismatch", -1, -1,
-                          dv, this_elt_dv);
+              eval_error ("vertical dimensions mismatch", dv, this_elt_dv);
               return;
             }
         }
@@ -928,6 +955,10 @@ tree_matrix::rvalue1 (int)
                 ::error ("cannot find overloaded vertcat function");
             }
         }
+      else if (result_type == "cell")
+        {
+          retval = do_single_type_concat<Cell> (dv, tmp);
+        }
       else if (result_type == "double")
         {
           if (any_sparse_p)
@@ -1129,6 +1160,191 @@ tree_matrix::accept (tree_walker& tw)
 %% test concatenation with all zero matrices
 %!assert([ '' 65*ones(1,10) ], 'AAAAAAAAAA');
 %!assert([ 65*ones(1,10) '' ], 'AAAAAAAAAA');
+
+%!assert (class ([int64(1), int64(1)]), 'int64')
+%!assert (class ([int64(1), int32(1)]), 'int64')
+%!assert (class ([int64(1), int16(1)]), 'int64')
+%!assert (class ([int64(1), int8(1)]), 'int64')
+%!assert (class ([int64(1), uint64(1)]), 'int64')
+%!assert (class ([int64(1), uint32(1)]), 'int64')
+%!assert (class ([int64(1), uint16(1)]), 'int64')
+%!assert (class ([int64(1), uint8(1)]), 'int64')
+%!assert (class ([int64(1), single(1)]), 'int64')
+%!assert (class ([int64(1), double(1)]), 'int64')
+%!assert (class ([int64(1), cell(1)]), 'cell')
+%!assert (class ([int64(1), true]), 'int64')
+%!assert (class ([int64(1), 'a']), 'char')
+
+%!assert (class ([int32(1), int64(1)]), 'int32')
+%!assert (class ([int32(1), int32(1)]), 'int32')
+%!assert (class ([int32(1), int16(1)]), 'int32')
+%!assert (class ([int32(1), int8(1)]), 'int32')
+%!assert (class ([int32(1), uint64(1)]), 'int32')
+%!assert (class ([int32(1), uint32(1)]), 'int32')
+%!assert (class ([int32(1), uint16(1)]), 'int32')
+%!assert (class ([int32(1), uint8(1)]), 'int32')
+%!assert (class ([int32(1), single(1)]), 'int32')
+%!assert (class ([int32(1), double(1)]), 'int32')
+%!assert (class ([int32(1), cell(1)]), 'cell')
+%!assert (class ([int32(1), true]), 'int32')
+%!assert (class ([int32(1), 'a']), 'char')
+
+%!assert (class ([int16(1), int64(1)]), 'int16')
+%!assert (class ([int16(1), int32(1)]), 'int16')
+%!assert (class ([int16(1), int16(1)]), 'int16')
+%!assert (class ([int16(1), int8(1)]), 'int16')
+%!assert (class ([int16(1), uint64(1)]), 'int16')
+%!assert (class ([int16(1), uint32(1)]), 'int16')
+%!assert (class ([int16(1), uint16(1)]), 'int16')
+%!assert (class ([int16(1), uint8(1)]), 'int16')
+%!assert (class ([int16(1), single(1)]), 'int16')
+%!assert (class ([int16(1), double(1)]), 'int16')
+%!assert (class ([int16(1), cell(1)]), 'cell')
+%!assert (class ([int16(1), true]), 'int16')
+%!assert (class ([int16(1), 'a']), 'char')
+
+%!assert (class ([int8(1), int64(1)]), 'int8')
+%!assert (class ([int8(1), int32(1)]), 'int8')
+%!assert (class ([int8(1), int16(1)]), 'int8')
+%!assert (class ([int8(1), int8(1)]), 'int8')
+%!assert (class ([int8(1), uint64(1)]), 'int8')
+%!assert (class ([int8(1), uint32(1)]), 'int8')
+%!assert (class ([int8(1), uint16(1)]), 'int8')
+%!assert (class ([int8(1), uint8(1)]), 'int8')
+%!assert (class ([int8(1), single(1)]), 'int8')
+%!assert (class ([int8(1), double(1)]), 'int8')
+%!assert (class ([int8(1), cell(1)]), 'cell')
+%!assert (class ([int8(1), true]), 'int8')
+%!assert (class ([int8(1), 'a']), 'char')
+
+%!assert (class ([uint64(1), int64(1)]), 'uint64')
+%!assert (class ([uint64(1), int32(1)]), 'uint64')
+%!assert (class ([uint64(1), int16(1)]), 'uint64')
+%!assert (class ([uint64(1), int8(1)]), 'uint64')
+%!assert (class ([uint64(1), uint64(1)]), 'uint64')
+%!assert (class ([uint64(1), uint32(1)]), 'uint64')
+%!assert (class ([uint64(1), uint16(1)]), 'uint64')
+%!assert (class ([uint64(1), uint8(1)]), 'uint64')
+%!assert (class ([uint64(1), single(1)]), 'uint64')
+%!assert (class ([uint64(1), double(1)]), 'uint64')
+%!assert (class ([uint64(1), cell(1)]), 'cell')
+%!assert (class ([uint64(1), true]), 'uint64')
+%!assert (class ([uint64(1), 'a']), 'char')
+
+%!assert (class ([uint32(1), int64(1)]), 'uint32')
+%!assert (class ([uint32(1), int32(1)]), 'uint32')
+%!assert (class ([uint32(1), int16(1)]), 'uint32')
+%!assert (class ([uint32(1), int8(1)]), 'uint32')
+%!assert (class ([uint32(1), uint64(1)]), 'uint32')
+%!assert (class ([uint32(1), uint32(1)]), 'uint32')
+%!assert (class ([uint32(1), uint16(1)]), 'uint32')
+%!assert (class ([uint32(1), uint8(1)]), 'uint32')
+%!assert (class ([uint32(1), single(1)]), 'uint32')
+%!assert (class ([uint32(1), double(1)]), 'uint32')
+%!assert (class ([uint32(1), cell(1)]), 'cell')
+%!assert (class ([uint32(1), true]), 'uint32')
+%!assert (class ([uint32(1), 'a']), 'char')
+
+%!assert (class ([uint16(1), int64(1)]), 'uint16')
+%!assert (class ([uint16(1), int32(1)]), 'uint16')
+%!assert (class ([uint16(1), int16(1)]), 'uint16')
+%!assert (class ([uint16(1), int8(1)]), 'uint16')
+%!assert (class ([uint16(1), uint64(1)]), 'uint16')
+%!assert (class ([uint16(1), uint32(1)]), 'uint16')
+%!assert (class ([uint16(1), uint16(1)]), 'uint16')
+%!assert (class ([uint16(1), uint8(1)]), 'uint16')
+%!assert (class ([uint16(1), single(1)]), 'uint16')
+%!assert (class ([uint16(1), double(1)]), 'uint16')
+%!assert (class ([uint16(1), cell(1)]), 'cell')
+%!assert (class ([uint16(1), true]), 'uint16')
+%!assert (class ([uint16(1), 'a']), 'char')
+
+%!assert (class ([uint8(1), int64(1)]), 'uint8')
+%!assert (class ([uint8(1), int32(1)]), 'uint8')
+%!assert (class ([uint8(1), int16(1)]), 'uint8')
+%!assert (class ([uint8(1), int8(1)]), 'uint8')
+%!assert (class ([uint8(1), uint64(1)]), 'uint8')
+%!assert (class ([uint8(1), uint32(1)]), 'uint8')
+%!assert (class ([uint8(1), uint16(1)]), 'uint8')
+%!assert (class ([uint8(1), uint8(1)]), 'uint8')
+%!assert (class ([uint8(1), single(1)]), 'uint8')
+%!assert (class ([uint8(1), double(1)]), 'uint8')
+%!assert (class ([uint8(1), cell(1)]), 'cell')
+%!assert (class ([uint8(1), true]), 'uint8')
+%!assert (class ([uint8(1), 'a']), 'char')
+
+%!assert (class ([single(1), int64(1)]), 'int64')
+%!assert (class ([single(1), int32(1)]), 'int32')
+%!assert (class ([single(1), int16(1)]), 'int16')
+%!assert (class ([single(1), int8(1)]), 'int8')
+%!assert (class ([single(1), uint64(1)]), 'uint64')
+%!assert (class ([single(1), uint32(1)]), 'uint32')
+%!assert (class ([single(1), uint16(1)]), 'uint16')
+%!assert (class ([single(1), uint8(1)]), 'uint8')
+%!assert (class ([single(1), single(1)]), 'single')
+%!assert (class ([single(1), double(1)]), 'single')
+%!assert (class ([single(1), cell(1)]), 'cell')
+%!assert (class ([single(1), true]), 'single')
+%!assert (class ([single(1), 'a']), 'char')
+
+%!assert (class ([double(1), int64(1)]), 'int64')
+%!assert (class ([double(1), int32(1)]), 'int32')
+%!assert (class ([double(1), int16(1)]), 'int16')
+%!assert (class ([double(1), int8(1)]), 'int8')
+%!assert (class ([double(1), uint64(1)]), 'uint64')
+%!assert (class ([double(1), uint32(1)]), 'uint32')
+%!assert (class ([double(1), uint16(1)]), 'uint16')
+%!assert (class ([double(1), uint8(1)]), 'uint8')
+%!assert (class ([double(1), single(1)]), 'single')
+%!assert (class ([double(1), double(1)]), 'double')
+%!assert (class ([double(1), cell(1)]), 'cell')
+%!assert (class ([double(1), true]), 'double')
+%!assert (class ([double(1), 'a']), 'char')
+
+%!assert (class ([cell(1), int64(1)]), 'cell')
+%!assert (class ([cell(1), int32(1)]), 'cell')
+%!assert (class ([cell(1), int16(1)]), 'cell')
+%!assert (class ([cell(1), int8(1)]), 'cell')
+%!assert (class ([cell(1), uint64(1)]), 'cell')
+%!assert (class ([cell(1), uint32(1)]), 'cell')
+%!assert (class ([cell(1), uint16(1)]), 'cell')
+%!assert (class ([cell(1), uint8(1)]), 'cell')
+%!assert (class ([cell(1), single(1)]), 'cell')
+%!assert (class ([cell(1), double(1)]), 'cell')
+%!assert (class ([cell(1), cell(1)]), 'cell')
+%!assert (class ([cell(1), true]), 'cell')
+%!assert (class ([cell(1), 'a']), 'cell')
+
+%!assert (class ([true, int64(1)]), 'int64')
+%!assert (class ([true, int32(1)]), 'int32')
+%!assert (class ([true, int16(1)]), 'int16')
+%!assert (class ([true, int8(1)]), 'int8')
+%!assert (class ([true, uint64(1)]), 'uint64')
+%!assert (class ([true, uint32(1)]), 'uint32')
+%!assert (class ([true, uint16(1)]), 'uint16')
+%!assert (class ([true, uint8(1)]), 'uint8')
+%!assert (class ([true, single(1)]), 'single')
+%!assert (class ([true, double(1)]), 'double')
+%!assert (class ([true, cell(1)]), 'cell')
+%!assert (class ([true, true]), 'logical')
+%!assert (class ([true, 'a']), 'char')
+
+%!assert (class (['a', int64(1)]), 'char')
+%!assert (class (['a', int32(1)]), 'char')
+%!assert (class (['a', int16(1)]), 'char')
+%!assert (class (['a', int8(1)]), 'char')
+%!assert (class (['a', int64(1)]), 'char')
+%!assert (class (['a', int32(1)]), 'char')
+%!assert (class (['a', int16(1)]), 'char')
+%!assert (class (['a', int8(1)]), 'char')
+%!assert (class (['a', single(1)]), 'char')
+%!assert (class (['a', double(1)]), 'char')
+%!assert (class (['a', cell(1)]), 'cell')
+%!assert (class (['a', true]), 'char')
+%!assert (class (['a', 'a']), 'char')
+
+%!assert (class ([cell(1), struct('foo', 'bar')]), 'cell')
+%!error [struct('foo', 'bar'), cell(1)];
 */
 
 DEFUN (string_fill_char, args, nargout,

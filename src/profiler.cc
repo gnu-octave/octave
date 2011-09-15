@@ -118,7 +118,7 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
   if (fcn_id != 0)
     {
       stats& entry = data[fcn_id - 1];
-      
+
       entry.time += time;
       entry.calls += calls;
 

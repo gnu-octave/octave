@@ -77,7 +77,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   l = line;
 %!   assert (ancestor (l, "axes"), gca);
 %!   assert (ancestor (l, "figure"), hf);

@@ -56,7 +56,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   assert (gcf, hf);
 %! unwind_protect_cleanup
 %!   close (hf);

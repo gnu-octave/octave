@@ -95,7 +95,7 @@ endfunction
 %!test
 %! assert (deconv (poly(1:8), polygcd (poly(1:8), poly(3:12))), poly(1:2), sqrt (eps))
 
-%!test 
+%!test
 %! for ii=1:10
 %!   p  = (unique (randn (10, 1)) * 10).';
 %!   p1 = p(3:end);

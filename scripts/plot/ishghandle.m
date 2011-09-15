@@ -29,7 +29,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   assert (ishghandle (hf));
 %!   assert (!ishghandle (-hf));
 %!   l = line;

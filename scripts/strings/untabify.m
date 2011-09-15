@@ -57,13 +57,13 @@ function s = untabify (t, tw = 8, dblank = false)
   elseif (! (ischar (t) || iscellstr (t)))
     error ("untabify: T must be a string or cellstring");
   endif
- 
+
   if (ischar (t))
     s = replace_tabs (t, tw);
   else
     s = cellfun (@(str) replace_tabs (str, tw), t, "uniformoutput", false);
   endif
- 
+
   if (dblank)
     s = deblank (s);
   endif

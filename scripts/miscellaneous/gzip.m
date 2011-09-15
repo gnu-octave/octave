@@ -31,7 +31,7 @@ function entries = gzip (varargin)
   if (nargin != 1 && nargin != 2) || (nargout > 1)
     print_usage ();
   endif
-     
+
   if (nargout == 0)
     __xzip__ ("gzip", "gz", "gzip -r %s", varargin{:});
   else

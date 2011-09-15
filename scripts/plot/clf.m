@@ -78,7 +78,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   l = line;
 %!   assert (!isempty (get (gcf, "children")));
 %! unwind_protect_cleanup
@@ -87,7 +87,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   clf;
 %!   assert (isempty (get (gcf, "children")));
 %! unwind_protect_cleanup

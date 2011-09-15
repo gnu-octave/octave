@@ -28,7 +28,7 @@ function jumps = ppjumps (pp)
   if (nargin != 1)
     print_usage ();
   endif
-  
+
   if (! isstruct (pp) && strcmp (pp.form, "pp"))
     error ("ppjumps: PP must be a structure");
   endif
@@ -52,7 +52,7 @@ function jumps = ppjumps (pp)
     llim .*= dx;
     llim += shiftdim (reshape (P(1:(n-1) * prod (d), i), [d, n-1]), nd - 1);
   endfor
-  
+
   rlim = shiftdim (ppval (pp, x(2:end-1)), nd - 1);
   jumps = shiftdim (rlim - llim, 1);
 endfunction

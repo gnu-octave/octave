@@ -230,7 +230,7 @@ glps_renderer::draw_text (const text::properties& props)
 
   std::string s = sv.join ("\n");
 
-  gl2psTextOpt (s.c_str (), fontname.c_str (), fontsize, 
+  gl2psTextOpt (s.c_str (), fontname.c_str (), fontsize,
                 alignment_to_mode (halign, valign), props.get_rotation ());
 }
 

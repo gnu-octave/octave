@@ -2485,7 +2485,7 @@ Array<T>::diag (octave_idx_type k) const
         }
       else
         {
-          // Create diag matrix from vector  
+          // Create diag matrix from vector
           octave_idx_type roff = 0;
           octave_idx_type coff = 0;
           if (k > 0)

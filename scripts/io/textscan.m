@@ -28,7 +28,7 @@
 ## The file associated with @var{fid} is read and parsed according to
 ## @var{format}.  The function behaves like @code{strread} except it works by
 ## parsing a file instead of a string.  See the documentation of
-## @code{strread} for details.  
+## @code{strread} for details.
 ##
 ## In addition to the options supported by
 ## @code{strread}, this function supports a few more:
@@ -52,7 +52,7 @@
 ## have been encountered.  If set to 0 or false, return an error and no data.
 ## @end itemize
 ##
-## The optional input @var{n} specifes the number of times to use 
+## The optional input @var{n} specifes the number of times to use
 ## @var{format} when parsing, i.e., the format repeat count.
 ##
 ## The output @var{C} is a cell array whose length is given by the number
@@ -108,7 +108,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     fmt = regexp (fmt, '[^ ]+', 'match');
     fmt = strtrim (fmt(strmatch ("%", fmt)))
     has_str_fmt = all (cellfun ("isempty", strfind (strtrim (fmt(strmatch ("%", fmt))), 's')));
-    ## If there is a format, AND whitespace value = empty, 
+    ## If there is a format, AND whitespace value = empty,
     ## don't add a space (char(32)) to whitespace
     if (! (isempty (args{ipos+1}) &&  has_str_fmt))
       args{ipos+1} = unique ([" ", whitespace]);
@@ -116,7 +116,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
 
   if (! any (strcmpi (args, "delimiter")))
-    ## Matlab says default delimiter = whitespace.  
+    ## Matlab says default delimiter = whitespace.
     ## strread() will pick this up further
     args(end+1:end+2) = {'delimiter', ""};
   endif
@@ -156,7 +156,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Beware of zero valued headerline, fskipl would skip to EOF
     if (! isempty (headerlines) && (args{headerlines + 1} > 0))
       fskipl (fid, varargin{headerlines + 1});
-      args(headerlines:headerlines+1) = []; 
+      args(headerlines:headerlines+1) = [];
     endif
     if (isfinite (nlines) && (nlines >= 0))
       str = tmp_str = "";
@@ -183,13 +183,13 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   ## Check value of 'endofline'.  String or file doesn't seem to matter
   endofline = find (strcmpi (args, "endofline"), 1);
   if (! isempty (endofline))
-    if (ischar (args{endofline + 1})) 
+    if (ischar (args{endofline + 1}))
       eol_char = args{endofline + 1};
       if (isempty (strmatch (eol_char, {"", "\n", "\r", "\r\n"}, 'exact')))
         error ("textscan: illegal EndOfLine character value specified");
       endif
     else
-      error ("textscan: character value required for EndOfLine"); 
+      error ("textscan: character value required for EndOfLine");
     endif
   else
     ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
@@ -219,7 +219,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   ## Call strread to make it do the real work
   C = cell (1, num_fields);
   [C{:}] = strread (str, format, args{:});
-  
+
   ## If requested, collect output columns of same class
   if (collop)
     C = colloutp (C);

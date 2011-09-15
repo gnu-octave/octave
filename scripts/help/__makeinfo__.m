@@ -72,11 +72,11 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     error ("__makeinfo__: second input argument must be a string");
   endif
 
-  if (nargin < 3)  
+  if (nargin < 3)
     if (strcmpi (output_type, "plain text"))
       fsee_also = @(T) strcat ...
           ("\nSee also:", sprintf (" %s,", T{:})(1:end-1), "\n");
-    else    
+    else
       fsee_also = @(T) strcat ...
           ("\nSee also:", sprintf (" @ref{%s},", T{:})(1:end-1), "\n");
     endif
@@ -86,11 +86,11 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     error (["__makeinfo__: third input argument must ", ...
             "be the empty matrix, or a function handle"]);
   endif
-  
+
 
   ## It seems like makeinfo sometimes gets angry if the first character
   ## on a line is a space, so we remove these.
-  text = strrep (text, "\n ", "\n"); 
+  text = strrep (text, "\n ", "\n");
 
   ## Handle @seealso macro
   see_also_pat = '@seealso *\{([^}]*)\}';

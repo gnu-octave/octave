@@ -47,9 +47,9 @@ endfunction
 %! old_tmpdir = getenv ("TMPDIR");
 %! unwind_protect
 %!   setenv ("TMPDIR", "__MY_TMP_DIR__");
-%!   assert (tempdir (), ["__MY_TMP_DIR__" filesep()]); 
+%!   assert (tempdir (), ["__MY_TMP_DIR__" filesep()]);
 %! unwind_protect_cleanup
 %!   setenv ("TMPDIR", old_tmpdir);
 %!   warning (old_wstate);
-%! end_unwind_protect 
+%! end_unwind_protect
 

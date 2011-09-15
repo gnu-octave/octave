@@ -43,7 +43,7 @@ function profshow (data, n = 20)
 
   n = fix (n);
   if (! isscalar (n) || ! isreal (n) || ! (n > 0))
-    error ("profile: N must be a positive integer"); 
+    error ("profile: N must be a positive integer");
   endif
 
   m = length (data.FunctionTable);

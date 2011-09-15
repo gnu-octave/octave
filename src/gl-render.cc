@@ -1270,7 +1270,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
                                   yPlaneN, yPlaneN,
                                   signum(xPlane-xPlaneN)*fx*zticklen/2,
                                   0., 0., 2, false);
-            }            
+            }
         }
 
       gh_manager::get_object (props.get_zlabel ()).set ("visible", "on");
@@ -2374,7 +2374,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
             {
               if (c.numel () == 0)
                 c = props.get_color_data ().matrix_value ();
-              has_markerfacecolor = ((c.numel () > 0) 
+              has_markerfacecolor = ((c.numel () > 0)
                                     && (c.rows () == f.rows ()));
             }
         }

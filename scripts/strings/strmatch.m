@@ -27,7 +27,7 @@
 ## @var{s} only needs to match @var{A} up to the length of @var{s}.
 ## Trailing spaces and nulls in @var{s} and @var{A} are ignored when matching.
 ## option.
-## 
+##
 ## For example:
 ##
 ## @example

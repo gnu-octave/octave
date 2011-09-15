@@ -50,7 +50,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   z = zlabel ("zlabel_string");
 %!   assert (get(gca, "zlabel"), z);
 %!   assert (get(z, "type"), "text");
@@ -63,7 +63,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! plot3 (0, 0, 0);
-%! unwind_protect  
+%! unwind_protect
 %!   z = zlabel ("zlabel_string");
 %!   assert (get(gca, "zlabel"), z);
 %!   assert (get(z, "type"), "text");

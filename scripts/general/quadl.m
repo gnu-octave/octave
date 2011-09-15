@@ -209,7 +209,7 @@ endfunction
 %!assert (quadl (@(x,a,b) sin (a + b*x), 0, 1, [], [], 2, 3),
 %!        cos(2)/3 - cos(5)/3, - 3e-16)
 
-## test different tolerances. 
+## test different tolerances.
 %!assert (quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.3, []),
 %!        (60 + sin(4) - sin(64))/12, -0.3)
 %!assert (quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.1, []),

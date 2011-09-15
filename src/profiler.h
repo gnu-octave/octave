@@ -91,7 +91,7 @@ private:
   };
 
   typedef std::vector<stats> flat_profile;
-  
+
   // Store data for one node in the call-tree of the hierarchical profiler
   // data we collect.
   class tree_node

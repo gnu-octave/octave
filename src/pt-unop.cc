@@ -74,7 +74,7 @@ tree_prefix_expression::rvalue1 (int)
           if (! error_state)
             {
               BEGIN_PROFILER_BLOCK ("prefix " + oper ())
-              
+
               ref.do_unary_op (etype);
 
               if (! error_state)

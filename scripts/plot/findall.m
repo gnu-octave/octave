@@ -45,7 +45,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   h = findall (hf);
 %!   all_handles = {"uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "figure"};
 %!   assert (get (h, 'type'), all_handles)

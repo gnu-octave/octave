@@ -33,7 +33,7 @@
 ## and may be a scalar or two-element vector with values between 0 and 1.
 ## A value of 0 represents no curvature of the side, whereas a value of 1
 ## means that the side is entirely curved into the arc of a circle.
-## If @var{curv} is a two-element vector, then the first element is the 
+## If @var{curv} is a two-element vector, then the first element is the
 ## curvature along the x-axis of the patch and the second along y-axis.
 ##
 ## If @var{curv} is a scalar, it represents the curvature of the shorter of the
@@ -44,8 +44,8 @@
 ## min (pos (1:2)) / max (pos (1:2)) * curv
 ## @end example
 ##
-## Other properties are passed to the underlying patch command.  If called 
-## with an output argument, @code{rectangle} returns the handle to the 
+## Other properties are passed to the underlying patch command.  If called
+## with an output argument, @code{rectangle} returns the handle to the
 ## rectangle.
 ## @end deftypefn
 ## @seealso{patch}

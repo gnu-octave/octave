@@ -19,7 +19,7 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine ddot3(m,n,k,a,b,c)
-c purpose:      a 3-dimensional dot product. 
+c purpose:      a 3-dimensional dot product.
 c               c = sum (a .* b, 2), where a and b are 3d arrays.
 c arguments:
 c m,n,k (in)    the dimensions of a and b

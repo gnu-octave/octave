@@ -220,7 +220,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   h = text (0.5, 0.3, "char");
 %!   assert ("char", class (get (h, "string")))
 %!   h = text (0.5, 0.4, ["char row 1"; "char row 2"]);

@@ -18,12 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp}, @var{xi})
-## Evaluate piece-wise polynomial structure @var{pp} at the points @var{xi}.  
+## Evaluate piece-wise polynomial structure @var{pp} at the points @var{xi}.
 ## If @var{pp} describes a scalar polynomial function, the result is an
 ## array of the same shape as @var{xi}.
 ## Otherwise, the size of the result is @code{[pp.dim, length(@var{xi})]} if
 ## @var{xi} is a vector, or @code{[pp.dim, size(@var{xi})]} if it is a
-## multi-dimensional array.  
+## multi-dimensional array.
 ##
 ##, the dimensions are permuted as
 ## in interp1, to
@@ -43,13 +43,13 @@ function yi = ppval (pp, xi)
 
   ## Extract info.
   [x, P, n, k, d] = unmkpp (pp);
-  
+
   ## dimension checks
   sxi = size (xi);
   if (isvector (xi))
     xi = xi(:).';
   endif
-  
+
   nd = length (d);
 
   ## Determine intervals.
@@ -60,7 +60,7 @@ function yi = ppval (pp, xi)
   P = shiftdim (P, nd);
   P = reshape (P, [n, k, d]);
   Pidx = P(idx(:), :);#2d matrix size x: coefs*prod(d) y: prod(sxi)
-  
+
   if (isvector(xi))
     Pidx = reshape (Pidx, [xn, k, d]);
     Pidx = shiftdim (Pidx, 1);
@@ -83,12 +83,12 @@ function yi = ppval (pp, xi)
   if (k > 1)
     yi = shiftdim (reshape (Pidx(1,:), dimvec), ndv - 1);
   endif
-  
+
   for i = 2 : k;
     yi .*= dx;
     yi += shiftdim (reshape (Pidx(i,:), dimvec), ndv - 1);
   endfor
-  
+
   ## Adjust shape.
   if ((numel (xi) > 1) || (length (d) == 1))
     yi = reshape (shiftdim (yi, 1), dimvec);
@@ -104,7 +104,7 @@ function yi = ppval (pp, xi)
   #if (d == 1)
   #  yi = reshape (yi, sxi);
   #endif
-  
+
 endfunction
 
 %!shared b,c,pp,pp2,xi,abserr

@@ -727,7 +727,7 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int
 %! x(1,1,:,:) = [1 2 3 4; 5 6 7 8; 9 10 11 12];
 %! y0 = [1 1 6 2 15 3 2 1 8 2 18 3 3 1 10 2 21 3 4 1 12 2 24 3];
 %! y0 = reshape (y0, size (x));
-%! y = filter([1 1 1], 1, x, [], 3); 
+%! y = filter([1 1 1], 1, x, [], 3);
 %! assert (y, y0);
 
 */

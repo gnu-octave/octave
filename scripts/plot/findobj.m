@@ -245,7 +245,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   l = line;
 %!   obj = findobj (hf, "type", "line");
 %!   assert (l, obj);

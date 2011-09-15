@@ -288,7 +288,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (! isempty (hlegend))
       set (hlegend, "box", "off", "visible", "off");
     endif
-  elseif (nargs == 0 && !(strcmp (position, "default") && 
+  elseif (nargs == 0 && !(strcmp (position, "default") &&
                           strcmp (orientation, "default")))
     if (! isempty (hlegend))
       hax = getfield (get (hlegend, "userdata"), "handle");
@@ -298,14 +298,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         h = legend (hax, hplots, text_strings, "orientation", orientation);
       elseif (strcmp (orientation, "default"))
         if (outside)
-          h = legend (hax, hplots, text_strings, "location", 
+          h = legend (hax, hplots, text_strings, "location",
                       strcat (position, "outside"));
         else
           h = legend (hax, hplots, text_strings, "location", position);
         endif
       else
         if (outside)
-          h = legend (hax, hplots, text_strings, "location", 
+          h = legend (hax, hplots, text_strings, "location",
                       strcat (position, "outside"), "orientation", orientation);
         else
           h = legend (hax, hplots, text_strings, "location", position,

@@ -148,7 +148,7 @@ endfunction
 %! dac = get (0, "defaultaxescolor");
 %! dfc = get (0, "defaultfigurecolor");
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   l = line;
 %!   assert (get (hf, "color"), dfc);
 %!   assert (get (gca, "color"), dac);

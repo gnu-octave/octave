@@ -70,11 +70,11 @@ endfunction
 %! clf ();
 %! a = logspace (-5, 1, 10);
 %! b =-logspace (-5, 1, 10);
-%! 
+%!
 %! subplot (1, 2, 1)
 %! semilogy (a, b)
 %! xlabel ('semilogy (a, b)')
-%! 
+%!
 %! subplot (1, 2, 2)
 %! semilogy (a, abs (b))
 %! set (gca, 'ydir', 'reverse')
@@ -82,7 +82,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b = logspace (-5, 1, 10);
 %!   semilogy (a, b)
@@ -94,7 +94,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b =-logspace (-5, 1, 10);
 %!   semilogy (a, b)

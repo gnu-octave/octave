@@ -3396,7 +3396,7 @@ axes::properties::sync_positions (const Matrix& linset)
       double thrshldy = 0.005*outpos(3);
       double minsizex = 0.2*outpos(2);
       double minsizey = 0.2*outpos(3);
-      bool updatex = true, updatey = true; 
+      bool updatex = true, updatey = true;
       for (int i = 0; i < 10; i++)
         {
           double dt;
@@ -3469,7 +3469,7 @@ axes::properties::sync_positions (const Matrix& linset)
   inset(1) = pos(1)-outpos(1);
   inset(2) = outpos(0)+outpos(2)-pos(0)-pos(2);
   inset(3) = outpos(1)+outpos(3)-pos(1)-pos(3);
-  
+
   tightinset = inset;
 }
 
@@ -4939,7 +4939,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
 
   ext(2) = ext(2)-ext(0);
   ext(3) = ext(3)-ext(1);
-  
+
   return ext;
 }
 
@@ -5137,8 +5137,8 @@ magform (double x, double& a, int& b)
     }
   else
     {
-      b = static_cast<int> (gnulib::floor (std::log10 (std::abs (x)))); 
-      a = x / std::pow (10.0, b); 
+      b = static_cast<int> (gnulib::floor (std::log10 (std::abs (x))));
+      a = x / std::pow (10.0, b);
     }
 }
 

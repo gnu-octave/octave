@@ -3,17 +3,17 @@
 # Copyright (C) 1993-2011 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
@@ -24,7 +24,7 @@ AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
-  -I. -I$(srcdir) 
+  -I. -I$(srcdir)
 
 AUTOMAKE_OPTIONS = subdir-objects
 
@@ -56,7 +56,7 @@ bin_SCRIPTS = \
   octave-config
 endif
 
-## Order matters here.  Leave builtins.cc last, because it depends on 
+## Order matters here.  Leave builtins.cc last, because it depends on
 ## $(DEF_FILES), and building those requires all the sources
 ## (except builtins.cc) to be available.
 BUILT_SOURCES = \
@@ -568,7 +568,7 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
 	mv $@-t $@
 
-## Special rules:  
+## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
 ## defaults.h and oct-conf.h must depend on Makefile.  Calling configure

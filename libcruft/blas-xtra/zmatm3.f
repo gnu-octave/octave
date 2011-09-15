@@ -19,7 +19,7 @@ c along with this software; see the file COPYING.  If not, see
 c <http://www.gnu.org/licenses/>.
 c
       subroutine zmatm3(m,n,k,np,a,b,c)
-c purpose:      a 3-dimensional matrix product. 
+c purpose:      a 3-dimensional matrix product.
 c               given a (m,k,np) array a and (k,n,np) array b,
 c               calculates a (m,n,np) array c such that
 c                 for i = 1:np
@@ -28,8 +28,8 @@ c
 c arguments:
 c m,n,k (in)    the dimensions
 c np (in)       number of multiplications
-c a (in)        a double complex input array, size (m,k,np) 
-c b (in)        a double complex input array, size (k,n,np) 
+c a (in)        a double complex input array, size (m,k,np)
+c b (in)        a double complex input array, size (k,n,np)
 c c (out)       a double complex output array, size (m,n,np)
       integer m,n,k,np
       double complex a(m*k,np),b(k*n,np)

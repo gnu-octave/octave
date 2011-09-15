@@ -96,7 +96,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
 %!   [az, el] = view;
 %!   assert ([az, el], [-37.5, 30], eps);
@@ -112,7 +112,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   line;
 %!   [az, el] = view;
 %!   assert ([az, el], [0, 90], eps);

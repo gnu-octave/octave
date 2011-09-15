@@ -154,7 +154,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   h = patch;
 %!   assert (findobj (hf, "type", "patch"), h);
 %!   assert (get (h, "xdata"), [0; 1; 1], eps);

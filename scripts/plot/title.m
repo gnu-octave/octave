@@ -54,7 +54,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   ax=axes();
 %!   xl = get(ax,"title");
 %!   title("Testing title")
@@ -65,7 +65,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
 %!   xl = get(gca (), "title");
 %!   title("Testing title")

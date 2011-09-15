@@ -56,7 +56,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   x = xlabel ("xlabel_string");
 %!   assert (get(gca, "xlabel"), x);
 %!   assert (get(x, "type"), "text");

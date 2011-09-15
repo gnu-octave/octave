@@ -368,14 +368,14 @@ function update_data (h, d)
     if (isempty (z1))
       for i = 1 : length (hlist)
         set (hlist(i), "vertices", [x1(i), y1(i)], "cdata",
-             reshape(c1(i,:),[1, size(c1)(2:end)]), 
+             reshape(c1(i,:),[1, size(c1)(2:end)]),
              "facevertexcdata", c1(i,:),
              "markersize", size1(i));
       endfor
     else
       for i = 1 : length (hlist)
         set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata",
-             reshape(c1(i,:),[1, size(c1)(2:end)]), 
+             reshape(c1(i,:),[1, size(c1)(2:end)]),
              "facevertexcdata", c1(i,:),
              "markersize", size1(i));
       endfor

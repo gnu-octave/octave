@@ -60,7 +60,7 @@ public:
   virtual bool is_system_fcn_file (void) const { return false; }
 
   virtual std::string fcn_file_name (void) const { return std::string (); }
-  
+
   // The name to show in the profiler (also used as map-key).
   virtual std::string profiler_name (void) const { return name (); }
 

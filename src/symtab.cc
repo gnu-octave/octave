@@ -1511,10 +1511,10 @@ need to recompiled.\n\
 %!shared old_state
 %! old_state = ignore_function_time_stamp ();
 %!test
-%! state = ignore_function_time_stamp ("all");  
+%! state = ignore_function_time_stamp ("all");
 %! assert (state, old_state);
 %! assert (ignore_function_time_stamp (), "all");
-%! state = ignore_function_time_stamp ("system");  
+%! state = ignore_function_time_stamp ("system");
 %! assert (state, "all");
 %! assert (ignore_function_time_stamp (), "system");
 %! ignore_function_time_stamp (old_state);

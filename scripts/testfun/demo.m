@@ -97,7 +97,7 @@ function demo (name, n)
     n = 0;
   elseif (ischar (n))
     n = str2double (n);
-  endif 
+  endif
 
   [code, idx] = test (name, "grabdemo");
   if (isempty (idx))

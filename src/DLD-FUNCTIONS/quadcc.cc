@@ -1636,7 +1636,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   else
     {
       nivals = 1 + args(4).length ();
-      if (nivals > cquad_heapsize) 
+      if (nivals > cquad_heapsize)
         {
           error ("quadcc: maximum number of singular points is limited to %i",
                  cquad_heapsize-1);
@@ -2243,7 +2243,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 }
 
 
-/* 
+/*
 
 %!assert (quadcc(@sin,-pi,pi), 0, 1e-6)
 %!assert (quadcc(inline('sin'),-pi,pi), 0, 1e-6)

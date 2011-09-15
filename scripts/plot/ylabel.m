@@ -50,7 +50,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   y = ylabel ("ylabel_string");
 %!   assert (get(gca, "ylabel"), y);
 %!   assert (get(y, "type"), "text");

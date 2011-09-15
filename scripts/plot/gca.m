@@ -53,7 +53,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! ax = axes;
-%! unwind_protect  
+%! unwind_protect
 %!   assert (gca, ax);
 %! unwind_protect_cleanup
 %!   close (hf);

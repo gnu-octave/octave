@@ -45,7 +45,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   h = line;
 %!   assert (findobj (hf, "type", "line"), h);
 %!   assert (get (h, "xdata"), [0 1], eps);

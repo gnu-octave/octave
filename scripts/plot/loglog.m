@@ -71,11 +71,11 @@ endfunction
 %! clf ();
 %! a = logspace (-5, 1, 10);
 %! b =-logspace (-5, 1, 10);
-%! 
+%!
 %! subplot (1, 2, 1)
 %! loglog (a, b)
 %! xlabel ('loglog (a, b)')
-%! 
+%!
 %! subplot (1, 2, 2)
 %! loglog (a, abs (b))
 %! set (gca, 'ydir', 'reverse')
@@ -83,7 +83,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b = logspace (-5, 1, 10);
 %!   loglog (a, b)
@@ -95,7 +95,7 @@ endfunction
 
 %!test
 %! hf = figure ("visible", "off");
-%! unwind_protect  
+%! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b =-logspace (-5, 1, 10);
 %!   loglog (a, b)

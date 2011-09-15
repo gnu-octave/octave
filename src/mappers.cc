@@ -1475,7 +1475,8 @@ DEFUN (round, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
-@code{round (real (@var{x})) + round (imag (@var{x})) * I}.\n\
+@code{round (real (@var{x})) + round (imag (@var{x})) * I}. If there\n\
+are two nearest integers, return the one further away from zero.\n\
 \n\
 @example\n\
 @group\n\
@@ -1483,7 +1484,7 @@ round ([-2.7, 2.7])\n\
      @result{} -3   3\n\
 @end group\n\
 @end example\n\
-@seealso{ceil, floor, fix}\n\
+@seealso{ceil, floor, fix, roundb}\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -108,6 +108,8 @@ private:
 
     void init (const tree_argument_list&);
 
+    void cellify (void);
+
   private:
 
     tm_row_const_rep (const tm_row_const_rep&);
@@ -177,8 +179,11 @@ public:
   bool any_sparse_p (void) const { return rep->any_sparse; }
   bool any_class_p (void) const { return rep->any_class; }
   bool all_1x1_p (void) const { return rep->all_1x1; }
+  bool first_elem_struct_p (void) const { return rep->first_elem_is_struct; }
 
   std::string class_name (void) const { return rep->class_nm; }
+
+  void cellify (void) { rep->cellify (); }
 
   operator bool () const { return (rep && rep->ok); }
 
@@ -376,18 +381,14 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
     }
 
   if (any_cell && ! any_class && ! first_elem_is_struct)
-    {
-      for (iterator p = begin (); p != end (); p++)
-        {
-          if (! p->is_cell ())
-            *p = Cell (*p);
-        }
-    }
+    cellify ();
 
   first_elem = true;
 
   for (iterator p = begin (); p != end (); p++)
     {
+      octave_quit ();
+
       octave_value val = *p;
 
       dim_vector this_elt_dv = val.dims ();
@@ -413,6 +414,52 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 }
 
 void
+tm_row_const::tm_row_const_rep::cellify (void)
+{
+  bool elt_changed = false;
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      octave_quit ();
+
+      if (! p->is_cell ())
+        {
+          elt_changed = true;
+
+          *p = Cell (*p);
+        }
+    }
+
+  if (elt_changed)
+    {
+      bool first_elem = true;
+
+      for (iterator p = begin (); p != end (); p++)
+        {
+          octave_quit ();
+
+          octave_value val = *p;
+
+          dim_vector this_elt_dv = val.dims ();
+
+          if (! this_elt_dv.zero_by_zero ())
+            {
+              if (first_elem)
+                {
+                  first_elem = false;
+                  dv = this_elt_dv;
+                }
+              else if (! dv.hvcat (this_elt_dv, 1))
+                {
+                  eval_error ("horizontal dimensions mismatch", dv, this_elt_dv);
+                  break;
+                }
+            }
+        }
+    }
+}
+
+void
 tm_row_const::tm_row_const_rep::eval_warning (const char *msg, int l,
                                               int c) const
 {
@@ -431,8 +478,8 @@ public:
   tm_const (const tree_matrix& tm)
     : dv (0, 0), all_str (false), all_sq_str (false), all_dq_str (false),
       some_str (false), all_real (false), all_cmplx (false),
-      all_mt (true), any_sparse (false), any_class (false),
-      class_nm (), ok (false)
+      all_mt (true), any_cell (false), any_sparse (false),
+      any_class (false), class_nm (), ok (false)
   { init (tm); }
 
   ~tm_const (void) { }
@@ -449,6 +496,7 @@ public:
   bool all_real_p (void) const { return all_real; }
   bool all_complex_p (void) const { return all_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
+  bool any_cell_p (void) const { return any_cell; }
   bool any_sparse_p (void) const { return any_sparse; }
   bool any_class_p (void) const { return any_class; }
   bool all_1x1_p (void) const { return all_1x1; }
@@ -468,6 +516,7 @@ private:
   bool all_real;
   bool all_cmplx;
   bool all_mt;
+  bool any_cell;
   bool any_sparse;
   bool any_class;
   bool all_1x1;
@@ -493,11 +542,13 @@ tm_const::init (const tree_matrix& tm)
   all_dq_str = true;
   all_real = true;
   all_cmplx = true;
+  any_cell = false;
   any_sparse = false;
   any_class = false;
   all_1x1 = ! empty ();
 
   bool first_elem = true;
+  bool first_elem_is_struct = false;
 
   // Just eval and figure out if what we have is complex or all
   // strings.  We can't check columns until we know that this is a
@@ -511,6 +562,13 @@ tm_const::init (const tree_matrix& tm)
       tree_argument_list *elt = *p;
 
       tm_row_const tmp (*elt);
+
+      if (first_elem)
+        {
+          first_elem_is_struct = tmp.first_elem_struct_p ();
+
+          first_elem = false;
+        }
 
       if (tmp && ! tmp.empty ())
         {
@@ -535,6 +593,9 @@ tm_const::init (const tree_matrix& tm)
           if (all_mt && ! tmp.all_empty_p ())
             all_mt = false;
 
+          if (!any_cell && tmp.any_cell_p ())
+            any_cell = true;
+
           if (!any_sparse && tmp.any_sparse_p ())
             any_sparse = true;
 
@@ -551,6 +612,20 @@ tm_const::init (const tree_matrix& tm)
 
   if (! error_state)
     {
+      iterator p = begin ();
+
+      if (any_cell && ! any_class && ! first_elem_is_struct)
+        {
+          for (iterator p = begin (); p != end (); p++)
+            {
+              octave_quit ();
+
+              p->cellify ();
+            }
+        }
+
+      first_elem = true;
+
       for (iterator p = begin (); p != end (); p++)
         {
           octave_quit ();
@@ -1160,6 +1235,10 @@ tree_matrix::accept (tree_walker& tw)
 %% test concatenation with all zero matrices
 %!assert([ '' 65*ones(1,10) ], 'AAAAAAAAAA');
 %!assert([ 65*ones(1,10) '' ], 'AAAAAAAAAA');
+
+%!test
+%! c = {'foo'; 'bar'; 'bazoloa'};
+%! assert ([c; 'a'; 'bc'; 'def'], {'foo'; 'bar'; 'bazoloa'; 'a'; 'bc'; 'def'});
 
 %!assert (class ([int64(1), int64(1)]), 'int64')
 %!assert (class ([int64(1), int32(1)]), 'int64')

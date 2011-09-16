@@ -25,6 +25,7 @@ FCN_FILES = \
   test_args.m \
   test_classes.m \
   test_contin.m \
+  test_ctor_vs_method.m \
   test_diag_perm.m \
   test_error.m \
   test_eval-catch.m \
@@ -60,6 +61,8 @@ include @Pork/module.mk
 include @Sneetch/module.mk
 include @Snork/module.mk
 include @Spork/module.mk
+
+include ctor-vs-method/module.mk
 
 check: test_sparse.m test_bc_overloads.m
 	$(top_builddir)/run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)

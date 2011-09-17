@@ -91,7 +91,7 @@ function vi = interp3 (varargin)
     if (ndims (v) != 3)
       error ("interp3: expect 3-dimensional array of values");
     endif
-    x = varargin (2:4);
+    x = varargin (2:end);
     if (any (! cellfun (@isvector, x)))
       for i = 2 : 3
         if (! size_equal (x{1}, x{i}))

@@ -319,10 +319,18 @@ function add_patch_children (hg)
       else
         ## Special case unclosed contours
       endif
+      if (isnan(cont_lev(idx)))
+        fc = get (ca, "color");
+        if (strcmp (fc, "none"))
+          fc = get (ancestor (ca, "figure"), "color");
+        endif
+      else
+        fc = "flat";
+      endif
       h = [h; __go_patch__(ca, "xdata", ctmp(1, :)(:), "ydata", ctmp(2, :)(:),
                            "vertices", ctmp.', "faces", 1:(cont_len(idx)-1),
                            "facevertexcdata", cont_lev(idx),
-                           "facecolor", "flat", "cdata", cont_lev(idx),
+                           "facecolor", fc, "cdata", cont_lev(idx),
                            "edgecolor", lc, "linestyle", ls,
                            "linewidth", lw, "parent", hg)];
     endfor

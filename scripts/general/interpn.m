@@ -70,14 +70,14 @@ function vi = interpn (varargin)
   extrapval = NA;
   nargs = nargin;
 
-  if (nargin < 1)
+  if (nargin < 1 || ! isnumeric (varargin{1}))
     print_usage ();
   endif
 
   if (ischar (varargin{end}))
     method = varargin{end};
     nargs = nargs - 1;
-  elseif (ischar (varargin{end - 1}))
+  elseif (nargs > 1 && ischar (varargin{end - 1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("interpn: extrapal is expected to be a numeric scalar");
     endif
@@ -90,9 +90,12 @@ function vi = interpn (varargin)
     v = varargin{1};
     m = 1;
     if (nargs == 2)
-      m = varargin{2};
-      if (! isnumeric (m) || ! isscalar (m) || floor (m) != m)
-        error ("interpn: M is expected to be a integer scalar");
+      if (ischar (varargin{2}))
+        method = varargin{2};
+      elseif (isnumeric (m) && isscalar (m) && round (m) == m)
+        m = varargin{2};
+      else
+        print_usage ();
       endif
     endif
     sz = size (v);
@@ -103,6 +106,8 @@ function vi = interpn (varargin)
       x{i} = 1 : sz(i);
       y{i} = 1 : (1 / (2 ^ m)) : sz(i);
     endfor
+    y{1} = y{1}.';
+    [y{:}] = ndgrid (y{:});
   elseif (! isvector (varargin{1}) && nargs == (ndims (varargin{1}) + 1))
     v = varargin{1};
     sz = size (v);
@@ -290,3 +295,20 @@ endfunction
 %! X = meshgrid (1:4);
 %! assert (interpn (X, 2.5, 2.5, 'nearest'), 3);
 
+%!shared z, zout, tol
+%! z = zeros (3, 3, 3);
+%! zout = zeros (5, 5, 5);
+%! z(:,:,1) = [1 3 5; 3 5 7; 5 7 9];
+%! z(:,:,2) = z(:,:,1) + 2;
+%! z(:,:,3) = z(:,:,2) + 2;
+%! for n = 1:5
+%!   zout(:,:,n) = [1 2 3 4 5;
+%!                  2 3 4 5 6; 
+%!                  3 4 5 6 7;
+%!                  4 5 6 7 8;
+%!                  5 6 7 8 9] + (n-1);
+%! end
+%! tol = 10 * eps;
+%!assert (interpn (z), zout, tol)
+%!assert (interpn (z, "linear"), zout, tol)
+%!assert (interpn (z, "spline"), zout, tol)

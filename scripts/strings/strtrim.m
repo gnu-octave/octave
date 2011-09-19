@@ -39,7 +39,7 @@
 
 ## This function was derived from deblank.
 
-function s = strtrim2 (s)
+function s = strtrim (s)
 
   if (nargin != 1)
     print_usage ();

@@ -80,9 +80,12 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     z = varargin{3};
     c = varargin{4};
 
-    if (! size_equal (z, c))
+    [z_nr, z_nc] = size (z);
+    [c_nr, c_nc, c_np] = size (c);
+    if (! (z_nr == c_nr && z_nc == c_nc && (c_np == 1 || c_np == 3)))
       error ("surface: Z and C must have the same size");
     endif
+
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
         x = x(:)';

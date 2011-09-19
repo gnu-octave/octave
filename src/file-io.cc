@@ -1174,6 +1174,23 @@ complete description of the syntax of the template string.\n\
   return retval;
 }
 
+static std::string
+get_sscanf_data (const octave_value& val)
+{
+  std::string retval;
+
+  if (val.is_string ())
+    {
+      octave_value tmp = val.reshape (dim_vector (1, val.numel ()));
+
+      retval = tmp.string_value ();
+    }
+  else
+    ::error ("sscanf: argument STRING must be a string");
+
+  return retval;
+}
+
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
@@ -1194,10 +1211,10 @@ is returned in in @var{pos}.\n\
 
   if (nargin == 3 && args(2).is_string ())
     {
-      if (args(0).is_string ())
-        {
-          std::string data = args(0).string_value ();
+      std::string data = get_sscanf_data (args(0));
 
+      if (! error_state)
+        {
           octave_stream os = octave_istrstream::create (data);
 
           if (os.is_valid ())
@@ -1223,10 +1240,10 @@ is returned in in @var{pos}.\n\
           retval(1) = 0.0;
           retval(0) = Matrix ();
 
-          if (args(0).is_string ())
-            {
-              std::string data = args(0).string_value ();
+          std::string data = get_sscanf_data (args(0));
 
+          if (! error_state)
+            {
               octave_stream os = octave_istrstream::create (data);
 
               if (os.is_valid ())
@@ -1263,8 +1280,6 @@ is returned in in @var{pos}.\n\
                 ::error ("%s: unable to create temporary input buffer",
                          who.c_str  ());
             }
-          else
-            ::error ("%s: argument STRING must be a string", who.c_str ());
         }
       else
         print_usage ();

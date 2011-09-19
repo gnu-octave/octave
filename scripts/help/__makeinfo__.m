@@ -83,8 +83,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   endif
 
   if (! isa (fsee_also, "function_handle"))
-    error (["__makeinfo__: third input argument must ", ...
-            "be the empty matrix, or a function handle"]);
+    error ("__makeinfo__: third input argument must be a function handle");
   endif
 
 

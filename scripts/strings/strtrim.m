@@ -39,7 +39,7 @@
 
 ## This function was derived from deblank.
 
-function s = strtrim (s)
+function s = strtrim2 (s)
 
   if (nargin != 1)
     print_usage ();
@@ -54,9 +54,18 @@ function s = strtrim (s)
       s = s(:, ceil (min (k) / rows (s)):ceil (max (k) / rows (s)));
     endif
 
-  elseif (iscellstr (s))
+  elseif (iscell (s))
 
-    s = regexprep (s, "^[\\s\v]+|[\\s\v]+$", '');
+    char_idx = cellfun ("isclass", s, "char");
+    cell_idx = cellfun ("isclass", s, "cell");
+    if (! all (char_idx | cell_idx))  
+      error ("strtrim: S argument must be a string or cellstring");
+    endif
+
+    ## Divide work load.  Recursive cellfun strtrim call is slow
+    ## and avoided where possible.
+    s(char_idx) = regexprep (s(char_idx), "^[\\s\v]+|[\\s\v]+$", '');
+    s(cell_idx) = cellfun ("strtrim", s(cell_idx), "UniformOutput", false);
 
   else
     error ("strtrim: S argument must be a string or cellstring");
@@ -70,6 +79,7 @@ endfunction
 %!assert (strtrim ("abc"), "abc");
 %!assert (strtrim ([" abc   "; "   def   "]), ["abc  "; "  def"]);
 %!assert (strtrim ({" abc   "; "   def   "}), {"abc"; "def"});
+%!assert (strtrim ({" abc   ", {"   def   "}}), {"abc", {"def"}});
 
 %!error <Invalid call to strtrim> strtrim ();
 %!error <Invalid call to strtrim> strtrim ("abc", "def");

@@ -386,7 +386,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       ytick = axis_obj.ytick
       yticklabel = axis_obj.yticklabel
       yticklabelmode = axis_obj.yticklabelmode
-    end
+    endif
 
     xlim = axis_obj.xlim;
     ylim = axis_obj.ylim;

@@ -69,7 +69,7 @@ function yi = ppval (pp, xi)
     Pidx = reshape (Pidx, [sxi, k, d]);
     Pidx = shiftdim (Pidx, length (sxi));
     dimvec = [d, sxi];
-  end
+  endif
   ndv = length (dimvec);
 
   ## Offsets.

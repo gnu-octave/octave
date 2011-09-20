@@ -599,7 +599,7 @@ function varargout = strread (str, format = "%f", varargin)
             ## Cast to integer
             ## FIXME: NaNs will be transformed into zeros
             data = int32 (data);
-          end
+          endif
           data(n) = numeric_fill_value;
           if (pad_out)
             data(end+1:num_lines) = numeric_fill_value;
@@ -626,7 +626,7 @@ function varargout = strread (str, format = "%f", varargin)
                 ## Cast to integer
                 ## FIXME: NaNs will be transformed into zeros
                 data = int32 (data);
-              end
+              endif
               varargout{k} = data.';
               k++;
             case "s"

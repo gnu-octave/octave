@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1997-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,81 +18,131 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{sz})
-## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n})
-## Return an @var{r} by @var{c} matrix of random samples from the
-## hypergeometric distribution with parameters @var{t}, @var{m},
-## and @var{n}.
+## @deftypefn  {Function File} {} hygernd (@var{t}, @var{m}, @var{n})
+## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r})
+## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, [@var{sz}])
+## Return a matrix of random samples from the hypergeometric distribution
+## with parameters @var{t}, @var{m}, and @var{n}.
 ##
-## The parameters @var{t}, @var{m}, and @var{n} must positive integers
+## The parameters @var{t}, @var{m}, and @var{n} must be positive integers
 ## with @var{m} and @var{n} not greater than @var{t}.
 ##
-## The parameter @var{sz} must be scalar or a vector of matrix
-## dimensions.  If @var{sz} is scalar, then a @var{sz} by @var{sz}
-## matrix of random samples is generated.
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is the common size of
+## @var{t}, @var{m}, and @var{n}.
 ## @end deftypefn
 
-function rnd = hygernd (t, m, n, r, c)
+function rnd = hygernd (t, m, n, varargin)
 
-  if (nargin == 5)
-    if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("hygernd: R must be a positive integer");
-    endif
-    if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("hygernd: C must be a positive integer");
-    endif
-    sz = [r, c];
-  elseif (nargin == 4)
-    if (isvector (r) && all (r > 0) && all (r == round (r)))
-      if (isscalar (r))
-        sz = [r, r];
-      else
-        sz = r(:)';
-      endif
-    else
-      error ("hygernd: R must be a vector of positive integers");
-    endif
-  elseif (nargin != 3)
+  if (nargin < 3)
     print_usage ();
   endif
 
   if (! isscalar (t) || ! isscalar (m) || ! isscalar (n))
     [retval, t, m, n] = common_size (t, m, n);
     if (retval > 0)
-      error ("hygernd: T, M and N must be of common size or scalar");
+      error ("hygernd: T, M, and N must be of common size or scalars");
     endif
-    if (nargin > 3)
-      if (any (sz != size (t)))
-        error ("hygernd: T, M and N must have the same size as implied by R and C or must be scalar");
-      endif
-    else
-      sz = size (t);
-    endif
-  elseif (nargin == 3)
-    sz = 1;
   endif
 
-  ## NaN elements
-  ne = (! (t >= 0) | ! (m >= 0) | ! (n > 0) | ! (t == round (t)) | ! (m == round (m)) | ! (n == round (n)) | ! (m <= t) | ! (n <= t));
+  if (iscomplex (t) || iscomplex (m) || iscomplex (n))
+    error ("hygernd: T, M, and N must not be complex");
+  endif
 
-  if (! isscalar (t))
-    rnd = zeros (sz);
-    rnd(ne) = NaN;
+  if (nargin == 3)
+    sz = size (t);
+  elseif (nargin == 4)
+    if (isscalar (varargin{1}) && varargin{1} >= 0)
+      sz = [varargin{1}, varargin{1}];
+    elseif (isrow (varargin{1}) && all (varargin{1} >= 0))
+      sz = varargin{1};
+    else
+      error ("hygernd: dimension vector must be row vector of non-negative integers");
+    endif
+  elseif (nargin > 4)
+    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+      error ("hygernd: dimensions must be non-negative integers");
+    endif
+    sz = [varargin{:}];
+  endif
+
+  if (!isscalar (t) && !isequal (size (t), sz))
+    error ("hygernd: T, M, and N must be scalar or of size SZ");
+  endif
+
+  if (isa (t, "single") || isa (m, "single") || isa (n, "single"))
+    cls = "single";
+  else
+    cls = "double";
+  endif
+
+  ok = ((t >= 0) & (m >= 0) & (n > 0) & (m <= t) & (n <= t) &
+        (t == fix (t)) & (m == fix (m)) & (n == fix (n)));
+
+  if (isscalar (t))
+    if (ok)
+      v = 0:n;
+      p = hygepdf (v, t, m, n);
+      rnd = v(lookup (cumsum (p(1:end-1)) / sum (p), rand (sz)) + 1);
+      rnd = reshape (rnd, sz);
+      if (strcmp (cls, "single"))
+        rnd = single (rnd);
+      endif
+    else
+      rnd = NaN (sz, cls);
+    endif
+  else
+    rnd = NaN (sz, cls);
     rn = rand (sz);
-    for i = find (! ne)
+    for i = find (ok(:)')  # Must be row vector arg to for loop
       v = 0 : n(i);
       p = hygepdf (v, t(i), m(i), n(i));
       rnd(i) = v(lookup (cumsum (p(1 : end-1)) / sum (p), rn(i)) + 1);
     endfor
-  else
-    if (ne)
-      rnd = NaN (sz);
-    else
-      v = 0:n;
-      p = hygepdf (v, t, m, n);
-      rnd = v(lookup (cumsum (p(1:end-1)) / sum (p), rand (sz)) + 1);
-    endif
   endif
 
 endfunction
+
+
+%!assert(size (hygernd (4,2,2)), [1, 1]);
+%!assert(size (hygernd (4*ones(2,1), 2,2)), [2, 1]);
+%!assert(size (hygernd (4*ones(2,2), 2,2)), [2, 2]);
+%!assert(size (hygernd (4, 2*ones(2,1), 2)), [2, 1]);
+%!assert(size (hygernd (4, 2*ones(2,2), 2)), [2, 2]);
+%!assert(size (hygernd (4, 2, 2*ones(2,1))), [2, 1]);
+%!assert(size (hygernd (4, 2, 2*ones(2,2))), [2, 2]);
+%!assert(size (hygernd (4, 2, 2, 3)), [3, 3]);
+%!assert(size (hygernd (4, 2, 2, [4 1])), [4, 1]);
+%!assert(size (hygernd (4, 2, 2, 4, 1)), [4, 1]);
+
+%!assert(class (hygernd (4,2,2)), "double");
+%!assert(class (hygernd (single(4),2,2)), "single");
+%!assert(class (hygernd (single([4 4]),2,2)), "single");
+%!assert(class (hygernd (4,single(2),2)), "single");
+%!assert(class (hygernd (4,single([2 2]),2)), "single");
+%!assert(class (hygernd (4,2,single(2))), "single");
+%!assert(class (hygernd (4,2,single([2 2]))), "single");
+
+%% Test input validation
+%!error hygernd ()
+%!error hygernd (1)
+%!error hygernd (1,2)
+%!error hygernd (ones(3),ones(2),ones(2), 2)
+%!error hygernd (ones(2),ones(3),ones(2), 2)
+%!error hygernd (ones(2),ones(2),ones(3), 2)
+%!error hygernd (i, 2, 2)
+%!error hygernd (2, i, 2)
+%!error hygernd (2, 2, i)
+%!error hygernd (4,2,2, -1)
+%!error hygernd (4,2,2, ones(2))
+%!error hygernd (4,2,2, [2 -1 2])
+%!error hygernd (4*ones(2),2,2, 3)
+%!error hygernd (4*ones(2),2,2, [3, 2])
+%!error hygernd (4*ones(2),2,2, 3, 2)
+

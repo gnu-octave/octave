@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,81 +18,118 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} gamrnd (@var{a}, @var{b}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{sz})
-## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of
-## random samples from the Gamma distribution with parameters @var{a}
-## and @var{b}.  Both @var{a} and @var{b} must be scalar or of size
-## @var{r} by @var{c}.
+## @deftypefn  {Function File} {} gamrnd (@var{a}, @var{b})
+## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{r})
+## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, [@var{sz}])
+## Return a matrix of random samples from the Gamma distribution with
+## parameters @var{a} and @var{b}.
 ##
-## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{a} and @var{b}.
-## @seealso{gamma, gammaln, gammainc, gampdf, gamcdf, gaminv}
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is the common size of
+## @var{a} and @var{b}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Gamma distribution
 
-function rnd = gamrnd (a, b, r, c)
+function rnd = gamrnd (a, b, varargin)
 
-  if (nargin > 1)
-    if (!isscalar(a) || !isscalar(b))
-      [retval, a, b] = common_size (a, b);
-      if (retval > 0)
-        error ("gamrnd: A and B must be of common size or scalar");
-      endif
-    endif
-  endif
-
-  if (nargin == 4)
-    if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("gamrnd: R must be a positive integer");
-    endif
-    if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("gamrnd: C must be a positive integer");
-    endif
-    sz = [r, c];
-
-    if (any (size (a) != 1)
-        && (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("gamrnd: A and B must be scalar or of size [R, C]");
-    endif
-  elseif (nargin == 3)
-    if (isscalar (r) && (r > 0))
-      sz = [r, r];
-    elseif (isvector(r) && all (r > 0))
-      sz = r(:)';
-    else
-      error ("gamrnd: R must be a positive integer or vector");
-    endif
-
-    if (any (size (a) != 1)
-        && (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("gamrnd: A and B must be scalar or of size SZ");
-    endif
-  elseif (nargin == 2)
-    sz = size(a);
-  else
+  if (nargin < 2)
     print_usage ();
   endif
 
-  rnd = zeros (sz);
-
-  if (isscalar (a) && isscalar(b))
-    if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
-      rnd = NaN (sz);
-    else
-      rnd = b .* randg(a, sz);
-    endif
-  else
-    k = find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf));
-    if (any (k))
-      rnd(k) = NaN;
-    endif
-    k = find ((a > 0) & (a < Inf) & (b > 0) & (b < Inf));
-    if (any (k))
-      rnd(k) = b(k) .* randg(a(k), size(k));
+  if (!isscalar (a) || !isscalar (b))
+    [retval, a, b] = common_size (a, b);
+    if (retval > 0)
+      error ("gamrnd: A and B must be of common size or scalars");
     endif
   endif
 
+  if (iscomplex (a) || iscomplex (b))
+    error ("gamrnd: A and B must not be complex");
+  endif
+
+  if (nargin == 2)
+    sz = size (a);
+  elseif (nargin == 3)
+    if (isscalar (varargin{1}) && varargin{1} >= 0)
+      sz = [varargin{1}, varargin{1}];
+    elseif (isrow (varargin{1}) && all (varargin{1} >= 0))
+      sz = varargin{1};
+    else
+      error ("gamrnd: dimension vector must be row vector of non-negative integers");
+    endif
+  elseif (nargin > 3)
+    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+      error ("gamrnd: dimensions must be non-negative integers");
+    endif
+    sz = [varargin{:}];
+  endif
+
+  if (!isscalar (a) && !isequal (size (a), sz))
+    error ("gamrnd: A and B must be scalar or of size SZ");
+  endif
+
+  if (isa (a, "single") || isa (b, "single"))
+    cls = "single";
+  else
+    cls = "double";
+  endif
+
+  if (isscalar (a) && isscalar (b))
+    if ((a > 0) && (a < Inf) && (b > 0) && (b < Inf))
+      rnd = b * randg (a, sz);
+      if (strcmp (cls, "single"))
+        rnd = single (rnd);
+      endif
+    else 
+      rnd = NaN (sz, cls);
+    endif
+  else
+    rnd = NaN (sz, cls);
+
+    k = (a > 0) & (a < Inf) & (b > 0) & (b < Inf);
+    rnd(k) = b(k) .* randg (a(k));
+  endif
+
 endfunction
+
+
+%!assert(size (gamrnd (1,2)), [1, 1]);
+%!assert(size (gamrnd (ones(2,1), 2)), [2, 1]);
+%!assert(size (gamrnd (ones(2,2), 2)), [2, 2]);
+%!assert(size (gamrnd (1, 2*ones(2,1))), [2, 1]);
+%!assert(size (gamrnd (1, 2*ones(2,2))), [2, 2]);
+%!assert(size (gamrnd (1, 2, 3)), [3, 3]);
+%!assert(size (gamrnd (1, 2, [4 1])), [4, 1]);
+%!assert(size (gamrnd (1, 2, 4, 1)), [4, 1]);
+
+%% Test class of input preserved
+%!assert(class (gamrnd (1, 2)), "double");
+%!assert(class (gamrnd (single(1), 2)), "single");
+%!assert(class (gamrnd (single([1 1]), 2)), "single");
+%!assert(class (gamrnd (1, single(2))), "single");
+%!assert(class (gamrnd (1, single([2 2]))), "single");
+
+%% Test input validation
+%!error gamrnd ()
+%!error gamrnd (1)
+%!error gamrnd (ones(3),ones(2))
+%!error gamrnd (ones(2),ones(3))
+%!error gamrnd (i, 2)
+%!error gamrnd (2, i)
+%!error gamrnd (1,2, -1)
+%!error gamrnd (1,2, ones(2))
+%!error gamrnd (1, 2, [2 -1 2])
+%!error gamrnd (1,2, 1, ones(2))
+%!error gamrnd (1,2, 1, -1)
+%!error gamrnd (ones(2,2), 2, 3)
+%!error gamrnd (ones(2,2), 2, [3, 2])
+%!error gamrnd (ones(2,2), 2, 2, 3)
+

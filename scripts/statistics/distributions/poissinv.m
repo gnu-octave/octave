@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} poissinv (@var{x}, @var{lambda})
-## For each component of @var{x}, compute the quantile (the inverse of
+## For each element of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the Poisson distribution with parameter
 ## @var{lambda}.
 ## @end deftypefn
@@ -35,42 +36,68 @@ function inv = poissinv (x, lambda)
   if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("poissinv: X and LAMBDA must be of common size or scalar");
+      error ("poissinv: X and LAMBDA must be of common size or scalars");
     endif
   endif
 
-  inv = zeros (size (x));
-
-  k = find ((x < 0) | (x > 1) | isnan (x) | !(lambda > 0));
-  if (any (k))
-    inv(k) = NaN;
+  if (iscomplex (x) || iscomplex (lambda))
+    error ("poissinv: X and LAMBDA must not be complex");
   endif
 
-  k = find ((x == 1) & (lambda > 0));
-  if (any (k))
-    inv(k) = Inf;
+  if (isa (x, "single") || isa (lambda, "single"))
+    inv = zeros (size (x), "single");
+  else
+    inv = zeros (size (x));
   endif
+
+  k = (x < 0) | (x > 1) | isnan (x) | !(lambda > 0);
+  inv(k) = NaN;
+
+  k = (x == 1) & (lambda > 0);
+  inv(k) = Inf;
 
   k = find ((x > 0) & (x < 1) & (lambda > 0));
-  if (any (k))
-    if (isscalar (lambda))
-      cdf = exp (-lambda) * ones (size (k));
-    else
-      cdf = exp (-lambda(k));
-    endif
-    while (1)
-      m = find (cdf < x(k));
-      if (any (m))
-        inv(k(m)) = inv(k(m)) + 1;
-        if (isscalar (lambda))
-          cdf(m) = cdf(m) + poisspdf (inv(k(m)), lambda);
-        else
-          cdf(m) = cdf(m) + poisspdf (inv(k(m)), lambda(k(m)));
-        endif
-      else
-        break;
-      endif
-    endwhile
+  if (isscalar (lambda))
+    cdf = exp (-lambda) * ones (size (k));
+  else
+    cdf = exp (-lambda(k));
   endif
+  
+  while (1)
+    m = find (cdf < x(k));
+    if (any (m))
+      inv(k(m)) += 1;
+      if (isscalar (lambda))
+        cdf(m) = cdf(m) + poisspdf (inv(k(m)), lambda);
+      else
+        cdf(m) = cdf(m) + poisspdf (inv(k(m)), lambda(k(m)));
+      endif
+    else
+      break;
+    endif
+  endwhile
 
 endfunction
+
+
+%!shared x
+%! x = [-1 0 0.5 1 2];
+%!assert(poissinv (x, ones(1,5)), [NaN 0 1 Inf NaN]);
+%!assert(poissinv (x, 1), [NaN 0 1 Inf NaN]);
+%!assert(poissinv (x, [1 0 NaN 1 1]), [NaN NaN NaN Inf NaN]);
+%!assert(poissinv ([x(1:2) NaN x(4:5)], 1), [NaN 0 NaN Inf NaN]);
+
+%% Test class of input preserved
+%!assert(poissinv ([x, NaN], 1), [NaN 0 1 Inf NaN NaN]);
+%!assert(poissinv (single([x, NaN]), 1), single([NaN 0 1 Inf NaN NaN]));
+%!assert(poissinv ([x, NaN], single(1)), single([NaN 0 1 Inf NaN NaN]));
+
+%% Test input validation
+%!error poissinv ()
+%!error poissinv (1)
+%!error poissinv (1,2,3)
+%!error poissinv (ones(3),ones(2))
+%!error poissinv (ones(2),ones(3))
+%!error poissinv (i, 2)
+%!error poissinv (2, i)
+

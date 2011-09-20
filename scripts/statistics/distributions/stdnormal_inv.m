@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,8 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stdnormal_inv (@var{x})
-## For each component of @var{x}, compute the quantile (the
-## inverse of the CDF) at @var{x} of the standard normal distribution.
+## For each element of @var{x}, compute the quantile (the
+## inverse of the CDF) at @var{x} of the standard normal distribution
+## (mean = 0, standard deviation = 1).
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -31,6 +33,25 @@ function inv = stdnormal_inv (x)
     print_usage ();
   endif
 
+  if (iscomplex (x))
+    error ("stdnormal_inv: X must not be complex");
+  endif
+
   inv = sqrt (2) * erfinv (2 * x - 1);
 
 endfunction
+
+
+%!shared x
+%! x = [-1 0 0.5 1 2];
+%!assert(stdnormal_inv (x), [NaN -Inf 0 Inf NaN]);
+
+%% Test class of input preserved
+%!assert(stdnormal_inv ([x, NaN]), [NaN -Inf 0 Inf NaN NaN]);
+%!assert(stdnormal_inv (single([x, NaN])), single([NaN -Inf 0 Inf NaN NaN]));
+
+%% Test input validation
+%!error stdnormal_inv ()
+%!error stdnormal_inv (1,2)
+%!error stdnormal_inv (i)
+

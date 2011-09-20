@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -35,26 +36,58 @@ function pdf = tpdf (x, n)
   if (!isscalar (n))
     [retval, x, n] = common_size (x, n);
     if (retval > 0)
-      error ("tpdf: X and N must be of common size or scalar");
+      error ("tpdf: X and N must be of common size or scalars");
     endif
   endif
 
-  pdf = zeros (size (x));
-
-  k = find (isnan (x) | !(n > 0) | !(n < Inf));
-  if (any (k))
-    pdf(k) = NaN;
+  if (iscomplex (x) || iscomplex (n))
+    error ("tpdf: X and N must not be complex");
   endif
 
-  k = find (!isinf (x) & !isnan (x) & (n > 0) & (n < Inf));
-  if (any (k))
-    if (isscalar (n))
-      pdf(k) = (exp (- (n + 1) .* log (1 + x(k) .^ 2 ./ n)/2)
-                / (sqrt (n) * beta (n/2, 1/2)));
-    else
-      pdf(k) = (exp (- (n(k) + 1) .* log (1 + x(k) .^ 2 ./ n(k))/2)
-                ./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
-    endif
+  if (isa (x, "single") || isa (n, "single"))
+    pdf = zeros (size (x), "single");
+  else
+    pdf = zeros (size (x));
+  endif
+
+  k = isnan (x) | !(n > 0) | !(n < Inf);
+  pdf(k) = NaN;
+
+  k = !isinf (x) & !isnan (x) & (n > 0) & (n < Inf);
+  if (isscalar (n))
+    pdf(k) = (exp (- (n + 1) * log (1 + x(k) .^ 2 / n)/2)
+              / (sqrt (n) * beta (n/2, 1/2)));
+  else
+    pdf(k) = (exp (- (n(k) + 1) .* log (1 + x(k) .^ 2 ./ n(k))/2)
+              ./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
   endif
 
 endfunction
+
+
+%!test
+%! x = rand (10,1);
+%! y = 1./(pi * (1 + x.^2));
+%! assert(tpdf (x, 1), y, 5*eps);
+
+%!shared x,y
+%! x = [-Inf 0 0.5 1 Inf];
+%! y = 1./(pi * (1 + x.^2));
+%!assert(tpdf (x, ones(1,5)), y, eps);
+%!assert(tpdf (x, 1), y, eps);
+%!assert(tpdf (x, [0 NaN 1 1 1]), [NaN NaN y(3:5)], eps);
+
+%% Test class of input preserved
+%!assert(tpdf ([x, NaN], 1), [y, NaN]);
+%!assert(tpdf (single([x, NaN]), 1), single([y, NaN]), eps("single"));
+%!assert(tpdf ([x, NaN], single(1)), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error tpdf ()
+%!error tpdf (1)
+%!error tpdf (1,2,3)
+%!error tpdf (ones(3),ones(2))
+%!error tpdf (ones(2),ones(3))
+%!error tpdf (i, 2)
+%!error tpdf (2, i)
+

@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,75 +18,115 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} unifrnd (@var{a}, @var{b}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, @var{sz})
-## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of
-## random samples from the uniform distribution on [@var{a}, @var{b}].
-## Both @var{a} and @var{b} must be scalar or of size @var{r} by @var{c}.
+## @deftypefn  {Function File} {} unifrnd (@var{a}, @var{b})
+## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, @var{r})
+## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} unifrnd (@var{a}, @var{b}, [@var{sz}])
+## Return a matrix of random samples from the uniform distribution on
+## [@var{a}, @var{b}].
 ##
-## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{a} and @var{b}.
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is the common size of
+## @var{a} and @var{b}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the uniform distribution
 
-function rnd = unifrnd (a, b, r, c)
+function rnd = unifrnd (a, b, varargin)
 
-  if (nargin > 1)
-    if (!isscalar(a) || !isscalar(b))
-      [retval, a, b] = common_size (a, b);
-      if (retval > 0)
-        error ("unifrnd: A and B must be of common size or scalar");
-      endif
-    endif
-  endif
-
-  if (nargin == 4)
-    if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("unifrnd: R must be a positive integer");
-    endif
-    if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("unifrnd: C must be a positive integer");
-    endif
-    sz = [r, c];
-
-    if (any (size (a) != 1)
-        && (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("unifrnd: A and B must be scalar or of size [R, C]");
-    endif
-  elseif (nargin == 3)
-    if (isscalar (r) && (r > 0))
-      sz = [r, r];
-    elseif (isvector(r) && all (r > 0))
-      sz = r(:)';
-    else
-      error ("unifrnd: R must be a positive integer or vector");
-    endif
-
-    if (any (size (a) != 1)
-        && (length (size (a)) != length (sz) || any (size (a) != sz)))
-      error ("unifrnd: A and B must be scalar or of size SZ");
-    endif
-  elseif (nargin == 2)
-    sz = size(a);
-  else
+  if (nargin < 2)
     print_usage ();
   endif
 
-  if (isscalar(a) && isscalar(b))
-    if (find (!(-Inf < a) | !(a < b) | !(b < Inf)))
-      rnd = NaN(sz);
+  if (!isscalar (a) || !isscalar (b))
+    [retval, a, b] = common_size (a, b);
+    if (retval > 0)
+      error ("unifrnd: A and B must be of common size or scalars");
+    endif
+  endif
+
+  if (iscomplex (a) || iscomplex (b))
+    error ("unifrnd: A and B must not be complex");
+  endif
+
+  if (nargin == 2)
+    sz = size (a);
+  elseif (nargin == 3)
+    if (isscalar (varargin{1}) && varargin{1} >= 0)
+      sz = [varargin{1}, varargin{1}];
+    elseif (isrow (varargin{1}) && all (varargin{1} >= 0))
+      sz = varargin{1};
     else
-      rnd =  a + (b - a) .* rand (sz);
+      error ("unifrnd: dimension vector must be row vector of non-negative integers");
+    endif
+  elseif (nargin > 3)
+    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+      error ("unifrnd: dimensions must be non-negative integers");
+    endif
+    sz = [varargin{:}];
+  endif
+
+  if (!isscalar (a) && !isequal (size (a), sz))
+    error ("unifrnd: A and B must be scalar or of size SZ");
+  endif
+
+  if (isa (a, "single") || isa (b, "single"))
+    cls = "single";
+  else
+    cls = "double";
+  endif
+
+  if (isscalar (a) && isscalar (b))
+    if ((-Inf < a) && (a < b) && (b < Inf))
+      rnd =  a + (b - a) * rand (sz);
+    else
+      rnd = NaN (sz, cls);
     endif
   else
     rnd =  a + (b - a) .* rand (sz);
 
-    k = find (!(-Inf < a) | !(a < b) | !(b < Inf));
-    if (any (k))
-      rnd(k) = NaN;
-    endif
+    k = !(-Inf < a) | !(a < b) | !(b < Inf);
+    rnd(k) = NaN;
   endif
 
 endfunction
+
+
+%!assert(size (unifrnd (1,2)), [1, 1]);
+%!assert(size (unifrnd (ones(2,1), 2)), [2, 1]);
+%!assert(size (unifrnd (ones(2,2), 2)), [2, 2]);
+%!assert(size (unifrnd (1, 2*ones(2,1))), [2, 1]);
+%!assert(size (unifrnd (1, 2*ones(2,2))), [2, 2]);
+%!assert(size (unifrnd (1, 2, 3)), [3, 3]);
+%!assert(size (unifrnd (1, 2, [4 1])), [4, 1]);
+%!assert(size (unifrnd (1, 2, 4, 1)), [4, 1]);
+
+%% Test class of input preserved
+%!assert(class (unifrnd (1, 2)), "double");
+%!assert(class (unifrnd (single(1), 2)), "single");
+%!assert(class (unifrnd (single([1 1]), 2)), "single");
+%!assert(class (unifrnd (1, single(2))), "single");
+%!assert(class (unifrnd (1, single([2 2]))), "single");
+
+%% Test input validation
+%!error unifrnd ()
+%!error unifrnd (1)
+%!error unifrnd (ones(3),ones(2))
+%!error unifrnd (ones(2),ones(3))
+%!error unifrnd (i, 2)
+%!error unifrnd (2, i)
+%!error unifrnd (1,2, -1)
+%!error unifrnd (1,2, ones(2))
+%!error unifrnd (1, 2, [2 -1 2])
+%!error unifrnd (1,2, 1, ones(2))
+%!error unifrnd (1,2, 1, -1)
+%!error unifrnd (ones(2,2), 2, 3)
+%!error unifrnd (ones(2,2), 2, [3, 2])
+%!error unifrnd (ones(2,2), 2, 2, 3)
+

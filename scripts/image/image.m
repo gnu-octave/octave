@@ -164,6 +164,7 @@ function h = __img__ (x, y, img, varargin)
 endfunction
 
 %!demo
+%! clf
 %! img = 1 ./ hilb (11);
 %! x = -5:5;
 %! y = x;
@@ -186,4 +187,40 @@ endfunction
 %! set (h, "cdatamapping", "scaled")
 %! title ('image (-x, -y, img)')
 
+%!demo
+%! clf
+%! g = 0.1:0.1:10;
+%! h = g'*g;
+%! imagesc (g, g, sin (h));
+%! hold on
+%! imagesc (g, g+12, cos (h/2));
+%! axis ([0 10 0 22])
+%! hold off
+%! title ("two consecutive images")
+
+%!demo
+%! clf
+%! g = 0.1:0.1:10;
+%! h = g'*g;
+%! imagesc (g, g, sin (h));
+%! hold all
+%! plot (g, 11.0 * ones (size (g)))
+%! imagesc (g, g+12, cos (h/2));
+%! axis ([0 10 0 22])
+%! hold off
+%! title ("image, line, image")
+
+%!demo
+%! clf
+%! g = 0.1:0.1:10;
+%! h = g'*g;
+%! plot (g, 10.5 * ones (size (g)))
+%! hold all
+%! imagesc (g, g, sin (h));
+%! plot (g, 11.0 * ones (size (g)))
+%! imagesc (g, g+12, cos (h/2));
+%! plot (g, 11.5 * ones (size (g)))
+%! axis ([0 10 0 22])
+%! hold off
+%! title ("line, image, line, image, line")
 

@@ -1521,6 +1521,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
         fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                  usingclause{1}, titlespec{1}, withclause{1});
       elseif (is_image_data (1))
+        if (numel (is_image_data) > 1 && is_image_data(2))
+          ## Remove terminating semicolon
+          n = max (strfind (withclause{1}, ";"));
+          if (! isempty(n))
+            withclause{1} = withclause{1}(1:n-1);
+          endif
+        endif
         fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
                  usingclause{1}, titlespec{1}, withclause{1});
       else
@@ -1542,9 +1549,20 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
               fputs (plot_stream, "unset obj 2; \\\n");
               fg_is_set = false;
             endif
+            if (numel (is_image_data) > i && is_image_data(i+1))
+              ## Remove terminating semicolon
+              n = max (strfind (withclause{i}, ";"));
+              if (! isempty(n))
+                withclause{i} = withclause{i}(1:n-1);
+              endif
+            endif
+            fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
+                     usingclause{i}, titlespec{i}, withclause{i});
+          else
+            ## For consecutive images continue with the same plot command
+            fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", ",",
+                     usingclause{i}, titlespec{i}, withclause{i});
           endif
-          fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
-                   usingclause{i}, titlespec{i}, withclause{i});
         elseif (is_image_data (i-1))
           if (bg_is_set)
             fputs (plot_stream, "unset obj 1; \\\n");

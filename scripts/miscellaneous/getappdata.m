@@ -40,7 +40,7 @@ function val = getappdata (h, name)
         appdata.(name) = [];
       end_try_catch
       val(nh) = {appdata.(name)};
-    end
+    endfor
     if (nh == 1)
       val = val{1};
     endif

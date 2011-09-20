@@ -33,7 +33,7 @@ function setappdata (h, varargin)
   for nh = 1:numel(h)
     if (! isfield (get (h(nh)), "__appdata__"))
       addproperty ("__appdata__", h(nh), "any", struct ());
-    end
+    endif
     appdata = get (h(nh), "__appdata__");
     for narg = 1:2:numel(varargin)
       if (iscellstr (varargin{narg}))

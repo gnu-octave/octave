@@ -321,7 +321,7 @@ function lims = __get_tight_lims__ (ca, ax)
     scale = get (ca, strcat (ax, "scale"));
     if (strcmp (scale, "log") && any (data > 0))
       data(data<=0) = NaN;
-    end
+    endif
     if (iscell (data))
       data = data (find (! cellfun ("isempty", data)));
       if (! isempty (data))

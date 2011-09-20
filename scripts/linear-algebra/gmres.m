@@ -76,7 +76,7 @@ function [x, flag, prec_res_norm, itcnt] = gmres (A, b, restart, rtol, maxit, M1
 
   if (nargin < 2 || nargin > 8)
     print_usage ();    
-  end
+  endif
       
   if (ischar (A))
     Ax = str2func (A);

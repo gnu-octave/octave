@@ -323,11 +323,11 @@ function lims = __get_tight_lims__ (ca, ax)
       if (iscell (data))
         for i = 1:length(data)
           data{i}(data{i}<=0) = NaN;
-        end
+        endfor
       else
         data(data<=0) = NaN;
-      end
-    end
+      endif
+    endif
     if (iscell (data))
       data = data (find (! cellfun (@isempty, data)));
       if (! isempty (data))

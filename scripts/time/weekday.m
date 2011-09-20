@@ -61,7 +61,7 @@ function [d, s] = weekday (d, format)
 
   if (nargout > 1)
     if (strcmpi (format, "long"))
-      names = {"Sunday" "Monday" "Tuesday" "Wednesday" "Thursday"
+      names = {"Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" \
                "Friday" "Saturday"};
     else
       names = {"Sun" "Mon" "Tue" "Wed" "Thu" "Fri" "Sat"};
@@ -96,6 +96,12 @@ endfunction
 %!assert(weekday('7-Feb-2008'),5)
 ## Test fractional dates
 %!assert(weekday(728647.1),2)
+## Test "long" option
+%!test
+%! [a, b] = weekday ("25-Dec-1994", "long");
+%! assert (a, 1);
+%! assert (b, "Sunday");
+
 # demos
 %!demo
 %! [n, s] = weekday (now ())

@@ -78,7 +78,7 @@ endfunction
 %!assert(tpdf (x, [0 NaN 1 1 1]), [NaN NaN y(3:5)], eps);
 
 %% Test class of input preserved
-%!assert(tpdf ([x, NaN], 1), [y, NaN]);
+%!assert(tpdf ([x, NaN], 1), [y, NaN], eps);
 %!assert(tpdf (single([x, NaN]), 1), single([y, NaN]), eps("single"));
 %!assert(tpdf ([x, NaN], single(1)), single([y, NaN]), eps("single"));
 

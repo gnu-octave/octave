@@ -278,6 +278,7 @@ endfunction
 ## Only likely to be within a factor of 10.
 %!test
 %!  N = 100;
+%!  rand ('state', 42);  % Initialize to guarantee reproducible results
 %!  A = rand (N);
 %!  [nm1, v1, w1] = onenormest (A);
 %!  [nminf, vinf, winf] = onenormest (A', 6);

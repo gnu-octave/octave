@@ -39,9 +39,8 @@ function retval = optimset (varargin)
       printf ("  %s\n", opts{:});
       puts ("\n");
     else
-      ## Return empty structure.
-      ## We're incompatible with Matlab at this point.
-      retval = struct ();
+      ## Return struct with all options initialized to []
+      retval = cell2struct (repmat ({[]}, size (opts)), opts, 2);
     endif
   elseif (nargs == 1 && ischar (varargin{1}))
     ## Return defaults for named function.
@@ -90,5 +89,9 @@ function retval = optimset (varargin)
 
 endfunction
 
+
 %!assert (optimget (optimset ('tolx', 1e-2), 'tOLx'), 1e-2)
 %!assert (isfield (optimset ('tolFun', 1e-3), 'TolFun'))
+
+%!error (optimset ("%NOT_A_REAL_FUNCTION_NAME%"))
+

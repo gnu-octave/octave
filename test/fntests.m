@@ -115,26 +115,45 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
     nm = lst(i).name;
-    if (length (nm) > 5 && strcmp (nm(1:5), "test_")
-        && strcmp (nm((end-1):end), ".m"))
-      p = n = xf = sk = 0;
-      ffnm = fullfile (d, nm);
-      if (has_tests (ffnm))
-        print_test_file_name (nm);
-        [p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
-        print_pass_fail (n, p);
-        files_with_tests(end+1) = ffnm;
-      ##elseif (has_demos (ffnm))
-      ##  files_with_tests(end+1) = ffnm;
-      else
-        files_with_no_tests(end+1) = ffnm;
-      endif
+    if (lst(i).isdir
+        && ! strcmp (nm, ".") && ! strcmp (nm, "..")
+        && ! strcmp (nm, "private") && nm(1) != "@"
+        && ! strcmp (nm, "CVS"))
+      [p, n, xf, sk] = run_test_dir (fid, [d, "/", nm]);
       dp += p;
       dn += n;
       dxf += xf;
       dsk += sk;
     endif
   endfor
+  saved_dir = pwd ();
+  unwind_protect
+    chdir (d);
+    for i = 1:length (lst)
+      nm = lst(i).name;
+      if (length (nm) > 5 && strcmp (nm(1:5), "test_")
+          && strcmp (nm((end-1):end), ".m"))
+        p = n = xf = sk = 0;
+        ffnm = fullfile (d, nm);
+        if (has_tests (ffnm))
+          print_test_file_name (nm);
+          [p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
+          print_pass_fail (n, p);
+          files_with_tests(end+1) = ffnm;
+        ##elseif (has_demos (ffnm))
+        ##  files_with_tests(end+1) = ffnm;
+        else
+          files_with_no_tests(end+1) = ffnm;
+        endif
+        dp += p;
+        dn += n;
+        dxf += xf;
+        dsk += sk;
+      endif
+    endfor
+  unwind_protect_cleanup
+    chdir (saved_dir);
+  end_unwind_protect
 endfunction
 
 function [dp, dn, dxf, dsk] = run_test_script (fid, d);

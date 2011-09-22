@@ -55,6 +55,7 @@
 ## has an index into the @code{FunctionTable} identifying the function it
 ## corresponds to as well as data fields for number of calls and time spent
 ## at this level in the call-tree.
+## @seealso{profshow, profexplore}
 ## @end table
 ## @end deftypefn
 

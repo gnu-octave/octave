@@ -30,6 +30,7 @@
 ##
 ## The attribute column shows @samp{R} for recursive functions and nothing
 ## otherwise.
+## @seealso{profexplore, profile}
 ## @end deftypefn
 
 ## Built-in profiler.

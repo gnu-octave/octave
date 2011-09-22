@@ -24,6 +24,7 @@
 ## @code{profile ('info')}, this command opens an interactive prompt
 ## that can be used to explore the call-tree.  Type @kbd{help} to get a list
 ## of possible commands.
+## @seealso{profile, profshow}
 ## @end deftypefn
 
 ## Built-in profiler.

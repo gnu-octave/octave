@@ -23,6 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_profiler_h)
 #define octave_profiler_h 1
 
+#include <cstddef>
 #include <map>
 #include <set>
 #include <string>
@@ -113,7 +114,11 @@ private:
     tree_node* exit (octave_idx_type);
 
     void build_flat (flat_profile&) const;
-    octave_value get_hierarchical (void) const;
+
+    // Get the hierarchical profile for this node and its children.  If total
+    // is set, accumulate total time of the subtree in that variable as
+    // additional return value.
+    octave_value get_hierarchical (double* total = NULL) const;
 
   private:
 

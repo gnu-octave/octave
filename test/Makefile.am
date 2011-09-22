@@ -53,6 +53,7 @@ FCN_FILES = \
 
 include classes/module.mk
 include ctor-vs-method/module.mk
+include fcn-handle-derived-resolution/module.mk
 
 check: test_sparse.m test_bc_overloads.m
 	$(top_builddir)/run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)

@@ -61,6 +61,7 @@ general_FCN_FILES = \
   general/polyarea.m \
   general/postpad.m \
   general/prepad.m \
+  general/profexplore.m \
   general/profile.m \
   general/profshow.m \
   general/quadgk.m \

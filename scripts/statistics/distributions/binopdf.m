@@ -66,15 +66,20 @@ function pdf = binopdf (x, n, p)
 endfunction
 
 
-%!shared x,y
+%!shared x,y,tol
+%! if (ismac ())
+%!   tol = eps ();
+%! else
+%!   tol = 0;
+%! endif
 %! x = [-1 0 1 2 3];
 %! y = [0 1/4 1/2 1/4 0];
-%!assert(binopdf (x, 2*ones(1,5), 0.5*ones(1,5)), y);
-%!assert(binopdf (x, 2, 0.5*ones(1,5)), y);
-%!assert(binopdf (x, 2*ones(1,5), 0.5), y);
+%!assert(binopdf (x, 2*ones(1,5), 0.5*ones(1,5)), y, tol);
+%!assert(binopdf (x, 2, 0.5*ones(1,5)), y, tol);
+%!assert(binopdf (x, 2*ones(1,5), 0.5), y, tol);
 %!assert(binopdf (x, 2*[0 -1 NaN 1.1 1], 0.5), [0 NaN NaN NaN 0]);
 %!assert(binopdf (x, 2, 0.5*[0 -1 NaN 3 1]), [0 NaN NaN NaN 0]);
-%!assert(binopdf ([x, NaN], 2, 0.5), [y, NaN]);
+%!assert(binopdf ([x, NaN], 2, 0.5), [y, NaN], tol);
 
 %% Test class of input preserved
 %!assert(binopdf (single([x, NaN]), 2, 0.5), single([y, NaN]));

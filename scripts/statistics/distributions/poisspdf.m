@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -34,24 +35,51 @@ function pdf = poisspdf (x, lambda)
   if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("poisspdf: X and LAMBDA must be of common size or scalar");
+      error ("poisspdf: X and LAMBDA must be of common size or scalars");
     endif
   endif
 
-  pdf = zeros (size (x));
-
-  k = find (!(lambda > 0) | isnan (x));
-  if (any (k))
-    pdf(k) = NaN;
+  if (iscomplex (x) || iscomplex (lambda))
+    error ("poisspdf: X and LAMBDA must not be complex");
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (lambda > 0));
-  if (any (k))
-    if (isscalar (lambda))
-      pdf(k) = exp (x(k) .* log (lambda) - lambda - gammaln (x(k) + 1));
-    else
-      pdf(k) = exp (x(k) .* log (lambda(k)) - lambda(k) - gammaln (x(k) + 1));
-    endif
+  if (isa (x, "single") || isa (lambda, "single"))
+    pdf = zeros (size (x), "single");
+  else
+    pdf = zeros (size (x));
+  endif
+
+  k = isnan (x) | !(lambda > 0);
+  pdf(k) = NaN;
+
+  k = (x >= 0) & (x < Inf) & (x == fix (x)) & (lambda > 0);
+  if (isscalar (lambda))
+    pdf(k) = exp (x(k) * log (lambda) - lambda - gammaln (x(k) + 1));
+  else
+    pdf(k) = exp (x(k) .* log (lambda(k)) - lambda(k) - gammaln (x(k) + 1));
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 1 2 Inf];
+%! y = [0, exp(-1)*[1 1 0.5], 0];
+%!assert(poisspdf (x, ones(1,5)), y, eps);
+%!assert(poisspdf (x, 1), y, eps);
+%!assert(poisspdf (x, [1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)], eps);
+%!assert(poisspdf ([x, NaN], 1), [y, NaN], eps);
+
+%% Test class of input preserved
+%!assert(poisspdf (single([x, NaN]), 1), single([y, NaN]), eps("single"));
+%!assert(poisspdf ([x, NaN], single(1)), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error poisspdf ()
+%!error poisspdf (1)
+%!error poisspdf (1,2,3)
+%!error poisspdf (ones(3),ones(2))
+%!error poisspdf (ones(2),ones(3))
+%!error poisspdf (i, 2)
+%!error poisspdf (2, i)
+

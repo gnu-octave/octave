@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,78 +18,115 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} cauchy_rnd (@var{location}, @var{scale}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} cauchy_rnd (@var{location}, @var{scale}, @var{sz})
-## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of
-## random samples from the Cauchy distribution with parameters @var{location}
-## and @var{scale} which must both be scalar or of size @var{r} by @var{c}.
+## @deftypefn  {Function File} {} cauchy_rnd (@var{location}, @var{scale})
+## @deftypefnx {Function File} {} cauchy_rnd (@var{location}, @var{scale}, @var{r})
+## @deftypefnx {Function File} {} cauchy_rnd (@var{location}, @var{scale}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} cauchy_rnd (@var{location}, @var{scale}, [@var{sz}])
+## Return a matrix of random samples from the Cauchy distribution with
+## parameters @var{location} and @var{scale}.
 ##
-## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{location} and @var{scale}.
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is the common size of
+## @var{location} and @var{scale}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Cauchy distribution
 
-function rnd = cauchy_rnd (location, scale, r, c)
+function rnd = cauchy_rnd (location, scale, varargin)
 
-  if (nargin > 1)
-    if (!isscalar (location) || !isscalar (scale))
-      [retval, location, scale] = common_size (location, scale);
-      if (retval > 0)
-        error ("cauchy_rnd: LOCATION and SCALE must be of common size or scalar");
-      endif
-    endif
-  endif
-
-  if (nargin == 4)
-    if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("cauchy_rnd: R must be a positive integer");
-    endif
-    if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("cauchy_rnd: C must be a positive integer");
-    endif
-    sz = [r, c];
-
-    if (any (size (location) != 1)
-        && (length (size (location)) != length (sz)
-            || any (size (location) != sz)))
-      error ("cauchy_rnd: LOCATION and SCALE must be scalar or of size [R, C]");
-    endif
-  elseif (nargin == 3)
-    if (isscalar (r) && (r > 0))
-      sz = [r, r];
-    elseif (isvector(r) && all (r > 0))
-      sz = r(:)';
-    else
-      error ("cauchy_rnd: R must be a positive integer or vector");
-    endif
-
-    if (any (size (location) != 1)
-        && (length (size (location)) != length (sz)
-        || any (size (location) != sz)))
-      error ("cauchy_rnd: LOCATION and SCALE must be scalar or of size SZ");
-    endif
-  elseif (nargin == 2)
-    sz = size(location);
-  else
+  if (nargin < 2)
     print_usage ();
   endif
 
-  if (isscalar (location) && isscalar (scale))
-    if (find (!(location > -Inf) | !(location < Inf)
-                | !(scale > 0) | !(scale < Inf)))
-      rnd = NaN (sz);
-    else
-      rnd = location - cot (pi * rand (sz)) .* scale;
-    endif
-  else
-    rnd = NaN (sz);
-    k = find ((location > -Inf) & (location < Inf)
-              & (scale > 0) & (scale < Inf));
-    if (any (k))
-      rnd(k) = location(k)(:) - cot (pi * rand (size (k))) .* scale(k)(:);
+  if (!isscalar (location) || !isscalar (scale))
+    [retval, location, scale] = common_size (location, scale);
+    if (retval > 0)
+      error ("cauchy_rnd: LOCATION and SCALE must be of common size or scalars");
     endif
   endif
 
+  if (iscomplex (location) || iscomplex (scale))
+    error ("cauchy_rnd: LOCATION and SCALE must not be complex");
+  endif
+
+  if (nargin == 2)
+    sz = size (location);
+  elseif (nargin == 3)
+    if (isscalar (varargin{1}) && varargin{1} >= 0)
+      sz = [varargin{1}, varargin{1}];
+    elseif (isrow (varargin{1}) && all (varargin{1} >= 0))
+      sz = varargin{1};
+    else
+      error ("cauchy_rnd: dimension vector must be row vector of non-negative integers");
+    endif
+  elseif (nargin > 3)
+    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+      error ("cauchy_rnd: dimensions must be non-negative integers");
+    endif
+    sz = [varargin{:}];
+  endif
+
+  if (!isscalar (location) && !isequal (size (location), sz))
+    error ("cauchy_rnd: LOCATION and SCALE must be scalar or of size SZ");
+  endif
+
+  if (isa (location, "single") || isa (scale, "single"))
+    cls = "single";
+  else
+    cls = "double";
+  endif
+
+  if (isscalar (location) && isscalar (scale))
+    if (!isinf (location) && (scale > 0) && (scale < Inf))
+      rnd = location - cot (pi * rand (sz)) * scale;
+    else
+      rnd = NaN (sz, cls);
+    endif
+  else
+    rnd = NaN (sz, cls);
+
+    k = !isinf (location) & (scale > 0) & (scale < Inf);
+    rnd(k) = location(k)(:) - cot (pi * rand (sum (k(:)), 1)) .* scale(k)(:);
+  endif
+
 endfunction
+
+
+%!assert(size (cauchy_rnd (1,2)), [1, 1]);
+%!assert(size (cauchy_rnd (ones(2,1), 2)), [2, 1]);
+%!assert(size (cauchy_rnd (ones(2,2), 2)), [2, 2]);
+%!assert(size (cauchy_rnd (1, 2*ones(2,1))), [2, 1]);
+%!assert(size (cauchy_rnd (1, 2*ones(2,2))), [2, 2]);
+%!assert(size (cauchy_rnd (1, 2, 3)), [3, 3]);
+%!assert(size (cauchy_rnd (1, 2, [4 1])), [4, 1]);
+%!assert(size (cauchy_rnd (1, 2, 4, 1)), [4, 1]);
+
+%% Test class of input preserved
+%!assert(class (cauchy_rnd (1, 2)), "double");
+%!assert(class (cauchy_rnd (single(1), 2)), "single");
+%!assert(class (cauchy_rnd (single([1 1]), 2)), "single");
+%!assert(class (cauchy_rnd (1, single(2))), "single");
+%!assert(class (cauchy_rnd (1, single([2 2]))), "single");
+
+%% Test input validation
+%!error cauchy_rnd ()
+%!error cauchy_rnd (1)
+%!error cauchy_rnd (ones(3),ones(2))
+%!error cauchy_rnd (ones(2),ones(3))
+%!error cauchy_rnd (i, 2)
+%!error cauchy_rnd (2, i)
+%!error cauchy_rnd (1,2, -1)
+%!error cauchy_rnd (1,2, ones(2))
+%!error cauchy_rnd (1,2, [2 -1 2])
+%!error cauchy_rnd (1,2, 1, ones(2))
+%!error cauchy_rnd (1,2, 1, -1)
+%!error cauchy_rnd (ones(2,2), 2, 3)
+%!error cauchy_rnd (ones(2,2), 2, [3, 2])
+%!error cauchy_rnd (ones(2,2), 2, 2, 3)
+

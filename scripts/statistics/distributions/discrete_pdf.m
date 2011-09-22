@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1996-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -24,7 +25,7 @@
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
-## Description: pDF of a discrete distribution
+## Description: PDF of a discrete distribution
 
 function pdf = discrete_pdf (x, v, p)
 
@@ -32,28 +33,53 @@ function pdf = discrete_pdf (x, v, p)
     print_usage ();
   endif
 
-  sz = size (x);
-
   if (! isvector (v))
     error ("discrete_pdf: V must be a vector");
+  elseif (any (isnan (v)))
+    error ("discrete_pdf: V must not have any NaN elements");
   elseif (! isvector (p) || (length (p) != length (v)))
     error ("discrete_pdf: P must be a vector with length (V) elements");
   elseif (! (all (p >= 0) && any (p)))
-    error ("discrete_pdf: P must be a nonzero, nonnegative vector");
+    error ("discrete_pdf: P must be a nonzero, non-negative vector");
   endif
 
-  n = numel (x);
-  m = length (v);
-  x = reshape (x, n, 1);
-  v = reshape (v, 1, m);
-  p = reshape (p / sum (p), m, 1);
+  ## Reshape and normalize probability vector.  Values not in table get 0 prob.
+  p = [0 ; p(:)/sum(p)];   
 
-  pdf = NaN (sz);
-  k = find (!isnan (x));
-  if (any (k))
-    n = length (k);
-    [vs, vi] = sort (v);
-    pdf (k) = p (vi(lookup (vs, x(k), 'm')));
+  if (isa (x, "single") || isa (v, "single") || isa (p, "single"))
+    pdf = NaN (size (x), "single");
+  else
+    pdf = NaN (size (x));
   endif
+
+  k = !isnan (x);
+  [vs, vi] = sort (v(:));
+  pdf(k) = p([0 ; vi](lookup (vs, x(k), 'm') + 1) + 1);
 
 endfunction
+
+
+%!shared x,v,p,y
+%! x = [-1 0.1 1.1 1.9 3];
+%! v = 0.1:0.2:1.9;
+%! p = 1/length(v) * ones(1, length(v));
+%! y = [0 0.1 0.1 0.1 0];
+%!assert(discrete_pdf ([x, NaN], v, p), [y, NaN], 5*eps);
+
+%% Test class of input preserved
+%!assert(discrete_pdf (single([x, NaN]), v, p), single([y, NaN]), 5*eps("single"));
+%!assert(discrete_pdf ([x, NaN], single(v), p), single([y, NaN]), 5*eps("single"));
+%!assert(discrete_pdf ([x, NaN], v, single(p)), single([y, NaN]), 5*eps("single"));
+
+%% Test input validation
+%!error discrete_pdf ()
+%!error discrete_pdf (1)
+%!error discrete_pdf (1,2)
+%!error discrete_pdf (1,2,3,4)
+%!error discrete_pdf (1, ones(2), ones(2,1))
+%!error discrete_pdf (1, [1 ; NaN], ones(2,1))
+%!error discrete_pdf (1, ones(2,1), ones(1,1))
+%!error discrete_pdf (1, ones(2,1), [1 -1])
+%!error discrete_pdf (1, ones(2,1), [1 NaN])
+%!error discrete_pdf (1, ones(2,1), [0  0])
+

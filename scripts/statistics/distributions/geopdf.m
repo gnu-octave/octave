@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -31,35 +32,54 @@ function pdf = geopdf (x, p)
     print_usage ();
   endif
 
-  if (!isscalar (x) && !isscalar (p))
+  if (!isscalar (p))
     [retval, x, p] = common_size (x, p);
     if (retval > 0)
-      error ("geopdf: X and P must be of common size or scalar");
+      error ("geopdf: X and P must be of common size or scalars");
     endif
   endif
 
-  pdf = zeros (size (x));
-
-  k = find (isnan (x) | !(p >= 0) | !(p <= 1));
-  if (any (k))
-    pdf(k) = NaN;
+  if (iscomplex (x) || iscomplex (p))
+    error ("geopdf: X and P must not be complex");
   endif
 
-  ## Just for the fun of it ...
-  k = find ((x == Inf) & (p == 0));
-  if (any (k))
-    pdf(k) = 1;
+  if (isa (x, "single") || isa (p, "single"))
+    pdf = zeros (size (x), "single");
+  else
+    pdf = zeros (size (x));
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (p > 0) & (p <= 1));
-  if (any (k))
-    if (isscalar (x))
-      pdf(k) = p(k) .* ((1 - p(k)) .^ x);
-    elseif (isscalar (p))
-      pdf(k) = p .* ((1 - p) .^ x(k));
-    else
-      pdf(k) = p(k) .* ((1 - p(k)) .^ x(k));
-    endif
+  k = isnan (x) | (x == Inf) | !(p >= 0) | !(p <= 1);
+  pdf(k) = NaN;
+
+  k = (x >= 0) & (x < Inf) & (x == fix (x)) & (p > 0) & (p <= 1);
+  if (isscalar (p))
+    pdf(k) = p * ((1 - p) .^ x(k));
+  else
+    pdf(k) = p(k) .* ((1 - p(k)) .^ x(k));
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 1 Inf];
+%! y = [0, 1/2, 1/4, NaN];
+%!assert(geopdf (x, 0.5*ones(1,4)), y);
+%!assert(geopdf (x, 0.5), y);
+%!assert(geopdf (x, 0.5*[-1 NaN 4 1]), [NaN NaN NaN y(4)]);
+%!assert(geopdf ([x, NaN], 0.5), [y, NaN]);
+
+%% Test class of input preserved
+%!assert(geopdf (single([x, NaN]), 0.5), single([y, NaN]), 5*eps("single"));
+%!assert(geopdf ([x, NaN], single(0.5)), single([y, NaN]), 5*eps("single"));
+
+%% Test input validation
+%!error geopdf ()
+%!error geopdf (1)
+%!error geopdf (1,2,3)
+%!error geopdf (ones(3),ones(2))
+%!error geopdf (ones(2),ones(3))
+%!error geopdf (i, 2)
+%!error geopdf (2, i)
+

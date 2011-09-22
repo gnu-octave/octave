@@ -51,7 +51,7 @@
 ## that in the first column counts how many occurrences each number in
 ## the second column has, taken from the vector @var{x}. Note the usage
 ## of @code{unique}  for assigning to all repeated elements of @var{x}
-## the same index (@xref{doc-unique}).
+## the same index (@pxref{doc-unique}).
 ##
 ## @example
 ## @group

@@ -92,7 +92,7 @@ function vi = interpn (varargin)
     if (nargs == 2)
       if (ischar (varargin{2}))
         method = varargin{2};
-      elseif (isnumeric (m) && isscalar (m) && round (m) == m)
+      elseif (isnumeric (m) && isscalar (m) && fix (m) == m)
         m = varargin{2};
       else
         print_usage ();

@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1997-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -25,7 +26,7 @@
 ## replacement from a population of total size @var{t} containing
 ## @var{m} marked items.
 ##
-## The parameters @var{t}, @var{m}, and @var{n} must positive integers
+## The parameters @var{t}, @var{m}, and @var{n} must be positive integers
 ## with @var{m} and @var{n} not greater than @var{t}.
 ## @end deftypefn
 
@@ -39,14 +40,70 @@ function cdf = hygecdf (x, t, m, n)
   endif
 
   if (!isscalar (t) || !isscalar (m) || !isscalar (n))
-    error ("hygecdf: T, M and N must all be positive integers");
+    [retval, x, t, m, n] = common_size (x, t, m, n);
+    if (retval > 0)
+      error ("hygecdf: X, T, M, and N must be of common size or scalars");
+    endif
   endif
 
-  if (t < 0 || m < 0 || n <= 0 || t != round (t) || m != round (m)
-      || n != round (n) || m > t || n > t)
-    cdf = NaN (size (x));
+  if (iscomplex (x) || iscomplex (t) || iscomplex (m) || iscomplex (n))
+    error ("hygecdf: X, T, M, and N must not be complex");
+  endif
+
+  if (isa (x, "single") || isa (t, "single") || isa (m, "single") || isa (n, "single"))
+    cdf = NaN (size (x), "single");
   else
-    cdf = discrete_cdf (x, 0 : n, hygepdf (0 : n, t, m, n));
+    cdf = NaN (size (x));
+  endif
+
+  ok = ((t >= 0) & (m >= 0) & (n > 0) & (m <= t) & (n <= t) &
+        (t == fix (t)) & (m == fix (m)) & (n == fix (n)));
+
+  if (isscalar (t))
+    if (ok)
+      cdf = discrete_cdf (x, 0 : n, hygepdf (0 : n, t, m, n));
+    endif
+  else
+    for i = find (ok(:)')  # Must be row vector arg to for loop
+      v = 0 : n(i);
+      cdf(i) = discrete_cdf (x(i), v, hygepdf (v, t(i), m(i), n(i)));
+    endfor
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 1 2 3];
+%! y = [0 1/6 5/6 1 1];
+%!assert(hygecdf (x, 4*ones(1,5), 2, 2), y, eps);
+%!assert(hygecdf (x, 4, 2*ones(1,5), 2), y, eps);
+%!assert(hygecdf (x, 4, 2, 2*ones(1,5)), y, eps);
+%!assert(hygecdf (x, 4*[1 -1 NaN 1.1 1], 2, 2), [y(1) NaN NaN NaN y(5)], eps);
+%!assert(hygecdf (x, 4, 2*[1 -1 NaN 1.1 1], 2), [y(1) NaN NaN NaN y(5)], eps);
+%!assert(hygecdf (x, 4, 5, 2), [NaN NaN NaN NaN NaN]);
+%!assert(hygecdf (x, 4, 2, 2*[1 -1 NaN 1.1 1]), [y(1) NaN NaN NaN y(5)], eps);
+%!assert(hygecdf (x, 4, 2, 5), [NaN NaN NaN NaN NaN]);
+%!assert(hygecdf ([x(1:2) NaN x(4:5)], 4, 2, 2), [y(1:2) NaN y(4:5)], eps);
+
+%% Test class of input preserved
+%!assert(hygecdf ([x, NaN], 4, 2, 2), [y, NaN], eps);
+%!assert(hygecdf (single([x, NaN]), 4, 2, 2), single([y, NaN]), eps("single"));
+%!assert(hygecdf ([x, NaN], single(4), 2, 2), single([y, NaN]), eps("single"));
+%!assert(hygecdf ([x, NaN], 4, single(2), 2), single([y, NaN]), eps("single"));
+%!assert(hygecdf ([x, NaN], 4, 2, single(2)), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error hygecdf ()
+%!error hygecdf (1)
+%!error hygecdf (1,2)
+%!error hygecdf (1,2,3)
+%!error hygecdf (1,2,3,4,5)
+%!error hygecdf (ones(2), ones(3), 1, 1)
+%!error hygecdf (1, ones(2), ones(3), 1)
+%!error hygecdf (1, 1, ones(2), ones(3))
+%!error hygecdf (i, 2, 2, 2)
+%!error hygecdf (2, i, 2, 2)
+%!error hygecdf (2, 2, i, 2)
+%!error hygecdf (2, 2, 2, i)
+

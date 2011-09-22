@@ -28,8 +28,9 @@
 ## @end group
 ## @end example
 ##
-## If @var{d} is a vector, return a string matrix, one row per value,
-## padded with leading zeros to the width of the largest value.
+## If @var{d} is a matrix or cell array, return a string matrix with one
+## row per element in @var{d}, padded with leading zeros to the width of 
+## the largest value.
 ##
 ## The optional second argument, @var{len}, specifies the minimum
 ## number of digits in the result.
@@ -51,8 +52,10 @@ function h = dec2hex (d, len)
 
 endfunction
 
-%!assert(strcmpi (dec2hex (2748), "abc"));
-%!assert(strcmpi (dec2hex (2748, 5), "00abc"));
+
+%!assert(dec2hex (2748), "ABC");
+%!assert(dec2hex (2748, 5), "00ABC");
+%!assert(dec2hex ({2748, 2746}), ["ABC"; "ABA"]);
 
 %% Test input validation
 %!error dec2hex ();

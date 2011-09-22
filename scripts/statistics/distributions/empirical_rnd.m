@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1996-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,29 +18,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} empirical_rnd (@var{n}, @var{data})
-## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{sz})
-## Generate a bootstrap sample of size @var{n} from the empirical
-## distribution obtained from the univariate sample @var{data}.
+## @deftypefn  {Function File} {} empirical_rnd (@var{data})
+## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r})
+## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} empirical_rnd (@var{data}, [@var{sz}])
+## Return a matrix of random samples from the empirical distribution obtained
+## from the univariate sample @var{data}.
 ##
-## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
-## @var{c} columns.  Or if @var{sz} is a vector, create a matrix of size
-## @var{sz}.
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is a random ordering
+## of the sample @var{data}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Bootstrap samples from the empirical distribution
 
-function rnd = empirical_rnd (data, r, c)
+function rnd = empirical_rnd (data, varargin)
 
-  if (nargin == 2)
-    if (isscalar(data))
-      c = data;
-      data = r;
-      r = 1;
-    endif
-  elseif (nargin != 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -47,6 +48,22 @@ function rnd = empirical_rnd (data, r, c)
     error ("empirical_rnd: DATA must be a vector");
   endif
 
-  rnd = discrete_rnd (data, ones (size (data)) / length (data), r, c);
+  rnd = discrete_rnd (data, ones (size (data)), varargin{:});
 
 endfunction
+
+
+%!assert(size (empirical_rnd (ones (3, 1))), [3, 1]);
+%!assert(size (empirical_rnd (1:2, [4 1])), [4, 1]);
+%!assert(size (empirical_rnd (1:2, 4, 1)), [4, 1]);
+
+%% Test class of input preserved
+%!assert(class (empirical_rnd (1:2, 1)), "double");
+%!assert(class (empirical_rnd (single(1:2), 1)), "single");
+
+%% Test input validation
+%!error empirical_rnd ()
+%!error empirical_rnd (ones(2), 1)
+%% test data verification
+%!error empirical_rnd (ones(2), 1, 1)
+

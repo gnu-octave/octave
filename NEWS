@@ -4,8 +4,26 @@ Summary of important user-visible changes for version 3.6:
  ** The PCRE library is now required to build Octave.
 
  ** Octave now features a profiler, thanks to the work of Daniel Kraft
-    under the Google Summer of Code mentorship program. The manual has
+    under the Google Summer of Code mentorship program.  The manual has
     been updated to reflect this addition.
+
+ ** Overhaul of statistical distribution functions
+
+    Functions now return "single" outputs for inputs of class "single".
+
+    75% reduction in memory usage through use of logical indexing.
+
+    Random sample functions now use the same syntax as rand() and accept
+    a comma separated list of dimensions or a dimension vector.
+
+    Functions have been made Matlab-compatible with regard to special
+    cases (probability on boundaries, probabilities for values outside
+    distribution, etc.).  This may cause subtle changes to existing
+    scripts.
+
+    negative binomial function has been extended to real, non-integer inputs.
+    discrete_inv() now returns v(1) for 0 instead of NaN.
+    nbincdf() recoded to use closed form solution with betainc().
 
  ** strread, textscan, and textread have been completely revamped.
 
@@ -20,7 +38,7 @@ Summary of important user-visible changes for version 3.6:
  ** Certain string functions have been modified for greater Matlab compatibility
     and for 15X greater performance when operating on cell array of strings.
 
-    deblank : Now requires character or cellstr input
+    deblank : Now requires character or cellstr input.
     strtrim : Now requires character or cellstr input.
               No longer trims nulls ("\0") from string for ML compatibility.
     strmatch: Follows documentation precisely and ignores trailing spaces

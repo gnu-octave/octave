@@ -321,7 +321,7 @@ function lims = __get_tight_lims__ (ca, ax)
     scale = get (ca, strcat (ax, "scale"));
     if (strcmp (scale, "log") && any (data > 0))
       data(data<=0) = NaN;
-    end
+    endif
     if (iscell (data))
       data = data (find (! cellfun ("isempty", data)));
       if (! isempty (data))
@@ -350,6 +350,7 @@ function __do_tight_option__ (ca)
 endfunction
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(221);
@@ -372,6 +373,7 @@ endfunction
 %! axis("normal");
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(121);
@@ -385,6 +387,7 @@ endfunction
 %! axis("xy");
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(331);
@@ -433,6 +436,7 @@ endfunction
 %! axis("on");
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(321);
@@ -492,4 +496,9 @@ endfunction
 %! set (gca, "yscale", "log")
 %! legend ({"x >= 1", "x <= 1"}, "location", "north")
 %! title ("ylim = [1, 10]")
+
+%!demo
+%! clf
+%! loglog (1:20, "-s")
+%! axis tight
 

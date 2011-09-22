@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,56 +18,82 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} normcdf (@var{x}, @var{m}, @var{s})
+## @deftypefn  {Function File} {} normcdf (@var{x})
+## @deftypefnx {Function File} {} normcdf (@var{x}, @var{mu}, @var{sigma})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the normal distribution with mean
-## @var{m} and standard deviation @var{s}.
+## @var{mu} and standard deviation @var{sigma}.
 ##
-## Default values are @var{m} = 0, @var{s} = 1.
+## Default values are @var{mu} = 0, @var{sigma} = 1.
 ## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: CDF of the normal distribution
 
-function cdf = normcdf (x, m, s)
+function cdf = normcdf (x, mu = 0, sigma = 1)
 
-  if (! ((nargin == 1) || (nargin == 3)))
+  if (nargin != 1 && nargin != 3)
     print_usage ();
   endif
 
-  if (nargin == 1)
-    m = 0;
-    s = 1;
-  endif
-
-  if (!isscalar (m) || !isscalar (s))
-    [retval, x, m, s] = common_size (x, m, s);
+  if (!isscalar (mu) || !isscalar (sigma))
+    [retval, x, mu, sigma] = common_size (x, mu, sigma);
     if (retval > 0)
-      error ("normcdf: X, M and S must be of common size or scalar");
+      error ("normcdf: X, MU, and SIGMA must be of common size or scalars");
     endif
   endif
 
-  sz = size (x);
-  cdf = zeros (sz);
+  if (iscomplex (x) || iscomplex (mu) || iscomplex (sigma))
+    error ("normcdf: X, MU, and SIGMA must not be complex");
+  endif
 
-  if (isscalar (m) && isscalar(s))
-    if (find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf)))
-      cdf = NaN (sz);
+  if (isa (x, "single") || isa (mu, "single") || isa (sigma, "single"));
+    cdf = zeros (size (x), "single");
+  else
+    cdf = zeros (size (x));
+  endif
+
+  if (isscalar (mu) && isscalar (sigma))
+    if (!isinf (mu) && !isnan (mu) && (sigma > 0) && (sigma < Inf))
+      cdf = stdnormal_cdf ((x - mu) / sigma);
     else
-      cdf =  stdnormal_cdf ((x - m) ./ s);
+      cdf = NaN (size (x), class (cdf));
     endif
   else
-    k = find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf));
-    if (any (k))
-      cdf(k) = NaN;
-    endif
+    k = isinf (mu) | isnan (mu) | !(sigma > 0) | !(sigma < Inf);
+    cdf(k) = NaN;
 
-    k = find (!isinf (m) & !isnan (m) & (s > 0) & (s < Inf));
-    if (any (k))
-      cdf(k) = stdnormal_cdf ((x(k) - m(k)) ./ s(k));
-    endif
+    k = ! k;
+    cdf(k) = stdnormal_cdf ((x(k) - mu(k)) ./ sigma(k));
   endif
 
-  cdf((s == 0) & (x == m)) = 0.5;
-
 endfunction
+
+
+%!shared x,y
+%! x = [-Inf 1 2 Inf];
+%! y = [0, 0.5, 1/2*(1+erf(1/sqrt(2))), 1];
+%!assert(normcdf (x, ones(1,4), ones(1,4)), y);
+%!assert(normcdf (x, 1, ones(1,4)), y);
+%!assert(normcdf (x, ones(1,4), 1), y);
+%!assert(normcdf (x, [0 -Inf NaN Inf], 1), [y(1) NaN NaN NaN]);
+%!assert(normcdf (x, 1, [Inf NaN -1 0]), [NaN NaN NaN NaN]);
+%!assert(normcdf ([x(1:2) NaN x(4)], 1, 1), [y(1:2) NaN y(4)]);
+
+%% Test class of input preserved
+%!assert(normcdf ([x, NaN], 1, 1), [y, NaN]);
+%!assert(normcdf (single([x, NaN]), 1, 1), single([y, NaN]), eps("single"));
+%!assert(normcdf ([x, NaN], single(1), 1), single([y, NaN]), eps("single"));
+%!assert(normcdf ([x, NaN], 1, single(1)), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error normcdf ()
+%!error normcdf (1,2)
+%!error normcdf (1,2,3,4)
+%!error normcdf (ones(3),ones(2),ones(2))
+%!error normcdf (ones(2),ones(3),ones(2))
+%!error normcdf (ones(2),ones(2),ones(3))
+%!error normcdf (i, 2, 2)
+%!error normcdf (2, i, 2)
+%!error normcdf (2, 2, i)
+

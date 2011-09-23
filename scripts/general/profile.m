@@ -137,7 +137,7 @@ endfunction
 %! ftbl = info.FunctionTable;
 %! assert (fieldnames (ftbl), {'FunctionName'; 'TotalTime'; 'NumCalls'; 'IsRecursive'; 'Parents'; 'Children'});
 %! hier = info.Hierarchical;
-%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'NumCalls'; 'Children'});
+%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'TotalTime'; 'NumCalls'; 'Children'});
 %! profile ('clear');
 %! info = profile ('info');
 %! assert (isstruct (info));

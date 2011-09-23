@@ -27,12 +27,9 @@
 ## @var{d} should be between 0 and 1.  Values will be uniformly
 ## distributed between 0 and 1.
 ##
-## Note: sometimes the actual density may be a bit smaller than @var{d}.
-## This is unlikely to happen for large, truly sparse, matrices.
-##
 ## If called with a single matrix argument, a random sparse matrix is
 ## generated wherever the matrix @var{S} is non-zero.
-## @seealso{sprandn}
+## @seealso{sprandn, sprandsym}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
@@ -47,36 +44,13 @@
 
 function S = sprand (m, n, d)
 
-  if (nargin != 1 && nargin != 3)
+  if (nargin == 1 )
+    S = __sprand_impl__ (m, @rand);
+  elseif ( nargin == 3)
+    S = __sprand_impl__ (m, n, d, "sprand", @rand);
+  else
     print_usage ();
   endif
-
-  if (nargin == 1)
-    [i, j] = find (m);
-    [nr, nc] = size (m);
-    S = sparse (i, j, rand (size (i)), nr, nc);
-    return;
-  endif
-
-  if (!(isscalar (m) && m == fix (m) && m > 0))
-    error ("sprand: M must be an integer greater than 0");
-  endif
-
-  if (!(isscalar (n) && n == fix (n) && n > 0))
-    error ("sprand: N must be an integer greater than 0");
-  endif
-
-  if (d < 0 || d > 1)
-    error ("sprand: density D must be between 0 and 1");
-  endif
-
-  mn = m*n;
-  ## how many entries in S would be satisfactory?
-  k = round (d*mn);
-  idx = randperm (mn, k);
-
-  [i, j] = ind2sub ([m, n], idx);
-  S = sparse (i, j, rand (k, 1), m, n);
 
 endfunction
 

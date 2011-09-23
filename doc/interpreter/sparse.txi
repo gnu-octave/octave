@@ -241,7 +241,7 @@ vector of the same size containing the data to be stored.  For example,
 @group
   ri = ci = d = [];
   for j = 1:c
-    ri = [ri; randperm(r)(1:n)'];
+    ri = [ri; randperm(r,n)'];
     ci = [ci; j*ones(n,1)];
     d = [d; rand(n,1)];
   endfor

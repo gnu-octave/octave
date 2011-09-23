@@ -55,7 +55,9 @@ function retval = pascal (n, t)
   endif
 
   retval = zeros (n);
-  retval(:,1) = 1;
+  if (n > 0)
+    retval(:,1) = 1;
+  endif
 
   if (t == -1)
     for j = 2:n
@@ -71,9 +73,7 @@ function retval = pascal (n, t)
     retval = retval*retval';
   elseif (t == 2)
     retval = retval';
-    retval = retval(n:-1:1,:);
-    retval(:,n) = -retval(:,n);
-    retval(n,:) = -retval(n,:);
+    retval = retval (:,n:-1:1);
     if (rem(n,2) != 1)
       retval = -retval;
     endif
@@ -85,7 +85,7 @@ endfunction
 %!assert (pascal(3,0), [1,1,1;1,2,3;1,3,6])
 %!assert (pascal(3,0), pascal(3))
 %!assert (pascal(3,1), [1,0,0;1,-1,0;1,-2,1])
-%!assert (pascal(3,2), [0,0,-1;0,-1,2;-1,-1,1])
+%!assert (pascal(3,2), [1,1,1;-2,-1,0;1,0,0])
 %!error (pascal(3,4))
 %!error (pascal(3,-2))
 %!error (pascal())

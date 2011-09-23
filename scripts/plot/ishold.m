@@ -58,3 +58,23 @@ function retval = ishold (h)
             && strcmpi (get (ax, "nextplot"), "add"));
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   l = plot ([0 1]);
+%!   assert (!ishold);
+%!   assert (!ishold (gca));
+%!   assert (get (gca, "NextPlot"), "replace");
+%!   assert (get (hf, "NextPlot"), "add");
+%!   hold;
+%!   assert (ishold);
+%!   assert (ishold (gca));
+%!   assert (get (gca, "NextPlot"), "add");
+%!   assert (get (hf, "NextPlot"), "add");
+%!   p = fill ([0 1 1], [0 0 1],"black");
+%!   assert (length (get (hf, "children")), 1);
+%!   assert (length (get (gca, "children")), 2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

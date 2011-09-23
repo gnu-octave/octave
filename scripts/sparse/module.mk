@@ -1,7 +1,7 @@
 FCN_FILE_DIRS += sparse
 
 sparse_PRIVATE_FCN_FILES = \
-	__sprand_impl__.m
+	sparse/private/__sprand_impl__.m
 
 sparse_FCN_FILES = \
   sparse/bicg.m \

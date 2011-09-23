@@ -1,4 +1,5 @@
 ## Copyright (C) 2004-2011 Paul Kienzle
+## Copyright (C) 2011 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##
@@ -19,10 +20,9 @@
 ## Original version by Paul Kienzle distributed as free software in the
 ## public domain.
 
-## Undocumented internal function.
-
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
+## @deftypefn {Function File} {} __sprand_impl__ (@var{s}, @var{randfun})
+## @deftypefnx {Function File} {} __sprand_impl__ (@var{m}, @var{n}, @var{d}, @var{funname}, @var{randfun})
 ## Undocumented internal function.
 ## @end deftypefn
 

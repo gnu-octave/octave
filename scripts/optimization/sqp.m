@@ -443,7 +443,19 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     info = INFO.info;
 
-    ## Check QP solution and attempt to recover if it has failed.
+    ## FIXME -- check QP solution and attempt to recover if it has
+    ## failed.  For now, just warn about possible problems.
+    
+    id = "Octave:SQP-QP-subproblem";
+    switch (info)
+      case 2
+        warning (id, "sqp: QP subproblem is non-convex and unbounded");
+      case 3
+        warning (id, "sqp: QP subproblem failed to converge in %d iterations",
+                 INFO.solveiter);
+      case 6
+        warning (id, "sqp: QP subproblem is infeasible");
+    endswitch
 
     ## Choose mu such that p is a descent direction for the chosen
     ## merit function phi.

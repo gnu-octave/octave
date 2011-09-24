@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "ov.h"
+#include "oct-locbuf.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
@@ -7121,6 +7122,21 @@ the dimensions of @var{pv}.\n\
   return retval;
 }
 
+static std::string
+get_graphics_object_type (const double val)
+{
+  std::string retval;
+
+  graphics_object obj = gh_manager::get_object (val);
+
+  if (obj)
+    retval = obj.type ();
+  else
+    error ("get: invalid handle (= %g)", val);
+
+  return retval;
+}
+
 DEFUN (get, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} get (@var{h}, @var{p})\n\
@@ -7154,31 +7170,57 @@ values or lists respectively.\n\
 
           vals.resize (dim_vector (len, 1));
 
-          for (octave_idx_type n = 0; n < len; n++)
+          if (nargin == 1 && len > 1)
             {
-              graphics_object obj = gh_manager::get_object (hcv(n));
+              std::string t0 = get_graphics_object_type (hcv(0));
 
-              if (obj)
+              if (! error_state)
                 {
-                  if (nargin == 1)
-                    vals(n) = obj.get ();
-                  else
+                  for (octave_idx_type n = 1; n < len; n++)
                     {
-                      caseless_str property = args(1).string_value ();
+                      std::string t = get_graphics_object_type (hcv(n));
 
-                      if (! error_state)
-                        vals(n) = obj.get (property);
-                      else
+                      if (error_state)
+                        break;
+
+                      if (t != t0)
                         {
-                          error ("get: expecting property name as second argument");
+                          error ("get: vector of handles must all have same type");
                           break;
                         }
                     }
+
                 }
-              else
+            }
+
+          if (! error_state)
+            {
+              for (octave_idx_type n = 0; n < len; n++)
                 {
-                  error ("get: invalid handle (= %g)", hcv(n));
-                  break;
+                  graphics_object obj = gh_manager::get_object (hcv(n));
+
+                  if (obj)
+                    {
+                      if (nargin == 1)
+                        vals(n) = obj.get ();
+                      else
+                        {
+                          caseless_str property = args(1).string_value ();
+
+                          if (! error_state)
+                            vals(n) = obj.get (property);
+                          else
+                            {
+                              error ("get: expecting property name as second argument");
+                              break;
+                            }
+                        }
+                    }
+                  else
+                    {
+                      error ("get: invalid handle (= %g)", hcv(n));
+                      break;
+                    }
                 }
             }
         }
@@ -7196,6 +7238,15 @@ values or lists respectively.\n\
         retval = Matrix ();
       else if (len == 1)
         retval = vals(0);
+      else if (len > 1 && nargin == 1)
+        {
+          OCTAVE_LOCAL_BUFFER (octave_scalar_map, tmp, len);
+
+          for (octave_idx_type n = 0; n < len; n++)
+            tmp[n] = vals(n).scalar_map_value ();
+
+          retval = octave_map::cat (0, len, tmp);
+        }
       else
         retval = vals;
     }

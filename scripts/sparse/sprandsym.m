@@ -1,4 +1,5 @@
 ## Copyright (C) 2004-2011 David Bateman and Andy Adler
+## Copyright (C) 2011 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##
@@ -23,9 +24,6 @@
 ## @var{n} by @var{n}, with a density of values given by @var{d}.
 ## @var{d} should be between 0 and 1. Values will be normally
 ## distributed with mean of zero and variance 1.
-##
-## Note: sometimes the actual density may be a bit smaller than @var{d}.
-## This is unlikely to happen for large really sparse matrices.
 ##
 ## If called with a single matrix argument, a random sparse matrix is
 ## generated wherever the matrix @var{S} is non-zero in its lower
@@ -55,48 +53,98 @@ function S = sprandsym (n, d)
     error ("sprand: density D must be between 0 and 1");
   endif
 
-  m1 = floor (n/2);
-  n1 = m1 + rem (n, 2);
-  mn1 = m1*n1;
-  k1 = round (d*mn1);
-  idx1 = unique (fix (rand (min (k1*1.01, k1+10), 1) * mn1)) + 1;
-  ## idx contains random numbers in [1,mn] generate 1% or 10 more
-  ## random values than necessary in order to reduce the probability
-  ## that there are less than k distinct values; maybe a better
-  ## strategy could be used but I don't think it's worth the price.
+  ## Actual number of nonzero entries
+  k = round (n^2*d);
 
-  ## Actual number of entries in S.
-  k1 = min (length (idx1), k1);
-  j1 = floor ((idx1(1:k1)-1)/m1);
-  i1 = idx1(1:k1) - j1*m1;
+  ## Diagonal nonzero entries, same parity as k
+  r = pick_rand_diag (n, k);
 
-  n2 = ceil (n/2);
-  nn2 = n2*n2;
-  k2 = round (d*nn2);
-  idx2 = unique (fix (rand (min (k2*1.01, k1+10), 1) * nn2)) + 1;
-  k2 = min (length (idx2), k2);
-  j2 = floor ((idx2(1:k2)-1)/n2);
-  i2 = idx2(1:k2) - j2*n2;
+  ## Off diagonal nonzero entries
+  m = (k - r)/2;
 
-  if (isempty (i1) && isempty (i2))
-    S = sparse (n, n);
-  else
-    S1 = sparse (i1, j1+1, randn (k1, 1), m1, n1);
-    S = [tril(S1), sparse(m1,m1); ...
-         sparse(i2,j2+1,randn(k2,1),n2,n2), triu(S1,1)'];
-    S = S + tril (S, -1)';
-  endif
+  ondiag = randperm (n, r);
+  offdiag = randperm (n*(n - 1)/2, m);
+
+  ## Do five Newton iterations to solve n(n - 1)/2 = offdiag (this is the
+  ## row index)
+  x = sqrt (offdiag);
+  for ii = 1:5
+    x = x - (x.^2 - x - 2*offdiag)./(2*x - 1);
+  endfor
+  i = floor(x);
+  i(i.^2 - i - 2*offdiag != 0) += 1;
+
+  ## Column index
+  j = offdiag - (i - 1).*(i - 2)/2;
+
+  diagvals = randn (1, r);
+  offdiagvals = randn (1, m);
+
+  S = sparse ([ondiag, i, j], [ondiag, j, i],
+              [diagvals, offdiagvals, offdiagvals], n, n);
 
 endfunction
 
+function r = pick_rand_diag (n, k)
+  ## Pick a random number R of entries for the diagonal of a sparse NxN
+  ## square matrix with exactly K nonzero entries, ensuring that this R
+  ## is chosen uniformly over all such matrices.
+  ##
+  ## Let D be the number of diagonal entries and M the number of
+  ## off-diagonal entries. Then K = D + 2*M. Let A = N*(N-1)/2 be the
+  ## number of available entries in the upper triangle of the matrix.
+  ## Then, by a simple counting argument, there is a total of
+  ##
+  ##     T = nchoosek (N, D) * nchoosek (A, M)
+  ##
+  ## symmetric NxN matrices with a total of K nonzero entries and D on
+  ## the diagonal. Letting D range from mod (K,2) through min (N,K), and
+  ## dividing by this sum, we obtain the probability P for D to be each
+  ## of those values.
+  ##
+  ## However, we cannot use this form for computation, as the binomial
+  ## coefficients become unmanageably large. Instead, we use the
+  ## successive quotients Q(i) = T(i+1)/T(i), which we easily compute to
+  ## be
+  ##
+  ##               (N - D)*(N - D - 1)*M
+  ##     Q =  -------------------------------
+  ##            (D + 2)*(D + 1)*(A - M + 1)
+  ##
+  ## Then the cumprod of these quotients is
+  ##
+  ##      C = [ T(2)/T(1), T(3)/T(1), ..., T(N)/T(1) ]
+  ##
+  ## Their sum + 1 is thus S = sum (T)/T(1), and then C(i)/S is the
+  ## desired probability P(i) for i = 2:N. The first P(1) can be
+  ## obtained by the condition that sum (P) = 1, and the cumsum will
+  ## give the distribution function for computing the random number of
+  ## entries on the diagonal R.
 
-## FIXME: Test for density can't happen until code of sprandsym is improved
+  ## Compute the stuff described above
+  a = n*(n - 1)/2;
+  d = [mod(k,2):2:min(n,k)-2];
+  m = (k - d)/2;
+  q = (n - d).*(n - d - 1).*m ./ (d + 2)./(d + 1)./(a - m + 1);
+  c = cumprod (q);
+  s = sum (c) + 1;
+  p = c/s;
+
+  ## Add missing entries
+  p = [1 - sum(p), p];
+  d(end+1) = d(end) + 2;
+
+  ## Pick a random r using this distribution
+  r = d(sum (cumsum (p) < rand) + 1);
+
+endfunction
+
 %!test
 %! s = sprandsym (10, 0.1);
 %! assert (issparse (s));
 %! assert (issymmetric (s));
 %! assert (size (s), [10, 10]);
-##%! assert (nnz (s) / numel (s), 0.1, .01);
+%! assert (nnz (s) / numel (s), 0.1, .01);
 
 %% Test 1-input calling form
 %!test

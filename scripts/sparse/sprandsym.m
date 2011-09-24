@@ -65,13 +65,8 @@ function S = sprandsym (n, d)
   ondiag = randperm (n, r);
   offdiag = randperm (n*(n - 1)/2, m);
 
-  ## Do five Newton iterations to solve n(n - 1)/2 = offdiag (this is the
-  ## row index)
-  x = sqrt (offdiag);
-  for ii = 1:5
-    x = x - (x.^2 - x - 2*offdiag)./(2*x - 1);
-  endfor
-  i = floor(x);
+  ## solve with quadratic formula n^2 - n - 2*offdiag = 0 to get the row index
+  i = floor((1 + sqrt(1 + 8*offdiag))/2);
   i(i.^2 - i - 2*offdiag != 0) += 1;
 
   ## Column index

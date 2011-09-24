@@ -5375,17 +5375,55 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
 void
 axes::properties::calc_ticklabels (const array_property& ticks,
-                                   any_property& labels, bool /*logscale*/)
+                                   any_property& labels, bool logscale)
 {
   Matrix values = ticks.get ().matrix_value ();
   Cell c (values.dims ());
   std::ostringstream os;
 
-  for (int i = 0; i < values.numel (); i++)
+  if (logscale)
     {
-      os.str (std::string ());
-      os << values(i);
-      c(i) = os.str ();
+      double significand;
+      double exponent;
+      double exp_max = 0.;
+      double exp_min = 0.;
+
+      for (int i = 0; i < values.numel (); i++)
+        {
+          exp_max = std::max (exp_max, std::log10 (values(i)));
+          exp_min = std::max (exp_min, std::log10 (values(i)));
+        }
+
+      for (int i = 0; i < values.numel (); i++)
+        {
+          if (values(i) < 0.)
+            exponent = gnulib::floor (std::log10 (-values(i)));
+          else
+            exponent = gnulib::floor (std::log10 (values(i)));
+          significand = values(i) * std::pow (10., -exponent);
+          os.str (std::string ());
+          os << significand;
+          if (exponent < 0.)
+            {
+              os << "e-";
+              exponent = -exponent;
+            }
+          else
+            os << "e+";
+          if (exponent < 10. && (exp_max > 9 || exp_min < -9))
+            os << "0";
+          os << exponent;
+          c(i) = os.str ();
+        }
+    }
+  else
+    {
+      for (int i = 0; i < values.numel (); i++)
+        {
+          os.str (std::string ());
+          os << values(i);
+          c(i) = os.str ();
+        }
     }
 
   labels = c;

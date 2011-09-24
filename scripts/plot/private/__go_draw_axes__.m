@@ -338,7 +338,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 
     ## Detect logscale and negative lims
     if (xlogscale && all (axis_obj.xlim < 0))
-      xsgn = -1;
+      axis_obj.xsgn = -1;
       if (strcmp (axis_obj.xdir, "reverse"))
         axis_obj.xdir = "normal";
       else
@@ -346,13 +346,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       endif
       axis_obj.xtick = -flip (axis_obj.xtick);
       axis_obj.xticklabel = flip (axis_obj.xticklabel);
-      axis_obj.xticklabelmode = "manual";
       axis_obj.xlim = -flip (axis_obj.xlim);
     else
-      xsgn = 1;
+      axis_obj.xsgn = 1;
     endif
     if (ylogscale && all (axis_obj.ylim < 0))
-      ysgn = -1;
+      axis_obj.ysgn = -1;
       if (strcmp (axis_obj.ydir, "reverse"))
         axis_obj.ydir = "normal";
       else
@@ -360,13 +359,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       endif
       axis_obj.ytick = -flip (axis_obj.ytick);
       axis_obj.yticklabel = flip (axis_obj.yticklabel);
-      axis_obj.yticklabelmode = "manual";
       axis_obj.ylim = -flip (axis_obj.ylim);
     else
-      ysgn = 1;
+      axis_obj.ysgn = 1;
     endif
     if (zlogscale && all (axis_obj.zlim < 0))
-      zsgn = -1;
+      axis_obj.zsgn = -1;
       if (strcmp (axis_obj.zdir, "reverse"))
         axis_obj.zdir = "normal";
       else
@@ -374,18 +372,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       endif
       axis_obj.ztick = -flip (axis_obj.ztick);
       axis_obj.zticklabel = flip (axis_obj.zticklabel);
-      axis_obj.zticklabelmode = "manual";
       axis_obj.zlim = -flip (axis_obj.zlim);
     else
-      zsgn = 1;
-    endif
-
-    if (ylogscale && false)
-      disp ('yscale is "log"')
-      ylim = axis_obj.ylim
-      ytick = axis_obj.ytick
-      yticklabel = axis_obj.yticklabel
-      yticklabelmode = axis_obj.yticklabelmode
+      axis_obj.zsgn = 1;
     endif
 
     xlim = axis_obj.xlim;
@@ -462,15 +451,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       endif
 
       if (xlogscale && isfield (obj, "xdata"))
-        obj.xdata = xsgn * obj.xdata;
+        obj.xdata = axis_obj.xsgn * obj.xdata;
         obj.xdata(obj.xdata<=0) = NaN;
       endif
       if (ylogscale && isfield (obj, "ydata"))
-        obj.ydata = ysgn * obj.ydata;
+        obj.ydata = axis_obj.ysgn * obj.ydata;
         obj.ydata(obj.ydata<=0) = NaN;
       endif
       if (zlogscale && isfield (obj, "zdata"))
-        obj.zdata = zsgn * obj.zdata;
+        obj.zdata = axis_obj.zsgn * obj.zdata;
         obj.zdata(obj.zdata<=0) = NaN;
       endif
 
@@ -1991,67 +1980,67 @@ function do_tics (obj, plot_stream, ymirror, mono, gnuplot_term)
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
                obj.xticklabel, obj.xcolor, "x2", plot_stream, true, mono,
                "border", obj.tickdir, ticklength, fontname, fontspec,
-               obj.interpreter, obj.xscale, gnuplot_term);
+               obj.interpreter, obj.xscale, obj.xsgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
                obj.xcolor, "x", plot_stream, true, mono, "border",
                "", "", fontname, fontspec, obj.interpreter, obj.xscale,
-               gnuplot_term);
+               obj.xsgn, gnuplot_term);
   elseif (strcmpi (obj.xaxislocation, "zero"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
                obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
-               obj.interpreter, obj.xscale, gnuplot_term);
+               obj.interpreter, obj.xscale, obj.xsgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
                obj.xcolor, "x2", plot_stream, true, mono, "axis",
                "", "", fontname, fontspec, obj.interpreter, obj.xscale,
-               gnuplot_term);
+               obj.xsgn, gnuplot_term);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xminortick, obj.xticklabelmode,
                obj.xticklabel, obj.xcolor, "x", plot_stream, true, mono,
                "border", obj.tickdir, ticklength, fontname, fontspec,
-               obj.interpreter, obj.xscale, gnuplot_term);
+               obj.interpreter, obj.xscale, obj.xsgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.xticklabelmode, obj.xticklabel,
                obj.xcolor, "x2", plot_stream, true, mono, "border",
                "", "", fontname, fontspec, obj.interpreter, obj.xscale,
-               gnuplot_term);
+               obj.xsgn, gnuplot_term);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
                obj.yticklabel, obj.ycolor, "y2", plot_stream, ymirror, mono,
                "border", obj.tickdir, ticklength, fontname, fontspec,
-               obj.interpreter, obj.yscale, gnuplot_term);
+               obj.interpreter, obj.yscale, obj.ysgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
                obj.ycolor, "y", plot_stream, ymirror, mono, "border",
                "", "", fontname, fontspec, obj.interpreter, obj.yscale,
-               gnuplot_term);
+               obj.ysgn, gnuplot_term);
   elseif (strcmpi (obj.yaxislocation, "zero"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
                obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
                "axis", obj.tickdir, ticklength, fontname, fontspec,
-               obj.interpreter, obj.yscale, gnuplot_term);
+               obj.interpreter, obj.yscale, obj.ysgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
                obj.ycolor, "y2", plot_stream, ymirror, mono, "axis",
                "", "", fontname, fontspec, obj.interpreter, obj.yscale,
-               gnuplot_term);
+               obj.ysgn, gnuplot_term);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yminortick, obj.yticklabelmode,
                obj.yticklabel, obj.ycolor, "y", plot_stream, ymirror, mono,
                "border", obj.tickdir, ticklength, fontname, fontspec,
-               obj.interpreter, obj.yscale, gnuplot_term);
+               obj.interpreter, obj.yscale, obj.ysgn, gnuplot_term);
     do_tics_1 ("manual", [], "off", obj.yticklabelmode, obj.yticklabel,
                obj.ycolor, "y2", plot_stream, ymirror, mono, "border",
                "", "", fontname, fontspec, obj.interpreter, obj.yscale,
-               gnuplot_term);
+               obj.ysgn, gnuplot_term);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zminortick, obj.zticklabelmode,
              obj.zticklabel, obj.zcolor, "z", plot_stream, true, mono,
              "border", obj.tickdir, ticklength, fontname, fontspec,
-             obj.interpreter, obj.zscale, gnuplot_term);
+             obj.interpreter, obj.zscale, obj.zsgn, gnuplot_term);
 endfunction
 
 function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
                     plot_stream, mirror, mono, axispos, tickdir, ticklength,
-                    fontname, fontspec, interpreter, scale, gnuplot_term)
+                    fontname, fontspec, interpreter, scale, sgn, gnuplot_term)
   persistent warned_latex = false;
   if (strcmpi (interpreter, "tex"))
     for n = 1 : numel(labels)
@@ -2069,6 +2058,9 @@ function do_tics_1 (ticmode, tics, mtics, labelmode, labels, color, ax,
       fmt = "$10^{%T}$";
     else
       fmt = "10^{%T}";
+    endif
+    if (sgn < 0)
+      fmt = strcat ("-", fmt);
     endif
   else
     fmt = "%g";

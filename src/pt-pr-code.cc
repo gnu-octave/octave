@@ -529,16 +529,10 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 
   print_parens (expr, "(");
 
-  bool expr_has_parens = false;
-
   tree_expression *e = expr.expression ();
 
   if (e)
-    {
-      e->accept (*this);
-
-      expr_has_parens = e->is_postfix_indexed ();
-    }
+    e->accept (*this);
 
   std::list<tree_argument_list *> arg_lists = expr.arg_lists ();
   std::string type_tags = expr.type_tags ();

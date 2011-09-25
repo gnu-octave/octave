@@ -612,25 +612,23 @@ tm_const::init (const tree_matrix& tm)
 
   if (! error_state)
     {
-      iterator p = begin ();
-
       if (any_cell && ! any_class && ! first_elem_is_struct)
         {
-          for (iterator p = begin (); p != end (); p++)
+          for (iterator q = begin (); q != end (); q++)
             {
               octave_quit ();
 
-              p->cellify ();
+              q->cellify ();
             }
         }
 
       first_elem = true;
 
-      for (iterator p = begin (); p != end (); p++)
+      for (iterator q = begin (); q != end (); q++)
         {
           octave_quit ();
 
-          tm_row_const elt = *p;
+          tm_row_const elt = *q;
 
           octave_idx_type this_elt_nr = elt.rows ();
           octave_idx_type this_elt_nc = elt.cols ();
@@ -940,12 +938,10 @@ tree_matrix::rvalue1 (int)
 {
   octave_value retval = Matrix ();
 
-  bool all_strings_p = false;
   bool all_sq_strings_p = false;
   bool all_dq_strings_p = false;
   bool all_empty_p = false;
   bool all_real_p = false;
-  bool all_complex_p = false;
   bool any_sparse_p = false;
   bool any_class_p = false;
   bool frc_str_conv = false;
@@ -955,12 +951,10 @@ tree_matrix::rvalue1 (int)
   if (tmp && ! tmp.empty ())
     {
       dim_vector dv = tmp.dims ();
-      all_strings_p = tmp.all_strings_p ();
       all_sq_strings_p = tmp.all_sq_strings_p ();
       all_dq_strings_p = tmp.all_dq_strings_p ();
       all_empty_p = tmp.all_empty_p ();
       all_real_p = tmp.all_real_p ();
-      all_complex_p = tmp.all_complex_p ();
       any_sparse_p = tmp.any_sparse_p ();
       any_class_p = tmp.any_class_p ();
       frc_str_conv = tmp.some_strings_p ();

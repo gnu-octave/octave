@@ -1569,7 +1569,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
   /* Actual variables (as opposed to constants above). */
   double m, h, ml, hl, mr, hr, temp;
-  double igral, err, igral_final, err_final, err_excess;
+  double igral, err, igral_final, err_final;
   int nivals, neval = 0;
   int i, j, d, split, t;
   int nnans, nans[33];
@@ -1766,7 +1766,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   /* Initialize some global values. */
   igral_final = 0.0;
   err_final = 0.0;
-  err_excess = 0.0;
 
 
   /* Main loop. */

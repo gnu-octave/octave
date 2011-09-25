@@ -2449,7 +2449,6 @@ opengl_renderer::draw_image (const image::properties& props)
   octave_value cdata = props.get_color_data ();
   dim_vector dv (cdata.dims ());
   int h = dv(0), w = dv(1);
-  bool ok = true;
 
   Matrix x = props.get_xdata ().matrix_value ();
   Matrix y = props.get_ydata ().matrix_value ();
@@ -2593,16 +2592,11 @@ opengl_renderer::draw_image (const image::properties& props)
           draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
         }
       else
-        {
-          ok = false;
-          warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
-        }
+        warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
     }
   else
-    {
-      ok = false;
-      warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");
-    }
+    warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");
+
   glPixelZoom (1, 1);
 }
 

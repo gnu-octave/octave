@@ -262,7 +262,6 @@ By default @var{shape} is @samp{\"full\"}.\n\
   octave_value tmp;
   int nargin = args.length ();
   std::string shape = "full"; //default
-  bool separable = false;
   convn_type ct;
 
   if (nargin < 2 || nargin > 3)
@@ -274,8 +273,6 @@ By default @var{shape} is @samp{\"full\"}.\n\
     {
       if (args(2).is_string ())
         shape = args(2).string_value ();
-      else
-        separable = true;
     }
 
   if (shape == "full")

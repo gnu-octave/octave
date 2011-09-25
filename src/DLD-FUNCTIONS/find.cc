@@ -232,26 +232,23 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
   octave_idx_type nc = v.cols();
-  octave_idx_type start_nc, end_nc, count;
+  octave_idx_type start_nc, count;
 
   // Determine the range to search.
   if (n_to_find < 0 || n_to_find >= nc)
     {
       start_nc = 0;
-      end_nc = nc;
       n_to_find = nc;
       count = nc;
     }
   else if (direction > 0)
     {
       start_nc = 0;
-      end_nc = n_to_find;
       count = n_to_find;
     }
   else
     {
       start_nc = nc - n_to_find;
-      end_nc = nc;
       count = n_to_find;
     }
 

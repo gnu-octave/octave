@@ -66,7 +66,7 @@ function S = sprandsym (n, d)
   offdiag = randperm (n*(n - 1)/2, m);
 
   ## Row index
-  i = lookup (cumsum (1:n), offdiag) + 2;
+  i = lookup (cumsum (0:n), offdiag - 1) + 1;
 
   ## Column index
   j = offdiag - (i - 1).*(i - 2)/2;
@@ -125,7 +125,7 @@ function r = pick_rand_diag (n, k)
   d = [mod(k,2):2:min(n,k)-2];
   m = (k - d)/2;
   q = (n - d).*(n - d - 1).*m ./ (d + 2)./(d + 1)./(a - m + 1);
-  c = [1 cumprod (q)];
+  c = [1 cumprod(q)];
   s = sum (c);
   p = c/s;
 

@@ -70,15 +70,17 @@ OctaveLink::octaveValueAsQString (OctaveValue octaveValue)
     }
   else if (octaveValue.is_real_matrix ())
     {
-      // TODO: Convert real matrix into a string.
-      return QString ("{matrix}");
+      return QString ("%1x%2 matrix")
+          .arg (octaveValue.matrix_value ().rows ())
+          .arg (octaveValue.matrix_value ().cols ());
 
       // Convert complex matrix.
     }
   else if (octaveValue.is_complex_matrix ())
     {
-      // TODO: Convert complex matrix into a string.
-      return QString ("{complex matrix}");
+    return QString ("%1x%2 complex matrix")
+        .arg (octaveValue.matrix_value ().rows ())
+        .arg (octaveValue.matrix_value ().cols ());
 
       // If everything else does not fit, we could not recognize the type.
     }

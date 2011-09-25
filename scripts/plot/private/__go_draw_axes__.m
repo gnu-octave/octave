@@ -40,10 +40,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     gnuplot_term = __gnuplot_get_var__ (axis_obj.parent, "GPVAL_TERM");
 
     ## Set to false for plotyy axes.
-    if (strcmp (axis_obj.tag, "plotyy"))
-      ymirror = false;
-    else
-      ymirror = true;
+    ymirror = true;
+    if (isfield (axis_obj, "__plotyy_axes__"))
+      if (all (ishandle (axis_obj.__plotyy_axes__)))
+        ymirror = false;
+      else
+        h = axis_obj.__plotyy_axes__;
+        h = h(ishandle (h));
+        h = h(isprop (h, "__ploty_axes__"));
+        rmappdata (h, "__plotyy_axes__")
+      endif
     endif
 
     nd = __calc_dimensions__ (h);

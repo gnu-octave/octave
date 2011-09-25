@@ -849,7 +849,7 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
   double ypTickN = props.get_ypTickN ();
   double zpTickN = props.get_zpTickN ();
 
-  bool plotyy = (props.get_tag () == "plotyy");
+  bool plotyy = (props.has_property ("__plotyy_axes__"));
 
   // Axes box
 
@@ -1074,7 +1074,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       int wmax = 0, hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fx);
       bool mirror = props.is_box () && ystate != AXE_ANY_DIR
-                    && (props.get_tag () != "plotyy");
+                    && (! props.has_property ("__plotyy_axes__"));
 
       set_color (props.get_ycolor_rgb ());
 

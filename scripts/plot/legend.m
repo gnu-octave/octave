@@ -119,13 +119,20 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     ca = gca ();
   endif
 
-  if (strcmp (get (ca, "tag"), "plotyy"))
-    plty = get(ca, "userdata");
-    if (isscalar (plty))
+  if (ishandle (ca) && isprop (ca, "__plotyy_axes__"))
+    plty = get (ca, "__plotyy_axes__");
+    if (isscalar (plty) && ishandle (plty))
       ca = [ca, plty];
-    else
+    elseif (iscell (plty))
       ca = [ca, plty{:}];
+    elseif (all (ishandle (plty)))
+      ca = [ca, plty(:).'];
+    else
+      error ("legend.m: This should not happen. File a bug report.")
     endif
+    ## Remove duplicates while preserving order
+    [~, n] = unique (ca);
+    ca = ca (sort (n));
   endif
 
   if (nargin > 0 && all (ishandle (varargin{1})))

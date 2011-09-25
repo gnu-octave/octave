@@ -65,9 +65,8 @@ function S = sprandsym (n, d)
   ondiag = randperm (n, r);
   offdiag = randperm (n*(n - 1)/2, m);
 
-  ## solve with quadratic formula n^2 - n - 2*offdiag = 0 to get the row index
-  i = floor((1 + sqrt(1 + 8*offdiag))/2);
-  i(i.^2 - i - 2*offdiag != 0) += 1;
+  ## Row index
+  i = lookup (cumsum (1:n), offdiag) + 2;
 
   ## Column index
   j = offdiag - (i - 1).*(i - 2)/2;
@@ -106,27 +105,31 @@ function r = pick_rand_diag (n, k)
   ##     Q =  -------------------------------
   ##            (D + 2)*(D + 1)*(A - M + 1)
   ##
-  ## Then the cumprod of these quotients is
+  ## Then, after prepending 1, the cumprod of these quotients is
   ##
-  ##      C = [ T(2)/T(1), T(3)/T(1), ..., T(N)/T(1) ]
+  ##      C = [ T(1)/T(1), T(2)/T(1), T(3)/T(1), ..., T(N)/T(1) ]
   ##
-  ## Their sum + 1 is thus S = sum (T)/T(1), and then C(i)/S is the
-  ## desired probability P(i) for i = 2:N. The first P(1) can be
-  ## obtained by the condition that sum (P) = 1, and the cumsum will
-  ## give the distribution function for computing the random number of
-  ## entries on the diagonal R.
+  ## Their sum is thus S = sum (T)/T(1), and then C(i)/S is the desired
+  ## probability P(i) for i=1:N. The cumsum will finally give the
+  ## distribution function for computing the random number of entries on
+  ## the diagonal R.
+
+  ## Degenerate case
+  if k == 1
+    r = 1;
+    return
+  endif
 
   ## Compute the stuff described above
   a = n*(n - 1)/2;
   d = [mod(k,2):2:min(n,k)-2];
   m = (k - d)/2;
   q = (n - d).*(n - d - 1).*m ./ (d + 2)./(d + 1)./(a - m + 1);
-  c = cumprod (q);
-  s = sum (c) + 1;
+  c = [1 cumprod (q)];
+  s = sum (c);
   p = c/s;
 
-  ## Add missing entries
-  p = [1 - sum(p), p];
+  ## Add final d
   d(end+1) = d(end) + 2;
 
   ## Pick a random r using this distribution

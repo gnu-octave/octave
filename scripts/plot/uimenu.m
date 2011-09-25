@@ -108,3 +108,41 @@ endfunction
 %! e = uimenu("label", "&Edit", "accelerator", "e");
 %! uimenu(f, "label", "Close", "accelerator", "q", "callback", "close (gcf)");
 %! uimenu(e, "label", "Toggle &Grid", "accelerator", "g", "callback", "grid (gca)");
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ui = uimenu ("label", "mylabel");
+%!   assert (findobj (hf, "type", "uimenu"), ui);
+%!   assert (get (ui, "label"), "mylabel");
+%!   assert (get (ui, "checked"), "off");
+%!   assert (get (ui, "separator"), "off");
+%!   assert (get (ui, "enable"), "on");
+%!   assert (get (ui, "position"), 9);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%% check for top level menus file, edit, and help
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   uif = findall (hf, "label", "&file");
+%!   assert (ishghandle (uif))
+%!   uie = findall (hf, "label", "&edit");
+%!   assert (ishghandle (uie))
+%!   uih = findall (hf, "label", "&help");
+%!   assert (ishghandle (uih))
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   uie = findall (hf, "label", "&edit")
+%!   myui = uimenu (uie, "label", "mylabel");
+%!   assert (ancestor (myui, "uimenu", "toplevel"), uie)
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

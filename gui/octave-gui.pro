@@ -65,7 +65,7 @@ SOURCES +=\
     	  src/FileEditorMdiSubWindow.cpp \
     	  src/BrowserWidget.cpp \
     	  src/ImageViewerMdiSubWindow.cpp \
-    src/qirc/IRCWidget.cpp \
+    src/irc/IRCWidget.cpp \
     src/SettingsDialog.cpp \
     src/OctaveGUI.cpp \
     src/ResourceManager.cpp \
@@ -73,7 +73,7 @@ SOURCES +=\
     src/backend/OctaveCallbackThread.cpp \
     src/backend/OctaveLink.cpp \
     src/backend/OctaveMainThread.cpp \
-    src/qirc/IRCClientImpl.cpp \
+    src/irc/IRCClientImpl.cpp \
     src/terminal/TerminalEmulation.cpp \
     src/terminal/LinuxTerminalEmulation.cpp \
     src/backend/ReadlineAdapter.cpp \
@@ -92,15 +92,15 @@ HEADERS += \
     	  src/FileEditorMdiSubWindow.h \
     	  src/BrowserWidget.h \
     	  src/ImageViewerMdiSubWindow.h \
-    src/qirc/IRCWidget.h \
+    src/irc/IRCWidget.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
     src/CommandLineParser.h \
     src/backend/OctaveCallbackThread.h \
     src/backend/OctaveLink.h \
     src/backend/OctaveMainThread.h \
-    src/qirc/IRCClientInterface.h \
-    src/qirc/IRCClientImpl.h \
+    src/irc/IRCClientInterface.h \
+    src/irc/IRCClientImpl.h \
     src/terminal/TerminalEmulation.h \
     src/terminal/LinuxTerminalEmulation.h \
     src/backend/ReadlineAdapter.h \

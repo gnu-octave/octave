@@ -91,17 +91,21 @@ OctaveLink::octaveValueAsQString (OctaveValue octaveValue)
 void
 OctaveLink::launchOctave ()
 {
+  // Create both threads.
   m_octaveMainThread = new OctaveMainThread (this);
-  m_octaveMainThread->start ();
-
   m_octaveCallbackThread = new OctaveCallbackThread (this);
+
+  // Launch the second as soon as the first ist ready.
   connect (m_octaveMainThread, SIGNAL(ready()), m_octaveCallbackThread, SLOT(start()));
+
+  // Start the first one.
+  m_octaveMainThread->start ();
 }
 
 void
 OctaveLink::terminateOctave ()
 {
-  m_octaveCallbackThread->terminate ();
+  m_octaveCallbackThread->halt();
   m_octaveCallbackThread->wait ();
 
   m_octaveMainThread->terminate ();

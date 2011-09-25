@@ -19,15 +19,19 @@
 #define OCTAVECALLBACKTHREAD_H
 
 #include <QThread>
+#include <QSemaphore>
 
 class OctaveCallbackThread:public QThread
 {
   Q_OBJECT
 public:
+  void halt();
   OctaveCallbackThread (QObject * parent);
 protected:
   void run ();
-
+private:
+  QSemaphore *m_runningSemaphore;
+  bool m_running;
 };
 
 #endif // OCTAVECALLBACKTHREAD_H

@@ -18,17 +18,33 @@
 #include "OctaveCallbackThread.h"
 #include "MainWindow.h"
 
-OctaveCallbackThread::OctaveCallbackThread (QObject * parent):QThread (parent)
+OctaveCallbackThread::OctaveCallbackThread (QObject * parent)
+  : QThread (parent)
 {
+  m_runningSemaphore = new QSemaphore(1);
+  m_running = true;
+}
+
+void
+OctaveCallbackThread::halt ()
+{
+  m_runningSemaphore->acquire ();
+  m_running = false;
+  m_runningSemaphore->release ();
 }
 
 void
 OctaveCallbackThread::run ()
 {
-  while (1)
+  bool running = true;
+  while (running)
     {
       OctaveLink::instance ()->fetchSymbolTable ();
       OctaveLink::instance ()->updateHistoryModel ();
       usleep (500000);
+
+      m_runningSemaphore->acquire ();
+      running = m_running;
+      m_runningSemaphore->release ();
     }
 }

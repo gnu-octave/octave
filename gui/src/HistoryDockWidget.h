@@ -39,7 +39,7 @@ public slots:
 signals:
   void information (QString message);
   void commandDoubleClicked (QString command);
-  /** Custom signal that tells if a user has clicke away that dock widget. */
+  /** Custom signal that tells if a user has clicked away that dock widget. */
   void activeChanged (bool active);
 protected:
   void closeEvent (QCloseEvent *event);

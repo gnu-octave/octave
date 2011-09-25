@@ -113,6 +113,10 @@ function r = pick_rand_diag (n, k)
   ## probability P(i) for i=1:N. The cumsum will finally give the
   ## distribution function for computing the random number of entries on
   ## the diagonal R.
+  ##
+  ## Thanks to Zsbán Ambrus <ambrus@math.bme.hu> for most of the ideas
+  ## of the implementation here, especially how to do the computation
+  ## numerically to avoid overflow.
 
   ## Degenerate case
   if k == 1
@@ -125,7 +129,17 @@ function r = pick_rand_diag (n, k)
   d = [mod(k,2):2:min(n,k)-2];
   m = (k - d)/2;
   q = (n - d).*(n - d - 1).*m ./ (d + 2)./(d + 1)./(a - m + 1);
-  c = [1 cumprod(q)];
+
+  ## Slight modification from discussion above: pivot around the max in
+  ## order to avoid overflow (underflow is fine, just means effectively
+  ## zero probabilities).
+  [~, midx] = max (cumsum (log (q))) ;
+  midx++;
+  lc = fliplr (cumprod (1./q(midx-1:-1:1)));
+  rc = cumprod (q(midx:end));
+
+  ## Now c = t(i)/t(midx), so c > 1 == [].
+  c = [lc, 1, rc];
   s = sum (c);
   p = c/s;
 

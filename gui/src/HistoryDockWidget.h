@@ -32,8 +32,6 @@ public:
   void updateHistory (QStringList history);
 
 public slots:
-  /** Tells the widget to notice settings that are probably new. */
-  void noticeSettings ();
   void handleVisibilityChanged (bool visible);
 
 signals:

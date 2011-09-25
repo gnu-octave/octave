@@ -65,7 +65,7 @@ SOURCES +=\
     	  src/FileEditorMdiSubWindow.cpp \
     	  src/BrowserWidget.cpp \
     	  src/ImageViewerMdiSubWindow.cpp \
-    src/IRCWidget.cpp \
+    src/qirc/IRCWidget.cpp \
     src/SettingsDialog.cpp \
     src/OctaveGUI.cpp \
     src/ResourceManager.cpp \
@@ -92,7 +92,7 @@ HEADERS += \
     	  src/FileEditorMdiSubWindow.h \
     	  src/BrowserWidget.h \
     	  src/ImageViewerMdiSubWindow.h \
-    src/IRCWidget.h \
+    src/qirc/IRCWidget.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
     src/CommandLineParser.h \

@@ -63,12 +63,6 @@ HistoryDockWidget::construct ()
 }
 
 void
-HistoryDockWidget::noticeSettings ()
-{
-
-}
-
-void
 HistoryDockWidget::handleDoubleClick (QModelIndex modelIndex)
 {
   emit commandDoubleClicked (modelIndex.data().toString());

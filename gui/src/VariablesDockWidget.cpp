@@ -157,26 +157,26 @@ VariablesDockWidget::updateScope (int topLevelItemIndex,
     // will contain the appropriate QTreeWidgetItem* pointing at it.
     for (int i = 0; i < childCount; i++)
       {
-	child = topLevelItem->child (i);
-	if (child->data (0, 0).toString () ==
-	    QString (symbolRecord.name ().c_str ()))
-	  {
-	    alreadyExists = true;
-	    break;
-	  }
+        child = topLevelItem->child (i);
+        if (child->data (0, 0).toString () ==
+            QString (symbolRecord.name ().c_str ()))
+          {
+            alreadyExists = true;
+            break;
+          }
       }
 
     // If it already exists, just update it.
     if (alreadyExists)
       {
-	updateTreeEntry (child, symbolRecord);
+        updateTreeEntry (child, symbolRecord);
       }
     else
       {
-	// It does not exist, so create a new one and set the right values.
-	child = new QTreeWidgetItem ();
-	updateTreeEntry (child, symbolRecord);
-	topLevelItem->addChild (child);
+        // It does not exist, so create a new one and set the right values.
+        child = new QTreeWidgetItem ();
+        updateTreeEntry (child, symbolRecord);
+        topLevelItem->addChild (child);
       }
   }
 
@@ -186,27 +186,21 @@ VariablesDockWidget::updateScope (int topLevelItemIndex,
       bool existsInVariableList = false;
       QTreeWidgetItem *child = topLevelItem->child (i);
       foreach (SymbolRecord symbolRecord, symbolTable)
-      {
-	if (QString (symbolRecord.name ().c_str ()) ==
-	    child->data (0, 0).toString ())
-	  {
-	    existsInVariableList = true;
-	  }
-      }
+        {
+          if (QString (symbolRecord.name ().c_str ()) ==
+              child->data (0, 0).toString ())
+            {
+              existsInVariableList = true;
+            }
+        }
 
       if (!existsInVariableList)
-	{
-	  topLevelItem->removeChild (child);
-	  delete child;
-	  i--;
-	}
+        {
+          topLevelItem->removeChild (child);
+          delete child;
+          i--;
+        }
     }
-}
-
-void
-VariablesDockWidget::noticeSettings ()
-{
-
 }
 
 void

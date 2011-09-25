@@ -31,8 +31,6 @@ public:
   void setVariablesList (QList < SymbolRecord > symbolTable);
 
 public slots:
-  /** Tells the widget to notice settings that are probably new. */
-  void noticeSettings ();
   void fetchSymbolTable ();
   void handleVisibilityChanged (bool visible);
 signals:

@@ -60,8 +60,10 @@ mark_upper_triangular (const Matrix& a)
 DEFUN_DLD (schur, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{S} =} schur (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{S} =} schur (@var{A}, \"real\")\n\
 @deftypefnx {Loadable Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
-@deftypefnx {Loadable Function} {[@var{U}, @var{S}] =} schur (@var{A}, @var{opt})\n\
+@deftypefnx {Loadable Function} {@var{S} =} schur (@var{A}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{U}, @var{S}] =} schur (@var{A}, @dots{})\n\
 @cindex Schur decomposition\n\
 Compute the Schur@tie{}decomposition of @var{A}\n\
 @tex\n\
@@ -104,7 +106,8 @@ $2 \\times 2$\n\
 @end ifnottex\n\
 blocks, when appropriate) are the eigenvalues of @var{A} and @var{S}.\n\
 \n\
-A complex decomposition may be forced by passing \"complex\" as @var{opt}.\n\
+The default for real matrices is a real Schur@tie{}decomposition.\n\
+A complex decomposition may be forced by passing the flag \"complex\".\n\
 \n\
 The eigenvalues are optionally ordered along the diagonal according to\n\
 the value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all\n\
@@ -150,7 +153,11 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 
   bool force_complex = false;
 
-  if (ord == "complex")
+  if (ord == "real")
+    {
+      ord = std::string ();
+    }
+  else if (ord == "complex")
     {
       force_complex = true;
       ord = std::string ();

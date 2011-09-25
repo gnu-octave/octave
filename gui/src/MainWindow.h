@@ -34,7 +34,7 @@
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
 #include "BrowserWidget.h"
-#include "IRCWidget.h"
+#include "irc/IRCWidget.h"
 #include "lexer/lexeroctavegui.h"
 
 class NonClosableMdiSubWindow : public QMdiSubWindow

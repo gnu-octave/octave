@@ -140,7 +140,7 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   uie = findall (hf, "label", "&edit")
+%!   uie = findall (hf, "label", "&edit");
 %!   myui = uimenu (uie, "label", "mylabel");
 %!   assert (ancestor (myui, "uimenu", "toplevel"), uie)
 %! unwind_protect_cleanup

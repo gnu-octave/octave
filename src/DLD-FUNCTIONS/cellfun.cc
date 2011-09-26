@@ -76,11 +76,16 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
           msg.assign ("identifier", last_error_id ());
           msg.assign ("message", last_error_message ());
           msg.assign ("index", static_cast<double> (count + static_cast<octave_idx_type>(1)));
+
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
+
           buffer_error_messages--;
+
           error_state = 0;
+
           tmp = error_handler.do_multi_index_op (nargout, errlist);
+
           buffer_error_messages++;
 
           if (error_state)
@@ -91,6 +96,155 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
     }
 
   return tmp;
+}
+
+static octave_value_list
+try_cellfun_internal_ops (const octave_value_list& args, int nargin)
+{
+  octave_value_list retval;
+
+  std::string name = args(0).string_value ();
+
+  const Cell f_args = args(1).cell_value ();
+
+  octave_idx_type k = f_args.numel ();
+
+  if (name == "isempty")
+    {
+      boolNDArray result (f_args.dims ());
+      for (octave_idx_type count = 0; count < k ; count++)
+        result(count) = f_args.elem(count).is_empty ();
+      retval(0) = result;
+    }
+  else if (name == "islogical")
+    {
+      boolNDArray result (f_args.dims ());
+      for (octave_idx_type  count= 0; count < k ; count++)
+        result(count) = f_args.elem(count).is_bool_type ();
+      retval(0) = result;
+    }
+  else if (name == "isreal")
+    {
+      boolNDArray result (f_args.dims ());
+      for (octave_idx_type  count= 0; count < k ; count++)
+        result(count) = f_args.elem(count).is_real_type ();
+      retval(0) = result;
+    }
+  else if (name == "length")
+    {
+      NDArray result (f_args.dims ());
+      for (octave_idx_type  count= 0; count < k ; count++)
+        result(count) = static_cast<double> (f_args.elem(count).length ());
+      retval(0) = result;
+    }
+  else if (name == "ndims")
+    {
+      NDArray result (f_args.dims ());
+      for (octave_idx_type count = 0; count < k ; count++)
+        result(count) = static_cast<double> (f_args.elem(count).ndims ());
+      retval(0) = result;
+    }
+  else if (name == "prodofsize" || name == "numel")
+    {
+      NDArray result (f_args.dims ());
+      for (octave_idx_type count = 0; count < k ; count++)
+        result(count) = static_cast<double> (f_args.elem(count).numel ());
+      retval(0) = result;
+    }
+  else if (name == "size")
+    {
+      if (nargin == 3)
+        {
+          int d = args(2).nint_value () - 1;
+
+          if (d < 0)
+            error ("cellfun: K must be a positive integer");
+
+          if (! error_state)
+            {
+              NDArray result (f_args.dims ());
+              for (octave_idx_type count = 0; count < k ; count++)
+                {
+                  dim_vector dv = f_args.elem(count).dims ();
+                  if (d < dv.length ())
+                    result(count) = static_cast<double> (dv(d));
+                  else
+                    result(count) = 1.0;
+                }
+              retval(0) = result;
+            }
+        }
+      else
+        error ("cellfun: not enough arguments for \"size\"");
+    }
+  else if (name == "isclass")
+    {
+      if (nargin == 3)
+        {
+          std::string class_name = args(2).string_value();
+          boolNDArray result (f_args.dims ());
+          for (octave_idx_type count = 0; count < k ; count++)
+            result(count) = (f_args.elem(count).class_name() == class_name);
+
+          retval(0) = result;
+        }
+      else
+        error ("cellfun: not enough arguments for \"isclass\"");
+    }
+
+  return retval;
+}
+
+static void
+get_cellfun_options (const octave_value_list& args, int& nargin,
+                     bool& uniform_output, octave_value& error_handler)
+{
+  while (nargin > 3 && args(nargin-2).is_string ())
+    {
+      std::string arg = args(nargin-2).string_value ();
+
+      std::transform (arg.begin (), arg.end (),
+                      arg.begin (), tolower);
+
+      if (arg == "uniformoutput")
+        uniform_output = args(nargin-1).bool_value();
+      else if (arg == "errorhandler")
+        {
+          if (args(nargin-1).is_function_handle ()
+              || args(nargin-1).is_inline_function ())
+            {
+              error_handler = args(nargin-1);
+            }
+          else if (args(nargin-1).is_string ())
+            {
+              std::string err_name = args(nargin-1).string_value ();
+
+              error_handler = symbol_table::find_function (err_name);
+
+              if (error_handler.is_undefined ())
+                {
+                  error ("cellfun: invalid function NAME: %s",
+                         err_name.c_str ());
+                  break;
+                }
+            }
+          else
+            {
+              error ("cellfun: invalid value for 'ErrorHandler' function");
+              break;
+            }
+        }
+      else
+        {
+          error ("cellfun: unrecognized parameter %s",
+                 arg.c_str());
+          break;
+        }
+
+      nargin -= 2;
+    }
+
+  nargin -= 1;
 }
 
 DEFUN_DLD (cellfun, args, nargout,
@@ -235,130 +389,49 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 
   if (func.is_string ())
     {
-      const Cell f_args = args(1).cell_value ();
+      retval = try_cellfun_internal_ops (args, nargin);
 
-      octave_idx_type k = f_args.numel ();
+      if (error_state || ! retval.empty ())
+        return retval;
 
-      std::string name = func.string_value ();
+      // See if we can convert the string into a function.
 
-      if (name == "isempty")
-        {
-          boolNDArray result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k ; count++)
-            result(count) = f_args.elem(count).is_empty ();
-          retval(0) = result;
-        }
-      else if (name == "islogical")
-        {
-          boolNDArray result (f_args.dims ());
-          for (octave_idx_type  count= 0; count < k ; count++)
-            result(count) = f_args.elem(count).is_bool_type ();
-          retval(0) = result;
-        }
-      else if (name == "isreal")
-        {
-          boolNDArray result (f_args.dims ());
-          for (octave_idx_type  count= 0; count < k ; count++)
-            result(count) = f_args.elem(count).is_real_type ();
-          retval(0) = result;
-        }
-      else if (name == "length")
-        {
-          NDArray result (f_args.dims ());
-          for (octave_idx_type  count= 0; count < k ; count++)
-            result(count) = static_cast<double> (f_args.elem(count).length ());
-          retval(0) = result;
-        }
-      else if (name == "ndims")
-        {
-          NDArray result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k ; count++)
-            result(count) = static_cast<double> (f_args.elem(count).ndims ());
-          retval(0) = result;
-        }
-      else if (name == "prodofsize" || name == "numel")
-        {
-          NDArray result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k ; count++)
-            result(count) = static_cast<double> (f_args.elem(count).numel ());
-          retval(0) = result;
-        }
-      else if (name == "size")
-        {
-          if (nargin == 3)
-            {
-              int d = args(2).nint_value () - 1;
+      std::string name = args(0).string_value ();
 
-              if (d < 0)
-                error ("cellfun: K must be a positive integer");
-
-              if (! error_state)
-                {
-                  NDArray result (f_args.dims ());
-                  for (octave_idx_type count = 0; count < k ; count++)
-                    {
-                      dim_vector dv = f_args.elem(count).dims ();
-                      if (d < dv.length ())
-                        result(count) = static_cast<double> (dv(d));
-                      else
-                        result(count) = 1.0;
-                    }
-                  retval(0) = result;
-                }
-            }
-          else
-            error ("cellfun: not enough arguments for \"size\"");
-        }
-      else if (name == "isclass")
+      if (! valid_identifier (name))
         {
-          if (nargin == 3)
-            {
-              std::string class_name = args(2).string_value();
-              boolNDArray result (f_args.dims ());
-              for (octave_idx_type count = 0; count < k ; count++)
-                result(count) = (f_args.elem(count).class_name() == class_name);
+          std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
+          std::string fname = "function y = " + fcn_name + "(x) y = ";
 
-              retval(0) = result;
-            }
-          else
-            error ("cellfun: not enough arguments for \"isclass\"");
+          octave_function *ptr_func
+            = extract_function (args(0), "cellfun", fcn_name,
+                                fname, "; endfunction");
+
+          if (ptr_func && ! error_state)
+            func = octave_value (ptr_func, true);
         }
       else
         {
-          if (! valid_identifier (name))
-            {
+          func = symbol_table::find_function (name);
 
-              std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
-              std::string fname = "function y = ";
-              fname.append (fcn_name);
-              fname.append ("(x) y = ");
-              octave_function *ptr_func = extract_function (args(0), "cellfun",
-                                                            fcn_name, fname, "; endfunction");
-              if (ptr_func && ! error_state)
-                func = octave_value (ptr_func, true);
-            }
-          else
-            {
-              func = symbol_table::find_function (name);
-              if (func.is_undefined ())
-                error ("cellfun: invalid function NAME: %s", name.c_str ());
+          if (func.is_undefined ())
+            error ("cellfun: invalid function NAME: %s", name.c_str ());
 
-              symbol_table_lookup = true;
-            }
+          symbol_table_lookup = true;
         }
-    }
 
-  if (error_state || ! retval.empty ())
-    return retval;
+      if (error_state || ! retval.empty ())
+        return retval;
+    }
 
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
-
       // The following is an optimisation because the symbol table can
       // give a more specific function class, so this can result in
       // fewer polymorphic function calls as the function gets called
       // for each value of the array.
+
       if (! symbol_table_lookup )
         {
           if (func.is_function_handle ())
@@ -368,6 +441,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
               // Overloaded function handles need to check the type of
               // the arguments for each element of the array, so they
               // cannot be optimised this way.
+
               if (f -> is_overloaded ())
                 goto nevermind;
             }
@@ -376,57 +450,18 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
           if (f.is_defined ())
             func = f;
         }
-      nevermind:
 
-      unwind_protect frame;
-      frame.protect_var (buffer_error_messages);
+    nevermind:
 
       bool uniform_output = true;
       octave_value error_handler;
+      
+      get_cellfun_options (args, nargin, uniform_output, error_handler);
 
-      while (nargin > 3 && args(nargin-2).is_string())
-        {
-          std::string arg = args(nargin-2).string_value();
+      if (error_state)
+        return octave_value_list ();
 
-          std::transform (arg.begin (), arg.end (),
-                          arg.begin (), tolower);
-
-          if (arg == "uniformoutput")
-            uniform_output = args(nargin-1).bool_value();
-          else if (arg == "errorhandler")
-            {
-              if (args(nargin-1).is_function_handle () ||
-                  args(nargin-1).is_inline_function ())
-                {
-                  error_handler = args(nargin-1);
-                }
-              else if (args(nargin-1).is_string ())
-                {
-                  std::string err_name = args(nargin-1).string_value ();
-                  error_handler = symbol_table::find_function (err_name);
-                  if (error_handler.is_undefined ())
-                    {
-                      error ("cellfun: invalid function NAME: %s", err_name.c_str ());
-                      break;
-                    }
-                }
-              else
-                {
-                  error ("cellfun: invalid value for 'ErrorHandler' function");
-                  break;
-                }
-            }
-          else
-            {
-              error ("cellfun: unrecognized parameter %s",
-                     arg.c_str());
-              break;
-            }
-
-          nargin -= 2;
-        }
-
-      nargin -= 1;
+      // Extract cell arguments.
 
       octave_value_list inputlist (nargin, octave_value ());
 
@@ -439,9 +474,6 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
       octave_idx_type k = 1;
 
       dim_vector fdims (1, 1);
-
-      if (error_state)
-        return octave_value_list ();
 
       for (int j = 0; j < nargin; j++)
         {
@@ -475,8 +507,13 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
             }
         }
 
+      unwind_protect frame;
+      frame.protect_var (buffer_error_messages);
+
       if (error_handler.is_defined ())
         buffer_error_messages++;
+
+      // Apply functions.
 
       if (uniform_output)
         {
@@ -494,8 +531,9 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
                     inputlist.xelem (j) = cinputs[j](count);
                 }
 
-              const octave_value_list tmp = get_output_list (count, nargout, inputlist,
-                                                             func, error_handler);
+              const octave_value_list tmp
+                = get_output_list (count, nargout, inputlist, func,
+                                   error_handler);
 
               if (error_state)
                 return retval;
@@ -557,6 +595,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
             }
 
           retval.resize (nargout1);
+
           for (int j = 0; j < nargout1; j++)
             {
               if (nargout > 0 && retv[j].is_undefined ())

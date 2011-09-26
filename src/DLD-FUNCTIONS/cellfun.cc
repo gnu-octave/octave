@@ -112,42 +112,42 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
   if (name == "isempty")
     {
       boolNDArray result (f_args.dims ());
-      for (octave_idx_type count = 0; count < k ; count++)
+      for (octave_idx_type count = 0; count < k; count++)
         result(count) = f_args.elem(count).is_empty ();
       retval(0) = result;
     }
   else if (name == "islogical")
     {
       boolNDArray result (f_args.dims ());
-      for (octave_idx_type  count= 0; count < k ; count++)
+      for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem(count).is_bool_type ();
       retval(0) = result;
     }
   else if (name == "isreal")
     {
       boolNDArray result (f_args.dims ());
-      for (octave_idx_type  count= 0; count < k ; count++)
+      for (octave_idx_type  count= 0; count < k; count++)
         result(count) = f_args.elem(count).is_real_type ();
       retval(0) = result;
     }
   else if (name == "length")
     {
       NDArray result (f_args.dims ());
-      for (octave_idx_type  count= 0; count < k ; count++)
+      for (octave_idx_type  count= 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem(count).length ());
       retval(0) = result;
     }
   else if (name == "ndims")
     {
       NDArray result (f_args.dims ());
-      for (octave_idx_type count = 0; count < k ; count++)
+      for (octave_idx_type count = 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem(count).ndims ());
       retval(0) = result;
     }
   else if (name == "prodofsize" || name == "numel")
     {
       NDArray result (f_args.dims ());
-      for (octave_idx_type count = 0; count < k ; count++)
+      for (octave_idx_type count = 0; count < k; count++)
         result(count) = static_cast<double> (f_args.elem(count).numel ());
       retval(0) = result;
     }
@@ -163,7 +163,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
           if (! error_state)
             {
               NDArray result (f_args.dims ());
-              for (octave_idx_type count = 0; count < k ; count++)
+              for (octave_idx_type count = 0; count < k; count++)
                 {
                   dim_vector dv = f_args.elem(count).dims ();
                   if (d < dv.length ())
@@ -183,7 +183,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
         {
           std::string class_name = args(2).string_value();
           boolNDArray result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k ; count++)
+          for (octave_idx_type count = 0; count < k; count++)
             result(count) = (f_args.elem(count).class_name() == class_name);
 
           retval(0) = result;
@@ -523,7 +523,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 
           OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
 
-          for (octave_idx_type count = 0; count < k ; count++)
+          for (octave_idx_type count = 0; count < k; count++)
             {
               for (int j = 0; j < nargin; j++)
                 {

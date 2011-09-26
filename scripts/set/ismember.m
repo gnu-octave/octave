@@ -77,6 +77,14 @@ function [tf, a_idx] = ismember (A, s, varargin)
     print_usage ();
   endif
 
+  ## lookup() does not handle logical values
+  if (islogical (A))
+    A = uint8 (A);
+  endif
+  if (islogical (s))
+    s = uint8 (s);
+  endif
+
   [A, s] = validargs ("ismember", A, s, varargin{:});
 
   if (nargin == 2)

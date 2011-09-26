@@ -24,12 +24,14 @@
 ## center of the vector or matrix.
 ##
 ## If @var{x} is a vector of @math{N} elements corresponding to @math{N}
-## time samples spaced of @math{Dt} each, then @code{fftshift (fft
-## (@var{x}))} corresponds to frequencies
+## time samples spaced by @math{dt}, then
+## @code{fftshift (fft (@var{x}))} corresponds to frequencies
 ##
 ## @example
-## f = ((1:N) - ceil(N/2)) / N / Dt
+## f = [ -(ceil((N-1)/2):-1:1)*df 0 (1:floor((N-1)/2))*df ]
 ## @end example
+##
+## where @math{df} = 1 / @math{dt}.
 ##
 ## If @var{x} is a matrix, the same holds for rows and columns.  If
 ## @var{x} is an array, then the same holds along each dimension.
@@ -44,15 +46,13 @@
 
 function retval = fftshift (x, dim)
 
-  retval = 0;
-
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
   if (nargin == 2)
-    if (!isscalar (dim))
-      error ("fftshift: dimension must be an integer scalar");
+    if (! (isscalar (dim) && dim > 0 && dim == fix (dim)))
+      error ("fftshift: dimension DIM must be a positive integer");
     endif
     nd = ndims (x);
     sz = size (x);
@@ -83,6 +83,7 @@ function retval = fftshift (x, dim)
   endif
 
 endfunction
+
 
 %!test
 %!  x = [0:7];

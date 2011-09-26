@@ -21,6 +21,7 @@
    Boston, MA 02110-1301, USA.
 */
 
+
 #include "KPtyDevice.h"
 #define i18n
 
@@ -452,3 +453,4 @@ KPtyDevice::writeData (const char *data, qint64 len)
   d->writeNotifier->setEnabled (true);
   return len;
 }
+

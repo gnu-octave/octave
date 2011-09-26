@@ -28,6 +28,10 @@ TerminalEmulation *TerminalEmulation::newTerminalEmulation (Terminal *terminal)
   terminalEmulation->m_terminal = terminal;
   return terminalEmulation;
 #endif
+#ifdef Q_OS_WIN
+  // TODO: Implement on Windows.
+  return 0;
+#endif
 }
 
 TerminalEmulation::TerminalEmulation ()

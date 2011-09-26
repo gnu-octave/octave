@@ -31,7 +31,7 @@ TRANSLATIONS        += languages/generic.ts \
                        languages/es-es.ts \
                        languages/ru-ru.ts \
                        languages/uk-ua.ts           # Available translations
-LIBS                += -lqscintilla2
+LIBS                += -lqscintilla2 $$system(mkoctfile -p LIBS) $$system(mkoctfile -p OCTAVE_LIBS)
 
 mac {
     CONFIG -= app_bundle
@@ -52,19 +52,27 @@ mac {
     LFLAGS += -L/opt/local-native/lib
 }
 
-QMAKE_LFLAGS        += $$LFLAGS -lutil $$system(mkoctfile -p RLD_FLAG)
+unix {
+    QMAKE_LFLAGS +=  -lutil
+}
+
+win32 {
+    QMAKE_LFLAGS += --enable-auto-import
+}
+
+QMAKE_LFLAGS        += $$LFLAGS $$system(mkoctfile -p RLD_FLAG)
 QMAKE_CXXFLAGS      += $$INCFLAGS
 
 # Files associated with the project:
 SOURCES +=\
-        src/lexer/lexeroctavegui.cpp \
-        src/MainWindow.cpp \
-    	  src/VariablesDockWidget.cpp \
-    	  src/HistoryDockWidget.cpp \
-    	  src/FilesDockWidget.cpp \
-    	  src/FileEditorMdiSubWindow.cpp \
-    	  src/BrowserWidget.cpp \
-    	  src/ImageViewerMdiSubWindow.cpp \
+    src/lexer/lexeroctavegui.cpp \
+    src/MainWindow.cpp \
+    src/VariablesDockWidget.cpp \
+    src/HistoryDockWidget.cpp \
+    src/FilesDockWidget.cpp \
+    src/FileEditorMdiSubWindow.cpp \
+    src/BrowserWidget.cpp \
+    src/ImageViewerMdiSubWindow.cpp \
     src/irc/IRCWidget.cpp \
     src/SettingsDialog.cpp \
     src/OctaveGUI.cpp \
@@ -75,23 +83,27 @@ SOURCES +=\
     src/backend/OctaveMainThread.cpp \
     src/irc/IRCClientImpl.cpp \
     src/terminal/TerminalEmulation.cpp \
-    src/terminal/LinuxTerminalEmulation.cpp \
     src/backend/ReadlineAdapter.cpp \
-    src/terminal/KPty.cpp \
-    src/terminal/KPtyDevice.cpp \
     src/TerminalView.cpp \
     src/TerminalHighlighter.cpp \
     src/WelcomeWizard.cpp
 
+unix {
+SOURCES +=\
+    src/terminal/LinuxTerminalEmulation.cpp \
+    src/terminal/KPty.cpp \
+    src/terminal/KPtyDevice.cpp
+}
+
 HEADERS += \
-        src/lexer/lexeroctavegui.h \
-    	  src/MainWindow.h \
-    	  src/VariablesDockWidget.h \
-    	  src/HistoryDockWidget.h \
-    	  src/FilesDockWidget.h \
-    	  src/FileEditorMdiSubWindow.h \
-    	  src/BrowserWidget.h \
-    	  src/ImageViewerMdiSubWindow.h \
+    src/lexer/lexeroctavegui.h \
+    src/MainWindow.h \
+    src/VariablesDockWidget.h \
+    src/HistoryDockWidget.h \
+    src/FilesDockWidget.h \
+    src/FileEditorMdiSubWindow.h \
+    src/BrowserWidget.h \
+    src/ImageViewerMdiSubWindow.h \
     src/irc/IRCWidget.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
@@ -102,13 +114,17 @@ HEADERS += \
     src/irc/IRCClientInterface.h \
     src/irc/IRCClientImpl.h \
     src/terminal/TerminalEmulation.h \
-    src/terminal/LinuxTerminalEmulation.h \
     src/backend/ReadlineAdapter.h \
-    src/terminal/KPtyDevice.h \
-    src/terminal/KPty.h \
     src/TerminalView.h \
     src/TerminalHighlighter.h \
     src/WelcomeWizard.h
+
+unix {
+HEADERS += \
+    src/terminal/LinuxTerminalEmulation.h \
+    src/terminal/KPtyDevice.h \
+    src/terminal/KPty.h
+}
 
 FORMS += \
     src/SettingsDialog.ui \

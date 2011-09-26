@@ -53,13 +53,13 @@ TerminalView::setTextCursor (const QTextCursor &cursor)
 void
 TerminalView::bell ()
 {
-
 }
 
 void
 TerminalView::keyPressEvent (QKeyEvent * keyEvent)
 {
-  m_terminalEmulation->processKeyEvent (keyEvent);
+  if(m_terminalEmulation)
+    m_terminalEmulation->processKeyEvent (keyEvent);
 }
 
 void

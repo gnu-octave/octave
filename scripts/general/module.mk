@@ -7,7 +7,6 @@ general_PRIVATE_FCN_FILES = \
 general_FCN_FILES = \
   general/accumarray.m \
   general/accumdim.m \
-  general/arrayfun.m \
   general/bicubic.m \
   general/bitcmp.m \
   general/bitget.m \

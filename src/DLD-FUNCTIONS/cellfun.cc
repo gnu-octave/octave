@@ -538,53 +538,64 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
               if (error_state)
                 return retval;
 
-              if (tmp.length () < nargout1)
+              if (nargout > 0 && tmp.length () < nargout)
                 {
-                  if (tmp.length () < nargout)
-                    {
-                      error ("cellfun: too many output arguments");
-                      return octave_value_list ();
-                    }
-                  else
-                    nargout1 = 0;
+                  error ("cellfun: function returned fewer than nargout values");
+                  return retval;
                 }
 
-              if (count == 0)
+              if  (nargout > 0
+                   || (nargout == 0
+                       && tmp.length () > 0 && tmp(0).is_defined ()))
                 {
-                  for (int j = 0; j < nargout1; j++)
-                    {
-                      octave_value val = tmp(j);
+                  int num_to_copy = tmp.length ();
 
-                      if (val.numel () == 1)
-                        retv[j] = val.resize (fdims);
-                      else
+                  if (num_to_copy > nargout1)
+                    num_to_copy = nargout1;
+
+                  if (count == 0)
+                    {
+                      for (int j = 0; j < num_to_copy; j++)
                         {
-                          error ("cellfun: all values must be scalars when UniformOutput = true");
-                          break;
+                          if (tmp(j).is_defined ())
+                            {
+                              octave_value val = tmp(j);
+
+                              if (val.numel () == 1)
+                                retv[j] = val.resize (fdims);
+                              else
+                                {
+                                  error ("cellfun: all values must be scalars when UniformOutput = true");
+                                  break;
+                                }
+                            }
                         }
                     }
-                }
-              else
-                {
-                  for (int j = 0; j < nargout1; j++)
+                  else
                     {
-                      octave_value val = tmp(j);
-
-                      if (! retv[j].fast_elem_insert (count, val))
+                      for (int j = 0; j < num_to_copy; j++)
                         {
-                          if (val.numel () == 1)
+                          if (tmp(j).is_defined ())
                             {
-                              idx_list.front ()(0) = count + 1.0;
-                              retv[j].assign (octave_value::op_asn_eq,
-                                              idx_type, idx_list, val);
+                              octave_value val = tmp(j);
 
-                              if (error_state)
-                                break;
-                            }
-                          else
-                            {
-                              error ("cellfun: all values must be scalars when UniformOutput = true");
-                              break;
+                              if (! retv[j].fast_elem_insert (count, val))
+                                {
+                                  if (val.numel () == 1)
+                                    {
+                                      idx_list.front ()(0) = count + 1.0;
+                                      retv[j].assign (octave_value::op_asn_eq,
+                                                      idx_type, idx_list, val);
+
+                                      if (error_state)
+                                        break;
+                                    }
+                                  else
+                                    {
+                                      error ("cellfun: all values must be scalars when UniformOutput = true");
+                                      break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -607,10 +618,13 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
       else
         {
           OCTAVE_LOCAL_BUFFER (Cell, results, nargout1);
-          for (int j = 0; j < nargout1; j++)
-            results[j].resize (fdims);
 
-          for (octave_idx_type count = 0; count < k ; count++)
+          for (int j = 0; j < nargout1; j++)
+            results[j].resize (fdims, Matrix ());
+
+          bool have_some_output = false;
+
+          for (octave_idx_type count = 0; count < k; count++)
             {
               for (int j = 0; j < nargin; j++)
                 {
@@ -618,31 +632,43 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
                     inputlist.xelem (j) = cinputs[j](count);
                 }
 
-              const octave_value_list tmp = get_output_list (count, nargout, inputlist,
-                                                             func, error_handler);
+              const octave_value_list tmp
+                = get_output_list (count, nargout, inputlist, func,
+                                   error_handler);
 
               if (error_state)
                 return retval;
 
-              if (tmp.length () < nargout1)
+              if (nargout > 0 && tmp.length () < nargout)
                 {
-                  if (tmp.length () < nargout)
-                    {
-                      error ("cellfun: too many output arguments");
-                      return octave_value_list ();
-                    }
-                  else
-                    nargout1 = 0;
+                  error ("cellfun: function returned fewer than nargout values");
+                  return retval;
                 }
 
+              if  (nargout > 0
+                   || (nargout == 0
+                       && tmp.length () > 0 && tmp(0).is_defined ()))
+                {
+                  int num_to_copy = tmp.length ();
 
-              for (int j = 0; j < nargout1; j++)
-                results[j](count) = tmp(j);
+                  if (num_to_copy > nargout1)
+                    num_to_copy = nargout1;
+
+                  if (num_to_copy > 0)
+                    have_some_output = true;
+
+                  for (int j = 0; j < num_to_copy; j++)
+                    results[j](count) = tmp(j);
+                }
             }
 
-          retval.resize(nargout1);
-          for (int j = 0; j < nargout1; j++)
-            retval(j) = results[j];
+          if (have_some_output || fdims.any_zero ())
+            {
+              retval.resize (nargout1);
+
+              for (int j = 0; j < nargout1; j++)
+                retval(j) = results[j];
+            }
         }
     }
   else
@@ -652,6 +678,35 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 }
 
 /*
+
+%!function r = f11 (x)
+%!  global __cellfun_test_num_outputs__
+%!  __cellfun_test_num_outputs__ = nargout;
+%!  r = x;
+%! endfunction
+
+%!function f01 (x)
+%!  global __cellfun_test_num_outputs__
+%!  __cellfun_test_num_outputs__ = nargout;
+%! endfunction
+
+%!test
+%! global __cellfun_test_num_outputs__
+%! cellfun (@f11, {1});
+%! assert (__cellfun_test_num_outputs__, 0)
+%! x = cellfun (@f11, {1});
+%! assert (__cellfun_test_num_outputs__, 1)
+
+%!test
+%! global __cellfun_test_num_outputs__
+%! cellfun (@f01, {1});
+%! assert (__cellfun_test_num_outputs__, 0)
+
+%!error x = cellfun (@f01, {1, 2});
+
+%!test
+%! assert (cellfun (@f11, {1, 2}), [1, 2])
+%! assert (cellfun (@f11, {1, 2}, 'uniformoutput', false), {1, 2})
 
 %!test
 %!  [a,b] = cellfun (@(x) x, cell (2, 0));

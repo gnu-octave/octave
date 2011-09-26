@@ -281,18 +281,6 @@ quit_loop_now (void)
   return quit;
 }
 
-#define DO_SIMPLE_FOR_LOOP_ONCE(VAL) \
-  do \
-    { \
-      ult.assign (octave_value::op_asn_eq, VAL); \
- \
-      if (! error_state && loop_body) \
-        loop_body->accept (*this); \
- \
-      quit = quit_loop_now (); \
-    } \
-  while (0)
-
 void
 tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 {

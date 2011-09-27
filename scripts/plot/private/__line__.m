@@ -79,7 +79,6 @@ function h = __line__ (p, varargin)
     varargin = {[0, 1], [0, 1]};
     num_data_args = 2;
     nlines = 1;
-    nvecpts = 2;
   endif
 
   handles = zeros (nlines, 1);
@@ -99,7 +98,8 @@ function h = __line__ (p, varargin)
 
   for i = 1:nlines
     tmp = data(ismat);
-    if (! size_equal (tmp) || any (nvecpts != cellfun ("size", tmp, 1)))
+    if (! size_equal (tmp)
+        || (nvecpts != 0 && any (nvecpts != cellfun ("size", tmp, 1))))
       error ("line: data size_mismatch");
     endif
 

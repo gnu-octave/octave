@@ -976,9 +976,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_at_object_index.pop_front ();
 
     lexer_flags.quote_is_transpose = true;
-    lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket_or_brace ();
+    lexer_flags.convert_spaces_to_comma
+      = (nesting_level.is_bracket_or_brace ()
+         && ! lexer_flags.looking_at_anon_fcn_args);
     lexer_flags.looking_for_object_index = true;
     lexer_flags.at_beginning_of_statement = false;
+
+    if (lexer_flags.looking_at_anon_fcn_args)
+      lexer_flags.looking_at_anon_fcn_args = false;
 
     do_comma_insert_check ();
 
@@ -3367,6 +3372,9 @@ lexical_feedback::init (void)
 
   // Not initiallly looking at a function handle.
   looking_at_function_handle = 0;
+
+  // Not initiallly looking at an anonymous function argument list.
+  looking_at_anon_fcn_args = 0;
 
   // Not parsing a function return, parameter, or declaration list.
   looking_at_return_list = false;

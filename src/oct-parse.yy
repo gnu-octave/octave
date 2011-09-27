@@ -735,7 +735,10 @@ fcn_handle      : '@' FCN_HANDLE
                 ;
 
 anon_fcn_handle : '@' param_list statement
-                  { $$ = make_anon_fcn_handle ($2, $3); }
+                  {
+                    lexer_flags.quote_is_transpose = false;
+                    $$ = make_anon_fcn_handle ($2, $3);
+                  }
                 ;
 
 primary_expr    : identifier
@@ -1230,6 +1233,7 @@ param_list_beg  : '('
                         symtab_context.push (symbol_table::current_scope ());
                         symbol_table::set_scope (symbol_table::alloc_scope ());
                         lexer_flags.looking_at_function_handle--;
+                        lexer_flags.looking_at_anon_fcn_args = true;
                       }
                   }
                 ;

@@ -926,11 +926,13 @@ color_property::do_set (const octave_value& val)
 
       if (! s.empty ())
         {
-          if (radio_val.contains (s))
+          std::string match;
+
+          if (radio_val.contains (s, match))
             {
-              if (current_type != radio_t || current_val != s)
+              if (current_type != radio_t || match != current_val)
                 {
-                  current_val = s;
+                  current_val = match;
                   current_type = radio_t;
                   return true;
                 }
@@ -990,10 +992,11 @@ double_radio_property::do_set (const octave_value& val)
   if (val.is_string ())
     {
       std::string s = val.string_value ();
+      std::string match;
 
-      if (! s.empty () && radio_val.contains (s))
+      if (! s.empty () && radio_val.contains (s, match))
         {
-          if (current_type != radio_t || s != current_val)
+          if (current_type != radio_t || match != current_val)
             {
               current_val = s;
               current_type = radio_t;

@@ -886,11 +886,11 @@ public:
 
   std::string default_value (void) const { return default_val; }
 
-  bool validate (const std::string& val)
+  bool validate (const std::string& val, std::string& match)
   {
     bool retval = true;
 
-    if (! contains (val))
+    if (! contains (val, match))
       {
         error ("invalid value = %s", val.c_str ());
         retval = false;
@@ -899,9 +899,46 @@ public:
     return retval;
   }
 
-  bool contains (const std::string& val)
+  bool contains (const std::string& val, std::string& match)
   {
-    return (possible_vals.find (val) != possible_vals.end ());
+    size_t k = 0;
+
+    size_t len = val.length ();
+
+    std::string first_match;
+
+    for (std::set<caseless_str>::const_iterator p = possible_vals.begin ();
+         p != possible_vals.end (); p++)
+      {
+        if (p->compare (val, len))
+          {
+            if (len == p->length ())
+              {
+                // We found a full match (consider the case of val ==
+                // "replace" with possible values "replace" and
+                // "replacechildren").  Any other matches are
+                // irrelevant, so set match and return now.
+
+                match = *p;
+                return true;
+              }
+            else
+              {
+                if (k == 0)
+                  first_match = *p;
+
+                k++;
+              }
+          }
+      }
+
+    if (k == 1)
+      {
+        match = first_match;
+        return true;
+      }
+    else
+      return false;
   }
 
   std::string values_as_string (void) const;
@@ -964,11 +1001,14 @@ protected:
     if (newval.is_string ())
       {
         std::string s = newval.string_value ();
-        if (vals.validate (s))
+
+        std::string match;
+
+        if (vals.validate (s, match))
           {
-            if (s != current_val)
+            if (match != current_val)
               {
-                current_val = s;
+                current_val = match;
                 return true;
               }
           }

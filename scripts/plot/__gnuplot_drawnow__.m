@@ -149,7 +149,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       ## Generate gnuplot title string for plot windows.
       if (output_to_screen (term) && ~strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
-        fig.name = get (h, "name");
+        fig.name = strrep ("\"", "\\\"", get (h, "name"));
         if (strcmpi (get (h, "numbertitle"), "on"))
           title_str = sprintf ("Figure %d", h);
         else

@@ -263,6 +263,20 @@ public:
 
   bool is_inline_function (void) const { return inline_function; }
 
+  void mark_as_anonymous_function (void) { anonymous_function = true; }
+
+  bool is_anonymous_function (void) const { return anonymous_function; }
+
+  bool is_anonymous_function_of_class
+    (const std::string& cname = std::string ()) const
+  {
+    return anonymous_function
+      ? (cname.empty ()
+         ? (! dispatch_class().empty ())
+         : cname == dispatch_class ())
+      : false;
+  }
+
   void mark_as_class_constructor (void) { class_constructor = true; }
 
   bool is_class_constructor (const std::string& cname = std::string ()) const
@@ -382,6 +396,9 @@ private:
 
   // TRUE means this is an inline function.
   bool inline_function;
+
+  // TRUE means this is an anonymous function.
+  bool anonymous_function;
 
   // TRUE means this function is the constructor for class object.
   bool class_constructor;

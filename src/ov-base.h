@@ -427,6 +427,8 @@ public:
 
   virtual bool is_function_handle (void) const { return false; }
 
+  virtual bool is_anonymous_function (void) const { return false; }
+
   virtual bool is_inline_function (void) const { return false; }
 
   virtual bool is_function (void) const { return false; }

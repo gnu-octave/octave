@@ -103,8 +103,12 @@ public:
 
   bool is_private_function (void) const { return private_function; }
 
-  bool is_private_function_of_class (const std::string& nm)
+  bool is_private_function_of_class (const std::string& nm) const
     { return private_function && xdispatch_class == nm; }
+
+  virtual bool
+  is_anonymous_function_of_class (const std::string& = std::string ()) const
+    { return false; }
 
   std::string dir_name (void) const { return my_dir_name; }
 

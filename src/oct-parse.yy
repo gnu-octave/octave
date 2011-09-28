@@ -4185,7 +4185,9 @@ feval (const octave_value_list& args, int nargout)
               retval = feval (name, tmp_args, nargout);
             }
         }
-      else if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+      else if (f_arg.is_function_handle ()
+               || f_arg.is_anonymous_function ()
+               || f_arg.is_inline_function ())
         {
           const octave_value_list tmp_args = get_feval_args (args);
 

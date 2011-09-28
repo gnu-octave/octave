@@ -654,6 +654,9 @@ public:
   bool is_function_handle (void) const
     { return rep->is_function_handle (); }
 
+  bool is_anonymous_function (void) const
+    { return rep->is_anonymous_function (); }
+
   bool is_inline_function (void) const
     { return rep->is_inline_function (); }
 

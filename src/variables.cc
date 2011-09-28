@@ -416,7 +416,9 @@ symbol_exist (const std::string& name, const std::string& type)
           && var_ok
           && (type == "any" || type == "var")
           && (val.is_constant () || val.is_object ()
-              || val.is_inline_function () || val.is_function_handle ()))
+              || val.is_function_handle ()
+              || val.is_anonymous_function ()
+              || val.is_inline_function ()))
         {
           retval = 1;
         }

@@ -289,7 +289,7 @@ function args = setvertexdata (args)
   if (ndims (c) == 3)
     fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
   else
-    fvc = c(:).';
+    fvc = c.';
   endif
 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};

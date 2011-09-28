@@ -865,9 +865,9 @@ octave_main (int argc, char **argv, int embedded)
 
   load_path::initialize (set_initial_path);
 
-  execute_startup_files ();
-
   initialize_history (read_history_file);
+
+  execute_startup_files ();
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     std::cout << std::endl;

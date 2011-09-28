@@ -46,11 +46,11 @@ function S = sprandsym (n, d)
   endif
 
   if (!(isscalar (n) && n == fix (n) && n > 0))
-    error ("sprand: N must be an integer greater than 0");
+    error ("sprandsym: N must be an integer greater than 0");
   endif
 
   if (d < 0 || d > 1)
-    error ("sprand: density D must be between 0 and 1");
+    error ("sprandsym: density D must be between 0 and 1");
   endif
 
   ## Actual number of nonzero entries

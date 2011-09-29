@@ -38,6 +38,7 @@ enum octave_kw_id
   end_try_catch_kw,
   end_unwind_protect_kw,
   endclassdef_kw,
+  endenumeration_kw,
   endevents_kw,
   endfor_kw,
   endfunction_kw,
@@ -47,6 +48,7 @@ enum octave_kw_id
   endproperties_kw,
   endswitch_kw,
   endwhile_kw,
+  enumeration_kw,
   events_kw,
   for_kw,
   function_kw,
@@ -84,6 +86,7 @@ end, END, end_kw
 end_try_catch, END, end_try_catch_kw
 end_unwind_protect, END, end_unwind_protect_kw
 endclassdef, END, endclassdef_kw 
+endenumeration, END, endenumeration_kw
 endevents, END, endevents_kw
 endfor, END, endfor_kw
 endfunction, END, endfunction_kw
@@ -93,6 +96,7 @@ endparfor, END, endparfor_kw
 endproperties, END, endproperties_kw
 endswitch, END, endswitch_kw
 endwhile, END, endwhile_kw
+enumeration, ENUMERATION, enumeration_kw
 events, EVENTS, events_kw
 for, FOR, for_kw
 function, FCN, function_kw

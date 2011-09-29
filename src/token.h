@@ -45,6 +45,7 @@ public:
     {
       simple_end,
       classdef_end,
+      enumeration_end,
       events_end,
       for_end,
       function_end,

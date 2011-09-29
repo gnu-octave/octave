@@ -1541,6 +1541,11 @@ is_keyword_token (const std::string& s)
           lexer_flags.at_beginning_of_statement = true;
           break;
 
+        case endenumeration_kw:
+          yylval.tok_val = new token (token::enumeration_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+
         case endevents_kw:
           yylval.tok_val = new token (token::events_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
@@ -1589,9 +1594,10 @@ is_keyword_token (const std::string& s)
             return 0;
           break;
 
-        case properties_kw:
-        case methods_kw:
+        case enumeration_kw:
         case events_kw:
+        case methods_kw:
+        case properties_kw:
           // 'properties', 'methods' and 'events' are keywords for
           // classdef blocks.
           if (! lexer_flags.parsing_classdef)

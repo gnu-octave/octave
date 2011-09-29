@@ -448,9 +448,7 @@ make_statement (T *arg)
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL STATIC
 %token <tok_val> FCN_HANDLE
-%token <tok_val> PROPERTIES
-%token <tok_val> METHODS
-%token <tok_val> EVENTS
+%token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
 %token <tok_val> METAQUERY
 %token <tok_val> SUPERCLASSREF
 %token <tok_val> GET SET
@@ -463,7 +461,7 @@ make_statement (T *arg)
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
-%type <comment_type> properties_beg methods_beg events_beg
+%type <comment_type> properties_beg methods_beg events_beg enum_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -503,6 +501,7 @@ make_statement (T *arg)
 // These types need to be specified.
 %type <dummy_type> attr
 %type <dummy_type> class_event
+%type <dummy_type> class_enum
 %type <dummy_type> class_property
 %type <dummy_type> properties_list
 %type <dummy_type> properties_block
@@ -512,6 +511,8 @@ make_statement (T *arg)
 %type <dummy_type> attr_list
 %type <dummy_type> events_list
 %type <dummy_type> events_block
+%type <dummy_type> enum_list
+%type <dummy_type> enum_block
 %type <dummy_type> class_body
 
 // Precedence and associativity.
@@ -1537,11 +1538,15 @@ class_body      : properties_block
                   { $$ = 0; }
                 | events_block
                   { $$ = 0; }
+                | enum_block
+                  { $$ = 0; }
                 | class_body '\n' properties_block
                   { $$ = 0; }
                 | class_body '\n' methods_block
                   { $$ = 0; }
                 | class_body '\n' events_block
+                  { $$ = 0; }
+                | class_body '\n' enum_block
                   { $$ = 0; }
                 ;
 
@@ -1596,6 +1601,24 @@ events_list     : class_event
                 ;
 
 class_event     : identifier
+                  { $$ = 0; }
+                ;
+
+enum_beg        : ENUMERATION stash_comment
+                  { $$ = 0; }
+                ;
+
+enum_block      : enum_beg opt_attr_list '\n' enum_list '\n' END
+                  { $$ = 0; }
+                ;
+
+enum_list       : class_enum
+                  { $$ = 0; }
+                | enum_list '\n' class_enum
+                  { $$ = 0; }
+                ;
+
+class_enum      : identifier '(' expression ')'
                   { $$ = 0; }
                 ;
 
@@ -1775,6 +1798,10 @@ end_token_ok (token *tok, token::end_tok_type expected)
 
         case token::for_end:
           end_error ("for", ettype, l, c);
+          break;
+
+        case token::enumeration_end:
+          end_error ("enumeration", ettype, l, c);
           break;
 
         case token::function_end:

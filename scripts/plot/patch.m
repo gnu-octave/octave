@@ -172,3 +172,15 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! c = 0.9;
+%! unwind_protect
+%!   h = patch ([0 1 0], [0 1 1], c);
+%!   assert (get (gca, "clim"), [c - 1, c + 1]);
+%!   h = patch ([0 1 0], [0 1 1], 2 * c);
+%!   assert (get (gca, "clim"), [c, 2 * c]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

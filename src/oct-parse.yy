@@ -1491,7 +1491,7 @@ classdef1       : classdef_beg opt_attr_list identifier opt_superclasses
                   { $$ = 0; }
                 ;
 
-classdef        : classdef1 '\n' class_body '\n' stash_comment classdef_end
+classdef        : classdef1 opt_sep class_body opt_sep stash_comment classdef_end
                   { $$ = 0; }
                 ;
 
@@ -1540,13 +1540,13 @@ class_body      : properties_block
                   { $$ = 0; }
                 | enum_block
                   { $$ = 0; }
-                | class_body '\n' properties_block
+                | class_body opt_sep properties_block
                   { $$ = 0; }
-                | class_body '\n' methods_block
+                | class_body opt_sep methods_block
                   { $$ = 0; }
-                | class_body '\n' events_block
+                | class_body opt_sep events_block
                   { $$ = 0; }
-                | class_body '\n' enum_block
+                | class_body opt_sep enum_block
                   { $$ = 0; }
                 ;
 
@@ -1555,14 +1555,14 @@ properties_beg  : PROPERTIES stash_comment
                 ;
 
 properties_block
-                : properties_beg opt_attr_list '\n' properties_list '\n' END
+                : properties_beg opt_attr_list opt_sep properties_list opt_sep END
                   { $$ = 0; }
                 ;
 
 properties_list
                 : class_property
                   { $$ = 0; }
-                | properties_list '\n' class_property
+                | properties_list opt_sep class_property
                   { $$ = 0; }
                 ;
 
@@ -1576,13 +1576,13 @@ methods_beg     : METHODS stash_comment
                   { $$ = 0; }
                 ;
 
-methods_block   : methods_beg opt_attr_list '\n' methods_list '\n' END
+methods_block   : methods_beg opt_attr_list opt_sep methods_list opt_sep END
                   { $$ = 0; }
                 ;
 
 methods_list    : function
                   { $$ = 0; }
-                | methods_list '\n' function
+                | methods_list opt_sep function
                   { $$ = 0; }
                 ;
 
@@ -1590,13 +1590,13 @@ events_beg      : EVENTS stash_comment
                   { $$ = 0; }
                 ;
 
-events_block    : events_beg opt_attr_list '\n' events_list '\n' END
+events_block    : events_beg opt_attr_list opt_sep events_list opt_sep END
                   { $$ = 0; }
                 ;
 
 events_list     : class_event
                   { $$ = 0; }
-                | events_list '\n' class_event
+                | events_list opt_sep class_event
                   { $$ = 0; }
                 ;
 
@@ -1608,13 +1608,13 @@ enum_beg        : ENUMERATION stash_comment
                   { $$ = 0; }
                 ;
 
-enum_block      : enum_beg opt_attr_list '\n' enum_list '\n' END
+enum_block      : enum_beg opt_attr_list opt_sep enum_list opt_sep END
                   { $$ = 0; }
                 ;
 
 enum_list       : class_enum
                   { $$ = 0; }
-                | enum_list '\n' class_enum
+                | enum_list opt_sep class_enum
                   { $$ = 0; }
                 ;
 

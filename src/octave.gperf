@@ -35,7 +35,6 @@ enum octave_kw_id
   else_kw,
   elseif_kw,
   end_kw,
-  end_parfor_kw,
   end_try_catch_kw,
   end_unwind_protect_kw,
   endclassdef_kw,
@@ -44,6 +43,7 @@ enum octave_kw_id
   endfunction_kw,
   endif_kw,
   endmethods_kw,
+  endparfor_kw,
   endproperties_kw,
   endswitch_kw,
   endwhile_kw,
@@ -81,7 +81,6 @@ do, DO, do_kw
 else, ELSE, else_kw
 elseif, ELSEIF, elseif_kw
 end, END, end_kw
-end_parfor, END, end_parfor_kw
 end_try_catch, END, end_try_catch_kw
 end_unwind_protect, END, end_unwind_protect_kw
 endclassdef, END, endclassdef_kw 
@@ -90,6 +89,7 @@ endfor, END, endfor_kw
 endfunction, END, endfunction_kw
 endif, END, endif_kw
 endmethods, END, endmethods_kw
+endparfor, END, endparfor_kw
 endproperties, END, endproperties_kw
 endswitch, END, endswitch_kw
 endwhile, END, endwhile_kw

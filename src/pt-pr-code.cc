@@ -257,7 +257,7 @@ tree_print_code::visit_simple_for_command (tree_simple_for_command& cmd)
 
   indent ();
 
-  os << "endfor";
+  os << (cmd.in_parallel () ? "endparfor" : "endfor");
 }
 
 void

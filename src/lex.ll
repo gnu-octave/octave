@@ -1496,11 +1496,6 @@ is_keyword_token (const std::string& s)
           lexer_flags.at_beginning_of_statement = true;
           break;
 
-        case end_parfor_kw:
-          yylval.tok_val = new token (token::parfor_end, l, c);
-          lexer_flags.at_beginning_of_statement = true;
-          break;
-
         case end_try_catch_kw:
           yylval.tok_val = new token (token::try_catch_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
@@ -1523,6 +1518,11 @@ is_keyword_token (const std::string& s)
 
         case endif_kw:
           yylval.tok_val = new token (token::if_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+
+        case endparfor_kw:
+          yylval.tok_val = new token (token::parfor_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
           break;
 

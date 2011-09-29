@@ -1785,6 +1785,10 @@ end_token_ok (token *tok, token::end_tok_type expected)
           end_error ("if", ettype, l, c);
           break;
 
+        case token::parfor_end:
+          end_error ("parfor", ettype, l, c);
+          break;
+
         case token::try_catch_end:
           end_error ("try", ettype, l, c);
           break;

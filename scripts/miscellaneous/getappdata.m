@@ -36,9 +36,10 @@ function val = getappdata (h, name)
     for nh = 1:numel(h)
       try
         appdata = get (h(nh), "__appdata__");
-      catch
-        appdata.(name) = [];
       end_try_catch
+      if (! isfield (appdata, name))
+        appdata.(name) = [];
+      endif
       val(nh) = {appdata.(name)};
     endfor
     if (nh == 1)

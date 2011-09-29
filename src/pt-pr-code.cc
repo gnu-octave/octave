@@ -214,9 +214,14 @@ tree_print_code::visit_simple_for_command (tree_simple_for_command& cmd)
 
   indent ();
 
-  os << "for ";
+  os << (cmd.in_parallel () ? "parfor " : "for ");
 
   tree_expression *lhs = cmd.left_hand_side ();
+
+  tree_expression *maxproc = cmd.maxproc_expr ();
+
+  if (maxproc)
+    os << "(";
 
   if (lhs)
     lhs->accept (*this);
@@ -227,6 +232,13 @@ tree_print_code::visit_simple_for_command (tree_simple_for_command& cmd)
 
   if (expr)
     expr->accept (*this);
+
+  if (maxproc)
+    {
+      os << ", ";
+      maxproc->accept (*this);
+      os << ")";
+    }
 
   newline ();
 

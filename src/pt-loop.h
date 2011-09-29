@@ -145,22 +145,29 @@ tree_simple_for_command : public tree_command
 public:
 
   tree_simple_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), lhs (0), expr (0), list (0), lead_comm (0),
-      trail_comm (0) { }
+    : tree_command (l, c), parallel (false), lhs (0), expr (0),
+      maxproc (0), list (0), lead_comm (0), trail_comm (0) { }
 
-  tree_simple_for_command (tree_expression *le, tree_expression *re,
+  tree_simple_for_command (bool parallel_arg, tree_expression *le,
+                           tree_expression *re,
+                           tree_expression *maxproc_arg,
                            tree_statement_list *lst,
                            octave_comment_list *lc = 0,
                            octave_comment_list *tc = 0,
                            int l = -1, int c = -1)
-    : tree_command (l, c), lhs (le), expr (re), list (lst),
+    : tree_command (l, c), parallel (parallel_arg), lhs (le),
+      expr (re), maxproc (maxproc_arg), list (lst),
       lead_comm (lc), trail_comm (tc) { }
 
   ~tree_simple_for_command (void);
 
+  bool in_parallel (void) { return parallel; }
+
   tree_expression *left_hand_side (void) { return lhs; }
 
   tree_expression *control_expr (void) { return expr; }
+
+  tree_expression *maxproc_expr (void) { return maxproc; }
 
   tree_statement_list *body (void) { return list; }
 
@@ -175,11 +182,19 @@ public:
 
 private:
 
+  // TRUE means operate in parallel (subject to the value of the
+  // maxproc expression).
+  bool parallel;
+
   // Expression to modify.
   tree_expression *lhs;
 
   // Expression to evaluate.
   tree_expression *expr;
+
+  // Expression to tell how many processors should be used (only valid
+  // if parallel is TRUE).
+  tree_expression *maxproc;
 
   // List of commands to execute.
   tree_statement_list *list;

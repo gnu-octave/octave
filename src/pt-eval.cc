@@ -290,6 +290,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
+  // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
+  // and cmd.maxproc_expr ();
+
   unwind_protect frame;
 
   frame.protect_var (in_loop_command);

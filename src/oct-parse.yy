@@ -232,9 +232,10 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 
 // Build a for command.
 static tree_command *
-make_for_command (token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_statement_list *body,
-                  token *end_tok, octave_comment_list *lc);
+make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
+                  tree_expression *expr, tree_expression *maxproc,
+                  tree_statement_list *body, token *end_tok,
+                  octave_comment_list *lc);
 
 // Build a break command.
 static tree_command *
@@ -439,7 +440,7 @@ make_statement (T *arg)
 %token <tok_val> NAME
 %token <tok_val> END
 %token <tok_val> DQ_STRING SQ_STRING
-%token <tok_val> FOR WHILE DO UNTIL
+%token <tok_val> FOR PARFOR WHILE DO UNTIL
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
 %token <tok_val> BREAK CONTINUE FUNC_RET
@@ -1143,12 +1144,26 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   }
                 | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command ($1, $3, $5, $7, $8, $2)))
+                    if (! ($$ = make_for_command (FOR, $1, $3, $5, 0,
+                                                  $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command ($1, $4, $6, $9, $10, $2)))
+                    if (! ($$ = make_for_command (FOR, $1, $4, $6, 0,
+                                                  $9, $10, $2)))
+                      ABORT_PARSE;
+                  }
+                | PARFOR stash_comment assign_lhs '=' expression opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command (PARFOR, $1, $3, $5,
+                                                  0, $7, $8, $2)))
+                      ABORT_PARSE;
+                  }
+                | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command (PARFOR, $1, $4, $6,
+                                                  $8, $11, $12, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -2480,13 +2495,16 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 // Build a for command.
 
 static tree_command *
-make_for_command (token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_statement_list *body,
-                  token *end_tok, octave_comment_list *lc)
+make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
+                  tree_expression *expr, tree_expression *maxproc,
+                  tree_statement_list *body, token *end_tok,
+                  octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
-  if (end_token_ok (end_tok, token::for_end))
+  bool parfor = tok_id == PARFOR;
+
+  if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
@@ -2499,14 +2517,19 @@ make_for_command (token *for_tok, tree_argument_list *lhs,
         {
           tree_expression *tmp = lhs->remove_front ();
 
-          retval = new tree_simple_for_command (tmp, expr, body,
-                                                lc, tc, l, c);
+          retval = new tree_simple_for_command (parfor, tmp, expr, maxproc,
+                                                body, lc, tc, l, c);
 
           delete lhs;
         }
       else
-        retval = new tree_complex_for_command (lhs, expr, body,
-                                               lc, tc, l, c);
+        {
+          if (parfor)
+            yyerror ("invalid syntax for parfor statement");
+          else
+            retval = new tree_complex_for_command (lhs, expr, body,
+                                                   lc, tc, l, c);
+        }
     }
 
   return retval;

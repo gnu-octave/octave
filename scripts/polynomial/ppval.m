@@ -37,8 +37,8 @@ function yi = ppval (pp, xi)
   if (nargin != 2)
     print_usage ();
   endif
-  if (! isstruct (pp) && strcmp (pp.form, "pp"))
-    error ("ppval: expects a pp-form structure");
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
+    error ("ppval: first argument must be a pp-form structure");
   endif
 
   ## Extract info.

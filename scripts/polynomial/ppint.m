@@ -28,7 +28,7 @@ function ppi = ppint (pp, c)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-  if (! isstruct (pp) && strcmp (pp.form, "pp"))
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
     error ("ppint: PP must be a structure");
   endif
 

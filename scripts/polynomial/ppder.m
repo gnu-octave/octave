@@ -32,7 +32,7 @@ function ppd = ppder (pp, m)
     m = 1;
   endif
 
-  if !(isstruct (pp) && strcmp (pp.form, "pp"))
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
     error ("ppder: PP must be a structure");
   endif
 

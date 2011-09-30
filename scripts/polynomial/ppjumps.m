@@ -29,7 +29,7 @@ function jumps = ppjumps (pp)
     print_usage ();
   endif
 
-  if (! isstruct (pp) && strcmp (pp.form, "pp"))
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
     error ("ppjumps: PP must be a structure");
   endif
 

@@ -554,6 +554,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
             lexer_flags.quote_is_transpose = false;
             lexer_flags.convert_spaces_to_comma = true;
+            lexer_flags.looking_for_object_index = false;
 
             maybe_warn_separator_insert (',');
 

@@ -114,33 +114,16 @@ OctaveLink::terminateOctave ()
   //m_octaveMainThread->wait();
 }
 
-void
-OctaveLink::fetchSymbolTable ()
+QList < SymbolRecord > OctaveLink::symbolTable ()
 {
-  m_symbolTableSemaphore->acquire ();
   m_symbolTableBuffer.clear ();
   std::list < SymbolRecord > allVariables = symbol_table::all_variables ();
   std::list < SymbolRecord >::iterator iterator;
   for (iterator = allVariables.begin (); iterator != allVariables.end ();
        iterator++)
-    m_symbolTableBuffer.append (iterator->dup ());
-  m_symbolTableSemaphore->release ();
-  emit symbolTableChanged ();
+    m_symbolTableBuffer.append (iterator->dup());
+  return m_symbolTableBuffer;
 }
-
-QList < SymbolRecord > OctaveLink::copyCurrentSymbolTable ()
-{
-  QList < SymbolRecord > m_symbolTableCopy;
-
-  // Generate a deep copy of the current symbol table.
-  m_symbolTableSemaphore->acquire ();
-  foreach (SymbolRecord symbolRecord, m_symbolTableBuffer)
-    m_symbolTableCopy.append (symbolRecord.dup ());
-  m_symbolTableSemaphore->release ();
-
-  return m_symbolTableCopy;
-}
-
 
 void
 OctaveLink::updateHistoryModel ()

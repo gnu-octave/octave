@@ -26,9 +26,8 @@
 #include "FileEditorMdiSubWindow.h"
 #include "ImageViewerMdiSubWindow.h"
 #include "SettingsDialog.h"
-#include "cmd-edit.h"
 
-#define VERSION_STRING "Octave GUI (0.8.4)"
+#define VERSION_STRING "Octave GUI (0.8.5)"
 
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {
@@ -278,8 +277,8 @@ MainWindow::construct ()
   m_centralMdiArea->setViewMode (QMdiArea::TabbedView);
 
   // Setup dockable widgets and the status bar.
-  m_variablesDockWidget = new VariablesDockWidget (this);
-  m_variablesDockWidget->setStatusTip (tr ("View the variables in the active workspace."));
+  m_workspaceView = new WorkspaceView (this);
+  m_workspaceView->setStatusTip (tr ("View the variables in the active workspace."));
   m_historyDockWidget = new HistoryDockWidget (this);
   m_historyDockWidget->setStatusTip (tr ("Browse and search the command history."));
   m_filesDockWidget = new FilesDockWidget (this);
@@ -378,14 +377,14 @@ MainWindow::construct ()
   connect (aboutOctaveAction, SIGNAL (triggered ()), this, SLOT (showAboutOctave ()));
   connect (aboutQt, SIGNAL (triggered ()), this, SLOT (showAboutQt ()));
 
-  connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_variablesDockWidget, SLOT (setShown (bool)));
-  connect (m_variablesDockWidget, SIGNAL (activeChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
+  connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_workspaceView, SLOT (setShown (bool)));
+  connect (m_workspaceView, SIGNAL (activeChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
   connect (showHistoryAction, SIGNAL (toggled (bool)), m_historyDockWidget, SLOT (setShown (bool)));
   connect (m_historyDockWidget, SIGNAL (activeChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
   connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
   connect (m_filesDockWidget, SIGNAL (activeChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
 
-  connect (this, SIGNAL (settingsChanged ()), m_variablesDockWidget, SLOT (noticeSettings ()));
+  connect (this, SIGNAL (settingsChanged ()), m_workspaceView, SLOT (noticeSettings ()));
   connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
   connect (this, SIGNAL (settingsChanged ()), m_filesDockWidget, SLOT (noticeSettings ()));
 
@@ -399,7 +398,7 @@ MainWindow::construct ()
   setWindowTitle (QString (VERSION_STRING));
 
   setCentralWidget (m_centralMdiArea);
-  addDockWidget (Qt::LeftDockWidgetArea, m_variablesDockWidget);
+  addDockWidget (Qt::LeftDockWidgetArea, m_workspaceView);
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);
   addDockWidget (Qt::RightDockWidgetArea, m_filesDockWidget);
   setStatusBar (m_statusBar);

@@ -15,23 +15,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "VariablesDockWidget.h"
+#include "WorkspaceView.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
 
-VariablesDockWidget::VariablesDockWidget (QWidget * parent):QDockWidget
+WorkspaceView::WorkspaceView (QWidget * parent) : QDockWidget
   (parent)
 {
-  setObjectName ("VariablesDockWidget");
-  construct ();
-
-  connect (OctaveLink::instance(), SIGNAL (symbolTableChanged()), this, SLOT (fetchSymbolTable()));
-}
-
-void
-VariablesDockWidget::construct ()
-{
+  setObjectName ("WorkspaceView");
   setWindowTitle (tr ("Workspace"));
 
   m_updateSemaphore = new QSemaphore (1);
@@ -79,11 +71,12 @@ VariablesDockWidget::construct ()
       "   stop:0.780424 rgba(255, 215, 215, 255)); "
       " } "
       );
+
+  connect (OctaveLink::instance(), SIGNAL (symbolTableChanged()), this, SLOT (fetchSymbolTable()));
 }
 
 void
-VariablesDockWidget::updateTreeEntry (QTreeWidgetItem * treeItem,
-				      SymbolRecord symbolRecord)
+WorkspaceView::updateTreeEntry (QTreeWidgetItem * treeItem, SymbolRecord symbolRecord)
 {
   treeItem->setData (0, 0, QString (symbolRecord.name ().c_str ()));
   treeItem->setData (1, 0,
@@ -94,7 +87,7 @@ VariablesDockWidget::updateTreeEntry (QTreeWidgetItem * treeItem,
 }
 
 void
-VariablesDockWidget::setVariablesList (QList < SymbolRecord > symbolTable)
+WorkspaceView::updateFromSymbolTable (QList < SymbolRecord > symbolTable)
 {
   m_updateSemaphore->acquire ();
   // Split the symbol table into its different scopes.
@@ -108,24 +101,24 @@ VariablesDockWidget::setVariablesList (QList < SymbolRecord > symbolTable)
     // It's true that being global or hidden includes it's can mean it's also locally visible,
     // but we want to distinguish that here.
     if (symbolRecord.is_local () && !symbolRecord.is_global ()
-	&& !symbolRecord.is_hidden ())
+        && !symbolRecord.is_hidden ())
       {
-	localSymbolTable.append (symbolRecord);
+        localSymbolTable.append (symbolRecord);
       }
 
     if (symbolRecord.is_global ())
       {
-	globalSymbolTable.append (symbolRecord);
+        globalSymbolTable.append (symbolRecord);
       }
 
     if (symbolRecord.is_persistent ())
       {
-	persistentSymbolTable.append (symbolRecord);
+        persistentSymbolTable.append (symbolRecord);
       }
 
     if (symbolRecord.is_hidden ())
       {
-	hiddenSymbolTable.append (symbolRecord);
+        hiddenSymbolTable.append (symbolRecord);
       }
   }
 
@@ -137,8 +130,7 @@ VariablesDockWidget::setVariablesList (QList < SymbolRecord > symbolTable)
 }
 
 void
-VariablesDockWidget::updateScope (int topLevelItemIndex,
-				  QList < SymbolRecord > symbolTable)
+WorkspaceView::updateScope (int topLevelItemIndex, QList < SymbolRecord > symbolTable)
 {
   // This method may be a little bit confusing; variablesList is a complete list of all
   // variables that are in the workspace currently.
@@ -204,21 +196,23 @@ VariablesDockWidget::updateScope (int topLevelItemIndex,
 }
 
 void
-VariablesDockWidget::fetchSymbolTable ()
+WorkspaceView::fetchSymbolTable ()
 {
-  QList < SymbolRecord > symbolTable = OctaveLink::instance ()->copyCurrentSymbolTable ();
-  setVariablesList (symbolTable);
+  OctaveLink::instance ()->acquireSymbolTable();
+  QList < SymbolRecord > symbolTable = OctaveLink::instance ()->symbolTable();
+  updateFromSymbolTable (symbolTable);
+  OctaveLink::instance ()->releaseSymbolTable();
 }
 
 void
-VariablesDockWidget::handleVisibilityChanged (bool visible)
+WorkspaceView::handleVisibilityChanged (bool visible)
 {
   if (visible)
-    emit activeChanged (true);
+  emit activeChanged (true);
 }
 
 void
-VariablesDockWidget::closeEvent (QCloseEvent *event)
+WorkspaceView::closeEvent (QCloseEvent *event)
 {
   emit activeChanged (false);
   QDockWidget::closeEvent (event);

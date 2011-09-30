@@ -30,7 +30,7 @@
 #include "ResourceManager.h"
 #include "TerminalView.h"
 #include "OctaveLink.h"
-#include "VariablesDockWidget.h"
+#include "WorkspaceView.h"
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
 #include "BrowserWidget.h"
@@ -66,10 +66,7 @@ Q_OBJECT public:
   {
     return m_terminalView;
   }
-  VariablesDockWidget *variablesDockWidget ()
-  {
-    return m_variablesDockWidget;
-  }
+
   HistoryDockWidget *historyDockWidget ()
   {
     return m_historyDockWidget;
@@ -125,7 +122,7 @@ private:
   NonClosableMdiSubWindow *m_ircWidgetSubWindow;
 
   // Dock widgets.
-  VariablesDockWidget *m_variablesDockWidget;
+  WorkspaceView *m_workspaceView;
   HistoryDockWidget *m_historyDockWidget;
   FilesDockWidget *m_filesDockWidget;
 

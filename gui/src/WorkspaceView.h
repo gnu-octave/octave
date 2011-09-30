@@ -15,37 +15,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VARIABLESDOCKWIDGET_H
-#define VARIABLESDOCKWIDGET_H
+#ifndef WORKSPACEVIEW_H
+#define WORKSPACEVIEW_H
 
 #include <QDockWidget>
 #include <QTreeWidget>
 #include <QSemaphore>
 #include "OctaveLink.h"
 
-class VariablesDockWidget:public QDockWidget
+class WorkspaceView:public QDockWidget
 {
   Q_OBJECT
 public:
-  VariablesDockWidget (QWidget * parent = 0);
-  void setVariablesList (QList < SymbolRecord > symbolTable);
+  WorkspaceView (QWidget * parent = 0);
 
 public slots:
   void fetchSymbolTable ();
   void handleVisibilityChanged (bool visible);
+
 signals:
   /** Custom signal that tells if a user has clicke away that dock widget. */
   void activeChanged (bool active);
+
 protected:
   void closeEvent (QCloseEvent *event);
+
 private:
-  void construct ();
-  void updateTreeEntry (QTreeWidgetItem * treeItem,
-			SymbolRecord symbolRecord);
-  void updateScope (int topLevelItemIndex,
-		    QList < SymbolRecord > symbolTable);
+  void updateFromSymbolTable (QList < SymbolRecord > symbolTable);
+  void updateTreeEntry (QTreeWidgetItem * treeItem, SymbolRecord symbolRecord);
+  void updateScope (int topLevelItemIndex, QList < SymbolRecord > symbolTable);
+
   QTreeWidget *m_variablesTreeWidget;
   QSemaphore *m_updateSemaphore;
 };
 
-#endif // VARIABLESDOCKWIDGET_H
+#endif // WORKSPACEVIEW_H

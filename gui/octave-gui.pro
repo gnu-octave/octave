@@ -67,7 +67,7 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 SOURCES +=\
     src/lexer/lexeroctavegui.cpp \
     src/MainWindow.cpp \
-    src/VariablesDockWidget.cpp \
+    src/WorkspaceView.cpp \
     src/HistoryDockWidget.cpp \
     src/FilesDockWidget.cpp \
     src/FileEditorMdiSubWindow.cpp \
@@ -98,7 +98,7 @@ SOURCES +=\
 HEADERS += \
     src/lexer/lexeroctavegui.h \
     src/MainWindow.h \
-    src/VariablesDockWidget.h \
+    src/WorkspaceView.h \
     src/HistoryDockWidget.h \
     src/FilesDockWidget.h \
     src/FileEditorMdiSubWindow.h \

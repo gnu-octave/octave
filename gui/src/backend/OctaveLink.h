@@ -96,6 +96,14 @@ public:
 
   void launchOctave ();
   void terminateOctave ();
+  void acquireSymbolTable () { m_symbolTableSemaphore->acquire (); }
+  void releaseSymbolTable () { m_symbolTableSemaphore->release (); }
+
+  /**
+    * For performance reasons this is not thread safe. Before you use this,
+    * acquire a lock with acquireSymbolTable and releaseSymbolTable.
+    */
+  QList < SymbolRecord > symbolTable ();
 
   /**
     * Returns a copy of the current symbol table buffer.
@@ -103,22 +111,12 @@ public:
     */
   QList < SymbolRecord > copyCurrentSymbolTable ();
 
-  void
-  updateHistoryModel ();
-
-  QStringListModel *
-  historyModel ();
-
-  /**
-    * Updates the current symbol table with new data
-    * from octave.
-    */
-  void
-  fetchSymbolTable ();
+  void updateHistoryModel ();
+  QStringListModel *historyModel ();
+  void emitSymbolTableChanged() { emit symbolTableChanged(); }
 
 signals:
-  void
-  symbolTableChanged ();
+  void symbolTableChanged ();
 
 private:
   OctaveLink ();

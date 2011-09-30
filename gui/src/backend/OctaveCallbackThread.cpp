@@ -39,7 +39,7 @@ OctaveCallbackThread::run ()
   bool running = true;
   while (running)
     {
-      OctaveLink::instance ()->fetchSymbolTable ();
+      OctaveLink::instance ()->emitSymbolTableChanged();
       OctaveLink::instance ()->updateHistoryModel ();
       usleep (500000);
 

@@ -5,7 +5,8 @@ Summary of important user-visible changes for version 3.6:
 
  ** Octave now features a profiler, thanks to the work of Daniel Kraft
     under the Google Summer of Code mentorship program.  The manual has
-    been updated to reflect this addition.
+    been updated to reflect this addition.  The new user-visible
+    functions are profexplore, profile, and profshow.
 
  ** Overhaul of statistical distribution functions
 
@@ -38,20 +39,22 @@ Summary of important user-visible changes for version 3.6:
  ** Certain string functions have been modified for greater Matlab compatibility
     and for 15X greater performance when operating on cell array of strings.
 
-    deblank : Now requires character or cellstr input.
-    strtrim : Now requires character or cellstr input.
+    deblank:  Now requires character or cellstr input.
+    strtrim:  Now requires character or cellstr input.
               No longer trims nulls ("\0") from string for ML compatibility.
     strmatch: Follows documentation precisely and ignores trailing spaces
               in pattern and in string.  Note that Matlab documents this 
               behavior but the implementation does *not* always follow it.
- 
- ** New functions added.
 
-    iscolumn
-    issrow
-    zscore
-    profile
-    profshow
+ ** Matlab-compatible preference functions:
+
+      addpref  getpref  ispref  rmpref  setpref
+
+ ** Other miscellaneous new functions:
+
+      iscolumn
+      issrow
+      zscore
 
  ** Deprecated functions.
 

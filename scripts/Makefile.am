@@ -53,6 +53,7 @@ include path/module.mk
 include pkg/module.mk
 include plot/module.mk
 include polynomial/module.mk
+include prefs/module.mk
 include set/module.mk
 include signal/module.mk
 include sparse/module.mk
@@ -139,6 +140,10 @@ plot/PKG_ADD: $(plot_FCN_FILES) $(plot_GEN_FCN_FILES) plot/$(octave_dirstamp) mk
 
 polynomial/PKG_ADD: $(polynomial_FCN_FILES) $(polynomial_GEN_FCN_FILES) polynomial/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(polynomial_FCN_FILES) -- $(polynomial_GEN_FCN_FILES) > $@-t
+	mv $@-t $@
+
+prefs/PKG_ADD: $(prefs_FCN_FILES) $(prefs_GEN_FCN_FILES) plot/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(prefs_FCN_FILES) -- $(prefs_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
 set/PKG_ADD: $(set_FCN_FILES) $(set_GEN_FCN_FILES) set/$(octave_dirstamp) mk-pkg-add

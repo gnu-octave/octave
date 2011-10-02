@@ -70,3 +70,34 @@ function [xx, yy, zz] = meshgrid (x, y, z)
   endif
 
 endfunction
+
+%!test
+%! x = 1:2;
+%! y = 1:3;
+%! z = 1:4;
+%! [XX, YY, ZZ] = meshgrid (x, y, z);
+%! assert (size_equal (XX, YY, ZZ));
+%! assert (ndims (XX), 3);
+%! assert (size (XX), [3, 2, 4]);
+%! assert (XX(1) * YY(1) * ZZ(1), x(1) * y(1) * z(1));
+%! assert (XX(end) * YY(end) * ZZ(end), x(end) * y(end) * z(end));
+
+%!test
+%! x = 1:2;
+%! y = 1:3;
+%! [XX, YY] = meshgrid (x, y);
+%! assert (size_equal (XX, YY));
+%! assert (ndims (XX), 2);
+%! assert (size (XX), [3, 2]);
+%! assert (XX(1) * YY(1), x(1) * y(1));
+%! assert (XX(end) * YY(end), x(end) * y(end));
+
+%!test
+%! x = 1:3;
+%! [XX1, YY1] = meshgrid (x, x);
+%! [XX2, YY2] = meshgrid (x);
+%! assert (size_equal (XX1, XX2, YY1, YY2));
+%! assert (ndims (XX1), 2);
+%! assert (size (XX1), [3, 3]);
+%! assert (XX1, XX2);
+%! assert (YY1, YY2);

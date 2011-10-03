@@ -334,6 +334,29 @@ octave_pager_stream::set_diary_skip (void)
     pb->set_diary_skip ();
 }
 
+// Reinitialize the pager buffer to avoid hanging on to large internal
+// buffers when they might not be needed.  This function should only be
+// called when the pager is not in use.  For example, just before
+// getting command-line input.
+
+void
+octave_pager_stream::reset (void)
+{
+  if (! instance)
+    instance = new octave_pager_stream ();
+
+  instance->do_reset ();
+}
+
+void
+octave_pager_stream::do_reset (void)
+{
+  delete pb;
+  pb = new octave_pager_buf ();
+  rdbuf (pb);
+  setf (unitbuf);
+}
+
 octave_diary_stream *octave_diary_stream::instance = 0;
 
 octave_diary_stream::octave_diary_stream (void) : std::ostream (0), db (0)
@@ -356,6 +379,29 @@ octave_diary_stream::stream (void)
     instance = new octave_diary_stream ();
 
   return *instance;
+}
+
+// Reinitialize the diary buffer to avoid hanging on to large internal
+// buffers when they might not be needed.  This function should only be
+// called when the pager is not in use.  For example, just before
+// getting command-line input.
+
+void
+octave_diary_stream::reset (void)
+{
+  if (! instance)
+    instance = new octave_diary_stream ();
+
+  instance->do_reset ();
+}
+
+void
+octave_diary_stream::do_reset (void)
+{
+  delete db;
+  db = new octave_diary_buf ();
+  rdbuf (db);
+  setf (unitbuf);
 }
 
 void

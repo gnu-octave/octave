@@ -1669,7 +1669,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
       OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
     ;;
     shl_load)
-      shl_load_api=truenn
+      shl_load_api=true
       DL_API_MSG="(shl_load)"
       AC_DEFINE(HAVE_SHL_LOAD_API, 1, [Define if your system has shl_load and shl_findsym for dynamic linking])
     ;;

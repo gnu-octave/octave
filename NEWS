@@ -83,10 +83,15 @@ Summary of important user-visible changes for version 3.6:
       __error_text__     sylvester_matrix
       error_text
 
+Summary of important user-visible changes for version 3.4.3:
+-----------------------------------------------------------
+
+ ** Octave 3.4.3 is a bug fixing release.
+     
 Summary of important user-visible changes for version 3.4.2:
 -----------------------------------------------------------
 
- ** Octave 3.2.4 fixes some minor installation problems that affected
+ ** Octave 3.4.2 fixes some minor installation problems that affected
     version 3.4.1.
 
 Summary of important user-visible changes for version 3.4.1:

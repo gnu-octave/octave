@@ -45,8 +45,12 @@ function h = __line__ (p, varargin)
     num_data_args = 0;
   endif
 
+  if (num_data_args > 0 && ! size_equal (varargin{1:num_data_args}))
+    error ("line: number of X, Y, and Z points must be equal");
+  endif
+
   if (rem (nvargs - num_data_args, 2) != 0)
-    print_usage ("line");
+    error ("line: invalid number of PROPERTY / VALUE pairs");
   endif
 
   other_args = {};

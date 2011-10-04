@@ -386,7 +386,7 @@ profile_data_accumulator::query_time (void) const
 {
   octave_time now;
   // FIXME -- this should be removed at some point...  See bug 34210.
-#if defined (__CYGWIN__) || defined (__MINGW__)
+#if defined (__CYGWIN__) || defined (__MINGW32__)
   volatile
 #endif
     double dnow = now.double_value ();

@@ -2115,7 +2115,7 @@ octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
 
           octave_idx_type len = fmt_list.length ();
 
-          retval.resize (nconv+1, Matrix ());
+          retval.resize (nconv+2, Matrix ());
 
           const scanf_format_elt *elt = fmt_list.first ();
 
@@ -2144,6 +2144,9 @@ octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
             }
 
           retval(nconv) = num_values;
+
+          int err_num;
+          retval(nconv+1) = error (false, err_num);
 
           if (! quit)
             {

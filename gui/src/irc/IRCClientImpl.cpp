@@ -47,6 +47,7 @@ IRCServerMessage::IRCServerMessage (const QString& serverMessage)
 
       // If it belongs to the prefix, it must be concatenanted neatlessly without
       // any spaces.
+      if (position < serverMessage.size())
       if (!serverMessage.at (position - 1).isSpace ())
         {
           while ((position < serverMessage.size ())
@@ -60,6 +61,7 @@ IRCServerMessage::IRCServerMessage (const QString& serverMessage)
 
       // If it belongs to the prefix, it must be concatenanted neatlessly without
       // any spaces.
+      if (position < serverMessage.size())
       if (!serverMessage.at (position - 1).isSpace ())
         {
           while ((position < serverMessage.size ())

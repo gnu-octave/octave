@@ -158,7 +158,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
   if (nargs > 0)
     pos = varargin{nargs};
-    if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
+    if (isnumeric (pos) && isscalar (pos) && pos == fix (pos))
       if (pos >= -1 && pos <= 4)
         position = [{"northeastoutside", "best", "northeast",
                      "northwest", "southwest", "southeast"}] {pos + 2};

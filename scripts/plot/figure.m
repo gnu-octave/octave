@@ -41,7 +41,7 @@ function h = figure (varargin)
       f = tmp;
       varargin(1) = [];
       nargs--;
-    elseif (isnumeric (tmp) && tmp > 0 && round (tmp) == tmp)
+    elseif (isnumeric (tmp) && tmp > 0 && tmp == fix (tmp))
       f = tmp;
       init_new_figure = true;
       varargin(1) = [];

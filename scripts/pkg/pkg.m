@@ -308,6 +308,8 @@ function [local_packages, global_packages] = pkg (varargin)
         auto = 1;
       case "-verbose"
         verbose = true;
+        ## Send verbose output to pager immediately.  Change setting locally.
+        page_output_immediately (true, "local");
       case "-forge"
         octave_forge = true;
       case "-local"

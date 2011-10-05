@@ -21,7 +21,7 @@
 ## Return which mouse buttons were pressed and keys were hit on the current
 ## figure.  If @var{n} is defined, then wait for @var{n} mouse clicks
 ## before returning.  If @var{n} is not defined, then @code{ginput} will
-## loop until the return key is pressed.
+## loop until the return key @key{RET} is pressed.
 ## @end deftypefn
 
 function varargout = ginput (n)

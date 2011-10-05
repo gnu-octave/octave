@@ -156,7 +156,7 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
   endif
 
   if (nargin < 2 || isempty (__init))
-    __init = "x = randn(n, 1);";
+    __init = "x = randn (n, 1);";
   endif
 
   if (nargin < 3 || isempty (__max_n))
@@ -396,25 +396,22 @@ endfunction
 %! assert (fieldnames (order), {"p"; "a"});
 %! assert (isnumeric (n));
 %! assert (length (n) > 10);
-%! n_sz = size (n); 
 %! assert (isnumeric (T_f1));
-%! assert (size (T_f1), n_sz);
+%! assert (size (T_f1), size (n));
 %! assert (isnumeric (T_f2));
-%! assert (size (T_f2), n_sz);
+%! assert (length (T_f2) > 10);
 
 %!test
-%! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); end");
+%! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); endfor");
 %! assert (isstruct (order));
 %! assert (size (order), [1, 1]);
 %! assert (fieldnames (order), {"p"; "a"});
 %! assert (isnumeric (n));
 %! assert (length (n) > 10);
-%! n_sz = size (n); 
-%! assert (size (n), [1, 15]);
 %! assert (isnumeric (T_f1));
-%! assert (size (T_f1), n_sz);
+%! assert (size (T_f1), size (n));
 %! assert (isnumeric (T_f2));
-%! assert (size (T_f2), n_sz);
+%! assert (length (T_f2) > 10);
 
 %% Test input validation
 %!error speed ();

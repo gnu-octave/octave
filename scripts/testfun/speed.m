@@ -331,7 +331,9 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
 
 endfunction
 
-%!demo if 1
+
+%% FIXME: Demos with declared functions do not work.  See bug #31815.
+%!#demo
 %!  function x = build_orig(n)
 %!    ## extend the target vector on the fly
 %!    for i=0:n-1, x([1:10]+i*10) = 1:10; endfor
@@ -359,7 +361,7 @@ endfunction
 %!  disp("Notice the peak speedup ratio.");
 %! endif
 
-%!demo if 1
+%!#demo
 %!  function x = build_orig(n)
 %!    for i=0:n-1, x([1:10]+i*10) = 1:10; endfor
 %!  endfunction
@@ -387,20 +389,18 @@ endfunction
 %!  disp("Notice how much bigger the speedup is than in example 1.");
 %! endif
 
-%!error speed ();
-%!error speed (1, 2, 3, 4, 5, 6, 7);
-
 %!test
 %! [order, n, T_f1, T_f2] = speed ("airy (x)", "x = rand (n, 10)", [100, 1000]);
 %! assert (isstruct (order));
 %! assert (size (order), [1, 1]);
 %! assert (fieldnames (order), {"p"; "a"});
 %! assert (isnumeric (n));
-%! assert (size (n), [1, 15]);
+%! assert (length (n) > 10);
+%! n_sz = size (n); 
 %! assert (isnumeric (T_f1));
-%! assert (size (T_f1), [1, 15]);
-%! assert (isnumeric (T_f1));
-%! assert (size (T_f2), [1, 15]);
+%! assert (size (T_f1), n_sz);
+%! assert (isnumeric (T_f2));
+%! assert (size (T_f2), n_sz);
 
 %!test
 %! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); end");
@@ -408,8 +408,15 @@ endfunction
 %! assert (size (order), [1, 1]);
 %! assert (fieldnames (order), {"p"; "a"});
 %! assert (isnumeric (n));
+%! assert (length (n) > 10);
+%! n_sz = size (n); 
 %! assert (size (n), [1, 15]);
 %! assert (isnumeric (T_f1));
-%! assert (size (T_f1), [1, 15]);
-%! assert (isnumeric (T_f1));
-%! assert (size (T_f2), [1, 15]);
+%! assert (size (T_f1), n_sz);
+%! assert (isnumeric (T_f2));
+%! assert (size (T_f2), n_sz);
+
+%% Test input validation
+%!error speed ();
+%!error speed (1, 2, 3, 4, 5, 6, 7);
+

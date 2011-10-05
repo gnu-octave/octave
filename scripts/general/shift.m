@@ -37,7 +37,9 @@ function y = shift (x, b, dim)
     print_usage ();
   endif
 
-  if (! (isscalar (b) && b == round (b)))
+  if (numel (x) < 1)
+    error ("shift: X must not be empty");
+  elseif (! (isscalar (b) && b == fix (b)))
     error ("shift: B must be an integer");
   endif
 
@@ -45,7 +47,7 @@ function y = shift (x, b, dim)
   sz = size (x);
 
   if (nargin == 3)
-    if (!(isscalar (dim) && dim == round (dim))
+    if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
       error ("shift: DIM must be an integer and a valid dimension");
     endif
@@ -54,23 +56,21 @@ function y = shift (x, b, dim)
     (dim = find (sz > 1, 1)) || (dim = 1);
   endif
 
-  if (numel (x) < 1)
-    error ("shift: X must not be empty");
-  endif
-
-  d = sz (dim);
+  d = sz(dim);
 
   idx = repmat ({':'}, nd, 1);
-  if (b >= 0)
+  if (b > 0)
     b = rem (b, d);
     idx{dim} = [d-b+1:d, 1:d-b];
   elseif (b < 0)
     b = rem (abs (b), d);
     idx{dim} = [b+1:d, 1:b];
   endif
+
   y = x(idx{:});
 
 endfunction
+
 
 %!test
 %! a = [1, 2, 3];
@@ -80,13 +80,19 @@ endfunction
 %! r = [a, b, c];
 %! m = [a; b; c];
 %!
-%! assert((shift (r, 3) == [c, a, b]
-%! && shift (r, -6) == [c, a, b]
-%! && shift (r, -3) == [b, c, a]
-%! && shift (m, 1) == [c; a; b]
-%! && shift (m, -2) == [c; a; b]));
+%! assert(shift (r, 0), r);
+%! assert(shift (r, 3), [c, a, b]);
+%! assert(shift (r, -6), [c, a, b]);
+%! assert(shift (r, -3), [b, c, a]);
+%! assert(shift (m, 1), [c; a; b]);
+%! assert(shift (m, -2), [c; a; b]);
 
-%!error shift ();
-
-%!error shift (1, 2, 3, 4);
+%% Test input validation
+%!error shift ()
+%!error shift (1, 2, 3, 4)
+%!error shift ([], 1)
+%!error shift (ones(2), ones(2))
+%!error kurtosis (ones(2), 1.5)
+%!error kurtosis (ones(2), 0)
+%!error kurtosis (ones(2), 3)
 

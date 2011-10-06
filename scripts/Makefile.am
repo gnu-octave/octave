@@ -142,7 +142,7 @@ polynomial/PKG_ADD: $(polynomial_FCN_FILES) $(polynomial_GEN_FCN_FILES) polynomi
 	$(srcdir)/mk-pkg-add $(srcdir) $(polynomial_FCN_FILES) -- $(polynomial_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
-prefs/PKG_ADD: $(prefs_FCN_FILES) $(prefs_GEN_FCN_FILES) plot/$(octave_dirstamp) mk-pkg-add
+prefs/PKG_ADD: $(prefs_FCN_FILES) $(prefs_GEN_FCN_FILES) prefs/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(prefs_FCN_FILES) -- $(prefs_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
@@ -214,6 +214,7 @@ $(path_GEN_FCN_FILES): path/$(octave_dirstamp)
 $(pkg_GEN_FCN_FILES): pkg/$(octave_dirstamp)
 $(plot_GEN_FCN_FILES): plot/$(octave_dirstamp)
 $(polynomial_GEN_FCN_FILES): polynomial/$(octave_dirstamp)
+$(prefs_GEN_FCN_FILES): prefs/$(octave_dirstamp)
 $(set_GEN_FCN_FILES): set/$(octave_dirstamp)
 $(signal_GEN_FCN_FILES): signal/$(octave_dirstamp)
 $(sparse_GEN_FCN_FILES): sparse/$(octave_dirstamp)
@@ -276,6 +277,9 @@ plot/$(octave_dirstamp):
 polynomial/$(octave_dirstamp):
 	$(MKDIR_P) polynomial
 	: > polynomial/$(octave_dirstamp)
+prefs/$(octave_dirstamp):
+	$(MKDIR_P) prefs
+	: > prefs/$(octave_dirstamp)
 set/$(octave_dirstamp):
 	$(MKDIR_P) set
 	: > set/$(octave_dirstamp)

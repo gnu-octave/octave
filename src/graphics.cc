@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
+#include "pager.h"
 #include "parse.h"
 #include "toplev.h"
 #include "txt-eng-ft.h"
@@ -309,6 +310,100 @@ default_figure_paperposition (void)
 }
 
 static Matrix
+default_control_position (void)
+{
+  Matrix retval (1, 4, 0.0);
+
+  retval(0) = 0;
+  retval(1) = 0;
+  retval(2) = 80;
+  retval(3) = 30;
+
+  return retval;
+}
+
+static Matrix
+default_control_sliderstep (void)
+{
+  Matrix retval (1, 2, 0.0);
+
+  retval(0) = 0.01;
+  retval(1) = 0.1;
+
+  return retval;
+}
+
+static Matrix
+default_panel_position (void)
+{
+  Matrix retval (1, 4, 0.0);
+
+  retval(0) = 0;
+  retval(1) = 0;
+  retval(2) = retval(3) = 0.5;
+
+  return retval;
+}
+
+static double
+convert_font_size (double font_size, const caseless_str& from_units,
+                   const caseless_str& to_units, double parent_height = 0)
+{
+  // Simple case where from_units == to_units
+
+  if (from_units.compare (to_units))
+    return font_size;
+
+  // Converts the given fontsize using the following transformation:
+  // <old_font_size> => points => <new_font_size>
+
+  double points_size = 0;
+  double res = 0;
+
+  if (from_units.compare ("points"))
+    points_size = font_size;
+  else
+    {
+      res = xget (0, "screenpixelsperinch").double_value ();
+
+      if (from_units.compare ("pixels"))
+        points_size = font_size * 72.0 / res;
+      else if (from_units.compare ("inches"))
+        points_size = font_size * 72.0;
+      else if (from_units.compare ("centimeters"))
+        points_size = font_size * 72.0 / 2.54;
+      else if (from_units.compare ("normalized"))
+        points_size = font_size * parent_height * 72.0 / res;
+    }
+
+  double new_font_size = 0;
+
+  if (to_units.compare ("points"))
+    new_font_size = points_size;
+  else
+    {
+      if (res <= 0)
+        res = xget (0, "screenpixelsperinch").double_value ();
+
+      if (to_units.compare ("pixels"))
+        new_font_size = points_size * res / 72.0;
+      else if (to_units.compare ("inches"))
+        new_font_size = points_size / 72.0;
+      else if (to_units.compare ("centimeters"))
+        new_font_size = points_size * 2.54 / 72.0;
+      else if (to_units.compare ("normalized"))
+        {
+          // Avoid setting font size to (0/0) = NaN
+
+          if (parent_height > 0)
+            new_font_size = points_size * res / (parent_height * 72.0);
+        }
+    }
+
+  return new_font_size;
+}
+
+static Matrix
 convert_position (const Matrix& pos, const caseless_str& from_units,
                   const caseless_str& to_units,
                   const Matrix& parent_dim = Matrix (1, 2, 0.0))
@@ -316,6 +411,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
   Matrix retval (1, pos.numel ());
   double res = 0;
   bool is_rectangle = (pos.numel () == 4);
+  bool is_2d = (pos.numel () == 2);
 
   if (from_units.compare ("pixels"))
     retval = pos;
@@ -328,7 +424,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
           retval(2) = pos(2) * parent_dim(0);
           retval(3) = pos(3) * parent_dim(1);
         }
-      else
+      else if (! is_2d)
         retval(2) = 0;
     }
   else if (from_units.compare ("characters"))
@@ -351,7 +447,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) = 0.5 * pos(2) * f;
               retval(3) = pos(3) * f;
             }
-          else
+          else if (! is_2d)
             retval(2) = 0;
         }
     }
@@ -378,7 +474,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) = pos(2) * f;
               retval(3) = pos(3) * f;
             }
-          else
+          else if (! is_2d)
             retval(2) = 0;
         }
     }
@@ -394,7 +490,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
               retval(2) /= parent_dim(0);
               retval(3) /= parent_dim(1);
             }
-          else
+          else if (! is_2d)
             retval(2) = 0;
         }
       else if (to_units.compare ("characters"))
@@ -415,7 +511,7 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
                   retval(2) = 2 * retval(2) / f;
                   retval(3) = retval(3) / f;
                 }
-              else
+              else if (! is_2d)
                 retval(2) = 0;
             }
         }
@@ -442,12 +538,12 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
                   retval(2) /= f;
                   retval(3) /= f;
                 }
-              else
+              else if (! is_2d)
                 retval(2) = 0;
             }
         }
     }
-  else if (! is_rectangle)
+  else if (! is_rectangle && ! is_2d)
     retval(2) = 0;
 
   return retval;
@@ -716,8 +812,16 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                 {
                   pfx = name.substr (0, 7);
 
-                  if (pfx.compare ("surface") || pfx.compare ("hggroup"))
+                  if (pfx.compare ("surface") || pfx.compare ("hggroup")
+		      || pfx.compare ("uipanel"))
                     offset = 7;
+                  else if (len >= 9)
+                    {
+                      pfx = name.substr (0, 9);
+
+                      if (pfx.compare ("uicontrol"))
+                        offset = 9;
+                    }
                 }
             }
         }
@@ -758,27 +862,27 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new hggroup (h, p);
   else if (type.compare ("uimenu"))
     go = new uimenu (h, p);
+  else if (type.compare ("uicontrol"))
+    go = new uicontrol (h, p);
+  else if (type.compare ("uipanel"))
+    go = new uipanel (h, p);
   return go;
 }
 
 // ---------------------------------------------------------------------
 
 bool
-base_property::set (const octave_value& v, bool do_run )
+base_property::set (const octave_value& v, bool do_run, bool do_notify_toolkit)
 {
   if (do_set (v))
     {
 
       // Notify graphics toolkit.
-      if (id >= 0)
+      if (id >= 0 && do_notify_toolkit)
         {
           graphics_object go = gh_manager::get_object (parent);
           if (go)
-            {
-              graphics_toolkit toolkit = go.get_toolkit ();
-              if (toolkit)
-                toolkit.update (go, id);
-            }
+            go.update (id);
         }
 
       // run listeners
@@ -799,7 +903,7 @@ base_property::run_listeners (listener_mode mode)
 
   for (int i = 0; i < l.length (); i++)
     {
-      gh_manager::execute_callback (parent, l(i), octave_value ());
+      gh_manager::execute_listener (parent, l(i));
 
       if (error_state)
         break;
@@ -932,6 +1036,11 @@ color_property::do_set (const octave_value& val)
             {
               if (current_type != radio_t || match != current_val)
                 {
+                  if (s.length () != match.length ())
+                    warning_with_id ("Octave:abbreviated-property-match",
+                                     "%s: allowing %s to match %s value %s",
+                                     "set", s.c_str (), get_name ().c_str (),
+                                     match.c_str ());
                   current_val = match;
                   current_type = radio_t;
                   return true;
@@ -998,7 +1107,12 @@ double_radio_property::do_set (const octave_value& val)
         {
           if (current_type != radio_t || match != current_val)
             {
-              current_val = s;
+              if (s.length () != match.length ())
+                warning_with_id ("Octave:abbreviated-property-match",
+                                 "%s: allowing %s to match %s value %s",
+                                 "set", s.c_str (), get_name ().c_str (),
+                                 match.c_str ());
+              current_val = match;
               current_type = radio_t;
               return true;
             }
@@ -1434,6 +1548,54 @@ property::create (const std::string& name, const graphics_handle& h,
   return retval;
 }
 
+static void
+finalize_r (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+
+  if (go)
+    {
+      Matrix children = go.get_properties ().get_all_children ();
+
+      for (int k = 0; k < children.numel (); k++)
+        finalize_r (children(k));
+
+      go.finalize ();
+    }
+}
+
+static void
+initialize_r (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+
+  if (go)
+    {
+      Matrix children = go.get_properties ().get_all_children ();
+
+      go.initialize ();
+
+      for (int k = 0; k < children.numel (); k++)
+        initialize_r (children(k));
+    }
+}
+
+void
+figure::properties::set_toolkit (const graphics_toolkit& b)
+{
+  if (toolkit)
+    finalize_r (get___myhandle__ ());
+
+  toolkit = b;
+  __graphics_toolkit__ = b.get_name ();
+  __plot_stream__ = Matrix ();
+
+  if (toolkit)
+    initialize_r (get___myhandle__ ());
+
+  mark_modified ();
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -1466,8 +1628,16 @@ property_list::set (const caseless_str& name, const octave_value& val)
                 {
                   pfx = name.substr (0, 7);
 
-                  if (pfx.compare ("surface") || pfx.compare ("hggroup"))
+                  if (pfx.compare ("surface") || pfx.compare ("hggroup")
+                      || pfx.compare ("uipanel"))
                     offset = 7;
+                  else if (len > 9)
+                    {
+                      pfx = name.substr (0, 9);
+
+                      if (pfx.compare ("uicontrol"))
+                        offset = 9;
+                    }
                 }
             }
         }
@@ -1500,6 +1670,10 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = hggroup::properties::has_core_property (pname);
           else if (pfx == "uimenu")
             has_property = uimenu::properties::has_core_property (pname);
+          else if (pfx == "uicontrol")
+            has_property = uicontrol::properties::has_core_property (pname);
+          else if (pfx == "uipanel")
+            has_property = uipanel::properties::has_core_property (pname);
 
           if (has_property)
             {
@@ -1564,8 +1738,16 @@ property_list::lookup (const caseless_str& name) const
                 {
                   pfx = name.substr (0, 7);
 
-                  if (pfx.compare ("surface") || pfx.compare ("hggroup"))
+                  if (pfx.compare ("surface") || pfx.compare ("hggroup")
+                      || pfx.compare ("uipanel"))
                     offset = 7;
+                  else if (len > 9)
+                    {
+                      pfx = name.substr (0, 9);
+
+                      if (pfx.compare ("uicontrol"))
+                        offset = 9;
+                    }
                 }
             }
         }
@@ -1880,9 +2062,7 @@ gh_manager::do_free (const graphics_handle& h)
               bp.execute_deletefcn ();
 
               // Notify graphics toolkit.
-              graphics_toolkit toolkit = p->second.get_toolkit ();
-              if (toolkit)
-                toolkit.finalize (p->second);
+              p->second.finalize ();
 
               // Note: this will be valid only for first explicitly
               // deleted object.  All its children will then have an
@@ -2051,6 +2231,15 @@ xcreatefcn (const graphics_handle& h)
   obj.get_properties ().execute_createfcn  ();
 }
 
+static void
+xinitialize (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (h);
+  
+  if (go)
+    go.initialize ();
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -2061,12 +2250,12 @@ base_graphics_toolkit::update (const graphics_handle& h, int id)
   update (go, id);
 }
 
-void
+bool
 base_graphics_toolkit::initialize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
 
-  initialize (go);
+  return initialize (go);
 }
 
 void
@@ -2312,6 +2501,11 @@ public:
   ~gnuplot_toolkit (void) { }
 
   bool is_valid (void) const { return true; }
+
+  bool initialize (const graphics_object& go)
+    {
+      return go.isa ("figure");
+    }
 
   void finalize (const graphics_object& go)
     {
@@ -2763,7 +2957,7 @@ figure::properties::set_visible (const octave_value& val)
 }
 
 Matrix
-figure::properties::get_boundingbox (bool) const
+figure::properties::get_boundingbox (bool, const Matrix&) const
 {
   Matrix screen_size = screen_size_pixels ();
   Matrix pos;
@@ -2790,6 +2984,40 @@ figure::properties::set_boundingbox (const Matrix& bb)
   pos = convert_position (pos, "pixels", get_units (), screen_size);
 
   set_position (pos);
+}
+
+Matrix
+figure::properties::map_from_boundingbox (double x, double y) const
+{
+  Matrix bb = get_boundingbox (true);
+  Matrix pos (1, 2, 0);
+
+  pos(0) = x;
+  pos(1) = y;
+
+  pos(1) = bb(3) - pos(1);
+  pos(0)++;
+  pos = convert_position (pos, "pixels", get_units (),
+                          bb.extract_n (0, 2, 1, 2));
+
+  return pos;
+}
+
+Matrix
+figure::properties::map_to_boundingbox (double x, double y) const
+{
+  Matrix bb = get_boundingbox (true);
+  Matrix pos (1, 2, 0);
+
+  pos(0) = x;
+  pos(1) = y;
+
+  pos = convert_position (pos, get_units (), "pixels",
+                          bb.extract_n (0, 2, 1, 2));
+  pos(0)--;
+  pos(1) = bb(3) - pos(1);
+
+  return pos;
 }
 
 void
@@ -4844,20 +5072,27 @@ axes::properties::update_font (void)
 // The INTERNAL flag defines whether position or outerposition is used.
 
 Matrix
-axes::properties::get_boundingbox (bool internal) const
+axes::properties::get_boundingbox (bool internal,
+                                   const Matrix& parent_pix_size) const
 {
-  graphics_object obj = gh_manager::get_object (get_parent ());
-  Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
   Matrix pos = (internal ?
                   get_position ().matrix_value ()
                   : get_outerposition ().matrix_value ());
+  Matrix parent_size (parent_pix_size);
 
-  pos = convert_position (pos, get_units (), "pixels",
-                          parent_bb.extract_n (0, 2, 1, 2));
+  if (parent_size.numel () == 0)
+    {
+      graphics_object obj = gh_manager::get_object (get_parent ());
+
+      parent_size =
+       obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+    }
+
+  pos = convert_position (pos, get_units (), "pixels", parent_size);
 
   pos(0)--;
   pos(1)--;
-  pos(1) = parent_bb(3) - pos(1) - pos(3);
+  pos(1) = parent_size(1) - pos(1) - pos(3);
 
   return pos;
 }
@@ -4990,29 +5225,24 @@ void
 axes::properties::update_fontunits (const caseless_str& old_units)
 {
   caseless_str new_units = get_fontunits ();
-  double fsz = get_fontsize ();
-  double pixelsperinch = xget (0, "screenpixelsperinch").double_value();
   double parent_height = get_boundingbox (true).elem (3);
+  double fsz = get_fontsize ();
 
-  if (old_units.compare ("normalized"))
-    fsz = fsz * parent_height * 72 / pixelsperinch;
-  else if (old_units.compare ("pixels"))
-    fsz = fsz * 72 / pixelsperinch;
-  else if (old_units.compare ("inches"))
-    fsz = fsz * 72;
-  else if (old_units.compare ("centimeters"))
-    fsz = fsz * 72 / 2.54;
-
-  if (new_units.compare ("normalized"))
-    fsz = fsz * pixelsperinch / parent_height / 72;
-  else if (new_units.compare ("pixels"))
-    fsz = fsz * pixelsperinch / 72;
-  else if (new_units.compare ("inches"))
-    fsz = fsz / 72;
-  else if (new_units.compare ("centimeters"))
-    fsz = fsz * 2.54 / 72;
+  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
 
   set_fontsize (octave_value (fsz));
+}
+
+double
+axes::properties::get_fontsize_points (double box_pix_height) const
+{
+  double fs = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (true).elem(3);
+
+  return convert_font_size (fs, get_fontunits (), "points", parent_height);
 }
 
 ColumnVector
@@ -6059,6 +6289,17 @@ axes::reset_default_properties (void)
   ::reset_default_properties (default_properties);
 }
 
+void
+axes::initialize (const graphics_object& go)
+{
+  base_graphics_object::initialize (go);
+
+  xinitialize (xproperties.get_title ());
+  xinitialize (xproperties.get_xlabel ());
+  xinitialize (xproperties.get_ylabel ());
+  xinitialize (xproperties.get_zlabel ());
+}
+
 // ---------------------------------------------------------------------
 
 Matrix
@@ -6201,6 +6442,23 @@ text::properties::update_units (void)
     }
 
   cached_units = get_units ();
+}
+
+double
+text::properties::get_fontsize_points (double box_pix_height) const
+{
+  double fs = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    {
+      graphics_object go (gh_manager::get_object (get___myhandle__ ()));
+      graphics_object ax (go.get_ancestor ("axes"));
+
+      parent_height = ax.get_properties ().get_boundingbox (true).elem(3);
+    }
+
+  return convert_font_size (fs, get_fontunits (), "points", parent_height);
 }
 
 // ---------------------------------------------------------------------
@@ -6556,6 +6814,279 @@ hggroup::update_axis_limits (const std::string& axis_type)
 // ---------------------------------------------------------------------
 
 octave_value
+uicontrol::properties::get_extent (void) const
+{
+  Matrix m = extent.get ().matrix_value ();
+
+  graphics_handle parent = get_parent ();
+  graphics_object parent_obj = gh_manager::get_object (parent);
+  Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
+         parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+
+  return convert_position (m, "pixels", get_units (), parent_size);
+}
+
+void
+uicontrol::properties::update_text_extent (void)
+{
+#ifdef HAVE_FREETYPE
+
+  text_element *elt;
+  ft_render text_renderer;
+  Matrix box;
+
+  // FIXME: parsed content should be cached for efficiency
+  // FIXME: support multiline text
+  
+  elt = text_parser_none ().parse (get_string_string ());
+#ifdef HAVE_FONTCONFIG
+  text_renderer.set_font (get_fontname (),
+			  get_fontweight (),
+			  get_fontangle (),
+			  get_fontsize ());
+#endif
+  box = text_renderer.get_extent (elt, 0);
+
+  Matrix ext (1, 4, 0.0);
+
+  // FIXME: also handle left and bottom components
+
+  ext(0) = ext(1) = 1;
+  ext(2) = box(0);
+  ext(3) = box(1);
+
+  set_extent (ext);
+
+#endif
+}
+
+void
+uicontrol::properties::update_units (void)
+{
+  Matrix pos = get_position ().matrix_value ();
+
+  graphics_handle parent = get_parent ();
+  graphics_object parent_obj = gh_manager::get_object (parent);
+  Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
+         parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+  
+  pos = convert_position (pos, cached_units, get_units (), parent_size);
+  set_position (pos);
+
+  cached_units = get_units ();
+}
+
+void
+uicontrol::properties::set_style (const octave_value& st)
+{
+  if (get___object__ ().is_empty())
+    style = st;
+  else
+    error ("set: cannot change the style of a uicontrol object after creation.");
+}
+
+Matrix
+uicontrol::properties::get_boundingbox (bool,
+                                        const Matrix& parent_pix_size) const
+{
+  Matrix pos = get_position ().matrix_value ();
+  Matrix parent_size (parent_pix_size);
+
+  if (parent_size.numel () == 0)
+    {
+      graphics_object obj = gh_manager::get_object (get_parent ());
+
+      parent_size =
+       obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+    }
+
+  pos = convert_position (pos, get_units (), "pixels", parent_size);
+
+  pos(0)--;
+  pos(1)--;
+  pos(1) = parent_size(1) - pos(1) - pos(3);
+
+  return pos;
+}
+
+void
+uicontrol::properties::set_fontunits (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str old_fontunits = get_fontunits ();
+      if (fontunits.set (v, true))
+        {
+          update_fontunits (old_fontunits);
+          mark_modified ();
+        }
+    }
+}
+
+void
+uicontrol::properties::update_fontunits (const caseless_str& old_units)
+{
+  caseless_str new_units = get_fontunits ();
+  double parent_height = get_boundingbox (false).elem (3);
+  double fsz = get_fontsize ();
+
+  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
+
+  fontsize.set (octave_value (fsz), true);
+}
+
+double
+uicontrol::properties::get_fontsize_points (double box_pix_height) const
+{
+  double fs = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (false).elem(3);
+
+  return convert_font_size (fs, get_fontunits (), "points", parent_height);
+}
+
+// ---------------------------------------------------------------------
+
+Matrix
+uipanel::properties::get_boundingbox (bool internal,
+                                      const Matrix& parent_pix_size) const
+{
+  Matrix pos = get_position ().matrix_value ();
+  Matrix parent_size (parent_pix_size);
+
+  if (parent_size.numel () == 0)
+    {
+      graphics_object obj = gh_manager::get_object (get_parent ());
+
+      parent_size =
+       obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
+    }
+
+  pos = convert_position (pos, get_units (), "pixels", parent_size);
+
+  pos(0)--;
+  pos(1)--;
+  pos(1) = parent_size(1) - pos(1) - pos(3);
+
+  if (internal)
+    {
+      double outer_height = pos(3);
+
+      pos(0) = pos(1) = 0;
+
+      if (! bordertype_is ("none"))
+        {
+          double bw = get_borderwidth ();
+          double mul = 1.0;
+
+          if (bordertype_is ("etchedin") || bordertype_is ("etchedout"))
+            mul = 2.0;
+
+          pos(0) += mul * bw;
+          pos(1) += mul * bw;
+          pos(2) -= 2 * mul * bw;
+          pos(3) -= 2 * mul * bw;
+        }
+
+      if (! get_title ().empty ())
+        {
+          double fs = get_fontsize ();
+
+          if (! fontunits_is ("pixels"))
+            {
+              double res = xget (0, "screenpixelsperinch").double_value ();
+
+              if (fontunits_is ("points"))
+                fs *= (res / 72.0);
+              else if (fontunits_is ("inches"))
+                fs *= res;
+              else if (fontunits_is ("centimeters"))
+                fs *= (res / 2.54);
+              else if (fontunits_is ("normalized"))
+                fs *= outer_height;
+            }
+
+          if (titleposition_is ("lefttop") || titleposition_is ("centertop")
+              || titleposition_is ("righttop"))
+            pos(1) += (fs / 2);
+          pos(3) -= (fs / 2);
+        }
+    }
+
+  return pos;
+}
+
+void
+uipanel::properties::set_units (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str old_units = get_units ();
+      if (units.set (v, true))
+        {
+          update_units (old_units);
+          mark_modified ();
+        }
+    }
+}
+
+void
+uipanel::properties::update_units (const caseless_str& old_units)
+{
+  Matrix pos = get_position ().matrix_value ();
+
+  graphics_handle parent = get_parent ();
+  graphics_object parent_obj = gh_manager::get_object (parent);
+  Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
+         parent_size = parent_bbox.extract_n (0, 2, 1, 2);
+  
+  pos = convert_position (pos, old_units, get_units (), parent_size);
+  set_position (pos);
+}
+
+void
+uipanel::properties::set_fontunits (const octave_value& v)
+{
+  if (! error_state)
+    {
+      caseless_str old_fontunits = get_fontunits ();
+      if (fontunits.set (v, true))
+        {
+          update_fontunits (old_fontunits);
+          mark_modified ();
+        }
+    }
+}
+
+void
+uipanel::properties::update_fontunits (const caseless_str& old_units)
+{
+  caseless_str new_units = get_fontunits ();
+  double parent_height = get_boundingbox (false).elem (3);
+  double fsz = get_fontsize ();
+
+  fsz = convert_font_size (fsz, old_units, new_units, parent_height);
+
+  set_fontsize (octave_value (fsz));
+}
+
+double
+uipanel::properties::get_fontsize_points (double box_pix_height) const
+{
+  double fs = get_fontsize ();
+  double parent_height = box_pix_height;
+
+  if (fontunits_is ("normalized") && parent_height <= 0)
+    parent_height = get_boundingbox (false).elem(3);
+
+  return convert_font_size (fs, get_fontunits (), "points", parent_height);
+}
+
+// ---------------------------------------------------------------------
+
+octave_value
 base_graphics_object::get_default (const caseless_str& name) const
 {
   graphics_handle parent = get_parent ();
@@ -6577,7 +7108,8 @@ base_graphics_object::get_factory_default (const caseless_str& name) const
 gh_manager::gh_manager (void)
   : handle_map (), handle_free_list (),
     next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)),
-    figure_list (), graphics_lock (), event_queue (), callback_objects ()
+    figure_list (), graphics_lock (),  event_queue (),
+    callback_objects (), event_processing (0)
 {
   handle_map[0] = graphics_object (new root_figure ());
 
@@ -6587,7 +7119,8 @@ gh_manager::gh_manager (void)
 
 graphics_handle
 gh_manager::do_make_graphics_handle (const std::string& go_name,
-                                     const graphics_handle& p, bool do_createfcn)
+                                     const graphics_handle& p, bool do_createfcn,
+                                     bool do_notify_toolkit)
 {
   graphics_handle h = get_handle (go_name);
 
@@ -6604,9 +7137,8 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
         go->get_properties ().execute_createfcn ();
 
       // Notify graphics toolkit.
-      graphics_toolkit toolkit = go->get_toolkit ();
-      if (toolkit)
-        toolkit.initialize (obj);
+      if (do_notify_toolkit)
+        obj.initialize ();
     }
   else
     error ("gh_manager::do_make_graphics_handle: invalid object type `%s'",
@@ -6616,7 +7148,7 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 }
 
 graphics_handle
-gh_manager::do_make_figure_handle (double val)
+gh_manager::do_make_figure_handle (double val, bool do_notify_toolkit)
 {
   graphics_handle h = val;
 
@@ -6626,9 +7158,8 @@ gh_manager::do_make_figure_handle (double val)
   handle_map[h] = obj;
 
   // Notify graphics toolkit.
-  graphics_toolkit toolkit = go->get_toolkit ();
-  if (toolkit)
-    toolkit.initialize (obj);
+  if (do_notify_toolkit)
+    obj.initialize ();
 
   return h;
 }
@@ -6663,11 +7194,19 @@ public:
   callback_event (const graphics_handle& h, const std::string& name,
                   const octave_value& data = Matrix ())
       : base_graphics_event (), handle (h), callback_name (name),
-        callback_data (data) { }
+        callback (), callback_data (data) { }
+  
+  callback_event (const graphics_handle& h, const octave_value& cb,
+                  const octave_value& data = Matrix ())
+      : base_graphics_event (), handle (h), callback_name (),
+        callback (cb), callback_data (data) { }
 
   void execute (void)
     {
-      gh_manager::execute_callback (handle, callback_name, callback_data);
+      if (callback.is_defined ())
+        gh_manager::execute_callback (handle, callback, callback_data);
+      else
+        gh_manager::execute_callback (handle, callback_name, callback_data);
     }
 
 private:
@@ -6679,6 +7218,7 @@ private:
 private:
   graphics_handle handle;
   std::string callback_name;
+  octave_value callback;
   octave_value callback_data;
 };
 
@@ -6716,15 +7256,23 @@ set_event : public base_graphics_event
 {
 public:
   set_event (const graphics_handle& h, const std::string& name,
-             const octave_value& value)
+             const octave_value& value, bool do_notify_toolkit = true)
       : base_graphics_event (), handle (h), property_name (name),
-        property_value (value) { }
+        property_value (value), notify_toolkit (do_notify_toolkit) { }
 
   void execute (void)
     {
-      gh_manager::autolock guard;
+      gh_manager::auto_lock guard;
 
-      xset (handle, property_name, property_value);
+      graphics_object go = gh_manager::get_object (handle);
+
+      if (go)
+        {
+          property p = go.get_properties ().get_property (property_name);
+
+          if (p.ok ())
+            p.set (property_value, true, notify_toolkit);
+        }
     }
 
 private:
@@ -6736,6 +7284,7 @@ private:
   graphics_handle handle;
   std::string property_name;
   octave_value property_value;
+  bool notify_toolkit;
 };
 
 graphics_event
@@ -6746,6 +7295,18 @@ graphics_event::create_callback_event (const graphics_handle& h,
   graphics_event e;
 
   e.rep = new callback_event (h, name, data);
+
+  return e;
+}
+
+graphics_event
+graphics_event::create_callback_event (const graphics_handle& h,
+                                       const octave_value& cb,
+                                       const octave_value& data)
+{
+  graphics_event e;
+
+  e.rep = new callback_event (h, cb, data);
 
   return e;
 }
@@ -6764,11 +7325,12 @@ graphics_event::create_function_event (graphics_event::event_fcn fcn,
 graphics_event
 graphics_event::create_set_event (const graphics_handle& h,
                                   const std::string& name,
-                                  const octave_value& data)
+                                  const octave_value& data,
+                                  bool notify_toolkit)
 {
   graphics_event e;
 
-  e.rep = new set_event (h, name, data);
+  e.rep = new set_event (h, name, data, notify_toolkit);
 
   return e;
 }
@@ -6786,7 +7348,7 @@ xset_gcbo (const graphics_handle& h)
 void
 gh_manager::do_restore_gcbo (void)
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   callback_objects.pop_front ();
 
@@ -6796,69 +7358,86 @@ gh_manager::do_restore_gcbo (void)
 }
 
 void
+gh_manager::do_execute_listener (const graphics_handle& h,
+                                 const octave_value& l)
+{
+  if (octave_thread::is_octave_thread ())
+    gh_manager::execute_callback (h, l, octave_value ());
+  else
+    {
+      gh_manager::auto_lock guard;
+      
+      do_post_event (graphics_event::create_callback_event (h, l));
+    }
+}
+
+void
 gh_manager::do_execute_callback (const graphics_handle& h,
                                  const octave_value& cb_arg,
                                  const octave_value& data)
 {
-  octave_value_list args;
-  octave_function *fcn = 0;
-
-  args(0) = h.as_octave_value ();
-  if (data.is_defined ())
-    args(1) = data;
-  else
-    args(1) = Matrix ();
-
-  unwind_protect_safe frame;
-  frame.add_fcn (gh_manager::restore_gcbo);
-
-  if (true)
+  if (cb_arg.is_defined () && ! cb_arg.is_empty ())
     {
-      gh_manager::autolock guard;
+      octave_value_list args;
+      octave_function *fcn = 0;
 
-      callback_objects.push_front (get_object (h));
-      xset_gcbo (h);
-    }
+      args(0) = h.as_octave_value ();
+      if (data.is_defined ())
+        args(1) = data;
+      else
+        args(1) = Matrix ();
 
-  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+      unwind_protect_safe frame;
+      frame.add_fcn (gh_manager::restore_gcbo);
 
-  // Copy CB because "function_value" method is non-const.
-
-  octave_value cb = cb_arg;
-
-  if (cb.is_function_handle ())
-    fcn = cb.function_value ();
-  else if (cb.is_string ())
-    {
-      int status;
-      std::string s = cb.string_value ();
-
-      eval_string (s, false, status);
-    }
-  else if (cb.is_cell () && cb.length () > 0
-           && (cb.rows () == 1 || cb.columns () == 1)
-           && cb.cell_value ()(0).is_function_handle ())
-    {
-      Cell c = cb.cell_value ();
-
-      fcn = c(0).function_value ();
-      if (! error_state)
+      if (true)
         {
-          for (int i = 1; i < c.length () ; i++)
-            args(1+i) = c(i);
+          gh_manager::auto_lock guard;
+
+          callback_objects.push_front (get_object (h));
+          xset_gcbo (h);
         }
-    }
-  else
-    {
-      std::string nm = cb.class_name ();
-      error ("trying to execute non-executable object (class = %s)",
-             nm.c_str ());
-    }
 
-  if (fcn && ! error_state)
-    feval (fcn, args);
+      BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
-  END_INTERRUPT_WITH_EXCEPTIONS;
+      // Copy CB because "function_value" method is non-const.
+
+      octave_value cb = cb_arg;
+
+      if (cb.is_function_handle ())
+        fcn = cb.function_value ();
+      else if (cb.is_string ())
+        {
+          int status;
+          std::string s = cb.string_value ();
+
+          eval_string (s, false, status);
+        }
+      else if (cb.is_cell () && cb.length () > 0
+               && (cb.rows () == 1 || cb.columns () == 1)
+               && cb.cell_value ()(0).is_function_handle ())
+        {
+          Cell c = cb.cell_value ();
+
+          fcn = c(0).function_value ();
+          if (! error_state)
+            {
+              for (int i = 1; i < c.length () ; i++)
+                args(1+i) = c(i);
+            }
+        }
+      else
+        {
+          std::string nm = cb.class_name ();
+          error ("trying to execute non-executable object (class = %s)",
+                 nm.c_str ());
+        }
+
+      if (fcn && ! error_state)
+        feval (fcn, args);
+
+      END_INTERRUPT_WITH_EXCEPTIONS;
+    }
 }
 
 void
@@ -6873,7 +7452,7 @@ void
 gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
                               const octave_value& data)
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   graphics_object go = get_object (h);
 
@@ -6912,67 +7491,106 @@ gh_manager::do_post_callback (const graphics_handle& h, const std::string name,
 void
 gh_manager::do_post_function (graphics_event::event_fcn fcn, void* fcn_data)
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   do_post_event (graphics_event::create_function_event (fcn, fcn_data));
 }
 
 void
 gh_manager::do_post_set (const graphics_handle& h, const std::string name,
-                         const octave_value& value)
+                         const octave_value& value, bool notify_toolkit)
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
-  do_post_event (graphics_event::create_set_event (h, name, value));
+  do_post_event (graphics_event::create_set_event (h, name, value,
+                                                   notify_toolkit));
 }
 
 int
 gh_manager::do_process_events (bool force)
 {
   graphics_event e;
+  bool old_Vdrawnow_requested = Vdrawnow_requested;
+  unwind_protect frame;
+ 
+  static int process_events_executing = 0;
+ 
+  frame.protect_var (process_events_executing);
 
-  do
+  if (++process_events_executing <= 1)
     {
-      e = graphics_event ();
-
-      gh_manager::lock ();
-
-      if (! event_queue.empty ())
+      do
         {
-          if (callback_objects.empty () || force)
-            {
-              e = event_queue.front ();
+          e = graphics_event ();
 
-              event_queue.pop_front ();
-            }
-          else
-            {
-              const graphics_object& go = callback_objects.front ();
+          gh_manager::lock ();
 
-              if (go.get_properties ().is_interruptible ())
+          if (! event_queue.empty ())
+            {
+              if (callback_objects.empty () || force)
                 {
                   e = event_queue.front ();
 
                   event_queue.pop_front ();
                 }
+              else
+                {
+                  const graphics_object& go = callback_objects.front ();
+
+                  if (go.get_properties ().is_interruptible ())
+                    {
+                      e = event_queue.front ();
+
+                      event_queue.pop_front ();
+                    }
+                }
             }
+
+          gh_manager::unlock ();
+
+          if (e.ok ())
+	    e.execute ();
         }
+      while (e.ok ());
+
+      gh_manager::lock ();
+
+      if (event_queue.empty () && event_processing == 0)
+        command_editor::remove_event_hook (gh_manager::process_events);
 
       gh_manager::unlock ();
 
-      if (e.ok ())
-        e.execute ();
+      flush_octave_stdout ();
+
+      if (Vdrawnow_requested && ! old_Vdrawnow_requested)
+        {
+          feval ("drawnow");
+
+          Vdrawnow_requested = false;
+        }
     }
-  while (e.ok ());
-
-  gh_manager::lock ();
-
-  if (event_queue.empty ())
-    command_editor::remove_event_hook (gh_manager::process_events);
-
-  gh_manager::unlock ();
 
   return 0;
+}
+
+void 
+gh_manager::do_enable_event_processing (bool enable)
+{
+  gh_manager::auto_lock lock;
+
+  if (enable)
+    {
+      event_processing++;
+
+      command_editor::add_event_hook (gh_manager::process_events);
+    }
+  else
+    {
+      event_processing--;
+
+      if (event_queue.empty () && event_processing == 0)
+        command_editor::remove_event_hook (gh_manager::process_events);
+    }
 }
 
 property_list::plist_map_type
@@ -6989,6 +7607,8 @@ root_figure::init_factory_properties (void)
   plist_map["surface"] = surface::properties::factory_defaults ();
   plist_map["hggroup"] = hggroup::properties::factory_defaults ();
   plist_map["uimenu"] = uimenu::properties::factory_defaults ();
+  plist_map["uicontrol"] = uicontrol::properties::factory_defaults ();
+  plist_map["uipanel"] = uipanel::properties::factory_defaults ();
 
   return plist_map;
 }
@@ -7005,7 +7625,7 @@ graphics handles and false where they are not.\n\
 @seealso{isfigure}\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -7081,7 +7701,7 @@ the dimensions of @var{pv}.\n\
 @end itemize\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -7193,7 +7813,7 @@ If @var{h} is a vector, return a cell array including the property\n\
 values or lists respectively.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -7315,7 +7935,7 @@ DEFUN (__get__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -7406,7 +8026,7 @@ make_graphics_object (const std::string& go_name,
       if (parent.ok ())
         {
           graphics_handle h
-            = gh_manager::make_graphics_handle (go_name, parent, false);
+            = gh_manager::make_graphics_handle (go_name, parent, false, false);
 
           if (! error_state)
             {
@@ -7414,6 +8034,7 @@ make_graphics_object (const std::string& go_name,
 
               xset (h, xargs);
               xcreatefcn (h);
+              xinitialize (h);
 
               retval = h.value ();
 
@@ -7439,7 +8060,7 @@ DEFUN (__go_figure__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -7462,9 +8083,10 @@ Undocumented internal function.\n\
               graphics_handle h = octave_NaN;
 
               if (xisnan (val))
-                h = gh_manager::make_graphics_handle ("figure", 0, false);
+                h = gh_manager::make_graphics_handle ("figure", 0, false,
+						      false);
               else if (val > 0 && D_NINT (val) == val)
-                h = gh_manager::make_figure_handle (val);
+                h = gh_manager::make_figure_handle (val, false);
               else
                 error ("__go_figure__: invalid figure number");
 
@@ -7474,6 +8096,7 @@ Undocumented internal function.\n\
 
                   xset (h, args.splice (0, 1));
                   xcreatefcn (h);
+                  xinitialize (h);
 
                   retval = h.value ();
                 }
@@ -7491,7 +8114,7 @@ Undocumented internal function.\n\
 }
 
 #define GO_BODY(TYPE) \
-  gh_manager::autolock guard; \
+  gh_manager::auto_lock guard; \
  \
   octave_value retval; \
  \
@@ -7542,7 +8165,7 @@ Internal function.  Determine the number of dimensions in a graphics\n\
 object, whether 2 or 3.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -7635,13 +8258,31 @@ Undocumented internal function.\n\
   GO_BODY (uimenu);
 }
 
+DEFUN (__go_uicontrol__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uicontrol__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uicontrol);
+}
+
+DEFUN (__go_uipanel__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uipanel__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uipanel);
+}
+
 DEFUN (__go_delete__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_delete__ (@var{h})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value_list retval;
 
@@ -7719,7 +8360,7 @@ DEFUN (__go_axes_init__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -7773,7 +8414,7 @@ DEFUN (__go_handles__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   return octave_value (gh_manager::handle_list ());
 }
@@ -7784,7 +8425,7 @@ DEFUN (__go_figure_handles__, , ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   return octave_value (gh_manager::figure_handle_list ());
 }
@@ -7880,7 +8521,7 @@ DEFUN (available_graphics_toolkits, , ,
 Return a cell array of registered graphics toolkits.\n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   return octave_value (graphics_toolkit::available_toolkits_list ());
 }
@@ -8087,7 +8728,7 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 \n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -8159,7 +8800,7 @@ dellistener (gcf, \"position\", c);\n\
 \n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -8279,7 +8920,7 @@ addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
 \n\
 @end deftypefn")
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   octave_value retval;
 
@@ -8337,7 +8978,7 @@ octave_value
 get_property_from_handle (double handle, const std::string& property,
                           const std::string& func)
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   graphics_object obj = gh_manager::get_object (handle);
   octave_value retval;
@@ -8354,7 +8995,7 @@ bool
 set_property_in_handle (double handle, const std::string& property,
                         const octave_value& arg, const std::string& func)
 {
-  gh_manager::autolock guard;
+  gh_manager::auto_lock guard;
 
   graphics_object obj = gh_manager::get_object (handle);
   int ret = false;

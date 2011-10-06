@@ -544,7 +544,7 @@ private:
 };
 
 void
-opengl_renderer::draw (const graphics_object& go)
+opengl_renderer::draw (const graphics_object& go, bool toplevel)
 {
   if (! go.valid_object ())
     return;
@@ -567,11 +567,18 @@ opengl_renderer::draw (const graphics_object& go)
     draw_text (dynamic_cast<const text::properties&> (props));
   else if (go.isa ("image"))
     draw_image (dynamic_cast<const image::properties&> (props));
-  else if (go.isa ("uimenu"))
-    ;
+  else if (go.isa ("uimenu") || go.isa ("uicontrol"))
+    /* SKIP */;
+  else if (go.isa ("uipanel"))
+    {
+      if (toplevel)
+        draw_uipanel (dynamic_cast<const uipanel::properties&> (props), go);
+    }
   else
-    warning ("opengl_renderer: cannot render object of type `%s'",
-             props.graphics_object_name ().c_str ());
+    {
+      warning ("opengl_renderer: cannot render object of type `%s'",
+               props.graphics_object_name ().c_str ());
+    }
 }
 
 void
@@ -581,13 +588,45 @@ opengl_renderer::draw_figure (const figure::properties& props)
 
   // Initialize OpenGL context
 
+  init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
+
+  // Draw children
+
+  draw (props.get_all_children (), false);
+}
+
+void
+opengl_renderer::draw_uipanel (const uipanel::properties& props,
+                               const graphics_object& go)
+{
+  graphics_object fig = go.get_ancestor ("figure");
+  const figure::properties& figProps =
+    dynamic_cast<const figure::properties&> (fig.get_properties ());
+
+  toolkit = figProps.get_toolkit ();
+
+  // Initialize OpenGL context 
+
+  init_gl_context (figProps.is___enhanced__ (),
+                   props.get_backgroundcolor_rgb ());
+
+  // Draw children
+
+  draw (props.get_all_children (), false);
+}
+
+void
+opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
+{
+  // Initialize OpenGL context
+
   glEnable (GL_DEPTH_TEST);
   glDepthFunc (GL_LEQUAL);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glAlphaFunc (GL_GREATER, 0.0f);
   glEnable (GL_NORMALIZE);
 
-  if (props.is___enhanced__ ())
+  if (enhanced)
     {
       glEnable (GL_BLEND);
       glEnable (GL_LINE_SMOOTH);
@@ -600,17 +639,11 @@ opengl_renderer::draw_figure (const figure::properties& props)
 
   // Clear background
 
-  Matrix c = props.get_color_rgb ();
-
   if (c.length() >= 3)
     {
       glClearColor (c(0), c(1), c(2), 1);
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
-
-  // Draw children
-
-  draw (props.get_all_children ());
 }
 
 void

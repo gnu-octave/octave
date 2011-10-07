@@ -20,7 +20,9 @@
 ## @deftypefn {Function File} {} rindex (@var{s}, @var{t})
 ## Return the position of the last occurrence of the character string
 ## @var{t} in the character string @var{s}, or 0 if no occurrence is
-## found.  For example:
+## found.  @var{s} may also be a string array or cell array of strings.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -29,17 +31,17 @@
 ## @end group
 ## @end example
 ##
-## @strong{Caution:} This function does not work for arrays of
-## character strings.
+## The @code{rindex} function is equivalent to @code{index} with
+## @var{direction} set to @samp{"last"}.
+##
 ## @seealso{find, index}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
+## This is patterned after the AWK function of the same name.
 
 function n = rindex (s, t)
-
-  ## This is patterned after the AWK function of the same name.
 
   if (nargin != 2)
     print_usage ();
@@ -49,9 +51,17 @@ function n = rindex (s, t)
 
 endfunction
 
+
 %!assert(rindex ("foobarbaz", "b") == 7 && rindex ("foobarbaz", "o") == 3);
 
-%!error rindex ();
+%!test
+%! str = char ("Hello", "World", "Goodbye", "World");
+%! assert (rindex (str, "o"), [5; 2; 3; 2]);
+%! str = cellstr (str);
+%! assert (rindex (str, "o"), [5; 2; 3; 2]);
 
-%!error rindex ("foo", "bar", 3);
+%% Test input validation
+%!error rindex ()
+%!error rindex ("foo")
+%!error rindex ("foo", "bar", "last")
 

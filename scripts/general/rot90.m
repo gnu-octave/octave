@@ -60,17 +60,11 @@ function B = rot90 (A, k = 1)
 
   if (ndims (A) > 2)
     error ("rot90: A must be a 2-D array");
-  endif
-
-  if (! (isscalar (k) && isreal (k) && fix (k) == k))
+  elseif (! (isscalar (k) && isreal (k) && k == fix (k)))
     error ("rot90: K must be a single real integer");
   endif
 
-  k = rem (k, 4);
-
-  if (k < 0)
-    k = k + 4;
-  endif
+  k = mod (k, 4);
 
   if (k == 0)
     B = A;
@@ -93,12 +87,12 @@ endfunction
 %! x3 = [4, 3; 2, 1];
 %! x4 = [3, 1; 4, 2];
 %!
-%! assert(rot90 (x1) == x2);
-%! assert(rot90 (x1, 2) == x3);
-%! assert(rot90 (x1, 3) == x4);
-%! assert(rot90 (x1, 4) == x1);
-%! assert(rot90 (x1, 5) == x2);
-%! assert(rot90 (x1, -1) == x4);
+%! assert(rot90 (x1), x2);
+%! assert(rot90 (x1, 2), x3);
+%! assert(rot90 (x1, 3), x4);
+%! assert(rot90 (x1, 4), x1);
+%! assert(rot90 (x1, 5), x2);
+%! assert(rot90 (x1, -1), x4);
 
 %% Test input validation
 %!error rot90 ();

@@ -32,28 +32,29 @@ function s = strtrunc (s, n)
   endif
 
   if (ischar (s))
-    s_was_char = true;
-    s = {s};
-  else
-    s_was_char = false;
-  endif
-
-  if (iscellstr (s))
-    for i = 1:(numel (s))
-      s{i} = s{i}(:,1:(min (n, columns (s{i}))));
-    endfor
+    if (n < columns (s))
+      s = s(:, 1:n);
+    endif
+  elseif (iscellstr (s))
+    ## Convoluted approach converts cellstr to char matrix, trims the character
+    ## matrix using indexing, and then converts back to cellstr with mat2cell.
+    ## This approach is 28X faster than using cellfun and recursive call to strtrunc
+    idx = cellfun ("length", s) > n;
+    s(idx) = mat2cell (char (s(idx))(:, 1:n), ones (sum (idx), 1));
   else
     error ("strtrunc: S must be a character string or a cell array of strings");
   endif
 
-  if (s_was_char)
-    s = s{:};
-  endif
-
 endfunction
 
-%!error <Invalid call to strtrunc> strtrunc ();
-%!error <S must be a character string or a cell array of strings> strtrunc (1, 1)
+
 %!assert (strtrunc("abcdefg", 4), "abcd");
 %!assert (strtrunc("abcdefg", 10), "abcdefg");
+%!assert (strtrunc(char ("abcdef", "fedcba"), 3), ["abc"; "fed"]);
 %!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});
+
+%% Test input validation
+%!error strtrunc ()
+%!error strtrunc ("abcd")
+%!error strtrunc ("abcd", 4, 5)
+%!error <S must be a character string or a cell array of strings> strtrunc (1, 1)

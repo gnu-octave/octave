@@ -93,6 +93,4 @@ endfunction
 %!error shift ([], 1)
 %!error shift (ones(2), ones(2))
 %!error shift (ones(2), 1.5)
-%!error shift (ones(2), 0)
-%!error shift (ones(2), 3)
 

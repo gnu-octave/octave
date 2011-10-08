@@ -1132,8 +1132,9 @@ octave_value::octave_value (const Octave_map& m)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const Octave_map& m, const std::string& id)
-  : rep (new octave_class (m, id))
+octave_value::octave_value (const Octave_map& m, const std::string& id,
+                            const std::list<std::string>& plist)
+  : rep (new octave_class (m, id, plist))
 {
 }
 

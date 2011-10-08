@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "quit.h"
 
+#include "data.h"
 #include "defun.h"
 #include "error.h"
 #include "oct-obj.h"
@@ -933,6 +934,45 @@ do_single_type_concat<octave_map> (const dim_vector& dv,
   return result;
 }
 
+static octave_value
+do_class_concat (tm_const& tmc)
+{
+  octave_value retval;
+
+  octave_value_list rows (tmc.length (), octave_value ());
+
+  octave_idx_type j = 0;
+  for (tm_const::iterator p = tmc.begin (); p != tmc.end (); p++)
+    {
+      octave_quit ();
+
+      tm_row_const tmrc = *p;
+
+      if (tmrc.length () == 1)
+        rows(j++) = *(tmrc.begin ());
+      else
+        {
+          octave_value_list row (tmrc.length (), octave_value ());
+
+          octave_idx_type i = 0;
+          for (tm_row_const::iterator q = tmrc.begin (); q != tmrc.end (); q++)
+            row(i++) = *q;
+
+          rows(j++) = do_class_concat (row, "horzcat", 1);
+        }
+    }
+
+  if (! error_state)
+    {
+      if (rows.length () == 1)
+        retval = rows(0);
+      else
+        retval = do_class_concat (rows, "vertcat", 0);
+    }
+
+  return retval;
+}
+
 octave_value
 tree_matrix::rvalue1 (int)
 {
@@ -965,68 +1005,7 @@ tree_matrix::rvalue1 (int)
 
       if (any_class_p)
         {
-          octave_value_list tmp3 (tmp.length (), octave_value ());
-
-          int j = 0;
-          for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
-            {
-              octave_quit ();
-
-              tm_row_const row = *p;
-
-              if (row.length () == 1)
-                tmp3 (j++) = *(row.begin ());
-              else
-                {
-                  octave_value_list tmp1 (row.length (), octave_value ());
-
-                  int i = 0;
-                  for (tm_row_const::iterator q = row.begin ();
-                       q != row.end (); q++)
-                    tmp1 (i++) = *q;
-
-                  octave_value_list tmp2;
-                  octave_value fcn =
-                    symbol_table::find_function ("horzcat", tmp1);
-
-                  if (fcn.is_defined ())
-                    {
-                      tmp2 = fcn.do_multi_index_op (1, tmp1);
-
-                      if (error_state)
-                        goto done;
-
-                      tmp3 (j++) = tmp2 (0);
-                    }
-                  else
-                    {
-                      ::error ("cannot find overloaded horzcat function");
-                      goto done;
-                    }
-                }
-            }
-
-          if (tmp.length () == 1)
-            retval = tmp3 (0);
-          else
-            {
-              octave_value_list tmp2;
-              octave_value fcn = symbol_table::find_function ("vertcat", tmp3);
-
-              if (fcn.is_defined ())
-                {
-                  tmp2 = fcn.do_multi_index_op (1, tmp3);
-
-                  if (! error_state)
-                    retval = tmp2 (0);
-                }
-              else
-                ::error ("cannot find overloaded vertcat function");
-            }
-        }
-      else if (result_type == "cell")
-        {
-          retval = do_single_type_concat<Cell> (dv, tmp);
+          retval = do_class_concat (tmp);
         }
       else if (result_type == "double")
         {

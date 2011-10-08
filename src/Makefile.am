@@ -235,6 +235,7 @@ octinclude_HEADERS = \
   c-file-ptr-stream.h \
   comment-list.h \
   cutils.h \
+  data.h \
   debug.h \
   defun-dld.h \
   defun-int.h \

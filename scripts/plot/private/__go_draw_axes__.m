@@ -699,8 +699,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      elseif (nd == 3 && numel (xcol) == 3)
                        ccdat = ccol * ones (3,1);
                      else
-                       r = 1 + round ((size (cmap, 1) - 1)
-                                      * (ccol - clim(1))/(clim(2) - clim(1)));
+                       if (cdatadirect)
+                         r = round (ccol);
+                       else
+                         r = 1 + round ((size (cmap, 1) - 1)
+                                        * (ccol - clim(1))/(clim(2) - clim(1)));
+                       endif
                        r = max (1, min (r, size (cmap, 1)));
                        color = cmap(r, :);
                      endif
@@ -716,10 +720,17 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                          ccdat = ccdat(:);
                        endif
                      else
-                       warning ("\"interp\" not supported, using 1st entry of cdata");
-                       r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
+                       if (sum (diff (ccol)))
+                         warning ("\"interp\" not supported, using 1st entry of cdata");
+                       endif
+                       if (cdatadirect)
+                         r = round (ccol);
+                       else
+                         r = 1 + round ((size (cmap, 1) - 1)
+                                        * (ccol - clim(1))/(clim(2) - clim(1)));
+                       endif
                        r = max (1, min (r, size (cmap, 1)));
-                       color = cmap(r,:);
+                       color = cmap(r(1),:);
                      endif
                    endif
                  elseif (isnumeric (obj.facecolor))

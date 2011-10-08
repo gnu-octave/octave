@@ -152,6 +152,56 @@ endfunction
 %!       'FaceVertexCData', jet(5), 'FaceColor', 'interp')
 %! view (-37.5, 30)
 
+%!demo
+%! clf
+%! colormap (jet)
+%! x = [0 1 1 0];
+%! y = [0 0 1 1];
+%! subplot (2, 1, 1)
+%! title ("Blue, Light-Green, and Red Horizontal Bars")
+%! patch (x, y + 0, 1);
+%! patch (x, y + 1, 2);
+%! patch (x, y + 2, 3);
+%! subplot (2, 1, 2)
+%! title ("Blue, Light-Green, and Red Vertical Bars")
+%! patch (x + 0, y, 1 * ones (size (x)));
+%! patch (x + 1, y, 2 * ones (size (x)));
+%! patch (x + 2, y, 3 * ones (size (x)));
+
+%!demo
+%! clf
+%! colormap (jet)
+%! x = [0 1 1 0];
+%! y = [0 0 1 1];
+%! subplot (2, 1, 1)
+%! title ("Blue horizontal bars: Dark to Light")
+%! patch (x, y + 0, 1, "cdatamapping", "direct");
+%! patch (x, y + 1, 9, "cdatamapping", "direct");
+%! patch (x, y + 2, 17, "cdatamapping", "direct");
+%! subplot (2, 1, 2)
+%! title ("Blue vertical bars: Dark to Light")
+%! patch (x + 0, y, 1 * ones (size (x)), "cdatamapping", "direct");
+%! patch (x + 1, y, 9 * ones (size (x)), "cdatamapping", "direct");
+%! patch (x + 2, y, 17 * ones (size (x)), "cdatamapping", "direct");
+
+%!demo
+%! clf;
+%! colormap (jet);
+%! x = [ 0 0; 1 1; 1 0 ];
+%! y = [ 0 0; 0 1; 1 1 ];
+%! p = patch (x, y, "facecolor", "b");
+%! title ("Two blue triangles")
+%! set (p, "cdatamapping", "direct", "facecolor", "flat", "cdata", [1 32])
+%! title ("Direct mapping of colors: Light-Green UL and Blue LR triangles")
+
+%!demo
+%! clf;
+%! colormap (jet);
+%! x = [ 0 0; 1 1; 1 0 ];
+%! y = [ 0 0; 0 1; 1 1 ];
+%! p = patch (x, y, [1 32]);
+%! title ("Autoscaling of colors: Red UL and Blue LR triangles")
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

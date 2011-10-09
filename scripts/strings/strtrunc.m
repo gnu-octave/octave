@@ -39,7 +39,7 @@ function s = strtrunc (s, n)
     ## Convoluted approach converts cellstr to char matrix, trims the character
     ## matrix using indexing, and then converts back to cellstr with mat2cell.
     ## This approach is 28X faster than using cellfun and recursive call to strtrunc
-    idx = cellfun ("length", s) > n;
+    idx = cellfun ("length", s) >= n;
     s(idx) = mat2cell (char (s(idx))(:, 1:n), ones (sum (idx), 1));
   else
     error ("strtrunc: S must be a character string or a cell array of strings");
@@ -52,6 +52,7 @@ endfunction
 %!assert (strtrunc("abcdefg", 10), "abcdefg");
 %!assert (strtrunc(char ("abcdef", "fedcba"), 3), ["abc"; "fed"]);
 %!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});
+%!assert (strtrunc({"1", "21", "321"}, 1), {"1", "2", "3"})
 
 %% Test input validation
 %!error strtrunc ()

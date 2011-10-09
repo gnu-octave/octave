@@ -19,10 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strtrunc (@var{s}, @var{n})
 ## Truncate the character string @var{s} to length @var{n}.  If @var{s}
-## is a char matrix, then the number of columns is adjusted.
-##
+## is a character matrix, then the number of columns is adjusted.
 ## If @var{s} is a cell array of strings, then the operation is performed
-## on its members and the new cell array is returned.
+## on each cell element and the new cell array is returned.
 ## @end deftypefn
 
 function s = strtrunc (s, n)
@@ -38,9 +37,10 @@ function s = strtrunc (s, n)
   elseif (iscellstr (s))
     ## Convoluted approach converts cellstr to char matrix, trims the character
     ## matrix using indexing, and then converts back to cellstr with mat2cell.
-    ## This approach is 28X faster than using cellfun and recursive call to strtrunc
-    idx = cellfun ("length", s) >= n;
-    s(idx) = mat2cell (char (s(idx))(:, 1:n), ones (sum (idx), 1));
+    ## This approach is 24X faster than using cellfun with call to strtrunc
+    idx = cellfun ("size", s, 2) > n;
+    rows = cellfun ("size", s(idx), 1);
+    s(idx) = mat2cell (char (s(idx))(:, 1:n), rows);
   else
     error ("strtrunc: S must be a character string or a cell array of strings");
   endif
@@ -52,10 +52,16 @@ endfunction
 %!assert (strtrunc("abcdefg", 10), "abcdefg");
 %!assert (strtrunc(char ("abcdef", "fedcba"), 3), ["abc"; "fed"]);
 %!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});
-%!assert (strtrunc({"1", "21", "321"}, 1), {"1", "2", "3"})
+%!test
+%! cstr = {"line1"; ["line2"; "line3"]; "line4"};
+%! y = strtrunc (cstr, 4);
+%! assert (size (y), [3, 1]); 
+%! assert (size (y{2}), [2, 4]); 
+%! assert (y{2}, repmat ("line", 2, 1));
 
 %% Test input validation
 %!error strtrunc ()
 %!error strtrunc ("abcd")
 %!error strtrunc ("abcd", 4, 5)
 %!error <S must be a character string or a cell array of strings> strtrunc (1, 1)
+

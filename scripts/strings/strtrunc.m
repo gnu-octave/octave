@@ -52,6 +52,7 @@ endfunction
 %!assert (strtrunc("abcdefg", 10), "abcdefg");
 %!assert (strtrunc(char ("abcdef", "fedcba"), 3), ["abc"; "fed"]);
 %!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});
+%!assert (strtrunc({"1", "21", "321"}, 1), {"1", "2", "3"})
 %!test
 %! cstr = {"line1"; ["line2"; "line3"]; "line4"};
 %! y = strtrunc (cstr, 4);

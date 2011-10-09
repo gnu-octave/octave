@@ -30,6 +30,11 @@ function s = strtrunc (s, n)
     print_usage ();
   endif
 
+  n = fix (n);
+  if (! isscalar (n) || n < 0)
+    error ("strtrunc: length N must be a positive integer (N >= 0)");
+  endif
+
   if (ischar (s))
     if (n < columns (s))
       s = s(:, 1:n);
@@ -38,9 +43,11 @@ function s = strtrunc (s, n)
     ## Convoluted approach converts cellstr to char matrix, trims the character
     ## matrix using indexing, and then converts back to cellstr with mat2cell.
     ## This approach is 24X faster than using cellfun with call to strtrunc
-    idx = cellfun ("size", s, 2) >= n;
+    idx = cellfun ("size", s, 2) > n;
     rows = cellfun ("size", s(idx), 1);
-    s(idx) = mat2cell (char (s(idx))(:, 1:n), rows);
+    if (! isempty (rows))
+      s(idx) = mat2cell (char (s(idx))(:, 1:n), rows);
+    endif
   else
     error ("strtrunc: S must be a character string or a cell array of strings");
   endif
@@ -52,7 +59,8 @@ endfunction
 %!assert (strtrunc("abcdefg", 10), "abcdefg");
 %!assert (strtrunc(char ("abcdef", "fedcba"), 3), ["abc"; "fed"]);
 %!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});
-%!assert (strtrunc({"1", "21", "321"}, 1), {"1", "2", "3"})
+%!assert (strtrunc({"", "1", "21", "321"}, 1), {"", "1", "2", "3"})
+%!assert (strtrunc({"1", "", "2"}, 1), {"1", "", "2"})
 %!test
 %! cstr = {"line1"; ["line2"; "line3"]; "line4"};
 %! y = strtrunc (cstr, 4);
@@ -64,5 +72,7 @@ endfunction
 %!error strtrunc ()
 %!error strtrunc ("abcd")
 %!error strtrunc ("abcd", 4, 5)
+%!error <N must be a positive integer> strtrunc ("abcd", ones (2,2))
+%!error <N must be a positive integer> strtrunc ("abcd", -1)
 %!error <S must be a character string or a cell array of strings> strtrunc (1, 1)
 

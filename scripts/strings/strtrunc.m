@@ -38,7 +38,7 @@ function s = strtrunc (s, n)
     ## Convoluted approach converts cellstr to char matrix, trims the character
     ## matrix using indexing, and then converts back to cellstr with mat2cell.
     ## This approach is 24X faster than using cellfun with call to strtrunc
-    idx = cellfun ("size", s, 2) > n;
+    idx = cellfun ("size", s, 2) >= n;
     rows = cellfun ("size", s(idx), 1);
     s(idx) = mat2cell (char (s(idx))(:, 1:n), rows);
   else

@@ -89,7 +89,7 @@ function retval = unwrap (x, tol, dim)
 
 endfunction
 
-%!function t = xassert(a,b,tol)
+%!function t = __xassert(a,b,tol)
 %!  if (nargin == 1)
 %!    t = all(a(:));
 %!  else
@@ -104,6 +104,7 @@ endfunction
 %!      t = 1;
 %!    endif
 %!  endif
+%!endfunction
 %!
 %!test
 %!
@@ -114,18 +115,18 @@ endfunction
 %! w = r - 2*pi*floor((r+pi)/(2*pi));  # wrapped into [-pi,pi]
 %! tol = 1e3*eps;                      # maximum expected deviation
 %!
-%! t(++i) = xassert(r, unwrap(w), tol);               #unwrap single row
-%! t(++i) = xassert(r', unwrap(w'), tol);             #unwrap single column
-%! t(++i) = xassert([r',r'], unwrap([w',w']), tol);   #unwrap 2 columns
-%! t(++i) = xassert([r;r], unwrap([w;w],[],2), tol);  #verify that dim works
-%! t(++i) = xassert(r+10, unwrap(10+w), tol);         #verify that r(1)>pi works
+%! t(++i) = __xassert(r, unwrap(w), tol);               #unwrap single row
+%! t(++i) = __xassert(r', unwrap(w'), tol);             #unwrap single column
+%! t(++i) = __xassert([r',r'], unwrap([w',w']), tol);   #unwrap 2 columns
+%! t(++i) = __xassert([r;r], unwrap([w;w],[],2), tol);  #check that dim works
+%! t(++i) = __xassert(r+10, unwrap(10+w), tol);         #check r(1)>pi works
 %!
-%! t(++i) = xassert(w', unwrap(w',[],2));  #unwrap col by rows should not change it
-%! t(++i) = xassert(w, unwrap(w,[],1));    #unwrap row by cols should not change it
-%! t(++i) = xassert([w;w], unwrap([w;w])); #unwrap 2 rows by cols should not change them
+%! t(++i) = __xassert(w', unwrap(w',[],2));  #unwrap col by rows should not change it
+%! t(++i) = __xassert(w, unwrap(w,[],1));    #unwrap row by cols should not change it
+%! t(++i) = __xassert([w;w], unwrap([w;w])); #unwrap 2 rows by cols should not change them
 %!
 %! ## verify that setting tolerance too low will cause bad results.
-%! t(++i) = xassert(any(abs(r - unwrap(w,0.8)) > 100));
+%! t(++i) = __xassert(any(abs(r - unwrap(w,0.8)) > 100));
 %!
 %! assert(all(t));
 %!

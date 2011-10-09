@@ -736,19 +736,21 @@ endfunction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Test Code
 
-%!function r = g (x)
+%!function r = __g (x)
 %!  r = [sumsq(x)-10;
 %!       x(2)*x(3)-5*x(4)*x(5);
 %!       x(1)^3+x(2)^3+1 ];
+%!endfunction
 %!
-%!function obj = phi (x)
+%!function obj = __phi (x)
 %!  obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+%!endfunction
 %!
 %!test
 %!
 %! x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
 %!
-%! [x, obj, info, iter, nf, lambda] = sqp (x0, @phi, @g, []);
+%! [x, obj, info, iter, nf, lambda] = sqp (x0, @__phi, @__g, []);
 %!
 %! x_opt = [-1.717143501952599;
 %!           1.595709610928535;

@@ -359,17 +359,18 @@ function [fx, gx] = guarded_eval (fun, x)
   endif
 endfunction
 
-%!function f = rosenb (x)
+%!function f = __rosenb (x)
 %!  n = length (x);
 %!  f = sumsq (1 - x(1:n-1)) + 100 * sumsq (x(2:n) - x(1:n-1).^2);
+%!endfunction
 %!test
-%! [x, fval, info, out] = fminunc (@rosenb, [5, -5]);
+%! [x, fval, info, out] = fminunc (@__rosenb, [5, -5]);
 %! tol = 2e-5;
 %! assert (info > 0);
 %! assert (x, ones (1, 2), tol);
 %! assert (fval, 0, tol);
 %!test
-%! [x, fval, info, out] = fminunc (@rosenb, zeros (1, 4));
+%! [x, fval, info, out] = fminunc (@__rosenb, zeros (1, 4));
 %! tol = 2e-5;
 %! assert (info > 0);
 %! assert (x, ones (1, 4), tol);

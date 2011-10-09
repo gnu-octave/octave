@@ -364,6 +364,14 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       endif
       __code = "";
 
+### ENDFUNCTION
+
+    elseif (strcmp (__type, "endfunction"))
+      ## endfunction simply declares the end of a previous function block.
+      ## There is no processing to be done here, just skip to next block.
+      __istest = 0;
+      __code = "";
+
 ### ASSERT/FAIL
 
     elseif (strcmp (__type, "assert") || strcmp (__type, "fail"))
@@ -761,16 +769,19 @@ endfunction
 
 %!function x = __test_a(y)
 %! x = 2*y;
+%!endfunction
 %!assert(__test_a(2),4);       # Test a test function
 
 %!function __test_a (y)
 %! x = 2*y;
+%!endfunction
 %!test
 %! __test_a(2);                # Test a test function with no return value
 
 %!function [x,z] = __test_a (y)
 %! x = 2*y;
 %! z = 3*y;
+%!endfunction
 %!test                   # Test a test function with multiple returns
 %! [x,z] = __test_a(3);
 %! assert(x,6);

@@ -4573,6 +4573,7 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES (uimenu)
+      any_property __object__ , Matrix ()
       string_property accelerator , ""
       callback_property callback , Matrix()
       bool_property checked , "off"

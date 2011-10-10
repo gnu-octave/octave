@@ -168,9 +168,10 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
           freespacing = true;
           nopts--;
         }
-      else if (str.find ("start", 0) && str.find ("end", 0) &&
-               str.find ("tokenextents", 0) && str.find ("match", 0) &&
-               str.find ("tokens", 0) && str.find ("names", 0))
+      else if (str.find ("start", 0) && str.find ("end", 0)
+               && str.find ("tokenextents", 0) && str.find ("match", 0)
+               && str.find ("tokens", 0) && str.find ("names", 0)
+               && str.find ("split", 0))
         error ("%s: unrecognized option", nm.c_str ());
     }
 
@@ -524,6 +525,8 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       octave_idx_type i = 0;
       octave_scalar_map nmap;
 
+      retval.resize (7);
+
       if (sz == 1)
         {
           for (int j = 0; j < named.length (); j++)
@@ -547,78 +550,64 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
           retval(5) = nmap;
         }
 
+      std::string buffer = args(0).string_value ();
+
       if (once)
-        retval(4) = sz ? lst.front ().t : Cell ();
+        {
+          retval(4) = sz ? lst.front ().t : Cell ();
+          retval(3) = sz ? lst.front ().m : std::string ();
+          retval(2) = sz ? lst.front ().te : Matrix ();
+
+          if (sz)
+            {
+              double e = lst.front ().e;
+              double s = lst.front ().s;
+
+              Cell sp (dim_vector (1, 2));
+              sp(0) = buffer.substr (0, s-1);
+              sp(1) = buffer.substr (e);
+
+              retval(6) = sp;
+              retval(1) = e;
+              retval(0) = s;
+            }
+          else
+            {
+              retval(6) = buffer;
+              retval(1) = Matrix ();
+              retval(0) = Matrix ();
+            }
+        }
       else
         {
           Cell t (dim_vector (1, sz));
-
-          i = 0;
-          for (const_iterator p = lst.begin (); p != lst.end (); p++)
-            t(i++) = p->t;
-
-          retval(4) = t;
-        }
-
-      if (once)
-        retval(3) = sz ? lst.front ().m : std::string ();
-      else
-        {
           Cell m (dim_vector (1, sz));
-
-          i = 0;
-          for (const_iterator p = lst.begin (); p != lst.end (); p++)
-            m(i++) = p->m;
-
-          retval(3) = m;
-        }
-
-      if (once)
-        retval(2) = sz ? lst.front ().te : Matrix ();
-      else
-        {
           Cell te (dim_vector (1, sz));
-
-          i = 0;
-          for (const_iterator p = lst.begin (); p != lst.end (); p++)
-            te(i++) = p->te;
-
-          retval(2) = te;
-        }
-
-      if (once)
-        {
-          if (sz)
-            retval(1) = lst.front ().e;
-          else
-            retval(1) = Matrix ();
-        }
-      else
-        {
           NDArray e (dim_vector (1, sz));
-
-          i = 0;
-          for (const_iterator p = lst.begin (); p != lst.end (); p++)
-            e(i++) = p->e;
-
-          retval(1) = e;
-        }
-
-      if (once)
-        {
-          if (sz)
-            retval(0) = lst.front ().s;
-          else
-            retval(0) = Matrix ();
-        }
-      else
-        {
           NDArray s (dim_vector (1, sz));
+          Cell sp (dim_vector (1, sz+1));
+          size_t sp_start = 0;
 
           i = 0;
           for (const_iterator p = lst.begin (); p != lst.end (); p++)
-            s(i++) = p->s;
+            {
+              t(i) = p->t;
+              m(i) = p->m;
+              te(i) = p->te;
+              e(i) = p->e;
+              s(i) = p->s;
+              sp(i) = buffer.substr (sp_start, p->s-sp_start-1);
+              sp_start = p->e;
+              i++;
+            }
 
+          sp(i) = buffer.substr (sp_start);
+
+          retval(6) = sp;
+          retval(4) = t;
+          retval(3) = m;
+          retval(2) = te;
+          retval(1) = e;
           retval(0) = s;
         }
 
@@ -661,6 +650,8 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
                 k = 4;
               else if (str.find ("names", 0) == 0)
                 k = 5;
+              else if (str.find ("split", 0) == 0)
+                k = 6;
 
               new_retval(n++) = retval(k);
               arg_used[k] = true;
@@ -947,6 +938,8 @@ A cell array of the text of each token matched\n\
 A structure containing the text of each matched named token, with the name\n\
 being used as the fieldname.  A named token is denoted by\n\
 @code{(?<name>@dots{})}.\n\
+@item sp\n\
+A cell array of the text not returned by match.\n\
 @end table\n\
 \n\
 Particular output arguments, or the order of the output arguments, can be\n\
@@ -961,6 +954,7 @@ are\n\
 @item @tab 'match'        @tab @var{m}  @tab\n\
 @item @tab 'tokens'       @tab @var{t}  @tab\n\
 @item @tab 'names'        @tab @var{nm} @tab\n\
+@item @tab 'split'        @tab @var{sp} @tab\n\
 @end multitable\n\
 \n\
 Additional arguments are summarized below.\n\
@@ -1200,6 +1194,45 @@ Alternatively, use (?x) in the pattern.\n\
 %! assert(regexp("qit",'q(?=u*)','match'), {'q'})
 %! assert(regexp('thingamabob','(?<=a)b'), 9)
 
+## Tests for split option.
+%!shared str
+%! str = "foo bar foo";
+%!test
+%! [a, b] = regexp (str, "f..", "match", "split");
+%! assert (a, {"foo", "foo"});
+%! assert (b, {"", " bar ", ""});
+%!test
+%! [a, b] = regexp (str, "f..", "match", "split", "once");
+%! assert (a, "foo");
+%! assert (b, {"", " bar foo"});
+%!test
+%! [a, b] = regexp (str, "fx.", "match", "split");
+%! assert (a, cell (1, 0));
+%! assert (b, {"foo bar foo"});
+%!test
+%! [a, b] = regexp (str, "fx.", "match", "split", "once");
+%! assert (a, "");
+%! assert (b, "foo bar foo")
+
+%!shared str
+%! str = "foo bar";
+%!test
+%! [a, b] = regexp (str, "f..", "match", "split");
+%! assert (a, {"foo"});
+%! assert (b, {"", " bar"});
+%!test
+%! [a, b] = regexp (str, "b..", "match", "split");
+%! assert (a, {"bar"});
+%! assert (b, {"foo ", ""});
+%!test
+%! [a, b] = regexp (str, "x", "match", "split");
+%! assert (a, cell (1, 0));
+%! assert (b, {"foo bar"});
+%!test
+%! [a, b] = regexp (str, "[o]+", "match", "split");
+%! assert (a, {"oo"});
+%! assert (b, {"f", " bar"});
+
 */
 
 DEFUN_DLD (regexpi, args, nargout,
@@ -1395,7 +1428,7 @@ octregexprep (const octave_value_list &args, const std::string &nm)
       const std::string opt = args(i).string_value ();
       if (opt != "tokenize" && opt != "start" && opt != "end"
           && opt != "tokenextents" && opt != "match" && opt != "tokens"
-          && opt != "names"  && opt != "warnings")
+          && opt != "names"  && opt != "split" && opt != "warnings")
         {
           regexpargs(len++) = args(i);
         }

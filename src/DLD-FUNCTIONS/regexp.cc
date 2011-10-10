@@ -1703,7 +1703,8 @@ This option is present for compatibility but is ignored.\n\
             }
 
           if (!error_state)
-            retval = octave_value (ret);
+            retval = args(0).is_cell ()
+              ? octave_value (ret) : octave_value (ret(0));
         }
     }
   else
@@ -1759,7 +1760,7 @@ This option is present for compatibility but is ignored.\n\
 %!assert(regexprep("abc","(b)","$1.."),"ab..c");
 
 ## Test cell array arguments
-%!assert(regexprep("abc",{"b","a"},"?"),{"??c"})
+%!assert(regexprep("abc",{"b","a"},"?"),"??c")
 %!assert(regexprep({"abc","cba"},"b","?"),{"a?c","c?a"})
 %!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"!?c","c?!"})
 

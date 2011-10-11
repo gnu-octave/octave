@@ -19,9 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{s} =} mat2str (@var{x}, @var{n})
 ## @deftypefnx {Function File} {@var{s} =} mat2str (@var{x}, @var{n}, "class")
-## Format real/complex numerical matrices as strings.  This function
-## returns values that are suitable for the use of the @code{eval}
-## function.
+## Format real, complex, and logical matrices as strings.  The 
+## returned string may be used to reconstruct the original matrix by using
+## the @code{eval} function.
 ##
 ## The precision of the values is given by @var{n}.  If @var{n} is a
 ## scalar then both real and imaginary parts of the matrix are printed
@@ -29,7 +29,7 @@
 ## precision of the real part and @code{@var{n}(2)} defines the
 ## precision of the imaginary part.  The default for @var{n} is 15.
 ##
-## If the argument "class" is given, then the class of @var{x} is
+## If the argument "class" is given then the class of @var{x} is
 ## included in the string in such a way that @code{eval} will result in the
 ## construction of a matrix of the same class.
 ##
@@ -39,10 +39,16 @@
 ##      @result{} "[-0.3333+0.14i;0.3333-0.14i]"
 ##
 ## mat2str ([ -1/3 +i/7; 1/3 -i/7 ], [4 2])
-##      @result{} "[-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]"
+##      @result{} "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]"
 ##
 ## mat2str (int16([1 -1]), "class")
-##      @result{} "int16([1,-1])"
+##      @result{} "int16([1 -1])"
+##
+## mat2str (logical (eye (2)))
+##      @result{} "[true false;false true]"
+##
+## isequal (x, eval (mat2str (x)))
+##      @result{} 1
 ## @end group
 ## @end example
 ##
@@ -51,34 +57,26 @@
 
 ## Author: Rolf Fabian <fabian@tu-cottbus.de>
 
-function s = mat2str (x, n, cls)
+function s = mat2str (x, n = 15, cls = "")
 
   if (nargin < 1 || nargin > 3 || ! (isnumeric (x) || islogical (x)))
     print_usage ();
-  endif
-
-  if (ndims (x) > 2)
+  elseif (ndims (x) > 2)
     error ("mat2str: X must be two dimensional");
   endif
 
-  if (nargin < 2 || isempty (n))
+  if (nargin == 2 && ischar (n))
+    cls = n;
+    n = 15;
+  elseif (isempty (n))
     n = 15;   # Default precision
-  endif
-
-  if (nargin < 3)
-    if (ischar (n))
-      cls = n;
-      n = 15;
-    else
-      cls = "";
-    endif
   endif
 
   x_islogical = islogical (x);
   x_iscomplex = iscomplex (x);
 
   if (x_iscomplex)
-    if (length (n) == 1)
+    if (isscalar (n))
       n = [n, n];
     endif
     fmt = sprintf ("%%.%dg%%+.%dgi", n(1), n(2));
@@ -105,7 +103,7 @@ function s = mat2str (x, n, cls)
     endif
   else
     ## Non-scalar X, print brackets
-    fmt = cstrcat (fmt, ",");
+    fmt = cstrcat (fmt, " ");
     if (x_iscomplex)
       t = x.';
       s = sprintf (fmt, [real(t(:))'; imag(t(:))']);
@@ -118,7 +116,7 @@ function s = mat2str (x, n, cls)
 
     s = cstrcat ("[", s);
     s(end) = "]";
-    idx = find (s == ",");
+    idx = strfind (s, " ");
     nc = columns (x);
     s(idx(nc:nc:end)) = ";";
   endif
@@ -135,11 +133,11 @@ endfunction
 %!assert (mat2str (pi, 5), "3.1416");
 %!assert (mat2str (single (pi), 5, "class"), "single(3.1416)");
 %!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]), "[-0.3333+0.14i;0.3333-0.14i]")
-%!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]), "[-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]")
-%!assert (mat2str (int16 ([1 -1]), 'class'), "int16([1,-1])")
+%!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]), "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]")
+%!assert (mat2str (int16 ([1 -1]), 'class'), "int16([1 -1])")
 %!assert (mat2str (true), "true");
 %!assert (mat2str (false), "false");
-%!assert (mat2str (logical (eye (2))), "[true,false;false,true]");
+%!assert (mat2str (logical (eye (2))), "[true false;false true]");
 
 %% Test input validation
 %!error mat2str ()

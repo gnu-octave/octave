@@ -36,6 +36,25 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 #include "txt-eng-ft.h"
 
+// FIXME -- maybe issue at most one warning per glyph/font/size/weight
+// combination.
+
+static void
+gripe_missing_glyph (char c)
+{
+  warning_with_id ("Octave:missing-glyph",
+                   "ft_render: skipping missing glyph for character `%c'",
+                   c);
+}
+
+static void
+gripe_glyph_render (char c)
+{
+  warning_with_id ("Octave:glyph-render",
+                   "ft_render: unable to render glyph for character `%c'",
+                   c);
+}
+
 class
 ft_manager
 {
@@ -288,8 +307,7 @@ ft_render::visit (text_element_string& e)
           if (str[i] != '\n'
               && (! glyph_index
               || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
-            ::warning ("ft_render: skipping missing glyph for character `%c'",
-                       str[i]);
+            gripe_missing_glyph (str[i]);
           else
             {
               switch (mode)
@@ -300,7 +318,7 @@ ft_render::visit (text_element_string& e)
                     glyph_index = FT_Get_Char_Index(face, ' ');
                     if (!glyph_index || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
                       {
-                        ::warning ("ft_render: skipping missing glyph for character ` '");
+                        gripe_missing_glyph (' ');
                       }
                     else
                       {
@@ -308,10 +326,11 @@ ft_render::visit (text_element_string& e)
                         xoffset = multiline_align_xoffsets[line_index];
                         yoffset -= (face->size->metrics.height >> 6);
                       }
-                  }
+                    }
                   else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
-                    ::warning ("ft_render: unable to render glyph for character `%c'",
-                               str[i]);
+                    {
+                      gripe_glyph_render (str[i]);
+                    }
                   else
                     {
                       FT_Bitmap& bitmap = face->glyph->bitmap;
@@ -364,7 +383,7 @@ ft_render::visit (text_element_string& e)
                       if (! glyph_index
                           || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
                       {
-                        ::warning ("ft_render: skipping missing glyph for character ` '");
+                        gripe_missing_glyph (' ');
                       }
                     else
                       {

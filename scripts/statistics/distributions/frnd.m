@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,103 +18,115 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} frnd (@var{m}, @var{n}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{sz})
-## Return an @var{r} by @var{c} matrix of random samples from the F
-## distribution with @var{m} and @var{n} degrees of freedom.  Both
-## @var{m} and @var{n} must be scalar or of size @var{r} by @var{c}.
-## If @var{sz} is a vector the random samples are in a matrix of
-## size @var{sz}.
+## @deftypefn  {Function File} {} frnd (@var{m}, @var{n})
+## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{r})
+## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} frnd (@var{m}, @var{n}, [@var{sz}])
+## Return a matrix of random samples from the F distribution with
+## @var{m} and @var{n} degrees of freedom.
 ##
-## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{m} and @var{n}.
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is the common size of
+## @var{m} and @var{n}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the F distribution
 
-function rnd = frnd (m, n, r, c)
+function rnd = frnd (m, n, varargin)
 
-  if (nargin > 1)
-    if (!isscalar(m) || !isscalar(n))
-      [retval, m, n] = common_size (m, n);
-      if (retval > 0)
-        error ("frnd: M and N must be of common size or scalar");
-      endif
-    endif
-  endif
-
-
-  if (nargin == 4)
-    if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("frnd: R must be a positive integer");
-    endif
-    if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("frnd: C must be a positive integer");
-    endif
-    sz = [r, c];
-
-    if (any (size (m) != 1)
-        && ((length (size (m)) != length (sz)) || any (size (m) != sz)))
-      error ("frnd: M and N must be scalar or of size [R,C]");
-    endif
-  elseif (nargin == 3)
-    if (isscalar (r) && (r > 0))
-      sz = [r, r];
-    elseif (isvector(r) && all (r > 0))
-      sz = r(:)';
-    else
-      error ("frnd: R must be a positive integer or vector");
-    endif
-
-    if (any (size (m) != 1)
-        && ((length (size (m)) != length (sz)) || any (size (m) != sz)))
-      error ("frnd: M and N must be scalar or of size SZ");
-    endif
-  elseif (nargin == 2)
-    sz = size(m);
-  else
+  if (nargin < 2)
     print_usage ();
   endif
 
-
-  if (isscalar (m) && isscalar (n))
-    if (isinf (m) || isinf (n))
-      if (isinf (m))
-        rnd = ones (sz);
-      else
-        rnd = 2 ./ m .* randg(m / 2, sz);
-      endif
-      if (! isinf (n))
-        rnd = 0.5 .* n .* rnd ./ randg (n / 2, sz);
-      endif
-    elseif ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
-      rnd = n ./ m .* randg (m / 2, sz) ./ randg (n / 2, sz);
-    else
-      rnd = NaN (sz);
-    endif
-  else
-    rnd = zeros (sz);
-
-    k = find (isinf(m) | isinf(n));
-    if (any (k))
-      rnd (k) = 1;
-      k2 = find (!isinf(m) & isinf(n));
-      rnd (k2) = 2 ./ m(k2) .* randg (m(k2) ./ 2, size(k2));
-      k2 = find (isinf(m) & !isinf(n));
-      rnd (k2) = 0.5 .* n(k2) .* rnd(k2) ./ randg (n(k2) ./ 2, size(k2));
-    endif
-
-    k = find (!(m > 0) | !(n > 0));
-    if (any (k))
-      rnd(k) = NaN;
-    endif
-
-    k = find ((m > 0) & (m < Inf) &
-              (n > 0) & (n < Inf));
-    if (any (k))
-      rnd(k) = n(k) ./ m(k) .* randg(m(k)./2,size(k)) ./ randg(n(k)./2,size(k));
+  if (!isscalar (m) || !isscalar (n))
+    [retval, m, n] = common_size (m, n);
+    if (retval > 0)
+      error ("frnd: M and N must be of common size or scalars");
     endif
   endif
 
+  if (iscomplex (m) || iscomplex (n))
+    error ("frnd: M and N must not be complex");
+  endif
+
+  if (nargin == 2)
+    sz = size (m);
+  elseif (nargin == 3)
+    if (isscalar (varargin{1}) && varargin{1} >= 0)
+      sz = [varargin{1}, varargin{1}];
+    elseif (isrow (varargin{1}) && all (varargin{1} >= 0))
+      sz = varargin{1};
+    else
+      error ("frnd: dimension vector must be row vector of non-negative integers");
+    endif
+  elseif (nargin > 3)
+    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+      error ("frnd: dimensions must be non-negative integers");
+    endif
+    sz = [varargin{:}];
+  endif
+
+  if (!isscalar (m) && !isequal (size (m), sz))
+    error ("frnd: M and N must be scalar or of size SZ");
+  endif
+
+  if (isa (m, "single") || isa (n, "single"))
+    cls = "single";
+  else
+    cls = "double";
+  endif
+
+  if (isscalar (m) && isscalar (n))
+    if ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
+      rnd = n/m * randg (m/2, sz) ./ randg (n/2, sz);
+    else
+      rnd = NaN (sz, cls);
+    endif
+  else
+    rnd = NaN (sz, cls);
+
+    k = (m > 0) & (m < Inf) & (n > 0) & (n < Inf);
+    rnd(k) = n(k) ./ m(k) .* randg (m(k)/2) ./ randg (n(k)/2);
+  endif
+
 endfunction
+
+
+%!assert(size (frnd (1,2)), [1, 1]);
+%!assert(size (frnd (ones(2,1), 2)), [2, 1]);
+%!assert(size (frnd (ones(2,2), 2)), [2, 2]);
+%!assert(size (frnd (1, 2*ones(2,1))), [2, 1]);
+%!assert(size (frnd (1, 2*ones(2,2))), [2, 2]);
+%!assert(size (frnd (1, 2, 3)), [3, 3]);
+%!assert(size (frnd (1, 2, [4 1])), [4, 1]);
+%!assert(size (frnd (1, 2, 4, 1)), [4, 1]);
+
+%% Test class of input preserved
+%!assert(class (frnd (1, 2)), "double");
+%!assert(class (frnd (single(1), 2)), "single");
+%!assert(class (frnd (single([1 1]), 2)), "single");
+%!assert(class (frnd (1, single(2))), "single");
+%!assert(class (frnd (1, single([2 2]))), "single");
+
+%% Test input validation
+%!error frnd ()
+%!error frnd (1)
+%!error frnd (ones(3),ones(2))
+%!error frnd (ones(2),ones(3))
+%!error frnd (i, 2)
+%!error frnd (2, i)
+%!error frnd (1,2, -1)
+%!error frnd (1,2, ones(2))
+%!error frnd (1, 2, [2 -1 2])
+%!error frnd (1,2, 1, ones(2))
+%!error frnd (1,2, 1, -1)
+%!error frnd (ones(2,2), 2, 3)
+%!error frnd (ones(2,2), 2, [3, 2])
+%!error frnd (ones(2,2), 2, 2, 3)
+

@@ -68,7 +68,11 @@ public:
 
   static octave_pager_stream& stream (void);
 
+  static void reset (void);
+
 private:
+
+  void do_reset (void);
 
   static octave_pager_stream *instance;
 
@@ -108,7 +112,11 @@ public:
 
   static octave_diary_stream& stream (void);
 
+  static void reset (void);
+
 private:
+
+  void do_reset (void);
 
   static octave_diary_stream *instance;
 

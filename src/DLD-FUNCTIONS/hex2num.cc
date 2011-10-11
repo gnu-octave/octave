@@ -76,6 +76,8 @@ hex2num ([\"4005bf0a8b145769\";\"4024000000000000\"])\n\
                 double dval;
               } num;
 
+              num.ival = 0;
+
               for (octave_idx_type j = 0; j < nc; j++)
                 {
                   unsigned char ch = cmat.elem (i, j);

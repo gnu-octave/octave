@@ -47,10 +47,10 @@ function [C, F] = voronoin (pts, options)
   if (np > dims)
     if (nargin == 1)
       [C, F, infi] = __voronoi__ (pts);
-    elseif (ischar (options))
+    elseif (ischar (options) || iscellstr (options))
       [C, F, infi] = __voronoi__ (pts, options);
     else
-      error ("voronoin: second argument must be a string");
+      error ("voronoin: second argument must be a string or cell array of strings");
     endif
 
   else

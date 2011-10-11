@@ -47,3 +47,15 @@ function retval = ylabel (varargin)
   endif
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   y = ylabel ("ylabel_string");
+%!   assert (get(gca, "ylabel"), y);
+%!   assert (get(y, "type"), "text");
+%!   assert (get(y, "visible"), "on");
+%!   assert (get(y, "string"), "ylabel_string");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

@@ -1,17 +1,17 @@
 ## Copyright (C) 2009-2011 Carlo de Falco
-##  
+##
 ## This file is part of Octave.
-## 
+##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by the
 ## Free Software Foundation; either version 3 of the License, or (at your
 ## option) any later version.
-## 
+##
 ## Octave is distributed in the hope that it will be useful, but WITHOUT
 ## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 ## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 ## for more details.
-## 
+##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
@@ -68,9 +68,9 @@
 function [x, flag, presn, it] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
 
   if (nargin < 2 || nargin > 8)
-    print_usage ();    
-  end
-      
+    print_usage ();
+  endif
+
   if (ischar (A))
     Ax = str2func (A);
   elseif (ismatrix (A))
@@ -104,7 +104,7 @@ function [x, flag, presn, it] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
   else
     error ("gmres: preconditioner M1 must be a function or matrix");
   endif
-  
+
   if (nargin < 7 || isempty (M2))
     M2m1x = @(x) x;
   elseif (ischar (M2))
@@ -123,57 +123,57 @@ function [x, flag, presn, it] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
     x0 = zeros (size (b));
   endif
 
-  x_old = x0; 
+  x_old = x0;
   x = x_old;
   prec_res = Pm1x (b - Ax (x_old));
   presn = norm (prec_res, 2);
-  
+
   B = zeros (restart + 1, 1);
   V = zeros (rows (x), restart);
   H = zeros (restart + 1, restart);
 
   ## begin loop
   iter = 1;
-  restart_it  = restart + 1; 
+  restart_it  = restart + 1;
   resids      = zeros (maxit, 1);
   resids(1)   = presn;
   prec_b_norm = norm (Pm1x (b), 2);
   flag        = 1;
 
   while (iter <= maxit * restart && presn > rtol * prec_b_norm)
-  
+
     ## restart
     if (restart_it > restart)
       restart_it = 1;
-      x_old = x;	      
+      x_old = x;
       prec_res = Pm1x (b - Ax (x_old));
       presn = norm (prec_res, 2);
       B(1) = presn;
       H(:) = 0;
       V(:, 1) = prec_res / presn;
-    endif  
-    
+    endif
+
     ## basic iteration
     tmp = Pm1x (Ax (V(:, restart_it)));
     [V(:,restart_it+1), H(1:restart_it+1, restart_it)] = ...
         mgorth (tmp, V(:,1:restart_it));
-    
+
     Y = (H(1:restart_it+1, 1:restart_it) \ B (1:restart_it+1));
-	      
+
     little_res = B(1:restart_it+1) - ...
         H(1:restart_it+1, 1:restart_it) * Y(1:restart_it);
 
     presn = norm (little_res, 2);
-	      
+
     x = x_old + V(:, 1:restart_it) * Y(1:restart_it);
-    
+
     resids(iter) = presn;
     if (norm (x - x_old, inf) <= eps)
       flag = 3;
       break
     endif
 
-    restart_it++ ; 
+    restart_it++ ;
     iter++;
   endwhile
 
@@ -191,12 +191,12 @@ endfunction
 %! dim = 100;
 %!test
 %! A = spdiags ([-ones(dim,1) 2*ones(dim,1) ones(dim,1)], [-1:1], dim, dim);
-%! b = ones(dim, 1); 
+%! b = ones(dim, 1);
 %! x = gmres (A, b, 10, 1e-10, dim, @(x) x./diag(A), [],  b);
 %! assert(x, A\b, 1e-9*norm(x,inf));
 %!
 %!test
-%! x = gmres (A, b, dim, 1e-10, 1e4, @(x) diag(diag(A))\x, [],  b);  
+%! x = gmres (A, b, dim, 1e-10, 1e4, @(x) diag(diag(A))\x, [],  b);
 %! assert(x, A\b, 1e-7*norm(x,inf));
 %!
 %!test

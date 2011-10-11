@@ -53,3 +53,15 @@ function retval = xlabel (varargin)
   endif
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   x = xlabel ("xlabel_string");
+%!   assert (get(gca, "xlabel"), x);
+%!   assert (get(x, "type"), "text");
+%!   assert (get(x, "visible"), "on");
+%!   assert (get(x, "string"), "xlabel_string");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

@@ -245,6 +245,8 @@
 %!assert (sscanf ('123456', '%10c'), '123456')
 %!assert (sscanf ('123456', '%10s'), '123456')
 
+%!assert (sscanf (['ab'; 'cd'], '%s'), 'acbd');
+
 %!test
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);

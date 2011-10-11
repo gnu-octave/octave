@@ -33,7 +33,31 @@ is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
 {
   for (int i = 0; i < std::min (dx.length (), dy.length ()); i++)
     {
-      if ( dx(i) > 1 && dy(i) > 1 && dx(i) != dy(i))
+      octave_idx_type xk = dx(i), yk = dy(i);
+      // Check the three conditions for valid bsxfun dims
+      if (! ( (xk == yk) || (xk == 1 && yk > 1) || (xk > 1 && yk == 1)))
+        return false;
+    }
+  return true;
+}
+
+// since we can't change the size of the assigned-to matrix, we cannot
+// apply singleton expansion to it, so the conditions to check are
+// different here.
+inline
+bool
+is_valid_inplace_bsxfun (const dim_vector& dr, const dim_vector& dx)
+{
+  octave_idx_type drl = dr.length (), dxl = dx.length ();
+  if (drl < dxl)
+    return false;
+
+  for (int i = 0; i < drl; i++)
+    {
+      octave_idx_type rk = dr(i), xk = dx(i);
+
+      // Only two valid canditions to check; can't stretch rk
+      if (! ( (rk == xk) || (rk > 1 && xk == 1)))
         return false;
     }
   return true;

@@ -1789,6 +1789,9 @@ public:
 
   bool is_valid (void) const { return true; }
 
+  bool initialize (const graphics_object& go)
+    { return go.isa ("figure"); }
+
   void finalize (const graphics_object& go)
   {
     if (go.isa ("figure"))

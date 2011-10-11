@@ -68,46 +68,53 @@ function b = bincoeff (n, k)
     error ("bincoeff: N and K must be of common size or scalars");
   endif
 
-  sz = size (n);
-  b   = zeros (sz);
+  if (iscomplex (n) || iscomplex (k))
+    error ("bincoeff: N and K must not be complex");
+  endif
 
-  ind = (! (k >= 0) | (k != real (round (k))) | isnan (n));
-  b(ind) = NaN;
+  b = zeros (size (n));
 
-  ind = (k == 0);
-  b(ind) = 1;
+  ok = (k >= 0) & (k == fix (k)) & (! isnan (n));
+  b(! ok) = NaN;
 
-  ind = ((k > 0) & ((n == real (round (n))) & (n < 0)));
-  b(ind) = (-1) .^ k(ind) .* exp (gammaln (abs (n(ind)) + k(ind))
-                                  - gammaln (k(ind) + 1)
-                                  - gammaln (abs (n(ind))));
+  n_int = (n == fix (n));
+  idx = n_int & (n < 0) & ok;
+  b(idx) = (-1) .^ k(idx) .* exp (gammaln (abs (n(idx)) + k(idx))
+                                  - gammaln (k(idx) + 1)
+                                  - gammaln (abs (n(idx))));
 
-  ind = ((k > 0) & (n >= k));
-  b(ind) = exp (gammaln (n(ind) + 1)
-                - gammaln (k(ind) + 1)
-                - gammaln (n(ind) - k(ind) + 1));
+  idx = (n >= k) & ok;
+  b(idx) = exp (gammaln (n(idx) + 1)
+                - gammaln (k(idx) + 1)
+                - gammaln (n(idx) - k(idx) + 1));
 
-  ind = ((k > 0) & ((n != real (round (n))) & (n < k)));
-  b(ind) = (1/pi) * exp (gammaln (n(ind) + 1)
-                         - gammaln (k(ind) + 1)
-                         + gammaln (k(ind) - n(ind))
-                         + log (sin (pi * (n(ind) - k(ind) + 1))));
+  idx = (! n_int) & (n < k) & ok;
+  b(idx) = (1/pi) * exp (gammaln (n(idx) + 1)
+                         - gammaln (k(idx) + 1)
+                         + gammaln (k(idx) - n(idx))
+                         + log (sin (pi * (n(idx) - k(idx) + 1))));
 
   ## Clean up rounding errors.
-  ind = (n == round (n));
-  b(ind) = round (b(ind));
+  b(n_int) = round (b(n_int));
 
-  ind = (n != round (n));
-  b(ind) = real (b(ind));
+  idx = ! n_int;
+  b(idx) = real (b(idx));
 
 endfunction
 
-%!assert(bincoeff(4,2), 6)
-%!assert(bincoeff(2,4), 0)
-%!assert(bincoeff(0.4,2), -.12, 8*eps)
 
-%!assert(bincoeff (5, 2) == 10 && bincoeff (50, 6) == 15890700);
+%!assert(bincoeff (4, 2), 6)
+%!assert(bincoeff (2, 4), 0)
+%!assert(bincoeff (-4, 2), 10)
+%!assert(bincoeff (5, 2), 10)
+%!assert(bincoeff (50, 6), 15890700)
+%!assert(bincoeff (0.4, 2), -.12, 8*eps)
 
+%!assert(bincoeff ([4 NaN 4], [-1, 2, 2.5]), NaN (1, 3))
+
+%% Test input validation
 %!error bincoeff ();
-
 %!error bincoeff (1, 2, 3);
+%!error bincoeff (ones(3),ones(2))
+%!error bincoeff (ones(2),ones(3))
+

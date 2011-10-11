@@ -241,6 +241,27 @@ function emit_get_array (i)
   emit_get_accessor(i, "octave_value", "get");
 }
 
+## string_array_property
+
+function emit_get_string_array (i)
+{
+  printf ("  std::string get_%s_string (void) const", name[i]);
+
+  if (emit_get[i] == "definition")
+    printf (" { return %s.string_value (); }\n", name[i]);
+  else
+    printf (";\n");
+
+  printf ("  string_vector get_%s_vector (void) const", name[i]);
+
+  if (emit_get[i] == "definition")
+    printf (" { return %s.string_vector_value (); }\n", name[i]);
+  else
+    printf (";\n");
+
+  emit_get_accessor(i, "octave_value", "get");
+}
+
 ## common section
 
 function emit_common_declarations ()
@@ -300,8 +321,7 @@ function emit_declarations ()
         emit_get_accessor(i, "graphics_handle", "handle_value");
       else if (type[i] == "string_property")
         emit_get_accessor(i, "std::string", "string_value");
-      else if (type[i] == "string_array_property" \
-               || type[i] == "text_label_property")
+      else if (type[i] == "text_label_property")
         emit_get_accessor(i, "octave_value", "get");
       else if (type[i] == "double_property")
         emit_get_accessor(i, "double", "double_value");
@@ -318,6 +338,8 @@ function emit_declarations ()
         emit_get_color(i);
       else if (type[i] == "callback_property")
         emit_get_callback(i);
+      else if (type[i] == "string_array_property")
+        emit_get_string_array(i);
       else
       {
         printf ("  %s get_%s (void) const", type[i], name[i]);

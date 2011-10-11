@@ -152,3 +152,85 @@ endfunction
 %!       'FaceVertexCData', jet(5), 'FaceColor', 'interp')
 %! view (-37.5, 30)
 
+%!demo
+%! clf
+%! colormap (jet)
+%! x = [0 1 1 0];
+%! y = [0 0 1 1];
+%! subplot (2, 1, 1)
+%! title ("Blue, Light-Green, and Red Horizontal Bars")
+%! patch (x, y + 0, 1);
+%! patch (x, y + 1, 2);
+%! patch (x, y + 2, 3);
+%! subplot (2, 1, 2)
+%! title ("Blue, Light-Green, and Red Vertical Bars")
+%! patch (x + 0, y, 1 * ones (size (x)));
+%! patch (x + 1, y, 2 * ones (size (x)));
+%! patch (x + 2, y, 3 * ones (size (x)));
+
+%!demo
+%! clf
+%! colormap (jet)
+%! x = [0 1 1 0];
+%! y = [0 0 1 1];
+%! subplot (2, 1, 1)
+%! title ("Blue horizontal bars: Dark to Light")
+%! patch (x, y + 0, 1, "cdatamapping", "direct");
+%! patch (x, y + 1, 9, "cdatamapping", "direct");
+%! patch (x, y + 2, 17, "cdatamapping", "direct");
+%! subplot (2, 1, 2)
+%! title ("Blue vertical bars: Dark to Light")
+%! patch (x + 0, y, 1 * ones (size (x)), "cdatamapping", "direct");
+%! patch (x + 1, y, 9 * ones (size (x)), "cdatamapping", "direct");
+%! patch (x + 2, y, 17 * ones (size (x)), "cdatamapping", "direct");
+
+%!demo
+%! clf;
+%! colormap (jet);
+%! x = [ 0 0; 1 1; 1 0 ];
+%! y = [ 0 0; 0 1; 1 1 ];
+%! p = patch (x, y, "facecolor", "b");
+%! title ("Two blue triangles")
+%! set (p, "cdatamapping", "direct", "facecolor", "flat", "cdata", [1 32])
+%! title ("Direct mapping of colors: Light-Green UL and Blue LR triangles")
+
+%!demo
+%! clf;
+%! colormap (jet);
+%! x = [ 0 0; 1 1; 1 0 ];
+%! y = [ 0 0; 0 1; 1 1 ];
+%! p = patch (x, y, [1 32]);
+%! title ("Autoscaling of colors: Red UL and Blue LR triangles")
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = patch;
+%!   assert (findobj (hf, "type", "patch"), h);
+%!   assert (get (h, "xdata"), [0; 1; 1], eps);
+%!   assert (get (h, "ydata"), [0; 0; 1], eps);
+%!   assert (isempty(get (h, "zdata")));
+%!   assert (isempty(get (h, "cdata")));
+%!   assert (get (h, "faces"), [1, 2, 3], eps);
+%!   assert (get (h, "vertices"), [0 0; 1 0; 1 1], eps);
+%!   assert (get (h, "type"), "patch");
+%!   assert (get (h, "facecolor"), [0 0 1]);
+%!   assert (get (h, "linestyle"), get (0, "defaultpatchlinestyle"));
+%!   assert (get (h, "linewidth"), get (0, "defaultpatchlinewidth"), eps);
+%!   assert (get (h, "marker"), get (0, "defaultpatchmarker"));
+%!   assert (get (h, "markersize"), get (0, "defaultpatchmarkersize"));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! c = 0.9;
+%! unwind_protect
+%!   h = patch ([0 1 0], [0 1 1], c);
+%!   assert (get (gca, "clim"), [c - 1, c + 1]);
+%!   h = patch ([0 1 0], [0 1 1], 2 * c);
+%!   assert (get (gca, "clim"), [c, 2 * c]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

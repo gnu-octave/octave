@@ -73,20 +73,25 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  const char *options;
+  std::string options = "qhull v Fv T0";
 
   if (nargin == 2)
     {
-      if (! args (1).is_string ())
+      if (args(1).is_cellstr ())
         {
-          error ("__voronoi__: OPTIONS argument must be a string");
+          Array<std::string> tmp = args(1).cellstr_value ();
+
+          for (octave_idx_type i = 0; i < tmp.numel (); i++)
+            options += " " + tmp(i);
+        }
+      else if (args(1).is_string ())
+        options += " " + args(1).string_value ();
+      else
+        {
+          error ("__voronoi__: OPTIONS argument must be a string or cellstr");
           return retval;
         }
-
-      options = args (1).string_value().c_str ();
     }
-  else
-    options = "";
 
   Matrix p (args(0).matrix_value ());
 
@@ -107,16 +112,16 @@ Undocumented internal function.\n\
 
   boolT ismalloc = false;
 
-  OCTAVE_LOCAL_BUFFER (char, flags, 250);
-
-  // hmm  lot's of options for qhull here
-  sprintf (flags, "qhull v Fv T0 %s", options);
-
   // If you want some debugging information replace the 0 pointer
   // with stdout or some other file open for writing.
 
   FILE *outfile = 0;
   FILE *errfile = stderr;
+
+  // Qhull flags argument is not const char*...
+  OCTAVE_LOCAL_BUFFER (char, flags, options.length () + 1);
+
+  strcpy (flags, options.c_str ());
 
   if (! qh_new_qhull (dim, np, pt_array, ismalloc, flags, outfile, errfile))
     {

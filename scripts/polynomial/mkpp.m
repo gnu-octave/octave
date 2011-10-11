@@ -22,21 +22,21 @@
 ##
 ## Construct a piece-wise polynomial (pp) structure from sample points
 ## @var{breaks} and coefficients @var{coefs}.  @var{breaks} must be a vector of
-## strictly increasing values. The number of intervals is given by 
+## strictly increasing values. The number of intervals is given by
 ## @code{@var{ni} = length (@var{breaks}) - 1}.
-## When @var{m} is the polynomial order @var{coefs} must be of 
+## When @var{m} is the polynomial order @var{coefs} must be of
 ## size: @var{ni} x @var{m} + 1.
 ##
 ## The i-th row of @var{coefs},
 ## @code{@var{coefs} (@var{i},:)}, contains the coefficients for the polynomial
-## over the @var{i}-th interval, ordered from highest (@var{m}) to 
+## over the @var{i}-th interval, ordered from highest (@var{m}) to
 ## lowest (@var{0}).
 ##
 ## @var{coefs} may also be a multi-dimensional array, specifying a vector-valued
 ## or array-valued polynomial. In that case the polynomial order is defined
 ## by the length of the last dimension of @var{coefs}.
 ## The size of first dimension(s) are given by the scalar or
-## vector @var{d}. If @var{d} is not given it is set to @code{1}. 
+## vector @var{d}. If @var{d} is not given it is set to @code{1}.
 ## In any case @var{coefs} is reshaped to a 2d matrix of
 ## size @code{[@var{ni}*prod(@var{d} @var{m})] }
 ##
@@ -72,7 +72,7 @@ function pp = mkpp (x, P, d)
   if (nargin == 3)
     pp.dim = d;
     pp.order /= prod (d);
-  endif 
+  endif
 
   dim_vec = [pp.pieces * prod(pp.dim), pp.order];
   pp.coefs = reshape (P, dim_vec);

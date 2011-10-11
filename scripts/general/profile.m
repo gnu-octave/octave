@@ -55,6 +55,7 @@
 ## has an index into the @code{FunctionTable} identifying the function it
 ## corresponds to as well as data fields for number of calls and time spent
 ## at this level in the call-tree.
+## @seealso{profshow, profexplore}
 ## @end table
 ## @end deftypefn
 
@@ -136,7 +137,7 @@ endfunction
 %! ftbl = info.FunctionTable;
 %! assert (fieldnames (ftbl), {'FunctionName'; 'TotalTime'; 'NumCalls'; 'IsRecursive'; 'Parents'; 'Children'});
 %! hier = info.Hierarchical;
-%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'NumCalls'; 'Children'});
+%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'TotalTime'; 'NumCalls'; 'Children'});
 %! profile ('clear');
 %! info = profile ('info');
 %! assert (isstruct (info));

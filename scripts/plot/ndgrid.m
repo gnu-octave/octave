@@ -69,3 +69,29 @@ function varargout = ndgrid (varargin)
   endfor
 
 endfunction
+
+%!test
+%! x = 1:2;
+%! y = 1:3;
+%! z = 1:4;
+%! [XX, YY, ZZ] = ndgrid (x, y, z);
+%! assert (size_equal (XX, YY, ZZ));
+%! assert (ndims (XX), 3);
+%! assert (size (XX), [2, 3, 4]);
+%! assert (XX(1) * YY(1) * ZZ(1), x(1) * y(1) * z(1));
+%! assert (XX(end) * YY(end) * ZZ(end), x(end) * y(end) * z(end));
+
+%!test
+%! x = 1:2;
+%! y = 1:3;
+%! [XX1, YY1] = meshgrid (x, y);
+%! [XX2, YY2] = ndgrid (x, y);
+%! assert (size_equal (XX1, YY1));
+%! assert (size_equal (XX2, YY2));
+%! assert (ndims (XX1), 2);
+%! assert (size (XX1), [3, 2]);
+%! assert (size (XX2), [2, 3]);
+%! assert (XX2(1) * YY2(1), x(1) * y(1));
+%! assert (XX2(end) * YY2(end), x(end) * y(end));
+%! assert (XX1, XX2.');
+%! assert (YY1, YY2.');

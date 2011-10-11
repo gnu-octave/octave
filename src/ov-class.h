@@ -54,9 +54,11 @@ public:
       parent_list (), obsolete_copies (0)
     { }
 
-  octave_class (const octave_map& m, const std::string& id)
+  octave_class (const octave_map& m, const std::string& id,
+                const std::list<std::string>& plist
+                  = std::list<std::string> ())
     : octave_base_value (), map (m), c_name (id),
-      parent_list (), obsolete_copies (0)
+      parent_list (plist), obsolete_copies (0)
     { }
 
   octave_class (const octave_class& s)
@@ -94,6 +96,12 @@ public:
                              const std::list<octave_value_list>& idx,
                              int nargout);
 
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& idx)
+  {
+    return subsref ("(", std::list<octave_value_list> (1, idx), nargout);
+  }
+
   static octave_value numeric_conv (const Cell& val,
                                     const std::string& type);
 
@@ -127,14 +135,14 @@ public:
   size_t nparents (void) const { return parent_list.size (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { 
+    {
       octave_class retval = octave_class (*this);
       retval.map = retval.map_value().reshape (new_dims);
       return octave_value (new octave_class (retval));
     }
 
   octave_value resize (const dim_vector& dv, bool = false) const
-    { 
+    {
       octave_class retval = octave_class (*this);
       retval.map.resize (dv);
       return octave_value (new octave_class (retval));

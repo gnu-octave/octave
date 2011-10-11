@@ -678,11 +678,13 @@ Convert special characters in @var{string} to their escaped forms.\n\
 %!assert (do_string_escapes ('foo\nbar'), "foo\nbar");
 %!assert (do_string_escapes ("foo\\nbar"), "foo\nbar");
 %!assert (do_string_escapes ("foo\\nbar"), ["foo", char(10), "bar"]);
+%!assert ("foo\nbar", ["foo", char(10), "bar"]);
 
 %!assert (do_string_escapes ('\a\b\f\n\r\t\v'), "\a\b\f\n\r\t\v");
 %!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"), "\a\b\f\n\r\t\v");
 %!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"),
 %!        char ([7, 8, 12, 10, 13, 9, 11]));
+%!assert ("\a\b\f\n\r\t\v", char ([7, 8, 12, 10, 13, 9, 11]));
 */
 
 const char *

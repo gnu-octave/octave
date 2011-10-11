@@ -30,21 +30,26 @@ function res = isprop (h, prop)
     print_usage ();
   endif
 
-  if (! ishandle (h))
+  if (! all (ishandle (h)))
     error ("isprop: first input argument must be a handle");
   elseif (! ischar (prop))
     error ("isprop: second input argument must be string");
   endif
 
-  res = true;
-  try
-    v = get (h, prop);
-  catch
-    res = false;
-  end_try_catch
+  res = false (size (h));
+  for n = 1:numel(res)
+    res(n) = true;
+    try
+      v = get (h(n), prop);
+    catch
+      res(n) = false;
+    end_try_catch
+  endfor
 endfunction
 
 %!assert (isprop (0, "foobar"), false)
 
 %!assert (isprop (0, "screenpixelsperinch"), true)
+
+%!assert (isprop (zeros (2, 3), "visible"), true (2, 3))
 

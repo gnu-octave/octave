@@ -28,8 +28,9 @@
 ## @end group
 ## @end example
 ##
-## If @var{d} is a vector, returns a string matrix, one row per value,
-## padded with leading zeros to the width of the largest value.
+## If @var{d} is a matrix or cell array, return a string matrix with one
+## row per element in @var{d}, padded with leading zeros to the width of 
+## the largest value.
 ##
 ## The optional second argument, @var{len}, specifies the minimum
 ## number of digits in the result.
@@ -51,8 +52,10 @@ function b = dec2bin (d, len)
 
 endfunction
 
-%!assert(strcmp (dec2bin (14), "1110"));
-%!assert(strcmp (dec2bin (14, 6), "001110"));
+
+%!assert(dec2bin (14), "1110");
+%!assert(dec2bin (14, 6), "001110");
+%!assert(dec2bin ({1, 2; 3, 4}), ["001"; "011"; "010"; "100"]);
 
 %%Test input validation
 %!error dec2bin ();

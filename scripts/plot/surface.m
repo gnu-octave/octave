@@ -80,9 +80,12 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     z = varargin{3};
     c = varargin{4};
 
-    if (! size_equal (z, c))
+    [z_nr, z_nc] = size (z);
+    [c_nr, c_nc, c_np] = size (c);
+    if (! (z_nr == c_nr && z_nc == c_nc && (c_np == 1 || c_np == 3)))
       error ("surface: Z and C must have the same size");
     endif
+
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
         x = x(:)';
@@ -136,6 +139,10 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     else
       error ("surface: Z argument must be a matrix");
     endif
+  elseif (firststring == 1)
+    x = 1:3;
+    y = (x).';
+    c = z = eye(3);
   else
     bad_usage = true;
   endif
@@ -158,4 +165,21 @@ endfunction
 
 ## Mark file as being tested.  Tests for surface are in
 ## surf.m, surfc.m, surfl.m, and pcolor.m
-%!assert(1)
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = surface;
+%!   assert (findobj (hf, "type", "surface"), h);
+%!   assert (get (h, "xdata"), 1:3, eps);
+%!   assert (get (h, "ydata"), (1:3)', eps);
+%!   assert (get (h, "zdata"), eye(3));
+%!   assert (get (h, "cdata"), eye(3));
+%!   assert (get (h, "type"), "surface");
+%!   assert (get (h, "linestyle"), get (0, "defaultsurfacelinestyle"));
+%!   assert (get (h, "linewidth"), get (0, "defaultsurfacelinewidth"), eps);
+%!   assert (get (h, "marker"), get (0, "defaultsurfacemarker"));
+%!   assert (get (h, "markersize"), get (0, "defaultsurfacemarkersize"));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

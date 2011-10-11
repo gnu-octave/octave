@@ -35,7 +35,7 @@
 ## @end group
 ## @end example
 ##
-## @var{x} must have all real entries.  @var{n} must be a scalar. 
+## @var{x} must have all real entries.  @var{n} must be a scalar.
 ## If @var{n} is an even integer and @var{X} has negative entries, an
 ## error is produced.
 ## @seealso{realsqrt, sqrt, cbrt}

@@ -28,8 +28,11 @@
 ## @end group
 ## @end example
 ##
-## If @var{s} is a string matrix, return a column vector of converted
-## numbers, one per row of @var{s}.  Invalid rows evaluate to NaN.
+## If @var{s} is a string matrix, return a column vector with one converted
+## number per row of @var{s}; Invalid rows evaluate to NaN@.
+##
+## If @var{s} is a cell array of strings, return a column vector with one
+## converted number per cell element in @var{s}.
 ## @seealso{dec2bin, base2dec, hex2dec}
 ## @end deftypefn
 
@@ -38,17 +41,19 @@
 
 function d = bin2dec (s)
 
-  if (nargin == 1 && ischar (s))
-    d = base2dec (s, 2);
-  else
+  if (nargin != 1)
     print_usage ();
   endif
 
+  d = base2dec (s, 2);
+
 endfunction
+
 
 %!assert(bin2dec ("0000"), 0);
 %!assert(bin2dec ("1110"), 14);
 %!assert(bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1);
+%!assert(bin2dec ({"1110", "1111"}), [14; 15]);
 
 %%Test input validation
 %!error bin2dec ();

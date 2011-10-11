@@ -19,10 +19,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strtrunc (@var{s}, @var{n})
 ## Truncate the character string @var{s} to length @var{n}.  If @var{s}
-## is a char matrix, then the number of columns is adjusted.
-##
+## is a character matrix, then the number of columns is adjusted.
 ## If @var{s} is a cell array of strings, then the operation is performed
-## on its members and the new cell array is returned.
+## on each cell element and the new cell array is returned.
 ## @end deftypefn
 
 function s = strtrunc (s, n)
@@ -31,29 +30,49 @@ function s = strtrunc (s, n)
     print_usage ();
   endif
 
-  if (ischar (s))
-    s_was_char = true;
-    s = {s};
-  else
-    s_was_char = false;
+  n = fix (n);
+  if (! isscalar (n) || n < 0)
+    error ("strtrunc: length N must be a positive integer (N >= 0)");
   endif
 
-  if (iscellstr (s))
-    for i = 1:(numel (s))
-      s{i} = s{i}(:,1:(min (n, columns (s{i}))));
-    endfor
+  if (ischar (s))
+    if (n < columns (s))
+      s = s(:, 1:n);
+    endif
+  elseif (iscellstr (s))
+    ## Convoluted approach converts cellstr to char matrix, trims the character
+    ## matrix using indexing, and then converts back to cellstr with mat2cell.
+    ## This approach is 24X faster than using cellfun with call to strtrunc
+    idx = cellfun ("size", s, 2) > n;
+    rows = cellfun ("size", s(idx), 1);
+    if (! isempty (rows))
+      s(idx) = mat2cell (char (s(idx))(:, 1:n), rows);
+    endif
   else
     error ("strtrunc: S must be a character string or a cell array of strings");
   endif
 
-  if (s_was_char)
-    s = s{:};
-  endif
-
 endfunction
 
-%!error <Invalid call to strtrunc> strtrunc ();
-%!error <S must be a character string or a cell array of strings> strtrunc (1, 1)
+
 %!assert (strtrunc("abcdefg", 4), "abcd");
 %!assert (strtrunc("abcdefg", 10), "abcdefg");
+%!assert (strtrunc(char ("abcdef", "fedcba"), 3), ["abc"; "fed"]);
 %!assert (strtrunc({"abcdef", "fedcba"}, 3), {"abc", "fed"});
+%!assert (strtrunc({"", "1", "21", "321"}, 1), {"", "1", "2", "3"})
+%!assert (strtrunc({"1", "", "2"}, 1), {"1", "", "2"})
+%!test
+%! cstr = {"line1"; ["line2"; "line3"]; "line4"};
+%! y = strtrunc (cstr, 4);
+%! assert (size (y), [3, 1]); 
+%! assert (size (y{2}), [2, 4]); 
+%! assert (y{2}, repmat ("line", 2, 1));
+
+%% Test input validation
+%!error strtrunc ()
+%!error strtrunc ("abcd")
+%!error strtrunc ("abcd", 4, 5)
+%!error <N must be a positive integer> strtrunc ("abcd", ones (2,2))
+%!error <N must be a positive integer> strtrunc ("abcd", -1)
+%!error <S must be a character string or a cell array of strings> strtrunc (1, 1)
+

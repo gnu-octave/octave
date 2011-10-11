@@ -41,7 +41,7 @@ function h = figure (varargin)
       f = tmp;
       varargin(1) = [];
       nargs--;
-    elseif (isnumeric (tmp) && tmp > 0 && round (tmp) == tmp)
+    elseif (isnumeric (tmp) && tmp > 0 && tmp == fix (tmp))
       f = tmp;
       init_new_figure = true;
       varargin(1) = [];
@@ -80,3 +80,12 @@ function h = figure (varargin)
   endif
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   assert (gcf, hf);
+%!   assert (isfigure (hf));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

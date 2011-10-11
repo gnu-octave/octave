@@ -580,7 +580,7 @@ multi-dimensional arrays.  For example:
 
 @example
 @group
-a = [1,3;2,4]; b = cat(3, a, 2*a);
+a = [1,3;2,4]; c = cat(3, a, 2*a);
 for i = c
   i
 endfor

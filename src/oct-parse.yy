@@ -232,9 +232,10 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 
 // Build a for command.
 static tree_command *
-make_for_command (token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_statement_list *body,
-                  token *end_tok, octave_comment_list *lc);
+make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
+                  tree_expression *expr, tree_expression *maxproc,
+                  tree_statement_list *body, token *end_tok,
+                  octave_comment_list *lc);
 
 // Build a break command.
 static tree_command *
@@ -439,7 +440,7 @@ make_statement (T *arg)
 %token <tok_val> NAME
 %token <tok_val> END
 %token <tok_val> DQ_STRING SQ_STRING
-%token <tok_val> FOR WHILE DO UNTIL
+%token <tok_val> FOR PARFOR WHILE DO UNTIL
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
 %token <tok_val> BREAK CONTINUE FUNC_RET
@@ -447,9 +448,7 @@ make_statement (T *arg)
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL STATIC
 %token <tok_val> FCN_HANDLE
-%token <tok_val> PROPERTIES
-%token <tok_val> METHODS
-%token <tok_val> EVENTS
+%token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
 %token <tok_val> METAQUERY
 %token <tok_val> SUPERCLASSREF
 %token <tok_val> GET SET
@@ -462,7 +461,7 @@ make_statement (T *arg)
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
-%type <comment_type> properties_beg methods_beg events_beg
+%type <comment_type> properties_beg methods_beg events_beg enum_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -502,6 +501,7 @@ make_statement (T *arg)
 // These types need to be specified.
 %type <dummy_type> attr
 %type <dummy_type> class_event
+%type <dummy_type> class_enum
 %type <dummy_type> class_property
 %type <dummy_type> properties_list
 %type <dummy_type> properties_block
@@ -511,6 +511,8 @@ make_statement (T *arg)
 %type <dummy_type> attr_list
 %type <dummy_type> events_list
 %type <dummy_type> events_block
+%type <dummy_type> enum_list
+%type <dummy_type> enum_block
 %type <dummy_type> class_body
 
 // Precedence and associativity.
@@ -735,7 +737,10 @@ fcn_handle      : '@' FCN_HANDLE
                 ;
 
 anon_fcn_handle : '@' param_list statement
-                  { $$ = make_anon_fcn_handle ($2, $3); }
+                  {
+                    lexer_flags.quote_is_transpose = false;
+                    $$ = make_anon_fcn_handle ($2, $3);
+                  }
                 ;
 
 primary_expr    : identifier
@@ -1140,12 +1145,26 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   }
                 | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command ($1, $3, $5, $7, $8, $2)))
+                    if (! ($$ = make_for_command (FOR, $1, $3, $5, 0,
+                                                  $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command ($1, $4, $6, $9, $10, $2)))
+                    if (! ($$ = make_for_command (FOR, $1, $4, $6, 0,
+                                                  $9, $10, $2)))
+                      ABORT_PARSE;
+                  }
+                | PARFOR stash_comment assign_lhs '=' expression opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command (PARFOR, $1, $3, $5,
+                                                  0, $7, $8, $2)))
+                      ABORT_PARSE;
+                  }
+                | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command (PARFOR, $1, $4, $6,
+                                                  $8, $11, $12, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1230,6 +1249,7 @@ param_list_beg  : '('
                         symtab_context.push (symbol_table::current_scope ());
                         symbol_table::set_scope (symbol_table::alloc_scope ());
                         lexer_flags.looking_at_function_handle--;
+                        lexer_flags.looking_at_anon_fcn_args = true;
                       }
                   }
                 ;
@@ -1471,7 +1491,7 @@ classdef1       : classdef_beg opt_attr_list identifier opt_superclasses
                   { $$ = 0; }
                 ;
 
-classdef        : classdef1 '\n' class_body '\n' stash_comment classdef_end
+classdef        : classdef1 opt_sep class_body opt_sep stash_comment classdef_end
                   { $$ = 0; }
                 ;
 
@@ -1518,11 +1538,15 @@ class_body      : properties_block
                   { $$ = 0; }
                 | events_block
                   { $$ = 0; }
-                | class_body '\n' properties_block
+                | enum_block
                   { $$ = 0; }
-                | class_body '\n' methods_block
+                | class_body opt_sep properties_block
                   { $$ = 0; }
-                | class_body '\n' events_block
+                | class_body opt_sep methods_block
+                  { $$ = 0; }
+                | class_body opt_sep events_block
+                  { $$ = 0; }
+                | class_body opt_sep enum_block
                   { $$ = 0; }
                 ;
 
@@ -1531,14 +1555,14 @@ properties_beg  : PROPERTIES stash_comment
                 ;
 
 properties_block
-                : properties_beg opt_attr_list '\n' properties_list '\n' END
+                : properties_beg opt_attr_list opt_sep properties_list opt_sep END
                   { $$ = 0; }
                 ;
 
 properties_list
                 : class_property
                   { $$ = 0; }
-                | properties_list '\n' class_property
+                | properties_list opt_sep class_property
                   { $$ = 0; }
                 ;
 
@@ -1552,13 +1576,13 @@ methods_beg     : METHODS stash_comment
                   { $$ = 0; }
                 ;
 
-methods_block   : methods_beg opt_attr_list '\n' methods_list '\n' END
+methods_block   : methods_beg opt_attr_list opt_sep methods_list opt_sep END
                   { $$ = 0; }
                 ;
 
 methods_list    : function
                   { $$ = 0; }
-                | methods_list '\n' function
+                | methods_list opt_sep function
                   { $$ = 0; }
                 ;
 
@@ -1566,17 +1590,35 @@ events_beg      : EVENTS stash_comment
                   { $$ = 0; }
                 ;
 
-events_block    : events_beg opt_attr_list '\n' events_list '\n' END
+events_block    : events_beg opt_attr_list opt_sep events_list opt_sep END
                   { $$ = 0; }
                 ;
 
 events_list     : class_event
                   { $$ = 0; }
-                | events_list '\n' class_event
+                | events_list opt_sep class_event
                   { $$ = 0; }
                 ;
 
 class_event     : identifier
+                  { $$ = 0; }
+                ;
+
+enum_beg        : ENUMERATION stash_comment
+                  { $$ = 0; }
+                ;
+
+enum_block      : enum_beg opt_attr_list opt_sep enum_list opt_sep END
+                  { $$ = 0; }
+                ;
+
+enum_list       : class_enum
+                  { $$ = 0; }
+                | enum_list opt_sep class_enum
+                  { $$ = 0; }
+                ;
+
+class_enum      : identifier '(' expression ')'
                   { $$ = 0; }
                 ;
 
@@ -1758,12 +1800,20 @@ end_token_ok (token *tok, token::end_tok_type expected)
           end_error ("for", ettype, l, c);
           break;
 
+        case token::enumeration_end:
+          end_error ("enumeration", ettype, l, c);
+          break;
+
         case token::function_end:
           end_error ("function", ettype, l, c);
           break;
 
         case token::if_end:
           end_error ("if", ettype, l, c);
+          break;
+
+        case token::parfor_end:
+          end_error ("parfor", ettype, l, c);
           break;
 
         case token::try_catch_end:
@@ -2071,9 +2121,8 @@ static tree_anon_fcn_handle *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
-
-  int l = -1;
-  int c = -1;
+  int l = input_line_number;
+  int c = current_input_column;
 
   tree_parameter_list *ret_list = 0;
 
@@ -2094,6 +2143,9 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   tree_anon_fcn_handle *retval
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
+  // FIXME: Stash the filename.  This does not work and produces
+  // errors when executed.
+  //retval->stash_file_name (curr_fcn_file_name);
 
   return retval;
 }
@@ -2474,13 +2526,16 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 // Build a for command.
 
 static tree_command *
-make_for_command (token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_statement_list *body,
-                  token *end_tok, octave_comment_list *lc)
+make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
+                  tree_expression *expr, tree_expression *maxproc,
+                  tree_statement_list *body, token *end_tok,
+                  octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
-  if (end_token_ok (end_tok, token::for_end))
+  bool parfor = tok_id == PARFOR;
+
+  if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
@@ -2493,14 +2548,19 @@ make_for_command (token *for_tok, tree_argument_list *lhs,
         {
           tree_expression *tmp = lhs->remove_front ();
 
-          retval = new tree_simple_for_command (tmp, expr, body,
-                                                lc, tc, l, c);
+          retval = new tree_simple_for_command (parfor, tmp, expr, maxproc,
+                                                body, lc, tc, l, c);
 
           delete lhs;
         }
       else
-        retval = new tree_complex_for_command (lhs, expr, body,
-                                               lc, tc, l, c);
+        {
+          if (parfor)
+            yyerror ("invalid syntax for parfor statement");
+          else
+            retval = new tree_complex_for_command (lhs, expr, body,
+                                                   lc, tc, l, c);
+        }
     }
 
   return retval;
@@ -4179,7 +4239,9 @@ feval (const octave_value_list& args, int nargout)
               retval = feval (name, tmp_args, nargout);
             }
         }
-      else if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+      else if (f_arg.is_function_handle ()
+               || f_arg.is_anonymous_function ()
+               || f_arg.is_inline_function ())
         {
           const octave_value_list tmp_args = get_feval_args (args);
 

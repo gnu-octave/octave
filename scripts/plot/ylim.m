@@ -74,8 +74,8 @@ endfunction
 %! assert (ylim ("mode"), "auto");
 
 %!test
-%! hf = figure (1232, "visible", "off");
-%! unwind_protect  
+%! hf = figure ("visible", "off");
+%! unwind_protect
 %!   limy = [0, 1.1];
 %!   plot3 ([0,1], [0,1], [0,1]);
 %!   ylim (limy);
@@ -86,8 +86,8 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! hf = figure (1232, "visible", "off");
-%! unwind_protect  
+%! hf = figure ("visible", "off");
+%! unwind_protect
 %!   plot3 ([0,1], [0,1.1], [0, 1]);
 %!   assert (get (gca, "ylim"), [0, 1.4], eps);
 %!   assert (ylim ("mode"), "auto");

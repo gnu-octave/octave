@@ -554,6 +554,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
             lexer_flags.quote_is_transpose = false;
             lexer_flags.convert_spaces_to_comma = true;
+            lexer_flags.looking_for_object_index = false;
 
             maybe_warn_separator_insert (',');
 
@@ -976,9 +977,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     lexer_flags.looking_at_object_index.pop_front ();
 
     lexer_flags.quote_is_transpose = true;
-    lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket_or_brace ();
+    lexer_flags.convert_spaces_to_comma
+      = (nesting_level.is_bracket_or_brace ()
+         && ! lexer_flags.looking_at_anon_fcn_args);
     lexer_flags.looking_for_object_index = true;
     lexer_flags.at_beginning_of_statement = false;
+
+    if (lexer_flags.looking_at_anon_fcn_args)
+      lexer_flags.looking_at_anon_fcn_args = false;
 
     do_comma_insert_check ();
 
@@ -1516,6 +1522,11 @@ is_keyword_token (const std::string& s)
           lexer_flags.at_beginning_of_statement = true;
           break;
 
+        case endparfor_kw:
+          yylval.tok_val = new token (token::parfor_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+
         case endswitch_kw:
           yylval.tok_val = new token (token::switch_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
@@ -1528,6 +1539,11 @@ is_keyword_token (const std::string& s)
 
         case endclassdef_kw:
           yylval.tok_val = new token (token::classdef_end, l, c);
+          lexer_flags.at_beginning_of_statement = true;
+          break;
+
+        case endenumeration_kw:
+          yylval.tok_val = new token (token::enumeration_end, l, c);
           lexer_flags.at_beginning_of_statement = true;
           break;
 
@@ -1546,7 +1562,9 @@ is_keyword_token (const std::string& s)
           lexer_flags.at_beginning_of_statement = true;
           break;
 
+
         case for_kw:
+        case parfor_kw:
         case while_kw:
           promptflag--;
           lexer_flags.looping++;
@@ -1577,9 +1595,10 @@ is_keyword_token (const std::string& s)
             return 0;
           break;
 
-        case properties_kw:
-        case methods_kw:
+        case enumeration_kw:
         case events_kw:
+        case methods_kw:
+        case properties_kw:
           // 'properties', 'methods' and 'events' are keywords for
           // classdef blocks.
           if (! lexer_flags.parsing_classdef)
@@ -3367,6 +3386,9 @@ lexical_feedback::init (void)
 
   // Not initiallly looking at a function handle.
   looking_at_function_handle = 0;
+
+  // Not initiallly looking at an anonymous function argument list.
+  looking_at_anon_fcn_args = 0;
 
   // Not parsing a function return, parameter, or declaration list.
   looking_at_return_list = false;

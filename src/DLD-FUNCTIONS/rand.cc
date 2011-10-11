@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <ctime>
-
+#include <tr1/unordered_map>
 #include <string>
 
 #include "f77-fcn.h"
@@ -1019,10 +1019,11 @@ DEFUN_DLD (randperm, args, ,
 @deftypefn  {Loadable Function} {} randperm (@var{n})\n\
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
-If @var{m} is supplied, return @var{m} permutations,\n\
-one in each row of an @nospell{MxN} matrix.  The complexity is O(M*N) in both\n\
-time and memory.  The randomization is performed using rand().\n\
-All permutations are equally likely.\n\
+If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
+replacement from @code{1:@var{n}}. The complexity is O(@var{n}) in\n\
+memory and O(@var{m}) in time, unless @var{m} < @var{n}/5, in which case\n\
+O(@var{m}) memory is used as well. The randomization is performed using\n\
+rand(). All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {
@@ -1033,54 +1034,76 @@ All permutations are equally likely.\n\
     {
       octave_idx_type n, m;
 
+      n = args(0).idx_type_value (true);
+
       if (nargin == 2)
         m = args(1).idx_type_value (true);
       else
-        m = 1;
-
-      n = args(0).idx_type_value (true);
+        m = n;
 
       if (m < 0 || n < 0)
         error ("randperm: M and N must be non-negative");
 
+      if (m > n)
+        error ("randperm: M must be less than or equal to N");
+
+      // Quick and dirty heuristic to decide if we allocate or not the
+      // whole vector for tracking the truncated shuffle.
+      bool short_shuffle = m < n/5 && m < 1e5;
+
       if (! error_state)
         {
           // Generate random numbers.
-          NDArray r = octave_rand::nd_array (dim_vector (m, n));
-
-          // Create transposed to allow faster access.
-          Array<octave_idx_type> idx (dim_vector (n, m));
-
+          NDArray r = octave_rand::nd_array (dim_vector (1, m));
           double *rvec = r.fortran_vec ();
 
+          octave_idx_type idx_len = short_shuffle ? m : n;
+          Array<octave_idx_type> idx (dim_vector (1, idx_len));
           octave_idx_type *ivec = idx.fortran_vec ();
 
-          // Perform the Knuth shuffle.
-          for (octave_idx_type j = 0; j < m; j++)
-            {
-              for (octave_idx_type i = 0; i < n; i++)
-                ivec[i] = i;
+          for (octave_idx_type i = 0; i < idx_len; i++)
+            ivec[i] = i;
 
-              for (octave_idx_type i = 0; i < n; i++)
+          if (short_shuffle)
+            {
+              std::tr1::unordered_map<octave_idx_type,
+                                      octave_idx_type> map (m);
+
+              // Perform the Knuth shuffle only keeping track of moved
+              // entries in the map
+              for (octave_idx_type i = 0; i < m; i++)
                 {
-                  octave_idx_type k = i + gnulib::floor (rvec[i] * (n - i));
+                  octave_idx_type k = i +
+                    gnulib::floor (rvec[i] * (n - i));
+
+                  if (map.find(k) == map.end())
+                    {
+                      map[k] = ivec[i];
+                      ivec[i] = k;
+                    }
+                  else
+                    std::swap (ivec[i], map[k]);
+
+                }
+            }
+          else
+            {
+
+              // Perform the Knuth shuffle of the first m entries
+              for (octave_idx_type i = 0; i < m; i++)
+                {
+                  octave_idx_type k = i +
+                    gnulib::floor (rvec[i] * (n - i));
                   std::swap (ivec[i], ivec[k]);
                 }
-
-              ivec += n;
-              rvec += n;
             }
 
-          // Transpose.
-          idx = idx.transpose ();
-
-          // Re-fetch the pointers.
-          ivec = idx.fortran_vec ();
-          rvec = r.fortran_vec ();
-
           // Convert to doubles, reusing r.
-          for (octave_idx_type i = 0, l = m*n; i < l; i++)
+          for (octave_idx_type i = 0; i < m; i++)
             rvec[i] = ivec[i] + 1;
+
+          if (m < n)
+            idx.resize (dim_vector (1, m));
 
           // Now create an array object with a cached idx_vector.
           retval = new octave_matrix (r, idx_vector (idx));
@@ -1093,6 +1116,6 @@ All permutations are equally likely.\n\
 }
 
 /*
-%!assert(sort(randperm(20)),1:20)
-%!assert(sort(randperm(20,50),2),repmat(1:20,50,1))
+%!assert(sort (randperm (20)),1:20)
+%!assert(length (randperm (20,10)), 10)
 */

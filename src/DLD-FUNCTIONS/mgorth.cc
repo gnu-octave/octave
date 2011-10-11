@@ -31,8 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 
 template <class ColumnVector, class Matrix, class RowVector>
-static void 
-do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h) 
+static void
+do_mgorth (ColumnVector& x, const Matrix& V, RowVector& h)
 {
   octave_idx_type Vc = V.columns ();
   h = RowVector (Vc + 1);
@@ -71,7 +71,7 @@ On exit, @var{y} is a unit vector such that:\n\
 
   if (nargin != 2 || nargout > 2)
   {
-    print_usage (); 
+    print_usage ();
     return retval;
   }
 
@@ -90,7 +90,7 @@ On exit, @var{y} is a unit vector such that:\n\
     {
       error ("mgorth: X and V must be numeric");
     }
- 
+
   bool iscomplex = (arg_x.is_complex_type () || arg_v.is_complex_type ());
   if (arg_x.is_single_type () || arg_v.is_single_type ())
     {
@@ -139,7 +139,7 @@ On exit, @var{y} is a unit vector such that:\n\
 }
 
 /*
-  
+
 %!test
 %! for ii=1:100; assert (abs (mgorth (randn (5, 1), eye (5, 4))), [0 0 0 0 1]', eps); endfor
 

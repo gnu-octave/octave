@@ -50,7 +50,7 @@ function q = triplequad (f, xa, xb, ya, yb, za, zb, tol = 1e-6, quadf = @quadcc,
     print_usage ();
   endif
 
-  ## Allow use of empty matrix ([]) to indicate default 
+  ## Allow use of empty matrix ([]) to indicate default
   if (isempty (tol))
     tol = 1e-6;
   endif
@@ -75,7 +75,7 @@ function q = __triplequad_inner__ (y, z, f, xa, xb, tol, quadf, varargin)
   endfor
 endfunction
 
- 
+
 %!assert (triplequad (@(x,y,z) exp(-x.^2 - y.^2 - z.^2) , -1, 1, -1, 1, -1, 1, [],  @quadcc), pi ^ (3/2) * erf(1).^3, 1e-6)
 
 %% These tests are too expensive to run normally (~30 sec each).  Disable them

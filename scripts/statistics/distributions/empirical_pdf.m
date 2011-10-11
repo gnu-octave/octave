@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1996-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -36,6 +37,24 @@ function pdf = empirical_pdf (x, data)
     error ("empirical_pdf: DATA must be a vector");
   endif
 
-  pdf = discrete_pdf (x, data, ones (size (data)) / length (data));
+  pdf = discrete_pdf (x, data, ones (size (data)));
 
 endfunction
+
+
+%!shared x,v,y
+%! x = [-1 0.1 1.1 1.9 3];
+%! v = 0.1:0.2:1.9;
+%! y = [0 0.1 0.1 0.1 0];
+%!assert(empirical_pdf (x, v), y);
+
+%% Test class of input preserved
+%!assert(empirical_pdf (single(x), v), single (y));
+%!assert(empirical_pdf (x, single(v)), single (y));
+
+%% Test input validation
+%!error empirical_pdf ()
+%!error empirical_pdf (1)
+%!error empirical_pdf (1,2,3)
+%!error empirical_inv (1, ones(2))
+

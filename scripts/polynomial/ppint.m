@@ -28,7 +28,7 @@ function ppi = ppint (pp, c)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-  if (! isstruct (pp) && strcmp (pp.form, "pp"))
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
     error ("ppint: PP must be a structure");
   endif
 
@@ -48,7 +48,7 @@ function ppi = ppint (pp, c)
 
   tmp = -cumsum (ppjumps (ppi), length (d) + 1);
   ppi.coefs(prod(d)+1:end, k) = tmp(:);
-  
+
 endfunction
 
 %!shared x,y,pp,ppi

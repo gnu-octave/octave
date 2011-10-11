@@ -29,7 +29,7 @@
 function x = factorial (n)
   if (nargin != 1)
     print_usage ();
-  elseif (any (n(:) < 0 | n(:) != round (n(:))))
+  elseif (any (n(:) < 0 | n(:) != fix (n(:))))
     error ("factorial: N must all be nonnegative integers");
   endif
   x = round (gamma (n+1));

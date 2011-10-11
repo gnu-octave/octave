@@ -164,9 +164,9 @@ endfunction
 %!demo
 %! clf
 %! axis ([0 8 0 8])
-%! title (["First title";"Second title"])
-%! xlabel (["First xlabel";"Second xlabel"])
-%! ylabel (["First ylabel";"Second ylabel"])
+%! title (["1st title";"2nd title"])
+%! xlabel (["1st xlabel";"2nd xlabel"])
+%! ylabel (["1st ylabel";"2nd ylabel"])
 %! text (4, 4, {"Hello", "World"}, ...
 %!       "horizontalalignment", "center", ...
 %!       "verticalalignment", "middle")
@@ -177,10 +177,10 @@ endfunction
 %! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
 %!                  "facecolor", "none", ...
 %!                  "facealpha", 0);
-%! title (["First title";"Second title"])
-%! xlabel (["First xlabel";"Second xlabel"])
-%! ylabel (["First ylabel";"Second ylabel"])
-%! zlabel (["First zlabel";"Second zlabel"])
+%! title (["1st title";"2nd title"])
+%! xlabel (["1st xlabel";"2nd xlabel"])
+%! ylabel (["1st ylabel";"2nd ylabel"])
+%! zlabel (["1st zlabel";"2nd zlabel"])
 %! text (0, 0, 5, {"Hello", "World"}, ...
 %!       "horizontalalignment", "center", ...
 %!       "verticalalignment", "middle")
@@ -218,3 +218,33 @@ endfunction
 %! ylabel (1:2)
 %! title (1:2)
 
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = text (0.5, 0.3, "char");
+%!   assert ("char", class (get (h, "string")))
+%!   h = text (0.5, 0.4, ["char row 1"; "char row 2"]);
+%!   assert ("char", class (get (h, "string")))
+%!   h = text (0.5, 0.6, {"cell2str (1,1)", "cell2str (1,2)"; "cell2str (2,1)", "cell2str (2,2)"});
+%!   assert ("cell", class (get (h, "string")))
+%!   h = text (0.5, 0.8, "foobar");
+%!   set (h, "string", 1:3)
+%!   h = text ([0.1, 0.1], [0.3, 0.4], "one string & two objects");
+%!   assert ("char", class (get (h(1), "string")))
+%!   assert ("char", class (get (h(2), "string")))
+%!   h = text ([0.1, 0.1], [0.5, 0.6], {"one cellstr & two objects"});
+%!   assert ("cell", class (get (h(1), "string")))
+%!   assert ("cell", class (get (h(2), "string")))
+%!   h = text ([0.1, 0.1], [0.7, 0.8], {"cellstr 1 object 1", "cellstr 2 object 2"});
+%!   assert ("char", class (get (h(1), "string")))
+%!   assert ("char", class (get (h(2), "string")))
+%!   h = text ([0.1, 0.1], [0.1, 0.2], ["1st string & 1st object"; "2nd string & 2nd object"]);
+%!   assert ("char", class (get (h(1), "string")))
+%!   assert ("char", class (get (h(2), "string")))
+%!   h = text (0.7, 0.6, "single string");
+%!   assert ("char", class (get (h, "string")))
+%!   h = text (0.7, 0.5, {"single cell-string"});
+%!   assert ("cell", class (get (h, "string")))
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

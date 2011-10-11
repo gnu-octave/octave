@@ -149,7 +149,8 @@ mx_el_and_assign (boolNDArray& a, const boolNDArray& b)
   if (a.is_shared ())
     a = mx_el_and (a, b);
   else
-    do_mm_inplace_op<bool, bool> (a, b, mx_inline_and2, "operator &=");
+    do_mm_inplace_op<bool, bool> (a, b, mx_inline_and2, mx_inline_and2,
+                                  "operator &=");
 
   return a;
 }
@@ -160,7 +161,8 @@ mx_el_or_assign (boolNDArray& a, const boolNDArray& b)
   if (a.is_shared ())
     a = mx_el_or (a, b);
   else
-    do_mm_inplace_op<bool, bool> (a, b, mx_inline_or2, "operator |=");
+    do_mm_inplace_op<bool, bool> (a, b, mx_inline_or2, mx_inline_or2,
+                                  "operator |=");
 
   return a;
 }

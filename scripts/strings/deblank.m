@@ -54,9 +54,18 @@ function s = deblank (s)
       s = s(:,1:ceil (max (k) / rows (s)));
     endif
 
-  elseif (iscellstr (s))
+  elseif (iscell (s))
 
-    s = regexprep (s, "[\\s\v\\0]+$", '');
+    char_idx = cellfun ("isclass", s, "char");
+    cell_idx = cellfun ("isclass", s, "cell");
+    if (! all (char_idx | cell_idx))  
+      error ("deblank: S argument must be a string or cellstring");
+    endif
+
+    ## Divide work load.  Recursive cellfun deblank call is slow
+    ## and avoided where possible.
+    s(char_idx) = regexprep (s(char_idx), "[\\s\v\\0]+$", '');
+    s(cell_idx) = cellfun ("deblank", s(cell_idx), "UniformOutput", false);
 
   else
     error ("deblank: S argument must be a string or cellstring");
@@ -65,11 +74,12 @@ function s = deblank (s)
 endfunction
 
 
-%!assert (strcmp (deblank (" f o o \0"), " f o o"));
-%!assert (deblank ('   '), '')
-%!assert (deblank ("   "), "")
-%!assert (deblank (""), "")
-%!assert (deblank ({}), {})
+%!assert (deblank (" f o o \0"), " f o o");
+%!assert (deblank ('   '), '');
+%!assert (deblank ("   "), "");
+%!assert (deblank (""), "");
+%!assert (deblank ({}), {});
+%!assert (deblank ({" abc   ", {"   def   "}}), {" abc", {"   def"}});
 
 %!error <Invalid call to deblank> deblank ();
 %!error <Invalid call to deblank> deblank ("foo", "bar");

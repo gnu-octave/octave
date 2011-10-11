@@ -44,7 +44,11 @@ function retval = __axes_limits__ (fcn, varargin)
       if (!isnumeric (arg) && any (size(arg(:)) != [2, 1]))
         error ("%s: argument must be a 2 element vector", fcn);
       else
-        set (h, fcn, arg(:));
+        if (arg(1) >= arg(2))
+          error ("%s: axis limits must be increasing", fcn)
+        else
+          set (h, fcn, arg(:));
+        endif
       endif
     endif
   endif

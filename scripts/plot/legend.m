@@ -119,13 +119,20 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     ca = gca ();
   endif
 
-  if (strcmp (get (ca, "tag"), "plotyy"))
-    plty = get(ca, "userdata");
-    if (isscalar (plty))
+  if (ishandle (ca) && isprop (ca, "__plotyy_axes__"))
+    plty = get (ca, "__plotyy_axes__");
+    if (isscalar (plty) && ishandle (plty))
       ca = [ca, plty];
-    else
+    elseif (iscell (plty))
       ca = [ca, plty{:}];
+    elseif (all (ishandle (plty)))
+      ca = [ca, plty(:).'];
+    else
+      error ("legend.m: This should not happen. File a bug report.")
     endif
+    ## Remove duplicates while preserving order
+    [~, n] = unique (ca);
+    ca = ca (sort (n));
   endif
 
   if (nargin > 0 && all (ishandle (varargin{1})))
@@ -151,7 +158,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
   if (nargs > 0)
     pos = varargin{nargs};
-    if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
+    if (isnumeric (pos) && isscalar (pos) && pos == fix (pos))
       if (pos >= -1 && pos <= 4)
         position = [{"northeastoutside", "best", "northeast",
                      "northwest", "southwest", "southeast"}] {pos + 2};
@@ -288,7 +295,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (! isempty (hlegend))
       set (hlegend, "box", "off", "visible", "off");
     endif
-  elseif (nargs == 0 && !(strcmp (position, "default") && 
+  elseif (nargs == 0 && !(strcmp (position, "default") &&
                           strcmp (orientation, "default")))
     if (! isempty (hlegend))
       hax = getfield (get (hlegend, "userdata"), "handle");
@@ -298,14 +305,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         h = legend (hax, hplots, text_strings, "orientation", orientation);
       elseif (strcmp (orientation, "default"))
         if (outside)
-          h = legend (hax, hplots, text_strings, "location", 
+          h = legend (hax, hplots, text_strings, "location",
                       strcat (position, "outside"));
         else
           h = legend (hax, hplots, text_strings, "location", position);
         endif
       else
         if (outside)
-          h = legend (hax, hplots, text_strings, "location", 
+          h = legend (hax, hplots, text_strings, "location",
                       strcat (position, "outside"), "orientation", orientation);
         else
           h = legend (hax, hplots, text_strings, "location", position,

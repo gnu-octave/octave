@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-##  
+##
 ## @deftypefn {Function File} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicgstab (@var{A}, @var{b}, ...)
@@ -34,11 +34,11 @@
 ## default value @code{zeros (size (b))} is used.
 ## @end itemize
 ##
-## @var{A} can be passed as a matrix or as a function handle or 
+## @var{A} can be passed as a matrix or as a function handle or
 ## inline function @code{f} such that @code{f(x) = A*x}.
 ##
-## The preconditioner @var{P} is given as @code{P = M1 * M2}. 
-## Both @var{M1} and @var{M2} can be passed as a matrix or as a function handle or 
+## The preconditioner @var{P} is given as @code{P = M1 * M2}.
+## Both @var{M1} and @var{M2} can be passed as a matrix or as a function handle or
 ## inline function @code{g} such that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.
 ##
 ## If called with more than one output parameter
@@ -52,7 +52,7 @@
 ## @end itemize
 ## (the value 2 is unused but skipped for compatibility).
 ## @item @var{relres} is the final value of the relative residual.
-## @item @var{iter} is the number of iterations performed. 
+## @item @var{iter} is the number of iterations performed.
 ## @item @var{resvec} is a vector containing the relative residual at each iteration.
 ## @end itemize
 ##
@@ -60,11 +60,11 @@
 ##
 ## @end deftypefn
 
-function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, 
+function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
                                                      M1, M2, x0)
 
   if (nargin >= 2 && nargin <= 7 && isvector (full (b)))
-    
+
     if (ischar (A))
       A = str2func (A);
     elseif (ismatrix (A))
@@ -75,7 +75,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
       error (["bicgstab: first argument is expected " ...
               "to be a function or a square matrix"]);
     endif
-    
+
     if (nargin < 3 || isempty (tol))
       tol = 1e-6;
     endif
@@ -96,7 +96,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
       error (["bicgstab: preconditioner is " ...
               "expected to be a function or matrix"]);
     endif
-    
+
     if (nargin < 6 || isempty (M2))
       M2m1x = @(x) x;
     elseif (ischar (M2))
@@ -115,7 +115,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     if (nargin < 7 || isempty (x0))
       x0 = zeros (size (b));
     endif
-    
+
     ## specifies initial estimate x0
     if (nargin < 7)
       x = zeros (rows (b), 1);
@@ -206,33 +206,33 @@ endfunction
 %!shared A, b, n, M1, M2
 %!
 %!test
-%! n = 100; 
+%! n = 100;
 %! A = spdiags ([-2*ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
-%! b = sum (A, 2); 
-%! tol = 1e-8; 
+%! b = sum (A, 2);
+%! tol = 1e-8;
 %! maxit = 15;
-%! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n); 
-%! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n); 
+%! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
+%! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 %!
 %!test
-%! tol = 1e-8; 
+%! tol = 1e-8;
 %! maxit = 15;
 %!
 %! function y = afun (x, a)
 %!     y = a * x;
 %! endfunction
 %!
-%! [x, flag, relres, iter, resvec] = bicgstab (@(x) afun (x, A), b, 
+%! [x, flag, relres, iter, resvec] = bicgstab (@(x) afun (x, A), b,
 %!                                             tol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 
 %!test
-%! n = 100; 
-%! tol = 1e-8; 
+%! n = 100;
+%! tol = 1e-8;
 %! a = sprand (n, n, .1);
 %! A = a'*a + 100 * eye (n);
-%! b = sum (A, 2); 
+%! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);

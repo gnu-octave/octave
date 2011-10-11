@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -22,7 +23,7 @@
 ## function (CDF) at @var{x} of the exponential distribution with
 ## mean @var{lambda}.
 ##
-## The arguments can be of common size or scalar.
+## The arguments can be of common size or scalars.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -34,40 +35,57 @@ function cdf = expcdf (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (x) && !isscalar(lambda))
+  if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("expcdf: X and LAMBDA must be of common size or scalar");
+      error ("expcdf: X and LAMBDA must be of common size or scalars");
     endif
   endif
 
-  if (isscalar (x))
-    sz = size (lambda);
+  if (iscomplex (x) || iscomplex (lambda))
+    error ("expcdf: X and LAMBDA must not be complex");
+  endif
+
+  if (isa (x, "single") || isa (lambda, "single"))
+    cdf = zeros (size (x), "single");
   else
-    sz = size (x);
+    cdf = zeros (size (x));
   endif
 
-  cdf = zeros (sz);
+  k = isnan (x) | !(lambda > 0);
+  cdf(k) = NaN;
 
-  k = find (isnan (x) | !(lambda > 0));
-  if (any (k))
-    cdf(k) = NaN;
-  endif
+  k = (x == Inf) & (lambda > 0);
+  cdf(k) = 1;
 
-  k = find ((x == Inf) & (lambda > 0));
-  if (any (k))
-    cdf(k) = 1;
-  endif
-
-  k = find ((x > 0) & (x < Inf) & (lambda > 0));
-  if (any (k))
-    if isscalar (lambda)
-      cdf (k) = 1 - exp (- x(k) ./ lambda);
-    elseif isscalar (x)
-      cdf (k) = 1 - exp (- x ./ lambda(k));
-    else
-      cdf (k) = 1 - exp (- x(k) ./ lambda(k));
-    endif
+  k = (x > 0) & (x < Inf) & (lambda > 0);
+  if isscalar (lambda)
+    cdf(k) = 1 - exp (- x(k) / lambda);
+  else
+    cdf(k) = 1 - exp (- x(k) ./ lambda(k));
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 0.5 1 Inf];
+%! y = [0, 1 - exp(-x(2:end)/2)];
+%!assert(expcdf (x, 2*ones(1,5)), y);
+%!assert(expcdf (x, 2), y);
+%!assert(expcdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)]);
+
+%% Test class of input preserved
+%!assert(expcdf ([x, NaN], 2), [y, NaN]);
+%!assert(expcdf (single([x, NaN]), 2), single([y, NaN]));
+%!assert(expcdf ([x, NaN], single(2)), single([y, NaN]));
+
+%% Test input validation
+%!error expcdf ()
+%!error expcdf (1)
+%!error expcdf (1,2,3)
+%!error expcdf (ones(3),ones(2))
+%!error expcdf (ones(2),ones(3))
+%!error expcdf (i, 2)
+%!error expcdf (2, i)
+

@@ -45,7 +45,7 @@ function [code_r, idx_r] = example (name, n)
     n = 0;
   elseif (ischar (n))
     n = str2double (n);
-  endif 
+  endif
 
   [code, idx] = test (name, "grabdemo");
   if (nargout > 0)

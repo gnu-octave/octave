@@ -575,13 +575,16 @@ get_dispatch_type (const octave_value_list& args)
 //   variable
 //   subfunction
 //   private function
-//   class constructor
 //   class method
+//   class constructor
 //   legacy dispatch
 //   command-line function
 //   autoload function
 //   function on the path
 //   built-in function
+//
+// Matlab documentation states that constructors have higher precedence
+// than methods, but that does not seem to be the case.
 
 octave_value
 symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
@@ -687,6 +690,18 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
         }
     }
 
+  // Class methods.
+
+  if (! args.empty ())
+    {
+      std::string dispatch_type = get_dispatch_type (args);
+
+      octave_value fcn = find_method (dispatch_type);
+
+      if (fcn.is_defined ())
+        return fcn;
+    }
+
   // Class constructors.  The class name and function name are the same.
 
   str_val_iterator q = class_constructors.find (name);
@@ -714,18 +729,6 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
           if (val.is_defined ())
             return val;
         }
-    }
-
-  // Class methods.
-
-  if (! args.empty ())
-    {
-      std::string dispatch_type = get_dispatch_type (args);
-
-      octave_value fcn = find_method (dispatch_type);
-
-      if (fcn.is_defined ())
-        return fcn;
     }
 
   // Legacy dispatch.
@@ -1511,10 +1514,10 @@ need to recompiled.\n\
 %!shared old_state
 %! old_state = ignore_function_time_stamp ();
 %!test
-%! state = ignore_function_time_stamp ("all");  
+%! state = ignore_function_time_stamp ("all");
 %! assert (state, old_state);
 %! assert (ignore_function_time_stamp (), "all");
-%! state = ignore_function_time_stamp ("system");  
+%! state = ignore_function_time_stamp ("system");
 %! assert (state, "all");
 %! assert (ignore_function_time_stamp (), "system");
 %! ignore_function_time_stamp (old_state);

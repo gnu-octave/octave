@@ -59,9 +59,9 @@ public:
 
   virtual ~opengl_renderer (void) { }
 
-  virtual void draw (const graphics_object& go);
+  virtual void draw (const graphics_object& go, bool toplevel = true);
 
-  virtual void draw (const Matrix& hlist)
+  virtual void draw (const Matrix& hlist, bool toplevel = false)
     {
       int len = hlist.length ();
 
@@ -70,7 +70,7 @@ public:
           graphics_object obj = gh_manager::get_object (hlist(i));
 
           if (obj)
-            draw (obj);
+            draw (obj, toplevel);
         }
     }
 
@@ -86,6 +86,10 @@ protected:
   virtual void draw_hggroup (const hggroup::properties& props);
   virtual void draw_text (const text::properties& props);
   virtual void draw_image (const image::properties& props);
+  virtual void draw_uipanel (const uipanel::properties& props,
+                             const graphics_object& go);
+
+  virtual void init_gl_context (bool enhanced, const Matrix& backgroundColor);
 
   virtual void set_color (const Matrix& c);
   virtual void set_polygon_offset (bool on, double offset = 0.0);

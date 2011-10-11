@@ -92,13 +92,14 @@ tree_anon_fcn_handle : public tree_expression
 public:
 
   tree_anon_fcn_handle (int l = -1, int c = -1)
-    : tree_expression (l, c), fcn (0) { }
+    : tree_expression (l, c), fcn (0), file_name () { }
 
   tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
                         tree_statement_list *cl, symbol_table::scope_id sid,
                         int l = -1, int c = -1)
     : tree_expression (l, c),
-      fcn (new octave_user_function (sid, pl, rl, cl)) { }
+      fcn (new octave_user_function (sid, pl, rl, cl)),
+      file_name () { }
 
   ~tree_anon_fcn_handle (void) { delete fcn; }
 
@@ -135,10 +136,15 @@ public:
 
   void accept (tree_walker& tw);
 
+  void stash_file_name (const std::string& file) { file_name = file; }
+
 private:
 
   // The function.
   octave_user_function *fcn;
+
+  // Filename where the handle was defined.
+  std::string file_name;
 
   // No copying!
 

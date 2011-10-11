@@ -30,10 +30,10 @@
 ##
 ## @table @code
 ## @item @var{f}
-## The expression to evaluate.
+## The code expression to evaluate.
 ##
 ## @item @var{max_n}
-## The maximum test length to run.  Default value is 100.  Alternatively,
+## The maximum test length to run.  The default value is 100.  Alternatively,
 ## use @code{[min_n, max_n]} or specify the @var{n} exactly with
 ## @code{[n1, n2, @dots{}, nk]}.
 ##
@@ -60,7 +60,7 @@
 ## is a structure with fields @code{a} and @code{p}.
 ##
 ## @item @var{n}
-## The values @var{n} for which the expression was calculated AND
+## The values @var{n} for which the expression was calculated @strong{AND}
 ## the execution time was greater than zero.
 ##
 ## @item @var{T_f}
@@ -68,7 +68,7 @@
 ##
 ## @item @var{T_f2}
 ## The nonzero execution times recorded for the expression @var{f2} in seconds.
-## If required, the mean time ratio is simply @code{mean (T_f./T_f2)}.
+## If required, the mean time ratio is simply @code{mean (T_f ./ T_f2)}.
 ##
 ## @end table
 ##
@@ -117,7 +117,7 @@
 ## @example
 ## @group
 ## speed ("sum (x)", "", [10000, 100000], ...
-##        "v = 0; for i = 1:length (x), v += x(i); end")
+##        "v = 0; for i = 1:length (x), v += x(i); endfor")
 ## @end group
 ## @end example
 ##
@@ -137,38 +137,28 @@
 ##
 ## Assuming one of the two versions is in xcorr_orig, this
 ## would compare their speed and their output values.  Note that the
-## FFT version is not exact, so we specify an acceptable tolerance on
-## the comparison @code{100*eps}, and that the errors should be computed
-## relatively, as @code{abs ((@var{x} - @var{y}) ./ @var{y})} rather than
-## absolutely as @code{abs (@var{x} - @var{y})}.
+## FFT version is not exact, so one must specify an acceptable tolerance on
+## the comparison @code{100*eps}.  In this case, the comparison should be
+## computed relatively, as @code{abs ((@var{x} - @var{y}) ./ @var{y})} rather
+## than absolutely as @code{abs (@var{x} - @var{y})}.
 ##
-## Type @code{example('speed')} to see some real examples.  Note that for
-## obscure reasons, examples 1 and 2 can not be run directly using
-## @code{demo('speed')}.  Instead use, @code{eval ( example('speed', 1) )}
-## or @code{eval ( example('speed', 2) )}.
+## Type @kbd{example ("speed")} to see some real examples or 
+## @kbd{demo ("speed")} to run them.
 ## @end deftypefn
 
 ## FIXME: consider two dimensional speedup surfaces for functions like kron.
-function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __f2, __tol)
+function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 100, __f2 = "", __tol = eps)
 
   if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
 
   if (nargin < 2 || isempty (__init))
-    __init = "x = randn(n, 1);";
+    __init = "x = randn (n, 1)";
   endif
 
-  if (nargin < 3 || isempty (__max_n))
+  if (isempty (__max_n))
     __max_n = 100;
-  endif
-
-  if (nargin < 4)
-    __f2 = [];
-  endif
-
-  if (nargin < 5 || isempty (__tol))
-    __tol = eps;
   endif
 
   __numtests = 15;
@@ -179,11 +169,12 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
     assert (__max_n > __min_n);
     __test_n = logspace (0, log10 (__max_n), __numtests);
   elseif (length (__max_n) == 2)
-    __min_n = __max_n(1);
-    __max_n = __max_n(2);
+    [__min_n, __max_n] = deal (__max_n(1), __max_n(2));
     assert (__min_n >= 1);
+    assert (__max_n > __min_n);
     __test_n = logspace (log10 (__min_n), log10 (__max_n), __numtests);
   else
+    assert (all (__max_n > 0));
     __test_n = __max_n;
   endif
   ## Force n to be an integer.
@@ -199,60 +190,75 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
     disp (cstrcat ("testing ", __f1, "\ninit: ", __init));
   endif
 
+  ## Add semicolon closure to all code fragments in case user has not done so.
+  __init = cstrcat (__init, ";");
+  __f1 = cstrcat (__f1, ";");
+  if (! isempty (__f2))
+    __f2 = cstrcat (__f2, ";");
+  endif
+
   ## Make sure the functions are freshly loaded by evaluating them at
   ## test_n(1); first have to initialize the args though.
   n = 1;
   k = 0;
-  eval (cstrcat (__init, ";"));
+  eval (__init);
+  eval (__f1);
   if (! isempty (__f2))
-    eval (cstrcat (__f2, ";"));
+    eval (__f2);
   endif
-  eval (cstrcat (__f1, ";"));
 
   ## Run the tests.
   for k = 1:length (__test_n)
     n = __test_n(k);
-    eval (cstrcat (__init, ";"));
+    eval (__init);
 
     if (do_display)
-      printf ("n%i = %i  ",k, n);
+      printf ("n%i = %i  ", k, n);
       fflush (stdout);
     endif
-    eval (cstrcat ("__t = time();", __f1, "; __v1=ans; __t = time()-__t;"));
+
+    eval (cstrcat ("__t = time();", __f1, "__v1=ans; __t = time()-__t;"));
     if (__t < 0.25)
-      eval (cstrcat ("__t2 = time();", __f1, "; __t2 = time()-__t2;"));
-      eval (cstrcat ("__t3 = time();", __f1, "; __t3 = time()-__t3;"));
+      eval (cstrcat ("__t2 = time();", __f1, "__t2 = time()-__t2;"));
+      eval (cstrcat ("__t3 = time();", __f1, "__t3 = time()-__t3;"));
       __t = min ([__t, __t2, __t3]);
     endif
     __tnew(k) = __t;
 
     if (! isempty (__f2))
-      eval (cstrcat ("__t = time();", __f2, "; __v2=ans; __t = time()-__t;"));
+      eval (cstrcat ("__t = time();", __f2, "__v2=ans; __t = time()-__t;"));
       if (__t < 0.25)
-        eval (cstrcat ("__t2 = time();", __f2, "; __t2 = time()-__t2;"));
-        eval (cstrcat ("__t3 = time();", __f2, "; __t3 = time()-__t3;"));
+        eval (cstrcat ("__t2 = time();", __f2, "__t2 = time()-__t2;"));
+        eval (cstrcat ("__t3 = time();", __f2, "__t3 = time()-__t3;"));
+        __t = min ([__t, __t2, __t3]);
       endif
       __torig(k) = __t;
       if (! isinf(__tol))
         assert (__v1, __v2, __tol);
       endif
     endif
+
   endfor
 
   ## Drop times of zero.
-  if (! isempty (__f2))
-    zidx = (__tnew < 100*eps |  __torig < 100*eps);
-    __test_n(zidx) = [];
-    __tnew(zidx) = [];
-    __torig(zidx) = [];
-  else
+  if (isempty (__f2))
     zidx = (__tnew < 100*eps);
     __test_n(zidx) = [];
     __tnew(zidx) = [];
+  else
+    zidx = (__tnew < 100*eps | __torig < 100*eps);
+    __test_n(zidx) = [];
+    __tnew(zidx) = [];
+    __torig(zidx) = [];
+  endif
+
+  if (isempty (__test_n))
+    error (["speed: All running times were zero.\n",
+            "error: speed: Choose larger MAX_N or do more work per function evaluation"]);
   endif
 
   ## Approximate time complexity and return it if requested.
-  tailidx = ceil(length(__test_n)/2):length(__test_n);
+  tailidx = ceil (length (__test_n)/2):length (__test_n);
   p = polyfit (log (__test_n(tailidx)), log (__tnew(tailidx)), 1);
   if (nargout > 0)
     __order.p = p(1);
@@ -261,19 +267,32 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
 
   if (do_display)
     figure;
+    ## Strip semicolon added to code fragments before displaying
+    __init(end) = ""; 
+    __f1(end) = ""; 
+    if (! isempty (__f2))
+      __f2(end) = ""; 
+    endif
   endif
 
-  if (do_display && ! isempty (__f2))
+  if (do_display && isempty (__f2))
+
+    loglog (__test_n, __tnew*1000, "*-g;execution time;");
+    xlabel ("test length");
+    ylabel ("best execution time (ms)");
+    title ({__f1, cstrcat("init: ", __init)});
+
+  elseif (do_display)
 
     subplot (1, 2, 1);
     semilogx (__test_n, __torig./__tnew,
-              cstrcat ("-*r;", strrep (__f1, ";", "."), "/",
-                      strrep (__f2, ";", "."), ";"),
+              cstrcat ("-*r;", strrep (__f1, ";", "."), " / ",
+                       strrep (__f2, ";", "."), ";"),
                __test_n, __tnew./__torig,
-              cstrcat ("-*g;", strrep (__f2, ";", "."), "/",
-                      strrep (__f1, ";", "."), ";"));
+              cstrcat ("-*g;", strrep (__f2, ";", "."), " / ",
+                       strrep (__f1, ";", "."), ";"));
+    title ("Speedup Ratio");
     xlabel ("test length");
-    title (__f1);
     ylabel ("speedup ratio");
 
     subplot (1, 2, 2);
@@ -281,31 +300,32 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
             cstrcat ("*-g;", strrep (__f1, ";", "."), ";"),
             __test_n, __torig*1000,
             cstrcat ("*-r;", strrep (__f2,";","."), ";"));
-
+    title ({"Execution Times", cstrcat("init: ", __init)});
     xlabel ("test length");
     ylabel ("best execution time (ms)");
-    title (cstrcat ("init: ", __init));
 
     ratio = mean (__torig ./ __tnew);
     printf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n",
             ratio, __f2, __f1);
-
-  elseif (do_display)
-
-    loglog (__test_n, __tnew*1000, "*-g;execution time;");
-    xlabel ("test length");
-    ylabel ("best execution time (ms)");
-    title (cstrcat (__f1, "  init: ", __init));
 
   endif
 
   if (do_display)
 
     ## Plot time complexity approximation (using milliseconds).
-    order = sprintf ("O(n^%g)", round (10*p(1))/10);
+    figure;   # Open second plot window
+
+    order = round (10*p(1))/10;
+    if (order >= 0.1)
+      order = sprintf ("O(n^%g)", order);
+    else
+      order = "O(1)";
+    endif
     v = polyval (p, log (__test_n(tailidx)));
 
     loglog (__test_n(tailidx), exp(v)*1000, sprintf ("b;%s;", order));
+    title ({"Time Complexity", __f1});
+    xlabel ("test length");
 
     ## Get base time to 1 digit of accuracy.
     dt = exp (p(2));
@@ -320,75 +340,78 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n, __
       time = sprintf ("%g ns", dt*1e9);
     endif
 
-    if (do_display)
-      ## Display nicely formatted complexity.
-      printf ("\nFor %s:\n", __f1);
-      printf ("  asymptotic power: %s\n", order);
-      printf ("  approximate time per operation: %s\n", time);
-    endif
+    ## Display nicely formatted complexity.
+    printf ("\nFor %s:\n", __f1);
+    printf ("  asymptotic power: %s\n", order);
+    printf ("  approximate time per operation: %s\n", time);
 
   endif
 
 endfunction
 
-%!demo if 1
-%!  function x = build_orig(n)
-%!    ## extend the target vector on the fly
-%!    for i=0:n-1, x([1:10]+i*10) = 1:10; endfor
-%!  endfunction
-%!  function x = build(n)
-%!    ## preallocate the target vector
-%!    x = zeros(1, n*10);
-%!    try
-%!      if (prefer_column_vectors), x = x.'; endif
-%!    catch
-%!    end
-%!    for i=0:n-1, x([1:10]+i*10) = 1:10; endfor
-%!  endfunction
-%!
-%!  disp("-----------------------");
-%!  type build_orig;
-%!  disp("-----------------------");
-%!  type build;
-%!  disp("-----------------------");
-%!
-%!  disp("Preallocated vector test.\nThis takes a little while...");
-%!  speed('build(n)', '', 1000, 'build_orig(n)');
-%!  clear build build_orig
-%!  disp("Note how much faster it is to pre-allocate a vector.");
-%!  disp("Notice the peak speedup ratio.");
-%! endif
 
-%!demo if 1
-%!  function x = build_orig(n)
-%!    for i=0:n-1, x([1:10]+i*10) = 1:10; endfor
-%!  endfunction
-%!  function x = build(n)
-%!    idx = [1:10]';
-%!    x = idx(:,ones(1,n));
-%!    x = reshape(x, 1, n*10);
-%!    try
-%!      if (prefer_column_vectors), x = x.'; endif
-%!    catch
-%!    end
-%!  endfunction
+%% FIXME: Demos with declared functions do not work.  See bug #31815.
+%%        A workaround has been hacked by not declaring the functions
+%%        but using eval to create them in the proper context.
+%%        Unfortunately, we can't remove them from the user's workspace
+%%        because of another bug (#34497).
+%!demo
+%!  fstr_build_orig = cstrcat (
+%!  "function x = build_orig (n)\n",
+%!  "  ## extend the target vector on the fly\n",
+%!  "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
+%!  "endfunction");
+%!  fstr_build = cstrcat (
+%!  "function x = build (n)\n",
+%!  "  ## preallocate the target vector\n",
+%!  "  x = zeros (1, n*100);\n",
+%!  "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
+%!  "endfunction");
 %!
-%!  disp("-----------------------");
-%!  type build_orig;
-%!  disp("-----------------------");
-%!  type build;
-%!  disp("-----------------------");
+%!  disp ("-----------------------");
+%!  disp (fstr_build_orig);
+%!  disp ("-----------------------");
+%!  disp (fstr_build);
+%!  disp ("-----------------------");
 %!
-%!  disp("Vectorized test.\nThis takes a little while...");
-%!  speed('build(n)', '', 1000, 'build_orig(n)');
-%!  clear build build_orig
-%!  disp("-----------------------");
-%!  disp("This time, the for loop is done away with entirely.");
-%!  disp("Notice how much bigger the speedup is than in example 1.");
-%! endif
+%!  ## Eval functions strings to create them in the current context
+%!  eval (fstr_build_orig);
+%!  eval (fstr_build);
+%!
+%!  disp ("Preallocated vector test.\nThis takes a little while...");
+%!  speed("build (n)", "", 1000, "build_orig (n)");
+%!  clear -f build build_orig
+%!  disp ("Note how much faster it is to pre-allocate a vector.");
+%!  disp ("Notice the peak speedup ratio.");
 
-%!error speed ();
-%!error speed (1, 2, 3, 4, 5, 6, 7);
+%!demo
+%!  fstr_build_orig = cstrcat (
+%!  "function x = build_orig (n)\n",
+%!  "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
+%!  "endfunction");
+%!  fstr_build = cstrcat (
+%!  "function x = build (n)\n",
+%!  "  idx = [1:100]';\n",
+%!  "  x = idx(:,ones(1,n));\n",
+%!  "  x = reshape (x, 1, n*100);\n",
+%!  "endfunction");
+%!
+%!  disp ("-----------------------");
+%!  disp (fstr_build_orig);
+%!  disp ("-----------------------");
+%!  disp (fstr_build);
+%!  disp ("-----------------------");
+%!
+%!  ## Eval functions strings to create them in the current context
+%!  eval (fstr_build_orig);
+%!  eval (fstr_build);
+%!
+%!  disp ("Vectorized test.\nThis takes a little while...");
+%!  speed("build (n)", "", 1000, "build_orig (n)");
+%!  clear -f build build_orig
+%!  disp ("-----------------------");
+%!  disp ("This time, the for loop is done away with entirely.");
+%!  disp ("Notice how much bigger the speedup is than in example 1.");
 
 %!test
 %! [order, n, T_f1, T_f2] = speed ("airy (x)", "x = rand (n, 10)", [100, 1000]);
@@ -396,20 +419,26 @@ endfunction
 %! assert (size (order), [1, 1]);
 %! assert (fieldnames (order), {"p"; "a"});
 %! assert (isnumeric (n));
-%! assert (size (n), [1, 15]);
+%! assert (length (n) > 10);
 %! assert (isnumeric (T_f1));
-%! assert (size (T_f1), [1, 15]);
-%! assert (isnumeric (T_f1));
-%! assert (size (T_f2), [1, 15]);
+%! assert (size (T_f1), size (n));
+%! assert (isnumeric (T_f2));
+%! assert (length (T_f2) > 10);
 
-%!test
-%! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); end");
+%% This test is known to fail on operating systems with low resolution timers such as MinGW
+%!xtest
+%! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); endfor");
 %! assert (isstruct (order));
 %! assert (size (order), [1, 1]);
 %! assert (fieldnames (order), {"p"; "a"});
 %! assert (isnumeric (n));
-%! assert (size (n), [1, 15]);
+%! assert (length (n) > 10);
 %! assert (isnumeric (T_f1));
-%! assert (size (T_f1), [1, 15]);
-%! assert (isnumeric (T_f1));
-%! assert (size (T_f2), [1, 15]);
+%! assert (size (T_f1), size (n));
+%! assert (isnumeric (T_f2));
+%! assert (length (T_f2) > 10);
+
+%% Test input validation
+%!error speed ();
+%!error speed (1, 2, 3, 4, 5, 6, 7);
+

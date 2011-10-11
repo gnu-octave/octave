@@ -30,22 +30,19 @@ SED=%SED%
 top_srcdir='%abs_top_srcdir%'
 builddir='%builddir%'
 
-d1="$top_srcdir/test"
-d2="$top_srcdir/scripts"
-d3="$builddir/scripts"
-d4="$builddir/src"
+d1="$top_srcdir/scripts"
+d2="$builddir/scripts"
+d3="$builddir/src"
 
 d1_list=`$FIND "$d1" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d2_list=`$FIND "$d2" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 d3_list=`$FIND "$d3" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
-d4_list=`$FIND "$d4" -type d -a ! \( \( -name private -o -name '@*' \) -a -prune \) -exec echo '{}' ';' | $SED 's/$/:/'`
 
 d1_path=`echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
 d2_path=`echo "$d2_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
 d3_path=`echo "$d3_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
-d4_path=`echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
 
-LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
+LOADPATH="$d1_path:$d2_path:$d3_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
 INFOFILE="$top_srcdir/doc/interpreter/octave.info"

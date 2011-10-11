@@ -41,7 +41,7 @@
 ## delimiters.
 ## @end itemize
 ##
-## The optional input @var{n} specifes the number of times to use 
+## The optional input @var{n} specifes the number of times to use
 ## @var{format} when parsing, i.e., the format repeat count.
 ##
 ## @seealso{strread, load, dlmread, fscanf, textscan}
@@ -98,9 +98,9 @@ function varargout = textread (filename, format = "%f", varargin)
 
   endofline = find (strcmpi (varargin, "endofline"), 1);
   if (! isempty (endofline))
-    ## 'endofline' option set by user.  
-    if (! ischar (varargin{endofline + 1})); 
-      error ("textread: character value required for EndOfLine"); 
+    ## 'endofline' option set by user.
+    if (! ischar (varargin{endofline + 1}));
+      error ("textread: character value required for EndOfLine");
     endif
   else
     ## Determine EOL from file.  Search for EOL candidates in first 3000 chars

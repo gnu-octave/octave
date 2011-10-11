@@ -49,7 +49,7 @@ function [m, f, c] = mode (x, dim)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == round (dim))
+    if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
       error ("mode: DIM must be an integer and a valid dimension");
     endif

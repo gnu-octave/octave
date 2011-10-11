@@ -364,7 +364,8 @@ public:
 
   // Sets property value, notifies graphics toolkit.
   // If do_run is true, runs associated listeners.
-  bool set (const octave_value& v, bool do_run = true);
+  bool set (const octave_value& v, bool do_run = true,
+            bool do_notify_toolkit = true);
 
   virtual octave_value get (void) const
     {
@@ -598,6 +599,8 @@ public:
     }
 
   Cell cell_value (void) const {return Cell (str);}
+
+  string_vector string_vector_value (void) const { return str; }
 
   string_array_property& operator = (const octave_value& val)
     {
@@ -886,11 +889,11 @@ public:
 
   std::string default_value (void) const { return default_val; }
 
-  bool validate (const std::string& val)
+  bool validate (const std::string& val, std::string& match)
   {
     bool retval = true;
 
-    if (! contains (val))
+    if (! contains (val, match))
       {
         error ("invalid value = %s", val.c_str ());
         retval = false;
@@ -899,9 +902,46 @@ public:
     return retval;
   }
 
-  bool contains (const std::string& val)
+  bool contains (const std::string& val, std::string& match)
   {
-    return (possible_vals.find (val) != possible_vals.end ());
+    size_t k = 0;
+
+    size_t len = val.length ();
+
+    std::string first_match;
+
+    for (std::set<caseless_str>::const_iterator p = possible_vals.begin ();
+         p != possible_vals.end (); p++)
+      {
+        if (p->compare (val, len))
+          {
+            if (len == p->length ())
+              {
+                // We found a full match (consider the case of val ==
+                // "replace" with possible values "replace" and
+                // "replacechildren").  Any other matches are
+                // irrelevant, so set match and return now.
+
+                match = *p;
+                return true;
+              }
+            else
+              {
+                if (k == 0)
+                  first_match = *p;
+
+                k++;
+              }
+          }
+      }
+
+    if (k == 1)
+      {
+        match = first_match;
+        return true;
+      }
+    else
+      return false;
   }
 
   std::string values_as_string (void) const;
@@ -964,11 +1004,19 @@ protected:
     if (newval.is_string ())
       {
         std::string s = newval.string_value ();
-        if (vals.validate (s))
+
+        std::string match;
+
+        if (vals.validate (s, match))
           {
-            if (s != current_val)
+            if (match != current_val)
               {
-                current_val = s;
+                if (s.length () != match.length ())
+                  warning_with_id ("Octave:abbreviated-property-match",
+                                   "%s: allowing %s to match %s value %s",
+                                   "set", s.c_str (), get_name ().c_str (),
+                                   match.c_str ());
+                current_val = match;
                 return true;
               }
           }
@@ -1288,7 +1336,8 @@ class array_property : public base_property
 public:
   array_property (void)
     : base_property ("", graphics_handle ()), data (Matrix ()),
-      xmin (), xmax (), xminp (), type_constraints (), size_constraints ()
+      xmin (), xmax (), xminp (), xmaxp (),
+      type_constraints (), size_constraints ()
     {
       get_data_limits ();
     }
@@ -1296,7 +1345,8 @@ public:
   array_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m)
     : base_property (nm, h), data (m),
-      xmin (), xmax (), xminp (), type_constraints (), size_constraints ()
+      xmin (), xmax (), xminp (), xmaxp (),
+      type_constraints (), size_constraints ()
     {
       get_data_limits ();
     }
@@ -1306,7 +1356,7 @@ public:
   // copy constraints.
   array_property (const array_property& p)
     : base_property (p), data (p.data),
-      xmin (p.xmin), xmax (p.xmax), xminp (p.xminp),
+      xmin (p.xmin), xmax (p.xmax), xminp (p.xminp), xmaxp (p.xmaxp),
       type_constraints (), size_constraints ()
     { }
 
@@ -1321,14 +1371,16 @@ public:
   double min_val (void) const { return xmin; }
   double max_val (void) const { return xmax; }
   double min_pos (void) const { return xminp; }
+  double max_neg (void) const { return xmaxp; }
 
   Matrix get_limits (void) const
     {
-      Matrix m (1, 3);
+      Matrix m (1, 4);
 
       m(0) = min_val ();
       m(1) = max_val ();
       m(2) = min_pos ();
+      m(3) = max_neg ();
 
       return m;
     }
@@ -1383,6 +1435,7 @@ protected:
   double xmin;
   double xmax;
   double xminp;
+  double xmaxp;
   std::list<std::string> type_constraints;
   std::list<dim_vector> size_constraints;
 };
@@ -1858,8 +1911,9 @@ public:
   octave_value get (void) const
     { return rep->get (); }
 
-  bool set (const octave_value& val)
-    { return rep->set (val); }
+  bool set (const octave_value& val, bool do_run = true,
+            bool do_notify_toolkit = true)
+    { return rep->set (val, do_run, do_notify_toolkit); }
 
   std::string values_as_string (void) const
     { return rep->values_as_string (); }
@@ -2028,10 +2082,10 @@ public:
   // Callback function executed when the given graphics object is
   // created.  This allows the graphics toolkit to do toolkit-specific
   // initializations for a newly created object.
-  virtual void initialize (const graphics_object&)
-    { gripe_invalid ("base_graphics_toolkit::initialize"); }
+  virtual bool initialize (const graphics_object&)
+    { gripe_invalid ("base_graphics_toolkit::initialize"); return false; }
 
-  void initialize (const graphics_handle&);
+  bool initialize (const graphics_handle&);
 
   // Callback function executed just prior to deleting the given
   // graphics object.  This allows the graphics toolkit to perform
@@ -2123,11 +2177,11 @@ public:
     { rep->update (h, id); }
 
   // Notifies graphics toolkit that new object was created.
-  void initialize (const graphics_object& go)
-    { rep->initialize (go); }
+  bool initialize (const graphics_object& go)
+    { return rep->initialize (go); }
 
-  void initialize (const graphics_handle& h)
-    { rep->initialize (h); }
+  bool initialize (const graphics_handle& h)
+    { return rep->initialize (h); }
 
   // Notifies graphics toolkit that object was destroyed.
   // This is called only for explicitly deleted object. Children are
@@ -2185,6 +2239,7 @@ private:
 // ---------------------------------------------------------------------
 
 class base_graphics_object;
+class graphics_object;
 
 class OCTINTERP_API base_properties
 {
@@ -2253,7 +2308,8 @@ public:
 
   virtual graphics_toolkit get_toolkit (void) const;
 
-  virtual Matrix get_boundingbox (bool /*internal*/ = false) const
+  virtual Matrix get_boundingbox (bool /*internal*/ = false,
+                                  const Matrix& /*parent_pix_size*/ = Matrix ()) const
     { return Matrix (1, 4, 0.0); }
 
   virtual void update_boundingbox (void);
@@ -2397,7 +2453,7 @@ class OCTINTERP_API base_graphics_object
 public:
   friend class graphics_object;
 
-  base_graphics_object (void) : count (1) { }
+  base_graphics_object (void) : count (1), toolkit_flag (false) { }
 
   virtual ~base_graphics_object (void) { }
 
@@ -2558,6 +2614,8 @@ public:
 
   virtual bool valid_object (void) const { return false; }
 
+  bool valid_toolkit_object (void) const { return toolkit_flag; }
+
   virtual std::string type (void) const
   {
     return (valid_object () ? get_properties ().graphics_object_name ()
@@ -2610,8 +2668,34 @@ public:
     }
 
 protected:
+  virtual void initialize (const graphics_object& go)
+    {
+      if (! toolkit_flag)
+        toolkit_flag = get_toolkit ().initialize (go);
+    }
+
+  virtual void finalize (const graphics_object& go)
+    {
+      if (toolkit_flag)
+        {
+          get_toolkit ().finalize (go);
+          toolkit_flag = false;
+        }
+    }
+
+  virtual void update (const graphics_object& go, int id)
+    {
+      if (toolkit_flag)
+        get_toolkit ().update (go, id);
+    }
+
+protected:
   // A reference count.
   int count;
+
+  // A flag telling whether this object is a valid object
+  // in the backend context.
+  bool toolkit_flag;
 
   // No copying!
 
@@ -2808,6 +2892,12 @@ public:
                                  listener_mode mode = POSTSET)
     { rep->delete_property_listener (nm, v, mode); }
 
+  void initialize (void) { rep->initialize (*this); }
+  
+  void finalize (void) { rep->finalize (*this); }
+
+  void update (int id) { rep->update (*this, id); }
+
   void reset_default_properties (void)
   { rep->reset_default_properties (); }
 
@@ -2980,15 +3070,7 @@ public:
         return toolkit;
       }
 
-    void set_toolkit (const graphics_toolkit& b)
-    {
-      if (toolkit)
-        toolkit.finalize (__myhandle__);
-      toolkit = b;
-      __graphics_toolkit__ = b.get_name ();
-      __plot_stream__ = Matrix ();
-      mark_modified ();
-    }
+    void set_toolkit (const graphics_toolkit& b);
 
     void set___graphics_toolkit__ (const octave_value& val)
     {
@@ -3013,9 +3095,14 @@ public:
         }
     }
 
-    Matrix get_boundingbox (bool internal = false) const;
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
 
     void set_boundingbox (const Matrix& bb);
+
+    Matrix map_from_boundingbox (double x, double y) const;
+
+    Matrix map_to_boundingbox (double x, double y) const;
 
     void update_units (const caseless_str& old_units);
 
@@ -3269,8 +3356,11 @@ public:
     const scaler& get_y_scaler (void) const { return sy; }
     const scaler& get_z_scaler (void) const { return sz; }
 
-    Matrix get_boundingbox (bool internal = false) const;
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
     Matrix get_extent (bool with_text = false, bool only_text_height=false) const;
+
+    double get_fontsize_points (double box_pix_height = 0) const;
 
     void update_boundingbox (void)
       {
@@ -3411,10 +3501,10 @@ public:
       radio_property zlimmode al , "{auto}|manual"
       radio_property climmode al , "{auto}|manual"
       radio_property alimmode    , "{auto}|manual"
-      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
-      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
-      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
-      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false)
+      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
+      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
+      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
+      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
       bool_property xgrid , "off"
       bool_property ygrid , "off"
       bool_property zgrid , "off"
@@ -3645,7 +3735,9 @@ public:
     Matrix calc_tightbox (const Matrix& init_pos);
 
   public:
-    Matrix get_axis_limits (double xmin, double xmax, double min_pos, bool logscale);
+    Matrix get_axis_limits (double xmin, double xmax,
+                            double min_pos, double max_neg,
+                            bool logscale);
 
     void update_xlim (bool do_clr_zoom = true)
     {
@@ -3770,6 +3862,9 @@ public:
 
   void reset_default_properties (void);
 
+protected:
+  void initialize (const graphics_object& go);
+
 private:
   property_list default_properties;
 };
@@ -3855,6 +3950,8 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    double get_fontsize_points (double box_pix_height = 0) const;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
@@ -4514,6 +4611,162 @@ public:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API uicontrol : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
+
+    double get_fontsize_points (double box_pix_height = 0) const;
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES (uicontrol)
+      any_property __object__ , Matrix ()
+      color_property backgroundcolor , color_values (1, 1, 1)
+      callback_property callback , Matrix ()
+      array_property cdata , Matrix ()
+      bool_property clipping , "on"
+      radio_property enable , "{on}|inactive|off"
+      array_property extent rG , Matrix (1, 4, 0.0)
+      radio_property fontangle u , "{normal}|italic|oblique"
+      string_property fontname u , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize u , 10
+      radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontweight u , "light|{normal}|demi|bold"
+      color_property foregroundcolor , color_values (0, 0, 0)
+      radio_property horizontalalignment , "{left}|center|right"
+      callback_property keypressfcn , Matrix ()
+      double_property listboxtop , 1
+      double_property max , 1
+      double_property min , 0
+      array_property position , default_control_position ()
+      array_property sliderstep , default_control_sliderstep ()
+      string_array_property string u , ""
+      radio_property style S , "{pushbutton}|togglebutton|radiobutton|checkbox|edit|text|slider|frame|listbox|popupmenu"
+      string_property tooltipstring , ""
+      radio_property units u , "normalized|inches|centimeters|points|{pixels}|characters"
+      row_vector_property value , Matrix (1, 1, 1.0)
+      radio_property verticalalignment , "top|{middle}|bottom"
+    END_PROPERTIES
+
+  private:
+    std::string cached_units;
+
+  protected:
+    void init (void)
+      {
+        cdata.add_constraint ("double");
+        cdata.add_constraint (dim_vector (-1, -1, 3));
+        position.add_constraint (dim_vector (1, 4));
+        sliderstep.add_constraint (dim_vector (1, 2));
+        cached_units = get_units ();
+      }
+    
+    void update_text_extent (void);
+
+    void update_string (void) { update_text_extent (); }
+    void update_fontname (void) { update_text_extent (); }
+    void update_fontsize (void) { update_text_extent (); }
+    void update_fontangle (void) { update_text_extent (); }
+    void update_fontweight (void) { update_text_extent (); }
+    void update_fontunits (const caseless_str& old_units);
+
+    void update_units (void);
+
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uicontrol (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~uicontrol (void) { xproperties.delete_children (); }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+};
+
+// ---------------------------------------------------------------------
+
+class OCTINTERP_API uipanel : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
+
+    double get_fontsize_points (double box_pix_height = 0) const;
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES (uipanel)
+      any_property __object__ , Matrix ()
+      color_property backgroundcolor , color_values (1, 1, 1)
+      radio_property bordertype , "none|{etchedin}|etchedout|beveledin|beveledout|line"
+      double_property borderwidth , 1
+      radio_property fontangle , "{normal}|italic|oblique"
+      string_property fontname , OCTAVE_DEFAULT_FONTNAME
+      double_property fontsize , 10
+      radio_property fontunits S , "inches|centimeters|normalized|{points}|pixels"
+      radio_property fontweight , "light|{normal}|demi|bold"
+      color_property foregroundcolor , color_values (0, 0, 0)
+      color_property highlightcolor , color_values (1, 1, 1)
+      array_property position , default_panel_position ()
+      callback_property resizefcn , Matrix ()
+      color_property shadowcolor , color_values (0, 0, 0)
+      string_property title , ""
+      radio_property titleposition , "{lefttop}|centertop|righttop|leftbottom|centerbottom|rightbottom"
+      radio_property units S , "{normalized}|inches|centimeters|points|pixels|characters"
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+      {
+        position.add_constraint (dim_vector (1, 4));
+      }
+    
+    void update_units (const caseless_str& old_units);
+    void update_fontunits (const caseless_str& old_units);
+
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uipanel (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~uipanel (void) { xproperties.delete_children (); }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+};
+
+// ---------------------------------------------------------------------
+
 octave_value
 get_property_from_handle (double handle, const std::string &property,
                           const std::string &func);
@@ -4585,14 +4838,19 @@ public:
       create_callback_event (const graphics_handle& h,
                              const std::string& name,
                              const octave_value& data = Matrix ());
+  
+  static graphics_event
+      create_callback_event (const graphics_handle& h,
+                             const octave_value& cb,
+                             const octave_value& data = Matrix ());
 
   static graphics_event
       create_function_event (event_fcn fcn, void *data = 0);
 
   static graphics_event
-      create_set_event (const graphics_handle& h,
-                        const std::string& name,
-                        const octave_value& value);
+      create_set_event (const graphics_handle& h, const std::string& name,
+                        const octave_value& value,
+                        bool notify_toolkit = true);
 private:
   base_graphics_event *rep;
 };
@@ -4651,17 +4909,21 @@ public:
 
   static graphics_handle
   make_graphics_handle (const std::string& go_name,
-                        const graphics_handle& parent, bool do_createfcn = true)
+                        const graphics_handle& parent, bool do_createfcn = true,
+                        bool do_notify_toolkit = true)
   {
     return instance_ok ()
-      ? instance->do_make_graphics_handle (go_name, parent, do_createfcn)
+      ? instance->do_make_graphics_handle (go_name, parent, do_createfcn,
+                                           do_notify_toolkit)
       : graphics_handle ();
   }
 
-  static graphics_handle make_figure_handle (double val)
+  static graphics_handle make_figure_handle (double val,
+                                             bool do_notify_toolkit = true)
   {
     return instance_ok ()
-      ? instance->do_make_figure_handle (val) : graphics_handle ();
+      ? instance->do_make_figure_handle (val, do_notify_toolkit)
+      : graphics_handle ();
   }
 
   static void push_figure (const graphics_handle& h)
@@ -4693,30 +4955,50 @@ public:
       instance->do_lock ();
   }
 
+  static bool try_lock (void)
+  {
+    if (instance_ok ())
+      return instance->do_try_lock ();
+    else
+      return false;
+  }
+
   static void unlock (void)
   {
     if (instance_ok ())
       instance->do_unlock ();
   }
-
+  
   static Matrix figure_handle_list (void)
   {
     return instance_ok () ? instance->do_figure_handle_list () : Matrix ();
+  }
+
+  static void execute_listener (const graphics_handle& h,
+                                const octave_value& l)
+  {
+    if (instance_ok ())
+      instance->do_execute_listener (h, l);
   }
 
   static void execute_callback (const graphics_handle& h,
                                 const std::string& name,
                                 const octave_value& data = Matrix ())
   {
-    graphics_object go = get_object (h);
+    octave_value cb;
 
-    if (go.valid_object ())
+    if (true)
       {
-        octave_value cb = go.get (name);
+        gh_manager::auto_lock lock;
 
-        if (! error_state)
-          execute_callback (h, cb, data);
+        graphics_object go = get_object (h);
+
+        if (go.valid_object ())
+          cb = go.get (name);
       }
+
+    if (! error_state)
+      execute_callback (h, cb, data);
   }
 
   static void execute_callback (const graphics_handle& h,
@@ -4734,19 +5016,18 @@ public:
     if (instance_ok ())
       instance->do_post_callback (h, name, data);
   }
-
+  
   static void post_function (graphics_event::event_fcn fcn, void* data = 0)
   {
     if (instance_ok ())
       instance->do_post_function (fcn, data);
   }
 
-  static void post_set (const graphics_handle& h,
-                        const std::string& name,
-                        const octave_value& value)
+  static void post_set (const graphics_handle& h, const std::string& name,
+                        const octave_value& value, bool notify_toolkit = true)
   {
     if (instance_ok ())
-      instance->do_post_set (h, name, value);
+      instance->do_post_set (h, name, value, notify_toolkit);
   }
 
   static int process_events (void)
@@ -4758,6 +5039,12 @@ public:
   {
     return (instance_ok () ?  instance->do_process_events (true) : 0);
   }
+
+  static void enable_event_processing (bool enable = true)
+    {
+      if (instance_ok ())
+        instance->do_enable_event_processing (enable);
+    }
 
   static bool is_handle_visible (const graphics_handle& h)
   {
@@ -4772,18 +5059,21 @@ public:
   }
 
 public:
-  class autolock
+  class auto_lock : public octave_autolock
   {
   public:
-    autolock (void) { lock (); }
-
-    ~autolock (void) { unlock (); }
+    auto_lock (bool wait = true)
+      : octave_autolock (instance_ok ()
+                         ? instance->graphics_lock
+                         : octave_mutex (),
+                         wait)
+      { }
 
   private:
 
     // No copying!
-    autolock (const autolock&);
-    autolock& operator = (const autolock&);
+    auto_lock (const auto_lock&);
+    auto_lock& operator = (const auto_lock&);
   };
 
 private:
@@ -4821,6 +5111,9 @@ private:
   // The stack of callback objects.
   std::list<graphics_object> callback_objects;
 
+  // A flag telling whether event processing must be constantly on.
+  int event_processing;
+
   graphics_handle get_handle (const std::string& go_name);
 
   void do_free (const graphics_handle& h);
@@ -4840,9 +5133,10 @@ private:
   }
 
   graphics_handle do_make_graphics_handle (const std::string& go_name,
-                                           const graphics_handle& p, bool do_createfcn);
+                                           const graphics_handle& p, bool do_createfcn,
+                                           bool do_notify_toolkit);
 
-  graphics_handle do_make_figure_handle (double val);
+  graphics_handle do_make_figure_handle (double val, bool do_notify_toolkit);
 
   Matrix do_handle_list (void)
   {
@@ -4881,18 +5175,22 @@ private:
 
   void do_lock (void) { graphics_lock.lock (); }
 
+  bool do_try_lock (void) { return graphics_lock.try_lock (); }
+
   void do_unlock (void) { graphics_lock.unlock (); }
+
+  void do_execute_listener (const graphics_handle& h, const octave_value& l);
 
   void do_execute_callback (const graphics_handle& h, const octave_value& cb,
                             const octave_value& data);
 
   void do_post_callback (const graphics_handle& h, const std::string name,
                          const octave_value& data);
-
+  
   void do_post_function (graphics_event::event_fcn fcn, void* fcn_data);
 
   void do_post_set (const graphics_handle& h, const std::string name,
-                    const octave_value& value);
+                    const octave_value& value, bool notify_toolkit = true);
 
   int do_process_events (bool force = false);
 
@@ -4905,9 +5203,12 @@ private:
   void do_restore_gcbo (void);
 
   void do_post_event (const graphics_event& e);
+
+  void do_enable_event_processing (bool enable = true);
 };
 
-void get_children_limits (double& min_val, double& max_val, double& min_pos,
+void get_children_limits (double& min_val, double& max_val,
+                          double& min_pos, double& max_neg,
                           const Matrix& kids, char limit_type);
 
 OCTINTERP_API int calc_dimensions (const graphics_object& gh);

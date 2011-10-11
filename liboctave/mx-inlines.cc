@@ -169,6 +169,9 @@ inline void F (size_t n, bool *r, const X *x) throw () \
   for (size_t i = 0; i < n; i++) \
     r[i] OP logical_value (x[i]); \
 } \
+template <class X> \
+inline void F (size_t n, bool *r, X x) throw () \
+{ for (size_t i = 0; i < n; i++) r[i] OP x; }
 
 DEFMXBOOLOPEQ (mx_inline_and2, &=)
 DEFMXBOOLOPEQ (mx_inline_or2, |=)
@@ -391,11 +394,18 @@ template <class R, class X>
 inline Array<R>&
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
                   void (*op) (size_t, R *, const X *) throw (),
+                  void (*op1) (size_t, R *, X) throw (),
                   const char *opname)
 {
   dim_vector dr = r.dims (), dx = x.dims ();
   if (dr == dx)
-    op (r.length (), r.fortran_vec (), x.data ());
+    {
+      op (r.length (), r.fortran_vec (), x.data ());
+    }
+  else if (is_valid_inplace_bsxfun (dr, dx))
+    {
+      do_inplace_bsxfun_op (r, x, op, op1);
+    }
   else
     gripe_nonconformant (opname, dr, dx);
   return r;

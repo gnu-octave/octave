@@ -81,22 +81,22 @@ endfunction
 %!demo
 %! x = rand (100, 1);
 %! y = rand (100, 1);
-%! z = x.^2 + y.^2; 
-%! tri = delaunay (x, y); 
+%! z = x.^2 + y.^2;
+%! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z)
 
 %!demo
 %! x = rand (100, 1);
 %! y = rand (100, 1);
-%! z = x.^2 + y.^2; 
-%! tri = delaunay (x, y); 
+%! z = x.^2 + y.^2;
+%! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z, "facecolor", "interp")
 
 %!demo
 %! x = rand (100, 1);
 %! y = rand (100, 1);
-%! z = x.^2 + y.^2; 
-%! tri = delaunay (x, y); 
+%! z = x.^2 + y.^2;
+%! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k")
 
 

@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logistic_cdf (@var{x})
-## For each component of @var{x}, compute the CDF at @var{x} of the
-## logistic distribution.
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the logistic distribution.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -31,6 +32,25 @@ function cdf = logistic_cdf (x)
     print_usage ();
   endif
 
-  cdf = 1 ./ (1 + exp (- x));
+  if (iscomplex (x))
+    error ("logistic_cdf: X must not be complex");
+  endif
+
+  cdf = 1 ./ (1 + exp (-x));
 
 endfunction
+
+
+%!shared x,y
+%! x = [-Inf -log(3) 0 log(3) Inf];
+%! y = [0, 1/4, 1/2, 3/4, 1]; 
+%!assert(logistic_cdf ([x, NaN]), [y, NaN], eps);
+
+%% Test class of input preserved
+%!assert(logistic_cdf (single([x, NaN])), single([y, NaN]), eps ("single"));
+
+%% Test input validation
+%!error logistic_cdf ()
+%!error logistic_cdf (1,2)
+%!error logistic_cdf (i)
+

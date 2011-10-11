@@ -31,7 +31,12 @@ function [h, failed] = __patch__ (p, varargin)
 
   failed = false;
 
-  if (isstruct (varargin{1}))
+  is_numeric_arg = cellfun (@isnumeric, varargin);
+
+  if (isempty (varargin))
+    args = {"xdata", [0; 1; 1], "ydata", [0; 0; 1], "facecolor", "blue"};
+    args = setvertexdata (args);
+  elseif (isstruct (varargin{1}))
     if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))
       args{1} = "faces";
       args{2} = getfield(varargin{1}, "faces");
@@ -48,26 +53,47 @@ function [h, failed] = __patch__ (p, varargin)
     else
       failed = true;
     endif
-  elseif (isnumeric (varargin{1}))
-    if (nargin < 3 || ! isnumeric (varargin{2}))
+  elseif (is_numeric_arg(1))
+    if (nargin < 3 || ! is_numeric_arg(2))
       failed = true;
     else
-      x = varargin{1};
-      y = varargin{2};
-      iarg = 3;
 
-      if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
-          && size_equal(x, varargin{3}) && !ischar(varargin{3}))
+      if (nargin > 4 && all (is_numeric_arg(1:4)))
+        x = varargin{1};
+        y = varargin{2};
         z = varargin{3};
-        iarg++;
-      else
+        c = varargin{4};
+        iarg = 5;
+      elseif (nargin > 3 && all (is_numeric_arg(1:3)))
+        x = varargin{1};
+        y = varargin{2};
         z = [];
+        c = varargin{3};
+        iarg = 4;
+      elseif (nargin > 2 && all (is_numeric_arg(1:2)))
+        x = varargin{1};
+        y = varargin{2};
+        z = [];
+        iarg = 3;
+        if (rem (nargin - iarg, 2) == 1)
+          c = varargin {iarg};
+          iarg++; 
+        else
+          c = [];
+        endif
       endif
 
       if (isvector (x))
         x = x(:);
         y = y(:);
         z = z(:);
+        if (isnumeric (c))
+          if (isvector (c) && numel (c) == numel (x))
+            c = c(:);
+          elseif (size (c, 1) != numel (x) && size (c, 2) == numel (x))
+            c = c.';
+          endif
+        endif
       endif
       args{1} = "xdata";
       args{2} = x;
@@ -76,9 +102,7 @@ function [h, failed] = __patch__ (p, varargin)
       args{5} = "zdata";
       args{6} = z;
 
-      if (isnumeric (varargin{iarg}))
-        c = varargin{iarg};
-        iarg++;
+      if (isnumeric (c))
 
         if (ndims (c) == 3 && size (c, 2) == 1)
           c = permute (c, [1, 3, 2]);
@@ -105,23 +129,31 @@ function [h, failed] = __patch__ (p, varargin)
           args{10} = c;
         else
           ## Color Vectors
-          if (rows (c) != rows (x) || rows (c) != length (y))
-            error ("patch: size of x, y, and c must be equal");
-          else
+          if (isempty (c))
             args{7} = "facecolor";
             args{8} = "interp";
             args{9} = "cdata";
             args{10} = [];
+          else
+            if (rows (c) != rows (x) || rows (c) != length (y))
+              error ("patch: size of x, y, and c must be equal");
+            elseif (rows (c) == rows (x) && rows (c) == rows (y))
+              args{7} = "facecolor";
+              args{8} = "interp";
+              args{9} = "cdata";
+              args{10} = c;
+            else
+              error ("patch: color value not valid");
+            endif
           endif
         endif
-      elseif (ischar (varargin{iarg}) && rem (nargin - iarg, 2) != 0)
+      elseif (ischar (c) && rem (nargin - iarg, 2) == 0)
         ## Assume that any additional argument over an even number is
         ## color string.
         args{7} = "facecolor";
-        args{8} =  tolower (varargin{iarg});
+        args{8} =  tolower (c);
         args{9} = "cdata";
         args{10} = [];
-        iarg++;
       else
         args{7} = "facecolor";
         args{8} = [0, 1, 0];
@@ -285,8 +317,10 @@ function args = setvertexdata (args)
 
   if (ndims (c) == 3)
     fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
+  elseif (isvector (c))
+    fvc = c(:);
   else
-    fvc = c(:).';
+    fvc = c.';
   endif
 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};

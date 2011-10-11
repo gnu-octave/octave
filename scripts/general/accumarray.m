@@ -19,50 +19,78 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
-## @deftypefnx {Function File} {} accumarray (@var{csubs}, @var{vals}, @dots{})
+## @deftypefnx {Function File} {} accumarray (@var{subs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
 ## positions defined by their subscripts.  The subscripts are defined by
-## the rows of the matrix @var{subs} and the values by @var{vals}.  Each row
-## of @var{subs} corresponds to one of the values in @var{vals}.
+## the rows of the matrix @var{subs} and the values by @var{vals}.  Each
+## row of @var{subs} corresponds to one of the values in @var{vals}. If
+## @var{vals} is a scalar, it will be used for each of the row of
+## @var{subs}.
 ##
-## The size of the matrix will be determined by the subscripts themselves.
-## However, if @var{sz} is defined it determines the matrix size.  The length
-## of @var{sz} must correspond to the number of columns in @var{subs}.
+## The size of the matrix will be determined by the subscripts
+## themselves. However, if @var{sz} is defined it determines the matrix
+## size. The length of @var{sz} must correspond to the number of columns
+## in @var{subs}.
 ##
-## The default action of @code{accumarray} is to sum the elements with the
-## same subscripts.  This behavior can be modified by defining the @var{func}
-## function.  This should be a function or function handle that accepts a
-## column vector and returns a scalar.  The result of the function should not
-## depend on the order of the subscripts.
+## The default action of @code{accumarray} is to sum the elements with
+## the same subscripts.  This behavior can be modified by defining the
+## @var{func} function.  This should be a function or function handle
+## that accepts a column vector and returns a scalar.  The result of the
+## function should not depend on the order of the subscripts.
 ##
-## The elements of the returned array that have no subscripts associated with
-## them are set to zero.  Defining @var{fillval} to some other value allows
-## these values to be defined.
+## The elements of the returned array that have no subscripts associated
+## with them are set to zero.  Defining @var{fillval} to some other
+## value allows these values to be defined.
 ##
-## By default @code{accumarray} returns a full matrix.  If @var{issparse} is
-## logically true, then a sparse matrix is returned instead.
+## By default @code{accumarray} returns a full matrix.  If
+## @var{issparse} is logically true, then a sparse matrix is returned
+## instead.
 ##
-## An example of the use of @code{accumarray} is:
+## The following @code{accumarray} example constructs a frequency table
+## that in the first column counts how many occurrences each number in
+## the second column has, taken from the vector @var{x}. Note the usage
+## of @code{unique}  for assigning to all repeated elements of @var{x}
+## the same index (@pxref{doc-unique}).
 ##
 ## @example
 ## @group
-## accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2], 101:105)
+## x = [91, 92, 90, 92, 90, 89, 91, 89, 90, 100, 100, 100];
+## [u, ~, j] = unique (x);
+## [accumarray(j', 1), u']
+## @result{} 2    89
+##    3    90
+##    2    91
+##    2    92
+##    3   100
+## @end group
+## @end example
+##
+## Another example, where the result is a multidimensional 3D array and
+## the default value (zero) appears in the output:
+##
+## @example
+## @group
+## accumarray ([1, 1, 1;
+##              2, 1, 2;
+##              2, 3, 2;
+##              2, 1, 2;
+##              2, 3, 2], 101:105)
 ## @result{} ans(:,:,1) = [101, 0, 0; 0, 0, 0]
 ##    ans(:,:,2) = [0, 0, 0; 206, 0, 208]
 ## @end group
 ## @end example
 ##
-## The complexity in the non-sparse case is generally O(M+N), where N is the
-## number of
-## subscripts and M is the maximum subscript (linearized in multi-dimensional
-## case).
-## If @var{func} is one of @code{@@sum} (default), @code{@@max}, @code{@@min}
-## or @code{@@(x) @{x@}}, an optimized code path is used.
-## Note that for general reduction function the interpreter overhead can play a
-## major part and it may be more efficient to do multiple accumarray calls and
-## compute the results in a vectorized manner.
-## @seealso{accumdim}
+## The complexity in the non-sparse case is generally O(M+N), where N is
+## the number of subscripts and M is the maximum subscript (linearized
+## in multi-dimensional case). If @var{func} is one of @code{@@sum}
+## (default), @code{@@max}, @code{@@min} or @code{@@(x) @{x@}}, an
+## optimized code path is used. Note that for general reduction function
+## the interpreter overhead can play a major part and it may be more
+## efficient to do multiple accumarray calls and compute the results in
+## a vectorized manner.
+##
+## @seealso{accumdim, unique}
 ## @end deftypefn
 
 function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])

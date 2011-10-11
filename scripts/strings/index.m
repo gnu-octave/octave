@@ -20,7 +20,10 @@
 ## @deftypefn  {Function File} {} index (@var{s}, @var{t})
 ## @deftypefnx {Function File} {} index (@var{s}, @var{t}, @var{direction})
 ## Return the position of the first occurrence of the string @var{t} in the
-## string @var{s}, or 0 if no occurrence is found.  For example:
+## string @var{s}, or 0 if no occurrence is found.  @var{s} may also be a
+## string array or cell array of strings.
+##
+## For example:
 ##
 ## @example
 ## @group
@@ -31,70 +34,83 @@
 ##
 ## If @var{direction} is @samp{"first"}, return the first element found.
 ## If @var{direction} is @samp{"last"}, return the last element found.
-## The @code{rindex} function is equivalent to @code{index} with
-## @var{direction} set to @samp{"last"}.
 ##
-## @strong{Caution:}  This function does not work for arrays of
-## character strings.
 ## @seealso{find, rindex}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
+## This is patterned after the AWK function of the same name.
 
-function n = index (s, t, direction)
-
-  ## This is patterned after the AWK function of the same name.
+function n = index (s, t, direction = "first")
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
-  elseif (nargin < 3)
-    direction = "first";
   endif
-  direction = lower (direction);
+
+  if (ischar (s))
+    if (! isrow (s))
+      s = cellstr (s);  # Handle string arrays by conversion to cellstr
+    endif
+  elseif (! iscellstr (s))
+    error ("index: S must be a string, string array, or cellstr");
+  endif
 
   f = strfind (s, t);
-  if (iscell (f))
-    f(cellfun ("isempty", f)) = {0};
-  elseif (isempty (f))
+  if (isempty (f))
     f = 0;
+  elseif (iscell (f))
+    f(cellfun ("isempty", f)) = {0};
   endif
 
-  if (strcmp (direction, "last"))
+  direction = tolower (direction);
+
+  if (strcmp (direction, "first"))
     if (iscell (f))
       n = cellfun ("min", f);
     else
-      n = f(end);
+      n = f(1);
     endif
-  elseif (strcmp (direction, "first"))
+  elseif (strcmp (direction, "last"))
     if (iscell (f))
       n = cellfun ("max", f);
     else
-      n = f(1);
+      n = f(end);
     endif
   else
-    error ("index: DIRECTION must be either \"first\" or \"last\"");
+    error ('index: DIRECTION must be either "first" or "last"');
   endif
+
 endfunction
 
-## Test the function out
-%!assert(index("astringbstringcstring", "s"), 2)
-%!assert(index("astringbstringcstring", "st"), 2)
-%!assert(index("astringbstringcstring", "str"), 2)
-%!assert(index("astringbstringcstring", "string"), 2)
-%!assert(index("abc---", "abc+++"), 0)
+
+%!assert (index ("foobarbaz", "b") == 4 && index ("foobarbaz", "z") == 9);
+
+%!assert (index("astringbstringcstring", "s"), 2)
+%!assert (index("astringbstringcstring", "st"), 2)
+%!assert (index("astringbstringcstring", "str"), 2)
+%!assert (index("astringbstringcstring", "string"), 2)
+%!assert (index("abc---", "abc+++"), 0)
 
 ## test everything out in reverse
-%!assert(index("astringbstringcstring", "s", "last"), 16)
-%!assert(index("astringbstringcstring", "st", "last"), 16)
-%!assert(index("astringbstringcstring", "str", "last"), 16)
-%!assert(index("astringbstringcstring", "string", "last"), 16)
-%!assert(index("abc---", "abc+++", "last"), 0)
+%!assert (index("astringbstringcstring", "s", "last"), 16)
+%!assert (index("astringbstringcstring", "st", "last"), 16)
+%!assert (index("astringbstringcstring", "str", "last"), 16)
+%!assert (index("astringbstringcstring", "string", "last"), 16)
+%!assert (index("abc---", "abc+++", "last"), 0)
 
+%!test
+%! str = char ("Hello", "World", "Goodbye", "World");
+%! assert (index (str, "o"), [5; 2; 2; 2]);
+%! assert (index (str, "o", "last"), [5; 2; 3; 2]);
+%! str = cellstr (str);
+%! assert (index (str, "o"), [5; 2; 2; 2]);
+%! assert (index (str, "o", "last"), [5; 2; 3; 2]);
 
-%!assert(index ("foobarbaz", "b") == 4 && index ("foobarbaz", "z") == 9);
-
-%!error index ();
-
-%!error index ("foo", "bar", 3);
+%% Test input validation
+%!error index ()
+%!error index ("a")
+%!error index ("a", "b", "first", "d")
+%!error index (1, "bar")
+%!error index ("foo", "bar", 3)
 

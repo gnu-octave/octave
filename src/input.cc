@@ -275,6 +275,9 @@ octave_gets (void)
 
       flush_octave_stdout ();
 
+      octave_pager_stream::reset ();
+      octave_diary_stream::reset ();
+
       octave_diary << prompt;
 
       retval = interactive_input (prompt);
@@ -793,6 +796,9 @@ get_user_input (const octave_value_list& args, int nargout)
     }
 
   flush_octave_stdout ();
+
+  octave_pager_stream::reset ();
+  octave_diary_stream::reset ();
 
   octave_diary << prompt;
 

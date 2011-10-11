@@ -24,7 +24,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <cstddef>
 #include <iostream>
 
 #include "defun.h"
@@ -118,7 +117,7 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
   if (fcn_id != 0)
     {
       stats& entry = data[fcn_id - 1];
-      
+
       entry.time += time;
       entry.calls += calls;
 
@@ -145,7 +144,7 @@ profile_data_accumulator::tree_node::build_flat (flat_profile& data) const
 }
 
 octave_value
-profile_data_accumulator::tree_node::get_hierarchical (void) const
+profile_data_accumulator::tree_node::get_hierarchical (double* total) const
 {
   /* Note that we don't generate the entry just for this node, but rather
      a struct-array with entries for all children.  This way, the top-node
@@ -156,6 +155,7 @@ profile_data_accumulator::tree_node::get_hierarchical (void) const
 
   Cell rv_indices (n, 1);
   Cell rv_times (n, 1);
+  Cell rv_totals (n, 1);
   Cell rv_calls (n, 1);
   Cell rv_children (n, 1);
 
@@ -164,11 +164,16 @@ profile_data_accumulator::tree_node::get_hierarchical (void) const
        p != children.end (); ++p)
     {
       const tree_node& entry = *p->second;
+      double child_total = entry.time;
 
       rv_indices(i) = octave_value (p->first);
       rv_times(i) = octave_value (entry.time);
       rv_calls(i) = octave_value (entry.calls);
-      rv_children(i) = entry.get_hierarchical ();
+      rv_children(i) = entry.get_hierarchical (&child_total);
+      rv_totals(i) = octave_value (child_total);
+
+      if (total)
+        *total += child_total;
 
       ++i;
     }
@@ -178,6 +183,7 @@ profile_data_accumulator::tree_node::get_hierarchical (void) const
 
   retval.assign ("Index", rv_indices);
   retval.assign ("SelfTime", rv_times);
+  retval.assign ("TotalTime", rv_totals);
   retval.assign ("NumCalls", rv_calls);
   retval.assign ("Children", rv_children);
 
@@ -379,7 +385,12 @@ double
 profile_data_accumulator::query_time (void) const
 {
   octave_time now;
-  return now.double_value ();
+  // FIXME -- this should be removed at some point...  See bug 34210.
+#if defined (__CYGWIN__) || defined (__MINGW32__)
+  volatile
+#endif
+    double dnow = now.double_value ();
+  return dnow;
 }
 
 void

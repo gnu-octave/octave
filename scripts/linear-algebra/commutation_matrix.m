@@ -76,12 +76,12 @@ function k = commutation_matrix (m, n)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   else
-    if (! (isscalar (m) && m == round (m) && m > 0))
+    if (! (isscalar (m) && m == fix (m) && m > 0))
       error ("commutation_matrix: M must be a positive integer");
     endif
     if (nargin == 1)
       n = m;
-    elseif (! (isscalar (n) && n == round (n) && n > 0))
+    elseif (! (isscalar (n) && n == fix (n) && n > 0))
       error ("commutation_matrix: N must be a positive integer");
     endif
   endif

@@ -125,8 +125,8 @@ function hg = __quiver__ (varargin)
       sd = sqrt (dx.^2 + dy.^2 + dz.^2) / len;
       if (sd != 0)
         s = sqrt(2) * autoscale * sd;
-      else # special case of identical points with multiple vectors 
-        s = autoscale; 
+      else # special case of identical points with multiple vectors
+        s = autoscale;
       endif
       uu = s * u;
       vv = s * v;

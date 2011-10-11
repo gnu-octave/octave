@@ -335,7 +335,6 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
   ColumnVector resid;
   ComplexColumnVector cresid;
   octave_idx_type info = 1;
-  char bmat = 'I';
 
   warned_imaginary = false;
 
@@ -427,7 +426,6 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
         {
           b_arg = 1+arg_offset;
           have_b = true;
-          bmat = 'G';
           b_is_complex = true;
           arg_offset++;
         }
@@ -435,7 +433,6 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
         {
           b_arg = 1+arg_offset;
           have_b = true;
-          bmat = 'G';
           arg_offset++;
         }
     }

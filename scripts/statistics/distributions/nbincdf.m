@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,9 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nbincdf (@var{x}, @var{n}, @var{p})
-## For each element of @var{x}, compute the CDF at x of the Pascal
-## (negative binomial) distribution with parameters @var{n} and @var{p}.
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the negative binomial distribution with
+## parameters @var{n} and @var{p}.
 ##
+## When @var{n} is integer this is the Pascal distribution.  When
+## @var{n} is extended to real numbers this is the Polya distribution.
+## 
 ## The number of failures in a Bernoulli experiment with success
 ## probability @var{p} before the @var{n}-th success follows this
 ## distribution.
@@ -35,58 +40,66 @@ function cdf = nbincdf (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar(n) || !isscalar(p))
+  if (!isscalar (n) || !isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("nbincdf: X, N and P must be of common size or scalar");
+      error ("nbincdf: X, N, and P must be of common size or scalars");
     endif
   endif
 
-  cdf = zeros (size (x));
-
-  k = find (isnan (x) | (n < 1) | (n == Inf) | (n != round (n))
-            | (p < 0) | (p > 1));
-  if (any (k))
-    cdf(k) = NaN;
+  if (iscomplex (x) || iscomplex (n) || iscomplex (p))
+    error ("nbincdf: X, N, and P must not be complex");
   endif
 
-  k = find ((x == Inf) & (n > 0) & (n < Inf) & (n == round (n))
-            & (p >= 0) & (p <= 1));
-  if (any (k))
-    cdf(k) = 1;
+  if (isa (x, "single") || isa (n, "single") || isa (p, "single"))
+    cdf = zeros (size (x), "single");
+  else
+    cdf = zeros (size (x));
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (n > 0)
-            & (n < Inf) & (n == round (n)) & (p > 0) & (p <= 1));
-  if (any (k))
-    ## Does anyone know a better way to do the summation?
-    m = zeros (size (k));
-    x = floor (x(k));
-    y = cdf(k);
-    if (isscalar (n) && isscalar (p))
-      while (1)
-        l = find (m <= x);
-        if (any (l))
-          y(l) = y(l) + nbinpdf (m(l), n, p);
-          m(l) = m(l) + 1;
-        else
-          break;
-        endif
-      endwhile
-    else
-      n = n(k);
-      p = p(k);
-      while (1)
-        l = find (m <= x);
-        if (any (l))
-          y(l) = y(l) + nbinpdf (m(l), n(l), p(l));
-          m(l) = m(l) + 1;
-        else
-          break;
-        endif
-      endwhile
-    endif
-    cdf(k) = y;
+  k = (isnan (x) | isnan (n) | (n < 1) | (n == Inf) 
+       | (p < 0) | (p > 1) | isnan (p));
+  cdf(k) = NaN;
+
+  k = (x == Inf) & (n > 0) & (n < Inf) & (p >= 0) & (p <= 1);
+  cdf(k) = 1;
+
+  k = ((x >= 0) & (x < Inf) & (x == fix (x))
+       & (n > 0) & (n < Inf) & (p > 0) & (p <= 1));
+  if (isscalar (n) && isscalar (p))
+    cdf(k) = 1 - betainc (1-p, x(k)+1, n);
+  else
+    cdf(k) = 1 - betainc (1-p(k), x(k)+1, n(k));
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 1 2 Inf];
+%! y = [0 1/2 3/4 7/8 1];
+%!assert(nbincdf (x, ones(1,5), 0.5*ones(1,5)), y);
+%!assert(nbincdf (x, 1, 0.5*ones(1,5)), y);
+%!assert(nbincdf (x, ones(1,5), 0.5), y);
+%!assert(nbincdf ([x(1:3) 0 x(5)], [0 1 NaN 1.5 Inf], 0.5), [NaN 1/2 NaN nbinpdf(0,1.5,0.5) NaN], eps);
+%!assert(nbincdf (x, 1, 0.5*[-1 NaN 4 1 1]), [NaN NaN NaN y(4:5)]);
+%!assert(nbincdf ([x(1:2) NaN x(4:5)], 1, 0.5), [y(1:2) NaN y(4:5)]);
+
+%% Test class of input preserved
+%!assert(nbincdf ([x, NaN], 1, 0.5), [y, NaN]);
+%!assert(nbincdf (single([x, NaN]), 1, 0.5), single([y, NaN]));
+%!assert(nbincdf ([x, NaN], single(1), 0.5), single([y, NaN]));
+%!assert(nbincdf ([x, NaN], 1, single(0.5)), single([y, NaN]));
+
+%% Test input validation
+%!error nbincdf ()
+%!error nbincdf (1)
+%!error nbincdf (1,2)
+%!error nbincdf (1,2,3,4)
+%!error nbincdf (ones(3),ones(2),ones(2))
+%!error nbincdf (ones(2),ones(3),ones(2))
+%!error nbincdf (ones(2),ones(2),ones(3))
+%!error nbincdf (i, 2, 2)
+%!error nbincdf (2, i, 2)
+%!error nbincdf (2, 2, i)
+

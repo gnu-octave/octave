@@ -7,7 +7,6 @@ general_PRIVATE_FCN_FILES = \
 general_FCN_FILES = \
   general/accumarray.m \
   general/accumdim.m \
-  general/arrayfun.m \
   general/bicubic.m \
   general/bitcmp.m \
   general/bitget.m \
@@ -61,6 +60,7 @@ general_FCN_FILES = \
   general/polyarea.m \
   general/postpad.m \
   general/prepad.m \
+  general/profexplore.m \
   general/profile.m \
   general/profshow.m \
   general/quadgk.m \

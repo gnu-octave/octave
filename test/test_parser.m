@@ -247,3 +247,10 @@
 %! assert (a += b *= c += 1, 42)
 %! assert (b == 40 && c == 8)
 
+%!test
+%! af_in_cell = {@(x) [1 2]};
+%! assert (af_in_cell{1}(), [1, 2]);
+
+%!test
+%! R = @(rot) [cos(rot) -sin(rot); sin(rot) cos(rot)];
+%! assert (R(pi/2), [cos(pi/2), -sin(pi/2); sin(pi/2),cos(pi/2)]);

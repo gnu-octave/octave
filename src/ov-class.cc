@@ -1686,6 +1686,7 @@ octave_class::in_class_method (void)
   return (fcn
           && (fcn->is_class_method ()
               || fcn->is_class_constructor ()
+              || fcn->is_anonymous_function_of_class ()
               || fcn->is_private_function_of_class (class_name ()))
           && find_parent_class (fcn->dispatch_class ()));
 }

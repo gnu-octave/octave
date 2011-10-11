@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,78 +18,115 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} wblrnd (@var{scale}, @var{shape}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, @var{sz})
-## Return an @var{r} by @var{c} matrix of random samples from the
-## Weibull distribution with parameters @var{scale} and @var{shape}
-## which must be scalar or of size @var{r} by @var{c}.  Or if @var{sz}
-## is a vector return a matrix of size @var{sz}.
+## @deftypefn  {Function File} {} wblrnd (@var{scale}, @var{shape})
+## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, @var{r})
+## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} wblrnd (@var{scale}, @var{shape}, [@var{sz}])
+## Return a matrix of random samples from the Weibull distribution with
+## parameters @var{scale} and @var{shape}.
 ##
-## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{alpha} and @var{sigma}.
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is the common size of
+## @var{scale} and @var{shape}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Weibull distribution
 
-function rnd = wblrnd (scale, shape, r, c)
+function rnd = wblrnd (scale, shape, varargin)
 
-  if (nargin > 1)
-    if (!isscalar(scale) || !isscalar(shape))
-      [retval, scale, shape] = common_size (scale, shape);
-      if (retval > 0)
-        error ("wblrnd: SCALE and SHAPE must be of common size or scalar");
-      endif
-    endif
-  endif
-
-  if (nargin == 4)
-    if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("wblrnd: R must be a positive integer");
-    endif
-    if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("wblrnd: C must be a positive integer");
-    endif
-    sz = [r, c];
-
-    if (any (size (scale) != 1)
-        && ((length (size (scale)) != length (sz))
-            || any (size (scale) != sz)))
-      error ("wblrnd: SCALE and SHAPE must be scalar or of size [R, C]");
-    endif
-  elseif (nargin == 3)
-    if (isscalar (r) && (r > 0))
-      sz = [r, r];
-    elseif (isvector(r) && all (r > 0))
-      sz = r(:)';
-    else
-      error ("wblrnd: R must be a positive integer or vector");
-    endif
-
-    if (any (size (scale) != 1)
-        && ((length (size (scale)) != length (sz))
-            || any (size (scale) != sz)))
-      error ("wblrnd: SCALE and SHAPE must be scalar or of size SZ");
-    endif
-  elseif (nargin == 2)
-    sz = size(scale);
-  else
+  if (nargin < 2)
     print_usage ();
   endif
 
-  if (isscalar (scale) && isscalar (shape))
-    if (scale > 0 && scale < Inf && shape > 0 && shape < Inf)
-      rnd = scale .* rande(sz) .^ (1./shape);
-    else
-      rnd = NaN (sz);
-    endif
-  else
-    rnd = scale .* rande(sz) .^ (1./shape);
-    k = find ((scale <= 0) | (scale == Inf) | ((shape <= 0) & (shape == Inf)));
-    if (any(k))
-      rnd(k) = NaN;
+  if (!isscalar (scale) || !isscalar (shape))
+    [retval, scale, shape] = common_size (scale, shape);
+    if (retval > 0)
+      error ("wblrnd: SCALE and SHAPE must be of common size or scalars");
     endif
   endif
 
+  if (iscomplex (scale) || iscomplex (shape))
+    error ("wblrnd: SCALE and SHAPE must not be complex");
+  endif
+
+  if (nargin == 2)
+    sz = size (scale);
+  elseif (nargin == 3)
+    if (isscalar (varargin{1}) && varargin{1} >= 0)
+      sz = [varargin{1}, varargin{1}];
+    elseif (isrow (varargin{1}) && all (varargin{1} >= 0))
+      sz = varargin{1};
+    else
+      error ("wblrnd: dimension vector must be row vector of non-negative integers");
+    endif
+  elseif (nargin > 3)
+    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+      error ("wblrnd: dimensions must be non-negative integers");
+    endif
+    sz = [varargin{:}];
+  endif
+
+  if (!isscalar (scale) && !isequal (size (scale), sz))
+    error ("wblrnd: SCALE and SHAPE must be scalar or of size SZ");
+  endif
+
+  if (isa (scale, "single") || isa (shape, "single"))
+    cls = "single";
+  else
+    cls = "double";
+  endif
+
+  if (isscalar (scale) && isscalar (shape))
+    if ((scale > 0) && (scale < Inf) && (shape > 0) && (shape < Inf))
+      rnd = scale * rande (sz) .^ (1/shape);
+    else
+      rnd = NaN (sz, cls);
+    endif
+  else
+    rnd = scale .* rande (sz) .^ (1./shape);
+
+    k = (scale <= 0) | (scale == Inf) | (shape <= 0) | (shape == Inf);
+    rnd(k) = NaN;
+  endif
+
 endfunction
+
+
+%!assert(size (wblrnd (1,2)), [1, 1]);
+%!assert(size (wblrnd (ones(2,1), 2)), [2, 1]);
+%!assert(size (wblrnd (ones(2,2), 2)), [2, 2]);
+%!assert(size (wblrnd (1, 2*ones(2,1))), [2, 1]);
+%!assert(size (wblrnd (1, 2*ones(2,2))), [2, 2]);
+%!assert(size (wblrnd (1, 2, 3)), [3, 3]);
+%!assert(size (wblrnd (1, 2, [4 1])), [4, 1]);
+%!assert(size (wblrnd (1, 2, 4, 1)), [4, 1]);
+
+%% Test class of input preserved
+%!assert(class (wblrnd (1, 2)), "double");
+%!assert(class (wblrnd (single(1), 2)), "single");
+%!assert(class (wblrnd (single([1 1]), 2)), "single");
+%!assert(class (wblrnd (1, single(2))), "single");
+%!assert(class (wblrnd (1, single([2 2]))), "single");
+
+%% Test input validation
+%!error wblrnd ()
+%!error wblrnd (1)
+%!error wblrnd (ones(3),ones(2))
+%!error wblrnd (ones(2),ones(3))
+%!error wblrnd (i, 2)
+%!error wblrnd (2, i)
+%!error wblrnd (1,2, -1)
+%!error wblrnd (1,2, ones(2))
+%!error wblrnd (1, 2, [2 -1 2])
+%!error wblrnd (1,2, 1, ones(2))
+%!error wblrnd (1,2, 1, -1)
+%!error wblrnd (ones(2,2), 2, 3)
+%!error wblrnd (ones(2,2), 2, [3, 2])
+%!error wblrnd (ones(2,2), 2, 2, 3)
 

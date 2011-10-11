@@ -21,7 +21,7 @@
 ## @deftypefn  {Command} {} pkg @var{command} @var{pkg_name}
 ## @deftypefnx {Command} {} pkg @var{command} @var{option} @var{pkg_name}
 ## Manage packages (groups of add-on functions) for Octave.  Different actions
-## are available depending on the value of @var{command}.  
+## are available depending on the value of @var{command}.
 ##
 ## Available commands:
 ##
@@ -55,7 +55,7 @@
 ## starting Octave.  This overrides any setting within the package.
 ##
 ## @item -local
-## A local installation (package available only to current user) is forced, 
+## A local installation (package available only to current user) is forced,
 ## even if the user has system privileges.
 ##
 ## @item -global
@@ -131,7 +131,7 @@
 ## If two output arguments are requested @code{pkg} splits the list of
 ## installed packages into those which were installed by the current user,
 ## and those which were installed by the system administrator.
-## 
+##
 ## @example
 ## [user_packages, system_packages] = pkg ("list")
 ## @end example
@@ -308,6 +308,8 @@ function [local_packages, global_packages] = pkg (varargin)
         auto = 1;
       case "-verbose"
         verbose = true;
+        ## Send verbose output to pager immediately.  Change setting locally.
+        page_output_immediately (true, "local");
       case "-forge"
         octave_forge = true;
       case "-local"
@@ -1355,7 +1357,7 @@ function configure_make (desc, packdir, verbose)
         flags = cstrcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
       endif
       [status, output] = shell (cstrcat ("cd '", src, "'; ", scenv,
-					 "./configure --prefix=\"",
+                                         "./configure --prefix=\"",
                                          desc.dir, "\"", flags));
       if (status != 0)
         rm_rf (desc.dir);

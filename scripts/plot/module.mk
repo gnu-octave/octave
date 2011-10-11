@@ -46,7 +46,8 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__quiver__.m \
   plot/private/__scatter__.m \
   plot/private/__stem__.m \
-  plot/private/__tight_eps_bbox__.m
+  plot/private/__tight_eps_bbox__.m \
+  plot/private/__uiobject_split_args__.m
 
 plot_FCN_FILES = \
   plot/__gnuplot_drawnow__.m \
@@ -174,9 +175,11 @@ plot_FCN_FILES = \
   plot/trimesh.m \
   plot/triplot.m \
   plot/trisurf.m \
+  plot/uicontrol.m \
   plot/uigetdir.m \
   plot/uigetfile.m \
   plot/uimenu.m \
+  plot/uipanel.m \
   plot/uiputfile.m \
   plot/view.m \
   plot/waitforbuttonpress.m \

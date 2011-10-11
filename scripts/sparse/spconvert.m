@@ -49,7 +49,7 @@ endfunction
 %! i = [1; 3; 5];
 %! j = [2; 4; 6];
 %! v = [7; 8; 9];
-%! s = spconvert ([i, j, v]); 
+%! s = spconvert ([i, j, v]);
 %! assert (issparse (s));
 %! [fi, fj, fv] = find (s);
 %! assert (isequal (i, fi) && isequal (j, fj) && isequal (v, fv));

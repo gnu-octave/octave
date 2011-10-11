@@ -187,8 +187,8 @@ octave_user_function::octave_user_function
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
-    class_constructor (false), class_method (false),
-    parent_scope (-1), local_scope (sid),
+    anonymous_function (false), class_constructor (false),
+    class_method (false), parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
 {
   if (cmd_list)
@@ -229,6 +229,9 @@ octave_user_function::profiler_name (void) const
   std::ostringstream result;
 
   if (is_inline_function ())
+    result << "inline@" << fcn_file_name ()
+           << ":" << location_line << ":" << location_column;
+  else if (is_anonymous_function ())
     result << "anonymous@" << fcn_file_name ()
            << ":" << location_line << ":" << location_column;
   else if (is_subfunction ())
@@ -450,8 +453,7 @@ octave_user_function::do_multi_index_op (int nargout,
   frame.protect_var (tree_evaluator::statement_context);
   tree_evaluator::statement_context = tree_evaluator::function;
 
-  bool special_expr = (is_inline_function ()
-                       || cmd_list->is_anon_function_body ());
+  bool special_expr = (is_inline_function () || is_anonymous_function ());
 
   BEGIN_PROFILER_BLOCK (profiler_name ())
 

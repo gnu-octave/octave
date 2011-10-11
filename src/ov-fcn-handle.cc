@@ -164,7 +164,38 @@ octave_fcn_handle::do_multi_index_op (int nargout,
       else
         {
           str_ov_map::iterator it = overloads.find (dispatch_type);
-          if (it != overloads.end ())
+
+          if (it == overloads.end ())
+            {
+              // Try parent classes too.
+
+              std::list<std::string> plist
+                = symbol_table::parent_classes (dispatch_type);
+
+              std::list<std::string>::const_iterator pit = plist.begin ();
+
+              while (pit != plist.end ())
+                {
+                  std::string pname = *pit;
+
+                  std::string fnm = fcn_name ();
+
+                  octave_value ftmp = symbol_table::find_method (fnm, pname);
+
+                  if (ftmp.is_defined ())
+                    {
+                      set_overload (pname, ftmp);
+
+                      out_of_date_check (ftmp, pname, false);
+                      ov_fcn = ftmp;
+
+                      break;
+                    }
+
+                  pit++;
+                }
+            }
+          else
             {
               out_of_date_check (it->second, dispatch_type, false);
               ov_fcn = it->second;

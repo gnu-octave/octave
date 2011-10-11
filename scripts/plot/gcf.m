@@ -55,9 +55,9 @@ function h = gcf ()
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
-%! unwind_protect  
-%!   assert (gcf, 1232);
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   assert (gcf, hf);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

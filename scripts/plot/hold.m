@@ -139,3 +139,35 @@ endfunction
 %! colorbar ("SouthOutside");
 %! title ("Test script for some plot functions");
 
+##hold on
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   p = plot ([0 1]);
+%!   assert (!ishold);
+%!   hold on;
+%!   assert (ishold);
+%!   p1 = fill ([0 1 1], [0 0 1],"black");
+%!   p2 = fill ([0 1 0], [0 1 1], "red");
+%!   assert (length (get (hf, "children")), 1);
+%!   assert (length (get (gca, "children")), 3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+##hold off
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   p = plot ([0 1]);
+%!   assert (!ishold);
+%!   hold on;
+%!   assert (ishold);
+%!   p1 = fill ([0 1 1], [0 0 1],"black");
+%!   hold off
+%!   p2 = fill ([0 1 0], [0 1 1], "red");
+%!   assert (length (get (hf, "children")), 1);
+%!   assert (length (get (gca, "children")), 1);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

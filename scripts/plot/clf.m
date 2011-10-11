@@ -77,8 +77,8 @@ function clf (varargin)
 endfunction
 
 %!test
-%! hf = figure (1232, "visible", "off");
-%! unwind_protect  
+%! hf = figure ("visible", "off");
+%! unwind_protect
 %!   l = line;
 %!   assert (!isempty (get (gcf, "children")));
 %! unwind_protect_cleanup
@@ -86,8 +86,8 @@ endfunction
 %! end_unwind_protect
 
 %!test
-%! hf = figure (1232, "visible", "off");
-%! unwind_protect  
+%! hf = figure ("visible", "off");
+%! unwind_protect
 %!   clf;
 %!   assert (isempty (get (gcf, "children")));
 %! unwind_protect_cleanup

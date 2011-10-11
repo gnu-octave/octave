@@ -281,18 +281,6 @@ quit_loop_now (void)
   return quit;
 }
 
-#define DO_SIMPLE_FOR_LOOP_ONCE(VAL) \
-  do \
-    { \
-      ult.assign (octave_value::op_asn_eq, VAL); \
- \
-      if (! error_state && loop_body) \
-        loop_body->accept (*this); \
- \
-      quit = quit_loop_now (); \
-    } \
-  while (0)
-
 void
 tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 {
@@ -301,6 +289,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
+
+  // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
+  // and cmd.maxproc_expr ();
 
   unwind_protect frame;
 
@@ -347,17 +338,24 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
             octave_value val (b + i * increment);
 
-            DO_SIMPLE_FOR_LOOP_ONCE (val);
+            ult.assign (octave_value::op_asn_eq, val);
 
-            if (quit)
+            if (! error_state && loop_body)
+              loop_body->accept (*this);
+
+            if (quit_loop_now ())
               break;
           }
       }
     else if (rhs.is_scalar_type ())
       {
-        bool quit = false;
+        ult.assign (octave_value::op_asn_eq, rhs);
 
-        DO_SIMPLE_FOR_LOOP_ONCE (rhs);
+        if (! error_state && loop_body)
+          loop_body->accept (*this);
+
+        // Maybe decrement break and continue states.
+        quit_loop_now ();
       }
     else if (rhs.is_matrix_type () || rhs.is_cell () || rhs.is_string ()
              || rhs.is_map ())
@@ -397,9 +395,13 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
                 // do_index_op expects one-based indices.
                 idx(iidx) = i;
                 octave_value val = arg.do_index_op (idx);
-                DO_SIMPLE_FOR_LOOP_ONCE (val);
 
-                if (quit)
+                ult.assign (octave_value::op_asn_eq, val);
+
+                if (! error_state && loop_body)
+                  loop_body->accept (*this);
+
+                if (quit_loop_now ())
                   break;
               }
           }

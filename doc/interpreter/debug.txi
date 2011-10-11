@@ -228,6 +228,8 @@ and the profiler also records that it is recursive.
 
 @DOCSTRING(profshow)
 
+@DOCSTRING(profexplore)
+
 @node Profiler Example
 @section Profiler Example
 

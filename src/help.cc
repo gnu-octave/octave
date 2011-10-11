@@ -432,7 +432,7 @@ const static pair_type keywords[] =
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} break\n\
 Exit the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, continue}\n\
+@seealso{do, while, for, parfor, continue}\n\
 @end deftypefn"),
 
   pair_type ("case",
@@ -455,7 +455,7 @@ Begin the cleanup part of a try-catch block.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} continue\n\
 Jump to the end of the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, break}\n\
+@seealso{do, while, for, parfor, break}\n\
 @end deftypefn"),
 
   pair_type ("do",
@@ -485,7 +485,7 @@ Alternate conditional test for an if block.  See @code{if} for an example.\n\
 @deftypefn {Keyword} {} end\n\
 Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or\n\
 @code{function} block.\n\
-@seealso{for, if, do, while, function}\n\
+@seealso{for, parfor, if, do, while, function}\n\
 @end deftypefn"),
 
   pair_type ("end_try_catch",
@@ -523,6 +523,13 @@ Mark the end of an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
 @end deftypefn"),
 
+  pair_type ("endparfor",
+    "-*- texinfo -*-\n\
+@deftypefn {Keyword} {} endparfor\n\
+Mark the end of a parfor loop.  See @code{parfor} for an example.\n\
+@seealso{parfor}\n\
+@end deftypefn"),
+
   pair_type ("endswitch",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endswitch\n\
@@ -549,7 +556,7 @@ for i = 1:10\n\
 endfor\n\
 @end group\n\
 @end example\n\
-@seealso{do, while}\n\
+@seealso{do, parfor, while}\n\
 @end deftypefn"),
 
   pair_type ("function",
@@ -606,6 +613,22 @@ endif\n\
 @deftypefn {Keyword} {} otherwise\n\
 The default statement in a switch block (similar to else in an if block).\n\
 @seealso{switch}\n\
+@end deftypefn"),
+
+  pair_type ("parfor",
+    "-*- texinfo -*-\n\
+@deftypefn {Keyword} {} for @var{i} = @var{range}\n\
+@deftypefnx {Keyword} {} for (@var{i} = @var{range}, @var{maxproc})\n\
+Begin a for loop that may execute in parallel.\n\
+\n\
+@example\n\
+@group\n\
+parfor i = 1:10\n\
+  i\n\
+endparfor\n\
+@end group\n\
+@end example\n\
+@seealso{do, for, while}\n\
 @end deftypefn"),
 
   pair_type ("persistent",

@@ -70,6 +70,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     else
       error ("plotyy: expecting first argument to be axes handle");
     endif
+    oldh = gca ();
   else
     f = get (0, "currentfigure");
     if (isempty (f))
@@ -78,7 +79,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     ca = get (f, "currentaxes");
     if (isempty (ca))
       ax = [];
-    elseif (strcmp (get (ca, "tag"), "plotyy"))
+    elseif (ishandle (ca) && isprop (ca, "__plotyy_axes__"))
       ax = get (ca, "__plotyy_axes__");
     else
       ax = ca;
@@ -93,17 +94,18 @@ function [Ax, H1, H2] = plotyy (varargin)
     elseif (isempty (ax))
       ax(1) = axes ();
       ax(2) = axes ();
+      ca = ax(2);
     endif
     if (nargin < 2)
       varargin = {};
     endif
+    oldh = ca;
   endif
 
   if (nargin < 4)
     print_usage ();
   endif
 
-  oldh = gca ();
   unwind_protect
     [ax, h1, h2] = __plotyy__ (ax, varargin{:});
   unwind_protect_cleanup
@@ -207,25 +209,21 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   addlistener (ax(1), "plotboxaspectratiomode", {@update_position, ax(2)});
   addlistener (ax(2), "plotboxaspectratiomode", {@update_position, ax(1)});
 
-  ## Tag the plotyy axes, so we can use that information
-  ## not to mirror the y axis tick marks
-  set (ax, "tag", "plotyy");
-
-  ## Cross-reference one axis to the other in the userdata
-  set (ax(1), "userdata", ax(2));
-  set (ax(2), "userdata", ax(1));
-
   ## Store the axes handles for the sister axes.
-  try
+  if (ishandle (ax(1)) && ! isprop (ax(1), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(1), "data", ax);
-  catch
+  elseif (ishandle (ax(1)))
     set (ax(1), "__plotyy_axes__", ax);
-  end_try_catch
-  try
+  else
+    error ("plotyy.m: This shouldn't happen. File a bug report.")
+  endif
+  if (ishandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(2), "data", ax);
-  catch
+  elseif (ishandle (ax(2)))
     set (ax(2), "__plotyy_axes__", ax);
-  end_try_catch
+  else
+    error ("plotyy.m: This shouldn't happen. File a bug report.")
+  endif
 endfunction
 
 %!demo
@@ -256,6 +254,15 @@ endfunction
 %! subplot (2, 2, 4)
 %! plotyy (x, 10*sin(2*pi*x), x, cos(2*pi*x))
 %! axis square
+
+%!demo
+%! clf
+%! x = linspace (-1, 1, 201);
+%! subplot (1, 1, 1);
+%! hax = plotyy (x, sin(pi*x), x, cos(pi*x));
+%! ylabel ("Blue and on the Left")
+%! ylabel (hax(2), "Green and on the Right")
+%! xlabel ("xlabel")
 
 function deleteplotyy (h, d, ax2, t2)
   if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes")

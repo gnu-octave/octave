@@ -151,7 +151,7 @@ function yi = interp1 (x, y, varargin)
   if (isvector (y))
     y = y(:);
   endif
-  
+
   szy = size (y);
   y = y(:,:);
   [ny, nc] = size (y);
@@ -192,7 +192,7 @@ function yi = interp1 (x, y, varargin)
   case "nearest"
     pp = mkpp ([x(1); (x(1:nx-1)+x(2:nx))/2; x(nx)], shiftdim (y, 1), szy(2:end));
     pp.orient = "first";
-    
+
     if (ispp)
       yi = pp;
     else
@@ -208,7 +208,7 @@ function yi = interp1 (x, y, varargin)
     endif
   case "linear"
     dy = diff (y);
-    dx = diff (x);    
+    dx = diff (x);
     dx = repmat (dx, [1 size(dy)(2:end)]);
     coefs = [(dy./dx).'(:), y(1:nx-1, :).'(:)];
     xx = x;
@@ -244,7 +244,7 @@ function yi = interp1 (x, y, varargin)
     if (nx == 2 || starmethod)
       x = linspace (x(1), x(nx), ny);
     endif
-    
+
     if (ispp)
       y = shiftdim (reshape (y, szy), 1);
       yi = pchip (x, y);
@@ -256,7 +256,7 @@ function yi = interp1 (x, y, varargin)
     if (nx == 2 || starmethod)
       x = linspace(x(1), x(nx), ny);
     endif
-    
+
     if (ispp)
       y = shiftdim (reshape (y, szy), 1);
       yi = spline (x, y);

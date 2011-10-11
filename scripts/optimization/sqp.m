@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h})
 ## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub})
 ## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter})
-## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tolerance})
+## @deftypefnx {Function File} {[@dots{}] =} sqp (@var{x0}, @var{phi}, @var{g}, @var{h}, @var{lb}, @var{ub}, @var{maxiter}, @var{tol})
 ## Solve the nonlinear program
 ## @tex
 ## $$
@@ -62,14 +62,8 @@
 ## The first argument is the initial guess for the vector @var{x0}.
 ##
 ## The second argument is a function handle pointing to the objective
-## function.  The objective function must be of the form
-##
-## @example
-##      @var{y} = phi (@var{x})
-## @end example
-##
-## @noindent
-## in which @var{x} is a vector and @var{y} is a scalar.
+## function @var{phi}.  The objective function must accept one vector
+## argument and return a scalar.
 ##
 ## The second argument may also be a 2- or 3-element cell array of
 ## function handles.  The first element should point to the objective
@@ -80,40 +74,18 @@
 ## differences.  If the Hessian function is not supplied, a BFGS update
 ## formula is used to approximate the Hessian.
 ##
-## When supplied, the gradient function must be of the form
+## When supplied, the gradient function @code{@var{phi}@{2@}} must accept
+## one vector argument and return a vector. When supplifed, the Hessian
+## function @code{@var{phi}@{3@}} must accept one vector argument and
+## return a matrix.
 ##
-## @example
-## @var{g} = gradient (@var{x})
-## @end example
-##
-## @noindent
-## in which @var{x} is a vector and @var{g} is a vector.
-##
-## When supplied, the Hessian function must be of the form
-##
-## @example
-## @var{h} = hessian (@var{x})
-## @end example
-##
-## @noindent
-## in which @var{x} is a vector and @var{h} is a matrix.
-##
-## The third and fourth arguments are function handles pointing to
-## functions that compute the equality constraints and the inequality
-## constraints, respectively.
-##
-## If the problem does not have equality (or inequality) constraints,
-## then use an empty matrix ([]) for @var{cef} (or @var{cif}).
-##
-## When supplied, the equality and inequality constraint functions must be
-## of the form
-##
-## @example
-## @var{r} = f (@var{x})
-## @end example
-##
-## @noindent
-## in which @var{x} is a vector and @var{r} is a vector.
+## The third and fourth arguments @var{g} and @var{h} are function
+## handles pointing to functions that compute the equality constraints
+## and the inequality constraints, respectively.  If the problem does
+## not have equality (or inequality) constraints, then use an empty
+## matrix ([]) for @var{g} (or @var{h}). When supplied, these equality
+## and inequality constraint functions must accept one vector argument
+## and return a vector.
 ##
 ## The third and fourth arguments may also be 2-element cell arrays of
 ## function handles.  The first element should point to the constraint
@@ -137,19 +109,20 @@
 ## @end example
 ##
 ## @end ifnottex
-## The fifth and sixth arguments contain lower and upper bounds
-## on @var{x}.  These must be consistent with the equality and inequality
-## constraints @var{g} and @var{h}.  If the arguments are vectors then
-## @var{x}(i) is bound by @var{lb}(i) and @var{ub}(i).  A bound can also
-## be a scalar in which case all elements of @var{x} will share the same
-## bound.  If only one bound (lb, ub) is specified then the other will
-## default to (-@var{realmax}, +@var{realmax}).
+## The fifth and sixth arguments, @var{lb} and @var{ub}, contain lower
+## and upper bounds on @var{x}.  These must be consistent with the
+## equality and inequality constraints @var{g} and @var{h}.  If the
+## arguments are vectors then @var{x}(i) is bound by @var{lb}(i) and
+## @var{ub}(i). A bound can also be a scalar in which case all elements
+## of @var{x} will share the same bound.  If only one bound (lb, ub) is
+## specified then the other will default to (-@var{realmax},
+## +@var{realmax}).
 ##
-## The seventh argument specifies the maximum number of iterations.
-## The default value is 100.
+## The seventh argument @var{maxiter} specifies the maximum number of
+## iterations. The default value is 100.
 ##
-## The eighth argument specifies the tolerance for the stopping criteria.
-## The default value is @code{sqrt(eps)}.
+## The eighth argument @var{tol} specifies the tolerance for the
+## stopping criteria. The default value is @code{sqrt(eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:
 ##
@@ -163,7 +136,7 @@
 ## @ifnottex
 ## delta @var{x},
 ## @end ifnottex
-## is less than @code{tol * norm (x)}.
+## is less than @code{@var{tol} * norm (x)}.
 ##
 ## @item 102
 ## The BFGS update failed.
@@ -443,7 +416,19 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
 
     info = INFO.info;
 
-    ## Check QP solution and attempt to recover if it has failed.
+    ## FIXME -- check QP solution and attempt to recover if it has
+    ## failed.  For now, just warn about possible problems.
+    
+    id = "Octave:SQP-QP-subproblem";
+    switch (info)
+      case 2
+        warning (id, "sqp: QP subproblem is non-convex and unbounded");
+      case 3
+        warning (id, "sqp: QP subproblem failed to converge in %d iterations",
+                 INFO.solveiter);
+      case 6
+        warning (id, "sqp: QP subproblem is infeasible");
+    endswitch
 
     ## Choose mu such that p is a descent direction for the chosen
     ## merit function phi.
@@ -751,19 +736,21 @@ endfunction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Test Code
 
-%!function r = g (x)
+%!function r = __g (x)
 %!  r = [sumsq(x)-10;
 %!       x(2)*x(3)-5*x(4)*x(5);
 %!       x(1)^3+x(2)^3+1 ];
+%!endfunction
 %!
-%!function obj = phi (x)
+%!function obj = __phi (x)
 %!  obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+%!endfunction
 %!
 %!test
 %!
 %! x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
 %!
-%! [x, obj, info, iter, nf, lambda] = sqp (x0, @phi, @g, []);
+%! [x, obj, info, iter, nf, lambda] = sqp (x0, @__phi, @__g, []);
 %!
 %! x_opt = [-1.717143501952599;
 %!           1.595709610928535;

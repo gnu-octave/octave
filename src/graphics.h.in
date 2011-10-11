@@ -364,8 +364,8 @@ public:
 
   // Sets property value, notifies graphics toolkit.
   // If do_run is true, runs associated listeners.
-  bool set (const octave_value& v, bool do_run = true,
-            bool do_notify_toolkit = true);
+  OCTINTERP_API bool set (const octave_value& v, bool do_run = true,
+                          bool do_notify_toolkit = true);
 
   virtual octave_value get (void) const
     {

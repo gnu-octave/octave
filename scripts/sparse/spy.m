@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} spy (@dots{}, @var{markersize})
 ## @deftypefnx {Function File} {} spy (@dots{}, @var{line_spec})
 ## Plot the sparsity pattern of the sparse matrix @var{x}.  If the argument
-## @var{markersize} is given as an scalar value, it is used to determine the
+## @var{markersize} is given as a scalar value, it is used to determine the
 ## point size in the plot.  If the string @var{line_spec} is given it is
 ## passed to @code{plot} and determines the appearance of the plot.
 ## @seealso{plot}
@@ -41,7 +41,11 @@ function spy (x, varargin)
   endif
   for i = 1:length (varargin)
     if (ischar (varargin{i}))
-      line_spec = varargin{i};
+      if (length (varargin{i}) == 1)
+        line_spec = [line_spec, varargin{i}];
+      else
+        line_spec = varargin{i};
+      endif
     elseif (isscalar (varargin{i}))
       markersize = varargin{i};
     else

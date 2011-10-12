@@ -76,7 +76,7 @@ end
 ## Display Octave debugging stack 
 
 define show-octave-dbstack
-  call show_octave_dbstack
+  call show_octave_dbstack ()
 end
 
 document show-octave-dbstack

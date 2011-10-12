@@ -929,6 +929,17 @@ Print or return current stack information.  With optional argument\n\
   return retval;
 }
 
+// A function that can be easily called from a debugger print the Octave
+// stack.  This can be useful for finding what line of code the
+// interpreter is currently executing when the debugger is stopped in
+// some C++ function, for example.
+
+static void
+show_octave_dbstack (void)
+{
+  Fdbstack (octave_value_list (), 0);
+}
+
 static void
 do_dbupdown (const octave_value_list& args, const std::string& who)
 {

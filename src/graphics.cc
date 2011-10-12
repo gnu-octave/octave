@@ -1387,6 +1387,11 @@ callback_property::validate (const octave_value& v) const
   return false;
 }
 
+// If TRUE, we are executing any callback function, or the functions it
+// calls.  Used to determine handle visibility inside callback
+// functions.
+static bool executing_callback = false;
+
 void
 callback_property::execute (const octave_value& data) const
 {
@@ -1397,9 +1402,14 @@ callback_property::execute (const octave_value& data) const
   // callback routines.
   frame.protect_var (executing);
 
+  // We are executing a callback function, so allow handles that have
+  // their handlevisibility property set to "callback" to be visible.
+  frame.protect_var (executing_callback);
+
   if (! executing)
     {
       executing = true;
+      executing_callback = true;
 
       if (callback.is_defined () && ! callback.is_empty ())
         gh_manager::execute_callback (get_parent (), callback, data);
@@ -2446,6 +2456,13 @@ base_properties::update_axis_limits (const std::string& axis_type,
 
   if (obj)
     obj.update_axis_limits (axis_type, h);
+}
+
+bool
+base_properties::is_handle_visible (void) const
+{
+  return (handlevisibility.is ("on")
+          || executing_callback && ! handlevisibility.is ("off"));
 }
 
 graphics_toolkit

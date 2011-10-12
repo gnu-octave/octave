@@ -2382,10 +2382,7 @@ public:
   virtual bool is_climinclude (void) const { return false; }
   virtual bool is_aliminclude (void) const { return false; }
 
-  bool is_handle_visible (void) const
-  {
-    return ! handlevisibility.is ("off");
-  }
+  bool is_handle_visible (void) const;
 
   std::set<std::string> dynamic_property_names (void) const;
 

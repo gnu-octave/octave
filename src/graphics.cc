@@ -1390,8 +1390,20 @@ callback_property::validate (const octave_value& v) const
 void
 callback_property::execute (const octave_value& data) const
 {
-  if (callback.is_defined () && ! callback.is_empty ())
-    gh_manager::execute_callback (get_parent (), callback, data);
+  unwind_protect frame;
+
+  // We are executing the callback function associated with this
+  // callback property.  When set to true, we avoid recursive calls to
+  // callback routines.
+  frame.protect_var (executing);
+
+  if (! executing)
+    {
+      executing = true;
+
+      if (callback.is_defined () && ! callback.is_empty ())
+        gh_manager::execute_callback (get_parent (), callback, data);
+    }
 }
 
 // Used to cache dummy graphics objects from which dynamic

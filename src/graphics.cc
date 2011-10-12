@@ -7666,6 +7666,59 @@ graphics handles and false where they are not.\n\
   return retval;
 }
 
+static bool
+is_handle_visible (const graphics_handle& h)
+{
+  return h.ok () && gh_manager::is_handle_visible (h);
+}
+
+static bool
+is_handle_visible (double val)
+{
+  return is_handle_visible (gh_manager::lookup (val));
+}
+
+static octave_value
+is_handle_visible (const octave_value& val)
+{
+  octave_value retval = false;
+
+  if (val.is_real_scalar () && is_handle_visible (val.double_value ()))
+    retval = true;
+  else if (val.is_numeric_type () && val.is_real_type ())
+    {
+      const NDArray handles = val.array_value ();
+
+      if (! error_state)
+        {
+          boolNDArray result (handles.dims ());
+
+          for (octave_idx_type i = 0; i < handles.numel (); i++)
+            result.xelem (i) = is_handle_visible (handles (i));
+
+          retval = result;
+        }
+    }
+
+  return retval;
+}
+
+DEFUN (__is_handle_visible__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} __is_handle_visible__ (@var{h})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = is_handle_visible (args(0));
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUN (reset, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} reset (@var{h}, @var{property})\n\

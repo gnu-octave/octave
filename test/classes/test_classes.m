@@ -199,3 +199,14 @@
 %!  assert(isa(grk,'Blork'))
 %!  assert(isa(grk,'Snork'))
 %!  assert(isa(grk,'Spork'))
+
+%!test
+%! d = Dork ();
+%! x = [d,d];
+%! assert (size (x), [1, 2])
+%! assert (class (x), "Dork")
+
+%!test
+%! d = Dork ();
+%! x = [d,d];
+%! assert (num2cell (x), {d, d});

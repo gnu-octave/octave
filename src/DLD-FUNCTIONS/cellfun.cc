@@ -45,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "utils.h"
 
+#include "ov-class.h"
 #include "ov-scalar.h"
 #include "ov-float.h"
 #include "ov-complex.h"
@@ -1800,9 +1801,25 @@ num2cell([1,2;3,4],1)\n\
                 retval = do_num2cell (array.array_value (), dimv);
             }
         }
-      else if (array.is_map ())
-        retval = do_num2cell (array.map_value (), dimv);
+      else if (array.is_map () || array.is_object ())
+        {
+          Cell tmp = do_num2cell (array.map_value (), dimv);
+
+          if (array.is_object ())
+            {
+              std::string cname = array.class_name ();
+              std::list<std::string> parents = array.parent_class_name_list ();
+
+              for (octave_idx_type i = 0; i < tmp.numel (); i++)
+                tmp(i) = octave_value (new octave_class (tmp(i).map_value (),
+                                                         cname, parents));
+            }
+
+          retval = tmp;
+        }
       else if (array.is_cell ())
+        retval = do_num2cell (array.cell_value (), dimv);
+      else if (array.is_object ())
         retval = do_num2cell (array.cell_value (), dimv);
       else
         gripe_wrong_type_arg ("num2cell", array);

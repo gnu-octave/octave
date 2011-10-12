@@ -835,13 +835,8 @@ List script file with line numbers.\n\
   return retval;
 }
 
-DEFUN (dbstack, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
-Print or return current stack information.  With optional argument\n\
-@var{n}, omit the @var{n} innermost stack frames.\n\
-@seealso{dbclear, dbstatus, dbstop}\n\
-@end deftypefn")
+static octave_value_list
+do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 {
   octave_value_list retval;
 
@@ -882,7 +877,7 @@ Print or return current stack information.  With optional argument\n\
 
           if (nframes_to_display > 0)
             {
-              octave_stdout << "stopped in:\n\n";
+              os << "stopped in:\n\n";
 
               Cell names = stk.contents ("name");
               Cell files = stk.contents ("file");
@@ -908,15 +903,15 @@ Print or return current stack information.  With optional argument\n\
                   if (show_top_level && i == curr_frame)
                     show_top_level = false;
 
-                  octave_stdout << (i == curr_frame ? "  --> " : "      ")
-                                << std::setw (max_name_len) << name
-                                << " at line " << line
-                                << " [" << file << "]"
-                                << std::endl;
+                  os << (i == curr_frame ? "  --> " : "      ")
+                     << std::setw (max_name_len) << name
+                     << " at line " << line
+                     << " [" << file << "]"
+                     << std::endl;
                 }
 
               if (show_top_level)
-                octave_stdout << "  --> top level" << std::endl;
+                os << "  --> top level" << std::endl;
             }
         }
       else
@@ -937,7 +932,18 @@ Print or return current stack information.  With optional argument\n\
 static void
 show_octave_dbstack (void)
 {
-  Fdbstack (octave_value_list (), 0);
+  do_dbstack (octave_value_list (), 0, std::cerr);
+}
+
+DEFUN (dbstack, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
+Print or return current stack information.  With optional argument\n\
+@var{n}, omit the @var{n} innermost stack frames.\n\
+@seealso{dbclear, dbstatus, dbstop}\n\
+@end deftypefn")
+{
+  return do_dbstack (args, nargout, octave_stdout);
 }
 
 static void

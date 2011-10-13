@@ -19,6 +19,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__errcomm__.m \
   plot/private/__errplot__.m \
   plot/private/__ezplot__.m \
+  plot/private/__file_filter__.m \
   plot/private/__fltk_file_filter__.m \
   plot/private/__fltk_ginput__.m \
   plot/private/__fltk_print__.m \
@@ -34,6 +35,7 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__go_draw_axes__.m \
   plot/private/__go_draw_figure__.m \
   plot/private/__interp_cube__.m \
+  plot/private/__is_function__.m \
   plot/private/__line__.m \
   plot/private/__marching_cube__.m \
   plot/private/__next_line_color__.m \
@@ -47,6 +49,9 @@ plot_PRIVATE_FCN_FILES = \
   plot/private/__scatter__.m \
   plot/private/__stem__.m \
   plot/private/__tight_eps_bbox__.m \
+  plot/private/__uigetdir_fltk__.m \
+  plot/private/__uigetfile_fltk__.m \
+  plot/private/__uiputfile_fltk__.m \
   plot/private/__uiobject_split_args__.m
 
 plot_FCN_FILES = \

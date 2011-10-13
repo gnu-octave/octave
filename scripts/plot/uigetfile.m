@@ -64,22 +64,32 @@
 
 function [retfile, retpath, retindex] = uigetfile (varargin)
 
-  if (exist("__fltk_uigetfile__") != 3)
-    error ("uigetfile: fltk graphics toolkit required");
+  defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
+  funcname = ["__uigetfile_", defaulttoolkit, "__"];
+  functype = exist (funcname);
+  if (! __is_function__ (funcname))
+    funcname = "__uigetfile_fltk__";
+    if (! __is_function__ (funcname))
+      error ("uigetfile: fltk graphics toolkit required");
+    elseif (! strcmp (defaulttoolkit, "gnuplot"))
+      warning ("uigetfile: no implementation for toolkit `%s', using `fltk' instead",
+               defaulttoolkit);
+    endif
   endif
 
   if (nargin > 7)
     error ("uigetfile: number of input arguments must be less than eight");
   endif
 
-  defaultvals = {"All Files(*)", #FLTK File Filter
-                 "Open File?",   #Dialog Title
-                 pwd,            #FLTK default file name
-                 [240, 120],     #Dialog Position (pixel x/y)
-                 "off"};         #MultiSelect on/off
+  defaultvals = {cell(0, 2),         # File Filter
+                 "Open File",        # Dialog Title
+                 "",                 # Default file name
+                 [240, 120],         # Dialog Position (pixel x/y)
+                 "off",              # MultiSelect on/off
+                 pwd};               # Default directory
 
-  outargs = cell (5, 1);
-  for i = 1 : 5
+  outargs = cell (6, 1);
+  for i = 1 : 6
     outargs{i} = defaultvals{i};
   endfor
 
@@ -88,9 +98,9 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     for i = 1 : length (varargin)
       val = varargin{i};
       if (ischar (val))
-        if (strncmp (tolower (val), "multiselect", 11))
+        if (strncmpi (val, "multiselect", 11))
           idx1 = i;
-        elseif (strncmp(tolower (val), "position", 8))
+        elseif (strncmpi (val, "position", 8))
           idx2 = i;
         endif
       endif
@@ -110,18 +120,36 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
   len = length (args);
   if (len > 0)
     file_filter = args{1};
-    outargs{1} = __fltk_file_filter__ (file_filter);
-    if (ischar (file_filter))
-      outargs{3} = file_filter;
+    [outargs{1}, outargs{3}, defdir] = __file_filter__ (file_filter);
+    if (length (defdir) > 0)
+      outargs{6} = defdir;
     endif
+  else
+    outargs{1} = __file_filter__ (outargs{1});
   endif
 
   if (len > 1)
-    outargs{2} = args{2};
+    if (ischar (args{2}))
+      if (length (args{2}) > 0)
+        outargs{2} = args{2};
+      endif
+    elseif (! isempty (args{2}))
+      print_usage ();
+    endif
   endif
 
   if (len > 2)
-    outargs{3} = args{3};
+    if (ischar (args{3}))
+      [fdir, fname, fext] = fileparts (args{3});
+      if (length (fdir) > 0)
+        outargs{6} = fdir;
+      endif
+      if (length (fname) > 0 || length (fext) > 0)
+        outargs{3} = strcat (fname, fext);
+      endif
+    elseif (! isempty (args{3}))
+      print_usage ();
+    endif
   endif
 
   if (stridx)
@@ -153,7 +181,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     endfor
   endif
 
-  [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
+  [retfile, retpath, retindex] = feval (funcname, outargs{:});
 
 endfunction
 

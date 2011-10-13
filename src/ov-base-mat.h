@@ -89,6 +89,9 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
+  octave_value_list do_multi_index_op (int, const octave_value_list& idx)
+    { return do_index_op (idx); }
+
   void assign (const octave_value_list& idx, const MT& rhs);
 
   void assign (const octave_value_list& idx, typename MT::element_type rhs);

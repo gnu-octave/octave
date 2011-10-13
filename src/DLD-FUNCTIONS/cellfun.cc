@@ -1712,6 +1712,66 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
     }
 }
 
+// FIXME -- this is a mess, but if a size method for the object exists,
+// we have to call it to get the size of the object instead of using the
+// internal dims method.
+
+static dim_vector
+get_object_dims (octave_value& obj)
+{
+  dim_vector retval;
+
+  Matrix m = obj.size ();
+
+  int n = m.numel ();
+
+  retval.resize (n);
+
+  for (int i = 0; i < n; i++)
+    retval(i) = m(i);
+
+  return retval;
+}
+
+static Cell
+do_object2cell (const octave_value& obj, const Array<int>& dimv)
+{
+  Cell retval;
+
+  // FIXME -- this copy is only needed because the octave_value::size
+  // method is not const.
+  octave_value array = obj;
+
+  if (dimv.is_empty ())
+    {
+      dim_vector dv = get_object_dims (array);
+
+      if (! error_state)
+        {
+          retval.resize (dv);
+
+          octave_value_list idx (1);
+
+          for (octave_idx_type i = 0; i < dv.numel (); i++)
+            {
+              octave_quit ();
+
+              idx(0) = double (i+1);
+
+              retval.xelem(i) = array.single_subsref ("(", idx);
+
+              if (error_state)
+                break;
+            }
+        }
+    }
+  else
+    {
+      error ("num2cell (A, dim) not implemented for class objects");
+    }
+
+  return retval;
+}
 
 DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
@@ -1801,22 +1861,10 @@ num2cell([1,2;3,4],1)\n\
                 retval = do_num2cell (array.array_value (), dimv);
             }
         }
-      else if (array.is_map () || array.is_object ())
-        {
-          Cell tmp = do_num2cell (array.map_value (), dimv);
-
-          if (array.is_object ())
-            {
-              std::string cname = array.class_name ();
-              std::list<std::string> parents = array.parent_class_name_list ();
-
-              for (octave_idx_type i = 0; i < tmp.numel (); i++)
-                tmp(i) = octave_value (new octave_class (tmp(i).map_value (),
-                                                         cname, parents));
-            }
-
-          retval = tmp;
-        }
+      else if (array.is_object ())
+        retval = do_object2cell (array, dimv);
+      else if (array.is_map ())
+        retval = do_num2cell (array.map_value (), dimv);
       else if (array.is_cell ())
         retval = do_num2cell (array.cell_value (), dimv);
       else if (array.is_object ())

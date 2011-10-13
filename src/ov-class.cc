@@ -322,6 +322,17 @@ octave_class::size (void)
       else
         error ("@%s/size: invalid return value", class_name ().c_str ());
     }
+  else
+    {
+      dim_vector dv = dims ();
+
+      int nel = dv.numel ();
+
+      retval.resize (1, nel);
+
+      for (int i = 0; i < nel; i++)
+        retval(i) = dv(i);
+    }
 
   return retval;
 }

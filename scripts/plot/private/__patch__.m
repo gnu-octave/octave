@@ -322,7 +322,7 @@ function args = setvertexdata (args)
   elseif (isvector (c))
     fvc = c(:);
   else
-    fvc = c.';
+    fvc = c.'(:);
   endif
 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};

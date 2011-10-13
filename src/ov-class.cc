@@ -996,6 +996,35 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
   return retval;
 }
 
+string_vector
+octave_class::all_strings (bool pad) const
+{
+  string_vector retval;
+
+  octave_value meth = symbol_table::find_method ("char", class_name ());
+
+  if (meth.is_defined ())
+    {
+      octave_value_list args;
+      args(0) = octave_value (new octave_class (map, c_name));
+
+      octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+      if (!error_state && tmp.length () >= 1)
+        {
+          if (tmp(0).is_string ())
+            retval = tmp(0).all_strings (pad);
+          else
+            error ("cname/char method did not return a character string");
+        }
+    }
+  else
+    error ("no char method defined for class %s", class_name().c_str ());
+
+  return retval;
+}
+
+
 void
 octave_class::print (std::ostream& os, bool) const
 {

@@ -109,6 +109,8 @@ plot_FCN_FILES = \
   plot/graphics_toolkit.m \
   plot/grid.m \
   plot/gtext.m \
+  plot/guidata.m \
+  plot/guihandles.m \
   plot/hggroup.m \
   plot/hidden.m \
   plot/hist.m \

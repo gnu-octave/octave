@@ -3165,6 +3165,7 @@ public:
       radio_property xvisualmode , "{auto}|manual"
       callback_property buttondownfcn , Matrix ()
       string_property __graphics_toolkit__ s , "gnuplot"
+      any_property __guidata__ h , Matrix ()
     END_PROPERTIES
 
   protected:

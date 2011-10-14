@@ -98,7 +98,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
         }
       dim_vector cdvx = dvx.cumulative (), cdvy = dvy.cumulative ();
       // Nullify singleton dims to achieve a spread effect.
-      for (int i = std::max (start, 1); i < nd; i++)
+      for (int i = std::max (start, octave_idx_type (1)); i < nd; i++)
         {
           if (dvx(i) == 1)
             cdvx(i-1) = 0;
@@ -176,7 +176,7 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
 
       dim_vector cdvx = dvx.cumulative ();
       // Nullify singleton dims to achieve a spread effect.
-      for (int i = std::max (start, 1); i < nd; i++)
+      for (int i = std::max (start, octave_idx_type (1)); i < nd; i++)
         {
           if (dvx(i) == 1)
             cdvx(i-1) = 0;

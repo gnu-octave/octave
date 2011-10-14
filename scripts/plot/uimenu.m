@@ -79,18 +79,7 @@
 
 function hui = uimenu (varargin)
 
-  args = varargin;
-
-  if (ishandle (args{1}))
-    h = args{1};
-    args(1) = [];
-  else
-    h = gcf ();
-  endif
-
-  if (rem (length (args), 2))
-    error ("uimenu: expecting PROPERTY/VALUE pairs");
-  endif
+  [h, args] = __uiobject_split_args__ ("uimenu", varargin, {"figure", "uicontextmenu", "uimenu"});
 
   tmp = __go_uimenu__ (h, args{:});
 

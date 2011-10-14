@@ -17,15 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{handle} =} uipushtool ('Name', value, @dots{})
+## @deftypefnx {Function File} {@var{handle} =} uipushtool (@var{parent}, 'Name', value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uipanel (varargin)
+function handle = uipushtool (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  [h, args] = __uiobject_split_args__ ("uipushtool", varargin, {"uitoolbar"}, 0);
+  if (isempty (h))
+    h = uitoolbar ();
+  endif
+  handle = __go_uipushtool__ (h, args{:});
 
 endfunction

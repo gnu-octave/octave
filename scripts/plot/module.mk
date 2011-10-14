@@ -182,12 +182,16 @@ plot_FCN_FILES = \
   plot/trimesh.m \
   plot/triplot.m \
   plot/trisurf.m \
+  plot/uicontextmenu.m \
   plot/uicontrol.m \
   plot/uigetdir.m \
   plot/uigetfile.m \
   plot/uimenu.m \
   plot/uipanel.m \
+  plot/uipushtool.m \
   plot/uiputfile.m \
+  plot/uitoggletool.m \
+  plot/uitoolbar.m \
   plot/view.m \
   plot/waitforbuttonpress.m \
   plot/whitebg.m \

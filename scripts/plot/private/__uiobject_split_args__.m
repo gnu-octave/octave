@@ -17,28 +17,30 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @dots{})
+## @deftypefn  {Function File} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function [parent, args] = __uiobject_split_args__ (who, varargin)
+function [parent, args] = __uiobject_split_args__ (who, in_args, parent_type = {}, use_gcf = 1)
 
   parent = [];
   args = {};
   offset = 1;
 
-  if (nargin > 1)
-    if (ishandle (varargin{1}))
-      parent = varargin{1};
+  if (! isempty (in_args))
+    if (ishandle (in_args{1}))
+      parent = in_args{1};
       offset = 2;
-    elseif (! ischar (varargin{1}))
+    elseif (! ischar (in_args{1}))
       error ("%s: invalid parent handle.", who);
     endif
 
-    if (nargin > offset)
-      args = varargin(offset:end);
-    endif
+    args = in_args(offset:end);
+  endif
+
+  if (rem (length (args), 2))
+    error ("%s: expecting PROPERTY/VALUE pairs", who);
   endif
 
   if (! isempty (args))
@@ -53,10 +55,11 @@ function [parent, args] = __uiobject_split_args__ (who, varargin)
   endif
 
   if (! isempty (parent))
-    if (isempty (find (strcmpi (get (parent, "type"), {"figure", "uipanel", "uibuttongroup"}))))
-      error ("%s: invalid parent, the parent must be a figure, uipanel or uibuttongroup handle", who);
+    if (! isempty (parent_type) && isempty (find (strcmpi (get (parent, "type"), parent_type))))
+      error ("%s: invalid parent, the parent type must be: %s", ...
+             who, sprintf ("%s, ", parent_type{:})(1:end-2));
     endif
-  else
+  elseif (use_gcf)
     parent = gcf ();
   endif
 

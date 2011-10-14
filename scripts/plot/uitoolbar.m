@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{handle} =} uitoolbar ('Name', value, @dots{})
+## @deftypefnx {Function File} {@var{handle} =} uitoolbar (@var{parent}, 'Name', value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uipanel (varargin)
+function handle = uitoolbar (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  [h, args] = __uiobject_split_args__ ("uitoolbar", varargin, {"figure"});
+  handle = __go_uitoolbar__ (h, args{:});
 
 endfunction

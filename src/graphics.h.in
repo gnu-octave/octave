@@ -4613,6 +4613,51 @@ public:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API uicontextmenu : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES (uicontextmenu)
+      any_property __object__ , Matrix ()
+      callback_property callback , Matrix()
+      array_property position , Matrix (1, 2, 0.0)
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+      {
+        position.add_constraint (dim_vector (1, 2));
+        position.add_constraint (dim_vector (2, 1));
+      }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uicontextmenu (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~uicontextmenu (void) { xproperties.delete_children (); }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+};
+
+// ---------------------------------------------------------------------
+
 class OCTINTERP_API uicontrol : public base_graphics_object
 {
 public:
@@ -4663,6 +4708,8 @@ public:
     void init (void)
       {
         cdata.add_constraint ("double");
+        cdata.add_constraint ("single");
+        cdata.add_constraint ("uint8");
         cdata.add_constraint (dim_vector (-1, -1, 3));
         position.add_constraint (dim_vector (1, 4));
         sliderstep.add_constraint (dim_vector (1, 2));
@@ -4765,6 +4812,197 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+};
+
+// ---------------------------------------------------------------------
+
+class OCTINTERP_API uitoolbar : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES (uitoolbar)
+      any_property __object__ , Matrix ()
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+      { }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uitoolbar (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p), default_properties ()
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~uitoolbar (void) { xproperties.delete_children (); }
+
+  void override_defaults (base_graphics_object& obj)
+  {
+    // Allow parent (figure) to override first (properties knows how
+    // to find the parent object).
+    xproperties.override_defaults (obj);
+
+    // Now override with our defaults.  If the default_properties
+    // list includes the properties for all defaults (line,
+    // surface, etc.) then we don't have to know the type of OBJ
+    // here, we just call its set function and let it decide which
+    // properties from the list to use.
+    obj.set_from_list (default_properties);
+  }
+
+  void set (const caseless_str& name, const octave_value& value)
+  {
+    if (name.compare ("default", 7))
+      // strip "default", pass rest to function that will
+      // parse the remainder and add the element to the
+      // default_properties map.
+      default_properties.set (name.substr (7), value);
+    else
+      xproperties.set (name, value);
+  }
+
+  octave_value get (const caseless_str& name) const
+  {
+    octave_value retval;
+
+    if (name.compare ("default", 7))
+      retval = get_default (name.substr (7));
+    else
+      retval = xproperties.get (name);
+
+    return retval;
+  }
+
+  octave_value get_default (const caseless_str& name) const;
+
+  octave_value get_defaults (void) const
+  {
+    return default_properties.as_struct ("default");
+  }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+  void reset_default_properties (void);
+
+private:
+  property_list default_properties;
+};
+
+// ---------------------------------------------------------------------
+
+class OCTINTERP_API uipushtool : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES (uipushtool)
+      any_property __object__ , Matrix ()
+      array_property cdata , Matrix ()
+      callback_property clickedcallback , Matrix()
+      bool_property enable , "on"
+      bool_property separator , "off"
+      string_property tooltipstring , ""
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+      {
+        cdata.add_constraint ("double");
+        cdata.add_constraint ("single");
+        cdata.add_constraint ("uint8");
+        cdata.add_constraint (dim_vector (-1, -1, 3));
+      }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uipushtool (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~uipushtool (void) { xproperties.delete_children (); }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
+};
+
+// ---------------------------------------------------------------------
+
+class OCTINTERP_API uitoggletool : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES (uitoggletool)
+      any_property __object__ , Matrix ()
+      array_property cdata , Matrix ()
+      callback_property clickedcallback , Matrix()
+      bool_property enable , "on"
+      callback_property offcallback , Matrix()
+      callback_property oncallback , Matrix()
+      bool_property separator , "off"
+      bool_property state , "off"
+      string_property tooltipstring , ""
+    END_PROPERTIES
+
+  protected:
+    void init (void)
+      {
+        cdata.add_constraint ("double");
+        cdata.add_constraint ("single");
+        cdata.add_constraint ("uint8");
+        cdata.add_constraint (dim_vector (-1, -1, 3));
+      }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  uitoggletool (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~uitoggletool (void) { xproperties.delete_children (); }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+
 };
 
 // ---------------------------------------------------------------------

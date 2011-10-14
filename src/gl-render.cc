@@ -567,7 +567,9 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
     draw_text (dynamic_cast<const text::properties&> (props));
   else if (go.isa ("image"))
     draw_image (dynamic_cast<const image::properties&> (props));
-  else if (go.isa ("uimenu") || go.isa ("uicontrol"))
+  else if (go.isa ("uimenu") || go.isa ("uicontrol")
+           || go.isa ("uicontextmenu") || go.isa ("uitoolbar")
+           || go.isa ("uipushtool") || go.isa ("uitoggletool"))
     /* SKIP */;
   else if (go.isa ("uipanel"))
     {

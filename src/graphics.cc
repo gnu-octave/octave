@@ -813,14 +813,36 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-		      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel"))
                     offset = 7;
                   else if (len >= 9)
                     {
                       pfx = name.substr (0, 9);
 
-                      if (pfx.compare ("uicontrol"))
+                      if (pfx.compare ("uicontrol")
+                          || pfx.compare ("uitoolbar"))
                         offset = 9;
+                      else if (len >= 10)
+                        {
+                          pfx = name.substr (0, 10);
+
+                          if (pfx.compare ("uipushtool"))
+                            offset = 10;
+                          else if (len >= 12)
+                            {
+                              pfx = name.substr (0, 12);
+
+                              if (pfx.compare ("uitoggletool"))
+                                offset = 12;
+                              else if (len >= 13)
+                                {
+                                  pfx = name.substr (0, 13);
+
+                                  if (pfx.compare ("uicontextmenu"))
+                                    offset = 13;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -866,6 +888,14 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new uicontrol (h, p);
   else if (type.compare ("uipanel"))
     go = new uipanel (h, p);
+  else if (type.compare ("uicontextmenu"))
+    go = new uicontextmenu (h, p);
+  else if (type.compare ("uitoolbar"))
+    go = new uitoolbar (h, p);
+  else if (type.compare ("uipushtool"))
+    go = new uipushtool (h, p);
+  else if (type.compare ("uitoggletool"))
+    go = new uitoggletool (h, p);
   return go;
 }
 
@@ -1657,8 +1687,30 @@ property_list::set (const caseless_str& name, const octave_value& val)
                     {
                       pfx = name.substr (0, 9);
 
-                      if (pfx.compare ("uicontrol"))
+                      if (pfx.compare ("uicontrol")
+                          || pfx.compare ("uitoolbar"))
                         offset = 9;
+                      else if (len > 10)
+                        {
+                          pfx = name.substr (0, 10);
+
+                          if (pfx.compare ("uipushtool"))
+                            offset = 10;
+                          else if (len > 12)
+                            {
+                              pfx = name.substr (0, 12);
+
+                              if (pfx.compare ("uitoogletool"))
+                                offset = 12;
+                              else if (len > 13)
+                                {
+                                  pfx = name.substr (0, 13);
+
+                                  if (pfx.compare ("uicontextmenu"))
+                                    offset = 13;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1696,6 +1748,12 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = uicontrol::properties::has_core_property (pname);
           else if (pfx == "uipanel")
             has_property = uipanel::properties::has_core_property (pname);
+          else if (pfx == "uicontextmenu")
+            has_property = uicontextmenu::properties::has_core_property (pname);
+          else if (pfx == "uitoolbar")
+            has_property = uitoolbar::properties::has_core_property (pname);
+          else if (pfx == "uipushtool")
+            has_property = uipushtool::properties::has_core_property (pname);
 
           if (has_property)
             {
@@ -1767,8 +1825,30 @@ property_list::lookup (const caseless_str& name) const
                     {
                       pfx = name.substr (0, 9);
 
-                      if (pfx.compare ("uicontrol"))
+                      if (pfx.compare ("uicontrol")
+                          || pfx.compare ("uitoolbar"))
                         offset = 9;
+                      else if (len > 10)
+                        {
+                          pfx = name.substr (0, 10);
+
+                          if (pfx.compare ("uipushtool"))
+                            offset = 10;
+                          else if (len > 12)
+                            {
+                              pfx = name.substr (0, 12);
+
+                              if (pfx.compare ("uitoggletool"))
+                                offset = 12;
+                              else if (len > 13)
+                                {
+                                  pfx = name.substr (0, 13);
+
+                                  if (pfx.compare ("uicontextmenu"))
+                                    offset = 13;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -6870,9 +6950,9 @@ uicontrol::properties::update_text_extent (void)
   elt = text_parser_none ().parse (get_string_string ());
 #ifdef HAVE_FONTCONFIG
   text_renderer.set_font (get_fontname (),
-			  get_fontweight (),
-			  get_fontangle (),
-			  get_fontsize ());
+                          get_fontweight (),
+                          get_fontangle (),
+                          get_fontsize ());
 #endif
   box = text_renderer.get_extent (elt, 0);
 
@@ -7111,6 +7191,30 @@ uipanel::properties::get_fontsize_points (double box_pix_height) const
     parent_height = get_boundingbox (false).elem(3);
 
   return convert_font_size (fs, get_fontunits (), "points", parent_height);
+}
+
+// ---------------------------------------------------------------------
+
+octave_value
+uitoolbar::get_default (const caseless_str& name) const
+{
+  octave_value retval = default_properties.lookup (name);
+
+  if (retval.is_undefined ())
+    {
+      graphics_handle parent = get_parent ();
+      graphics_object parent_obj = gh_manager::get_object (parent);
+
+      retval = parent_obj.get_default (name);
+    }
+
+  return retval;
+}
+
+void
+uitoolbar::reset_default_properties (void)
+{
+  ::reset_default_properties (default_properties);
 }
 
 // ---------------------------------------------------------------------
@@ -7578,7 +7682,7 @@ gh_manager::do_process_events (bool force)
           gh_manager::unlock ();
 
           if (e.ok ())
-	    e.execute ();
+            e.execute ();
         }
       while (e.ok ());
 
@@ -7638,6 +7742,10 @@ root_figure::init_factory_properties (void)
   plist_map["uimenu"] = uimenu::properties::factory_defaults ();
   plist_map["uicontrol"] = uicontrol::properties::factory_defaults ();
   plist_map["uipanel"] = uipanel::properties::factory_defaults ();
+  plist_map["uicontextmenu"] = uicontextmenu::properties::factory_defaults ();
+  plist_map["uitoolbar"] = uitoolbar::properties::factory_defaults ();
+  plist_map["uipushtool"] = uipushtool::properties::factory_defaults ();
+  plist_map["uitoggletool"] = uitoggletool::properties::factory_defaults ();
 
   return plist_map;
 }
@@ -8166,7 +8274,7 @@ Undocumented internal function.\n\
 
               if (xisnan (val))
                 h = gh_manager::make_graphics_handle ("figure", 0, false,
-						      false);
+                                                      false);
               else if (val > 0 && D_NINT (val) == val)
                 h = gh_manager::make_figure_handle (val, false);
               else
@@ -8356,6 +8464,42 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (uipanel);
+}
+
+DEFUN (__go_uicontextmenu__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uicontextmenu__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uicontextmenu);
+}
+
+DEFUN (__go_uitoolbar__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uitoolbar__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uitoolbar);
+}
+
+DEFUN (__go_uipushtool__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uipushtool__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uipushtool);
+}
+
+DEFUN (__go_uitoggletool__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uitoggletool__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uitoggletool);
 }
 
 DEFUN (__go_delete__, args, ,

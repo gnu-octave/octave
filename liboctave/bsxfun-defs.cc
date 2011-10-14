@@ -69,8 +69,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
   R *rvec = retval.fortran_vec ();
 
   // Fold the common leading dimensions.
-  int start;
-  octave_idx_type ldr = 1;
+  octave_idx_type start, ldr = 1;
   for (start = 0; start < nd; start++)
     {
       if (dvx(start) != dvy(start))

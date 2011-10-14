@@ -17,53 +17,100 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{s}] =} strsplit (@var{p}, @var{sep}, @var{strip_empty})
-## Split a single string using one or more delimiters and return a cell
+## @deftypefn {Function File} {[@var{cstr}] =} strsplit (@var{p}, @var{sep}, @var{strip_empty})
+## Split a string using one or more delimiters and return a cell
 ## array of strings.  Consecutive delimiters and delimiters at
 ## boundaries result in empty strings, unless @var{strip_empty} is true.
 ## The default value of @var{strip_empty} is false.
+##
+## 2-D character arrays are split at delimiters and at the original column
+## boundaries.
+##
+## Example:
+## @example
+## strsplit ("a,b,c", ",")
+##        @result{}
+##           @{
+##             [1,1] = a
+##             [1,2] = b
+##             [1,3] = c
+##           @}
+##
+## strsplit (["a,b" ; "cde"], ",")
+##        @result{}
+##           @{
+##             [1,1] = a
+##             [1,2] = b
+##             [1,3] = cde
+##           @}
+## @group
+## @end group
+## @end example
 ## @seealso{strtok}
 ## @end deftypefn
 
 function s = strsplit (p, sep, strip_empty = false)
 
-  if (nargin < 2 || nargin > 3 || ! ischar (p) || rows (p) > 1
-      || ! ischar (sep) || ! isscalar (strip_empty))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
+  elseif (! ischar (p) || ! ischar (sep))
+    error ("strsplit: P and SEP must be string values");
+  elseif (! isscalar (strip_empty))
+    error ("strsplit: STRIP_EMPTY must be a scalar value");
   endif
 
   if (isempty (p))
     s = cell (size (p));
   else
-    ## Split p according to delimiter.
+    if (rows (p) > 1)
+      ## For 2-D arrays, add separator character at line boundaries
+      ## and transform to single string
+      p(:, end+1) = sep(1);
+      p = reshape (p.', 1, numel (p));
+      p(end) = []; 
+    endif
+
+    ## Split p according to delimiter
     if (isscalar (sep))
-      ## Single separator.
+      ## Single separator
       idx = find (p == sep);
     else
-      ## Multiple separators.
+      ## Multiple separators
       idx = strchr (p, sep);
     endif
 
-    ## Get substring sizes.
+    ## Get substring lengths.
     if (isempty (idx))
-      sizes = numel (p);
+      strlens = length (p);
     else
-      sizes = [idx(1)-1, diff(idx)-1, numel(p)-idx(end)];
+      strlens = [idx(1)-1, diff(idx)-1, numel(p)-idx(end)];
     endif
     ## Remove separators.
     p(idx) = [];
     if (strip_empty)
       ## Omit zero lengths.
-      sizes = sizes (sizes != 0);
+      strlens = strlens(strlens != 0);
     endif
+
     ## Convert!
-    s = mat2cell (p, 1, sizes);
+    s = mat2cell (p, 1, strlens);
   endif
 
 endfunction
 
-%!assert (all (strcmp (strsplit ("road to hell", " "), {"road", "to", "hell"})))
 
-%!assert (all (strcmp (strsplit ("road to^hell", " ^"), {"road", "to", "hell"})))
+%!assert (strsplit ("road to hell", " "), {"road", "to", "hell"})
+%!assert (strsplit ("road to^hell", " ^"), {"road", "to", "hell"})
+%!assert (strsplit ("road   to--hell", " -", true), {"road", "to", "hell"})
+%!assert (strsplit (["a,bc";",de"], ","), {"a", "bc", ones(1,0), "de "})
+%!assert (strsplit (["a,bc";",de"], ",", true), {"a", "bc", "de "})
+%!assert (strsplit (["a,bc";",de"], ", ", true), {"a", "bc", "de"})
 
-%!assert (all (strcmp (strsplit ("road   to--hell", " -", true), {"road", "to", "hell"})))
+%% Test input validation
+%!error strsplit ()
+%!error strsplit ("abc")
+%!error strsplit ("abc", "b", true, 4)
+%!error <P and SEP must be string values> strsplit (123, "b")
+%!error <P and SEP must be string values> strsplit ("abc", 1)
+%!error <STRIP_EMPTY must be a scalar value> strsplit ("abc", "def", ones(3,3))
+

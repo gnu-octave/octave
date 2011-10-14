@@ -88,7 +88,15 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
             {
               parent_list.push_back (cnm);
 
-              map.assign (cnm, parent);
+              if (map.numel () > 1)
+                {
+                  // If MAP has more than one element, put the parent
+                  // class object in each element.
+
+                  map.assign (cnm, Cell (map.dims (), parent));
+                }
+              else
+                map.assign (cnm, parent);
             }
         }
     }

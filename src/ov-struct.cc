@@ -480,7 +480,7 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                if (t_rhs.is_map())
+                if (t_rhs.is_map() || t_rhs.is_object ())
                   {
                     octave_map rhs_map = t_rhs.map_value ();
 

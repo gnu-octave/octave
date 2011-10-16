@@ -42,10 +42,10 @@
 ##
 ## @example
 ## @group
-## validatestring ("r", {"red", "green", "blue"})
+## validatestring ("r", @{"red", "green", "blue"@})
 ##    @result{} "red"
 ##
-## validatestring ("b", {"red", "green", "blue", "black"})
+## validatestring ("b", @{"red", "green", "blue", "black"@})
 ##    @result{} error: validatestring: multiple unique matches were found for 'b':
 ##       blue, black
 ## @end group

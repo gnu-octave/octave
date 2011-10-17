@@ -3066,13 +3066,14 @@ figure::properties::set_visible (const octave_value& val)
 }
 
 Matrix
-figure::properties::get_boundingbox (bool, const Matrix&) const
+figure::properties::get_boundingbox (bool internal, const Matrix&) const
 {
   Matrix screen_size = screen_size_pixels ();
-  Matrix pos;
+  Matrix pos = (internal ?
+                get_position ().matrix_value () :
+                get_outerposition ().matrix_value ());
 
-  pos = convert_position (get_position ().matrix_value (), get_units (),
-                          "pixels", screen_size);
+  pos = convert_position (pos, get_units (), "pixels", screen_size);
 
   pos(0)--;
   pos(1)--;
@@ -3082,7 +3083,8 @@ figure::properties::get_boundingbox (bool, const Matrix&) const
 }
 
 void
-figure::properties::set_boundingbox (const Matrix& bb)
+figure::properties::set_boundingbox (const Matrix& bb, bool internal,
+                                     bool do_notify_toolkit)
 {
   Matrix screen_size = screen_size_pixels ();
   Matrix pos = bb;
@@ -3092,7 +3094,10 @@ figure::properties::set_boundingbox (const Matrix& bb)
   pos(0)++;
   pos = convert_position (pos, "pixels", get_units (), screen_size);
 
-  set_position (pos);
+  if (internal)
+    set_position (pos, do_notify_toolkit);
+  else
+    set_outerposition (pos, do_notify_toolkit);
 }
 
 Matrix
@@ -3130,14 +3135,15 @@ figure::properties::map_to_boundingbox (double x, double y) const
 }
 
 void
-figure::properties::set_position (const octave_value& v)
+figure::properties::set_position (const octave_value& v,
+                                  bool do_notify_toolkit)
 {
   if (! error_state)
     {
       Matrix old_bb, new_bb;
 
       old_bb = get_boundingbox ();
-      position = v;
+      position.set (v, true, do_notify_toolkit);
       new_bb = get_boundingbox ();
 
       if (old_bb != new_bb)
@@ -3150,6 +3156,19 @@ figure::properties::set_position (const octave_value& v)
         }
 
       mark_modified ();
+    }
+}
+
+void
+figure::properties::set_outerposition (const octave_value& v,
+                                       bool do_notify_toolkit)
+{
+  if (! error_state)
+    {
+      if (outerposition.set (v, true, do_notify_toolkit))
+        {
+          mark_modified ();
+        }
     }
 }
 

@@ -2882,3 +2882,52 @@ Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
 
 */
 
+DEFUN (is_sq_string, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_sq_string (@var{val})\n\
+Return true if @var{val} is a single-quoted character string\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_sq_string ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (is_sq_string ('foo'), true);
+%!assert (is_sq_string ("foo"), false);
+%!assert (is_sq_string (1.0), false);
+%!assert (is_sq_string ({2.0}), false);
+%!error is_sq_string ()
+%!error is_sq_string ('foo', 2)
+*/
+
+DEFUN (is_dq_string, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_dq_string (@var{val})\n\
+Return true if @var{val} is a double-quoted character string\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_dq_string ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (is_dq_string ("foo"), true);
+%!assert (is_dq_string ('foo'), false);
+%!assert (is_dq_string (1.0), false);
+%!assert (is_dq_string ({2.0}), false);
+%!error is_dq_string ()
+%!error is_dq_string ("foo", 2)
+*/

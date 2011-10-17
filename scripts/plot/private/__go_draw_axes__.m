@@ -1468,7 +1468,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                      axis_obj.tickdir);
             fputs (plot_stream, "set border 8;\n");
-            fputs (plot_stream, "set xzeroaxis lt -1 lw 1;\n");
+            fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
+                     axis_obj.linewidth);
           endif
         elseif (strcmpi (axis_obj.yaxislocation, "left"))
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
@@ -1485,7 +1486,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                      axis_obj.tickdir);
             fputs (plot_stream, "set border 2;\n");
-            fputs (plot_stream, "set xzeroaxis lt -1 lw 1;\n");
+            fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
+                     axis_obj.linewidth);
           endif
         else # yaxislocation == zero
           fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
@@ -1504,9 +1506,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
                      axis_obj.tickdir);
             fputs (plot_stream, "unset border;\n");
-            fputs (plot_stream, "set xzeroaxis lt -1 lw 1;\n");
+            fprintf (plot_stream, "set xzeroaxis lt -1 lw %f;\n",
+                     axis_obj.linewidth);
           endif
-          fputs (plot_stream, "set yzeroaxis lt -1 lw 1;\n");
+          fprintf (plot_stream, "set yzeroaxis lt -1 lw %f;\n",
+                   axis_obj.linewidth);
         endif
       endif
     endif

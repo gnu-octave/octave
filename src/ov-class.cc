@@ -494,7 +494,8 @@ octave_class::subsref (const std::string& type,
       else
         {
           if (type.length () == 1 && type[0] == '(')
-            retval(0) = octave_value (map.index (idx.front ()), class_name ());
+            retval(0) = octave_value (map.index (idx.front ()), class_name (),
+                                      parent_class_name_list ());
           else
             gripe_invalid_index1 ();
         }

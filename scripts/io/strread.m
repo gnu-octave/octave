@@ -226,15 +226,24 @@ function varargout = strread (str, format = "%f", varargin)
         endswitch
       case "delimiter"
         delimiter_str = varargin{n+1};
+        if (is_sq_string (delimiter_str))
+          delimiter_str = do_string_escapes (delimiter_str);
+        endif
       case "emptyvalue"
         numeric_fill_value = varargin{n+1};
       case "expchars"
         warning ('strread: property "expchars" is not implemented');
       case "whitespace"
         white_spaces = varargin{n+1};
+        if (is_sq_string (white_spaces))
+          white_spaces = do_string_escapes (white_spaces);
+        endif
       ## The following parameters are specific to textscan and textread
       case "endofline"
         eol_char = varargin{n+1};
+        if (is_sq_string (eol_char))
+          eol_char = do_string_escapes (eol_char);
+        endif
       case "returnonerror"
         err_action = varargin{n+1};
       case "multipledelimsasone"
@@ -800,3 +809,10 @@ endfunction
 %! assert (c', [13, 24, 34]);
 %! assert (d', [15, 25, 35]);
 
+%% delimiter as sq_string and dq_string
+%! assert (strread ("1\n2\n3", "%d", "delimiter", "\n"),
+%!         strread ("1\n2\n3", "%d", "delimiter", '\n'))
+
+%% whitespace as sq_string and dq_string
+%! assert (strread ("1\b2\r3\b4\t5", "%d", "whitespace", "\b\r\n\t"),
+%!         strread ("1\b2\r3\b4\t5", "%d", "whitespace", '\b\r\n\t'))

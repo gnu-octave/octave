@@ -125,9 +125,9 @@ public:
 
 // row vector by column vector -> scalar
 
-Complex operator * (const ComplexRowVector& a, const ColumnVector& b);
+Complex OCTAVE_API operator * (const ComplexRowVector& a, const ColumnVector& b);
 
-Complex operator * (const ComplexRowVector& a, const ComplexColumnVector& b);
+Complex OCTAVE_API operator * (const ComplexRowVector& a, const ComplexColumnVector& b);
 
 // other operations
 

@@ -2699,9 +2699,12 @@ protected:
 
   // No copying!
 
-  base_graphics_object (const base_graphics_object&);
+  base_graphics_object (const base_graphics_object&) : count (0) { }
 
-  base_graphics_object& operator = (const base_graphics_object&);
+  base_graphics_object& operator = (const base_graphics_object&)
+  {
+    return *this;
+  }
 };
 
 class OCTINTERP_API graphics_object

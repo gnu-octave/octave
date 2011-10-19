@@ -27,7 +27,12 @@ function handle = uipushtool (varargin)
 
   [h, args] = __uiobject_split_args__ ("uipushtool", varargin, {"uitoolbar"}, 0);
   if (isempty (h))
-    h = uitoolbar ();
+    h = findobj (gcf, "-depth", 1, "type", "uitoolbar");
+    if (isempty (h))
+      h = uitoolbar ();
+    else
+      h = h(1);
+    endif
   endif
   handle = __go_uipushtool__ (h, args{:});
 

@@ -27,7 +27,12 @@ function handle = uitoggletool (varargin)
 
   [h, args] = __uiobject_split_args__ ("uitoggletool", varargin, {"uitoolbar"}, 0);
   if (isempty (h))
-    h = uitoolbar ();
+    h = findobj (gcf, "-depth", 1, "type", "uitoolbar");
+    if (isempty (h))
+      h = uitoolbar ();
+    else
+      h = h(1);
+    endif
   endif
   handle = __go_uitoggletool__ (h, args{:});
 

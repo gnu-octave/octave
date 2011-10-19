@@ -49,8 +49,8 @@ extern "C" {
 #include <fcntl.h>
 #include <dirent.h>
 #elif defined(WIN32)
-#define __STDC__ 1
 #ifndef _MSC_VER
+#define __STDC__ 1
 #include "win32lib.h"
 #endif
 #endif /* not WIN32 */

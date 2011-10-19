@@ -227,7 +227,6 @@ extern OCTAVE_API int NINT (double x);
 extern OCTAVE_API int NINT (float x);
 
 template <typename T>
-OCTAVE_API
 T
 X_NINT (T x)
 {
@@ -305,7 +304,6 @@ signum (const std::complex<T>& x)
 }
 
 template <typename T>
-OCTAVE_API
 T
 xmod (T x, T y)
 {
@@ -353,7 +351,6 @@ xmod (T x, T y)
 }
 
 template <typename T>
-OCTAVE_API
 T
 xrem (T x, T y)
 {

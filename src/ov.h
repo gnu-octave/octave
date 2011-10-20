@@ -1373,7 +1373,7 @@ DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
 
 #define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL) \
 template<> \
-inline VALUE octave_value_extract<VALUE> (const octave_value& v) \
+inline VALUE octave_value_extract<VALUE> (const octave_value&) \
   { assert (false); return DEFVAL; }
 
 DEF_DUMMY_VALUE_EXTRACTOR (char, 0)

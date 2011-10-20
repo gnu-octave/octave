@@ -2542,7 +2542,7 @@ bool
 base_properties::is_handle_visible (void) const
 {
   return (handlevisibility.is ("on")
-          || executing_callback && ! handlevisibility.is ("off"));
+          || (executing_callback && ! handlevisibility.is ("off")));
 }
 
 graphics_toolkit
@@ -6946,8 +6946,8 @@ uicontrol::properties::get_extent (void) const
 {
   Matrix m = extent.get ().matrix_value ();
 
-  graphics_handle parent = get_parent ();
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_object parent_obj =
+    gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
@@ -6993,8 +6993,7 @@ uicontrol::properties::update_units (void)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_handle parent = get_parent ();
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
   
@@ -7165,8 +7164,7 @@ uipanel::properties::update_units (const caseless_str& old_units)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_handle parent = get_parent ();
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
   
@@ -7728,7 +7726,7 @@ gh_manager::do_process_events (bool force)
 void 
 gh_manager::do_enable_event_processing (bool enable)
 {
-  gh_manager::auto_lock lock;
+  gh_manager::auto_lock guard;
 
   if (enable)
     {

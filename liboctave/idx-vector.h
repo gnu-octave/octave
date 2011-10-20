@@ -63,6 +63,8 @@ public:
       class_mask
     };
 
+  template<class T> friend class std::auto_ptr;
+
 private:
 
   class OCTAVE_API idx_base_rep

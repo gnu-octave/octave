@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <iosfwd>
+#include <memory>
 
 #include "dim-vector.h"
 #include "oct-inttypes.h"

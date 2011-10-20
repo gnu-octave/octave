@@ -46,12 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "ov-re-mat.h"
 
-#ifdef USE_UNORDERED_MAP_WITH_TR1
-using namespace std::tr1;
-#else
-using namespace std;
-#endif
-
 /*
 %!shared __random_statistical_tests__
 %! % Flag whether the statistical tests should be run in "make check" or not
@@ -1037,6 +1031,13 @@ rand(). All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {
+
+#ifdef USE_UNORDERED_MAP_WITH_TR1
+using std::tr1::unordered_map;
+#else
+using std::unordered_map;
+#endif
+
   int nargin = args.length ();
   octave_value retval;
 

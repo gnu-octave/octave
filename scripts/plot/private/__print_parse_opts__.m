@@ -449,7 +449,7 @@ function gs = __ghostscript_binary__ ()
       gs_binaries = horzcat (gs_binaries, {"gs", "gs.exe"});
     else
       ## pc - Includes Win32 and mingw.
-      gs_binaries = horzcat (gs_binaries, {"gs.exe", "gswin32c.exe"});
+      gs_binaries = horzcat (gs_binaries, {"gs.exe", "gswin32c.exe", "mgs.exe"});
     endif
     n = 0;
     while (n < numel (gs_binaries) && isempty (ghostscript_binary))

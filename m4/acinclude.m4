@@ -565,7 +565,7 @@ dnl OCTAVE_PROG_GHOSTSCRIPT
 AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   case "$canonical_host_type" in
     *-*-mingw* | *-*-msdosmsvc)
-      gs_names="gswin32c gs"
+      gs_names="gswin32c gs mgs"
     ;;
     *)
       gs_names="gs"

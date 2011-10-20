@@ -1119,7 +1119,7 @@ along with Octave; see the file COPYING.  If not, see
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
-        if (do_mx_check (m1, mx_inline_all_finite)) \
+        if (do_mx_check (m1, mx_inline_all_finite<M1::element_type>)) \
           { \
             /* Sparsity pattern is preserved. */ \
             octave_idx_type m2_nz = m2.nnz (); \
@@ -1335,12 +1335,12 @@ along with Octave; see the file COPYING.  If not, see
   }
 
 // sm .* m preserves sparsity if m contains no Infs nor Nans.
-#define SPARSE_SMM_BIN_OP_2_CHECK_product \
-  do_mx_check (m2, mx_inline_all_finite)
+#define SPARSE_SMM_BIN_OP_2_CHECK_product(ET) \
+  do_mx_check (m2, mx_inline_all_finite<ET>)
 
 // sm ./ m preserves sparsity if m contains no NaNs or zeros.
-#define SPARSE_SMM_BIN_OP_2_CHECK_quotient \
-  ! do_mx_check (m2, mx_inline_any_nan) && m2.nnz () == m2.numel ()
+#define SPARSE_SMM_BIN_OP_2_CHECK_quotient(ET) \
+  ! do_mx_check (m2, mx_inline_any_nan<ET>) && m2.nnz () == m2.numel ()
 
 #define SPARSE_SMM_BIN_OP_2(R, F, OP, M1, M2) \
   R \
@@ -1360,7 +1360,7 @@ along with Octave; see the file COPYING.  If not, see
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
-        if (SPARSE_SMM_BIN_OP_2_CHECK_ ## F) \
+        if (SPARSE_SMM_BIN_OP_2_CHECK_ ## F(M2::element_type)) \
           { \
             /* Sparsity pattern is preserved. */ \
             octave_idx_type m1_nz = m1.nnz (); \

@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 boolNDArray
 boolNDArray::operator ! (void) const
 {
-  return do_mx_unary_op<bool> (*this, mx_inline_not);
+  return do_mx_unary_op<bool, bool> (*this, mx_inline_not);
 }
 
 boolNDArray&

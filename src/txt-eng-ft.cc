@@ -55,6 +55,14 @@ gripe_glyph_render (char c)
                    c);
 }
 
+#ifdef _MSC_VER
+// This is just a trick to avoid multiply symbols definition.
+// PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
+// that will make MSVC not to generate new instantiation and
+// use the imported one.
+#include "PermMatrix.h"
+#endif
+
 class
 ft_manager
 {

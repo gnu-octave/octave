@@ -47,11 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 #define HAVE_FINITE 1
 #endif
 
-#if ! defined (HAVE_COPYSIGN) && defined (HAVE__COPYSIGN)
-#define copysign _copysign
-#define HAVE_COPYSIGN 1
-#endif
-
 #if defined (_AIX) && defined (__GNUG__)
 #undef finite
 #define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)

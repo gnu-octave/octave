@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Double Precision
 extern OCTAVE_API double xtrunc (double x);
-inline double xcopysign (double x, double y) { return copysign (x, y); }
+extern OCTAVE_API double xcopysign (double x, double y);
 inline double xceil (double x) { return ceil (x); }
 extern OCTAVE_API double xfloor (double x);
 inline double arg (double x) { return atan2 (0.0, x); }
@@ -117,7 +117,7 @@ extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
 
 // Single Precision
 extern OCTAVE_API float xtrunc (float x);
-inline float xcopysign (float x, float y) { return copysignf (x, y); }
+extern OCTAVE_API float xcopysign (float x, float y);
 inline float xceil (float x) { return ceilf (x); }
 inline float xfloor (float x) { return floorf (x); }
 inline float arg (float x) { return atan2f (0.0f, x); }

@@ -813,14 +813,36 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
                   pfx = name.substr (0, 7);
 
                   if (pfx.compare ("surface") || pfx.compare ("hggroup")
-		      || pfx.compare ("uipanel"))
+                      || pfx.compare ("uipanel"))
                     offset = 7;
                   else if (len >= 9)
                     {
                       pfx = name.substr (0, 9);
 
-                      if (pfx.compare ("uicontrol"))
+                      if (pfx.compare ("uicontrol")
+                          || pfx.compare ("uitoolbar"))
                         offset = 9;
+                      else if (len >= 10)
+                        {
+                          pfx = name.substr (0, 10);
+
+                          if (pfx.compare ("uipushtool"))
+                            offset = 10;
+                          else if (len >= 12)
+                            {
+                              pfx = name.substr (0, 12);
+
+                              if (pfx.compare ("uitoggletool"))
+                                offset = 12;
+                              else if (len >= 13)
+                                {
+                                  pfx = name.substr (0, 13);
+
+                                  if (pfx.compare ("uicontextmenu"))
+                                    offset = 13;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -866,6 +888,14 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new uicontrol (h, p);
   else if (type.compare ("uipanel"))
     go = new uipanel (h, p);
+  else if (type.compare ("uicontextmenu"))
+    go = new uicontextmenu (h, p);
+  else if (type.compare ("uitoolbar"))
+    go = new uitoolbar (h, p);
+  else if (type.compare ("uipushtool"))
+    go = new uipushtool (h, p);
+  else if (type.compare ("uitoggletool"))
+    go = new uitoggletool (h, p);
   return go;
 }
 
@@ -1387,11 +1417,33 @@ callback_property::validate (const octave_value& v) const
   return false;
 }
 
+// If TRUE, we are executing any callback function, or the functions it
+// calls.  Used to determine handle visibility inside callback
+// functions.
+static bool executing_callback = false;
+
 void
 callback_property::execute (const octave_value& data) const
 {
-  if (callback.is_defined () && ! callback.is_empty ())
-    gh_manager::execute_callback (get_parent (), callback, data);
+  unwind_protect frame;
+
+  // We are executing the callback function associated with this
+  // callback property.  When set to true, we avoid recursive calls to
+  // callback routines.
+  frame.protect_var (executing);
+
+  // We are executing a callback function, so allow handles that have
+  // their handlevisibility property set to "callback" to be visible.
+  frame.protect_var (executing_callback);
+
+  if (! executing)
+    {
+      executing = true;
+      executing_callback = true;
+
+      if (callback.is_defined () && ! callback.is_empty ())
+        gh_manager::execute_callback (get_parent (), callback, data);
+    }
 }
 
 // Used to cache dummy graphics objects from which dynamic
@@ -1635,8 +1687,30 @@ property_list::set (const caseless_str& name, const octave_value& val)
                     {
                       pfx = name.substr (0, 9);
 
-                      if (pfx.compare ("uicontrol"))
+                      if (pfx.compare ("uicontrol")
+                          || pfx.compare ("uitoolbar"))
                         offset = 9;
+                      else if (len > 10)
+                        {
+                          pfx = name.substr (0, 10);
+
+                          if (pfx.compare ("uipushtool"))
+                            offset = 10;
+                          else if (len > 12)
+                            {
+                              pfx = name.substr (0, 12);
+
+                              if (pfx.compare ("uitoogletool"))
+                                offset = 12;
+                              else if (len > 13)
+                                {
+                                  pfx = name.substr (0, 13);
+
+                                  if (pfx.compare ("uicontextmenu"))
+                                    offset = 13;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1674,6 +1748,12 @@ property_list::set (const caseless_str& name, const octave_value& val)
             has_property = uicontrol::properties::has_core_property (pname);
           else if (pfx == "uipanel")
             has_property = uipanel::properties::has_core_property (pname);
+          else if (pfx == "uicontextmenu")
+            has_property = uicontextmenu::properties::has_core_property (pname);
+          else if (pfx == "uitoolbar")
+            has_property = uitoolbar::properties::has_core_property (pname);
+          else if (pfx == "uipushtool")
+            has_property = uipushtool::properties::has_core_property (pname);
 
           if (has_property)
             {
@@ -1745,8 +1825,30 @@ property_list::lookup (const caseless_str& name) const
                     {
                       pfx = name.substr (0, 9);
 
-                      if (pfx.compare ("uicontrol"))
+                      if (pfx.compare ("uicontrol")
+                          || pfx.compare ("uitoolbar"))
                         offset = 9;
+                      else if (len > 10)
+                        {
+                          pfx = name.substr (0, 10);
+
+                          if (pfx.compare ("uipushtool"))
+                            offset = 10;
+                          else if (len > 12)
+                            {
+                              pfx = name.substr (0, 12);
+
+                              if (pfx.compare ("uitoggletool"))
+                                offset = 12;
+                              else if (len > 13)
+                                {
+                                  pfx = name.substr (0, 13);
+
+                                  if (pfx.compare ("uicontextmenu"))
+                                    offset = 13;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2436,6 +2538,13 @@ base_properties::update_axis_limits (const std::string& axis_type,
     obj.update_axis_limits (axis_type, h);
 }
 
+bool
+base_properties::is_handle_visible (void) const
+{
+  return (handlevisibility.is ("on")
+          || (executing_callback && ! handlevisibility.is ("off")));
+}
+
 graphics_toolkit
 base_properties::get_toolkit (void) const
 {
@@ -2957,13 +3066,14 @@ figure::properties::set_visible (const octave_value& val)
 }
 
 Matrix
-figure::properties::get_boundingbox (bool, const Matrix&) const
+figure::properties::get_boundingbox (bool internal, const Matrix&) const
 {
   Matrix screen_size = screen_size_pixels ();
-  Matrix pos;
+  Matrix pos = (internal ?
+                get_position ().matrix_value () :
+                get_outerposition ().matrix_value ());
 
-  pos = convert_position (get_position ().matrix_value (), get_units (),
-                          "pixels", screen_size);
+  pos = convert_position (pos, get_units (), "pixels", screen_size);
 
   pos(0)--;
   pos(1)--;
@@ -2973,7 +3083,8 @@ figure::properties::get_boundingbox (bool, const Matrix&) const
 }
 
 void
-figure::properties::set_boundingbox (const Matrix& bb)
+figure::properties::set_boundingbox (const Matrix& bb, bool internal,
+                                     bool do_notify_toolkit)
 {
   Matrix screen_size = screen_size_pixels ();
   Matrix pos = bb;
@@ -2983,7 +3094,10 @@ figure::properties::set_boundingbox (const Matrix& bb)
   pos(0)++;
   pos = convert_position (pos, "pixels", get_units (), screen_size);
 
-  set_position (pos);
+  if (internal)
+    set_position (pos, do_notify_toolkit);
+  else
+    set_outerposition (pos, do_notify_toolkit);
 }
 
 Matrix
@@ -3021,14 +3135,15 @@ figure::properties::map_to_boundingbox (double x, double y) const
 }
 
 void
-figure::properties::set_position (const octave_value& v)
+figure::properties::set_position (const octave_value& v,
+                                  bool do_notify_toolkit)
 {
   if (! error_state)
     {
       Matrix old_bb, new_bb;
 
       old_bb = get_boundingbox ();
-      position = v;
+      position.set (v, true, do_notify_toolkit);
       new_bb = get_boundingbox ();
 
       if (old_bb != new_bb)
@@ -3041,6 +3156,19 @@ figure::properties::set_position (const octave_value& v)
         }
 
       mark_modified ();
+    }
+}
+
+void
+figure::properties::set_outerposition (const octave_value& v,
+                                       bool do_notify_toolkit)
+{
+  if (! error_state)
+    {
+      if (outerposition.set (v, true, do_notify_toolkit))
+        {
+          mark_modified ();
+        }
     }
 }
 
@@ -6818,8 +6946,8 @@ uicontrol::properties::get_extent (void) const
 {
   Matrix m = extent.get ().matrix_value ();
 
-  graphics_handle parent = get_parent ();
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_object parent_obj =
+    gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
 
@@ -6841,9 +6969,9 @@ uicontrol::properties::update_text_extent (void)
   elt = text_parser_none ().parse (get_string_string ());
 #ifdef HAVE_FONTCONFIG
   text_renderer.set_font (get_fontname (),
-			  get_fontweight (),
-			  get_fontangle (),
-			  get_fontsize ());
+                          get_fontweight (),
+                          get_fontangle (),
+                          get_fontsize ());
 #endif
   box = text_renderer.get_extent (elt, 0);
 
@@ -6865,8 +6993,7 @@ uicontrol::properties::update_units (void)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_handle parent = get_parent ();
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
   
@@ -7037,8 +7164,7 @@ uipanel::properties::update_units (const caseless_str& old_units)
 {
   Matrix pos = get_position ().matrix_value ();
 
-  graphics_handle parent = get_parent ();
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
   
@@ -7082,6 +7208,30 @@ uipanel::properties::get_fontsize_points (double box_pix_height) const
     parent_height = get_boundingbox (false).elem(3);
 
   return convert_font_size (fs, get_fontunits (), "points", parent_height);
+}
+
+// ---------------------------------------------------------------------
+
+octave_value
+uitoolbar::get_default (const caseless_str& name) const
+{
+  octave_value retval = default_properties.lookup (name);
+
+  if (retval.is_undefined ())
+    {
+      graphics_handle parent = get_parent ();
+      graphics_object parent_obj = gh_manager::get_object (parent);
+
+      retval = parent_obj.get_default (name);
+    }
+
+  return retval;
+}
+
+void
+uitoolbar::reset_default_properties (void)
+{
+  ::reset_default_properties (default_properties);
 }
 
 // ---------------------------------------------------------------------
@@ -7549,7 +7699,7 @@ gh_manager::do_process_events (bool force)
           gh_manager::unlock ();
 
           if (e.ok ())
-	    e.execute ();
+            e.execute ();
         }
       while (e.ok ());
 
@@ -7576,7 +7726,7 @@ gh_manager::do_process_events (bool force)
 void 
 gh_manager::do_enable_event_processing (bool enable)
 {
-  gh_manager::auto_lock lock;
+  gh_manager::auto_lock guard;
 
   if (enable)
     {
@@ -7609,6 +7759,10 @@ root_figure::init_factory_properties (void)
   plist_map["uimenu"] = uimenu::properties::factory_defaults ();
   plist_map["uicontrol"] = uicontrol::properties::factory_defaults ();
   plist_map["uipanel"] = uipanel::properties::factory_defaults ();
+  plist_map["uicontextmenu"] = uicontextmenu::properties::factory_defaults ();
+  plist_map["uitoolbar"] = uitoolbar::properties::factory_defaults ();
+  plist_map["uipushtool"] = uipushtool::properties::factory_defaults ();
+  plist_map["uitoggletool"] = uitoggletool::properties::factory_defaults ();
 
   return plist_map;
 }
@@ -7631,6 +7785,59 @@ graphics handles and false where they are not.\n\
 
   if (args.length () == 1)
     retval = is_handle (args(0));
+  else
+    print_usage ();
+
+  return retval;
+}
+
+static bool
+is_handle_visible (const graphics_handle& h)
+{
+  return h.ok () && gh_manager::is_handle_visible (h);
+}
+
+static bool
+is_handle_visible (double val)
+{
+  return is_handle_visible (gh_manager::lookup (val));
+}
+
+static octave_value
+is_handle_visible (const octave_value& val)
+{
+  octave_value retval = false;
+
+  if (val.is_real_scalar () && is_handle_visible (val.double_value ()))
+    retval = true;
+  else if (val.is_numeric_type () && val.is_real_type ())
+    {
+      const NDArray handles = val.array_value ();
+
+      if (! error_state)
+        {
+          boolNDArray result (handles.dims ());
+
+          for (octave_idx_type i = 0; i < handles.numel (); i++)
+            result.xelem (i) = is_handle_visible (handles (i));
+
+          retval = result;
+        }
+    }
+
+  return retval;
+}
+
+DEFUN (__is_handle_visible__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} __is_handle_visible__ (@var{h})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = is_handle_visible (args(0));
   else
     print_usage ();
 
@@ -8084,7 +8291,7 @@ Undocumented internal function.\n\
 
               if (xisnan (val))
                 h = gh_manager::make_graphics_handle ("figure", 0, false,
-						      false);
+                                                      false);
               else if (val > 0 && D_NINT (val) == val)
                 h = gh_manager::make_figure_handle (val, false);
               else
@@ -8274,6 +8481,42 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (uipanel);
+}
+
+DEFUN (__go_uicontextmenu__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uicontextmenu__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uicontextmenu);
+}
+
+DEFUN (__go_uitoolbar__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uitoolbar__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uitoolbar);
+}
+
+DEFUN (__go_uipushtool__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uipushtool__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uipushtool);
+}
+
+DEFUN (__go_uitoggletool__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_uitoggletool__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (uitoggletool);
 }
 
 DEFUN (__go_delete__, args, ,

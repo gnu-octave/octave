@@ -589,7 +589,7 @@ agree, or if either of the arguments is complex.\n\
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, xrem, "rem");
+              retval = binmap<float> (a0, a1, xrem<float>, "rem");
             }
         }
       else
@@ -603,13 +603,13 @@ agree, or if either of the arguments is complex.\n\
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, xrem, "rem");
+              retval = binmap<double> (m0, m1, xrem<double>, "rem");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, xrem, "rem");
+              retval = binmap<double> (a0, a1, xrem<double>, "rem");
             }
         }
     }
@@ -722,7 +722,7 @@ either of the arguments is complex.\n\
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, xmod, "mod");
+              retval = binmap<float> (a0, a1, xmod<float>, "mod");
             }
         }
       else
@@ -736,13 +736,13 @@ either of the arguments is complex.\n\
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, xmod, "mod");
+              retval = binmap<double> (m0, m1, xmod<double>, "mod");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, xmod, "mod");
+              retval = binmap<double> (a0, a1, xmod<double>, "mod");
             }
         }
     }

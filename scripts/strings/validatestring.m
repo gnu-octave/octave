@@ -21,18 +21,37 @@
 ## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname})
 ## @deftypefnx {Function File} {@var{validstr} =} validatestring (@var{str}, @var{strarray}, @var{funcname}, @var{varname})
 ## @deftypefnx {Function File} {@var{validstr} =} validatestring (@dots{}, @var{position})
-## Verify that @var{str} is a string or substring of an element of
+## Verify that @var{str} is an element, or substring of an element, in
 ## @var{strarray}.
 ##
-## @var{str} is a character string to be tested, and @var{strarray} is a
-## cellstr of valid values.  @var{validstr} will be the validated form
+## When @var{str} is a character string to be tested, and @var{strarray} is a
+## cellstr of valid values, then @var{validstr} will be the validated form
 ## of @var{str} where validation is defined as @var{str} being a member
-## or substring of @var{validstr}.  If @var{str} is a substring of
-## @var{validstr} and there are multiple matches, the shortest match
-## will be returned if all matches are substrings of each other, and an
-## error will be raised if the matches are not substrings of each other.
+## or substring of @var{validstr}.  This is useful for both verifying
+## and expanding short options, such as "r", to their longer forms, such as
+## "red".  If @var{str} is a substring of @var{validstr}, and there are
+## multiple matches, the shortest match will be returned if all matches are
+## substrings of each other.  Otherwise, an error will be raised because the
+## expansion of @var{str} is ambiguous.  All comparisons are case insensitive.
 ##
-## All comparisons are case insensitive.
+## The additional inputs @var{funcname}, @var{varname}, and @var{position}
+## are optional and will make any generated validation error message more
+## specific.
+##
+## Examples:
+##
+## @example
+## @group
+## validatestring ("r", @{"red", "green", "blue"@})
+##    @result{} "red"
+##
+## validatestring ("b", @{"red", "green", "blue", "black"@})
+##    @result{} error: validatestring: multiple unique matches were found for 'b':
+##       blue, black
+## @end group
+## @end example
+##
+## 
 ## @seealso{strcmp, strcmpi}
 ## @end deftypefn
 
@@ -44,55 +63,40 @@ function str = validatestring (str, strarray, varargin)
     print_usage ();
   endif
 
-  ## set the defaults
-  funcname = "";
-  varname = "";
   position = 0;
-  ## set the actual values
-  if (! isempty (varargin))
-    if (isnumeric (varargin{end}))
-      position = varargin{end};
-      varargin(end) = [];
-    endif
+  ## Process input arguments
+  if (! isempty (varargin) && isnumeric (varargin{end}))
+    position = varargin{end};
+    varargin(end) = [];
   endif
-  funcnameset = false;
-  varnameset = false;
-  for i = 1:numel (varargin)
-    if (ischar (varargin{i}))
-      if (varnameset)
-        error ("validatestring: invalid number of character inputs: %d",
-               numel (varargin));
-      elseif (funcnameset)
-        varname = varargin{i};
-        varnameset = true;
-      else
-        funcname = varargin{i};
-        funcnameset = true;
-      endif
-    endif
-  endfor
+  
+  funcname = varname = "";
+  char_idx = cellfun ("isclass", varargin, "char");
+  n_chararg = sum (char_idx);
+  if (n_chararg > 2)
+    error ("validatestring: invalid number of character inputs (3)");
+  elseif (n_chararg == 2)
+    [funcname, varname] = deal (varargin{char_idx});
+  elseif (n_chararg == 1)
+    funcname = varargin{char_idx};
+  endif
 
   ## Check the inputs
   if (! ischar (str))
     error ("validatestring: STR must be a character string");
-  elseif (rows (str) != 1)
-    error ("validatestring: STR must have only one row");
+  elseif (! isrow (str))
+    error ("validatestring: STR must be a single row vector");
   elseif (! iscellstr (strarray))
     error ("validatestring: STRARRAY must be a cellstr");
-  elseif (! ischar (funcname))
-    error ("validatestring: FUNCNAME must be a character string");
-  elseif (! isempty (funcname) && (rows (funcname) != 1))
-    error ("validatestring: FUNCNAME must be exactly one row");
-  elseif (! ischar (varname))
-    error ("validatestring: VARNAME must be a character string");
-  elseif (! isempty (varname) && (rows (varname) != 1))
-    error ("validatestring: VARNAME must be exactly one row");
+  elseif (! isempty (funcname) && ! isrow (funcname))
+    error ("validatestring: FUNCNAME must be a single row vector");
+  elseif (! isempty (varname) && ! isrow (varname))
+    error ("validatestring: VARNAME must be a single row vector");
   elseif (position < 0)
     error ("validatestring: POSITION must be >= 0");
   endif
 
-  ## make the part of the error that will use funcname, varname, and
-  ## position
+  ## Make static part of error string that uses funcname, varname, and position
   errstr = "";
   if (! isempty (funcname))
     errstr = sprintf ("Function: %s ", funcname);
@@ -109,35 +113,51 @@ function str = validatestring (str, strarray, varargin)
 
   matches = strncmpi (str, strarray(:), numel (str));
   nmatches = sum (matches);
-  if (nmatches == 1)
+  if (nmatches == 0)
+    error ("validatestring: %s'%s' does not match any of\n%s", errstr, str,
+           sprintf ("%s, ", strarray{:})(1:end-2));
+  elseif (nmatches == 1)
     str = strarray{matches};
-  elseif (nmatches == 0)
-    error ("validatestring: %s%s does not match any of\n%s", errstr, str,
-           sprintf ("%s, ", strarray{:})(1:end-1));
   else
-    ## are the matches a substring of each other, if so, choose the
-    ## shortest.  If not, raise an error.
+    ## Are the matches substrings of each other?
+    ## If true, choose the shortest.  If not, raise an error.
     match_idx = find (matches);
-    match_l = cellfun ("length", strarray(match_idx));
-    longest_idx = find (match_l == max (match_l), 1);
-    shortest_idx = find (match_l == min (match_l), 1);
-    longest = strarray(match_idx)(longest_idx);
-    for i = 1:numel(match_idx)
-      currentmatch = strarray(match_idx(i));
-      if (! strncmpi (longest, currentmatch, length(currentmatch)))
-        error ("validatestring: %smultiple unique matches were found for %s:\n%s",
-               errstr, sprintf ("%s, ", strarray(match_idx))(1:end-2));
-      endif
-    endfor
-    str = strarray{shortest_idx};
+    match_len = cellfun ("length", strarray(match_idx));
+    [min_len, min_idx] = min (match_len); 
+    short_str = strarray{match_idx(min_idx)};
+    submatch = strncmpi (short_str, strarray(match_idx), min_len);    
+    if (all (submatch))
+      str = short_str;
+    else
+      error ("validatestring: %smultiple unique matches were found for '%s':\n%s",
+             errstr, str, sprintf ("%s, ", strarray{match_idx})(1:end-2));
+    endif
   endif
 
 endfunction
 
-## Tests
+
 %!shared strarray
 %!  strarray = {"octave" "Oct" "octopus" "octaves"};
 %!assert (validatestring ("octave", strarray), "octave")
 %!assert (validatestring ("oct", strarray), "Oct")
-%!assert (validatestring ("octave", strarray), "octave")
-%!assert (validatestring ("octav", strarray), "octave")
+%!assert (validatestring ("octa", strarray), "octave")
+%!  strarray = {"abc1" "def" "abc2"};
+%!assert (validatestring ("d", strarray), "def")
+%!error <'xyz' does not match any> validatestring ("xyz", strarray)
+%!error <Function: DUMMY_TEST> validatestring ("xyz", strarray, "DUMMY_TEST")
+%!error <Function: DUMMY_TEST Variable: DUMMY_VAR:> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR")
+%!error <Function: DUMMY_TEST Variable: DUMMY_VAR Argument position 5> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR", 5)
+%!error <multiple unique matches were found for 'abc'> validatestring ("abc", strarray)
+
+%% Test input validation
+%!error validatestring ("xyz")
+%!error validatestring ("xyz", {"xyz"}, "3", "4", 5, 6)
+%!error <invalid number of character inputs> validatestring ("xyz", {"xyz"}, "3", "4", "5")
+%!error <STR must be a character string> validatestring (1, {"xyz"}, "3", "4", 5)
+%!error <STR must be a single row vector> validatestring ("xyz".', {"xyz"}, "3", "4", 5)
+%!error <STRARRAY must be a cellstr> validatestring ("xyz", "xyz", "3", "4", 5)
+%!error <FUNCNAME must be a single row vector> validatestring ("xyz", {"xyz"}, "33".', "4", 5)
+%!error <VARNAME must be a single row vector> validatestring ("xyz", {"xyz"}, "3", "44".', 5)
+%!error <POSITION must be> validatestring ("xyz", {"xyz"}, "3", "4", -5)
+

@@ -17,15 +17,23 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{handle} =} uitoggletool ('Name', value, @dots{})
+## @deftypefnx {Function File} {@var{handle} =} uitoggletool (@var{parent}, 'Name', value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uipanel (varargin)
+function handle = uitoggletool (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  [h, args] = __uiobject_split_args__ ("uitoggletool", varargin, {"uitoolbar"}, 0);
+  if (isempty (h))
+    h = findobj (gcf, "-depth", 1, "type", "uitoolbar");
+    if (isempty (h))
+      h = uitoolbar ();
+    else
+      h = h(1);
+    endif
+  endif
+  handle = __go_uitoggletool__ (h, args{:});
 
 endfunction

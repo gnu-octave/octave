@@ -28,8 +28,7 @@
 function h = axes (varargin)
 
   if (nargin == 0 || nargin > 1)
-    ## make default axes object, and make it the current axes for the
-    ## current figure.
+    ## Create an axes object.
     idx = find (strcmpi (varargin(1:2:end), "parent"), 1, "first");
     if (! isempty (idx) && length (varargin) >= 2*idx)
       cf = varargin{2*idx};
@@ -38,16 +37,19 @@ function h = axes (varargin)
       cf = gcf ();
     endif
     tmp = __go_axes__ (cf, varargin{:});
-    set (ancestor (cf, "figure"), "currentaxes", tmp);
+    if (__is_handle_visible__ (tmp))
+      set (ancestor (cf, "figure"), "currentaxes", tmp);
+    endif
   else
-    ## arg is axes handle, make it the current axes for the current
-    ## figure.
+    ## arg is axes handle.
     tmp = varargin{1};
     if (length(tmp) == 1 && ishandle (tmp)
         && strcmp (get (tmp, "type"), "axes"))
-      parent = ancestor (tmp, "figure");
-      set (0, "currentfigure", parent);
-      set (parent, "currentaxes", tmp);
+      if (__is_handle_visible__ (tmp))
+        parent = ancestor (tmp, "figure");
+        set (0, "currentfigure", parent);
+        set (parent, "currentaxes", tmp);
+      endif
     else
       error ("axes: expecting argument to be a scalar axes handle");
     endif

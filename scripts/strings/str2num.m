@@ -53,15 +53,12 @@ function [m, state] = str2num (s)
 
   if (nargin != 1) 
     print_usage ();
-  endif
-  
-  if (! ischar (s))
+  elseif (! ischar (s))
     error ("str2num: S must be a string or string array");
   endif
 
-  [nr, nc] = size (s);
-  sep = repmat (";", nr, 1);
-  s = sprintf ("m = [%s];", reshape ([s, sep]', 1, nr * (nc + 1)));
+  s(:, end+1) = ";";
+  s = sprintf ("m = [%s];", reshape (s', 1, numel (s)));
   state = true;
   eval (s, "m = []; state = false;");
   if (ischar (m))
@@ -75,13 +72,14 @@ endfunction
 %!assert(str2num ("-1.3e2"), -130);
 %!assert(str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4]);
 
-%% Test input validation
-%!error str2num ()
-%!error str2num ("string", 1)
-%!error str2num ({"string"})
-
 %!test
 %! [x, state] = str2num ("pi");
 %! assert (state);
-%! [x, state] = str2num (tmpnam);
+%! [x, state] = str2num ("Hello World");
 %! assert (! state);
+
+%% Test input validation
+%!error str2num ()
+%!error str2num ("string", 1)
+%!error <S must be a string> str2num ({"string"})
+

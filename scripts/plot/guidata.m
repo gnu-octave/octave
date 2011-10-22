@@ -17,15 +17,36 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{data} =} guidata (@var{handle})
+## @deftypefnx {Function File} guidata (@var{handle}, @var{data})
 ## @end deftypefn
 
 ## Author: goffioul
 
-function handle = uipanel (varargin)
+function varargout = guidata (varargin)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  if (nargin == 1 || nargin == 2)
+    h = varargin{1};
+    if (ishandle (h))
+      h = ancestor (h, "figure");
+      if (! isempty (h))
+        if (nargin == 1)
+          varargout{1} = get (h, "__guidata__");
+        else
+          data = varargin{2};
+          set (h, "__guidata__", data);
+          if (nargout == 1)
+            varargout{1} = data;
+          endif
+        endif
+      else
+        error ("no ancestor figure found");
+      endif
+    else
+      error ("invalid object handle");
+    endif
+  else
+    print_usage ();
+  endif
 
 endfunction

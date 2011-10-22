@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <algorithm>
 #include <iosfwd>
+#include <memory>
 
 #include "dim-vector.h"
 #include "oct-inttypes.h"
@@ -62,6 +63,8 @@ public:
       class_vector,
       class_mask
     };
+
+  template<class T> friend class std::auto_ptr;
 
 private:
 

@@ -67,9 +67,15 @@ function [h, failed] = __patch__ (p, varargin)
       elseif (nargin > 3 && all (is_numeric_arg(1:3)))
         x = varargin{1};
         y = varargin{2};
-        z = [];
-        c = varargin{3};
         iarg = 4;
+        if (rem (nargin - iarg, 2) == 1)
+          c = varargin {iarg};
+          z = varargin{3};
+          iarg = 5;
+        else
+          z = [];
+          c = varargin{3};
+        endif
       elseif (nargin > 2 && all (is_numeric_arg(1:2)))
         x = varargin{1};
         y = varargin{2};
@@ -134,17 +140,13 @@ function [h, failed] = __patch__ (p, varargin)
             args{8} = "interp";
             args{9} = "cdata";
             args{10} = [];
+          elseif (isequal (size (c), size (x)) && isequal (size (c), size (y)))
+            args{7} = "facecolor";
+            args{8} = "interp";
+            args{9} = "cdata";
+            args{10} = c;
           else
-            if (rows (c) != rows (x) || rows (c) != length (y))
-              error ("patch: size of x, y, and c must be equal");
-            elseif (rows (c) == rows (x) && rows (c) == rows (y))
-              args{7} = "facecolor";
-              args{8} = "interp";
-              args{9} = "cdata";
-              args{10} = c;
-            else
-              error ("patch: color value not valid");
-            endif
+            error ("patch: size of x, y, and c must be equal");
           endif
         endif
       elseif (ischar (c) && rem (nargin - iarg, 2) == 0)
@@ -320,7 +322,7 @@ function args = setvertexdata (args)
   elseif (isvector (c))
     fvc = c(:);
   else
-    fvc = c.';
+    fvc = c.'(:);
   endif
 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};

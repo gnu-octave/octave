@@ -1062,6 +1062,10 @@ error: nargin != 1\n\
         }
       else if (nargin == 1 && args(0).is_map ())
         {
+          // empty struct is not an error.  return and resume calling function.
+          if (args(0).is_empty ())
+            return retval;
+
           octave_value_list tmp;
 
           octave_scalar_map m = args(0).scalar_map_value ();

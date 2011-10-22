@@ -17,15 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{dirname} =} __uigetdir_fltk__ (@var{start_path}, @var{dialog_title})
+## Undocumented internal function.
 ## @end deftypefn
 
-## Author: goffioul
+## Author: Michael Goffioul
 
-function handle = uipanel (varargin)
+function dirname = __uigetdir_fltk__ (start_path, dialog_title)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  if (exist("__fltk_uigetfile__") != 3)
+    error ("uigetdir: fltk graphics toolkit required");
+  endif
+
+  dirname = __fltk_uigetfile__ ("", dialog_title, start_path, [240, 120], "dir");
 
 endfunction

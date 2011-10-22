@@ -27,7 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cstdlib>
-#include <memory>
 
 #include <iostream>
 

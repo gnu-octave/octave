@@ -88,7 +88,15 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
             {
               parent_list.push_back (cnm);
 
-              map.assign (cnm, parent);
+              if (map.numel () > 1)
+                {
+                  // If MAP has more than one element, put the parent
+                  // class object in each element.
+
+                  map.assign (cnm, Cell (map.dims (), parent));
+                }
+              else
+                map.assign (cnm, parent);
             }
         }
     }
@@ -322,6 +330,17 @@ octave_class::size (void)
       else
         error ("@%s/size: invalid return value", class_name ().c_str ());
     }
+  else
+    {
+      dim_vector dv = dims ();
+
+      int nel = dv.numel ();
+
+      retval.resize (1, nel);
+
+      for (int i = 0; i < nel; i++)
+        retval(i) = dv(i);
+    }
 
   return retval;
 }
@@ -475,7 +494,8 @@ octave_class::subsref (const std::string& type,
       else
         {
           if (type.length () == 1 && type[0] == '(')
-            retval(0) = octave_value (map.index (idx.front ()), class_name ());
+            retval(0) = octave_value (map.index (idx.front ()), class_name (),
+                                      parent_class_name_list ());
           else
             gripe_invalid_index1 ();
         }
@@ -995,6 +1015,35 @@ octave_class::unique_parent_class (const std::string& parent_class_name)
 
   return retval;
 }
+
+string_vector
+octave_class::all_strings (bool pad) const
+{
+  string_vector retval;
+
+  octave_value meth = symbol_table::find_method ("char", class_name ());
+
+  if (meth.is_defined ())
+    {
+      octave_value_list args;
+      args(0) = octave_value (new octave_class (map, c_name));
+
+      octave_value_list tmp = feval (meth.function_value (), args, 1);
+
+      if (!error_state && tmp.length () >= 1)
+        {
+          if (tmp(0).is_string ())
+            retval = tmp(0).all_strings (pad);
+          else
+            error ("cname/char method did not return a character string");
+        }
+    }
+  else
+    error ("no char method defined for class %s", class_name().c_str ());
+
+  return retval;
+}
+
 
 void
 octave_class::print (std::ostream& os, bool) const

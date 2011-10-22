@@ -26,7 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <ctime>
+#if defined (HAVE_UNORDERED_MAP)
+#include <unordered_map>
+#elif defined (HAVE_TR1_UNORDERED_MAP)
 #include <tr1/unordered_map>
+#endif
 #include <string>
 
 #include "f77-fcn.h"
@@ -1027,6 +1031,13 @@ rand(). All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {
+
+#ifdef USE_UNORDERED_MAP_WITH_TR1
+using std::tr1::unordered_map;
+#else
+using std::unordered_map;
+#endif
+
   int nargin = args.length ();
   octave_value retval;
 
@@ -1066,8 +1077,7 @@ rand(). All permutations are equally likely.\n\
 
           if (short_shuffle)
             {
-              std::tr1::unordered_map<octave_idx_type,
-                                      octave_idx_type> map (m);
+              unordered_map<octave_idx_type, octave_idx_type> map (m);
 
               // Perform the Knuth shuffle only keeping track of moved
               // entries in the map

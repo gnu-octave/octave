@@ -17,15 +17,22 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __uiputfile_fltk__ ()
+## Undocumented internal function.
 ## @end deftypefn
 
-## Author: goffioul
+## Author: Michael Goffioul
 
-function handle = uipanel (varargin)
+function [retval, retpath, retindex] = __uiputfile_fltk__ (filters, title, defval, position, tag, defdir)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  if (exist("__fltk_uigetfile__") != 3)
+    error ("uiputfile: fltk graphics toolkit required");
+  endif
+
+  filters = __fltk_file_filter__ (filters);
+  if (length (defdir) > 0)
+    defval = fullfile (defdir, defval);
+  endif
+  [retval, retpath, retindex] = __fltk_uigetfile__ (filters, title, defval, position, tag);
 
 endfunction

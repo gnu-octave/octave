@@ -502,3 +502,48 @@ endfunction
 %! loglog (1:20, "-s")
 %! axis tight
 
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "left")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "right")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "bottom")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "top")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+

@@ -115,6 +115,12 @@ function h = imshow (im, varargin)
     endif
   endwhile
 
+  ## Check for complex images.
+  if (iscomplex (im))
+    warning ("imshow: only showing real part of complex image");
+    im = real (im);
+  endif
+
   ## Set default display range if display_range not set yet.
   if (isempty (display_range))
     display_range = [min(im(:)), max(im(:))];
@@ -128,12 +134,6 @@ function h = imshow (im, varargin)
       otherwise
         error ("imshow: invalid data type for image");
     endswitch
-  endif
-
-  ## Check for complex images.
-  if (iscomplex (im))
-    warning ("imshow: only showing real part of complex image");
-    im = real (im);
   endif
 
   nans = isnan (im(:));

@@ -21,17 +21,19 @@
 ## @deftypefnx {Function File} {} clf ("reset")
 ## @deftypefnx {Function File} {} clf (@var{hfig})
 ## @deftypefnx {Function File} {} clf (@var{hfig}, "reset")
+## @deftypefnx {Function File} {@var{h} =} clf (@dots{})
 ## Clear the current figure window.  @code{clf} operates by deleting child
 ## graphics objects with visible handles (@code{handlevisibility} = on).
 ## If @var{hfig} is specified operate on it instead of the current figure.
 ## If the optional argument @code{"reset"} is specified, all objects including
-## those with hidden handles are deleted.
+## those with hidden handles are deleted.  If an output value is
+## requested, return the handle of the figure window that was cleared.
 ## @seealso{cla, close, delete}
 ## @end deftypefn
 
 ## Author: jwe
 
-function clf (varargin)
+function retval = clf (varargin)
 
   if (nargin > 2)
     print_usage ();
@@ -73,6 +75,10 @@ function clf (varargin)
 
   ## Delete the children.
   delete (hc);
+
+  if (nargout > 0)
+    retval = hfig;
+  endif
 
 endfunction
 

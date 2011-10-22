@@ -26,6 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_FLTK)
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <FL/Fl.H>
 #include <FL/Fl_File_Chooser.H>
 

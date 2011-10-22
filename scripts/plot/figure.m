@@ -73,7 +73,9 @@ function h = figure (varargin)
   endif
 
   cf = get (0, "currentfigure");
-  __add_default_menu__ (cf);
+  if (strcmp (get (cf, "__graphics_toolkit__"), "fltk"))
+    __add_default_menu__ (cf);
+  endif
 
   if (nargout > 0)
     h = f;

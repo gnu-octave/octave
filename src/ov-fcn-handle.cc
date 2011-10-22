@@ -1956,3 +1956,12 @@ octave_fcn_binder::do_multi_index_op (int nargout,
 
   return retval;
 }
+
+/*
+%!function r = f (g, i)
+%!  r = g(i);
+%!endfunction
+%!test
+%! x = [1,2;3,4];
+%! assert (f (@(i) x(:,i), 1), [1;3]);
+*/

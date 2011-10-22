@@ -40,6 +40,10 @@ To initialize:
 #include <sstream>
 #include <iostream>
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Button.H>

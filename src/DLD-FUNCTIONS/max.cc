@@ -178,7 +178,7 @@ do_minmax_body (const octave_value_list& args,
             }
 
           if (! args(1).is_empty ())
-            warning ("%s: second argument is ignored");
+            warning ("%s: second argument is ignored", func);
         }
 
       switch (arg.builtin_type ())

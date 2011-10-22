@@ -17,15 +17,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uipanel ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uipanel (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{result} =} __is_function__ (@var{func})
+## Undocumented internal function.
 ## @end deftypefn
 
-## Author: goffioul
+## Author: Michael Goffioul
 
-function handle = uipanel (varargin)
+function result = __is_function__ (func)
 
-  [h, args] = __uiobject_split_args__ ("uipanel", varargin, {"figure", "uipanel", "uibuttongroup"});
-  handle = __go_uipanel__ (h, args{:});
+  existval = exist (func);
+  result = (existval == 2 || existval == 3 || existval == 5 || existval == 6);
 
 endfunction

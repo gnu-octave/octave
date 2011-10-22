@@ -46,6 +46,7 @@
 #    pragma warning(disable:4115)
 #    pragma warning(disable:4996)
 #  endif
+#  define WIN32_LEAN_AND_MEAN
 #  include <windows.h>
 #  if defined(GL2PSDLL)
 #    if defined(GL2PSDLL_EXPORTS)

@@ -54,7 +54,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
   df_num = length (x) - 1;
   df_den = length (y) - 1;
   f      = var (x) / var (y);
-  cdf    = f_cdf (f, df_num, df_den);
+  cdf    = fcdf (f, df_num, df_den);
 
   if (nargin == 2)
     alt  = "!=";

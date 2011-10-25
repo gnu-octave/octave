@@ -251,8 +251,12 @@ endfunction
 %! s = s(idx);
 %! u = u(:,idx);
 %! v = v(:,idx);
+%! old_state1 = randn ("state");
+%! restore_state1 = onCleanup (@() randn ("state", old_state1));
+%! old_state2 = rand ("state");
+%! restore_state2 = onCleanup (@() rand ("state", old_state2));
 %! randn ('state', 42);      % Initialize to make normest function reproducible
-%! rand ('state', 42)
+%! rand ('state', 42);
 %! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
 %!                         % to guarantee reproducible results
 %!test
@@ -279,3 +283,4 @@ endfunction
 %!test
 %! s = svds (speye (10));
 %! assert (s, ones (6, 1), 2*eps);
+

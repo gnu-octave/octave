@@ -27,7 +27,7 @@
 ## @seealso{triplot, trimesh, delaunay3}
 ## @end deftypefn
 
-function varargout = trisurf (tri, x, y, z, varargin)
+function h = trisurf (tri, x, y, z, varargin)
 
   if (nargin < 3)
     print_usage ();
@@ -55,11 +55,11 @@ function varargout = trisurf (tri, x, y, z, varargin)
       varargin(end+(1:2)) = {"EdgeColor", "none"};
     endif
     newplot ();
-    h = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
-               "FaceVertexCData", reshape (c, numel (c), 1),
-               varargin{:});
+    handle = patch ("Faces", tri, "Vertices", [x(:), y(:), z(:)],
+                    "FaceVertexCData", reshape (c, numel (c), 1),
+                    varargin{:});
     if (nargout > 0)
-      varargout = {h};
+      h = handle;
     endif
 
     if (! ishold ())
@@ -67,11 +67,15 @@ function varargout = trisurf (tri, x, y, z, varargin)
            "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   endif
+
 endfunction
 
+
 %!demo
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 10);
 %! N = 10;
-%! rand ('state', 10)
 %! x = 3 - 6 * rand (N, N);
 %! y = 3 - 6 * rand (N, N);
 %! z = peaks (x, y);
@@ -98,5 +102,4 @@ endfunction
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
 %! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k")
-
 

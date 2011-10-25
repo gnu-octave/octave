@@ -39,28 +39,29 @@ function h = trimesh (tri, x, y, z, varargin)
     triplot (tri, x, y, z, varargin{:});
   else
     newplot ();
-    if (nargout > 0)
-      h = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
-                 "FaceColor", "none", "EdgeColor", __next_line_color__(),
-                 varargin{:});
-    else
-      patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
-             "FaceColor", "none", "EdgeColor", __next_line_color__(),
-             varargin{:});
-    endif
-
+    handle = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
+                    "FaceColor", "none", "EdgeColor", __next_line_color__(),
+                    varargin{:});
     if (! ishold ())
       set (gca(), "view", [-37.5, 30],
            "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
+    if (nargout > 0)
+      h = handle;
+    endif
   endif
+
 endfunction
 
+
 %!demo
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 10);
 %! N = 10;
-%! rand ('state', 10)
 %! x = 3 - 6 * rand (N, N);
 %! y = 3 - 6 * rand (N, N);
 %! z = peaks (x, y);
 %! tri = delaunay (x(:), y(:));
 %! trimesh (tri, x(:), y(:), z(:));
+

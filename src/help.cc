@@ -729,14 +729,14 @@ Begin the cleanup section of an unwind_protect block.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargin\n\
 Pass an arbitrary number of arguments into a function.\n\
-@seealso{varargout, nargin, nargout}\n\
+@seealso{varargout, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("varargout",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargout\n\
 Pass an arbitrary number of arguments out of a function.\n\
-@seealso{varargin, nargin, nargout}\n\
+@seealso{varargin, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("while",

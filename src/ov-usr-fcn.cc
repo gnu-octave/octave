@@ -635,7 +635,7 @@ At the top level, return the number of command line arguments passed to\n\
 Octave.  If called with the optional argument @var{fcn_name}, return the\n\
 maximum number of arguments the named function can accept, or -1 if the\n\
 function accepts a variable number of arguments.\n\
-@seealso{nargout, varargin, varargout}\n\
+@seealso{nargout, varargin, isargout, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -709,7 +709,7 @@ will cause @code{nargout} to return 2 inside the function\n\
 @code{f}.\n\
 \n\
 At the top level, @code{nargout} is undefined.\n\
-@seealso{nargin, isargout, varargin, varargout}\n\
+@seealso{nargin, varargin, isargout, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -806,7 +806,7 @@ If @var{k} is outside the range @code{1:max(nargout)}, the function returns\n\
 false.  @var{k} can also be an array, in which case the function works\n\
 element-by-element and a logical array is returned.  At the top level,\n\
 @code{isargout} returns an error.\n\
-@seealso{nargout, nargin, varargin, varargout}\n\
+@seealso{nargout, nargin, varargin, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;

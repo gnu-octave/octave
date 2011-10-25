@@ -289,6 +289,12 @@ convenient.  The values to be returned may not have compatible
 dimensions, and it is often desirable to give the individual return
 values distinct names.
 
+It is possible to use the @code{nthargout} function to obtain only some
+of the return values or several at once in a cell array. @ref{Cell Array
+Objects}
+
+@DOCSTRING(nthargout)
+
 In addition to setting @code{nargin} each time a function is called,
 Octave also automatically initializes @code{nargout} to the number of
 values that are expected to be returned.  This allows you to write

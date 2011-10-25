@@ -62,6 +62,7 @@ Summary of important user-visible changes for version 3.6:
 
  ** Other miscellaneous new functions:
 
+      nthargout
       iscolumn
       issrow
       zscore

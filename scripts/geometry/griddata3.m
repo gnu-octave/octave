@@ -53,28 +53,32 @@ function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
 
   vi = griddatan ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});
   vi = reshape (vi, size (xi));
+
 endfunction
 
-%!testif HAVE_QHULL
-%! rand('state', 0);
-%! x = 2 * rand(1000, 1) - 1;
-%! y = 2 * rand(1000, 1) - 1;
-%! z = 2 * rand(1000, 1) - 1;
-%! v = x.^2 + y.^2 + z.^2;
-%! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
-%! ##vi = reshape (griddatan([x(:), y(:), z(:)], v, [xi(:), yi(:), zi(:)], 'linear'), size (xi));
-%! vi = griddata3 (x, y, z, v, xi, yi, zi, 'linear');
-%! vv = vi - xi.^2 - yi.^2 - zi.^2;
-%! assert (max(abs(vv(:))), 0, 0.1)
 
 %!testif HAVE_QHULL
-%! rand('state', 0);
-%! x = 2 * rand(1000, 1) - 1;
-%! y = 2 * rand(1000, 1) - 1;
-%! z = 2 * rand(1000, 1) - 1;
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 0);
+%! x = 2 * rand (1000, 1) - 1;
+%! y = 2 * rand (1000, 1) - 1;
+%! z = 2 * rand (1000, 1) - 1;
 %! v = x.^2 + y.^2 + z.^2;
 %! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
-%! ##vi = reshape (griddatan([x(:), y(:), z(:)], v, [xi(:), yi(:), zi(:)], 'linear'), size (xi));
+%! vi = griddata3 (x, y, z, v, xi, yi, zi, 'linear');
+%! vv = vi - xi.^2 - yi.^2 - zi.^2;
+%! assert (max (abs (vv(:))), 0, 0.1);
+
+%!testif HAVE_QHULL
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 0);
+%! x = 2 * rand (1000, 1) - 1;
+%! y = 2 * rand (1000, 1) - 1;
+%! z = 2 * rand (1000, 1) - 1;
+%! v = x.^2 + y.^2 + z.^2;
+%! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
 %! vi = griddata3 (x, y, z, v, xi, yi, zi, 'nearest');
 %! vv = vi - xi.^2 - yi.^2 - zi.^2;
-%! assert (max(abs(vv(:))), 0, 0.1)
+%! assert (max (abs (vv(:))), 0, 0.1)

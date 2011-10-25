@@ -53,10 +53,11 @@ char qh_version[] = "__voronoi__.oct 2007-07-24";
 #endif
 #endif
 
-DEFUN_DLD (__voronoi__, args, ,
+DEFUN_DLD (__voronoi__, args, nargout,
         "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{tri} =} __voronoi__ (@var{point})\n\
-@deftypefnx {Loadable Function} {@var{tri} =} __voronoi__ (@var{point}, @var{options})\n\
+@deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{pts})\n\
+@deftypefnx {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{pts}, @var{options})\n\
+@deftypefnx {Loadable Function} {@var{C}, @var{F}, @var{Inf_Pts} =} __voronoi__ (@dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
@@ -73,57 +74,50 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  std::string options = "qhull v Fv T0";
+  std::string options = "";
 
   if (nargin == 2)
     {
-      if (args(1).is_cellstr ())
+      if (args(1).is_string ())
+        options = args(1).string_value ();
+      else if (args(1).is_empty ())
+        ;  // Use default options
+      else if (args(1).is_cellstr ())
         {
+          options = "";
           Array<std::string> tmp = args(1).cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += " " + tmp(i);
+            options += tmp(i) + " ";
         }
-      else if (args(1).is_string ())
-        options += " " + args(1).string_value ();
       else
         {
-          error ("__voronoi__: OPTIONS argument must be a string or cellstr");
+          error ("__voronoi__: OPTIONS argument must be a string, cell array of strings, or empty");
           return retval;
         }
     }
 
   Matrix p (args(0).matrix_value ());
-
   const octave_idx_type dim = p.columns ();
   const octave_idx_type np = p.rows ();
+
   p = p.transpose ();
-
   double *pt_array = p.fortran_vec ();
-
-  //double  pt_array[dim * np];
-  //for (int i = 0; i < np; i++)
-  //  {
-  //    for (int j = 0; j < dim; j++)
-  //      {
-  //        pt_array[j+i*dim] = p(i,j);
-  //      }
-  //  }
 
   boolT ismalloc = false;
 
-  // If you want some debugging information replace the 0 pointer
-  // with stdout or some other file open for writing.
-
+  // Replace the 0 pointer with stdout for debugging information
   FILE *outfile = 0;
   FILE *errfile = stderr;
 
-  // Qhull flags argument is not const char*...
-  OCTAVE_LOCAL_BUFFER (char, flags, options.length () + 1);
+  // Qhull flags argument is not const char*
+  OCTAVE_LOCAL_BUFFER (char, flags, 12 + options.length ());
 
-  strcpy (flags, options.c_str ());
+  sprintf (flags, "qhull v FV %s", options.c_str ());
 
-  if (! qh_new_qhull (dim, np, pt_array, ismalloc, flags, outfile, errfile))
+  int exitcode = qh_new_qhull (dim, np, pt_array, 
+                               ismalloc, flags, outfile, errfile);
+  if (! exitcode) 
     {
       facetT *facet;
       vertexT *vertex;
@@ -134,6 +128,7 @@ Undocumented internal function.\n\
       for (i = 0; i < np; i++)
         ni[i] = 0;
       qh_setvoronoi_all ();
+
       bool infinity_seen = false;
       facetT *neighbor, **neighborp;
       coordT *voronoi_vertex;
@@ -147,6 +142,7 @@ Undocumented internal function.\n\
         {
           if (qh hull_dim == 3)
             qh_order_vertexneighbors (vertex);
+          
           infinity_seen = false;
 
           FOREACHneighbor_ (vertex)
@@ -173,9 +169,7 @@ Undocumented internal function.\n\
       for (octave_idx_type d = 0; d < dim; d++)
         v(0,d) = octave_Inf;
 
-      boolMatrix AtInf (np, 1);
-      for (i = 0; i < np; i++)
-        AtInf(i) = false;
+      boolMatrix AtInf (np, 1, false);
       octave_value_list F (np, octave_value ());
       k = 0;
       i = 0;
@@ -189,6 +183,7 @@ Undocumented internal function.\n\
         {
           if (qh hull_dim == 3)
             qh_order_vertexneighbors(vertex);
+
           infinity_seen = false;
           RowVector facet_list (ni[k++]);
           m = 0;
@@ -229,23 +224,26 @@ Undocumented internal function.\n\
       for (i = 0; i < r; i++)
         C.elem (i) = F(i);
 
-      retval(0) = v;
+      if (nargout == 3)
+        {
+          AtInf.resize (r, 1);
+          retval(2) = AtInf;
+        }
       retval(1) = C;
-      AtInf.resize (r, 1);
-      retval(2) = AtInf;
-
-      // free long memory
-      qh_freeqhull (! qh_ALL);
-
-      // free short memory and memory allocator
-      int curlong, totlong;
-      qh_memfreeshort (&curlong, &totlong);
-
-      if (curlong || totlong)
-        warning ("__voronoi__: did not free %d bytes of long memory (%d pieces)", totlong, curlong);
+      retval(0) = v;
     }
   else
     error ("__voronoi__: qhull failed");
+
+  // free memory from Qhull
+  qh_freeqhull (! qh_ALL);
+
+  int curlong, totlong;
+  qh_memfreeshort (&curlong, &totlong);
+
+  if (curlong || totlong)
+    warning ("__voronoi__: did not free %d bytes of long memory (%d pieces)",
+             totlong, curlong);
 
 #else
   error ("__voronoi__: not available in this version of Octave");

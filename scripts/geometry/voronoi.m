@@ -18,18 +18,27 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} voronoi (@var{x}, @var{y})
-## @deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, "plotstyle")
-## @deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, "plotstyle", @var{options})
+## @deftypefnx {Function File} {} voronoi (@var{x}, @var{y}, @var{options})
+## @deftypefnx {Function File} {} voronoi (@dots{}, "linespec")
+## @deftypefnx {Function File} {} voronoi (@var{hax}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} voronoi (@dots{})
 ## @deftypefnx {Function File} {[@var{vx}, @var{vy}] =} voronoi (@dots{})
-## Plot Voronoi diagram of points @code{(@var{x}, @var{y})}.
+## Plot the Voronoi diagram of points @code{(@var{x}, @var{y})}.
 ## The Voronoi facets with points at infinity are not drawn.
-## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the vertices instead of
-## plotting the
-## diagram. plot (@var{vx}, @var{vy}) shows the Voronoi diagram.
+## 
+## If "linespec" is given it is used to set the color and line style of the
+## plot.  If an axis graphics handle @var{hax} is supplied then the Voronoi
+## diagram is drawn on the specified axis rather than in a new figure.
 ##
-## A fourth optional argument, which must be a string, contains extra options
-## passed to the underlying qhull command.  See the documentation for the
-## Qhull library for details.
+## The @var{options} argument, which must be a string or cell array of strings,
+## contains options passed to the underlying qhull command.
+## See the documentation for the Qhull library for details
+## @url{http://www.qhull.org/html/qh-quick.htm#options}.
+##
+## If a single output argument is requested then the Voronoi diagram will be
+## plotted and a graphics handle to the plot is returned.
+## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the Voronoi vertices
+## instead of plotting the diagram.
 ##
 ## @example
 ## @group
@@ -57,23 +66,23 @@
 ## Added optional fourth argument to pass options to the underlying
 ## qhull command
 
-function [vvx, vvy] = voronoi (varargin)
+function [vx, vy] = voronoi (varargin)
 
   if (nargin < 1)
     print_usage ();
+  elseif (nargout > 2)
+    error ("voronoi: No more than two output arguments supported");
   endif
 
   narg = 1;
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
     handl = varargin{1};
-    narg++;
     if (! strcmp (get (handl, "type"), "axes"))
       error ("voronoi: expecting first argument to be an axes object");
     endif
-  else
-    if (nargout < 2)
-      handl = gca ();
-    endif
+    narg++;
+  elseif (nargout < 2)
+    handl = gca ();
   endif
 
   if (nargin < 1 + narg || nargin > 3 + narg)
@@ -87,24 +96,22 @@ function [vvx, vvy] = voronoi (varargin)
   if (narg <= nargin)
     if (iscell (varargin{narg}))
       opts = varargin(narg++);
-    elseif (ismatrix (varargin{narg}))
-      ## Accept but ignore the triangulation
+    elseif (isnumeric (varargin{narg}))
+      ## Accept, but ignore, the triangulation
       narg++;
     endif
   endif
 
   linespec = {"b"};
-  if (narg <= nargin)
-    if (ischar (varargin{narg}))
-      linespec = varargin(narg);
-    endif
+  if (narg <= nargin && ischar (varargin{narg}))
+    linespec = varargin(narg);
   endif
 
   lx = length (x);
   ly = length (y);
 
   if (lx != ly)
-    error ("voronoi: arguments must be vectors of same length");
+    error ("voronoi: X and Y must be vectors of the same length");
   endif
 
   ## Add box to approximate rays to infinity. For Voronoi diagrams the
@@ -126,12 +133,12 @@ function [vvx, vvy] = voronoi (varargin)
 
   [p, c, infi] = __voronoi__ ([[x(:) ; xbox(:)], [y(:); ybox(:)]], opts{:});
 
-  idx = find (!infi);
+  idx = find (! infi);
   ll = length (idx);
   c = c(idx).';
   k = sum (cellfun ("length", c));
-  edges = cell2mat(cellfun (@(x) [x ; [x(end), x(1:end-1)]], c,
-                            "uniformoutput", false));
+  edges = cell2mat (cellfun (@(x) [x ; [x(end), x(1:end-1)]], c,
+                             "uniformoutput", false));
 
   ## Identify the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';
@@ -147,32 +154,34 @@ function [vvx, vvy] = voronoi (varargin)
   edges (:, edgeoutside) = [];
 
   ## Get points of the diagram
-  vx = reshape (p (edges, 1), size(edges));
-  vy = reshape (p (edges, 2), size(edges));
+  Vvx = reshape (p(edges, 1), size (edges));
+  Vvy = reshape (p(edges, 2), size (edges));
 
   if (nargout < 2)
     lim = [xmin, xmax, ymin, ymax];
-    h = plot (handl, vx, vy, linespec{:}, x, y, '+');
+    h = plot (handl, Vvx, Vvy, linespec{:}, x, y, '+');
     axis (lim + 0.1 * [[-1, 1] * (lim (2) - lim (1)), ...
                        [-1, 1] * (lim (4) - lim (3))]);
     if (nargout == 1)
-      vxx = h;
+      vx = h;
     endif
-  elseif (nargout == 2)
-    vvx = vx;
-    vvy = vy;
   else
-    error ("voronoi: only two or zero output arguments supported");
+    vx = Vvx;
+    vy = Vvy;
   endif
 
 endfunction
 
-%!testif HAVE_QHULL
-%! phi=linspace(-pi,3/4*pi,8);
-%! [x,y]=pol2cart(phi,1);
-%! [vx,vy]=voronoi(x,y);
-%! assert(vx(2,:),zeros(1,size(vx,2)),eps);
-%! assert(vy(2,:),zeros(1,size(vy,2)),eps);
 
 %!demo
 %! voronoi (rand(10,1), rand(10,1));
+
+%!testif HAVE_QHULL
+%! phi = linspace (-pi, 3/4*pi, 8);
+%! [x,y] = pol2cart (phi, 1);
+%! [vx,vy] = voronoi (x,y);
+%! assert(vx(2,:), zeros (1, columns (vx)), eps);
+%! assert(vy(2,:), zeros (1, columns (vy)), eps);
+
+%% FIXME: Need input validation tests
+

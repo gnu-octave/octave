@@ -46,6 +46,16 @@ Summary of important user-visible changes for version 3.6:
               in pattern and in string.  Note that Matlab documents this 
               behavior but the implementation does *not* always follow it.
 
+ ** Geometry functions derived from Qhull (convhull, delaunay, voronoi)
+    have been revamped.  The options passed to the underlying qhull command
+    have been changed for better results or for Matlab compatibility.
+
+    convhull : Default options are "Qt" for 2D, 3D, 4D inputs
+               Default options are "Qt Qx" for 5D and higher
+    delaunay : Default options are "Qt Qbb Qc Qz" for 2D and 3D inputs
+               Default options are "Qt Qbb Qc Qx" for 4D and higher
+    voronoi  : No default arguments
+
  ** Matlab-compatible preference functions:
 
       addpref  getpref  ispref  rmpref  setpref

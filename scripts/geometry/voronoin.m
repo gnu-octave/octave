@@ -20,14 +20,15 @@
 ## @deftypefn  {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts})
 ## @deftypefnx {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts}, @var{options})
 ## Compute N-dimensional Voronoi facets.  The input matrix @var{pts}
-## of size [n, dim] contains n points of dimension dim.
+## of size [n, dim] contains n points in a space of dimension dim.
 ## @var{C} contains the points of the Voronoi facets.  The list @var{F}
-## contains for each facet the indices of the Voronoi points.
+## contains, for each facet, the indices of the Voronoi points.
 ##
-## A second optional argument, which must be a string, contains extra options
-## passed to the underlying qhull command.  See the documentation for the
-## Qhull library for details.
-## @seealso{voronoin, delaunay, convhull}
+## An optional second argument, which must be a string or cell array of strings,
+## contains options passed to the underlying qhull command.
+## See the documentation for the Qhull library for details
+## @url{http://www.qhull.org/html/qh-quick.htm#options}.
+## @seealso{voronoi, convhulln, delaunayn}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
@@ -43,17 +44,24 @@ function [C, F] = voronoin (pts, options)
     print_usage ();
   endif
 
-  [np, dims] = size (pts);
-  if (np > dims)
-    if (nargin == 1)
-      [C, F, infi] = __voronoi__ (pts);
-    elseif (ischar (options) || iscellstr (options))
-      [C, F, infi] = __voronoi__ (pts, options);
-    else
-      error ("voronoin: second argument must be a string or cell array of strings");
-    endif
+  [np, dim] = size (pts);
 
-  else
+  if (np <= dim)
     error ("voronoin: number of points must be greater than their dimension");
+  elseif (nargin == 2 && ! (ischar (options) || iscellstr (options)))
+    error ("voronoin: OPTIONS argument must be a string or cell array of strings");
   endif
+
+  if (nargin == 1)
+    [C, F] = __voronoi__ (pts);
+  else
+    [C, F] = __voronoi__ (pts, options);
+  endif
+
 endfunction
+
+
+%% FIXME: Need functional tests
+
+%% FIXME: Need input validation tests
+

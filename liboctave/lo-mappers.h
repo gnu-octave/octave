@@ -218,6 +218,10 @@ xisinteger (float x)
 extern OCTAVE_API bool xnegative_sign (double x);
 extern OCTAVE_API bool xnegative_sign (float x);
 
+// Test for positive sign.
+inline bool xpositive_sign (double x) { return ! xnegative_sign (x); }
+inline bool xpositive_sign (float x) { return ! xnegative_sign (x); }
+
 // Some old rounding functions.
 
 extern OCTAVE_API octave_idx_type NINTbig (double x);

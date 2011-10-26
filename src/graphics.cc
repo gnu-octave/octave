@@ -5568,7 +5568,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
               retval(1) = pow (10., retval(1));
               return retval;
             }
-          if ((min_val <= 0 && max_val >= 0))
+          if ((min_val <= 0 && max_val > 0))
             {
               warning ("axis: omitting nonpositive data in log plot");
               min_val = min_pos;
@@ -5588,8 +5588,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
           else
             {
               // Log plots with all negative data
-              min_val = -pow (10, gnulib::floor (log10 (-min_val)));
-              max_val = -pow (10, std::ceil (log10 (-max_val)));
+              min_val = -pow (10, std::ceil (log10 (-min_val)));
+              max_val = -pow (10, gnulib::floor (log10 (-max_val)));
             }
         }
       else

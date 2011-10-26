@@ -215,6 +215,19 @@ mx_inline_any_negative (size_t n, const T* x) throw ()
   return false;
 }
 
+template <class T>
+inline bool
+mx_inline_any_positive (size_t n, const T* x) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    {
+      if (x[i] > 0)
+        return true;
+    }
+
+  return false;
+}
+
 template<class T>
 inline bool
 mx_inline_all_real (size_t n, const std::complex<T>* x) throw ()

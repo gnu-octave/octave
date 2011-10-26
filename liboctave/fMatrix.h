@@ -296,6 +296,7 @@ public:
   // other operations
 
   bool any_element_is_negative (bool = false) const;
+  bool any_element_is_positive (bool = false) const;
   bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;
   bool any_element_not_one_or_zero (void) const;

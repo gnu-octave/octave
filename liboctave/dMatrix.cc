@@ -2655,6 +2655,13 @@ Matrix::any_element_is_negative (bool neg_zero) const
 }
 
 bool
+Matrix::any_element_is_positive (bool neg_zero) const
+{
+  return (neg_zero ? test_all (xpositive_sign)
+          : do_mx_check<double> (*this, mx_inline_any_positive));
+}
+
+bool
 Matrix::any_element_is_nan (void) const
 {
   return do_mx_check<double> (*this, mx_inline_any_nan);

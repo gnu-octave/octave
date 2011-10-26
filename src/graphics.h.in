@@ -221,7 +221,11 @@ public:
     {
       Matrix retval (m.rows (), m.cols ());
 
-      do_scale (m.data (), retval.fortran_vec (), m.numel ());
+      if (m.any_element_is_positive ())
+        do_scale (m.data (), retval.fortran_vec (), m.numel ());
+      else
+        do_neg_scale (m.data (), retval.fortran_vec (), m.numel ());
+
       return retval;
     }
 
@@ -229,7 +233,11 @@ public:
     {
       NDArray retval (m.dims ());
 
-      do_scale (m.data (), retval.fortran_vec (), m.numel ());
+      if (m.any_element_is_positive ())
+        do_scale (m.data (), retval.fortran_vec (), m.numel ());
+      else
+        do_neg_scale (m.data (), retval.fortran_vec (), m.numel ());
+
       return retval;
     }
 
@@ -247,6 +255,12 @@ private:
     {
       for (int i = 0; i < n; i++)
         dest[i] = log10(src[i]);
+    }
+
+  void do_neg_scale (const double *src, double *dest, int n) const
+    {
+      for (int i = 0; i < n; i++)
+        dest[i] = -log10(-src[i]);
     }
 };
 

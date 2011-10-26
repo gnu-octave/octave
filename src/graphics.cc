@@ -220,10 +220,18 @@ default_colororder (void)
 }
 
 static Matrix
-default_lim (void)
+default_lim (bool logscale = false)
 {
   Matrix m (1, 2, 0);
-  m(1) = 1;
+
+  if (logscale)
+    {
+      m(0) = 0.1;
+      m(1) = 1.0;
+    }
+  else
+    m(1) = 1;
+
   return m;
 }
 
@@ -5554,7 +5562,12 @@ axes::properties::get_axis_limits (double xmin, double xmax,
   double min_val = xmin;
   double max_val = xmax;
 
-  if (! (xisinf (min_val) || xisinf (max_val)))
+  if (xisinf (min_val) && min_val > 0 && xisinf (max_val) && max_val < 0)
+    {
+      retval = default_lim (logscale);
+      return retval;
+    }
+  else if (! (xisinf (min_val) || xisinf (max_val)))
     {
       if (logscale)
         {

@@ -546,7 +546,7 @@ tm_const::init (const tree_matrix& tm)
   any_cell = false;
   any_sparse = false;
   any_class = false;
-  all_1x1 = ! empty ();
+  all_1x1 = ! tm.empty ();
 
   bool first_elem = true;
   bool first_elem_is_struct = false;

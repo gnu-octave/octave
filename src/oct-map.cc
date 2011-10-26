@@ -664,6 +664,7 @@ octave_map
 octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
 {
   octave_map retval;
+
   // Allow dim = -1, -2 for compatibility, though it makes no difference here.
   if (dim == -1 || dim == -2)
     dim = -dim - 1;
@@ -671,7 +672,9 @@ octave_map::cat (int dim, octave_idx_type n, const octave_scalar_map *map_list)
     (*current_liboctave_error_handler)
       ("cat: invalid dimension");
 
-  if (n > 0)
+  if (n == 1)
+    retval = map_list[0];
+  else if (n > 1)
     {
       octave_idx_type idx, nf = 0;
       for (idx = 0; idx < n; idx++)
@@ -726,9 +729,20 @@ octave_map
 octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
 {
   octave_map retval;
-  if (n > 0)
+
+  // Allow dim = -1, -2 for compatibility, though it makes no difference here.
+  if (dim == -1 || dim == -2)
+    dim = -dim - 1;
+  else if (dim < 0)
+    (*current_liboctave_error_handler)
+      ("cat: invalid dimension");
+
+  if (n == 1)
+    retval = map_list[0];
+  else if (n > 1)
     {
       octave_idx_type idx, nf = 0;
+
       for (idx = 0; idx < n; idx++)
         {
           nf = map_list[idx].nfields ();
@@ -752,20 +766,29 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
         do_cat (dim, n, map_list, retval);
       else
         {
-          // permute all structures to correct order.
-          OCTAVE_LOCAL_BUFFER (octave_map, new_map_list, n);
-
-          permute_to_correct_order (n, nf, idx, map_list, new_map_list);
-
           if (nf > 0)
-            do_cat (dim, n, new_map_list, retval);
+            {
+              // permute all structures to correct order.
+              OCTAVE_LOCAL_BUFFER (octave_map, new_map_list, n);
+
+              permute_to_correct_order (n, nf, idx, map_list, new_map_list);
+
+              do_cat (dim, n, new_map_list, retval);
+            }
           else
             {
-              // Use dummy arrays. FIXME: Need(?) a better solution.
-              OCTAVE_LOCAL_BUFFER (Array<char>, dummy, n);
-              for (octave_idx_type i = 0; i < n; i++)
-                dummy[i].clear (map_list[i].dimensions);
-              Array<char>::cat (dim, n, dummy);
+              dim_vector dv = map_list[0].dimensions;
+
+              for (octave_idx_type i = 1; i < n; i++)
+                {
+                  if (! dv.concat (map_list[i].dimensions, dim))
+                    {
+                      error ("dimension mismatch in struct concatenation");
+                      return retval;
+                    }
+                }
+
+              retval.dimensions = dv;
             }
         }
 
@@ -781,6 +804,18 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
 %!  x(1, 1).d = 10; x(4, 6).a = "b"; x(2, 4).f = 27;
 %!  y(1, 6).f = 11; y(1, 6).a = "c"; y(1, 6).d = 33;
 %!  assert (fieldnames ([x; y]), {"d"; "a"; "f"});
+
+%!test
+%!  s = struct ();
+%!  sr = [s,s];
+%!  sc = [s;s];
+%!  sm = [s,s;s,s];
+%!  assert (nfields (sr), 0);
+%!  assert (nfields (sc), 0);
+%!  assert (nfields (sm), 0);
+%!  assert (size (sr), [1, 2]);
+%!  assert (size (sc), [2, 1]);
+%!  assert (size (sm), [2, 2]);
 */
 
 octave_map

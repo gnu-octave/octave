@@ -5306,7 +5306,13 @@ This function is equivalent to @w{@code{- x}}.\n\
 DEFUN (transpose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
-Return the transpose of @var{x}.  This function is equivalent to @code{x.'}.\n\
+Return the transpose of @var{x}.  This function is equivalent to\n\
+@tex\n\
+@code{x.'}.\n\
+@end tex\n\
+@ifnottex\n\
+x.'.\n\
+@end ifnottex\n\
 @seealso{ctranspose}\n\
 @end deftypefn")
 {
@@ -5339,7 +5345,13 @@ DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
 Return the complex conjugate transpose of @var{x}.  This function is\n\
-equivalent to @code{x'}.\n\
+equivalent to\n\
+@tex\n\
+@code{x'}.\n\
+@end tex\n\
+@ifnottex\n\
+x'.\n\
+@end ifnottex\n\
 @seealso{transpose}\n\
 @end deftypefn")
 {

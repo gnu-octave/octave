@@ -2887,7 +2887,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
         glBegin (GL_POLYGON);
         for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-          glVertex2d (sz*cos(ang)/6, sz*sin(ang)/6);
+          glVertex2d (sz*cos(ang)/3, sz*sin(ang)/3);
         glEnd ();
       }
       break;

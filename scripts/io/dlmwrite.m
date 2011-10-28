@@ -21,6 +21,7 @@
 ## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{delim}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, @var{key}, @var{val} @dots{})
 ## @deftypefnx {Function File} {} dlmwrite (@var{file}, @var{M}, "-append", @dots{})
+## @deftypefnx {Function File} {} dlmwrite (@var{fid}, @dots{})
 ## Write the matrix @var{M} to the named file using delimiters.
 ##
 ## @var{file} should be a file name or writable file ID given by @code{fopen}.
@@ -34,7 +35,7 @@
 ## The value of @var{c} specifies the number of delimiters to prepend to
 ## each line of data.
 ##
-## If the argument @code{"-append"} is given, append to the end of the
+## If the argument @code{"-append"} is given, append to the end of
 ## @var{file}.
 ##
 ## In addition, the following keyword value pairs may appear at the end
@@ -86,14 +87,13 @@
 
 function dlmwrite (file, M, varargin)
 
-  if (nargin < 2 || ! ischar (file))
+  if (nargin < 2)
     print_usage ();
   endif
 
   ## set defaults
   delim = ",";
-  r = 0;
-  c = 0;
+  r = c = 0;
   newline = "\n";
   if (ischar (M))
     precision = "%c";
@@ -102,16 +102,14 @@ function dlmwrite (file, M, varargin)
   endif
   opentype = "wt";
 
-  ## process the input arguements
+  ## process the input arguments
   i = 0;
   while (i < length (varargin))
-    i = i + 1;
+    i++;
     if (strcmpi (varargin{i}, "delimiter"))
-      i = i + 1;
-      delim = varargin{i};
+      delim = varargin{++i};
     elseif (strcmpi (varargin{i}, "newline"))
-      i = i + 1;
-      newline = varargin{i};
+      newline = varargin{++i};
       if (strcmpi (newline, "unix"))
         newline = "\n";
       elseif (strcmpi (newline, "pc"))
@@ -120,27 +118,24 @@ function dlmwrite (file, M, varargin)
         newline = "\r";
       endif
     elseif (strcmpi (varargin{i}, "roffset"))
-      i = i + 1;
-      r = varargin{i};
+      r = varargin{++i};
     elseif (strcmpi (varargin{i}, "coffset"))
-      i = i + 1;
-      c = varargin{i};
+      c = varargin{++i};
     elseif (strcmpi (varargin{i}, "precision"))
-      i = i + 1;
-      precision = varargin{i};
+      precision = varargin{++i};
       if (! strcmpi (class (precision), "char"))
         precision = sprintf ("%%.%gg", precision);
       endif
     elseif (strcmpi (varargin{i}, "-append"))
       opentype = "at";
     elseif (strcmpi (varargin{i}, "append"))
-      i = i + 1;
+      i++;
       if (strcmpi (varargin{i}, "on"))
         opentype = "at";
       elseif (strcmpi (varargin{i}, "off"))
         opentype = "wt";
       else
-        error ("dlmwrite: append must be \"on\" or \"off\"");
+        error ('dlmwrite: append must be "on" or "off"');
       endif
     else
       if (i == 1)
@@ -158,21 +153,20 @@ function dlmwrite (file, M, varargin)
   if (ischar (file))
     [fid, msg] = fopen (file, opentype);
   elseif (isscalar (file) && isnumeric (file))
-    fid = file;
-    msg = "invalid file number";
+    [fid, msg] = deal (file, "invalid file number");
   else
     error ("dlmwrite: FILE must be a filename string or numeric FID");
   endif
 
   if (fid < 0)
-    error (msg);
+    error (["dlmwrite: " msg]);
   else
     if (r > 0)
       fprintf (fid, "%s",
                repmat ([repmat(delim, 1, c + columns(M)-1), newline], 1, r));
     endif
     if (iscomplex (M))
-      cprecision = regexprep (precision, '^%([-\d.])','%+$1');
+      cprecision = regexprep (precision, '^%([-\d.])', '%+$1');
       template = [precision, cprecision, "i", ...
                   repmat([delim, precision, cprecision, "i"], 1, ...
                   columns(M) - 1), newline ];
@@ -196,19 +190,22 @@ function dlmwrite (file, M, varargin)
       fclose (fid);
     endif
   endif
+
 endfunction
 
+
 %!test
-%! f = tmpnam();
-%! dlmwrite(f,[1,2;3,4],'precision','%5.2f','newline','unix','roffset',1,'coffset',1);
-%! fid = fopen(f,"rt");
-%! f1 = char(fread(fid,Inf,'char')');
-%! fclose(fid);
-%! dlmwrite(f,[5,6],'precision','%5.2f','newline','unix','coffset',1,'delimiter',',','-append');
-%! fid = fopen(f,"rt");
-%! f2 = char(fread(fid,Inf,'char')');
-%! fclose(fid);
-%! unlink(f);
+%! f = tmpnam ();
+%! dlmwrite (f,[1,2;3,4],'precision','%5.2f','newline','unix','roffset',1,'coffset',1);
+%! fid = fopen (f,"rt");
+%! f1 = char (fread (fid,Inf,'char')');
+%! fclose (fid);
+%! dlmwrite (f,[5,6],'precision','%5.2f','newline','unix','coffset',1,'delimiter',',','-append');
+%! fid = fopen (f,"rt");
+%! f2 = char (fread (fid,Inf,'char')');
+%! fclose (fid);
+%! unlink (f);
 %!
-%! assert(f1,",,\n, 1.00, 2.00\n, 3.00, 4.00\n");
-%! assert(f2,",,\n, 1.00, 2.00\n, 3.00, 4.00\n, 5.00, 6.00\n");
+%! assert (f1,",,\n, 1.00, 2.00\n, 3.00, 4.00\n");
+%! assert (f2,",,\n, 1.00, 2.00\n, 3.00, 4.00\n, 5.00, 6.00\n");
+

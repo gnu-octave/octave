@@ -25,7 +25,7 @@
 ##
 ## This is useful for checking to see that the number of output
 ## arguments supplied to a function is within an acceptable range.
-## @seealso{nargchk, error, nargout, nargin}
+## @seealso{nargchk, narginchk, error, nargout, nargin}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>

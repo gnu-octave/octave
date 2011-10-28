@@ -25,7 +25,7 @@
 #include <Qsci/qscilexer.h>
 
 
-class QSCINTILLA_EXPORT LexerOctaveGui : public QsciLexer
+class LexerOctaveGui : public QsciLexer
 {
     Q_OBJECT
 

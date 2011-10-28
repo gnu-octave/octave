@@ -45,9 +45,8 @@ mac {
     INCFLAGS += -I/opt/local-native/include
 }
 
-LFLAGS              += $$system(mkoctfile -p LFLAGS) \
-                       $$system(mkoctfile -p OCTAVE_LIBS) \
-                       $$system(mkoctfile -p LIBS)
+QMAKE_LIBDIR        += $$system(octave-config -p OCTLIBDIR)
+
 mac {
     LFLAGS += -L/opt/local-native/lib
 }
@@ -56,8 +55,14 @@ unix {
     QMAKE_LFLAGS +=  -lutil
 }
 
-win32 {
+win32-g++ {
     QMAKE_LFLAGS += --enable-auto-import
+}
+
+win32-msvc* {
+    DEFINES += QSCINTILLA_DLL
+    CONFIG += console
+    include(msvc-debug.pri)
 }
 
 QMAKE_LFLAGS        += $$LFLAGS $$system(mkoctfile -p RLD_FLAG)

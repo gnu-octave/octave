@@ -92,7 +92,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   text = strrep (text, "\n ", "\n");
 
   ## Handle @seealso macro
-  see_also_pat = '@seealso *\{([^}]*)\}';
+  see_also_pat = '@seealso *\{(.*)\}';
   args = regexp (text, see_also_pat, 'tokens');
   for ii = 1:numel (args)
     expanded = fsee_also (strtrim (strsplit (args{ii}{:}, ',', true)));

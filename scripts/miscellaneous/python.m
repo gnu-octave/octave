@@ -1,5 +1,5 @@
 ## Copyright (C) 2008-2011 Julian Schnidder
-## Copyright (C) 2011 Carnë Draug <carandraug+dev@gmail.com>
+## Copyright (C) 2011 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -26,6 +26,8 @@
 ## in @var{status}.
 ## @seealso{system}
 ## @end deftypefn
+
+## Author: Carnë Draug <carandraug+dev@gmail.com>
 
 function [output, status] = python (scriptfile = "-c ''", varargin)
 

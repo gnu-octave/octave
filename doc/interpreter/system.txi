@@ -302,6 +302,8 @@ higher-level functions.
 
 @DOCSTRING(perl)
 
+@DOCSTRING(python)
+
 @DOCSTRING(popen)
 
 @DOCSTRING(pclose)

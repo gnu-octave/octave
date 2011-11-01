@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{cstr}] =} strsplit (@var{p}, @var{sep}, @var{strip_empty})
+## @deftypefn {Function File} {[@var{cstr}] =} strsplit (@var{s}, @var{sep}, @var{strip_empty})
 ## Split a string using one or more delimiters and return a cell
 ## array of strings.  Consecutive delimiters and delimiters at
 ## boundaries result in empty strings, unless @var{strip_empty} is true.
@@ -49,51 +49,51 @@
 ## @seealso{strtok}
 ## @end deftypefn
 
-function s = strsplit (p, sep, strip_empty = false)
+function cstr = strsplit (s, sep, strip_empty = false)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
-  elseif (! ischar (p) || ! ischar (sep))
-    error ("strsplit: P and SEP must be string values");
+  elseif (! ischar (s) || ! ischar (sep))
+    error ("strsplit: S and SEP must be string values");
   elseif (! isscalar (strip_empty))
     error ("strsplit: STRIP_EMPTY must be a scalar value");
   endif
 
-  if (isempty (p))
-    s = cell (size (p));
+  if (isempty (s))
+    cstr = cell (size (s));
   else
-    if (rows (p) > 1)
+    if (rows (s) > 1)
       ## For 2-D arrays, add separator character at line boundaries
       ## and transform to single string
-      p(:, end+1) = sep(1);
-      p = reshape (p.', 1, numel (p));
-      p(end) = []; 
+      s(:, end+1) = sep(1);
+      s = reshape (s.', 1, numel (s));
+      s(end) = []; 
     endif
 
-    ## Split p according to delimiter
+    ## Split s according to delimiter
     if (isscalar (sep))
       ## Single separator
-      idx = find (p == sep);
+      idx = find (s == sep);
     else
       ## Multiple separators
-      idx = strchr (p, sep);
+      idx = strchr (s, sep);
     endif
 
     ## Get substring lengths.
     if (isempty (idx))
-      strlens = length (p);
+      strlens = length (s);
     else
-      strlens = [idx(1)-1, diff(idx)-1, numel(p)-idx(end)];
+      strlens = [idx(1)-1, diff(idx)-1, numel(s)-idx(end)];
     endif
     ## Remove separators.
-    p(idx) = [];
+    s(idx) = [];
     if (strip_empty)
       ## Omit zero lengths.
       strlens = strlens(strlens != 0);
     endif
 
     ## Convert!
-    s = mat2cell (p, 1, strlens);
+    cstr = mat2cell (s, 1, strlens);
   endif
 
 endfunction
@@ -110,7 +110,7 @@ endfunction
 %!error strsplit ()
 %!error strsplit ("abc")
 %!error strsplit ("abc", "b", true, 4)
-%!error <P and SEP must be string values> strsplit (123, "b")
-%!error <P and SEP must be string values> strsplit ("abc", 1)
+%!error <S and SEP must be string values> strsplit (123, "b")
+%!error <S and SEP must be string values> strsplit ("abc", 1)
 %!error <STRIP_EMPTY must be a scalar value> strsplit ("abc", "def", ones(3,3))
 

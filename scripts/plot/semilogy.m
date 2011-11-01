@@ -68,17 +68,31 @@ endfunction
 
 %!demo
 %! clf ();
-%! a = logspace (-5, 1, 10);
-%! b =-logspace (-5, 1, 10);
+%! x = logspace (-5, 1, 10);
+%! y = logspace (-5, 1, 10);
 %!
-%! subplot (1, 2, 1)
-%! semilogy (a, b)
-%! xlabel ('semilogy (a, b)')
+%! subplot (2, 1, 1)
+%! semilogy (x, y)
+%! ylabel ('semilogy (x, y)')
 %!
-%! subplot (1, 2, 2)
-%! semilogy (a, abs (b))
-%! set (gca, 'ydir', 'reverse')
-%! xlabel ('semilogy (a, abs (b))')
+%! subplot (2, 1, 2)
+%! semilogy (x, -y)
+%! ylabel ('semilogy (x, -y)')
+
+%!demo
+%! clf ();
+%! x = logspace (-5, 1, 10);
+%! y = logspace (-5, 1, 10);
+%!
+%! subplot (2, 1, 1)
+%! semilogy (x, y)
+%! set (gca, "ydir", "reverse", "activepositionproperty", "outerposition")
+%! ylabel ({"semilogy (x, y)", "ydir = reversed"})
+%!
+%! subplot (2, 1, 2)
+%! semilogy (x, -y)
+%! set (gca, "ydir", "reverse", "activepositionproperty", "outerposition")
+%! ylabel ({"semilogy (x, -y)", "ydir = reversed"})
 
 %!test
 %! hf = figure ("visible", "off");

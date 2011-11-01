@@ -347,6 +347,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       axis_obj.xsgn = -1;
       if (strcmp (axis_obj.xdir, "reverse"))
         axis_obj.xdir = "normal";
+      elseif (strcmp (axis_obj.xdir, "normal"))
+        axis_obj.xdir = "reverse";
       endif
       axis_obj.xtick = -flip (axis_obj.xtick);
       axis_obj.xticklabel = flip (axis_obj.xticklabel);
@@ -358,6 +360,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       axis_obj.ysgn = -1;
       if (strcmp (axis_obj.ydir, "reverse"))
         axis_obj.ydir = "normal";
+      elseif (strcmp (axis_obj.ydir, "normal"))
+        axis_obj.ydir = "reverse";
       endif
       axis_obj.ytick = -flip (axis_obj.ytick);
       axis_obj.yticklabel = flip (axis_obj.yticklabel);
@@ -369,6 +373,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       axis_obj.zsgn = -1;
       if (strcmp (axis_obj.zdir, "reverse"))
         axis_obj.zdir = "normal";
+      elseif (strcmp (axis_obj.zdir, "normal"))
+        axis_obj.zdir = "reverse";
       endif
       axis_obj.ztick = -flip (axis_obj.ztick);
       axis_obj.zticklabel = flip (axis_obj.zticklabel);

@@ -239,12 +239,10 @@ function args = setdata (args)
   nc = size (faces, 1);
   idx = faces .';
   t1 = isnan (idx);
-  if (any (t1(:)))
-    t2 = find (t1 != t1([2:end,end],:));
-    idx (t1) = idx (t2 (cell2mat (cellfun (@(x) x(1)*ones(1,x(2)),
-                mat2cell ([1 : nc; sum(t1)], 2, ones(1,nc)),
-                                           "uniformoutput", false))));
-  endif
+  for i = find (any(t1))
+    first_idx_in_column = find (idx(:,i), 1);
+    idx(first_idx_in_column+1:end,i) = idx(first_idx_in_column,i);
+  endfor
   x = reshape (vert(:,1)(idx), size (idx));
   y = reshape (vert(:,2)(idx), size (idx));
   if (size(vert,2) > 2)

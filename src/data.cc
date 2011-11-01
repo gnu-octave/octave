@@ -5288,7 +5288,7 @@ Return the logical NOT of @var{x}.  This function is equivalent to\n\
 DEFUN (uplus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
-This function is equivalent to @w{@code{+ x}}.\n\
+This function and @w{@xcode{+ x}} are equivalent.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uplus, args);
@@ -5297,7 +5297,7 @@ This function is equivalent to @w{@code{+ x}}.\n\
 DEFUN (uminus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
-This function is equivalent to @w{@code{- x}}.\n\
+This function and @w{@xcode{- x}} are equivalent.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uminus, args);
@@ -5306,13 +5306,8 @@ This function is equivalent to @w{@code{- x}}.\n\
 DEFUN (transpose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
-Return the transpose of @var{x}.  This function is equivalent to\n\
-@tex\n\
-@code{x.'}.\n\
-@end tex\n\
-@ifnottex\n\
-x.'.\n\
-@end ifnottex\n\
+Return the transpose of @var{x}.\n\
+This function and @xcode{x.'} are equivalent.\n\
 @seealso{ctranspose}\n\
 @end deftypefn")
 {
@@ -5344,14 +5339,8 @@ x.'.\n\
 DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
-Return the complex conjugate transpose of @var{x}.  This function is\n\
-equivalent to\n\
-@tex\n\
-@code{x'}.\n\
-@end tex\n\
-@ifnottex\n\
-x'.\n\
-@end ifnottex\n\
+Return the complex conjugate transpose of @var{x}.\n\
+This function and @xcode{x'} are equivalent.\n\
 @seealso{transpose}\n\
 @end deftypefn")
 {
@@ -5427,7 +5416,7 @@ DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @w{@code{x + y}}.\n\
+This function and @w{@xcode{x + y}} are equivalent.\n\
 If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5446,7 +5435,7 @@ At least one argument is required.\n\
 DEFUN (minus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
-This function is equivalent to @w{@code{x - y}}.\n\
+This function and @w{@xcode{x - y}} are equivalent.\n\
 @seealso{plus}\n\
 @end deftypefn")
 {
@@ -5458,7 +5447,7 @@ DEFUN (mtimes, args, ,
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 Return the matrix multiplication product of inputs.\n\
-This function is equivalent to @w{@code{x * y}}.\n\
+This function and @w{@xcode{x * y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5478,7 +5467,7 @@ DEFUN (mrdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x / y}}.\n\
+This function and @w{@xcode{x / y}} are equivalent.\n\
 @seealso{mldivide, rdivide}\n\
 @end deftypefn")
 {
@@ -5489,7 +5478,7 @@ DEFUN (mpower, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
-This function is equivalent to @w{@code{x ^ y}}.\n\
+This function and @w{@xcode{x ^ y}} are equivalent.\n\
 @seealso{power}\n\
 @end deftypefn")
 {
@@ -5500,7 +5489,7 @@ DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x \\ y}}.\n\
+This function and @w{@xcode{x \\ y}} are equivalent.\n\
 @seealso{mrdivide, ldivide}\n\
 @end deftypefn")
 {
@@ -5570,7 +5559,7 @@ DEFUN (times, args, ,
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 Return the element-by-element multiplication product of inputs.\n\
-This function is equivalent to @w{@code{x .* y}}.\n\
+This function and @w{@xcode{x .* y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5590,7 +5579,7 @@ DEFUN (rdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x ./ y}}.\n\
+This function and @w{@xcode{x ./ y}} are equivalent.\n\
 @seealso{ldivide, mrdivide}\n\
 @end deftypefn")
 {
@@ -5602,7 +5591,7 @@ DEFUN (power, args, ,
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
 Return the element-by-element operation of @var{x} raised to the\n\
 @var{y} power.\n\
-This function is equivalent to @w{@code{x .^ y}}.\n\
+This function and @w{@xcode{x .^ y}} are equivalent.\n\
 @seealso{mpower}\n\
 @end deftypefn")
 {
@@ -5613,7 +5602,7 @@ DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x .\\ y}}.\n\
+This function and @w{@xcode{x .\\ y}} are equivalent.\n\
 @seealso{rdivide, mldivide}\n\
 @end deftypefn")
 {

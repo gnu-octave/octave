@@ -29,12 +29,17 @@ function txt = unimplemented (fcn)
   ## Some smarter cases, add more as needed.
   switch (fcn)
 
+  case "importdata"
+    txt = ["importdata is not implemented.  Similar functionality is ",...
+    "available through @code{load}, @code{dlmread}, @code{csvread}, ",...
+    "or @code{textscan}."];  
+
   case "quad2d"
     txt = ["quad2d is not implemented.  Consider using dblquad."];
 
   case "gsvd"
-    txt = ["gsvd is not currently part of Octave.  See the linear-algebra",...
-    "package at @url{http://octave.sf.net/linear-algebra/}."];
+    txt = ["gsvd is not currently part of core Octave.  See the ",
+    "linear-algebra package at @url{http://octave.sf.net/linear-algebra/}."];
 
   case "linprog"
     txt = ["Octave does not currently provide linprog.  ",...

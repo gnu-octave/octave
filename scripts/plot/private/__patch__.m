@@ -239,9 +239,9 @@ function args = setdata (args)
   nc = size (faces, 1);
   idx = faces .';
   t1 = isnan (idx);
-  for i = find (any(t1))
-    first_idx_in_column = find (idx(:,i), 1);
-    idx(first_idx_in_column+1:end,i) = idx(first_idx_in_column,i);
+  for i = find (any (t1))
+    first_idx_in_column = find (t1(:,i), 1);
+    idx(first_idx_in_column:end,i) = idx(first_idx_in_column-1,i);
   endfor
   x = reshape (vert(:,1)(idx), size (idx));
   y = reshape (vert(:,2)(idx), size (idx));

@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{cstr}] =} strsplit (@var{s}, @var{sep}, @var{strip_empty})
-## Split a string using one or more delimiters and return a cell
-## array of strings.  Consecutive delimiters and delimiters at
+## @deftypefn  {Function File} {[@var{cstr}] =} strsplit (@var{s}, @var{sep})
+## @deftypefnx {Function File} {[@var{cstr}] =} strsplit (@var{s}, @var{sep}, @var{strip_empty})
+## Split the string @var{s} using one or more separators @var{sep} and return
+## a cell array of strings.  Consecutive separators and separators at
 ## boundaries result in empty strings, unless @var{strip_empty} is true.
 ## The default value of @var{strip_empty} is false.
 ##
-## 2-D character arrays are split at delimiters and at the original column
+## 2-D character arrays are split at separators and at the original column
 ## boundaries.
 ##
 ## Example:

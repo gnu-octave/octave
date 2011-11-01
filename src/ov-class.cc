@@ -431,11 +431,11 @@ octave_class::size (void)
     {
       dim_vector dv = dims ();
 
-      int nel = dv.numel ();
+      int nd = dv.length ();
 
-      retval.resize (1, nel);
+      retval.resize (1, nd);
 
-      for (int i = 0; i < nel; i++)
+      for (int i = 0; i < nd; i++)
         retval(i) = dv(i);
     }
 

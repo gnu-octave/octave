@@ -66,56 +66,96 @@
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe
 
-function h = subplot (rows, cols, index, varargin)
+function h = subplot (varargin)
 
   align_axes = false;
   replace_axes = false;
+  have_position = false;
+  initial_args_decoded = false;
 
-  if (! (nargin >= 3) && nargin != 1)
-    print_usage ();
-  elseif (nargin > 3)
-    for n = 1:numel(varargin)
-      switch lower(varargin{n})
-      case "align"
-        align_axes = true;
-      case "replace"
-        replace_axes = true;
-      otherwise
-        print_usage ();
-      endswitch
-    endfor
+  if (nargin > 2)
+    ## R, C, N?
+    arg1 = varargin{1};
+    arg2 = varargin{2};
+    arg3 = varargin{3};
+    if (isnumeric (arg1) && isscalar (arg1) && isnumeric (arg2)
+        && isscalar (arg2) && isnumeric (arg3))
+      rows = arg1;
+      cols = arg2;
+      index = arg3;
+      varargin(1:3)= [];
+      initial_args_decoded = true;
+    endif
   endif
 
-  if (nargin == 1)
+  if (! initial_args_decoded && nargin > 1)
+    ## check for 'position', pos, ...
+    if (strcmpi (varargin{1}, "position"))
+      arg = varargin{2};
+      if (isnumeric (arg) && numel (arg) == 4)
+        pos = arg;
+        varargin(1:2) = [];
+        have_position = true;
+        initial_args_decoded = true;
+      else
+        error ("expecting position to be a 4-element numeric array");
+      endif
+    endif
+  endif
+    
+  if (! initial_args_decoded && nargin > 0)
+    arg = varargin{1};
+    if (nargin == 1 && ishandle (arg))
+      ## Axes handle?
+      axes (arg);
+      cf = get (0, "currentfigure");
+      set (cf, "nextplot", "add");
+      return;
+    elseif (isscalar (arg) && arg >= 0)
+      ## RCN?
+      index = rem (arg, 10);
+      arg = (arg - index) / 10;
+      cols = rem (arg, 10);
+      arg = (arg - cols) / 10;
+      rows = rem (arg, 10);
+      varargin(1) = [];
+      initial_args_decoded = true;
+    else
+      error ("subplot: expecting axes handle or RCN argument");
+    endif
+  endif
 
-    if (! (isscalar (rows) && rows >= 0))
-      error ("subplot: input RCN has to be a positive scalar");
+  if (! initial_args_decoded)
+    print_usage ();
+  endif
+
+  if (! have_position)
+    cols = round (cols);
+    rows = round (rows);
+    index = round (index);
+
+    if (any (index < 1) || any (index > rows*cols))
+      error ("subplot: INDEX value must be greater than 1 and less than ROWS*COLS");
     endif
 
-    tmp = rows;
-    index = rem (tmp, 10);
-    tmp = (tmp - index) / 10;
-    cols = rem (tmp, 10);
-    tmp = (tmp - cols) / 10;
-    rows = rem (tmp, 10);
-
-  elseif (! (isscalar (cols) && isscalar (rows)))
-    error ("subplot: COLS, and ROWS must be scalars");
-  elseif (any (index < 1) || any (index > rows*cols))
-    error ("subplot: INDEX value must be greater than 1 and less than ROWS*COLS");
+    if (cols < 1 || rows < 1 || index < 1)
+      error ("subplot: COLS, ROWS, and INDEX must be be positive");
+    endif
   endif
 
-  cols = round (cols);
-  rows = round (rows);
-  index = round (index);
-
-  if (index > cols*rows)
-    error ("subplot: INDEX must be less than COLS*ROWS");
-  endif
-
-  if (cols < 1 || rows < 1 || index < 1)
-    error ("subplot: COLS,ROWS,INDEX must be be positive");
-  endif
+  nargs = numel (varargin);
+  while (nargs > 0)
+    arg = varargin{1};
+    if (strcmpi (arg, "align"))
+      align_axes = true;
+    elseif (strcmpi (arg, "replace"))
+      replace_axes = true;
+    else
+      break;
+    endif
+    varargin(1) = [];
+    nargs--;
+  endwhile
 
   axesunits = get (0, "defaultaxesunits");
   cf = gcf ();
@@ -133,12 +173,14 @@ function h = subplot (rows, cols, index, varargin)
       align_axes = true;
     endif
 
-    if (align_axes)
-      pos = subplot_position (rows, cols, index, "position");
-    elseif (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
-      pos = subplot_position (rows, cols, index, "outerpositiontight");
-    else
-      pos = subplot_position (rows, cols, index, "outerposition");
+    if (! have_position)
+      if (align_axes)
+        pos = subplot_position (rows, cols, index, "position");
+      elseif (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
+        pos = subplot_position (rows, cols, index, "outerpositiontight");
+      else
+        pos = subplot_position (rows, cols, index, "outerposition");
+      endif
     endif
 
     set (cf, "nextplot", "add");
@@ -190,12 +232,12 @@ function h = subplot (rows, cols, index, varargin)
     if (found)
       set (cf, "currentaxes", tmp);
     elseif (align_axes)
-      tmp = axes ("box", "off", "position", pos);
+      tmp = axes ("box", "off", "position", pos, varargin{:});
     elseif (strcmp (get (cf, "__graphics_toolkit__"), "gnuplot"))
-      tmp = axes ("box", "off", "outerposition", pos);
+      tmp = axes ("box", "off", "outerposition", pos, varargin{:});
     else
       tmp = axes ("looseinset", [0 0 0 0], "box", "off", "outerposition", pos,
-                  "autopos_tag", "subplot");
+                  "autopos_tag", "subplot", varargin{:});
     endif
 
   unwind_protect_cleanup

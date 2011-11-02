@@ -31,7 +31,9 @@
 ## The size of the matrix will be determined by the subscripts
 ## themselves. However, if @var{sz} is defined it determines the matrix
 ## size. The length of @var{sz} must correspond to the number of columns
-## in @var{subs}.
+## in @var{subs}. An exception is if @var{subs} has only one column, in
+## which case @var{sz} may be the dimensions of a vector and the subscripts
+## of @var{subs} are taken as the indices into it.
 ##
 ## The default action of @code{accumarray} is to sum the elements with
 ## the same subscripts.  This behavior can be modified by defining the
@@ -172,7 +174,14 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     if (isempty (sz))
       A = sparse (subs(:,1), subs(:,2), vals, mode);
     elseif (length (sz) == 2)
-      A = sparse (subs(:,1), subs(:,2), vals, sz(1), sz(2), mode);
+
+      ## Row vector case
+      if (sz(1) == 1)
+        [i, j] = deal (subs(:,2), subs(:,1));
+      else
+        [i, j] = deal (subs(:,1), subs(:,2));
+      endif
+      A = sparse (i, j, vals, sz(1), sz(2), mode);
     else
       error ("accumarray: dimensions mismatch");
     endif
@@ -322,6 +331,10 @@ endfunction
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2 4],@prod,0,true),sparse([1,2,2],[1,1,3],[101,10608,10815],2,4))
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],1,[2,4]), [1,0,0,0;2,0,2,0])
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x)length(x)>1),[false,false,false,false;true,false,true,false])
+%!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 0), [3; 4])
+%!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 1), sparse ([3; 4]))
+%!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 0), [3, 4])
+%!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 1), sparse ([3, 4]))
 %!test
 %! A = accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x){x});
 %! assert (A{2},[102;104])

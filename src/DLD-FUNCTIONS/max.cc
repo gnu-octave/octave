@@ -309,11 +309,12 @@ DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} min (@var{x})\n\
 @deftypefnx {Loadable Function} {} min (@var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {} min (@var{x}, [], @var{dim})\n\
 @deftypefnx {Loadable Function} {} min (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
 For a vector argument, return the minimum value.  For a matrix\n\
 argument, return the minimum value from each column, as a row\n\
-vector, or over the dimension @var{dim} if defined, in which case @vary{y} \n\
+vector, or over the dimension @var{dim} if defined, in which case @var{y} \n\
 should be set to the empty matrix (it's ignored otherwise).  For two matrices\n\
 (or a matrix and scalar), return the pair-wise minimum.\n\
 Thus,\n\
@@ -387,11 +388,12 @@ DEFUN_DLD (max, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} max (@var{x})\n\
 @deftypefnx {Loadable Function} {} max (@var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {} max (@var{x}, [], @var{dim})\n\
 @deftypefnx {Loadable Function} {} max (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
 For a vector argument, return the maximum value.  For a matrix\n\
 argument, return the maximum value from each column, as a row\n\
-vector, or over the dimension @var{dim} if defined, in which case @vary{y} \n\
+vector, or over the dimension @var{dim} if defined, in which case @var{y} \n\
 should be set to the empty matrix (it's ignored otherwise).  For two matrices\n\
 (or a matrix and scalar), return the pair-wise maximum.\n\
 Thus,\n\

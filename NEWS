@@ -36,8 +36,10 @@ Summary of important user-visible changes for version 3.6:
     format string repeat count, user-specified comment style, uneven-length
     output arrays, %n and %u conversion specifiers (provisionally)
 
- ** Certain string functions have been modified for greater Matlab compatibility
-    and for 15X greater performance when operating on cell array of strings.
+ ** All .m string functions have been modified for better performance or greater
+    Matlab compatibility.  Performance gains of 15X-30X have been demonstrated.
+    Operations on cell array of strings no longer pay quite as high a penalty
+    as those on 2-D character arrays.
 
     deblank:  Now requires character or cellstr input.
     strtrim:  Now requires character or cellstr input.
@@ -45,6 +47,13 @@ Summary of important user-visible changes for version 3.6:
     strmatch: Follows documentation precisely and ignores trailing spaces
               in pattern and in string.  Note that Matlab documents this 
               behavior but the implementation does *not* always follow it.
+    substr:   Now possible to specify a negative LEN option which extracts
+              to within LEN of the end of the string.
+    strtok:   Now accepts cellstr input.
+    base2dec, bin2dec, hex2dec: Now accept cellstr inputs.
+    dec2base, dec2bin, dec2hex: Now accept cellstr inputs.
+    index, rindex: Now accept 2-D character array input.
+    strsplit: Now accepts 2-D character array input.
 
  ** Geometry functions derived from Qhull (convhull, delaunay, voronoi)
     have been revamped.  The options passed to the underlying qhull command
@@ -56,17 +65,16 @@ Summary of important user-visible changes for version 3.6:
                Default options are "Qt Qbb Qc Qx" for 4D and higher
     voronoi  : No default arguments
 
- ** Matlab-compatible preference functions:
+ ** Matlab-compatible preference functions added:
 
-      addpref  getpref  ispref  rmpref  setpref
+    addpref  getpref  ispref  rmpref  setpref
 
- ** Other miscellaneous new functions:
+ ** Other new functions added in 3.6.0:
 
-      nthargout
-      iscolumn
-      issrow
-      zscore
-
+    is_dq_string      python 
+    is_sq_string      zscore
+    nthargout   
+    
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.2 and have been

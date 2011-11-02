@@ -40,8 +40,14 @@
 ## function should not depend on the order of the subscripts.
 ##
 ## The elements of the returned array that have no subscripts associated
-## with them are set to zero.  Defining @var{fillval} to some other
-## value allows these values to be defined.
+## with them are set to zero. Defining @var{fillval} to some other value
+## allows these values to be defined. This behaviour changes, however,
+## for certain values of @var{func}. If @var{func} is @code{min}
+## (respectively, @code{max}) then the result will be filled with the
+## minimum (respectively, maximum) integer if @var{vals} is of integral
+## type, logical false (respectively, logical true) if @var{vals} is of
+## logical type, zero if @var{fillval} is zero and all values are
+## nonpositive (respectively, nonnegative), and NaN otherwise.
 ##
 ## By default @code{accumarray} returns a full matrix.  If
 ## @var{issparse} is logically true, then a sparse matrix is returned
@@ -248,6 +254,9 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
         zero = intmax (class (vals));
       elseif (islogical (vals))
         zero = true;
+      elseif (fillval == 0 && all (vals(:) <= 0))
+        ## This is a common case - fillval is zero, all numbers nonpositive.
+        zero = 0;
       else
         zero = NaN; # Neutral value.
       endif

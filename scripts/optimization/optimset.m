@@ -23,6 +23,57 @@
 ## @deftypefnx {Function File} {} optimset (@var{old}, @var{par}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {} optimset (@var{old}, @var{new})
 ## Create options struct for optimization functions.
+##
+## Valid parameters are:
+## @itemize @bullet
+## @item AutoScaling
+##
+## @item ComplexEqn
+##
+## @item FinDiffType
+##
+## @item FunValCheck
+## When enabled, display an error if the objective function returns a complex
+## value or NaN@.  Must be set to "on" or "off" [default].
+##
+## @item GradObj
+## When set to "on", the function to be minimized must return a second argument
+## which is the gradient, or first derivative, of the function at the point
+## @var{x}.  If set to "off" [default], the gradient is computed via finite
+## differences.
+##
+## @item Jacobian
+## When set to "on", the function to be minimized must return a second argument
+## which is the Jacobian, or first derivative, of the function at the point
+## @var{x}.  If set to "off" [default], the Jacobian is computed via finite
+## differences.
+##
+## @item MaxFunEvals
+## Maximum number of function evaluations before optimization stops.
+## Must be a positive integer.
+##
+## @item MaxIter
+## Maximum number of algorithm iterations before optimization stops.
+## Must be a positive integer.
+##
+## @item OutputFcn
+## A user-defined function executed once per algorithm iteration.
+##
+## @item TolFun
+## Termination criterion for the function output.  If the difference in the
+## calculated objective function between one algorithm iteration and the next
+## is less than @code{TolFun} the optimization stops.  Must be a positive
+## scalar.
+##
+## @item TolX
+## Termination criterion for the function input.  If the difference in @var{x},
+## the current search point, between one algorithm iteration and the next is
+## less than @code{TolX} the optimization stops.  Must be a positive scalar.
+##
+## @item TypicalX
+##
+## @item Updating
+## @end itemize
 ## @end deftypefn
 
 function retval = optimset (varargin)

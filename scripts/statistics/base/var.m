@@ -23,7 +23,7 @@
 ## Compute the variance of the elements of the vector @var{x}.
 ## @tex
 ## $$
-## {\rm std} (x) = \sigma^2 = {\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}
+## {\rm var} (x) = \sigma^2 = {\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}
 ## $$
 ## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
@@ -31,7 +31,7 @@
 ##
 ## @example
 ## @group
-## std (x) = 1/(N-1) SUM_i (x(i) - mean(x))^2
+## var (x) = 1/(N-1) SUM_i (x(i) - mean(x))^2
 ## @end group
 ## @end example
 ##

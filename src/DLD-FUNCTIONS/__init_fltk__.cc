@@ -1574,6 +1574,10 @@ private:
       {
         Matrix pos = fp.get_position ().matrix_value ();
 
+        Matrix screen_size = screen_size_pixels ();
+
+        pos = convert_position (pos, fp.get_units (), "pixels", screen_size);
+
         int x = pos(0);
         int y = pos(1);
         int w = pos(2);

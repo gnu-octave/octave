@@ -5486,4 +5486,11 @@ OCTINTERP_API graphics_handle gcf (void);
 // This function is NOT equivalent to the scripting language function gca.
 OCTINTERP_API graphics_handle gca (void);
 
+extern OCTINTERP_API Matrix 
+convert_position (const Matrix& pos, const caseless_str& from_units,
+                  const caseless_str& to_units,
+                  const Matrix& parent_dim = Matrix (1, 2, 0.0));
+
+extern OCTINTERP_API Matrix screen_size_pixels (void);
+
 #endif

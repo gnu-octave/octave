@@ -222,6 +222,16 @@ endfunction;
 %! [x, flag, relres, iter, resvec] = bicg (A, b, tol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
 %!
+
+%!function y = afun (x, t, a)
+%!  switch t
+%!   case "notransp"
+%!     y = a * x;
+%!   case "transp"
+%!     y = a' * x;
+%!  endswitch
+%!endfunction
+%!
 %!test
 %! n = 100;
 %! A = spdiags ([-2*ones(n,1) 4*ones(n,1) -ones(n,1)], -1:1, n, n);
@@ -230,15 +240,6 @@ endfunction;
 %! maxit = 15;
 %! M1 = spdiags ([ones(n,1)/(-2) ones(n,1)],-1:0, n, n);
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
-%!
-%! function y = afun (x, t, a)
-%!  switch t
-%!   case "notransp"
-%!     y = a * x;
-%!   case "transp"
-%!     y = a' * x;
-%!  endswitch
-%! endfunction
 %!
 %! [x, flag, relres, iter, resvec] = bicg (@(x, t) afun (x, t, A),
 %!                                         b, tol, maxit, M1, M2);

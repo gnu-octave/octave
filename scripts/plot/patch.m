@@ -43,17 +43,11 @@ function retval = patch (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
 
-  oldh = gca ();
+  [tmp, failed] = __patch__ (h, varargin{:});
 
-  unwind_protect
-    axes (h);
-    [tmp, failed] = __patch__ (h, varargin{:});
-    if (failed)
-      print_usage ();
-    endif
-  unwind_protect_cleanup
-    axes (oldh);
-  end_unwind_protect
+  if (failed)
+    print_usage ();
+  endif
 
   if (nargout > 0)
     retval = tmp;

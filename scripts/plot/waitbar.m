@@ -35,6 +35,8 @@
 
 function retval = waitbar (varargin)
 
+  persistent curr_waitbar;
+
   if (nargin < 1)
     print_usage ();
   endif
@@ -47,7 +49,12 @@ function retval = waitbar (varargin)
   endif
 
   msg = false;
-  h = 0;
+
+  if (isempty (varargin) && ! isempty (curr_waitbar))
+    h = curr_waitbar;
+  else
+    h = false;
+  endif
 
   if (! isempty (varargin) && ishandle (varargin{1}))
     h = varargin{1};
@@ -72,13 +79,19 @@ function retval = waitbar (varargin)
 
   if (h)
     p = findobj (h, "type", "patch");
-    if (p)
-      delete (p);
-    endif
+    set (p, "xdata", [0; frac; frac; 0]);
     ax = findobj (h, "type", "axes");
+    if (ischar (msg))
+      th = get (ax, "title");
+      curr_msg = get (th, "string");
+      if (! strcmp (msg, curr_msg))
+        set (th, "string", msg);
+      endif
+    endif
   else
     h = __go_figure__ (Inf, "position", [250, 500, 400, 100],
                        "numbertitle", "off",
+                       "toolbar", "none", "menubar", "none",
                        "handlevisibility", "callback",
                        varargin{:});
 
@@ -86,26 +99,44 @@ function retval = waitbar (varargin)
                "xlim", [0, 1], "ylim", [0, 1],
                "xlimmode", "manual", "ylimmode", "manual",
                "position", [0.1, 0.3, 0.8, 0.2]);
+    patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
+
+    if (ischar (msg))
+      title (ax, msg);
+    endif
   endif
 
-  patch (ax, [0, frac, frac, 0], [0, 0, 1, 1], [0, 0.35, 0.75]);
-  if (ischar (msg))
-    title (ax, msg);
-  endif
   drawnow ();
 
   if (nargout > 0)
     retval = h;
   endif
 
-endfunction
+  ## If there were no errors, update current waitbar.
+  curr_waitbar = h;
 
+endfunction
 
 %!demo
 %! h = waitbar (0, "0.00%");
 %! for i = 0:0.01:1
 %!   waitbar (i, h, sprintf ("%.2f%%", 100*i));
 %! endfor
+%! close (h);
+
+%!demo
+%! h = waitbar (0, "please wait...");
+%! for i = 0:0.01:1
+%!   waitbar (i, h);
+%! endfor
+%! close (h);
+
+%!demo
+%! h = waitbar (0, "please don't be impatient...");
+%! for i = 0:0.01:1
+%!   waitbar (i);
+%! endfor
+%! close (h);
 
 %% Test input validation
 %!error <FRAC must be between 0 and 1> waitbar (-0.5)

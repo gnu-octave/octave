@@ -130,9 +130,9 @@ function [h, failed] = __patch__ (p, varargin)
           endif
         elseif (size (c, ndims (c)) == 3)
           args{7} = "facecolor";
-          args{8} = "flat";
+          args{8} = c;
           args{9} = "cdata";
-          args{10} = c;
+          args{10} = [];
         else
           ## Color Vectors
           if (isempty (c))

@@ -1568,13 +1568,19 @@ private:
 
   void do_new_window (figure::properties& fp)
   {
-    int x, y, w, h;
-
     int idx = figprops2idx (fp);
+
     if (idx >= 0 && windows.find (idx) == windows.end ())
       {
-        default_size (x, y, w, h);
+        Matrix pos = fp.get_position ().matrix_value ();
+
+        int x = pos(0);
+        int y = pos(1);
+        int w = pos(2);
+        int h = pos(3);
+
         idx2figprops (curr_index , fp);
+
         windows[curr_index++] = new plot_window (x, y, w, h, fp);
       }
   }
@@ -1677,16 +1683,6 @@ private:
         else
           win->second->hide_canvas ();
       }
-  }
-
-
-  // FIXME -- default size should be configurable.
-  void default_size (int& x, int& y, int& w, int& h)
-  {
-    x = 0;
-    y = 0;
-    w = 640;
-    h = 480;
   }
 
   static int str2idx (const caseless_str clstr)

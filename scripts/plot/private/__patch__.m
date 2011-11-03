@@ -34,7 +34,7 @@ function [h, failed] = __patch__ (p, varargin)
   is_numeric_arg = cellfun (@isnumeric, varargin);
 
   if (isempty (varargin))
-    args = {"xdata", [0; 1; 1], "ydata", [0; 0; 1], "facecolor", "blue"};
+    args = {"xdata", [0; 1; 0], "ydata", [1; 1; 0], "facecolor", [0, 0, 0]};
     args = setvertexdata (args);
   elseif (isstruct (varargin{1}))
     if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))

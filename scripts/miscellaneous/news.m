@@ -17,14 +17,33 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} news ()
-## Display the current NEWS file for Octave.
+## @deftypefn {Function File} {} news (@var{package})
+## Display the current NEWS file for Octave or installed package.
+##
+## If @var{package} is the name of an installed package, display the current
+## NEWS file for that package.
 ## @end deftypefn
 
-function news ()
+function news (package)
 
-  octetcdir = octave_config_info ("octetcdir");
-  newsfile = fullfile (octetcdir, "NEWS");
+  ## also let users specify 'octave'
+  if (nargin == 0 || (nargin == 1 && ischar (package) && strcmpi (package, "octave")))
+    octetcdir = octave_config_info ("octetcdir");
+    newsfile = fullfile (octetcdir, "NEWS");
+
+  elseif (nargin == 1 && ischar (package))
+    installed = pkg ("list");
+    names     = cellfun (@(x) x.name, installed, "UniformOutput", false);
+    ## we are nice and let the user use any case on the package name
+    pos = strcmpi (names, package);
+    if (!any (pos))
+      error ("Package '%s' is not installed.", package);
+    endif
+    newsfile = fullfile (installed{pos}.dir, "doc", "NEWS");
+
+  else
+    print_usage;
+  endif
 
   if (exist (newsfile, "file"))
     f = fopen (newsfile, "r");
@@ -32,11 +51,14 @@ function news ()
       puts (line);
     endwhile
   else
-    error ("news: unable to locate NEWS file");
+    if (package)
+      error ("news: unable to locate NEWS file of %s package", package);
+    else
+      error ("news: unable to locate NEWS file");
+    endif
   endif
 
 endfunction
-
 
 ## Remove from test statistics.  No real tests possible
 %!assert (1)

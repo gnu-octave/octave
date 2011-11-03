@@ -1572,11 +1572,7 @@ private:
 
     if (idx >= 0 && windows.find (idx) == windows.end ())
       {
-        Matrix pos = fp.get_position ().matrix_value ();
-
-        Matrix screen_size = screen_size_pixels ();
-
-        pos = convert_position (pos, fp.get_units (), "pixels", screen_size);
+        Matrix pos = fp.get_boundingbox (true);
 
         int x = pos(0);
         int y = pos(1);

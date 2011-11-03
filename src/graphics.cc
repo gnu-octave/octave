@@ -411,7 +411,7 @@ convert_font_size (double font_size, const caseless_str& from_units,
   return new_font_size;
 }
 
-Matrix
+static Matrix
 convert_position (const Matrix& pos, const caseless_str& from_units,
                   const caseless_str& to_units, const Matrix& parent_dim)
 {
@@ -635,7 +635,7 @@ convert_text_position (const Matrix& pos, const text::properties& props,
 }
 
 // This function always returns the screensize in pixels
-Matrix
+static Matrix
 screen_size_pixels (void)
 {
   graphics_object obj = gh_manager::get_object (0);

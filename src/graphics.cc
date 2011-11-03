@@ -2108,11 +2108,11 @@ make_handle_fraction (void)
 }
 
 graphics_handle
-gh_manager::get_handle (const std::string& go_name)
+gh_manager::get_handle (bool integer_figure_handle)
 {
   graphics_handle retval;
 
-  if (go_name == "figure")
+  if (integer_figure_handle)
     {
       // Figure handles are positive integers corresponding to the
       // figure number.
@@ -3849,7 +3849,8 @@ axes::properties::set_text_child (handle_property& hp,
 
   if (v.is_string ())
     {
-      val = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+      val = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                              false, false);
 
       xset (val, "string", v);
     }
@@ -4049,10 +4050,17 @@ axes::properties::set_defaults (base_graphics_object& obj,
 
   delete_children (true);
 
-  xlabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
-  ylabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
-  zlabel = gh_manager::make_graphics_handle ("text", __myhandle__, false);
-  title = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+  xlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                             false, false);
+
+  ylabel = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                             false, false);
+
+  zlabel = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                             false, false);
+
+  title = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                            false, false);
 
   xset (xlabel.handle_value (), "handlevisibility", "off");
   xset (ylabel.handle_value (), "handlevisibility", "off");
@@ -4122,7 +4130,8 @@ axes::properties::delete_text_child (handle_property& hp)
 
   if (! is_beingdeleted ())
     {
-      hp = gh_manager::make_graphics_handle ("text", __myhandle__, false);
+      hp = gh_manager::make_graphics_handle ("text", __myhandle__,
+                                             false, false);
 
       xset (hp.handle_value (), "handlevisibility", "off");
 
@@ -7281,10 +7290,12 @@ gh_manager::gh_manager (void)
 
 graphics_handle
 gh_manager::do_make_graphics_handle (const std::string& go_name,
-                                     const graphics_handle& p, bool do_createfcn,
+                                     const graphics_handle& p,
+                                     bool integer_figure_handle,
+                                     bool do_createfcn,
                                      bool do_notify_toolkit)
 {
-  graphics_handle h = get_handle (go_name);
+  graphics_handle h = get_handle (integer_figure_handle);
 
   base_graphics_object *go = 0;
 
@@ -8206,6 +8217,7 @@ Undocumented internal function.\n\
 
 static octave_value
 make_graphics_object (const std::string& go_name,
+                      bool integer_figure_handle,
                       const octave_value_list& args)
 {
   octave_value retval;
@@ -8245,7 +8257,9 @@ make_graphics_object (const std::string& go_name,
       if (parent.ok ())
         {
           graphics_handle h
-            = gh_manager::make_graphics_handle (go_name, parent, false, false);
+            = gh_manager::make_graphics_handle (go_name, parent,
+                                                integer_figure_handle,
+                                                false, false);
 
           if (! error_state)
             {
@@ -8301,17 +8315,18 @@ Undocumented internal function.\n\
             {
               graphics_handle h = octave_NaN;
 
-              if (xisnan (val))
-                h = gh_manager::make_graphics_handle ("figure", 0, false,
-                                                      false);
+              if (xisnan (val) || xisinf (val))
+                h = gh_manager::make_graphics_handle ("figure", 0,
+                                                      xisnan (val),
+                                                      false, false);
               else if (val > 0 && D_NINT (val) == val)
                 h = gh_manager::make_figure_handle (val, false);
-              else
-                error ("__go_figure__: invalid figure number");
 
               if (! error_state && h.ok ())
                 {
                   adopt (0, h);
+
+                  gh_manager::push_figure (h);
 
                   xset (h, args.splice (0, 1));
                   xcreatefcn (h);
@@ -8338,7 +8353,7 @@ Undocumented internal function.\n\
   octave_value retval; \
  \
   if (args.length () > 0) \
-    retval = make_graphics_object (#TYPE, args); \
+    retval = make_graphics_object (#TYPE, false, args);  \
   else \
     print_usage (); \
  \
@@ -8663,26 +8678,36 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN (__go_handles__, , ,
+DEFUN (__go_handles__, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_handles__ ()\n\
+@deftypefn {Built-in Function} {} __go_handles__ (@var{show_hidden})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
 
-  return octave_value (gh_manager::handle_list ());
+  bool show_hidden = false;
+
+  if (args.length () > 0)
+    show_hidden = args(0).bool_value ();
+
+  return octave_value (gh_manager::handle_list (show_hidden));
 }
 
-DEFUN (__go_figure_handles__, , ,
+DEFUN (__go_figure_handles__, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __go_figure_handles__ ()\n\
+@deftypefn {Built-in Function} {} __go_figure_handles__ (@var{show_hidden})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
 
-  return octave_value (gh_manager::figure_handle_list ());
+  bool show_hidden = false;
+
+  if (args.length () > 0)
+    show_hidden = args(0).bool_value ();
+
+  return octave_value (gh_manager::figure_handle_list (show_hidden));
 }
 
 DEFUN (__go_execute_callback__, args, ,
@@ -8817,7 +8842,7 @@ undocumented.\n\
 
       if (args.length () == 0 || args.length () == 1)
         {
-          Matrix hlist = gh_manager::figure_handle_list ();
+          Matrix hlist = gh_manager::figure_handle_list (true);
 
           for (int i = 0; ! error_state && i < hlist.length (); i++)
             {

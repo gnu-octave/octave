@@ -3528,10 +3528,10 @@ public:
       radio_property zlimmode al , "{auto}|manual"
       radio_property climmode al , "{auto}|manual"
       radio_property alimmode    , "{auto}|manual"
-      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
-      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
-      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
-      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false)
+      handle_property xlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property ylabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property zlabel SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
+      handle_property title SOf , gh_manager::make_graphics_handle ("text", __myhandle__, false, false, false)
       bool_property xgrid , "off"
       bool_property ygrid , "off"
       bool_property zgrid , "off"
@@ -5176,12 +5176,15 @@ public:
 
   static graphics_handle
   make_graphics_handle (const std::string& go_name,
-                        const graphics_handle& parent, bool do_createfcn = true,
+                        const graphics_handle& parent,
+                        bool integer_figure_handle = false,
+                        bool do_createfcn = true,
                         bool do_notify_toolkit = true)
   {
     return instance_ok ()
-      ? instance->do_make_graphics_handle (go_name, parent, do_createfcn,
-                                           do_notify_toolkit)
+      ? instance->do_make_graphics_handle (go_name, parent,
+                                           integer_figure_handle,
+                                           do_createfcn, do_notify_toolkit)
       : graphics_handle ();
   }
 
@@ -5211,9 +5214,10 @@ public:
       ? instance->do_current_figure () : graphics_handle ();
   }
 
-  static Matrix handle_list (void)
+  static Matrix handle_list (bool show_hidden = false)
   {
-    return instance_ok () ? instance->do_handle_list () : Matrix ();
+    return instance_ok ()
+      ? instance->do_handle_list (show_hidden) : Matrix ();
   }
 
   static void lock (void)
@@ -5236,9 +5240,10 @@ public:
       instance->do_unlock ();
   }
   
-  static Matrix figure_handle_list (void)
+  static Matrix figure_handle_list (bool show_hidden = false)
   {
-    return instance_ok () ? instance->do_figure_handle_list () : Matrix ();
+    return instance_ok ()
+      ? instance->do_figure_handle_list (show_hidden) : Matrix ();
   }
 
   static void execute_listener (const graphics_handle& h,
@@ -5381,7 +5386,7 @@ private:
   // A flag telling whether event processing must be constantly on.
   int event_processing;
 
-  graphics_handle get_handle (const std::string& go_name);
+  graphics_handle get_handle (bool integer_figure_handle);
 
   void do_free (const graphics_handle& h);
 
@@ -5400,34 +5405,48 @@ private:
   }
 
   graphics_handle do_make_graphics_handle (const std::string& go_name,
-                                           const graphics_handle& p, bool do_createfcn,
+                                           const graphics_handle& p,
+                                           bool integer_figure_handle,
+                                           bool do_createfcn,
                                            bool do_notify_toolkit);
 
   graphics_handle do_make_figure_handle (double val, bool do_notify_toolkit);
 
-  Matrix do_handle_list (void)
+  Matrix do_handle_list (bool show_hidden)
   {
     Matrix retval (1, handle_map.size ());
+
     octave_idx_type i = 0;
     for (const_iterator p = handle_map.begin (); p != handle_map.end (); p++)
       {
         graphics_handle h = p->first;
-        retval(i++) = h.value ();
+
+        if (show_hidden || is_handle_visible (h))
+          retval(i++) = h.value ();
       }
+
+    retval.resize (1, i);
+
     return retval;
   }
 
-  Matrix do_figure_handle_list (void)
+  Matrix do_figure_handle_list (bool show_hidden)
   {
     Matrix retval (1, figure_list.size ());
+
     octave_idx_type i = 0;
     for (const_figure_list_iterator p = figure_list.begin ();
          p != figure_list.end ();
          p++)
       {
         graphics_handle h = *p;
-        retval(i++) = h.value ();
+
+        if (show_hidden || is_handle_visible (h))
+          retval(i++) = h.value ();
       }
+
+    retval.resize (1, i);
+
     return retval;
   }
 
@@ -5437,7 +5456,19 @@ private:
 
   graphics_handle do_current_figure (void) const
   {
-    return figure_list.empty () ? graphics_handle () : figure_list.front ();
+    graphics_handle retval;
+
+    for (const_figure_list_iterator p = figure_list.begin ();
+         p != figure_list.end ();
+         p++)
+      {
+        graphics_handle h = *p;
+
+        if (is_handle_visible (h))
+          retval = h;
+      }
+
+    return retval;
   }
 
   void do_lock (void) { graphics_lock.lock (); }

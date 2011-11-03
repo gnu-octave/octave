@@ -72,8 +72,8 @@ Summary of important user-visible changes for version 3.6:
  ** Other new functions added in 3.6.0:
 
     is_dq_string      python 
-    is_sq_string      zscore
-    nthargout   
+    is_sq_string      waitbar
+    nthargout         zscore
     
  ** Deprecated functions.
 

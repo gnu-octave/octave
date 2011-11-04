@@ -2108,7 +2108,7 @@ make_handle_fraction (void)
 }
 
 graphics_handle
-gh_manager::get_handle (bool integer_figure_handle)
+gh_manager::do_get_handle (bool integer_figure_handle)
 {
   graphics_handle retval;
 
@@ -2192,6 +2192,38 @@ gh_manager::do_free (const graphics_handle& h)
         }
       else
         error ("graphics_handle::free: can't delete root figure");
+    }
+}
+
+void
+gh_manager::do_renumber_figure (const graphics_handle& old_gh,
+                                const graphics_handle& new_gh)
+{
+  iterator p = handle_map.find (old_gh);
+
+  if (p != handle_map.end ())
+    {
+      graphics_object go = p->second;
+
+      handle_map.erase (p);
+
+      handle_map[new_gh] = go;
+
+      if (old_gh.value () < 0)
+        handle_free_list.insert (std::ceil (old_gh.value ())
+                                 - make_handle_fraction ());
+    }
+  else
+    error ("graphics_handle::free: invalid object %g", old_gh.value ());
+
+  for (figure_list_iterator q = figure_list.begin ();
+       q != figure_list.end (); q++)
+    {
+      if (*q == old_gh)
+        {
+          *q = new_gh;
+          break;
+        }
     }
 }
 
@@ -2921,6 +2953,50 @@ root_figure::properties::set_callbackobject (const octave_value& v)
     }
   else
     gripe_set_invalid ("callbackobject");
+}
+
+void
+figure::properties::set_integerhandle (const octave_value& val)
+{
+  if (! error_state)
+    {
+      if (integerhandle.set (val, true))
+        {
+          bool int_fig_handle = integerhandle.is_on ();
+
+          graphics_object this_go = gh_manager::get_object (__myhandle__);
+
+          graphics_handle old_myhandle = __myhandle__;
+
+          __myhandle__ = gh_manager::get_handle (int_fig_handle);
+
+          gh_manager::renumber_figure (old_myhandle, __myhandle__);
+
+          graphics_object parent_go = gh_manager::get_object (get_parent ());
+
+          base_properties& props = parent_go.get_properties ();
+
+          props.renumber_child (old_myhandle, __myhandle__);
+
+          Matrix kids = get_children ();
+
+          for (octave_idx_type i = 0; i < kids.numel (); i++)
+            {
+              graphics_object kid = gh_manager::get_object (kids(i));
+
+              kid.get_properties ().renumber_parent (__myhandle__);
+            }
+
+          graphics_handle cf = gh_manager::current_figure ();
+
+          if (__myhandle__ == cf)
+            xset (0, "currentfigure", __myhandle__.value ());
+
+          this_go.update (integerhandle.get_id ());
+
+          mark_modified ();
+        }
+    }
 }
 
 // FIXME This should update monitorpositions and pointerlocation, but
@@ -8313,12 +8389,51 @@ Undocumented internal function.\n\
             }
           else
             {
+              bool int_fig_handle = true;
+
+              octave_value_list xargs = args.splice (0, 1);
+
               graphics_handle h = octave_NaN;
 
-              if (xisnan (val) || xisinf (val))
-                h = gh_manager::make_graphics_handle ("figure", 0,
-                                                      xisnan (val),
-                                                      false, false);
+              if (xisnan (val))
+                {
+                  caseless_str p ("integerhandle");
+
+                  for (int i = 0; i < xargs.length (); i++)
+                    {
+                      if (xargs(i).is_string ()
+                          && p.compare (xargs(i).string_value ()))
+                        {
+                          if (i < (xargs.length () - 1))
+                            {
+                              std::string pval = xargs(i+1).string_value ();
+
+                              if (! error_state)
+                                {
+                                  caseless_str on ("on");
+                                  int_fig_handle = on.compare (pval);
+                                  xargs = xargs.splice (i, 2);
+                                  break;
+                                }
+                            }
+                        }
+                    }
+
+                  h = gh_manager::make_graphics_handle ("figure", 0,
+                                                        int_fig_handle,
+                                                        false, false);
+
+                  if (! int_fig_handle)
+                    {
+                      // We need to intiailize the integerhandle
+                      // property without calling the set_integerhandle
+                      // method, because doing that will generate a new
+                      // handle value...
+
+                      graphics_object go = gh_manager::get_object (h);
+                      go.get_properties ().init_integerhandle ("off");
+                    }
+                }
               else if (val > 0 && D_NINT (val) == val)
                 h = gh_manager::make_figure_handle (val, false);
 
@@ -8328,7 +8443,7 @@ Undocumented internal function.\n\
 
                   gh_manager::push_figure (h);
 
-                  xset (h, args.splice (0, 1));
+                  xset (h, xargs);
                   xcreatefcn (h);
                   xinitialize (h);
 

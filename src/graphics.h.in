@@ -1711,6 +1711,21 @@ public:
       do_delete_children (clear);
     }
 
+  void renumber (graphics_handle old_gh, graphics_handle new_gh)
+    {
+      for (children_list_iterator p = children_list.begin ();
+           p != children_list.end (); p++)
+        {
+          if (*p == old_gh)
+            {
+              *p = new_gh.value ();
+              return;
+            }
+        }
+
+      error ("children_list::renumber: child not found!");
+    }
+
 private:
   typedef std::list<double>::iterator children_list_iterator;
   typedef std::list<double>::const_iterator const_children_list_iterator;
@@ -2273,6 +2288,11 @@ public:
 
   void override_defaults (base_graphics_object& obj);
 
+  virtual void init_integerhandle (const octave_value&)
+    {
+      panic_impossible ();
+    }
+
   // Look through DEFAULTS for properties with given CLASS_NAME, and
   // apply them to the current object with set (virtual method).
 
@@ -2375,6 +2395,16 @@ public:
   virtual void delete_children (bool clear = false)
     {
       children.delete_children (clear);
+    }
+
+  void renumber_child (graphics_handle old_gh, graphics_handle new_gh)
+    {
+      children.renumber (old_gh, new_gh);
+    }
+
+  void renumber_parent (graphics_handle new_gh)
+    {
+      parent = new_gh;
     }
 
   static property_list::pval_map_type factory_defaults (void);
@@ -3075,6 +3105,11 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    void init_integerhandle (const octave_value& val)
+      {
+        integerhandle = val;
+      }
+
     void remove_child (const graphics_handle& h);
 
     void set_visible (const octave_value& val);
@@ -3153,7 +3188,7 @@ public:
       bool_property dockcontrols , "off"
       bool_property doublebuffer , "on"
       string_property filename , ""
-      bool_property integerhandle , "on"
+      bool_property integerhandle S , "on"
       bool_property inverthardcopy , "off"
       callback_property keypressfcn , Matrix ()
       callback_property keyreleasefcn , Matrix ()
@@ -5147,10 +5182,23 @@ public:
     return retval;
   }
 
+  static graphics_handle get_handle (bool integer_figure_handle)
+  {
+    return instance_ok ()
+      ? instance->do_get_handle (integer_figure_handle) : graphics_handle ();
+  }
+
   static void free (const graphics_handle& h)
   {
     if (instance_ok ())
       instance->do_free (h);
+  }
+
+  static void renumber_figure (const graphics_handle& old_gh,
+                               const graphics_handle& new_gh)
+  {
+    if (instance_ok ())
+      instance->do_renumber_figure (old_gh, new_gh);
   }
 
   static graphics_handle lookup (double val)
@@ -5386,9 +5434,12 @@ private:
   // A flag telling whether event processing must be constantly on.
   int event_processing;
 
-  graphics_handle get_handle (bool integer_figure_handle);
+  graphics_handle do_get_handle (bool integer_figure_handle);
 
   void do_free (const graphics_handle& h);
+
+  void do_renumber_figure (const graphics_handle& old_gh,
+                           const graphics_handle& new_gh);
 
   graphics_handle do_lookup (double val)
   {

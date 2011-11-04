@@ -89,9 +89,10 @@ function retval = waitbar (varargin)
       endif
     endif
   else
-    h = __go_figure__ (Inf, "position", [250, 500, 400, 100],
+    h = __go_figure__ (NaN, "position", [250, 500, 400, 100],
                        "numbertitle", "off",
                        "toolbar", "none", "menubar", "none",
+                       "integerhandle", "off",
                        "handlevisibility", "callback",
                        varargin{:});
 

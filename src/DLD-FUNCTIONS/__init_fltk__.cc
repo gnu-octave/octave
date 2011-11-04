@@ -134,6 +134,19 @@ public:
     redraw ();
   }
 
+  bool renumber (double new_number)
+  {
+    bool retval = false;
+
+    if (number != new_number)
+      {
+        number = new_number;
+        retval = true;
+      }
+
+    return retval;
+  }
+
 private:
   double number;
   opengl_renderer renderer;
@@ -741,8 +754,18 @@ public:
     delete uimenu;
   }
 
-  // FIXME -- this could change.
   double number (void) { return fp.get___myhandle__ ().value (); }
+
+  void renumber (double new_number)
+  {
+    if (canvas)
+      {
+        if (canvas->renumber (new_number))
+          mark_modified ();
+      }
+    else
+      error ("unable to renumber figure");
+  }
 
   void print (const std::string& cmd, const std::string& term)
   {
@@ -1449,6 +1472,12 @@ public:
     delete_window (str2idx (idx_str));
   }
 
+  static void renumber_figure (const std::string& idx_str, double new_number)
+  {
+    if (instance_ok ())
+      instance->do_renumber_figure (str2idx (idx_str), new_number);
+  }
+
   static void toggle_window_visibility (int idx, bool is_visible)
   {
     if (instance_ok ())
@@ -1583,6 +1612,14 @@ private:
       }
   }
 
+  void do_renumber_figure (int idx, double new_number)
+  {
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      win->second->renumber (new_number);
+  }
+
   void do_toggle_window_visibility (int idx, bool is_visible)
   {
     wm_iterator win = windows.find (idx);
@@ -1707,7 +1744,7 @@ private:
     return -1;
   }
 
-  static int hnd2idx (const double h)
+  static int hnd2idx (double h)
   {
     graphics_object fobj = gh_manager::get_object (h);
     if (fobj &&  fobj.isa ("figure"))
@@ -1716,7 +1753,7 @@ private:
           dynamic_cast<figure::properties&> (fobj.get_properties ());
         return figprops2idx (fp);
       }
-    error ("figure_manager: H is not a figure");
+    error ("figure_manager: H (= %g) is not a figure", h);
     return -1;
   }
 
@@ -1843,6 +1880,15 @@ public:
               case figure::properties::ID_NAME:
               case figure::properties::ID_NUMBERTITLE:
                 figure_manager::set_name (ov.string_value ());
+                break;
+
+              case figure::properties::ID_INTEGERHANDLE:
+                {
+                  std::string tmp = ov.string_value ();
+                  graphics_handle gh = fp.get___myhandle__ ();
+                  figure_manager::renumber_figure (tmp, gh.value ());
+                  figure_manager::set_name (tmp);
+                }
                 break;
               }
           }

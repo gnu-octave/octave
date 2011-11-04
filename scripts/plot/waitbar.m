@@ -17,18 +17,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} waitbar (@var{frac})
-## @deftypefn  {Function File} {} waitbar (@var{frac}, @var{msg})
-## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{h}, @dots{})
-## @deftypefnx {Function File} {} waitbar (@dots{}, "FigureProperty", "Value", @dots{})
-## @deftypefnx {Function File} {@var{h} = } waitbar (@dots{})
-## Create a waitbar filled to fraction @var{frac} and display an optional
-## message @var{msg}.  The waitbar fraction must be in the range [0, 1].  If
-## the optional input @var{h} is specified then update the waitbar in the
-## specified figure handle.  Otherwise, a new waitbar is created.
-##
-## The display of the waitbar window can be configured by passing 
+## @deftypefn  {Function File} {@var{h} =} waitbar (@var{frac})
+## @deftypefnx {Function File} {@var{h} =} waitbar (@var{frac}, @var{msg})
+## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, "FigureProperty", "Value", @dots{})
+## @deftypefnx {Function File} {} waitbar (@var{frac})
+## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{msg})
+## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar})
+## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar}, @var{msg})
+## Return a handle @var{h} to a new waitbar object.  The waitbar is
+## filled to fraction @var{frac} which must be in the range [0, 1].  The
+## optional message @var{msg} is centered and displayed above the waitbar.
+## The appearance of the waitbar figure window can be configured by passing 
 ## property/value pairs to the function.
+## 
+## If no output handle is requested, and there is an existing waitbar, then
+## the current waitbar is updated with new @var{frac} and optional @var{msg}
+## values.  If there are multiple outstanding waitbars they can be updated
+## individually by passing the handle @var{hwbar} of the specific waitbar to
+## modify.
 ## @end deftypefn
 
 ## Author: jwe
@@ -48,22 +54,26 @@ function retval = waitbar (varargin)
     error ("waitbar: FRAC must be between 0 and 1");
   endif
 
-  msg = false;
-
-  if (isempty (varargin) && ! isempty (curr_waitbar))
+  ## Use existing waitbar if it still points to a valid graphics handle
+  if (nargout == 0 && ishandle (curr_waitbar))
     h = curr_waitbar;
   else
     h = false;
   endif
 
-  if (! isempty (varargin) && ishandle (varargin{1}))
-    h = varargin{1};
-    varargin(1) = [];
-    ## FIXME -- also check that H is really a waitbar?
-    if (! isfigure (h))
+  if (! isempty (varargin) && isnumeric (varargin{1}))
+    if (! ishandle (varargin{1}))
       error ("waitbar: H must be a handle to a waitbar object");
+    else
+      h = varargin{1};
+      varargin(1) = [];
+      if (! isfigure (h) || ! strcmp (get (h, "tag"), "waitbar"))
+        error ("waitbar: H must be a handle to a waitbar object");
+      endif
     endif
   endif
+
+  msg = false;
 
   if (! isempty (varargin))
     msg = varargin{1};
@@ -94,6 +104,7 @@ function retval = waitbar (varargin)
                        "toolbar", "none", "menubar", "none",
                        "integerhandle", "off",
                        "handlevisibility", "callback",
+                       "tag", "waitbar",
                        varargin{:});
 
     ax = axes ("parent", h, "xtick", [], "ytick", [],
@@ -118,6 +129,7 @@ function retval = waitbar (varargin)
 
 endfunction
 
+
 %!demo
 %! h = waitbar (0, "0.00%");
 %! for i = 0:0.01:1
@@ -128,16 +140,26 @@ endfunction
 %!demo
 %! h = waitbar (0, "please wait...");
 %! for i = 0:0.01:1
-%!   waitbar (i, h);
+%!   waitbar (i);
 %! endfor
 %! close (h);
 
 %!demo
-%! h = waitbar (0, "please don't be impatient...");
-%! for i = 0:0.01:1
-%!   waitbar (i);
+%! h1 = waitbar (0, "Waitbar #1");
+%! h2 = waitbar (0, "Waitbar #2");
+%! h2pos = get (h2, "position");
+%! h2pos(1) += h2pos(3) + 50;
+%! set (h2, "position", h2pos);
+%! pause (0.5)
+%! for i = 1:4
+%!   waitbar (i/4, h1);
+%!   pause (0.5);
+%!   waitbar (i/4, h2);
+%!   pause (0.5);
 %! endfor
-%! close (h);
+%! pause (0.5)
+%! close (h1);
+%! close (h2);
 
 %% Test input validation
 %!error <FRAC must be between 0 and 1> waitbar (-0.5)

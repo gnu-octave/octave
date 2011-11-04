@@ -114,7 +114,7 @@ function [beta, sigma, r] = ols (y, x)
   if (p)
     beta = pinv (x) * y;
   else
-    beta = u \ (u' \ x' * y);
+    beta = u \ (u' \ (x' * y));
   endif
 
   if (isargout (2) || isargout (3))

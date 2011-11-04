@@ -4268,7 +4268,7 @@ public:
       array_property vertices , Matrix ()
       array_property vertexnormals , Matrix ()
       radio_property normalmode , "{auto}|manual"
-      color_property facecolor , "{flat}|none|interp"
+      color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       radio_property facelighting , "flat|{none}|gouraud|phong"
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
@@ -4384,7 +4384,7 @@ public:
       string_property ydatasource , ""
       string_property zdatasource , ""
       string_property cdatasource , ""
-      color_property facecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
+      color_property facecolor , "{flat}|none|interp"
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
       radio_property linestyle , "{-}|--|:|-.|none"

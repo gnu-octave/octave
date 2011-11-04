@@ -52,6 +52,7 @@ FCN_FILES = \
   test_while.m
 
 include classes/module.mk
+include class-concat/module.mk
 include ctor-vs-method/module.mk
 include fcn-handle-derived-resolution/module.mk
 

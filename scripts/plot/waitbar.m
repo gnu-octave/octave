@@ -114,9 +114,10 @@ function retval = waitbar (varargin)
 
     patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
-    if (ischar (msg))
-      title (ax, msg);
+    if (! ischar (msg))
+      msg = "Please wait...";
     endif
+    title (ax, msg);
   endif
 
   drawnow ();

@@ -54,8 +54,8 @@ function retval = waitbar (varargin)
     error ("waitbar: FRAC must be between 0 and 1");
   endif
 
-  ## Use existing waitbar if it still points to a valid graphics handle
-  if (nargout == 0 && ishandle (curr_waitbar))
+  ## Use existing waitbar if it still points to a valid graphics handle.
+  if (nargin == 1 && ishandle (curr_waitbar))
     h = curr_waitbar;
   else
     h = false;
@@ -111,6 +111,7 @@ function retval = waitbar (varargin)
                "xlim", [0, 1], "ylim", [0, 1],
                "xlimmode", "manual", "ylimmode", "manual",
                "position", [0.1, 0.3, 0.8, 0.2]);
+
     patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
     if (ischar (msg))

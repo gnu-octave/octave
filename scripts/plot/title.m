@@ -26,7 +26,7 @@
 
 ## Author: jwe
 
-function h = title (varargin)
+function retval = title (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ("title", varargin{:});
 

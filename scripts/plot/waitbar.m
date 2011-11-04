@@ -139,8 +139,22 @@ endfunction
 
 %!demo
 %! h = waitbar (0, "please wait...");
-%! for i = 0:0.01:1
+%! for i = 0:0.01:0.6
 %!   waitbar (i);
+%! endfor
+%! i = 0.3
+%! waitbar (i, h, "don't you hate taking a step backward?")
+%! pause (0.5)
+%! for i = i:0.005:0.7
+%!   waitbar (i, h);
+%! endfor
+%! waitbar (i, h, "or stalling?")
+%! pause (1)
+%! for i = i:0.003:0.8
+%!   waitbar (i, h, "just a little longer now")
+%! endfor
+%! for i = i:0.001:1
+%!   waitbar (i, h, "please don't be impatient")
 %! endfor
 %! close (h);
 

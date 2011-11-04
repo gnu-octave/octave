@@ -23,34 +23,41 @@
 ##
 ## Deleting graphics objects is the proper way to remove
 ## features from a plot without clearing the entire figure.
-## @seealso{clf, cla}
+## @seealso{clf, cla, unlink}
 ## @end deftypefn
 
 ## Author: jwe
 
 function delete (arg)
 
-  if (nargin == 1)
-    if (ischar (arg))
-      files = glob (arg).';
-      if (isempty (files))
-        warning ("delete: no such file: %s", arg);
-      endif
-      for i = 1:length (files)
-        file = files{i};
-        [err, msg] = unlink (file);
-        if (err)
-          warning ("delete: %s: %s", file, msg);
-        endif
-      endfor
-    elseif (all (ishandle (arg(:))))
-      ## Delete a graphics object.
-      __go_delete__ (arg);
-    else
-      error ("delete: first argument must be a filename or graphics handle");
-    endif
-  else
+  if (nargin != 1)
     print_usage ();
   endif
 
+  if (ischar (arg))
+    files = glob (arg);
+    if (isempty (files))
+      warning ("delete: no such file: %s", arg);
+    endif
+    for i = 1:length (files)
+      file = files{i};
+      [err, msg] = unlink (file);
+      if (err)
+        warning ("delete: %s: %s", file, msg);
+      endif
+    endfor
+  elseif (all (ishandle (arg(:))))
+    ## Delete a graphics object.
+    __go_delete__ (arg);
+  else
+    error ("delete: first argument must be a filename or graphics handle");
+  endif
+
 endfunction
+
+
+%% Test input validation
+%!error delete ()
+%!error delete (1, 2)
+%!error <first argument must be a filename> delete (struct ())
+

@@ -71,10 +71,10 @@ Summary of important user-visible changes for version 3.6:
 
  ** Other new functions added in 3.6.0:
 
-    is_dq_string      python 
-    is_sq_string      waitbar
-    nthargout         zscore
-    
+    is_dq_string      python      zscore
+    is_sq_string      usejava 
+    nthargout         waitbar
+                      
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.2 and have been

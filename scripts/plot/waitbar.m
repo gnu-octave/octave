@@ -21,7 +21,6 @@
 ## @deftypefnx {Function File} {@var{h} =} waitbar (@var{frac}, @var{msg})
 ## @deftypefnx {Function File} {@var{h} =} waitbar (@dots{}, "FigureProperty", "Value", @dots{})
 ## @deftypefnx {Function File} {} waitbar (@var{frac})
-## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{msg})
 ## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar})
 ## @deftypefnx {Function File} {} waitbar (@var{frac}, @var{hwbar}, @var{msg})
 ## Return a handle @var{h} to a new waitbar object.  The waitbar is
@@ -30,11 +29,10 @@
 ## The appearance of the waitbar figure window can be configured by passing 
 ## property/value pairs to the function.
 ## 
-## If no output handle is requested, and there is an existing waitbar, then
-## the current waitbar is updated with new @var{frac} and optional @var{msg}
-## values.  If there are multiple outstanding waitbars they can be updated
-## individually by passing the handle @var{hwbar} of the specific waitbar to
-## modify.
+## When called with a single input the current waitbar, if it exists, is
+## updated to the new value @var{frac}.  If there are multiple outstanding
+## waitbars they can be updated individually by passing the handle @var{hwbar}
+## of the specific waitbar to modify.
 ## @end deftypefn
 
 ## Author: jwe
@@ -146,12 +144,12 @@ endfunction
 %! endfor
 %! i = 0.3
 %! waitbar (i, h, "don't you hate taking a step backward?")
-%! pause (0.5)
+%! pause (0.5);
 %! for i = i:0.005:0.7
 %!   waitbar (i, h);
 %! endfor
 %! waitbar (i, h, "or stalling?")
-%! pause (1)
+%! pause (1);
 %! for i = i:0.003:0.8
 %!   waitbar (i, h, "just a little longer now")
 %! endfor
@@ -166,14 +164,14 @@ endfunction
 %! h2pos = get (h2, "position");
 %! h2pos(1) += h2pos(3) + 50;
 %! set (h2, "position", h2pos);
-%! pause (0.5)
+%! pause (0.5);
 %! for i = 1:4
 %!   waitbar (i/4, h1);
 %!   pause (0.5);
 %!   waitbar (i/4, h2);
 %!   pause (0.5);
 %! endfor
-%! pause (0.5)
+%! pause (0.5);
 %! close (h1);
 %! close (h2);
 

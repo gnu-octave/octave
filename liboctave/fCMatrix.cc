@@ -3793,7 +3793,7 @@ xgemm (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
           octave_idx_type lda = a.rows (), tda = a.cols ();
           octave_idx_type ldb = b.rows (), tdb = b.cols ();
 
-          retval = FloatComplexMatrix (a_nr, b_nc);
+          retval = FloatComplexMatrix (a_nr, b_nc, 0.0);
           FloatComplex *c = retval.fortran_vec ();
 
           if (b_nc == 1 && a_nr == 1)

@@ -3797,7 +3797,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
           octave_idx_type lda = a.rows (), tda = a.cols ();
           octave_idx_type ldb = b.rows (), tdb = b.cols ();
 
-          retval = ComplexMatrix (a_nr, b_nc);
+          retval = ComplexMatrix (a_nr, b_nc, 0.0);
           Complex *c = retval.fortran_vec ();
 
           if (b_nc == 1 && a_nr == 1)

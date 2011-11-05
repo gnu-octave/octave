@@ -39,7 +39,7 @@ function news (package)
     if (!any (pos))
       error ("Package '%s' is not installed.", package);
     endif
-    newsfile = fullfile (installed{pos}.dir, "doc", "NEWS");
+    newsfile = fullfile (installed{pos}.dir, "packinfo", "NEWS");
 
   else
     print_usage;

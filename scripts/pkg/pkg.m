@@ -1626,42 +1626,17 @@ function copy_files (desc, packdir, global_install)
     error ("couldn't create packinfo directory: %s", msg);
   endif
 
-  ## Copy DESCRIPTION.
-  [status, output] = copyfile (fullfile (packdir, "DESCRIPTION"), packinfo);
-  if (status != 1)
-    rm_rf (desc.dir);
-    rm_rf (octfiledir);
-    error ("couldn't copy DESCRIPTION: %s", output);
-  endif
+  packinfo_copy_file ("DESCRIPTION", "required", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("COPYING", "required", packdir, packinfo, desc, octfiledir);
 
-  ## Copy COPYING.
-  [status, output] = copyfile (fullfile (packdir, "COPYING"), packinfo);
-  if (status != 1)
-    rm_rf (desc.dir);
-    rm_rf (octfiledir);
-    error ("couldn't copy COPYING: %s", output);
-  endif
-
-  ## If the file ChangeLog exists, copy it.
-  changelog_file = fullfile (packdir, "ChangeLog");
-  if (exist (changelog_file, "file"))
-    [status, output] = copyfile (changelog_file, packinfo);
-    if (status != 1)
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
-      error ("couldn't copy ChangeLog file: %s", output);
-    endif
-  endif
+  packinfo_copy_file ("NEWS", "optional", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("ONEWS", "optional", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("ChangeLog", "optional", packdir, packinfo, desc, octfiledir);
 
   ## Is there an INDEX file to copy or should we generate one?
   index_file = fullfile (packdir, "INDEX");
   if (exist(index_file, "file"))
-    [status, output] = copyfile (index_file, packinfo);
-    if (status != 1)
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
-      error ("couldn't copy INDEX file: %s", output);
-    endif
+    packinfo_copy_file ("INDEX", "required", packdir, packinfo, desc, octfiledir);
   else
     try
       write_index (desc, fullfile (packdir, "inst"),
@@ -1674,15 +1649,7 @@ function copy_files (desc, packdir, global_install)
   endif
 
   ## Is there an 'on_uninstall.m' to install?
-  fon_uninstall = fullfile (packdir, "on_uninstall.m");
-  if (exist (fon_uninstall, "file"))
-    [status, output] = copyfile (fon_uninstall, packinfo);
-    if (status != 1)
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
-      error ("couldn't copy on_uninstall.m: %s", output);
-    endif
-  endif
+  packinfo_copy_file ("on_uninstall.m", "optional", packdir, packinfo, desc, octfiledir);
 
   ## Is there a doc/ directory that needs to be installed?
   docdir = fullfile (packdir, "doc");
@@ -1695,6 +1662,20 @@ function copy_files (desc, packdir, global_install)
   bindir = fullfile (packdir, "bin");
   if (exist (bindir, "dir") && ! dirempty (bindir))
     [status, output] = copyfile (bindir, desc.dir);
+  endif
+endfunction
+
+function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, octfiledir)
+  filepath = fullfile (packdir, filename);
+  if (!exist (filepath, "file") && strcmpi (requirement, "optional"))
+    ## do nothing, it's still OK
+  else
+    [status, output] = copyfile (filepath, packinfo);
+    if (status != 1)
+      rm_rf (desc.dir);
+      rm_rf (octfiledir);
+      error ("Couldn't copy %s file: %s", filename, output);
+    endif
   endif
 endfunction
 

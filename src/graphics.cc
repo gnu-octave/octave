@@ -4702,8 +4702,6 @@ axes::properties::update_axes_layout (void)
   frame.protect_var (updating_axes_layout);
   updating_axes_layout = true;
 
-  update_ticklengths ();
-
   xySym = (xd*yd*(xPlane-xPlaneN)*(yPlane-yPlaneN) > 0);
   zSign = (zd*(zPlane-zPlaneN) <= 0);
   xyzSym = zSign ? xySym : !xySym;
@@ -4749,6 +4747,8 @@ axes::properties::update_axes_layout (void)
 
   Matrix viewmat = get_view ().matrix_value ();
   nearhoriz = std::abs(viewmat(1)) <= 5;
+
+  update_ticklengths ();
 }
 
 void

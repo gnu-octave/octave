@@ -119,7 +119,7 @@ function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
         && ! strcmp (nm, ".") && ! strcmp (nm, "..")
         && ! strcmp (nm, "private") && nm(1) != "@"
         && ! strcmp (nm, "CVS"))
-      [p, n, xf, sk] = run_test_dir (fid, [d, "/", nm]);
+      [p, n, xf, sk] = run_test_dir (fid, [d, filesep, nm]);
       dp += p;
       dn += n;
       dxf += xf;
@@ -167,7 +167,7 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
     nm = lst(i).name;
     if (lst(i).isdir && ! strcmp (nm, ".") && ! strcmp (nm, "..")
         && ! strcmp (nm, "CVS"))
-      [p, n, xf, sk] = run_test_script (fid, [d, "/", nm]);
+      [p, n, xf, sk] = run_test_script (fid, [d, filesep, nm]);
       dp += p;
       dn += n;
       dxf += xf;
@@ -186,8 +186,8 @@ function [dp, dn, dxf, dsk] = run_test_script (fid, d);
       p = n = xf = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
       if (has_tests (f))
-        tmp = strrep (f, [topsrcdir, "/"], "");
-        tmp = strrep (tmp, [topbuilddir, "/"], "../");
+        tmp = strrep (f, [topsrcdir, filesep], "");
+        tmp = strrep (tmp, [topbuilddir, filesep], ["..", filesep]);
         print_test_file_name (tmp);
         [p, n, xf, sk] = test (f, "quiet", fid);
         print_pass_fail (n, p);

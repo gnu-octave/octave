@@ -21,14 +21,14 @@
 ## @item Octave:array-to-scalar
 ## If the @code{Octave:array-to-scalar} warning is enabled, Octave will
 ## warn when an implicit conversion from an array to a scalar value is
-## attempted.  By default, the @code{Octave:array-to-scalar} warning is
-## disabled.
+## attempted.
+## By default, the @code{Octave:array-to-scalar} warning is disabled.
 ##
 ## @item Octave:array-to-vector
 ## If the @code{Octave:array-to-vector} warning is enabled, Octave will
 ## warn when an implicit conversion from an array to a vector value is
-## attempted.  By default, the @code{Octave:array-to-vector} warning is
-## disabled.
+## attempted.
+## By default, the @code{Octave:array-to-vector} warning is disabled.
 ##
 ## @item Octave:assign-as-truth-value
 ## If the @code{Octave:assign-as-truth-value} warning is
@@ -106,8 +106,8 @@
 ## enabled, Octave will warn about possible changes in the meaning of
 ## some code due to changes in associativity for some operators.
 ## Associativity changes have typically been made for @sc{matlab}
-## compatibility.  By default, the @code{Octave:associativity-change}
-## warning is enabled.
+## compatibility.
+## By default, the @code{Octave:associativity-change} warning is enabled.
 ##
 ## @item Octave:autoload-relative-file-name
 ## If the @code{Octave:autoload-relative-file-name} is enabled,
@@ -115,31 +115,12 @@
 ## paths to function files.  This usually happens when using autoload()
 ## calls in PKG_ADD files, when the PKG_ADD file is not in the same
 ## directory as the .oct file referred to by the autoload() command.
-## By default, the @code{Octave:autoload-relative-file-name}
-## warning is enabled.
+## By default, the @code{Octave:autoload-relative-file-name} warning is enabled.
 ##
 ## @item Octave:divide-by-zero
 ## If the @code{Octave:divide-by-zero} warning is enabled, a
-## warning is issued when Octave encounters a division by zero.  By
-## default, the @code{Octave:divide-by-zero} warning is enabled.
-##
-## @item Octave:empty-list-elements
-## If the @code{Octave:empty-list-elements} warning is enabled, a
-## warning is issued when an empty matrix is found in a matrix list.
-## For example:
-##
-## @example
-## a = [1, [], 3, [], 5]
-## @end example
-##
-## @noindent
-## By default, the @code{Octave:empty-list-elements} warning is enabled.
-##
-## @item Octave:fortran-indexing
-## If the @code{Octave:fortran-indexing} warning is enabled, a warning is
-## printed for expressions which select elements of a two-dimensional matrix
-## using a single index.  By default, the @code{Octave:fortran-indexing}
-## warning is disabled.
+## warning is issued when Octave encounters a division by zero.
+## By default, the @code{Octave:divide-by-zero} warning is enabled.
 ##
 ## @item Octave:function-name-clash
 ## If the @code{Octave:function-name-clash} warning is enabled, a
@@ -151,8 +132,8 @@
 ## @item Octave:future-time-stamp
 ## If the @code{Octave:future-time-stamp} warning is enabled, Octave
 ## will print a warning if it finds a function file with a time stamp
-## that is in the future.  By default, the
-## @code{Octave:future-time-stamp} warning is enabled.
+## that is in the future.
+## By default, the @code{Octave:future-time-stamp} warning is enabled.
 ##
 ## @item Octave:imag-to-real
 ## If the @code{Octave:imag-to-real} warning is enabled, a warning is
@@ -162,12 +143,18 @@
 ## @item Octave:matlab-incompatible
 ## Print warnings for Octave language features that may cause
 ## compatibility problems with @sc{matlab}.
+## By default, the @code{Octave:matlab-incompatible} warning is disabled.
 ##
 ## @item Octave:missing-semicolon
 ## If the @code{Octave:missing-semicolon} warning is enabled, Octave
 ## will warn when statements in function definitions don't end in
-## semicolons.  By default the @code{Octave:missing-semicolon} warning
-## is disabled.
+## semicolons.
+## By default the @code{Octave:missing-semicolon} warning is disabled.
+##
+## @item Octave:mixed-string-concat
+## If the @code{Octave:mixed-string-concat} warning is enabled, print a
+## warning when concatenating a mixture of double and single quoted strings.
+## By default, the @code{Octave:mixed-string-concat} warning is disabled.
 ##
 ## @item Octave:neg-dim-as-zero
 ## If the @code{Octave:neg-dim-as-zero} warning is enabled, print a warning
@@ -217,35 +204,39 @@
 ## circuit in both Octave and @sc{matlab}, so it's only necessary to
 ## enable @sc{matlab}-style short-circuiting it's too arduous to modify
 ## existing code that relies on this behavior.
+## By default, the @code{Octave:possible-matlab-short-circuit-operator} warning
+## is enabled.
 ##
 ## @item Octave:precedence-change
 ## If the @code{Octave:precedence-change} warning is enabled, Octave
 ## will warn about possible changes in the meaning of some code due to
 ## changes in precedence for some operators.  Precedence changes have
-## typically been made for @sc{matlab} compatibility.  By default, the
-## @code{Octave:precedence-change} warning is enabled.
+## typically been made for @sc{matlab} compatibility.
+## By default, the @code{Octave:precedence-change} warning is enabled.
 ##
 ## @item Octave:reload-forces-clear
 ## If several functions have been loaded from the same file, Octave must
 ## clear all the functions before any one of them can be reloaded.  If
 ## the @code{Octave:reload-forces-clear} warning is enabled, Octave will
 ## warn you when this happens, and print a list of the additional
-## functions that it is forced to clear.  By default, the
-## @code{Octave:reload-forces-clear} warning is enabled.
+## functions that it is forced to clear.
+## By default, the @code{Octave:reload-forces-clear} warning is enabled.
 ##
 ## @item Octave:resize-on-range-error
 ## If the @code{Octave:resize-on-range-error} warning is enabled, print a
 ## warning when a matrix is resized by an indexed assignment with
-## indices outside the current bounds.  By default, the
-## @code{Octave:resize-on-range-error} warning is disabled.
+## indices outside the current bounds.
+## By default, the ## @code{Octave:resize-on-range-error} warning is disabled.
 ##
 ## @item Octave:separator-insert
 ## Print warning if commas or semicolons might be inserted
 ## automatically in literal matrices.
+## By default, the @code{Octave:separator-insert} warning is disabled.
 ##
 ## @item Octave:single-quote-string
 ## Print warning if a single quote character is used to introduce a
 ## string constant.
+## By default, the @code{Octave:single-quote-string} warning is disabled.
 ##
 ## @item Octave:str-to-num
 ## If the @code{Octave:str-to-num} warning is enabled, a warning is printed
@@ -263,22 +254,17 @@
 ## elicits a warning if the @code{Octave:str-to-num} warning is enabled.
 ## By default, the @code{Octave:str-to-num} warning is disabled.
 ##
-## @item Octave:string-concat
-## If the @code{Octave:string-concat} warning is enabled, print a
-## warning when concatenating a mixture of double and single quoted strings.
-## By default, the @code{Octave:string-concat} warning is disabled.
-##
 ## @item Octave:undefined-return-values
 ## If the @code{Octave:undefined-return-values} warning is disabled,
 ## print a warning if a function does not define all the values in
-## the return list which are expected.  By default, the
-## @code{Octave:undefined-return-values} warning is enabled.
+## the return list which are expected.
+## By default, the @code{Octave:undefined-return-values} warning is enabled.
 ##
 ## @item Octave:variable-switch-label
 ## If the @code{Octave:variable-switch-label} warning is enabled, Octave
 ## will print a warning if a switch label is not a constant or constant
-## expression.  By default, the @code{Octave:variable-switch-label}
-## warning is disabled.
+## expression.
+## By default, the @code{Octave:variable-switch-label} warning is disabled.
 ## @end table
 
 function warning_ids ()

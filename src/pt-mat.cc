@@ -117,7 +117,6 @@ private:
 
     tm_row_const_rep& operator = (const tm_row_const_rep&);
 
-    void eval_warning (const char *msg, int l, int c) const;
   };
 
 public:
@@ -460,17 +459,6 @@ tm_row_const::tm_row_const_rep::cellify (void)
     }
 }
 
-void
-tm_row_const::tm_row_const_rep::eval_warning (const char *msg, int l,
-                                              int c) const
-{
-  if (l == -1 && c == -1)
-    warning_with_id ("Octave:empty-list-elements", "%s", msg);
-  else
-    warning_with_id ("Octave:empty-list-elements",
-                     "%s near line %d, column %d", msg, l, c);
-}
-
 class
 tm_const : public octave_base_list<tm_row_const>
 {
@@ -726,7 +714,7 @@ void
 maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 {
   if (! (all_dq_strings_p || all_sq_strings_p))
-    warning_with_id ("Octave:string-concat",
+    warning_with_id ("Octave:mixed-string-concat",
                      "concatenation of different character string types may have unintended consequences");
 }
 

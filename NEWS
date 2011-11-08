@@ -65,6 +65,12 @@ Summary of important user-visible changes for version 3.6:
                Default options are "Qt Qbb Qc Qx" for 4D and higher
     voronoi  : No default arguments
 
+ ** Octave warning IDs updated
+    "empty-list-elements" : removed
+    "fortran-indexing"    : removed
+    "complex-cmp-ops"     : removed
+    "string-concat"       : renamed to "mixed-string-concat"
+
  ** Matlab-compatible preference functions added:
 
     addpref  getpref  ispref  rmpref  setpref

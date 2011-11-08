@@ -18,6 +18,9 @@
 
 ## -*- texinfo -*-
 ## @table @code
+## @item Octave:abbreviated-property-match
+## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
+##
 ## @item Octave:array-to-scalar
 ## If the @code{Octave:array-to-scalar} warning is enabled, Octave will
 ## warn when an implicit conversion from an array to a scalar value is
@@ -117,10 +120,17 @@
 ## directory as the .oct file referred to by the autoload() command.
 ## By default, the @code{Octave:autoload-relative-file-name} warning is enabled.
 ##
+## @item Octave:built-in-variable-assignment
+## By default, the @code{Octave:built-in-variable-assignment} warning is
+## enabled.
+##
 ## @item Octave:divide-by-zero
 ## If the @code{Octave:divide-by-zero} warning is enabled, a
 ## warning is issued when Octave encounters a division by zero.
 ## By default, the @code{Octave:divide-by-zero} warning is enabled.
+##
+## @item Octave:fopen-file-in-path
+## By default, the @code{Octave:fopen-file-in-path} warning is enabled.
 ##
 ## @item Octave:function-name-clash
 ## If the @code{Octave:function-name-clash} warning is enabled, a
@@ -135,15 +145,30 @@
 ## that is in the future.
 ## By default, the @code{Octave:future-time-stamp} warning is enabled.
 ##
+## @item Octave:glyph-render
+## By default, the @code{Octave:glyph-render} warning is enabled.
+##
 ## @item Octave:imag-to-real
 ## If the @code{Octave:imag-to-real} warning is enabled, a warning is
 ## printed for implicit conversions of complex numbers to real numbers.
 ## By default, the @code{Octave:imag-to-real} warning is disabled.
 ##
+## @item Octave:load-file-in-path
+## By default, the @code{Octave:load-file-in-path} warning is enabled.
+##
+## @item Octave:logical-conversion
+## By default, the @code{Octave:logical-conversion} warning is enabled.
+##
 ## @item Octave:matlab-incompatible
 ## Print warnings for Octave language features that may cause
 ## compatibility problems with @sc{matlab}.
 ## By default, the @code{Octave:matlab-incompatible} warning is disabled.
+##
+## @item Octave:md5sum-file-in-path
+## By default, the @code{Octave:md5sum-file-in-path} warning is enabled.
+##
+## @item Octave:missing-glyph
+## By default, the @code{Octave:missing-glyph} warning is enabled.
 ##
 ## @item Octave:missing-semicolon
 ## If the @code{Octave:missing-semicolon} warning is enabled, Octave
@@ -166,6 +191,12 @@
 ##
 ## @noindent
 ## By default, the @code{Octave:neg-dim-as-zero} warning is disabled.
+##
+## @item Octave:nested-functions-coerced
+## By default, the @code{Octave:nested-functions-coerced} warning is enabled.
+##
+## @item Octave:noninteger-range-as-index
+## By default, the @code{Octave:noninteger-range-as-index} warning is enabled.
 ##
 ## @item Octave:num-to-str
 ## If the @code{Octave:num-to-str} warning is enable, a warning is
@@ -214,6 +245,9 @@
 ## typically been made for @sc{matlab} compatibility.
 ## By default, the @code{Octave:precedence-change} warning is enabled.
 ##
+## @item Octave:recursive-path-search
+## By default, the @code{Octave:recursive-path-search} warning is enabled.
+##
 ## @item Octave:reload-forces-clear
 ## If several functions have been loaded from the same file, Octave must
 ## clear all the functions before any one of them can be reloaded.  If
@@ -233,10 +267,19 @@
 ## automatically in literal matrices.
 ## By default, the @code{Octave:separator-insert} warning is disabled.
 ##
+## @item Octave:shadowed-function
+## By default, the @code{Octave:shadowed-function} warning is enabled.
+##
 ## @item Octave:single-quote-string
 ## Print warning if a single quote character is used to introduce a
 ## string constant.
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
+##
+## @item Octave:singular-matrix-div
+## By default, the @code{Octave:singular-matrix-div} warning is enabled.
+##
+## @item Octave:sqrtm:SingularMatrix
+## By default, the @code{Octave:sqrtm:SingularMatrix} warning is enabled.
 ##
 ## @item Octave:str-to-num
 ## If the @code{Octave:str-to-num} warning is enabled, a warning is printed

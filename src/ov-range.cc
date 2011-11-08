@@ -661,12 +661,19 @@ compatibility; however, it is still not entirely compatible because\n\
 /*
 %!test
 %! x = 0:10;
-%! save = allow_noninteger_range_as_index (0);
-%! fail ('x(2.1:5)');
-%! assert (x(2:5), 1:4);
-%! allow_noninteger_range_as_index (1);
-%! assert (x(2.49:5), 1:3);
-%! assert (x(2.5:5), 2:4);
-%! assert (x(2.51:5), 2:4);
-%! allow_noninteger_range_as_index (save);
+%! save = allow_noninteger_range_as_index ();
+%! warn_state = warning ("query", "Octave:noninteger-range-as-index");
+%! unwind_protect
+%!   save = allow_noninteger_range_as_index (false);
+%!   fail ('x(2.1:5)');
+%!   assert (x(2:5), 1:4);
+%!   allow_noninteger_range_as_index (true);
+%!   warning ("off", "Octave:noninteger-range-as-index");
+%!   assert (x(2.49:5), 1:3);
+%!   assert (x(2.5:5), 2:4);
+%!   assert (x(2.51:5), 2:4);
+%! unwind_protect_cleanup
+%!   allow_noninteger_range_as_index (save);
+%!   warning (warn_state.state, warn_state.identifier);
+%! end_unwind_protect
 */

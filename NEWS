@@ -65,6 +65,12 @@ Summary of important user-visible changes for version 3.6:
                Default options are "Qt Qbb Qc Qx" for 4D and higher
     voronoi  : No default arguments
 
+ ** Date/Time functions updated.
+    Millisecond support with FFF format string now supported.
+
+    datestr : Numerical formats 21, 22, 29 changed to match Matlab.
+              Now accepts cellstr inputs.
+
  ** Octave warning IDs updated
     "empty-list-elements" : removed
     "fortran-indexing"    : removed

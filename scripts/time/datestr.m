@@ -89,6 +89,8 @@
 ## @item      @tab and not padded with zeros otherwise          @tab 9:00 AM
 ## @item MM   @tab Minute of hour (padded with zeros)           @tab 10:05
 ## @item SS   @tab Second of minute (padded with zeros)         @tab 10:05:03
+## @item FFF  @tab Milliseconds of second (padded with zeros)   @tab 10:05:03.012
+## @item AM   @tab Use 12-hour time format                      @tab 11:30 AM
 ## @item PM   @tab Use 12-hour time format                      @tab 11:30 PM
 ## @end multitable
 ##
@@ -98,10 +100,10 @@
 ##
 ## If @var{p} is nor specified, it defaults to the current year minus 50.
 ##
-## If a matrix or cell array of dates is given, a vector of date strings is
-## returned.
+## If a matrix or cell array of dates is given, a column vector of date strings
+## is returned.
 ##
-## @seealso{datenum, datevec, date, clock, now, datetick}
+## @seealso{datenum, datevec, date, clock, now}
 ## @end deftypefn
 
 ## FIXME: parse arbitrary code strings.
@@ -126,22 +128,21 @@
 ## Created: 10 October 2001 (CVS)
 ## Adapted-By: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function retval = datestr (date, f, p)
+function retval = datestr (date, f = [], p = [])
 
-  persistent dateform names_mmmm names_mmm names_m names_dddd names_ddd names_d;
+  persistent dateform names_mmmm names_m names_d;
 
   if (isempty (dateform))
-
     dateform = cell (32, 1);
-    dateform{1} = "dd-mmm-yyyy HH:MM:SS";
-    dateform{2} = "dd-mmm-yyyy";
-    dateform{3} = "mm/dd/yy";
-    dateform{4} = "mmm";
-    dateform{5} = "m";
-    dateform{6} = "mm";
-    dateform{7} = "mm/dd";
-    dateform{8} = "dd";
-    dateform{9} = "ddd";
+    dateform{1}  = "dd-mmm-yyyy HH:MM:SS";
+    dateform{2}  = "dd-mmm-yyyy";
+    dateform{3}  = "mm/dd/yy";
+    dateform{4}  = "mmm";
+    dateform{5}  = "m";
+    dateform{6}  = "mm";
+    dateform{7}  = "mm/dd";
+    dateform{8}  = "dd";
+    dateform{9}  = "ddd";
     dateform{10} = "d";
     dateform{11} = "yyyy";
     dateform{12} = "yy";
@@ -154,68 +155,50 @@ function retval = datestr (date, f, p)
     dateform{19} = "QQ";
     dateform{20} = "dd/mm";
     dateform{21} = "dd/mm/yy";
-    dateform{22} = "mmm.dd.yyyy HH:MM:SS";
-    dateform{23} = "mmm.dd.yyyy";
+    dateform{22} = "mmm.dd,yyyy HH:MM:SS";
+    dateform{23} = "mmm.dd,yyyy";
     dateform{24} = "mm/dd/yyyy";
     dateform{25} = "dd/mm/yyyy";
     dateform{26} = "yy/mm/dd";
     dateform{27} = "yyyy/mm/dd";
     dateform{28} = "QQ-YYYY";
     dateform{29} = "mmmyyyy";
-    dateform{30} = "yyyymmdd";
+    dateform{30} = "yyyy-mm-dd";
     dateform{31} = "yyyymmddTHHMMSS";
     dateform{32} = "yyyy-mm-dd HH:MM:SS";
 
-    names_m = {"J"; "F"; "M"; "A"; "M"; "J"; "J"; "A"; "S"; "O"; "N"; "D"};
-
-    names_d = {"S"; "M"; "T"; "W"; "T"; "F"; "S"};
-
+    names_m = {"J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"};
+    names_d = {"S", "M", "T", "W", "T", "F", "S"};
   endif
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (nargin < 2)
-    f = [];
-  endif
-  if (nargin < 3)
-    p = [];
-  endif
-
-  if (ischar (date))
-    t = date;
-    date = cell (1);
-    date{1} = t;
-  endif
-
-  ## Guess, so we might be wrong.
-  if (iscell (date) || columns (date) != 6)
+  ## Guess input type.  We might be wrong.
+  if (ischar (date) || iscellstr (date) || columns (date) != 6)
     v = datevec (date, p);
   else
     v = [];
     if (columns (date) == 6)
       ## Make sure that the input really is a datevec.
       maxdatevec = [Inf, 12, 31, 23, 59, 60];
-      for i = 1:numel (maxdatevec)
-        if (any (date(:,i) > maxdatevec(i))
-            || (i != 6 && any (floor (date(:,i)) != date(:,i))))
-          v = datevec (date, p);
-          break;
-        endif
-      endfor
+      if (any (max (date, 1) > maxdatevec) ||
+          any (date(:,1:5) != floor (date(:,1:5))))
+        v = datevec (date, p);
+      endif
     endif
     if (isempty (v))
       v = date;
     endif
   endif
 
-  for i = 1:(rows (v))
+  retval = [];
+  for i = 1 : rows (v)
 
-    if (isempty (f) || f == -1)
+    if (isempty (f))
       if (v(i,4:6) == 0)
         f = 1;
-        ## elseif (v(i,1:3) == [0, 1, 1])
       elseif (v(i,1:3) == [-1, 12, 31])
         f = 16;
       else
@@ -230,7 +213,8 @@ function retval = datestr (date, f, p)
     endif
 
     df_orig = df;
-    df = regexprep (df, '[AP]M', "%p");
+    df = strrep (df, 'AM', "%p");
+    df = strrep (df, 'PM', "%p");
     if (strcmp (df, df_orig))
       ## PM not set.
       df = strrep (df, "HH", "%H");
@@ -266,9 +250,11 @@ function retval = datestr (date, f, p)
 
     df = strrep (df, "MM", "%M");
 
-    df = strrep (df, "SS", "%S");
+    df = regexprep (df, '[Ss][Ss]', "%S");
 
-    df = regexprep (df, '[Qq][Qq]', sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
+    df = strrep (df, "FFF", sprintf ("%03d", 1000 * (v(i,6) - fix (v(i,6)))));
+
+    df = strrep (df, 'QQ', sprintf ("Q%d", fix ((v(i,2) + 2) / 3)));
 
     vi = v(i,:);
     tm.year = vi(1) - 1900;
@@ -278,7 +264,7 @@ function retval = datestr (date, f, p)
     tm.min = vi(5);
     sec = vi(6);
     tm.sec = fix (sec);
-    tm.usec = fix (rem (sec, 1) * 1e6);
+    tm.usec = fix ((sec - tm.sec) * 1e6);
     tm.wday = wday - 1;
     ## FIXME -- Do we need YDAY and DST?  How should they be computed?
     ## We don't want to use "localtime (mktime (tm))" because that
@@ -288,61 +274,64 @@ function retval = datestr (date, f, p)
 
     str = strftime (df, tm);
 
-    if (i == 1)
-      retval = str;
-    else
-      retval = [retval; str];
-    endif
+    retval = [retval; str];
 
   endfor
 
 endfunction
 
-# simple tests
-%!shared testtime
-%! testtime = [2005.0000, 12.0000, 18.0000, 2.0000, 33.0000, 17.3822];
-%!assert(datestr(testtime,0),"18-Dec-2005 02:33:17");
-%!assert(datestr(testtime,1),"18-Dec-2005");
-%!assert(datestr(testtime,2),"12/18/05");
-%!assert(datestr(testtime,3),"Dec");
-%!assert(datestr(testtime,4),"D");
-%!assert(datestr(testtime,5),"12");
-%!assert(datestr(testtime,6),"12/18");
-%!assert(datestr(testtime,7),"18");
-%!assert(datestr(testtime,8),"Sun");
-%!assert(datestr(testtime,9),"S");
-%!assert(datestr(testtime,10),"2005");
-%!assert(datestr(testtime,11),"05");
-%!assert(datestr(testtime,12),"Dec05");
-%!assert(datestr(testtime,13),"02:33:17");
-%!assert(datestr(testtime,14)," 2:33:17 AM");
-%!assert(datestr(testtime,15),"02:33");
-%!assert(datestr(testtime,16)," 2:33 AM");
-%!assert(datestr(testtime,17),"Q4-05");
-%!assert(datestr(testtime,18),"Q4");
-%!assert(datestr(testtime,19),"18/12");
-%!assert(datestr(testtime,20),"18/12/05");
-%!assert(datestr(testtime,21),"Dec.18.2005 02:33:17");
-%!assert(datestr(testtime,22),"Dec.18.2005");
-%!assert(datestr(testtime,23),"12/18/2005");
-%!assert(datestr(testtime,24),"18/12/2005");
-%!assert(datestr(testtime,25),"05/12/18");
-%!assert(datestr(testtime,26),"2005/12/18");
-%!assert(datestr(testtime,27),"Q4-2005");
-%!assert(datestr(testtime,28),"Dec2005");
-%!assert(datestr(testtime,29),"20051218");
-%!assert(datestr(testtime,30),"20051218T023317");
-%!assert(datestr(testtime,31),"2005-12-18 02:33:17");
-%!assert(datestr(testtime+[0 0 3 0 0 0],"dddd"),"Wednesday")
-## avoid the bug where someone happens to give a vector of datenums that
-## happens to be 6 wide
-%!assert(datestr(733452.933:733457.933), ["14-Feb-2008 22:23:31";"15-Feb-2008 22:23:31";"16-Feb-2008 22:23:31";"17-Feb-2008 22:23:31";"18-Feb-2008 22:23:31";"19-Feb-2008 22:23:31"])
-%!assert (datestr ([1944, 6, 6, 6, 30, 0], 0), "06-Jun-1944 06:30:00");
 
-# demos
+## demos
 %!demo
+%! ## Current date and time in default format
 %! datestr (now ())
 %!demo
-%! datestr (rem (now (), 1))
+%! ## Current date (integer portion of datenum)
+%! datestr (fix (now ()))
 %!demo
-%! datestr (floor (now ()))
+%! ## Current time (fractional portion of datenum)
+%! datestr (rem (now (), 1))
+
+%!shared testtime
+%! testtime = [2005.0000, 12.0000, 18.0000, 2.0000, 33.0000, 17.3822];
+%!assert (datestr (testtime,0), "18-Dec-2005 02:33:17")
+%!assert (datestr (testtime,1), "18-Dec-2005")
+%!assert (datestr (testtime,2), "12/18/05")
+%!assert (datestr (testtime,3), "Dec")
+%!assert (datestr (testtime,4), "D")
+%!assert (datestr (testtime,5), "12")
+%!assert (datestr (testtime,6), "12/18")
+%!assert (datestr (testtime,7), "18")
+%!assert (datestr (testtime,8), "Sun")
+%!assert (datestr (testtime,9), "S")
+%!assert (datestr (testtime,10), "2005")
+%!assert (datestr (testtime,11), "05")
+%!assert (datestr (testtime,12), "Dec05")
+%!assert (datestr (testtime,13), "02:33:17")
+%!assert (datestr (testtime,14), " 2:33:17 AM")
+%!assert (datestr (testtime,15), "02:33")
+%!assert (datestr (testtime,16), " 2:33 AM")
+%!assert (datestr (testtime,17), "Q4-05")
+%!assert (datestr (testtime,18), "Q4")
+%!assert (datestr (testtime,19), "18/12")
+%!assert (datestr (testtime,20), "18/12/05")
+%!assert (datestr (testtime,21), "Dec.18,2005 02:33:17")
+%!assert (datestr (testtime,22), "Dec.18,2005")
+%!assert (datestr (testtime,23), "12/18/2005")
+%!assert (datestr (testtime,24), "18/12/2005")
+%!assert (datestr (testtime,25), "05/12/18")
+%!assert (datestr (testtime,26), "2005/12/18")
+%!assert (datestr (testtime,27), "Q4-2005")
+%!assert (datestr (testtime,28), "Dec2005")
+%!assert (datestr (testtime,29), "2005-12-18")
+%!assert (datestr (testtime,30), "20051218T023317")
+%!assert (datestr (testtime,31), "2005-12-18 02:33:17")
+%!assert (datestr (testtime+[0 0 3 0 0 0], "dddd"), "Wednesday")
+## Test possible bug where input is a vector of datenums that is exactly 6 wide
+%!assert (datestr ([1944, 6, 6, 6, 30, 0], 0), "06-Jun-1944 06:30:00")
+## Test fractional millisecond time extension
+%!assert (datestr (testtime, "HH:MM:SS:FFF"), "02:33:17:382")
+
+%% Test input validation
+%!error datestr ()
+%!error datestr (1, 2, 3, 4)

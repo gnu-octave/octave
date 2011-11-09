@@ -1,5 +1,8 @@
 ## Copyright (C) 2008-2011 David Bateman
 ##
+## Fixes for convergence issues with vector-valued functions:
+## (C) 2011 Alexander Klein <alexander.klein@math.uni-giessen.de>
+##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -15,6 +18,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
+##
+## TODO: Make norm for convergence testing configurable
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b})
@@ -88,10 +93,10 @@ function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
 
   ## If have edge singularities, move edge point by eps*(b-a) as
   ## discussed in Shampine paper used to implement quadgk
-  if (isinf (fa))
+  if ( any( isinf( vec(fa))))
     fa = feval (f, a + myeps * (b-a), varargin{:});
   endif
-  if (isinf (fb))
+  if ( any( isinf( vec (fb))))
     fb = feval (f, b - myeps * (b-a), varargin{:});
   endif
 
@@ -103,7 +108,7 @@ function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
 
   if (nfun > 10000)
     warning ("maximum iteration count reached");
-  elseif (isnan (q) || isinf (q))
+  elseif (any(vec(isnan (q) || isinf (q))))
     warning ("infinite or NaN function evaluations were returned");
   elseif (hmin < (b - a) * myeps)
     warning ("minimum step size reached -- possibly singular integral");
@@ -133,7 +138,9 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
     endif
 
     ## Force at least one adpative step.
-    if (nfun == 5 || abs (q - q0) > tol)
+    ## Not vectorizing q-q0 in the norm provides a more rigid criterion for
+    ## matrix-valued functions.
+    if (nfun == 5 || norm (q - q0, Inf) > tol)
       [q1, nfun, hmin] = simpsonstp (f, a, c, d, fa, fc, fd, q1, nfun, hmin,
                                     tol, trace, varargin{:});
       [q2, nfun, hmin] = simpsonstp (f, c, b, e, fc, fb, fe, q2, nfun, hmin,
@@ -152,3 +159,5 @@ endfunction
 %% Handles vector-valued functions
 %!assert (quadv (@(x) [(sin (x)), (sin (2 * x))], 0, pi), [2, 0], 1e-5)
 
+%% Handles matrix-valued functions
+%!assert (quadv (@(x) [ x, x, x; x, 1./sqrt(x), x; x, x, x ], 0, 1 ), [0.5, 0.5, 0.5; 0.5, 2, 0.5; 0.5, 0.5, 0.5], 1e-5)

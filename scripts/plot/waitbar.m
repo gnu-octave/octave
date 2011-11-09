@@ -76,8 +76,8 @@ function retval = waitbar (varargin)
   if (! isempty (varargin))
     msg = varargin{1};
     varargin(1) = [];
-    if (! ischar (msg))
-      error ("waitbar: MSG must be a character string");
+    if (! (ischar (msg) || iscellstr (msg)))
+      error ("waitbar: MSG must be a character string or cell array of strings");
     endif
   endif
 
@@ -89,10 +89,11 @@ function retval = waitbar (varargin)
     p = findobj (h, "type", "patch");
     set (p, "xdata", [0; frac; frac; 0]);
     ax = findobj (h, "type", "axes");
-    if (ischar (msg))
+    if (ischar (msg) || iscellstr (msg))
       th = get (ax, "title");
       curr_msg = get (th, "string");
-      if (! strcmp (msg, curr_msg))
+      cmp = strcmp (msg, curr_msg);
+      if (all (cmp(:)))
         set (th, "string", msg);
       endif
     endif
@@ -112,7 +113,7 @@ function retval = waitbar (varargin)
 
     patch (ax, [0; frac; frac; 0], [0; 0; 1; 1], [0, 0.35, 0.75]);
 
-    if (! ischar (msg))
+    if (! (ischar (msg) || iscellstr (msg)))
       msg = "Please wait...";
     endif
     title (ax, msg);

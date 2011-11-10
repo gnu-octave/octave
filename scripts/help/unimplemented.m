@@ -29,12 +29,17 @@ function txt = unimplemented (fcn)
   ## Some smarter cases, add more as needed.
   switch (fcn)
 
+  case "importdata"
+    txt = ["importdata is not implemented.  Similar functionality is ",...
+    "available through @code{load}, @code{dlmread}, @code{csvread}, ",...
+    "or @code{textscan}."];  
+
   case "quad2d"
     txt = ["quad2d is not implemented.  Consider using dblquad."];
 
   case "gsvd"
-    txt = ["gsvd is not currently part of Octave.  See the linear-algebra",...
-    "package at @url{http://octave.sf.net/linear-algebra/}."];
+    txt = ["gsvd is not currently part of core Octave.  See the ",
+    "linear-algebra package at @url{http://octave.sf.net/linear-algebra/}."];
 
   case "linprog"
     txt = ["Octave does not currently provide linprog.  ",...
@@ -76,7 +81,6 @@ function list = missing_functions ()
   "RandStream",
   "TriRep",
   "TriScatteredInterp",
-  "addpref",
   "align",
   "alim",
   "alpha",
@@ -95,7 +99,6 @@ function list = missing_functions ()
   "bar3h",
   "bench",
   "betaincinv",
-  "bicg",
   "bicgstabl",
   "brush",
   "builddocsearchdb",
@@ -188,7 +191,6 @@ function list = missing_functions ()
   "gco",
   "getframe",
   "getpixelposition",
-  "getpref",
   "gmres",
   "grabcode",
   "graymon",
@@ -233,7 +235,6 @@ function list = missing_functions ()
   "isinterface",
   "isjava",
   "isocaps",
-  "ispref",
   "isstudent",
   "javaArray",
   "javaMethod",
@@ -334,7 +335,6 @@ function list = missing_functions ()
   "reducevolume",
   "resample",
   "rgbplot",
-  "rmpref",
   "root",
   "rotate",
   "rotate3d",
@@ -342,7 +342,6 @@ function list = missing_functions ()
   "sendmail",
   "serial",
   "setpixelposition",
-  "setpref",
   "showplottool",
   "shrinkfaces",
   "smooth3",
@@ -397,14 +396,12 @@ function list = missing_functions ()
   "unicode2native",
   "unloadlibrary",
   "unmesh",
-  "usejava",
   "userpath",
   "validateattributes",
   "verLessThan",
   "viewmtx",
   "visdiff",
   "volumebounds",
-  "waitbar",
   "waitfor",
   "warndlg",
   "waterfall",

@@ -42,17 +42,18 @@
 ## @end deftypefn
 
 function [out_fun, out_help_text] = lookfor (str, arg2)
+
   if (strcmpi (str, "-all"))
     ## The difference between using '-all' and not, is which part of the caches
-    ## we search. The cache is organised such that its first column contains
-    ## the function name, its second column contains the full help text, and its
-    ## third column contains the first sentence of the help text.
+    ## we search.  The cache is organized such that the first column contains
+    ## the function name, the second column contains the full help text, and
+    ## the third column contains the first sentence of the help text.
     str = arg2;
-    search_type = 2; # when using caches, search its second column
+    search_type = 2; # when using caches, search the second column
   else
-    search_type = 3; # when using caches, search its third column
+    search_type = 3; # when using caches, search the third column
   endif
-  str = lower (str);
+  str = lower (str);   # Compare is case insensitive
 
   ## Search functions, operators, and keywords that come with Octave
   cache_file = doc_cache_file ();
@@ -81,16 +82,16 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
     if (exist (cache_file, "file"))
       ## We have a cache in the directory, then read it and search it!
       [funs, hts] = search_cache (str, cache_file, search_type);
-      fun (end+1:end+length (funs)) = funs;
-      help_text (end+1:end+length (hts)) = hts;
+      fun(end+1:end+length (funs)) = funs;
+      help_text(end+1:end+length (hts)) = hts;
     else
     ## We don't have a cache. Search files
       funs_in_f = __list_functions__ (elt);
       for m = 1:length (funs_in_f)
-        fn = funs_in_f {m};
+        fn = funs_in_f{m};
 
         ## Skip files that start with __
-        if (length (fn) > 2 && strcmp (fn (1:2), "__"))
+        if (length (fn) > 2 && strcmp (fn(1:2), "__"))
           continue;
         endif
 
@@ -99,7 +100,7 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
           warn_state = warning ();
           unwind_protect
             warning ("off");
-            first_sentence = get_first_help_sentence (fn);
+            first_sentence = get_first_help_sentence (fn, 1024);
             status = 0;
           unwind_protect_cleanup
             warning (warn_state);
@@ -139,28 +140,29 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
         endif
 
         ## Search the help text, if we can
-        if (status == 0 && !isempty (strfind (text, str)))
-          fun (end+1) = fn;
-          help_text (end+1) = first_sentence;
+        if (status == 0 && ! isempty (strfind (lower (text), str)))
+          fun(end+1) = fn;
+          help_text(end+1) = first_sentence;
         endif
       endfor
     endif
   endfor
 
   if (nargout == 0)
-    ## Print the results (FIXME: improve this to make it look better.
+    ## Print the results (FIXME: it would be nice to break at word boundaries)
     indent = 20;
-    term_width = terminal_size() (2);
+    term_width = (terminal_size ())(2);
     desc_width = term_width - indent - 2;
-    indent_space = repmat (" ", 1, indent);
+    indent_space = blanks (indent);
     for k = 1:length (fun)
-      f = fun {k};
-      f (end+1:indent) = " ";
-      printf (f);
-      desc = strtrim (strrep (help_text {k}, "\n", " "));
+      f = fun{k};
+      f(end+1:indent-1) = " ";
+      puts ([f " "]);
+      lf = length (f);
+      desc = strtrim (strrep (help_text{k}, "\n", " "));
       ldesc = length (desc);
-      printf ("%s\n", desc (1:min (desc_width, ldesc)));
-      for start = desc_width+1:desc_width:ldesc
+      printf ("%s\n", desc(1:min (ldesc, desc_width - (lf - indent))));
+      for start = (desc_width - (lf - indent) + 1):desc_width:ldesc
         stop = min (start + desc_width, ldesc);
         printf ("%s%s\n", indent_space, strtrim (desc (start:stop)));
       endfor
@@ -171,17 +173,19 @@ function [out_fun, out_help_text] = lookfor (str, arg2)
     out_fun = fun;
     out_help_text = help_text;
   endif
+
 endfunction
 
 function [funs, help_texts] = search_cache (str, cache_file, search_type)
   load (cache_file);
   if (! isempty (cache))
-    t1 = strfind (cache (1, :), str);
-    t2 = strfind (cache (search_type, :), str);
+    t1 = strfind (lower (cache (1, :)), str);
+    t2 = strfind (lower (cache (search_type, :)), str);
     cache_idx = find (! (cellfun ("isempty", t1) & cellfun ("isempty", t2)));
-    funs = cache (1, cache_idx);
-    help_texts = cache (3, cache_idx);
+    funs = cache(1, cache_idx);
+    help_texts = cache(3, cache_idx);
   else
     funs = help_texts = {};
   endif
 endfunction
+

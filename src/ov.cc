@@ -2884,8 +2884,9 @@ Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
 
 DEFUN (is_sq_string, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_sq_string (@var{val})\n\
-Return true if @var{val} is a single-quoted character string\n\
+@deftypefn {Built-in Function} {} is_sq_string (@var{x})\n\
+Return true if @var{x} is a single-quoted character string.\n\
+@seealso{is_dq_string, ischar}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2909,8 +2910,9 @@ Return true if @var{val} is a single-quoted character string\n\
 
 DEFUN (is_dq_string, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_dq_string (@var{val})\n\
-Return true if @var{val} is a double-quoted character string\n\
+@deftypefn {Built-in Function} {} is_dq_string (@var{x})\n\
+Return true if @var{x} is a double-quoted character string.\n\
+@seealso{is_sq_string, ischar}\n\
 @end deftypefn")
 {
   octave_value retval;

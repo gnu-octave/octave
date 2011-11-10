@@ -21,6 +21,6 @@ do
     file="$srcdir/$arg"
   fi
   if [ "`$EGREP -l "$DEFUN_PATTERN" $file`" ]; then
-    echo "$file" | $SED 's,.*/,,; s/\.\(cc\|yy\|ll\)$/.df/';
+    echo "$file" | $SED 's,.*/,,; s/\.cc$/.df/; s/\.ll$/.df/; s/\.yy$/.df/';
   fi
 done

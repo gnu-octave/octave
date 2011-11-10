@@ -17,13 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str}, @var{delim})
+## @deftypefn  {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str})
+## @deftypefnx {Function File} {[@var{tok}, @var{rem}] =} strtok (@var{str}, @var{delim})
 ##
-## Find all characters up to but not including the first character which
-## is in the string delim.  If @var{rem} is requested, it contains the
-## remainder of the string, starting at the first delimiter.  Leading
-## delimiters are ignored.  If @var{delim} is not specified, space is
-## assumed.  For example:
+## Find all characters in the string @var{str} up to, but not including, the 
+## first character which is in the string @var{delim}.  If @var{rem} is
+## requested, it contains the remainder of the string, starting at the first
+## delimiter.  Leading delimiters are ignored.  If @var{delim} is not
+## specified, whitespace is assumed.  @var{str} may also be a cell array of
+## strings in which case the function executes on every individual string
+## and returns a cell array of tokens and remainders.
+##
+## Examples:
 ##
 ## @example
 ## @group
@@ -36,66 +41,96 @@
 ##         rem = *27+31
 ## @end group
 ## @end example
-## @seealso{index, strsplit}
+## @seealso{index, strsplit, strchr, isspace}
 ## @end deftypefn
-
-## FIXME: check what to do for a null delimiter
 
 function [tok, rem] = strtok (str, delim)
 
-  if (nargin<1 || nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+  elseif (! (ischar (str) || iscellstr (str)))
+    error ("strtok: STR must be a string or cell array of strings.");
+  elseif (ischar (str) && ! isvector (str) &&! isempty (str))
+    error ("strtok: STR cannot be a 2-D character array.");
   endif
 
   if (nargin < 2 || isempty (delim))
-    delim = "\t\n\v\f\r ";
+    ws_delim = true;
+  else
+    ws_delim = false;
   endif
 
   if (isempty (str))
     tok = rem = "";
-  elseif (length (delim) > 3)
-    start = 1;
-    len = length (str);
-    while (start <= len)
-      if (all (str(start) != delim))
-        break;
-      endif
-      start++;
-    endwhile
-    stop = start;
-    while (stop <= len)
-      if (any (str(stop) == delim))
-        break;
-      endif
-      stop++;
-    endwhile
-    tok = str(start:stop-1);
-    rem = str(stop:len);
-  else
-    if (length (delim) == 1)
-      idx = find (str == delim);
-    elseif (length (delim) == 2)
-      idx = find (str == delim(1) | str == delim(2));
+  elseif (ischar (str))
+    if (ws_delim)
+      idx = isspace (str);
+    elseif (length (delim) <= 7)
+      ## Build index of delimiters incrementally for low N.
+      idx = str == delim(1);
+      for i = 2:length (delim) 
+        idx |= str == delim(i);
+      endfor
     else
-      idx = find (str == delim(1) | str == delim(2) | str == delim(3));
+      ## Index the str into a mask of valid values.  Faster for large N.
+      f = false (256, 1);
+      ## This is slower than it could be because of the +1 issue.
+      f(uint8(delim)+1) = true;
+      ## Default goes via double -- unnecessarily long.
+      si = uint32 (str);
+      ## in-place is faster than str+1
+      ++si;
+      idx = f(si);
     endif
-    if (isempty (idx))
+
+    idx_dlim = find (idx, 1);
+    idx_nodlim = find (! idx, 1);
+    if (isempty (idx_dlim))
+      ## No delimiter.  Return whole string.
       tok = str;
       rem = "";
+    elseif (idx_dlim > idx_nodlim)
+      ## Normal case.  No leading delimiters and at least 1 delimiter in STR. 
+      tok = str(1:idx_dlim-1);
+      rem = str(idx_dlim:end);
     else
-      ## Find first non-leading delimiter.
-      skip = find (idx(:)' != 1:length(idx));
-      if (isempty (skip))
-        tok = str(idx(length(idx))+1:length(str));
+      ## Leading delimiter found.
+      idx_dlim = find (idx(idx_nodlim+1:end), 1); 
+      if (isempty (idx_dlim))
+        ## No further delimiters.  Return STR stripped of delimiter prefix.
+        tok = str(idx_nodlim:end);
         rem = "";
       else
-        tok = str(skip(1):idx(skip(1))-1);
-        rem = str(idx(skip(1)):length(str));
+        ## Strip delimiter prefix.  Return STR up to 1st delimiter
+        tok = str(idx_nodlim:(idx_dlim + idx_nodlim -1));
+        rem = str((idx_dlim + idx_nodlim):end);
       endif
+    endif
+  else    # Cell array of strings
+    if (ws_delim)
+      delim = '\s';
+    endif
+    ptn = [ '^[' delim ']*','([^' delim ']+)','([' delim '].*)$' ];
+    matches = regexp (str, ptn, "tokens");
+    eidx = cellfun ("isempty", matches);
+    midx = ! eidx;
+    tok = cell (size (str));
+    tok(eidx) = regexprep (str(eidx), [ '^[' delim ']+' ], '');
+    ## Unwrap doubly nested cell array from regexp
+    tmp = [matches{midx}];
+    if (! isempty (tmp))
+      tmp = [tmp{:}];
+    endif
+    tok(midx) = tmp(1:2:end);
+    if (isargout (2))
+      rem = cell (size (str));
+      rem(eidx) = {""};
+      rem(midx) = tmp(2:2:end);
     endif
   endif
 
 endfunction
+
 
 %!demo
 %! strtok("this is the life")
@@ -103,59 +138,87 @@ endfunction
 
 %!demo
 %! s = "14*27+31"
-%! while 1
-%!   [t,s] = strtok(s, "+-*/");
-%!   printf("<%s>", t);
-%!   if isempty(s), break; endif
-%!   printf("<%s>", s(1));
+%! while (1)
+%!   [t, s] = strtok (s, "+-*/");
+%!   printf ("<%s>", t);
+%!   if (isempty (s))
+%!     break;
+%!   endif
+%!   printf ("<%s>", s(1));
 %! endwhile
 %! printf("\n");
 %! % ----------------------------------------------------
 %! % Demonstrates processing of an entire string split on
-%! % a variety of delimiters. Tokens and delimiters are
-%! % printed one after another in angle brackets.  The
-%! % string is:
+%! % a variety of delimiters.  Tokens and delimiters are
+%! % printed one after another in angle brackets.
 
-%!# test the tokens for all cases
-%!assert(strtok(""), "");             # no string
-%!assert(strtok("this"), "this");     # no delimiter in string
-%!assert(strtok("this "), "this");    # delimiter at end
-%!assert(strtok("this is"), "this");  # delimiter in middle
-%!assert(strtok(" this"), "this");    # delimiter at start
-%!assert(strtok(" this "), "this");   # delimiter at start and end
-%!assert(strtok(" "), ""(1:0));            # delimiter only
+%% Test the tokens for all cases
+%!assert (strtok (""), "");             # no string
+%!assert (strtok ("this"), "this");     # no delimiter in string
+%!assert (strtok ("this "), "this");    # delimiter at end
+%!assert (strtok ("this is"), "this");  # delimiter in middle
+%!assert (strtok (" this"), "this");    # delimiter at start
+%!assert (strtok (" this "), "this");   # delimiter at start and end
+%!assert (strtok (" "), ""(1:0));       # delimiter only
 
-%!# test the remainder for all cases
-%!test [t,r] = strtok(""); assert(r, "");
-%!test [t,r] = strtok("this"); assert(r, char (zeros (1, 0)));
-%!test [t,r] = strtok("this "); assert(r, " ");
-%!test [t,r] = strtok("this is"); assert(r, " is");
-%!test [t,r] = strtok(" this"); assert(r, char (zeros (1, 0)));
-%!test [t,r] = strtok(" this "); assert(r, " ");
-%!test [t,r] = strtok(" "); assert(r, char (zeros (1, 0)));
+%% Test the remainder for all cases
+%!test [t,r] = strtok (""); assert (r, "");
+%!test [t,r] = strtok ("this"); assert (r, "");
+%!test [t,r] = strtok ("this "); assert (r, " ");
+%!test [t,r] = strtok ("this is"); assert (r, " is");
+%!test [t,r] = strtok (" this"); assert (r, "");
+%!test [t,r] = strtok (" this "); assert (r, " ");
+%!test [t,r] = strtok (" "); assert (r, "");
 
-%!# simple check with 2 and 3 delimeters
-%!assert(strtok("this is", "i "), "th");
-%!assert(strtok("this is", "ij "), "th");
+%% Test all tokens and remainders with cell array input
+%!test
+%! str = {"", "this", "this ", "this is", " this", " this ", " "};
+%! [t, r] = strtok (str);
+%! assert (t{1}, "");
+%! assert (r{1}, "");
+%! assert (t{2}, "this");
+%! assert (r{2}, "");
+%! assert (t{3}, "this");
+%! assert (r{3}, " ");
+%! assert (t{4}, "this");
+%! assert (r{4}, " is");
+%! assert (t{5}, "this");
+%! assert (r{5}, "");
+%! assert (t{6}, "this");
+%! assert (r{6}, " ");
+%! assert (t{7}, "");
+%! assert (r{7}, "");
 
-%!# test all cases for 4 delimiters since a different
-%!# algorithm is used when more than 3 delimiters
-%!assert(strtok("","jkl "), "");
-%!assert(strtok("this","jkl "), "this");
-%!assert(strtok("this ","jkl "), "this");
-%!assert(strtok("this is","jkl "), "this");
-%!assert(strtok(" this","jkl "), "this");
-%!assert(strtok(" this ","jkl "), "this");
-%!assert(strtok(" ","jkl "), ""(1:0));
+%% Simple check for 2, 3, and 4 delimeters
+%!assert(strtok ("this is", "i "), "th");
+%!assert(strtok ("this is", "ij "), "th");
+%!assert(strtok ("this is", "ijk "), "th");
 
-%!# test 'bad' string orientations
-%!assert(strtok(" this "'), "this"');   # delimiter at start and end
-%!assert(strtok(" this "',"jkl "), "this"');
+%% Test all cases for 8 delimiters since a different
+%!# algorithm is used when more than 7 delimiters
+%!assert (strtok ("","jklmnop "), "");
+%!assert (strtok ("this","jklmnop "), "this");
+%!assert (strtok ("this ","jklmnop "), "this");
+%!assert (strtok ("this is","jklmnop "), "this");
+%!assert (strtok (" this","jklmnop "), "this");
+%!assert (strtok (" this ","jklmnop "), "this");
+%!assert (strtok (" ","jklmnop "), ""(1:0));
 
-%!# test with TAB, LF, VT, FF, and CR
+%% Test 'bad' string orientations
+%!assert (strtok (" this ".'), "this".');   # delimiter at start and end
+%!assert (strtok (" this ".',"jkl "), "this".');
+
+%% Test with TAB, LF, VT, FF, and CR
 %!test
 %! for ch = "\t\n\v\f\r"
 %!   [t, r] = strtok (cstrcat ("beg", ch, "end"));
 %!   assert (t, "beg");
 %!   assert (r, cstrcat (ch, "end"))
 %! endfor
+
+%% Test input validation
+%!error strtok ()
+%!error strtok ("a", "b", "c")
+%!error <STR must be a string> strtok (1, "b")
+%!error <STR cannot be a 2-D> strtok (char ("hello", "world"), "l")
+

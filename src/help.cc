@@ -152,43 +152,43 @@ Begin comment character.\n\
   pair_type ("#{",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #@{\n\
-Begin block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{#@{}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{#, #@}, %@{}\n\
+Begin block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{#@{}.\n\
+It is possible to nest block comments.\n\
+@seealso{%@{, #@}, #}\n\
 @end deftypefn"),
 
   pair_type ("%{",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %@{\n\
-Begin block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{%@{}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{%, %@}, #@{}\n\
+Begin block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{%@{}.\n\
+It is possible to nest block comments.\n\
+@seealso{#@{, %@}, %}\n\
 @end deftypefn"),
 
   pair_type ("#}",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #@}\n\
-Close block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{#@}}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{#, #@{, %@}}\n\
+Close block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{#@}}.\n\
+It is possible to nest block comments.\n\
+@seealso{%@}, #@{, #}\n\
 @end deftypefn"),
 
   pair_type ("%}",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %@}\n\
-Close block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{%@}}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{%, %@{, #@}}\n\
+Close block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{%@}}.\n\
+It is possible to nest block comments.\n\
+@seealso{#@}, %@{, %}\n\
 @end deftypefn"),
 
   pair_type ("...",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ...\n\
-Continuation marker. Joins current line with following line.\n\
+Continuation marker.  Joins current line with following line.\n\
 @end deftypefn"),
 
   pair_type ("&",
@@ -208,12 +208,12 @@ Logical 'and' operator (with short-circuit evaluation).\n\
   pair_type ("'",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} '\n\
-Matrix transpose operator. For complex matrices, computes the\n\
+Matrix transpose operator.  For complex matrices, computes the\n\
 complex conjugate (Hermitian) transpose.\n\
 \n\
 The single quote character may also be used to delimit strings, but\n\
 it is better to use the double quote character, since that is never\n\
-ambiguous\n\
+ambiguous.\n\
 @seealso{.', transpose}\n\
 @end deftypefn"),
 
@@ -260,7 +260,7 @@ Addition operator.\n\
   pair_type ("++",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ++\n\
-Increment operator. As in C, may be applied as a prefix or postfix\n\
+Increment operator.  As in C, may be applied as a prefix or postfix\n\
 operator.\n\
 @seealso{--}\n\
 @end deftypefn"),
@@ -281,7 +281,7 @@ Subtraction or unary negation operator.\n\
   pair_type ("--",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} --\n\
-Decrement operator. As in C, may be applied as a prefix or postfix\n\
+Decrement operator.  As in C, may be applied as a prefix or postfix\n\
 operator.\n\
 @seealso{++}\n\
 @end deftypefn"),
@@ -289,7 +289,7 @@ operator.\n\
   pair_type (".'",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .'\n\
-Matrix transpose operator. For complex matrices, computes the\n\
+Matrix transpose operator.  For complex matrices, computes the\n\
 transpose, @emph{not} the complex conjugate transpose.\n\
 @seealso{', transpose}\n\
 @end deftypefn"),
@@ -628,7 +628,7 @@ parfor i = 1:10\n\
 endparfor\n\
 @end group\n\
 @end example\n\
-@seealso{do, for, while}\n\
+@seealso{for, do, while}\n\
 @end deftypefn"),
 
   pair_type ("persistent",

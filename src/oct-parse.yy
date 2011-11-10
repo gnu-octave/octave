@@ -1901,11 +1901,7 @@ fold (tree_binary_expression *e)
 
   octave_value::binary_op op_type = e->op_type ();
 
-  if (op1->is_constant () && op2->is_constant ()
-      && (! ((warning_enabled ("Octave:associativity-change")
-              && (op_type == POW || op_type == EPOW))
-             || (warning_enabled ("Octave:precedence-change")
-                 && (op_type == EXPR_OR || op_type == EXPR_OR_OR)))))
+  if (op1->is_constant () && op2->is_constant ())
     {
       octave_value tmp = e->rvalue1 ();
 
@@ -2150,36 +2146,6 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
   return retval;
 }
 
-static void
-maybe_warn_associativity_change (tree_expression *op)
-{
-  if (op->paren_count () == 0 && op->is_binary_expression ())
-    {
-      tree_binary_expression *e
-        = dynamic_cast<tree_binary_expression *> (op);
-
-      octave_value::binary_op op_type = e->op_type ();
-
-      if (op_type == octave_value::op_pow
-          || op_type == octave_value::op_el_pow)
-        {
-          std::string op_str = octave_value::binary_op_as_string (op_type);
-
-          if (curr_fcn_file_full_name.empty ())
-            warning_with_id
-              ("Octave:associativity-change",
-               "meaning may have changed due to change in associativity for %s operator",
-               op_str.c_str ());
-          else
-            warning_with_id
-              ("Octave:associativity-change",
-               "meaning may have changed due to change in associativity for %s operator near line %d, column %d in file `%s'",
-               op_str.c_str (), op->line (), op->column (),
-               curr_fcn_file_full_name.c_str ());
-        }
-    }
-}
-
 // Build a binary expression.
 
 static tree_expression *
@@ -2192,12 +2158,10 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
     {
     case POW:
       t = octave_value::op_pow;
-      maybe_warn_associativity_change (op1);
       break;
 
     case EPOW:
       t = octave_value::op_el_pow;
-      maybe_warn_associativity_change (op1);
       break;
 
     case '+':
@@ -2270,25 +2234,6 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR:
       t = octave_value::op_el_or;
-      if (op2->paren_count () == 0 && op2->is_binary_expression ())
-        {
-          tree_binary_expression *e
-            = dynamic_cast<tree_binary_expression *> (op2);
-
-          if (e->op_type () == octave_value::op_el_and)
-            {
-              if (curr_fcn_file_full_name.empty ())
-                warning_with_id
-                  ("Octave:precedence-change",
-                   "meaning may have changed due to change in precedence for & and | operators");
-              else
-                warning_with_id
-                  ("Octave:precedence-change",
-                   "meaning may have changed due to change in precedence for & and | operators near line %d, column %d in file `%s'",
-                   op2->line (), op2->column (),
-                   curr_fcn_file_full_name.c_str ());
-            }
-        }
       break;
 
     default:
@@ -2321,16 +2266,6 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR_OR:
       t = tree_boolean_expression::bool_or;
-      if (op2->paren_count () == 0 && op2->is_boolean_expression ())
-        {
-          tree_boolean_expression *e
-            = dynamic_cast<tree_boolean_expression *> (op2);
-
-          if (e->op_type () == tree_boolean_expression::bool_and)
-            warning_with_id
-              ("Octave:precedence-change",
-               "meaning may have changed due to change in precedence for && and || operators");
-        }
       break;
 
     default:

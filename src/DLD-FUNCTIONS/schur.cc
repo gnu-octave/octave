@@ -307,7 +307,7 @@ $UR \\cdot TR \\cdot {UR}^T = U T U^{\\dagger}$ and\n\
 $U^{\\dagger} U$ is the identity matrix I.\n\
 @end tex\n\
 @ifnottex\n\
-@code{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
+@xcode{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
 @code{@var{U}' * @var{U}} is the identity matrix I.\n\
 @end ifnottex\n\
 \n\

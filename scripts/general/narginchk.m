@@ -54,3 +54,16 @@ function narginchk (minargs, maxargs)
   endif
 
 endfunction
+
+%!function f (nargs, varargin)
+%! narginchk (nargs(1), nargs(2));
+%!endfunction
+
+%!error <too many input arguments> f([0,0])
+%!error <not enough input arguments> f([3, 3], 1)
+
+%!test
+%! f([1,1])
+
+%!test
+%! f([1,5], 2, 3, 4, 5)

@@ -18,17 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} narginchk (@var{minargs}, @var{maxargs})
-## Check for correct number of arguments.
+## Check for correct number of arguments or generate an error message if
+## the number of arguments in the calling function is outside the range
+## @var{minargs} and @var{maxargs}.  Otherwise, do nothing.
 ##
-## This function returns an error unless the number of arguments in its caller
-## is between the values of @var{minargs} and @var{maxargs}. It does nothing
-## otherwise.
+## Both @var{minargs} and @var{maxargs} need to be scalar numeric
+## values.  Zero, Inf and negative values are all allowed, and
+## @var{minargs} and @var{maxargs} may be equal.
 ##
-## Both @var{minargs} and @var{maxargs} need to be a numeric scalar. Zero, Inf
-## and negative are all valid, and they can have the same value.
-##
-## Note that this function evaluates the value of @code{nargin} on the caller so
-## its value must have not been tampered with.
+## Note that this function evaluates @code{nargin} on the caller.
 ##
 ## @seealso{nargchk, nargoutchk, error, nargout, nargin}
 ## @end deftypefn
@@ -36,11 +34,6 @@
 ## Author: Carnë Draug <carandraug+dev@gmail.com>
 
 function narginchk (minargs, maxargs)
-
-  ## it requires always two arguments (can't specify only min)
-  ## zero, negative and inf are all valid arguments and they can be equal
-  ## thanks to Oldak in ##matlab for the help in checking these corner cases
-  ## tested compatibility in version 2011b
 
   if (nargin != 2)
     print_usage;
@@ -55,9 +48,9 @@ function narginchk (minargs, maxargs)
   args = evalin ("caller", "nargin;");
 
   if (args < minargs)
-    error ("Not enough input arguments.");
+    error ("not enough input arguments");
   elseif (args > maxargs)
-    error ("Too many input arguments.");
+    error ("too many input arguments");
   endif
 
 endfunction

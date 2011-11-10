@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{e} =} eomday (@var{y}, @var{m})
 ## Return the last day of the month @var{m} for the year @var{y}.
-## @seealso{datenum, datevec, weekday}
+## @seealso{weekday, datenum, datevec, is_leap_year, calendar}
 ## @end deftypefn
 
 ## Author: pkienzle <pkienzle@users.sf.net>
@@ -38,20 +38,28 @@ function e = eomday (y, m)
 
 endfunction
 
-# tests
-%!assert(eomday([-4:4],2),[29,28,28,28,29,28,28,28,29])
-%!assert(eomday([-901,901],2),[28,28])
-%!assert(eomday([-100,100],2),[28,28])
-%!assert(eomday([-900,900],2),[28,28])
-%!assert(eomday([-400,400],2),[29,29])
-%!assert(eomday([-800,800],2),[29,29])
-%!assert(eomday(2001,1:12),[31,28,31,30,31,30,31,31,30,31,30,31])
-%!assert(eomday(1:3,1:3),[31,28,31])
-%!assert(eomday(1:2000,2)',datevec(datenum(1:2000,3,0))(:,3))
-%!assert([1900:1999](find(eomday(1900:1999,2*ones(1,100))==29)),[1904,1908,1912,1916,1920,1924,1928,1932,1936,1940,1944,1948,1952,1956,1960,1964,1968,1972,1976,1980,1984,1988,1992,1996])
-%!assert(eomday([2004;2005], [2;2]), [29;28])
-# demos
+
 %!demo
+%! ## Find leap years in the 20th century
 %! y = 1900:1999;
-%! e = eomday (y, 2 * ones (1, 100));
-%! y (find (e == 29))
+%! e = eomday (y, repmat (2, [1, 100]));
+%! y(find (e == 29))
+
+# tests
+%!assert (eomday ([-4:4],2), [29,28,28,28,29,28,28,28,29])
+%!assert (eomday ([-901,901],2), [28,28])
+%!assert (eomday ([-100,100],2), [28,28])
+%!assert (eomday ([-900,900],2), [28,28])
+%!assert (eomday ([-400,400],2), [29,29])
+%!assert (eomday ([-800,800],2), [29,29])
+%!assert (eomday (2001,1:12), [31,28,31,30,31,30,31,31,30,31,30,31])
+%!assert (eomday (1:3,1:3), [31,28,31])
+%!assert (eomday (1:2000,2)', datevec(datenum(1:2000,3,0))(:,3))
+%!assert ([1900:1999](find(eomday(1900:1999,2*ones(1,100))==29)), [1904,1908,1912,1916,1920,1924,1928,1932,1936,1940,1944,1948,1952,1956,1960,1964,1968,1972,1976,1980,1984,1988,1992,1996])
+%!assert (eomday ([2004;2005], [2;2]), [29;28])
+
+%% Test input validation
+%!error eomday ()
+%!error eomday (1)
+%!error eomday (1,2,3)
+

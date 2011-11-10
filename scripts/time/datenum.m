@@ -26,16 +26,23 @@
 ## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{p})
 ## @deftypefnx {Function File} {[@var{days}, @var{secs}] =} datenum (@dots{})
 ## Return the date/time input as a serial day number, with Jan 1, 0000
-## being day 1.  The fractional portion of @var{days} corresponds to the time
-## on the given day.  The input may be a date vector (see @code{datevec}), 
+## defined as day 1.
+##
+## The integer part, @code{floor (@var{days})} counts the number of
+## complete days in the date input.
+##
+## The fractional part, @code{rem (@var{days}, 1)} corresponds to the time
+## on the given day.
+##
+## The input may be a date vector (see @code{datevec}), 
 ## datestr (see @code{datestr}), or directly specified as input.
 ##
-## When processing datestrings, @var{p} is the year at the start of the century
-## to which two-digit years will be referenced.  If not specified, it defaults
-## to the current year minus 50.
+## When processing input datestrings, @var{p} is the year at the start of the
+## century to which two-digit years will be referenced.  If not specified, it
+## defaults to the current year minus 50.
 ##
-## The optional output @var{secs} holds the time on the specified day with greater
-## precision than @var{days}.
+## The optional output @var{secs} holds the time on the specified day with
+## greater precision than @var{days}.
 ##
 ## Notes:
 ##
@@ -68,7 +75,7 @@
 ##
 ## @strong{Warning:} leap seconds are ignored.  A table of leap seconds
 ## is available on the Wikipedia entry for leap seconds.
-## @seealso{datestr, datevec, date, clock, now, calendar, weekday}
+## @seealso{datestr, datevec, now, clock, date}
 ## @end deftypefn
 
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)

@@ -34,7 +34,7 @@
 ## @var{p} is the year at the start of the century to which two-digit years
 ## will be referenced.  If not specified, it defaults to the current year
 ## minus 50.
-## @seealso{datenum, datestr, date, clock, now}
+## @seealso{datenum, datestr, clock, now, date}
 ## @end deftypefn
 
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)

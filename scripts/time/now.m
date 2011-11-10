@@ -18,16 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {t =} now ()
-## Return the current local time as the number of days since Jan 1, 0000.
-## By this reckoning, Jan 1, 1970 is day number 719529.
+## Return the current local date/time as a serial day number
+## (see @code{datenum}).
 ##
-## The integral part, @code{floor (now)} corresponds to 00:00:00 today.
+## The integral part, @code{floor (now)} corresponds to the number of days
+## between today and Jan 1, 0000.
 ##
 ## The fractional part, @code{rem (now, 1)} corresponds to the current
-## time on Jan 1, 0000.
-##
-## The returned value is also called a "serial date number"
-## (see @code{datenum}).
+## time.
 ## @seealso{clock, date, datenum}
 ## @end deftypefn
 
@@ -37,11 +35,11 @@
 
 function t = now ()
 
-  if (nargin == 0)
-    t = datenum (clock ());
-  else
+  if (nargin != 0)
     print_usage ();
   endif
+
+  t = datenum (clock ());
 
   ## The following doesn't work (e.g., one hour off on 2005-10-04):
   ##
@@ -55,7 +53,9 @@ function t = now ()
 
 endfunction
 
-%!error now (1);
+
 %!assert (isnumeric (now ()));
 %!assert (now () > 0);
 %!assert (now () <= now ());
+
+%!error now (1);

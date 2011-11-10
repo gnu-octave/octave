@@ -103,7 +103,7 @@
 ## If a matrix or cell array of dates is given, a column vector of date strings
 ## is returned.
 ##
-## @seealso{datenum, datevec, date, clock, now}
+## @seealso{datenum, datevec, date, now, clock}
 ## @end deftypefn
 
 ## FIXME: parse arbitrary code strings.

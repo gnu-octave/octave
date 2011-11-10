@@ -17,22 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} calendar (@dots{})
-## @deftypefnx {Function File} {@var{c} =} calendar ()
+## @deftypefn  {Function File} {@var{c} =} calendar ()
 ## @deftypefnx {Function File} {@var{c} =} calendar (@var{d})
 ## @deftypefnx {Function File} {@var{c} =} calendar (@var{y}, @var{m})
-## If called with no arguments, return the current monthly calendar in
-## a 6x7 matrix.
+## @deftypefnx {Function File} {} calendar (@dots{})
+## Return the current monthly calendar in a 6x7 matrix.
 ##
 ## If @var{d} is specified, return the calendar for the month containing
-## the day @var{d}, which must be a serial date number or a date string.
+## the date @var{d}, which must be a serial date number or a date string.
 ##
 ## If @var{y} and @var{m} are specified, return the calendar for year @var{y}
 ## and month @var{m}.
 ##
 ## If no output arguments are specified, print the calendar on the screen
 ## instead of returning a matrix.
-## @seealso{datenum}
+## @seealso{datenum, datestr}
 ## @end deftypefn
 
 ## Author: pkienzle <pkienzle@users.sf.net>
@@ -72,13 +71,10 @@ function varargout = calendar (varargin)
     str = sprintf ("    %2d    %2d    %2d    %2d    %2d    %2d    %2d\n", c);
 
     ## Print an asterisk before the specified date
-    if (! isempty (d) && d >= 1 && d <= ndays)
+    if (! isempty (d))
       pos = weekday (dayone) + d - 1;
-      idx = 6 * (pos - 1) + floor (pos / 7) + 1;
-      while (str(idx) == " ")
-        ++idx;
-      endwhile
-      str(--idx) = "*";
+      idx = 6*pos + fix (pos / 7.1) - ifelse (d < 10, 1, 2);
+      str(idx) = "*";
     endif
 
     ## Display the calendar.
@@ -91,11 +87,18 @@ function varargout = calendar (varargin)
 
 endfunction
 
-# tests
-%!assert((calendar(2000,2))'(2:31),[0:29]);
-%!assert((calendar(1957,10))'(2:33),[0:31]);
-# demos
+
+## demos
 %!demo
+%! ## Calendar for current month
 %! calendar ()
 %!demo
 %! calendar (1957, 10)
+
+## tests
+%!assert ((calendar(2000,2))'(2:31), [0:29])
+%!assert ((calendar(1957,10))'(2:33), [0:31])
+
+%% Test input validation
+%!error calendar (1,2,3)
+

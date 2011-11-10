@@ -18,15 +18,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} date ()
-## Return the date as a character string in the form DD-MMM-YY@.  For
-## example:
+## Return the current date as a character string in the form DD-MMM-YYYY@.
+##
+## For example:
 ##
 ## @example
 ## @group
 ## date ()
-##      @result{} "20-Aug-93"
+##      @result{} "20-Aug-1993"
 ## @end group
 ## @end example
+## @seealso{now, clock, datestr, localtime}
 ## @end deftypefn
 
 ## Author: jwe

@@ -1,7 +1,5 @@
 ## Copyright (C) 2008-2011 David Bateman
-##
-## Fixes for convergence issues with vector-valued functions:
-## (C) 2011 Alexander Klein <alexander.klein@math.uni-giessen.de>
+## Copyright (C) 2011 Alexander Klein
 ##
 ## This file is part of Octave.
 ##
@@ -18,8 +16,6 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
-##
-## TODO: Make norm for convergence testing configurable
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{q} =} quadv (@var{f}, @var{a}, @var{b})
@@ -63,6 +59,8 @@
 ## @end deftypefn
 
 function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
+  ## TODO: Make norm for convergence testing configurable
+
   if (nargin < 3)
     print_usage ();
   endif
@@ -93,10 +91,10 @@ function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
 
   ## If have edge singularities, move edge point by eps*(b-a) as
   ## discussed in Shampine paper used to implement quadgk
-  if ( any( isinf( vec(fa))))
+  if (any (isinf (fa(:))))
     fa = feval (f, a + myeps * (b-a), varargin{:});
   endif
-  if ( any( isinf( vec (fb))))
+  if (any (isinf (fb(:))))
     fb = feval (f, b - myeps * (b-a), varargin{:});
   endif
 
@@ -108,7 +106,7 @@ function [q, nfun] = quadv (f, a, b, tol, trace, varargin)
 
   if (nfun > 10000)
     warning ("maximum iteration count reached");
-  elseif (any(vec(isnan (q) || isinf (q))))
+  elseif (any (isnan (q)(:) | isinf (q)(:)))
     warning ("infinite or NaN function evaluations were returned");
   elseif (hmin < (b - a) * myeps)
     warning ("minimum step size reached -- possibly singular integral");

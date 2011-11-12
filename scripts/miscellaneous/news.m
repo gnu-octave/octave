@@ -24,12 +24,11 @@
 ## NEWS file for that package.
 ## @end deftypefn
 
-function news (package)
+function news (package = "octave")
 
-  ## also let users specify 'octave'
-  if (nargin == 0 || (nargin == 1 && ischar (package) && strcmpi (package, "octave")))
+  if (ischar (package) && strcmpi (package, "octave"))
     octetcdir = octave_config_info ("octetcdir");
-    newsfile = fullfile (octetcdir, "NEWS");
+    newsfile  = fullfile (octetcdir, "NEWS");
 
   elseif (nargin == 1 && ischar (package))
     installed = pkg ("list");
@@ -51,10 +50,10 @@ function news (package)
       puts (line);
     endwhile
   else
-    if (package)
-      error ("news: unable to locate NEWS file of %s package", package);
-    else
+    if (strcmpi (package, "octave"))
       error ("news: unable to locate NEWS file");
+    else
+      error ("news: unable to locate NEWS file of %s package", package);
     endif
   endif
 

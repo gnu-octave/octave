@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} is_leap_year ()
 ## @deftypefnx {Function File} {} is_leap_year (@var{year})
-## Return true if the given year is a leap year and false otherwise.  If no
-## year is provided, @code{is_leap_year} will use the current year.
+## Return true if @var{year} is a leap year and false otherwise.  If no
+## year is specified, @code{is_leap_year} uses the current year.
 ## For example:
 ##
 ## @example
@@ -29,6 +29,7 @@
 ##      @result{} 1
 ## @end group
 ## @end example
+## @seealso{weekday, eomday, calendar}
 ## @end deftypefn
 
 ## Author: jwe
@@ -41,17 +42,19 @@ function retval = is_leap_year (year)
 
   if (nargin == 0)
     t = clock ();
-    year = t (1);
+    year = t(1);
   endif
 
-  retval = ((rem (year, 4) == 0 & rem (year, 100) != 0) ...
-            | rem (year, 400) == 0);
+  retval = (rem (year, 4) == 0 & rem (year, 100) != 0) | (rem (year, 400) == 0);
 
 endfunction
 
-%!assert((is_leap_year (2000) == 1 && is_leap_year (1976) == 1
-%! && is_leap_year (1000) == 0 && is_leap_year (1800) == 0
-%! && is_leap_year (1600) == 1));
+
+%!assert (is_leap_year (2000), true)
+%!assert (is_leap_year (1976), true)
+%!assert (is_leap_year (1000), false)
+%!assert (is_leap_year (1800), false)
+%!assert (is_leap_year (1600), true)
 
 %!error is_leap_year (1, 2);
 

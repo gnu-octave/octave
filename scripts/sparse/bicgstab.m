@@ -217,12 +217,12 @@ endfunction
 %! assert (x, ones (size (b)), 1e-7);
 %!
 %!test
+%!function y = afun (x, a)
+%!  y = a * x;
+%!endfunction
+%!
 %! tol = 1e-8;
 %! maxit = 15;
-%!
-%! function y = afun (x, a)
-%!     y = a * x;
-%! endfunction
 %!
 %! [x, flag, relres, iter, resvec] = bicgstab (@(x) afun (x, A), b,
 %!                                             tol, maxit, M1, M2);

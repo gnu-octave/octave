@@ -425,7 +425,7 @@ the recursion depth and prevents Octave from recursing infinitely.
 The following arithmetic operators are available, and work on scalars
 and matrices.
 
-@table @code
+@table @asis
 @item @var{x} + @var{y}
 @opindex +
 Addition.  If both operands are matrices, the number of rows and columns

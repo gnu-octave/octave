@@ -48,6 +48,7 @@ text = [text{:}, doc_delim];
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
 text = regexprep (text, '@seealso *\{([^}]*)\}', "See also: $1.");
 text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
+text = regexprep (text, '@xcode *\{([^}]*)\}', "$1");
 text = strrep (text, '@', "@@");
 
 ## Write data to temporary file for input to makeinfo

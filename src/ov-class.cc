@@ -80,23 +80,120 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
         error ("parents must be objects");
       else
         {
-          std::string cnm = parent.class_name ();
+          std::string pcnm = parent.class_name ();
 
-          if (find_parent_class (cnm))
+          if (find_parent_class (pcnm))
             error ("duplicate class in parent tree");
           else
             {
-              parent_list.push_back (cnm);
+              parent_list.push_back (pcnm);
 
-              if (map.numel () > 1)
+              octave_idx_type nel = map.numel ();
+              octave_idx_type p_nel = parent.numel ();
+
+              if (nel == 0)
                 {
-                  // If MAP has more than one element, put the parent
-                  // class object in each element.
+                  if (p_nel == 0)
+                    {
+                      // No elements in MAP or the parent class object,
+                      // so just add the field name.
 
-                  map.assign (cnm, Cell (map.dims (), parent));
+                      map.assign (pcnm, Cell (map.dims ()));
+                    }
+                  else if (p_nel == 1)
+                    {
+                      if (map.nfields () == 0)
+                        {
+                          // No elements or fields in MAP, but the
+                          // parent is class object with one element.
+                          // Resize to match size of parent class and
+                          // make the parent a field in MAP.
+
+                          map.resize (parent.dims ());
+
+                          map.assign (pcnm, parent);
+                        }
+                      else
+                        {
+                          // No elements in MAP, but we have at least
+                          // one field.  So don't resize, just add the
+                          // field name.
+
+                          map.assign (pcnm, Cell (map.dims ()));
+                        }
+                    }
+                  else if (map.nfields () == 0)
+                    {
+                      // No elements or fields in MAP and more than one
+                      // element in the parent class object, so we can
+                      // resize MAP to match parent dimsenions, then
+                      // distribute the elements of the parent object to
+                      // the elements of MAP.
+
+                      dim_vector parent_dims = parent.dims ();
+
+                      map.resize (parent_dims);
+
+                      Cell c (parent_dims);
+
+                      octave_map pmap = parent.map_value ();
+
+                      std::list<std::string> plist
+                        = parent.parent_class_name_list ();
+
+                      for (octave_idx_type i = 0; i < p_nel; i++)
+                        c(i) = octave_value (pmap.index(i), pcnm, plist);
+
+                      map.assign (pcnm, c);
+                    }
+                  else
+                    error ("class: parent class dimension mismatch");
+                }
+              else if (nel == 1 && p_nel == 1)
+                {
+                  // Simple assignment.
+
+                  map.assign (pcnm, parent);
                 }
               else
-                map.assign (cnm, parent);
+                {
+                  if (p_nel == 1)
+                    {
+                      // Broadcast the scalar parent class object to
+                      // each element of MAP.
+
+                      Cell pcell (map.dims (), parent);
+
+                      map.assign (pcnm, pcell);
+                    }
+
+                  else if (nel == p_nel)
+                    {
+                      // FIXME -- is there a better way to do this?
+
+                      // The parent class object has the same number of
+                      // elements as the map we are using to create the
+                      // new object, so distribute those elements to
+                      // each element of the new object by first
+                      // splitting the elements of the parent class
+                      // object into a cell array with one element per
+                      // cell.  Then do the assignment all at once.
+
+                      Cell c (parent.dims ());
+
+                      octave_map pmap = parent.map_value ();
+
+                      std::list<std::string> plist
+                        = parent.parent_class_name_list ();
+
+                      for (octave_idx_type i = 0; i < p_nel; i++)
+                        c(i) = octave_value (pmap.index(i), pcnm, plist);
+
+                      map.assign (pcnm, c);
+                    }
+                  else
+                    error ("class: parent class dimension mismatch");
+                }
             }
         }
     }
@@ -334,11 +431,11 @@ octave_class::size (void)
     {
       dim_vector dv = dims ();
 
-      int nel = dv.numel ();
+      int nd = dv.length ();
 
-      retval.resize (1, nel);
+      retval.resize (1, nd);
 
-      for (int i = 0; i < nel; i++)
+      for (int i = 0; i < nd; i++)
         retval(i) = dv(i);
     }
 

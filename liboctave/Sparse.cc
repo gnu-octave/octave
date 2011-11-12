@@ -1486,9 +1486,6 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
     }
   else
     {
-      (*current_liboctave_warning_with_id_handler)
-        ("Octave:fortran-indexing", "single index used for sparse matrix");
-
       if (nr != 0 && idx.is_scalar ())
         retval = Sparse<T> (1, 1, elem (idx(0) % nr, idx(0) / nr));
       else

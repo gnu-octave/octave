@@ -1464,8 +1464,6 @@ initialize_default_warning_state (void)
 
   disable_warning ("Octave:array-to-scalar");
   disable_warning ("Octave:array-to-vector");
-  disable_warning ("Octave:empty-list-elements");
-  disable_warning ("Octave:fortran-indexing");
   disable_warning ("Octave:imag-to-real");
   disable_warning ("Octave:matlab-incompatible");
   disable_warning ("Octave:missing-semicolon");
@@ -1474,13 +1472,16 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:separator-insert");
   disable_warning ("Octave:single-quote-string");
   disable_warning ("Octave:str-to-num");
-  disable_warning ("Octave:string-concat");
+  disable_warning ("Octave:mixed-string-concat");
   disable_warning ("Octave:variable-switch-label");
-  disable_warning ("Octave:complex-cmp-ops");
 
   // This should be an error unless we are in maximum braindamage mode.
+  // FIXME: Not quite right.  This sets the error state even for braindamage
+  // mode.  Also, this error is not triggered in normal mode because another
+  // error handler catches it first and gives:
+  // error: subscript indices must be either positive integers or logicals
+  set_warning_state ("Octave:noninteger-range-as-index", "error");
 
-  set_warning_state ("Octave:allow-noninteger-ranges-as-indices", "error");
 }
 
 DEFUN (lasterror, args, ,

@@ -33,9 +33,18 @@
 ## @end deftypefn
 
 function idx = display (a)
-  if (nargin == 1)
-    error ("display: not defined for class \"%s\"", class(a));
-  else
+
+  if (nargin != 1)
     print_usage ();
   endif
+ 
+  ## Only reason we got here is that there was no overloaded display()
+  ## function for object a.  This may mean it is a built-in.
+  str = disp (a);
+  if (isempty (strfind (str, "<class ")))
+    disp (str);   
+  else
+    error ('display: not defined for class "%s"', class (a));
+  endif
+
 endfunction

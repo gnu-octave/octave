@@ -1571,6 +1571,9 @@ ComplexMatrix::determinant (MatrixType& mattype,
 {
   ComplexDET retval (1.0);
 
+  info = 0;
+  rcon = 0.0;
+
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1599,7 +1602,6 @@ ComplexMatrix::determinant (MatrixType& mattype,
           ComplexMatrix atmp = *this;
           Complex *tmp_data = atmp.fortran_vec ();
 
-          info = 0;
           double anorm = 0;
           if (calc_cond) anorm = xnorm (*this, 1);
 
@@ -3795,7 +3797,7 @@ xgemm (const ComplexMatrix& a, const ComplexMatrix& b,
           octave_idx_type lda = a.rows (), tda = a.cols ();
           octave_idx_type ldb = b.rows (), tdb = b.cols ();
 
-          retval = ComplexMatrix (a_nr, b_nc);
+          retval = ComplexMatrix (a_nr, b_nc, 0.0);
           Complex *c = retval.fortran_vec ();
 
           if (b_nc == 1 && a_nr == 1)

@@ -109,12 +109,12 @@ function [beta, sigma, r] = ols (y, x)
 
   ## Start of algorithm
   z = x' * x;
-  rnk = rank (z);
+  [u, p] = chol (z);
 
-  if (rnk == nc)
-    beta = inv (z) * x' * y;
-  else
+  if (p)
     beta = pinv (x) * y;
+  else
+    beta = u \ (u' \ (x' * y));
   endif
 
   if (isargout (2) || isargout (3))

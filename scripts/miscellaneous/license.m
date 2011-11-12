@@ -75,21 +75,15 @@ function retval = license (varargin)
   nr_licenses = rows (__octave_licenses__);
 
   if (nout > 1 || nin > 3)
-    error ("type `help license' for usage info");
+    print_usage ();
   endif
 
-  if (nin == 0)
+  if (nin == 0)  
 
-    found = false;
-    for p = 1:nr_licenses
-      if (strcmp (__octave_licenses__{p,1}, "Octave"))
-        found = true;
-        break;
-      endif
-    endfor
+    found = find (strcmp (__octave_licenses__(:,1), "Octave"), 1);
 
-    if (found)
-      result = __octave_licenses__{p,2};
+    if (! isempty (found))
+      result = __octave_licenses__{found,2};
     else
       result = "unknown";
     endif
@@ -105,17 +99,15 @@ function retval = license (varargin)
     if (nout == 0)
 
       if (! strcmp (varargin{1}, "inuse"))
-        usage ("license (\"inuse\")");
+        usage ('license ("inuse")');
       endif
 
-      for p = 1:nr_licenses
-        printf ("%s\n", __octave_licenses__{p,1});
-      endfor
+      printf ("%s\n", __octave_licenses__{:,1});
 
     else
 
       if (! strcmp (varargin{1}, "inuse"))
-        usage ("retval = license (\"inuse\")");
+        usage ('retval = license ("inuse")');
       endif
 
       pw = getpwuid (getuid ());
@@ -125,11 +117,7 @@ function retval = license (varargin)
         username = "octave_user";
       endif
 
-      retval(1:nr_licenses) = struct ("feature", "", "user", "");
-      for p = 1:nr_licenses
-        retval(p).feature = __octave_licenses__{p,1};
-        retval(p).user = username;
-      endfor
+      retval = struct ("feature", __octave_licenses__(:,1), "user", username);
 
     endif
 
@@ -139,52 +127,61 @@ function retval = license (varargin)
 
     if (strcmp (varargin{1}, "test"))
 
-      found = false;
-      for p = 1:nr_licenses
-        if (strcmpi (feature, __octave_licenses__{p,1}))
-          found = true;
-          break;
-        endif
-      endfor
+      found = find (strcmpi (__octave_licenses__(:,1), feature), 1);
 
       if (nin == 2)
-        retval = found && __octave_licenses__{p,3};
+        retval = ! isempty (found) && __octave_licenses__{found,3};
       else
-        if (found)
+        if (! isempty (found))
           if (strcmp (varargin{3}, "enable"))
-            __octave_licenses__{p,3} = true;
+            __octave_licenses__{found,3} = true;
           elseif (strcmp (varargin{3}, "disable"))
-            __octave_licenses__{p,3} = false;
+            __octave_licenses__{found,3} = false;
           else
-            error ("TOGGLE must be either `enable' of `disable'");
+            error ("license: TOGGLE must be either `enable' or `disable'");
           endif
         else
-          error ("FEATURE `%s' not found", feature);
+          error ("license: FEATURE `%s' not found", feature);
         endif
       endif
 
     elseif (strcmp (varargin{1}, "checkout"))
 
       if (nin != 2)
-        usage ("retval = license (\"checkout\", feature)");
+        usage ('retval = license ("checkout", feature)');
       endif
 
-      found = false;
-      for p = 1:nr_licenses
-        if (strcmpi (feature, __octave_licenses__{p,1}))
-          found = true;
-          break;
-        endif
-      endfor
+      found = find (strcmpi (__octave_licenses__(:,1), feature), 1);
 
-      retval = found && __octave_licenses__{p,3};
+      retval = ! isempty (found) && __octave_licenses__{found,3};
 
     else
-
-      error ("type `help license' for usage info");
-
+      print_usage ();
     endif
 
   endif
 
 endfunction
+
+
+%!assert (license(), "GNU General Public License")
+%!assert ((license ("inuse")).feature, "Octave")
+
+%!test
+%! lstate = license ("test", "Octave");
+%! license ("test", "Octave", "disable");
+%! assert (license ("test", "Octave"), false);
+%! license ("test", "Octave", "enable");
+%! assert (license ("test", "Octave"), true);
+%! if (lstate == false)
+%!   license ("test", "Octave", "disable");
+%! endif
+
+%!assert (license ("checkout", "Octave"), true)
+
+%% Test input validation
+%!error license ("not_inuse")
+%!error <TOGGLE must be either> license ("test", "Octave", "not_enable")
+%!error <FEATURE `INVALID' not found> license ("test", "INVALID", "enable")
+%!error license ("not_test", "Octave", "enable")
+

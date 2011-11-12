@@ -43,17 +43,11 @@ function retval = patch (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
 
-  oldh = gca ();
+  [tmp, failed] = __patch__ (h, varargin{:});
 
-  unwind_protect
-    axes (h);
-    [tmp, failed] = __patch__ (h, varargin{:});
-    if (failed)
-      print_usage ();
-    endif
-  unwind_protect_cleanup
-    axes (oldh);
-  end_unwind_protect
+  if (failed)
+    print_usage ();
+  endif
 
   if (nargout > 0)
     retval = tmp;
@@ -207,14 +201,14 @@ endfunction
 %! unwind_protect
 %!   h = patch;
 %!   assert (findobj (hf, "type", "patch"), h);
-%!   assert (get (h, "xdata"), [0; 1; 1], eps);
-%!   assert (get (h, "ydata"), [0; 0; 1], eps);
+%!   assert (get (h, "xdata"), [0; 1; 0], eps);
+%!   assert (get (h, "ydata"), [1; 1; 0], eps);
 %!   assert (isempty(get (h, "zdata")));
 %!   assert (isempty(get (h, "cdata")));
 %!   assert (get (h, "faces"), [1, 2, 3], eps);
-%!   assert (get (h, "vertices"), [0 0; 1 0; 1 1], eps);
+%!   assert (get (h, "vertices"), [0 1; 1 1; 0 0], eps);
 %!   assert (get (h, "type"), "patch");
-%!   assert (get (h, "facecolor"), [0 0 1]);
+%!   assert (get (h, "facecolor"), [0 0 0]);
 %!   assert (get (h, "linestyle"), get (0, "defaultpatchlinestyle"));
 %!   assert (get (h, "linewidth"), get (0, "defaultpatchlinewidth"), eps);
 %!   assert (get (h, "marker"), get (0, "defaultpatchmarker"));

@@ -44,36 +44,27 @@
 
 function st = cstrcat (varargin)
 
-  if (nargin > 0)
-
-    if (iscellstr (varargin))
-      ## All arguments are character strings.
-      unwind_protect
-        tmp = warning ("query", "Octave:empty-list-elements");
-        warning ("off", "Octave:empty-list-elements");
-        st = [varargin{:}];
-      unwind_protect_cleanup
-        warning (tmp.state, "Octave:empty-list-elements");
-      end_unwind_protect
-    else
-      error ("cstrcat: expecting arguments to character strings");
-    endif
-  else
+  if (nargin < 1)
     print_usage ();
+  elseif (! iscellstr (varargin))
+    error ("cstrcat: expecting arguments to character strings");
   endif
+
+  st = [varargin{:}];
 
 endfunction
 
-## test the dimensionality
+
+## Test the dimensionality
 ## 1d
-%!assert(cstrcat("ab ", "ab "), "ab ab ")
+%!assert (cstrcat ("ab ", "ab "), "ab ab ")
 ## 2d
-%!assert(cstrcat(["ab ";"cde"], ["ab ";"cde"]), ["ab ab ";"cdecde"])
+%!assert (cstrcat (["ab ";"cde"], ["ab ";"cde"]), ["ab ab ";"cdecde"])
 
-%!assert((strcmp (cstrcat ("foo", "bar"), "foobar")
-%! && strcmp (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])));
+%!assert (cstrcat ("foo", "bar"), "foobar")
+%!assert (cstrcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])
 
+%% Test input validation
 %!error cstrcat ();
-
 %!error cstrcat (1, 2);
 

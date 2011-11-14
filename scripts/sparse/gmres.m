@@ -65,7 +65,7 @@
 ## @seealso{bicg, bicgstab, cgs, pcg}
 ## @end deftypefn
 
-function [x, flag, presn, it] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
+function [x, flag, presn, it, resids] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
 
   if (nargin < 2 || nargin > 8)
     print_usage ();
@@ -182,7 +182,7 @@ function [x, flag, presn, it] = gmres (A, b, restart, rtol, maxit, M1, M2, x0)
   endif
 
   resids = resids(1:iter-1);
-  it = [floor(maxit/restart), rem(maxit, restart)];
+  it = [ceil(iter / restart), rem(iter, restart)];
 
 endfunction
 

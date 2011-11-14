@@ -81,8 +81,8 @@ endfunction
 
 function r = pick_rand_diag (n, k)
   ## Pick a random number R of entries for the diagonal of a sparse NxN
-  ## square matrix with exactly K nonzero entries, ensuring that this R
-  ## is chosen uniformly over all such matrices.
+  ## symmetric square matrix with exactly K nonzero entries, ensuring
+  ## that this R is chosen uniformly over all such matrices.
   ##
   ## Let D be the number of diagonal entries and M the number of
   ## off-diagonal entries. Then K = D + 2*M. Let A = N*(N-1)/2 be the

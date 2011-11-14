@@ -101,6 +101,8 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
 
   ## Handle @nospell macro
   text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
+  ## Handle @xcode macro
+  text = regexprep (text, '@xcode *\{([^}]*)\}', "$1");
 
   if (strcmpi (output_type, "texinfo"))
     status = 0;

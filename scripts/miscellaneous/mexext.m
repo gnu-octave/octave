@@ -19,8 +19,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mexext ()
 ## Return the filename extension used for MEX files.
+## @seealso{mex}
 ## @end deftypefn
 
 function retval = mexext ()
   retval = "mex";
 endfunction
+
+%!assert (mexext (), "mex")

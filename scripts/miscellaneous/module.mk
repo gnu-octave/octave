@@ -51,6 +51,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/parseparams.m \
   miscellaneous/perl.m \
   miscellaneous/python.m \
+  miscellaneous/recycle.m \
   miscellaneous/rmappdata.m \
   miscellaneous/run.m \
   miscellaneous/semicolon.m \

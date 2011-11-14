@@ -1239,6 +1239,9 @@ Matrix::determinant (MatrixType& mattype,
 {
   DET retval (1.0);
 
+  info = 0;
+  rcon = 0.0;
+
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1267,7 +1270,6 @@ Matrix::determinant (MatrixType& mattype,
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
 
-          info = 0;
           double anorm = 0;
           if (calc_cond) anorm = xnorm (*this, 1);
 

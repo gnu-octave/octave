@@ -648,23 +648,33 @@ function accepts a variable number of arguments.\n\
 
       if (! error_state)
         {
-          octave_value fcn_val = symbol_table::find_user_function (fname);
+          octave_value fcn_val = symbol_table::find_function (fname);
 
-          octave_user_function *fcn = fcn_val.user_function_value (true);
-
-          if (fcn)
+          if (fcn_val.is_user_function ())
             {
-              if (fcn->takes_varargs ())
-                retval = -1;
-              else
-                {
-                  tree_parameter_list *param_list = fcn->parameter_list ();
+              octave_user_function *fcn = fcn_val.user_function_value (true);
 
-                  retval = param_list ? param_list->length () : 0;
+              if (fcn)
+                {
+                  if (fcn->takes_varargs ())
+                    retval = -1;
+                  else
+                    {
+                      tree_parameter_list *param_list = fcn->parameter_list ();
+
+                      retval = param_list ? param_list->length () : 0;
+                    }
                 }
+              else
+                error ("nargin: loading user-defined function failed");
             }
           else
-            error ("nargin: invalid function");
+            {
+              // FIXME -- what about built-in functions or functions
+              // defined in .oct files or .mex files?
+
+              error ("nargin: FCN_NAME must be a user-defined function");
+            }
         }
       else
         error ("nargin: FCN_NAME must be a string");

@@ -19,21 +19,25 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} title (@var{string})
 ## @deftypefnx {Function File} {} title (@var{string}, @var{p1}, @var{v1}, @dots{})
+## @deftypefnx {Function File} {} title (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} title (@dots{})
 ## Create a title object and return a handle to it.
 ## @end deftypefn
 
 ## Author: jwe
 
-function h = title (string, varargin)
+function retval = title (varargin)
 
-  if (rem (nargin, 2) == 1)
-    if (nargout > 0)
-      h = __axis_label__ ("title", string, varargin{:});
-    else
-      __axis_label__ ("title", string, varargin{:});
-    endif
-  else
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("title", varargin{:});
+
+  if (rem (nargin, 2) != 1)
     print_usage ();
+  endif
+
+  tmp = __axis_label__ (h, "title", varargin{:});
+
+  if (nargout > 0)
+    retval = tmp;
   endif
 
 endfunction

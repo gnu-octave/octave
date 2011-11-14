@@ -38,6 +38,7 @@ function retval = ispref (group, pref)
   if (nargin == 1)
     retval = isfield (loadprefs (), group);
   elseif (nargin == 2)
+    prefs = loadprefs ();
     if (isfield (prefs, group))
       grp = prefs.(group);
       if (ischar (pref) || iscellstr (pref))

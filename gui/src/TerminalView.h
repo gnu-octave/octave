@@ -18,9 +18,13 @@
 #ifndef OCTAVETERMINAL_H
 #define OCTAVETERMINAL_H
 #include <QPlainTextEdit>
+#include "AbstractTerminalView.h"
 #include "TerminalEmulation.h"
 
-class TerminalView:public QPlainTextEdit, Terminal
+class TerminalView:
+  public QPlainTextEdit,
+  public AbstractTerminalView,
+  Terminal
 {
 Q_OBJECT
 public:
@@ -32,7 +36,10 @@ public:
     return m_terminalEmulation;
   }
 
-  void sendText (QString text) { m_terminalEmulation->transmitText(text); }
+  // AbstractTerminalView interface
+  void sendText (const QString& text)
+    { m_terminalEmulation->transmitText(text); }
+  QWidget* widget (void) { return this; }
 
   // Terminal Interface
   QTextCursor textCursor();

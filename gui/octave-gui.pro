@@ -61,7 +61,7 @@ win32-g++ {
 
 win32-msvc* {
     DEFINES += QSCINTILLA_DLL
-    CONFIG += console
+    #CONFIG += console
     include(msvc-debug.pri)
 }
 
@@ -87,17 +87,25 @@ SOURCES +=\
     src/backend/OctaveLink.cpp \
     src/backend/OctaveMainThread.cpp \
     src/irc/IRCClientImpl.cpp \
-    src/terminal/TerminalEmulation.cpp \
     src/backend/ReadlineAdapter.cpp \
-    src/TerminalView.cpp \
-    src/TerminalHighlighter.cpp \
-    src/WelcomeWizard.cpp
+    src/WelcomeWizard.cpp \
+    src/AbstractTerminalView.cpp
 
 unix {
 SOURCES +=\
-    src/terminal/LinuxTerminalEmulation.cpp \
+    src/TerminalHighlighter.cpp \
+    src/TerminalView.cpp \
     src/terminal/KPty.cpp \
     src/terminal/KPtyDevice.cpp
+    src/terminal/LinuxTerminalEmulation.cpp \
+    src/terminal/TerminalEmulation.cpp \
+}
+
+win32 {
+SOURCES += \
+    src/WinTerminalView.cpp \
+    src/terminal/win32/QConsole.cpp \
+    src/terminal/win32/QConsoleColors.cpp
 }
 
 HEADERS += \
@@ -118,17 +126,26 @@ HEADERS += \
     src/backend/OctaveMainThread.h \
     src/irc/IRCClientInterface.h \
     src/irc/IRCClientImpl.h \
-    src/terminal/TerminalEmulation.h \
     src/backend/ReadlineAdapter.h \
-    src/TerminalView.h \
-    src/TerminalHighlighter.h \
-    src/WelcomeWizard.h
+    src/WelcomeWizard.h \
+    src/AbstractTerminalView.h
 
 unix {
 HEADERS += \
-    src/terminal/LinuxTerminalEmulation.h \
+    src/TerminalHighlighter.h \
+    src/TerminalView.h \
     src/terminal/KPtyDevice.h \
     src/terminal/KPty.h
+    src/terminal/LinuxTerminalEmulation.h \
+    src/terminal/TerminalEmulation.h \
+}
+
+win32 {
+HEADERS += \
+    src/WinTerminalView.h \
+    src/terminal/win32/QConsole.h \
+    src/terminal/win32/QConsoleColors.h
+INCLUDEPATH += src/terminal/win32
 }
 
 FORMS += \

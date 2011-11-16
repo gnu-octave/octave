@@ -19,7 +19,7 @@
 #define FILEEDITORMDISUBWINDOW_H
 
 #include "MainWindow.h"
-#include "TerminalEmulation.h"
+#include "AbstractTerminalView.h"
 #include <QMdiSubWindow>
 #include <QToolBar>
 #include <QAction>
@@ -45,7 +45,7 @@ Q_OBJECT public:
   FileEditorMdiSubWindow (QWidget * parent = 0);
   ~FileEditorMdiSubWindow ();
   void loadFile (QString fileName);
-  void initEditor (TerminalEmulation *terminalEmulation,
+  void initEditor (AbstractTerminalView *terminalView,
                    LexerOctaveGui *lexer,
                    MainWindow *mainWindow);
 
@@ -78,7 +78,7 @@ private:
   QStatusBar *m_statusBar;
   QString m_fileName;
   QString m_fileNameShort;
-  TerminalEmulation* m_terminalEmulation;
+  AbstractTerminalView* m_terminalView;
   QAction* m_copyAction;
   QAction* m_cutAction;
   MainWindow* m_mainWindow;

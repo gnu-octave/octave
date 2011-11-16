@@ -28,7 +28,7 @@
 #include <Qsci/qsciapis.h>
 #include <QMdiSubWindow>
 #include "ResourceManager.h"
-#include "TerminalView.h"
+#include "AbstractTerminalView.h"
 #include "OctaveLink.h"
 #include "WorkspaceView.h"
 #include "HistoryDockWidget.h"
@@ -62,7 +62,7 @@ Q_OBJECT public:
   MainWindow (QWidget * parent = 0);
   ~MainWindow ();
 
-  TerminalView *terminalView ()
+  AbstractTerminalView *terminalView ()
   {
     return m_terminalView;
   }
@@ -113,7 +113,7 @@ private:
   QMdiArea *m_centralMdiArea;
 
   // Mdi sub windows.
-  TerminalView *m_terminalView;
+  AbstractTerminalView *m_terminalView;
   BrowserWidget *m_documentationWidget;
   IRCWidget *m_ircWidget;
 

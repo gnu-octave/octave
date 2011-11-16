@@ -251,8 +251,8 @@ FileEditorMdiSubWindow::runFile ()
 {
   if (m_editor->isModified ())
     saveFile(m_fileName);
-  m_terminalEmulation->transmitText (QString ("run \'%1\'\n").arg (m_fileName));
-  //m_terminalEmulation->setFocus ();
+  m_terminalView->sendText (QString ("run \'%1\'\n").arg (m_fileName));
+  //m_terminalView->widget ()->setFocus ();
 }
 
 
@@ -338,12 +338,12 @@ FileEditorMdiSubWindow::prevBookmark ()
 
 // function for setting the already existing lexer from MainWindow
 void
-FileEditorMdiSubWindow::initEditor (TerminalEmulation* terminalEmulation,
+FileEditorMdiSubWindow::initEditor (AbstractTerminalView* terminalView,
                                     LexerOctaveGui* lexer,
                                     MainWindow* mainWindow)
 {
   m_editor->setLexer(lexer);
-  m_terminalEmulation = terminalEmulation; // for sending commands to octave
+  m_terminalView = terminalView; // for sending commands to octave
                        // TODO: make a global commandOctave function?
   m_mainWindow = mainWindow;  // get the MainWindow for chekcing state at subwindow close
 }

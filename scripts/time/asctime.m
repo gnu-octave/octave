@@ -18,36 +18,37 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} asctime (@var{tm_struct})
-## Convert a time structure to a string using the following five-field
-## format: Thu Mar 28 08:40:14 1996.  For example:
+## Convert a time structure to a string using the following 
+## format: "ddd mmm mm HH:MM:SS yyyy".  For example:
 ##
 ## @example
 ## @group
 ## asctime (localtime (time ()))
-##      @result{} "Mon Feb 17 01:15:06 1997\n"
+##      @result{} "Mon Feb 17 01:15:06 1997"
 ## @end group
 ## @end example
 ##
 ## This is equivalent to @code{ctime (time ())}.
+## @seealso{ctime, localtime, time}
 ## @end deftypefn
 
 ## Author: jwe
 
 function retval = asctime (tm_struct)
 
-  if (nargin == 1)
-    retval = strftime ("%a %b %d %H:%M:%S %Y\n", tm_struct);
-  else
+  if (nargin != 1)
     print_usage ();
   endif
 
+  retval = strftime ("%a %b %d %H:%M:%S %Y\n", tm_struct);
+
 endfunction
+
 
 %!test
 %! t = time ();
 %! assert(strcmp (asctime (localtime (t)), ctime (t)));
 
 %!error asctime ();
-
 %!error asctime (1, 2);
 

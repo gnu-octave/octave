@@ -34,7 +34,7 @@
 
 ## Three test statistics (Wilks, Hotelling-Lawley, and Pillai-Bartlett)
 ## and corresponding approximate p-values are calculated and displayed.
-## (Currently NOT because the f_cdf respectively betai code is too bad.)
+## (Currently NOT because the fcdf respectively betai code is too bad.)
 
 ## Author: TF <Thomas.Fuereder@ci.tuwien.ac.at>
 ## Adapted-By: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -107,7 +107,7 @@ function manova (x, g)
   df_den = delta * eta - df_num / 2 + 1;
 
   WT = exp (- log (Lambda) / eta) - 1;
-  W_pval_2 = 1 - f_cdf (WT * df_den / df_num, df_num, df_den);
+  W_pval_2 = 1 - fcdf (WT * df_den / df_num, df_num, df_den);
 
   if (0)
 
@@ -123,7 +123,7 @@ function manova (x, g)
     df_num = theta * (2 * u + theta + 1);
     df_den = 2 * (theta * v + 1);
 
-    HL_pval = 1 - f_cdf (HL * df_den / df_num, df_num, df_den);
+    HL_pval = 1 - fcdf (HL * df_den / df_num, df_num, df_den);
 
     ## Pillai-Bartlett
     ## ===============
@@ -131,7 +131,7 @@ function manova (x, g)
     PB = sum (l ./ (1 + l));
 
     df_den = theta * (2 * v + theta + 1);
-    PB_pval = 1 - f_cdf (PB * df_den / df_num, df_num, df_den);
+    PB_pval = 1 - fcdf (PB * df_den / df_num, df_num, df_den);
 
     printf ("\n");
     printf ("One-way MANOVA Table:\n");

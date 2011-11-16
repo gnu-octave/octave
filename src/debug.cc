@@ -929,7 +929,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 // interpreter is currently executing when the debugger is stopped in
 // some C++ function, for example.
 
-static void
+void
 show_octave_dbstack (void)
 {
   do_dbstack (octave_value_list (), 0, std::cerr);

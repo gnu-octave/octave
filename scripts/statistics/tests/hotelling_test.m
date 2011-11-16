@@ -63,7 +63,7 @@ function [pval, Tsq] = hotelling_test (x, m)
 
   d    = mean (x) - m;
   Tsq  = n * d * (cov (x) \ d');
-  pval = 1 - f_cdf ((n-p) * Tsq / (p * (n-1)), p, n-p);
+  pval = 1 - fcdf ((n-p) * Tsq / (p * (n-1)), p, n-p);
 
   if (nargout == 0)
     printf ("  pval: %g\n", pval);

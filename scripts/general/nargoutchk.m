@@ -1,4 +1,5 @@
 ## Copyright (C) 2008-2011 Bill Denney
+## Copyright (C) 2011 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -17,51 +18,91 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs})
+## @deftypefn  {Function File} {} nargoutchk (@var{minargs}, @var{maxargs})
+## @deftypefnx {Function File} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs})
 ## @deftypefnx {Function File} {@var{msgstr} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "string")
 ## @deftypefnx {Function File} {@var{msgstruct} =} nargoutchk (@var{minargs}, @var{maxargs}, @var{nargs}, "struct")
-## Return an appropriate error message string (or structure) if the
-## number of outputs requested is invalid.
+## Check for correct number of output arguments.
+##
+## On the first form, returns an error unless the number of arguments in its
+## caller is between the values of @var{minargs} and @var{maxargs}. It does
+## nothing otherwise. Note that this function evaluates the value of
+## @code{nargout} on the caller so its value must have not been tampered with.
+##
+## Both @var{minargs} and @var{maxargs} need to be a numeric scalar. Zero, Inf
+## and negative are all valid, and they can have the same value.
+##
+## For backward compatibility reasons, the other forms return an appropriate
+## error message string (or structure) if the number of outputs requested is
+## invalid.
 ##
 ## This is useful for checking to see that the number of output
 ## arguments supplied to a function is within an acceptable range.
-## @seealso{nargchk, error, nargout, nargin}
+## @seealso{nargchk, narginchk, error, nargout, nargin}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>
+## Author: Carnë Draug <carandraug+dev@gmail.com>
 
 function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 
-  if (nargin < 3 || nargin > 4)
-    print_usage ();
-  elseif (minargs > maxargs)
-    error ("nargoutchk: MINARGS must be <= MAXARGS");
-  elseif (nargin == 3)
-    outtype = "string";
-  elseif (! any (strcmpi (outtype, {"string" "struct"})))
-    error ("nargoutchk: output type must be either string or struct");
-  elseif (! (isscalar (minargs) && isscalar (maxargs) && isscalar (nargs)))
-    error ("nargoutchk: MINARGS, MAXARGS, and NARGS must be scalars");
-  endif
+  ## before matlab's 2011b, nargoutchk would return an error message (just the
+  ## message in a string). With 2011b, it no longer returns anything, it simply
+  ## gives an error if the args number is incorrect.
+  ## To try to keep compatibility with both versions, check nargout and nargin
+  ## to guess if the caller is expecting a value (old syntax) or none (new syntax)
 
-  msg = struct ("message", "", "identifier", "");
-  if (nargs < minargs)
-    msg.message = "not enough output arguments";
-    msg.identifier = "Octave:nargoutchk:not-enough-outputs";
-  elseif (nargs > maxargs)
-    msg.message = "too many output arguments";
-    msg.identifier = "Octave:nargoutchk:too-many-outputs";
-  endif
+  if (nargout == 1 && (nargin == 3 || nargin == 4))
 
-  if (strcmpi (outtype, "string"))
-    msg = msg.message;
-  elseif (isempty (msg.message))
-    ## Compatability: Matlab returns a 0x1 empty struct when nargchk passes
-    msg = resize (msg, 0, 1);
+    if (minargs > maxargs)
+      error ("nargoutchk: MINARGS must be <= MAXARGS");
+    elseif (nargin == 3)
+      outtype = "string";
+    elseif (! any (strcmpi (outtype, {"string" "struct"})))
+      error ("nargoutchk: output type must be either string or struct");
+    elseif (! (isscalar (minargs) && isscalar (maxargs) && isscalar (nargs)))
+      error ("nargoutchk: MINARGS, MAXARGS, and NARGS must be scalars");
+    endif
+
+    msg = struct ("message", "", "identifier", "");
+    if (nargs < minargs)
+      msg.message = "not enough output arguments";
+      msg.identifier = "Octave:nargoutchk:not-enough-outputs";
+    elseif (nargs > maxargs)
+      msg.message = "too many output arguments";
+      msg.identifier = "Octave:nargoutchk:too-many-outputs";
+    endif
+
+    if (strcmpi (outtype, "string"))
+      msg = msg.message;
+    elseif (isempty (msg.message))
+      ## Compatability: Matlab returns a 0x1 empty struct when nargchk passes
+      msg = resize (msg, 0, 1);
+    endif
+
+  elseif (nargout == 0 && nargin == 2)
+
+    if (!isnumeric (minargs) || !isscalar (minargs))
+      error ("minargs must be a numeric scalar");
+    elseif (!isnumeric (maxargs) || !isscalar (maxargs))
+      error ("maxargs must be a numeric scalar");
+    elseif (minargs > maxargs)
+      error ("minargs cannot be larger than maxargs")
+    endif
+
+    args = evalin ("caller", "nargout;");
+
+    if (args < minargs)
+      error ("Not enough output arguments.");
+    elseif (args > maxargs)
+      error ("Too many output arguments.");
+    endif
+
+  else
+    print_usage;
   endif
 
 endfunction
-
 
 ## Tests
 %!shared stnul, stmin, stmax

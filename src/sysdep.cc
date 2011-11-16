@@ -101,28 +101,43 @@ BSD_init (void)
 #endif
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+#define WIN32_LEAN_AND_MEAN
+#include <tlhelp32.h>
+
 static void
 w32_set_octave_home (void)
 {
-  int n = 1024;
+  std::string bin_dir;
 
-  std::string bin_dir (n, '\0');
+  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE |
+				       TH32CS_SNAPMODULE32, 0);
 
-  while (true)
+  if (h != INVALID_HANDLE_VALUE)
     {
-      HMODULE hMod = GetModuleHandle ("octinterp");
-      int status = GetModuleFileName (hMod, &bin_dir[0], n);
+      MODULEENTRY32 mod_info;
 
-      if (status < n)
-        {
-          bin_dir.resize (status);
-          break;
-        }
-      else
-        {
-          n *= 2;
-          bin_dir.resize (n);
-        }
+      ZeroMemory (&mod_info, sizeof (mod_info));
+      mod_info.dwSize = sizeof (mod_info);
+
+      if (Module32First (h, &mod_info))
+	{
+	  do
+	    {
+	      std::string mod_name (mod_info.szModule);
+
+	      if (mod_name.find ("octinterp") != std::string::npos)
+		{
+		  bin_dir = mod_info.szExePath;
+		  if (bin_dir[bin_dir.length () - 1] != '\\')
+		    bin_dir.append (1, '\\');
+		  break;
+		}
+	    }
+	  while (Module32Next (h, &mod_info));
+	}
+
+      CloseHandle (h);
     }
 
   if (! bin_dir.empty ())

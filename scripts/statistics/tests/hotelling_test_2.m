@@ -76,7 +76,7 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
   d    = mean (x) - mean (y);
   S    = ((n_x - 1) * cov (x) + (n_y - 1) * cov (y)) / (n_x + n_y - 2);
   Tsq  = (n_x * n_y / (n_x + n_y)) * d * (S \ d');
-  pval = 1 - f_cdf ((n_x + n_y - p - 1) * Tsq / (p * (n_x + n_y - 2)),
+  pval = 1 - fcdf ((n_x + n_y - p - 1) * Tsq / (p * (n_x + n_y - 2)),
                     p, n_x + n_y - p - 1);
 
   if (nargout == 0)

@@ -46,6 +46,20 @@
 \arg\
 @end macro
 
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro xcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro xcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
 @ifinfo
 @format
 START-INFO-DIR-ENTRY

@@ -90,15 +90,8 @@ endfunction
 %! profshow (T, 10);
 
 %!demo
-%! function f = myfib (n)
-%!   if (n <= 2)
-%!     f = 1;
-%!   else
-%!     f = myfib (n - 1) + myfib (n - 2);
-%!   endif
-%! endfunction
 %! profile ("on");
-%! myfib (20);
+%! expm (rand (500) + eye (500));
 %! profile ("off");
 %! profshow (profile ("info"), 5);
 

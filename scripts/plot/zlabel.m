@@ -33,14 +33,8 @@ function retval = zlabel (varargin)
     print_usage ();
   endif
 
-  oldh = gca ();
-  unwind_protect
-    axes (h);
-    tmp = __axis_label__ ("zlabel", varargin{:},
-                          "color", get (h, "zcolor"));
-  unwind_protect_cleanup
-    axes (oldh);
-  end_unwind_protect
+  tmp = __axis_label__ (h, "zlabel", varargin{:},
+                        "color", get (h, "zcolor"));
 
   if (nargout > 0)
     retval = tmp;

@@ -39,14 +39,8 @@ function retval = xlabel (varargin)
     print_usage ();
   endif
 
-  oldh = gca ();
-  unwind_protect
-    axes (h);
-    tmp = __axis_label__ ("xlabel", varargin{:},
-                          "color", get (h, "xcolor"));
-  unwind_protect_cleanup
-    axes (oldh);
-  end_unwind_protect
+  tmp = __axis_label__ (h, "xlabel", varargin{:},
+                        "color", get (h, "xcolor"));
 
   if (nargout > 0)
     retval = tmp;

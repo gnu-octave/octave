@@ -57,13 +57,16 @@
 ## Quit debugging mode and return to the main prompt.
 ##
 ## @item debug_on_error
-## Flag whether to enter debug mode in case Octave encounters an error.
+## Function to query or set whether to enter debug mode in case Octave
+## encounters an error.
 ##
 ## @item debug_on_warning
-## Flag whether to enter debug mode in case Octave encounters a warning.
+## Function to query or set whether to enter debug mode in case Octave
+## encounters a warning.
 ##
 ## @item debug_on_interrupt
-## Flag whether to enter debug mode in case Octave encounters an interupt.
+## Function to query or set whether to enter debug mode in case Octave
+## encounters an interupt.
 ##
 ## @end table
 ##

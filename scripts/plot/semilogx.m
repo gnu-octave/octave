@@ -67,17 +67,31 @@ endfunction
 
 %!demo
 %! clf ();
-%! a = logspace (-5, 1, 10);
-%! b =-logspace (-5, 1, 10);
+%! x = logspace (-5, 1, 10);
+%! y = logspace (-5, 1, 10);
 %!
 %! subplot (1, 2, 1)
-%! semilogx (b, a)
-%! xlabel ('semilogx (a, b)')
+%! semilogx (x, y)
+%! xlabel ('semilogx (x, y)')
 %!
 %! subplot (1, 2, 2)
-%! semilogx (abs (b), a)
-%! set (gca, 'ydir', 'reverse')
-%! xlabel ('semilogx (a, abs (b))')
+%! semilogx (-x, y)
+%! xlabel ('semilogx (-x, y)')
+
+%!demo
+%! clf ();
+%! x = logspace (-5, 1, 10);
+%! y = logspace (-5, 1, 10);
+%!
+%! subplot (1, 2, 1)
+%! semilogx (x, y)
+%! set (gca, "xdir", "reverse", "activepositionproperty", "outerposition")
+%! xlabel ({"semilogx (x, y)", "xdir = reversed"})
+%!
+%! subplot (1, 2, 2)
+%! semilogx (-x, y)
+%! set (gca, "xdir", "reverse", "activepositionproperty", "outerposition")
+%! xlabel ({"semilogx (-x, y)","xdir = reversed"})
 
 %!test
 %! hf = figure ("visible", "off");

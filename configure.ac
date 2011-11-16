@@ -167,6 +167,15 @@ if $BOUNDS_CHECKING; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to use internal bounds checking.])
 fi
 
+USE_OCTAVE_ALLOCATOR=false
+AC_ARG_ENABLE(octave-allocator,
+  [AS_HELP_STRING([--enable-octave-allocator],
+     [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.  (default is no)])],
+  [if test "$enableval" = yes; then USE_ALLOCATOR=true; fi], [])
+if $USE_OCTAVE_ALLOCATOR; then
+  AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1, [Define to use octave_allocator class.])
+fi
+
 ### Make it possible to disable running Make in the doc directory.
 ### Useful for building on systems without TeX, for example.
 DOCDIR=doc
@@ -2702,6 +2711,7 @@ Octave is now configured for $canonical_host_type
   gnuplot:                     $GNUPLOT
 
   Do internal array bounds checking:  $BOUNDS_CHECKING
+  Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
   Build static libraries:             $STATIC_LIBS
   Build shared libraries:             $SHARED_LIBS
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG

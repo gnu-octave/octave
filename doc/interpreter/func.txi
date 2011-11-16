@@ -359,10 +359,12 @@ endif
 which stops the function execution and prints a message about the correct
 way to call the function whenever the number of inputs is wrong.
 
-For compatibility with @sc{matlab}, @code{nargchk} and @code{nargoutchk} are
-available which provide similar error checking.
+For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
+@code{nargoutchk} are available which provide similar error checking.
 
 @DOCSTRING(nargchk)
+
+@DOCSTRING(narginchk)
 
 @DOCSTRING(nargoutchk)
 

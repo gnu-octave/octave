@@ -53,6 +53,7 @@ general_FCN_FILES = \
   general/loadobj.m \
   general/logspace.m \
   general/nargchk.m \
+  general/narginchk.m \
   general/nargoutchk.m \
   general/nthargout.m \
   general/nextpow2.m \

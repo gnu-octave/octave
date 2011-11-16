@@ -422,9 +422,12 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
             break;
           else if (ovector[1] <= ovector[0])
             {
-              // FIXME: Zero sized match!! Is this the right thing to do?
+              // Zero sized match.  Skip to next char.
               idx = ovector[0] + 1;
-              continue;
+              if (idx < buffer.length ())
+                continue;
+              else
+                break;
             }
           else
             {
@@ -1040,6 +1043,8 @@ Alternatively, use (?x) in the pattern.\n\
 
 ## seg-fault test
 %!assert(regexp("abcde","."),[1,2,3,4,5])
+## Infinite loop test
+%!assert (isempty (regexp("abcde", "")))
 
 ## Check that anchoring of pattern works correctly
 %!assert(regexp('abcabc','^abc'),1);

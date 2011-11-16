@@ -30,7 +30,7 @@ doc_delim = char (31);
 ## It is more efficient to fork to shell for makeinfo only once on large data
 
 nfiles = numel (docstrings_files);
-text = cell (1, nfiles+1);
+text = cell (1, nfiles);
 for i = 1:nfiles
   file = docstrings_files{i};
   fid = fopen (file, "r");
@@ -39,16 +39,17 @@ for i = 1:nfiles
   else
     tmp = fread (fid, Inf, "*char")';
     ## Strip off header lines
-    [null, text{i}] = strtok (tmp, doc_delim);
+    [~, text{i}] = strtok (tmp, doc_delim);
   endif
 endfor
 text = [text{:}, doc_delim];
 
 ## Modify Octave-specific macros before passing to makeinfo
+text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
 text = regexprep (text, '@seealso *\{([^}]*)\}', "See also: $1.");
 text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
-text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
-text = regexprep (text, '@', "@@");
+text = regexprep (text, '@xcode *\{([^}]*)\}', "$1");
+text = strrep (text, '@', "@@");
 
 ## Write data to temporary file for input to makeinfo
 [fid, name, msg] = mkstemp ("octave_doc_XXXXXX", true);
@@ -58,17 +59,14 @@ endif
 fwrite (fid, text, "char");
 fclose (fid);
 
-cmd = sprintf ("%s --no-headers --no-warn --force --no-validate --fill-column=1024 %s",
-               makeinfo_program (), name);
+cmd = [makeinfo_program() " --no-headers --no-warn --force --no-validate --fill-column=1024 " name];
 
 [status, formatted_text] = system (cmd);
 
 ## Did we get the help text?
 if (status != 0)
   error ("makeinfo failed with exit status %d!", status);
-endif
-
-if (isempty (formatted_text))
+elseif (isempty (formatted_text))
   error ("makeinfo produced no output!");
 endif
 
@@ -85,42 +83,32 @@ for i = 2:n
 
   [symbol, doc] = strtok (block, "\r\n");
 
-  doc = regexprep (doc, "^[\r\n]+", '');
-
   ## Skip internal functions that start with __ as these aren't
   ## indexed by lookfor.
   if (length (symbol) > 2 && regexp (symbol, '^__.+__$'))
     continue;
   endif
 
+  doc = regexprep (doc, "^[\r\n]+", '', 'once');
+
   if (isempty (doc))
     continue;
   endif
 
-  tmp = doc;
-  found = 0;
-  do
-    [s, e] = regexp (tmp, "^ -- [^\r\n]*[\r\n]");
-    if (! isempty(s))
-      found = 1;
-      tmp = tmp(e+1:end);
-    endif
-  until (isempty (s))
+  tmp = regexprep (doc, "^ -- .*$[\r\n]", '', 'lineanchors', 'dotexceptnewline');
 
-  if (! found)
+  if (isempty (tmp))
     continue;
   endif
 
   end_of_first_sentence = regexp (tmp, "(\\.|[\r\n][\r\n])", "once");
   if (isempty (end_of_first_sentence))
     end_of_first_sentence = length (tmp);
-  else
-    end_of_first_sentence = end_of_first_sentence;
   endif
 
   first_sentence = tmp(1:end_of_first_sentence);
   first_sentence = regexprep (first_sentence, "([\r\n]| {2,})", " ");
-  first_sentence = regexprep (first_sentence, '^ +', "");
+  first_sentence = regexprep (first_sentence, '^ +', "", 'once');
 
   cache{1,k} = symbol;
   cache{2,k} = doc;

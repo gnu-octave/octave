@@ -230,6 +230,8 @@ status information on files; and for manipulating file and path names.
 
 @DOCSTRING(tempname)
 
+@DOCSTRING(recycle)
+
 @node File Archiving Utilities
 @section File Archiving Utilities
 
@@ -301,6 +303,8 @@ higher-level functions.
 @DOCSTRING(dos)
 
 @DOCSTRING(perl)
+
+@DOCSTRING(python)
 
 @DOCSTRING(popen)
 

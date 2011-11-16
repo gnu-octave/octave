@@ -68,7 +68,7 @@ function [pval, f, df_num, df_den] = f_test_regression (y, x, rr, r)
   [b, v] = ols (y, x);
   diff   = rr * b - r;
   f      = diff' * inv (rr * inv (x' * x) * rr') * diff / (q * v);
-  pval  = 1 - f_cdf (f, df_num, df_den);
+  pval  = 1 - fcdf (f, df_num, df_den);
 
   if (nargout == 0)
     printf ("  pval: %g\n", pval);

@@ -36,6 +36,8 @@ qhull command
 
 #include <cstdio>
 
+#include <list>
+
 #include "lo-ieee.h"
 
 #include "Cell.h"
@@ -53,7 +55,7 @@ char qh_version[] = "__voronoi__.oct 2007-07-24";
 #endif
 #endif
 
-DEFUN_DLD (__voronoi__, args, nargout,
+DEFUN_DLD (__voronoi__, args, ,
         "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{pts})\n\
 @deftypefnx {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{pts}, @var{options})\n\
@@ -113,7 +115,7 @@ Undocumented internal function.\n\
   // Qhull flags argument is not const char*
   OCTAVE_LOCAL_BUFFER (char, flags, 12 + options.length ());
 
-  sprintf (flags, "qhull v FV %s", options.c_str ());
+  sprintf (flags, "qhull v Fv %s", options.c_str ());
 
   int exitcode = qh_new_qhull (dim, np, pt_array, 
                                ismalloc, flags, outfile, errfile);
@@ -122,11 +124,21 @@ Undocumented internal function.\n\
       facetT *facet;
       vertexT *vertex;
 
-      octave_idx_type i = 0, n = 1, k = 0, m = 0, fidx = 0, j = 0, r = 0;
-      OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, np);
+      octave_idx_type i = 0, n = 1, k = 0, m = 0, j = 0, r = 0;
 
-      for (i = 0; i < np; i++)
+      // Count number of vertices for size of NI.  FIXME -- does Qhull
+      // have a way to query this value directly?
+      octave_idx_type nv = 0;
+      FORALLvertices
+        {
+          nv++;
+        }
+
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, nv);
+
+      for (i = 0; i < nv; i++)
         ni[i] = 0;
+
       qh_setvoronoi_all ();
 
       bool infinity_seen = false;
@@ -162,6 +174,7 @@ Undocumented internal function.\n\
                   ni[k]++;
                 }
             }
+
           k++;
         }
 
@@ -169,8 +182,8 @@ Undocumented internal function.\n\
       for (octave_idx_type d = 0; d < dim; d++)
         v(0,d) = octave_Inf;
 
-      boolMatrix AtInf (np, 1, false);
-      octave_value_list F (np, octave_value ());
+      boolMatrix AtInf (nv, 1, false);
+      std::list<RowVector> F;
       k = 0;
       i = 0;
 
@@ -182,10 +195,20 @@ Undocumented internal function.\n\
       FORALLvertices
         {
           if (qh hull_dim == 3)
-            qh_order_vertexneighbors(vertex);
+            qh_order_vertexneighbors (vertex);
 
           infinity_seen = false;
-          RowVector facet_list (ni[k++]);
+
+          octave_idx_type n_vertices = ni[k++];
+
+          // Qhull seems to sometimes produce "facets" with a single
+          // vertex.  Is that a bug?  How can a facet have just one
+          // vertex?  Let's skip it.
+
+          if (n_vertices == 1)
+            continue;
+
+          RowVector facet_list (n_vertices);
           m = 0;
 
           FOREACHneighbor_(vertex)
@@ -204,7 +227,6 @@ Undocumented internal function.\n\
                   if (! neighbor->seen)
                     {
                       voronoi_vertex = neighbor->center;
-                      fidx = neighbor->id;
                       i++;
                       for (octave_idx_type d = 0; d < dim; d++)
                         {
@@ -216,19 +238,25 @@ Undocumented internal function.\n\
                   facet_list(m++) = neighbor->visitid + 1;
                 }
             }
-          F(r++) = facet_list;
+          F.push_back (facet_list);
           j++;
         }
 
-      Cell C(r, 1);
-      for (i = 0; i < r; i++)
-        C.elem (i) = F(i);
+      // For compatibility with Matlab, pad the cell array of vertex
+      // lists with empty matrices if there are fewer facets than
+      // points.
+      octave_idx_type f_len = F.size ();
+      Cell C(np > f_len ? np : f_len, 1);
 
-      if (nargout == 3)
-        {
-          AtInf.resize (r, 1);
-          retval(2) = AtInf;
-        }
+      i = 0;
+      for (std::list<RowVector>::const_iterator it = F.begin ();
+           it != F.end (); it++)
+        C.elem (i++) = *it;
+
+      F.clear ();
+
+      AtInf.resize (f_len, 1);
+      retval(2) = AtInf;
       retval(1) = C;
       retval(0) = v;
     }

@@ -55,18 +55,17 @@ public:
     { }
 
   octave_class (const octave_map& m, const std::string& id,
-                const std::list<std::string>& plist
-                  = std::list<std::string> ())
+                const std::list<std::string>& plist)
     : octave_base_value (), map (m), c_name (id),
       parent_list (plist), obsolete_copies (0)
     { }
 
+  octave_class (const octave_map& m, const std::string& id,
+                const octave_value_list& parents);
+
   octave_class (const octave_class& s)
     : octave_base_value (s), map (s.map), c_name (s.c_name),
       parent_list (s.parent_list), obsolete_copies (0)  { }
-
-  octave_class (const octave_map& m, const std::string& id,
-                const octave_value_list& parents);
 
   ~octave_class (void) { }
 
@@ -76,7 +75,7 @@ public:
 
   octave_base_value *empty_clone (void) const
   {
-    return new octave_class (octave_map (map.keys ()), class_name ());
+    return new octave_class (octave_map (map.keys ()), c_name, parent_list);
   }
 
   Cell dotref (const octave_value_list& idx);

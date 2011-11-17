@@ -104,7 +104,7 @@ xpow (double a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -155,7 +155,7 @@ xpow (double a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -194,7 +194,7 @@ xpow (const Matrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -280,7 +280,7 @@ xpow (const DiagMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -324,7 +324,7 @@ xpow (const Matrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       EIG a_eig (a);
@@ -372,7 +372,7 @@ xpow (const Complex& a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -420,7 +420,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -459,7 +459,7 @@ xpow (const ComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -545,7 +545,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       EIG a_eig (a);
@@ -579,7 +579,7 @@ xpow (const ComplexDiagMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       ComplexDiagMatrix r (nr, nc);
@@ -1553,7 +1553,7 @@ xpow (float a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1605,7 +1605,7 @@ xpow (float a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1644,7 +1644,7 @@ xpow (const FloatMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1730,7 +1730,7 @@ xpow (const FloatDiagMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1762,7 +1762,7 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       FloatEIG a_eig (a);
@@ -1810,7 +1810,7 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1858,7 +1858,7 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1897,7 +1897,7 @@ xpow (const FloatComplexMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1983,7 +1983,7 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       FloatEIG a_eig (a);
@@ -2017,7 +2017,7 @@ xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       FloatComplexDiagMatrix r (nr, nc);

@@ -63,7 +63,7 @@ xpow (const SparseMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -136,7 +136,7 @@ xpow (const SparseComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)

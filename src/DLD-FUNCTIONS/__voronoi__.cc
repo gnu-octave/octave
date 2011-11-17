@@ -96,10 +96,10 @@ Undocumented internal function.\n\
       octave_value opt_arg = args(2);
 
       if (opt_arg.is_string ())
-        options = " " + args(1).string_value ();
+        options = " " + opt_arg.string_value ();
       else if (opt_arg.is_empty ())
         ; // Use default options.
-      else if (args(1).is_cellstr ())
+      else if (opt_arg.is_cellstr ())
         {
           options = "";
 

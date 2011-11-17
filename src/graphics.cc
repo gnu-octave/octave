@@ -564,7 +564,7 @@ convert_text_position (const Matrix& pos, const text::properties& props,
   graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
   graphics_object ax = go.get_ancestor ("axes");
 
-  Matrix retval (1, pos.numel (), 0);
+  Matrix retval;
 
   if (ax.valid_object ())
     {
@@ -583,6 +583,8 @@ convert_text_position (const Matrix& pos, const text::properties& props,
                            v2 = ax_xform.transform (pos(0) + pos(2),
                                                     pos(1) + pos(3), 0);
 
+              retval.resize (1, 4);
+
               retval(0) = v1(0) - ax_bbox(0) + 1;
               retval(1) = ax_bbox(1) + ax_bbox(3) - v1(1) + 1;
               retval(2) = v2(0) - v1(0);
@@ -591,6 +593,8 @@ convert_text_position (const Matrix& pos, const text::properties& props,
           else
             {
               ColumnVector v = ax_xform.transform (pos(0), pos(1), pos(2));
+
+              retval.resize (1, 3);
 
               retval(0) = v(0) - ax_bbox(0) + 1;
               retval(1) = ax_bbox(1) + ax_bbox(3) - v(1) + 1;
@@ -611,6 +615,8 @@ convert_text_position (const Matrix& pos, const text::properties& props,
                                v2 = ax_xform.untransform (retval(0) + retval(2) + ax_bbox(0) - 1,
                                                           ax_bbox(1) + ax_bbox(3)  - (retval(1) + retval(3)) + 1);
 
+                  retval.resize (1, 4);
+
                   retval(0) = v1(0);
                   retval(1) = v1(1);
                   retval(2) = v2(0) - v1(0);
@@ -620,6 +626,8 @@ convert_text_position (const Matrix& pos, const text::properties& props,
                 {
                   ColumnVector v = ax_xform.untransform (retval(0) + ax_bbox(0) - 1,
                                                          ax_bbox(1) + ax_bbox(3)  - retval(1) + 1);
+
+                  retval.resize (1, 3);
 
                   retval(0) = v(0);
                   retval(1) = v(1);

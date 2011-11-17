@@ -100,23 +100,27 @@ convex hull is calculated.\n\n\
 
   points = points.transpose ();
 
-  std::string cmd = "qhull";
+  std::string options;
 
   if (dim <= 4)
-    cmd += " Qt";
+    options = " Qt";
   else
-    cmd += " Qt Qx";
+    options = " Qt Qx";
 
-  if (nargin == 2 && ! args(1).is_empty ())
+  if (nargin == 2)
     {
       if (args(1).is_string ())
-        cmd += " " + args(1).string_value ();
+        options = " " + args(1).string_value ();
+      else if (args(1).is_empty ())
+        ; // Use default options.
       else if (args(1).is_cellstr ())
         {
+          options = "";
+
           Array<std::string> tmp = args(1).cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            cmd += " " + tmp(i);
+            options += " " + tmp(i);
         }
       else
         {
@@ -131,7 +135,9 @@ convex hull is calculated.\n\n\
   FILE *outfile = 0;
   FILE *errfile = stderr;
       
-  // Qhull flags and points arguments are not const...
+  // qh_new_qhull command and points arguments are not const...
+
+  std::string cmd = "qhull" + options;
 
   OCTAVE_LOCAL_BUFFER (char, cmd_str, cmd.length () + 1);
 

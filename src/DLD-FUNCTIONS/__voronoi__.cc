@@ -57,8 +57,8 @@ char qh_version[] = "__voronoi__.oct 2007-07-24";
 
 DEFUN_DLD (__voronoi__, args, ,
         "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{pts})\n\
-@deftypefnx {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{pts}, @var{options})\n\
+@deftypefn  {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts})\n\
+@deftypefnx {Loadable Function} {@var{C}, @var{F} =} __voronoi__ (@var{caller}, @var{pts}, @var{options})\n\
 @deftypefnx {Loadable Function} {@var{C}, @var{F}, @var{Inf_Pts} =} __voronoi__ (@dots{})\n\
 Undocumented internal function.\n\
 @end deftypefn")
@@ -70,37 +70,51 @@ Undocumented internal function.\n\
   retval(0) = 0.0;
 
   int nargin = args.length ();
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 2 || nargin > 3)
     {
       print_usage ();
       return retval;
     }
 
-  std::string cmd = "qhull v";
+  std::string caller = args(0).string_value ();
 
-  if (nargin == 2 && ! args(1).is_empty ())
-    {
-      if (args(1).is_string ())
-        cmd += " " + args(1).string_value ();
-      else if (args(1).is_cellstr ())
-        {
-          Array<std::string> tmp = args(1).cellstr_value ();
-
-          for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            cmd += " " + tmp(i);
-        }
-      else
-        {
-          error ("__voronoi__: OPTIONS argument must be a string, cell array of strings, or empty");
-          return retval;
-        }
-    }
-
-  Matrix points (args(0).matrix_value ());
+  Matrix points = args(1).matrix_value ();
   const octave_idx_type dim = points.columns ();
   const octave_idx_type num_points = points.rows ();
 
   points = points.transpose ();
+
+  std::string options;
+
+  if (dim <= 4)
+    options = " Qbb";
+  else
+    options = " Qbb Qx";
+
+  if (nargin == 3)
+    {
+      octave_value opt_arg = args(2);
+
+      if (opt_arg.is_string ())
+        options = " " + args(1).string_value ();
+      else if (opt_arg.is_empty ())
+        ; // Use default options.
+      else if (args(1).is_cellstr ())
+        {
+          options = "";
+
+          Array<std::string> tmp = opt_arg.cellstr_value ();
+
+          for (octave_idx_type i = 0; i < tmp.numel (); i++)
+            options += " " + tmp(i);
+        }
+      else
+        {
+          error ("%s: OPTIONS must be a string, cell array of strings, or empty",
+                 caller.c_str ());
+          return retval;
+        }
+    }
 
   boolT ismalloc = false;
 
@@ -108,7 +122,9 @@ Undocumented internal function.\n\
   FILE *outfile = 0;
   FILE *errfile = stderr;
 
-  // Qhull flags and points arguments are not const...
+  // qh_new_qhull command and points arguments are not const...
+
+  std::string cmd = "qhull v" + options;
 
   OCTAVE_LOCAL_BUFFER (char, cmd_str, cmd.length () + 1);
 
@@ -275,7 +291,7 @@ Undocumented internal function.\n\
       retval(0) = F;
     }
   else
-    error ("__voronoi__: qhull failed");
+    error ("%s: qhull failed", caller.c_str ());
 
   // Free memory from Qhull
   qh_freeqhull (! qh_ALL);
@@ -284,11 +300,11 @@ Undocumented internal function.\n\
   qh_memfreeshort (&curlong, &totlong);
 
   if (curlong || totlong)
-    warning ("__voronoi__: did not free %d bytes of long memory (%d pieces)",
-             totlong, curlong);
+    warning ("%s: qhull did not free %d bytes of long memory (%d pieces)",
+             caller.c_str (), totlong, curlong);
 
 #else
-  error ("__voronoi__: not available in this version of Octave");
+  error ("%s: not available in this version of Octave", caller.c_str ());
 #endif
 
   return retval;

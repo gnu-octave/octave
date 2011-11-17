@@ -48,14 +48,14 @@ function [C, F] = voronoin (pts, options)
 
   if (np <= dim)
     error ("voronoin: number of points must be greater than their dimension");
-  elseif (nargin == 2 && ! (ischar (options) || iscellstr (options)))
-    error ("voronoin: OPTIONS argument must be a string or cell array of strings");
   endif
 
+  caller = "voronoin";
+
   if (nargin == 1)
-    [C, F] = __voronoi__ (pts);
+    [C, F] = __voronoi__ (caller, pts);
   else
-    [C, F] = __voronoi__ (pts, options);
+    [C, F] = __voronoi__ (caller, pts, options);
   endif
 
 endfunction

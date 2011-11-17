@@ -70,8 +70,6 @@ function [vx, vy] = voronoi (varargin)
 
   if (nargin < 1)
     print_usage ();
-  elseif (nargout > 2)
-    error ("voronoi: No more than two output arguments supported");
   endif
 
   narg = 1;
@@ -131,7 +129,9 @@ function [vx, vy] = voronoi (varargin)
   ybox = [xmin - scale * xdelta; xmax + scale * xdelta; ...
           xmax + scale * xdelta; xmin - scale * xdelta];
 
-  [p, c, infi] = __voronoi__ ([[x(:) ; xbox(:)], [y(:); ybox(:)]], opts{:});
+  [p, c, infi] = __voronoi__ ("voronoi",
+                              [[x(:) ; xbox(:)], [y(:); ybox(:)]],
+                              opts{:});
 
   idx = find (! infi);
   ll = length (idx);

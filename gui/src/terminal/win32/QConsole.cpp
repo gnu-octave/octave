@@ -97,6 +97,7 @@ public:
   void updateConsoleView (bool grab = true);
   void monitorConsole (void);
   void startCommand (void);
+  void sendConsoleText (const QString& s);
 
   void log (const char* fmt, ...);
 
@@ -629,6 +630,62 @@ void QConsolePrivate::startCommand (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
+void QConsolePrivate::sendConsoleText (const QString& s)
+{
+  // Send the string in chunks of 512 characters. Each character is
+  // translated into an equivalent keypress event.
+
+#define TEXT_CHUNK_SIZE 512
+
+  int len = s.length ();
+  INPUT_RECORD events[TEXT_CHUNK_SIZE];
+  DWORD nEvents = 0, written;
+  HANDLE hStdIn = GetStdHandle (STD_INPUT_HANDLE);
+
+  ZeroMemory (events, sizeof (events));
+
+  for (int i = 0; i < len; i++)
+    {
+      QChar c = s.at (i);
+
+      if (c == L'\r' || c == L'\n')
+        {
+          if (c == L'\r' && i < (len - 1) && s.at (i+1) == L'\n')
+            i++;
+          if (nEvents)
+            {
+              WriteConsoleInput (hStdIn, events, nEvents, &written);
+              nEvents = 0;
+              ZeroMemory (events, sizeof (events));
+            }
+          PostMessage (m_consoleWindow, WM_KEYDOWN, VK_RETURN, 0x001C0001);
+          PostMessage (m_consoleWindow, WM_KEYDOWN, VK_RETURN, 0xC01C0001);
+        }
+      else
+        {
+          events[nEvents].EventType                        = KEY_EVENT;
+          events[nEvents].Event.KeyEvent.bKeyDown          = TRUE;
+          events[nEvents].Event.KeyEvent.wRepeatCount      = 1;
+          events[nEvents].Event.KeyEvent.wVirtualKeyCode   =
+            LOBYTE (VkKeyScan (c.unicode ()));
+          events[nEvents].Event.KeyEvent.wVirtualScanCode  = 0;
+          events[nEvents].Event.KeyEvent.uChar.UnicodeChar = c.unicode ();
+          events[nEvents].Event.KeyEvent.dwControlKeyState = 0;
+          nEvents++;
+        }
+
+      if (nEvents == TEXT_CHUNK_SIZE
+          || (nEvents > 0 && i == (len - 1)))
+        {
+          WriteConsoleInput (hStdIn, events, nEvents, &written);
+          nEvents = 0;
+          ZeroMemory (events, sizeof (events));
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 QConsole::QConsole (QWidget* parent)
     : d (new QConsolePrivate (this))
 {
@@ -806,4 +863,11 @@ void QConsole::focusInEvent (QFocusEvent* event)
 void QConsole::start (void)
 {
   d->startCommand ();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QConsole::sendText (const QString& s)
+{
+  d->sendConsoleText (s);
 }

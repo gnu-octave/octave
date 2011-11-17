@@ -48,6 +48,8 @@ public:
   QConsole (const QString& cmd, QWidget* parent = 0);
   ~QConsole (void);
 
+  void sendText (const QString& s);
+
 signals:
   void terminated (void);
   void titleChanged (const QString&);

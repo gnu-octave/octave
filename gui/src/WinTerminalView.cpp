@@ -26,7 +26,7 @@ WinTerminalView::~WinTerminalView (void)
 {
 }
 
-void WinTerminalView::sendText (const QString& /*txt*/)
+void WinTerminalView::sendText (const QString& txt)
 {
-  // FIXME: implement this.
+  QConsole::sendText (txt);
 }

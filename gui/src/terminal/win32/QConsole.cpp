@@ -100,6 +100,10 @@ public:
 
   void log (const char* fmt, ...);
 
+  void closeStandardIO (int fd, DWORD stdHandleId, const char* name);
+  void setupStandardIO (DWORD stdHandleId, int fd, const char* name,
+                        const char* devName);
+
 private:
   QConsole* q;
 
@@ -135,23 +139,13 @@ QConsolePrivate::QConsolePrivate (QConsole* parent, const QString& cmd)
 {
   log (NULL);
 
-  HANDLE hStdOut = GetStdHandle (STD_OUTPUT_HANDLE);
-  if (hStdOut)
-    {
-      // FIXME: should we detach from the existing console and create
-      //        a new one?
-      log ("STDIN: %p, STDOUT: %p, STDERR: %p.\n",
-           GetStdHandle (STD_INPUT_HANDLE), GetStdHandle (STD_OUTPUT_HANDLE),
-           GetStdHandle (STD_ERROR_HANDLE));
-      log ("Console existing, detaching...\n", hStdOut);
-      FreeConsole ();
-      log ("STDIN: %p, STDOUT: %p, STDERR: %p.\n",
-           GetStdHandle (STD_INPUT_HANDLE), GetStdHandle (STD_OUTPUT_HANDLE),
-           GetStdHandle (STD_ERROR_HANDLE));
-      close (0);
-      close (1);
-      close (2);
-    }
+  // Possibly detach from any existing console
+  log ("Detaching from existing console (if any)...\n");
+  FreeConsole ();
+  log ("Closing standard IO...\n");
+  closeStandardIO (0, STD_INPUT_HANDLE, "STDIN");
+  closeStandardIO (1, STD_OUTPUT_HANDLE, "STDOUT");
+  closeStandardIO (2, STD_ERROR_HANDLE, "STDERR");
 
 #ifdef HIDDEN_CONSOLE
   HWINSTA hOrigSta, hNewSta;
@@ -173,76 +167,13 @@ QConsolePrivate::QConsolePrivate (QConsole* parent, const QString& cmd)
     log ("Failed to close new Windows station.\n");
 #endif
 
-  log ("Hidden console created.\n");
-  log ("STDIN: %p, STDOUT: %p, STDERR: %p.\n",
-       GetStdHandle (STD_INPUT_HANDLE), GetStdHandle (STD_OUTPUT_HANDLE),
-       GetStdHandle (STD_ERROR_HANDLE));
+  log ("New (hidden) console created.\n");
 
-  // Setup stdin/stdout/stderr
-  int fd_in = _open_osfhandle ((intptr_t) GetStdHandle (STD_INPUT_HANDLE),
-                               _O_RDONLY | _O_BINARY);
-  int fd_out = _open_osfhandle ((intptr_t) GetStdHandle (STD_OUTPUT_HANDLE),
-                                _O_WRONLY | _O_BINARY);
-  int fd_err = _open_osfhandle ((intptr_t) GetStdHandle (STD_ERROR_HANDLE),
-                                _O_WRONLY | _O_BINARY);
+  setupStandardIO (STD_INPUT_HANDLE,  0, "STDIN",  "CONIN$");
+  setupStandardIO (STD_OUTPUT_HANDLE, 1, "STDOUT", "CONOUT$");
+  setupStandardIO (STD_ERROR_HANDLE,  2, "STDERR", "CONOUT$");
 
-  log ("Win32 standard handles opened: fd_in=%d, fd_out=%d, fd_err=%d\n",
-       fd_in, fd_out, fd_err);
-
-  if (fd_in == -1)
-    {
-      log ("Invalid STDIN, trying to open CONIN$ instead...\n");
-      fd_in = open ("CONIN$", _O_RDWR | _O_BINARY);
-      if (fd_in != -1)
-        {
-          log ("CONIN$ opened, assigning as STDIN...\n");
-          SetStdHandle (STD_INPUT_HANDLE, (HANDLE) _get_osfhandle (fd_in));
-        }
-    }
-  if (fd_in != -1 && fd_in != 0)
-    {
-      log ("Duplicating standard input in 0 file descriptor\n");
-      dup2 (fd_in, 0);
-      close (fd_in);
-      SetStdHandle (STD_INPUT_HANDLE, (HANDLE) _get_osfhandle (0));
-    }
-  if (fd_out == -1)
-    {
-      log ("Invalid STDOUT, trying to open CONOUT$ instead...\n");
-      fd_out = open ("CONOUT$", _O_RDWR | _O_BINARY);
-      if (fd_out != -1)
-        {
-          log ("CONOUT$ opened, assigning as STDOUT...\n");
-          SetStdHandle (STD_OUTPUT_HANDLE, (HANDLE) _get_osfhandle (fd_out));
-        }
-    }
-  if (fd_out != -1 && fd_out != 1)
-    {
-      log ("Duplicating standard output in 1 file descriptor\n");
-      dup2 (fd_out, 1);
-      close (fd_out);
-      SetStdHandle (STD_OUTPUT_HANDLE, (HANDLE) _get_osfhandle (1));
-    }
-  if (fd_err == -1)
-    {
-      log ("Invalid STDERR, trying to open CONOUT$ instead...\n");
-      fd_err = open ("CONOUT$", _O_RDWR | _O_BINARY);
-      if (fd_err != -1)
-        {
-          log ("CONOUT$ opened, assigning as STDERR...\n");
-          SetStdHandle (STD_ERROR_HANDLE, (HANDLE) _get_osfhandle (fd_err));
-        }
-    }
-  if (fd_err != -1 && fd_err != 2)
-    {
-      log ("Duplicating standard error in 2 file descriptor\n");
-      dup2 (fd_err, 2);
-      close (fd_err);
-      SetStdHandle (STD_ERROR_HANDLE, (HANDLE) _get_osfhandle (2));
-    }
-
-  log ("Win32 standard handles fixed/duplicated: "
-       "fd_in=%d, fd_out=%d, fd_err=%d\n", fd_in, fd_out, fd_err);
+  log ("Standard input/output/error set up.\n");
 
   *stdin = *(fdopen (0, "rb"));
   *stdout = *(fdopen (1, "wb"));
@@ -256,7 +187,7 @@ QConsolePrivate::QConsolePrivate (QConsole* parent, const QString& cmd)
 
   log ("POSIX standard stream buffers adjusted.\n");
 
-  hStdOut = GetStdHandle (STD_OUTPUT_HANDLE);
+  HANDLE hStdOut = GetStdHandle (STD_OUTPUT_HANDLE);
 
   log ("Console allocated: hStdOut: %p\n", hStdOut);
 
@@ -346,6 +277,47 @@ QConsolePrivate::~QConsolePrivate (void)
     delete [] m_buffer;
   if (m_tmpBuffer)
     delete [] m_tmpBuffer;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QConsolePrivate::setupStandardIO (DWORD stdHandleId, int targetFd,
+                                       const char* name, const char* devName)
+{
+  log ("Opening %s...\n", devName);
+
+  int fd = open (devName, _O_RDWR | _O_BINARY);
+
+  if (fd != -1)
+    {
+      if (fd != targetFd)
+        {
+          log ("Opened %s is not at target file descriptor %d, "
+               "duplicating...\n", name, targetFd);
+          if (dup2 (fd, targetFd) == -1)
+            log ("Failed to duplicate file descriptor: errno=%d.\n", errno);
+          if (close (fd) == -1)
+            log ("Failed to close original file descriptor: errno=%d.\n",
+                 errno);
+        }
+      else
+        log ("%s opened and assigned to file descriptor %d.\n", devName, fd);
+      if (! SetStdHandle (stdHandleId, (HANDLE) _get_osfhandle (targetFd)))
+        log ("Failed to re-assign %s: error=%08x.\n", name, GetLastError ());
+    }
+  else
+    log ("Failed to open %s: errno=%d.\n", devName, errno);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QConsolePrivate::closeStandardIO (int fd, DWORD stdHandleId,
+                                       const char* name)
+{
+  if (close (fd) == -1)
+    log ("Failed to close file descriptor %d: errno=%d.\n", fd, errno);
+  if (! CloseHandle (GetStdHandle (stdHandleId)))
+    log ("Failed to close Win32 %s: error=%08x.\n", name, GetLastError ());
 }
 
 //////////////////////////////////////////////////////////////////////////////

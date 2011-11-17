@@ -94,30 +94,29 @@ convex hull is calculated.\n\n\
       return retval;
     }
 
-  Matrix p (args(0).matrix_value ());
-  const octave_idx_type dim = p.columns ();
-  const octave_idx_type n = p.rows ();
+  Matrix points (args(0).matrix_value ());
+  const octave_idx_type dim = points.columns ();
+  const octave_idx_type num_points = points.rows ();
 
-  // Default options
-  std::string options;
+  points = points.transpose ();
+
+  std::string cmd = "qhull";
+
   if (dim <= 4)
-    options = "Qt";
+    cmd += " Qt";
   else
-    options = "Qt Qx";
+    cmd += " Qt Qx";
 
-  if (nargin == 2)
+  if (nargin == 2 && ! args(1).is_empty ())
     {
       if (args(1).is_string ())
-        options = args(1).string_value ();
-      else if (args(1).is_empty ())
-        ; // Use default options
+        cmd += " " + args(1).string_value ();
       else if (args(1).is_cellstr ())
         {
-          options = "";
           Array<std::string> tmp = args(1).cellstr_value ();
 
           for (octave_idx_type i = 0; i < tmp.numel (); i++)
-            options += tmp(i) + " ";
+            cmd += " " + tmp(i);
         }
       else
         {
@@ -126,53 +125,54 @@ convex hull is calculated.\n\n\
         }
      }
 
-
-  p = p.transpose ();
-  double *pt_array = p.fortran_vec ();
   boolT ismalloc = false;
 
-  // FIXME: we can't just pass options.c_str () to qh_new_qhull
-  // because the argument is not declared const.  Ugh.  Unless qh_new_qhull
-  // really needs to modify this argument, someone should fix QHULL.
-  OCTAVE_LOCAL_BUFFER (char, flags, 7 + options.length ());
-
-  sprintf (flags, "qhull %s", options.c_str ());
-
-  // Replace the 0 pointer with stdout for debugging information
+  // Replace the 0 pointer with stdout for debugging information.
   FILE *outfile = 0;
   FILE *errfile = stderr;
       
-  int exitcode = qh_new_qhull (dim, n, pt_array, 
-                               ismalloc, flags, outfile, errfile);
+  // Qhull flags and points arguments are not const...
+
+  OCTAVE_LOCAL_BUFFER (char, cmd_str, cmd.length () + 1);
+
+  strcpy (cmd_str, cmd.c_str ());
+
+  int exitcode = qh_new_qhull (dim, num_points, points.fortran_vec (),
+                               ismalloc, cmd_str, outfile, errfile);
   if (! exitcode)
     {
-      vertexT *vertex, **vertexp;
-      facetT *facet;
-      setT *vertices;
       bool nonsimp_seen = false;
+
       octave_idx_type nf = qh num_facets;
 
       Matrix idx (nf, dim + 1);
 
-      octave_idx_type i = 0, j;
+      facetT *facet;
+
+      octave_idx_type i = 0;
+
       FORALLfacets
         {
-          j = 0;
+          octave_idx_type j = 0;
 
           if (! nonsimp_seen && ! facet->simplicial)
             {
               nonsimp_seen = true;
 
-              if (options.find ("QJ") != std::string::npos)
+              if (cmd.find ("QJ") != std::string::npos)
                 {
-                  // should never happen with QJ
-                  error ("convhulln: qhull failed.  Option 'QJ' returned non-simplicial facet");
-                  break;
+                  // Should never happen with QJ.
+                  error ("convhulln: qhull failed: option 'QJ' returned non-simplicial facet");
+                  return retval;
                 }
             }
+
           if (dim == 3)
             {
-              vertices = qh_facet3vertex (facet);
+              setT *vertices = qh_facet3vertex (facet);
+
+              vertexT *vertex, **vertexp;
+
               FOREACHvertex_ (vertices)
                 idx(i, j++) = 1 + qh_pointid(vertex->point);
 
@@ -182,29 +182,34 @@ convex hull is calculated.\n\n\
             {
               if (facet->toporient ^ qh_ORIENTclock)
                 {
+                  vertexT *vertex, **vertexp;
+
                   FOREACHvertex_ (facet->vertices)
                     idx(i, j++) = 1 + qh_pointid(vertex->point);
                 }
               else
                 {
+                  vertexT *vertex, **vertexp;
+
                   FOREACHvertexreverse12_ (facet->vertices)
                     idx(i, j++) = 1 + qh_pointid(vertex->point);
                 }
             }
           if (j < dim)
-            warning ("facet %d only has %d vertices", i, j);
+            warning ("convhulln: facet %d only has %d vertices", i, j);
 
           i++;
         }
 
-      // Remove extra dimension if all facets were simplicial
+      // Remove extra dimension if all facets were simplicial.
+
       if (! nonsimp_seen)
         idx.resize (nf, dim, 0.0);
 
       if (nargout == 2)
-        // calculate volume of convex hull
-        // taken from qhull src/geom2.c
         {
+          // Calculate volume of convex hull, taken from qhull src/geom2.c.
+
           realT area;
           realT dist;
 
@@ -240,7 +245,7 @@ convex hull is calculated.\n\n\
   else
     error ("convhulln: qhull failed");
 
-  // free memory from Qhull
+  // Free memory from Qhull
   qh_freeqhull (! qh_ALL);
 
   int curlong, totlong;

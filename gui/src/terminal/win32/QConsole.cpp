@@ -263,6 +263,9 @@ QConsolePrivate::QConsolePrivate (QConsole* parent, const QString& cmd)
   m_stdOut = hStdOut;
   m_consoleWindow = GetConsoleWindow ();
 
+  // In case the console window hasn't been created hidden...
+  ShowWindow (m_consoleWindow, SW_HIDE);
+
   CONSOLE_SCREEN_BUFFER_INFO sbi;
 
   GetConsoleScreenBufferInfo (hStdOut, &sbi);

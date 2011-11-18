@@ -1224,7 +1224,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               }
             else
               {
-                octave_class* cls = new octave_class (m, classname);
+                octave_class* cls
+                  = new octave_class (m, classname,
+                                      std::list<std::string> ());
 
                 if (cls->reconstruct_exemplar ())
                   {

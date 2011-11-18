@@ -280,8 +280,7 @@ public:
   octave_value (const octave_scalar_map& m);
   octave_value (const Octave_map& m);
   octave_value (const Octave_map& m, const std::string& id,
-                const std::list<std::string>& plist
-                  = std::list<std::string> ());
+                const std::list<std::string>& plist);
   octave_value (const octave_value_list& m, bool = false);
   octave_value (octave_value::magic_colon);
 

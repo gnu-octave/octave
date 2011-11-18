@@ -515,7 +515,7 @@ octave_class::subsref (const std::string& type,
               }
             else
               retval(0) = octave_value (map.index (idx.front ()),
-                                        class_name ());
+                                        c_name, parent_list);
           }
           break;
 
@@ -591,8 +591,8 @@ octave_class::subsref (const std::string& type,
       else
         {
           if (type.length () == 1 && type[0] == '(')
-            retval(0) = octave_value (map.index (idx.front ()), class_name (),
-                                      parent_class_name_list ());
+            retval(0) = octave_value (map.index (idx.front ()), c_name,
+                                      parent_list);
           else
             gripe_invalid_index1 ();
         }
@@ -993,7 +993,7 @@ octave_class::index_vector (void) const
   if (meth.is_defined ())
     {
       octave_value_list args;
-      args(0) = octave_value (new octave_class (map, c_name));
+      args(0) = octave_value (new octave_class (map, c_name, parent_list));
 
       octave_value_list tmp = feval (meth.function_value (), args, 1);
 
@@ -1123,7 +1123,7 @@ octave_class::all_strings (bool pad) const
   if (meth.is_defined ())
     {
       octave_value_list args;
-      args(0) = octave_value (new octave_class (map, c_name));
+      args(0) = octave_value (new octave_class (map, c_name, parent_list));
 
       octave_value_list tmp = feval (meth.function_value (), args, 1);
 
@@ -1954,7 +1954,9 @@ derived.\n\
                   if (! error_state)
                     {
                       if (nargin == 2)
-                        retval = octave_value (new octave_class (m, id));
+                        retval
+                          = octave_value (new octave_class
+                                          (m, id, std::list<std::string> ()));
                       else
                         {
                           octave_value_list parents = args.slice (2, nargin-2);

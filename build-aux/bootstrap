@@ -169,8 +169,10 @@ vc_ignore=auto
 # default.
 bootstrap_sync=false
 
-# Use git to update gnulib sources
-use_git=true
+# Don't use git to update gnulib sources. We keep gnulib under a
+# Mercurial subrepository instead
+use_git=false
+GNULIB_SRCDIR=gnulib/
 
 # find_tool ENVVAR NAMES...
 # -------------------------

@@ -110,8 +110,11 @@ w32_set_octave_home (void)
 {
   std::string bin_dir;
 
-  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE |
-				       TH32CS_SNAPMODULE32, 0);
+  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
+#ifdef TH32CS_SNAPMODULE32
+                                       | TH32CS_SNAPMODULE32
+#endif
+                                       , 0);
 
   if (h != INVALID_HANDLE_VALUE)
     {

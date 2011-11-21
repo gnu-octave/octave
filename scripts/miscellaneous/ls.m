@@ -50,7 +50,15 @@ function retval = ls (varargin)
 
     args = tilde_expand (varargin);
 
-    cmd = sprintf ("%s ", __ls_command__, args{:});
+    if (nargin > 0)
+      ## FIXME -- this will fail for filenames that contain single quote
+      ## characters...
+      cmd = sprintf (" '%s'", args{:});
+    else
+      cmd = "";
+    endif
+
+    cmd = sprintf ("%s%s", __ls_command__, cmd);
 
     if (page_screen_output () || nargout > 0)
 

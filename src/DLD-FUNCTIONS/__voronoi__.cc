@@ -65,6 +65,8 @@ Undocumented internal function.\n\
 {
   octave_value_list retval;
 
+  std::string caller = args(0).string_value ();
+
 #ifdef HAVE_QHULL
 
   retval(0) = 0.0;
@@ -75,8 +77,6 @@ Undocumented internal function.\n\
       print_usage ();
       return retval;
     }
-
-  std::string caller = args(0).string_value ();
 
   Matrix points = args(1).matrix_value ();
   const octave_idx_type dim = points.columns ();

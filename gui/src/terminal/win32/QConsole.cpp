@@ -217,7 +217,7 @@ QConsolePrivate::QConsolePrivate (QConsole* parent, const QString& cmd)
 
   wchar_t titleBuf[260];
   GetConsoleTitleW (titleBuf, sizeof (titleBuf));
-  q->setWindowTitle (QString::fromUtf16 (titleBuf));
+  q->setWindowTitle (QString::fromWCharArray (titleBuf));
 
   m_font.setFamily ("Lucida Console");
   m_font.setPointSize (9);
@@ -530,7 +530,7 @@ void QConsolePrivate::monitorConsole (void)
   static wchar_t titleBuf[260];
 
   GetConsoleTitleW (titleBuf, sizeof (titleBuf));
-  QString title = QString::fromUtf16 (titleBuf);
+  QString title = QString::fromWCharArray (titleBuf);
 
   if (title != m_title)
     {

@@ -3237,9 +3237,9 @@ figure::properties::set_position (const octave_value& v,
     {
       Matrix old_bb, new_bb;
 
-      old_bb = get_boundingbox ();
+      old_bb = get_boundingbox (true);
       position.set (v, true, do_notify_toolkit);
-      new_bb = get_boundingbox ();
+      new_bb = get_boundingbox (true);
 
       if (old_bb != new_bb)
         {

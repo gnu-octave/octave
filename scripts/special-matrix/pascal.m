@@ -66,7 +66,7 @@ function retval = pascal (n, t = 0)
   elseif (t == 2)
     retval = rot90 (retval, 3);
     if (rem (n,2) != 1)
-      retval = -retval;
+      retval *= -1;
     endif
   endif
 

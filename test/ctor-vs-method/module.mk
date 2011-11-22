@@ -6,6 +6,6 @@ ctor_vs_method_FCN_FILES = \
   ctor-vs-method/@parent/method.m \
   ctor-vs-method/@parent/parent.m \
   ctor-vs-method/__trace__.m \
-  test_ctor_vs_method.m
+  ctor-vs-method/test_ctor_vs_method.m
 
 FCN_FILES += $(ctor_vs_method_FCN_FILES)

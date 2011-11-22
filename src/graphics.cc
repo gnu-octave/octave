@@ -2384,7 +2384,7 @@ static void
 xinitialize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
-  
+
   if (go)
     go.initialize ();
 }
@@ -7074,7 +7074,7 @@ uicontrol::properties::update_text_extent (void)
 
   // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
-  
+
   elt = text_parser_none ().parse (get_string_string ());
 #ifdef HAVE_FONTCONFIG
   text_renderer.set_font (get_fontname (),
@@ -7105,7 +7105,7 @@ uicontrol::properties::update_units (void)
   graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
-  
+
   pos = convert_position (pos, cached_units, get_units (), parent_size);
   set_position (pos);
 
@@ -7276,7 +7276,7 @@ uipanel::properties::update_units (const caseless_str& old_units)
   graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
-  
+
   pos = convert_position (pos, old_units, get_units (), parent_size);
   set_position (pos);
 }
@@ -7456,7 +7456,7 @@ public:
                   const octave_value& data = Matrix ())
       : base_graphics_event (), handle (h), callback_name (name),
         callback (), callback_data (data) { }
-  
+
   callback_event (const graphics_handle& h, const octave_value& cb,
                   const octave_value& data = Matrix ())
       : base_graphics_event (), handle (h), callback_name (),
@@ -7627,7 +7627,7 @@ gh_manager::do_execute_listener (const graphics_handle& h,
   else
     {
       gh_manager::auto_lock guard;
-      
+
       do_post_event (graphics_event::create_callback_event (h, l));
     }
 }
@@ -7773,9 +7773,9 @@ gh_manager::do_process_events (bool force)
   graphics_event e;
   bool old_Vdrawnow_requested = Vdrawnow_requested;
   unwind_protect frame;
- 
+
   static int process_events_executing = 0;
- 
+
   frame.protect_var (process_events_executing);
 
   if (++process_events_executing <= 1)
@@ -7834,7 +7834,7 @@ gh_manager::do_process_events (bool force)
   return 0;
 }
 
-void 
+void
 gh_manager::do_enable_event_processing (bool enable)
 {
   gh_manager::auto_lock guard;

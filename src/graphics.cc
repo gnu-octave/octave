@@ -5113,8 +5113,22 @@ axes::properties::update_title_position (void)
 
       // FIXME: bbox should be stored in axes::properties
       Matrix bbox = get_extent (false);
-      ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
-                                          (x_zlim(0)+x_zlim(1))/2, true);
+
+      ColumnVector p =
+        graphics_xform::xform_vector (bbox(0)+bbox(2)/2,
+                                      bbox(1)-10,
+                                      (x_zlim(0)+x_zlim(1))/2);
+
+      if (x2Dtop)
+        {
+          Matrix ext (1, 2, 0.0);
+          ext = get_ticklabel_extents (get_xtick ().matrix_value (),
+                                       get_xticklabel ().all_strings (),
+                                       get_xlim ().matrix_value ());
+          p(1) -= ext(1);
+        }
+
+      p = xform.untransform (p(0), p(1), p(2), true);
 
       title_props.set_position (p.extract_n(0, 3).transpose ());
       title_props.set_positionmode ("auto");

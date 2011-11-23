@@ -96,9 +96,9 @@ SOURCES +=\
     src/TerminalHighlighter.cpp \
     src/TerminalView.cpp \
     src/terminal/KPty.cpp \
-    src/terminal/KPtyDevice.cpp
+    src/terminal/KPtyDevice.cpp \
     src/terminal/LinuxTerminalEmulation.cpp \
-    src/terminal/TerminalEmulation.cpp \
+    src/terminal/TerminalEmulation.cpp
 }
 
 win32 {
@@ -135,9 +135,9 @@ HEADERS += \
     src/TerminalHighlighter.h \
     src/TerminalView.h \
     src/terminal/KPtyDevice.h \
-    src/terminal/KPty.h
+    src/terminal/KPty.h \
     src/terminal/LinuxTerminalEmulation.h \
-    src/terminal/TerminalEmulation.h \
+    src/terminal/TerminalEmulation.h
 }
 
 win32 {

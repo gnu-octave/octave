@@ -1902,8 +1902,8 @@ tolower (\"MiXeD cAsE 123\")\n\
 DEFALIAS (lower, tolower);
 
 /*
-%!error <Invalid call to tolower.*> tolower();
-%!error <Invalid call to tolower.*> lower();
+%!error <Invalid call to tolower> tolower();
+%!error <Invalid call to tolower> lower();
 %!error tolower (1, 2);
 %!assert(tolower("OCTAVE"), "octave");
 %!assert(tolower("123OCTave!_&"), "123octave!_&");
@@ -1953,8 +1953,8 @@ toupper (\"MiXeD cAsE 123\")\n\
 DEFALIAS (upper, toupper);
 
 /*
-%!error <Invalid call to toupper.*> toupper();
-%!error <Invalid call to toupper.*> upper();
+%!error <Invalid call to toupper> toupper();
+%!error <Invalid call to toupper> upper();
 %!error toupper (1, 2);
 %!assert(toupper("octave"), "OCTAVE");
 %!assert(toupper("123OCTave!_&"), "123OCTAVE!_&");

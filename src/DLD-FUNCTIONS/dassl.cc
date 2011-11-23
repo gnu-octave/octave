@@ -558,6 +558,6 @@ parameters for @code{dassl}.\n\
 %! dassl_options ("absolute tolerance", eps);
 %! assert(dassl_options ("absolute tolerance") == eps);
 
-%!error <Invalid call to dassl_options.*> dassl_options ("foo", 1, 2);
+%!error <Invalid call to dassl_options> dassl_options ("foo", 1, 2);
 
 */

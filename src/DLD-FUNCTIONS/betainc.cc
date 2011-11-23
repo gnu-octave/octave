@@ -322,12 +322,12 @@ compatible dimensions.\n\
 %! assert(v3, v4, sqrt(eps ('single')));
 
 %% test/octave.test/arith/betainc-2.m
-%!error <Invalid call to betainc.*> betainc();
+%!error <Invalid call to betainc> betainc();
 
 %% test/octave.test/arith/betainc-3.m
-%!error <Invalid call to betainc.*> betainc(1);
+%!error <Invalid call to betainc> betainc(1);
 
 %% test/octave.test/arith/betainc-4.m
-%!error <Invalid call to betainc.*> betainc(1,2);
+%!error <Invalid call to betainc> betainc(1,2);
 
 */

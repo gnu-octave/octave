@@ -184,8 +184,8 @@ Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
 %! [p, h] = hess (a);
 %! assert(p * h * p', a, sqrt(eps ('single')));
 
-%!error <Invalid call to hess.*> hess ();
-%!error <Invalid call to hess.*> hess ([1, 2; 3, 4], 2);
+%!error <Invalid call to hess> hess ();
+%!error <Invalid call to hess> hess ([1, 2; 3, 4], 2);
 %!error hess ([1, 2; 3, 4; 5, 6]);
 
 */

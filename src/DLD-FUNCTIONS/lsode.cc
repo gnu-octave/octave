@@ -541,6 +541,6 @@ parameters for @code{lsode}.\n\
 %! lsode_options ("absolute tolerance", eps);
 %! assert(lsode_options ("absolute tolerance") == eps);
 
-%!error <Invalid call to lsode_options.*> lsode_options ("foo", 1, 2);
+%!error <Invalid call to lsode_options> lsode_options ("foo", 1, 2);
 
 */

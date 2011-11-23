@@ -289,7 +289,7 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 %!test
 %! fail("schur ([1, 2; 3, 4], 2)","warning");
 
-%!error <Invalid call to schur.*> schur ();
+%!error <Invalid call to schur> schur ();
 %!error schur ([1, 2, 3; 4, 5, 6]);
 
 */

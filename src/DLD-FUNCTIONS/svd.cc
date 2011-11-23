@@ -398,9 +398,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 %! assert (size (s), [0, 0]);
 %! assert (size (v), [0, 0]);
 
-%!error <Invalid call to svd.*> svd ();
-%!error <Invalid call to svd.*> svd ([1, 2; 4, 5], 2, 3);
-%!error <Invalid call to svd.*> [u, v] = svd ([1, 2; 3, 4]);
+%!error <Invalid call to svd> svd ();
+%!error <Invalid call to svd> svd ([1, 2; 4, 5], 2, 3);
+%!error <Invalid call to svd> [u, v] = svd ([1, 2; 3, 4]);
 
 */
 

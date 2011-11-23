@@ -497,8 +497,8 @@ x = @var{R} \\ @var{C}\n\
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
 
-%!error <Invalid call to qr.*> qr ();
-%!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
+%!error <Invalid call to qr> qr ();
+%!error <Invalid call to qr> qr ([1, 2; 3, 4], 0, 2);
 
 %!function retval = testqr (q, r, a, p)
 %!  tol = 100*eps (class(q));
@@ -615,8 +615,8 @@ x = @var{R} \\ @var{C}\n\
 %! assert (q * r, a * p, sqrt (eps('single')));
 %! assert (qe * re, a(:, pe), sqrt (eps('single')));
 
-%!error <Invalid call to qr.*> qr ();
-%!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
+%!error <Invalid call to qr> qr ();
+%!error <Invalid call to qr> qr ([1, 2; 3, 4], 0, 2);
 
 %!test
 %!

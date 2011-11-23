@@ -332,8 +332,8 @@ Return true if @var{x} is a character array.\n\
 %!assert(ischar ("test"), logical (1));
 %!assert(ischar (["test"; "ing"]), logical (1));
 %!assert(ischar (struct ("foo", "bar")), logical (0));
-%!error <Invalid call to ischar.*> ischar ();
-%!error <Invalid call to ischar.*> ischar ("test", 1);
+%!error <Invalid call to ischar> ischar ();
+%!error <Invalid call to ischar> ischar ("test", 1);
 */
 
 static octave_value
@@ -589,8 +589,8 @@ This is just the opposite of the corresponding C library function.\n\
 }
 
 /*
-%!error <Invalid call to strcmp.*> strcmp ();
-%!error <Invalid call to strcmp.*> strcmp ("foo", "bar", 3);
+%!error <Invalid call to strcmp> strcmp ();
+%!error <Invalid call to strcmp> strcmp ("foo", "bar", 3);
 %!
 %!shared x
 %!  x = char (zeros (0, 2));
@@ -712,8 +712,8 @@ This is just the opposite of the corresponding C library function.\n\
 }
 
 /*
-%!error <Invalid call to strncmp.*> strncmp ();
-%!error <Invalid call to strncmp.*> strncmp ("abc", "def");
+%!error <Invalid call to strncmp> strncmp ();
+%!error <Invalid call to strncmp> strncmp ("abc", "def");
 %!assert (strncmp ("abce", "abc", 3) == 1)
 %!assert (strncmp (100, 100, 1) == 0)
 %!assert (all (strncmp ("abce", {"abcd", "bca", "abc"}, 3) == [1, 0, 1]))
@@ -922,9 +922,9 @@ whos ans\n\
 }
 
 /*
-%!error <Invalid call to list_in_columns.*> list_in_columns ();
-%!error <Invalid call to list_in_columns.*> list_in_columns (["abc", "def"], 20, 2);
-%!error <invalid conversion from string to real scalar.*> list_in_columns (["abc", "def"], "a");
+%!error <Invalid call to list_in_columns> list_in_columns ();
+%!error <Invalid call to list_in_columns> list_in_columns (["abc", "def"], 20, 2);
+%!error <invalid conversion from string to real scalar> list_in_columns (["abc", "def"], "a");
 %!test
 %!  input  = {"abc", "def", "ghijkl", "mnop", "qrs", "tuv"};
 %!  result = "abc     mnop\ndef     qrs\nghijkl  tuv\n";

@@ -149,8 +149,8 @@ If the optional argument @var{dim} is supplied, work along dimension\n\
 %! && all (x, 1) == [0, 1, 1]
 %! && all (x, 2) == [0; 1; 1]));
 
-%!error <Invalid call to all.*> all ();
-%!error <Invalid call to all.*> all (1, 2, 3);
+%!error <Invalid call to all> all ();
+%!error <Invalid call to all> all (1, 2, 3);
 
  */
 
@@ -205,8 +205,8 @@ any (eye (2, 4), 2)\n\
 %! && any (x, 1) == [0, 0, 1]
 %! && any (x, 2) == [0; 0; 1]));
 
-%!error <Invalid call to any.*> any ();
-%!error <Invalid call to any.*> any (1, 2, 3);
+%!error <Invalid call to any> any ();
+%!error <Invalid call to any> any (1, 2, 3);
 
  */
 
@@ -293,8 +293,8 @@ and orientation.\n\
 %! x = single([1, 3, 1, 1, 1, 1, 3, 1]);
 %! assert(atan2 (y, x), v, sqrt (eps('single')));
 
-%!error <Invalid call to atan2.*> atan2 ();
-%!error <Invalid call to atan2.*> atan2 (1, 2, 3);
+%!error <Invalid call to atan2> atan2 ();
+%!error <Invalid call to atan2> atan2 (1, 2, 3);
 
 */
 
@@ -1079,7 +1079,7 @@ Cumulative product of elements along dimension @var{dim}.  If\n\
 %!assert (cumprod (single([i, 2+i, -3+2i, 4])), single([i, -1+2i, -1-8i, -4-32i]));
 %!assert (cumprod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; i, 4i, 9i; -1+i, -8+8i, -27+27i]));
 
-%!error <Invalid call to cumprod.*> cumprod ();
+%!error <Invalid call to cumprod> cumprod ();
 
 %!assert (cumprod ([2, 3; 4, 5], 1), [2, 3; 8, 15]);
 %!assert (cumprod ([2, 3; 4, 5], 2), [2, 6; 4, 20]);
@@ -1230,7 +1230,7 @@ See @code{sum} for an explanation of the optional parameters 'native',\n\
 %!assert (cumsum (single([i, 2+i, -3+2i, 4])), single([i, 2+2i, -1+4i, 3+4i]));
 %!assert (cumsum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; 1+i, 2+2i, 3+3i; 2+2i, 4+4i, 6+6i]));
 
-%!error <Invalid call to cumsum.*> cumsum ();
+%!error <Invalid call to cumsum> cumsum ();
 
 %!assert (cumsum ([1, 2; 3, 4], 1), [1, 2; 4, 6]);
 %!assert (cumsum ([1, 2; 3, 4], 2), [1, 3; 3, 7]);
@@ -1342,8 +1342,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
 
 %% Test input validation
-%!error <Invalid call to diag.*> diag ();
-%!error <Invalid call to diag.*> diag (1,2,3,4);
+%!error <Invalid call to diag> diag ();
+%!error <Invalid call to diag> diag (1,2,3,4);
 %!error diag (ones (2), 3, 3);
 %!error diag (1:3, -4, 3);
 
@@ -1373,7 +1373,7 @@ omitted, it defaults to the first non-singleton dimension.\n\
 %!assert (prod (single([i, 2+i, -3+2i, 4])), single(-4 - 32i));
 %!assert (prod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([-1+i, -8+8i, -27+27i]));
 
-%!error <Invalid call to prod.*> prod ();
+%!error <Invalid call to prod> prod ();
 
 %!assert (prod ([1, 2; 3, 4], 1), [3, 8]);
 %!assert (prod ([1, 2; 3, 4], 2), [2; 12]);
@@ -2815,7 +2815,7 @@ than straightforward summation is to be used.  For single precision inputs,\n\
 %!assert(sum (single([i, 2+i, -3+2i, 4])), single(3+4i));
 %!assert(sum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([2+2i, 4+4i, 6+6i]));
 
-%!error <Invalid call to sum.*> sum ();
+%!error <Invalid call to sum> sum ();
 
 %!assert (sum ([1, 2; 3, 4], 1), [4, 6]);
 %!assert (sum ([1, 2; 3, 4], 2), [3; 7]);
@@ -2890,7 +2890,7 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 %!assert(sumsq (single([-1; -2; 4i])), single(21));
 %!assert(sumsq (single([1, 2, 3; 2, 3, 4; 4i, 6i, 2])), single([21, 49, 29]));
 
-%!error <Invalid call to sumsq.*> sumsq ();
+%!error <Invalid call to sumsq> sumsq ();
 
 %!assert (sumsq ([1, 2; 3, 4], 1), [10, 20]);
 %!assert (sumsq ([1, 2; 3, 4], 2), [5; 25]);
@@ -3402,8 +3402,8 @@ will return true for these objects as well.\n\
 %! s.a = 1;
 %! assert(ismatrix (s), false);
 
-%!error <Invalid call to ismatrix.*> ismatrix ();
-%!error <Invalid call to ismatrix.*> ismatrix ([1, 2; 3, 4], 2);
+%!error <Invalid call to ismatrix> ismatrix ();
+%!error <Invalid call to ismatrix> ismatrix ([1, 2; 3, 4], 2);
 
  */
 
@@ -4620,7 +4620,7 @@ These odd definitions are for compatibility with @sc{matlab}.\n\
 %!assert (eye(3,'int8'), int8([1, 0, 0; 0, 1, 0; 0, 0, 1]));
 %!assert (eye(2, 3,'int8'), int8([1, 0, 0; 0, 1, 0]));
 
-%!error <Invalid call to eye.*> eye (1, 2, 3);
+%!error <Invalid call to eye> eye (1, 2, 3);
 
  */
 
@@ -4743,8 +4743,8 @@ if fewer than two values are requested.\n\
 
 % assert(linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6));
 
-%!error <Invalid call to linspace.*> linspace ();
-%!error <Invalid call to linspace.*> linspace (1, 2, 3, 4);
+%!error <Invalid call to linspace> linspace ();
+%!error <Invalid call to linspace> linspace (1, 2, 3, 4);
 
 %!test
 %! fail("linspace ([1, 2; 3, 4], 5, 6)","warning");
@@ -4977,7 +4977,7 @@ the unspecified dimension.\n\
 %! s.a = 1;
 %! fail("reshape (s, 2, 3)");
 
-%!error <Invalid call to reshape.*> reshape ();
+%!error <Invalid call to reshape> reshape ();
 %!error reshape (1, 2, 3, 4);
 
  */
@@ -6154,8 +6154,8 @@ ordered lists.\n\
 %! [v, i] = sort (a);
 %! assert (i, [1, 4, 2, 5, 3])
 
-%!error <Invalid call to sort.*> sort ();
-%!error <Invalid call to sort.*> sort (1, 2, 3, 4);
+%!error <Invalid call to sort> sort ();
+%!error <Invalid call to sort> sort (1, 2, 3, 4);
 
 */
 

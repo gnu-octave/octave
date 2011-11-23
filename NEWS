@@ -3,6 +3,28 @@ Summary of important user-visible changes for version 3.6:
 
  ** The PCRE library is now required to build Octave.
 
+ ** The following binary elementwise operators and functions now perform
+    Numpy-like broadcasting (a.k.a. binary singleton expansion):
+
+    plus      ldivide   rem    eq    gt     xor
+    minus     power     mod    ne    ge
+    times     max       atan2  lt    and
+    rdivide   min       hypot  le    or
+
+    +         .*        &
+    -         ./        |
+    .+        .\
+    .-        .^
+
+    +=        .*=       &=
+    -=        ./=       |=
+    .+=       .\=
+    .-=       .^=
+
+    This makes the bsxfun function mostly redundant except for
+    user-defined functions. A new section in the manual has been written
+    to explain and clarify this change.
+
  ** Octave now features a profiler, thanks to the work of Daniel Kraft
     under the Google Summer of Code mentorship program.  The manual has
     been updated to reflect this addition.  The new user-visible

@@ -43,7 +43,7 @@
 ## @code{g(x, 'notransp') = M1 \ x} or @code{g(x, 'notransp') = M2 \ x} and
 ## @code{g(x, 'transp') = M1' \ x} or @code{g(x, 'transp') = M2' \ x}.
 ##
-## If colled with more than one output parameter
+## If called with more than one output parameter
 ##
 ## @itemize @minus
 ## @item @var{flag} indicates the exit status:

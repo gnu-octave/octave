@@ -32,7 +32,7 @@
 ## @end example
 ##
 ## @noindent
-## where @math{df} = 1 / @math{dt}.
+## where @nospell{@math{df}} = 1 / @math{dt}.
 ##
 ## If @var{x} is a matrix, the same holds for rows and columns.  If
 ## @var{x} is an array, then the same holds along each dimension.

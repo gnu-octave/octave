@@ -2397,7 +2397,7 @@ may override the factory defaults.
 
 Although default values may be set for any object, they are set in
 parent objects and apply to child objects, of the specified object type.
-For example, seeting the default @code{color} property of @code{line}
+For example, setting the default @code{color} property of @code{line}
 objects to "green", for the @code{root} object, will result in all
 @code{line} objects inheriting the @code{color} "green" as the default
 value.

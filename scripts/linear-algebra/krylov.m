@@ -28,8 +28,8 @@
 ## Using Householder reflections to guard against loss of orthogonality.
 ##
 ## If @var{V} is a vector, then @var{h} contains the Hessenberg matrix
-## such that @xcode{a*u == u*h+rk*ek'}, in which @code{rk =
-## a*u(:,k)-u*h(:,k)}, and @xcode{ek'} is the vector
+## such that @nospell{@xcode{a*u == u*h+rk*ek'}}, in which @code{rk =
+## a*u(:,k)-u*h(:,k)}, and @nospell{@xcode{ek'}} is the vector
 ## @code{[0, 0, @dots{}, 1]} of length @code{k}.  Otherwise, @var{h} is
 ## meaningless.
 ##

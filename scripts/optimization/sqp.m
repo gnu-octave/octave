@@ -75,7 +75,7 @@
 ## formula is used to approximate the Hessian.
 ##
 ## When supplied, the gradient function @code{@var{phi}@{2@}} must accept
-## one vector argument and return a vector.  When supplifed, the Hessian
+## one vector argument and return a vector.  When supplied, the Hessian
 ## function @code{@var{phi}@{3@}} must accept one vector argument and
 ## return a matrix.
 ##

@@ -35,7 +35,7 @@
 ## @end example
 ##
 ## The optional second output, @var{state}, is logically true when the
-## coversion is successful.  If the conversion fails the numeric output,
+## conversion is successful.  If the conversion fails the numeric output,
 ## @var{x}, is empty and @var{state} is false.
 ##
 ## @strong{Caution:} As @code{str2num} uses the @code{eval} function

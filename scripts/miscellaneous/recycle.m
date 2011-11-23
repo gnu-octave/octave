@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{current_state}} recycle ()
 ## @deftypefnx  {Function File} {@var{old_state}} recycle (@var{new_state})
-## Display or set the preference for recycling deleted files.
+## Query or set the preference for recycling deleted files.
 ##
 ## Recycling files instead of permanently deleting them is currently not
 ## implemented in Octave.  To help avoid accidental data loss it
@@ -51,7 +51,7 @@ function retval = recycle (state)
         error ("recycle: invalid value of STATE = `%s'", state);
       endif
     else
-      erroor ("recycle: expecting STATE to be a character string");
+      error ("recycle: expecting STATE to be a character string");
     endif
   endif
 

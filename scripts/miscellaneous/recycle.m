@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{current_state}} recycle ()
-## @deftypefnx  {Function File} {@var{old_state}} recycle (@var{new_state})
+## @deftypefnx {Function File} {@var{old_state}} recycle (@var{new_state})
 ## Query or set the preference for recycling deleted files.
 ##
 ## Recycling files instead of permanently deleting them is currently not

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} addpref (@var{group}, @var{pref}, @var{val})
+## @deftypefn {Function File} {} addpref (@var{group}, @var{pref}, @var{val})
 ## Add a preference @var{pref} and associated value @var{val} to the
 ## named preference group @var{group}.
 ##

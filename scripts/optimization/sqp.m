@@ -75,7 +75,7 @@
 ## formula is used to approximate the Hessian.
 ##
 ## When supplied, the gradient function @code{@var{phi}@{2@}} must accept
-## one vector argument and return a vector. When supplifed, the Hessian
+## one vector argument and return a vector.  When supplifed, the Hessian
 ## function @code{@var{phi}@{3@}} must accept one vector argument and
 ## return a matrix.
 ##
@@ -83,7 +83,7 @@
 ## handles pointing to functions that compute the equality constraints
 ## and the inequality constraints, respectively.  If the problem does
 ## not have equality (or inequality) constraints, then use an empty
-## matrix ([]) for @var{g} (or @var{h}). When supplied, these equality
+## matrix ([]) for @var{g} (or @var{h}).  When supplied, these equality
 ## and inequality constraint functions must accept one vector argument
 ## and return a vector.
 ##
@@ -113,16 +113,16 @@
 ## and upper bounds on @var{x}.  These must be consistent with the
 ## equality and inequality constraints @var{g} and @var{h}.  If the
 ## arguments are vectors then @var{x}(i) is bound by @var{lb}(i) and
-## @var{ub}(i). A bound can also be a scalar in which case all elements
+## @var{ub}(i).  A bound can also be a scalar in which case all elements
 ## of @var{x} will share the same bound.  If only one bound (lb, ub) is
 ## specified then the other will default to (-@var{realmax},
 ## +@var{realmax}).
 ##
 ## The seventh argument @var{maxiter} specifies the maximum number of
-## iterations. The default value is 100.
+## iterations.  The default value is 100.
 ##
 ## The eighth argument @var{tol} specifies the tolerance for the
-## stopping criteria. The default value is @code{sqrt(eps)}.
+## stopping criteria.  The default value is @code{sqrt(eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:
 ##

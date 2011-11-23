@@ -1203,7 +1203,7 @@ This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.  In addition to the values\n\
 returned by @code{fscanf}, the index of the next character to be read\n\
-is returned in in @var{pos}.\n\
+is returned in @var{pos}.\n\
 @seealso{fscanf, scanf, sprintf}\n\
 @end deftypefn")
 {

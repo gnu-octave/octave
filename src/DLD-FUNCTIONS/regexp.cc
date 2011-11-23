@@ -941,6 +941,7 @@ A cell array of the text of each token matched\n\
 A structure containing the text of each matched named token, with the name\n\
 being used as the fieldname.  A named token is denoted by\n\
 @code{(?<name>@dots{})}.\n\
+\n\
 @item sp\n\
 A cell array of the text not returned by match.\n\
 @end table\n\

@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {ppd =} ppder (pp, m)
-## Computes the piecewise @var{m}-th derivative of a piecewise polynomial
-## struct @var{pp}. If @var{m} is omitted the first derivate is
+## Compute the piecewise @var{m}-th derivative of a piecewise polynomial
+## struct @var{pp}.  If @var{m} is omitted the first derivate is
 ## calculated.
 ## @seealso{mkpp, ppval, ppint}
 ## @end deftypefn

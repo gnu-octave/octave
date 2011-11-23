@@ -239,7 +239,7 @@ dispatch_kron (const octave_value& a, const octave_value& b)
 
 
 DEFUN_DLD (kron, args, , "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} kron (@var{A}, @var{B})\n\
+@deftypefn  {Loadable Function} {} kron (@var{A}, @var{B})\n\
 @deftypefnx {Loadable Function} {} kron (@var{A1}, @var{A2}, @dots{})\n\
 Form the Kronecker product of two or more matrices, defined block by \n\
 block as\n\

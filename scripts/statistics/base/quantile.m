@@ -89,8 +89,8 @@
 ## @end itemize
 ##
 ## Examples:
-##
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## @group
 ## x = randi (1000, [10, 1]);  # Create empirical data in range 1-1000

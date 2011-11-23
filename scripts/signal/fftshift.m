@@ -31,6 +31,7 @@
 ## f = [ -(ceil((N-1)/2):-1:1)*df 0 (1:floor((N-1)/2))*df ]
 ## @end example
 ##
+## @noindent
 ## where @math{df} = 1 / @math{dt}.
 ##
 ## If @var{x} is a matrix, the same holds for rows and columns.  If

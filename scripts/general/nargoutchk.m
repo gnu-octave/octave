@@ -25,11 +25,11 @@
 ## Check for correct number of output arguments.
 ##
 ## On the first form, returns an error unless the number of arguments in its
-## caller is between the values of @var{minargs} and @var{maxargs}. It does
-## nothing otherwise. Note that this function evaluates the value of
+## caller is between the values of @var{minargs} and @var{maxargs}.  It does
+## nothing otherwise.  Note that this function evaluates the value of
 ## @code{nargout} on the caller so its value must have not been tampered with.
 ##
-## Both @var{minargs} and @var{maxargs} need to be a numeric scalar. Zero, Inf
+## Both @var{minargs} and @var{maxargs} need to be a numeric scalar.  Zero, Inf
 ## and negative are all valid, and they can have the same value.
 ##
 ## For backward compatibility reasons, the other forms return an appropriate

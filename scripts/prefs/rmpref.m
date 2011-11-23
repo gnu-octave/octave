@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rmpref (@var{group}, @var{pref})
+## @deftypefn {Function File} {} rmpref (@var{group}, @var{pref})
 ## Remove the named preference @var{pref} from the preference group
 ## @var{group}.
 ##

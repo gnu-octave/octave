@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} loadprefs ()
+## @deftypefn {Function File} {} loadprefs ()
 ## Undocumented internal function.
 ## @end deftypefn
 

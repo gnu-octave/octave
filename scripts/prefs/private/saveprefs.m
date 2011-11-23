@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} saveprefs ()
+## @deftypefn {Function File} {} saveprefs ()
 ## Undocumented internal function.
 ## @end deftypefn
 

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __uigetfile_fltk__ ()
+## @deftypefn {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} __uigetfile_fltk__ ()
 ## Undocumented internal function.
 ## @end deftypefn
 

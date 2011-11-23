@@ -1565,7 +1565,7 @@ DEFUN (round, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
-@code{round (real (@var{x})) + round (imag (@var{x})) * I}. If there\n\
+@code{round (real (@var{x})) + round (imag (@var{x})) * I}.  If there\n\
 are two nearest integers, return the one further away from zero.\n\
 \n\
 @example\n\

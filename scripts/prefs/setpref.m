@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} setpref (@var{group}, @var{pref}, @var{val})
+## @deftypefn {Function File} {} setpref (@var{group}, @var{pref}, @var{val})
 ## Set a preference @var{pref} to the given @var{val} in the named
 ## preference group @var{group}.
 ##

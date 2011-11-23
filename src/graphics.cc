@@ -9572,32 +9572,32 @@ DEFUN (waitfor, args, ,
 @deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop})\n\
 @deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
 @deftypefnx {Built-in Function} {} waitfor (@dots{}, \"timeout\", @var{timeout})\n\
-Suspends the execution of the current program until a condition is\n\
-satisfied on the graphics handle @var{h}. While the program is suspended\n\
+Suspend the execution of the current program until a condition is\n\
+satisfied on the graphics handle @var{h}.  While the program is suspended\n\
 graphics events are still being processed normally, allowing callbacks to\n\
-modify the state of graphics objects. This function is reentrant and can be\n\
+modify the state of graphics objects.  This function is reentrant and can be\n\
 called from a callback, while another @code{waitfor} call is pending at\n\
 top-level.\n\
 \n\
 In the first form, program execution is suspended until the graphics object\n\
-@var{h} is destroyed. If the graphics handle is invalid, the function\n\
+@var{h} is destroyed.  If the graphics handle is invalid, the function\n\
 returns immediately.\n\
 \n\
 In the second form, execution is suspended until the graphics object is\n\
-destroyed or the property named @var{prop} is modified. If the graphics\n\
+destroyed or the property named @var{prop} is modified.  If the graphics\n\
 handle is invalid or the property does not exist, the function returns\n\
 immediately.\n\
 \n\
 In the third form, execution is suspended until the graphics object is\n\
-destroyed or the property named @var{prop} is set to @var{value}. The\n\
-function @code{isequal} is used to compare property values. If the graphics\n\
+destroyed or the property named @var{prop} is set to @var{value}.  The\n\
+function @code{isequal} is used to compare property values.  If the graphics\n\
 handle is invalid, the property does not exist or the property is already\n\
 set to @var{value}, the function returns immediately.\n\
 \n\
 An optional timeout can be specified using the property @code{timeout}.\n\
 This timeout value is the number of seconds to wait for the condition to be\n\
-true. @var{timeout} must be at least 1. If a smaller value is specified, a\n\
-warning is issued and a value of 1 is used instead. If the timeout value is\n\
+true.  @var{timeout} must be at least 1. If a smaller value is specified, a\n\
+warning is issued and a value of 1 is used instead.  If the timeout value is\n\
 not an integer, it is truncated towards 0.\n\
 \n\
 To define a condition on a property named @code{timeout}, use the string\n\

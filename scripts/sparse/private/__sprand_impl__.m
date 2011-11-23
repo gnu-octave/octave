@@ -21,7 +21,7 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __sprand_impl__ (@var{s}, @var{randfun})
+## @deftypefn  {Function File} {} __sprand_impl__ (@var{s}, @var{randfun})
 ## @deftypefnx {Function File} {} __sprand_impl__ (@var{m}, @var{n}, @var{d}, @var{funname}, @var{randfun})
 ## Undocumented internal function.
 ## @end deftypefn

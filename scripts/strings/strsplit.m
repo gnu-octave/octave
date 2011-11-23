@@ -28,7 +28,9 @@
 ## boundaries.
 ##
 ## Example:
+##
 ## @example
+## @group
 ## strsplit ("a,b,c", ",")
 ##        @result{}
 ##           @{
@@ -44,7 +46,6 @@
 ##             [1,2] = b
 ##             [1,3] = cde
 ##           @}
-## @group
 ## @end group
 ## @end example
 ## @seealso{strtok}

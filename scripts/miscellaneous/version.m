@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} version ()
 ## Return the version number of Octave, as a string.
 ##
-## This is an alias for the function @code{OCTAVE_VERSION} provided for
+## This is an alias for the function @w{@env{OCTAVE_VERSION}} provided for
 ## compatibility
 ## @seealso{OCTAVE_VERSION}.
 ## @end deftypefn

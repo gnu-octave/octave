@@ -1475,6 +1475,7 @@ then the @var{options}, @var{file}, and variable name arguments\n\
 @table @code\n\
 @item -append\n\
 Append to the destination instead of overwriting.\n\
+\n\
 @item -ascii\n\
 Save a single matrix in a text file without header or any other information.\n\
 \n\

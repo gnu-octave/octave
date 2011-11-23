@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{result} =} __is_function__ (@var{func})
+## @deftypefn {Function File} {@var{result} =} __is_function__ (@var{func})
 ## Undocumented internal function.
 ## @end deftypefn
 

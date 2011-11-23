@@ -72,21 +72,27 @@ Summary of important user-visible changes for version 3.6:
               Now accepts cellstr inputs.
 
  ** Octave warning IDs updated
+    "associativity-change": removed
+    "complex-cmp-ops"     : removed
     "empty-list-elements" : removed
     "fortran-indexing"    : removed
-    "complex-cmp-ops"     : removed
+    "precedence-change"   : removed
     "string-concat"       : renamed to "mixed-string-concat"
 
  ** Matlab-compatible preference functions added:
 
     addpref  getpref  ispref  rmpref  setpref
 
+ ** New keyword parfor
+    parfor (parallel for loop) is now recognized as a valid keyword.
+    Implementation, however, is still mapped to an ordinary for loop.
+
  ** Other new functions added in 3.6.0:
 
-    is_dq_string      python      zscore
-    is_sq_string      usejava 
-    nthargout         waitbar
-                      
+    is_dq_string    nthargout    usejava     
+    is_sq_string    python       waitbar
+    narginchk       recycle      zscore            
+    
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.2 and have been

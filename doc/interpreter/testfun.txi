@@ -167,9 +167,10 @@ You can also share test functions:
 
 @example
 @group
-   %!function @var{a} = fn(@var{b})
+   %!function @var{a} = fn (@var{b})
    %!  @var{a} = 2*@var{b};
-   %!assert (@var{a}(2),4);
+   %!endfunction
+   %!assert (@var{fn}(2), 4);
 @end group
 @end example
 
@@ -263,13 +264,16 @@ demo only executes in interactive mode
 comment: ignore everything within the block
 
 @item %!shared x,y,z
-declares variables for use in multiple tests
+declare variables for use in multiple tests
 
 @item %!function
-defines a function value for a shared variable
+define a function for use in multiple tests
+
+@item %!endfunction
+close a function definition
 
 @item %!assert (x, y, tol)
-shorthand for %!test assert (x, y, tol)
+shorthand for @code{%!test assert (x, y, tol)}
 @end table
 
 You can also create test scripts for builtins and your own C++

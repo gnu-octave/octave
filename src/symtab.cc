@@ -674,7 +674,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
                   octave_value& fval = q->second;
 
                   if (fval.is_defined ())
-                    out_of_date_check (fval);
+                    out_of_date_check (fval, "", false);
 
                   if (fval.is_defined ())
                     return fval;

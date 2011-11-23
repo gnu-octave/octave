@@ -410,10 +410,10 @@ DEFUN (bitshift, args, ,
 @deftypefn  {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
 @deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})\n\
 Return a @var{k} bit shift of @var{n}-digit unsigned\n\
-integers in @var{a}.  A positive @var{k} leads to a left shift.\n\
+integers in @var{a}.  A positive @var{k} leads to a left shift;\n\
 A negative value to a right shift.  If @var{n} is omitted it defaults\n\
 to log2(bitmax)+1.\n\
-@var{n} must be in the range [1,log2(bitmax)+1] usually [1,33]\n\
+@var{n} must be in the range [1,log2(bitmax)+1] usually [1,33].\n\
 \n\
 @example\n\
 @group\n\

@@ -1227,6 +1227,12 @@ command_editor::remove_event_hook (event_hook_fcn f)
 }
 
 void
+command_editor::run_event_hooks (void)
+{
+  event_handler ();
+}
+
+void
 command_editor::read_init_file (const std::string& file_arg)
 {
   if (instance_ok ())

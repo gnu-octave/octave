@@ -333,7 +333,7 @@ private:
 
 class property;
 
-enum listener_mode { POSTSET, PERSISTENT };
+enum listener_mode { POSTSET, PERSISTENT, PREDELETE };
 
 class base_property
 {

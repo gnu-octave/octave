@@ -9807,11 +9807,7 @@ In all cases, typing CTRL-C stops program execution immediately.\n\
                     break;
                 }
 
-#if defined (WIN32) && ! defined (__CYGWIN__)
-              Sleep (100);
-#else
               octave_usleep (100000);
-#endif
 
               OCTAVE_QUIT;
 

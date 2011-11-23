@@ -90,7 +90,7 @@ function h = hadamard (n)
     case 5
       h = h20 ();
     case 7
-      h = hnormalize (h28 ());
+      h = h28 ();
     otherwise
       error ("hadamard: N must be 2^k*p, for p = 1, 12, 20 or 28");
   endswitch
@@ -166,10 +166,10 @@ endfunction
 %!test
 %! for n = [1,2,4,8,12,24,48,20,28,2^9]
 %!   h = hadamard(n);
-%!   assert (norm (h*h'-n*eye (n)), 0);
+%!   assert (norm (h*h' - n*eye (n)), 0);
 %! endfor
 
 %!error hadamard ()
 %!error hadamard (1,2)
-%!error <N must be 2^k*p> hadamard (5)
+%!error <N must be 2\^k\*p> hadamard (5)
 

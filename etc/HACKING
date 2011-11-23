@@ -7,8 +7,7 @@ DO NOT put this file into the distribution.
 
 These notes are intended to help people working on sources checked-out from
 the savannah source code repository.
-These requirements do not apply when building from a distribution
-tarball.
+These requirements do not apply when building from a distribution tarball.
 
 ** Requirements
 
@@ -120,7 +119,7 @@ An overview of the directory layout of Octave's source files:
     fftpack        * subroutines for fast fourier transforms
     lapack-xtra    * wrappers for lapack functions used in Octave
     misc           * miscellaneous utilities
-    odepack        * odinary differential equation solver
+    odepack        * ordinary differential equation solver
     ordered-qz     * code for ordering eigenvalues for QZ factorization
     quadpack       * subroutines for numerical integration
     ranlib         * random number generators
@@ -137,8 +136,8 @@ An overview of the directory layout of Octave's source files:
     @ftp           * ftp object class
     general        * utility functions
     geometry       * geometry algorithms
-    image          * image processing
     help           * help subsystem functions
+    image          * image processing
     io             * input/output functions
     linear-algebra * linear algebra stuff
     miscellaneous  * stuff that doesn't fit anywhere else
@@ -147,6 +146,7 @@ An overview of the directory layout of Octave's source files:
     pkg            * the package manager
     plot           * plotting functions
     polynomial     * polynomial manipulation
+    prefs          * user-defined preferences
     set            * set manipulation
     signal         * signal processing
     sparse         * sparse matrix support
@@ -159,13 +159,13 @@ An overview of the directory layout of Octave's source files:
     time           * time and date functions
 
   src           -- the interpreter itself plus lots of infrastructure
-                   around it. Octave's extensive octave_value class
+                   around it.  Octave's extensive octave_value class
                    hierarchy for polymorphically handling all Octave
-                   types is defined here. The built-in functions are
+                   types is defined here.  The built-in functions are
                    also defined here, so if "help foo" tells you foo is
                    built-in, its source will be somewhere in this
                    directory.
-    DLD-FUNCTIONS  * Dynamically linked oct files. If you see "help foo"
+    DLD-FUNCTIONS  * Dynamically linked oct files.  If you see "help foo"
                      telling you that foo is defined in foo.oct, then
                      foo.cc will be found here and contain the source
                      code.
@@ -184,7 +184,7 @@ John W. Eaton
 jwe@octave.org
 
 
-Last updated: Wed Sep 28 22:37:37 CDT 2011
+Last updated: Tue Nov 22 20:51:34 PST 2011
 
 
 ################################################################################

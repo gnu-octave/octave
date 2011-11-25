@@ -7792,63 +7792,60 @@ gh_manager::do_process_events (bool force)
 {
   graphics_event e;
   bool old_Vdrawnow_requested = Vdrawnow_requested;
-  unwind_protect frame;
+  bool events_executed = false;
 
-  static int process_events_executing = 0;
-
-  frame.protect_var (process_events_executing);
-
-  if (++process_events_executing <= 1)
+  do
     {
-      do
+      e = graphics_event ();
+
+      gh_manager::lock ();
+
+      if (! event_queue.empty ())
         {
-          e = graphics_event ();
-
-          gh_manager::lock ();
-
-          if (! event_queue.empty ())
+          if (callback_objects.empty () || force)
             {
-              if (callback_objects.empty () || force)
+              e = event_queue.front ();
+
+              event_queue.pop_front ();
+            }
+          else
+            {
+              const graphics_object& go = callback_objects.front ();
+
+              if (go.get_properties ().is_interruptible ())
                 {
                   e = event_queue.front ();
 
                   event_queue.pop_front ();
                 }
-              else
-                {
-                  const graphics_object& go = callback_objects.front ();
-
-                  if (go.get_properties ().is_interruptible ())
-                    {
-                      e = event_queue.front ();
-
-                      event_queue.pop_front ();
-                    }
-                }
             }
-
-          gh_manager::unlock ();
-
-          if (e.ok ())
-            e.execute ();
         }
-      while (e.ok ());
-
-      gh_manager::lock ();
-
-      if (event_queue.empty () && event_processing == 0)
-        command_editor::remove_event_hook (gh_manager::process_events);
 
       gh_manager::unlock ();
 
-      flush_octave_stdout ();
-
-      if (Vdrawnow_requested && ! old_Vdrawnow_requested)
+      if (e.ok ())
         {
-          feval ("drawnow");
-
-          Vdrawnow_requested = false;
+          e.execute ();
+          events_executed = true;
         }
+    }
+  while (e.ok ());
+
+  gh_manager::lock ();
+
+  if (event_queue.empty () && event_processing == 0)
+    command_editor::remove_event_hook (gh_manager::process_events);
+
+  gh_manager::unlock ();
+
+  if (events_executed)
+    flush_octave_stdout ();
+
+  if (Vdrawnow_requested && ! old_Vdrawnow_requested)
+    {
+      feval ("drawnow");
+
+      Vdrawnow_requested = false;
     }
 
   return 0;

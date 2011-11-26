@@ -40,6 +40,9 @@
 ##
 ## @multitable @columnfractions 0.06 0.14 0.80
 ##
+## @headitem @tab @var{pos} @tab
+##   location of the legend
+##
 ## @item @tab north @tab
 ##   center top
 ##

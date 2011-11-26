@@ -403,7 +403,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               if (isfield (hgobj, "displayname")
                   && ! isempty (hgobj.displayname))
                 hplots = [hplots, hgkids(j)];
-                text_strings = {text_strings{:}, hbobj.displayname};
+                text_strings = {text_strings{:}, hgobj.displayname};
                 break;
               endif
             endfor
@@ -1083,7 +1083,7 @@ endfunction
 %! clf
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
-%! ylim ([0 1.2]);
+%! ylim ([0 1.0]);
 %! legend ({"1st Bar", "2nd Bar", "3rd Bar"});
 
 %!demo
@@ -1092,6 +1092,7 @@ endfunction
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
 %! legend ("1st Bar", "2nd Bar", "3rd Bar");
+%! legend right
 
 %!demo
 %! clf

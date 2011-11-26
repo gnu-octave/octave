@@ -649,7 +649,7 @@ Force Octave to assume the file is in Octave's text format.\n\
   std::string orig_fname = "";
 
   // Function called with Matlab-style ["filename", options] syntax
-  if (argv[1].at(0) != '-')
+  if (argc > 1 && argv[1].at(0) != '-')
     {
       orig_fname = argv[1];
       i++;

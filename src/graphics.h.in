@@ -661,6 +661,8 @@ protected:
           else
             replace = true;
 
+          desired_type = string_t;
+
           if (replace)
             {
               str = strings;
@@ -689,6 +691,8 @@ protected:
                     }
                 }
             }
+
+          desired_type = cell_t;
 
           if (replace)
             {

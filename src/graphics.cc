@@ -7691,7 +7691,7 @@ gh_manager::do_execute_callback (const graphics_handle& h,
           int status;
           std::string s = cb.string_value ();
 
-          eval_string (s, false, status);
+          eval_string (s, false, status, 0);
         }
       else if (cb.is_cell () && cb.length () > 0
                && (cb.rows () == 1 || cb.columns () == 1)

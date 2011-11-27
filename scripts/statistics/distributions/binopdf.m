@@ -21,7 +21,8 @@
 ## @deftypefn {Function File} {} binopdf (@var{x}, @var{n}, @var{p})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the binomial distribution with parameters @var{n}
-## and @var{p}.
+## and @var{p}, where @var{n} is the number of trials and @var{p} is the
+## probability of success.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -23,7 +23,8 @@
 ## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, @var{r}, @var{c}, @dots{})
 ## @deftypefnx {Function File} {} binornd (@var{n}, @var{p}, [@var{sz}])
 ## Return a matrix of random samples from the binomial distribution with
-## parameters @var{n} and @var{p}.
+## parameters @var{n} and @var{p}, where @var{n} is the number of trials
+## and @var{p} is the probability of success.
 ##
 ## When called with a single size argument, return a square matrix with
 ## the dimension specified.  When called with more than one scalar argument the

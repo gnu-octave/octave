@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} setpref (@var{group}, @var{pref}, @var{val})
+## @deftypefn {Function File} {} setpref (@var{group}, @var{pref}, @var{val})
 ## Set a preference @var{pref} to the given @var{val} in the named
 ## preference group @var{group}.
 ##
@@ -29,7 +29,7 @@
 ## must be a cell array of values with the same size as @var{pref}.
 ##
 ## If the named preference or group does not exist, it is added.
-## @seealso{pref, getpref, ispref, rmpref, setpref}
+## @seealso{addpref, getpref, ispref, rmpref}
 ## @end deftypefn
 
 ## Author: jwe

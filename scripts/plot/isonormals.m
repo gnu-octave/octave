@@ -45,8 +45,8 @@
 ## given by the patch handle @var{p}.
 ##
 ## For example:
-##
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## function [] = isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode", "manual", ...

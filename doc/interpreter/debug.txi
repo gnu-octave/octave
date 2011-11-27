@@ -194,7 +194,7 @@ Octave supports profiling of code execution on a per-function level. If
 profiling is enabled, each call to a function (supporting built-ins,
 operators, functions in oct- and mex-files, user-defined functions in
 Octave code and anonymous functions) is recorded while running Octave
-code. After that, this data can aid in analyzing the code behaviour, and
+code. After that, this data can aid in analyzing the code behavior, and
 is in particular helpful for finding ``hot spots'' in the code which use
 up a lot of computation time and are the best targets to spend
 optimization efforts on.
@@ -221,7 +221,7 @@ binary <=             0.061        13529
 @end group
 @end example
 
-This shows that most of the runtime was spent executing the function
+This shows that most of the run time was spent executing the function
 @samp{myfib}, and some minor proportion evaluating the listed binary
 operators. Furthermore, it is shown how often the function was called
 and the profiler also records that it is recursive.
@@ -334,7 +334,7 @@ largest proportion of the processing time, even though it is only called
 once. The second expensive operation is the matrix-vector product in the
 routine @code{timesteps}. @footnote{We only know it is the binary
 multiplication operator, but fortunately this operator appears only at
-one place in the code and thus we know which occurence takes so much
+one place in the code and thus we know which occurrence takes so much
 time. If there were multiple places, we would have to use the
 hierarchical profile to find out the exact place which uses up the time
 which is not covered in this example.}
@@ -405,7 +405,7 @@ times in the course of recursively calculating the Fibonacci number in a
 suboptimal way, and most of the time was spent in @code{bar} itself.
 
 Finally, let's say we want to profile the execution of both @code{foo}
-and @code{bar} together. Since we already have the runtime data
+and @code{bar} together. Since we already have the run-time data
 collected for @code{bar}, we can restart the profiler without clearing
 the existing data and collect the missing statistics about @code{foo}.
 This is done by:

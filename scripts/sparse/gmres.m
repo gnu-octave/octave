@@ -51,13 +51,19 @@
 ## @item @var{flag} indicates the exit status:
 ## @table @asis
 ## @item 0 : iteration converged to within the specified tolerance
+##
 ## @item 1 : maximum number of iterations exceeded
+##
 ## @item 2 : unused, but skipped for compatibility
+##
 ## @item 3 : algorithm reached stagnation
 ## @end table
+##
 ## @item @var{relres} is the final value of the relative residual.
+##
 ## @item @var{iter} is a vector containing the number of outer iterations and
 ## total iterations performed.
+##
 ## @item @var{resvec} is a vector containing the relative residual at each
 ## iteration.
 ## @end itemize

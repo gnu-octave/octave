@@ -8,6 +8,28 @@ Summary of important user-visible changes for version 3.6:
 
  ** The PCRE library is now required to build Octave.
 
+ ** The following binary elementwise operators and functions now perform
+    Numpy-like broadcasting (a.k.a. binary singleton expansion):
+
+    plus      ldivide   rem    eq    gt     xor
+    minus     power     mod    ne    ge
+    times     max       atan2  lt    and
+    rdivide   min       hypot  le    or
+
+    +         .*        &
+    -         ./        |
+    .+        .\
+    .-        .^
+
+    +=        .*=       &=
+    -=        ./=       |=
+    .+=       .\=
+    .-=       .^=
+
+    This makes the bsxfun function mostly redundant except for
+    user-defined functions.  A new section in the manual has been written
+    to explain and clarify this change.
+
  ** Octave now features a profiler, thanks to the work of Daniel Kraft
     under the Google Summer of Code mentorship program.  The manual has
     been updated to reflect this addition.  The new user-visible
@@ -77,21 +99,43 @@ Summary of important user-visible changes for version 3.6:
               Now accepts cellstr inputs.
 
  ** Octave warning IDs updated
+    "associativity-change": removed
+    "complex-cmp-ops"     : removed
     "empty-list-elements" : removed
     "fortran-indexing"    : removed
-    "complex-cmp-ops"     : removed
+    "precedence-change"   : removed
     "string-concat"       : renamed to "mixed-string-concat"
 
  ** Matlab-compatible preference functions added:
 
     addpref  getpref  ispref  rmpref  setpref
 
+ ** Matlab-compatible handle graphics functions added:
+
+    guidata         uipanel        uitoolbar
+    guihandles      uipushtool     uiwait
+    uicontextmenu   uiresume       waitfor
+    uicontrol       uitoggletool
+
+    The uiXXX functions above are experimental.
+
+    Except for uiwait and uiresume, the uiXXX functions are not supported on
+    the FLTK backend.
+
+    The gnuplot backend does not support any of the uiXXX functions nor
+    the waitfor function.
+
+ ** New keyword parfor
+
+    parfor (parallel for loop) is now recognized as a valid keyword.
+    Implementation, however, is still mapped to an ordinary for loop.
+
  ** Other new functions added in 3.6.0:
 
-    is_dq_string      python      zscore
-    is_sq_string      usejava 
-    nthargout         waitbar
-                      
+    is_dq_string    nthargout    usejava     
+    is_sq_string    python       waitbar
+    narginchk       recycle      zscore            
+    
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.2 and have been

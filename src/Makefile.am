@@ -286,6 +286,7 @@ octinclude_HEADERS = \
   parse.h \
   pr-output.h \
   procstream.h \
+  profiler.h \
   sighandlers.h \
   siglist.h \
   sparse-xdiv.h \
@@ -311,7 +312,6 @@ nodist_octinclude_HEADERS = \
   defaults.h \
   graphics.h \
   oct-conf.h \
-  profiler.h \
   mxarray.h \
   version.h
 

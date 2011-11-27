@@ -19,17 +19,20 @@
 
 ## -*- texinfo -*-
 ##
-## @deftypefn {Function File} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
+## @deftypefn  {Function File} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{M1}, @var{M2}, @var{x0})
 ## @deftypefnx {Function File} {@var{x} =} bicgstab (@var{A}, @var{b}, @var{rtol}, @var{maxit}, @var{P})
-## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicgstab (@var{A}, @var{b}, ...)
-## Solve @code{A x = b} using the stabilizied Bi-conjugate gradient iterative method.
+## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} bicgstab (@var{A}, @var{b}, @dots{})
+## Solve @code{A x = b} using the stabilizied Bi-conjugate gradient iterative
+## method.
 ##
 ## @itemize @minus
 ## @item @var{rtol} is the relative tolerance, if not given or set to
 ## [] the default value 1e-6 is used.
+##
 ## @item @var{maxit} the maximum number of outer iterations, if not
 ## given or set to [] the default value @code{min (20, numel (b))} is
 ## used.
+##
 ## @item @var{x0} the initial guess, if not given or set to [] the
 ## default value @code{zeros (size (b))} is used.
 ## @end itemize
@@ -38,8 +41,9 @@
 ## inline function @code{f} such that @code{f(x) = A*x}.
 ##
 ## The preconditioner @var{P} is given as @code{P = M1 * M2}.
-## Both @var{M1} and @var{M2} can be passed as a matrix or as a function handle or
-## inline function @code{g} such that @code{g(x) = M1 \ x} or @code{g(x) = M2 \ x}.
+## Both @var{M1} and @var{M2} can be passed as a matrix or as a function
+## handle or inline function @code{g} such that @code{g(x) = M1 \ x} or
+## @code{g(x) = M2 \ x}.
 ##
 ## If called with more than one output parameter
 ##
@@ -47,16 +51,21 @@
 ## @item @var{flag} indicates the exit status:
 ## @itemize @minus
 ## @item 0: iteration converged to the within the chosen tolerance
+##
 ## @item 1: the maximum number of iterations was reached before convergence
+##
 ## @item 3: the algorithm reached stagnation
 ## @end itemize
 ## (the value 2 is unused but skipped for compatibility).
+##
 ## @item @var{relres} is the final value of the relative residual.
+##
 ## @item @var{iter} is the number of iterations performed.
+##
 ## @item @var{resvec} is a vector containing the relative residual at each iteration.
 ## @end itemize
 ##
-## @seealso{bicg,cgs,gmres,pcg}
+## @seealso{bicg, cgs, gmres, pcg}
 ##
 ## @end deftypefn
 

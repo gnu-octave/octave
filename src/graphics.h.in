@@ -333,7 +333,7 @@ private:
 
 class property;
 
-enum listener_mode { POSTSET, PERSISTENT };
+enum listener_mode { POSTSET, PERSISTENT, PREDELETE };
 
 class base_property
 {
@@ -661,6 +661,8 @@ protected:
           else
             replace = true;
 
+          desired_type = string_t;
+
           if (replace)
             {
               str = strings;
@@ -689,6 +691,8 @@ protected:
                     }
                 }
             }
+
+          desired_type = cell_t;
 
           if (replace)
             {

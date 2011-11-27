@@ -1,4 +1,4 @@
-## Copyright (C) 2011 John W. Eaton
+## Copyright (C) 2011 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,20 +17,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} saveprefs ()
-## Undocumented internal function.
+## @deftypefn {Function File} {} uiresume (@var{h})
+## Resume program execution suspended with @code{uiwait}.  The handle @var{h}
+## must be the same as the on specified in @code{uiwait}.  If the handle
+## is invalid or there is no @code{uiwait} call pending for the figure
+## with handle @var{h}, this function does nothing.
+## @seealso{uiwait}
 ## @end deftypefn
 
-## Author: jwe
+## Author: goffioul
 
-function retval = saveprefs (s)
+function uiresume (h)
 
-  prefs = s;
+  if (! ishandle (h) || ! strcmp (get (h, "type"), "figure"))
+    error ("uiresume: invalid figure handle");
+  endif
 
-  save (prefsfile (), "prefs");
+  try
+    uiwait_state = get (h, "__uiwait_state__");
+    if (strcmp (uiwait_state, "active"))
+      set (h, "__uiwait_state__", "triggered");
+    endif
+  catch
+    # Ignore exception
+  end_try_catch
 
 endfunction
-
-%% Testing these functions will require some care to avoid wiping out
-%% existing (or creating unwanted) preferences for the user running the
-%% tests.

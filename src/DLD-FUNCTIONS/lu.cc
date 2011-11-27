@@ -580,7 +580,7 @@ information.\n\
 %! assert(u, single([5, 6; 0, 4/5]), sqrt (eps('single')));
 %! assert(p(:,:), single([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps('single')));
 
-%!error <Invalid call to lu.*> lu ();
+%!error <Invalid call to lu> lu ();
 %!error lu ([1, 2; 3, 4], 2);
 
  */

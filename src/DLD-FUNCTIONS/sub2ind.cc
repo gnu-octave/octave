@@ -125,9 +125,9 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 /*
 
 # Test input validation
-%!error <sub2ind: dimension vector .*> sub2ind([10 10.5], 1, 1);
-%!error <subscript indices .*> sub2ind([10 10], 1.5, 1);
-%!error <subscript indices .*> sub2ind([10 10], 1, 1.5);
+%!error <sub2ind: dimension vector > sub2ind([10 10.5], 1, 1);
+%!error <subscript indices > sub2ind([10 10], 1.5, 1);
+%!error <subscript indices > sub2ind([10 10], 1, 1.5);
 
 # Test evaluation
 %!shared s1, s2, s3, in
@@ -140,9 +140,9 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 
 # Test low index
 %!assert (sub2ind([10 10 10], 1, 1, 1), 1);
-%!error <subscript indices .*> sub2ind([10 10 10], 0, 1, 1);
-%!error <subscript indices .*> sub2ind([10 10 10], 1, 0, 1);
-%!error <subscript indices .*> sub2ind([10 10 10], 1, 1, 0);
+%!error <subscript indices > sub2ind([10 10 10], 0, 1, 1);
+%!error <subscript indices > sub2ind([10 10 10], 1, 0, 1);
+%!error <subscript indices > sub2ind([10 10 10], 1, 1, 0);
 
 # Test high index
 %!assert (sub2ind([10 10 10], 10, 10, 10), 1000);

@@ -97,11 +97,6 @@ get_dimensions (const octave_value& a,const char *warn_for,
 extern OCTINTERP_API octave_idx_type
 dims_to_numel (const dim_vector& dims, const octave_value_list& idx);
 
-extern OCTINTERP_API void
-decode_subscripts (const char* name, const octave_value& arg,
-                   std::string& type_string,
-                   std::list<octave_value_list>& idx);
-
 extern OCTINTERP_API Matrix
 identity_matrix (octave_idx_type nr, octave_idx_type nc);
 

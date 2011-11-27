@@ -24,14 +24,14 @@
 ## Create an array by accumulating the elements of a vector into the
 ## positions defined by their subscripts.  The subscripts are defined by
 ## the rows of the matrix @var{subs} and the values by @var{vals}.  Each
-## row of @var{subs} corresponds to one of the values in @var{vals}. If
+## row of @var{subs} corresponds to one of the values in @var{vals}.  If
 ## @var{vals} is a scalar, it will be used for each of the row of
 ## @var{subs}.
 ##
 ## The size of the matrix will be determined by the subscripts
-## themselves. However, if @var{sz} is defined it determines the matrix
-## size. The length of @var{sz} must correspond to the number of columns
-## in @var{subs}. An exception is if @var{subs} has only one column, in
+## themselves.  However, if @var{sz} is defined it determines the matrix
+## size.  The length of @var{sz} must correspond to the number of columns
+## in @var{subs}.  An exception is if @var{subs} has only one column, in
 ## which case @var{sz} may be the dimensions of a vector and the subscripts
 ## of @var{subs} are taken as the indices into it.
 ##
@@ -42,14 +42,14 @@
 ## function should not depend on the order of the subscripts.
 ##
 ## The elements of the returned array that have no subscripts associated
-## with them are set to zero. Defining @var{fillval} to some other value
-## allows these values to be defined. This behaviour changes, however,
-## for certain values of @var{func}. If @var{func} is @code{min}
+## with them are set to zero.  Defining @var{fillval} to some other value
+## allows these values to be defined.  This behavior changes, however,
+## for certain values of @var{func}.  If @var{func} is @code{min}
 ## (respectively, @code{max}) then the result will be filled with the
 ## minimum (respectively, maximum) integer if @var{vals} is of integral
 ## type, logical false (respectively, logical true) if @var{vals} is of
 ## logical type, zero if @var{fillval} is zero and all values are
-## nonpositive (respectively, nonnegative), and NaN otherwise.
+## non-positive (respectively, non-negative), and NaN otherwise.
 ##
 ## By default @code{accumarray} returns a full matrix.  If
 ## @var{issparse} is logically true, then a sparse matrix is returned
@@ -57,7 +57,7 @@
 ##
 ## The following @code{accumarray} example constructs a frequency table
 ## that in the first column counts how many occurrences each number in
-## the second column has, taken from the vector @var{x}. Note the usage
+## the second column has, taken from the vector @var{x}.  Note the usage
 ## of @code{unique}  for assigning to all repeated elements of @var{x}
 ## the same index (@pxref{doc-unique}).
 ##
@@ -74,7 +74,7 @@
 ## @end group
 ## @end example
 ##
-## Another example, where the result is a multidimensional 3D array and
+## Another example, where the result is a multi-dimensional 3-D array and
 ## the default value (zero) appears in the output:
 ##
 ## @example
@@ -91,9 +91,9 @@
 ##
 ## The complexity in the non-sparse case is generally O(M+N), where N is
 ## the number of subscripts and M is the maximum subscript (linearized
-## in multi-dimensional case). If @var{func} is one of @code{@@sum}
+## in multi-dimensional case).  If @var{func} is one of @code{@@sum}
 ## (default), @code{@@max}, @code{@@min} or @code{@@(x) @{x@}}, an
-## optimized code path is used. Note that for general reduction function
+## optimized code path is used.  Note that for general reduction function
 ## the interpreter overhead can play a major part and it may be more
 ## efficient to do multiple accumarray calls and compute the results in
 ## a vectorized manner.

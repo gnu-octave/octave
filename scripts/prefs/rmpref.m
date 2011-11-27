@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} rmpref (@var{group}, @var{pref})
+## @deftypefn {Function File} {} rmpref (@var{group}, @var{pref})
 ## Remove the named preference @var{pref} from the preference group
 ## @var{group}.
 ##
@@ -30,7 +30,7 @@
 ## @var{group}.
 ##
 ## It is an error to remove a nonexistent preference or group.
-## @seealso{addpref, getpref, rmpref, setpref}
+## @seealso{addpref, ispref, setpref, getpref}
 ## @end deftypefn
 
 ## Author: jwe

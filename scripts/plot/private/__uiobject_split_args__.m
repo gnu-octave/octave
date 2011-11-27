@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
+## @deftypefn {Function File} {[@var{p}, @var{args}] =} __uiobject_split_args__ (@var{who}, @var{args}, @var{parent_type}, @var{use_gcf})
 ## @end deftypefn
 
 ## Author: goffioul

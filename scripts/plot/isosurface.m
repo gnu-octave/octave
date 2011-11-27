@@ -70,8 +70,8 @@
 ## will directly draw a random isosurface geometry in a graphics window.
 ## Another example for an isosurface geometry with different additional
 ## coloring
-##
 ## @c Set example in small font to prevent overfull line
+##
 ## @smallexample
 ## N = 15;    # Increase number of vertices in each direction
 ## iso = .4;  # Change isovalue to .1 to display a sphere

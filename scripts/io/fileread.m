@@ -49,8 +49,8 @@ endfunction
 %!test
 %! cstr = {"Hello World", "The answer is 42", "Goodbye World"};
 %! fname = tmpnam ();
-%! fid = fopen (fname, "wt");
-%! fprintf(fid, "%s\n", cstr{:})
+%! fid = fopen (fname, "w");
+%! fprintf (fid, "%s\n", cstr{:})
 %! fclose (fid);
 %! str = fileread (fname);
 %! assert (str', [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);

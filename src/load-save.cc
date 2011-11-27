@@ -649,7 +649,7 @@ Force Octave to assume the file is in Octave's text format.\n\
   std::string orig_fname = "";
 
   // Function called with Matlab-style ["filename", options] syntax
-  if (argv[1].at(0) != '-')
+  if (argc > 1 && argv[1].at(0) != '-')
     {
       orig_fname = argv[1];
       i++;
@@ -1475,6 +1475,7 @@ then the @var{options}, @var{file}, and variable name arguments\n\
 @table @code\n\
 @item -append\n\
 Append to the destination instead of overwriting.\n\
+\n\
 @item -ascii\n\
 Save a single matrix in a text file without header or any other information.\n\
 \n\

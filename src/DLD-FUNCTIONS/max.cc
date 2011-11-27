@@ -367,10 +367,10 @@ minimum value(s).  Thus,\n\
 %!assert(all (min ([4, i; -2, 2]) == [-2, i]));
 
 %% test/octave.test/arith/min-3.m
-%!error <Invalid call to min.*> min ();
+%!error <Invalid call to min> min ();
 
 %% test/octave.test/arith/min-4.m
-%!error <Invalid call to min.*> min (1, 2, 3, 4);
+%!error <Invalid call to min> min (1, 2, 3, 4);
 
 %!test
 %! x = reshape (1:8,[2,2,2]);
@@ -446,10 +446,10 @@ maximum value(s).  Thus,\n\
 %!assert(all (max ([4, i 4.999; -2, 2, 3+4i]) == [4, 2, 3+4i]));
 
 %% test/octave.test/arith/max-3.m
-%!error <Invalid call to max.*> max ();
+%!error <Invalid call to max> max ();
 
 %% test/octave.test/arith/max-4.m
-%!error <Invalid call to max.*> max (1, 2, 3, 4);
+%!error <Invalid call to max> max (1, 2, 3, 4);
 
 %!test
 %! x = reshape (1:8,[2,2,2]);

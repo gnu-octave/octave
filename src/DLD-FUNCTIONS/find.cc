@@ -617,6 +617,6 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 %!assert (find ([2 0 1 0 5 0], Inf), [1, 3, 5])
 %!assert (find ([2 0 1 0 5 0], Inf, "last"), [1, 3, 5])
 
-%!error <Invalid call to find.*> find ();
+%!error <Invalid call to find> find ();
 
 */

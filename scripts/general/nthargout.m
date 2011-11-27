@@ -20,10 +20,10 @@
 ## @deftypefn  {Function File} {} nthargout (@var{n}, @var{func}, @dots{})
 ## @deftypefnx {Function File} {} nthargout (@var{n}, @var{ntot}, @var{func}, @dots{})
 ## Return the @var{n}th output argument of function given by the
-## function handle or string @var{func}. Any arguments after @var{func}
-## are passed to @var{func}. The total number of arguments to call
+## function handle or string @var{func}.  Any arguments after @var{func}
+## are passed to @var{func}.  The total number of arguments to call
 ## @var{func} with can be passed in @var{ntot}; by default @var{ntot}
-## is @var{n}. The input @var{n} can also be a vector of indices of the
+## is @var{n}.  The input @var{n} can also be a vector of indices of the
 ## output, in which case the output will be a cell array of the
 ## requested output arguments.
 ##

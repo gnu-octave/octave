@@ -22,7 +22,7 @@
 ##
 ## Construct a piece-wise polynomial (pp) structure from sample points
 ## @var{breaks} and coefficients @var{coefs}.  @var{breaks} must be a vector of
-## strictly increasing values. The number of intervals is given by
+## strictly increasing values.  The number of intervals is given by
 ## @code{@var{ni} = length (@var{breaks}) - 1}.
 ## When @var{m} is the polynomial order @var{coefs} must be of
 ## size: @var{ni} x @var{m} + 1.
@@ -33,11 +33,11 @@
 ## lowest (@var{0}).
 ##
 ## @var{coefs} may also be a multi-dimensional array, specifying a vector-valued
-## or array-valued polynomial. In that case the polynomial order is defined
+## or array-valued polynomial.  In that case the polynomial order is defined
 ## by the length of the last dimension of @var{coefs}.
 ## The size of first dimension(s) are given by the scalar or
-## vector @var{d}. If @var{d} is not given it is set to @code{1}.
-## In any case @var{coefs} is reshaped to a 2d matrix of
+## vector @var{d}.  If @var{d} is not given it is set to @code{1}.
+## In any case @var{coefs} is reshaped to a 2-D matrix of
 ## size @code{[@var{ni}*prod(@var{d} @var{m})] }
 ##
 ## @seealso{unmkpp, ppval, spline}

@@ -39,7 +39,7 @@
 %! assert(prog_output_assert("ok"));
 
 %% test/octave.test/system/pause-2.m
-%!error <Invalid call to pause.*> pause (1, 2);
+%!error <Invalid call to pause> pause (1, 2);
 
 %% test/octave.test/system/sleep-1.m
 %!test
@@ -48,10 +48,10 @@
 %! assert(prog_output_assert("ok"));
 
 %% test/octave.test/system/sleep-2.m
-%!error <Invalid call to sleep.*> sleep ();
+%!error <Invalid call to sleep> sleep ();
 
 %% test/octave.test/system/sleep-3.m
-%!error <Invalid call to sleep.*> sleep (1, 2);
+%!error <Invalid call to sleep> sleep (1, 2);
 
 %% test/octave.test/system/usleep-1.m
 %!test
@@ -60,10 +60,10 @@
 %! assert(prog_output_assert("ok"));
 
 %% test/octave.test/system/usleep-2.m
-%!error <Invalid call to usleep.*> usleep ();
+%!error <Invalid call to usleep> usleep ();
 
 %% test/octave.test/system/usleep-3.m
-%!error <Invalid call to usleep.*> usleep (1, 2);
+%!error <Invalid call to usleep> usleep (1, 2);
 
 %% test/octave.test/system/rename-1.m
 %!test
@@ -85,10 +85,10 @@
 %! endif
 
 %% test/octave.test/system/rename-2.m
-%!error <Invalid call to rename.*> rename ();
+%!error <Invalid call to rename> rename ();
 
 %% test/octave.test/system/rename-3.m
-%!error <Invalid call to rename.*> rename ("foo", "bar", 1);
+%!error <Invalid call to rename> rename ("foo", "bar", 1);
 
 %% test/octave.test/system/unlink-1.m
 %!test
@@ -102,10 +102,10 @@
 %! endif
 
 %% test/octave.test/system/unlink-2.m
-%!error <Invalid call to unlink.*> unlink ();
+%!error <Invalid call to unlink> unlink ();
 
 %% test/octave.test/system/unlink-3.m
-%!error <Invalid call to unlink.*> unlink ("foo", 1);
+%!error <Invalid call to unlink> unlink ("foo", 1);
 
 %% test/octave.test/system/readdir-1.m
 %!test
@@ -113,10 +113,10 @@
 %! assert(iscell (files) && status == 0 && strcmp (msg, ""));
 
 %% test/octave.test/system/readdir-2.m
-%!error <Invalid call to readdir.*> readdir ();
+%!error <Invalid call to readdir> readdir ();
 
 %% test/octave.test/system/readdir-3.m
-%!error <Invalid call to readdir.*> readdir ("foo", 1);
+%!error <Invalid call to readdir> readdir ("foo", 1);
 
 %% test/octave.test/system/mk-rm-dir-1.m
 %!test
@@ -128,13 +128,13 @@
 %! assert((e1 && strcmp (s2.modestr(1), "d") && e3 && e4 < 0));
 
 %% test/octave.test/system/mkdir-1.m
-%!error <Invalid call to mkdir.*> mkdir ();
+%!error <Invalid call to mkdir> mkdir ();
 
 %% test/octave.test/system/mkdir-2.m
-%!error <Invalid call to mkdir.*> mkdir ("foo", 1, 2);
+%!error <Invalid call to mkdir> mkdir ("foo", 1, 2);
 
 %% test/octave.test/system/rmdir-1.m
-%!error <Invalid call to rmdir.*> rmdir ();
+%!error <Invalid call to rmdir> rmdir ();
 
 %% test/octave.test/system/rmdir-2.m
 %!test
@@ -163,10 +163,10 @@
 %! assert(strcmp (s1.modestr, "-rw-rw-rw-") && strcmp (s2.modestr, "----------"));
 
 %% test/octave.test/system/umask-2.m
-%!error <Invalid call to umask.*> umask ();
+%!error <Invalid call to umask> umask ();
 
 %% test/octave.test/system/umask-3.m
-%!error <Invalid call to umask.*> umask (1, 2);
+%!error <Invalid call to umask> umask (1, 2);
 
 %% test/octave.test/system/stat-1.m
 %!test
@@ -186,10 +186,10 @@
 %! && ischar (msg)));
 
 %% test/octave.test/system/stat-2.m
-%!error <Invalid call to stat.*> stat ();
+%!error <Invalid call to stat> stat ();
 
 %% test/octave.test/system/stat-3.m
-%!error <Invalid call to stat.*> stat ("foo", 1);
+%!error <Invalid call to stat> stat ("foo", 1);
 
 %% test/octave.test/system/lstat-1.m
 %!test
@@ -209,10 +209,10 @@
 %! && ischar (msg)));
 
 %% test/octave.test/system/lstat-2.m
-%!error <Invalid call to lstat.*> lstat ();
+%!error <Invalid call to lstat> lstat ();
 
 %% test/octave.test/system/lstat-3.m
-%!error <Invalid call to lstat.*> lstat ("foo", 1);
+%!error <Invalid call to lstat> lstat ("foo", 1);
 
 %% test/octave.test/system/glob-1.m
 %!assert(iscell (glob ([filesep "*"])));
@@ -221,7 +221,7 @@
 %!error <Invalid call to glob*> glob ();
 
 %% test/octave.test/system/glob-3.m
-%!error <Invalid call to glob.*> glob ("foo", 1);
+%!error <Invalid call to glob> glob ("foo", 1);
 
 %% test/octave.test/system/fnmatch-1.m
 %!test
@@ -233,10 +233,10 @@
 %! && fnmatch ("x???y", {"xabcy"; "xy"}) == [1; 0]));
 
 %% test/octave.test/system/fnmatch-2.m
-%!error <Invalid call to fnmatch.*> fnmatch ();
+%!error <Invalid call to fnmatch> fnmatch ();
 
 %% test/octave.test/system/fnmatch-3.m
-%!error <Invalid call to fnmatch.*> fnmatch ("foo", "bar", 3);
+%!error <Invalid call to fnmatch> fnmatch ("foo", "bar", 3);
 
 %% test/octave.test/system/file_in_path-1.m
 %!assert(ischar (file_in_path (path (), "date.m")));
@@ -245,10 +245,10 @@
 %!error <invalid option> file_in_path ("foo", "bar", 1);
 
 %% test/octave.test/system/file_in_path-3.m
-%!error <Invalid call to file_in_path.*> file_in_path ();
+%!error <Invalid call to file_in_path> file_in_path ();
 
 %% test/octave.test/system/file_in_path-4.m
-%!error <Invalid call to file_in_path.*> file_in_path ("foo", "bar", "baz", "ooka");
+%!error <Invalid call to file_in_path> file_in_path ("foo", "bar", "baz", "ooka");
 
 %% test/octave.test/system/tilde_expand-1.m
 %!testif HAVE_GETPWUID
@@ -258,10 +258,10 @@
 %! && strcmp ("foobar", tilde_expand ("foobar"))));
 
 %% test/octave.test/system/tilde_expand-2.m
-%!error <Invalid call to tilde_expand.*> tilde_expand ();
+%!error <Invalid call to tilde_expand> tilde_expand ();
 
 %% test/octave.test/system/tilde_expand-3.m
-%!error <Invalid call to tilde_expand.*> tilde_expand ("str", 2);
+%!error <Invalid call to tilde_expand> tilde_expand ("str", 2);
 
 %% test/octave.test/system/getpgrp-1.m
 %!testif HAVE_GETPGRP
@@ -311,10 +311,10 @@
 %!assert(strcmp (getenv ("HOME"), tilde_expand ("~")));
 
 %% test/octave.test/system/getenv-2.m
-%!error <Invalid call to getenv.*> getenv ();
+%!error <Invalid call to getenv> getenv ();
 
 %% test/octave.test/system/getenv-3.m
-%!error <Invalid call to getenv.*> getenv ("foo", 1);
+%!error <Invalid call to getenv> getenv ("foo", 1);
 
 %% test/octave.test/system/getenv-4.m
 %!test
@@ -329,10 +329,10 @@
 %! assert(strcmp (getenv ("foobar"), "baz"));
 
 %% test/octave.test/system/putenv-2.m
-%!error <Invalid call to putenv.*> putenv ();
+%!error <Invalid call to putenv> putenv ();
 
 %% test/octave.test/system/putenv-3.m
-%!error <Invalid call to putenv.*> putenv ("foo", "bar", 1);
+%!error <Invalid call to putenv> putenv ("foo", "bar", 1);
 
 %% test/octave.test/system/putenv-4.m
 %!test
@@ -377,7 +377,7 @@
 %! && isfield (s, "shell")));
 
 %% test/octave.test/system/getpwent-2.m
-%!error <Invalid call to getpwent.*> getpwent (1);
+%!error <Invalid call to getpwent> getpwent (1);
 
 %% test/octave.test/system/getpwuid-1.m
 %!testif HAVE_GETPWUID
@@ -387,10 +387,10 @@
 %! assert(strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/getpwuid-2.m
-%!error <Invalid call to getpwuid.*> getpwuid ();
+%!error <Invalid call to getpwuid> getpwuid ();
 
 %% test/octave.test/system/getpwuid-3.m
-%!error <Invalid call to getpwuid.*> getpwuid (1, 2);
+%!error <Invalid call to getpwuid> getpwuid (1, 2);
 
 %% test/octave.test/system/getpwnam-1.m
 %!testif HAVE_GETPWNAM
@@ -400,10 +400,10 @@
 %! assert(strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/getpwnam-2.m
-%!error <Invalid call to getpwnam.*> getpwnam ();
+%!error <Invalid call to getpwnam> getpwnam ();
 
 %% test/octave.test/system/getpwnam-3.m
-%!error <Invalid call to getpwnam.*> getpwnam ("foo", 1);
+%!error <Invalid call to getpwnam> getpwnam ("foo", 1);
 
 %% test/octave.test/system/setpwent-1.m
 %!testif HAVE_SETPWENT
@@ -414,10 +414,10 @@
 %! assert(strcmp (x.name, y.name) && x.uid == y.uid && x.gid == y.gid);
 
 %% test/octave.test/system/setpwent-2.m
-%!error <Invalid call to setpwent.*> setpwent (1);
+%!error <Invalid call to setpwent> setpwent (1);
 
 %% test/octave.test/system/endpwent-1.m
-%!error <Invalid call to endpwent.*> endpwent (1);
+%!error <Invalid call to endpwent> endpwent (1);
 
 %% test/octave.test/system/getgrent-1.m
 %!testif HAVE_GETGRENT
@@ -430,7 +430,7 @@
 %! && isfield (x, "mem")));
 
 %% test/octave.test/system/getgrent-2.m
-%!error <Invalid call to getgrent.*> getgrent (1);
+%!error <Invalid call to getgrent> getgrent (1);
 
 %% test/octave.test/system/getgrgid-1.m
 %!testif HAVE_GETGRGID
@@ -440,10 +440,10 @@
 %! assert(strcmp (x.name, y.name) && x.gid == y.gid);
 
 %% test/octave.test/system/getgrgid-2.m
-%!error <Invalid call to getgrgid.*> getgrgid ();
+%!error <Invalid call to getgrgid> getgrgid ();
 
 %% test/octave.test/system/getgrgid-3.m
-%!error <Invalid call to getgrgid.*> getgrgid (1, 2);
+%!error <Invalid call to getgrgid> getgrgid (1, 2);
 
 %% test/octave.test/system/getgrnam-1.m
 %!testif HAVE_GETGRNAM
@@ -453,10 +453,10 @@
 %! assert(strcmp (x.name, y.name) && x.gid == y.gid);
 
 %% test/octave.test/system/getgrnam-2.m
-%!error <Invalid call to getgrnam.*> getgrnam ();
+%!error <Invalid call to getgrnam> getgrnam ();
 
 %% test/octave.test/system/getgrnam-3.m
-%!error <Invalid call to getgrnam.*> getgrnam ("foo", 1);
+%!error <Invalid call to getgrnam> getgrnam ("foo", 1);
 
 %% test/octave.test/system/setgrent-1.m
 %!testif HAVE_SETGRENT
@@ -467,10 +467,10 @@
 %! assert(strcmp (x.name, y.name) && x.gid == y.gid);
 
 %% test/octave.test/system/setgrent-2.m
-%!error <Invalid call to setgrent.*> setgrent (1);
+%!error <Invalid call to setgrent> setgrent (1);
 
 %% test/octave.test/system/endgrent-1.m
-%!error <Invalid call to endgrent.*> endgrent (1);
+%!error <Invalid call to endgrent> endgrent (1);
 
 %% test/octave.test/system/isieee-1.m
 %!assert(isieee () == 1 || isieee () == 0);

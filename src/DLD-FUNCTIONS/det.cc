@@ -248,8 +248,8 @@ For that, use any of the condition number functions: @code{cond},\n\
 
 %!assert(det ([1, 2; 3, 4]), -2, 10 * eps);
 %!assert(det (single([1, 2; 3, 4])), single(-2), 10 * eps ('single'));
-%!error <Invalid call to det.*> det ();
-%!error <Invalid call to det.*> det (1, 2);
+%!error <Invalid call to det> det ();
+%!error <Invalid call to det> det (1, 2);
 %!error det ([1, 2; 3, 4; 5, 6]);
 
 */

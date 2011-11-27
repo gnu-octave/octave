@@ -677,13 +677,14 @@ endfunction
 %!xtest error("This test is known to fail")
 
 ### example from toeplitz
-%!shared msg
-%! msg="expecting vector arguments";
-%!fail ('toeplitz([])', msg);
-%!fail ('toeplitz([1,2],[])', msg);
-%!fail ('toeplitz([1,2;3,4])', msg);
-%!fail ('toeplitz([1,2],[1,2;3,4])', msg);
-%!fail ('toeplitz ([1,2;3,4],[1,2])', msg);
+%!shared msg1,msg2
+%! msg1="C must be a vector";
+%! msg2="C and R must be vectors";
+%!fail ('toeplitz([])', msg1);
+%!fail ('toeplitz([1,2;3,4])', msg1);
+%!fail ('toeplitz([1,2],[])', msg2);
+%!fail ('toeplitz([1,2],[1,2;3,4])', msg2);
+%!fail ('toeplitz ([1,2;3,4],[1,2])', msg2);
 % !fail ('toeplitz','usage: toeplitz'); # usage doesn't generate an error
 % !fail ('toeplitz(1, 2, 3)', 'usage: toeplitz');
 %!test  assert (toeplitz ([1,2,3], [1,4]), [1,4; 2,1; 3,2]);

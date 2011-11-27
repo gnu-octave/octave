@@ -585,7 +585,7 @@ ColumnVector
 SparseMatrix::column (octave_idx_type i) const
 {
   octave_idx_type nr = rows ();
-  ColumnVector retval (nr);
+  ColumnVector retval (nr, 0);
 
   for (octave_idx_type k = cidx (i); k < cidx (i+1); k++)
     retval(ridx (k)) = data (k);

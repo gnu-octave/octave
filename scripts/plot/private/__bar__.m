@@ -82,7 +82,7 @@ function varargout = __bar__ (vertical, func, varargin)
         [linespec, valid] = __pltopt__ (func, varargin{idx}, false);
         if (valid)
           have_line_spec = true;
-          newargs = [{linespec.color}, newargs];
+          newargs = [{"facecolor", linespec.color}, newargs]
           idx++;
           continue;
         endif

@@ -87,7 +87,7 @@ octave_change_to_directory (const std::string& newdir)
   return cd_ok;
 }
 
-DEFUN (cd, args, ,
+DEFUN (cd, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} cd dir\n\
 @deftypefnx {Command} {} chdir dir\n\
@@ -127,10 +127,18 @@ directory is not changed.\n\
     }
   else
     {
-      std::string home_dir = octave_env::get_home_directory ();
+      // Behave like Unixy shells for "cd" by itself, but be Matlab
+      // compatible if doing "current_dir = cd".
 
-      if (home_dir.empty () || ! octave_change_to_directory (home_dir))
-        return retval;
+      if (nargout == 0)
+        {
+          std::string home_dir = octave_env::get_home_directory ();
+
+          if (home_dir.empty () || ! octave_change_to_directory (home_dir))
+            return retval;
+        }
+      else
+        retval = octave_value (octave_env::get_current_directory ());
     }
 
   return retval;

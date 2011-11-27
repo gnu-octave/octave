@@ -118,4 +118,37 @@ as the obsolete function, but should provide equivalent functionality.
 @item @code{weibull_pdf} @tab @code{wblpdf} @tab 3.4.0
 @item @code{weibull_rnd} @tab @code{wblrnd} @tab 3.4.0
 @item @code{wiener_rnd} @tab @code{wienrnd} @tab 3.4.0
+@item @code{create_set} @tab @code{unique} @tab 3.6.0
+@item @code{dmult} @tab @code{diag (A) * B} @tab 3.6.0
+@item @code{iscommand} @tab None @tab 3.6.0
+@item @code{israwcommand} @tab None @tab 3.6.0
+@item @code{lchol} @tab @code{chol (@dots{}, "lower")} @tab 3.6.0
+@item @code{loadimage} @tab @code{load} or @code{imread} @tab 3.6.0
+@item @code{mark_as_command} @tab None @tab 3.6.0
+@item @code{mark_as_rawcommand} @tab None @tab 3.6.0
+@item @code{spatan2} @tab @code{atan2} @tab 3.6.0
+@item @code{spchol} @tab @code{chol} @tab 3.6.0
+@item @code{spchol2inv} @tab @code{chol2inv} @tab 3.6.0
+@item @code{spcholinv} @tab @code{cholinv} @tab 3.6.0
+@item @code{spcumprod} @tab @code{cumprod} @tab 3.6.0
+@item @code{spcumsum} @tab @code{cumsum} @tab 3.6.0
+@item @code{spdet} @tab @code{det} @tab 3.6.0
+@item @code{spdiag} @tab @code{sparse (diag (@dots{}))} @tab 3.6.0
+@item @code{spfind} @tab @code{find} @tab 3.6.0
+@item @code{sphcat} @tab @code{horzcat} @tab 3.6.0
+@item @code{spinv} @tab @code{inv} @tab 3.6.0
+@item @code{spkron} @tab @code{kron} @tab 3.6.0
+@item @code{splchol} @tab @code{chol (@dots{}, "lower")} @tab 3.6.0
+@item @code{split} @tab @code{char (strsplit (s, t))} @tab 3.6.0
+@item @code{splu} @tab @code{lu} @tab 3.6.0
+@item @code{spmax} @tab @code{max} @tab 3.6.0
+@item @code{spmin} @tab @code{min} @tab 3.6.0
+@item @code{spprod} @tab @code{prod} @tab 3.6.0
+@item @code{spqr} @tab @code{qr} @tab 3.6.0
+@item @code{spsum} @tab @code{sum} @tab 3.6.0
+@item @code{spsumsq} @tab @code{sumsq} @tab 3.6.0
+@item @code{spvcat} @tab @code{vertcat} @tab 3.6.0
+@item @code{str2mat} @tab @code{char} @tab 3.6.0
+@item @code{unmark_command} @tab None @tab 3.6.0
+@item @code{unmark_rawcommand} @tab None @tab 3.6.0
 @end multitable

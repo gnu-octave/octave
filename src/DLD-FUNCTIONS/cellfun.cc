@@ -2295,6 +2295,7 @@ endfor\n\
 \n\
 The position of the index is determined by @var{dim}.  If not specified,\n\
 slicing is done along the first non-singleton dimension.\n\
+@seealso{cell2mat, cellindexmat, cellfun}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2408,7 +2409,7 @@ Given a cell array of matrices @var{x}, this function computes\n\
   endfor\n\
 @end group\n\
 @end example\n\
-@seealso{cellfun, cellslices}\n\
+@seealso{cellslices, cellfun}\n\
 @end deftypefn")
 {
   octave_value retval;

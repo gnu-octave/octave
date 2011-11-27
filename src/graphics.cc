@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <cfloat>
 #include <cstdlib>
+#include <ctime>
 
 #include <algorithm>
 #include <list>
@@ -39,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 
 #include "cmd-edit.h"
+#include "cutils.h"
 #include "defun.h"
 #include "display.h"
 #include "error.h"
@@ -2384,7 +2386,7 @@ static void
 xinitialize (const graphics_handle& h)
 {
   graphics_object go = gh_manager::get_object (h);
-  
+
   if (go)
     go.initialize ();
 }
@@ -2484,7 +2486,10 @@ base_properties::has_dynamic_property (const std::string& pname)
 {
   const std::set<std::string>& dynprops = dynamic_property_names ();
 
-  return dynprops.find (pname) != dynprops.end ();
+  if (dynprops.find (pname) != dynprops.end ())
+    return true;
+  else
+    return all_props.find (pname) != all_props.end ();
 }
 
 void
@@ -5113,8 +5118,22 @@ axes::properties::update_title_position (void)
 
       // FIXME: bbox should be stored in axes::properties
       Matrix bbox = get_extent (false);
-      ColumnVector p = xform.untransform (bbox(0)+bbox(2)/2, (bbox(1)-10),
-                                          (x_zlim(0)+x_zlim(1))/2, true);
+
+      ColumnVector p =
+        graphics_xform::xform_vector (bbox(0)+bbox(2)/2,
+                                      bbox(1)-10,
+                                      (x_zlim(0)+x_zlim(1))/2);
+
+      if (x2Dtop)
+        {
+          Matrix ext (1, 2, 0.0);
+          ext = get_ticklabel_extents (get_xtick ().matrix_value (),
+                                       get_xticklabel ().all_strings (),
+                                       get_xlim ().matrix_value ());
+          p(1) -= ext(1);
+        }
+
+      p = xform.untransform (p(0), p(1), p(2), true);
 
       title_props.set_position (p.extract_n(0, 3).transpose ());
       title_props.set_positionmode ("auto");
@@ -7074,7 +7093,7 @@ uicontrol::properties::update_text_extent (void)
 
   // FIXME: parsed content should be cached for efficiency
   // FIXME: support multiline text
-  
+
   elt = text_parser_none ().parse (get_string_string ());
 #ifdef HAVE_FONTCONFIG
   text_renderer.set_font (get_fontname (),
@@ -7105,7 +7124,7 @@ uicontrol::properties::update_units (void)
   graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
-  
+
   pos = convert_position (pos, cached_units, get_units (), parent_size);
   set_position (pos);
 
@@ -7276,7 +7295,7 @@ uipanel::properties::update_units (const caseless_str& old_units)
   graphics_object parent_obj = gh_manager::get_object (get_parent ());
   Matrix parent_bbox = parent_obj.get_properties ().get_boundingbox (true),
          parent_size = parent_bbox.extract_n (0, 2, 1, 2);
-  
+
   pos = convert_position (pos, old_units, get_units (), parent_size);
   set_position (pos);
 }
@@ -7456,7 +7475,7 @@ public:
                   const octave_value& data = Matrix ())
       : base_graphics_event (), handle (h), callback_name (name),
         callback (), callback_data (data) { }
-  
+
   callback_event (const graphics_handle& h, const octave_value& cb,
                   const octave_value& data = Matrix ())
       : base_graphics_event (), handle (h), callback_name (),
@@ -7627,7 +7646,7 @@ gh_manager::do_execute_listener (const graphics_handle& h,
   else
     {
       gh_manager::auto_lock guard;
-      
+
       do_post_event (graphics_event::create_callback_event (h, l));
     }
 }
@@ -7665,18 +7684,19 @@ gh_manager::do_execute_callback (const graphics_handle& h,
 
       octave_value cb = cb_arg;
 
-      if (cb.is_function_handle ())
+      if (cb.is_function () || cb.is_function_handle ())
         fcn = cb.function_value ();
       else if (cb.is_string ())
         {
           int status;
           std::string s = cb.string_value ();
 
-          eval_string (s, false, status);
+          eval_string (s, false, status, 0);
         }
       else if (cb.is_cell () && cb.length () > 0
                && (cb.rows () == 1 || cb.columns () == 1)
-               && cb.cell_value ()(0).is_function_handle ())
+               && (cb.cell_value ()(0).is_function ()
+                   || cb.cell_value ()(0).is_function_handle ()))
         {
           Cell c = cb.cell_value ();
 
@@ -7772,69 +7792,66 @@ gh_manager::do_process_events (bool force)
 {
   graphics_event e;
   bool old_Vdrawnow_requested = Vdrawnow_requested;
-  unwind_protect frame;
- 
-  static int process_events_executing = 0;
- 
-  frame.protect_var (process_events_executing);
+  bool events_executed = false;
 
-  if (++process_events_executing <= 1)
+  do
     {
-      do
+      e = graphics_event ();
+
+      gh_manager::lock ();
+
+      if (! event_queue.empty ())
         {
-          e = graphics_event ();
-
-          gh_manager::lock ();
-
-          if (! event_queue.empty ())
+          if (callback_objects.empty () || force)
             {
-              if (callback_objects.empty () || force)
+              e = event_queue.front ();
+
+              event_queue.pop_front ();
+            }
+          else
+            {
+              const graphics_object& go = callback_objects.front ();
+
+              if (go.get_properties ().is_interruptible ())
                 {
                   e = event_queue.front ();
 
                   event_queue.pop_front ();
                 }
-              else
-                {
-                  const graphics_object& go = callback_objects.front ();
-
-                  if (go.get_properties ().is_interruptible ())
-                    {
-                      e = event_queue.front ();
-
-                      event_queue.pop_front ();
-                    }
-                }
             }
-
-          gh_manager::unlock ();
-
-          if (e.ok ())
-            e.execute ();
         }
-      while (e.ok ());
-
-      gh_manager::lock ();
-
-      if (event_queue.empty () && event_processing == 0)
-        command_editor::remove_event_hook (gh_manager::process_events);
 
       gh_manager::unlock ();
 
-      flush_octave_stdout ();
-
-      if (Vdrawnow_requested && ! old_Vdrawnow_requested)
+      if (e.ok ())
         {
-          feval ("drawnow");
-
-          Vdrawnow_requested = false;
+          e.execute ();
+          events_executed = true;
         }
+    }
+  while (e.ok ());
+
+  gh_manager::lock ();
+
+  if (event_queue.empty () && event_processing == 0)
+    command_editor::remove_event_hook (gh_manager::process_events);
+
+  gh_manager::unlock ();
+
+  if (events_executed)
+    flush_octave_stdout ();
+
+  if (Vdrawnow_requested && ! old_Vdrawnow_requested)
+    {
+      feval ("drawnow");
+
+      Vdrawnow_requested = false;
     }
 
   return 0;
 }
 
-void 
+void
 gh_manager::do_enable_event_processing (bool enable)
 {
   gh_manager::auto_lock guard;
@@ -9418,4 +9435,393 @@ set_property_in_handle (double handle, const std::string& property,
     error ("%s: invalid handle (= %g)", func.c_str(), handle);
 
   return ret;
+}
+
+static bool
+compare_property_values (const octave_value& o1, const octave_value& o2)
+{
+  octave_value_list args (2);
+
+  args(0) = o1;
+  args(1) = o2;
+
+  octave_value_list result = feval ("isequal", args, 1);
+
+  if (! error_state && result.length () > 0)
+    return result(0).bool_value ();
+
+  return false;
+}
+
+static std::map<uint32_t, bool> waitfor_results;
+
+static void
+cleanup_waitfor_id (uint32_t id)
+{
+  waitfor_results.erase (id);
+}
+
+static void
+do_cleanup_waitfor_listener (const octave_value& listener,
+                             listener_mode mode = POSTSET)
+{
+  Cell c = listener.cell_value ();
+
+  if (c.numel () >= 4)
+    {
+      double h = c(2).double_value ();
+
+      if (! error_state)
+        {
+          caseless_str pname = c(3).string_value ();
+
+          if (! error_state)
+            {
+              gh_manager::auto_lock guard;
+
+              graphics_handle handle = gh_manager::lookup (h);
+
+              if (handle.ok ())
+                {
+                  graphics_object go = gh_manager::get_object (handle);
+
+                  if (go.get_properties ().has_property (pname))
+                    {
+                      go.get_properties ()
+                        .delete_listener (pname, listener, mode);
+                      if (mode == POSTSET)
+                        go.get_properties ()
+                          .delete_listener (pname, listener, PERSISTENT);
+                    }
+                }
+            }
+        }
+    }
+}
+
+static void
+cleanup_waitfor_postset_listener(const octave_value& listener)
+{ do_cleanup_waitfor_listener (listener, POSTSET); }
+
+static void
+cleanup_waitfor_predelete_listener(const octave_value& listener)
+{ do_cleanup_waitfor_listener (listener, PREDELETE); }
+
+static octave_value_list
+waitfor_listener (const octave_value_list& args, int)
+{
+  if (args.length () > 3)
+    {
+      uint32_t id = args(2).uint32_scalar_value ().value ();
+
+      if (! error_state)
+        {
+          if (args.length () > 5)
+            {
+              double h = args(0).double_value ();
+
+              if (! error_state)
+                {
+                  caseless_str pname = args(4).string_value ();
+
+                  if (! error_state)
+                    {
+                      gh_manager::auto_lock guard;
+
+                      graphics_handle handle = gh_manager::lookup (h);
+
+                      if (handle.ok ())
+                        {
+                          graphics_object go = gh_manager::get_object (handle);
+                          octave_value pvalue = go.get (pname);
+
+                          if (compare_property_values (pvalue, args(5)))
+                            waitfor_results[id] = true;
+                        }
+                    }
+                }
+            }
+          else
+            waitfor_results[id] = true;
+        }
+    }
+
+  return octave_value_list ();
+}
+
+static octave_value_list
+waitfor_del_listener (const octave_value_list& args, int)
+{
+  if (args.length () > 2)
+    {
+      uint32_t id = args(2).uint32_scalar_value ().value ();
+
+      if (! error_state)
+        waitfor_results[id] = true;
+    }
+
+  return octave_value_list ();
+}
+
+DEFUN (waitfor, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {} waitfor (@var{h})\n\
+@deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop})\n\
+@deftypefnx {Built-in Function} {} waitfor (@var{h}, @var{prop}, @var{value})\n\
+@deftypefnx {Built-in Function} {} waitfor (@dots{}, \"timeout\", @var{timeout})\n\
+Suspend the execution of the current program until a condition is\n\
+satisfied on the graphics handle @var{h}.  While the program is suspended\n\
+graphics events are still being processed normally, allowing callbacks to\n\
+modify the state of graphics objects.  This function is reentrant and can be\n\
+called from a callback, while another @code{waitfor} call is pending at\n\
+top-level.\n\
+\n\
+In the first form, program execution is suspended until the graphics object\n\
+@var{h} is destroyed.  If the graphics handle is invalid, the function\n\
+returns immediately.\n\
+\n\
+In the second form, execution is suspended until the graphics object is\n\
+destroyed or the property named @var{prop} is modified.  If the graphics\n\
+handle is invalid or the property does not exist, the function returns\n\
+immediately.\n\
+\n\
+In the third form, execution is suspended until the graphics object is\n\
+destroyed or the property named @var{prop} is set to @var{value}.  The\n\
+function @code{isequal} is used to compare property values.  If the graphics\n\
+handle is invalid, the property does not exist or the property is already\n\
+set to @var{value}, the function returns immediately.\n\
+\n\
+An optional timeout can be specified using the property @code{timeout}.\n\
+This timeout value is the number of seconds to wait for the condition to be\n\
+true.  @var{timeout} must be at least 1. If a smaller value is specified, a\n\
+warning is issued and a value of 1 is used instead.  If the timeout value is\n\
+not an integer, it is truncated towards 0.\n\
+\n\
+To define a condition on a property named @code{timeout}, use the string\n\
+@code{\\timeout} instead.\n\
+\n\
+In all cases, typing CTRL-C stops program execution immediately.\n\
+@seealso{isequal}\n\
+@end deftypefn")
+{
+  if (args.length () > 0)
+    {
+      double h = args(0).double_value ();
+
+      if (! error_state)
+        {
+          caseless_str pname;
+
+          unwind_protect frame;
+
+          static uint32_t id_counter = 0;
+          uint32_t id = 0;
+
+          int max_arg_index = 0;
+          int timeout_index = -1;
+
+          int timeout = 0;
+
+          if (args.length () > 1)
+            {
+              pname = args(1).string_value ();
+              if (! error_state
+                  && ! pname.empty ()
+                  && ! pname.compare ("timeout"))
+                {
+                  if (pname.compare ("\\timeout"))
+                    pname = "timeout";
+
+                  static octave_value wf_listener;
+
+                  if (! wf_listener.is_defined ())
+                    wf_listener =
+                      octave_value (new octave_builtin (waitfor_listener,
+                                                        "waitfor_listener"));
+
+                  max_arg_index++;
+                  if (args.length () > 2)
+                    {
+                      if (args(2).is_string ())
+                        {
+                          caseless_str s = args(2).string_value ();
+
+                          if (! error_state)
+                            {
+                              if (s.compare ("timeout"))
+                                timeout_index = 2;
+                              else
+                                max_arg_index++;
+                            }
+                        }
+                      else
+                        max_arg_index++;
+                    }
+
+                  Cell listener (1, max_arg_index >= 2 ? 5 : 4);
+
+                  id = id_counter++;
+                  frame.add_fcn (cleanup_waitfor_id, id);
+                  waitfor_results[id] = false;
+
+                  listener(0) = wf_listener;
+                  listener(1) = octave_uint32 (id);
+                  listener(2) = h;
+                  listener(3) = pname;
+
+                  if (max_arg_index >= 2)
+                    listener(4) = args(2);
+
+                  octave_value ov_listener (listener);
+
+                  gh_manager::auto_lock guard;
+
+                  graphics_handle handle = gh_manager::lookup (h);
+
+                  if (handle.ok ())
+                    {
+                      graphics_object go = gh_manager::get_object (handle);
+
+                      if (max_arg_index >= 2
+                          && compare_property_values (go.get (pname),
+                                                      args(2)))
+                        waitfor_results[id] = true;
+                      else
+                        {
+
+                          frame.add_fcn (cleanup_waitfor_postset_listener,
+                                         ov_listener);
+                          go.add_property_listener (pname, ov_listener,
+                                                    POSTSET);
+                          go.add_property_listener (pname, ov_listener,
+                                                    PERSISTENT);
+
+                          if (go.get_properties ()
+                              .has_dynamic_property (pname))
+                            {
+                              static octave_value wf_del_listener;
+
+                              if (! wf_del_listener.is_defined ())
+                                wf_del_listener =
+                                  octave_value (new octave_builtin
+                                                (waitfor_del_listener,
+                                                 "waitfor_del_listener"));
+
+                              Cell del_listener (1, 4);
+
+                              del_listener(0) = wf_del_listener;
+                              del_listener(1) = octave_uint32 (id);
+                              del_listener(2) = h;
+                              del_listener(3) = pname;
+
+                              octave_value ov_del_listener (del_listener);
+
+                              frame.add_fcn (cleanup_waitfor_predelete_listener,
+                                             ov_del_listener);
+                              go.add_property_listener (pname, ov_del_listener,
+                                                        PREDELETE);
+                            }
+                        }
+                    }
+                }
+              else if (error_state || pname.empty ())
+                error ("waitfor: invalid property name, expected a non-empty string value");
+            }
+
+          if (! error_state
+              && timeout_index < 0
+              && args.length () > (max_arg_index + 1))
+            {
+              caseless_str s = args(max_arg_index + 1).string_value ();
+
+              if (! error_state)
+                {
+                  if (s.compare ("timeout"))
+                    timeout_index = max_arg_index + 1;
+                  else
+                    error ("waitfor: invalid parameter `%s'", s.c_str ());
+                }
+              else
+                error ("waitfor: invalid parameter, expected `timeout'");
+            }
+
+          if (! error_state && timeout_index >= 0)
+            {
+              if (args.length () > (timeout_index + 1))
+                {
+                  timeout = static_cast<int>
+                    (args(timeout_index + 1).scalar_value ());
+
+                  if (! error_state)
+                    {
+                      if (timeout < 1)
+                        {
+                          warning ("waitfor: the timeout value must be >= 1, using 1 instead");
+                          timeout = 1;
+                        }
+                    }
+                  else
+                    error ("waitfor: invalid timeout value, expected a value >= 1");
+                }
+              else
+                error ("waitfor: missing timeout value");
+            }
+
+          // FIXME: There is still a "hole" in the following loop. The code
+          //        assumes that an object handle is unique, which is a fair
+          //        assumptions, except for figures. If a figure is destroyed
+          //        then recreated with the same figure ID, within the same
+          //        run of event hooks, then the figure destruction won't be
+          //        caught and the loop will not stop. This is an unlikely
+          //        possibility in practice, though.
+          //
+          //        Using deletefcn callback is also unreliable as it could be
+          //        modified during a callback execution and the waitfor loop
+          //        would not stop.
+          //
+          //        The only "good" implementation would require object
+          //        listeners, similar to property listeners.
+
+          time_t start = 0;
+
+          if (timeout > 0)
+            start = time (0);
+
+          while (! error_state)
+            {
+              if (true)
+                {
+                  gh_manager::auto_lock guard;
+
+                  graphics_handle handle = gh_manager::lookup (h);
+
+                  if (handle.ok ())
+                    {
+                      if (! pname.empty () && waitfor_results[id])
+                        break;
+                    }
+                  else
+                    break;
+                }
+
+              octave_usleep (100000);
+
+              OCTAVE_QUIT;
+
+              command_editor::run_event_hooks ();
+
+              if (timeout > 0)
+                {
+                  if (start + timeout < time (0))
+                    break;
+                }
+            }
+        }
+      else
+        error ("waitfor: invalid handle value.");
+    }
+  else
+    print_usage ();
+
+  return octave_value ();
 }

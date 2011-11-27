@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, @var{r}, @var{c}, @dots{})
 ## @deftypefnx {Function File} {} gamrnd (@var{a}, @var{b}, [@var{sz}])
 ## Return a matrix of random samples from the Gamma distribution with
-## parameters @var{a} and @var{b}.
+## shape parameter @var{a} and scale @var{b}.
 ##
 ## When called with a single size argument, return a square matrix with
 ## the dimension specified.  When called with more than one scalar argument the

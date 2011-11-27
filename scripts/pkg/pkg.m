@@ -72,7 +72,7 @@
 ## @end table
 ##
 ## @item update
-## Check installed Octave-Forge pacakages against repository and update any
+## Check installed Octave-Forge packages against repository and update any
 ## outdated items.  This requires an internet connection and the cURL library.
 ## Usage:
 ##

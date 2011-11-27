@@ -24,6 +24,7 @@
 ## string element.
 ##
 ## Examples:
+##
 ## @example
 ## @group
 ## deblank ("    abc  ")

@@ -315,13 +315,13 @@ DEFUN_DLD (bsxfun, args, ,
 The binary singleton expansion function applier does what its name\n\
 suggests: applies a binary function @var{f} element-by-element to two\n\
 array arguments @var{A} and @var{B}, and expands as necessary\n\
-singleton dimensions in either input argument. @var{f} is a function\n\
+singleton dimensions in either input argument.  @var{f} is a function\n\
 handle, inline function, or string containing the name of the function\n\
-to evaluate. The function @var{f} must be capable of accepting two\n\
+to evaluate.  The function @var{f} must be capable of accepting two\n\
 column-vector arguments of equal length, or one column vector argument\n\
 and a scalar.\n\
 \n\
-The dimensions of @var{A} and @var{B} must be equal or singleton. The\n\
+The dimensions of @var{A} and @var{B} must be equal or singleton.  The\n\
 singleton dimensions of the arrays will be expanded to the same\n\
 dimensionality as the other array.\n\
 @seealso{arrayfun, cellfun}\n\

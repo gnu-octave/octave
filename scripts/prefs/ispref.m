@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} ispref (@var{group}, @var{pref})
+## @deftypefn {Function File} {} ispref (@var{group}, @var{pref})
 ## Return true if the named preference @var{pref} exists in the
 ## preference group @var{group}.
 ##
@@ -26,9 +26,9 @@
 ## The preference @var{pref} may be a character string or a cell array
 ## of character strings.
 ##
-## If @var{pref} is not specified, return true if the the preference
+## If @var{pref} is not specified, return true if the preference
 ## group @var{group} exists.
-## @seealso{addpref, getpref, rmpref, setpref}
+## @seealso{getpref, addpref, setpref, rmpref}
 ## @end deftypefn
 
 ## Author: jwe

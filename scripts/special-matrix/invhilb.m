@@ -77,57 +77,52 @@ function retval = invhilb (n)
 
   if (nargin != 1)
     print_usage ();
+  elseif (! isscalar (n))
+    error ("invhilb: N must be a scalar integer");
   endif
 
-  nmax = length (n);
-  if (nmax == 1)
+  ## The point about the second formula above is that when vectorized,
+  ## p(k) is evaluated for k=1:n which involves O(n) calls to bincoeff
+  ## instead of O(n^2).
+  ##
+  ## We evaluate the expression as (-1)^(i+j)*(p(i)*p(j))/(i+j-1) except
+  ## when p(i)*p(j) would overflow.  In cases where p(i)*p(j) is an exact
+  ## machine number, the result is also exact.  Otherwise we calculate
+  ## (-1)^(i+j)*p(i)*(p(j)/(i+j-1)).
+  ##
+  ## The Octave bincoeff routine uses transcendental functions (gammaln
+  ## and exp) rather than multiplications, for the sake of speed.
+  ## However, it rounds the answer to the nearest integer, which
+  ## justifies the claim about exactness made above.
 
-    ## The point about the second formula above is that when vectorized,
-    ## p(k) is evaluated for k=1:n which involves O(n) calls to bincoeff
-    ## instead of O(n^2).
-    ##
-    ## We evaluate the expression as (-1)^(i+j)*(p(i)*p(j))/(i+j-1) except
-    ## when p(i)*p(j) would overflow.  In cases where p(i)*p(j) is an exact
-    ## machine number, the result is also exact.  Otherwise we calculate
-    ## (-1)^(i+j)*p(i)*(p(j)/(i+j-1)).
-    ##
-    ## The Octave bincoeff routine uses transcendental functions (gammaln
-    ## and exp) rather than multiplications, for the sake of speed.
-    ## However, it rounds the answer to the nearest integer, which
-    ## justifies the claim about exactness made above.
-
-    retval = zeros (n);
-    k = [1:n];
-    p = k .* bincoeff (k+n-1, k-1) .* bincoeff (n, k);
-    p(2:2:n) = -p(2:2:n);
-    if (n < 203)
-      for l = 1:n
-        retval(l,:) = (p(l) * p) ./ [l:l+n-1];
-      endfor
-    else
-      for l = 1:n
-        retval(l,:) = p(l) * (p ./ [l:l+n-1]);
-      endfor
-    endif
+  retval = zeros (n);
+  k = [1:n];
+  p = k .* bincoeff (k+n-1, k-1) .* bincoeff (n, k);
+  p(2:2:n) = -p(2:2:n);
+  if (n < 203)
+    for l = 1:n
+      retval(l,:) = (p(l) * p) ./ [l:l+n-1];
+    endfor
   else
-    error ("invhilb: expecting scalar argument, found something else");
+    for l = 1:n
+      retval(l,:) = p(l) * (p ./ [l:l+n-1]);
+    endfor
   endif
 
 endfunction
 
+
+%!assert (invhilb (1), 1)
+%!assert (invhilb (2), [4, -6; -6, 12])
 %!test
-%! result4 = [16, -120, 240, -140;
-%! -120, 1200, -2700, 1680;
-%! 240, -2700, 6480, -4200;
-%! -140, 1680, -4200, 2800];
-%!
-%! assert((invhilb (1) == 1 && invhilb (2) == [4, -6; -6, 12]
-%! && invhilb (4) == result4
-%! && abs (invhilb (7) * hilb (7) - eye (7)) < sqrt (eps)));
+%! result4 = [16  , -120 , 240  , -140;
+%!            -120, 1200 , -2700, 1680;
+%!            240 , -2700, 6480 , -4200;
+%!            -140, 1680 , -4200, 2800];
+%! assert (invhilb (4), result4);
+%!assert (abs (invhilb (7) * hilb (7) - eye (7)) < sqrt (eps))
 
-%!error invhilb ([1, 2]);
-
-%!error invhilb ();
-
-%!error invhilb (1, 2);
+%!error invhilb ()
+%!error invhilb (1, 2)
+%!error <N must be a scalar integer> invhilb ([1, 2])
 

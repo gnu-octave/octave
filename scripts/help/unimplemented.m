@@ -330,7 +330,6 @@ function list = missing_functions ()
   "quad2d",
   "questdlg",
   "rbbox",
-  "recycle",
   "reducepatch",
   "reducevolume",
   "resample",

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{data} =} guidata (@var{handle})
-## @deftypefnx {Function File} guidata (@var{handle}, @var{data})
+## @deftypefnx {Function File} {} guidata (@var{handle}, @var{data})
 ## @end deftypefn
 
 ## Author: goffioul

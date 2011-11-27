@@ -213,8 +213,8 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
 %!assert(syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12]), [-1/2, -2/3; -2/3, -1/2], sqrt (eps));
 %!assert(syl (single([1, 2; 3, 4]), single([5, 6; 7, 8]), single([9, 10; 11, 12])), single([-1/2, -2/3; -2/3, -1/2]), sqrt (eps('single')));
 
-%!error <Invalid call to syl.*> syl ();
-%!error <Invalid call to syl.*> syl (1, 2, 3, 4);
+%!error <Invalid call to syl> syl ();
+%!error <Invalid call to syl> syl (1, 2, 3, 4);
 %!error syl ([1, 2; 3, 4], [1, 2, 3; 4, 5, 6], [4, 3]);
 
 */

@@ -1565,7 +1565,7 @@ DEFUN (round, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
-@code{round (real (@var{x})) + round (imag (@var{x})) * I}. If there\n\
+@code{round (real (@var{x})) + round (imag (@var{x})) * I}.  If there\n\
 are two nearest integers, return the one further away from zero.\n\
 \n\
 @example\n\
@@ -1902,8 +1902,8 @@ tolower (\"MiXeD cAsE 123\")\n\
 DEFALIAS (lower, tolower);
 
 /*
-%!error <Invalid call to tolower.*> tolower();
-%!error <Invalid call to tolower.*> lower();
+%!error <Invalid call to tolower> tolower();
+%!error <Invalid call to tolower> lower();
 %!error tolower (1, 2);
 %!assert(tolower("OCTAVE"), "octave");
 %!assert(tolower("123OCTave!_&"), "123octave!_&");
@@ -1953,8 +1953,8 @@ toupper (\"MiXeD cAsE 123\")\n\
 DEFALIAS (upper, toupper);
 
 /*
-%!error <Invalid call to toupper.*> toupper();
-%!error <Invalid call to toupper.*> upper();
+%!error <Invalid call to toupper> toupper();
+%!error <Invalid call to toupper> upper();
 %!error toupper (1, 2);
 %!assert(toupper("octave"), "OCTAVE");
 %!assert(toupper("123OCTave!_&"), "123OCTAVE!_&");

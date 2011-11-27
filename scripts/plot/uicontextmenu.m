@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uicontextmenu ('Name', value, @dots{})
+## @deftypefn {Function File} {@var{handle} =} uicontextmenu ('Name', value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul

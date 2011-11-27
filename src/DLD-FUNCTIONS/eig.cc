@@ -325,8 +325,8 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 %! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
 %! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
-%!error <Invalid call to eig.*> eig ();
-%!error <Invalid call to eig.*> eig ([1, 2; 3, 4], [4, 3; 2, 1], 1);
+%!error <Invalid call to eig> eig ();
+%!error <Invalid call to eig> eig ([1, 2; 3, 4], [4, 3; 2, 1], 1);
 %!error eig ([1, 2; 3, 4], 2);
 %!error eig ([1, 2; 3, 4; 5, 6]);
 %!error eig ("abcd");

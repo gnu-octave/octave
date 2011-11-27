@@ -344,8 +344,8 @@ sparse matrices.\n\
 
 %!error chol ([1, 2; 3, 4]);
 %!error chol ([1, 2; 3, 4; 5, 6]);
-%!error <Invalid call to chol.*> chol ();
-%!error <unexpected second or third input.*> chol (1, 2);
+%!error <Invalid call to chol> chol ();
+%!error <unexpected second or third input> chol (1, 2);
 
  */
 

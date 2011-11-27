@@ -190,8 +190,10 @@ plot_FCN_FILES = \
   plot/uipanel.m \
   plot/uipushtool.m \
   plot/uiputfile.m \
+  plot/uiresume.m \
   plot/uitoggletool.m \
   plot/uitoolbar.m \
+  plot/uiwait.m \
   plot/view.m \
   plot/waitforbuttonpress.m \
   plot/whitebg.m \

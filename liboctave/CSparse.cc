@@ -579,7 +579,7 @@ ComplexColumnVector
 SparseComplexMatrix::column (octave_idx_type i) const
 {
   octave_idx_type nr = rows ();
-  ComplexColumnVector retval (nr);
+  ComplexColumnVector retval (nr, 0);
 
   for (octave_idx_type k = cidx (i); k < cidx (i+1); k++)
     retval(ridx (k)) = data (k);

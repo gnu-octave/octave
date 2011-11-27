@@ -118,6 +118,7 @@ MUNGED_TEXI_SRC = \
   fn-idx.texi \
   func.texi \
   geometry.texi \
+  gui.texi \
   gpl.texi \
   grammar.texi \
   image.texi \

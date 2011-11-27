@@ -37,7 +37,7 @@
 ##
 ## If no arguments are specified, return a structure containing all
 ## groups of preferences and their values.
-## @seealso{addpref, ispref, rmpref, setpref}
+## @seealso{addpref, setpref, ispref, rmpref}
 ## @end deftypefn
 
 ## Author: jwe

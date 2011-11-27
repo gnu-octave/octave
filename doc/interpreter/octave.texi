@@ -213,6 +213,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Image Processing::            
 * Audio Processing::            
 * Object Oriented Programming::            
+* GUI Development::            
 * System Utilities::            
 * Packages:: 
 * Dynamically Linked Functions::
@@ -476,7 +477,6 @@ Input and Output
 
 * Basic Input and Output::      
 * C-Style I/O Functions::       
-* GUI Dialogs for I/O::       
 
 Basic Input and Output
 
@@ -754,6 +754,13 @@ Overloading Objects
 * Operator Overloading::
 * Precedence of Objects::
 
+GUI Development
+
+* I/O Dialogs::       
+* Progress Bar::       
+* GUI Utility Functions::       
+* User-Defined Preferences::
+
 System Utilities
 
 * Timing Utilities::            
@@ -855,7 +862,7 @@ Trouble
 Reporting Bugs
 
 * Bug Criteria::                
-* Bug Tracker::ff               Where to submit your bug report.
+* Bug Tracker::                 Where to submit your bug report.
 * Bug Reporting::               How to report a bug effectively.
 * Sending Patches::             How to send a patch for Octave.
 
@@ -914,6 +921,7 @@ Grammar and Parser
 @include image.texi
 @include audio.texi
 @include oop.texi
+@include gui.texi
 @include system.texi
 @include package.texi
 

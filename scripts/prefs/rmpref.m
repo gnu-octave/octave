@@ -30,7 +30,7 @@
 ## @var{group}.
 ##
 ## It is an error to remove a nonexistent preference or group.
-## @seealso{addpref, getpref, rmpref, setpref}
+## @seealso{addpref, ispref, setpref, getpref}
 ## @end deftypefn
 
 ## Author: jwe

@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} uiwait
-## @deftypefnx {Function File} uiwait (@var{h})
-## @deftypefnx {Function File} uiwait (@var{h}, @var{timeout})
+## @deftypefn  {Function File} {} uiwait
+## @deftypefnx {Function File} {} uiwait (@var{h})
+## @deftypefnx {Function File} {} uiwait (@var{h}, @var{timeout})
 ## Suspend program execution until the figure with handle @var{h} is
 ## deleted or @code{uiresume} is called.  When no figure handle is specified,
 ## this function uses the current figure.

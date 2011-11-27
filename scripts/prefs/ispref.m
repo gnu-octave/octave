@@ -28,7 +28,7 @@
 ##
 ## If @var{pref} is not specified, return true if the preference
 ## group @var{group} exists.
-## @seealso{addpref, getpref, rmpref, setpref}
+## @seealso{getpref, addpref, setpref, rmpref}
 ## @end deftypefn
 
 ## Author: jwe

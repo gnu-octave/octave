@@ -360,6 +360,7 @@ Haddad
 Hankel
 Hanning
 hardcode
+hardcoding
 Hauberg
 HDF
 hdf
@@ -725,6 +726,7 @@ rdivide
 Readline
 readline
 recursing
+reentrant
 regex
 regressor
 reimported

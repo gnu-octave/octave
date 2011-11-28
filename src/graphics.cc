@@ -8156,6 +8156,8 @@ values or lists respectively.\n\
 
   int nargin = args.length ();
 
+  bool use_cell_format = false;
+
   if (nargin == 1 || nargin == 2)
     {
       if (args(0).is_empty())
@@ -8169,8 +8171,6 @@ values or lists respectively.\n\
       if (! error_state)
         {
           octave_idx_type len = hcv.length ();
-
-          vals.resize (dim_vector (len, 1));
 
           if (nargin == 1 && len > 1)
             {
@@ -8197,31 +8197,74 @@ values or lists respectively.\n\
 
           if (! error_state)
             {
-              for (octave_idx_type n = 0; n < len; n++)
+              if (nargin > 1 && args(1).is_cellstr ())
                 {
-                  graphics_object obj = gh_manager::get_object (hcv(n));
+                  Array<std::string> plist = args(1).cellstr_value ();
 
-                  if (obj)
+                  if (! error_state)
                     {
-                      if (nargin == 1)
-                        vals(n) = obj.get ();
-                      else
-                        {
-                          caseless_str property = args(1).string_value ();
+                      octave_idx_type plen = plist.numel ();
 
-                          if (! error_state)
-                            vals(n) = obj.get (property);
+                      use_cell_format = true;
+
+                      vals.resize (dim_vector (len, plen));
+
+                      for (octave_idx_type n = 0; ! error_state && n < len; n++)
+                        {
+                          graphics_object obj = gh_manager::get_object (hcv(n));
+
+                          if (obj)
+                            {
+                              for (octave_idx_type m = 0; ! error_state && m < plen; m++)
+                                {
+                                  caseless_str property = plist(m);
+
+                                  vals(n, m) = obj.get (property);
+                                }
+                            }
                           else
                             {
-                              error ("get: expecting property name as second argument");
+                              error ("get: invalid handle (= %g)", hcv(n));
                               break;
                             }
                         }
                     }
                   else
+                    error ("get: expecting property name or cell array of property names as second argument");
+                }
+              else
+                {
+                  caseless_str property;
+
+                  if (nargin > 1)
                     {
-                      error ("get: invalid handle (= %g)", hcv(n));
-                      break;
+                      property = args(1).string_value ();
+
+                      if (error_state)
+                        error ("get: expecting property name or cell array of property names as second argument");
+                    }
+
+                  vals.resize (dim_vector (len, 1));
+
+                  if (! error_state)
+                    {
+                      for (octave_idx_type n = 0; ! error_state && n < len; n++)
+                        {
+                          graphics_object obj = gh_manager::get_object (hcv(n));
+
+                          if (obj)
+                            {
+                              if (nargin == 1)
+                                vals(n) = obj.get ();
+                              else
+                                vals(n) = obj.get (property);
+                            }
+                          else
+                            {
+                              error ("get: invalid handle (= %g)", hcv(n));
+                              break;
+                            }
+                        }
                     }
                 }
             }
@@ -8234,23 +8277,28 @@ values or lists respectively.\n\
 
   if (! error_state)
     {
-      octave_idx_type len = vals.numel ();
-
-      if (len == 0)
-        retval = Matrix ();
-      else if (len == 1)
-        retval = vals(0);
-      else if (len > 1 && nargin == 1)
-        {
-          OCTAVE_LOCAL_BUFFER (octave_scalar_map, tmp, len);
-
-          for (octave_idx_type n = 0; n < len; n++)
-            tmp[n] = vals(n).scalar_map_value ();
-
-          retval = octave_map::cat (0, len, tmp);
-        }
-      else
+      if (use_cell_format)
         retval = vals;
+      else
+        {
+          octave_idx_type len = vals.numel ();
+
+          if (len == 0)
+            retval = Matrix ();
+          else if (len == 1)
+            retval = vals(0);
+          else if (len > 1 && nargin == 1)
+            {
+              OCTAVE_LOCAL_BUFFER (octave_scalar_map, tmp, len);
+
+              for (octave_idx_type n = 0; n < len; n++)
+                tmp[n] = vals(n).scalar_map_value ();
+
+              retval = octave_map::cat (0, len, tmp);
+            }
+          else
+            retval = vals;
+        }
     }
 
   return retval;

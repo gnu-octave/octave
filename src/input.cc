@@ -1360,6 +1360,7 @@ DEFUN (PS1, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS1 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} PS1 (@var{new_val}, \"local\")\n\
 Query or set the primary prompt string.  When executing interactively,\n\
 Octave displays the primary prompt when it is ready to read a command.\n\
 \n\
@@ -1385,6 +1386,10 @@ PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\]\")\n\
 \n\
 @noindent\n\
 will give the default Octave prompt a red coloring.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{PS2, PS4}\n\
 @end deftypefn")
 {
@@ -1395,12 +1400,17 @@ DEFUN (PS2, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS2 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} PS2 (@var{new_val}, \"local\")\n\
 Query or set the secondary prompt string.  The secondary prompt is\n\
 printed when Octave is expecting additional input to complete a\n\
 command.  For example, if you are typing a @code{for} loop that spans several\n\
 lines, Octave will print the secondary prompt at the beginning of\n\
 each line after the first.  The default value of the secondary prompt\n\
 string is @code{\"> \"}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{PS1, PS4}\n\
 @end deftypefn")
 {
@@ -1411,10 +1421,15 @@ DEFUN (PS4, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS4 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} PS4 (@var{new_val}, \"local\")\n\
 Query or set the character string used to prefix output produced\n\
 when echoing commands is enabled.\n\
 The default value is @code{\"+ \"}.\n\
 @xref{Diary and Echo Commands}, for a description of echoing commands.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{echo, echo_executing_commands, PS1, PS2}\n\
 @end deftypefn")
 {
@@ -1425,9 +1440,14 @@ DEFUN (completion_append_char, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} completion_append_char ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} completion_append_char (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} completion_append_char (@var{new_val}, \"local\")\n\
 Query or set the internal character variable that is appended to\n\
 successful command-line completion attempts.  The default\n\
 value is @code{\" \"} (a single space).\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (completion_append_char);
@@ -1437,6 +1457,7 @@ DEFUN (echo_executing_commands, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} echo_executing_commands ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} echo_executing_commands (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls the echo state.\n\
 It may be the sum of the following values:\n\
 \n\
@@ -1456,6 +1477,10 @@ equivalent to the command @kbd{echo on all}.\n\
 \n\
 The value of @code{echo_executing_commands} may be set by the @kbd{echo}\n\
 command or the command line option @option{--echo-commands}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);
@@ -1506,6 +1531,7 @@ DEFUN (filemarker, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} filemarker ()\n\
 @deftypefnx {Built-in Function} {} filemarker (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} filemarker (@var{new_val}, \"local\")\n\
 Query or set the character used to separate filename from the\n\
 the subfunction names contained within the file.  This can be used in\n\
 a generic manner to interact with subfunctions.  For example,\n\
@@ -1526,6 +1552,10 @@ dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 \n\
 @noindent\n\
 will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   char tmp = Vfilemarker;

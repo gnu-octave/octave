@@ -1530,6 +1530,7 @@ DEFUN (sparse_auto_mutate, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sparse_auto_mutate ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} sparse_auto_mutate (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 automatically mutate sparse matrices to real matrices to save memory.\n\
 For example:\n\
@@ -1547,6 +1548,10 @@ typeinfo (s)\n\
 @result{} matrix\n\
 @end group\n\
 @end example\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (sparse_auto_mutate);

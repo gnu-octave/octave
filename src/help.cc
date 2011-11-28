@@ -1268,6 +1268,7 @@ DEFUN (doc_cache_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} doc_cache_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} doc_cache_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave documentation cache file.  A cache file significantly improves\n\
 the performance of the @code{lookfor} command.  The default value is \n\
@@ -1277,6 +1278,10 @@ and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
 @samp{--doc-cache-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1287,6 +1292,7 @@ DEFUN (info_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave info file.  The default value is\n\
 @file{@var{octave-home}/info/octave.info}, in\n\
@@ -1294,6 +1300,10 @@ which @var{octave-home} is the root directory of the Octave installation.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
 @samp{--info-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1304,6 +1314,7 @@ DEFUN (info_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 info program to run.  The default value is\n\
 @file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
@@ -1313,6 +1324,10 @@ is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
 default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
 @samp{--info-program NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1323,9 +1338,14 @@ DEFUN (makeinfo_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} makeinfo_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} makeinfo_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 program that Octave runs to format help text containing\n\
 Texinfo markup commands.  The default value is @code{makeinfo}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, info_program, doc, help}\n\
 @end deftypefn")
 {
@@ -1336,9 +1356,14 @@ DEFUN (suppress_verbose_help_message, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} suppress_verbose_help_message (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);

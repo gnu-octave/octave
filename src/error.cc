@@ -1774,8 +1774,13 @@ DEFUN (beep_on_error, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} beep_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} beep_on_error (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} beep_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to ring the terminal bell before printing an error message.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (beep_on_error);
@@ -1785,10 +1790,15 @@ DEFUN (debug_on_error, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_error (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when an error is encountered.  This will also\n\
 inhibit printing of the normal traceback message (you will only see\n\
 the top-level error message).\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_error);
@@ -1798,8 +1808,13 @@ DEFUN (debug_on_warning, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_warning ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_on_warning (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when a warning is encountered.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_warning);

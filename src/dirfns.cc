@@ -772,8 +772,13 @@ DEFUN (confirm_recursive_rmdir, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} confirm_recursive_rmdir (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);

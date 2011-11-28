@@ -775,9 +775,14 @@ DEFUN (optimize_subsasgn_calls, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
 Query or set the internal flag for subsasgn method call optimizations.\n\
 If true, Octave will attempt to eliminate the redundant copying when calling\n\
 subsasgn method of a user-defined class.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);

@@ -2462,6 +2462,7 @@ DEFUN (whos_line_format, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} whos_line_format (@var{new_val}, \"local\")\n\
 Query or set the format string used by the command @code{whos}.\n\
 \n\
 A full format string is:\n\
@@ -2523,6 +2524,10 @@ left of the specified balance column.\n\
 \n\
 The default format is\n\
 @code{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{whos}\n\
 @end deftypefn")
 {
@@ -2535,8 +2540,13 @@ DEFUN (missing_function_hook, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} missing_function_hook (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the function to call when\n\
 an unknown identifier is requested.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);

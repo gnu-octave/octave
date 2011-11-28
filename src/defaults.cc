@@ -408,11 +408,16 @@ DEFUN (EDITOR, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} EDITOR (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the editor to\n\
 use with the @code{edit_history} command.  The default value is taken from\n\
 the environment variable @w{@env{EDITOR}} when Octave starts.  If the\n\
 environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
 @code{\"emacs\"}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{edit_history}\n\
 @end deftypefn")
 {
@@ -434,11 +439,16 @@ DEFUN (EXEC_PATH, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} EXEC_PATH (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories to append to the shell PATH when executing external\n\
 programs.  The initial value of is taken from the environment variable\n\
 @w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by\n\
 the command line argument @option{--exec-path PATH}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
@@ -464,8 +474,13 @@ DEFUN (IMAGE_PATH, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories in which to search for image files.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);

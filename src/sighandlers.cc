@@ -955,10 +955,15 @@ DEFUN (debug_on_interrupt, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_interrupt ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_interrupt (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_on_interrupt (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter debugging mode when it receives an interrupt signal (typically\n\
 generated with @kbd{C-c}).  If a second interrupt signal is received\n\
 before reaching the debugging mode, a normal interrupt will occur.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_interrupt);
@@ -979,9 +984,14 @@ DEFUN (sighup_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} sighup_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file \"octave-core\" if it receives\n\
 a hangup signal.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (sighup_dumps_octave_core);
@@ -1002,9 +1012,14 @@ DEFUN (sigterm_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} sigterm_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file \"octave-core\" if it receives\n\
 a terminate signal.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (sigterm_dumps_octave_core);

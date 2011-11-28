@@ -408,9 +408,14 @@ DEFUN_DLD (svd_driver, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{val} =} svd_driver ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} svd_driver (@var{new_val})\n\
+@deftypefnx {Loadable Function} {} svd_driver (@var{new_val}, \"local\")\n\
 Query or set the underlying @sc{lapack} driver used by @code{svd}.\n\
 Currently recognized values are \"gesvd\" and \"gesdd\".  The default\n\
 is \"gesvd\".\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{svd}\n\
 @end deftypefn")
 {

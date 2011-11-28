@@ -99,13 +99,8 @@ function entries = __xzip__ (commandname, extension,
   unwind_protect_cleanup
     cd (cwd);
     if (nargin == 4)
-      crr = confirm_recursive_rmdir ();
-      unwind_protect
-        confirm_recursive_rmdir (false);
-        rmdir (outdir, "s");
-      unwind_protect_cleanup
-        confirm_recursive_rmdir (crr);
-      end_unwind_protect
+      confirm_recursive_rmdir (false, "local");
+      rmdir (outdir, "s");
     endif
   end_unwind_protect
 

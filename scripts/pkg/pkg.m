@@ -2190,13 +2190,8 @@ endfunction
 
 function [status_out, msg_out] = rm_rf (dir)
   if (exist (dir))
-    crr = confirm_recursive_rmdir ();
-    unwind_protect
-      confirm_recursive_rmdir (false);
-      [status, msg] = rmdir (dir, "s");
-    unwind_protect_cleanup
-      confirm_recursive_rmdir (crr);
-    end_unwind_protect
+    crr = confirm_recursive_rmdir (false, "local");
+    [status, msg] = rmdir (dir, "s");
   else
     status = 1;
     msg = "";

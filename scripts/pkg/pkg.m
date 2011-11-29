@@ -946,6 +946,15 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
                                     global_install);
   endif
+
+  ## If there's a NEWS file, mention it
+  ## we are checking if desc exists too because it's possible to ge to this point
+  ## without creating it such as giving an invalid filename for the package
+  if (exist ("desc", "var") && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
+    printf ("For information about changes from previous versions of the %s package, run 'news (\"%s\")'.\n",
+            desc.name, desc.name);
+  endif
+
 endfunction
 
 function uninstall (pkgnames, handle_deps, verbose, local_list,

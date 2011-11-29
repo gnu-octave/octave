@@ -380,7 +380,6 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
     }
 
   octave_value func = args(0);
-  bool symbol_table_lookup = false;
 
   if (! args(1).is_cell ())
     {
@@ -418,8 +417,6 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 
           if (func.is_undefined ())
             error ("cellfun: invalid function NAME: %s", name.c_str ());
-
-          symbol_table_lookup = true;
         }
 
       if (error_state || ! retval.empty ())
@@ -429,53 +426,50 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
+
       // The following is an optimisation because the symbol table can
       // give a more specific function class, so this can result in
       // fewer polymorphic function calls as the function gets called
       // for each value of the array.
+      {
+        if (func.is_function_handle ())
+          {
+            octave_fcn_handle* f = func.fcn_handle_value ();
 
-      if (! symbol_table_lookup )
-        {
-          if (func.is_function_handle ())
-            {
-              octave_fcn_handle* f = func.fcn_handle_value ();
+            // Overloaded function handles need to check the type of the
+            // arguments for each element of the array, so they cannot
+            // be optimised this way.
+            if (f -> is_overloaded ())
+              goto nevermind;
+          }
 
-              // Overloaded function handles need to check the type of
-              // the arguments for each element of the array, so they
-              // cannot be optimised this way.
+        std::string name = func.function_value () -> name ();
+        octave_value f = symbol_table::find_function (name);
 
-              if (f -> is_overloaded ())
-                goto nevermind;
-            }
+        if (f.is_defined ())
+          {
+            //Except for these two which are special cases...
+            if (name != "size" && name != "class")
+              {
+                //Try first the optimised code path for built-in functions
+                octave_value_list tmp_args = args;
+                tmp_args(0) = name;
+                retval = try_cellfun_internal_ops (tmp_args, nargin);
+                if (error_state || ! retval.empty ())
+                  return retval;
+              }
 
-          std::string name = func.function_value () -> name ();
-          octave_value f = symbol_table::find_function (name);
-
-          if (f.is_defined ())
-            {
-              //Except for these two which are special cases...
-              if (name != "size" && name != "class")
-                {
-                  //Try first the optimised code path for built-in functions
-                  octave_value_list tmp_args = args;
-                  tmp_args(0) = name;
-                  retval = try_cellfun_internal_ops (tmp_args, nargin);
-                  if (error_state || ! retval.empty ())
-                    return retval;
-                }
-
-              //Okay, we tried, doesn't work, let's do the best we can
-              //instead and avoid polymorphic calls for each element of
-              //the array.
-              func = f;
-            }
-        }
-
+            //Okay, we tried, doesn't work, let's do the best we can
+            //instead and avoid polymorphic calls for each element of
+            //the array.
+            func = f;
+          }
+      }
     nevermind:
 
       bool uniform_output = true;
       octave_value error_handler;
-      
+
       get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
       if (error_state)

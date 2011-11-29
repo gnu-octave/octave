@@ -447,10 +447,28 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
               if (f -> is_overloaded ())
                 goto nevermind;
             }
-          octave_value f = symbol_table::find_function (func.function_value ()
-                                                         -> name ());
+
+          std::string name = func.function_value () -> name ();
+          octave_value f = symbol_table::find_function (name);
+
           if (f.is_defined ())
-            func = f;
+            {
+              //Except for these two which are special cases...
+              if (name != "size" && name != "class")
+                {
+                  //Try first the optimised code path for built-in functions
+                  octave_value_list tmp_args = args;
+                  tmp_args(0) = name;
+                  retval = try_cellfun_internal_ops (tmp_args, nargin);
+                  if (error_state || ! retval.empty ())
+                    return retval;
+                }
+
+              //Okay, we tried, doesn't work, let's do the best we can
+              //instead and avoid polymorphic calls for each element of
+              //the array.
+              func = f;
+            }
         }
 
     nevermind:

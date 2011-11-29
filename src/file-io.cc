@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 #include <vector>
 
+#include <fcntl.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -1981,7 +1982,7 @@ must be @code{XXXXXX} and these are replaced with a string that makes the\n\
 filename unique.  The file is then created with mode read/write and\n\
 permissions that are system dependent (on GNU/Linux systems, the permissions\n\
 will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
-with the @w{@code{O_EXCL}} flag.\n\
+in binary mode and with the @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true,\n\
 the file will be deleted automatically when Octave exits, or when\n\
@@ -2011,7 +2012,7 @@ error message.\n\
           OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
           strcpy (tmp, tmpl8.c_str ());
 
-          int fd = gnulib::mkstemp (tmp);
+          int fd = gnulib::mkostemp (tmp, O_BINARY);
 
           if (fd < 0)
             {
@@ -2020,7 +2021,7 @@ error message.\n\
             }
           else
             {
-              const char *fopen_mode = "w+";
+              const char *fopen_mode = "w+b";
 
               FILE *fid = fdopen (fd, fopen_mode);
 

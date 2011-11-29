@@ -370,7 +370,8 @@ AC_DEFUN([OCTAVE_CHECK_FORTRAN_INTEGER_SIZE], [
   assert (in[0] == out[0] && in[1] == out[1]);
 ]])],
   [octave_cv_fortran_integer_size=yes],
-  [octave_cv_fortran_integer_size=no])
+  [octave_cv_fortran_integer_size=no],
+  [octave_cv_fortran_integer_size=yes])
   AC_LANG_POP(C)dnl
   LIBS="$octave_fintsize_save_LIBS"
 rm -f conftest.$ac_objext fintsize.$ac_objext
@@ -818,7 +819,7 @@ main (void)
 }]])],
   octave_cv_ieee754_data_format=yes,
   octave_cv_ieee754_data_format=no,
-  octave_cv_ieee754_data_format=no)])
+  octave_cv_ieee754_data_format=yes)])
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT([$octave_cv_ieee754_data_format assumed for cross compilation])
 else
@@ -881,7 +882,7 @@ int main (void)
 ]])],
   octave_cv_umfpack_seperate_split=yes,
   octave_cv_umfpack_seperate_split=no,
-  octave_cv_umfpack_seperate_split=no)])
+  octave_cv_umfpack_seperate_split=yes)])
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT([$octave_cv_umfpack_seperate_split assumed for cross compilation])
 else
@@ -962,7 +963,10 @@ int n = 4;
 coordT points[8] = { -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5 };
 boolT ismalloc = 0;
 return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr); 
-]])], [octave_cv_lib_qhull_ok=yes], [octave_cv_lib_qhull_ok=no])])
+]])],
+  [octave_cv_lib_qhull_ok=yes],
+  [octave_cv_lib_qhull_ok=no],
+  [octave_cv_lib_qhull_ok=yes])])
   if test "$octave_cv_lib_qhull_ok" = "yes"; then
     $1
   else
@@ -1337,9 +1341,10 @@ dnl     need for things like -ftrapv).
 dnl 4. Bit operations on signed integers work like on unsigned integers,
 dnl    except for the shifts. Shifts are arithmetic.
 dnl
-AC_DEFUN([OCTAVE_FAST_INT_OPS],[
-AC_MSG_CHECKING([whether fast integer arithmetics is usable])
-AC_LANG_PUSH(C++)
+AC_DEFUN([OCTAVE_FAST_INT_OPS],
+[AC_CACHE_CHECK([whether fast integer arithmetics is usable],
+octave_cv_fast_int_ops,
+[AC_LANG_PUSH(C++)
 AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 #include <limits>
 template<class UT, class ST>
@@ -1383,10 +1388,15 @@ if (do_test (static_cast<unsigned T> (0), static_cast<signed T> (0))) \
   DO_TEST(long long)
 #endif
 ]])],
-[AC_MSG_RESULT([yes])
- AC_DEFINE(HAVE_FAST_INT_OPS,1,[Define if signed integers use two's complement])],
-[AC_MSG_RESULT([no])])
+   [octave_cv_fast_int_ops=yes],
+   [octave_cv_fast_int_ops=no],
+   [octave_cv_fast_int_ops=yes])
 AC_LANG_POP(C++)])
+if test $octave_cv_fast_int_ops = yes; then
+  AC_DEFINE(HAVE_FAST_INT_OPS, 1,
+    [Define if signed integers use two's complement])
+fi
+])
 dnl
 dnl Check to see if the compiler and the linker can handle the flags
 dnl "-framework $1" for the given prologue $2 and the given body $3 of

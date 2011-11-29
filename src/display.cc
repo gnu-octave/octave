@@ -27,7 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#include <Windows.h>
+#include <windows.h>
 #elif defined (HAVE_FRAMEWORK_CARBON)
 #include <Carbon/Carbon.h>
 #elif defined (HAVE_X_WINDOWS)

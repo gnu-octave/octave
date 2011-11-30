@@ -642,13 +642,6 @@ scope to a particular function and are not visible elsewhere.\n\
 @seealso{global}\n\
 @end deftypefn"),
 
-  pair_type ("replot",
-    "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} replot\n\
-Replot a graphic.\n\
-@seealso{plot}\n\
-@end deftypefn"),
-
   pair_type ("return",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} return\n\

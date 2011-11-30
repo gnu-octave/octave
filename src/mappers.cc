@@ -1275,9 +1275,6 @@ are not.\n\
 %! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result (33:127) = 1;
-%! if (ispc () && ! isunix ())
-%!   result(10) = 1;
-%! endif
 %! assert(all (isprint (charset) == result));
 
 %!error isprint (1, 2);

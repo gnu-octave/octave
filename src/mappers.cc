@@ -952,7 +952,7 @@ letters or digits and false where they are not.  This is equivalent to\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result ((toascii("A"):toascii("Z"))+1) = 1;
 %! result ((toascii("0"):toascii("9"))+1) = 1;
@@ -983,7 +983,7 @@ letters and false where they are not.  This is equivalent to\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result ((toascii("A"):toascii("Z"))+1) = 1;
 %! result ((toascii("a"):toascii("z"))+1) = 1;
@@ -1012,7 +1012,7 @@ not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = ones (1, 128);
 %! assert(all (isascii (charset) == result));
 
@@ -1040,7 +1040,7 @@ control characters and false where they are not.\n\
 /*
 %% test/octave.test/string/iscntrl-1.m
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result (1:32) = 1;
 %! result (128) = 1;
@@ -1069,7 +1069,7 @@ decimal digits (0-9) and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result ((toascii("0"):toascii("9"))+1) = 1;
 %! assert(all (isdigit (charset) == result));
@@ -1137,7 +1137,7 @@ not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result (34:127) = 1;
 %! assert(all (isgraph (charset) == result));
@@ -1165,7 +1165,7 @@ lowercase letters and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result ((toascii("a"):toascii("z"))+1) = 1;
 %! assert(all (islower (charset) == result));
@@ -1272,7 +1272,7 @@ are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result (33:127) = 1;
 %! if (ispc () && ! isunix ())
@@ -1303,7 +1303,7 @@ punctuation characters and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result (34:48) = 1;
 %! result (59:65) = 1;
@@ -1335,7 +1335,7 @@ vertical tab) and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result (toascii (" \f\n\r\t\v")+1) = 1;
 %! assert(all (isspace (charset) == result));
@@ -1363,7 +1363,7 @@ uppercase letters and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result ((toascii("A"):toascii("Z"))+1) = 1;
 %! assert(all (isupper (charset) == result));
@@ -1391,7 +1391,7 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = zeros (1, 128);
 %! result ((toascii("A"):toascii("F"))+1) = 1;
 %! result ((toascii("0"):toascii("9"))+1) = 1;
@@ -1917,7 +1917,7 @@ DEFALIAS (lower, tolower);
 %!  assert(tolower(a)(3,3,3,3), "d");
 
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = charset;
 %! result ((toascii("A"):toascii("Z"))+1) \
 %! = result ((toascii("a"):toascii("z"))+1);
@@ -1967,7 +1967,7 @@ DEFALIAS (upper, toupper);
 %!  a(3,3,3,3) = "d";
 %!  assert(toupper(a)(3,3,3,3), "D");
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = charset;
 %! result ((toascii("a"):toascii("z"))+1) \
 %! = result ((toascii("A"):toascii("Z"))+1);

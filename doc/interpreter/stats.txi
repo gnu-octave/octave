@@ -118,8 +118,6 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(histc)
 
-@DOCSTRING(cut)
-
 @c FIXME: really want to put a reference to unique here
 @c @DOCSTRING(values)
 

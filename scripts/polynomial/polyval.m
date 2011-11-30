@@ -32,7 +32,7 @@
 ## prediction interval, the structured variable @var{s}, originating
 ## form `polyfit', must be present.
 ## @seealso{polyfit, polyvalm, poly, roots, conv, deconv, residue, filter,
-## polyderiv, polyint}
+## polyder, polyint}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

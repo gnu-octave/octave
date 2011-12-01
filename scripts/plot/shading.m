@@ -73,24 +73,36 @@ function shading (varargin)
 
 endfunction
 
+
 %!demo
 %! clf
 %! colormap (jet)
 %! sombrero
 %! shading faceted
-%! title("shading ""faceted""")
+%! title ('shading "faceted"')
+
+%!demo
+%! sombrero
+%! shading flat
+%! title ('shading "flat"')
 
 %!demo
 %! sombrero
 %! shading interp
-%! title("shading ""interp""")
+%! title ('shading "interp"')
 
 %!demo
 %! pcolor (peaks ())
 %! shading faceted
-%! title("shading ""faceted""")
+%! title ('shading "faceted"')
+
+%!demo
+%! pcolor (peaks ())
+%! shading flat
+%! title ('shading "flat"')
 
 %!demo
 %! pcolor (peaks ())
 %! shading interp
-%! title("shading ""interp""")
+%! title ('shading "interp"')
+

@@ -749,17 +749,15 @@ get_debug_input (const std::string& prompt)
 
       if (retval == 0 && global_command)
         {
-          global_command->accept (*current_evaluator);
+          unwind_protect inner_frame;
 
-          // FIXME -- To avoid a memory leak, global_command should be
-          // deleted, I think.  But doing that here causes trouble if
-          // an error occurs while executing a debugging command
-          // (dbstep, for example). It's not clear to me why that
-          // happens.
-          //
-          // delete global_command;
-          //
-          // global_command = 0;
+          // Use an unwind-protect cleanup function so that the
+          // global_command list will be deleted in the event of an
+          // interrupt.
+
+          inner_frame.add_fcn (cleanup_statement_list, &global_command);
+
+          global_command->accept (*current_evaluator);
 
           if (octave_completion_matches_called)
             octave_completion_matches_called = false;

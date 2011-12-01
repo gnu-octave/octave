@@ -571,11 +571,13 @@ main_loop (void)
             {
               if (global_command)
                 {
+                  // Use an unwind-protect cleanup function so that the
+                  // global_command list will be deleted in the event of
+                  // an interrupt.
+
+                  frame.add_fcn (cleanup_statement_list, &global_command);
+
                   global_command->accept (*current_evaluator);
-
-                  delete global_command;
-
-                  global_command = 0;
 
                   octave_quit ();
 

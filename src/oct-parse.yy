@@ -3565,7 +3565,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           int status = yyparse ();
 
-          delete global_command;
+          // Use an unwind-protect cleanup function so that the
+          // global_command list will be deleted in the event of an
+          // interrupt.
+
+          frame.add_fcn (cleanup_statement_list, &global_command);
 
           fcn_ptr = primary_fcn_ptr;
 
@@ -4345,6 +4349,14 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
         {
           if (command_list)
             {
+              unwind_protect inner_frame;
+
+              // Use an unwind-protect cleanup function so that the
+              // global_command list will be deleted in the event of an
+              // interrupt.
+
+              inner_frame.add_fcn (cleanup_statement_list, &command_list);
+
               tree_statement *stmt = 0;
 
               if (command_list->length () == 1
@@ -4380,10 +4392,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                 command_list->accept (*current_evaluator);
               else
                 error ("eval: invalid use of statement list");
-
-              delete command_list;
-
-              command_list = 0;
 
               if (error_state
                   || tree_return_command::returning
@@ -4426,6 +4434,16 @@ eval_string (const octave_value& arg, bool silent, int& parse_status,
     }
 
   return eval_string (s, silent, parse_status, nargout);
+}
+
+void
+cleanup_statement_list (tree_statement_list **lst)
+{
+  if (*lst)
+    {
+      delete *lst;
+      *lst = 0;
+    }
 }
 
 DEFUN (eval, args, nargout,

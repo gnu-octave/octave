@@ -55,10 +55,6 @@ public:
 
   bool has_magic_end (void) const { return false; }
 
-  void *operator new (size_t size) { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size) { allocator.free (p, size); }
-
   // Type.  It would be nice to eliminate the need for this.
 
   bool is_constant (void) const { return true; }
@@ -91,9 +87,6 @@ public:
 
 private:
 
-  // For custom memory management.
-  static octave_allocator allocator;
-
   // The actual value that this constant refers to.
   octave_value val;
 
@@ -105,6 +98,8 @@ private:
   tree_constant (const tree_constant&);
 
   tree_constant& operator = (const tree_constant&);
+
+  DECLARE_OCTAVE_ALLOCATOR
 };
 
 #endif

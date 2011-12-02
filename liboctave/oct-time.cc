@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-math.h"
 #include "lo-utils.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 
 octave_time::octave_time (const octave_base_tm& tm)
@@ -266,7 +267,19 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   t.tm_zone = ps;
 #endif
 
-  char *p = strsave (str.c_str ());
+  // FIXME -- the following kluge avoids a memory access problem with
+  // strptime in some versions of GNU libc.
+  // http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=650714
+
+  const char *pstr = str.c_str ();
+  size_t len = str.length ();
+  const int extra = 128;
+  OCTAVE_LOCAL_BUFFER (char, p, len + extra);
+  char *pp = p;
+  for (size_t i = 0; i < len; i++)
+    *pp++ = *pstr++;
+  for (size_t i = len; i < extra; i++)
+    *pp++ = 0;
 
   char *q = gnulib::strptime (p, fmt.c_str (), &t);
 
@@ -288,8 +301,6 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
     nchars = q - p + 1;
   else
     nchars = 0;
-
-  delete [] p;
 
   octave_base_tm::init (&t);
 

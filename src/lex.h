@@ -43,6 +43,10 @@ extern OCTINTERP_API void switch_to_buffer (YY_BUFFER_STATE buf);
 // Delete a buffer.
 extern OCTINTERP_API void delete_buffer (YY_BUFFER_STATE buf);
 
+extern OCTINTERP_API void clear_all_buffers (void);
+
+extern OCTINTERP_API void cleanup_parser (void);
+
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
 

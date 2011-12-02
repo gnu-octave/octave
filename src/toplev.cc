@@ -676,6 +676,8 @@ clean_up_and_exit (int retval)
   // Clean up symbol table.
   SAFE_CALL (symbol_table::cleanup, ());
 
+  SAFE_CALL (cleanup_parser, ());
+
   SAFE_CALL (sysdep_cleanup, ())
 
   if (octave_exit)

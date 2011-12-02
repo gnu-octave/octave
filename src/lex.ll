@@ -1416,6 +1416,22 @@ delete_buffer (YY_BUFFER_STATE buf)
   yy_delete_buffer (buf);
 }
 
+// Delete all buffers from the stack.
+void
+clear_all_buffers (void)
+{                 
+  while (current_buffer ())
+    octave_pop_buffer_state ();
+}
+
+void
+cleanup_parser (void)
+{
+  reset_parser ();
+
+  clear_all_buffers ();
+}
+
 // Restore a buffer (for unwind-prot).
 
 void

@@ -89,16 +89,19 @@ function hui = uimenu (varargin)
 
 endfunction
 
-%!demo
-%! surfl(peaks);
-%! colormap(copper);
-%! shading("interp");
-%! f = uimenu("label", "&File", "accelerator", "f");
-%! e = uimenu("label", "&Edit", "accelerator", "e");
-%! uimenu(f, "label", "Close", "accelerator", "q", "callback", "close (gcf)");
-%! uimenu(e, "label", "Toggle &Grid", "accelerator", "g", "callback", "grid (gca)");
 
-%!test
+%!demo
+%! surfl (peaks);
+%! colormap (copper);
+%! shading ("interp");
+%! f = uimenu ("label", "&File", "accelerator", "f");
+%! e = uimenu ("label", "&Edit", "accelerator", "e");
+%! uimenu (f, "label", "Close", "accelerator", "q", "callback", "close (gcf)");
+%! uimenu (e, "label", "Toggle &Grid", "accelerator", "g", "callback", "grid (gca)");
+
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   ui = uimenu ("label", "mylabel");
@@ -110,10 +113,13 @@ endfunction
 %!   assert (get (ui, "position"), 9);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 %% check for top level menus file, edit, and help
-%!test
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   uif = findall (hf, "label", "&file");
@@ -124,9 +130,12 @@ endfunction
 %!   assert (ishghandle (uih))
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
-%!test
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   uie = findall (hf, "label", "&edit");
@@ -134,4 +143,6 @@ endfunction
 %!   assert (ancestor (myui, "uimenu", "toplevel"), uie)
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
+

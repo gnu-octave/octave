@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{name} =} graphics_toolkit ()
-## @deftypefn  {Function File} {@var{old_name} =} graphics_toolkit (@var{name})
+## @deftypefnx {Function File} {@var{old_name} =} graphics_toolkit (@var{name})
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
 ## Query or set the default graphics toolkit to @var{name}.  If the
 ## toolkit is not already loaded, it is first initialized by calling the

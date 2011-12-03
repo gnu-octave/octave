@@ -49,6 +49,7 @@ command_history *command_history::instance = 0;
 #include "oct-rl-hist.h"
 
 #include "file-stat.h"
+#include "singleton-cleanup.h"
 
 class
 gnu_history : public command_history
@@ -467,7 +468,12 @@ command_history::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    make_command_history ();
+    {
+      make_command_history ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

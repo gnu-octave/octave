@@ -25,24 +25,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "oct-env.h"
-#include "oct-time.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-env.h"
+#include "oct-time.h"
+#include "singleton-cleanup.h"
 
+#include "debug.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "input.h"
 #include "load-path.h"
-#include "symtab.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "pt-arg-list.h"
+#include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
-#include "debug.h"
 
 symbol_table *symbol_table::instance = 0;
 
@@ -68,6 +69,14 @@ symbol_table::context_id symbol_table::xcurrent_context = 0;
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
+
+void
+symbol_table::scope_id_cache::create_instance (void)
+{
+  instance = new scope_id_cache ();
+
+  singleton_cleanup_list::add (cleanup_instance);
+}
 
 void
 symbol_table::symbol_record::symbol_record_rep::dump

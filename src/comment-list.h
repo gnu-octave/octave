@@ -105,6 +105,8 @@ public:
   octave_comment_buffer (void)
     : comment_list (new octave_comment_list ()) { }
 
+  ~octave_comment_buffer (void) { delete comment_list; }
+
   static bool instance_ok (void);
 
   static void append
@@ -122,6 +124,8 @@ private:
   octave_comment_list *comment_list;
 
   static octave_comment_buffer *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 };
 
 #endif

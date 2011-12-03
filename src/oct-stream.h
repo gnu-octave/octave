@@ -689,6 +689,8 @@ private:
 
   static octave_stream_list *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   int do_insert (octave_stream& os);
 
   octave_stream do_lookup (int fid, const std::string& who = std::string ()) const;

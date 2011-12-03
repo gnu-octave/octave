@@ -40,8 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "str-vec.h"
 #include "quit.h"
+#include "singleton-cleanup.h"
+#include "str-vec.h"
 
 #include "error.h"
 #include "gripes.h"
@@ -3916,7 +3917,12 @@ octave_stream_list::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_stream_list ();
+    {
+      instance = new octave_stream_list ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

@@ -34,6 +34,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <X11/Xlib.h>
 #endif
 
+#include "singleton-cleanup.h"
+
 #include "display.h"
 #include "error.h"
 
@@ -138,7 +140,12 @@ display_info::instance_ok (bool query)
   bool retval = true;
 
   if (! instance)
-    instance = new display_info (query);
+    {
+      instance = new display_info (query);
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

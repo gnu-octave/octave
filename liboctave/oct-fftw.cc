@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-fftw.h"
 #include "quit.h"
 #include "oct-locbuf.h"
+#include "singleton-cleanup.h"
 
 octave_fftw_planner *octave_fftw_planner::instance = 0;
 
@@ -75,7 +76,12 @@ octave_fftw_planner::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_fftw_planner ();
+    {
+      instance = new octave_fftw_planner ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

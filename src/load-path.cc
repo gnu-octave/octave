@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "oct-env.h"
 #include "pathsearch.h"
+#include "singleton-cleanup.h"
 
 #include "defaults.h"
 #include "defun.h"
@@ -290,7 +291,12 @@ load_path::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new load_path ();
+    {
+      instance = new load_path ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "oct-syscalls.h"
 #include "quit.h"
+#include "singleton-cleanup.h"
 
 #include "debug.h"
 #include "defun.h"
@@ -804,7 +805,12 @@ octave_child_list::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_child_list_rep ();
+    {
+      instance = new octave_child_list_rep ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

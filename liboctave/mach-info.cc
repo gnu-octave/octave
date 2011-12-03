@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "mach-info.h"
+#include "singleton-cleanup.h"
 
 extern "C"
 {
@@ -163,7 +164,12 @@ oct_mach_info::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new oct_mach_info ();
+    {
+      instance = new oct_mach_info ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

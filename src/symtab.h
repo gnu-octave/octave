@@ -81,12 +81,14 @@ public:
       return instance_ok () ? instance->do_scopes () : std::list<scope_id> ();
     }
 
+    static void create_instance (void);
+
     static bool instance_ok (void)
     {
       bool retval = true;
 
       if (! instance)
-        instance = new scope_id_cache ();
+        create_instance ();
 
       if (! instance)
         {
@@ -107,6 +109,8 @@ public:
     scope_id_cache& operator = (const scope_id_cache&);
 
     static scope_id_cache *instance;
+
+    static void cleanup_instance (void) { delete instance; instance = 0; }
 
     // The next available scope not in the free list.
     scope_id next_available;

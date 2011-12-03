@@ -73,6 +73,8 @@ private:
 
   static display_info *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   // Height, width, and depth of the display.
   int ht;
   int wd;

@@ -30,16 +30,16 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "cmd-edit.h"
 #include "oct-env.h"
+#include "singleton-cleanup.h"
 
-#include "procstream.h"
-
-#include <defaults.h>
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
 #include "input.h"
 #include "oct-obj.h"
 #include "pager.h"
+#include "procstream.h"
 #include "sighandlers.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -311,27 +311,24 @@ octave_pager_stream::~octave_pager_stream (void)
   delete pb;
 }
 
-octave_pager_stream&
+std::ostream&
 octave_pager_stream::stream (void)
 {
-  if (! instance)
-    instance = new octave_pager_stream ();
-
-  return *instance;
+  return instance_ok () ? *instance : std::cout;
 }
 
 void
 octave_pager_stream::flush_current_contents_to_diary (void)
 {
-  if (pb)
-    pb->flush_current_contents_to_diary ();
+  if (instance_ok ())
+    instance->flush_current_contents_to_diary ();
 }
 
 void
 octave_pager_stream::set_diary_skip (void)
 {
-  if (pb)
-    pb->set_diary_skip ();
+  if (instance_ok ())
+    instance->do_set_diary_skip ();
 }
 
 // Reinitialize the pager buffer to avoid hanging on to large internal
@@ -342,10 +339,22 @@ octave_pager_stream::set_diary_skip (void)
 void
 octave_pager_stream::reset (void)
 {
-  if (! instance)
-    instance = new octave_pager_stream ();
+  if (instance_ok ())
+    instance->do_reset ();
+}
 
-  instance->do_reset ();
+void
+octave_pager_stream::do_flush_current_contents_to_diary (void)
+{
+  if (pb)
+    pb->flush_current_contents_to_diary ();
+}
+
+void
+octave_pager_stream::do_set_diary_skip (void)
+{
+  if (pb)
+    pb->set_diary_skip ();
 }
 
 void
@@ -355,6 +364,29 @@ octave_pager_stream::do_reset (void)
   pb = new octave_pager_buf ();
   rdbuf (pb);
   setf (unitbuf);
+}
+
+bool
+octave_pager_stream::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    {
+      instance = new octave_pager_stream ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
+
+  if (! instance)
+    {
+      ::error ("unable to create pager_stream object!");
+
+      retval = false;
+    }
+
+  return retval;
 }
 
 octave_diary_stream *octave_diary_stream::instance = 0;
@@ -372,13 +404,10 @@ octave_diary_stream::~octave_diary_stream (void)
   delete db;
 }
 
-octave_diary_stream&
+std::ostream&
 octave_diary_stream::stream (void)
 {
-  if (! instance)
-    instance = new octave_diary_stream ();
-
-  return *instance;
+  return instance_ok () ? *instance : std::cout;
 }
 
 // Reinitialize the diary buffer to avoid hanging on to large internal
@@ -389,10 +418,8 @@ octave_diary_stream::stream (void)
 void
 octave_diary_stream::reset (void)
 {
-  if (! instance)
-    instance = new octave_diary_stream ();
-
-  instance->do_reset ();
+  if (instance_ok ())
+    instance->do_reset ();
 }
 
 void
@@ -402,6 +429,29 @@ octave_diary_stream::do_reset (void)
   db = new octave_diary_buf ();
   rdbuf (db);
   setf (unitbuf);
+}
+
+bool
+octave_diary_stream::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    {
+      instance = new octave_diary_stream ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
+
+  if (! instance)
+    {
+      ::error ("unable to create diary_stream object!");
+
+      retval = false;
+    }
+
+  return retval;
 }
 
 void
@@ -437,7 +487,7 @@ close_diary_file (void)
   //
   // will do the right thing.
 
-  octave_stdout.flush_current_contents_to_diary ();
+  octave_pager_stream::flush_current_contents_to_diary ();
 
   if (external_diary_file.is_open ())
     {
@@ -454,7 +504,7 @@ open_diary_file (void)
   // If there is pending output in the pager buf, it should not go
   // into the diary file.
 
-  octave_stdout.set_diary_skip ();
+  octave_pager_stream::set_diary_skip ();
 
   external_diary_file.open (diary_file.c_str (), std::ios::app);
 

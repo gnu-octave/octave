@@ -112,22 +112,20 @@ public:
   typedef std::deque<call_stack_elt>::reverse_iterator reverse_iterator;
   typedef std::deque<call_stack_elt>::const_reverse_iterator const_reverse_iterator;
 
+  static void create_instance (void);
+  
   static bool instance_ok (void)
   {
     bool retval = true;
 
     if (! instance)
+      create_instance ();
+
+    if (! instance)
       {
-        instance = new octave_call_stack ();
+        ::error ("unable to create call stack object!");
 
-        if (instance)
-          instance->do_push (0, symbol_table::top_scope (), 0);
-        else
-          {
-            ::error ("unable to create call stack object!");
-
-            retval = false;
-          }
+        retval = false;
       }
 
     return retval;
@@ -299,6 +297,8 @@ private:
   size_t curr_frame;
 
   static octave_call_stack *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   int do_current_line (void) const;
 

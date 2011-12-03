@@ -170,6 +170,8 @@ private:
   static bool instance_ok (void);
 
   static octave_child_list_rep *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 };
 
 #endif

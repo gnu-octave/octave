@@ -44,25 +44,26 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-mappers.h"
 #include "oct-env.h"
-#include "quit.h"
-#include "str-vec.h"
 #include "oct-locbuf.h"
+#include "quit.h"
+#include "singleton-cleanup.h"
+#include "str-vec.h"
 
-#include <defaults.h>
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "file-io.h"
 #include "input.h"
 #include "lex.h"
-#include <oct-conf.h>
+#include "oct-conf.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-obj.h"
+#include "ov.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
-#include "ov.h"
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
@@ -73,7 +74,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#include <version.h>
+#include "version.h"
 
 void (*octave_exit) (int) = ::exit;
 
@@ -96,6 +97,19 @@ bool octave_initialized = false;
 tree_statement_list *global_command = 0;
 
 octave_call_stack *octave_call_stack::instance = 0;
+
+void
+octave_call_stack::create_instance (void)
+{
+  instance = new octave_call_stack ();
+
+  if (instance)
+    {
+      instance->do_push (0, symbol_table::top_scope (), 0);
+
+      singleton_cleanup_list::add (cleanup_instance);
+    }
+}
 
 int
 octave_call_stack::do_current_line (void) const
@@ -674,11 +688,13 @@ clean_up_and_exit (int retval)
   do_octave_atexit ();
 
   // Clean up symbol table.
-  SAFE_CALL (symbol_table::cleanup, ());
+  SAFE_CALL (symbol_table::cleanup, ())
 
-  SAFE_CALL (cleanup_parser, ());
+  SAFE_CALL (cleanup_parser, ())
 
   SAFE_CALL (sysdep_cleanup, ())
+
+  SAFE_CALL (singleton_cleanup_list::cleanup, ())
 
   SAFE_CALL (octave_chunk_buffer::clear, ())
 

@@ -99,6 +99,8 @@ private:
 
   static file_ops *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   // No copying!
 
   file_ops (const file_ops&);

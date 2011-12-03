@@ -244,6 +244,7 @@ INCS = \
   randmtzig.h \
   randpoisson.h \
   regex-match.h \
+  singleton-cleanup.h \
   sparse-sort.h \
   sparse-util.h \
   statdefs.h \
@@ -452,6 +453,7 @@ LIBOCTAVE_CXX_SOURCES = \
   oct-uname.cc \
   pathsearch.cc \
   regex-match.cc \
+  singleton-cleanup.cc \
   sparse-sort.cc \
   sparse-util.cc \
   str-vec.cc \

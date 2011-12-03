@@ -184,6 +184,8 @@ private:
   // The real thing.
   static command_editor *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
 protected:
 
   // To use something other than the GNU readline library, derive a new

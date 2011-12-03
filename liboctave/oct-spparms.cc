@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 
 #include "oct-spparms.h"
+#include "singleton-cleanup.h"
 
 octave_sparse_params *octave_sparse_params::instance = 0;
 
@@ -38,7 +39,12 @@ octave_sparse_params::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_sparse_params ();
+    {
+      instance = new octave_sparse_params ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

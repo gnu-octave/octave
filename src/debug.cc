@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "file-stat.h"
+#include "singleton-cleanup.h"
 
 #include "defun.h"
 #include "error.h"
@@ -248,6 +249,28 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
             break;
         }
     }
+}
+
+bool
+bp_table::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    {
+      instance = new bp_table ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
+
+  if (! instance)
+    {
+      ::error ("unable to create breakpoint table!");
+      retval = false;
+    }
+
+  return retval;
 }
 
 bp_table::intmap

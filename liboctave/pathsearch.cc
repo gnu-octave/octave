@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "pathsearch.h"
-#include "str-vec.h"
+#include "singleton-cleanup.h"
 #include "str-vec.h"
 
 #include "kpse.cc"
@@ -47,7 +47,12 @@ dir_path::static_members::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new static_members ();
+    {
+      instance = new static_members ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

@@ -53,7 +53,10 @@ octave_time::octave_time (const octave_base_tm& tm)
   t.tm_wday = tm.wday ();
   t.tm_yday = tm.yday ();
   t.tm_isdst = tm.isdst ();
+
+#if defined (HAVE_STRUCT_TM_GMTOFF)
   t.tm_gmtoff = tm.gmtoff ();
+#endif
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
   std::string s = tm.zone ();

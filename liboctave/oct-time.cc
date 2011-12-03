@@ -267,19 +267,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   t.tm_zone = ps;
 #endif
 
-  // FIXME -- the following kluge avoids a memory access problem with
-  // strptime in some versions of GNU libc.
-  // http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=650714
-
-  const char *pstr = str.c_str ();
-  size_t len = str.length ();
-  const int extra = 128;
-  OCTAVE_LOCAL_BUFFER (char, p, len + extra);
-  char *pp = p;
-  for (size_t i = 0; i < len; i++)
-    *pp++ = *pstr++;
-  for (size_t i = len; i < extra; i++)
-    *pp++ = 0;
+  const char *p = str.c_str ();
 
   char *q = gnulib::strptime (p, fmt.c_str (), &t);
 

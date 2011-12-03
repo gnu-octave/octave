@@ -441,6 +441,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     while (! isempty (kids))
 
       obj = get (kids(end));
+
       if (isfield (obj, "units"))
         units = obj.units;
         unwind_protect
@@ -2302,7 +2303,35 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
         warning ("latex markup not supported for text objects");
         warned_latex = true;
       endif
+    elseif (enhanced)
+      str = no_super_sub_scripts (str);
     endif
+  endif
+endfunction
+
+function str = no_super_sub_scripts (str)
+  if (iscellstr (str))
+    labels = str;
+  else
+    labels = cellstr (str);
+  endif
+  for marker = "_^" 
+    for m = 1 : numel(labels)
+      n1 = strfind (labels{m}, sprintf ("\\%s", marker));
+      n2 = strfind (labels{m}, marker);
+      if (! isempty (n1))
+        n1 = n1 + 1;
+        n2 = setdiff (n2, n1);
+      end
+      for n = n2
+        labels{m} = [labels{m}(1:n2-1), "\\", labels{m}(n2:end)];
+      endfor
+    endfor
+  endfor
+  if (iscellstr (str))
+    str = labels;
+  else
+    str = char (labels);
   endif
 endfunction
 

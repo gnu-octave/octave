@@ -378,13 +378,15 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               break;
             endif
           elseif (! warned)
-            warned = true;
-            warning ("legend: ignoring extra labels");
+            break;
           endif
         else
           error ("legend: expecting argument to be a character string");
         endif
       endfor
+      if (i < nargs && ! warned)
+        warning ("legend: ignoring extra labels");
+      endif
     else
       k = nkids;
       while (k > 0)
@@ -816,22 +818,14 @@ function updatelegend (h, d)
 endfunction
 
 function updatelegendtext (h, d)
+  hax = get (h, "userdata").handle;
   kids = get (h, "children");
-  k = numel (kids);
-  in = get (h, "interpreter");
-  tc = get (h, "textcolor");
-  while (k > 0)
-    typ = get (kids(k), "type");
-    while (k > 0 && ! strcmp (typ, "text"))
-      typ = get (kids(--k), "type");
-    endwhile
-    if (k > 0)
-      set (kids (k), "interpreter", in, "color", tc);
-      if (--k == 0)
-        break;
-      endif
-    endif
-  endwhile
+  text_kids = findobj (kids, "-property", "interpreter", "type", "text");
+  interpreter = get (h, "interpreter");
+  textcolor = get (h, "textcolor");
+  set (kids, "interpreter", interpreter, "color", textcolor);
+  hobj = cell2mat (get (kids, "userdata"));
+  set (hobj, "interpreter", interpreter);
 endfunction
 
 function hideshowlegend (h, d, ca, pos1, pos2)
@@ -1134,21 +1128,34 @@ endfunction
 
 %!demo
 %! clf
-%! x = 0:4;
+%! x = 1:5;
 %! subplot (2, 2, 1)
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "northwestoutside")
+%! legend (cellstr (num2str (x')), "location", "northwestoutside")
 %! legend boxon
 %! subplot (2, 2, 2)
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "northeastoutside")
+%! legend (cellstr (num2str (x')), "location", "northeastoutside")
 %! legend boxon
 %! subplot (2, 2, 3);
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "southwestoutside")
+%! legend (cellstr (num2str (x')), "location", "southwestoutside")
 %! legend boxon
 %! subplot (2, 2, 4)
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "southeastoutside")
+%! legend (cellstr (num2str (x')), "location", "southeastoutside")
 %! legend boxon
+
+%!demo
+%! clf
+%! plot (rand (2))
+%! title ("Warn of extra labels")
+%! legend ("Hello", "World", "interpreter", "foobar")
+
+%!demo
+%! clf
+%! plot (rand (2))
+%! title ("Turn off TeX interpreter")
+%! h = legend ("Hello_World", "foo^bar");
+%! set (h, "interpreter", "none")
 

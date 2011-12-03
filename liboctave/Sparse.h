@@ -147,8 +147,12 @@ protected:
     {
       if (rep->count > 1)
         {
-          --rep->count;
-          rep = new SparseRep (*rep);
+          SparseRep *r = new SparseRep (*rep);
+
+          if (--rep->count == 0)
+            delete rep;
+
+          rep = r;
         }
     }
 

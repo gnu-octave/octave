@@ -667,7 +667,7 @@ Sparse<T>::Sparse (const Array<T>& a)
 template <class T>
 Sparse<T>::~Sparse (void)
 {
-  if (--rep->count <= 0)
+  if (--rep->count == 0)
     delete rep;
 }
 
@@ -677,7 +677,7 @@ Sparse<T>::operator = (const Sparse<T>& a)
 {
   if (this != &a)
     {
-      if (--rep->count <= 0)
+      if (--rep->count == 0)
         delete rep;
 
       rep = a.rep;

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <lo-mappers.h>
 #include "oct-locbuf.h"
+#include "oct-refcount.h"
 #include "gl-render.h"
 #include "txt-eng.h"
 #include "txt-eng-ft.h"

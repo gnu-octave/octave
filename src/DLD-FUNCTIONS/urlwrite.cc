@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cell.h"
 #include "pager.h"
 #include "oct-map.h"
+#include "oct-refcount.h"
 #include "unwind-prot.h"
 
 #ifdef HAVE_CURL
@@ -141,7 +142,7 @@ private:
         return !ascii;
       }
 
-    size_t count;
+    octave_refcount<size_t> count;
     std::string host;
     bool valid;
     bool ascii;

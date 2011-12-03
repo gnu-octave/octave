@@ -110,8 +110,12 @@ public:
     {
       if (rep->count > 1)
         {
-          --rep->count;
-          rep = new ArrayRep (slice_data, slice_len);
+          ArrayRep *r = new ArrayRep (slice_data, slice_len);
+
+          if (--rep->count == 0)
+            delete rep;
+          
+          rep = r;
           slice_data = rep->data;
         }
     }
@@ -225,7 +229,7 @@ public:
 
   ~Array (void)
     {
-      if (--rep->count <= 0)
+      if (--rep->count == 0)
         delete rep;
     }
 
@@ -233,7 +237,7 @@ public:
     {
       if (this != &a)
         {
-          if (--rep->count <= 0)
+          if (--rep->count == 0)
             delete rep;
 
           rep = a.rep;

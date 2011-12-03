@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-mutex.h"
+#include "oct-refcount.h"
 #include "ov.h"
 #include "txt-eng-ft.h"
 
@@ -482,7 +483,7 @@ private:
 
 private:
   int id;
-  int count;
+  octave_refcount<int> count;
   std::string name;
   graphics_handle parent;
   bool hidden;
@@ -1910,7 +1911,7 @@ public:
 
   ~property (void)
     {
-      if (--rep->count <= 0)
+      if (--rep->count == 0)
         delete rep;
     }
 
@@ -1965,7 +1966,7 @@ public:
 
   property& operator = (const property& p)
     {
-      if (rep && --rep->count <= 0)
+      if (rep && --rep->count == 0)
         delete rep;
 
       rep = p.rep;
@@ -2133,7 +2134,7 @@ public:
 
 private:
   std::string name;
-  int count;
+  octave_refcount<int> count;
 
 private:
   void gripe_invalid (const std::string& fname) const
@@ -2739,7 +2740,7 @@ protected:
 
 protected:
   // A reference count.
-  int count;
+  octave_refcount<int> count;
 
   // A flag telling whether this object is a valid object
   // in the backend context.
@@ -5097,7 +5098,7 @@ public:
   virtual void execute (void) = 0;
 
 private:
-  int count;
+  octave_refcount<int> count;
 };
 
 class

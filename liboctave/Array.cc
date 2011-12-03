@@ -84,7 +84,7 @@ template <class T>
 void
 Array<T>::clear (void)
 {
-  if (--rep->count <= 0)
+  if (--rep->count == 0)
     delete rep;
 
   rep = nil_rep ();
@@ -99,7 +99,7 @@ template <class T>
 void
 Array<T>::clear (const dim_vector& dv)
 {
-  if (--rep->count <= 0)
+  if (--rep->count == 0)
     delete rep;
 
   rep = new ArrayRep (dv.safe_numel ());

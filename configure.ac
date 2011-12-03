@@ -171,9 +171,18 @@ USE_OCTAVE_ALLOCATOR=false
 AC_ARG_ENABLE(octave-allocator,
   [AS_HELP_STRING([--enable-octave-allocator],
      [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.  (default is no)])],
-  [if test "$enableval" = yes; then USE_ALLOCATOR=true; fi], [])
+  [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=true; fi], [])
 if $USE_OCTAVE_ALLOCATOR; then
   AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1, [Define to use octave_allocator class.])
+fi
+
+USE_ATOMIC_REFCOUNT=false
+AC_ARG_ENABLE(atomic-refcount,
+  [AS_HELP_STRING([--enable-atomic-refcount],
+     [use atomic operations for internal reference counting. This is required for thread-safe behavior.  (default is no)])],
+  [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=true; fi], [])
+if $USE_ATOMIC_REFCOUNT; then
+  AC_DEFINE(USE_ATOMIC_REFCOUNT, 1, [Define to use atomic operations for reference counting.])
 fi
 
 ### Make it possible to disable running Make in the doc directory.
@@ -2089,6 +2098,9 @@ typedef unsigned long ino_t;
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 
 #include <stdint.h>
+
+/* Tag indicating octave config.h has been included */
+#define OCTAVE_CONFIG_INCLUDED 1
 ])
 
 ### Do the substitutions in all the Makefiles.
@@ -2462,6 +2474,22 @@ if test -n "$warn_gnuplot"; then
   AC_MSG_WARN([Setting default value to $GNUPLOT])
   AC_MSG_WARN([])
 
+  warn_msg_printed=true
+fi
+
+if $USE_ATOMIC_REFCOUNT; then
+  AC_MSG_WARN([])
+  AC_MSG_WARN([Using atomic reference counting.])
+  AC_MSG_WARN([This feature allows to access octave data safely from])
+  AC_MSG_WARN([another thread, for instance from a GUI. However this])
+  AC_MSG_WARN([results in a small performance penalty in the octave])
+  AC_MSG_WARN([interpreter.])
+  AC_MSG_WARN([])
+  if $USE_OCTAVE_ALLOCATOR; then
+    AC_MSG_WARN([Thread-safe behavior is not guaranteed unless you also])
+    AC_MSG_WARN([disable the use of the octave_allocator class.])
+    AC_MSG_WARN([])
+  fi
   warn_msg_printed=true
 fi
 

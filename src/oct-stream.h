@@ -37,6 +37,7 @@ class octave_value_list;
 #include "data-conv.h"
 #include "lo-utils.h"
 #include "mach-info.h"
+#include "oct-refcount.h"
 
 class
 OCTINTERP_API
@@ -427,7 +428,7 @@ protected:
 private:
 
   // A reference count.
-  octave_idx_type count;
+  octave_refcount<octave_idx_type> count;
 
   // The permission bits for the file.  Should be some combination of
   // std::ios::open_mode bits.

@@ -37,6 +37,7 @@ class tree_argument_list;
 class octave_user_function;
 
 #include "oct-obj.h"
+#include "oct-refcount.h"
 #include "ov.h"
 
 class
@@ -387,7 +388,7 @@ public:
 
       fcn_info *finfo;
 
-      size_t count;
+      octave_refcount<size_t> count;
 
     private:
 
@@ -728,7 +729,7 @@ public:
 
       octave_value built_in_function;
 
-      size_t count;
+      octave_refcount<size_t> count;
 
     private:
 

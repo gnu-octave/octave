@@ -680,6 +680,8 @@ clean_up_and_exit (int retval)
 
   SAFE_CALL (sysdep_cleanup, ())
 
+  SAFE_CALL (octave_chunk_buffer::clear, ())
+
   if (octave_exit)
     (*octave_exit) (retval == EOF ? 0 : retval);
 }
@@ -709,9 +711,13 @@ Octave's exit status.  The default value is zero.\n\
 
       if (! error_state)
         {
-          quitting_gracefully = true;
+          // Instead of simply calling exit, we simulate an interrupt
+          // with a request to exit cleanly so that no matter where the
+          // call to quit occurs, we will run the unwind_protect stack,
+          // clear the OCTAVE_LOCAL_BUFFER allocations, etc. before
+          // exiting.
 
-          // Simulate interrupt.
+          quitting_gracefully = true;
 
           octave_interrupt_state = -1;
 

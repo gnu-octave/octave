@@ -156,10 +156,12 @@ private:
 
   typename Array<T>::ArrayRep *nil_rep (void) const
     {
-      static typename Array<T>::ArrayRep *nr
-        = new typename Array<T>::ArrayRep ();
+      // NR was originally allocated with new, but that does not seem
+      // to be necessary since it will never be deleted.  So just use
+      // a static object instead.
 
-      return nr;
+      static typename Array<T>::ArrayRep nr;
+      return &nr;
     }
 
 public:

@@ -195,18 +195,23 @@ function hg = __scatter__ (varargin)
     elseif (columns (c) == 1)
       h = render_size_color (hg, vert, s, c, marker, filled, true);
     else
-      [cc, idx] = unique_idx (c, "rows");
-      if (isscalar (s))
-        for i = 1:rows (x)
-          h = render_size_color (hg, vert(idx{i},:), s, cc(i,:),
+      ## We want to group points by colour. So first get all the unique colours
+      [cc, ~, c_to_cc] = unique (c, "rows");
+
+      for i = 1:rows (cc)
+        ## Now for each possible unique colour, get the logical index of
+        ## points that correspond to that colour
+        idx = (i == c_to_cc);
+
+        if (isscalar (s))
+          h = render_size_color (hg, vert(idx, :), s, c(idx,:),
                                  marker, filled, true);
-        endfor
-      else
-        for i = 1:rows (x)
-          h = render_size_color (hg, vert(idx{i},:), s(idx{i}), cc(i,:),
+        else
+          h = render_size_color (hg, vert(idx, :), s(idx), c(idx,:),
                                  marker, filled, true);
-        endfor
-      endif
+        endif
+      endfor
+
     endif
   endif
 
@@ -248,28 +253,6 @@ function hg = __scatter__ (varargin)
     set (hg, newargs{:});
   endif
 
-endfunction
-
-function [y, idx] =  unique_idx (x, byrows)
-  if (nargin == 2)
-    [xx, idx] = sortrows (x);
-    n = rows (x);
-    jdx = find (any (xx(1:n-1,:) != xx(2:n,:), 2));
-    jdx(end+1) = n;
-    y = xx(jdx,:);
-  else
-    [xx, idx] = sort (x);
-    n = length (x);
-    jdx = find (xx(1:n-1,:) != xx(2:n,:));
-    jdx(end+1) = n;
-    y = xx(jdx);
-  endif
-
-  if (nargin == 2 || columns (x) == 1)
-    idx = mat2cell (idx, diff ([0; jdx]), 1);
-  else
-    idx = mat2cell (idx, 1, diff ([0, jdx]));
-  endif
 endfunction
 
 function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
@@ -318,9 +301,10 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
     endif
   else
     ## FIXME: round the size to one decimal place. It's not quite right, though.
-    [ss, idx] = unique_idx (ceil (s*10) / 10);
+    [ss, ~, s_to_ss] = unique (ceil (s*10) / 10);
     for i = 1:rows (ss)
-      h = render_size_color (hg, vert(idx{i},:), ss(i), c,
+      idx = (i == s_to_ss);
+      h = render_size_color (hg, vert(idx,:), ss(i), c,
                              marker, filled, isflat);
     endfor
   endif

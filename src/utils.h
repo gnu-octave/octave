@@ -103,15 +103,15 @@ identity_matrix (octave_idx_type nr, octave_idx_type nc);
 extern OCTINTERP_API FloatMatrix
 float_identity_matrix (octave_idx_type nr, octave_idx_type nc);
 
-extern OCTINTERP_API int
+extern OCTINTERP_API size_t
 octave_format (std::ostream& os, const char *fmt, ...);
 
-extern OCTINTERP_API int
+extern OCTINTERP_API size_t
 octave_vformat (std::ostream& os, const char *fmt, va_list args);
 
-extern OCTINTERP_API char *octave_vsnprintf (const char *fmt, va_list args);
+extern OCTINTERP_API std::string octave_vsnprintf (const char *fmt, va_list args);
 
-extern OCTINTERP_API char *octave_snprintf (const char *fmt, ...);
+extern OCTINTERP_API std::string octave_snprintf (const char *fmt, ...);
 
 extern OCTINTERP_API void octave_sleep (double seconds);
 

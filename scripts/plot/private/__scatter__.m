@@ -286,7 +286,7 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "none",
                           "markerfacecolor", "flat",
-                          "cdata", c, "facevertexcdata", c(:),
+                          "cdata", c, "facevertexcdata", c,
                           "linestyle", "none");
       else
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
@@ -295,7 +295,7 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "flat",
                           "markerfacecolor", "none",
-                          "cdata", c, "facevertexcdata", c(:),
+                          "cdata", c, "facevertexcdata", c,
                           "linestyle", "none");
       endif
     endif

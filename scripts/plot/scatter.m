@@ -115,3 +115,10 @@ endfunction
 %! s = 10 - 10*log (x.^2 + y.^2);
 %! h = scatter (x, y, [], "r", "s");
 
+%!demo
+%! n = 500;
+%! x = rand(n,1);
+%! y = rand(n,1);
+%! idx = ceil(rand(n,1)*3);
+%! colors = eye(3)(idx, :);
+%! scatter(x,y,15, colors, "filled")

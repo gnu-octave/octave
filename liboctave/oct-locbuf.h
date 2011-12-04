@@ -74,7 +74,7 @@ public:
 
   char *data (void) const { return dat; }
 
-  static void clear (void);
+  static OCTAVE_API void clear (void);
 
 private:
 

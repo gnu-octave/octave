@@ -119,9 +119,6 @@ bool discard_error_messages = false;
 // TRUE means warning messages are turned off.
 bool discard_warning_messages = false;
 
-// The message buffer.
-static std::ostringstream *error_message_buffer = 0;
-
 void
 reset_error_handler (void)
 {
@@ -263,16 +260,7 @@ verror (bool save_last_error, std::ostream& os,
         Vlast_error_stack = initialize_last_error_stack ();
     }
 
-  if (buffer_error_messages)
-    {
-      if (error_message_buffer)
-        msg_string = "error: " + msg_string;
-      else
-        error_message_buffer = new std::ostringstream ();
-
-      *error_message_buffer << msg_string;
-    }
-  else
+  if (! buffer_error_messages)
     {
       octave_diary << msg_string;
       os << msg_string;

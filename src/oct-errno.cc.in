@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cerrno>
 
+#include "singleton-cleanup.h"
+
 #include "oct-errno.h"
 #include "oct-map.h"
 #include "error.h"
@@ -292,7 +294,12 @@ octave_errno::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_errno ();
+    {
+      instance = new octave_errno ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

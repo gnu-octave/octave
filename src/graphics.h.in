@@ -5170,12 +5170,14 @@ protected:
 
 public:
 
+  static void create_instance (void);
+
   static bool instance_ok (void)
   {
     bool retval = true;
 
     if (! instance)
-      instance = new gh_manager ();
+      create_instance ();
 
     if (! instance)
       {
@@ -5186,6 +5188,8 @@ public:
 
     return retval;
   }
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static graphics_handle get_handle (bool integer_figure_handle)
   {

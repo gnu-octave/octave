@@ -32,6 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 
+#include "singleton-cleanup.h"
+
 #include "error.h"
 #include "pr-output.h"
 #include "txt-eng-ft.h"
@@ -72,7 +74,12 @@ public:
       bool retval = true;
 
       if (! instance)
-        instance = new ft_manager ();
+        {
+          instance = new ft_manager ();
+
+          if (instance)
+            singleton_cleanup_list::add (cleanup_instance);
+        }
 
       if (! instance)
         {
@@ -83,6 +90,8 @@ public:
 
       return retval;
     }
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static FT_Face get_font (const std::string& name, const std::string& weight,
                            const std::string& angle, double size)

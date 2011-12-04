@@ -36,10 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <sstream>
 
+#include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-locbuf.h"
+#include "singleton-cleanup.h"
 
-#include "cmd-edit.h"
 #include "cutils.h"
 #include "defun.h"
 #include "display.h"
@@ -47,7 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "ov.h"
-#include "oct-locbuf.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
@@ -7393,6 +7394,14 @@ gh_manager::gh_manager (void)
 
   // Make sure the default graphics toolkit is registered.
   graphics_toolkit::default_toolkit ();
+}
+
+void
+gh_manager::create_instance (void)
+{
+  instance = new gh_manager ();
+
+  singleton_cleanup_list::add (cleanup_instance);
 }
 
 graphics_handle

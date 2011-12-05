@@ -77,8 +77,14 @@ public:
         {
           instance = new ft_manager ();
 
+          // FIXME -- there seem to be some memory management errors
+          // related to fontconfig that cause segfaults when Octave
+          // exits if ft_manager::instance is explicitly deleted.  So
+          // skip doing that for now.
+#if 0
           if (instance)
             singleton_cleanup_list::add (cleanup_instance);
+#endif
         }
 
       if (! instance)

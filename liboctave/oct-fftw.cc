@@ -389,7 +389,12 @@ octave_float_fftw_planner::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_float_fftw_planner ();
+    {
+      instance = new octave_float_fftw_planner ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

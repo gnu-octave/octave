@@ -245,6 +245,8 @@ private:
 
   static octave_float_fftw_planner *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   fftwf_plan
   do_create_plan (int dir, const int rank, const dim_vector dims,
                   octave_idx_type howmany, octave_idx_type stride,

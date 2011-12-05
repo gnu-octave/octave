@@ -120,6 +120,8 @@ display_info::init (bool query)
                 }
               else
                 warning ("X11 display has no default screen");
+
+              XCloseDisplay (display);
             }
           else
             warning ("unable to open X11 DISPLAY");

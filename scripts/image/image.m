@@ -96,8 +96,6 @@ endfunction
 
 function h = __img__ (x, y, img, varargin)
   
-  persistent warn = true
-
   newplot ();
 
   if (isempty (img))
@@ -115,9 +113,13 @@ function h = __img__ (x, y, img, varargin)
   xdata = [x(1), x(end)];
   ydata = [y(1), y(end)];
 
-  if ((numel (unique (diff (x))) > 1 || numel (unique (diff (y))) > 1) && warn)
+  dx = diff (x);
+  dy = diff (y);
+  dx = std (dx) / mean (abs (dx));
+  dy = std (dy) / mean (abs (dy));
+  tol = 100*eps;
+  if (any (dx > tol) || any (dy > tol))
     warning ("Image does not map to non-linearly spaced coordinates")
-    warn = false;
   endif
 
   ca = gca ();

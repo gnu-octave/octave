@@ -21,10 +21,13 @@
 ## @deftypefnx {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
 ## @deftypefnx {Function File} {} polar (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} polar (@dots{})
-## Make a two-dimensional plot given the polar coordinates @var{theta} and
+## Create a two-dimensional plot from polar coordinates @var{theta} and
 ## @var{rho}.
 ##
-## The optional third argument specifies the line type.
+## The optional argument @var{fmt} specifies the line format.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
+##
 ## @seealso{plot}
 ## @end deftypefn
 

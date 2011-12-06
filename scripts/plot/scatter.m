@@ -44,7 +44,8 @@
 ## If the argument @code{"filled"} is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
-## The optional return value @var{h} provides a handle to the patch object
+## The optional return value @var{h} is a graphics handle to the hggroup
+## object representing the points.
 ##
 ## @example
 ## @group
@@ -89,7 +90,7 @@ endfunction
 %!demo
 %! x = randn (100, 1);
 %! y = randn (100, 1);
-%! scatter (x, y, [], sqrt(x.^2 + y.^2));
+%! scatter (x, y, [], sqrt (x.^2 + y.^2));
 
 %!demo
 %! rand_10x1_data1 = [0.171577, 0.404796, 0.025469, 0.335309, 0.047814, 0.898480, 0.639599, 0.700247, 0.497798, 0.737940];
@@ -117,8 +118,9 @@ endfunction
 
 %!demo
 %! n = 500;
-%! x = rand(n,1);
-%! y = rand(n,1);
-%! idx = ceil(rand(n,1)*3);
+%! x = rand (n,1);
+%! y = rand (n,1);
+%! idx = ceil (rand (n,1)*3);
 %! colors = eye(3)(idx, :);
-%! scatter(x,y,15, colors, "filled")
+%! scatter (x,y,15, colors, "filled");
+

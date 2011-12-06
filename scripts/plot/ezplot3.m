@@ -32,8 +32,7 @@
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
 ## value of @var{t}.  @var{n} is a scalar defining the number of points to use.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a graphics handle to the created plot.
 ##
 ## @example
 ## @group
@@ -60,8 +59,10 @@ function retval = ezplot3 (varargin)
   endif
 endfunction
 
+
 %!demo
 %! fx = @(t) cos (t);
 %! fy = @(t) sin (t);
 %! fz = @(t) t;
 %! ezplot3 (fx, fy, fz, [0, 10*pi], 100);
+

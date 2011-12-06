@@ -36,13 +36,13 @@
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
-## The optional return value @var{h} provides a handle to the bar series
-## object.  See @code{bar} for a description of the use of the bar series.
-##
 ## The optional input handle @var{h} allows an axis handle to be passed.
 ## Properties of the patch graphics object can be changed using
 ## @var{prop}, @var{val} pairs.
 ##
+## The optional return value @var{h} is a graphics handle to the created
+## bar series object.  See @code{bar} for a description of the use of the
+## bar series.
 ## @seealso{bar, plot}
 ## @end deftypefn
 
@@ -52,3 +52,7 @@ function varargout = barh (varargin)
   varargout = cell (nargout, 1);
   [varargout{:}] = __bar__ (false, "barh", varargin{:});
 endfunction
+
+
+%% FIXME: Need demo or test for function
+

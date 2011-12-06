@@ -33,9 +33,11 @@
 ## @code{1 : rows (@var{y})}.  A value @var{lvl} can be defined that determines
 ## where the base level of the shading under the curve should be defined.
 ##
-## Additional arguments to the @code{area} function are passed to the
-## @code{patch}.  The optional return value @var{h} provides a handle to
-## area series object representing the patches of the areas.
+## Additional arguments to the @code{area} function are passed to
+## @code{patch}.
+##
+## The optional return value @var{h} is a graphics handle to the hggroup
+## object representing the area patch objects.
 ## @seealso{plot, patch}
 ## @end deftypefn
 

@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
+## @deftypefnx {Function File} {@var{h} =} image (@dots{})
 ## Display a matrix as a color image.  The elements of @var{img} are indices
 ## into the current colormap, and the colormap will be scaled so that the
 ## extremes of @var{img} are mapped to the extremes of the colormap.
@@ -35,6 +36,8 @@
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata,1)}.
+##
+## The optional return value @var{h} is a graphics handle to the image.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 

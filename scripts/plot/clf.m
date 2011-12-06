@@ -26,8 +26,10 @@
 ## graphics objects with visible handles (@code{handlevisibility} = on).
 ## If @var{hfig} is specified operate on it instead of the current figure.
 ## If the optional argument @code{"reset"} is specified, all objects including
-## those with hidden handles are deleted.  If an output value is
-## requested, return the handle of the figure window that was cleared.
+## those with hidden handles are deleted.
+## 
+## The optional return value @var{h} is the graphics handle of the figure
+## window that was cleared.
 ## @seealso{cla, close, delete}
 ## @end deftypefn
 
@@ -82,6 +84,7 @@ function retval = clf (varargin)
 
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -99,3 +102,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

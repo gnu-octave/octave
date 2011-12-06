@@ -22,8 +22,9 @@
 ## Plot a triangular surface in 3D@.  The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned
 ## from @code{delaunay}.  The variable @var{z} is value at the point
-## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic
-## handle of the plot.
+## @code{(@var{x}, @var{y})}.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{triplot, trimesh, delaunay3}
 ## @end deftypefn
 
@@ -87,19 +88,19 @@ endfunction
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z)
+%! trisurf (tri, x, y, z);
 
 %!demo
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, "facecolor", "interp")
+%! trisurf (tri, x, y, z, "facecolor", "interp");
 
 %!demo
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k")
+%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k");
 

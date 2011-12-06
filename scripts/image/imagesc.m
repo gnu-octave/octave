@@ -32,6 +32,7 @@
 ## values for the respective axes, or as values for each row and column
 ## of the matrix @var{A}.
 ##
+## The optional return value @var{h} is a graphics handle to the image.
 ## @seealso{image, imshow, caxis}
 ## @end deftypefn
 

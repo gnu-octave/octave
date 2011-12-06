@@ -44,9 +44,10 @@
 ## min (pos (1:2)) / max (pos (1:2)) * curv
 ## @end example
 ##
-## Other properties are passed to the underlying patch command.  If called
-## with an output argument, @code{rectangle} returns the handle to the
-## rectangle.
+## Other properties are passed to the underlying patch command. 
+## 
+## The optional return value @var{h} is a graphics handle to the created
+## rectangle object.
 ## @end deftypefn
 ## @seealso{patch}
 

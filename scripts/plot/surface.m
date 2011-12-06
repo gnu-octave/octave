@@ -33,6 +33,9 @@
 ## are missing, they are constructed from size of the matrix @var{z}.
 ##
 ## Any additional properties passed are assigned to the surface.
+## 
+## The optional return value @var{h} is a graphics handle to the created
+## surface object.
 ## @seealso{surf, mesh, patch, line}
 ## @end deftypefn
 
@@ -163,8 +166,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
 
 endfunction
 
-## Mark file as being tested.  Tests for surface are in
-## surf.m, surfc.m, surfl.m, and pcolor.m
+## Functional tests for surface() are in surf.m, surfc.m, surfl.m, and pcolor.m
 
 %!test
 %! hf = figure ("visible", "off");
@@ -183,3 +185,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

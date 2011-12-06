@@ -26,6 +26,8 @@
 ## Produce a two-dimensional plot using a logarithmic scale for the @var{x}
 ## axis.  See the documentation of @code{plot} for a description of the
 ## arguments that @code{semilogx} will accept.
+## 
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{plot, semilogy, loglog}
 ## @end deftypefn
 
@@ -60,6 +62,7 @@ function retval = semilogx (varargin)
 
 endfunction
 
+
 %!demo
 %! x = 1:0.01:10;
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
@@ -70,28 +73,28 @@ endfunction
 %! x = logspace (-5, 1, 10);
 %! y = logspace (-5, 1, 10);
 %!
-%! subplot (1, 2, 1)
-%! semilogx (x, y)
-%! xlabel ('semilogx (x, y)')
+%! subplot (1, 2, 1);
+%! semilogx (x, y);
+%! xlabel ("semilogx (x, y)");
 %!
-%! subplot (1, 2, 2)
-%! semilogx (-x, y)
-%! xlabel ('semilogx (-x, y)')
+%! subplot (1, 2, 2);
+%! semilogx (-x, y);
+%! xlabel ("semilogx (-x, y)");
 
 %!demo
 %! clf ();
 %! x = logspace (-5, 1, 10);
 %! y = logspace (-5, 1, 10);
 %!
-%! subplot (1, 2, 1)
-%! semilogx (x, y)
+%! subplot (1, 2, 1);
+%! semilogx (x, y);
 %! set (gca, "xdir", "reverse", "activepositionproperty", "outerposition")
 %! xlabel ({"semilogx (x, y)", "xdir = reversed"})
 %!
-%! subplot (1, 2, 2)
-%! semilogx (-x, y)
-%! set (gca, "xdir", "reverse", "activepositionproperty", "outerposition")
-%! xlabel ({"semilogx (-x, y)","xdir = reversed"})
+%! subplot (1, 2, 2);
+%! semilogx (-x, y);
+%! set (gca, "xdir", "reverse", "activepositionproperty", "outerposition");
+%! xlabel ({"semilogx (-x, y)", "xdir = reversed"});
 
 %!test
 %! hf = figure ("visible", "off");
@@ -102,7 +105,7 @@ endfunction
 %!   assert (get (gca, "xscale"), "log");
 %!   assert (get (gca, "yscale"), "linear");
 %! unwind_protect_cleanup
-%! close (hf);
+%!   close (hf);
 %! end_unwind_protect
 
 %!test
@@ -110,9 +113,10 @@ endfunction
 %! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b =-logspace (-5, 1, 10);
-%!   semilogx (a, b)
-%!   axis tight
+%!   semilogx (a, b);
+%!   axis tight;
 %!   assert (all (get (gca, "ytick") < 0));
 %! unwind_protect_cleanup
-%! close (hf);
+%!   close (hf);
 %! end_unwind_protect
+

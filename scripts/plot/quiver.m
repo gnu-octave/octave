@@ -34,7 +34,7 @@
 ## size(@var{u})}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
-##  the arrows of the field relative to the mesh spacing.  A value of 0
+## the arrows of the field relative to the mesh spacing.  A value of 0
 ## disables all scaling.  The default value is 1.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
@@ -43,9 +43,9 @@
 ## printed rather than arrows.  If the argument 'filled' is given then the
 ## markers as filled.
 ##
-## The optional return value @var{h} provides a quiver group that
-## regroups the components of the quiver plot (body, arrow and marker),
-## and allows them to be changed together
+## The optional return value @var{h} is a graphics handle to a quiver object.
+## A quiver object regroups the components of the quiver plot (body, arrow,
+## and marker), and allows them to be changed together.
 ##
 ## @example
 ## @group
@@ -81,14 +81,18 @@ function retval = quiver (varargin)
 
 endfunction
 
+
 %!demo
 %! clf
-%! [x,y] = meshgrid(1:2:20);
-%! h = quiver(x,y,sin(2*pi*x/10),sin(2*pi*y/10));
+%! [x,y] = meshgrid (1:2:20);
+%! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10));
 %! set (h, "maxheadsize", 0.33);
 
 %!demo
-%! axis("equal");
-%! x=linspace(0,3,80); y=sin(2*pi*x); theta=2*pi*x+pi/2;
-%! quiver(x,y,sin(theta)/10,cos(theta)/10);
+%! axis ("equal");
+%! x = linspace (0,3,80);
+%! y = sin (2*pi*x);
+%! theta = 2*pi*x + pi/2;
+%! quiver (x, y, sin (theta)/10, cos (theta)/10);
 %! hold on; plot(x,y,"r"); hold off;
+

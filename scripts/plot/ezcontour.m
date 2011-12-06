@@ -35,8 +35,7 @@
 ##
 ## @var{n} is a scalar defining the number of points to use in each dimension.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a graphics handle to the created plot.
 ##
 ## @example
 ## @group
@@ -61,6 +60,8 @@ function retval = ezcontour (varargin)
   endif
 endfunction
 
+
 %!demo
 %! f = @(x,y) sqrt(abs(x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezcontour (f, [-3, 3]);
+

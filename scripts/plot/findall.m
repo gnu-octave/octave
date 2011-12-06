@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{h} =} findall (@var{prop_name}, @var{prop_value})
 ## @deftypefnx {Function File} {@var{h} =} findall (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findall (@var{h}, "-depth", @var{d}, @dots{})
-## Find object with specified property values including hidden handles.
+## Find graphics object with specified property values including hidden handles.
 ##
 ## This function performs the same function as @code{findobj}, but it
 ## includes hidden objects in its search.  For full documentation, see

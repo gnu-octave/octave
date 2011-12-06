@@ -22,8 +22,9 @@
 ## Plot a triangular mesh in 3D@.  The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned
 ## from @code{delaunay}.  The variable @var{z} is value at the point
-## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic
-## handle of the plot.
+## @code{(@var{x}, @var{y})}.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{triplot, trisurf, delaunay3}
 ## @end deftypefn
 

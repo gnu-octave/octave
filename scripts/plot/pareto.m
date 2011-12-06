@@ -41,6 +41,10 @@
 ## @var{y} can be a string array, a cell array of strings or a numerical
 ## vector.
 ##
+## The optional return value @var{h} is a 2-element vector with a graphics
+## handle for the created bar plot and a second handle for the created line
+## plot.
+##
 ## An example of the use of @code{pareto} is
 ##
 ## @example
@@ -48,7 +52,7 @@
 ## Cheese = @{"Cheddar", "Swiss", "Camembert", ...
 ##           "Munster", "Stilton", "Blue"@};
 ## Sold = [105, 30, 70, 10, 15, 20];
-## pareto(Sold, Cheese);
+## pareto (Sold, Cheese);
 ## @end group
 ## @end example
 ## @end deftypefn
@@ -99,12 +103,13 @@ function h = pareto (varargin)
 
 endfunction
 
+
 %!demo
 %! clf
-%! colormap (jet (64))
+%! colormap (jet (64));
 %! Cheese = {"Cheddar", "Swiss", "Camembert", "Munster", "Stilton", "Blue"};
 %! Sold = [105, 30, 70, 10, 15, 20];
-%! pareto(Sold, Cheese);
+%! pareto (Sold, Cheese);
 
 %!demo
 %! clf
@@ -114,3 +119,4 @@ endfunction
 %! SoldUnits = [54723 41114 16939 1576091 168000 687197 120222 168195, ...
 %!              1084118 55576]';
 %! pareto (Value.*SoldUnits, Codes);
+

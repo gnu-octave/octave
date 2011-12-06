@@ -23,6 +23,7 @@
 ## @deftypefnx {Function File} {} imshow (@var{rgb}, @dots{})
 ## @deftypefnx {Function File} {} imshow (@var{filename})
 ## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} imshow (@dots{})
 ## Display the image @var{im}, where @var{im} can be a 2-dimensional
 ## (gray-scale image) or a 3-dimensional (RGB image) matrix.
 ##
@@ -44,6 +45,8 @@
 ## @item "displayrange"
 ## @var{value1} is the display range as described above.
 ## @end table
+##
+## The optional return value @var{h} is a graphics handle to the image.
 ## @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 ## @end deftypefn
 

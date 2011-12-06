@@ -32,6 +32,9 @@
 ## The color of the surface is derived from the @code{colormap} and
 ## the value of @var{z}.  Optionally the color of the surface can be
 ## specified independent of @var{z}, by adding a fourth matrix, @var{c}.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## surface object.
 ## @seealso{colormap, contour, meshgrid, mesh}
 ## @end deftypefn
 
@@ -61,19 +64,21 @@ function retval = surf (varargin)
 
 endfunction
 
+
 %!demo
 %! clf
-%! [~,~,Z]=peaks;
-%! surf(Z);
+%! [~,~,Z] = peaks;
+%! surf (Z);
 
 %!demo
-%! [~,~,Z]=sombrero;
-%! [Fx,Fy] = gradient(Z);
-%! surf(Z,Fx+Fy);
+%! [~,~,Z] = sombrero;
+%! [Fx,Fy] = gradient (Z);
+%! surf (Z, Fx+Fy);
 %! shading interp;
 
 %!demo
-%! [X,Y,Z]=sombrero;
-%! [~,Fy] = gradient(Z);
-%! surf(X,Y,Z,Fy);
+%! [X,Y,Z] = sombrero;
+%! [~,Fy] = gradient (Z);
+%! surf (X, Y, Z, Fy);
 %! shading interp;
+

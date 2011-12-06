@@ -26,6 +26,8 @@
 ## Produce a two-dimensional plot using log scales for both axes.  See
 ## the documentation of @code{plot} for a description of the arguments
 ## that @code{loglog} will accept.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{plot, semilogx, semilogy}
 ## @end deftypefn
 

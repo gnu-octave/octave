@@ -31,17 +31,17 @@
 ## The style to use for the plot can be defined with a line style @var{style}
 ## in a similar manner to the line styles used with the @code{plot} command.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a vector of graphics handles to the
+## line objects representing the drawn vectors.
 ##
 ## @example
 ## @group
-## a = toeplitz([1;randn(9,1)],[1,randn(1,9)]);
+## a = toeplitz ([1;randn(9,1)], [1,randn(1,9)]);
 ## compass (eig (a))
 ## @end group
 ## @end example
 ##
-## @seealso{plot, polar, quiver, feather}
+## @seealso{polar, quiver, feather, plot}
 ## @end deftypefn
 
 function retval = compass (varargin)

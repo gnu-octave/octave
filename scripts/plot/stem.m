@@ -47,8 +47,8 @@
 ## @noindent
 ## plots 10 stems with heights from 2 to 20 in red;
 ##
-## The return value of @code{stem} is a vector of "stem series" graphics
-## handles, with one handle per column of the variable @var{y}.  This
+## The optional return value @var{h} is a vector of "stem series" graphics
+## handles with one handle per column of the variable @var{y}.  The
 ## handle regroups the elements of the stem graph together as the
 ## children of the "stem series" handle, allowing them to be altered
 ## together.  For example,
@@ -86,33 +86,34 @@ function h = stem (varargin)
 
 endfunction
 
+
 %!demo
 %! x = 1:10;
 %! stem (x);
 
 %!demo
 %! x = 1:10;
-%! y = ones (1, length (x))*2.*x;
+%! y = 2*x;
 %! stem (x, y);
 
 %!demo
 %! x = 1:10;
-%! y = ones (size (x))*2.*x;
+%! y = 2*x;
 %! h = stem (x, y, "r");
 
 %!demo
 %! x = 1:10;
-%! y = ones (size (x))*2.*x;
+%! y = 2*x;
 %! h = stem (x, y, "-.k");
 
 %!demo
 %! x = 1:10;
-%! y = ones (size (x))*2.*x;
+%! y = 2*x;
 %! h = stem (x, y, "-.k.");
 
 %!demo
 %! x = 1:10;
-%! y = ones (size (x))*2.*x;
+%! y = 2*x;
 %! h = stem (x, y, "filled");
 
 %!demo
@@ -121,3 +122,4 @@ endfunction
 %! h = stem (x, y);
 %! set (h(2), "color", "g");
 %! set (h(1), "basevalue", -1)
+

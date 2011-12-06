@@ -23,8 +23,9 @@
 ## Plot a triangular mesh in 2D@.  The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned from
 ## @code{delaunay}.  If given, @var{linespec} determines the properties
-## to use for the lines.  The output argument @var{h} is the graphic handle
-## of the plot.
+## to use for the lines. 
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{plot, trimesh, trisurf, delaunay}
 ## @end deftypefn
 

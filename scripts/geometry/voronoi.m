@@ -36,7 +36,7 @@
 ## @url{http://www.qhull.org/html/qh-quick.htm#options}.
 ##
 ## If a single output argument is requested then the Voronoi diagram will be
-## plotted and a graphics handle to the plot is returned.
+## plotted and a graphics handle @var{h} to the plot is returned.
 ## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the Voronoi vertices
 ## instead of plotting the diagram.
 ##

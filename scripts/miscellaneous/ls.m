@@ -51,14 +51,17 @@ function retval = ls (varargin)
     args = tilde_expand (varargin);
 
     if (nargin > 0)
-      ## FIXME -- this will fail for filenames that contain single quote
-      ## characters...
-      cmd = sprintf (" '%s'", args{:});
+      if (ispc () && ! isunix ())
+        ## shell (cmd.exe) on MinGW uses '^' as escape character
+        args = regexprep (args{:}, '([^\w.*?])', '^$1');
+      else
+        args = regexprep (args{:}, '([^\w.*?])', '\$1');
+      endif
     else
-      cmd = "";
+      args = "";
     endif
 
-    cmd = sprintf ("%s%s", __ls_command__, cmd);
+    cmd = sprintf ("%s %s", __ls_command__, args);
 
     if (page_screen_output () || nargout > 0)
 

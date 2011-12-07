@@ -46,8 +46,10 @@ octave_value_typeinfo::instance_ok (void)
     {
       instance = new octave_value_typeinfo ();
 
+#if 0
       if (instance)
         singleton_cleanup_list::add (cleanup_instance);
+#endif
     }
 
   if (! instance)

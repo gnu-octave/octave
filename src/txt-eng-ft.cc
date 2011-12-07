@@ -24,9 +24,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if HAVE_FREETYPE
+#if defined (HAVE_FREETYPE)
 
-#if HAVE_FONTCONFIG
+#if defined (HAVE_FONTCONFIG)
 #include <fontconfig/fontconfig.h>
 #endif
 
@@ -77,14 +77,8 @@ public:
         {
           instance = new ft_manager ();
 
-          // FIXME -- there seem to be some memory management errors
-          // related to fontconfig that cause segfaults when Octave
-          // exits if ft_manager::instance is explicitly deleted.  So
-          // skip doing that for now.
-#if 0
           if (instance)
             singleton_cleanup_list::add (cleanup_instance);
-#endif
         }
 
       if (! instance)
@@ -117,36 +111,38 @@ private:
 
   ft_manager& operator = (const ft_manager&);
 
-  ft_manager (void) : library ()
-#if HAVE_FONTCONFIG
-    , fc_init_done (false)
-#endif
+  ft_manager (void)
+    : library (), freetype_initialized (false), fontconfig_initialized (false)
     {
       if (FT_Init_FreeType (&library))
-        {
-          ::error ("unable to initialize freetype library");
-        }
-
-#if HAVE_FONTCONFIG
-      fc_init_done = false;
-      if (! FcInit ())
-        {
-          ::error ("unable to initialize fontconfig library");
-        }
+        ::error ("unable to initialize freetype library");
       else
-        {
-          fc_init_done = true;
-        }
+        freetype_initialized = true;
+
+#if defined (HAVE_FONTCONFIG)
+      if (! FcInit ())
+        ::error ("unable to initialize fontconfig library");
+      else
+        fontconfig_initialized = true;
 #endif
     }
 
   ~ft_manager (void)
     {
-#if HAVE_FONTCONFIG
-      FcFini ();
-      fc_init_done = false;
+      if (freetype_initialized)
+        FT_Done_FreeType (library);
+
+#if defined (HAVE_FONTCONFIG)
+      // FIXME -- Skip the call to FcFini because it can trigger the
+      // assertion
+      //
+      //   octave: fccache.c:507: FcCacheFini: Assertion `fcCacheChains[i] == ((void *)0)' failed.
+      //
+      // if (fontconfig_initialized)
+      //   FcFini ();
 #endif
     }
+
 
   FT_Face do_get_font (const std::string& name, const std::string& weight,
                        const std::string& angle, double size)
@@ -155,8 +151,8 @@ private:
 
       std::string file;
 
-#if HAVE_FONTCONFIG
-      if (fc_init_done)
+#if defined (HAVE_FONTCONFIG)
+      if (fontconfig_initialized)
         {
           int fc_weight, fc_angle;
 
@@ -233,9 +229,8 @@ private:
 
 private:
   FT_Library library;
-#if HAVE_FONTCONFIG
-  bool fc_init_done;
-#endif
+  bool freetype_initialized;
+  bool fontconfig_initialized;
 };
 
 ft_manager* ft_manager::instance = 0;

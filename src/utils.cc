@@ -1214,7 +1214,7 @@ octave_format (std::ostream& os, const char *fmt, ...)
 size_t
 octave_vformat (std::ostream& os, const char *fmt, va_list args)
 {
-  std::string s = octave_vsnprintf (fmt, args);
+  std::string s = octave_vasprintf (fmt, args);
 
   os << s;
 
@@ -1222,13 +1222,13 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 }
 
 std::string
-octave_vsnprintf (const char *fmt, va_list args)
+octave_vasprintf (const char *fmt, va_list args)
 {
   std::string retval;
 
   char *result;
 
-  int status = vasprintf (&result, fmt, args);
+  int status = gnulib::vasprintf (&result, fmt, args);
 
   if (status >= 0)
     {
@@ -1240,14 +1240,14 @@ octave_vsnprintf (const char *fmt, va_list args)
 }
 
 std::string
-octave_snprintf (const char *fmt, ...)
+octave_asprintf (const char *fmt, ...)
 {
   std::string retval;
 
   va_list args;
   va_start (args, fmt);
 
-  retval = octave_vsnprintf (fmt, args);
+  retval = octave_vasprintf (fmt, args);
 
   va_end (args);
 

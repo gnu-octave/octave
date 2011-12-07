@@ -109,9 +109,10 @@ octave_format (std::ostream& os, const char *fmt, ...);
 extern OCTINTERP_API size_t
 octave_vformat (std::ostream& os, const char *fmt, va_list args);
 
-extern OCTINTERP_API std::string octave_vsnprintf (const char *fmt, va_list args);
+extern OCTINTERP_API std::string
+octave_vasprintf (const char *fmt, va_list args);
 
-extern OCTINTERP_API std::string octave_snprintf (const char *fmt, ...);
+extern OCTINTERP_API std::string octave_asprintf (const char *fmt, ...);
 
 extern OCTINTERP_API void octave_sleep (double seconds);
 

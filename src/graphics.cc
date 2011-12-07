@@ -7401,7 +7401,9 @@ gh_manager::create_instance (void)
 {
   instance = new gh_manager ();
 
+#if 0
   singleton_cleanup_list::add (cleanup_instance);
+#endif
 }
 
 graphics_handle

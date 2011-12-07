@@ -749,9 +749,6 @@ public:
     status->hide ();
     uimenu->hide ();
     this->hide ();
-    delete canvas;
-    delete status;
-    delete uimenu;
   }
 
   double number (void) { return fp.get___myhandle__ ().value (); }

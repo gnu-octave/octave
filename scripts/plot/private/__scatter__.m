@@ -133,6 +133,8 @@ function hg = __scatter__ (varargin)
   addlistener (hg, "cdata", @update_data);
   addlistener (hg, "sizedata", @update_data);
 
+  one_explicit_color = ischar (c) || isequal (size (c), [1, 3]);
+
   if (numel (x) <= 100)
 
     ## For small number of points, we'll construct an object for each point.
@@ -141,7 +143,7 @@ function hg = __scatter__ (varargin)
       s = repmat (s, numel(x), 1);
     endif
 
-    if (ischar (c) || rows(c) == 1)
+    if (one_explicit_color)
       for i = 1 : numel (x)
         if (filled)
           h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
@@ -160,6 +162,9 @@ function hg = __scatter__ (varargin)
         endif
       endfor
     else
+      if (rows (c) == 1)
+        c = ones (rows (x), 1) * c;
+      endif
       for i = 1 : numel (x)
         if (filled)
           h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
@@ -189,12 +194,12 @@ function hg = __scatter__ (varargin)
     ## For larger numbers of points, we split the points by common color.
 
     vert = [x, y, z];
-
-    if (ischar (c) || rows (c) == 1)
-      h = render_size_color (hg, vert, s, c, marker, filled, false);
-    elseif (columns (c) == 1)
+    if (one_explicit_color)
       h = render_size_color (hg, vert, s, c, marker, filled, true);
     else
+      if (rows (c) == 1)
+        c = ones (rows (x), 1) * c;
+      endif
       ## We want to group points by colour. So first get all the unique colours
       [cc, ~, c_to_cc] = unique (c, "rows");
 
@@ -202,7 +207,6 @@ function hg = __scatter__ (varargin)
         ## Now for each possible unique colour, get the logical index of
         ## points that correspond to that colour
         idx = (i == c_to_cc);
-
         if (isscalar (s))
           h = render_size_color (hg, vert(idx, :), s, c(idx,:),
                                  marker, filled, true);
@@ -231,14 +235,14 @@ function hg = __scatter__ (varargin)
   addproperty ("marker", hg, "patchmarker", marker);
   if (filled)
     addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", "none");
-    if (ischar (c) || rows (c) == 1)
+    if (one_explicit_color)
       addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", c);
     else
       addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "flat");
     endif
   else
     addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "none");
-    if (ischar (c) || rows (c) == 1)
+    if (one_explicit_color)
       addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", c);
     else
       addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", "flat");
@@ -260,21 +264,26 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
     x = vert(:,1);
     y = vert(:,2);
     z = vert(:,3:end);
-    if (ischar (c) || !isflat)
+    toolkit = get (ancestor (hg, "figure"), "__graphics_toolkit__");
+    ## Does gnuplot only support triangles with different vertex colors ?
+    ## TODO - Verify gnuplot can only support one color. If RGB triplets
+    ##        can be assigned to each vertex, then fix __go_draw_axe__.m
+    gnuplot_hack = numel (x) > 1 && strcmp (toolkit, "gnuplot");
+    if (ischar (c) || ! isflat || gnuplot_hack)
       if (filled)
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel(x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
                           "markeredgecolor", "none",
-                          "markerfacecolor", c,
+                          "markerfacecolor", c(1,:),
                           "markersize", s, "linestyle", "none");
       else
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel(x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
-                          "markeredgecolor", c,
+                          "markeredgecolor", c(1,:),
                           "markerfacecolor", "none",
                           "markersize", s, "linestyle", "none");
       endif

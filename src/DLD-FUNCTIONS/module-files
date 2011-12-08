@@ -57,7 +57,6 @@ max.cc
 md5sum.cc
 mgorth.cc
 nproc.cc
-onCleanup.cc
 pinv.cc
 qr.cc|$(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)|$(QRUPDATE_LDFLAGS) $(SPARSE_XLDFLAGS)|$(QRUPDATE_LIBS) $(SPARSE_XLIBS)
 quad.cc

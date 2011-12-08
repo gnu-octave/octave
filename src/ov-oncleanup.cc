@@ -24,77 +24,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "defun-dld.h"
-#include "ov-base.h"
-#include "ov.h"
+#include "defun.h"
+#include "ov-cleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pt-misc.h"
 #include "toplev.h"
 
-static void gripe_internal (void)
-{
-  error ("onCleanup: internal error: cloning nonempty object");
-}
-
-class octave_oncleanup : public octave_base_value, octave_auto_shlib
-{
-public:
-  octave_oncleanup (void) : fcn () { }
-  octave_oncleanup (const octave_value& fcn);
-
-  octave_base_value *clone (void) const
-    {
-      if (fcn.is_defined ())
-        gripe_internal ();
-      return empty_clone ();
-    }
-
-  octave_base_value *empty_clone (void) const { return new octave_oncleanup (); }
-
-  ~octave_oncleanup (void);
-
-  bool is_defined (void) const { return true; }
-
-  bool is_object (void) const { return true; } // do we want this?
-
-  octave_map map_value (void) const
-    { return scalar_map_value (); }
-
-  octave_scalar_map scalar_map_value (void) const;
-
-  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
-
-  bool save_ascii (std::ostream& os);
-
-  bool load_ascii (std::istream& is);
-
-  bool save_binary (std::ostream& os, bool& save_as_floats);
-
-  bool load_binary (std::istream& is, bool swap,
-                    oct_mach_info::float_format fmt);
-
-#if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
-
-  bool load_hdf5 (hid_t loc_id, const char *name);
-#endif
-
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
-
-private:
-
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
-protected:
-
-    octave_value fcn;
-
-};
-
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_oncleanup, "onCleanup", "onCleanup");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_oncleanup, "onCleanup",
+                                     "onCleanup");
 
 octave_oncleanup::octave_oncleanup (const octave_value& f)
   : fcn (f)
@@ -104,10 +42,13 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
       octave_function *fptr = f.function_value (true);
       if (fptr)
         {
-          octave_user_function *uptr = dynamic_cast<octave_user_function *> (fptr);
+          octave_user_function *uptr
+            = dynamic_cast<octave_user_function *> (fptr);
+
           if (uptr != 0)
             {
               tree_parameter_list *pl = uptr->parameter_list ();
+
               if (pl != 0 && pl->length () > 0)
                 warning ("onCleanup: cleanup action takes parameters");
             }
@@ -207,7 +148,6 @@ octave_oncleanup::save_binary (std::ostream& /* os */, bool& /* save_as_floats *
   return true;
 }
 
-
 bool
 octave_oncleanup::load_binary (std::istream& /* is */, bool /* swap */,
                                oct_mach_info::float_format /* fmt */)
@@ -249,7 +189,7 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
   os << ")";
 }
 
-DEFUN_DLD (onCleanup, args, ,
+DEFUN (onCleanup, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{c} =} onCleanup (@var{action})\n\
 Create a special object that executes a given function upon destruction.\n\
@@ -263,12 +203,7 @@ For similar functionality @xref{The @code{unwind_protect} Statement}.\n\
   octave_value retval;
 
   if (args.length () == 1)
-    {
-      if (octave_oncleanup::static_type_id () < 0)
-        octave_oncleanup::register_type ();
-
-      retval = new octave_oncleanup (args(0));
-    }
+    retval = octave_value (new octave_oncleanup (args(0)));
   else
     print_usage ();
 

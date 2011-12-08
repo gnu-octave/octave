@@ -179,6 +179,7 @@ OV_INCLUDES = \
   ov-lazy-idx.h \
   ov-mex-fcn.h \
   ov-null-mat.h \
+  ov-oncleanup.h \
   ov-perm.h \
   ov-range.h \
   ov-re-diag.h \
@@ -357,6 +358,7 @@ OV_SRC = \
   ov-lazy-idx.cc \
   ov-mex-fcn.cc \
   ov-null-mat.cc \
+  ov-oncleanup.cc \
   ov-perm.cc \
   ov-range.cc \
   ov-re-diag.cc \

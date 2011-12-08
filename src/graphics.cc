@@ -2890,19 +2890,6 @@ graphics_toolkit::default_toolkit (void)
   return available_toolkits["gnuplot"];
 }
 
-void
-graphics_toolkit::close_all_toolkits (void)
-{
-  while (! available_toolkits.empty ())
-    {
-      available_toolkits_iterator p = available_toolkits.begin ();
-
-      p->second.close ();
-
-      available_toolkits.erase (p);
-    }
-}
-
 std::map<std::string, graphics_toolkit> graphics_toolkit::available_toolkits;
 
 // ---------------------------------------------------------------------

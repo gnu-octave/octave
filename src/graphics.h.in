@@ -2236,8 +2236,6 @@ public:
   // Close the graphics toolkit.
   void close (void) { rep->close (); }
 
-  void close_all_toolkits (void);
-
   OCTINTERP_API static graphics_toolkit default_toolkit (void);
 
   static void register_toolkit (const graphics_toolkit& b)
@@ -2267,6 +2265,23 @@ public:
       m(i) = p->first;
 
     return m;
+  }
+
+  static void close_all_toolkits (void)
+  {
+    while (! available_toolkits.empty ())
+      {
+        available_toolkits_iterator p = available_toolkits.begin ();
+
+        std::string name = p->first;
+
+        p->second.close ();
+
+        // The toolkit may have unregistered itself.  If not, we'll do
+        // it here.
+        if (available_toolkits.find (name) != available_toolkits.end ())
+          unregister_toolkit (name);
+      }
   }
 
 private:

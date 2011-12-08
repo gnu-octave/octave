@@ -137,7 +137,7 @@ charMatrix::row_as_string (octave_idx_type r, bool strip_ws) const
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (r == 0 && nr == 0 && nc == 0)
+  if (r == 0 && (nr == 0 || nc == 0))
     return retval;
 
   if (r < 0 || r >= nr)

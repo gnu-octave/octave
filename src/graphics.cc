@@ -2323,6 +2323,114 @@ gca (void)
 }
 
 static void
+delete_graphics_object (const graphics_handle& h)
+{
+  if (h.ok ())
+    {
+      graphics_object obj = gh_manager::get_object (h);
+
+      // Don't do recursive deleting, due to callbacks
+      if (! obj.get_properties ().is_beingdeleted ())
+        {
+          graphics_handle parent_h = obj.get_parent ();
+
+          graphics_object parent_obj =
+            gh_manager::get_object (parent_h);
+
+          // NOTE: free the handle before removing it from its
+          //       parent's children, such that the object's
+          //       state is correct when the deletefcn callback
+          //       is executed
+
+          gh_manager::free (h);
+
+          // A callback function might have already deleted
+          // the parent
+          if (parent_obj.valid_object ())
+            parent_obj.remove_child (h);
+
+          Vdrawnow_requested = true;
+        }
+    }
+}
+
+static void
+delete_graphics_object (double val)
+{
+  delete_graphics_object (gh_manager::lookup (val));
+}
+
+static void
+delete_graphics_objects (const NDArray vals)
+{
+  for (octave_idx_type i = 0; i < vals.numel (); i++)
+    delete_graphics_object (vals.elem (i));
+}
+
+static void
+close_figure (const graphics_handle& handle)
+{
+  octave_value closerequestfcn = xget (handle, "closerequestfcn");
+
+  OCTAVE_SAFE_CALL (gh_manager::execute_callback, (handle, closerequestfcn));
+}
+
+static void
+force_close_figure (const graphics_handle& handle)
+{
+  // Remove the deletefcn and closerequestfcn callbacks and delete the
+  // object directly.
+
+  xset (handle, "deletefcn", Matrix ());
+  xset (handle, "closerequestfcn", Matrix ());
+
+  delete_graphics_object (handle);
+}
+
+void
+gh_manager::do_close_all_figures (void)
+{
+  // FIXME -- should we process or discard pending events?
+
+  event_queue.clear ();
+
+  // Don't use figure_list_iterator because we'll be removing elements
+  // from the list elsewhere.
+
+  Matrix hlist = do_figure_handle_list (true);
+
+  for (octave_idx_type i = 0; i < hlist.numel (); i++)
+    {
+      graphics_handle h = gh_manager::lookup (hlist(i));
+
+      if (h.ok ())
+        close_figure (h);
+    }
+
+  // They should all be closed now.  If not, force them to close.
+
+  hlist = do_figure_handle_list (true);
+
+  for (octave_idx_type i = 0; i < hlist.numel (); i++)
+    {
+      graphics_handle h = gh_manager::lookup (hlist(i));
+
+      if (h.ok ())
+        force_close_figure (h);
+    }
+
+  // None left now, right?
+
+  hlist = do_figure_handle_list (true);
+
+  assert (hlist.numel () == 0);
+
+  // Clear all callback objects from our list.
+
+  callback_objects.clear ();
+}
+
+static void
 adopt (const graphics_handle& p, const graphics_handle& h)
 {
   graphics_object parent_obj = gh_manager::get_object (p);
@@ -2417,6 +2525,7 @@ base_graphics_toolkit::finalize (const graphics_handle& h)
 
   finalize (go);
 }
+
 // ---------------------------------------------------------------------
 
 void
@@ -2736,6 +2845,8 @@ public:
   Matrix get_screen_size (void) const
     { return Matrix (1, 2, 0.0); }
 
+  void close (void) { }
+
 private:
   void send_quit (const octave_value& pstream) const
     {
@@ -2777,6 +2888,19 @@ graphics_toolkit::default_toolkit (void)
     register_toolkit (new gnuplot_toolkit ());
 
   return available_toolkits["gnuplot"];
+}
+
+void
+graphics_toolkit::close_all_toolkits (void)
+{
+  while (! available_toolkits.empty ())
+    {
+      available_toolkits_iterator p = available_toolkits.begin ();
+
+      p->second.close ();
+
+      available_toolkits.erase (p);
+    }
 }
 
 std::map<std::string, graphics_toolkit> graphics_toolkit::available_toolkits;
@@ -2937,7 +3061,8 @@ root_figure::properties::set_currentfigure (const octave_value& v)
     {
       currentfigure = val;
 
-      gh_manager::push_figure (val);
+      if (val.ok ())
+        gh_manager::push_figure (val);
     }
   else
     gripe_set_invalid ("currentfigure");
@@ -7401,9 +7526,8 @@ gh_manager::create_instance (void)
 {
   instance = new gh_manager ();
 
-#if 0
-  singleton_cleanup_list::add (cleanup_instance);
-#endif
+  if (instance)
+    singleton_cleanup_list::add (cleanup_instance);
 }
 
 graphics_handle
@@ -8783,40 +8907,7 @@ Undocumented internal function.\n\
             }
 
           if (! error_state)
-            {
-              for (octave_idx_type i = 0; i < vals.numel (); i++)
-                {
-                  h = gh_manager::lookup (vals.elem (i));
-
-                  if (h.ok ())
-                    {
-                      graphics_object obj = gh_manager::get_object (h);
-
-                      // Don't do recursive deleting, due to callbacks
-                      if (! obj.get_properties ().is_beingdeleted ())
-                        {
-                          graphics_handle parent_h = obj.get_parent ();
-
-                          graphics_object parent_obj =
-                            gh_manager::get_object (parent_h);
-
-                          // NOTE: free the handle before removing it from its
-                          //       parent's children, such that the object's
-                          //       state is correct when the deletefcn callback
-                          //       is executed
-
-                          gh_manager::free (h);
-
-                          // A callback function might have already deleted
-                          // the parent
-                          if (parent_obj.valid_object ())
-                            parent_obj.remove_child (h);
-
-                          Vdrawnow_requested = true;
-                        }
-                    }
-                }
-            }
+            delete_graphics_objects (vals);
         }
       else
         error ("delete: invalid graphics object");
@@ -9023,7 +9114,6 @@ undocumented.\n\
 @end deftypefn")
 {
   static int drawnow_executing = 0;
-  static bool __go_close_all_registered__ = false;
 
   octave_value retval;
 
@@ -9036,13 +9126,6 @@ undocumented.\n\
 
   if (++drawnow_executing <= 1)
     {
-      if (! __go_close_all_registered__)
-        {
-          octave_add_atexit_function ("__go_close_all__");
-
-          __go_close_all_registered__ = true;
-        }
-
       if (args.length () == 0 || args.length () == 1)
         {
           Matrix hlist = gh_manager::figure_handle_list (true);

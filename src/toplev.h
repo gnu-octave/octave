@@ -418,4 +418,38 @@ private:
   void do_backtrace_error_message (void) const;
 };
 
+// Call a function with exceptions handled to avoid problems with
+// errors while shutting down.
+
+#define OCTAVE_IGNORE_EXCEPTION(E) \
+  catch (E) \
+    { \
+      std::cerr << "error: ignoring " #E " while preparing to exit" << std::endl; \
+      recover_from_exception (); \
+    }
+
+#define OCTAVE_SAFE_CALL(F, ARGS) \
+  do \
+    { \
+      try \
+        { \
+          unwind_protect frame; \
+ \
+          frame.protect_var (Vdebug_on_error); \
+          frame.protect_var (Vdebug_on_warning); \
+ \
+          Vdebug_on_error = false; \
+          Vdebug_on_warning = false; \
+ \
+          F ARGS; \
+        } \
+      OCTAVE_IGNORE_EXCEPTION (octave_interrupt_exception) \
+      OCTAVE_IGNORE_EXCEPTION (octave_execution_exception) \
+      OCTAVE_IGNORE_EXCEPTION (std::bad_alloc) \
+ \
+      if (error_state) \
+        error_state = 0; \
+    } \
+  while (0)
+
 #endif

@@ -1934,14 +1934,31 @@ public:
     sz(1) = Fl::h ();
     return sz;
   }
+
+  void close (void)
+  {
+    if (toolkit_registered)
+      {
+        munlock ("__init_fltk__");
+
+        figure_manager::close_all ();
+        graphics_toolkit::unregister_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
+        toolkit_registered = false;
+
+        octave_value_list args;
+        args(0) = "__fltk_redraw__";
+        feval ("remove_input_event_hook", args, 0);
+
+        // FIXME ???
+        Fl::wait (fltk_maxtime);
+      }
+  }
 };
 
 // Initialize the fltk graphics toolkit.
 
 DEFUN_DLD (__init_fltk__, , , "")
 {
-  static bool remove_fltk_registered = false;
-
   if (! toolkit_registered)
     {
       mlock ();
@@ -1952,13 +1969,6 @@ DEFUN_DLD (__init_fltk__, , , "")
       octave_value_list args;
       args(0) = "__fltk_redraw__";
       feval ("add_input_event_hook", args, 0);
-
-      if (! remove_fltk_registered)
-        {
-          octave_add_atexit_function ("__remove_fltk__");
-
-          remove_fltk_registered = true;
-        }
     }
 
   octave_value retval;
@@ -1968,29 +1978,6 @@ DEFUN_DLD (__init_fltk__, , , "")
 DEFUN_DLD (__fltk_redraw__, , , "")
 {
   __fltk_redraw__ ();
-
-  return octave_value ();
-}
-
-// Delete the fltk graphics toolkit.
-
-DEFUN_DLD (__remove_fltk__, , , "")
-{
-  if (toolkit_registered)
-    {
-      munlock ("__init_fltk__");
-
-      figure_manager::close_all ();
-      graphics_toolkit::unregister_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
-      toolkit_registered = false;
-
-      octave_value_list args;
-      args(0) = "__fltk_redraw__";
-      feval ("remove_input_event_hook", args, 0);
-
-      // FIXME ???
-      Fl::wait (fltk_maxtime);
-    }
 
   return octave_value ();
 }

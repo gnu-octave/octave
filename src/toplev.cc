@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "error.h"
 #include "file-io.h"
+#include "graphics.h"
 #include "input.h"
 #include "lex.h"
 #include "oct-conf.h"
@@ -661,25 +662,6 @@ main_loop (void)
   return retval;
 }
 
-// Call a function with exceptions handled to avoid problems with
-// errors while shutting down.
-
-#define IGNORE_EXCEPTION(E) \
-  catch (E) \
-    { \
-      std::cerr << "error: ignoring " #E " while preparing to exit" << std::endl; \
-      recover_from_exception (); \
-    }
-
-#define SAFE_CALL(F, ARGS) \
-  try \
-    { \
-      F ARGS; \
-    } \
-  IGNORE_EXCEPTION (octave_interrupt_exception) \
-  IGNORE_EXCEPTION (octave_execution_exception) \
-  IGNORE_EXCEPTION (std::bad_alloc)
-
 // Fix up things before exiting.
 
 void
@@ -687,16 +669,17 @@ clean_up_and_exit (int retval)
 {
   do_octave_atexit ();
 
-  // Clean up symbol table.
-  SAFE_CALL (symbol_table::cleanup, ())
+  OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
 
-  SAFE_CALL (cleanup_parser, ())
+  OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 
-  SAFE_CALL (sysdep_cleanup, ())
+  OCTAVE_SAFE_CALL (cleanup_parser, ());
 
-  SAFE_CALL (singleton_cleanup_list::cleanup, ())
+  OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 
-  SAFE_CALL (octave_chunk_buffer::clear, ())
+  OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+
+  OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
 
   if (octave_exit)
     (*octave_exit) (retval == EOF ? 0 : retval);
@@ -1057,11 +1040,11 @@ do_octave_atexit (void)
 
       octave_atexit_functions.pop_front ();
 
-      SAFE_CALL (reset_error_handler, ())
+      OCTAVE_SAFE_CALL (reset_error_handler, ());
 
-      SAFE_CALL (feval, (fcn, octave_value_list (), 0))
+      OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
-      SAFE_CALL (flush_octave_stdout, ())
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
     }
 
   if (! deja_vu)
@@ -1071,23 +1054,23 @@ do_octave_atexit (void)
       // Do this explicitly so that destructors for mex file objects
       // are called, so that functions registered with mexAtExit are
       // called.
-      SAFE_CALL (clear_mex_functions, ())
+      OCTAVE_SAFE_CALL (clear_mex_functions, ());
 
-        SAFE_CALL (command_editor::restore_terminal_state, ())
+      OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 
       // FIXME -- is this needed?  Can it cause any trouble?
-      SAFE_CALL (raw_mode, (0))
+      OCTAVE_SAFE_CALL (raw_mode, (0));
 
-      SAFE_CALL (octave_history_write_timestamp, ())
+      OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
 
       if (! command_history::ignoring_entries ())
-        SAFE_CALL (command_history::clean_up_and_save, ())
+        OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
-      SAFE_CALL (close_files, ())
+      OCTAVE_SAFE_CALL (close_files, ());
 
-      SAFE_CALL (cleanup_tmp_files, ())
+      OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
 
-      SAFE_CALL (flush_octave_stdout, ())
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
 
       if (! quitting_gracefully && (interactive || forced_interactive))
         {
@@ -1096,7 +1079,7 @@ do_octave_atexit (void)
           // Yes, we want this to be separate from the call to
           // flush_octave_stdout above.
 
-          SAFE_CALL (flush_octave_stdout, ())
+          OCTAVE_SAFE_CALL (flush_octave_stdout, ());
         }
     }
 }

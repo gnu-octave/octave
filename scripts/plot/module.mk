@@ -56,7 +56,6 @@ plot_PRIVATE_FCN_FILES = \
 
 plot_FCN_FILES = \
   plot/__gnuplot_drawnow__.m \
-  plot/__go_close_all__.m \
   plot/__plt_get_axis_arg__.m \
   plot/allchild.m \
   plot/ancestor.m \

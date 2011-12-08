@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "defun.h"
-#include "ov-cleanup.h"
+#include "ov-oncleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pt-misc.h"

@@ -65,7 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-class.h"
-#include "ov-cleanup.h"
+#include "ov-oncleanup.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
 #include "ov-builtin.h"

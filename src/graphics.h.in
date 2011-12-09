@@ -2236,65 +2236,197 @@ public:
   // Close the graphics toolkit.
   void close (void) { rep->close (); }
 
-  OCTINTERP_API static graphics_toolkit default_toolkit (void);
+private:
 
-  static void register_toolkit (const graphics_toolkit& b)
-    { available_toolkits[b.get_name ()] = b; }
+  base_graphics_toolkit *rep;
+};
+
+class gtk_manager
+{
+public:
+
+  static graphics_toolkit get_toolkit (void)
+  {
+    return instance_ok () ? instance->do_get_toolkit () : graphics_toolkit ();
+  }
+
+  static void register_toolkit (const std::string& name)
+  {
+    if (instance_ok ())
+      instance->do_register_toolkit (name);
+  }
 
   static void unregister_toolkit (const std::string& name)
-    { available_toolkits.erase (name); }
+  {
+    if (instance_ok ())
+      instance->do_unregister_toolkit (name);
+  }
+
+  static void load_toolkit (const graphics_toolkit& tk)
+  {
+    if (instance_ok ())
+      instance->do_load_toolkit (tk);
+  }
+
+  static void unload_toolkit (const std::string& name)
+  {
+    if (instance_ok ())
+      instance->do_unload_toolkit (name);
+  }
 
   static graphics_toolkit find_toolkit (const std::string& name)
   {
-    const_available_toolkits_iterator p = available_toolkits.find (name);
-
-    if (p != available_toolkits.end ())
-      return p->second;
-    else
-      return default_toolkit ();
+    return instance_ok ()
+      ? instance->do_find_toolkit (name) : graphics_toolkit ();
   }
 
   static Cell available_toolkits_list (void)
   {
-    Cell m (1 , available_toolkits.size ());
-    const_available_toolkits_iterator p;
-    int i;
+    return instance_ok () ? instance->do_available_toolkits_list () : Cell ();
+  }
 
-    for (i = 0, p = available_toolkits.begin ();
-         p !=  available_toolkits.end (); p++, i++)
-      m(i) = p->first;
+  static Cell loaded_toolkits_list (void)
+  {
+    return instance_ok () ? instance->do_loaded_toolkits_list () : Cell ();
+  }
+
+  static void unload_all_toolkits (void)
+  {
+    if (instance_ok ())
+      instance->do_unload_all_toolkits ();
+  }
+
+  static std::string default_toolkit (void)
+  {
+    return instance_ok () ? instance->do_default_toolkit () : std::string ();
+  }
+
+private:
+
+  // FIXME -- default toolkit should be configurable.
+
+  gtk_manager (void)
+    : dtk ("gnuplot"), available_toolkits (), loaded_toolkits () { }
+
+  ~gtk_manager (void) { }
+
+  static void create_instance (void);
+
+  static bool instance_ok (void)
+  {
+    bool retval = true;
+
+    if (! instance)
+      create_instance ();
+
+    if (! instance)
+      {
+        ::error ("unable to create gh_manager!");
+
+        retval = false;
+      }
+
+    return retval;
+  }
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
+  static gtk_manager *instance;
+
+  // The name of the default toolkit.
+  std::string dtk;
+
+  // The list of toolkits that we know about.
+  std::set<std::string> available_toolkits;
+
+  // The list of toolkits we have actually loaded.
+  std::map<std::string, graphics_toolkit> loaded_toolkits;
+
+  typedef std::set<std::string>::iterator available_toolkits_iterator;
+
+  typedef std::set<std::string>::const_iterator
+    const_available_toolkits_iterator;
+
+  typedef std::map<std::string, graphics_toolkit>::iterator
+    loaded_toolkits_iterator;
+
+  typedef std::map<std::string, graphics_toolkit>::const_iterator
+    const_loaded_toolkits_iterator;
+
+  graphics_toolkit do_get_toolkit (void) const;
+
+  void do_register_toolkit (const std::string& name)
+  {
+    available_toolkits.insert (name);
+  }
+
+  void do_unregister_toolkit (const std::string& name)
+  {
+    available_toolkits.erase (name);
+  }
+
+  void do_load_toolkit (const graphics_toolkit& tk)
+  {
+    loaded_toolkits[tk.get_name ()] = tk;
+  }
+
+  void do_unload_toolkit (const std::string& name)
+  {
+    loaded_toolkits.erase (name);
+  }
+
+  graphics_toolkit do_find_toolkit (const std::string& name) const
+  {
+    const_loaded_toolkits_iterator p = loaded_toolkits.find (name);
+
+    if (p != loaded_toolkits.end ())
+      return p->second;
+    else
+      return graphics_toolkit ();
+  }
+
+  Cell do_available_toolkits_list (void) const
+  {
+    Cell m (1 , available_toolkits.size ());
+    
+    octave_idx_type i = 0;
+    for (const_available_toolkits_iterator p = available_toolkits.begin ();
+         p !=  available_toolkits.end (); p++)
+      m(i++) = *p;
 
     return m;
   }
 
-  static void close_all_toolkits (void)
+  Cell do_loaded_toolkits_list (void) const
   {
-    while (! available_toolkits.empty ())
+    Cell m (1 , loaded_toolkits.size ());
+    
+    octave_idx_type i = 0;
+    for (const_loaded_toolkits_iterator p = loaded_toolkits.begin ();
+         p !=  loaded_toolkits.end (); p++)
+      m(i++) = p->first;
+
+    return m;
+  }
+
+  void do_unload_all_toolkits (void)
+  {
+    while (! loaded_toolkits.empty ())
       {
-        available_toolkits_iterator p = available_toolkits.begin ();
+        loaded_toolkits_iterator p = loaded_toolkits.begin ();
 
         std::string name = p->first;
 
         p->second.close ();
 
-        // The toolkit may have unregistered itself.  If not, we'll do
+        // The toolkit may have unloaded itself.  If not, we'll do
         // it here.
-        if (available_toolkits.find (name) != available_toolkits.end ())
-          unregister_toolkit (name);
+        if (loaded_toolkits.find (name) != loaded_toolkits.end ())
+          unload_toolkit (name);
       }
   }
 
-private:
-  base_graphics_toolkit *rep;
-
-  static OCTINTERP_API std::map<std::string, graphics_toolkit>
-    available_toolkits;
-
-  typedef std::map<std::string, graphics_toolkit>::iterator
-    available_toolkits_iterator;
-
-  typedef std::map<std::string, graphics_toolkit>::const_iterator
-    const_available_toolkits_iterator;
+  std::string do_default_toolkit (void) { return dtk; }
 };
 
 // ---------------------------------------------------------------------
@@ -3146,7 +3278,7 @@ public:
     graphics_toolkit get_toolkit (void) const
       {
         if (! toolkit)
-          toolkit = graphics_toolkit::default_toolkit ();
+          toolkit = gtk_manager::get_toolkit ();
 
         return toolkit;
       }
@@ -3160,7 +3292,7 @@ public:
           if (val.is_string ())
             {
               std::string nm = val.string_value ();
-              graphics_toolkit b = graphics_toolkit::find_toolkit (nm);
+              graphics_toolkit b = gtk_manager::find_toolkit (nm);
               if (b.get_name () != nm)
                 {
                   error ("set___graphics_toolkit__: invalid graphics toolkit");

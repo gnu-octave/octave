@@ -52,10 +52,10 @@ function retval = graphics_toolkit (name, hlist = [])
     endif
   endif
 
-  if (! any (strcmp (available_graphics_toolkits (), name)))
+  if (! any (strcmp (loaded_graphics_toolkits (), name)))
     feval (["__init_", name, "__"]);
-    if (! any (strcmp (available_graphics_toolkits (), name)))
-      error ("graphics_toolkit: %s toolkit was not correctly registered", name);
+    if (! any (strcmp (loaded_graphics_toolkits (), name)))
+      error ("graphics_toolkit: %s toolkit was not correctly loaded", name);
     endif
   endif
 

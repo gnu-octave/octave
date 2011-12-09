@@ -2763,137 +2763,6 @@ base_properties::delete_listener (const caseless_str& nm,
 
 // ---------------------------------------------------------------------
 
-class gnuplot_toolkit : public base_graphics_toolkit
-{
-public:
-  gnuplot_toolkit (void)
-      : base_graphics_toolkit ("gnuplot") { }
-
-  ~gnuplot_toolkit (void) { }
-
-  bool is_valid (void) const { return true; }
-
-  bool initialize (const graphics_object& go)
-    {
-      return go.isa ("figure");
-    }
-
-  void finalize (const graphics_object& go)
-    {
-      if (go.isa ("figure"))
-        {
-          const figure::properties& props =
-              dynamic_cast<const figure::properties&> (go.get_properties ());
-
-          send_quit (props.get___plot_stream__ ());
-        }
-    }
-
-  void update (const graphics_object& go, int id)
-    {
-      if (go.isa ("figure"))
-        {
-          graphics_object obj (go);
-
-          figure::properties& props =
-              dynamic_cast<figure::properties&> (obj.get_properties ());
-
-          switch (id)
-            {
-            case base_properties::ID_VISIBLE:
-              if (! props.is_visible ())
-                {
-                  send_quit (props.get___plot_stream__ ());
-                  props.set___plot_stream__ (Matrix ());
-                  props.set___enhanced__ (false);
-                }
-              break;
-            }
-        }
-    }
-
-  void redraw_figure (const graphics_object& go) const
-    {
-      octave_value_list args;
-      args(0) = go.get_handle ().as_octave_value ();
-      feval ("__gnuplot_drawnow__", args);
-    }
-
-  void print_figure (const graphics_object& go, const std::string& term,
-                     const std::string& file, bool mono,
-                     const std::string& debug_file) const
-    {
-      octave_value_list args;
-      if (! debug_file.empty ())
-        args(4) = debug_file;
-      args(3) = mono;
-      args(2) = file;
-      args(1) = term;
-      args(0) = go.get_handle ().as_octave_value ();
-      feval ("__gnuplot_drawnow__", args);
-    }
-
-  Matrix get_canvas_size (const graphics_handle&) const
-    {
-      Matrix sz (1, 2, 0.0);
-      return sz;
-    }
-
-  double get_screen_resolution (void) const
-    { return 72.0; }
-
-  Matrix get_screen_size (void) const
-    { return Matrix (1, 2, 0.0); }
-
-  void close (void) { }
-
-private:
-  void send_quit (const octave_value& pstream) const
-    {
-      if (! pstream.is_empty ())
-        {
-          octave_value_list args;
-          Matrix fids = pstream.matrix_value ();
-
-          if (! error_state)
-            {
-              args(1) = "\nquit;\n";
-              args(0) = fids(0);
-              feval ("fputs", args);
-
-              args.resize (1);
-              feval ("fflush", args);
-              feval ("pclose", args);
-
-              if (fids.numel () > 1)
-                {
-                  args(0) = fids(1);
-                  feval ("pclose", args);
-
-                  if (fids.numel () > 2)
-                    {
-                      args(0) = fids(2);
-                      feval ("waitpid", args);
-                    }
-                }
-            }
-        }
-    }
-};
-
-graphics_toolkit
-graphics_toolkit::default_toolkit (void)
-{
-  if (available_toolkits.size () == 0)
-    register_toolkit (new gnuplot_toolkit ());
-
-  return available_toolkits["gnuplot"];
-}
-
-std::map<std::string, graphics_toolkit> graphics_toolkit::available_toolkits;
-
-// ---------------------------------------------------------------------
-
 void
 base_graphics_object::update_axis_limits (const std::string& axis_type)
 {
@@ -7505,7 +7374,7 @@ gh_manager::gh_manager (void)
   handle_map[0] = graphics_object (new root_figure ());
 
   // Make sure the default graphics toolkit is registered.
-  graphics_toolkit::default_toolkit ();
+  gtk_manager::default_toolkit ();
 }
 
 void
@@ -9076,6 +8945,52 @@ Internal function: returns the pixel size of the image in normalized units.\n\
   return retval;
 }
 
+gtk_manager *gtk_manager::instance = 0;
+
+void
+gtk_manager::create_instance (void)
+{
+  instance = new gtk_manager ();
+
+  if (instance)
+    singleton_cleanup_list::add (cleanup_instance);
+}
+
+graphics_toolkit
+gtk_manager::do_get_toolkit (void) const
+{
+  graphics_toolkit retval;
+
+  const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
+
+  if (pl == loaded_toolkits.end ())
+    {
+      const_available_toolkits_iterator pa = available_toolkits.find (dtk);
+
+      if (pa != available_toolkits.end ())
+        {
+          octave_value_list args;
+          args(0) = dtk;
+          feval ("graphics_toolkit", args);
+
+          if (! error_state)
+            pl = loaded_toolkits.find (dtk);
+
+          if (error_state || pl == loaded_toolkits.end ())
+            error ("failed to load %s graphics toolkit", dtk.c_str ());
+          else
+            retval = pl->second;
+        }
+      else
+        error ("default graphics toolkit `%s' is not available!",
+               dtk.c_str ());
+    }
+  else
+    retval = pl->second;
+
+  return retval;
+}
+
 DEFUN (available_graphics_toolkits, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_graphics_toolkits ()\n\
@@ -9084,7 +8999,43 @@ Return a cell array of registered graphics toolkits.\n\
 {
   gh_manager::auto_lock guard;
 
-  return octave_value (graphics_toolkit::available_toolkits_list ());
+  return octave_value (gtk_manager::available_toolkits_list ());
+}
+
+DEFUN (register_graphics_toolkit, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} register_graphics_toolkit (@var{toolkit})\n\
+List @var{toolkit} as an available graphics toolkit.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  gh_manager::auto_lock guard;
+
+  if (args.length () == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+        gtk_manager::register_toolkit (name);
+      else
+        error ("register_graphics_toolkit: expecting character string");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (loaded_graphics_toolkits, , ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} loaded_graphics_toolkits ()\n\
+Return a cell array of the currently loaded graphics toolkits.\n\
+@end deftypefn")
+{
+  gh_manager::auto_lock guard;
+
+  return octave_value (gtk_manager::loaded_toolkits_list ());
 }
 
 DEFUN (drawnow, args, ,

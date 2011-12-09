@@ -671,7 +671,7 @@ clean_up_and_exit (int retval)
 
   OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
 
-  OCTAVE_SAFE_CALL (graphics_toolkit::close_all_toolkits, ());
+  OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
 
   OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
 

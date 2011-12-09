@@ -6,6 +6,7 @@ __dsearchn__.cc
 __fltk_uigetfile__.cc|$(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)|$(GRAPHICS_LDFLAGS) $(FT2_LDFLAGS)|$(GRAPHICS_LIBS) $(FT2_LIBS)
 __glpk__.cc|$(GLPK_CPPFLAGS)|$(GLPK_LDFLAGS)|$(GLPK_LIBS)
 __init_fltk__.cc|$(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)|$(GRAPHICS_LDFLAGS) $(FT2_LDFLAGS)|$(GRAPHICS_LIBS) $(FT2_LIBS)
+__init_gnuplot__.cc
 __lin_interpn__.cc
 __magick_read__.cc|$(MAGICK_CPPFLAGS)|$(MAGICK_LDFLAGS)|$(MAGICK_LIBS)
 __pchip_deriv__.cc

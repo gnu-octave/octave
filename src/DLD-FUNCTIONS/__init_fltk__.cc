@@ -29,6 +29,8 @@ To initialize:
 
 */
 
+// PKG_ADD: register_graphics_toolkit ("fltk");
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -1769,12 +1771,12 @@ figure_manager *figure_manager::instance = 0;
 std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
 
-static bool toolkit_registered = false;
+static bool toolkit_loaded = false;
 
 static int
 __fltk_redraw__ (void)
 {
-  if (toolkit_registered)
+  if (toolkit_loaded)
     {
       // We scan all figures and add those which use FLTK.
       graphics_object obj = gh_manager::get_object (0);
@@ -1941,13 +1943,13 @@ public:
 
   void close (void)
   {
-    if (toolkit_registered)
+    if (toolkit_loaded)
       {
         munlock ("__init_fltk__");
 
         figure_manager::close_all ();
-        graphics_toolkit::unregister_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
-        toolkit_registered = false;
+        gtk_manager::unload_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
+        toolkit_loaded = false;
 
         octave_value_list args;
         args(0) = "__fltk_redraw__";
@@ -1963,12 +1965,13 @@ public:
 
 DEFUN_DLD (__init_fltk__, , , "")
 {
-  if (! toolkit_registered)
+  if (! toolkit_loaded)
     {
       mlock ();
 
-      graphics_toolkit::register_toolkit (new fltk_graphics_toolkit);
-      toolkit_registered = true;
+      graphics_toolkit tk (new fltk_graphics_toolkit ());
+      gtk_manager::load_toolkit (tk);
+      toolkit_loaded = true;
 
       octave_value_list args;
       args(0) = "__fltk_redraw__";

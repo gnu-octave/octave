@@ -659,7 +659,8 @@ public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
     : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
       ndim (2), fp (xfp), canvas (0), autoscale (0), togglegrid (0),
-      panzoom (0), rotate (0), help (0), status (0)
+      panzoom (0), rotate (0), help (0), status (0),
+      ax_obj (), pos_x (0), pos_y (0)
   {
     callback (window_close, static_cast<void*> (this));
     size_range (4*status_h, 2*status_h);
@@ -968,6 +969,9 @@ private:
   Fl_Button* rotate;
   Fl_Button* help;
   Fl_Output* status;
+  graphics_object ax_obj;
+  int pos_x;
+  int pos_y;
 
   void axis_auto (void)
   {
@@ -1174,9 +1178,6 @@ private:
 
   int handle (int event)
   {
-    static int px0,py0;
-    static graphics_object ax0;
-
     graphics_handle gh;
 
     graphics_object fig = gh_manager::get_object (fp.get___myhandle__ ());
@@ -1252,17 +1253,17 @@ private:
             break;
 
           case FL_PUSH:
-            px0 = Fl::event_x ();
-            py0 = Fl::event_y ();
+            pos_x = Fl::event_x ();
+            pos_y = Fl::event_y ();
 
             set_currentpoint (Fl::event_x (), Fl::event_y ());
 
-            gh = pixel2axes_or_ca (px0, py0);
+            gh = pixel2axes_or_ca (pos_x, pos_y);
 
             if (gh.ok ())
               {
-                ax0 = gh_manager::get_object (gh);
-                set_axes_currentpoint (ax0, px0, py0);
+                ax_obj = gh_manager::get_object (gh);
+                set_axes_currentpoint (ax_obj, pos_x, pos_y);
               }
 
             fp.execute_windowbuttondownfcn ();
@@ -1281,42 +1282,44 @@ private:
 
             if (Fl::event_button () == 1)
               {
-                if (ax0 && ax0.isa ("axes"))
+                if (ax_obj && ax_obj.isa ("axes"))
                   {
                     if (gui_mode == pan_zoom)
-                      pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+                      pixel2status (ax_obj, pos_x, pos_y,
+                                    Fl::event_x (), Fl::event_y ());
                     else
-                      view2status (ax0);
+                      view2status (ax_obj);
                     axes::properties& ap =
-                      dynamic_cast<axes::properties&> (ax0.get_properties ());
+                      dynamic_cast<axes::properties&> (ax_obj.get_properties ());
 
                     double x0, y0, x1, y1;
                     Matrix pos = fp.get_position ().matrix_value ();
-                    pixel2pos (ax0, px0, py0, x0, y0);
-                    pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                    pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                    pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
 
                     if (gui_mode == pan_zoom)
                       ap.translate_view (x0 - x1, y0 - y1);
                     else if (gui_mode == rotate_zoom)
                       {
                         double daz, del;
-                        daz = (Fl::event_x () - px0) / pos(2) * 360;
-                        del = (Fl::event_y () - py0) / pos(3) * 360;
+                        daz = (Fl::event_x () - pos_x) / pos(2) * 360;
+                        del = (Fl::event_y () - pos_y) / pos(3) * 360;
                         ap.rotate_view (del, daz);
                       }
 
-                    px0 = Fl::event_x ();
-                    py0 = Fl::event_y ();
+                    pos_x = Fl::event_x ();
+                    pos_y = Fl::event_y ();
                     mark_modified ();
                   }
                 return 1;
               }
             else if (Fl::event_button () == 3)
               {
-                pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+                pixel2status (ax_obj, pos_x, pos_y,
+                              Fl::event_x (), Fl::event_y ());
                 Matrix zoom_box (1,4,0);
-                zoom_box (0) = px0;
-                zoom_box (1) = py0;
+                zoom_box (0) = pos_x;
+                zoom_box (1) = pos_y;
                 zoom_box (2) =  Fl::event_x ();
                 zoom_box (3) =  Fl::event_y ();
                 canvas->set_zoom_box (zoom_box);
@@ -1361,10 +1364,10 @@ private:
               {
                 if ( Fl::event_clicks () == 1)
                   {
-                    if (ax0 && ax0.isa ("axes"))
+                    if (ax_obj && ax_obj.isa ("axes"))
                       {
                         axes::properties& ap =
-                          dynamic_cast<axes::properties&> (ax0.get_properties ());
+                          dynamic_cast<axes::properties&> (ax_obj.get_properties ());
                         ap.set_xlimmode ("auto");
                         ap.set_ylimmode ("auto");
                         ap.set_zlimmode ("auto");
@@ -1379,12 +1382,13 @@ private:
                   {
                     canvas->zoom (false);
                     double x0,y0,x1,y1;
-                    if (ax0 && ax0.isa ("axes"))
+                    if (ax_obj && ax_obj.isa ("axes"))
                       {
                         axes::properties& ap =
-                          dynamic_cast<axes::properties&> (ax0.get_properties ());
-                        pixel2pos (ax0, px0, py0, x0, y0);
-                        pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                          dynamic_cast<axes::properties&> (ax_obj.get_properties ());
+                        pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                        pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (),
+                                   x1, y1);
                         Matrix xl (1,2,0);
                         Matrix yl (1,2,0);
                         if (x0 < x1)

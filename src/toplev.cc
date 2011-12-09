@@ -827,8 +827,8 @@ run_command_and_return_output (const std::string& cmd_str)
       else
         cmd_status = 127;
 
-      retval(0) = cmd_status;
       retval(1) = output_buf.str ();
+      retval(0) = cmd_status;
     }
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());
@@ -840,31 +840,36 @@ enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{status}, @var{output}]} system (@var{string}, @var{return_output}, @var{type})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{output}]} shell_cmd (@var{string}, @var{return_output}, @var{type})\n\
+@deftypefn  {Built-in Function} {} system (\"@var{string}\")\n\
+@deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output})\n\
+@deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{output}] =} system (@dots{})\n\
 Execute a shell command specified by @var{string}.\n\
-If the optional argument @var{type} is @code{\"async\"}, the process\n\
-is started in the background and the process id of the child process\n\
-is returned immediately.  Otherwise, the process is started, and\n\
-Octave waits until it exits.  If the @var{type} argument is omitted, a\n\
-value of @code{\"sync\"} is assumed.\n\
+If the optional argument @var{type} is \"async\", the process\n\
+is started in the background and the process ID of the child process\n\
+is returned immediately.  Otherwise, the child process is started and\n\
+Octave waits until it exits.  If the @var{type} argument is omitted, it\n\
+defaults to the value \"sync\".\n\
 \n\
-If the optional argument @var{return_output} is true and the subprocess\n\
-is started synchronously, or if @var{system} is called with one input\n\
-argument and one or more output arguments, the output from the command\n\
-is returned.  Otherwise, if the subprocess is executed synchronously, its\n\
-output is sent to the standard output.  To send the output of a command\n\
-executed with @code{system} through the pager, use a command like\n\
+If @var{system} is called with one or more output arguments, or if the\n\
+optional argument @var{return_output} is true and the subprocess is started\n\
+synchronously, then the output from the command is returned as a variable.  \n\
+Otherwise, if the subprocess is executed synchronously, its output is sent\n\
+to the standard output.  To send the output of a command executed with\n\
+@code{system} through the pager, use a command like\n\
 \n\
 @example\n\
-disp (system (cmd, 1));\n\
+@group\n\
+[output, text] = system (\"cmd\");\n\
+disp (text);\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
 or\n\
 \n\
 @example\n\
-printf (\"%s\\n\", system (cmd, 1));\n\
+printf (\"%s\\n\", nthargout (2, \"system\", \"cmd\"));\n\
 @end example\n\
 \n\
 The @code{system} function can return two values.  The first is the\n\
@@ -881,6 +886,7 @@ variable @code{status} to the integer @samp{2}.\n\
 \n\
 For commands run asynchronously, @var{status} is the process id of the\n\
 command shell that is started to run the command.\n\
+@seealso{unix, dos}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1011,20 +1017,16 @@ command shell that is started to run the command.\n\
   return retval;
 }
 
-DEFALIAS (shell_cmd, system);
-
 /*
-%!error (system ());
-%!error (system (1, 2, 3));
 %!test
-%! if (ispc ())
-%!   cmd = "dir";
-%! else
-%!   cmd = "ls";
-%! endif
+%! cmd = ls_command ();
 %! [status, output] = system (cmd);
+%! assert (status, 0);
 %! assert (ischar (output));
 %! assert (! isempty (output));
+
+%!error system ()
+%!error system (1, 2, 3)
 */
 
 // FIXME -- this should really be static, but that causes

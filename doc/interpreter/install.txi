@@ -747,7 +747,7 @@ when compiling @file{Array.cc} and @file{Matrix.cc}, try recompiling
 these files without @option{-g}.
 
 @item
-Some people have reported that calls to shell_cmd and the pager do not
+Some people have reported that calls to system() and the pager do not
 work on SunOS systems.  This is apparently due to having
 @w{@code{G_HAVE_SYS_WAIT}} defined to be 0 instead of 1 when compiling
 @code{libg++}.

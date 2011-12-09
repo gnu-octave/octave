@@ -120,7 +120,6 @@ SEEK_CUR
 SEEK_END
 semicolon
 setenv
-shell_cmd
 toc
 triu
 unimplemented

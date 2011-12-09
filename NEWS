@@ -154,9 +154,9 @@ Summary of important user-visible changes for version 3.6:
 
       cut                is_duplicate_entry
       cor                polyderiv
-      corrcoef           studentize
-      __error_text__     sylvester_matrix
-      error_text
+      corrcoef           shell_cmd 
+      __error_text__     studentize
+      error_text         sylvester_matrix
 
 Summary of important user-visible changes for version 3.4.3:
 -----------------------------------------------------------

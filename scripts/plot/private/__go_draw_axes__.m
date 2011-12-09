@@ -2323,8 +2323,8 @@ function str = no_super_sub_scripts (str)
         n1 = n1 + 1;
         n2 = setdiff (n2, n1);
       end
-      for n = n2
-        labels{m} = [labels{m}(1:n2-1), "\\", labels{m}(n2:end)];
+      for n = numel(n2):-1:1
+        labels{m} = [labels{m}(1:n2(n)-1), "\\", labels{m}(n2(n):end)]
       endfor
     endfor
   endfor

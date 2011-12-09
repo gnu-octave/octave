@@ -187,8 +187,8 @@ system-dependent error message.\n\
           if (dir)
             {
               string_vector dirlist = dir.read ();
-              retval(0) = Cell (dirlist.sort ());
               retval(1) = 0.0;
+              retval(0) = Cell (dirlist.sort ());
             }
           else
             {
@@ -487,12 +487,10 @@ system-dependent error message.\n\
 
           int status = octave_readlink (symlink, result, msg);
 
-          retval(0) = result;
-
-          retval(1) = status;
-
           if (status < 0)
             retval(2) = msg;
+          retval(1) = status;
+          retval(0) = result;
         }
     }
   else

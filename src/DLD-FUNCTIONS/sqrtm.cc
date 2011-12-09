@@ -232,6 +232,12 @@ Mathematics, Manchester, England, January 1999.\n\
       return retval;
     }
 
+  if (nargout > 1)
+    {
+      retval.resize (1, 2);
+      retval(2) = -1.0;
+    }
+
   if (arg.is_diag_matrix ())
     // sqrtm of a diagonal matrix is just sqrt.
     retval(0) = arg.sqrt ();

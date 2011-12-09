@@ -80,8 +80,8 @@ Once the end of data has been reached, @code{getgrent} returns 0.\n\
     {
       std::string msg;
 
-      retval(0) = mk_gr_map (octave_group::getgrent (msg));
       retval(1) = msg;
+      retval(0) = mk_gr_map (octave_group::getgrent (msg));
     }
   else
     print_usage ();
@@ -116,8 +116,8 @@ Return the first entry from the group database with the group ID\n\
 
               std::string msg;
 
-              retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
               retval(1) = msg;
+              retval(0) = mk_gr_map (octave_group::getgrgid (gid, msg));
             }
           else
             error ("getgrgid: GID must be an integer");
@@ -152,8 +152,8 @@ Return the first entry from the group database with the group name\n\
         {
           std::string msg;
 
-          retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
           retval(1) = msg;
+          retval(0) = mk_gr_map (octave_group::getgrnam (s.c_str (), msg));
         }
     }
   else
@@ -179,8 +179,8 @@ Return the internal pointer to the beginning of the group database.\n\
     {
       std::string msg;
 
-      retval(0) = static_cast<double> (octave_group::setgrent (msg));
       retval(1) = msg;
+      retval(0) = static_cast<double> (octave_group::setgrent (msg));
     }
   else
     print_usage ();
@@ -205,8 +205,8 @@ Close the group database.\n\
     {
       std::string msg;
 
-      retval(0) = static_cast<double> (octave_group::endgrent (msg));
       retval(1) = msg;
+      retval(0) = static_cast<double> (octave_group::endgrent (msg));
     }
   else
     print_usage ();

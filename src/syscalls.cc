@@ -145,8 +145,8 @@ system-dependent error message.\n\
 
                   int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-                  retval(0) = status;
                   retval(1) = msg;
+                  retval(0) = status;
                 }
             }
         }
@@ -224,8 +224,8 @@ error message.\n\
 
               int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
-              retval(0) = status;
               retval(1) = msg;
+              retval(0) = status;
             }
         }
       else
@@ -347,9 +347,9 @@ exit status, it will linger until Octave exits.\n\
 
                       Cell file_ids (1, 2);
 
-                      retval(0) = octave_stream_list::insert (os);
+                      retval(2) = pid;
                       retval(1) = octave_stream_list::insert (is);
-                                          retval(2) = pid;
+                      retval(0) = octave_stream_list::insert (os);
                     }
                                   else
                     error (msg.c_str ());
@@ -496,8 +496,8 @@ system-dependent error message.\n\
 
                   int status = octave_fcntl (fid, req, arg, msg);
 
-                  retval(0) = status;
                   retval(1) = msg;
+                  retval(0) = status;
                 }
             }
         }
@@ -546,8 +546,8 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 
       pid_t pid = octave_syscalls::fork (msg);
 
-      retval(0) = pid;
       retval(1) = msg;
+      retval(0) = pid;
     }
   else
     print_usage ();
@@ -572,8 +572,8 @@ Return the process group id of the current process.\n\
     {
       std::string msg;
 
-      retval(0) = octave_syscalls::getpgrp (msg);
       retval(1) = msg;
+      retval(0) = octave_syscalls::getpgrp (msg);
     }
   else
     print_usage ();
@@ -865,10 +865,9 @@ system-dependent error message.\n\
           octave_stream os = octave_stdiostream::create (nm, ofile,
                                                          std::ios::out);
 
+          retval(2) = status;
           retval(1) = octave_stream_list::insert (os);
           retval(0) = octave_stream_list::insert (is);
-
-          retval(2) = status;
         }
     }
   else
@@ -1270,8 +1269,8 @@ system-dependent error message.\n\
 
           int status = octave_unlink (name, msg);
 
-          retval(0) = status;
           retval(1) = msg;
+          retval(0) = status;
         }
       else
         error ("unlink: FILE must be a string");
@@ -1354,9 +1353,9 @@ information about the subprocess that exited.\n\
 
               pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
 
-              retval(0) = result;
-              retval(1) = status;
               retval(2) = msg;
+              retval(1) = status;
+              retval(0) = result;
             }
           else
             error ("waitpid: OPTIONS must be an integer");

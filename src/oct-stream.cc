@@ -4181,9 +4181,9 @@ octave_stream_list::do_get_info (int fid) const
     {
       retval.resize (3);
 
-      retval(0) = os.name ();
-      retval(1) = octave_stream::mode_as_string (os.mode ());
       retval(2) = oct_mach_info::float_format_as_string (os.float_format ());
+      retval(1) = octave_stream::mode_as_string (os.mode ());
+      retval(0) = os.name ();
     }
   else
     ::error ("invalid file id = %d", fid);

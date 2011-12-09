@@ -169,8 +169,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(0) = result.scaling_vector ();
                   retval(1) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
                 }
 
             }
@@ -188,8 +188,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(0) = result.scaling_vector ();
                   retval(1) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
                 }
             }
         }
@@ -209,8 +209,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(0) = result.scaling_vector ();
                   retval(1) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
                 }
             }
           else
@@ -227,8 +227,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
               else
                 {
                   retval(2) = result.balanced_matrix ();
-                  retval(0) = result.scaling_vector ();
                   retval(1) = result.permuting_vector ();
+                  retval(0) = result.scaling_vector ();
                 }
             }
         }

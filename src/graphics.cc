@@ -284,7 +284,8 @@ default_axes_tick (void)
 static Matrix
 default_axes_ticklength (void)
 {
-  Matrix m (1, 2, 0.01);
+  Matrix m (1, 2, 0.0);
+  m(0) = 0.01;
   m(1) = 0.025;
   return m;
 }
@@ -351,7 +352,8 @@ default_panel_position (void)
 
   retval(0) = 0;
   retval(1) = 0;
-  retval(2) = retval(3) = 0.5;
+  retval(2) = 0.5;
+  retval(3) = 0.5;
 
   return retval;
 }
@@ -5727,8 +5729,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
 
   retval.resize (1, 2);
 
-  retval(0) = min_val;
   retval(1) = max_val;
+  retval(0) = min_val;
 
   return retval;
 }

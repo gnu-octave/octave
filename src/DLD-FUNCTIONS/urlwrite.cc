@@ -945,10 +945,10 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   if (nargout > 0)
     {
-      retval(0) = buf.str ();
-      retval(1) = ok;
       // Return empty string if no error occured.
       retval(2) = ok ? "" : curl.lasterror ();
+      retval(1) = ok;
+      retval(0) = buf.str ();
     }
 
   if (nargout < 2 && ! ok)

@@ -5974,6 +5974,8 @@ ordered lists.\n\
 
   if (return_idx)
     {
+      retval.resize (2);
+
       Array<octave_idx_type> sidx;
 
       retval (0) = arg.sort (sidx, dim, smode);

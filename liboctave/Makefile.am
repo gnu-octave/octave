@@ -187,6 +187,7 @@ INCS = \
   Range.h \
   base-dae.h \
   base-de.h \
+  base-list.h \
   base-min.h \
   bsxfun.h \
   byte-swap.h \

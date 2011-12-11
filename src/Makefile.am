@@ -231,7 +231,6 @@ PT_INCLUDES = \
 
 octinclude_HEADERS = \
   Cell.h \
-  base-list.h \
   builtins.h \
   c-file-ptr-stream.h \
   comment-list.h \

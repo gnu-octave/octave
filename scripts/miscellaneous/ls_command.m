@@ -30,10 +30,10 @@ function old_cmd = ls_command (cmd)
   global __ls_command__;
 
   if (isempty (__ls_command__))
-    ## FIXME -- ispc and isunix both return true for Cygwin.  Should they?
+    ## MinGW uses different ls_command
     if (ispc () && ! isunix ()
         && isempty (file_in_path (getenv ("PATH"), "ls")))
-      __ls_command__ = "cmd /C dir /D";
+      __ls_command__ = "dir /D";
     else
       __ls_command__ = "ls -C";
     endif
@@ -54,3 +54,14 @@ function old_cmd = ls_command (cmd)
   endif
 
 endfunction
+
+
+%!test
+%! cmd = ls_command ();
+%! assert (ischar (cmd));
+%! if (ispc () && ! isunix ())
+%!   assert (cmd(1:3), "dir"); 
+%! else
+%!   assert (cmd(1:2), "ls"); 
+%! endif
+

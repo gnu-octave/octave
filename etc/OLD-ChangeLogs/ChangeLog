@@ -2,6 +2,10 @@
 
 	* NEWS: Add colstyle to list of new functions for 3.4
 
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
+	* NEWS: Deprecate studentize(), add new function zscore().
+
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Add perror, strerror to list of functions deprecated in 3.4
@@ -87,6 +91,11 @@
 2011-02-08  Rik  <octave@nomad.inbox5.com>
 
 	* NEWS: Use indentation of 2 spaces rather than 3 in code examples.
+
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* NEWS: New section for 3.6.  List deprecated functions that
+	have been removed for 3.6.
 
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 

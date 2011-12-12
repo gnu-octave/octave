@@ -89,32 +89,41 @@
 ## @end itemize
 ##
 ## Examples:
+## @c Set example in small font to prevent overfull line
 ##
-## @example
+## @smallexample
 ## @group
-## x = randi (1000, [10, 1]);  # Create random empirical data in range 1-1000
-## q = quantile (x, [0, 1]);   # Return minimum, maximum of empirical distribution
-## q = quantile (x, [0.25 0.5 0.75]); # Return quartiles of empirical distribution
+## x = randi (1000, [10, 1]);  # Create empirical data in range 1-1000
+## q = quantile (x, [0, 1]);   # Return minimum, maximum of distribution
+## q = quantile (x, [0.25 0.5 0.75]); # Return quartiles of distribution
 ## @end group
-## @end example
+## @end smallexample
 ## @seealso{prctile}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>
 ## Description: Matlab style quantile function of a discrete/continuous distribution
 
-function q = quantile (x, p, dim = 1, method = 5)
+function q = quantile (x, p = [], dim = 1, method = 5)
 
   if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
-  if (nargin < 2)
+  if (! (isnumeric (x) || islogical (x)))
+    error ("quantile: X must be a numeric vector or matrix");
+  endif
+
+  if (isempty (p))
     p = [0.00 0.25, 0.50, 0.75, 1.00];
   endif
 
-  if (!(isscalar (dim) && dim == fix (dim)) ||
-      !(1 <= dim && dim <= ndims (x)))
+  if (! (isnumeric (p) && isvector (p)))
+    error ("quantile: P must be a numeric vector");
+  endif
+
+  if (!(isscalar (dim) && dim == fix (dim))
+      || !(1 <= dim && dim <= ndims (x)))
     error ("quantile: DIM must be an integer and a valid dimension");
   endif
 
@@ -142,6 +151,7 @@ function q = quantile (x, p, dim = 1, method = 5)
   q = ipermute (q, perm);
 
 endfunction
+
 
 %!test
 %! p = 0.5;
@@ -282,9 +292,14 @@ endfunction
 %% Test input validation
 %!error quantile ()
 %!error quantile (1, 2, 3, 4, 5)
+%!error quantile (['A'; 'B'], 10)
+%!error quantile (1:10, [true, false])
+%!error quantile (1:10, ones (2,2))
 %!error quantile (1, 1, 1.5)
 %!error quantile (1, 1, 0)
 %!error quantile (1, 1, 3)
+%!error quantile ((1:5)', 0.5, 1, 0)
+%!error quantile ((1:5)', 0.5, 1, 10)
 
 ## For the cumulative probability values in @var{p}, compute the
 ## quantiles, @var{q} (the inverse of the cdf), for the sample, @var{x}.
@@ -304,37 +319,35 @@ function inv = __quantile__ (x, p, method = 5)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
-    error ("quantile: X must be a numeric vector or matrix");
+  if (isinteger (x) || islogical (x))
+    x = double (x);
   endif
 
-  ## Save length and set shape of quantiles.
-  n = numel (p);
+  ## set shape of quantiles to column vector.
   p = p(:);
 
   ## Save length and set shape of samples.
   ## FIXME: does sort guarantee that NaN's come at the end?
   x = sort (x);
   m = sum (! isnan (x));
-  mx = size (x, 1);
-  nx = size (x, 2);
+  [xr, xc] = size (x);
 
   ## Initialize output values.
-  inv = Inf*(-(p < 0) + (p > 1));
-  inv = repmat (inv, 1, nx);
+  inv = Inf (class (x)) * (-(p < 0) + (p > 1));
+  inv = repmat (inv, 1, xc);
 
   ## Do the work.
-  if (any(k = find((p >= 0) & (p <= 1))))
+  if (any (k = find ((p >= 0) & (p <= 1))))
     n = length (k);
-    p = p (k);
-    ## Special case.
-    if (mx == 1)
+    p = p(k);
+    ## Special case of 1 row.
+    if (xr == 1)
       inv(k,:) = repmat (x, n, 1);
-      return
+      return;
     endif
 
     ## The column-distribution indices.
-    pcd = kron (ones (n, 1), mx*(0:nx-1));
+    pcd = kron (ones (n, 1), xr*(0:xc-1));
     mm = kron (ones (n, 1), m);
     switch (method)
       case {1, 2, 3}
@@ -375,7 +388,7 @@ function inv = __quantile__ (x, p, method = 5)
             p = kron (p, m-1) + 1;
 
           case 8
-            ## Median unbiased .
+            ## Median unbiased.
             p = kron (p, m+1/3) + 1/3;
 
           case 9
@@ -387,7 +400,7 @@ function inv = __quantile__ (x, p, method = 5)
         endswitch
 
         ## Duplicate single values.
-        imm1 = mm == 1;
+        imm1 = (mm == 1);
         x(2,imm1) = x(1,imm1);
 
         ## Interval indices.

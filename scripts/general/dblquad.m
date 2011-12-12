@@ -37,22 +37,23 @@
 ##
 ## The optional argument @var{quadf} specifies which underlying integrator
 ## function to use.  Any choice but @code{quad} is available and the default
-## is @code{quadgk}.
+## is @code{quadcc}.
 ##
 ## Additional arguments, are passed directly to @var{f}.  To use the default
-## value for @var{tol} or @var{quadf} one may pass an empty matrix ([]).
+## value for @var{tol} or @var{quadf} one may pass ':' or an empty matrix ([]).
 ## @seealso{triplequad, quad, quadv, quadl, quadgk, quadcc, trapz}
 ## @end deftypefn
 
-function q = dblquad(f, xa, xb, ya, yb, tol, quadf, varargin)
+function q = dblquad (f, xa, xb, ya, yb, tol = 1e-6, quadf = @quadcc, varargin)
+
   if (nargin < 5)
     print_usage ();
   endif
-  if (nargin < 6 || isempty (tol))
+  if (isempty (tol))
     tol = 1e-6;
   endif
-  if (nargin < 7 || isempty (quadf))
-    quadf = @quadgk;
+  if (isempty (quadf))
+    quadf = @quadcc;
   endif
 
   inner = @__dblquad_inner__;
@@ -72,10 +73,10 @@ function q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)
   endfor
 endfunction
 
-%% Nasty integrand to show quadgk off
+%% Nasty integrand to show quadcc off
 %!assert (dblquad (@(x,y) 1 ./ (x+y), 0, 1, 0, 1), 2*log(2), 1e-6)
 
-%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, [],  @quadgk), pi * erf(1).^2, 1e-6)
-%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, [],  @quadl), pi * erf(1).^2, 1e-6)
-%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, [],  @quadv), pi * erf(1).^2, 1e-6)
+%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadgk), pi * erf(1).^2, 1e-6)
+%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadl), pi * erf(1).^2, 1e-6)
+%!assert (dblquad (@(x,y) exp(-x.^2 - y.^2) , -1, 1, -1, 1, 1e-6, @quadv), pi * erf(1).^2, 1e-6)
 

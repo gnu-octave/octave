@@ -494,14 +494,14 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 %!  [v, ier, nfun, err] = quad ("f", single(0.001), single(3));
 %! assert((ier == 0 || ier == 1) && abs (v - 1.98194120273598) < sqrt (eps ("single")) && nfun > 0);
 
-%!error <Invalid call to quad.*> quad ();
+%!error <Invalid call to quad> quad ();
 
-%!error <Invalid call to quad.*> quad ("f", 1, 2, 3, 4, 5);
+%!error <Invalid call to quad> quad ("f", 1, 2, 3, 4, 5);
 
 %!test
 %! quad_options ("absolute tolerance", eps);
 %! assert(quad_options ("absolute tolerance") == eps);
 
-%!error <Invalid call to quad_options.*> quad_options (1, 2, 3);
+%!error <Invalid call to quad_options> quad_options (1, 2, 3);
 
 */

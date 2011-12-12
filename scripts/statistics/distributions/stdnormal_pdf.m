@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -19,7 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stdnormal_pdf (@var{x})
 ## For each element of @var{x}, compute the probability density function
-## (PDF) of the standard normal distribution at @var{x}.
+## (PDF) at @var{x} of the standard normal distribution (mean = 0,
+## standard deviation = 1).
 ## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
@@ -31,17 +33,25 @@ function pdf = stdnormal_pdf (x)
     print_usage ();
   endif
 
-  sz = size(x);
-  pdf = zeros (sz);
-
-  k = find (isnan (x));
-  if (any (k))
-    pdf(k) = NaN;
+  if (iscomplex (x))
+    error ("stdnormal_pdf: X must not be complex");
   endif
 
-  k = find (!isinf (x));
-  if (any (k))
-    pdf (k) = (2 * pi)^(- 1/2) * exp (- x(k) .^ 2 / 2);
-  endif
+  pdf = (2 * pi)^(- 1/2) * exp (- x .^ 2 / 2);
 
 endfunction
+
+
+%!shared x,y
+%! x = [-Inf 0 1 Inf];
+%! y = 1/sqrt(2*pi)*exp (-x.^2/2);
+%!assert(stdnormal_pdf ([x, NaN]), [y, NaN], eps);
+
+%% Test class of input preserved
+%!assert(stdnormal_pdf (single([x, NaN])), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error stdnormal_pdf ()
+%!error stdnormal_pdf (1,2)
+%!error stdnormal_pdf (i)
+

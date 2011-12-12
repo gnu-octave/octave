@@ -452,7 +452,7 @@ public:
 
   // Returns 1 for negative number, 0 otherwise.
   static T
-  signbit (T x)
+  __signbit (T x)
     {
 #ifdef HAVE_FAST_INT_OPS
       return static_cast<UT> (x) >> std::numeric_limits<T>::digits;
@@ -496,7 +496,7 @@ public:
   signum (T x)
     {
       // With modest optimizations, this will compile without a jump.
-      return ((x > 0) ? 1 : 0) - signbit (x);
+      return ((x > 0) ? 1 : 0) - __signbit (x);
     }
 
   // FIXME -- we do not have an authority what signed shifts should
@@ -544,7 +544,7 @@ public:
       T ux = u ^ x, uy = u ^ y;
       if ((ux & uy) < 0)
         {
-          u = octave_int_base<T>::max_val () + signbit (~u);
+          u = octave_int_base<T>::max_val () + __signbit (~u);
         }
       return u;
 #else
@@ -585,7 +585,7 @@ public:
       T ux = u ^ x, uy = u ^ ~y;
       if ((ux & uy) < 0)
         {
-          u = octave_int_base<T>::max_val () + signbit (~u);
+          u = octave_int_base<T>::max_val () + __signbit (~u);
         }
       return u;
 #else
@@ -651,7 +651,7 @@ public:
               z = x / y;
               T w = -octave_int_abs (x % y); // Can't overflow, but std::abs (x) can!
               if (w <= y - w)
-                z -= 1 - (signbit (x) << 1);
+                z -= 1 - (__signbit (x) << 1);
             }
         }
       else
@@ -663,7 +663,7 @@ public:
           T w = octave_int_abs (x % y);
 
           if (w >= y - w)
-            z += 1 - (signbit (x) << 1);
+            z += 1 - (__signbit (x) << 1);
         }
       return z;
     }
@@ -872,6 +872,17 @@ template <class T>
 extern OCTAVE_API octave_int<T>
 pow (const octave_int<T>& a, const double& b);
 
+template <class T>
+extern OCTAVE_API octave_int<T>
+pow (const float& a, const octave_int<T>& b);
+
+template <class T>
+extern OCTAVE_API octave_int<T>
+pow (const octave_int<T>& a, const float& b);
+
+// FIXME: Do we really need a differently named single-precision
+//        function integer power function here instead of an overloaded
+//        one?
 template <class T>
 extern OCTAVE_API octave_int<T>
 powf (const float& a, const octave_int<T>& b);

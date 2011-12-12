@@ -40,6 +40,9 @@
 ##
 ## @multitable @columnfractions 0.06 0.14 0.80
 ##
+## @headitem @tab @var{pos} @tab
+##   location of the legend
+##
 ## @item @tab north @tab
 ##   center top
 ##
@@ -119,13 +122,20 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     ca = gca ();
   endif
 
-  if (strcmp (get (ca, "tag"), "plotyy"))
-    plty = get(ca, "userdata");
-    if (isscalar (plty))
+  if (ishandle (ca) && isprop (ca, "__plotyy_axes__"))
+    plty = get (ca, "__plotyy_axes__");
+    if (isscalar (plty) && ishandle (plty))
       ca = [ca, plty];
-    else
+    elseif (iscell (plty))
       ca = [ca, plty{:}];
+    elseif (all (ishandle (plty)))
+      ca = [ca, plty(:).'];
+    else
+      error ("legend.m: This should not happen. File a bug report.")
     endif
+    ## Remove duplicates while preserving order
+    [~, n] = unique (ca);
+    ca = ca (sort (n));
   endif
 
   if (nargin > 0 && all (ishandle (varargin{1})))
@@ -151,7 +161,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
   if (nargs > 0)
     pos = varargin{nargs};
-    if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
+    if (isnumeric (pos) && isscalar (pos) && pos == fix (pos))
       if (pos >= -1 && pos <= 4)
         position = [{"northeastoutside", "best", "northeast",
                      "northwest", "southwest", "southeast"}] {pos + 2};
@@ -288,7 +298,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (! isempty (hlegend))
       set (hlegend, "box", "off", "visible", "off");
     endif
-  elseif (nargs == 0 && !(strcmp (position, "default") && 
+  elseif (nargs == 0 && !(strcmp (position, "default") &&
                           strcmp (orientation, "default")))
     if (! isempty (hlegend))
       hax = getfield (get (hlegend, "userdata"), "handle");
@@ -298,14 +308,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         h = legend (hax, hplots, text_strings, "orientation", orientation);
       elseif (strcmp (orientation, "default"))
         if (outside)
-          h = legend (hax, hplots, text_strings, "location", 
+          h = legend (hax, hplots, text_strings, "location",
                       strcat (position, "outside"));
         else
           h = legend (hax, hplots, text_strings, "location", position);
         endif
       else
         if (outside)
-          h = legend (hax, hplots, text_strings, "location", 
+          h = legend (hax, hplots, text_strings, "location",
                       strcat (position, "outside"), "orientation", orientation);
         else
           h = legend (hax, hplots, text_strings, "location", position,
@@ -368,13 +378,15 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               break;
             endif
           elseif (! warned)
-            warned = true;
-            warning ("legend: ignoring extra labels");
+            break;
           endif
         else
           error ("legend: expecting argument to be a character string");
         endif
       endfor
+      if (i < nargs && ! warned)
+        warning ("legend: ignoring extra labels");
+      endif
     else
       k = nkids;
       while (k > 0)
@@ -396,7 +408,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               if (isfield (hgobj, "displayname")
                   && ! isempty (hgobj.displayname))
                 hplots = [hplots, hgkids(j)];
-                text_strings = {text_strings{:}, hbobj.displayname};
+                text_strings = {text_strings{:}, hgobj.displayname};
                 break;
               endif
             endfor
@@ -806,22 +818,14 @@ function updatelegend (h, d)
 endfunction
 
 function updatelegendtext (h, d)
+  hax = get (h, "userdata").handle;
   kids = get (h, "children");
-  k = numel (kids);
-  in = get (h, "interpreter");
-  tc = get (h, "textcolor");
-  while (k > 0)
-    typ = get (kids(k), "type");
-    while (k > 0 && ! strcmp (typ, "text"))
-      typ = get (kids(--k), "type");
-    endwhile
-    if (k > 0)
-      set (kids (k), "interpreter", in, "color", tc);
-      if (--k == 0)
-        break;
-      endif
-    endif
-  endwhile
+  text_kids = findobj (kids, "-property", "interpreter", "type", "text");
+  interpreter = get (h, "interpreter");
+  textcolor = get (h, "textcolor");
+  set (kids, "interpreter", interpreter, "color", textcolor);
+  hobj = cell2mat (get (kids, "userdata"));
+  set (hobj, "interpreter", interpreter);
 endfunction
 
 function hideshowlegend (h, d, ca, pos1, pos2)
@@ -1076,7 +1080,7 @@ endfunction
 %! clf
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
-%! ylim ([0 1.2]);
+%! ylim ([0 1.0]);
 %! legend ({"1st Bar", "2nd Bar", "3rd Bar"});
 
 %!demo
@@ -1085,6 +1089,7 @@ endfunction
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
 %! legend ("1st Bar", "2nd Bar", "3rd Bar");
+%! legend right
 
 %!demo
 %! clf
@@ -1123,21 +1128,34 @@ endfunction
 
 %!demo
 %! clf
-%! x = 0:4;
+%! x = 1:5;
 %! subplot (2, 2, 1)
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "northwestoutside")
+%! legend (cellstr (num2str (x')), "location", "northwestoutside")
 %! legend boxon
 %! subplot (2, 2, 2)
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "northeastoutside")
+%! legend (cellstr (num2str (x')), "location", "northeastoutside")
 %! legend boxon
 %! subplot (2, 2, 3);
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "southwestoutside")
+%! legend (cellstr (num2str (x')), "location", "southwestoutside")
 %! legend boxon
 %! subplot (2, 2, 4)
 %! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "southeastoutside")
+%! legend (cellstr (num2str (x')), "location", "southeastoutside")
 %! legend boxon
+
+%!demo
+%! clf
+%! plot (rand (2))
+%! title ("Warn of extra labels")
+%! legend ("Hello", "World", "interpreter", "foobar")
+
+%!demo
+%! clf
+%! plot (rand (2))
+%! title ("Turn off TeX interpreter")
+%! h = legend ("Hello_World", "foo^bar");
+%! set (h, "interpreter", "none")
 

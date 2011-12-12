@@ -61,8 +61,7 @@
 ## @var{n} is a scalar defining the number of points to use in plotting
 ## the function.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the line objects plotted.
+## The optional return value @var{h} is a graphics handle to the created plot.
 ##
 ## @seealso{plot, ezplot3}
 ## @end deftypefn
@@ -80,6 +79,7 @@ function retval = ezplot (varargin)
   endif
 endfunction
 
+
 %!demo
 %! ezplot (@cos, @sin)
 
@@ -87,4 +87,5 @@ endfunction
 %! ezplot ("1/x")
 
 %!demo
-%! ezplot (inline("x^2 - y^2 = 1"))
+%! ezplot (inline ("x^2 - y^2 = 1"))
+

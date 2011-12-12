@@ -1003,7 +1003,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
   octave_idx_type *idest;
   int result = -1;      /* guilty until proved innocent */
   T *basea, *baseb;
-  octave_idx_type *ibasea, *ibaseb;
+  octave_idx_type *ibaseb;
   octave_idx_type min_gallop = ms->min_gallop;
 
   ms->getmemi (nb);
@@ -1012,7 +1012,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type *ipa, octave_idx_type na,
   idest = ipb + nb - 1;
   std::copy (pb, pb + nb, ms->a);
   std::copy (ipb, ipb + nb, ms->ia);
-  basea = pa; ibasea = ipa;
+  basea = pa;
   baseb = ms->a; ibaseb = ms->ia;
   pb = ms->a + nb - 1; ipb = ms->ia + nb - 1;
   pa += na - 1; ipa += na - 1;

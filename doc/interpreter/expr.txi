@@ -425,7 +425,7 @@ the recursion depth and prevents Octave from recursing infinitely.
 The following arithmetic operators are available, and work on scalars
 and matrices.
 
-@table @code
+@table @asis
 @item @var{x} + @var{y}
 @opindex +
 Addition.  If both operands are matrices, the number of rows and columns
@@ -1239,51 +1239,62 @@ you too could make a mistake.  Explicit parentheses will help prevent
 any such mistake.
 
 When operators of equal precedence are used together, the leftmost
-operator groups first, except for the assignment and exponentiation
-operators, which group in the opposite order.  Thus, the expression
-@code{a - b + c} groups as @code{(a - b) + c}, but the expression
-@code{a = b = c} groups as @code{a = (b = c)}.
+operator groups first, except for the assignment operators, which group
+in the opposite order.  Thus, the expression @code{a - b + c} groups as
+@code{(a - b) + c}, but the expression @code{a = b = c} groups as
+@code{a = (b = c)}.
 
 The precedence of prefix unary operators is important when another
 operator follows the operand.  For example, @code{-x^2} means
 @code{-(x^2)}, because @samp{-} has lower precedence than @samp{^}.
 
-Here is a table of the operators in Octave, in order of increasing
-precedence.
+Here is a table of the operators in Octave, in order of decreasing
+precedence.  Unless noted, all operators group left to right.
 
 @table @code
-@item statement separators
-@samp{;}, @samp{,}.
+@item function call and array indexing, cell array indexing, and structure element indexing
+@samp{()}  @samp{@{@}} @samp{.}
 
-@item assignment
-@samp{=}, @samp{+=}, @samp{-=}, @samp{*=},@samp{/=}.  This operator
-groups right to left.
+@item postfix increment, and postfix decrement
+@samp{++}  @samp{--}
 
-@item logical "or" and "and"
-@samp{||}, @samp{&&}.
+These operators group right to left.
 
-@item element-wise "or" and "and"
-@samp{|}, @samp{&}.
+@item transpose and exponentiation
+@samp{'} @samp{.'} @samp{^} @samp{**} @samp{.^} @samp{.**}
 
-@item relational
-@samp{<}, @samp{<=}, @samp{==}, @samp{>=}, @samp{>}, @samp{!=},
-@samp{~=}.
+@item unary plus, unary minus, prefix increment, prefix decrement, and logical "not"
+@samp{+} @samp{-} @samp{++}  @samp{--} @samp{~} @samp{!}
 
-@item colon
-@samp{:}.
+@item multiply and divide
+@samp{*} @samp{/} @samp{\} @samp{.\} @samp{.*} @samp{./}
 
 @item add, subtract
-@samp{+}, @samp{-}.
+@samp{+} @samp{-}
 
-@item multiply, divide
-@samp{*}, @samp{/}, @samp{\}, @samp{.\}, @samp{.*}, @samp{./}.
+@item colon
+@samp{:}
 
-@item transpose
-@samp{'}, @samp{.'}
+@item relational
+@samp{<} @samp{<=} @samp{==} @samp{>=} @samp{>} @samp{!=}
+@samp{~=}
 
-@item unary plus, minus, increment, decrement, and ``not''
-@samp{+}, @samp{-}, @samp{++}, @samp{--}, @samp{!}, @samp{~}.
+@item element-wise "and"
+@samp{&}
 
-@item exponentiation
-@samp{^}, @samp{**}, @samp{.^}, @samp{.**}.
+@item element-wise "or"
+@samp{|}
+
+@item logical "and"
+@samp{&&}
+
+@item logical "or"
+@samp{||}
+
+@item assignment
+@samp{=} @samp{+=} @samp{-=} @samp{*=} @samp{/=} @samp{\=}
+@samp{^=} @samp{.*=} @samp{./=} @samp{.\=} @samp{.^=} @samp{|=}
+@samp{&=}
+
+These operators group right to left.
 @end table

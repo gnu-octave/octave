@@ -49,22 +49,20 @@ sqrtm_utri_inplace (Matrix& T)
 
   bool singular = false;
 
-  /*
-   * the following code is equivalent to this triple loop:
-   *
-   *  n = rows (T);
-   *  for j = 1:n
-   *    T(j,j) = sqrt (T(j,j));
-   *    for i = j-1:-1:1
-   *      T(i,j) /= (T(i,i) + T(j,j));
-   *      k = 1:i-1;
-   *      T(k,j) -= T(k,i) * T(i,j);
-   *    endfor
-   *  endfor
-   *
-   *  this is an in-place, cache-aligned variant of the code
-   *  given in Higham's paper.
-  */
+  // The following code is equivalent to this triple loop:
+  //
+  //   n = rows (T);
+  //   for j = 1:n
+  //     T(j,j) = sqrt (T(j,j));
+  //     for i = j-1:-1:1
+  //       T(i,j) /= (T(i,i) + T(j,j));
+  //       k = 1:i-1;
+  //       T(k,j) -= T(k,i) * T(i,j);
+  //     endfor
+  //   endfor
+  //
+  // this is an in-place, cache-aligned variant of the code
+  // given in Higham's paper.
 
   const octave_idx_type n = T.rows ();
   element_type *Tp = T.fortran_vec ();
@@ -117,38 +115,32 @@ do_sqrtm (const octave_value& arg)
         {
         case MatrixType::Upper:
         case MatrixType::Diagonal:
+          if (! x.diag ().any_element_is_negative ())
             {
-              if (! x.diag ().any_element_is_negative ())
-                {
-                  // Do it in real arithmetic.
-                  sqrtm_utri_inplace (x);
-                  retval = x;
-                  retval.matrix_type (mt);
-                }
-              else
-                iscomplex = true;
-
-              break;
+              // Do it in real arithmetic.
+              sqrtm_utri_inplace (x);
+              retval = x;
+              retval.matrix_type (mt);
             }
-        case MatrixType::Lower:
-            {
-              if (! x.diag ().any_element_is_negative ())
-                {
-                  x = x.transpose ();
-                  sqrtm_utri_inplace (x);
-                  retval = x.transpose ();
-                  retval.matrix_type (mt);
-                }
-              else
-                iscomplex = true;
-
-              break;
-            }
-        default:
-          {
+          else
             iscomplex = true;
-            break;
-          }
+          break;
+
+        case MatrixType::Lower:
+          if (! x.diag ().any_element_is_negative ())
+            {
+              x = x.transpose ();
+              sqrtm_utri_inplace (x);
+              retval = x.transpose ();
+              retval.matrix_type (mt);
+            }
+          else
+            iscomplex = true;
+          break;
+
+        default:
+          iscomplex = true;
+          break;
         }
 
       if (iscomplex)
@@ -166,46 +158,41 @@ do_sqrtm (const octave_value& arg)
         {
         case MatrixType::Upper:
         case MatrixType::Diagonal:
-            {
-              sqrtm_utri_inplace (x);
-              retval = x;
-              retval.matrix_type (mt);
+          sqrtm_utri_inplace (x);
+          retval = x;
+          retval.matrix_type (mt);
+          break;
 
-              break;
-            }
         case MatrixType::Lower:
-            {
-              x = x.transpose ();
-              sqrtm_utri_inplace (x);
-              retval = x.transpose ();
-              retval.matrix_type (mt);
+          x = x.transpose ();
+          sqrtm_utri_inplace (x);
+          retval = x.transpose ();
+          retval.matrix_type (mt);
+          break;
 
-              break;
-            }
         default:
-            {
-              ComplexMatrix u;
+          {
+            ComplexMatrix u;
 
-              do
-                {
-                  ComplexSCHUR schur (x, std::string (), true);
-                  x = schur.schur_matrix ();
-                  u = schur.unitary_matrix ();
-                }
-              while (0); // schur no longer needed.
+            do
+              {
+                ComplexSCHUR schur (x, std::string (), true);
+                x = schur.schur_matrix ();
+                u = schur.unitary_matrix ();
+              }
+            while (0); // schur no longer needed.
 
-              sqrtm_utri_inplace (x);
+            sqrtm_utri_inplace (x);
 
-              x = u * x; // original x no longer needed.
-              ComplexMatrix res = xgemm (x, u, blas_no_trans, blas_conj_trans);
+            x = u * x; // original x no longer needed.
+            ComplexMatrix res = xgemm (x, u, blas_no_trans, blas_conj_trans);
 
-              if (cutoff > 0 && xnorm (imag (res), one) <= cutoff)
-                retval = real (res);
-              else
-                retval = res;
-
-              break;
-            }
+            if (cutoff > 0 && xnorm (imag (res), one) <= cutoff)
+              retval = real (res);
+            else
+              retval = res;
+          }
+          break;
         }
     }
 
@@ -245,23 +232,24 @@ Mathematics, Manchester, England, January 1999.\n\
       return retval;
     }
 
+  if (nargout > 1)
+    {
+      retval.resize (1, 2);
+      retval(2) = -1.0;
+    }
+
   if (arg.is_diag_matrix ())
-    {
-      // sqrtm of a diagonal matrix is just sqrt.
-      retval(0) = arg.sqrt ();
-    }
+    // sqrtm of a diagonal matrix is just sqrt.
+    retval(0) = arg.sqrt ();
   else if (arg.is_single_type ())
-    {
-      retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR> (arg);
-    }
+    retval(0) = do_sqrtm<FloatMatrix, FloatComplexMatrix, FloatComplexSCHUR> (arg);
   else if (arg.is_numeric_type ())
-    {
-      retval(0) = do_sqrtm<Matrix, ComplexMatrix, ComplexSCHUR> (arg);
-    }
+    retval(0) = do_sqrtm<Matrix, ComplexMatrix, ComplexSCHUR> (arg);
 
   if (nargout > 1 && ! error_state)
     {
       // This corresponds to generic code
+      //
       //   norm (s*s - x, "fro") / norm (x, "fro");
 
       octave_value s = retval(0);
@@ -270,3 +258,22 @@ Mathematics, Manchester, England, January 1999.\n\
 
   return retval;
 }
+
+/*
+
+%!assert (sqrtm (2*ones (2)), ones (2), 3*eps)
+
+## The following two tests are from the reference in the docstring above.
+
+%!test
+%! x = [0 1; 0 0];
+%! assert (any (isnan (sqrtm (x))(:) ))
+
+%!test
+%! x = eye (4); x(2,2) = x(3,3) = 2^-26; x(1,4) = 1;
+%! z = eye (4); z(2,2) = z(3,3) = 2^-13; z(1,4) = 0.5;
+%! [y, err] = sqrtm(x);
+%! assert (y, z)
+%! assert (err, 0)   ## Yes, this one has to hold exactly
+
+*/

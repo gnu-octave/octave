@@ -189,6 +189,12 @@ public:
 
   void stash_fcn_file_name (const std::string& nm);
 
+  void stash_fcn_location (int line, int col)
+    {
+      location_line = line;
+      location_column = col;
+    }
+
   void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
 
   void stash_parent_fcn_scope (symbol_table::scope_id ps) { parent_scope = ps; }
@@ -206,6 +212,8 @@ public:
     }
 
   std::string fcn_file_name (void) const { return file_name; }
+
+  std::string profiler_name (void) const;
 
   std::string parent_fcn_name (void) const { return parent_name; }
 
@@ -254,6 +262,20 @@ public:
   void mark_as_inline_function (void) { inline_function = true; }
 
   bool is_inline_function (void) const { return inline_function; }
+
+  void mark_as_anonymous_function (void) { anonymous_function = true; }
+
+  bool is_anonymous_function (void) const { return anonymous_function; }
+
+  bool is_anonymous_function_of_class
+    (const std::string& cname = std::string ()) const
+  {
+    return anonymous_function
+      ? (cname.empty ()
+         ? (! dispatch_class().empty ())
+         : cname == dispatch_class ())
+      : false;
+  }
 
   void mark_as_class_constructor (void) { class_constructor = true; }
 
@@ -344,6 +366,10 @@ private:
   // The name of the file we parsed.
   std::string file_name;
 
+  // Location where this function was defined.
+  int location_line;
+  int location_column;
+
   // The name of the parent function, if any.
   std::string parent_name;
 
@@ -370,6 +396,9 @@ private:
 
   // TRUE means this is an inline function.
   bool inline_function;
+
+  // TRUE means this is an anonymous function.
+  bool anonymous_function;
 
   // TRUE means this function is the constructor for class object.
   bool class_constructor;

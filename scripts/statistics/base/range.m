@@ -37,20 +37,24 @@
 
 function y = range (x, dim)
 
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
   if (nargin == 1)
     y = max (x) - min (x);
-  elseif (nargin == 2)
-    y = max (x, [], dim) - min (x, [], dim);
   else
-    print_usage ();
+    y = max (x, [], dim) - min (x, [], dim);
   endif
 
 endfunction
 
-%!assert(range (1:10), 9)
-%!assert(range (magic (3)), [5, 8, 5])
-%!assert(range (magic (3), 2), [7; 4; 7])
-%!assert(range (2), 0)
+
+%!assert(range (1:10), 9);
+%!assert(range (single(1:10)), single(9));
+%!assert(range (magic (3)), [5, 8, 5]);
+%!assert(range (magic (3), 2), [7; 4; 7]);
+%!assert(range (2), 0);
 
 %% Test input validation
 %!error range ()

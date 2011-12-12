@@ -1,6 +1,6 @@
 /*
  * GL2PS, an OpenGL to PostScript Printing Library
- * Copyright (C) 1999-2009 C. Geuzaine
+ * Copyright (C) 1999-2011 C. Geuzaine
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of either:
@@ -305,10 +305,12 @@ static void *gl2psMalloc(size_t size)
 
 static void *gl2psRealloc(void *ptr, size_t size)
 {
+  void *orig = ptr;
   if(!size) return NULL;
-  ptr = realloc(ptr, size);
+  ptr = realloc(orig, size);
   if(!ptr){
     gl2psMsg(GL2PS_ERROR, "Couldn't reallocate requested memory");
+    free(orig);
     return NULL;
   }
   return ptr;
@@ -320,12 +322,12 @@ static void gl2psFree(void *ptr)
   free(ptr);
 }
 
-static size_t gl2psWriteBigEndian(unsigned long data, size_t bytes)
+static int gl2psWriteBigEndian(unsigned long data, int bytes)
 {
-  size_t i;
-  size_t size = sizeof(unsigned long);
+  int i;
+  int size = sizeof(unsigned long);
   for(i = 1; i <= bytes; ++i){
-    fputc(0xff & (data >> (size-i) * 8), gl2ps->stream);
+    fputc(0xff & (data >> (size - i) * 8), gl2ps->stream);
   }
   return bytes;
 }
@@ -392,10 +394,10 @@ static void *gl2psReallocCompress(unsigned int srcsize)
   return gl2ps->compress->start;
 }
 
-static size_t gl2psWriteBigEndianCompress(unsigned long data, size_t bytes)
+static int gl2psWriteBigEndianCompress(unsigned long data, int bytes)
 {
-  size_t i;
-  size_t size = sizeof(unsigned long);
+  int i;
+  int size = sizeof(unsigned long);
   for(i = 1; i <= bytes; ++i){
     *gl2ps->compress->src = (Bytef)(0xff & (data >> (size-i) * 8));
     ++gl2ps->compress->src;
@@ -441,7 +443,7 @@ static int gl2psPrintf(const char* fmt, ...)
   return ret;
 }
 
-static void gl2psPrintGzipHeader()
+static void gl2psPrintGzipHeader(void)
 {
 #if defined(GL2PS_HAVE_ZLIB)
   char tmp[10] = {'\x1f', '\x8b', /* magic numbers: 0x1f, 0x8b */
@@ -459,7 +461,7 @@ static void gl2psPrintGzipHeader()
 #endif
 }
 
-static void gl2psPrintGzipFooter()
+static void gl2psPrintGzipFooter(void)
 {
 #if defined(GL2PS_HAVE_ZLIB)
   int n;
@@ -789,6 +791,7 @@ static void gl2psUserWritePNG(png_structp png_ptr, png_bytep data, png_size_t le
 
 static void gl2psUserFlushPNG(png_structp png_ptr)
 {
+  (void) png_ptr;  /* not used */
 }
 
 static void gl2psConvertPixmapToPNG(GL2PSimage *pixmap, GL2PSlist *png)
@@ -1358,17 +1361,17 @@ static void gl2psDivideQuad(GL2PSprimitive *quad,
   (*t2)->verts[0] = quad->verts[0];
   (*t2)->verts[1] = quad->verts[2];
   (*t2)->verts[2] = quad->verts[3];
-  (*t2)->boundary = ((quad->boundary & 4) ? 2 : 0) | ((quad->boundary & 4) ? 2 : 0);
+  (*t2)->boundary = ((quad->boundary & 4) ? 2 : 0) | ((quad->boundary & 8) ? 4 : 0);
 }
 
 static int gl2psCompareDepth(const void *a, const void *b)
 {
-  GL2PSprimitive *q, *w;
+  const GL2PSprimitive *q, *w;
   GLfloat dq = 0.0F, dw = 0.0F, diff;
   int i;
 
-  q = *(GL2PSprimitive**)a;
-  w = *(GL2PSprimitive**)b;
+  q = *(const GL2PSprimitive* const*)a;
+  w = *(const GL2PSprimitive* const*)b;
 
   for(i = 0; i < q->numverts; i++){
     dq += q->verts[i].xyz[2];
@@ -1394,10 +1397,10 @@ static int gl2psCompareDepth(const void *a, const void *b)
 
 static int gl2psTrianglesFirst(const void *a, const void *b)
 {
-  GL2PSprimitive *q, *w;
+  const GL2PSprimitive *q, *w;
 
-  q = *(GL2PSprimitive**)a;
-  w = *(GL2PSprimitive**)b;
+  q = *(const GL2PSprimitive* const*)a;
+  w = *(const GL2PSprimitive* const*)b;
   return (q->type < w->type ? 1 : -1);
 }
 
@@ -1614,7 +1617,7 @@ static void gl2psTraverseBspTree(GL2PSbsptree *tree, GL2PSxyz eye, GLfloat epsil
   }
 }
 
-static void gl2psRescaleAndOffset()
+static void gl2psRescaleAndOffset(void)
 {
   GL2PSprimitive *prim;
   GLfloat minZ, maxZ, rangeZ, scaleZ;
@@ -3201,7 +3204,7 @@ static void gl2psPrintTeXHeader(void)
   int i;
 
   if(gl2ps->filename && strlen(gl2ps->filename) < 256){
-    for(i = strlen(gl2ps->filename)-1; i >= 0; i--){
+    for(i = (int)strlen(gl2ps->filename) - 1; i >= 0; i--){
       if(gl2ps->filename[i] == '.'){
         strncpy(name, gl2ps->filename, i);
         name[i] = '\0';
@@ -3306,6 +3309,7 @@ static void gl2psPrintTeXFooter(void)
 
 static void gl2psPrintTeXBeginViewport(GLint viewport[4])
 {
+  (void) viewport;  /* not used */
   glRenderMode(GL_FEEDBACK);
 
   if(gl2ps->header){
@@ -3409,7 +3413,7 @@ static void gl2psPutPDFText(GL2PSstring *text, int cnt, GLfloat x, GLfloat y)
        cnt, text->fontsize, x, y, text->str);
   }
   else{
-    rad = (GLfloat)M_PI * text->angle / 180.0F;
+    rad = (GLfloat)(M_PI * text->angle / 180.0F);
     srad = (GLfloat)sin(rad);
     crad = (GLfloat)cos(rad);
     gl2ps->streamlength += gl2psPrintf
@@ -4170,8 +4174,7 @@ static int gl2psPrintPDFGSObject(void)
 /* Put vertex' edge flag (8bit) and coordinates (32bit) in shader stream */
 
 static int gl2psPrintPDFShaderStreamDataCoord(GL2PSvertex *vertex,
-                                              size_t (*action)(unsigned long data,
-                                                               size_t size),
+                                              int (*action)(unsigned long data, int size),
                                               GLfloat dx, GLfloat dy,
                                               GLfloat xmin, GLfloat ymin)
 {
@@ -4217,8 +4220,7 @@ static int gl2psPrintPDFShaderStreamDataCoord(GL2PSvertex *vertex,
 /* Put vertex' rgb value (8bit for every component) in shader stream */
 
 static int gl2psPrintPDFShaderStreamDataRGB(GL2PSvertex *vertex,
-                                            size_t (*action)(unsigned long data,
-                                                             size_t size))
+                                            int (*action)(unsigned long data, int size))
 {
   int offs = 0;
   unsigned long imap;
@@ -4242,8 +4244,7 @@ static int gl2psPrintPDFShaderStreamDataRGB(GL2PSvertex *vertex,
 /* Put vertex' alpha (8/16bit) in shader stream */
 
 static int gl2psPrintPDFShaderStreamDataAlpha(GL2PSvertex *vertex,
-                                              size_t (*action)(unsigned long data,
-                                                               size_t size),
+                                              int (*action)(unsigned long data, int size),
                                               int sigbyte)
 {
   int offs = 0;
@@ -4270,8 +4271,7 @@ static int gl2psPrintPDFShaderStreamDataAlpha(GL2PSvertex *vertex,
 static int gl2psPrintPDFShaderStreamData(GL2PStriangle *triangle,
                                          GLfloat dx, GLfloat dy,
                                          GLfloat xmin, GLfloat ymin,
-                                         size_t (*action)(unsigned long data,
-                                                          size_t size),
+                                         int (*action)(unsigned long data, int size),
                                          int gray)
 {
   int i, offs = 0;
@@ -4489,8 +4489,7 @@ static int gl2psPrintPDFShaderSimpleExtGS(int obj, GLfloat alpha)
 /* Similar groups of functions for pixmaps and text */
 
 static int gl2psPrintPDFPixmapStreamData(GL2PSimage *im,
-                                         size_t (*action)(unsigned long data,
-                                                          size_t size),
+                                         int (*action)(unsigned long data, int size),
                                          int gray)
 {
   int x, y, shift;
@@ -5031,6 +5030,7 @@ static void gl2psPrintSVGPixmap(GLfloat x, GLfloat y, GL2PSimage *pixmap)
   gl2psPrintf("\"/>\n");
   gl2psListDelete(png);
 #else
+  (void) x; (void) y; (void) pixmap;  /* not used */
   gl2psMsg(GL2PS_WARNING, "GL2PS must be compiled with PNG support in "
            "order to embed images in SVG streams");
 #endif
@@ -5842,7 +5842,8 @@ GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
                                    const void *pixels)
 {
   int size, i;
-  GLfloat pos[4], *piv, zoom_x, zoom_y;
+  const GLfloat *piv;
+  GLfloat pos[4], zoom_x, zoom_y;
   GL2PSprimitive *prim;
   GLboolean valid;
 
@@ -5894,7 +5895,7 @@ GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
       prim->data.image->format = GL_RGB;
       size = height * width * 3;
       prim->data.image->pixels = (GLfloat*)gl2psMalloc(size * sizeof(GLfloat));
-      piv = (GLfloat*)pixels;
+      piv = (const GLfloat*)pixels;
       for(i = 0; i < size; ++i, ++piv){
         prim->data.image->pixels[i] = *piv;
         if(!((i + 1) % 3))
@@ -5939,7 +5940,7 @@ GL2PSDLL_API GLint gl2psDrawImageMap(GLsizei width, GLsizei height,
   glPassThrough((GLfloat)width);
   glPassThrough((GLfloat)height);
   for(i = 0; i < size; i += sizeoffloat){
-    float *value = (float*)imagemap;
+    const float *value = (const float*)imagemap;
     glPassThrough(*value);
     imagemap += sizeoffloat;
   }

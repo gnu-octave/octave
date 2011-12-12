@@ -60,6 +60,7 @@ function [t, v, w] = table (x, y)
 
 endfunction
 
+
 %% Test input validation
 %!error table ()
 %!error table (1, 2, 3)

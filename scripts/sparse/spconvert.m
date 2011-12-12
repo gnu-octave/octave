@@ -43,3 +43,25 @@ function s = spconvert (m)
   endif
 
 endfunction
+
+
+%!test
+%! i = [1; 3; 5];
+%! j = [2; 4; 6];
+%! v = [7; 8; 9];
+%! s = spconvert ([i, j, v]);
+%! assert (issparse (s));
+%! [fi, fj, fv] = find (s);
+%! assert (isequal (i, fi) && isequal (j, fj) && isequal (v, fv));
+%! s = spconvert ([i, j, v, j]);
+%! [fi, fj, fv] = find (s);
+%! assert (isequal (i, fi) && isequal (j, fj) && isequal (complex (v, j), fv));
+%! assert (size (spconvert ([1, 1, 3; 5, 15, 0])), [5, 15]);
+
+%% Test input validation
+%!error spconvert ()
+%!error spconvert (1, 2)
+%!error spconvert ({[1 2 3]})
+%!error spconvert ([1 2])
+%!error spconvert ([1 2 3i])
+%!error spconvert ([1 2 3 4 5])

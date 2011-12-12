@@ -27,13 +27,13 @@ dnl Copyright (C) 1993-2011 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT([GNU Octave], [3.4.3], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.5.90+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
-OCTAVE_API_VERSION_NUMBER="45"
+OCTAVE_API_VERSION_NUMBER="46"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2011-10-10"
+OCTAVE_RELEASE_DATE="2011-12-11"
 OCTAVE_COPYRIGHT="Copyright (C) 2011 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
@@ -165,6 +165,24 @@ AC_ARG_ENABLE(bounds-check,
   [if test "$enableval" = yes; then BOUNDS_CHECKING=true; fi], [])
 if $BOUNDS_CHECKING; then
   AC_DEFINE(BOUNDS_CHECKING, 1, [Define to use internal bounds checking.])
+fi
+
+USE_OCTAVE_ALLOCATOR=false
+AC_ARG_ENABLE(octave-allocator,
+  [AS_HELP_STRING([--enable-octave-allocator],
+     [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.  (default is no)])],
+  [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=true; fi], [])
+if $USE_OCTAVE_ALLOCATOR; then
+  AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1, [Define to use octave_allocator class.])
+fi
+
+USE_ATOMIC_REFCOUNT=false
+AC_ARG_ENABLE(atomic-refcount,
+  [AS_HELP_STRING([--enable-atomic-refcount],
+     [use atomic operations for internal reference counting. This is required for thread-safe behavior.  (default is no)])],
+  [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=true; fi], [])
+if $USE_ATOMIC_REFCOUNT; then
+  AC_DEFINE(USE_ATOMIC_REFCOUNT, 1, [Define to use atomic operations for reference counting.])
 fi
 
 ### Make it possible to disable running Make in the doc directory.
@@ -644,12 +662,17 @@ REGEX_LIBS=
 
 pcre_fail_msg="to build Octave, you must have the PCRE library and header files installed"
 
-## NB: no need to do separate check for pcre.h header -- checking
-## macros is good enough
+AC_CHECK_HEADERS([pcre.h pcre/pcre.h])
+
 AC_CACHE_CHECK([whether pcre.h defines the macros we need],
   [ac_cv_pcre_h_macros_present],
   [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
+#if defined (HAVE_PCRE_H)
 #include <pcre.h>
+#elif defined (HAVE_PCRE_PCRE_H)
+#include <pcre.h>
+#error "NO PCRE HEADER"
+#endif
 #if defined (PCRE_INFO_NAMECOUNT) \
   && defined (PCRE_INFO_NAMEENTRYSIZE) \
   && defined (PCRE_INFO_NAMETABLE)
@@ -1157,7 +1180,7 @@ fi
 
 AC_ARG_ENABLE([dl],
   [AS_HELP_STRING([--enable-dl],
-    [create shared libraries (not all systems)])], [
+    [allow loading of dynamically linked modules (not all systems)])], [
   case "${enableval}" in
     yes) ENABLE_DYNAMIC_LINKING=true ;;
     no) ENABLE_DYNAMIC_LINKING=false ;;
@@ -1169,16 +1192,6 @@ if $STATIC_LIBS || $SHARED_LIBS; then
 else
   AC_MSG_ERROR([You can't disable building static AND shared libraries!])
 fi
-
-AC_ARG_ENABLE(rpath,
-  [AS_HELP_STRING([--enable-rpath],
-     [override the default link options for rpath; e.g., --enable-rpath='-rpath $(octlibdir)'])],
-  [ if test "$enableval" = no; then use_rpath=false;
-    else
-      use_rpath=true
-      if test "$enableval" = yes; then true;
-      else enable_rpath_arg="$enableval"; fi
-    fi], [use_rpath=true])
 
 CPICFLAG=-fPIC
 CXXPICFLAG=-fPIC
@@ -1200,7 +1213,6 @@ DL_LD='$(SH_LD)'
 DL_LDFLAGS='$(SH_LDFLAGS)'
 MKOCTFILE_DL_LDFLAGS='$(DL_LDFLAGS)'
 SONAME_FLAGS=
-RLD_FLAG=
 NO_OCT_FILE_STRIP=false
 TEMPLATE_AR='$(AR)'
 TEMPLATE_ARFLAGS="$ARFLAGS"
@@ -1221,14 +1233,12 @@ case "$canonical_host_type" in
   ;;
   *-*-freebsd*)
     SH_LDFLAGS="-shared -Wl,-x"
-    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   alpha*-dec-osf*)
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
     SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
-    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   *-*-darwin*)
     DL_LDFLAGS='-bundle -bundle_loader $(top_builddir)/src/octave $(LDFLAGS)'
@@ -1335,11 +1345,9 @@ case "$canonical_host_type" in
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
     SONAME_FLAGS='-Wl,-soname -Wl,$@'
-    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   i[[3456]]86-*-sco3.2v5*)
     SONAME_FLAGS='-Wl,-h -Wl,$@'
-    RLD_FLAG=
     SH_LDFLAGS=-G
   ;;
   rs6000-ibm-aix* | powerpc-ibm-aix*)
@@ -1356,7 +1364,6 @@ case "$canonical_host_type" in
     fi
     SHLEXT=sl
     SH_LDFLAGS="-shared -fPIC"
-    RLD_FLAG='-Wl,+b -Wl,$(octlibdir)'
     library_path_var=SHLIB_PATH
   ;;
   ia64*-hp-hpux*)
@@ -1366,13 +1373,11 @@ case "$canonical_host_type" in
       FPICFLAG=+Z
     fi
     SH_LDFLAGS="-shared -fPIC"
-    RLD_FLAG='-Wl,+b -Wl,$(octlibdir)'
   ;;
   *-sgi-*)
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
-    RLD_FLAG='-rpath $(octlibdir)'
   ;;
   sparc-sun-sunos4*)
     if test "$ac_cv_f77_compiler_gnu" = yes; then
@@ -1382,7 +1387,6 @@ case "$canonical_host_type" in
     fi
     SH_LD=ld
     SH_LDFLAGS="-assert nodefinitions"
-    RLD_FLAG='-L$(octlibdir)'
   ;;
   sparc-sun-solaris2* | i386-pc-solaris2*)
     if test "$ac_cv_f77_compiler_gnu" = yes; then
@@ -1402,7 +1406,6 @@ case "$canonical_host_type" in
       CXXPICFLAG=-KPIC
       SH_LDFLAGS=-G
     fi
-    RLD_FLAG='-R $(octlibdir)'
     ## Template closures in archive libraries need a different mechanism.
     if test "$GXX" = yes; then
       true
@@ -1415,14 +1418,6 @@ esac
 
 AM_CONDITIONAL([AMCOND_BUILD_COMPILED_AUX_PROGRAMS],
   [test x$BUILD_COMPILED_AUX_PROGRAMS = xtrue])
-
-if $use_rpath; then
-  if test -n "$enable_rpath_arg"; then
-    RLD_FLAG="$enable_rpath_arg"
-  fi
-else
-  RLD_FLAG=""
-fi
 
 AC_MSG_NOTICE([defining FPICFLAG to be $FPICFLAG])
 AC_MSG_NOTICE([defining CPICFLAG to be $CPICFLAG])
@@ -1445,7 +1440,6 @@ AC_MSG_NOTICE([defining DL_LDFLAGS to be $DL_LDFLAGS])
 AC_MSG_NOTICE([defining MKOCTFILE_DL_LDFLAGS to be $MKOCTFILE_DL_LDFLAGS])
 AC_MSG_NOTICE([defining SONAME_FLAGS to be $SONAME_FLAGS])
 AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
-AC_MSG_NOTICE([defining RLD_FLAG to be $RLD_FLAG])
 AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
 AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
@@ -1474,7 +1468,6 @@ AC_SUBST(DL_LDFLAGS)
 AC_SUBST(MKOCTFILE_DL_LDFLAGS)
 AC_SUBST(SONAME_FLAGS)
 AC_SUBST(NO_OCT_FILE_STRIP)
-AC_SUBST(RLD_FLAG)
 AC_SUBST(TEMPLATE_AR)
 AC_SUBST(TEMPLATE_ARFLAGS)
 AC_SUBST(CRUFT_DLL_DEFS)
@@ -1488,27 +1481,41 @@ AC_SUBST(ldpreloadsep)
 
 AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
-NO_UNDEFINED_LDFLAG=
 case "$canonical_host_type" in
   *-*-mingw*)
     if test "$have_msvc" = "yes"; then
       AC_CHECK_LIB(dirent, opendir)
       LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
-      NO_UNDEFINED_LDFLAG=-no-undefined
     else
       LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
-      NO_UNDEFINED_LDFLAG=-no-undefined
     fi
     LIBS="$LIBS -lgdi32 -lws2_32 -luser32 -lkernel32"
-    NO_UNDEFINED_LDFLAG=-no-undefined
   ;;
   *-*-msdosmsvc*)
     AC_CHECK_LIB(dirent, opendir)
     LIBS="$LIBS -ladvapi32 -lgdi32 -lws2_32 -luser32 -lkernel32"
-    NO_UNDEFINED_LDFLAG=-no-undefined
   ;;
 esac
+
+AC_ARG_ENABLE([no-undefined],
+  [AS_HELP_STRING([--enable-no-undefined],
+    [pass -no-undefined to libtool when linking linking Octave and its shared libraries (on by default)])],
+  [case "${enableval}" in
+    yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
+    no)  NO_UNDEFINED_LDFLAG="" ;;
+    *) AC_MSG_ERROR([bad value ${enableval} for --enable-link-all-depenencies]) ;;
+   esac], [NO_UNDEFINED_LDFLAG="-no-undefined"])
 AC_SUBST(NO_UNDEFINED_LDFLAG)
+
+AC_ARG_ENABLE([link-all-dependencies],
+  [AS_HELP_STRING([--enable-link-all-dependencies],
+    [link Octave and its shared libraries with all dependencies, not just those immediately referenced (should not be needed on most systems)])],
+  [case "${enableval}" in
+    yes) link_all_deps=true ;;
+    no)  link_all_deps=false ;;
+    *) AC_MSG_ERROR([bad value ${enableval} for --enable-link-all-depenencies]) ;;
+   esac], [link_all_deps=false])
+AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test x$link_all_deps = xtrue])
 
 ### Type stuff.
 
@@ -1564,6 +1571,26 @@ AC_CHECK_HEADERS(curses.h direct.h dlfcn.h floatingpoint.h grp.h \
 
 AC_LANG_PUSH(C++)
 AC_CHECK_HEADERS(sstream)
+AC_CHECK_HEADERS([unordered_map], [], [
+  AC_CHECK_HEADERS([tr1/unordered_map])])
+AC_MSG_CHECKING([whether unordered_map requires tr1 namespace])
+unordered_map_requires_tr1_namespace=no
+if test "$ac_cv_header_unordered_map" = "yes"; then
+  ### Have <unordered_map>, but still have to check whether
+  ### tr1 namespace is required (like MSVC, for instance).
+  AC_COMPILE_IFELSE([
+    AC_LANG_PROGRAM([
+      #include <unordered_map>
+    ], [
+      std::unordered_map m;
+    ])], [], [unordered_map_requires_tr1_namespace=yes])
+elif test "$ac_cv_header_tr1_unordered_map" = "yes"; then
+  unordered_map_requires_tr1_namespace=yes
+fi
+if test "$unordered_map_requires_tr1_namespace" = "yes"; then
+  AC_DEFINE(USE_UNORDERED_MAP_WITH_TR1, 1, [Defines whether unordered_map requires the use of tr1 namespace.])
+fi
+AC_MSG_RESULT([$unordered_map_requires_tr1_namespace])
 AC_LANG_POP(C++)
 
 have_termios_h=no
@@ -1704,10 +1731,16 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
   DL_LIBS="$lt_cv_dlopen_libs"
   AC_SUBST(DL_LIBS)
 
+  ## Disable dynamic linking if capability is not present.
   if $dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api; then
-    ENABLE_DYNAMIC_LINKING=true
-    AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define if using dynamic linking])
+    true
+  else
+    ENABLE_DYNAMIC_LINKING=false
   fi
+fi
+
+if $ENABLE_DYNAMIC_LINKING; then
+  AC_DEFINE(ENABLE_DYNAMIC_LINKING, 1, [Define if using dynamic linking])
 fi
 
 AM_CONDITIONAL([AMCOND_ENABLE_DYNAMIC_LINKING],
@@ -2070,6 +2103,9 @@ typedef unsigned long ino_t;
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 
 #include <stdint.h>
+
+/* Tag indicating octave config.h has been included */
+#define OCTAVE_CONFIG_INCLUDED 1
 ])
 
 ### Do the substitutions in all the Makefiles.
@@ -2178,6 +2214,7 @@ Octave is now configured for $canonical_host_type
   gnuplot:                     $GNUPLOT
 
   Do internal array bounds checking:  $BOUNDS_CHECKING
+  Use octave_allocator:               $USE_OCTAVE_ALLOCATOR
   Build static libraries:             $STATIC_LIBS
   Build shared libraries:             $SHARED_LIBS
   Dynamic Linking:                    $ENABLE_DYNAMIC_LINKING $DL_API_MSG
@@ -2442,6 +2479,22 @@ if test -n "$warn_gnuplot"; then
   AC_MSG_WARN([Setting default value to $GNUPLOT])
   AC_MSG_WARN([])
 
+  warn_msg_printed=true
+fi
+
+if $USE_ATOMIC_REFCOUNT; then
+  AC_MSG_WARN([])
+  AC_MSG_WARN([Using atomic reference counting.])
+  AC_MSG_WARN([This feature allows to access octave data safely from])
+  AC_MSG_WARN([another thread, for instance from a GUI. However this])
+  AC_MSG_WARN([results in a small performance penalty in the octave])
+  AC_MSG_WARN([interpreter.])
+  AC_MSG_WARN([])
+  if $USE_OCTAVE_ALLOCATOR; then
+    AC_MSG_WARN([Thread-safe behavior is not guaranteed unless you also])
+    AC_MSG_WARN([disable the use of the octave_allocator class.])
+    AC_MSG_WARN([])
+  fi
   warn_msg_printed=true
 fi
 

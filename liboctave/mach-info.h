@@ -61,6 +61,8 @@ private:
 
   static oct_mach_info *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   // The floating point format for the current machine.
   mutable float_format native_float_fmt;
 

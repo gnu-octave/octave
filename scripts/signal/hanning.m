@@ -33,7 +33,7 @@ function c = hanning (m)
     print_usage ();
   endif
 
-  if (! (isscalar (m) && (m == round (m)) && (m > 0)))
+  if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
     error ("hanning: M has to be an integer > 0");
   endif
 
@@ -45,3 +45,17 @@ function c = hanning (m)
   endif
 
 endfunction
+
+%!assert (hanning (1), 1);
+%!assert (hanning (2), zeros(2,1));
+%!assert (hanning (16), fliplr (hanning (16)));
+%!assert (hanning (15), fliplr (hanning (15)));
+%!test
+%! N = 15;
+%! A = hanning (N);
+%! assert (A (ceil (N/2)), 1);
+
+%!error hanning ();
+%!error hanning (0.5);
+%!error hanning (-1);
+%!error hanning (ones(1,4));

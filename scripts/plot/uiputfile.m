@@ -55,44 +55,74 @@
 
 function [retfile, retpath, retindex] = uiputfile (varargin)
 
-  if (exist("__fltk_uigetfile__") != 3)
-    error ("uiputfile: fltk graphics toolkit required");
+  defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
+  funcname = ["__uiputfile_", defaulttoolkit, "__"];
+  functype = exist (funcname);
+  if (! __is_function__ (funcname))
+    funcname = "__uiputfile_fltk__";
+    if (! __is_function__ (funcname))
+      error ("uiputfile: fltk graphics toolkit required");
+    elseif (! strcmp (defaulttoolkit, "gnuplot"))
+      warning ("uiputfile: no implementation for toolkit `%s', using `fltk' instead",
+               defaulttoolkit);
+    endif
   endif
 
   if (nargin > 3)
     print_usage ();
   endif
 
-  defaultvals = {"All Files(*)", #FLTK File Filter
-                 "Save File?",   #Dialog Title
-                 pwd,            #FLTK default file name
-                 [240, 120],     #Dialog Position (pixel x/y)
-                 "create"};
+  defaultvals = {cell(0, 2),     # File Filter
+                 "Save File",    # Dialog Title
+                 "",             # Default file name
+                 [240, 120],     # Dialog Position (pixel x/y)
+                 "create",
+                 pwd};           # Default directory
 
-  outargs = cell(5, 1);
-  for i = 1 : 5
+  outargs = cell(6, 1);
+  for i = 1 : 6
     outargs{i} = defaultvals{i};
   endfor
 
   if (nargin > 0)
     file_filter = varargin{1};
-    outargs{1} = __fltk_file_filter__ (file_filter);
-    if (ischar (file_filter))
-      outargs{3} = file_filter;
+    [outargs{1}, outargs{3}, defdir] = __file_filter__ (file_filter);
+    if (length (defdir) > 0)
+      outargs{6} = defdir;
     endif
+  else
+    outargs{1} = __file_filter__ (outargs{1});
   endif
 
   if (nargin > 1)
-    outargs{2} = varargin{2};
+    if (ischar (varargin{2}))
+      outargs{2} = varargin{2};
+    elseif (! isempty (varargin{2}))
+      print_usage ();
+    endif
   endif
 
   if (nargin > 2)
-    outargs{3} = varargin{3};
+    if (ischar (varargin{3}))
+      [fdir, fname, fext] = fileparts (varargin{3});
+      if (! isempty (fdir))
+        outargs{6} = fdir;
+      endif
+      if (! isempty (fname) || ! isempty (fext))
+        outargs{3} = strcat (fname, fext);
+      endif
+    elseif (! isempty (varargin{3}))
+      print_usage ();
+    endif
   endif
 
-  [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
+  [retfile, retpath, retindex] = feval (funcname, outargs{:});
 
 endfunction
 
 %!demo
 %! uiputfile({"*.gif;*.png;*.jpg", "Supported Picture Formats"})
+
+## Remove from test statistics.  No real tests possible.
+%!test
+%! assert (1);

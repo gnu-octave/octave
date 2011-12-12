@@ -34,7 +34,8 @@ function retval = mahalanobis (x, y)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) && isnumeric (y)))
+  if (   ! (isnumeric (x) || islogical (x))
+      || ! (isnumeric (y) || islogical (y)))
     error ("mahalanobis: X and Y must be numeric matrices or vectors");
   endif
 
@@ -49,11 +50,16 @@ function retval = mahalanobis (x, y)
     error ("mahalanobis: X and Y must have the same number of columns");
   endif
 
+  if (isinteger (x))
+    x = double (x);
+  endif
+
   xm = mean (x);
   ym = mean (y);
 
-  x = x - ones (xr, 1) * xm;
-  y = y - ones (yr, 1) * ym;
+  ## Center data by subtracting means
+  x = bsxfun (@minus, x, xm);
+  y = bsxfun (@minus, y, ym);
 
   w = (x' * x + y' * y) / (xr + yr - 2);
 
@@ -63,11 +69,12 @@ function retval = mahalanobis (x, y)
 
 endfunction
 
+
 %% Test input validation
 %!error mahalanobis ();
 %!error mahalanobis (1, 2, 3);
-%!error mahalanobis ([true], [true]);
-%!error mahalanobis ([1, 2], [true, true]);
+%!error mahalanobis ('A', 'B');
+%!error mahalanobis ([1, 2], ['A', 'B']);
 %!error mahalanobis (ones (2,2,2));
 %!error mahalanobis (ones (2,2), ones (2,2,2));
 %!error mahalanobis (ones (2,2), ones (2,3));

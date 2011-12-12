@@ -36,6 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "vasnprintf.h"
+
 #include "quit.h"
 
 #include "dir-ops.h"
@@ -113,6 +115,17 @@ Return true if @var{name} is a valid variable name.\n\
 
   return retval;
 }
+
+/*
+%!error isvarname ();
+%!error isvarname ("foo", "bar");
+
+%!assert (isvarname ("foo"), true);
+%!assert (isvarname ("_foo"), true);
+%!assert (isvarname ("_1"), true);
+%!assert (isvarname ("1foo"), false);
+%!assert (isvarname (""), false);
+*/
 
 // Return TRUE if F and G are both names for the same file.
 
@@ -325,6 +338,24 @@ name in the path.  If no files are found, return an empty cell array.\n\
   return retval;
 }
 
+/*
+%!error file_in_loadpath ();
+%!error file_in_loadpath ("foo", "bar", 1);
+
+%!test
+%! f = file_in_loadpath ("plot.m");
+%! assert (ischar (f));
+%! assert (! isempty (f));
+
+%!test
+%! f = file_in_loadpath ("$$probably_!!_not_&&_a_!!_file$$");
+%! assert (f, "");
+
+%!test
+%! lst = file_in_loadpath ("$$probably_!!_not_&&_a_!!_file$$", "all");
+%! assert (lst, {});
+*/
+
 DEFUN (file_in_path, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
@@ -389,6 +420,25 @@ name in the path.  If no files are found, return an empty cell array.\n\
 
   return retval;
 }
+
+/*
+%!error file_in_path ();
+%!error file_in_path ("foo");
+%!error file_in_path ("foo", "bar", "baz", 1);
+
+%!test
+%! f = file_in_path (path (), "plot.m");
+%! assert (ischar (f));
+%! assert (! isempty (f));
+
+%!test
+%! f = file_in_path (path (), "$$probably_!!_not_&&_a_!!_file$$");
+%! assert (f, "");
+
+%!test
+%! lst = file_in_path (path (), "$$probably_!!_not_&&_a_!!_file$$", "all");
+%! assert (lst, {});
+*/
 
 std::string
 file_in_path (const std::string& name, const std::string& suffix)
@@ -623,6 +673,22 @@ Convert special characters in @var{string} to their escaped forms.\n\
   return retval;
 }
 
+/*
+%!error do_string_escapes ();
+%!error do_string_escapes ("foo", "bar");
+
+%!assert (do_string_escapes ('foo\nbar'), "foo\nbar");
+%!assert (do_string_escapes ("foo\\nbar"), "foo\nbar");
+%!assert (do_string_escapes ("foo\\nbar"), ["foo", char(10), "bar"]);
+%!assert ("foo\nbar", ["foo", char(10), "bar"]);
+
+%!assert (do_string_escapes ('\a\b\f\n\r\t\v'), "\a\b\f\n\r\t\v");
+%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"), "\a\b\f\n\r\t\v");
+%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"),
+%!        char ([7, 8, 12, 10, 13, 9, 11]));
+%!assert ("\a\b\f\n\r\t\v", char ([7, 8, 12, 10, 13, 9, 11]));
+*/
+
 const char *
 undo_string_escape (char c)
 {
@@ -729,6 +795,20 @@ representation.\n\
   return retval;
 }
 
+/*
+%!error undo_string_escapes ();
+%!error undo_string_escapes ("foo", "bar");
+
+%!assert (undo_string_escapes ("foo\nbar"), 'foo\nbar');
+%!assert (undo_string_escapes ("foo\nbar"), "foo\\nbar");
+%!assert (undo_string_escapes (["foo", char(10), "bar"]), "foo\\nbar");
+
+%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), '\a\b\f\n\r\t\v');
+%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), "\\a\\b\\f\\n\\r\\t\\v");
+%!assert (undo_string_escapes (char ([7, 8, 12, 10, 13, 9, 11])),
+%!        "\\a\\b\\f\\n\\r\\t\\v");
+*/
+
 DEFUN (is_absolute_filename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_absolute_filename (@var{file})\n\
@@ -747,6 +827,13 @@ Return true if @var{file} is an absolute filename.\n\
   return retval;
 }
 
+/*
+%!error is_absolute_filename ();
+%!error is_absolute_filename ("foo", "bar");
+
+FIXME -- we need system-dependent tests here.
+*/
+
 DEFUN (is_rooted_relative_filename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} is_rooted_relative_filename (@var{file})\n\
@@ -764,6 +851,13 @@ Return true if @var{file} is a rooted-relative filename.\n\
 
   return retval;
 }
+
+/*
+%!error is_rooted_relative_filename ();
+%!error is_rooted_relative_filename ("foo", "bar");
+
+FIXME -- we need system-dependent tests here.
+*/
 
 DEFUN (make_absolute_filename, args, ,
   "-*- texinfo -*-\n\
@@ -788,6 +882,13 @@ Return the full name of @var{file}, relative to the current directory.\n\
 
   return retval;
 }
+
+/*
+%!error make_absolute_filename ();
+%!error make_absolute_filename ("foo", "bar");
+
+FIXME -- we need system-dependent tests here.
+*/
 
 DEFUN (find_dir_in_path, args, ,
   "-*- texinfo -*-\n\
@@ -828,6 +929,13 @@ containing all name matches rather than just the first.\n\
 
   return retval;
 }
+
+/*
+%!error find_dir_in_path ();
+%!error find_dir_in_path ("foo", "bar", 1);
+
+FIXME -- need to create tests using current path, pathsep, and dirsep.
+*/
 
 DEFUNX ("errno", Ferrno, args, ,
   "-*- texinfo -*-\n\
@@ -873,6 +981,21 @@ if @var{name} is not found.\n\
   return retval;
 }
 
+/*
+%!error errno ("foo", 1);
+
+%!assert (isnumeric (errno ()));
+
+%!test
+%! lst = errno_list ();
+%! fns = fieldnames (lst);
+%! oldval = errno (fns{1});
+%! assert (isnumeric (oldval));
+%! errno (oldval);
+%! newval = errno ();
+%! assert (oldval, newval);
+*/
+
 DEFUN (errno_list, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} errno_list ()\n\
@@ -888,6 +1011,12 @@ Return a structure containing the system-dependent errno values.\n\
 
   return retval;
 }
+
+/*
+%!error errno_list ("foo");
+
+%!assert (isstruct (errno_list ()));
+*/
 
 static void
 check_dimensions (octave_idx_type& nr, octave_idx_type& nc, const char *warnfor)
@@ -1035,79 +1164,6 @@ dims_to_numel (const dim_vector& dims, const octave_value_list& idx)
   return retval;
 }
 
-void
-decode_subscripts (const char* name, const octave_value& arg,
-                   std::string& type_string,
-                   std::list<octave_value_list>& idx)
-{
-  const octave_map m = arg.map_value ();
-
-  if (! error_state
-      && m.nfields () == 2 && m.contains ("type") && m.contains ("subs"))
-    {
-      const Cell type = m.contents ("type");
-      const Cell subs = m.contents ("subs");
-
-      octave_idx_type nel = type.numel ();
-
-      type_string = std::string (nel, '\0');
-
-      for (int k = 0; k < nel; k++)
-        {
-          std::string item = type(k).string_value ();
-
-          if (! error_state)
-            {
-              if (item == "{}")
-                type_string[k] = '{';
-              else if (item == "()")
-                type_string[k] = '(';
-              else if (item == ".")
-                type_string[k] = '.';
-              else
-                {
-                  error("%s: invalid indexing type `%s'", name, item.c_str ());
-                  return;
-                }
-            }
-          else
-            {
-              error ("%s: expecting type(%d) to be a character string",
-                     name, k+1);
-              return;
-            }
-
-          octave_value_list idx_item;
-
-          if (subs(k).is_string ())
-            idx_item(0) = subs(k);
-          else if (subs(k).is_cell ())
-            {
-              Cell subs_cell = subs(k).cell_value ();
-
-              for (int n = 0; n < subs_cell.length (); n++)
-                {
-                  if (subs_cell(n).is_string ()
-                      && subs_cell(n).string_value () == ":")
-                    idx_item(n) = octave_value(octave_value::magic_colon_t);
-                  else
-                    idx_item(n) = subs_cell(n);
-                }
-            }
-          else
-            {
-              error ("%s: expecting subs(%d) to be a character string or cell array",
-                     name, k+1);
-              return;
-            }
-
-          idx.push_back (idx_item);
-        }
-    }
-  else
-    error ("%s: second argument must be a structure with fields `type' and `subs'", name);
-}
-
 Matrix
 identity_matrix (octave_idx_type nr, octave_idx_type nc)
 {
@@ -1140,10 +1196,10 @@ float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
   return m;
 }
 
-int
+size_t
 octave_format (std::ostream& os, const char *fmt, ...)
 {
-  int retval = -1;
+  size_t retval;
 
   va_list args;
   va_start (args, fmt);
@@ -1155,121 +1211,43 @@ octave_format (std::ostream& os, const char *fmt, ...)
   return retval;
 }
 
-int
+size_t
 octave_vformat (std::ostream& os, const char *fmt, va_list args)
 {
-  int retval = -1;
+  std::string s = octave_vasprintf (fmt, args);
 
-#if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
+  os << s;
 
-  std::streambuf *sb = os.rdbuf ();
+  return s.length ();
+}
 
-  if (sb)
+std::string
+octave_vasprintf (const char *fmt, va_list args)
+{
+  std::string retval;
+
+  char *result;
+
+  int status = gnulib::vasprintf (&result, fmt, args);
+
+  if (status >= 0)
     {
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-      retval = sb->vform (fmt, args);
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      retval = result;
+      ::free (result);
     }
-
-#else
-
-  char *s = octave_vsnprintf (fmt, args);
-
-  if (s)
-    {
-      os << s;
-
-      retval = strlen (s);
-    }
-
-#endif
 
   return retval;
 }
 
-// We manage storage.  User should not free it, and its contents are
-// only valid until next call to vsnprintf.
-
-// Interrupts might happen if someone makes a call with something that
-// will require a very large buffer.  If we are interrupted in that
-// case, we should make the buffer size smaller for the next call.
-
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1; \
-  delete [] buf; \
-  buf = 0; \
-  size = initial_size; \
-  octave_rethrow_exception (); \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
-
-#if defined __GNUC__ && defined __va_copy
-#define SAVE_ARGS(saved_args, args) __va_copy (saved_args, args)
-#elif defined va_copy
-#define SAVE_ARGS(saved_args, args) va_copy (saved_args, args)
-#else
-#define SAVE_ARGS(saved_args, args) saved_args = args
-#endif
-
-char *
-octave_vsnprintf (const char *fmt, va_list args)
+std::string
+octave_asprintf (const char *fmt, ...)
 {
-  static const size_t initial_size = 100;
-
-  static size_t size = initial_size;
-
-  static char *buf = 0;
-
-  volatile int nchars = 0;
-
-  if (! buf)
-    buf = new char [size];
-
-  if (! buf)
-    return 0;
-
-  while (1)
-    {
-      va_list saved_args;
-
-      SAVE_ARGS (saved_args, args);
-
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
-
-      nchars = octave_raw_vsnprintf (buf, size, fmt, saved_args);
-
-      va_end (saved_args);
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-      if (nchars > -1 && nchars < size)
-        break;
-      else
-        {
-          delete [] buf;
-
-          size = nchars + 1;;
-
-          buf = new char [size];
-
-          if (! buf)
-            return 0;
-        }
-    }
-
-  return buf;
-}
-
-char *
-octave_snprintf (const char *fmt, ...)
-{
-  char *retval = 0;
+  std::string retval;
 
   va_list args;
   va_start (args, fmt);
 
-  retval = octave_vsnprintf (fmt, args);
+  retval = octave_vasprintf (fmt, args);
 
   va_end (args);
 
@@ -1351,6 +1329,14 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
 
   return retval;
 }
+
+/*
+%!error isindex ();
+
+%!assert (isindex ([1, 2, 3]));
+%!assert (isindex (1:3));
+%!assert (isindex ([1, 2, -3]), false);
+*/
 
 octave_value_list
 do_simple_cellfun (octave_value_list (*fun) (const octave_value_list&, int),

@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
+## @deftypefn  {Function File} {[@var{c}, @var{maxsize}, @var{endian}] =} computer ()
+## @deftypefnx {Function File} {@var{arch} =} computer ("arch")
 ## Print or return a string of the form @var{cpu}-@var{vendor}-@var{os}
 ## that identifies the kind of computer Octave is running on.  If invoked
 ## with an output argument, the value is returned instead of printed.  For
@@ -39,42 +40,52 @@
 ## If three output arguments are requested, also return the byte order
 ## of the current system as a character (@code{"B"} for big-endian or
 ## @code{"L"} for little-endian).
+##
+## If the argument @code{"arch"} is specified, return a string
+## indicating the architecture of the computer on which Octave is
+## running.
 ## @end deftypefn
 
-function [c, maxsize, endian] = computer ()
+function [c, maxsize, endian] = computer (a)
 
-  if (nargin != 0)
-    warning ("computer: ignoring extra arguments");
-  endif
+  if (nargin == 1 && ischar (a) && strcmpi (a, "arch"))
+    tmp = strsplit (octave_config_info ("canonical_host_type"), "-");
+    if (numel (tmp) == 4)
+      c = sprintf ("%s-%s-%s", tmp{4}, tmp{3}, tmp{1});
+    else
+      c = sprintf ("%s-%s", tmp{3}, tmp{1});
+    endif
+  elseif (nargin == 0)
+    msg = octave_config_info ("canonical_host_type");
 
-  msg = octave_config_info ("canonical_host_type");
+    if (strcmp (msg, "unknown"))
+      msg = "Hi Dave, I'm a HAL-9000";
+    endif
 
-  if (strcmp (msg, "unknown"))
-    msg = "Hi Dave, I'm a HAL-9000";
-  endif
-
-  if (nargout == 0)
-    printf ("%s\n", msg);
+    if (nargout == 0)
+      printf ("%s\n", msg);
+    else
+      c = msg;
+      if (strcmp (octave_config_info ("USE_64_BIT_IDX_T"), "true"))
+        maxsize = 2^63-1;
+      else
+        maxsize = 2^31-1;
+      endif
+      if (octave_config_info ("words_big_endian"))
+        endian = "B";
+      elseif (octave_config_info ("words_little_endian"))
+        endian = "L";
+      else
+        endian = "?";
+      endif
+    endif
   else
-    c = msg;
-    if (strcmp (octave_config_info ("USE_64_BIT_IDX_T"), "true"))
-      maxsize = 2^63-1;
-    else
-      maxsize = 2^31-1;
-    endif
-    if (octave_config_info ("words_big_endian"))
-      endian = "B";
-    elseif (octave_config_info ("words_little_endian"))
-      endian = "L";
-    else
-      endian = "?";
-    endif
+    print_usage ();
   endif
 
 endfunction
 
 %!assert((ischar (computer ())
 %! && computer () == octave_config_info ("canonical_host_type")));
-
-%!warning a =computer(2);
-
+%!assert(ischar (computer ("arch")));
+%!error computer (2);

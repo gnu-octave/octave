@@ -83,7 +83,7 @@ function refreshdata (h, workspace)
     obj = get (h (i));
     fldnames = fieldnames (obj);
     m = regexpi (fieldnames(obj), '^.+datasource$', "match");
-    idx = cellfun (@(x) !isempty(x), m);
+    idx = ! cellfun ("isempty", m);
     if (any (idx))
       tmp = m(idx);
       props = [props; {vertcat(tmp{:})}];

@@ -3,17 +3,17 @@
 # Copyright (C) 1993-2011 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
@@ -53,6 +53,7 @@ include path/module.mk
 include pkg/module.mk
 include plot/module.mk
 include polynomial/module.mk
+include prefs/module.mk
 include set/module.mk
 include signal/module.mk
 include sparse/module.mk
@@ -141,6 +142,10 @@ polynomial/PKG_ADD: $(polynomial_FCN_FILES) $(polynomial_GEN_FCN_FILES) polynomi
 	$(srcdir)/mk-pkg-add $(srcdir) $(polynomial_FCN_FILES) -- $(polynomial_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
 
+prefs/PKG_ADD: $(prefs_FCN_FILES) $(prefs_GEN_FCN_FILES) prefs/$(octave_dirstamp) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(srcdir) $(prefs_FCN_FILES) -- $(prefs_GEN_FCN_FILES) > $@-t
+	mv $@-t $@
+
 set/PKG_ADD: $(set_FCN_FILES) $(set_GEN_FCN_FILES) set/$(octave_dirstamp) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(srcdir) $(set_FCN_FILES) -- $(set_GEN_FCN_FILES) > $@-t
 	mv $@-t $@
@@ -209,6 +214,7 @@ $(path_GEN_FCN_FILES): path/$(octave_dirstamp)
 $(pkg_GEN_FCN_FILES): pkg/$(octave_dirstamp)
 $(plot_GEN_FCN_FILES): plot/$(octave_dirstamp)
 $(polynomial_GEN_FCN_FILES): polynomial/$(octave_dirstamp)
+$(prefs_GEN_FCN_FILES): prefs/$(octave_dirstamp)
 $(set_GEN_FCN_FILES): set/$(octave_dirstamp)
 $(signal_GEN_FCN_FILES): signal/$(octave_dirstamp)
 $(sparse_GEN_FCN_FILES): sparse/$(octave_dirstamp)
@@ -271,6 +277,9 @@ plot/$(octave_dirstamp):
 polynomial/$(octave_dirstamp):
 	$(MKDIR_P) polynomial
 	: > polynomial/$(octave_dirstamp)
+prefs/$(octave_dirstamp):
+	$(MKDIR_P) prefs
+	: > prefs/$(octave_dirstamp)
 set/$(octave_dirstamp):
 	$(MKDIR_P) set
 	: > set/$(octave_dirstamp)

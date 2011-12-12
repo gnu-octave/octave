@@ -312,15 +312,18 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 DEFUN_DLD (bsxfun, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
-Apply a binary function @var{f} element-by-element to two matrix arguments\n\
-@var{A} and @var{B}.  @var{f} is a function handle, inline function, or\n\
-string containing the name of the function to evaluate.\n\
-The function @var{f} must be capable of accepting two column-vector\n\
-arguments of equal length, or one column vector argument and a scalar.\n\
+The binary singleton expansion function applier does what its name\n\
+suggests: applies a binary function @var{f} element-by-element to two\n\
+array arguments @var{A} and @var{B}, and expands as necessary\n\
+singleton dimensions in either input argument.  @var{f} is a function\n\
+handle, inline function, or string containing the name of the function\n\
+to evaluate.  The function @var{f} must be capable of accepting two\n\
+column-vector arguments of equal length, or one column vector argument\n\
+and a scalar.\n\
 \n\
 The dimensions of @var{A} and @var{B} must be equal or singleton.  The\n\
-singleton dimensions of the matrices will be expanded to the same\n\
-dimensionality as the other matrix.\n\
+singleton dimensions of the arrays will be expanded to the same\n\
+dimensionality as the other array.\n\
 @seealso{arrayfun, cellfun}\n\
 @end deftypefn")
 {
@@ -766,4 +769,45 @@ dimensionality as the other matrix.\n\
 %!assert (bsxfun (@max, a, b), max (aa, bb));
 %!assert (bsxfun (@and, a > 0, b > 0), (aa > 0) & (bb > 0));
 %!assert (bsxfun (@or, a > 0, b > 0), (aa > 0) | (bb > 0));
+
+%% Test automatic bsxfun
+%
+%!test
+%! funs = {@plus, @minus, @times, @rdivide, @ldivide, @power, @max, @min, \
+%!         @rem, @mod, @atan2, @hypot, @eq, @ne, @lt, @le, @gt, @ge, \
+%!         @and, @or, @xor };
+%!
+%! float_types = {@single, @double};
+%! int_types = {@int8, @int16, @int32, @int64, \
+%!             @uint8, @uint16, @uint32, @uint64};
+%!
+%! x = rand (3)*10-5;
+%! y = rand (3,1)*10-5;
+%!
+%! for i=1:length (funs)
+%!   for j = 1:length(float_types)
+%!     for k = 1:length(int_types)
+%!
+%!       fun = funs{i};
+%!       f_type = float_types{j};
+%!       i_type = int_types{k};
+%!
+%!         assert (bsxfun (fun, f_type (x), i_type (y)), \
+%!                 fun (f_type(x), i_type (y)));
+%!         assert (bsxfun (fun, f_type (y), i_type (x)), \
+%!                 fun (f_type(y), i_type (x)));
+%!
+%!         assert (bsxfun (fun, i_type (x), i_type (y)), \
+%!                 fun (i_type (x), i_type (y)));
+%!         assert (bsxfun (fun, i_type (y), i_type (x)), \
+%!                 fun (i_type (y), i_type (x)));
+%!
+%!         assert (bsxfun (fun, f_type (x), f_type (y)), \
+%!                 fun (f_type (x), f_type (y)));
+%!         assert (bsxfun (fun, f_type(y), f_type(x)), \
+%!                 fun (f_type (y), f_type (x)));
+%!     endfor
+%!   endfor
+%! endfor
+%!
 */

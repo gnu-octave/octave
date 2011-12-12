@@ -82,10 +82,21 @@ function [beta, v, r] = gls (y, x, o)
   if (rx != ry)
     error ("gls: number of rows of X and Y must be equal");
   endif
-  if (!issquare(o) || ro != ry*cy)
+  if (!issquare (o) || ro != ry*cy)
     error ("gls: matrix O must be square matrix with rows = rows (Y) * cols (Y)");
   endif
 
+  if (isinteger (x))
+    x = double (x);
+  endif
+  if (isinteger (y))
+    y = double (y);
+  endif
+  if (isinteger (o))
+    o = double (o);
+  endif
+
+  ## Start of algorithm
   o = o^(-1/2);
   z = kron (eye (cy), x);
   z = o * z;
@@ -116,7 +127,7 @@ endfunction
 %! y = 3*x + 2;
 %! x = [x, ones(5,1)];
 %! o = diag (ones (5,1));
-%! assert (gls (y,x,o), [3; 2], 50*eps)
+%! assert (gls (y,x,o), [3; 2], 50*eps);
 
 %% Test input validation
 %!error gls ()

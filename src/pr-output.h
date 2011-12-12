@@ -256,4 +256,7 @@ octave_print_internal (std::ostream& os, const Cell& cell,
 // like this: x = [](2x0).
 extern bool Vprint_empty_dimensions;
 
+// TRUE means don't put empty lines in output
+extern bool Vcompact_format;
+
 #endif

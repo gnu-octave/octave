@@ -20,7 +20,6 @@ elfun_FCN_FILES = \
   elfun/csc.m \
   elfun/cscd.m \
   elfun/csch.m \
-  elfun/lcm.m \
   elfun/sec.m \
   elfun/secd.m \
   elfun/sech.m \

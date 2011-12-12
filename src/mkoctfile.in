@@ -85,7 +85,6 @@ fi
 : ${DL_LD=%OCTAVE_CONF_DL_LD%}
 : ${DL_LDFLAGS=%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%}
 
-: ${RLD_FLAG=%OCTAVE_CONF_RLD_FLAG%}
 : ${RDYNAMIC_FLAG=%OCTAVE_CONF_RDYNAMIC_FLAG%}
 : ${LIBOCTAVE=-loctave}
 : ${LIBOCTINTERP=-loctinterp}
@@ -99,6 +98,10 @@ fi
 : ${FFTW3F_LIBS=%OCTAVE_CONF_FFTW3F_LIBS%}
 : ${LIBS=%OCTAVE_CONF_LIBS%}
 : ${FLIBS=%OCTAVE_CONF_FLIBS%}
+: ${OCTAVE_LINK_DEPS=%OCTAVE_CONF_OCTAVE_LINK_DEPS%}
+: ${OCTAVE_LINK_OPTS=%OCTAVE_CONF_OCTAVE_LINK_OPTS%}
+: ${OCT_LINK_DEPS=%OCTAVE_CONF_OCT_LINK_DEPS%}
+: ${OCT_LINK_OPTS=%OCTAVE_CONF_OCT_LINK_OPTS%}
 : ${LD_CXX=%OCTAVE_CONF_LD_CXX%}
 : ${LDFLAGS=%OCTAVE_CONF_LDFLAGS%}
 : ${LD_STATIC_FLAG=%OCTAVE_CONF_LD_STATIC_FLAG%}
@@ -221,7 +224,7 @@ Options:
 
   -s, --strip             Strip output file.
 
-  --mex                   Create a MEX file.  
+  --mex                   Create a MEX file.
                           Set the default output extension to ".mex".
 
   -o FILE, --output FILE  Output file name.  Default extension is .oct
@@ -231,28 +234,29 @@ Options:
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
 
-                            ALL_CFLAGS                FFTW3F_LDFLAGS
-                            ALL_CXXFLAGS              FFTW3F_LIBS
-                            ALL_FFLAGS                FLIBS
-                            ALL_LDFLAGS               FPICFLAG
-                            BLAS_LIBS                 INCFLAGS
-                            CC                        LAPACK_LIBS
-                            CFLAGS                    LDFLAGS
-                            CPICFLAG                  LD_CXX
-                            CPPFLAGS                  LD_STATIC_FLAG
-                            CXX                       LFLAGS
-                            CXXFLAGS                  LIBCRUFT
-                            CXXPICFLAG                LIBOCTAVE
-                            DEPEND_EXTRA_SED_PATTERN  LIBOCTINTERP
-                            DEPEND_FLAGS              LIBS
-                            DL_LD                     OCTAVE_LIBS
-                            DL_LDFLAGS                RDYNAMIC_FLAG
-                            EXEEXT                    READLINE_LIBS
-                            F77                       RLD_FLAG
+                            ALL_CFLAGS                FFTW3F_LIBS
+                            ALL_CXXFLAGS              FLIBS
+                            ALL_FFLAGS                FPICFLAG
+                            ALL_LDFLAGS               INCFLAGS
+                            BLAS_LIBS                 LAPACK_LIBS
+                            CC                        LDFLAGS
+                            CFLAGS                    LD_CXX
+                            CPICFLAG                  LD_STATIC_FLAG
+                            CPPFLAGS                  LFLAGS
+                            CXX                       LIBCRUFT
+                            CXXFLAGS                  LIBOCTAVE
+                            CXXPICFLAG                LIBOCTINTERP
+                            DEPEND_EXTRA_SED_PATTERN  LIBS
+                            DEPEND_FLAGS              OCTAVE_LIBS
+                            DL_LD                     OCTAVE_LINK_DEPS
+                            DL_LDFLAGS                OCT_LINK_DEPS
+                            EXEEXT                    RDYNAMIC_FLAG
+                            F77                       READLINE_LIBS
                             F77_INTEGER_8_FLAG        SED
                             FFLAGS                    XTRA_CFLAGS
                             FFTW3_LDFLAGS             XTRA_CXXFLAGS
                             FFTW3_LIBS
+                            FFTW3F_LDFLAGS
 
   -v, --verbose           Echo commands as they are executed.
 
@@ -529,7 +533,7 @@ fi
 if $link && [ -n "$objfiles" ]; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $LAPACK_LIBS $BLAS_LIBS $FFTW_LIBS $READLINE_LIBS $LIBS $FLIBS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $OCTAVE_LINK_OPTS $OCTAVE_LINK_DEPS"
       $dbg $cmd
       eval $cmd
     else
@@ -537,8 +541,7 @@ if $link && [ -n "$objfiles" ]; then
       exit 1
     fi
   else
-    LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $LAPACK_LIBS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
-    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LINK_DEPS"
+    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LFLAGS -loctinterp -loctave -lcruft $OCT_LINK_OPTS $OCT_LINK_DEPS"
     $dbg $cmd
     eval $cmd
   fi

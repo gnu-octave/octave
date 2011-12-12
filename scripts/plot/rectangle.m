@@ -25,15 +25,15 @@
 ## @deftypefnx {Function File} {@var{h} =} rectangle (@dots{})
 ##
 ## Draw rectangular patch defined by @var{pos} and @var{curv}.  The variable
-## @code{@var{pos}(1 : 2)} defines the lower left-hand corner of the patch
-## and @code{@var{pos}(3 : 4)} defines its width and height.  By default, the
+## @code{@var{pos}(1:2)} defines the lower left-hand corner of the patch
+## and @code{@var{pos}(3:4)} defines its width and height.  By default, the
 ## value of @var{pos} is @code{[0, 0, 1, 1]}.
 ##
 ## The variable @var{curv} defines the curvature of the sides of the rectangle
 ## and may be a scalar or two-element vector with values between 0 and 1.
 ## A value of 0 represents no curvature of the side, whereas a value of 1
 ## means that the side is entirely curved into the arc of a circle.
-## If @var{curv} is a two-element vector, then the first element is the 
+## If @var{curv} is a two-element vector, then the first element is the
 ## curvature along the x-axis of the patch and the second along y-axis.
 ##
 ## If @var{curv} is a scalar, it represents the curvature of the shorter of the
@@ -41,12 +41,13 @@
 ## by
 ##
 ## @example
-## min (pos (1: 2)) / max (pos (1:2)) * curv
+## min (pos (1:2)) / max (pos (1:2)) * curv
 ## @end example
 ##
-## Other properties are passed to the underlying patch command.  If called 
-## with an output argument, @code{rectangle} returns the handle to the 
-## rectangle.
+## Other properties are passed to the underlying patch command. 
+## 
+## The optional return value @var{h} is a graphics handle to the created
+## rectangle object.
 ## @end deftypefn
 ## @seealso{patch}
 
@@ -204,17 +205,17 @@ endfunction
 
 
 %!demo
-%! close all
+%! clf
 %! axis equal
 %! rectangle ("Position", [0.05, 0.05, 0.9, 0.9], "Curvature", [0.5, 0.5]);
 
 %!demo
-%! close all
+%! clf
 %! axis equal
 %! rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature", 1.0);
 
 %!demo
-%! close all
+%! clf
 %! axis equal
 %! h = rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature",  1.0);
 %! set (h, "FaceColor", [0, 1, 0]);

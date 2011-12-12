@@ -124,9 +124,14 @@ tree_anon_fcn_handle::rvalue1 (int)
         parent_scope = curr_fcn->scope ();
 
       uf->stash_parent_fcn_scope (parent_scope);
+
+      if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
+        uf->stash_dispatch_class (curr_fcn->dispatch_class ());
     }
 
-  uf->mark_as_inline_function ();
+  uf->mark_as_anonymous_function ();
+  uf->stash_fcn_file_name (file_name);
+  uf->stash_fcn_location (line (), column ());
 
   octave_value ov_fcn (uf);
 

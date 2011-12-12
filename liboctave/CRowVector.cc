@@ -234,7 +234,7 @@ ComplexRowVector::transpose (void) const
 ComplexRowVector
 conj (const ComplexRowVector& a)
 {
-  return do_mx_unary_map<Complex, Complex, std::conj> (a);
+  return do_mx_unary_map<Complex, Complex, std::conj<double> > (a);
 }
 
 // resize is the destructive equivalent for this one

@@ -74,7 +74,8 @@ function tau = kendall (x, y = [])
     print_usage ();
   endif
 
-  if (! (isnumeric (x) && isnumeric (y)))
+  if (   ! (isnumeric (x) || islogical (x))
+      || ! (isnumeric (y) || islogical (y)))
     error ("kendall: X and Y must be numeric matrices or vectors");
   endif
 
@@ -82,14 +83,14 @@ function tau = kendall (x, y = [])
     error ("kendall: X and Y must be 2-D matrices or vectors");
   endif
 
-  if (rows (x) == 1)
-    x = x';
+  if (isrow (x))
+    x = x.';
   endif
   [n, c] = size (x);
 
   if (nargin == 2)
-    if (rows (y) == 1)
-      y = y';
+    if (isrow (y))
+      y = y.';
     endif
     if (rows (y) != n)
       error ("kendall: X and Y must have the same number of observations");
@@ -98,22 +99,36 @@ function tau = kendall (x, y = [])
     endif
   endif
 
+  if (isa (x, 'single') || isa (y, 'single'))
+    cls = 'single';
+  else
+    cls = 'double';
+  endif
   r   = ranks (x);
-  m   = sign (kron (r, ones (n, 1)) - kron (ones (n, 1), r));
-  tau = corrcoef (m);
+  m   = sign (kron (r, ones (n, 1, cls)) - kron (ones (n, 1, cls), r));
+  tau = corr (m);
 
   if (nargin == 2)
-    tau = tau (1 : c, (c + 1) : columns (x));
+    tau = tau(1 : c, (c + 1) : columns (x));
   endif
 
 endfunction
 
 
+%!test
+%! x = [1:2:10];
+%! y = [100:10:149];
+%! assert (kendall (x,y), 1, 5*eps);
+%! assert (kendall (x,fliplr (y)), -1, 5*eps);
+
+%!assert (kendall (logical(1)), 1);
+%!assert (kendall (single(1)), single(1));
+
 %% Test input validation
 %!error kendall ();
 %!error kendall (1, 2, 3);
-%!error kendall ([true, true]);
-%!error kendall (ones(1,2), [true, true]);
+%!error kendall (['A'; 'B']);
+%!error kendall (ones(2,1), ['A'; 'B']);
 %!error kendall (ones (2,2,2));
 %!error kendall (ones (2,2), ones (2,2,2));
 %!error kendall (ones (2,2), ones (3,2));

@@ -32,7 +32,7 @@ c apply previous rotations to rows
 
          y = t(j+1,j)
          if (y /= 0) then
-c 2x2 block, form Givens rotation [c, i*s; i*s, c] 
+c 2x2 block, form Givens rotation [c, i*s; i*s, c]
            x = t(j,j)
            z = t(j,j+1)
            c(j) = sqrt(z/(z-y))
@@ -42,7 +42,7 @@ c apply new rotation to t(j:j+1,j)
 c apply all rotations to t(1:j+1,j+1)
            call zrcrot1(j+1,t(1,j+1),c,s)
 c apply new rotation to columns j,j+1
-           call zrcrot2(j+1,t(1,j),t(1,j+1),c(j),s(j))           
+           call zrcrot2(j+1,t(1,j),t(1,j+1),c(j),s(j))
 c zero subdiagonal entry, skip next row
            t(j+1,j) = 0
            c(j+1) = 1

@@ -36,6 +36,7 @@ extern int octave_parse (void);
 class tree;
 class tree_matrix;
 class tree_identifier;
+class tree_statement_list;
 class octave_function;
 
 #include "oct-obj.h"
@@ -112,5 +113,7 @@ eval_string (const std::string&, bool silent, int& parse_status, int hargout);
 
 extern OCTINTERP_API octave_value
 eval_string (const std::string&, bool silent, int& parse_status);
+
+extern OCTINTERP_API void cleanup_statement_list (tree_statement_list **lst);
 
 #endif

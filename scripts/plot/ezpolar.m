@@ -32,8 +32,7 @@
 ## value of both @var{t}.  @var{n} is a scalar defining the number of points to
 ## use.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a graphics handle to the created plot.
 ##
 ## @example
 ## ezpolar (@@(t) 1 + sin (t));
@@ -55,5 +54,7 @@ function retval = ezpolar (varargin)
   endif
 endfunction
 
+
 %!demo
 %! ezpolar (@(t) 1 + sin (t));
+

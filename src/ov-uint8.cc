@@ -82,3 +82,14 @@ Convert @var{x} to unsigned 8-bit integer type.\n\
 {
   OCTAVE_TYPE_CONV_BODY (uint8);
 }
+
+/*
+
+%!assert (class (uint8 (1)), "uint8")
+%!assert (uint8 (1.25), uint8 (1))
+%!assert (uint8 (1.5), uint8 (2))
+%!assert (uint8 (-1.5), uint8 (0))
+%!assert (uint8 (2^9), uint8 (2^8-1))
+%!assert (uint8 (-2^9), uint8 (0))
+
+*/

@@ -28,14 +28,12 @@
 
 function retval = isvector (x)
 
-  retval = 0;
-
-  if (nargin == 1)
-    sz = size (x);
-    retval = (ndims (x) == 2 && (sz(1) == 1 || sz(2) == 1));
-  else
+  if (nargin != 1)
     print_usage ();
   endif
+
+  sz = size (x);
+  retval = (ndims (x) == 2 && (sz(1) == 1 || sz(2) == 1));
 
 endfunction
 

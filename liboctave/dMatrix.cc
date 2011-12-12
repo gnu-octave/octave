@@ -1239,6 +1239,9 @@ Matrix::determinant (MatrixType& mattype,
 {
   DET retval (1.0);
 
+  info = 0;
+  rcon = 0.0;
+
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1267,7 +1270,6 @@ Matrix::determinant (MatrixType& mattype,
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
 
-          info = 0;
           double anorm = 0;
           if (calc_cond) anorm = xnorm (*this, 1);
 
@@ -2652,6 +2654,13 @@ Matrix::any_element_is_negative (bool neg_zero) const
 {
   return (neg_zero ? test_all (xnegative_sign)
           : do_mx_check<double> (*this, mx_inline_any_negative));
+}
+
+bool
+Matrix::any_element_is_positive (bool neg_zero) const
+{
+  return (neg_zero ? test_all (xpositive_sign)
+          : do_mx_check<double> (*this, mx_inline_any_positive));
 }
 
 bool

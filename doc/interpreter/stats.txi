@@ -114,11 +114,9 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(center)
 
-@DOCSTRING(studentize)
+@DOCSTRING(zscore)
 
 @DOCSTRING(histc)
-
-@DOCSTRING(cut)
 
 @c FIXME: really want to put a reference to unique here
 @c @DOCSTRING(values)
@@ -168,9 +166,7 @@ using the @code{hist} function as described in
 
 @DOCSTRING(cov)
 
-@DOCSTRING(cor)
-
-@DOCSTRING(corrcoef)
+@DOCSTRING(corr)
 
 @DOCSTRING(spearman)
 

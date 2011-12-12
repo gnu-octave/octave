@@ -257,8 +257,6 @@ The following functions return famous matrix forms.
 
 @DOCSTRING(rosser)
 
-@DOCSTRING(sylvester_matrix)
-
 @DOCSTRING(toeplitz)
 
 @DOCSTRING(vander)

@@ -126,6 +126,8 @@ private:
   // The real thing.
   static command_history *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
 protected:
 
   // To use something other than the GNU history library, derive a new

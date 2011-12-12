@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "file-stat.h"
+#include "singleton-cleanup.h"
 
 #include "defun.h"
 #include "error.h"
@@ -248,6 +249,28 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
             break;
         }
     }
+}
+
+bool
+bp_table::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    {
+      instance = new bp_table ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
+
+  if (! instance)
+    {
+      ::error ("unable to create breakpoint table!");
+      retval = false;
+    }
+
+  return retval;
 }
 
 bp_table::intmap
@@ -835,13 +858,8 @@ List script file with line numbers.\n\
   return retval;
 }
 
-DEFUN (dbstack, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
-Print or return current stack information.  With optional argument\n\
-@var{n}, omit the @var{n} innermost stack frames.\n\
-@seealso{dbclear, dbstatus, dbstop}\n\
-@end deftypefn")
+static octave_value_list
+do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
 {
   octave_value_list retval;
 
@@ -882,7 +900,7 @@ Print or return current stack information.  With optional argument\n\
 
           if (nframes_to_display > 0)
             {
-              octave_stdout << "stopped in:\n\n";
+              os << "stopped in:\n\n";
 
               Cell names = stk.contents ("name");
               Cell files = stk.contents ("file");
@@ -908,15 +926,15 @@ Print or return current stack information.  With optional argument\n\
                   if (show_top_level && i == curr_frame)
                     show_top_level = false;
 
-                  octave_stdout << (i == curr_frame ? "  --> " : "      ")
-                                << std::setw (max_name_len) << name
-                                << " at line " << line
-                                << " [" << file << "]"
-                                << std::endl;
+                  os << (i == curr_frame ? "  --> " : "      ")
+                     << std::setw (max_name_len) << name
+                     << " at line " << line
+                     << " [" << file << "]"
+                     << std::endl;
                 }
 
               if (show_top_level)
-                octave_stdout << "  --> top level" << std::endl;
+                os << "  --> top level" << std::endl;
             }
         }
       else
@@ -927,6 +945,28 @@ Print or return current stack information.  With optional argument\n\
     }
 
   return retval;
+}
+
+// A function that can be easily called from a debugger print the Octave
+// stack.  This can be useful for finding what line of code the
+// interpreter is currently executing when the debugger is stopped in
+// some C++ function, for example.
+
+void
+show_octave_dbstack (void)
+{
+  do_dbstack (octave_value_list (), 0, std::cerr);
+}
+
+DEFUN (dbstack, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
+Print or return current stack information.  With optional argument\n\
+@var{n}, omit the @var{n} innermost stack frames.\n\
+@seealso{dbclear, dbstatus, dbstop}\n\
+@end deftypefn")
+{
+  return do_dbstack (args, nargout, octave_stdout);
 }
 
 static void

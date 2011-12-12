@@ -23,8 +23,8 @@
 ##
 ## @example
 ## @group
-## (I - beta*housv*housv')x =  norm(x)*e(j) if x(1) < 0,
-## (I - beta*housv*housv')x = -norm(x)*e(j) if x(1) >= 0
+## (I - beta*housv*housv')x =  norm(x)*e(j) if x(j) < 0,
+## (I - beta*housv*housv')x = -norm(x)*e(j) if x(j) >= 0
 ## @end group
 ## @end example
 ##
@@ -91,3 +91,43 @@ function [housv, beta, zer] = housh (x, j, z)
   endif
 
 endfunction
+
+%!test
+%! x = [1 2 3]';
+%! j = 3;
+%! [hv, b, z] = housh(x, j, 0);
+%! r = (eye(3) - b*hv*hv') * x;
+%! d = - norm(x) * [0 0 1]';
+%! assert(r, d, 2e-8);
+%! assert(z, 0, 2e-8);
+
+%!test
+%! x = [7 -3 1]';
+%! j = 2;
+%! [hv, b, z] = housh(x, j, 0);
+%! r = (eye(3) - b*hv*hv') * x;
+%! d = norm(x) * [0 1 0]';
+%! assert(r, d, 2e-8);
+%! assert(z, 0, 2e-8);
+
+%!test
+%! x = [1 0 0]';
+%! j = 1;
+%! [hv, b, z] = housh(x, j, 10);
+%! r = (eye(3) - b*hv*hv') * x;
+%! d = norm(x) * [1 0 0]';
+%! assert(r, d, 2e-8);
+%! assert(z, 1, 2e-8);
+
+%!test
+%! x = [5 0 4 1]';
+%! j = 2;
+%! [hv, b, z] = housh(x, j, 0);
+%! r = (eye(4) - b*hv*hv') * x;
+%! d = - norm(x) * [0 1 0 0]';
+%! assert(r, d, 2e-8);
+%! assert(z, 0, 2e-8);
+
+%!error housh([0]);
+%!error housh();
+

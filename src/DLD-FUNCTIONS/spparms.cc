@@ -113,8 +113,8 @@ time.\n\
         retval(0) =  octave_sparse_params::get_vals ();
       else if (nargout == 2)
         {
-          retval (0) = octave_sparse_params::get_keys ();
           retval (1) = octave_sparse_params::get_vals ();
+          retval (0) = octave_sparse_params::get_keys ();
         }
       else
         error ("spparms: too many output arguments");
@@ -136,7 +136,7 @@ time.\n\
             {
               double val = octave_sparse_params::get_key (str);
               if (xisnan (val))
-                error ("spparams: KEY not recognized");
+                error ("spparms: KEY not recognized");
               else
                 retval (0) = val;
             }
@@ -148,7 +148,7 @@ time.\n\
           if (error_state)
             error ("spparms: input must be a string or a vector");
           else if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
-            error ("spparams: too many elements in vector VALS");
+            error ("spparms: too many elements in vector VALS");
           else
             octave_sparse_params::set_vals (vals);
         }
@@ -176,3 +176,33 @@ time.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! old_vals = spparms ();  # save state
+%! spparms ("defaults");
+%! vals = spparms ();
+%! assert (vals, [0 1 1 0 3 3 0.5 1.0 1.0 0.1 0.5 1.0 0.001]');
+%! [keys, vals] = spparms ();
+%! assert (rows (keys), 13);
+%! assert (keys(2,:), "ths_rel");
+%! assert (vals, [0 1 1 0 3 3 0.5 1.0 1.0 0.1 0.5 1.0 0.001]');
+%! spparms ([3 2 1]);
+%! assert (spparms ()(1:3), [3, 2, 1]');
+%! assert (spparms ("ths_rel"), 2);
+%! spparms ("exact_d", 5);
+%! assert (spparms ("exact_d"), 5);
+%! spparms (old_vals);     # restore state
+
+%% Test input validation
+%!error (spparms (1, 2, 3))
+%!error ([x, y, z] = spparms ())
+%!error (spparms ("UNKNOWN_KEY"))
+%!error (spparms ({1, 2, 3}))
+%!error (spparms (ones (14, 1)))
+%!error (spparms (1, 1))
+%!error (spparms ("ths_rel", "hello"))
+%!error (spparms ("UNKNOWN_KEY", 1))
+
+*/

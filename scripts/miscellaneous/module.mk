@@ -50,6 +50,8 @@ miscellaneous_FCN_FILES = \
   miscellaneous/paren.m \
   miscellaneous/parseparams.m \
   miscellaneous/perl.m \
+  miscellaneous/python.m \
+  miscellaneous/recycle.m \
   miscellaneous/rmappdata.m \
   miscellaneous/run.m \
   miscellaneous/semicolon.m \
@@ -61,7 +63,6 @@ miscellaneous_FCN_FILES = \
   miscellaneous/tar.m \
   miscellaneous/tempdir.m \
   miscellaneous/tempname.m \
-  miscellaneous/unimplemented.m \
   miscellaneous/unix.m \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \

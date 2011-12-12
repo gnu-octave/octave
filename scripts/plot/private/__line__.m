@@ -53,19 +53,69 @@ function h = __line__ (p, varargin)
     error ("line: invalid number of PROPERTY / VALUE pairs");
   endif
 
-  data_args = {};
-  if (num_data_args > 1)
-    data_args(1:4) = { "xdata", varargin{1}, "ydata", varargin{2} };
-    if (num_data_args == 3)
-      data_args(5:6) = { "zdata", varargin{3} };
-    endif
-  endif
-
   other_args = {};
   if (nvargs > num_data_args)
     other_args = varargin(num_data_args+1:end);
   endif
 
-  h = __go_line__ (p, data_args{:}, other_args{:});
+  nlines = 0;
+  nvecpts = 0;
+  ismat = false (1, 3);
+  for i = 1:num_data_args
+    tmp = varargin{i}(:,:);
+    if (isvector (tmp))
+      nlines = max (1, nlines);
+      if (! isscalar (tmp))
+        if (nvecpts == 0)
+          nvecpts = numel (tmp);
+        elseif (nvecpts != numel (tmp))
+          error ("line: data size mismatch");
+        endif
+      endif
+    else
+      ismat(i) = true;
+      nlines = max (columns (tmp), nlines);
+    endif
+    varargin{i} = tmp;
+  endfor
+
+  if (num_data_args == 0)
+    varargin = {[0, 1], [0, 1]};
+    num_data_args = 2;
+    nlines = 1;
+  endif
+
+  handles = zeros (nlines, 1);
+
+  data = cell (1, 3);
+
+  if (num_data_args > 1)
+    data(1) = varargin{1};
+    data(2) = varargin{2};
+    if (num_data_args == 3)
+      data(3) = varargin{3};
+    endif
+  endif
+
+  data_args = reshape ({"xdata", "ydata", "zdata"; data{:}}, [1, 6]);
+  mask = reshape ([false(1,3); ismat], [1, 6]);
+
+  for i = 1:nlines
+    tmp = data(ismat);
+    if (! size_equal (tmp)
+        || (nvecpts != 0 && any (nvecpts != cellfun ("size", tmp, 1))))
+      error ("line: data size_mismatch");
+    endif
+
+    data_args(mask) = cellfun (@(x) x(:,i), data(ismat),
+                               "uniformoutput", false);
+
+    handles(i) = __go_line__ (p, data_args{:}, other_args{:});
+
+  endfor
+
+  if (nargout > 0)
+    h = handles;
+  endif
 
 endfunction

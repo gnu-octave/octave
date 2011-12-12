@@ -41,7 +41,8 @@
 ## If the argument 'filled' is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
-## The optional return value @var{h} provides a handle to the patch object
+## The optional return value @var{h} is a graphics handle to the hggroup
+## object representing the points.
 ##
 ## @example
 ## @group

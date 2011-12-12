@@ -30,46 +30,59 @@
 
 function playaudio (name, ext)
 
-  if (nargin == 1 && isvector (name) && ! ischar (name))
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
+  if (nargin == 1 && isnumeric (name))
     ## play a vector
-    [nr, nc] = size (name);
-    if (nc != 1)
-      if (nr == 1)
-        name = name';
-        nr = nc;
-      else
-        error ("playaudio: X must be a vector");
-      endif
+    if (! isvector (name))
+      error ("playaudio: X must be a vector");
     endif
-    X = name + 127;
+    X = name(:) + 127;
     unwind_protect
       file = tmpnam ();
-      num = fopen (file, "wb");
-      c = fwrite (num, X, "uchar");
-      fclose (num);
-      system (sprintf ("cat \"%s\" > /dev/dsp", file));
+      fid = fopen (file, "wb");
+      fwrite (fid, X, "uchar");
+      fclose (fid);
+      [status, out] = system (sprintf ('cat "%s" > /dev/dsp', file));
+      if (status != 0)
+        system (sprintf ("paplay --raw \"%s\"", file))
+      endif
     unwind_protect_cleanup
       unlink (file);
     end_unwind_protect
   elseif (nargin >= 1 && ischar (name))
     ## play a file
     if (nargin == 1)
-      name = [name, ".lin"];
+      name = [name ".lin"];
     elseif (nargin == 2)
-      name = [name, ".", ext];
-    else
-      print_usage ();
+      name = [name "." ext];
     endif
-    if (strcmp (ext, "lin") || strcmp (ext, "raw"))
-      system (sprintf ("cat \"%s\" > /dev/dsp", name));
-    elseif (strcmp (ext, "mu") || strcmp (ext, "au")
-            || strcmp (ext, "snd") || strcmp (ext, "ul"))
-      system (sprintf ("cat \"%s\" > /dev/audio", name));
+    if (any (strcmp (ext, {"lin", "raw"})))
+      [status, out] = system (sprintf ('cat "%s" > /dev/dsp', name));
+      if (status != 0)
+        system (sprintf ('paplay --raw "%s"', name))
+      endif
+    elseif (any (strcmp (ext, {"mu", "au" "snd", "ul"})))
+      [status, out] = system (sprintf ('cat "%s" > /dev/audio', name));
+      if (status != 0)
+        system (sprintf ('paplay "%s"', name))
+      endif
     else
-      error ("playaudio: unsupported extension");
+      error ("playaudio: unsupported extension '%s'", ext);
     endif
   else
     print_usage ();
   endif
 
 endfunction
+
+
+%% Test input validation
+%!error playaudio ()
+%!error playaudio (1,2,3)
+%!error <X must be a vector> playaudio (magic (3))
+%!error <unsupported extension> playaudio ("file", "abc")
+%!error playaudio ({"abc"})
+

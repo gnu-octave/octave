@@ -35,6 +35,7 @@ function rundemos (directory)
     if (is_absolute_filename (directory))
       dirs = {directory};
     else
+      directory = regexprep (directory, ['\',filesep(),'$'], "");
       fullname = find_dir_in_path (directory);
       if (! isempty (fullname))
         dirs = {fullname};
@@ -80,3 +81,5 @@ function retval = has_demos (f)
     retval = findstr (str, "%!demo");
   endif
 endfunction
+
+%!error rundemos ("foo", 1);

@@ -275,6 +275,9 @@ octave_gets (void)
 
       flush_octave_stdout ();
 
+      octave_pager_stream::reset ();
+      octave_diary_stream::reset ();
+
       octave_diary << prompt;
 
       retval = interactive_input (prompt);
@@ -686,93 +689,86 @@ get_debug_input (const std::string& prompt)
   frame.protect_var (VPS1);
   VPS1 = prompt;
 
-  if (stdin_is_tty)
+  if (! (interactive || forced_interactive)
+      || (reading_fcn_file
+          || reading_classdef_file
+          || reading_script_file
+          || get_input_from_eval_string
+          || input_from_startup_file
+          || input_from_command_line_file))
     {
-      if (! (interactive || forced_interactive)
-          || (reading_fcn_file
-              || reading_classdef_file
-              || reading_script_file
-              || get_input_from_eval_string
-              || input_from_startup_file
-              || input_from_command_line_file))
-        {
-          frame.protect_var (forced_interactive);
-          forced_interactive = true;
+      frame.protect_var (forced_interactive);
+      forced_interactive = true;
 
-          frame.protect_var (reading_fcn_file);
-          reading_fcn_file = false;
+      frame.protect_var (reading_fcn_file);
+      reading_fcn_file = false;
 
-          frame.protect_var (reading_classdef_file);
-          reading_classdef_file = false;
+      frame.protect_var (reading_classdef_file);
+      reading_classdef_file = false;
 
-          frame.protect_var (reading_script_file);
-          reading_script_file = false;
+      frame.protect_var (reading_script_file);
+      reading_script_file = false;
 
-          frame.protect_var (input_from_startup_file);
-          input_from_startup_file = false;
+      frame.protect_var (input_from_startup_file);
+      input_from_startup_file = false;
 
-          frame.protect_var (input_from_command_line_file);
-          input_from_command_line_file = false;
+      frame.protect_var (input_from_command_line_file);
+      input_from_command_line_file = false;
 
-          frame.protect_var (get_input_from_eval_string);
-          get_input_from_eval_string = false;
+      frame.protect_var (get_input_from_eval_string);
+      get_input_from_eval_string = false;
 
-          YY_BUFFER_STATE old_buf = current_buffer ();
-          YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
+      YY_BUFFER_STATE old_buf = current_buffer ();
+      YY_BUFFER_STATE new_buf = create_buffer (get_input_from_stdin ());
 
-          // FIXME: are these safe?
-          frame.add_fcn (switch_to_buffer, old_buf);
-          frame.add_fcn (delete_buffer, new_buf);
+      // FIXME: are these safe?
+      frame.add_fcn (switch_to_buffer, old_buf);
+      frame.add_fcn (delete_buffer, new_buf);
 
-          switch_to_buffer (new_buf);
-        }
-
-      while (Vdebugging)
-        {
-          reset_error_handler ();
-
-          reset_parser ();
-
-          // Save current value of global_command.
-          frame.protect_var (global_command);
-
-          global_command = 0;
-
-          // Do this with an unwind-protect cleanup function so that the
-          // forced variables will be unmarked in the event of an interrupt.
-          symbol_table::scope_id scope = symbol_table::top_scope ();
-          frame.add_fcn (symbol_table::unmark_forced_variables, scope);
-
-          // This is the same as yyparse in parse.y.
-          int retval = octave_parse ();
-
-          if (retval == 0 && global_command)
-            {
-              global_command->accept (*current_evaluator);
-
-              // FIXME -- To avoid a memory leak, global_command should be
-              // deleted, I think.  But doing that here causes trouble if
-              // an error occurs while executing a debugging command
-              // (dbstep, for example). It's not clear to me why that
-              // happens.
-              //
-              // delete global_command;
-              //
-              // global_command = 0;
-
-              if (octave_completion_matches_called)
-                octave_completion_matches_called = false;
-            }
-
-          // Unmark forced variables.
-          // Restore previous value of global_command.
-          frame.run_top (2);
-
-          octave_quit ();
-        }
+      switch_to_buffer (new_buf);
     }
-  else
-    warning ("invalid attempt to debug script read from stdin");
+
+  while (Vdebugging)
+    {
+      reset_error_handler ();
+
+      reset_parser ();
+
+      // Save current value of global_command.
+      frame.protect_var (global_command);
+
+      global_command = 0;
+
+      // Do this with an unwind-protect cleanup function so that the
+      // forced variables will be unmarked in the event of an interrupt.
+      symbol_table::scope_id scope = symbol_table::top_scope ();
+      frame.add_fcn (symbol_table::unmark_forced_variables, scope);
+
+      // This is the same as yyparse in parse.y.
+      int retval = octave_parse ();
+
+      if (retval == 0 && global_command)
+        {
+          unwind_protect inner_frame;
+
+          // Use an unwind-protect cleanup function so that the
+          // global_command list will be deleted in the event of an
+          // interrupt.
+
+          inner_frame.add_fcn (cleanup_statement_list, &global_command);
+
+          global_command->accept (*current_evaluator);
+
+          if (octave_completion_matches_called)
+            octave_completion_matches_called = false;
+        }
+
+      // Unmark forced variables.
+      // Restore previous value of global_command.
+      frame.run_top (2);
+
+      octave_quit ();
+    }
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -798,6 +794,9 @@ get_user_input (const octave_value_list& args, int nargout)
     }
 
   flush_octave_stdout ();
+
+  octave_pager_stream::reset ();
+  octave_diary_stream::reset ();
 
   octave_diary << prompt;
 
@@ -956,14 +955,11 @@ do_keyboard (const octave_value_list& args)
 
   unwind_protect frame;
 
-  // FIXME -- we shouldn't need both the
-  // command_history object and the
-  // Vsaving_history variable...
+  frame.add_fcn (command_history::ignore_entries,
+                 command_history::ignoring_entries ());
+
   command_history::ignore_entries (false);
 
-  frame.add_fcn (command_history::ignore_entries, ! Vsaving_history);
-
-  frame.protect_var (Vsaving_history);
   frame.protect_var (Vdebugging);
 
   frame.add_fcn (octave_call_stack::restore_frame,
@@ -975,7 +971,6 @@ do_keyboard (const octave_value_list& args)
   // tree_print_code tpc (octave_stdout);
   // stmt.accept (tpc);
 
-  Vsaving_history = true;
   Vdebugging = true;
 
   std::string prompt = "debug> ";
@@ -1363,6 +1358,7 @@ DEFUN (PS1, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS1 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS1 (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} PS1 (@var{new_val}, \"local\")\n\
 Query or set the primary prompt string.  When executing interactively,\n\
 Octave displays the primary prompt when it is ready to read a command.\n\
 \n\
@@ -1388,6 +1384,10 @@ PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\]\")\n\
 \n\
 @noindent\n\
 will give the default Octave prompt a red coloring.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{PS2, PS4}\n\
 @end deftypefn")
 {
@@ -1398,12 +1398,17 @@ DEFUN (PS2, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS2 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS2 (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} PS2 (@var{new_val}, \"local\")\n\
 Query or set the secondary prompt string.  The secondary prompt is\n\
 printed when Octave is expecting additional input to complete a\n\
 command.  For example, if you are typing a @code{for} loop that spans several\n\
 lines, Octave will print the secondary prompt at the beginning of\n\
 each line after the first.  The default value of the secondary prompt\n\
 string is @code{\"> \"}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{PS1, PS4}\n\
 @end deftypefn")
 {
@@ -1414,10 +1419,15 @@ DEFUN (PS4, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} PS4 ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} PS4 (@var{new_val}, \"local\")\n\
 Query or set the character string used to prefix output produced\n\
 when echoing commands is enabled.\n\
 The default value is @code{\"+ \"}.\n\
 @xref{Diary and Echo Commands}, for a description of echoing commands.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{echo, echo_executing_commands, PS1, PS2}\n\
 @end deftypefn")
 {
@@ -1428,9 +1438,14 @@ DEFUN (completion_append_char, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} completion_append_char ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} completion_append_char (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} completion_append_char (@var{new_val}, \"local\")\n\
 Query or set the internal character variable that is appended to\n\
 successful command-line completion attempts.  The default\n\
 value is @code{\" \"} (a single space).\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (completion_append_char);
@@ -1440,6 +1455,7 @@ DEFUN (echo_executing_commands, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} echo_executing_commands ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} echo_executing_commands (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} echo_executing_commands (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls the echo state.\n\
 It may be the sum of the following values:\n\
 \n\
@@ -1459,6 +1475,10 @@ equivalent to the command @kbd{echo on all}.\n\
 \n\
 The value of @code{echo_executing_commands} may be set by the @kbd{echo}\n\
 command or the command line option @option{--echo-commands}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);
@@ -1509,6 +1529,7 @@ DEFUN (filemarker, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} filemarker ()\n\
 @deftypefnx {Built-in Function} {} filemarker (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} filemarker (@var{new_val}, \"local\")\n\
 Query or set the character used to separate filename from the\n\
 the subfunction names contained within the file.  This can be used in\n\
 a generic manner to interact with subfunctions.  For example,\n\
@@ -1529,6 +1550,10 @@ dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 \n\
 @noindent\n\
 will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   char tmp = Vfilemarker;

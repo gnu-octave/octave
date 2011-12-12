@@ -58,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave.h"
 #include "oct-hist.h"
 #include "oct-map.h"
+#include "oct-mutex.h"
 #include "oct-obj.h"
 #include "ops.h"
 #include "ov.h"
@@ -632,6 +633,8 @@ octave_main (int argc, char **argv, int embedded)
   octave_program_invocation_name = octave_env::get_program_invocation_name ();
   octave_program_name = octave_env::get_program_name ();
 
+  octave_thread::init ();
+
   // The order of these calls is important.  The call to
   // install_defaults must come before install_builtins because
   // default variable values must be available for the variables to be
@@ -865,9 +868,9 @@ octave_main (int argc, char **argv, int embedded)
 
   load_path::initialize (set_initial_path);
 
-  execute_startup_files ();
-
   initialize_history (read_history_file);
+
+  execute_startup_files ();
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     std::cout << std::endl;
@@ -971,6 +974,11 @@ for an example of how to create an executable Octave script.\n\
   return retval;
 }
 
+/*
+%!error argv (1);
+%!assert (iscellstr (argv ()));
+*/
+
 DEFUN (program_invocation_name, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_invocation_name ()\n\
@@ -993,6 +1001,11 @@ how to create an executable Octave script.\n\
   return retval;
 }
 
+/*
+%!error program_invocation_name (1);
+%!assert (ischar (program_invocation_name ()));
+*/
+
 DEFUN (program_name, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} program_name ()\n\
@@ -1010,3 +1023,8 @@ Return the last component of the value returned by\n\
 
   return retval;
 }
+
+/*
+%!error program_name (1);
+%!assert (ischar (program_name ()));
+*/

@@ -4,14 +4,14 @@
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
-## under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 3 of the License, or (at
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 3 of the License, or (at
 ## your option) any later version.
 ##
-## Octave is distributed in the hope that it will be useful, but
-## WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-## General Public License for more details.
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, see
@@ -20,17 +20,16 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} setxor (@var{a}, @var{b})
 ## @deftypefnx {Function File} {} setxor (@var{a}, @var{b}, 'rows')
+## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@var{a}, @var{b})
 ##
 ## Return the elements exclusive to @var{a} or @var{b}, sorted in ascending
 ## order.  If @var{a} and @var{b} are both column vectors return a column
 ## vector, otherwise return a row vector.
 ## @var{a}, @var{b} may be cell arrays of string(s).
 ##
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@var{a}, @var{b})
-##
-## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and
-## @code{b(ib)} are
-## disjoint sets whose union is @var{c}.
+## With three output arguments, return index vectors @var{ia} and @var{ib}
+## such that @code{a(ia)} and @code{b(ib)} are disjoint sets whose union
+## is @var{c}.
 ##
 ## @seealso{unique, union, intersect, setdiff, ismember}
 ## @end deftypefn

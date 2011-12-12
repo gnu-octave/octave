@@ -119,6 +119,30 @@ public:
   uint64_array_value (void) const
     { return uint64NDArray (dim_vector (1, 1), scalar); }
 
+  octave_int8
+  int8_scalar_value (void) const { return octave_int8 (scalar); }
+
+  octave_int16
+  int16_scalar_value (void) const { return octave_int16 (scalar); }
+
+  octave_int32
+  int32_scalar_value (void) const { return octave_int32 (scalar); }
+
+  octave_int64
+  int64_scalar_value (void) const { return octave_int64 (scalar); }
+
+  octave_uint8
+  uint8_scalar_value (void) const { return octave_uint8 (scalar); }
+
+  octave_uint16
+  uint16_scalar_value (void) const { return octave_uint16 (scalar); }
+
+  octave_uint32
+  uint32_scalar_value (void) const { return octave_uint32 (scalar); }
+
+  octave_uint64
+  uint64_scalar_value (void) const { return octave_uint64 (scalar); }
+
   double double_value (bool = false) const { return scalar; }
 
   float float_value (bool = false) const { return scalar; }

@@ -32,6 +32,7 @@
 ## @end deftypefn
 
 function y = swapbytes (x)
+
   if (nargin != 1)
     print_usage ();
   endif
@@ -53,4 +54,11 @@ function y = swapbytes (x)
     y = reshape (typecast (reshape (typecast (x(:), "uint8"), nb, numel (x))
                            ([nb : -1 : 1], :) (:), clx), size(x));
   endif
+
 endfunction
+
+
+%!assert (double (swapbytes (uint16 (1:4))), [256 512 768 1024])
+%!error (swapbytes ())
+%!error (swapbytes (1, 2))
+

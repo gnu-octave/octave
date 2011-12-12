@@ -48,6 +48,12 @@ xtrunc (double x)
   return gnulib::trunc (x);
 }
 
+double
+xcopysign (double x, double y)
+{
+  return gnulib::copysign (x, y);
+}
+
 double xfloor (double x)
 {
   return gnulib::floor (x);
@@ -265,6 +271,12 @@ float
 xtrunc (float x)
 {
   return gnulib::truncf (x);
+}
+
+float
+xcopysign (float x, float y)
+{
+  return gnulib::copysignf (x, y);
 }
 
 float

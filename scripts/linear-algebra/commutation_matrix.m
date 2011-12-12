@@ -76,12 +76,12 @@ function k = commutation_matrix (m, n)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   else
-    if (! (isscalar (m) && m == round (m) && m > 0))
+    if (! (isscalar (m) && m == fix (m) && m > 0))
       error ("commutation_matrix: M must be a positive integer");
     endif
     if (nargin == 1)
       n = m;
-    elseif (! (isscalar (n) && n == round (n) && n > 0))
+    elseif (! (isscalar (n) && n == fix (n) && n > 0))
       error ("commutation_matrix: N must be a positive integer");
     endif
   endif
@@ -95,3 +95,25 @@ function k = commutation_matrix (m, n)
   endfor
 
 endfunction
+
+%!test
+%! c = commutation_matrix(1,1);
+%! assert(c,1);
+
+%!test
+%! A = rand(3,5);
+%! vc = vec(A);
+%! vr = vec(A');
+%! c = commutation_matrix(3,5);
+%! assert(c*vc,vr);
+
+%!test
+%! A = rand(4,6);
+%! vc = vec(A);
+%! vr = vec(A');
+%! c = commutation_matrix(4,6);
+%! assert(c*vc,vr);
+
+%!error commutation_matrix(0,0);
+%!error commutation_matrix(1,0);
+%!error commutation_matrix(0,1);

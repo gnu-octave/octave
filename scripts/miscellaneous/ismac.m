@@ -32,3 +32,5 @@ function retval = ismac ()
 
 endfunction
 
+%!error ismac (1);
+%!assert (islogical (ismac ()));

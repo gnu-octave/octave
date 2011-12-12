@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} findobj ('flat', @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, '-depth', @var{d}, @dots{})
-## Find object with specified property values.  The simplest form is
+## Find graphics object with specified property values.  The simplest form is
 ##
 ## @example
 ## findobj (@var{prop_name}, @var{prop_Value})
@@ -242,3 +242,18 @@ function h = findobj (varargin)
   h = h (keepers != 0);
   h = reshape (h, [numel(h), 1]);
 endfunction
+
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   l = line;
+%!   obj = findobj (hf, "type", "line");
+%!   assert (l, obj);
+%!   assert (gca, findobj (hf, "type", "axes"));
+%!   assert (hf, findobj (hf, "type", "figure"));
+%!   assert (isempty (findobj (hf, "type", "xyzxyz")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+

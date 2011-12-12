@@ -32,6 +32,7 @@
 ## @end deftypefn
 
 function gen_doc_cache (out_file = "doc-cache", directory = [])
+
   ## Check input
   if (!ischar (out_file))
     print_usage ();
@@ -142,4 +143,9 @@ function cache = gen_builtin_cache ()
 
   cache = create_cache (list);
 endfunction
+
+
+%% No true tests desirable for this function.
+%% Test input validation
+%!error gen_doc_cache (1)
 

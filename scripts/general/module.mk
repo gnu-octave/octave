@@ -7,7 +7,6 @@ general_PRIVATE_FCN_FILES = \
 general_FCN_FILES = \
   general/accumarray.m \
   general/accumdim.m \
-  general/arrayfun.m \
   general/bicubic.m \
   general/bitcmp.m \
   general/bitget.m \
@@ -54,13 +53,18 @@ general_FCN_FILES = \
   general/loadobj.m \
   general/logspace.m \
   general/nargchk.m \
+  general/narginchk.m \
   general/nargoutchk.m \
+  general/nthargout.m \
   general/nextpow2.m \
   general/num2str.m \
   general/pol2cart.m \
   general/polyarea.m \
   general/postpad.m \
   general/prepad.m \
+  general/profexplore.m \
+  general/profile.m \
+  general/profshow.m \
   general/quadgk.m \
   general/quadl.m \
   general/quadv.m \

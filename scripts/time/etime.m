@@ -32,7 +32,7 @@
 ## @noindent
 ## will set the variable @code{elapsed_time} to the number of seconds since
 ## the variable @code{t0} was set.
-## @seealso{tic, toc, clock, cputime}
+## @seealso{tic, toc, clock, cputime, addtodate}
 ## @end deftypefn
 
 ## Author: jwe
@@ -50,14 +50,15 @@ function secs = etime (t2, t1)
 
 endfunction
 
-%!assert(etime([1900,12,31,23,59,59],[1901,1,1,0,0,0]),-1)
-%!assert(etime([1900,2,28,23,59,59],[1900,3,1,0,0,0]),-1)
-%!assert(etime([2000,2,28,23,59,59],[2000,3,1,0,0,0]),-86401)
-%!assert(etime([1996,2,28,23,59,59],[1996,3,1,0,0,0]),-86401)
+
+%!assert (etime ([1900,12,31,23,59,59],[1901,1,1,0,0,0]),-1)
+%!assert (etime ([1900,2,28,23,59,59],[1900,3,1,0,0,0]),-1)
+%!assert (etime ([2000,2,28,23,59,59],[2000,3,1,0,0,0]),-86401)
+%!assert (etime ([1996,2,28,23,59,59],[1996,3,1,0,0,0]),-86401)
 %!test
-%!  t1 = [1900,12,31,23,59,59; 1900,2,28,23,59,59];
-%!  t2 = [1901,1,1,0,0,0; 1900,3,1,0,0,0];
-%!  assert(etime(t2, t1), [1;1]);
+%! t1 = [1900,12,31,23,59,59; 1900,2,28,23,59,59];
+%! t2 = [1901,1,1,0,0,0; 1900,3,1,0,0,0];
+%! assert(etime(t2, t1), [1;1]);
 
 %!test
 %! t1 = [1993, 8, 20, 4, 56, 1];
@@ -66,10 +67,13 @@ endfunction
 %! t4 = [1993, 8, 20, 4, 57, 1];
 %! t5 = [1993, 8, 20, 4, 56, 14];
 %!
-%! assert((etime (t2, t1) == 86400 && etime (t3, t1) == 3600
-%! && etime (t4, t1) == 60 && etime (t5, t1) == 13));
+%! assert (etime (t2, t1), 86400);
+%! assert (etime (t3, t1), 3600);
+%! assert (etime (t4, t1), 60);
+%! assert (etime (t5, t1), 13);
 
+%% Test input validation
 %!error etime ();
-
+%!error etime (1);
 %!error etime (1, 2, 3);
 

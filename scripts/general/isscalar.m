@@ -26,11 +26,11 @@
 
 function retval = isscalar (x)
 
-  if (nargin == 1)
-    retval = numel (x) == 1;
-  else
+  if (nargin != 1)
     print_usage ();
   endif
+
+  retval = numel (x) == 1;
 
 endfunction
 

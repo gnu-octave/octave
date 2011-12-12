@@ -45,6 +45,14 @@ octave_base_mutex::unlock (void)
   (*current_liboctave_error_handler) ("mutex not supported on this platform");
 }
 
+bool
+octave_base_mutex::try_lock (void)
+{
+  (*current_liboctave_error_handler) ("mutex not supported on this platform");
+
+  return false;
+}
+
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 
 class
@@ -72,9 +80,28 @@ public:
     LeaveCriticalSection (&cs);
   }
 
+  bool try_lock (void)
+  {
+    return (TryEnterCriticalSection (&cs) != 0);
+  }
+
 private:
   CRITICAL_SECTION cs;
 };
+
+static DWORD octave_thread_id = 0; 
+
+void
+octave_thread::init (void)
+{
+  octave_thread_id = GetCurrentThreadId ();
+}
+
+bool
+octave_thread::is_octave_thread (void)
+{
+  return (GetCurrentThreadId () == octave_thread_id);
+}
 
 #elif defined (HAVE_PTHREAD_H)
 
@@ -108,9 +135,28 @@ public:
     pthread_mutex_unlock (&pm);
   }
 
+  bool try_lock (void)
+  {
+    return (pthread_mutex_trylock (&pm) == 0);
+  }
+
 private:
   pthread_mutex_t pm;
 };
+
+static pthread_t octave_thread_id = 0;
+
+void
+octave_thread::init (void)
+{
+  octave_thread_id = pthread_self ();
+}
+
+bool
+octave_thread::is_octave_thread (void)
+{
+  return (pthread_equal (octave_thread_id, pthread_self ()) != 0);
+}
 
 #endif
 

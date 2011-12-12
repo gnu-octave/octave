@@ -1,7 +1,46 @@
+2011-04-18  Paul Boven  <p.boven@xs4all.nl>
+
+	* image/image.m: Fixed naming of variables in texinfo
+
+2011-04-17  Patrick Häcker  <magicmuscleman>
+
+	* strings/mat2str.m: Limit the number of digits to one less than
+	available for double.
+
+2011-04-15  Kai Habel  <kai.habel@gmx.de>
+
+	* general/interp1.m, polynomial/mkpp.m, polynomial/pchip.m,
+	polynomial/ppder.m, polynomial/ppint.m, polynomial/ppjumps.m,
+	polynomial/ppval.m, polynomial/spline.m, polynomial/unmkpp.m:
+	Make functions more compatible with respect to handling of
+	picewise polynoms (pp). Rename pp-struct elements.
+	Handle nD-arguments correctly. Tests added.
+	(bugs #32040, #32045)
+
 2011-04-13  David Bateman  <dbateman@free.fr>
 
 	* plot/colstyle.m : New function.
 	* plot/module.mk plot_FCN_FILES) : Add it here.
+
+2011-04-13  Rik  <octave@nomad.inbox5.com>
+
+	* help/__makeinfo__.m: Simplify function by using regular expressions.
+	Eliminate third input argument see_also function.
+
+2011-04-13  Rik  <octave@nomad.inbox5.com>
+
+	* general/isdir.m, general/isequal.m, general/isequalwithequalnans.m,
+	general/isscalar.m, general/issquare.m, general/isvector.m: Refactor
+	code to put input validation first.
+
+	* general/iscolumn.m, general/isrow.m : Remove useless initialization
+	of output variable.
+
+	* general/isa.m: Add additional tests for various classes.
+
+2011-04-13  Rik  <octave@nomad.inbox5.com>
+
+	* ChangeLog: Remove results of bad merge in ChangeLog.
 
 2011-04-12  Ben Abbott  <bpabbott@mac.com>
 
@@ -20,9 +59,20 @@
 
 2011-04-08  Rik  <octave@nomad.inbox5.com>
 
+	* deprecated/module.mk, statistics/base/center.m,
+	statistics/base/module.mk: Deprecate studentize(), replace with
+	zscore().
+
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
 	* linear-algebra/cond.m, linear-algebra/expm.m, linear-algebra/logm.m,
 	linear-algebra/null.m, linear-algebra/orth.m, linear-algebra/rank.m,
 	linear-algebra/rref.m: Improve docstrings.
+
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
+	* statistics/base/mode.m, statistics/base/quantile.m: Return output
+	of same class as input.
 
 2011-04-06  Rik  <octave@nomad.inbox5.com>
 
@@ -396,6 +446,25 @@
 2011-02-08  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/__go_draw_axes__.m: Properly set fontspec for legends.
+
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/complement.m, deprecated/create_set.m,
+	deprecated/dmult.m, deprecated/iscommand.m,
+	deprecated/israwcommand.m, deprecated/lchol.m,
+	deprecated/loadimage.m, deprecated/mark_as_command.m,
+	deprecated/mark_as_rawcommand.m, deprecated/spatan2.m,
+	deprecated/spchol2inv.m, deprecated/spcholinv.m,
+	deprecated/spchol.m, deprecated/spcumprod.m,
+	deprecated/spcumsum.m, deprecated/spdet.m, deprecated/spdiag.m,
+	deprecated/spfind.m, deprecated/spinv.m, deprecated/spkron.m,
+	deprecated/splchol.m, deprecated/split.m, deprecated/splu.m,
+	deprecated/spmax.m, deprecated/spmin.m, deprecated/spprod.m,
+	deprecated/spqr.m, deprecated/spsum.m, deprecated/spsumsq.m,
+	deprecated/str2mat.m, deprecated/unmark_command.m,
+	deprecated/unmark_rawcommand.m:
+	Remove functions deprecated in version 3.2.
+	* module.mk (deprecated_FCN_FILES): Remove them from the list.
 
 2011-02-05  David Bateman  <dbateman@free.fr>
 

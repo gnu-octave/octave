@@ -150,6 +150,8 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     ## Scale everything by the 1-norm to make things more stable.
     b = A / max_a;
     b_opts = opts;
+    ## Call to eigs is always a symmetric matrix by construction
+    b_opts.issym = true;
     b_opts.tol = opts.tol / max_a;
     b_sigma = sigma;
     if (!ischar (b_sigma))
@@ -249,8 +251,12 @@ endfunction
 %! s = s(idx);
 %! u = u(:,idx);
 %! v = v(:,idx);
+%! old_state1 = randn ("state");
+%! restore_state1 = onCleanup (@() randn ("state", old_state1));
+%! old_state2 = rand ("state");
+%! restore_state2 = onCleanup (@() rand ("state", old_state2));
 %! randn ('state', 42);      % Initialize to make normest function reproducible
-%! rand ('state', 42)
+%! rand ('state', 42);
 %! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
 %!                         % to guarantee reproducible results
 %!test
@@ -277,3 +283,4 @@ endfunction
 %!test
 %! s = svds (speye (10));
 %! assert (s, ones (6, 1), 2*eps);
+

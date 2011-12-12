@@ -55,21 +55,7 @@ public:
   typedef fname_line_map::const_iterator const_fname_line_map_iterator;
   typedef fname_line_map::iterator fname_line_map_iterator;
 
-  static bool instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      instance = new bp_table ();
-
-    if (! instance)
-      {
-        ::error ("unable to create breakpoint table!");
-        retval = false;
-      }
-
-    return retval;
-  }
+  static bool instance_ok (void);
 
   // Add a breakpoint at the nearest executable line.
   static intmap add_breakpoint (const std::string& fname = "",
@@ -126,6 +112,8 @@ private:
   std::set<std::string> bp_set;
 
   static bp_table *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   intmap do_add_breakpoint (const std::string& fname, const intmap& lines);
 

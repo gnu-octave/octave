@@ -63,10 +63,10 @@ Factorize @var{S}.  This is the default.\n\
 Factorize @code{@var{S}' * @var{S}}.\n\
 \n\
 @item row\n\
-Factorize @code{@var{S} * @var{S}'}.\n\
+Factorize @xcode{@var{S} * @var{S}'}.\n\
 \n\
 @item lo\n\
-Factorize @code{@var{S}'}\n\
+Factorize @xcode{@var{S}'}\n\
 @end table\n\
 \n\
 @item mode\n\

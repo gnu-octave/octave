@@ -36,7 +36,7 @@ function entries = __xzip__ (commandname, extension,
   if (nargin != 4 && nargin != 5)
     print_usage ();
   endif
-  
+
   if (! ischar (extension) || length (extension) == 0)
     error ("__xzip__: EXTENSION must be a string with finite length");
   endif
@@ -99,23 +99,18 @@ function entries = __xzip__ (commandname, extension,
   unwind_protect_cleanup
     cd (cwd);
     if (nargin == 4)
-      crr = confirm_recursive_rmdir ();
-      unwind_protect
-        confirm_recursive_rmdir (false);
-        rmdir (outdir, "s");
-      unwind_protect_cleanup
-        confirm_recursive_rmdir (crr);
-      end_unwind_protect
+      confirm_recursive_rmdir (false, "local");
+      rmdir (outdir, "s");
     endif
   end_unwind_protect
 
 endfunction
 
 function [d, f] = myfileparts (files)
-  [d, f, ext] = cellfun (@(x) fileparts (x), files, "uniformoutput", false);
+  [d, f, ext] = cellfun ("fileparts", files, "uniformoutput", false);
   f = cellfun (@(x, y) sprintf ("%s%s", x, y), f, ext,
                "uniformoutput", false);
-  idx = cellfun (@isdir, files);
+  idx = cellfun ("isdir", files);
   d(idx) = "";
   f(idx) = files(idx);
 endfunction

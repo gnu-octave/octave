@@ -36,7 +36,7 @@ function retval = run_count (x, n, dim)
     print_usage ();
   endif
 
-  if (!isnumeric(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("run_count: X must be a numeric vector or matrix");
   endif
 
@@ -48,10 +48,7 @@ function retval = run_count (x, n, dim)
   sz = size (x);
   if (nargin != 3)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -59,6 +56,7 @@ function retval = run_count (x, n, dim)
     endif
   endif
 
+  ## Algorithm works on rows.  Permute array if necessary, ipermute back at end
   if (dim != 1)
     perm = [1 : nd];
     perm(1) = dim;
@@ -76,7 +74,7 @@ function retval = run_count (x, n, dim)
   infvec = Inf ([1, sz(2 : end)]);
 
   ind = find (diff ([infvec; x; -infvec]) < 0);
-  tmp(ind(2:end) - 1) = diff(ind);
+  tmp(ind(2:end) - 1) = diff (ind);
   tmp = tmp(idx{:});
 
   sz(1) = n;
@@ -86,7 +84,7 @@ function retval = run_count (x, n, dim)
     retval(idx{:}) = sum (tmp == k);
   endfor
   idx{1} = n;
-  retval (idx{:}) = sum (tmp >= n);
+  retval(idx{:}) = sum (tmp >= n);
 
   if (dim != 1)
     retval = ipermute (retval, perm);
@@ -105,7 +103,7 @@ endfunction
 %!error run_count (1)
 %!error run_count (1, 2, 3, 4)
 %!error run_count ({1, 2}, 3)
-%!error run_count (true(3), 3)
+%!error run_count (['A'; 'A'; 'B'], 3)
 %!error run_count (1:5, ones(2,2))
 %!error run_count (1:5, 1.5)
 %!error run_count (1:5, -2)

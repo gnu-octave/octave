@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "regex-match.h"
+#include "regexp.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -416,7 +416,9 @@ symbol_exist (const std::string& name, const std::string& type)
           && var_ok
           && (type == "any" || type == "var")
           && (val.is_constant () || val.is_object ()
-              || val.is_inline_function () || val.is_function_handle ()))
+              || val.is_function_handle ()
+              || val.is_anonymous_function ()
+              || val.is_inline_function ()))
         {
           retval = 1;
         }
@@ -1043,11 +1045,12 @@ private:
                  const std::string& expr_str = std::string (),
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
+        varval (expr_val.is_undefined () ? sr.varval () : expr_val),
         is_automatic (sr.is_automatic ()),
+        is_complex (varval.is_complex_type ()),
         is_formal (sr.is_formal ()),
         is_global (sr.is_global ()),
-        is_persistent (sr.is_persistent ()),
-        varval (expr_val.is_undefined () ? sr.varval () : expr_val)
+        is_persistent (sr.is_persistent ())
     { }
 
     void display_line (std::ostream& os,
@@ -1117,13 +1120,14 @@ private:
                 {
                 case 'a':
                   {
-                    char tmp[5];
+                    char tmp[6];
 
                     tmp[0] = (is_automatic ? 'a' : ' ');
-                    tmp[1] = (is_formal ? 'f' : ' ');
-                    tmp[2] = (is_global ? 'g' : ' ');
-                    tmp[3] = (is_persistent ? 'p' : ' ');
-                    tmp[4] = 0;
+                    tmp[1] = (is_complex ? 'c' : ' ');
+                    tmp[2] = (is_formal ? 'f' : ' ');
+                    tmp[3] = (is_global ? 'g' : ' ');
+                    tmp[4] = (is_persistent ? 'p' : ' ');
+                    tmp[5] = 0;
 
                     os << tmp;
                   }
@@ -1172,11 +1176,12 @@ private:
     }
 
     std::string name;
+    octave_value varval;
     bool is_automatic;
+    bool is_complex;
     bool is_formal;
     bool is_global;
     bool is_persistent;
-    octave_value varval;
   };
 
 public:
@@ -1332,6 +1337,9 @@ public:
 
     for (size_t i = 0; i < param_string.length (); i++)
       param_length(i) = param_names(i) . length ();
+
+    // The attribute column needs size 5.
+    param_length(pos_a) = 5;
 
     // Calculating necessary spacing for name column,
     // bytes column, elements column and class column
@@ -1798,6 +1806,9 @@ Variable in local scope\n\
 Automatic variable.  An automatic variable is one created by the\n\
 interpreter, for example @code{argn}.\n\
 \n\
+@item @code{c}\n\
+Variable of complex type.\n\
+\n\
 @item @code{f}\n\
 Formal parameter (function argument).\n\
 \n\
@@ -2039,9 +2050,7 @@ name_matches_any_pattern (const std::string& nm, const string_vector& argv,
         {
           if (have_regexp)
             {
-              regex_match pattern (patstr);
-
-              if (pattern.match (nm))
+              if (is_regexp_match (patstr, nm))
                 {
                   retval = true;
                   break;
@@ -2451,6 +2460,7 @@ DEFUN (whos_line_format, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} whos_line_format (@var{new_val}, \"local\")\n\
 Query or set the format string used by the command @code{whos}.\n\
 \n\
 A full format string is:\n\
@@ -2512,6 +2522,10 @@ left of the specified balance column.\n\
 \n\
 The default format is\n\
 @code{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{whos}\n\
 @end deftypefn")
 {
@@ -2524,8 +2538,13 @@ DEFUN (missing_function_hook, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} missing_function_hook (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the function to call when\n\
 an unknown identifier is requested.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);

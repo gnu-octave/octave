@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "ov-class.h"
 #include "ov-float.h"
 #include "ov-complex.h"
 #include "ov-flt-complex.h"
@@ -148,8 +149,8 @@ If the optional argument @var{dim} is supplied, work along dimension\n\
 %! && all (x, 1) == [0, 1, 1]
 %! && all (x, 2) == [0; 1; 1]));
 
-%!error <Invalid call to all.*> all ();
-%!error <Invalid call to all.*> all (1, 2, 3);
+%!error <Invalid call to all> all ();
+%!error <Invalid call to all> all (1, 2, 3);
 
  */
 
@@ -204,8 +205,8 @@ any (eye (2, 4), 2)\n\
 %! && any (x, 1) == [0, 0, 1]
 %! && any (x, 2) == [0; 0; 1]));
 
-%!error <Invalid call to any.*> any ();
-%!error <Invalid call to any.*> any (1, 2, 3);
+%!error <Invalid call to any> any ();
+%!error <Invalid call to any> any (1, 2, 3);
 
  */
 
@@ -292,8 +293,8 @@ and orientation.\n\
 %! x = single([1, 3, 1, 1, 1, 1, 3, 1]);
 %! assert(atan2 (y, x), v, sqrt (eps('single')));
 
-%!error <Invalid call to atan2.*> atan2 ();
-%!error <Invalid call to atan2.*> atan2 (1, 2, 3);
+%!error <Invalid call to atan2> atan2 ();
+%!error <Invalid call to atan2> atan2 (1, 2, 3);
 
 */
 
@@ -588,7 +589,7 @@ agree, or if either of the arguments is complex.\n\
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, xrem, "rem");
+              retval = binmap<float> (a0, a1, xrem<float>, "rem");
             }
         }
       else
@@ -602,13 +603,13 @@ agree, or if either of the arguments is complex.\n\
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, xrem, "rem");
+              retval = binmap<double> (m0, m1, xrem<double>, "rem");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, xrem, "rem");
+              retval = binmap<double> (a0, a1, xrem<double>, "rem");
             }
         }
     }
@@ -721,7 +722,7 @@ either of the arguments is complex.\n\
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, xmod, "mod");
+              retval = binmap<float> (a0, a1, xmod<float>, "mod");
             }
         }
       else
@@ -735,13 +736,13 @@ either of the arguments is complex.\n\
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, xmod, "mod");
+              retval = binmap<double> (m0, m1, xmod<double>, "mod");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, xmod, "mod");
+              retval = binmap<double> (a0, a1, xmod<double>, "mod");
             }
         }
     }
@@ -1078,7 +1079,7 @@ Cumulative product of elements along dimension @var{dim}.  If\n\
 %!assert (cumprod (single([i, 2+i, -3+2i, 4])), single([i, -1+2i, -1-8i, -4-32i]));
 %!assert (cumprod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; i, 4i, 9i; -1+i, -8+8i, -27+27i]));
 
-%!error <Invalid call to cumprod.*> cumprod ();
+%!error <Invalid call to cumprod> cumprod ();
 
 %!assert (cumprod ([2, 3; 4, 5], 1), [2, 3; 8, 15]);
 %!assert (cumprod ([2, 3; 4, 5], 2), [2, 6; 4, 20]);
@@ -1229,7 +1230,7 @@ See @code{sum} for an explanation of the optional parameters 'native',\n\
 %!assert (cumsum (single([i, 2+i, -3+2i, 4])), single([i, 2+2i, -1+4i, 3+4i]));
 %!assert (cumsum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; 1+i, 2+2i, 3+3i; 2+2i, 4+4i, 6+6i]));
 
-%!error <Invalid call to cumsum.*> cumsum ();
+%!error <Invalid call to cumsum> cumsum ();
 
 %!assert (cumsum ([1, 2; 3, 4], 1), [1, 2; 4, 6]);
 %!assert (cumsum ([1, 2; 3, 4], 2), [1, 3; 3, 7]);
@@ -1341,8 +1342,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
 
 %% Test input validation
-%!error <Invalid call to diag.*> diag ();
-%!error <Invalid call to diag.*> diag (1,2,3,4);
+%!error <Invalid call to diag> diag ();
+%!error <Invalid call to diag> diag (1,2,3,4);
 %!error diag (ones (2), 3, 3);
 %!error diag (1:3, -4, 3);
 
@@ -1372,7 +1373,7 @@ omitted, it defaults to the first non-singleton dimension.\n\
 %!assert (prod (single([i, 2+i, -3+2i, 4])), single(-4 - 32i));
 %!assert (prod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([-1+i, -8+8i, -27+27i]));
 
-%!error <Invalid call to prod.*> prod ();
+%!error <Invalid call to prod> prod ();
 
 %!assert (prod ([1, 2; 3, 4], 1), [3, 8]);
 %!assert (prod ([1, 2; 3, 4], 2), [2; 12]);
@@ -1527,9 +1528,135 @@ do_single_type_concat_map (const octave_value_list& args,
 }
 
 static octave_value
-do_cat (const octave_value_list& args, int dim, std::string fname)
+attempt_type_conversion (const octave_value& ov, std::string dtype)
 {
   octave_value retval;
+
+  // First try to find function in the class of OV that can convert to
+  // the dispatch type dtype.  It will have the name of the dispatch
+  // type.
+
+  std::string cname = ov.class_name ();
+
+  octave_value fcn = symbol_table::find_method (dtype, cname);
+
+  if (fcn.is_defined ())
+    {
+      octave_value_list result
+        = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+
+      if (! error_state && result.length () > 0)
+        retval = result(0);
+      else
+        error ("conversion from %s to %s failed", dtype.c_str (),
+               cname.c_str ());
+    }
+  else
+    {
+      // No conversion function available.  Try the constructor for the
+      // dispatch type.
+
+      fcn = symbol_table::find_method (dtype, dtype);
+
+      if (fcn.is_defined ())
+        {
+          octave_value_list result
+            = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+
+          if (! error_state && result.length () > 0)
+            retval = result(0);
+          else
+            error ("%s constructor failed for %s argument", dtype.c_str (),
+                   cname.c_str ());
+        }
+      else
+        error ("no constructor for %s!", dtype.c_str ());
+    }
+
+  return retval;
+}
+
+octave_value
+do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
+{
+  octave_value retval;
+
+  // Get dominant type for list
+
+  std::string dtype = get_dispatch_type (ovl);
+
+  octave_value fcn = symbol_table::find_method (cattype, dtype);
+
+  if (fcn.is_defined ())
+    {
+      // Have method for dominant type, so call it and let it handle
+      // conversions.
+
+      octave_value_list tmp2 = fcn.do_multi_index_op (1, ovl);
+
+      if (! error_state)
+        {
+          if (tmp2.length () > 0)
+            retval = tmp2(0);
+          else
+            {
+              error ("%s/%s method did not return a value",
+                     dtype.c_str (), cattype.c_str ());
+              goto done;
+            }
+        }
+      else
+        goto done;
+    }
+  else
+    {
+      // No method for dominant type, so attempt type conversions for
+      // all elements that are not of the dominant type, then do the
+      // default operation for octave_class values.
+
+      octave_idx_type j = 0;
+      octave_idx_type len = ovl.length ();
+      octave_value_list tmp (len, octave_value ());
+      for (octave_idx_type k = 0; k < len; k++)
+        {
+          octave_value elt = ovl(k);
+
+          std::string t1_type = elt.class_name ();
+
+          if (t1_type == dtype)
+            tmp(j++) = elt;
+          else if (elt.is_object () || ! elt.is_empty ())
+            {
+              tmp(j++) = attempt_type_conversion (elt, dtype);
+
+              if (error_state)
+                goto done;
+            }
+        }
+
+      tmp.resize (j);
+
+      octave_map m = do_single_type_concat_map (tmp, dim);
+
+      std::string cname = tmp(0).class_name ();
+      std::list<std::string> parents = tmp(0).parent_class_name_list ();
+
+      retval = octave_value (new octave_class (m, cname, parents));
+    }
+
+ done:
+  return retval;
+}
+
+static octave_value
+do_cat (const octave_value_list& xargs, int dim, std::string fname)
+{
+  octave_value retval;
+
+  // We may need to convert elements of the list to cells, so make a
+  // copy.  This should be efficient, it is done mostly by incrementing
+  // reference counts.
+  octave_value_list args = xargs;
 
   int n_args = args.length ();
 
@@ -1539,18 +1666,28 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
     retval = args(0);
   else if (n_args > 1)
     {
+      std::string result_type;
 
-      std::string result_type = args(0).class_name ();
+      bool all_sq_strings_p = true;
+      bool all_dq_strings_p = true;
+      bool all_real_p = true;
+      bool all_cmplx_p = true;
+      bool any_sparse_p = false;
+      bool any_cell_p = false;
+      bool any_class_p = false;
 
-      bool all_sq_strings_p = args(0).is_sq_string ();
-      bool all_dq_strings_p = args(0).is_dq_string ();
-      bool all_real_p = args(0).is_real_type ();
-      bool any_sparse_p = args(0).is_sparse_type();
+      bool first_elem_is_struct = false;
 
-      for (int i = 1; i < args.length (); i++)
+      for (int i = 0; i < n_args; i++)
         {
-          result_type =
-            get_concat_class (result_type, args(i).class_name ());
+          if (i == 0)
+            {
+              result_type = args(i).class_name ();
+
+              first_elem_is_struct = args(i).is_map ();
+            }
+          else
+            result_type = get_concat_class (result_type, args(i).class_name ());
 
           if (all_sq_strings_p && ! args(i).is_sq_string ())
             all_sq_strings_p = false;
@@ -1558,11 +1695,30 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
             all_dq_strings_p = false;
           if (all_real_p && ! args(i).is_real_type ())
             all_real_p = false;
+          if (all_cmplx_p && ! (args(i).is_complex_type () || args(i).is_real_type ()))
+            all_cmplx_p = false;
           if (!any_sparse_p && args(i).is_sparse_type ())
             any_sparse_p = true;
+          if (!any_cell_p && args(i).is_cell ())
+            any_cell_p = true;
+          if (!any_class_p && args(i).is_object ())
+            any_class_p = true;
         }
 
-      if (result_type == "double")
+      if (any_cell_p && ! any_class_p && ! first_elem_is_struct)
+        {
+          for (int i = 0; i < n_args; i++)
+            {
+              if (! args(i).is_cell ())
+                args(i) = Cell (args(i));
+            }
+        }
+
+      if (any_class_p)
+        {
+          retval = do_class_concat (args, fname, dim);
+        }
+      else if (result_type == "double")
         {
           if (any_sparse_p)
             {
@@ -1718,6 +1874,197 @@ new matrices.  For example:\n\
   return do_cat (args, -2, "horzcat");
 }
 
+/*
+%% test concatenation with all zero matrices
+%!assert(horzcat ('', 65*ones(1,10)), 'AAAAAAAAAA');
+%!assert(horzcat (65*ones(1,10), ''), 'AAAAAAAAAA');
+
+%!assert (class (horzcat (int64(1), int64(1))), 'int64')
+%!assert (class (horzcat (int64(1), int32(1))), 'int64')
+%!assert (class (horzcat (int64(1), int16(1))), 'int64')
+%!assert (class (horzcat (int64(1), int8(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint64(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint32(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint16(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint8(1))), 'int64')
+%!assert (class (horzcat (int64(1), single(1))), 'int64')
+%!assert (class (horzcat (int64(1), double(1))), 'int64')
+%!assert (class (horzcat (int64(1), cell(1))), 'cell')
+%!assert (class (horzcat (int64(1), true)), 'int64')
+%!assert (class (horzcat (int64(1), 'a')), 'char')
+
+%!assert (class (horzcat (int32(1), int64(1))), 'int32')
+%!assert (class (horzcat (int32(1), int32(1))), 'int32')
+%!assert (class (horzcat (int32(1), int16(1))), 'int32')
+%!assert (class (horzcat (int32(1), int8(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint64(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint32(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint16(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint8(1))), 'int32')
+%!assert (class (horzcat (int32(1), single(1))), 'int32')
+%!assert (class (horzcat (int32(1), double(1))), 'int32')
+%!assert (class (horzcat (int32(1), cell(1))), 'cell')
+%!assert (class (horzcat (int32(1), true)), 'int32')
+%!assert (class (horzcat (int32(1), 'a')), 'char')
+
+%!assert (class (horzcat (int16(1), int64(1))), 'int16')
+%!assert (class (horzcat (int16(1), int32(1))), 'int16')
+%!assert (class (horzcat (int16(1), int16(1))), 'int16')
+%!assert (class (horzcat (int16(1), int8(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint64(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint32(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint16(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint8(1))), 'int16')
+%!assert (class (horzcat (int16(1), single(1))), 'int16')
+%!assert (class (horzcat (int16(1), double(1))), 'int16')
+%!assert (class (horzcat (int16(1), cell(1))), 'cell')
+%!assert (class (horzcat (int16(1), true)), 'int16')
+%!assert (class (horzcat (int16(1), 'a')), 'char')
+
+%!assert (class (horzcat (int8(1), int64(1))), 'int8')
+%!assert (class (horzcat (int8(1), int32(1))), 'int8')
+%!assert (class (horzcat (int8(1), int16(1))), 'int8')
+%!assert (class (horzcat (int8(1), int8(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint64(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint32(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint16(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint8(1))), 'int8')
+%!assert (class (horzcat (int8(1), single(1))), 'int8')
+%!assert (class (horzcat (int8(1), double(1))), 'int8')
+%!assert (class (horzcat (int8(1), cell(1))), 'cell')
+%!assert (class (horzcat (int8(1), true)), 'int8')
+%!assert (class (horzcat (int8(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint64(1), int64(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), int32(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), int16(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), int8(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint64(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint32(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint16(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint8(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), single(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), double(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint64(1), true)), 'uint64')
+%!assert (class (horzcat (uint64(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint32(1), int64(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), int32(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), int16(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), int8(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint64(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint32(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint16(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint8(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), single(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), double(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint32(1), true)), 'uint32')
+%!assert (class (horzcat (uint32(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint16(1), int64(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), int32(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), int16(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), int8(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint64(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint32(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint16(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint8(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), single(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), double(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint16(1), true)), 'uint16')
+%!assert (class (horzcat (uint16(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint8(1), int64(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), int32(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), int16(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), int8(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint64(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint32(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint16(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint8(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), single(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), double(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint8(1), true)), 'uint8')
+%!assert (class (horzcat (uint8(1), 'a')), 'char')
+
+%!assert (class (horzcat (single(1), int64(1))), 'int64')
+%!assert (class (horzcat (single(1), int32(1))), 'int32')
+%!assert (class (horzcat (single(1), int16(1))), 'int16')
+%!assert (class (horzcat (single(1), int8(1))), 'int8')
+%!assert (class (horzcat (single(1), uint64(1))), 'uint64')
+%!assert (class (horzcat (single(1), uint32(1))), 'uint32')
+%!assert (class (horzcat (single(1), uint16(1))), 'uint16')
+%!assert (class (horzcat (single(1), uint8(1))), 'uint8')
+%!assert (class (horzcat (single(1), single(1))), 'single')
+%!assert (class (horzcat (single(1), double(1))), 'single')
+%!assert (class (horzcat (single(1), cell(1))), 'cell')
+%!assert (class (horzcat (single(1), true)), 'single')
+%!assert (class (horzcat (single(1), 'a')), 'char')
+
+%!assert (class (horzcat (double(1), int64(1))), 'int64')
+%!assert (class (horzcat (double(1), int32(1))), 'int32')
+%!assert (class (horzcat (double(1), int16(1))), 'int16')
+%!assert (class (horzcat (double(1), int8(1))), 'int8')
+%!assert (class (horzcat (double(1), uint64(1))), 'uint64')
+%!assert (class (horzcat (double(1), uint32(1))), 'uint32')
+%!assert (class (horzcat (double(1), uint16(1))), 'uint16')
+%!assert (class (horzcat (double(1), uint8(1))), 'uint8')
+%!assert (class (horzcat (double(1), single(1))), 'single')
+%!assert (class (horzcat (double(1), double(1))), 'double')
+%!assert (class (horzcat (double(1), cell(1))), 'cell')
+%!assert (class (horzcat (double(1), true)), 'double')
+%!assert (class (horzcat (double(1), 'a')), 'char')
+
+%!assert (class (horzcat (cell(1), int64(1))), 'cell')
+%!assert (class (horzcat (cell(1), int32(1))), 'cell')
+%!assert (class (horzcat (cell(1), int16(1))), 'cell')
+%!assert (class (horzcat (cell(1), int8(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint64(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint32(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint16(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint8(1))), 'cell')
+%!assert (class (horzcat (cell(1), single(1))), 'cell')
+%!assert (class (horzcat (cell(1), double(1))), 'cell')
+%!assert (class (horzcat (cell(1), cell(1))), 'cell')
+%!assert (class (horzcat (cell(1), true)), 'cell')
+%!assert (class (horzcat (cell(1), 'a')), 'cell')
+
+%!assert (class (horzcat (true, int64(1))), 'int64')
+%!assert (class (horzcat (true, int32(1))), 'int32')
+%!assert (class (horzcat (true, int16(1))), 'int16')
+%!assert (class (horzcat (true, int8(1))), 'int8')
+%!assert (class (horzcat (true, uint64(1))), 'uint64')
+%!assert (class (horzcat (true, uint32(1))), 'uint32')
+%!assert (class (horzcat (true, uint16(1))), 'uint16')
+%!assert (class (horzcat (true, uint8(1))), 'uint8')
+%!assert (class (horzcat (true, single(1))), 'single')
+%!assert (class (horzcat (true, double(1))), 'double')
+%!assert (class (horzcat (true, cell(1))), 'cell')
+%!assert (class (horzcat (true, true)), 'logical')
+%!assert (class (horzcat (true, 'a')), 'char')
+
+%!assert (class (horzcat ('a', int64(1))), 'char')
+%!assert (class (horzcat ('a', int32(1))), 'char')
+%!assert (class (horzcat ('a', int16(1))), 'char')
+%!assert (class (horzcat ('a', int8(1))), 'char')
+%!assert (class (horzcat ('a', int64(1))), 'char')
+%!assert (class (horzcat ('a', int32(1))), 'char')
+%!assert (class (horzcat ('a', int16(1))), 'char')
+%!assert (class (horzcat ('a', int8(1))), 'char')
+%!assert (class (horzcat ('a', single(1))), 'char')
+%!assert (class (horzcat ('a', double(1))), 'char')
+%!assert (class (horzcat ('a', cell(1))), 'cell')
+%!assert (class (horzcat ('a', true)), 'char')
+%!assert (class (horzcat ('a', 'a')), 'char')
+
+%!assert (class (horzcat (cell(1), struct('foo', 'bar'))), 'cell')
+%!error horzcat (struct('foo', 'bar'), cell(1));
+*/
+
 DEFUN (vertcat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
@@ -1735,6 +2082,12 @@ new matrices.  For example:\n\
 {
   return do_cat (args, -1, "vertcat");
 }
+
+/*
+%!test
+%! c = {'foo'; 'bar'; 'bazoloa'};
+%! assert (vertcat (c, 'a', 'bc', 'def'), {'foo'; 'bar'; 'bazoloa'; 'a'; 'bc'; 'def'});
+*/
 
 DEFUN (cat, args, ,
   "-*- texinfo -*-\n\
@@ -1943,6 +2296,9 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4]);
 %!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4]);
 
+%!assert ([zeros(3,2,2); ones(1,2,2)], repmat([0;0;0;1],[1,2,2]) );
+%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat(zeros(3,2,2), ones(1,2,2)) );
+
 */
 
 static octave_value
@@ -2057,14 +2413,17 @@ return the number of elements that would result from the indexing\n\
   @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
 @end example\n\
 \n\
-Note that the indices do not have to be numerical. For example\n\
+Note that the indices do not have to be numerical.  For example,\n\
 \n\
 @example\n\
+@group\n\
   @var{a} = 1;\n\
   @var{b} = ones (2, 3);\n\
   numel (@var{a}, @var{b});\n\
+@end group\n\
 @end example\n\
 \n\
+@noindent\n\
 will return 6, as this is the number of ways to index with @var{b}.\n\
 \n\
 This method is also called when an object appears as lvalue with cs-list\n\
@@ -2459,7 +2818,7 @@ than straightforward summation is to be used.  For single precision inputs,\n\
 %!assert(sum (single([i, 2+i, -3+2i, 4])), single(3+4i));
 %!assert(sum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([2+2i, 4+4i, 6+6i]));
 
-%!error <Invalid call to sum.*> sum ();
+%!error <Invalid call to sum> sum ();
 
 %!assert (sum ([1, 2; 3, 4], 1), [4, 6]);
 %!assert (sum ([1, 2; 3, 4], 2), [3; 7]);
@@ -2534,7 +2893,7 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 %!assert(sumsq (single([-1; -2; 4i])), single(21));
 %!assert(sumsq (single([1, 2, 3; 2, 3, 4; 4i, 6i, 2])), single([21, 49, 29]));
 
-%!error <Invalid call to sumsq.*> sumsq ();
+%!error <Invalid call to sumsq> sumsq ();
 
 %!assert (sumsq ([1, 2; 3, 4], 1), [10, 20]);
 %!assert (sumsq ([1, 2; 3, 4], 2), [5; 25]);
@@ -3046,8 +3405,8 @@ will return true for these objects as well.\n\
 %! s.a = 1;
 %! assert(ismatrix (s), false);
 
-%!error <Invalid call to ismatrix.*> ismatrix ();
-%!error <Invalid call to ismatrix.*> ismatrix ([1, 2; 3, 4], 2);
+%!error <Invalid call to ismatrix> ismatrix ();
+%!error <Invalid call to ismatrix> ismatrix ([1, 2; 3, 4], 2);
 
  */
 
@@ -4194,8 +4553,8 @@ val = zeros (n,m, \"uint8\")\n\
 @end example\n\
 \n\
 Calling @code{eye} with no arguments is equivalent to calling it\n\
-with an argument of 1.  This odd definition is for compatibility\n\
-with @sc{matlab}.\n\
+with an argument of 1.  Any negative dimensions are treated as zero. \n\
+These odd definitions are for compatibility with @sc{matlab}.\n\
 @seealso{speye}\n\
 @end deftypefn")
 {
@@ -4264,7 +4623,7 @@ with @sc{matlab}.\n\
 %!assert (eye(3,'int8'), int8([1, 0, 0; 0, 1, 0; 0, 0, 1]));
 %!assert (eye(2, 3,'int8'), int8([1, 0, 0; 0, 1, 0]));
 
-%!error <Invalid call to eye.*> eye (1, 2, 3);
+%!error <Invalid call to eye> eye (1, 2, 3);
 
  */
 
@@ -4387,8 +4746,8 @@ if fewer than two values are requested.\n\
 
 % assert(linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6));
 
-%!error <Invalid call to linspace.*> linspace ();
-%!error <Invalid call to linspace.*> linspace (1, 2, 3, 4);
+%!error <Invalid call to linspace> linspace ();
+%!error <Invalid call to linspace> linspace (1, 2, 3, 4);
 
 %!test
 %! fail("linspace ([1, 2; 3, 4], 5, 6)","warning");
@@ -4621,7 +4980,7 @@ the unspecified dimension.\n\
 %! s.a = 1;
 %! fail("reshape (s, 2, 3)");
 
-%!error <Invalid call to reshape.*> reshape ();
+%!error <Invalid call to reshape> reshape ();
 %!error reshape (1, 2, 3, 4);
 
  */
@@ -4932,7 +5291,7 @@ Return the logical NOT of @var{x}.  This function is equivalent to\n\
 DEFUN (uplus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
-This function is equivalent to @w{@code{+ x}}.\n\
+This function and @w{@xcode{+ x}} are equivalent.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uplus, args);
@@ -4941,7 +5300,7 @@ This function is equivalent to @w{@code{+ x}}.\n\
 DEFUN (uminus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
-This function is equivalent to @w{@code{- x}}.\n\
+This function and @w{@xcode{- x}} are equivalent.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uminus, args);
@@ -4950,7 +5309,8 @@ This function is equivalent to @w{@code{- x}}.\n\
 DEFUN (transpose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
-Return the transpose of @var{x}.  This function is equivalent to @code{x.'}.\n\
+Return the transpose of @var{x}.\n\
+This function and @xcode{x.'} are equivalent.\n\
 @seealso{ctranspose}\n\
 @end deftypefn")
 {
@@ -4982,8 +5342,8 @@ Return the transpose of @var{x}.  This function is equivalent to @code{x.'}.\n\
 DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
-Return the complex conjugate transpose of @var{x}.  This function is\n\
-equivalent to @code{x'}.\n\
+Return the complex conjugate transpose of @var{x}.\n\
+This function and @xcode{x'} are equivalent.\n\
 @seealso{transpose}\n\
 @end deftypefn")
 {
@@ -5059,7 +5419,7 @@ DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @w{@code{x + y}}.\n\
+This function and @w{@xcode{x + y}} are equivalent.\n\
 If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5078,7 +5438,7 @@ At least one argument is required.\n\
 DEFUN (minus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
-This function is equivalent to @w{@code{x - y}}.\n\
+This function and @w{@xcode{x - y}} are equivalent.\n\
 @seealso{plus}\n\
 @end deftypefn")
 {
@@ -5090,7 +5450,7 @@ DEFUN (mtimes, args, ,
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 Return the matrix multiplication product of inputs.\n\
-This function is equivalent to @w{@code{x * y}}.\n\
+This function and @w{@xcode{x * y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5110,7 +5470,7 @@ DEFUN (mrdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x / y}}.\n\
+This function and @w{@xcode{x / y}} are equivalent.\n\
 @seealso{mldivide, rdivide}\n\
 @end deftypefn")
 {
@@ -5121,7 +5481,7 @@ DEFUN (mpower, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
-This function is equivalent to @w{@code{x ^ y}}.\n\
+This function and @w{@xcode{x ^ y}} are equivalent.\n\
 @seealso{power}\n\
 @end deftypefn")
 {
@@ -5132,7 +5492,7 @@ DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x \\ y}}.\n\
+This function and @w{@xcode{x \\ y}} are equivalent.\n\
 @seealso{mrdivide, ldivide}\n\
 @end deftypefn")
 {
@@ -5202,7 +5562,7 @@ DEFUN (times, args, ,
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 Return the element-by-element multiplication product of inputs.\n\
-This function is equivalent to @w{@code{x .* y}}.\n\
+This function and @w{@xcode{x .* y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5222,7 +5582,7 @@ DEFUN (rdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x ./ y}}.\n\
+This function and @w{@xcode{x ./ y}} are equivalent.\n\
 @seealso{ldivide, mrdivide}\n\
 @end deftypefn")
 {
@@ -5234,7 +5594,7 @@ DEFUN (power, args, ,
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
 Return the element-by-element operation of @var{x} raised to the\n\
 @var{y} power.\n\
-This function is equivalent to @w{@code{x .^ y}}.\n\
+This function and @w{@xcode{x .^ y}} are equivalent.\n\
 @seealso{mpower}\n\
 @end deftypefn")
 {
@@ -5245,7 +5605,7 @@ DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x .\\ y}}.\n\
+This function and @w{@xcode{x .\\ y}} are equivalent.\n\
 @seealso{rdivide, mldivide}\n\
 @end deftypefn")
 {
@@ -5614,6 +5974,8 @@ ordered lists.\n\
 
   if (return_idx)
     {
+      retval.resize (2);
+
       Array<octave_idx_type> sidx;
 
       retval (0) = arg.sort (sidx, dim, smode);
@@ -5797,8 +6159,8 @@ ordered lists.\n\
 %! [v, i] = sort (a);
 %! assert (i, [1, 4, 2, 5, 3])
 
-%!error <Invalid call to sort.*> sort ();
-%!error <Invalid call to sort.*> sort (1, 2, 3, 4);
+%!error <Invalid call to sort> sort ();
+%!error <Invalid call to sort> sort (1, 2, 3, 4);
 
 */
 

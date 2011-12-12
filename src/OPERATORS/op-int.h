@@ -21,6 +21,7 @@ along with Octave; see the file COPYING.  If not, see
 */
 
 #include "quit.h"
+#include "bsxfun.h"
 
 #define DEFINTBINOP_OP(name, t1, t2, op, t3) \
   BINOPDECL (name, a1, a2) \
@@ -703,8 +704,15 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        gripe_nonconformant ("operator .^", a_dims, b_dims); \
-        return octave_value (); \
+        if (is_valid_bsxfun (a_dims, b_dims)) \
+          { \
+            return bsxfun_pow (a, b); \
+          } \
+        else \
+          { \
+            gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+            return octave_value (); \
+          } \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
@@ -722,8 +730,15 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        gripe_nonconformant ("operator .^", a_dims, b_dims); \
-        return octave_value (); \
+        if (is_valid_bsxfun (a_dims, b_dims)) \
+          { \
+            return bsxfun_pow (a, b); \
+          } \
+        else \
+          { \
+            gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+            return octave_value (); \
+          } \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
@@ -741,8 +756,15 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        gripe_nonconformant ("operator .^", a_dims, b_dims); \
-        return octave_value (); \
+        if (is_valid_bsxfun (a_dims, b_dims)) \
+          { \
+            return bsxfun_pow (a, b); \
+          } \
+        else \
+          { \
+            gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+            return octave_value (); \
+          } \
       } \
     T2 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
@@ -760,8 +782,15 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        gripe_nonconformant ("operator .^", a_dims, b_dims); \
-        return octave_value (); \
+        if (is_valid_bsxfun (a_dims, b_dims)) \
+          { \
+            return bsxfun_pow (a, b); \
+          } \
+        else \
+          { \
+            gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+            return octave_value (); \
+          } \
       } \
     T1 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \
@@ -779,8 +808,15 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        gripe_nonconformant ("operator .^", a_dims, b_dims); \
-        return octave_value (); \
+        if (is_valid_bsxfun (a_dims, b_dims)) \
+          { \
+            return bsxfun_pow (a, b); \
+          } \
+        else \
+          { \
+            gripe_nonconformant ("operator .^", a_dims, b_dims);  \
+            return octave_value (); \
+          } \
       } \
     T2 ## NDArray result (a_dims); \
     for (int i = 0; i < a.length (); i++) \

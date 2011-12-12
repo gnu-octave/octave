@@ -76,6 +76,8 @@ DEFUN_DLD (qr, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{Q}, @var{R}, @var{P}] =} qr (@var{A}, '0')\n\
+@deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B})\n\
+@deftypefnx {Loadable Function} {[@var{C}, @var{R}] =} qr (@var{A}, @var{B}, '0')\n\
 @cindex QR factorization\n\
 Compute the QR@tie{}factorization of @var{A}, using standard @sc{lapack}\n\
 subroutines.  For example, given the matrix @code{@var{A} = [1, 2; 3, 4]},\n\
@@ -188,7 +190,7 @@ as\n\
 \n\
 @example\n\
 @group\n\
-[@var{C},@var{R}] = spqr (@var{A},@var{B})\n\
+[@var{C}, @var{R}] = qr (@var{A}, @var{B})\n\
 x = @var{R} \\ @var{C}\n\
 @end group\n\
 @end example\n\
@@ -495,8 +497,8 @@ x = @var{R} \\ @var{C}\n\
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
 
-%!error <Invalid call to qr.*> qr ();
-%!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
+%!error <Invalid call to qr> qr ();
+%!error <Invalid call to qr> qr ([1, 2; 3, 4], 0, 2);
 
 %!function retval = testqr (q, r, a, p)
 %!  tol = 100*eps (class(q));
@@ -613,8 +615,8 @@ x = @var{R} \\ @var{C}\n\
 %! assert (q * r, a * p, sqrt (eps('single')));
 %! assert (qe * re, a(:, pe), sqrt (eps('single')));
 
-%!error <Invalid call to qr.*> qr ();
-%!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
+%!error <Invalid call to qr> qr ();
+%!error <Invalid call to qr> qr ([1, 2; 3, 4], 0, 2);
 
 %!test
 %!
@@ -1172,7 +1174,7 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
 @w{[A(:,1:j-1) A(:,j+1:n)]}, i.e., @var{A} with one column deleted\n\
 (if @var{orient} is \"col\"), or the QR@tie{}factorization of\n\
-@w{[A(1:j-1,:);A(:,j+1:n)]}, i.e., @var{A} with one row deleted (if\n\
+@w{[A(1:j-1,:);A(j+1:n,:)]}, i.e., @var{A} with one row deleted (if\n   \
 @var{orient} is \"row\").\n\
 \n\
 The default value of @var{orient} is \"col\".\n\

@@ -62,15 +62,19 @@ template <class qr_type>
 bool
 base_qr<qr_type>::regular (void) const
 {
-  octave_idx_type k = std::min (r.rows (), r.columns ());
   bool retval = true;
-  for (octave_idx_type i = 0; i < k; i++)
-    if (r(i, i) == qr_elt_type ())
-      {
-        retval = false;
-        break;
-      }
 
-  return true;
+  octave_idx_type k = std::min (r.rows (), r.columns ());
+
+  for (octave_idx_type i = 0; i < k; i++)
+    {
+      if (r(i, i) == qr_elt_type ())
+        {
+          retval = false;
+          break;
+        }
+    }
+
+  return retval;
 }
 

@@ -757,7 +757,7 @@ FloatComplexNDArray::isfinite (void) const
 FloatComplexNDArray
 conj (const FloatComplexNDArray& a)
 {
-  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj> (a);
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float> > (a);
 }
 
 FloatComplexNDArray&

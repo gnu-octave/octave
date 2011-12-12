@@ -63,7 +63,7 @@ you should first check to see if the topic is covered in the manual.
 * Getting Octave::
 * Installation::
 * Common problems::
-* How do I ...?::
+* Using Octave::
 * @sc{Matlab} compatibility::
 * Index::
 @end menu
@@ -780,15 +780,16 @@ Fedora
 @end itemize
 @end itemize
 
-@node How do I ...?
-@chapter  How do I ...?
+@node Using Octave
+@chapter  Using Octave
 
 @menu
 * How do I set the number of displayed decimals?::
+* How does Octave solve linear systems?::
 @end menu
 
 @cindex Tips and tricks
-@cindex How do I @dots{} ?
+@cindex Using Octave
 
 @node How do I set the number of displayed decimals?
 @section How do I set the number of displayed decimals?
@@ -803,6 +804,18 @@ octave:4> pi
 pi = 3.1416
 @end group
 @end example
+
+@node How does Octave solve linear systems?
+@section How does Octave solve linear systems?
+
+@cindex backslash operator
+
+In addition to consulting Octave's source for the precise details, the
+Octave manual contains a complete high-level description of the
+algorithm that Octave uses to decide how to solve a particular linear
+system, e.g. how the backslash operator @code{A\x} will be interpreted.
+Sections ``Techniques Used for Linear Algebra'' and ``Linear Algebra on
+Sparse Matrices'' from the manual describe this procedure.
 
 @node @sc{Matlab} compatibility
 @chapter Porting programs from @sc{Matlab} to Octave

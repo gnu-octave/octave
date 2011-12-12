@@ -77,6 +77,7 @@ function [p, y] = ppplot (x, dist, varargin)
 
 endfunction
 
+
 %% Test input validation
 %!error ppplot ();
 %!error ppplot (ones(2,2));

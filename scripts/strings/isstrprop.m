@@ -84,47 +84,52 @@
 
 function retval = isstrprop (str, prop)
 
-  if (nargin == 2)
-    switch (prop)
-      case "alpha"
-        retval = isalpha (str);
-      case {"alnum", "alphanum"}
-        retval = isalnum (str);
-      case "ascii"
-        retval = isascii (str);
-      case "cntrl"
-        retval = iscntrl (str);
-      case "digit"
-        retval = isdigit (str);
-      case {"graph", "graphic"}
-        retval = isgraph (str);
-      case "lower"
-        retval = islower (str);
-      case "print"
-        retval = isprint (str);
-      case "punct"
-        retval = ispunct (str);
-      case {"space", "wspace"}
-        retval = isspace (str);
-      case "upper"
-        retval = isupper (str);
-      case "xdigit"
-        retval = isxdigit (str);
-      otherwise
-        error ("isstrprop: invalid string property");
-    endswitch
-  else
+  if (nargin != 2)
     print_usage ();
   endif
 
+  switch (prop)
+    case "alpha"
+      retval = isalpha (str);
+    case {"alnum", "alphanum"}
+      retval = isalnum (str);
+    case "ascii"
+      retval = isascii (str);
+    case "cntrl"
+      retval = iscntrl (str);
+    case "digit"
+      retval = isdigit (str);
+    case {"graph", "graphic"}
+      retval = isgraph (str);
+    case "lower"
+      retval = islower (str);
+    case "print"
+      retval = isprint (str);
+    case "punct"
+      retval = ispunct (str);
+    case {"space", "wspace"}
+      retval = isspace (str);
+    case "upper"
+      retval = isupper (str);
+    case "xdigit"
+      retval = isxdigit (str);
+    otherwise
+      error ("isstrprop: invalid string property");
+  endswitch
+
 endfunction
 
-%!error <invalid string property> isstrprop ("abc123", "foo")
+
 %!assert (isstrprop ("abc123", "alpha"), logical ([1, 1, 1, 0, 0, 0]))
+%!assert (isstrprop ("abc123", "digit"), logical ([0, 0, 0, 1, 1, 1]))
 %!assert (isstrprop ("Hello World", "wspace"), isspace ("Hello World"))
 %!assert (isstrprop ("Hello World", "graphic"), isgraph ("Hello World"))
+%!assert (isstrprop (char ("AbC", "123"), "upper"), logical ([1 0 1; 0 0 0]))
+%!assert (isstrprop ({"AbC", "123"}, "lower"), {logical([0 1 0]), logical([0 0 0])})
 
 %%Input Validation
 %!error isstrprop ()
 %!error isstrprop ("abc123")
 %!error isstrprop ("abc123", "alpha", "alpha")
+%!error <invalid string property> isstrprop ("abc123", "foo")
+

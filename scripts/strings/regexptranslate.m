@@ -18,14 +18,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} regexptranslate (@var{op}, @var{s})
-## Translate a string for use in a regular expression.  This might
+## Translate a string for use in a regular expression.  This may
 ## include either wildcard replacement or special character escaping.
-## The behavior can be controlled by the @var{op} that can have the
+## The behavior is controlled by @var{op} which can take the following
 ## values
 ##
 ## @table @asis
 ## @item "wildcard"
-## The wildcard characters @code{.}, @code{*} and @code{?} are replaced
+## The wildcard characters @code{.}, @code{*}, and @code{?} are replaced
 ## with wildcards that are appropriate for a regular expression.
 ## For example:
 ##
@@ -57,29 +57,31 @@ function y = regexptranslate (op, s)
     print_usage ();
   endif
 
-  if (ischar (op))
-    op = tolower (op);
-    if (strcmp ("wildcard", op))
-      y = regexprep (regexprep (regexprep (s, '\.', '\.'), '\*',
-                                '.*'), '\?', '.');
-    elseif (strcmp ("escape", op))
-      ch = {'\$', '\.', '\?', '\[', '\]'};
-      y = s;
-      for i = 1 : length (ch)
-        y = regexprep (y, ch{i}, ch{i});
-      endfor
-    else
-      error ("regexptranslate: unexpected operation");
-    endif
-  else
-    error ("regexptranslate: expecting operation to be a string");
+  if (! ischar (op))
+    error ("regexptranslate: operation OP must be a string");
   endif
+
+  op = tolower (op);
+  if (strcmp ("wildcard", op))
+    y = regexprep (regexprep (regexprep (s, '\.', '\.'), 
+                                            '\*', '.*'), 
+                                            '\?', '.');
+  elseif (strcmp ("escape", op))
+    y = regexprep (s, '([^\w])', '\$1');
+  else
+    error ("regexptranslate: invalid operation OP");
+  endif
+
 endfunction
 
-%!error <Invalid call to regexptranslate> regexptranslate ();
-%!error <Invalid call to regexptranslate> regexptranslate ("wildcard");
-%!error <Invalid call to regexptranslate> regexptranslate ("a", "b", "c");
-%!error <unexpected operation> regexptranslate ("foo", "abc");
-%!error <expecting operation to be a string> regexptranslate (10, "abc");
+
 %!assert (regexptranslate ("wildcard", "/a*b?c."), "/a.*b.c\\.")
-%!assert (regexptranslate ("escape", '$.?[]'), '\$\.\?\[\]')
+%!assert (regexptranslate ("escape", '$.?[abc]'), '\$\.\?\[abc\]')
+
+%% Test input validation
+%!error <Invalid call to regexptranslate> regexptranslate ()
+%!error <Invalid call to regexptranslate> regexptranslate ("wildcard")
+%!error <Invalid call to regexptranslate> regexptranslate ("a", "b", "c")
+%!error <invalid operation> regexptranslate ("foo", "abc")
+%!error <operation OP must be a string> regexptranslate (10, "abc")
+

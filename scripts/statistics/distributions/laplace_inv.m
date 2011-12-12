@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -31,22 +32,33 @@ function inv = laplace_inv (x)
     print_usage ();
   endif
 
-  inv = -Inf (size (x));
-
-  k = find (isnan (x) | (x < 0) | (x > 1));
-  if (any (k))
-    inv(k) = NaN;
+  if (iscomplex (x))
+    error ("laplace_inv: X must not be complex");
   endif
 
-  k = find (x == 1);
-  if (any (k))
-    inv(k) = Inf;
+  if (isa (x, "single"))
+    inv = NaN (size (x), "single");
+  else
+    inv = NaN (size (x));
   endif
 
-  k = find ((x > 0) & (x < 1));
-  if (any (k))
-    inv(k) = ((x(k) < 1/2) .* log (2 * x(k))
-              - (x(k) > 1/2) .* log (2 * (1 - x(k))));
-  endif
+  k = (x >= 0) & (x <= 1);
+  inv(k) = ((x(k) < 1/2) .* log (2 * x(k))
+            - (x(k) > 1/2) .* log (2 * (1 - x(k))));
 
 endfunction
+
+
+%!shared x
+%! x = [-1 0 0.5 1 2];
+%!assert(laplace_inv (x), [NaN -Inf 0 Inf NaN]);
+
+%% Test class of input preserved
+%!assert(laplace_inv ([x, NaN]), [NaN -Inf 0 Inf NaN NaN]);
+%!assert(laplace_inv (single([x, NaN])), single([NaN -Inf 0 Inf NaN NaN]));
+
+%% Test input validation
+%!error laplace_inv ()
+%!error laplace_inv (1,2)
+%!error laplace_inv (i)
+

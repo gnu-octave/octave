@@ -152,43 +152,43 @@ Begin comment character.\n\
   pair_type ("#{",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #@{\n\
-Begin block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{#@{}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{#, #@}, %@{}\n\
+Begin block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{#@{}.\n\
+It is possible to nest block comments.\n\
+@seealso{%@{, #@}, #}\n\
 @end deftypefn"),
 
   pair_type ("%{",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %@{\n\
-Begin block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{%@{}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{%, %@}, #@{}\n\
+Begin block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{%@{}.\n\
+It is possible to nest block comments.\n\
+@seealso{#@{, %@}, %}\n\
 @end deftypefn"),
 
   pair_type ("#}",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #@}\n\
-Close block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{#@}}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{#, #@{, %@}}\n\
+Close block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{#@}}.\n\
+It is possible to nest block comments.\n\
+@seealso{%@}, #@{, #}\n\
 @end deftypefn"),
 
   pair_type ("%}",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %@}\n\
-Close block comment. There must be nothing else other than\n\
-whitespace in the line, both before and after @code{%@}}. Also,\n\
-it is possible to nest block comments.\n\
-@seealso{%, %@{, #@}}\n\
+Close block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{%@}}.\n\
+It is possible to nest block comments.\n\
+@seealso{#@}, %@{, %}\n\
 @end deftypefn"),
 
   pair_type ("...",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ...\n\
-Continuation marker. Joins current line with following line.\n\
+Continuation marker.  Joins current line with following line.\n\
 @end deftypefn"),
 
   pair_type ("&",
@@ -208,12 +208,12 @@ Logical 'and' operator (with short-circuit evaluation).\n\
   pair_type ("'",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} '\n\
-Matrix transpose operator. For complex matrices, computes the\n\
+Matrix transpose operator.  For complex matrices, computes the\n\
 complex conjugate (Hermitian) transpose.\n\
 \n\
 The single quote character may also be used to delimit strings, but\n\
 it is better to use the double quote character, since that is never\n\
-ambiguous\n\
+ambiguous.\n\
 @seealso{.', transpose}\n\
 @end deftypefn"),
 
@@ -260,7 +260,7 @@ Addition operator.\n\
   pair_type ("++",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ++\n\
-Increment operator. As in C, may be applied as a prefix or postfix\n\
+Increment operator.  As in C, may be applied as a prefix or postfix\n\
 operator.\n\
 @seealso{--}\n\
 @end deftypefn"),
@@ -281,7 +281,7 @@ Subtraction or unary negation operator.\n\
   pair_type ("--",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} --\n\
-Decrement operator. As in C, may be applied as a prefix or postfix\n\
+Decrement operator.  As in C, may be applied as a prefix or postfix\n\
 operator.\n\
 @seealso{++}\n\
 @end deftypefn"),
@@ -289,7 +289,7 @@ operator.\n\
   pair_type (".'",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .'\n\
-Matrix transpose operator. For complex matrices, computes the\n\
+Matrix transpose operator.  For complex matrices, computes the\n\
 transpose, @emph{not} the complex conjugate transpose.\n\
 @seealso{', transpose}\n\
 @end deftypefn"),
@@ -432,7 +432,7 @@ const static pair_type keywords[] =
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} break\n\
 Exit the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, continue}\n\
+@seealso{do, while, for, parfor, continue}\n\
 @end deftypefn"),
 
   pair_type ("case",
@@ -455,7 +455,7 @@ Begin the cleanup part of a try-catch block.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} continue\n\
 Jump to the end of the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, break}\n\
+@seealso{do, while, for, parfor, break}\n\
 @end deftypefn"),
 
   pair_type ("do",
@@ -485,7 +485,7 @@ Alternate conditional test for an if block.  See @code{if} for an example.\n\
 @deftypefn {Keyword} {} end\n\
 Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or\n\
 @code{function} block.\n\
-@seealso{for, if, do, while, function}\n\
+@seealso{for, parfor, if, do, while, function}\n\
 @end deftypefn"),
 
   pair_type ("end_try_catch",
@@ -523,6 +523,13 @@ Mark the end of an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
 @end deftypefn"),
 
+  pair_type ("endparfor",
+    "-*- texinfo -*-\n\
+@deftypefn {Keyword} {} endparfor\n\
+Mark the end of a parfor loop.  See @code{parfor} for an example.\n\
+@seealso{parfor}\n\
+@end deftypefn"),
+
   pair_type ("endswitch",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endswitch\n\
@@ -549,7 +556,7 @@ for i = 1:10\n\
 endfor\n\
 @end group\n\
 @end example\n\
-@seealso{do, while}\n\
+@seealso{do, parfor, while}\n\
 @end deftypefn"),
 
   pair_type ("function",
@@ -608,6 +615,22 @@ The default statement in a switch block (similar to else in an if block).\n\
 @seealso{switch}\n\
 @end deftypefn"),
 
+  pair_type ("parfor",
+    "-*- texinfo -*-\n\
+@deftypefn {Keyword} {} for @var{i} = @var{range}\n\
+@deftypefnx {Keyword} {} for (@var{i} = @var{range}, @var{maxproc})\n\
+Begin a for loop that may execute in parallel.\n\
+\n\
+@example\n\
+@group\n\
+parfor i = 1:10\n\
+  i\n\
+endparfor\n\
+@end group\n\
+@end example\n\
+@seealso{for, do, while}\n\
+@end deftypefn"),
+
   pair_type ("persistent",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} persistent @var{var}\n\
@@ -617,13 +640,6 @@ subsequent calls to the same function.  The difference between persistent\n\
 variables and global variables is that persistent variables are local in \n\
 scope to a particular function and are not visible elsewhere.\n\
 @seealso{global}\n\
-@end deftypefn"),
-
-  pair_type ("replot",
-    "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} replot\n\
-Replot a graphic.\n\
-@seealso{plot}\n\
 @end deftypefn"),
 
   pair_type ("return",
@@ -706,14 +722,14 @@ Begin the cleanup section of an unwind_protect block.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargin\n\
 Pass an arbitrary number of arguments into a function.\n\
-@seealso{varargout, nargin, nargout}\n\
+@seealso{varargout, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("varargout",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargout\n\
 Pass an arbitrary number of arguments out of a function.\n\
-@seealso{varargin, nargin, nargout}\n\
+@seealso{varargin, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("while",
@@ -749,6 +765,9 @@ make_name_list (void)
   const string_vector bif = symbol_table::built_in_function_names ();
   const int bif_len = bif.length ();
 
+  const string_vector cfl = symbol_table::cmdline_function_names ();
+  const int cfl_len = cfl.length ();
+
   const string_vector lcl = symbol_table::variable_names ();
   const int lcl_len = lcl.length ();
 
@@ -758,7 +777,8 @@ make_name_list (void)
   const string_vector afl = autoloaded_functions ();
   const int afl_len = afl.length ();
 
-  const int total_len = key_len + bif_len + lcl_len + ffl_len + afl_len;
+  const int total_len
+    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len;
 
   string_vector list (total_len);
 
@@ -771,6 +791,9 @@ make_name_list (void)
 
   for (i = 0; i < bif_len; i++)
     list[j++] = bif[i];
+
+  for (i = 0; i < cfl_len; i++)
+    list[j++] = cfl[i];
 
   for (i = 0; i < lcl_len; i++)
     list[j++] = lcl[i];
@@ -1238,6 +1261,7 @@ DEFUN (doc_cache_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} doc_cache_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} doc_cache_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave documentation cache file.  A cache file significantly improves\n\
 the performance of the @code{lookfor} command.  The default value is \n\
@@ -1247,6 +1271,10 @@ and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
 @samp{--doc-cache-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1257,6 +1285,7 @@ DEFUN (info_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave info file.  The default value is\n\
 @file{@var{octave-home}/info/octave.info}, in\n\
@@ -1264,6 +1293,10 @@ which @var{octave-home} is the root directory of the Octave installation.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
 @samp{--info-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1274,6 +1307,7 @@ DEFUN (info_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 info program to run.  The default value is\n\
 @file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
@@ -1283,6 +1317,10 @@ is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
 default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
 @samp{--info-program NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1293,9 +1331,14 @@ DEFUN (makeinfo_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} makeinfo_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} makeinfo_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 program that Octave runs to format help text containing\n\
 Texinfo markup commands.  The default value is @code{makeinfo}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, info_program, doc, help}\n\
 @end deftypefn")
 {
@@ -1306,9 +1349,14 @@ DEFUN (suppress_verbose_help_message, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} suppress_verbose_help_message (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);

@@ -50,8 +50,7 @@ typedef struct
   int depth, rdepth, ndiv;
 } cquad_ival;
 
-/* Some constants and matrices that we'll need.
-    */
+/* Some constants and matrices that we'll need.  */
 
 static const double xi[33] = {
   -1., -0.99518472667219688624, -0.98078528040323044912,
@@ -1473,9 +1472,7 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 }
 
 
-
-/* The actual integration routine.
-    */
+/* The actual integration routine.  */
 
 DEFUN_DLD (quadcc, args, nargout,
 "-*- texinfo -*-\n\
@@ -1545,6 +1542,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {
+  octave_value_list retval;
 
   /* Some constants that we will need. */
   static const int n[4] = { 4, 8, 16, 32 };
@@ -1563,15 +1561,15 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   double a, b, tol, iivals[cquad_heapsize], *sing;
 
   /* Variables needed for transforming the integrand. */
-  int wrap = 0;
+  bool wrap = false;
   double xw;
 
   /* Stuff we will need to call the integrand. */
-  octave_value_list fargs, retval;
+  octave_value_list fargs, fvals;
 
   /* Actual variables (as opposed to constants above). */
   double m, h, ml, hl, mr, hr, temp;
-  double igral, err, igral_final, err_final, err_excess;
+  double igral, err, igral_final, err_final;
   int nivals, neval = 0;
   int i, j, d, split, t;
   int nnans, nans[33];
@@ -1580,48 +1578,49 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
 
   /* Parse the input arguments. */
-  if (nargin < 1)
+  if (nargin < 3)
     {
-      error
-        ("quadcc: first argument (integrand) of type function handle required");
-      return octave_value_list ();
-    }
-  else
-    {
-      if (args (0).is_function_handle () || args (0).is_inline_function ())
-        fcn = args (0).function_value ();
-      else
-        {
-          error ("quadcc: first argument (integrand) must be a function handle or an inline function");
-          return octave_value_list();
-        }
+      print_usage ();
+      return retval;
     }
 
-  if (nargin < 2 || !args (1).is_real_scalar ())
+  if (args(0).is_function_handle () || args(0).is_inline_function ())
+    fcn = args(0).function_value ();
+  else
     {
-      error ("quadcc: second argument (left interval edge) must be a single real scalar");
-      return octave_value_list ();
+       std::string fcn_name = unique_symbol_name ("__quadcc_fcn_");
+       std::string fname = "function y = ";
+       fname.append (fcn_name);
+       fname.append ("(x) y = ");
+       fcn = extract_function (args(0), "quadcc", fcn_name, fname,
+                               "; endfunction");
+    }
+
+  if (!args(1).is_real_scalar ())
+    {
+      error ("quadcc: lower limit of integration (A) must be a single real scalar");
+      return retval;
     }
   else
-    a = args (1).double_value ();
+    a = args(1).double_value ();
 
-  if (nargin < 3 || !args (2).is_real_scalar ())
+  if (!args(2).is_real_scalar ())
     {
-      error ("quadcc: third argument (right interval edge) must be a single real scalar");
-      return octave_value_list ();
+      error ("quadcc: upper limit of integration (B) must be a single real scalar");
+      return retval;
     }
   else
-    b = args (2).double_value ();
+    b = args(2).double_value ();
 
-  if (nargin < 4)
+  if (nargin < 4 || args(3).is_empty ())
     tol = 1.0e-6;
-  else if (!args (3).is_real_scalar ())
+  else if (!args(3).is_real_scalar () || args(3).double_value () <= 0)
     {
-      error ("quadcc: fourth argument (tolerance) must be a single real scalar");
-      return octave_value_list ();
+      error ("quadcc: tolerance (TOL) must be a single real scalar > 0");
+      return retval;
     }
   else
-    tol = args (3).double_value ();
+    tol = args(3).double_value ();
 
   if (nargin < 5)
     {
@@ -1629,20 +1628,21 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       iivals[0] = a;
       iivals[1] = b;
     }
-  else if (!(args (4).is_real_scalar () || args (4).is_real_matrix ()))
+  else if (!(args(4).is_real_scalar () || args(4).is_real_matrix ()))
     {
-      error ("quadcc: fifth argument (singularities) must be a vector of real values");
-      return octave_value_list ();
+      error ("quadcc: list of singularities (SING) must be a vector of real values");
+      return retval;
     }
   else
     {
-      nivals = 1 + args (4).length ();
-      if ( nivals > cquad_heapsize ) {
-        error ("quadcc: maximum number of singular points is limited to %i",
-               cquad_heapsize-1);
-        return octave_value_list();
+      nivals = 1 + args(4).length ();
+      if (nivals > cquad_heapsize)
+        {
+          error ("quadcc: maximum number of singular points is limited to %i",
+                 cquad_heapsize-1);
+          return retval;
         }
-      sing = args (4).array_value ().fortran_vec ();
+      sing = args(4).array_value ().fortran_vec ();
       iivals[0] = a;
       for (i = 0; i < nivals - 2; i++)
         iivals[i + 1] = sing[i];
@@ -1652,7 +1652,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   /* If a or b are +/-Inf, transform the integral. */
   if (xisinf (a) || xisinf (b))
     {
-      wrap = 1;
+      wrap = true;
       for (i = 0; i <= nivals; i++)
         if (xisinf (iivals[i]))
           iivals[i] = copysign (1.0, iivals[i]);
@@ -1688,19 +1688,18 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
           for (i = 0; i <= n[3]; i++)
             ex (i) = m + xi[i] * h;
         }
-      fargs (0) = ex;
-      retval = feval (fcn, fargs, 1);
-      if (retval.length () != 1 || !retval (0).is_real_matrix ())
+      fargs(0) = ex;
+      fvals = feval (fcn, fargs, 1);
+      if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
         {
-          error
-            ("quadcc: integrand must return a single, real-valued vector");
-          return octave_value_list ();
+          error ("quadcc: integrand F must return a single, real-valued vector");
+          return retval;
         }
-      Matrix effex = retval (0).matrix_value ();
+      Matrix effex = fvals(0).matrix_value ();
       if (effex.length () != ex.length ())
         {
-          error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-          return octave_value_list ();
+          error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+          return retval;
         }
       for (i = 0; i <= n[3]; i++)
         {
@@ -1767,7 +1766,6 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
   /* Initialize some global values. */
   igral_final = 0.0;
   err_final = 0.0;
-  err_excess = 0.0;
 
 
   /* Main loop. */
@@ -1809,18 +1807,18 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 for (i = 0; i < n[d] / 2; i++)
                   ex (i) = m + xi[(2 * i + 1) * skip[d]] * h;
               }
-            fargs (0) = ex;
-            retval = feval (fcn, fargs, 1);
-            if (retval.length () != 1 || !retval (0).is_real_matrix ())
+            fargs(0) = ex;
+            fvals = feval (fcn, fargs, 1);
+            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector");
+                return retval;
               }
-            Matrix effex = retval (0).matrix_value ();
+            Matrix effex = fvals(0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+                return retval;
               }
             neval += effex.length ();
             for (i = 0; i < n[d] / 2; i++)
@@ -1957,18 +1955,18 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 for (i = 0; i < n[0] - 1; i++)
                   ex (i) = ml + xi[(i + 1) * skip[0]] * hl;
               }
-            fargs (0) = ex;
-            retval = feval (fcn, fargs, 1);
-            if (retval.length () != 1 || !retval (0).is_real_matrix ())
+            fargs(0) = ex;
+            fvals = feval (fcn, fargs, 1);
+            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector");
+                return retval;
               }
-            Matrix effex = retval (0).matrix_value ();
+            Matrix effex = fvals(0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+                return retval;
               }
             neval += effex.length ();
             for (i = 0; i < n[0] - 1; i++)
@@ -2053,18 +2051,18 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                 for (i = 0; i < n[0] - 1; i++)
                   ex (i) = mr + xi[(i + 1) * skip[0]] * hr;
               }
-            fargs (0) = ex;
-            retval = feval (fcn, fargs, 1);
-            if (retval.length () != 1 || !retval (0).is_real_matrix ())
+            fargs(0) = ex;
+            fvals = feval (fcn, fargs, 1);
+            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector");
+                return retval;
               }
-            Matrix effex = retval (0).matrix_value ();
+            Matrix effex = fvals(0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+                return retval;
               }
             neval += effex.length ();
             for (i = 0; i < n[0] - 1; i++)
@@ -2234,11 +2232,39 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
     }
 */
   /* Clean up and present the results. */
-  retval (0) = igral;
-  if (nargout > 1)
-    retval (1) = err;
   if (nargout > 2)
-    retval (2) = neval;
+    retval(2) = neval;
+  if (nargout > 1)
+    retval(1) = err;
+  retval(0) = igral;
   /* All is well that ends well. */
   return retval;
 }
+
+
+/*
+
+%!assert (quadcc(@sin,-pi,pi), 0, 1e-6)
+%!assert (quadcc(inline('sin'),-pi,pi), 0, 1e-6)
+%!assert (quadcc('sin',-pi,pi), 0, 1e-6)
+
+%!assert (quadcc(@sin,-pi,0), -2, 1e-6)
+%!assert (quadcc(@sin,0,pi), 2, 1e-6)
+%!assert (quadcc(@(x) 1./sqrt(x), 0, 1), 2, 1e-6)
+%!assert (quadcc(@(x) 1./(sqrt(x).*(x+1)), 0, Inf), pi, 1e-6)
+
+%!assert (quadcc (@(x) exp(-x .^ 2), -Inf, Inf), sqrt(pi), 1e-6)
+%!assert (quadcc (@(x) exp(-x .^ 2), -Inf, 0), sqrt(pi)/2, 1e-6)
+
+%% Test input validation
+%!error (quadcc ())
+%!error (quadcc (@sin))
+%!error (quadcc (@sin, 0))
+%!error (quadcc (@sin, ones(2), pi))
+%!error (quadcc (@sin, -i, pi))
+%!error (quadcc (@sin, 0, ones(2)))
+%!error (quadcc (@sin, 0, i))
+%!error (quadcc (@sin, 0, pi, 0))
+%!error (quadcc (@sin, 0, pi, 1e-6, [ i ]))
+
+*/

@@ -1,6 +1,7 @@
 /*
 
 Copyright (C) 2005-2011 Mohamed Kamoun
+Copyright (C) 2006-2011 Bill Denney
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
@@ -44,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "utils.h"
 
+#include "ov-class.h"
 #include "ov-scalar.h"
 #include "ov-float.h"
 #include "ov-complex.h"
@@ -57,6 +59,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-uint16.h"
 #include "ov-uint32.h"
 #include "ov-uint64.h"
+
+#include "ov-fcn-handle.h"
 
 static octave_value_list
 get_output_list (octave_idx_type count, octave_idx_type nargout,
@@ -74,11 +78,16 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
           msg.assign ("identifier", last_error_id ());
           msg.assign ("message", last_error_message ());
           msg.assign ("index", static_cast<double> (count + static_cast<octave_idx_type>(1)));
+
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
+
           buffer_error_messages--;
+
           error_state = 0;
+
           tmp = error_handler.do_multi_index_op (nargout, errlist);
+
           buffer_error_messages++;
 
           if (error_state)
@@ -89,6 +98,155 @@ get_output_list (octave_idx_type count, octave_idx_type nargout,
     }
 
   return tmp;
+}
+
+static octave_value_list
+try_cellfun_internal_ops (const octave_value_list& args, int nargin)
+{
+  octave_value_list retval;
+
+  std::string name = args(0).string_value ();
+
+  const Cell f_args = args(1).cell_value ();
+
+  octave_idx_type k = f_args.numel ();
+
+  if (name == "isempty")
+    {
+      boolNDArray result (f_args.dims ());
+      for (octave_idx_type count = 0; count < k; count++)
+        result(count) = f_args.elem(count).is_empty ();
+      retval(0) = result;
+    }
+  else if (name == "islogical")
+    {
+      boolNDArray result (f_args.dims ());
+      for (octave_idx_type  count= 0; count < k; count++)
+        result(count) = f_args.elem(count).is_bool_type ();
+      retval(0) = result;
+    }
+  else if (name == "isreal")
+    {
+      boolNDArray result (f_args.dims ());
+      for (octave_idx_type  count= 0; count < k; count++)
+        result(count) = f_args.elem(count).is_real_type ();
+      retval(0) = result;
+    }
+  else if (name == "length")
+    {
+      NDArray result (f_args.dims ());
+      for (octave_idx_type  count= 0; count < k; count++)
+        result(count) = static_cast<double> (f_args.elem(count).length ());
+      retval(0) = result;
+    }
+  else if (name == "ndims")
+    {
+      NDArray result (f_args.dims ());
+      for (octave_idx_type count = 0; count < k; count++)
+        result(count) = static_cast<double> (f_args.elem(count).ndims ());
+      retval(0) = result;
+    }
+  else if (name == "prodofsize" || name == "numel")
+    {
+      NDArray result (f_args.dims ());
+      for (octave_idx_type count = 0; count < k; count++)
+        result(count) = static_cast<double> (f_args.elem(count).numel ());
+      retval(0) = result;
+    }
+  else if (name == "size")
+    {
+      if (nargin == 3)
+        {
+          int d = args(2).nint_value () - 1;
+
+          if (d < 0)
+            error ("cellfun: K must be a positive integer");
+
+          if (! error_state)
+            {
+              NDArray result (f_args.dims ());
+              for (octave_idx_type count = 0; count < k; count++)
+                {
+                  dim_vector dv = f_args.elem(count).dims ();
+                  if (d < dv.length ())
+                    result(count) = static_cast<double> (dv(d));
+                  else
+                    result(count) = 1.0;
+                }
+              retval(0) = result;
+            }
+        }
+      else
+        error ("cellfun: not enough arguments for \"size\"");
+    }
+  else if (name == "isclass")
+    {
+      if (nargin == 3)
+        {
+          std::string class_name = args(2).string_value();
+          boolNDArray result (f_args.dims ());
+          for (octave_idx_type count = 0; count < k; count++)
+            result(count) = (f_args.elem(count).class_name() == class_name);
+
+          retval(0) = result;
+        }
+      else
+        error ("cellfun: not enough arguments for \"isclass\"");
+    }
+
+  return retval;
+}
+
+static void
+get_mapper_fun_options (const octave_value_list& args, int& nargin,
+                     bool& uniform_output, octave_value& error_handler)
+{
+  while (nargin > 3 && args(nargin-2).is_string ())
+    {
+      std::string arg = args(nargin-2).string_value ();
+
+      std::transform (arg.begin (), arg.end (),
+                      arg.begin (), tolower);
+
+      if (arg == "uniformoutput")
+        uniform_output = args(nargin-1).bool_value();
+      else if (arg == "errorhandler")
+        {
+          if (args(nargin-1).is_function_handle ()
+              || args(nargin-1).is_inline_function ())
+            {
+              error_handler = args(nargin-1);
+            }
+          else if (args(nargin-1).is_string ())
+            {
+              std::string err_name = args(nargin-1).string_value ();
+
+              error_handler = symbol_table::find_function (err_name);
+
+              if (error_handler.is_undefined ())
+                {
+                  error ("cellfun: invalid function NAME: %s",
+                         err_name.c_str ());
+                  break;
+                }
+            }
+          else
+            {
+              error ("cellfun: invalid value for 'ErrorHandler' function");
+              break;
+            }
+        }
+      else
+        {
+          error ("cellfun: unrecognized parameter %s",
+                 arg.c_str());
+          break;
+        }
+
+      nargin -= 2;
+    }
+
+  nargin -= 1;
 }
 
 DEFUN_DLD (cellfun, args, nargout,
@@ -122,8 +280,10 @@ Return a vector of the lengths of cell elements.\n\
 @item ndims\n\
 Return the number of dimensions of each element.\n\
 \n\
-@item prodofsize\n\
-Return the product of dimensions of each element.\n\
+@item numel\n\
+@itemx prodofsize\n\
+Return the number of elements contained within each cell element.  The\n\
+number is the product of the dimensions of the object at each cell element.\n\
 \n\
 @item size\n\
 Return the size along the @var{k}-th dimension.\n\
@@ -142,7 +302,7 @@ function can return one or more output arguments.  For example:\n\
 \n\
 @example\n\
 @group\n\
-cellfun (@@atan2, @{1, 0@}, @{0, 1@})\n\
+cellfun (\"atan2\", @{1, 0@}, @{0, 1@})\n\
      @result{}ans = [1.57080   0.00000]\n\
 @end group\n\
 @end example\n\
@@ -177,7 +337,7 @@ cell array (or cell arrays).  For example:\n\
 \n\
 @example\n\
 @group\n\
-cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
+cellfun (\"tolower\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
          \"UniformOutput\",false)\n\
 @result{} ans = @{\"foo\", \"bar\", \"foobar\"@}\n\
 @end group\n\
@@ -200,7 +360,7 @@ of the element that caused the error.  For example:\n\
 @example\n\
 @group\n\
 function y = foo (s, x), y = NaN; endfunction\n\
-cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
+cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 @result{} ans = [NaN 2]\n\
 @end group\n\
 @end example\n\
@@ -230,172 +390,92 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
   if (func.is_string ())
     {
-      const Cell f_args = args(1).cell_value ();
+      retval = try_cellfun_internal_ops (args, nargin);
 
-      octave_idx_type k = f_args.numel ();
+      if (error_state || ! retval.empty ())
+        return retval;
 
-      std::string name = func.string_value ();
+      // See if we can convert the string into a function.
 
-      if (name == "isempty")
-        {
-          boolNDArray result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k ; count++)
-            result(count) = f_args.elem(count).is_empty ();
-          retval(0) = result;
-        }
-      else if (name == "islogical")
-        {
-          boolNDArray result (f_args.dims ());
-          for (octave_idx_type  count= 0; count < k ; count++)
-            result(count) = f_args.elem(count).is_bool_type ();
-          retval(0) = result;
-        }
-      else if (name == "isreal")
-        {
-          boolNDArray result (f_args.dims ());
-          for (octave_idx_type  count= 0; count < k ; count++)
-            result(count) = f_args.elem(count).is_real_type ();
-          retval(0) = result;
-        }
-      else if (name == "length")
-        {
-          NDArray result (f_args.dims ());
-          for (octave_idx_type  count= 0; count < k ; count++)
-            result(count) = static_cast<double> (f_args.elem(count).length ());
-          retval(0) = result;
-        }
-      else if (name == "ndims")
-        {
-          NDArray result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k ; count++)
-            result(count) = static_cast<double> (f_args.elem(count).ndims ());
-          retval(0) = result;
-        }
-      else if (name == "prodofsize" || name == "numel")
-        {
-          NDArray result (f_args.dims ());
-          for (octave_idx_type count = 0; count < k ; count++)
-            result(count) = static_cast<double> (f_args.elem(count).numel ());
-          retval(0) = result;
-        }
-      else if (name == "size")
-        {
-          if (nargin == 3)
-            {
-              int d = args(2).nint_value () - 1;
+      std::string name = args(0).string_value ();
 
-              if (d < 0)
-                error ("cellfun: K must be a positive integer");
-
-              if (! error_state)
-                {
-                  NDArray result (f_args.dims ());
-                  for (octave_idx_type count = 0; count < k ; count++)
-                    {
-                      dim_vector dv = f_args.elem(count).dims ();
-                      if (d < dv.length ())
-                        result(count) = static_cast<double> (dv(d));
-                      else
-                        result(count) = 1.0;
-                    }
-                  retval(0) = result;
-                }
-            }
-          else
-            error ("cellfun: not enough arguments for \"size\"");
-        }
-      else if (name == "isclass")
+      if (! valid_identifier (name))
         {
-          if (nargin == 3)
-            {
-              std::string class_name = args(2).string_value();
-              boolNDArray result (f_args.dims ());
-              for (octave_idx_type count = 0; count < k ; count++)
-                result(count) = (f_args.elem(count).class_name() == class_name);
+          std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
+          std::string fname = "function y = " + fcn_name + "(x) y = ";
 
-              retval(0) = result;
-            }
-          else
-            error ("cellfun: not enough arguments for \"isclass\"");
+          octave_function *ptr_func
+            = extract_function (args(0), "cellfun", fcn_name,
+                                fname, "; endfunction");
+
+          if (ptr_func && ! error_state)
+            func = octave_value (ptr_func, true);
         }
       else
         {
-          if (! valid_identifier (name))
-            {
+          func = symbol_table::find_function (name);
 
-              std::string fcn_name = unique_symbol_name ("__cellfun_fcn_");
-              std::string fname = "function y = ";
-              fname.append (fcn_name);
-              fname.append ("(x) y = ");
-              octave_function *ptr_func = extract_function (args(0), "cellfun",
-                                                            fcn_name, fname, "; endfunction");
-              if (ptr_func && ! error_state)
-                func = octave_value (ptr_func, true);
-            }
-          else
-            {
-              func = symbol_table::find_function (name);
-              if (func.is_undefined ())
-                error ("cellfun: invalid function NAME: %s", name.c_str ());
-            }
+          if (func.is_undefined ())
+            error ("cellfun: invalid function NAME: %s", name.c_str ());
         }
-    }
 
-  if (error_state || ! retval.empty ())
-    return retval;
+      if (error_state || ! retval.empty ())
+        return retval;
+    }
 
   if (func.is_function_handle () || func.is_inline_function ()
       || func.is_function ())
     {
-      unwind_protect frame;
-      frame.protect_var (buffer_error_messages);
+
+      // The following is an optimisation because the symbol table can
+      // give a more specific function class, so this can result in
+      // fewer polymorphic function calls as the function gets called
+      // for each value of the array.
+      {
+        if (func.is_function_handle ())
+          {
+            octave_fcn_handle* f = func.fcn_handle_value ();
+
+            // Overloaded function handles need to check the type of the
+            // arguments for each element of the array, so they cannot
+            // be optimised this way.
+            if (f -> is_overloaded ())
+              goto nevermind;
+          }
+
+        std::string name = func.function_value () -> name ();
+        octave_value f = symbol_table::find_function (name);
+
+        if (f.is_defined ())
+          {
+            //Except for these two which are special cases...
+            if (name != "size" && name != "class")
+              {
+                //Try first the optimised code path for built-in functions
+                octave_value_list tmp_args = args;
+                tmp_args(0) = name;
+                retval = try_cellfun_internal_ops (tmp_args, nargin);
+                if (error_state || ! retval.empty ())
+                  return retval;
+              }
+
+            //Okay, we tried, doesn't work, let's do the best we can
+            //instead and avoid polymorphic calls for each element of
+            //the array.
+            func = f;
+          }
+      }
+    nevermind:
 
       bool uniform_output = true;
       octave_value error_handler;
 
-      while (nargin > 3 && args(nargin-2).is_string())
-        {
-          std::string arg = args(nargin-2).string_value();
+      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
 
-          std::transform (arg.begin (), arg.end (),
-                          arg.begin (), tolower);
+      if (error_state)
+        return octave_value_list ();
 
-          if (arg == "uniformoutput")
-            uniform_output = args(nargin-1).bool_value();
-          else if (arg == "errorhandler")
-            {
-              if (args(nargin-1).is_function_handle () ||
-                  args(nargin-1).is_inline_function ())
-                {
-                  error_handler = args(nargin-1);
-                }
-              else if (args(nargin-1).is_string ())
-                {
-                  std::string err_name = args(nargin-1).string_value ();
-                  error_handler = symbol_table::find_function (err_name);
-                  if (error_handler.is_undefined ())
-                    {
-                      error ("cellfun: invalid function NAME: %s", err_name.c_str ());
-                      break;
-                    }
-                }
-              else
-                {
-                  error ("cellfun: invalid value for 'ErrorHandler' function");
-                  break;
-                }
-            }
-          else
-            {
-              error ("cellfun: unrecognized parameter %s",
-                     arg.c_str());
-              break;
-            }
-
-          nargin -= 2;
-        }
-
-      nargin -= 1;
+      // Extract cell arguments.
 
       octave_value_list inputlist (nargin, octave_value ());
 
@@ -409,8 +489,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
       dim_vector fdims (1, 1);
 
-      if (error_state)
-        return octave_value_list ();
+      // Collect arguments.  Pre-fill scalar elements of inputlist
+      // array.
 
       for (int j = 0; j < nargin; j++)
         {
@@ -444,8 +524,13 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
             }
         }
 
+      unwind_protect frame;
+      frame.protect_var (buffer_error_messages);
+
       if (error_handler.is_defined ())
         buffer_error_messages++;
+
+      // Apply functions.
 
       if (uniform_output)
         {
@@ -455,7 +540,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
           OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
 
-          for (octave_idx_type count = 0; count < k ; count++)
+          for (octave_idx_type count = 0; count < k; count++)
             {
               for (int j = 0; j < nargin; j++)
                 {
@@ -463,59 +548,71 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                     inputlist.xelem (j) = cinputs[j](count);
                 }
 
-              const octave_value_list tmp = get_output_list (count, nargout, inputlist,
-                                                             func, error_handler);
+              const octave_value_list tmp
+                = get_output_list (count, nargout, inputlist, func,
+                                   error_handler);
 
               if (error_state)
                 return retval;
 
-              if (tmp.length () < nargout1)
+              if (nargout > 0 && tmp.length () < nargout)
                 {
-                  if (tmp.length () < nargout)
-                    {
-                      error ("cellfun: too many output arguments");
-                      return octave_value_list ();
-                    }
-                  else
-                    nargout1 = 0;
+                  error ("cellfun: function returned fewer than nargout values");
+                  return retval;
                 }
 
-              if (count == 0)
+              if  (nargout > 0
+                   || (nargout == 0
+                       && tmp.length () > 0 && tmp(0).is_defined ()))
                 {
-                  for (int j = 0; j < nargout1; j++)
-                    {
-                      octave_value val = tmp(j);
+                  int num_to_copy = tmp.length ();
 
-                      if (val.numel () == 1)
-                        retv[j] = val.resize (fdims);
-                      else
+                  if (num_to_copy > nargout1)
+                    num_to_copy = nargout1;
+
+                  if (count == 0)
+                    {
+                      for (int j = 0; j < num_to_copy; j++)
                         {
-                          error ("cellfun: all values must be scalars when UniformOutput = true");
-                          break;
+                          if (tmp(j).is_defined ())
+                            {
+                              octave_value val = tmp(j);
+
+                              if (val.numel () == 1)
+                                retv[j] = val.resize (fdims);
+                              else
+                                {
+                                  error ("cellfun: all values must be scalars when UniformOutput = true");
+                                  break;
+                                }
+                            }
                         }
                     }
-                }
-              else
-                {
-                  for (int j = 0; j < nargout1; j++)
+                  else
                     {
-                      octave_value val = tmp(j);
-
-                      if (! retv[j].fast_elem_insert (count, val))
+                      for (int j = 0; j < num_to_copy; j++)
                         {
-                          if (val.numel () == 1)
+                          if (tmp(j).is_defined ())
                             {
-                              idx_list.front ()(0) = count + 1.0;
-                              retv[j].assign (octave_value::op_asn_eq,
-                                              idx_type, idx_list, val);
+                              octave_value val = tmp(j);
 
-                              if (error_state)
-                                break;
-                            }
-                          else
-                            {
-                              error ("cellfun: all values must be scalars when UniformOutput = true");
-                              break;
+                              if (! retv[j].fast_elem_insert (count, val))
+                                {
+                                  if (val.numel () == 1)
+                                    {
+                                      idx_list.front ()(0) = count + 1.0;
+                                      retv[j].assign (octave_value::op_asn_eq,
+                                                      idx_type, idx_list, val);
+
+                                      if (error_state)
+                                        break;
+                                    }
+                                  else
+                                    {
+                                      error ("cellfun: all values must be scalars when UniformOutput = true");
+                                      break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -526,6 +623,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
             }
 
           retval.resize (nargout1);
+
           for (int j = 0; j < nargout1; j++)
             {
               if (nargout > 0 && retv[j].is_undefined ())
@@ -537,10 +635,13 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
       else
         {
           OCTAVE_LOCAL_BUFFER (Cell, results, nargout1);
-          for (int j = 0; j < nargout1; j++)
-            results[j].resize (fdims);
 
-          for (octave_idx_type count = 0; count < k ; count++)
+          for (int j = 0; j < nargout1; j++)
+            results[j].resize (fdims, Matrix ());
+
+          bool have_some_output = false;
+
+          for (octave_idx_type count = 0; count < k; count++)
             {
               for (int j = 0; j < nargin; j++)
                 {
@@ -548,31 +649,43 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
                     inputlist.xelem (j) = cinputs[j](count);
                 }
 
-              const octave_value_list tmp = get_output_list (count, nargout, inputlist,
-                                                             func, error_handler);
+              const octave_value_list tmp
+                = get_output_list (count, nargout, inputlist, func,
+                                   error_handler);
 
               if (error_state)
                 return retval;
 
-              if (tmp.length () < nargout1)
+              if (nargout > 0 && tmp.length () < nargout)
                 {
-                  if (tmp.length () < nargout)
-                    {
-                      error ("cellfun: too many output arguments");
-                      return octave_value_list ();
-                    }
-                  else
-                    nargout1 = 0;
+                  error ("cellfun: function returned fewer than nargout values");
+                  return retval;
                 }
 
+              if  (nargout > 0
+                   || (nargout == 0
+                       && tmp.length () > 0 && tmp(0).is_defined ()))
+                {
+                  int num_to_copy = tmp.length ();
 
-              for (int j = 0; j < nargout1; j++)
-                results[j](count) = tmp(j);
+                  if (num_to_copy > nargout1)
+                    num_to_copy = nargout1;
+
+                  if (num_to_copy > 0)
+                    have_some_output = true;
+
+                  for (int j = 0; j < num_to_copy; j++)
+                    results[j](count) = tmp(j);
+                }
             }
 
-          retval.resize(nargout1);
-          for (int j = 0; j < nargout1; j++)
-            retval(j) = results[j];
+          if (have_some_output || fdims.any_zero ())
+            {
+              retval.resize (nargout1);
+
+              for (int j = 0; j < nargout1; j++)
+                retval(j) = results[j];
+            }
         }
     }
   else
@@ -582,6 +695,35 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 }
 
 /*
+
+%!function r = f11 (x)
+%!  global __cellfun_test_num_outputs__
+%!  __cellfun_test_num_outputs__ = nargout;
+%!  r = x;
+%! endfunction
+
+%!function f01 (x)
+%!  global __cellfun_test_num_outputs__
+%!  __cellfun_test_num_outputs__ = nargout;
+%! endfunction
+
+%!test
+%! global __cellfun_test_num_outputs__
+%! cellfun (@f11, {1});
+%! assert (__cellfun_test_num_outputs__, 0)
+%! x = cellfun (@f11, {1});
+%! assert (__cellfun_test_num_outputs__, 1)
+
+%!test
+%! global __cellfun_test_num_outputs__
+%! cellfun (@f01, {1});
+%! assert (__cellfun_test_num_outputs__, 0)
+
+%!error x = cellfun (@f01, {1, 2});
+
+%!test
+%! assert (cellfun (@f11, {1, 2}), [1, 2])
+%! assert (cellfun (@f11, {1, 2}, 'uniformoutput', false), {1, 2})
 
 %!test
 %!  [a,b] = cellfun (@(x) x, cell (2, 0));
@@ -852,6 +994,643 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 */
 
+// Arrayfun was originally a .m file written by Bill Denney and Jaroslav
+// Hajek.  It was converted to C++ by jwe so that it could properly
+// handle the nargout = 0 case.
+
+DEFUN_DLD (arrayfun, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Function File} {} arrayfun (@var{func}, @var{A})\n\
+@deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A})\n\
+@deftypefnx {Function File} {@var{x} =} arrayfun (@var{func}, @var{A}, @var{b}, @dots{})\n\
+@deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} arrayfun (@var{func}, @var{A}, @dots{})\n\
+@deftypefnx {Function File} {} arrayfun (@dots{}, \"UniformOutput\", @var{val})\n\
+@deftypefnx {Function File} {} arrayfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
+\n\
+Execute a function on each element of an array.  This is useful for\n\
+functions that do not accept array arguments.  If the function does\n\
+accept array arguments it is better to call the function directly.\n\
+\n\
+The first input argument @var{func} can be a string, a function\n\
+handle, an inline function, or an anonymous function.  The input\n\
+argument @var{A} can be a logic array, a numeric array, a string\n\
+array, a structure array, or a cell array.  By a call of the function\n\
+@command{arrayfun} all elements of @var{A} are passed on to the named\n\
+function @var{func} individually.\n\
+\n\
+The named function can also take more than two input arguments, with\n\
+the input arguments given as third input argument @var{b}, fourth\n\
+input argument @var{c}, @dots{}  If given more than one array input\n\
+argument then all input arguments must have the same sizes, for\n\
+example:\n\
+\n\
+@example\n\
+@group\n\
+arrayfun (@@atan2, [1, 0], [0, 1])\n\
+@result{} ans = [1.5708   0.0000]\n\
+@end group\n\
+@end example\n\
+\n\
+If the parameter @var{val} after a further string input argument\n\
+\"UniformOutput\" is set @code{true} (the default), then the named\n\
+function @var{func} must return a single element which then will be\n\
+concatenated into the return value and is of type matrix.  Otherwise,\n\
+if that parameter is set to @code{false}, then the outputs are\n\
+concatenated in a cell array.  For example:\n\
+\n\
+@example\n\
+@group\n\
+arrayfun (@@(x,y) x:y, \"abc\", \"def\", \"UniformOutput\", false)\n\
+@result{} ans =\n\
+@{\n\
+  [1,1] = abcd\n\
+  [1,2] = bcde\n\
+  [1,3] = cdef\n\
+@}\n\
+@end group\n\
+@end example\n\
+\n\
+If more than one output arguments are given then the named function\n\
+must return the number of return values that also are expected, for\n\
+example:\n\
+\n\
+@example\n\
+@group\n\
+[A, B, C] = arrayfun (@@find, [10; 0], \"UniformOutput\", false)\n\
+@result{}\n\
+A =\n\
+@{\n\
+  [1,1] =  1\n\
+  [2,1] = [](0x0)\n\
+@}\n\
+B =\n\
+@{\n\
+  [1,1] =  1\n\
+  [2,1] = [](0x0)\n\
+@}\n\
+C =\n\
+@{\n\
+  [1,1] =  10\n\
+  [2,1] = [](0x0)\n\
+@}\n\
+@end group\n\
+@end example\n\
+\n\
+If the parameter @var{errfunc} after a further string input argument\n\
+\"ErrorHandler\" is another string, a function handle, an inline\n\
+function, or an anonymous function, then @var{errfunc} defines a\n\
+function to call in the case that @var{func} generates an error.\n\
+The definition of the function must be of the form\n\
+\n\
+@example\n\
+function [@dots{}] = errfunc (@var{s}, @dots{})\n\
+@end example\n\
+\n\
+@noindent\n\
+where there is an additional input argument to @var{errfunc}\n\
+relative to @var{func}, given by @var{s}.  This is a structure with\n\
+the elements \"identifier\", \"message\", and \"index\" giving,\n\
+respectively, the error identifier, the error message, and the index of\n\
+the array elements that caused the error.  The size of the output\n\
+argument of @var{errfunc} must have the same size as the output\n\
+argument of @var{func}, otherwise a real error is thrown.  For\n\
+example:\n\
+\n\
+@example\n\
+@group\n\
+function y = ferr (s, x), y = \"MyString\"; endfunction\n\
+arrayfun (@@str2num, [1234], \\n\
+          \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
+@result{} ans =\n\
+@{\n\
+ [1,1] = MyString\n\
+@}\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{spfun, cellfun, structfun}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+  int nargin = args.length ();
+  int nargout1 = (nargout < 1 ? 1 : nargout);
+
+  if (nargin < 2)
+    {
+      error ("arrayfun: function requires at least 2 arguments");
+      print_usage ();
+      return retval;
+    }
+
+  octave_value func = args(0);
+  bool symbol_table_lookup = false;
+
+  if (func.is_string ())
+    {
+      // See if we can convert the string into a function.
+
+      std::string name = args(0).string_value ();
+
+      if (! valid_identifier (name))
+        {
+          std::string fcn_name = unique_symbol_name ("__arrayfun_fcn_");
+          std::string fname = "function y = " + fcn_name + "(x) y = ";
+
+          octave_function *ptr_func
+            = extract_function (args(0), "arrayfun", fcn_name,
+                                fname, "; endfunction");
+
+          if (ptr_func && ! error_state)
+            func = octave_value (ptr_func, true);
+        }
+      else
+        {
+          func = symbol_table::find_function (name);
+
+          if (func.is_undefined ())
+            error ("arrayfun: invalid function NAME: %s", name.c_str ());
+
+          symbol_table_lookup = true;
+        }
+
+      if (error_state)
+        return retval;
+    }
+
+  if (func.is_function_handle () || func.is_inline_function ()
+      || func.is_function ())
+    {
+      // The following is an optimisation because the symbol table can
+      // give a more specific function class, so this can result in
+      // fewer polymorphic function calls as the function gets called
+      // for each value of the array.
+
+      if (! symbol_table_lookup )
+        {
+          if (func.is_function_handle ())
+            {
+              octave_fcn_handle* f = func.fcn_handle_value ();
+
+              // Overloaded function handles need to check the type of
+              // the arguments for each element of the array, so they
+              // cannot be optimised this way.
+
+              if (f -> is_overloaded ())
+                goto nevermind;
+            }
+          octave_value f = symbol_table::find_function (func.function_value ()
+                                                         -> name ());
+          if (f.is_defined ())
+            func = f;
+        }
+
+    nevermind:
+
+      bool uniform_output = true;
+      octave_value error_handler;
+      
+      get_mapper_fun_options (args, nargin, uniform_output, error_handler);
+
+      if (error_state)
+        return octave_value_list ();
+
+      octave_value_list inputlist (nargin, octave_value ());
+
+      OCTAVE_LOCAL_BUFFER (octave_value, inputs, nargin);
+      OCTAVE_LOCAL_BUFFER (bool, mask, nargin);
+
+      octave_idx_type k = 1;
+
+      dim_vector fdims (1, 1);
+
+      // Collect arguments.  Pre-fill scalar elements of inputlist
+      // array.
+
+      for (int j = 0; j < nargin; j++)
+        {
+          inputs[j] = args(j+1);
+          mask[j] = inputs[j].numel () != 1;
+
+          if (! mask[j])
+            inputlist(j) = inputs[j];
+        }
+
+      for (int j = 0; j < nargin; j++)
+        {
+          if (mask[j])
+            {
+              fdims = inputs[j].dims ();
+              k = inputs[j].numel ();
+
+              for (int i = j+1; i < nargin; i++)
+                {
+                  if (mask[i] && inputs[i].dims () != fdims)
+                    {
+                      error ("arrayfun: dimensions mismatch");
+                      return retval;
+                    }
+                }
+              break;
+            }
+        }
+
+
+      unwind_protect frame;
+      frame.protect_var (buffer_error_messages);
+
+      if (error_handler.is_defined ())
+        buffer_error_messages++;
+
+      // Apply functions.
+
+      if (uniform_output)
+        {
+          std::list<octave_value_list> idx_list (1);
+          idx_list.front ().resize (1);
+          std::string idx_type = "(";
+
+          OCTAVE_LOCAL_BUFFER (octave_value, retv, nargout1);
+
+          for (octave_idx_type count = 0; count < k; count++)
+            {
+              idx_list.front ()(0) = count + 1.0;
+
+              for (int j = 0; j < nargin; j++)
+                {
+                  if (mask[j])
+                    inputlist.xelem (j) = inputs[j].do_index_op (idx_list);
+
+                  if (error_state)
+                    return retval;
+                }
+
+              const octave_value_list tmp
+                = get_output_list (count, nargout, inputlist, func,
+                                   error_handler);
+
+              if (error_state)
+                return retval;
+
+              if (nargout > 0 && tmp.length () < nargout)
+                {
+                  error ("arrayfun: function returned fewer than nargout values");
+                  return retval;
+                }
+
+              if  (nargout > 0
+                   || (nargout == 0
+                       && tmp.length () > 0 && tmp(0).is_defined ()))
+                {
+                  int num_to_copy = tmp.length ();
+
+                  if (num_to_copy > nargout1)
+                    num_to_copy = nargout1;
+
+                  if (count == 0)
+                    {
+                      for (int j = 0; j < num_to_copy; j++)
+                        {
+                          if (tmp(j).is_defined ())
+                            {
+                              octave_value val = tmp(j);
+
+                              if (val.numel () == 1)
+                                retv[j] = val.resize (fdims);
+                              else
+                                {
+                                  error ("arrayfun: all values must be scalars when UniformOutput = true");
+                                  break;
+                                }
+                            }
+                        }
+                    }
+                  else
+                    {
+                      for (int j = 0; j < num_to_copy; j++)
+                        {
+                          if (tmp(j).is_defined ())
+                            {
+                              octave_value val = tmp(j);
+
+                              if (! retv[j].fast_elem_insert (count, val))
+                                {
+                                  if (val.numel () == 1)
+                                    {
+                                      idx_list.front ()(0) = count + 1.0;
+                                      retv[j].assign (octave_value::op_asn_eq,
+                                                      idx_type, idx_list, val);
+
+                                      if (error_state)
+                                        break;
+                                    }
+                                  else
+                                    {
+                                      error ("arrayfun: all values must be scalars when UniformOutput = true");
+                                      break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+              if (error_state)
+                break;
+            }
+
+          retval.resize (nargout1);
+
+          for (int j = 0; j < nargout1; j++)
+            {
+              if (nargout > 0 && retv[j].is_undefined ())
+                retval(j) = NDArray (fdims);
+              else
+                retval(j) = retv[j];
+            }
+        }
+      else
+        {
+          std::list<octave_value_list> idx_list (1);
+          idx_list.front ().resize (1);
+          std::string idx_type = "(";
+
+          OCTAVE_LOCAL_BUFFER (Cell, results, nargout1);
+
+          for (int j = 0; j < nargout1; j++)
+            results[j].resize (fdims, Matrix ());
+
+          bool have_some_output = false;
+
+          for (octave_idx_type count = 0; count < k; count++)
+            {
+              idx_list.front ()(0) = count + 1.0;
+
+              for (int j = 0; j < nargin; j++)
+                {
+                  if (mask[j])
+                    inputlist.xelem (j) = inputs[j].do_index_op (idx_list);
+
+                  if (error_state)
+                    return retval;
+                }
+
+              const octave_value_list tmp
+                = get_output_list (count, nargout, inputlist, func,
+                                   error_handler);
+
+              if (error_state)
+                return retval;
+
+              if (nargout > 0 && tmp.length () < nargout)
+                {
+                  error ("arrayfun: function returned fewer than nargout values");
+                  return retval;
+                }
+
+              if  (nargout > 0
+                   || (nargout == 0
+                       && tmp.length () > 0 && tmp(0).is_defined ()))
+                {
+                  int num_to_copy = tmp.length ();
+
+                  if (num_to_copy > nargout1)
+                    num_to_copy = nargout1;
+
+                  if (num_to_copy > 0)
+                    have_some_output = true;
+
+                  for (int j = 0; j < num_to_copy; j++)
+                    results[j](count) = tmp(j);
+                }
+            }
+
+          if (have_some_output || fdims.any_zero ())
+            {
+              retval.resize (nargout1);
+
+              for (int j = 0; j < nargout1; j++)
+                retval(j) = results[j];
+            }
+        }
+    }
+  else
+    error ("arrayfun: argument NAME must be a string or function handle");
+
+  return retval;
+}
+
+/*
+%!function r = f11 (x)
+%!  global __arrayfun_test_num_outputs__
+%!  __arrayfun_test_num_outputs__ = nargout;
+%!  r = x;
+%! endfunction
+
+%!function f01 (x)
+%!  global __arrayfun_test_num_outputs__
+%!  __arrayfun_test_num_outputs__ = nargout;
+%! endfunction
+
+%!test
+%! global __arrayfun_test_num_outputs__
+%! arrayfun (@f11, {1});
+%! assert (__arrayfun_test_num_outputs__, 0)
+%! x = arrayfun (@f11, {1});
+%! assert (__arrayfun_test_num_outputs__, 1)
+
+%!test
+%! global __arrayfun_test_num_outputs__
+%! arrayfun (@f01, {1});
+%! assert (__arrayfun_test_num_outputs__, 0)
+
+%!error x = arrayfun (@f01, [1, 2]);
+
+%!test
+%! assert (arrayfun (@f11, [1, 2]), [1, 2])
+%! assert (arrayfun (@f11, [1, 2], 'uniformoutput', false), {1, 2});
+%! assert (arrayfun (@f11, {1, 2}), {1, 2})
+%! assert (arrayfun (@f11, {1, 2}, 'uniformoutput', false), {{1}, {2}});
+
+%!assert (arrayfun (@ones, 1, [2,3], 'uniformoutput', false), {[1,1], [1,1,1]});
+
+%% Test function to check the "Errorhandler" option
+%!function [z] = arrayfunerror (S, varargin)
+%!      z = S;
+%!    endfunction
+%% First input argument can be a string, an inline function, a
+%% function_handle or an anonymous function
+%!test
+%!  arrayfun (@isequal, [false, true], [true, true]); %% No output argument
+%!error
+%!  arrayfun (@isequal); %% One or less input arguments
+%!test
+%!  A = arrayfun ("isequal", [false, true], [true, true]);
+%!  assert (A, [false, true]);
+%!test
+%!  A = arrayfun (inline ("(x == y)", "x", "y"), [false, true], [true, true]);
+%!  assert (A, [false, true]);
+%!test
+%!  A = arrayfun (@isequal, [false, true], [true, true]);
+%!  assert (A, [false, true]);
+%!test
+%!  A = arrayfun (@(x,y) isequal(x,y), [false, true], [true, true]);
+%!  assert (A, [false, true]);
+
+%% Number of input and output arguments may be greater than one
+%#!test
+%!  A = arrayfun (@(x) islogical (x), false);
+%!  assert (A, true);
+%!test
+%!  A = arrayfun (@(x,y,z) x + y + z, [1, 1, 1], [2, 2, 2], [3, 4, 5]);
+%!  assert (A, [6, 7, 8], 1e-16);
+%!test %% Two input arguments of different types
+%!  A = arrayfun (@(x,y) islogical (x) && ischar (y), false, "a");
+%!  assert (A, true);
+%!test %% Pass another variable to the anonymous function
+%!  y = true; A = arrayfun (@(x) islogical (x && y), false);
+%!  assert (A, true);
+%!test %% Three ouptut arguments of different type
+%!  [A, B, C] = arrayfun (@find, [10, 11; 0, 12], "UniformOutput", false);
+%!  assert (isequal (A, {true, true; [], true}));
+%!  assert (isequal (B, {true, true; [], true}));
+%!  assert (isequal (C, {10, 11; [], 12}));
+
+%% Input arguments can be of type logical
+%!test
+%!  A = arrayfun (@(x,y) x == y, [false, true], [true, true]);
+%!  assert (A, [false, true]);
+%!test
+%!  A = arrayfun (@(x,y) x == y, [false; true], [true; true], "UniformOutput", true);
+%!  assert (A, [false; true]);
+%!test
+%!  A = arrayfun (@(x) x, [false, true, false, true], "UniformOutput", false);
+%!  assert (A, {false, true, false, true});
+%!test %% Three ouptut arguments of same type
+%!  [A, B, C] = arrayfun (@find, [true, false; false, true], "UniformOutput", false);
+%!  assert (isequal (A, {true, []; [], true}));
+%!  assert (isequal (B, {true, []; [], true}));
+%!  assert (isequal (C, {true, []; [], true}));
+%!test
+%!  A = arrayfun (@(x,y) array2str (x,y), true, true, "ErrorHandler", @arrayfunerror);
+%!  assert (isfield (A, "identifier"), true);
+%!  assert (isfield (A, "message"), true);
+%!  assert (isfield (A, "index"), true);
+%!  assert (isempty (A.message), false);
+%!  assert (A.index, 1);
+%!test %% Overwriting setting of "UniformOutput" true
+%!  A = arrayfun (@(x,y) array2str (x,y), true, true, \
+%!                "UniformOutput", true, "ErrorHandler", @arrayfunerror);
+%!  assert (isfield (A, "identifier"), true);
+%!  assert (isfield (A, "message"), true);
+%!  assert (isfield (A, "index"), true);
+%!  assert (isempty (A.message), false);
+%!  assert (A.index, 1);
+
+%% Input arguments can be of type numeric
+%!test
+%!  A = arrayfun (@(x,y) x>y, [1.1, 4.2], [3.1, 2+3*i]);
+%!  assert (A, [false, true]);
+%!test
+%!  A = arrayfun (@(x,y) x>y, [1.1, 4.2; 2, 4], [3.1, 2; 2, 4+2*i], "UniformOutput", true);
+%!  assert (A, [false, true; false, false]);
+%!test
+%!  A = arrayfun (@(x,y) x:y, [1.1, 4], [3.1, 6], "UniformOutput", false);
+%!  assert (isequal (A{1}, [1.1, 2.1, 3.1]));
+%!  assert (isequal (A{2}, [4, 5, 6]));
+%!test %% Three ouptut arguments of different type
+%!  [A, B, C] = arrayfun (@find, [10, 11; 0, 12], "UniformOutput", false);
+%!  assert (isequal (A, {true, true; [], true}));
+%!  assert (isequal (B, {true, true; [], true}));
+%!  assert (isequal (C, {10, 11; [], 12}));
+%!test
+%!  A = arrayfun (@(x,y) array2str(x,y), {1.1, 4}, {3.1, 6}, "ErrorHandler", @arrayfunerror);
+%!  B = isfield (A(1), "message") && isfield (A(1), "index");
+%!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
+%!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
+%!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
+%!  assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%!  assert ([A(1).index, A(2).index], [1, 2]);
+%!test %% Overwriting setting of "UniformOutput" true
+%!  A = arrayfun (@(x,y) array2str(x,y), {1.1, 4}, {3.1, 6}, \
+%!                "UniformOutput", true, "ErrorHandler", @arrayfunerror);
+%!  B = isfield (A(1), "message") && isfield (A(1), "index");
+%!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
+%!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
+%!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
+%!  assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%!  assert ([A(1).index, A(2).index], [1, 2]);
+
+%% Input arguments can be of type character or strings
+%!test
+%!  A = arrayfun (@(x,y) x>y, ["ad", "c", "ghi"], ["cc", "d", "fgh"]);
+%!  assert (A, [false, true, false, true, true, true]);
+%!test
+%!  A = arrayfun (@(x,y) x>y, ["a"; "f"], ["c"; "d"], "UniformOutput", true);
+%!  assert (A, [false; true]);
+%!test
+%!  A = arrayfun (@(x,y) x:y, ["a", "d"], ["c", "f"], "UniformOutput", false);
+%!  assert (A, {"abc", "def"});
+%! %#!test
+%!   A = arrayfun (@(x,y) cell2str(x,y), ["a", "d"], ["c", "f"], "ErrorHandler", @arrayfunerror);
+%!   B = isfield (A(1), "identifier") && isfield (A(1), "message") && isfield (A(1), "index");
+%!   assert (B, true);
+
+%% Input arguments can be of type structure
+%!test
+%!  a = struct ("a", 1.1, "b", 4.2); b = struct ("a", 3.1, "b", 2);
+%!  A = arrayfun (@(x,y) (x.a < y.a) && (x.b > y.b), a, b);
+%!  assert (A, true);
+%!test
+%!  a = struct ("a", 1.1, "b", 4.2); b = struct ("a", 3.1, "b", 2);
+%!  A = arrayfun (@(x,y) (x.a < y.a) && (x.b > y.b), a, b, "UniformOutput", true);
+%!  assert (A, true);
+%!test
+%!  a = struct ("a", 1.1, "b", 4.2); b = struct ("a", 3.1, "b", 2);
+%!  A = arrayfun (@(x,y) x.a:y.a, a, b, "UniformOutput", false);
+%!  assert (isequal (A, {[1.1, 2.1, 3.1]}));
+%!test
+%!  A = arrayfun (@(x) mat2str(x), "a", "ErrorHandler", @arrayfunerror);
+%!  assert (isfield (A, "identifier"), true);
+%!  assert (isfield (A, "message"), true);
+%!  assert (isfield (A, "index"), true);
+%!  assert (isempty (A.message), false);
+%!  assert (A.index, 1);
+%!test %% Overwriting setting of "UniformOutput" true
+%!  A = arrayfun (@(x) mat2str(x), "a", "UniformOutput", true, \
+%!                "ErrorHandler", @arrayfunerror);
+%!  assert (isfield (A, "identifier"), true);
+%!  assert (isfield (A, "message"), true);
+%!  assert (isfield (A, "index"), true);
+%!  assert (isempty (A.message), false);
+%!  assert (A.index, 1);
+
+%% Input arguments can be of type cell array
+%!test
+%!  A = arrayfun (@(x,y) x{1} < y{1}, {1.1, 4.2}, {3.1, 2});
+%!  assert (A, [true, false]);
+%!test
+%!  A = arrayfun (@(x,y) x{1} < y{1}, {1.1; 4.2}, {3.1; 2}, "UniformOutput", true);
+%!  assert (A, [true; false]);
+%!test
+%!  A = arrayfun (@(x,y) x{1} < y{1}, {1.1, 4.2}, {3.1, 2}, "UniformOutput", false);
+%!  assert (A, {true, false});
+%!test
+%!  A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, "ErrorHandler", @arrayfunerror);
+%!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
+%!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
+%!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
+%!  assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%!  assert ([A(1).index, A(2).index], [1, 2]);
+%!test
+%!  A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, \
+%!                "UniformOutput", true, "ErrorHandler", @arrayfunerror);
+%!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
+%!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
+%!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
+%!  assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
+%!  assert ([A(1).index, A(2).index], [1, 2]);
+*/
+
 static void
 do_num2cell_helper (const dim_vector& dv,
                     const Array<int>& dimv,
@@ -945,6 +1724,66 @@ do_num2cell (const NDA& array, const Array<int>& dimv)
     }
 }
 
+// FIXME -- this is a mess, but if a size method for the object exists,
+// we have to call it to get the size of the object instead of using the
+// internal dims method.
+
+static dim_vector
+get_object_dims (octave_value& obj)
+{
+  dim_vector retval;
+
+  Matrix m = obj.size ();
+
+  int n = m.numel ();
+
+  retval.resize (n);
+
+  for (int i = 0; i < n; i++)
+    retval(i) = m(i);
+
+  return retval;
+}
+
+static Cell
+do_object2cell (const octave_value& obj, const Array<int>& dimv)
+{
+  Cell retval;
+
+  // FIXME -- this copy is only needed because the octave_value::size
+  // method is not const.
+  octave_value array = obj;
+
+  if (dimv.is_empty ())
+    {
+      dim_vector dv = get_object_dims (array);
+
+      if (! error_state)
+        {
+          retval.resize (dv);
+
+          octave_value_list idx (1);
+
+          for (octave_idx_type i = 0; i < dv.numel (); i++)
+            {
+              octave_quit ();
+
+              idx(0) = double (i+1);
+
+              retval.xelem(i) = array.single_subsref ("(", idx);
+
+              if (error_state)
+                break;
+            }
+        }
+    }
+  else
+    {
+      error ("num2cell (A, dim) not implemented for class objects");
+    }
+
+  return retval;
+}
 
 DEFUN_DLD (num2cell, args, ,
   "-*- texinfo -*-\n\
@@ -1034,9 +1873,13 @@ num2cell([1,2;3,4],1)\n\
                 retval = do_num2cell (array.array_value (), dimv);
             }
         }
+      else if (array.is_object ())
+        retval = do_object2cell (array, dimv);
       else if (array.is_map ())
         retval = do_num2cell (array.map_value (), dimv);
       else if (array.is_cell ())
+        retval = do_num2cell (array.cell_value (), dimv);
+      else if (array.is_object ())
         retval = do_num2cell (array.cell_value (), dimv);
       else
         gripe_wrong_type_arg ("num2cell", array);
@@ -1464,6 +2307,7 @@ endfor\n\
 \n\
 The position of the index is determined by @var{dim}.  If not specified,\n\
 slicing is done along the first non-singleton dimension.\n\
+@seealso{cell2mat, cellindexmat, cellfun}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1577,7 +2421,7 @@ Given a cell array of matrices @var{x}, this function computes\n\
   endfor\n\
 @end group\n\
 @end example\n\
-@seealso{cellfun, cellslices}\n\
+@seealso{cellslices, cellfun}\n\
 @end deftypefn")
 {
   octave_value retval;

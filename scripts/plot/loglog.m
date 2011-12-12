@@ -26,6 +26,8 @@
 ## Produce a two-dimensional plot using log scales for both axes.  See
 ## the documentation of @code{plot} for a description of the arguments
 ## that @code{loglog} will accept.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{plot, semilogx, semilogy}
 ## @end deftypefn
 
@@ -59,4 +61,49 @@ function retval = loglog (varargin)
   end_unwind_protect
 
 endfunction
+
+%!demo
+%! clf ();
+%! t = 1:0.01:10;
+%! x = sort ((t .* (1 + rand (size (t)))) .^ 2);
+%! y = ((t .* (1 + rand (size (t)))) .^ 2);
+%! loglog (x, y);
+
+%!demo
+%! clf ();
+%! a = logspace (-5, 1, 10);
+%! b =-logspace (-5, 1, 10);
+%!
+%! subplot (1, 2, 1)
+%! loglog (a, b)
+%! xlabel ('loglog (a, b)')
+%!
+%! subplot (1, 2, 2)
+%! loglog (a, abs (b))
+%! set (gca, 'ydir', 'reverse')
+%! xlabel ('loglog (a, abs (b))')
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   a = logspace (-5, 1, 10);
+%!   b = logspace (-5, 1, 10);
+%!   loglog (a, b)
+%!   assert (get (gca, "yscale"), "log");
+%!   assert (get (gca, "xscale"), "log");
+%! unwind_protect_cleanup
+%! close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   a = logspace (-5, 1, 10);
+%!   b =-logspace (-5, 1, 10);
+%!   loglog (a, b)
+%!   axis tight
+%!   assert (all (get (gca, "ytick") < 0));
+%! unwind_protect_cleanup
+%! close (hf);
+%! end_unwind_protect
 

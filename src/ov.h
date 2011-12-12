@@ -279,7 +279,8 @@ public:
   octave_value (const octave_map& m);
   octave_value (const octave_scalar_map& m);
   octave_value (const Octave_map& m);
-  octave_value (const Octave_map& m, const std::string& id);
+  octave_value (const Octave_map& m, const std::string& id,
+                const std::list<std::string>& plist);
   octave_value (const octave_value_list& m, bool = false);
   octave_value (octave_value::magic_colon);
 
@@ -314,8 +315,12 @@ public:
     {
       if (rep->count > 1)
         {
-          --rep->count;
-          rep = rep->unique_clone ();
+	  octave_base_value *r = rep->unique_clone ();
+
+          if (--rep->count == 0)
+            delete rep;
+
+          rep = r;
         }
     }
 
@@ -326,8 +331,12 @@ public:
     {
       if (rep->count > obsolete_copies + 1)
         {
-          --rep->count;
-          rep = rep->unique_clone ();
+          octave_base_value *r = rep->unique_clone ();
+
+          if (--rep->count == 0)
+            delete rep;
+
+          rep = r;
         }
     }
 
@@ -653,6 +662,9 @@ public:
 
   bool is_function_handle (void) const
     { return rep->is_function_handle (); }
+
+  bool is_anonymous_function (void) const
+    { return rep->is_anonymous_function (); }
 
   bool is_inline_function (void) const
     { return rep->is_inline_function (); }
@@ -987,9 +999,8 @@ public:
   bool print_name_tag (std::ostream& os, const std::string& name) const
     { return rep->print_name_tag (os, name); }
 
-  void print_with_name (std::ostream& os, const std::string& name,
-                        bool print_padding = true) const
-    { rep->print_with_name (os, name, print_padding); }
+  void print_with_name (std::ostream& os, const std::string& name) const
+  { rep->print_with_name (os, name, true); }
 
   int type_id (void) const { return rep->type_id (); }
 
@@ -1366,5 +1377,14 @@ DEF_VALUE_EXTRACTOR (SparseMatrix, sparse_matrix)
 DEF_VALUE_EXTRACTOR (SparseComplexMatrix, sparse_complex_matrix)
 DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
 #undef DEF_VALUE_EXTRACTOR
+
+#define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL) \
+template<> \
+inline VALUE octave_value_extract<VALUE> (const octave_value&) \
+  { assert (false); return DEFVAL; }
+
+DEF_DUMMY_VALUE_EXTRACTOR (char, 0)
+DEF_DUMMY_VALUE_EXTRACTOR (octave_value, octave_value ())
+#undef DEF_DUMMY_VALUE_EXTRACTOR
 
 #endif

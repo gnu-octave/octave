@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
+## @deftypefn  {Function File} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
 ## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
 ## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
 ## The first calling form computes the partial fraction expansion for the
@@ -136,7 +136,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyint}
+## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyder, polyint}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -75,7 +75,7 @@ function retval = num2str (x, arg)
       if (ischar (arg))
         fmt = cstrcat (arg, "%-+", arg(2:end), "i");
       else
-        if (isnumeric (x) && round (x) == x && abs (x) < (10 .^ arg))
+        if (isnumeric (x) && x == fix (x) && abs (x) < (10 .^ arg))
           fmt = sprintf ("%%%dd%%-+%ddi  ", arg, arg);
         else
           fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
@@ -83,7 +83,7 @@ function retval = num2str (x, arg)
       endif
     else
       ## Setup a suitable format string
-      if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
+      if (isnumeric (x) && x == fix (x) && abs (x) < 1e10)
         if (max (abs (real (x(:)))) == 0)
           dgt1 = 2;
         else
@@ -111,10 +111,7 @@ function retval = num2str (x, arg)
     nd = ndims (x);
     perm = fix ([1:0.5:nc+0.5]);
     perm(2:2:2*nc) = perm(2:2:2*nc) + nc;
-    idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{2} = perm;
     x = horzcat (real (x), imag (x));
     x = x(idx{:});
@@ -147,14 +144,14 @@ function retval = num2str (x, arg)
       if (ischar (arg))
         fmt = arg;
       else
-        if (isnumeric (x) && round (x) == x && abs (x) < (10 .^ arg))
+        if (isnumeric (x) && x == fix (x) && abs (x) < (10 .^ arg))
           fmt = sprintf ("%%%dd  ", arg);
         else
           fmt = sprintf ("%%%d.%dg", arg+7, arg);
         endif
       endif
     else
-      if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
+      if (isnumeric (x) && x == fix (x) && abs (x) < 1e10)
         if (max (abs (x(:))) == 0)
           dgt = 2;
         else

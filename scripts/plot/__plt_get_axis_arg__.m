@@ -33,7 +33,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     nogca = false;
   endif
 
-  ## Figure handles are integers, but object handles are non integer,
+  ## Figure handles are integers, but object handles are non-integer,
   ## therefore ignore integer scalars.
   if (nargin > 1 && length (varargin) > 0 && isnumeric (varargin{1})
       && numel (varargin{1}) == 1 && ishandle (varargin{1}(1))
@@ -76,3 +76,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
   narg = length (varargin);
 
 endfunction
+
+
+## No test needed for internal helper function.
+%!assert (1)

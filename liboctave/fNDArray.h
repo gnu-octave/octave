@@ -72,6 +72,7 @@ public:
   boolNDArray operator ! (void) const;
 
   bool any_element_is_negative (bool = false) const;
+  bool any_element_is_positive (bool = false) const;
   bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;
   bool any_element_not_one_or_zero (void) const;
@@ -182,5 +183,7 @@ BSXFUN_STDREL_DECLS (FloatNDArray, OCTAVE_API)
 BSXFUN_OP_DECL (pow, FloatNDArray, OCTAVE_API)
 BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatComplexNDArray,
                  FloatNDArray, OCTAVE_API)
+BSXFUN_OP2_DECL (pow, FloatComplexNDArray, FloatNDArray,
+                 FloatComplexNDArray, OCTAVE_API)
 
 #endif

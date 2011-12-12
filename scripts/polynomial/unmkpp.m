@@ -47,18 +47,37 @@
 ## @end deftypefn
 
 function [x, P, n, k, d] = unmkpp (pp)
-  if (nargin == 0)
+
+  if (nargin != 1)
     print_usage ();
   endif
-  if (! isstruct (pp))
-    error ("unmkpp: expecting piecewise polynomial structure");
+  if (! (isstruct (pp) && isfield (pp, "form") && strcmp (pp.form, "pp")))
+    error ("unmkpp: PP must be a piecewise polynomial structure");
   endif
-  x = pp.x;
-  P = pp.P;
-  n = size (P, 2);
-  k = size (P, 3);
-  d = pp.d;
-  if (d == 1)
-    P = reshape (P, n, k);
-  endif
+  x = pp.breaks;
+  P = pp.coefs;
+  n = pp.pieces;
+  k = pp.order;
+  d = pp.dim;
+
 endfunction
+
+
+%!test
+%! b = 1:3;
+%! c = 1:24;
+%! pp = mkpp (b,c);
+%! [x, P, n, k, d] = unmkpp (pp);
+%! assert (x, b);
+%! assert (P, reshape (c, [2 12]));
+%! assert (n, 2);
+%! assert (k, 12);
+%! assert (d, 1);
+
+%% Test input validation
+%!error unmkpp ()
+%!error unmkpp (1,2)
+%!error <piecewise polynomial structure> unmkpp (1)
+%!error <piecewise polynomial structure> unmkpp (struct ("field1", "pp"))
+%!error <piecewise polynomial structure> unmkpp (struct ("form", "not_a_pp"))
+

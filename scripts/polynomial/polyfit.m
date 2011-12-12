@@ -76,7 +76,7 @@ function [p, s, mu] = polyfit (x, y, n)
     error ("polyfit: X and Y must be vectors of the same size");
   endif
 
-  if (! (isscalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
+  if (! (isscalar (n) && n >= 0 && ! isinf (n) && n == fix (n)))
     error ("polyfit: N must be a nonnegative integer");
   endif
 

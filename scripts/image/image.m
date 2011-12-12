@@ -19,9 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
-## Display a matrix as a color image.  The elements of @var{x} are indices
+## @deftypefnx {Function File} {@var{h} =} image (@dots{})
+## Display a matrix as a color image.  The elements of @var{img} are indices
 ## into the current colormap, and the colormap will be scaled so that the
-## extremes of @var{x} are mapped to the extremes of the colormap.
+## extremes of @var{img} are mapped to the extremes of the colormap.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
@@ -35,6 +36,8 @@
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata,1)}.
+##
+## The optional return value @var{h} is a graphics handle to the image.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
@@ -95,7 +98,7 @@ endfunction
 ## Adapted-By: jwe
 
 function h = __img__ (x, y, img, varargin)
-
+  
   newplot ();
 
   if (isempty (img))
@@ -112,6 +115,15 @@ function h = __img__ (x, y, img, varargin)
 
   xdata = [x(1), x(end)];
   ydata = [y(1), y(end)];
+
+  dx = diff (x);
+  dy = diff (y);
+  dx = std (dx) / mean (abs (dx));
+  dy = std (dy) / mean (abs (dy));
+  tol = 100*eps;
+  if (any (dx > tol) || any (dy > tol))
+    warning ("Image does not map to non-linearly spaced coordinates")
+  endif
 
   ca = gca ();
 

@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "oct-lvalue.h"
 #include "ov.h"
+#include "profiler.h"
 #include "pt-bp.h"
 #include "pt-unop.h"
 #include "pt-walk.h"
@@ -72,10 +73,14 @@ tree_prefix_expression::rvalue1 (int)
 
           if (! error_state)
             {
+              BEGIN_PROFILER_BLOCK ("prefix " + oper ())
+
               ref.do_unary_op (etype);
 
               if (! error_state)
                 retval = ref.value ();
+
+              END_PROFILER_BLOCK
             }
         }
       else
@@ -84,6 +89,8 @@ tree_prefix_expression::rvalue1 (int)
 
           if (! error_state && val.is_defined ())
             {
+              BEGIN_PROFILER_BLOCK ("prefix " + oper ())
+
               // Attempt to do the operation in-place if it is unshared
               // (a temporary expression).
               if (val.get_count () == 1)
@@ -93,6 +100,8 @@ tree_prefix_expression::rvalue1 (int)
 
               if (error_state)
                 retval = octave_value ();
+
+              END_PROFILER_BLOCK
             }
         }
     }
@@ -153,7 +162,9 @@ tree_postfix_expression::rvalue1 (int)
             {
               retval = ref.value ();
 
+              BEGIN_PROFILER_BLOCK ("postfix " + oper ())
               ref.do_unary_op (etype);
+              END_PROFILER_BLOCK
             }
         }
       else
@@ -162,10 +173,14 @@ tree_postfix_expression::rvalue1 (int)
 
           if (! error_state && val.is_defined ())
             {
+              BEGIN_PROFILER_BLOCK ("postfix " + oper ())
+
               retval = ::do_unary_op (etype, val);
 
               if (error_state)
                 retval = octave_value ();
+
+              END_PROFILER_BLOCK
             }
         }
     }

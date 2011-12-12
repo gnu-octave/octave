@@ -23,10 +23,10 @@
 ## @deftypefnx {Function File} {} ylabel (@dots{})
 ## @deftypefnx {Function File} {} zlabel (@dots{})
 ## Specify x-, y-, or z-axis labels for the current axis.  If @var{h} is
-## specified then label the axis defined by @var{h}.  The optional return
-## value @var{h} provides a handle to the created label.
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, title}
+## specified then label the axis defined by @var{h}.
+##
+## The optional return value @var{h} is a graphics handle to the created object.
+## @seealso{title, text}
 ## @end deftypefn
 
 ## Author: jwe
@@ -39,17 +39,25 @@ function retval = xlabel (varargin)
     print_usage ();
   endif
 
-  oldh = gca ();
-  unwind_protect
-    axes (h);
-    tmp = __axis_label__ ("xlabel", varargin{:},
-                          "color", get (h, "xcolor"));
-  unwind_protect_cleanup
-    axes (oldh);
-  end_unwind_protect
+  tmp = __axis_label__ (h, "xlabel", varargin{:},
+                        "color", get (h, "xcolor"));
 
   if (nargout > 0)
     retval = tmp;
   endif
 
 endfunction
+
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   x = xlabel ("xlabel_string");
+%!   assert (get (gca, "xlabel"), x);
+%!   assert (get (x, "type"), "text");
+%!   assert (get (x, "visible"), "on");
+%!   assert (get (x, "string"), "xlabel_string");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+

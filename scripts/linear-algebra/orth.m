@@ -39,6 +39,11 @@ function retval = orth (A, tol)
 
   if (nargin == 1 || nargin == 2)
 
+    if (isempty (A))
+      retval = [];
+      return;
+    endif
+
     [U, S, V] = svd (A);
 
     [rows, cols] = size (A);
@@ -74,3 +79,12 @@ function retval = orth (A, tol)
   endif
 
 endfunction
+
+%!test
+%! for ii=1:20
+%!   A = rand (10, 10);
+%!   V = orth (A);
+%!   if (det (A) != 0)
+%!     assert (V'*V, eye (10), 100*eps)
+%!   endif
+%! endfor

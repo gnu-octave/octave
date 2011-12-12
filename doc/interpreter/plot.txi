@@ -1808,6 +1808,7 @@ The RGB color of the line, or a color name.  @xref{Colors}.
 @item deletefcn
 
 @item displayname
+The text of the legend entry corresponding to this line.
 
 @item erasemode
 
@@ -1818,11 +1819,6 @@ The RGB color of the line, or a color name.  @xref{Colors}.
 @item interpreter
 
 @item interruptible
-
-@item keylabel
-The text of the legend entry corresponding to this line.  Note that this
-property is not compatible with @sc{matlab} and may be removed in a
-future version of Octave.
 
 @item ldata
 The lower errorbar in the y direction to be plotted.
@@ -1925,6 +1921,7 @@ The color of the text.  @xref{Colors}.
 @item deletefcn
 
 @item displayname
+The text of the legend entry corresponding to this line.
 
 @item edgecolor
 
@@ -2132,6 +2129,9 @@ Data defining the patch object.
 
 @item diffusestrength
 
+@item displayname
+The text of the legend entry corresponding to this line.
+
 @item edgealpha
 
 @item edgecolor
@@ -2162,8 +2162,6 @@ The fill color of the patch.  @xref{Colors}.
 @item interpreter
 
 @item interruptible
-
-@item keylabel
 
 @item linestyle
 @xref{Line Styles}.
@@ -2282,6 +2280,9 @@ The @code{surface} properties are:
 
 @item diffusestrength
 
+@item displayname
+The text of the legend entry corresponding to this surface.
+
 @item edgealpha
 
 @item edgecolor
@@ -2303,11 +2304,6 @@ The @code{surface} properties are:
 @item interpreter
 
 @item interruptible
-
-@item keylabel
-The text of the legend entry corresponding to this surface.  Note that
-this property is not compatible with @sc{matlab} and may be removed in a
-future version of Octave.
 
 @item linestyle
 
@@ -2396,7 +2392,11 @@ defaults} (the initial values) and @dfn{user-defined defaults}, which
 may override the factory defaults.
 
 Although default values may be set for any object, they are set in
-parent objects and apply to child objects.  For example,
+parent objects and apply to child objects, of the specified object type.
+For example, setting the default @code{color} property of @code{line}
+objects to "green", for the @code{root} object, will result in all
+@code{line} objects inheriting the @code{color} "green" as the default
+value.
 
 @example
 set (0, "defaultlinecolor", "green");

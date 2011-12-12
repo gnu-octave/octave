@@ -22,7 +22,11 @@
 ## @deftypefnx {Function File} {} fill (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} fill (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} fill (@dots{})
-## Create one or more filled patch objects, returning a patch object for each.
+## Create one or more filled patch objects.
+##
+## The optional return value @var{h} is an array of graphics handles to
+## the created patch objects.
+## @seealso{patch}
 ## @end deftypefn
 
 function retval = fill (varargin)
@@ -114,12 +118,14 @@ function iargs = __find_patches__ (varargin)
   endwhile
 endfunction
 
+
 %!demo
 %! clf
-%! t1 = (1/16:1/8:1)'*2*pi;
-%! t2 = ((1/16:1/8:1)' + 1/32)*2*pi;
-%! x1 = sin(t1) - 0.8;
-%! y1 = cos(t1);
-%! x2 = sin(t2) + 0.8;
-%! y2 = cos(t2);
-%! h = fill(x1,y1,'r',x2,y2,'g');
+%! t1 = (1/16:1/8:1)*2*pi;
+%! t2 = ((1/16:1/8:1) + 1/32)*2*pi;
+%! x1 = sin (t1) - 0.8;
+%! y1 = cos (t1);
+%! x2 = sin (t2) + 0.8;
+%! y2 = cos (t2);
+%! h = fill (x1,y1,'r', x2,y2,'g');
+

@@ -31,7 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // Double Precision
 extern OCTAVE_API double xtrunc (double x);
-inline double xcopysign (double x, double y) { return copysign (x, y); }
+extern OCTAVE_API double xcopysign (double x, double y);
 inline double xceil (double x) { return ceil (x); }
 extern OCTAVE_API double xfloor (double x);
 inline double arg (double x) { return atan2 (0.0, x); }
@@ -117,7 +117,7 @@ extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
 
 // Single Precision
 extern OCTAVE_API float xtrunc (float x);
-inline float xcopysign (float x, float y) { return copysignf (x, y); }
+extern OCTAVE_API float xcopysign (float x, float y);
 inline float xceil (float x) { return ceilf (x); }
 inline float xfloor (float x) { return floorf (x); }
 inline float arg (float x) { return atan2f (0.0f, x); }
@@ -218,6 +218,10 @@ xisinteger (float x)
 extern OCTAVE_API bool xnegative_sign (double x);
 extern OCTAVE_API bool xnegative_sign (float x);
 
+// Test for positive sign.
+inline bool xpositive_sign (double x) { return ! xnegative_sign (x); }
+inline bool xpositive_sign (float x) { return ! xnegative_sign (x); }
+
 // Some old rounding functions.
 
 extern OCTAVE_API octave_idx_type NINTbig (double x);
@@ -227,7 +231,6 @@ extern OCTAVE_API int NINT (double x);
 extern OCTAVE_API int NINT (float x);
 
 template <typename T>
-OCTAVE_API
 T
 X_NINT (T x)
 {
@@ -305,7 +308,6 @@ signum (const std::complex<T>& x)
 }
 
 template <typename T>
-OCTAVE_API
 T
 xmod (T x, T y)
 {
@@ -353,7 +355,6 @@ xmod (T x, T y)
 }
 
 template <typename T>
-OCTAVE_API
 T
 xrem (T x, T y)
 {

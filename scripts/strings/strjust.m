@@ -18,10 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strjust (@var{s}, @var{pos})
+## @deftypefn  {Function File} {} strjust (@var{s})
+## @deftypefnx {Function File} {} strjust (@var{s}, @var{pos})
 ## Return the text, @var{s}, justified according to @var{pos}, which may
 ## be @samp{"left"}, @samp{"center"}, or @samp{"right"}.  If @var{pos}
-## is omitted, @samp{"right"} is assumed.
+## is omitted it defaults to @samp{"right"}.
 ##
 ## Null characters are replaced by spaces.  All other character
 ## data are treated as non-white space.
@@ -41,69 +42,71 @@
 ## @seealso{deblank, strrep, strtrim, untabify}
 ## @end deftypefn
 
-function y = strjust (s, pos)
+function y = strjust (s, pos = "right")
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif
-
-  if (nargin == 1)
-    pos = "right";
-  else
-    pos = tolower (pos);
-  endif
-
-  if (ndims (s) != 2)
-    error ("strjust: input must be a string or character matrix");
+  elseif (! ischar (s) || ndims (s) > 2)
+    error ("strjust: S must be a string or 2-D character matrix");
   endif
 
   if (isempty (s))
     y = s;
-  else
-    ## Apparently, Matlab considers nulls to be blanks as well; however, does
-    ## not preserve the nulls, but rather converts them to blanks.  That's a
-    ## bit unexpected, but it allows simpler processing, because we can move
-    ## just the nonblank characters. So we'll do the same here.
-
-    [nr, nc] = size (s);
-    ## Find the indices of all nonblanks.
-    nonbl = s != " " & s != "\0";
-    [idx, jdx] = find (nonbl);
-
-    if (strcmp (pos, "right"))
-      ## We wish to find the maximum column index for each row. Because jdx is
-      ## sorted, we can take advantage of the fact that assignment is processed
-      ## sequentially and for duplicate indices the last value will remain.
-      maxs = nc * ones (nr, 1);
-      maxs(idx) = jdx;
-      shift = nc - maxs;
-    elseif (strcmp (pos, "left"))
-      ## See above for explanation.
-      mins = ones (nr, 1);
-      mins(flipud (idx(:))) = flipud (jdx(:));
-      shift = 1 - mins;
-    else
-      ## Use both of the above.
-      mins = ones (nr, 1);
-      mins(flipud (idx(:))) = flipud (jdx(:));
-      maxs = nc * ones (nr, 1);
-      maxs(idx) = jdx;
-      shift = floor ((nc + 1 - maxs - mins) / 2);
-    endif
-
-    ## Adjust the column indices.
-    jdx += shift (idx);
-
-    ## Create a blank matrix and position the nonblank characters.
-    y = " "(ones (1, nr), ones (1, nc));
-    y(sub2ind ([nr, nc], idx, jdx)) = s(nonbl);
+    return;
   endif
+
+  ## Apparently, Matlab considers nulls to be blanks as well; however, does
+  ## not preserve the nulls, but rather converts them to blanks.  That's a
+  ## bit unexpected, but it allows simpler processing, because we can move
+  ## just the nonblank characters. So we'll do the same here.
+
+  [nr, nc] = size (s);
+  ## Find the indices of all nonblanks.
+  nonbl = s != " " & s != "\0";
+  [idx, jdx] = find (nonbl);
+
+  if (strcmpi (pos, "right"))
+    ## We wish to find the maximum column index for each row. Because jdx is
+    ## sorted, we can take advantage of the fact that assignment is processed
+    ## sequentially and for duplicate indices the last value will remain.
+    maxs = repmat (nc, [nr, 1]);
+    maxs(idx) = jdx;
+    shift = nc - maxs;
+  elseif (strcmpi (pos, "left"))
+    ## See above for explanation.
+    mins = ones (nr, 1);
+    mins(flipud (idx(:))) = flipud (jdx(:));
+    shift = 1 - mins;
+  else
+    ## Use both of the above to achieve centering.
+    mins = ones (nr, 1);
+    mins(flipud (idx(:))) = flipud (jdx(:));
+    maxs = repmat (nc, [nr, 1]);
+    maxs(idx) = jdx;
+    shift = floor ((nc + 1 - maxs - mins) / 2);
+  endif
+
+  ## Adjust the column indices.
+  jdx += shift(idx);
+
+  ## Create a blank matrix and position the nonblank characters.
+  y = repmat (" ", nr, nc);
+  y(sub2ind ([nr, nc], idx, jdx)) = s(nonbl);
 
 endfunction
 
-%!error <Invalid call to strjust> strjust();
-%!error <Invalid call to strjust> strjust(["a";"ab"], "center", 1);
+
 %!assert (strjust (["a"; "ab"; "abc"; "abcd"]),
 %!        ["   a";"  ab"; " abc"; "abcd"]);
-%!assert (strjust (["a"; "ab"; "abc"; "abcd"], "center"),
+%!assert (strjust ([" a"; "  ab"; "abc"; "abcd"], "left"),
+%!        ["a   "; "ab  "; "abc "; "abcd"]);
+%!assert (strjust (["a"; "ab"; "abc"; "abcd"], "CENTER"),
 %!        [" a  "; " ab"; "abc "; "abcd"]);
+%!assert (strjust (["";""]), "");
+
+%% Test input validation
+%!error <Invalid call to strjust> strjust ()
+%!error <Invalid call to strjust> strjust (["a";"ab"], "center", 1)
+%!error <S must be a string> strjust (ones(3,3))
+%!error <S must be a string> strjust (char (ones(3,3,3)))
+

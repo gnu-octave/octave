@@ -319,20 +319,14 @@ function lims = __get_tight_lims__ (ca, ax)
   else
     data = get (kids, strcat (ax, "data"));
     scale = get (ca, strcat (ax, "scale"));
-    if (strcmp (scale, "log"))
-      if (iscell (data))
-        for i = 1:length(data)
-          data{i}(data{i}<=0) = NaN;
-        endfor
-      else
-        data(data<=0) = NaN;
-      endif
+    if (strcmp (scale, "log") && any (data > 0))
+      data(data<=0) = NaN;
     endif
     if (iscell (data))
-      data = data (find (! cellfun (@isempty, data)));
+      data = data (find (! cellfun ("isempty", data)));
       if (! isempty (data))
-        lims_min = min (cellfun (@min, cellfun (@min, data, 'uniformoutput', false)(:)));
-        lims_max = max (cellfun (@max, cellfun (@max, data, 'uniformoutput', false)(:)));
+        lims_min = min (cellfun ("min", cellfun ("min", data, 'uniformoutput', false)(:)));
+        lims_max = max (cellfun ("max", cellfun ("max", data, 'uniformoutput', false)(:)));
         lims = [lims_min, lims_max];
       else
         lims = [0, 1];
@@ -507,4 +501,49 @@ endfunction
 %! clf
 %! loglog (1:20, "-s")
 %! axis tight
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "left")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "right")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "bottom")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+
+%!demo
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "top")
+%! set (gca, "yaxislocation", "zero")
+%! box off
 

@@ -1,3 +1,7 @@
+2011-04-16  Ben Abbott  <bpabbott@mac.com>
+
+	* interpreter/plot.txi: Clarify that inheritance of default property
+	values only applies to the named object type.
 2011-04-14  Rik  <octave@nomad.inbox5.com>
 
 	* interpreter/plot.txi: Add colstyle function to documentation.
@@ -15,6 +19,11 @@
 
 	* interpreter/func.txi: Add discussion of isargout to Ignoring
 	Arguments section of documentation.
+
+2011-04-08  Rik  <octave@nomad.inbox5.com>
+
+	* interpreter/stats.txi: Deprecate studentize(), replace with
+	zscore().
 
 2011-04-07  Rik  <octave@nomad.inbox5.com>
 
@@ -42,7 +51,7 @@
 
 2011-04-04  Rik  <octave@nomad.inbox5.com>
 
-	* interpreter/doccheck/aspell-octave.en.pws, interpreter/nonlin.txi, 
+	* interpreter/doccheck/aspell-octave.en.pws, interpreter/nonlin.txi,
 	interpreter/tips.txi: Spellcheck documentation for 3.4.1 release.
 
 2011-04-04  Rik  <octave@nomad.inbox5.com>

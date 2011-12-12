@@ -31,10 +31,10 @@
 ## @var{f} is the format string used to interpret date strings
 ## (see @code{datestr}).
 ##
-## @var{p} is the year at the start of the century in which two-digit years
-## are to be interpreted in.  If not specified, it defaults to the current
-## year minus 50.
-## @seealso{datenum, datestr, date, clock, now}
+## @var{p} is the year at the start of the century to which two-digit years
+## will be referenced.  If not specified, it defaults to the current year
+## minus 50.
+## @seealso{datenum, datestr, clock, now, date}
 ## @end deftypefn
 
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
@@ -46,13 +46,15 @@
 
 ## The function __date_str2vec__ is based on datesplit by Bill Denney.
 
-function [y, m, d, h, mi, s] = datevec (date, varargin)
+function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
 
   persistent std_formats nfmt;
 
   if (isempty (std_formats))
     std_formats = cell ();
     nfmt = 0;
+    ## These formats are specified by Matlab to be parsed
+    ## The '# XX' refers to the datestr numerical format code
     std_formats{++nfmt} = "dd-mmm-yyyy HH:MM:SS";   # 0
     std_formats{++nfmt} = "dd-mmm-yyyy";            # 1
     std_formats{++nfmt} = "mm/dd/yy";               # 2
@@ -62,6 +64,8 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     std_formats{++nfmt} = "HH:MM";                  # 15
     std_formats{++nfmt} = "HH:MM PM";               # 16
     std_formats{++nfmt} = "mm/dd/yyyy";             # 23
+
+    ## These are other formats that Octave tries
     std_formats{++nfmt} = "mmm-dd-yyyy HH:MM:SS";
     std_formats{++nfmt} = "mmm-dd-yyyy";
     std_formats{++nfmt} = "dd mmm yyyy HH:MM:SS";
@@ -72,8 +76,6 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     std_formats{++nfmt} = "dd.mmm.yyyy";
     std_formats{++nfmt} = "mmm.dd.yyyy HH:MM:SS";
     std_formats{++nfmt} = "mmm.dd.yyyy";
-
-    ## Custom formats.
     std_formats{++nfmt} = "mmmyy";                  # 12
     std_formats{++nfmt} = "mm/dd/yyyy HH:MM";
   endif
@@ -82,22 +84,14 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     print_usage ();
   endif
 
-  switch (nargin)
-  case 1
+  if (ischar (date))
+    date = cellstr (date);
+  endif
+
+  if (isnumeric (f))
+    p = f;
     f = [];
-    p = [];
-  case 2
-    if (ischar (varargin{1}))
-      f = varargin{1};
-      p = [];
-    else
-      f = [];
-      p = varargin{1};
-    endif
-  case 3
-      f = varargin{1};
-      p = varargin{2};
-  endswitch
+  endif
 
   if (isempty (f))
     f = -1;
@@ -105,10 +99,6 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
 
   if (isempty (p))
     p = (localtime (time ())).year + 1900 - 50;
-  endif
-
-  if (ischar (date))
-    date = cellstr (date);
   endif
 
   if (iscell (date))
@@ -132,7 +122,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
         endif
       endfor
     else
-      ## Decipher the format string just once for sake of speed.
+      ## Decipher the format string just once for speed.
       [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f);
       for k = 1:nd
         [found y(k) m(k) d(k) h(k) mi(k) s(k)] = __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
@@ -142,7 +132,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
       endfor
     endif
 
-  else
+  else   # datenum input
 
     date = date(:);
 
@@ -187,38 +177,7 @@ endfunction
 function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
   ## Play safe with percent signs.
-  f = strrep(f, "%", "%%");
-
-  ## Dates to lowercase (note: we cannot convert MM to mm).
-  f = strrep (f, "YYYY", "yyyy");
-  f = strrep (f, "YY", "yy");
-  f = strrep (f, "QQ", "qq");
-  f = strrep (f, "MMMM", "mmmm");
-  f = strrep (f, "MMM", "mmm");
-  f = strrep (f, "DDDD", "dddd");
-  f = strrep (f, "DDD", "ddd");
-  f = strrep (f, "DD", "dd");
-  ## Times to uppercase (also cannot convert mm to MM).
-  f = strrep (f, "hh", "HH");
-  f = strrep (f, "ss", "SS");
-  f = strrep (f, "pm", "PM");
-  f = strrep (f, "am", "AM");
-
-  ## Right now, the format string may only contain these tokens:
-  ##
-  ## yyyy   4 digit year
-  ## yy     2 digit year
-  ## mmmm   month name, full
-  ## mmm    month name, abbreviated
-  ## mm     month number
-  ## dddd   weekday name, full
-  ## ddd    weekday name, abbreviated
-  ## dd     date
-  ## HH     hour
-  ## MM     minutes
-  ## SS     seconds
-  ## PM     AM/PM
-  ## AM     AM/PM
+  f = strrep (f, "%", "%%");
 
   if (! isempty (strfind (f, "PM")) || ! isempty (strfind (f, "AM")))
     ampm = true;
@@ -227,14 +186,14 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
   endif
 
   ## Date part.
-  f = strrep (f, "yyyy", "%Y");
-  f = strrep (f, "yy", "%y");
+  f = regexprep (f, '[Yy][Yy][Yy][Yy]', "%Y");
+  f = regexprep (f, '[Yy][Yy]', "%y");
   f = strrep (f, "mmmm", "%B");
   f = strrep (f, "mmm", "%b");
   f = strrep (f, "mm", "%m");
-  f = strrep (f, "dddd", "%A");
-  f = strrep (f, "ddd", "%a");
-  f = strrep (f, "dd", "%d");
+  f = regexprep (f, '[Dd][Dd][Dd][Dd]', "%A");
+  f = regexprep (f, '[Dd][Dd][Dd]', "%a");
+  f = regexprep (f, '[Dd][Dd]', "%d");
 
   ## Time part.
   if (ampm)
@@ -245,7 +204,7 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
     f = strrep (f, "HH", "%H");
   endif
   f = strrep (f, "MM", "%M");
-  f = strrep (f, "SS", "%S");
+  f = regexprep (f, '[Ss][Ss]', "%S");
 
   rY = rindex (f, "%Y");
   ry = rindex (f, "%y");
@@ -263,12 +222,25 @@ endfunction
 
 function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm, fd, fh, fmi, fs)
 
-  [tm, nc] = strptime (ds, f);
-
-  if (nc == size (ds, 2) + 1)
+  idx = strfind (f, "FFF");
+  if (! isempty (idx)) 
+    ## Kludge to handle FFF millisecond format since strptime does not
+    f(idx:idx+2) = []; 
+    [~, nc] = strptime (ds, f);
+    if (nc > 0)
+      msec = ds(nc:min(nc+2, end)); 
+      f = [f(1:idx-1) msec f(idx:end)]; 
+      [tm, nc] = strptime (ds, f);
+      tm.usec = 1000 * str2double (msec);
+    endif
+  else
+    [tm, nc] = strptime (ds, f);
+  endif
+  
+  if (nc == columns (ds) + 1)
+    found = true;
     y = tm.year + 1900; m = tm.mon + 1; d = tm.mday;
     h = tm.hour; mi = tm.min; s = tm.sec + tm.usec / 1e6;
-    found = true;
     if (rY < ry)
       if (y > 1999)
         y -= 2000;
@@ -289,7 +261,6 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
       tmp = localtime (time ());
       y = tmp.year + 1900;
     elseif (fy && fm && ! fd)
-      tmp = localtime (time ());
       d = 1;
     endif
     if (! fh && ! fmi && ! fs)
@@ -304,23 +275,30 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
 
 endfunction
 
+
+%!demo
+%! ## Current date and time
+%! datevec (now ())
+
 %!shared nowvec
 %! nowvec = datevec (now); # Some tests could fail around midnight!
-# tests for standard formats: 0, 1, 2, 6, 13, 14, 15, 16, 23
-%!assert(datevec("07-Sep-2000 15:38:09"),[2000,9,7,15,38,9]);
-%!assert(datevec("07-Sep-2000"),[2000,9,7,0,0,0]);
-%!assert(datevec("09/07/00"),[2000,9,7,0,0,0]);
-%!assert(datevec("09/13"),[nowvec(1),9,13,0,0,0]);
-%!assert(datevec("15:38:09"),[nowvec(1:3),15,38,9]);
-%!assert(datevec("3:38:09 PM"),[nowvec(1:3),15,38,9]);
-%!assert(datevec("15:38"),[nowvec(1:3),15,38,0]);
-%!assert(datevec("03:38 PM"),[nowvec(1:3),15,38,0]);
-%!assert(datevec("03/13/1962"),[1962,3,13,0,0,0]);
-# other tests
-%!assert(all(datenum(datevec([-1e4:1e4]))==[-1e4:1e4]'))
+%!# tests for standard formats: 0, 1, 2, 6, 13, 14, 15, 16, 23
+%!assert (datevec ("07-Sep-2000 15:38:09"), [2000,9,7,15,38,9])
+%!assert (datevec ("07-Sep-2000"), [2000,9,7,0,0,0])
+%!assert (datevec ("09/07/00"), [2000,9,7,0,0,0])
+%!assert (datevec ("09/13"), [nowvec(1),9,13,0,0,0])
+%!assert (datevec ("15:38:09"), [nowvec(1:3),15,38,9])
+%!assert (datevec ("3:38:09 PM"), [nowvec(1:3),15,38,9])
+%!assert (datevec ("15:38"), [nowvec(1:3),15,38,0])
+%!assert (datevec ("03:38 PM"), [nowvec(1:3),15,38,0])
+%!assert (datevec ("03/13/1962"), [1962,3,13,0,0,0])
+
+%% Test millisecond format FFF
+%!assert (datevec ("15:38:21.25", "HH:MM:SS.FFF"), [nowvec(1:3),15,38,21.025])
+
+# Other tests
+%!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]')
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));
-# demos
-%!demo
-%! datevec (now ())
+

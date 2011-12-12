@@ -35,8 +35,9 @@
 ## @end group
 ## @end example
 ##
-## @var{n} must be a scalar.  If @var{n} is not an even integer and @var{X} has
-## negative entries, an error is produced.
+## @var{x} must have all real entries.  @var{n} must be a scalar.
+## If @var{n} is an even integer and @var{X} has negative entries, an
+## error is produced.
 ## @seealso{realsqrt, sqrt, cbrt}
 ## @end deftypefn
 
@@ -46,7 +47,11 @@ function y = nthroot (x, n)
     print_usage ();
   endif
 
-  if (! isscalar (n))
+  if (any (iscomplex (x(:))))
+    error ("nthroot: X must not contain complex values");
+  endif
+
+  if (! isscalar (n) || n == 0)
     error ("nthroot: N must be a nonzero scalar");
   endif
 
@@ -58,7 +63,7 @@ function y = nthroot (x, n)
     y = 1 ./ nthroot (x, -n);
   else
     ## Compute using power.
-    if (n == round (n) && mod (n, 2) == 1)
+    if (n == fix (n) && mod (n, 2) == 1)
       y = abs (x) .^ (1/n) .* sign (x);
     elseif (any (x(:) < 0))
       error ("nthroot: if X contains negative values, N must be an odd integer");
@@ -66,7 +71,7 @@ function y = nthroot (x, n)
       y = x .^ (1/n);
     endif
 
-    if (finite (n) && n > 0 && n == round (n))
+    if (finite (n) && n > 0 && n == fix (n))
       ## Correction.
       y = ((n-1)*y + x ./ (y.^(n-1))) / n;
       y = merge (finite (y), y, x);
@@ -76,8 +81,18 @@ function y = nthroot (x, n)
 
 endfunction
 
-%!assert(nthroot(-32,5), -2);
-%!assert(nthroot(81,4), 3);
-%!assert(nthroot(Inf,4), Inf);
-%!assert(nthroot(-Inf,7), -Inf);
-%!assert(nthroot(-Inf,-7), 0);
+%!assert (nthroot(-32,5), -2);
+%!assert (nthroot(81,4), 3);
+%!assert (nthroot(Inf,4), Inf);
+%!assert (nthroot(-Inf,7), -Inf);
+%!assert (nthroot(-Inf,-7), 0);
+
+%% Test input validation
+%!error (nthroot ())
+%!error (nthroot (1))
+%!error (nthroot (1,2,3))
+%!error (nthroot (1+j,2))
+%!error (nthroot (1,[1 2]))
+%!error (nthroot (1,0))
+%!error (nthroot (-1,2))
+

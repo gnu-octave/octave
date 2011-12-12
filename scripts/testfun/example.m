@@ -17,16 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} example @var{name} @var{n}
+## @deftypefn  {Command} {} example @var{name}
+## @deftypefnx {Command} {} example @var{name} @var{n}
+## @deftypefnx {Function File} {} example ('@var{name}')
 ## @deftypefnx {Function File} {} example ('@var{name}', @var{n})
-## @deftypefnx {Function File} {[@var{x}, @var{idx}] =} example ('@var{name}', @var{n})
+## @deftypefnx {Function File} {[@var{s}, @var{idx}] =} example (@dots{})
 ##
-##  Display the code for example @var{n} associated with the function
-## '@var{name}', but do not run it.  If @var{n} is not given, all examples
+## Display the code for example @var{n} associated with the function
+## '@var{name}', but do not run it.  If @var{n} is not specified, all examples
 ## are displayed.
 ##
-## Called with output arguments, the examples are returned in the form of
-## a string @var{x}, with @var{idx} indicating the ending position of the
+## When called with output arguments, the examples are returned in the form of
+## a string @var{s}, with @var{idx} indicating the ending position of the
 ## various examples.
 ##
 ## See @code{demo} for a complete explanation.
@@ -41,9 +43,9 @@ function [code_r, idx_r] = example (name, n)
 
   if (nargin < 2)
     n = 0;
-  elseif (strcmp ("char", class (n)))
+  elseif (ischar (n))
     n = str2double (n);
-  endif 
+  endif
 
   [code, idx] = test (name, "grabdemo");
   if (nargout > 0)
@@ -65,15 +67,16 @@ function [code_r, idx_r] = example (name, n)
     else
       doidx = 1:length(idx)-1;
     endif
-    if (length (idx) == 0)
-      warning ("example not available for %s", name);
+    if (isempty (idx))
+      warning ("no example available for %s", name);
+      return;
     elseif (n >= length(idx))
       warning ("only %d examples available for %s", length(idx)-1, name);
-      doidx = [];
+      return;
     endif
 
     for i = 1:length (doidx)
-      block = code (idx(doidx(i)):idx(doidx(i)+1)-1);
+      block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
       printf ("%s example %d:%s\n\n", name, doidx(i), block);
     endfor
   endif
@@ -82,17 +85,18 @@ endfunction
 
 %!## warning: don't modify the demos without modifying the tests!
 %!demo
-%! example('example');
+%! example ('example');
 %!demo
-%! t=0:0.01:2*pi; x=sin(t);
-%! plot(t,x)
+%! t=0:0.01:2*pi; x = sin(t);
+%! plot (t,x)
 
-%!assert (example('example',1), "\n example('example');");
+%!assert (example('example',1), "\n example ('example');");
 %!test
-%! [code, idx] = example('example');
+%! [code, idx] = example ('example');
 %! assert (code, ...
-%!         "\n example('example');\n t=0:0.01:2*pi; x=sin(t);\n plot(t,x)")
-%! assert (idx, [1, 22, 59]);
+%!         "\n example ('example');\n t=0:0.01:2*pi; x = sin(t);\n plot (t,x)")
+%! assert (idx, [1, 23, 63]);
 
+%% Test input validation
 %!error example;
-%!error example('example',3,5)
+%!error example('example', 3, 5)

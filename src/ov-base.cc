@@ -50,6 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-str-mat.h"
 #include "ov-fcn-handle.h"
 #include "parse.h"
+#include "pr-output.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -419,7 +420,9 @@ octave_base_value::print_name_tag (std::ostream& os, const std::string& name) co
     {
       os << name << " =";
       newline (os);
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 
@@ -435,7 +438,7 @@ octave_base_value::print_with_name (std::ostream& output_buf,
 
   print (output_buf);
 
-  if (print_padding && pad_after)
+  if (print_padding  && pad_after && ! Vcompact_format)
     newline (output_buf);
 }
 
@@ -1527,6 +1530,7 @@ DEFUN (sparse_auto_mutate, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} sparse_auto_mutate ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} sparse_auto_mutate (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 automatically mutate sparse matrices to real matrices to save memory.\n\
 For example:\n\
@@ -1544,7 +1548,24 @@ typeinfo (s)\n\
 @result{} matrix\n\
 @end group\n\
 @end example\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (sparse_auto_mutate);
 }
+
+/*
+
+%!test
+ s = speye(3);
+ sparse_auto_mutate (false);
+ s(:, 1) = 1;
+ assert (typeinfo (s), "sparse matrix");
+ sparse_auto_mutate (true);
+ s(1, :) = 1;
+ assert (typeinfo (s), "matrix");
+
+*/

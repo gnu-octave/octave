@@ -98,7 +98,7 @@ public:
 
   ~SparseQR (void)
     {
-      if (--rep->count <= 0)
+      if (--rep->count == 0)
         delete rep;
     }
 
@@ -106,7 +106,7 @@ public:
     {
       if (this != &a)
         {
-          if (--rep->count <= 0)
+          if (--rep->count == 0)
             delete rep;
 
           rep = a.rep;

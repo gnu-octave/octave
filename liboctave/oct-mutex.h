@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_octave_mutex_h)
 #define octave_octave_mutex_h 1
 
+#include "oct-refcount.h"
+
 class octave_mutex;
 
 class
@@ -39,8 +41,10 @@ public:
 
   virtual void unlock (void);
 
+  virtual bool try_lock (void);
+
 private:
-  int count;
+  octave_refcount<int> count;
 };
 
 class
@@ -86,6 +90,11 @@ public:
     rep->unlock ();
   }
 
+  bool try_lock (void)
+  {
+    return rep->try_lock ();
+  }
+
 protected:
   octave_base_mutex *rep;
 };
@@ -94,16 +103,27 @@ class
 octave_autolock
 {
 public:
-  octave_autolock (const octave_mutex& m)
-    : mutex (m)
+  octave_autolock (const octave_mutex& m, bool block = true)
+    : mutex (m), lock_result (false)
   {
-    mutex.lock ();
+    if (block)
+      {
+        mutex.lock ();
+        lock_result = true;
+      }
+    else
+      lock_result = mutex.try_lock ();
   }
 
   ~octave_autolock (void)
   {
-    mutex.unlock ();
+    if (lock_result)
+      mutex.unlock ();
   }
+
+  bool ok (void) const { return lock_result; }
+
+  operator bool (void) const { return ok (); }
 
 private:
 
@@ -114,6 +134,17 @@ private:
 
 private:
   octave_mutex mutex;
+  bool lock_result;
+};
+
+class
+OCTAVE_API
+octave_thread
+{
+public:
+  static void init (void);
+
+  static bool is_octave_thread (void);
 };
 
 #endif

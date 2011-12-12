@@ -271,7 +271,7 @@ risk of using @code{eval} on unknown data.\n\
     }
   else if (args(0).is_cell ())
     {
-      const Cell cell = args(0).cell_value (); 
+      const Cell cell = args(0).cell_value ();
 
       if (! error_state)
       {
@@ -286,7 +286,7 @@ risk of using @code{eval} on unknown data.\n\
     }
   else
     retval = NDArray (args(0).dims (), octave_NaN);
-  
+
 
   return retval;
 }

@@ -41,7 +41,7 @@ function h = figure (varargin)
       f = tmp;
       varargin(1) = [];
       nargs--;
-    elseif (isnumeric (tmp) && tmp > 0 && round (tmp) == tmp)
+    elseif (isnumeric (tmp) && tmp > 0 && tmp == fix (tmp))
       f = tmp;
       init_new_figure = true;
       varargin(1) = [];
@@ -73,10 +73,21 @@ function h = figure (varargin)
   endif
 
   cf = get (0, "currentfigure");
-  __add_default_menu__ (cf);
+  if (strcmp (get (cf, "__graphics_toolkit__"), "fltk"))
+    __add_default_menu__ (cf);
+  endif
 
   if (nargout > 0)
     h = f;
   endif
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   assert (gcf, hf);
+%!   assert (isfigure (hf));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

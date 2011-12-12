@@ -23,9 +23,10 @@
 ## Plot a ribbon plot for the columns of @var{y} vs.  @var{x}.  The
 ## optional parameter @var{width} specifies the width of a single ribbon
 ## (default is 0.75).  If @var{x} is omitted, a vector containing the
-## row numbers is assumed (1:rows(Y)).  If requested, return a vector
-## @var{h} of the handles to the surface objects.
-## @seealso{gca, colorbar}
+## row numbers is assumed (1:rows(Y)).
+##
+## The optional return value @var{h} is a vector of graphics handles to
+## the surface objects representing each ribbon.
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel at gmx.de>
@@ -85,7 +86,9 @@ function h = ribbon (x, y, width)
 
 endfunction
 
+
 %!demo
 %! [x, y, z] = sombrero ();
 %! [x, y] = meshgrid (x, y);
 %! ribbon (y, z);
+

@@ -36,57 +36,55 @@
 ## Author: Peter Ekberg
 ##         (peda)
 
-function retval = pascal (n, t)
+function retval = pascal (n, t = 0)
 
-  if (nargin > 2) || (nargin == 0)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
-  endif
-
-  if (nargin == 1)
-    t = 0;
-  endif
-
-  if (! isscalar (n) || ! isscalar (t))
-    error ("pascal: expecting scalar arguments, found something else");
-  endif
-
-  if (t < -1 || t > 2)
+  elseif (! (isscalar (n) && isscalar (t)))
+    error ("pascal: N and T must be scalars");
+  elseif (! any (t == [-1, 0, 1, 2]))
     error ("pascal: expecting T to be -1, 0, 1, or 2, found %d", t);
   endif
 
   retval = zeros (n);
-  retval(:,1) = 1;
+  if (n > 0)
+    retval(:,1) = 1;
+  endif
 
   if (t == -1)
     for j = 2:n
-      retval(j:n,j) = cumsum (retval (j-1:n-1,j-1));
+      retval(j:n,j) = cumsum (retval(j-1:n-1,j-1));
     endfor
   else
     for j = 2:n
-      retval(j:n,j) = -cumsum (retval (j-1:n-1,j-1));
+      retval(j:n,j) = -cumsum (retval(j-1:n-1,j-1));
     endfor
   endif
 
   if (t == 0)
     retval = retval*retval';
   elseif (t == 2)
-    retval = retval';
-    retval = retval(n:-1:1,:);
-    retval(:,n) = -retval(:,n);
-    retval(n,:) = -retval(n,:);
-    if (rem(n,2) != 1)
-      retval = -retval;
+    retval = rot90 (retval, 3);
+    if (rem (n,2) != 1)
+      retval *= -1;
     endif
   endif
 
 endfunction
 
-%!assert (pascal(3,-1), [1,0,0;1,1,0;1,2,1])
-%!assert (pascal(3,0), [1,1,1;1,2,3;1,3,6])
-%!assert (pascal(3,0), pascal(3))
-%!assert (pascal(3,1), [1,0,0;1,-1,0;1,-2,1])
-%!assert (pascal(3,2), [0,0,-1;0,-1,2;-1,-1,1])
-%!error (pascal(3,4))
-%!error (pascal(3,-2))
-%!error (pascal())
-%!error (pascal(1,2,3))
+
+%!assert (pascal (3,-1), [1,0,0;1,1,0;1,2,1])
+%!assert (pascal (3,0), [1,1,1;1,2,3;1,3,6])
+%!assert (pascal (3,0), pascal (3))
+%!assert (pascal (3,1), [1,0,0;1,-1,0;1,-2,1])
+%!assert (pascal (3,2), [1,1,1;-2,-1,0;1,0,0])
+%!assert (pascal (0,2), [])
+
+%% Test input validation
+%!error pascal ()
+%!error pascal (1,2,3)
+%!error <N and T must be scalars> pascal ([1 2])
+%!error <N and T must be scalars> pascal (1, [1 2])
+%!error <expecting T to be> pascal (3,-2)
+%!error <expecting T to be> pascal (3,4)
+

@@ -100,13 +100,21 @@ function [beta, sigma, r] = ols (y, x)
     error ("ols: number of rows of X and Y must be equal");
   endif
 
-  z = x' * x;
-  rnk = rank (z);
+  if (isinteger (x))
+    x = double (x);
+  endif
+  if (isinteger (y))
+    y = double (y);
+  endif
 
-  if (rnk == nc)
-    beta = inv (z) * x' * y;
-  else
+  ## Start of algorithm
+  z = x' * x;
+  [u, p] = chol (z);
+
+  if (p)
     beta = pinv (x) * y;
+  else
+    beta = u \ (u' \ (x' * y));
   endif
 
   if (isargout (2) || isargout (3))
@@ -117,6 +125,7 @@ function [beta, sigma, r] = ols (y, x)
   endif
 
 endfunction
+
 
 %!test
 %! x = [1:5]';

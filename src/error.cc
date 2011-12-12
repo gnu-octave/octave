@@ -119,9 +119,6 @@ bool discard_error_messages = false;
 // TRUE means warning messages are turned off.
 bool discard_warning_messages = false;
 
-// The message buffer.
-static std::ostringstream *error_message_buffer = 0;
-
 void
 reset_error_handler (void)
 {
@@ -263,16 +260,7 @@ verror (bool save_last_error, std::ostream& os,
         Vlast_error_stack = initialize_last_error_stack ();
     }
 
-  if (buffer_error_messages)
-    {
-      if (error_message_buffer)
-        msg_string = "error: " + msg_string;
-      else
-        error_message_buffer = new std::ostringstream ();
-
-      *error_message_buffer << msg_string;
-    }
-  else
+  if (! buffer_error_messages)
     {
       octave_diary << msg_string;
       os << msg_string;
@@ -1062,9 +1050,17 @@ error: nargin != 1\n\
         }
       else if (nargin == 1 && args(0).is_map ())
         {
+          // empty struct is not an error.  return and resume calling function.
+          if (args(0).is_empty ())
+            return retval;
+
           octave_value_list tmp;
 
           octave_scalar_map m = args(0).scalar_map_value ();
+
+          // empty struct is not an error.  return and resume calling function.
+          if (m.nfields () == 0)
+            return retval;
 
           if (m.contains ("message"))
             {
@@ -1456,8 +1452,6 @@ initialize_default_warning_state (void)
 
   disable_warning ("Octave:array-to-scalar");
   disable_warning ("Octave:array-to-vector");
-  disable_warning ("Octave:empty-list-elements");
-  disable_warning ("Octave:fortran-indexing");
   disable_warning ("Octave:imag-to-real");
   disable_warning ("Octave:matlab-incompatible");
   disable_warning ("Octave:missing-semicolon");
@@ -1466,13 +1460,16 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:separator-insert");
   disable_warning ("Octave:single-quote-string");
   disable_warning ("Octave:str-to-num");
-  disable_warning ("Octave:string-concat");
+  disable_warning ("Octave:mixed-string-concat");
   disable_warning ("Octave:variable-switch-label");
-  disable_warning ("Octave:complex-cmp-ops");
 
   // This should be an error unless we are in maximum braindamage mode.
+  // FIXME: Not quite right.  This sets the error state even for braindamage
+  // mode.  Also, this error is not triggered in normal mode because another
+  // error handler catches it first and gives:
+  // error: subscript indices must be either positive integers or logicals
+  set_warning_state ("Octave:noninteger-range-as-index", "error");
 
-  set_warning_state ("Octave:allow-noninteger-ranges-as-indices", "error");
 }
 
 DEFUN (lasterror, args, ,
@@ -1684,10 +1681,6 @@ also set the last message identifier.\n\
   return retval;
 }
 
-// For backward compatibility.
-DEFALIAS (error_text, lasterr);
-DEFALIAS (__error_text__, lasterr);
-
 DEFUN (lastwarn, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{msg}, @var{msgid}] =} lastwarn (@var{msg}, @var{msgid})\n\
@@ -1769,8 +1762,13 @@ DEFUN (beep_on_error, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} beep_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} beep_on_error (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} beep_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to ring the terminal bell before printing an error message.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (beep_on_error);
@@ -1780,10 +1778,15 @@ DEFUN (debug_on_error, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_error (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when an error is encountered.  This will also\n\
 inhibit printing of the normal traceback message (you will only see\n\
 the top-level error message).\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_error);
@@ -1793,8 +1796,13 @@ DEFUN (debug_on_warning, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_warning ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_on_warning (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when a warning is encountered.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_warning);

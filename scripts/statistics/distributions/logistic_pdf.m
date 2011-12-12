@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logistic_pdf (@var{x})
-## For each component of @var{x}, compute the PDF at @var{x} of the
+## For each element of @var{x}, compute the PDF at @var{x} of the
 ## logistic distribution.
 ## @end deftypefn
 
@@ -31,7 +31,26 @@ function pdf = logistic_pdf (x)
     print_usage ();
   endif
 
+  if (iscomplex (x))
+    error ("logistic_pdf: X must not be complex");
+  endif
+
   cdf = logistic_cdf (x);
   pdf = cdf .* (1 - cdf);
 
 endfunction
+
+
+%!shared x,y
+%! x = [-Inf -log(4) 0 log(4) Inf];
+%! y = [0, 0.16, 1/4, 0.16, 0]; 
+%!assert(logistic_pdf ([x, NaN]), [y, NaN], eps);
+
+%% Test class of input preserved
+%!assert(logistic_pdf (single([x, NaN])), single([y, NaN]), eps ("single"));
+
+%% Test input validation
+%!error logistic_pdf ()
+%!error logistic_pdf (1,2)
+%!error logistic_pdf (i)
+

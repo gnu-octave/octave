@@ -7,7 +7,6 @@ linear_algebra_FCN_FILES = \
   linear-algebra/cross.m \
   linear-algebra/duplication_matrix.m \
   linear-algebra/expm.m \
-  linear-algebra/gmres.m \
   linear-algebra/housh.m \
   linear-algebra/isdefinite.m \
   linear-algebra/ishermitian.m \

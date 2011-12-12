@@ -36,7 +36,8 @@ public:
 
   bool empty (void) const { return lst.empty (); }
 
-  size_t length (void) const { return lst.size (); }
+  size_t size (void) const { return lst.size (); }
+  size_t length (void) const { return size (); }
 
   iterator erase (iterator pos) { return lst.erase (pos); }
 
@@ -89,6 +90,8 @@ public:
 protected:
 
   octave_base_list (void) : lst () { }
+
+  octave_base_list (const std::list<elt_type>& l) : lst (l) { }
 
   octave_base_list (const octave_base_list& bl) : lst (bl.lst) { }
 

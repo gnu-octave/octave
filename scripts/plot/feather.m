@@ -31,8 +31,8 @@
 ## The style to use for the plot can be defined with a line style @var{style}
 ## in a similar manner to the line styles used with the @code{plot} command.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a vector of graphics handles to the
+## line objects representing the drawn vectors.
 ##
 ## @example
 ## @group
@@ -109,6 +109,8 @@ function retval = feather (varargin)
 
 endfunction
 
+
 %!demo
 %! phi = [0 : 15 : 360] * pi / 180;
 %! feather (sin (phi), cos (phi))
+

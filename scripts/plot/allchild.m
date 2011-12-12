@@ -35,16 +35,23 @@ function h = allchild (handles)
   shh = get (0, "showhiddenhandles");
   unwind_protect
     set (0, "showhiddenhandles", "on");
-    if (isscalar (handles))
-      h = get (handles, "children");
-    else
-      h = cell (size (handles));
-      for i = 1:numel (handles)
-        h{i} = get (handles, "children");
-      endfor
-    endif
+    h = get (handles, "children");
   unwind_protect_cleanup
     set (0, "showhiddenhandles", shh);
   end_unwind_protect
 
 endfunction
+
+
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   l = line;
+%!   assert(get (allchild (hf),"type"),{"axes"; "uimenu"; "uimenu"; "uimenu"});
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   graphics_toolkit (toolkit);
+%! end_unwind_protect
+

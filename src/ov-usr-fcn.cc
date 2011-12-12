@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <sstream>
+
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -47,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "parse.h"
+#include "profiler.h"
 #include "variables.h"
 
 // Whether to optimize subsasgn method calls.
@@ -131,7 +134,9 @@ octave_user_script::do_multi_index_op (int nargout,
                   frame.protect_var (tree_evaluator::statement_context);
                   tree_evaluator::statement_context = tree_evaluator::script;
 
+                  BEGIN_PROFILER_BLOCK (profiler_name ())
                   cmd_list->accept (*current_evaluator);
+                  END_PROFILER_BLOCK
 
                   if (tree_return_command::returning)
                     tree_return_command::returning = 0;
@@ -176,13 +181,14 @@ octave_user_function::octave_user_function
   : octave_user_code (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
     lead_comm (), trail_comm (), file_name (),
+    location_line (0), location_column (0),
     parent_name (), t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
-    class_constructor (false), class_method (false),
-    parent_scope (-1), local_scope (sid),
+    anonymous_function (false), class_constructor (false),
+    class_method (false), parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
 {
   if (cmd_list)
@@ -215,6 +221,25 @@ void
 octave_user_function::stash_fcn_file_name (const std::string& nm)
 {
   file_name = nm;
+}
+
+std::string
+octave_user_function::profiler_name (void) const
+{
+  std::ostringstream result;
+
+  if (is_inline_function ())
+    result << "inline@" << fcn_file_name ()
+           << ":" << location_line << ":" << location_column;
+  else if (is_anonymous_function ())
+    result << "anonymous@" << fcn_file_name ()
+           << ":" << location_line << ":" << location_column;
+  else if (is_subfunction ())
+    result << parent_fcn_name () << ">" << name ();
+  else
+    result << name ();
+
+  return result.str ();
 }
 
 void
@@ -428,8 +453,9 @@ octave_user_function::do_multi_index_op (int nargout,
   frame.protect_var (tree_evaluator::statement_context);
   tree_evaluator::statement_context = tree_evaluator::function;
 
-  bool special_expr = (is_inline_function ()
-                       || cmd_list->is_anon_function_body ());
+  bool special_expr = (is_inline_function () || is_anonymous_function ());
+
+  BEGIN_PROFILER_BLOCK (profiler_name ())
 
   if (special_expr)
     {
@@ -447,6 +473,8 @@ octave_user_function::do_multi_index_op (int nargout,
     }
   else
     cmd_list->accept (*current_evaluator);
+
+  END_PROFILER_BLOCK
 
   if (echo_commands)
     print_code_function_trailer ();
@@ -607,7 +635,7 @@ At the top level, return the number of command line arguments passed to\n\
 Octave.  If called with the optional argument @var{fcn_name}, return the\n\
 maximum number of arguments the named function can accept, or -1 if the\n\
 function accepts a variable number of arguments.\n\
-@seealso{nargout, varargin, varargout}\n\
+@seealso{nargout, varargin, isargout, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -620,23 +648,33 @@ function accepts a variable number of arguments.\n\
 
       if (! error_state)
         {
-          octave_value fcn_val = symbol_table::find_user_function (fname);
+          octave_value fcn_val = symbol_table::find_function (fname);
 
-          octave_user_function *fcn = fcn_val.user_function_value (true);
-
-          if (fcn)
+          if (fcn_val.is_user_function ())
             {
-              if (fcn->takes_varargs ())
-                retval = -1;
-              else
-                {
-                  tree_parameter_list *param_list = fcn->parameter_list ();
+              octave_user_function *fcn = fcn_val.user_function_value (true);
 
-                  retval = param_list ? param_list->length () : 0;
+              if (fcn)
+                {
+                  if (fcn->takes_varargs ())
+                    retval = -1;
+                  else
+                    {
+                      tree_parameter_list *param_list = fcn->parameter_list ();
+
+                      retval = param_list ? param_list->length () : 0;
+                    }
                 }
+              else
+                error ("nargin: loading user-defined function failed");
             }
           else
-            error ("nargin: invalid function");
+            {
+              // FIXME -- what about built-in functions or functions
+              // defined in .oct files or .mex files?
+
+              error ("nargin: FCN_NAME must be a user-defined function");
+            }
         }
       else
         error ("nargin: FCN_NAME must be a string");
@@ -681,7 +719,7 @@ will cause @code{nargout} to return 2 inside the function\n\
 @code{f}.\n\
 \n\
 At the top level, @code{nargout} is undefined.\n\
-@seealso{nargin, isargout, varargin, varargout}\n\
+@seealso{nargin, varargin, isargout, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -737,9 +775,14 @@ DEFUN (optimize_subsasgn_calls, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} optimize_subsasgn_calls ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} optimize_subsasgn_calls (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} optimize_subsasgn_calls (@var{new_val}, \"local\")\n\
 Query or set the internal flag for subsasgn method call optimizations.\n\
 If true, Octave will attempt to eliminate the redundant copying when calling\n\
 subsasgn method of a user-defined class.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (optimize_subsasgn_calls);
@@ -778,7 +821,7 @@ If @var{k} is outside the range @code{1:max(nargout)}, the function returns\n\
 false.  @var{k} can also be an array, in which case the function works\n\
 element-by-element and a logical array is returned.  At the top level,\n\
 @code{isargout} returns an error.\n\
-@seealso{nargout, nargin, varargin, varargout}\n\
+@seealso{nargout, nargin, varargin, varargout, nthargout}\n\
 @end deftypefn")
 {
   octave_value retval;

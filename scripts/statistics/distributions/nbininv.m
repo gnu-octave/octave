@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,10 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nbininv (@var{x}, @var{n}, @var{p})
-## For each element of @var{x}, compute the quantile at @var{x} of the
-## Pascal (negative binomial) distribution with parameters @var{n} and
-## @var{p}.
+## For each element of @var{x}, compute the quantile (the inverse of
+## the CDF) at @var{x} of the negative binomial distribution
+## with parameters @var{n} and @var{p}.
 ##
+## When @var{n} is integer this is the Pascal distribution.  When
+## @var{n} is extended to real numbers this is the Polya distribution.
+## 
 ## The number of failures in a Bernoulli experiment with success
 ## probability @var{p} before the @var{n}-th success follows this
 ## distribution.
@@ -36,58 +40,89 @@ function inv = nbininv (x, n, p)
     print_usage ();
   endif
 
-  if (!isscalar(n) || !isscalar(p))
+  if (!isscalar (n) || !isscalar (p))
     [retval, x, n, p] = common_size (x, n, p);
     if (retval > 0)
-      error ("nbininv: X, N and P must be of common size or scalar");
+      error ("nbininv: X, N, and P must be of common size or scalars");
     endif
   endif
 
-  inv = zeros (size (x));
-
-  k = find (isnan (x) | (x < 0) | (x > 1) | (n < 1) | (n == Inf)
-            | (n != round (n)) | (p < 0) | (p > 1));
-  if (any (k))
-    inv(k) = NaN;
+  if (iscomplex (x) || iscomplex (n) || iscomplex (p))
+    error ("nbininv: X, N, and P must not be complex");
   endif
 
-  k = find ((x == 1) & (n > 0) & (n < Inf) & (n == round (n))
-            & (p >= 0) & (p <= 1));
-  if (any (k))
-    inv(k) = Inf;
+  if (isa (x, "single") || isa (n, "single") || isa (p, "single"))
+    inv = zeros (size (x), "single");
+  else
+    inv = zeros (size (x));
   endif
+
+  k = (isnan (x) | (x < 0) | (x > 1) | isnan (n) | (n < 1) | (n == Inf)
+       | isnan (p) | (p < 0) | (p > 1));
+  inv(k) = NaN;
+
+  k = (x == 1) & (n > 0) & (n < Inf) & (p >= 0) & (p <= 1);
+  inv(k) = Inf;
 
   k = find ((x >= 0) & (x < 1) & (n > 0) & (n < Inf)
-            & (n == round (n)) & (p > 0) & (p <= 1));
-  if (any (k))
-    m = zeros (size (k));
-    x = x(k);
-    if (isscalar (n) && isscalar (p))
-      s = p ^ n * ones (size(k));
-      while (1)
-        l = find (s < x);
-        if (any (l))
-          m(l) = m(l) + 1;
-          s(l) = s(l) + nbinpdf (m(l), n, p);
-        else
-          break;
-        endif
-      endwhile
-    else
-      n = n(k);
-      p = p(k);
-      s = p .^ n;
-      while (1)
-        l = find (s < x);
-        if (any (l))
-          m(l) = m(l) + 1;
-          s(l) = s(l) + nbinpdf (m(l), n(l), p(l));
-        else
-          break;
-        endif
-      endwhile
-    endif
-    inv(k) = m;
+            & (p > 0) & (p <= 1));
+  m = zeros (size (k));
+  x = x(k);
+  if (isscalar (n) && isscalar (p))
+    s = p ^ n * ones (size (k));
+    while (1)
+      l = find (s < x);
+      if (any (l))
+        m(l) = m(l) + 1;
+        s(l) = s(l) + nbinpdf (m(l), n, p);
+      else
+        break;
+      endif
+    endwhile
+  else
+    n = n(k);
+    p = p(k);
+    s = p .^ n;
+    while (1)
+      l = find (s < x);
+      if (any (l))
+        m(l) = m(l) + 1;
+        s(l) = s(l) + nbinpdf (m(l), n(l), p(l));
+      else
+        break;
+      endif
+    endwhile
   endif
+  inv(k) = m;
 
 endfunction
+
+
+%!shared x
+%! x = [-1 0 3/4 1 2];
+%!assert(nbininv (x, ones(1,5), 0.5*ones(1,5)), [NaN 0 1 Inf NaN]);
+%!assert(nbininv (x, 1, 0.5*ones(1,5)), [NaN 0 1 Inf NaN]);
+%!assert(nbininv (x, ones(1,5), 0.5), [NaN 0 1 Inf NaN]);
+%!assert(nbininv (x, [1 0 NaN Inf 1], 0.5), [NaN NaN NaN NaN NaN]);
+%!assert(nbininv (x, [1 0 1.5 Inf 1], 0.5), [NaN NaN 2 NaN NaN]);
+%!assert(nbininv (x, 1, 0.5*[1 -Inf NaN Inf 1]), [NaN NaN NaN NaN NaN]);
+%!assert(nbininv ([x(1:2) NaN x(4:5)], 1, 0.5), [NaN 0 NaN Inf NaN]);
+
+%% Test class of input preserved
+%!assert(nbininv ([x, NaN], 1, 0.5), [NaN 0 1 Inf NaN NaN]);
+%!assert(nbininv (single([x, NaN]), 1, 0.5), single([NaN 0 1 Inf NaN NaN]));
+%!assert(nbininv ([x, NaN], single(1), 0.5), single([NaN 0 1 Inf NaN NaN]));
+%!assert(nbininv ([x, NaN], 1, single(0.5)), single([NaN 0 1 Inf NaN NaN]));
+
+%% Test input validation
+%!error nbininv ()
+%!error nbininv (1)
+%!error nbininv (1,2)
+%!error nbininv (1,2,3,4)
+%!error nbininv (ones(3),ones(2),ones(2))
+%!error nbininv (ones(2),ones(3),ones(2))
+%!error nbininv (ones(2),ones(2),ones(3))
+%!error nbininv (i, 2, 2)
+%!error nbininv (2, i, 2)
+%!error nbininv (2, 2, i)
+

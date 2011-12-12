@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "oct-mutex.h"
 #include "oct-time.h"
+#include "singleton-cleanup.h"
 
 command_editor *command_editor::instance = 0;
 
@@ -831,7 +832,12 @@ command_editor::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    make_command_editor ();
+    {
+      make_command_editor ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {
@@ -1224,6 +1230,12 @@ command_editor::remove_event_hook (event_hook_fcn f)
       if (event_hook_set.empty ())
         instance->restore_event_hook ();
     }
+}
+
+void
+command_editor::run_event_hooks (void)
+{
+  event_handler ();
 }
 
 void

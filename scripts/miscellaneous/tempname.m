@@ -29,3 +29,7 @@ function filename = tempname (varargin)
   filename = tmpnam (varargin{:});
 
 endfunction
+
+
+%% No tests needed for alias.
+%!assert (1)

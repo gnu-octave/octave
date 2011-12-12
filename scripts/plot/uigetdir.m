@@ -28,10 +28,19 @@
 
 ## Author: Kai Habel
 
-function dirname = uigetdir (init_path = pwd, dialog_name = "Choose directory?")
+function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to Open")
 
-  if (exist("__fltk_uigetfile__") != 3)
-    error ("uigetfile: fltk graphics toolkit required");
+  defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
+  funcname = ["__uigetdir_", defaulttoolkit, "__"];
+  functype = exist (funcname);
+  if (! __is_function__ (funcname))
+    funcname = "__uigetdir_fltk__";
+    if (! __is_function__ (funcname))
+      error ("uigetdir: fltk graphics toolkit required");
+    elseif (! strcmp (defaulttoolkit, "gnuplot"))
+      warning ("uigetdir: no implementation for toolkit `%s', using `fltk' instead",
+               defaulttoolkit);
+    endif
   endif
 
   if (nargin > 2)
@@ -45,9 +54,13 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Choose directory?")
   if (!isdir (init_path))
     init_path = fileparts (init_path);
   endif
-  dirname = __fltk_uigetfile__ ("", dialog_name, init_path, [240, 120], "dir");
+  dirname = feval (funcname, init_path, dialog_name);
 
 endfunction
 
 %!demo
 %! uigetdir(pwd, "Select Directory")
+
+## Remove from test statistics.  No real tests possible.
+%!test
+%! assert (1);

@@ -58,18 +58,28 @@
 
 function retval = toeplitz (c, r)
 
-  if (nargin == 1)
-    r = c;
-  elseif (nargin != 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if (! (isvector (c) && isvector (r)))
-    error ("toeplitz: expecting vector arguments");
-  endif
+  if (nargin == 1)
+    if (! isvector (c))
+      error ("toeplitz: C must be a vector");
+    endif
 
-  nc = length (r);
-  nr = length (c);
+    r = c;
+    nr = length (c);
+    nc = nr;
+  else
+    if (! (isvector (c) && isvector (r))) 
+      error ("toeplitz: C and R must be vectors");
+    elseif (r(1) != c(1))
+      warning ("toeplitz: column wins anti-diagonal conflict");
+    endif
+
+    nr = length (c);
+    nc = length (r);
+  endif
 
   if (nr == 0 || nc == 0)
     ## Empty matrix.
@@ -77,31 +87,26 @@ function retval = toeplitz (c, r)
     return;
   endif
 
-  if (r (1) != c (1))
-    warning ("toeplitz: column wins diagonal conflict");
-  endif
-
   ## If we have a single complex argument, we want to return a
   ## Hermitian-symmetric matrix (actually, this will really only be
   ## Hermitian-symmetric if the first element of the vector is real).
-
   if (nargin == 1 && iscomplex (c))
     c = conj (c);
     c(1) = conj (c(1));
   endif
 
-  if (issparse(c) && issparse(r))
-    c = c(:).';
-    r = r(:).';
-    cidx = find(c);
-    ridx = find(r);
+  if (issparse (c) && issparse (r))
+    c = c(:).';  ## enforce row vector
+    r = r(:).';  ## enforce row vector
+    cidx = find (c);
+    ridx = find (r);
 
     ## Ignore the first element in r.
     ridx = ridx(ridx > 1);
 
     ## Form matrix.
-    retval = spdiags(repmat(c(cidx),nr,1),1-cidx,nr,nc)+...
-        spdiags(repmat(r(ridx),nr,1),ridx-1,nr,nc);
+    retval = spdiags(repmat (c(cidx),nr,1),1-cidx,nr,nc) + ...
+             spdiags(repmat (r(ridx),nr,1),ridx-1,nr,nc);
   else
     ## Concatenate data into a single column vector.
     data = [r(end:-1:2)(:); c(:)];
@@ -112,15 +117,18 @@ function retval = toeplitz (c, r)
     ## Form matrix.
     retval = horzcat (slices{:});
   endif
+
 endfunction
 
-%!assert((toeplitz (1) == 1
-%! && toeplitz ([1, 2, 3], [1; -3; -5]) == [1, -3, -5; 2, 1, -3; 3, 2, 1]
-%! && toeplitz ([1, 2, 3], [1; -3i; -5i]) == [1, -3i, -5i; 2, 1, -3i; 3, 2, 1]));
 
-%!error toeplitz ([1, 2; 3, 4], 1);
+%!assert (toeplitz (1), [1])
+%!assert (toeplitz ([1, 2, 3], [1; -3; -5]), [1, -3, -5; 2, 1, -3; 3, 2, 1])
+%!assert (toeplitz ([1, 2, 3], [1; -3i; -5i]), [1, -3i, -5i; 2, 1, -3i; 3, 2, 1])
 
-%!error toeplitz ();
-
-%!error toeplitz (1, 2, 3);
+%% Test input validation
+%!error toeplitz ()
+%!error toeplitz (1, 2, 3)
+%!error <C must be a vector> toeplitz ([1, 2; 3, 4])
+%!error <C and R must be vectors> toeplitz ([1, 2; 3, 4], 1)
+%!error <C and R must be vectors> toeplitz (1, [1, 2; 3, 4])
 

@@ -41,16 +41,17 @@ or function names:
 @item @code{case} @tab @code{catch} @tab @code{classdef}
 @item @code{continue} @tab @code{do} @tab @code{else}
 @item @code{elseif} @tab @code{end} @tab @code{end_try_catch}
-@item @code{end_unwind_protect} @tab @code{endclassdef} @tab @code{endevents}
-@item @code{endfor} @tab @code{endfunction} @tab @code{endif}
-@item @code{endmethods} @tab @code{endproperties} @tab @code{endswitch}
-@item @code{endwhile} @tab @code{events} @tab @code{for}
+@item @code{end_unwind_protect} @tab @code{endclassdef} @tab @code{endenumeration}
+@item @code{endevents} @tab @code{endfor} @tab @code{endfunction}
+@item @code{endif} @tab @code{endmethods} @tab @code{endparfor}
+@item @code{endproperties} @tab @code{endswitch} @tab @code{endwhile}
+@item @code{enumeration} @tab @code{events} @tab @code{for}
 @item @code{function} @tab @code{get} @tab @code{global}
 @item @code{if} @tab @code{methods} @tab @code{otherwise}
-@item @code{persistent} @tab @code{properties} @tab @code{return}
-@item @code{set} @tab @code{static} @tab @code{switch}
-@item @code{try} @tab @code{until} @tab @code{unwind_protect}
-@item @code{unwind_protect_cleanup}@tab @code{while}
+@item @code{parfor} @tab @code{persistent} @tab @code{properties}
+@item @code{return} @tab @code{set} @tab @code{static}
+@item @code{switch} @tab @code{try} @tab @code{until}
+@item @code{unwind_protect} @tab @code{unwind_protect_cleanup} @tab @code{while}
 @end multitable
 
 The function @code{iskeyword} can be used to quickly check whether an

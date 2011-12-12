@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-class.h"
+#include "ov-oncleanup.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
 #include "ov-builtin.h"
@@ -1132,8 +1133,9 @@ octave_value::octave_value (const Octave_map& m)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const Octave_map& m, const std::string& id)
-  : rep (new octave_class (m, id))
+octave_value::octave_value (const Octave_map& m, const std::string& id,
+                            const std::list<std::string>& plist)
+  : rep (new octave_class (m, id, plist))
 {
 }
 
@@ -2688,26 +2690,8 @@ install_types (void)
   octave_null_str::register_type ();
   octave_null_sq_str::register_type ();
   octave_lazy_index::register_type ();
+  octave_oncleanup::register_type ();
 }
-
-#if 0
-DEFUN (cast, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} cast (@var{val}, @var{type})\n\
-Convert @var{val} to the new data type @var{type}.\n\
-@seealso{class, typeinfo}\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 2)
-    error ("cast: not implemented");
-  else
-    print_usage ();
-
-  return retval;
-}
-#endif
 
 DEFUN (sizeof, args, ,
   "-*- texinfo -*-\n\
@@ -2724,6 +2708,89 @@ Return the size of @var{val} in bytes.\n\
     print_usage ();
 
   return retval;
+}
+
+/*
+%!assert (sizeof (uint64 (ones (3))), 72)
+%!assert (sizeof (double (zeros (2,4))), 64)
+%!assert (sizeof ({"foo", "bar", "baaz"}), 10)
+*/
+
+static void
+decode_subscripts (const char* name, const octave_value& arg,
+                   std::string& type_string,
+                   std::list<octave_value_list>& idx)
+{
+  const octave_map m = arg.map_value ();
+
+  if (! error_state
+      && m.nfields () == 2 && m.contains ("type") && m.contains ("subs"))
+    {
+      octave_idx_type nel = m.numel ();
+
+      type_string = std::string (nel, '\0');
+      idx = std::list<octave_value_list> ();
+
+      if (nel == 0)
+        return;
+
+      const Cell type = m.contents ("type");
+      const Cell subs = m.contents ("subs");
+
+      for (int k = 0; k < nel; k++)
+        {
+          std::string item = type(k).string_value ();
+
+          if (! error_state)
+            {
+              if (item == "{}")
+                type_string[k] = '{';
+              else if (item == "()")
+                type_string[k] = '(';
+              else if (item == ".")
+                type_string[k] = '.';
+              else
+                {
+                  error("%s: invalid indexing type `%s'", name, item.c_str ());
+                  return;
+                }
+            }
+          else
+            {
+              error ("%s: expecting type(%d) to be a character string",
+                     name, k+1);
+              return;
+            }
+
+          octave_value_list idx_item;
+
+          if (subs(k).is_string ())
+            idx_item(0) = subs(k);
+          else if (subs(k).is_cell ())
+            {
+              Cell subs_cell = subs(k).cell_value ();
+
+              for (int n = 0; n < subs_cell.length (); n++)
+                {
+                  if (subs_cell(n).is_string ()
+                      && subs_cell(n).string_value () == ":")
+                    idx_item(n) = octave_value(octave_value::magic_colon_t);
+                  else
+                    idx_item(n) = subs_cell(n);
+                }
+            }
+          else
+            {
+              error ("%s: expecting subs(%d) to be a character string or cell array",
+                     name, k+1);
+              return;
+            }
+
+          idx.push_back (idx_item);
+        }
+    }
+  else
+    error ("%s: second argument must be a structure with fields `type' and `subs'", name);
 }
 
 DEFUN (subsref, args, nargout,
@@ -2758,6 +2825,9 @@ subsref(val, idx)\n\
 \n\
 @noindent\n\
 Note that this is the same as writing @code{val(:,1:2)}.\n\
+\n\
+If @var{idx} is an empty structure array with fields @samp{type}\n\
+and @samp{subs}, return @var{val}.\n\
 @seealso{subsasgn, substruct}\n\
 @end deftypefn")
 {
@@ -2772,8 +2842,12 @@ Note that this is the same as writing @code{val(:,1:2)}.\n\
 
       if (! error_state)
         {
-          octave_value tmp = args(0);
-          retval = tmp.subsref (type, idx, nargout);
+          octave_value arg0 = args(0);
+
+          if (type.empty ())
+            retval = arg0;
+          else
+            retval = arg0.subsref (type, idx, nargout);
         }
     }
   else
@@ -2810,6 +2884,9 @@ subsasgn (val, idx, 0)\n\
 @end example\n\
 \n\
 Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
+\n\
+If @var{idx} is an empty structure array with fields @samp{type}\n\
+and @samp{subs}, return @var{rhs}.\n\
 @seealso{subsref, substruct}\n\
 @end deftypefn")
 {
@@ -2822,15 +2899,147 @@ Note that this is the same as writing @code{val(:,1:2) = 0}.\n\
 
       decode_subscripts ("subsasgn", args(1), type, idx);
 
-      octave_value arg0 = args(0);
-
-      arg0.make_unique ();
-
       if (! error_state)
-        retval = arg0.subsasgn (type, idx, args(2));
+        {
+          if (type.empty ())
+            {
+              // Regularize a null matrix if stored into a variable.
+
+              retval = args(2).storable_value ();
+            }
+          else
+            {
+              octave_value arg0 = args(0);
+
+              arg0.make_unique ();
+
+              if (! error_state)
+                retval= arg0.subsasgn (type, idx, args(2));
+            }
+        }
     }
   else
     print_usage ();
 
   return retval;
 }
+
+/*
+%!test
+%! a = reshape ([1:25], 5,5);
+%! idx1 = substruct ("()", {3, 3});
+%! idx2 = substruct ("()", {2:2:5, 2:2:5});
+%! idx3 = substruct ("()", {":", [1,5]});
+%! idx4 = struct ("type", {}, "subs", {});
+%! assert (subsref (a, idx1), 13);
+%! assert (subsref (a, idx2), [7 17; 9 19]);
+%! assert (subsref (a, idx3), [1:5; 21:25]');
+%! assert (subsref (a, idx4), a);
+%! a = subsasgn (a, idx1, 0);
+%! a = subsasgn (a, idx2, 0);
+%! a = subsasgn (a, idx3, 0);
+%!# a = subsasgn (a, idx4, 0);
+%! b = [0    6   11   16    0
+%!      0    0   12    0    0
+%!      0    8    0   18    0
+%!      0    0   14    0    0
+%!      0   10   15   20    0];
+%! assert (a,b);
+
+%!test
+%! c = num2cell (reshape ([1:25],5,5));
+%! idx1 = substruct  ("{}", {3, 3});
+%! idx2 = substruct  ("()", {2:2:5, 2:2:5});
+%! idx3 = substruct  ("()", {":", [1,5]});
+%! idx2p = substruct ("{}", {2:2:5, 2:2:5});
+%! idx3p = substruct ("{}", {":", [1,5]});
+%! idx4 = struct ("type", {}, "subs", {});
+%! assert ({ subsref(c, idx1) }, {13});
+%! assert ({ subsref(c, idx2p) }, {7 9 17 19});
+%! assert ({ subsref(c, idx3p) }, num2cell ([1:5, 21:25]));
+%! assert (subsref(c, idx4), c);
+%! c = subsasgn (c, idx1, 0);
+%! c = subsasgn (c, idx2, 0);
+%! c = subsasgn (c, idx3, 0);
+%!# c = subsasgn (c, idx4, 0);
+%! d = {0    6   11   16    0
+%!      0    0   12    0    0
+%!      0    8    0   18    0
+%!      0    0   14    0    0
+%!      0   10   15   20    0};
+%! assert (c, d);
+
+%!test
+%! s.a = "ohai";
+%! s.b = "dere";
+%! s.c = 42;
+%! idx1 = substruct (".", "a");
+%! idx2 = substruct (".", "b");
+%! idx3 = substruct (".", "c");
+%! idx4 = struct ("type", {}, "subs", {});
+%! assert (subsref (s, idx1), "ohai");
+%! assert (subsref (s, idx2), "dere");
+%! assert (subsref (s, idx3), 42);
+%! assert (subsref (s, idx4), s);
+%! s = subsasgn (s, idx1, "Hello");
+%! s = subsasgn (s, idx2, "There");
+%! s = subsasgn (s, idx3, 163);
+%!# s = subsasgn (s, idx4, 163);
+%! t.a = "Hello";
+%! t.b = "There";
+%! t.c = 163;
+%! assert (s, t);
+
+*/
+
+DEFUN (is_sq_string, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_sq_string (@var{x})\n\
+Return true if @var{x} is a single-quoted character string.\n\
+@seealso{is_dq_string, ischar}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_sq_string ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (is_sq_string ('foo'), true);
+%!assert (is_sq_string ("foo"), false);
+%!assert (is_sq_string (1.0), false);
+%!assert (is_sq_string ({2.0}), false);
+%!error is_sq_string ()
+%!error is_sq_string ('foo', 2)
+*/
+
+DEFUN (is_dq_string, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_dq_string (@var{x})\n\
+Return true if @var{x} is a double-quoted character string.\n\
+@seealso{is_sq_string, ischar}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_dq_string ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (is_dq_string ("foo"), true);
+%!assert (is_dq_string ('foo'), false);
+%!assert (is_dq_string (1.0), false);
+%!assert (is_dq_string ({2.0}), false);
+%!error is_dq_string ()
+%!error is_dq_string ("foo", 2)
+*/

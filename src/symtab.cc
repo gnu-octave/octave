@@ -25,24 +25,25 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "oct-env.h"
-#include "oct-time.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-env.h"
+#include "oct-time.h"
+#include "singleton-cleanup.h"
 
+#include "debug.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "input.h"
 #include "load-path.h"
-#include "symtab.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "pt-arg-list.h"
+#include "symtab.h"
 #include "unwind-prot.h"
 #include "utils.h"
-#include "debug.h"
 
 symbol_table *symbol_table::instance = 0;
 
@@ -68,6 +69,14 @@ symbol_table::context_id symbol_table::xcurrent_context = 0;
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
+
+void
+symbol_table::scope_id_cache::create_instance (void)
+{
+  instance = new scope_id_cache ();
+
+  singleton_cleanup_list::add (cleanup_instance);
+}
 
 void
 symbol_table::symbol_record::symbol_record_rep::dump
@@ -575,13 +584,16 @@ get_dispatch_type (const octave_value_list& args)
 //   variable
 //   subfunction
 //   private function
-//   class constructor
 //   class method
+//   class constructor
 //   legacy dispatch
 //   command-line function
 //   autoload function
 //   function on the path
 //   built-in function
+//
+// Matlab documentation states that constructors have higher precedence
+// than methods, but that does not seem to be the case.
 
 octave_value
 symbol_table::fcn_info::fcn_info_rep::find (const octave_value_list& args,
@@ -671,7 +683,7 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
                   octave_value& fval = q->second;
 
                   if (fval.is_defined ())
-                    out_of_date_check (fval);
+                    out_of_date_check (fval, "", false);
 
                   if (fval.is_defined ())
                     return fval;
@@ -685,6 +697,18 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
                 }
             }
         }
+    }
+
+  // Class methods.
+
+  if (! args.empty ())
+    {
+      std::string dispatch_type = get_dispatch_type (args);
+
+      octave_value fcn = find_method (dispatch_type);
+
+      if (fcn.is_defined ())
+        return fcn;
     }
 
   // Class constructors.  The class name and function name are the same.
@@ -714,18 +738,6 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
           if (val.is_defined ())
             return val;
         }
-    }
-
-  // Class methods.
-
-  if (! args.empty ())
-    {
-      std::string dispatch_type = get_dispatch_type (args);
-
-      octave_value fcn = find_method (dispatch_type);
-
-      if (fcn.is_defined ())
-        return fcn;
     }
 
   // Legacy dispatch.
@@ -1463,7 +1475,9 @@ need to recompiled.\n\
 {
   octave_value retval;
 
-  if (nargout > 0)
+  int nargin = args.length ();
+
+  if (nargout > 0 || nargin == 0)
     {
       switch (Vignore_function_time_stamp)
         {
@@ -1480,8 +1494,6 @@ need to recompiled.\n\
           break;
         }
     }
-
-  int nargin = args.length ();
 
   if (nargin == 1)
     {
@@ -1506,6 +1518,25 @@ need to recompiled.\n\
 
   return retval;
 }
+
+/*
+%!shared old_state
+%! old_state = ignore_function_time_stamp ();
+%!test
+%! state = ignore_function_time_stamp ("all");
+%! assert (state, old_state);
+%! assert (ignore_function_time_stamp (), "all");
+%! state = ignore_function_time_stamp ("system");
+%! assert (state, "all");
+%! assert (ignore_function_time_stamp (), "system");
+%! ignore_function_time_stamp (old_state);
+
+%% Test input validation
+%!error (ignore_function_time_stamp ("all", "all"))
+%!error (ignore_function_time_stamp ("UNKNOWN_VALUE"))
+%!error (ignore_function_time_stamp (42))
+
+*/
 
 DEFUN (__current_scope__, , ,
   "-*- texinfo -*-\n\

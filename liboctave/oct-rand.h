@@ -160,6 +160,8 @@ private:
 
   static octave_rand *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   enum
   {
     unknown_dist,

@@ -6,55 +6,30 @@ deprecated_FCN_FILES = \
   deprecated/betai.m \
   deprecated/cellidx.m \
   deprecated/clg.m \
-  deprecated/complement.m \
-  deprecated/create_set.m \
+  deprecated/cor.m \
+  deprecated/corrcoef.m \
   deprecated/cquad.m \
+  deprecated/cut.m \
   deprecated/dispatch.m \
-  deprecated/dmult.m \
   deprecated/fstat.m \
   deprecated/gammai.m \
   deprecated/glpkmex.m \
   deprecated/intwarning.m \
-  deprecated/iscommand.m \
   deprecated/is_duplicate_entry.m \
   deprecated/is_global.m \
-  deprecated/israwcommand.m \
   deprecated/isstr.m \
-  deprecated/lchol.m \
-  deprecated/loadimage.m \
   deprecated/krylovb.m \
-  deprecated/mark_as_command.m \
-  deprecated/mark_as_rawcommand.m \
   deprecated/perror.m \
+  deprecated/polyderiv.m \
   deprecated/replot.m \
   deprecated/saveimage.m \
   deprecated/setstr.m \
-  deprecated/spatan2.m \
-  deprecated/spchol2inv.m \
-  deprecated/spcholinv.m \
-  deprecated/spchol.m \
-  deprecated/spcumprod.m \
-  deprecated/spcumsum.m \
-  deprecated/spdet.m \
-  deprecated/spdiag.m \
-  deprecated/spfind.m \
+  deprecated/shell_cmd.m \
   deprecated/sphcat.m \
-  deprecated/spinv.m \
-  deprecated/spkron.m \
-  deprecated/splchol.m \
-  deprecated/split.m \
-  deprecated/splu.m \
-  deprecated/spmax.m \
-  deprecated/spmin.m \
-  deprecated/spprod.m \
-  deprecated/spqr.m \
-  deprecated/spsum.m \
-  deprecated/spsumsq.m \
   deprecated/spvcat.m \
-  deprecated/str2mat.m \
   deprecated/strerror.m \
-  deprecated/unmark_command.m \
-  deprecated/unmark_rawcommand.m \
+  deprecated/studentize.m \
+  deprecated/sylvester_matrix.m \
   deprecated/values.m \
   deprecated/weibcdf.m \
   deprecated/weibinv.m \

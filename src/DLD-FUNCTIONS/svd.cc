@@ -398,9 +398,9 @@ decomposition, eliminating the unnecessary rows or columns of @var{U} or\n\
 %! assert (size (s), [0, 0]);
 %! assert (size (v), [0, 0]);
 
-%!error <Invalid call to svd.*> svd ();
-%!error <Invalid call to svd.*> svd ([1, 2; 4, 5], 2, 3);
-%!error <Invalid call to svd.*> [u, v] = svd ([1, 2; 3, 4]);
+%!error <Invalid call to svd> svd ();
+%!error <Invalid call to svd> svd ([1, 2; 4, 5], 2, 3);
+%!error <Invalid call to svd> [u, v] = svd ([1, 2; 3, 4]);
 
 */
 
@@ -408,9 +408,14 @@ DEFUN_DLD (svd_driver, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{val} =} svd_driver ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} svd_driver (@var{new_val})\n\
+@deftypefnx {Loadable Function} {} svd_driver (@var{new_val}, \"local\")\n\
 Query or set the underlying @sc{lapack} driver used by @code{svd}.\n\
 Currently recognized values are \"gesvd\" and \"gesdd\".  The default\n\
 is \"gesvd\".\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{svd}\n\
 @end deftypefn")
 {

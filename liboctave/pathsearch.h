@@ -153,6 +153,8 @@ private:
 
     static static_members *instance;
 
+    static void cleanup_instance (void) { delete instance; instance = 0; }
+
     static bool instance_ok (void);
 
     // No copying!

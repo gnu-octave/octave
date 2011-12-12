@@ -129,7 +129,7 @@ function vi = interpn (varargin)
     error ("interpn: wrong number or incorrectly formatted input arguments");
   endif
 
-  if (any (! cellfun (@isvector, x)))
+  if (any (! cellfun ("isvector", x)))
     for i = 2 : nd
       if (! size_equal (x{1}, x{i}) || ! size_equal (x{i}, v))
         error ("interpn: dimensional mismatch");
@@ -145,8 +145,8 @@ function vi = interpn (varargin)
 
   method = tolower (method);
 
-  all_vectors = all (cellfun (@isvector, y));
-  different_lengths = numel (unique (cellfun (@numel, y))) > 1;
+  all_vectors = all (cellfun ("isvector", y));
+  different_lengths = numel (unique (cellfun ("numel", y))) > 1;
   if (all_vectors && different_lengths)
     [foobar(1:numel(y)).y] = ndgrid (y{:});
     y = {foobar.y};
@@ -174,7 +174,7 @@ function vi = interpn (varargin)
     vi(idx) = extrapval;
     vi = reshape (vi, yshape);
   elseif (strcmp (method, "spline"))
-    if (any (! cellfun (@isvector, y)))
+    if (any (! cellfun ("isvector", y)))
       for i = 2 : nd
         if (! size_equal (y{1}, y{i}))
           error ("interpn: dimensional mismatch");

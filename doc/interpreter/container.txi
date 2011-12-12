@@ -563,16 +563,11 @@ extracted by indexing with a vector of indexes
 @example
 @group
 c@{1:2@}
+     @result{} ans = a string
      @result{} ans =
-          
-          (,
-            [1] = a string
-            [2] =
           
                0.593993   0.627732
                0.377037   0.033643
-          
-          ,)
 @end group
 @end example
 

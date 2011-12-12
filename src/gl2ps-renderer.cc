@@ -199,7 +199,7 @@ glps_renderer::draw_pixels (GLsizei w, GLsizei h, GLenum format,
 void
 glps_renderer::draw_text (const text::properties& props)
 {
-  if (props.get_string ().empty ())
+  if (props.get_string ().is_empty ())
     return;
 
   set_font (props);
@@ -223,9 +223,15 @@ glps_renderer::draw_text (const text::properties& props)
   // FIXME: handle margin and surrounding box
 
   glRasterPos3d (pos(0), pos(1), pos(2));
-  gl2psTextOpt (props.get_string ().c_str (), fontname.c_str (), fontsize,
-                alignment_to_mode (halign, valign), props.get_rotation ());
 
+  octave_value string_prop = props.get_string ();
+
+  string_vector sv = string_prop.all_strings ();
+
+  std::string s = sv.join ("\n");
+
+  gl2psTextOpt (s.c_str (), fontname.c_str (), fontsize,
+                alignment_to_mode (halign, valign), props.get_rotation ());
 }
 
 #endif

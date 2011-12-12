@@ -47,3 +47,16 @@ function X = autoreg_matrix (y, k)
   endfor
 
 endfunction
+
+
+%!test
+%! K=4;
+%! A = zeros(1,K+1);
+%! A(1) = 1;
+%! B = eye(K+1);
+%! B(:,1) = 1;
+%! assert (autoreg_matrix(A,K),B);
+
+%!error autoreg_matrix()
+%!error autoreg_matrix(1)
+%!error autoreg_matrix(ones(4,1),5)

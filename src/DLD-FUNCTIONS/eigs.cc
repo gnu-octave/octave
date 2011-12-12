@@ -323,6 +323,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
   bool a_is_complex = false;
   bool b_is_complex = false;
   bool symmetric = false;
+  bool sym_tested = false;
   bool cholB = false;
   bool a_is_sparse = false;
   ColumnVector permB;
@@ -334,7 +335,6 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
   ColumnVector resid;
   ComplexColumnVector cresid;
   octave_idx_type info = 1;
-  char bmat = 'I';
 
   warned_imaginary = false;
 
@@ -399,7 +399,8 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
           else
             acm = (args(0).complex_matrix_value());
           a_is_complex = true;
-          symmetric = false; // ARAPACK doesn't special case complex symmetric
+          symmetric = false; // ARPACK doesn't special case complex symmetric
+          sym_tested = true;
         }
       else
         {
@@ -407,19 +408,17 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
             {
               asmm = (args(0).sparse_matrix_value());
               a_is_sparse = true;
-              symmetric = asmm.is_symmetric();
             }
           else
             {
               amm = (args(0).matrix_value());
-              symmetric = amm.is_symmetric();
             }
         }
 
     }
 
   // Note hold off reading B till later to avoid issues of double
-  // copies of the matrix if B is full/real while A is complex..
+  // copies of the matrix if B is full/real while A is complex.
   if (!error_state && nargin > 1 + arg_offset &&
       !(args(1 + arg_offset).is_real_scalar ()))
     {
@@ -427,7 +426,6 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
         {
           b_arg = 1+arg_offset;
           have_b = true;
-          bmat = 'G';
           b_is_complex = true;
           arg_offset++;
         }
@@ -435,7 +433,6 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
         {
           b_arg = 1+arg_offset;
           have_b = true;
-          bmat = 'G';
           arg_offset++;
         }
     }
@@ -481,10 +478,13 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
             {
               octave_value tmp;
 
-              // issym is ignored if A is not a function
+              // issym is ignored for complex matrix inputs
               tmp = map.getfield ("issym");
-              if (tmp.is_defined () && have_a_fun)
-                symmetric = tmp.double_value () != 0.;
+              if (tmp.is_defined () && !sym_tested)
+                {
+                  symmetric = tmp.double_value () != 0.;
+                  sym_tested = true;
+                }
 
               // isreal is ignored if A is not a function
               tmp = map.getfield ("isreal");
@@ -541,6 +541,15 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
     {
       error ("eigs: incorrect number of arguments");
       return retval;
+    }
+
+  // Test undeclared (no issym) matrix inputs for symmetry
+  if (!sym_tested && !have_a_fun)
+    {
+      if (a_is_sparse)
+        symmetric = asmm.is_symmetric();
+      else
+        symmetric = amm.is_symmetric();
     }
 
   if (have_b)

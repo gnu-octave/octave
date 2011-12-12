@@ -87,7 +87,7 @@ octave_change_to_directory (const std::string& newdir)
   return cd_ok;
 }
 
-DEFUN (cd, args, ,
+DEFUN (cd, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} cd dir\n\
 @deftypefnx {Command} {} chdir dir\n\
@@ -127,10 +127,18 @@ directory is not changed.\n\
     }
   else
     {
-      std::string home_dir = octave_env::get_home_directory ();
+      // Behave like Unixy shells for "cd" by itself, but be Matlab
+      // compatible if doing "current_dir = cd".
 
-      if (home_dir.empty () || ! octave_change_to_directory (home_dir))
-        return retval;
+      if (nargout == 0)
+        {
+          std::string home_dir = octave_env::get_home_directory ();
+
+          if (home_dir.empty () || ! octave_change_to_directory (home_dir))
+            return retval;
+        }
+      else
+        retval = octave_value (octave_env::get_current_directory ());
     }
 
   return retval;
@@ -179,8 +187,8 @@ system-dependent error message.\n\
           if (dir)
             {
               string_vector dirlist = dir.read ();
-              retval(0) = Cell (dirlist.sort ());
               retval(1) = 0.0;
+              retval(0) = Cell (dirlist.sort ());
             }
           else
             {
@@ -479,12 +487,10 @@ system-dependent error message.\n\
 
           int status = octave_readlink (symlink, result, msg);
 
-          retval(0) = result;
-
-          retval(1) = status;
-
           if (status < 0)
             retval(2) = msg;
+          retval(1) = status;
+          retval(0) = result;
         }
     }
   else
@@ -764,8 +770,13 @@ DEFUN (confirm_recursive_rmdir, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} confirm_recursive_rmdir (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);

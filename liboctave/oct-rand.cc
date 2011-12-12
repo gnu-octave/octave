@@ -29,18 +29,19 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <stdint.h>
 
-#include "f77-fcn.h"
-#include "lo-ieee.h"
-#include "lo-error.h"
-#include "lo-mappers.h"
-#include "oct-rand.h"
-#include "oct-time.h"
 #include "data-conv.h"
-#include "randmtzig.h"
-#include "randpoisson.h"
-#include "randgamma.h"
+#include "f77-fcn.h"
+#include "lo-error.h"
+#include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-locbuf.h"
+#include "oct-rand.h"
+#include "oct-time.h"
+#include "randgamma.h"
+#include "randmtzig.h"
+#include "randpoisson.h"
+#include "singleton-cleanup.h"
 
 extern "C"
 {
@@ -89,7 +90,12 @@ octave_rand::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_rand ();
+    {
+      instance = new octave_rand ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

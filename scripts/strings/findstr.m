@@ -17,20 +17,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
+## @deftypefn  {Function File} {} findstr (@var{s}, @var{t})
+## @deftypefnx {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
 ## Return the vector of all positions in the longer of the two strings
 ## @var{s} and @var{t} where an occurrence of the shorter of the two starts.
-## If the optional argument @var{overlap} is nonzero, the returned vector
+## If the optional argument @var{overlap} is true, the returned vector
 ## can include overlapping positions (this is the default).  For example:
 ##
 ## @example
 ## @group
 ## findstr ("ababab", "a")
-##      @result{} [1, 3, 5]
+##      @result{} [1, 3, 5];
 ## findstr ("abababa", "aba", 0)
 ##      @result{} [1, 5]
 ## @end group
 ## @end example
+##
+## @strong{Caution:} @code{findstr} is scheduled for deprecation.  Use
+## @code{strfind} in all new code.
 ## @seealso{strfind, strmatch, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
@@ -40,7 +44,7 @@
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
-function v = findstr (s, t, overlap)
+function v = findstr (s, t, overlap = true)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -50,15 +54,9 @@ function v = findstr (s, t, overlap)
     error ("findstr: arguments must have only one non-singleton dimension");
   endif
 
-  if (nargin == 2)
-    overlap = 1;
-  endif
-
   ## Make S be the longer string.
   if (length (s) < length (t))
-    tmp = s;
-    s = t;
-    t = tmp;
+    [s, t] = deal (t, s);
   endif
 
   l_s = length (s);
@@ -126,18 +124,20 @@ function v = findstr (s, t, overlap)
     v = [];
   endif
 
-  ## Always return a column vector, because that's what the old one did.
-  if (rows (v) > 1)
+  ## Always return a row vector, because that's what the old one did.
+  if (iscolumn (v))
     v = v.';
   endif
 
 endfunction
 
-%!assert ((findstr ("abababa", "a") == [1, 3, 5, 7]
-%! && findstr ("abababa", "aba") == [1, 3, 5]
-%! && findstr ("abababa", "aba", 0) == [1, 5]));
 
-%!error findstr ();
+%!assert (findstr ("abababa", "a"), [1, 3, 5, 7])
+%!assert (findstr ("abababa", "aba"), [1, 3, 5]);
+%!assert (findstr ("aba", "abababa", 0), [1, 5]);
 
+%% Test input validation
+%!error findstr ()
 %!error findstr ("foo", "bar", 3, 4);
+%!error findstr (["AB" ; "CD"], "C");
 

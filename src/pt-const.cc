@@ -34,8 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 // We are likely to have a lot of tree_constant objects to allocate,
 // so make the grow_size large.
-octave_allocator
-tree_constant::allocator (sizeof (tree_constant), 1024);
+DEFINE_OCTAVE_ALLOCATOR2 (tree_constant, 1024);
 
 void
 tree_constant::print (std::ostream& os, bool pr_as_read_syntax, bool pr_orig_text)

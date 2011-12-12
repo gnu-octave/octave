@@ -514,6 +514,13 @@ FloatNDArray::any_element_is_negative (bool neg_zero) const
 }
 
 bool
+FloatNDArray::any_element_is_positive (bool neg_zero) const
+{
+  return (neg_zero ? test_all (xpositive_sign)
+          : do_mx_check<float> (*this, mx_inline_any_positive));
+}
+
+bool
 FloatNDArray::any_element_is_nan (void) const
 {
   return do_mx_check<float> (*this, mx_inline_any_nan);
@@ -885,3 +892,5 @@ BSXFUN_STDREL_DEFS_MXLOOP (FloatNDArray)
 BSXFUN_OP_DEF_MXLOOP (pow, FloatNDArray, mx_inline_pow)
 BSXFUN_OP2_DEF_MXLOOP (pow, FloatComplexNDArray, FloatComplexNDArray,
                        FloatNDArray, mx_inline_pow)
+BSXFUN_OP2_DEF_MXLOOP (pow, FloatComplexNDArray, FloatNDArray,
+                       FloatComplexNDArray, mx_inline_pow)

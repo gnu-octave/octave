@@ -46,40 +46,35 @@ function z = interpft (x, n, dim)
     print_usage ();
   endif
 
+  if (! (isscalar (n) && n == fix (n)))
+    error ("interpft: N must be a scalar integer");
+  endif
+
   if (nargin == 2)
-    if (isvector (x) && size (x, 1) == 1)
+    if (isrow (x))
       dim = 2;
     else
       dim = 1;
     endif
   endif
 
-  if (! isscalar (n))
-    error ("interpft: N must be an integer scalar");
-  endif
-
   nd = ndims (x);
 
   if (dim < 1 || dim > nd)
-    error ("interpft: integrating over invalid dimension");
+    error ("interpft: invalid dimension DIM");
   endif
 
   perm = [dim:nd, 1:(dim-1)];
   x = permute (x, perm);
-  m = size (x, 1);
+  m = rows (x);
 
-  inc = 1;
-  while (inc*n < m)
-    inc++;
-  endwhile
+  inc = max (1, fix (m/n));
   y = fft (x) / m;
   k = floor (m / 2);
   sz = size (x);
   sz(1) = n * inc - m;
-  idx = cell (nd, 1);
-  for i = 2:nd
-    idx{i} = 1:sz(i);
-  endfor
+
+  idx = repmat ({':'}, nd, 1);
   idx{1} = 1:k;
   z = cat (1, y(idx{:}), zeros (sz));
   idx{1} = k+1:m;
@@ -92,7 +87,9 @@ function z = interpft (x, n, dim)
   endif
 
   z = ipermute (z, perm);
+
 endfunction
+
 
 %!demo
 %! t = 0 : 0.3 : pi; dt = t(2)-t(1);
@@ -110,5 +107,10 @@ endfunction
 %!assert (interpft(y', n), y', 20*eps);
 %!assert (interpft([y,y],n), [y,y], 20*eps);
 
-%!error (interpft(y,n,0))
-%!error (interpft(y,[n,n]))
+%% Test input validation
+%!error interpft ()
+%!error interpft (1)
+%!error interpft (1,2,3)
+%!error (interpft(1,[n,n]))
+%!error (interpft(1,2,0))
+%!error (interpft(1,2,3))

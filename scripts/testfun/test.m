@@ -132,7 +132,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     __rundemo = 0;
     __verbose = 0;
     __demo_code = "";
-    __demo_idx = 1;
+    __demo_idx = [];
   elseif (strcmp (__flag, "explain"))
     fprintf (__fid, "# %s new test file\n", __signal_file);
     fprintf (__fid, "# %s no tests in file\n", __signal_empty);
@@ -286,7 +286,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
           input ("Press <enter> to continue: ", "s");
         catch
           __success = 0;
-          __msg = sprintf ("%sdemo failed\n%s",  __signal_fail, __error_text__);
+          __msg = sprintf ("%sdemo failed\n%s",  __signal_fail, lasterr ());
         end_try_catch
         clear __test__;
 
@@ -359,9 +359,17 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         catch
           __success = 0;
           __msg = sprintf ("%stest failed: syntax error\n%s",
-                           __signal_fail, __error_text__);
+                           __signal_fail, lasterr ());
         end_try_catch
       endif
+      __code = "";
+
+### ENDFUNCTION
+
+    elseif (strcmp (__type, "endfunction"))
+      ## endfunction simply declares the end of a previous function block.
+      ## There is no processing to be done here, just skip to next block.
+      __istest = 0;
       __code = "";
 
 ### ASSERT/FAIL
@@ -389,7 +397,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       catch
         __success = 0;
         __msg = sprintf ("%stest failed: syntax error\n%s",
-                         __signal_fail, __error_text__);
+                         __signal_fail, lasterr ());
       end_try_catch
 
       if (__success)
@@ -488,13 +496,13 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
       catch
         if (strcmp (__type, "xtest"))
-           __msg = sprintf ("%sknown failure\n%s", __signal_fail, __error_text__);
+           __msg = sprintf ("%sknown failure\n%s", __signal_fail, lasterr ());
            __xfail++;
         else
-           __msg = sprintf ("%stest failed\n%s", __signal_fail, __error_text__);
+           __msg = sprintf ("%stest failed\n%s", __signal_fail, lasterr ());
            __success = 0;
         endif
-        if (isempty (__error_text__))
+        if (isempty (lasterr ()))
           error ("empty error text, probably Ctrl-C --- aborting");
         endif
       end_try_catch
@@ -669,13 +677,14 @@ endfunction
 %!xtest error("This test is known to fail")
 
 ### example from toeplitz
-%!shared msg
-%! msg="expecting vector arguments";
-%!fail ('toeplitz([])', msg);
-%!fail ('toeplitz([1,2],[])', msg);
-%!fail ('toeplitz([1,2;3,4])', msg);
-%!fail ('toeplitz([1,2],[1,2;3,4])', msg);
-%!fail ('toeplitz ([1,2;3,4],[1,2])', msg);
+%!shared msg1,msg2
+%! msg1="C must be a vector";
+%! msg2="C and R must be vectors";
+%!fail ('toeplitz([])', msg1);
+%!fail ('toeplitz([1,2;3,4])', msg1);
+%!fail ('toeplitz([1,2],[])', msg2);
+%!fail ('toeplitz([1,2],[1,2;3,4])', msg2);
+%!fail ('toeplitz ([1,2;3,4],[1,2])', msg2);
 % !fail ('toeplitz','usage: toeplitz'); # usage doesn't generate an error
 % !fail ('toeplitz(1, 2, 3)', 'usage: toeplitz');
 %!test  assert (toeplitz ([1,2,3], [1,4]), [1,4; 2,1; 3,2]);
@@ -761,16 +770,19 @@ endfunction
 
 %!function x = __test_a(y)
 %! x = 2*y;
+%!endfunction
 %!assert(__test_a(2),4);       # Test a test function
 
 %!function __test_a (y)
 %! x = 2*y;
+%!endfunction
 %!test
 %! __test_a(2);                # Test a test function with no return value
 
 %!function [x,z] = __test_a (y)
 %! x = 2*y;
 %! z = 3*y;
+%!endfunction
 %!test                   # Test a test function with multiple returns
 %! [x,z] = __test_a(3);
 %! assert(x,6);

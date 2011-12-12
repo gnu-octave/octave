@@ -242,7 +242,7 @@ FloatComplexColumnVector::abs (void) const
 FloatComplexColumnVector
 conj (const FloatComplexColumnVector& a)
 {
-  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj> (a);
+  return do_mx_unary_map<FloatComplex, FloatComplex, std::conj<float> > (a);
 }
 
 // resize is the destructive equivalent for this one

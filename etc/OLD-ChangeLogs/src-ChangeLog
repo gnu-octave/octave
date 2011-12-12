@@ -1,10 +1,15 @@
+2011-04-19  Kai Habel  <kai.habel@gmx.de>
+
+	* src/DLD-FUNCTIONS/__init_fltk__.cc(plot_window::plot_window):
+	Instantiate canvas before uimenu.
+
 2011-04-13  Rik  <octave@nomad.inbox5.com>
 
 	* help.cc: Add spaces after commas in @seealso blocks.
 
 2011-04-12  Rik  <octave@nomad.inbox5.com>
 
-	* load-path.cc (restoredefaultpath): Correct use of it's -> its in 
+	* load-path.cc (restoredefaultpath): Correct use of it's -> its in
 	documentation.
 
 2011-04-10  John Eaton  <jwe@octave.org>
@@ -90,7 +95,7 @@
 
 	* DLD-FUNCTIONS/inv.cc (inv, inverse), DLD-FUNCTIONS/tril.cc (tril),
 	data.cc (cumsum, szie), file-io.cc (fgets), ov-typeinfo.cc (typeinfo),
-	ov-usr-fcn.cc (nargout), utils.cc (make_absolute_filename), 
+	ov-usr-fcn.cc (nargout), utils.cc (make_absolute_filename),
 	variables.cc (who): Improve docstrings
 
 2011-03-25  John W. Eaton  <jwe@octave.org>
@@ -339,6 +344,10 @@
 
 	* pr-output.cc (INSTANTIATE_ABS): Omit inline keyword from
 	template instantiation.  From Orion Poplawski <orion@cora.nwra.com>.
+
+2011-02-08  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/chol.cc: Delete obsolete test of spcholinv.
 
 2011-02-08  John W. Eaton  <jwe@octave.org>
 

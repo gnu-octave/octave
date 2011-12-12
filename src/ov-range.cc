@@ -370,7 +370,9 @@ octave_range::print_name_tag (std::ostream& os, const std::string& name) const
     {
       os << name << " =";
       newline (os);
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       retval = true;
     }
 
@@ -647,11 +649,36 @@ DEFUN (allow_noninteger_range_as_index, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} allow_noninteger_range_as_index ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} allow_noninteger_range_as_index (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} allow_noninteger_range_as_index (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether non-integer\n\
 ranges are allowed as indices.  This might be useful for @sc{matlab}\n\
 compatibility; however, it is still not entirely compatible because\n\
 @sc{matlab} treats the range expression differently in different contexts.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (allow_noninteger_range_as_index);
 }
+
+/*
+%!test
+%! x = 0:10;
+%! save = allow_noninteger_range_as_index ();
+%! warn_state = warning ("query", "Octave:noninteger-range-as-index");
+%! unwind_protect
+%!   save = allow_noninteger_range_as_index (false);
+%!   fail ('x(2.1:5)');
+%!   assert (x(2:5), 1:4);
+%!   allow_noninteger_range_as_index (true);
+%!   warning ("off", "Octave:noninteger-range-as-index");
+%!   assert (x(2.49:5), 1:3);
+%!   assert (x(2.5:5), 2:4);
+%!   assert (x(2.51:5), 2:4);
+%! unwind_protect_cleanup
+%!   allow_noninteger_range_as_index (save);
+%!   warning (warn_state.state, warn_state.identifier);
+%! end_unwind_protect
+*/

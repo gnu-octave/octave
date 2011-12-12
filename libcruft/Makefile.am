@@ -3,17 +3,17 @@
 # Copyright (C) 1993-2011 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
@@ -34,6 +34,13 @@ libcruft_la_CPPFLAGS = \
   @CRUFT_DLL_DEFS@ \
   $(AM_CPPFLAGS)
 
+include link-deps.mk
+
+libcruft_la_LIBADD = \
+  libranlib.la \
+  ../libgnu/libgnu.la \
+  $(LIBCRUFT_LINK_DEPS)
+
 # Increment these as needed and according to the rules in the libtool
 # manual:
 libcruft_current = 0
@@ -46,13 +53,8 @@ libcruft_la_LDFLAGS = \
   -version-info $(libcruft_version_info) \
   $(NO_UNDEFINED_LDFLAG) \
   @XTRA_CRUFT_SH_LDFLAGS@ \
-  -bindir $(bindir)
-
-libcruft_la_LIBADD = \
-  ../libgnu/libgnu.la \
-  libranlib.la \
-  $(LAPACK_LIBS) $(BLAS_LIBS) \
-  $(FLIBS)
+  -bindir $(bindir) \
+  $(LIBCRUFT_LINK_OPTS)
 
 libcruft_la_DEPENDENCIES = cruft.def
 

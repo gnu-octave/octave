@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <lo-mappers.h>
 #include "oct-locbuf.h"
+#include "oct-refcount.h"
 #include "gl-render.h"
 #include "txt-eng.h"
 #include "txt-eng-ft.h"
@@ -544,7 +545,7 @@ private:
 };
 
 void
-opengl_renderer::draw (const graphics_object& go)
+opengl_renderer::draw (const graphics_object& go, bool toplevel)
 {
   if (! go.valid_object ())
     return;
@@ -567,11 +568,20 @@ opengl_renderer::draw (const graphics_object& go)
     draw_text (dynamic_cast<const text::properties&> (props));
   else if (go.isa ("image"))
     draw_image (dynamic_cast<const image::properties&> (props));
-  else if (go.isa ("uimenu"))
-    ;
+  else if (go.isa ("uimenu") || go.isa ("uicontrol")
+           || go.isa ("uicontextmenu") || go.isa ("uitoolbar")
+           || go.isa ("uipushtool") || go.isa ("uitoggletool"))
+    /* SKIP */;
+  else if (go.isa ("uipanel"))
+    {
+      if (toplevel)
+        draw_uipanel (dynamic_cast<const uipanel::properties&> (props), go);
+    }
   else
-    warning ("opengl_renderer: cannot render object of type `%s'",
-             props.graphics_object_name ().c_str ());
+    {
+      warning ("opengl_renderer: cannot render object of type `%s'",
+               props.graphics_object_name ().c_str ());
+    }
 }
 
 void
@@ -581,13 +591,45 @@ opengl_renderer::draw_figure (const figure::properties& props)
 
   // Initialize OpenGL context
 
+  init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
+
+  // Draw children
+
+  draw (props.get_all_children (), false);
+}
+
+void
+opengl_renderer::draw_uipanel (const uipanel::properties& props,
+                               const graphics_object& go)
+{
+  graphics_object fig = go.get_ancestor ("figure");
+  const figure::properties& figProps =
+    dynamic_cast<const figure::properties&> (fig.get_properties ());
+
+  toolkit = figProps.get_toolkit ();
+
+  // Initialize OpenGL context 
+
+  init_gl_context (figProps.is___enhanced__ (),
+                   props.get_backgroundcolor_rgb ());
+
+  // Draw children
+
+  draw (props.get_all_children (), false);
+}
+
+void
+opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
+{
+  // Initialize OpenGL context
+
   glEnable (GL_DEPTH_TEST);
   glDepthFunc (GL_LEQUAL);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glAlphaFunc (GL_GREATER, 0.0f);
   glEnable (GL_NORMALIZE);
 
-  if (props.is___enhanced__ ())
+  if (enhanced)
     {
       glEnable (GL_BLEND);
       glEnable (GL_LINE_SMOOTH);
@@ -600,17 +642,11 @@ opengl_renderer::draw_figure (const figure::properties& props)
 
   // Clear background
 
-  Matrix c = props.get_color_rgb ();
-
   if (c.length() >= 3)
     {
       glClearColor (c(0), c(1), c(2), 1);
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
-
-  // Draw children
-
-  draw (props.get_all_children ());
 }
 
 void
@@ -665,7 +701,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
                                    double p1, double p1N,
                                    double p2, double p2N,
                                    double dx, double dy, double dz,
-                                   int xyz, bool doubleside)
+                                   int xyz, bool mirror)
 {
   glBegin (GL_LINES);
 
@@ -679,7 +715,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
             {
               glVertex3d (val, p1, p2);
               glVertex3d (val, p1+dy, p2+dz);
-              if (doubleside)
+              if (mirror)
                 {
                   glVertex3d (val, p1N, p2N);
                   glVertex3d (val, p1N-dy, p2N-dz);
@@ -689,7 +725,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
             {
               glVertex3d (p1, val, p2);
               glVertex3d (p1+dx, val, p2+dz);
-              if (doubleside)
+              if (mirror)
                 {
                   glVertex3d (p1N, val, p2N);
                   glVertex3d (p1N-dx, val, p2N-dz);
@@ -699,7 +735,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
             {
               glVertex3d (p1, p2, val);
               glVertex3d (p1+dx, p2+dy, val);
-              if (doubleside)
+              if (mirror)
                 {
                   glVertex3d (p1N, p2N, val);
                   glVertex3d (p1N-dx, p2N-dy, val);
@@ -849,7 +885,7 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
   double ypTickN = props.get_ypTickN ();
   double zpTickN = props.get_zpTickN ();
 
-  bool plotyy = (props.get_tag () == "plotyy");
+  bool plotyy = (props.has_property ("__plotyy_axes__"));
 
   // Axes box
 
@@ -966,7 +1002,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       string_vector xticklabels = props.get_xticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fy);
-      bool box = props.is_box ();
+      bool mirror = props.is_box () && xstate != AXE_ANY_DIR;
 
       set_color (props.get_xcolor_rgb ());
 
@@ -982,14 +1018,14 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTick,
                             zpTick, zpTickN, 0., 0.,
                             signum(zpTick-zpTickN)*fz*xticklen,
-                            0, (box && xstate != AXE_ANY_DIR));
+                            0, mirror);
         }
       else
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN,
                             zpTick, zpTick, 0.,
                             signum(ypTick-ypTickN)*fy*xticklen,
-                            0., 0, (box && xstate != AXE_ANY_DIR));
+                            0., 0, mirror);
         }
 
       // tick texts
@@ -1021,12 +1057,12 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
                               zpTick, zpTickN, 0., 0.,
                               signum(zpTick-zpTickN)*fz*xticklen/2,
-                              0, (box && xstate != AXE_ANY_DIR));
+                              0, mirror);
           else
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
                               zpTick, zpTick, 0.,
                               signum(ypTick-ypTickN)*fy*xticklen/2,
-                              0., 0, (box && xstate != AXE_ANY_DIR));
+                              0., 0, mirror);
         }
 
       gh_manager::get_object (props.get_xlabel ()).set ("visible", "on");
@@ -1073,7 +1109,8 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       string_vector yticklabels = props.get_yticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
       bool tick_along_z = nearhoriz || xisinf (fx);
-      bool box = props.is_box ();
+      bool mirror = props.is_box () && ystate != AXE_ANY_DIR
+                    && (! props.has_property ("__plotyy_axes__"));
 
       set_color (props.get_ycolor_rgb ());
 
@@ -1088,12 +1125,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTick,
                           zpTick, zpTickN, 0., 0.,
                           signum(zpTick-zpTickN)*fz*yticklen,
-                          1, (box && ystate != AXE_ANY_DIR));
+                          1, mirror);
       else
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN,
                           zpTick, zpTick,
                           signum(xPlaneN-xPlane)*fx*yticklen,
-                          0., 0., 1, (box && ystate != AXE_ANY_DIR));
+                          0., 0., 1, mirror);
 
       // tick texts
       if (yticklabels.numel () > 0)
@@ -1125,12 +1162,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
                               zpTick, zpTickN, 0., 0.,
                               signum(zpTick-zpTickN)*fz*yticklen/2,
-                              1, (box && ystate != AXE_ANY_DIR));
+                              1, mirror);
           else
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
                               zpTick, zpTick,
                               signum(xpTick-xpTickN)*fx*yticklen/2,
-                              0., 0., 1, (box && ystate != AXE_ANY_DIR));
+                              0., 0., 1, mirror);
         }
 
       gh_manager::get_object (props.get_ylabel ()).set ("visible", "on");
@@ -1169,7 +1206,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       Matrix zmticks = xform.zscale (props.get_zmtick ().matrix_value ());
       string_vector zticklabels = props.get_zticklabel ().all_strings ();
       int wmax = 0, hmax = 0;
-      bool box = props.is_box ();
+      bool mirror = props.is_box () && zstate != AXE_ANY_DIR;
 
       set_color (props.get_zcolor_rgb ());
 
@@ -1185,7 +1222,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlane, yPlane,
                               signum(xPlaneN-xPlane)*fx*zticklen,
-                              0., 0., 2, (box && zstate != AXE_ANY_DIR));
+                              0., 0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
                               yPlane, yPlane, 0.,
@@ -1198,7 +1235,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlaneN, yPlane, 0.,
                               signum(yPlaneN-yPlane)*fy*zticklen,
-                              0., 2, (box && zstate != AXE_ANY_DIR));
+                              0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
                               yPlaneN, yPlane,
@@ -1250,7 +1287,7 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
                                   yPlane, yPlane,
                                   signum(xPlaneN-xPlane)*fx*zticklen/2,
-                                  0., 0., 2, (box && zstate != AXE_ANY_DIR));
+                                  0., 0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
                                   yPlane, yPlane, 0.,
@@ -1263,13 +1300,13 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlane, 0.,
                                   signum(yPlaneN-yPlane)*fy*zticklen/2,
-                                  0., 2, (box && zstate != AXE_ANY_DIR));
+                                  0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlaneN,
                                   signum(xPlane-xPlaneN)*fx*zticklen/2,
                                   0., 0., 2, false);
-            }            
+            }
         }
 
       gh_manager::get_object (props.get_zlabel ()).set ("visible", "on");
@@ -2373,7 +2410,7 @@ opengl_renderer::draw_patch (const patch::properties &props)
             {
               if (c.numel () == 0)
                 c = props.get_color_data ().matrix_value ();
-              has_markerfacecolor = ((c.numel () > 0) 
+              has_markerfacecolor = ((c.numel () > 0)
                                     && (c.rows () == f.rows ()));
             }
         }
@@ -2421,10 +2458,10 @@ opengl_renderer::draw_hggroup (const hggroup::properties &props)
 void
 opengl_renderer::draw_text (const text::properties& props)
 {
-  if (props.get_string ().empty ())
+  if (props.get_string ().is_empty ())
     return;
 
-  const Matrix pos = xform.scale (props.get_data_position ());
+  Matrix pos = xform.scale (props.get_data_position ());
   const Matrix bbox = props.get_extent_matrix ();
 
   // FIXME: handle margin and surrounding box
@@ -2432,7 +2469,7 @@ opengl_renderer::draw_text (const text::properties& props)
 
   glEnable (GL_BLEND);
   glEnable (GL_ALPHA_TEST);
-  glRasterPos3d (pos(0), pos(1), pos(2));
+  glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
   glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
   glDrawPixels (bbox(2), bbox(3),
                 GL_RGBA, GL_UNSIGNED_BYTE, props.get_pixels ().data ());
@@ -2448,7 +2485,6 @@ opengl_renderer::draw_image (const image::properties& props)
   octave_value cdata = props.get_color_data ();
   dim_vector dv (cdata.dims ());
   int h = dv(0), w = dv(1);
-  bool ok = true;
 
   Matrix x = props.get_xdata ().matrix_value ();
   Matrix y = props.get_ydata ().matrix_value ();
@@ -2592,16 +2628,11 @@ opengl_renderer::draw_image (const image::properties& props)
           draw_pixels (j1-j0, i1-i0, GL_RGB, GL_UNSIGNED_BYTE, a);
         }
       else
-        {
-          ok = false;
-          warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
-        }
+        warning ("opengl_texture::draw: invalid image data type (expected double, uint16, or uint8)");
     }
   else
-    {
-      ok = false;
-      warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");
-    }
+    warning ("opengl_texture::draw: invalid image size (expected n*m*3 or n*m)");
+
   glPixelZoom (1, 1);
 }
 
@@ -2857,7 +2888,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
         glBegin (GL_POLYGON);
         for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-          glVertex2d (sz*cos(ang)/6, sz*sin(ang)/6);
+          glVertex2d (sz*cos(ang)/3, sz*sin(ang)/3);
         glEnd ();
       }
       break;

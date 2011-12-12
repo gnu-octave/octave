@@ -40,7 +40,7 @@ function whitebg (varargin)
   h = 0;
   color = NaN;
 
-  if (nargin > 0 && nargin < 2)
+  if (nargin > 0 && nargin < 3)
     if (ishandle (varargin{1}))
       h = varargin{1};
       if (nargin == 2)
@@ -74,7 +74,7 @@ function whitebg (varargin)
     if (isroot)
       fac = get (0, "factory");
       fields = fieldnames (fac);
-      fieldindex = intersect (find (!cellfun (@isempty, regexp(fields, 'color'))), union (find (!cellfun (@isempty, regexp(fields, 'factoryaxes.*'))), find (!cellfun (@isempty, regexp(fields, 'factoryfigure.*')))));
+      fieldindex = intersect (find (!cellfun ("isempty", regexp(fields, 'color'))), union (find (!cellfun ("isempty", regexp(fields, 'factoryaxes.*'))), find (!cellfun ("isempty", regexp(fields, 'factoryfigure.*')))));
 
       ## Check whether the factory value has been replaced
       for nf = 1 : numel (fieldindex);
@@ -104,7 +104,7 @@ function whitebg (varargin)
     for nh = 1 : numel(h)
       p = get (h (nh));
       fields = fieldnames (p);
-      fieldindex = find (!cellfun (@isempty, regexp(fields, 'color')));
+      fieldindex = find (!cellfun ("isempty", regexp(fields, 'color')));
       if (numel (fieldindex))
         for nf = 1 : numel (fieldindex);
           field = fields {fieldindex (nf)};
@@ -121,7 +121,7 @@ function whitebg (varargin)
         def = get (h (nh), "default");
         fields = fieldnames (def);
         if (! isempty (fields))
-          fieldindex = find (!cellfun (@isempty, regexp(fields, 'color')));
+          fieldindex = find (!cellfun ("isempty", regexp(fields, 'color')));
           for nf = 1 : numel (fieldindex)
             defaultfield = fields {fieldindex (nf)};
             defaultvalue = 1 - subsref (def, struct ("type", ".", "subs", defaultfield));
@@ -143,3 +143,22 @@ function whitebg (varargin)
     endif
   endif
 endfunction
+
+%!test
+%! dac = get (0, "defaultaxescolor");
+%! dfc = get (0, "defaultfigurecolor");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   l = line;
+%!   assert (get (hf, "color"), dfc);
+%!   assert (get (gca, "color"), dac);
+%!   whitebg (hf);
+%!   assert (get (hf, "color"), 1 - dfc);
+%!   assert (get (gca, "color"), 1 - dac);
+%!   c = [0.2 0.2 0.2];
+%!   whitebg (hf, c);
+%!   assert (get (hf, "color"), 1 - dfc);
+%!   assert (get (gca, "color"), c);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

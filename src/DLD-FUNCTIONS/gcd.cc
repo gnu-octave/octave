@@ -522,7 +522,7 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 %!assert(gcd (uint64(200), uint64(300), uint64(50), uint64(35)), uint64(5))
 %!assert(gcd (18-i, -29+3i), -3-4i)
 
-%!error <Invalid call to gcd.*> gcd ();
+%!error <Invalid call to gcd> gcd ();
 
 %!test
 %! s.a = 1;

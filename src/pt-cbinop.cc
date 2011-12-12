@@ -84,7 +84,9 @@ strip_not (tree_expression *&exp)
 static octave_value::compound_binary_op
 simplify_mul_op (tree_expression *&a, tree_expression *&b)
 {
-  octave_value::compound_binary_op retop;
+  octave_value::compound_binary_op retop
+    = octave_value::unknown_compound_binary_op;
+
   octave_value::unary_op opa = strip_trans_herm (a);
 
   if (opa == octave_value::op_hermitian)
@@ -99,8 +101,6 @@ simplify_mul_op (tree_expression *&a, tree_expression *&b)
         retop = octave_value::op_mul_herm;
       else if (opb == octave_value::op_transpose)
         retop = octave_value::op_mul_trans;
-      else
-        retop = octave_value::unknown_compound_binary_op;
     }
 
   return retop;
@@ -111,15 +111,15 @@ simplify_mul_op (tree_expression *&a, tree_expression *&b)
 static octave_value::compound_binary_op
 simplify_ldiv_op (tree_expression *&a, tree_expression *&)
 {
-  octave_value::compound_binary_op retop;
+  octave_value::compound_binary_op retop
+    = octave_value::unknown_compound_binary_op;
+
   octave_value::unary_op opa = strip_trans_herm (a);
 
   if (opa == octave_value::op_hermitian)
     retop = octave_value::op_herm_ldiv;
   else if (opa == octave_value::op_transpose)
     retop = octave_value::op_trans_ldiv;
-  else
-    retop = octave_value::unknown_compound_binary_op;
 
   return retop;
 }
@@ -129,7 +129,9 @@ simplify_ldiv_op (tree_expression *&a, tree_expression *&)
 static octave_value::compound_binary_op
 simplify_and_or_op (tree_expression *&a, tree_expression *&b, octave_value::binary_op op)
 {
-  octave_value::compound_binary_op retop;
+  octave_value::compound_binary_op retop
+    = octave_value::unknown_compound_binary_op;
+
   octave_value::unary_op opa = strip_not (a);
 
   if (opa == octave_value::op_not)
@@ -150,8 +152,6 @@ simplify_and_or_op (tree_expression *&a, tree_expression *&b, octave_value::bina
           else if (op == octave_value::op_el_or)
             retop = octave_value::op_el_or_not;
         }
-      else
-        retop = octave_value::unknown_compound_binary_op;
     }
 
   return retop;

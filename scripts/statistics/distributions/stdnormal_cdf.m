@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,8 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stdnormal_cdf (@var{x})
-## For each component of @var{x}, compute the CDF of the standard normal
-## distribution at @var{x}.
+## For each element of @var{x}, compute the cumulative distribution
+## function (CDF) at @var{x} of the standard normal distribution
+## (mean = 0, standard deviation = 1).
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -31,9 +33,8 @@ function cdf = stdnormal_cdf (x)
     print_usage ();
   endif
 
-  sz = size (x);
-  if (numel(x) == 0)
-    error ("stdnormal_cdf: X must not be empty");
+  if (iscomplex (x))
+    error ("stdnormal_cdf: X must not be complex");
   endif
 
   cdf = erfc (x / (-sqrt(2))) / 2;
@@ -41,5 +42,16 @@ function cdf = stdnormal_cdf (x)
 endfunction
 
 
+%!shared x,y
+%! x = [-Inf 0 1 Inf];
+%! y = [0, 0.5, 1/2*(1+erf(1/sqrt(2))), 1];
+%!assert(stdnormal_cdf ([x, NaN]), [y, NaN]);
 
+%% Test class of input preserved
+%!assert(stdnormal_cdf (single([x, NaN])), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error stdnormal_cdf ()
+%!error stdnormal_cdf (1,2)
+%!error stdnormal_cdf (i)
 

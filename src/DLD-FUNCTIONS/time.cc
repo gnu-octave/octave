@@ -186,9 +186,9 @@ gmtime (time ())\n\
 %! && isfield (ts, "isdst")
 %! && isfield (ts, "yday")));
 
-%!error <Invalid call to gmtime.*> gmtime ();
+%!error <Invalid call to gmtime> gmtime ();
 
-%!error <Invalid call to gmtime.*> gmtime (1, 2);
+%!error <Invalid call to gmtime> gmtime (1, 2);
 
 */
 
@@ -250,9 +250,9 @@ localtime (time ())\n\
 %! && isfield (ts, "isdst")
 %! && isfield (ts, "yday")));
 
-%!error <Invalid call to localtime.*> localtime ();
+%!error <Invalid call to localtime> localtime ();
 
-%!error <Invalid call to localtime.*> localtime (1, 2);
+%!error <Invalid call to localtime> localtime (1, 2);
 
 */
 
@@ -301,9 +301,9 @@ mktime (localtime (time ()))\n\
 %! t = time ();
 %! assert(fix (mktime (localtime (t))) == fix (t));
 
-%!error <Invalid call to mktime.*> mktime ();
+%!error <Invalid call to mktime> mktime ();
 
-%!error <Invalid call to mktime.*> mktime (1, 2, 3);
+%!error <Invalid call to mktime> mktime (1, 2, 3);
 
 %% These tests fail on systems with mktime functions of limited
 %% intelligence:
@@ -505,9 +505,9 @@ Year (1970-).\n\
 %! && ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ())))
 %! && ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ())))));
 
-%!error <Invalid call to strftime.*> strftime ();
+%!error <Invalid call to strftime> strftime ();
 
-%!error <Invalid call to strftime.*> strftime ("foo", localtime (time ()), 1);
+%!error <Invalid call to strftime> strftime ("foo", localtime (time ()), 1);
 
 */
 

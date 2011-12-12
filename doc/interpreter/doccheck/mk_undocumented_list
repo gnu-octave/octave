@@ -82,7 +82,6 @@ chdir
 comma
 debug
 dbnext
-error_text
 exit
 F_DUPFD
 F_GETFD
@@ -121,7 +120,6 @@ SEEK_CUR
 SEEK_END
 semicolon
 setenv
-shell_cmd
 toc
 triu
 unimplemented

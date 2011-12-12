@@ -58,7 +58,8 @@
 ## @seealso{optimset, lsqnonneg, qp}
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("pqpnonneg");
+## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
+## PKG_ADD: [~] = __all_opts__ ("pqpnonneg");
 
 ## This is analogical to the lsqnonneg implementation, which is
 ## implemented from Lawson and Hanson's 1973 algorithm on page

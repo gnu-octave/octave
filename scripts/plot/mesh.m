@@ -34,7 +34,7 @@
 ## specified independent of @var{z}, by adding a fourth matrix, @var{c}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created
-## suface object.
+## surface object.
 ## @seealso{colormap, contour, meshgrid, surf}
 ## @end deftypefn
 

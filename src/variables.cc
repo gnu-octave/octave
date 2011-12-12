@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "regex-match.h"
+#include "regexp.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -2050,9 +2050,7 @@ name_matches_any_pattern (const std::string& nm, const string_vector& argv,
         {
           if (have_regexp)
             {
-              regex_match pattern (patstr);
-
-              if (pattern.match (nm))
+              if (is_regexp_match (patstr, nm))
                 {
                   retval = true;
                   break;

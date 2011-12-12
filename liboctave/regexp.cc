@@ -31,7 +31,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <vector>
 
+#if defined (HAVE_PCRE_H)
 #include <pcre.h>
+#elif defined (HAVE_PCRE_PCRE_H)
+#include <pcre/pcre.h>
+#endif
 
 #include "Matrix.h"
 #include "base-list.h"

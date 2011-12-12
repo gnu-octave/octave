@@ -662,12 +662,17 @@ REGEX_LIBS=
 
 pcre_fail_msg="to build Octave, you must have the PCRE library and header files installed"
 
-## NB: no need to do separate check for pcre.h header -- checking
-## macros is good enough
+AC_CHECK_HEADERS([pcre.h pcre/pcre.h])
+
 AC_CACHE_CHECK([whether pcre.h defines the macros we need],
   [ac_cv_pcre_h_macros_present],
   [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
+#if defined (HAVE_PCRE_H)
 #include <pcre.h>
+#elif defined (HAVE_PCRE_PCRE_H)
+#include <pcre.h>
+#error "NO PCRE HEADER"
+#endif
 #if defined (PCRE_INFO_NAMECOUNT) \
   && defined (PCRE_INFO_NAMEENTRYSIZE) \
   && defined (PCRE_INFO_NAMETABLE)

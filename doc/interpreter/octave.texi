@@ -383,6 +383,10 @@ Expressions
 * Increment Ops::               
 * Operator Precedence::         
 
+Index Expressions
+
+* Advanced Indexing::           
+
 Calling Functions
 
 * Call by Value::               

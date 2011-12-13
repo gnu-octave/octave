@@ -374,7 +374,8 @@ in.call1
 
 Besides the index operator ".", Octave can use dynamic naming "(var)" or the
 @code{struct} function to create structures.  Dynamic naming uses the string
-value of a variable as the field name.  For example,
+value of a variable as the field name.  For example:
+
 @example
 @group
 a = "field2";

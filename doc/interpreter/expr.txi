@@ -62,7 +62,7 @@ When using a single index expression to index 2-D or higher data the
 elements of the array are taken in column-first order (like Fortran).
 
 The output from indexing assumes the dimensions of the index
-expression.  For example,
+expression.  For example:
 
 @example
 @group
@@ -77,8 +77,10 @@ is a column vector containing all the elements of the vector or
 matrix.  For example:
 
 @example
+@group
 a(:)       # result is a column vector
 a(:)'      # result is a row vector
+@end group
 @end example
 
 The above two code idioms are often used in place of @code{reshape}
@@ -149,7 +151,6 @@ of extents of the original dimensions.  This is easiest to understand
 with an example.
 
 @example
-@group
 a = reshape (1:8, 2, 2, 2)  # Create 3-D array
 a =
 
@@ -169,7 +170,6 @@ a(2,1);     # Case (m < n), idx within array:
 a(2,4);     # Case (m < n), idx outside array:
             # Dimension 2 & 3 folded into new dimension of size 2x2 = 4
             # Select 2nd row, 4th element of [2, 4, 6, 8], ans = 8
-@end group
 @end example
 
 One advanced use of indexing is to create arrays filled with a single

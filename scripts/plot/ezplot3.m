@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} ezplot3 (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezplot3 (@dots{})
 ##
-## Plots in three-dimensions the curve defined parametrically.
+## Plot a parametrically defined curve in three dimensions.
 ## @var{fx}, @var{fy}, and @var{fz} are strings, inline functions
 ## or function handles with one arguments defining the function.  By
 ## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi}

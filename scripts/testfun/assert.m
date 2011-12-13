@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected})
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected}, @var{tol})
 ##
-## Produces an error if the condition is not met.  @code{assert} can be
+## Produce an error if the condition is not met.  @code{assert} can be
 ## called in three different ways.
 ##
 ## @table @code

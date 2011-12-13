@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} ezsurf (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezsurf (@dots{})
 ##
-## Plots the surface defined by a function.  @var{f} is a string, inline
+## Plot the surface defined by a function.  @var{f} is a string, inline
 ## function or function handle with two arguments defining the function.  By
 ## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
 ## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.

@@ -647,7 +647,7 @@ DEFUN_DLD (etree, args, nargout,
 @deftypefnx {Loadable Function} {@var{p} =} etree (@var{S}, @var{typ})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})\n\
 \n\
-Returns the elimination tree for the matrix @var{S}.  By default @var{S}\n\
+Return the elimination tree for the matrix @var{S}.  By default @var{S}\n\
 is assumed to be symmetric and the symmetric elimination tree is\n\
 returned.  The argument @var{typ} controls whether a symmetric or\n\
 column elimination tree is returned.  Valid values of @var{typ} are\n\

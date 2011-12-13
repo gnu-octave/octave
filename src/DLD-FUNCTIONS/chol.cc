@@ -129,8 +129,9 @@ $ L L^T = A $.\n\
 \n\
 @end ifnottex\n\
 \n\
-For full matrices, if the 'lower' flag is set only the lower triangular part of the matrix \
-is used for the factorization, otherwise the upper triangular part is used.\n\
+For full matrices, if the 'lower' flag is set only the lower triangular part\n\
+of the matrix is used for the factorization, otherwise the upper triangular\n\
+part is used.\n\
 \n\
 In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\

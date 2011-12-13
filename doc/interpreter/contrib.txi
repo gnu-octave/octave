@@ -71,7 +71,7 @@ hg export -o ../cool.diff tip
 @end example
 
 You may want to get familiar with Mercurial queues to manage your
-changesets. Here is a slightly more complex example using Mercurial
+changesets.  Here is a slightly more complex example using Mercurial
 queues, where work on two unrelated changesets is done in parallel and
 one of the changesets is updated after discussion on the maintainers
 mailing list:
@@ -154,7 +154,7 @@ example:
 look for methods before constructors
 
 * symtab.cc (symbol_table::fcn_info::fcn_info_rep::find):
-Look for class methods before constructors, contrary to Matlab
+Look for class methods before constructors, contrary to @sc{matlab}
 documentation.
 
 * test/ctor-vs-method: New directory of test classes.

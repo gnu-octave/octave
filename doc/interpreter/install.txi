@@ -82,7 +82,7 @@ recommended for general use.
 @item --disable-docs
 Disable building all forms of the documentation (Info, PDF, HTML).  The
 default is to build documentation, but your system will need functioning
-Texinfo and Tex installs for this to succeed.
+Texinfo and @TeX{} installs for this to succeed.
 
 @item --enable-float-truncate
 This option allows for truncation of intermediate floating point results

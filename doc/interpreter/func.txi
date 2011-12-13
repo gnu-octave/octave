@@ -290,8 +290,8 @@ dimensions, and it is often desirable to give the individual return
 values distinct names.
 
 It is possible to use the @code{nthargout} function to obtain only some
-of the return values or several at once in a cell array. @ref{Cell Array
-Objects}
+of the return values or several at once in a cell array.
+@ref{Cell Array Objects}
 
 @DOCSTRING(nthargout)
 

@@ -1565,7 +1565,7 @@ save -binary data a b*\n\
 @noindent\n\
 saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
 the file @file{data} in Octave's binary format.\n\
-@seealso{load, default_save_options, dlmread, csvread, fread}\n\
+@seealso{load, default_save_options, save_header_format_string, dlmread, csvread, fread}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -41,15 +41,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "parse.h"
 
-#ifdef HAVE_QHULL
-extern "C" {
-#include <qhull/qhull_a.h>
-}
-
-# ifdef NEED_QHULL_VERSION
+#if defined (HAVE_QHULL)
+# include "oct-qhull.h"
+# if defined (NEED_QHULL_VERSION)
 char qh_version[] = "convhulln.oct 2007-07-24";
 # endif
-#endif /* HAVE_QHULL */
+#endif
 
 DEFUN_DLD (convhulln, args, nargout,
   "-*- texinfo -*-\n\
@@ -85,7 +82,7 @@ convex hull is calculated.\n\n\
 {
   octave_value_list retval;
 
-#ifdef HAVE_QHULL
+#if defined (HAVE_QHULL)
 
   int nargin = args.length ();
   if (nargin < 1 || nargin > 2)

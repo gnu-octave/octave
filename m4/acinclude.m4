@@ -936,7 +936,28 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION],
   [AC_CACHE_CHECK([for qh_version in $QHULL_LIBS],
     octave_cv_lib_qhull_version,  [
       AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-#include <qhull/qhull_a.h>
+#include <stdio.h>
+#if defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
+# if defined (HAVE_QHULL_LIBQHULL_H)
+#  include <qhull/libqhull.h>
+# else
+#  include <qhull/qhull.h>
+# endif
+# include <qhull/qset.h>
+# include <qhull/geom.h>
+# include <qhull/poly.h>
+# include <qhull/io.h>
+#elif defined (HAVE_LIBQHULL_H) || defined (HAVE_QHULL_H)
+# if defined (HAVE_LIBQHULL_H)
+#  include <libqhull.h>
+# else
+#  include <qhull.h>
+# endif
+# include <qset.h>
+# include <geom.h>
+# include <poly.h>
+# include <io.h>
+#endif
 ]], [[
 const char *tmp = qh_version;
 ]])], [octave_cv_lib_qhull_version=yes], [octave_cv_lib_qhull_version=no])])
@@ -953,7 +974,27 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_OK],
     octave_cv_lib_qhull_ok, [
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
-#include <qhull/qhull.h>
+#if defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
+# if defined (HAVE_QHULL_LIBQHULL_H)
+#  include <qhull/libqhull.h>
+# else
+#  include <qhull/qhull.h>
+# endif
+# include <qhull/qset.h>
+# include <qhull/geom.h>
+# include <qhull/poly.h>
+# include <qhull/io.h>
+#elif defined (HAVE_LIBQHULL_H) || defined (HAVE_QHULL_H)
+# if defined (HAVE_LIBQHULL_H)
+#  include <libqhull.h>
+# else
+#  include <qhull.h>
+# endif
+# include <qset.h>
+# include <geom.h>
+# include <poly.h>
+# include <io.h>
+#endif
 #ifdef NEED_QHULL_VERSION
 char *qh_version = "version";
 #endif

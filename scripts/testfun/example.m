@@ -83,6 +83,7 @@ function [code_r, idx_r] = example (name, n)
 
 endfunction
 
+
 %!## warning: don't modify the demos without modifying the tests!
 %!demo
 %! example ('example');
@@ -98,5 +99,6 @@ endfunction
 %! assert (idx, [1, 23, 63]);
 
 %% Test input validation
-%!error example;
-%!error example('example', 3, 5)
+%!error example
+%!error example ('example', 3, 5)
+

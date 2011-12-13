@@ -669,7 +669,7 @@ variable value is restored when exiting the function.\n\
 %! save = allow_noninteger_range_as_index ();
 %! warn_state = warning ("query", "Octave:noninteger-range-as-index");
 %! unwind_protect
-%!   save = allow_noninteger_range_as_index (false);
+%!   allow_noninteger_range_as_index (false);
 %!   fail ('x(2.1:5)');
 %!   assert (x(2:5), 1:4);
 %!   allow_noninteger_range_as_index (true);

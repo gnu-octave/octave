@@ -640,7 +640,7 @@ terminal window in characters (rows and columns).\n\
 DEFUN (page_output_immediately, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} page_output_immediately ()\n\
-@deftypefnx {Built-in Function} {@var{val} =} page_output_immediately (@var{new_val})\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} page_output_immediately (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} page_output_immediately (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave sends\n\
 output to the pager as soon as it is available.  Otherwise, Octave\n\

@@ -321,7 +321,7 @@ void
 octave_pager_stream::flush_current_contents_to_diary (void)
 {
   if (instance_ok ())
-    instance->flush_current_contents_to_diary ();
+    instance->do_flush_current_contents_to_diary ();
 }
 
 void

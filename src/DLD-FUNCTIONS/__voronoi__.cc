@@ -45,14 +45,11 @@ qhull command
 #include "error.h"
 #include "oct-obj.h"
 
-#ifdef HAVE_QHULL
-extern "C" {
-#include <qhull/qhull_a.h>
-}
-
-#ifdef NEED_QHULL_VERSION
+#if defined (HAVE_QHULL)
+# include "oct-qhull.h"
+# if defined (NEED_QHULL_VERSION)
 char qh_version[] = "__voronoi__.oct 2007-07-24";
-#endif
+# endif
 #endif
 
 DEFUN_DLD (__voronoi__, args, ,
@@ -67,7 +64,7 @@ Undocumented internal function.\n\
 
   std::string caller = args(0).string_value ();
 
-#ifdef HAVE_QHULL
+#if defined (HAVE_QHULL)
 
   retval(0) = 0.0;
 

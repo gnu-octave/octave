@@ -73,7 +73,7 @@ static const char *former_built_in_variables[] =
   "debug_on_interrupt",
   "debug_on_warning",
   "debug_symtab_lookups",
-  "default_save_format",
+  "default_save_options",
   "echo_executing_commands",
   "fixed_point_format",
   "gnuplot_binary",

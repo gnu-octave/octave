@@ -552,7 +552,8 @@ check_state (const std::string& state)
 }
 
 // For given warning ID, return 0 if warnings are disabled, 1 if
-// enabled, and 2 if this ID should be an error instead of a warning.
+// enabled, and 2 if the given ID should be an error instead of a
+// warning.
 
 int
 warning_enabled (const std::string& id)
@@ -598,8 +599,9 @@ warning_enabled (const std::string& id)
         }
     }
 
+  // If "all" is not present, assume warnings are enabled.
   if (all_state == -1)
-    panic_impossible ();
+    all_state = 1;
 
   if (all_state == 0)
     {

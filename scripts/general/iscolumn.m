@@ -35,26 +35,22 @@ function retval = iscolumn (x)
 
 endfunction
 
-%!assert(iscolumn ([1, 2, 3]), false);
-%!assert(iscolumn ([1; 2; 3]));
-%!assert(iscolumn (1));
-%!assert(iscolumn ([]), false);
-%!assert(iscolumn ([1, 2; 3, 4]), false);
 
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((iscolumn ("t")));
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert(!(iscolumn ("test")));
+%!assert (iscolumn ([1, 2, 3]), false)
+%!assert (iscolumn ([1; 2; 3]))
+%!assert (iscolumn (1))
+%!assert (iscolumn ([]), false)
+%!assert (iscolumn ([1, 2; 3, 4]), false)
 
-%!assert(!(iscolumn (["test"; "ing"])));
+%!assert (iscolumn ("t"))
+%!assert (iscolumn ("test"), false)
+%!assert (iscolumn (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert((iscolumn (s)));
+%! assert (iscolumn (s));
 
 %% Test input validation
-%!error iscolumn ();
-%!error iscolumn ([1, 2], 2);
+%!error iscolumn ()
+%!error iscolumn ([1, 2], 2)
 

@@ -18,13 +18,12 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} debug ()
-## Summary of the debugging commands.  The debugging commands that are
-## available in Octave are
+## Summary of debugging commands.  For more information on each command
+## and available options use @code{help CMD}.
+## 
+## The debugging commands available in Octave are
 ##
 ## @table @code
-## @item keyboard
-## Force entry into debug mode.
-##
 ## @item dbstop
 ## Add a breakpoint.
 ##
@@ -34,51 +33,57 @@
 ## @item dbstatus
 ## List all breakpoints.
 ##
+## @item dbwhere
+## Report the current file and line number where execution is stopped.
+##
+## @item dbtype
+## List the function where execution is currently stopped, enumerating
+## the line numbers.
+##
+## @item  dbstep
+## @itemx dbnext
+## Execute one or more lines of code and re-enter debug mode.
+##
 ## @item dbcont
-## Continue execution from the debug prompt.
+## Continue normal code execution from the debug prompt.
+##
+## @item dbquit
+## Quit debugging mode immediately and return to the main prompt.
 ##
 ## @item dbstack
 ## Print a backtrace of the execution stack.
 ##
-## @item dbstep
-## Execute one or more lines and re-enter debug mode
-##
-## @item dbtype
-## List the function where execution is currently stopped, enumerating
-## the lines.
-##
 ## @item dbup
-## The workspace up the execution stack.
+## Move up the execution stack.
 ##
 ## @item dbdown
-## The workspace down the execution stack.
+## Move down the execution stack.
 ##
-## @item dbquit
-## Quit debugging mode and return to the main prompt.
+## @item keyboard
+## Force entry into debug mode from an m-file.
 ##
 ## @item debug_on_error
-## Function to query or set whether to enter debug mode in case Octave
-## encounters an error.
+## Configure whether Octave enters debug mode when it encounters an error.
 ##
 ## @item debug_on_warning
-## Function to query or set whether to enter debug mode in case Octave
-## encounters a warning.
+## Configure whether Octave enters debug mode when it encounters a warning.
 ##
 ## @item debug_on_interrupt
-## Function to query or set whether to enter debug mode in case Octave
-## encounters an interupt.
+## Configure whether Octave enters debug mode when it encounters an interrupt.
 ##
+## @item isdebugmode
+## Return true if in debug mode.
 ## @end table
 ##
 ## @noindent
-## when Octave encounters a breakpoint or other reason to enter debug
+## When Octave encounters a breakpoint, or other reason to enter debug
 ## mode, the prompt changes to @code{"debug>"}.  The workspace of the function
 ## where the breakpoint was encountered becomes available and any Octave
-## command that works within that workspace may be executed.
+## command that is valid in that workspace context may be executed.
 ##
-## @seealso{dbstop, dbclear, dbstatus, dbcont, dbstack, dbstep, dbtype,
-## dbup, dbdown, dbquit, debug_on_error, debug_on_warning,
-## debug_on_interrupt}
+## @seealso{dbstop, dbclear, dbstatus, dbwhere, dbtype, dbcont, dbquit,
+##          dbstack, dbup, dbdown, keyboard, debug_on_error, debug_on_warning,
+##          debug_on_interrupt, isdebugmode}
 ## @end deftypefn
 
 function debug ()

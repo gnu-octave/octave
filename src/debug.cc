@@ -308,7 +308,7 @@ bp_table::do_add_breakpoint (const std::string& fname,
         }
     }
   else
-    error ("add_breakpoint: unable to find the function requested\n");
+    error ("add_breakpoint: unable to find the requested function\n");
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
@@ -363,7 +363,7 @@ bp_table::do_remove_breakpoint (const std::string& fname,
             }
         }
       else
-        error ("remove_breakpoint: unable to find the function requested\n");
+        error ("remove_breakpoint: unable to find the requested function\n");
     }
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
@@ -403,7 +403,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
     }
   else if (! silent)
     error ("remove_all_breakpoint_in_file: "
-           "unable to find the function requested\n");
+           "unable to find the requested function\n");
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
@@ -504,20 +504,31 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFUN (dbstop, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{rline} =} dbstop (@var{func}, @var{line}, @dots{})\n\
-Set a breakpoint in a function\n\
-@table @code\n\
+@deftypefn  {Loadable Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
+@deftypefnx {Loadable Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line}, @dots{})\n\
+Set a breakpoint in function @var{func}.\n\
+\n\
+Arguments are\n\
+\n\
+@table @var\n\
 @item func\n\
-String representing the function name.  When already in debug\n\
+Function name as a string variable.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 \n\
 @item line\n\
-Line number you would like the breakpoint to be set on.  Multiple\n\
-lines might be given as separate arguments or as a vector.\n\
+Line number where the breakpoint should be set.  Multiple\n\
+lines may be given as separate arguments or as a vector.\n\
 @end table\n\
 \n\
-The rline returned is the real line that the breakpoint was set at.\n\
-@seealso{dbclear, dbstatus, dbstep}\n\
+When called with a single argument @var{func}, the breakpoint\n\
+is set at the first executable line in the named function.\n\
+\n\
+The optional output @var{rline} is the real line number where the\n\
+breakpoint was set.  This can differ from specified line if\n\
+the line is not executable.  For example, if a breakpoint attempted on a\n\
+blank line then Octave will set the real breakpoint at the\n\
+next executable line.\n\
+@seealso{dbclear, dbstatus, dbstep, debug_on_error, debug_on_warning, debug_on_interrupt}\n\
 @end deftypefn")
 {
   bp_table::intmap retval;
@@ -537,19 +548,26 @@ The rline returned is the real line that the breakpoint was set at.\n\
 
 DEFUN (dbclear, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbclear (@var{func}, @var{line}, @dots{})\n\
-Delete a breakpoint in a function\n\
-@table @code\n\
+@deftypefn  {Loadable Function} {} dbclear (\"@var{func}\")\n\
+@deftypefnx {Loadable Function} {} dbclear (\"@var{func}\", @var{line}, @dots{})\n\
+Delete a breakpoint in the function @var{func}.\n\
+\n\
+Arguments are\n\
+\n\
+@table @var\n\
 @item func\n\
-String representing the function name.  When already in debug\n\
+Function name as a string variable.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 \n\
 @item line\n\
-Line number where you would like to remove the breakpoint.  Multiple\n\
-lines might be given as separate arguments or as a vector.\n\
+Line number from which to remove a breakpoint.  Multiple\n\
+lines may be given as separate arguments or as a vector.\n\
 @end table\n\
-No checking is done to make sure that the line you requested is really\n\
-a breakpoint.  If you get the wrong line nothing will happen.\n\
+\n\
+When called without a line number specification all breakpoints\n\
+in the named function are cleared.\n\
+\n\
+If the requested line is not a breakpoint no action is performed.\n\
 @seealso{dbstop, dbstatus, dbwhere}\n\
 @end deftypefn")
 {
@@ -567,14 +585,31 @@ a breakpoint.  If you get the wrong line nothing will happen.\n\
 
 DEFUN (dbstatus, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {lst =} dbstatus (@var{func})\n\
-Return a vector containing the lines on which a function has\n\
-breakpoints set.\n\
-@table @code\n\
-@item func\n\
-String representing the function name.  When already in debug\n\
-mode this should be left out.\n\
+@deftypefn  {Loadable Function} {} dbstatus ()\n\
+@deftypefnx {Loadable Function} {@var{brk_list} =} dbstatus ()\n\
+@deftypefnx {Loadable Function} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
+Report the location of active breakpoints.\n\
+\n\
+When called with no input or output arguments, print the list of\n\
+all functions with breakpoints and the line numbers where those\n\
+breakpoints are set.\n\
+If a function name @var{func} is specified then only report breakpoints\n\
+for the named function.\n\
+\n\
+The optional return argument @var{brk_list} is a struct array with the\n\
+following fields.\n\
+\n\
+@table @asis\n\
+@item name\n\
+The name of the function with a breakpoint.\n\
+\n\
+@item file\n\
+The name of the m-file where the function code is located.\n\
+\n\
+@item line\n\
+A line number, or vector of line numbers, with a breakpoint.\n\
 @end table\n\
+\n\
 @seealso{dbclear, dbwhere}\n\
 @end deftypefn")
 {
@@ -586,7 +621,7 @@ mode this should be left out.\n\
 
   if (nargin != 0 && nargin != 1)
     {
-      error ("dbstatus: only zero or one arguements accepted\n");
+      error ("dbstatus: only zero or one arguments accepted\n");
       return octave_value ();
     }
 
@@ -663,8 +698,9 @@ mode this should be left out.\n\
 DEFUN (dbwhere, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbwhere ()\n\
-Show where we are in the code\n\
-@seealso{dbclear, dbstatus, dbstop}\n\
+In debugging mode, report the current file and line number where\n\
+execution is stopped.\n\
+@seealso{dbstatus, dbcont, dbstep, dbup}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -704,7 +740,7 @@ Show where we are in the code\n\
         octave_stdout << " <unknown line>" << std::endl;
     }
   else
-    error ("dbwhere: must be inside of a user function to use dbwhere\n");
+    error ("dbwhere: must be inside a user function to use dbwhere\n");
 
   return retval;
 }
@@ -754,9 +790,17 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 
 DEFUN (dbtype, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbtype ()\n\
-List script file with line numbers.\n\
-@seealso{dbclear, dbstatus, dbstop}\n\
+@deftypefn  {Loadable Function} {} dbtype ()\n\
+@deftypefnx {Loadable Function} {} dbtype (\"startl:endl\")\n\
+@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\")\n\
+@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\", \"startl:endl\")\n\
+When in debugging mode and called with no arguments, list the script file\n\
+being debugged with line numbers.  An optional range specification,\n\
+specified as a string, can be used to list only a portion of the file.\n\
+\n\
+When called with the name of a function, list that script file\n\
+with line numbers.\n\
+@seealso{dbstatus, dbstop}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -775,7 +819,7 @@ List script file with line numbers.\n\
           if (dbg_fcn)
             do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
           else
-            error ("dbtype: must be in a user function to give no arguments to dbtype\n");
+            error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
           break;
 
         case 1: // (dbtype func) || (dbtype start:end)
@@ -887,7 +931,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
       if (n > 0)
         nskip = n;
       else
-        error ("dbstack: expecting N to be a nonnegative integer");
+        error ("dbstack: N must be a non-negative integer");
     }
 
   if (! error_state)
@@ -960,10 +1004,38 @@ show_octave_dbstack (void)
 
 DEFUN (dbstack, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
-Print or return current stack information.  With optional argument\n\
-@var{n}, omit the @var{n} innermost stack frames.\n\
-@seealso{dbclear, dbstatus, dbstop}\n\
+@deftypefn  {Loadable Function} {} dbstack ()\n\
+@deftypefnx {Loadable Function} {} dbstack (@var{n})\n\
+@deftypefnx {Loadable Function} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
+Display or return current debugging function stack information.\n\
+With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
+\n\
+The optional return argument @var{stack} is a struct array with the\n\
+following fields:\n\
+\n\
+@table @asis\n\
+@item file\n\
+The name of the m-file where the function code is located.\n\
+\n\
+@item name\n\
+The name of the function with a breakpoint.\n\
+\n\
+@item line\n\
+The line number of an active breakpoint.\n\
+\n\
+@item column\n\
+The column number of the line where the breakpoint begins.\n\
+\n\
+@item scope\n\
+Undocumented.\n\
+\n\
+@item context\n\
+Undocumented.\n\
+@end table\n\
+\n\
+The return argument @var{idx} specifies which element of the @var{stack}\n\
+struct array is currently active.\n\
+@seealso{dbup, dbdown, dbwhere, dbstatus}\n\
 @end deftypefn")
 {
   return do_dbstack (args, nargout, octave_stdout);
@@ -1004,7 +1076,7 @@ DEFUN (dbup, args, ,
 @deftypefnx {Loadable Function} {} dbup (@var{n})\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move up one frame.\n\
-@seealso{dbstack}\n\
+@seealso{dbstack, dbdown}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1020,7 +1092,7 @@ DEFUN (dbdown, args, ,
 @deftypefnx {Loadable Function} {} dbdown (@var{n})\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move down one frame.\n\
-@seealso{dbstack}\n\
+@seealso{dbstack, dbup}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1036,14 +1108,17 @@ DEFUN (dbstep, args, ,
 @deftypefnx {Command} {} dbstep @var{n}\n\
 @deftypefnx {Command} {} dbstep in\n\
 @deftypefnx {Command} {} dbstep out\n\
+@deftypefnx {Command} {} dbnext @dots{}\n\
 In debugging mode, execute the next @var{n} lines of code.\n\
-If @var{n} is omitted , execute the next single line of code.\n\
-If the next line of code is itself\n\
-defined in terms of an m-file remain in the existing function.\n\
+If @var{n} is omitted, execute the next single line of code.\n\
+If the next line of code is itself defined in terms of an m-file remain in\n\
+the existing function.\n\
 \n\
 Using @code{dbstep in} will cause execution of the next line to step into\n\
 any m-files defined on the next line.  Using @code{dbstep out} will cause\n\
 execution to continue until the current function returns.\n\
+\n\
+@code{dbnext} is an alias for @code{dbstep}.\n\
 @seealso{dbcont, dbquit}\n\
 @end deftypefn")
 {
@@ -1089,7 +1164,7 @@ execution to continue until the current function returns.\n\
                 }
             }
           else
-            error ("dbstep: expecting character string as argument");
+            error ("dbstep: input argument must be a character string");
         }
       else
         {
@@ -1109,7 +1184,7 @@ DEFALIAS (dbnext, dbstep);
 DEFUN (dbcont, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbcont\n\
-In debugging mode, quit debugging mode and continue execution.\n\
+Leave command-line debugging mode and continue code execution normally.\n\
 @seealso{dbstep, dbquit}\n\
 @end deftypefn")
 {
@@ -1133,8 +1208,9 @@ In debugging mode, quit debugging mode and continue execution.\n\
 DEFUN (dbquit, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Command} {} dbquit\n\
-In debugging mode, quit debugging mode and return to the top level.\n\
-@seealso{dbstep, dbcont}\n\
+Quit debugging mode immediately without further code execution and\n\
+return to the Octave prompt.\n\
+@seealso{dbcont, dbstep}\n\
 @end deftypefn")
 {
   if (Vdebugging)
@@ -1159,8 +1235,8 @@ In debugging mode, quit debugging mode and return to the top level.\n\
 DEFUN (isdebugmode, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} isdebugmode ()\n\
-Return true if debug mode is on, otherwise false.\n\
-@seealso{dbstack, dbclear, dbstop, dbstatus}\n\
+Return true if in debugging mode, otherwise false.\n\
+@seealso{dbwhere, dbstack, dbstatus}\n\
 @end deftypefn")
 {
   octave_value retval;

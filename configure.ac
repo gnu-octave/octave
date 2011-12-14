@@ -649,7 +649,7 @@ OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
 
 OCTAVE_CHECK_LIBRARY(qhull, QHull,
   [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
-  [qhull/qhull_a.h], [qh_qhull], [], [],
+  [qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h], [qh_qhull], [], [],
   [warn_qhull=
    OCTAVE_CHECK_QHULL_VERSION
    OCTAVE_CHECK_QHULL_OK([TEXINFO_QHULL="@set HAVE_QHULL"

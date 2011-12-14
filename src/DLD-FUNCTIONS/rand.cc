@@ -1024,9 +1024,9 @@ DEFUN_DLD (randperm, args, ,
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
 If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
-replacement from @code{1:@var{n}}. The complexity is O(@var{n}) in\n\
+replacement from @code{1:@var{n}}.  The complexity is O(@var{n}) in\n\
 memory and O(@var{m}) in time, unless @var{m} < @var{n}/5, in which case\n\
-O(@var{m}) memory is used as well. The randomization is performed using\n\
+O(@var{m}) memory is used as well.  The randomization is performed using\n\
 rand(). All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")

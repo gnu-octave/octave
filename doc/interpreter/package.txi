@@ -206,7 +206,7 @@ automatically from the functions in the package and the
 
 @item package/NEWS
 This is an optional file describing all user-visible changes worth
-mentioning. As this file increases on size, old entries can be moved
+mentioning.  As this file increases on size, old entries can be moved
 into @file{package/ONEWS}.
 
 @item package/ONEWS

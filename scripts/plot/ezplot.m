@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} ezplot (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezplot (@dots{})
 ##
-## Plots in two-dimensions the curve defined by @var{f}.  The function
+## Plot the curve defined by @var{f} in two dimensions.  The function
 ## @var{f} may be a string, inline function or function handle and can
 ## have either one or two variables.  If @var{f} has one variable, then
 ## the function is plotted over the domain @code{-2*pi < @var{x} < 2*pi}

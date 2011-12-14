@@ -55,7 +55,7 @@ DEFUN_DLD (amd, args, nargout,
 @deftypefn  {Loadable Function} {@var{p} =} amd (@var{S})\n\
 @deftypefnx {Loadable Function} {@var{p} =} amd (@var{S}, @var{opts})\n\
 \n\
-Returns the approximate minimum degree permutation of a matrix.  This\n\
+Return the approximate minimum degree permutation of a matrix.  This\n\
 permutation such that the Cholesky@tie{}factorization of @code{@var{S}\n\
 (@var{p}, @var{p})} tends to be sparser than the Cholesky@tie{}factorization\n\
 of @var{S} itself.  @code{amd} is typically faster than @code{symamd} but\n\

@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} ezpolar (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezpolar (@dots{})
 ##
-## Plots in polar plot defined by a function.  The function @var{f} is either
+## Plot a function in polar coordinates.  The function @var{f} is either
 ## a string, inline function or function handle with one arguments defining
 ## the function.  By default the plot is over the domain @code{0 < @var{x} <
 ## 2*pi} with 60 points.

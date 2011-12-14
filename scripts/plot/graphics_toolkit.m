@@ -35,8 +35,11 @@ function retval = graphics_toolkit (name, hlist = [])
     print_usage ();
   endif
 
-  if (nargin == 0)
+  if (nargout > 0 || nargin == 0)
     retval = get (0, "defaultfigure__graphics_toolkit__");
+  endif
+
+  if (nargin == 0)
     return;
   elseif (nargin == 1)
     if (! ischar (name))
@@ -65,10 +68,6 @@ function retval = graphics_toolkit (name, hlist = [])
     set (hlist, "__graphics_toolkit__", name);
   endif
 
-  if (isargout (1))
-    retval = name;
-  endif
-
 endfunction
 
 
@@ -82,4 +81,15 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!testif HAVE_FLTK
+%!  old_toolkit = graphics_toolkit ();
+%!  switch old_toolkit
+%!    case {"gnuplot"}
+%!      new_toolkit = "fltk";
+%!    otherwise
+%!      new_toolkit = "gnuplot";
+%!  endswitch
+%!  assert (graphics_toolkit (new_toolkit), old_toolkit)
+%!  assert (graphics_toolkit (old_toolkit), new_toolkit)
 

@@ -308,7 +308,7 @@ bp_table::do_add_breakpoint (const std::string& fname,
         }
     }
   else
-    error ("add_breakpoint: unable to find the function requested\n");
+    error ("add_breakpoint: unable to find the requested function\n");
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
@@ -363,7 +363,7 @@ bp_table::do_remove_breakpoint (const std::string& fname,
             }
         }
       else
-        error ("remove_breakpoint: unable to find the function requested\n");
+        error ("remove_breakpoint: unable to find the requested function\n");
     }
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
@@ -403,7 +403,7 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname,
     }
   else if (! silent)
     error ("remove_all_breakpoint_in_file: "
-           "unable to find the function requested\n");
+           "unable to find the requested function\n");
 
   tree_evaluator::debug_mode = bp_table::have_breakpoints () || Vdebugging;
 
@@ -740,7 +740,7 @@ execution is stopped.\n\
         octave_stdout << " <unknown line>" << std::endl;
     }
   else
-    error ("dbwhere: must be inside of a user function to use dbwhere\n");
+    error ("dbwhere: must be inside a user function to use dbwhere\n");
 
   return retval;
 }
@@ -819,7 +819,7 @@ with line numbers.\n\
           if (dbg_fcn)
             do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
           else
-            error ("dbtype: must be in a user function to give no arguments to dbtype\n");
+            error ("dbtype: must be inside a user function to give no arguments to dbtype\n");
           break;
 
         case 1: // (dbtype func) || (dbtype start:end)
@@ -931,7 +931,7 @@ do_dbstack (const octave_value_list& args, int nargout, std::ostream& os)
       if (n > 0)
         nskip = n;
       else
-        error ("dbstack: expecting N to be a nonnegative integer");
+        error ("dbstack: N must be a non-negative integer");
     }
 
   if (! error_state)
@@ -1164,7 +1164,7 @@ execution to continue until the current function returns.\n\
                 }
             }
           else
-            error ("dbstep: expecting character string as argument");
+            error ("dbstep: input argument must be a character string");
         }
       else
         {

@@ -417,7 +417,7 @@ regexp::is_match (const string_vector& buffer)
 {
   octave_idx_type len = buffer.length ();
 
-  Array<bool> retval (len, 1);
+  Array<bool> retval (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < buffer.length (); i++)
     retval(i) = is_match (buffer(i));

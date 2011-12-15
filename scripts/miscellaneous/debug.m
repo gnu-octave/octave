@@ -42,7 +42,9 @@
 ##
 ## @item  dbstep
 ## @itemx dbnext
-## Execute one or more lines of code and re-enter debug mode.
+## Execute (step) one or more lines, follow execution into (step into) a
+## function call, or execute until the end of a function (step out), and
+## re-enter debug mode.
 ##
 ## @item dbcont
 ## Continue normal code execution from the debug prompt.

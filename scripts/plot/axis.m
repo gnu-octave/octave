@@ -309,9 +309,9 @@ function lims = __get_tight_lims__ (ca, ax)
   ## Get the limits for axis ("tight").
   ## AX should be one of "x", "y", or "z".
   kids = findobj (ca, "-property", strcat (ax, "data"));
-  ## Since contours set the cdata for the patches to the hggroup zdata property, exclude
-  ## hgroups when determining the tight limits.
-  hg_kids = findobj (ca, "-property", strcat (ax, "data"), "type", "hggroup");
+  ## The data properties for hggroups mirror their children.
+  ## Exclude the redundant hgroup values.
+  hg_kids = findobj (kids, "type", "hggroup");
   kids = setdiff (kids, hg_kids);
   if (isempty (kids))
     ## Return the current limits.
@@ -319,20 +319,20 @@ function lims = __get_tight_lims__ (ca, ax)
   else
     data = get (kids, strcat (ax, "data"));
     scale = get (ca, strcat (ax, "scale"));
-    if (strcmp (scale, "log") && any (data > 0))
-      data(data<=0) = NaN;
+    if (! iscell (data))
+      data = {data};
+    end
+    if (strcmp (scale, "log"))
+      data = cellfun (@(x) x(x>0), data, "uniformoutput", false);
     endif
-    if (iscell (data))
-      data = data (find (! cellfun ("isempty", data)));
-      if (! isempty (data))
-        lims_min = min (cellfun ("min", cellfun ("min", data, 'uniformoutput', false)(:)));
-        lims_max = max (cellfun ("max", cellfun ("max", data, 'uniformoutput', false)(:)));
-        lims = [lims_min, lims_max];
-      else
-        lims = [0, 1];
-      endif
+    data = cellfun (@(x) x(isfinite(x)), data, "uniformoutput", false);
+    data = data(! cellfun ("isempty", data));
+    if (! isempty (data))
+      lims_min = min (cellfun (@(x) min (x(:)), data(:)));
+      lims_max = max (cellfun (@(x) max (x(:)), data(:)));
+      lims = [lims_min, lims_max];
     else
-      lims = [min(data(:)), max(data(:))];
+      lims = [0, 1];
     endif
   endif
 
@@ -546,4 +546,16 @@ endfunction
 %! set (gca, "xaxislocation", "top")
 %! set (gca, "yaxislocation", "zero")
 %! box off
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot (11:20, [21:24, NaN, -Inf, 27:30]);
+%!   hold all;
+%!   plot (11:20, 25.5 + rand (10));
+%!   axis tight;
+%!   assert (axis, [11 20 21 30]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

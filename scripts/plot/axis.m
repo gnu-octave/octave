@@ -323,7 +323,10 @@ function lims = __get_tight_lims__ (ca, ax)
       data = {data};
     end
     if (strcmp (scale, "log"))
-      data = cellfun (@(x) x(x>0), data, "uniformoutput", false);
+      tmp = data;
+      data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);
+      n = cellfun (@isempty, data);
+      data(n) = cellfun (@(x) x(x<0), tmp(n), "uniformoutput", false);
     endif
     data = cellfun (@(x) x(isfinite(x)), data, "uniformoutput", false);
     data = data(! cellfun ("isempty", data));
@@ -554,7 +557,18 @@ endfunction
 %!   hold all;
 %!   plot (11:20, 25.5 + rand (10));
 %!   axis tight;
-%!   assert (axis, [11 20 21 30]);
+%!   assert (axis (), [11 20 21 30]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   a = logspace (-5, 1, 10);
+%!   loglog (a, -a)
+%!   axis tight;
+%!   assert (axis (), [1e-5, 10, -10, -1e-5])
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

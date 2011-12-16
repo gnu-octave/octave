@@ -5682,7 +5682,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
             }
           if ((min_val <= 0 && max_val > 0))
             {
-              warning ("axis: omitting nonpositive data in log plot");
+              warning ("axis: omitting non-positive data in log plot");
               min_val = min_pos;
             }
           // FIXME -- maybe this test should also be relative?

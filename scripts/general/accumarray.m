@@ -264,7 +264,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       elseif (islogical (vals))
         zero = true;
       elseif (fillval == 0 && all (vals(:) <= 0))
-        ## This is a common case - fillval is zero, all numbers nonpositive.
+        ## This is a common case - fillval is zero, all numbers non-positive.
         zero = 0;
       else
         zero = NaN; # Neutral value.

@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{status}, @var{msg}, @var{msgid}] =} fileattrib (@var{file})
+## @deftypefn {Function File} {[@var{status}, @var{result}, @var{msgid}] =} fileattrib (@var{file})
 ## Return information about @var{file}.
 ##
 ## If successful, @var{status} is 1, with @var{result} containing a

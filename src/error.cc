@@ -1577,7 +1577,7 @@ set to their default values.\n\
               if (! error_state && new_err.contains ("stack"))
                 {
                   octave_scalar_map new_err_stack =
-                    new_err.getfield("identifier").scalar_map_value ();
+                    new_err.getfield("stack").scalar_map_value ();
 
                   if (! error_state && new_err_stack.contains ("file"))
                     {

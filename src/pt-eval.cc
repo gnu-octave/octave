@@ -323,7 +323,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
         octave_idx_type steps = rng.nelem ();
         double b = rng.base ();
         double increment = rng.inc ();
-        bool quit = false;
 
         for (octave_idx_type i = 0; i < steps; i++)
           {
@@ -362,8 +361,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by
         // columns.
-
-        bool quit = false;
 
         dim_vector dv = rhs.dims ().redim (2);
 

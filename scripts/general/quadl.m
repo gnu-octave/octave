@@ -203,11 +203,11 @@ endfunction
 
 ## the values here are very high so it may be unavoidable that this fails
 %!assert (quadl (@(x) sin (3*x).*cosh (x).*sinh (x),10,15),
-%!         2.588424538641647e+10, -9e-15)
+%!         2.588424538641647e+10, -1.1e-14)
 
 ## extra parameters
 %!assert (quadl (@(x,a,b) sin (a + b*x), 0, 1, [], [], 2, 3),
-%!        cos(2)/3 - cos(5)/3, - 3e-16)
+%!        cos(2)/3 - cos(5)/3, -3e-16)
 
 ## test different tolerances.
 %!assert (quadl (@(x) sin (2 + 3*x).^2, 0, 10, 0.3, []),

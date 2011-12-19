@@ -68,7 +68,7 @@ function A = nchoosek (v, k)
   endif
   if ((isscalar(v) && v < k) || k < 0
       || k != round(k) || any (v < 0 || v != round(v)))
-    error ("nchoosek: args are nonnegative integers with V not less than K");
+    error ("nchoosek: args are non-negative integers with V not less than K");
   endif
 
   n = length (v);

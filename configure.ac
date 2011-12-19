@@ -1499,7 +1499,7 @@ esac
 
 AC_ARG_ENABLE([no-undefined],
   [AS_HELP_STRING([--enable-no-undefined],
-    [pass -no-undefined to libtool when linking linking Octave and its shared libraries (on by default)])],
+    [pass -no-undefined to libtool when linking Octave and its shared libraries (on by default)])],
   [case "${enableval}" in
     yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
     no)  NO_UNDEFINED_LDFLAG="" ;;

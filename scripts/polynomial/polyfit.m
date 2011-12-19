@@ -77,7 +77,7 @@ function [p, s, mu] = polyfit (x, y, n)
   endif
 
   if (! (isscalar (n) && n >= 0 && ! isinf (n) && n == fix (n)))
-    error ("polyfit: N must be a nonnegative integer");
+    error ("polyfit: N must be a non-negative integer");
   endif
 
   y_is_row_vector = (rows (y) == 1);

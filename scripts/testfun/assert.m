@@ -23,35 +23,33 @@
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected})
 ## @deftypefnx {Function File} {} assert (@var{observed}, @var{expected}, @var{tol})
 ##
-## Produce an error if the condition is not met.  @code{assert} can be
-## called in three different ways.
+## Produce an error if the specified condition is not met.  @code{assert} can
+## be called in three different ways.
 ##
 ## @table @code
-## @item assert (@var{cond})
+## @item  assert (@var{cond})
 ## @itemx assert (@var{cond}, @var{errmsg}, @dots{})
 ## @itemx assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## Called with a single argument @var{cond}, @code{assert} produces an
-## error if @var{cond} is zero.  If called with a single argument a
-## generic error message.  With more than one argument, the additional
-## arguments are passed to the @code{error} function.
+## error if @var{cond} is zero.  When called with more than one argument the
+## additional arguments are passed to the @code{error} function.
 ##
 ## @item assert (@var{observed}, @var{expected})
 ## Produce an error if observed is not the same as expected.  Note that
-## observed and expected can be strings, scalars, vectors, matrices,
-## lists or structures.
+## @var{observed} and @var{expected} can be scalars, vectors, matrices,
+## strings, cell arrays, or structures.
 ##
-## @item assert(@var{observed}, @var{expected}, @var{tol})
-## Accept a tolerance when comparing numbers.
-## If @var{tol} is positive use it as an absolute tolerance, will produce an
-## error if
-## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
-## If @var{tol} is negative use it as a relative tolerance, will produce an
-## error if
-## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol} *
-## @var{expected})}.  If @var{expected} is zero @var{tol} will always be used as
-## an absolute tolerance.
+## @item assert (@var{observed}, @var{expected}, @var{tol})
+## Produce an error if observed is not the same as expected but equality
+## comparison for numeric data uses a tolerance @var{tol}.
+## If @var{tol} is positive then it is an absolute tolerance which will produce
+## an error if @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
+## If @var{tol} is negative then it is a relative tolerance which will produce
+## an error if @code{abs(@var{observed} - @var{expected}) >
+## abs(@var{tol} * @var{expected})}.  If @var{expected} is zero @var{tol} will
+## always be interpreted as an absolute tolerance.
 ## @end table
-## @seealso{test, fail}
+## @seealso{test, fail, error}
 ## @end deftypefn
 
 ## FIXME: Output throttling: don't print out the entire 100x100 matrix,
@@ -81,11 +79,11 @@ function assert (cond, varargin)
       print_usage ();
     endif
 
-    expected = varargin {1};
+    expected = varargin{1};
     if (nargin < 3)
       tol = 0;
     else
-      tol = varargin {2};
+      tol = varargin{2};
     endif
 
     if (exist ("argn") == 0)
@@ -118,8 +116,9 @@ function assert (cond, varargin)
         iserror = 1;
       else
         try
-          empty = numel (cond) == 0;
-          normal = numel (cond) == 1;
+          #empty = numel (cond) == 0;
+          empty = isempty (cond);
+          normal = (numel (cond) == 1);
           for [v, k] = cond
             if (! isfield (expected, k))
               error ();
@@ -146,7 +145,7 @@ function assert (cond, varargin)
     else
       if (nargin < 3)
         ## Without explicit tolerance, be more strict.
-        if (! strcmp(class (cond), class (expected)))
+        if (! strcmp (class (cond), class (expected)))
           iserror = 1;
           coda = cstrcat ("Class ", class (cond), " != ", class (expected));
         elseif (isnumeric (cond))
@@ -188,8 +187,8 @@ function assert (cond, varargin)
           coda = "Infs don't match";
         else
           ## Check normal values.
-          A = A(finite (A));
-          B = B(finite (B));
+          A = A(isfinite (A));
+          B = B(isfinite (B));
           if (tol == 0)
             err = any (A != B);
             errtype = "values do not match";
@@ -234,62 +233,56 @@ function assert (cond, varargin)
       msg = cstrcat (msg, "\n", coda);
     endif
     error ("%s", msg);
-    ## disp (msg);
-    ## error ("assertion failed");
   endif
+
 endfunction
 
-## empty
-%!assert([])
-%!assert(zeros(3,0),zeros(3,0))
-%!error assert(zeros(3,0),zeros(0,2))
-%!error assert(zeros(3,0),[])
-%!fail("assert(zeros(2,0,2),zeros(2,0))", "Dimensions don't match")
+
+## empty input
+%!assert ([])
+%!assert (zeros (3,0), zeros (3,0))
+%!error assert (zeros (3,0), zeros (0,2))
+%!error assert (zeros (3,0), [])
+%!error <Dimensions don't match> assert (zeros (2,0,2), zeros (2,0))
 
 ## conditions
-%!assert(isempty([]))
-%!assert(1)
-%!error assert(0)
-%!assert(ones(3,1))
-%!assert(ones(1,3))
-%!assert(ones(3,4))
-%!error assert([1,0,1])
-%!error assert([1;1;0])
-%!error assert([1,0;1,1])
-
-## vectors
-%!assert([1,2,3],[1,2,3]);
-%!assert([1;2;3],[1;2;3]);
-%!error assert([2;2;3],[1;2;3]);
-%!error assert([1,2,3],[1;2;3]);
-%!error assert([1,2],[1,2,3]);
-%!error assert([1;2;3],[1;2]);
-%!assert([1,2;3,4],[1,2;3,4]);
-%!error assert([1,4;3,4],[1,2;3,4])
-%!error assert([1,3;2,4;3,5],[1,2;3,4])
-
-## exceptional values
-%!assert([NaN, NA, Inf, -Inf, 1+eps, eps],[NaN, NA, Inf, -Inf, 1, 0],eps)
-%!error assert(NaN, 1)
-%!error assert(NA, 1)
-%!error assert(-Inf, Inf)
+%!assert (isempty ([]))
+%!assert (1)
+%!error assert (0)
+%!assert (ones(3,1))
+%!assert (ones(1,3))
+%!assert (ones(3,4))
+%!error assert ([1,0,1])
+%!error assert ([1;1;0])
+%!error assert ([1,0;1,1])
 
 ## scalars
-%!error assert(3, [3,3; 3,3])
-%!error assert([3,3; 3,3], 3)
-%!assert(3, 3);
-%!assert(3+eps, 3, eps);
-%!assert(3, 3+eps, eps);
-%!error assert(3+2*eps, 3, eps);
-%!error assert(3, 3+2*eps, eps);
+%!error assert (3, [3,3; 3,3])
+%!error assert ([3,3; 3,3], 3)
+%!assert (3, 3)
+%!assert (3+eps, 3, eps)
+%!assert (3, 3+eps, eps)
+%!error assert (3+2*eps, 3, eps)
+%!error assert (3, 3+2*eps, eps)
 
-## must give a little space for floating point errors on relative
-%!assert(100+100*eps, 100, -2*eps);
-%!assert(100, 100+100*eps, -2*eps);
-%!error assert(100+300*eps, 100, -2*eps);
-%!error assert(100, 100+300*eps, -2*eps);
-%!error assert(3, [3,3]);
-%!error assert(3,4);
+## vectors
+%!assert ([1,2,3],[1,2,3]);
+%!assert ([1;2;3],[1;2;3]);
+%!error assert ([2;2;3],[1;2;3]);
+%!error assert ([1,2,3],[1;2;3]);
+%!error assert ([1,2],[1,2,3]);
+%!error assert ([1;2;3],[1;2]);
+%!assert ([1,2;3,4],[1,2;3,4]);
+%!error assert ([1,4;3,4],[1,2;3,4])
+%!error assert ([1,3;2,4;3,5],[1,2;3,4])
+
+## must give a small tolerance for floating point errors on relative
+%!assert (100+100*eps, 100, -2*eps)
+%!assert (100, 100+100*eps, -2*eps)
+%!error assert (100+300*eps, 100, -2*eps)
+%!error assert (100, 100+300*eps, -2*eps)
+%!error assert (3, [3,3])
+%!error assert (3, 4)
 
 ## test relative vs. absolute tolerances
 %!test  assert (0.1+eps, 0.1,  2*eps);  # accept absolute
@@ -297,28 +290,48 @@ endfunction
 %!test  assert (100+100*eps, 100, -2*eps);  # accept relative
 %!error assert (100+100*eps, 100,  2*eps);  # fail absolute
 
+## exceptional values
+%!assert ([NaN, NA, Inf, -Inf, 1+eps, eps], [NaN, NA, Inf, -Inf, 1, 0], eps)
+%!error assert (NaN, 1)
+%!error assert (NA, 1)
+%!error assert (-Inf, Inf)
+
+## strings
+%!assert ("dog", "dog")
+%!error assert ("dog", "cat")
+%!error assert ("dog", 3)
+%!error assert (3, "dog")
+
 ## structures
 %!shared x,y
 %! x.a = 1; x.b=[2, 2];
 %! y.a = 1; y.b=[2, 2];
-%!assert (x,y)
+%!assert (x, y)
 %!test y.b=3;
-%!error assert (x,y)
-%!error assert (3, x);
-%!error assert (x, 3);
+%!error assert (x, y)
+%!error assert (3, x)
+%!error assert (x, 3)
 %!test
 %! # Empty structures
 %! x = resize (x, 0, 1);
 %! y = resize (y, 0, 1);
 %! assert (x, y);
 
-## strings
-%!assert("dog","dog")
-%!error assert("dog","cat")
-%!error assert("dog",3);
-%!error assert(3,"dog");
+## cell arrays
+%!test
+%! x = {[3], [1,2,3]; 100+100*eps, "dog"};
+%! y = x;
+%! assert (x, y);
+%! y = x; y(1,1) = [2];
+%! fail ("assert (x, y)");
+%! y = x; y(1,2) = [0, 2, 3];
+%! fail ("assert (x, y)");
+%! y = x; y(2,1) = 101;
+%! fail ("assert (x, y)");
+%! y = x; y(2,2) = "cat";
+%! fail ("assert (x, y)");
 
-## check input validation
+%% Test input validation
 %!error assert
-%!error assert (1,2,3,4,5)
+%!error assert (1,2,3,4)
 

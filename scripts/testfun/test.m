@@ -491,9 +491,17 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     ## evaluate code for test, shared, and assert.
     if (! isempty(__code))
       try
-        eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
-                       __shared_r,__shared, __code));
-        eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
+        ## FIXME: need to check for embedded test functions, which cause
+        ## segfaults, until issues with subfunctions in functions are resolved.
+        embed_func = regexp (__code, '^\s*function ', 'once', 'lineanchors');
+        if (isempty (embed_func))
+          eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
+                         __shared_r,__shared, __code));
+          eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
+        else
+          error (["Functions embedded in %!test blocks are not allowed.\n", ...
+                  "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
+        endif
       catch
         if (strcmp (__type, "xtest"))
            __msg = sprintf ("%sknown failure\n%s", __signal_fail, lasterr ());

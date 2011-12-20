@@ -669,20 +669,6 @@ clean_up_and_exit (int retval)
 {
   do_octave_atexit ();
 
-  OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
-
-  OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
-
-  OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
-
-  OCTAVE_SAFE_CALL (cleanup_parser, ());
-
-  OCTAVE_SAFE_CALL (sysdep_cleanup, ());
-
-  OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
-
-  OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
-
   if (octave_exit)
     (*octave_exit) (retval == EOF ? 0 : retval);
 }
@@ -1070,9 +1056,19 @@ do_octave_atexit (void)
       if (! command_history::ignoring_entries ())
         OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
+      OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
+
+      OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
+
       OCTAVE_SAFE_CALL (close_files, ());
 
       OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
+
+      OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
+
+      OCTAVE_SAFE_CALL (cleanup_parser, ());
+
+      OCTAVE_SAFE_CALL (sysdep_cleanup, ());
 
       OCTAVE_SAFE_CALL (flush_octave_stdout, ());
 
@@ -1085,6 +1081,10 @@ do_octave_atexit (void)
 
           OCTAVE_SAFE_CALL (flush_octave_stdout, ());
         }
+
+      OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+
+      OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
     }
 }
 

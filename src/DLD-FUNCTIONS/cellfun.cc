@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <memory>
 
+#include "caseless-str.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
 
@@ -199,18 +200,17 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
 static void
 get_mapper_fun_options (const octave_value_list& args, int& nargin,
-                     bool& uniform_output, octave_value& error_handler)
+                        bool& uniform_output, octave_value& error_handler)
 {
   while (nargin > 3 && args(nargin-2).is_string ())
     {
-      std::string arg = args(nargin-2).string_value ();
+      caseless_str arg = args(nargin-2).string_value ();
 
-      std::transform (arg.begin (), arg.end (),
-                      arg.begin (), tolower);
+      size_t compare_len = std::max (arg.length (), static_cast<size_t> (2));
 
-      if (arg == "uniformoutput")
+      if (arg.compare ("uniformoutput", compare_len))
         uniform_output = args(nargin-1).bool_value();
-      else if (arg == "errorhandler")
+      else if (arg.compare ("errorhandler", compare_len))
         {
           if (args(nargin-1).is_function_handle ()
               || args(nargin-1).is_inline_function ())

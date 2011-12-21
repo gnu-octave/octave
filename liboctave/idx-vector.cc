@@ -331,7 +331,10 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
       data = d;
 
       if (err)
+      {
+        delete [] data;
         gripe_invalid_index ();
+      }
     }
 }
 

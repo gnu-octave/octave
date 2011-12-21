@@ -67,6 +67,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \
   miscellaneous/unzip.m \
+  miscellaneous/usejava.m \
   miscellaneous/ver.m \
   miscellaneous/version.m \
   miscellaneous/warning_ids.m \

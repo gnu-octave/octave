@@ -52,7 +52,7 @@ mac {
 }
 
 unix {
-    QMAKE_LFLAGS +=  -lutil
+    LIBS +=  -lutil
 }
 
 win32-g++ {

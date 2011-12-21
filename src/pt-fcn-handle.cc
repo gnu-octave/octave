@@ -141,22 +141,24 @@ tree_anon_fcn_handle::rvalue1 (int)
 }
 
 /*
-%!function r = f2 (f, x)
+%!function r = __f2 (f, x)
 %!  r = f (x);
-%!function f = f1 (k)
-%!  f = @(x) f2 (@(y) y-k, x);
+%!endfunction
+%!function f = __f1 (k)
+%!  f = @(x) __f2 (@(y) y-k, x);
+%!endfunction
+
+%!assert ((__f1 (3)) (10) == 7)
+
 %!test
-%! assert ((f1 (3)) (10) == 7)
-%!
-%!shared g
 %! g = @(t) feval (@(x) t*x, 2);
-%!assert (g(0.5) == 1)
-%!
-%!shared f, g, h
+%! assert (g(0.5) == 1);
+
+%!test
 %! h = @(x) sin (x);
 %! g = @(f, x) h (x);
 %! f = @() g (@(x) h, pi);
-%!assert (f () == sin (pi))
+%! assert (f () == sin (pi));
 */
 
 octave_value_list

@@ -500,7 +500,7 @@ x = @var{R} \\ @var{C}\n\
 %!error <Invalid call to qr> qr ();
 %!error <Invalid call to qr> qr ([1, 2; 3, 4], 0, 2);
 
-%!function retval = testqr (q, r, a, p)
+%!function retval = __testqr (q, r, a, p)
 %!  tol = 100*eps (class(q));
 %!  retval = 0;
 %!  if (nargin == 3)
@@ -518,6 +518,8 @@ x = @var{R} \\ @var{C}\n\
 %!      retval = (retval && n2 < tol);
 %!    endif
 %!  endif
+%!endfunction
+
 %!test
 %!
 %! t = ones (24, 1);
@@ -525,41 +527,41 @@ x = @var{R} \\ @var{C}\n\
 %!
 %! if false # eliminate big matrix tests
 %!   a = rand(5000,20);
-%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %!
 %!   a = a+1i*eps;
-%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %! endif
 %!
 %! a = [ ones(1,15); sqrt(eps)*eye(15) ];
-%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = a+1i*eps;
-%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = [ ones(1,15); sqrt(eps)*eye(15) ];
-%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = a+1i*eps;
-%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = [
 %! 611   196  -192   407    -8   -52   -49    29
@@ -625,41 +627,41 @@ x = @var{R} \\ @var{C}\n\
 %!
 %! if false # eliminate big matrix tests
 %!   a = rand(5000,20);
-%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %!
 %!   a = a+1i*eps('single');
-%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %! endif
 %!
 %! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
-%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = a+1i*eps('single');
-%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
-%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = a+1i*eps('single');
-%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
 %!
 %! a = [
 %! 611   196  -192   407    -8   -52   -49    29

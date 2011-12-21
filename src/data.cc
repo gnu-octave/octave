@@ -2160,7 +2160,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 
 /*
 
-%!function ret = testcat (t1, t2, tr, cmplx)
+%!function ret = __testcat (t1, t2, tr, cmplx)
 %! assert (cat (1, cast ([], t1), cast([], t2)), cast ([], tr));
 %!
 %! assert (cat (1, cast (1, t1), cast (2, t2)), cast ([1; 2], tr));
@@ -2237,67 +2237,68 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 %!   assert ([cast([1i, 2], t1), cast([3i, 4], t2)], cast ([1i, 2, 3i, 4], tr));
 %! endif
 %! ret = true;
+%!endfunction
 
-%!assert (testcat('double', 'double', 'double'));
-%!assert (testcat('single', 'double', 'single'));
-%!assert (testcat('double', 'single', 'single'));
-%!assert (testcat('single', 'single', 'single'));
+%!assert (__testcat('double', 'double', 'double'))
+%!assert (__testcat('single', 'double', 'single'))
+%!assert (__testcat('double', 'single', 'single'))
+%!assert (__testcat('single', 'single', 'single'))
 
-%!assert (testcat('double', 'int8', 'int8', false));
-%!assert (testcat('int8', 'double', 'int8', false));
-%!assert (testcat('single', 'int8', 'int8', false));
-%!assert (testcat('int8', 'single', 'int8', false));
-%!assert (testcat('int8', 'int8', 'int8', false));
-%!assert (testcat('double', 'int16', 'int16', false));
-%!assert (testcat('int16', 'double', 'int16', false));
-%!assert (testcat('single', 'int16', 'int16', false));
-%!assert (testcat('int16', 'single', 'int16', false));
-%!assert (testcat('int16', 'int16', 'int16', false));
-%!assert (testcat('double', 'int32', 'int32', false));
-%!assert (testcat('int32', 'double', 'int32', false));
-%!assert (testcat('single', 'int32', 'int32', false));
-%!assert (testcat('int32', 'single', 'int32', false));
-%!assert (testcat('int32', 'int32', 'int32', false));
-%!assert (testcat('double', 'int64', 'int64', false));
-%!assert (testcat('int64', 'double', 'int64', false));
-%!assert (testcat('single', 'int64', 'int64', false));
-%!assert (testcat('int64', 'single', 'int64', false));
-%!assert (testcat('int64', 'int64', 'int64', false));
+%!assert (__testcat('double', 'int8', 'int8', false))
+%!assert (__testcat('int8', 'double', 'int8', false))
+%!assert (__testcat('single', 'int8', 'int8', false))
+%!assert (__testcat('int8', 'single', 'int8', false))
+%!assert (__testcat('int8', 'int8', 'int8', false))
+%!assert (__testcat('double', 'int16', 'int16', false))
+%!assert (__testcat('int16', 'double', 'int16', false))
+%!assert (__testcat('single', 'int16', 'int16', false))
+%!assert (__testcat('int16', 'single', 'int16', false))
+%!assert (__testcat('int16', 'int16', 'int16', false))
+%!assert (__testcat('double', 'int32', 'int32', false))
+%!assert (__testcat('int32', 'double', 'int32', false))
+%!assert (__testcat('single', 'int32', 'int32', false))
+%!assert (__testcat('int32', 'single', 'int32', false))
+%!assert (__testcat('int32', 'int32', 'int32', false))
+%!assert (__testcat('double', 'int64', 'int64', false))
+%!assert (__testcat('int64', 'double', 'int64', false))
+%!assert (__testcat('single', 'int64', 'int64', false))
+%!assert (__testcat('int64', 'single', 'int64', false))
+%!assert (__testcat('int64', 'int64', 'int64', false))
 
-%!assert (testcat('double', 'uint8', 'uint8', false));
-%!assert (testcat('uint8', 'double', 'uint8', false));
-%!assert (testcat('single', 'uint8', 'uint8', false));
-%!assert (testcat('uint8', 'single', 'uint8', false));
-%!assert (testcat('uint8', 'uint8', 'uint8', false));
-%!assert (testcat('double', 'uint16', 'uint16', false));
-%!assert (testcat('uint16', 'double', 'uint16', false));
-%!assert (testcat('single', 'uint16', 'uint16', false));
-%!assert (testcat('uint16', 'single', 'uint16', false));
-%!assert (testcat('uint16', 'uint16', 'uint16', false));
-%!assert (testcat('double', 'uint32', 'uint32', false));
-%!assert (testcat('uint32', 'double', 'uint32', false));
-%!assert (testcat('single', 'uint32', 'uint32', false));
-%!assert (testcat('uint32', 'single', 'uint32', false));
-%!assert (testcat('uint32', 'uint32', 'uint32', false));
-%!assert (testcat('double', 'uint64', 'uint64', false));
-%!assert (testcat('uint64', 'double', 'uint64', false));
-%!assert (testcat('single', 'uint64', 'uint64', false));
-%!assert (testcat('uint64', 'single', 'uint64', false));
-%!assert (testcat('uint64', 'uint64', 'uint64', false));
+%!assert (__testcat('double', 'uint8', 'uint8', false))
+%!assert (__testcat('uint8', 'double', 'uint8', false))
+%!assert (__testcat('single', 'uint8', 'uint8', false))
+%!assert (__testcat('uint8', 'single', 'uint8', false))
+%!assert (__testcat('uint8', 'uint8', 'uint8', false))
+%!assert (__testcat('double', 'uint16', 'uint16', false))
+%!assert (__testcat('uint16', 'double', 'uint16', false))
+%!assert (__testcat('single', 'uint16', 'uint16', false))
+%!assert (__testcat('uint16', 'single', 'uint16', false))
+%!assert (__testcat('uint16', 'uint16', 'uint16', false))
+%!assert (__testcat('double', 'uint32', 'uint32', false))
+%!assert (__testcat('uint32', 'double', 'uint32', false))
+%!assert (__testcat('single', 'uint32', 'uint32', false))
+%!assert (__testcat('uint32', 'single', 'uint32', false))
+%!assert (__testcat('uint32', 'uint32', 'uint32', false))
+%!assert (__testcat('double', 'uint64', 'uint64', false))
+%!assert (__testcat('uint64', 'double', 'uint64', false))
+%!assert (__testcat('single', 'uint64', 'uint64', false))
+%!assert (__testcat('uint64', 'single', 'uint64', false))
+%!assert (__testcat('uint64', 'uint64', 'uint64', false))
 
-%!assert (cat (3, [], [1,2;3,4]), [1,2;3,4]);
-%!assert (cat (3, [1,2;3,4], []), [1,2;3,4]);
-%!assert (cat (3, [], [1,2;3,4], []), [1,2;3,4]);
-%!assert (cat (3, [], [], []), zeros (0, 0, 3));
+%!assert (cat (3, [], [1,2;3,4]), [1,2;3,4])
+%!assert (cat (3, [1,2;3,4], []), [1,2;3,4])
+%!assert (cat (3, [], [1,2;3,4], []), [1,2;3,4])
+%!assert (cat (3, [], [], []), zeros (0, 0, 3))
 
-%!assert (cat (3, [], [], 1, 2), cat (3, 1, 2));
-%!assert (cat (3, [], [], [1,2;3,4]), [1,2;3,4]);
-%!assert (cat (4, [], [], [1,2;3,4]), [1,2;3,4]);
-%!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4]);
-%!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4]);
+%!assert (cat (3, [], [], 1, 2), cat (3, 1, 2))
+%!assert (cat (3, [], [], [1,2;3,4]), [1,2;3,4])
+%!assert (cat (4, [], [], [1,2;3,4]), [1,2;3,4])
+%!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4])
+%!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4])
 
-%!assert ([zeros(3,2,2); ones(1,2,2)], repmat([0;0;0;1],[1,2,2]) );
-%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat(zeros(3,2,2), ones(1,2,2)) );
+%!assert ([zeros(3,2,2); ones(1,2,2)], repmat([0;0;0;1],[1,2,2]) )
+%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat(zeros(3,2,2), ones(1,2,2)) )
 
 */
 

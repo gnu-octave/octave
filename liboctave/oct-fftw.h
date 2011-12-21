@@ -44,7 +44,7 @@ protected:
 
 public:
 
-  ~octave_fftw_planner (void) { }
+  ~octave_fftw_planner (void);
 
   enum FftwMethod
   {
@@ -181,7 +181,7 @@ protected:
 
 public:
 
-  ~octave_float_fftw_planner (void) { }
+  ~octave_float_fftw_planner (void);
 
   enum FftwMethod
   {

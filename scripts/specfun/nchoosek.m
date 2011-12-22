@@ -48,9 +48,9 @@
 ## This is the number of combinations of @var{n} items taken in groups of
 ## size @var{k}.
 ##
-## If the first argument is a vector, @var{set}, then generate all combinations
-## of the elements of @var{set}, taken @var{k} at a time, with one row per
-## combination.  The result @var{c} has @var{k} columns and
+## If the first argument is a vector, @var{set}, then generate all
+## combinations of the elements of @var{set}, taken @var{k} at a time, with
+## one row per combination.  The result @var{c} has @var{k} columns and
 ## @w{@code{nchoosek (length (@var{set}), @var{k})}} rows.
 ##
 ## For example:
@@ -77,8 +77,8 @@
 ##
 ## @code{nchoosek} works only for non-negative, integer arguments.  Use
 ## @code{bincoeff} for non-integer and negative scalar arguments, or for
-## computing many binomial coefficients at once with vector inputs for @var{n}
-## or @var{k}.
+## computing many binomial coefficients at once with vector inputs
+## for @var{n} or @var{k}.
 ##
 ## @seealso{bincoeff, perms}
 ## @end deftypefn

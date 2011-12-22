@@ -43,6 +43,7 @@ autoregressions
 autoscaled
 AutoScaling
 AWK
+awt
 backend
 Backends
 backends
@@ -350,6 +351,7 @@ grayscale
 Graz
 griddata
 gswin
+GUIs
 gunzipped
 gz
 gzip
@@ -438,6 +440,7 @@ ji
 jpeg
 JPEG
 jpg
+jvm
 keybindings
 keypress
 Kolmogorov
@@ -978,6 +981,8 @@ Villadsen
 voronoi
 Voronoi
 Wa
+waitbar
+waitbars
 wallis
 wblcdf
 wblinv

@@ -1113,11 +1113,11 @@ warnings tagged by @var{id}.  The special identifier @samp{\"all\"} may\n\
 be used to set the state of all warnings.\n\
 \n\
 If the first argument is @samp{\"on\"} or @samp{\"off\"}, set the state\n\
-of a particular warning using the identifier @var{id}. If the first\n\
+of a particular warning using the identifier @var{id}.  If the first\n\
 argument is @samp{\"query\"}, query the state of this warning instead.\n\
-If the identifier is omitted, a value of @samp{\"all\"} is assumed. If\n\
+If the identifier is omitted, a value of @samp{\"all\"} is assumed.  If\n\
 you set the state of a warning to @samp{\"error\"}, the warning named by\n\
-@var{id} is handled as if it were an error instead. So, for example, the\n\
+@var{id} is handled as if it were an error instead.  So, for example, the\n\
 following handles all warnings as errors:\n\
 \n\
 @example\n\
@@ -1488,8 +1488,8 @@ DEFUN (lasterror, args, ,
 @deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
 @deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror ('reset')\n\
-Query or set the last error message structure.  When called without arguments\n\
-, return a structure containing the last error message and other\n\
+Query or set the last error message structure.  When called without\n\
+arguments, return a structure containing the last error message and other\n\
 information related to this error.  The elements of the structure are:\n\
 \n\
 @table @asis\n\

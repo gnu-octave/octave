@@ -80,7 +80,7 @@ Summary of important user-visible changes for version 3.6:
 
  ** All .m string functions have been modified for better performance or
     greater Matlab compatibility.  Performance gains of 15X-30X have
-    been demonstrated. Operations on cell array of strings no longer pay
+    been demonstrated.  Operations on cell array of strings no longer pay
     quite as high a penalty as those on 2-D character arrays.
 
       deblank:  Now requires character or cellstr input.
@@ -518,7 +518,7 @@ Summary of important user-visible changes for version 3.4:
     which is no longer a mere dummy.  Consequently, nzmax and nnz are no
     longer always equal in Octave.  Octave may also produce a matrix
     with nnz < nzmax as a result of other operations, so you should
-    consistently use nnz unless you really want to use nzmax (i.e. the
+    consistently use nnz unless you really want to use nzmax (i.e., the
     space allocated for nonzero elements).
 
     Sparse concatenation is also affected, and concatenating sparse 
@@ -555,7 +555,7 @@ Summary of important user-visible changes for version 3.4:
       pkg install -forge general
     
     will automatically download the latest release of the general
-    package and attempt to install it. No automatic resolving of
+    package and attempt to install it.  No automatic resolving of
     dependencies is provided.  Further,
 
       pkg list -forge
@@ -928,7 +928,7 @@ Summary of important user-visible changes for version 3.2:
 
     For some operations on ranges, Octave will attempt to keep the
     result as a range.  These include negation, adding a scalar,
-    subtracting a scalar, and multiplying by a scalar. Ranges with zero
+    subtracting a scalar, and multiplying by a scalar.  Ranges with zero
     increment are allowed and can be constructed using the built-in
     function `ones'.
 

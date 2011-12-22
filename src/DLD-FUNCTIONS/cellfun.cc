@@ -1042,11 +1042,11 @@ concatenated in a cell array.  For example:\n\
 @group\n\
 arrayfun (@@(x,y) x:y, \"abc\", \"def\", \"UniformOutput\", false)\n\
 @result{} ans =\n\
-@{\n\
-  [1,1] = abcd\n\
-  [1,2] = bcde\n\
-  [1,3] = cdef\n\
-@}\n\
+    @{\n\
+      [1,1] = abcd\n\
+      [1,2] = bcde\n\
+      [1,3] = cdef\n\
+    @}\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1099,12 +1099,12 @@ example:\n\
 @example\n\
 @group\n\
 function y = ferr (s, x), y = \"MyString\"; endfunction\n\
-arrayfun (@@str2num, [1234], \\n\
-          \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
+arrayfun (@@str2num, [1234],\n\
+           \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
 @result{} ans =\n\
-@{\n\
- [1,1] = MyString\n\
-@}\n\
+    @{\n\
+     [1,1] = MyString\n\
+    @}\n\
 @end group\n\
 @end example\n\
 \n\

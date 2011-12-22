@@ -506,6 +506,7 @@ endfunction
 %! axis tight
 
 %!demo
+%! clf
 %! x = -10:0.1:10;
 %! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
 %! plot (x, y)
@@ -515,6 +516,7 @@ endfunction
 %! box off
 
 %!demo
+%! clf
 %! x = -10:0.1:10;
 %! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
 %! plot (x, y)
@@ -524,6 +526,7 @@ endfunction
 %! box off
 
 %!demo
+%! clf
 %! x = -10:0.1:10;
 %! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
 %! plot (x, y)
@@ -533,6 +536,7 @@ endfunction
 %! box off
 
 %!demo
+%! clf
 %! x = -10:0.1:10;
 %! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
 %! plot (x, y)
@@ -542,6 +546,7 @@ endfunction
 %! box off
 
 %!demo
+%! clf
 %! x = -10:0.1:10;
 %! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
 %! plot (x, y)

@@ -87,6 +87,7 @@ endfunction
 %! pcolor(Z);
 
 %!demo
+%! clf
 %! [X,Y,Z]=sombrero;
 %! [Fx,Fy] = gradient(Z);
 %! pcolor(X,Y,Fx+Fy);

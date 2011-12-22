@@ -81,10 +81,12 @@ function [c, h] = contourf (varargin)
 endfunction
 
 %!demo
+%! clf
 %! [x, y, z] = peaks (50);
 %! contourf (x, y, z, -7:9)
 
 %!demo
+%! clf
 %! [theta, r] = meshgrid (linspace (0, 2*pi, 64), linspace(0,1,64));
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin(2*theta).*(1-r);

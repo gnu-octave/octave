@@ -56,5 +56,6 @@ endfunction
 
 
 %!demo
+%! clf
 %! ezpolar (@(t) 1 + sin (t));
 

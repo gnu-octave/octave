@@ -88,35 +88,42 @@ endfunction
 
 
 %!demo
+%! clf
 %! x = 1:10;
 %! stem (x);
 
 %!demo
+%! clf
 %! x = 1:10;
 %! y = 2*x;
 %! stem (x, y);
 
 %!demo
+%! clf
 %! x = 1:10;
 %! y = 2*x;
 %! h = stem (x, y, "r");
 
 %!demo
+%! clf
 %! x = 1:10;
 %! y = 2*x;
 %! h = stem (x, y, "-.k");
 
 %!demo
+%! clf
 %! x = 1:10;
 %! y = 2*x;
 %! h = stem (x, y, "-.k.");
 
 %!demo
+%! clf
 %! x = 1:10;
 %! y = 2*x;
 %! h = stem (x, y, "filled");
 
 %!demo
+%! clf
 %! x = [0 : 10]';
 %! y = [sin(x), cos(x)];
 %! h = stem (x, y);

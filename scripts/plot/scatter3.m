@@ -84,22 +84,26 @@ endfunction
 
 
 %!demo
+%! clf
 %! [x, y, z] = peaks (20);
 %! scatter3 (x(:), y(:), z(:), [], z(:));
 
 %!demo
+%! clf
 %! x = rand (20,1);
 %! y = rand (20,1);
 %! z = rand (20,1);
 %! scatter3 (x(:), y(:), z(:), 10, z(:), "s");
 
 %!demo
+%! clf
 %! x = rand (20,1);
 %! y = rand (20,1);
 %! z = rand (20,1);
 %! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), "s");
 
 %!demo
+%! clf
 %! x = rand (20,1);
 %! y = rand (20,1);
 %! z = rand (20,1);

@@ -71,12 +71,14 @@ endfunction
 %! surf (Z);
 
 %!demo
+%! clf
 %! [~,~,Z] = sombrero;
 %! [Fx,Fy] = gradient (Z);
 %! surf (Z, Fx+Fy);
 %! shading interp;
 
 %!demo
+%! clf
 %! [X,Y,Z] = sombrero;
 %! [~,Fy] = gradient (Z);
 %! surf (X, Y, Z, Fy);

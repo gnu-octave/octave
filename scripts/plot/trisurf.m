@@ -73,6 +73,7 @@ endfunction
 
 
 %!demo
+%! clf
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 10);
@@ -84,6 +85,7 @@ endfunction
 %! trisurf (tri, x(:), y(:), z(:));
 
 %!demo
+%! clf
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
@@ -91,6 +93,7 @@ endfunction
 %! trisurf (tri, x, y, z);
 
 %!demo
+%! clf
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
@@ -98,6 +101,7 @@ endfunction
 %! trisurf (tri, x, y, z, "facecolor", "interp");
 
 %!demo
+%! clf
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;

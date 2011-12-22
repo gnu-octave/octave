@@ -1,4 +1,5 @@
 ## Copyright (C) 2009-2011 Eric Chassande-Mottin, CNRS (France)
+## Copyright (C) 2011 Philip Nienhuis
 ##
 ## This file is part of Octave.
 ##
@@ -123,8 +124,10 @@
 ## Any character in @var{value} will be used to split @var{str} into words
 ## (default value = any whitespace).
 ##
-## @item "emptyvalue"
-## Parts of the output where no word is available is filled with @var{value}.
+## @item "emptyvalue":
+## Value to return for empty numeric values in non-whitespace delimited data.
+## The default is NaN. When the data type does not support NaN
+## (int32 for example), then default is zero.
 ##
 ## @item "multipledelimsasone"
 ## Treat a series of consecutive delimiters, without whitespace in between,
@@ -144,6 +147,8 @@
 ## trimmed; the string defining whitespace must be enclosed in double
 ## quotes for proper processing of special characters like \t.
 ## The default value for whitespace = " \b\r\n\t" (note the space).
+## Unless whitespace is set to '' (empty) AND at least one "%s" format
+## conversion specifier is supplied, a space is always part of whitespace.
 ##
 ## @end table
 ##
@@ -226,7 +231,7 @@ function varargout = strread (str, format = "%f", varargin)
         endswitch
       case "delimiter"
         delimiter_str = varargin{n+1};
-        if (is_sq_string (delimiter_str))
+        if (strcmp (typeinfo (delimiter_str), "sq_string"))
           delimiter_str = do_string_escapes (delimiter_str);
         endif
       case "emptyvalue"
@@ -235,13 +240,13 @@ function varargout = strread (str, format = "%f", varargin)
         warning ('strread: property "expchars" is not implemented');
       case "whitespace"
         white_spaces = varargin{n+1};
-        if (is_sq_string (white_spaces))
+        if (strcmp (typeinfo (white_spaces), "sq_string"))
           white_spaces = do_string_escapes (white_spaces);
         endif
       ## The following parameters are specific to textscan and textread
       case "endofline"
         eol_char = varargin{n+1};
-        if (is_sq_string (eol_char))
+        if (strcmp (typeinfo (eol_char), "sq_string"))
           eol_char = do_string_escapes (eol_char);
         endif
       case "returnonerror"
@@ -329,8 +334,14 @@ function varargout = strread (str, format = "%f", varargin)
   endif
 
   if (! isempty (white_spaces))
-    ## Remove any delimiter chars from white_spaces list
-    white_spaces = setdiff (white_spaces, delimiter_str);
+    ## For numeric fields, whitespace is always a delimiter, but not for text fields
+    if (isempty (strfind (format, "%s")))
+      ## Add whitespace to delimiter set
+      delimiter_str = unique ([white_spaces delimiter_str]);
+    else
+      ## Remove any delimiter chars from white_spaces list
+      white_spaces = setdiff (white_spaces, delimiter_str);
+    endif
   endif
   if (isempty (delimiter_str))
     delimiter_str = " ";
@@ -344,27 +355,28 @@ function varargout = strread (str, format = "%f", varargin)
 
   pad_out = 0;
   ## Trim whitespace if needed
-  ## FIXME: This is very complicated.  Can this be simplified with regexprep?
   if (! isempty (white_spaces))
     ## Check if trailing "\n" might signal padding output arrays to equal size
     ## before it is trimmed away below
     if ((str(end) == 10) && (nargout > 1))
       pad_out = 1;
     endif
-    ## Remove repeated white_space chars.  First find white_space positions
-    idx = strchr (str, white_spaces);
-    ## Find repeated white_spaces
-    idx2 = ! (idx(2:end) - idx(1:end-1) - 1);
-    ## Set all whitespace chars to spaces
-    ## FIXME: this implies real spaces are always part of white_spaces
-    str(idx) = ' ';
-    ## Set all repeated white_space to \0
-    str(idx(idx2)) = "\0";
-    str = strsplit (str, "\0");
-    ## Reconstruct trimmed str
-    str = cell2mat (str);
-    ## Remove leading & trailing space, but preserve delimiters.
-    str = strtrim (str);
+    ## Condense all repeated whitespace into one single space
+    ## FIXME: this will also fold repeated whitespace in a char field
+    rxp_wsp = sprintf ("[%s]+", white_spaces);
+    str = regexprep (str, rxp_wsp, ' ');
+    ## Remove possible leading space at string
+    if (str(1) == 32)
+       str = str(2:end);
+    endif
+    ## Check for single delimiter followed/preceded by whitespace
+    ## FIXME: Double strrep on str is enormously expensive of CPU time.
+    ## Can this be eliminated
+    if (! isempty (delimiter_str))
+      dlmstr = setdiff (delimiter_str, " ");
+      rxp_dlmwsp = sprintf ("( [%s]|[%s] )", dlmstr, dlmstr);
+      str = regexprep (str, rxp_dlmwsp, delimiter_str(1));
+    endif
     ## FIXME: Double strrep on str is enormously expensive of CPU time.
     ## Can this be eliminated
     ## Wipe leading and trailing whitespace on each line (it may be delimiter too)
@@ -394,25 +406,31 @@ function varargout = strread (str, format = "%f", varargin)
     endfor
   endif
 
-  ## We now may have to cope with 3 cases:
+  ## fmt_words has been split properly now, but words{} has only been split on
+  ## delimiter positions. 
+  ## As numeric fields can also be separated by whitespace, more splits may be
+  ## needed.
+  ## We also don't know the number of lines (as EndOfLine may have been set to
+  ## "" (empty) by the caller).
+  ##
+  ## We also may have to cope with 3 cases as far as literals go:
   ## A: Trailing literals (%f<literal>) w/o delimiter in between.
   ## B: Leading literals (<literal>%f) w/o delimiter in between.
   ## C. Skipping leftover parts of specified skip fields (%*N )
-  ## fmt_words has been split properly now, but words{} has only been split on
-  ## delimiter positions.  Some words columns may have to be split further.
-  ## We also don't know the number of lines (as EndOfLine may have been set to
-  ## "" (empty) by the caller).
+  ## Some words columns may have to be split further to fix these.
 
   ## Find indices and pointers to possible literals in fmt_words
   idf = cellfun ("isempty", strfind (fmt_words, "%"));
   ## Find indices and pointers to conversion specifiers with fixed width
   idg = ! cellfun ("isempty", regexp (fmt_words, '%\*?\d'));
   idy = find (idf | idg);
+  ## Find indices to numeric conversion specifiers
+  idn = ! cellfun ("isempty", regexp (fmt_words, "%[dnfu]"));
 
   ## If needed, split up columns in three steps:
   if (! isempty (idy))
     ## Try-catch because complexity of strings to read can be infinite
-    #try
+    try
 
       ## 1. Assess "period" in the split-up words array ( < num_words_per_line).
       ## Could be done using EndOfLine but that prohibits EndOfLine = "" option.
@@ -434,7 +452,13 @@ function varargout = strread (str, format = "%f", varargin)
             iwrdp += length (fmt_words{ii});
             if (iwrdp > iwrdl)
               ## Parse error.  Literal extends beyond delimiter (word boundary)
-              error ("strread: Literal '%s' (fmt spec # %d) does not match data", fmt_words{ii}, ii);
+              warning ("strread: literal '%s' (fmt spec # %d) does not match data", ...
+                fmt_words{ii}, ii);
+              ## Word assumed to be completely "used up". Next word
+              ++iwrd; iwrdp = 0;
+              if (ii < numel (fmt_words))
+                iwrdl = length (words{iwrd});
+              endif
             elseif (iwrdp == iwrdl)
               ## Word completely "used up". Next word
               ++iwrd; iwrdp = 0;
@@ -449,8 +473,12 @@ function varargout = strread (str, format = "%f", varargin)
             iwrdp += floor ...
              (str2double (fmt_words{ii}(regexp(fmt_words{ii}, '\d') : end-1)));
             if (iwrdp > iwrdl)
-              ## Error. Field extends beyond word boundary.
-              error ("strread: Field width '%s' (fmt spec # %d) extends beyond word limit", fmt_words{ii}, ii);
+              ## Match error. Field extends beyond word boundary.
+              warning  ...
+              ("strread: field width '%s' (fmt spec # %d) extends beyond actual word limit", ...
+                 fmt_words{ii}, ii);
+              ## Assume word to be completely "used up".  Next word
+              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
             elseif (iwrdp == iwrdl)
               ## Word completely "used up".  Next word
               ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
@@ -556,8 +584,10 @@ function varargout = strread (str, format = "%f", varargin)
 
         else
           ## Conv. specifier.  Peek if next fmt_word needs split from current column
-          if (ii < num_words_per_line && idf(ii+1))
-            if (! isempty (strfind (words{icol, 1}, fmt_words{ii+1})))
+          if (ii < num_words_per_line)
+            if (idf(ii+1) && (! isempty (strfind (words{icol, 1}, fmt_words{ii+1}))))
+              --icol;
+            elseif (idg(ii+1))
               --icol;
             endif
           endif
@@ -569,11 +599,11 @@ function varargout = strread (str, format = "%f", varargin)
       ## Done.  Reshape words back into 1 long vector and strip padded empty words
       words = reshape (words, 1, numel (words))(1 : end-num_words_padded);
 
-    #catch
-    #  warning ("strread: unable to parse text or file with given format string");
-    #  return;
+    catch
+      warning ("strread: unable to parse text or file with given format string");
+      return;
 
-    #end_try_catch
+    end_try_catch
   endif
 
   ## For each specifier, process corresponding column
@@ -678,15 +708,19 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
     mult_dlms_s1 = true;
     ## FIXME: Should re-implement strsplit() function here in order
     ## to avoid strrep on megabytes of data.
-    ## If \n is in sep collection we need to enclose it in spaces in text
+    ## If \n is in sep collection we need to enclose it in text
     ## to avoid it being included in consecutive delim series
-    text = strrep (text, eol_char, [" " eol_char " "]);
+    enchr = ' ';
+    ## However watch out if eol_char is also in delimiters
+    if (index (sep, eol_char)); enchr = char(255); endif
+    text = strrep (text, eol_char, [enchr eol_char enchr]);
   else
     mult_dlms_s1 = false;
   endif
 
   ## Split text string along delimiters
   out = strsplit (text, sep, mult_dlms_s1);
+  if (index (sep, eol_char)); out = strrep (out, char(255), ''); endif
   ## In case of trailing delimiter, strip stray last empty word
   if (!isempty (out) && any (sep == text(end)))
     out(end) = [];
@@ -795,10 +829,10 @@ endfunction
 %!test
 %! # No delimiters at all besides EOL.  Plain reading numbers & strings
 %! str = "Text1Text2Text\nText398Text4Text\nText57Text";
-%! c = textscan (str, "Text%dText%1sText");
-%! assert (c{1}, int32 ([1; 398; 57]));
-%! assert (c{2}(1:2), {'2'; '4'});
-%! assert (isempty (c{2}{3}), true);
+%! [a, b] = strread (str, "Text%dText%1sText");
+%! assert (a, int32 ([1; 398; 57]));
+%! assert (b(1:2), {'2'; '4'});
+%! assert (isempty (b{3}), true);
 
 %% MultipleDelimsAsOne
 %!test
@@ -810,9 +844,47 @@ endfunction
 %! assert (d', [15, 25, 35]);
 
 %% delimiter as sq_string and dq_string
+%!test
 %! assert (strread ("1\n2\n3", "%d", "delimiter", "\n"),
 %!         strread ("1\n2\n3", "%d", "delimiter", '\n'))
 
 %% whitespace as sq_string and dq_string
+%!test
 %! assert (strread ("1\b2\r3\b4\t5", "%d", "whitespace", "\b\r\n\t"),
 %!         strread ("1\b2\r3\b4\t5", "%d", "whitespace", '\b\r\n\t'))
+
+%!test
+%! str =  "0.31 0.86 0.94\n 0.60 0.72 0.87";
+%! fmt = "%f %f %f";
+%! args = {"delimiter", " ", "endofline", "\n", "whitespace", " "};
+%! [a, b, c] = strread (str, fmt, args {:});
+%! assert (a, [0.31; 0.60], 0.01)
+%! assert (b, [0.86; 0.72], 0.01)
+%! assert (c, [0.94; 0.87], 0.01)
+
+%!test
+%! str =  "0.31,0.86,0.94\n0.60,0.72,0.87";
+%! fmt = "%f %f %f";
+%! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
+%! [a, b, c] = strread (str, fmt, args {:});
+%! assert (a, [0.31; 0.60], 0.01)
+%! assert (b, [0.86; 0.72], 0.01)
+%! assert (c, [0.94; 0.87], 0.01)
+
+%!test
+%! str =  "0.31 0.86 0.94\n 0.60 0.72 0.87";
+%! fmt = "%f %f %f";
+%! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
+%! [a, b, c] = strread (str, fmt, args {:});
+%! assert (a, [0.31; 0.60], 0.01)
+%! assert (b, [0.86; 0.72], 0.01)
+%! assert (c, [0.94; 0.87], 0.01)
+
+%!test
+%! str =  "0.31, 0.86, 0.94\n 0.60, 0.72, 0.87";
+%! fmt = "%f %f %f";
+%! args = {"delimiter", ",", "endofline", "\n", "whitespace", " "};
+%! [a, b, c] = strread (str, fmt, args {:});
+%! assert (a, [0.31; 0.60], 0.01)
+%! assert (b, [0.86; 0.72], 0.01)
+%! assert (c, [0.94; 0.87], 0.01)

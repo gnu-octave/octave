@@ -62,7 +62,7 @@ single_num (std::istringstream& is, double& num)
       if (c1 == 'n' && c2 == 'f')
         {
           num = octave_Inf;
-          is.peek (); // Sets eof bit.
+          is.peek (); // May sets EOF bit.
         }
       else
         is.setstate (std::ios::failbit); // indicate that read has failed.
@@ -75,7 +75,7 @@ single_num (std::istringstream& is, double& num)
       if (c1 == 'A')
         {
           num = octave_NA;
-          is.peek (); // Sets eof bit.
+          is.peek (); // May set EOF bit.
         }
       else
         {
@@ -83,7 +83,7 @@ single_num (std::istringstream& is, double& num)
           if (c1 == 'a' && c2 == 'N')
             {
               num = octave_NaN;
-              is.peek (); // Sets eof bit.
+              is.peek (); // May set EOF bit.
             }
           else
             is.setstate (std::ios::failbit); // indicate that read has failed.
@@ -130,22 +130,24 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
   // It's i*num or just i.
   if (is_imag_unit (c))
     {
-      c = is.get ();
       imag = true;
-      char cn = is.peek ();
+      is.get ();
+      c = is.peek ();
 
       // Skip spaces after imaginary unit.
-      while (isspace (cn))
+      while (isspace (c))
         {
           is.get ();
-          cn = is.peek ();
+          c = is.peek ();
         }
 
-      if (cn == '*')
+      if (c == '*')
         {
           // Multiplier follows, we extract it as a number.
           is.get ();
           single_num (is, num);
+          if (is.good ())
+            c = is.peek ();
         }
       else
         num = 1.0;
@@ -181,7 +183,7 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
                 {
                   imag = true;
                   is.get ();
-                  is.peek (); // Sets eof bit.
+                  c = is.peek ();
                 }
               else
                 is.setstate (std::ios::failbit); // indicate that read has failed.
@@ -190,8 +192,18 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
             {
               imag = true;
               is.get ();
-              is.peek (); // Sets eof bit.
+              c = is.peek ();
             }
+        }
+    }
+
+  if (is.good ())
+    {
+      // Skip trailing spaces.
+      while (isspace (c))
+        {
+          is.get ();
+          c = is.peek ();
         }
     }
 
@@ -340,6 +352,8 @@ risk of using @code{eval} on unknown data.\n\
 /*
 
 %!assert (str2double ("1"), 1)
+%!assert (str2double ("-.1e-5"), -1e-6)
+%!assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
 %!assert (str2double ("-.1e-5"), -1e-6)
 %!assert (str2double ("1,222.5"), 1222.5)
 %!assert (str2double ("i"), i)

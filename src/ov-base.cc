@@ -1532,18 +1532,18 @@ DEFUN (sparse_auto_mutate, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sparse_auto_mutate (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
-automatically mutate sparse matrices to real matrices to save memory.\n\
+automatically mutate sparse matrices to full matrices to save memory.\n\
 For example:\n\
 \n\
 @example\n\
 @group\n\
-s = speye(3);\n\
+s = speye (3);\n\
 sparse_auto_mutate (false)\n\
-s (:, 1) = 1;\n\
+s(:, 1) = 1;\n\
 typeinfo (s)\n\
 @result{} sparse matrix\n\
 sparse_auto_mutate (true)\n\
-s (1, :) = 1;\n\
+s(1, :) = 1;\n\
 typeinfo (s)\n\
 @result{} matrix\n\
 @end group\n\

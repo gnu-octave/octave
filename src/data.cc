@@ -4299,6 +4299,11 @@ either \"double\" or \"single\".\n\
 
 DEFUN (I, args, ,
   "-*- texinfo -*-\n\
+@c List other forms of function in documentation index\n\
+@findex i\n\
+@findex j\n\
+@findex J\n\
+\n\
 @deftypefn  {Built-in Function} {} I\n\
 @deftypefnx {Built-in Function} {} I (@var{n})\n\
 @deftypefnx {Built-in Function} {} I (@var{n}, @var{m})\n\

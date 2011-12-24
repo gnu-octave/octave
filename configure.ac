@@ -27,7 +27,7 @@ dnl Copyright (C) 1993-2011 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT([GNU Octave], [3.5.91], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.5.91+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"

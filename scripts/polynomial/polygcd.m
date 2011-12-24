@@ -23,12 +23,11 @@
 ## Find the greatest common divisor of two polynomials.  This is equivalent
 ## to the polynomial found by multiplying together all the common roots.
 ## Together with deconv, you can reduce a ratio of two polynomials.
-## Tolerance defaults to @code{sqrt(eps)}.
+## The tolerance @var{tol} defaults to @code{sqrt(eps)}.
 ##
-## Note that this is a numerically unstable algorithm, and should not be used
-## on large polynomials.
+## @strong{Caution:} This is a numerically unstable algorithm and should not be used on large polynomials.
 ##
-## Example:
+## Example code:
 ##
 ## @example
 ## @group
@@ -39,8 +38,7 @@
 ## @result{} [ 0, 0, 0 ]
 ## @end group
 ## @end example
-## @seealso{poly, polyint, polyder, polyreduce, roots, conv, deconv,
-## residue, filter, polyval, polyvalm}
+## @seealso{poly, roots, conv, deconv, residue}
 ## @end deftypefn
 
 function x = polygcd (b, a, tol)

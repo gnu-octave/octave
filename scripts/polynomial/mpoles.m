@@ -17,20 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{multp}, @var{indx}] =} mpoles (@var{p})
-## @deftypefnx {Function File} {[@var{multp}, @var{indx}] =} mpoles (@var{p}, @var{tol})
-## @deftypefnx {Function File} {[@var{multp}, @var{indx}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
-## Identify unique poles in @var{p} and associates their multiplicity,
-## ordering them from largest to smallest.
+## @deftypefn  {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p})
+## @deftypefnx {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol})
+## @deftypefnx {Function File} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
+## Identify unique poles in @var{p} and their associated multiplicity.  The
+## output is ordered from largest pole to smallest pole.
 ##
-## If the relative difference of the poles is less than @var{tol}, then
+## If the relative difference of two poles is less than @var{tol} then
 ## they are considered to be multiples.  The default value for @var{tol}
 ## is 0.001.
 ##
 ## If the optional parameter @var{reorder} is zero, poles are not sorted.
 ##
-## The value @var{multp} is a vector specifying the multiplicity of the
-## poles.  @var{multp}(:) refers to multiplicity of @var{p}(@var{indx}(:)).
+## The output @var{multp} is a vector specifying the multiplicity of the
+## poles.  @code{@var{multp}(n)} refers to the multiplicity of the Nth pole
+## @code{@var{p}(@var{idxp}(n))}.
 ##
 ## For example:
 ##
@@ -44,7 +45,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{poly, roots, conv, deconv, polyval, polyder, polyint, residue}
+## @seealso{residue, poly, roots, conv, deconv}
 ## @end deftypefn
 
 ## Author: Ben Abbott <bpabbott@mac.com>

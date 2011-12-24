@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{pp} =} mkpp (@var{breaks}, @var{coefs})
 ## @deftypefnx {Function File} {@var{pp} =} mkpp (@var{breaks}, @var{coefs}, @var{d})
 ##
-## Construct a piece-wise polynomial (pp) structure from sample points
+## Construct a piecewise polynomial (pp) structure from sample points
 ## @var{breaks} and coefficients @var{coefs}.  @var{breaks} must be a vector of
 ## strictly increasing values.  The number of intervals is given by
 ## @code{@var{ni} = length (@var{breaks}) - 1}.
@@ -40,7 +40,7 @@
 ## In any case @var{coefs} is reshaped to a 2-D matrix of
 ## size @code{[@var{ni}*prod(@var{d} @var{m})] }
 ##
-## @seealso{unmkpp, ppval, spline}
+## @seealso{unmkpp, ppval, spline, pchip, ppder, ppint, ppjumps}
 ## @end deftypefn
 
 function pp = mkpp (x, P, d)

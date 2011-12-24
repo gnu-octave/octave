@@ -36,7 +36,7 @@
 ## Return the central part of the convolution with the same size as @var{a}.
 ## @end table
 ##
-## @seealso{deconv, fftconv, conv2, poly}
+## @seealso{deconv, conv2, convn, fftconv}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

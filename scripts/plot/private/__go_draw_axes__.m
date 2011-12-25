@@ -694,25 +694,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                    else
                      ccol = cdat;
                    endif
-                   if (strncmp (obj.facecolor, "interp", 6) && nd == 3
-                       && numel (xcol) == 3 && isempty (ccol))
-                     ## FIXME - Use isonormals to render interpolated
-                     ##         triangular patches.
-                     obj.facecolor = "flat";
-                   endif
                    if (strncmp (obj.facecolor, "flat", 4))
-                     if (numel (ccol) == 3)
+                     if (isequal (size (ccol), [1, 3]))
+                       ## RGB Triplet
                        color = ccol;
                      elseif (nd == 3 && numel (xcol) == 3)
-                       if (isempty (ccol))
-                         z = mean (zcol);
-                         nr = size (cmap, 1);
-                         r = interp1 (linspace (clim(1), clim(2), nr),
-                                      (1:nr), z, "nearest", "extrap");
-                         color = cmap (r, :);
-                       else
-                         ccdat = ccol * ones (3,1);
-                       endif
+                       ccdat = ccol;
                      else
                        if (cdatadirect)
                          r = round (ccol);

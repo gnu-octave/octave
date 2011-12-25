@@ -275,7 +275,7 @@ function args = setdata (args)
               reshape (fvc(idx, 2), size(idx)),
               reshape (fvc(idx, 3), size(idx)));
     elseif (isempty (fvc))
-      c = []
+      c = [];
     else ## if (size (fvc, 2) == 1)
       c = permute (fvc(faces), [2, 1]);
     endif

@@ -81,6 +81,8 @@ function [p, s, mu] = polyfit (x, y, n)
     error ("polyfit: N must be a non-negative integer");
   endif
 
+  y_is_row_vector = (rows (y) == 1);
+
   ## Reshape x & y into column vectors.
   l = numel (x);
   x = x(:);
@@ -97,7 +99,7 @@ function [p, s, mu] = polyfit (x, y, n)
   if (nargout > 1)
     yf = v*p;
 
-    if (isrow (y))
+    if (y_is_row_vector)
       s.yf = yf.';
     else
       s.yf = yf;

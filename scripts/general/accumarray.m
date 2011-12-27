@@ -320,6 +320,13 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       endif
       subs = subs(jdx);
 
+      if (isempty (sz))
+        sz = max (subs);
+        if (length (sz) == 1)
+          sz(2) = 1;
+        endif
+      endif
+
       ## Construct matrix of fillvals.
       if (iscell (vals))
         A = cell (sz);
@@ -342,6 +349,7 @@ endfunction
 %!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105,[],@(x)sin(sum(x))),sin(cat(3, [101,0,0;0,0,0],[0,0,0;206,0,208])))
 %!assert (accumarray ({[1 3 3 2 3 1 2 2 3 3 1 2],[3 4 2 1 4 3 4 2 2 4 3 4],[1 1 2 2 1 1 2 1 1 1 2 2]},101:112),cat(3,[0,0,207,0;0,108,0,0;0,109,0,317],[0,0,111,0;104,0,0,219;0,103,0,0]))
 %!assert (accumarray ([1,1;2,1;2,3;2,1;2,3],101:105,[2,4],@max,NaN),[101,NaN,NaN,NaN;104,NaN,105,NaN])
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105, [], @prod), [101, 0, 0; 10608, 0, 10815])
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2 4],@prod,0,true),sparse([1,2,2],[1,1,3],[101,10608,10815],2,4))
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],1,[2,4]), [1,0,0,0;2,0,2,0])
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x)length(x)>1),[false,false,false,false;true,false,true,false])

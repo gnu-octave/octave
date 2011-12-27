@@ -148,7 +148,8 @@ MUNGED_TEXI_SRC = \
   system.texi \
   testfun.texi \
   tips.texi \
-  var.texi
+  var.texi \
+  vectorize.texi
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 

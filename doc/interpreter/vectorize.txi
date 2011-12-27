@@ -1,0 +1,625 @@
+@c Copyright (C) 2011 Jordi Gutiérrez Hermoso
+@c
+@c This file is part of Octave.
+@c
+@c Octave is free software; you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by the
+@c Free Software Foundation; either version 3 of the License, or (at
+@c your option) any later version.
+@c
+@c Octave is distributed in the hope that it will be useful, but WITHOUT
+@c ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+@c FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+@c for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with Octave; see the file COPYING. If not, see
+@c <http://www.gnu.org/licenses/>.
+
+@node Vectorization and Faster Code Execution
+@chapter Vectorization and Faster Code Execution
+@cindex vectorization
+@cindex vectorize
+
+Vectorization is a programming technique that uses vector operations
+instead of element-by-element loop-based operations. Besides frequently
+writing more succinct code, vectorization also allows for better
+optimization of the code. The optimizations may occur either in Octave's
+own Fortran, C, or C++ internal implementation, or even at a lower level
+depending on the compiler and external numerical libraries used to
+build Octave. The ultimate goal is to make use of your hardware's vector
+instructions if possible or to perform other optimizations in software.
+
+Vectorization is not a concept unique to Octave, but is particularly
+important because Octave is a matrix-oriented language. Vectorized
+Octave code will see a dramatic speed up in most cases.
+
+This chapter discusses vectorization and other techniques for faster
+code execution.
+
+@menu
+* Basic Vectorization::        Basic techniques for code optimization
+* Broadcasting::               Broadcasting operations
+* Function Application::       Applying functions to arrays, cells, and structs
+* Accumulation::               Accumulation functions
+* Miscellaneous Techniques::   Other techniques for speeding up code
+* Examples::
+@end menu
+
+@node Basic Vectorization
+@section Basic Vectorization
+
+To a very good first approximation, the goal in vectorization is to
+write code that avoids loops and uses whole-array operations. As a
+trivial example, consider
+
+@example
+@group
+for i = 1:n
+  for j = 1:m
+    c(i,j) = a(i,j) + b(i,j);
+  endfor
+endfor
+@end group
+@end example
+
+@noindent
+compared to the much simpler
+
+@example
+c = a + b;
+@end example
+
+@noindent
+This isn't merely easier to write; it is also internally much easier to
+optimize. Octave delegates this operation to an underlying
+implementation which among other optimizations may use special vector
+hardware instructions or could conceivably even perform the additions in
+parallel. In general, if the code is vectorized, the underlying
+implementation has much more freedom about the assumptions it can make
+in order to achieve faster execution.
+
+This is especially important for loops with "cheap" bodies. Often it
+suffices to vectorize just the innermost loop to get acceptable
+performance. A general rule of thumb is that the "order" of the
+vectorized body should be greater or equal to the "order" of the
+enclosing loop.
+
+As a less trivial example, rather than
+
+@example
+@group
+for i = 1:n-1
+  a(i) = b(i+1) - b(i);
+endfor
+@end group
+@end example
+
+@noindent
+write
+
+@example
+a = b(2:n) - b(1:n-1);
+@end example
+
+This shows an important general concept about using arrays for indexing
+instead of looping over an index variable. @xref{Index Expressions}.
+Also use boolean indexing generously. If a condition needs to be tested,
+this condition can also be written as a boolean index. For instance,
+instead of
+
+@example
+@group
+for i = 1:n
+  if a(i) > 5
+    a(i) -= 20
+  endif
+endfor
+@end group
+@end example
+
+@noindent
+write
+
+@example
+a(a>5) -= 20;
+@end example
+
+@noindent
+which exploits the fact that @code{a > 5} produces a boolean index.
+
+Use elementwise vector operators whenever possible to avoid looping
+(operators like @code{.*} and @code{.^}). @xref{Arithmetic Ops}. For
+simple in-line functions, the @code{vectorize} function can do this
+automatically.
+
+@DOCSTRING(vectorize)
+
+Also exploit broadcasting in these elementise operators both to avoid
+looping and unnecessary intermediate memory allocations.
+@xref{Broadcasting}.
+
+Use built-in and library functions if possible. Built-in and compiled
+functions are very fast. Even with a m-file library function, chances
+are good that it is already optimized, or will be optimized more in a
+future release.
+
+For instance, even better than
+
+@example
+a = b(2:n) - b(1:n-1);
+@end example
+
+@noindent
+is
+
+@example
+a = diff (b);
+@end example
+
+Most Octave functions are written with vector and array arguments in
+mind. If you find yourself writing a loop with a very simple operation,
+chances are that such a function already exists. The following functions
+occur frequently in vectorized code:
+
+@itemize @bullet
+@item
+Index manipulation
+
+@itemize
+@item
+find
+@item
+sub2ind
+@item
+ind2sub
+@item
+sort
+@item
+unique
+@item
+lookup
+@item
+ifelse / merge
+@end itemize
+
+@item
+Repetition
+@itemize
+@item
+repmat
+@item
+repelems
+@end itemize
+
+@item
+Vectorized arithmetic
+@itemize
+@item
+sum
+@item
+prod
+@item
+cumsum
+@item
+cumprod
+@item
+sumsq
+@item
+diff
+@item
+dot
+@item
+cummax
+@item
+cummin
+@end itemize
+
+@item
+Shape of higher dimensional arrays
+@itemize
+@item
+reshape
+@item
+resize
+@item
+permute
+@item
+squeeze
+@item
+deal
+@end itemize
+
+@end itemize
+
+@node Broadcasting
+@section Broadcasting
+@cindex broadcast
+@cindex broadcasting
+@cindex BSX
+@cindex recycling
+@cindex SIMD
+
+Broadcasting refers to how Octave binary operators and functions behave
+when their matrix or array operands or arguments differ in size. Since
+version 3.6.0, Octave now automatically broadcasts vectors, matrices,
+and arrays when using elementwise binary operators and functions.
+Broadly speaking, smaller arrays are ``broadcast'' across the larger
+one, until they have a compatible shape. The rule is that corresponding
+array dimensions must either
+
+@enumerate
+@item
+be equal or,
+@item
+one of them must be 1.
+@end enumerate
+
+@noindent
+In case all dimensions are equal, no broadcasting occurs and ordinary
+element-by-element arithmetic takes place. For arrays of higher
+dimensions, if the number of dimensions isn't the same, then missing
+trailing dimensions are treated as 1. When one of the dimensions is 1,
+the array with that singleton dimension gets copied along that dimension
+until it matches the dimension of the other array. For example, consider
+
+@example
+@group
+x = [1 2 3;
+     4 5 6;
+     7 8 9];
+
+y = [10 20 30];
+
+x + y
+@end group
+@end example
+
+@noindent
+Without broadcasting, @code{x + y} would be an error because dimensions
+do not agree. However, with broadcasting it is as if the following
+operation were performed:
+
+@example
+@group
+x = [1 2 3
+     4 5 6
+     7 8 9];
+
+y = [10 20 30
+     10 20 30
+     10 20 30];
+
+x + y
+@result{}    11   22   33
+      14   25   36
+      17   28   39
+@end group
+@end example
+
+@noindent
+That is, the smaller array of size @code{[1 3]} gets copied along the
+singleton dimension (the number of rows) until it is @code{[3 3]}. No
+actual copying takes place, however. The internal implementation reuses
+elements along the necessary dimension in order to achieve the desired
+effect without copying in memory.
+
+Both arrays can be broadcast across each other, for example, all
+pairwise differences of the elements of a vector with itself:
+
+@example
+@group
+y - y'
+@result{}    0   10   20
+    -10    0   10
+    -20  -10    0
+@end group
+@end example
+
+@noindent
+Here the vectors of size @code{[1 3]} and @code{[3 1]} both get
+broadcast into matrices of size @code{[3 3]} before ordinary matrix
+subtraction takes place.
+
+For a higher-dimensional example, suppose @code{img} is an RGB image of
+size @code{[m n 3]} and we wish to multiply each colour by a different
+scalar. The following code accomplishes this with broadcasting,
+
+@example
+img .*= permute ([0.8, 0.9, 1.2], [1, 3, 2]);
+@end example
+
+@noindent
+Note the usage of permute to match the dimensions of the @code{[0.8,
+0.9, 1.2]} vector with @code{img}.
+
+For functions that are not written with broadcasting semantics,
+@code{bsxfun} can be useful for coercing them to broadcast.
+
+@DOCSTRING(bsxfun)
+
+Broadcasting is only applied if either of the two broadcasting
+conditions hold. As usual, however, broadcasting does not apply when two
+dimensions differ and neither is 1:
+
+@example
+@group
+x = [1 2 3
+     4 5 6];
+y = [10 20
+     30 40];
+x + y
+@end group
+@end example
+
+@noindent
+This will produce an error about nonconformant arguments.
+
+Besides common arithmetic operations, several functions of two arguments
+also broadcast. The full list of functions and operators that broadcast
+is
+
+@example
+@group
+      plus      +  .+
+      minus     -  .-
+      times     .*
+      rdivide   ./
+      ldivide   .\
+      power     .^  .**
+      lt        <
+      le        <=
+      eq        ==
+      gt        >
+      ge        >=
+      ne        !=  ~=
+      and       &
+      or        |
+      atan2
+      hypot
+      max
+      min
+      mod
+      rem
+      xor
+
+      +=  -=  .+=  .-=  .*=  ./=  .\=  .^=  .**=  &=  |=
+@end group
+@end example
+
+Beware of resorting to broadcasting if a simpler operation will suffice.
+For matrices @var{a} and @var{b}, consider the following:
+
+@example
+c = sum (permute (a, [1, 3, 2]) .* permute (b, [3, 2, 1]), 3);
+@end example
+
+@noindent
+This operation broadcasts the two matrices with permuted dimensions
+across each other during elementwise multiplication in order to obtain a
+larger 3d array, and this array is the summed along the third dimension.
+A moment of thought will prove that this operation is simply the much
+faster ordinary matrix multiplication, @code{c = a*b;}.
+
+A note on terminology: ``broadcasting'' is the term popularized by the
+Numpy numerical environment in the Python programming language. In other
+programming languages and environments, broadcasting may also be known
+as @emph{binary singleton expansion} (BSX, in @sc{Matlab}, and the
+origin of the name of the @code{bsxfun} function), @emph{recycling} (R
+programming language), @emph{single-instruction multiple data} (SIMD),
+or @emph{replication}.
+
+@subsection Broadcasting and Legacy Code
+
+The new broadcasting semantics do not affect almost any code that worked
+in previous versions of Octave without error. Thus for example all code
+inherited from @sc{Matlab} that worked in previous versions of Octave
+should still work without change in Octave. The only exception is code
+such as
+
+@example
+@group
+try
+  c = a.*b;
+catch
+  c = a.*a;
+end_try_catch
+@end group
+@end example
+
+@noindent
+that may have relied on matrices of different size producing an error.
+Due to how broadcasting changes semantics with older versions of Octave,
+by default Octave warns if a broadcasting operation is performed. To
+disable this warning, refer to its ID (@pxref{doc-warning_ids}):
+
+@example
+warning ("off", "Octave:broadcast");
+@end example
+
+@noindent
+If you want to recover the old behaviour and produce an error, turn this
+warning into an error:
+
+@example
+warning ("error", "Octave:broadcast");
+@end example
+
+@node Function Application
+@section Function Application
+@cindex map
+@cindex apply
+@cindex function application
+
+As a general rule, functions should already be written with matrix
+arguments in mind and should consider whole matrix operations in a
+vectorized manner. Sometimes, writing functions in this way appears
+difficult or impossible for various reasons. For those situations,
+Octave provides facilities for applying a function to each element of an
+array, cell, or struct.
+
+@DOCSTRING(arrayfun)
+@DOCSTRING(spfun)
+@DOCSTRING(cellfun)
+@DOCSTRING(structfun)
+
+@node Accumulation
+@section Accumulation
+
+Whenever it's possible to categorize according to indices the elements
+of an array when performing a computation, accumulation functions can be
+useful.
+
+@DOCSTRING(accumarray)
+
+@DOCSTRING(accumdim)
+
+@node Miscellaneous Techniques
+@section Miscellaneous Techniques
+@cindex execution speed
+@cindex speedups
+@cindex optimization
+
+Here are some other ways of improving the execution speed of Octave
+programs.
+
+@itemize @bullet
+
+@item
+Avoid computing costly intermediate results multiple times. Octave
+currently does not eliminate common subexpressions. Also, certain
+internal computation results are cached for variables. For instance, if
+a matrix variable is used multiple times as an index, checking the
+indices (and internal conversion to integers) is only done once.
+
+@item
+@cindex copy-on-write
+@cindex COW
+@cindex memory management
+Be aware of lazy copies (copy-on-write). When a copy of an object is
+created, the data is not immediately copied, but rather shared. The
+actual copying is postponed until the copied data needs to be modified.
+For example:
+
+@example
+@group
+a = zeros (1000); # create a 1000x1000 matrix
+b = a; # no copying done here
+b(1) = 1; # copying done here
+@end group
+@end example
+
+Lazy copying applies to whole Octave objects such as matrices, cells,
+struct, and also individual cell or struct elements (not array
+elements).
+
+Additionally, index expressions also use lazy copying when Octave can
+determine that the indexed portion is contiguous in memory. For example:
+
+@example
+@group
+a = zeros (1000); # create a 1000x1000 matrix
+b = a(:,10:100); # no copying done here
+b = a(10:100,:); # copying done here
+@end group
+@end example
+
+This applies to arrays (matrices), cell arrays, and structs indexed
+using (). Index expressions generating cs-lists can also benefit of
+shallow copying in some cases. In particular, when @var{a} is a struct
+array, expressions like @code{@{a.x@}, @{a(:,2).x@}} will use lazy
+copying, so that data can be shared between a struct array and a cell
+array.
+
+Most indexing expressions do not live longer than their `parent'
+objects. In rare cases, however, a lazily copied slice outlasts its
+parent, in which case it becomes orphaned, still occupying unnecessarily
+more memory than needed. To provide a remedy working in most real cases,
+Octave checks for orphaned lazy slices at certain situations, when a
+value is stored into a "permanent" location, such as a named variable or
+cell or struct element, and possibly economizes them. For example:
+
+@example
+@group
+a = zeros (1000); # create a 1000x1000 matrix
+b = a(:,10:100);  # lazy slice
+a = []; # the original a array is still allocated
+c@{1@} = b; # b is reallocated at this point
+@end group
+@end example
+
+@item
+Avoid deep recursion. Function calls to m-file functions carry a
+relatively significant overhead, so rewriting a recursion as a loop
+often helps. Also, note that the maximum level of recursion is limited.
+
+@item
+Avoid resizing matrices unnecessarily.  When building a single result
+matrix from a series of calculations, set the size of the result matrix
+first, then insert values into it.  Write
+
+@example
+@group
+result = zeros (big_n, big_m)
+for i = over:and_over
+  r1 = @dots{}
+  r2 = @dots{}
+  result (r1, r2) = new_value ();
+endfor
+@end group
+@end example
+
+@noindent
+instead of
+
+@example
+@group
+result = [];
+for i = ever:and_ever
+  result = [ result, new_value() ];
+endfor
+@end group
+@end example
+
+Sometimes the number of items can't be computed in advance, and
+stack-like operations are needed. When elements are being repeatedly
+inserted at/removed from the end of an array, Octave detects it as stack
+usage and attempts to use a smarter memory management strategy
+pre-allocating the array in bigger chunks. Likewise works for cell and
+struct arrays.
+
+@example
+@group
+a = [];
+while (condition)
+  @dots{}
+  a(end+1) = value; # "push" operation
+  @dots{}
+  a(end) = []; # "pop" operation
+  @dots{}
+endwhile
+@end group
+@end example
+
+@item
+Avoid calling @code{eval} or @code{feval} excessively, because
+they require Octave to parse input or look up the name of a function in
+the symbol table.
+
+If you are using @code{eval} as an exception handling mechanism and not
+because you need to execute some arbitrary text, use the @code{try}
+statement instead.  @xref{The @code{try} Statement}.
+
+@item
+If you are calling lots of functions but none of them will need to
+change during your run, set the variable
+@code{ignore_function_time_stamp} to @code{"all"} so that Octave doesn't
+waste a lot of time checking to see if you have updated your function
+files.
+@end itemize
+
+@node Examples
+@section Examples
+
+Here goes a gallery of vectorization puzzles with solutions culled from
+the help mailing list and the machine learning class...

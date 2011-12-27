@@ -42,8 +42,8 @@ Summary of important user-visible changes for version 3.6:
 
       +=  -=  .+=  .-=  .*=  ./=  .\=  .^=  .**=  &=  |=
 
-    See the new "Broadcasting Operations" chapter in the manual for more
-    details.
+    See the "Broadcasting" section in the new "Vectorization and Faster
+    Code Execution" chapter of the manual for more details.
 
  ** Octave now features a profiler, thanks to the work of Daniel Kraft
     under the Google Summer of Code mentorship program.  The manual has

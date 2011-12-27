@@ -1225,8 +1225,6 @@ writing @code{f(x)}.
 
 @DOCSTRING(formula)
 
-@DOCSTRING(vectorize)
-
 @DOCSTRING(symvar)
 
 @node Commands

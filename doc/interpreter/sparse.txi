@@ -223,8 +223,6 @@ diagonal defined.
 
 @DOCSTRING(speye)
 
-@DOCSTRING(spfun)
-
 @DOCSTRING(spones)
 
 @DOCSTRING(sprand)

@@ -189,10 +189,6 @@ cos (pi/2)
 
 @DOCSTRING(sumsq)
 
-@DOCSTRING(accumarray)
-
-@DOCSTRING(accumdim)
-
 @node Utility Functions
 @section Utility Functions
 

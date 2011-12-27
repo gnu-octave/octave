@@ -512,7 +512,8 @@ the recursion depth and prevents Octave from recursing infinitely.
 @cindex complex-conjugate transpose
 
 The following arithmetic operators are available, and work on scalars
-and matrices.
+and matrices. They element-by-element operators and functions broadcast
+(@pxref{Broadcasting}).
 
 @table @asis
 @item @var{x} + @var{y}
@@ -715,7 +716,8 @@ such as equality.  They are written using
 
 All of Octave's comparison operators return a value of 1 if the
 comparison is true, or 0 if it is false.  For matrix values, they all
-work on an element-by-element basis.  For example:
+work on an element-by-element basis.  Broadcasting rules apply.
+@xref{Broadcasting}. For example:
 
 @example
 @group
@@ -725,9 +727,9 @@ work on an element-by-element basis.  For example:
 @end group
 @end example
 
-If one operand is a scalar and the other is a matrix, the scalar is
-compared to each element of the matrix in turn, and the result is the
-same size as the matrix.
+According to broadcasting rules, if one operand is a scalar and the
+other is a matrix, the scalar is compared to each element of the matrix
+in turn, and the result is the same size as the matrix.
 
 @table @code
 @item @var{x} < @var{y}
@@ -862,8 +864,8 @@ Each element of the result is true if the corresponding element of
 @var{boolean} is false.
 @end table
 
-For matrix operands, these operators work on an element-by-element
-basis.  For example, the expression
+These operators work on an element-by-element basis. For example, the
+expression
 
 @example
 [1, 0; 0, 1] & [1, 0; 2, 3]
@@ -872,8 +874,8 @@ basis.  For example, the expression
 @noindent
 returns a two by two identity matrix.
 
-For the binary operators, the dimensions of the operands must conform if
-both are matrices.  If one of the operands is a scalar and the other a
+For the binary operators, broadcasting rules apply. @xref{Broadcasting}.
+In particular, if one of the operands is a scalar and the other a
 matrix, the operator is applied to the scalar and each element of the
 matrix.
 

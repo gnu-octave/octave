@@ -26,7 +26,9 @@
 ## the rows of the matrix @var{subs} and the values by @var{vals}.  Each
 ## row of @var{subs} corresponds to one of the values in @var{vals}.  If
 ## @var{vals} is a scalar, it will be used for each of the row of
-## @var{subs}.
+## @var{subs}. If @var{subs} is a cell array of vectors, all vectors
+## must be of the same length, and the subscripts in the @var{k}th
+## vector must correspond to the @var{k}th dimension of the result.
 ##
 ## The size of the matrix will be determined by the subscripts
 ## themselves.  However, if @var{sz} is defined it determines the matrix
@@ -107,14 +109,26 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     print_usage ();
   endif
 
+  lenvals = length (vals);
+
   if (iscell (subs))
-    subs = cellfun ("vec", subs, "uniformoutput", false);
+    subs = cellfun (@vec, subs, "uniformoutput", false);
     ndims = numel (subs);
     if (ndims == 1)
       subs = subs{1};
     endif
+
+    lensubs = cellfun (@length, subs);
+
+    if (any (lensubs != lensubs(1)) || (lenvals > 1 && lenvals != lensubs(1)))
+      error ("accumarray: dimension mismatch");
+    endif
+
   else
     ndims = columns (subs);
+    if (lenvals > 1 && lenvals != rows (subs))
+      error ("accumarray: dimension mismatch")
+    endif
   endif
 
   if (isempty (fillval))

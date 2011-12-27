@@ -6636,9 +6636,10 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
   if (n < 0)
     n = idx.extent (0);
   else if (idx.extent (n) > n)
-    error ("accumarray: index out of range");
+    error ("accumdim: index out of range");
 
-  dim_vector rdv = vals.dims ();
+  dim_vector vals_dim = vals.dims (), rdv = vals_dim;
+
   if (dim < 0)
     dim = vals.dims ().first_non_singleton ();
   else if (dim >= rdv.length ())
@@ -6648,7 +6649,11 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
 
   NDT retval (rdv, T());
 
+  if (idx.length () != vals_dim(dim))
+    error ("accumdim: dimension mismatch");
+
   retval.idx_add_nd (idx, vals, dim);
+
   return retval;
 }
 

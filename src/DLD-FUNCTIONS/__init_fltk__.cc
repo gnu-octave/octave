@@ -35,6 +35,9 @@ To initialize:
 #include <config.h>
 #endif
 
+#include "defun-dld.h"
+#include "error.h"
+
 #if defined (HAVE_FLTK)
 
 #include <map>
@@ -69,8 +72,6 @@ To initialize:
 #include "cmd-edit.h"
 #include "lo-ieee.h"
 
-#include "defun-dld.h"
-#include "error.h"
 #include "file-ops.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
@@ -2004,6 +2005,8 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
   return retval;
 }
 
+#endif
+
 // FIXME -- This function should be abstracted and made potentially
 // available to all graphics toolkits.  This suggests putting it in
 // graphics.cc as is done for drawnow() and having the master
@@ -2021,6 +2024,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{gui_mode}\n\
 @end deftypefn")
 {
+#if defined (HAVE_FLTK)
   octave_value retval = wheel_zoom_speed;
 
   if (args.length () == 1)
@@ -2032,6 +2036,10 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
     }
 
   return retval;
+#else 
+  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
 DEFUN_DLD (gui_mode, args, ,
@@ -2055,6 +2063,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{mouse_wheel_zoom}\n\
 @end deftypefn")
 {
+#if defined (HAVE_FLTK)
   caseless_str mode_str;
 
   if (gui_mode == pan_zoom)
@@ -2089,6 +2098,9 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
     error ("MODE must be one of the strings: \"2D\", \"3D\", or \"none\"");
 
   return octave_value (mode_str);
+#else
+  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
-#endif

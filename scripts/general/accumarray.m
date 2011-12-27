@@ -31,11 +31,11 @@
 ## vector must correspond to the @var{k}th dimension of the result.
 ##
 ## The size of the matrix will be determined by the subscripts
-## themselves.  However, if @var{sz} is defined it determines the matrix
-## size.  The length of @var{sz} must correspond to the number of columns
+## themselves. However, if @var{sz} is defined it determines the matrix
+## size. The length of @var{sz} must correspond to the number of columns
 ## in @var{subs}.  An exception is if @var{subs} has only one column, in
-## which case @var{sz} may be the dimensions of a vector and the subscripts
-## of @var{subs} are taken as the indices into it.
+## which case @var{sz} may be the dimensions of a vector and the
+## subscripts of @var{subs} are taken as the indices into it.
 ##
 ## The default action of @code{accumarray} is to sum the elements with
 ## the same subscripts.  This behavior can be modified by defining the
@@ -120,7 +120,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     lensubs = cellfun (@length, subs);
 
-    if (any (lensubs != lensubs(1)) || (lenvals > 1 && lenvals != lensubs(1)))
+    if (any (lensubs != lensubs(1)) || 
+        (lenvals > 1 && lenvals != lensubs(1)))
       error ("accumarray: dimension mismatch");
     endif
 
@@ -141,7 +142,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
   if (issparse)
 
-    ## Sparse case. Avoid linearizing the subscripts, because it could overflow.
+    ## Sparse case. Avoid linearizing the subscripts, because it could
+    ## overflow.
 
     if (fillval != 0)
       error ("accumarray: FILLVAL must be zero in the sparse case");
@@ -167,8 +169,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     if (! (isempty (func) || func == @sum))
 
-      ## Reduce values. This is not needed if we're about to sum them, because
-      ## "sparse" can do that.
+      ## Reduce values. This is not needed if we're about to sum them,
+      ## because "sparse" can do that.
 
       ## Sort indices.
       [subs, idx] = sortrows (subs);
@@ -252,7 +254,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       elseif (islogical (vals))
         zero = false;
       elseif (fillval == 0 && all (vals(:) >= 0))
-        ## This is a common case - fillval is zero, all numbers nonegative.
+        ## This is a common case - fillval is zero, all numbers
+        ## nonegative.
         zero = 0;
       else
         zero = NaN; # Neutral value.
@@ -278,7 +281,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       elseif (islogical (vals))
         zero = true;
       elseif (fillval == 0 && all (vals(:) <= 0))
-        ## This is a common case - fillval is zero, all numbers non-positive.
+        ## This is a common case - fillval is zero, all numbers
+        ## non-positive.
         zero = 0;
       else
         zero = NaN; # Neutral value.
@@ -312,8 +316,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       jdx = find (subs(1:n-1) != subs(2:n));
       jdx = [jdx; n];
       vals = mat2cell (vals(idx), diff ([0; jdx]));
-      ## Optimize the case when function is @(x) {x}, i.e. we just want to
-      ## collect the values to cells.
+      ## Optimize the case when function is @(x) {x}, i.e. we just want
+      ## to collect the values to cells.
       persistent simple_cell_str = func2str (@(x) {x});
       if (! strcmp (func2str (func), simple_cell_str))
         vals = cellfun (func, vals);

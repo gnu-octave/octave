@@ -65,9 +65,9 @@
 ##
 ## @example
 ## @group
-## x = [91, 92, 90, 92, 90, 89, 91, 89, 90, 100, 100, 100];
-## [u, ~, j] = unique (x);
-## [accumarray(j', 1), u']
+## @var{x} = [91, 92, 90, 92, 90, 89, 91, 89, 90, 100, 100, 100];
+## [@var{u}, ~, @var{j}] = unique (@var{x});
+## [accumarray(@var{j}', 1), @var{u}']
 ## @result{} 2    89
 ##    3    90
 ##    2    91
@@ -91,16 +91,38 @@
 ## @end group
 ## @end example
 ##
-## The complexity in the non-sparse case is generally O(M+N), where N is
-## the number of subscripts and M is the maximum subscript (linearized
-## in multi-dimensional case).  If @var{func} is one of @code{@@sum}
-## (default), @code{@@max}, @code{@@min} or @code{@@(x) @{x@}}, an
-## optimized code path is used.  Note that for general reduction function
-## the interpreter overhead can play a major part and it may be more
-## efficient to do multiple accumarray calls and compute the results in
-## a vectorized manner.
+## The sparse option can be used as an alternative to the @code{sparse}
+## constructor (@pxref{doc-sparse}). Thus
 ##
-## @seealso{accumdim, unique}
+## @example
+## sparse (@var{i}, @var{j}, @var{sv})
+## @end example
+##
+## @noindent
+## can be written with @code{accumarray} as
+##
+## @example
+## accumarray ([@var{i}, @var{j}], @var{sv}', [], [], 0, true)
+## @end example
+##
+## @noindent
+## For repeated indices, @code{sparse} adds the corresponding value. To
+## take the minimum instead, use @min as an accumulator function:
+##
+## @example
+## accumarray ([@var{i}, @var{j}], @var{sv}', [], @@min, 0, true)
+## @end example
+##
+## The complexity of accumarray in general for the non-sparse case is
+## generally O(M+N), where N is the number of subscripts and M is the
+## maximum subscript (linearized in multi-dimensional case).  If
+## @var{func} is one of @code{@@sum} (default), @code{@@max},
+## @code{@@min} or @code{@@(x) @{x@}}, an optimized code path is used.
+## Note that for general reduction function the interpreter overhead can
+## play a major part and it may be more efficient to do multiple
+## accumarray calls and compute the results in a vectorized manner.
+##
+## @seealso{accumdim, unique, sparse}
 ## @end deftypefn
 
 function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])

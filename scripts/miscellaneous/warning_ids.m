@@ -123,8 +123,8 @@
 ##
 ## @item Octave:broadcast
 ## Warn when performing broadcasting operations.  By default, this is
-## enabled.  @xref{Broadcasting} in the chapter Vectorization and Faster Code
-## Execution of the manual.
+## enabled.  See @ref{Broadcasting} in the chapter Vectorization and Faster
+## Code Execution of the manual.
 ##
 ## @item Octave:built-in-variable-assignment
 ## By default, the @code{Octave:built-in-variable-assignment} warning is

@@ -512,7 +512,7 @@ the recursion depth and prevents Octave from recursing infinitely.
 @cindex complex-conjugate transpose
 
 The following arithmetic operators are available, and work on scalars
-and matrices. They element-by-element operators and functions broadcast
+and matrices.  The element-by-element operators and functions broadcast
 (@pxref{Broadcasting}).
 
 @table @asis
@@ -717,7 +717,7 @@ such as equality.  They are written using
 All of Octave's comparison operators return a value of 1 if the
 comparison is true, or 0 if it is false.  For matrix values, they all
 work on an element-by-element basis.  Broadcasting rules apply.
-@xref{Broadcasting}. For example:
+@xref{Broadcasting}.  For example:
 
 @example
 @group
@@ -864,7 +864,7 @@ Each element of the result is true if the corresponding element of
 @var{boolean} is false.
 @end table
 
-These operators work on an element-by-element basis. For example, the
+These operators work on an element-by-element basis.  For example, the
 expression
 
 @example
@@ -874,7 +874,7 @@ expression
 @noindent
 returns a two by two identity matrix.
 
-For the binary operators, broadcasting rules apply. @xref{Broadcasting}.
+For the binary operators, broadcasting rules apply.  @xref{Broadcasting}.
 In particular, if one of the operands is a scalar and the other a
 matrix, the operator is applied to the scalar and each element of the
 matrix.

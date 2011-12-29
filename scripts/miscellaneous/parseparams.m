@@ -48,7 +48,7 @@
 ## with their default values given as name-value pairs.
 ## If @var{params} do not form name-value pairs, or if an option occurs
 ## that does not match any of the available options, an error occurs.
-## When called from a m-file function, the error is prefixed with the
+## When called from an m-file function, the error is prefixed with the
 ## name of the caller function.
 ## The matching of options is case-insensitive.
 ##

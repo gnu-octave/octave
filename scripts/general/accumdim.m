@@ -22,11 +22,11 @@
 ## positions defined by their subscripts along a specified dimension.
 ## The subscripts are defined by the index vector @var{subs}.
 ## The dimension is specified by @var{dim}.  If not given, it defaults
-## to the first non-singleton dimension. The length of @var{subs} must
+## to the first non-singleton dimension.  The length of @var{subs} must
 ## be equal to @code{size (@var{vals}, @var{dim})}.
 ##
 ## The extent of the result matrix in the working dimension will be
-## determined by the subscripts themselves. However, if @var{n} is
+## determined by the subscripts themselves.  However, if @var{n} is
 ## defined it determines this extent.
 ##
 ## The default action of @code{accumdim} is to sum the subarrays with the
@@ -39,7 +39,7 @@
 ##
 ## The slices of the returned array that have no subscripts associated
 ## with them are set to zero.  Defining @var{fillval} to some other
-## value allows  these values to be defined.
+## value allows these values to be defined.
 ##
 ## An example of the use of @code{accumdim} is:
 ##

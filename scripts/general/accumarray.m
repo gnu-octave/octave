@@ -26,13 +26,13 @@
 ## the rows of the matrix @var{subs} and the values by @var{vals}.  Each
 ## row of @var{subs} corresponds to one of the values in @var{vals}.  If
 ## @var{vals} is a scalar, it will be used for each of the row of
-## @var{subs}. If @var{subs} is a cell array of vectors, all vectors
+## @var{subs}.  If @var{subs} is a cell array of vectors, all vectors
 ## must be of the same length, and the subscripts in the @var{k}th
 ## vector must correspond to the @var{k}th dimension of the result.
 ##
 ## The size of the matrix will be determined by the subscripts
-## themselves. However, if @var{sz} is defined it determines the matrix
-## size. The length of @var{sz} must correspond to the number of columns
+## themselves.  However, if @var{sz} is defined it determines the matrix
+## size.  The length of @var{sz} must correspond to the number of columns
 ## in @var{subs}.  An exception is if @var{subs} has only one column, in
 ## which case @var{sz} may be the dimensions of a vector and the
 ## subscripts of @var{subs} are taken as the indices into it.

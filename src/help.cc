@@ -617,7 +617,7 @@ The default statement in a switch block (similar to else in an if block).\n\
 
   pair_type ("parfor",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} for @var{i} = @var{range}\n\
+@deftypefn  {Keyword} {} for @var{i} = @var{range}\n\
 @deftypefnx {Keyword} {} for (@var{i} = @var{range}, @var{maxproc})\n\
 Begin a for loop that may execute in parallel.\n\
 \n\

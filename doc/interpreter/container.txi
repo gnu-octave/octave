@@ -507,7 +507,7 @@ Other functions that can manipulate the fields of a structure are given below.
 The simplest way to process data in a structure is within a @code{for}
 loop (@pxref{Looping Over Structure Elements}).  A similar effect can be
 achieved with the @code{structfun} function, where a user defined
-function is applied to each field of the structure. @xref{doc-structfun}.
+function is applied to each field of the structure.  @xref{doc-structfun}.
 
 Alternatively, to process the data in a structure, the structure might
 be converted to another type of container before being treated.
@@ -885,7 +885,7 @@ depending on the actual data.  The simplest way to process that data
 is to iterate through it using one or more @code{for} loops.  The same
 idea can be implemented more easily through the use of the @code{cellfun}
 function that calls a user-specified function on all elements of a cell
-array. @xref{doc-cellfun}.
+array.  @xref{doc-cellfun}.
 
 An alternative is to convert the data to a different container, such as
 a matrix or a data structure.  Depending on the data this is possible

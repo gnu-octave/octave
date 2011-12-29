@@ -365,12 +365,12 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 @end group\n\
 @end example\n\
 \n\
-Use @code{cellfun} intelligently. The @code{cellfun} function is a\n\
-useful tool for avoiding loops. It is often used with anonymous\n\
+Use @code{cellfun} intelligently.  The @code{cellfun} function is a\n\
+useful tool for avoiding loops.  It is often used with anonymous\n\
 function handles; however, calling an anonymous function involves an\n\
 overhead quite comparable to the overhead of an m-file function.\n\
 Passing a handle to a built-in function is faster, because the\n\
-interpreter is not involved in the internal loop. For example:\n\
+interpreter is not involved in the internal loop.  For example:\n\
 \n\
 @example\n\
 @group\n\

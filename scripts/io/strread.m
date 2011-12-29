@@ -126,7 +126,7 @@
 ##
 ## @item "emptyvalue":
 ## Value to return for empty numeric values in non-whitespace delimited data.
-## The default is NaN. When the data type does not support NaN
+## The default is NaN@.  When the data type does not support NaN
 ## (int32 for example), then default is zero.
 ##
 ## @item "multipledelimsasone"

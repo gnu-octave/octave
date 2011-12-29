@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @cindex warning ids
 ## @table @code
 ## @item Octave:abbreviated-property-match
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
@@ -121,9 +122,9 @@
 ## By default, the @code{Octave:autoload-relative-file-name} warning is enabled.
 ##
 ## @item Octave:broadcast
-## Warn when performing broadcasting operations. By default, this is
-## enabled. See the Broadcasting section in the Vectorization and Faster
-## Code Execution chapter in the manual.
+## Warn when performing broadcasting operations.  By default, this is
+## enabled.  @xref{Broadcasting} in the chapter Vectorization and Faster Code
+## Execution of the manual.
 ##
 ## @item Octave:built-in-variable-assignment
 ## By default, the @code{Octave:built-in-variable-assignment} warning is

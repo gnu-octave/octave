@@ -107,7 +107,7 @@
 ##
 ## @noindent
 ## For repeated indices, @code{sparse} adds the corresponding value. To
-## take the minimum instead, use @min as an accumulator function:
+## take the minimum instead, use @code{min} as an accumulator function:
 ##
 ## @example
 ## accumarray ([@var{i}, @var{j}], @var{sv}', [], @@min, 0, true)

@@ -349,3 +349,9 @@
 %! assert (a, reshape (1:4,[1,1,1,4]));
 
 %!error (a(1:2,1:2) = 1:4)
+
+%!shared x
+%! x = 1:5;
+%!error <attempted to use a complex scalar as an index> x(i)
+%!error <attempted to use a complex scalar as an index> x(j)
+%!error <attempted to use a complex scalar as an index> x(1+i)

@@ -33,7 +33,7 @@ intNDArray : public MArray<T>
 {
 public:
 
-  using MArray<T>::element_type;
+  using typename MArray<T>::element_type;
 
   intNDArray (void) : MArray<T> () { }
 

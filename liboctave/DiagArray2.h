@@ -43,7 +43,7 @@ protected:
 
 public:
 
-  using Array<T>::element_type;
+  using typename Array<T>::element_type;
 
   DiagArray2 (void)
     : Array<T> (), d1 (0), d2 (0) { }

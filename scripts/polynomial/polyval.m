@@ -24,15 +24,15 @@
 ## (@var{x}-@var{mu}(1))/@var{mu}(2).
 ## If @var{x} is a vector or matrix, the polynomial is evaluated for each of
 ## the elements of @var{x}.
+## 
 ## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s})
 ## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s}, @var{mu})
 ## In addition to evaluating the polynomial, the second output
 ## represents the prediction interval, @var{y} +/- @var{dy}, which
 ## contains at least 50% of the future predictions.  To calculate the
 ## prediction interval, the structured variable @var{s}, originating
-## form `polyfit', must be present.
-## @seealso{polyfit, polyvalm, poly, roots, conv, deconv, residue, filter,
-## polyder, polyint}
+## from @code{polyfit}, must be supplied.
+## @seealso{polyvalm, polyaffine, polyfit, roots, poly}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

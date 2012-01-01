@@ -456,11 +456,11 @@ MatrixType::MatrixType (const SparseMatrix &a)
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
            && nrows < ncols))
         {
-          typ = MatrixType::Rectangular;
           if (typ == MatrixType::Permuted_Upper ||
               typ == MatrixType::Permuted_Lower)
             delete [] perm;
           nperm = 0;
+          typ = MatrixType::Rectangular;
         }
 
       if (typ == MatrixType::Full && ncols != nrows)
@@ -777,11 +777,11 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
            && nrows < ncols))
         {
-          typ = MatrixType::Rectangular;
           if (typ == MatrixType::Permuted_Upper ||
               typ == MatrixType::Permuted_Lower)
             delete [] perm;
           nperm = 0;
+          typ = MatrixType::Rectangular;
         }
 
       if (typ == MatrixType::Full && ncols != nrows)

@@ -26,8 +26,7 @@
 ## If two inputs and two outputs are given, return the derivative of the
 ## polynomial quotient @math{@var{b}/@var{a}}.  The quotient numerator is
 ## in @var{q} and the denominator in @var{d}.
-## @seealso{poly, polyint, polyreduce, roots, conv, deconv, residue,
-## filter, polygcd, polyval, polyvalm}
+## @seealso{polyint, polyval, polyreduce}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

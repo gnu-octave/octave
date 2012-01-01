@@ -61,6 +61,7 @@ endfunction
 
 
 %!demo
+%! clf
 %! fx = @(t) cos (t);
 %! fy = @(t) sin (t);
 %! fz = @(t) t;

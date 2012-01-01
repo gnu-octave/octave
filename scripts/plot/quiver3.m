@@ -106,5 +106,13 @@ endfunction
 %! hold off;
 
 %!demo
+%! clf
+%! [x, y, z] = peaks (25);
+%! surf (x, y, z);
+%! hold on;
+%! [u, v, w] = surfnorm (x, y, z / 10);
+%! h = quiver3 (x, y, z, u, v, w);
+%! set (h, "maxheadsize", 0.33);
+%! hold off;
 %! shading interp
 

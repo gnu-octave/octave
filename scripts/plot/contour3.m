@@ -75,6 +75,7 @@ function [c, h] = contour3 (varargin)
 endfunction
 
 %!demo
+%! clf
 %! contour3 (peaks (19));
 %! hold on
 %! surface (peaks (19), "facecolor", "none", "edgecolor", "black")

@@ -28,7 +28,6 @@ previous chapters.
 
 @menu
 * Style Tips::                  Writing clean and robust programs.
-* Coding Tips::                 Making code run faster.
 * Comment Tips::                Conventions for writing comments.
 * Function Headers::            Standard headers for functions.
 * Documentation Tips::          Writing readable documentation strings.
@@ -75,203 +74,6 @@ distributed with Octave.  If you have not signed papers to assign the
 copyright to anyone else, then place your name in the copyright notice.
 @end itemize
 
-@node Coding Tips
-@section Tips for Making Code Run Faster.
-@cindex execution speed
-@cindex speedups
-
-Here are some ways of improving the execution speed of Octave programs.
-
-@itemize @bullet
-@item
-Vectorize loops.  For instance, rather than
-
-@example
-@group
-for i = 1:n-1
-  a(i) = b(i+1) - b(i);
-endfor
-@end group
-@end example
-
-@noindent
-write
-
-@example
-a = b(2:n) - b(1:n-1);
-@end example
-
-This is especially important for loops with "cheap" bodies.  Often it suffices
-to vectorize just the innermost loop to get acceptable performance.  A general
-rule of thumb is that the "order" of the vectorized body should be greater or
-equal to the "order" of the enclosing loop.
-
-@item
-Use built-in and library functions if possible.  Built-in and compiled functions
-are very fast.  Even with a m-file library function, chances are good that it is
-already optimized, or will be optimized more in a future release.
-
-For instance, even better than
-
-@example
-a = b(2:n) - b(1:n-1);
-@end example
-
-@noindent
-is
-
-@example
-a = diff (b);
-@end example
-
-
-@item
-Avoid computing costly intermediate results multiple times.  Octave currently
-does not eliminate common subexpressions.
-Also, certain internal computation results are cached for variables.
-For instance, if a matrix variable is used multiple times as an index,
-checking the indices (and internal conversion to integers) is only done once.
-
-@item
-Be aware of lazy copies (copy-on-write).  When a copy of an object
-is created, the data is not immediately copied, but rather shared.  The actual
-copying is postponed until the copied data needs to be modified.  For example:
-
-@example
-@group
-a = zeros (1000); # create a 1000x1000 matrix
-b = a; # no copying done here
-b(1) = 1; # copying done here
-@end group
-@end example
-
-Lazy copying applies to whole Octave objects such as matrices, cells, struct,
-and also individual cell or struct elements (not array elements).
-
-Additionally, index expressions also use lazy copying when Octave can determine
-that the indexed portion is contiguous in memory.  For example:
-
-@example
-@group
-a = zeros (1000); # create a 1000x1000 matrix
-b = a(:,10:100); # no copying done here
-b = a(10:100,:); # copying done here
-@end group
-@end example
-
-This applies to arrays (matrices), cell arrays, and structs indexed using ().
-Index expressions generating cs-lists can also benefit of shallow copying
-in some cases.  In particular, when @var{a} is a struct array, expressions like
-@code{@{a.x@}, @{a(:,2).x@}} will use lazy copying, so that data can be shared
-between a struct array and a cell array.
-
-Most indexing expressions do not live longer than their `parent' objects.
-In rare cases, however, a lazily copied slice outlasts its parent, in which
-case it becomes orphaned, still occupying unnecessarily more memory than needed.
-To provide a remedy working in most real cases,
-Octave checks for orphaned lazy slices at certain situations, when a value
-is stored into a "permanent" location, such as a named variable or cell or
-struct element, and possibly economizes them.  For example:
-
-@example
-@group
-a = zeros (1000); # create a 1000x1000 matrix
-b = a(:,10:100);  # lazy slice
-a = []; # the original a array is still allocated
-c@{1@} = b; # b is reallocated at this point
-@end group
-@end example
-
-@item
-Avoid deep recursion.  Function calls to m-file functions carry a relatively
-significant overhead, so rewriting a recursion as a loop often helps.  Also,
-note that the maximum level of recursion is limited.
-
-@item
-Avoid resizing matrices unnecessarily.  When building a single result
-matrix from a series of calculations, set the size of the result matrix
-first, then insert values into it.  Write
-
-@example
-@group
-result = zeros (big_n, big_m)
-for i = over:and_over
-  r1 = @dots{}
-  r2 = @dots{}
-  result (r1, r2) = new_value ();
-endfor
-@end group
-@end example
-
-@noindent
-instead of
-
-@example
-@group
-result = [];
-for i = ever:and_ever
-  result = [ result, new_value() ];
-endfor
-@end group
-@end example
-
-Sometimes the number of items can't be computed in advance, and stack-like
-operations are needed.  When elements are being repeatedly inserted at/removed
-from the end of an array, Octave detects it as stack usage and attempts to use a
-smarter memory management strategy pre-allocating the array in bigger chunks. 
-Likewise works for cell and struct arrays.
-
-@example
-@group
-a = [];
-while (condition)
-  @dots{}
-  a(end+1) = value; # "push" operation
-  @dots{}
-  a(end) = []; # "pop" operation
-  @dots{}
-endwhile
-@end group
-@end example
-
-@item
-Use @code{cellfun} intelligently.  The @code{cellfun} function is a useful tool
-for avoiding loops.  @xref{Processing Data in Cell Arrays}.
-@code{cellfun} is often used with anonymous function handles; however, calling
-an anonymous function involves an overhead quite comparable to the overhead
-of an m-file function.  Passing a handle to a built-in function is faster,
-because the interpreter is not involved in the internal loop.  For example:
-
-@example
-@group
-a = @{@dots{}@}
-v = cellfun (@@(x) det(x), a); # compute determinants
-v = cellfun (@@det, a); # faster
-@end group
-@end example
-
-@item
-Octave includes a number of other functions that can replace common types of
-loops, including @code{bsxfun}, @code{arrayfun}, @code{structfun},
-@code{accumarray}.  These functions can take an arbitrary function as a handle.
-Be sure to get familiar with them if you want to become an Octave expert.
-
-@item
-Avoid calling @code{eval} or @code{feval} excessively, because
-they require Octave to parse input or look up the name of a function in
-the symbol table.
-
-If you are using @code{eval} as an exception handling mechanism and not
-because you need to execute some arbitrary text, use the @code{try}
-statement instead.  @xref{The @code{try} Statement}.
-
-@item
-If you are calling lots of functions but none of them will need to
-change during your run, set the variable
-@code{ignore_function_time_stamp} to @code{"all"} so that Octave doesn't
-waste a lot of time checking to see if you have updated your function
-files.
-@end itemize
 
 @node Comment Tips
 @section Tips on Writing Comments
@@ -689,15 +491,17 @@ documentation string for @code{nchoosek} is
 
 @example
 -*- texinfo -*-
-@@deftypefn @{Function File@} @{@} nchoosek (@@var@{n@}, @@var@{k@})
+@@deftypefn  @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{n@}, @@var@{k@})
+@@deftypefnx @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{set@}, @@var@{k@})
 
-Compute the binomial coefficient or all combinations of 
-@@var@{n@}.  If @@var@{n@} is a scalar then, calculate the
-binomial coefficient of @@var@{n@} and @@var@{k@}, defined as
+Compute the binomial coefficient or all combinations of a set of items.
 
+If @@var@{n@} is a scalar then calculate the binomial coefficient
+of @@var@{n@} and @@var@{k@} which is defined as
 @@tex
 $$
  @{n \choose k@} = @{n (n-1) (n-2) \cdots (n-k+1) \over k!@}
+               = @{n! \over k! (n-k)!@}
 $$
 @@end tex
 @@ifnottex
@@ -705,86 +509,161 @@ $$
 @@example
 @@group
  /   \
- | n |    n (n-1) (n-2) @dots{} (n-k+1)
- |   |  = -------------------------
- | k |               k!
+ | n |    n (n-1) (n-2) @@dots@{@} (n-k+1)       n!
+ |   |  = ------------------------- =  ---------
+ | k |               k!                k! (n-k)!
  \   /
 @@end group
 @@end example
+
 @@end ifnottex
+@@noindent
+This is the number of combinations of @@var@{n@} items taken in groups of
+size @@var@{k@}.
 
-If @@var@{n@} is a vector, this generates all combinations
-of the elements of @@var@{n@}, taken @@var@{k@} at a time,
-one row per combination.  The resulting @@var@{c@} has size
-@@code@{[nchoosek (length (@@var@{n@}),@@var@{k@}), @@var@{k@}]@}.
+If the first argument is a vector, @@var@{set@}, then generate all
+combinations of the elements of @@var@{set@}, taken @@var@{k@} at a time, with
+one row per combination.  The result @@var@{c@} has @@var@{k@} columns and
+@@w@{@@code@{nchoosek (length (@@var@{set@}), @@var@{k@})@}@} rows.
 
-@@code@{nchoosek@} works only for non-negative integer arguments; use
-@@code@{bincoeff@} for non-integer scalar arguments and for using vector
-arguments to compute many coefficients at once.
+For example:
 
-@@seealso@{bincoeff@}
+How many ways can three items be grouped into pairs?
+
+@@example
+@@group
+nchoosek (3, 2)
+   @@result@{@} 3
+@@end group
+@@end example
+
+What are the possible pairs?
+
+@@example
+@@group
+nchoosek (1:3, 2)
+   @@result@{@}  1   2
+       1   3
+       2   3
+@@end group
+@@end example
+
+@@code@{nchoosek@} works only for non-negative, integer arguments.  Use
+@@code@{bincoeff@} for non-integer and negative scalar arguments, or for
+computing many binomial coefficients at once with vector inputs
+for @@var@{n@} or @@var@{k@}.
+
+@@seealso@{bincoeff, perms@}
 @@end deftypefn
 @end example
-
+@noindent
 which demonstrates most of the concepts discussed above.
 @iftex
 This documentation string renders as
 
-@c Note actually use the output of info below rather than try and 
-@c reproduce it here to prevent it looking different than how it would
+@c Note: use the actual output of info below, rather than try and 
+@c reproduce it here to prevent it looking different from how it would
 @c appear with info.
 @example
-@group
  -- Function File: C = nchoosek (N, K)
-     Compute the binomial coefficient or all combinations
-     of N.  If N is a scalar then, calculate the binomial
-     coefficient of N and K, defined as
+ -- Function File: C = nchoosek (SET, K)
+     Compute the binomial coefficient or all combinations of a set of
+     items.
+
+     If N is a scalar then calculate the binomial coefficient of N and
+     K which is defined as
 
            /   \
-           | n |    n (n-1) (n-2) @dots{} (n-k+1)       n!
+           | n |    n (n-1) (n-2) ... (n-k+1)       n!
            |   |  = ------------------------- =  ---------
            | k |               k!                k! (n-k)!
            \   /
 
-     If N is a vector generate all combinations of the
-     elements of N, taken K at a time, one row per
-     combination.  The resulting C has size `[nchoosek
-     (length (N), K), K]'.
+     This is the number of combinations of N items taken in groups of
+     size K.
 
-     `nchoosek' works only for non-negative integer
-     arguments; use `bincoeff' for non-integer scalar 
-     arguments and for using vector arguments to compute
-     many coefficients at once.
+     If the first argument is a vector, SET, then generate all
+     combinations of the elements of SET, taken K at a time, with one
+     row per combination.  The result C has K columns and
+     `nchoosek (length (SET), K)' rows.
 
-     See also: bincoeff.
-@end group
+     For example:
+
+     How many ways can three items be grouped into pairs?
+
+          nchoosek (3, 2)
+             => 3
+
+     What are the possible pairs?
+
+          nchoosek (1:3, 2)
+             =>  1   2
+                 1   3
+                 2   3
+
+     `nchoosek' works only for non-negative, integer arguments.  Use
+     `bincoeff' for non-integer and negative scalar arguments, or for
+     computing many binomial coefficients at once with vector inputs
+     for N or K.
+
+     See also: bincoeff, perms
 @end example
+@noindent
+using info, whereas in a printed documentation using @TeX{} it will
+appear as
 
-using info, whereas in a printed documentation using @TeX{} it will appear
-as
+@deftypefn  {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
+@deftypefnx {Function File} {@var{c} =} nchoosek (@var{set}, @var{k})
 
-@deftypefn {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
+Compute the binomial coefficient or all combinations of a set of items.
 
-Compute the binomial coefficient or all combinations of @var{n}.
-If @var{n} is a scalar then, calculate the binomial coefficient
-of @var{n} and @var{k}, defined as
+If @var{n} is a scalar then calculate the binomial coefficient
+of @var{n} and @var{k} which is defined as
 
 @tex
 $$
  {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
+               = {n! \over k! (n-k)!}
 $$
 @end tex
 
-If @var{n} is a vector generate all combinations of the elements
-of @var{n}, taken @var{k} at a time, one row per combination.  The 
-resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
-@var{k}), @var{k}]}.
+@noindent
+This is the number of combinations of @var{n} items taken in groups of
+size @var{k}.
 
-@code{nchoosek} works only for non-negative integer arguments; use
-@code{bincoeff} for non-integer scalar arguments and for using vector
-arguments to compute many coefficients at once.
+If the first argument is a vector, @var{set}, then generate all
+combinations of the elements of @var{set}, taken @var{k} at a time, with
+one row per combination.  The result @var{c} has @var{k} columns and
+@w{@code{nchoosek (length (@var{set}), @var{k})}} rows.
 
-@seealso{bincoeff}
+For example:
+
+How many ways can three items be grouped into pairs?
+
+@example
+@group
+nchoosek (3, 2)
+   @result{} 3
+@end group
+@end example
+
+What are the possible pairs?
+
+@example
+@group
+nchoosek (1:3, 2)
+   @result{}  1   2
+       1   3
+       2   3
+@end group
+@end example
+
+@code{nchoosek} works only for non-negative, integer arguments.  Use
+@code{bincoeff} for non-integer and negative scalar arguments, or for
+computing many binomial coefficients at once with vector inputs for @var{n}
+or @var{k}.
+
+@seealso{bincoeff, perms}
 @end deftypefn
 
 @end iftex

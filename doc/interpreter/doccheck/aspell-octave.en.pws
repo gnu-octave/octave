@@ -43,6 +43,7 @@ autoregressions
 autoscaled
 AutoScaling
 AWK
+awt
 backend
 Backends
 backends
@@ -82,6 +83,7 @@ brackety
 breakpoint
 Brenan
 Brockwell
+BSX
 builtin
 builtins
 ButtonDownFcn
@@ -161,6 +163,10 @@ csymamd
 ctranspose
 CTRL
 CTS
+cummax
+cummin
+cumprod
+cumsum
 cURL
 Cuthill
 cxsparse
@@ -225,6 +231,7 @@ eigenvector
 eigenvectors
 eigs
 Ekerdt
+elementwise
 Elfers
 elseif
 emacs
@@ -350,6 +357,7 @@ grayscale
 Graz
 griddata
 gswin
+GUIs
 gunzipped
 gz
 gzip
@@ -395,6 +403,7 @@ Hyndman
 Hypergeometric
 hypergeometric
 IEEE
+ifelse
 iff
 ifft
 ifftn
@@ -438,6 +447,7 @@ ji
 jpeg
 JPEG
 jpg
+jvm
 keybindings
 keypress
 Kolmogorov
@@ -598,6 +608,7 @@ nnz
 nocompute
 nolabel
 noncommercially
+nonconformant
 nonsmooth
 nonzeros
 noperm
@@ -613,6 +624,7 @@ notin
 nthargout
 NTSC
 nul
+Numpy
 Nx
 nzmax
 oct
@@ -733,6 +745,7 @@ reimported
 Reindent
 relicensing
 ren
+repelems
 repmat
 resampled
 resampling
@@ -778,6 +791,7 @@ signum
 SIGNUM
 sim
 SIMAX
+SIMD
 simplechol
 simplecholperm
 simplematrix
@@ -861,6 +875,7 @@ subsref
 substring
 substrings
 SuiteSparse
+sumsq
 SunOS
 superiorto
 supradiagonal
@@ -978,6 +993,8 @@ Villadsen
 voronoi
 Voronoi
 Wa
+waitbar
+waitbars
 wallis
 wblcdf
 wblinv

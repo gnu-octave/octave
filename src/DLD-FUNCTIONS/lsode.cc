@@ -492,7 +492,7 @@ parameters for @code{lsode}.\n\
 %%
 %%    y1(t) = cos(t)
 %%    y2(t) = sin(t)
-%!function xdot = f (x, t)
+%!function xdot = __f (x, t)
 %!  xdot = [-x(2); x(1)];
 %!test
 %!
@@ -503,13 +503,13 @@ parameters for @code{lsode}.\n\
 %! tol = 500 * lsode_options ("relative tolerance");
 %!
 %!
-%! x = lsode ("f", x0, t);
+%! x = lsode ("__f", x0, t);
 %!
 %! y = [cos(t), sin(t)];
 %!
 %! assert(all (all (abs (x - y) < tol)));
 
-%!function xdotdot = f (x, t)
+%!function xdotdot = __f (x, t)
 %!  xdotdot = [x(2); -x(1)];
 %!test
 %!
@@ -517,13 +517,13 @@ parameters for @code{lsode}.\n\
 %! t = [0; 2*pi];
 %! tol = 100 * dassl_options ("relative tolerance");
 %!
-%! x = lsode ("f", x0, t);
+%! x = lsode ("__f", x0, t);
 %!
 %! y = [1, 0; 1, 0];
 %!
 %! assert(all (all (abs (x - y) < tol)));
 
-%!function xdot = f (x, t)
+%!function xdot = __f (x, t)
 %!  xdot = x;
 %!test
 %!
@@ -531,7 +531,7 @@ parameters for @code{lsode}.\n\
 %! t = [0; 1];
 %! tol = 100 * dassl_options ("relative tolerance");
 %!
-%! x = lsode ("f", x0, t);
+%! x = lsode ("__f", x0, t);
 %!
 %! y = [1; e];
 %!

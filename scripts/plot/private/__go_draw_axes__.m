@@ -695,10 +695,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      ccol = cdat;
                    endif
                    if (strncmp (obj.facecolor, "flat", 4))
-                     if (numel(ccol) == 3)
+                     if (isequal (size (ccol), [1, 3]))
+                       ## RGB Triplet
                        color = ccol;
                      elseif (nd == 3 && numel (xcol) == 3)
-                       ccdat = ccol * ones (3,1);
+                       ccdat = ccol;
                      else
                        if (cdatadirect)
                          r = round (ccol);

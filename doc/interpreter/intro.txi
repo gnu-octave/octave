@@ -562,9 +562,9 @@ description.
 
 Here is a description of an imaginary function @code{foo}:
 
-@deftypefn  {Function} {} foo (@var{x})
-@deftypefnx {Function} {} foo (@var{x}, @var{y})
-@deftypefnx {Function} {} foo (@var{x}, @var{y}, @dots{})
+@deftypefn  {Function File} {} foo (@var{x})
+@deftypefnx {Function File} {} foo (@var{x}, @var{y})
+@deftypefnx {Function File} {} foo (@var{x}, @var{y}, @dots{})
 The function @code{foo} subtracts @var{x} from @var{y}, then adds the
 remaining arguments to the result.  If @var{y} is not supplied, then the
 number 19 is used by default.

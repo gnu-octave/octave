@@ -89,6 +89,7 @@ endfunction
 %! set (h, "maxheadsize", 0.33);
 
 %!demo
+%! clf
 %! axis ("equal");
 %! x = linspace (0,3,80);
 %! y = sin (2*pi*x);

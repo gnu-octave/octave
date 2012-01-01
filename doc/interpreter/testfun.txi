@@ -312,9 +312,9 @@ C++ code:
 
 @example
 @group
-#if 0
+/*
 %!test disp ("this is a test")
-#endif
+*/
 @end group
 @end example
 
@@ -323,9 +323,9 @@ or
 
 @example
 @group
-/*
+#if 0
 %!test disp ("this is a test")
-*/
+#endif
 @end group
 @end example
 

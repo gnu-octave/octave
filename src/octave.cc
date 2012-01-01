@@ -901,7 +901,11 @@ octave_main (int argc, char **argv, int embedded)
       execute_command_line_file (argv[last_arg_idx]);
 
       if (! persist)
-        clean_up_and_exit (error_state ? 1 : 0);
+        {
+          quitting_gracefully = true;
+
+          clean_up_and_exit (error_state ? 1 : 0);
+        }
     }
 
   // Avoid counting commands executed from startup files.
@@ -939,6 +943,8 @@ octave_main (int argc, char **argv, int embedded)
 
   if (retval == 1 && ! error_state)
     retval = 0;
+
+  quitting_gracefully = true;
 
   clean_up_and_exit (retval);
 

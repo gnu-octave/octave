@@ -179,6 +179,7 @@ endfunction
 %! shading interp;
 
 %!demo
+%! clf
 %! [X,Y,Z]=sombrero;
 %! colormap(copper);
 %! [az, el] = view;

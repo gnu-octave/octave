@@ -91,6 +91,7 @@ endfunction
 
 
 %!demo
+%! clf
 %! surfl (peaks);
 %! colormap (copper);
 %! shading ("interp");

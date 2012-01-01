@@ -62,7 +62,11 @@ function run_all_demos (directory)
     if (length (f) > 2 && strcmp (f((end-1):end), ".m"))
       f = fullfile (directory, f);
       if (has_demos (f))
-        demo (f);
+        try
+          demo (f);
+        catch
+          printf ("error: %s\n\n", lasterror().message)
+        end_try_catch
         if (i != numel (flist))
           input ("Press <enter> to continue: ", "s");
         endif

@@ -18,11 +18,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
+## @deftypefn  {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
+## @deftypefnx {Function File} {@var{c} =} nchoosek (@var{set}, @var{k})
 ##
-## Compute the binomial coefficient or all combinations of @var{n}.
-## If @var{n} is a scalar then, calculate the binomial coefficient
-## of @var{n} and @var{k}, defined as
+## Compute the binomial coefficient or all combinations of a set of items.
+##
+## If @var{n} is a scalar then calculate the binomial coefficient
+## of @var{n} and @var{k} which is defined as
 ## @tex
 ## $$
 ##  {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
@@ -42,17 +44,43 @@
 ## @end example
 ##
 ## @end ifnottex
+## @noindent
+## This is the number of combinations of @var{n} items taken in groups of
+## size @var{k}.
 ##
-## If @var{n} is a vector generate all combinations of the elements
-## of @var{n}, taken @var{k} at a time, one row per combination.  The
-## resulting @var{c} has size @code{[nchoosek (length (@var{n}),
-## @var{k}), @var{k}]}.
+## If the first argument is a vector, @var{set}, then generate all
+## combinations of the elements of @var{set}, taken @var{k} at a time, with
+## one row per combination.  The result @var{c} has @var{k} columns and
+## @w{@code{nchoosek (length (@var{set}), @var{k})}} rows.
 ##
-## @code{nchoosek} works only for non-negative integer arguments; use
-## @code{bincoeff} for non-integer scalar arguments and for using vector
-## arguments to compute many coefficients at once.
+## For example:
 ##
-## @seealso{bincoeff}
+## How many ways can three items be grouped into pairs?
+##
+## @example
+## @group
+## nchoosek (3, 2)
+##    @result{} 3
+## @end group
+## @end example
+##
+## What are the possible pairs?
+##
+## @example
+## @group
+## nchoosek (1:3, 2)
+##    @result{}  1   2
+##        1   3
+##        2   3
+## @end group
+## @end example
+##
+## @code{nchoosek} works only for non-negative, integer arguments.  Use
+## @code{bincoeff} for non-integer and negative scalar arguments, or for
+## computing many binomial coefficients at once with vector inputs
+## for @var{n} or @var{k}.
+##
+## @seealso{bincoeff, perms}
 ## @end deftypefn
 
 ## Author: Rolf Fabian  <fabian@tu-cottbus.de>
@@ -62,12 +90,12 @@
 function A = nchoosek (v, k)
 
   if (nargin != 2
-      || !isnumeric(k) || !isnumeric(v)
-      || !isscalar(k) || (!isscalar(v) && !isvector(v)))
+      || !isnumeric (k) || !isnumeric (v)
+      || !isscalar (k) || ! (isscalar (v) || isvector (v)))
     print_usage ();
   endif
-  if ((isscalar(v) && v < k) || k < 0
-      || k != round(k) || any (v < 0 || v != round(v)))
+  if (k < 0 || k != fix (k)
+      || (isscalar (v) && (v < k || v < 0 || v != fix (v))))
     error ("nchoosek: args are non-negative integers with V not less than K");
   endif
 
@@ -111,8 +139,19 @@ function A = nchoosek (v, k)
   endif
 endfunction
 
-%!warning (nchoosek(100,45));
-%!error (nchoosek(100,45.5));
-%!error (nchoosek(100,145));
-%!assert (nchoosek(80,10), bincoeff(80,10))
-%!assert (nchoosek(1:5,3),[1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
+
+%!assert (nchoosek (80,10), bincoeff (80,10))
+%!assert (nchoosek(1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
+
+%% Test input validation
+%!warning nchoosek (100,45);
+%!error nchoosek ("100", 45)
+%!error nchoosek (100, "45")
+%!error nchoosek (100, ones (2,2))
+%!error nchoosek (repmat (100, [2 2]), 45)
+%!error nchoosek (100, -45)
+%!error nchoosek (100, 45.5)
+%!error nchoosek (100, 145)
+%!error nchoosek (-100, 45)
+%!error nchoosek (100.5, 45)
+

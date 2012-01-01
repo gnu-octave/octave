@@ -30,7 +30,7 @@
 ##
 ## Table of return values based on @var{format}:
 ##
-## @multitable @columnfractions .06 .13 .13
+## @multitable @columnfractions .06 .13 .16
 ## @headitem @var{n} @tab "short" @tab "long"
 ## @item 1 @tab Sun @tab Sunday
 ## @item 2 @tab Mon @tab Monday

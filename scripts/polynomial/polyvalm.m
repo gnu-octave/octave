@@ -23,11 +23,10 @@
 ##
 ## @code{polyvalm (@var{c}, @var{x})} will evaluate the polynomial in the
 ## matrix sense, i.e., matrix multiplication is used instead of element by
-## element multiplication as is used in polyval.
+## element multiplication as used in @code{polyval}.
 ##
 ## The argument @var{x} must be a square matrix.
-## @seealso{polyval, poly, roots, conv, deconv, residue, filter,
-## polyder, polyint}
+## @seealso{polyval, roots, poly}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

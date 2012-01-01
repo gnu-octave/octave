@@ -274,8 +274,10 @@ function args = setdata (args)
       c = cat(3, reshape (fvc(idx, 1), size(idx)),
               reshape (fvc(idx, 2), size(idx)),
               reshape (fvc(idx, 3), size(idx)));
-    else
+    elseif (isempty (fvc))
       c = [];
+    else ## if (size (fvc, 2) == 1)
+      c = permute (fvc(faces), [2, 1]);
     endif
   endif
   args = {"xdata", x, "ydata", y, "zdata", z, "cdata", c, args{:}};
@@ -335,10 +337,8 @@ function args = setvertexdata (args)
 
   if (ndims (c) == 3)
     fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
-  elseif (isvector (c))
-    fvc = c(:);
   else
-    fvc = c.'(:);
+    fvc = c(:);
   endif
 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};

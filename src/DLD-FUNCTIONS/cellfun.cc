@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <list>
 #include <memory>
 
+#include "caseless-str.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
 
@@ -199,18 +200,17 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
 static void
 get_mapper_fun_options (const octave_value_list& args, int& nargin,
-                     bool& uniform_output, octave_value& error_handler)
+                        bool& uniform_output, octave_value& error_handler)
 {
   while (nargin > 3 && args(nargin-2).is_string ())
     {
-      std::string arg = args(nargin-2).string_value ();
+      caseless_str arg = args(nargin-2).string_value ();
 
-      std::transform (arg.begin (), arg.end (),
-                      arg.begin (), tolower);
+      size_t compare_len = std::max (arg.length (), static_cast<size_t> (2));
 
-      if (arg == "uniformoutput")
+      if (arg.compare ("uniformoutput", compare_len))
         uniform_output = args(nargin-1).bool_value();
-      else if (arg == "errorhandler")
+      else if (arg.compare ("errorhandler", compare_len))
         {
           if (args(nargin-1).is_function_handle ()
               || args(nargin-1).is_inline_function ())
@@ -362,6 +362,21 @@ of the element that caused the error.  For example:\n\
 function y = foo (s, x), y = NaN; endfunction\n\
 cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 @result{} ans = [NaN 2]\n\
+@end group\n\
+@end example\n\
+\n\
+Use @code{cellfun} intelligently.  The @code{cellfun} function is a\n\
+useful tool for avoiding loops.  It is often used with anonymous\n\
+function handles; however, calling an anonymous function involves an\n\
+overhead quite comparable to the overhead of an m-file function.\n\
+Passing a handle to a built-in function is faster, because the\n\
+interpreter is not involved in the internal loop.  For example:\n\
+\n\
+@example\n\
+@group\n\
+a = @{@dots{}@}\n\
+v = cellfun (@@(x) det(x), a); # compute determinants\n\
+v = cellfun (@@det, a); # faster\n\
 @end group\n\
 @end example\n\
 \n\
@@ -696,34 +711,34 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 
 /*
 
-%!function r = f11 (x)
+%!function r = __f11 (x)
 %!  global __cellfun_test_num_outputs__
 %!  __cellfun_test_num_outputs__ = nargout;
 %!  r = x;
-%! endfunction
+%!endfunction
 
-%!function f01 (x)
+%!function __f01 (x)
 %!  global __cellfun_test_num_outputs__
 %!  __cellfun_test_num_outputs__ = nargout;
-%! endfunction
+%!endfunction
 
 %!test
 %! global __cellfun_test_num_outputs__
-%! cellfun (@f11, {1});
+%! cellfun (@__f11, {1});
 %! assert (__cellfun_test_num_outputs__, 0)
-%! x = cellfun (@f11, {1});
+%! x = cellfun (@__f11, {1});
 %! assert (__cellfun_test_num_outputs__, 1)
 
 %!test
 %! global __cellfun_test_num_outputs__
-%! cellfun (@f01, {1});
+%! cellfun (@__f01, {1});
 %! assert (__cellfun_test_num_outputs__, 0)
 
-%!error x = cellfun (@f01, {1, 2});
+%!error x = cellfun (@__f01, {1, 2});
 
 %!test
-%! assert (cellfun (@f11, {1, 2}), [1, 2])
-%! assert (cellfun (@f11, {1, 2}, 'uniformoutput', false), {1, 2})
+%! assert (cellfun (@__f11, {1, 2}), [1, 2])
+%! assert (cellfun (@__f11, {1, 2}, 'uniformoutput', false), {1, 2})
 
 %!test
 %!  [a,b] = cellfun (@(x) x, cell (2, 0));
@@ -736,9 +751,9 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert (b, cell (2, 0));
 
 %% Test function to check the "Errorhandler" option
-%!function [z] = cellfunerror (S, varargin)
-%!    z = S;
-%!  endfunction
+%!function [z] = __cellfunerror (S, varargin)
+%!  z = S;
+%!endfunction
 
 %% First input argument can be a string, an inline function,
 %% a function_handle or an anonymous function
@@ -815,7 +830,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert (isequal (C, {true, []; [], true}));
 %!test
 %!  A = cellfun (@(x,y) cell2str (x,y), {true}, {true}, \
-%!    "ErrorHandler", @cellfunerror);
+%!    "ErrorHandler", @__cellfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -823,7 +838,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert (A.index, 1);
 %!test %% Overwriting setting of "UniformOutput" true
 %!  A = cellfun (@(x,y) cell2str (x,y), {true}, {true}, \
-%!    "UniformOutput", true, "ErrorHandler", @cellfunerror);
+%!    "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -849,7 +864,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert (isequal (C, {10, 11; [], 12}));
 %!test
 %!  A = cellfun (@(x,y) cell2str(x,y), {1.1, 4}, {3.1, 6}, \
-%!    "ErrorHandler", @cellfunerror);
+%!    "ErrorHandler", @__cellfunerror);
 %!  B = isfield (A(1), "message") && isfield (A(1), "index");
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -858,7 +873,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
 %!  A = cellfun (@(x,y) cell2str(x,y), {1.1, 4}, {3.1, 6}, \
-%!    "UniformOutput", true, "ErrorHandler", @cellfunerror);
+%!    "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %!  B = isfield (A(1), "message") && isfield (A(1), "index");
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -877,7 +892,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert (A, {"abc", "def"});
 %!test
 %!  A = cellfun (@(x,y) cell2str(x,y), {"a", "d"}, {"c", "f"}, \
-%!    "ErrorHandler", @cellfunerror);
+%!    "ErrorHandler", @__cellfunerror);
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
 %!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
@@ -885,7 +900,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
 %!  A = cellfun (@(x,y) cell2str(x,y), {"a", "d"}, {"c", "f"}, \
-%!    "UniformOutput", true, "ErrorHandler", @cellfunerror);
+%!    "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
 %!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
@@ -911,7 +926,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert (A, {true, false});
 %!test
 %!  A = cellfun (@(x,y) mat2str(x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
-%!    "ErrorHandler", @cellfunerror);
+%!    "ErrorHandler", @__cellfunerror);
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
 %!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
@@ -919,7 +934,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!  assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
 %!  A = cellfun (@(x,y) mat2str(x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
-%!    "UniformOutput", true, "ErrorHandler", @cellfunerror);
+%!    "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
 %!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
@@ -944,7 +959,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!test
 %!  a = struct ("a", 1, "b", 2); b = struct ("a", 1, "b", 3);
 %!  A = cellfun (@(x,y) cell2str (x.a, y.a), {a}, {b}, \
-%!    "ErrorHandler", @cellfunerror);
+%!    "ErrorHandler", @__cellfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -953,7 +968,7 @@ cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 %!test %% Overwriting setting of "UniformOutput" true
 %!  a = struct ("a", 1, "b", 2); b = struct ("a", 1, "b", 3);
 %!  A = cellfun (@(x,y) cell2str (x.a, y.a), {a}, {b}, \
-%!    "UniformOutput", true, "ErrorHandler", @cellfunerror);
+%!    "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -1042,11 +1057,11 @@ concatenated in a cell array.  For example:\n\
 @group\n\
 arrayfun (@@(x,y) x:y, \"abc\", \"def\", \"UniformOutput\", false)\n\
 @result{} ans =\n\
-@{\n\
-  [1,1] = abcd\n\
-  [1,2] = bcde\n\
-  [1,3] = cdef\n\
-@}\n\
+    @{\n\
+      [1,1] = abcd\n\
+      [1,2] = bcde\n\
+      [1,3] = cdef\n\
+    @}\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1099,12 +1114,12 @@ example:\n\
 @example\n\
 @group\n\
 function y = ferr (s, x), y = \"MyString\"; endfunction\n\
-arrayfun (@@str2num, [1234], \\n\
-          \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
+arrayfun (@@str2num, [1234],\n\
+           \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
 @result{} ans =\n\
-@{\n\
- [1,1] = MyString\n\
-@}\n\
+    @{\n\
+     [1,1] = MyString\n\
+    @}\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1420,43 +1435,43 @@ arrayfun (@@str2num, [1234], \\n\
 }
 
 /*
-%!function r = f11 (x)
+%!function r = __f11 (x)
 %!  global __arrayfun_test_num_outputs__
 %!  __arrayfun_test_num_outputs__ = nargout;
 %!  r = x;
-%! endfunction
+%!endfunction
 
-%!function f01 (x)
+%!function __f01 (x)
 %!  global __arrayfun_test_num_outputs__
 %!  __arrayfun_test_num_outputs__ = nargout;
-%! endfunction
+%!endfunction
 
 %!test
 %! global __arrayfun_test_num_outputs__
-%! arrayfun (@f11, {1});
+%! arrayfun (@__f11, {1});
 %! assert (__arrayfun_test_num_outputs__, 0)
-%! x = arrayfun (@f11, {1});
+%! x = arrayfun (@__f11, {1});
 %! assert (__arrayfun_test_num_outputs__, 1)
 
 %!test
 %! global __arrayfun_test_num_outputs__
-%! arrayfun (@f01, {1});
+%! arrayfun (@__f01, {1});
 %! assert (__arrayfun_test_num_outputs__, 0)
 
-%!error x = arrayfun (@f01, [1, 2]);
+%!error x = arrayfun (@__f01, [1, 2]);
 
 %!test
-%! assert (arrayfun (@f11, [1, 2]), [1, 2])
-%! assert (arrayfun (@f11, [1, 2], 'uniformoutput', false), {1, 2});
-%! assert (arrayfun (@f11, {1, 2}), {1, 2})
-%! assert (arrayfun (@f11, {1, 2}, 'uniformoutput', false), {{1}, {2}});
+%! assert (arrayfun (@__f11, [1, 2]), [1, 2])
+%! assert (arrayfun (@__f11, [1, 2], 'uniformoutput', false), {1, 2});
+%! assert (arrayfun (@__f11, {1, 2}), {1, 2})
+%! assert (arrayfun (@__f11, {1, 2}, 'uniformoutput', false), {{1}, {2}});
 
 %!assert (arrayfun (@ones, 1, [2,3], 'uniformoutput', false), {[1,1], [1,1,1]});
 
 %% Test function to check the "Errorhandler" option
-%!function [z] = arrayfunerror (S, varargin)
+%!function [z] = __arrayfunerror (S, varargin)
 %!      z = S;
-%!    endfunction
+%!endfunction
 %% First input argument can be a string, an inline function, a
 %% function_handle or an anonymous function
 %!test
@@ -1511,7 +1526,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  assert (isequal (B, {true, []; [], true}));
 %!  assert (isequal (C, {true, []; [], true}));
 %!test
-%!  A = arrayfun (@(x,y) array2str (x,y), true, true, "ErrorHandler", @arrayfunerror);
+%!  A = arrayfun (@(x,y) array2str (x,y), true, true, "ErrorHandler", @__arrayfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -1519,7 +1534,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  assert (A.index, 1);
 %!test %% Overwriting setting of "UniformOutput" true
 %!  A = arrayfun (@(x,y) array2str (x,y), true, true, \
-%!                "UniformOutput", true, "ErrorHandler", @arrayfunerror);
+%!                "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -1543,7 +1558,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  assert (isequal (B, {true, true; [], true}));
 %!  assert (isequal (C, {10, 11; [], 12}));
 %!test
-%!  A = arrayfun (@(x,y) array2str(x,y), {1.1, 4}, {3.1, 6}, "ErrorHandler", @arrayfunerror);
+%!  A = arrayfun (@(x,y) array2str(x,y), {1.1, 4}, {3.1, 6}, "ErrorHandler", @__arrayfunerror);
 %!  B = isfield (A(1), "message") && isfield (A(1), "index");
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -1552,7 +1567,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
 %!  A = arrayfun (@(x,y) array2str(x,y), {1.1, 4}, {3.1, 6}, \
-%!                "UniformOutput", true, "ErrorHandler", @arrayfunerror);
+%!                "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %!  B = isfield (A(1), "message") && isfield (A(1), "index");
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -1571,7 +1586,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  A = arrayfun (@(x,y) x:y, ["a", "d"], ["c", "f"], "UniformOutput", false);
 %!  assert (A, {"abc", "def"});
 %! %#!test
-%!   A = arrayfun (@(x,y) cell2str(x,y), ["a", "d"], ["c", "f"], "ErrorHandler", @arrayfunerror);
+%!   A = arrayfun (@(x,y) cell2str(x,y), ["a", "d"], ["c", "f"], "ErrorHandler", @__arrayfunerror);
 %!   B = isfield (A(1), "identifier") && isfield (A(1), "message") && isfield (A(1), "index");
 %!   assert (B, true);
 
@@ -1589,7 +1604,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  A = arrayfun (@(x,y) x.a:y.a, a, b, "UniformOutput", false);
 %!  assert (isequal (A, {[1.1, 2.1, 3.1]}));
 %!test
-%!  A = arrayfun (@(x) mat2str(x), "a", "ErrorHandler", @arrayfunerror);
+%!  A = arrayfun (@(x) mat2str(x), "a", "ErrorHandler", @__arrayfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -1597,7 +1612,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  assert (A.index, 1);
 %!test %% Overwriting setting of "UniformOutput" true
 %!  A = arrayfun (@(x) mat2str(x), "a", "UniformOutput", true, \
-%!                "ErrorHandler", @arrayfunerror);
+%!                "ErrorHandler", @__arrayfunerror);
 %!  assert (isfield (A, "identifier"), true);
 %!  assert (isfield (A, "message"), true);
 %!  assert (isfield (A, "index"), true);
@@ -1615,7 +1630,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  A = arrayfun (@(x,y) x{1} < y{1}, {1.1, 4.2}, {3.1, 2}, "UniformOutput", false);
 %!  assert (A, {true, false});
 %!test
-%!  A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, "ErrorHandler", @arrayfunerror);
+%!  A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, "ErrorHandler", @__arrayfunerror);
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
 %!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);
@@ -1623,7 +1638,7 @@ arrayfun (@@str2num, [1234], \\n\
 %!  assert ([A(1).index, A(2).index], [1, 2]);
 %!test
 %!  A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, \
-%!                "UniformOutput", true, "ErrorHandler", @arrayfunerror);
+%!                "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %!  assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %!  assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
 %!  assert ([(isfield (A(1), "index")), (isfield (A(2), "index"))], [true, true]);

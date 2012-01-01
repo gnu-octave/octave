@@ -21,11 +21,12 @@
 ## @deftypefnx {Function File} {[@var{p}, @var{s}] =} polyfit (@var{x}, @var{y}, @var{n})
 ## @deftypefnx {Function File} {[@var{p}, @var{s}, @var{mu}] =} polyfit (@var{x}, @var{y}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
-## @var{n} that minimizes the least-squares-error of the fit.
+## @var{n} that minimizes the least-squares-error of the fit to the points
+## @code{[@var{x}, @var{y}]}.
 ##
 ## The polynomial coefficients are returned in a row vector.
 ##
-## The second output is a structure containing the following fields:
+## The optional output @var{s} is a structure containing the following fields:
 ##
 ## @table @samp
 ## @item R
@@ -53,7 +54,7 @@
 ## Where @var{mu}(1) = mean (@var{x}), and @var{mu}(2) = std (@var{x}).
 ## This linear transformation of @var{x} improves the numerical
 ## stability of the fit.
-## @seealso{polyval, residue}
+## @seealso{polyval, polyaffine, roots, vander, zscore}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

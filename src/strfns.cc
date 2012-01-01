@@ -862,8 +862,9 @@ columns with an overall maximum width of @var{width}.  The argument\n\
 If @var{width} is not specified, the width of the terminal screen is used.\n\
 Newline characters are used to break the lines in the output string.\n\
 For example:\n\
+@c Set example in small font to prevent overfull line\n\
 \n\
-@example\n\
+@smallexample\n\
 @group\n\
 list_in_columns (@{\"abc\", \"def\", \"ghijkl\", \"mnop\", \"qrs\", \"tuv\"@}, 20)\n\
      @result{} ans = abc     mnop\n\
@@ -880,7 +881,7 @@ whos ans\n\
 \n\
      Total is 37 elements using 37 bytes\n\
 @end group\n\
-@end example\n\
+@end smallexample\n\
 \n\
 @seealso{terminal_size}\n\
 @end deftypefn")

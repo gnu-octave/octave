@@ -18,18 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp}, @var{xi})
-## Evaluate piece-wise polynomial structure @var{pp} at the points @var{xi}.
+## Evaluate the piecewise polynomial structure @var{pp} at the points @var{xi}.
 ## If @var{pp} describes a scalar polynomial function, the result is an
 ## array of the same shape as @var{xi}.
 ## Otherwise, the size of the result is @code{[pp.dim, length(@var{xi})]} if
 ## @var{xi} is a vector, or @code{[pp.dim, size(@var{xi})]} if it is a
 ## multi-dimensional array.
-##
-##, the dimensions are permuted as
-## in interp1, to
-## @code{[pp.d, length(@var{xi})]} and @code{[pp.d, size(@var{xi})]}
-## respectively.
-## @seealso{mkpp, unmkpp, spline, pchip, interp1}
+## @seealso{mkpp, unmkpp, spline, pchip}
 ## @end deftypefn
 
 function yi = ppval (pp, xi)

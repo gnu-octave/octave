@@ -106,5 +106,6 @@ endfunction
 
 
 %!demo
+%! clf
 %! rose ([2*randn(1e5, 1), pi + 2*randn(1e5, 1)]);
 

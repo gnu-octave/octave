@@ -29,7 +29,6 @@ lower-triangular parts, or sort the columns of a matrix.
 @menu
 * Finding Elements and Checking Conditions::  
 * Rearranging Matrices::        
-* Applying a Function to an Array::
 * Special Utility Matrices::    
 * Famous Matrices::             
 @end menu
@@ -139,13 +138,6 @@ its elements may have, consult @ref{Status of Variables}.
 @DOCSTRING(diag)
 
 @DOCSTRING(blkdiag)
-
-@node Applying a Function to an Array
-@section Applying a Function to an Array
-
-@DOCSTRING(arrayfun)
-
-@DOCSTRING(bsxfun)
 
 @node Special Utility Matrices
 @section Special Utility Matrices

@@ -1141,9 +1141,11 @@ reset_parser (void)
 
   // Only ask for input from stdin if we are expecting interactive
   // input.
-  if ((interactive || forced_interactive)
+
+  if (! quitting_gracefully
+      && (interactive || forced_interactive)
       && ! (reading_fcn_file
-        || reading_classdef_file
+            || reading_classdef_file
             || reading_script_file
             || get_input_from_eval_string
             || input_from_startup_file))

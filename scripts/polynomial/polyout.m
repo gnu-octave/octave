@@ -31,11 +31,9 @@
 ## @end example
 ##
 ## @end ifnottex
-## and return it as a string or write it to the screen (if
-## @var{nargout} is zero).
-## @var{x} defaults to the string @code{"s"}.
-## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,
-## filter, polyder, polyint}
+## and return it as a string or write it to the screen (if @var{nargout} is
+## zero).  @var{x} defaults to the string @code{"s"}.
+## @seealso{polyreduce}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

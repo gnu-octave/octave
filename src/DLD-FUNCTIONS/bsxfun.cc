@@ -312,8 +312,8 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 DEFUN_DLD (bsxfun, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} bsxfun (@var{f}, @var{A}, @var{B})\n\
-The binary singleton expansion function applier does what its name\n\
-suggests: applies a binary function @var{f} element-by-element to two\n\
+The binary singleton expansion function applier performs broadcasting,\n\
+that is, applies a binary function @var{f} element-by-element to two\n\
 array arguments @var{A} and @var{B}, and expands as necessary\n\
 singleton dimensions in either input argument.  @var{f} is a function\n\
 handle, inline function, or string containing the name of the function\n\

@@ -88,6 +88,7 @@ endfunction
 
 
 %!demo
+%! clf
 %! [x, y, z] = sombrero ();
 %! [x, y] = meshgrid (x, y);
 %! ribbon (y, z);

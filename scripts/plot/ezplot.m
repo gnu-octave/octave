@@ -81,11 +81,14 @@ endfunction
 
 
 %!demo
+%! clf
 %! ezplot (@cos, @sin)
 
 %!demo
+%! clf
 %! ezplot ("1/x")
 
 %!demo
+%! clf
 %! ezplot (inline ("x^2 - y^2 = 1"))
 

@@ -37,24 +37,23 @@ along with Octave; see the file COPYING.  If not, see
 
 octave_fftw_planner *octave_fftw_planner::instance = 0;
 
-// Helper class to create and cache fftw plans for both 1d and
-// 2d. This implementation defaults to using FFTW_ESTIMATE to create
-// the plans, which in theory is suboptimal, but provides quit
-// reasonable performance.
+// Helper class to create and cache FFTW plans for both 1D and
+// 2D. This implementation defaults to using FFTW_ESTIMATE to create
+// the plans, which in theory is suboptimal, but provides quite
+// reasonable performance in practice.
 
-// Also note that if FFTW_ESTIMATE is not used the planner in FFTW3
-// destroys the input and output arrays. We must therefore create a
+// Also note that if FFTW_ESTIMATE is not used then the planner in FFTW3
+// will destroy the input and output arrays. We must, therefore, create a
 // temporary input array with the same size and 16-byte alignment as
-// the original array and use that for the planner. Note that we also
-// use any wisdom that is available, either in a FFTW3 system wide file
-//  or as supplied by the user.
+// the original array when using a different planner strategy.
+// Note that we also use any wisdom that is available, either in a
+// FFTW3 system wide file or as supplied by the user.
 
 // FIXME -- if we can ensure 16 byte alignment in Array<T>
 // (<T> *data) the FFTW3 can use SIMD instructions for further
 // acceleration.
 
-// Note that it is profitable to store the FFTW3 plans, for small
-// ffts.
+// Note that it is profitable to store the FFTW3 plans, for small FFTs.
 
 octave_fftw_planner::octave_fftw_planner (void)
   : meth (ESTIMATE), rplan (0), rd (0), rs (0), rr (0), rh (0), rn (),
@@ -68,6 +67,23 @@ octave_fftw_planner::octave_fftw_planner (void)
 
   // If we have a system wide wisdom file, import it.
   fftw_import_system_wisdom ();
+}
+
+octave_fftw_planner::~octave_fftw_planner (void)
+{
+  fftw_plan *plan_p;
+
+  plan_p = &rplan;
+  if (*plan_p)
+    fftw_destroy_plan (*plan_p);
+
+  plan_p = &plan[0];
+  if (*plan_p)
+    fftw_destroy_plan (*plan_p);
+
+  plan_p = &plan[1];
+  if (*plan_p)
+    fftw_destroy_plan (*plan_p);
 }
 
 bool
@@ -381,6 +397,23 @@ octave_float_fftw_planner::octave_float_fftw_planner (void)
 
   // If we have a system wide wisdom file, import it.
   fftwf_import_system_wisdom ();
+}
+
+octave_float_fftw_planner::~octave_float_fftw_planner (void)
+{
+  fftwf_plan *plan_p;
+
+  plan_p = &rplan;
+  if (*plan_p)
+    fftwf_destroy_plan (*plan_p);
+
+  plan_p = &plan[0];
+  if (*plan_p)
+    fftwf_destroy_plan (*plan_p);
+
+  plan_p = &plan[1];
+  if (*plan_p)
+    fftwf_destroy_plan (*plan_p);
 }
 
 bool

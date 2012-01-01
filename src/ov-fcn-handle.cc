@@ -1759,7 +1759,8 @@ are ignored in the lookup.\n\
 }
 
 /*
-%!function y = testrecursionfunc (f, x, n)
+
+%!function y = __testrecursionfunc (f, x, n)
 %!  if (nargin < 3)
 %!    n = 0;
 %!  endif
@@ -1767,10 +1768,12 @@ are ignored in the lookup.\n\
 %!    y = f (x);
 %!  else
 %!    n++;
-%!    y = testrecursionfunc (@(x) f(2*x), x, n);
+%!    y = __testrecursionfunc (@(x) f(2*x), x, n);
 %!  endif
-%!test
-%! assert (testrecursionfunc (@(x) x, 1), 8);
+%!endfunction
+%!
+%!assert (__testrecursionfunc (@(x) x, 1), 8)
+
 */
 
 octave_fcn_binder::octave_fcn_binder (const octave_value& f,
@@ -1958,10 +1961,10 @@ octave_fcn_binder::do_multi_index_op (int nargout,
 }
 
 /*
-%!function r = f (g, i)
+%!function r = __f (g, i)
 %!  r = g(i);
 %!endfunction
 %!test
 %! x = [1,2;3,4];
-%! assert (f (@(i) x(:,i), 1), [1;3]);
+%! assert (__f (@(i) x(:,i), 1), [1;3]);
 */

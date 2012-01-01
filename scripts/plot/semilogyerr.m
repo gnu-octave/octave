@@ -61,6 +61,7 @@ function retval = semilogyerr (varargin)
 endfunction
 
 %!demo
+%! clf
 %! x = 0.25:0.25:10;
 %! y = wblpdf (x, 4, 2);
 %! eyu = rand (size (y));

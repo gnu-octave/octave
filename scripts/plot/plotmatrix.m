@@ -96,6 +96,7 @@ function [h, ax, bigax, p, pax] = plotmatrix (varargin)
 endfunction
 
 %!demo
+%! clf
 %! plotmatrix (randn (100, 3), 'g+')
 
 function plotmatrixdelete (h, d, ax)

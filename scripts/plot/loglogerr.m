@@ -61,6 +61,7 @@ function retval = loglogerr (varargin)
 endfunction
 
 %!demo
+%! clf
 %! x = exp (log(0.01):0.2:log(10));
 %! y = wblpdf (x, 3, 2);
 %! eyu = 2*rand (size (y)) .* y;

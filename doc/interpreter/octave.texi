@@ -197,8 +197,9 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Plotting::                    
 * Matrix Manipulation::         
 * Arithmetic::                  
-* Linear Algebra::              
-* Nonlinear Equations::         
+* Linear Algebra::
+* Vectorization and Faster Code Execution::
+* Nonlinear Equations::
 * Diagonal and Permutation Matrices::
 * Sparse Matrices::
 * Numerical Integration::                  
@@ -600,7 +601,6 @@ Matrix Manipulation
 
 * Finding Elements and Checking Conditions::  
 * Rearranging Matrices::        
-* Applying a Function to an Array::
 * Special Utility Matrices::    
 * Famous Matrices::             
 
@@ -623,6 +623,15 @@ Linear Algebra
 * Matrix Factorizations::       
 * Functions of a Matrix::       
 * Specialized Solvers::
+
+Vectorization and Faster Code Execution
+
+* Basic Vectorization::
+* Broadcasting::
+* Function Application::
+* Accumulation::
+* Miscellaneous Techniques::
+* Examples::
 
 Nonlinear Equations
 
@@ -844,7 +853,6 @@ Test and Demo Functions
 Tips and Standards
 
 * Style Tips::                  Writing clean and robust programs.
-* Coding Tips::                 Making code run faster.
 * Comment Tips::                Conventions for writing comments.
 * Function Headers::            Standard headers for functions.
 * Documentation Tips::          Writing readable documentation strings.
@@ -910,6 +918,7 @@ Grammar and Parser
 @include matrix.texi
 @include arith.texi
 @include linalg.texi
+@include vectorize.texi
 @include nonlin.texi
 @include diagperm.texi
 @include sparse.texi

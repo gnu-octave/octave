@@ -1095,6 +1095,10 @@ DEFUN (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {} warning (\"on\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
 functions (@pxref{Formatted Output}) and print the resulting message\n\
@@ -1108,14 +1112,19 @@ The optional message identifier allows users to enable or disable\n\
 warnings tagged by @var{id}.  The special identifier @samp{\"all\"} may\n\
 be used to set the state of all warnings.\n\
 \n\
-@deftypefnx {Built-in Function} {} warning (\"on\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
-Set or query the state of a particular warning using the identifier\n\
-@var{id}.  If the identifier is omitted, a value of @samp{\"all\"} is\n\
-assumed.  If you set the state of a warning to @samp{\"error\"}, the\n\
-warning named by @var{id} is handled as if it were an error instead.\n\
+If the first argument is @samp{\"on\"} or @samp{\"off\"}, set the state\n\
+of a particular warning using the identifier @var{id}.  If the first\n\
+argument is @samp{\"query\"}, query the state of this warning instead.\n\
+If the identifier is omitted, a value of @samp{\"all\"} is assumed.  If\n\
+you set the state of a warning to @samp{\"error\"}, the warning named by\n\
+@var{id} is handled as if it were an error instead.  So, for example, the\n\
+following handles all warnings as errors:\n\
+\n\
+@example\n\
+@group\n\
+warning (\"error\");\n\
+@end group\n\
+@end example\n\
 @seealso{warning_ids}\n\
 @end deftypefn")
 {
@@ -1479,8 +1488,8 @@ DEFUN (lasterror, args, ,
 @deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
 @deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror ('reset')\n\
-Query or set the last error message structure.  When called without arguments\n\
-, return a structure containing the last error message and other\n\
+Query or set the last error message structure.  When called without\n\
+arguments, return a structure containing the last error message and other\n\
 information related to this error.  The elements of the structure are:\n\
 \n\
 @table @asis\n\

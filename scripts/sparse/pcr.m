@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{x} =} pcr (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}] =} pcr (@dots{})
 ##
-## Solves the linear system of equations @code{@var{A} * @var{x} = @var{b}}
+## Solve the linear system of equations @code{@var{A} * @var{x} = @var{b}}
 ## by means of the Preconditioned Conjugate Residuals iterative
 ## method.  The input arguments are
 ##

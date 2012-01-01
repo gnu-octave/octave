@@ -194,6 +194,7 @@ plot_FCN_FILES = \
   plot/uitoolbar.m \
   plot/uiwait.m \
   plot/view.m \
+  plot/waitbar.m \
   plot/waitforbuttonpress.m \
   plot/whitebg.m \
   plot/xlabel.m \

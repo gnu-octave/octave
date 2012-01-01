@@ -303,9 +303,9 @@ alphabetical order).
   @tab @code{poisscdf}
   @tab @code{poissinv}
 @item Standard Normal Distribution
-  @tab @code{stdtormal_pdf}
-  @tab @code{stdtormal_cdf}
-  @tab @code{stdtormal_inv}
+  @tab @code{stdnormal_pdf}
+  @tab @code{stdnormal_cdf}
+  @tab @code{stdnormal_inv}
 @item t (Student) Distribution
   @tab @code{tpdf}
   @tab @code{tcdf}

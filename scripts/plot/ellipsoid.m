@@ -70,4 +70,5 @@ function [xx, yy, zz] = ellipsoid (varargin)
 endfunction
 
 %!demo
+%! clf
 %! ellipsoid (0, 0, 1, 2, 3, 4, 20);

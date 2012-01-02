@@ -47,14 +47,16 @@ for class in $CLASSES; do
   DIR="@$class"
   test -d $DIR || mkdir $DIR || { echo "error: could not create $DIR"; exit; }
   cat > $DIR/tbcover.m << EOF
-% DO NOT EDIT - generated automatically
+% !!! DO NOT EDIT !!!
+% generated automatically by build_bc_overload_tests.sh
 function s = tbcover (x, y)
   s = '$class';
 EOF
 done
 
 cat > tbcover.m << EOF
-% DO NOT EDIT - generated automatically
+% !!! DO NOT EDIT !!!
+% generated automatically by build_bc_overload_tests.sh
 function s = tbcover (x, y)
   s = 'none';
 EOF
@@ -64,8 +66,9 @@ if test "$1" = "overloads_only" ; then
 fi
 
 cat > test_bc_overloads.m << EOF
-## THIS IS AN AUTOMATICALLY GENERATED FILE --- DO NOT EDIT ---
-## instead modify build_bc_overload_tests.sh to generate the tests that you want.
+## !!! DO NOT EDIT !!!
+## THIS IS AN AUTOMATICALLY GENERATED FILE
+## modify build_bc_overload_tests.sh to generate the tests you need.
 
 %!shared ex
 %! ex.double = 1;

@@ -23,10 +23,10 @@
 ## just that the results are consistent for all types.
 
 %!function __fntestfunc__ (fn, mn, varargin)
-%!  typ = {'double', 'complex', 'logical', 'sparse', 'complex sparse', ...
-%!         'logical sparse', 'int8', 'int16', 'int32', 'int64', 'uint8', ...
-%!         'uint16', 'uint32', 'uint64', 'char', 'cell', 'struct', ...
-%!         'single', 'single complex'};
+%!  typ = {"double", "complex", "logical", "sparse", "complex sparse", ...
+%!         "logical sparse", "int8", "int16", "int32", "int64", "uint8", ...
+%!         "uint16", "uint32", "uint64", "char", "cell", "struct", ...
+%!         "single", "single complex"};
 %!
 %!  cmplx = [2, 5, 18];
 %!  nlogical = [3, 6];
@@ -39,7 +39,7 @@
 %!    varargin(1) = [];
 %!  endif
 %!
-%!  for i = 1 : length(typ)
+%!  for i = 1 : length (typ)
 %!    if (any (strcmp (skip, typ {i})))
 %!      continue;
 %!    endif
@@ -48,7 +48,7 @@
 %!    if (any (nsparse == i))
 %!      if (ndims (m) > 2)
 %!        sz = size (m);
-%!        m = reshape (m, [sz(1), prod(sz (2:end))]);
+%!        m = reshape (m, [sz(1), prod(sz(2:end))]);
 %!      endif
 %!      if (any (cmplx == i))
 %!        m = sparse ((1 + 1i) * m);
@@ -61,30 +61,30 @@
 %!      endif
 %!    endif
 %!    if (any (nlogical == i))
-%!      m = cast (m, 'logical');
+%!      m = cast (m, "logical");
 %!    endif
 %!    if (any (ninteger == i))
 %!      m = cast (m, typ{i});
 %!    endif
-%!    if (strcmp (typ{i}, 'cell'))
+%!    if (strcmp (typ{i}, "cell"))
 %!      m = num2cell (m);
-%!    elseif (strcmp (typ{i}, 'struct'))
-%!      m = struct ('fld', num2cell (m));
+%!    elseif (strcmp (typ{i}, "struct"))
+%!      m = struct ("fld", num2cell (m));
 %!    endif
 %!
 %!    y = feval (fn, m, varargin{:});
 %!    y2 = feval (fn, reshape (mn, size (m)), varargin{:});
 %!    if (!strcmp (class (y), class (m)) ||
 %!         issparse (y) != issparse (m) || !size_equal (y, y2))
-%!      error ('failed for type %s\n', typ{i});
+%!      error ("failed for type %s\n", typ{i});
 %!    endif
-%!    if (!(strcmp (typ{i}, 'cell') || strcmp (typ{i}, 'struct')) &&
-%!        any (vec (cast (real (y), 'double')) !=
-%!             vec (feval (fn , cast (real (m), 'double'), varargin{:}))))
-%!      error ('failed for type %s\n', typ{i});
+%!    if (!(strcmp (typ{i}, "cell") || strcmp (typ{i}, "struct")) &&
+%!        any (vec (cast (real (y), "double")) !=
+%!             vec (feval (fn , cast (real (m), "double"), varargin{:}))))
+%!      error ("failed for type %s\n", typ{i});
 %!    endif
 %!  endfor
-%! endfunction
+%!endfunction
 
 %!shared m0, m1, m2, m3
 %! m0 = [1:5];
@@ -93,100 +93,100 @@
 %! m3 = [];
 
 %!test
-%! __fntestfunc__('triu', m1, {'struct'});
+%! __fntestfunc__("triu", m1, {"struct"});
 %!test
-%! __fntestfunc__ ('triu', m1, {'struct'}, -1);
+%! __fntestfunc__ ("triu", m1, {"struct"}, -1);
 %!test
-%! __fntestfunc__ ('triu', m1, {'struct'}, 1);
+%! __fntestfunc__ ("triu", m1, {"struct"}, 1);
 %!test
-%! __fntestfunc__('triu', m3, {'struct'});
+%! __fntestfunc__("triu", m3, {"struct"});
 %!test
-%! __fntestfunc__ ('tril', m1, {'struct'});
+%! __fntestfunc__ ("tril", m1, {"struct"});
 %!test
-%! __fntestfunc__ ('tril', m1, {'struct'}, -1);
+%! __fntestfunc__ ("tril", m1, {"struct"}, -1);
 %!test
-%! __fntestfunc__ ('tril', m1, {'struct'}, 1);
+%! __fntestfunc__ ("tril", m1, {"struct"}, 1);
 %!test
-%! __fntestfunc__('tril', m3, {'struct'});
+%! __fntestfunc__("tril", m3, {"struct"});
 %!test
-%! __fntestfunc__ ('squeeze', m2);
+%! __fntestfunc__ ("squeeze", m2);
 %!test
-%! __fntestfunc__ ('squeeze', m3);
+%! __fntestfunc__ ("squeeze", m3);
 %!test
-%! __fntestfunc__ ('permute', m1, [2, 1]);
+%! __fntestfunc__ ("permute", m1, [2, 1]);
 %!test
-%! __fntestfunc__ ('permute', m2, {'sparse', 'logical sparse', 'complex sparse'}, [3, 1, 2]);
+%! __fntestfunc__ ("permute", m2, {"sparse", "logical sparse", "complex sparse"}, [3, 1, 2]);
 %!test
-%! __fntestfunc__ ('permute', m3, [2, 1]);
+%! __fntestfunc__ ("permute", m3, [2, 1]);
 %!test
-%! __fntestfunc__ ('ipermute', m1, [2, 1]);
+%! __fntestfunc__ ("ipermute", m1, [2, 1]);
 %!test
-%! __fntestfunc__ ('ipermute', m2, {'sparse', 'logical sparse', 'complex sparse'}, [3, 1, 2]);
+%! __fntestfunc__ ("ipermute", m2, {"sparse", "logical sparse", "complex sparse"}, [3, 1, 2]);
 %!test
-%! __fntestfunc__ ('ipermute', m3, [2, 1]);
+%! __fntestfunc__ ("ipermute", m3, [2, 1]);
 %!test
-%! __fntestfunc__ ('shiftdim', m2, 1);
+%! __fntestfunc__ ("shiftdim", m2, 1);
 %!test
-%! __fntestfunc__ ('shiftdim', m2, {'sparse', 'logical sparse', 'complex sparse'}, -1);
+%! __fntestfunc__ ("shiftdim", m2, {"sparse", "logical sparse", "complex sparse"}, -1);
 %!test
-%! __fntestfunc__ ('shiftdim', m3, 1);
+%! __fntestfunc__ ("shiftdim", m3, 1);
 %!test
-%! __fntestfunc__ ('circshift', m2, 1);
+%! __fntestfunc__ ("circshift", m2, 1);
 %!test
-%! __fntestfunc__ ('circshift', m2, [1, -1]);
+%! __fntestfunc__ ("circshift", m2, [1, -1]);
 %!test
-%! __fntestfunc__ ('circshift', m3, 1);
+%! __fntestfunc__ ("circshift", m3, 1);
 %!test
-%! __fntestfunc__ ('reshape', m2, [6, 5]);
+%! __fntestfunc__ ("reshape", m2, [6, 5]);
 %!test
-%! __fntestfunc__ ('reshape', m3, [1, 0]);
+%! __fntestfunc__ ("reshape", m3, [1, 0]);
 %!test
-%! __fntestfunc__ ('diag', m0, {'struct'});
+%! __fntestfunc__ ("diag", m0, {"struct"});
 %!test
-%! __fntestfunc__ ('diag', m0, {'struct'}, 1);
+%! __fntestfunc__ ("diag", m0, {"struct"}, 1);
 %!test
-%! __fntestfunc__ ('diag', m0, {'struct'}, -1);
+%! __fntestfunc__ ("diag", m0, {"struct"}, -1);
 %!test
-%! __fntestfunc__ ('diag', m1, {'struct'});
+%! __fntestfunc__ ("diag", m1, {"struct"});
 %!test
-%! __fntestfunc__ ('diag', m1, {'struct'}, 1);
+%! __fntestfunc__ ("diag", m1, {"struct"}, 1);
 %!test
-%! __fntestfunc__ ('diag', m1, {'struct'}, -1);
+%! __fntestfunc__ ("diag", m1, {"struct"}, -1);
 %!test
-%! __fntestfunc__ ('diag', m3, {'struct'});
+%! __fntestfunc__ ("diag", m3, {"struct"});
 %!test
-%! __fntestfunc__ ('fliplr', m1);
+%! __fntestfunc__ ("fliplr", m1);
 %!test
-%! __fntestfunc__ ('fliplr', m3);
+%! __fntestfunc__ ("fliplr", m3);
 %!test
-%! __fntestfunc__ ('flipud', m1);
+%! __fntestfunc__ ("flipud", m1);
 %!test
-%! __fntestfunc__ ('flipud', m3);
+%! __fntestfunc__ ("flipud", m3);
 %!test
-%! __fntestfunc__ ('flipdim', m1, 2);
+%! __fntestfunc__ ("flipdim", m1, 2);
 %!test
-%! __fntestfunc__ ('flipdim', m3, 2);
+%! __fntestfunc__ ("flipdim", m3, 2);
 %!test
-%! __fntestfunc__ ('transpose', m1);
+%! __fntestfunc__ ("transpose", m1);
 %!test
-%! __fntestfunc__ ('transpose', m3);
+%! __fntestfunc__ ("transpose", m3);
 %!test
-%! __fntestfunc__ ('ctranspose', m1);
+%! __fntestfunc__ ("ctranspose", m1);
 %!test
-%! __fntestfunc__ ('ctranspose', m3);
+%! __fntestfunc__ ("ctranspose", m3);
 %!test
-%! __fntestfunc__ ('rot90', m1);
+%! __fntestfunc__ ("rot90", m1);
 %!test
-%! __fntestfunc__ ('rot90', m1, 2);
+%! __fntestfunc__ ("rot90", m1, 2);
 %!test
-%! __fntestfunc__ ('rot90', m1, -1);
+%! __fntestfunc__ ("rot90", m1, -1);
 %!test
-%! __fntestfunc__ ('rot90', m3);
+%! __fntestfunc__ ("rot90", m3);
 %!test
-%! __fntestfunc__ ('rotdim', m2, 1, [1, 2]);
+%! __fntestfunc__ ("rotdim", m2, 1, [1, 2]);
 %!test
-%! __fntestfunc__ ('rotdim', m2, 2, [1, 2]);
+%! __fntestfunc__ ("rotdim", m2, 2, [1, 2]);
 %!test
-%! __fntestfunc__ ('rotdim', m2, -1, [1, 2]);
+%! __fntestfunc__ ("rotdim", m2, -1, [1, 2]);
 %!test
-%! __fntestfunc__ ('rotdim', m3, 1, [1, 2]);
+%! __fntestfunc__ ("rotdim", m3, 1, [1, 2]);

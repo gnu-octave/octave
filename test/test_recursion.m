@@ -24,8 +24,9 @@
 %!  else
 %!    y = x * f (x-1);
 %!  endif
-%!test
-%! assert(f (5),120);
+%!endfunction
+%!
+%!assert(f (5), 120);
 
 %% test/octave.test/recursion/recursion-2.m
 %!function y = f (x)
@@ -35,6 +36,8 @@
 %!  else
 %!    y = f (x-1) * x;
 %!  endif
-%!test
-%! assert(f (5),120);
+%!endfunction
+%!
+%!assert(f (5), 120);
 
+%%FIXME: Need test for maximum recursion depth

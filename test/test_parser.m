@@ -16,8 +16,8 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## Tests for parser problems belong in this file.  We need many more
-## tests here!
+## Tests for parser problems belong in this file.
+## We need many more tests here!
 
 %!assert ({1 2 {3 4}}, {1,2,{3,4}})
 %!assert ({1, 2 {3 4}}, {1,2,{3,4}})
@@ -247,6 +247,8 @@
 %! assert (a += b *= c += 1, 42)
 %! assert (b == 40 && c == 8)
 
+## Test creation of anonymous functions
+
 %!test
 %! af_in_cell = {@(x) [1 2]};
 %! assert (af_in_cell{1}(), [1, 2]);
@@ -254,3 +256,4 @@
 %!test
 %! R = @(rot) [cos(rot) -sin(rot); sin(rot) cos(rot)];
 %! assert (R(pi/2), [cos(pi/2), -sin(pi/2); sin(pi/2),cos(pi/2)]);
+

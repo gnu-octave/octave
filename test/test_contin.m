@@ -16,100 +16,29 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% test/octave.test/contin/contin-1.m
-%!test
+%!shared x, a, b
 %! x = [1,2];
 %! a = 1;
 %! b = 2;
+
+%!test
 %! y = [a... # comments here ok
 %! b];
-%! assert(all (y == x));
+%! assert (y, x);
 
-%% test/octave.test/contin/contin-2.m
-%!test
-%! x = [1,2];
-%! a = 1;
-%! b = 2;
-%! y = [a... # comments here ok
-%! b];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-3.m
-%!test
-%! x = [1,2];
-%! a = 1;
-%! b = 2;
-%! y = [a... # comments here ok
-%! b];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-4.m
-%!test
-%! x = [1,2];
-%! a = 1;
-%! b = 2;
-%! y = [a... # comments ok here
-%! b];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-5.m
-%!test
-%! x = [1,2];
-%! a = 1;
-%! b = 2;
-%! y = [a... # comments here ok
-%! b];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-6.m
-%!test
-%! x = [1,2];
-%! a = 1;
-%! b = 2;
-%! y = [a... # comments here ok
-%! b];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-7.m
 %!test
 %! x = [1;2];
-%! a = 1;
-%! b = 2;
 %! y = [a... # comments here ok
 %! ;\
 %! 
 %! b];
-%! assert(all (y == x));
+%! assert (y, x);
 
-%% test/octave.test/contin/contin-8.m
-%!test
-%! x = [1;2];
-%! a = 1;
-%! b = 2;
-%! y = [a... # comments here ok
-%! ;\
-%! 
-%! b];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-9.m
-%!test
-%! x = [1;2];
-%! a = 1;
-%! b = 2;
-%! y = [a... # comments here ok
-%! ;\
-%! 
-%! b];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-10.m
-%!assert(1 + ...
+%!assert (1 + ...
 %! 2 - \# comments here ok
 %! 3 / ... # comments here ok
 %! -1,6);
 
-%% test/octave.test/contin/contin-11.m
 %!function y = f (a,...
 %!                b,  ...
 %!                c,  ...   % comments ok
@@ -118,16 +47,15 @@
 %!                z)
 %!
 %!  y = 1;
-%!test
-%! assert(f (),1);
+%!endfunction
+%!
+%!assert (f (), 1)
 
-%% test/octave.test/contin/contin-12.m
 %!test
-%!assert(1 == 1
+%!assert (1 == 1
 %! && 2 == 2
 %! || 3 == 5);
 
-%% test/octave.test/contin/contin-13.m
 %!test
 %! x = [1, ...
 %! 
@@ -135,29 +63,18 @@
 %! 
 %! 2];
 %! y = [1;2];
-%! assert(all (y == x));
+%! assert (y, x);
 
-%% test/octave.test/contin/contin-14.m
 %!test
-%! x = [1, ...
-%! 
-%! ...
-%! 
-%! 2];
-%! y = [1;2];
-%! assert(all (y == x));
-
-%% test/octave.test/contin/contin-15.m
-%!test
-%! x = [1,...
+%! x = [1 ,...
 %! 2];
 %! y = [1,2];
-%! assert(all (y == x));
+%! assert (y, x);
 
-%% test/octave.test/contin/contin-16.m
+%% test/oc tave.test/contin/contin-16.m
 %!test
 %! x = [ 1 , ...
 %! 2];
 %! y = [1,2];
-%! assert(all (y == x));
+%! assert  (y, x);
 

@@ -16,68 +16,78 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## Test %!error usage
+
 %% test/octave.test/error/error-1.m
 %!function g () 
-%! error ("foo");
+%!  error ("foo");
+%!endfunction
 %!function f () 
-%! g (); 
-%!error <foo> f ();
+%!  g (); 
+%!endfunction
+%!error <foo> f ()
 
 %% test/octave.test/error/error-2.m
 %!function g () 
-%! error ("foo\n");
+%!  error ("foo\n");
+%!endfunction
 %!function f () 
-%! g 
-%!error <foo> f ();
+%!  g 
+%!endfunction
+%!error <foo> f ()
 
 %% test/octave.test/error/error-3.m
-%!error error ();
+%!error error ()
 
 %% test/octave.test/error/error-4.m
-%!error <foo> error ("foo\n");
+%!error <foo> error ("foo\n")
 
-%% FIXME Why can't I use %!warning <foo> f;
+## Test %!warning usage
+
 %% test/octave.test/error/warning-1.m
 %!function g ()
-%! warning ("foo");
+%!  warning ("foo");
+%!endfunction
 %!function f ()
-%! g;
-%!test
-%! fail("f","warning","foo");
+%!  g;
+%!endfunction
+%!warning <foo> f ()
 
 %% test/octave.test/error/warning-2.m
 %!test
 %! st.identifier = "backtrace";
-%! ws = warning ("query","backtrace");
-%! warning ("on","backtrace");
+%! ws = warning ("query", "backtrace");
+%! warning ("on", "backtrace");
 %! st.state = "on";
-%! assert(warning ("query","backtrace"),st);
-%! warning ("off","backtrace");
+%! assert(warning ("query", "backtrace"), st);
+%! warning ("off", "backtrace");
 %! st.state = "off";
-%! assert(warning ("query","backtrace"),st);
-%! warning (ws.state,"backtrace");
+%! assert(warning ("query", "backtrace"), st);
+%! warning (ws.state, "backtrace");
 
-%% FIXME This test no longer makes sense with new warning syntax
-%% test/octave.test/error/warning-3.m
-%!#warning <foo> warning ("foo", 1);
+## Test usage() function
 
 %% test/octave.test/error/usage-1.m
 %!function g () 
-%! usage ("foo");
+%!  usage ("foo");
+%!endfunction
 %!function f () 
-%! g (); 
-%!error <foo> f ();
+%!  g (); 
+%!endfunction
+%!error <foo> f ()
 
 %% test/octave.test/error/usage-2.m
 %!function g () 
-%! usage ("foo");
+%!  usage ("foo");
+%!endfunction
 %!function f () 
-%! g 
-%!error <foo> f ();
+%!  g 
+%!endfunction
+%!error <foo> f ()
 
 %% test/octave.test/error/usage-3.m
-%!error usage ();
+%!error usage ()
 
 %% test/octave.test/error/usage-4.m
-%!error <foo> usage ("foo\n");
+%!error <foo> usage ("foo\n")
 

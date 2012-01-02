@@ -1348,6 +1348,9 @@ Functions for displaying and printing two- and three-dimensional graphs.
 @item polynomial
 Functions for manipulating polynomials.
 
+@item prefs
+Functions implementing user-defined preferences.
+
 @item set
 Functions for creating and manipulating sets of unique values.
 

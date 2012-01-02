@@ -50,7 +50,7 @@
 ## @example
 ## @group
 ## c = [1, 0, -5];
-## roots(c)
+## roots (c)
 ## @result{}  2.2361
 ## @result{} -2.2361
 ## @end group
@@ -70,7 +70,7 @@
 ## @ifnottex
 ## @math{+/- 2.2361}.
 ## @end ifnottex
-## @seealso{compan}
+## @seealso{poly, compan, fzero}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

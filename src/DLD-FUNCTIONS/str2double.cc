@@ -46,6 +46,14 @@ static std::istringstream&
 single_num (std::istringstream& is, double& num)
 {
   char c = is.peek ();
+
+  // Skip spaces.
+  while (isspace (c))
+    {
+      is.get ();
+      c = is.peek ();
+    }
+
   if (c == 'I')
     {
       // It's infinity.
@@ -54,7 +62,7 @@ single_num (std::istringstream& is, double& num)
       if (c1 == 'n' && c2 == 'f')
         {
           num = octave_Inf;
-          is.peek (); // Sets eof bit.
+          is.peek (); // May sets EOF bit.
         }
       else
         is.setstate (std::ios::failbit); // indicate that read has failed.
@@ -67,7 +75,7 @@ single_num (std::istringstream& is, double& num)
       if (c1 == 'A')
         {
           num = octave_NA;
-          is.peek (); // Sets eof bit.
+          is.peek (); // May set EOF bit.
         }
       else
         {
@@ -75,7 +83,7 @@ single_num (std::istringstream& is, double& num)
           if (c1 == 'a' && c2 == 'N')
             {
               num = octave_NaN;
-              is.peek (); // Sets eof bit.
+              is.peek (); // May set EOF bit.
             }
           else
             is.setstate (std::ios::failbit); // indicate that read has failed.
@@ -93,6 +101,14 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
   have_sign = imag = false;
 
   char c = is.peek ();
+
+  // Skip leading spaces.
+  while (isspace (c))
+    {
+      is.get ();
+      c = is.peek ();
+    }
+
   bool negative = false;
 
   // Accept leading sign.
@@ -104,17 +120,34 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
       have_sign = true;
     }
 
+  // Skip spaces after sign.
+  while (isspace (c))
+    {
+      is.get ();
+      c = is.peek ();
+    }
+
   // It's i*num or just i.
   if (is_imag_unit (c))
     {
-      c = is.get ();
       imag = true;
-      char cn = is.peek ();
-      if (cn == '*')
+      is.get ();
+      c = is.peek ();
+
+      // Skip spaces after imaginary unit.
+      while (isspace (c))
+        {
+          is.get ();
+          c = is.peek ();
+        }
+
+      if (c == '*')
         {
           // Multiplier follows, we extract it as a number.
           is.get ();
           single_num (is, num);
+          if (is.good ())
+            c = is.peek ();
         }
       else
         num = 1.0;
@@ -126,14 +159,31 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
       if (is.good ())
         {
           c = is.peek ();
+
+          // Skip spaces after number.
+          while (isspace (c))
+            {
+              is.get ();
+              c = is.peek ();
+            }
+
           if (c == '*')
             {
               is.get ();
-              c = is.get ();
+              c = is.peek ();
+
+              // Skip spaces after operator.
+              while (isspace (c))
+                {
+                  is.get ();
+                  c = is.peek ();
+                }
+
               if (is_imag_unit (c))
                 {
                   imag = true;
-                  is.peek ();
+                  is.get ();
+                  c = is.peek ();
                 }
               else
                 is.setstate (std::ios::failbit); // indicate that read has failed.
@@ -142,8 +192,18 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
             {
               imag = true;
               is.get ();
-              is.peek ();
+              c = is.peek ();
             }
+        }
+    }
+
+  if (is.good ())
+    {
+      // Skip trailing spaces.
+      while (isspace (c))
+        {
+          is.get ();
+          c = is.peek ();
         }
     }
 
@@ -181,14 +241,12 @@ str2double1 (const std::string& str_arg)
 
   std::string str = str_arg;
 
+  // FIXME -- removing all commas does too much...
   std::string::iterator se = str.end ();
-
-  // Remove commas (thousand separators) and spaces.
   se = std::remove (str.begin (), se, ',');
-  se = std::remove (str.begin (), se, ' ');
   str.erase (se, str.end ());
-
   std::istringstream is (str);
+
   double num;
   bool i1, i2, s1, s2;
 
@@ -244,38 +302,49 @@ repeated for each row.  Or @var{s} may be a cell array of strings, in which\n\
 case each element is converted and an array of the same dimensions is\n\
 returned.\n\
 \n\
-@code{str2double} can replace @code{str2num}, and it avoids the use of\n\
-@code{eval} on unknown data.\n\
+@code{str2double} returns NaN for elements of @var{s} which cannot be\n\
+converted.\n\
+\n\
+@code{str2double} can replace @code{str2num}, and it avoids the security\n\
+risk of using @code{eval} on unknown data.\n\
 @seealso{str2num}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 1)
+  if (args.length () != 1)
+    print_usage ();
+  else if (args(0).is_string ())
     {
-      if (args(0).is_string ())
+      if (args(0).rows () == 1 && args(0).ndims () == 2)
         {
-          if (args(0).rows () == 1 && args(0).ndims () == 2)
-            {
-              retval = str2double1 (args(0).string_value ());
-            }
-          else
-            {
-              const string_vector sv = args(0).all_strings ();
-              if (! error_state)
-                retval = sv.map<Complex> (str2double1);
-            }
-        }
-      else if (args(0).is_cellstr ())
-        {
-          Array<std::string> sa = args(0).cellstr_value ();
-          retval = sa.map<Complex> (str2double1);
+          retval = str2double1 (args(0).string_value ());
         }
       else
-        gripe_wrong_type_arg ("str2double", args(0));
+        {
+          const string_vector sv = args(0).all_strings ();
+          if (! error_state)
+            retval = sv.map<Complex> (str2double1);
+        }
+    }
+  else if (args(0).is_cell ())
+    {
+      const Cell cell = args(0).cell_value ();
+
+      if (! error_state)
+      {
+        ComplexNDArray output (cell.dims (), octave_NaN);
+        for (octave_idx_type i = 0; i < cell.numel (); i++)
+        {
+          if (cell(i).is_string ())
+            output(i) = str2double1 (cell(i).string_value ());
+        }
+        retval = output;
+      }
     }
   else
-    print_usage ();
+    retval = NDArray (args(0).dims (), octave_NaN);
+
 
   return retval;
 }
@@ -283,6 +352,8 @@ returned.\n\
 /*
 
 %!assert (str2double ("1"), 1)
+%!assert (str2double ("-.1e-5"), -1e-6)
+%!assert (str2double (char ("1", "2 3", "4i")), [1; NaN; 4i]);
 %!assert (str2double ("-.1e-5"), -1e-6)
 %!assert (str2double ("1,222.5"), 1222.5)
 %!assert (str2double ("i"), i)
@@ -293,6 +364,8 @@ returned.\n\
 %!assert (str2double ("1e-3 + i*.25"), 1e-3 + 0.25i)
 %!assert (str2double (["2 + j";"1.25e-3";"-05"]), [2+i; 1.25e-3; -5])
 %!assert (str2double ({"2 + j","1.25e-3","-05"}), [2+i, 1.25e-3, -5])
+%!assert (str2double (1), NaN)
+%!assert (str2double ("1 2 3 4"), NaN)
 %!assert (str2double ("Hello World"), NaN)
 %!assert (str2double ("NaN"), NaN)
 %!assert (str2double ("NA"), NA)
@@ -302,5 +375,8 @@ returned.\n\
 %!assert (str2double ("NaN + Inf*i"), complex (NaN, Inf))
 %!assert (str2double ("Inf - Inf*i"), complex (Inf, -Inf))
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
+%!assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i])
+%!assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
+%!assert (str2double (zeros(3,1,2)), NaN (3,1,2))
 
 */

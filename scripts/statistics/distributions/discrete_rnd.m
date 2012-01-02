@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1996-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,51 +18,29 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} discrete_rnd (@var{n}, @var{v}, @var{p})
-## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{sz})
-## Generate a row vector containing a random sample of size @var{n} from
-## the univariate distribution which assumes the values in @var{v} with
-## probabilities @var{p}.  @var{n} must be a scalar.
+## @deftypefn  {Function File} {} discrete_rnd (@var{v}, @var{p})
+## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{r})
+## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, @var{r}, @var{c}, @dots{})
+## @deftypefnx {Function File} {} discrete_rnd (@var{v}, @var{p}, [@var{sz}])
+## Return a matrix of random samples from the univariate distribution which
+## assumes the values in @var{v} with probabilities @var{p}.
 ##
-## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
-## @var{c} columns.  Or if @var{sz} is a vector, create a matrix of size
-## @var{sz}.
+## When called with a single size argument, return a square matrix with
+## the dimension specified.  When called with more than one scalar argument the
+## first two arguments are taken as the number of rows and columns and any
+## further arguments specify additional matrix dimensions.  The size may also
+## be specified with a vector of dimensions @var{sz}.
+## 
+## If no size arguments are given then the result matrix is the common size of
+## @var{v} and @var{p}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from a discrete distribution
 
-function rnd = discrete_rnd (v, p, r, c)
+function rnd = discrete_rnd (v, p, varargin)
 
-  if (nargin == 4)
-    if (! (isscalar (r) && (r > 0) && (r == round (r))))
-      error ("discrete_rnd: R must be a positive integer");
-    endif
-    if (! (isscalar (c) && (c > 0) && (c == round (c))))
-      error ("discrete_rnd: C must be a positive integer");
-    endif
-    sz = [r, c];
-  elseif (nargin == 3)
-    ## A potential problem happens here if all args are scalar, as
-    ## we can't distiguish between the command syntax. Thankfully this
-    ## case doesn't make much sense. So we assume the first syntax
-    ## if the first arg is scalar
-
-    if (isscalar (v))
-      sz = [1, floor(v)];
-      v = p;
-      p = r;
-    else
-      if (isscalar (r) && (r > 0))
-        sz = [r, r];
-      elseif (isvector(r) && all (r > 0))
-        sz = r(:)';
-      else
-        error ("discrete_rnd: R must be a positive integer or vector");
-      endif
-    endif
-  else
+  if (nargin < 2)
     print_usage ();
   endif
 
@@ -69,9 +48,57 @@ function rnd = discrete_rnd (v, p, r, c)
     error ("discrete_rnd: V must be a vector");
   elseif (! isvector (p) || (length (p) != length (v)))
     error ("discrete_rnd: P must be a vector with length (V) elements");
+  elseif (any (isnan (p)))
+    error ("discrete_rnd: P must not have any NaN elements");
   elseif (! (all (p >= 0) && any (p)))
-    error ("discrete_rnd: P must be a nonzero, nonnegative vector");
+    error ("discrete_rnd: P must be a nonzero, non-negative vector");
   endif
 
-  rnd = v (lookup (cumsum (p (1 : end-1)) / sum(p), rand (sz)) + 1);
+  if (nargin == 2)
+    sz = size (v);
+  elseif (nargin == 3)
+    if (isscalar (varargin{1}) && varargin{1} >= 0)
+      sz = [varargin{1}, varargin{1}];
+    elseif (isrow (varargin{1}) && all (varargin{1} >= 0))
+      sz = varargin{1};
+    else
+      error ("discrete_rnd: dimension vector must be row vector of non-negative integers");
+    endif
+  elseif (nargin > 3)
+    if (any (cellfun (@(x) (!isscalar (x) || x < 0), varargin)))
+      error ("discrete_rnd: dimensions must be non-negative integers");
+    endif
+    sz = [varargin{:}];
+  endif
+
+  rnd = v(lookup (cumsum (p(1:end-1)) / sum (p), rand (sz)) + 1);
+  rnd = reshape (rnd, sz);
+
 endfunction
+
+
+%!assert(size (discrete_rnd (1:2, 1:2, 3)), [3, 3]);
+%!assert(size (discrete_rnd (1:2, 1:2, [4 1])), [4, 1]);
+%!assert(size (discrete_rnd (1:2, 1:2, 4, 1)), [4, 1]);
+
+%% Test class of input preserved
+%!assert(class (discrete_rnd (1:2, 1:2)), "double");
+%!assert(class (discrete_rnd (single(1:2), 1:2)), "single");
+## FIXME: Maybe this should work, maybe it shouldn't.
+#%!assert(class (discrete_rnd (1:2, single(1:2))), "single");
+
+%% Test input validation
+%!error discrete_rnd ()
+%!error discrete_rnd (1)
+%!error discrete_rnd (1:2,1:2, -1)
+%!error discrete_rnd (1:2,1:2, ones(2))
+%!error discrete_rnd (1:2,1:2, [2 -1 2])
+%!error discrete_rnd (1:2,1:2, 1, ones(2))
+%!error discrete_rnd (1:2,1:2, 1, -1)
+%% test v,p verification
+%!error discrete_rnd (1, ones(2), ones(2,1))
+%!error discrete_rnd (1, ones(2,1), ones(1,1))
+%!error discrete_rnd (1, ones(2,1), [1 -1])
+%!error discrete_rnd (1, ones(2,1), [1 NaN])
+%!error discrete_rnd (1, ones(2,1), [0  0])
+

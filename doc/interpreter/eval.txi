@@ -48,8 +48,6 @@ that finds the root of a user-supplied function of one variable using
 Newton's method.
 
 @example
-@cindex Fordyce, A. P.
-@findex newtroot
 function result = newtroot (fname, x)
 
 # usage: newtroot (fname, x)

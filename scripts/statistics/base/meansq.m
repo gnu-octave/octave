@@ -40,7 +40,7 @@
 ## of each column.
 ##
 ## If the optional argument @var{dim} is given, operate along this dimension.
-## @seealso{var,std,moment}
+## @seealso{var, std, moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -52,7 +52,7 @@ function y = meansq (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("mean: X must be a numeric vector or matrix");
   endif
 
@@ -60,29 +60,28 @@ function y = meansq (x, dim)
   sz = size (x);
   if (nargin < 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
+    (dim = find (sz > 1, 1)) || (dim = 1);
+  else
+    if (!(isscalar (dim) && dim == fix (dim))
+        || !(1 <= dim && dim <= nd))
+      error ("mean: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  if (!(isscalar (dim) && dim == fix (dim))
-      || !(1 <= dim && dim <= nd))
-    error ("mean: DIM must be an integer and a valid dimension");
-  endif
-
-  y = sumsq (x, dim) / size (x, dim);
+  y = sumsq (x, dim) / sz(dim);
 
 endfunction
 
 
-%!assert(meansq (1:5), 11)
-%!assert(meansq (magic (4)), [94.5, 92.5, 92.5, 94.5])
+%!assert(meansq (1:5), 11);
+%!assert(meansq (single(1:5)), single(11));
+%!assert(meansq (magic (4)), [94.5, 92.5, 92.5, 94.5]);
+%!assert(meansq (magic (4), 2), [109.5; 77.5; 77.5; 109.5]);
 
 %% Test input validation
 %!error meansq ()
 %!error meansq (1, 2, 3)
-%!error kurtosis ([true true])
+%!error meansq (['A'; 'B']);
 %!error meansq (1, ones(2,2))
 %!error meansq (1, 1.5)
 %!error meansq (1, 0)

@@ -3,11 +3,174 @@ Summary of important user-visible changes for version 3.6:
 
  ** The PCRE library is now required to build Octave.
 
- ** New functions added.
+ ** Many of Octave's binary operators (.*, .^, +, -, ...) now perform
+    automatic broadcasting for array operations that allows you to use
+    operator notation instead of calling bsxfun or expanding arrays (and
+    unnecessarily wasting memory) with repmat or similar idioms.  For
+    example, to scale the columns of a matrix by the elements of a row
+    vector, you may now write
 
-    iscolumn
-    issrow
- 
+      rv .* M
+
+    In this expression, the number of elements of rv must match the
+    number of columns of M.  The following operators are affected:
+
+      plus      +  .+
+      minus     -  .-
+      times     .*
+      rdivide   ./
+      ldivide   .\
+      power     .^  .**
+      lt        <
+      le        <=
+      eq        ==
+      gt        >
+      ge        >=
+      ne        !=  ~=
+      and       &
+      or        |
+      atan2
+      hypot
+      max
+      min
+      mod
+      rem
+      xor
+
+    additionally, since the A op= B assginment operators are equivalent
+    to A = A op B, the following operators are also affected:
+
+      +=  -=  .+=  .-=  .*=  ./=  .\=  .^=  .**=  &=  |=
+
+    See the "Broadcasting" section in the new "Vectorization and Faster
+    Code Execution" chapter of the manual for more details.
+
+ ** Octave now features a profiler, thanks to the work of Daniel Kraft
+    under the Google Summer of Code mentorship program.  The manual has
+    been updated to reflect this addition.  The new user-visible
+    functions are profexplore, profile, and profshow.
+
+ ** Overhaul of statistical distribution functions
+
+    Functions now return "single" outputs for inputs of class "single".
+
+    75% reduction in memory usage through use of logical indexing.
+
+    Random sample functions now use the same syntax as rand() and accept
+    a comma separated list of dimensions or a dimension vector.
+
+    Functions have been made Matlab-compatible with regard to special
+    cases (probability on boundaries, probabilities for values outside
+    distribution, etc.).  This may cause subtle changes to existing
+    scripts.
+
+    negative binomial function has been extended to real, non-integer inputs.
+    discrete_inv() now returns v(1) for 0 instead of NaN.
+    nbincdf() recoded to use closed form solution with betainc().
+
+ ** strread, textscan, and textread have been completely revamped.
+
+    They now support nearly all Matlab functionality including:
+
+      * Matlab-compatible whitespace and delimiter defaults
+
+      * Matlab-compatible options: 'whitespace', treatasempty', format
+        string repeat count, user-specified comment style, uneven-length
+        output arrays, %n and %u conversion specifiers (provisionally)
+
+ ** All .m string functions have been modified for better performance or
+    greater Matlab compatibility.  Performance gains of 15X-30X have
+    been demonstrated.  Operations on cell array of strings no longer pay
+    quite as high a penalty as those on 2-D character arrays.
+
+      deblank:  Now requires character or cellstr input.
+
+      strtrim:  Now requires character or cellstr input.
+                No longer trims nulls ("\0") from string for Matlab
+                compatibility.
+
+      strmatch: Follows documentation precisely and ignores trailing spaces
+                in pattern and in string.  Note that this is documented
+                Matlab behavior but the implementation apparently does
+                not always follow it.
+
+      substr:   Now possible to specify a negative LEN option which
+                extracts to within LEN of the end of the string.
+
+      strtok:   Now accepts cellstr input.
+
+      base2dec, bin2dec, hex2dec:
+                Now accept cellstr inputs.
+
+      dec2base, dec2bin, dec2hex:
+                Now accept cellstr inputs.
+
+      index, rindex:
+                Now accept 2-D character array input.
+
+      strsplit: Now accepts 2-D character array input.
+
+ ** Geometry functions derived from Qhull (convhull, delaunay, voronoi)
+    have been revamped.  The options passed to the underlying qhull
+    command have been changed for better results or for Matlab
+    compatibility.
+
+      convhull: Default options are "Qt" for 2D, 3D, 4D inputs
+                Default options are "Qt Qx" for 5D and higher
+
+      delaunay: Default options are "Qt Qbb Qc Qz" for 2D and 3D inputs
+                Default options are "Qt Qbb Qc Qx" for 4D and higher
+
+      voronoi:  No default arguments
+
+ ** Date/Time functions updated.  Millisecond support with FFF format
+    string now supported.
+
+    datestr: Numerical formats 21, 22, 29 changed to match Matlab.
+             Now accepts cellstr inputs.
+
+ ** The following warning IDs have been removed:
+
+      Octave:associativity-change
+      Octave:complex-cmp-ops
+      Octave:empty-list-elements
+      Octave:fortran-indexing
+      Octave:precedence-change
+      
+ ** The warning ID Octave:string-concat has been renamed to
+    Octave:mixed-string-concat.
+
+ ** Octave now includes the following Matlab-compatible preference
+    functions:
+
+      addpref  getpref  ispref  rmpref  setpref
+
+ ** The following Matlab-compatible handle graphics functions have been
+    added:
+
+      guidata         uipanel        uitoolbar
+      guihandles      uipushtool     uiwait
+      uicontextmenu   uiresume       waitfor
+      uicontrol       uitoggletool
+
+    The uiXXX functions above are experimental.
+
+    Except for uiwait and uiresume, the uiXXX functions are not
+    supported with the the FLTK+OpenGL graphics toolkit.
+
+    The gnuplot graphics toolkit does not support any of the uiXXX
+    functions nor the waitfor function.
+
+ ** New keyword parfor (parallel for loop) is now recognized as a valid
+    keyword.  Implementation, however, is still mapped to an ordinary
+    for loop.
+
+ ** Other new functions added in 3.6.0:
+
+      is_dq_string    nthargout    usejava     
+      is_sq_string    python       waitbar
+      narginchk       recycle      zscore            
+    
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.2 and have been
@@ -29,8 +192,73 @@ Summary of important user-visible changes for version 3.6:
     be removed from Octave 3.10 (or whatever version is the second major
     release after 3.6):
 
-      is_duplicate_entry
-      
+      cut                is_duplicate_entry
+      cor                polyderiv
+      corrcoef           shell_cmd 
+      __error_text__     studentize
+      error_text         sylvester_matrix
+
+Summary of important user-visible changes for version 3.4.3:
+-----------------------------------------------------------
+
+ ** Octave 3.4.3 is a bug fixing release.
+     
+Summary of important user-visible changes for version 3.4.2:
+-----------------------------------------------------------
+
+ ** Octave 3.4.2 fixes some minor installation problems that affected
+    version 3.4.1.
+
+Summary of important user-visible changes for version 3.4.1:
+-----------------------------------------------------------
+
+ ** Octave 3.4.1 is primarily a bug fixing release.
+
+ ** IMPORTANT note about binary incompatibility in this release:
+
+    Binary compatibility for all 3.4.x releases was originally planned,
+    but this is impossible for the 3.4.1 release due to a bug in the way
+    shared libraries were built in Octave 3.4.0.  Because of this bug,
+    .oct files built for Octave 3.4.0 must be recompiled before they
+    will work with Octave 3.4.1.
+
+    Given that there would be binary incompatibilities with shared
+    libraries going from Octave 3.4.0 to 3.4.1, the following
+    incompatible changes were also made in this release:
+
+      * The Perl Compatible Regular Expression (PCRE) library is now
+        required to build Octave.
+
+      * Octave's libraries and .oct files are now installed in
+        subdirectories of $libdir instead of $libexecdir.
+
+    Any future Octave 3.4.x release versions should remain binary
+    compatible with Octave 3.4.1 as proper library versioning is now
+    being used as recommended by the libtool manual.
+
+ ** The following functions have been deprecated in Octave 3.4.1 and will
+    be removed from Octave 3.8 (or whatever version is the second major
+    release after 3.4):
+
+      cquad  is_duplicate_entry  perror  strerror
+
+ ** The following functions are new in 3.4.1:
+
+      colstyle  gmres  iscolumn  isrow  mgorth  nproc  rectangle
+
+ ** The get_forge_pkg function is now private.
+
+ ** The rectangle_lw, rectangle_sw, triangle_lw, and triangle_sw
+    functions are now private.
+
+ ** The logistic_regression_derivatives and logistic_regression_likelihood
+    functions are now private.
+
+ ** ChangeLog files in the Octave sources are no longer maintained
+    by hand.  Instead, there is a single ChangeLog file generated from
+    the Mercurial version control commit messages.  Older ChangeLog
+    information can be found in the etc/OLD-ChangeLogs directory in the
+    source distribution.
 
 Summary of important user-visible changes for version 3.4:
 ---------------------------------------------------------
@@ -162,7 +390,7 @@ Summary of important user-visible changes for version 3.4:
 
     Moreover, when unary operators occur in expressions, Octave will
     also try to do the operation in-place if it's argument is a
-    temporary expresssion.
+    temporary expression.
 
  ** The effect of comparison operators (<, >, <=, and >=) applied to
     complex numbers has changed to be consistent with the strict
@@ -251,6 +479,11 @@ Summary of important user-visible changes for version 3.4:
     of `strcat' has been vectorized and is now much more efficient when
     many strings are concatenated.  The `strcmpi' and `strncmpi'
     functions are now built-in functions, providing better performance.
+
+ ** 'str2double' now has a compiled implementation and the API conforms
+    to Matlab.  The additional Octave-specific features of returning a
+    boolean matrix indicating which elements were successfully converted
+    has been removed.
  
  ** Matlab-style ignoring input and output function arguments using
     tilde (~) is now supported.  Ignored output arguments may be
@@ -285,7 +518,7 @@ Summary of important user-visible changes for version 3.4:
     which is no longer a mere dummy.  Consequently, nzmax and nnz are no
     longer always equal in Octave.  Octave may also produce a matrix
     with nnz < nzmax as a result of other operations, so you should
-    consistently use nnz unless you really want to use nzmax (i.e. the
+    consistently use nnz unless you really want to use nzmax (i.e., the
     space allocated for nonzero elements).
 
     Sparse concatenation is also affected, and concatenating sparse 
@@ -322,7 +555,7 @@ Summary of important user-visible changes for version 3.4:
       pkg install -forge general
     
     will automatically download the latest release of the general
-    package and attempt to install it. No automatic resolving of
+    package and attempt to install it.  No automatic resolving of
     dependencies is provided.  Further,
 
       pkg list -forge
@@ -350,16 +583,15 @@ Summary of important user-visible changes for version 3.4:
     exponent where the exponent is a multiple of 3.
 
  ** The following functions are new in Octave 3.4:
-
-      accumdim    erfcx        nfields      pqpnonneg  uigetdir 
-      bitpack     fileread     nth_element  quadcc     uigetfile  
-      bitunpack   fminbnd      onCleanup    randi      uiputfile    
-      blkmm       fskipl       pbaspect     repelems   uimenu  
-      cbrt        ifelse       pie3         reset      whitebg
-      curl        ishermitian  powerset     rsf2csf    
-      chop        isindex      ppder        saveas          
-      daspect     luupdate     ppint        strread          
-      divergence  merge        ppjumps      textread 
+      accumdim    erfcx        nfields      pqpnonneg  uigetdir
+      bitpack     fileread     nth_element  quadcc     uigetfile
+      bitunpack   fminbnd      onCleanup    randi      uiputfile
+      blkmm       fskipl       pbaspect     repelems   uimenu           
+      cbrt        ifelse       pie3         reset      whitebg          
+      curl        ishermitian  powerset     rsf2csf            
+      chop        isindex      ppder        saveas             
+      daspect     luupdate     ppint        strread                     
+      divergence  merge        ppjumps      textread             
 
  ** Using the image function to view images with external programs such
     as display, xv, and xloadimage is no longer supported.  The
@@ -461,9 +693,9 @@ Summary of important user-visible changes for version 3.4:
     be removed from Octave 3.8 (or whatever version is the second major
     release after 3.4):
 
-      autocor  cellidx   gammai     krylovb    values
-      autocov  dispatch  glpkmex    replot
-      betai    fstat     is_global  saveimage
+      autocor  cellidx   gammai     krylovb  saveimage 
+      autocov  dispatch  glpkmex    perror   strerror  
+      betai    fstat     is_global  replot   values    
 
 Summary of important user-visible changes for version 3.2:
 ---------------------------------------------------------
@@ -687,7 +919,7 @@ Summary of important user-visible changes for version 3.2:
     The performance of sort has been improved, especially when sorting
     indices are requested.  An efficient built-in issorted
     implementation was added.  The sortrows function now uses a more
-    efficient algorithm, especially in the homegeneous case.  The lookup
+    efficient algorithm, especially in the homogeneous case.  The lookup
     function is now a built-in function performing a binary search,
     optimized for long runs of close elements.  Lookup also works with
     cell arrays of strings.
@@ -696,7 +928,7 @@ Summary of important user-visible changes for version 3.2:
 
     For some operations on ranges, Octave will attempt to keep the
     result as a range.  These include negation, adding a scalar,
-    subtracting a scalar, and multiplying by a scalar. Ranges with zero
+    subtracting a scalar, and multiplying by a scalar.  Ranges with zero
     increment are allowed and can be constructed using the built-in
     function `ones'.
 

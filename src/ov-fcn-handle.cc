@@ -164,7 +164,38 @@ octave_fcn_handle::do_multi_index_op (int nargout,
       else
         {
           str_ov_map::iterator it = overloads.find (dispatch_type);
-          if (it != overloads.end ())
+
+          if (it == overloads.end ())
+            {
+              // Try parent classes too.
+
+              std::list<std::string> plist
+                = symbol_table::parent_classes (dispatch_type);
+
+              std::list<std::string>::const_iterator pit = plist.begin ();
+
+              while (pit != plist.end ())
+                {
+                  std::string pname = *pit;
+
+                  std::string fnm = fcn_name ();
+
+                  octave_value ftmp = symbol_table::find_method (fnm, pname);
+
+                  if (ftmp.is_defined ())
+                    {
+                      set_overload (pname, ftmp);
+
+                      out_of_date_check (ftmp, pname, false);
+                      ov_fcn = ftmp;
+
+                      break;
+                    }
+
+                  pit++;
+                }
+            }
+          else
             {
               out_of_date_check (it->second, dispatch_type, false);
               ov_fcn = it->second;
@@ -553,7 +584,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
     swap_bytes<4> (&tmp);
 
   OCTAVE_LOCAL_BUFFER (char, ctmp1, tmp+1);
-  is.get (ctmp1, tmp+1, 0);
+  // is.get (ctmp1, tmp+1, 0); caused is.eof () to be true though
+  // effectively not reading over file end
+  is.read (ctmp1, tmp);
+  ctmp1[tmp] = 0;
   nm = std::string (ctmp1);
 
   if (! is)
@@ -578,7 +612,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
         swap_bytes<4> (&tmp);
 
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
-      is.get (ctmp2, tmp+1, 0);
+      // is.get (ctmp2, tmp+1, 0); caused is.eof () to be true though
+      // effectively not reading over file end
+      is.read (ctmp2, tmp);
+      ctmp2[tmp] = 0;
 
       unwind_protect_safe frame;
 
@@ -658,7 +695,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       success = set_fcn (octaveroot, fpath);
      }
 
- return success;
+  return success;
 }
 
 #if defined (HAVE_HDF5)
@@ -1722,7 +1759,8 @@ are ignored in the lookup.\n\
 }
 
 /*
-%!function y = testrecursionfunc (f, x, n)
+
+%!function y = __testrecursionfunc (f, x, n)
 %!  if (nargin < 3)
 %!    n = 0;
 %!  endif
@@ -1730,10 +1768,12 @@ are ignored in the lookup.\n\
 %!    y = f (x);
 %!  else
 %!    n++;
-%!    y = testrecursionfunc (@(x) f(2*x), x, n);
+%!    y = __testrecursionfunc (@(x) f(2*x), x, n);
 %!  endif
-%!test
-%! assert (testrecursionfunc (@(x) x, 1), 8);
+%!endfunction
+%!
+%!assert (__testrecursionfunc (@(x) x, 1), 8)
+
 */
 
 octave_fcn_binder::octave_fcn_binder (const octave_value& f,
@@ -1919,3 +1959,12 @@ octave_fcn_binder::do_multi_index_op (int nargout,
 
   return retval;
 }
+
+/*
+%!function r = __f (g, i)
+%!  r = g(i);
+%!endfunction
+%!test
+%! x = [1,2;3,4];
+%! assert (__f (@(i) x(:,i), 1), [1;3]);
+*/

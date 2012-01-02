@@ -264,7 +264,7 @@ operator += (MArray<T>& a, const MArray<T>& b)
   if (a.is_shared ())
     a = a + b;
   else
-    do_mm_inplace_op<T, T> (a, b, mx_inline_add2, "+=");
+    do_mm_inplace_op<T, T> (a, b, mx_inline_add2, mx_inline_add2, "+=");
   return a;
 }
 
@@ -275,7 +275,7 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   if (a.is_shared ())
     a = a - b;
   else
-    do_mm_inplace_op<T, T> (a, b, mx_inline_sub2, "-=");
+    do_mm_inplace_op<T, T> (a, b, mx_inline_sub2, mx_inline_sub2, "-=");
   return a;
 }
 
@@ -287,7 +287,7 @@ product_eq (MArray<T>& a, const MArray<T>& b)
   if (a.is_shared ())
     return a = product (a, b);
   else
-    do_mm_inplace_op<T, T> (a, b, mx_inline_mul2, ".*=");
+    do_mm_inplace_op<T, T> (a, b, mx_inline_mul2, mx_inline_mul2, ".*=");
   return a;
 }
 
@@ -298,7 +298,7 @@ quotient_eq (MArray<T>& a, const MArray<T>& b)
   if (a.is_shared ())
     return a = quotient (a, b);
   else
-    do_mm_inplace_op<T, T> (a, b, mx_inline_div2, "./=");
+    do_mm_inplace_op<T, T> (a, b, mx_inline_div2, mx_inline_div2, "./=");
   return a;
 }
 
@@ -339,7 +339,7 @@ MARRAY_SND_OP (/, mx_inline_div)
   MArray<T> \
   FCN (const MArray<T>& a, const MArray<T>& b) \
   { \
-    return do_mm_binary_op<T, T, T> (a, b, FN, #FCN); \
+    return do_mm_binary_op<T, T, T> (a, b, FN, FN, FN, #FCN); \
   }
 
 MARRAY_NDND_OP (operator +, +, mx_inline_add)

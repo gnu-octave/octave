@@ -33,7 +33,7 @@
 ## along the first dimension with 3 elements.  The optional argument
 ## @var{dim} forces the cross product to be calculated along
 ## the specified dimension.
-## @seealso{dot}
+## @seealso{dot, curl, divergence}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
@@ -90,3 +90,26 @@ function z = cross (x, y, dim)
   endif
 
 endfunction
+
+%!test
+%! x = [1 0 0];
+%! y = [0 1 0];
+%! r = [0 0 1];
+%! assert(cross(x, y), r, 2e-8);
+
+%!test
+%! x = [1 2 3];
+%! y = [4 5 6];
+%! r = [(2*6-3*5) (3*4-1*6) (1*5-2*4)];
+%! assert(cross(x, y), r, 2e-8);
+
+%!test
+%! x = [1 0 0; 0 1 0; 0 0 1];
+%! y = [0 1 0; 0 0 1; 1 0 0];
+%! r = [0 0 1; 1 0 0; 0 1 0];
+%! assert(cross(x, y, 2), r, 2e-8);
+%! assert(cross(x, y, 1), -r, 2e-8);
+
+%!error cross(0,0);
+%!error cross();
+

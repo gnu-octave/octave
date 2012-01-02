@@ -1,0 +1,230 @@
+-*- outline -*-
+
+This file attempts to describe the rules to use when hacking Octave.
+DO NOT put this file into the distribution.
+
+* Working from the repository
+
+These notes are intended to help people working on sources checked-out from
+the savannah source code repository.
+These requirements do not apply when building from a distribution tarball.
+
+** Requirements
+
+We've opted to keep only the highest-level sources in the repository.
+This eases our maintenance burden, (fewer merges, etc.), but imposes
+more requirements on anyone wishing to build from the just-checked-out
+sources.  For example, you have to use the latest stable versions of
+the maintainer tools we depend upon, including:
+
+  - Autoconf <http://www.gnu.org/software/autoconf/>
+  - Automake <http://www.gnu.org/software/automake/>
+  - Bison <http://www.gnu.org/software/bison/>
+  - Flex <http://www.gnu.org/software/flex/>
+  - Git <http://git-scm.com/>
+  - Gnulib <http://www.gnu.org/software/gnulib/>
+  - GNU Make <http://www.gnu.org/software/make/>
+  - Gzip <http://www.gnu.org/software/gzip/>
+  - Libtool <http://www.gnu.org/software/libtool/>
+  - Mercurial <http://mercurial.selenic.com/>
+  - Perl <http://www.cpan.org/>
+  - Rsync <http://samba.anu.edu.au/rsync/>
+  - Tar <http://www.gnu.org/software/tar/>
+
+Only building the initial full source tree will be a bit painful.
+Later, after synchronizing from the repository, a plain `make' should
+be sufficient.
+
+** First checkout
+
+Obviously, if you are reading these notes, you did manage to check out
+this package from the repository.  For the record, you will find all the
+relevant information on downloading sources at:
+
+  http://www.gnu.org/software/octave/download.html
+
+After checking out Octave, you will need to run the autogen.sh script:
+
+  $ ./autogen.sh
+
+This script will examine the source tree and generate some Makefile
+fragments and then runs the bootstrap script.  The bootstrap script comes
+from gnulib, but is kept in the Octave source archive.  It should be
+updated from the gnulib sources as necssary.  The bootstrap script takes
+care of checking out a copy of gnulib, running the autotools, and
+generating the configure script.
+
+If you have a copy of gnulib in some directory apart from the Octave
+source tree, then pass the name of the directory containing gnulib-tool
+to the bootstrap script using the option: 
+
+  --gnulib-srcdir=DIRNAME
+
+If you have downloaded gnulib directly, DIRNAME will be the directory where
+gnulib was unpacked.  If you have installed gnulib using a package 
+manager, DIRNAME is likely to be /usr/bin or /usr/local/bin(where the
+gnulib-tool script resides).
+
+By using an external gnulib directory, you can share a single gnulib source
+tree among several projects.  Regardless of the location of the gnulib
+sources, the bootstrap script will try to update them if it appears
+that they are checked out using git.  Otherwise, it is your
+responsibility to keep the gnulib sources up to date.  They change
+frequently, so the best way to stay current is probably to use git to
+do the job.
+
+Additional options besides --gnulib-srcdir can be passed to autogen.sh and
+they will be forwarded without modification to the bootstrap script.
+
+Once the autogen.sh and bootstrap scripts complete successfully, you may
+run
+
+  $ ./configure
+  $ make
+  $ make check
+
+At this point, there should be no difference between your local copy,
+and the master copy:
+
+  $ hg diff
+
+should output no difference.
+
+** Coding style
+
+The most important advice is to follow any conventions you detect in the
+file being edited.  In addition, Octave maintainers have written a lot
+on the subject.  See "Appendix C: Tips and Standards" and
+"Appendix D: Contributing Guidelines" in the PDF documentation.
+
+* Bugs and patches
+
+See the file BUGS in this directory for more guidance on reporting bugs
+and preparing patches.
+
+* Code layout
+
+An overview of the directory layout of Octave's source files:
+
+  doc           -- Texinfo documentation for Octave
+
+  examples      -- some example files
+
+  libcruft      -- various numerical libraries (mostly Fortran)
+    amos           * bessel functions
+    blas-xtra      * wrappers for blas functions used in Octave
+    daspk          * large scale differential algebraic equation solver
+    dasrt          * differential algebraic equation solver with root finding
+    dassl          * differential-algebraic system solver
+    fftpack        * subroutines for fast fourier transforms
+    lapack-xtra    * wrappers for lapack functions used in Octave
+    misc           * miscellaneous utilities
+    odepack        * ordinary differential equation solver
+    ordered-qz     * code for ordering eigenvalues for QZ factorization
+    quadpack       * subroutines for numerical integration
+    ranlib         * random number generators
+    slatec-err     * slatec error handling library
+    slatec-fn      * various special function subroutines
+
+  liboctave     -- the C++ interfaces to the numerical libraries and
+                   various OS facilities
+
+  scripts       -- functions written in the Octave language
+    audio          * play and record sound files (system dependent)
+    deprecated     * older deprecated functions
+    elfun          * elementary mathematical functions
+    @ftp           * ftp object class
+    general        * utility functions
+    geometry       * geometry algorithms
+    help           * help subsystem functions
+    image          * image processing
+    io             * input/output functions
+    linear-algebra * linear algebra stuff
+    miscellaneous  * stuff that doesn't fit anywhere else
+    optimization   * zero finders and minimizers
+    path           * functions for path manipulation
+    pkg            * the package manager
+    plot           * plotting functions
+    polynomial     * polynomial manipulation
+    prefs          * user-defined preferences
+    set            * set manipulation
+    signal         * signal processing
+    sparse         * sparse matrix support
+    specfun        * special mathematical functions
+    special-matrix * functions for generating special types of matrices
+    startup        * initialization functions
+    statistics     * statistical functions, distributions, and tests
+    strings        * character string manipulation
+    testfun        * unit testing
+    time           * time and date functions
+
+  src           -- the interpreter itself plus lots of infrastructure
+                   around it.  Octave's extensive octave_value class
+                   hierarchy for polymorphically handling all Octave
+                   types is defined here.  The built-in functions are
+                   also defined here, so if "help foo" tells you foo is
+                   built-in, its source will be somewhere in this
+                   directory.
+    DLD-FUNCTIONS  * Dynamically linked oct files.  If you see "help foo"
+                     telling you that foo is defined in foo.oct, then
+                     foo.cc will be found here and contain the source
+                     code.
+    OPERATORS      * Definitions and template instantiations for
+                     operators for all possible Octave type
+                     combinations.
+    TEMPLATE-INST  * Some C++ template instantiations.
+
+  test          -- tests for the interpreter
+    test_*.m       * fixed tests for the interpreter
+    fntests.m      * script to run function tests embedded in C++ and .m files
+
+
+----
+John W. Eaton
+jwe@octave.org
+
+
+Last updated: Tue Nov 22 20:51:34 PST 2011
+
+
+################################################################################
+
+Copyright (C) 2009,2011 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at
+your option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
+
+This file was adapted for Octave from the HACKING file that is part of
+GNU Bison, which contained the following Copyright notice:
+
+  Copyright (C) 2002, 2003, 2004, 2005, 2007, 2008, 2009
+  Free Software Foundation, Inc.
+
+  This file is part of GNU Bison.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.

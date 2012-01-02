@@ -39,29 +39,32 @@ along with Octave; see the file COPYING.  If not, see
 #include <unistd.h>
 
 #include "cmd-edit.h"
+#include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
 #include "oct-env.h"
-#include "quit.h"
-#include "str-vec.h"
 #include "oct-locbuf.h"
+#include "quit.h"
+#include "singleton-cleanup.h"
+#include "str-vec.h"
 
-#include <defaults.h>
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "file-io.h"
+#include "graphics.h"
 #include "input.h"
 #include "lex.h"
-#include <oct-conf.h>
+#include "oct-conf.h"
 #include "oct-hist.h"
 #include "oct-map.h"
 #include "oct-obj.h"
+#include "ov.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
-#include "ov.h"
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-stmt.h"
@@ -72,7 +75,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#include <version.h>
+#include "version.h"
 
 void (*octave_exit) (int) = ::exit;
 
@@ -95,6 +98,19 @@ bool octave_initialized = false;
 tree_statement_list *global_command = 0;
 
 octave_call_stack *octave_call_stack::instance = 0;
+
+void
+octave_call_stack::create_instance (void)
+{
+  instance = new octave_call_stack ();
+
+  if (instance)
+    {
+      instance->do_push (0, symbol_table::top_scope (), 0);
+
+      singleton_cleanup_list::add (cleanup_instance);
+    }
+}
 
 int
 octave_call_stack::do_current_line (void) const
@@ -570,11 +586,13 @@ main_loop (void)
             {
               if (global_command)
                 {
+                  // Use an unwind-protect cleanup function so that the
+                  // global_command list will be deleted in the event of
+                  // an interrupt.
+
+                  frame.add_fcn (cleanup_statement_list, &global_command);
+
                   global_command->accept (*current_evaluator);
-
-                  delete global_command;
-
-                  global_command = 0;
 
                   octave_quit ();
 
@@ -644,36 +662,12 @@ main_loop (void)
   return retval;
 }
 
-// Call a function with exceptions handled to avoid problems with
-// errors while shutting down.
-
-#define IGNORE_EXCEPTION(E) \
-  catch (E) \
-    { \
-      std::cerr << "error: ignoring " #E " while preparing to exit" << std::endl; \
-      recover_from_exception (); \
-    }
-
-#define SAFE_CALL(F, ARGS) \
-  try \
-    { \
-      F ARGS; \
-    } \
-  IGNORE_EXCEPTION (octave_interrupt_exception) \
-  IGNORE_EXCEPTION (octave_execution_exception) \
-  IGNORE_EXCEPTION (std::bad_alloc)
-
 // Fix up things before exiting.
 
 void
 clean_up_and_exit (int retval)
 {
   do_octave_atexit ();
-
-  // Clean up symbol table.
-  SAFE_CALL (symbol_table::cleanup, ());
-
-  SAFE_CALL (sysdep_cleanup, ())
 
   if (octave_exit)
     (*octave_exit) (retval == EOF ? 0 : retval);
@@ -704,9 +698,13 @@ Octave's exit status.  The default value is zero.\n\
 
       if (! error_state)
         {
-          quitting_gracefully = true;
+          // Instead of simply calling exit, we simulate an interrupt
+          // with a request to exit cleanly so that no matter where the
+          // call to quit occurs, we will run the unwind_protect stack,
+          // clear the OCTAVE_LOCAL_BUFFER allocations, etc. before
+          // exiting.
 
-          // Simulate interrupt.
+          quitting_gracefully = true;
 
           octave_interrupt_state = -1;
 
@@ -815,8 +813,8 @@ run_command_and_return_output (const std::string& cmd_str)
       else
         cmd_status = 127;
 
-      retval(0) = cmd_status;
       retval(1) = output_buf.str ();
+      retval(0) = cmd_status;
     }
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());
@@ -828,31 +826,36 @@ enum system_exec_type { et_sync, et_async };
 
 DEFUN (system, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{status}, @var{output}]} system (@var{string}, @var{return_output}, @var{type})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{output}]} shell_cmd (@var{string}, @var{return_output}, @var{type})\n\
+@deftypefn  {Built-in Function} {} system (\"@var{string}\")\n\
+@deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output})\n\
+@deftypefnx {Built-in Function} {} system (\"@var{string}\", @var{return_output}, @var{type})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{output}] =} system (@dots{})\n\
 Execute a shell command specified by @var{string}.\n\
-If the optional argument @var{type} is @code{\"async\"}, the process\n\
-is started in the background and the process id of the child process\n\
-is returned immediately.  Otherwise, the process is started, and\n\
-Octave waits until it exits.  If the @var{type} argument is omitted, a\n\
-value of @code{\"sync\"} is assumed.\n\
+If the optional argument @var{type} is \"async\", the process\n\
+is started in the background and the process ID of the child process\n\
+is returned immediately.  Otherwise, the child process is started and\n\
+Octave waits until it exits.  If the @var{type} argument is omitted, it\n\
+defaults to the value \"sync\".\n\
 \n\
-If the optional argument @var{return_output} is true and the subprocess\n\
-is started synchronously, or if @var{system} is called with one input\n\
-argument and one or more output arguments, the output from the command\n\
-is returned.  Otherwise, if the subprocess is executed synchronously, its\n\
-output is sent to the standard output.  To send the output of a command\n\
-executed with @code{system} through the pager, use a command like\n\
+If @var{system} is called with one or more output arguments, or if the\n\
+optional argument @var{return_output} is true and the subprocess is started\n\
+synchronously, then the output from the command is returned as a variable.  \n\
+Otherwise, if the subprocess is executed synchronously, its output is sent\n\
+to the standard output.  To send the output of a command executed with\n\
+@code{system} through the pager, use a command like\n\
 \n\
 @example\n\
-disp (system (cmd, 1));\n\
+@group\n\
+[output, text] = system (\"cmd\");\n\
+disp (text);\n\
+@end group\n\
 @end example\n\
 \n\
 @noindent\n\
 or\n\
 \n\
 @example\n\
-printf (\"%s\\n\", system (cmd, 1));\n\
+printf (\"%s\\n\", nthargout (2, \"system\", \"cmd\"));\n\
 @end example\n\
 \n\
 The @code{system} function can return two values.  The first is the\n\
@@ -869,6 +872,7 @@ variable @code{status} to the integer @samp{2}.\n\
 \n\
 For commands run asynchronously, @var{status} is the process id of the\n\
 command shell that is started to run the command.\n\
+@seealso{unix, dos}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -999,7 +1003,17 @@ command shell that is started to run the command.\n\
   return retval;
 }
 
-DEFALIAS (shell_cmd, system);
+/*
+%!test
+%! cmd = ls_command ();
+%! [status, output] = system (cmd);
+%! assert (status, 0);
+%! assert (ischar (output));
+%! assert (! isempty (output));
+
+%!error system ()
+%!error system (1, 2, 3)
+*/
 
 // FIXME -- this should really be static, but that causes
 // problems on some systems.
@@ -1016,11 +1030,11 @@ do_octave_atexit (void)
 
       octave_atexit_functions.pop_front ();
 
-      SAFE_CALL (reset_error_handler, ())
+      OCTAVE_SAFE_CALL (reset_error_handler, ());
 
-      SAFE_CALL (feval, (fcn, octave_value_list (), 0))
+      OCTAVE_SAFE_CALL (feval, (fcn, octave_value_list (), 0));
 
-      SAFE_CALL (flush_octave_stdout, ())
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
     }
 
   if (! deja_vu)
@@ -1030,23 +1044,33 @@ do_octave_atexit (void)
       // Do this explicitly so that destructors for mex file objects
       // are called, so that functions registered with mexAtExit are
       // called.
-      SAFE_CALL (clear_mex_functions, ())
+      OCTAVE_SAFE_CALL (clear_mex_functions, ());
 
-        SAFE_CALL (command_editor::restore_terminal_state, ())
+      OCTAVE_SAFE_CALL (command_editor::restore_terminal_state, ());
 
       // FIXME -- is this needed?  Can it cause any trouble?
-      SAFE_CALL (raw_mode, (0))
+      OCTAVE_SAFE_CALL (raw_mode, (0));
 
-      SAFE_CALL (octave_history_write_timestamp, ())
+      OCTAVE_SAFE_CALL (octave_history_write_timestamp, ());
 
-      if (Vsaving_history)
-        SAFE_CALL (command_history::clean_up_and_save, ())
+      if (! command_history::ignoring_entries ())
+        OCTAVE_SAFE_CALL (command_history::clean_up_and_save, ());
 
-      SAFE_CALL (close_files, ())
+      OCTAVE_SAFE_CALL (gh_manager::close_all_figures, ());
 
-      SAFE_CALL (cleanup_tmp_files, ())
+      OCTAVE_SAFE_CALL (gtk_manager::unload_all_toolkits, ());
 
-      SAFE_CALL (flush_octave_stdout, ())
+      OCTAVE_SAFE_CALL (close_files, ());
+
+      OCTAVE_SAFE_CALL (cleanup_tmp_files, ());
+
+      OCTAVE_SAFE_CALL (symbol_table::cleanup, ());
+
+      OCTAVE_SAFE_CALL (cleanup_parser, ());
+
+      OCTAVE_SAFE_CALL (sysdep_cleanup, ());
+
+      OCTAVE_SAFE_CALL (flush_octave_stdout, ());
 
       if (! quitting_gracefully && (interactive || forced_interactive))
         {
@@ -1055,8 +1079,12 @@ do_octave_atexit (void)
           // Yes, we want this to be separate from the call to
           // flush_octave_stdout above.
 
-          SAFE_CALL (flush_octave_stdout, ())
+          OCTAVE_SAFE_CALL (flush_octave_stdout, ());
         }
+
+      OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+
+      OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
     }
 }
 
@@ -1285,6 +1313,10 @@ specified option.\n\
       { false, "MAGICK_LDFLAGS", OCTAVE_CONF_MAGICK_LDFLAGS },
       { false, "MAGICK_LIBS", OCTAVE_CONF_MAGICK_LIBS },
       { false, "MKOCTFILE_DL_LDFLAGS", OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS },
+      { false, "OCTAVE_LINK_DEPS", OCTAVE_CONF_OCTAVE_LINK_DEPS },
+      { false, "OCTAVE_LINK_OPTS", OCTAVE_CONF_OCTAVE_LINK_OPTS },
+      { false, "OCT_LINK_DEPS", OCTAVE_CONF_OCT_LINK_DEPS },
+      { false, "OCT_LINK_OPTS", OCTAVE_CONF_OCT_LINK_OPTS },
       { false, "OPENGL_LIBS", OCTAVE_CONF_OPENGL_LIBS },
       { false, "PTHREAD_CFLAGS", OCTAVE_CONF_PTHREAD_CFLAGS },
       { false, "PTHREAD_LIBS", OCTAVE_CONF_PTHREAD_LIBS },
@@ -1298,7 +1330,6 @@ specified option.\n\
       { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
       { false, "READLINE_LIBS", OCTAVE_CONF_READLINE_LIBS },
       { false, "REGEX_LIBS", OCTAVE_CONF_REGEX_LIBS },
-      { false, "RLD_FLAG", OCTAVE_CONF_RLD_FLAG },
       { false, "SED", OCTAVE_CONF_SED },
       { false, "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS },
       { false, "SHLEXT", OCTAVE_CONF_SHLEXT },
@@ -1438,6 +1469,15 @@ specified option.\n\
 
   return retval;
 }
+
+/*
+%!error octave_config_info (1, 2);
+%!assert (ischar (octave_config_info ("version")));
+%!test
+%! x = octave_config_info ();
+%! assert (isstruct (x));
+%! assert (! isempty (x));
+*/
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)
 

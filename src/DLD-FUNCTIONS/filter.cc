@@ -64,6 +64,10 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   octave_idx_type ab_len = a_len > b_len ? a_len : b_len;
 
+  // FIXME: The two lines below should be unecessary because
+  //        this template is called with a and b as column vectors
+  //        already.  However the a.resize line is currently (2011/04/26)
+  //        necessary to stop bug #33164.
   b.resize (dim_vector (ab_len, 1), 0.0);
   if (a_len > 1)
     a.resize (dim_vector (ab_len, 1), 0.0);
@@ -100,16 +104,17 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
       return y;
     }
 
-  octave_idx_type si_dim = 0;
-  for (octave_idx_type i = 0; i < x_dims.length (); i++)
+  for (octave_idx_type i = 1; i < dim; i++)
     {
-      if (i == dim)
-        continue;
-
-      if (x_dims(i) == 1)
-        continue;
-
-      if (si_dims(++si_dim) != x_dims(i))
+      if (si_dims(i) != x_dims(i-1))
+        {
+          error ("filter: dimensionality of SI and X must agree");
+          return y;
+        }
+    }
+  for (octave_idx_type i = dim+1; i < x_dims.length (); i++)
+    {
+      if (si_dims(i) != x_dims(i))
         {
           error ("filter: dimensionality of SI and X must agree");
           return y;
@@ -452,18 +457,9 @@ $$\n\
                 }
               else
                 {
-                  dim_vector si_dims = args (3).dims ();
-                  bool si_is_vector = true;
-                  for (int i = 0; i < si_dims.length (); i++)
-                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-                      {
-                        si_is_vector = false;
-                        break;
-                      }
-
                   si = args(3).float_complex_array_value ();
 
-                  if (si_is_vector)
+                  if (si.is_vector () && x.is_vector ())
                     si = si.reshape (dim_vector (si.numel (), 1));
                 }
 
@@ -509,18 +505,9 @@ $$\n\
                 }
               else
                 {
-                  dim_vector si_dims = args (3).dims ();
-                  bool si_is_vector = true;
-                  for (int i = 0; i < si_dims.length (); i++)
-                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-                      {
-                        si_is_vector = false;
-                        break;
-                      }
-
                   si = args(3).complex_array_value ();
 
-                  if (si_is_vector)
+                  if (si.is_vector () && x.is_vector ())
                     si = si.reshape (dim_vector (si.numel (), 1));
                 }
 
@@ -569,18 +556,9 @@ $$\n\
                 }
               else
                 {
-                  dim_vector si_dims = args (3).dims ();
-                  bool si_is_vector = true;
-                  for (int i = 0; i < si_dims.length (); i++)
-                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-                      {
-                        si_is_vector = false;
-                        break;
-                      }
-
                   si = args(3).float_array_value ();
 
-                  if (si_is_vector)
+                  if (si.is_vector () && x.is_vector ())
                     si = si.reshape (dim_vector (si.numel (), 1));
                 }
 
@@ -626,18 +604,9 @@ $$\n\
                 }
               else
                 {
-                  dim_vector si_dims = args (3).dims ();
-                  bool si_is_vector = true;
-                  for (int i = 0; i < si_dims.length (); i++)
-                    if (si_dims(i) != 1 && si_dims(i) < si_dims.numel ())
-                      {
-                        si_is_vector = false;
-                        break;
-                      }
-
                   si = args(3).array_value ();
 
-                  if (si_is_vector)
+                  if (si.is_vector () && x.is_vector ())
                     si = si.reshape (dim_vector (si.numel (), 1));
                 }
 
@@ -694,58 +663,71 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int
 %!test
 %!  a = [1 1];
 %!  b = [1 1];
-%!  x = zeros(1,10); x(1) = 1;
-%!  assert(all(filter(b,   [1], x  ) == [1 1 0 0 0 0 0 0 0 0]  ))
-%!  assert(all(filter(b,   [1], x.') == [1 1 0 0 0 0 0 0 0 0].'))
-%!  assert(all(filter(b.', [1], x  ) == [1 1 0 0 0 0 0 0 0 0]  ))
-%!  assert(all(filter(b.', [1], x.') == [1 1 0 0 0 0 0 0 0 0].'))
-%!  assert(all(filter([1], a,   x  ) == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1]  ))
-%!  assert(all(filter([1], a,   x.') == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1].'))
-%!  assert(all(filter([1], a.', x  ) == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1]  ))
-%!  assert(all(filter([1], a.', x.') == [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1].'))
-%!  assert(all(filter(b,   a,   x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
-%!  assert(all(filter(b.', a,   x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
-%!  assert(all(filter(b,   a.', x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
-%!  assert(all(filter(b.', a,   x  ) == [1 0 0 0 0 0 0 0 0 0]  ))
-%!  assert(all(filter(b,   a,   x.') == [1 0 0 0 0 0 0 0 0 0].'))
-%!  assert(all(filter(b.', a,   x.') == [1 0 0 0 0 0 0 0 0 0].'))
-%!  assert(all(filter(b,   a.', x.') == [1 0 0 0 0 0 0 0 0 0].'))
-%!  assert(all(filter(b.', a,   x.') == [1 0 0 0 0 0 0 0 0 0].'))
+%!  x = zeros (1,10); x(1) = 1;
+%!  assert(filter(b,   [1], x  ), [1 1 0 0 0 0 0 0 0 0]);
+%!  assert(filter(b,   [1], x.'), [1 1 0 0 0 0 0 0 0 0].');
+%!  assert(filter(b.', [1], x  ), [1 1 0 0 0 0 0 0 0 0]  );
+%!  assert(filter(b.', [1], x.'), [1 1 0 0 0 0 0 0 0 0].');
+%!  assert(filter([1], a,   x  ), [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1]  );
+%!  assert(filter([1], a,   x.'), [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1].');
+%!  assert(filter([1], a.', x  ), [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1]  );
+%!  assert(filter([1], a.', x.'), [+1 -1 +1 -1 +1 -1 +1 -1 +1 -1].');
+%!  assert(filter(b,   a,   x  ), [1 0 0 0 0 0 0 0 0 0]  );
+%!  assert(filter(b.', a,   x  ), [1 0 0 0 0 0 0 0 0 0]  );
+%!  assert(filter(b,   a.', x  ), [1 0 0 0 0 0 0 0 0 0]  );
+%!  assert(filter(b.', a,   x  ), [1 0 0 0 0 0 0 0 0 0]  );
+%!  assert(filter(b,   a,   x.'), [1 0 0 0 0 0 0 0 0 0].');
+%!  assert(filter(b.', a,   x.'), [1 0 0 0 0 0 0 0 0 0].');
+%!  assert(filter(b,   a.', x.'), [1 0 0 0 0 0 0 0 0 0].');
+%!  assert(filter(b.', a,   x.'), [1 0 0 0 0 0 0 0 0 0].');
 %!
 %!test
 %!  r = sqrt(1/2)*(1+i);
 %!  a = a*r;
 %!  b = b*r;
-%!  assert(all(filter(b, [1], x   ) == r*[1 1 0 0 0 0 0 0 0 0]   ))
-%!  assert(all(filter(b, [1], r*x ) == r*r*[1 1 0 0 0 0 0 0 0 0] ))
-%!  assert(all(filter(b, [1], x.' ) == r*[1 1 0 0 0 0 0 0 0 0].' ))
-%!  assert(all(filter(b, a,   x   ) ==   [1 0 0 0 0 0 0 0 0 0]   ))
-%!  assert(all(filter(b, a,   r*x ) == r*[1 0 0 0 0 0 0 0 0 0]   ))
+%!  assert(filter(b, [1], x   ), r*[1 1 0 0 0 0 0 0 0 0]   );
+%!  assert(filter(b, [1], r*x ), r*r*[1 1 0 0 0 0 0 0 0 0] );
+%!  assert(filter(b, [1], x.' ), r*[1 1 0 0 0 0 0 0 0 0].' );
+%!  assert(filter(b, a,   x   ),   [1 0 0 0 0 0 0 0 0 0]   );
+%!  assert(filter(b, a,   r*x ), r*[1 0 0 0 0 0 0 0 0 0]   );
 %!
 %!shared a, b, x, y, so
 %!test
-%!  a = [1,1]; b=[1,1];
-%!  x = zeros(1,10); x(1) = 1;
-%!  [y, so] = filter(b, [1], x, [-1]);
-%!  assert(all(y == [0 1 0 0 0 0 0 0 0 0]))
-%!  assert(so,0)
+%!  a = [1,1]; b = [1,1];
+%!  x = zeros (1,10); x(1) = 1;
+%!  [y, so] = filter (b, [1], x, [-1]);
+%!  assert(y, [0 1 0 0 0 0 0 0 0 0]);
+%!  assert(so,0);
 %!
 %!test
-%!  x  = zeros(10,3); x(1,1)=-1; x(1,2)=1;
-%!  y0 = zeros(10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
-%!  y = filter(b,[1],x);
-%!  assert(all(all(y==y0)))
+%!  x  = zeros (10,3); x(1,1)=-1; x(1,2)=1;
+%!  y0 = zeros (10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
+%!  y = filter (b, [1], x);
+%!  assert(y,y0);
 %!
 %!test
 %!  a = [1,1]; b=[1,1];
-%!  x = zeros(4,4,2); x(1,1:4,1) = +1; x(1,1:4,2) = -1;
-%!  y0 = zeros(4,4,2); y0(1:2,1:4,1) = +1; y0(1:2,1:4,2) = -1;
-%!  y = filter(b, [1], x);
-%!  assert(all(all(all(y==y0))))
+%!  x = zeros (4,4,2); x(1,1:4,1) = +1; x(1,1:4,2) = -1;
+%!  y0 = zeros (4,4,2); y0(1:2,1:4,1) = +1; y0(1:2,1:4,2) = -1;
+%!  y = filter (b, [1], x);
+%!  assert(y, y0);
 %!
-%!assert(filter(1,ones(10,1)/10,[]), [])
-%!assert(filter(1,ones(10,1)/10,zeros(0,10)), zeros(0,10))
-
-%%  Should put some tests of the "DIM" parameter in here.
+%!assert(filter (1, ones(10,1)/10, []), []);
+%!assert(filter (1, ones(10,1)/10, zeros(0,10)), zeros(0,10));
+%!assert(filter (1, ones(10,1)/10, single (1:5)), repmat (single (10), 1, 5));
+%% Test using initial conditions
+%!assert(filter([1, 1, 1], [1, 1], [1 2], [1, 1]), [2 2]);
+%!assert(filter([1, 1, 1], [1, 1], [1 2], [1, 1]'), [2 2]);
+%!assert(filter([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]), [5 7; 6 10; 14 18]);
+%!error (filter([1, 3], [1], [1 2; 3 4; 5 6], [4, 5]'));
+%!assert(filter([1, 3, 2], [1], [1 2; 3 4; 5 6], [1 0 0; 1 0 0], 2), [2 6; 3 13; 5 21]);
+%% Test of DIM parameter
+%!test
+%! x = ones (2, 1, 3, 4);
+%! x(1,1,:,:) = [1 2 3 4; 5 6 7 8; 9 10 11 12];
+%! y0 = [1 1 6 2 15 3 2 1 8 2 18 3 3 1 10 2 21 3 4 1 12 2 24 3];
+%! y0 = reshape (y0, size (x));
+%! y = filter([1 1 1], 1, x, [], 3);
+%! assert (y, y0);
 
 */

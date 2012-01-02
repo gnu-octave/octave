@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,16 +19,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} kolmogorov_smirnov_cdf (@var{x}, @var{tol})
-## Return the CDF at @var{x} of the Kolmogorov-Smirnov distribution,
+## Return the cumulative distribution function (CDF) at @var{x} of the 
+## Kolmogorov-Smirnov distribution,
 ## @tex
-## $$ Q(x) = \sum_{k=-\infty}^\infty (-1)^k \exp(-2 k^2 x^2) $$
+## $$ Q(x) = \sum_{k=-\infty}^\infty (-1)^k \exp (-2 k^2 x^2) $$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
 ##          Inf
-## Q(x) =   SUM    (-1)^k exp(-2 k^2 x^2)
+## Q(x) =   SUM    (-1)^k exp (-2 k^2 x^2)
 ##        k = -Inf
 ## @end group
 ## @end example
@@ -61,8 +63,7 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
     endif
   endif
 
-  n = numel (x);
-  if (n == 0)
+  if (numel (x) == 0)
     error ("kolmogorov_smirnov_cdf: X must not be empty");
   endif
 
@@ -70,10 +71,10 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
 
   ind = find (x > 0);
   if (length (ind) > 0)
-    if (size(ind,2) < size(ind,1))
+    if (columns (ind) < rows (ind))
       y = x(ind.');
     else
-      y   = x(ind);
+      y = x(ind);
     endif
     K   = ceil (sqrt (- log (tol) / 2) / min (y));
     k   = (1:K)';
@@ -84,3 +85,11 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
   endif
 
 endfunction
+
+
+%% Test input validation
+%!error kolmogorov_smirnov_cdf ()
+%!error kolmogorov_smirnov_cdf (1,2,3)
+%!error kolmogorov_smirnov_cdf (1, ones(2))
+%!error kolmogorov_smirnov_cdf ([], 1)
+

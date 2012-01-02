@@ -95,6 +95,8 @@ private:
 
   static octave_sparse_params *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   void do_defaults (void);
 
   void do_tight (void);

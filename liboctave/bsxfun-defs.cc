@@ -69,8 +69,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
   R *rvec = retval.fortran_vec ();
 
   // Fold the common leading dimensions.
-  int start;
-  octave_idx_type ldr = 1;
+  octave_idx_type start, ldr = 1;
   for (start = 0; start < nd; start++)
     {
       if (dvx(start) != dvy(start))
@@ -98,7 +97,7 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
         }
       dim_vector cdvx = dvx.cumulative (), cdvy = dvy.cumulative ();
       // Nullify singleton dims to achieve a spread effect.
-      for (int i = std::max (start, 1); i < nd; i++)
+      for (int i = std::max (start, octave_idx_type (1)); i < nd; i++)
         {
           if (dvx(i) == 1)
             cdvx(i-1) = 0;
@@ -132,6 +131,77 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
     }
 
   return retval;
+}
+
+template <class R, class X>
+void
+do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
+                      void (*op_vv) (size_t, R *, const X *),
+                      void (*op_vs) (size_t, R *, X))
+{
+  dim_vector dvr = r.dims (), dvx = x.dims ();
+  octave_idx_type nd = r.ndims ();
+  dvx.redim (nd);
+
+  const X* xvec = x.fortran_vec ();
+  R* rvec = r.fortran_vec ();
+
+  // Fold the common leading dimensions.
+  octave_idx_type start, ldr = 1;
+  for (start = 0; start < nd; start++)
+    {
+      if (dvr(start) != dvx(start))
+        break;
+      ldr *= dvr(start);
+    }
+
+  if (r.is_empty ())
+    ; // do nothing
+  else if (start == nd)
+    op_vv (r.numel (), rvec, xvec);
+  else
+    {
+      // Determine the type of the low-level loop.
+      bool xsing = false;
+      if (ldr == 1)
+        {
+          xsing = dvx(start) == 1;
+          if (xsing)
+            {
+              ldr *= dvr(start) * dvx(start);
+              start++;
+            }
+        }
+
+      dim_vector cdvx = dvx.cumulative ();
+      // Nullify singleton dims to achieve a spread effect.
+      for (int i = std::max (start, octave_idx_type (1)); i < nd; i++)
+        {
+          if (dvx(i) == 1)
+            cdvx(i-1) = 0;
+        }
+
+      octave_idx_type niter = dvr.numel (start);
+      // The index array.
+      OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, idx, nd, 0);
+      for (octave_idx_type iter = 0; iter < niter; iter++)
+        {
+          octave_quit ();
+
+          // Compute indices.
+          // FIXME: performance impact noticeable?
+          octave_idx_type xidx = cdvx.cum_compute_index (idx);
+          octave_idx_type ridx = dvr.compute_index (idx);
+
+          // Apply the low-level loop.
+          if (xsing)
+            op_vs (ldr, rvec + ridx, xvec[xidx]);
+          else
+            op_vv (ldr, rvec + ridx, xvec + xidx);
+
+          dvr.increment_index (idx + start, start);
+        }
+    }
 }
 
 #define BSXFUN_OP_DEF(OP, ARRAY) \
@@ -173,5 +243,12 @@ boolNDArray bsxfun_ ## OP (const ARRAY& x, const ARRAY& y)
   BSXFUN_REL_DEF_MXLOOP (le, ARRAY, mx_inline_le) \
   BSXFUN_REL_DEF_MXLOOP (gt, ARRAY, mx_inline_gt) \
   BSXFUN_REL_DEF_MXLOOP (ge, ARRAY, mx_inline_ge)
+
+//For bsxfun power with mixed integer/float types
+#define BSXFUN_POW_MIXED_MXLOOP(INT_TYPE)                              \
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, NDArray, mx_inline_pow) \
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, INT_TYPE, FloatNDArray, mx_inline_pow)\
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, NDArray, INT_TYPE,  mx_inline_pow) \
+  BSXFUN_OP2_DEF_MXLOOP (pow, INT_TYPE, FloatNDArray, INT_TYPE, mx_inline_pow)
 
 #endif

@@ -17,32 +17,26 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __axis_label__ (@var{caller}, @var{txt}, @dots{})
+## @deftypefn {Function File} {} __axis_label__ (@var{caller}, @var{h}, @var{txt}, @dots{})
 ## Undocumented internal function.
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = __axis_label__ (caller, txt, varargin)
+function retval = __axis_label__ (ah, caller, txt, varargin)
 
-  if (ischar (txt))
-    ca = gca ();
+  h = get (ah, caller);
 
-    h = get (gca (), caller);
+  set (h, "fontangle", get (ah, "fontangle"),
+       "fontname", get (ah, "fontname"),
+       "fontsize", get (ah, "fontsize"),
+       "fontunits", get (ah, "fontunits"),
+       "fontweight", get (ah, "fontweight"),
+       "string", txt,
+       varargin{:});
 
-    set (h, "fontangle", get (ca, "fontangle"),
-         "fontname", get (ca, "fontname"),
-         "fontsize", get (ca, "fontsize"),
-         "fontunits", get (ca, "fontunits"),
-         "fontweight", get (ca, "fontweight"),
-         "string", txt,
-         varargin{:});
-
-    if (nargout > 0)
-      retval = h;
-    endif
-  else
-    error ("%s: expecting first argument to be character string", caller);
+  if (nargout > 0)
+    retval = h;
   endif
 
 endfunction

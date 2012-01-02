@@ -45,11 +45,13 @@ public:
     {
       simple_end,
       classdef_end,
+      enumeration_end,
       events_end,
       for_end,
       function_end,
       if_end,
       methods_end,
+      parfor_end,
       properties_end,
       switch_end,
       while_end,

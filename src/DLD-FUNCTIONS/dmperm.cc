@@ -191,7 +191,7 @@ Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
 DEFUN_DLD (sprank, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} =} sprank (@var{S})\n\
-@cindex Structural Rank\n\
+@cindex structural rank\n\
 \n\
 Calculate the structural rank of the sparse matrix @var{S}.  Note that\n\
 only the structure of the matrix is used in this calculation based on\n\

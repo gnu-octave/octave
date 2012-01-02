@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} setappdata (@var{h}, @var{name}, @var{value})
-## Sets the named application data to @var{value} for the object(s) with
+## Set the named application data to @var{value} for the object(s) with
 ## handle(s) @var{h}.  If the application data with the specified name does
 ## not exist, it is created.
 ## @end deftypefn
@@ -33,7 +33,7 @@ function setappdata (h, varargin)
   for nh = 1:numel(h)
     if (! isfield (get (h(nh)), "__appdata__"))
       addproperty ("__appdata__", h(nh), "any", struct ());
-    end
+    endif
     appdata = get (h(nh), "__appdata__");
     for narg = 1:2:numel(varargin)
       if (iscellstr (varargin{narg}))

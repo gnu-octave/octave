@@ -21,7 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} fminunc (@var{fcn}, @var{x0})
 ## @deftypefnx {Function File} {} fminunc (@var{fcn}, @var{x0}, @var{options})
-## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}]} = fminunc (@var{fcn}, @dots{})
+## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
@@ -59,7 +59,7 @@
 ## Last relative step size was less that TolX.
 ##
 ## @item 3
-## Last relative decrease in func value was less than TolF.
+## Last relative decrease in function value was less than TolF.
 ##
 ## @item 0
 ## Iteration limit exceeded.
@@ -77,7 +77,8 @@
 ## @seealso{fminbnd, optimset}
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("fminunc");
+## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
+## PKG_ADD: [~] = __all_opts__ ("fminunc");
 
 function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struct ())
 
@@ -358,17 +359,18 @@ function [fx, gx] = guarded_eval (fun, x)
   endif
 endfunction
 
-%!function f = rosenb (x)
+%!function f = __rosenb (x)
 %!  n = length (x);
 %!  f = sumsq (1 - x(1:n-1)) + 100 * sumsq (x(2:n) - x(1:n-1).^2);
+%!endfunction
 %!test
-%! [x, fval, info, out] = fminunc (@rosenb, [5, -5]);
+%! [x, fval, info, out] = fminunc (@__rosenb, [5, -5]);
 %! tol = 2e-5;
 %! assert (info > 0);
 %! assert (x, ones (1, 2), tol);
 %! assert (fval, 0, tol);
 %!test
-%! [x, fval, info, out] = fminunc (@rosenb, zeros (1, 4));
+%! [x, fval, info, out] = fminunc (@__rosenb, zeros (1, 4));
 %! tol = 2e-5;
 %! assert (info > 0);
 %! assert (x, ones (1, 4), tol);

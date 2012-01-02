@@ -66,26 +66,6 @@ public:
 
   ~octave_value_list (void) { }
 
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
-
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
-
-  // FIXME -- without this, I have errors with the stack of
-  // octave_value_list objects in ov-usr-fcn.h.  Why?
-  void *operator new (size_t size, void *p)
-    { return ::operator new (size, p); }
-
-  void operator delete (void *p, void *)
-    {
-#if defined (HAVE_PLACEMENT_DELETE)
-      ::operator delete (p, static_cast<void *> (0));
-#else
-      ::operator delete (p);
-#endif
-    }
-
   octave_value_list& operator = (const octave_value_list& obj)
     {
       if (this != &obj)
@@ -167,8 +147,6 @@ public:
 
 private:
 
-  static octave_allocator allocator;
-
   Array<octave_value> data;
 
   // This list of strings can be used to tag each element of data with
@@ -185,6 +163,8 @@ private:
 
   const octave_value& elem (octave_idx_type n) const
     { return data(n); }
+
+  DECLARE_OCTAVE_ALLOCATOR
 };
 
 #endif

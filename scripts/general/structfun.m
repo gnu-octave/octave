@@ -106,7 +106,7 @@ function varargout = structfun (func, S, varargin);
   [varargout{:}] = cellfun (func, struct2cell (S), varargin{:});
 
   if (! uniform_output)
-    varargout = cellfun (@cell2struct, varargout, {fieldnames(S)}, {1}, uo_str, false);
+    varargout = cellfun ("cell2struct", varargout, {fieldnames(S)}, {1}, uo_str, false);
   endif
 endfunction
 
@@ -120,9 +120,10 @@ endfunction
 %!                "UniformOutput", false);
 %! assert (o, l);
 
-%!function [a, b] = twoouts (x)
+%!function [a, b] = __twoouts (x)
 %! a = x + x;
 %! b = x * x;
+%!endfunction
 
 %!test
 %! s = struct ("a", {1, 2, 3}, "b", {4, 5, 6});
@@ -132,7 +133,7 @@ endfunction
 %! d(1:2, 1, 1) = [1; 16];
 %! d(1:2, 1, 2) = [4; 25];
 %! d(1:2, 1, 3) = [9; 36];
-%! [aa, bb] = structfun(@twoouts, s);
+%! [aa, bb] = structfun(@__twoouts, s);
 %! assert(aa, c);
 %! assert(bb, d);
 
@@ -140,6 +141,6 @@ endfunction
 %! s = struct ("a", {1, 2, 3}, "b", {4, 5, 6});
 %! c = struct ("a", {2, 4, 6}, "b", {8, 10, 12});
 %! d = struct ("a", {1, 4, 9}, "b", {16, 25, 36});
-%! [aa, bb] = structfun(@twoouts, s, "UniformOutput", false);
+%! [aa, bb] = structfun(@__twoouts, s, "UniformOutput", false);
 %! assert(aa, c);
 %! assert(bb, d);

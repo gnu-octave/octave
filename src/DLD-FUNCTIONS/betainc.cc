@@ -35,10 +35,10 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (betainc, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} betainc (@var{x}, @var{a}, @var{b})\n\
-Return the incomplete Beta function,\n\
+Return the regularized incomplete Beta function,\n\
 @tex\n\
 $$\n\
- \\beta (x, a, b) = B (a, b)^{-1} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
+ I (x, a, b) = {1 \\over {B (a, b)}} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
 $$\n\
 @end tex\n\
 @ifnottex\n\
@@ -46,17 +46,18 @@ $$\n\
 \n\
 @smallexample\n\
 @group\n\
-                                      x\n\
-                                     /\n\
-betainc (x, a, b) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.\n\
-                                     /\n\
-                                  t=0\n\
+@c spacing appears odd here, but is correct after Makeinfo\n\
+                                     x\n\
+                          1         /\n\
+betainc (x, a, b) = -----------    | t^(a-1) (1-t)^(b-1) dt.\n\
+                     beta (a, b)    /\n\
+                                 t=0\n\
 @end group\n\
 @end smallexample\n\
 \n\
 @end ifnottex\n\
 \n\
-If x has more than one component, both @var{a} and @var{b} must be\n\
+If @var{x} has more than one component, both @var{a} and @var{b} must be\n\
 scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of\n\
 compatible dimensions.\n\
 @end deftypefn")
@@ -321,12 +322,12 @@ compatible dimensions.\n\
 %! assert(v3, v4, sqrt(eps ('single')));
 
 %% test/octave.test/arith/betainc-2.m
-%!error <Invalid call to betainc.*> betainc();
+%!error <Invalid call to betainc> betainc();
 
 %% test/octave.test/arith/betainc-3.m
-%!error <Invalid call to betainc.*> betainc(1);
+%!error <Invalid call to betainc> betainc(1);
 
 %% test/octave.test/arith/betainc-4.m
-%!error <Invalid call to betainc.*> betainc(1,2);
+%!error <Invalid call to betainc> betainc(1,2);
 
 */

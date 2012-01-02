@@ -545,6 +545,9 @@ DEFUN (load, args, nargout,
 @deftypefnx {Command} {} load options file\n\
 @deftypefnx {Command} {} load options file v1 v2 @dots{}\n\
 @deftypefnx {Command} {S =} load (\"options\", \"file\", \"v1\", \"v2\", @dots{})\n\
+@deftypefnx {Command} {} load file options\n\
+@deftypefnx {Command} {} load file options v1 v2 @dots{}\n\
+@deftypefnx {Command} {S =} load (\"file\", \"options\", \"v1\", \"v2\", @dots{})\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
 @var{file}.  If no variables are specified then all variables found in the\n\
 file will be loaded.  As with @code{save}, the list of variables to extract\n\
@@ -642,6 +645,16 @@ Force Octave to assume the file is in Octave's text format.\n\
   if (error_state)
     return retval;
 
+  int i = 1;
+  std::string orig_fname = "";
+
+  // Function called with Matlab-style ["filename", options] syntax
+  if (argc > 1 && argv[1].at(0) != '-')
+    {
+      orig_fname = argv[1];
+      i++;
+    }
+
   // It isn't necessary to have the default load format stored in a
   // user preference variable since we can determine the type of file
   // as we are reading.
@@ -651,8 +664,8 @@ Force Octave to assume the file is in Octave's text format.\n\
   bool list_only = false;
   bool verbose = false;
 
-  int i;
-  for (i = 1; i < argc; i++)
+  //for (i; i < argc; i++)
+  for (; i < argc; i++)
     {
       if (argv[i] == "-force" || argv[i] == "-f")
         {
@@ -710,19 +723,24 @@ Force Octave to assume the file is in Octave's text format.\n\
         break;
     }
 
-  if (i == argc)
+  if (orig_fname == "")
     {
-      print_usage ();
-      return retval;
+      if (i == argc)
+        {
+          print_usage ();
+          return retval;
+        }
+      else
+        orig_fname = argv[i];
     }
-
-  std::string orig_fname = argv[i];
+  else
+    i--;
 
   oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
 
   bool swap = false;
 
-  if (argv[i] == "-")
+  if (orig_fname == "-")
     {
       i++;
 
@@ -747,7 +765,7 @@ Force Octave to assume the file is in Octave's text format.\n\
     }
   else
     {
-      std::string fname = file_ops::tilde_expand (argv[i]);
+      std::string fname = file_ops::tilde_expand (orig_fname);
 
       fname = find_file_to_load (fname, orig_fname);
 
@@ -1441,7 +1459,7 @@ If the @option{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
 of the scalar structure @var{STRUCT} are saved as if they were variables\n\
 with corresponding names.\n\
 Valid options for the @code{save} command are listed in the following table.\n\
-Options that modify the output format override the format specified by \n\
+Options that modify the output format override the format specified by\n\
 @code{default_save_options}.\n\
 \n\
 If save is invoked using the functional form\n\
@@ -1455,6 +1473,9 @@ then the @var{options}, @var{file}, and variable name arguments\n\
 (@var{v1}, @dots{}) must be specified as character strings.\n\
 \n\
 @table @code\n\
+@item -append\n\
+Append to the destination instead of overwriting.\n\
+\n\
 @item -ascii\n\
 Save a single matrix in a text file without header or any other information.\n\
 \n\
@@ -1522,7 +1543,7 @@ Match zero or more characters.\n\
 Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @code{[a-zA-Z]} will\n\
-match all lower and upper case alphabetic characters.  \n\
+match all lower and uppercase alphabetic characters.\n\
 \n\
 Wildcards may also be used in the field name specifications when using\n\
 the @option{-struct} modifier (but not in the struct name itself).\n\
@@ -1544,7 +1565,7 @@ save -binary data a b*\n\
 @noindent\n\
 saves the variable @samp{a} and all variables beginning with @samp{b} to\n\
 the file @file{data} in Octave's binary format.\n\
-@seealso{load, default_save_options, dlmread, csvread, fread}\n\
+@seealso{load, default_save_options, save_header_format_string, dlmread, csvread, fread}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1727,9 +1748,14 @@ DEFUN (crash_dumps_octave_core, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
 to save all current variables to the file \"octave-core\" if it\n\
 crashes or receives a hangup, terminate or similar signal.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1740,10 +1766,15 @@ DEFUN (default_save_options, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} default_save_options ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} default_save_options (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} default_save_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the default options\n\
 for the @code{save} command, and defines the default format.\n\
 Typical values include @code{\"-ascii\"}, @code{\"-text -zip\"}.\n\
 The default value is @option{-text}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{save}\n\
 @end deftypefn")
 {
@@ -1754,6 +1785,7 @@ DEFUN (octave_core_file_limit, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} octave_core_file_limit ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_limit (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} octave_core_file_limit (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the maximum amount\n\
 of memory (in kilobytes) of the top-level workspace that Octave will\n\
 attempt to save when writing data to the crash dump file (the name of\n\
@@ -1762,6 +1794,10 @@ the file is specified by @var{octave_core_file_name}).  If\n\
 then @var{octave_core_file_limit} will be approximately the maximum\n\
 size of the file.  If a text file format is used, then the file could\n\
 be much larger than the limit.  The default value is -1 (unlimited)\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1772,9 +1808,14 @@ DEFUN (octave_core_file_name, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} octave_core_file_name ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_name (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the file\n\
 used for saving data from the top-level workspace if Octave aborts.\n\
 The default value is @code{\"octave-core\"}\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")
 {
@@ -1785,11 +1826,16 @@ DEFUN (octave_core_file_options, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} octave_core_file_options ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} octave_core_file_options (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} octave_core_file_options (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the options used for\n\
 saving the workspace data if Octave aborts.  The value of\n\
 @code{octave_core_file_options} should follow the same format as the\n\
 options for the @code{save} function.  The default value is Octave's binary\n\
 format.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{crash_dumps_octave_core, octave_core_file_name, octave_core_file_limit}\n\
 @end deftypefn")
 {
@@ -1800,6 +1846,7 @@ DEFUN (save_header_format_string, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} save_header_format_string ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} save_header_format_string (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} save_header_format_string (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the format\n\
 string used for the comment line written at the beginning of\n\
 text-format data files saved by Octave.  The format string is\n\
@@ -1813,6 +1860,10 @@ default value is\n\
 @smallexample\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end smallexample\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{strftime, save}\n\
 @end deftypefn")
 {

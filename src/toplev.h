@@ -112,22 +112,20 @@ public:
   typedef std::deque<call_stack_elt>::reverse_iterator reverse_iterator;
   typedef std::deque<call_stack_elt>::const_reverse_iterator const_reverse_iterator;
 
+  static void create_instance (void);
+  
   static bool instance_ok (void)
   {
     bool retval = true;
 
     if (! instance)
+      create_instance ();
+
+    if (! instance)
       {
-        instance = new octave_call_stack ();
+        ::error ("unable to create call stack object!");
 
-        if (instance)
-          instance->do_push (0, symbol_table::top_scope (), 0);
-        else
-          {
-            ::error ("unable to create call stack object!");
-
-            retval = false;
-          }
+        retval = false;
       }
 
     return retval;
@@ -300,6 +298,8 @@ private:
 
   static octave_call_stack *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   int do_current_line (void) const;
 
   int do_current_column (void) const;
@@ -417,5 +417,39 @@ private:
 
   void do_backtrace_error_message (void) const;
 };
+
+// Call a function with exceptions handled to avoid problems with
+// errors while shutting down.
+
+#define OCTAVE_IGNORE_EXCEPTION(E) \
+  catch (E) \
+    { \
+      std::cerr << "error: ignoring " #E " while preparing to exit" << std::endl; \
+      recover_from_exception (); \
+    }
+
+#define OCTAVE_SAFE_CALL(F, ARGS) \
+  do \
+    { \
+      try \
+        { \
+          unwind_protect frame; \
+ \
+          frame.protect_var (Vdebug_on_error); \
+          frame.protect_var (Vdebug_on_warning); \
+ \
+          Vdebug_on_error = false; \
+          Vdebug_on_warning = false; \
+ \
+          F ARGS; \
+        } \
+      OCTAVE_IGNORE_EXCEPTION (octave_interrupt_exception) \
+      OCTAVE_IGNORE_EXCEPTION (octave_execution_exception) \
+      OCTAVE_IGNORE_EXCEPTION (std::bad_alloc) \
+ \
+      if (error_state) \
+        error_state = 0; \
+    } \
+  while (0)
 
 #endif

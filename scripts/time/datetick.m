@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keeplimits")
 ## @deftypefnx {Function File} {} datetick (@dots{}, "keepticks")
 ## @deftypefnx {Function File} {} datetick (@dots{ax}, @dots{})
-## Adds date formatted tick labels to an axis.  The axis the apply the
+## Add date formatted tick labels to an axis.  The axis the apply the
 ## ticks to is determined by @var{axis} that can take the values "x",
 ## "y" or "z".  The default value is "x".  The formatting of the labels is
 ## determined by the variable @var{form}, that can either be a string in
@@ -66,6 +66,9 @@ endfunction
 %! set(ax,'xtick',datenum(1990:5:2005,1,1))
 %! datetick(2,'keepticks')
 %! set(ax,'ytick',12:16)
+
+## Remove from test statistics.  No real tests possible.
+%!assert (1)
 
 function __datetick__ (varargin)
 

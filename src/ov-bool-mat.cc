@@ -575,3 +575,15 @@ Convert @var{x} to logical type.\n\
 
   return retval;
 }
+
+/*
+%!shared m, s, c
+%! m = eye (2) != 0;
+%! s = !0;
+%! c = {"double", "single", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64", "logical"};
+%!test
+%! for i = 1:numel (c)
+%!   assert (logical (eye (2, c{i})), m)
+%!   assert (logical (eye (1, c{i})), s)
+%! endfor
+*/

@@ -73,7 +73,7 @@ static const char *former_built_in_variables[] =
   "debug_on_interrupt",
   "debug_on_warning",
   "debug_symtab_lookups",
-  "default_save_format",
+  "default_save_options",
   "echo_executing_commands",
   "fixed_point_format",
   "gnuplot_binary",
@@ -157,7 +157,12 @@ maybe_warn_former_built_in_variable (const std::string& nm)
       const char *nm_c_str = nm.c_str ();
 
       warning_with_id ("Octave:built-in-variable-assignment",
-                       "%s is now a function instead of a built-in variable.  By assigning to %s, you have created a variable that hides the function %s.  To remove the variable and restore the function, type \"clear %s\"",
+                       "\
+In recent versions of Octave, %s is a function instead\n\
+of a built-in variable.\n\n\
+By assigning to %s, you have created a variable that hides\n\
+the function %s. To remove the variable and restore the \n\
+function, type \"clear %s\"\n",
                        nm_c_str, nm_c_str, nm_c_str, nm_c_str);
     }
 }

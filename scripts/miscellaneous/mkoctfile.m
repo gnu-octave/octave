@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} mkoctfile [-options] file @dots{}
+## @deftypefnx {Function File} {[@var{output}, @var{status} =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C,
 ## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the
@@ -25,7 +26,9 @@
 ## application.
 ##
 ## @code{mkoctfile} can be called from the shell prompt or from the Octave
-## prompt.
+## prompt.  Calling it from the Octave prompt simply delegates the
+## call to the shell prompt.  The output is stored in the @var{output}
+## variable and the exit status in the @var{status} variable.
 ##
 ## @code{mkoctfile} accepts the following options, all of which are optional
 ## except for the file name of the code you wish to compile:
@@ -75,26 +78,30 @@
 ## Print the configuration variable VAR@.  Recognized variables are:
 ##
 ## @example
-##    ALL_CFLAGS                FFTW_LIBS
+##    ALL_CFLAGS                FFTW3F_LIBS
 ##    ALL_CXXFLAGS              FLIBS
 ##    ALL_FFLAGS                FPICFLAG
 ##    ALL_LDFLAGS               INCFLAGS
-##    BLAS_LIBS                 LDFLAGS
-##    CC                        LD_CXX
-##    CFLAGS                    LD_STATIC_FLAG
-##    CPICFLAG                  LFLAGS
-##    CPPFLAGS                  LIBCRUFT
-##    CXX                       LIBOCTAVE
-##    CXXFLAGS                  LIBOCTINTERP
-##    CXXPICFLAG                LIBREADLINE
+##    BLAS_LIBS                 LAPACK_LIBS
+##    CC                        LDFLAGS
+##    CFLAGS                    LD_CXX
+##    CPICFLAG                  LD_STATIC_FLAG
+##    CPPFLAGS                  LFLAGS
+##    CXX                       LIBCRUFT
+##    CXXFLAGS                  LIBOCTAVE
+##    CXXPICFLAG                LIBOCTINTERP
 ##    DEPEND_EXTRA_SED_PATTERN  LIBS
 ##    DEPEND_FLAGS              OCTAVE_LIBS
-##    DL_LD                     RDYNAMIC_FLAG
-##    DL_LDFLAGS                RLD_FLAG
-##    F2C                       SED
-##    F2CFLAGS                  XTRA_CFLAGS
-##    F77                       XTRA_CXXFLAGS
-##    FFLAGS
+##    DL_LD                     OCTAVE_LINK_DEPS
+##    DL_LDFLAGS                OCT_LINK_DEPS
+##    EXEEXT                    RDYNAMIC_FLAG
+##    F77                       READLINE_LIBS
+##    F77_INTEGER_8_FLAG        SED
+##    FFLAGS                    XTRA_CFLAGS
+##    FFTW3_LDFLAGS             XTRA_CXXFLAGS
+##    FFTW3_LIBS
+##    FFTW3F_LDFLAGS
+##
 ## @end example
 ##
 ## @item --link-stand-alone
@@ -133,7 +140,7 @@
 ## @end table
 ## @end deftypefn
 
-function mkoctfile (varargin)
+function [output, status] = mkoctfile (varargin)
 
   bindir = octave_config_info ("bindir");
 
@@ -144,9 +151,15 @@ function mkoctfile (varargin)
     cmd = cstrcat (cmd, " \"", varargin{i}, "\"");
   endfor
 
-  status = system (cmd);
+  [sys, out] = system (cmd);
 
-  if (status == 127)
+  if (nargout > 0)
+    [output, status] = deal (out, sys);
+  else
+    printf ("%s", out);
+  endif
+
+  if (sys == 127)
     warning ("unable to find mkoctfile in expected location: `%s'",
              shell_script);
 

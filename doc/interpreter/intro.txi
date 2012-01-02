@@ -385,7 +385,7 @@ file.
 
 In order to get good help you first need to know the name of the command
 that you want to use.  This name of the function may not always be
-obvious, but a good place to start is to just type @code{help --list}.
+obvious, but a good place to start is to type @code{help --list}.
 This will show you all the operators, keywords, built-in functions,
 and loadable functions available in the current session of Octave.  An
 alternative is to search the documentation using the @code{lookfor}
@@ -562,7 +562,9 @@ description.
 
 Here is a description of an imaginary function @code{foo}:
 
-@deftypefn {Function} {} foo (@var{x}, @var{y}, @dots{})
+@deftypefn  {Function File} {} foo (@var{x})
+@deftypefnx {Function File} {} foo (@var{x}, @var{y})
+@deftypefnx {Function File} {} foo (@var{x}, @var{y}, @dots{})
 The function @code{foo} subtracts @var{x} from @var{y}, then adds the
 remaining arguments to the result.  If @var{y} is not supplied, then the
 number 19 is used by default.

@@ -129,9 +129,9 @@ public:
 
 // row vector by column vector -> scalar
 
-FloatComplex operator * (const FloatComplexRowVector& a, const ColumnVector& b);
+FloatComplex OCTAVE_API operator * (const FloatComplexRowVector& a, const ColumnVector& b);
 
-FloatComplex operator * (const FloatComplexRowVector& a, const FloatComplexColumnVector& b);
+FloatComplex OCTAVE_API operator * (const FloatComplexRowVector& a, const FloatComplexColumnVector& b);
 
 // other operations
 

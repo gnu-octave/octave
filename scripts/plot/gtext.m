@@ -29,25 +29,21 @@
 
 function gtext (s, varargin)
 
-  if (nargin > 0)
-    if (iscellstr (s))
-      if (isempty (s))
-        s = "";
-      else
-        s = sprintf ("%s\n", s{:});
-      endif
-    endif
-    if (ischar (s))
-      if (! isempty (s))
-        [x, y] = ginput (1);
-        text (x, y, s, varargin{:});
-      endif
-    else
-      error ("gtext: expecting a string or cell array of strings");
-    endif
-  else
+  if (nargin < 1)
     print_usage ();
+  endif
+
+  if (! (ischar (s) || iscellstr (s)))
+    error ("gtext: S must be a string or cell array of strings");
+  endif
+
+  if (! isempty (s))
+    [x, y] = ginput (1);
+    text (x, y, s, varargin{:});
   endif
 
 endfunction
 
+## Remove from test statistics.  No real tests possible.
+%!test
+%! assert (1);

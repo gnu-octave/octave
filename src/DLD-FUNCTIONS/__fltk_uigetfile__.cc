@@ -26,8 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_FLTK)
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <FL/Fl.H>
-#include <Fl/Fl_File_Chooser.H>
+#include <FL/Fl_File_Chooser.H>
 
 // FLTK headers may include X11/X.h which defines Complex, and that
 // conflicts with Octave's Complex typedef.  We don't need the X11
@@ -129,5 +133,12 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
 
 #endif

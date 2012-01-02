@@ -87,7 +87,7 @@ octave_change_to_directory (const std::string& newdir)
   return cd_ok;
 }
 
-DEFUN (cd, args, ,
+DEFUN (cd, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Command} {} cd dir\n\
 @deftypefnx {Command} {} chdir dir\n\
@@ -127,10 +127,18 @@ directory is not changed.\n\
     }
   else
     {
-      std::string home_dir = octave_env::get_home_directory ();
+      // Behave like Unixy shells for "cd" by itself, but be Matlab
+      // compatible if doing "current_dir = cd".
 
-      if (home_dir.empty () || ! octave_change_to_directory (home_dir))
-        return retval;
+      if (nargout == 0)
+        {
+          std::string home_dir = octave_env::get_home_directory ();
+
+          if (home_dir.empty () || ! octave_change_to_directory (home_dir))
+            return retval;
+        }
+      else
+        retval = octave_value (octave_env::get_current_directory ());
     }
 
   return retval;
@@ -179,8 +187,8 @@ system-dependent error message.\n\
           if (dir)
             {
               string_vector dirlist = dir.read ();
-              retval(0) = Cell (dirlist.sort ());
               retval(1) = 0.0;
+              retval(0) = Cell (dirlist.sort ());
             }
           else
             {
@@ -283,7 +291,7 @@ message identifier.\n\
 DEFUNX ("rmdir", Frmdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir})\n\
-@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, @code{\"s\"})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} rmdir (@var{dir}, \"s\")\n\
 Remove the directory named @var{dir}.\n\
 \n\
 If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
@@ -479,12 +487,10 @@ system-dependent error message.\n\
 
           int status = octave_readlink (symlink, result, msg);
 
-          retval(0) = result;
-
-          retval(1) = status;
-
           if (status < 0)
             retval(2) = msg;
+          retval(1) = status;
+          retval(0) = result;
         }
     }
   else
@@ -545,7 +551,7 @@ DEFUN (glob, args, ,
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
 Given an array of pattern strings (as a char array or a cell array) in\n\
 @var{pattern}, return a cell array of file names that match any of\n\
-them, or an empty cell array if no patterns match.  The pattern strings are \n\
+them, or an empty cell array if no patterns match.  The pattern strings are\n\
 interpreted as filename globbing patterns (as they are used by Unix shells).\n\
 Within a pattern\n\
 @table @code\n\
@@ -565,7 +571,7 @@ names.  For example:\n\
 @example\n\
 ls\n\
      @result{}\n\
-        file1  file2  file3  myfile1 myfile1b \n\
+        file1  file2  file3  myfile1 myfile1b\n\
 glob (\"*file1\")\n\
      @result{}\n\
         @{\n\
@@ -686,8 +692,8 @@ Return the system-dependent character used to separate directory names.\n\
 \n\
 If 'all' is given, the function returns all valid file separators in\n\
 the form of a string.  The list of file separators is system-dependent.\n\
-It is @samp{/} (forward slash) under UNIX or Mac OS X, @samp{/} and @samp{\\}\n\
-(forward and backward slashes) under Windows.\n\
+It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
+@samp{\\} (forward and backward slashes) under Windows.\n\
 @seealso{pathsep}\n\
 @end deftypefn")
 {
@@ -764,8 +770,13 @@ DEFUN (confirm_recursive_rmdir, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} confirm_recursive_rmdir (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);

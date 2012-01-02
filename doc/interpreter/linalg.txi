@@ -88,8 +88,6 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(det)
 
-@DOCSTRING(dot)
-
 @DOCSTRING(eig)
 
 @DOCSTRING(givens)
@@ -105,6 +103,8 @@ flag a non-Hermitian matrix.
 @DOCSTRING(null)
 
 @DOCSTRING(orth)
+
+@DOCSTRING(mgorth)
 
 @DOCSTRING(pinv)
 
@@ -180,11 +180,17 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(kron)
 
+@DOCSTRING(blkmm)
+
 @DOCSTRING(syl)
 
 @node Specialized Solvers
 @section Specialized Solvers
 
+@DOCSTRING(bicg)
+
 @DOCSTRING(bicgstab)
 
 @DOCSTRING(cgs)
+
+@DOCSTRING(gmres)

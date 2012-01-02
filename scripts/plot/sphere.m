@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{y}, @var{z}] =} sphere (@var{n})
 ## @deftypefnx {Function File} {} sphere (@var{h}, @dots{})
-## Generates three matrices in @code{meshgrid} format, such that
+## Generate three matrices in @code{meshgrid} format, such that
 ## @code{surf (@var{x}, @var{y}, @var{z})} generates a unit sphere.
 ## The matrices of @code{@var{n}+1}-by-@code{@var{n}+1}.  If @var{n} is
 ## omitted then a default value of 20 is assumed.

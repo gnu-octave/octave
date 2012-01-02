@@ -49,8 +49,8 @@ extern "C" {
 #include <fcntl.h>
 #include <dirent.h>
 #elif defined(WIN32)
-#define __STDC__ 1
 #ifndef _MSC_VER
+#define __STDC__ 1
 #include "win32lib.h"
 #endif
 #endif /* not WIN32 */
@@ -212,7 +212,7 @@ extern "C" {
 
 /* A printf for the debugging.  */
 #define DEBUGF_START() do { gnulib::fputs ("kdebug:", stderr)
-#define DEBUGF_END()        fflush (stderr); } while (0)
+#define DEBUGF_END()        gnulib::fflush (stderr); } while (0)
 
 #define DEBUGF(str)                                                     \
   DEBUGF_START (); gnulib::fputs (str, stderr); DEBUGF_END ()
@@ -432,7 +432,7 @@ hash_lookup (hash_table_type table, const std::string& key)
             }
           gnulib::putc ('\n', stderr);
         }
-      fflush (stderr);
+      gnulib::fflush (stderr);
     }
 #endif
 
@@ -2428,7 +2428,7 @@ kpse_element_dirs (const std::string& elt)
             gnulib::fprintf (stderr, " %s", (STR_LLIST (*e)).c_str ());
         }
       gnulib::putc ('\n', stderr);
-      fflush (stderr);
+      gnulib::fflush (stderr);
     }
 #endif /* KPSE_DEBUG */
 

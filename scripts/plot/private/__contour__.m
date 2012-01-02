@@ -319,10 +319,18 @@ function add_patch_children (hg)
       else
         ## Special case unclosed contours
       endif
+      if (isnan(cont_lev(idx)))
+        fc = get (ca, "color");
+        if (strcmp (fc, "none"))
+          fc = get (ancestor (ca, "figure"), "color");
+        endif
+      else
+        fc = "flat";
+      endif
       h = [h; __go_patch__(ca, "xdata", ctmp(1, :)(:), "ydata", ctmp(2, :)(:),
                            "vertices", ctmp.', "faces", 1:(cont_len(idx)-1),
                            "facevertexcdata", cont_lev(idx),
-                           "facecolor", "flat", "cdata", cont_lev(idx),
+                           "facecolor", fc, "cdata", cont_lev(idx),
                            "edgecolor", lc, "linestyle", ls,
                            "linewidth", lw, "parent", hg)];
     endfor
@@ -530,7 +538,7 @@ function lvl_eps = get_lvl_eps (lev)
   ## it be an absolute or relative tolerance, or switch from one to the
   ## other depending on the value of lev?
   if (isscalar (lev))
-    lvl_eps = abs (lev) * sqrt (eps);
+    lvl_eps = abs (lev) * sqrt (eps) + sqrt (eps);
   else
     tmp = min (abs (diff (lev)));
     if (tmp < 10*eps)

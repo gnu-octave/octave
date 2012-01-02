@@ -34,7 +34,7 @@ function c = bartlett (m)
     print_usage ();
   endif
 
-  if (! (isscalar (m) && (m == round (m)) && (m > 0)))
+  if (! (isscalar (m) && (m == fix (m)) && (m > 0)))
     error ("bartlett: M has to be an integer > 0");
   endif
 
@@ -47,3 +47,17 @@ function c = bartlett (m)
   endif
 
 endfunction
+
+%!assert (bartlett (1), 1);
+%!assert (bartlett (2), zeros (2,1));
+%!assert (bartlett (16), fliplr (bartlett (16)));
+%!assert (bartlett (15), fliplr (bartlett (15)));
+%!test
+%! N = 9;
+%! A = bartlett (N);
+%! assert (A (ceil (N/2)), 1);
+
+%!error bartlett ();
+%!error bartlett (0.5);
+%!error bartlett (-1);
+%!error bartlett (ones(1,4));

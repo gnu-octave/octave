@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} ezmesh (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezmesh (@dots{})
 ##
-## Plots the mesh defined by a function.  @var{f} is a string, inline
+## Plot the mesh defined by a function.  @var{f} is a string, inline
 ## function or function handle with two arguments defining the function.  By
 ## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
 ## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.
@@ -44,8 +44,8 @@
 ## If the argument 'circ' is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a graphics handle to the created 
+## surface object.
 ##
 ## @example
 ## @group
@@ -65,7 +65,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{ezplot, ezsurf, ezsurfc, ezmeshc}
+## @seealso{ezplot, ezmeshc, ezsurf, ezsurfc}
 ## @end deftypefn
 
 function retval = ezmesh (varargin)
@@ -81,12 +81,16 @@ function retval = ezmesh (varargin)
   endif
 endfunction
 
+
 %!demo
+%! clf
 %! f = @(x,y) sqrt(abs(x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezmesh (f, [-3, 3]);
 
 %!demo
+%! clf
 %! fx = @(s,t) cos (s) .* cos(t);
 %! fy = @(s,t) sin (s) .* cos(t);
 %! fz = @(s,t) sin (t);
 %! ezmesh (fx, fy, fz, [-pi,pi,-pi/2,pi/2], 20);
+

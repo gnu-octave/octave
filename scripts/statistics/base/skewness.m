@@ -38,7 +38,7 @@
 ## If @var{x} is a matrix, return the skewness along the
 ## first non-singleton dimension of the matrix.  If the optional
 ## @var{dim} argument is given, operate along this dimension.
-## @seealso{var,kurtosis,moment}
+## @seealso{var, kurtosis, moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -51,7 +51,7 @@ function retval = skewness (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("skewness: X must be a numeric vector or matrix");
   endif
 
@@ -59,29 +59,25 @@ function retval = skewness (x, dim)
   sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
-    if (!(isscalar (dim) && dim == round (dim))
+    if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
       error ("skewness: DIM must be an integer and a valid dimension");
     endif
   endif
 
-  c = sz(dim);
-  idx = ones (1, nd);
-  idx(dim) = c;
-  x = x - repmat (mean (x, dim), idx);
+  n = sz(dim);
   sz(dim) = 1;
+  x = center (x, dim);  # center also promotes integer to double for next line
   retval = zeros (sz, class (x));
   s = std (x, [], dim);
-  ind = find (s > 0);
+  idx = find (s > 0);
   x = sum (x .^ 3, dim);
-  retval(ind) = x(ind) ./ (c * s(ind) .^ 3);
+  retval(idx) = x(idx) ./ (n * s(idx) .^ 3);
 
 endfunction
+
 
 %!assert(skewness ([-1,0,1]), 0);
 %!assert(skewness ([-2,0,1]) < 0);
@@ -92,10 +88,12 @@ endfunction
 %! y = [x, 2*x];
 %! assert(all (abs (skewness (y) - [0.75, 0.75]) < sqrt (eps)));
 
+%!assert (skewness (single(1)), single(0));
+
 %% Test input validation
 %!error skewness ()
 %!error skewness (1, 2, 3)
-%!error skewness ([true true])
+%!error skewness (['A'; 'B'])
 %!error skewness (1, ones(2,2))
 %!error skewness (1, 1.5)
 %!error skewness (1, 0)

@@ -107,7 +107,7 @@ DEFUN_DLD (dot, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dot (@var{x}, @var{y}, @var{dim})\n\
 Compute the dot product of two vectors.  If @var{x} and @var{y}\n\
-are matrices, calculate the dot products along the first \n\
+are matrices, calculate the dot products along the first\n\
 non-singleton dimension.  If the optional argument @var{dim} is\n\
 given, calculate the dot products along this dimension.\n\
 \n\
@@ -116,7 +116,7 @@ This is equivalent to\n\
 but avoids forming a temporary array and is faster.  When @var{X} and\n\
 @var{Y} are column vectors, the result is equivalent to\n\
 @code{@var{X}' * @var{Y}}.\n\
-@seealso{cross}\n\
+@seealso{cross, divergence}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -238,21 +238,32 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 
 /*
 
+%! assert(dot ([1, 2], [2, 3]), 11);
+
+%!test
+%! x = [2, 1; 2, 1];
+%! y = [-0.5, 2; 0.5, -2];
+%! assert(dot (x, y), [0 0]);
+
+%!test
+%! x = [ 1+i, 3-i; 1-i, 3-i];
+%! assert(dot (x, x), [4, 20]);
+
 */
 
 DEFUN_DLD (blkmm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} blkmm (@var{x}, @var{y})\n\
+@deftypefn {Loadable Function} {} blkmm (@var{A}, @var{B})\n\
 Compute products of matrix blocks.  The blocks are given as\n\
-2-dimensional subarrays of the arrays @var{x}, @var{y}.\n\
-The size of @var{x} must have the form @code{[m,k,@dots{}]} and\n\
-size of @var{y} must be @code{[k,n,@dots{}]}.  The result is\n\
+2-dimensional subarrays of the arrays @var{A}, @var{B}.\n\
+The size of @var{A} must have the form @code{[m,k,@dots{}]} and\n\
+size of @var{B} must be @code{[k,n,@dots{}]}.  The result is\n\
 then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
 \n\
 @example\n\
 @group\n\
-  for i = 1:prod (size (@var{x})(3:end))\n\
-    @var{z}(:,:,i) = @var{x}(:,:,i) * @var{y}(:,:,i)\n\
+  for i = 1:prod (size (@var{A})(3:end))\n\
+    @var{C}(:,:,i) = @var{A}(:,:,i) * @var{B}(:,:,i)\n\
   endfor\n\
 @end group\n\
 @end example\n\
@@ -335,12 +346,23 @@ then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
             }
         }
       else
-        error ("blkmm: X and Y dimensions don't match: (%s) and (%s)",
+        error ("blkmm: A and B dimensions don't match: (%s) and (%s)",
                dimx.str ().c_str (), dimy.str ().c_str ());
 
     }
   else
-    error ("blkmm: X and Y must be numeric");
+    error ("blkmm: A and B must be numeric");
 
   return retval;
 }
+
+/*
+
+%!test
+%! x(:,:,1) = [1 2; 3 4];
+%! x(:,:,2) = [1 1; 1 1];
+%! z(:,:,1) = [7 10; 15 22];
+%! z(:,:,2) = [2 2; 2 2];
+%! assert(blkmm (x,x),z);
+
+*/

@@ -79,6 +79,15 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
+  // Use this to give a more specific error message
+  idx_vector index_vector (void) const
+  {
+    error (
+           "attempted to use a complex scalar as an index\n"
+           "       (forgot to initialize i or j?)");
+    return idx_vector ();
+  }
+
   octave_value any (int = 0) const
     {
       return (scalar != Complex (0, 0)

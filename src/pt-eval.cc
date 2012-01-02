@@ -281,18 +281,6 @@ quit_loop_now (void)
   return quit;
 }
 
-#define DO_SIMPLE_FOR_LOOP_ONCE(VAL) \
-  do \
-    { \
-      ult.assign (octave_value::op_asn_eq, VAL); \
- \
-      if (! error_state && loop_body) \
-        loop_body->accept (*this); \
- \
-      quit = quit_loop_now (); \
-    } \
-  while (0)
-
 void
 tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 {
@@ -301,6 +289,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
+
+  // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
+  // and cmd.maxproc_expr ();
 
   unwind_protect frame;
 
@@ -332,7 +323,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
         octave_idx_type steps = rng.nelem ();
         double b = rng.base ();
         double increment = rng.inc ();
-        bool quit = false;
 
         for (octave_idx_type i = 0; i < steps; i++)
           {
@@ -347,25 +337,30 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
             octave_value val (b + i * increment);
 
-            DO_SIMPLE_FOR_LOOP_ONCE (val);
+            ult.assign (octave_value::op_asn_eq, val);
 
-            if (quit)
+            if (! error_state && loop_body)
+              loop_body->accept (*this);
+
+            if (quit_loop_now ())
               break;
           }
       }
     else if (rhs.is_scalar_type ())
       {
-        bool quit = false;
+        ult.assign (octave_value::op_asn_eq, rhs);
 
-        DO_SIMPLE_FOR_LOOP_ONCE (rhs);
+        if (! error_state && loop_body)
+          loop_body->accept (*this);
+
+        // Maybe decrement break and continue states.
+        quit_loop_now ();
       }
     else if (rhs.is_matrix_type () || rhs.is_cell () || rhs.is_string ()
              || rhs.is_map ())
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by
         // columns.
-
-        bool quit = false;
 
         dim_vector dv = rhs.dims ().redim (2);
 
@@ -397,9 +392,13 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
                 // do_index_op expects one-based indices.
                 idx(iidx) = i;
                 octave_value val = arg.do_index_op (idx);
-                DO_SIMPLE_FOR_LOOP_ONCE (val);
 
-                if (quit)
+                ult.assign (octave_value::op_asn_eq, val);
+
+                if (! error_state && loop_body)
+                  loop_body->accept (*this);
+
+                if (quit_loop_now ())
                   break;
               }
           }
@@ -1194,23 +1193,55 @@ DEFUN (max_recursion_depth, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} max_recursion_depth (@var{new_val}, \"local\")\n\
 Query or set the internal limit on the number of times a function may\n\
 be called recursively.  If the limit is exceeded, an error message is\n\
 printed and control returns to the top level.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (max_recursion_depth);
 }
 
+/*
+%!error (max_recursion_depth (1, 2));
+%!test
+%! orig_val = max_recursion_depth ();
+%! old_val = max_recursion_depth (2*orig_val);
+%! assert (orig_val, old_val);
+%! assert (max_recursion_depth (), 2*orig_val);
+%! max_recursion_depth (orig_val);
+%! assert (max_recursion_depth (), orig_val);
+*/
+
 DEFUN (silent_functions, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} silent_functions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} silent_functions (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether internal\n\
 output from a function is suppressed.  If this option is disabled,\n\
 Octave will display the results produced by evaluating expressions\n\
 within a function body that are not terminated with a semicolon.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (silent_functions);
 }
+
+/*
+%!error (silent_functions (1, 2));
+%!test
+%! orig_val = silent_functions ();
+%! old_val = silent_functions (! orig_val);
+%! assert (orig_val, old_val);
+%! assert (silent_functions (), ! orig_val);
+%! silent_functions (orig_val);
+%! assert (silent_functions (), orig_val);
+*/

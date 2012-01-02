@@ -564,6 +564,14 @@ public:
       return retval;
     }
 
+  bool bool_value (bool warn = false) const
+  {
+    if (warn && scalar != 0.0 && scalar != 1.0)
+      gripe_logical_conversion ();
+
+    return scalar.bool_value ();
+  }
+
   boolNDArray
   bool_array_value (bool warn = false) const
   {

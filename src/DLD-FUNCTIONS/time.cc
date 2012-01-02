@@ -131,7 +131,7 @@ DEFUN_DLD (gmtime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{tm_struct} =} gmtime (@var{t})\n\
 Given a value returned from @code{time}, or any non-negative integer,\n\
-return a time structure corresponding to CUT (Coordinated Universal Time).  \n\
+return a time structure corresponding to CUT (Coordinated Universal Time).\n\
 For example:\n\
 \n\
 @example\n\
@@ -186,9 +186,9 @@ gmtime (time ())\n\
 %! && isfield (ts, "isdst")
 %! && isfield (ts, "yday")));
 
-%!error <Invalid call to gmtime.*> gmtime ();
+%!error <Invalid call to gmtime> gmtime ();
 
-%!error <Invalid call to gmtime.*> gmtime (1, 2);
+%!error <Invalid call to gmtime> gmtime (1, 2);
 
 */
 
@@ -250,9 +250,9 @@ localtime (time ())\n\
 %! && isfield (ts, "isdst")
 %! && isfield (ts, "yday")));
 
-%!error <Invalid call to localtime.*> localtime ();
+%!error <Invalid call to localtime> localtime ();
 
-%!error <Invalid call to localtime.*> localtime (1, 2);
+%!error <Invalid call to localtime> localtime (1, 2);
 
 */
 
@@ -301,9 +301,9 @@ mktime (localtime (time ()))\n\
 %! t = time ();
 %! assert(fix (mktime (localtime (t))) == fix (t));
 
-%!error <Invalid call to mktime.*> mktime ();
+%!error <Invalid call to mktime> mktime ();
 
-%!error <Invalid call to mktime.*> mktime (1, 2, 3);
+%!error <Invalid call to mktime> mktime (1, 2, 3);
 
 %% These tests fail on systems with mktime functions of limited
 %% intelligence:
@@ -340,13 +340,13 @@ field specifiers.\n\
 Literal character fields:\n\
 \n\
 @table @code\n\
-@item %\n\
+@item %%\n\
 % character.\n\
 \n\
-@item n\n\
+@item %n\n\
 Newline character.\n\
 \n\
-@item t\n\
+@item %t\n\
 Tab character.\n\
 @end table\n\
 \n\
@@ -505,9 +505,9 @@ Year (1970-).\n\
 %! && ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ())))
 %! && ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ())))));
 
-%!error <Invalid call to strftime.*> strftime ();
+%!error <Invalid call to strftime> strftime ();
 
-%!error <Invalid call to strftime.*> strftime ("foo", localtime (time ()), 1);
+%!error <Invalid call to strftime> strftime ("foo", localtime (time ()), 1);
 
 */
 

@@ -17,18 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
+## @deftypefn  {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ()
 ## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt})
-## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile ())
-## Open a GUI dialog to select a file.  @var{flt} contains a (list of) file
+## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name})
+## @deftypefnx {Function File} {[@var{fname}, @var{fpath}, @var{fltidx}] =} uiputfile (@var{flt}, @var{dialog_name}, @var{default_file})
+## Open a GUI dialog for selecting a file.  @var{flt} contains a (list of) file
 ## filter string(s) in one of the following formats:
 ##
 ## @table @code
 ## @item "/path/to/filename.ext"
 ## If a filename is given the file extension is
 ## extracted and used as filter.
-## In addtion the path is selected as current path and the filname is selected
+## In addition the path is selected as current path and the filename is selected
 ## as default file.
 ## Example: uiputfile("myfun.m");
 ##
@@ -48,53 +48,81 @@
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.
-## If in addtion a path is given it is also used as current path.
+## If, in addition, a path is given it is also used as current path.
 ## @end deftypefn
 
 ## Author: Kai Habel
 
 function [retfile, retpath, retindex] = uiputfile (varargin)
 
-  if (nargin <= 3)
-
-    defaultvals = {"All Files(*)", #FLTK File Filter
-                   "Save File?",   #Dialog Title
-                   pwd,            #FLTK default file name
-                   [240, 120],     #Dialog Position (pixel x/y)
-                   "create"};
-
-    outargs = cell(5, 1);
-    for i = 1 : 5
-      outargs{i} = defaultvals{i};
-    endfor
-
-    if (nargin > 0)
-      file_filter = varargin{1};
-      outargs{1} = __fltk_file_filter__ (file_filter);
-      if (ischar (file_filter))
-        outargs{3} = file_filter;
-      endif
+  defaulttoolkit = get (0, "defaultfigure__graphics_toolkit__");
+  funcname = ["__uiputfile_", defaulttoolkit, "__"];
+  functype = exist (funcname);
+  if (! __is_function__ (funcname))
+    funcname = "__uiputfile_fltk__";
+    if (! __is_function__ (funcname))
+      error ("uiputfile: fltk graphics toolkit required");
+    elseif (! strcmp (defaulttoolkit, "gnuplot"))
+      warning ("uiputfile: no implementation for toolkit `%s', using `fltk' instead",
+               defaulttoolkit);
     endif
+  endif
 
-    if (nargin > 1)
+  if (nargin > 3)
+    print_usage ();
+  endif
+
+  defaultvals = {cell(0, 2),     # File Filter
+                 "Save File",    # Dialog Title
+                 "",             # Default file name
+                 [240, 120],     # Dialog Position (pixel x/y)
+                 "create",
+                 pwd};           # Default directory
+
+  outargs = cell(6, 1);
+  for i = 1 : 6
+    outargs{i} = defaultvals{i};
+  endfor
+
+  if (nargin > 0)
+    file_filter = varargin{1};
+    [outargs{1}, outargs{3}, defdir] = __file_filter__ (file_filter);
+    if (length (defdir) > 0)
+      outargs{6} = defdir;
+    endif
+  else
+    outargs{1} = __file_filter__ (outargs{1});
+  endif
+
+  if (nargin > 1)
+    if (ischar (varargin{2}))
       outargs{2} = varargin{2};
+    elseif (! isempty (varargin{2}))
+      print_usage ();
     endif
-
-    if (nargin > 2)
-      outargs{3} = varargin{3};
-    endif
-
-  else
-    error ("uiputfile: number of input arguments must be less than four");
   endif
 
-  if (exist("__fltk_uigetfile__") == 3)
-    [retfile, retpath, retindex] = __fltk_uigetfile__ (outargs{:});
-  else
-    error ("uiputfile: fltk graphics toolkit required");
+  if (nargin > 2)
+    if (ischar (varargin{3}))
+      [fdir, fname, fext] = fileparts (varargin{3});
+      if (! isempty (fdir))
+        outargs{6} = fdir;
+      endif
+      if (! isempty (fname) || ! isempty (fext))
+        outargs{3} = strcat (fname, fext);
+      endif
+    elseif (! isempty (varargin{3}))
+      print_usage ();
+    endif
   endif
+
+  [retfile, retpath, retindex] = feval (funcname, outargs{:});
 
 endfunction
 
 %!demo
 %! uiputfile({"*.gif;*.png;*.jpg", "Supported Picture Formats"})
+
+## Remove from test statistics.  No real tests possible.
+%!test
+%! assert (1);

@@ -18,7 +18,7 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 ## Automake generated rules for documentation are not parallel-safe.
 ## Restrict current directory to run serially
@@ -118,6 +118,7 @@ MUNGED_TEXI_SRC = \
   fn-idx.texi \
   func.texi \
   geometry.texi \
+  gui.texi \
   gpl.texi \
   grammar.texi \
   image.texi \
@@ -147,7 +148,8 @@ MUNGED_TEXI_SRC = \
   system.texi \
   testfun.texi \
   tips.texi \
-  var.texi
+  var.texi \
+  vectorize.texi
 
 TXI_SRC = $(MUNGED_TEXI_SRC:.texi=.txi)
 
@@ -223,6 +225,24 @@ undocumented_list:
 	-$(PERL) $(srcdir)/doccheck/mk_undocumented_list > $@
 .PHONY: undocumented_list
 
+
+SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)
+
+%.scheck: %.texi
+	$(srcdir)/doccheck/spellcheck $< > $@-t
+	mv $@-t $@
+	[ -s $@ ] || rm -f $@
+
+spellcheck: $(SPELLCHECK_FILES) 
+	@if ls *.scheck >/dev/null 2>&1 ; then \
+		echo "Spellcheck failed"; \
+		echo "Review the following files:"; \
+		ls *.scheck ; \
+		exit 1 ; \
+	else \
+		echo "Spellcheck passed"; \
+	fi
+.PHONY: spellcheck
 
 EXTRA_DIST = \
   config-images.sh \

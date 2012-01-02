@@ -45,17 +45,14 @@ function retval = ifftshift (x, dim)
     nd = ndims (x);
     sz = size (x);
     sz2 = floor (sz(dim) / 2);
-    idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{dim} = [sz2+1:sz(dim), 1:sz2];
     retval = x(idx{:});
   else
     if (isvector (x))
-      x = length (x);
-      xx = floor (x/2);
-      retval = x([xx+1:x, 1:xx]);
+      xl = length (x);
+      xx = floor (xl/2);
+      retval = x([xx+1:xl, 1:xx]);
     elseif (ismatrix (x))
       nd = ndims (x);
       sz = size (x);
@@ -71,3 +68,49 @@ function retval = ifftshift (x, dim)
   endif
 
 endfunction
+
+%!test
+%!  x = [0:7];
+%!  y = ifftshift (x);
+%!  assert(y, [4 5 6 7 0 1 2 3]);
+%!  assert(ifftshift (y), x);
+
+%!test
+%!  x = [0:6];
+%!  y = ifftshift (x);
+%!  assert(y, [3 4 5 6 0 1 2]);
+%!  assert(ifftshift (y), [6 0 1 2 3 4 5]);
+
+%!test
+%!  x = [0:7]';
+%!  y = ifftshift (x);
+%!  assert(y, [4;5;6;7;0;1;2;3]);
+%!  assert(ifftshift (y), x);
+
+%!test
+%!  x = [0:6]';
+%!  y = ifftshift (x);
+%!  assert(y, [3;4;5;6;0;1;2]);
+%!  assert(ifftshift (y), [6;0;1;2;3;4;5]);
+
+%!test
+%!  x = [0:3];
+%!  x = [x;2*x;3*x+1;4*x+1];
+%!  y = ifftshift (x);
+%!  assert(y, [[7 10 1 4];[9 13 1 5];[2 3 0 1];[4 6 0 2]]);
+%!  assert(ifftshift (y), x);
+
+%!test
+%!  x = [0:3];
+%!  x = [x;2*x;3*x+1;4*x+1];
+%!  y = ifftshift (x,1);
+%!  assert(y, [[1 4 7 10];[1 5 9 13];[0 1 2 3];[0 2 4 6]]);
+%!  assert(ifftshift (y,1), x);
+
+%!test
+%!  x = [0:3];
+%!  x = [x;2*x;3*x+1;4*x+1];
+%!  y = ifftshift (x,2);
+%!  assert(y, [[2 3 0 1];[4 6 0 2];[7 10 1 4];[9 13 1 5]]);
+%!  assert(ifftshift (y,2), x);
+

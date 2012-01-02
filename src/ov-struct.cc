@@ -480,7 +480,7 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                if (t_rhs.is_map())
+                if (t_rhs.is_map() || t_rhs.is_object ())
                   {
                     octave_map rhs_map = t_rhs.map_value ();
 
@@ -1335,11 +1335,14 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
+
       indent (os);
       os << "scalar structure containing the fields:";
       newline (os);
-      newline (os);
+      if (! Vcompact_format)
+        newline (os);
 
       increment_indent_level ();
 
@@ -2026,6 +2029,7 @@ DEFUN (cell2struct, args, ,
 Convert @var{cell} to a structure.  The number of fields in @var{fields}\n\
 must match the number of elements in @var{cell} along dimension @var{dim},\n\
 that is @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.\n\
+If @var{dim} is omitted, a value of 1 is assumed.\n\
 \n\
 @example\n\
 @group\n\
@@ -2045,63 +2049,87 @@ A(1)\n\
 {
   octave_value retval;
 
-  if (args.length () == 3)
+  int nargin = args.length ();
+
+  if (nargin == 2 || nargin == 3)
     {
       if (! args(0).is_cell ())
-        error ("cell2struct: argument CELL must be of type cell");
-      else if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
-        error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
-      else if (! args(2).is_real_scalar ())
-        error ("cell2struct: DIM must be a real scalar");
-      else
         {
-          const Cell vals = args(0).cell_value ();
-          const Array<std::string> fields = args(1).cellstr_value ();
-          int dim = args(2).int_value () - 1;
-          octave_idx_type ext = 0;
+          error ("cell2struct: argument CELL must be of type cell");
+          return retval;
+        }
 
-          if (dim < 0)
-            error ("cell2struct: DIM must be a valid dimension");
+      if (! (args(1).is_cellstr () || args(1).is_char_matrix ()))
+        {
+          error ("cell2struct: FIELDS must be a cell array of strings or a character matrix");
+          return retval;
+        }
+
+      const Cell vals = args(0).cell_value ();
+      const Array<std::string> fields = args(1).cellstr_value ();
+
+      octave_idx_type ext = 0;
+
+      int dim = 0;
+
+      if (nargin == 3)
+        {
+          if (args(2).is_real_scalar ())
+            {
+              dim = nargin == 2 ? 0 : args(2).int_value () - 1;
+
+              if (error_state)
+                return retval;
+            }
           else
             {
-              ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
-              if (ext != fields.numel ())
-                error ("cell2struct: number of FIELDS does not match dimension");
-            }
-
-
-          if (! error_state)
-            {
-              int nd = std::max (dim+1, vals.ndims ());
-              // result dimensions.
-              dim_vector rdv = vals.dims ().redim (nd);
-
-              assert (ext == rdv(dim));
-              if (nd == 2)
-                {
-                  rdv(0) = rdv(1-dim);
-                  rdv(1) = 1;
-                }
-              else
-                {
-                  for (int i =  dim + 1; i < nd; i++)
-                    rdv(i-1) = rdv(i);
-
-                  rdv.resize (nd-1);
-                }
-
-              octave_map map (rdv);
-              Array<idx_vector> ia (dim_vector (nd, 1), idx_vector::colon);
-
-              for (octave_idx_type i = 0; i < ext; i++)
-                {
-                  ia(dim) = i;
-                  map.setfield (fields(i), vals.index (ia).reshape (rdv));
-                }
-
-              retval = map;
+              error ("cell2struct: DIM must be a real scalar");
+              return retval;
             }
         }
+
+      if (dim < 0)
+        {
+          error ("cell2struct: DIM must be a valid dimension");
+          return retval;
+        }
+
+      ext = vals.ndims () > dim ? vals.dims ()(dim) : 1;
+
+      if (ext != fields.numel ())
+        {
+          error ("cell2struct: number of FIELDS does not match dimension");
+          return retval;
+        }
+
+      int nd = std::max (dim+1, vals.ndims ());
+      // result dimensions.
+      dim_vector rdv = vals.dims ().redim (nd);
+
+      assert (ext == rdv(dim));
+      if (nd == 2)
+        {
+          rdv(0) = rdv(1-dim);
+          rdv(1) = 1;
+        }
+      else
+        {
+          for (int i =  dim + 1; i < nd; i++)
+            rdv(i-1) = rdv(i);
+
+          rdv.resize (nd-1);
+        }
+
+      octave_map map (rdv);
+      Array<idx_vector> ia (dim_vector (nd, 1), idx_vector::colon);
+
+      for (octave_idx_type i = 0; i < ext; i++)
+        {
+          ia(dim) = i;
+          map.setfield (fields(i), vals.index (ia).reshape (rdv));
+        }
+
+      retval = map;
     }
   else
     print_usage ();
@@ -2119,6 +2147,8 @@ A(1)\n\
 %!  assert (s, t);
 %!  assert (struct2cell (s), vals');
 %!  assert (fieldnames (s), keys');
+
+%!assert (cell2struct ({1; 2}, {"a"; "b"}), struct ("a", 1, "b", 2));
 */
 
 
@@ -2186,8 +2216,13 @@ DEFUN (struct_levels_to_print, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} struct_levels_to_print (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the number of\n\
 structure levels to display.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print,
@@ -2198,11 +2233,16 @@ DEFUN (print_struct_array_contents, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} print_struct_array_contents ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} print_struct_array_contents (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies whether to print struct\n\
 array contents.  If true, values of struct array elements are printed.\n\
 This variable does not affect scalar structures.  Their elements\n\
 are always printed.  In both cases, however, printing will be limited to\n\
 the number of levels specified by @var{struct_levels_to_print}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);

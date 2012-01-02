@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} record (@var{sec}, @var{sampling_rate})
-## Records @var{sec} seconds of audio input into the vector @var{x}.  The
+## Record @var{sec} seconds of audio input into the vector @var{x}.  The
 ## default value for @var{sampling_rate} is 8000 samples per second, or
 ## 8kHz.  The program waits until the user types @key{RET} and then
 ## immediately starts to record.

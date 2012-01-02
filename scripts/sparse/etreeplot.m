@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} etreeplot (@var{A})
 ## @deftypefnx {Function File} {} etreeplot (@var{A}, @var{node_style}, @var{edge_style})
 ## Plot the elimination tree of the matrix @var{A} or
-## @code{@var{A}+@var{A}'} if @var{A} in not symmetric.  The optional
+## @xcode{@var{A}+@var{A}'} if @var{A} in not symmetric.  The optional
 ## parameters @var{node_style} and @var{edge_style} define the output
 ## style.
 ## @seealso{treeplot, gplot}

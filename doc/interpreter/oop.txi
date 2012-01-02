@@ -54,18 +54,18 @@ a small understand of the polynomial class itself is necessary to
 fully grasp the techniques described.
 
 The polynomial class is used to represent polynomials of the form
-
-@example
-@group
 @tex
-$a_0 + a_1 x + a_2 x^2 + \ldots a_n x^n$
+$$
+a_0 + a_1 x + a_2 x^2 + \ldots a_n x^n
+$$
 @end tex
 @ifnottex
+
+@example
 a0 + a1 * x + a2 * x^2 + @dots{} + an * x^n
-@end ifnottex
-@end group
 @end example
 
+@end ifnottex
 @noindent
 where
 @tex
@@ -130,9 +130,9 @@ To check where a variable is a user class, the @code{isobject} and
 @group
 p = polynomial ([1, 0, 1]);
 isobject (p)
-@result{} 1
+  @result{} 1
 isa (p, "polynomial")
-@result{} 1
+  @result{} 1
 @end group
 @end example
 
@@ -157,7 +157,7 @@ For example:
 @group
 p = polynomial ([1, 0, 1]);
 ismethod (p, "roots")
-@result{} 1
+  @result{} 1
 @end group
 @end example
 
@@ -292,6 +292,8 @@ The equivalent functionality for subscripted assignments uses the
 
 @DOCSTRING(subsasgn)
 
+@DOCSTRING(optimize_subsasgn_calls)
+
 Note that the @code{subsref} and @code{subsasgn} methods always receive the
 whole index chain, while they usually handle only the first element.  It is the
 responsibility of these methods to handle the rest of the chain (if needed),
@@ -317,7 +319,7 @@ follows:
 @group
 p = polynomial([1,2,3,4]);
 p(end-1)
-@result{} 3
+  @result{} 3
 @end group
 @end example
 
@@ -576,8 +578,8 @@ width 0.6pt \tabskip=0pt\cr
 @item @tab a / b @tab mrdivide (a, b) @tab Matrix right division operator @tab
 @item @tab a .\ b @tab ldivide (a, b) @tab Element-wise left division operator @tab
 @item @tab a \ b @tab mldivide (a, b) @tab Matrix left division operator @tab
-@item @tab a .^ b @tab ldivide (a, b) @tab Element-wise power operator @tab
-@item @tab a ^ b @tab mldivide (a, b) @tab Matrix power operator @tab
+@item @tab a .^ b @tab power (a, b) @tab Element-wise power operator @tab
+@item @tab a ^ b @tab mpower (a, b) @tab Matrix power operator @tab
 @item @tab a < b @tab lt (a, b) @tab Less than operator @tab
 @item @tab a <= b @tab le (a, b) @tab Less than or equal to operator @tab
 @item @tab a > b @tab gt (a, b) @tab Greater than operator @tab

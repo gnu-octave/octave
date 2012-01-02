@@ -44,3 +44,53 @@ function retval = xlim (varargin)
     retval = ret;
   endif
 endfunction
+
+%!demo
+%! clf ();
+%! line ();
+%! xlim ([0.2, 0.8]);
+%! title ("xlim is [0.2, 0.8]");
+%! assert (xlim (), [0.2, 0.8]);
+
+%!demo
+%! clf ();
+%! line ();
+%! xlim ('auto');
+%! title ("xlim is auto");
+%! assert (xlim ("mode"), "auto");
+
+%!demo
+%! clf ();
+%! plot3 ([0,1], [0,1], [0,1]);
+%! xlim ([0.2, 0.8]);
+%! title ("xlim is [0.2, 0.8]");
+%! assert (xlim (), [0.2, 0.8]);
+
+%!demo
+%! clf ();
+%! plot3 ([0,1], [0,1], [0,1]);
+%! xlim ('auto');
+%! title ("xlim is auto");
+%! assert (xlim ("mode"), "auto");
+
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   xlim ([0, 1.1]);
+%!   assert (get (gca, "xlim"), [0, 1.1], eps);
+%!   assert (xlim ("mode"), "manual");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   h = plot3 ([0,1.1], [0,1], [0, 1]);
+%!   assert (get (gca, "xlim"), [0, 1.4], eps);
+%!   assert (xlim ("mode"), "auto");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

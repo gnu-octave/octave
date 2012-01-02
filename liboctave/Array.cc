@@ -84,7 +84,7 @@ template <class T>
 void
 Array<T>::clear (void)
 {
-  if (--rep->count <= 0)
+  if (--rep->count == 0)
     delete rep;
 
   rep = nil_rep ();
@@ -99,7 +99,7 @@ template <class T>
 void
 Array<T>::clear (const dim_vector& dv)
 {
-  if (--rep->count <= 0)
+  if (--rep->count == 0)
     delete rep;
 
   rep = new ArrayRep (dv.safe_numel ());
@@ -1500,7 +1500,7 @@ Array<T>::insert (const Array<T>& a, octave_idx_type r, octave_idx_type c)
       Array<idx_vector> idx (dim_vector (a.ndims (), 1));
       idx(0) = i;
       idx(1) = j;
-      for (int k = 0; k < a.ndims (); k++)
+      for (int k = 2; k < a.ndims (); k++)
         idx(k) = idx_vector (0, a.dimensions(k));
       assign (idx, a);
     }
@@ -2447,10 +2447,11 @@ Array<T>::diag (octave_idx_type k) const
       octave_idx_type nnr = dv (0);
       octave_idx_type nnc = dv (1);
 
-      if (nnr == 0 || nnc == 0)
-        ; // do nothing
+      if (nnr == 0 && nnc == 0)
+        ; // do nothing for empty matrix
       else if (nnr != 1 && nnc != 1)
         {
+          // Extract diag from matrix
           if (k > 0)
             nnc -= k;
           else if (k < 0)
@@ -2482,8 +2483,9 @@ Array<T>::diag (octave_idx_type k) const
             (*current_liboctave_error_handler)
               ("diag: requested diagonal out of range");
         }
-      else if (nnr != 0 && nnc != 0)
+      else
         {
+          // Create diag matrix from vector
           octave_idx_type roff = 0;
           octave_idx_type coff = 0;
           if (k > 0)

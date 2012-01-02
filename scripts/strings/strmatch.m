@@ -19,13 +19,15 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} strmatch (@var{s}, @var{A}, "exact")
-## Return indices of entries of @var{A} that match the string @var{s}.
-## The second argument @var{A} may be a string matrix or a cell array of
-## strings.  If the third argument @code{"exact"} is not given, then
+## @deftypefn  {Function File} {} strmatch (@var{s}, @var{A})
+## @deftypefnx {Function File} {} strmatch (@var{s}, @var{A}, "exact")
+## Return indices of entries of @var{A} which begin with the string @var{s}.
+## The second argument @var{A} must be a string, character matrix, or a cell
+## array of strings.  If the third argument @code{"exact"} is not given, then
 ## @var{s} only needs to match @var{A} up to the length of @var{s}.
-## Trailing whitespace is ignored.
-## Results are returned as a column vector.
+## Trailing spaces and nulls in @var{s} and @var{A} are ignored when matching.
+## option.
+##
 ## For example:
 ##
 ## @example
@@ -33,13 +35,16 @@
 ## strmatch ("apple", "apple juice")
 ##      @result{} 1
 ##
-## strmatch ("apple", ["apple pie"; "apple juice"; "an apple"])
+## strmatch ("apple", ["apple  "; "apple juice"; "an apple"])
 ##      @result{} [1; 2]
 ##
-## strmatch ("apple", @{"apple pie"; "apple juice"; "tomato"@})
-##      @result{} [1; 2]
+## strmatch ("apple", ["apple  "; "apple juice"; "an apple"], "exact")
+##      @result{} [1]
 ## @end group
 ## @end example
+##
+## @strong{Caution:} @code{strmatch} is scheduled for deprecation.  Use
+## @code{strcmpi} or @code{strncmpi} in all new code.
 ## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 
@@ -52,29 +57,19 @@ function idx = strmatch (s, A, exact)
     print_usage ();
   endif
 
-  if (! ischar (s))
+  if (! ischar (s) || (! isempty (s) && ! isvector (s)))
     error ("strmatch: S must be a string");
+  elseif (! (ischar (A) || iscellstr (A)))
+    error ("strmatch: A must be a string or cell array of strings");
   endif
 
-  ## Truncate trailing whitespace.
-  s = strtrimr (s);
-
+  ## Trim blanks and nulls from search string
+  s = regexprep (s, "[ \\0]+$", '');
   len = length (s);
 
   exact = nargin == 3 && ischar (exact) && strcmp (exact, "exact");
 
-  if (iscell (A))
-    if (len > 0)
-      idx = find (strncmp (s, A, len));
-    else
-      idx = find (strcmp (s, A));
-    endif
-    if (exact)
-      ## We can't just use strcmp, because we need to ignore whitespace.
-      B = cellfun (@strtrimr, A(idx), "uniformoutput", false);
-      idx = idx (strcmp (s, B));
-    endif
-  elseif (ischar (A))
+  if (ischar (A))
     [nr, nc] = size (A);
     if (len > nc)
       idx = [];
@@ -82,34 +77,43 @@ function idx = strmatch (s, A, exact)
       match = all (bsxfun (@eq, A(:,1:len), s), 2);
       if (exact)
         AA = A(:,len+1:nc);
-        match &= all (AA == "\0" | AA == " ", 2);
+        match &= all (AA == " " | AA == "\0", 2);
       endif
       idx = find (match);
     endif
   else
-    error ("strmatch: A must be a string or cell array of strings");
+    if (len > 0)
+      idx = find (strncmp (s, A, len));
+    else
+      idx = find (strcmp (s, A));
+    endif
+    if (exact)
+      ## We can't just use strcmp, because we need to ignore spaces at end.
+      B = regexprep (A(idx), "[ \\0]+$", '');
+      idx = idx(strcmp (s, B));
+    endif
   endif
 
 endfunction
 
-## Removes nuls and blanks from the end of the array
-function s = strtrimr (s)
-  blnks = s == "\0" | s == " ";
-  i = find (blnks, 1, "last");
-  if (i && all (blnks(i:end)))
-    s = s(1:i-1);
-  endif
-endfunction
 
-%!error <Invalid call to strmatch> strmatch();
-%!error <Invalid call to strmatch> strmatch("a", "aaa", "exact", 1);
 %!assert (strmatch("a", {"aaa", "bab", "bbb"}), 1);
 %!assert (strmatch ("apple", "apple juice"), 1);
-%!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]),
-%!        [1; 2]);
-%!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}),
-%!        [1; 2]);
+%!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]), [1; 2]);
+%!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}), [1; 2]);
 %!assert (strmatch ("apple pie", "apple"), []);
-%!assert (strmatch ("a b", {"a b", "a c", "c d"}));
-%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
-%!assert (strmatch ('', { '', '% comment line', 'var a = 5', ''}, 'exact'), [1,4])
+%!assert (strmatch ("a ", "a"), 1);
+%!assert (strmatch ("a", "a \0", "exact"), 1);
+%!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1);
+%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4]);
+%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4]);
+
+%% Test input validation
+%!error <Invalid call to strmatch> strmatch();
+%!error <Invalid call to strmatch> strmatch("a");
+%!error <Invalid call to strmatch> strmatch("a", "aaa", "exact", 1);
+%!error <S must be a string> strmatch(1, "aaa");
+%!error <S must be a string> strmatch(char ("a", "bb"), "aaa");
+%!error <A must be a string> strmatch("a", 1);
+%!error <A must be a string> strmatch("a", {"hello", [1]});
+

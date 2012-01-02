@@ -237,10 +237,36 @@
 %!assert(puts (1),-1);
 
 %% test/octave.test/io/puts-3.m
-%!error <Invalid call to puts.*> puts ();
+%!error <Invalid call to puts> puts ();
 
 %% test/octave.test/io/puts-4.m
-%!error <Invalid call to puts.*> puts (1, 2);
+%!error <Invalid call to puts> puts (1, 2);
+
+%!assert (sscanf ('123456', '%10c'), '123456')
+%!assert (sscanf ('123456', '%10s'), '123456')
+
+%!assert (sscanf (['ab'; 'cd'], '%s'), 'acbd');
+
+%!test
+%! [val, count, msg, pos] = sscanf ("3I2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!test
+%! [val, count, msg, pos] = sscanf ("3In2", "%f");
+%! assert (val, 3);
+%! assert (count, 1);
+%! assert (msg, "");
+%! assert (pos, 2);
+
+%!test
+%! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
+%! assert (val, [3; Inf; 2]);
+%! assert (count, 3);
+%! assert (msg, "");
+%! assert (pos, 6);
 
 %% test/octave.test/io/sscanf-1.m
 %!test
@@ -253,13 +279,13 @@
 %! && v2 == [1; 2] && c2 == 2 && ischar (m2)));
 
 %% test/octave.test/io/sscanf-2.m
-%!error <Invalid call to sscanf.*> sscanf ();
+%!error <Invalid call to sscanf> sscanf ();
 
 %% test/octave.test/io/sscanf-3.m
 %!error sscanf (1, 2);
 
 %% test/octave.test/io/sscanf-4.m
-%!error <Invalid call to sscanf.*> sscanf ("foo", "bar", "C", 1);
+%!error <Invalid call to sscanf> sscanf ("foo", "bar", "C", 1);
 
 %% test/octave.test/io/sscanf-5.m
 %!test
@@ -284,7 +310,7 @@
 %!error printf (1);
 
 %% test/octave.test/io/printf-3.m
-%!error <Invalid call to printf.*> printf ();
+%!error <Invalid call to printf> printf ();
 
 %% test/octave.test/io/sprintf-1.m
 %!test
@@ -296,7 +322,7 @@
 %!error sprintf (1);
 
 %% test/octave.test/io/sprintf-3.m
-%!error <Invalid call to sprintf.*> sprintf ();
+%!error <Invalid call to sprintf> sprintf ();
 
 %% test/octave.test/io/fopen-1.m
 %!test
@@ -367,16 +393,16 @@
 %! assert(prog_output_assert("error:.*"));
 
 %% test/octave.test/io/fopen-5.m
-%!error <Invalid call to fopen.*> fopen ();
+%!error <Invalid call to fopen> fopen ();
 
 %% test/octave.test/io/fopen-6.m
-%!error <Invalid call to fopen.*> fopen ("foo", "wb", "native", 1);
+%!error <Invalid call to fopen> fopen ("foo", "wb", "native", 1);
 
 %% test/octave.test/io/fclose-1.m
 %!error fclose (0);
 
 %% test/octave.test/io/fclose-2.m
-%!error <Invalid call to fclose.*> fclose (1, 2);
+%!error <Invalid call to fclose> fclose (1, 2);
 
 %% test/octave.test/io/tmpnam-1.m
 %!assert(ischar (tmpnam ()));
@@ -388,7 +414,7 @@
 %!warning tmpnam ("foo", 1);
 
 %% test/octave.test/io/tmpnam-4.m
-%!error <Invalid call to tmpnam.*> tmpnam (1, 2, 3);
+%!error <Invalid call to tmpnam> tmpnam (1, 2, 3);
 
 %% test/octave.test/io/binary-io-1.m
 %!test
@@ -473,37 +499,37 @@
 %! unlink (nm);
 
 %% test/octave.test/io/fputs-1.m
-%!error <Invalid call to fputs.*> fputs ();
+%!error <Invalid call to fputs> fputs ();
 
 %% test/octave.test/io/fputs-2.m
-%!error <Invalid call to fputs.*> fputs (1, "foo", 1);
+%!error <Invalid call to fputs> fputs (1, "foo", 1);
 
 %% test/octave.test/io/fputs-3.m
 %!assert(fputs (1, 1),-1);
 
 %% test/octave.test/io/fgetl-1.m
-%!error <Invalid call to fgetl.*> fgetl ();
+%!error <Invalid call to fgetl> fgetl ();
 
 %% test/octave.test/io/fgetl-2.m
-%!error <Invalid call to fgetl.*> fgetl (1, 2, 3);
+%!error <Invalid call to fgetl> fgetl (1, 2, 3);
 
 %% test/octave.test/io/fgetl-3.m
 %!error fgetl ("foo", 1);
 
 %% test/octave.test/io/fgets-1.m
-%!error <Invalid call to fgets.*> fgets ();
+%!error <Invalid call to fgets> fgets ();
 
 %% test/octave.test/io/fgets-2.m
-%!error <Invalid call to fgets.*> fgets (1, 2, 3);
+%!error <Invalid call to fgets> fgets (1, 2, 3);
 
 %% test/octave.test/io/fgets-3.m
 %!error fgets ("foo", 1);
 
 %% test/octave.test/io/fprintf-1.m
-%!error <Invalid call to fprintf.*> fprintf ();
+%!error <Invalid call to fprintf> fprintf ();
 
 %% test/octave.test/io/fprintf-2.m
-%!error <Invalid call to fprintf.*> fprintf (1);
+%!error <Invalid call to fprintf> fprintf (1);
 
 %% test/octave.test/io/fprintf-3.m
 %!test
@@ -517,37 +543,37 @@
 %!error fprintf (-1, "foo");
 
 %% test/octave.test/io/fscanf-1.m
-%!error <Invalid call to fscanf.*> fscanf ();
+%!error <Invalid call to fscanf> fscanf ();
 
 %% test/octave.test/io/fscanf-2.m
-%!error <Invalid call to fscanf.*> fscanf (1);
+%!error <Invalid call to fscanf> fscanf (1);
 
 %% test/octave.test/io/fscanf-3.m
 %!error fscanf ("foo", "bar");
 
 %% test/octave.test/io/fread-1.m
-%!error <Invalid call to fread.*> fread ();
+%!error <Invalid call to fread> fread ();
 
 %% test/octave.test/io/fread-2.m
-%!error <Invalid call to fread.*> fread (1, 2, "char", 1, "native", 2);
+%!error <Invalid call to fread> fread (1, 2, "char", 1, "native", 2);
 
 %% test/octave.test/io/fread-3.m
 %!error fread ("foo");
 
 %% test/octave.test/io/fwrite-1.m
-%!error <Invalid call to fwrite.*> fwrite ();
+%!error <Invalid call to fwrite> fwrite ();
 
 %% test/octave.test/io/fwrite-2.m
-%!error <Invalid call to fwrite.*> fwrite (1, rand (10), "char", 1, "native", 2);
+%!error <Invalid call to fwrite> fwrite (1, rand (10), "char", 1, "native", 2);
 
 %% test/octave.test/io/fwrite-3.m
 %!error fwrite ("foo", 1);
 
 %% test/octave.test/io/feof-1.m
-%!error <Invalid call to feof.*> feof ();
+%!error <Invalid call to feof> feof ();
 
 %% test/octave.test/io/feof-2.m
-%!error <Invalid call to feof.*> feof (1, 2);
+%!error <Invalid call to feof> feof (1, 2);
 
 %% test/octave.test/io/feof-3.m
 %!error feof ("foo");
@@ -566,28 +592,28 @@
 %!error ferror ("foo");
 
 %% test/octave.test/io/ftell-1.m
-%!error <Invalid call to ftell.*> ftell ();
+%!error <Invalid call to ftell> ftell ();
 
 %% test/octave.test/io/ftell-2.m
-%!error <Invalid call to ftell.*> ftell (1, 2);
+%!error <Invalid call to ftell> ftell (1, 2);
 
 %% test/octave.test/io/ftell-3.m
 %!error ftell ("foo");
 
 %% test/octave.test/io/fseek-1.m
-%!error <Invalid call to fseek.*> fseek ();
+%!error <Invalid call to fseek> fseek ();
 
 %% test/octave.test/io/fseek-2.m
-%!error <Invalid call to fseek.*> fseek (1, 0, SEEK_SET, 1);
+%!error <Invalid call to fseek> fseek (1, 0, SEEK_SET, 1);
 
 %% test/octave.test/io/fseek-3.m
 %!error fseek ("foo", 0, SEEK_SET);
 
 %% test/octave.test/io/frewind-1.m
-%!error <Invalid call to frewind.*> frewind ();
+%!error <Invalid call to frewind> frewind ();
 
 %% test/octave.test/io/frewind-2.m
-%!error <Invalid call to frewind.*> frewind (1, 2);
+%!error <Invalid call to frewind> frewind (1, 2);
 
 %% test/octave.test/io/frewind-3.m
 %!error frewind ("foo");

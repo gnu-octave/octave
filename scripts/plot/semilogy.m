@@ -26,6 +26,8 @@
 ## Produce a two-dimensional plot using a logarithmic scale for the @var{y}
 ## axis.  See the documentation of @code{plot} for a description of the
 ## arguments that @code{semilogy} will accept.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{plot, semilogx, loglog}
 ## @end deftypefn
 
@@ -60,3 +62,62 @@ function retval = semilogy (varargin)
   end_unwind_protect
 
 endfunction
+
+%!demo
+%! clf ();
+%! x = 1:0.01:10;
+%! y = (x .* (1 + rand (size (x)))) .^ 2;
+%! semilogy (x, y);
+
+%!demo
+%! clf ();
+%! x = logspace (-5, 1, 10);
+%! y = logspace (-5, 1, 10);
+%!
+%! subplot (2, 1, 1);
+%! semilogy (x, y);
+%! ylabel ("semilogy (x, y)");
+%!
+%! subplot (2, 1, 2);
+%! semilogy (x, -y);
+%! ylabel ("semilogy (x, -y)");
+
+%!demo
+%! clf ();
+%! x = logspace (-5, 1, 10);
+%! y = logspace (-5, 1, 10);
+%!
+%! subplot (2, 1, 1);
+%! semilogy (x, y);
+%! set (gca, "ydir", "reverse", "activepositionproperty", "outerposition");
+%! ylabel ({"semilogy (x, y)", "ydir = reversed"});
+%!
+%! subplot (2, 1, 2);
+%! semilogy (x, -y);
+%! set (gca, "ydir", "reverse", "activepositionproperty", "outerposition");
+%! ylabel ({"semilogy (x, -y)", "ydir = reversed"});
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   a = logspace (-5, 1, 10);
+%!   b = logspace (-5, 1, 10);
+%!   semilogy (a, b);
+%!   assert (get (gca, "yscale"), "log");
+%!   assert (get (gca, "xscale"), "linear");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   a = logspace (-5, 1, 10);
+%!   b =-logspace (-5, 1, 10);
+%!   semilogy (a, b);
+%!   axis tight;
+%!   assert (all (get (gca, "ytick") < 0));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+

@@ -37,12 +37,12 @@ function [x, y] = validargs (caller, x, y, byrows_arg)
   elseif (nargin == 4)
     if (strcmpi (byrows_arg, "rows"))
       if (iscell (x) || iscell (y))
-        error ("%s: cells not supported with ""rows""");
+        error ('%s: cells not supported with "rows"', caller);
       elseif (! (ismatrix (x) && ismatrix (y)))
         error ("%s: input arguments must be arrays or cell arrays of strings", caller);
       else
         if (ndims (x) > 2 || ndims (y) > 2)
-          error ("%s: need 2-dimensional matrices for ""rows""", caller);
+          error ('%s: need 2-dimensional matrices for "rows"', caller);
         elseif (columns (x) != columns (y) && ! (isempty (x) || isempty (y)))
           error ("%s: number of columns must match", caller);
         endif

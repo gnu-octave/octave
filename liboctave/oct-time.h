@@ -174,14 +174,14 @@ public:
   octave_base_tm (void)
     : tm_usec (0), tm_sec (0), tm_min (0), tm_hour (0),
       tm_mday (0), tm_mon (0), tm_year (0), tm_wday (0),
-      tm_yday (0), tm_isdst (0), tm_zone ("unknown")
+      tm_yday (0), tm_isdst (0), tm_gmtoff (0), tm_zone ("unknown")
   { }
 
   octave_base_tm (const octave_base_tm& tm)
     : tm_usec (tm.tm_usec), tm_sec (tm.tm_sec), tm_min (tm.tm_min),
       tm_hour (tm.tm_hour), tm_mday (tm.tm_mday), tm_mon (tm.tm_mon),
       tm_year (tm.tm_year), tm_wday (tm.tm_wday), tm_yday (tm.tm_yday),
-      tm_isdst (tm.tm_isdst), tm_zone (tm.tm_zone)
+      tm_isdst (tm.tm_isdst), tm_gmtoff (tm.tm_gmtoff), tm_zone (tm.tm_zone)
   { }
 
   octave_base_tm& operator = (const octave_base_tm& tm)
@@ -198,6 +198,7 @@ public:
         tm_wday = tm.tm_wday;
         tm_yday = tm.tm_yday;
         tm_isdst = tm.tm_isdst;
+        tm_gmtoff = tm.tm_gmtoff;
         tm_zone = tm.tm_zone;
       }
 
@@ -216,6 +217,7 @@ public:
   int wday (void) const { return tm_wday; }
   int yday (void) const { return tm_yday; }
   int isdst (void) const { return tm_isdst; }
+  long gmtoff (void) const { return tm_gmtoff; }
   std::string zone (void) const { return tm_zone; }
 
   octave_base_tm& usec (int v);
@@ -228,6 +230,7 @@ public:
   octave_base_tm& wday (int v);
   octave_base_tm& yday (int v);
   octave_base_tm& isdst (int v);
+  octave_base_tm& gmtoff (long v);
   octave_base_tm& zone (const std::string& s);
 
   std::string strftime (const std::string& fmt) const;
@@ -266,6 +269,9 @@ protected:
 
   // Daylight Savings Time flag.
   int tm_isdst;
+
+  // Time zone.
+  long tm_gmtoff;
 
   // Time zone.
   std::string tm_zone;

@@ -43,9 +43,9 @@
 ## printed rather than arrows.  If the argument 'filled' is given then the
 ## markers as filled.
 ##
-## The optional return value @var{h} provides a quiver group that
-## regroups the components of the quiver plot (body, arrow and marker),
-## and allows them to be changed together
+## The optional return value @var{h} is a graphics handle to a quiver object.
+## A quiver object regroups the components of the quiver plot (body, arrow,
+## and marker), and allows them to be changed together.
 ##
 ## @example
 ## @group
@@ -86,13 +86,13 @@ endfunction
 
 %!demo
 %! clf
-%! colormap (jet (64))
-%! [x,y]=meshgrid (-1:0.1:1);
-%! z=sin(2*pi*sqrt(x.^2+y.^2));
-%! theta=2*pi*sqrt(x.^2+y.^2)+pi/2;
-%! quiver3(x,y,z,sin(theta),cos(theta),ones(size(z)));
+%! colormap (jet (64));
+%! [x,y] = meshgrid (-1:0.1:1);
+%! z = sin (2*pi * sqrt (x.^2+y.^2));
+%! theta = 2*pi * sqrt (x.^2+y.^2) + pi/2;
+%! quiver3 (x, y, z, sin (theta), cos (theta), ones (size (z)));
 %! hold on;
-%! mesh(x,y,z);
+%! mesh (x,y,z);
 %! hold off;
 
 %!demo
@@ -106,5 +106,13 @@ endfunction
 %! hold off;
 
 %!demo
+%! clf
+%! [x, y, z] = peaks (25);
+%! surf (x, y, z);
+%! hold on;
+%! [u, v, w] = surfnorm (x, y, z / 10);
+%! h = quiver3 (x, y, z, u, v, w);
+%! set (h, "maxheadsize", 0.33);
+%! hold off;
 %! shading interp
 

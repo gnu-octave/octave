@@ -21,12 +21,12 @@
 ## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir})
 ## @deftypefnx {Function File} {@var{files} =} unpack (@var{file}, @var{dir}, @var{filetype})
 ## Unpack the archive @var{file} based on its extension to the directory
-## @var{dir}.  If @var{file} is a list of strings, then each file is 
+## @var{dir}.  If @var{file} is a list of strings, then each file is
 ## unpacked individually.  If @var{dir} is not specified, it defaults to
 ## the current directory.  If a directory is in the file list, then the
 ## @var{filetype} must also be specified.
 ##
-## The optional return value is a list of @var{files} unpacked.  
+## The optional return value is a list of @var{files} unpacked.
 ## @seealso{bzip2, gzip, zip, tar}
 ## @end deftypefn
 
@@ -38,12 +38,12 @@ function filelist = unpack (file, dir = ".", filetype = "")
     print_usage ();
   endif
 
-  if (! ischar (file) && ! iscellstr (file)) 
+  if (! ischar (file) && ! iscellstr (file))
     error ("unpack: invalid input file class, %s", class(file));
   endif
 
   ## character arrays of more than one string must be treated as cell strings
-  if (ischar (file) && ! isvector (file)) 
+  if (ischar (file) && ! isvector (file))
     file = cellstr (file);
   endif
 
@@ -222,7 +222,7 @@ function files = __parse_zip__ (output)
   ## Parse the output from zip and unzip.
 
   ## Skip first line which is Archive header
-  output(1) = []; 
+  output(1) = [];
   for i = 1:length (output)
     files{i} = output{i}(14:length(output{i}));
   endfor

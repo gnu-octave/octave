@@ -19,9 +19,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
-## Display a matrix as a color image.  The elements of @var{x} are indices
+## @deftypefnx {Function File} {@var{h} =} image (@dots{})
+## Display a matrix as a color image.  The elements of @var{img} are indices
 ## into the current colormap, and the colormap will be scaled so that the
-## extremes of @var{x} are mapped to the extremes of the colormap.
+## extremes of @var{img} are mapped to the extremes of the colormap.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
@@ -35,6 +36,8 @@
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata,1)}.
+##
+## The optional return value @var{h} is a graphics handle to the image.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
@@ -95,7 +98,7 @@ endfunction
 ## Adapted-By: jwe
 
 function h = __img__ (x, y, img, varargin)
-
+  
   newplot ();
 
   if (isempty (img))
@@ -112,6 +115,15 @@ function h = __img__ (x, y, img, varargin)
 
   xdata = [x(1), x(end)];
   ydata = [y(1), y(end)];
+
+  dx = diff (x);
+  dy = diff (y);
+  dx = std (dx) / mean (abs (dx));
+  dy = std (dy) / mean (abs (dy));
+  tol = 100*eps;
+  if (any (dx > tol) || any (dy > tol))
+    warning ("Image does not map to non-linearly spaced coordinates")
+  endif
 
   ca = gca ();
 
@@ -164,6 +176,7 @@ function h = __img__ (x, y, img, varargin)
 endfunction
 
 %!demo
+%! clf
 %! img = 1 ./ hilb (11);
 %! x = -5:5;
 %! y = x;
@@ -186,4 +199,40 @@ endfunction
 %! set (h, "cdatamapping", "scaled")
 %! title ('image (-x, -y, img)')
 
+%!demo
+%! clf
+%! g = 0.1:0.1:10;
+%! h = g'*g;
+%! imagesc (g, g, sin (h));
+%! hold on
+%! imagesc (g, g+12, cos (h/2));
+%! axis ([0 10 0 22])
+%! hold off
+%! title ("two consecutive images")
+
+%!demo
+%! clf
+%! g = 0.1:0.1:10;
+%! h = g'*g;
+%! imagesc (g, g, sin (h));
+%! hold all
+%! plot (g, 11.0 * ones (size (g)))
+%! imagesc (g, g+12, cos (h/2));
+%! axis ([0 10 0 22])
+%! hold off
+%! title ("image, line, image")
+
+%!demo
+%! clf
+%! g = 0.1:0.1:10;
+%! h = g'*g;
+%! plot (g, 10.5 * ones (size (g)))
+%! hold all
+%! imagesc (g, g, sin (h));
+%! plot (g, 11.0 * ones (size (g)))
+%! imagesc (g, g+12, cos (h/2));
+%! plot (g, 11.5 * ones (size (g)))
+%! axis ([0 10 0 22])
+%! hold off
+%! title ("line, image, line, image, line")
 

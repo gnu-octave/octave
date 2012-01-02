@@ -59,16 +59,16 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
   ## All arguments must either be of the same class or they must be
   ## numeric values.
   t = (all (strcmp (class(x),
-                    cellfun (@class, varargin, "uniformoutput", false)))
+                    cellfun ("class", varargin, "uniformoutput", false)))
        || ((isnumeric (x) || islogical (x))
-           && all (cellfun (@isnumeric, varargin)
-                   | cellfun (@islogical, varargin))));
+           && all (cellfun ("isnumeric", varargin)
+                   | cellfun ("islogical", varargin))));
 
   if (t)
     ## Test that everything has the same number of dimensions.
     s_x = size (x);
     s_v = cellfun (@size, varargin, "uniformoutput", false);
-    t = all (length (s_x) == cellfun (@length, s_v));
+    t = all (length (s_x) == cellfun ("length", s_v));
   endif
 
   if (t)
@@ -96,8 +96,8 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       ## Test the number of fields.
       fn_x = fieldnames (x);
       l_fn_x = length (fn_x);
-      fn_v = cellfun (@fieldnames, varargin, "uniformoutput", false);
-      t = all (l_fn_x == cellfun (@length, fn_v));
+      fn_v = cellfun ("fieldnames", varargin, "uniformoutput", false);
+      t = all (l_fn_x == cellfun ("length", fn_v));
 
       ## Test that all the names are equal.
       idx = 0;
@@ -146,7 +146,7 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     elseif (isa (x, "function_handle"))
 
       ## The == operator is overloaded for handles.
-      t = all (cellfun (@eq, {x}, varargin));
+      t = all (cellfun ("eq", {x}, varargin));
 
     else
       ## Check the numeric types.

@@ -31,3 +31,6 @@ function retval = ispc ()
   endif
 
 endfunction
+
+%!error ispc (1);
+%!assert (islogical (ispc ()));

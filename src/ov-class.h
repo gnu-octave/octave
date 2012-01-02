@@ -54,17 +54,18 @@ public:
       parent_list (), obsolete_copies (0)
     { }
 
-  octave_class (const octave_map& m, const std::string& id)
+  octave_class (const octave_map& m, const std::string& id,
+                const std::list<std::string>& plist)
     : octave_base_value (), map (m), c_name (id),
-      parent_list (), obsolete_copies (0)
+      parent_list (plist), obsolete_copies (0)
     { }
+
+  octave_class (const octave_map& m, const std::string& id,
+                const octave_value_list& parents);
 
   octave_class (const octave_class& s)
     : octave_base_value (s), map (s.map), c_name (s.c_name),
       parent_list (s.parent_list), obsolete_copies (0)  { }
-
-  octave_class (const octave_map& m, const std::string& id,
-                const octave_value_list& parents);
 
   ~octave_class (void) { }
 
@@ -74,7 +75,7 @@ public:
 
   octave_base_value *empty_clone (void) const
   {
-    return new octave_class (octave_map (map.keys ()), class_name ());
+    return new octave_class (octave_map (map.keys ()), c_name, parent_list);
   }
 
   Cell dotref (const octave_value_list& idx);
@@ -93,6 +94,12 @@ public:
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx,
                              int nargout);
+
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& idx)
+  {
+    return subsref ("(", std::list<octave_value_list> (1, idx), nargout);
+  }
 
   static octave_value numeric_conv (const Cell& val,
                                     const std::string& type);
@@ -127,10 +134,18 @@ public:
   size_t nparents (void) const { return parent_list.size (); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return map.reshape (new_dims); }
+    {
+      octave_class retval = octave_class (*this);
+      retval.map = retval.map_value().reshape (new_dims);
+      return octave_value (new octave_class (retval));
+    }
 
   octave_value resize (const dim_vector& dv, bool = false) const
-    { octave_map tmap = map; tmap.resize (dv); return tmap; }
+    {
+      octave_class retval = octave_class (*this);
+      retval.map.resize (dv);
+      return octave_value (new octave_class (retval));
+    }
 
   bool is_defined (void) const { return true; }
 
@@ -151,6 +166,8 @@ public:
   octave_base_value *find_parent_class (const std::string&);
 
   octave_base_value *unique_parent_class (const std::string&);
+
+  string_vector all_strings (bool pad) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 

@@ -42,6 +42,10 @@ FLTK/OpenGL system, and @code{graphics_toolkit ("gnuplot")} selects the
 gnuplot system.  The two systems may be used selectively through the use
 of the @code{graphics_toolkit} property of the graphics handle for each
 figure.  This is explained in @ref{Graphics Data Structures}.
+@strong{Caution:} The FLTK toolkit uses single precision variables internally
+which limits the maximum value that can be displayed to approximately
+@math{10^{38}}.  If your data contains larger values you must use the gnuplot
+toolkit which supports values up to @math{10^{308}}.
 
 @node High-Level Plotting
 @section High-Level Plotting
@@ -54,7 +58,7 @@ and @ref{Advanced Plotting}.
 
 @menu
 * Two-Dimensional Plots::       
-* Three-Dimensional Plotting::  
+* Three-Dimensional Plots::  
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
@@ -65,6 +69,12 @@ and @ref{Advanced Plotting}.
 
 @node Two-Dimensional Plots
 @subsection Two-Dimensional Plots
+
+@menu
+* Axis Configuration::  
+* Two-dimensional Function Plotting::  
+* Two-dimensional Geometric Shapes::  
+@end menu
 
 The @code{plot} function allows you to create simple x-y plots with
 linear axes.  For example,
@@ -219,6 +229,9 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(comet3)
 
+@node Axis Configuration
+@subsubsection Axis Configuration
+
 The axis function may be used to change the axis limits of an existing
 plot and various other axis properties, such as the aspect ratio and the
 appearance of tic marks.
@@ -236,10 +249,6 @@ get or set individual axis limits.  Each has the same form.
 @anchor{doc-ylim}
 @anchor{doc-zlim}
 @DOCSTRING(xlim)
-
-@menu
-* Two-dimensional Function Plotting::  
-@end menu
 
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
@@ -275,8 +284,13 @@ function include @code{ezplot}, @code{ezcontour}, @code{ezcontourf} and
 
 @DOCSTRING(ezpolar)
 
-@node Three-Dimensional Plotting
-@subsection Three-Dimensional Plotting
+@node Two-dimensional Geometric Shapes
+@subsubsection Two-dimensional Geometric Shapes
+
+@DOCSTRING(rectangle)
+
+@node Three-Dimensional Plots
+@subsection Three-Dimensional Plots
 
 The function @code{mesh} produces mesh surface plots.  For example,
 
@@ -343,6 +357,12 @@ three-dimensional plots.
 
 @DOCSTRING(surfnorm)
 
+@DOCSTRING(isosurface)
+
+@DOCSTRING(isonormals)
+
+@DOCSTRING(isocolors)
+
 @DOCSTRING(diffuse)
 
 @DOCSTRING(specular)
@@ -364,9 +384,22 @@ three-dimensional plots.
 @DOCSTRING(scatter3)
 
 @menu
+* Aspect Ratio::
 * Three-dimensional Function Plotting::  
 * Three-dimensional Geometric Shapes::  
 @end menu
+
+@node Aspect Ratio
+@subsubsection Aspect Ratio
+
+For three-dimensional plots the aspect ratio can be set for data with
+@code{daspect} and for the plot box with @code{pbaspect}.  
+See @ref{Axis Configuration} for controlling the x-, y-, and z-limits for
+plotting.
+
+@DOCSTRING(daspect)
+
+@DOCSTRING(pbaspect)
 
 @node Three-dimensional Function Plotting
 @subsubsection Three-dimensional Function Plotting
@@ -823,13 +856,16 @@ writes the current figure to an encapsulated PostScript file called
 
 The user can select points on a plot with the @code{ginput} function or
 selection the position at which to place text on the plot with the
-@code{gtext} function using the mouse.
+@code{gtext} function using the mouse.  Menus may also be created
+and populated with specific user commands via the @code{uimenu} function.
 
 @DOCSTRING(ginput)
 
 @DOCSTRING(waitforbuttonpress)
 
 @DOCSTRING(gtext)
+
+@DOCSTRING(uimenu)
 
 @node Test Plotting Functions
 @subsection Test Plotting Functions
@@ -1772,6 +1808,7 @@ The RGB color of the line, or a color name.  @xref{Colors}.
 @item deletefcn
 
 @item displayname
+The text of the legend entry corresponding to this line.
 
 @item erasemode
 
@@ -1782,11 +1819,6 @@ The RGB color of the line, or a color name.  @xref{Colors}.
 @item interpreter
 
 @item interruptible
-
-@item keylabel
-The text of the legend entry corresponding to this line.  Note that this
-property is not compatible with @sc{matlab} and may be removed in a
-future version of Octave.
 
 @item ldata
 The lower errorbar in the y direction to be plotted.
@@ -1889,6 +1921,7 @@ The color of the text.  @xref{Colors}.
 @item deletefcn
 
 @item displayname
+The text of the legend entry corresponding to this line.
 
 @item edgecolor
 
@@ -2096,6 +2129,9 @@ Data defining the patch object.
 
 @item diffusestrength
 
+@item displayname
+The text of the legend entry corresponding to this line.
+
 @item edgealpha
 
 @item edgecolor
@@ -2126,8 +2162,6 @@ The fill color of the patch.  @xref{Colors}.
 @item interpreter
 
 @item interruptible
-
-@item keylabel
 
 @item linestyle
 @xref{Line Styles}.
@@ -2246,6 +2280,9 @@ The @code{surface} properties are:
 
 @item diffusestrength
 
+@item displayname
+The text of the legend entry corresponding to this surface.
+
 @item edgealpha
 
 @item edgecolor
@@ -2267,11 +2304,6 @@ The @code{surface} properties are:
 @item interpreter
 
 @item interruptible
-
-@item keylabel
-The text of the legend entry corresponding to this surface.  Note that
-this property is not compatible with @sc{matlab} and may be removed in a
-future version of Octave.
 
 @item linestyle
 
@@ -2360,7 +2392,11 @@ defaults} (the initial values) and @dfn{user-defined defaults}, which
 may override the factory defaults.
 
 Although default values may be set for any object, they are set in
-parent objects and apply to child objects.  For example,
+parent objects and apply to child objects, of the specified object type.
+For example, setting the default @code{color} property of @code{line}
+objects to "green", for the @code{root} object, will result in all
+@code{line} objects inheriting the @code{color} "green" as the default
+value.
 
 @example
 set (0, "defaultlinecolor", "green");
@@ -2444,11 +2480,13 @@ returns a list of factory defaults.
 @node Advanced Plotting
 @section Advanced Plotting
 
+
 @menu
 * Colors::                      
 * Line Styles::                 
 * Marker Styles::               
 * Callbacks::                   
+* Application-defined Data::
 * Object Groups::               
 * Graphics Toolkits::           
 @end menu
@@ -2476,16 +2514,19 @@ Line styles are specified by the following properties:
 May be one of
 @table @code
 @item "-"
-Solid lines.
+Solid line.  [default]
 
 @item "--"
-Dashed lines.
+Dashed line.
 
 @item ":"
-Points.
+Dotted line.
 
 @item "-."
 A dash-dot line.
+
+@item "none"
+No line.  Points will still be marked using the current Marker Style.
 @end table
 
 @item linewidth
@@ -2516,6 +2557,11 @@ should not be filled.  @xref{Colors}.
 A number specifying the size of the marker.  The default is 1.  A value
 of 2 is twice as large as the default, etc.
 @end table
+
+The @code{colstyle} function will parse a @code{plot}-style specification
+and will return the color, line, and marker values that would result.
+
+@DOCSTRING(colstyle)
 
 @node Callbacks
 @subsection Callbacks
@@ -2590,6 +2636,22 @@ functions.
 
 Callbacks can equally be added to properties with the @code{addlistener}
 function described below.
+
+@node Application-defined Data
+@subsection Application-defined Data 
+@cindex application-defined data
+
+Octave has a provision for attaching application-defined data to a graphics
+handle.  The data can be anything which is meaningful to the application, and
+will be completely ignored by Octave.
+
+@DOCSTRING(setappdata)
+
+@DOCSTRING(getappdata)
+
+@DOCSTRING(rmappdata)
+
+@DOCSTRING(isappdata)
 
 @node Object Groups
 @subsection Object Groups

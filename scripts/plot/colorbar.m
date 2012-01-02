@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} colorbar (@var{s})
 ## @deftypefnx {Function File} {} colorbar ("peer", @var{h}, @dots{})
-## Adds a colorbar to the current axes.  Valid values for @var{s} are
+## Add a colorbar to the current axes.  Valid values for @var{s} are
 ##
 ## @table @asis
 ## @item "EastOutside"

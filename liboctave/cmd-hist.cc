@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "lo-error.h"
+#include "singleton-cleanup.h"
 #include "str-vec.h"
 
 command_history *command_history::instance = 0;
@@ -467,7 +468,12 @@ command_history::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    make_command_history ();
+    {
+      make_command_history ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

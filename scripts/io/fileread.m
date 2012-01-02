@@ -18,8 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{str} =} fileread (@var{filename})
-## Read the contents of a file and return it as a string.
-## @seealso{fread, textread}
+## Read the contents of @var{filename} and return it as a string.
+## @seealso{fread, textread, sscanf}
 ## @end deftypefn
 
 function str = fileread (filename)
@@ -29,7 +29,7 @@ function str = fileread (filename)
   endif
 
   if (! ischar (filename))
-    error ("fileread: argument must be a string");
+    error ("fileread: FILENAME argument must be a string");
   endif
 
   fid = fopen (filename, "r");
@@ -44,4 +44,20 @@ function str = fileread (filename)
   end_unwind_protect
 
 endfunction
+
+
+%!test
+%! cstr = {"Hello World", "The answer is 42", "Goodbye World"};
+%! fname = tmpnam ();
+%! fid = fopen (fname, "w");
+%! fprintf (fid, "%s\n", cstr{:})
+%! fclose (fid);
+%! str = fileread (fname);
+%! assert (str', [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
+%! unlink (fname);
+
+%% Test input validation
+%!error fileread ()
+%!error fileread (1, 2)
+%!error <FILENAME argument must be a string> fileread (1)
 

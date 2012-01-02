@@ -42,38 +42,29 @@ function num = menu (title, varargin)
   ## Don't send the menu through the pager since doing that can cause
   ## major confusion.
 
-  save_page_screen_output = page_screen_output ();
+  page_screen_output (0, "local");
 
-  unwind_protect
+  if (! isempty (title))
+    disp (title);
+    printf ("\n");
+  endif
 
-    page_screen_output (0);
+  nopt = nargin - 1;
 
-    if (! isempty (title))
-      disp (title);
-      printf ("\n");
+  while (1)
+    for i = 1:nopt
+      printf ("  [%2d] ", i);
+      disp (varargin{i});
+    endfor
+    printf ("\n");
+    s = input ("pick a number, any number: ", "s");
+    num = sscanf (s, "%d");
+    if (! isscalar (num) || num < 1 || num > nopt)
+      printf ("\nerror: input invalid or out of range\n\n");
+    else
+      break;
     endif
-
-    nopt = nargin - 1;
-
-    while (1)
-      for i = 1:nopt
-        printf ("  [%2d] ", i);
-        disp (varargin{i});
-      endfor
-      printf ("\n");
-      s = input ("pick a number, any number: ", "s");
-      num = sscanf (s, "%d");
-      if (! isscalar (num) || num < 1 || num > nopt)
-        printf ("\nerror: input invalid or out of range\n\n");
-      else
-        break;
-      endif
-    endwhile
-
-  unwind_protect_cleanup
-
-    page_screen_output (save_page_screen_output);
-
-  end_unwind_protect
+  endwhile
 
 endfunction
+

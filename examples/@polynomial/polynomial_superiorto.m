@@ -1,13 +1,14 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polynomial ()
+## @deftypefn  {Function File} {} polynomial ()
 ## @deftypefnx {Function File} {} polynomial (@var{a})
-## Creates a polynomial object representing the polynomial
+## Create a polynomial object representing the polynomial
 ##
 ## @example
 ## a0 + a1 * x + a2 * x^2 + @dots{} + an * x^n
 ## @end example
 ##
-## from a vector of coefficients [a0 a1 a2 ... an].
+## @noindent
+## from a vector of coefficients [a0 a1 a2 @dots{} an].
 ## @end deftypefn
 
 function p = polynomial (a)

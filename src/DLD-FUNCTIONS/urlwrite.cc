@@ -46,13 +46,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cell.h"
 #include "pager.h"
 #include "oct-map.h"
+#include "oct-refcount.h"
 #include "unwind-prot.h"
 
 #ifdef HAVE_CURL
 
 #include <curl/curl.h>
 #include <curl/curlver.h>
-#include <curl/types.h>
 #include <curl/easy.h>
 
 static int
@@ -113,11 +113,11 @@ private:
           {
             BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-            CURLcode res = curl_easy_perform (curl);
-            if (res != CURLE_OK)
+            errnum = curl_easy_perform (curl);
+            if (errnum != CURLE_OK)
               {
                 if (curlerror)
-                  error ("%s", curl_easy_strerror (res));
+                  error ("%s", curl_easy_strerror (errnum));
               }
             else
               retval = true;
@@ -142,10 +142,11 @@ private:
         return !ascii;
       }
 
-    size_t count;
+    octave_refcount<size_t> count;
     std::string host;
     bool valid;
     bool ascii;
+    mutable CURLcode errnum;
 
   private:
     CURL *curl;
@@ -251,11 +252,7 @@ public:
 
   std::string lasterror (void) const
     {
-      CURLcode errnum;
-
-      curl_easy_getinfo (rep->handle(), CURLINFO_OS_ERRNO, &errnum);
-
-      return std::string (curl_easy_strerror (errnum));
+      return std::string (curl_easy_strerror (rep->errnum));
     }
 
   void set_ostream (std::ostream& os) const
@@ -690,7 +687,7 @@ Download a remote file specified by its @var{url} and save it as\n\
 \n\
 @example\n\
 @group\n\
-urlwrite (\"ftp://ftp.octave.org/pub/octave/README\", \n\
+urlwrite (\"ftp://ftp.octave.org/pub/octave/README\",\n\
           \"README.txt\");\n\
 @end group\n\
 @end example\n\
@@ -809,8 +806,8 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   frame.add_fcn (cleanup_urlwrite, filename);
 
-  bool res;
-  curl_handle curl = curl_handle (url, method, param, ofile, res);
+  bool ok;
+  curl_handle curl = curl_handle (url, method, param, ofile, ok);
 
   ofile.close ();
 
@@ -821,7 +818,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   if (nargout > 0)
     {
-      if (res)
+      if (ok)
         {
           retval(2) = std::string ();
           retval(1) = true;
@@ -835,7 +832,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
         }
     }
 
-  if (nargout < 2 && res)
+  if (nargout < 2 && ! ok)
     error ("urlwrite: curl: %s", curl.lasterror ().c_str ());
 
 #else
@@ -943,18 +940,18 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   std::ostringstream buf;
 
-  bool res;
-  curl_handle curl = curl_handle (url, method, param, buf, res);
+  bool ok;
+  curl_handle curl = curl_handle (url, method, param, buf, ok);
 
   if (nargout > 0)
     {
-      retval(0) = buf.str ();
-      retval(1) = res;
       // Return empty string if no error occured.
-      retval(2) = res ? "" : curl.lasterror ();
+      retval(2) = ok ? "" : curl.lasterror ();
+      retval(1) = ok;
+      retval(0) = buf.str ();
     }
 
-  if (nargout < 2 && !res)
+  if (nargout < 2 && ! ok)
     error ("urlread: curl: %s", curl.lasterror().c_str());
 
 #else

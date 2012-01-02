@@ -53,6 +53,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "ov-class.h"
 #include "ov-float.h"
 #include "ov-complex.h"
 #include "ov-flt-complex.h"
@@ -106,10 +107,25 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN (all, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} all (@var{x}, @var{dim})\n\
-The function @code{all} behaves like the function @code{any}, except\n\
-that it returns true only if all the elements of a vector, or all the\n\
-elements along dimension @var{dim} of a matrix, are nonzero.\n\
+@deftypefn  {Built-in Function} {} all (@var{x})\n\
+@deftypefnx {Built-in Function} {} all (@var{x}, @var{dim})\n\
+For a vector argument, return true (logical 1) if all elements of the vector\n\
+are nonzero.\n\
+\n\
+For a matrix argument, return a row vector of logical ones and\n\
+zeros with each element indicating whether all of the elements of the\n\
+corresponding column of the matrix are nonzero.  For example:\n\
+\n\
+@example\n\
+@group\n\
+all ([2, 3; 1, 0]))\n\
+     @result{} [ 1, 0 ]\n\
+@end group\n\
+@end example\n\
+\n\
+If the optional argument @var{dim} is supplied, work along dimension\n\
+@var{dim}.\n\
+@seealso{any}\n\
 @end deftypefn")
 {
   ANY_ALL (all);
@@ -133,18 +149,19 @@ elements along dimension @var{dim} of a matrix, are nonzero.\n\
 %! && all (x, 1) == [0, 1, 1]
 %! && all (x, 2) == [0; 1; 1]));
 
-%!error <Invalid call to all.*> all ();
-%!error <Invalid call to all.*> all (1, 2, 3);
+%!error <Invalid call to all> all ();
+%!error <Invalid call to all> all (1, 2, 3);
 
  */
 
 DEFUN (any, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} any (@var{x}, @var{dim})\n\
-For a vector argument, return 1 if any element of the vector is\n\
-nonzero.\n\
+@deftypefn  {Built-in Function} {} any (@var{x})\n\
+@deftypefnx {Built-in Function} {} any (@var{x}, @var{dim})\n\
+For a vector argument, return true (logical 1) if any element of the vector\n\
+is nonzero.\n\
 \n\
-For a matrix argument, return a row vector of ones and\n\
+For a matrix argument, return a row vector of logical ones and\n\
 zeros with each element indicating whether any of the elements of the\n\
 corresponding column of the matrix are nonzero.  For example:\n\
 \n\
@@ -164,6 +181,7 @@ any (eye (2, 4), 2)\n\
      @result{} [ 1; 1 ]\n\
 @end group\n\
 @end example\n\
+@seealso{all}\n\
 @end deftypefn")
 {
   ANY_ALL (any);
@@ -187,8 +205,8 @@ any (eye (2, 4), 2)\n\
 %! && any (x, 1) == [0, 0, 1]
 %! && any (x, 2) == [0; 0; 1]));
 
-%!error <Invalid call to any.*> any ();
-%!error <Invalid call to any.*> any (1, 2, 3);
+%!error <Invalid call to any> any ();
+%!error <Invalid call to any> any (1, 2, 3);
 
  */
 
@@ -275,8 +293,8 @@ and orientation.\n\
 %! x = single([1, 3, 1, 1, 1, 1, 3, 1]);
 %! assert(atan2 (y, x), v, sqrt (eps('single')));
 
-%!error <Invalid call to atan2.*> atan2 ();
-%!error <Invalid call to atan2.*> atan2 (1, 2, 3);
+%!error <Invalid call to atan2> atan2 ();
+%!error <Invalid call to atan2> atan2 (1, 2, 3);
 
 */
 
@@ -501,7 +519,7 @@ DEFUN (rem, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Mapping Function} {} rem (@var{x}, @var{y})\n\
 @deftypefnx {Mapping Function} {} fmod (@var{x}, @var{y})\n\
-Return the remainder of the division @code{@var{x} / @var{y}}, computed \n\
+Return the remainder of the division @code{@var{x} / @var{y}}, computed\n\
 using the expression\n\
 \n\
 @example\n\
@@ -571,7 +589,7 @@ agree, or if either of the arguments is complex.\n\
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, xrem, "rem");
+              retval = binmap<float> (a0, a1, xrem<float>, "rem");
             }
         }
       else
@@ -585,13 +603,13 @@ agree, or if either of the arguments is complex.\n\
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, xrem, "rem");
+              retval = binmap<double> (m0, m1, xrem<double>, "rem");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, xrem, "rem");
+              retval = binmap<double> (a0, a1, xrem<double>, "rem");
             }
         }
     }
@@ -704,7 +722,7 @@ either of the arguments is complex.\n\
             {
               FloatNDArray a0 = args(0).float_array_value ();
               FloatNDArray a1 = args(1).float_array_value ();
-              retval = binmap<float> (a0, a1, xmod, "mod");
+              retval = binmap<float> (a0, a1, xmod<float>, "mod");
             }
         }
       else
@@ -718,13 +736,13 @@ either of the arguments is complex.\n\
             {
               SparseMatrix m0 = args(0).sparse_matrix_value ();
               SparseMatrix m1 = args(1).sparse_matrix_value ();
-              retval = binmap<double> (m0, m1, xmod, "mod");
+              retval = binmap<double> (m0, m1, xmod<double>, "mod");
             }
           else
             {
               NDArray a0 = args(0).array_value ();
               NDArray a1 = args(1).array_value ();
-              retval = binmap<double> (a0, a1, xmod, "mod");
+              retval = binmap<double> (a0, a1, xmod<double>, "mod");
             }
         }
     }
@@ -1061,7 +1079,7 @@ Cumulative product of elements along dimension @var{dim}.  If\n\
 %!assert (cumprod (single([i, 2+i, -3+2i, 4])), single([i, -1+2i, -1-8i, -4-32i]));
 %!assert (cumprod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; i, 4i, 9i; -1+i, -8+8i, -27+27i]));
 
-%!error <Invalid call to cumprod.*> cumprod ();
+%!error <Invalid call to cumprod> cumprod ();
 
 %!assert (cumprod ([2, 3; 4, 5], 1), [2, 3; 8, 15]);
 %!assert (cumprod ([2, 3; 4, 5], 2), [2, 6; 4, 20]);
@@ -1076,12 +1094,13 @@ DEFUN (cumsum, args, ,
 @deftypefn  {Built-in Function} {} cumsum (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
 @deftypefnx {Built-in Function} {} cumsum (@dots{}, 'native')\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'double')\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'extra')\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-The \"native\" argument implies the summation is performed in native type.\n\
- See @code{sum} for a complete description and example of the use of\n\
-\"native\".\n\
+See @code{sum} for an explanation of the optional parameters 'native',\n\
+'double', and 'extra'.\n\
 @seealso{sum, cumprod}\n\
 @end deftypefn")
 {
@@ -1211,7 +1230,7 @@ The \"native\" argument implies the summation is performed in native type.\n\
 %!assert (cumsum (single([i, 2+i, -3+2i, 4])), single([i, 2+2i, -1+4i, 3+4i]));
 %!assert (cumsum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; 1+i, 2+2i, 3+3i; 2+2i, 4+4i, 6+6i]));
 
-%!error <Invalid call to cumsum.*> cumsum ();
+%!error <Invalid call to cumsum> cumsum ();
 
 %!assert (cumsum ([1, 2; 3, 4], 1), [1, 2; 4, 6]);
 %!assert (cumsum ([1, 2; 3, 4], 2), [1, 3; 3, 7]);
@@ -1223,7 +1242,11 @@ The \"native\" argument implies the summation is performed in native type.\n\
 
 DEFUN (diag, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} diag (@var{v}, @var{k})\n\
+@deftypefn  {Built-in Function} {@var{M} =} diag (@var{v})\n\
+@deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{k})\n\
+@deftypefnx {Built-in Function} {@var{M} =} diag (@var{v}, @var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {@var{v} =} diag (@var{M})\n\
+@deftypefnx {Built-in Function} {@var{v} =} diag (@var{M}, @var{k})\n\
 Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The\n\
 second argument is optional.  If it is positive, the vector is placed on\n\
 the @var{k}-th super-diagonal.  If it is negative, it is placed on the\n\
@@ -1241,6 +1264,10 @@ diag ([1, 2, 3], 1)\n\
 @end example\n\
 \n\
 @noindent\n\
+The 3-input form returns a diagonal matrix with vector @var{v} on the main\n\
+diagonal and the resulting matrix being of size @var{m} rows x @var{n}\n\
+columns.\n\
+\n\
 Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 @var{k}-th diagonal of the matrix.\n\
 @end deftypefn")
@@ -1291,6 +1318,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag ([1, 0, 0; 0, 2, 0; 0, 0, 3]), [1; 2; 3]);
 %!assert(diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3]);
 %!assert(diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3]);
+%!assert(diag (ones(1, 0), 2), zeros (2));
+%!assert(diag (1:3, 4, 2), [1, 0; 0, 2; 0, 0; 0, 0]);
 
 %!assert(full (diag (single([1; 2; 3]))), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
 %!assert(diag (single([1; 2; 3]), 1), single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]));
@@ -1312,7 +1341,11 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!assert(diag (int8([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8([1; 2; 3]));
 %!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
 
-%!error <Invalid call to diag.*> diag ();
+%% Test input validation
+%!error <Invalid call to diag> diag ();
+%!error <Invalid call to diag> diag (1,2,3,4);
+%!error diag (ones (2), 3, 3);
+%!error diag (1:3, -4, 3);
 
  */
 
@@ -1340,7 +1373,7 @@ omitted, it defaults to the first non-singleton dimension.\n\
 %!assert (prod (single([i, 2+i, -3+2i, 4])), single(-4 - 32i));
 %!assert (prod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([-1+i, -8+8i, -27+27i]));
 
-%!error <Invalid call to prod.*> prod ();
+%!error <Invalid call to prod> prod ();
 
 %!assert (prod ([1, 2; 3, 4], 1), [3, 8]);
 %!assert (prod ([1, 2; 3, 4], 2), [2; 12]);
@@ -1495,9 +1528,135 @@ do_single_type_concat_map (const octave_value_list& args,
 }
 
 static octave_value
-do_cat (const octave_value_list& args, int dim, std::string fname)
+attempt_type_conversion (const octave_value& ov, std::string dtype)
 {
   octave_value retval;
+
+  // First try to find function in the class of OV that can convert to
+  // the dispatch type dtype.  It will have the name of the dispatch
+  // type.
+
+  std::string cname = ov.class_name ();
+
+  octave_value fcn = symbol_table::find_method (dtype, cname);
+
+  if (fcn.is_defined ())
+    {
+      octave_value_list result
+        = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+
+      if (! error_state && result.length () > 0)
+        retval = result(0);
+      else
+        error ("conversion from %s to %s failed", dtype.c_str (),
+               cname.c_str ());
+    }
+  else
+    {
+      // No conversion function available.  Try the constructor for the
+      // dispatch type.
+
+      fcn = symbol_table::find_method (dtype, dtype);
+
+      if (fcn.is_defined ())
+        {
+          octave_value_list result
+            = fcn.do_multi_index_op (1, octave_value_list (1, ov));
+
+          if (! error_state && result.length () > 0)
+            retval = result(0);
+          else
+            error ("%s constructor failed for %s argument", dtype.c_str (),
+                   cname.c_str ());
+        }
+      else
+        error ("no constructor for %s!", dtype.c_str ());
+    }
+
+  return retval;
+}
+
+octave_value
+do_class_concat (const octave_value_list& ovl, std::string cattype, int dim)
+{
+  octave_value retval;
+
+  // Get dominant type for list
+
+  std::string dtype = get_dispatch_type (ovl);
+
+  octave_value fcn = symbol_table::find_method (cattype, dtype);
+
+  if (fcn.is_defined ())
+    {
+      // Have method for dominant type, so call it and let it handle
+      // conversions.
+
+      octave_value_list tmp2 = fcn.do_multi_index_op (1, ovl);
+
+      if (! error_state)
+        {
+          if (tmp2.length () > 0)
+            retval = tmp2(0);
+          else
+            {
+              error ("%s/%s method did not return a value",
+                     dtype.c_str (), cattype.c_str ());
+              goto done;
+            }
+        }
+      else
+        goto done;
+    }
+  else
+    {
+      // No method for dominant type, so attempt type conversions for
+      // all elements that are not of the dominant type, then do the
+      // default operation for octave_class values.
+
+      octave_idx_type j = 0;
+      octave_idx_type len = ovl.length ();
+      octave_value_list tmp (len, octave_value ());
+      for (octave_idx_type k = 0; k < len; k++)
+        {
+          octave_value elt = ovl(k);
+
+          std::string t1_type = elt.class_name ();
+
+          if (t1_type == dtype)
+            tmp(j++) = elt;
+          else if (elt.is_object () || ! elt.is_empty ())
+            {
+              tmp(j++) = attempt_type_conversion (elt, dtype);
+
+              if (error_state)
+                goto done;
+            }
+        }
+
+      tmp.resize (j);
+
+      octave_map m = do_single_type_concat_map (tmp, dim);
+
+      std::string cname = tmp(0).class_name ();
+      std::list<std::string> parents = tmp(0).parent_class_name_list ();
+
+      retval = octave_value (new octave_class (m, cname, parents));
+    }
+
+ done:
+  return retval;
+}
+
+static octave_value
+do_cat (const octave_value_list& xargs, int dim, std::string fname)
+{
+  octave_value retval;
+
+  // We may need to convert elements of the list to cells, so make a
+  // copy.  This should be efficient, it is done mostly by incrementing
+  // reference counts.
+  octave_value_list args = xargs;
 
   int n_args = args.length ();
 
@@ -1507,18 +1666,28 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
     retval = args(0);
   else if (n_args > 1)
     {
+      std::string result_type;
 
-      std::string result_type = args(0).class_name ();
+      bool all_sq_strings_p = true;
+      bool all_dq_strings_p = true;
+      bool all_real_p = true;
+      bool all_cmplx_p = true;
+      bool any_sparse_p = false;
+      bool any_cell_p = false;
+      bool any_class_p = false;
 
-      bool all_sq_strings_p = args(0).is_sq_string ();
-      bool all_dq_strings_p = args(0).is_dq_string ();
-      bool all_real_p = args(0).is_real_type ();
-      bool any_sparse_p = args(0).is_sparse_type();
+      bool first_elem_is_struct = false;
 
-      for (int i = 1; i < args.length (); i++)
+      for (int i = 0; i < n_args; i++)
         {
-          result_type =
-            get_concat_class (result_type, args(i).class_name ());
+          if (i == 0)
+            {
+              result_type = args(i).class_name ();
+
+              first_elem_is_struct = args(i).is_map ();
+            }
+          else
+            result_type = get_concat_class (result_type, args(i).class_name ());
 
           if (all_sq_strings_p && ! args(i).is_sq_string ())
             all_sq_strings_p = false;
@@ -1526,11 +1695,30 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
             all_dq_strings_p = false;
           if (all_real_p && ! args(i).is_real_type ())
             all_real_p = false;
+          if (all_cmplx_p && ! (args(i).is_complex_type () || args(i).is_real_type ()))
+            all_cmplx_p = false;
           if (!any_sparse_p && args(i).is_sparse_type ())
             any_sparse_p = true;
+          if (!any_cell_p && args(i).is_cell ())
+            any_cell_p = true;
+          if (!any_class_p && args(i).is_object ())
+            any_class_p = true;
         }
 
-      if (result_type == "double")
+      if (any_cell_p && ! any_class_p && ! first_elem_is_struct)
+        {
+          for (int i = 0; i < n_args; i++)
+            {
+              if (! args(i).is_cell ())
+                args(i) = Cell (args(i));
+            }
+        }
+
+      if (any_class_p)
+        {
+          retval = do_class_concat (args, fname, dim);
+        }
+      else if (result_type == "double")
         {
           if (any_sparse_p)
             {
@@ -1671,29 +1859,240 @@ do_cat (const octave_value_list& args, int dim, std::string fname)
 DEFUN (horzcat, args, ,
        "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} horzcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the horizontal concatenation of N-d array objects, @var{array1},\n\
+Return the horizontal concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension 2.\n\
+\n\
+Arrays may also be concatenated horizontally using the syntax for creating\n\
+new matrices.  For example:\n\
+\n\
+@example\n\
+@var{hcat} = [ @var{array1}, @var{array2}, @dots{} ];\n\
+@end example\n\
 @seealso{cat, vertcat}\n\
 @end deftypefn")
 {
   return do_cat (args, -2, "horzcat");
 }
 
+/*
+%% test concatenation with all zero matrices
+%!assert(horzcat ('', 65*ones(1,10)), 'AAAAAAAAAA');
+%!assert(horzcat (65*ones(1,10), ''), 'AAAAAAAAAA');
+
+%!assert (class (horzcat (int64(1), int64(1))), 'int64')
+%!assert (class (horzcat (int64(1), int32(1))), 'int64')
+%!assert (class (horzcat (int64(1), int16(1))), 'int64')
+%!assert (class (horzcat (int64(1), int8(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint64(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint32(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint16(1))), 'int64')
+%!assert (class (horzcat (int64(1), uint8(1))), 'int64')
+%!assert (class (horzcat (int64(1), single(1))), 'int64')
+%!assert (class (horzcat (int64(1), double(1))), 'int64')
+%!assert (class (horzcat (int64(1), cell(1))), 'cell')
+%!assert (class (horzcat (int64(1), true)), 'int64')
+%!assert (class (horzcat (int64(1), 'a')), 'char')
+
+%!assert (class (horzcat (int32(1), int64(1))), 'int32')
+%!assert (class (horzcat (int32(1), int32(1))), 'int32')
+%!assert (class (horzcat (int32(1), int16(1))), 'int32')
+%!assert (class (horzcat (int32(1), int8(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint64(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint32(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint16(1))), 'int32')
+%!assert (class (horzcat (int32(1), uint8(1))), 'int32')
+%!assert (class (horzcat (int32(1), single(1))), 'int32')
+%!assert (class (horzcat (int32(1), double(1))), 'int32')
+%!assert (class (horzcat (int32(1), cell(1))), 'cell')
+%!assert (class (horzcat (int32(1), true)), 'int32')
+%!assert (class (horzcat (int32(1), 'a')), 'char')
+
+%!assert (class (horzcat (int16(1), int64(1))), 'int16')
+%!assert (class (horzcat (int16(1), int32(1))), 'int16')
+%!assert (class (horzcat (int16(1), int16(1))), 'int16')
+%!assert (class (horzcat (int16(1), int8(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint64(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint32(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint16(1))), 'int16')
+%!assert (class (horzcat (int16(1), uint8(1))), 'int16')
+%!assert (class (horzcat (int16(1), single(1))), 'int16')
+%!assert (class (horzcat (int16(1), double(1))), 'int16')
+%!assert (class (horzcat (int16(1), cell(1))), 'cell')
+%!assert (class (horzcat (int16(1), true)), 'int16')
+%!assert (class (horzcat (int16(1), 'a')), 'char')
+
+%!assert (class (horzcat (int8(1), int64(1))), 'int8')
+%!assert (class (horzcat (int8(1), int32(1))), 'int8')
+%!assert (class (horzcat (int8(1), int16(1))), 'int8')
+%!assert (class (horzcat (int8(1), int8(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint64(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint32(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint16(1))), 'int8')
+%!assert (class (horzcat (int8(1), uint8(1))), 'int8')
+%!assert (class (horzcat (int8(1), single(1))), 'int8')
+%!assert (class (horzcat (int8(1), double(1))), 'int8')
+%!assert (class (horzcat (int8(1), cell(1))), 'cell')
+%!assert (class (horzcat (int8(1), true)), 'int8')
+%!assert (class (horzcat (int8(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint64(1), int64(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), int32(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), int16(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), int8(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint64(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint32(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint16(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), uint8(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), single(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), double(1))), 'uint64')
+%!assert (class (horzcat (uint64(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint64(1), true)), 'uint64')
+%!assert (class (horzcat (uint64(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint32(1), int64(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), int32(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), int16(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), int8(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint64(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint32(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint16(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), uint8(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), single(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), double(1))), 'uint32')
+%!assert (class (horzcat (uint32(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint32(1), true)), 'uint32')
+%!assert (class (horzcat (uint32(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint16(1), int64(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), int32(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), int16(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), int8(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint64(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint32(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint16(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), uint8(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), single(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), double(1))), 'uint16')
+%!assert (class (horzcat (uint16(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint16(1), true)), 'uint16')
+%!assert (class (horzcat (uint16(1), 'a')), 'char')
+
+%!assert (class (horzcat (uint8(1), int64(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), int32(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), int16(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), int8(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint64(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint32(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint16(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), uint8(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), single(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), double(1))), 'uint8')
+%!assert (class (horzcat (uint8(1), cell(1))), 'cell')
+%!assert (class (horzcat (uint8(1), true)), 'uint8')
+%!assert (class (horzcat (uint8(1), 'a')), 'char')
+
+%!assert (class (horzcat (single(1), int64(1))), 'int64')
+%!assert (class (horzcat (single(1), int32(1))), 'int32')
+%!assert (class (horzcat (single(1), int16(1))), 'int16')
+%!assert (class (horzcat (single(1), int8(1))), 'int8')
+%!assert (class (horzcat (single(1), uint64(1))), 'uint64')
+%!assert (class (horzcat (single(1), uint32(1))), 'uint32')
+%!assert (class (horzcat (single(1), uint16(1))), 'uint16')
+%!assert (class (horzcat (single(1), uint8(1))), 'uint8')
+%!assert (class (horzcat (single(1), single(1))), 'single')
+%!assert (class (horzcat (single(1), double(1))), 'single')
+%!assert (class (horzcat (single(1), cell(1))), 'cell')
+%!assert (class (horzcat (single(1), true)), 'single')
+%!assert (class (horzcat (single(1), 'a')), 'char')
+
+%!assert (class (horzcat (double(1), int64(1))), 'int64')
+%!assert (class (horzcat (double(1), int32(1))), 'int32')
+%!assert (class (horzcat (double(1), int16(1))), 'int16')
+%!assert (class (horzcat (double(1), int8(1))), 'int8')
+%!assert (class (horzcat (double(1), uint64(1))), 'uint64')
+%!assert (class (horzcat (double(1), uint32(1))), 'uint32')
+%!assert (class (horzcat (double(1), uint16(1))), 'uint16')
+%!assert (class (horzcat (double(1), uint8(1))), 'uint8')
+%!assert (class (horzcat (double(1), single(1))), 'single')
+%!assert (class (horzcat (double(1), double(1))), 'double')
+%!assert (class (horzcat (double(1), cell(1))), 'cell')
+%!assert (class (horzcat (double(1), true)), 'double')
+%!assert (class (horzcat (double(1), 'a')), 'char')
+
+%!assert (class (horzcat (cell(1), int64(1))), 'cell')
+%!assert (class (horzcat (cell(1), int32(1))), 'cell')
+%!assert (class (horzcat (cell(1), int16(1))), 'cell')
+%!assert (class (horzcat (cell(1), int8(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint64(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint32(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint16(1))), 'cell')
+%!assert (class (horzcat (cell(1), uint8(1))), 'cell')
+%!assert (class (horzcat (cell(1), single(1))), 'cell')
+%!assert (class (horzcat (cell(1), double(1))), 'cell')
+%!assert (class (horzcat (cell(1), cell(1))), 'cell')
+%!assert (class (horzcat (cell(1), true)), 'cell')
+%!assert (class (horzcat (cell(1), 'a')), 'cell')
+
+%!assert (class (horzcat (true, int64(1))), 'int64')
+%!assert (class (horzcat (true, int32(1))), 'int32')
+%!assert (class (horzcat (true, int16(1))), 'int16')
+%!assert (class (horzcat (true, int8(1))), 'int8')
+%!assert (class (horzcat (true, uint64(1))), 'uint64')
+%!assert (class (horzcat (true, uint32(1))), 'uint32')
+%!assert (class (horzcat (true, uint16(1))), 'uint16')
+%!assert (class (horzcat (true, uint8(1))), 'uint8')
+%!assert (class (horzcat (true, single(1))), 'single')
+%!assert (class (horzcat (true, double(1))), 'double')
+%!assert (class (horzcat (true, cell(1))), 'cell')
+%!assert (class (horzcat (true, true)), 'logical')
+%!assert (class (horzcat (true, 'a')), 'char')
+
+%!assert (class (horzcat ('a', int64(1))), 'char')
+%!assert (class (horzcat ('a', int32(1))), 'char')
+%!assert (class (horzcat ('a', int16(1))), 'char')
+%!assert (class (horzcat ('a', int8(1))), 'char')
+%!assert (class (horzcat ('a', int64(1))), 'char')
+%!assert (class (horzcat ('a', int32(1))), 'char')
+%!assert (class (horzcat ('a', int16(1))), 'char')
+%!assert (class (horzcat ('a', int8(1))), 'char')
+%!assert (class (horzcat ('a', single(1))), 'char')
+%!assert (class (horzcat ('a', double(1))), 'char')
+%!assert (class (horzcat ('a', cell(1))), 'cell')
+%!assert (class (horzcat ('a', true)), 'char')
+%!assert (class (horzcat ('a', 'a')), 'char')
+
+%!assert (class (horzcat (cell(1), struct('foo', 'bar'))), 'cell')
+%!error horzcat (struct('foo', 'bar'), cell(1));
+*/
+
 DEFUN (vertcat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vertcat (@var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the vertical concatenation of N-d array objects, @var{array1},\n\
+Return the vertical concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension 1.\n\
+\n\
+Arrays may also be concatenated vertically using the syntax for creating\n\
+new matrices.  For example:\n\
+\n\
+@example\n\
+@var{vcat} = [ @var{array1}; @var{array2}; @dots{} ];\n\
+@end example\n\
 @seealso{cat, horzcat}\n\
 @end deftypefn")
 {
   return do_cat (args, -1, "vertcat");
 }
 
+/*
+%!test
+%! c = {'foo'; 'bar'; 'bazoloa'};
+%! assert (vertcat (c, 'a', 'bc', 'def'), {'foo'; 'bar'; 'bazoloa'; 'a'; 'bc'; 'def'});
+*/
+
 DEFUN (cat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
-Return the concatenation of N-d array objects, @var{array1},\n\
+Return the concatenation of N-D array objects, @var{array1},\n\
 @var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.\n\
 \n\
 @example\n\
@@ -1701,10 +2100,8 @@ Return the concatenation of N-d array objects, @var{array1},\n\
 A = ones (2, 2);\n\
 B = zeros (2, 2);\n\
 cat (2, A, B)\n\
-@result{} ans =\n\
-\n\
-     1 1 0 0\n\
-     1 1 0 0\n\
+    @result{} 1 1 0 0\n\
+       1 1 0 0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1717,23 +2114,23 @@ second dimension the following way:\n\
 @end group\n\
 @end example\n\
 \n\
-@var{dim} can be larger than the dimensions of the N-d array objects\n\
+@var{dim} can be larger than the dimensions of the N-D array objects\n\
 and the result will thus have @var{dim} dimensions as the\n\
 following example shows:\n\
 \n\
 @example\n\
 @group\n\
-cat (4, ones(2, 2), zeros (2, 2))\n\
-@result{} ans =\n\
+cat (4, ones (2, 2), zeros (2, 2))\n\
+    @result{} ans =\n\
 \n\
-   ans(:,:,1,1) =\n\
+       ans(:,:,1,1) =\n\
 \n\
-     1 1\n\
-     1 1\n\
+         1 1\n\
+         1 1\n\
 \n\
-   ans(:,:,1,2) =\n\
-     0 0\n\
-     0 0\n\
+       ans(:,:,1,2) =\n\
+         0 0\n\
+         0 0\n\
 @end group\n\
 @end example\n\
 @seealso{horzcat, vertcat}\n\
@@ -1763,7 +2160,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 
 /*
 
-%!function ret = testcat (t1, t2, tr, cmplx)
+%!function ret = __testcat (t1, t2, tr, cmplx)
 %! assert (cat (1, cast ([], t1), cast([], t2)), cast ([], tr));
 %!
 %! assert (cat (1, cast (1, t1), cast (2, t2)), cast ([1; 2], tr));
@@ -1840,64 +2237,68 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 %!   assert ([cast([1i, 2], t1), cast([3i, 4], t2)], cast ([1i, 2, 3i, 4], tr));
 %! endif
 %! ret = true;
+%!endfunction
 
-%!assert (testcat('double', 'double', 'double'));
-%!assert (testcat('single', 'double', 'single'));
-%!assert (testcat('double', 'single', 'single'));
-%!assert (testcat('single', 'single', 'single'));
+%!assert (__testcat('double', 'double', 'double'))
+%!assert (__testcat('single', 'double', 'single'))
+%!assert (__testcat('double', 'single', 'single'))
+%!assert (__testcat('single', 'single', 'single'))
 
-%!assert (testcat('double', 'int8', 'int8', false));
-%!assert (testcat('int8', 'double', 'int8', false));
-%!assert (testcat('single', 'int8', 'int8', false));
-%!assert (testcat('int8', 'single', 'int8', false));
-%!assert (testcat('int8', 'int8', 'int8', false));
-%!assert (testcat('double', 'int16', 'int16', false));
-%!assert (testcat('int16', 'double', 'int16', false));
-%!assert (testcat('single', 'int16', 'int16', false));
-%!assert (testcat('int16', 'single', 'int16', false));
-%!assert (testcat('int16', 'int16', 'int16', false));
-%!assert (testcat('double', 'int32', 'int32', false));
-%!assert (testcat('int32', 'double', 'int32', false));
-%!assert (testcat('single', 'int32', 'int32', false));
-%!assert (testcat('int32', 'single', 'int32', false));
-%!assert (testcat('int32', 'int32', 'int32', false));
-%!assert (testcat('double', 'int64', 'int64', false));
-%!assert (testcat('int64', 'double', 'int64', false));
-%!assert (testcat('single', 'int64', 'int64', false));
-%!assert (testcat('int64', 'single', 'int64', false));
-%!assert (testcat('int64', 'int64', 'int64', false));
+%!assert (__testcat('double', 'int8', 'int8', false))
+%!assert (__testcat('int8', 'double', 'int8', false))
+%!assert (__testcat('single', 'int8', 'int8', false))
+%!assert (__testcat('int8', 'single', 'int8', false))
+%!assert (__testcat('int8', 'int8', 'int8', false))
+%!assert (__testcat('double', 'int16', 'int16', false))
+%!assert (__testcat('int16', 'double', 'int16', false))
+%!assert (__testcat('single', 'int16', 'int16', false))
+%!assert (__testcat('int16', 'single', 'int16', false))
+%!assert (__testcat('int16', 'int16', 'int16', false))
+%!assert (__testcat('double', 'int32', 'int32', false))
+%!assert (__testcat('int32', 'double', 'int32', false))
+%!assert (__testcat('single', 'int32', 'int32', false))
+%!assert (__testcat('int32', 'single', 'int32', false))
+%!assert (__testcat('int32', 'int32', 'int32', false))
+%!assert (__testcat('double', 'int64', 'int64', false))
+%!assert (__testcat('int64', 'double', 'int64', false))
+%!assert (__testcat('single', 'int64', 'int64', false))
+%!assert (__testcat('int64', 'single', 'int64', false))
+%!assert (__testcat('int64', 'int64', 'int64', false))
 
-%!assert (testcat('double', 'uint8', 'uint8', false));
-%!assert (testcat('uint8', 'double', 'uint8', false));
-%!assert (testcat('single', 'uint8', 'uint8', false));
-%!assert (testcat('uint8', 'single', 'uint8', false));
-%!assert (testcat('uint8', 'uint8', 'uint8', false));
-%!assert (testcat('double', 'uint16', 'uint16', false));
-%!assert (testcat('uint16', 'double', 'uint16', false));
-%!assert (testcat('single', 'uint16', 'uint16', false));
-%!assert (testcat('uint16', 'single', 'uint16', false));
-%!assert (testcat('uint16', 'uint16', 'uint16', false));
-%!assert (testcat('double', 'uint32', 'uint32', false));
-%!assert (testcat('uint32', 'double', 'uint32', false));
-%!assert (testcat('single', 'uint32', 'uint32', false));
-%!assert (testcat('uint32', 'single', 'uint32', false));
-%!assert (testcat('uint32', 'uint32', 'uint32', false));
-%!assert (testcat('double', 'uint64', 'uint64', false));
-%!assert (testcat('uint64', 'double', 'uint64', false));
-%!assert (testcat('single', 'uint64', 'uint64', false));
-%!assert (testcat('uint64', 'single', 'uint64', false));
-%!assert (testcat('uint64', 'uint64', 'uint64', false));
+%!assert (__testcat('double', 'uint8', 'uint8', false))
+%!assert (__testcat('uint8', 'double', 'uint8', false))
+%!assert (__testcat('single', 'uint8', 'uint8', false))
+%!assert (__testcat('uint8', 'single', 'uint8', false))
+%!assert (__testcat('uint8', 'uint8', 'uint8', false))
+%!assert (__testcat('double', 'uint16', 'uint16', false))
+%!assert (__testcat('uint16', 'double', 'uint16', false))
+%!assert (__testcat('single', 'uint16', 'uint16', false))
+%!assert (__testcat('uint16', 'single', 'uint16', false))
+%!assert (__testcat('uint16', 'uint16', 'uint16', false))
+%!assert (__testcat('double', 'uint32', 'uint32', false))
+%!assert (__testcat('uint32', 'double', 'uint32', false))
+%!assert (__testcat('single', 'uint32', 'uint32', false))
+%!assert (__testcat('uint32', 'single', 'uint32', false))
+%!assert (__testcat('uint32', 'uint32', 'uint32', false))
+%!assert (__testcat('double', 'uint64', 'uint64', false))
+%!assert (__testcat('uint64', 'double', 'uint64', false))
+%!assert (__testcat('single', 'uint64', 'uint64', false))
+%!assert (__testcat('uint64', 'single', 'uint64', false))
+%!assert (__testcat('uint64', 'uint64', 'uint64', false))
 
-%!assert (cat (3, [], [1,2;3,4]), [1,2;3,4]);
-%!assert (cat (3, [1,2;3,4], []), [1,2;3,4]);
-%!assert (cat (3, [], [1,2;3,4], []), [1,2;3,4]);
-%!assert (cat (3, [], [], []), zeros (0, 0, 3));
+%!assert (cat (3, [], [1,2;3,4]), [1,2;3,4])
+%!assert (cat (3, [1,2;3,4], []), [1,2;3,4])
+%!assert (cat (3, [], [1,2;3,4], []), [1,2;3,4])
+%!assert (cat (3, [], [], []), zeros (0, 0, 3))
 
-%!assert (cat (3, [], [], 1, 2), cat (3, 1, 2));
-%!assert (cat (3, [], [], [1,2;3,4]), [1,2;3,4]);
-%!assert (cat (4, [], [], [1,2;3,4]), [1,2;3,4]);
-%!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4]);
-%!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4]);
+%!assert (cat (3, [], [], 1, 2), cat (3, 1, 2))
+%!assert (cat (3, [], [], [1,2;3,4]), [1,2;3,4])
+%!assert (cat (4, [], [], [1,2;3,4]), [1,2;3,4])
+%!error <dimension mismatch> cat (3, cat (3, [], []), [1,2;3,4])
+%!error <dimension mismatch> cat (3, zeros (0, 0, 2), [1,2;3,4])
+
+%!assert ([zeros(3,2,2); ones(1,2,2)], repmat([0;0;0;1],[1,2,2]) )
+%!assert ([zeros(3,2,2); ones(1,2,2)], vertcat(zeros(3,2,2), ones(1,2,2)) )
 
 */
 
@@ -1931,10 +2332,10 @@ do_permute (const octave_value_list& args, bool inv)
 
 DEFUN (permute, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} permute (@var{a}, @var{perm})\n\
-Return the generalized transpose for an N-d array object @var{a}.\n\
+@deftypefn {Built-in Function} {} permute (@var{A}, @var{perm})\n\
+Return the generalized transpose for an N-D array object @var{A}.\n\
 The permutation vector @var{perm} must contain the elements\n\
-@code{1:ndims(a)} (in any order, but each element must appear just once).\n\
+@code{1:ndims(A)} (in any order, but each element must appear only once).\n\
 @seealso{ipermute}\n\
 @end deftypefn")
 {
@@ -1943,15 +2344,15 @@ The permutation vector @var{perm} must contain the elements\n\
 
 DEFUN (ipermute, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} ipermute (@var{a}, @var{iperm})\n\
+@deftypefn {Built-in Function} {} ipermute (@var{A}, @var{iperm})\n\
 The inverse of the @code{permute} function.  The expression\n\
 \n\
 @example\n\
-ipermute (permute (a, perm), perm)\n\
+ipermute (permute (A, perm), perm)\n\
 @end example\n\
 \n\
 @noindent\n\
-returns the original array @var{a}.\n\
+returns the original array @var{A}.\n\
 @seealso{permute}\n\
 @end deftypefn")
 {
@@ -1985,7 +2386,7 @@ Trailing singleton dimensions are not counted.\n\
 \n\
 @example\n\
 @group\n\
-  ndims (ones (4, 1, 2, 1)\n\
+  ndims (ones (4, 1, 2, 1))\n\
      @result{} 3\n\
 @end group\n\
 @end example\n\
@@ -2013,6 +2414,19 @@ return the number of elements that would result from the indexing\n\
   @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
 @end example\n\
 \n\
+Note that the indices do not have to be numerical.  For example,\n\
+\n\
+@example\n\
+@group\n\
+  @var{a} = 1;\n\
+  @var{b} = ones (2, 3);\n\
+  numel (@var{a}, @var{b});\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+will return 6, as this is the number of ways to index with @var{b}.\n\
+\n\
 This method is also called when an object appears as lvalue with cs-list\n\
 indexing, i.e., @code{object@{@dots{}@}} or @code{object(@dots{}).field}.\n\
 @seealso{size}\n\
@@ -2039,7 +2453,7 @@ DEFUN (size, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} size (@var{a})\n\
 @deftypefnx {Built-in Function} {} size (@var{a}, @var{dim})\n\
-Return the number rows and columns of @var{a}.\n\
+Return the number of rows and columns of @var{a}.\n\
 \n\
 With one input argument and one output argument, the result is returned\n\
 in a row vector.  If there are multiple output arguments, the number of\n\
@@ -2255,7 +2669,6 @@ sum ([true, true], 'native')\n\
 @end group\n\
 @end example\n\
 \n\
-  \n\
 On the contrary, if 'double' is given, the sum is performed in double\n\
 precision even for single precision inputs.\n\
 \n\
@@ -2406,7 +2819,7 @@ than straightforward summation is to be used.  For single precision inputs,\n\
 %!assert(sum (single([i, 2+i, -3+2i, 4])), single(3+4i));
 %!assert(sum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([2+2i, 4+4i, 6+6i]));
 
-%!error <Invalid call to sum.*> sum ();
+%!error <Invalid call to sum> sum ();
 
 %!assert (sum ([1, 2; 3, 4], 1), [4, 6]);
 %!assert (sum ([1, 2; 3, 4], 2), [3; 7]);
@@ -2481,7 +2894,7 @@ but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
 %!assert(sumsq (single([-1; -2; 4i])), single(21));
 %!assert(sumsq (single([1, 2, 3; 2, 3, 4; 4i, 6i, 2])), single([21, 49, 29]));
 
-%!error <Invalid call to sumsq.*> sumsq ();
+%!error <Invalid call to sumsq> sumsq ();
 
 %!assert (sumsq ([1, 2; 3, 4], 1), [10, 20]);
 %!assert (sumsq ([1, 2; 3, 4], 2), [5; 25]);
@@ -2993,8 +3406,8 @@ will return true for these objects as well.\n\
 %! s.a = 1;
 %! assert(ismatrix (s), false);
 
-%!error <Invalid call to ismatrix.*> ismatrix ();
-%!error <Invalid call to ismatrix.*> ismatrix ([1, 2; 3, 4], 2);
+%!error <Invalid call to ismatrix> ismatrix ();
+%!error <Invalid call to ismatrix> ismatrix ([1, 2; 3, 4], 2);
 
  */
 
@@ -3419,28 +3832,29 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
 DEFUN (ones, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} ones (@var{x})\n\
-@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})\n\
-@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefn  {Built-in Function} {} ones (@var{n})\n\
+@deftypefnx {Built-in Function} {} ones (@var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {} ones (@var{m}, @var{n}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} ones ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {} ones (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 1.\n\
-If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.  If invoked with two or more scalar\n\
+If invoked with a single scalar integer argument @var{n}, return a square\n\
+@nospell{NxN} matrix.  If invoked with two or more scalar\n\
 integer arguments, or a vector of integer values, return an array with\n\
-given dimensions.\n\
+the given dimensions.\n\
 \n\
 If you need to create a matrix whose values are all the same, you should\n\
 use an expression like\n\
 \n\
 @example\n\
-val_matrix = val * ones (n, m)\n\
+val_matrix = val * ones (m, n)\n\
 @end example\n\
 \n\
 The optional argument @var{class} specifies the class of the return array\n\
 and defaults to double.  For example:\n\
 \n\
 @example\n\
-val = ones (n,m, \"uint8\")\n\
+val = ones (m,n, \"uint8\")\n\
 @end example\n\
 @seealso{zeros}\n\
 @end deftypefn")
@@ -3469,21 +3883,22 @@ val = ones (n,m, \"uint8\")\n\
 
 DEFUN (zeros, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} zeros (@var{x})\n\
-@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})\n\
-@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m}, @var{k}, @dots{})\n\
+@deftypefn  {Built-in Function} {} zeros (@var{n})\n\
+@deftypefnx {Built-in Function} {} zeros (@var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {} zeros (@var{m}, @var{n}, @var{k}, @dots{})\n\
+@deftypefnx {Built-in Function} {} zeros ([@var{m} @var{n} @dots{}])\n\
 @deftypefnx {Built-in Function} {} zeros (@dots{}, @var{class})\n\
 Return a matrix or N-dimensional array whose elements are all 0.\n\
 If invoked with a single scalar integer argument, return a square\n\
-matrix of the specified size.  If invoked with two or more scalar\n\
+@nospell{NxN} matrix.  If invoked with two or more scalar\n\
 integer arguments, or a vector of integer values, return an array with\n\
-given dimensions.\n\
+the given dimensions.\n\
 \n\
 The optional argument @var{class} specifies the class of the return array\n\
 and defaults to double.  For example:\n\
 \n\
 @example\n\
-val = zeros (n,m, \"uint8\")\n\
+val = zeros (m,n, \"uint8\")\n\
 @end example\n\
 @seealso{ones}\n\
 @end deftypefn")
@@ -3884,6 +4299,11 @@ either \"double\" or \"single\".\n\
 
 DEFUN (I, args, ,
   "-*- texinfo -*-\n\
+@c List other forms of function in documentation index\n\
+@findex i\n\
+@findex j\n\
+@findex J\n\
+\n\
 @deftypefn  {Built-in Function} {} I\n\
 @deftypefnx {Built-in Function} {} I (@var{n})\n\
 @deftypefnx {Built-in Function} {} I (@var{n}, @var{m})\n\
@@ -4099,14 +4519,15 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 
 DEFUN (eye, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} eye (@var{x})\n\
-@deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})\n\
+@deftypefn  {Built-in Function} {} eye (@var{n})\n\
+@deftypefnx {Built-in Function} {} eye (@var{m}, @var{n})\n\
+@deftypefnx {Built-in Function} {} eye ([@var{m} @var{n}])\n\
 @deftypefnx {Built-in Function} {} eye (@dots{}, @var{class})\n\
-Return an identity matrix.  If invoked with a single scalar argument,\n\
-@code{eye} returns a square matrix with the dimension specified.  If you\n\
-supply two scalar arguments, @code{eye} takes them to be the number of\n\
-rows and columns.  If given a vector with two elements, @code{eye} uses\n\
-the values of the elements as the number of rows and columns,\n\
+Return an identity matrix.  If invoked with a single scalar argument @var{n},\n\
+return a square @nospell{NxN} identity matrix.  If\n\
+supplied two scalar arguments (@var{m}, @var{n}), @code{eye} takes them to be\n\
+the number of rows and columns.  If given a vector with two elements,\n\
+@code{eye} uses the values of the elements as the number of rows and columns,\n\
 respectively.  For example:\n\
 \n\
 @example\n\
@@ -4138,8 +4559,9 @@ val = zeros (n,m, \"uint8\")\n\
 @end example\n\
 \n\
 Calling @code{eye} with no arguments is equivalent to calling it\n\
-with an argument of 1.  This odd definition is for compatibility\n\
-with @sc{matlab}.\n\
+with an argument of 1.  Any negative dimensions are treated as zero. \n\
+These odd definitions are for compatibility with @sc{matlab}.\n\
+@seealso{speye}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4207,7 +4629,7 @@ with @sc{matlab}.\n\
 %!assert (eye(3,'int8'), int8([1, 0, 0; 0, 1, 0; 0, 0, 1]));
 %!assert (eye(2, 3,'int8'), int8([1, 0, 0; 0, 1, 0]));
 
-%!error <Invalid call to eye.*> eye (1, 2, 3);
+%!error <Invalid call to eye> eye (1, 2, 3);
 
  */
 
@@ -4257,20 +4679,21 @@ do_linspace (const octave_value& base, const octave_value& limit,
 
 DEFUN (linspace, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
+@deftypefn  {Built-in Function} {} linspace (@var{base}, @var{limit})\n\
+@deftypefnx {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
 Return a row vector with @var{n} linearly spaced elements between\n\
 @var{base} and @var{limit}.  If the number of elements is greater than one,\n\
-then the @var{base} and @var{limit} are always included in\n\
+then the endpoints @var{base} and @var{limit} are always included in\n\
 the range.  If @var{base} is greater than @var{limit}, the elements are\n\
 stored in decreasing order.  If the number of points is not specified, a\n\
 value of 100 is used.\n\
 \n\
 The @code{linspace} function always returns a row vector if both\n\
-@var{base} and @var{limit} are scalars.  If one of them or both are column\n\
+@var{base} and @var{limit} are scalars.  If one, or both, of them are column\n\
 vectors, @code{linspace} returns a matrix.\n\
 \n\
-For compatibility with @sc{matlab}, return the second argument if\n\
-fewer than two values are requested.\n\
+For compatibility with @sc{matlab}, return the second argument (@var{limit})\n\
+if fewer than two values are requested.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4329,8 +4752,8 @@ fewer than two values are requested.\n\
 
 % assert(linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6));
 
-%!error <Invalid call to linspace.*> linspace ();
-%!error <Invalid call to linspace.*> linspace (1, 2, 3, 4);
+%!error <Invalid call to linspace> linspace ();
+%!error <Invalid call to linspace> linspace (1, 2, 3, 4);
 
 %!test
 %! fail("linspace ([1, 2; 3, 4], 5, 6)","warning");
@@ -4343,8 +4766,8 @@ fewer than two values are requested.\n\
 DEFUN (resize, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} resize (@var{x}, @var{m})\n\
-@deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} resize (@var{x}, [@var{m} @var{n} @dots{}])\n\
 Resize @var{x} cutting off elements as necessary.\n\
 \n\
 In the result, element with certain indices is equal to the corresponding\n\
@@ -4372,11 +4795,12 @@ is equivalent to the following code:\n\
 @noindent\n\
 but is performed more efficiently.\n\
 \n\
-If only @var{m} is supplied and it is a scalar, the dimension of the\n\
-result is @var{m}-by-@var{m}.  If @var{m} is a vector, then the\n\
-dimensions of the result are given by the elements of @var{m}.\n\
-If both @var{m} and @var{n} are scalars, then the dimensions of\n\
-the result are @var{m}-by-@var{n}.\n\
+If only @var{m} is supplied, and it is a scalar, the dimension of the\n\
+result is @var{m}-by-@var{m}.\n\
+If @var{m}, @var{n}, @dots{} are all scalars, then the dimensions of\n\
+the result are @var{m}-by-@var{n}-by-@dots{}.\n\
+If given a vector as input, then the\n\
+dimensions of the result are given by the elements of that vector.\n\
 \n\
 An object can be resized to more dimensions than it has;\n\
 in such case the missing dimensions are assumed to be 1.\n\
@@ -4429,13 +4853,16 @@ Resizing an object to fewer dimensions is not possible.\n\
 
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Built-in Function} {} reshape (@var{a}, @var{size})\n\
-Return a matrix with the given dimensions whose elements are taken\n\
-from the matrix @var{a}.  The elements of the matrix are accessed in\n\
-column-major order (like Fortran arrays are stored).\n\
+@deftypefn  {Built-in Function} {} reshape (@var{A}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} reshape (@var{A}, [@var{m} @var{n} @dots{}])\n\
+@deftypefnx {Built-in Function} {} reshape (@var{A}, @dots{}, [], @dots{})\n\
+@deftypefnx {Built-in Function} {} reshape (@var{A}, @var{size})\n\
+Return a matrix with the specified dimensions (@var{m}, @var{n}, @dots{})\n\
+whose elements are taken from the matrix @var{A}.  The elements of the\n\
+matrix are accessed in column-major order (like Fortran arrays are stored).\n\
 \n\
-For example:\n\
+The following code demonstrates reshaping a 1x4 row vector into a 2x2 square\n\
+matrix.\n\
 \n\
 @example\n\
 @group\n\
@@ -4447,10 +4874,13 @@ reshape ([1, 2, 3, 4], 2, 2)\n\
 \n\
 @noindent\n\
 Note that the total number of elements in the original\n\
-matrix must match the total number of elements in the new matrix.\n\
+matrix (@code{prod (size (@var{A}))}) must match the total number of elements\n\
+in the new matrix (@code{prod ([@var{m} @var{n} @dots{}])}).\n\
 \n\
-A single dimension of the return matrix can be unknown and is flagged\n\
-by an empty argument.\n\
+A single dimension of the return matrix may be left unspecified and Octave\n\
+will determine its size automatically.  An empty matrix ([]) is used to flag\n\
+the unspecified dimension.\n\
+@seealso{resize}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4556,20 +4986,21 @@ by an empty argument.\n\
 %! s.a = 1;
 %! fail("reshape (s, 2, 3)");
 
-%!error <Invalid call to reshape.*> reshape ();
+%!error <Invalid call to reshape> reshape ();
 %!error reshape (1, 2, 3, 4);
 
  */
 
 DEFUN (vec, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} @var{v} = vec (@var{x})\n\
-@deftypefnx {Built-in Function} {} @var{v} = vec (@var{x}, @var{dim})\n\
+@deftypefn  {Built-in Function} {@var{v} =} vec (@var{x})\n\
+@deftypefnx {Built-in Function} {@var{v} =} vec (@var{x}, @var{dim})\n\
 Return the vector obtained by stacking the columns of the matrix @var{x}\n\
 one above the other.  Without @var{dim} this is equivalent to\n\
 @code{@var{x}(:)}.  If @var{dim} is supplied, the dimensions of @var{v}\n\
 are set to @var{dim} with all elements along the last dimension.\n\
 This is equivalent to @code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
+@seealso{vech}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4649,7 +5080,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 DEFUN (full, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
- returns a full storage matrix from a sparse, diagonal, permutation matrix\n\
+Return a full storage matrix from a sparse, diagonal, permutation matrix\n\
 or a range.\n\
 @seealso{sparse}\n\
 @end deftypefn")
@@ -4668,51 +5099,51 @@ or a range.\n\
 
 DEFUN (norm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} norm (@var{a})\n\
-@deftypefnx {Built-in Function} {} norm (@var{a}, @var{p})\n\
-@deftypefnx {Built-in Function} {} norm (@var{a}, @var{p}, @var{opt})\n\
-Compute the p-norm of the matrix @var{a}.  If the second argument is\n\
+@deftypefn  {Built-in Function} {} norm (@var{A})\n\
+@deftypefnx {Built-in Function} {} norm (@var{A}, @var{p})\n\
+@deftypefnx {Built-in Function} {} norm (@var{A}, @var{p}, @var{opt})\n\
+Compute the p-norm of the matrix @var{A}.  If the second argument is\n\
 missing, @code{p = 2} is assumed.\n\
 \n\
-If @var{a} is a matrix (or sparse matrix):\n\
+If @var{A} is a matrix (or sparse matrix):\n\
 \n\
 @table @asis\n\
 @item @var{p} = @code{1}\n\
-1-norm, the largest column sum of the absolute values of @var{a}.\n\
+1-norm, the largest column sum of the absolute values of @var{A}.\n\
 \n\
 @item @var{p} = @code{2}\n\
-Largest singular value of @var{a}.\n\
+Largest singular value of @var{A}.\n\
 \n\
 @item @var{p} = @code{Inf} or @code{\"inf\"}\n\
 @cindex infinity norm\n\
-Infinity norm, the largest row sum of the absolute values of @var{a}.\n\
+Infinity norm, the largest row sum of the absolute values of @var{A}.\n\
 \n\
 @item @var{p} = @code{\"fro\"}\n\
 @cindex Frobenius norm\n\
-Frobenius norm of @var{a}, @code{sqrt (sum (diag (@var{a}' * @var{a})))}.\n\
+Frobenius norm of @var{A}, @code{sqrt (sum (diag (@var{A}' * @var{A})))}.\n\
 \n\
 @item other @var{p}, @code{@var{p} > 1}\n\
-@cindex general p-norm \n\
+@cindex general p-norm\n\
 maximum @code{norm (A*x, p)} such that @code{norm (x, p) == 1}\n\
 @end table\n\
 \n\
-If @var{a} is a vector or a scalar:\n\
+If @var{A} is a vector or a scalar:\n\
 \n\
 @table @asis\n\
 @item @var{p} = @code{Inf} or @code{\"inf\"}\n\
-@code{max (abs (@var{a}))}.\n\
+@code{max (abs (@var{A}))}.\n\
 \n\
 @item @var{p} = @code{-Inf}\n\
-@code{min (abs (@var{a}))}.\n\
+@code{min (abs (@var{A}))}.\n\
 \n\
 @item @var{p} = @code{\"fro\"}\n\
-Frobenius norm of @var{a}, @code{sqrt (sumsq (abs (a)))}.\n\
+Frobenius norm of @var{A}, @code{sqrt (sumsq (abs (A)))}.\n\
 \n\
 @item @var{p} = 0\n\
 Hamming norm - the number of nonzero elements.\n\
 \n\
 @item other @var{p}, @code{@var{p} > 1}\n\
-p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
+p-norm of @var{A}, @code{(sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})}.\n\
 \n\
 @item other @var{p} @code{@var{p} < 1}\n\
 the p-pseudonorm defined as above.\n\
@@ -4857,7 +5288,7 @@ DEFUN (not, args, ,
 @deftypefn {Built-in Function} {} not (@var{x})\n\
 Return the logical NOT of @var{x}.  This function is equivalent to\n\
 @code{! x}.\n\
-@seealso{and, or}\n\
+@seealso{and, or, xor}\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_not, args);
@@ -4866,7 +5297,7 @@ Return the logical NOT of @var{x}.  This function is equivalent to\n\
 DEFUN (uplus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
-This function is equivalent to @w{@code{+ x}}.\n\
+This function and @w{@xcode{+ x}} are equivalent.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uplus, args);
@@ -4875,7 +5306,7 @@ This function is equivalent to @w{@code{+ x}}.\n\
 DEFUN (uminus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
-This function is equivalent to @w{@code{- x}}.\n\
+This function and @w{@xcode{- x}} are equivalent.\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uminus, args);
@@ -4884,7 +5315,8 @@ This function is equivalent to @w{@code{- x}}.\n\
 DEFUN (transpose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} transpose (@var{x})\n\
-Return the transpose of @var{x}.  This function is equivalent to @code{x.'}.\n\
+Return the transpose of @var{x}.\n\
+This function and @xcode{x.'} are equivalent.\n\
 @seealso{ctranspose}\n\
 @end deftypefn")
 {
@@ -4916,8 +5348,8 @@ Return the transpose of @var{x}.  This function is equivalent to @code{x.'}.\n\
 DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
-Return the complex conjugate transpose of @var{x}.  This function is\n\
-equivalent to @code{x'}.\n\
+Return the complex conjugate transpose of @var{x}.\n\
+This function and @xcode{x'} are equivalent.\n\
 @seealso{transpose}\n\
 @end deftypefn")
 {
@@ -4993,7 +5425,7 @@ DEFUN (plus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} plus (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} plus (@var{x1}, @var{x2}, @dots{})\n\
-This function is equivalent to @w{@code{x + y}}.\n\
+This function and @w{@xcode{x + y}} are equivalent.\n\
 If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5012,7 +5444,7 @@ At least one argument is required.\n\
 DEFUN (minus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
-This function is equivalent to @w{@code{x - y}}.\n\
+This function and @w{@xcode{x - y}} are equivalent.\n\
 @seealso{plus}\n\
 @end deftypefn")
 {
@@ -5024,7 +5456,7 @@ DEFUN (mtimes, args, ,
 @deftypefn  {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} mtimes (@var{x1}, @var{x2}, @dots{})\n\
 Return the matrix multiplication product of inputs.\n\
-This function is equivalent to @w{@code{x * y}}.\n\
+This function and @w{@xcode{x * y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5044,7 +5476,7 @@ DEFUN (mrdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x / y}}.\n\
+This function and @w{@xcode{x / y}} are equivalent.\n\
 @seealso{mldivide, rdivide}\n\
 @end deftypefn")
 {
@@ -5055,7 +5487,7 @@ DEFUN (mpower, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
-This function is equivalent to @w{@code{x ^ y}}.\n\
+This function and @w{@xcode{x ^ y}} are equivalent.\n\
 @seealso{power}\n\
 @end deftypefn")
 {
@@ -5066,7 +5498,7 @@ DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x \\ y}}.\n\
+This function and @w{@xcode{x \\ y}} are equivalent.\n\
 @seealso{mrdivide, ldivide}\n\
 @end deftypefn")
 {
@@ -5136,7 +5568,7 @@ DEFUN (times, args, ,
 @deftypefn  {Built-in Function} {} times (@var{x}, @var{y})\n\
 @deftypefnx {Built-in Function} {} times (@var{x1}, @var{x2}, @dots{})\n\
 Return the element-by-element multiplication product of inputs.\n\
-This function is equivalent to @w{@code{x .* y}}.\n\
+This function and @w{@xcode{x .* y}} are equivalent.\n\
 If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
@@ -5156,7 +5588,7 @@ DEFUN (rdivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x ./ y}}.\n\
+This function and @w{@xcode{x ./ y}} are equivalent.\n\
 @seealso{ldivide, mrdivide}\n\
 @end deftypefn")
 {
@@ -5168,7 +5600,7 @@ DEFUN (power, args, ,
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
 Return the element-by-element operation of @var{x} raised to the\n\
 @var{y} power.\n\
-This function is equivalent to @w{@code{x .^ y}}.\n\
+This function and @w{@xcode{x .^ y}} are equivalent.\n\
 @seealso{mpower}\n\
 @end deftypefn")
 {
@@ -5179,7 +5611,7 @@ DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
-This function is equivalent to @w{@code{x .\\ y}}.\n\
+This function and @w{@xcode{x .\\ y}} are equivalent.\n\
 @seealso{rdivide, mldivide}\n\
 @end deftypefn")
 {
@@ -5200,7 +5632,7 @@ cumulatively from left to right:\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
-@seealso{or, not}\n\
+@seealso{or, not, xor}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_and,
@@ -5221,7 +5653,7 @@ cumulatively from left to right:\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
-@seealso{and, not}\n\
+@seealso{and, not, xor}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_or,
@@ -5411,7 +5843,7 @@ DEFUN (sort, args, nargout,
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
 Return a copy of @var{x} with the elements arranged in increasing\n\
-order.  For matrices, @code{sort} orders the elements in each column.\n\
+order.  For matrices, @code{sort} orders the elements within columns\n\
 \n\
 For example:\n\
 \n\
@@ -5423,6 +5855,11 @@ sort ([1, 2; 2, 3; 3, 1])\n\
          3  3\n\
 @end group\n\
 @end example\n\
+\n\
+If the optional argument @var{dim} is given, then the matrix is sorted\n\
+along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
+defines the order in which the values will be sorted.  Valid values of\n\
+@code{mode} are `ascend' or `descend'.\n\
 \n\
 The @code{sort} function may also be used to produce a matrix\n\
 containing the original row indices of the elements in the sorted\n\
@@ -5440,16 +5877,27 @@ matrix.  For example:\n\
 @end group\n\
 @end example\n\
 \n\
-If the optional argument @var{dim} is given, then the matrix is sorted\n\
-along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
-defines the order in which the values will be sorted.  Valid values of\n\
-@code{mode} are `ascend' or `descend'.\n\
+For equal elements, the indices are such that equal elements are listed\n\
+in the order in which they appeared in the original list.\n\
 \n\
-For equal elements, the indices are such that the equal elements are listed\n\
-in the order that appeared in the original list.\n\
+Sorting of complex entries is done first by magnitude (@code{abs (@var{z})})\n\
+and for any ties by phase angle (@code{angle (z)}).  For example:\n\
+\n\
+@example\n\
+@group\n\
+sort ([1+i; 1; 1-i])\n\
+     @result{} 1 + 0i\n\
+        1 - 1i\n\
+        1 + 1i\n\
+@end group\n\
+@end example\n\
+\n\
+NaN values are treated as being greater than any other value and are sorted\n\
+to the end of the list.\n\
 \n\
 The @code{sort} function may also be used to sort strings and cell arrays\n\
-of strings, in which case the dictionary order of the strings is used.\n\
+of strings, in which case ASCII dictionary order (uppercase 'A' precedes\n\
+lowercase 'a') of the strings is used.\n\
 \n\
 The algorithm used in @code{sort} is optimized for the sorting of partially\n\
 ordered lists.\n\
@@ -5532,6 +5980,8 @@ ordered lists.\n\
 
   if (return_idx)
     {
+      retval.resize (2);
+
       Array<octave_idx_type> sidx;
 
       retval (0) = arg.sort (sidx, dim, smode);
@@ -5715,8 +6165,8 @@ ordered lists.\n\
 %! [v, i] = sort (a);
 %! assert (i, [1, 4, 2, 5, 3])
 
-%!error <Invalid call to sort.*> sort ();
-%!error <Invalid call to sort.*> sort (1, 2, 3, 4);
+%!error <Invalid call to sort> sort ();
+%!error <Invalid call to sort> sort (1, 2, 3, 4);
 
 */
 
@@ -5799,8 +6249,9 @@ get_sort_mode_option (const octave_value& arg, const char *argn)
 
 DEFUN (issorted, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
-@deftypefnx {Built-in Function} {} issorted (@var{a}, @code{\"rows\"}, @var{mode})\n\
+@deftypefn  {Built-in Function} {} issorted (@var{a})\n\
+@deftypefnx {Built-in Function} {} issorted (@var{a}, @var{mode})\n\
+@deftypefnx {Built-in Function} {} issorted (@var{a}, \"rows\", @var{mode})\n\
 Return true if the array is sorted according to @var{mode}, which\n\
 may be either \"ascending\", \"descending\", or \"either\".  By default,\n\
  @var{mode} is \"ascending\".  NaNs are treated in the same manner as\n\
@@ -5922,7 +6373,8 @@ not given.\n\
 \n\
 nth_element encapsulates the C++ standard library algorithms nth_element and\n\
 partial_sort.  On average, the complexity of the operation is O(M*log(K)),\n\
-where @code{M = size(@var{x}, @var{dim})} and @code{K = length (@var{n})}.\n\
+where @w{@code{M = size (@var{x}, @var{dim})}} and\n\
+@w{@code{K = length (@var{n})}}.\n\
 This function is intended for cases where the ratio K/M is small; otherwise,\n\
 it may be better to use @code{sort}.\n\
 @seealso{sort, min, max}\n\
@@ -6184,9 +6636,10 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
   if (n < 0)
     n = idx.extent (0);
   else if (idx.extent (n) > n)
-    error ("accumarray: index out of range");
+    error ("accumdim: index out of range");
 
-  dim_vector rdv = vals.dims ();
+  dim_vector vals_dim = vals.dims (), rdv = vals_dim;
+
   if (dim < 0)
     dim = vals.dims ().first_non_singleton ();
   else if (dim >= rdv.length ())
@@ -6196,7 +6649,11 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
 
   NDT retval (rdv, T());
 
+  if (idx.length () != vals_dim(dim))
+    error ("accumdim: dimension mismatch");
+
   retval.idx_add_nd (idx, vals, dim);
+
   return retval;
 }
 
@@ -6324,7 +6781,7 @@ is true, otherwise @var{fval} is returned.\n\
 \n\
 In the array mask case, both @var{tval} and @var{fval} must be either\n\
 scalars or arrays with dimensions equal to @var{mask}.  The result is\n\
-constructed as follows: \n\
+constructed as follows:\n\
 \n\
 @example\n\
 @group\n\
@@ -6536,8 +6993,10 @@ do_diff (const octave_value& array, octave_idx_type order,
 
 DEFUN (diff, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} diff (@var{x}, @var{k}, @var{dim})\n\
-If @var{x} is a vector of length @var{n}, @code{diff (@var{x})} is the\n\
+@deftypefn  {Built-in Function} {} diff (@var{x})\n\
+@deftypefnx {Built-in Function} {} diff (@var{x}, @var{k})\n\
+@deftypefnx {Built-in Function} {} diff (@var{x}, @var{k}, @var{dim})\n\
+If @var{x} is a vector of length @math{n}, @code{diff (@var{x})} is the\n\
 vector of first differences\n\
 @tex\n\
  $x_2 - x_1, \\ldots{}, x_n - x_{n-1}$.\n\
@@ -6552,15 +7011,15 @@ differences along the first non-singleton dimension.\n\
 The second argument is optional.  If supplied, @code{diff (@var{x},\n\
 @var{k})}, where @var{k} is a non-negative integer, returns the\n\
 @var{k}-th differences.  It is possible that @var{k} is larger than\n\
-then first non-singleton dimension of the matrix.  In this case,\n\
+the first non-singleton dimension of the matrix.  In this case,\n\
 @code{diff} continues to take the differences along the next\n\
 non-singleton dimension.\n\
 \n\
 The dimension along which to take the difference can be explicitly\n\
-stated with the optional variable @var{dim}.  In this case the \n\
+stated with the optional variable @var{dim}.  In this case the\n\
 @var{k}-th order differences are calculated along this dimension.\n\
 In the case where @var{k} exceeds @code{size (@var{x}, @var{dim})}\n\
-then an empty matrix is returned.\n\
+an empty matrix is returned.\n\
 @end deftypefn")
 {
   int nargin = args.length ();

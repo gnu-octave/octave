@@ -27,7 +27,7 @@
 ## g(x) = f((x-@var{mu}(1))/@var{mu}(2)).
 ## @end example
 ##
-## @seealso{polyval}
+## @seealso{polyval, polyfit}
 ## @end deftypefn
 
 
@@ -70,25 +70,19 @@ function g = polyaffine (f, mu)
 endfunction
 
 
-%!test
-%! f = [1/5 4/5 -7/5 -2];
-%!
-%! mu = [1, 1.2];
-%!
-%! g = polyaffine (f, mu);
-%!
-%! x = linspace (-4, 4, 100);
-%!
-%! assert (polyval(f, x, [], mu), polyval (g, x), 1e-10);
-
 %!demo
 %! f = [1/5 4/5 -7/5 -2];
-%!
 %! g = polyaffine (f, [1, 1.2]);
-%!
 %! x = linspace (-4, 4, 100);
-%!
 %! plot(x, polyval (f, x), x, polyval (g, x));
-%!
+%! legend ("original", "affine");
 %! axis ([-4 4 -3 5]);
 %! grid ("on");
+
+%!test
+%! f = [1/5 4/5 -7/5 -2];
+%! mu = [1, 1.2];
+%! g = polyaffine (f, mu);
+%! x = linspace (-4, 4, 100);
+%! assert (polyval (f, x, [], mu), polyval (g, x), 1e-10);
+

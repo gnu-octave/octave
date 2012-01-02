@@ -29,7 +29,7 @@
 %! assert(iscell (c) && strcmp (c{1}, "b"));
 
 %% test/octave.test/struct/fieldnames-3.m
-%!error <Invalid call to fieldnames.*> fieldnames ();
+%!error <Invalid call to fieldnames> fieldnames ();
 
 %% test/octave.test/struct/fieldnames-4.m
 %!test
@@ -52,7 +52,7 @@
 %! assert(!(isfield (s, "b")));
 
 %% test/octave.test/struct/isfield-3.m
-%!error <Invalid call to isfield.*> isfield ();
+%!error <Invalid call to isfield> isfield ();
 
 %% test/octave.test/struct/isfield-4.m
 %!test
@@ -100,7 +100,7 @@
 %! assert(isstruct (s.a));
 
 %% test/octave.test/struct/isstruct-10.m
-%!error <Invalid call to isstruct.*> isstruct ();
+%!error <Invalid call to isstruct> isstruct ();
 
 %% test/octave.test/struct/isstruct-11.m
 %!test

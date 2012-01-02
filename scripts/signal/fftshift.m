@@ -24,12 +24,15 @@
 ## center of the vector or matrix.
 ##
 ## If @var{x} is a vector of @math{N} elements corresponding to @math{N}
-## time samples spaced of @math{Dt} each, then @code{fftshift (fft
-## (@var{x}))} corresponds to frequencies
+## time samples spaced by @math{dt}, then
+## @code{fftshift (fft (@var{x}))} corresponds to frequencies
 ##
 ## @example
-## f = ((1:N) - ceil(N/2)) / N / Dt
+## f = [ -(ceil((N-1)/2):-1:1)*df 0 (1:floor((N-1)/2))*df ]
 ## @end example
+##
+## @noindent
+## where @nospell{@math{df}} = 1 / @math{dt}.
 ##
 ## If @var{x} is a matrix, the same holds for rows and columns.  If
 ## @var{x} is an array, then the same holds along each dimension.
@@ -44,23 +47,19 @@
 
 function retval = fftshift (x, dim)
 
-  retval = 0;
-
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
   if (nargin == 2)
-    if (!isscalar (dim))
-      error ("fftshift: dimension must be an integer scalar");
+    if (! (isscalar (dim) && dim > 0 && dim == fix (dim)))
+      error ("fftshift: dimension DIM must be a positive integer");
     endif
     nd = ndims (x);
     sz = size (x);
     sz2 = ceil (sz(dim) / 2);
     idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{dim} = [sz2+1:sz(dim), 1:sz2];
     retval = x(idx{:});
   else
@@ -83,3 +82,50 @@ function retval = fftshift (x, dim)
   endif
 
 endfunction
+
+
+%!test
+%!  x = [0:7];
+%!  y = fftshift (x);
+%!  assert(y, [4 5 6 7 0 1 2 3]);
+%!  assert(fftshift (y), x);
+
+%!test
+%!  x = [0:6];
+%!  y = fftshift (x);
+%!  assert(y, [4 5 6 0 1 2 3]);
+%!  assert(fftshift (y), [1 2 3 4 5 6 0]);
+
+%!test
+%!  x = [0:7]';
+%!  y = fftshift (x);
+%!  assert(y, [4;5;6;7;0;1;2;3]);
+%!  assert(fftshift (y), x);
+
+%!test
+%!  x = [0:6]';
+%!  y = fftshift (x);
+%!  assert(y, [4;5;6;0;1;2;3]);
+%!  assert(fftshift (y), [1;2;3;4;5;6;0]);
+
+%!test
+%!  x = [0:3];
+%!  x = [x;2*x;3*x+1;4*x+1];
+%!  y = fftshift (x);
+%!  assert(y, [[7 10 1 4];[9 13 1 5];[2 3 0 1];[4 6 0 2]]);
+%!  assert(fftshift (y), x);
+
+%!test
+%!  x = [0:3];
+%!  x = [x;2*x;3*x+1;4*x+1];
+%!  y = fftshift (x,1);
+%!  assert(y, [[1 4 7 10];[1 5 9 13];[0 1 2 3];[0 2 4 6]]);
+%!  assert(fftshift (y,1), x);
+
+%!test
+%!  x = [0:3];
+%!  x = [x;2*x;3*x+1;4*x+1];
+%!  y = fftshift (x,2);
+%!  assert(y, [[2 3 0 1];[4 6 0 2];[7 10 1 4];[9 13 1 5]]);
+%!  assert(fftshift (y,2), x);
+

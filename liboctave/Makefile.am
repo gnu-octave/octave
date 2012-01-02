@@ -3,29 +3,28 @@
 # Copyright (C) 1993-2011 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc
 
 EXTRA_DIST = \
-  ChangeLog \
   config-ops.sh \
   mk-ops.awk \
   mx-op-inc.mk \
@@ -188,7 +187,9 @@ INCS = \
   Range.h \
   base-dae.h \
   base-de.h \
+  base-list.h \
   base-min.h \
+  bsxfun.h \
   byte-swap.h \
   caseless-str.h \
   cmd-edit.h \
@@ -243,7 +244,8 @@ INCS = \
   randgamma.h \
   randmtzig.h \
   randpoisson.h \
-  regex-match.h \
+  regexp.h \
+  singleton-cleanup.h \
   sparse-sort.h \
   sparse-util.h \
   statdefs.h \
@@ -451,7 +453,8 @@ LIBOCTAVE_CXX_SOURCES = \
   oct-time.cc \
   oct-uname.cc \
   pathsearch.cc \
-  regex-match.cc \
+  regexp.cc \
+  singleton-cleanup.cc \
   sparse-sort.cc \
   sparse-util.cc \
   str-vec.cc \
@@ -492,21 +495,6 @@ LIBOCT_READLINE_C_SOURCES = oct-rl-edit.c oct-rl-hist.c
 
 LIBOCT_READLINE_SOURCES = $(LIBOCT_READLINE_CXX_SOURCES) $(LIBOCT_READLINE_C_SOURCES)
 
-LINK_DEPS = \
-  $(RLD_FLAG) \
-  ../libcruft/libcruft.la \
-  ../libcruft/libranlib.la \
-  ../libgnu/libgnu.la \
-  $(SPARSE_XLIBS) \
-  $(ARPACK_LIBS) \
-  $(QRUPDATE_LIBS) \
-  $(FFTW_XLIBS) \
-  $(LAPACK_LIBS) $(BLAS_LIBS) \
-  $(READLINE_LIBS) $(TERM_LIBS) \
-  $(LIBGLOB) $(REGEX_LIBS) $(DL_LIBS) \
-  $(FLIBS) \
-  $(PTHREAD_LIBS) $(LIBS)
-
 liboctave_la_SOURCES = \
   $(LIBOCTAVE_CXX_SOURCES) \
   $(LIBOCTAVE_C_SOURCES) \
@@ -517,7 +505,11 @@ liboctave_la_SOURCES = \
 nodist_liboctave_la_SOURCES = \
   $(BUILT_LIBOCTAVE_CXX_SOURCES)
 
-liboctave_la_LIBADD = $(LINK_DEPS)
+include link-deps.mk
+
+liboctave_la_LIBADD = \
+  ../libcruft/libcruft.la \
+  $(LIBOCTAVE_LINK_DEPS)
 
 liboctave_la_CPPFLAGS = \
   @OCTAVE_DLL_DEFS@ \
@@ -526,12 +518,19 @@ liboctave_la_CPPFLAGS = \
   $(ARPACK_CPPFLAGS) \
   $(AM_CPPFLAGS)
 
-liboctave_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
+# Increment these as needed and according to the rules in the libtool
+# manual:
+liboctave_current = 0
+liboctave_revision = 0
+liboctave_age = 0
+
+liboctave_version_info = $(liboctave_current):$(liboctave_revision):$(liboctave_age)
+
+liboctave_la_LDFLAGS = \
+  -version-info $(liboctave_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
-  $(SPARSE_XLDFLAGS) \
-  $(ARPACK_LDFLAGS) \
-  $(QRUPDATE_LDFLAGS) \
-  $(FFTW_XLDFLAGS)
+  $(LIBOCTAVE_LINK_OPTS)
 
 octinclude_HEADERS = \
   $(INCS) \
@@ -542,9 +541,9 @@ octinclude_HEADERS = \
 nodist_octinclude_HEADERS = \
   $(BUILT_INCS)
 
-$(OPT_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
+$(OPT_INC) : %.h : %.in $(top_srcdir)/build-aux/mk-opts.pl
 	@echo making $@ from $<
-	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
+	@$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-class-header $< > $@-t
 	mv $@-t $@
 
 $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops

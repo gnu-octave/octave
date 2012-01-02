@@ -19,15 +19,15 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} uimenu (@var{property}, @var{value}, @dots{})
 ## @deftypefnx {Function File} {} uimenu (@var{h}, @var{property}, @var{value}, @dots{})
-## Create an uimenu object and return a handle to it.  If @var{h} is ommited
-## then a top level menu entry for the current figure is created.  If @var{h}
+## Create a uimenu object and return a handle to it.  If @var{h} is ommited
+## then a top-level menu for the current figure is created.  If @var{h}
 ## is given then a submenu relative to @var{h} is created.
 ##
-## Uimenu objects have the following specific properties:
+## uimenu objects have the following specific properties:
 ##
 ## @table @asis
 ## @item "accelerator"
-## A string containg the key combination together with CTRL to execute this
+## A string containing the key combination together with CTRL to execute this
 ## menu entry (e.g., "x" for CTRL+x).
 ##
 ## @item "callback"
@@ -48,7 +48,7 @@
 ##
 ## @item "label"
 ## A string containing the label for this menu entry.  A "&"-symbol can be
-## used to mark the "accelerator" character (e.g., "E&xit")
+## used to mark the "accelerator" character (e.g., @nospell{"E&xit"})
 ##
 ## @item "position"
 ## An scalar value containing the relative menu position.  The entry with the
@@ -58,7 +58,6 @@
 ## Can be set "on" or "off".  If enabled it draws a separator line above the
 ## current position.  It is ignored for top level entries.
 ##
-##
 ## @end table
 ##
 ## Examples:
@@ -67,8 +66,10 @@
 ## @group
 ## f = uimenu("label", "&File", "accelerator", "f");
 ## e = uimenu("label", "&Edit", "accelerator", "e");
-## uimenu(f, "label", "Close", "accelerator", "q", "callback", "close (gcf)");
-## uimenu(e, "label", "Toggle &Grid", "accelerator", "g", "callback", "grid (gca)");
+## uimenu(f, "label", "Close", "accelerator", "q", ...
+##           "callback", "close (gcf)");
+## uimenu(e, "label", "Toggle &Grid", "accelerator", "g", ...
+##           "callback", "grid (gca)");
 ## @end group
 ## @end example
 ## @seealso{figure}
@@ -78,18 +79,7 @@
 
 function hui = uimenu (varargin)
 
-  args = varargin;
-
-  if (ishandle (args{1}))
-    h = args{1};
-    args(1) = [];
-  else
-    h = gcf ();
-  endif
-
-  if (rem (length (args), 2))
-    error ("uimenu: expecting PROPERTY/VALUE pairs");
-  endif
+  [h, args] = __uiobject_split_args__ ("uimenu", varargin, {"figure", "uicontextmenu", "uimenu"});
 
   tmp = __go_uimenu__ (h, args{:});
 
@@ -99,11 +89,61 @@ function hui = uimenu (varargin)
 
 endfunction
 
+
 %!demo
-%! surfl(peaks);
-%! colormap(copper);
-%! shading("interp");
-%! f = uimenu("label", "&File", "accelerator", "f");
-%! e = uimenu("label", "&Edit", "accelerator", "e");
-%! uimenu(f, "label", "Close", "accelerator", "q", "callback", "close (gcf)");
-%! uimenu(e, "label", "Toggle &Grid", "accelerator", "g", "callback", "grid (gca)");
+%! clf
+%! surfl (peaks);
+%! colormap (copper);
+%! shading ("interp");
+%! f = uimenu ("label", "&File", "accelerator", "f");
+%! e = uimenu ("label", "&Edit", "accelerator", "e");
+%! uimenu (f, "label", "Close", "accelerator", "q", "callback", "close (gcf)");
+%! uimenu (e, "label", "Toggle &Grid", "accelerator", "g", "callback", "grid (gca)");
+
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ui = uimenu ("label", "mylabel");
+%!   assert (findobj (hf, "type", "uimenu"), ui);
+%!   assert (get (ui, "label"), "mylabel");
+%!   assert (get (ui, "checked"), "off");
+%!   assert (get (ui, "separator"), "off");
+%!   assert (get (ui, "enable"), "on");
+%!   assert (get (ui, "position"), 9);
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   graphics_toolkit (toolkit);
+%! end_unwind_protect
+
+%% check for top level menus file, edit, and help
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   uif = findall (hf, "label", "&file");
+%!   assert (ishghandle (uif))
+%!   uie = findall (hf, "label", "&edit");
+%!   assert (ishghandle (uie))
+%!   uih = findall (hf, "label", "&help");
+%!   assert (ishghandle (uih))
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   graphics_toolkit (toolkit);
+%! end_unwind_protect
+
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   uie = findall (hf, "label", "&edit");
+%!   myui = uimenu (uie, "label", "mylabel");
+%!   assert (ancestor (myui, "uimenu", "toplevel"), uie)
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   graphics_toolkit (toolkit);
+%! end_unwind_protect
+

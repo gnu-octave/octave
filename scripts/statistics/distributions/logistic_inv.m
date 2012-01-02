@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logistic_inv (@var{x})
-## For each component of @var{x}, compute the quantile (the inverse of
+## For each element of @var{x}, compute the quantile (the inverse of
 ## the CDF) at @var{x} of the logistic distribution.
 ## @end deftypefn
 
@@ -31,26 +32,38 @@ function inv = logistic_inv (x)
     print_usage ();
   endif
 
-  inv = zeros (size (x));
-
-  k = find ((x < 0) | (x > 1) | isnan (x));
-  if (any (k))
-    inv(k) = NaN;
+  if (iscomplex (x))
+    error ("logistic_inv: X must not be complex");
   endif
 
-  k = find (x == 0);
-  if (any (k))
-    inv(k) = -Inf;
+  if (isa (x, "single"))
+    inv = NaN (size (x), "single");
+  else
+    inv = NaN (size (x));
   endif
 
-  k = find (x == 1);
-  if (any (k))
-    inv(k) = Inf;
-  endif
+  k = (x == 0);
+  inv(k) = -Inf;
 
-  k = find ((x > 0) & (x < 1));
-  if (any (k))
-    inv (k) = - log (1 ./ x(k) - 1);
-  endif
+  k = (x == 1);
+  inv(k) = Inf;
+
+  k = (x > 0) & (x < 1);
+  inv(k) = - log (1 ./ x(k) - 1);
 
 endfunction
+
+
+%!shared x
+%! x = [-1 0 0.5 1 2];
+%!assert(logistic_inv (x), [NaN -Inf 0 Inf NaN]);
+
+%% Test class of input preserved
+%!assert(logistic_inv ([x, NaN]), [NaN -Inf 0 Inf NaN NaN]);
+%!assert(logistic_inv (single([x, NaN])), single([NaN -Inf 0 Inf NaN NaN]));
+
+%% Test input validation
+%!error logistic_inv ()
+%!error logistic_inv (1,2)
+%!error logistic_inv (i)
+

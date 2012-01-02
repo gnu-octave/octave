@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
-## Searches for the enclosing Delaunay convex hull.  For @code{@var{t} =
+## Search for the enclosing Delaunay convex hull.  For @code{@var{t} =
 ## delaunayn (@var{x})}, finds the index in @var{t} containing the
 ## points @var{xi}.  For points outside the convex hull, @var{idx} is NaN.
 ## If requested @code{tsearchn} also returns the Barycentric coordinates @var{p}

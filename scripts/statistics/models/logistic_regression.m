@@ -84,8 +84,7 @@
 ## Uses the auxiliary functions logistic_regression_derivatives and
 ## logistic_regression_likelihood.
 
-function [theta, beta, dev, dl, d2l, p] ...
-  = logistic_regression (y, x, print, theta, beta)
+function [theta, beta, dev, dl, d2l, p] = logistic_regression (y, x, print, theta, beta)
 
   ## check input
   y = round (vec (y));

@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -31,21 +32,25 @@ function cdf = laplace_cdf (x)
     print_usage ();
   endif
 
-  cdf = zeros (size (x));
-
-  k = find (isnan (x));
-  if (any (k))
-    cdf(k) = NaN;
+  if (iscomplex (x))
+    error ("laplace_cdf: X must not be complex");
   endif
 
-  k = find (x == Inf);
-  if (any (k))
-    cdf(k) = 1;
-  endif
-
-  k = find ((x > -Inf) & (x < Inf));
-  if (any (k))
-    cdf(k) = (1 + sign (x(k)) .* (1 - exp (- abs (x(k))))) / 2;
-  endif
+  cdf = (1 + sign (x) .* (1 - exp (- abs (x)))) / 2;
 
 endfunction
+
+
+%!shared x,y
+%! x = [-Inf -log(2) 0 log(2) Inf];
+%! y = [0, 1/4, 1/2, 3/4, 1]; 
+%!assert(laplace_cdf ([x, NaN]), [y, NaN]);
+
+%% Test class of input preserved
+%!assert(laplace_cdf (single([x, NaN])), single([y, NaN]));
+
+%% Test input validation
+%!error laplace_cdf ()
+%!error laplace_cdf (1,2)
+%!error laplace_cdf (i)
+

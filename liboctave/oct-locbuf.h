@@ -26,8 +26,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstddef>
 #include "oct-cmplx.h"
 
-// The default local buffer simply encapsulates an *array* pointer that gets
-// delete[]d automatically. For common POD types, we provide specializations.
+// The default local buffer simply encapsulates an *array* pointer
+// that gets deleted automatically.  For common POD types, we provide
+// specializations.
 
 template <class T>
 class octave_local_buffer
@@ -50,16 +51,17 @@ private:
   octave_local_buffer& operator = (const octave_local_buffer&);
 };
 
-// For buffers of POD types, we'll be more smart. There is one thing that
-// differentiates a local buffer from a dynamic array - the local buffers, if
-// not manipulated improperly, have a FIFO semantics, meaning that if buffer B
-// is allocated after buffer A, B *must* be deallocated before A. This is
-// *guaranteed* if you use local buffer exclusively through the
-// OCTAVE_LOCAL_BUFFER macro, because the C++ standard *mandates* explicit
-// local objects be destroyed in reverse order of declaration.
-// Therefore, we can avoid memory fragmentation by allocating fairly large
-// chunks of memory and serving local buffers from them in a stack-like manner.
-// The first returning buffer in previous chunk will be responsible for
+// For buffers of POD types, we'll be smarter.  There is one thing
+// that differentiates a local buffer from a dynamic array - the local
+// buffers, if not manipulated improperly, have a FIFO semantics,
+// meaning that if buffer B is allocated after buffer A, B *must* be
+// deallocated before A.  This is *guaranteed* if you use local buffer
+// exclusively through the OCTAVE_LOCAL_BUFFER macro, because the C++
+// standard requires that explicit local objects be destroyed in
+// reverse order of declaration.  Therefore, we can avoid memory
+// fragmentation by allocating fairly large chunks of memory and
+// serving local buffers from them in a stack-like manner.  The first
+// returning buffer in previous chunk will be responsible for
 // deallocating the chunk.
 
 class octave_chunk_buffer
@@ -72,13 +74,30 @@ public:
 
   char *data (void) const { return dat; }
 
+  static OCTAVE_API void clear (void);
+
 private:
+
+  // The number of bytes we allocate for each large chunk of memory we
+  // manage.
   static const size_t chunk_size;
 
-  static char *top, *chunk;
+  // Pointer to the end end of the last allocation.
+  static char *top;
+
+  // Pointer to the current active chunk.
+  static char *chunk;
+
+  // The number of bytes remaining in the active chunk.
   static size_t left;
 
+  // The number of active allocations.
+  static size_t active;
+
+  // Pointer to the current chunk.
   char *cnk;
+
+  // Pointer to the beginning of the most recent allocation.
   char *dat;
 
   // No copying!
@@ -86,8 +105,8 @@ private:
   octave_chunk_buffer& operator = (const octave_chunk_buffer&);
 };
 
-// This specializes octave_local_buffer to use the chunked buffer mechanism
-// for POD types.
+// This specializes octave_local_buffer to use the chunked buffer
+// mechanism for POD types.
 #define SPECIALIZE_POD_BUFFER(TYPE) \
 template <> \
 class octave_local_buffer<TYPE> : private octave_chunk_buffer \
@@ -143,32 +162,37 @@ public:
   }
 };
 
-// If the compiler supports dynamic stack arrays, we can use the attached hack
-// to place small buffer arrays on the stack. It may be even faster than our
-// obstack-like optimization, but is dangerous because stack is a very limited
-// resource, so we disable it.
-#if 0 //defined (HAVE_DYNAMIC_AUTO_ARRAYS)
+// If the compiler supports dynamic stack arrays, we can use the
+// attached hack to place small buffer arrays on the stack. It may be
+// even faster than our obstack-like optimization, but is dangerous
+// because stack is a very limited resource, so we disable it.
+
+#if 0 // defined (HAVE_DYNAMIC_AUTO_ARRAYS)
 
 // Maximum buffer size (in bytes) to be placed on the stack.
 
 #define OCTAVE_LOCAL_BUFFER_MAX_STACK_SIZE 8192
 
-// If we have automatic arrays, we use an automatic array if the size is small
-// enough.  To avoid possibly evaluating `size' multiple times, we first cache
-// it.  Note that we always construct both the stack array and the
-// octave_local_buffer object, but only one of them will be nonempty.
+// If we have automatic arrays, we use an automatic array if the size
+// is small enough.  To avoid possibly evaluating `size' multiple
+// times, we first cache it.  Note that we always construct both the
+// stack array and the octave_local_buffer object, but only one of
+// them will be nonempty.
 
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   const size_t _bufsize_ ## buf = size; \
   const bool _lbufaut_ ## buf = _bufsize_ ## buf * sizeof (T) \
      <= OCTAVE_LOCAL_BUFFER_MAX_STACK_SIZE; \
   T _bufaut_ ## buf [_lbufaut_ ## buf ? _bufsize_ ## buf : 0]; \
-  octave_local_buffer<T> _bufheap_ ## buf (!_lbufaut_ ## buf ? _bufsize_ ## buf : 0); \
-  T *buf = _lbufaut_ ## buf ? _bufaut_ ## buf : static_cast<T *> (_bufheap_ ## buf)
+  octave_local_buffer<T> _bufheap_ ## buf \
+    (!_lbufaut_ ## buf ? _bufsize_ ## buf : 0); \
+  T *buf = _lbufaut_ ## buf \
+    ? _bufaut_ ## buf : static_cast<T *> (_bufheap_ ## buf)
 
 #else
 
-// If we don't have automatic arrays, we simply always use octave_local_buffer.
+// If we don't have automatic arrays, we simply always use
+// octave_local_buffer.
 
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   octave_local_buffer<T> _buffer_ ## buf (size); \
@@ -176,13 +200,14 @@ public:
 
 #endif
 
-// Yeah overloading macros would be nice.
-// Note: we use weird variables in the for loop to avoid warnings about
-// shadowed parameters.
+// Note: we use weird variables in the for loop to avoid warnings
+// about shadowed parameters.
+
 #define OCTAVE_LOCAL_BUFFER_INIT(T, buf, size, value) \
   OCTAVE_LOCAL_BUFFER(T, buf, size); \
   for (size_t _buf_iter = 0, _buf_size = size; \
-       _buf_iter < _buf_size; _buf_iter++) buf[_buf_iter] = value
+        _buf_iter < _buf_size; _buf_iter++) \
+    buf[_buf_iter] = value
 
 #endif
 

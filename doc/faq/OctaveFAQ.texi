@@ -63,7 +63,7 @@ you should first check to see if the topic is covered in the manual.
 * Getting Octave::
 * Installation::
 * Common problems::
-* How do I ...?::
+* Using Octave::
 * @sc{Matlab} compatibility::
 * Index::
 @end menu
@@ -242,7 +242,7 @@ under terms that are compatible with the GPL.
 No.  Instead of asking us to change the licensing terms for Octave, we
 recommend that you release your program under terms that are compatible
 with the GPL so that the free software community can benefit from your
-work the same as you have benefitted from the work of all the people who
+work the same as you have benefited from the work of all the people who
 have contributed to Octave.
 
 @node How can I cite Octave?
@@ -384,7 +384,7 @@ features:
 @menu
 * Functions defined on the command-line::
 * Comments with #::
-* Strings delimitted by double quotes "::
+* Strings delimited by double quotes "::
 * Line continuation by backslash::
 * Informative block closing::
 * Coherent syntax::
@@ -424,8 +424,8 @@ this is that as @samp{#} is also a comment character for unix script
 files, any file that starts with a string like @samp{#! /usr/bin/octave
 -q} will be treated as an octave script and be executed by octave.
 
-@node Strings delimitted by double quotes "
-@section Strings delimitted by double quotes "
+@node Strings delimited by double quotes "
+@section Strings delimited by double quotes "
 The double quote, @samp{"}, may be used to delimit strings, in addition
 to the single quote @samp{'}. See the previous example. Also,
 double-quoted strings include backslash interpretation (like C++, C, and
@@ -513,7 +513,7 @@ work on each element of the operand.
 
 @cindex Unwind-protect
 
-Octave supports a limited form of exception handling modelled after the
+Octave supports a limited form of exception handling modeled after the
 unwind-protect form of Lisp.  The general form of an
 @code{unwind_protect} block looks like this:
 
@@ -644,7 +644,7 @@ sure to get the latest version.
 @item @url{ftp://ftp.octave.org/pub/octave/}
 @end itemize
 
-Since Octave is distrubted under the terms of the GPL, you can get
+Since Octave is distributed under the terms of the GPL, you can get
 Octave from a friend who has a copy, or from the Octave website.
 
 @node Pre-compiled binary packages
@@ -780,15 +780,16 @@ Fedora
 @end itemize
 @end itemize
 
-@node How do I ...?
-@chapter  How do I ...?
+@node Using Octave
+@chapter  Using Octave
 
 @menu
 * How do I set the number of displayed decimals?::
+* How does Octave solve linear systems?::
 @end menu
 
 @cindex Tips and tricks
-@cindex How do I @dots{} ?
+@cindex Using Octave
 
 @node How do I set the number of displayed decimals?
 @section How do I set the number of displayed decimals?
@@ -803,6 +804,18 @@ octave:4> pi
 pi = 3.1416
 @end group
 @end example
+
+@node How does Octave solve linear systems?
+@section How does Octave solve linear systems?
+
+@cindex backslash operator
+
+In addition to consulting Octave's source for the precise details, the
+Octave manual contains a complete high-level description of the
+algorithm that Octave uses to decide how to solve a particular linear
+system, e.g. how the backslash operator @code{A\x} will be interpreted.
+Sections ``Techniques Used for Linear Algebra'' and ``Linear Algebra on
+Sparse Matrices'' from the manual describe this procedure.
 
 @node @sc{Matlab} compatibility
 @chapter Porting programs from @sc{Matlab} to Octave
@@ -886,7 +899,7 @@ such thing is available in Octave, due to how Octave essentially
 
 The authors of Octave consider the nested function scoping rules of
 @sc{Matlab} to be more problems than they are worth as they introduce
-diffiult to find bugs as inadvertantly modifying a variable in a
+difficult to find bugs as inadvertently modifying a variable in a
 nested function that is also used in the parent is particularly easy.
 
 @item Differences in core syntax
@@ -1020,7 +1033,7 @@ exactly duplicate the @sc{Matlab} functionality or interface.
 
 @item Short-circuit & and | operators
 The @code{&} and @code{|} operators in @sc{Matlab} short-circuit when
-included in an if statemant and not otherwise.  In Octave only the
+included in an if statement and not otherwise.  In Octave only the
 @code{&&} and @code{||} short circuit.  Note that this means that
 
 @example
@@ -1286,7 +1299,7 @@ interpreted in double quoted strings but not single quoted strings. This
 difference is important on Windows platforms where the "\" character is
 used in path names, and so single quoted strings should be used in
 paths. @sc{Matlab} doesn't have double quoted strings and so they should
-be avoided if the code will be transfered to a @sc{Matlab} user.
+be avoided if the code will be transferred to a @sc{Matlab} user.
 @end itemize
 
 @end itemize

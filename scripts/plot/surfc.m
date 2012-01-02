@@ -45,7 +45,26 @@ function h = surfc (varargin)
   drawnow ();
   zmin = get (ax, "zlim")(1);
 
-  [c, tmp2] = __contour__ (ax, zmin, varargin{:});
+  # don't pass axis handle and/or string arguments to __contour__()
+  stop_idx = nargin;
+  for i = 2 : nargin
+    if (ischar (varargin{i}))
+      stop_idx = i - 1;
+      break;
+    endif
+  endfor
+
+  start_idx = 1;
+  if (ishandle (varargin{1}))
+    start_idx = 2;
+  endif
+
+  if (stop_idx - start_idx == 1 || stop_idx - start_idx == 3)
+    #don't pass a color matrix c to __contour__
+    stop_idx -= 1;
+  endif
+
+  [c, tmp2] = __contour__ (ax, zmin, varargin{start_idx:stop_idx});
 
   tmp = [tmp; tmp2];
 
@@ -54,3 +73,22 @@ function h = surfc (varargin)
   endif
 
 endfunction
+
+%!demo
+%! clf
+%! [~,~,Z]=peaks;
+%! surfc(Z);
+
+%!demo
+%! clf
+%! [~,~,Z]=sombrero;
+%! [Fx,Fy] = gradient(Z);
+%! surfc(Z,Fx+Fy);
+%! shading interp;
+
+%!demo
+%! clf
+%! [X,Y,Z]=sombrero;
+%! [~,Fy] = gradient(Z);
+%! surfc(X,Y,Z,Fy);
+%! shading interp;

@@ -179,26 +179,38 @@ called without a new path, the current path will be returned.
 Internally a package is simply a gzipped tar file that contains a
 top level directory of any given name.  This directory will in the
 following be referred to as @code{package} and may contain the
-following files
+following files:
 
 @noindent
 @table @code
-@item package/DESCRIPTION
-This is a required file containing information about the package.
-@xref{The DESCRIPTION File}, for details on this file.
-
 @item package/COPYING
 This is a required file containing the license of the package.  No
 restrictions is made on the license in general.  If however the
 package contains dynamically linked functions the license must be
 compatible with the GNU General Public License.
 
+@item package/DESCRIPTION
+This is a required file containing information about the package.
+@xref{The DESCRIPTION File}, for details on this file.
+
+@item package/ChangeLog
+This is an optional file describing all the changes made to the
+package source files.
+
 @item package/INDEX
 This is an optional file describing the functions provided by the
 package.  If this file is not given then one with be created
 automatically from the functions in the package and the
-@code{Categories} keyword in the @code{DESCRIPTION} file.
+@code{Categories} keyword in the @file{DESCRIPTION} file.
 @xref{The INDEX File}, for details on this file.
+
+@item package/NEWS
+This is an optional file describing all user-visible changes worth
+mentioning.  As this file increases on size, old entries can be moved
+into @file{package/ONEWS}.
+
+@item package/ONEWS
+This is an optional file describing old entries from the @file{NEWS} file.
 
 @anchor{doc-PKG_ADD}
 @item package/PKG_ADD
@@ -246,7 +258,7 @@ package.
 @end table
 
 Besides the above mentioned files, a package can also contain on or
-more of the following directories
+more of the following directories:
 
 @noindent
 @table @code
@@ -289,7 +301,7 @@ external scripts, etc., called by functions within the package.
 @node The DESCRIPTION File
 @subsection The DESCRIPTION File
 
-The @code{DESCRIPTION} file contains various information about the
+The @file{DESCRIPTION} file contains various information about the
 package, such as its name, author, and version.  This file has a very
 simple format
 
@@ -307,7 +319,7 @@ Everything else is of the form @code{NameOfOption: ValueOfOption}.
 @end itemize
 
 @noindent
-The following is a simple example of a @code{DESCRIPTION} file
+The following is a simple example of a @file{DESCRIPTION} file
 
 @example
 @group
@@ -334,7 +346,8 @@ The package manager currently recognizes the following keywords
 Name of the package.
 
 @item Version
-Version of the package.
+Version of the package.  A package version must be 3 numbers separated
+by a dot.
 
 @item Date
 Date of last update.
@@ -352,7 +365,7 @@ A one line description of the package.
 A one paragraph description of the package.
 
 @item Categories
-Optional keyword describing the package (if no @code{INDEX} file is
+Optional keyword describing the package (if no @file{INDEX} file is
 given this is mandatory).
 
 @item Problems
@@ -385,7 +398,7 @@ lines.
 
 @item License
 An optional short description of the used license (e.g., GPL version 3
-or newer).  This is optional since the file @code{COPYING} is mandatory.
+or newer).  This is optional since the file @file{COPYING} is mandatory.
 
 @item SystemRequirements
 These are the external install dependencies of the package and are not
@@ -407,7 +420,7 @@ from the build dependencies, and therefore the often a
 
 @noindent
 The developer is free to add additional arguments to the 
-@code{DESCRIPTION} file for their own purposes.  One further detail to
+@file{DESCRIPTION} file for their own purposes.  One further detail to
 aid the packager is that the @code{SystemRequirements} and
 @code{BuildRequires} keywords can have a distribution dependent section,
 and the automatic build process will use these.  An example of the
@@ -425,7 +438,7 @@ name will be used instead.
 @node The INDEX File
 @subsection The INDEX File
 
-The optional @code{INDEX} file provides a categorical view of the
+The optional @file{INDEX} file provides a categorical view of the
 functions in the package.  This file has a very simple format
 
 @noindent

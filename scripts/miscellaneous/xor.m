@@ -17,11 +17,24 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} xor (@var{x}, @var{y})
+## @deftypefn {Mapping Function} {@var{z} =} xor (@var{x}, @var{y})
 ## Return the `exclusive or' of the entries of @var{x} and @var{y}.
 ## For boolean expressions @var{x} and @var{y},
-## @code{xor (@var{x}, @var{y})} is true if and only if @var{x} or @var{y}
-## is true, but not if both @var{x} and @var{y} are true.
+## @code{xor (@var{x}, @var{y})} is true if and only if one of @var{x} or
+## @var{y} is true.  Otherwise, for @var{x} and @var{y} both true or both
+## false, @code{xor} returns false.
+##
+## The truth table for the xor operation is
+##
+## @multitable @columnfractions 0.44 .03 .05 .03 0.44
+## @item @tab @var{x} @tab @var{y} @tab @var{z} @tab
+## @item @tab 0 @tab 0 @tab 0 @tab
+## @item @tab 1 @tab 0 @tab 1 @tab
+## @item @tab 0 @tab 1 @tab 1 @tab
+## @item @tab 1 @tab 1 @tab 0 @tab
+## @end multitable
+##
+## @seealso{and, or, not}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -35,7 +48,11 @@ function z = xor (x, y)
       ## Typecast to logicals is necessary for other numeric types.
       z = logical (x) != logical (y);
     else
-      error ("xor: X and Y must be of common size or scalars");
+      try
+        z = bsxfun (@xor, x, y);
+      catch
+        error ("xor: X and Y must be of compatible size or scalars");
+      end_try_catch
     endif
   else
     print_usage ();

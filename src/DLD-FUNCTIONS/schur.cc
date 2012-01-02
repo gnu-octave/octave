@@ -60,170 +60,70 @@ mark_upper_triangular (const Matrix& a)
 DEFUN_DLD (schur, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{S} =} schur (@var{A})\n\
+@deftypefnx {Loadable Function} {@var{S} =} schur (@var{A}, \"real\")\n\
 @deftypefnx {Loadable Function} {@var{S} =} schur (@var{A}, \"complex\")\n\
-@deftypefnx {Loadable Function} {[@var{U}, @var{S}] =} schur (@var{A}, @var{opt})\n\
+@deftypefnx {Loadable Function} {@var{S} =} schur (@var{A}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{U}, @var{S}] =} schur (@var{A}, @dots{})\n\
 @cindex Schur decomposition\n\
-The Schur@tie{}decomposition is used to compute eigenvalues of a\n\
-square matrix, and has applications in the solution of algebraic\n\
-Riccati equations in control (see @code{are} and @code{dare}).\n\
-@code{schur} always returns\n\
+Compute the Schur@tie{}decomposition of @var{A}\n\
 @tex\n\
-$S = U^T A U$\n\
+$$\n\
+ S = U^T A U\n\
+$$\n\
 @end tex\n\
 @ifnottex\n\
+\n\
+@example\n\
 @code{@var{S} = @var{U}' * @var{A} * @var{U}}\n\
+@end example\n\
+\n\
 @end ifnottex\n\
-where\n\
-@tex\n\
-$U$\n\
-@end tex\n\
-@ifnottex\n\
-@var{U}\n\
-@end ifnottex\n\
- is a unitary matrix\n\
+where @var{U} is a unitary matrix\n\
 @tex\n\
 ($U^T U$ is identity)\n\
 @end tex\n\
 @ifnottex\n\
 (@code{@var{U}'* @var{U}} is identity)\n\
 @end ifnottex\n\
-and\n\
-@tex\n\
-$S$\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}\n\
-@end ifnottex\n\
-is upper triangular.  The eigenvalues of\n\
-@tex\n\
-$A$ (and $S$)\n\
-@end tex\n\
-@ifnottex\n\
-@var{A} (and @var{S})\n\
-@end ifnottex\n\
-are the diagonal elements of\n\
-@tex\n\
-$S$.\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}.\n\
-@end ifnottex\n\
-If the matrix\n\
-@tex\n\
-$A$\n\
-@end tex\n\
-@ifnottex\n\
-@var{A}\n\
-@end ifnottex\n\
+and @var{S} is upper triangular.  The eigenvalues of @var{A} (and @var{S})\n\
+are the diagonal elements of @var{S}.  If the matrix @var{A}\n\
 is real, then the real Schur@tie{}decomposition is computed, in which the\n\
-matrix\n\
-@tex\n\
-$U$\n\
-@end tex\n\
-@ifnottex\n\
-@var{U}\n\
-@end ifnottex\n\
-is orthogonal and\n\
-@tex\n\
-$S$\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}\n\
-@end ifnottex\n\
-is block upper triangular\n\
+matrix @var{U} is orthogonal and @var{S} is block upper triangular\n\
 with blocks of size at most\n\
 @tex\n\
-$2\\times 2$\n\
+$2 \\times 2$\n\
 @end tex\n\
 @ifnottex\n\
 @code{2 x 2}\n\
 @end ifnottex\n\
-along the diagonal.  The diagonal elements of\n\
-@tex\n\
-$S$\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}\n\
-@end ifnottex\n\
+along the diagonal.  The diagonal elements of @var{S}\n\
 (or the eigenvalues of the\n\
 @tex\n\
-$2\\times 2$\n\
+$2 \\times 2$\n\
 @end tex\n\
 @ifnottex\n\
 @code{2 x 2}\n\
 @end ifnottex\n\
-blocks, when\n\
-appropriate) are the eigenvalues of\n\
-@tex\n\
-$A$\n\
-@end tex\n\
-@ifnottex\n\
-@var{A}\n\
-@end ifnottex\n\
-and\n\
-@tex\n\
-$S$.\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}.\n\
-@end ifnottex\n\
+blocks, when appropriate) are the eigenvalues of @var{A} and @var{S}.\n\
 \n\
-A complex decomposition may be forced by passing \"complex\" as @var{opt}.\n\
+The default for real matrices is a real Schur@tie{}decomposition.\n\
+A complex decomposition may be forced by passing the flag \"complex\".\n\
 \n\
 The eigenvalues are optionally ordered along the diagonal according to\n\
 the value of @var{opt}.  @code{@var{opt} = \"a\"} indicates that all\n\
 eigenvalues with negative real parts should be moved to the leading\n\
-block of\n\
-@tex\n\
-$S$\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}\n\
-@end ifnottex\n\
+block of @var{S}\n\
 (used in @code{are}), @code{@var{opt} = \"d\"} indicates that all eigenvalues\n\
-with magnitude less than one should be moved to the leading block of\n\
-@tex\n\
-$S$\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}\n\
-@end ifnottex\n\
+with magnitude less than one should be moved to the leading block of @var{S}\n\
 (used in @code{dare}), and @code{@var{opt} = \"u\"}, the default, indicates\n\
-that no ordering of eigenvalues should occur.  The leading\n\
-@tex\n\
-$k$\n\
-@end tex\n\
-@ifnottex\n\
-@var{k}\n\
-@end ifnottex\n\
-columns of\n\
-@tex\n\
-$U$\n\
-@end tex\n\
-@ifnottex\n\
-@var{U}\n\
-@end ifnottex\n\
-always span the\n\
-@tex\n\
-$A$-invariant\n\
-@end tex\n\
-@ifnottex\n\
-@var{A}-invariant\n\
-@end ifnottex\n\
-subspace corresponding to the\n\
-@tex\n\
-$k$\n\
-@end tex\n\
-@ifnottex\n\
-@var{k}\n\
-@end ifnottex\n\
-leading eigenvalues of\n\
-@tex\n\
-$S$.\n\
-@end tex\n\
-@ifnottex\n\
-@var{S}.\n\
-@end ifnottex\n\
+that no ordering of eigenvalues should occur.  The leading @var{k}\n\
+columns of @var{U} always span the @var{A}-invariant\n\
+subspace corresponding to the @var{k} leading eigenvalues of @var{S}.\n\
+\n\
+The Schur@tie{}decomposition is used to compute eigenvalues of a\n\
+square matrix, and has applications in the solution of algebraic\n\
+Riccati equations in control (see @code{are} and @code{dare}).\n\
+@seealso{rsf2csf}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -253,7 +153,11 @@ $S$.\n\
 
   bool force_complex = false;
 
-  if (ord == "complex")
+  if (ord == "real")
+    {
+      ord = std::string ();
+    }
+  else if (ord == "complex")
     {
       force_complex = true;
       ord = std::string ();
@@ -385,7 +289,7 @@ $S$.\n\
 %!test
 %! fail("schur ([1, 2; 3, 4], 2)","warning");
 
-%!error <Invalid call to schur.*> schur ();
+%!error <Invalid call to schur> schur ();
 %!error schur ([1, 2, 3; 4, 5, 6]);
 
 */
@@ -396,10 +300,16 @@ DEFUN_DLD (rsf2csf, args, nargout,
 Convert a real, upper quasi-triangular Schur@tie{}form @var{TR} to a complex,\n\
 upper triangular Schur@tie{}form @var{T}.\n\
 \n\
-Note that the following relations hold: \n\
+Note that the following relations hold:\n\
 \n\
-@code{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
+@tex\n\
+$UR \\cdot TR \\cdot {UR}^T = U T U^{\\dagger}$ and\n\
+$U^{\\dagger} U$ is the identity matrix I.\n\
+@end tex\n\
+@ifnottex\n\
+@xcode{@var{UR} * @var{TR} * @var{UR}' = @var{U} * @var{T} * @var{U}'} and\n\
 @code{@var{U}' * @var{U}} is the identity matrix I.\n\
+@end ifnottex\n\
 \n\
 Note also that @var{U} and @var{T} are not unique.\n\
 @seealso{schur}\n\

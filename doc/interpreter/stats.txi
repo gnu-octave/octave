@@ -96,6 +96,10 @@ measures to be developed.
 
 @DOCSTRING(moment)
 
+@DOCSTRING(quantile)
+
+@DOCSTRING(prctile)
+
 A summary view of a data set can be generated quickly with the
 @code{statistics} function.
 
@@ -110,11 +114,9 @@ different measures from those of the basic descriptive statistics.
 
 @DOCSTRING(center)
 
-@DOCSTRING(studentize)
+@DOCSTRING(zscore)
 
 @DOCSTRING(histc)
-
-@DOCSTRING(cut)
 
 @c FIXME: really want to put a reference to unique here
 @c @DOCSTRING(values)
@@ -126,6 +128,8 @@ different measures from those of the basic descriptive statistics.
 @DOCSTRING(ranks)
 
 @DOCSTRING(run_count)
+
+@DOCSTRING(runlength)
 
 @DOCSTRING(probit)
 
@@ -162,9 +166,7 @@ using the @code{hist} function as described in
 
 @DOCSTRING(cov)
 
-@DOCSTRING(cor)
-
-@DOCSTRING(corrcoef)
+@DOCSTRING(corr)
 
 @DOCSTRING(spearman)
 
@@ -301,9 +303,9 @@ alphabetical order).
   @tab @code{poisscdf}
   @tab @code{poissinv}
 @item Standard Normal Distribution
-  @tab @code{stdtormal_pdf}
-  @tab @code{stdtormal_cdf}
-  @tab @code{stdtormal_inv}
+  @tab @code{stdnormal_pdf}
+  @tab @code{stdnormal_cdf}
+  @tab @code{stdnormal_inv}
 @item t (Student) Distribution
   @tab @code{tpdf}
   @tab @code{tcdf}

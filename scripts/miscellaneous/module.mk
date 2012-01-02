@@ -20,6 +20,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/dos.m \
   miscellaneous/dump_prefs.m \
   miscellaneous/edit.m \
+	miscellaneous/fact.m \
   miscellaneous/fileattrib.m \
   miscellaneous/fileparts.m \
   miscellaneous/fullfile.m \
@@ -50,6 +51,8 @@ miscellaneous_FCN_FILES = \
   miscellaneous/paren.m \
   miscellaneous/parseparams.m \
   miscellaneous/perl.m \
+  miscellaneous/python.m \
+  miscellaneous/recycle.m \
   miscellaneous/rmappdata.m \
   miscellaneous/run.m \
   miscellaneous/semicolon.m \
@@ -61,11 +64,11 @@ miscellaneous_FCN_FILES = \
   miscellaneous/tar.m \
   miscellaneous/tempdir.m \
   miscellaneous/tempname.m \
-  miscellaneous/unimplemented.m \
   miscellaneous/unix.m \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \
   miscellaneous/unzip.m \
+  miscellaneous/usejava.m \
   miscellaneous/ver.m \
   miscellaneous/version.m \
   miscellaneous/warning_ids.m \

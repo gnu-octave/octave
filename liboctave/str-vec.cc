@@ -163,6 +163,26 @@ string_vector::append (const string_vector& sv)
   return *this;
 }
 
+std::string
+string_vector::join (const std::string& sep) const
+{
+  std::string retval;
+
+  octave_idx_type len = length ();
+
+  if (len > 0)
+    {
+      octave_idx_type i;
+
+      for (i = 0; i < len - 1; i++)
+        retval += elem(i) + sep;
+
+      retval += elem(i);
+    }
+
+  return retval;
+}
+
 char **
 string_vector::c_str_vec (void) const
 {

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{hlink} =} linkprop (@var{h}, @var{prop})
-## Links graphics object properties, such that a change in one is
+## Link graphics object properties, such that a change in one is
 ## propagated to the others.  The properties to link are given as a
 ## string of cell string array by @var{prop} and the objects containing
 ## these properties by the handle array @var{h}.

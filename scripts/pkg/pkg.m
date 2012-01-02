@@ -20,8 +20,10 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} pkg @var{command} @var{pkg_name}
 ## @deftypefnx {Command} {} pkg @var{command} @var{option} @var{pkg_name}
-## This command interacts with the package manager.  Different actions will
-## be taken depending on the value of @var{command}.
+## Manage packages (groups of add-on functions) for Octave.  Different actions
+## are available depending on the value of @var{command}.
+##
+## Available commands:
 ##
 ## @table @samp
 ##
@@ -40,29 +42,43 @@
 ##
 ## @table @code
 ## @item -nodeps
-## The package manager will disable the dependency checking.  That way it
-## is possible to install a package even if it depends on another package
-## that's not installed on the system.  @strong{Use this option with care.}
+## The package manager will disable dependency checking.  With this option it
+## is possible to install a package even when it depends on another package
+## which is not installed on the system.  @strong{Use this option with care.}
 ##
 ## @item -noauto
 ## The package manager will not automatically load the installed package
-## when starting Octave, even if the package requests that it is.
+## when starting Octave.  This overrides any setting within the package.
 ##
 ## @item -auto
 ## The package manager will automatically load the installed package when
-## starting Octave, even if the package requests that it isn't.
+## starting Octave.  This overrides any setting within the package.
 ##
 ## @item -local
-## A local installation is forced, even if the user has system privileges.
+## A local installation (package available only to current user) is forced,
+## even if the user has system privileges.
 ##
 ## @item -global
-## A global installation is forced, even if the user doesn't normally have
-## system privileges
+## A global installation (package available to all users) is forced, even if
+## the user doesn't normally have system privileges.
+##
+## @item -forge
+## Install a package directly from the Octave-Forge repository.  This
+## requires an internet connection and the cURL library.
 ##
 ## @item -verbose
-## The package manager will print the output of all of the commands that are
-## performed.
+## The package manager will print the output of all commands as
+## they are performed.
 ## @end table
+##
+## @item update
+## Check installed Octave-Forge packages against repository and update any
+## outdated items.  This requires an internet connection and the cURL library.
+## Usage:
+##
+## @example
+## pkg update
+## @end example
 ##
 ## @item uninstall
 ## Uninstall named packages.  For example,
@@ -86,44 +102,53 @@
 ##
 ## @noindent
 ## adds the @code{image} package to the path.  It is possible to load all
-## installed packages at once with the command
+## installed packages at once with the keyword @samp{all}.  Usage:
 ##
 ## @example
 ## pkg load all
 ## @end example
 ##
 ## @item unload
-## Removes named packages from the path.  After unloading a package it is
-## no longer possible to use the functions provided by the package.
-## This command behaves like the @code{load} command.
-##
-## @item list
-## Show a list of the currently installed packages.  By requesting one or two
-## output argument it is possible to get a list of the currently installed
-## packages.  For example,
+## Remove named packages from the path.  After unloading a package it is
+## no longer possible to use the functions provided by the package.  It is
+## possible to unload all installed packages at once with the keyword
+## @samp{all}.  Usage:
 ##
 ## @example
-## installed_packages = pkg list;
+## pkg unload all
+## @end example
+##
+## @item list
+## Show the list of currently installed packages.  For example,
+##
+## @example
+## installed_packages = pkg ("list")
 ## @end example
 ##
 ## @noindent
 ## returns a cell array containing a structure for each installed package.
-## The command
+##
+## If two output arguments are requested @code{pkg} splits the list of
+## installed packages into those which were installed by the current user,
+## and those which were installed by the system administrator.
 ##
 ## @example
-## [@var{user_packages}, @var{system_packages}] = pkg list
+## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## @noindent
-## splits the list of installed packages into those who are installed by
-## the current user, and those installed by the system administrator.
+## The option '-forge' lists packages available at the Octave-Forge repository.
+## This requires an internet connection and the cURL library.  For example:
+##
+## @example
+## oct_forge_pkgs = pkg ("list", "-forge")
+## @end example
 ##
 ## @item describe
 ## Show a short description of the named installed packages, with the option
-## '-verbose' also list functions provided by the package, e.g.:
+## '-verbose' also list functions provided by the package.  For example,
 ##
 ## @example
-##  pkg describe -verbose all
+## pkg describe -verbose all
 ## @end example
 ##
 ## @noindent
@@ -133,7 +158,7 @@
 ## output rather than printed on screen:
 ##
 ## @example
-##  desc = pkg ("describe", "secs1d", "image")
+## desc = pkg ("describe", "secs1d", "image")
 ## @end example
 ##
 ## @noindent
@@ -141,7 +166,7 @@
 ## error, unless a second output is requested:
 ##
 ## @example
-##  [ desc, flag] = pkg ("describe", "secs1d", "image")
+## [desc, flag] = pkg ("describe", "secs1d", "image")
 ## @end example
 ##
 ## @noindent
@@ -163,20 +188,20 @@
 ## output argument.  For example:
 ##
 ## @example
-## p = pkg prefix
+## pfx = pkg ("prefix")
 ## @end example
 ##
 ## The location in which to install the architecture dependent files can be
-## independent specified with an addition argument.  For example:
+## independently specified with an addition argument.  For example:
 ##
 ## @example
 ## pkg prefix ~/my_octave_packages ~/my_arch_dep_pkgs
 ## @end example
 ##
 ## @item local_list
-## Set the file in which to look for information on the locally
+## Set the file in which to look for information on locally
 ## installed packages.  Locally installed packages are those that are
-## typically available only to the current user.  For example:
+## available only to the current user.  For example:
 ##
 ## @example
 ## pkg local_list ~/.octave_packages
@@ -189,9 +214,9 @@
 ## @end example
 ##
 ## @item global_list
-## Set the file in which to look for, for information on the globally
+## Set the file in which to look for information on globally
 ## installed packages.  Globally installed packages are those that are
-## typically available to all users.  For example:
+## available to all users.  For example:
 ##
 ## @example
 ## pkg global_list /usr/share/octave/octave_packages
@@ -203,21 +228,8 @@
 ## pkg global_list
 ## @end example
 ##
-## @item rebuild
-## Rebuilds the package database from the installed directories.  This can
-## be used in cases where for some reason the package database is corrupted.
-## It can also take the @option{-auto} and @option{-noauto} options to allow the
-## autoloading state of a package to be changed.  For example,
-##
-## @example
-## pkg rebuild -noauto image
-## @end example
-##
-## @noindent
-## will remove the autoloading status of the image package.
-##
 ## @item build
-## Builds a binary form of a package or packages.  The binary file produced
+## Build a binary form of a package or packages.  The binary file produced
 ## will itself be an Octave package that can be installed normally with
 ## @code{pkg}.  The form of the command to build a binary package is
 ##
@@ -229,7 +241,21 @@
 ## where @code{builddir} is the name of a directory where the temporary
 ## installation will be produced and the binary packages will be found.
 ## The options @option{-verbose} and @option{-nodeps} are respected, while
-## the other options are ignored.
+## all other options are ignored.
+##
+## @item rebuild
+## Rebuild the package database from the installed directories.  This can
+## be used in cases where the package database has been corrupted.
+## It can also take the @option{-auto} and @option{-noauto} options to allow the
+## autoloading state of a package to be changed.  For example,
+##
+## @example
+## pkg rebuild -noauto image
+## @end example
+##
+## @noindent
+## will remove the autoloading status of the image package.
+##
 ## @end table
 ## @end deftypefn
 
@@ -248,7 +274,7 @@ function [local_packages, global_packages] = pkg (varargin)
   if (prefix == -1)
     if (global_install)
       prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-      archprefix = fullfile (octave_config_info ("libexecdir"),
+      archprefix = fullfile (octave_config_info ("libdir"),
                              "octave", "packages");
     else
       prefix = fullfile ("~", "octave");
@@ -260,7 +286,8 @@ function [local_packages, global_packages] = pkg (varargin)
 
   available_actions = {"list", "install", "uninstall", "load", ...
                        "unload", "prefix", "local_list", ...
-                       "global_list", "rebuild", "build","describe"};
+                       "global_list", "rebuild", "build", ...
+                       "describe", "update"};
   ## Handle input
   if (length (varargin) == 0 || ! iscellstr (varargin))
     print_usage ();
@@ -281,6 +308,8 @@ function [local_packages, global_packages] = pkg (varargin)
         auto = 1;
       case "-verbose"
         verbose = true;
+        ## Send verbose output to pager immediately.  Change setting locally.
+        page_output_immediately (true, "local");
       case "-forge"
         octave_forge = true;
       case "-local"
@@ -293,7 +322,7 @@ function [local_packages, global_packages] = pkg (varargin)
         global_install = true;
         if (! user_prefix)
           prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-          archprefix = fullfile (octave_config_info ("libexecdir"),
+          archprefix = fullfile (octave_config_info ("libdir"),
                                  "octave", "packages");
         endif
       case available_actions
@@ -342,8 +371,8 @@ function [local_packages, global_packages] = pkg (varargin)
       unwind_protect
 
         if (octave_forge)
-          [urls, local_files] = cellfun (@get_forge_download, files, "uniformoutput", false);
-          [files, succ] = cellfun (@urlwrite, urls, local_files, "uniformoutput", false);
+          [urls, local_files] = cellfun ("get_forge_download", files, "uniformoutput", false);
+          [files, succ] = cellfun ("urlwrite", urls, local_files, "uniformoutput", false);
           succ = [succ{:}];
           if (! all (succ))
             i = find (! succ, 1);
@@ -355,7 +384,7 @@ function [local_packages, global_packages] = pkg (varargin)
                  global_list, global_install);
 
       unwind_protect_cleanup
-        cellfun (@unlink, local_files);
+        cellfun ("unlink", local_files);
       end_unwind_protect
 
     case "uninstall"
@@ -484,6 +513,21 @@ function [local_packages, global_packages] = pkg (varargin)
         otherwise
           error ("you can request at most two outputs when calling 'pkg describe'");
       endswitch
+
+    case "update"
+      if (nargout == 0)
+        installed_pkgs_lst = installed_packages (local_list, global_list);
+        for i = 1:length (installed_pkgs_lst)
+          installed_pkg_name = installed_pkgs_lst{i}.name;
+          installed_pkg_version = installed_pkgs_lst{i}.version;
+          forge_pkg_version = get_forge_pkg (installed_pkg_name);
+          if (compare_versions (forge_pkg_version, installed_pkg_version, ">"))
+            feval (@pkg, "install", "-forge", installed_pkg_name);
+          endif
+        endfor
+      else
+        error ("no output arguments available");
+      endif
 
     otherwise
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
@@ -902,6 +946,15 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
                                     global_install);
   endif
+
+  ## If there's a NEWS file, mention it
+  ## we are checking if desc exists too because it's possible to ge to this point
+  ## without creating it such as giving an invalid filename for the package
+  if (exist ("desc", "var") && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
+    printf ("For information about changes from previous versions of the %s package, run 'news (\"%s\")'.\n",
+            desc.name, desc.name);
+  endif
+
 endfunction
 
 function uninstall (pkgnames, handle_deps, verbose, local_list,
@@ -1313,7 +1366,7 @@ function configure_make (desc, packdir, verbose)
         flags = cstrcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
       endif
       [status, output] = shell (cstrcat ("cd '", src, "'; ", scenv,
-					 "./configure --prefix=\"",
+                                         "./configure --prefix=\"",
                                          desc.dir, "\"", flags));
       if (status != 0)
         rm_rf (desc.dir);
@@ -1376,7 +1429,7 @@ function configure_make (desc, packdir, verbose)
     if (isempty (filenames))
       idx = [];
     else
-      idx = cellfun (@is_architecture_dependent, filenames);
+      idx = cellfun ("is_architecture_dependent", filenames);
     endif
     archdependent = filenames (idx);
     archindependent = filenames (!idx);
@@ -1582,42 +1635,17 @@ function copy_files (desc, packdir, global_install)
     error ("couldn't create packinfo directory: %s", msg);
   endif
 
-  ## Copy DESCRIPTION.
-  [status, output] = copyfile (fullfile (packdir, "DESCRIPTION"), packinfo);
-  if (status != 1)
-    rm_rf (desc.dir);
-    rm_rf (octfiledir);
-    error ("couldn't copy DESCRIPTION: %s", output);
-  endif
+  packinfo_copy_file ("DESCRIPTION", "required", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("COPYING", "required", packdir, packinfo, desc, octfiledir);
 
-  ## Copy COPYING.
-  [status, output] = copyfile (fullfile (packdir, "COPYING"), packinfo);
-  if (status != 1)
-    rm_rf (desc.dir);
-    rm_rf (octfiledir);
-    error ("couldn't copy COPYING: %s", output);
-  endif
-
-  ## If the file ChangeLog exists, copy it.
-  changelog_file = fullfile (packdir, "ChangeLog");
-  if (exist (changelog_file, "file"))
-    [status, output] = copyfile (changelog_file, packinfo);
-    if (status != 1)
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
-      error ("couldn't copy ChangeLog file: %s", output);
-    endif
-  endif
+  packinfo_copy_file ("NEWS", "optional", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("ONEWS", "optional", packdir, packinfo, desc, octfiledir);
+  packinfo_copy_file ("ChangeLog", "optional", packdir, packinfo, desc, octfiledir);
 
   ## Is there an INDEX file to copy or should we generate one?
   index_file = fullfile (packdir, "INDEX");
   if (exist(index_file, "file"))
-    [status, output] = copyfile (index_file, packinfo);
-    if (status != 1)
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
-      error ("couldn't copy INDEX file: %s", output);
-    endif
+    packinfo_copy_file ("INDEX", "required", packdir, packinfo, desc, octfiledir);
   else
     try
       write_index (desc, fullfile (packdir, "inst"),
@@ -1630,15 +1658,7 @@ function copy_files (desc, packdir, global_install)
   endif
 
   ## Is there an 'on_uninstall.m' to install?
-  fon_uninstall = fullfile (packdir, "on_uninstall.m");
-  if (exist (fon_uninstall, "file"))
-    [status, output] = copyfile (fon_uninstall, packinfo);
-    if (status != 1)
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
-      error ("couldn't copy on_uninstall.m: %s", output);
-    endif
-  endif
+  packinfo_copy_file ("on_uninstall.m", "optional", packdir, packinfo, desc, octfiledir);
 
   ## Is there a doc/ directory that needs to be installed?
   docdir = fullfile (packdir, "doc");
@@ -1651,6 +1671,20 @@ function copy_files (desc, packdir, global_install)
   bindir = fullfile (packdir, "bin");
   if (exist (bindir, "dir") && ! dirempty (bindir))
     [status, output] = copyfile (bindir, desc.dir);
+  endif
+endfunction
+
+function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, octfiledir)
+  filepath = fullfile (packdir, filename);
+  if (!exist (filepath, "file") && strcmpi (requirement, "optional"))
+    ## do nothing, it's still OK
+  else
+    [status, output] = copyfile (filepath, packinfo);
+    if (status != 1)
+      rm_rf (desc.dir);
+      rm_rf (octfiledir);
+      error ("Couldn't copy %s file: %s", filename, output);
+    endif
   endif
 endfunction
 
@@ -2165,13 +2199,8 @@ endfunction
 
 function [status_out, msg_out] = rm_rf (dir)
   if (exist (dir))
-    crr = confirm_recursive_rmdir ();
-    unwind_protect
-      confirm_recursive_rmdir (false);
-      [status, msg] = rmdir (dir, "s");
-    unwind_protect_cleanup
-      confirm_recursive_rmdir (crr);
-    end_unwind_protect
+    crr = confirm_recursive_rmdir (false, "local");
+    [status, msg] = rmdir (dir, "s");
   else
     status = 1;
     msg = "";
@@ -2212,14 +2241,14 @@ function emp = dirempty (nm, ign)
 endfunction
 
 function arch = getarch ()
-  persistent _arch = cstrcat (octave_config_info("canonical_host_type"), ...
-                             "-", octave_config_info("api_version"));
+  persistent _arch = cstrcat (octave_config_info ("canonical_host_type"),
+                              "-", octave_config_info ("api_version"));
   arch = _arch;
 endfunction
 
 function archprefix = getarchprefix (desc, global_install)
   if ((nargin == 2 && global_install) || (nargin < 2 && issuperuser ()))
-    archprefix = fullfile (octave_config_info ("libexecdir"), "octave",
+    archprefix = fullfile (octave_config_info ("libdir"), "octave",
                            "packages", cstrcat(desc.name, "-", desc.version));
   else
     archprefix = desc.dir;

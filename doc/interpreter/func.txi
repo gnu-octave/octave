@@ -289,6 +289,12 @@ convenient.  The values to be returned may not have compatible
 dimensions, and it is often desirable to give the individual return
 values distinct names.
 
+It is possible to use the @code{nthargout} function to obtain only some
+of the return values or several at once in a cell array.
+@ref{Cell Array Objects}
+
+@DOCSTRING(nthargout)
+
 In addition to setting @code{nargin} each time a function is called,
 Octave also automatically initializes @code{nargout} to the number of
 values that are expected to be returned.  This allows you to write
@@ -338,11 +344,29 @@ along with a warning.
 
 @DOCSTRING(nargout)
 
+It is good practice at the head of a function to verify that it has been called
+correctly.  In Octave the following idiom is seen frequently
+
+@example
+@group
+if (nargin < min_#_inputs || nargin > max_#_inputs)
+  print_usage ();
+endif
+@end group
+@end example
+
+@noindent
+which stops the function execution and prints a message about the correct
+way to call the function whenever the number of inputs is wrong.
+
+For compatibility with @sc{matlab}, @code{nargchk}, @code{narginchk} and
+@code{nargoutchk} are available which provide similar error checking.
+
 @DOCSTRING(nargchk)
 
-@DOCSTRING(nargoutchk)
+@DOCSTRING(narginchk)
 
-@DOCSTRING(isargout)
+@DOCSTRING(nargoutchk)
 
 @anchor{doc-varargin} @anchor{doc-varargout}
 @node Variable-length Argument Lists
@@ -455,6 +479,26 @@ endfunction
 @end example
 
 The value of @code{nargin} is not affected by using this declaration.
+
+Return arguments can also be ignored using the same syntax.  Functions may
+take advantage of ignored outputs to reduce the number of calculations
+performed.  To do so, use the @code{isargout} function to query whether the
+output argument is wanted.  For example:
+
+@example
+@group
+function [out1, out2] = long_function (x, y, z)
+  if (isargout (1))
+    ## Long calculation
+    @dots{}
+    out1 = result;
+  endif
+  @dots{}
+endfunction
+@end group
+@end example
+
+@DOCSTRING(isargout)
 
 @node Variable-length Return Lists
 @section Variable-length Return Lists
@@ -1181,8 +1225,6 @@ writing @code{f(x)}.
 
 @DOCSTRING(formula)
 
-@DOCSTRING(vectorize)
-
 @DOCSTRING(symvar)
 
 @node Commands
@@ -1259,20 +1301,25 @@ types of functions you will find there.
 @item audio
 Functions for playing and recording sounds.
 
-@item control
-Functions for design and simulation of automatic control systems.
+@item deprecated
+Out-of-date functions which will eventually be removed from Octave.
 
 @item elfun
-Elementary functions.
+Elementary functions, principally trigonometric.
 
-@item finance
-Functions for computing interest payments, investment values, and rates
-of return.
+@item @@ftp
+Class functions for the FTP object.
 
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
 @code{ismatrix}, @code{nargchk}, etc.
+
+@item geometry
+Functions related to Delaunay triangulation.
+
+@item help
+Functions for Octave's built-in help system.
 
 @item image
 Image processing tools.  These functions require the X Window System.
@@ -1287,13 +1334,13 @@ Functions for linear algebra.
 Functions that don't really belong anywhere else.
 
 @item optimization
-Minimization of functions.
+Functions related to minimization, optimization, and root finding.
 
 @item path
 Functions to manage the directory path Octave uses to find functions.
 
 @item pkg
-Install external packages of functions in Octave.
+Package manager for installing external packages of functions in Octave.
 
 @item plot
 Functions for displaying and printing two- and three-dimensional graphs.
@@ -1311,10 +1358,11 @@ Functions for signal processing applications.
 Functions for handling sparse matrices.
 
 @item specfun
-Special functions.
+Special functions such as @code{bessel} or @code{factor}.
 
 @item special-matrix
-Functions that create special matrix forms.
+Functions that create special matrix forms such as Hilbert or Vandermonde
+matrices.
 
 @item startup
 Octave's system-wide startup file.
@@ -1326,8 +1374,8 @@ Statistical functions.
 Miscellaneous string-handling functions.
 
 @item testfun
-Perform unit tests on other functions.
+Functions for performing unit tests on other functions.
 
 @item time
-Functions related to time keeping.
+Functions related to time and date processing.
 @end table

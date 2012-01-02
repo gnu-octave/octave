@@ -17,35 +17,39 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Command} {} demo @var{name} @var{n}
+## @deftypefn  {Command} {} demo @var{name}
+## @deftypefnx {Command} {} demo @var{name} @var{n}
+## @deftypefnx {Function File} {} demo ('@var{name}')
 ## @deftypefnx {Function File} {} demo ('@var{name}', @var{n})
 ##
-## Runs any examples associated with the function '@var{name}'.
+## Run example code block @var{n} associated with the function @var{name}.
+## If @var{n} is not specified, all examples are run.
+##
 ## Examples are stored in the script file, or in a file with the same
-## name but no extension somewhere on your path.  To keep them separate
-## from the usual script code, all lines are prefixed by @code{%!}.  Each
-## example is introduced by the keyword 'demo' flush left to the prefix,
-## with no intervening spaces.  The remainder of the example can contain
-## arbitrary Octave code.  For example:
+## name but no extension located on Octave's load path.  To keep examples
+## separate from regular script code, all lines are prefixed by @code{%!}.  Each
+## example must also be introduced by the keyword 'demo' flush left to the
+## prefix with no intervening spaces.  The remainder of the example can
+## contain arbitrary Octave code.  For example:
 ##
 ## @example
 ## @group
-##    %!demo
-##    %! t=0:0.01:2*pi; x = sin(t);
-##    %! plot(t,x)
-##    %! %-------------------------------------------------
-##    %! % the figure window shows one cycle of a sine wave
+##   %!demo
+##   %! t=0:0.01:2*pi; x = sin(t);
+##   %! plot (t,x)
+##   %! %-------------------------------------------------
+##   %! % the figure window shows one cycle of a sine wave
 ## @end group
 ## @end example
 ##
 ## Note that the code is displayed before it is executed, so a simple
-## comment at the end suffices.  It is generally not necessary to use
-## disp or printf within the demo.
+## comment at the end suffices for labeling what is being shown.  It is
+## generally not necessary to use @code{disp} or @code{printf} within the demo.
 ##
 ## Demos are run in a function environment with no access to external
-## variables.  This means that all demos in your function must use
-## separate initialization code.  Alternatively, you can combine your
-## demos into one huge demo, with the code:
+## variables.  This means that every demo must have separate initialization
+## code.  Alternatively, all demos can be combined into a single large demo
+## with the code
 ##
 ## @example
 ##    %! input("Press <enter> to continue: ","s");
@@ -53,11 +57,13 @@
 ##
 ## @noindent
 ## between the sections, but this is discouraged.  Other techniques
-## include using multiple plots by saying figure between each, or
-## using subplot to put multiple plots in the same window.
+## to avoid multiple initialization blocks include using multiple plots
+## with a new @code{figure} command between each plot, or using @code{subplot}
+## to put multiple plots in the same window.
 ##
-## Also, since demo evaluates inside a function context, you cannot
-## define new functions inside a demo.  Instead you will have to
+## Also, because demo evaluates within a function context, you cannot
+## define new functions inside a demo.  If you must have function blocks,
+## rather than just anonymous functions or inline functions, you will have to
 ## use @code{eval(example('function',n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
 ## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
@@ -73,6 +79,7 @@
 ##   %! endif
 ## @end group
 ## @end example
+##
 ## @seealso{test, example}
 ## @end deftypefn
 
@@ -88,19 +95,18 @@ function demo (name, n)
 
   if (nargin < 2)
     n = 0;
-  elseif (strcmp ("char", class (n)))
+  elseif (ischar (n))
     n = str2double (n);
-  endif 
+  endif
 
   [code, idx] = test (name, "grabdemo");
-  if (length (idx) == 0)
-    warning ("demo not available for %s", name);
+  if (isempty (idx))
+    warning ("no demo available for %s", name);
     return;
   elseif (n >= length (idx))
     warning ("only %d demos available for %s", length (idx) - 1, name);
     return;
   endif
-
 
   if (n > 0)
     doidx = n;
@@ -116,14 +122,22 @@ function demo (name, n)
     ## Process each demo without failing
     try
       block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
-      ## Use an environment without variables
-      eval (cstrcat ("function __demo__()\n", block, "\nendfunction"));
-      ## Display the code that will be executed before executing it
-      printf ("%s example %d:%s\n\n", name, doidx(i), block);
-      __demo__;
+      ## FIXME: need to check for embedded test functions, which cause
+      ## segfaults, until issues with subfunctions in functions are resolved.
+      embed_func = regexp (block, '^\s*function ', 'once', 'lineanchors');
+      if (isempty (embed_func))
+        ## Use an environment without variables
+        eval (cstrcat ("function __demo__()\n", block, "\nendfunction"));
+        ## Display the code that will be executed before executing it
+        printf ("%s example %d:%s\n\n", name, doidx(i), block);
+        __demo__;
+      else
+        error (["Functions embedded in %!demo blocks are not allowed.\n", ...
+                "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
+      endif
     catch
       ## Let the programmer know which demo failed.
-      printf ("%s example %d: failed\n%s\n", name, doidx(i), __error_text__);
+      printf ("%s example %d: failed\n%s\n", name, doidx(i), lasterr ());
     end_try_catch
     clear __demo__;
   endfor
@@ -132,6 +146,9 @@ endfunction
 
 %!demo
 %! t=0:0.01:2*pi; x = sin(t);
-%! plot(t,x)
+%! plot (t,x)
 %! %-------------------------------------------------
 %! % the figure window shows one cycle of a sine wave
+
+%!error demo ();
+%!error demo (1, 2, 3);

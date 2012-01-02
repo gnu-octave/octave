@@ -43,11 +43,11 @@ function m = cell2mat (c)
   else
 
     ## We only want numeric, logical, and char matrices.
-    valid = cellfun (@isnumeric, c);
-    valid |= cellfun (@islogical, c);
-    valid |= cellfun (@ischar, c);
-    validc = cellfun (@iscell, c);
-    valids = cellfun (@isstruct, c);
+    valid = cellfun ("isnumeric", c);
+    valid |= cellfun ("islogical", c);
+    valid |= cellfun ("isclass", c, "char");
+    validc = cellfun ("isclass", c, "cell");
+    valids = cellfun ("isclass", c, "struct");
 
     if (! all (valid(:)) && ! all (validc(:)) && ! all (valids(:)))
       error ("cell2mat: wrong type elements or mixed cells, structs and matrices");
@@ -71,7 +71,7 @@ function m = cell2mat (c)
       endif
       xdim = [1:idim-1, idim+1:nd];
       cc = num2cell (c, xdim);
-      c = cellfun (@cat, {idim}, cc{:}, "uniformoutput", false);
+      c = cellfun ("cat", {idim}, cc{:}, "uniformoutput", false);
     endfor
     m = c{1};
   endif

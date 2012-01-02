@@ -18,10 +18,23 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} deblank (@var{s})
-## Remove trailing blanks and nulls from @var{s}.  If @var{s}
+## Remove trailing whitespace and nulls from @var{s}.  If @var{s}
 ## is a matrix, @var{deblank} trims each row to the length of longest
-## string.  If @var{s} is a cell array, operate recursively on each
-## element of the cell array.
+## string.  If @var{s} is a cell array of strings, operate recursively on each
+## string element.
+##
+## Examples:
+##
+## @example
+## @group
+## deblank ("    abc  ")
+##      @result{}  "    abc"
+##
+## deblank ([" abc   "; "   def   "])
+##      @result{}  [" abc  " ; "   def"]
+## @end group
+## @end example
+## @seealso{strtrim}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
@@ -33,53 +46,44 @@ function s = deblank (s)
     print_usage ();
   endif
 
-  char_arg = ischar (s);
+  if (ischar (s))
 
-  if (char_arg || isnumeric (s))
-
-    if (! isempty (s))
-      if (char_arg)
-        k = find (! isspace (s) & s != "\0");
-      else
-        warning ("deblank: expecting character string argument");
-        k = find (s != 0);
-      endif
-
-      if (isempty (k))
-        s = resize (s, 0, 0);
-      else
-        s = s(:,1:ceil (max (k) / rows (s)));
-      endif
+    k = find (! isspace (s) & s != "\0");
+    if (isempty (s) || isempty (k))
+      s = "";
+    else
+      s = s(:,1:ceil (max (k) / rows (s)));
     endif
 
-  elseif (iscell(s))
+  elseif (iscell (s))
 
-    s = cellfun (@deblank, s, "uniformoutput", false);
+    char_idx = cellfun ("isclass", s, "char");
+    cell_idx = cellfun ("isclass", s, "cell");
+    if (! all (char_idx | cell_idx))  
+      error ("deblank: S argument must be a string or cellstring");
+    endif
+
+    ## Divide work load.  Recursive cellfun deblank call is slow
+    ## and avoided where possible.
+    s(char_idx) = regexprep (s(char_idx), "[\\s\v\\0]+$", '');
+    s(cell_idx) = cellfun ("deblank", s(cell_idx), "UniformOutput", false);
 
   else
-    error ("deblank: expecting character string argument");
+    error ("deblank: S argument must be a string or cellstring");
   endif
 
 endfunction
 
-%!assert (strcmp (deblank (" f o o  "), " f o o"));
 
-%!assert (deblank ([]), [])
-%!assert (deblank ({}), {})
-%!assert (deblank (""), "")
+%!assert (deblank (" f o o \0"), " f o o");
+%!assert (deblank ('   '), '');
+%!assert (deblank ("   "), "");
+%!assert (deblank (""), "");
+%!assert (deblank ({}), {});
+%!assert (deblank ({" abc   ", {"   def   "}}), {" abc", {"   def"}});
 
-%!assert (deblank ([0,0,0]), [])
-%!assert (deblank ('   '), '')
-%!assert (deblank ("   "), "")
+%!error <Invalid call to deblank> deblank ();
+%!error <Invalid call to deblank> deblank ("foo", "bar");
+%!error <argument must be a string> deblank (1);
+%!error <argument must be a string> deblank ({[]});
 
-%!assert (typeinfo (deblank ("   ")), "string")
-%!assert (typeinfo (deblank ('   ')), "sq_string")
-
-%!assert (deblank ([1,2,0]), [1,2])
-%!assert (deblank ([1,2,0,32]), [1,2,0,32])
-
-%!assert (deblank (int8 ([1,2,0])), int8 ([1,2]))
-
-%!error deblank ();
-
-%!error deblank ("foo", "bar");

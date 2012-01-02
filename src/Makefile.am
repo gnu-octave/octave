@@ -3,38 +3,64 @@
 # Copyright (C) 1993-2011 John W. Eaton
 #
 # This file is part of Octave.
-# 
+#
 # Octave is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at
 # your option) any later version.
-# 
+#
 # Octave is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 # for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
-
-octlib_LTLIBRARIES = \
-  liboctinterp.la
+include $(top_srcdir)/build-aux/common.mk
 
 AM_CPPFLAGS = \
   @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
-  -I. -I$(srcdir) 
+  -I. -I$(srcdir)
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-## Order matters here.  Leave builtins.cc last, because it depends on 
+octlib_LTLIBRARIES = liboctinterp.la
+
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+bin_PROGRAMS = \
+  mkoctfile \
+  octave \
+  octave-config
+
+mkoctfile_SOURCES =
+nodist_mkoctfile_SOURCES = mkoctfile.cc
+mkoctfile_LDADD = ../libgnu/libgnu.la $(LIBS)
+
+octave_config_SOURCES =
+nodist_octave_config_SOURCES = octave-config.cc
+octave_config_LDADD = ../libgnu/libgnu.la $(LIBS)
+
+BUILT_SOURCES_EXTRA = \
+  mkoctfile.cc \
+  octave-config.cc
+else
+bin_PROGRAMS = \
+  octave
+
+bin_SCRIPTS = \
+  mkoctfile \
+  octave-config
+endif
+
+## Order matters here.  Leave builtins.cc last, because it depends on
 ## $(DEF_FILES), and building those requires all the sources
 ## (except builtins.cc) to be available.
 BUILT_SOURCES = \
+  $(BUILT_SOURCES_EXTRA) \
   defaults.h \
   graphics.h \
   graphics-props.cc \
@@ -52,9 +78,8 @@ BUILT_DISTFILES = \
   oct-gperf.h \
   oct-parse.h
 
-## FIXME -- These files don't need to be distributed.  Some of them
-## do need to be installed.  So we need to add them to a list somewhere
-## so that happens correctly.
+## Files that are created during build process and installed,
+## BUT not distributed in tarball.
 BUILT_NODISTFILES = \
   defaults.h \
   graphics.h \
@@ -65,11 +90,10 @@ BUILT_NODISTFILES = \
   version.h \
   $(OPT_HANDLERS) \
   $(OPT_INC) \
-  $(DEF_FILES) \
+  $(ALL_DEF_FILES) \
   builtins.cc
 
 EXTRA_DIST = \
-  ChangeLog \
   Makefile.in \
   defaults.h.in \
   DOCSTRINGS \
@@ -82,22 +106,17 @@ EXTRA_DIST = \
   mkbuiltins \
   mkdefs \
   mkgendoc \
+  mkoctfile.cc.in \
+  mkoctfile.in \
   mkops \
   mxarray.h.in \
   oct-conf.h.in \
   oct-errno.cc.in \
+  octave-config.cc.in \
+  octave-config.in \
   octave.gperf \
   version.h.in \
   $(BUILT_DISTFILES)
-
-DLL_CDEFS = @OCTINTERP_DLL_DEFS@
-DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
-
-.cc.df:	
-	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
-	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
-	mv $@-t $@
 
 OPT_HANDLERS = \
   DASPK-opts.cc \
@@ -105,13 +124,6 @@ OPT_HANDLERS = \
   DASSL-opts.cc \
   LSODE-opts.cc \
   Quad-opts.cc
-
-OPT_IN = \
-  ../liboctave/DASPK-opts.in \
-  ../liboctave/DASRT-opts.in \
-  ../liboctave/DASSL-opts.in \
-  ../liboctave/LSODE-opts.in \
-  ../liboctave/Quad-opts.in
 
 OPT_INC = \
   ../liboctave/DASPK-opts.h \
@@ -167,6 +179,7 @@ OV_INCLUDES = \
   ov-lazy-idx.h \
   ov-mex-fcn.h \
   ov-null-mat.h \
+  ov-oncleanup.h \
   ov-perm.h \
   ov-range.h \
   ov-re-diag.h \
@@ -218,13 +231,12 @@ PT_INCLUDES = \
 
 octinclude_HEADERS = \
   Cell.h \
-  base-list.h \
   builtins.h \
   c-file-ptr-stream.h \
   comment-list.h \
   cutils.h \
+  data.h \
   debug.h \
-  defaults.h \
   defun-dld.h \
   defun-int.h \
   defun.h \
@@ -236,7 +248,6 @@ octinclude_HEADERS = \
   gl-render.h \
   gl2ps.h \
   gl2ps-renderer.h \
-  graphics.h \
   graphics-props.cc \
   gripes.h \
   help.h \
@@ -254,8 +265,6 @@ octinclude_HEADERS = \
   ls-utils.h \
   mex.h \
   mexproto.h \
-  mxarray.h \
-  oct-conf.h \
   oct-errno.h \
   oct-fstrm.h \
   oct-gperf.h \
@@ -277,6 +286,7 @@ octinclude_HEADERS = \
   parse.h \
   pr-output.h \
   procstream.h \
+  profiler.h \
   sighandlers.h \
   siglist.h \
   sparse-xdiv.h \
@@ -290,7 +300,6 @@ octinclude_HEADERS = \
   unwind-prot.h \
   utils.h \
   variables.h \
-  version.h \
   xdiv.h \
   xnorm.h \
   xpow.h \
@@ -298,6 +307,13 @@ octinclude_HEADERS = \
   $(OV_INCLUDES) \
   $(OV_SPARSE_INCLUDES) \
   $(PT_INCLUDES)
+
+nodist_octinclude_HEADERS = \
+  defaults.h \
+  graphics.h \
+  oct-conf.h \
+  mxarray.h \
+  version.h
 
 OV_INTTYPE_SRC = \
   ov-int16.cc \
@@ -341,6 +357,7 @@ OV_SRC = \
   ov-lazy-idx.cc \
   ov-mex-fcn.cc \
   ov-null-mat.cc \
+  ov-oncleanup.cc \
   ov-perm.cc \
   ov-range.cc \
   ov-re-diag.cc \
@@ -432,6 +449,7 @@ DIST_SRC = \
   pager.cc \
   pr-output.cc \
   procstream.cc \
+  profiler.cc \
   sighandlers.cc \
   siglist.c \
   sparse.cc \
@@ -464,119 +482,17 @@ include OPERATORS/module.mk
 include TEMPLATE-INST/module.mk
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
-  DLD_DYNAMIC_SRC = $(DLD_FUNCTIONS_SRC)
-  DLD_STATIC_SRC =
   OCT_FILES = $(DLD_FUNCTIONS_LIBS:.la=.oct)
   OCT_STAMP_FILES = $(subst DLD-FUNCTIONS/,DLD-FUNCTIONS/$(am__leading_dot),$(DLD_FUNCTIONS_LIBS:.la=.oct-stamp))
 else
-  DLD_DYNAMIC_SRC =
-  DLD_STATIC_SRC = $(DLD_FUNCTIONS_SRC)
   OCT_FILES =
   OCT_STAMP_FILES =
 endif
 
 liboctinterp_la_SOURCES = \
   $(DIST_SRC) \
-  $(DLD_STATIC_SRC) \
   $(OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
-
-DLD_DYNAMIC_DEF_FILES = $(DLD_DYNAMIC_SRC:.cc=.df)
-DLD_STATIC_DEF_FILES = $(DLD_STATIC_SRC:.cc=.df)
-
-SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
-
-## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
-## .df files that correspond to sources included in liboctave.
-DEF_FILES = $(SRC_DEF_FILES) $(DLD_STATIC_DEF_FILES)
-
-ALL_DEF_FILES = $(DEF_FILES) $(DLD_DYNAMIC_DEF_FILES)
-
-$(DEF_FILES) $(DYNAMIC_DLD_DEF_FILES): mkdefs Makefile
-
-$(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
-
-if AMCOND_ENABLE_DYNAMIC_LINKING
-  OCTAVE_LIBS = \
-    ./liboctinterp.la \
-    ../liboctave/liboctave.la \
-    ../libcruft/libcruft.la \
-    ../libcruft/libranlib.la \
-    ../libgnu/libgnu.la \
-    $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \
-    $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
-    $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
-    $(LAPACK_LIBS) $(BLAS_LIBS) \
-    $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
-    $(FT2_LDFLAGS) $(FT2_LIBS) \
-    $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
-    $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
-    $(READLINE_LIBS) $(TERM_LIBS) \
-    $(LIBGLOB) \
-    $(REGEX_LDFLAGS) $(REGEX_LIBS) \
-    $(LAPACK_LIBS) $(BLAS_LIBS) \
-    $(DL_LIBS) $(PTHREAD_LIBS) \
-    $(LIBS) \
-    $(FLIBS)
-else
-  ## FIXME -- this list is probably not complete now.  It may not even
-  ## be possible to build a statically linked copy of Octave that is
-  ## fully functional.
-  OCTAVE_LIBS = \
-    ./liboctinterp.la \
-    ../liboctave/liboctave.la \
-    ../libcruft/libcruft.la \
-    ../libcruft/libranlib.la \
-    ../libgnu/libgnu.la \
-    $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-    $(QHULL_LDFLAGS) $(QHULL_LIBS) \
-    $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) \
-    $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) \
-    $(REGEX_LDFLAGS) $(REGEX_LIBS) \
-    $(CURL_LDFLAGS) $(CURL_LIBS) \
-    $(GLPK_LDFLAGS) $(GLPK_LIBS) \
-    $(MAGICK_LDFLAGS) $(MAGICK_LIBS) \
-    $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) \
-    $(FT2_LDFLAGS) $(FT2_LIBS) \
-    $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
-    $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
-    $(READLINE_LIBS) $(TERM_LIBS) \
-    $(LIBGLOB) \
-    $(LAPACK_LIBS) $(BLAS_LIBS) \
-    $(DL_LIBS) $(PTHREAD_LIBS) \
-    $(LIBS) \
-    $(FLIBS)
-endif
-
-OCTINTERP_LINK_DEPS = \
-  $(RLD_FLAG) \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
-  ../libcruft/libranlib.la \
-  ../libgnu/libgnu.la \
-  $(FFTW_XLDFLAGS) $(FFTW_XLIBS) \
-  $(FT2_LDFLAGS) $(FT2_LIBS) \
-  $(HDF5_LDFLAGS) $(HDF5_LIBS) $(Z_LDFLAGS) $(Z_LIBS) \
-  $(OPENGL_LIBS) $(X11_LIBS) $(CARBON_LIBS) \
-  $(READLINE_LIBS) $(TERM_LIBS) \
-  $(LIBGLOB) \
-  $(LAPACK_LIBS) $(BLAS_LIBS) \
-  $(LIBS) \
-  $(FLIBS)
-
-liboctinterp_la_LIBADD = $(OCTINTERP_LINK_DEPS)
-
-OCT_LINK_DEPS = \
-  $(RLD_FLAG) $(LDFLAGS) \
-  ./liboctinterp.la \
-  ../liboctave/liboctave.la \
-  ../libcruft/libcruft.la \
-  ../libcruft/libranlib.la \
-  ../libgnu/libgnu.la
-
-bin_PROGRAMS = octave
-
-octave_SOURCES = main.c
 
 nodist_liboctinterp_la_SOURCES = \
   builtins.cc \
@@ -591,45 +507,94 @@ nodist_liboctinterp_la_SOURCES = \
 
 liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 
-liboctinterp_la_LDFLAGS = -release $(version) $(NO_UNDEFINED_LDFLAG) \
-  -bindir $(bindir)
+include link-deps.mk
 
-CLEANFILES = \
-  DLD-FUNCTIONS/PKG_ADD \
-  doc-files \
-  gendoc.cc \
-  gendoc$(BUILD_EXEEXT) \
-  graphics-props.cc \
-  oct-parse.output \
-  $(BUILT_NODISTFILES)
+liboctinterp_la_LIBADD = \
+  ../liboctave/liboctave.la \
+  ../libcruft/libcruft.la \
+  $(LIBOCTINTERP_LINK_DEPS)
 
-DISTCLEANFILES = \
-  .DOCSTRINGS \
-  DOCSTRINGS \
-  $(OCT_FILES) \
-  $(OCT_STAMP_FILES)
+# Increment these as needed and according to the rules in the libtool manual:
+liboctinterp_current = 0
+liboctinterp_revision = 0
+liboctinterp_age = 0
 
-MAINTAINERCLEANFILES = \
-  $(BUILT_DISTFILES)
+liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
 
-octave_LDADD = $(OCTAVE_LIBS)
+liboctinterp_la_LDFLAGS = \
+  -version-info $(liboctinterp_version_info) \
+  $(NO_UNDEFINED_LDFLAG) \
+  -bindir $(bindir) \
+  $(LIBOCTINTERP_LINK_OPTS)
 
-all-local: $(OCT_STAMP_FILES) DLD-FUNCTIONS/PKG_ADD .DOCSTRINGS
+display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
-lex.lo lex.o oct-parse.lo oct-parse.o: \
-  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+octave_SOURCES = main.c
 
-__fltk_uigetfile__.lo __fltk_uigetfile__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
+octave_LDADD = \
+  liboctinterp.la \
+  ../liboctave/liboctave.la \
+  ../libcruft/libcruft.la \
+  $(OCTAVE_LINK_DEPS)
 
-__init_fltk__.lo __init_fltk__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
+octave_LDFLAGS = \
+  $(NO_UNDEFINED_LDFLAG) \
+  $(OCTAVE_LINK_OPTS)
 
-# XERBLA = ../libcruft/blas-xtra/xerbla.o
+## Section for defining and creating DEF_FILES
+SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 
-builtins.cc: $(DEF_FILES) mkbuiltins
-	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
+DLD_FUNCTIONS_DEF_FILES = $(DLD_FUNCTIONS_SRC:.cc=.df)
+
+## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
+## .df files that correspond to sources included in liboctave.
+if AMCOND_ENABLE_DYNAMIC_LINKING
+  DEF_FILES = $(SRC_DEF_FILES)
+else
+  DEF_FILES = $(SRC_DEF_FILES) $(DLD_FUNCTIONS_DEF_FILES)
+endif
+
+ALL_DEF_FILES = $(SRC_DEF_FILES) $(DLD_FUNCTIONS_DEF_FILES)
+
+$(SRC_DEF_FILES): mkdefs Makefile
+
+$(DEF_FILES): $(OPT_HANDLERS) $(OPT_INC)
+
+DLL_CDEFS = @OCTINTERP_DLL_DEFS@
+DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
+
+## Rule to build a DEF file from a .cc file
+%.df: %.cc
+	$(CXXCPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	  $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	  -DMAKE_BUILTINS $< | $(srcdir)/mkdefs $(srcdir) $< > $@-t
 	mv $@-t $@
+
+## Special rules:
+## Mostly for sources which must be built before rest of compilation.
+
+## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
+## may change default/config values.  However, calling configure will also
+## regenerate the Makefiles from Makefile.am and trigger the rules below.
+defaults.h: defaults.h.in Makefile
+	@$(do_subst_default_vals)
+
+graphics.h: graphics.h.in genprops.awk Makefile
+	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
+	mv $@-t $@
+
+oct-conf.h: oct-conf.h.in Makefile
+	@$(do_subst_config_vals)
+
+## Don't use a pipeline to process gperf output since if gperf
+## is missing but sed is not, the exit status of the pipeline
+## will still be success and we will end up creating an empty
+## oct-gperf.h file.
+oct-gperf.h: octave.gperf
+	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
+	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
+	mv $@-t $@
+	rm -f $@-t1
 
 mxarray.h: mxarray.h.in Makefile
 	$(SED) < $< \
@@ -645,17 +610,51 @@ version.h: version.h.in Makefile
 	  -e "s|%OCTAVE_VERSION%|\"${OCTAVE_VERSION}\"|" > $@-t
 	mv $@-t $@
 
-graphics.h: graphics.h.in genprops.awk Makefile
-	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
+builtins.cc: $(DEF_FILES) mkbuiltins
+	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
 	mv $@-t $@
 
 graphics-props.cc: graphics.h.in genprops.awk Makefile
 	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
 	mv $@-t $@
 
-DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(DLD_DYNAMIC_DEF_FILES) > $@-t
+ops.cc: $(OPERATORS_SRC) mkops
+	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
 	mv $@-t $@
+
+oct-errno.cc: oct-errno.cc.in Makefile
+	if test -n "$(PERL)"; then \
+	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
+	elif test -n "$(PYTHON)"; then \
+	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
+	else \
+	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
+	fi
+	mv $@-t $@
+
+$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/build-aux/mk-opts.pl
+	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
+	mv $@-t $@
+
+$(OPT_INC) : %.h : %.in
+	$(MAKE) -C $(@D) $(@F)
+
+if AMCOND_ENABLE_DYNAMIC_LINKING
+DLD_FUNCTIONS_PKG_ADD_FILE = DLD-FUNCTIONS/PKG_ADD
+
+DLD-FUNCTIONS/PKG_ADD: $(DLD_FUNCTIONS_DEF_FILES) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(DLD_FUNCTIONS_DEF_FILES) > $@-t
+	mv $@-t $@
+endif
+
+lex.lo lex.o oct-parse.lo oct-parse.o: \
+  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+
+__fltk_uigetfile__.lo __fltk_uigetfile__.o: \
+  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
+
+__init_fltk__.lo __init_fltk__.o: \
+  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
 
 .DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
@@ -664,7 +663,7 @@ DLD-FUNCTIONS/PKG_ADD: $(DLD_DYNAMIC_DEF_FILES) mk-pkg-add
 	fi
 	@echo "creating .DOCSTRINGS from .cc source files"
 	@./gendoc > $@
-	$(top_srcdir)/move-if-change $@ DOCSTRINGS
+	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
 
 doc-files: $(ALL_DEF_FILES)
@@ -678,9 +677,23 @@ gendoc.cc: doc-files mkgendoc
 gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
-ops.cc: $(OPERATORS_SRC) mkops
-	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
-	mv $@-t $@
+all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE) .DOCSTRINGS
+
+if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+octave-config.cc: octave-config.cc.in Makefile
+	@$(do_subst_default_vals)
+
+mkoctfile.cc: mkoctfile.cc.in Makefile
+	@$(do_subst_config_vals)
+else
+octave-config: octave-config.in Makefile
+	@$(do_subst_default_vals)
+	chmod a+rx $@
+
+mkoctfile: mkoctfile.in Makefile
+	@$(do_subst_config_vals)
+	chmod a+rx $@
+endif
 
 install-exec-hook: make-version-links
 
@@ -690,19 +703,35 @@ uninstall-local: remove-version-links uninstall-oct
 
 make-version-links:
 	cd $(DESTDIR)$(bindir) && \
-	mv octave$(EXEEXT) octave-$(version)$(EXEEXT) && \
-	$(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
-.PHONY: make-version-links
+	for f in $(basename $(bin_PROGRAMS)); do \
+	  mv $$f$(EXEEXT) $$f-$(version)$(EXEEXT) && \
+	    $(LN_S) $$f-$(version)$(EXEEXT) $$f$(EXEEXT); \
+	done
+if ! AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+	cd $(DESTDIR)$(bindir) && \
+	for f in $(basename $(bin_SCRIPTS)); do \
+	  mv $$f $$f-$(version) && \
+	    $(LN_S) $$f-$(version) $$f; \
+	done
+endif
 
 remove-version-links:
-	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
-.PHONY: remove-version-links
+	for f in $(basename $(bin_PROGRAMS)); do \
+	  rm -f $(DESTDIR)$(bindir)/$$f-$(version)$(EXEEXT); \
+	done
+if ! AMCOND_BUILD_COMPILED_AUX_PROGRAMS
+	for f in $(basename $(bin_SCRIPTS)); do \
+	  rm -f $(DESTDIR)$(bindir)/$$f-$(version); \
+	done
+endif
+
+.PHONY: make-version-links remove-version-links
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
-	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir)
-	if [ -n "`cat DLD-FUNCTIONS/PKG_ADD`" ]; then \
-	  $(INSTALL_DATA) DLD-FUNCTIONS/PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
+	$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(octfiledir)
+	if [ -n "`cat $(DLD_FUNCTIONS_PKG_ADD_FILE)`" ]; then \
+	  $(INSTALL_DATA) $(DLD_FUNCTIONS_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
 	cd $(DESTDIR)$(octlibdir) && \
 	for ltlib in $(DLD_FUNCTIONS_LIBS); do \
@@ -728,144 +757,21 @@ uninstall-oct:
 endif
 .PHONY: install-oct uninstall-oct
 
-# Special rules -- these files need special things to be defined.
+CLEANFILES = \
+  $(bin_SCRIPTS) \
+  $(DLD_FUNCTIONS_PKG_ADD_FILE) \
+  doc-files \
+  gendoc.cc \
+  gendoc$(BUILD_EXEEXT) \
+  graphics-props.cc \
+  oct-parse.output
 
-$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
-	$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
-	mv $@-t $@
+DISTCLEANFILES = \
+  .DOCSTRINGS \
+  DOCSTRINGS \
+  $(BUILT_NODISTFILES) \
+  $(OCT_FILES) \
+  $(OCT_STAMP_FILES)
 
-## We require Bison.
-#parse.cc : parse.y
-#	@echo "expect 14 shift/reduce conflicts"
-#	$(YACC) $(YFLAGS) --output=$@ --defines=y.tab.h $<
-
-#lex.cc : lex.l
-#	$(LEX) $(LFLAGS) $< > $(@F)-t
-#	@mv $(@F)-t $@
-
-
-$(OPT_INC) : %.h : %.in
-	$(MAKE) -C $(@D) $@
-
-## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
-## may change default/config values.  However, calling configure will also
-## regenerate the Makefiles from Makefile.am and trigger the rules below.
-
-defaults.h: defaults.h.in Makefile
-	@$(do_subst_default_vals)
-
-oct-conf.h: oct-conf.h.in Makefile
-	@$(do_subst_config_vals)
-
-oct-errno.cc: oct-errno.cc.in Makefile
-	if test -n "$(PERL)"; then \
-	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
-	elif test -n "$(PYTHON)"; then \
-	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
-	else \
-	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
-	fi
-	mv $@-t $@
-
-## Don't use a pipeline to process gperf output since if gperf
-## is missing but sed is not, the exit status of the pipeline
-## will still be success and we will end up creating an empty
-## oct-gperf.h file.
-oct-gperf.h: octave.gperf
-	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
-	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
-	mv $@-t $@
-	rm -f $@-t1
-
-display.df display.lo: CPPFLAGS += $(X11_FLAGS)
-
-DLD-FUNCTIONS/__magick_read__.df: CPPFLAGS += $(MAGICK_CPPFLAGS)
-DLD_FUNCTIONS___magick_read___la_CPPFLAGS = $(AM_CPPFLAGS) $(MAGICK_CPPFLAGS)
-DLD_FUNCTIONS___magick_read___la_LIBADD += $(MAGICK_LDFLAGS) $(MAGICK_LIBS)
-
-DLD-FUNCTIONS/convhulln.df: CPPFLAGS += $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS_convhulln_la_CPPFLAGS = $(AM_CPPFLAGS) $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS_convhulln_la_LIBADD += $(QHULL_LDFLAGS) $(QHULL_LIBS)
-
-DLD-FUNCTIONS/__delaunayn__.df: CPPFLAGS += $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___delaunayn___la_CPPFLAGS = $(AM_CPPFLAGS) $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___delaunayn___la_LIBADD += $(QHULL_LDFLAGS) $(QHULL_LIBS)
-
-DLD-FUNCTIONS/__voronoi__.df: CPPFLAGS += $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___voronoi___la_CPPFLAGS = $(AM_CPPFLAGS) $(QHULL_CPPFLAGS)
-DLD_FUNCTIONS___voronoi___la_LIBADD += $(QHULL_LDFLAGS) $(QHULL_LIBS)
-
-DLD-FUNCTIONS/eigs.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_eigs_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_eigs_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS) $(LAPACK_LIBS) $(BLAS_LIBS)
-
-#DLD-FUNCTIONS/qz.df DLD-FUNCTIONS/qz.lo:
-DLD_FUNCTIONS_qz_la_LIBADD += $(LAPACK_LIBS) $(BLAS_LIBS)
-
-DLD-FUNCTIONS/qr.df: CPPFLAGS += $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_qr_la_CPPFLAGS = $(AM_CPPFLAGS) $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_qr_la_LIBADD += $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/chol.df: CPPFLAGS += $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_chol_la_CPPFLAGS = $(AM_CPPFLAGS) $(QRUPDATE_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_chol_la_LIBADD += $(QRUPDATE_LDFLAGS) $(QRUPDATE_LIBS) $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/regexp.df: CPPFLAGS += $(REGEX_CPPFLAGS)
-DLD_FUNCTIONS_regexp_la_CPPFLAGS = $(AM_CPPFLAGS) $(REGEX_CPPFLAGS)
-DLD_FUNCTIONS_regexp_la_LIBADD += $(REGEX_LDFLAGS) $(REGEX_LIBS)
-
-DLD-FUNCTIONS/urlwrite.df: CPPFLAGS += $(CURL_CPPFLAGS)
-DLD_FUNCTIONS_urlwrite_la_CPPFLAGS = $(AM_CPPFLAGS) $(CURL_CPPFLAGS)
-DLD_FUNCTIONS_urlwrite_la_LIBADD += $(CURL_LDFLAGS) $(CURL_LIBS)
-
-DLD-FUNCTIONS/__fltk_uigetfile__.df: CPPFLAGS += $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___fltk_uigetfile___la_CPPFLAGS = $(AM_CPPFLAGS) $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___fltk_uigetfile___la_LIBADD += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
-
-DLD-FUNCTIONS/__glpk__.df: CPPFLAGS += $(GLPK_CPPFLAGS)
-DLD_FUNCTIONS___glpk___la_CPPFLAGS = $(AM_CPPFLAGS) $(GLPK_CPPFLAGS)
-DLD_FUNCTIONS___glpk___la_LIBADD += $(GLPK_LDFLAGS) $(GLPK_LIBS)
-
-DLD-FUNCTIONS/__init_fltk__.df: CPPFLAGS += $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___init_fltk___la_CPPFLAGS = $(AM_CPPFLAGS) $(GRAPHICS_CFLAGS) $(FT2_CPPFLAGS)
-DLD_FUNCTIONS___init_fltk___la_LIBADD += $(GRAPHICS_LDFLAGS) $(GRAPHICS_LIBS) $(FT2_LDFLAGS) $(FT2_LIBS)
-
-DLD-FUNCTIONS/amd.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_amd_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_amd_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/colamd.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_colamd_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_colamd_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/ccolamd.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_ccolamd_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_ccolamd_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/symbfact.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symbfact_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symbfact_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/dmperm.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_dmperm_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_dmperm_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/symrcm.df: CPPFLAGS += $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symrcm_la_CPPFLAGS = $(AM_CPPFLAGS) $(SPARSE_XCPPFLAGS)
-DLD_FUNCTIONS_symrcm_la_LIBADD += $(SPARSE_XLDFLAGS) $(SPARSE_XLIBS)
-
-DLD-FUNCTIONS/fft.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-
-DLD-FUNCTIONS/fft2.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft2_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fft2_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-
-DLD-FUNCTIONS/fftn.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftn_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftn_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
-
-DLD-FUNCTIONS/fftw.df: CPPFLAGS += $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftw_la_CPPFLAGS = $(AM_CPPFLAGS) $(FFTW_XCPPFLAGS)
-DLD_FUNCTIONS_fftw_la_LIBADD += $(FFTW_XLDFLAGS) $(FFTW_XLIBS)
+MAINTAINERCLEANFILES = \
+  $(BUILT_DISTFILES)

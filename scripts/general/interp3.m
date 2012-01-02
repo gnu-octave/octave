@@ -69,14 +69,14 @@ function vi = interp3 (varargin)
   extrapval = NA;
   nargs = nargin;
 
-  if (nargin < 1)
+  if (nargin < 1 || ! isnumeric (varargin{1}))
     print_usage ();
   endif
 
   if (ischar (varargin{end}))
     method = varargin{end};
     nargs = nargs - 1;
-  elseif (ischar (varargin{end-1}))
+  elseif (nargs > 1 && ischar (varargin{end - 1}))
     if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("interp3: extrapal is expected to be a numeric scalar");
     endif
@@ -91,7 +91,7 @@ function vi = interp3 (varargin)
     if (ndims (v) != 3)
       error ("interp3: expect 3-dimensional array of values");
     endif
-    x = varargin (2:4);
+    x = varargin (2:end);
     if (any (! cellfun (@isvector, x)))
       for i = 2 : 3
         if (! size_equal (x{1}, x{i}))
@@ -146,3 +146,21 @@ endfunction
 %! [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
 %! vi2 = interpn(x, y, z, v, xxi, yyi, zzi);
 %! assert (vi, vi2);
+
+%!shared z, zout, tol
+%! z = zeros (3, 3, 3);
+%! zout = zeros (5, 5, 5);
+%! z(:,:,1) = [1 3 5; 3 5 7; 5 7 9];
+%! z(:,:,2) = z(:,:,1) + 2;
+%! z(:,:,3) = z(:,:,2) + 2;
+%! for n = 1:5
+%!   zout(:,:,n) = [1 2 3 4 5;
+%!                  2 3 4 5 6; 
+%!                  3 4 5 6 7;
+%!                  4 5 6 7 8;
+%!                  5 6 7 8 9] + (n-1);
+%! end
+%! tol = 10 * eps;
+%!assert (interp3 (z), zout, tol)
+%!assert (interp3 (z, "linear"), zout, tol)
+%!assert (interp3 (z, "spline"), zout, tol)

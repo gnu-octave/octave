@@ -50,30 +50,26 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-obj.h"
 
-#ifdef HAVE_QHULL
-extern "C" {
-#include <qhull/qhull_a.h>
-}
-
-#ifdef NEED_QHULL_VERSION
+#if defined (HAVE_QHULL)
+# include "oct-qhull.h"
+# if defined (NEED_QHULL_VERSION)
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
-#endif
+# endif
 #endif
 
 DEFUN_DLD (__delaunayn__, args, ,
            "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{T} =} __delaunayn__ (@var{P})\n\
-@deftypefnx {Loadable Function} {@var{T} =} __delaunayn__ (@var{P}, @var{opt})\n\
+@deftypefn  {Loadable Function} {@var{T} =} __delaunayn__ (@var{pts})\n\
+@deftypefnx {Loadable Function} {@var{T} =} __delaunayn__ (@var{pts}, @var{options})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 
 {
   octave_value_list retval;
 
-#ifdef HAVE_QHULL
+#if defined (HAVE_QHULL)
 
   retval(0) = 0.0;
-  std::string options = "";
 
   int nargin = args.length ();
   if (nargin < 1 || nargin > 2)
@@ -86,49 +82,33 @@ Undocumented internal function.\n\
   const octave_idx_type dim = p.columns ();
   const octave_idx_type n = p.rows ();
 
-  // default options
+  // Default options
+  std::string options;
   if (dim <= 3)
-    options = "Qt Qbb Qc";
+    options = "Qt Qbb Qc Qz";
   else
     options = "Qt Qbb Qc Qx";
 
-
   if (nargin == 2)
     {
-    if (args(1).is_empty ())
-      {
-        // keep default options
-      }
-    else if (args(1).is_string ())
-      {
-        // option string is directly provided
+      if (args(1).is_string ())
         options = args(1).string_value ();
-      }
-    else if (args(1).is_cell ())
-      {
-        options = "";
+      else if (args(1).is_empty ())
+        ;  // Use default options
+      else if (args(1).is_cellstr ())
+        {
+          options = "";
+          Array<std::string> tmp = args(1).cellstr_value ();
 
-        Cell c = args(1).cell_value ();
-        for (octave_idx_type i = 0; i < c.numel (); i++)
-          {
-
-            if (! c.elem(i).is_string ())
-              {
-                error ("__delaunayn__: all options must be strings");
-                return retval;
-              }
-
-            options = options + c.elem(i).string_value () + " ";
-          }
-      }
-    else
-      {
-        error ("__delaunayn__: OPT argument must be a string, cell array of strings, or empty");
-        return retval;
-      }
+          for (octave_idx_type i = 0; i < tmp.numel (); i++)
+            options += tmp(i) + " ";
+        }
+      else
+        {
+          error ("__delaunayn__: OPTIONS argument must be a string, cell array of strings, or empty");
+          return retval;
+        }
     }
-
-  //octave_stdout << "options " << options << std::endl;
 
   if (n > dim + 1)
     {
@@ -136,17 +116,18 @@ Undocumented internal function.\n\
       double *pt_array = p.fortran_vec ();
       boolT ismalloc = false;
 
-      OCTAVE_LOCAL_BUFFER (char, flags, 250);
+      // Qhull flags argument is not const char*
+      OCTAVE_LOCAL_BUFFER (char, flags, 9 + options.length());
 
       sprintf (flags, "qhull d %s", options.c_str ());
 
-      // If you want some debugging information replace the 0 pointer
-      // with stdout or some other file open for writing.
-
+      // Replace the 0 pointer with stdout for debugging information
       FILE *outfile = 0;
       FILE *errfile = stderr;
-
-      if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, outfile, errfile))
+      
+      int exitcode = qh_new_qhull (dim, n, pt_array, 
+                                   ismalloc, flags, outfile, errfile);
+      if (! exitcode)
         {
           // triangulate non-simplicial facets
           qh_triangulate ();
@@ -160,54 +141,48 @@ Undocumented internal function.\n\
               if (! facet->upperdelaunay)
                 nf++;
 
-              // Double check
+              // Double check.  Non-simplicial facets will cause segfault below
               if (! facet->simplicial)
                 {
                   error ("__delaunayn__: Qhull returned non-simplicial facets -- try delaunayn with different options");
+                  exitcode = 1;
                   break;
                 }
             }
 
-          Matrix simpl (nf, dim+1);
-
-          FORALLfacets
+          if (! exitcode)
             {
-              if (! facet->upperdelaunay)
+              Matrix simpl (nf, dim+1);
+
+              FORALLfacets
                 {
-                  octave_idx_type j = 0;
-
-                  FOREACHvertex_ (facet->vertices)
+                  if (! facet->upperdelaunay)
                     {
-                      // if delaunayn crashes, enable this check
-#if 0
-                      if (j > dim)
+                      octave_idx_type j = 0;
+
+                      FOREACHvertex_ (facet->vertices)
                         {
-                          error ("__delaunayn__: internal error. Qhull returned non-simplicial facets");
-                          return retval;
+                          simpl(i, j++) = 1 + qh_pointid(vertex->point);
                         }
-#endif
-
-                      simpl(i, j++) = 1 + qh_pointid(vertex->point);
+                      i++;
                     }
-                  i++;
                 }
+
+              retval(0) = simpl;
             }
-
-          retval(0) = simpl;
-
-          // free long memory
-          qh_freeqhull (! qh_ALL);
-
-          // free short memory and memory allocator
-          int curlong, totlong;
-          qh_memfreeshort (&curlong, &totlong);
-
-          if (curlong || totlong)
-            warning ("__delaunay__: did not free %d bytes of long memory (%d pieces)",
-                     totlong, curlong);
         }
       else
         error ("__delaunayn__: qhull failed");
+
+      // Free memory from Qhull
+      qh_freeqhull (! qh_ALL);
+
+      int curlong, totlong;
+      qh_memfreeshort (&curlong, &totlong);
+
+      if (curlong || totlong)
+        warning ("__delaunay__: did not free %d bytes of long memory (%d pieces)",
+                 totlong, curlong);
     }
   else if (n == dim + 1)
     {
@@ -226,3 +201,10 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/

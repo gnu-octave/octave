@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -30,17 +31,26 @@ function pdf = laplace_pdf (x)
   if (nargin != 1)
     print_usage ();
   endif
-
-  pdf = zeros (size (x));
-
-  k = find (isnan (x));
-  if (any (k))
-    pdf(k) = NaN;
+  
+  if (iscomplex (x))
+    error ("laplace_pdf: X must not be complex");
   endif
 
-  k = find ((x > -Inf) & (x < Inf));
-  if (any (k))
-    pdf(k) = exp (- abs (x(k))) / 2;
-  endif
+  pdf = exp (- abs (x)) / 2;
 
 endfunction
+
+
+%!shared x,y
+%! x = [-Inf -log(2) 0 log(2) Inf];
+%! y = [0, 1/4, 1/2, 1/4, 0]; 
+%!assert(laplace_pdf ([x, NaN]), [y, NaN]);
+
+%% Test class of input preserved
+%!assert(laplace_pdf (single([x, NaN])), single([y, NaN]));
+
+%% Test input validation
+%!error laplace_pdf ()
+%!error laplace_pdf (1,2)
+%!error laplace_pdf (i)
+

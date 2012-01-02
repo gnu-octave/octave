@@ -64,3 +64,13 @@ function newplot ()
   endif
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   p = plot ([0, 1]);
+%!   newplot;
+%!   assert (isempty (get (gca, "children")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

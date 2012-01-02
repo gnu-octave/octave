@@ -46,6 +46,20 @@
 \arg\
 @end macro
 
+@c The following macro works around a situation where the Info/plain text
+@c expansion of the @code{XXX} macro is `XXX'.  The use of the apostrophe
+@c can be confusing if the code segment itself ends with a transpose operator.
+@ifinfo
+@macro xcode{arg}
+\arg\
+@end macro
+@end ifinfo
+@ifnotinfo
+@macro xcode{arg}
+@code{\arg\}
+@end macro
+@end ifnotinfo
+
 @ifinfo
 @format
 START-INFO-DIR-ENTRY
@@ -183,8 +197,9 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Plotting::                    
 * Matrix Manipulation::         
 * Arithmetic::                  
-* Linear Algebra::              
-* Nonlinear Equations::         
+* Linear Algebra::
+* Vectorization and Faster Code Execution::
+* Nonlinear Equations::
 * Diagonal and Permutation Matrices::
 * Sparse Matrices::
 * Numerical Integration::                  
@@ -199,6 +214,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Image Processing::            
 * Audio Processing::            
 * Object Oriented Programming::            
+* GUI Development::            
 * System Utilities::            
 * Packages:: 
 * Dynamically Linked Functions::
@@ -209,7 +225,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
 * Emacs Octave Support::                       
-@c * Grammar::                     
+* Grammar and Parser::                     
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Function Index::              An item for each documented function.
@@ -326,11 +342,11 @@ Creating Strings
 
 Data Containers
 
-* Data Structures::
+* Structures::
 * Cell Arrays::
 * Comma Separated Lists::
 
-Data Structures
+Structures
 
 * Basic Usage and Examples::
 * Structure Arrays::
@@ -367,6 +383,10 @@ Expressions
 * Assignment Ops::              
 * Increment Ops::               
 * Operator Precedence::         
+
+Index Expressions
+
+* Advanced Indexing::           
 
 Calling Functions
 
@@ -443,6 +463,7 @@ Handling Errors
 
 * Raising Errors::
 * Catching Errors::
+* Recovering From Errors::
 
 Handling Warnings
 
@@ -509,7 +530,7 @@ Plotting
 High-Level Plotting
 
 * Two-Dimensional Plots::       
-* Three-Dimensional Plotting::  
+* Three-Dimensional Plots::  
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
@@ -519,10 +540,13 @@ High-Level Plotting
 
 Two-Dimensional Plots
 
+* Axis Configuration::  
 * Two-dimensional Function Plotting::  
+* Two-dimensional Geometric Shapes::  
 
-Three-Dimensional Plotting
+Three-Dimensional Plots
 
+* Aspect Ratio::  
 * Three-dimensional Function Plotting::  
 * Three-dimensional Geometric Shapes::  
 
@@ -551,6 +575,7 @@ Advanced Plotting
 * Line Styles::                 
 * Marker Styles::               
 * Callbacks::                   
+* Application-defined Data
 * Object Groups::               
 * Graphics Toolkits::           
 
@@ -576,7 +601,6 @@ Matrix Manipulation
 
 * Finding Elements and Checking Conditions::  
 * Rearranging Matrices::        
-* Applying a Function to an Array::
 * Special Utility Matrices::    
 * Famous Matrices::             
 
@@ -599,6 +623,20 @@ Linear Algebra
 * Matrix Factorizations::       
 * Functions of a Matrix::       
 * Specialized Solvers::
+
+Vectorization and Faster Code Execution
+
+* Basic Vectorization::
+* Broadcasting::
+* Function Application::
+* Accumulation::
+* Miscellaneous Techniques::
+* Examples::
+
+Nonlinear Equations
+
+* Solvers::
+* Minimizers::
 
 Diagonal and Permutation Matrices
 
@@ -647,8 +685,8 @@ Operators and Functions
 Numerical Integration
 
 * Functions of One Variable:: 
-* Functions of Multiple Variables:: 
 * Orthogonal Collocation::      
+* Functions of Multiple Variables:: 
 
 Differential Equations
 
@@ -729,6 +767,13 @@ Overloading Objects
 * Operator Overloading::
 * Precedence of Objects::
 
+GUI Development
+
+* I/O Dialogs::       
+* Progress Bar::       
+* GUI Utility Functions::       
+* User-Defined Preferences::
+
 System Utilities
 
 * Timing Utilities::            
@@ -808,7 +853,6 @@ Test and Demo Functions
 Tips and Standards
 
 * Style Tips::                  Writing clean and robust programs.
-* Coding Tips::                 Making code run faster.
 * Comment Tips::                Conventions for writing comments.
 * Function Headers::            Standard headers for functions.
 * Documentation Tips::          Writing readable documentation strings.
@@ -830,7 +874,7 @@ Trouble
 Reporting Bugs
 
 * Bug Criteria::                
-* Bug Tracker::ff               Where to submit your bug report.
+* Bug Tracker::                 Where to submit your bug report.
 * Bug Reporting::               How to report a bug effectively.
 * Sending Patches::             How to send a patch for Octave.
 
@@ -844,6 +888,12 @@ Emacs Octave Support
 * Using Octave Mode::           
 * Running Octave from Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
+
+Grammar and Parser
+
+* Keywords::                    
+* Parser::                    
+
 @end detailmenu
 @end menu
 
@@ -868,6 +918,7 @@ Emacs Octave Support
 @include matrix.texi
 @include arith.texi
 @include linalg.texi
+@include vectorize.texi
 @include nonlin.texi
 @include diagperm.texi
 @include sparse.texi
@@ -883,6 +934,7 @@ Emacs Octave Support
 @include image.texi
 @include audio.texi
 @include oop.texi
+@include gui.texi
 @include system.texi
 @include package.texi
 
@@ -902,7 +954,7 @@ Emacs Octave Support
 @include bugs.texi
 @include install.texi
 @include emacs.texi
-@c @include grammar.texi
+@include grammar.texi
 @include gpl.texi
 
 @c ------------------------------------------------------------------------

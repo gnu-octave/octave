@@ -17,25 +17,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} ishold
+## @deftypefn  {Command} {} ishold
+## @deftypefnx {Function File} {} ishold (@var{h})
 ## Return true if the next plot will be added to the current plot, or
 ## false if the plot device will be cleared before drawing the next plot.
+##
+## Optionally, operate on the graphics handle @var{h} rather than the current
+## plot.
 ## @seealso{hold}
 ## @end deftypefn
 
 function retval = ishold (h)
 
   if (nargin == 0)
-    ax = gca ();
     fig = gcf ();
+    ax = get (fig, "currentaxes");
   elseif (nargin == 1)
     if (ishandle (h))
       if (isfigure (h))
         ax = get (h, "currentaxes");
-        if (isempty (ax))
-          ax = __go_axes__ (h);
-          set (h, "currentaxes", ax);
-        endif
         fig = h;
       elseif (strcmpi (get (h, "type"), "axes"))
         ax = h;
@@ -51,6 +51,29 @@ function retval = ishold (h)
   endif
 
   retval = (strcmpi (get (fig, "nextplot"), "add")
-            && strcmpi (get (ax, "nextplot"), "add"));
+            && ! isempty (ax) && strcmpi (get (ax, "nextplot"), "add"));
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   assert (!ishold);
+%!   assert (isempty (get (hf, "currentaxes")));
+%!   assert (get (hf, "NextPlot"), "add");
+%!   l = plot ([0 1]);
+%!   assert (!ishold);
+%!   assert (!ishold (gca));
+%!   assert (get (gca, "NextPlot"), "replace");
+%!   assert (get (hf, "NextPlot"), "add");
+%!   hold;
+%!   assert (ishold);
+%!   assert (ishold (gca));
+%!   assert (get (gca, "NextPlot"), "add");
+%!   assert (get (hf, "NextPlot"), "add");
+%!   p = fill ([0 1 1], [0 0 1],"black");
+%!   assert (length (get (hf, "children")), 1);
+%!   assert (length (get (gca, "children")), 2);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

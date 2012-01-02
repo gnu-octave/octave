@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
-#include "regex-match.h"
+#include "regexp.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -416,7 +416,9 @@ symbol_exist (const std::string& name, const std::string& type)
           && var_ok
           && (type == "any" || type == "var")
           && (val.is_constant () || val.is_object ()
-              || val.is_inline_function () || val.is_function_handle ()))
+              || val.is_function_handle ()
+              || val.is_anonymous_function ()
+              || val.is_inline_function ()))
         {
           retval = 1;
         }
@@ -546,6 +548,7 @@ Check only for files.\n\
 @item \"dir\"\n\
 Check only for directories.\n\
 @end table\n\
+@seealso{file_in_loadpath}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -1042,11 +1045,12 @@ private:
                  const std::string& expr_str = std::string (),
                  const octave_value& expr_val = octave_value ())
       : name (expr_str.empty () ? sr.name () : expr_str),
+        varval (expr_val.is_undefined () ? sr.varval () : expr_val),
         is_automatic (sr.is_automatic ()),
+        is_complex (varval.is_complex_type ()),
         is_formal (sr.is_formal ()),
         is_global (sr.is_global ()),
-        is_persistent (sr.is_persistent ()),
-        varval (expr_val.is_undefined () ? sr.varval () : expr_val)
+        is_persistent (sr.is_persistent ())
     { }
 
     void display_line (std::ostream& os,
@@ -1116,13 +1120,14 @@ private:
                 {
                 case 'a':
                   {
-                    char tmp[5];
+                    char tmp[6];
 
                     tmp[0] = (is_automatic ? 'a' : ' ');
-                    tmp[1] = (is_formal ? 'f' : ' ');
-                    tmp[2] = (is_global ? 'g' : ' ');
-                    tmp[3] = (is_persistent ? 'p' : ' ');
-                    tmp[4] = 0;
+                    tmp[1] = (is_complex ? 'c' : ' ');
+                    tmp[2] = (is_formal ? 'f' : ' ');
+                    tmp[3] = (is_global ? 'g' : ' ');
+                    tmp[4] = (is_persistent ? 'p' : ' ');
+                    tmp[5] = 0;
 
                     os << tmp;
                   }
@@ -1171,11 +1176,12 @@ private:
     }
 
     std::string name;
+    octave_value varval;
     bool is_automatic;
+    bool is_complex;
     bool is_formal;
     bool is_global;
     bool is_persistent;
-    octave_value varval;
   };
 
 public:
@@ -1331,6 +1337,9 @@ public:
 
     for (size_t i = 0; i < param_string.length (); i++)
       param_length(i) = param_names(i) . length ();
+
+    // The attribute column needs size 5.
+    param_length(pos_a) = 5;
 
     // Calculating necessary spacing for name column,
     // bytes column, elements column and class column
@@ -1755,7 +1764,7 @@ from a file.\n\
 \n\
 If called as a function, return a cell array of defined variable names\n\
 matching the given patterns.\n\
-@seealso{whos, regexp}\n\
+@seealso{whos, isglobal, isvarname, exist, regexp}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1797,6 +1806,9 @@ Variable in local scope\n\
 Automatic variable.  An automatic variable is one created by the\n\
 interpreter, for example @code{argn}.\n\
 \n\
+@item @code{c}\n\
+Variable of complex type.\n\
+\n\
 @item @code{f}\n\
 Formal parameter (function argument).\n\
 \n\
@@ -1827,7 +1839,7 @@ the function @code{whos_line_format}.\n\
 \n\
 If @code{whos} is called as a function, return a struct array of defined\n\
 variable names matching the given patterns.  Fields in the structure\n\
-describing each variable are: name, size, bytes, class, global, sparse, \n\
+describing each variable are: name, size, bytes, class, global, sparse,\n\
 complex, nesting, persistent.\n\
 @seealso{who, whos_line_format}\n\
 @end deftypefn")
@@ -1954,8 +1966,9 @@ Lock the current function into memory so that it can't be cleared.\n\
 
 DEFUN (munlock, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} munlock (@var{fcn})\n\
-Unlock the named function.  If no function is named\n\
+@deftypefn  {Built-in Function} {} munlock ()\n\
+@deftypefnx {Built-in Function} {} munlock (@var{fcn})\n\
+Unlock the named function @var{fcn}.  If no function is named\n\
 then unlock the current function.\n\
 @seealso{mlock, mislocked, persistent}\n\
 @end deftypefn")
@@ -1989,9 +2002,10 @@ then unlock the current function.\n\
 
 DEFUN (mislocked, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mislocked (@var{fcn})\n\
-Return true if the named function is locked.  If no function is named\n\
-then return true if the current function is locked.\n\
+@deftypefn  {Built-in Function} {} mislocked ()\n\
+@deftypefnx {Built-in Function} {} mislocked (@var{fcn})\n\
+Return true if the named function @var{fcn} is locked.  If no function is\n\
+named then return true if the current function is locked.\n\
 @seealso{mlock, munlock, persistent}\n\
 @end deftypefn")
 {
@@ -2036,9 +2050,7 @@ name_matches_any_pattern (const std::string& nm, const string_vector& argv,
         {
           if (have_regexp)
             {
-              regex_match pattern (patstr);
-
-              if (pattern.match (nm))
+              if (is_regexp_match (patstr, nm))
                 {
                   retval = true;
                   break;
@@ -2262,7 +2274,7 @@ Match zero or more characters.\n\
 Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
-match all lower and upper case alphabetic characters.\n\
+match all lowercase and uppercase alphabetic characters.\n\
 @end table\n\
 \n\
 For example, the command\n\
@@ -2310,7 +2322,7 @@ Clears the class structure table and clears all objects.\n\
 The arguments are treated as regular expressions as any variables that\n\
 match will be cleared.\n\
 @end table\n\
-With the exception of @code{exclusive}, all long options can be used \n\
+With the exception of @code{exclusive}, all long options can be used\n\
 without the dash as well.\n\
 @end deftypefn")
 {
@@ -2448,6 +2460,7 @@ DEFUN (whos_line_format, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} whos_line_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} whos_line_format (@var{new_val}, \"local\")\n\
 Query or set the format string used by the command @code{whos}.\n\
 \n\
 A full format string is:\n\
@@ -2509,6 +2522,10 @@ left of the specified balance column.\n\
 \n\
 The default format is\n\
 @code{\"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\"}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{whos}\n\
 @end deftypefn")
 {
@@ -2521,8 +2538,13 @@ DEFUN (missing_function_hook, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} missing_function_hook ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} missing_function_hook (@var{new_val})\n\
-Query or set the internal variable that allows setting a custom hook function\n\
-called when an uknown identifier is requested.\n\
+@deftypefnx {Built-in Function} {} missing_function_hook (@var{new_val}, \"local\")\n\
+Query or set the internal variable that specifies the function to call when\n\
+an unknown identifier is requested.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (missing_function_hook);

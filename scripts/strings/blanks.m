@@ -22,7 +22,7 @@
 ##
 ## @example
 ## @group
-## blanks(10);
+## blanks (10);
 ## whos ans;
 ##      @result{}
 ##       Attr Name        Size                     Bytes  Class
@@ -40,7 +40,7 @@ function s = blanks (n)
 
   if (nargin != 1)
     print_usage ();
-  elseif (! (isscalar (n) && n == round (n)))
+  elseif (! (isscalar (n) && n == fix (n) && n >= 0))
     error ("blanks: N must be a non-negative integer");
   endif
 
@@ -50,14 +50,16 @@ function s = blanks (n)
 
 endfunction
 
+
 ## There really isn't that much to test here
 %!assert(blanks (0), "")
 %!assert(blanks (5), "     ")
 %!assert(blanks (10), "          ")
 
-%!assert(strcmp (blanks (3), "   "));
-
-%!error blanks ();
-
-%!error blanks (1, 2);
+%% Test input validation
+%!error blanks ()
+%!error blanks (1, 2)
+%!error blanks (ones (2))
+%!error blanks (2.1)
+%!error blanks (-2)
 

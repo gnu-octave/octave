@@ -44,7 +44,7 @@
 ## for two-dimensional input.  For three-dimensional input the scalar
 ## rotation is calculated at each grid point in direction of the vector field
 ## at that point.
-## @seealso{divergence, gradient, del2, cross, dot}
+## @seealso{divergence, gradient, del2, cross}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

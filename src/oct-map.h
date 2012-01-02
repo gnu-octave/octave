@@ -53,8 +53,8 @@ octave_fields
 
   static fields_rep *nil_rep (void)
     {
-      static fields_rep *nr = new fields_rep ();
-      return nr;
+      static fields_rep nr;
+      return &nr;
     }
 
 public:
@@ -73,8 +73,12 @@ public:
     {
       if (rep->count > 1)
         {
-          --rep->count;
-          rep = new fields_rep (*rep);
+          fields_rep *r = new fields_rep (*rep);
+
+          if (--rep->count == 0)
+            delete rep;
+
+          rep = r;
         }
     }
 

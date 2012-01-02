@@ -18,32 +18,33 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{d} =} addtodate (@var{d}, @var{q}, @var{f})
-## Add @var{q} amount of time (with units @var{f}) to the datenum, @var{d}.
+## Add @var{q} amount of time (with units @var{f}) to the serial datenum,
+## @var{d}.
 ##
-## @var{f} must be one of "year", "month", "day", "hour", "minute", or
-## "second".
-## @seealso{datenum, datevec}
+## @var{f} must be one of "year", "month", "day", "hour", "minute", "second",
+## or "millisecond".
+## @seealso{datenum, datevec, etime}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@denney.ws>
 
 function d = addtodate (d, q, f)
 
+  persistent mult = struct ("day", 1, "hour", 1/24, "minute", 1/1440, ...
+                            "second", 1/86400, "millisecond", 1/86400000);
+
   if (nargin != 3)
     print_usage ();
-  elseif (! (ischar (f) && rows (f) == 1))
-    ## FIXME: enhance the function so that it works with cellstrs of the
-    ## same size as the output.
-    error ("addtodate: F must be a single row character string");
+  elseif (! (ischar (f) && isrow (f)))
+    error ("addtodate: F must be a single character string");
   endif
 
-  if (numel (d) == 1 && numel (q) > 1)
-    ## expand d to the size of q if d only has one element to make
-    ## addition later eaiser.
-    d = d.*ones (size (q));
+  if (isscalar (d) && ! isscalar (q))
+    ## expand d to size of q to make later addition easier.
+    d = repmat (d, size (q));
   endif
 
-  ## in case the user gives f as a plural, remove the s
+  ## in case the user gives f as a plural, remove the 's'
   if ("s" == f(end))
     f(end) = [];
   endif
@@ -65,14 +66,14 @@ function d = addtodate (d, q, f)
     else
       d = reshape (dnew, size (q));
     endif
-  elseif (any (strcmpi ({"day" "hour" "minute" "second"}, f)))
-    mult = struct ("day", 1, "hour", 1/24, "minute", 1/1440, "second", 1/86400);
-    d += q.*mult.(f);
+  elseif (any (strcmpi ({"day" "hour" "minute" "second", "millisecond"}, f)))
+    d += q .* mult.(f);
   else
     error ("addtodate: Invalid time unit: %s", f);
   endif
 
 endfunction
+
 
 ## tests
 %!shared d
@@ -84,6 +85,7 @@ endfunction
 %!assert (addtodate (d, 0, "hour"), d)
 %!assert (addtodate (d, 0, "minute"), d)
 %!assert (addtodate (d, 0, "second"), d)
+%!assert (addtodate (d, 0, "millisecond"), d)
 ## Add one of each
 ## leap year
 %!assert (addtodate (d, 1, "year"), d+366)
@@ -92,6 +94,7 @@ endfunction
 %!assert (addtodate (d, 1, "hour"), d+1/24)
 %!assert (addtodate (d, 1, "minute"), d+1/1440)
 %!assert (addtodate (d, 1, "second"), d+1/86400)
+%!assert (addtodate (d, 1, "millisecond"), d+1/86400000)
 ## substract one of each
 %!assert (addtodate (d, -1, "year"), d-365)
 %!assert (addtodate (d, -1, "month"), d-31)
@@ -99,6 +102,7 @@ endfunction
 %!assert (addtodate (d, -1, "hour"), d-1/24)
 %!assert (addtodate (d, -1, "minute"), d-1/1440)
 %!assert (addtodate (d, -1, "second"), d-1/86400)
+%!assert (addtodate (d, -1, "millisecond"), d-1/86400000)
 ## rollover
 %!assert (addtodate (d, 12, "month"), d+366)
 %!assert (addtodate (d, 13, "month"), d+366+31)
@@ -109,3 +113,13 @@ endfunction
 %!assert (addtodate (d, [1 13], "month"), [d+31 d+366+31])
 %!assert (addtodate ([d;d+1], 1, "month"), [d+31;d+1+31])
 %!assert (addtodate ([d d+1], 1, "month"), [d+31 d+1+31])
+
+%% Test input validation
+%!error addtodate ()
+%!error addtodate (1)
+%!error addtodate (1,2)
+%!error addtodate (1,2,3,4)
+%!error <F must be a single character string> addtodate (1,2,3)
+%!error <F must be a single character string> addtodate (1,2,"month"')
+%!error <Invalid time unit> addtodate (1,2,"abc")
+

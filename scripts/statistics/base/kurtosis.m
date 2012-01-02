@@ -41,7 +41,7 @@
 ## stdnormal distribution and is sometimes referred to as "excess kurtosis".
 ## To calculate kurtosis without the normalization factor of @math{-3} use
 ## @code{moment (@var{x}, 4, 'c') / std (@var{x})^4}.
-## @seealso{var,skewness,moment}
+## @seealso{var, skewness, moment}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -54,7 +54,7 @@ function retval = kurtosis (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("kurtosis: X must be a numeric vector or matrix");
   endif
 
@@ -62,10 +62,7 @@ function retval = kurtosis (x, dim)
   sz = size (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -73,16 +70,14 @@ function retval = kurtosis (x, dim)
     endif
   endif
 
-  c = sz(dim);
+  n = sz(dim);
   sz(dim) = 1;
-  idx = ones (1, nd);
-  idx(dim) = c;
-  x = x - repmat (mean (x, dim), idx);
+  x = center (x, dim);  # center also promotes integer to double for next line
   retval = zeros (sz, class (x));
   s = std (x, [], dim);
+  idx = find (s > 0);
   x = sum (x.^4, dim);
-  ind = find (s > 0);
-  retval(ind) = x(ind) ./ (c * s(ind) .^ 4) - 3;
+  retval(idx) = x(idx) ./ (n * s(idx) .^ 4) - 3;
 
 endfunction
 
@@ -90,12 +85,14 @@ endfunction
 %!test
 %! x = [-1; 0; 0; 0; 1];
 %! y = [x, 2*x];
-%! assert(all (abs (kurtosis (y) - [-1.4, -1.4]) < sqrt (eps)));
+%! assert (kurtosis (y), [-1.4, -1.4], sqrt (eps));
+
+%!assert (kurtosis (single(1)), single(0));
 
 %% Test input validation
 %!error kurtosis ()
 %!error kurtosis (1, 2, 3)
-%!error kurtosis (true(1,2))
+%!error kurtosis (['A'; 'B'])
 %!error kurtosis (1, ones(2,2))
 %!error kurtosis (1, 1.5)
 %!error kurtosis (1, 0)

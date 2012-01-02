@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} loadaudio (@var{name}, @var{ext}, @var{bps})
-## Loads audio data from the file @file{@var{name}.@var{ext}} into the
+## Load audio data from the file @file{@var{name}.@var{ext}} into the
 ## vector @var{x}.
 ##
 ## The extension @var{ext} determines how the data in the audio file is

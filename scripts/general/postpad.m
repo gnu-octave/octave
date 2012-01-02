@@ -20,9 +20,8 @@
 ## @deftypefn  {Function File} {} postpad (@var{x}, @var{l})
 ## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c})
 ## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
-## Append the scalar value @var{c} to the vector @var{x}
-## until it is of length @var{l}.  If the third argument is not
-## supplied, a value of 0 is used.
+## Append the scalar value @var{c} to the vector @var{x} until it is of length
+## @var{l}.  If @var{c} is not given, a value of 0 is used.
 ##
 ## If @code{length (@var{x}) > @var{l}}, elements from the end of
 ## @var{x} are removed until a vector of length @var{l} is obtained.
@@ -54,11 +53,8 @@ function y = postpad (x, l, c, dim)
   nd = ndims (x);
   sz = size (x);
   if (nargin < 4)
-    ## Find the first non-singleton dimension
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    ## Find the first non-singleton dimension.
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -77,10 +73,7 @@ function y = postpad (x, l, c, dim)
   d = sz (dim);
 
   if (d >= l)
-    idx = cell ();
-    for i = 1:nd
-      idx{i} = 1:sz(i);
-    endfor
+    idx = repmat ({':'}, nd, 1);
     idx{dim} = 1:l;
     y = x(idx{:});
   else
@@ -89,3 +82,16 @@ function y = postpad (x, l, c, dim)
   endif
 
 endfunction
+
+%!error postpad ();
+%!error postpad (1);
+%!error postpad (1,2,3,4,5);
+%!error postpad ([1,2], 2, 2,3);
+
+%!assert (postpad ([1,2], 4), [1,2,0,0]);
+%!assert (postpad ([1;2], 4), [1;2;0;0]);
+
+%!assert (postpad ([1,2], 4, 2), [1,2,2,2]);
+%!assert (postpad ([1;2], 4, 2), [1;2;2;2]);
+
+%!assert (postpad ([1,2], 2, 2, 1), [1,2;2,2]);

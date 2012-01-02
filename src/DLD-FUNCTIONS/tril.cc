@@ -389,7 +389,7 @@ tril (ones (3), 1)\n\
 If the option \"pack\" is given as third argument, the extracted elements\n\
 are not inserted into a matrix, but rather stacked column-wise one above\n\
 other.\n\
-@seealso{triu, diag}\n\
+@seealso{diag}\n\
 @end deftypefn")
 {
   return do_trilu ("tril", args);
@@ -400,7 +400,7 @@ DEFUN_DLD (triu, args, ,
 @deftypefn  {Function File} {} triu (@var{A})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k})\n\
 @deftypefnx {Function File} {} triu (@var{A}, @var{k}, @var{pack})\n\
-@xref{tril}.\n\
+See the documentation for the @code{tril} function (@pxref{tril}).\n\
 @end deftypefn")
 {
   return do_trilu ("triu", args);

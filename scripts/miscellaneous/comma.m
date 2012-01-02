@@ -21,3 +21,7 @@
 ## Array index, function argument, or command separator.
 ## @seealso{semicolon}
 ## @end deftypefn
+
+## Mark file as being tested.  No real test needed for a documentation .m file
+%!assert (1)
+

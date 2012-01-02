@@ -43,6 +43,10 @@ extern OCTINTERP_API void switch_to_buffer (YY_BUFFER_STATE buf);
 // Delete a buffer.
 extern OCTINTERP_API void delete_buffer (YY_BUFFER_STATE buf);
 
+extern OCTINTERP_API void clear_all_buffers (void);
+
+extern OCTINTERP_API void cleanup_parser (void);
+
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
 
@@ -60,7 +64,8 @@ public:
 
     : bracketflag (0), braceflag (0), looping (0),
       convert_spaces_to_comma (true), at_beginning_of_statement (true),
-      defining_func (0), looking_at_function_handle (false),
+      defining_func (0), looking_at_function_handle (0),
+      looking_at_anon_fcn_args (true),
       looking_at_return_list (false), looking_at_parameter_list (false),
       looking_at_decl_list (false), looking_at_initializer_expression (false),
       looking_at_matrix_or_assign_lhs (false), looking_at_object_index (),
@@ -100,6 +105,9 @@ public:
 
   // Nonzero means we are parsing a function handle.
   int looking_at_function_handle;
+
+  // TRUE means we are parsing an anonymous function argument list.
+  bool looking_at_anon_fcn_args;
 
   // TRUE means we're parsing the return list for a function.
   bool looking_at_return_list;

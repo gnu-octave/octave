@@ -18,35 +18,44 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{H} =} convhull (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{H} =} convhull (@var{x}, @var{y}, @var{opt})
-## Returns the index vector to the points of the enclosing convex hull.  The
-## data points are defined by the x and y vectors.
+## @deftypefnx {Function File} {@var{H} =} convhull (@var{x}, @var{y}, @var{options})
+## Compute the convex hull of the set of points defined by the
+## vectors @var{x} and @var{y}.  The hull @var{H} is an index vector into
+## the set of points and specifies which points form the enclosing hull.
 ##
-## A third optional argument, which must be a string, contains extra options
-## passed to the underlying qhull command.  See the documentation for the
-## Qhull library for details.
+## An optional third argument, which must be a string or cell array of strings,
+## contains options passed to the underlying qhull command.
+## See the documentation for the Qhull library for details
+## @url{http://www.qhull.org/html/qh-quick.htm#options}.
+## The default option is @code{@{"Qt"@}}.
 ##
-## @seealso{delaunay, convhulln}
+## If @var{options} is not present or @code{[]} then the default arguments are
+## used.  Otherwise, @var{options} replaces the default argument list. 
+## To append user options to the defaults it is necessary to repeat the 
+## default arguments in @var{options}.  Use a null string to pass no arguments.
+##
+## @seealso{convhulln, delaunay, voronoi}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function H = convhull (x, y, opt)
+function H = convhull (x, y, options)
 
   if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
 
-  if (isvector (x) && isvector (y) && length (x) == length (y))
-    if (nargin == 2)
-      i = convhulln ([x(:), y(:)]);
-    elseif (ischar (opt) || iscell (opt))
-      i = convhulln ([x(:), y(:)], opt);
-    else
-      error ("convhull: third argument must be a string or cell array of strings");
-    endif
+  if (! (isvector (x) && isvector (y) && length (x) == length (y))
+      && ! size_equal (x, y))
+    error ("convhull: X and Y must be the same size");
+  elseif (nargin == 3 && ! (ischar (options) || iscellstr (options)))
+    error ("convhull: OPTIONS must be a string or cell array of strings");
+  endif
+
+  if (nargin == 2)
+    i = convhulln ([x(:), y(:)]);
   else
-    error ("convhull: first two input arguments must be vectors of same size");
+    i = convhulln ([x(:), y(:)], options);
   endif
 
   n = rows (i);
@@ -71,16 +80,21 @@ function H = convhull (x, y, opt)
   endfor
 
   H(n + 1) = H(1);
+
 endfunction
 
-%!testif HAVE_QHULL
-%! x = -3:0.5:3;
-%! y = abs (sin (x));
-%! assert (convhull (x, y, {"s","Qci","Tcv","Pp"}), [1;7;13;12;11;10;4;3;2;1])
 
 %!demo
 %! x = -3:0.05:3;
 %! y = abs (sin (x));
 %! k = convhull (x, y);
-%! plot (x(k),y(k),'r-',x,y,'b+');
+%! plot (x(k),y(k),"r-;convex hull;", x,y,"b+;points;");
 %! axis ([-3.05, 3.05, -0.05, 1.05]);
+
+%!testif HAVE_QHULL
+%! x = -3:0.5:3;
+%! y = abs (sin (x));
+%! assert (convhull (x, y), [1;7;13;12;11;10;4;3;2;1])
+
+%% FIXME: Need input validation tests
+

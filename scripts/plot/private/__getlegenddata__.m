@@ -26,38 +26,33 @@ function [hplots, text_strings] = __getlegenddata__ (hlegend)
   text_strings = {};
   ca = getfield (get (hlegend, "userdata"), "handle");
   kids = [];
-  for i = 1  : numel (ca)
-    kids = [kids; get(ca (i), "children")];
+  for i = 1:numel (ca)
+    kids = [kids; get(ca(i), "children")];
   endfor
-  k = numel (kids);
-  while (k > 0)
-    typ = get (kids(k), "type");
-    while (k > 0
-           && ! (strcmp (typ, "line") || strcmp (typ, "surface")
-                 || strcmp (typ, "patch") || strcmp (typ, "hggroup")))
-      typ = get (kids(--k), "type");
-    endwhile
-    if (k > 0)
-      if (strcmp (get (kids(k), "type"), "hggroup"))
-        hgkids = get (kids(k), "children");
+
+  for i = numel (kids):-1:1
+    typ = get (kids(i), "type");
+    if (strcmp (typ, "line") || strcmp (typ, "surface")
+        || strcmp (typ, "patch") || strcmp (typ, "hggroup"))
+
+      if (strcmp (typ, "hggroup"))
+        hgkids = get (kids(i), "children");
         for j = 1 : length (hgkids)
           hgobj = get (hgkids (j));
-          if (isfield (hgobj, "displayname")
-              && ! isempty (hgobj.displayname))
+          if (isfield (hgobj, "displayname") && ! isempty (hgobj.displayname))
             hplots = [hplots, hgkids(j)];
-            text_strings = {text_strings{:}, hbobj.displayname};
+            text_strings = {text_strings{:}, hgobj.displayname};
             break;
           endif
         endfor
       else
-        if (! isempty (get (kids (k), "displayname")))
-          hplots = [hplots, kids(k)];
-          text_strings = {text_strings{:}, get(kids (k), "displayname")};
+        if (! isempty (get (kids (i), "displayname")))
+          hplots = [hplots, kids(i)];
+          text_strings = {text_strings{:}, get(kids (i), "displayname")};
         endif
       endif
-      if (--k == 0)
-        break;
-      endif
+
     endif
-  endwhile
+  endfor
+
 endfunction

@@ -88,7 +88,7 @@ function varargout = matrix_gradient (m, varargin)
   if (isvector (m))
     ## make a row vector.
     transposed = (size (m, 2) == 1);
-    m = m(:)';
+    m = m(:).';
   endif
 
   nd = ndims (m);
@@ -248,6 +248,34 @@ endfunction
 %! assert (all(dZ(:)==4));
 %! assert (all(dU(:)==0));
 %! [dX,dY,dZ,dU] = gradient (U);
+%! assert (all(dX(:)==0));
+%! assert (all(dY(:)==0));
+%! assert (all(dZ(:)==0));
+%! assert (all(dU(:)==5));
+%! assert (size_equal(dX, dY, dZ, dU, X, Y, Z, U));
+%! [dX,dY,dZ,dU] = gradient (U, 5.0);
+%! assert (all(dU(:)==1));
+%! [dX,dY,dZ,dU] = gradient (U, 1.0, 2.0, 3.0, 2.5);
+%! assert (all(dU(:)==2));
+
+%!test
+%! [Y,X,Z,U] = ndgrid (2:2:8,1:5,4:4:12,3:5:30);
+%! [dX,dY,dZ,dU] = gradient (X+j*X);
+%! assert (all(dX(:)==1+1j));
+%! assert (all(dY(:)==0));
+%! assert (all(dZ(:)==0));
+%! assert (all(dU(:)==0));
+%! [dX,dY,dZ,dU] = gradient (Y-j*Y);
+%! assert (all(dX(:)==0));
+%! assert (all(dY(:)==2-j*2));
+%! assert (all(dZ(:)==0));
+%! assert (all(dU(:)==0));
+%! [dX,dY,dZ,dU] = gradient (Z+j*1);
+%! assert (all(dX(:)==0));
+%! assert (all(dY(:)==0));
+%! assert (all(dZ(:)==4));
+%! assert (all(dU(:)==0));
+%! [dX,dY,dZ,dU] = gradient (U-j*1);
 %! assert (all(dX(:)==0));
 %! assert (all(dY(:)==0));
 %! assert (all(dZ(:)==0));

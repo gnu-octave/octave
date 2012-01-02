@@ -29,9 +29,14 @@ To initialize:
 
 */
 
+// PKG_ADD: register_graphics_toolkit ("fltk");
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "defun-dld.h"
+#include "error.h"
 
 #if defined (HAVE_FLTK)
 
@@ -40,11 +45,15 @@ To initialize:
 #include <sstream>
 #include <iostream>
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <FL/Fl.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Choice.H>
-#include <Fl/Fl_File_Chooser.H>
+#include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Menu_Button.H>
@@ -63,8 +72,6 @@ To initialize:
 #include "cmd-edit.h"
 #include "lo-ieee.h"
 
-#include "defun-dld.h"
-#include "error.h"
 #include "file-ops.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
@@ -128,6 +135,19 @@ public:
     Fl_Gl_Window::resize (xx, yy, ww, hh);
     setup_viewport (ww, hh);
     redraw ();
+  }
+
+  bool renumber (double new_number)
+  {
+    bool retval = false;
+
+    if (number != new_number)
+      {
+        number = new_number;
+        retval = true;
+      }
+
+    return retval;
   }
 
 private:
@@ -259,7 +279,7 @@ public:
       int n = 0;
       for (int t = 0; t < len; t++ )
         {
-          const Fl_Menu_Item *m = static_cast<const Fl_Menu_Item*>(&(menubar->menu ()[t]));
+          const Fl_Menu_Item *m = static_cast<const Fl_Menu_Item*> (&(menubar->menu ()[t]));
           if ((m->label () != NULL) && m->visible ())
             n++;
         }
@@ -282,7 +302,7 @@ public:
       return menubar->visible ();
     }
 
-  int find_index_by_name (std::string findname)
+  int find_index_by_name (const std::string& findname)
     {
       // This function is derived from Greg Ercolano's function
       // int GetIndexByName(...), see:
@@ -293,7 +313,7 @@ public:
       std::string menupath;
       for (int t = 0; t < menubar->size (); t++ )
         {
-          Fl_Menu_Item *m = const_cast<Fl_Menu_Item*>(&(menubar->menu ()[t]));
+          Fl_Menu_Item *m = const_cast<Fl_Menu_Item*> (&(menubar->menu ()[t]));
           if (m->submenu ())
             {
               // item has submenu
@@ -354,7 +374,7 @@ public:
       {
         graphics_object kidgo = gh_manager::get_object (uimenu_childs (ii));
 
-        if (kidgo.valid_object() && kidgo.isa ("uimenu"))
+        if (kidgo.valid_object () && kidgo.isa ("uimenu"))
           {
             uimenu_childs(k) = uimenu_childs(ii);
             pos(k++) =
@@ -374,7 +394,7 @@ public:
       return retval;
     }
 
-  void delete_entry(uimenu::properties& uimenup)
+  void delete_entry (uimenu::properties& uimenup)
     {
       std::string fltk_label = uimenup.get_fltk_label ();
       int idx = find_index_by_name (fltk_label.c_str ());
@@ -388,7 +408,7 @@ public:
       std::string fltk_label = uimenup.get_fltk_label ();
       if (!fltk_label.empty ())
         {
-          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
+          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
           if (item != NULL)
             {
               std::string acc = uimenup.get_accelerator ();
@@ -406,14 +426,14 @@ public:
       std::string fltk_label = uimenup.get_fltk_label ();
       if (!fltk_label.empty ())
         {
-          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
+          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
           if (item != NULL)
             {
               if (!uimenup.get_callback ().is_empty ())
-                item->callback(static_cast<Fl_Callback*>(script_cb), //callback
-                              static_cast<void*>(&uimenup));        //callback data
+                item->callback (static_cast<Fl_Callback*> (script_cb),
+                                static_cast<void*> (&uimenup));
               else
-                item->callback(NULL, static_cast<void*>(0));
+                item->callback (NULL, static_cast<void*> (0));
             }
         }
     }
@@ -423,7 +443,7 @@ public:
       std::string fltk_label = uimenup.get_fltk_label ();
       if (!fltk_label.empty ())
         {
-          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
+          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
           if (item != NULL)
             {
               if (uimenup.is_enable ())
@@ -439,18 +459,21 @@ public:
       std::string fltk_label = uimenup.get_fltk_label ();
       if (!fltk_label.empty ())
         {
-          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
+          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
           if (item != NULL)
             {
               Matrix rgb = uimenup.get_foregroundcolor_rgb ();
-              item->labelcolor(fl_rgb_color(static_cast<uchar>(floor (rgb(0)*255)),
-                                            static_cast<uchar>(floor (rgb(1)*255)),
-                                            static_cast<uchar>(floor (rgb(2)*255))));
+
+              uchar r = static_cast<uchar> (gnulib::floor (rgb (0) * 255));
+              uchar g = static_cast<uchar> (gnulib::floor (rgb (1) * 255));
+              uchar b = static_cast<uchar> (gnulib::floor (rgb (2) * 255));
+
+              item->labelcolor (fl_rgb_color (r, g, b));
             }
         }
     }
 
-  void update_seperator (uimenu::properties& uimenup)
+  void update_seperator (const uimenu::properties& uimenup)
     {
       // Matlab places the separator before the current
       // menu entry, while fltk places it after. So we need to find
@@ -459,17 +482,17 @@ public:
       if (!fltk_label.empty ())
         {
           int itemflags = 0, idx;
-          int curr_idx = find_index_by_name(fltk_label.c_str ());
+          int curr_idx = find_index_by_name (fltk_label.c_str ());
 
           for (idx = curr_idx - 1; idx >= 0; idx--)
             {
-              Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(&menubar->menu () [idx]);
+              Fl_Menu_Item* item = const_cast<Fl_Menu_Item*> (&menubar->menu () [idx]);
               itemflags = item->flags;
               if (item->label () != NULL)
                 break;
             }
 
-          if ((idx >= 0) && (idx < menubar->size ()))
+          if (idx >= 0 && idx < menubar->size ())
             {
               if (uimenup.is_separator ())
                 {
@@ -487,7 +510,8 @@ public:
       std::string fltk_label = uimenup.get_fltk_label ();
       if (!fltk_label.empty ())
         {
-          Fl_Menu_Item* item = const_cast<Fl_Menu_Item*>(menubar->find_item (fltk_label.c_str ()));
+          Fl_Menu_Item* item
+            = const_cast<Fl_Menu_Item*> (menubar->find_item (fltk_label.c_str ()));
           if (item != NULL)
             {
               if (uimenup.is_visible ())
@@ -508,7 +532,8 @@ public:
           bool item_added = false;
           do
             {
-              const Fl_Menu_Item* item = menubar->find_item(fltk_label.c_str ());
+              const Fl_Menu_Item* item
+                = menubar->find_item (fltk_label.c_str ());
 
               if (item == NULL)
                 {
@@ -517,9 +542,9 @@ public:
                   int flags = 0;
                   if (len > 0)
                     flags = FL_SUBMENU;
-                  if ((len == 0) && (uimenup.is_checked ()))
+                  if (len == 0 && uimenup.is_checked ())
                     flags += FL_MENU_TOGGLE + FL_MENU_VALUE;
-                  menubar->add(fltk_label.c_str (), 0, 0, 0, flags);
+                  menubar->add (fltk_label.c_str (), 0, 0, 0, flags);
                   item_added = true;
                 }
               else
@@ -532,9 +557,9 @@ public:
                   if (len > 0)
                     {
                       std::string valstr = fltk_label.substr (idx1 + 1, len - 1);
-                      fltk_label.erase(idx1, len + 1);
+                      fltk_label.erase (idx1, len + 1);
                       val = atoi (valstr.c_str ());
-                      if ((val > 0) && (val < 99))
+                      if (val > 0 && val < 99)
                         val++;
                     }
                   std::ostringstream valstream;
@@ -566,7 +591,7 @@ public:
           graphics_object kgo = gh_manager::get_object (kids (len - (ii + 1)));
           if (kgo.valid_object ())
             {
-              uimenu::properties& kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+              uimenu::properties& kprop = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
               add_to_menu (kprop);
             }
         }
@@ -583,7 +608,7 @@ public:
 
           if (kgo.valid_object ())
             {
-              uimenu::properties& kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+              uimenu::properties& kprop = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
               add_to_menu (kprop);
             }
         }
@@ -603,18 +628,18 @@ public:
 
           if (kgo.valid_object ())
             {
-              uimenu::properties kprop = dynamic_cast<uimenu::properties&>(kgo.get_properties ());
+              uimenu::properties kprop = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
               remove_from_menu (kprop);
             }
         }
 
-      if (type.compare("uimenu") == 0)
-        delete_entry(dynamic_cast<uimenu::properties&>(prop));
-      else if (type.compare("figure") == 0)
+      if (type.compare ("uimenu") == 0)
+        delete_entry (dynamic_cast<uimenu::properties&> (prop));
+      else if (type.compare ("figure") == 0)
         menubar->clear ();
     }
 
-  ~fltk_uimenu()
+  ~fltk_uimenu (void)
     {
       delete menubar;
     }
@@ -637,7 +662,8 @@ public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
     : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
       ndim (2), fp (xfp), canvas (0), autoscale (0), togglegrid (0),
-      panzoom (0), rotate (0), help (0), status (0)
+      panzoom (0), rotate (0), help (0), status (0),
+      ax_obj (), pos_x (0), pos_y (0)
   {
     callback (window_close, static_cast<void*> (this));
     size_range (4*status_h, 2*status_h);
@@ -645,81 +671,63 @@ public:
     begin ();
     {
 
-      uimenu = new
-        fltk_uimenu(0, 0, ww, menu_h);
+      canvas = new OpenGL_fltk (0, 0, ww, hh - status_h, number ());
+
+      uimenu = new fltk_uimenu (0, 0, ww, menu_h);
       uimenu->hide ();
 
-      canvas = new
-        OpenGL_fltk (0, 0, ww , hh - status_h, number ());
-
-      bottom = new
-        Fl_Box (0,
-                hh - status_h,
-                ww,
-                status_h);
+      bottom = new Fl_Box (0, hh - status_h, ww, status_h);
       bottom->box(FL_FLAT_BOX);
 
       ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
 
-      autoscale = new
-        Fl_Button (0,
-                   hh - status_h,
-                   status_h,
-                   status_h,
-                   "A");
+      autoscale = new Fl_Button (0, hh - status_h, status_h, status_h, "A");
       autoscale->callback (button_callback, static_cast<void*> (this));
       autoscale->tooltip ("Autoscale");
 
-      togglegrid = new
-        Fl_Button (status_h,
-                   hh - status_h,
-                   status_h,
-                   status_h,
-                   "G");
+      togglegrid = new Fl_Button (status_h, hh - status_h, status_h,
+                                  status_h, "G");
       togglegrid->callback (button_callback, static_cast<void*> (this));
       togglegrid->tooltip ("Toggle Grid");
 
-      panzoom = new
-        Fl_Button (2 * status_h,
-                   hh - status_h,
-                   status_h,
-                   status_h,
-                   "P");
+      panzoom = new Fl_Button (2 * status_h, hh - status_h, status_h,
+                               status_h, "P");
       panzoom->callback (button_callback, static_cast<void*> (this));
       panzoom->tooltip ("Mouse Pan/Zoom");
 
-      rotate = new
-        Fl_Button (3 * status_h,
-                   hh - status_h,
-                   status_h,
-                   status_h,
-                   "R");
+      rotate = new Fl_Button (3 * status_h, hh - status_h, status_h,
+                              status_h, "R");
       rotate->callback (button_callback, static_cast<void*> (this));
       rotate->tooltip ("Mouse Rotate");
 
       if (ndim == 2)
         rotate->deactivate ();
 
-      help = new
-        Fl_Button (4 * status_h,
-                   hh - status_h,
-                   status_h,
-                   status_h,
-                   "?");
+      help = new Fl_Button (4 * status_h, hh - status_h, status_h,
+                            status_h, "?");
       help->callback (button_callback, static_cast<void*> (this));
       help->tooltip ("Help");
 
-      status = new
-        Fl_Output (5 * status_h,
-                   hh - status_h,
-                   ww > 2*status_h ? ww - status_h : 0,
-                   status_h, "");
+      status = new Fl_Output (5 * status_h, hh - status_h,
+                              ww > 2*status_h ? ww - status_h : 0,
+                              status_h, "");
 
       status->textcolor (FL_BLACK);
       status->color (FL_GRAY);
       status->textfont (FL_COURIER);
       status->textsize (10);
       status->box (FL_ENGRAVED_BOX);
+
+      // This allows us to have a valid OpenGL context right away.
+      canvas->mode (FL_DEPTH | FL_DOUBLE );
+      if (fp.is_visible ())
+        {
+          show ();
+          if (fp.get_currentaxes ().ok())
+            show_canvas ();
+          else
+            hide_canvas ();
+        }
     }
     end ();
 
@@ -737,21 +745,6 @@ public:
       show_menubar ();
     else
       hide_menubar ();
-
-    begin ();
-    {
-      // This allows us to have a valid OpenGL context right away.
-      canvas->mode (FL_DEPTH | FL_DOUBLE );
-      if (fp.is_visible ())
-        {
-          show ();
-          if (fp.get_currentaxes ().ok())
-            show_canvas ();
-          else
-            hide_canvas ();
-        }
-    }
-    end ();
   }
 
   ~plot_window (void)
@@ -760,13 +753,20 @@ public:
     status->hide ();
     uimenu->hide ();
     this->hide ();
-    delete canvas;
-    delete status;
-    delete uimenu;
   }
 
-  // FIXME -- this could change.
   double number (void) { return fp.get___myhandle__ ().value (); }
+
+  void renumber (double new_number)
+  {
+    if (canvas)
+      {
+        if (canvas->renumber (new_number))
+          mark_modified ();
+      }
+    else
+      error ("unable to renumber figure");
+  }
 
   void print (const std::string& cmd, const std::string& term)
   {
@@ -804,7 +804,7 @@ public:
       }
   }
 
-  void uimenu_update(graphics_handle gh, int id)
+  void uimenu_update (const graphics_handle& gh, int id)
   {
     graphics_object uimenu_obj = gh_manager::get_object (gh);
 
@@ -812,58 +812,70 @@ public:
       {
         uimenu::properties& uimenup =
           dynamic_cast<uimenu::properties&> (uimenu_obj.get_properties ());
-        std::string fltk_label = uimenup.get_fltk_label();
-        graphics_object fig = uimenu_obj.get_ancestor("figure");
+        std::string fltk_label = uimenup.get_fltk_label ();
+        graphics_object fig = uimenu_obj.get_ancestor ("figure");
         figure::properties& figp =
           dynamic_cast<figure::properties&> (fig.get_properties ());
 
-        switch(id)
+        switch (id)
           {
-            case base_properties::ID_BEINGDELETED:
-              uimenu->remove_from_menu (uimenup);
-              break;
-            case base_properties::ID_VISIBLE:
-              uimenu->update_visible (uimenup);
-              break;
-            case uimenu::properties::ID_ACCELERATOR:
-              uimenu->update_accelerator (uimenup);
-              break;
-            case uimenu::properties::ID_CALLBACK:
-              uimenu->update_callback (uimenup);
-              break;
-            case uimenu::properties::ID_CHECKED:
-              uimenu->add_to_menu (figp);//rebuilding entire menu
-              break;
-            case uimenu::properties::ID_ENABLE:
-              uimenu->update_enable (uimenup);
-              break;
-            case uimenu::properties::ID_FOREGROUNDCOLOR:
-              uimenu->update_foregroundcolor (uimenup);
-              break;
-            case uimenu::properties::ID_LABEL:
-              uimenu->add_to_menu (figp);//rebuilding entire menu
-              break;
-            case uimenu::properties::ID_POSITION:
-              uimenu->add_to_menu (figp);//rebuilding entire menu
-              break;
-            case uimenu::properties::ID_SEPARATOR:
-              uimenu->update_seperator (uimenup);
-              break;
+          case base_properties::ID_BEINGDELETED:
+            uimenu->remove_from_menu (uimenup);
+            break;
+
+          case base_properties::ID_VISIBLE:
+            uimenu->update_visible (uimenup);
+            break;
+
+          case uimenu::properties::ID_ACCELERATOR:
+            uimenu->update_accelerator (uimenup);
+            break;
+
+          case uimenu::properties::ID_CALLBACK:
+            uimenu->update_callback (uimenup);
+            break;
+
+          case uimenu::properties::ID_CHECKED:
+            uimenu->add_to_menu (figp);//rebuilding entire menu
+            break;
+
+          case uimenu::properties::ID_ENABLE:
+            uimenu->update_enable (uimenup);
+            break;
+
+          case uimenu::properties::ID_FOREGROUNDCOLOR:
+            uimenu->update_foregroundcolor (uimenup);
+            break;
+
+          case uimenu::properties::ID_LABEL:
+            uimenu->add_to_menu (figp);//rebuilding entire menu
+            break;
+
+          case uimenu::properties::ID_POSITION:
+            uimenu->add_to_menu (figp);//rebuilding entire menu
+            break;
+
+          case uimenu::properties::ID_SEPARATOR:
+            uimenu->update_seperator (uimenup);
+            break;
           }
 
-          if (uimenu->items_to_show ())
-            show_menubar ();
-          else
-            hide_menubar ();
+        if (uimenu->items_to_show ())
+          show_menubar ();
+        else
+          hide_menubar ();
 
-          mark_modified();
+        mark_modified();
       }
   }
 
   void show_canvas (void)
   {
-    canvas->show ();
-    canvas->make_current ();
+    if (fp.is_visible ())
+      {
+        canvas->show ();
+        canvas->make_current ();
+      }
   }
 
   void hide_canvas (void)
@@ -879,7 +891,7 @@ public:
 
     if (ndim == 3)
       rotate->activate ();
-    else if ((ndim == 2) &&  (gui_mode == rotate_zoom))
+    else if (ndim == 2 && gui_mode == rotate_zoom)
       {
         rotate->deactivate ();
         gui_mode = pan_zoom;
@@ -960,6 +972,9 @@ private:
   Fl_Button* rotate;
   Fl_Button* help;
   Fl_Output* status;
+  graphics_object ax_obj;
+  int pos_x;
+  int pos_y;
 
   void axis_auto (void)
   {
@@ -980,14 +995,14 @@ private:
     mark_modified ();
   }
 
-  void pixel2pos
-  (graphics_handle ax, int px, int py, double& xx, double& yy) const
+  void pixel2pos (const graphics_handle& ax, int px, int py, double& xx,
+                  double& yy) const
   {
     pixel2pos ( gh_manager::get_object (ax), px, py, xx, yy);
   }
 
-  void pixel2pos
-  (graphics_object ax, int px, int py, double& xx, double& yy) const
+  void pixel2pos (graphics_object ax, int px, int py, double& xx,
+                  double& yy) const
   {
     if (ax && ax.isa ("axes"))
       {
@@ -1027,7 +1042,7 @@ private:
     return fp.get_currentaxes ();
   }
 
-  void pixel2status (graphics_handle ax, int px0, int py0,
+  void pixel2status (const graphics_handle& ax, int px0, int py0,
                      int px1 = -1, int py1 = -1)
   {
     pixel2status (gh_manager::get_object (ax), px0, py0, px1, py1);
@@ -1062,7 +1077,7 @@ private:
          cbuf.precision (4);
          cbuf.width (6);
          Matrix v (1,2,0);
-         v = ap.get("view").matrix_value();
+         v = ap.get ("view").matrix_value ();
          cbuf << "[azimuth: " << v(0) << ", elevation: " << v(1) << "]";
 
          status->value (cbuf.str ().c_str ());
@@ -1159,23 +1174,20 @@ private:
   void draw (void)
   {
     Matrix pos = fp.get_position ().matrix_value ();
-    Fl_Window::resize (pos(0), pos(1) , pos(2), pos(3) + status_h + menu_h);
+    Fl_Window::resize (pos(0), pos(1), pos(2), pos(3) + status_h + menu_h);
 
     return Fl_Window::draw ();
   }
 
   int handle (int event)
   {
-    static int px0,py0;
-    static graphics_object ax0;
-
     graphics_handle gh;
 
     graphics_object fig = gh_manager::get_object (fp.get___myhandle__ ());
     int retval = Fl_Window::handle (event);
 
     // We only handle events which are in the canvas area.
-    if (!Fl::event_inside(canvas))
+    if (!Fl::event_inside (canvas))
       return retval;
 
     if (!fp.is_beingdeleted ())
@@ -1244,17 +1256,17 @@ private:
             break;
 
           case FL_PUSH:
-            px0 = Fl::event_x ();
-            py0 = Fl::event_y ();
+            pos_x = Fl::event_x ();
+            pos_y = Fl::event_y ();
 
             set_currentpoint (Fl::event_x (), Fl::event_y ());
 
-            gh = pixel2axes_or_ca (px0, py0);
+            gh = pixel2axes_or_ca (pos_x, pos_y);
 
             if (gh.ok ())
               {
-                ax0 = gh_manager::get_object (gh);
-                set_axes_currentpoint (ax0, px0, py0);
+                ax_obj = gh_manager::get_object (gh);
+                set_axes_currentpoint (ax_obj, pos_x, pos_y);
               }
 
             fp.execute_windowbuttondownfcn ();
@@ -1273,42 +1285,44 @@ private:
 
             if (Fl::event_button () == 1)
               {
-                if (ax0 && ax0.isa ("axes"))
+                if (ax_obj && ax_obj.isa ("axes"))
                   {
                     if (gui_mode == pan_zoom)
-                      pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+                      pixel2status (ax_obj, pos_x, pos_y,
+                                    Fl::event_x (), Fl::event_y ());
                     else
-                      view2status (ax0);
+                      view2status (ax_obj);
                     axes::properties& ap =
-                      dynamic_cast<axes::properties&> (ax0.get_properties ());
+                      dynamic_cast<axes::properties&> (ax_obj.get_properties ());
 
                     double x0, y0, x1, y1;
                     Matrix pos = fp.get_position ().matrix_value ();
-                    pixel2pos (ax0, px0, py0, x0, y0);
-                    pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                    pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                    pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
 
                     if (gui_mode == pan_zoom)
                       ap.translate_view (x0 - x1, y0 - y1);
                     else if (gui_mode == rotate_zoom)
                       {
                         double daz, del;
-                        daz = (Fl::event_x () - px0) / pos(2) * 360;
-                        del = (Fl::event_y () - py0) / pos(3) * 360;
+                        daz = (Fl::event_x () - pos_x) / pos(2) * 360;
+                        del = (Fl::event_y () - pos_y) / pos(3) * 360;
                         ap.rotate_view (del, daz);
                       }
 
-                    px0 = Fl::event_x ();
-                    py0 = Fl::event_y ();
+                    pos_x = Fl::event_x ();
+                    pos_y = Fl::event_y ();
                     mark_modified ();
                   }
                 return 1;
               }
             else if (Fl::event_button () == 3)
               {
-                pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+                pixel2status (ax_obj, pos_x, pos_y,
+                              Fl::event_x (), Fl::event_y ());
                 Matrix zoom_box (1,4,0);
-                zoom_box (0) = px0;
-                zoom_box (1) = py0;
+                zoom_box (0) = pos_x;
+                zoom_box (1) = pos_y;
                 zoom_box (2) =  Fl::event_x ();
                 zoom_box (3) =  Fl::event_y ();
                 canvas->set_zoom_box (zoom_box);
@@ -1353,13 +1367,13 @@ private:
               {
                 if ( Fl::event_clicks () == 1)
                   {
-                    if (ax0 && ax0.isa ("axes"))
+                    if (ax_obj && ax_obj.isa ("axes"))
                       {
                         axes::properties& ap =
-                          dynamic_cast<axes::properties&> (ax0.get_properties ());
-                        ap.set_xlimmode("auto");
-                        ap.set_ylimmode("auto");
-                        ap.set_zlimmode("auto");
+                          dynamic_cast<axes::properties&> (ax_obj.get_properties ());
+                        ap.set_xlimmode ("auto");
+                        ap.set_ylimmode ("auto");
+                        ap.set_zlimmode ("auto");
                         mark_modified ();
                       }
                   }
@@ -1371,12 +1385,13 @@ private:
                   {
                     canvas->zoom (false);
                     double x0,y0,x1,y1;
-                    if (ax0 && ax0.isa ("axes"))
+                    if (ax_obj && ax_obj.isa ("axes"))
                       {
                         axes::properties& ap =
-                          dynamic_cast<axes::properties&> (ax0.get_properties ());
-                        pixel2pos (ax0, px0, py0, x0, y0);
-                        pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                          dynamic_cast<axes::properties&> (ax_obj.get_properties ());
+                        pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                        pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (),
+                                   x1, y1);
                         Matrix xl (1,2,0);
                         Matrix yl (1,2,0);
                         if (x0 < x1)
@@ -1456,9 +1471,15 @@ public:
       instance->do_delete_window (idx);
   }
 
-  static void delete_window (std::string idx_str)
+  static void delete_window (const std::string& idx_str)
   {
     delete_window (str2idx (idx_str));
+  }
+
+  static void renumber_figure (const std::string& idx_str, double new_number)
+  {
+    if (instance_ok ())
+      instance->do_renumber_figure (str2idx (idx_str), new_number);
   }
 
   static void toggle_window_visibility (int idx, bool is_visible)
@@ -1467,7 +1488,8 @@ public:
       instance->do_toggle_window_visibility (idx, is_visible);
   }
 
-  static void toggle_window_visibility (std::string idx_str, bool is_visible)
+  static void toggle_window_visibility (const std::string& idx_str,
+                                        bool is_visible)
   {
     toggle_window_visibility (str2idx (idx_str), is_visible);
   }
@@ -1489,7 +1511,7 @@ public:
       instance->do_set_name (idx);
   }
 
-  static void set_name (std::string idx_str)
+  static void set_name (const std::string& idx_str)
   {
     set_name (str2idx (idx_str));
   }
@@ -1504,22 +1526,25 @@ public:
     return get_size (hnd2idx (gh));
   }
 
-  static void print (const graphics_handle& gh , const std::string& cmd, const std::string& term)
+  static void print (const graphics_handle& gh, const std::string& cmd,
+                     const std::string& term)
   {
     if (instance_ok ())
-      instance->do_print (hnd2idx(gh), cmd, term);
+      instance->do_print (hnd2idx (gh), cmd, term);
   }
 
-  static void uimenu_update (const graphics_handle& figh, const graphics_handle& uimenuh, const int id)
+  static void uimenu_update (const graphics_handle& figh,
+                             const graphics_handle& uimenuh, int id)
   {
     if (instance_ok ())
-      instance->do_uimenu_update (hnd2idx(figh), uimenuh, id);
+      instance->do_uimenu_update (hnd2idx (figh), uimenuh, id);
   }
 
-  static void update_canvas (const graphics_handle& gh, const graphics_handle& ca)
+  static void update_canvas (const graphics_handle& gh,
+                             const graphics_handle& ca)
   {
     if (instance_ok ())
-      instance->do_update_canvas (hnd2idx(gh), ca);
+      instance->do_update_canvas (hnd2idx (gh), ca);
   }
 
   static void toggle_menubar_visibility (int fig_idx, bool menubar_is_figure)
@@ -1528,7 +1553,8 @@ public:
       instance->do_toggle_menubar_visibility (fig_idx, menubar_is_figure);
   }
 
-  static void toggle_menubar_visibility (std::string fig_idx_str, bool menubar_is_figure)
+  static void toggle_menubar_visibility (const std::string& fig_idx_str,
+                                         bool menubar_is_figure)
   {
     toggle_menubar_visibility (str2idx (fig_idx_str), menubar_is_figure);
   }
@@ -1562,31 +1588,47 @@ private:
 
   void do_new_window (figure::properties& fp)
   {
-    int x, y, w, h;
-
     int idx = figprops2idx (fp);
+
     if (idx >= 0 && windows.find (idx) == windows.end ())
       {
-        default_size (x, y, w, h);
-        idx2figprops (curr_index , fp);
+        Matrix pos = fp.get_boundingbox (true);
+
+        int x = pos(0);
+        int y = pos(1);
+        int w = pos(2);
+        int h = pos(3);
+
+        idx2figprops (curr_index, fp);
+
         windows[curr_index++] = new plot_window (x, y, w, h, fp);
       }
   }
 
   void do_delete_window (int idx)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
       {
         delete win->second;
         windows.erase (win);
       }
   }
 
+  void do_renumber_figure (int idx, double new_number)
+  {
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      win->second->renumber (new_number);
+  }
+
   void do_toggle_window_visibility (int idx, bool is_visible)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
       {
         if (is_visible)
           win->second->show ();
@@ -1599,8 +1641,9 @@ private:
 
   void do_toggle_menubar_visibility (int fig_idx, bool menubar_is_figure)
   {
-    wm_iterator win;
-    if ((win = windows.find (fig_idx)) != windows.end ())
+    wm_iterator win = windows.find (fig_idx);
+
+    if (win != windows.end ())
       {
         if (menubar_is_figure)
           win->second->show_menubar ();
@@ -1613,28 +1656,27 @@ private:
 
   void do_mark_modified (int idx)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
-      {
-        win->second->mark_modified ();
-      }
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      win->second->mark_modified ();
   }
 
   void do_set_name (int idx)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
-      {
-        win->second->set_name ();
-      }
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      win->second->set_name ();
   }
 
   Matrix do_get_size (int idx)
   {
     Matrix sz (1, 2, 0.0);
 
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
       {
         sz(0) = win->second->w ();
         sz(1) = win->second->h ();
@@ -1645,26 +1687,25 @@ private:
 
   void do_print (int idx, const std::string& cmd, const std::string& term)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
-      {
-        win->second->print (cmd, term);
-      }
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      win->second->print (cmd, term);
   }
 
-  void do_uimenu_update (int idx, graphics_handle gh, int id)
+  void do_uimenu_update (int idx, const graphics_handle& gh, int id)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
-      {
-        win->second->uimenu_update (gh, id);
-      }
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
+      win->second->uimenu_update (gh, id);
   }
 
-  void do_update_canvas (int idx, graphics_handle ca)
+  void do_update_canvas (int idx, const graphics_handle& ca)
   {
-    wm_iterator win;
-    if ((win = windows.find (idx)) != windows.end ())
+    wm_iterator win = windows.find (idx);
+
+    if (win != windows.end ())
       {
         if (ca.ok ())
           win->second->show_canvas ();
@@ -1673,17 +1714,7 @@ private:
       }
   }
 
-
-  // FIXME -- default size should be configurable.
-  void default_size (int& x, int& y, int& w, int& h)
-  {
-    x = 0;
-    y = 0;
-    w = 640;
-    h = 480;
-  }
-
-  static int str2idx (const caseless_str clstr)
+  static int str2idx (const caseless_str& clstr)
   {
     int ind;
     if (clstr.find (fltk_idx_header,0) == 0)
@@ -1717,7 +1748,7 @@ private:
     return -1;
   }
 
-  static int hnd2idx (const double h)
+  static int hnd2idx (double h)
   {
     graphics_object fobj = gh_manager::get_object (h);
     if (fobj &&  fobj.isa ("figure"))
@@ -1726,7 +1757,7 @@ private:
           dynamic_cast<figure::properties&> (fobj.get_properties ());
         return figprops2idx (fp);
       }
-    error ("figure_manager: H is not a figure");
+    error ("figure_manager: H (= %g) is not a figure", h);
     return -1;
   }
 
@@ -1741,12 +1772,12 @@ figure_manager *figure_manager::instance = 0;
 std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
 
-static bool toolkit_registered = false;
+static bool toolkit_loaded = false;
 
 static int
 __fltk_redraw__ (void)
 {
-  if (toolkit_registered)
+  if (toolkit_loaded)
     {
       // We scan all figures and add those which use FLTK.
       graphics_object obj = gh_manager::get_object (0);
@@ -1787,6 +1818,9 @@ public:
 
   bool is_valid (void) const { return true; }
 
+  bool initialize (const graphics_object& go)
+    { return go.isa ("figure"); }
+
   void finalize (const graphics_object& go)
   {
     if (go.isa ("figure"))
@@ -1798,7 +1832,7 @@ public:
       }
   }
 
-  void uimenu_set_fltk_label(graphics_object uimenu_obj)
+  void uimenu_set_fltk_label (graphics_object uimenu_obj)
   {
     if (uimenu_obj.valid_object ())
       {
@@ -1808,14 +1842,14 @@ public:
         graphics_object go = gh_manager::get_object (uimenu_obj.get_parent ());
         if (go.isa ("uimenu"))
           fltk_label = dynamic_cast<const uimenu::properties&> (go.get_properties ()).get_fltk_label ()
-                     + "/"
-                     + fltk_label;
+            + "/"
+            + fltk_label;
         else if (go.isa ("figure"))
           ;
         else
-          error("unexpected parent object\n");
+          error ("unexpected parent object\n");
 
-        uimenup.set_fltk_label(fltk_label);
+        uimenup.set_fltk_label (fltk_label);
       }
   }
 
@@ -1832,19 +1866,34 @@ public:
 
             switch (id)
               {
-                case base_properties::ID_VISIBLE:
-                  figure_manager::toggle_window_visibility (ov.string_value (), fp.is_visible ());
-                  break;
-                case figure::properties::ID_MENUBAR:
-                  figure_manager::toggle_menubar_visibility (ov.string_value (), fp.menubar_is("figure"));
-                  break;
-                case figure::properties::ID_NAME:
-                case figure::properties::ID_CURRENTAXES:
-                  figure_manager::update_canvas (go.get_handle (), fp.get_currentaxes ());
-                  break;
-                case figure::properties::ID_NUMBERTITLE:
-                  figure_manager::set_name (ov.string_value ());
-                  break;
+              case base_properties::ID_VISIBLE:
+                figure_manager::toggle_window_visibility
+                  (ov.string_value (), fp.is_visible ());
+                break;
+
+              case figure::properties::ID_MENUBAR:
+                figure_manager::toggle_menubar_visibility
+                  (ov.string_value (), fp.menubar_is ("figure"));
+                break;
+
+              case figure::properties::ID_CURRENTAXES:
+                figure_manager::update_canvas
+                  (go.get_handle (), fp.get_currentaxes ());
+                break;
+
+              case figure::properties::ID_NAME:
+              case figure::properties::ID_NUMBERTITLE:
+                figure_manager::set_name (ov.string_value ());
+                break;
+
+              case figure::properties::ID_INTEGERHANDLE:
+                {
+                  std::string tmp = ov.string_value ();
+                  graphics_handle gh = fp.get___myhandle__ ();
+                  figure_manager::renumber_figure (tmp, gh.value ());
+                  figure_manager::set_name (tmp);
+                }
+                break;
               }
           }
       }
@@ -1892,31 +1941,42 @@ public:
     sz(1) = Fl::h ();
     return sz;
   }
+
+  void close (void)
+  {
+    if (toolkit_loaded)
+      {
+        munlock ("__init_fltk__");
+
+        figure_manager::close_all ();
+        gtk_manager::unload_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
+        toolkit_loaded = false;
+
+        octave_value_list args;
+        args(0) = "__fltk_redraw__";
+        feval ("remove_input_event_hook", args, 0);
+
+        // FIXME ???
+        Fl::wait (fltk_maxtime);
+      }
+  }
 };
 
 // Initialize the fltk graphics toolkit.
 
 DEFUN_DLD (__init_fltk__, , , "")
 {
-  static bool remove_fltk_registered = false;
-
-  if (! toolkit_registered)
+  if (! toolkit_loaded)
     {
       mlock ();
 
-      graphics_toolkit::register_toolkit (new fltk_graphics_toolkit);
-      toolkit_registered = true;
+      graphics_toolkit tk (new fltk_graphics_toolkit ());
+      gtk_manager::load_toolkit (tk);
+      toolkit_loaded = true;
 
       octave_value_list args;
       args(0) = "__fltk_redraw__";
       feval ("add_input_event_hook", args, 0);
-
-      if (! remove_fltk_registered)
-        {
-          octave_add_atexit_function ("__remove_fltk__");
-
-          remove_fltk_registered = true;
-        }
     }
 
   octave_value retval;
@@ -1928,30 +1988,6 @@ DEFUN_DLD (__fltk_redraw__, , , "")
   __fltk_redraw__ ();
 
   return octave_value ();
-}
-
-// Delete the fltk graphics toolkit.
-
-DEFUN_DLD (__remove_fltk__, , , "")
-{
-  if (toolkit_registered)
-    {
-      munlock ("__init_fltk__");
-
-      figure_manager::close_all ();
-      graphics_toolkit::unregister_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
-      toolkit_registered = false;
-
-      octave_value_list args;
-      args(0) = "__fltk_redraw__";
-      feval ("remove_input_event_hook", args, 0);
-
-      // FIXME ???
-      Fl::wait (fltk_maxtime);
-    }
-
-  octave_value retval;
-  return retval;
 }
 
 DEFUN_DLD (__fltk_maxtime__, args, ,"")
@@ -1969,13 +2005,14 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
   return retval;
 }
 
-/* FIXME: This function should be abstracted and made potentially available
-          to all graphics toolkits.  This suggests putting it in graphics.cc
-          as is done for drawnow() and having the master mouse_wheel_zoom
-          function call fltk_mouse_wheel_zoom.  The same should be done for
-          gui_mode and fltk_gui_mode.  For now (2011.01.30), just
-          changing function names and docstrings.
-*/
+#endif
+
+// FIXME -- This function should be abstracted and made potentially
+// available to all graphics toolkits.  This suggests putting it in
+// graphics.cc as is done for drawnow() and having the master
+// mouse_wheel_zoom function call fltk_mouse_wheel_zoom.  The same
+// should be done for gui_mode and fltk_gui_mode.  For now (2011.01.30),
+// just changing function names and docstrings.
 
 DEFUN_DLD (mouse_wheel_zoom, args, ,
   "-*- texinfo -*-\n\
@@ -1987,6 +2024,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{gui_mode}\n\
 @end deftypefn")
 {
+#if defined (HAVE_FLTK)
   octave_value retval = wheel_zoom_speed;
 
   if (args.length () == 1)
@@ -1998,6 +2036,10 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
     }
 
   return retval;
+#else 
+  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
 DEFUN_DLD (gui_mode, args, ,
@@ -2021,6 +2063,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{mouse_wheel_zoom}\n\
 @end deftypefn")
 {
+#if defined (HAVE_FLTK)
   caseless_str mode_str;
 
   if (gui_mode == pan_zoom)
@@ -2029,7 +2072,6 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
     mode_str = "3d";
   else
     mode_str = "none";
-
 
   bool failed = false;
 
@@ -2055,9 +2097,10 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
   if (failed)
     error ("MODE must be one of the strings: \"2D\", \"3D\", or \"none\"");
 
-
-  return octave_value(mode_str);
+  return octave_value (mode_str);
+#else
+  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
-
-#endif

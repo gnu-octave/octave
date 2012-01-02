@@ -62,4 +62,5 @@ function [x, y, z] = sombrero (n)
 endfunction
 
 %!demo
+%! clf
 %! sombrero ();

@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} nonzeros (@var{s})
-## Returns a vector of the non-zero values of the sparse matrix @var{s}.
+## Return a vector of the non-zero values of the sparse matrix @var{s}.
 ## @end deftypefn
 
 function t = nonzeros (s)
@@ -27,11 +27,12 @@ function t = nonzeros (s)
     print_usage ();
   endif
 
-  [i, j, t] = find (s);
+  [~, ~, t] = find (s);
 
   t = t(:);
 
 endfunction
+
 
 %!assert(nonzeros([1,2;3,0]),[1;3;2])
 %!assert(nonzeros([1,2,3,0]),[1;2;3])

@@ -107,18 +107,27 @@ function hg = __quiver__ (varargin)
 
   if (autoscale && numel (u) > 1)
     ## Scale the arrows to fit in the grid
-    dx = (max(x(:)) - min(x(:))) ./ size (x, 2);
-    dy = (max(y(:)) - min(y(:))) ./ size (y, 1);
-    if (is3d)
-      ## What should this be divided by? The below seems right
-      dz = (max(z(:)) - min(z(:))) ./ max (size (z));
-      len = max (sqrt (u(:).^2 + dy(:).^2) + dz(:).^2);
+    if (isvector (x))
+      ny = nx = length (x);
     else
-      len = max (sqrt (u(:).^2 + dy(:).^2));
+      [nx, ny] = size (x);
+    endif
+    dx = (max(x(:)) - min(x(:))) ./ nx;
+    dy = (max(y(:)) - min(y(:))) ./ ny;
+    if (is3d)
+      dz = (max(z(:)) - min(z(:))) ./ max (size (z));
+      len = max (sqrt (u(:).^2 + v(:).^2 + w(:).^2));
+    else
       dz = 0;
+      len = max (sqrt (u(:).^2 + v(:).^2));
     endif
     if (len > 0)
-      s = 2 * autoscale / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len;
+      sd = sqrt (dx.^2 + dy.^2 + dz.^2) / len;
+      if (sd != 0)
+        s = sqrt(2) * autoscale * sd;
+      else # special case of identical points with multiple vectors
+        s = autoscale;
+      endif
       uu = s * u;
       vv = s * v;
       if (is3d)
@@ -335,18 +344,25 @@ function update_data (h, d)
 
   if (strcmpi (get (h, "autoscale"), "on") && s != 0)
     ## Scale the arrows to fit in the grid
-    dx = (max(x(:)) - min(x(:))) ./ size (x, 2);
-    dy = (max(y(:)) - min(y(:))) ./ size (y, 1);
-    if (is3d)
-      ## What should this be divided by? The below seems right
-      dz = (max(z(:)) - min(z(:))) ./ max (size (z));
-      len = max (sqrt (u(:).^2 + dy(:).^2) + dz(:).^2);
+    if (isvector (x))
+      ny = nx = length (x);
     else
-      len = max (sqrt (u(:).^2 + dy(:).^2));
+      [nx, ny] = size (x);
+    endif
+    dx = (max(x(:)) - min(x(:))) ./ nx;
+    dy = (max(y(:)) - min(y(:))) ./ ny;
+    if (is3d)
+      dz = (max(z(:)) - min(z(:))) ./ max (size (z));
+      len = max (sqrt (u(:).^2 + v(:).^2 + w(:).^2));
+    else
       dz = 0;
+      len = max (sqrt (u(:).^2 + v(:).^2));
     endif
     if (len > 0)
-      s = 2 * s / sqrt (2) * sqrt (dx.^2 + dy.^2 + dz.^2) / len;
+      sd = sqrt (dx.^2 + dy.^2 + dz.^2) / len;
+      if (sd != 0)
+        s *= sqrt(2) * sd;
+      endif
       u = s * u;
       v = s * v;
       if (is3d)

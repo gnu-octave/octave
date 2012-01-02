@@ -118,7 +118,7 @@ complex-valued result is requested.  Complex arrays are stored in memory as\n\
 consecutive pairs of real numbers.  The sizes of integer types are given by\n\
 their bit counts.  Both logical and char are typically one byte wide;\n\
 however, this is not guaranteed by C++.  If your system is IEEE conformant,\n\
-single and double should be 4 bytes and 8 bytes wide, respectively.  \n\
+single and double should be 4 bytes and 8 bytes wide, respectively.\n\
 \"logical\" is not allowed for @var{class}.  If the input is a row vector,\n\
 the return value is a row vector, otherwise it is a column vector.  If the\n\
 bit length of @var{x} is not divisible by that of @var{class}, an error\n\
@@ -382,7 +382,7 @@ do_bitunpack (const ArrayType& array)
 
 DEFUN_DLD (bitunpack, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{y} =} bitpack (@var{x})\n\
+@deftypefn {Loadable Function} {@var{y} =} bitunpack (@var{x})\n\
 Return an array @var{y} corresponding to the raw bit patterns of\n\
 @var{x}.  @var{x} must belong to one of the built-in numeric classes:\n\
 \n\

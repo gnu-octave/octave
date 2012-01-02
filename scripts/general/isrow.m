@@ -26,8 +26,6 @@
 
 function retval = isrow (x)
 
-  retval = false;
-
   if (nargin != 1)
     print_usage ();
   endif
@@ -37,26 +35,22 @@ function retval = isrow (x)
 
 endfunction
 
-%!assert(isrow ([1, 2, 3]));
-%!assert(isrow ([1; 2; 3]), false);
-%!assert(isrow (1));
-%!assert(isrow ([]), false);
-%!assert(isrow ([1, 2; 3, 4]), false);
 
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((isrow ("t")));
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((isrow ("test")));
+%!assert (isrow ([1, 2, 3]))
+%!assert (isrow ([1; 2; 3]), false)
+%!assert (isrow (1))
+%!assert (isrow ([]), false)
+%!assert (isrow ([1, 2; 3, 4]), false)
 
-%!assert(!(isrow (["test"; "ing"])));
+%!assert (isrow ("t"))
+%!assert (isrow ("test"))
+%!assert (isrow (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert((isrow (s)));
+%! assert (isrow (s));
 
 %% Test input validation
-%!error isrow ();
-%!error isrow ([1, 2], 2);
+%!error isrow ()
+%!error isrow ([1, 2], 2)
 

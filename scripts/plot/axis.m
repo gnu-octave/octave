@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} axis ()
-## @deftypefnx {Function File} {} axis ([@var{x}_lo, @var{x}_hi])
-## @deftypefnx {Function File} {} axis ([@var{x}_lo, @var{x}_hi, @var{y}_lo, @var{y}_hi])
-## @deftypefnx {Function File} {} axis ([@var{x}_lo, @var{x}_hi, @var{y}_lo, @var{y}_hi, @var{z}_lo, @var{z}_hi])
+## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi])
+## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi])
+## @deftypefnx {Function File} {} axis ([@var{x}_lo @var{x}_hi @var{y}_lo @var{y}_hi @var{z}_lo @var{z}_hi])
 ## @deftypefnx {Function File} {} axis (@var{option})
 ## @deftypefnx {Function File} {} axis (@dots{}, @var{option})
 ## @deftypefnx {Function File} {} axis (@var{h}, @dots{})
@@ -277,8 +277,8 @@ function curr_axis = __axis__ (ca, ax, varargin)
     endif
 
     for i = 1:2:len
-      if (ax(i) == ax(i+1))
-        error ("axis: limits(%d) cannot equal limits(%d)", i, i+1);
+      if (ax(i) >= ax(i+1))
+        error ("axis: limits(%d) must be less than limits(%d)", i, i+1);
       endif
     endfor
 
@@ -309,9 +309,9 @@ function lims = __get_tight_lims__ (ca, ax)
   ## Get the limits for axis ("tight").
   ## AX should be one of "x", "y", or "z".
   kids = findobj (ca, "-property", strcat (ax, "data"));
-  ## Since contours set the cdata for the patches to the hggroup zdata property, exclude
-  ## hgroups when determining the tight limits.
-  hg_kids = findobj (ca, "-property", strcat (ax, "data"), "type", "hggroup");
+  ## The data properties for hggroups mirror their children.
+  ## Exclude the redundant hgroup values.
+  hg_kids = findobj (kids, "type", "hggroup");
   kids = setdiff (kids, hg_kids);
   if (isempty (kids))
     ## Return the current limits.
@@ -319,20 +319,23 @@ function lims = __get_tight_lims__ (ca, ax)
   else
     data = get (kids, strcat (ax, "data"));
     scale = get (ca, strcat (ax, "scale"));
-    if (strcmp (scale, "log"))
-      data(data<=0) = NaN;
+    if (! iscell (data))
+      data = {data};
     end
-    if (iscell (data))
-      data = data (find (! cellfun (@isempty, data)));
-      if (! isempty (data))
-        lims_min = min (cellfun (@min, cellfun (@min, data, 'uniformoutput', false)(:)));
-        lims_max = max (cellfun (@max, cellfun (@max, data, 'uniformoutput', false)(:)));
-        lims = [lims_min, lims_max];
-      else
-        lims = [0, 1];
-      endif
+    if (strcmp (scale, "log"))
+      tmp = data;
+      data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);
+      n = cellfun (@isempty, data);
+      data(n) = cellfun (@(x) x(x<0), tmp(n), "uniformoutput", false);
+    endif
+    data = cellfun (@(x) x(isfinite(x)), data, "uniformoutput", false);
+    data = data(! cellfun ("isempty", data));
+    if (! isempty (data))
+      lims_min = min (cellfun (@(x) min (x(:)), data(:)));
+      lims_max = max (cellfun (@(x) max (x(:)), data(:)));
+      lims = [lims_min, lims_max];
     else
-      lims = [min(data(:)), max(data(:))];
+      lims = [0, 1];
     endif
   endif
 
@@ -350,6 +353,7 @@ function __do_tight_option__ (ca)
 endfunction
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(221);
@@ -372,6 +376,7 @@ endfunction
 %! axis("normal");
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(121);
@@ -385,6 +390,7 @@ endfunction
 %! axis("xy");
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(331);
@@ -433,6 +439,7 @@ endfunction
 %! axis("on");
 
 %!demo
+%! clf
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(321);
@@ -492,4 +499,82 @@ endfunction
 %! set (gca, "yscale", "log")
 %! legend ({"x >= 1", "x <= 1"}, "location", "north")
 %! title ("ylim = [1, 10]")
+
+%!demo
+%! clf
+%! loglog (1:20, "-s")
+%! axis tight
+
+%!demo
+%! clf
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+
+%!demo
+%! clf
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "left")
+%! box off
+
+%!demo
+%! clf
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "zero")
+%! set (gca, "yaxislocation", "right")
+%! box off
+
+%!demo
+%! clf
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "bottom")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+
+%!demo
+%! clf
+%! x = -10:0.1:10;
+%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
+%! plot (x, y)
+%! title ("no plot box")
+%! set (gca, "xaxislocation", "top")
+%! set (gca, "yaxislocation", "zero")
+%! box off
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot (11:20, [21:24, NaN, -Inf, 27:30]);
+%!   hold all;
+%!   plot (11:20, 25.5 + rand (10));
+%!   axis tight;
+%!   assert (axis (), [11 20 21 30]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   a = logspace (-5, 1, 10);
+%!   loglog (a, -a)
+%!   axis tight;
+%!   assert (axis (), [1e-5, 10, -10, -1e-5])
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

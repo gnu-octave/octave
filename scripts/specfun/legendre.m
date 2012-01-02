@@ -166,7 +166,7 @@ function retval = legendre (n, x, normalization)
     error ("legendre: N must be a non-negative scalar integer");
   endif
 
-  if (!isvector (x) || !isreal (x) || any (x < -1 | x > 1))
+  if (!isreal (x) || any (x(:) < -1 | x(:) > 1))
     error ("legendre: X must be real-valued vector in the range -1 <= X <= 1");
   endif
 
@@ -187,10 +187,7 @@ function retval = legendre (n, x, normalization)
       error ('legendre: expecting NORMALIZATION option to be "norm", "sch", or "unnorm"');
   endswitch
 
-  if (rows (x) != 1)
-    x = x';
-  endif
-  scale = scale * ones (1, numel (x));
+  scale = scale * ones (size (x));
 
   ## Based on the recurrence relation below
   ##            m                 m              m
@@ -199,6 +196,7 @@ function retval = legendre (n, x, normalization)
   ## http://en.wikipedia.org/wiki/Associated_Legendre_function
 
   overflow = false;
+  retval = zeros([n+1, size(x)]);
   for m = 1:n
     lpm1 = scale;
     lpm2 = (2*m-1) .* x .* scale;
@@ -217,7 +215,7 @@ function retval = legendre (n, x, normalization)
         endif
       endif
     endfor
-    retval(m,:) = lpm3;
+    retval(m,:) = lpm3(:);
     if (strcmp (normalization, "unnorm"))
       scale = -scale * (2*m-1);
     else
@@ -227,7 +225,12 @@ function retval = legendre (n, x, normalization)
     scale = scale .* sqrt(1-x.^2);
   endfor
 
-  retval(n+1,:) = scale;
+  retval(n+1,:) = scale(:);
+
+  if (isvector (x))
+  ## vector case is special
+    retval = reshape (retval, n + 1, length (x));
+  endif
 
   if (strcmp (normalization, "sch"))
     retval(1,:) = retval(1,:) / sqrt (2);
@@ -239,6 +242,7 @@ function retval = legendre (n, x, normalization)
   endif
 
 endfunction
+
 
 %!test
 %! result = legendre (3, [-1.0 -0.9 -0.8]);
@@ -278,11 +282,25 @@ endfunction
 %!test
 %! result = legendre (150, 0);
 %! ## This agrees with Matlab's result.
-%! assert (result(end), 3.7532741115719e+306, 0.0000000000001e+306)
+%! assert (result(end), 3.7532741115719e+306, 0.0000000000001e+306);
 
 %!test
 %! result = legendre (0, 0:0.1:1);
-%! assert (result, full(ones(1,11)))
+%! assert (result, full(ones(1,11)));
+
+%!test
+%! result = legendre (3, [-1,0,1;1,0,-1]);
+%! ## Test matrix input
+%! expected(:,:,1) = [-1,1;0,0;0,0;0,0];
+%! expected(:,:,2) = [0,0;1.5,1.5;0,0;-15,-15];
+%! expected(:,:,3) = [1,-1;0,0;0,0;0,0];
+%! assert (result, expected);
+
+%!test
+%! result = legendre (3, [-1,0,1;1,0,-1]');
+%! expected(:,:,1) = [-1,0,1;0,1.5,0;0,0,0;0,-15,0];
+%! expected(:,:,2) = [1,0,-1;0,1.5,0;0,0,0;0,-15,0];
+%! assert (result, expected);
 
 %% Check correct invocation
 %!error legendre ();

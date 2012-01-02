@@ -129,3 +129,10 @@ DEFUN_DLD (__dispatch__, args, nargout,
 
   return retval;
 }
+
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/

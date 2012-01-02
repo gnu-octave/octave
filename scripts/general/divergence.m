@@ -42,7 +42,7 @@
 ## The coordinates of the vector field can be given by the arguments @var{x},
 ## @var{y}, @var{z} or @var{x}, @var{y} respectively.
 ##
-## @seealso{curl, gradient, del2, cross, dot}
+## @seealso{curl, gradient, del2, dot}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

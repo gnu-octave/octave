@@ -127,7 +127,8 @@
 ## @end example
 ## @end deftypefn
 
-## PKG_ADD: __all_opts__ ("fsolve");
+## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.
+## PKG_ADD: [~] = __all_opts__ ("fsolve");
 
 function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
 
@@ -459,7 +460,7 @@ function [fx, jx] = make_fcn_jac (x, fcn, fjac)
   endif
 endfunction
 
-%!function retval = f (p)
+%!function retval = __f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
@@ -467,17 +468,18 @@ endfunction
 %!  retval(1) = sin(x) + y**2 + log(z) - 7;
 %!  retval(2) = 3*x + 2**y -z**3 + 1;
 %!  retval(3) = x + y + z - 5;
+%!endfunction
 %!test
 %! x_opt = [ 0.599054;
 %! 2.395931;
 %! 2.005014 ];
 %! tol = 1.0e-5;
-%! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ]);
+%! [x, fval, info] = fsolve (@__f, [ 0.5; 2.0; 2.5 ]);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
 
-%!function retval = f (p)
+%!function retval = __f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
@@ -487,15 +489,16 @@ endfunction
 %!  retval(2) = 6*x - 4*y + exp (3*z + w) - 11;
 %!  retval(3) = x^4 - 4*y^2 + 6*z - 8*w - 20;
 %!  retval(4) = x^2 + 2*y^3 + z - w - 4;
+%!endfunction
 %!test
 %! x_opt = [ -0.767297326653401, 0.590671081117440, 1.47190018629642, -1.52719341133957 ];
 %! tol = 1.0e-5;
-%! [x, fval, info] = fsolve (@f, [-1, 1, 2, -1]);
+%! [x, fval, info] = fsolve (@__f, [-1, 1, 2, -1]);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
 
-%!function retval = f (p)
+%!function retval = __f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
@@ -504,17 +507,18 @@ endfunction
 %!  retval(2) = 3*x + 2**y -z**3 + 1;
 %!  retval(3) = x + y + z - 5;
 %!  retval(4) = x*x + y - z*log(z) - 1.36;
+%!endfunction
 %!test
 %! x_opt = [ 0.599054;
 %! 2.395931;
 %! 2.005014 ];
 %! tol = 1.0e-5;
-%! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ]);
+%! [x, fval, info] = fsolve (@__f, [ 0.5; 2.0; 2.5 ]);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
 
-%!function retval = f (p)
+%!function retval = __f (p)
 %!  x = p(1);
 %!  y = p(2);
 %!  z = p(3);
@@ -522,13 +526,14 @@ endfunction
 %!  retval(1) = sin(x) + y**2 + log(z) - 7;
 %!  retval(2) = 3*x + 2**y -z**3 + 1;
 %!  retval(3) = x + y + z - 5;
+%!endfunction
 %!test
 %! x_opt = [ 0.599054;
 %! 2.395931;
 %! 2.005014 ];
 %! tol = 1.0e-5;
 %! opt = optimset ("Updating", "qrp");
-%! [x, fval, info] = fsolve (@f, [ 0.5; 2.0; 2.5 ], opt);
+%! [x, fval, info] = fsolve (@__f, [ 0.5; 2.0; 2.5 ], opt);
 %! assert (info > 0);
 %! assert (norm (x - x_opt, Inf) < tol);
 %! assert (norm (fval) < tol);
@@ -552,6 +557,7 @@ endfunction
 %!  y(1) = (1+i)*x(1)^2 - (1-i)*x(2) - 2;
 %!  y(2) = sqrt (x(1)*x(2)) - (1-2i)*x(3) + (3-4i);
 %!  y(3) = x(1) * x(2) - x(3)^2 + (3+2i);
+%!endfunction
 
 %!test
 %! x_opt = [-1+i, 1-i, 2+i];

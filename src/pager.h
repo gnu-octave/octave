@@ -62,15 +62,27 @@ public:
 
   ~octave_pager_stream (void);
 
-  void flush_current_contents_to_diary (void);
+  static void flush_current_contents_to_diary (void);
 
-  void set_diary_skip (void);
+  static void set_diary_skip (void);
 
-  static octave_pager_stream& stream (void);
+  static std::ostream& stream (void);
+
+  static void reset (void);
 
 private:
 
+  void do_flush_current_contents_to_diary (void);
+
+  void do_set_diary_skip (void);
+
+  void do_reset (void);
+
   static octave_pager_stream *instance;
+
+  static bool instance_ok (void);
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   octave_pager_buf *pb;
 
@@ -106,11 +118,19 @@ public:
 
   ~octave_diary_stream (void);
 
-  static octave_diary_stream& stream (void);
+  static std::ostream& stream (void);
+
+  static void reset (void);
 
 private:
 
+  void do_reset (void);
+
   static octave_diary_stream *instance;
+
+  static bool instance_ok (void);
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   octave_diary_buf *db;
 

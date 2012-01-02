@@ -24,10 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "ov-typeinfo.h"
+#include "Array.h"
+#include "singleton-cleanup.h"
 
 #include "defun.h"
 #include "error.h"
+#include "ov-typeinfo.h"
 
 const int
 octave_value_typeinfo::init_tab_sz (16);
@@ -35,14 +37,18 @@ octave_value_typeinfo::init_tab_sz (16);
 octave_value_typeinfo *
 octave_value_typeinfo::instance (0);
 
-#include <Array.h>
-
 bool
 octave_value_typeinfo::instance_ok (void)
 {
   bool retval = true;
+
   if (! instance)
-    instance = new octave_value_typeinfo ();
+    {
+      instance = new octave_value_typeinfo ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {
@@ -591,10 +597,11 @@ octave_value_typeinfo::do_installed_type_names (void)
 
 DEFUN (typeinfo, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} typeinfo (@var{expr})\n\
+@deftypefn  {Built-in Function} {} typeinfo ()\n\
+@deftypefnx {Built-in Function} {} typeinfo (@var{expr})\n\
 \n\
 Return the type of the expression @var{expr}, as a string.  If\n\
-@var{expr} is omitted, return an array of strings containing all the\n\
+@var{expr} is omitted, return an cell array of strings containing all the\n\
 currently installed data types.\n\
 @end deftypefn")
 {
@@ -611,3 +618,74 @@ currently installed data types.\n\
 
   return retval;
 }
+
+/*
+%!error typeinfo ("foo", 1);
+
+%!assert (iscellstr (typeinfo ()));
+
+%!assert (typeinfo (false), "bool");
+%!assert (typeinfo ([true, false]), "bool matrix");
+
+%!assert (typeinfo (1:2), "range");
+
+%!assert (typeinfo ("string"), "string");
+%!assert (typeinfo ('string'), "sq_string");
+
+%!assert (typeinfo (diag ([1, 2])), "diagonal matrix")
+%!assert (typeinfo (diag ([i, 2])), "complex diagonal matrix")
+%!assert (typeinfo (single (diag ([1, 2]))), "float diagonal matrix")
+%!assert (typeinfo (single (diag ([i, 2]))), "float complex diagonal matrix")
+%!assert (typeinfo (diag (single ([1, 2]))), "float diagonal matrix")
+%!assert (typeinfo (diag (single ([i, 2]))), "float complex diagonal matrix")
+
+%!assert (typeinfo ([]), "null_matrix");
+%!assert (typeinfo (""), "null_string");
+%!assert (typeinfo (''), "null_sq_string");
+
+%!assert (typeinfo (1), "scalar");
+%!assert (typeinfo (double (1)), "scalar");
+%!assert (typeinfo ([1, 2]), "matrix");
+%!assert (typeinfo (double ([1, 2])), "matrix");
+
+%!assert (typeinfo (i), "complex scalar");
+%!assert (typeinfo ([i, 2]), "complex matrix");
+
+%!assert (typeinfo (single (1)), "float scalar");
+%!assert (typeinfo (single ([1, 2])), "float matrix");
+
+%!assert (typeinfo (single (i)), "float complex scalar");
+%!assert (typeinfo (single ([i, 2])), "float complex matrix");
+
+%!assert (typeinfo (sparse (eye (10))), "sparse matrix");
+%!assert (typeinfo (sparse (i * eye (10))), "sparse complex matrix");
+%!assert (typeinfo (logical (sparse (i * eye (10)))), "sparse bool matrix");
+
+%!assert (typeinfo (int8 (1)), "int8 scalar");
+%!assert (typeinfo (int16 (1)), "int16 scalar");
+%!assert (typeinfo (int32 (1)), "int32 scalar");
+%!assert (typeinfo (int64 (1)), "int64 scalar");
+%!assert (typeinfo (uint8 (1)), "uint8 scalar");
+%!assert (typeinfo (uint16 (1)), "uint16 scalar");
+%!assert (typeinfo (uint32 (1)), "uint32 scalar");
+%!assert (typeinfo (uint64 (1)), "uint64 scalar");
+
+%!test
+%! s.a = 1;
+%! assert (typeinfo (s), "scalar struct");
+
+%!test
+%! s(2).a = 1;
+%! assert (typeinfo (s), "struct");
+
+%!assert (typeinfo ({"cell"}), "cell");
+
+%!assert (typeinfo (@sin), "function handle");
+%!assert (typeinfo (@(x) x), "function handle");
+
+%!assert (typeinfo (inline ('x^2')), "inline function");
+
+%!test
+%! [l, u, p] = lu (rand (3));
+%! assert (typeinfo (p), "permutation matrix");
+*/

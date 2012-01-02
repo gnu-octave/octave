@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "profiler.h"
 #include "pt-binop.h"
 #include "pt-bp.h"
 #include "pt-walk.h"
@@ -120,10 +121,20 @@ tree_binary_expression::rvalue1 (int)
 
           if (! error_state && b.is_defined ())
             {
+              BEGIN_PROFILER_BLOCK ("binary " + oper ())
+
+              // Note: The profiler does not catch the braindead
+              // short-circuit evaluation code above, but that should be
+              // ok. The evaluation of operands and the operator itself
+              // is entangled and it's not clear where to start/stop
+              // timing the operator to make it reasonable.
+
               retval = ::do_binary_op (etype, a, b);
 
               if (error_state)
                 retval = octave_value ();
+
+              END_PROFILER_BLOCK
             }
         }
     }
@@ -182,6 +193,11 @@ tree_boolean_expression::rvalue1 (int)
     return retval;
 
   bool result = false;
+
+  // This evaluation is not caught by the profiler, since we can't find
+  // a reasonable place where to time. Note that we don't want to
+  // include evaluation of LHS or RHS into the timing, but this is
+  // entangled together with short-circuit evaluation here.
 
   if (op_lhs)
     {
@@ -266,6 +282,7 @@ DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} do_braindead_shortcircuit_evaluation (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 do short-circuit evaluation of @samp{|} and @samp{&} operators inside the\n\
 conditions of if or while statements.\n\
@@ -275,7 +292,27 @@ not be used unless you are porting old code that relies on this feature.\n\
 \n\
 To obtain short-circuit behavior for logical expressions in new programs,\n\
 you should always use the @samp{&&} and @samp{||} operators.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);
 }
+
+/*
+
+%!test
+%! x = 0;
+%! do_braindead_shortcircuit_evaluation (0);
+%! if (1 | (x = 1))
+%! endif
+%! assert (x, 1);
+%! do_braindead_shortcircuit_evaluation (1);
+%! if (1 | (x = 0))
+%! endif
+%! assert (x, 1);
+
+*/
+

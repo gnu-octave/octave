@@ -75,3 +75,22 @@ endfunction
 %!assert (isa (uint16 (13), "numeric"), true)
 %!assert (isa (uint32 (13), "numeric"), true)
 %!assert (isa (uint64 (13), "numeric"), true)
+
+%!assert (isa (double (13), "double"));
+%!assert (isa (single (13), "single"));
+%!assert (isa (int8 (13), "int8"));
+%!assert (isa (int16 (13), "int16"));
+%!assert (isa (int32 (13), "int32"));
+%!assert (isa (int64 (13), "int64"));
+%!assert (isa (uint8 (13), "uint8"));
+%!assert (isa (uint16 (13), "uint16"));
+%!assert (isa (uint32 (13), "uint32"));
+%!assert (isa (uint64 (13), "uint64"));
+%!assert (isa ("string", "char"));
+%!assert (isa (true, "logical"));
+%!assert (isa (false, "logical"));
+%!assert (isa ({1, 2}, "cell"));
+%!test
+%! a.b = 1;
+%! assert (isa (a, "struct"));
+

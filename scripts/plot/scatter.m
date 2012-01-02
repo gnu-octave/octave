@@ -82,16 +82,19 @@ endfunction
 
 
 %!demo
+%! clf
 %! x = randn (100, 1);
 %! y = randn (100, 1);
 %! scatter (x, y, "r");
 
 %!demo
+%! clf
 %! x = randn (100, 1);
 %! y = randn (100, 1);
-%! scatter (x, y, [], sqrt(x.^2 + y.^2));
+%! scatter (x, y, [], sqrt (x.^2 + y.^2));
 
 %!demo
+%! clf
 %! rand_10x1_data1 = [0.171577, 0.404796, 0.025469, 0.335309, 0.047814, 0.898480, 0.639599, 0.700247, 0.497798, 0.737940];
 %! rand_10x1_data2 = [0.75495, 0.83991, 0.80850, 0.73603, 0.19360, 0.72573, 0.69371, 0.74388, 0.13837, 0.54143];
 %! x = rand_10x1_data1;
@@ -100,6 +103,7 @@ endfunction
 %! h = scatter (x, y, s, s, "s", "filled");
 
 %!demo
+%! clf
 %! rand_10x1_data3 = [0.42262, 0.51623, 0.65992, 0.14999, 0.68385, 0.55929, 0.52251, 0.92204, 0.19762, 0.93726];
 %! rand_10x1_data4 = [0.020207, 0.527193, 0.443472, 0.061683, 0.370277, 0.947349, 0.249591, 0.666304, 0.134247, 0.920356];
 %! x = rand_10x1_data3;
@@ -108,6 +112,7 @@ endfunction
 %! h = scatter (x, y, [], "r", "s", "filled");
 
 %!demo
+%! clf
 %! rand_10x1_data5 = [0.777753, 0.093848, 0.183162, 0.399499, 0.337997, 0.686724, 0.073906, 0.651808, 0.869273, 0.137949];
 %! rand_10x1_data6 = [0.37460, 0.25027, 0.19510, 0.51182, 0.54704, 0.56087, 0.24853, 0.75443, 0.42712, 0.44273];
 %! x = rand_10x1_data5;
@@ -115,3 +120,64 @@ endfunction
 %! s = 10 - 10*log (x.^2 + y.^2);
 %! h = scatter (x, y, [], "r", "s");
 
+%!demo
+%! k = 1;
+%! clf
+%! for m = [1, 3]
+%!   for n = [101, 50, 1]
+%!     x = rand (n, 1);
+%!     y = rand (n, 1);
+%!     if (m > 1)
+%!       str = "Three Colors";
+%!       idx = ceil (rand (n, 1) * 3);
+%!       colors = eye(3);
+%!       colors = colors(idx, :);
+%!     else
+%!       str = "Random Colors";
+%!       colors = rand (n, m);
+%!     endif
+%!     if (n == 1)
+%!       str = sprintf ("%s: 1 point", str);
+%!     elseif (n < 100)
+%!       str = sprintf ("%s: < 100 points", str);
+%!     else
+%!       str = sprintf ("%s: > 100 points", str);
+%!     endif
+%!     subplot (2, 3, k)
+%!     k = k + 1;
+%!     scatter (x, y, 15, colors, "filled")
+%!     axis ([0 1 0 1])
+%!     title (str)
+%!   endfor
+%! endfor
+
+%!demo
+%! k = 1;
+%! clf
+%! for m = [1, 3]
+%!   for n = [101, 50, 1]
+%!     x = rand (n, 1);
+%!     y = rand (n, 1);
+%!     if (m > 1)
+%!       str = "Three Colors";
+%!       idx = ceil (rand (n, 1) * 3);
+%!       colors = eye(3);
+%!       colors = colors(idx, :);
+%!     else
+%!       str = "Random Colors";
+%!       colors = rand (n, m);
+%!     endif
+%!     if (n == 1)
+%!       str = sprintf ("%s: 1 point", str);
+%!     elseif (n < 100)
+%!       str = sprintf ("%s: < 100 points", str);
+%!     else
+%!       str = sprintf ("%s: > 100 points", str);
+%!     endif
+%!     subplot (2, 3, k)
+%!     k = k + 1;
+%!     scatter (x, y, 15, colors)
+%!     axis ([0 1 0 1])
+%!     title (str)
+%!   endfor
+%! endfor

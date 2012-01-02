@@ -49,30 +49,32 @@
 
 function retval = int2str (n)
 
-  if (nargin == 1)
-    n = round (real(n));
-    sz = size(n);
-    nd = ndims (n);
-    nc = columns (n);
-    if (nc > 1)
-      idx = cell ();
-      for i = 1:nd
-        idx{i} = 1:sz(i);
-      endfor
-      idx(2) = 1;
-      ifmt = get_fmt (n(idx{:}), 0);
-      idx(2) = 2:sz(2);
-      rfmt = get_fmt (n(idx{:}), 2);
-      fmt = cstrcat (ifmt, repmat (rfmt, 1, nc-1), "\n");
-    else
-      fmt = cstrcat (get_fmt (n, 0), "\n");
-    endif
-    tmp = sprintf (fmt, permute (n, [2, 1, 3 : nd]));
-    tmp(end) = "";
-    retval = char (strsplit (tmp, "\n"));
-  else
+  if (nargin != 1)
     print_usage ();
   endif
+
+  if (isempty (n))
+    retval = '';
+    return;
+  endif
+
+  n = round (real(n));
+  sz = size(n);
+  nd = ndims (n);
+  nc = columns (n);
+  if (nc > 1)
+    idx = repmat ({':'}, nd, 1);
+    idx(2) = 1;
+    ifmt = get_fmt (n(idx{:}), 0);
+    idx(2) = 2:sz(2);
+    rfmt = get_fmt (n(idx{:}), 2);
+    fmt = cstrcat (ifmt, repmat (rfmt, 1, nc-1), "\n");
+  else
+    fmt = cstrcat (get_fmt (n, 0), "\n");
+  endif
+  tmp = sprintf (fmt, permute (n, [2, 1, 3 : nd]));
+  tmp(end) = "";
+  retval = char (strsplit (tmp, "\n"));
 
 endfunction
 
@@ -112,8 +114,10 @@ function fmt = get_fmt (x, sep)
 
 endfunction
 
-%!assert(strcmp (int2str (-123), "-123") && strcmp (int2str (1.2), "1"));
+%!assert (strcmp (int2str (-123), "-123") && strcmp (int2str (1.2), "1"));
 %!assert (all (int2str ([1, 2, 3; 4, 5, 6]) == ["1  2  3";"4  5  6"]));
+%!assert (int2str([]), "");
+
 %!error int2str ();
 %!error int2str (1, 2);
 

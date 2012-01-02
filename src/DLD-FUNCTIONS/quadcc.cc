@@ -50,8 +50,7 @@ typedef struct
   int depth, rdepth, ndiv;
 } cquad_ival;
 
-/* Some constants and matrices that we'll need.
-    */
+/* Some constants and matrices that we'll need.  */
 
 static const double xi[33] = {
   -1., -0.99518472667219688624, -0.98078528040323044912,
@@ -1473,79 +1472,77 @@ downdate (double *c, int n, int d, int *nans, int nnans)
 }
 
 
-
-/* The actual integration routine.
-    */
+/* The actual integration routine.  */
 
 DEFUN_DLD (quadcc, args, nargout,
 "-*- texinfo -*-\n\
-@deftypefn  {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
-@deftypefnx {Function File} {[@var{int}, @var{err}, @var{nr_points}] =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
-Numerically evaluates an integral using the doubly-adaptive\n\
-quadrature described by P. Gonnet in @cite{Increasing the\n\
-Reliability of Adaptive Quadrature Using Explicit Interpolants},\n\
-ACM Transactions on Mathematical Software, in Press, 2010.\n\
-The algorithm uses Clenshaw-Curtis quadrature rules of increasing\n\
-degree in each interval and bisects the interval if either the\n\
-function does not appear to be smooth or a rule of maximum\n\
-degree has been reached. The error estimate is computed from the\n\
-L2-norm of the difference between two successive interpolations\n\
-of the integrand over the nodes of the respective quadrature rules.\n\
-\n\
-For example,\n\
+@deftypefn  {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b})\n\
+@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol})\n\
+@deftypefnx {Function File} {@var{q} =} quadcc (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+@deftypefnx {Function File} {[@var{q}, @var{err}, @var{nr_points}] =} quadcc (@dots{})\n\
+Numerically evaluate the integral of @var{f} from @var{a} to @var{b}\n\
+using the doubly-adaptive Clenshaw-Curtis quadrature described by P. Gonnet\n\
+in @cite{Increasing the Reliability of Adaptive Quadrature Using Explicit\n\
+Interpolants}.\n\
+@var{f} is a function handle, inline function, or string\n\
+containing the name of the function to evaluate.\n\
+The function @var{f} must be vectorized and must return a vector of output\n\
+values if given a vector of input values.  For example,\n\
 \n\
 @example\n\
-   int = quadcc (f, a, b, 1.0e-6);\n\
+   f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
 @end example\n\
 \n\
 @noindent\n\
-computes the integral of a function @var{f} in the interval\n\
-[@var{a}, @var{b}] to the relative precision of six\n\
-decimal digits.\n\
-The integrand @var{f} should accept a vector argument and return a vector\n\
-result containing the integrand evaluated at each element of the\n\
-argument, for example:\n\
+which uses the element-by-element `dot' form for all operators.\n\
 \n\
-@example\n\
-   f = @@(x) x .* sin (1 ./ x) .* sqrt (abs (1 - x));\n\
-@end example\n\
+@var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
+or both limits may be infinite.  @code{quadcc} handles an inifinite limit\n\
+by substituting the variable of integration with @code{x=tan(pi/2*u)}.\n\
 \n\
-If the integrand has known singularities or discontinuities\n\
-in any of its derivatives inside the interval,\n\
-as does the above example at x=1, these can be specified in\n\
-the additional argument @var{sing} as follows\n\
+The optional argument @var{tol} defines the relative tolerance used to stop\n\
+the integration procedure.  The default value is @math{1e^{-6}}.\n\
+\n\
+The optional argument @var{sing} contains a list of points where the\n\
+integrand has known singularities, or discontinuities\n\
+in any of its derivatives, inside the integration interval.\n\
+For the example above, which has a discontinuity at x=1, the call to\n\
+@code{quadcc} would be as follows\n\
 \n\
 @example\n\
    int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
 @end example\n\
 \n\
-The two additional output variables @var{err} and @var{nr_points}\n\
-return an estimate of the absolute integration error and\n\
-the number of points at which the integrand was evaluated\n\
-respectively.\n\
+The result of the integration is returned in @var{q}.\n\
+@var{err} is an estimate of the absolute integration error and\n\
+@var{nr_points} is the number of points at which the integrand was evaluated.\n\
 If the adaptive integration did not converge, the value of\n\
-@var{err} will be larger than the requested tolerance.  It is\n\
-therefore recommended to verify this value for difficult\n\
-integrands.\n\
-\n\
-If either @var{a} or @var{b} are @code{+/-Inf}, @code{quadcc}\n\
-integrates @var{f} by substituting the variable of integration\n\
-with @code{x=tan(pi/2*u)}.\n\
+@var{err} will be larger than the requested tolerance.  Therefore, it is\n\
+recommended to verify this value for difficult integrands.\n\
 \n\
 @code{quadcc} is capable of dealing with non-numeric\n\
-values of the integrand such as @code{NaN}, @code{Inf}\n\
-or @code{-Inf}, as in the above example at x=0.\n\
-If the integral diverges and @code{quadcc} detects this, \n\
-a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
+values of the integrand such as @code{NaN} or @code{Inf}.\n\
+If the integral diverges, and @code{quadcc} detects this,\n\
+then a warning is issued and @code{Inf} or @code{-Inf} is returned.\n\
 \n\
-Note that @code{quadcc} is a general purpose quadrature algorithm\n\
-and as such may be less efficient for smooth or otherwise\n\
-well-behaved integrand than other methods such as\n\
-@code{quadgk} or @code{trapz}.\n\
+Note: @code{quadcc} is a general purpose quadrature algorithm\n\
+and, as such, may be less efficient for a smooth or otherwise\n\
+well-behaved integrand than other methods such as @code{quadgk}.\n\
 \n\
+The algorithm uses Clenshaw-Curtis quadrature rules of increasing\n\
+degree in each interval and bisects the interval if either the\n\
+function does not appear to be smooth or a rule of maximum\n\
+degree has been reached.  The error estimate is computed from the\n\
+L2-norm of the difference between two successive interpolations\n\
+of the integrand over the nodes of the respective quadrature rules.\n\
+\n\
+Reference: P. Gonnet, @cite{Increasing the Reliability of Adaptive\n\
+Quadrature Using Explicit Interpolants}, ACM Transactions on\n\
+Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 @seealso{quad, quadv, quadl, quadgk, trapz, dblquad, triplequad}\n\
 @end deftypefn")
 {
+  octave_value_list retval;
 
   /* Some constants that we will need. */
   static const int n[4] = { 4, 8, 16, 32 };
@@ -1564,15 +1561,15 @@ well-behaved integrand than other methods such as\n\
   double a, b, tol, iivals[cquad_heapsize], *sing;
 
   /* Variables needed for transforming the integrand. */
-  int wrap = 0;
+  bool wrap = false;
   double xw;
 
   /* Stuff we will need to call the integrand. */
-  octave_value_list fargs, retval;
+  octave_value_list fargs, fvals;
 
   /* Actual variables (as opposed to constants above). */
   double m, h, ml, hl, mr, hr, temp;
-  double igral, err, igral_final, err_final, err_excess;
+  double igral, err, igral_final, err_final;
   int nivals, neval = 0;
   int i, j, d, split, t;
   int nnans, nans[33];
@@ -1581,48 +1578,49 @@ well-behaved integrand than other methods such as\n\
 
 
   /* Parse the input arguments. */
-  if (nargin < 1)
+  if (nargin < 3)
     {
-      error
-        ("quadcc: first argument (integrand) of type function handle required");
-      return octave_value_list ();
-    }
-  else
-    {
-      if (args (0).is_function_handle () || args (0).is_inline_function ())
-        fcn = args (0).function_value ();
-      else
-        {
-          error ("quadcc: first argument (integrand) must be a function handle or an inline function");
-          return octave_value_list();
-        }
+      print_usage ();
+      return retval;
     }
 
-  if (nargin < 2 || !args (1).is_real_scalar ())
+  if (args(0).is_function_handle () || args(0).is_inline_function ())
+    fcn = args(0).function_value ();
+  else
     {
-      error ("quadcc: second argument (left interval edge) must be a single real scalar");
-      return octave_value_list ();
+       std::string fcn_name = unique_symbol_name ("__quadcc_fcn_");
+       std::string fname = "function y = ";
+       fname.append (fcn_name);
+       fname.append ("(x) y = ");
+       fcn = extract_function (args(0), "quadcc", fcn_name, fname,
+                               "; endfunction");
+    }
+
+  if (!args(1).is_real_scalar ())
+    {
+      error ("quadcc: lower limit of integration (A) must be a single real scalar");
+      return retval;
     }
   else
-    a = args (1).double_value ();
+    a = args(1).double_value ();
 
-  if (nargin < 3 || !args (2).is_real_scalar ())
+  if (!args(2).is_real_scalar ())
     {
-      error ("quadcc: third argument (right interval edge) must be a single real scalar");
-      return octave_value_list ();
+      error ("quadcc: upper limit of integration (B) must be a single real scalar");
+      return retval;
     }
   else
-    b = args (2).double_value ();
+    b = args(2).double_value ();
 
-  if (nargin < 4)
+  if (nargin < 4 || args(3).is_empty ())
     tol = 1.0e-6;
-  else if (!args (3).is_real_scalar ())
+  else if (!args(3).is_real_scalar () || args(3).double_value () <= 0)
     {
-      error ("quadcc: fourth argument (tolerance) must be a single real scalar");
-      return octave_value_list ();
+      error ("quadcc: tolerance (TOL) must be a single real scalar > 0");
+      return retval;
     }
   else
-    tol = args (3).double_value ();
+    tol = args(3).double_value ();
 
   if (nargin < 5)
     {
@@ -1630,20 +1628,21 @@ well-behaved integrand than other methods such as\n\
       iivals[0] = a;
       iivals[1] = b;
     }
-  else if (!(args (4).is_real_scalar () || args (4).is_real_matrix ()))
+  else if (!(args(4).is_real_scalar () || args(4).is_real_matrix ()))
     {
-      error ("quadcc: fifth argument (singularities) must be a vector of real values");
-      return octave_value_list ();
+      error ("quadcc: list of singularities (SING) must be a vector of real values");
+      return retval;
     }
   else
     {
-      nivals = 1 + args (4).length ();
-      if ( nivals > cquad_heapsize ) {
-        error ("quadcc: maximum number of singular points is limited to %i",
-               cquad_heapsize-1);
-        return octave_value_list();
+      nivals = 1 + args(4).length ();
+      if (nivals > cquad_heapsize)
+        {
+          error ("quadcc: maximum number of singular points is limited to %i",
+                 cquad_heapsize-1);
+          return retval;
         }
-      sing = args (4).array_value ().fortran_vec ();
+      sing = args(4).array_value ().fortran_vec ();
       iivals[0] = a;
       for (i = 0; i < nivals - 2; i++)
         iivals[i + 1] = sing[i];
@@ -1653,7 +1652,7 @@ well-behaved integrand than other methods such as\n\
   /* If a or b are +/-Inf, transform the integral. */
   if (xisinf (a) || xisinf (b))
     {
-      wrap = 1;
+      wrap = true;
       for (i = 0; i <= nivals; i++)
         if (xisinf (iivals[i]))
           iivals[i] = copysign (1.0, iivals[i]);
@@ -1689,19 +1688,18 @@ well-behaved integrand than other methods such as\n\
           for (i = 0; i <= n[3]; i++)
             ex (i) = m + xi[i] * h;
         }
-      fargs (0) = ex;
-      retval = feval (fcn, fargs, 1);
-      if (retval.length () != 1 || !retval (0).is_real_matrix ())
+      fargs(0) = ex;
+      fvals = feval (fcn, fargs, 1);
+      if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
         {
-          error
-            ("quadcc: integrand must return a single, real-valued vector");
-          return octave_value_list ();
+          error ("quadcc: integrand F must return a single, real-valued vector");
+          return retval;
         }
-      Matrix effex = retval (0).matrix_value ();
+      Matrix effex = fvals(0).matrix_value ();
       if (effex.length () != ex.length ())
         {
-          error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-          return octave_value_list ();
+          error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+          return retval;
         }
       for (i = 0; i <= n[3]; i++)
         {
@@ -1768,7 +1766,6 @@ well-behaved integrand than other methods such as\n\
   /* Initialize some global values. */
   igral_final = 0.0;
   err_final = 0.0;
-  err_excess = 0.0;
 
 
   /* Main loop. */
@@ -1810,18 +1807,18 @@ well-behaved integrand than other methods such as\n\
                 for (i = 0; i < n[d] / 2; i++)
                   ex (i) = m + xi[(2 * i + 1) * skip[d]] * h;
               }
-            fargs (0) = ex;
-            retval = feval (fcn, fargs, 1);
-            if (retval.length () != 1 || !retval (0).is_real_matrix ())
+            fargs(0) = ex;
+            fvals = feval (fcn, fargs, 1);
+            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector");
+                return retval;
               }
-            Matrix effex = retval (0).matrix_value ();
+            Matrix effex = fvals(0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+                return retval;
               }
             neval += effex.length ();
             for (i = 0; i < n[d] / 2; i++)
@@ -1958,18 +1955,18 @@ well-behaved integrand than other methods such as\n\
                 for (i = 0; i < n[0] - 1; i++)
                   ex (i) = ml + xi[(i + 1) * skip[0]] * hl;
               }
-            fargs (0) = ex;
-            retval = feval (fcn, fargs, 1);
-            if (retval.length () != 1 || !retval (0).is_real_matrix ())
+            fargs(0) = ex;
+            fvals = feval (fcn, fargs, 1);
+            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector");
+                return retval;
               }
-            Matrix effex = retval (0).matrix_value ();
+            Matrix effex = fvals(0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+                return retval;
               }
             neval += effex.length ();
             for (i = 0; i < n[0] - 1; i++)
@@ -2054,18 +2051,18 @@ well-behaved integrand than other methods such as\n\
                 for (i = 0; i < n[0] - 1; i++)
                   ex (i) = mr + xi[(i + 1) * skip[0]] * hr;
               }
-            fargs (0) = ex;
-            retval = feval (fcn, fargs, 1);
-            if (retval.length () != 1 || !retval (0).is_real_matrix ())
+            fargs(0) = ex;
+            fvals = feval (fcn, fargs, 1);
+            if (fvals.length () != 1 || !fvals(0).is_real_matrix ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector");
+                return retval;
               }
-            Matrix effex = retval (0).matrix_value ();
+            Matrix effex = fvals(0).matrix_value ();
             if (effex.length () != ex.length ())
               {
-                error ("quadcc: integrand must return a single, real-valued vector of the same size as the input");
-                return octave_value_list ();
+                error ("quadcc: integrand F must return a single, real-valued vector of the same size as the input");
+                return retval;
               }
             neval += effex.length ();
             for (i = 0; i < n[0] - 1; i++)
@@ -2235,11 +2232,39 @@ well-behaved integrand than other methods such as\n\
     }
 */
   /* Clean up and present the results. */
-  retval (0) = igral;
-  if (nargout > 1)
-    retval (1) = err;
   if (nargout > 2)
-    retval (2) = neval;
+    retval(2) = neval;
+  if (nargout > 1)
+    retval(1) = err;
+  retval(0) = igral;
   /* All is well that ends well. */
   return retval;
 }
+
+
+/*
+
+%!assert (quadcc(@sin,-pi,pi), 0, 1e-6)
+%!assert (quadcc(inline('sin'),-pi,pi), 0, 1e-6)
+%!assert (quadcc('sin',-pi,pi), 0, 1e-6)
+
+%!assert (quadcc(@sin,-pi,0), -2, 1e-6)
+%!assert (quadcc(@sin,0,pi), 2, 1e-6)
+%!assert (quadcc(@(x) 1./sqrt(x), 0, 1), 2, 1e-6)
+%!assert (quadcc(@(x) 1./(sqrt(x).*(x+1)), 0, Inf), pi, 1e-6)
+
+%!assert (quadcc (@(x) exp(-x .^ 2), -Inf, Inf), sqrt(pi), 1e-6)
+%!assert (quadcc (@(x) exp(-x .^ 2), -Inf, 0), sqrt(pi)/2, 1e-6)
+
+%% Test input validation
+%!error (quadcc ())
+%!error (quadcc (@sin))
+%!error (quadcc (@sin, 0))
+%!error (quadcc (@sin, ones(2), pi))
+%!error (quadcc (@sin, -i, pi))
+%!error (quadcc (@sin, 0, ones(2)))
+%!error (quadcc (@sin, 0, i))
+%!error (quadcc (@sin, 0, pi, 0))
+%!error (quadcc (@sin, 0, pi, 1e-6, [ i ]))
+
+*/

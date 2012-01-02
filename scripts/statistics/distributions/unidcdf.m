@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 2007-2011 David Bateman
 ##
 ## This file is part of Octave.
@@ -17,26 +18,72 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unidcdf (@var{x}, @var{v})
+## @deftypefn {Function File} {} unidcdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the cumulative distribution
-## function (CDF) at @var{x} of a discrete uniform distribution which
-## assumes the values in @var{v} with equal probability.  
-## If @var{v} is a scalar then @code{1/@var{v}} is the probability of a
-## single element.
+## function (CDF) at @var{x} of a discrete uniform distribution which assumes
+## the integer values 1--@var{n} with equal probability.
 ## @end deftypefn
 
-function cdf = unidcdf (x, v)
+function cdf = unidcdf (x, n)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  if (isscalar(v))
-    v = [1:v].';
-  else
-    v = v(:);
+  if (! isscalar (n))
+    [retval, x, n] = common_size (x, n);
+    if (retval > 0)
+      error ("unidcdf: X and N must be of common size or scalars");
+    endif
   endif
 
-  cdf = discrete_cdf (x, v, ones(size(v)));
+  if (iscomplex (x) || iscomplex (n))
+    error ("unidcdf: X and N must not be complex");
+  endif
+
+  if (isa (x, "single") || isa (n, "single"))
+    cdf = zeros (size (x), "single");
+  else
+    cdf = zeros (size (x));
+  endif
+
+  knan = isnan (x) | ! (n > 0 & n == fix (n));
+  if (any (knan(:)))
+    cdf(knan) = NaN;
+  endif
+
+  k = (x >= n) & !knan;  
+  cdf(k) = 1;
+
+  k = (x >= 1) & (x < n) & !knan;
+  if (isscalar (n))
+    cdf(k) = floor (x(k)) / n;
+  else
+    cdf(k) = floor (x(k)) ./ n(k);
+  endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [0 1 2.5 10 11];
+%! y = [0, 0.1 0.2 1.0 1.0];
+%!assert(unidcdf (x, 10*ones(1,5)), y);
+%!assert(unidcdf (x, 10), y);
+%!assert(unidcdf (x, 10*[0 1 NaN 1 1]), [NaN 0.1 NaN y(4:5)]);
+%!assert(unidcdf ([x(1:2) NaN Inf x(5)], 10), [y(1:2) NaN 1 y(5)]);
+
+%% Test class of input preserved
+%!assert(unidcdf ([x, NaN], 10), [y, NaN]);
+%!assert(unidcdf (single([x, NaN]), 10), single([y, NaN]));
+%!assert(unidcdf ([x, NaN], single(10)), single([y, NaN]));
+
+%% Test input validation
+%!error unidcdf ()
+%!error unidcdf (1)
+%!error unidcdf (1,2,3)
+%!error unidcdf (ones(3),ones(2))
+%!error unidcdf (ones(2),ones(3))
+%!error unidcdf (i, 2)
+%!error unidcdf (2, i)
+

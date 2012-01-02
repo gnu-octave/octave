@@ -17,15 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{retval}, @var{status}] =} get_first_help_sentence (@var{name}, @var{max_len})
-## Return the first sentence of a function help text.
+## @deftypefn  {Function File} {[@var{text}, @var{status}] =} get_first_help_sentence (@var{name})
+## @deftypefnx {Function File} {[@var{text}, @var{status}] =} get_first_help_sentence (@var{name}, @var{max_len})
+## Return the first sentence of a function's help text.
 ##
-## The function reads the first sentence of the help text of the function
-## @var{name}.  The first sentence is defined as the text after the function
+## The first sentence is defined as the text after the function
 ## declaration until either the first period (".") or the first appearance of
-## two consecutive end-lines ("\n\n").  The text is truncated to a maximum
-## length
-## of @var{max_len}, which defaults to 80.
+## two consecutive newlines ("\n\n").  The text is truncated to a maximum
+## length of @var{max_len}, which defaults to 80.
 ##
 ## The optional output argument @var{status} returns the status reported by
 ## @code{makeinfo}.  If only one output argument is requested, and @var{status}
@@ -36,23 +35,23 @@
 ## @example
 ## @group
 ## get_first_help_sentence ("get_first_help_sentence")
-## @print{} ans = Return the first sentence of a function help text.
+## @print{} ans = Return the first sentence of a function's help text.
 ## @end group
 ## @end example
 ## @end deftypefn
 
-function [retval, status] = get_first_help_sentence (name, max_len = 80)
+function [text, status] = get_first_help_sentence (name, max_len = 80)
   ## Check input
-  if (nargin == 0)
-    error ("get_first_help_sentence: not enough input arguments");
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
   endif
 
   if (!ischar (name))
-    error ("get_first_help_sentence: first input must be a string");
+    error ("get_first_help_sentence: NAME must be a string");
   endif
 
-  if (!isnumeric (max_len) || max_len <= 0 || max_len != round (max_len))
-    error ("get_first_help_sentence: second input must be positive integer");
+  if (!isnumeric (max_len) || max_len <= 0 || max_len != fix (max_len))
+    error ("get_first_help_sentence: MAX_LEN must be positive integer");
   endif
 
   ## First, we get the raw help text
@@ -61,11 +60,11 @@ function [retval, status] = get_first_help_sentence (name, max_len = 80)
   ## Then, we take action depending on the format
   switch (lower (format))
     case "plain text"
-      [retval, status] = first_sentence_plain_text (help_text, max_len);
+      [text, status] = first_sentence_plain_text (help_text, max_len);
     case "texinfo"
-      [retval, status] = first_sentence_texinfo (help_text, max_len);
+      [text, status] = first_sentence_texinfo (help_text, max_len);
     case "html"
-      [retval, status] = first_sentence_html (help_text, max_len);
+      [text, status] = first_sentence_html (help_text, max_len);
     case "not documented"
       error ("get_first_help_sentence: `%s' is not documented\n", name);
     case "not found"
@@ -80,18 +79,18 @@ function [retval, status] = get_first_help_sentence (name, max_len = 80)
 endfunction
 
 ## This function extracts the first sentence from a plain text help text
-function [retval, status] = first_sentence_plain_text (help_text, max_len)
+function [text, status] = first_sentence_plain_text (help_text, max_len)
   ## Extract first line by searching for a period or a double line-end.
-  period_idx = find (help_text == ".", 1);
+  period_idx = find (help_text == '.', 1);
   line_end_idx = strfind (help_text, "\n\n");
-  retval = help_text (1:min ([period_idx(:); line_end_idx(:); max_len; length(help_text)]));
+  text = help_text (1:min ([period_idx(:); line_end_idx(:); max_len; length(help_text)]));
   status = 0;
 endfunction
 
 ## This function extracts the first sentence from a Texinfo help text.
 ## The function works by removing @def* from the texinfo text. After this, we
 ## render the text to plain text using makeinfo, and then extract the first line.
-function [retval, status] = first_sentence_texinfo (help_text, max_len)
+function [text, status] = first_sentence_texinfo (help_text, max_len)
   ## Lines ending with "@\n" are continuation lines, so they should be concatenated
   ## with the following line.
   help_text = strrep (help_text, "@\n", " ");
@@ -141,16 +140,26 @@ function [retval, status] = first_sentence_texinfo (help_text, max_len)
   [help_text, status] = __makeinfo__ (help_text, "plain text");
 
   ## Extract first line with plain text method.
-  retval = first_sentence_plain_text (help_text, max_len);
+  text = first_sentence_plain_text (help_text, max_len);
 endfunction
 
 ## This function extracts the first sentence from a html help text.
 ## The function simply removes the tags and treats the text as plain text.
-function [retval, status] = first_sentence_html (help_text, max_len)
+function [text, status] = first_sentence_html (help_text, max_len)
   ## Strip tags
   [help_text, status] = strip_html_tags (help_text);
 
   ## Extract first line with plain text method.
-  retval = first_sentence_plain_text (help_text, max_len);
+  text = first_sentence_plain_text (help_text, max_len);
 endfunction
+
+%!assert (strcmp (get_first_help_sentence('get_first_help_sentence'), "Return the first sentence of a function's help text."));
+
+%% Test input validation
+%!error get_first_help_sentence ()
+%!error get_first_help_sentence (1, 2, 3)
+%!error get_first_help_sentence (1)
+%!error get_first_help_sentence ('ls', 'a')
+%!error get_first_help_sentence ('ls', 0)
+%!error get_first_help_sentence ('ls', 80.1)
 

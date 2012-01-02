@@ -18,12 +18,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sortrows (@var{A}, @var{c})
+## @deftypefn  {Function File} {[@var{s}, @var{i}] =} sortrows (@var{A})
+## @deftypefnx {Function File} {[@var{s}, @var{i}] =} sortrows (@var{A}, @var{c})
 ## Sort the rows of the matrix @var{A} according to the order of the
 ## columns specified in @var{c}.  If @var{c} is omitted, a
 ## lexicographical sort is used.  By default ascending order is used
 ## however if elements of @var{c} are negative then the corresponding
 ## column is sorted in descending order.
+## @seealso{sort}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo, Paul Kienzle
@@ -31,26 +33,38 @@
 
 function [s, i] = sortrows (A, c)
 
+  if (nargin < 1 || nargin > 2)
+    print_usage ();
+  endif
+
+  if (nargin == 2)
+    if (! (isnumeric (c) && isvector (c))) 
+      error ("sortrows: C must be a numeric vector");
+    elseif (any (c == 0) || any (abs (c) > columns (A)))
+      error ("sortrows: all elements of C must be in the range [1, columns (A)]");
+    endif
+  endif
+
   default_mode = "ascend";
-  other_mode = "descend";
+  reverse_mode = "descend";
 
   if (issparse (A))
-    ## FIXME -- eliminate this case once __sort_rows_idx__ is fixed to
-    ## handle sparse matrices.
+    ## FIXME: Eliminate this case once __sort_rows_idx__ is fixed to
+    ##        handle sparse matrices.
     if (nargin == 1)
-      i = sort_rows_idx_generic (default_mode, other_mode, A);
+      i = sort_rows_idx_generic (default_mode, reverse_mode, A);
     else
-      i = sort_rows_idx_generic (default_mode, other_mode, A, c);
+      i = sort_rows_idx_generic (default_mode, reverse_mode, A, c);
     endif
   elseif (nargin == 1)
     i = __sort_rows_idx__ (A, default_mode);
   elseif (all (c > 0))
     i = __sort_rows_idx__ (A(:,c), default_mode);
   elseif (all (c < 0))
-    i = __sort_rows_idx__ (A(:,-c), other_mode);
+    i = __sort_rows_idx__ (A(:,-c), reverse_mode);
   else
     ## Otherwise, fall back to the old algorithm.
-    i = sort_rows_idx_generic (default_mode, other_mode, A, c);
+    i = sort_rows_idx_generic (default_mode, reverse_mode, A, c);
   endif
 
   ## Only bother to compute s if needed.
@@ -60,20 +74,20 @@ function [s, i] = sortrows (A, c)
 
 endfunction
 
-function i = sort_rows_idx_generic (default_mode, other_mode, m, c)
+function i = sort_rows_idx_generic (default_mode, reverse_mode, m, c)
 
   if (nargin == 3)
-    indices = [1:size(m,2)]';
-    mode(1:size(m,2)) = {default_mode};
+    indices = [1:columns(m)]';
+    mode(1:columns(m)) = {default_mode};
   else
-    for ii = 1:length (c);
-      if (c(ii) < 0)
-        mode{ii} = other_mode;
+    for j = 1:length (c);
+      if (c(j) < 0)
+        mode{j} = reverse_mode;
       else
-        mode{ii} = default_mode;
+        mode{j} = default_mode;
       endif
     endfor
-    indices = abs(c(:));
+    indices = abs (c(:));
   endif
 
   ## Since sort is 'stable' the order of identical elements will be
@@ -82,9 +96,9 @@ function i = sort_rows_idx_generic (default_mode, other_mode, m, c)
   ## index j.
   indices = flipud (indices);
   mode = flipud (mode');
-  i = [1:size(m,1)]';
-  for ii = 1:length (indices);
-    [trash, idx] = sort (m(i, indices(ii)), mode{ii});
+  i = [1:rows(m)]';
+  for j = 1:length (indices);
+    [~, idx] = sort (m(i, indices(j)), mode{j});
     i = i(idx);
   endfor
 
@@ -101,3 +115,23 @@ endfunction
 %! assert (issparse (sx));
 %! assert (x, full (sx));
 %! assert (idx, sidx);
+
+%!test
+%! m = [1, 0, 0, 4];
+%! c = 1;
+%! [x, idx] = sortrows (m, c);
+%! [sx, sidx] = sortrows (sparse (m), c);
+%! assert (x, m);
+%! assert (idx, 1);
+%! assert (issparse (sx));
+%! assert (x, full (sx));
+%! assert (idx, sidx);
+
+%% Test input validation
+%!error sortrows ()
+%!error sortrows (1, 2, 3)
+%!error sortrows (1, "ascend")
+%!error sortrows (1, ones (2,2))
+%!error sortrows (1, 0)
+%!error sortrows (1, 2)
+

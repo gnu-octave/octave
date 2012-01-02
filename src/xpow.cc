@@ -49,6 +49,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "xpow.h"
 
+#include "bsxfun.h"
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -102,7 +104,7 @@ xpow (double a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -153,7 +155,7 @@ xpow (double a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -192,7 +194,7 @@ xpow (const Matrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -278,7 +280,7 @@ xpow (const DiagMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -322,7 +324,7 @@ xpow (const Matrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       EIG a_eig (a);
@@ -370,7 +372,7 @@ xpow (const Complex& a, const Matrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -418,7 +420,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       EIG b_eig (b);
@@ -457,7 +459,7 @@ xpow (const ComplexMatrix& a, double b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -543,7 +545,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       EIG a_eig (a);
@@ -577,7 +579,7 @@ xpow (const ComplexDiagMatrix& a, const Complex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       ComplexDiagMatrix r (nr, nc);
@@ -1243,8 +1245,21 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          //Potentially complex results
+          NDArray xa = octave_value_extract<NDArray> (a);
+          NDArray xb = octave_value_extract<NDArray> (b);
+          if (! xb.all_integers () && xa.any_element_is_negative ())
+            return octave_value (bsxfun_pow (ComplexNDArray (xa), xb));
+          else
+            return octave_value (bsxfun_pow (xa, xb));
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   int len = a.length ();
@@ -1318,8 +1333,15 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   ComplexNDArray result (a_dims);
@@ -1410,8 +1432,15 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   ComplexNDArray result (a_dims);
@@ -1453,8 +1482,15 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   ComplexNDArray result (a_dims);
@@ -1517,7 +1553,7 @@ xpow (float a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1569,7 +1605,7 @@ xpow (float a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1608,7 +1644,7 @@ xpow (const FloatMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1694,7 +1730,7 @@ xpow (const FloatDiagMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1726,7 +1762,7 @@ xpow (const FloatMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       FloatEIG a_eig (a);
@@ -1774,7 +1810,7 @@ xpow (const FloatComplex& a, const FloatMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1822,7 +1858,7 @@ xpow (const FloatComplex& a, const FloatComplexMatrix& b)
   octave_idx_type nc = b.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    error ("for x^A, A must be a square matrix");
   else
     {
       FloatEIG b_eig (b);
@@ -1861,7 +1897,7 @@ xpow (const FloatComplexMatrix& a, float b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       if (static_cast<int> (b) == b)
@@ -1947,7 +1983,7 @@ xpow (const FloatComplexMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       FloatEIG a_eig (a);
@@ -1981,7 +2017,7 @@ xpow (const FloatComplexDiagMatrix& a, const FloatComplex& b)
   octave_idx_type nc = a.cols ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for A^b, A must be square");
+    error ("for A^b, A must be a square matrix");
   else
     {
       FloatComplexDiagMatrix r (nr, nc);
@@ -2562,8 +2598,21 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          //Potentially complex results
+          FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
+          FloatNDArray xb = octave_value_extract<FloatNDArray> (b);
+          if (! xb.all_integers () && xa.any_element_is_negative ())
+            return octave_value (bsxfun_pow (FloatComplexNDArray (xa), xb));
+          else
+            return octave_value (bsxfun_pow (xa, xb));
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   int len = a.length ();
@@ -2637,8 +2686,15 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2729,8 +2785,15 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   FloatComplexNDArray result (a_dims);
@@ -2772,8 +2835,15 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      gripe_nonconformant ("operator .^", a_dims, b_dims);
-      return octave_value ();
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
+        {
+          return bsxfun_pow (a, b);
+        }
+      else
+        {
+          gripe_nonconformant ("operator .^", a_dims, b_dims);
+          return octave_value ();
+        }
     }
 
   FloatComplexNDArray result (a_dims);

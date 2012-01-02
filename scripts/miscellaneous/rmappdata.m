@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rmappdata (@var{h}, @var{name})
-## Deletes the named application data for the object(s) with
+## Delete the named application data for the object(s) with
 ## handle(s) @var{h}.
 ## @end deftypefn
 

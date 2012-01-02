@@ -17,28 +17,54 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ppd} =} ppder (@var{pp})
-## Compute the piecewise derivative of the piecewise polynomial struct @var{pp}.
-## @seealso{mkpp,ppval,ppint}
+## @deftypefn  {Function File} {ppd =} ppder (pp)
+## @deftypefnx {Function File} {ppd =} ppder (pp, m)
+## Compute the piecewise @var{m}-th derivative of a piecewise polynomial
+## struct @var{pp}.  If @var{m} is omitted the first derivative is calculated.
+## @seealso{mkpp, ppval, ppint}
 ## @end deftypefn
 
-function ppd = ppder (pp)
-  if (nargin != 1)
+function ppd = ppder (pp, m)
+
+  if ((nargin < 1) || (nargin > 2))
     print_usage ();
+  elseif (nargin == 1)
+    m = 1;
   endif
-  if (! isstruct (pp))
+
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
     error ("ppder: PP must be a structure");
   endif
 
   [x, p, n, k, d] = unmkpp (pp);
-  p = reshape (p, [], k);
-  if (k <= 1)
-    pd = zeros (rows (p), 1);
-    k = 1;
+
+  if (k - m <= 0)
+    x = [x(1) x(end)];
+    pd = zeros (prod (d), 1);
   else
-    k -= 1;
-    pd = p(:,1:k) * diag (k:-1:1);
+    f = k : -1 : 1;
+    ff = bincoeff (f, m + 1) .* factorial (m + 1) ./ f;
+    k -= m;
+    pd = p(:,1:k) * diag (ff(1:k));
   endif
+
   ppd = mkpp (x, pd, d);
 endfunction
 
+%!shared x,y,pp,ppd
+%! x=0:8;y=[x.^2;x.^3+1];pp=spline(x,y);
+%! ppd=ppder(pp);
+%!assert(ppval(ppd,x),[2*x;3*x.^2],1e-14)
+%!assert(ppd.order,3)
+%! ppd=ppder(pp,2);
+%!assert(ppval(ppd,x),[2*ones(size(x));6*x],1e-14)
+%!assert(ppd.order,2)
+%! ppd=ppder(pp,3);
+%!assert(ppd.order,1)
+%!assert(ppd.pieces,8)
+%!assert(size(ppd.coefs),[16,1])
+%! ppd=ppder(pp,4);
+%!assert(ppd.order,1)
+%!assert(ppd.pieces,1)
+%!assert(size(ppd.coefs),[2,1])
+%!assert(ppval(ppd,x),zeros(size(y)),1e-14)

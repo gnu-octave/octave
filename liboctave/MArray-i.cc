@@ -34,6 +34,13 @@ along with Octave; see the file COPYING.  If not, see
 template class OCTAVE_API MArray<int>;
 template class OCTAVE_API MArray<long>;
 
+// Explicit instantiation, as this seems to be required by weird compilers
+// like MSVC. This should be harmless on other compilers.
+template int xmin<int> (int, int);
+template int xmax<int> (int, int);
+template long xmin<long> (long, long);
+template long xmax<long> (long, long);
+
 INSTANTIATE_MARRAY_FRIENDS (int, OCTAVE_API)
 INSTANTIATE_MARRAY_FRIENDS (long, OCTAVE_API)
 

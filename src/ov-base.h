@@ -167,9 +167,9 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
   const std::string t::c_name (c); \
   void t::register_type (void) \
     { \
-      t_id = octave_value_typeinfo::register_type (t::t_name, \
-                                                   t::c_name, \
-                                                   octave_value (new t ())); \
+      static t exemplar; \
+      octave_value v (&exemplar, true); \
+      t_id = octave_value_typeinfo::register_type (t::t_name, t::c_name, v); \
     }
 
 // A base value type, so that derived types only have to redefine what
@@ -426,6 +426,8 @@ public:
   virtual bool is_constant (void) const { return false; }
 
   virtual bool is_function_handle (void) const { return false; }
+
+  virtual bool is_anonymous_function (void) const { return false; }
 
   virtual bool is_inline_function (void) const { return false; }
 

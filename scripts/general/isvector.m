@@ -28,37 +28,30 @@
 
 function retval = isvector (x)
 
-  retval = 0;
-
-  if (nargin == 1)
-    sz = size (x);
-    retval = (ndims (x) == 2 && (sz(1) == 1 || sz(2) == 1));
-  else
+  if (nargin != 1)
     print_usage ();
   endif
 
+  sz = size (x);
+  retval = (ndims (x) == 2 && (sz(1) == 1 || sz(2) == 1));
+
 endfunction
 
-%!assert(isvector (1));
-%!assert(isvector ([1; 2; 3]));
-%!assert(!(isvector ([])));
-%!assert(!(isvector ([1, 2; 3, 4])));
 
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((isvector ("t")));
+%!assert (isvector (1))
+%!assert (isvector ([1; 2; 3]))
+%!assert (isvector ([]), false)
+%!assert (isvector ([1, 2; 3, 4]), false)
 
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((isvector ("test")));
-
-%!assert(!(isvector (["test"; "ing"])));
+%!assert (isvector ("t"))
+%!assert (isvector ("test"))
+%!assert (isvector (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert((isvector (s)));
+%! assert (isvector (s));
 
 %% Test input validation
-%!error isvector ();
-%!error isvector ([1, 2], 2);
+%!error isvector ()
+%!error isvector ([1, 2], 2)
 

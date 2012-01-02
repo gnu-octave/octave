@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} plotyy (@dots{}, @var{fun1}, @var{fun2})
 ## @deftypefnx {Function File} {} plotyy (@var{h}, @dots{})
 ## @deftypefnx {Function File} {[@var{ax}, @var{h1}, @var{h2}] =} plotyy (@dots{})
-## Plots two sets of data with independent y-axes.  The arguments @var{x1} and
+## Plot two sets of data with independent y-axes.  The arguments @var{x1} and
 ## @var{y1} define the arguments for the first plot and @var{x1} and @var{y2}
 ## for the second.
 ##
@@ -70,6 +70,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     else
       error ("plotyy: expecting first argument to be axes handle");
     endif
+    oldh = gca ();
   else
     f = get (0, "currentfigure");
     if (isempty (f))
@@ -78,7 +79,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     ca = get (f, "currentaxes");
     if (isempty (ca))
       ax = [];
-    elseif (strcmp (get (ca, "tag"), "plotyy"));
+    elseif (ishandle (ca) && isprop (ca, "__plotyy_axes__"))
       ax = get (ca, "__plotyy_axes__");
     else
       ax = ca;
@@ -93,17 +94,18 @@ function [Ax, H1, H2] = plotyy (varargin)
     elseif (isempty (ax))
       ax(1) = axes ();
       ax(2) = axes ();
+      ca = ax(2);
     endif
     if (nargin < 2)
       varargin = {};
     endif
+    oldh = ca;
   endif
 
   if (nargin < 4)
     print_usage ();
   endif
 
-  oldh = gca ();
   unwind_protect
     [ax, h1, h2] = __plotyy__ (ax, varargin{:});
   unwind_protect_cleanup
@@ -112,8 +114,6 @@ function [Ax, H1, H2] = plotyy (varargin)
       axes (oldh);
     endif
   end_unwind_protect
-
-  set (ax, "activepositionproperty", "position");
 
   if (nargout > 0)
     Ax = ax;
@@ -162,10 +162,24 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   colors = get (ax(1), "colororder");
   set (ax(2), "colororder", [colors(2:end,:); colors(1,:)]);
 
+  if (strcmp (get (ax(1), "autopos_tag"), "subplot"))
+    set (ax(2), "autopos_tag", "subplot");
+  else
+    set (ax, "activepositionproperty", "position");
+  endif
+
   h2 = feval (fun2, x2, y2);
   set (ax(2), "yaxislocation", "right");
   set (ax(2), "ycolor", getcolor (h2(1)));
-  set (ax(2), "position", get (ax(1), "position"));
+
+
+  if (strcmp (get(ax(1), "activepositionproperty"), "position"))
+    set (ax(2), "position", get (ax(1), "position"));
+  else
+    set (ax(2), "outerposition", get (ax(1), "outerposition"));
+    set (ax(2), "looseinset", get (ax(1), "looseinset"));
+  endif
+
   set (ax(2), "xlim", xlim);
   set (ax(2), "color", "none");
   set (ax(2), "box", "off");
@@ -184,6 +198,10 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   addlistener (ax(1), "position", {@update_position, ax(2)});
   addlistener (ax(2), "position", {@update_position, ax(1)});
+  addlistener (ax(1), "outerposition", {@update_position, ax(2)});
+  addlistener (ax(2), "outerposition", {@update_position, ax(1)});
+  addlistener (ax(1), "looseinset", {@update_position, ax(2)});
+  addlistener (ax(2), "looseinset", {@update_position, ax(1)});
   addlistener (ax(1), "view", {@update_position, ax(2)});
   addlistener (ax(2), "view", {@update_position, ax(1)});
   addlistener (ax(1), "plotboxaspectratio", {@update_position, ax(2)});
@@ -191,25 +209,21 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   addlistener (ax(1), "plotboxaspectratiomode", {@update_position, ax(2)});
   addlistener (ax(2), "plotboxaspectratiomode", {@update_position, ax(1)});
 
-  ## Tag the plotyy axes, so we can use that information
-  ## not to mirror the y axis tick marks
-  set (ax, "tag", "plotyy");
-
-  ## Cross-reference one axis to the other in the userdata
-  set (ax(1), "userdata", ax(2));
-  set (ax(2), "userdata", ax(1));
-
   ## Store the axes handles for the sister axes.
-  try
+  if (ishandle (ax(1)) && ! isprop (ax(1), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(1), "data", ax);
-  catch
+  elseif (ishandle (ax(1)))
     set (ax(1), "__plotyy_axes__", ax);
-  end_try_catch
-  try
+  else
+    error ("plotyy.m: This shouldn't happen. File a bug report.")
+  endif
+  if (ishandle (ax(2)) && ! isprop (ax(2), "__plotyy_axes__"))
     addproperty ("__plotyy_axes__", ax(2), "data", ax);
-  catch
+  elseif (ishandle (ax(2)))
     set (ax(2), "__plotyy_axes__", ax);
-  end_try_catch
+  else
+    error ("plotyy.m: This shouldn't happen. File a bug report.")
+  endif
 endfunction
 
 %!demo
@@ -241,6 +255,15 @@ endfunction
 %! plotyy (x, 10*sin(2*pi*x), x, cos(2*pi*x))
 %! axis square
 
+%!demo
+%! clf
+%! x = linspace (-1, 1, 201);
+%! subplot (1, 1, 1);
+%! hax = plotyy (x, sin(pi*x), x, cos(pi*x));
+%! ylabel ("Blue and on the Left")
+%! ylabel (hax(2), "Green and on the Right")
+%! xlabel ("xlabel")
+
 function deleteplotyy (h, d, ax2, t2)
   if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes")
       && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
@@ -257,17 +280,27 @@ function update_position (h, d, ax2)
   if (! recursion)
     unwind_protect
       recursion = true;
-      position = get (h, "position");
       view = get (h, "view");
-      plotboxaspectratio = get (h, "plotboxaspectratio");
-      plotboxaspectratiomode = get (h, "plotboxaspectratiomode");
-      oldposition = get (ax2, "position");
       oldview = get (ax2, "view");
+      plotboxaspectratio = get (h, "plotboxaspectratio");
       oldplotboxaspectratio = get (ax2, "plotboxaspectratio");
+      plotboxaspectratiomode = get (h, "plotboxaspectratiomode");
       oldplotboxaspectratiomode = get (ax2, "plotboxaspectratiomode");
-      if (! (isequal (position, oldposition) && isequal (view, oldview)))
-        set (ax2, "position", position, "view", view);
+
+      if (strcmp (get(h, "activepositionproperty"), "position"))
+        position = get (h, "position");
+        oldposition = get (ax2, "position");
+        if (! (isequal (position, oldposition) && isequal (view, oldview)))
+          set (ax2, "position", position, "view", view);
+        endif
+      else
+        outerposition = get (h, "outerposition");
+        oldouterposition = get (ax2, "outerposition");
+        if (! (isequal (outerposition, oldouterposition) && isequal (view, oldview)))
+          set (ax2, "outerposition", outerposition, "view", view);
+        endif
       endif
+
       if (! (isequal (plotboxaspectratio, oldplotboxaspectratio)
              && isequal (plotboxaspectratiomode, oldplotboxaspectratiomode)))
         set (ax2, "plotboxaspectratio", plotboxaspectratio);

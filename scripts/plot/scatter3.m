@@ -41,7 +41,8 @@
 ## If the argument 'filled' is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
-## The optional return value @var{h} provides a handle to the patch object
+## The optional return value @var{h} is a graphics handle to the hggroup
+## object representing the points.
 ##
 ## @example
 ## @group
@@ -83,22 +84,26 @@ endfunction
 
 
 %!demo
+%! clf
 %! [x, y, z] = peaks (20);
 %! scatter3 (x(:), y(:), z(:), [], z(:));
 
 %!demo
+%! clf
 %! x = rand (20,1);
 %! y = rand (20,1);
 %! z = rand (20,1);
 %! scatter3 (x(:), y(:), z(:), 10, z(:), "s");
 
 %!demo
+%! clf
 %! x = rand (20,1);
 %! y = rand (20,1);
 %! z = rand (20,1);
 %! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), "s");
 
 %!demo
+%! clf
 %! x = rand (20,1);
 %! y = rand (20,1);
 %! z = rand (20,1);

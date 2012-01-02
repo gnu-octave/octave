@@ -1239,6 +1239,9 @@ Matrix::determinant (MatrixType& mattype,
 {
   DET retval (1.0);
 
+  info = 0;
+  rcon = 0.0;
+
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1267,7 +1270,6 @@ Matrix::determinant (MatrixType& mattype,
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
 
-          info = 0;
           double anorm = 0;
           if (calc_cond) anorm = xnorm (*this, 1);
 
@@ -2655,6 +2657,13 @@ Matrix::any_element_is_negative (bool neg_zero) const
 }
 
 bool
+Matrix::any_element_is_positive (bool neg_zero) const
+{
+  return (neg_zero ? test_all (xpositive_sign)
+          : do_mx_check<double> (*this, mx_inline_any_positive));
+}
+
+bool
 Matrix::any_element_is_nan (void) const
 {
   return do_mx_check<double> (*this, mx_inline_any_nan);
@@ -3111,15 +3120,19 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 */
 
 /* Test some simple identities
-%!shared M, cv, rv
-%! M = randn(10,10);
+%!shared M, cv, rv, Mt, rvt
+%! M = randn(10,10)+100*eye(10,10);
+%! Mt = M';
 %! cv = randn(10,1);
 %! rv = randn(1,10);
-%!assert([M*cv,M*cv],M*[cv,cv],1e-14)
-%!assert([M'*cv,M'*cv],M'*[cv,cv],1e-14)
-%!assert([rv*M;rv*M],[rv;rv]*M,1e-14)
-%!assert([rv*M';rv*M'],[rv;rv]*M',1e-14)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
+%! rvt = rv';
+%!assert([M*cv,M*cv],M*[cv,cv],1e-13)
+%!assert([M'*cv,M'*cv],M'*[cv,cv],1e-13)
+%!assert([rv*M;rv*M],[rv;rv]*M,1e-13)
+%!assert([rv*M';rv*M'],[rv;rv]*M',1e-13)
+%!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-13)
+%!assert(M'\cv,Mt\cv,1e-14)
+%!assert(M'\rv',Mt\rvt,1e-14)
 */
 
 static inline char

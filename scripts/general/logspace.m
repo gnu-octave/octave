@@ -17,18 +17,19 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} logspace (@var{base}, @var{limit})
-## @deftypefnx {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
-## Similar to @code{linspace} except that the values are logarithmically
-## spaced from
+## @deftypefn  {Function File} {} logspace (@var{a}, @var{b})
+## @deftypefnx {Function File} {} logspace (@var{b}, @var{b}, @var{n})
+## @deftypefnx {Function File} {} logspace (@var{a}, pi, @var{n})
+## Return a row vector with @var{n} elements logarithmically spaced from
 ## @tex
-## $10^{base}$ to $10^{limit}$.
+## $10^{a}$ to $10^{b}$.
 ## @end tex
 ## @ifnottex
-## 10^base to 10^limit.
+## 10^@var{a} to 10^@var{b}.
 ## @end ifnottex
+## If @var{n} is unspecified it defaults to 50.
 ##
-## If @var{limit} is equal to
+## If @var{b} is equal to
 ## @tex
 ## $\pi$,
 ## @end tex
@@ -37,67 +38,62 @@
 ## @end ifnottex
 ## the points are between
 ## @tex
-## $10^{base}$ and $\pi$,
+## $10^{a}$ and $\pi$,
 ## @end tex
 ## @ifnottex
-## 10^base and pi,
+## 10^@var{a} and pi,
 ## @end ifnottex
 ## @emph{not}
 ## @tex
-## $10^{base}$ and $10^{\pi}$,
+## $10^{a}$ and $10^{\pi}$,
 ## @end tex
 ## @ifnottex
-## 10^base and 10^pi,
+## 10^@var{a} and 10^pi,
 ## @end ifnottex
-## in order to be compatible with the corresponding @sc{matlab}
-## function.
-## If @var{n} is unspecified it defaults to 50.
+## in order to be compatible with the corresponding @sc{matlab} function.
 ##
-## Also for compatibility with @sc{matlab}, return the second argument if
-## fewer than two values are requested.
+## Also for compatibility with @sc{matlab}, return the second argument @var{b}
+## if fewer than two values are requested.
 ## @seealso{linspace}
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = logspace (base, limit, n)
+function retval = logspace (base, limit, n = 50)
 
-  if (nargin == 2)
-    npoints = 50;
-  elseif (nargin == 3)
-    if (length (n) == 1)
-      npoints = fix (n);
-    else
-      error ("logspace: arguments must be scalars");
-    endif
-  else
+  if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
 
-  if (length (base) == 1 && length (limit) == 1)
-    if (limit == pi)
-      limit = log10 (pi);
-    endif
-    retval = 10 .^ (linspace (base, limit, npoints));
-  else
-    error ("logspace: arguments must be scalars");
+  if (! (isscalar (base) && isscalar (limit) && isscalar (n)))
+    error ("logspace: arguments BASE, LIMIT, and N must be scalars");
   endif
+
+  npoints = fix (n);
+
+  if (limit == pi)
+    limit = log10 (pi);
+  endif
+
+  retval = 10 .^ (linspace (base, limit, npoints));
 
 endfunction
 
+
 %!test
 %! x1 = logspace (1, 2);
-%! x2 = logspace (1, 2, 10);
+%! x2 = logspace (1, 2, 10.1);
 %! x3 = logspace (1, -2, 10);
 %! x4 = logspace (1, pi, 10);
-%! assert((size (x1) == [1, 50] && x1(1) == 10 && x1(50) == 100
-%! && size (x2) == [1, 10] && x2(1) == 10 && x2(10) == 100
-%! && size (x3) == [1, 10] && x3(1) == 10 && x3(10) == 0.01
-%! && size (x4) == [1, 10] && x4(1) == 10 && abs (x4(10) - pi) < sqrt (eps)));
+%! assert (size (x1) == [1, 50] && x1(1) == 10 && x1(50) == 100);
+%! assert (size (x2) == [1, 10] && x2(1) == 10 && x2(10) == 100);
+%! assert (size (x3) == [1, 10] && x3(1) == 10 && x3(10) == 0.01);
+%! assert (size (x4) == [1, 10] && x4(1) == 10 && abs (x4(10) - pi) < sqrt (eps));
 
-%!error logspace ([1, 2; 3, 4], 5, 6);
-
+%% Test input validation
 %!error logspace ();
-
 %!error logspace (1, 2, 3, 4);
+%!error logspace ([1, 2; 3, 4], 5, 6);
+%!error logspace (1, [1, 2; 3, 4], 6);
+%!error logspace (1, 2, [1, 2; 3, 4]);
 

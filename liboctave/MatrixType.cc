@@ -456,11 +456,11 @@ MatrixType::MatrixType (const SparseMatrix &a)
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
            && nrows < ncols))
         {
-          typ = MatrixType::Rectangular;
           if (typ == MatrixType::Permuted_Upper ||
               typ == MatrixType::Permuted_Lower)
             delete [] perm;
           nperm = 0;
+          typ = MatrixType::Rectangular;
         }
 
       if (typ == MatrixType::Full && ncols != nrows)
@@ -777,11 +777,11 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
           ((typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
            && nrows < ncols))
         {
-          typ = MatrixType::Rectangular;
           if (typ == MatrixType::Permuted_Upper ||
               typ == MatrixType::Permuted_Lower)
             delete [] perm;
           nperm = 0;
+          typ = MatrixType::Rectangular;
         }
 
       if (typ == MatrixType::Full && ncols != nrows)
@@ -921,14 +921,20 @@ MatrixType::operator = (const MatrixType& a)
       lower_band = a.lower_band;
       dense = a.dense;
       full = a.full;
-      nperm = a.nperm;
 
-      if (nperm != 0)
+      if (nperm)
         {
-          perm = new octave_idx_type [nperm];
-          for (octave_idx_type i = 0; i < nperm; i++)
+          delete[] perm;
+        }
+
+      if (a.nperm != 0)
+        {
+          perm = new octave_idx_type [a.nperm];
+          for (octave_idx_type i = 0; i < a.nperm; i++)
             perm[i] = a.perm[i];
         }
+
+      nperm = a.nperm;
     }
 
   return *this;

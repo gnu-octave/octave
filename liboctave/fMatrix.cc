@@ -1239,6 +1239,9 @@ FloatMatrix::determinant (MatrixType& mattype,
 {
   FloatDET retval (1.0);
 
+  info = 0;
+  rcon = 0.0;
+
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
@@ -1267,7 +1270,6 @@ FloatMatrix::determinant (MatrixType& mattype,
           FloatMatrix atmp = *this;
           float *tmp_data = atmp.fortran_vec ();
 
-          info = 0;
           float anorm = 0;
           if (calc_cond) anorm = xnorm (*this, 1);
 
@@ -2652,6 +2654,13 @@ FloatMatrix::any_element_is_negative (bool neg_zero) const
 {
   return (neg_zero ? test_all (xnegative_sign)
           : do_mx_check<float> (*this, mx_inline_any_negative));
+}
+
+bool
+FloatMatrix::any_element_is_positive (bool neg_zero) const
+{
+  return (neg_zero ? test_all (xpositive_sign)
+          : do_mx_check<float> (*this, mx_inline_any_positive));
 }
 
 bool

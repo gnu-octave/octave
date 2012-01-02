@@ -16,16 +16,17 @@
 @c along with Octave; see the file COPYING.  If not, see
 @c <http://www.gnu.org/licenses/>.
 
-@node Grammar
-@appendix Grammar
+@node Grammar and Parser
+@appendix Grammar and Parser
 @cindex grammar rules
 @cindex language definition
 
-This appendix should eventually contain a semi-formal description of
+This appendix will eventually contain a semi-formal description of
 Octave's language.
 
 @menu
 * Keywords::                    
+* Parser::                    
 @end menu
 
 @node Keywords
@@ -40,16 +41,46 @@ or function names:
 @item @code{case} @tab @code{catch} @tab @code{classdef}
 @item @code{continue} @tab @code{do} @tab @code{else}
 @item @code{elseif} @tab @code{end} @tab @code{end_try_catch}
-@item @code{end_unwind_protect} @tab @code{endclassdef} @tab @code{endevents}
-@item @code{endfor} @tab @code{endfunction} @tab @code{endif}
-@item @code{endmethods} @tab @code{endproperties} @tab @code{endswitch}
-@item @code{endwhile} @tab @code{events} @tab @code{for}
+@item @code{end_unwind_protect} @tab @code{endclassdef} @tab @code{endenumeration}
+@item @code{endevents} @tab @code{endfor} @tab @code{endfunction}
+@item @code{endif} @tab @code{endmethods} @tab @code{endparfor}
+@item @code{endproperties} @tab @code{endswitch} @tab @code{endwhile}
+@item @code{enumeration} @tab @code{events} @tab @code{for}
 @item @code{function} @tab @code{get} @tab @code{global}
 @item @code{if} @tab @code{methods} @tab @code{otherwise}
-@item @code{persistent} @tab @code{properties} @tab @code{return}
-@item @code{set} @tab @code{static} @tab @code{switch}
-@item @code{try} @tab @code{until} @tab @code{unwind_protect}
-@item @code{unwind_protect_cleanup}@tab @code{while}
+@item @code{parfor} @tab @code{persistent} @tab @code{properties}
+@item @code{return} @tab @code{set} @tab @code{static}
+@item @code{switch} @tab @code{try} @tab @code{until}
+@item @code{unwind_protect} @tab @code{unwind_protect_cleanup} @tab @code{while}
 @end multitable
 
+The function @code{iskeyword} can be used to quickly check whether an
+identifier is reserved by Octave.
+
 @DOCSTRING(iskeyword)
+
+@node Parser
+@section Parser
+@cindex parser
+
+The parser has a number of variables that affect its internal operation.
+These variables are generally documented in the manual alongside the code that
+they affect.  For example, @code{allow_noninteger_range_as_index} is discussed
+in the section on index expressions.
+
+In addition, there are three non-specific parser customization functions.
+@code{add_input_event_hook} can be used to schedule a user function for
+periodic evaluation.  @code{remove_input_event_hook} will stop a user function
+from being evaluated periodically.
+
+@DOCSTRING(add_input_event_hook)
+
+@DOCSTRING(remove_input_event_hook)
+
+Finally, when the parser cannot identify an input token it calls a particular
+function to handle this.  By default, this is the function "unimplemented"
+which makes suggestions about possible Octave substitutes for @sc{matlab}
+functions.
+
+@DOCSTRING(missing_function_hook)
+

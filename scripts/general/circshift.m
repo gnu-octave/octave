@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} circshift (@var{x}, @var{n})
-## Circularly shifts the values of the array @var{x}.  @var{n} must be
+## Circularly shift the values of the array @var{x}.  @var{n} must be
 ## a vector of integers no longer than the number of dimensions in
 ## @var{x}.  The values of @var{n} can be either positive or negative,
 ## which determines the direction in which the values or @var{x} are
@@ -47,53 +47,58 @@
 
 function y = circshift (x, n)
 
-  if (nargin == 2)
-    if (isempty (x))
-      y = x;
-    else
-      nd = ndims (x);
-      sz = size (x);
-
-      if (! isvector (n) && length (n) > nd)
-        error ("circshift: N must be a vector, no longer than the number of dimension in X");
-      endif
-
-      if (any (n != floor (n)))
-        error ("circshift: all values of N must be integers");
-      endif
-
-      idx = cell ();
-      for i = 1:length (n);
-        nn = n(i);
-        if (nn < 0)
-          while (sz(i) <= -nn)
-            nn = nn + sz(i);
-          endwhile
-          idx{i} = [(1-nn):sz(i), 1:-nn];
-        else
-          while (sz(i) <= nn)
-            nn = nn - sz(i);
-          endwhile
-          idx{i} = [(sz(i)-nn+1):sz(i), 1:(sz(i)-nn)];
-        endif
-      endfor
-      for i = (length(n) + 1) : nd
-        idx{i} = 1:sz(i);
-      endfor
-      y = x(idx{:});
-    endif
-  else
+  if (nargin != 2)
     print_usage ();
   endif
+
+  if (isempty (x))
+    y = x;
+    return;
+  endif
+
+  nd = ndims (x);
+  sz = size (x);
+
+  if (! isvector (n) || length (n) > nd)
+    error ("circshift: N must be a vector, no longer than the number of dimension in X");
+  elseif (any (n != fix (n)))
+    error ("circshift: all values of N must be integers");
+  endif
+
+  idx = repmat ({':'}, 1, nd);
+  for i = 1:length (n);
+    b = n(i);
+    d = sz(i);
+    if (b > 0)
+      b = rem (b, d);
+      idx{i} = [d-b+1:d, 1:d-b];
+    elseif (b < 0)
+      b = rem (abs (b), d);
+      idx{i} = [b+1:d, 1:b];
+    endif
+  endfor
+
+  y = x(idx{:});
+
 endfunction
+
 
 %!shared x
 %! x = [1, 2, 3; 4, 5, 6; 7, 8, 9];
 
 %!assert (circshift (x, 1), [7, 8, 9; 1, 2, 3; 4, 5, 6])
 %!assert (circshift (x, -2), [7, 8, 9; 1, 2, 3; 4, 5, 6])
-%!assert (circshift (x, [0, 1]), [3, 1, 2; 6, 4, 5; 9, 7, 8]);
-%!assert (circshift ([],1), [])
+%!assert (circshift (x, [0, 1]), [3, 1, 2; 6, 4, 5; 9, 7, 8])
+%!assert (circshift ([], 1), [])
 
-%!assert (full (circshift (eye (3), 1)), circshift (full (eye (3)), 1))
-%!assert (full (circshift (eye (3), 1)), [0,0,1;1,0,0;0,1,0])
+%!assert (circshift (eye (3), 1), circshift (eye (3), 1))
+%!assert (circshift (eye (3), 1), [0,0,1;1,0,0;0,1,0])
+
+%% Test input validation
+%!error circshift ()
+%!error circshift (1)
+%!error circshift (1,2,3)
+%!error circshift (1, ones(2,2))
+%!error circshift (1, [1 2 3])
+%!error circshift (1, 1.5)
+

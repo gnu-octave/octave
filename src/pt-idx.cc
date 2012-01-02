@@ -113,6 +113,13 @@ tree_index_expression::~tree_index_expression (void)
       delete *p;
       args.erase (p);
     }
+
+  while (! dyn_field.empty ())
+    {
+      std::list<tree_expression *>::iterator p = dyn_field.begin ();
+      delete *p;
+      dyn_field.erase (p);
+    }
 }
 
 bool

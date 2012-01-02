@@ -38,7 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (inv, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{x} =} inv (@var{A})\n\
+@deftypefn  {Loadable Function} {@var{x} =} inv (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{x}, @var{rcond}] =} inv (@var{A})\n\
 Compute the inverse of the square matrix @var{A}.  Return an estimate\n\
 of the reciprocal condition number if requested, otherwise warn of an\n\
@@ -228,8 +228,8 @@ of a sparse matrix if possible.\n\
 %!assert(inv ([1, 2; 3, 4]), [-2, 1; 1.5, -0.5], sqrt (eps))
 %!assert(inv (single([1, 2; 3, 4])), single([-2, 1; 1.5, -0.5]), sqrt (eps ('single')))
 
-%!error <Invalid call to inv.*> inv ();
-%!error <Invalid call to inv.*> inv ([1, 2; 3, 4], 2);
+%!error <Invalid call to inv> inv ();
+%!error <Invalid call to inv> inv ([1, 2; 3, 4], 2);
 %!error inv ([1, 2; 3, 4; 5, 6]);
 
  */
@@ -240,9 +240,11 @@ of a sparse matrix if possible.\n\
 
 DEFUN_DLD (inverse, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{x} =} inverse (@var{A})\n\
+@deftypefn  {Loadable Function} {@var{x} =} inverse (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{x}, @var{rcond}] =} inverse (@var{A})\n\
-This in an alias for @code{inv}.\n\
+Compute the inverse of the square matrix @var{A}.\n\
+\n\
+This is an alias for @code{inv}.\n\
 @seealso{inv}\n\
 @end deftypefn")
 {

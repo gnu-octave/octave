@@ -37,16 +37,16 @@ function retval = isdefinite (x, tol)
     print_usage ();
   endif
 
-  if (! ishermitian (x))
-    error ("isdefinite: X must be a hermitian matrix");
-  endif
-
   if (! isfloat (x))
     x = double (x);
   endif
 
   if (nargin == 1)
-    tol = 100 * eps(class (x)) * norm (x, "fro");
+    tol = 100 * eps (class (x)) * norm (x, "fro");
+  endif
+
+  if (! ishermitian (x, tol))
+    error ("isdefinite: X must be a Hermitian matrix");
   endif
 
   e = tol * eye (rows (x));
@@ -63,3 +63,25 @@ function retval = isdefinite (x, tol)
   endif
 
 endfunction
+
+
+%!test
+%! A = [-1 0; 0 -1];
+%! assert (isdefinite (A), -1)
+
+%!test
+%! A = [1 0; 0 1];
+%! assert (isdefinite (A), 1)
+
+%!test
+%! A = [2 -1 0; -1 2 -1; 0 -1 2];
+%! assert (isdefinite (A), 1)
+
+%!test
+%! A = [1 0; 0 0];
+%! assert (isdefinite (A), 0)
+
+%!error isdefinite ()
+%!error isdefinite (1,2,3)
+%!error <X must be a Hermitian matrix> isdefinite ([1 2; 3 4])
+

@@ -82,3 +82,14 @@ Convert @var{x} to 8-bit integer type.\n\
 {
   OCTAVE_TYPE_CONV_BODY (int8);
 }
+
+/*
+
+%!assert (class (int8 (1)), "int8")
+%!assert (int8 (1.25), int8 (1))
+%!assert (int8 (1.5), int8 (2))
+%!assert (int8 (-1.5), int8 (-2))
+%!assert (int8 (2^9), int8 (2^8-1))
+%!assert (int8 (-2^9), int8 (-2^8))
+
+*/

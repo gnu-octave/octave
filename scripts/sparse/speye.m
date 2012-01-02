@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{y} =} speye (@var{m})
 ## @deftypefnx {Function File} {@var{y} =} speye (@var{m}, @var{n})
 ## @deftypefnx {Function File} {@var{y} =} speye (@var{sz})
-## Returns a sparse identity matrix.  This is significantly more
+## Return a sparse identity matrix.  This is significantly more
 ## efficient than @code{sparse (eye (@var{m}))} as the full matrix
 ## is not constructed.
 ##

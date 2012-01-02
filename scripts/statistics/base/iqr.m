@@ -39,7 +39,7 @@ function y = iqr (x, dim)
     print_usage ();
   endif
 
-  if (!(ismatrix (x) && isnumeric (x)) || isscalar(x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("iqr: X must be a numeric vector or matrix");
   endif
 
@@ -48,10 +48,7 @@ function y = iqr (x, dim)
   nel = numel (x);
   if (nargin != 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -60,27 +57,33 @@ function y = iqr (x, dim)
   endif
 
   ## This code is a bit heavy, but is needed until empirical_inv
-  ## takes other than vector arguments.
-  c = sz(dim);
+  ## can take a matrix, rather than just a vector argument.
+  n = sz(dim);
   sz(dim) = 1;
-  y = zeros (sz);
+  if (isa (x, 'single'))
+    y = zeros (sz, 'single');
+  else
+    y = zeros (sz);
+  endif
   stride = prod (sz(1:dim-1));
-  for i = 1 : nel / c;
+  for i = 1 : nel / n;
     offset = i;
     offset2 = 0;
     while (offset > stride)
       offset -= stride;
       offset2++;
     endwhile
-    offset += offset2 * stride * c;
-    rng = [0 : c-1] * stride + offset;
+    offset += offset2 * stride * n;
+    rng = [0 : n-1] * stride + offset;
 
-    y (i) = empirical_inv (3/4, x(rng)) - empirical_inv (1/4, x(rng));
+    y(i) = diff (empirical_inv ([1/4, 3/4], x(rng)));
   endfor
 
 endfunction
 
+
 %!assert (iqr (1:101), 50);
+%!assert (iqr (single(1:101)), single(50));
 
 %%!test
 %%! x = [1:100];
@@ -90,5 +93,6 @@ endfunction
 %!error iqr ();
 %!error iqr (1, 2, 3);
 %!error iqr (1);
-%!error iqr ([true, true]);
+%!error iqr (['A'; 'B']);
 %!error iqr (1:10, 3);
+

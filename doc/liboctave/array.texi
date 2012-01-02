@@ -177,7 +177,7 @@ the current size, the length is updated but no memory is released.
 @deftypefnx Constructor {} DiagArray<T> (const DiagArray<T> &@var{a})
 @end deftypefn
 
-@deftypeop Assginment DiagArray<T>& {} {operator =} (const DiagArray<T> &@var{a})
+@deftypeop Assignment DiagArray<T>& {} {operator =} (const DiagArray<T> &@var{a})
 @end deftypeop
 
 @deftypemethod DiagArray<T> int dim1 (void) const

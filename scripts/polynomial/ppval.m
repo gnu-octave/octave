@@ -18,16 +18,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} =} ppval (@var{pp}, @var{xi})
-## Evaluate piecewise polynomial @var{pp} at the points @var{xi}.
-## If @var{pp} is scalar-valued, the result is an array of the same shape as
-## @var{xi}.
-## Otherwise, the size of the result is @code{[pp.d, length(@var{xi})]} if
-## @var{xi} is a vector, or @code{[pp.d, size(@var{xi})]} if it is a
-## multi-dimensional array.  If pp.orient is 1, the dimensions are permuted as
-## in interp1, to
-## @code{[pp.d, length(@var{xi})]} and @code{[pp.d, size(@var{xi})]}
-## respectively.
-## @seealso{mkpp, unmkpp, spline}
+## Evaluate the piecewise polynomial structure @var{pp} at the points @var{xi}.
+## If @var{pp} describes a scalar polynomial function, the result is an
+## array of the same shape as @var{xi}.
+## Otherwise, the size of the result is @code{[pp.dim, length(@var{xi})]} if
+## @var{xi} is a vector, or @code{[pp.dim, size(@var{xi})]} if it is a
+## multi-dimensional array.
+## @seealso{mkpp, unmkpp, spline, pchip}
 ## @end deftypefn
 
 function yi = ppval (pp, xi)
@@ -35,48 +32,85 @@ function yi = ppval (pp, xi)
   if (nargin != 2)
     print_usage ();
   endif
-  if (! isstruct (pp))
-    error ("ppval: PP must be a structure");
+  if (! (isstruct (pp) && strcmp (pp.form, "pp")))
+    error ("ppval: first argument must be a pp-form structure");
   endif
 
   ## Extract info.
-  x = pp.x;
-  P = pp.P;
-  d = pp.d;
-  k = size (P, 3);
-  nd = size (P, 1);
+  [x, P, n, k, d] = unmkpp (pp);
 
-  ## Determine resulting shape.
-  if (d == 1) # scalar case
-    yisz = size (xi);
-  elseif (isvector (xi)) # this is special
-    yisz = [d, length(xi)];
-  else # general
-    yisz = [d, size(xi)];
+  ## dimension checks
+  sxi = size (xi);
+  if (isvector (xi))
+    xi = xi(:).';
   endif
 
-  ## Determine intervals.
-  xi = xi(:);
-  xn = numel (xi);
+  nd = length (d);
 
+  ## Determine intervals.
+  xn = numel (xi);
   idx = lookup (x, xi, "lr");
 
+  P = reshape (P, [d, n * k]);
+  P = shiftdim (P, nd);
+  P = reshape (P, [n, k, d]);
+  Pidx = P(idx(:), :);#2d matrix size x: coefs*prod(d) y: prod(sxi)
+
+  if (isvector(xi))
+    Pidx = reshape (Pidx, [xn, k, d]);
+    Pidx = shiftdim (Pidx, 1);
+    dimvec = [d, xn];
+  else
+    Pidx = reshape (Pidx, [sxi, k, d]);
+    Pidx = shiftdim (Pidx, length (sxi));
+    dimvec = [d, sxi];
+  endif
+  ndv = length (dimvec);
+
   ## Offsets.
-  dx = (xi - x(idx)).';
-  dx = dx(ones (1, nd), :); # spread (do nothing in 1D)
+  dx = (xi - x(idx));
+  dx = repmat (dx, [prod(d), 1]);
+  dx = reshape (dx, dimvec);
+  dx = shiftdim (dx, ndv - 1);
 
   ## Use Horner scheme.
-  yi = P(:,idx,1);
-  for i = 2:k;
+  yi = Pidx;
+  if (k > 1)
+    yi = shiftdim (reshape (Pidx(1,:), dimvec), ndv - 1);
+  endif
+
+  for i = 2 : k;
     yi .*= dx;
-    yi += P(:,idx,i);
+    yi += shiftdim (reshape (Pidx(i,:), dimvec), ndv - 1);
   endfor
 
   ## Adjust shape.
-  yi = reshape (yi, yisz);
-  if (d != 1 && pp.orient == 1)
-    ## Switch dimensions to match interp1 order.
-    yi = shiftdim (yi, length (d));
+  if ((numel (xi) > 1) || (length (d) == 1))
+    yi = reshape (shiftdim (yi, 1), dimvec);
   endif
 
+  if (isvector (xi) && (d == 1))
+    yi = reshape (yi, sxi);
+  elseif (isfield (pp, "orient") && strcmp (pp.orient, "first"))
+    yi = shiftdim(yi, nd);
+  endif
+
+  ##
+  #if (d == 1)
+  #  yi = reshape (yi, sxi);
+  #endif
+
 endfunction
+
+%!shared b,c,pp,pp2,xi,abserr
+%! b = 1:3; c = ones(2); pp=mkpp(b,c);abserr = 1e-14;pp2=mkpp(b,[c;c],2);
+%! xi = [1.1 1.3 1.9 2.1];
+%!assert (ppval(pp,1.1), 1.1, abserr);
+%!assert (ppval(pp,2.1), 1.1, abserr);
+%!assert (ppval(pp,xi), [1.1 1.3 1.9 1.1], abserr);
+%!assert (ppval(pp,xi.'), [1.1 1.3 1.9 1.1].', abserr);
+%!assert (ppval(pp2,1.1), [1.1;1.1], abserr);
+%!assert (ppval(pp2,2.1), [1.1;1.1], abserr);
+%!assert (ppval(pp2,xi), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr);
+%!assert (ppval(pp2,xi'), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr);
+%!assert (size(ppval(pp2,[xi;xi])), [2 2 4]);

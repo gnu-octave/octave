@@ -52,7 +52,7 @@ function [errorcode, varargout] = common_size (varargin)
   endif
 
   ## Find scalar args.
-  nscal = cellfun (@numel, varargin) != 1;
+  nscal = cellfun ("numel", varargin) != 1;
 
   i = find (nscal, 1);
 
@@ -60,7 +60,7 @@ function [errorcode, varargout] = common_size (varargin)
     errorcode = 0;
     varargout = varargin;
   else
-    match = cellfun (@size_equal, varargin, varargin(i));
+    match = cellfun ("size_equal", varargin, varargin(i));
     if (any (nscal &! match))
       errorcode = 1;
       varargout = varargin;
@@ -78,3 +78,13 @@ function [errorcode, varargout] = common_size (varargin)
     endif
   endif
 endfunction
+
+%!error common_size ();
+
+%!test
+%! m = [1,2;3,4];
+%! [err, a, b, c] = common_size (m, 3, 5);
+%! assert (err, 0);
+%! assert (a, m);
+%! assert (b, [3,3;3,3]);
+%! assert (c, [5,5;5,5]);

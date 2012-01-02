@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -17,7 +18,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wblpdf (@var{x}, @var{scale}, @var{shape})
+## @deftypefn  {Function File} {} wblpdf (@var{x})
+## @deftypefnx {Function File} {} wblpdf (@var{x}, @var{scale})
+## @deftypefnx {Function File} {} wblpdf (@var{x}, @var{scale}, @var{shape})
 ## Compute the probability density function (PDF) at @var{x} of the
 ## Weibull distribution with scale parameter @var{scale} and shape
 ## parameter @var{shape} which is given by
@@ -27,57 +30,83 @@
 ## @ifnottex
 ##
 ## @example
-##    shape * scale^(-shape) * x^(shape-1) * exp(-(x/scale)^shape)
+##    shape * scale^(-shape) * x^(shape-1) * exp (-(x/scale)^shape)
 ## @end example
 ##
 ## @end ifnottex
 ## @noindent
 ## for @var{x} @geq{} 0.
+##
+## Default values are @var{scale} = 1, @var{shape} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Weibull distribution
 
-function pdf = wblpdf (x, scale, shape)
+function pdf = wblpdf (x, scale = 1, shape = 1)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
-  if (nargin < 3)
-    shape = 1;
-  endif
-
-  if (nargin < 2)
-    scale = 1;
-  endif
-
   if (!isscalar (scale) || !isscalar (shape))
     [retval, x, scale, shape] = common_size (x, scale, shape);
     if (retval > 0)
-      error ("wblpdf: X, SCALE and SHAPE must be of common size or scalar");
+      error ("wblpdf: X, SCALE, and SHAPE must be of common size or scalars");
     endif
   endif
 
-  pdf = NaN (size (x));
+  if (iscomplex (x) || iscomplex (scale) || iscomplex (shape))
+    error ("wblpdf: X, SCALE, and SHAPE must not be complex");
+  endif
+
+  if (isa (x, "single") || isa (scale, "single") || isa (shape, "single"))
+    pdf = NaN (size (x), "single");
+  else
+    pdf = NaN (size (x));
+  endif
+
   ok = ((scale > 0) & (scale < Inf) & (shape > 0) & (shape < Inf));
 
-  k = find ((x > -Inf) & (x <= 0) & ok);
-  if (any (k))
-    pdf(k) = 0;
-  endif
+  k = (x < 0) & ok;
+  pdf(k) = 0;
 
-  k = find ((x > 0) & (x < Inf) & ok);
-  if (any (k))
-    if (isscalar (scale) && isscalar (shape))
-      pdf(k) = (shape .* (scale .^ -shape)
-                .* (x(k) .^ (shape - 1))
-                .* exp(- (x(k) / scale) .^ shape));
-    else
-      pdf(k) = (shape(k) .* (scale(k) .^ -shape(k))
-                .* (x(k) .^ (shape(k) - 1))
-                .* exp(- (x(k) ./ scale(k)) .^ shape(k)));
-    endif
+  k = (x >= 0) & (x < Inf) & ok;
+  if (isscalar (scale) && isscalar (shape))
+    pdf(k) = (shape * (scale .^ -shape)
+              .* (x(k) .^ (shape - 1))
+              .* exp (- (x(k) / scale) .^ shape));
+  else
+    pdf(k) = (shape(k) .* (scale(k) .^ -shape(k))
+              .* (x(k) .^ (shape(k) - 1))
+              .* exp (- (x(k) ./ scale(k)) .^ shape(k)));
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 0.5 1 Inf];
+%! y = [0, exp(-x(2:4)), NaN];
+%!assert(wblpdf (x, ones(1,5), ones(1,5)), y);
+%!assert(wblpdf (x, 1, ones(1,5)), y);
+%!assert(wblpdf (x, ones(1,5), 1), y);
+%!assert(wblpdf (x, [0 NaN Inf 1 1], 1), [NaN NaN NaN y(4:5)]);
+%!assert(wblpdf (x, 1, [0 NaN Inf 1 1]), [NaN NaN NaN y(4:5)]);
+%!assert(wblpdf ([x, NaN], 1, 1), [y, NaN]);
+
+%% Test class of input preserved
+%!assert(wblpdf (single([x, NaN]), 1, 1), single([y, NaN]));
+%!assert(wblpdf ([x, NaN], single(1), 1), single([y, NaN]));
+%!assert(wblpdf ([x, NaN], 1, single(1)), single([y, NaN]));
+
+%% Test input validation
+%!error wblpdf ()
+%!error wblpdf (1,2,3,4)
+%!error wblpdf (ones(3),ones(2),ones(2))
+%!error wblpdf (ones(2),ones(3),ones(2))
+%!error wblpdf (ones(2),ones(2),ones(3))
+%!error wblpdf (i, 2, 2)
+%!error wblpdf (2, i, 2)
+%!error wblpdf (2, 2, i)
+

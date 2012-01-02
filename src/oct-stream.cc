@@ -40,8 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "str-vec.h"
 #include "quit.h"
+#include "singleton-cleanup.h"
+#include "str-vec.h"
 
 #include "error.h"
 #include "gripes.h"
@@ -1227,151 +1228,9 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
 
         if (c1 != EOF)
           {
-            if (c1 == 'N')
-              {
-                int c2 = is.get ();
+            is.putback (c1);
 
-                if (c2 != EOF)
-                  {
-                    if (c2 == 'A')
-                      {
-                        int c3 = is.get ();
-
-                        if (c3 != EOF)
-                          {
-                            is.putback (c3);
-
-                            if (isspace (c3) || ispunct (c3))
-                              ref = octave_NA;
-                            else
-                              {
-                                is.putback (c2);
-                                is.putback (c1);
-
-                                is >> ref;
-                              }
-                          }
-                        else
-                          {
-                            is.clear ();
-
-                            ref = octave_NA;
-                          }
-                      }
-                    else if (c2 == 'a')
-                      {
-                        int c3 = is.get ();
-
-                        if (c3 != EOF)
-                          {
-                            if (c3 == 'N')
-                              {
-                                int c4 = is.get ();
-
-                                if (c4 != EOF)
-                                  {
-                                    is.putback (c4);
-
-                                    if (isspace (c4) || ispunct (c4))
-                                      ref = octave_NaN;
-                                    else
-                                      {
-                                        is.putback (c3);
-                                        is.putback (c2);
-                                        is.putback (c1);
-
-                                        is >> ref;
-                                      }
-                                  }
-                                else
-                                  {
-                                    is.clear ();
-
-                                    ref = octave_NaN;
-                                  }
-                              }
-                            else
-                              {
-                                is.putback (c3);
-                                is.putback (c2);
-                                is.putback (c1);
-
-                                is >> ref;
-                              }
-                          }
-                      }
-                    else
-                      {
-                        is.putback (c2);
-                        is.putback (c1);
-
-                        is >> ref;
-                      }
-                  }
-              }
-            else if (c1 == 'I')
-              {
-                int c2 = is.get ();
-
-                if (c2 != EOF)
-                  {
-                    if (c2 == 'n')
-                      {
-                        int c3 = is.get ();
-
-                        if (c3 != EOF)
-                          {
-                            if (c3 == 'f')
-                              {
-                                int c4 = is.get ();
-
-                                if (c4 != EOF)
-                                  {
-                                    is.putback (c4);
-
-                                    if (isspace (c4) || ispunct (c4))
-                                      ref = octave_Inf;
-                                    else
-                                      {
-                                        is.putback (c3);
-                                        is.putback (c2);
-                                        is.putback (c1);
-
-                                        is >> ref;
-                                      }
-                                  }
-                                else
-                                  {
-                                    is.clear ();
-
-                                    ref = octave_Inf;
-                                  }
-                              }
-                            else
-                              {
-                                is.putback (c3);
-                                is.putback (c2);
-                                is.putback (c1);
-
-                                is >> ref;
-                              }
-                        }
-                      else
-                        {
-                          is.putback (c2);
-                          is.putback (c1);
-
-                          is >> ref;
-                        }
-                      }
-                  }
-              }
-            else
-              {
-                is.putback (c1);
-
-                is >> ref;
-              }
+            ref = octave_read_value<double> (is);
           }
       }
       break;
@@ -1521,7 +1380,9 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
     tmp[n++] = static_cast<char> (c); \
  \
   if (n > 0 && c == EOF) \
-    is.clear ()
+    is.clear (); \
+ \
+  tmp.resize (n)
 
 // For a `%s' format, skip initial whitespace and then read until the
 // next whitespace character or until WIDTH characters have been read.
@@ -2255,7 +2116,7 @@ octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
 
           octave_idx_type len = fmt_list.length ();
 
-          retval.resize (nconv+1, Matrix ());
+          retval.resize (nconv+2, Matrix ());
 
           const scanf_format_elt *elt = fmt_list.first ();
 
@@ -2284,6 +2145,9 @@ octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
             }
 
           retval(nconv) = num_values;
+
+          int err_num;
+          retval(nconv+1) = error (false, err_num);
 
           if (! quit)
             {
@@ -3002,37 +2866,59 @@ octave_stream::seek (long offset, int origin)
     {
       clearerr ();
 
+      // Find current position so we can return to it if needed.
+
       long orig_pos = rep->tell ();
 
-      status = rep->seek (offset, origin);
+      // Move to end of file.  If successful, find the offset of the end.
+
+      status = rep->seek (0, SEEK_END);
 
       if (status == 0)
         {
-          long save_pos = rep->tell ();
+          long eof_pos = rep->tell ();
 
-          rep->seek (0, SEEK_END);
-
-          long pos_eof = rep->tell ();
-
-          // I don't think save_pos can be less than zero, but we'll
-          // check anyway...
-
-          if (save_pos > pos_eof || save_pos < 0)
+          if (origin == SEEK_CUR)
             {
-              // Seek outside bounds of file.  Failure should leave
-              // position unchanged.
+              // Move back to original position, otherwise we will be
+              // seeking from the end of file which is probably not the
+              // original location.
+
+              rep->seek (orig_pos, SEEK_SET);
+            }
+
+          // Attempt to move to desired position; may be outside bounds
+          // of existing file.
+
+          status = rep->seek (offset, origin);
+
+          if (status == 0)
+            {
+              // Where are we after moving to desired position?
+
+              long desired_pos = rep->tell ();
+
+              // I don't think save_pos can be less than zero, but we'll
+              // check anyway...
+
+              if (desired_pos > eof_pos || desired_pos < 0)
+                {
+                  // Seek outside bounds of file.  Failure should leave
+                  // position unchanged.
+
+                  rep->seek (orig_pos, SEEK_SET);
+
+                  status = -1;
+                }
+            }
+          else
+            {
+              // Seeking to the desired position failed.  Move back to
+              // original position and return failure status.
 
               rep->seek (orig_pos, SEEK_SET);
 
               status = -1;
-            }
-          else
-            {
-              // Is it possible for this to fail?  We are just
-              // returning to a position after the first successful
-              // seek.
-
-              rep->seek (save_pos, SEEK_SET);
             }
         }
     }
@@ -4031,7 +3917,12 @@ octave_stream_list::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_stream_list ();
+    {
+      instance = new octave_stream_list ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {
@@ -4290,9 +4181,9 @@ octave_stream_list::do_get_info (int fid) const
     {
       retval.resize (3);
 
-      retval(0) = os.name ();
-      retval(1) = octave_stream::mode_as_string (os.mode ());
       retval(2) = oct_mach_info::float_format_as_string (os.float_format ());
+      retval(1) = octave_stream::mode_as_string (os.mode ());
+      retval(0) = os.name ();
     }
   else
     ::error ("invalid file id = %d", fid);

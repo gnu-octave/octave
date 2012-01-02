@@ -27,9 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse.h"
 #include "Array-util.h"
 
-// This source implements a general binary maping function for arrays.
-// The syntax is binmap<type> (a, b, f, [name]). type denotes the expected
-// return type of the operation. a, b, should be one of the 6 combinations:
+#include "bsxfun.h"
+
+// This source file implements a general binary maping function for
+// arrays. The syntax is binmap<type> (a, b, f, [name]). type denotes
+// the expected return type of the operation. a, b, should be one of
+// the 6 combinations:
+//
 // Array-Array
 // Array-scalar
 // scalar-Array
@@ -37,11 +41,12 @@ along with Octave; see the file COPYING.  If not, see
 // Sparse-scalar
 // scalar-Sparse
 //
-// If both operands are nonscalar, name must be supplied. It is used as the base for error message
-// when operands are nonconforming.
+// If both operands are nonscalar, name must be supplied. It is used
+// as the base for error message when operands are nonconforming.
 //
-// The operation needs not be homogeneous, i.e. a, b and the result may be of distinct types.
-// f can have any of the four signatures:
+// The operation needs not be homogeneous, i.e. a, b and the result
+// may be of distinct types. f can have any of the four signatures:
+//
 // U f (T, R)
 // U f (const T&, R)
 // U f (T, const R&)
@@ -49,7 +54,51 @@ along with Octave; see the file COPYING.  If not, see
 //
 // Additionally, f can be an arbitrary functor object.
 //
-// octave_quit() is called at appropriate places, hence the operation is breakable.
+// octave_quit() is called at appropriate places, hence the operation
+// is breakable.
+
+// The following template wrappers are provided for automatic bsxfun
+// calls (see the function signature for do_bsxfun_op).
+
+template<typename R, typename X, typename Y, typename F>
+class bsxfun_wrapper
+{
+private:
+  static F f;
+
+public:
+  static void
+  set_f (const F& f_in)
+  {
+    f = f_in;
+  }
+
+  static void
+  op_mm (size_t n, R* r, const X* x , const Y* y)
+  {
+    for (size_t i = 0; i < n; i++)
+      r[i] = f (x[i], y[i]);
+  }
+
+  static void
+  op_sm (size_t n, R* r, X x, const Y* y)
+  {
+    for (size_t i = 0; i < n; i++)
+      r[i] = f (x, y[i]);
+  }
+
+  static void
+  op_ms (size_t n , R* r, const X* x, Y y)
+  {
+    for (size_t i = 0; i < n; i++)
+      r[i] = f (x[i], y);
+  }
+};
+
+// Static init
+template<typename R, typename X, typename Y, typename F>
+F bsxfun_wrapper<R, X, Y, F>::f;
+
 
 // scalar-Array
 template <class U, class T, class R, class F>
@@ -118,12 +167,24 @@ template <class U, class T, class R, class F>
 Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
 {
+  dim_vector xad = xa.dims (), yad = ya.dims ();
   if (xa.numel () == 1)
     return binmap<U, T, R, F> (xa(0), ya, fcn);
   else if (ya.numel () == 1)
     return binmap<U, T, R, F> (xa, ya(0), fcn);
-  else if (xa.dims () != ya.dims ())
-    gripe_nonconformant (name, xa.dims (), ya.dims ());
+  else if (xad != yad)
+    {
+      if (is_valid_bsxfun (name, xad, yad))
+        {
+          bsxfun_wrapper<U, T, R, F>::set_f(fcn);
+          return do_bsxfun_op (xa, ya,
+                               bsxfun_wrapper<U, T, R, F>::op_mm,
+                               bsxfun_wrapper<U, T, R, F>::op_sm,
+                               bsxfun_wrapper<U, T, R, F>::op_ms);
+        }
+      else
+        gripe_nonconformant (name, xad, yad);
+    }
 
   octave_idx_type len = xa.numel ();
 
@@ -273,134 +334,134 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
                                           fcn, name));
 }
 
-// Overloads for function references.
+// Overloads for function pointers.
 
 // Signature (T, R)
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (&fcn) (T, R), const char *name)
-{ return binmap<U, T, R, U (&) (T, R)> (xa, ya, fcn, name); }
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, R), const char *name)
+{ return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const T& x, const Array<R>& ya, U (&fcn) (T, R))
-{ return binmap<U, T, R, U (&) (T, R)> (x, ya, fcn); }
+binmap (const T& x, const Array<R>& ya, U (*fcn) (T, R))
+{ return binmap<U, T, R, U (*) (T, R)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const R& y, U (&fcn) (T, R))
-{ return binmap<U, T, R, U (&) (T, R)> (xa, y, fcn); }
+binmap (const Array<T>& xa, const R& y, U (*fcn) (T, R))
+{ return binmap<U, T, R, U (*) (T, R)> (xa, y, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (&fcn) (T, R), const char *name)
-{ return binmap<U, T, R, U (&) (T, R)> (xa, ya, fcn, name); }
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, R), const char *name)
+{ return binmap<U, T, R, U (*) (T, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const T& x, const Sparse<R>& ya, U (&fcn) (T, R))
-{ return binmap<U, T, R, U (&) (T, R)> (x, ya, fcn); }
+binmap (const T& x, const Sparse<R>& ya, U (*fcn) (T, R))
+{ return binmap<U, T, R, U (*) (T, R)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const R& y, U (&fcn) (T, R))
-{ return binmap<U, T, R, U (&) (T, R)> (xa, y, fcn); }
+binmap (const Sparse<T>& xa, const R& y, U (*fcn) (T, R))
+{ return binmap<U, T, R, U (*) (T, R)> (xa, y, fcn); }
 
 // Signature (const T&, const R&)
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (&fcn) (const T&, const R&), const char *name)
-{ return binmap<U, T, R, U (&) (const T&, const R&)> (xa, ya, fcn, name); }
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, const R&), const char *name)
+{ return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const T& x, const Array<R>& ya, U (&fcn) (const T&, const R&))
-{ return binmap<U, T, R, U (&) (const T&, const R&)> (x, ya, fcn); }
+binmap (const T& x, const Array<R>& ya, U (*fcn) (const T&, const R&))
+{ return binmap<U, T, R, U (*) (const T&, const R&)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const R& y, U (&fcn) (const T&, const R&))
-{ return binmap<U, T, R, U (&) (const T&, const R&)> (xa, y, fcn); }
+binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, const R&))
+{ return binmap<U, T, R, U (*) (const T&, const R&)> (xa, y, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (&fcn) (const T&, const R&), const char *name)
-{ return binmap<U, T, R, U (&) (const T&, const R&)> (xa, ya, fcn, name); }
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, const R&), const char *name)
+{ return binmap<U, T, R, U (*) (const T&, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const T& x, const Sparse<R>& ya, U (&fcn) (const T&, const R&))
-{ return binmap<U, T, R, U (&) (const T&, const R&)> (x, ya, fcn); }
+binmap (const T& x, const Sparse<R>& ya, U (*fcn) (const T&, const R&))
+{ return binmap<U, T, R, U (*) (const T&, const R&)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const R& y, U (&fcn) (const T&, const R&))
-{ return binmap<U, T, R, U (&) (const T&, const R&)> (xa, y, fcn); }
+binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, const R&))
+{ return binmap<U, T, R, U (*) (const T&, const R&)> (xa, y, fcn); }
 
 // Signature (const T&, R)
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (&fcn) (const T&, R), const char *name)
-{ return binmap<U, T, R, U (&) (const T&, R)> (xa, ya, fcn, name); }
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (const T&, R), const char *name)
+{ return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const T& x, const Array<R>& ya, U (&fcn) (const T&, R))
-{ return binmap<U, T, R, U (&) (const T&, R)> (x, ya, fcn); }
+binmap (const T& x, const Array<R>& ya, U (*fcn) (const T&, R))
+{ return binmap<U, T, R, U (*) (const T&, R)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const R& y, U (&fcn) (const T&, R))
-{ return binmap<U, T, R, U (&) (const T&, R)> (xa, y, fcn); }
+binmap (const Array<T>& xa, const R& y, U (*fcn) (const T&, R))
+{ return binmap<U, T, R, U (*) (const T&, R)> (xa, y, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (&fcn) (const T&, R), const char *name)
-{ return binmap<U, T, R, U (&) (const T&, R)> (xa, ya, fcn, name); }
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (const T&, R), const char *name)
+{ return binmap<U, T, R, U (*) (const T&, R)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const T& x, const Sparse<R>& ya, U (&fcn) (const T&, R))
-{ return binmap<U, T, R, U (&) (const T&, R)> (x, ya, fcn); }
+binmap (const T& x, const Sparse<R>& ya, U (*fcn) (const T&, R))
+{ return binmap<U, T, R, U (*) (const T&, R)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const R& y, U (&fcn) (const T&, R))
-{ return binmap<U, T, R, U (&) (const T&, R)> (xa, y, fcn); }
+binmap (const Sparse<T>& xa, const R& y, U (*fcn) (const T&, R))
+{ return binmap<U, T, R, U (*) (const T&, R)> (xa, y, fcn); }
 
 // Signature (T, const R&)
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const Array<R>& ya, U (&fcn) (T, const R&), const char *name)
-{ return binmap<U, T, R, U (&) (T, const R&)> (xa, ya, fcn, name); }
+binmap (const Array<T>& xa, const Array<R>& ya, U (*fcn) (T, const R&), const char *name)
+{ return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const T& x, const Array<R>& ya, U (&fcn) (T, const R&))
-{ return binmap<U, T, R, U (&) (T, const R&)> (x, ya, fcn); }
+binmap (const T& x, const Array<R>& ya, U (*fcn) (T, const R&))
+{ return binmap<U, T, R, U (*) (T, const R&)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Array<U>
-binmap (const Array<T>& xa, const R& y, U (&fcn) (T, const R&))
-{ return binmap<U, T, R, U (&) (T, const R&)> (xa, y, fcn); }
+binmap (const Array<T>& xa, const R& y, U (*fcn) (T, const R&))
+{ return binmap<U, T, R, U (*) (T, const R&)> (xa, y, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (&fcn) (T, const R&), const char *name)
-{ return binmap<U, T, R, U (&) (T, const R&)> (xa, ya, fcn, name); }
+binmap (const Sparse<T>& xa, const Sparse<R>& ya, U (*fcn) (T, const R&), const char *name)
+{ return binmap<U, T, R, U (*) (T, const R&)> (xa, ya, fcn, name); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const T& x, const Sparse<R>& ya, U (&fcn) (T, const R&))
-{ return binmap<U, T, R, U (&) (T, const R&)> (x, ya, fcn); }
+binmap (const T& x, const Sparse<R>& ya, U (*fcn) (T, const R&))
+{ return binmap<U, T, R, U (*) (T, const R&)> (x, ya, fcn); }
 
 template <class U, class T, class R>
 inline Sparse<U>
-binmap (const Sparse<T>& xa, const R& y, U (&fcn) (T, const R&))
-{ return binmap<U, T, R, U (&) (T, const R&)> (xa, y, fcn); }
+binmap (const Sparse<T>& xa, const R& y, U (*fcn) (T, const R&))
+{ return binmap<U, T, R, U (*) (T, const R&)> (xa, y, fcn); }
 
 #endif

@@ -147,6 +147,12 @@ example,
 @end group
 @end example
 
+In scripts the two different string types can be distinguished if necessary
+by using @code{is_dq_string} and @code{is_sq_string}.
+
+@DOCSTRING(is_dq_string)
+
+@DOCSTRING(is_sq_string)
 
 @node Character Arrays
 @section Character Arrays
@@ -517,26 +523,26 @@ isalpha ("!Q@@WERT^Y&")
 
 @DOCSTRING(isalpha)
 
-@DOCSTRING(isascii)
-
-@DOCSTRING(iscntrl)
-
-@DOCSTRING(isdigit)
-
-@DOCSTRING(isgraph)
-
 @DOCSTRING(isletter)
 
 @DOCSTRING(islower)
 
-@DOCSTRING(isprint)
+@DOCSTRING(isupper)
+
+@DOCSTRING(isdigit)
+
+@DOCSTRING(isxdigit)
 
 @DOCSTRING(ispunct)
 
 @DOCSTRING(isspace)
 
-@DOCSTRING(isupper)
+@DOCSTRING(iscntrl)
 
-@DOCSTRING(isxdigit)
+@DOCSTRING(isgraph)
+
+@DOCSTRING(isprint)
+
+@DOCSTRING(isascii)
 
 @DOCSTRING(isstrprop)

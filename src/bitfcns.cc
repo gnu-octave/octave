@@ -410,10 +410,10 @@ DEFUN (bitshift, args, ,
 @deftypefn  {Built-in Function} {} bitshift (@var{a}, @var{k})\n\
 @deftypefnx {Built-in Function} {} bitshift (@var{a}, @var{k}, @var{n})\n\
 Return a @var{k} bit shift of @var{n}-digit unsigned\n\
-integers in @var{a}.  A positive @var{k} leads to a left shift.\n\
+integers in @var{a}.  A positive @var{k} leads to a left shift;\n\
 A negative value to a right shift.  If @var{n} is omitted it defaults\n\
 to log2(bitmax)+1.\n\
-@var{n} must be in the range [1,log2(bitmax)+1] usually [1,33]\n\
+@var{n} must be in the range [1,log2(bitmax)+1] usually [1,33].\n\
 \n\
 @example\n\
 @group\n\
@@ -428,8 +428,8 @@ bitshift (eye (3), 1)\n\
 bitshift (10, [-2, -1, 0, 1, 2])\n\
 @result{} 2   5  10  20  40\n\
 @c FIXME -- restore this example when third arg is allowed to be an array.\n\
-@c \n\
-@c \n\
+@c\n\
+@c\n\
 @c bitshift ([1, 10], 2, [3,4])\n\
 @c @result{} 4  8\n\
 @end group\n\
@@ -518,7 +518,7 @@ DEFUN (bitmax, args, ,
 @deftypefnx {Built-in Function} {} bitmax (\"double\")\n\
 @deftypefnx {Built-in Function} {} bitmax (\"single\")\n\
 Return the largest integer that can be represented within a floating point\n\
-value.  The default class is \"double\", but \"single\" is a valid option.  \n\
+value.  The default class is \"double\", but \"single\" is a valid option.\n\
 On IEEE-754 compatible systems, @code{bitmax} is @w{@math{2^{53} - 1}}.\n\
 @end deftypefn")
 {

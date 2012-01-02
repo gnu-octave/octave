@@ -37,6 +37,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Array-util.h"
 
+#include "bsxfun.h"
+
 // Provides some commonly repeated, basic loop templates.
 
 template <class R, class S>
@@ -167,6 +169,9 @@ inline void F (size_t n, bool *r, const X *x) throw () \
   for (size_t i = 0; i < n; i++) \
     r[i] OP logical_value (x[i]); \
 } \
+template <class X> \
+inline void F (size_t n, bool *r, X x) throw () \
+{ for (size_t i = 0; i < n; i++) r[i] OP x; }
 
 DEFMXBOOLOPEQ (mx_inline_and2, &=)
 DEFMXBOOLOPEQ (mx_inline_or2, |=)
@@ -204,6 +209,19 @@ mx_inline_any_negative (size_t n, const T* x) throw ()
   for (size_t i = 0; i < n; i++)
     {
       if (x[i] < 0)
+        return true;
+    }
+
+  return false;
+}
+
+template <class T>
+inline bool
+mx_inline_any_positive (size_t n, const T* x) throw ()
+{
+  for (size_t i = 0; i < n; i++)
+    {
+      if (x[i] > 0)
         return true;
     }
 
@@ -286,7 +304,10 @@ template <class R, class X, class Y> \
 inline void F (size_t n, R *r, X x, const Y *y) throw () \
 { for (size_t i = 0; i < n; i++) r[i] = FUN (x, y[i]); }
 
-DEFMXMAPPER2X (mx_inline_pow, std::pow)
+// Let the compiler decide which pow to use, whichever best matches the
+// arguments provided.
+using std::pow;
+DEFMXMAPPER2X (mx_inline_pow, pow)
 
 // Arbitrary function appliers. The function is a template parameter to enable
 // inlining.
@@ -336,11 +357,12 @@ do_mx_inplace_op (Array<R>& r,
   return r;
 }
 
-
 template <class R, class X, class Y>
 inline Array<R>
 do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
                  void (*op) (size_t, R *, const X *, const Y *) throw (),
+                 void (*op1) (size_t, R *, X, const Y *) throw (),
+                 void (*op2) (size_t, R *, const X *, Y) throw (),
                  const char *opname)
 {
   dim_vector dx = x.dims (), dy = y.dims ();
@@ -349,6 +371,10 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
       Array<R> r (dx);
       op (r.length (), r.fortran_vec (), x.data (), y.data ());
       return r;
+    }
+  else if (is_valid_bsxfun (opname, dx, dy))
+    {
+      return do_bsxfun_op (x, y, op, op1, op2);
     }
   else
     {
@@ -381,11 +407,18 @@ template <class R, class X>
 inline Array<R>&
 do_mm_inplace_op (Array<R>& r, const Array<X>& x,
                   void (*op) (size_t, R *, const X *) throw (),
+                  void (*op1) (size_t, R *, X) throw (),
                   const char *opname)
 {
   dim_vector dr = r.dims (), dx = x.dims ();
   if (dr == dx)
-    op (r.length (), r.fortran_vec (), x.data ());
+    {
+      op (r.length (), r.fortran_vec (), x.data ());
+    }
+  else if (is_valid_inplace_bsxfun (opname, dr, dx))
+    {
+      do_inplace_bsxfun_op (r, x, op, op1);
+    }
   else
     gripe_nonconformant (opname, dr, dx);
   return r;

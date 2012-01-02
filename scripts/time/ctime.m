@@ -26,28 +26,29 @@
 ## @example
 ## @group
 ## ctime (time ())
-##      @result{} "Mon Feb 17 01:15:06 1997\n"
+##      @result{} "Mon Feb 17 01:15:06 1997"
 ## @end group
 ## @end example
+## @seealso{asctime, time, localtime}
 ## @end deftypefn
 
 ## Author: jwe
 
 function retval = ctime (t)
 
-  if (nargin == 1)
-    retval = asctime (localtime (t));
-  else
+  if (nargin != 1)
     print_usage ();
   endif
 
+  retval = asctime (localtime (t));
+
 endfunction
+
 
 %!test
 %! t = time ();
 %! assert(strcmp (asctime (localtime (t)), ctime (t)));
 
 %!error ctime ();
-
 %!error ctime (1, 2);
 

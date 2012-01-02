@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} clabel (@var{c}, @var{h})
 ## @deftypefnx {Function File} {} clabel (@dots{}, @var{prop}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} clabel (@dots{})
-## Adds labels to the contours of a contour plot.  The contour plot is specified
+## Add labels to the contours of a contour plot.  The contour plot is specified
 ## by the contour matrix @var{c} and optionally the contourgroup object @var{h}
 ## that are returned by @code{contour}, @code{contourf} and @code{contour3}.
 ## The contour labels are rotated and placed in the contour itself.
@@ -39,9 +39,10 @@
 ## on a contour (in points) to be specified.  The default is 144 points, or 2
 ## inches.
 ##
-## The returned value @var{h} is the set of text object that represent the
-## contour labels.  The "userdata" property of the text objects contains the
-## numerical value of the contour label.
+## The optional return value @var{h} is a vector of graphics handles to
+## the text objects representing each label.  
+## The "userdata" property of the text objects contains the numerical value of
+## the contour label.
 ##
 ## An example of the use of @code{clabel} is
 ##
@@ -128,12 +129,14 @@ function retval = clabel (c, varargin)
   endif
 endfunction
 
-%!demo
-%! clf
-%! [c, h] = contour (peaks(), -4 : 6);
-%! clabel (c, h, -4 : 2 : 6, 'fontsize', 12);
 
 %!demo
 %! clf
-%! [c, h] = contourf (peaks(), -7 : 6);
-%! clabel (c, h, -6 : 2 : 6, 'fontsize', 12);
+%! [c, h] = contour (peaks(), -4:6);
+%! clabel (c, h, -4:2:6, "fontsize", 12);
+
+%!demo
+%! clf
+%! [c, h] = contourf (peaks(), -7:6);
+%! clabel (c, h, -6:2:6, "fontsize", 12);
+

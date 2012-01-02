@@ -26,7 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <ctime>
-
+#if defined (HAVE_UNORDERED_MAP)
+#include <unordered_map>
+#elif defined (HAVE_TR1_UNORDERED_MAP)
+#include <tr1/unordered_map>
+#endif
 #include <string>
 
 #include "f77-fcn.h"
@@ -177,20 +181,17 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
                 octave_idx_type base = NINTbig (r.base ());
                 octave_idx_type incr = NINTbig (r.inc ());
-                octave_idx_type lim = NINTbig (r.limit ());
 
-                if (base < 0 || lim < 0)
-                  error ("%s: all dimensions must be positive", fcn);
-                else
+                for (octave_idx_type i = 0; i < n; i++)
                   {
-                    for (octave_idx_type i = 0; i < n; i++)
-                      {
-                        dims(i) = base;
-                        base += incr;
-                      }
-
-                    goto gen_matrix;
+                    //Negative dimensions are treated as zero for Matlab
+                    //compatibility
+                    dims(i) = base >= 0 ? base : 0;
+                    base += incr;
                   }
+
+                goto gen_matrix;
+
               }
             else
               error ("%s: all elements of range must be integers",
@@ -208,15 +209,10 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
                 for (octave_idx_type i = 0; i < len; i++)
                   {
+                    //Negative dimensions are treated as zero for Matlab
+                    //compatibility
                     octave_idx_type elt = iv(i);
-
-                    if (elt < 0)
-                      {
-                        error ("%s: all dimensions must be positive", fcn);
-                        goto done;
-                      }
-
-                    dims(i) = iv(i);
+                    dims(i) = elt >=0 ? elt : 0;
                   }
 
                 goto gen_matrix;
@@ -278,13 +274,14 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
             for (int i = 0; i < nargin; i++)
               {
-                dims(i) = args(idx+i).int_value ();
-
+                octave_idx_type elt = args(idx+i).int_value ();
                 if (error_state)
                   {
                     error ("%s: expecting integer arguments", fcn);
                     goto done;
                   }
+                //Negative is zero for Matlab compatibility
+                dims(i) = elt >= 0 ? elt : 0;
               }
 
             goto gen_matrix;
@@ -326,8 +323,9 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
 DEFUN_DLD (rand, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} rand (@var{x})\n\
-@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} rand (@var{n})\n\
+@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} rand ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} rand (\"state\")\n\
 @deftypefnx {Loadable Function} {} rand (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rand (\"state\", \"reset\")\n\
@@ -359,13 +357,13 @@ length @leq{} 625 for @var{v}.  This new state will be a hash based on the\n\
 value of @var{v}, not @var{v} itself.\n\
 \n\
 By default, the generator is initialized from @code{/dev/urandom} if it is\n\
-available, otherwise from CPU time, wall clock time and the current\n\
+available, otherwise from CPU time, wall clock time, and the current\n\
 fraction of a second.\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
 Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and\n\
 T. Nishimura,\n\
-@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform \n\
+@cite{Mersenne Twister: A 623-dimensionally equidistributed uniform\n\
 pseudorandom number generator}, ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, pp. 3-30, January 1998,\n\
 @url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\
@@ -490,8 +488,9 @@ static std::string current_distribution = octave_rand::distribution ();
 
 DEFUN_DLD (randn, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} randn (@var{x})\n\
-@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} randn (@var{n})\n\
+@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} randn ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} randn (\"state\")\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", \"reset\")\n\
@@ -555,8 +554,9 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN_DLD (rande, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} rande (@var{x})\n\
-@deftypefnx {Loadable Function} {} rande (@var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} rande (@var{n})\n\
+@deftypefnx {Loadable Function} {} rande (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} rande ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} rande (\"state\")\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rande (\"state\", \"reset\")\n\
@@ -621,8 +621,9 @@ J. Statistical Software, vol 5, 2000,\n\
 
 DEFUN_DLD (randg, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} randg (@var{a}, @var{x})\n\
-@deftypefnx {Loadable Function} {} randg (@var{a}, @var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} randg (@var{n})\n\
+@deftypefnx {Loadable Function} {} randg (@var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} randg ([@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} randg (\"state\")\n\
 @deftypefnx {Loadable Function} {} randg (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randg (\"state\", \"reset\")\n\
@@ -663,7 +664,7 @@ r = a * randg (n)\n\
 r = 2 * randg (df / 2)\n\
 @end example\n\
 \n\
-@item @code{t(df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
+@item @code{t (df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
 \n\
 @example\n\
 r = randn () / sqrt (2 * randg (df / 2) / df)\n\
@@ -877,8 +878,9 @@ r = r / sum (r)\n\
 
 DEFUN_DLD (randp, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} randp (@var{l}, @var{x})\n\
-@deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m})\n\
+@deftypefn  {Loadable Function} {} randp (@var{l}, @var{n})\n\
+@deftypefnx {Loadable Function} {} randp (@var{l}, @var{n}, @var{m}, @dots{})\n\
+@deftypefnx {Loadable Function} {} randp (@var{l}, [@var{n} @var{m} @dots{}])\n\
 @deftypefnx {Loadable Function} {@var{v} =} randp (\"state\")\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randp (\"state\", \"reset\")\n\
@@ -1021,13 +1023,21 @@ DEFUN_DLD (randperm, args, ,
 @deftypefn  {Loadable Function} {} randperm (@var{n})\n\
 @deftypefnx {Loadable Function} {} randperm (@var{n}, @var{m})\n\
 Return a row vector containing a random permutation of @code{1:@var{n}}.\n\
-If @var{m} is supplied, return @var{m} permutations,\n\
-one in each row of an @nospell{NxM} matrix.  The complexity is O(M*N) in both\n\
-time and memory.  The randomization is performed using rand().\n\
-All permutations are equally likely.\n\
+If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
+replacement from @code{1:@var{n}}.  The complexity is O(@var{n}) in\n\
+memory and O(@var{m}) in time, unless @var{m} < @var{n}/5, in which case\n\
+O(@var{m}) memory is used as well.  The randomization is performed using\n\
+rand(). All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {
+
+#ifdef USE_UNORDERED_MAP_WITH_TR1
+using std::tr1::unordered_map;
+#else
+using std::unordered_map;
+#endif
+
   int nargin = args.length ();
   octave_value retval;
 
@@ -1035,54 +1045,75 @@ All permutations are equally likely.\n\
     {
       octave_idx_type n, m;
 
+      n = args(0).idx_type_value (true);
+
       if (nargin == 2)
         m = args(1).idx_type_value (true);
       else
-        m = 1;
-
-      n = args(0).idx_type_value (true);
+        m = n;
 
       if (m < 0 || n < 0)
         error ("randperm: M and N must be non-negative");
 
+      if (m > n)
+        error ("randperm: M must be less than or equal to N");
+
+      // Quick and dirty heuristic to decide if we allocate or not the
+      // whole vector for tracking the truncated shuffle.
+      bool short_shuffle = m < n/5 && m < 1e5;
+
       if (! error_state)
         {
           // Generate random numbers.
-          NDArray r = octave_rand::nd_array (dim_vector (m, n));
-
-          // Create transposed to allow faster access.
-          Array<octave_idx_type> idx (dim_vector (n, m));
-
+          NDArray r = octave_rand::nd_array (dim_vector (1, m));
           double *rvec = r.fortran_vec ();
 
+          octave_idx_type idx_len = short_shuffle ? m : n;
+          Array<octave_idx_type> idx (dim_vector (1, idx_len));
           octave_idx_type *ivec = idx.fortran_vec ();
 
-          // Perform the Knuth shuffle.
-          for (octave_idx_type j = 0; j < m; j++)
-            {
-              for (octave_idx_type i = 0; i < n; i++)
-                ivec[i] = i;
+          for (octave_idx_type i = 0; i < idx_len; i++)
+            ivec[i] = i;
 
-              for (octave_idx_type i = 0; i < n; i++)
+          if (short_shuffle)
+            {
+              unordered_map<octave_idx_type, octave_idx_type> map (m);
+
+              // Perform the Knuth shuffle only keeping track of moved
+              // entries in the map
+              for (octave_idx_type i = 0; i < m; i++)
                 {
-                  octave_idx_type k = i + gnulib::floor (rvec[i] * (n - i));
+                  octave_idx_type k = i +
+                    gnulib::floor (rvec[i] * (n - i));
+
+                  if (map.find(k) == map.end())
+                    {
+                      map[k] = ivec[i];
+                      ivec[i] = k;
+                    }
+                  else
+                    std::swap (ivec[i], map[k]);
+
+                }
+            }
+          else
+            {
+
+              // Perform the Knuth shuffle of the first m entries
+              for (octave_idx_type i = 0; i < m; i++)
+                {
+                  octave_idx_type k = i +
+                    gnulib::floor (rvec[i] * (n - i));
                   std::swap (ivec[i], ivec[k]);
                 }
-
-              ivec += n;
-              rvec += n;
             }
 
-          // Transpose.
-          idx = idx.transpose ();
-
-          // Re-fetch the pointers.
-          ivec = idx.fortran_vec ();
-          rvec = r.fortran_vec ();
-
           // Convert to doubles, reusing r.
-          for (octave_idx_type i = 0, l = m*n; i < l; i++)
+          for (octave_idx_type i = 0; i < m; i++)
             rvec[i] = ivec[i] + 1;
+
+          if (m < n)
+            idx.resize (dim_vector (1, m));
 
           // Now create an array object with a cached idx_vector.
           retval = new octave_matrix (r, idx_vector (idx));
@@ -1095,6 +1126,6 @@ All permutations are equally likely.\n\
 }
 
 /*
-%!assert(sort(randperm(20)),1:20)
-%!assert(sort(randperm(20,50),2),repmat(1:20,50,1))
+%!assert(sort (randperm (20)),1:20)
+%!assert(length (randperm (20,10)), 10)
 */

@@ -31,7 +31,7 @@ function h = __errplot__ (fstr, p, varargin)
     print_usage ();
   endif
 
-  [fmt, key] = __pltopt__ ("__errplot__", fstr);
+  [fmt, valid] = __pltopt__ ("__errplot__", fstr);
 
   [len, nplots] = size (varargin{1});
   h = [];
@@ -74,7 +74,7 @@ function h = __errplot__ (fstr, p, varargin)
     switch (numel(varargin))
       case 2
         ydata = varargin{1}(:,i);
-        xdata = 1:numel(ydata);
+        xdata = 1:numel (ydata);
         if (strcmp (ifmt, "xerr") || strcmp (ifmt, "box"))
           xldata = varargin{2}(:,i);
           xudata = ldata;
@@ -86,12 +86,12 @@ function h = __errplot__ (fstr, p, varargin)
           xldata = [];
           xudata = [];
         else
-          error ("errorbar: 2 column errorplot is only valid or xerr or yerr");
+          error ("errorbar: 2 column errorplot is only valid for xerr or yerr");
         endif
       case 3
         if (strcmp (ifmt, "boxxy") || strcmp (ifmt, "xyerr"))
           ydata = varargin{1}(:,i);
-          xdata = 1:numel(ydata);
+          xdata = 1:numel (ydata);
           xldata = varargin{2}(:,i);
           xudata = xldata;
           ldata = varargin{3}(:,i);
@@ -146,7 +146,7 @@ function h = __errplot__ (fstr, p, varargin)
           error ("errorbar: error plot with 6 columns only valid for boxxy and xyerr");
         endif
       otherwise
-        error ("errorbar: error plot requires 2, 3, 4 or 6 arguments");
+        error ("errorbar: error plot requires 2, 3, 4, or 6 arguments");
     endswitch
 
     addproperty ("xdata", hg, "data", xdata(:));
@@ -192,6 +192,34 @@ function h = __errplot__ (fstr, p, varargin)
     update_data (hg, [], hl);
 
   endfor
+
+  ## Process legend key
+  if (! isempty (fmt.key))    
+    hlegend = [];
+    fkids = get (gcf(), "children");
+    for i = 1 : numel (fkids)
+      if (ishandle (fkids(i)) && strcmp (get (fkids(i), "type"), "axes")
+          && (strcmp (get (fkids(i), "tag"), "legend")))
+        udata = get (fkids(i), "userdata");
+        if (! isempty (intersect (udata.handle, gca ())))
+          hlegend = fkids (i);
+          break;
+        endif
+      endif
+    endfor
+
+    if (isempty (hlegend))
+      hlgnd = [];
+      tlgnd = {};
+    else
+      [hlgnd, tlgnd] = __getlegenddata__ (hlegend);
+    endif
+ 
+    hlgnd(end+1) = hg;
+    tlgnd(end+1) = fmt.key;
+
+    legend (gca(), hlgnd, tlgnd);
+  end 
 
 endfunction
 
@@ -259,8 +287,10 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
   else
     error ("errorbar: valid error bar types are xerr, yerr, boxxy, and xyerr");
   endif
+
   xdata = xdata.'(:);
   ydata = ydata.'(:);
+
 endfunction
 
 function update_props (hg, dummy, hl)

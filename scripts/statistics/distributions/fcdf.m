@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -18,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} fcdf (@var{x}, @var{m}, @var{n})
-## For each element of @var{x}, compute the CDF at @var{x} of the F
-## distribution with @var{m} and @var{n} degrees of freedom, i.e.,
-## PROB (F (@var{m}, @var{n}) @leq{} @var{x}).
+## For each element of @var{x}, compute the cumulative distribution function
+## (CDF) at @var{x} of the F distribution with @var{m} and @var{n} degrees of
+## freedom.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -35,31 +36,61 @@ function cdf = fcdf (x, m, n)
   if (!isscalar (m) || !isscalar (n))
     [retval, x, m, n] = common_size (x, m, n);
     if (retval > 0)
-      error ("fcdf: X, M and N must be of common size or scalar");
+      error ("fcdf: X, M, and N must be of common size or scalars");
     endif
   endif
 
-  sz = size (x);
-  cdf = zeros (sz);
-
-  k = find (!(m > 0) | !(n > 0) | isnan (x));
-  if (any (k))
-    cdf(k) = NaN;
+  if (iscomplex (x) || iscomplex (m) || iscomplex (n))
+    error ("fcdf: X, M, and N must not be complex");
   endif
 
-  k = find ((x == Inf) & (m > 0) & (n > 0));
-  if (any (k))
-    cdf(k) = 1;
+  if (isa (x, "single") || isa (m, "single") || isa (n, "single"))
+    cdf = zeros (size (x), "single");
+  else
+    cdf = zeros (size (x));
   endif
 
-  k = find ((x > 0) & (x < Inf) & (m > 0) & (n > 0));
-  if (any (k))
-    if (isscalar (m) && isscalar (n))
-      cdf(k) = 1 - betainc (1 ./ (1 + m .* x(k) ./ n), n / 2, m / 2);
-    else
-      cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k) / 2,
-                            m(k) / 2);
-    endif
+  k = isnan (x) | !(m > 0) | !(m < Inf) | !(n > 0) | !(n < Inf);
+  cdf(k) = NaN;
+
+  k = (x == Inf) & (m > 0) & (m < Inf) & (n > 0) & (n < Inf);
+  cdf(k) = 1;
+
+  k = (x > 0) & (x < Inf) & (m > 0) & (m < Inf) & (n > 0) & (n < Inf);
+  if (isscalar (m) && isscalar (n))
+    cdf(k) = 1 - betainc (1 ./ (1 + m * x(k) / n), n/2, m/2);
+  else
+    cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k)/2, m(k)/2);
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 0.5 1 2 Inf];
+%! y = [0 0 1/3 1/2 2/3 1];
+%!assert(fcdf (x, 2*ones(1,6), 2*ones(1,6)), y, eps);
+%!assert(fcdf (x, 2, 2*ones(1,6)), y, eps);
+%!assert(fcdf (x, 2*ones(1,6), 2), y, eps);
+%!assert(fcdf (x, [0 NaN Inf 2 2 2], 2), [NaN NaN NaN y(4:6)], eps);
+%!assert(fcdf (x, 2, [0 NaN Inf 2 2 2]), [NaN NaN NaN y(4:6)], eps);
+%!assert(fcdf ([x(1:2) NaN x(4:6)], 2, 2), [y(1:2) NaN y(4:6)], eps);
+
+%% Test class of input preserved
+%!assert(fcdf ([x, NaN], 2, 2), [y, NaN], eps);
+%!assert(fcdf (single([x, NaN]), 2, 2), single([y, NaN]), eps("single"));
+%!assert(fcdf ([x, NaN], single(2), 2), single([y, NaN]), eps("single"));
+%!assert(fcdf ([x, NaN], 2, single(2)), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error fcdf ()
+%!error fcdf (1)
+%!error fcdf (1,2)
+%!error fcdf (1,2,3,4)
+%!error fcdf (ones(3),ones(2),ones(2))
+%!error fcdf (ones(2),ones(3),ones(2))
+%!error fcdf (ones(2),ones(2),ones(3))
+%!error fcdf (i, 2, 2)
+%!error fcdf (2, i, 2)
+%!error fcdf (2, 2, i)
+

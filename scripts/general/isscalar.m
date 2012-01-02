@@ -26,31 +26,29 @@
 
 function retval = isscalar (x)
 
-  if (nargin == 1)
-    retval = numel (x) == 1;
-  else
+  if (nargin != 1)
     print_usage ();
   endif
 
+  retval = numel (x) == 1;
+
 endfunction
 
-%!assert(isscalar (1));
-%!assert(!(isscalar ([1, 2])));
-%!assert(!(isscalar ([])));
-%!assert(!(isscalar ([1, 2; 3, 4])));
 
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((isscalar ("t")));
+%!assert (isscalar (1))
+%!assert (isscalar ([1, 2]), false)
+%!assert (isscalar ([]), false)
+%!assert (isscalar ([1, 2; 3, 4]), false)
 
-%!assert(!(isscalar ("test")));
-%!assert(!(isscalar (["test"; "ing"])));
+%!assert (isscalar ("t"))
+%!assert (isscalar ("test"), false)
+%!assert (isscalar (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert((isscalar (s)));
+%! assert (isscalar (s));
 
 %% Test input validation
-%!error isscalar ();
-%!error isscalar (1, 2);
+%!error isscalar ()
+%!error isscalar (1, 2)
 

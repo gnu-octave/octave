@@ -20,7 +20,8 @@
 ## public domain.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} fail (@var{code}, @var{pattern})
+## @deftypefn  {Function File} {} fail (@var{code})
+## @deftypefnx {Function File} {} fail (@var{code}, @var{pattern})
 ## @deftypefnx {Function File} {} fail (@var{code}, 'warning', @var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
@@ -45,7 +46,7 @@
 ## Called with three arguments, the behavior is similar to
 ## @code{fail(@var{code}, @var{pattern})}, but produces an error if no
 ## warning is given during code execution or if the code fails.
-##
+## @seealso{assert}
 ## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
@@ -128,15 +129,16 @@ function ret = fail (code, pattern, warning_pattern)
 
 endfunction
 
-%!fail ('[1,2]*[2,3]','nonconformant')
-%!fail ("fail('[1,2]*[2;3]','nonconformant')","expected error <nonconformant> but got none")
-%!fail ("fail('[1,2]*[2,3]','usage:')","expected error <usage:>\nbut got.*nonconformant")
-%!fail ("warning('test warning')",'warning','test warning');
 
-%!# fail ("warning('next test')",'warning','next test');  ## only allowed one warning test?!?
+%!fail ('[1,2]*[2,3]', 'nonconformant')
+%!fail ("fail('[1,2]*[2;3]', 'nonconformant')", "expected error <nonconformant> but got none")
+%!fail ("fail('[1,2]*[2,3]','usage:')", "expected error <usage:>\nbut got.*nonconformant")
+%!fail ("warning('test warning')", 'warning','test warning');
 
-## Comment out the following tests if you don't want to see what
-## errors look like
-% !fail ('a*[2;3]', 'nonconformant')
-% !fail ('a*[2,3]', 'usage:')
-% !fail ("warning('warning failure')", 'warning', 'success')
+##% !fail ("warning('next test')",'warning','next test');  ## only allowed one warning test?!?
+
+%% Test that fail() itself will generate an error
+%!error fail ("1");
+%!error <undefined> fail ('a*[2;3]', 'nonconformant')
+%!error <expected error>  fail ('a*[2,3]', 'usage:')
+%!error <warning failure> fail ("warning('warning failure')", 'warning', 'success')

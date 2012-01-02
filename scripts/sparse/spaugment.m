@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{s} =} spaugment (@var{A}, @var{c})
-## Creates the augmented matrix of @var{A}.  This is given by
+## Create the augmented matrix of @var{A}.  This is given by
 ##
 ## @example
 ## @group

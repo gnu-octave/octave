@@ -81,3 +81,7 @@ endfunction
 %!demo
 %! c = {1, 2, {31, 32}};
 %! celldisp(c, "b")
+
+%!error celldisp ();
+%!error celldisp ({}, "name", 1);
+%!error celldisp (1);

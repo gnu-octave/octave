@@ -20,10 +20,10 @@
 ## @deftypefn {Function File} {} wilkinson (@var{n})
 ## Return the Wilkinson matrix of order @var{n}.  Wilkinson matrices are
 ## symmetric and tridiagonal with pairs of nearly, but not exactly, equal
-## eigenvalues.
+## eigenvalues.  They are useful in testing the behavior and performance
+## of eigenvalue solvers.
 ##
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhilb, toeplitz,
-##          hadamard, rosser, compan, pascal}
+## @seealso{rosser, eig}
 ## @end deftypefn
 
 ## Author: Peter Ekberg
@@ -35,8 +35,8 @@ function retval = wilkinson (n)
     print_usage ();
   endif
 
-  if (! (isscalar (n) && (n == fix (n)) && n > 0))
-    error ("wilkinson: N must be an integer greater than 0");
+  if (! (isscalar (n) && n >= 0 && (n == fix (n))))
+    error ("wilkinson: N must be a non-negative integer");
   endif
 
   side = ones (n-1, 1);
@@ -45,9 +45,17 @@ function retval = wilkinson (n)
 
 endfunction
 
-%!assert (wilkinson(1), [])
-%!assert (wilkinson(2), [0.5,1;1,0.5])
-%!assert (wilkinson(3), [1,1,0;1,0,1;0,1,1])
-%!assert (wilkinson(4), [1.5,1,0,0;1,0.5,1,0;0,1,0.5,1;0,0,1,1.5])
-%!error (wilkinson())
-%!error (wilkinson(1,2))
+
+%!assert (wilkinson (0), [])
+%!assert (wilkinson (1), 0)
+%!assert (wilkinson (2), [0.5,1;1,0.5])
+%!assert (wilkinson (3), [1,1,0;1,0,1;0,1,1])
+%!assert (wilkinson (4), [1.5,1,0,0;1,0.5,1,0;0,1,0.5,1;0,0,1,1.5])
+
+%% Test input validation
+%!error wilkinson ()
+%!error wilkinson (1,2)
+%!error <N must be a non-negative integer> wilkinson (ones (2))
+%!error <N must be a non-negative integer> wilkinson (-1)
+%!error <N must be a non-negative integer> wilkinson (1.5)
+

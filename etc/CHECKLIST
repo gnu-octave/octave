@@ -1,0 +1,13 @@
+Things to do before making a release:
+
+  * Update the version number and release date in configure.ac.
+
+  * Update the NEWS file.
+
+  * Update the NEWS-<VERSION>.html, index.in, news.in, and download.in
+    files for the web site.
+
+  * Copy tarballs to ftp.gnu.org.
+
+  * Post a release announcement to the help@octave.org and
+    info-gnu@gnu.org lists.

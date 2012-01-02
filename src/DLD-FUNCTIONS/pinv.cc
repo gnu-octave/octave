@@ -41,9 +41,9 @@ DEFUN_DLD (pinv, args, ,
 @deftypefn  {Loadable Function} {} pinv (@var{x})\n\
 @deftypefnx {Loadable Function} {} pinv (@var{x}, @var{tol})\n\
 Return the pseudoinverse of @var{x}.  Singular values less than\n\
-@var{tol} are ignored.  \n\
+@var{tol} are ignored.\n\
 \n\
-If the second argument is omitted, it is assumed that\n\
+If the second argument is omitted, it is taken to be\n\
 \n\
 @example\n\
 tol = max (size (@var{x})) * sigma_max (@var{x}) * eps,\n\
@@ -169,3 +169,23 @@ where @code{sigma_max (@var{x})} is the maximal singular value of @var{x}.\n\
 
   return retval;
 }
+
+/*
+%!shared a, b, tol, hitol, d, u, x, y
+%! a = reshape (rand*[1:16], 4, 4);   ## Rank 2 matrix
+%! b = pinv (a);
+%! tol = 1e-14;
+%! hitol = 15*sqrt(eps);
+%! d = diag ([rand, rand, hitol, hitol]);
+%! u = rand (4);                      ## Could be singular by freak accident
+%! x = inv (u)*d*u;
+%! y = pinv (x, sqrt(eps));
+%!assert(a*b*a, a, tol);
+%!assert(b*a*b, b, tol);
+%!assert((b*a)', b*a, tol);
+%!assert((a*b)', a*b, tol);
+%!assert(x*y*x, x, -hitol);
+%!assert(y*x*y, y, -hitol);
+%!assert((x*y)', x*y, hitol);
+%!assert((y*x)', y*x, hitol);
+*/

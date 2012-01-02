@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-stat.h"
 #include "oct-env.h"
 #include "pathsearch.h"
+#include "singleton-cleanup.h"
 
 #include "defaults.h"
 #include "defun.h"
@@ -290,7 +291,12 @@ load_path::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new load_path ();
+    {
+      instance = new load_path ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {
@@ -1956,7 +1962,7 @@ DEFUN (genpath, args, ,
 @deftypefn  {Built-in Function} {} genpath (@var{dir})\n\
 @deftypefnx {Built-in Function} {} genpath (@var{dir}, @var{skip}, @dots{})\n\
 Return a path constructed from @var{dir} and all its subdirectories.\n\
-If additional string parameters are given, the resulting path will \n\
+If additional string parameters are given, the resulting path will\n\
 exclude directories with those names.\n\
 @end deftypefn")
 {
@@ -2037,7 +2043,7 @@ Return the command line path variable.\n\
 DEFUN (restoredefaultpath, , ,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} restoredefaultpath (@dots{})\n\
-Restore Octave's path to it's initial state at startup.\n\
+Restore Octave's path to its initial state at startup.\n\
 \n\
 @seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
@@ -2122,8 +2128,8 @@ DEFUN (addpath, args, nargout,
 @deftypefn  {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
 Add @var{dir1}, @dots{} to the current function search path.  If\n\
-@var{option} is @samp{\"-begin\"} or 0 (the default), prepend the\n\
-directory name to the current path.  If @var{option} is @samp{\"-end\"}\n\
+@var{option} is \"-begin\" or 0 (the default), prepend the\n\
+directory name to the current path.  If @var{option} is \"-end\"\n\
 or 1, append the directory name to the current path.\n\
 Directories added to the path must exist.\n\
 \n\

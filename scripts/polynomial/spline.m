@@ -20,23 +20,22 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{pp} =} spline (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
+## Return the cubic spline interpolant of points @var{x} and @var{y}.
+## 
+## When called with two arguments, return the piecewise polynomial @var{pp}
+## that may be used with @code{ppval} to evaluate the polynomial at specific
+## points.  When called with a third input argument, @code{spline} evaluates
+## the spline at the points @var{xi}.  The third calling form @code{spline
+## (@var{x}, @var{y}, @var{xi})} is equivalent to @code{ppval (spline
+## (@var{x}, @var{y}), @var{xi})}.
 ##
-## Return the cubic spline interpolant of @var{y} at points @var{x}.
-## If called with two arguments, @code{spline} returns the piecewise
-## polynomial @var{pp} that may later be used with @code{ppval} to
-## evaluate the polynomial at specific points.
-## If called with a third input argument, @code{spline} evaluates the
-## spline at the points @var{xi}.  There is an equivalence
-## between @code{ppval (spline (@var{x}, @var{y}), @var{xi})} and
-## @code{spline (@var{x}, @var{y}, @var{xi})}.
-##
-## The variable @var{x} must be a vector of length @var{n}, and @var{y}
-## can be either a vector or array.  In the case where @var{y} is a
-## vector, it can have a length of either @var{n} or @code{@var{n} + 2}.
-## If the length of @var{y} is @var{n}, then the 'not-a-knot' end
-## condition is used.  If the length of @var{y} is @code{@var{n} + 2},
-## then the first and last values of the vector @var{y} are the values
-## of the first derivative of the cubic spline at the end-points.
+## The variable @var{x} must be a vector of length @var{n}.  @var{y} can be
+## either a vector or array.  If @var{y} is a vector it must have a length of
+## either @var{n} or @code{@var{n} + 2}.  If the length of @var{y} is
+## @var{n}, then the "not-a-knot" end condition is used.  If the length of
+## @var{y} is @code{@var{n} + 2}, then the first and last values of the
+## vector @var{y} are the values of the first derivative of the cubic spline
+## at the endpoints.
 ##
 ## If @var{y} is an array, then the size of @var{y} must have the form
 ## @tex
@@ -52,7 +51,7 @@
 ## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n} + 2]}.
 ## @end ifnottex
-## The array is then reshaped internally to a matrix where the leading
+## The array is reshaped internally to a matrix where the leading
 ## dimension is given by
 ## @tex
 ## $$s_1 s_2 \cdots s_k$$
@@ -61,9 +60,10 @@
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
 ## and each row of this matrix is then treated separately.  Note that this
-## is exactly the opposite treatment than @code{interp1} and is done
-## for compatibility.
-## @seealso{ppval, mkpp, unmkpp}
+## is exactly opposite to @code{interp1} but is done for @sc{matlab}
+## compatibility.
+##
+## @seealso{pchip, ppval, mkpp, unmkpp}
 ## @end deftypefn
 
 ## This code is based on csape.m from octave-forge, but has been
@@ -83,15 +83,15 @@ function ret = spline (x, y, xi)
   ## Check the size and shape of y
   ndy = ndims (y);
   szy = size (y);
-  if (ndy == 2 && (szy(1) == 1 || szy(2) == 1))
-    if (szy(1) == 1)
+  if (ndy == 2 && (szy(1) == n || szy(2) == n))
+    if (szy(2) == n)
       a = y.';
     else
       a = y;
       szy = fliplr (szy);
     endif
   else
-    a = reshape (y, [prod(szy(1:end-1)), szy(end)]).';
+    a = shiftdim (reshape (y, [prod(szy(1:end-1)), szy(end)]), 1);
   endif
 
   for k = (1:columns (a))(any (isnan (a)))
@@ -120,9 +120,9 @@ function ret = spline (x, y, xi)
 
     if (n == 2)
       d = (dfs + dfe) / (x(2) - x(1)) ^ 2 + ...
-	2 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 3;
+          2 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 3;
       c = (-2 * dfs - dfe) / (x(2) - x(1)) - ...
-	3 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 2;
+          3 * (a(1,:) - a(2,:)) / (x(2) - x(1)) ^ 2;
       b = dfs;
       a = a(1,:);
 
@@ -132,7 +132,7 @@ function ret = spline (x, y, xi)
       a = a(1:n-1,:);
     else
       if (n == 3)
-	dg = 1.5 * h(1) - 0.5 * h(2);
+        dg = 1.5 * h(1) - 0.5 * h(2);
         c(2:n-1,:) = 1/dg(1);
       else
         dg = 2 * (h(1:n-2) .+ h(2:n-1));
@@ -153,9 +153,9 @@ function ret = spline (x, y, xi)
       endif
 
       c(1,:) = (3 / h(1) * (a(2,:) - a(1,:)) - 3 * dfs
-		- c(2,:) * h(1)) / (2 * h(1));
+             - c(2,:) * h(1)) / (2 * h(1));
       c(n,:) = - (3 / h(n-1) * (a(n,:) - a(n-1,:)) - 3 * dfe
-		  + c(n-1,:) * h(n-1)) / (2 * h(n-1));
+             + c(n-1,:) * h(n-1)) / (2 * h(n-1));
       b(1:n-1,:) = diff (a) ./ h(1:n-1, idx) ...
         - h(1:n-1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
@@ -229,15 +229,14 @@ function ret = spline (x, y, xi)
           - h(1:n-1, idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));
 
-      d = d(1:n-1,:);
-      c = c(1:n-1,:);
-      b = b(1:n-1,:);
-      a = a(1:n-1,:);
+      d = d(1:n-1,:);d = d.'(:);
+      c = c(1:n-1,:);c = c.'(:);
+      b = b(1:n-1,:);b = b.'(:);
+      a = a(1:n-1,:);a = a.'(:);
     endif
 
   endif
-  coeffs = cat (3, d.', c.', b.', a.');
-  ret = mkpp (x, coeffs, szy(1:end-1));
+  ret = mkpp (x, cat (2, d, c, b, a), szy(1:end-1));
 
   if (nargin == 3)
     ret = ppval (ret, xi);
@@ -263,6 +262,9 @@ endfunction
 %!assert (isempty(spline(x',y',[])));
 %!assert (isempty(spline(x,y,[])));
 %!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
+%!assert (spline(x,[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
+%!assert (spline(x',[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
+%!assert (spline(x',[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
 %! y = cos(x) + i*sin(x);
 %!assert (spline(x,y,x), y, abserr)
 %!assert (real(spline(x,y,x)), real(y), abserr);

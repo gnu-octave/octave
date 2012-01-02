@@ -39,11 +39,12 @@ DEFUN_DLD (eig, args, nargout,
 @deftypefnx {Loadable Function} {@var{lambda} =} eig (@var{A}, @var{B})\n\
 @deftypefnx {Loadable Function} {[@var{V}, @var{lambda}] =} eig (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{V}, @var{lambda}] =} eig (@var{A}, @var{B})\n\
-The eigenvalues (and eigenvectors) of a matrix are computed in a several\n\
-step process which begins with a Hessenberg decomposition, followed by a\n\
-Schur@tie{}decomposition, from which the eigenvalues are apparent.  The\n\
-eigenvectors, when desired, are computed by further manipulations of the\n\
-Schur@tie{}decomposition.\n\
+Compute the eigenvalues and eigenvectors of a matrix.\n\
+\n\
+Eigenvalues are computed in a several step process which begins with a\n\
+Hessenberg decomposition, followed by a Schur@tie{}decomposition, from which\n\
+the eigenvalues are apparent.  The eigenvectors, when desired, are computed\n\
+by further manipulations of the Schur@tie{}decomposition.\n\
 \n\
 The eigenvalues returned by @code{eig} are not ordered.\n\
 @seealso{eigs, svd}\n\
@@ -324,8 +325,8 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 %! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
 %! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
-%!error <Invalid call to eig.*> eig ();
-%!error <Invalid call to eig.*> eig ([1, 2; 3, 4], [4, 3; 2, 1], 1);
+%!error <Invalid call to eig> eig ();
+%!error <Invalid call to eig> eig ([1, 2; 3, 4], [4, 3; 2, 1], 1);
 %!error eig ([1, 2; 3, 4], 2);
 %!error eig ([1, 2; 3, 4; 5, 6]);
 %!error eig ("abcd");

@@ -15,7 +15,7 @@ export AUTOMAKE
 ## building the rest of Octave, and INSTALL, which is linked from
 ## gnulib/doc/INSTALL by the bootstrap script.
 
-for f in NEWS README ChangeLog COPYING; do
+for f in NEWS README COPYING; do
   if ! test -f $f; then
     echo "required file $f is missing" 2>&1
     exit 1
@@ -36,4 +36,4 @@ echo "generating src/DLD-FUNCTIONS/module.mk..."
 
 echo "bootstrapping..."
 
-./bootstrap "$@"
+build-aux/bootstrap "$@"

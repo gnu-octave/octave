@@ -287,6 +287,9 @@ fout (const octave_idx_type& lsize, const double& alpha,
     return (fabs (p) >= 1 ? 1 : -1);
 }
 
+
+//FIXME: Matlab does not produce lambda as the first output argument.
+//       Compatibility problem?
 DEFUN_DLD (qz, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {@var{lambda} =} qz (@var{A}, @var{B})\n\
@@ -307,7 +310,7 @@ of @math{(A - s B)}.\n\
 \n\
 @item @code{[AA, BB, Q, Z, V, W, @var{lambda}] = qz (@var{A}, @var{B})}\n\
 \n\
-Computes QZ@tie{}decomposition, generalized eigenvectors, and \n\
+Computes QZ@tie{}decomposition, generalized eigenvectors, and\n\
 generalized eigenvalues of @math{(A - s B)}\n\
 @tex\n\
 $$ AV = BV{ \\rm diag }(\\lambda) $$\n\
@@ -343,13 +346,13 @@ for ordering eigenvalues of the GEP pencil.  The leading block\n\
 of the revised pencil contains all eigenvalues that satisfy:\n\
 @table @asis\n\
 @item \"N\"\n\
-= unordered (default) \n\
+= unordered (default)\n\
 \n\
 @item \"S\"\n\
-= small: leading block has all |lambda| @leq{} 1 \n\
+= small: leading block has all |lambda| @leq{} 1\n\
 \n\
 @item \"B\"\n\
-= big: leading block has all |lambda| @geq{} 1 \n\
+= big: leading block has all |lambda| @geq{} 1\n\
 \n\
 @item \"-\"\n\
 = negative real part: leading block has all eigenvalues\n\
@@ -1236,3 +1239,30 @@ compatibility with @sc{matlab}.\n\
 
   return retval;
 }
+
+/*
+%!shared a, b, c
+%!  a = [1 2; 0 3];
+%!  b = [1 0; 0 0];
+%!  c = [0 1; 0 0];
+%!assert(qz (a,b), 1);
+%!assert(isempty (qz (a,c)));
+
+%% Exaple 7.7.3 in Golub & Van Loan
+%!test
+%! a = [ 10  1  2;
+%!        1  2 -1;
+%!        1  1  2];
+%! b = reshape(1:9,3,3);
+%! [aa, bb, q, z, v, w, lambda] = qz (a, b);
+%! sz = length(lambda);
+%! observed =  (b * v * diag ([lambda;0])) (:, 1:sz);
+%! assert ( (a*v) (:, 1:sz), observed, norm (observed) * 1e-14);
+%! observed = (diag ([lambda;0]) * w' * b) (1:sz, :);
+%! assert ( (w'*a) (1:sz, :) , observed, norm (observed) * 1e-13);
+%! assert (q * a * z, aa, norm (aa) * 1e-14);
+%! assert (q * b * z, bb, norm (bb) * 1e-14);
+
+%% FIXME: Still need a test for third form of calling qz
+
+*/

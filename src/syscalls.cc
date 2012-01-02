@@ -145,8 +145,8 @@ system-dependent error message.\n\
 
                   int status = octave_syscalls::dup2 (i_old, i_new, msg);
 
-                  retval(0) = status;
                   retval(1) = msg;
+                  retval(0) = status;
                 }
             }
         }
@@ -224,8 +224,8 @@ error message.\n\
 
               int status = octave_syscalls::execvp (exec_file, exec_args, msg);
 
-              retval(0) = status;
               retval(1) = msg;
+              retval(0) = status;
             }
         }
       else
@@ -347,9 +347,9 @@ exit status, it will linger until Octave exits.\n\
 
                       Cell file_ids (1, 2);
 
-                      retval(0) = octave_stream_list::insert (os);
+                      retval(2) = pid;
                       retval(1) = octave_stream_list::insert (is);
-                                          retval(2) = pid;
+                      retval(0) = octave_stream_list::insert (os);
                     }
                                   else
                     error (msg.c_str ());
@@ -496,8 +496,8 @@ system-dependent error message.\n\
 
                   int status = octave_fcntl (fid, req, arg, msg);
 
-                  retval(0) = status;
                   retval(1) = msg;
+                  retval(0) = status;
                 }
             }
         }
@@ -546,8 +546,8 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
 
       pid_t pid = octave_syscalls::fork (msg);
 
-      retval(0) = pid;
       retval(1) = msg;
+      retval(0) = pid;
     }
   else
     print_usage ();
@@ -572,8 +572,8 @@ Return the process group id of the current process.\n\
     {
       std::string msg;
 
-      retval(0) = octave_syscalls::getpgrp (msg);
       retval(1) = msg;
+      retval(0) = octave_syscalls::getpgrp (msg);
     }
   else
     print_usage ();
@@ -865,10 +865,9 @@ system-dependent error message.\n\
           octave_stream os = octave_stdiostream::create (nm, ofile,
                                                          std::ios::out);
 
+          retval(2) = status;
           retval(1) = octave_stream_list::insert (os);
           retval(0) = octave_stream_list::insert (is);
-
-          retval(2) = status;
         }
     }
   else
@@ -968,7 +967,7 @@ For example:\n\
           dev = 2049\n\
         @}\n\
      @result{} err = 0\n\
-     @result{} msg = \n\
+     @result{} msg =\n\
 @end example\n\
 @end deftypefn")
 {
@@ -1182,8 +1181,8 @@ of @var{mode} is assumed to be returned from a call to @code{stat}.\n\
 
 DEFUN (gethostname, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{uts}, @var{err}, @var{msg}] =} uname ()\n\
-Return the hostname of the system on which Octave is running\n\
+@deftypefn {Built-in Function} {} gethostname ()\n\
+Return the hostname of the system where Octave is running.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1270,8 +1269,8 @@ system-dependent error message.\n\
 
           int status = octave_unlink (name, msg);
 
-          retval(0) = status;
           retval(1) = msg;
+          retval(0) = status;
         }
       else
         error ("unlink: FILE must be a string");
@@ -1354,9 +1353,9 @@ information about the subprocess that exited.\n\
 
               pid_t result = octave_syscalls::waitpid (pid, &status, options, msg);
 
-              retval(0) = result;
-              retval(1) = status;
               retval(2) = msg;
+              retval(1) = status;
+              retval(0) = result;
             }
           else
             error ("waitpid: OPTIONS must be an integer");
@@ -1644,7 +1643,6 @@ const_value (const octave_value_list& args, int val)
 #define O_NONBLOCK O_NDELAY
 #endif
 
-#if defined (F_DUPFD)
 DEFUNX ("F_DUPFD", FF_DUPFD, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_DUPFD ()\n\
@@ -1653,11 +1651,14 @@ duplicate file descriptor.\n\
 @seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
+#if defined (F_DUPFD)
   return const_value (args, F_DUPFD);
-}
+#else
+  error ("F_DUPFD: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (F_GETFD)
 DEFUNX ("F_GETFD", FF_GETFD, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_GETFD ()\n\
@@ -1666,11 +1667,14 @@ file descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
+#if defined (F_GETFD)
   return const_value (args, F_GETFD);
-}
+#else
+  error ("F_GETFD: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (F_GETFL)
 DEFUNX ("F_GETFL", FF_GETFL, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_GETFL ()\n\
@@ -1679,11 +1683,14 @@ file status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
+#if defined (F_GETFL)
   return const_value (args, F_GETFL);
-}
+#else
+  error ("F_GETFL: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (F_SETFD)
 DEFUNX ("F_SETFD", FF_SETFD, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_SETFD ()\n\
@@ -1692,11 +1699,14 @@ descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}\n\
 @end deftypefn")
 {
+#if defined (F_SETFD)
   return const_value (args, F_SETFD);
-}
+#else
+  error ("F_SETFD: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (F_SETFL)
 DEFUNX ("F_SETFL", FF_SETFL, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_SETFL ()\n\
@@ -1705,11 +1715,14 @@ status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}\n\
 @end deftypefn")
 {
+#if defined (F_SETFL)
   return const_value (args, F_SETFL);
-}
+#else
+  error ("F_SETFL: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_APPEND)
 DEFUNX ("O_APPEND", FO_APPEND, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_APPEND ()\n\
@@ -1719,11 +1732,14 @@ or that may be passed to @code{fcntl} to set the write mode to append.\n\
 @seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_APPEND)
   return const_value (args, O_APPEND);
-}
+#else
+  error ("O_APPEND: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_ASYNC)
 DEFUNX ("O_ASYNC", FO_ASYNC, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_ASYNC ()\n\
@@ -1732,11 +1748,14 @@ returned by @code{fcntl} to indicate asynchronous I/O.\n\
 @seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_ASYNC)
   return const_value (args, O_ASYNC);
-}
+#else
+  error ("O_ASYNC: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_CREAT)
 DEFUNX ("O_CREAT", FO_CREAT, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_CREAT ()\n\
@@ -1746,11 +1765,14 @@ created if it does not exist.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_CREAT)
   return const_value (args, O_CREAT);
-}
+#else
+  error ("O_CREAT: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_EXCL)
 DEFUNX ("O_EXCL", FO_EXCL, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_EXCL ()\n\
@@ -1759,11 +1781,14 @@ returned by @code{fcntl} to indicate that file locking is used.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_EXCL)
   return const_value (args, O_EXCL);
-}
+#else
+  error ("O_EXCL: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_NONBLOCK)
 DEFUNX ("O_NONBLOCK", FO_NONBLOCK, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_NONBLOCK ()\n\
@@ -1773,11 +1798,14 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_NONBLOCK)
   return const_value (args, O_NONBLOCK);
-}
+#else
+  error ("O_NONBLOCK: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_RDONLY)
 DEFUNX ("O_RDONLY", FO_RDONLY, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_RDONLY ()\n\
@@ -1787,11 +1815,14 @@ reading only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_RDONLY)
   return const_value (args, O_RDONLY);
-}
+#else
+  error ("O_RDONLY: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_RDWR)
 DEFUNX ("O_RDWR", FO_RDWR, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_RDWR ()\n\
@@ -1801,11 +1832,14 @@ reading and writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_RDWR)
   return const_value (args, O_RDWR);
-}
+#else
+  error ("O_RDWR: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_SYNC)
 DEFUNX ("O_SYNC", FO_SYNC, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_SYNC ()\n\
@@ -1815,11 +1849,14 @@ synchronous I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_SYNC)
   return const_value (args, O_SYNC);
-}
+#else
+  error ("O_SYNC: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_TRUNC)
 DEFUNX ("O_TRUNC", FO_TRUNC, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} O_TRUNC ()\n\
@@ -1829,11 +1866,14 @@ be truncated when writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}\n\
 @end deftypefn")
 {
+#if defined (O_TRUNC)
   return const_value (args, O_TRUNC);
-}
+#else
+  error ("O_TRUNC: not available on this system");
+  return octave_value ();
 #endif
+}
 
-#if defined (O_WRONLY)
 DEFUNX ("O_WRONLY", FO_WRONLY, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} O_WRONLY ()\n\
@@ -1843,9 +1883,13 @@ writing only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}\n\
 @end deftypefn")
 {
+#if defined (O_WRONLY)
   return const_value (args, O_WRONLY);
-}
+#else
+  error ("O_WRONLY: not available on this system");
+  return octave_value ();
 #endif
+}
 
 #if !defined (WNOHANG)
 #define WNOHANG 0

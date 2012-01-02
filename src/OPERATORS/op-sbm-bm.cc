@@ -31,9 +31,19 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "ov-bool-mat.h"
 #include "boolMatrix.h"
+#include "ov-int8.h"
+#include "ov-int16.h"
+#include "ov-int32.h"
+#include "ov-int64.h"
+#include "ov-uint8.h"
+#include "ov-uint16.h"
+#include "ov-uint32.h"
+#include "ov-uint64.h"
+#include "ov-range.h"
 #include "ov-scalar.h"
+#include "ov-str-mat.h"
 #include "ops.h"
-
+#include "ov-null-mat.h"
 #include "ov-re-sparse.h"
 #include "ov-bool-sparse.h"
 #include "smx-bm-sbm.h"
@@ -79,6 +89,26 @@ DEFASSIGNOP (assign, sparse_bool_matrix, bool_matrix)
   return octave_value ();
 }
 
+DEFNULLASSIGNOP_FN (null_assign, sparse_bool_matrix, delete_elements)
+
+static octave_value
+oct_assignop_conv_and_assign (octave_base_value& a1,
+                              const octave_value_list& idx,
+                              const octave_base_value& a2)
+{
+  octave_sparse_bool_matrix& v1 = dynamic_cast<octave_sparse_bool_matrix&> (a1);
+
+  // FIXME -- perhaps add a warning for this conversion if the values
+  // are not all 0 or 1?
+
+  SparseBoolMatrix v2 (a2.bool_array_value ());
+
+  if (! error_state)
+    v1.assign (idx, v2);
+
+  return octave_value ();
+}
+
 void
 install_sbm_bm_ops (void)
 {
@@ -96,4 +126,42 @@ install_sbm_bm_ops (void)
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix,
                     octave_bool_matrix, assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix,
+                    octave_char_matrix_str, conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix,
+                    octave_char_matrix_sq_str, conv_and_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_range,
+                    conv_and_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_sparse_matrix,
+                    conv_and_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_int8_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_int16_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_int32_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_int64_matrix,
+                    conv_and_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_uint8_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_uint16_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_uint32_matrix,
+                    conv_and_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_uint64_matrix,
+                    conv_and_assign);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_null_matrix,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_null_str,
+                    null_assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, octave_null_sq_str,
+                    null_assign);
 }

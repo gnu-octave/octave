@@ -408,26 +408,47 @@ DEFUN (EDITOR, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EDITOR ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EDITOR (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} EDITOR (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the editor to\n\
 use with the @code{edit_history} command.  The default value is taken from\n\
 the environment variable @w{@env{EDITOR}} when Octave starts.  If the\n\
 environment variable is not initialized, @w{@env{EDITOR}} will be set to\n\
 @code{\"emacs\"}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{edit_history}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EDITOR);
 }
 
+/*
+%!error (EDITOR (1, 2));
+%!test
+%! orig_val = EDITOR ();
+%! old_val = EDITOR ("X");
+%! assert (orig_val, old_val);
+%! assert (EDITOR (), "X");
+%! EDITOR (orig_val);
+%! assert (EDITOR (), orig_val);
+*/
+
 DEFUN (EXEC_PATH, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} EXEC_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} EXEC_PATH (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} EXEC_PATH (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories to append to the shell PATH when executing external\n\
 programs.  The initial value of is taken from the environment variable\n\
 @w{@env{OCTAVE_EXEC_PATH}}, but that value can be overridden by\n\
 the command line argument @option{--exec-path PATH}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   octave_value retval = SET_NONEMPTY_INTERNAL_STRING_VARIABLE (EXEC_PATH);
@@ -438,16 +459,43 @@ the command line argument @option{--exec-path PATH}.\n\
   return retval;
 }
 
+/*
+%!error (EXEC_PATH (1, 2));
+%!test
+%! orig_val = EXEC_PATH ();
+%! old_val = EXEC_PATH ("X");
+%! assert (orig_val, old_val);
+%! assert (EXEC_PATH (), "X");
+%! EXEC_PATH (orig_val);
+%! assert (EXEC_PATH (), orig_val);
+*/
+
 DEFUN (IMAGE_PATH, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} IMAGE_PATH ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} IMAGE_PATH (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} IMAGE_PATH (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies a colon separated\n\
 list of directories in which to search for image files.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (IMAGE_PATH);
 }
+
+/*
+%!error (IMAGE_PATH (1, 2));
+%!test
+%! orig_val = IMAGE_PATH ();
+%! old_val = IMAGE_PATH ("X");
+%! assert (orig_val, old_val);
+%! assert (IMAGE_PATH (), "X");
+%! IMAGE_PATH (orig_val);
+%! assert (IMAGE_PATH (), orig_val);
+*/
 
 DEFUN (OCTAVE_HOME, args, ,
   "-*- texinfo -*-\n\
@@ -464,6 +512,11 @@ Return the name of the top-level Octave installation directory.\n\
 
   return retval;
 }
+
+/*
+%!error OCTAVE_HOME (1);
+%!assert (ischar (OCTAVE_HOME ()));
+*/
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
   "-*- texinfo -*-\n\
@@ -482,3 +535,8 @@ Return the version number of Octave, as a string.\n\
 
   return retval;
 }
+
+/*
+%!error OCTAVE_VERSION (1);
+%!assert (ischar (OCTAVE_VERSION ()));
+*/

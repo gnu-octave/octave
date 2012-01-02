@@ -531,6 +531,13 @@ function.  Instead use @code{imread}.\n\
   return output;
 }
 
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
+
 #ifdef HAVE_MAGICK
 
 static void
@@ -663,8 +670,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
   octave_idx_type rows = m.rows ();
   octave_idx_type columns = m.columns ();
 
-  // FIXME -- maybe simply using bit shifting would be better?
-  unsigned int div_factor = pow (2.0, static_cast<int> (bitdepth)) - 1;
+  unsigned int div_factor = (1 << bitdepth) - 1;
 
   for (unsigned int ii = 0; ii < nframes; ii++)
     {
@@ -753,7 +759,7 @@ encode_uint_image (std::vector<Magick::Image>& imvec,
             }
 
           im.quantizeColorSpace (Magick::GRAYColorspace);
-          im.quantizeColors (pow (2, bitdepth));
+          im.quantizeColors (1 << bitdepth);
           im.quantize ();
         }
 
@@ -916,6 +922,13 @@ function.  Instead use @code{imwrite}.\n\
 
 return retval;
 }
+
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
 
 #ifdef HAVE_MAGICK
 
@@ -1135,6 +1148,13 @@ not be using this function.  Instead use @code{imfinfo}.\n\
   return retval;
 }
 
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/
+
 #undef GET_PARAM
 
 // Determine the file formats supported by GraphicsMagick.  This is
@@ -1194,3 +1214,10 @@ Undocumented internal function.\n\
 
   return retval;
 }
+
+/*
+
+## No test needed for internal helper function.
+%!assert (1)
+
+*/

@@ -54,7 +54,7 @@
 ## filename.  If @file{name.ext} is not modifiable, it will be copied to
 ## @env{HOME} before editing.
 ##
-## @strong{WARNING!} You may need to clear name before the new definition
+## @strong{Warning:} You may need to clear name before the new definition
 ## is available.  If you are editing a .cc file, you will need
 ## to mkoctfile @file{name.cc} before the definition will be available.
 ## @end itemize
@@ -76,7 +76,7 @@
 ## In place of the function name.  For example,
 ## @table @samp
 ## @item [EDITOR, " %s"]
-## Use the editor which Octave uses for @code{bug_report}.
+## Use the editor which Octave uses for @code{edit_history}.
 ##
 ## @item "xedit %s &"
 ## pop up simple X11 editor in a separate window

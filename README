@@ -49,9 +49,9 @@ YOU MUST HAVE GNU MAKE TO COMPILE OCTAVE.  Octave's Makefiles use
 features of GNU Make that are not present in other versions of make.
 GNU Make is very portable and easy to install.
 
-See the notes in the files INSTALL and INSTALL.OCTAVE for more
-specific installation instructions, including directions for
-installing Octave from a binary distribution.
+See the notes in the files INSTALL and the system-specific README files
+in the etc directory of the Octave source distribution for more specific
+installation instructions.
 
 Bugs and Patches
 ----------------
@@ -78,4 +78,4 @@ URL http://www.octave.org, including archives of the help, bug, and
 maintainers mailing lists.
 
 
-Last updated: Sat, 07 Mar 2009 11:18:14 EST
+Last updated: Fri, 10 Jun 2011 14:02:32 EDT

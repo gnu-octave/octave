@@ -110,8 +110,12 @@ public:
     {
       if (rep->count > 1)
         {
-          --rep->count;
-          rep = new ArrayRep (slice_data, slice_len);
+          ArrayRep *r = new ArrayRep (slice_data, slice_len);
+
+          if (--rep->count == 0)
+            delete rep;
+          
+          rep = r;
           slice_data = rep->data;
         }
     }
@@ -152,10 +156,12 @@ private:
 
   typename Array<T>::ArrayRep *nil_rep (void) const
     {
-      static typename Array<T>::ArrayRep *nr
-        = new typename Array<T>::ArrayRep ();
+      // NR was originally allocated with new, but that does not seem
+      // to be necessary since it will never be deleted.  So just use
+      // a static object instead.
 
-      return nr;
+      static typename Array<T>::ArrayRep nr;
+      return &nr;
     }
 
 public:
@@ -225,7 +231,7 @@ public:
 
   ~Array (void)
     {
-      if (--rep->count <= 0)
+      if (--rep->count == 0)
         delete rep;
     }
 
@@ -233,7 +239,7 @@ public:
     {
       if (this != &a)
         {
-          if (--rep->count <= 0)
+          if (--rep->count == 0)
             delete rep;
 
           rep = a.rep;

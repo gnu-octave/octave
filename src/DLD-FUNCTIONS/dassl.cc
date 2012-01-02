@@ -500,8 +500,11 @@ parameters for @code{dassl}.\n\
 %%
 %%    y1(t) = cos(t)
 %%    y2(t) = sin(t)
-%!function res = f (x, xdot, t)
+
+%!function res = __f (x, xdot, t)
 %!  res = [xdot(1)+x(2); xdot(2)-x(1)];
+%!endfunction
+
 %!test
 %!
 %! x0 = [1; 0];
@@ -511,7 +514,7 @@ parameters for @code{dassl}.\n\
 %! tol = 100 * dassl_options ("relative tolerance");
 %!
 %!
-%! [x, xdot] = dassl ("f", x0, xdot0, t);
+%! [x, xdot] = dassl ("__f", x0, xdot0, t);
 %!
 %! y = [cos(t), sin(t)];
 %!
@@ -537,8 +540,11 @@ parameters for @code{dassl}.\n\
 %%
 %%  x1(t) = exp(-10*t)
 %%  x2(t) = 1 - x(1)
-%!function res = f (x, xdot, t)
+
+%!function res = __f (x, xdot, t)
 %!  res = [xdot(1)+10*x(1); x(1)+x(2)-1];
+%!endfunction
+
 %!test
 %!
 %! x0 = [1; 0];
@@ -548,7 +554,7 @@ parameters for @code{dassl}.\n\
 %! tol = 500 * dassl_options ("relative tolerance");
 %!
 %!
-%! [x, xdot] = dassl ("f", x0, xdot0, t);
+%! [x, xdot] = dassl ("__f", x0, xdot0, t);
 %!
 %! y = [exp(-10*t), 1-exp(-10*t)];
 %!
@@ -558,6 +564,6 @@ parameters for @code{dassl}.\n\
 %! dassl_options ("absolute tolerance", eps);
 %! assert(dassl_options ("absolute tolerance") == eps);
 
-%!error <Invalid call to dassl_options.*> dassl_options ("foo", 1, 2);
+%!error <Invalid call to dassl_options> dassl_options ("foo", 1, 2);
 
 */

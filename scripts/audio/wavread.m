@@ -22,9 +22,9 @@
 ## in vector @var{y}.  If the file contains multichannel data, then
 ## @var{y} is a matrix with the channels represented as columns.
 ##
-## @deftypefnx {Function File} {[@var{y}, @var{Fs}, @var{bits}] =} wavread (@var{filename})
+## @deftypefnx {Function File} {[@var{y}, @var{Fs}, @var{bps}] =} wavread (@var{filename})
 ## Additionally return the sample rate (@var{fs}) in Hz and the number of bits
-## per sample (@var{bits}).
+## per sample (@var{bps}).
 ##
 ## @deftypefnx {Function File} {[@dots{}] =} wavread (@var{filename}, @var{n})
 ## Read only the first @var{n} samples from each channel.
@@ -55,135 +55,139 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     error ("wavread: FILENAME must be a character string");
   endif
 
-  # Open file for binary reading.
-  [fid, msg] = fopen (filename, "rb");
-  if (fid < 0)
-    error ("wavread: %s", msg);
-  endif
+  fid = -1;
 
-  ## Get file size.
-  fseek (fid, 0, "eof");
-  file_size = ftell (fid);
-  fseek (fid, 0, "bof");
+  unwind_protect
 
-  ## Find RIFF chunk.
-  riff_size = find_chunk (fid, "RIFF", file_size);
-  riff_pos = ftell (fid);
-  if (riff_size == -1)
-    fclose (fid);
-    error ("wavread: file contains no RIFF chunk");
-  endif
+    [fid, msg] = fopen (filename, "rb");
 
-  riff_type = char (fread (fid, 4))';
-  if(! strcmp (riff_type, "WAVE"))
-    fclose (fid);
-    error ("wavread: file contains no WAVE signature");
-  endif
-  riff_pos = riff_pos + 4;
-  riff_size = riff_size - 4;
-
-  ## Find format chunk inside the RIFF chunk.
-  fseek (fid, riff_pos, "bof");
-  fmt_size = find_chunk (fid, "fmt ", riff_size);
-  fmt_pos = ftell(fid);
-  if (fmt_size == -1)
-    fclose (fid);
-    error ("wavread: file contains no format chunk");
-  endif
-
-  ## Find data chunk inside the RIFF chunk.
-  ## We don't assume that it comes after the format chunk.
-  fseek (fid, riff_pos, "bof");
-  data_size = find_chunk (fid, "data", riff_size);
-  data_pos = ftell (fid);
-  if (data_size == -1)
-    fclose (fid);
-    error ("wavread: file contains no data chunk");
-  endif
-
-  ### Read format chunk.
-  fseek (fid, fmt_pos, "bof");
-
-  ## Sample format code.
-  format_tag = fread (fid, 1, "uint16", 0, BYTEORDER);
-  if (format_tag != FORMAT_PCM && format_tag != FORMAT_IEEE_FLOAT)
-    fclose (fid);
-    error ("wavread: sample format %#x is not supported", format_tag);
-  endif
-
-  ## Number of interleaved channels.
-  channels = fread (fid, 1, "uint16", 0, BYTEORDER);
-
-  ## Sample rate.
-  samples_per_sec = fread (fid, 1, "uint32", 0, BYTEORDER);
-
-  ## Bits per sample.
-  fseek (fid, 6, "cof");
-  bits_per_sample = fread (fid, 1, "uint16", 0, BYTEORDER);
-
-  ### Read data chunk.
-  fseek (fid, data_pos, "bof");
-
-  ## Determine sample data type.
-  if (format_tag == FORMAT_PCM)
-    switch (bits_per_sample)
-      case 8
-        format = "uint8";
-      case 16
-        format = "int16";
-      case 24
-        format = "uint8";
-      case 32
-        format = "int32";
-      otherwise
-        fclose (fid);
-        error ("wavread: %d bits sample resolution is not supported with PCM",
-               bits_per_sample);
-    endswitch
-  else
-    switch (bits_per_sample)
-      case 32
-        format = "float32";
-      case 64
-        format = "float64";
-      otherwise
-        fclose (fid);
-        error ("wavread: %d bits sample resolution is not supported with IEEE float",
-               bits_per_sample);
-    endswitch
-  endif
-
-  ## Parse arguments.
-  if (nargin == 1)
-    length = 8 * data_size / bits_per_sample;
-  else
-    nparams = size (param, 2);
-    if (nparams == 1)
-      ## Number of samples is given.
-      length = param * channels;
-    elseif (nparams == 2)
-      ## Sample range is given.
-      if (fseek (fid, (param(1)-1) * channels * (bits_per_sample/8), "cof") < 0)
-        warning ("wavread: seeking failed");
-      endif
-      length = (param(2)-param(1)+1) * channels;
-    elseif (nparams == 4 && char (param) == "size")
-      ## Size of the file is requested.
-      fclose (fid);
-      y = [data_size/channels/(bits_per_sample/8), channels];
-      return;
-    else
-      fclose (fid);
-      error ("wavread: invalid argument 2");
+    if (fid < 0)
+      error ("wavread: %s", msg);
     endif
-  endif
 
-  ## Read samples and close file.
-  if (bits_per_sample == 24)
-    length *= 3;
-  endif
-  [yi, n] = fread (fid, length, format, 0, BYTEORDER);
-  fclose (fid);
+    ## Get file size.
+    fseek (fid, 0, "eof");
+    file_size = ftell (fid);
+    fseek (fid, 0, "bof");
+
+    ## Find RIFF chunk.
+    riff_size = find_chunk (fid, "RIFF", file_size);
+    riff_pos = ftell (fid);
+    if (riff_size == -1)
+      error ("wavread: file contains no RIFF chunk");
+    endif
+
+    riff_type = char (fread (fid, 4))';
+    if (! strcmp (riff_type, "WAVE"))
+      error ("wavread: file contains no WAVE signature");
+    endif
+    riff_pos = riff_pos + 4;
+    riff_size = riff_size - 4;
+
+    ## Find format chunk inside the RIFF chunk.
+    fseek (fid, riff_pos, "bof");
+    fmt_size = find_chunk (fid, "fmt ", riff_size);
+    fmt_pos = ftell(fid);
+    if (fmt_size == -1)
+      error ("wavread: file contains no format chunk");
+    endif
+
+    ## Find data chunk inside the RIFF chunk.
+    ## We don't assume that it comes after the format chunk.
+    fseek (fid, riff_pos, "bof");
+    data_size = find_chunk (fid, "data", riff_size);
+    data_pos = ftell (fid);
+    if (data_size == -1)
+      error ("wavread: file contains no data chunk");
+    endif
+
+    ### Read format chunk.
+    fseek (fid, fmt_pos, "bof");
+
+    ## Sample format code.
+    format_tag = fread (fid, 1, "uint16", 0, BYTEORDER);
+    if (format_tag != FORMAT_PCM && format_tag != FORMAT_IEEE_FLOAT)
+      error ("wavread: sample format %#x is not supported", format_tag);
+    endif
+
+    ## Number of interleaved channels.
+    channels = fread (fid, 1, "uint16", 0, BYTEORDER);
+
+    ## Sample rate.
+    samples_per_sec = fread (fid, 1, "uint32", 0, BYTEORDER);
+
+    ## Bits per sample.
+    fseek (fid, 6, "cof");
+    bits_per_sample = fread (fid, 1, "uint16", 0, BYTEORDER);
+
+    ### Read data chunk.
+    fseek (fid, data_pos, "bof");
+
+    ## Determine sample data type.
+    if (format_tag == FORMAT_PCM)
+      switch (bits_per_sample)
+        case 8
+          format = "uint8";
+        case 16
+          format = "int16";
+        case 24
+          format = "uint8";
+        case 32
+          format = "int32";
+        otherwise
+          error ("wavread: %d bits sample resolution is not supported with PCM",
+                 bits_per_sample);
+      endswitch
+    else
+      switch (bits_per_sample)
+        case 32
+          format = "float32";
+        case 64
+          format = "float64";
+        otherwise
+          error ("wavread: %d bits sample resolution is not supported with IEEE float",
+                 bits_per_sample);
+      endswitch
+    endif
+
+    ## Parse arguments.
+    if (nargin == 1)
+      length = idivide (8 * data_size, bits_per_sample);
+    else
+      nparams = numel (param);
+      if (nparams == 1)
+        ## Number of samples is given.
+        length = param * channels;
+      elseif (nparams == 2)
+        ## Sample range is given.
+        if (fseek (fid, (param(1)-1) * channels * (bits_per_sample/8), "cof") < 0)
+          warning ("wavread: seeking failed");
+        endif
+        length = (param(2)-param(1)+1) * channels;
+      elseif (nparams == 4 && char (param) == "size")
+        ## Size of the file is requested.
+        tmp = idivide (8 * data_size, channels * bits_per_sample);
+        y = [tmp, channels];
+        return;
+      else
+        error ("wavread: invalid PARAM argument");
+      endif
+    endif
+
+    ## Read samples and close file.
+    if (bits_per_sample == 24)
+      length *= 3;
+    endif
+
+    [yi, n] = fread (fid, length, format, 0, BYTEORDER);
+
+  unwind_protect_cleanup
+
+    if (fid >= 0)
+      fclose (fid);
+    endif
+
+  end_unwind_protect
 
   ## Check data.
   if (mod (numel (yi), channels) != 0)
@@ -201,13 +205,13 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     ## Normalize samples.
     switch (bits_per_sample)
       case 8
-        yi = (yi - 128)/127;
+        yi = (yi - 128)/128;
       case 16
-        yi /= 32767;
+        yi /= 32768;
       case 24
-        yi /= 8388607;
+        yi /= 8388608;
       case 32
-        yi /= 2147483647;
+        yi /= 2147483648;
     endswitch
   endif
 
@@ -239,3 +243,7 @@ function chunk_size = find_chunk (fid, chunk_id, size)
     chunk_size = -1;
   endif
 endfunction
+
+## Mark file as being tested.  Tests for wavread/wavwrite pair are in
+## wavwrite.m
+%!assert(1)

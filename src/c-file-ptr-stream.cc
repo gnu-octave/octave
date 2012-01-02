@@ -68,7 +68,7 @@ c_file_ptr_buf::underflow_common (bool bump)
 {
   if (f)
     {
-      int_type c = fgetc (f);
+      int_type c = gnulib::fgetc (f);
 
       if (! bump
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
@@ -112,7 +112,7 @@ std::streamsize
 c_file_ptr_buf::xsgetn (char *s, std::streamsize n)
 {
   if (f)
-    return fread (s, 1, n, f);
+    return gnulib::fread (s, 1, n, f);
   else
     return 0;
 }
@@ -173,7 +173,7 @@ c_file_ptr_buf::sync (void)
 int
 c_file_ptr_buf::flush (void)
 {
-  return f ? fflush (f) : EOF;
+  return f ? gnulib::fflush (f) : EOF;
 }
 
 int
@@ -190,6 +190,18 @@ c_file_ptr_buf::buf_close (void)
     }
 
   return retval;
+}
+
+int
+c_file_ptr_buf::seek (long offset, int origin)
+{
+  return f ? gnulib::fseek (f, offset, origin) : -1;
+}
+
+long
+c_file_ptr_buf::tell (void)
+{
+  return f ? gnulib::ftell (f) : -1;
 }
 
 int

@@ -154,6 +154,11 @@ tree_checker::visit_simple_for_command (tree_simple_for_command& cmd)
   if (expr)
     expr->accept (*this);
 
+  tree_expression *maxproc = cmd.maxproc_expr ();
+
+  if (maxproc)
+    maxproc->accept (*this);
+
   tree_statement_list *list = cmd.body ();
 
   if (list)

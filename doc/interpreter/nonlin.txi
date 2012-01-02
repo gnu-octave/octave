@@ -21,6 +21,14 @@
 @cindex nonlinear equations
 @cindex equations, nonlinear
 
+@menu
+* Solvers::
+* Minimizers::          
+@end menu
+
+@node Solvers
+@section Solvers
+
 Octave can solve sets of nonlinear equations of the form
 @tex
 $$
@@ -36,14 +44,14 @@ F (x) = 0
 @end ifnottex
 
 @noindent
-using the function @code{fsolve}, which is based on the @sc{Minpack}
+using the function @code{fsolve}, which is based on the @sc{minpack}
 subroutine @code{hybrd}.  This is an iterative technique so a starting
-point will have to be provided.  This also has the consequence that
+point must be provided.  This also has the consequence that
 convergence is not guaranteed even if a solution exists.
 
 @DOCSTRING(fsolve)
 
-Here is a complete example.  To solve the set of equations
+The following is a complete example.  To solve the set of equations
 @tex
 $$
  \eqalign{-2x^2 + 3xy + 4\sin(y) - 6 &= 0\cr
@@ -105,16 +113,6 @@ info = 1
 @noindent
 A value of @code{info = 1} indicates that the solution has converged.
 
-The function @code{perror} may be used to print English messages
-corresponding to the numeric error codes.  For example:
-
-@example
-@group
-perror ("fsolve", 1)
-     @print{} solution converged to requested tolerance
-@end group
-@end example
-
 When no Jacobian is supplied (as in the example above) it is approximated
 numerically.  This requires more function evaluations, and hence is
 less efficient.  In the example above we could compute the Jacobian 
@@ -164,3 +162,27 @@ The Jacobian can then be used with the following call to @code{fsolve}:
 which gives the same solution as before.
 
 @DOCSTRING(fzero)
+
+@node Minimizers
+@section Minimizers
+@cindex local minimum
+@cindex finding minimums
+
+Often it is useful to find the minimum value of a function rather than just
+the zeroes where it crosses the x-axis.  @code{fminbnd} is designed for the
+simpler, but very common, case of a univariate function where the interval
+to search is bounded.  For unbounded minimization of a function with
+potentially many variables use @code{fminunc}.  @xref{Optimization}, for
+minimization with the presence of constraint functions.  Note that searches
+can be made for maxima by simply inverting the objective function
+@tex
+($F_{max} = -F_{min}$).
+@end tex
+@ifnottex
+(@code{Fto_max = -Fto_min}).
+@end ifnottex
+
+@DOCSTRING(fminbnd)
+
+@DOCSTRING(fminunc)
+

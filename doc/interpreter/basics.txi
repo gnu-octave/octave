@@ -215,6 +215,7 @@ beep_on_error                   = true
 confirm_recursive_rmdir         = false
 crash_dumps_octave_core         = false
 default_save_options            = "-mat-binary"
+do_braindead_shortcircuit_evaluation = true
 fixed_point_format              = true
 history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
 page_screen_output              = false
@@ -336,6 +337,11 @@ A message will be displayed as each of the startup files is read if you
 invoke Octave with the @option{--verbose} option but without the
 @option{--silent} option.
 
+The @code{dump_prefs} function is useful for determining what customizations
+to Octave are possible and which are in effect.
+
+@DOCSTRING(dump_prefs)
+
 @node Quitting Octave
 @section Quitting Octave
 @cindex exiting octave
@@ -386,6 +392,18 @@ found.
 @DOCSTRING(doc_cache_file)
 
 @DOCSTRING(suppress_verbose_help_message)
+
+The following functions are principally used internally by Octave for
+generating the documentation.  They are documented here for completeness
+and because they may occasionally be useful for users.
+
+@DOCSTRING(gen_doc_cache)
+
+@DOCSTRING(get_help_text)
+
+@DOCSTRING(get_help_text_from_file)
+
+@DOCSTRING(get_first_help_sentence)
 
 @node Command Line Editing
 @section Command Line Editing
@@ -1039,6 +1057,9 @@ endfunction
 @noindent
 will produce a very quick countdown from '3' to 'Blast Off' as the
 lines "@code{disp(2);}" and "@code{disp(1);}" won't be executed.
+
+The block comment markers must appear alone as the only characters on a line
+(excepting whitespace) in order to be parsed correctly.
 
 @node Comments and the Help System
 @subsection Comments and the Help System

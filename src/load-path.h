@@ -443,6 +443,8 @@ private:
 
   static load_path *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   static hook_fcn_ptr add_hook;
 
   static hook_fcn_ptr remove_hook;

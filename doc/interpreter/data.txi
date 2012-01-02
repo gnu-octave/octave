@@ -146,7 +146,7 @@ different types.  The current implementation uses an associative array
 with indices limited to strings, but the syntax is more like C-style
 structures.
 
-@xref{Data Structures}, for more information.
+@xref{Structures}, for more information.
 
 @node Cell Array Objects
 @subsection Cell Array Objects

@@ -760,7 +760,7 @@ ComplexNDArray::isfinite (void) const
 ComplexNDArray
 conj (const ComplexNDArray& a)
 {
-  return do_mx_unary_map<Complex, Complex, std::conj> (a);
+  return do_mx_unary_map<Complex, Complex, std::conj<double> > (a);
 }
 
 ComplexNDArray&

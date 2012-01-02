@@ -22,10 +22,10 @@
 ## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{x}, @var{y}, @var{z}, @var{r}, @var{g}, @var{b}, @var{v})
 ## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@var{r}, @var{g}, @var{b}, @var{v})
 ## @deftypefnx {Function File} {[@var{cd}] =} isocolors (@dots{}, @var{p})
-## @deftypefnx {Function File} isocolors (@dots{})
+## @deftypefnx {Function File} {} isocolors (@dots{})
 ##
 ## If called with one output argument and the first input argument
-## @var{c} is a three--dimensional array that contains color values and
+## @var{c} is a three-dimensional array that contains color values and
 ## the second input argument @var{v} keeps the vertices of a geometry
 ## then return a matrix @var{cd} with color data information for the
 ## geometry at computed points
@@ -92,7 +92,7 @@
 ## isofinish (p);
 ## @end example
 ##
-## @seealso{isosurface, isonormals, isocaps}
+## @seealso{isosurface, isonormals}
 ##
 ## @end deftypefn
 

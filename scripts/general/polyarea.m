@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {} polyarea (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} polyarea (@var{x}, @var{y}, @var{dim})
 ##
-## Determines area of a polygon by triangle method.  The variables
+## Determine area of a polygon by triangle method.  The variables
 ## @var{x} and @var{y} define the vertex pairs, and must therefore have
 ## the same shape.  They can be either vectors or arrays.  If they are
 ## arrays then the columns of @var{x} and @var{y} are treated separately

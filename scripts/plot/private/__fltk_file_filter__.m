@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 Kai Habel
+## Copyright (C) 2011 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -17,56 +17,48 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __fltk_file_filter__ (@var{file_filter})
+## @deftypefn {Function File} {@var{filterspec} =} __fltk_file_filter__ (@var{filter})
 ## Undocumented internal function.
 ## @end deftypefn
 
-## Author: Kai Habel
+## Author: Michael Goffioul
 
 function retval = __fltk_file_filter__ (file_filter)
-  # converts octave's file filter format into fltk's.
+
   retval = "";
-  if (iscell (file_filter))
-    [r, c] = size (file_filter);
-    if ((c == 0) || (c > 2))
-      error ("expecting 1 or to 2 columns for file filter cell");
-    endif
-    fltk_str = "";
-    for idx = 1 : r
-
-      curr_ext = file_filter{idx, 1};
-      curr_ext = strsplit (curr_ext, ";");
-
-      if (length (curr_ext) > 1)
-        curr_ext = regexprep (curr_ext, '\*\.', ',');
-        curr_ext = strcat (curr_ext{:})(2 : end);
-        curr_ext = strcat ("*.{", curr_ext, "}");
-      else
-        curr_ext = curr_ext{:};
-      endif
-
-      curr_desc = strcat (curr_ext(3:end), "-Files");
-
-      if (c == 2)
-        curr_desc = file_filter{idx, 2};
-        curr_desc = regexprep (curr_desc, '\(', '<');
-        curr_desc = regexprep (curr_desc, '\)', '>');
-      endif
-
-      if (length (fltk_str) > 0)
-        fltk_str = strcat (fltk_str, "\t", curr_desc, " (", curr_ext, ")");
-      else
-        fltk_str = strcat (curr_desc, " (", curr_ext, ")");
-      endif
-
-    endfor
-    retval = fltk_str;
-  elseif (ischar (file_filter))
-    if (!isdir (file_filter))
-      [fdir, fname, fext] = fileparts (file_filter);
-      if (length (fext) > 0)
-        retval = strcat ("*", fext, "\t*");
-      endif
-    endif
+  [r, c] = size (file_filter);
+  if ((c == 0) || (c > 2))
+    error ("expecting 1 or to 2 columns for file filter cell");
   endif
+  fltk_str = "";
+  for idx = 1 : r
+
+    curr_ext = file_filter{idx, 1};
+    curr_ext = strsplit (curr_ext, ";");
+
+    if (length (curr_ext) > 1)
+      curr_ext = regexprep (curr_ext, '\*\.', ',');
+      curr_ext = strcat (curr_ext{:})(2 : end);
+      curr_ext = strcat ("*.{", curr_ext, "}");
+    else
+      curr_ext = curr_ext{:};
+    endif
+
+    curr_desc = strcat (curr_ext(3:end), "-Files");
+
+    if (c == 2)
+      curr_desc = file_filter{idx, 2};
+      curr_desc = regexprep (curr_desc, '\(', '<');
+      curr_desc = regexprep (curr_desc, '\)', '>');
+    endif
+
+    if (length (fltk_str) > 0)
+      fltk_str = strcat (fltk_str, "\t", curr_desc, " (", curr_ext, ")");
+    else
+      fltk_str = strcat (curr_desc, " (", curr_ext, ")");
+    endif
+
+  endfor
+  retval = fltk_str;
+
 endfunction

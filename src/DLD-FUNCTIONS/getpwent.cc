@@ -84,8 +84,8 @@ opening it if necessary.  Once the end of the data has been reached,\n\
     {
       std::string msg;
 
-      retval(0) = mk_pw_map (octave_passwd::getpwent (msg));
       retval(1) = msg;
+      retval(0) = mk_pw_map (octave_passwd::getpwent (msg));
     }
   else
     print_usage ();
@@ -120,8 +120,8 @@ database, @code{getpwuid} returns 0.\n\
 
               std::string msg;
 
-              retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
               retval(1) = msg;
+              retval(0) = mk_pw_map (octave_passwd::getpwuid (uid, msg));
             }
           else
             error ("getpwuid: UID must be an integer");
@@ -156,8 +156,8 @@ database, @code{getpwname} returns 0.\n\
         {
           std::string msg;
 
-          retval(0) = mk_pw_map (octave_passwd::getpwnam (s, msg));
           retval(1) = msg;
+          retval(0) = mk_pw_map (octave_passwd::getpwnam (s, msg));
         }
     }
   else
@@ -183,8 +183,8 @@ Return the internal pointer to the beginning of the password database.\n\
     {
       std::string msg;
 
-      retval(0) = static_cast<double> (octave_passwd::setpwent (msg));
       retval(1) = msg;
+      retval(0) = static_cast<double> (octave_passwd::setpwent (msg));
     }
   else
     print_usage ();
@@ -209,8 +209,8 @@ Close the password database.\n\
     {
       std::string msg;
 
-      retval(0) = static_cast<double> (octave_passwd::endpwent (msg));
       retval(1) = msg;
+      retval(0) = static_cast<double> (octave_passwd::endpwent (msg));
     }
   else
     print_usage ();

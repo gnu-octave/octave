@@ -21,7 +21,7 @@
 
 Octave supports several ways of reading and writing data to or from the
 prompt or a file.  The simplest functions for data Input and Output
-(I/O) are easy to use, but only provides limited control of how
+(I/O) are easy to use, but only provide limited control of how
 data is processed.  For more control, a set of functions modelled
 after the C standard library are also provided by Octave.
 
@@ -65,6 +65,10 @@ The @code{format} command offers some control over the way Octave prints
 values with @code{disp} and through the normal echoing mechanism.
 
 @DOCSTRING(disp)
+
+@DOCSTRING(list_in_columns)
+
+@DOCSTRING(terminal_size)
 
 @DOCSTRING(format)
 
@@ -175,6 +179,8 @@ A
 @DOCSTRING(save)
 
 @DOCSTRING(load)
+
+@DOCSTRING(fileread)
 
 There are three functions that modify the behavior of @code{save}.
 
@@ -576,7 +582,7 @@ Conversions}, for details.
 
 @item @samp{%x}, @samp{%X}
 Print an integer as an unsigned hexadecimal number.  @samp{%x} uses
-lower-case letters and @samp{%X} uses upper-case.  @xref{Integer
+lowercase letters and @samp{%X} uses uppercase.  @xref{Integer
 Conversions}, for details.
 
 @item @samp{%f}
@@ -585,13 +591,13 @@ Print a floating-point number in normal (fixed-point) notation.
 
 @item @samp{%e}, @samp{%E}
 Print a floating-point number in exponential notation.  @samp{%e} uses
-lower-case letters and @samp{%E} uses upper-case.  @xref{Floating-Point
+lowercase letters and @samp{%E} uses uppercase.  @xref{Floating-Point
 Conversions}, for details.
 
 @item @samp{%g}, @samp{%G}
 Print a floating-point number in either normal (fixed-point) or
 exponential notation, whichever is more appropriate for its magnitude.
-@samp{%g} uses lower-case letters and @samp{%G} uses upper-case.
+@samp{%g} uses lowercase letters and @samp{%G} uses uppercase.
 @xref{Floating-Point Conversions}, for details.
 
 @item @samp{%c}

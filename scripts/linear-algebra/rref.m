@@ -17,9 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{r}, @var{k}] =} rref (@var{A}, @var{tol})
-##
-## Returns the reduced row echelon form of @var{A}.  @var{tol} defaults
+## @deftypefn  {Function File} {} rref (@var{A})
+## @deftypefnx {Function File} {} rref (@var{A}, @var{tol})
+## @deftypefnx {Function File} {[@var{r}, @var{k}] =} rref (@dots{})
+## Return the reduced row echelon form of @var{A}.  @var{tol} defaults
 ## to @code{eps * max (size (@var{A})) * norm (@var{A}, inf)}.
 ##
 ## Called with two return arguments, @var{k} returns the vector of
@@ -85,3 +86,43 @@ function [A, k] = rref (A, tol)
   k = find (used);
 
 endfunction
+
+%!test
+%! a = [1];
+%! [r k] = rref(a);
+%! assert(r, [1], 2e-8);
+%! assert(k, [1], 2e-8);
+
+%!test
+%! a = [1 3; 4 5];
+%! [r k] = rref(a);
+%! assert(rank(a), rank(r), 2e-8);
+%! assert(r, eye(2), 2e-8);
+%! assert(k == [1, 2] || k == [2, 1]);
+
+
+%!test
+%! a = [1 3; 4 5; 7 9];
+%! [r k] = rref(a);
+%! assert(rank(a), rank(r), 2e-8);
+%! assert(r, eye(3)(:,1:2), 2e-8);
+%! assert(k, [1 2], 2e-8);
+
+%!test
+%! a = [1 2 3; 2 4 6; 7 2 0];
+%! [r k] = rref(a);
+%! assert(rank(a), rank(r), 2e-8);
+%! assert(r, [1 0 (3-7/2); 0 1 (7/4); 0 0 0], 2e-8);
+%! assert(k, [1 2], 2e-8);
+
+%!test
+%! a = [1 2 1; 2 4 2.01; 2 4 2.1];
+%! tol = 0.02;
+%! [r k] = rref(a, tol);
+%! assert(rank(a, tol), rank(r, tol), 2e-8);
+%! tol = 0.2;
+%! [r k] = rref(a, tol);
+%! assert(rank(a, tol), rank(r, tol), 2e-8);
+
+%!error rref();
+

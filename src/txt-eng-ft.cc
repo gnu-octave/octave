@@ -24,17 +24,46 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#if HAVE_FREETYPE
+#if defined (HAVE_FREETYPE)
 
-#if HAVE_FONTCONFIG
+#if defined (HAVE_FONTCONFIG)
 #include <fontconfig/fontconfig.h>
 #endif
 
 #include <iostream>
 
+#include "singleton-cleanup.h"
+
 #include "error.h"
 #include "pr-output.h"
 #include "txt-eng-ft.h"
+
+// FIXME -- maybe issue at most one warning per glyph/font/size/weight
+// combination.
+
+static void
+gripe_missing_glyph (char c)
+{
+  warning_with_id ("Octave:missing-glyph",
+                   "ft_render: skipping missing glyph for character `%c'",
+                   c);
+}
+
+static void
+gripe_glyph_render (char c)
+{
+  warning_with_id ("Octave:glyph-render",
+                   "ft_render: unable to render glyph for character `%c'",
+                   c);
+}
+
+#ifdef _MSC_VER
+// This is just a trick to avoid multiply symbols definition.
+// PermMatrix.h contains a dllexport'ed Array<octave_idx_type>
+// that will make MSVC not to generate new instantiation and
+// use the imported one.
+#include "PermMatrix.h"
+#endif
 
 class
 ft_manager
@@ -45,7 +74,12 @@ public:
       bool retval = true;
 
       if (! instance)
-        instance = new ft_manager ();
+        {
+          instance = new ft_manager ();
+
+          if (instance)
+            singleton_cleanup_list::add (cleanup_instance);
+        }
 
       if (! instance)
         {
@@ -56,6 +90,8 @@ public:
 
       return retval;
     }
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static FT_Face get_font (const std::string& name, const std::string& weight,
                            const std::string& angle, double size)
@@ -75,36 +111,38 @@ private:
 
   ft_manager& operator = (const ft_manager&);
 
-  ft_manager (void) : library ()
-#if HAVE_FONTCONFIG
-    , fc_init_done (false)
-#endif
+  ft_manager (void)
+    : library (), freetype_initialized (false), fontconfig_initialized (false)
     {
       if (FT_Init_FreeType (&library))
-        {
-          ::error ("unable to initialize freetype library");
-        }
-
-#if HAVE_FONTCONFIG
-      fc_init_done = false;
-      if (! FcInit ())
-        {
-          ::error ("unable to initialize fontconfig library");
-        }
+        ::error ("unable to initialize freetype library");
       else
-        {
-          fc_init_done = true;
-        }
+        freetype_initialized = true;
+
+#if defined (HAVE_FONTCONFIG)
+      if (! FcInit ())
+        ::error ("unable to initialize fontconfig library");
+      else
+        fontconfig_initialized = true;
 #endif
     }
 
   ~ft_manager (void)
     {
-#if HAVE_FONTCONFIG
-      FcFini ();
-      fc_init_done = false;
+      if (freetype_initialized)
+        FT_Done_FreeType (library);
+
+#if defined (HAVE_FONTCONFIG)
+      // FIXME -- Skip the call to FcFini because it can trigger the
+      // assertion
+      //
+      //   octave: fccache.c:507: FcCacheFini: Assertion `fcCacheChains[i] == ((void *)0)' failed.
+      //
+      // if (fontconfig_initialized)
+      //   FcFini ();
 #endif
     }
+
 
   FT_Face do_get_font (const std::string& name, const std::string& weight,
                        const std::string& angle, double size)
@@ -113,8 +151,8 @@ private:
 
       std::string file;
 
-#if HAVE_FONTCONFIG
-      if (fc_init_done)
+#if defined (HAVE_FONTCONFIG)
+      if (fontconfig_initialized)
         {
           int fc_weight, fc_angle;
 
@@ -191,9 +229,8 @@ private:
 
 private:
   FT_Library library;
-#if HAVE_FONTCONFIG
-  bool fc_init_done;
-#endif
+  bool freetype_initialized;
+  bool fontconfig_initialized;
 };
 
 ft_manager* ft_manager::instance = 0;
@@ -202,7 +239,8 @@ ft_manager* ft_manager::instance = 0;
 
 ft_render::ft_render (void)
     : text_processor (), face (0), bbox (1, 4, 0.0),
-      xoffset (0), yoffset (0), mode (MODE_BBOX),
+      xoffset (0), yoffset (0), multiline_halign (0),
+      multiline_align_xoffsets(), mode (MODE_BBOX),
       red (0), green (0), blue (0)
 {
 }
@@ -270,25 +308,47 @@ ft_render::visit (text_element_string& e)
 {
   if (face)
     {
+      int line_index = 0;
+      FT_UInt box_line_width = 0;
       std::string str = e.string_value ();
       FT_UInt glyph_index, previous = 0;
+
+      if (mode == MODE_BBOX)
+        multiline_align_xoffsets.clear();
+      else if (mode == MODE_RENDER)
+        xoffset += multiline_align_xoffsets[line_index];
 
       for (size_t i = 0; i < str.length (); i++)
         {
           glyph_index = FT_Get_Char_Index (face, str[i]);
 
-          if (! glyph_index
-              || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
-            ::warning ("ft_render: skipping missing glyph for character `%c'",
-                       str[i]);
+          if (str[i] != '\n'
+              && (! glyph_index
+              || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT)))
+            gripe_missing_glyph (str[i]);
           else
             {
               switch (mode)
                 {
                 case MODE_RENDER:
-                  if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
-                    ::warning ("ft_render: unable to render glyph for character `%c'",
-                               str[i]);
+                  if (str[i] == '\n')
+                    {
+                    glyph_index = FT_Get_Char_Index(face, ' ');
+                    if (!glyph_index || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+                      {
+                        gripe_missing_glyph (' ');
+                      }
+                    else
+                      {
+                        line_index++;
+                        xoffset = multiline_align_xoffsets[line_index];
+                        yoffset -= (face->size->metrics.height >> 6);
+                      }
+                    }
+                  else if (FT_Render_Glyph (face->glyph, FT_RENDER_MODE_NORMAL))
+                    {
+                      gripe_glyph_render (str[i]);
+                    }
                   else
                     {
                       FT_Bitmap& bitmap = face->glyph->bitmap;
@@ -304,6 +364,14 @@ ft_render::visit (text_element_string& e)
 
                       x0 = xoffset+face->glyph->bitmap_left;
                       y0 = yoffset+face->glyph->bitmap_top;
+
+                      // 'w' seems to have a negative -1
+                      // face->glyph->bitmap_left, this is so we don't
+                      // index out of bound, and assumes we we allocated
+                      // the right amount of horizontal space in the bbox.
+                      if (x0 < 0)
+                        x0 = 0;
+
                       for (int r = 0; r < bitmap.rows; r++)
                         for (int c = 0; c < bitmap.width; c++)
                           {
@@ -327,43 +395,89 @@ ft_render::visit (text_element_string& e)
                   break;
 
                 case MODE_BBOX:
-                  // width
-                  if (previous)
+                  if (str[i] == '\n')
                     {
-                      FT_Vector delta;
-
-                      FT_Get_Kerning (face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
-                      bbox(2) += (delta.x >> 6);
-                    }
-                  bbox(2) += (face->glyph->advance.x >> 6);
-
-                  int asc, desc;
-
-                  if (false /*tight*/)
-                    {
-                      desc = face->glyph->metrics.horiBearingY - face->glyph->metrics.height;
-                      asc = face->glyph->metrics.horiBearingY;
+                      glyph_index = FT_Get_Char_Index(face, ' ');
+                      if (! glyph_index
+                          || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
+                      {
+                        gripe_missing_glyph (' ');
+                      }
+                    else
+                      {
+                        multiline_align_xoffsets.push_back(box_line_width);
+                        // Reset the pixel width for this newline, so we don't
+                        // allocate a bounding box larger than the horizontal
+                        // width of the multi-line
+                        box_line_width = 0;
+                        bbox(1) -= (face->size->metrics.height >> 6);
+                      }
                     }
                   else
                     {
-                      asc = face->size->metrics.ascender;
-                      desc = face->size->metrics.descender;
-                    }
+                    // width
+                    if (previous)
+                      {
+                        FT_Vector delta;
 
-                  asc = yoffset + (asc >> 6);
-                  desc = yoffset + (desc >> 6);
+                        FT_Get_Kerning (face, previous, glyph_index,
+                                        FT_KERNING_DEFAULT, &delta);
 
-                  if (desc < bbox(1))
-                    {
-                      bbox(3) += (bbox(1) - desc);
-                      bbox(1) = desc;
-                    }
-                  if (asc > (bbox(3)+bbox(1)))
-                    bbox(3) = asc-bbox(1);
+                        box_line_width += (delta.x >> 6);
+                      }
+
+                    box_line_width += (face->glyph->advance.x >> 6);
+
+                    int asc, desc;
+
+                    if (false /*tight*/)
+                      {
+                        desc = face->glyph->metrics.horiBearingY - face->glyph->metrics.height;
+                        asc = face->glyph->metrics.horiBearingY;
+                      }
+                    else
+                      {
+                        asc = face->size->metrics.ascender;
+                        desc = face->size->metrics.descender;
+                      }
+
+                    asc = yoffset + (asc >> 6);
+                    desc = yoffset + (desc >> 6);
+
+                    if (desc < bbox(1))
+                      {
+                        bbox(3) += (bbox(1) - desc);
+                        bbox(1) = desc;
+                      }
+                    if (asc > (bbox(3)+bbox(1)))
+                      bbox(3) = asc-bbox(1);
+                    if (bbox(2) < box_line_width)
+                      bbox(2) = box_line_width;
+                  }
                   break;
                 }
+                if (str[i] == '\n')
+                  previous = 0;
+                else
+                  previous = glyph_index;
+            }
+        }
+      if (mode == MODE_BBOX)
+        {
+          /* Push last the width associated with the last line */
+          multiline_align_xoffsets.push_back(box_line_width);
 
-              previous = glyph_index;
+          for (unsigned int i = 0; i < multiline_align_xoffsets.size(); i++)
+            {
+            /* Center align */
+            if (multiline_halign == 1)
+              multiline_align_xoffsets[i] = (bbox(2) - multiline_align_xoffsets[i])/2;
+            /* Right align */
+            else if (multiline_halign == 2)
+              multiline_align_xoffsets[i] = (bbox(2) - multiline_align_xoffsets[i]);
+            /* Left align */
+            else
+              multiline_align_xoffsets[i] = 0;
             }
         }
     }
@@ -480,7 +594,7 @@ ft_render::get_extent (const std::string& txt, double rotation)
   text_element *elt = text_parser_none ().parse (txt);
   Matrix extent = get_extent (elt, rotation);
   delete elt;
-  
+
   return extent;
 }
 
@@ -506,6 +620,8 @@ ft_render::text_to_pixels (const std::string& txt,
 {
   // FIXME: clip "rotation" between 0 and 360
   int rot_mode = rotation_to_mode (rotation);
+
+  multiline_halign = halign;
 
   text_element *elt = text_parser_none ().parse (txt);
   pixels_ = render (elt, box, rot_mode);

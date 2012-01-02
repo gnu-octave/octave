@@ -99,133 +99,331 @@ size (T const (&)[z])
   return z;
 }
 
-// FIXME -- The descriptions could easily be in texinfo -- should they?
 const static pair_type operators[] =
 {
   pair_type ("!",
-    "Logical not operator.  See also `~'.\n"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} !\n\
+Logical 'not' operator.\n\
+@seealso{~, not}\n\
+@end deftypefn"),
+
+  pair_type ("~",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ~\n\
+Logical 'not' operator.\n\
+@seealso{!, not}\n\
+@end deftypefn"),
 
   pair_type ("!=",
-    "Logical not equals operator.  See also `~='.\n"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} !=\n\
+Logical 'not equals' operator.\n\
+@seealso{~=, ne}\n\
+@end deftypefn"),
+
+  pair_type ("~=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ~=\n\
+Logical 'not equals' operator.\n\
+@seealso{!=, ne}\n\
+@end deftypefn"),
 
   pair_type ("\"",
-    "String delimiter.\n"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} \"\n\
+String delimiter.\n\
+@end deftypefn"),
 
   pair_type ("#",
-    "Begin comment character.  See also `%'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} #\n\
+Begin comment character.\n\
+@seealso{%, #@{}\n\
+@end deftypefn"),
 
   pair_type ("%",
-    "Begin comment charcter.  See also `#'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} %\n\
+Begin comment character.\n\
+@seealso{#, %@{}\n\
+@end deftypefn"),
+
+  pair_type ("#{",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} #@{\n\
+Begin block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{#@{}.\n\
+It is possible to nest block comments.\n\
+@seealso{%@{, #@}, #}\n\
+@end deftypefn"),
+
+  pair_type ("%{",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} %@{\n\
+Begin block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{%@{}.\n\
+It is possible to nest block comments.\n\
+@seealso{#@{, %@}, %}\n\
+@end deftypefn"),
+
+  pair_type ("#}",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} #@}\n\
+Close block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{#@}}.\n\
+It is possible to nest block comments.\n\
+@seealso{%@}, #@{, #}\n\
+@end deftypefn"),
+
+  pair_type ("%}",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} %@}\n\
+Close block comment.  There must be nothing else, other than\n\
+whitespace, in the line both before and after @code{%@}}.\n\
+It is possible to nest block comments.\n\
+@seealso{#@}, %@{, %}\n\
+@end deftypefn"),
+
+  pair_type ("...",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ...\n\
+Continuation marker.  Joins current line with following line.\n\
+@end deftypefn"),
 
   pair_type ("&",
-    "Element by element logical and operator.  See also `&&'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} &\n\
+Element by element logical 'and' operator.\n\
+@seealso{&&, and}\n\
+@end deftypefn"),
 
   pair_type ("&&",
-    "Logical and operator (with short-circuit evaluation).  See also `&'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} &&\n\
+Logical 'and' operator (with short-circuit evaluation).\n\
+@seealso{&, and}\n\
+@end deftypefn"),
 
   pair_type ("'",
-    "Matrix transpose operator.  For complex matrices, computes the\n\
-complex conjugate (Hermitian) transpose.  See also `.''\n\
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} '\n\
+Matrix transpose operator.  For complex matrices, computes the\n\
+complex conjugate (Hermitian) transpose.\n\
 \n\
 The single quote character may also be used to delimit strings, but\n\
 it is better to use the double quote character, since that is never\n\
-ambiguous"),
+ambiguous.\n\
+@seealso{.', transpose}\n\
+@end deftypefn"),
 
   pair_type ("(",
-    "Array index or function argument delimiter."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} (\n\
+Array index or function argument delimiter.\n\
+@end deftypefn"),
 
   pair_type (")",
-    "Array index or function argument delimiter."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} )\n\
+Array index or function argument delimiter.\n\
+@end deftypefn"),
 
   pair_type ("*",
-    "Multiplication operator.  See also `.*'"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} *\n\
+Multiplication operator.\n\
+@seealso{.*, times}\n\
+@end deftypefn"),
 
   pair_type ("**",
-    "Power operator.  See also `^', `.**', and `.^'"),
-
-  pair_type ("+",
-    "Addition operator."),
-
-  pair_type ("++",
-    "Increment operator.  As in C, may be applied as a prefix or postfix\n\
-operator."),
-
-  pair_type (",",
-    "Array index, function argument, or command separator."),
-
-  pair_type ("-",
-    "Subtraction or unary negation operator."),
-
-  pair_type ("--",
-    "Decrement operator.  As in C, may be applied as a prefix or postfix\n\
-operator."),
-
-  pair_type (".'",
-    "Matrix transpose operator.  For complex matrices, computes the\n\
-transpose, *not* the complex conjugate transpose.  See also `''."),
-
-  pair_type (".*",
-    "Element by element multiplication operator.  See also `*'."),
-
-  pair_type (".**",
-    "Element by element power operator.  See also `**', `^', and `.^'."),
-
-  pair_type ("./",
-    "Element by element division operator.  See also `/' and `\\'."),
-
-  pair_type (".^",
-    "Element by element power operator.  See also `**', `^', and `.^'."),
-
-  pair_type ("/",
-    "Right division.  See also `\\' and `./'."),
-
-  pair_type (":",
-    "Select entire rows or columns of matrices."),
-
-  pair_type (";",
-    "Array row or command separator.  See also `,'."),
-
-  pair_type ("<",
-    "Less than operator."),
-
-  pair_type ("<=",
-    "Less than or equals operator."),
-
-  pair_type ("=",
-    "Assignment operator."),
-
-  pair_type ("==",
-    "Equality test operator."),
-
-  pair_type (">",
-    "Greater than operator."),
-
-  pair_type (">=",
-    "Greater than or equals operator."),
-
-  pair_type ("[",
-    "Return list delimiter.  See also `]'."),
-
-  pair_type ("\\",
-    "Left division operator.  See also `/' and `./'."),
-
-  pair_type ("]",
-    "Return list delimiter.  See also `['."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} **\n\
+Power operator.\n\
+@seealso{power, ^, .**, .^}\n\
+@end deftypefn"),
 
   pair_type ("^",
-    "Power operator.  See also `**', `.^', and `.**.'"),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ^\n\
+Power operator.\n\
+@seealso{power, **, .^, .**}\n\
+@end deftypefn"),
+
+  pair_type ("+",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} +\n\
+Addition operator.\n\
+@seealso{plus}\n\
+@end deftypefn"),
+
+  pair_type ("++",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ++\n\
+Increment operator.  As in C, may be applied as a prefix or postfix\n\
+operator.\n\
+@seealso{--}\n\
+@end deftypefn"),
+
+  pair_type (",",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ,\n\
+Array index, function argument, or command separator.\n\
+@end deftypefn"),
+
+  pair_type ("-",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} -\n\
+Subtraction or unary negation operator.\n\
+@seealso{minus}\n\
+@end deftypefn"),
+
+  pair_type ("--",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} --\n\
+Decrement operator.  As in C, may be applied as a prefix or postfix\n\
+operator.\n\
+@seealso{++}\n\
+@end deftypefn"),
+
+  pair_type (".'",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .'\n\
+Matrix transpose operator.  For complex matrices, computes the\n\
+transpose, @emph{not} the complex conjugate transpose.\n\
+@seealso{', transpose}\n\
+@end deftypefn"),
+
+  pair_type (".*",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .*\n\
+Element by element multiplication operator.\n\
+@seealso{*, times}\n\
+@end deftypefn"),
+
+  pair_type (".**",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .*\n\
+Element by element power operator.\n\
+@seealso{**, ^, .^, power}\n\
+@end deftypefn"),
+
+  pair_type (".^",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .^\n\
+Element by element power operator.\n\
+@seealso{.**, ^, **, power}\n\
+@end deftypefn"),
+
+  pair_type ("./",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ./\n\
+Element by element right division operator.\n\
+@seealso{/, .\\, rdivide, mrdivide}\n\
+@end deftypefn"),
+
+  pair_type ("/",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} /\n\
+Right division operator.\n\
+@seealso{./, \\, rdivide, mrdivide}\n\
+@end deftypefn"),
+
+  pair_type (".\\",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} .\\\n\
+Element by element left division operator.\n\
+@seealso{\\, ./, rdivide, mrdivide}\n\
+@end deftypefn"),
+
+  pair_type ("\\",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} \\\n\
+Left division operator.\n\
+@seealso{.\\, /, ldivide, mldivide}\n\
+@end deftypefn"),
+
+  pair_type (":",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} :\n\
+Select entire rows or columns of matrices.\n\
+@end deftypefn"),
+
+  pair_type (";",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ;\n\
+Array row or command separator.\n\
+@seealso{,}\n\
+@end deftypefn"),
+
+  pair_type ("<",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} <\n\
+'Less than' operator.\n\
+@seealso{lt}\n\
+@end deftypefn"),
+
+  pair_type ("<=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} <=\n\
+'Less than' or 'equals' operator.\n\
+@seealso{le}\n\
+@end deftypefn"),
+
+  pair_type ("=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} =\n\
+Assignment operator.\n\
+@end deftypefn"),
+
+  pair_type ("==",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ==\n\
+Equality test operator.\n\
+@seealso{eq}\n\
+@end deftypefn"),
+
+  pair_type (">",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} >\n\
+'Greater than' operator.\n\
+@seealso{gt}\n\
+@end deftypefn"),
+
+  pair_type (">=",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} >=\n\
+'Greater than' or 'equals' operator.\n\
+@seealso{ge}\n\
+@end deftypefn"),
+
+  pair_type ("[",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} [\n\
+Return list delimiter.\n\
+@seealso{]}\n\
+@end deftypefn"),
+
+  pair_type ("]",
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ]\n\
+Return list delimiter.\n\
+@seealso{[}\n\
+@end deftypefn"),
 
   pair_type ("|",
-    "Element by element logical or operator.  See also `||'."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} |\n\
+Element by element logical 'or' operator.\n\
+@seealso{||, or}\n\
+@end deftypefn"),
 
   pair_type ("||",
-    "Logical or operator (with short-circuit evaluation).  See also `|'."),
-
-  pair_type ("~",
-    "Logical not operator.  See also `!' and `~'."),
-
-  pair_type ("~=",
-    "Logical not equals operator.  See also `!='."),
+    "-*- texinfo -*-\n\
+@deftypefn {Operator} {} ||\n\
+Logical 'or' (with short-circuit evaluation) operator.\n\
+@seealso{|, or}\n\
+@end deftypefn"),
 };
 
 const static pair_type keywords[] =
@@ -234,7 +432,7 @@ const static pair_type keywords[] =
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} break\n\
 Exit the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, continue}\n\
+@seealso{do, while, for, parfor, continue}\n\
 @end deftypefn"),
 
   pair_type ("case",
@@ -257,7 +455,7 @@ Begin the cleanup part of a try-catch block.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} continue\n\
 Jump to the end of the innermost enclosing do, while or for loop.\n\
-@seealso{do, while, for, break}\n\
+@seealso{do, while, for, parfor, break}\n\
 @end deftypefn"),
 
   pair_type ("do",
@@ -287,7 +485,7 @@ Alternate conditional test for an if block.  See @code{if} for an example.\n\
 @deftypefn {Keyword} {} end\n\
 Mark the end of any @code{for}, @code{if}, @code{do}, @code{while}, or\n\
 @code{function} block.\n\
-@seealso{for, if, do, while, function}\n\
+@seealso{for, parfor, if, do, while, function}\n\
 @end deftypefn"),
 
   pair_type ("end_try_catch",
@@ -325,6 +523,13 @@ Mark the end of an if block.  See @code{if} for an example.\n\
 @seealso{if}\n\
 @end deftypefn"),
 
+  pair_type ("endparfor",
+    "-*- texinfo -*-\n\
+@deftypefn {Keyword} {} endparfor\n\
+Mark the end of a parfor loop.  See @code{parfor} for an example.\n\
+@seealso{parfor}\n\
+@end deftypefn"),
+
   pair_type ("endswitch",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} endswitch\n\
@@ -351,12 +556,12 @@ for i = 1:10\n\
 endfor\n\
 @end group\n\
 @end example\n\
-@seealso{do, while}\n\
+@seealso{do, parfor, while}\n\
 @end deftypefn"),
 
   pair_type ("function",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} function @var{outputs} = function (@var{input}, @dots{})\n\
+@deftypefn  {Keyword} {} function @var{outputs} = function (@var{input}, @dots{})\n\
 @deftypefnx {Keyword} {} function {} function (@var{input}, @dots{})\n\
 @deftypefnx {Keyword} {} function @var{outputs} = function\n\
 Begin a function body with @var{outputs} as results and @var{inputs} as\n\
@@ -382,7 +587,7 @@ endif\n\
 
   pair_type ("if",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} if (@var{cond}) @dots{} endif\n\
+@deftypefn  {Keyword} {} if (@var{cond}) @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} else @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} endif\n\
 @deftypefnx {Keyword} {} if (@var{cond}) @dots{} elseif (@var{cond}) @dots{} else @dots{} endif\n\
@@ -410,6 +615,22 @@ The default statement in a switch block (similar to else in an if block).\n\
 @seealso{switch}\n\
 @end deftypefn"),
 
+  pair_type ("parfor",
+    "-*- texinfo -*-\n\
+@deftypefn  {Keyword} {} for @var{i} = @var{range}\n\
+@deftypefnx {Keyword} {} for (@var{i} = @var{range}, @var{maxproc})\n\
+Begin a for loop that may execute in parallel.\n\
+\n\
+@example\n\
+@group\n\
+parfor i = 1:10\n\
+  i\n\
+endparfor\n\
+@end group\n\
+@end example\n\
+@seealso{for, do, while}\n\
+@end deftypefn"),
+
   pair_type ("persistent",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} persistent @var{var}\n\
@@ -419,13 +640,6 @@ subsequent calls to the same function.  The difference between persistent\n\
 variables and global variables is that persistent variables are local in \n\
 scope to a particular function and are not visible elsewhere.\n\
 @seealso{global}\n\
-@end deftypefn"),
-
-  pair_type ("replot",
-    "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} replot\n\
-Replot a graphic.\n\
-@seealso{plot}\n\
 @end deftypefn"),
 
   pair_type ("return",
@@ -473,7 +687,7 @@ If an error occurs within a try block, then the catch code will be run and\n\
 execution will proceed after the catch block (though it is often\n\
 recommended to use the lasterr function to re-throw the error after cleanup\n\
 is completed).\n\
-@seealso{catch,unwind_protect}\n\
+@seealso{catch, unwind_protect}\n\
 @end deftypefn"),
 
   pair_type ("until",
@@ -494,7 +708,7 @@ the error is thrown.  If an error is not thrown, then the\n\
 unwind_protect_cleanup block is still executed (in other words, the\n\
 unwind_protect_cleanup will be run with or without an error in the\n\
 unwind_protect block).\n\
-@seealso{unwind_protect_cleanup,try}\n\
+@seealso{unwind_protect_cleanup, try}\n\
 @end deftypefn"),
 
   pair_type ("unwind_protect_cleanup",
@@ -508,14 +722,14 @@ Begin the cleanup section of an unwind_protect block.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargin\n\
 Pass an arbitrary number of arguments into a function.\n\
-@seealso{varargout, nargin, nargout}\n\
+@seealso{varargout, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("varargout",
     "-*- texinfo -*-\n\
 @deftypefn {Keyword} {} varargout\n\
 Pass an arbitrary number of arguments out of a function.\n\
-@seealso{varargin, nargin, nargout}\n\
+@seealso{varargin, nargin, isargout, nargout, nthargout}\n\
 @end deftypefn"),
 
   pair_type ("while",
@@ -551,6 +765,9 @@ make_name_list (void)
   const string_vector bif = symbol_table::built_in_function_names ();
   const int bif_len = bif.length ();
 
+  const string_vector cfl = symbol_table::cmdline_function_names ();
+  const int cfl_len = cfl.length ();
+
   const string_vector lcl = symbol_table::variable_names ();
   const int lcl_len = lcl.length ();
 
@@ -560,7 +777,8 @@ make_name_list (void)
   const string_vector afl = autoloaded_functions ();
   const int afl_len = afl.length ();
 
-  const int total_len = key_len + bif_len + lcl_len + ffl_len + afl_len;
+  const int total_len
+    = key_len + bif_len + cfl_len + lcl_len + ffl_len + afl_len;
 
   string_vector list (total_len);
 
@@ -573,6 +791,9 @@ make_name_list (void)
 
   for (i = 0; i < bif_len; i++)
     list[j++] = bif[i];
+
+  for (i = 0; i < cfl_len; i++)
+    list[j++] = cfl[i];
 
   for (i = 0; i < lcl_len; i++)
     list[j++] = lcl[i];
@@ -719,16 +940,11 @@ do_get_help_text (const std::string& name, std::string& text,
 
 DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
-Return the help text of a given function.\n\
+Return the raw help text of function @var{name}.\n\
 \n\
-This function returns the raw help text @var{text} and an indication of\n\
-its format for the function @var{name}.  The format indication @var{format}\n\
-is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
+The raw help text is returned in @var{text} and the format in @var{format}\n\
+The format is a string which is one of @t{\"texinfo\"}, @t{\"html\"}, or\n\
 @t{\"plain text\"}.\n\
-\n\
-To convert the help text to other formats, use the @code{makeinfo} function.\n\
-\n\
-@seealso{makeinfo}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -793,16 +1009,11 @@ do_get_help_text_from_file (const std::string& fname, std::string& text,
 DEFUN (get_help_text_from_file, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
-Return the help text from the given file.\n\
+Return the raw help text from the file @var{fname}.\n\
 \n\
-This function returns the raw help text @var{text} and an indication of\n\
-its format for the function @var{name}.  The format indication @var{format}\n\
-is a string that can be either @t{\"texinfo\"}, @t{\"html\"}, or\n\
+The raw help text is returned in @var{text} and the format in @var{format}\n\
+The format is a string which is one of @t{\"texinfo\"}, @t{\"html\"}, or\n\
 @t{\"plain text\"}.\n\
-\n\
-To convert the help text to other formats, use the @code{makeinfo} function.\n\
-\n\
-@seealso{makeinfo}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1050,6 +1261,7 @@ DEFUN (doc_cache_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} doc_cache_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} doc_cache_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave documentation cache file.  A cache file significantly improves\n\
 the performance of the @code{lookfor} command.  The default value is \n\
@@ -1059,6 +1271,10 @@ and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
 @samp{--doc-cache-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1069,6 +1285,7 @@ DEFUN (info_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave info file.  The default value is\n\
 @file{@var{octave-home}/info/octave.info}, in\n\
@@ -1076,6 +1293,10 @@ which @var{octave-home} is the root directory of the Octave installation.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
 @samp{--info-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1086,6 +1307,7 @@ DEFUN (info_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 info program to run.  The default value is\n\
 @file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
@@ -1095,6 +1317,10 @@ is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
 default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
 @samp{--info-program NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1105,9 +1331,14 @@ DEFUN (makeinfo_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} makeinfo_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} makeinfo_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 program that Octave runs to format help text containing\n\
 Texinfo markup commands.  The default value is @code{makeinfo}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, info_program, doc, help}\n\
 @end deftypefn")
 {
@@ -1118,9 +1349,14 @@ DEFUN (suppress_verbose_help_message, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} suppress_verbose_help_message (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);

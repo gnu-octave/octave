@@ -1,9 +1,7 @@
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} FIRfilter ()
+## @deftypefn  {Function File} {} FIRfilter ()
 ## @deftypefnx {Function File} {} FIRfilter (@var{p})
-## Creates an FIR filter with polynomial @var{p} as
-## coefficient vector.
-##
+## Create a FIR filter with polynomial @var{p} as coefficient vector.
 ## @end deftypefn
 
 function f = FIRfilter (p)

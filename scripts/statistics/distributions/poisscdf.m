@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -35,29 +36,55 @@ function cdf = poisscdf (x, lambda)
   if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("poisscdf: X and LAMBDA must be of common size or scalar");
+      error ("poisscdf: X and LAMBDA must be of common size or scalars");
     endif
   endif
 
-  cdf = zeros (size (x));
-
-  k = find (isnan (x) | !(lambda > 0));
-  if (any (k))
-    cdf(k) = NaN;
+  if (iscomplex (x) || iscomplex (lambda))
+    error ("poisscdf: X and LAMBDA must not be complex");
   endif
 
-  k = find ((x == Inf) & (lambda > 0));
-  if (any (k))
-    cdf(k) = 1;
+  if (isa (x, "single") || isa (lambda, "single"))
+    cdf = zeros (size (x), "single");
+  else
+    cdf = zeros (size (x));
   endif
 
-  k = find ((x >= 0) & (x < Inf) & (lambda > 0));
-  if (any (k))
-    if (isscalar (lambda))
-      cdf(k) = 1 - gammainc (lambda, floor (x(k)) + 1);
-    else
-      cdf(k) = 1 - gammainc (lambda(k), floor (x(k)) + 1);
-    endif
+  k = isnan (x) | !(lambda > 0);
+  cdf(k) = NaN;
+
+  k = (x == Inf) & (lambda > 0);
+  cdf(k) = 1;
+
+  k = (x >= 0) & (x < Inf) & (lambda > 0);
+  if (isscalar (lambda))
+    cdf(k) = 1 - gammainc (lambda, floor (x(k)) + 1);
+  else
+    cdf(k) = 1 - gammainc (lambda(k), floor (x(k)) + 1);
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 1 2 Inf];
+%! y = [0, gammainc(1, (x(2:4) +1), 'upper'), 1];
+%!assert(poisscdf (x, ones(1,5)), y);
+%!assert(poisscdf (x, 1), y);
+%!assert(poisscdf (x, [1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)]);
+%!assert(poisscdf ([x(1:2) NaN Inf x(5)], 1), [y(1:2) NaN 1 y(5)]);
+
+%% Test class of input preserved
+%!assert(poisscdf ([x, NaN], 1), [y, NaN]);
+%!assert(poisscdf (single([x, NaN]), 1), single([y, NaN]), eps("single"));
+%!assert(poisscdf ([x, NaN], single(1)), single([y, NaN]), eps("single"));
+
+%% Test input validation
+%!error poisscdf ()
+%!error poisscdf (1)
+%!error poisscdf (1,2,3)
+%!error poisscdf (ones(3),ones(2))
+%!error poisscdf (ones(2),ones(3))
+%!error poisscdf (i, 2)
+%!error poisscdf (2, i)
+

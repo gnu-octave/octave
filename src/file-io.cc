@@ -46,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <stack>
 #include <vector>
 
+#include <fcntl.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -209,9 +210,11 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
 DEFUN (fclose, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fclose (@var{fid})\n\
+@deftypefn  {Built-in Function} {} fclose (@var{fid})\n\
+@deftypefnx {Built-in Function} {} fclose (\"all\")\n\
 Close the specified file.  If successful, @code{fclose} returns 0,\n\
-otherwise, it returns -1.\n\
+otherwise, it returns -1.  The second form of the @code{fclose} call closes\n\
+all open files except @code{stdout}, @code{stderr}, and @code{stdin}.\n\
 @seealso{fopen, fseek, ftell}\n\
 @end deftypefn")
 {
@@ -345,7 +348,8 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
 DEFUN (fgets, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})\n\
+@deftypefn  {Built-in Function} {} fgets (@var{fid})\n\
+@deftypefnx {Built-in Function} {} fgets (@var{fid}, @var{len})\n\
 Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, including\n\
 the possible trailing newline, are returned as a string.\n\
@@ -491,7 +495,7 @@ do_stream_open (const std::string& name, const std::string& mode,
                 {
                   tmode.erase (pos, 1);
 
-                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
 
                   int fd = fileno (fptr);
 
@@ -506,7 +510,7 @@ do_stream_open (const std::string& name, const std::string& mode,
               else
 #endif
                 {
-                  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+                  FILE *fptr = gnulib::fopen (fname.c_str (), tmode.c_str ());
 
                   retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 
@@ -663,14 +667,14 @@ however, conversions are currently only supported for @samp{native}\n\
 
   if (nargin == 1)
     {
-      if (nargout < 2 && args(0).is_string ())
+      if (args(0).is_string ())
         {
           // If there is only one argument and it is a string but it
           // is not the string "all", we assume it is a file to open
           // with MODE = "r".  To open a file called "all", you have
           // to supply more than one argument.
 
-          if (args(0).string_value () == "all")
+          if (nargout < 2 && args(0).string_value () == "all")
             return octave_stream_list::open_file_numbers ();
         }
       else
@@ -730,7 +734,7 @@ for reading, writing, or both.  For example:\n\
 freport ()\n\
 \n\
      @print{}  number  mode  name\n\
-     @print{} \n\
+     @print{}\n\
      @print{}       0     r  stdin\n\
      @print{}       1     w  stdout\n\
      @print{}       2     w  stderr\n\
@@ -1065,8 +1069,8 @@ converted.\n\
 
 DEFUN (fscanf, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{val}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, \"C\")\n\
+@deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, \"C\")\n\
 In the first form, read from @var{fid} according to @var{template},\n\
 returning the result in the matrix @var{val}.\n\
 \n\
@@ -1098,6 +1102,8 @@ A string is returned if @var{template} specifies only character\n\
 conversions.\n\
 \n\
 The number of items successfully read is returned in @var{count}.\n\
+\n\
+If an error occurs, @var{errmsg} contains a system-dependent error message.\n\
 \n\
 In the second form, read from @var{fid} according to @var{template},\n\
 with each conversion specifier in @var{template} corresponding to a\n\
@@ -1132,8 +1138,9 @@ complete description of the syntax of the template string.\n\
     }
   else
     {
-      retval (1) = 0.0;
-      retval (0) = Matrix ();
+      retval(2) = "unknown error";
+      retval(1) = 0.0;
+      retval(0) = Matrix ();
 
       if (nargin == 2 || nargin == 3)
         {
@@ -1155,6 +1162,7 @@ complete description of the syntax of the template string.\n\
 
                       if (! error_state)
                         {
+                          retval(2) = os.error ();
                           retval(1) = count;
                           retval(0) = tmp;
                         }
@@ -1171,13 +1179,32 @@ complete description of the syntax of the template string.\n\
   return retval;
 }
 
+static std::string
+get_sscanf_data (const octave_value& val)
+{
+  std::string retval;
+
+  if (val.is_string ())
+    {
+      octave_value tmp = val.reshape (dim_vector (1, val.numel ()));
+
+      retval = tmp.string_value ();
+    }
+  else
+    ::error ("sscanf: argument STRING must be a string");
+
+  return retval;
+}
+
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
+@deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
-string is treated as an end-of-file condition.\n\
+string is treated as an end-of-file condition.  In addition to the values\n\
+returned by @code{fscanf}, the index of the next character to be read\n\
+is returned in @var{pos}.\n\
 @seealso{fscanf, scanf, sprintf}\n\
 @end deftypefn")
 {
@@ -1189,10 +1216,10 @@ string is treated as an end-of-file condition.\n\
 
   if (nargin == 3 && args(2).is_string ())
     {
-      if (args(0).is_string ())
-        {
-          std::string data = args(0).string_value ();
+      std::string data = get_sscanf_data (args(0));
 
+      if (! error_state)
+        {
           octave_stream os = octave_istrstream::create (data);
 
           if (os.is_valid ())
@@ -1218,10 +1245,10 @@ string is treated as an end-of-file condition.\n\
           retval(1) = 0.0;
           retval(0) = Matrix ();
 
-          if (args(0).is_string ())
-            {
-              std::string data = args(0).string_value ();
+          std::string data = get_sscanf_data (args(0));
 
+          if (! error_state)
+            {
               octave_stream os = octave_istrstream::create (data);
 
               if (os.is_valid ())
@@ -1244,7 +1271,8 @@ string is treated as an end-of-file condition.\n\
                           // position will clear it.
                           std::string errmsg = os.error ();
 
-                          retval(3) = os.tell () + 1;
+                          retval(3)
+                            = (os.eof () ? data.length () : os.tell ()) + 1;
                           retval(2) = errmsg;
                           retval(1) = count;
                           retval(0) = tmp;
@@ -1257,8 +1285,6 @@ string is treated as an end-of-file condition.\n\
                 ::error ("%s: unable to create temporary input buffer",
                          who.c_str  ());
             }
-          else
-            ::error ("%s: argument STRING must be a string", who.c_str ());
         }
       else
         print_usage ();
@@ -1269,8 +1295,8 @@ string is treated as an end-of-file condition.\n\
 
 DEFUN (scanf, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {[@var{val}, @var{count}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}]] =} scanf (@var{template}, \"C\")\n\
+@deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, \"C\")\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\
@@ -1919,7 +1945,7 @@ system-dependent error message.\n\
 
   if (nargin == 0)
     {
-      FILE *fid = tmpfile ();
+      FILE *fid = gnulib::tmpfile ();
 
       if (fid)
         {
@@ -1956,7 +1982,7 @@ must be @code{XXXXXX} and these are replaced with a string that makes the\n\
 filename unique.  The file is then created with mode read/write and\n\
 permissions that are system dependent (on GNU/Linux systems, the permissions\n\
 will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
-with the @w{@code{O_EXCL}} flag.\n\
+in binary mode and with the @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true,\n\
 the file will be deleted automatically when Octave exits, or when\n\
@@ -1986,7 +2012,7 @@ error message.\n\
           OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
           strcpy (tmp, tmpl8.c_str ());
 
-          int fd = mkstemp (tmp);
+          int fd = gnulib::mkostemp (tmp, O_BINARY);
 
           if (fd < 0)
             {
@@ -1995,7 +2021,7 @@ error message.\n\
             }
           else
             {
-              const char *fopen_mode = "w+";
+              const char *fopen_mode = "w+b";
 
               FILE *fid = fdopen (fd, fopen_mode);
 

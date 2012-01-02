@@ -22,8 +22,7 @@
 ## Return the coefficients of the integral of the polynomial whose
 ## coefficients are represented by the vector @var{p}.  The variable
 ## @var{k} is the constant of integration, which by default is set to zero.
-## @seealso{poly, polyderiv, polyreduce, roots, conv, deconv, residue,
-## filter, polyval, polyvalm}
+## @seealso{polyder, polyval}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -61,3 +60,18 @@ function retval = polyint (p, k)
   retval = [(p ./ [lp:-1:1]), k];
 
 endfunction
+
+%!test
+%! A = [3, 2, 1];
+%! assert (polyint(A),polyint(A,0));
+%! assert (polyint(A),polyint(A'));
+%! assert (polyint(A),[1, 1, 1, 0]);
+%! assert (polyint(A,1),ones(1,4));
+
+%!test
+%! A = ones(1,8);
+%! B = [length(A):-1:1];
+%! assert (polyint(A),[1./B, 0]);
+
+%!error polyint()
+%!error polyint(ones(2,2))

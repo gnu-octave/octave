@@ -18,12 +18,11 @@
 # along with Octave; see the file COPYING.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-include $(top_srcdir)/common.mk
+include $(top_srcdir)/build-aux/common.mk
 
 FCN_FILES = \
   fntests.m \
   test_args.m \
-  test_classes.m \
   test_contin.m \
   test_diag_perm.m \
   test_error.m \
@@ -44,7 +43,6 @@ FCN_FILES = \
   test_recursion.m \
   test_return.m \
   test_slice.m \
-  test_string.m \
   test_struct.m \
   test_switch.m \
   test_system.m \
@@ -53,14 +51,10 @@ FCN_FILES = \
   test_unwind.m \
   test_while.m
 
-include @Blork/module.mk
-include @Cork/module.mk
-include @Dork/module.mk
-include @Gork/module.mk
-include @Pork/module.mk
-include @Sneetch/module.mk
-include @Snork/module.mk
-include @Spork/module.mk
+include classes/module.mk
+include class-concat/module.mk
+include ctor-vs-method/module.mk
+include fcn-handle-derived-resolution/module.mk
 
 check: test_sparse.m test_bc_overloads.m
 	$(top_builddir)/run-octave --norc --silent --no-history $(srcdir)/fntests.m $(srcdir)
@@ -72,7 +66,6 @@ test_bc_overloads.m: build_bc_overload_tests.sh bc_overloads_expected
 	$(srcdir)/build_bc_overload_tests.sh $(srcdir)/bc_overloads_expected
 
 EXTRA_DIST = \
-  ChangeLog \
   build_sparse_tests.sh \
   build_bc_overload_tests.sh \
   bc_overloads_expected \

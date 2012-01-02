@@ -1,3 +1,4 @@
+## Copyright (C) 2011 Rik Wehbring
 ## Copyright (C) 1995-2011 Kurt Hornik
 ##
 ## This file is part of Octave.
@@ -19,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} exppdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the probability density function
-## (PDF) of the exponential distribution with mean @var{lambda}.
+## (PDF) at @var{x} of the exponential distribution with mean @var{lambda}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -31,34 +32,53 @@ function pdf = exppdf (x, lambda)
     print_usage ();
   endif
 
-  if (!isscalar (x) && !isscalar(lambda))
+  if (!isscalar (lambda))
     [retval, x, lambda] = common_size (x, lambda);
     if (retval > 0)
-      error ("exppdf: X and LAMBDA must be of common size or scalar");
+      error ("exppdf: X and LAMBDA must be of common size or scalars");
     endif
   endif
 
-  if (isscalar (x))
-    sz = size (lambda);
+  if (iscomplex (x) || iscomplex (lambda))
+    error ("exppdf: X and LAMBDA must not be complex");
+  endif
+
+  if (isa (x, "single") || isa (lambda, "single"))
+    pdf = zeros (size (x), "single");
   else
-    sz = size (x);
-  endif
-  pdf = zeros (sz);
-
-  k = find (!(lambda > 0) | isnan (x));
-  if (any (k))
-    pdf(k) = NaN;
+    pdf = zeros (size (x));
   endif
 
-  k = find ((x > 0) & (x < Inf) & (lambda > 0));
-  if (any (k))
-    if isscalar (lambda)
-      pdf(k) = exp (- x(k) ./ lambda) ./ lambda;
-    elseif isscalar (x)
-      pdf(k) = exp (- x ./ lambda(k)) ./ lambda(k);
-    else
-      pdf(k) = exp (- x(k) ./ lambda(k)) ./ lambda(k);
-    endif
+  k = isnan (x) | !(lambda > 0);
+  pdf(k) = NaN;
+
+  k = (x >= 0) & (x < Inf) & (lambda > 0);
+  if isscalar (lambda)
+    pdf(k) = exp (- x(k) / lambda) / lambda;
+  else
+    pdf(k) = exp (- x(k) ./ lambda(k)) ./ lambda(k);
   endif
 
 endfunction
+
+
+%!shared x,y
+%! x = [-1 0 0.5 1 Inf];
+%! y = gampdf (x, 1, 2);
+%!assert(exppdf (x, 2*ones(1,5)), y);
+%!assert(exppdf (x, 2*[1 0 NaN 1 1]), [y(1) NaN NaN y(4:5)]);
+%!assert(exppdf ([x, NaN], 2), [y, NaN]);
+
+%% Test class of input preserved
+%!assert(exppdf (single([x, NaN]), 2), single([y, NaN]));
+%!assert(exppdf ([x, NaN], single(2)), single([y, NaN]));
+
+%% Test input validation
+%!error exppdf ()
+%!error exppdf (1)
+%!error exppdf (1,2,3)
+%!error exppdf (ones(3),ones(2))
+%!error exppdf (ones(2),ones(3))
+%!error exppdf (i, 2)
+%!error exppdf (2, i)
+

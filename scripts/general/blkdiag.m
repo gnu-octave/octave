@@ -18,10 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} blkdiag (@var{A}, @var{B}, @var{C}, @dots{})
-## Build a block diagonal matrix from @var{A}, @var{B}, @var{C}, @dots{}.
+## Build a block diagonal matrix from @var{A}, @var{B}, @var{C}, @dots{}
 ## All the arguments must be numeric and are two-dimensional matrices or
-## scalars.
-## @seealso{diag, horzcat, vertcat}
+## scalars.  If any argument is of type sparse, the output will also be
+## sparse.
+## @seealso{diag, horzcat, vertcat, sparse}
 ## @end deftypefn
 
 ## Author: Daniel Calvelo
@@ -33,7 +34,7 @@ function retval = blkdiag (varargin)
     print_usage ();
   endif
 
-  if (! all (cellfun (@isnumeric, varargin)))
+  if (! all (cellfun ("isnumeric", varargin)))
     error ("blkdiag: all arguments must be numeric");
   endif
 
@@ -46,7 +47,12 @@ function retval = blkdiag (varargin)
   ## calling size directly.
   tmp = cell2mat (cellfun (@size, varargin', "uniformoutput", false));
   csz = cumsum ([0 0; tmp], 1);
-  retval = zeros (csz(end,:));
+
+  if (any (cellfun ("issparse", varargin)))
+    retval = sparse (csz(end,1), csz(end,2));
+  else
+    retval = zeros (csz(end,:));
+  endif
 
   for p = 1:nargin
     vp = varargin{p};
@@ -57,15 +63,18 @@ function retval = blkdiag (varargin)
 
 endfunction
 
-# regular tests
+## regular tests
 %!assert(blkdiag(1,ones(2),1),[1,0,0,0;0,1,1,0;0,1,1,0;0,0,0,1])
 %!assert(blkdiag([1,2],[3,4],[5,6]),[1,2,0,0,0,0;0,0,3,4,0,0;0,0,0,0,5,6])
 %!assert(blkdiag([1,2],[3;4],[5,6]),[1,2,0,0,0;0,0,3,0,0;0,0,4,0,0;0,0,0,5,6])
 %!assert(blkdiag([1,2;3,4],[5,6,7]),[1,2,0,0,0;3,4,0,0,0;0,0,5,6,7])
-# tests involving empty matrices
+## tests involving empty matrices
 %!assert(blkdiag([],[],[]),[])
 %!assert(blkdiag([],[1,2;3,4],[],5,[]),[1,2,0;3,4,0;0,0,5])
 %!assert(blkdiag(zeros(1,0,1),[1,2,3],1,0,5,zeros(0,1,1)),[0,0,0,0,0,0,0;1,2,3,0,0,0,0;0,0,0,1,0,0,0;0,0,0,0,0,0,0;0,0,0,0,0,5,0]);
+## tests involving sparse matrices
+%!assert (blkdiag (sparse([1,2;3,4]),[5,6;7,8]), sparse([1,2,0,0;3,4,0,0;0,0,5,6;0,0,7,8]))
+%!assert (blkdiag (sparse([1,2;3,4]),[5,6]), sparse([1,2,0,0;3,4,0,0;0,0,5,6]))
 # sanity checks
 %!test
 %! A = rand (round (rand (1, 2) * 10));

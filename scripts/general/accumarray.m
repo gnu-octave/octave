@@ -19,50 +19,110 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{func}, @var{fillval}, @var{issparse})
-## @deftypefnx {Function File} {} accumarray (@var{csubs}, @var{vals}, @dots{})
+## @deftypefnx {Function File} {} accumarray (@var{subs}, @var{vals}, @dots{})
 ##
 ## Create an array by accumulating the elements of a vector into the
 ## positions defined by their subscripts.  The subscripts are defined by
-## the rows of the matrix @var{subs} and the values by @var{vals}.  Each row
-## of @var{subs} corresponds to one of the values in @var{vals}.
+## the rows of the matrix @var{subs} and the values by @var{vals}.  Each
+## row of @var{subs} corresponds to one of the values in @var{vals}.  If
+## @var{vals} is a scalar, it will be used for each of the row of
+## @var{subs}.  If @var{subs} is a cell array of vectors, all vectors
+## must be of the same length, and the subscripts in the @var{k}th
+## vector must correspond to the @var{k}th dimension of the result.
 ##
-## The size of the matrix will be determined by the subscripts themselves.
-## However, if @var{sz} is defined it determines the matrix size.  The length
-## of @var{sz} must correspond to the number of columns in @var{subs}.
+## The size of the matrix will be determined by the subscripts
+## themselves.  However, if @var{sz} is defined it determines the matrix
+## size.  The length of @var{sz} must correspond to the number of columns
+## in @var{subs}.  An exception is if @var{subs} has only one column, in
+## which case @var{sz} may be the dimensions of a vector and the
+## subscripts of @var{subs} are taken as the indices into it.
 ##
-## The default action of @code{accumarray} is to sum the elements with the
-## same subscripts.  This behavior can be modified by defining the @var{func}
-## function.  This should be a function or function handle that accepts a
-## column vector and returns a scalar.  The result of the function should not
-## depend on the order of the subscripts.
+## The default action of @code{accumarray} is to sum the elements with
+## the same subscripts.  This behavior can be modified by defining the
+## @var{func} function.  This should be a function or function handle
+## that accepts a column vector and returns a scalar.  The result of the
+## function should not depend on the order of the subscripts.
 ##
-## The elements of the returned array that have no subscripts associated with
-## them are set to zero.  Defining @var{fillval} to some other value allows
-## these values to be defined.
+## The elements of the returned array that have no subscripts associated
+## with them are set to zero.  Defining @var{fillval} to some other value
+## allows these values to be defined.  This behavior changes, however,
+## for certain values of @var{func}.  If @var{func} is @code{min}
+## (respectively, @code{max}) then the result will be filled with the
+## minimum (respectively, maximum) integer if @var{vals} is of integral
+## type, logical false (respectively, logical true) if @var{vals} is of
+## logical type, zero if @var{fillval} is zero and all values are
+## non-positive (respectively, non-negative), and NaN otherwise.
 ##
-## By default @code{accumarray} returns a full matrix.  If @var{issparse} is
-## logically true, then a sparse matrix is returned instead.
+## By default @code{accumarray} returns a full matrix.  If
+## @var{issparse} is logically true, then a sparse matrix is returned
+## instead.
 ##
-## An example of the use of @code{accumarray} is:
+## The following @code{accumarray} example constructs a frequency table
+## that in the first column counts how many occurrences each number in
+## the second column has, taken from the vector @var{x}.  Note the usage
+## of @code{unique}  for assigning to all repeated elements of @var{x}
+## the same index (@pxref{doc-unique}).
 ##
 ## @example
 ## @group
-## accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2], 101:105)
+## @var{x} = [91, 92, 90, 92, 90, 89, 91, 89, 90, 100, 100, 100];
+## [@var{u}, ~, @var{j}] = unique (@var{x});
+## [accumarray(@var{j}', 1), @var{u}']
+## @result{} 2    89
+##    3    90
+##    2    91
+##    2    92
+##    3   100
+## @end group
+## @end example
+##
+## Another example, where the result is a multi-dimensional 3-D array and
+## the default value (zero) appears in the output:
+##
+## @example
+## @group
+## accumarray ([1, 1, 1;
+##              2, 1, 2;
+##              2, 3, 2;
+##              2, 1, 2;
+##              2, 3, 2], 101:105)
 ## @result{} ans(:,:,1) = [101, 0, 0; 0, 0, 0]
 ##    ans(:,:,2) = [0, 0, 0; 206, 0, 208]
 ## @end group
 ## @end example
 ##
-## The complexity in the non-sparse case is generally O(M+N), where N is the
-## number of
-## subscripts and M is the maximum subscript (linearized in multi-dimensional
-## case).
-## If @var{func} is one of @code{@@sum} (default), @code{@@max}, @code{@@min}
-## or @code{@@(x) @{x@}}, an optimized code path is used.
-## Note that for general reduction function the interpreter overhead can play a
-## major part and it may be more efficient to do multiple accumarray calls and
-## compute the results in a vectorized manner.
-## @seealso{accumdim}
+## The sparse option can be used as an alternative to the @code{sparse}
+## constructor (@pxref{doc-sparse}). Thus
+##
+## @example
+## sparse (@var{i}, @var{j}, @var{sv})
+## @end example
+##
+## @noindent
+## can be written with @code{accumarray} as
+##
+## @example
+## accumarray ([@var{i}, @var{j}], @var{sv}', [], [], 0, true)
+## @end example
+##
+## @noindent
+## For repeated indices, @code{sparse} adds the corresponding value. To
+## take the minimum instead, use @code{min} as an accumulator function:
+##
+## @example
+## accumarray ([@var{i}, @var{j}], @var{sv}', [], @@min, 0, true)
+## @end example
+##
+## The complexity of accumarray in general for the non-sparse case is
+## generally O(M+N), where N is the number of subscripts and M is the
+## maximum subscript (linearized in multi-dimensional case).  If
+## @var{func} is one of @code{@@sum} (default), @code{@@max},
+## @code{@@min} or @code{@@(x) @{x@}}, an optimized code path is used.
+## Note that for general reduction function the interpreter overhead can
+## play a major part and it may be more efficient to do multiple
+## accumarray calls and compute the results in a vectorized manner.
+##
+## @seealso{accumdim, unique, sparse}
 ## @end deftypefn
 
 function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse = [])
@@ -71,14 +131,27 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     print_usage ();
   endif
 
+  lenvals = length (vals);
+
   if (iscell (subs))
     subs = cellfun (@vec, subs, "uniformoutput", false);
     ndims = numel (subs);
     if (ndims == 1)
       subs = subs{1};
     endif
+
+    lensubs = cellfun (@length, subs);
+
+    if (any (lensubs != lensubs(1)) || 
+        (lenvals > 1 && lenvals != lensubs(1)))
+      error ("accumarray: dimension mismatch");
+    endif
+
   else
     ndims = columns (subs);
+    if (lenvals > 1 && lenvals != rows (subs))
+      error ("accumarray: dimension mismatch")
+    endif
   endif
 
   if (isempty (fillval))
@@ -91,7 +164,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
   if (issparse)
 
-    ## Sparse case. Avoid linearizing the subscripts, because it could overflow.
+    ## Sparse case. Avoid linearizing the subscripts, because it could
+    ## overflow.
 
     if (fillval != 0)
       error ("accumarray: FILLVAL must be zero in the sparse case");
@@ -117,8 +191,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
 
     if (! (isempty (func) || func == @sum))
 
-      ## Reduce values. This is not needed if we're about to sum them, because
-      ## "sparse" can do that.
+      ## Reduce values. This is not needed if we're about to sum them,
+      ## because "sparse" can do that.
 
       ## Sort indices.
       [subs, idx] = sortrows (subs);
@@ -138,7 +212,14 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     if (isempty (sz))
       A = sparse (subs(:,1), subs(:,2), vals, mode);
     elseif (length (sz) == 2)
-      A = sparse (subs(:,1), subs(:,2), vals, sz(1), sz(2), mode);
+
+      ## Row vector case
+      if (sz(1) == 1)
+        [i, j] = deal (subs(:,2), subs(:,1));
+      else
+        [i, j] = deal (subs(:,1), subs(:,2));
+      endif
+      A = sparse (i, j, vals, sz(1), sz(2), mode);
     else
       error ("accumarray: dimensions mismatch");
     endif
@@ -149,7 +230,7 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
     if (ndims > 1)
       if (isempty (sz))
         if (iscell (subs))
-          sz = cellfun (@max, subs);
+          sz = cellfun ("max", subs);
         else
           sz = max (subs, [], 1);
         endif
@@ -195,7 +276,8 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       elseif (islogical (vals))
         zero = false;
       elseif (fillval == 0 && all (vals(:) >= 0))
-        ## This is a common case - fillval is zero, all numbers nonegative.
+        ## This is a common case - fillval is zero, all numbers
+        ## nonegative.
         zero = 0;
       else
         zero = NaN; # Neutral value.
@@ -220,6 +302,10 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
         zero = intmax (class (vals));
       elseif (islogical (vals))
         zero = true;
+      elseif (fillval == 0 && all (vals(:) <= 0))
+        ## This is a common case - fillval is zero, all numbers
+        ## non-positive.
+        zero = 0;
       else
         zero = NaN; # Neutral value.
       endif
@@ -252,13 +338,20 @@ function A = accumarray (subs, vals, sz = [], func = [], fillval = [], issparse 
       jdx = find (subs(1:n-1) != subs(2:n));
       jdx = [jdx; n];
       vals = mat2cell (vals(idx), diff ([0; jdx]));
-      ## Optimize the case when function is @(x) {x}, i.e. we just want to
-      ## collect the values to cells.
+      ## Optimize the case when function is @(x) {x}, i.e. we just want
+      ## to collect the values to cells.
       persistent simple_cell_str = func2str (@(x) {x});
       if (! strcmp (func2str (func), simple_cell_str))
         vals = cellfun (func, vals);
       endif
       subs = subs(jdx);
+
+      if (isempty (sz))
+        sz = max (subs);
+        if (length (sz) == 1)
+          sz(2) = 1;
+        endif
+      endif
 
       ## Construct matrix of fillvals.
       if (iscell (vals))
@@ -282,9 +375,14 @@ endfunction
 %!assert (accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105,[],@(x)sin(sum(x))),sin(cat(3, [101,0,0;0,0,0],[0,0,0;206,0,208])))
 %!assert (accumarray ({[1 3 3 2 3 1 2 2 3 3 1 2],[3 4 2 1 4 3 4 2 2 4 3 4],[1 1 2 2 1 1 2 1 1 1 2 2]},101:112),cat(3,[0,0,207,0;0,108,0,0;0,109,0,317],[0,0,111,0;104,0,0,219;0,103,0,0]))
 %!assert (accumarray ([1,1;2,1;2,3;2,1;2,3],101:105,[2,4],@max,NaN),[101,NaN,NaN,NaN;104,NaN,105,NaN])
+%!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105, [], @prod), [101, 0, 0; 10608, 0, 10815])
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2 4],@prod,0,true),sparse([1,2,2],[1,1,3],[101,10608,10815],2,4))
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],1,[2,4]), [1,0,0,0;2,0,2,0])
 %!assert (accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x)length(x)>1),[false,false,false,false;true,false,true,false])
+%!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 0), [3; 4])
+%!assert (accumarray ([1; 2], [3; 4], [2, 1], @min, [], 1), sparse ([3; 4]))
+%!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 0), [3, 4])
+%!assert (accumarray ([1; 2], [3; 4], [1, 2], @min, [], 1), sparse ([3, 4]))
 %!test
 %! A = accumarray ([1 1; 2 1; 2 3; 2 1; 2 3],101:105,[2,4],@(x){x});
 %! assert (A{2},[102;104])

@@ -101,9 +101,11 @@ function ZI = interp2 (varargin)
   switch (nargin)
     case 1
       Z = varargin{1};
+      n = 1;
     case 2
       if (ischar (varargin{2}))
         [Z, method] = deal (varargin{:});
+        n = 1;
       else
         [Z, n] = deal (varargin{:});
       endif
@@ -159,6 +161,7 @@ function ZI = interp2 (varargin)
     error ("interp2: X, Y must be numeric matrices");
   endif
   if (! isempty (n))
+    ## Calculate the interleaved input vectors.
     p = 2^n;
     XI = (p:p*zc)/p;
     YI = (p:p*zr)'/p;
@@ -337,17 +340,16 @@ function ZI = interp2 (varargin)
     endif
 
     ## Check dimensions of XI and YI
-    if (isvector (XI) && isvector (YI))
+    if (isvector (XI) && isvector (YI) && ! size_equal (XI, YI))
       XI = XI(:).';
       YI = YI(:);
+      [XI, YI] = meshgrid (XI, YI);
     elseif (! size_equal (XI, YI))
       error ("interp2: XI and YI must be matrices of equal size");
     endif
 
-    ## FIXME bicubic/__splinen__ don't handle arbitrary XI, YI.
     if (strcmp (method, "cubic"))
-      ## Please remove the dummy zero when bicubic is fixed.
-      if (0 && isgriddata (XI) && isgriddata (YI'))
+      if (isgriddata (XI) && isgriddata (YI'))
         ZI = bicubic (X, Y, Z, XI (1, :), YI (:, 1), extrapval);
       elseif (isgriddata (X) && isgriddata (Y'))
         ## Allocate output
@@ -589,3 +591,20 @@ endfunction
 %! X = meshgrid (1:4);
 %! assert (interp2 (X, 2.5, 2.5, 'nearest'), 3);
 
+%!shared z, zout, tol
+%!  z = [1 3 5; 3 5 7; 5 7 9];
+%!  zout = [1 2 3 4 5; 2 3 4 5 6; 3 4 5 6 7; 4 5 6 7 8; 5 6 7 8 9];
+%!  tol = 2 * eps;
+%!assert (interp2 (z), zout, tol);
+%!assert (interp2 (z, "linear"), zout, tol);
+%!assert (interp2 (z, "pchip"), zout, tol);
+%!assert (interp2 (z, "cubic"), zout, 10 * tol);
+%!assert (interp2 (z, "spline"), zout, tol);
+%!assert (interp2 (z, [2 3 1], [2 2 2]', "linear"), repmat ([5, 7, 3], [3, 1]), tol) 
+%!assert (interp2 (z, [2 3 1], [2 2 2]', "pchip"), repmat ([5, 7, 3], [3, 1]), tol) 
+%!assert (interp2 (z, [2 3 1], [2 2 2]', "cubic"), repmat ([5, 7, 3], [3, 1]), 10 * tol) 
+%!assert (interp2 (z, [2 3 1], [2 2 2]', "spline"), repmat ([5, 7, 3], [3, 1]), tol) 
+%!assert (interp2 (z, [2 3 1], [2 2 2], "linear"), [5 7 3], tol);
+%!assert (interp2 (z, [2 3 1], [2 2 2], "pchip"), [5 7 3], tol);
+%!assert (interp2 (z, [2 3 1], [2 2 2], "cubic"), [5 7 3], 10 * tol);
+%!assert (interp2 (z, [2 3 1], [2 2 2], "spline"), [5 7 3], tol);

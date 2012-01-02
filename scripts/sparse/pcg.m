@@ -20,7 +20,7 @@
 ## @deftypefn  {Function File} {@var{x} =} pcg (@var{A}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
-## Solves the linear system of equations @code{@var{A} * @var{x} = @var{b}}
+## Solve the linear system of equations @code{@var{A} * @var{x} = @var{b}}
 ## by means of the Preconditioned Conjugate Gradient iterative
 ## method.  The input arguments are
 ##

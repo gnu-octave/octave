@@ -232,26 +232,23 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
   octave_idx_type nc = v.cols();
-  octave_idx_type start_nc, end_nc, count;
+  octave_idx_type start_nc, count;
 
   // Determine the range to search.
   if (n_to_find < 0 || n_to_find >= nc)
     {
       start_nc = 0;
-      end_nc = nc;
       n_to_find = nc;
       count = nc;
     }
   else if (direction > 0)
     {
       start_nc = 0;
-      end_nc = n_to_find;
       count = n_to_find;
     }
   else
     {
       start_nc = nc - n_to_find;
-      end_nc = nc;
       count = n_to_find;
     }
 
@@ -341,11 +338,11 @@ DEFUN_DLD (find, args, nargout,
 @deftypefnx {Loadable Function} {@var{idx} =} find (@var{x}, @var{n})\n\
 @deftypefnx {Loadable Function} {@var{idx} =} find (@var{x}, @var{n}, @var{direction})\n\
 @deftypefnx {Loadable Function} {[i, j] =} find (@dots{})\n\
-@deftypefnx {Loadable Function} {[i, j, v]] =} find (@dots{})\n\
+@deftypefnx {Loadable Function} {[i, j, v] =} find (@dots{})\n\
 Return a vector of indices of nonzero elements of a matrix, as a row if\n\
-@var{x} is a row or as a column otherwise.  To obtain a single index for\n\
-each matrix element, Octave pretends that the columns of a matrix form one\n\
-long vector (like Fortran arrays are stored).  For example:\n\
+@var{x} is a row vector or as a column otherwise.  To obtain a single index\n\
+for each matrix element, Octave pretends that the columns of a matrix form\n\
+one long vector (like Fortran arrays are stored).  For example:\n\
 \n\
 @example\n\
 @group\n\
@@ -390,9 +387,9 @@ create the original matrix.  For example:\n\
 \n\
 @example\n\
 @group\n\
-sz = size(a);\n\
+sz = size (a);\n\
 [i, j, v] = find (a);\n\
-b = sparse(i, j, v, sz(1), sz(2));\n\
+b = sparse (i, j, v, sz(1), sz(2));\n\
 @end group\n\
 @end example\n\
 @seealso{nonzeros}\n\
@@ -416,7 +413,7 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 
       if (error_state || (val < 0 || (! xisinf (val) && val != xround (val))))
         {
-          error ("find: N must be a nonnegative integer");
+          error ("find: N must be a non-negative integer");
           return retval;
         }
       else if (! xisinf (val))
@@ -620,6 +617,6 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
 %!assert (find ([2 0 1 0 5 0], Inf), [1, 3, 5])
 %!assert (find ([2 0 1 0 5 0], Inf, "last"), [1, 3, 5])
 
-%!error <Invalid call to find.*> find ();
+%!error <Invalid call to find> find ();
 
 */

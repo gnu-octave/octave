@@ -178,7 +178,7 @@ do_minmax_body (const octave_value_list& args,
             }
 
           if (! args(1).is_empty ())
-            warning ("%s: second argument is ignored");
+            warning ("%s: second argument is ignored", func);
         }
 
       switch (arg.builtin_type ())
@@ -309,11 +309,13 @@ DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} min (@var{x})\n\
 @deftypefnx {Loadable Function} {} min (@var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {} min (@var{x}, [], @var{dim})\n\
 @deftypefnx {Loadable Function} {} min (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
 For a vector argument, return the minimum value.  For a matrix\n\
 argument, return the minimum value from each column, as a row\n\
-vector, or over the dimension @var{dim} if defined.  For two matrices\n\
+vector, or over the dimension @var{dim} if defined, in which case @var{y} \n\
+should be set to the empty matrix (it's ignored otherwise).  For two matrices\n\
 (or a matrix and scalar), return the pair-wise minimum.\n\
 Thus,\n\
 \n\
@@ -365,10 +367,10 @@ minimum value(s).  Thus,\n\
 %!assert(all (min ([4, i; -2, 2]) == [-2, i]));
 
 %% test/octave.test/arith/min-3.m
-%!error <Invalid call to min.*> min ();
+%!error <Invalid call to min> min ();
 
 %% test/octave.test/arith/min-4.m
-%!error <Invalid call to min.*> min (1, 2, 3, 4);
+%!error <Invalid call to min> min (1, 2, 3, 4);
 
 %!test
 %! x = reshape (1:8,[2,2,2]);
@@ -386,11 +388,13 @@ DEFUN_DLD (max, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} max (@var{x})\n\
 @deftypefnx {Loadable Function} {} max (@var{x}, @var{y})\n\
+@deftypefnx {Loadable Function} {} max (@var{x}, [], @var{dim})\n\
 @deftypefnx {Loadable Function} {} max (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Loadable Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
 For a vector argument, return the maximum value.  For a matrix\n\
 argument, return the maximum value from each column, as a row\n\
-vector, or over the dimension @var{dim} if defined.  For two matrices\n\
+vector, or over the dimension @var{dim} if defined, in which case @var{y} \n\
+should be set to the empty matrix (it's ignored otherwise).  For two matrices\n\
 (or a matrix and scalar), return the pair-wise maximum.\n\
 Thus,\n\
 \n\
@@ -442,10 +446,10 @@ maximum value(s).  Thus,\n\
 %!assert(all (max ([4, i 4.999; -2, 2, 3+4i]) == [4, 2, 3+4i]));
 
 %% test/octave.test/arith/max-3.m
-%!error <Invalid call to max.*> max ();
+%!error <Invalid call to max> max ();
 
 %% test/octave.test/arith/max-4.m
-%!error <Invalid call to max.*> max (1, 2, 3, 4);
+%!error <Invalid call to max> max (1, 2, 3, 4);
 
 %!test
 %! x = reshape (1:8,[2,2,2]);

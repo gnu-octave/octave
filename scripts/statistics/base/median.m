@@ -44,7 +44,7 @@
 ## If @var{x} is a matrix, compute the median value for each
 ## column and return them in a row vector.  If the optional @var{dim}
 ## argument is given, operate along this dimension.
-## @seealso{mean,mode}
+## @seealso{mean, mode}
 ## @end deftypefn
 
 ## Author: jwe
@@ -55,18 +55,19 @@ function retval = median (x, dim)
     print_usage ();
   endif
 
-  if (!isnumeric (x))
+  if (! (isnumeric (x) || islogical (x)))
     error ("median: X must be a numeric vector or matrix");
+  endif
+
+  if (isempty (x))
+    error ("median: X cannot be an empty matrix");
   endif
 
   nd = ndims (x);
   sz = size (x);
-  if (nargin != 2)
+  if (nargin < 2)
     ## Find the first non-singleton dimension.
-    dim = find (sz > 1, 1);
-    if (isempty (dim))
-      dim = 1;
-    endif
+    (dim = find (sz > 1, 1)) || (dim = 1);
   else
     if (!(isscalar (dim) && dim == fix (dim))
         || !(1 <= dim && dim <= nd))
@@ -74,21 +75,18 @@ function retval = median (x, dim)
     endif
   endif
 
-  if (numel (x) > 0)
-    n = size (x, dim);
-    k = floor ((n+1) / 2);
-    if (mod (n, 2) == 1)
-      retval = nth_element (x, k, dim);
-    else
-      retval = mean (nth_element (x, k:k+1, dim), dim);
-    endif
-    ## Inject NaNs where needed, to be consistent with Matlab.
-    retval(any (isnan (x), dim)) = NaN;
+  n = sz(dim);
+  k = floor ((n+1) / 2);
+  if (mod (n, 2) == 1)
+    retval = nth_element (x, k, dim);
   else
-    error ("median: invalid matrix argument");
+    retval = mean (nth_element (x, k:k+1, dim), dim);
   endif
+  ## Inject NaNs where needed, to be consistent with Matlab.
+  retval(any (isnan (x), dim)) = NaN;
 
 endfunction
+
 
 %!test
 %! x = [1, 2, 3, 4, 5, 6];
@@ -101,13 +99,14 @@ endfunction
 %! assert(median ([x2, 2*x2]) == [3.5, 7]);
 %! assert(median ([y2, 3*y2]) == [4, 12]);
 
+%!assert(median (single([1,2,3])), single(2));
 %!assert(median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN]);
 
 %% Test input validation
 %!error median ();
 %!error median (1, 2, 3);
 %!error median ({1:5});
-%!error median (true(1,5));
+%!error median (['A'; 'B']);
 %!error median (1, ones(2,2));
 %!error median (1, 1.5);
 %!error median (1, 0);

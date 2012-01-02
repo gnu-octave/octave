@@ -21,8 +21,9 @@
 ## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{tol})
 ## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{n})
 ## @deftypefnx {Function File} {} fplot (@dots{}, @var{fmt})
-## Plot a function @var{fn}, within the defined limits.  @var{fn}
-## an be either a string, a function handle or an inline function.
+## Plot a function @var{fn} within defined limits.
+## @var{fn} is a function handle, inline function, or string
+## containing the name of the function to evaluate.
 ## The limits of the plot are given by @var{limits} of the form
 ## @code{[@var{xlo}, @var{xhi}]} or @code{[@var{xlo}, @var{xhi},
 ## @var{ylo}, @var{yhi}]}.  @var{tol} is the default tolerance to use for the
@@ -127,7 +128,9 @@ function fplot (fn, limits, n, fmt)
 endfunction
 
 %!demo
+%! clf
 %! fplot ("cos", [0, 2*pi])
 
 %!demo
+%! clf
 %! fplot ("[cos(x), sin(x)]", [0, 2*pi])

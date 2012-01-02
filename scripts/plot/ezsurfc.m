@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} ezsurfc (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezsurfc (@dots{})
 ##
-## Plots the surface and contour lines defined by a function.  @var{f} is a
+## Plot the surface and contour lines defined by a function.  @var{f} is a
 ## string, inline function or function handle with two arguments defining the
 ## function.  By default the plot is over the domain @code{-2*pi < @var{x} <
 ## 2*pi} and @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.
@@ -44,8 +44,9 @@
 ## If the argument 'circ' is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a 2-element vector with a graphics
+## for the created surface plot and a second handle for the created contour
+## plot.
 ##
 ## @example
 ## @group
@@ -70,6 +71,9 @@ function retval = ezsurfc (varargin)
   endif
 endfunction
 
+
 %!demo
+%! clf
 %! f = @(x,y) sqrt(abs(x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezsurfc (f, [-3, 3]);
+

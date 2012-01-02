@@ -80,3 +80,15 @@ function h = pcolor (x, y, c)
   endif
 
 endfunction
+
+%!demo
+%! clf
+%! [~,~,Z]=peaks;
+%! pcolor(Z);
+
+%!demo
+%! clf
+%! [X,Y,Z]=sombrero;
+%! [Fx,Fy] = gradient(Z);
+%! pcolor(X,Y,Fx+Fy);
+%! shading interp;

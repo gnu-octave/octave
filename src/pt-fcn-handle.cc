@@ -124,9 +124,14 @@ tree_anon_fcn_handle::rvalue1 (int)
         parent_scope = curr_fcn->scope ();
 
       uf->stash_parent_fcn_scope (parent_scope);
+
+      if (curr_fcn->is_class_method () || curr_fcn->is_class_constructor ())
+        uf->stash_dispatch_class (curr_fcn->dispatch_class ());
     }
 
-  uf->mark_as_inline_function ();
+  uf->mark_as_anonymous_function ();
+  uf->stash_fcn_file_name (file_name);
+  uf->stash_fcn_location (line (), column ());
 
   octave_value ov_fcn (uf);
 
@@ -136,22 +141,24 @@ tree_anon_fcn_handle::rvalue1 (int)
 }
 
 /*
-%!function r = f2 (f, x)
+%!function r = __f2 (f, x)
 %!  r = f (x);
-%!function f = f1 (k)
-%!  f = @(x) f2 (@(y) y-k, x);
+%!endfunction
+%!function f = __f1 (k)
+%!  f = @(x) __f2 (@(y) y-k, x);
+%!endfunction
+
+%!assert ((__f1 (3)) (10) == 7)
+
 %!test
-%! assert ((f1 (3)) (10) == 7)
-%!
-%!shared g
 %! g = @(t) feval (@(x) t*x, 2);
-%!assert (g(0.5) == 1)
-%!
-%!shared f, g, h
+%! assert (g(0.5) == 1);
+
+%!test
 %! h = @(x) sin (x);
 %! g = @(f, x) h (x);
 %! f = @() g (@(x) h, pi);
-%!assert (f () == sin (pi))
+%! assert (f () == sin (pi));
 */
 
 octave_value_list

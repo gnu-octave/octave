@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-error.h"
 #include "lo-macros.h"
+#include "oct-refcount.h"
 
 // Rationale: This implementation is more tricky than Array, but the
 // big plus is that dim_vector requires only one allocation instead of
@@ -128,8 +129,12 @@ private:
   {
     if (count () > 1)
       {
-        --count();
-        rep = clonerep ();
+	octave_idx_type *new_rep = clonerep ();
+
+	if (OCTREFCOUNT_ATOMIC_DECREMENT(&(count())) == 0)
+	  freerep ();
+
+        rep = new_rep;
       }
   }
 
@@ -222,9 +227,11 @@ public:
 
   static octave_idx_type dim_max (void);
 
-  explicit dim_vector (void) : rep (nil_rep ()) { count()++; }
+  explicit dim_vector (void) : rep (nil_rep ())
+  { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
 
-  dim_vector (const dim_vector& dv) : rep (dv.rep) { count()++; }
+  dim_vector (const dim_vector& dv) : rep (dv.rep)
+  { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
 
   static dim_vector alloc (int n)
   {
@@ -235,11 +242,11 @@ public:
   {
     if (&dv != this)
       {
-        if (--count() <= 0)
+        if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
           freerep ();
 
         rep = dv.rep;
-        count()++;
+        OCTREFCOUNT_ATOMIC_INCREMENT (&(count()));
       }
 
     return *this;
@@ -247,7 +254,7 @@ public:
 
   ~dim_vector (void)
   {
-    if (--count() <= 0)
+    if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
       freerep ();
   }
 
@@ -265,7 +272,7 @@ public:
       {
         octave_idx_type *r = resizerep (n, fill_value);
 
-        if (--count() <= 0)
+        if (OCTREFCOUNT_ATOMIC_DECREMENT (&(count())) == 0)
           freerep ();
 
         rep = r;

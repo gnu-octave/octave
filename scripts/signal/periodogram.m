@@ -46,7 +46,7 @@
 ##
 ## @item range: "@nospell{onesided}" computes spectrum from [0..nfft/2+1].
 ## "@nospell{twosided}" computes spectrum from [0..nfft-1].  These strings
-## can appear at any  position in the list input arguments after window.
+## can appear at any position in the list input arguments after window.
 ##
 ## @item Pxx: one-, or two-sided power spectrum.
 ##

@@ -101,28 +101,46 @@ BSD_init (void)
 #endif
 
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+#define WIN32_LEAN_AND_MEAN
+#include <tlhelp32.h>
+
 static void
 w32_set_octave_home (void)
 {
-  int n = 1024;
+  std::string bin_dir;
 
-  std::string bin_dir (n, '\0');
+  HANDLE h = CreateToolhelp32Snapshot (TH32CS_SNAPMODULE
+#ifdef TH32CS_SNAPMODULE32
+                                       | TH32CS_SNAPMODULE32
+#endif
+                                       , 0);
 
-  while (true)
+  if (h != INVALID_HANDLE_VALUE)
     {
-      HMODULE hMod = GetModuleHandle ("octinterp");
-      int status = GetModuleFileName (hMod, &bin_dir[0], n);
+      MODULEENTRY32 mod_info;
 
-      if (status < n)
-        {
-          bin_dir.resize (status);
-          break;
-        }
-      else
-        {
-          n *= 2;
-          bin_dir.resize (n);
-        }
+      ZeroMemory (&mod_info, sizeof (mod_info));
+      mod_info.dwSize = sizeof (mod_info);
+
+      if (Module32First (h, &mod_info))
+	{
+	  do
+	    {
+	      std::string mod_name (mod_info.szModule);
+
+	      if (mod_name.find ("octinterp") != std::string::npos)
+		{
+		  bin_dir = mod_info.szExePath;
+		  if (bin_dir[bin_dir.length () - 1] != '\\')
+		    bin_dir.append (1, '\\');
+		  break;
+		}
+	    }
+	  while (Module32Next (h, &mod_info));
+	}
+
+      CloseHandle (h);
     }
 
   if (! bin_dir.empty ())
@@ -586,7 +604,15 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
   return retval;
 }
+
 DEFALIAS (setenv, putenv);
+
+/*
+%!assert (ischar (getenv ("OCTAVE_HOME")));
+%!test
+%! setenv ("dummy_variable_that_cannot_matter", "foobar");
+%! assert (getenv ("dummy_variable_that_cannot_matter"), "foobar");
+*/
 
 // FIXME -- perhaps kbhit should also be able to print a prompt?
 
@@ -695,6 +721,12 @@ clc;\n\
   return retval;
 }
 
+/*
+%!error (pause (1, 2));
+%!test
+%! pause (1);
+*/
+
 DEFUN (sleep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sleep (@var{seconds})\n\
@@ -723,6 +755,13 @@ Suspend the execution of the program for the given number of seconds.\n\
 
   return retval;
 }
+
+/*
+%!error (sleep ());
+%!error (sleep (1, 2));
+%!test
+%! sleep (1);
+*/
 
 DEFUN (usleep, args, ,
   "-*- texinfo -*-\n\
@@ -760,6 +799,13 @@ of time less than one second, @code{usleep} will pause the execution for\n\
   return retval;
 }
 
+/*
+%!error (usleep ());
+%!error (usleep (1, 2));
+%!test
+%! usleep (1000);
+*/
+
 // FIXME -- maybe this should only return 1 if IEEE floating
 // point functions really work.
 
@@ -776,6 +822,10 @@ for floating point calculations.  No actual tests are performed.\n\
                        || flt_fmt == oct_mach_info::flt_fmt_ieee_big_endian);
 }
 
+/*
+%!assert (islogical (isieee ()));
+*/
+
 DEFUN (native_float_format, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} native_float_format ()\n\
@@ -786,6 +836,10 @@ Return the native floating point format as a string\n\
 
   return octave_value (oct_mach_info::float_format_as_string (flt_fmt));
 }
+
+/*
+%!assert (ischar (native_float_format ()));
+*/
 
 DEFUN (tilde_expand, args, ,
   "-*- texinfo -*-\n\
@@ -835,3 +889,14 @@ tilde_expand (\"~/bin\")\n\
 
   return retval;
 }
+
+/*
+%!test
+%! if (isempty (getenv ("HOME")))
+%!   setenv ("HOME", "foobar");
+%! endif
+%! home = getenv ("HOME");
+%! assert (tilde_expand ("~/foobar"), strcat (home, "/foobar"));
+%! assert (tilde_expand ("/foo/bar"), "/foo/bar");
+%! assert (tilde_expand ("foo/bar"), "foo/bar");
+*/

@@ -29,7 +29,6 @@ libcruft_la_SOURCES += \
   arpack/src/dnapps.f \
   arpack/src/dnaup2.f \
   arpack/src/dnaupd.f \
-  arpack/src/dnaupe.f \
   arpack/src/dnconv.f \
   arpack/src/dneigh.f \
   arpack/src/dneupd.f \
@@ -54,7 +53,6 @@ libcruft_la_SOURCES += \
   arpack/src/snapps.f \
   arpack/src/snaup2.f \
   arpack/src/snaupd.f \
-  arpack/src/snaupe.f \
   arpack/src/snconv.f \
   arpack/src/sneigh.f \
   arpack/src/sneupd.f \

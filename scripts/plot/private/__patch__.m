@@ -29,9 +29,15 @@
 
 function [h, failed] = __patch__ (p, varargin)
 
+  h = NaN;
   failed = false;
 
-  if (isstruct (varargin{1}))
+  is_numeric_arg = cellfun (@isnumeric, varargin);
+
+  if (isempty (varargin))
+    args = {"xdata", [0; 1; 0], "ydata", [1; 1; 0], "facecolor", [0, 0, 0]};
+    args = setvertexdata (args);
+  elseif (isstruct (varargin{1}))
     if (isfield (varargin{1}, "vertices") && isfield (varargin{1}, "faces"))
       args{1} = "faces";
       args{2} = getfield(varargin{1}, "faces");
@@ -48,26 +54,53 @@ function [h, failed] = __patch__ (p, varargin)
     else
       failed = true;
     endif
-  elseif (isnumeric (varargin{1}))
-    if (nargin < 3 || ! isnumeric (varargin{2}))
+  elseif (is_numeric_arg(1))
+    if (nargin < 3 || ! is_numeric_arg(2))
       failed = true;
     else
-      x = varargin{1};
-      y = varargin{2};
-      iarg = 3;
 
-      if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
-          && size_equal(x, varargin{3}) && !ischar(varargin{3}))
+      if (nargin > 4 && all (is_numeric_arg(1:4)))
+        x = varargin{1};
+        y = varargin{2};
         z = varargin{3};
-        iarg++;
-      else
+        c = varargin{4};
+        iarg = 5;
+      elseif (nargin > 3 && all (is_numeric_arg(1:3)))
+        x = varargin{1};
+        y = varargin{2};
+        iarg = 4;
+        if (rem (nargin - iarg, 2) == 1)
+          c = varargin {iarg};
+          z = varargin{3};
+          iarg = 5;
+        else
+          z = [];
+          c = varargin{3};
+        endif
+      elseif (nargin > 2 && all (is_numeric_arg(1:2)))
+        x = varargin{1};
+        y = varargin{2};
         z = [];
+        iarg = 3;
+        if (rem (nargin - iarg, 2) == 1)
+          c = varargin {iarg};
+          iarg++; 
+        else
+          c = [];
+        endif
       endif
 
       if (isvector (x))
         x = x(:);
         y = y(:);
         z = z(:);
+        if (isnumeric (c))
+          if (isvector (c) && numel (c) == numel (x))
+            c = c(:);
+          elseif (size (c, 1) != numel (x) && size (c, 2) == numel (x))
+            c = c.';
+          endif
+        endif
       endif
       args{1} = "xdata";
       args{2} = x;
@@ -76,9 +109,7 @@ function [h, failed] = __patch__ (p, varargin)
       args{5} = "zdata";
       args{6} = z;
 
-      if (isnumeric (varargin{iarg}))
-        c = varargin{iarg};
-        iarg++;
+      if (isnumeric (c))
 
         if (ndims (c) == 3 && size (c, 2) == 1)
           c = permute (c, [1, 3, 2]);
@@ -98,30 +129,52 @@ function [h, failed] = __patch__ (p, varargin)
           else
             error ("patch: color value not valid");
           endif
-        elseif (size (c, ndims (c)) == 3)
+        elseif (isvector (c) && numel (c) == 3)
           args{7} = "facecolor";
-          args{8} = "flat";
+          args{8} = c;
           args{9} = "cdata";
-          args{10} = c;
+          args{10} = [];
+        elseif (ndims (c) == 3 && size (c, 3) == 3)
+          ## CDATA is specified as RGB data
+          if ((size (c, 1) == 1 && size (c, 2) == 1) ...
+              || (size (c, 1) == 1 && size (c, 2) == columns (x)))
+            ## Single patch color or per-face color
+            args{7} = "facecolor";
+            args{8} = "flat";
+            args{9} = "cdata";
+            args{10} = c;
+          elseif (size (c, 1) == rows (x) && size (c, 2) == columns (x))
+            ## Per-vertex color
+            args{7} = "facecolor";
+            args{8} = "interp";
+            args{9} = "cdata";
+            agrs{10} = c;
+          else
+            error ("patch: color value not valid");
+          endif
         else
           ## Color Vectors
-          if (rows (c) != rows (x) || rows (c) != length (y))
-            error ("patch: size of x, y, and c must be equal");
-          else
+          if (isempty (c))
             args{7} = "facecolor";
             args{8} = "interp";
             args{9} = "cdata";
             args{10} = [];
+          elseif (isequal (size (c), size (x)) && isequal (size (c), size (y)))
+            args{7} = "facecolor";
+            args{8} = "interp";
+            args{9} = "cdata";
+            args{10} = c;
+          else
+            error ("patch: size of x, y, and c must be equal");
           endif
         endif
-      elseif (ischar (varargin{iarg}) && rem (nargin - iarg, 2) != 0)
+      elseif (ischar (c) && rem (nargin - iarg, 2) == 0)
         ## Assume that any additional argument over an even number is
         ## color string.
         args{7} = "facecolor";
-        args{8} =  tolower (varargin{iarg});
+        args{8} =  tolower (c);
         args{9} = "cdata";
         args{10} = [];
-        iarg++;
       else
         args{7} = "facecolor";
         args{8} = [0, 1, 0];
@@ -134,7 +187,7 @@ function [h, failed] = __patch__ (p, varargin)
     endif
   else
     args = varargin;
-    if (any(cellfun (@(x) strcmpi(x,"faces") || strcmpi(x, "vertices"), args)))
+    if (any (strcmpi (args, "faces") | strcmpi (args, "vertices")))
       args = setdata (args);
     else
       args = setvertexdata (args);
@@ -197,20 +250,15 @@ function args = setdata (args)
       fc = [0, 1, 0];
     endif
     args = {"facecolor", fc, args{:}};
-  else
-    fc = args {idx};
   endif
 
-  nr = size (faces, 2);
   nc = size (faces, 1);
   idx = faces .';
   t1 = isnan (idx);
-  if (any (t1(:)))
-    t2 = find (t1 != t1([2:end,end],:));
-    idx (t1) = idx (t2 (cell2mat (cellfun (@(x) x(1)*ones(1,x(2)),
-                mat2cell ([1 : nc; sum(t1)], 2, ones(1,nc)),
-                                           "uniformoutput", false))));
-  endif
+  for i = find (any (t1))
+    first_idx_in_column = find (t1(:,i), 1);
+    idx(first_idx_in_column:end,i) = idx(first_idx_in_column-1,i);
+  endfor
   x = reshape (vert(:,1)(idx), size (idx));
   y = reshape (vert(:,2)(idx), size (idx));
   if (size(vert,2) > 2)
@@ -226,8 +274,10 @@ function args = setdata (args)
       c = cat(3, reshape (fvc(idx, 1), size(idx)),
               reshape (fvc(idx, 2), size(idx)),
               reshape (fvc(idx, 3), size(idx)));
-    else
+    elseif (isempty (fvc))
       c = [];
+    else ## if (size (fvc, 2) == 1)
+      c = permute (fvc(faces), [2, 1]);
     endif
   endif
   args = {"xdata", x, "ydata", y, "zdata", z, "cdata", c, args{:}};
@@ -270,23 +320,25 @@ function args = setvertexdata (args)
       fc = [0, 1, 0];
     endif
     args = {"facecolor", fc, args{:}};
-  else
-    fc = args {idx};
   endif
 
   [nr, nc] = size (x);
+  if (nr == 1 && nc > 1)
+    nr = nc;
+    nc = 1;
+  end
   if (!isempty (z))
     vert = [x(:), y(:), z(:)];
   else
     vert = [x(:), y(:)];
   endif
-  faces = reshape (1:numel(x), rows (x), columns (x));
+  faces = reshape (1:numel(x), nr, nc);
   faces = faces';
 
   if (ndims (c) == 3)
     fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
   else
-    fvc = c(:).';
+    fvc = c(:);
   endif
 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};

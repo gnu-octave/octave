@@ -64,6 +64,8 @@ private:
 
   static octave_dynamic_loader *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   static bool instance_ok (void);
 
   octave_function *

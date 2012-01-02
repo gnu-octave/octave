@@ -210,12 +210,14 @@ endfunction
 
 
 %!demo
+%! clf
 %! x = 1:10;
 %! rand_1x10_data1 = [0.073, 0.455, 0.837, 0.124, 0.426, 0.781, 0.004, 0.024, 0.519, 0.698];
 %! y = rand_1x10_data1;
 %! stairs (x, y);
 
 %!demo
+%! clf
 %! x = 1:10;
 %! rand_1x10_data2 = [0.014, 0.460, 0.622, 0.394, 0.531, 0.378, 0.466, 0.788, 0.342, 0.893];
 %! y = rand_1x10_data2;
@@ -223,9 +225,11 @@ endfunction
 %! plot (xs, ys);
 
 %!demo
+%! clf
 %! stairs (1:9);
 
 %!demo
+%! clf
 %! [xs, ys] = stairs (9:-1:1);
 %! plot (xs, ys);
 

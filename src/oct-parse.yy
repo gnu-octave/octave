@@ -232,9 +232,10 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 
 // Build a for command.
 static tree_command *
-make_for_command (token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_statement_list *body,
-                  token *end_tok, octave_comment_list *lc);
+make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
+                  tree_expression *expr, tree_expression *maxproc,
+                  tree_statement_list *body, token *end_tok,
+                  octave_comment_list *lc);
 
 // Build a break command.
 static tree_command *
@@ -439,7 +440,7 @@ make_statement (T *arg)
 %token <tok_val> NAME
 %token <tok_val> END
 %token <tok_val> DQ_STRING SQ_STRING
-%token <tok_val> FOR WHILE DO UNTIL
+%token <tok_val> FOR PARFOR WHILE DO UNTIL
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
 %token <tok_val> BREAK CONTINUE FUNC_RET
@@ -447,9 +448,7 @@ make_statement (T *arg)
 %token <tok_val> TRY CATCH
 %token <tok_val> GLOBAL STATIC
 %token <tok_val> FCN_HANDLE
-%token <tok_val> PROPERTIES
-%token <tok_val> METHODS
-%token <tok_val> EVENTS
+%token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
 %token <tok_val> METAQUERY
 %token <tok_val> SUPERCLASSREF
 %token <tok_val> GET SET
@@ -462,7 +461,7 @@ make_statement (T *arg)
 
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
-%type <comment_type> properties_beg methods_beg events_beg
+%type <comment_type> properties_beg methods_beg events_beg enum_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -471,7 +470,7 @@ make_statement (T *arg)
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
 %type <tree_expression_type> matrix cell
-%type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
+%type <tree_expression_type> primary_expr oper_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name magic_tilde
 %type <tree_identifier_type> superclass_identifier meta_identifier
@@ -502,6 +501,7 @@ make_statement (T *arg)
 // These types need to be specified.
 %type <dummy_type> attr
 %type <dummy_type> class_event
+%type <dummy_type> class_enum
 %type <dummy_type> class_property
 %type <dummy_type> properties_list
 %type <dummy_type> properties_block
@@ -511,10 +511,11 @@ make_statement (T *arg)
 %type <dummy_type> attr_list
 %type <dummy_type> events_list
 %type <dummy_type> events_block
+%type <dummy_type> enum_list
+%type <dummy_type> enum_block
 %type <dummy_type> class_body
 
 // Precedence and associativity.
-%left ';' ',' '\n'
 %right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ OR_EQ AND_EQ LSHIFT_EQ RSHIFT_EQ
 %left EXPR_OR_OR
 %left EXPR_AND_AND
@@ -525,8 +526,9 @@ make_statement (T *arg)
 %left ':'
 %left '-' '+' EPLUS EMINUS
 %left '*' '/' LEFTDIV EMUL EDIV ELEFTDIV
-%left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
+%right UNARY EXPR_NOT
 %left POW EPOW QUOTE TRANSPOSE
+%right PLUS_PLUS MINUS_MINUS
 %left '(' '.' '{'
 
 // Where to start.
@@ -735,7 +737,10 @@ fcn_handle      : '@' FCN_HANDLE
                 ;
 
 anon_fcn_handle : '@' param_list statement
-                  { $$ = make_anon_fcn_handle ($2, $3); }
+                  {
+                    lexer_flags.quote_is_transpose = false;
+                    $$ = make_anon_fcn_handle ($2, $3);
+                  }
                 ;
 
 primary_expr    : identifier
@@ -796,69 +801,61 @@ indirect_ref_op : '.'
                   { lexer_flags.looking_at_indirect_ref = true; }
                 ;
 
-postfix_expr    : primary_expr
+oper_expr       : primary_expr
                   { $$ = $1; }
-                | postfix_expr '(' ')'
-                  { $$ = make_index_expression ($1, 0, '('); }
-                | postfix_expr '(' arg_list ')'
-                  { $$ = make_index_expression ($1, $3, '('); }
-                | postfix_expr '{' '}'
-                  { $$ = make_index_expression ($1, 0, '{'); }
-                | postfix_expr '{' arg_list '}'
-                  { $$ = make_index_expression ($1, $3, '{'); }
-                | postfix_expr PLUS_PLUS
+                | oper_expr PLUS_PLUS
                   { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
-                | postfix_expr MINUS_MINUS
+                | oper_expr MINUS_MINUS
                   { $$ = make_postfix_op (MINUS_MINUS, $1, $2); }
-                | postfix_expr QUOTE
+                | oper_expr '(' ')'
+                  { $$ = make_index_expression ($1, 0, '('); }
+                | oper_expr '(' arg_list ')'
+                  { $$ = make_index_expression ($1, $3, '('); }
+                | oper_expr '{' '}'
+                  { $$ = make_index_expression ($1, 0, '{'); }
+                | oper_expr '{' arg_list '}'
+                  { $$ = make_index_expression ($1, $3, '{'); }
+                | oper_expr QUOTE
                   { $$ = make_postfix_op (QUOTE, $1, $2); }
-                | postfix_expr TRANSPOSE
+                | oper_expr TRANSPOSE
                   { $$ = make_postfix_op (TRANSPOSE, $1, $2); }
-                | postfix_expr indirect_ref_op STRUCT_ELT
+                | oper_expr indirect_ref_op STRUCT_ELT
                   { $$ = make_indirect_ref ($1, $3->text ()); }
-                | postfix_expr indirect_ref_op '(' expression ')'
+                | oper_expr indirect_ref_op '(' expression ')'
                   { $$ = make_indirect_ref ($1, $4); }
-                ;
-
-prefix_expr     : postfix_expr
-                  { $$ = $1; }
-                | binary_expr
-                  { $$ = $1; }
-                | PLUS_PLUS prefix_expr %prec UNARY
+                | PLUS_PLUS oper_expr %prec UNARY
                   { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
-                | MINUS_MINUS prefix_expr %prec UNARY
+                | MINUS_MINUS oper_expr %prec UNARY
                   { $$ = make_prefix_op (MINUS_MINUS, $2, $1); }
-                | EXPR_NOT prefix_expr %prec UNARY
+                | EXPR_NOT oper_expr %prec UNARY
                   { $$ = make_prefix_op (EXPR_NOT, $2, $1); }
-                | '+' prefix_expr %prec UNARY
+                | '+' oper_expr %prec UNARY
                   { $$ = make_prefix_op ('+', $2, $1); }
-                | '-' prefix_expr %prec UNARY
+                | '-' oper_expr %prec UNARY
                   { $$ = make_prefix_op ('-', $2, $1); }
-                ;
-
-binary_expr     : prefix_expr POW prefix_expr
+                | oper_expr POW oper_expr
                   { $$ = make_binary_op (POW, $1, $2, $3); }
-                | prefix_expr EPOW prefix_expr
+                | oper_expr EPOW oper_expr
                   { $$ = make_binary_op (EPOW, $1, $2, $3); }
-                | prefix_expr '+' prefix_expr
+                | oper_expr '+' oper_expr
                   { $$ = make_binary_op ('+', $1, $2, $3); }
-                | prefix_expr '-' prefix_expr
+                | oper_expr '-' oper_expr
                   { $$ = make_binary_op ('-', $1, $2, $3); }
-                | prefix_expr '*' prefix_expr
+                | oper_expr '*' oper_expr
                   { $$ = make_binary_op ('*', $1, $2, $3); }
-                | prefix_expr '/' prefix_expr
+                | oper_expr '/' oper_expr
                   { $$ = make_binary_op ('/', $1, $2, $3); }
-                | prefix_expr EPLUS prefix_expr
+                | oper_expr EPLUS oper_expr
                   { $$ = make_binary_op ('+', $1, $2, $3); }
-                | prefix_expr EMINUS prefix_expr
+                | oper_expr EMINUS oper_expr
                   { $$ = make_binary_op ('-', $1, $2, $3); }
-                | prefix_expr EMUL prefix_expr
+                | oper_expr EMUL oper_expr
                   { $$ = make_binary_op (EMUL, $1, $2, $3); }
-                | prefix_expr EDIV prefix_expr
+                | oper_expr EDIV oper_expr
                   { $$ = make_binary_op (EDIV, $1, $2, $3); }
-                | prefix_expr LEFTDIV prefix_expr
+                | oper_expr LEFTDIV oper_expr
                   { $$ = make_binary_op (LEFTDIV, $1, $2, $3); }
-                | prefix_expr ELEFTDIV prefix_expr
+                | oper_expr ELEFTDIV oper_expr
                   { $$ = make_binary_op (ELEFTDIV, $1, $2, $3); }
                 ;
 
@@ -866,9 +863,9 @@ colon_expr      : colon_expr1
                   { $$ = finish_colon_expression ($1); }
                 ;
 
-colon_expr1     : prefix_expr
+colon_expr1     : oper_expr
                   { $$ = new tree_colon_expression ($1); }
-                | colon_expr1 ':' prefix_expr
+                | colon_expr1 ':' oper_expr
                   {
                     if (! ($$ = $1->append ($3)))
                       ABORT_PARSE;
@@ -1148,12 +1145,26 @@ loop_command    : WHILE stash_comment expression opt_sep opt_list END
                   }
                 | FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command ($1, $3, $5, $7, $8, $2)))
+                    if (! ($$ = make_for_command (FOR, $1, $3, $5, 0,
+                                                  $7, $8, $2)))
                       ABORT_PARSE;
                   }
                 | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
                   {
-                    if (! ($$ = make_for_command ($1, $4, $6, $9, $10, $2)))
+                    if (! ($$ = make_for_command (FOR, $1, $4, $6, 0,
+                                                  $9, $10, $2)))
+                      ABORT_PARSE;
+                  }
+                | PARFOR stash_comment assign_lhs '=' expression opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command (PARFOR, $1, $3, $5,
+                                                  0, $7, $8, $2)))
+                      ABORT_PARSE;
+                  }
+                | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
+                  {
+                    if (! ($$ = make_for_command (PARFOR, $1, $4, $6,
+                                                  $8, $11, $12, $2)))
                       ABORT_PARSE;
                   }
                 ;
@@ -1238,6 +1249,7 @@ param_list_beg  : '('
                         symtab_context.push (symbol_table::current_scope ());
                         symbol_table::set_scope (symbol_table::alloc_scope ());
                         lexer_flags.looking_at_function_handle--;
+                        lexer_flags.looking_at_anon_fcn_args = true;
                       }
                   }
                 ;
@@ -1479,7 +1491,7 @@ classdef1       : classdef_beg opt_attr_list identifier opt_superclasses
                   { $$ = 0; }
                 ;
 
-classdef        : classdef1 '\n' class_body '\n' stash_comment classdef_end
+classdef        : classdef1 opt_sep class_body opt_sep stash_comment classdef_end
                   { $$ = 0; }
                 ;
 
@@ -1526,11 +1538,15 @@ class_body      : properties_block
                   { $$ = 0; }
                 | events_block
                   { $$ = 0; }
-                | class_body '\n' properties_block
+                | enum_block
                   { $$ = 0; }
-                | class_body '\n' methods_block
+                | class_body opt_sep properties_block
                   { $$ = 0; }
-                | class_body '\n' events_block
+                | class_body opt_sep methods_block
+                  { $$ = 0; }
+                | class_body opt_sep events_block
+                  { $$ = 0; }
+                | class_body opt_sep enum_block
                   { $$ = 0; }
                 ;
 
@@ -1539,14 +1555,14 @@ properties_beg  : PROPERTIES stash_comment
                 ;
 
 properties_block
-                : properties_beg opt_attr_list '\n' properties_list '\n' END
+                : properties_beg opt_attr_list opt_sep properties_list opt_sep END
                   { $$ = 0; }
                 ;
 
 properties_list
                 : class_property
                   { $$ = 0; }
-                | properties_list '\n' class_property
+                | properties_list opt_sep class_property
                   { $$ = 0; }
                 ;
 
@@ -1560,13 +1576,13 @@ methods_beg     : METHODS stash_comment
                   { $$ = 0; }
                 ;
 
-methods_block   : methods_beg opt_attr_list '\n' methods_list '\n' END
+methods_block   : methods_beg opt_attr_list opt_sep methods_list opt_sep END
                   { $$ = 0; }
                 ;
 
 methods_list    : function
                   { $$ = 0; }
-                | methods_list '\n' function
+                | methods_list opt_sep function
                   { $$ = 0; }
                 ;
 
@@ -1574,17 +1590,35 @@ events_beg      : EVENTS stash_comment
                   { $$ = 0; }
                 ;
 
-events_block    : events_beg opt_attr_list '\n' events_list '\n' END
+events_block    : events_beg opt_attr_list opt_sep events_list opt_sep END
                   { $$ = 0; }
                 ;
 
 events_list     : class_event
                   { $$ = 0; }
-                | events_list '\n' class_event
+                | events_list opt_sep class_event
                   { $$ = 0; }
                 ;
 
 class_event     : identifier
+                  { $$ = 0; }
+                ;
+
+enum_beg        : ENUMERATION stash_comment
+                  { $$ = 0; }
+                ;
+
+enum_block      : enum_beg opt_attr_list opt_sep enum_list opt_sep END
+                  { $$ = 0; }
+                ;
+
+enum_list       : class_enum
+                  { $$ = 0; }
+                | enum_list opt_sep class_enum
+                  { $$ = 0; }
+                ;
+
+class_enum      : identifier '(' expression ')'
                   { $$ = 0; }
                 ;
 
@@ -1766,12 +1800,20 @@ end_token_ok (token *tok, token::end_tok_type expected)
           end_error ("for", ettype, l, c);
           break;
 
+        case token::enumeration_end:
+          end_error ("enumeration", ettype, l, c);
+          break;
+
         case token::function_end:
           end_error ("function", ettype, l, c);
           break;
 
         case token::if_end:
           end_error ("if", ettype, l, c);
+          break;
+
+        case token::parfor_end:
+          end_error ("parfor", ettype, l, c);
           break;
 
         case token::try_catch_end:
@@ -1859,11 +1901,7 @@ fold (tree_binary_expression *e)
 
   octave_value::binary_op op_type = e->op_type ();
 
-  if (op1->is_constant () && op2->is_constant ()
-      && (! ((warning_enabled ("Octave:associativity-change")
-              && (op_type == POW || op_type == EPOW))
-             || (warning_enabled ("Octave:precedence-change")
-                 && (op_type == EXPR_OR || op_type == EXPR_OR_OR)))))
+  if (op1->is_constant () && op2->is_constant ())
     {
       octave_value tmp = e->rvalue1 ();
 
@@ -2079,9 +2117,8 @@ static tree_anon_fcn_handle *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
-
-  int l = -1;
-  int c = -1;
+  int l = input_line_number;
+  int c = current_input_column;
 
   tree_parameter_list *ret_list = 0;
 
@@ -2102,38 +2139,11 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   tree_anon_fcn_handle *retval
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
+  // FIXME: Stash the filename.  This does not work and produces
+  // errors when executed.
+  //retval->stash_file_name (curr_fcn_file_name);
 
   return retval;
-}
-
-static void
-maybe_warn_associativity_change (tree_expression *op)
-{
-  if (op->paren_count () == 0 && op->is_binary_expression ())
-    {
-      tree_binary_expression *e
-        = dynamic_cast<tree_binary_expression *> (op);
-
-      octave_value::binary_op op_type = e->op_type ();
-
-      if (op_type == octave_value::op_pow
-          || op_type == octave_value::op_el_pow)
-        {
-          std::string op_str = octave_value::binary_op_as_string (op_type);
-
-          if (curr_fcn_file_full_name.empty ())
-            warning_with_id
-              ("Octave:associativity-change",
-               "meaning may have changed due to change in associativity for %s operator",
-               op_str.c_str ());
-          else
-            warning_with_id
-              ("Octave:associativity-change",
-               "meaning may have changed due to change in associativity for %s operator near line %d, column %d in file `%s'",
-               op_str.c_str (), op->line (), op->column (),
-               curr_fcn_file_full_name.c_str ());
-        }
-    }
 }
 
 // Build a binary expression.
@@ -2148,12 +2158,10 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
     {
     case POW:
       t = octave_value::op_pow;
-      maybe_warn_associativity_change (op1);
       break;
 
     case EPOW:
       t = octave_value::op_el_pow;
-      maybe_warn_associativity_change (op1);
       break;
 
     case '+':
@@ -2226,25 +2234,6 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR:
       t = octave_value::op_el_or;
-      if (op2->paren_count () == 0 && op2->is_binary_expression ())
-        {
-          tree_binary_expression *e
-            = dynamic_cast<tree_binary_expression *> (op2);
-
-          if (e->op_type () == octave_value::op_el_and)
-            {
-              if (curr_fcn_file_full_name.empty ())
-                warning_with_id
-                  ("Octave:precedence-change",
-                   "meaning may have changed due to change in precedence for & and | operators");
-              else
-                warning_with_id
-                  ("Octave:precedence-change",
-                   "meaning may have changed due to change in precedence for & and | operators near line %d, column %d in file `%s'",
-                   op2->line (), op2->column (),
-                   curr_fcn_file_full_name.c_str ());
-            }
-        }
       break;
 
     default:
@@ -2277,16 +2266,6 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
 
     case EXPR_OR_OR:
       t = tree_boolean_expression::bool_or;
-      if (op2->paren_count () == 0 && op2->is_boolean_expression ())
-        {
-          tree_boolean_expression *e
-            = dynamic_cast<tree_boolean_expression *> (op2);
-
-          if (e->op_type () == tree_boolean_expression::bool_and)
-            warning_with_id
-              ("Octave:precedence-change",
-               "meaning may have changed due to change in precedence for && and || operators");
-        }
       break;
 
     default:
@@ -2482,13 +2461,16 @@ make_do_until_command (token *until_tok, tree_statement_list *body,
 // Build a for command.
 
 static tree_command *
-make_for_command (token *for_tok, tree_argument_list *lhs,
-                  tree_expression *expr, tree_statement_list *body,
-                  token *end_tok, octave_comment_list *lc)
+make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
+                  tree_expression *expr, tree_expression *maxproc,
+                  tree_statement_list *body, token *end_tok,
+                  octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
-  if (end_token_ok (end_tok, token::for_end))
+  bool parfor = tok_id == PARFOR;
+
+  if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
     {
       octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
@@ -2501,14 +2483,19 @@ make_for_command (token *for_tok, tree_argument_list *lhs,
         {
           tree_expression *tmp = lhs->remove_front ();
 
-          retval = new tree_simple_for_command (tmp, expr, body,
-                                                lc, tc, l, c);
+          retval = new tree_simple_for_command (parfor, tmp, expr, maxproc,
+                                                body, lc, tc, l, c);
 
           delete lhs;
         }
       else
-        retval = new tree_complex_for_command (lhs, expr, body,
-                                               lc, tc, l, c);
+        {
+          if (parfor)
+            yyerror ("invalid syntax for parfor statement");
+          else
+            retval = new tree_complex_for_command (lhs, expr, body,
+                                                   lc, tc, l, c);
+        }
     }
 
   return retval;
@@ -2908,6 +2895,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
     }
 
   fcn->stash_function_name (id_name);
+  fcn->stash_fcn_location (input_line_number, current_input_column);
 
   if (! help_buf.empty () && current_function_depth == 1
       && ! parsing_subfunctions)
@@ -3287,13 +3275,13 @@ looks_like_copyright (const std::string& s)
 static int
 text_getc (FILE *f)
 {
-  int c = getc (f);
+  int c = gnulib::getc (f);
 
   // Convert CRLF into just LF and single CR into LF.
 
   if (c == '\r')
     {
-      c = getc (f);
+      c = gnulib::getc (f);
 
       if (c != '\n')
         {
@@ -3348,11 +3336,10 @@ skip_white_space (stream_reader& reader)
           break;
 
         case '\n':
-          current_input_column = 0;
+          current_input_column = 1;
           break;
 
         default:
-          current_input_column--;
           reader.ungetc (c);
           goto done;
         }
@@ -3368,16 +3355,16 @@ looking_at_classdef_keyword (FILE *ffile)
 {
   bool status = false;
 
-  long pos = ftell (ffile);
+  long pos = gnulib::ftell (ffile);
 
   char buf [10];
-  fgets (buf, 10, ffile);
+  gnulib::fgets (buf, 10, ffile);
   size_t len = strlen (buf);
   if (len > 8 && strncmp (buf, "classdef", 8) == 0
       && ! (isalnum (buf[8]) || buf[8] == '_'))
     status = true;
 
-  fseek (ffile, pos, SEEK_SET);
+  gnulib::fseek (ffile, pos, SEEK_SET);
 
   return status;
  }
@@ -3428,16 +3415,16 @@ looking_at_function_keyword (FILE *ffile)
 {
   bool status = false;
 
-  long pos = ftell (ffile);
+  long pos = gnulib::ftell (ffile);
 
   char buf [10];
-  fgets (buf, 10, ffile);
+  gnulib::fgets (buf, 10, ffile);
   size_t len = strlen (buf);
   if (len > 8 && strncmp (buf, "function", 8) == 0
       && ! (isalnum (buf[8]) || buf[8] == '_'))
     status = true;
 
-  fseek (ffile, pos, SEEK_SET);
+  gnulib::fseek (ffile, pos, SEEK_SET);
 
   return status;
 }
@@ -3479,17 +3466,10 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   parsing_subfunctions = false;
   endfunction_found = false;
 
-  // The next four lines must be in this order.
-  frame.add_fcn (command_history::ignore_entries, ! Vsaving_history);
+  frame.add_fcn (command_history::ignore_entries,
+                 command_history::ignoring_entries ());
 
-  // FIXME -- we shouldn't need both the
-  // command_history object and the
-  // Vsaving_history variable...
   command_history::ignore_entries ();
-
-  frame.protect_var (Vsaving_history);
-
-  Vsaving_history = false;
 
   FILE *ffile = get_input_from_file (ff, 0);
 
@@ -3585,7 +3565,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           int status = yyparse ();
 
-          delete global_command;
+          // Use an unwind-protect cleanup function so that the
+          // global_command list will be deleted in the event of an
+          // interrupt.
+
+          frame.add_fcn (cleanup_statement_list, &global_command);
 
           fcn_ptr = primary_fcn_ptr;
 
@@ -4021,8 +4005,8 @@ source_file (const std::string& file_name, const std::string& context,
 DEFUN (mfilename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} mfilename ()\n\
-@deftypefnx {Built-in Function} {} mfilename (@code{\"fullpath\"})\n\
-@deftypefnx {Built-in Function} {} mfilename (@code{\"fullpathext\"})\n\
+@deftypefnx {Built-in Function} {} mfilename (\"fullpath\")\n\
+@deftypefnx {Built-in Function} {} mfilename (\"fullpathext\")\n\
 Return the name of the currently executing file.  At the top-level,\n\
 return the empty string.  Given the argument @code{\"fullpath\"},\n\
 include the directory part of the file name, but not the extension.\n\
@@ -4194,7 +4178,9 @@ feval (const octave_value_list& args, int nargout)
               retval = feval (name, tmp_args, nargout);
             }
         }
-      else if (f_arg.is_function_handle () || f_arg.is_inline_function ())
+      else if (f_arg.is_function_handle ()
+               || f_arg.is_anonymous_function ()
+               || f_arg.is_inline_function ())
         {
           const octave_value_list tmp_args = get_feval_args (args);
 
@@ -4223,12 +4209,26 @@ feval (\"acos\", -1)\n\
 @noindent\n\
 calls the function @code{acos} with the argument @samp{-1}.\n\
 \n\
-The function @code{feval} is necessary in order to be able to write\n\
-functions that call user-supplied functions, because Octave does not\n\
-have a way to declare a pointer to a function (like C) or to declare a\n\
-special kind of variable that can be used to hold the name of a function\n\
-(like @code{EXTERNAL} in Fortran).  Instead, you must refer to functions\n\
-by name, and use @code{feval} to call them.\n\
+The function @code{feval} can also be used with function handles of\n\
+any sort (@pxref{Function Handles}).  Historically, @code{feval} was\n\
+the only way to call user-supplied functions in strings, but\n\
+function handles are now preferred due to the cleaner syntax they\n\
+offer.  For example,\n\
+\n\
+@example\n\
+@group\n\
+@var{f} = @@exp;\n\
+feval (@var{f}, 1)\n\
+     @result{} 2.7183\n\
+@var{f} (1)\n\
+     @result{} 2.7183\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+are equivalent ways to call the function referred to by @var{f}.  If it\n\
+cannot be predicted beforehand that @var{f} is a function handle or the\n\
+function name in a string, @code{feval} can be used instead.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4349,6 +4349,14 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
         {
           if (command_list)
             {
+              unwind_protect inner_frame;
+
+              // Use an unwind-protect cleanup function so that the
+              // global_command list will be deleted in the event of an
+              // interrupt.
+
+              inner_frame.add_fcn (cleanup_statement_list, &command_list);
+
               tree_statement *stmt = 0;
 
               if (command_list->length () == 1
@@ -4384,10 +4392,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                 command_list->accept (*current_evaluator);
               else
                 error ("eval: invalid use of statement list");
-
-              delete command_list;
-
-              command_list = 0;
 
               if (error_state
                   || tree_return_command::returning
@@ -4430,6 +4434,16 @@ eval_string (const octave_value& arg, bool silent, int& parse_status,
     }
 
   return eval_string (s, silent, parse_status, nargout);
+}
+
+void
+cleanup_statement_list (tree_statement_list **lst)
+{
+  if (*lst)
+    {
+      delete *lst;
+      *lst = 0;
+    }
 }
 
 DEFUN (eval, args, nargout,
@@ -4504,84 +4518,34 @@ eval ('error (\"This is a bad example\");',\n\
 
 /*
 
-%% test/octave.test/eval/eval-1.m
-%!#test
+%!shared x
 %! x = 1;
-%! assert(eval ("x"),1);
 
-%% test/octave.test/eval/eval-2.m
+%!assert (eval ("x"), 1)
+%!assert (eval ("x;"))
+%!assert (eval ("x;"), 1);
+
 %!test
-%! x = 1;
-%! assert(eval ("x;"));
+%! y = eval ("x");
+%! assert (y, 1);
 
-%% test/octave.test/eval/eval-3.m
 %!test
-%! x = 1;
-%! assert(eval ("x;"),1);
+%! y = eval ("x;");
+%! assert (y, 1);
 
-%% FIXME
-%% Disable this test as adding the ";" is redundant with eval-1 and
-%% in any case is a syntax error with assert
-%% test/octave.test/eval/eval-4.m
-%!#test
-%! x = 1;
-%! assert(eval ("x");,1);
-
-%% test/octave.test/eval/eval-5.m
-%!test
-%! eval ("flipud = 2;");
-%! assert(flipud,2);
-
-%% test/octave.test/eval/eval-6.m
-%!function y = f ()
-%!  eval ("flipud = 2;");
-%!  y = flipud;
-%!test
-%! assert(f,2);
-
-%% test/octave.test/eval/eval-7.m
-%!#test
-%! eval ("x = 1");
-%! assert(x,1);
-
-%% test/octave.test/eval/eval-8.m
 %!test
 %! eval ("x = 1;")
-%! assert(x,1);
+%! assert (x,1);
 
-%% test/octave.test/eval/eval-9.m
 %!test
-%! eval ("x = 1;");
-%! assert(x,1);
+%! eval ("flipud = 2;");
+%! assert (flipud, 2);
 
-%% test/octave.test/eval/eval-10.m
-%!#test
-%! eval ("x = 1")
-%! assert(x,1);
-
-%% test/octave.test/eval/eval-11.m
-%!test
-%! x = 1;
-%! y = eval ("x");
-%! assert(y,1);
-
-%% test/octave.test/eval/eval-12.m
-%!test
-%! x = 1;
-%! y = eval ("x;");
-%! assert(y,1);
-
-%% test/octave.test/eval/eval-13.m
-%!test
-%! x = 1;
-%! y = eval ("x;");
-%! assert(y,1);
-
-%% test/octave.test/eval/eval-14.m
-%!test
-%! x = 1;
-%! y = eval ("x");
-%! assert(y,1);
+%!function y = __f ()
+%!  eval ("flipud = 2;");
+%!  y = flipud;
+%!endfunction
+%!assert (__f(), 2)
 
 */
 

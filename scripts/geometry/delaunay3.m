@@ -17,42 +17,61 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{opt})
-## A matrix of size [n, 4] is returned.  Each row contains a
-## set of tetrahedron which are
-## described by the indices to the data point vectors (x,y,z).
+## @deftypefn  {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {@var{tetr} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{options})
+## Compute the Delaunay triangulation for a 3-D set of points.
+## The return value @var{tetr} is a set of tetrahedrons which satisfies the
+## Delaunay circum-circle criterion, i.e., only a single data point from
+## [@var{x}, @var{y}, @var{z}] is within the circum-circle of the defining
+## tetrahedron.
 ##
-## A fourth optional argument, which must be a string or cell array of strings,
-## contains extra options passed to the underlying qhull command.  See the
-## documentation for the Qhull library for details.
-## @seealso{delaunay,delaunayn}
+## The set of tetrahedrons @var{tetr} is a matrix of size [n, 4].  Each
+## row defines a tetrahedron and the four columns are the four vertices
+## of the tetrahedron.  The value of @code{@var{tetr}(i,j)} is an index into
+## @var{x}, @var{y}, @var{z} for the location of the j-th vertex of the i-th
+## tetrahedron.
+##
+## An optional fourth argument, which must be a string or cell array of strings,
+## contains options passed to the underlying qhull command.
+## See the documentation for the Qhull library for details
+## @url{http://www.qhull.org/html/qh-quick.htm#options}.
+## The default options are @code{@{"Qt", "Qbb", "Qc", "Qz"@}}.
+##
+## If @var{options} is not present or @code{[]} then the default arguments are
+## used.  Otherwise, @var{options} replaces the default argument list. 
+## To append user options to the defaults it is necessary to repeat the 
+## default arguments in @var{options}.  Use a null string to pass no arguments.
+##
+## @seealso{delaunay, delaunayn, convhull, voronoi}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function tetr = delaunay3 (x, y, z, opt)
+function tetr = delaunay3 (x, y, z, options)
 
-  if (nargin != 3 && nargin != 4)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 
-  if (isvector (x) && isvector (y) &&isvector (z)
-      && length (x) == length (y) && length(x) == length (z))
-    if (nargin == 3)
-      tetr = delaunayn ([x(:), y(:), z(:)]);
-    elseif (ischar (opt) || iscell (opt))
-      tetr = delaunayn ([x(:), y(:), z(:)], opt);
-    else
-      error ("delaunay3: fourth argument must be a string or cell array of strings");
-    endif
+  if (! (isvector (x) && isvector (y) && isvector (z)
+         && length (x) == length (y) && length(x) == length (z)))
+    error ("delaunay: X, Y, and Z must be the same size");
+  elseif (nargin == 4 && ! (ischar (options) || iscellstr (options)))
+    error ("delaunay3: OPTIONS must be a string or cell array of strings");
+  endif
+
+  if (nargin == 3)
+    tetr = delaunayn ([x(:), y(:), z(:)]);
   else
-    error ("delaunay3: first three input arguments must be vectors of same size");
+    tetr = delaunayn ([x(:), y(:), z(:)], options);
   endif
 
 endfunction
 
+
 %!testif HAVE_QHULL
 %! x = [-1, -1, 1, 0, -1]; y = [-1, 1, 1, 0, -1]; z = [0, 0, 0, 1, 1];
 %! assert (sortrows (sort (delaunay3 (x, y, z), 2)), [1,2,3,4;1,2,4,5])
+
+%% FIXME: Need input validation tests
 

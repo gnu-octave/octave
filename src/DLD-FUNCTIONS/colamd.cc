@@ -232,7 +232,7 @@ completely dense rows or columns are removed if @code{@var{knobs}(1)} and\n\
 @code{@var{knobs}(2)} are < 0, respectively.  If @code{@var{knobs}(3)} is\n\
 nonzero, @var{stats} and @var{knobs} are printed.  The default is\n\
 @code{@var{knobs} = [10 10 0]}.  Note that @var{knobs} differs from earlier\n\
-versions of colamd\n\
+versions of colamd.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
 about the ordering and the validity of the input matrix @var{S}.  Ordering\n\
@@ -459,7 +459,7 @@ For a symmetric positive definite matrix @var{S}, returns the permutation\n\
 vector p such that @code{@var{S}(@var{p}, @var{p})} tends to have a\n\
 sparser Cholesky@tie{}factor than @var{S}.  Sometimes @code{symamd} works\n\
 well for symmetric indefinite matrices too.  The matrix @var{S} is assumed\n\
-to be symmetric; only the strictly lower triangular part is referenced.  \n\
+to be symmetric; only the strictly lower triangular part is referenced.\n\
 @var{S} must be square.\n\
 \n\
 @var{knobs} is an optional one- to two-element input vector.  If @var{S} is\n\
@@ -467,7 +467,7 @@ n-by-n, then rows and columns with more than\n\
 @code{max(16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,\n\
 and ordered last in the output permutation @var{p}.  No rows/columns are\n\
 removed if @code{@var{knobs}(1) < 0}.  If @code{@var{knobs} (2)} is nonzero,\n\
-@code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs} \n\
+@code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs}\n\
 = [10 0]}.  Note that @var{knobs} differs from earlier versions of symamd.\n\
 \n\
 @var{stats} is an optional 20-element output vector that provides data\n\
@@ -544,7 +544,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
         octave_stdout << "symamd: dense row/col fraction: "
                       << knobs [COLAMD_DENSE_ROW] << std::endl;
 
-      octave_idx_type n_row, n_col, nnz;
+      octave_idx_type n_row, n_col;
       octave_idx_type *ridx, *cidx;
       SparseMatrix sm;
       SparseComplexMatrix scm;
@@ -556,7 +556,6 @@ Ng, Oak Ridge National Laboratory.  (see\n\
               scm = args(0).sparse_complex_matrix_value ();
               n_row = scm.rows ();
               n_col = scm.cols ();
-              nnz = scm.nnz ();
               ridx = scm.xridx ();
               cidx = scm.xcidx ();
             }
@@ -565,7 +564,6 @@ Ng, Oak Ridge National Laboratory.  (see\n\
               sm = args(0).sparse_matrix_value ();
               n_row = sm.rows ();
               n_col = sm.cols ();
-              nnz = sm.nnz ();
               ridx = sm.xridx ();
               cidx = sm.xcidx ();
             }
@@ -579,7 +577,6 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
           n_row = sm.rows ();
           n_col = sm.cols ();
-          nnz = sm.nnz ();
           ridx = sm.xridx ();
           cidx = sm.xcidx ();
         }
@@ -650,7 +647,7 @@ DEFUN_DLD (etree, args, nargout,
 @deftypefnx {Loadable Function} {@var{p} =} etree (@var{S}, @var{typ})\n\
 @deftypefnx {Loadable Function} {[@var{p}, @var{q}] =} etree (@var{S}, @var{typ})\n\
 \n\
-Returns the elimination tree for the matrix @var{S}.  By default @var{S}\n\
+Return the elimination tree for the matrix @var{S}.  By default @var{S}\n\
 is assumed to be symmetric and the symmetric elimination tree is\n\
 returned.  The argument @var{typ} controls whether a symmetric or\n\
 column elimination tree is returned.  Valid values of @var{typ} are\n\
@@ -668,7 +665,7 @@ permutations on the tree.\n\
     print_usage ();
   else
     {
-      octave_idx_type n_row, n_col, nnz;
+      octave_idx_type n_row, n_col;
       octave_idx_type *ridx, *cidx;
       bool is_sym = true;
       SparseMatrix sm;
@@ -681,7 +678,6 @@ permutations on the tree.\n\
               scm = args(0).sparse_complex_matrix_value ();
               n_row = scm.rows ();
               n_col = scm.cols ();
-              nnz = scm.nnz ();
               ridx = scm.xridx ();
               cidx = scm.xcidx ();
             }
@@ -690,7 +686,6 @@ permutations on the tree.\n\
               sm = args(0).sparse_matrix_value ();
               n_row = sm.rows ();
               n_col = sm.cols ();
-              nnz = sm.nnz ();
               ridx = sm.xridx ();
               cidx = sm.xcidx ();
             }

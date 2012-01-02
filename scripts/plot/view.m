@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{azimuth}, @var{elevation}] =} view ()
-## @deftypefnx  {Function File} {} view (@var{azimuth}, @var{elevation})
-## @deftypefnx {Function File} {} view ([@var{azimuth}, @var{elevation}])
-## @deftypefnx {Function File} {} view ([@var{x}, @var{y}, @var{z}])
+## @deftypefnx {Function File} {} view (@var{azimuth}, @var{elevation})
+## @deftypefnx {Function File} {} view ([@var{azimuth} @var{elevation}])
+## @deftypefnx {Function File} {} view ([@var{x} @var{y} @var{z}])
 ## @deftypefnx {Function File} {} view (@var{dims})
 ## @deftypefnx {Function File} {} view (@var{ax}, @dots{})
 ## Query or set the viewpoint for the current axes.  The parameters
@@ -93,3 +93,32 @@ function [azimuth, elevation] = view (varargin)
   endif
 
 endfunction
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   [az, el] = view;
+%!   assert ([az, el], [-37.5, 30], eps);
+%!   view (2);
+%!   [az, el] = view;
+%!   assert ([az, el], [0, 90], eps);
+%!   view ([1 1 0]);
+%!   [az, el] = view;
+%!   assert ([az, el], [135, 0], eps);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   line;
+%!   [az, el] = view;
+%!   assert ([az, el], [0, 90], eps);
+%!   view (3);
+%!   [az, el] = view;
+%!   assert ([az, el], [-37.5, 30], eps);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

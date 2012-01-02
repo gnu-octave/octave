@@ -28,10 +28,6 @@ with a digit.  Octave does not enforce a limit on the length of variable
 names, but it is seldom useful to have variables with names longer than
 about 30 characters.  The following are all valid variable names
 
-@cindex job hunting
-@cindex getting a good job
-@cindex flying high and fast
-
 @example
 @group
 x
@@ -361,6 +357,8 @@ it can be necessary to remove it manually from memory.  The @code{clear}
 function allows this.
 
 @DOCSTRING(clear)
+
+@DOCSTRING(pack)
 
 Information about a function or variable such as its location in the
 file system can also be acquired from within Octave.  This is usually

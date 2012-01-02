@@ -61,14 +61,14 @@ function st = strcat (varargin)
     elseif (nargin > 1)
       ## Convert to cells of strings
       uo = "uniformoutput";
-      reals = cellfun (@isreal, varargin);
+      reals = cellfun ("isreal", varargin);
       if (any (reals))
-        varargin(reals) = cellfun (@char, varargin(reals), uo, false);
+        varargin(reals) = cellfun ("char", varargin(reals), uo, false);
       endif
-      chars = cellfun (@ischar, varargin);
+      chars = cellfun ("isclass", varargin, "char");
       allchar = all (chars);
-      varargin(chars) = cellfun (@cellstr, varargin(chars), uo, false);
-      if (! all (cellfun (@iscell, varargin)))
+      varargin(chars) = cellfun ("cellstr", varargin(chars), uo, false);
+      if (! all (cellfun ("isclass", varargin, "cell")))
         error ("strcat: inputs must be strings or cells of strings");
       endif
 
@@ -81,7 +81,7 @@ function st = strcat (varargin)
       endif
 
       ## Cellfun handles everything for us.
-      st = cellfun (@horzcat, varargin{:}, uo, false);
+      st = cellfun ("horzcat", varargin{:}, uo, false);
 
       if (allchar)
         ## If all inputs were strings, return strings.

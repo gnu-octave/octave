@@ -88,7 +88,7 @@ For more information, visit http://www.octave.org/help-wanted.html"
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
     ("  For details, type `warranty'.") "\n\n" \
   "For information about changes from previous versions, type `news'.\n\n\
-** WARNING ** Semantics for arithmetic operators have changed and now\n\
-              broadcast. Type `doc broadcast' to get a description of\n\
-              the changes."
+** WARNING ** Semantics for arithmetic operators were changed\n\
+              in version 3.6.0 and now broadcast.\n\
+              Type `doc broadcast' to get a description of the changes."
 #endif

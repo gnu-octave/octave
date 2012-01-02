@@ -48,6 +48,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "parse.h"
 #include "variables.h"
+#include "ov-fcn-handle.h"
 
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
@@ -601,12 +602,15 @@ octave_user_function::bind_automatic_vars
 DEFUN (nargin, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargin ()\n\
-@deftypefnx {Built-in Function} {} nargin (@var{fcn_name})\n\
+@deftypefnx {Built-in Function} {} nargin (@var{fcn})\n\
 Within a function, return the number of arguments passed to the function.\n\
 At the top level, return the number of command line arguments passed to\n\
-Octave.  If called with the optional argument @var{fcn_name}, return the\n\
-maximum number of arguments the named function can accept, or -1 if the\n\
-function accepts a variable number of arguments.\n\
+Octave.\n\
+\n\
+If called with the optional argument @var{fcn}, a function name or handle,\n\
+return the declared number of arguments that the function can accept.\n\
+If the last argument is @var{varargin} the returned value is negative.\n\
+This feature does not work on builtin functions.\n\
 @seealso{nargout, varargin, varargout}\n\
 @end deftypefn")
 {
@@ -616,30 +620,37 @@ function accepts a variable number of arguments.\n\
 
   if (nargin == 1)
     {
-      std::string fname = args(0).string_value ();
+      octave_value func = args(0);
 
-      if (! error_state)
+      if (func.is_string ())
         {
-          octave_value fcn_val = symbol_table::find_user_function (fname);
+          std::string name = func.string_value ();
+          func = symbol_table::find_function (name);
+          if (func.is_undefined ())
+            error ("nargout: invalid function name: %s", name.c_str ());
+        }
 
-          octave_user_function *fcn = fcn_val.user_function_value (true);
+      octave_function *fcn_val = func.function_value ();
+      if (fcn_val)
+        {
+          octave_user_function *fcn = fcn_val->user_function_value (true);
 
           if (fcn)
             {
-              if (fcn->takes_varargs ())
-                retval = -1;
-              else
-                {
-                  tree_parameter_list *param_list = fcn->parameter_list ();
+              tree_parameter_list *param_list = fcn->parameter_list ();
 
-                  retval = param_list ? param_list->length () : 0;
-                }
+              retval = param_list ? param_list->length () : 0;
+              if (fcn->takes_varargs ())
+                retval = -1 - retval;
             }
           else
-            error ("nargin: invalid function");
+            {
+              // Matlab gives up for histc, so maybe it's ok we give up somtimes too.
+              error ("nargin: nargin information not available for builtin functions");
+            }
         }
       else
-        error ("nargin: FCN_NAME must be a string");
+        error ("nargin: FCN must be a string or function handle");
     }
   else if (nargin == 0)
     {
@@ -657,11 +668,12 @@ function accepts a variable number of arguments.\n\
 DEFUN (nargout, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} nargout ()\n\
-@deftypefnx {Built-in Function} {} nargout (@var{fcn_name})\n\
+@deftypefnx {Built-in Function} {} nargout (@var{fcn})\n\
 Within a function, return the number of values the caller expects to\n\
-receive.  If called with the optional argument @var{fcn_name}, return the\n\
-maximum number of values the named function can produce, or -1 if the\n\
-function can produce a variable number of values.\n\
+receive.  If called with the optional argument @var{fcn}, a function\n\
+name or handle, return the number of declared output values that the\n\
+function can produce. If the final output argument is @var{varargout}\n\
+the returned value is negative.\n\
 \n\
 For example,\n\
 \n\
@@ -680,7 +692,23 @@ will cause @code{nargout} to return 0 inside the function @code{f} and\n\
 will cause @code{nargout} to return 2 inside the function\n\
 @code{f}.\n\
 \n\
-At the top level, @code{nargout} is undefined.\n\
+In the second usage,\n\
+\n\
+@example\n\
+nargout (@@histc) \% or nargout ('histc')\n\
+@end example\n\
+\n\
+will return 2, because @code{histc} has two outputs, whereas\n\
+\n\
+@example\n\
+nargout (@@deal)\n\
+@end example\n\
+\n\
+will return -1, because @code{deal} has a variable number of outputs.\n\
+\n\
+At the top level, @code{nargout} with no argument is undefined.\n\
+@code{nargout} does not work on builtin functions.\n\
+@code{nargout} returns -1 for all anonymous functions.\n\
 @seealso{nargin, varargin, varargout}\n\
 @end deftypefn")
 {
@@ -690,30 +718,58 @@ At the top level, @code{nargout} is undefined.\n\
 
   if (nargin == 1)
     {
-      std::string fname = args(0).string_value ();
+      octave_value func = args(0);
 
-      if (! error_state)
+      if (func.is_string ())
         {
-          octave_value fcn_val = symbol_table::find_user_function (fname);
+          std::string name = func.string_value ();
+          func = symbol_table::find_function (name);
+          if (func.is_undefined ())
+            error ("nargout: invalid function name: %s", name.c_str ());
+        }
 
-          octave_user_function *fcn = fcn_val.user_function_value (true);
+      if (func.is_inline_function ())
+        {
+          retval = 1;
+          return retval;
+        }
+
+      if (func.is_function_handle ())
+        {
+          octave_fcn_handle *fh = func.fcn_handle_value ();
+          std::string fh_nm = fh->fcn_name ();
+
+          if (fh_nm == octave_fcn_handle::anonymous)
+            {
+              retval = -1;
+              return retval;
+            }
+        }
+
+      octave_function *fcn_val = func.function_value ();
+      if (fcn_val)
+        {
+          octave_user_function *fcn = fcn_val->user_function_value (true);
 
           if (fcn)
             {
-              if (fcn->takes_var_return ())
-                retval = -1;
-              else
-                {
-                  tree_parameter_list *ret_list = fcn->return_list ();
+              tree_parameter_list *ret_list = fcn->return_list ();
+          
+              retval = ret_list ? ret_list->length () : 0;
 
-                  retval = ret_list ? ret_list->length () : 0;
-                }
+              if (fcn->takes_var_return ())
+                retval = -1 - retval;
             }
           else
-            error ("nargout: invalid function");
+            {
+              // JWE said this information is not available (currently, 2011-03-10)
+              // without making intrusive changes to Octave.
+              // Matlab gives up for histc, so maybe it's ok we give up somtimes too.
+              error ("nargout: nargout information not available for builtin functions.");
+            }
         }
       else
-        error ("nargout: FCN_NAME must be a string");
+        error ("nargout: FCN must be a string or function handle");
     }
   else if (nargin == 0)
     {

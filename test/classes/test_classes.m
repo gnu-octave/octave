@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 Robert T. Short
+## Copyright (C) 2009-2012 Robert T. Short
 ##
 ## This file is part of Octave.
 ##

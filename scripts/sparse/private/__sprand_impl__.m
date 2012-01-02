@@ -1,5 +1,5 @@
-## Copyright (C) 2004-2011 Paul Kienzle
-## Copyright (C) 2011 Jordi Gutiérrez Hermoso
+## Copyright (C) 2004-2012 Paul Kienzle
+## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##

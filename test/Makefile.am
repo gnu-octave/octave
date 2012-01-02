@@ -1,6 +1,6 @@
 # Makefile for octave's test directory
 #
-# Copyright (C) 1994-2011 John W. Eaton
+# Copyright (C) 1994-2012 John W. Eaton
 #
 # This file is part of Octave.
 # 

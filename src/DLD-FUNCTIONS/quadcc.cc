@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2011 Pedro Gonnet
+Copyright (C) 2010-2012 Pedro Gonnet
 
 This file is part of Octave.
 

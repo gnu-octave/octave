@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 S�ren Hauberg
+## Copyright (C) 2009-2012 S�ren Hauberg
 ##
 ## This file is part of Octave.
 ##

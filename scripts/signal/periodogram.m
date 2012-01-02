@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2011 Friedrich Leisch
+## Copyright (C) 1995-2012 Friedrich Leisch
 ## Copyright (C) 2010 Alois Schloegl
 ##
 ## This file is part of Octave.

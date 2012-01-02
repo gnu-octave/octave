@@ -1,6 +1,6 @@
 /* -*- C++ -*-
 
-Copyright (C) 2009-2011 Jason Riedy, Jaroslav Hajek
+Copyright (C) 2009-2012 Jason Riedy, Jaroslav Hajek
 
 This file is part of Octave.
 

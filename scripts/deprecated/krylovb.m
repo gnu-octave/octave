@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2011 A. Scottedward Hodel
+## Copyright (C) 1993-2012 A. Scottedward Hodel
 ##
 ## This file is part of Octave.
 ##

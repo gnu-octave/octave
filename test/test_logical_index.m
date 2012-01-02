@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,178 +18,56 @@
 
 %!test
 %! a = [];
-%! fail("a(0);");
+%! fail ("a(0);");
 
-%!test
-%! a = 2;
-%! assert(a(1) == 2);
-
-%!test
-%! a = 2;
-%! assert(a(1) == 2);
-
-%!test
 %!shared a
-%!  a = 2;
-%!error id=Octave:index-out-of-bounds a(logical ([1,1]));
+%! a = 2;
+%!assert (a(1), 2);
+%!error id=Octave:index-out-of-bounds a(logical ([1,1]))
 
-%!test
+%!shared a
 %! a = [9,8,7,6];
-%! assert(isempty (a(logical ([0,0,0,0]))));
+%!assert (isempty (a(logical ([0,0,0,0]))))
+%!assert (a(logical ([1,1,1,1])), [9,8,7,6])
+%!assert (a(logical ([0,1,1,0])), [8,7])
+%!assert (a(logical ([1,1])), [9,8])
 
-%!test
-%! a = [9,8,7,6];
-%! assert(all (a(logical ([1,1,1,1])) == [9,8,7,6]));
-
-%!test
-%! a = [9,8,7,6];
-%! assert(all (a(logical ([0,1,1,0])) == [8,7]));
-
-%!test
-%! a = [9,8,7,6];
-%! assert(all (a(logical ([1,1])) == [9,8]));
-
-%!test
+%!shared a
 %! a = [9,8;7,6];
-%! assert(isempty (a(logical ([0,0,0,0]))));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([1,1,1,1])) == [9,7,8,6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([0,1,1,0])) == [7,8]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(logical (0:1),logical (0:1)) == 6);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical (0:1),2:-1:1) == [6,7]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(logical (0:1),logical ([0,1])) == 6);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical (0:1),[2,1]) == [6,7]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical (0:1),:) == [7,6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(logical (0:1),1) == 7);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical (0:1),logical ([1,1])) == [7,6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(2:-1:1,logical (0:1)) == [6;8]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(2:-1:1,logical ([0,1])) == [6;8]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (all (a(2:-1:1,logical ([1,1])) == [7,6;9,8])));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(logical ([0,1]),logical (0:1)) == 6);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([0,1]),2:-1:1) == [6,7]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(logical ([0,1]),logical ([0,1])) == 6);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([0,1]),[2,1]) == [6,7]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([0,1]),:) == [7,6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(logical ([0,1]),1) == 7);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([0,1]),logical ([1,1])) == [7,6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a([2,1],logical (0:1)) == [6;8]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a([2,1],logical ([0,1])) == [6;8]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (all (a([2,1],logical ([1,1])) == [7,6;9,8])));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(:,logical (0:1)) == [8;6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(:,logical ([0,1])) == [8;6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (all (a(:,logical ([1,1])) == [9,8;7,6])));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(1,logical (0:1)) == 8);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(a(1,logical ([0,1])) == 8);
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(1,logical ([1,1])) == [9,8]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([1,1]),logical (0:1)) == [8;6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (all (a(logical ([1,1]),2:-1:1) == [8,9;6,7])));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([1,1]),logical ([0,1])) == [8;6]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (all (a(logical ([1,1]),[2,1]) == [8,9;6,7])));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (all (a(logical ([1,1]),:) == [9,8;7,6])));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (a(logical ([1,1]),1) == [9;7]));
-
-%!test
-%! a = [9,8;7,6];
-%! assert(all (all (a(logical ([1,1]),logical ([1,1])) == [9,8;7,6])));
+%!assert (isempty (a(logical ([0,0,0,0]))))
+%!assert (a(logical ([1,1,1,1])), [9,7,8,6])
+%!assert (a(logical ([0,1,1,0])), [7,8])
+%!assert (a(logical (0:1),logical (0:1)), 6)
+%!assert (a(logical (0:1),2:-1:1), [6,7])
+%!assert (a(logical (0:1),logical ([0,1])), 6)
+%!assert (a(logical (0:1),[2,1]), [6,7])
+%!assert (a(logical (0:1),:), [7,6])
+%!assert (a(logical (0:1),1), 7)
+%!assert (a(logical (0:1),logical ([1,1])), [7,6])
+%!assert (a(2:-1:1,logical (0:1)), [6;8])
+%!assert (a(2:-1:1,logical ([0,1])), [6;8])
+%!assert (a(2:-1:1,logical ([1,1])), [7,6;9,8])
+%!assert (a(logical ([0,1]),logical (0:1)), 6)
+%!assert (a(logical ([0,1]),2:-1:1), [6,7])
+%!assert (a(logical ([0,1]),logical ([0,1])), 6)
+%!assert (a(logical ([0,1]),[2,1]), [6,7])
+%!assert (a(logical ([0,1]),:), [7,6])
+%!assert (a(logical ([0,1]),1), 7)
+%!assert (a(logical ([0,1]),logical ([1,1])), [7,6])
+%!assert (a([2,1],logical (0:1)), [6;8])
+%!assert (a([2,1],logical ([0,1])), [6;8])
+%!assert (a([2,1],logical ([1,1])), [7,6;9,8])
+%!assert (a(:,logical (0:1)), [8;6])
+%!assert (a(:,logical ([0,1])), [8;6])
+%!assert (a(:,logical ([1,1])), [9,8;7,6])
+%!assert (a(1,logical (0:1)), 8)
+%!assert (a(1,logical ([0,1])), 8)
+%!assert (a(1,logical ([1,1])), [9,8])
+%!assert (a(logical ([1,1]),logical (0:1)), [8;6])
+%!assert (a(logical ([1,1]),2:-1:1), [8,9;6,7])
+%!assert (a(logical ([1,1]),logical ([0,1])), [8;6])
+%!assert (a(logical ([1,1]),[2,1]), [8,9;6,7])
+%!assert (a(logical ([1,1]),:), [9,8;7,6])
+%!assert (a(logical ([1,1]),1), [9;7])
+%!assert (a(logical ([1,1]),logical ([1,1])), [9,8;7,6])
 

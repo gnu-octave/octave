@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Thorsten Meyer
+## Copyright (C) 2008-2012 Thorsten Meyer
 ## (based on gzip.m by David Bateman)
 ##
 ## This file is part of Octave.

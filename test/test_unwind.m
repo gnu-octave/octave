@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -30,10 +30,12 @@
 %!    g = save_g;
 %!    y = [y, g];
 %!  end_unwind_protect
+%!endfunction
+%!
 %!test
 %! global g = -1;
 %! y = f ([3,4]);
-%! assert(y,[0,1,-1]);
+%! assert (y, [0,1,-1]);
 
 %% test/octave.test/unwind/unwind-2.m
 %!function y = f (x)
@@ -48,9 +50,11 @@
 %!  unwind_protect_cleanup
 %!    g = save_g;
 %!    y = [y, g];
-%!    assert(y,[0,-1]);
+%!    assert (y, [0,-1]);
 %!  end_unwind_protect
+%!endfunction
+%!
 %!test
 %! global g = -1;
-%! fail("y = f (3);","mismatch");
+%! fail ("y = f (3);", "mismatch");
 

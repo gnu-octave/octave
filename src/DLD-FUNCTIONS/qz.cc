@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1998-2011 A. S. Hodel
+Copyright (C) 1998-2012 A. S. Hodel
 
 This file is part of Octave.
 

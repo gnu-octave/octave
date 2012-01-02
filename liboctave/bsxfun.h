@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011 Jordi Gutiérrez Hermoso <jordigh@octave.org>
+Copyright (C) 2012 Jordi Gutiérrez Hermoso <jordigh@octave.org>
 
 This file is part of Octave.
 

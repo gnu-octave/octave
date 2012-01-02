@@ -1,5 +1,5 @@
-## Copyright (C) 2008-2011 Radek Salac
-## Copyright (C) 2011 Carlo de Falco
+## Copyright (C) 2008-2012 Radek Salac
+## Copyright (C) 2012 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##

@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Thomas L. Scofield <scofield@calvin.edu>
+## Copyright (C) 2008-2012 Thomas L. Scofield <scofield@calvin.edu>
 ## Copyright (C) 2008 Kristian Rumberg <kristianrumberg@gmail.com>
 ## Copyright (C) 2006 Thomas Weber <thomas.weber.mail@gmail.com>
 ## Copyright (C) 2005 Stefan van der Walt <stefan@sun.ac.za>

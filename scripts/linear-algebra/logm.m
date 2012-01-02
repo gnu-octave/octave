@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 N.J. Higham
+## Copyright (C) 2008-2012 N.J. Higham
 ## Copyright (C) 2010 Richard T. Guy <guyrt7@wfu.edu>
 ## Copyright (C) 2010 Marco Caliari <marco.caliari@univr.it>
 ##

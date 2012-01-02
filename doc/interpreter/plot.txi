@@ -3283,6 +3283,10 @@ Data source variables.
 
 @DOCSTRING(available_graphics_toolkits)
 
+@DOCSTRING(loaded_graphics_toolkits)
+
+@DOCSTRING(register_graphics_toolkit)
+
 @menu
 * Customizing Toolkit Behavior::    
 @end menu

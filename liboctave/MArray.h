@@ -1,7 +1,7 @@
 // Template array classes with like-type math ops
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.

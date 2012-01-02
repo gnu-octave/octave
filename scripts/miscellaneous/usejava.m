@@ -1,4 +1,4 @@
-## Copyright (C) 2011 Rik Wehbring
+## Copyright (C) 2012 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##

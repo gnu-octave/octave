@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2011 David Bateman
+Copyright (C) 2006-2012 David Bateman
 
 This file is part of Octave.
 

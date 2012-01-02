@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011 Daniel Kraft
+Copyright (C) 2012 Daniel Kraft
 
 This file is part of Octave.
 

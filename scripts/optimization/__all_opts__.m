@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 VZLU Prague
+## Copyright (C) 2009-2012 VZLU Prague
 ##
 ## This file is part of Octave.
 ##

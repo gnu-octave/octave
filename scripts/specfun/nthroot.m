@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2011 Paul Kienzle
+## Copyright (C) 2004-2012 Paul Kienzle
 ## Copyright (C) 2010 VZLU Prague
 ##
 ## This file is part of Octave.

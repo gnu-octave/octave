@@ -2,7 +2,7 @@ dnl configure.in
 dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl Copyright (C) 1993-2011 John W. Eaton
+dnl Copyright (C) 1993-2012 John W. Eaton
 ### 
 ### This file is part of Octave.
 ### 
@@ -34,7 +34,7 @@ OCTAVE_VERSION="$PACKAGE_VERSION"
 OCTAVE_API_VERSION_NUMBER="46"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
 OCTAVE_RELEASE_DATE="2011-12-23"
-OCTAVE_COPYRIGHT="Copyright (C) 2011 John W. Eaton and others."
+OCTAVE_COPYRIGHT="Copyright (C) 2012 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
 AC_SUBST(OCTAVE_API_VERSION)

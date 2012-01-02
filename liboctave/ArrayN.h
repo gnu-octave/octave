@@ -1,7 +1,7 @@
 // Template array classes
 /*
 
-Copyright (C) 2000-2011 John W. Eaton
+Copyright (C) 2000-2012 John W. Eaton
 
 This file is part of Octave.
 

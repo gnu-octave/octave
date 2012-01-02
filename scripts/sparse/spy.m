@@ -1,4 +1,4 @@
-## Copyright (C) 1998-2011 Andy Adler
+## Copyright (C) 1998-2012 Andy Adler
 ##
 ## This file is part of Octave.
 ##

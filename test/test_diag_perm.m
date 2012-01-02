@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 E. Jason Riedy
+## Copyright (C) 2009-2012 E. Jason Riedy
 ##
 ## This file is part of Octave.
 ##

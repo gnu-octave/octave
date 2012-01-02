@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ## Copyright (C) 2003 Alberto Terruzzi
 ##
 ## This file is part of Octave.

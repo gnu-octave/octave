@@ -86,7 +86,6 @@
 ##
 ## Note: If you only have a single nonlinear equation of one variable, using
 ## @code{fzero} is usually a much better idea.
-## @seealso{fzero, optimset}
 ##
 ## Note about user-supplied Jacobians:
 ## As an inherent property of the algorithm, Jacobian is always requested for a
@@ -121,10 +120,11 @@
 ## endif
 ## endfunction
 ##
-## ## @dots{}.
+## ## @dots{}
 ##
 ## fsolve (@@user_func, x0, optimset ("OutputFcn", @@user_func, @dots{}))
 ## @end example
+## @seealso{fzero, optimset}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.

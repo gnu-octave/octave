@@ -1015,6 +1015,131 @@ return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr);
   fi
 ])
 dnl
+dnl Check whether ARPACK works (does not crash)
+dnl
+AC_DEFUN([OCTAVE_CHECK_ARPACK_OK], [
+  AC_LANG_PUSH(Fortran 77)
+  AC_CACHE_CHECK([whether the arpack library works],
+    [octave_cv_lib_arpack_ok], [
+      AC_RUN_IFELSE([AC_LANG_PROGRAM([], [[
+* Based on function EigsRealNonSymmetricMatrix from liboctave/eigs-base.cc.
+* Problem matrix.  See bug #31479
+
+      integer rvec, ido, info, ii, jj
+      double precision tol, sigmar, sigmai
+
+      integer n, k, p, lwork
+      parameter (n = 4, k = 1, p = 3, lwork = 3*p*(p+2))
+
+      integer ip (11)
+      integer ipntr (14)
+      integer sel (p)
+
+      double precision m (n, n)
+      double precision resid (4)
+      double precision v (n*(p+1));
+      double precision workl (lwork+1)
+      double precision workd (3*n+1)
+* In Octave, the dimensions of dr and di are k+1, but k+2 avoids segfault
+      double precision dr (k+1)
+      double precision di (k+1)
+      double precision workev (3*p)
+* In Octave, this is n*(k+1), but k+2 avoids segfault
+      double precision z (n*(k+1))
+
+      do 10 ii = 1, 100
+
+        m(1,1) = 1
+        m(2,1) = 0
+        m(3,1) = 0
+        m(4,1) = 0
+
+        m(1,2) = 0
+        m(2,2) = 1
+        m(3,2) = 0
+        m(4,2) = 0
+
+        m(1,3) = 0
+        m(2,3) = 0
+        m(3,3) = 1
+        m(4,3) = 2
+
+        m(1,4) = -1
+        m(2,4) = 0
+        m(3,4) = 0
+        m(4,4) = 1
+
+        resid(1) = 0.960966
+        resid(1) = 0.741195
+        resid(1) = 0.150143
+        resid(1) = 0.868067
+
+* ip(1) = ishift
+* ip(2) is not referenced
+* ip(3) = maximum number of iterations
+* ip(4) = NB blocksize in recurrence
+* ip(5) = nconv, number of Ritz values that satisfy convergence
+* ip(6) is not referenced
+* ip(7) = mode
+* ip(8) to ip(11) are return values
+
+        ip(1) = 1
+        ip(2) = 0
+        ip(3) = 300
+        ip(4) = 1
+        ip(5) = 0
+        ip(6) = 0
+        ip(7) = 1
+        ip(8) = 0
+        ip(9) = 0
+        ip(10) = 0
+        ip(11) = 0
+
+        ido = 0
+        info = 0
+        rvec = 1
+        sigmar = 0
+        sigmai = 0
+        tol = 2.0d-15
+
+    1   continue
+
+        call dnaupd (ido, 'I', n, 'LM', k, tol, resid, p, v, n, ip,
+     $       ipntr, workd, workl, lwork, info)
+
+        if (ido .eq. -1 .or. ido .eq. 1 .or. ido .eq. 2) then
+          call dgemv ('N', n, n, 1.0, m, n, workd(ipntr(1)),
+     $         1, 0.0, workd(ipntr(2)), 1)
+          goto 1
+        else if (info .lt. 0) then
+* error
+          goto 9999
+        endif
+
+        do 10 jj = 1, k+1
+          dr(jj) = 0
+          di(jj) = 0
+   10   continue
+
+        call dneupd (rvec, "A", sel, dr, di, z, n, sigmar, sigmai,
+     $       workev,"I", n, "LM", k, tol, resid, p, v, n, ip, ipntr,
+     $       workd,workl, lwork, info)
+
+  100 continue
+
+ 9999 continue
+]])],
+  [octave_cv_lib_arpack_ok=yes],
+  [octave_cv_lib_arpack_ok=no],
+  [octave_cv_lib_arpack_ok=yes])])
+  AC_LANG_POP(Fortran 77)
+  if test "$octave_cv_lib_arpack_ok" = "yes"; then
+    $1
+  else
+    $2
+  fi
+])
+dnl
 dnl Check for OpenGL.  If found, define OPENGL_LIBS
 dnl
 dnl FIXME -- the following tests should probably check for the

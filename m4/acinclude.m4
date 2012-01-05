@@ -1017,122 +1017,147 @@ return qh_new_qhull (dim, n, points, ismalloc, "qhull ", 0, stderr);
 dnl
 dnl Check whether ARPACK works (does not crash)
 dnl
+dnl Using a pure Fortran program doesn't seem to crash when linked
+dnl with the buggy ARPACK library but the C++ program does.  Maybe
+dnl it is the memory allocation that exposes the bug and using statically
+dnl allocated arrays in Fortran does not?
+dnl
 AC_DEFUN([OCTAVE_CHECK_ARPACK_OK], [
-  AC_LANG_PUSH(Fortran 77)
+  AC_LANG_PUSH(C++)
   AC_CACHE_CHECK([whether the arpack library works],
     [octave_cv_lib_arpack_ok], [
-      AC_RUN_IFELSE([AC_LANG_PROGRAM([], [[
-* Based on function EigsRealNonSymmetricMatrix from liboctave/eigs-base.cc.
-* Problem matrix.  See bug #31479
+      AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+// External functions from ARPACK library
+extern "C" int
+F77_FUNC (dnaupd, DNAUPD) (int&, const char *, const int&, const char *,
+                           int&, const double&, double*, const int&,
+                           double*, const int&, int*, int*, double*,
+                           double*, const int&, int&, long int, long int);
 
-      integer rvec, ido, info, ii, jj
-      double precision tol, sigmar, sigmai
+extern "C" int
+F77_FUNC (dneupd, DNEUPD) (const int&, const char *, int*, double*,
+                           double*, double*, const int&,
+                           const double&, const double&, double*,
+                           const char*, const int&, const char *,
+                           int&, const double&, double*, const int&,
+                           double*, const int&, int*, int*, double*,
+                           double*, const int&, int&, long int,
+                           long int, long int);
 
-      integer n, k, p, lwork
-      parameter (n = 4, k = 1, p = 3, lwork = 3*p*(p+2))
+extern "C" int
+F77_FUNC (dgemv, DGEMV) (const char *, const int&, const int&,
+                         const double&, const double*, const int&,
+                         const double*, const int&, const double&,
+                         double*, const int&, long int);
 
-      integer ip (11)
-      integer ipntr (14)
-      integer sel (p)
+#include <cfloat>
 
-      double precision m (n, n)
-      double precision resid (4)
-      double precision v (n*(p+1));
-      double precision workl (lwork+1)
-      double precision workd (3*n+1)
-* In Octave, the dimensions of dr and di are k+1, but k+2 avoids segfault
-      double precision dr (k+1)
-      double precision di (k+1)
-      double precision workev (3*p)
-* In Octave, this is n*(k+1), but k+2 avoids segfault
-      double precision z (n*(k+1))
+void
+doit (void)
+{
+  // Based on function EigsRealNonSymmetricMatrix from liboctave/eigs-base.cc.
 
-      do 10 ii = 1, 100
+  // Problem matrix.  See bug #31479
+  int n = 4;
+  double *m = new double [n * n];
+  m[0] = 1, m[4] = 0, m[8]  = 0, m[12] = -1;
+  m[1] = 0, m[5] = 1, m[9]  = 0, m[13] = 0;
+  m[2] = 0, m[6] = 0, m[10] = 1, m[14] = 0;
+  m[3] = 0, m[7] = 0, m[11] = 2, m[15] = 1;
 
-        m(1,1) = 1
-        m(2,1) = 0
-        m(3,1) = 0
-        m(4,1) = 0
+  double *resid = new double [4];
 
-        m(1,2) = 0
-        m(2,2) = 1
-        m(3,2) = 0
-        m(4,2) = 0
+  resid[0] = 0.960966;
+  resid[1] = 0.741195;
+  resid[2] = 0.150143;
+  resid[3] = 0.868067;
 
-        m(1,3) = 0
-        m(2,3) = 0
-        m(3,3) = 1
-        m(4,3) = 2
+  int *ip = new int [11];
 
-        m(1,4) = -1
-        m(2,4) = 0
-        m(3,4) = 0
-        m(4,4) = 1
+  ip[0] = 1;   // ishift
+  ip[1] = 0;   // ip[1] not referenced
+  ip[2] = 300; // mxiter, maximum number of iterations
+  ip[3] = 1;   // NB blocksize in recurrence
+  ip[4] = 0;   // nconv, number of Ritz values that satisfy convergence
+  ip[5] = 0;   // ip[5] not referenced
+  ip[6] = 1;   // mode
+  ip[7] = 0;   // ip[7] to ip[10] are return values
+  ip[8] = 0;
+  ip[9] = 0;
+  ip[10] = 0;
+ 
+  int *ipntr = new int [14];
 
-        resid(1) = 0.960966
-        resid(1) = 0.741195
-        resid(1) = 0.150143
-        resid(1) = 0.868067
+  int k = 1;
+  int p = 3;
+  int lwork = 3 * p * (p + 2);
 
-* ip(1) = ishift
-* ip(2) is not referenced
-* ip(3) = maximum number of iterations
-* ip(4) = NB blocksize in recurrence
-* ip(5) = nconv, number of Ritz values that satisfy convergence
-* ip(6) is not referenced
-* ip(7) = mode
-* ip(8) to ip(11) are return values
+  double *v = new double [n * (p + 1)];
+  double *workl = new double [lwork + 1];
+  double *workd = new double [3 * n + 1];
 
-        ip(1) = 1
-        ip(2) = 0
-        ip(3) = 300
-        ip(4) = 1
-        ip(5) = 0
-        ip(6) = 0
-        ip(7) = 1
-        ip(8) = 0
-        ip(9) = 0
-        ip(10) = 0
-        ip(11) = 0
+  int ido = 0;
+  int info = 0;
 
-        ido = 0
-        info = 0
-        rvec = 1
-        sigmar = 0
-        sigmai = 0
-        tol = 2.0d-15
+  double tol = DBL_EPSILON;
 
-    1   continue
+  do 
+    {
+      F77_FUNC (dnaupd, DNAUPD) (ido, "I", n, "LM", k, tol, resid, p,
+                                 v, n, ip, ipntr, workd, workl, lwork,
+                                 info, 1L, 2L);
 
-        call dnaupd (ido, 'I', n, 'LM', k, tol, resid, p, v, n, ip,
-     $       ipntr, workd, workl, lwork, info)
+      if (ido == -1 || ido == 1 || ido == 2)
+        {
+          double *x = workd + ipntr[0] - 1;
+          double *y = workd + ipntr[1] - 1;
 
-        if (ido .eq. -1 .or. ido .eq. 1 .or. ido .eq. 2) then
-          call dgemv ('N', n, n, 1.0, m, n, workd(ipntr(1)),
-     $         1, 0.0, workd(ipntr(2)), 1)
-          goto 1
-        else if (info .lt. 0) then
-* error
-          goto 9999
-        endif
+          F77_FUNC (dgemv, DGEMV) ("N", n, n, 1.0, m, n, x, 1, 0.0,
+                                   y, 1, 1L);
+        }
+      else
+        {
+          if (info < 0)
+            {
+              return;  // Error
+            }
 
-        do 10 jj = 1, k+1
-          dr(jj) = 0
-          di(jj) = 0
-   10   continue
+          break;
+        }
+    } 
+  while (1);
 
-        call dneupd (rvec, "A", sel, dr, di, z, n, sigmar, sigmai,
-     $       workev,"I", n, "LM", k, tol, resid, p, v, n, ip, ipntr,
-     $       workd,workl, lwork, info)
+  int *sel = new int [p];
 
-  100 continue
+  // In Octave, the dimensions of dr and di are k+1, but k+2 avoids segfault
+  double *dr = new double [k + 1];
+  double *di = new double [k + 1];
+  double *workev = new double [3 * p];
 
- 9999 continue
+  for (int i = 0; i < k + 1; i++)
+    dr[i] = di[i] = 0.;
+
+  int rvec = 1;
+
+  double sigmar = 0.0;
+  double sigmai = 0.0;
+
+  // In Octave, this is n*(k+1), but k+2 avoids segfault
+  double *z = new double [n * (k + 1)];
+
+  F77_FUNC (dneupd, DNEUPD) (rvec, "A", sel, dr, di, z, n, sigmar,
+                             sigmai, workev, "I", n, "LM", k, tol,
+                             resid, p, v, n, ip, ipntr, workd,
+                             workl, lwork, info, 1L, 1L, 2L);
+}
+]], [[
+  for (int i = 0; i < 10; i++)
+    doit ();
 ]])],
   [octave_cv_lib_arpack_ok=yes],
   [octave_cv_lib_arpack_ok=no],
   [octave_cv_lib_arpack_ok=yes])])
-  AC_LANG_POP(Fortran 77)
+  AC_LANG_POP(C++)
   if test "$octave_cv_lib_arpack_ok" = "yes"; then
     $1
   else

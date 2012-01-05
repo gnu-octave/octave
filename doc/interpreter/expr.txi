@@ -519,8 +519,7 @@ and matrices.  The element-by-element operators and functions broadcast
 @item @var{x} + @var{y}
 @opindex +
 Addition.  If both operands are matrices, the number of rows and columns
-must both agree.  If one operand is a scalar, its value is added to
-all the elements of the other operand.
+must both agree, or they must be broadcastable to the same shape.
 
 @item @var{x} .+ @var{y}
 @opindex .+
@@ -529,20 +528,23 @@ Element by element addition.  This operator is equivalent to @code{+}.
 @item @var{x} - @var{y}
 @opindex -
 Subtraction.  If both operands are matrices, the number of rows and
-columns of both must agree.
+columns of both must agree, or they must be broadcastable to the same
+shape.
 
 @item @var{x} .- @var{y}
 Element by element subtraction.  This operator is equivalent to @code{-}.
 
 @item @var{x} * @var{y}
 @opindex *
-Matrix multiplication.  The number of columns of @var{x} must agree
-with the number of rows of @var{y}.
+Matrix multiplication. The number of columns of @var{x} must agree with
+the number of rows of @var{y}, or they must be broadcastable to the same
+shape.
 
 @item @var{x} .* @var{y}
 @opindex .*
-Element by element multiplication.  If both operands are matrices, the
-number of rows and columns must both agree.
+Element by element multiplication. If both operands are matrices, the
+number of rows and columns must both agree, or they must be
+broadcastable to the same shape.
 
 @item @var{x} / @var{y}
 @opindex /
@@ -599,8 +601,9 @@ The implementation of this operator needs to be improved.
 @itemx @var{x} .** @var{y}
 @opindex .**
 @opindex .^
-Element by element power operator.  If both operands are matrices, the
-number of rows and columns must both agree.
+Element by element power operator. If both operands are matrices, the
+number of rows and columns must both agree, or they must be
+broadcastable to the same shape.
 
 @item -@var{x}
 @opindex -

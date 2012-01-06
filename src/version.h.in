@@ -87,8 +87,5 @@ For more information, visit http://www.octave.org/help-wanted.html"
 #define OCTAVE_STARTUP_MESSAGE \
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
     ("  For details, type `warranty'.") "\n\n" \
-  "For information about changes from previous versions, type `news'.\n\n\
-** WARNING ** Semantics for arithmetic operators were changed\n\
-              in version 3.6.0 and now broadcast.\n\
-              Type `doc broadcast' to get a description of the changes."
+  "For information about changes from previous versions, type `news'."
 #endif

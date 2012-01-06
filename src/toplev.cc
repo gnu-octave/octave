@@ -1082,7 +1082,17 @@ do_octave_atexit (void)
           OCTAVE_SAFE_CALL (flush_octave_stdout, ());
         }
 
-      OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+      // Don't call singleton_cleanup_list::cleanup until we have the
+      // problems with registering/unregistering types worked out.  For
+      // example, uncomment the following line, then use the make_int
+      // function from the examples directory to create an integer
+      // object and then exit Octave.  Octave should crash with a
+      // segfault when cleaning up the typinfo singleton.  We need some
+      // way to force new octave_value_X types that are created in
+      // .oct files to be unregistered when the .oct file shared library
+      // is unloaded.
+      //
+      // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 
       OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
     }

@@ -1626,7 +1626,7 @@ fi
 AC_CHECK_FUNCS(basename canonicalize_file_name \
   chmod dup2 endgrent endpwent execvp expm1 expm1f fork \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
-  getppid getpwent getpwuid getuid getwd _kbhit kill \
+  getppid getpwent getpwuid getuid getwd _kbhit \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
   mkstemp pipe putenv \
   realpath resolvepath rindex roundl select setgrent setlocale \

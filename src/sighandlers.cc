@@ -185,15 +185,8 @@ my_friendly_exit (const char *sig_name, int sig_number,
         {
           octave_set_signal_handler (sig_number, SIG_DFL);
 
-#if defined (HAVE_RAISE)
-          raise (sig_number);
-#elif defined (HAVE_KILL)
-          kill (getpid (), sig_number);
-#else
-          exit (1);
-#endif
+          gnulib::raise (sig_number);
         }
-
     }
 }
 

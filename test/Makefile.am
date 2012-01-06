@@ -23,7 +23,6 @@ include $(top_srcdir)/build-aux/common.mk
 FCN_FILES = \
   fntests.m \
   test_args.m \
-  test_contin.m \
   test_diag_perm.m \
   test_error.m \
   test_eval-catch.m \
@@ -31,11 +30,10 @@ FCN_FILES = \
   test_func.m \
   test_global.m \
   test_if.m \
-  test_index-wfi-f.m \
-  test_index-wfi-t.m \
+  test_index.m \
   test_io.m \
-  test_logical-wfi-f.m \
-  test_logical-wfi-t.m \
+  test_line_continue.m \
+  test_logical_index.m \
   test_null_assign.m \
   test_parser.m \
   test_prefer.m \

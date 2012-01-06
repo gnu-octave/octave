@@ -83,6 +83,7 @@ along with Octave; see the file COPYING.  If not, see
 // via the gnulib namespace.
 #define fprintf GNULIB_NAMESPACE::fprintf
 #define fwrite GNULIB_NAMESPACE::fwrite
+#define isatty GNULIB_NAMESPACE::isatty
 #define malloc GNULIB_NAMESPACE::malloc
 #define realloc GNULIB_NAMESPACE::realloc
 #endif

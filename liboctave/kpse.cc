@@ -225,10 +225,6 @@ extern "C" {
 #define DEBUGF4(str, e1, e2, e3, e4)                                    \
   DEBUGF_START (); gnulib::fprintf (stderr, str, e1, e2, e3, e4); DEBUGF_END ()
 
-#undef fopen
-#define fopen kpse_fopen_trace
-static FILE *fopen (const char *filename, const char *mode);
-
 #endif /* not NO_DEBUG */
 
 #ifdef KPSE_DEBUG
@@ -362,10 +358,14 @@ xfopen (const std::string& filename, const char *mode)
 
   assert (! filename.empty () && mode);
 
-  f = fopen (filename.c_str (), mode);
+  f = gnulib::fopen (filename.c_str (), mode);
 
   if (! f)
     FATAL_PERROR (filename.c_str ());
+
+  if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
+    DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename.c_str (), mode,
+             reinterpret_cast<unsigned long> (f));
 
   return f;
 }
@@ -2444,28 +2444,6 @@ xclosedir (DIR *d)
   if (ret != 0)
     FATAL ("closedir failed");
 }
-#endif
-
-/* Help the user discover what's going on.  */
-
-#ifdef KPSE_DEBUG
-
-/* If the real definitions of fopen or fclose are macros, we lose -- the
-   #undef won't restore them. */
-
-static FILE *
-fopen (const char *filename, const char *mode)
-{
-#undef fopen
-  FILE *ret = fopen (filename, mode);
-
-  if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
-    DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename, mode,
-             reinterpret_cast<unsigned long> (ret));
-
-  return ret;
-}
-
 #endif
 
 /* Implementation of a linked list of strings.  */

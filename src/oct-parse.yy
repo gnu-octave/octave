@@ -3612,7 +3612,7 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
     {
       symbol_found = true;
 
-      FILE *fptr = fopen (file.c_str (), "r");
+      FILE *fptr = gnulib::fopen (file.c_str (), "r");
 
       if (fptr)
         {

@@ -2282,7 +2282,7 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
       name.resize (elt_length);
     }
 
-  while ((e = readdir (dir)))
+  while ((e = gnulib::readdir (dir)))
     {
       /* If it begins with a `.', never mind.  (This allows ``hidden''
          directories that the algorithm won't find.)  */

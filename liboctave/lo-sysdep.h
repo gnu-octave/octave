@@ -37,25 +37,4 @@ extern pid_t octave_popen2 (const std::string&, const string_vector&,
     bool, int *, std::string&);
 #endif
 
-#if defined (_MSC_VER) && ! defined (HAVE_DIRENT_H)
-
-// FIXME -- it would probably be better to adapt the versions of
-// opendir, readdir, and closedir from Emacs as they appear to be more
-// complete implementations.  We can probably get along without
-// rewinddir.
-
-struct direct
-{
-  char *d_name;
-};
-
-typedef struct __DIR DIR;
-
-extern DIR* opendir (const char *name);
-extern void rewinddir (DIR *d);
-extern void closedir (DIR *d);
-extern struct direct *readdir (DIR *d);
-
-#endif
-
 #endif

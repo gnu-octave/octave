@@ -258,7 +258,7 @@ endfunction
 %! opts.v0 = rand (2*n,1); % Initialize eigs ARPACK starting vector
 %!                         % to guarantee reproducible results
 %!
-%!test
+%!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds (A,k);
 %! s2 = diag (s2);
 %! assert (flag, !1);
@@ -279,13 +279,13 @@ endfunction
 %! assert (flag, !1);
 %! assert (s2, s((idx+floor(k/2)):-1:(idx-floor(k/2))), 1e-10);
 %!
-%!test
+%!testif HAVE_ARPACK
 %! [u2,s2,v2,flag] = svds (zeros (10), k);
 %! assert (u2, eye (10, k));
 %! assert (s2, zeros (k));
 %! assert (v2, eye (10, 7));
 %!
-%!test
+%!testif HAVE_ARPACK
 %! s = svds (speye (10));
 %! assert (s, ones (6, 1), 2*eps);
 

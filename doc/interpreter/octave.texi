@@ -860,6 +860,8 @@ Tips and Standards
 Contributing Guidelines
 
 * How to Contribute::
+* Building the Development Sources::
+* Basics of Generating a Changeset::
 * General Guidelines::
 * Octave Sources (m-files)::
 * C++ Sources::
@@ -880,6 +882,9 @@ Reporting Bugs
 
 Installation
 
+* Build Dependencies::
+* Running Configure and Make::
+* Compiling Octave with 64-bit Indexing::       
 * Installation Problems::       
 
 Emacs Octave Support

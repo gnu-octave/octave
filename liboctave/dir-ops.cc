@@ -77,7 +77,7 @@ dir_entry::read (void)
 
       struct dirent *dir_ent;
 
-      while ((dir_ent = readdir (static_cast<DIR *> (dir))))
+      while ((dir_ent = gnulib::readdir (static_cast<DIR *> (dir))))
         {
           if (dir_ent)
             dirlist.push_back (dir_ent->d_name);

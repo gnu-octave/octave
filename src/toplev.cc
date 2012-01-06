@@ -1082,7 +1082,17 @@ do_octave_atexit (void)
           OCTAVE_SAFE_CALL (flush_octave_stdout, ());
         }
 
-      OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
+      // Don't call singleton_cleanup_list::cleanup until we have the
+      // problems with registering/unregistering types worked out.  For
+      // example, uncomment the following line, then use the make_int
+      // function from the examples directory to create an integer
+      // object and then exit Octave.  Octave should crash with a
+      // segfault when cleaning up the typinfo singleton.  We need some
+      // way to force new octave_value_X types that are created in
+      // .oct files to be unregistered when the .oct file shared library
+      // is unloaded.
+      //
+      // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 
       OCTAVE_SAFE_CALL (octave_chunk_buffer::clear, ());
     }
@@ -1235,6 +1245,9 @@ specified option.\n\
       { false, "AMD_LIBS", OCTAVE_CONF_AMD_LIBS },
       { false, "AR", OCTAVE_CONF_AR },
       { false, "ARFLAGS", OCTAVE_CONF_ARFLAGS },
+      { false, "ARPACK_CPPFLAGS", OCTAVE_CONF_ARPACK_CPPFLAGS },
+      { false, "ARPACK_LDFLAGS", OCTAVE_CONF_ARPACK_LDFLAGS },
+      { false, "ARPACK_LIBS", OCTAVE_CONF_ARPACK_LIBS },
       { false, "BLAS_LIBS", OCTAVE_CONF_BLAS_LIBS },
       { false, "CARBON_LIBS", OCTAVE_CONF_CARBON_LIBS },
       { false, "CAMD_CPPFLAGS", OCTAVE_CONF_CAMD_CPPFLAGS },

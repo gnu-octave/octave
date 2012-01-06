@@ -288,7 +288,7 @@ raw_mode (bool on, bool wait)
   static bool curr_on = false;
 
   int tty_fd = STDIN_FILENO;
-  if (! isatty (tty_fd))
+  if (! gnulib::isatty (tty_fd))
     {
       if (interactive)
         error ("stdin is not a tty!");

@@ -77,7 +77,7 @@ octave_chdir (const std::string& path_arg)
     path += "\\";
 #endif
 
-  return chdir (path.c_str ());
+  return gnulib::chdir (path.c_str ());
 }
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)

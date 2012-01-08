@@ -603,7 +603,11 @@ The implementation of this operator needs to be improved.
 @opindex .^
 Element by element power operator. If both operands are matrices, the
 number of rows and columns must both agree, or they must be
-broadcastable to the same shape.
+broadcastable to the same shape. If several complex results are
+possible, the one with smallest nonnegative argument (angle) is taken.
+This may mean a complex root even if a real root is also possible. Use
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a
+real result is preferred.
 
 @item -@var{x}
 @opindex -

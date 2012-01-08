@@ -5599,9 +5599,13 @@ DEFUN (power, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
 Return the element-by-element operation of @var{x} raised to the\n\
-@var{y} power.\n\
+@var{y} power. If several complex results are possible,\n\
+returns the one with smallest nonnegative argument (angle). Use\n\
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
+real result is preferred.\n\
+\n\
 This function and @w{@xcode{x .^ y}} are equivalent.\n\
-@seealso{mpower}\n\
+@seealso{mpower, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_el_pow, args);

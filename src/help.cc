@@ -239,7 +239,7 @@ Multiplication operator.\n\
   pair_type ("**",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} **\n\
-Power operator. This may return complex results for real inputs. Use\n\
+Power operator.  This may return complex results for real inputs.  Use\n\
 @code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
 real results when possible.\n\
 @seealso{power, ^, .**, .^, realpow, realsqrt, cbrt, nthroot}\n\
@@ -248,7 +248,7 @@ real results when possible.\n\
   pair_type ("^",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ^\n\
-Power operator. This may return complex results for real inputs. Use\n\
+Power operator.  This may return complex results for real inputs.  Use\n\
 @code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
 real results when possible.\n\
 @seealso{power, **, .^, .**, realpow, realsqrt, cbrt, nthroot}\n\
@@ -308,8 +308,8 @@ Element by element multiplication operator.\n\
   pair_type (".**",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .*\n\
-Element by element power operator. If several complex results are possible,\n\
-returns the one with smallest nonnegative argument (angle). Use\n\
+Element by element power operator.  If several complex results are possible,\n\
+returns the one with smallest non-negative argument (angle).  Use\n\
 @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
 real result is preferred.\n\
 @seealso{**, ^, .^, power, realpow, realsqrt, cbrt, nthroot}\n\
@@ -318,8 +318,8 @@ real result is preferred.\n\
   pair_type (".^",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .^\n\
-Element by element power operator. If several complex results are possible,\n\
-returns the one with smallest nonnegative argument (angle). Use\n\
+Element by element power operator.  If several complex results are possible,\n\
+returns the one with smallest non-negative argument (angle).  Use\n\
 @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
 real result is preferred.\n\
 @seealso{.**, ^, **, power, realpow, realsqrt, cbrt, nthroot}\n\

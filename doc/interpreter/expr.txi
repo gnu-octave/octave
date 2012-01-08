@@ -523,7 +523,7 @@ must both agree, or they must be broadcastable to the same shape.
 
 @item @var{x} .+ @var{y}
 @opindex .+
-Element by element addition.  This operator is equivalent to @code{+}.
+Element-by-element addition.  This operator is equivalent to @code{+}.
 
 @item @var{x} - @var{y}
 @opindex -
@@ -532,17 +532,17 @@ columns of both must agree, or they must be broadcastable to the same
 shape.
 
 @item @var{x} .- @var{y}
-Element by element subtraction.  This operator is equivalent to @code{-}.
+Element-by-element subtraction.  This operator is equivalent to @code{-}.
 
 @item @var{x} * @var{y}
 @opindex *
-Matrix multiplication. The number of columns of @var{x} must agree with
+Matrix multiplication.  The number of columns of @var{x} must agree with
 the number of rows of @var{y}, or they must be broadcastable to the same
 shape.
 
 @item @var{x} .* @var{y}
 @opindex .*
-Element by element multiplication. If both operands are matrices, the
+Element-by-element multiplication.  If both operands are matrices, the
 number of rows and columns must both agree, or they must be
 broadcastable to the same shape.
 
@@ -562,7 +562,7 @@ a minimum norm solution is computed.
 
 @item @var{x} ./ @var{y}
 @opindex ./
-Element by element right division.
+Element-by-element right division.
 
 @item @var{x} \ @var{y}
 @opindex \
@@ -580,7 +580,7 @@ a minimum norm solution is computed.
 
 @item @var{x} .\ @var{y}
 @opindex .\
-Element by element left division.  Each element of @var{y} is divided
+Element-by-element left division.  Each element of @var{y} is divided
 by each corresponding element of @var{x}.
 
 @item @var{x} ^ @var{y}
@@ -601,12 +601,12 @@ The implementation of this operator needs to be improved.
 @itemx @var{x} .** @var{y}
 @opindex .**
 @opindex .^
-Element by element power operator. If both operands are matrices, the
+Element-by-element power operator.  If both operands are matrices, the
 number of rows and columns must both agree, or they must be
-broadcastable to the same shape. If several complex results are
-possible, the one with smallest nonnegative argument (angle) is taken.
-This may mean a complex root even if a real root is also possible. Use
-@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a
+broadcastable to the same shape.  If several complex results are
+possible, the one with smallest non-negative argument (angle) is taken.
+This rule may return a complex root even when a real root is also possible.
+Use @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a
 real result is preferred.
 
 @item -@var{x}
@@ -632,7 +632,7 @@ conj (x.')
 Transpose.
 @end table
 
-Note that because Octave's element by element operators begin with a
+Note that because Octave's element-by-element operators begin with a
 @samp{.}, there is a possible ambiguity for statements like
 
 @example

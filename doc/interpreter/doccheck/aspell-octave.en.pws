@@ -38,6 +38,7 @@ Autoload
 autoloaded
 autoloading
 Autoloading
+Automake
 autoregression
 autoregressions
 autoscaled
@@ -82,6 +83,7 @@ bracketx
 brackety
 breakpoint
 Brenan
+broadcastable
 Brockwell
 BSX
 builtin
@@ -305,6 +307,7 @@ fpdf
 fprintf
 FreeBSD
 freespacing
+FreeType
 freetype
 frnd
 frob
@@ -339,6 +342,7 @@ glibc
 globbing
 glpk
 GLS
+gnulib
 gnuplot
 Gnuplot
 gnuplot's
@@ -348,6 +352,7 @@ goto
 Goto
 gotos
 GPL
+GPLK
 gplot
 grabdemo
 GradObj
@@ -485,6 +490,7 @@ libcruft
 libcurl
 liblapack
 liboctave
+Libtool
 licensors
 lineanchors
 linefeeds
@@ -551,6 +557,7 @@ Metafont
 mex
 Michelsen
 Microsystems
+MinGW
 minima
 Minimizers
 Minitab
@@ -572,6 +579,7 @@ Montanet
 mpoles
 mpower
 mrdivide
+MSYS
 mtimes
 Multi
 multi
@@ -745,6 +753,7 @@ reimported
 Reindent
 relicensing
 ren
+renderer
 repelems
 repmat
 resampled
@@ -781,6 +790,7 @@ Schur
 SCO
 screenful
 se
+sed
 seealso
 semidefinite
 Sep
@@ -909,6 +919,7 @@ TikZ
 tinv
 Tisseur
 Tisseur's
+tmp
 Toeplitz
 tokenExtents
 TolF
@@ -1046,6 +1057,7 @@ xyz
 ydata
 yerrorbar
 yerrorbars
+ylim
 yy
 YY
 yyyy
@@ -1056,3 +1068,4 @@ Zechner
 zer
 Ziggurat
 zlib
+zlim

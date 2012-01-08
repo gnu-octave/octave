@@ -17,6 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @c List other forms of function in documentation index
+## @findex ylim
+## @findex zlim
+##
 ## @deftypefn  {Function File} {@var{xl} =} xlim ()
 ## @deftypefnx {Function File} {} xlim (@var{xl})
 ## @deftypefnx {Function File} {@var{m} =} xlim ('mode')

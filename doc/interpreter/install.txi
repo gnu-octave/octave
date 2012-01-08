@@ -121,8 +121,6 @@ Automake.
 The following external packages are required:
 
 @table @asis
-@item PCRE
-The Perl Compatible Reular Expression library (http://www.pcre.org).
 @item BLAS
 Basic Linear Algebra Subroutine library
 (@url{http://www.netlib.org/blas}).  Accelerated BLAS libraries such as
@@ -130,6 +128,8 @@ ATLAS (@url{http://math-atlas.sourceforge.net}) are recommeded for
 better performance.
 @item LAPACK
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).
+@item PCRE
+The Perl Compatible Regular Expression library (http://www.pcre.org).
 @end table
 
 The following external package is optional but strongly recommended:
@@ -152,7 +152,7 @@ required to provide the functions @code{eigs} and @code{svds}.
 
 @item cURL
 Library for transferring data with URL syntax
-(@url{http://curl.haxx.se}). cURL is required to provide the
+(@url{http://curl.haxx.se}).  cURL is required to provide the
 @code{urlread} and @code{urlwrite} functions and the @code{ftp} class.
 
 @item FFTW3
@@ -172,7 +172,7 @@ is used to manage fonts for Octave's OpenGL-based graphics functions.
 
 @item FreeType
 Portable font engine (@url{http://www.freetype.org}).  FreeType is used
-to peform font rendering Octave's OpenGL-based graphics functions.
+to perform font rendering for Octave's OpenGL-based graphics functions.
 
 @item GLPK
 GNU Linear Programming Kit (@url{http://www.gnu.org/software/glpk}).
@@ -190,7 +190,7 @@ functions.
 @item HDF5
 Library for manipulating portable data files
 (@url{http://www.hdfgroup.org/HDF5}).  HDF5 is required for Octave's
-@code{save} and @code{load} commands to write and read HDF data files.
+@code{load} and @code{save} commands to read and write HDF data files.
 
 @item OpenGL
 API for portable 2D and 3D graphics (@url{http://www.opengl.org}).  An

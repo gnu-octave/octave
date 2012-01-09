@@ -27,8 +27,6 @@ deprecated_FCN_FILES = \
   deprecated/saveimage.m \
   deprecated/setstr.m \
   deprecated/shell_cmd.m \
-  deprecated/sphcat.m \
-  deprecated/spvcat.m \
   deprecated/strerror.m \
   deprecated/studentize.m \
   deprecated/sylvester_matrix.m \

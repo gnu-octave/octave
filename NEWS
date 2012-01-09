@@ -3,6 +3,10 @@ Summary of important user-visible changes for version 3.6:
 
  ** The PCRE library is now required to build Octave.
 
+ ** The ARPACK library is no longer distributed with Octave.
+    If you need the eigs() or svds() functions you must provide an external
+    ARPACK through a package manager or by compiling it yourself.
+
  ** Many of Octave's binary operators (.*, .^, +, -, ...) now perform
     automatic broadcasting for array operations that allows you to use
     operator notation instead of calling bsxfun or expanding arrays (and

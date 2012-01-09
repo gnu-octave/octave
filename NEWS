@@ -52,7 +52,7 @@ Summary of important user-visible changes for version 3.6:
  ** Octave now features a profiler, thanks to the work of Daniel Kraft
     under the Google Summer of Code mentorship program.  The manual has
     been updated to reflect this addition.  The new user-visible
-    functions are profexplore, profile, and profshow.
+    functions are profile, profshow, and profexplore.
 
  ** Overhaul of statistical distribution functions
 
@@ -171,10 +171,12 @@ Summary of important user-visible changes for version 3.6:
 
  ** Other new functions added in 3.6.0:
 
-      is_dq_string    nthargout    usejava     
-      is_sq_string    python       waitbar
-      narginchk       recycle      zscore            
-    
+      bicg                       nthargout                   usejava
+      is_dq_string               narginchk                   waitbar
+      is_sq_string               python                      zscore
+      is_function_handle         register_graphics_toolkit 
+      loaded_graphics_toolkits   recycle                   
+
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.2 and have been

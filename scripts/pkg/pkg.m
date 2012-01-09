@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 S�ren Hauberg
+## Copyright (C) 2005-2012 S�ren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.

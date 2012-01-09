@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -512,36 +512,39 @@ the recursion depth and prevents Octave from recursing infinitely.
 @cindex complex-conjugate transpose
 
 The following arithmetic operators are available, and work on scalars
-and matrices.
+and matrices.  The element-by-element operators and functions broadcast
+(@pxref{Broadcasting}).
 
 @table @asis
 @item @var{x} + @var{y}
 @opindex +
 Addition.  If both operands are matrices, the number of rows and columns
-must both agree.  If one operand is a scalar, its value is added to
-all the elements of the other operand.
+must both agree, or they must be broadcastable to the same shape.
 
 @item @var{x} .+ @var{y}
 @opindex .+
-Element by element addition.  This operator is equivalent to @code{+}.
+Element-by-element addition.  This operator is equivalent to @code{+}.
 
 @item @var{x} - @var{y}
 @opindex -
 Subtraction.  If both operands are matrices, the number of rows and
-columns of both must agree.
+columns of both must agree, or they must be broadcastable to the same
+shape.
 
 @item @var{x} .- @var{y}
-Element by element subtraction.  This operator is equivalent to @code{-}.
+Element-by-element subtraction.  This operator is equivalent to @code{-}.
 
 @item @var{x} * @var{y}
 @opindex *
-Matrix multiplication.  The number of columns of @var{x} must agree
-with the number of rows of @var{y}.
+Matrix multiplication.  The number of columns of @var{x} must agree with
+the number of rows of @var{y}, or they must be broadcastable to the same
+shape.
 
 @item @var{x} .* @var{y}
 @opindex .*
-Element by element multiplication.  If both operands are matrices, the
-number of rows and columns must both agree.
+Element-by-element multiplication.  If both operands are matrices, the
+number of rows and columns must both agree, or they must be
+broadcastable to the same shape.
 
 @item @var{x} / @var{y}
 @opindex /
@@ -559,7 +562,7 @@ a minimum norm solution is computed.
 
 @item @var{x} ./ @var{y}
 @opindex ./
-Element by element right division.
+Element-by-element right division.
 
 @item @var{x} \ @var{y}
 @opindex \
@@ -577,7 +580,7 @@ a minimum norm solution is computed.
 
 @item @var{x} .\ @var{y}
 @opindex .\
-Element by element left division.  Each element of @var{y} is divided
+Element-by-element left division.  Each element of @var{y} is divided
 by each corresponding element of @var{x}.
 
 @item @var{x} ^ @var{y}
@@ -598,8 +601,13 @@ The implementation of this operator needs to be improved.
 @itemx @var{x} .** @var{y}
 @opindex .**
 @opindex .^
-Element by element power operator.  If both operands are matrices, the
-number of rows and columns must both agree.
+Element-by-element power operator.  If both operands are matrices, the
+number of rows and columns must both agree, or they must be
+broadcastable to the same shape.  If several complex results are
+possible, the one with smallest non-negative argument (angle) is taken.
+This rule may return a complex root even when a real root is also possible.
+Use @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a
+real result is preferred.
 
 @item -@var{x}
 @opindex -
@@ -624,7 +632,7 @@ conj (x.')
 Transpose.
 @end table
 
-Note that because Octave's element by element operators begin with a
+Note that because Octave's element-by-element operators begin with a
 @samp{.}, there is a possible ambiguity for statements like
 
 @example
@@ -715,7 +723,8 @@ such as equality.  They are written using
 
 All of Octave's comparison operators return a value of 1 if the
 comparison is true, or 0 if it is false.  For matrix values, they all
-work on an element-by-element basis.  For example:
+work on an element-by-element basis.  Broadcasting rules apply.
+@xref{Broadcasting}.  For example:
 
 @example
 @group
@@ -725,9 +734,9 @@ work on an element-by-element basis.  For example:
 @end group
 @end example
 
-If one operand is a scalar and the other is a matrix, the scalar is
-compared to each element of the matrix in turn, and the result is the
-same size as the matrix.
+According to broadcasting rules, if one operand is a scalar and the
+other is a matrix, the scalar is compared to each element of the matrix
+in turn, and the result is the same size as the matrix.
 
 @table @code
 @item @var{x} < @var{y}
@@ -862,8 +871,8 @@ Each element of the result is true if the corresponding element of
 @var{boolean} is false.
 @end table
 
-For matrix operands, these operators work on an element-by-element
-basis.  For example, the expression
+These operators work on an element-by-element basis.  For example, the
+expression
 
 @example
 [1, 0; 0, 1] & [1, 0; 2, 3]
@@ -872,8 +881,8 @@ basis.  For example, the expression
 @noindent
 returns a two by two identity matrix.
 
-For the binary operators, the dimensions of the operands must conform if
-both are matrices.  If one of the operands is a scalar and the other a
+For the binary operators, broadcasting rules apply.  @xref{Broadcasting}.
+In particular, if one of the operands is a scalar and the other a
 matrix, the operator is applied to the scalar and each element of the
 matrix.
 

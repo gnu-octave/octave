@@ -38,6 +38,7 @@ Autoload
 autoloaded
 autoloading
 Autoloading
+Automake
 autoregression
 autoregressions
 autoscaled
@@ -82,7 +83,9 @@ bracketx
 brackety
 breakpoint
 Brenan
+broadcastable
 Brockwell
+BSX
 builtin
 builtins
 ButtonDownFcn
@@ -162,6 +165,10 @@ csymamd
 ctranspose
 CTRL
 CTS
+cummax
+cummin
+cumprod
+cumsum
 cURL
 Cuthill
 cxsparse
@@ -226,6 +233,7 @@ eigenvector
 eigenvectors
 eigs
 Ekerdt
+elementwise
 Elfers
 elseif
 emacs
@@ -299,6 +307,7 @@ fpdf
 fprintf
 FreeBSD
 freespacing
+FreeType
 freetype
 frnd
 frob
@@ -333,6 +342,7 @@ glibc
 globbing
 glpk
 GLS
+gnulib
 gnuplot
 Gnuplot
 gnuplot's
@@ -342,6 +352,7 @@ goto
 Goto
 gotos
 GPL
+GPLK
 gplot
 grabdemo
 GradObj
@@ -397,6 +408,7 @@ Hyndman
 Hypergeometric
 hypergeometric
 IEEE
+ifelse
 iff
 ifft
 ifftn
@@ -478,6 +490,7 @@ libcruft
 libcurl
 liblapack
 liboctave
+Libtool
 licensors
 lineanchors
 linefeeds
@@ -544,6 +557,7 @@ Metafont
 mex
 Michelsen
 Microsystems
+MinGW
 minima
 Minimizers
 Minitab
@@ -565,6 +579,7 @@ Montanet
 mpoles
 mpower
 mrdivide
+MSYS
 mtimes
 Multi
 multi
@@ -601,6 +616,7 @@ nnz
 nocompute
 nolabel
 noncommercially
+nonconformant
 nonsmooth
 nonzeros
 noperm
@@ -616,6 +632,7 @@ notin
 nthargout
 NTSC
 nul
+Numpy
 Nx
 nzmax
 oct
@@ -736,6 +753,8 @@ reimported
 Reindent
 relicensing
 ren
+renderer
+repelems
 repmat
 resampled
 resampling
@@ -771,6 +790,7 @@ Schur
 SCO
 screenful
 se
+sed
 seealso
 semidefinite
 Sep
@@ -781,6 +801,7 @@ signum
 SIGNUM
 sim
 SIMAX
+SIMD
 simplechol
 simplecholperm
 simplematrix
@@ -864,6 +885,7 @@ subsref
 substring
 substrings
 SuiteSparse
+sumsq
 SunOS
 superiorto
 supradiagonal
@@ -897,6 +919,7 @@ TikZ
 tinv
 Tisseur
 Tisseur's
+tmp
 Toeplitz
 tokenExtents
 TolF
@@ -1034,6 +1057,7 @@ xyz
 ydata
 yerrorbar
 yerrorbars
+ylim
 yy
 YY
 yyyy
@@ -1044,3 +1068,4 @@ Zechner
 zer
 Ziggurat
 zlib
+zlim

@@ -1,6 +1,6 @@
 # Makefile for octave's libcruft directory
 #
-# Copyright (C) 1993-2011 John W. Eaton
+# Copyright (C) 1993-2012 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -69,7 +69,6 @@ octinclude_HEADERS =
 EXTRA_DIST =
 
 include amos/module.mk
-include arpack/module.mk
 include blas-xtra/module.mk
 include daspk/module.mk
 include dasrt/module.mk

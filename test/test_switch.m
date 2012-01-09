@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -27,7 +27,7 @@
 %! switch 2 case 1 z = a; case 2 z = b; otherwise z = c; endswitch
 %! switch 3 case 1 p = a; case 2 p = b; otherwise p = c; endswitch
 %! 
-%! assert(x == c && y == a && z == b && p == c);
+%! assert (x == c && y == a && z == b && p == c);
 
 %% test/octave.test/switch/switch-2.m
 %!test
@@ -41,17 +41,17 @@
 %! 
 %! for i = 0:3
 %! switch (i)
-%! case a
-%! x(k) = a;
-%! case b
-%! x(k) = b;
-%! otherwise
-%! x(k) = c;
-%! endswitch
-%! k++;
+%!   case a
+%!    x(k) = a;
+%!   case b
+%!    x(k) = b;
+%!   otherwise
+%!    x(k) = c;
+%!   endswitch
+%!   k++;
 %! endfor
 %! 
-%! assert(all (x == [3, 1, 2, 3]));
+%! assert (all (x == [3, 1, 2, 3]));
 
 %% test/octave.test/switch/switch-3.m
 %!test
@@ -64,14 +64,14 @@
 %! k = 1;
 %! 
 %! for i = 0:3
-%! switch (i)
-%! case a
-%! x(k) = a;
-%! endswitch
-%! k++;
+%!   switch (i)
+%!   case a
+%!    x(k) = a;
+%!   endswitch
+%!   k++;
 %! endfor
 %! 
-%! assert(all (x == [0, 1, 0, 0]));
+%! assert (all (x == [0, 1, 0, 0]));
 
 %!test
 %! a = 1;
@@ -81,15 +81,15 @@
 %!   a = 2;
 %! endswitch
 %! 
-%! assert(a == 2);
+%! assert (a == 2);
 
 
 %% test/octave.test/switch/switch-4.m
-%!error <syntax error> eval("switch endswitch");
+%!error <syntax error> eval ("switch endswitch")
 
 %% test/octave.test/switch/switch-5.m
-%!error <syntax error> eval("switch case endswitch");
+%!error <syntax error> eval ("switch case endswitch")
 
 %% test/octave.test/switch/switch-6.m
-%!error <syntax error> eval("switch 1 default 1; endswitch");
+%!error <syntax error> eval ("switch 1 default 1; endswitch")
 

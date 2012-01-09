@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 VZLU Prague
+## Copyright (C) 2010-2012 VZLU Prague
 ##
 ## This file is part of Octave.
 ##
@@ -22,32 +22,37 @@
 ## positions defined by their subscripts along a specified dimension.
 ## The subscripts are defined by the index vector @var{subs}.
 ## The dimension is specified by @var{dim}.  If not given, it defaults
-## to the first non-singleton dimension.
+## to the first non-singleton dimension.  The length of @var{subs} must
+## be equal to @code{size (@var{vals}, @var{dim})}.
 ##
-## The extent of the result matrix in the working dimension will be determined
-## by the subscripts themselves.
-## However, if @var{n} is defined it determines this extent.
+## The extent of the result matrix in the working dimension will be
+## determined by the subscripts themselves.  However, if @var{n} is
+## defined it determines this extent.
 ##
 ## The default action of @code{accumdim} is to sum the subarrays with the
-## same subscripts.  This behavior can be modified by defining the @var{func}
-## function.  This should be a function or function handle that accepts an
-## array and a dimension, and reduces the array along this dimension.
-## As a special exception, the built-in @code{min} and @code{max} functions
-## can be used directly, and @code{accumdim} accounts for the middle empty
-## argument that is used in their calling.
+## same subscripts.  This behavior can be modified by defining the
+## @var{func} function.  This should be a function or function handle
+## that accepts an array and a dimension, and reduces the array along
+## this dimension.  As a special exception, the built-in @code{min} and
+## @code{max} functions can be used directly, and @code{accumdim}
+## accounts for the middle empty argument that is used in their calling.
 ##
-## The slices of the returned array that have no subscripts associated with
-## them are set to zero.  Defining @var{fillval} to some other value allows
-## these values to be defined.
+## The slices of the returned array that have no subscripts associated
+## with them are set to zero.  Defining @var{fillval} to some other
+## value allows these values to be defined.
 ##
 ## An example of the use of @code{accumdim} is:
 ##
-## @smallexample
+## @example
 ## @group
-## accumdim ([1, 2, 1, 2, 1], [7,-10,4;-5,-12,8;-12,2,8;-10,9,-3;-5,-3,-13])
+## accumdim ([1, 2, 1, 2, 1], [ 7, -10,   4;
+##                             -5, -12,   8;
+##                            -12,   2,   8;
+##                            -10,   9,  -3;
+##                             -5,  -3, -13])
 ## @result{} ans = [-10,-11,-1;-15,-3,5]
 ## @end group
-## @end smallexample
+## @end example
 ##
 ## @seealso{accumarray}
 ## @end deftypefn
@@ -68,7 +73,7 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
     error ("accumdim: indices must be positive integers");
   else
     m = max (subs);
-    if (n == 0)
+    if (n == 0 || isempty (n))
       n = m;
     elseif (n < m)
       error ("accumdim: N index out of range");
@@ -85,6 +90,10 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
     sz(end+1:dim) = 1;
   endif
   sz(dim) = n;
+
+  if (length (subs) != size (vals, dim))
+    error ("accumdim: dimension mismatch")
+  endif
 
   if (isempty (func) || func == @sum)
     ## Fast summation case.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -1879,6 +1879,9 @@ use @code{fclose} for the same purpose.\n\
 
 DEFUNX ("tmpnam", Ftmpnam, args, ,
  "-*- texinfo -*-\n\
+@c List other forms of function in documentation index\n\
+@findex octave_tmp_file_name\n\
+\n\
 @deftypefn  {Built-in Function} {} tmpnam ()\n\
 @deftypefnx {Built-in Function} {} tmpnam (@var{dir})\n\
 @deftypefnx {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
@@ -2178,7 +2181,7 @@ DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
 @deftypefn  {Built-in Function} {} SEEK_SET ()\n\
 @deftypefnx {Built-in Function} {} SEEK_CUR ()\n\
 @deftypefnx {Built-in Function} {} SEEK_END ()\n\
-Return the value required to request that @code{fseek} perform\n\
+Return the numerical value to pass to @code{fseek} to perform\n\
 one of the following actions:\n\
 @table @code\n\
 @item SEEK_SET\n\
@@ -2190,6 +2193,7 @@ Position file relative to the current position.\n\
 @item SEEK_END\n\
 Position file relative to the end.\n\
 @end table\n\
+@seealso{fseek}\n\
 @end deftypefn")
 {
   return const_value ("SEEK_SET", args, -1);
@@ -2198,7 +2202,9 @@ Position file relative to the end.\n\
 DEFUNX ("SEEK_CUR", FSEEK_CUR, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} SEEK_CUR ()\n\
-See SEEK_SET.\n\
+Return the numerical value to pass to @code{fseek} to\n\
+position the file pointer relative to the current position.\n\
+@seealso{SEEK_SET, SEEK_END}.\n\
 @end deftypefn")
 {
   return const_value ("SEEK_CUR", args, 0);
@@ -2207,7 +2213,9 @@ See SEEK_SET.\n\
 DEFUNX ("SEEK_END", FSEEK_END, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} SEEK_END ()\n\
-See SEEK_SET.\n\
+Return the numerical value to pass to @code{fseek} to\n\
+position the file pointer relative to the end of the file.\n\
+@seealso{SEEK_SET, SEEK_CUR}.\n\
 @end deftypefn")
 {
   return const_value ("SEEK_END", args, 1);

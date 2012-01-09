@@ -1,4 +1,4 @@
-## Copyright (C) 2002-2011 Paul Kienzle
+## Copyright (C) 2002-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##

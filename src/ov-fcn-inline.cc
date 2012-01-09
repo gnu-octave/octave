@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2011 David Bateman
+Copyright (C) 2004-2012 David Bateman
 
 This file is part of Octave.
 
@@ -742,7 +742,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
                           tmp_arg != "NaN" && tmp_arg != "nan" &&
                           tmp_arg != "Inf" && tmp_arg != "inf" &&
                           tmp_arg != "NA" && tmp_arg != "pi" &&
-                          tmp_arg != "eps")
+                          tmp_arg != "e" && tmp_arg != "eps")
                         fargs.append (tmp_arg);
 
                       tmp_arg = std::string ();

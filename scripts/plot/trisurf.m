@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -71,6 +71,27 @@ function h = trisurf (tri, x, y, z, varargin)
 
 endfunction
 
+%!demo
+%! clf
+%! N = 31;
+%! [x, y] = meshgrid (1:N);
+%! tri = delaunay (x, y);
+%! z = peaks (N);
+%! h = trisurf (tri, x, y, z, "facecolor", "interp");
+%! axis tight
+%! zlim auto
+%! title (sprintf ("facecolor = %s", get (h, "facecolor")))
+
+%!demo
+%! clf
+%! N = 31;
+%! [x, y] = meshgrid (1:N);
+%! tri = delaunay (x, y);
+%! z = peaks (N);
+%! h = trisurf (tri, x, y, z, "facecolor", "flat");
+%! axis tight
+%! zlim auto
+%! title (sprintf ("facecolor = %s", get (h, "facecolor")))
 
 %!demo
 %! clf

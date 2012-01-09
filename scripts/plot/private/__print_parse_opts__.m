@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 David Bateman
+## Copyright (C) 2010-2012 Shai Ayal
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
-## Return which mouse buttons were pressed and keys were hit on the current
-## figure.  If @var{n} is defined, then wait for @var{n} mouse clicks
-## before returning.  If @var{n} is not defined, then @code{ginput} will
-## loop until the return key is pressed.
+## @deftypefn {Function File} {@var{args} =} __print_parse_opts__ (@var{propname}, @var{propvalue})
+## @deftypefnx {Function File} {@var{args} =} __print_parse_opts__ (@var{struct})
+## Undocumented internal function.
 ## @end deftypefn
 
 function arg_st = __print_parse_opts__ (varargin)

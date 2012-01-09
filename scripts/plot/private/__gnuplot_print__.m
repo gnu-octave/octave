@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2011 Daniel Heiserer
+## Copyright (C) 1999-2012 Daniel Heiserer
 ## Copyright (C) 2001 Laurent Mazet
 ##
 ## This file is part of Octave.
@@ -69,10 +69,16 @@ function opts = __gnuplot_print__ (opts)
     endif
   case {"epslatex", "pslatex", "pstex", "epslatexstandalone"}
     dot = find (opts.name == ".", 1, "last");
-    if ((! isempty (dot))
-        && any (strcmpi (opts.name(dot:end),
-                {".eps", ".ps", ".pdf", ".tex", "."})))
-      name = opts.name(1:dot-1);
+    n = find (opts.devopt == "l", 1);
+    suffix = opts.devopt(1:n-1);
+    if (! isempty (dot))
+      if (any (strcmpi (opts.name(dot:end), {strcat(".", suffix), ".tex", "."})))
+        name = opts.name(1:dot-1);
+      else
+        error ("print:invalid-suffix", 
+               "invalid suffix `%s' for device `%s'.",
+               opts.name(dot:end), lower (opts.devopt));
+      endif
     endif
     if (strfind (opts.devopt, "standalone"))
       term = sprintf ("%s ",

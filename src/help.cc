@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -239,15 +239,19 @@ Multiplication operator.\n\
   pair_type ("**",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} **\n\
-Power operator.\n\
-@seealso{power, ^, .**, .^}\n\
+Power operator.  This may return complex results for real inputs.  Use\n\
+@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
+real results when possible.\n\
+@seealso{power, ^, .**, .^, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type ("^",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ^\n\
-Power operator.\n\
-@seealso{power, **, .^, .**}\n\
+Power operator.  This may return complex results for real inputs.  Use\n\
+@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
+real results when possible.\n\
+@seealso{power, **, .^, .**, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type ("+",
@@ -304,15 +308,21 @@ Element by element multiplication operator.\n\
   pair_type (".**",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .*\n\
-Element by element power operator.\n\
-@seealso{**, ^, .^, power}\n\
+Element by element power operator.  If several complex results are possible,\n\
+returns the one with smallest non-negative argument (angle).  Use\n\
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
+real result is preferred.\n\
+@seealso{**, ^, .^, power, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type (".^",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .^\n\
-Element by element power operator.\n\
-@seealso{.**, ^, **, power}\n\
+Element by element power operator.  If several complex results are possible,\n\
+returns the one with smallest non-negative argument (angle).  Use\n\
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
+real result is preferred.\n\
+@seealso{.**, ^, **, power, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type ("./",
@@ -617,7 +627,7 @@ The default statement in a switch block (similar to else in an if block).\n\
 
   pair_type ("parfor",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} for @var{i} = @var{range}\n\
+@deftypefn  {Keyword} {} for @var{i} = @var{range}\n\
 @deftypefnx {Keyword} {} for (@var{i} = @var{range}, @var{maxproc})\n\
 Begin a for loop that may execute in parallel.\n\
 \n\

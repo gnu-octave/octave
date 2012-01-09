@@ -1,7 +1,7 @@
 /*
 
-Copyright (C) 2005-2011 Mohamed Kamoun
-Copyright (C) 2006-2011 Bill Denney
+Copyright (C) 2005-2012 Mohamed Kamoun
+Copyright (C) 2006-2012 Bill Denney
 Copyright (C) 2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
@@ -362,6 +362,21 @@ of the element that caused the error.  For example:\n\
 function y = foo (s, x), y = NaN; endfunction\n\
 cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
 @result{} ans = [NaN 2]\n\
+@end group\n\
+@end example\n\
+\n\
+Use @code{cellfun} intelligently.  The @code{cellfun} function is a\n\
+useful tool for avoiding loops.  It is often used with anonymous\n\
+function handles; however, calling an anonymous function involves an\n\
+overhead quite comparable to the overhead of an m-file function.\n\
+Passing a handle to a built-in function is faster, because the\n\
+interpreter is not involved in the internal loop.  For example:\n\
+\n\
+@example\n\
+@group\n\
+a = @{@dots{}@}\n\
+v = cellfun (@@(x) det(x), a); # compute determinants\n\
+v = cellfun (@@det, a); # faster\n\
 @end group\n\
 @end example\n\
 \n\

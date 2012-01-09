@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Jaroslav Hajek
+## Copyright (C) 2008-2012 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -33,7 +33,7 @@
 %!test
 %! a = ones (3); fail ("a(1:3,1:3) = []", ".*");
 
-% null strings should delete. [,] and [;] should delete.
+## null strings should delete. [,] and [;] should delete.
 %!test
 %! a = ones (3); a(1:2,:) = [,]; assert (size (a), [1,3])
 %!test
@@ -43,7 +43,7 @@
 %!test
 %! a = ones (3); a(1:2,:) = ""; assert (size (a), [1,3])
 
-% null matrix stored anywhere should lose its special status
+## null matrix stored anywhere should lose its special status
 %!test
 %! a = ones (3); b = []; fail ("a(:,1:3) = b", ".")
 %!test
@@ -51,11 +51,11 @@
 %!test
 %! a = ones (3); b.x = []; fail ("a(:,1:3) = b.x", ".")
 
-% filtering a null matrix through a function should not delete
+## filtering a null matrix through a function should not delete
 %!test
 %! a = ones (3); fail ("a(:,1:3) = double ([])")
 
-% subsasgn should work the same way
+## subsasgn should work the same way
 %!test
 %! a = ones (3); a = subsasgn (a, substruct ('()', {':',1:2}), []); assert (size (a), [3,1])
 %!test

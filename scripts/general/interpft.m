@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2011 Paul Kienzle
+## Copyright (C) 2001-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -27,7 +27,7 @@
 ## along the dimension @var{dim}.
 ##
 ## @code{interpft} assumes that the interpolated function is periodic,
-## and so assumptions are made about the end points of the interpolation.
+## and so assumptions are made about the endpoints of the interpolation.
 ##
 ## @seealso{interp1}
 ## @end deftypefn

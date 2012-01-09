@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011 Jarno Rajahalme
+Copyright (C) 2012 Jarno Rajahalme
 
 This file is part of Octave.
 

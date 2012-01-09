@@ -2,7 +2,7 @@
 ##
 ## run-octave -- run Octave in the build tree.
 ## 
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ## 

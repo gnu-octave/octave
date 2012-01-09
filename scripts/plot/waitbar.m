@@ -1,4 +1,4 @@
-## Copyright (C) 2011 John W. Eaton
+## Copyright (C) 2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -143,7 +143,7 @@ endfunction
 %! for i = 0:0.01:0.6
 %!   waitbar (i);
 %! endfor
-%! i = 0.3
+%! i = 0.3;
 %! waitbar (i, h, "don't you hate taking a step backward?")
 %! pause (0.5);
 %! for i = i:0.005:0.7

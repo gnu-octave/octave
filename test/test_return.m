@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,9 +19,11 @@
 %% test/octave.test/return/return-1.m
 %!function y = f ()
 %!  y = 1;
-%!  return
+%!  return;
 %!  y = 2;
-%!assert(f(),1)
+%!endfunction
+%!
+%!assert(f(), 1)
 
 %% test/octave.test/return/return-2.m
 %!test

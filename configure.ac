@@ -2,7 +2,7 @@ dnl configure.in
 dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl Copyright (C) 1993-2011 John W. Eaton
+dnl Copyright (C) 1993-2012 John W. Eaton
 ### 
 ### This file is part of Octave.
 ### 
@@ -27,14 +27,14 @@ dnl Copyright (C) 1993-2011 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT([GNU Octave], [3.5.91+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.5.92+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
 OCTAVE_API_VERSION_NUMBER="46"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2011-12-23"
-OCTAVE_COPYRIGHT="Copyright (C) 2011 John W. Eaton and others."
+OCTAVE_RELEASE_DATE="2012-01-06"
+OCTAVE_COPYRIGHT="Copyright (C) 2012 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
 AC_SUBST(OCTAVE_API_VERSION)
@@ -1173,6 +1173,19 @@ if test -n "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
+save_LIBS="$LIBS"
+LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
+OCTAVE_CHECK_LIBRARY(arpack, ARPACK,
+  [ARPACK not found.  The eigs function will be disabled.],
+  [],
+  [dseupd],
+  [Fortran 77], [don't use the ARPACK library, disable eigs function],
+  [warn_arpack=
+   OCTAVE_CHECK_ARPACK_OK([
+     AC_DEFINE(HAVE_ARPACK, 1, [Define if ARPACK is available.])], [
+     warn_arpack="ARPACK library found, but seems not to work properly -- disabling eigs function"])])
+LIBS="$save_LIBS"
+
 ### Enable dynamic linking.  --enable-shared implies this, so
 ### --enable-dl is only need if you are only building static libraries
 ### and want to try dynamic linking too (works on some systems, for
@@ -1613,7 +1626,7 @@ fi
 AC_CHECK_FUNCS(basename canonicalize_file_name \
   chmod dup2 endgrent endpwent execvp expm1 expm1f fork \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
-  getppid getpwent getpwuid getuid getwd _kbhit kill \
+  getppid getpwent getpwuid getuid getwd _kbhit \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
   mkstemp pipe putenv \
   realpath resolvepath rindex roundl select setgrent setlocale \
@@ -2150,6 +2163,9 @@ Octave is now configured for $canonical_host_type
   AMD CPPFLAGS:                $AMD_CPPFLAGS
   AMD LDFLAGS:                 $AMD_LDFLAGS
   AMD libraries:               $AMD_LIBS
+  ARPACK CPPFLAGS:             $ARPACK_CPPFLAGS
+  ARPACK LDFLAGS:              $ARPACK_LDFLAGS
+  ARPACK libraries:            $ARPACK_LIBS
   BLAS libraries:              $BLAS_LIBS
   CAMD CPPFLAGS:               $CAMD_CPPFLAGS
   CAMD LDFLAGS:                $CAMD_LDFLAGS
@@ -2395,7 +2411,7 @@ if $USE_64_BIT_IDX_T; then
   AC_MSG_WARN([Make.  This should work automatically for gfortran.  If])
   AC_MSG_WARN([you use another compiler, you will need to set this])
   AC_MSG_WARN([variable on the configure command line.  You must also])
-  AC_MSG_WARN([compile the BLAS, LAPACK, QRUPDATE, and SuiteSparse])
+  AC_MSG_WARN([compile the ARPACK, BLAS, LAPACK, QRUPDATE, and SuiteSparse])
   AC_MSG_WARN([libraries to use 8 byte signed integers for array indexing.])
   AC_MSG_WARN([])
   warn_msg_printed=true

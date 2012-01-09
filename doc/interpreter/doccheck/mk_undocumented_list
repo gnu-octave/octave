@@ -9,7 +9,7 @@
  where = cellfun (\@which, funclist, \"UniformOutput\", 0)'
 _END_OCT_SCRIPT_
 
-die "Unable to invoke 'run-octave'.  Exiting\n" unless (@octave_output);
+unless (@octave_output) { die "Unable to invoke 'run-octave'.  Exiting\n" ;}
 
 ################################################################################
 # Winnow list of functions that require a DOCSTRING
@@ -86,9 +86,9 @@ exit
 F_DUPFD
 F_GETFD
 F_GETFL
+fact
 finite
 fmod
-fntests
 F_SETFD
 F_SETFL
 gammaln

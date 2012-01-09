@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2011 Nicolo' Giorgetti
+Copyright (C) 2005-2012 Nicolo' Giorgetti
 
 This file is part of Octave.
 

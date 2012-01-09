@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 Hoxide Ma
+## Copyright (C) 2005-2012 Hoxide Ma
 ##
 ## This file is part of Octave.
 ##

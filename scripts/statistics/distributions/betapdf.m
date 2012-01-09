@@ -1,5 +1,5 @@
-## Copyright (C) 2011 Rik Wehbring
-## Copyright (C) 1995-2011 Kurt Hornik
+## Copyright (C) 2012 Rik Wehbring
+## Copyright (C) 1995-2012 Kurt Hornik
 ## Copyright (C) 2010 Christos Dimitrakakis
 ##
 ## This file is part of Octave.

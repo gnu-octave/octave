@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @cindex warning ids
 ## @table @code
 ## @item Octave:abbreviated-property-match
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
@@ -119,6 +120,11 @@
 ## calls in PKG_ADD files, when the PKG_ADD file is not in the same
 ## directory as the .oct file referred to by the autoload() command.
 ## By default, the @code{Octave:autoload-relative-file-name} warning is enabled.
+##
+## @item Octave:broadcast
+## Warn when performing broadcasting operations.  By default, this is
+## enabled.  See @ref{Broadcasting} in the chapter Vectorization and Faster
+## Code Execution of the manual.
 ##
 ## @item Octave:built-in-variable-assignment
 ## By default, the @code{Octave:built-in-variable-assignment} warning is

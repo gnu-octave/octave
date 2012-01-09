@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 E. Jason Riedy
+## Copyright (C) 2009-2012 E. Jason Riedy
 ##
 ## This file is part of Octave.
 ##
@@ -219,7 +219,7 @@
 %! A = sprand (n, n, .5);
 %! scalefact = rand (n-2, 1);
 %! Dr = diag (scalefact, n, n-2);
-%! assert (full (Dr \ A), Dr \ full(A))
+%! assert (full (Dr \ A), Dr \ full(A));
 
 ## sparse inverse column scaling with a zero factor
 %!test
@@ -229,7 +229,7 @@
 %! Dc = diag (scalefact);
 %! scalefact(n-1) = Inf;
 %! Dc(n-1, n-1) = 0;
-%! assert (full (A / Dc), full(A) / Dc)
+%! assert (full (A / Dc), full(A) / Dc);
 
 ## short sparse inverse column scaling
 %!test
@@ -237,29 +237,29 @@
 %! A = sprand (n, n, .5);
 %! scalefact = rand (1, n-2) + I () * rand(1, n-2);
 %! Dc = diag (scalefact, n-2, n);
-%! assert (full (A / Dc), full(A) / Dc)
+%! assert (full (A / Dc), full(A) / Dc);
 
 ## adding sparse and diagonal stays sparse
 %!test
 %! n = 9;
 %! A = sprand (n, n, .5);
 %! D = 2 * eye (n);
-%! assert (typeinfo (A + D), "sparse matrix")
-%! assert (typeinfo (A - D), "sparse matrix")
+%! assert (typeinfo (A + D), "sparse matrix");
+%! assert (typeinfo (A - D), "sparse matrix");
 %! D = D * I () + D;
-%! assert (typeinfo (A - D), "sparse complex matrix")
+%! assert (typeinfo (A - D), "sparse complex matrix");
 %! A = A * I () + A;
-%! assert (typeinfo (D - A), "sparse complex matrix")
+%! assert (typeinfo (D - A), "sparse complex matrix");
 
 ## adding sparse and diagonal stays sparse
 %!test
 %! n = 9;
 %! A = sprand (n, n, .5);
 %! D = 2 * eye (n);
-%! assert (full (A + D), full (A) + D)
-%! assert (full (A - D), full (A) - D)
+%! assert (full (A + D), full (A) + D);
+%! assert (full (A - D), full (A) - D);
 %! D = D * I () + D;
-%! assert (full (D + A), D + full (A))
+%! assert (full (D + A), D + full (A));
 %! A = A * I () + A;
 %! A(6, 4) = nan ();
-%! assert (full (D - A), D - full (A))
+%! assert (full (D - A), D - full (A));

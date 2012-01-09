@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -20,106 +20,106 @@
 %!test
 %! try
 %! catch
-%!   error("Shoudn't get here");
+%!   error ("Shoudn't get here");
 %! end_try_catch
 
 %% test/octave.test/try/try-2.m
 %!test
 %! try
-%!   clear a
+%!   clear a;
 %!   a;
 %! catch
 %! end_try_catch
 %! a = 1;
-%! assert(a,1);
+%! assert (a,1);
 
 %% test/octave.test/try/try-3.m
 %!test
 %! clear x;
 %! try
-%!   clear a
+%!   clear a;
 %!   a;
 %!   x = 1;
 %! catch
 %! end_try_catch
 %! a = 2;
-%! assert(!exist('x'))
-%! assert(a,2)
+%! assert (!exist ('x'));
+%! assert (a,2);
 
 %% test/octave.test/try/try-4.m
 %!test
 %! try
-%!   clear a
+%!   clear a;
 %!   a;
 %! catch
 %!   x = 1;
 %! end_try_catch
-%! assert(exist('x'))
+%! assert (exist ('x'));
 
 %% test/octave.test/try/try-5.m
 %!test
 %! try
 %!   clear a;
 %!   a;
-%!   error("Shoudn't get here");
+%!   error ("Shoudn't get here");
 %! catch
-%!   assert (strcmp(lasterr()(1:13), "`a' undefined"))
+%!   assert (lasterr()(1:13), "`a' undefined");
 %! end_try_catch
-%! assert (strcmp(lasterr()(1:13), "`a' undefined"))
+%! assert (lasterr()(1:13), "`a' undefined");
 
 %% test/octave.test/try/try-6.m
 %!test 
 %! try
-%!   error ("user-defined error")
+%!   error ("user-defined error");
 %! catch
-%!   assert(lasterr,"user-defined error");
+%!   assert (lasterr, "user-defined error");
 %! end_try_catch
 
 %% test/octave.test/try/try-7.m
 %!function ms = mangle (s)
 %!  ## Wrap angle brackets around S.
 %!  ms = cstrcat ("<", s, ">");
+%!endfunction
 %!test
 %! try
-%!   clear a
+%!   clear a;
 %!   a;
-%!   error("Shoudn't get here");
+%!   error ("Shoudn't get here");
 %! catch
-%!   assert(strcmp(mangle (lasterr)(1:14),"<`a' undefined"))
+%!   assert (mangle (lasterr)(1:14), "<`a' undefined");
 %! end_try_catch
-
 
 %% test/octave.test/try/try-8.m
 %!test
 %! try
 %!   try
-%!     clear a
+%!     clear a;
 %!     a;
-%!     error("Shoudn't get here");
+%!     error ("Shoudn't get here");
 %!   catch
-%!     assert(strcmp(lasterr()(1:13), "`a' undefined"))
+%!     assert (lasterr()(1:13), "`a' undefined");
 %!   end_try_catch
-%!   clear b
+%!   clear b;
 %!   b;
-%!   error("Shoudn't get here");
+%!   error ("Shoudn't get here");
 %! catch
-%!   assert(strcmp(lasterr()(1:13), "`b' undefined"))
+%!   assert (lasterr()(1:13), "`b' undefined");
 %! end_try_catch
 
 %% test/octave.test/try/try-9.m
 %!test
 %! try
-%!   clear a
+%!   clear a;
 %!   a;
-%!   error("Shoudn't get here");
+%!   error ("Shoudn't get here");
 %! catch
 %!   try
-%!     assert(strcmp(lasterr()(1:13), "`a' undefined"))
-%!     clear b
+%!     assert (lasterr()(1:13), "`a' undefined");
+%!     clear b;
 %!     b;
-%!     error("Shoudn't get here");
+%!     error ("Shoudn't get here");
 %!   catch
-%!     assert(strcmp(lasterr()(1:13), "`b' undefined"))
+%!     assert (lasterr()(1:13), "`b' undefined");
 %!   end_try_catch
 %! end_try_catch
 
@@ -127,13 +127,13 @@
 %!test
 %! try
 %!   try
-%!     clear a
+%!     clear a;
 %!     a;
-%!     error("Shoudn't get here");
+%!     error ("Shoudn't get here");
 %!   catch
-%!     error(cstrcat("rethrow: ",lasterr));
+%!     error (cstrcat ("rethrow: ", lasterr));
 %!   end_try_catch
 %! catch
-%!   assert(strcmp(lasterr()(1:22), "rethrow: `a' undefined"))
+%!   assert (lasterr()(1:22), "rethrow: `a' undefined");
 %! end_try_catch
 

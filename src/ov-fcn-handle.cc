@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2011 John W. Eaton
+Copyright (C) 2003-2012 John W. Eaton
 Copyright (C) 2009 VZLU Prague, a.s.
 Copyright (C) 2010 Jaroslav Hajek
 
@@ -1775,6 +1775,38 @@ are ignored in the lookup.\n\
 %!assert (__testrecursionfunc (@(x) x, 1), 8)
 
 */
+
+DEFUN (is_function_handle, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} is_function_handle (@var{x})\n\
+Return true if @var{x} is a function handle.\n\
+@seealso{isa, typeinfo, class}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    retval = args(0).is_function_handle ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!shared fh
+%! fh = @(x) x;
+
+%!assert (is_function_handle (fh))
+%!assert (! is_function_handle ({fh}))
+%!assert (! is_function_handle (1))
+%!error is_function_handle ();
+%!error is_function_handle (1, 2);
+
+*/
+
 
 octave_fcn_binder::octave_fcn_binder (const octave_value& f,
                                       const octave_value& root,

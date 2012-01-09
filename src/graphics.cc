@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2011 John W. Eaton
+Copyright (C) 2007-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -8997,6 +8997,7 @@ DEFUN (available_graphics_toolkits, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_graphics_toolkits ()\n\
 Return a cell array of registered graphics toolkits.\n\
+@seealso{graphics_toolkit, register_graphics_toolkit}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
@@ -9008,6 +9009,7 @@ DEFUN (register_graphics_toolkit, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} register_graphics_toolkit (@var{toolkit})\n\
 List @var{toolkit} as an available graphics toolkit.\n\
+@seealso{available_graphics_toolkits}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -9033,6 +9035,7 @@ DEFUN (loaded_graphics_toolkits, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} loaded_graphics_toolkits ()\n\
 Return a cell array of the currently loaded graphics toolkits.\n\
+@seealso{available_graphics_toolkits}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;

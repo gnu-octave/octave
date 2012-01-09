@@ -1,4 +1,4 @@
-## Copyright (C) 2011 Michael Goffioul
+## Copyright (C) 2012 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##

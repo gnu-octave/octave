@@ -264,13 +264,13 @@ endfunction
 %! assert (flag, !1);
 %! assert (s2, s(end:-1:end-k+1), 1e-10);
 %!
-%!testif HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK
 %! [u2,s2,v2,flag] = svds (A,k,0,opts);
 %! s2 = diag (s2);
 %! assert (flag, !1);
 %! assert (s2, s(k:-1:1), 1e-10);
 %!
-%!testif HAVE_UMFPACK
+%!testif HAVE_ARPACK, HAVE_UMFPACK
 %! idx = floor(n/2);
 %! % Don't put sigma right on a singular value or there are convergence issues
 %! sigma = 0.99*s(idx) + 0.01*s(idx+1);

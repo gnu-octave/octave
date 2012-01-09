@@ -456,8 +456,10 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 ### TESTIF
 
     elseif (strcmp (__type, "testif"))
-      [__e, __feat] = regexp (__code, '^\s*(\S+)', 'end', 'tokens');
-      if (isempty (findstr (octave_config_info ("DEFS"), __feat{1}{1})))
+      __e = regexp (__code, '.$', 'lineanchors', 'once');
+      __feat = regexp (__code(1:__e), '\w+', 'match');
+      __have_feat = strfind (octave_config_info ("DEFS"), __feat); 
+      if (any (cellfun ("isempty", __have_feat)))
         __xskip++;
         __istest = 0;
         __code = ""; # Skip the code.

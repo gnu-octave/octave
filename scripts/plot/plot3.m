@@ -170,6 +170,8 @@ function retval = plot3 (varargin)
 
       if (! size_equal (x, y, z))
         error ("plot3: x, y, and z must have the same shape");
+      elseif (ndims (x) > 2)
+        error ("plot3: x, y, and z must not have more than two dimensions");
       endif
 
       for i = 1 : columns (x)
@@ -222,6 +224,8 @@ function retval = plot3 (varargin)
 
       if (! size_equal (x, y, z))
         error ("plot3: x, y, and z must have the same shape");
+      elseif (ndims (x) > 2)
+        error ("plot3: x, y, and z must not have more than two dimensions");
       endif
 
       options =  __default_plot_options__ ();
@@ -294,6 +298,8 @@ function retval = plot3 (varargin)
 
     if (! size_equal (x, y, z))
       error ("plot3: x, y, and z must have the same shape");
+    elseif (ndims (x) > 2)
+      error ("plot3: x, y, and z must not have more than two dimensions");
     endif
 
     options =  __default_plot_options__ ();

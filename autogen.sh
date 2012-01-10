@@ -48,4 +48,6 @@ build-aux/bootstrap "$@"
 
 echo "replacing all occurrences of g77 with gfortran in configure script..."
 
-sed 's/g77/gfortran/g' configure > configure.t && mv configure.t configure
+sed 's/g77/gfortran/g' configure > configure.t
+mv configure.t configure
+chmod 755 configure

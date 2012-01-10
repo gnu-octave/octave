@@ -64,6 +64,56 @@ be able to find pre-packaged versions of the dependencies distributed as
 part of your system, or you may have to build some or all of them
 yourself.
 
+@menu
+* Tips for Specific Systems::
+* Build Tools::
+* External Packages::
+@end menu
+
+@node Tips for Specific Systems
+@subsection Tips for Specific Systems
+
+The names of pre-compiled packages vary by system and do not always
+match exactly the names listed above.
+
+You will usually need the development version of an external dependency
+so that you get the libraries and header files for building software,
+not just for running already compiled programs.  These packages
+typically have names that end with the suffix @code{-dev} or @code{-devel}.
+
+On systems with @code{apt-get} (Debian, Ubuntu, etc.), you may be able
+to install most of the tools and external packages using a command
+similar to
+
+@example
+apt-get build-dep octave
+@end example
+
+@noindent
+The specific package name may be @code{octave3.2} or @code{octave3.4}.
+The set of required tools and external dependencies does not change
+frequently, so it is not important that the version match exactly, but
+you should use the most recent one available.
+
+On systems with @code{yum} (Fedora, Red Hat, etc.), you may be able to
+install most of the tools and external packages using a command similar to
+
+@example
+yum-builddep octave
+@end example
+
+@noindent
+The @code{yum-builddep} utility is part of the @code{yum-utils} package.
+
+For either type of system, the package name may include a version
+number.  The set of required tools and external dependencies does not
+change frequently, so it is not important that the version exactly match
+the version you are installing, but you should use the most recent one
+available.
+
+@node Build Tools
+@subsection Build Tools
+
 The following tools are required:
 
 @table @asis
@@ -117,6 +167,9 @@ Package for building software libraries
 (@url{http://www.gnu.org/software/libtool}).  Libtool is required by
 Automake.
 @end table
+
+@node External Packages
+@subsection External Packages
 
 The following external packages are required:
 

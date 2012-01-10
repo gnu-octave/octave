@@ -1,11 +1,16 @@
 Summary of important user-visible changes for version 3.6:
 ---------------------------------------------------------
 
- ** The PCRE library is now required to build Octave.
+ ** The PCRE library is now required to build Octave.  If a pre-compiled
+    package does not exist for your system, you can find PCRE sources
+    at http://www.pcre.org
 
  ** The ARPACK library is no longer distributed with Octave.
-    If you need the eigs() or svds() functions you must provide an external
-    ARPACK through a package manager or by compiling it yourself.
+    If you need the eigs or svds functions you must provide an
+    external ARPACK through a package manager or by compiling it
+    yourself.  If a pre-compiled package does not exist for your system,
+    you can find the current ARPACK sources at
+    http://forge.scilab.org/index.php/p/arpack-ng
 
  ** Many of Octave's binary operators (.*, .^, +, -, ...) now perform
     automatic broadcasting for array operations that allows you to use
@@ -60,7 +65,7 @@ Summary of important user-visible changes for version 3.6:
 
     75% reduction in memory usage through use of logical indexing.
 
-    Random sample functions now use the same syntax as rand() and accept
+    Random sample functions now use the same syntax as rand and accept
     a comma separated list of dimensions or a dimension vector.
 
     Functions have been made Matlab-compatible with regard to special
@@ -68,9 +73,10 @@ Summary of important user-visible changes for version 3.6:
     distribution, etc.).  This may cause subtle changes to existing
     scripts.
 
-    negative binomial function has been extended to real, non-integer inputs.
-    discrete_inv() now returns v(1) for 0 instead of NaN.
-    nbincdf() recoded to use closed form solution with betainc().
+    negative binomial function has been extended to real, non-integer
+    inputs.  The discrete_inv fucntion now returns v(1) for 0 instead of
+    NaN.  The nbincdf fucntion has bbeen recoded to use a closed form
+    solution with betainc.
 
  ** strread, textscan, and textread have been completely revamped.
 
@@ -403,8 +409,8 @@ Summary of important user-visible changes for version 3.4:
     ordering defined by the `max', `min', and `sort' functions.  More
     specifically, complex numbers are compared by lexicographical
     comparison of the pairs `[abs(z), arg(z)]'.  Previously, only real
-    parts were compared; this can be trivially achieved by wrapping the
-    operands in real().
+    parts were compared; this can be trivially achieved by converting
+    the operands to real values with the `real' function.
 
  ** The automatic simplification of complex computation results has
     changed.  Octave will now simplify any complex number with a zero
@@ -533,7 +539,7 @@ Summary of important user-visible changes for version 3.4:
     cat/vertcat/horzcat functions.
 
  ** It is now possible to optionally employ the xGESDD LAPACK drivers
-    for computing the singular value decomposition using svd(), instead
+    for computing the singular value decomposition using svd, instead
     of the default xGESVD, using the configuration pseudo-variable
     svd_driver.  The xGESDD driver can be up to 6x times faster when
     singular vectors are requested, but is reported to be somewhat less
@@ -718,7 +724,7 @@ Summary of important user-visible changes for version 3.2:
            for i = 1 : 100
              pause(0.1)
              y = sin (x + 0.1 * i);
-             refreshdata();
+             refreshdata ();
            endfor
 
     works as expected.  This capability has be used to introduce

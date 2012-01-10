@@ -63,7 +63,16 @@ function h = figure (varargin)
 
   if (rem (nargs, 2) == 0)
     if (isnan (f) || init_new_figure)
-      f = __go_figure__ (f, varargin{:});
+      if (ismac () && strcmp (graphics_toolkit (), "fltk"))
+        ## FIXME - Hack for fltk-aqua to work around bug # 31931
+        f = __go_figure__ (f);
+        drawnow ();
+        if (! isempty (varargin))
+          set (f, varargin{:});
+        endif
+      else
+        f = __go_figure__ (f, varargin{:});
+      endif
     elseif (nargs > 0)
       set (f, varargin{:});
     endif

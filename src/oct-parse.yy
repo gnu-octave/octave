@@ -1899,8 +1899,6 @@ fold (tree_binary_expression *e)
   tree_expression *op1 = e->lhs ();
   tree_expression *op2 = e->rhs ();
 
-  octave_value::binary_op op_type = e->op_type ();
-
   if (op1->is_constant () && op2->is_constant ())
     {
       octave_value tmp = e->rvalue1 ();

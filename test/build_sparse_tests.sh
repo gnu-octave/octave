@@ -646,11 +646,11 @@ gen_square_tests() {
 %! assert (l, sparse ([1,2,2],[1,1,2],1), 10*eps);
 %! assert (u, sparse ([1,1,2],[1,2,2],[1,1,1i]), 10*eps);
 
-%!testif HAVE_UMFPACK ;# permuted LU
+%!testif HAVE_UMFPACK   # permuted LU
 %! [L,U] = lu (bs);
 %! assert (L*U, bs, 1e-10);
 
-%!testif HAVE_UMFPACK ;# simple LU + row permutations
+%!testif HAVE_UMFPACK   # simple LU + row permutations
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
 %! # triangularity
@@ -659,7 +659,7 @@ gen_square_tests() {
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
 
-%!testif HAVE_UMFPACK ;# simple LU + row/col permutations
+%!testif HAVE_UMFPACK   # simple LU + row/col permutations
 %! [L,U,P,Q] = lu (bs);
 %! assert (P'*L*U*Q', bs, 1e-10);
 %! # triangularity
@@ -668,7 +668,7 @@ gen_square_tests() {
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
 
-%!testif HAVE_UMFPACK ;# LU with vector permutations
+%!testif HAVE_UMFPACK   # LU with vector permutations
 %! [L,U,P,Q] = lu (bs,'vector');
 %! assert (L(P,:)*U(:,Q), bs, 1e-10);
 %! # triangularity
@@ -677,7 +677,7 @@ gen_square_tests() {
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
 
-%!testif HAVE_UMFPACK ;# LU with scaling
+%!testif HAVE_UMFPACK   # LU with scaling
 %! [L,U,P,Q,R] = lu (bs);
 %! assert (R*P'*L*U*Q', bs, 1e-10);
 %! # triangularity
@@ -686,7 +686,7 @@ gen_square_tests() {
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
 
-%!testif HAVE_UMFPACK ;# inverse
+%!testif HAVE_UMFPACK   # inverse
 %! assert (inv (bs)*bs, sparse (eye (rows (bs))), 1e-10);
 
 %!assert (bf\as', bf\af', 100*eps);
@@ -706,7 +706,7 @@ gen_cholesky_tests() {
 %!testif HAVE_CHOLMOD
 %! assert (chol (bs,'lower'), chol (bs)', 1e-10);
 
-%!testif HAVE_CHOLMOD ;# Return Partial Cholesky factorization
+%!testif HAVE_CHOLMOD   # Return Partial Cholesky factorization
 %! [RS,PS] = chol (bs);
 %! assert (RS'*RS, bs, 1e-10);
 %! assert (PS, 0);
@@ -714,7 +714,7 @@ gen_cholesky_tests() {
 %! assert (LS*LS', bs, 1e-10);
 %! assert (PS, 0);
 
-%!testif HAVE_CHOLMOD ;# Permuted Cholesky factorization
+%!testif HAVE_CHOLMOD   # Permuted Cholesky factorization
 %! [RS,PS,QS] = chol (bs);
 %! assert (RS'*RS, QS*bs*QS', 1e-10);
 %! assert (PS, 0);
@@ -750,11 +750,11 @@ gen_rectangular_tests() {
     gen_matrixdiag_tests
     gen_matrixreshape_tests
     cat >>$TESTS <<EOF
-%!testif HAVE_UMFPACK ;# permuted LU
+%!testif HAVE_UMFPACK   # permuted LU
 %! [L,U] = lu (bs);
 %! assert (L*U, bs, 1e-10);
 
-%!testif HAVE_UMFPACK ;# simple LU + row permutations
+%!testif HAVE_UMFPACK   # simple LU + row permutations
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
 %! # triangularity
@@ -763,7 +763,7 @@ gen_rectangular_tests() {
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
 
-%!testif HAVE_UMFPACK ;# simple LU + row/col permutations
+%!testif HAVE_UMFPACK   # simple LU + row/col permutations
 %! [L,U,P,Q] = lu (bs);
 %! assert (P'*L*U*Q', bs, 1e-10);
 %! # triangularity
@@ -772,7 +772,7 @@ gen_rectangular_tests() {
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
 
-%!testif HAVE_UMFPACK ;# LU with vector permutations
+%!testif HAVE_UMFPACK   # LU with vector permutations
 %! [L,U,P,Q] = lu (bs,'vector');
 %! assert (L (P,:)*U (:,Q), bs, 1e-10);
 %! # triangularity
@@ -781,7 +781,7 @@ gen_rectangular_tests() {
 %! [i,j,v] = find (U);
 %! assert (j-i>=0);
 
-%!testif HAVE_UMFPACK ;# LU with scaling
+%!testif HAVE_UMFPACK   # LU with scaling
 %! [L,U,P,Q,R] = lu (bs);
 %! assert (R*P'*L*U*Q', bs, 1e-10);
 %! # triangularity
@@ -930,7 +930,7 @@ gen_save_tests() {
 %! load (savefile, "as_save");
 %! unlink (savefile);
 %! assert (as_save, sparse(af));
-%!testif HAVE_HDF5 # save hdf5
+%!testif HAVE_HDF5   # save hdf5
 %! savefile = tmpnam ();
 %! as_save = as;
 %! save ("-hdf5", savefile, "bf", "as_save", "af");

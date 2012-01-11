@@ -457,7 +457,9 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
     elseif (strcmp (__type, "testif"))
       __e = regexp (__code, '.$', 'lineanchors', 'once');
-      __feat = regexp (__code(1:__e), '\w+', 'match');
+      ## Strip comment any comment from testif line before looking for features
+      __feat_line = strtok (__code(1:__e), '#%'); 
+      __feat = regexp (__feat_line, '\w+', 'match');
       __have_feat = strfind (octave_config_info ("DEFS"), __feat); 
       if (any (cellfun ("isempty", __have_feat)))
         __xskip++;

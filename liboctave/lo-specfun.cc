@@ -852,6 +852,13 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
+  else if (is_integer_value (alpha))
+    {
+      // zbesi can overflow as z->0, and cause troubles for generic case below
+      alpha = -alpha;
+      Complex tmp = zbesi (z, alpha, kode, ierr);
+      retval = bessel_return_value (tmp, ierr);
+    }
   else
     {
       alpha = -alpha;

@@ -366,8 +366,8 @@ public:
     {
       // Promotion type for multiplication (if exists).
       typedef typename query_integer_type<2*sizeof (T), false>::type mptype;
-      return truncate_int (static_cast<mptype> (x)
-                           * static_cast<mptype> (y));
+      return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
+                                               * static_cast<mptype> (y));
     }
 
   // Division with rounding to nearest. Note that / and % are probably
@@ -621,8 +621,8 @@ public:
     {
       // Promotion type for multiplication (if exists).
       typedef typename query_integer_type<2*sizeof (T), true>::type mptype;
-      return truncate_int (static_cast<mptype> (x)
-                           * static_cast<mptype> (y));
+      return octave_int_base<T>::truncate_int (static_cast<mptype> (x)
+                                               * static_cast<mptype> (y));
     }
 
   // Division.

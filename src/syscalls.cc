@@ -1646,7 +1646,7 @@ const_value (const octave_value_list& args, int val)
 DEFUNX ("F_DUPFD", FF_DUPFD, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_DUPFD ()\n\
-Return the value required to request that @code{fcntl} return a\n\
+Return the numerical value to pass to @code{fcntl} to return a\n\
 duplicate file descriptor.\n\
 @seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
@@ -1662,7 +1662,7 @@ duplicate file descriptor.\n\
 DEFUNX ("F_GETFD", FF_GETFD, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_GETFD ()\n\
-Return the value required to request that @code{fcntl} to return the\n\
+Return the numerical value to pass to @code{fcntl} to return the\n\
 file descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
@@ -1678,7 +1678,7 @@ file descriptor flags.\n\
 DEFUNX ("F_GETFL", FF_GETFL, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_GETFL ()\n\
-Return the value required to request that @code{fcntl} to return the\n\
+Return the numerical value to pass to @code{fcntl} to return the\n\
 file status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}\n\
 @end deftypefn")
@@ -1694,7 +1694,7 @@ file status flags.\n\
 DEFUNX ("F_SETFD", FF_SETFD, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_SETFD ()\n\
-Return the value required to request that @code{fcntl} to set the file\n\
+Return the numerical value to pass to @code{fcntl} to set the file\n\
 descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}\n\
 @end deftypefn")
@@ -1710,7 +1710,7 @@ descriptor flags.\n\
 DEFUNX ("F_SETFL", FF_SETFL, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} F_SETFL ()\n\
-Return the value required to request that @code{fcntl} to set the file\n\
+Return the numerical value to pass to @code{fcntl} to set the file\n\
 status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}\n\
 @end deftypefn")

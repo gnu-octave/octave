@@ -1899,8 +1899,6 @@ fold (tree_binary_expression *e)
   tree_expression *op1 = e->lhs ();
   tree_expression *op2 = e->rhs ();
 
-  octave_value::binary_op op_type = e->op_type ();
-
   if (op1->is_constant () && op2->is_constant ())
     {
       octave_value tmp = e->rvalue1 ();
@@ -3266,7 +3264,7 @@ looks_like_copyright (const std::string& s)
     {
       size_t offset = s.find_first_not_of (" \t");
 
-      retval = (s.substr (offset, 9) == "Copyright");
+      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
     }
 
   return retval;
@@ -4448,7 +4446,8 @@ cleanup_statement_list (tree_statement_list **lst)
 
 DEFUN (eval, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} eval (@var{try}, @var{catch})\n\
+@deftypefn  {Built-in Function} {} eval (@var{try})\n\
+@deftypefnx {Built-in Function} {} eval (@var{try}, @var{catch})\n\
 Parse the string @var{try} and evaluate it as if it were an Octave\n\
 program.  If that fails, evaluate the optional string @var{catch}.\n\
 The string @var{try} is evaluated in the current context,\n\
@@ -4472,6 +4471,11 @@ eval ('error (\"This is a bad example\");',\n\
         This is a bad example\n\
 @end group\n\
 @end example\n\
+\n\
+Consider using try/catch blocks instead if you are only using @code{eval}\n\
+as an error-capturing mechanism rather than for the execution of arbitrary\n\
+code strings.\n\
+@seealso{evalin}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4554,6 +4558,7 @@ DEFUN (assignin, args, ,
 @deftypefn {Built-in Function} {} assignin (@var{context}, @var{varname}, @var{value})\n\
 Assign @var{value} to @var{varname} in context @var{context}, which\n\
 may be either @code{\"base\"} or @code{\"caller\"}.\n\
+@seealso{evalin}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4603,10 +4608,12 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
 DEFUN (evalin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
+@deftypefn  {Built-in Function} {} evalin (@var{context}, @var{try})\n\
+@deftypefnx {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
 Like @code{eval}, except that the expressions are evaluated in the\n\
 context @var{context}, which may be either @code{\"caller\"} or\n\
 @code{\"base\"}.\n\
+@seealso{eval, assignin}\n\
 @end deftypefn")
 {
   octave_value_list retval;

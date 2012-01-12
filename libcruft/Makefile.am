@@ -43,7 +43,7 @@ libcruft_la_LIBADD = \
 
 # Increment these as needed and according to the rules in the libtool
 # manual:
-libcruft_current = 0
+libcruft_current = 1
 libcruft_revision = 0
 libcruft_age = 0
 

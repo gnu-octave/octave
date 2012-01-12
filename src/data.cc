@@ -3927,6 +3927,9 @@ val = zeros (m,n, \"uint8\")\n\
 
 DEFUN (Inf, args, ,
   "-*- texinfo -*-\n\
+@c List other form of function in documentation index\n\
+@findex inf\n\
+\n\
 @deftypefn  {Built-in Function} {} Inf\n\
 @deftypefnx {Built-in Function} {} Inf (@var{n})\n\
 @deftypefnx {Built-in Function} {} Inf (@var{n}, @var{m})\n\
@@ -3984,6 +3987,9 @@ DEFALIAS (inf, Inf);
 
 DEFUN (NaN, args, ,
   "-*- texinfo -*-\n\
+@c List other form of function in documentation index\n\
+@findex nan\n\
+\n\
 @deftypefn  {Built-in Function} {} NaN\n\
 @deftypefnx {Built-in Function} {} NaN (@var{n})\n\
 @deftypefnx {Built-in Function} {} NaN (@var{n}, @var{m})\n\
@@ -5599,9 +5605,13 @@ DEFUN (power, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
 Return the element-by-element operation of @var{x} raised to the\n\
-@var{y} power.\n\
+@var{y} power.  If several complex results are possible,\n\
+returns the one with smallest non-negative argument (angle).  Use\n\
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
+real result is preferred.\n\
+\n\
 This function and @w{@xcode{x .^ y}} are equivalent.\n\
-@seealso{mpower}\n\
+@seealso{mpower, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_el_pow, args);

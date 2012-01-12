@@ -52,15 +52,17 @@ function opts = __fltk_print__ (opts)
     dot = find (opts.name == ".", 1, "last");
     if ((! isempty (dot))
         && any (strcmpi (opts.name(dot:end), ...
-                {".eps", ".ps", ".pdf", ".tex", "."})))
+                {strcat(".", suffix), ".tex", "."})))
       name = opts.name(1:dot-1);
       if (dot < numel (opts.name)
           && any (strcmpi (opts.name(dot+1:end), {"eps", "ps", "pdf"})))
         ## If user provides eps/ps/pdf suffix, use it.
         suffix = opts.name(dot+1:end);
       endif
-    elseif (dot == numel (opts.name))
-      name = opts.name;
+    else
+      error ("print:invalid-suffix", 
+             "invalid suffix `%s' for device `%s'.",
+             opts.name(dot:end), lower (opts.devopt));
     endif
     gl2ps_device = {sprintf("%snotxt", lower (suffix))};
     gl2ps_device{2} = "tex";

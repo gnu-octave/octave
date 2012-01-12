@@ -65,7 +65,6 @@ you may have.
 @menu
 * Acknowledgements::            
 * How You Can Contribute to Octave::  
-* Donations to Support Octave Development::
 * Distribution::                
 @end menu
 

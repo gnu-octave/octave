@@ -79,7 +79,8 @@ glps_renderer::draw (const graphics_object& go)
                           gl2ps_term, GL2PS_BSP_SORT,
                           (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
                            | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
-                           | GL2PS_BEST_ROOT | gl2ps_text),
+                           | GL2PS_BEST_ROOT | gl2ps_text
+                           | GL2PS_NO_PS3_SHADING),
                           GL_RGBA, 0, NULL, 0, 0, 0,
                           buffsize, fp, "" );
 

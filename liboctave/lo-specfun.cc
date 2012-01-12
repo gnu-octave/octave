@@ -857,8 +857,6 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
       // zbesi can overflow as z->0, and cause troubles for generic case below
       alpha = -alpha;
       Complex tmp = zbesi (z, alpha, kode, ierr);
-      if ((static_cast <long> (alpha)) & 1)
-        tmp = - tmp;
       retval = bessel_return_value (tmp, ierr);
     }
   else

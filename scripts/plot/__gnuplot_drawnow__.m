@@ -205,7 +205,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           endif
           switch (term)
           case terminals_with_size
-            size_str = sprintf ("size %g,%g", gnuplot_size);
+            size_str = sprintf ("size %.12g,%.12g", gnuplot_size);
           case "tikz"
             size_str = sprintf ("size %gin,%gin", gnuplot_size);
           case "dumb"

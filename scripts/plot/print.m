@@ -370,6 +370,10 @@ function print (varargin)
         else
           fontsize = opts.fontsize;
         endif
+        if (! isempty (opts.scalefontsize) && ! opt.scalefontsize != 1)
+          ## This is done to work around the bbox being whole numbers.
+          fontsize = fontsize * opts.scalefontsize;
+        endif
         set (h(ishandle(h)), "fontsize", fontsize);
       endif
     endif

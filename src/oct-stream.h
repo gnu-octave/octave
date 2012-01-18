@@ -371,6 +371,12 @@ public:
 
   virtual std::ostream *output_stream (void) { return 0; }
 
+  // If the derived class is locale-aware, it must implement this function 
+  // in order to set a new locale. By default, this function avoids messing 
+  // with locales and ignores its input argument.
+  virtual std::locale imbue ( const std::locale & loc ) 
+    { return std::locale::classic (); }
+  
   // Return TRUE if this stream is open.
 
   bool is_open (void) const { return open_state; }
@@ -613,7 +619,23 @@ public:
   {
     return rep ? rep->output_stream () : 0;
   }
-
+  
+  std::locale imbue (const std::locale & loc )
+    {
+      if (!rep) return std::locale::classic ();
+      
+      std::istream *is = rep->input_stream ();
+      std::ostream *os = rep->output_stream ();
+      
+      if (os) 
+        {
+          if (is)
+            (void) is->imbue (loc);
+          return os->imbue (loc);
+        }
+      return is ? is->imbue (loc) : std::locale::classic ();
+    }
+  
   void clearerr (void) { if (rep) rep->clearerr (); }
 
 private:

@@ -147,7 +147,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (isscalar (kids))
       kids = get(kids, "children")(:);
     else
-      kids = [get(kids, "children"){:}](:);
+      kids = flipud ([get(kids, "children"){:}](:));
     endif
   endif
   nargs = numel (varargin);
@@ -1158,4 +1158,25 @@ endfunction
 %! title ("Turn off TeX interpreter")
 %! h = legend ("Hello_World", "foo^bar");
 %! set (h, "interpreter", "none")
+
+%!demo
+%! x = 0:10;
+%! y1 = rand (size (x));
+%! y2 = rand (size (x));
+%! [ax, h1, h2] = plotyy (x, y1, x, y2);
+%! legend ([h1, h2], {"Blue", "Green"}, "location", "south");
+
+%!demo
+%! x = 0:10;
+%! y1 = rand (size (x));
+%! y2 = rand (size (x));
+%! [ax, h1, h2] = plotyy (x, y1, x, y2);
+%! legend ({"Blue", "Green"}, "location", "south");
+
+%!demo
+%! x = 0:10;
+%! y1 = rand (size (x));
+%! y2 = rand (size (x));
+%! [ax, h1, h2] = plotyy (x, y1, x, y2);
+%! legend ("Blue", "Green", "location", "south");
 

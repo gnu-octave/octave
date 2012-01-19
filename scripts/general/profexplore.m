@@ -32,7 +32,7 @@
 
 function profexplore (data)
 
-  if (nargin ~= 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
@@ -87,7 +87,7 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
       printf ("help   Display this help message.\n");
       printf ("up [N] Go up N levels, where N is an integer.  Default is 1.\n");
       printf ("N      Go down a level into option N.\n");
-    elseif (~isnan (option))
+    elseif (! isnan (option))
       if (option < 1 || option > length (tree))
         printf ("The chosen option is out of range!\n");
       else
@@ -115,7 +115,7 @@ function rv = __profexplore_worker (fcn_table, tree, parents, prefix)
 
       if (length (cmd) > 3 && cmd(3) == ' ')
         opt = fix (str2double (substr (cmd, 3)));
-        if (~isnan (opt) && opt > 0)
+        if (! isnan (opt) && opt > 0)
           rv = opt;
           return;
         endif

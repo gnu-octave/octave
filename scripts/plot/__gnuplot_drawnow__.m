@@ -147,7 +147,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     if (! isempty (h) && isfigure (h))
 
       ## Generate gnuplot title string for plot windows.
-      if (output_to_screen (term) && ~strcmp (term, "dumb"))
+      if (output_to_screen (term) && ! strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = strrep (get (h, "name"), "\"", "\\\"");
         if (strcmpi (get (h, "numbertitle"), "on"))
@@ -210,7 +210,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
             size_str = sprintf ("size %gin,%gin", gnuplot_size);
           case "dumb"
             new_stream = 1;
-            if (~isempty (getenv ("COLUMNS")) && ~isempty (getenv ("LINES")))
+            if (! isempty (getenv ("COLUMNS")) && ! isempty (getenv ("LINES")))
               ## Let dumb use full text screen size (minus prompt lines).
               n = sprintf ("%i", -2 - length (find (sprintf ("%s", PS1) == "\n")));
               ## n = the number of times \n appears in PS1

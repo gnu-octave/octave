@@ -107,7 +107,7 @@ function ret = spline (x, y, xi)
     a = a(2:end-1,:);
   endif
 
-  if (~issorted (x))
+  if (! issorted (x))
     [x, idx] = sort(x);
     a = a(idx,:);
   endif

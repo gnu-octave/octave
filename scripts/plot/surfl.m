@@ -171,18 +171,19 @@ function retval = surfl (varargin)
 
 endfunction
 
+
 %!demo
 %! clf
-%! [X,Y,Z]=sombrero;
-%! colormap(copper);
-%! surfl(X,Y,Z);
+%! [X,Y,Z] = sombrero;
+%! colormap (copper);
+%! surfl (X,Y,Z);
 %! shading interp;
 
 %!demo
 %! clf
-%! [X,Y,Z]=sombrero;
-%! colormap(copper);
+%! [X,Y,Z] = sombrero;
+%! colormap (copper);
 %! [az, el] = view;
-%! surfl(X,Y,Z,[az+225,el],[0.2 0.6 0.4 25]);
+%! surfl (X,Y,Z, [az+225,el], [0.2 0.6 0.4 25]);
 %! shading interp;
 

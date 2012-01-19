@@ -166,8 +166,8 @@ function [h, bad_usage] = __surface__ (ax, varargin)
 
 endfunction
 
-## Functional tests for surface() are in surf.m, surfc.m, surfl.m, and pcolor.m
 
+## Functional tests for surface() are in surf.m, surfc.m, surfl.m, and pcolor.m
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect

@@ -141,17 +141,18 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
 
 endfunction
 
+
 %!demo
 %! clf
 %! colormap (jet (64))
-%! [x, y, z] = peaks(10);
+%! [x, y, z] = peaks (10);
 %! surfnorm (x, y, z);
 
 %!demo
 %! clf
-%! surfnorm (peaks(10));
+%! surfnorm (peaks (10));
 
 %!demo
 %! clf
-%! surfnorm (peaks(32));
+%! surfnorm (peaks (32));
 %! shading interp

@@ -1390,31 +1390,38 @@ private:
                         axes::properties& ap =
                           dynamic_cast<axes::properties&> (ax_obj.get_properties ());
                         pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
-                        pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (),
-                                   x1, y1);
+                        int pos_x1 = Fl::event_x ();
+                        int pos_y1 = Fl::event_y ();
+                        pixel2pos (ax_obj, pos_x1, pos_y1, x1, y1);
                         Matrix xl (1,2,0);
                         Matrix yl (1,2,0);
-                        if (x0 < x1)
+                        int dx = abs (pos_x - pos_x1);
+                        int dy = abs (pos_y - pos_y1);
+                        // Smallest zoom box must be 4 pixels square
+                        if ((dx > 4) && (dy > 4))
                           {
-                            xl(0) = x0;
-                            xl(1) = x1;
+                            if (x0 < x1)
+                              {
+                                xl(0) = x0;
+                                xl(1) = x1;
+                              }
+                            else
+                              {
+                                xl(0) = x1;
+                                xl(1) = x0;
+                              }
+                            if (y0 < y1)
+                              {
+                                yl(0) = y0;
+                                yl(1) = y1;
+                              }
+                            else
+                              {
+                                yl(0) = y1;
+                                yl(1) = y0;
+                              }
+                            ap.zoom (xl, yl);
                           }
-                        else
-                          {
-                            xl(0) = x1;
-                            xl(1) = x0;
-                          }
-                        if (y0 < y1)
-                          {
-                            yl(0) = y0;
-                            yl(1) = y1;
-                          }
-                        else
-                          {
-                            yl(0) = y1;
-                            yl(1) = y0;
-                          }
-                        ap.zoom (xl, yl);
                         mark_modified ();
                       }
                   }
@@ -2036,7 +2043,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
     }
 
   return retval;
-#else 
+#else
   error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
   return octave_value ();
 #endif

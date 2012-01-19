@@ -37,7 +37,7 @@ function h = figure (varargin)
   init_new_figure = false;
   if (mod (nargs, 2) == 1)
     tmp = varargin{1};
-    if (ishandle (tmp) && strcmp (get (tmp, "type"), "figure"))
+    if (isfigure (tmp))
       f = tmp;
       varargin(1) = [];
       nargs--;

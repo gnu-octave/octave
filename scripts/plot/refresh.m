@@ -19,24 +19,25 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} refresh ()
 ## @deftypefnx {Function File} {} refresh (@var{h})
-## Refresh a figure, forcing it to be redrawn.  Called without an
-## argument the current figure is redrawn, otherwise the figure pointed
+## Refresh a figure, forcing it to be redrawn.  When called without an
+## argument the current figure is redrawn.  Otherwise, the figure pointed
 ## to by @var{h} is redrawn.
 ## @seealso{drawnow}
 ## @end deftypefn
 
 function refresh (h)
 
-  if (nargin == 1)
-    if (!ishandle (h) || !strcmp (get (h, "type"), "figure"))
-      error ("refresh: expecting argument to be a valid figure handle");
-    endif
-  elseif (nargin > 1)
+  if (nargin > 1)
     print_usage ();
+  elseif (nargin == 1)
+    if (! isfigure (h))
+      error ("refresh: H must be a valid figure handle");
+    endif
   else
     h = gcf ();
   endif
 
-  set(h,"__modified__", "on");
+  set (h, "__modified__", "on");
   drawnow ();
+
 endfunction

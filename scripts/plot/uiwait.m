@@ -47,8 +47,8 @@ function uiwait (varargin)
     h = get (0, "currentfigure");
   else
     h = varargin{1};
-    if (! ishandle (h) || ! strcmp (get (h, "type"), "figure"))
-      error ("uiwait: invalid figure handle");
+    if (! isfigure (h))
+      error ("uiwait: invalid figure handle H");
     endif
     if (nargin > 1)
       timeout = varargin{2};
@@ -63,7 +63,7 @@ function uiwait (varargin)
         if (! strcmp (get (h, "__uiwait_state__"), "none"))
           error ("uiwait: an active uiwait call for this figure already exists");
         endif
-	set (h, "__uiwait_state__", "active");
+        set (h, "__uiwait_state__", "active");
       end_try_catch
       waitfor_args = {h, "__uiwait_state__", "triggered"};
       if (! isempty (timeout))

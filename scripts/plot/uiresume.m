@@ -29,8 +29,8 @@
 
 function uiresume (h)
 
-  if (! ishandle (h) || ! strcmp (get (h, "type"), "figure"))
-    error ("uiresume: invalid figure handle");
+  if (! isfigure (h))
+    error ("uiresume: invalid figure handle H");
   endif
 
   try

@@ -555,6 +555,7 @@ Metafile
 metafiles
 Metafont
 mex
+mget
 Michelsen
 Microsystems
 MinGW
@@ -565,6 +566,7 @@ minval
 MIP
 miscompiled
 Misra
+mkdir
 mkoctfile
 mldivide
 mmd
@@ -578,6 +580,7 @@ Moler
 Montanet
 mpoles
 mpower
+mput
 mrdivide
 MSYS
 mtimes
@@ -771,6 +774,7 @@ Riccati
 Rightarrow
 rightarrow
 rline
+rmdir
 RMS
 rnd
 roffset

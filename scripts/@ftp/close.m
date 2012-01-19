@@ -18,7 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} close (@var{f})
-## Close the FTP connection represented by the given FTP object @var{f}.
+## Close the FTP connection represented by the FTP object @var{f}.
+##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 

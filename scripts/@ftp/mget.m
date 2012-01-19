@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} mget (@var{f}, @var{file})
 ## @deftypefnx {Function File} {} mget (@var{f}, @var{dir})
-## @deftypefnx {Function File} {} mget (@dots{}, @var{target})
+## @deftypefnx {Function File} {} mget (@var{f}, @var{remote_name}, @var{target})
 ## Download a remote file @var{file} or directory @var{dir} to the local
 ## directory on the FTP connection @var{f}.  @var{f} is an FTP object
 ## returned by the @code{ftp} function.
@@ -28,8 +28,8 @@
 ## files or directories on the remote server that match will be downloaded.
 ##
 ## If a third argument @var{target} is given, then a single file or
-## directory will be downloaded with the name @var{target} to the local
-## directory.
+## directory will be downloaded to the local directory and the local name
+## will be changed to @var{target}.
 ## @end deftypefn
 
 function mget (f, file)

@@ -23,23 +23,38 @@
 ## If @var{username} and @var{password} are not specified, user "anonymous"
 ## with no password is used.  The returned FTP object @var{f} represents the
 ## established FTP connection.
+##
+## The list of actions for an FTP object are shown below.  All functions
+## require an FTP object as the first argument.
+##
+## @multitable @columnfractions 0.15 0.8
+## @headitem Method @tab Description
+## @item ascii @tab Set transfer type to ascii
+## @item binary @tab Set transfer type to binary
+## @item cd @tab Change remote working directory 
+## @item close @tab Close FTP connection
+## @item delete @tab Delete remote file 
+## @item dir @tab List remote directory contents 
+## @item mget @tab Download remote files
+## @item mkdir @tab Create remote directory
+## @item mput @tab Upload local files
+## @item rename @tab Rename remote file or directory
+## @item rmdir @tab Remove remote directory
+## @end multitable
+## 
 ## @end deftypefn
 
-function obj = ftp (host, username = "anonymous", password = "")
-  if (nargin == 0)
-    p.host = "";
-    p.username = username;
-    p.password = password;
-    p.curlhandle = tmpnam ("ftp-");
-    obj = class (p, "ftp");
-  elseif (nargin == 1 && strcmp (class (host), "ftp"))
-    obj = host;
+function obj = ftp (host = "", username = "anonymous", password = "")
+  if (nargin == 1 && isa (host, "ftp"))
+    obj = host;   # Copy constructor
   else
     p.host = host;
     p.username = username;
     p.password = password;
     p.curlhandle = tmpnam ("ftp-");
-    __ftp__ (p.curlhandle, host, username, password);
+    if (nargin > 0)
+      __ftp__ (p.curlhandle, host, username, password);
+    endif
     obj = class (p, "ftp");
   endif
 endfunction

@@ -266,15 +266,33 @@ status information on files; and for manipulating file and path names.
 @node FTP Objects
 @subsection FTP Objects
 
+Octave supports the FTP protocol through an object-oriented interface.
+Use the function @code{ftp} to create an FTP object which represents the
+connection.  All FTP functions take an FTP object as the first argument.
+
 @DOCSTRING(@ftp/ftp)
+
+@DOCSTRING(@ftp/close)
 
 @DOCSTRING(@ftp/mget)
 
 @DOCSTRING(@ftp/mput)
 
+@DOCSTRING(@ftp/cd)
+
+@DOCSTRING(@ftp/dir)
+
 @DOCSTRING(@ftp/ascii)
 
 @DOCSTRING(@ftp/binary)
+
+@DOCSTRING(@ftp/delete)
+
+@DOCSTRING(@ftp/rename)
+
+@DOCSTRING(@ftp/mkdir)
+
+@DOCSTRING(@ftp/rmdir)
 
 @node URL Manipulation
 @subsection URL Manipulation

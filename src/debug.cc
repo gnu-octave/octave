@@ -792,11 +792,15 @@ DEFUN (dbtype, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} dbtype ()\n\
 @deftypefnx {Loadable Function} {} dbtype (\"startl:endl\")\n\
+@deftypefnx {Loadable Function} {} dbtype (\"startl:end\")\n\
 @deftypefnx {Loadable Function} {} dbtype (\"@var{func}\")\n\
+@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\", \"startl\")\n\
 @deftypefnx {Loadable Function} {} dbtype (\"@var{func}\", \"startl:endl\")\n\
+@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\", \"startl:end\")\n\
 When in debugging mode and called with no arguments, list the script file\n\
 being debugged with line numbers.  An optional range specification,\n\
 specified as a string, can be used to list only a portion of the file.\n\
+The special keyword \"end\" is a valid line number specification.\n\
 \n\
 When called with the name of a function, list that script file\n\
 with line numbers.\n\
@@ -823,40 +827,46 @@ with line numbers.\n\
           break;
 
         case 1: // (dbtype func) || (dbtype start:end)
-          dbg_fcn = get_user_code (argv[1]);
+          {
+            std::string arg = argv[1];
 
-          if (dbg_fcn)
-            do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
-          else
-            {
-              dbg_fcn = get_user_code ();
+            size_t ind = arg.find (':');
 
-              if (dbg_fcn)
-                {
-                  std::string arg = argv[1];
+            if (ind != std::string::npos)  // (dbtype start:end)
+              {  
+                dbg_fcn = get_user_code ();
 
-                  size_t ind = arg.find (':');
+                if (dbg_fcn)
+                  {
+                    std::string start_str = arg.substr (0, ind);
+                    std::string end_str = arg.substr (ind + 1);
 
-                  if (ind != std::string::npos)
-                    {
-                      std::string start_str = arg.substr (0, ind);
-                      std::string end_str = arg.substr (ind + 1);
+                    int start, end;
+                    start = atoi (start_str.c_str ());
+                    if (end_str == "end")
+                      end = INT_MAX;
+                    else
+                      end = atoi (end_str.c_str ());
 
-                      int start = atoi (start_str.c_str ());
-                      int end = atoi (end_str.c_str ());
+                    if (std::min (start, end) <= 0)
+                      error ("dbtype: start and end lines must be >= 1\n");
 
-                      if (std::min (start, end) <= 0)
-                        error ("dbtype: start and end lines must be >= 1\n");
+                    if (start <= end)
+                      do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
+                    else
+                      error ("dbtype: start line must be less than end line\n");
+                  }
+              }
+            else  // (dbtype func)
+              {
+                dbg_fcn = get_user_code (arg);
 
-                      if (start <= end)
-                        do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
-                      else
-                        error ("dbtype: start line must be less than end line\n");
-                    }
-                  else
-                    error ("dbtype: line specification must be `start:end'");
-                }
-            }
+                if (dbg_fcn)
+                  do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
+                else
+                  error ("dbtype: function <%s> not found\n", arg.c_str ());
+              }
+          }
           break;
 
         case 2: // (dbtype func start:end) , (dbtype func start)
@@ -865,8 +875,7 @@ with line numbers.\n\
           if (dbg_fcn)
             {
               std::string arg = argv[2];
-              int start = 0;
-              int end = 0;
+              int start, end;
               size_t ind = arg.find (':');
 
               if (ind != std::string::npos)
@@ -875,8 +884,10 @@ with line numbers.\n\
                   std::string end_str = arg.substr (ind + 1);
 
                   start = atoi (start_str.c_str ());
-                  end = atoi (end_str.c_str ());
-
+                  if (end_str == "end")
+                    end = INT_MAX;
+                  else
+                    end = atoi (end_str.c_str ());
                 }
               else
                 {
@@ -892,6 +903,9 @@ with line numbers.\n\
               else
                 error ("dbtype: start line must be less than end line\n");
             }
+          else
+            error ("dbtype: function <%s> not found\n", argv[1].c_str ());
+
           break;
 
         default:

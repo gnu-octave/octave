@@ -122,8 +122,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     ## toolkit.
     [term, opts_str] = gnuplot_trim_term (term);
     term = lower (term);
-    if (strcmpi (term, "lua"))
-      ## Replace "lau tikz" with
+    if (strcmp (term, "lua"))
+      ## Replace "lua tikz" with just "tikz"
       term = "tikz";
       opts_str = strrep (opts_str, "tikz", "");
     endif
@@ -150,7 +150,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
       if (output_to_screen (term) && ! strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = strrep (get (h, "name"), "\"", "\\\"");
-        if (strcmpi (get (h, "numbertitle"), "on"))
+        if (strcmp (get (h, "numbertitle"), "on"))
           title_str = sprintf ("Figure %d", h);
         else
           title_str = "";

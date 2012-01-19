@@ -453,7 +453,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       endif
       kids = kids(1:(end-1));
 
-      if (strcmpi (obj.visible, "off"))
+      if (strcmp (obj.visible, "off"))
         continue;
       endif
 

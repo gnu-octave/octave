@@ -98,9 +98,10 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     for i = 1 : length (varargin)
       val = varargin{i};
       if (ischar (val))
-        if (strncmpi (val, "multiselect", 11))
+        val = tolower (val);
+        if (strncmp (val, "multiselect", 11))
           idx1 = i;
-        elseif (strncmpi (val, "position", 8))
+        elseif (strncmp (val, "position", 8))
           idx2 = i;
         endif
       endif

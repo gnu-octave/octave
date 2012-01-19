@@ -80,12 +80,12 @@ function retval = surfl (varargin)
     ## Check for lighting type.
     use_cdata = true;
     if (ischar (varargin{end}))
-      lstr = varargin{end};
-      if (strncmp (tolower (lstr), "light", 5))
+      lstr = tolower (varargin{end});
+      if (strncmp (lstr, "light", 5))
         warning ("light method not supported (yet), using cdata method instead");
         ## This can be implemented when light objects are supported.
         use_cdata = false;
-      elseif (strncmp (tolower (lstr), "cdata", 5))
+      elseif (strncmp (lstr, "cdata", 5))
         use_cdata = true;
       else
         error ("surfl: unknown lighting method");
@@ -123,7 +123,7 @@ function retval = surfl (varargin)
       endif
     endif
 
-    tmp = surface (varargin{:});
+    htmp = surface (varargin{:});
     if (! ishold ())
       set (h, "view", [-37.5, 30],
            "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
@@ -144,7 +144,7 @@ function retval = surfl (varargin)
       lv = (R * vv.').';
     endif
 
-    vn = get (tmp, "vertexnormals");
+    vn = get (htmp, "vertexnormals");
     dar = get (h, "plotboxaspectratio");
     vn(:,:,1) *= dar(1);
     vn(:,:,2) *= dar(2);
@@ -152,21 +152,21 @@ function retval = surfl (varargin)
 
     ## Normalize vn.
     vn = vn ./ repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
-    [nr, nc] = size(get(tmp, "zdata"));
+    [nr, nc] = size(get(htmp, "zdata"));
 
     ## Ambient, diffuse, and specular term.
     cdata = (r(1) * ones (nr, nc)
              + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
              + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
 
-    set (tmp, "cdata", cdata ./ sum (r(1:3)));
+    set (htmp, "cdata", cdata ./ sum (r(1:3)));
 
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect
 
   if (nargout > 0)
-    retval = tmp;
+    retval = htmp;
   endif
 
 endfunction

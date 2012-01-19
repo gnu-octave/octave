@@ -655,11 +655,15 @@ A line number, or vector of line numbers, with a breakpoint.\n\
       for (bp_table::fname_line_map_iterator it = bp_list.begin ();
            it != bp_list.end (); it++)
         {
-          octave_stdout << "breakpoint in " << it->first << " at line(s) ";
-
           bp_table::intmap m = it->second;
 
           size_t nel = m.size ();
+
+          octave_stdout << "breakpoint in " << it->first;
+          if (nel > 1)
+            octave_stdout << " at lines ";
+          else
+            octave_stdout << " at line ";
 
           for (size_t j = 0; j < nel; j++)
             octave_stdout << m[j] << ((j < nel - 1) ? ", " : ".");

@@ -46,16 +46,16 @@ function retval = fill (varargin)
         set (h, "nextplot", "add");
       endif
       if (i == length (iargs))
-        args = varargin (iargs(i):end);
+        args = varargin(iargs(i):end);
       else
-        args = varargin (iargs(i):iargs(i+1)-1);
+        args = varargin(iargs(i):iargs(i+1)-1);
       endif
       newplot ();
       [tmp, fail] = __patch__ (h, args{:});
       if (fail)
-        print_usage();
+        print_usage ();
       endif
-      htmp (end + 1) = tmp;
+      htmp(end + 1, 1) = tmp;
     endfor
     if (strncmp (nextplot, "replace", 7))
       set (h, "nextplot", nextplot);
@@ -74,7 +74,7 @@ function iargs = __find_patches__ (varargin)
   iargs = [];
   i = 1;
   while (i < nargin)
-    iargs (end + 1) = i;
+    iargs(end + 1) = i;
     if (ischar (varargin{i})
         && (strcmpi (varargin{i}, "faces")
             || strcmpi (varargin{i}, "vertices")))
@@ -96,17 +96,10 @@ function iargs = __find_patches__ (varargin)
         elseif (ischar (varargin{i}))
           colspec = tolower (varargin{i});
           collen = length (colspec);
-
-          if (strncmp (colspec, "blue", collen)
-              || strncmp (colspec, "black", collen)
-              || strncmp (colspec, "k", collen)
-              || strncmp (colspec, "black", collen)
-              || strncmp (colspec, "red", collen)
-              || strncmp (colspec, "green", collen)
-              || strncmp (colspec, "yellow", collen)
-              || strncmp (colspec, "magenta", collen)
-              || strncmp (colspec, "cyan", collen)
-              || strncmp (colspec, "white", collen))
+          if (any (strncmp (colspec, 
+                            {"blue", "black", "k", "red", "green", ...
+                             "yellow", "magenta", "cyan", "white"},
+                            collen)))
             i++;
             break;
           endif

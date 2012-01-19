@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {@var{val} =} pathdef ()
 ## Return the default path for Octave.
 ## The path information is extracted from one of three sources.
-## In order of preference, those are;
+## The possible sources, in order of preference, are:
 ##
 ## @enumerate
 ## @item @file{~/.octaverc}
@@ -30,7 +30,7 @@
 ##
 ## @item Octave's path prior to changes by any octaverc.
 ## @end enumerate
-## @seealso{path, addpath, rmpath, genpath, savepath, pathsep}
+## @seealso{path, addpath, rmpath, genpath, savepath}
 ## @end deftypefn
 
 function val = pathdef ()
@@ -39,10 +39,10 @@ function val = pathdef ()
   pathdir = octave_config_info ("localstartupfiledir");
   site_octaverc = fullfile (pathdir, "octaverc");
 
-  ## Locate the user ~\.octaverc file.
+  ## Locate the user's ~/.octaverc file.
   user_octaverc = fullfile ("~", ".octaverc");
 
-  ## Extract the specified paths from the site and user octaverc"s.
+  ## Extract the specified paths from the site and user octavercs.
   site_path = __extractpath__ (site_octaverc);
   if (exist (user_octaverc, "file"))
     user_path = __extractpath__ (user_octaverc);
@@ -50,9 +50,7 @@ function val = pathdef ()
     user_path = "";
   endif
 
-  ## A path definition in the user octaverc has precedence over the
-  ## site.
-
+  ## A path definition in the user rcfile has precedence over the site rcfile.
   if (! isempty (user_path))
     val = user_path;
   elseif (! isempty (site_path))
@@ -73,9 +71,10 @@ endfunction
 function specifiedpath = __extractpath__ (savefile)
 
   ## The majority of this code was borrowed from savepath.m.
-  ## FIXME -- is there some way to share the common parts instead of
-  ## duplicating?
-
+  ## FIXME: is there some way to share the common parts instead of duplicating?
+  ## ANSWER: Yes.  Create a private directory and extract this section of code
+  ##         and place it there in a new function only visible by pathdef() and
+  ##         savepath().
   beginstring = "## Begin savepath auto-created section, do not edit";
   endstring   = "## End savepath auto-created section";
 
@@ -85,31 +84,22 @@ function specifiedpath = __extractpath__ (savefile)
 
   ## Parse the file if it exists to see if we should replace a section
   ## or create a section.
-  startline = 0;
-  endline = 0;
+  startline = endline = 0;
   filelines = {};
   if (exist (savefile) == 2)
-    ## read in all lines of the file
     [fid, msg] = fopen (savefile, "rt");
     if (fid < 0)
       error ("__extractpath__: could not open savefile, %s: %s", savefile, msg);
     endif
     unwind_protect
       linenum = 0;
-      while (linenum >= 0)
-        result = fgetl (fid);
-        if (isnumeric (result))
-          ## End at the end of file.
-          linenum = -1;
-        else
-          linenum++;
-          filelines{linenum} = result;
-          ## Find the first and last lines if they exist in the file.
-          if (strcmp (result, beginstring))
-            startline = linenum + 1;
-          elseif (strcmp (result, endstring))
-            endline = linenum - 1;
-          endif
+      while (ischar (line = fgetl (fid)))
+        filelines{++linenum} = line;
+        ## find the first and last lines if they exist in the file
+        if (strcmp (line, beginstring))
+          startline = linenum;
+        elseif (strcmp (line, endstring))
+          endline = linenum;
         endif
       endwhile
     unwind_protect_cleanup

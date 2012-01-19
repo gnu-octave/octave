@@ -192,10 +192,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
     eol_srch_len = min (length (str), 3000);
     ## First try DOS (CRLF)
-    if (! isempty (findstr ("\r\n", str(1 : eol_srch_len))))
+    if (! isempty (strfind ("\r\n", str(1 : eol_srch_len))))
       eol_char = "\r\n";
     ## Perhaps old Macintosh? (CR)
-    elseif (! isempty (findstr ("\r", str(1 : eol_srch_len))))
+    elseif (! isempty (strfind ("\r", str(1 : eol_srch_len))))
       eol_char = "\r";
     ## Otherwise, use plain UNIX (LF)
     else

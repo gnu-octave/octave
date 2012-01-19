@@ -1544,7 +1544,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       keypos = hlgnd.location;
       if (ischar (keypos))
         keypos = lower (keypos);
-        keyout = findstr (keypos, "outside");
+        keyout = strfind (keypos, "outside");
         if (! isempty (keyout))
           inout = "outside";
           keypos = keypos(1:keyout-1);
@@ -2206,7 +2206,6 @@ function ticklabel = ticklabel_to_cell (ticklabel)
   endif
   if (ischar (ticklabel))
     if (size (ticklabel, 1) == 1 && any (ticklabel == "|"))
-      n = setdiff (findstr (ticklabel, "|"), findstr (ticklabel, '\|'));
       ticklabel = strsplit (ticklabel, "|");
     else
       ticklabel = cellstr (ticklabel);

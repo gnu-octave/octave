@@ -195,7 +195,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
   ## Validate the position type is valid
   outside = false;
-  inout = findstr (position, "outside");
+  inout = strfind (position, "outside");
   if (! isempty (inout))
     outside = true;
     position = position(1:inout-1);
@@ -442,7 +442,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         endif
         if (strcmp (position, "default"))
           position = get (hlegend, "location");
-          inout = findstr (position, "outside");
+          inout = strfind (position, "outside");
           if (! isempty (inout))
             outside = true;
             position = position(1:inout-1);

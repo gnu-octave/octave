@@ -181,5 +181,6 @@ function do_contents (name)
 endfunction
 
 
-%!assert (! isempty (findstr (help ("ls"), "List directory contents")))
+%!assert (! isempty (strfind (help ("ls"), "List directory contents")))
 %!error <invalid input> help (42)
+

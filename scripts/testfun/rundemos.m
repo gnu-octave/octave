@@ -82,8 +82,9 @@ function retval = has_demos (f)
   else
     str = fscanf (fid, "%s");
     fclose (fid);
-    retval = findstr (str, "%!demo");
+    retval = strfind (str, "%!demo");
   endif
 endfunction
+
 
 %!error rundemos ("foo", 1);

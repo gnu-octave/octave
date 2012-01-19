@@ -30,16 +30,16 @@ function y = csch (x)
     print_usage ();
   endif
 
-  y = 1 ./ sinh(x);
+  y = 1 ./ sinh (x);
 
 endfunction
+
 
 %!test
 %! x = [pi/2*i, 3*pi/2*i];
 %! v = [-i, i];
-%! assert(all (abs (csch (x) - v) < sqrt (eps)));
+%! assert (all (abs (csch (x) - v) < sqrt (eps)));
 
-%!error csch ();
-
-%!error csch (1, 2);
+%!error csch ()
+%!error csch (1, 2)
 

@@ -30,16 +30,16 @@ if (nargin != 1)
     print_usage ();
   endif
 
-  y = 1 ./ cosh(x);
+  y = 1 ./ cosh (x);
 
 endfunction
+
 
 %!test
 %! x = [0, pi*i];
 %! v = [1, -1];
-%! assert(all (abs (sech (x) - v) < sqrt (eps)));
+%! assert (all (abs (sech (x) - v) < sqrt (eps)));
 
-%!error sech ();
-
-%!error sech (1, 2);
+%!error sech ()
+%!error sech (1, 2)
 

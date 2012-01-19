@@ -25,12 +25,17 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function y = acotd (x)
+
   if (nargin != 1)
     print_usage ();
   endif
+
   y = atand (1 ./ x);
+
 endfunction
 
-%!error(acotd())
-%!error(acotd(1,2))
-%!assert(acotd(0:10:90),180./pi.*acot(0:10:90),-10*eps)
+
+%!assert (acotd (0:10:90), 180./pi.*acot (0:10:90), -10*eps)
+
+%!error acotd ()
+%!error acotd (1, 2)

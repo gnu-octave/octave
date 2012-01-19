@@ -1883,7 +1883,7 @@ function write_index (desc, dir, index_file, global_install)
   endif
 
   ## Get classes in dir
-  class_idx = strmatch ("@", files);
+  class_idx = find (strncmp (files, '@', 1));
   for k = 1:length (class_idx)
     class_name = files {class_idx (k)};
     class_dir = fullfile (dir, class_name);

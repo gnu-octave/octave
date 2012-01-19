@@ -401,7 +401,7 @@ function varargout = strread (str, format = "%f", varargin)
   ## Replace TreatAsEmpty char sequences by empty strings
   if (! isempty (empty_str))
     for ii = 1:numel (empty_str)
-      idz = strmatch (empty_str{ii}, words, "exact");
+      idz = strncmp (empty_str{ii}, words, length (empty_str{ii}));
       words(idz) = {""};
     endfor
   endif

@@ -1176,7 +1176,7 @@ Given a QR@tie{}factorization of a real or complex matrix\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
 @w{[A(:,1:j-1) A(:,j+1:n)]}, i.e., @var{A} with one column deleted\n\
 (if @var{orient} is \"col\"), or the QR@tie{}factorization of\n\
-@w{[A(1:j-1,:);A(j+1:n,:)]}, i.e., @var{A} with one row deleted (if\n   \
+@w{[A(1:j-1,:);A(j+1:n,:)]}, i.e., @var{A} with one row deleted (if\n\
 @var{orient} is \"row\").\n\
 \n\
 The default value of @var{orient} is \"col\".\n\

@@ -83,7 +83,8 @@ function A = accumdim (subs, vals, dim, n = 0, func = [], fillval = 0)
   sz = size (vals);
 
   if (nargin < 3)
-    [~, dim] = max (sz != 1); # first non-singleton dim
+    ## Find the first non-singleton dimension.
+    (dim = find (sz > 1, 1)) || (dim = 1);
   elseif (! isindex (dim))
     error ("accumdim: DIM must be a valid dimension");
   elseif (dim > length (sz))

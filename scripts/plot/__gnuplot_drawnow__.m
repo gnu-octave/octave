@@ -186,8 +186,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         gnuplot_pos = position_in_pixels(1:2);
         gnuplot_size = position_in_pixels(3:4);
         if (! (output_to_screen (term)
-               || any (strcmp (term, {"emf", "gif", "jpeg", "pbm", "png", ...
-                                      "pngcairo", "svg"}))))
+               || any (strcmp (term, {"canvas", "emf", "gif", "jpeg", ...
+                                      "pbm", "png", "pngcairo", "svg"}))))
           ## Convert to inches
           gnuplot_pos = gnuplot_pos / 72;
           gnuplot_size = gnuplot_size / 72;

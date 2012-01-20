@@ -206,7 +206,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
       elseif (topt == ";")
         t = index (opt(2:end), ";");
         if (t)
-          options.key = undo_string_escapes (opt(2:t));
+          options.key = opt(2:t);
           n = t+1;
         else
           if (err_on_invalid)

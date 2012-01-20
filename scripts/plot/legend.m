@@ -980,6 +980,13 @@ endfunction
 %!demo
 %! clf
 %! x = 0:1;
+%! plot (x, x, ";\alpha;",
+%!       x, 2*x, ";\beta=2\alpha;",
+%!       x, 3*x, ";\gamma=3\alpha;")
+
+%!demo
+%! clf
+%! x = 0:1;
 %! plot (x, x, ";I am Blue;", x, 2*x, x, 3*x, ";I am Red;")
 %! title ("Blue and Green keys, with Green mising")
 
@@ -1180,3 +1187,20 @@ endfunction
 %! [ax, h1, h2] = plotyy (x, y1, x, y2);
 %! legend ("Blue", "Green", "location", "south");
 
+%!test
+%! x = 0:10;
+%! y = rand (size (x));
+%! displayname = '\alpha_\beta \delta^\theta';
+%! displayname1 = "";
+%! displayname2 = "";
+%! figure (1, "visible", false)
+%! unwind_protect
+%!   h = plot (x, y, sprintf (";%s;", displayname));
+%!   displayname1 = get (h, "displayname")
+%!   hlegend = legend (h, displayname, "location", "south");
+%!   displayname2 = get (h, "displayname")
+%! unwind_protect_cleanup
+%!   close (gcf;
+%! end_unwind_protect
+%! assert (displayname1, displayname)
+%! assert (displayname2, displayname)

@@ -56,7 +56,7 @@ endfunction
 
 
 %!demo
-%! clf
+%! clf;
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 10);

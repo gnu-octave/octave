@@ -78,27 +78,28 @@ function m = cell2mat (c)
 
 endfunction
 
-## Tests
-%!shared C, D, E, F
+
+%!demo
+%! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
+%! cell2mat (C)
+
+%!assert (cell2mat ({}), []);
+%!test
 %! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
 %! D = C; D(:,:,2) = C;
 %! E = [1 2 3 4; 5 6 7 8; 9 10 11 12];
 %! F = E; F(:,:,2) = E;
-%!assert (cell2mat (C), E);
-%!assert (cell2mat (D), F);
+%! assert (cell2mat (C), E);
+%! assert (cell2mat (D), F);
 %!test
 %! m = rand (10) + i * rand (10);
 %! c = mat2cell (m, [1 2 3 4], [4 3 2 1]);
-%! assert (cell2mat (c), m)
+%! assert (cell2mat (c), m);
 %!test
 %! m = int8 (256*rand (4, 5, 6, 7, 8));
 %! c = mat2cell (m, [1 2 1], [1 2 2], [3 1 1 1], [4 1 2], [3 1 4]);
-%! assert (cell2mat (c), m)
+%! assert (cell2mat (c), m);
 %!test
 %! m = {1, 2, 3};
 %! assert (cell2mat (mat2cell (m, 1, [1 1 1])), m);
-%!assert (cell2mat ({}), []);
-## Demos
-%!demo
-%! C = {[1], [2 3 4]; [5; 9], [6 7 8; 10 11 12]};
-%! cell2mat (C)
+

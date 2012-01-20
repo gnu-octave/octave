@@ -35,8 +35,9 @@
 ## @example
 ## @group
 ##   %!demo
-##   %! t=0:0.01:2*pi; x = sin(t);
-##   %! plot (t,x)
+##   %! t = 0:0.01:2*pi;
+##   %! x = sin (t);
+##   %! plot (t,x);
 ##   %! %-------------------------------------------------
 ##   %! % the figure window shows one cycle of a sine wave
 ## @end group
@@ -144,9 +145,11 @@ function demo (name, n)
 
 endfunction
 
+
 %!demo
-%! t=0:0.01:2*pi; x = sin(t);
-%! plot (t,x)
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
+%! plot (t,x);
 %! %-------------------------------------------------
 %! % the figure window shows one cycle of a sine wave
 

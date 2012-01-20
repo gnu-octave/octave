@@ -176,35 +176,46 @@ function h = imshow (im, varargin)
 
 endfunction
 
-%!error imshow ()                           # no arguments
-%!error imshow ({"cell"})                   # No image or filename given
-%!error imshow (ones(4,4,4))                # Too many dimensions in image
 
 %!demo
-%!  imshow ("default.img");
+%! clf;
+%! imshow ("default.img");
 
 %!demo
-%!  imshow ("default.img");
-%!  colormap ("autumn");
+%! clf;
+%! imshow ("default.img");
+%! colormap (autumn (64));
 
 %!demo
-%!  [I, M] = imread ("default.img");
-%!  imshow (I, M);
+%! clf;
+%! [I, M] = imread ("default.img");
+%! imshow (I, M);
 
 %!demo
-%!  [I, M] = imread ("default.img");
-%!  [R, G, B] = ind2rgb (I, M);
-%!  imshow (cat(3, R, G*0.5, B*0.8));
+%! clf;
+%! [I, M] = imread ("default.img");
+%! [R, G, B] = ind2rgb (I, M);
+%! imshow (cat (3, R, G*0.5, B*0.8));
 
 %!demo
-%!  imshow (rand (100, 100));
+%! clf;
+%! imshow (rand (100, 100));
 
 %!demo
-%!  imshow (rand (100, 100, 3));
+%! clf;
+%! imshow (rand (100, 100, 3));
 
 %!demo
-%!  imshow (100*rand (100, 100, 3));
+%! clf;
+%! imshow (100*rand (100, 100, 3));
 
 %!demo
-%!  imshow (rand (100, 100));
-%!  colormap (jet);
+%! clf;
+%! imshow (rand (100, 100));
+%! colormap (jet (64));
+
+%% Test input validation
+%!error imshow ()
+%!error <IM must be an image> imshow ({"cell"})
+%!error <expecting MxN or MxNx3 matrix> imshow (ones (4,4,4))
+

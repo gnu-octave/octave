@@ -209,93 +209,93 @@ function vi = interpn (varargin)
 
 endfunction
 
-%!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"linear").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"nearest").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
-
-%!#demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"cubic").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "linear").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interpn(x,y,A.',xi,yi,"spline").');
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "nearest").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
+%!#demo  # FIXME: Uncomment when support for "cubic" has been added
+%! clf;
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "cubic").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi, yi, interpn (x,y,A.',xi,yi, "spline").');
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
+%! clf;
 %! x = y = z = -1:1;
 %! f = @(x,y,z) x.^2 - y - z.^2;
 %! [xx, yy, zz] = meshgrid (x, y, z);
 %! v = f (xx,yy,zz);
 %! xi = yi = zi = -1:0.1:1;
 %! [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
-%! vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
+%! vi = interpn (x, y, z, v, xxi, yyi, zzi, 'spline');
 %! mesh (yi, zi, squeeze (vi(1,:,:)));
 
-
 %!test
-%! [x,y,z] = ndgrid(0:2);
-%! f = x+y+z;
-%! assert (interpn(x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5]), [1.5, 4.5])
-%! assert (interpn(x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],'nearest'), [3, 6])
-%! assert (interpn(x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5],'spline'), [1.5, 4.5])
-%! assert (interpn(x,y,z,f,x,y,z), f)
-%! assert (interpn(x,y,z,f,x,y,z,'nearest'), f)
-%! assert (interpn(x,y,z,f,x,y,z,'spline'), f)
+%! [x,y,z] = ndgrid (0:2);
+%! f = x + y + z;
+%! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5]), [1.5, 4.5]);
+%! assert (interpn (x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],"nearest"), [3, 6]);
+%! assert (interpn (x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5],"spline"), [1.5, 4.5]);
+%! assert (interpn (x,y,z,f,x,y,z), f);
+%! assert (interpn (x,y,z,f,x,y,z,"nearest"), f);
+%! assert (interpn (x,y,z,f,x,y,z,"spline"), f);
 
 %!test
 %! [x, y, z] = ndgrid (0:2, 1:4, 2:6);
 %! f = x + y + z;
-%! xi = [0.5 1.0 1.5];
-%! yi = [1.5 2.0 2.5 3.5];
-%! zi = [2.5 3.5 4.0 5.0 5.5];
+%! xi = [0.5 1.0 1.5];  yi = [1.5 2.0 2.5 3.5];  zi = [2.5 3.5 4.0 5.0 5.5];
 %! fi = interpn (x, y, z, f, xi, yi, zi);
 %! [xi, yi, zi] = ndgrid (xi, yi, zi);
-%! assert (fi, xi + yi + zi)
+%! assert (fi, xi + yi + zi);
 
 %!test
-%! xi = 0:2;
-%! yi = 1:4;
-%! zi = 2:6;
+%! xi = 0:2;  yi = 1:4;  zi = 2:6;
 %! [x, y, z] = ndgrid (xi, yi, zi);
 %! f = x + y + z;
 %! fi = interpn (x, y, z, f, xi, yi, zi, "nearest");
-%! assert (fi, x + y + z)
+%! assert (fi, x + y + z);
 
 %!test
-%! [x,y,z] = ndgrid(0:2);
-%! f = x.^2+y.^2+z.^2;
-%! assert (interpn(x,y,-z,f,1.5,1.5,-1.5), 7.5)
+%! [x,y,z] = ndgrid (0:2);
+%! f = x.^2 + y.^2 + z.^2;
+%! assert (interpn (x,y,-z,f,1.5,1.5,-1.5), 7.5);
 
-%!test % for Matlab-compatible rounding for 'nearest'
-%! X = meshgrid (1:4);
-%! assert (interpn (X, 2.5, 2.5, 'nearest'), 3);
+%!test  # for Matlab-compatible rounding for "nearest"
+%! x = meshgrid (1:4);
+%! assert (interpn (x, 2.5, 2.5, "nearest"), 3);
 
-%!shared z, zout, tol
+%!test
 %! z = zeros (3, 3, 3);
 %! zout = zeros (5, 5, 5);
 %! z(:,:,1) = [1 3 5; 3 5 7; 5 7 9];
@@ -303,12 +303,13 @@ endfunction
 %! z(:,:,3) = z(:,:,2) + 2;
 %! for n = 1:5
 %!   zout(:,:,n) = [1 2 3 4 5;
-%!                  2 3 4 5 6; 
+%!                  2 3 4 5 6;
 %!                  3 4 5 6 7;
 %!                  4 5 6 7 8;
 %!                  5 6 7 8 9] + (n-1);
-%! end
-%! tol = 10 * eps;
-%!assert (interpn (z), zout, tol)
-%!assert (interpn (z, "linear"), zout, tol)
-%!assert (interpn (z, "spline"), zout, tol)
+%! endfor
+%! tol = 10*eps;
+%! assert (interpn (z), zout, tol);
+%! assert (interpn (z, "linear"), zout, tol);
+%! assert (interpn (z, "spline"), zout, tol);
+

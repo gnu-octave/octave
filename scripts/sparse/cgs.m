@@ -189,12 +189,11 @@ function [x, flag, relres, iter, resvec] = cgs (A, b, tol, maxit, M1, M2, x0)
 endfunction
 
 
-
 %!demo
 %! % Solve system of A*x=b
-%! A=[5 -1 3;-1 2 -2;3 -2 3]
-%! b=[7;-1;4]
-%! [a,b,c,d,e]=cgs(A,b)
+%! A = [5 -1 3;-1 2 -2;3 -2 3];
+%! b = [7;-1;4];
+%! [a,b,c,d,e] = cgs (A,b)
 
 %!shared A, b, n, M
 %!
@@ -223,3 +222,4 @@ endfunction
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = cgs (A, b, tol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
+

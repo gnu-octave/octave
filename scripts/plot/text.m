@@ -126,12 +126,12 @@ function h = text (varargin)
 
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
 %! ha = {"left", "center", "right"};
 %! va = {"bottom", "middle", "top"};
-%! x = [0.25 0.5 0.75];
-%! y = [0.25 0.5 0.75];
+%! x = y = [0.25 0.5 0.75];
 %! for t = 0:30:359;
 %!   for nh = 1:numel(ha)
 %!     for nv = 1:numel(va)
@@ -149,10 +149,10 @@ endfunction
 %! axis ([0 1 0 1]);
 %! xlabel ("horizontal alignment");
 %! ylabel ("vertical alignment");
-%! title ("text alignment and rotation (0:30:360 degrees)")
+%! title ("text alignment and rotation (0:30:360 degrees)");
 
 %!demo
-%! clf
+%! clf;
 %! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
 %!                  "facecolor", "none", ...
 %!                  "facealpha", 0);
@@ -166,7 +166,7 @@ endfunction
 %! title ("Vertically Aligned at Bottom");
 
 %!demo
-%! clf
+%! clf;
 %! axis ([0 8 0 8]);
 %! title (["1st title";"2nd title"]);
 %! xlabel (["1st xlabel";"2nd xlabel"]);
@@ -174,13 +174,13 @@ endfunction
 %! text (4, 4, {"Hello", "World"}, ...
 %!       "horizontalalignment", "center", ...
 %!       "verticalalignment", "middle");
-%! grid on
+%! grid on;
 
 %!demo
-%! clf
-%! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
-%!                  "facecolor", "none", ...
-%!                  "facealpha", 0);
+%! clf;
+%! h = mesh (peaks (), "edgecolor", 0.7 * [1 1 1], ...
+%!                     "facecolor", "none", ...
+%!                     "facealpha", 0);
 %! title (["1st title";"2nd title"]);
 %! xlabel (["1st xlabel";"2nd xlabel"]);
 %! ylabel (["1st ylabel";"2nd ylabel"]);
@@ -192,7 +192,7 @@ endfunction
 %! plot3 (0, 0, 5, "+k");
 
 %!demo
-%! clf
+%! clf;
 %! h = text (0.5, 0.3, "char");
 %! assert ("char", class (get (h, "string")));
 %! h = text (0.5, 0.4, ["char row 1"; "char row 2"]);

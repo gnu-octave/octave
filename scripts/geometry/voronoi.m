@@ -174,7 +174,7 @@ endfunction
 
 
 %!demo
-%! voronoi (rand(10,1), rand(10,1));
+%! voronoi (rand (10,1), rand (10,1));
 
 %!testif HAVE_QHULL
 %! phi = linspace (-pi, 3/4*pi, 8);

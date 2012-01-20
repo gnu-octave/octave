@@ -46,7 +46,9 @@ function datetick (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! yr = 1900:10:2000;
 %! pop = [76.094, 92.407, 106.461, 123.077 131.954, 151.868, 179.979, ...
 %!        203.984, 227.225, 249.623, 282.224];
@@ -56,16 +58,17 @@ endfunction
 %! datetick ("x", "YYYY");
 
 %!demo
-%! yr =1988:2:2002;
-%! yr =datenum(yr,1,1);
+%! clf;
+%! yr = 1988:2:2002;
+%! yr = datenum (yr,1,1);
 %! pr = [12.1 13.3 12.6 13.1 13.3 14.1 14.4 15.2];
-%! plot(yr,pr);
-%! xlabel('year')
-%! ylabel('average price')
-%! ax=gca;
-%! set(ax,'xtick',datenum(1990:5:2005,1,1))
-%! datetick(2,'keepticks')
-%! set(ax,'ytick',12:16)
+%! plot (yr, pr);
+%! xlabel ("year");
+%! ylabel ("average price");
+%! ax = gca ();
+%! set (ax, "xtick", datenum (1990:5:2005,1,1));
+%! datetick (2, "keepticks");
+%! set (ax, "ytick", 12:16);
 
 ## Remove from test statistics.  No real tests possible.
 %!assert (1)

@@ -57,11 +57,12 @@ function retval = ezplot3 (varargin)
   if (nargout > 0)
     retval = h;
   endif
+
 endfunction
 
 
 %!demo
-%! clf
+%! clf;
 %! fx = @(t) cos (t);
 %! fy = @(t) sin (t);
 %! fz = @(t) t;

@@ -173,17 +173,17 @@ endfunction
 
 
 %!demo
-%! clf
-%! [X,Y,Z] = sombrero;
-%! colormap (copper);
+%! clf;
+%! [X,Y,Z] = sombrero ();
+%! colormap (copper (64));
 %! surfl (X,Y,Z);
 %! shading interp;
 
 %!demo
-%! clf
-%! [X,Y,Z] = sombrero;
-%! colormap (copper);
-%! [az, el] = view;
+%! clf;
+%! [X,Y,Z] = sombrero ();
+%! colormap (copper (64));
+%! [az, el] = view ();
 %! surfl (X,Y,Z, [az+225,el], [0.2 0.6 0.4 25]);
 %! shading interp;
 

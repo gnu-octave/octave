@@ -26,7 +26,7 @@
 ## Return a handle @var{h} to a new waitbar object.  The waitbar is
 ## filled to fraction @var{frac} which must be in the range [0, 1].  The
 ## optional message @var{msg} is centered and displayed above the waitbar.
-## The appearance of the waitbar figure window can be configured by passing 
+## The appearance of the waitbar figure window can be configured by passing
 ## property/value pairs to the function.
 ## 
 ## When called with a single input the current waitbar, if it exists, is
@@ -144,18 +144,18 @@ endfunction
 %!   waitbar (i);
 %! endfor
 %! i = 0.3;
-%! waitbar (i, h, "don't you hate taking a step backward?")
+%! waitbar (i, h, "don't you hate taking a step backward?");
 %! pause (0.5);
 %! for i = i:0.005:0.7
 %!   waitbar (i, h);
 %! endfor
-%! waitbar (i, h, "or stalling?")
+%! waitbar (i, h, "or stalling?");
 %! pause (1);
 %! for i = i:0.003:0.8
-%!   waitbar (i, h, "just a little longer now")
+%!   waitbar (i, h, "just a little longer now");
 %! endfor
 %! for i = i:0.001:1
-%!   waitbar (i, h, "please don't be impatient")
+%!   waitbar (i, h, "please don't be impatient");
 %! endfor
 %! close (h);
 
@@ -163,7 +163,7 @@ endfunction
 %! h1 = waitbar (0, "Waitbar #1");
 %! h2 = waitbar (0, "Waitbar #2");
 %! h2pos = get (h2, "position");
-%! h2pos(1) += h2pos(3) + 50;
+%! h2pos(1) += (h2pos(3) + 50);
 %! set (h2, "position", h2pos);
 %! pause (0.5);
 %! for i = 1:4

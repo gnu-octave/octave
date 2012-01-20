@@ -244,37 +244,38 @@ function ret = spline (x, y, xi)
 
 endfunction
 
+
 %!demo
-%! x = 0:10; y = sin(x);
-%! xspline = 0:0.1:10; yspline = spline(x,y,xspline);
-%! title("spline fit to points from sin(x)");
-%! plot(xspline,sin(xspline),"r",xspline,yspline,"g-",x,y,"b+");
-%! legend("original","interpolation","interpolation points");
+%! x = 0:10; y = sin (x);
+%! xspline = 0:0.1:10; yspline = spline (x,y,xspline);
+%! title ("spline fit to points from sin(x)");
+%! plot (xspline,sin(xspline),"r", xspline,yspline,"g-", x,y,"b+");
+%! legend ("original", "interpolation", "interpolation points");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
 %!shared x,y,abserr
-%! x = [0:10]; y = sin(x); abserr = 1e-14;
-%!assert (spline(x,y,x), y, abserr);
-%!assert (spline(x,y,x'), y', abserr);
-%!assert (spline(x',y',x'), y', abserr);
-%!assert (spline(x',y',x), y, abserr);
-%!assert (isempty(spline(x',y',[])));
-%!assert (isempty(spline(x,y,[])));
-%!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x,[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x',[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x',[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
+%! x = [0:10]; y = sin (x); abserr = 1e-14;
+%!assert (spline (x,y,x), y, abserr)
+%!assert (spline (x,y,x'), y', abserr)
+%!assert (spline (x',y',x'), y', abserr)
+%!assert (spline (x',y',x), y, abserr)
+%!assert (isempty (spline (x',y',[])))
+%!assert (isempty (spline (x,y,[])))
+%!assert (spline (x,[y;y],x), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x,[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x',[y;y],x), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x',[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
 %! y = cos(x) + i*sin(x);
-%!assert (spline(x,y,x), y, abserr)
-%!assert (real(spline(x,y,x)), real(y), abserr);
-%!assert (real(spline(x,y,x.')), real(y).', abserr);
-%!assert (real(spline(x.',y.',x.')), real(y).', abserr);
-%!assert (real(spline(x.',y,x)), real(y), abserr);
-%!assert (imag(spline(x,y,x)), imag(y), abserr);
-%!assert (imag(spline(x,y,x.')), imag(y).', abserr);
-%!assert (imag(spline(x.',y.',x.')), imag(y).', abserr);
-%!assert (imag(spline(x.',y,x)), imag(y), abserr);
+%!assert (spline (x,y,x), y, abserr)
+%!assert (real (spline (x,y,x)), real (y), abserr)
+%!assert (real (spline (x,y,x.')), real (y).', abserr)
+%!assert (real (spline (x.',y.',x.')), real (y).', abserr)
+%!assert (real (spline (x.',y,x)), real (y), abserr)
+%!assert (imag (spline (x,y,x)), imag (y), abserr)
+%!assert (imag (spline (x,y,x.')), imag (y).', abserr)
+%!assert (imag (spline (x.',y.',x.')), imag (y).', abserr)
+%!assert (imag (spline (x.',y,x)), imag (y), abserr)
 %!test
 %! xnan = 5;
 %! y(x==xnan) = NaN;
@@ -303,3 +304,4 @@ endfunction
 %! pp = spline (x,y);
 %! [x,P] = unmkpp (pp);
 %! assert (norm (P-[7,-9,1,3]), 0, abserr);
+

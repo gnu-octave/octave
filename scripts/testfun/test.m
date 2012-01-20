@@ -805,15 +805,15 @@ endfunction
 
 %!## demo blocks
 %!demo                   # multiline demo block
-%! t=[0:0.01:2*pi]; x=sin(t);
-%! plot(t,x);
+%! t = [0:0.01:2*pi]; x = sin (t);
+%! plot (t,x);
 %! % you should now see a sine wave in your figure window
 %!demo a=3               # single line demo blocks work too
 
 %!## this is a comment block. it can contain anything.
 %!##
 %! it is the "#" as the block type that makes it a comment
-%! and it  stays as a comment even through continuation lines
+%! and it stays as a comment even through continuation lines
 %! which means that it works well with commenting out whole tests
 
 % !# failure tests.  All the following should fail. These tests should
@@ -838,3 +838,4 @@ endfunction
 % ! ## These don't signal an error, so the test for an error fails. Note
 % ! ## that the call doesn't reference the current fid (it is unavailable),
 % ! ## so of course the informational message is not printed in the log.
+

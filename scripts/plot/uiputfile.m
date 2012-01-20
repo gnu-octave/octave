@@ -120,9 +120,10 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
 
 endfunction
 
+
 %!demo
-%! uiputfile({"*.gif;*.png;*.jpg", "Supported Picture Formats"})
+%! uiputfile ({"*.gif;*.png;*.jpg", "Supported Picture Formats"});
 
 ## Remove from test statistics.  No real tests possible.
-%!test
-%! assert (1);
+%!assert (1)
+

@@ -77,18 +77,19 @@ function retval = ezplot (varargin)
   if (nargout > 0)
     retval = h;
   endif
+
 endfunction
 
 
 %!demo
-%! clf
-%! ezplot (@cos, @sin)
+%! clf;
+%! ezplot (@cos, @sin);
 
 %!demo
-%! clf
-%! ezplot ("1/x")
+%! clf;
+%! ezplot ("1/x");
 
 %!demo
-%! clf
-%! ezplot (inline ("x^2 - y^2 = 1"))
+%! clf;
+%! ezplot (inline ("x^2 - y^2 = 1"));
 

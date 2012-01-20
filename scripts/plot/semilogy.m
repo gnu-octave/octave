@@ -63,14 +63,15 @@ function retval = semilogy (varargin)
 
 endfunction
 
+
 %!demo
-%! clf ();
+%! clf;
 %! x = 1:0.01:10;
 %! y = (x .* (1 + rand (size (x)))) .^ 2;
 %! semilogy (x, y);
 
 %!demo
-%! clf ();
+%! clf;
 %! x = logspace (-5, 1, 10);
 %! y = logspace (-5, 1, 10);
 %!
@@ -83,7 +84,7 @@ endfunction
 %! ylabel ("semilogy (x, -y)");
 
 %!demo
-%! clf ();
+%! clf;
 %! x = logspace (-5, 1, 10);
 %! y = logspace (-5, 1, 10);
 %!

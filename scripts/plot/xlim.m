@@ -49,31 +49,32 @@ function retval = xlim (varargin)
   endif
 endfunction
 
+
 %!demo
-%! clf ();
+%! clf;
 %! line ();
 %! xlim ([0.2, 0.8]);
 %! title ("xlim is [0.2, 0.8]");
 %! assert (xlim (), [0.2, 0.8]);
 
 %!demo
-%! clf ();
+%! clf;
 %! line ();
-%! xlim ('auto');
+%! xlim ("auto");
 %! title ("xlim is auto");
 %! assert (xlim ("mode"), "auto");
 
 %!demo
-%! clf ();
+%! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! xlim ([0.2, 0.8]);
 %! title ("xlim is [0.2, 0.8]");
 %! assert (xlim (), [0.2, 0.8]);
 
 %!demo
-%! clf ();
+%! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! xlim ('auto');
+%! xlim ("auto");
 %! title ("xlim is auto");
 %! assert (xlim ("mode"), "auto");
 
@@ -98,3 +99,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

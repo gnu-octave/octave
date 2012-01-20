@@ -281,13 +281,14 @@ function retval = datestr (date, f = [], p = [])
 endfunction
 
 
-## demos
 %!demo
 %! ## Current date and time in default format
 %! datestr (now ())
+
 %!demo
 %! ## Current date (integer portion of datenum)
 %! datestr (fix (now ()))
+
 %!demo
 %! ## Current time (fractional portion of datenum)
 %! datestr (rem (now (), 1))
@@ -335,3 +336,4 @@ endfunction
 %% Test input validation
 %!error datestr ()
 %!error datestr (1, 2, 3, 4)
+

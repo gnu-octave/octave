@@ -57,9 +57,10 @@ function map = jet (n)
 
 endfunction
 
+
 %!demo
 %! ## Show the 'jet' colormap as an image
-%! image (1:64, linspace (0, 1, 64), repmat (1:64, 64, 1)')
-%! axis ([1, 64, 0, 1], "ticy", "xy")
-%! colormap (jet (64))
+%! image (1:64, linspace (0, 1, 64), repmat ((1:64)', 1, 64));
+%! axis ([1, 64, 0, 1], "ticy", "xy");
+%! colormap (jet (64));
 

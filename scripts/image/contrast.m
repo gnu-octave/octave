@@ -44,7 +44,10 @@ function map = contrast (x, n)
   map = [map, map, map];
 endfunction
 
-%!assert (contrast(1:100,10),[([0:9]/9)',([0:9]/9)',([0:9]/9)'],1e-10)
+
 %!demo
-%! image (reshape (1:100, 10, 10))
-%! colormap (contrast (1:100,10))
+%! image (reshape (1:100, 10, 10));
+%! colormap (contrast (1:100, 10));
+
+%!assert (contrast (1:100,10), [([0:9]/9)',([0:9]/9)',([0:9]/9)'], 1e-10)
+

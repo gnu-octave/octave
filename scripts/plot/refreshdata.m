@@ -42,9 +42,9 @@
 ## y = sin (x);
 ## plot (x, y, "ydatasource", "y");
 ## for i = 1 : 100
-##   pause(0.1)
+##   pause (0.1)
 ##   y = sin (x + 0.1 * i);
-##   refreshdata();
+##   refreshdata ();
 ## endfor
 ## @end group
 ## @end example
@@ -103,15 +103,18 @@ function refreshdata (h, workspace)
       endif
     endfor
   endfor
+
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
 %! x = 0:0.1:10;
 %! y = sin (x);
 %! plot (x, y, "ydatasource", "y");
 %! for i = 1 : 100
-%!   pause(0.1)
+%!   pause (0.1);
 %!   y = sin (x + 0.1 * i);
-%!   refreshdata(gcf(), "caller");
+%!   refreshdata (gcf (), "caller");
 %! endfor
+

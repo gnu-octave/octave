@@ -85,6 +85,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! x = -3:0.05:3;
 %! y = abs (sin (x));
 %! k = convhull (x, y);

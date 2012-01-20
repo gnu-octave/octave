@@ -49,9 +49,10 @@ function map = gmap40 (n)
 
 endfunction
 
+
 %!demo
 %! ## Show the 'gmap40' colormap as an image
-%! image (1:6, linspace (0, 1, 6), repmat (1:6, 6, 1)')
-%! axis ([1, 6, 0, 1], "ticy", "xy")
-%! colormap (gmap40 (6))
+%! image (1:6, linspace (0, 1, 6), repmat ((1:6)', 1, 6));
+%! axis ([1, 6, 0, 1], "ticy", "xy");
+%! colormap (gmap40 (6));
 

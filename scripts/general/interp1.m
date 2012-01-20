@@ -298,50 +298,54 @@ function yi = interp1 (x, y, varargin)
 
 endfunction
 
+
 %!demo
-%! xf=0:0.05:10; yf = sin(2*pi*xf/5);
-%! xp=0:10;      yp = sin(2*pi*xp/5);
-%! lin=interp1(xp,yp,xf,"linear");
-%! spl=interp1(xp,yp,xf,"spline");
-%! cub=interp1(xp,yp,xf,"pchip");
-%! near=interp1(xp,yp,xf,"nearest");
-%! plot(xf,yf,"r",xf,near,"g",xf,lin,"b",xf,cub,"c",xf,spl,"m",xp,yp,"r*");
-%! legend ("original","nearest","linear","pchip","spline")
+%! clf;
+%! xf = 0:0.05:10; yf = sin (2*pi*xf/5);
+%! xp = 0:10;      yp = sin (2*pi*xp/5);
+%! lin = interp1 (xp,yp,xf, "linear");
+%! spl = interp1 (xp,yp,xf, "spline");
+%! cub = interp1 (xp,yp,xf, "pchip");
+%! near= interp1 (xp,yp,xf, "nearest");
+%! plot (xf,yf,"r",xf,near,"g",xf,lin,"b",xf,cub,"c",xf,spl,"m",xp,yp,"r*");
+%! legend ("original", "nearest", "linear", "pchip", "spline");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
 %!demo
-%! xf=0:0.05:10; yf = sin(2*pi*xf/5);
-%! xp=0:10;      yp = sin(2*pi*xp/5);
-%! lin=interp1(xp,yp,xf,"*linear");
-%! spl=interp1(xp,yp,xf,"*spline");
-%! cub=interp1(xp,yp,xf,"*cubic");
-%! near=interp1(xp,yp,xf,"*nearest");
-%! plot(xf,yf,"r",xf,near,"g",xf,lin,"b",xf,cub,"c",xf,spl,"m",xp,yp,"r*");
-%! legend ("*original","*nearest","*linear","*cubic","*spline")
+%! clf;
+%! xf = 0:0.05:10; yf = sin (2*pi*xf/5);
+%! xp = 0:10;      yp = sin (2*pi*xp/5);
+%! lin = interp1 (xp,yp,xf, "*linear");
+%! spl = interp1 (xp,yp,xf, "*spline");
+%! cub = interp1 (xp,yp,xf, "*cubic");
+%! near= interp1 (xp,yp,xf, "*nearest");
+%! plot (xf,yf,"r",xf,near,"g",xf,lin,"b",xf,cub,"c",xf,spl,"m",xp,yp,"r*");
+%! legend ("*original", "*nearest", "*linear", "*cubic", "*spline");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
 %!demo
+%! clf;
 %! t = 0 : 0.3 : pi; dt = t(2)-t(1);
 %! n = length (t); k = 100; dti = dt*n/k;
 %! ti = t(1) + [0 : k-1]*dti;
 %! y = sin (4*t + 0.3) .* cos (3*t - 0.1);
-%! ddyc = diff(diff(interp1(t,y,ti,'cubic'))./dti)./dti;
-%! ddys = diff(diff(interp1(t,y,ti,'spline'))./dti)./dti;
-%! ddyp = diff(diff(interp1(t,y,ti,'pchip'))./dti)./dti;
-%! plot (ti(2:end-1), ddyc,'g+',ti(2:end-1),ddys,'b*', ...
-%!       ti(2:end-1),ddyp,'c^');
-%! legend('cubic','spline','pchip');
-%! title("Second derivative of interpolated 'sin (4*t + 0.3) .* cos (3*t - 0.1)'");
+%! ddyc = diff (diff (interp1 (t,y,ti, "cubic")) ./dti)./dti;
+%! ddys = diff (diff (interp1 (t,y,ti, "spline"))./dti)./dti;
+%! ddyp = diff (diff (interp1 (t,y,ti, "pchip")) ./dti)./dti;
+%! plot (ti(2:end-1),ddyc,'g+', ti(2:end-1),ddys,'b*', ti(2:end-1),ddyp,'c^');
+%! legend ("cubic", "spline", "pchip");
+%! title ("Second derivative of interpolated 'sin (4*t + 0.3) .* cos (3*t - 0.1)'");
 
 %!demo
-%! xf=0:0.05:10; yf = sin(2*pi*xf/5) - (xf >= 5);
-%! xp=[0:.5:4.5,4.99,5:.5:10];      yp = sin(2*pi*xp/5) - (xp >= 5);
-%! lin=interp1(xp,yp,xf,"linear");
-%! near=interp1(xp,yp,xf,"nearest");
-%! plot(xf,yf,"r",xf,near,"g",xf,lin,"b",xp,yp,"r*");
-%! legend ("original","nearest","linear")
+%! clf;
+%! xf = 0:0.05:10;               yf = sin (2*pi*xf/5) - (xf >= 5);
+%! xp = [0:.5:4.5,4.99,5:.5:10]; yp = sin (2*pi*xp/5) - (xp >= 5);
+%! lin = interp1 (xp,yp,xf, "linear");
+%! near= interp1 (xp,yp,xf, "nearest");
+%! plot (xf,yf,"r", xf,near,"g", xf,lin,"b", xp,yp,"r*");
+%! legend ("original", "nearest", "linear");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
@@ -353,18 +357,19 @@ endfunction
 ## confirm they are the correct values.
 
 %!shared xp, yp, xi, style
-%! xp=0:2:10;      yp = sin(2*pi*xp/5);
+%! xp = 0:2:10;
+%! yp = sin (2*pi*xp/5);
 %! xi = [-1, 0, 2.2, 4, 6.6, 10, 11];
-
 
 ## The following BLOCK/ENDBLOCK section is repeated for each style
 ##    nearest, linear, cubic, spline, pchip
 ## The test for ppval of cubic has looser tolerance, but otherwise
 ## the tests are identical.
 ## Note that the block checks style and *style; if you add more tests
-## before to add them to both sections of each block.  One test,
+## be sure to add them to both sections of each block.  One test,
 ## style vs. *style, occurs only in the first section.
 ## There is an ENDBLOCKTEST after the final block
+
 %!test style = "nearest";
 ## BLOCK
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
@@ -399,6 +404,7 @@ endfunction
 %!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
+
 %!test style='linear';
 ## BLOCK
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
@@ -433,6 +439,7 @@ endfunction
 %!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
+
 %!test style='cubic';
 ## BLOCK
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
@@ -467,6 +474,7 @@ endfunction
 %!        interp1(xp,yp,xi,style,"extrap"),100*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
+
 %!test style='pchip';
 ## BLOCK
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);
@@ -501,6 +509,7 @@ endfunction
 %!        interp1(xp,yp,xi,style,"extrap"),10*eps);
 %!error interp1(1,1,1, style);
 ## ENDBLOCK
+
 %!test style='spline';
 ## BLOCK
 %!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NA, NA]);

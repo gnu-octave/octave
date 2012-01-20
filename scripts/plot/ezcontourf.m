@@ -58,10 +58,12 @@ function retval = ezcontourf (varargin)
   if (nargout > 0)
     retval = h;
   endif
+
 endfunction
 
 
 %!demo
-%! clf
-%! f = @(x,y) sqrt(abs(x .* y)) ./ (1 + x.^2 + y.^2);
+%! clf;
+%! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezcontourf (f, [-3, 3]);
+

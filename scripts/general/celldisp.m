@@ -78,9 +78,10 @@ function s = indices (dv, i)
   endif
 endfunction
 
+
 %!demo
 %! c = {1, 2, {31, 32}};
-%! celldisp(c, "b")
+%! celldisp (c, "b")
 
 %!error celldisp ();
 %!error celldisp ({}, "name", 1);

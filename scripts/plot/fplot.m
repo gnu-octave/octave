@@ -127,10 +127,12 @@ function fplot (fn, limits, n, fmt)
   endif
 endfunction
 
-%!demo
-%! clf
-%! fplot ("cos", [0, 2*pi])
 
 %!demo
-%! clf
-%! fplot ("[cos(x), sin(x)]", [0, 2*pi])
+%! clf;
+%! fplot ("cos", [0, 2*pi]);
+
+%!demo
+%! clf;
+%! fplot ("[cos(x), sin(x)]", [0, 2*pi]);
+

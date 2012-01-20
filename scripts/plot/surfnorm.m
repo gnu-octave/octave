@@ -143,16 +143,17 @@ endfunction
 
 
 %!demo
-%! clf
-%! colormap (jet (64))
+%! clf;
+%! colormap (jet (64));
 %! [x, y, z] = peaks (10);
 %! surfnorm (x, y, z);
 
 %!demo
-%! clf
+%! clf;
 %! surfnorm (peaks (10));
 
 %!demo
-%! clf
+%! clf;
 %! surfnorm (peaks (32));
-%! shading interp
+%! shading interp;
+

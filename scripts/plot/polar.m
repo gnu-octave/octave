@@ -217,14 +217,14 @@ endfunction
 
 
 %!demo
-%! clf
-%! theta = linspace (0, 2*pi, 1000);
+%! clf;
+%! theta = linspace (0,2*pi,1000);
 %! rho = sin (7*theta);
 %! polar (theta, rho);
 
 %!demo
-%! clf
-%! theta = linspace (0, 10*pi, 1000);
+%! clf;
+%! theta = linspace (0,10*pi,1000);
 %! rho = sin (5/4*theta);
 %! polar (theta, rho);
 

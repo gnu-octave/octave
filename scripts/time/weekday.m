@@ -84,12 +84,14 @@ endfunction
 %!demo
 %! ## Current weekday
 %! [n, s] = weekday (now ())
+
 %!demo
 %! ## Weekday from datenum input
 %! [n, s] = weekday (728647)
+
 %!demo
 %! ## Weekday of new millennium from datestr input
-%! [n, s] = weekday ('1-Jan-2000')
+%! [n, s] = weekday ("1-Jan-2000")
 
 # tests
 %!assert (weekday (728647), 2)

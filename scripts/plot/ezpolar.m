@@ -52,10 +52,11 @@ function retval = ezpolar (varargin)
   if (nargout > 0)
     retval = h;
   endif
+
 endfunction
 
 
 %!demo
-%! clf
+%! clf;
 %! ezpolar (@(t) 1 + sin (t));
 

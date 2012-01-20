@@ -66,20 +66,20 @@ endfunction
 
 
 %!demo
-%! clf
-%! [~,~,Z] = peaks;
+%! clf;
+%! [~,~,Z] = peaks ();
 %! surf (Z);
 
 %!demo
-%! clf
-%! [~,~,Z] = sombrero;
+%! clf;
+%! [~,~,Z] = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! surf (Z, Fx+Fy);
 %! shading interp;
 
 %!demo
-%! clf
-%! [X,Y,Z] = sombrero;
+%! clf;
+%! [X,Y,Z] = sombrero ();
 %! [~,Fy] = gradient (Z);
 %! surf (X, Y, Z, Fy);
 %! shading interp;

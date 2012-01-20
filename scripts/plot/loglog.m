@@ -62,37 +62,38 @@ function retval = loglog (varargin)
 
 endfunction
 
+
 %!demo
-%! clf ();
+%! clf;
 %! t = 1:0.01:10;
 %! x = sort ((t .* (1 + rand (size (t)))) .^ 2);
 %! y = ((t .* (1 + rand (size (t)))) .^ 2);
 %! loglog (x, y);
 
 %!demo
-%! clf ();
+%! clf;
 %! a = logspace (-5, 1, 10);
 %! b =-logspace (-5, 1, 10);
 %!
-%! subplot (1, 2, 1)
-%! loglog (a, b)
-%! xlabel ('loglog (a, b)')
+%! subplot (1,2,1);
+%!  loglog (a, b);
+%!  xlabel ("loglog (a, b)");
 %!
-%! subplot (1, 2, 2)
-%! loglog (a, abs (b))
-%! set (gca, 'ydir', 'reverse')
-%! xlabel ('loglog (a, abs (b))')
+%! subplot (1,2,2);
+%!  loglog (a, abs (b));
+%!  set (gca, "ydir", "reverse");
+%!  xlabel ("loglog (a, abs (b))");
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b = logspace (-5, 1, 10);
-%!   loglog (a, b)
+%!   loglog (a, b);
 %!   assert (get (gca, "yscale"), "log");
 %!   assert (get (gca, "xscale"), "log");
 %! unwind_protect_cleanup
-%! close (hf);
+%!   close (hf);
 %! end_unwind_protect
 
 %!test
@@ -100,10 +101,10 @@ endfunction
 %! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b =-logspace (-5, 1, 10);
-%!   loglog (a, b)
-%!   axis tight
+%!   loglog (a, b);
+%!   axis tight;
 %!   assert (all (get (gca, "ytick") < 0));
 %! unwind_protect_cleanup
-%! close (hf);
+%!   close (hf);
 %! end_unwind_protect
 

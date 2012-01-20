@@ -88,14 +88,14 @@ function varargout = calendar (varargin)
 endfunction
 
 
-## demos
 %!demo
 %! ## Calendar for current month
 %! calendar ()
+
 %!demo
+%! ## Calendar for October, 1957
 %! calendar (1957, 10)
 
-## tests
 %!assert ((calendar(2000,2))'(2:31), [0:29])
 %!assert ((calendar(1957,10))'(2:33), [0:31])
 

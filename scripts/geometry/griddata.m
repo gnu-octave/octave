@@ -140,38 +140,43 @@ function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
   endif
 endfunction
 
+
+%!demo
+%! clf;
+%! x = 2*rand (100,1) - 1;
+%! y = 2*rand (size (x)) - 1;
+%! z = sin (2*(x.^2 + y.^2));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
+%! griddata (x,y,z,xx,yy);
+%! title ("nonuniform grid sampled at 100 points");
+
+%!demo
+%! clf;
+%! x = 2*rand (1000,1) - 1;
+%! y = 2*rand (size (x)) - 1;
+%! z = sin (2*(x.^2 + y.^2));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
+%! griddata (x,y,z,xx,yy);
+%! title ("nonuniform grid sampled at 1000 points");
+
+%!demo
+%! clf;
+%! x = 2*rand (1000,1) - 1;
+%! y = 2*rand (size (x)) - 1;
+%! z = sin (2*(x.^2 + y.^2));
+%! [xx,yy] = meshgrid (linspace (-1, 1, 32));
+%! griddata (x,y,z,xx,yy,"nearest");
+%! title ("nonuniform grid sampled at 1000 points with nearest neighbor");
+
 %!testif HAVE_QHULL
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
 %! x = xx(:);
-%! x = x + 10 * (2 * round(rand(size(x))) - 1) * eps;
+%! x = x + 10*(2*round (rand (size(x))) - 1) * eps;
 %! y = yy(:);
-%! y = y + 10 * (2 * round(rand(size(y))) - 1) * eps;
-%! z = sin(2*(x.^2+y.^2));
-%! zz = griddata(x,y,z,xx,yy,'linear');
-%! zz2 = sin(2*(xx.^2+yy.^2));
-%! zz2(isnan(zz)) = NaN;
-%! assert (zz, zz2, 100 * eps)
+%! y = y + 10*(2*round (rand (size(y))) - 1) * eps;
+%! z = sin (2*(x.^2 + y.^2));
+%! zz = griddata (x,y,z,xx,yy,"linear");
+%! zz2 = sin (2*(xx.^2 + yy.^2));
+%! zz2(isnan (zz)) = NaN;
+%! assert (zz, zz2, 100*eps);
 
-%!demo
-%! x=2*rand(100,1)-1;
-%! y=2*rand(size(x))-1;
-%! z=sin(2*(x.^2+y.^2));
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
-%! griddata(x,y,z,xx,yy);
-%! title('nonuniform grid sampled at 100 points');
-
-%!demo
-%! x=2*rand(1000,1)-1;
-%! y=2*rand(size(x))-1;
-%! z=sin(2*(x.^2+y.^2));
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
-%! griddata(x,y,z,xx,yy);
-%! title('nonuniform grid sampled at 1000 points');
-
-%!demo
-%! x=2*rand(1000,1)-1;
-%! y=2*rand(size(x))-1;
-%! z=sin(2*(x.^2+y.^2));
-%! [xx,yy]=meshgrid(linspace(-1,1,32));
-%! griddata(x,y,z,xx,yy,'nearest');
-%! title('nonuniform grid sampled at 1000 points with nearest neighbor');

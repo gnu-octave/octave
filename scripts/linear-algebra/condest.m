@@ -194,45 +194,46 @@ function [est, v] = condest (varargin)
 
 endfunction
 
+
 %!demo
-%!  N = 100;
-%!  A = randn (N) + eye (N);
-%!  condest (A)
-%!  [L,U,P] = lu (A);
-%!  condest (A, @(x) U\ (L\ (P*x)), @(x) P'*(L'\ (U'\x)))
-%!  condest (@(x) A*x, @(x) A'*x, @(x) U\ (L\ (P*x)), @(x) P'*(L'\ (U'\x)), N)
-%!  norm (inv (A), 1) * norm (A, 1)
+%! N = 100;
+%! A = randn (N) + eye (N);
+%! condest (A)
+%! [L,U,P] = lu (A);
+%! condest (A, @(x) U \ (L \ (P*x)), @(x) P'*(L' \ (U'\x)))
+%! condest (@(x) A*x, @(x) A'*x, @(x) U \ (L \ (P*x)), @(x) P'*(L' \ (U'\x)), N)
+%! norm (inv (A), 1) * norm (A, 1)
 
 ## Yes, these test bounds are really loose.  There's
 ## enough randomization to trigger odd cases with hilb().
 
 %!test
-%!  N = 6;
-%!  A = hilb (N);
-%!  cA = condest (A);
-%!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, -2^-8);
+%! N = 6;
+%! A = hilb (N);
+%! cA = condest (A);
+%! cA_test = norm (inv (A), 1) * norm (A, 1);
+%! assert (cA, cA_test, -2^-8);
 
 %!test
-%!  N = 6;
-%!  A = hilb (N);
-%!  solve = @(x) A\x; solve_t = @(x) A'\x;
-%!  cA = condest (A, solve, solve_t);
-%!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, -2^-8);
+%! N = 6;
+%! A = hilb (N);
+%! solve = @(x) A\x; solve_t = @(x) A'\x;
+%! cA = condest (A, solve, solve_t);
+%! cA_test = norm (inv (A), 1) * norm (A, 1);
+%! assert (cA, cA_test, -2^-8);
 
 %!test
-%!  N = 6;
-%!  A = hilb (N);
-%!  apply = @(x) A*x; apply_t = @(x) A'*x;
-%!  solve = @(x) A\x; solve_t = @(x) A'\x;
-%!  cA = condest (apply, apply_t, solve, solve_t, N);
-%!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, -2^-6);
+%! N = 6;
+%! A = hilb (N);
+%! apply = @(x) A*x; apply_t = @(x) A'*x;
+%! solve = @(x) A\x; solve_t = @(x) A'\x;
+%! cA = condest (apply, apply_t, solve, solve_t, N);
+%! cA_test = norm (inv (A), 1) * norm (A, 1);
+%! assert (cA, cA_test, -2^-6);
 
 %!test
-%!  N = 12;
-%!  A = hilb (N);
-%!  [rcondA, v] = condest (A);
-%!  x = A*v;
-%!  assert (norm(x, inf), 0, eps);
+%! N = 12;
+%! A = hilb (N);
+%! [rcondA, v] = condest (A);
+%! x = A*v;
+%! assert (norm(x, inf), 0, eps);

@@ -69,31 +69,31 @@ function retval = profile (option)
   endif
 
   switch (option)
-    case 'on'
+    case "on"
       __profiler_reset__ ();
       __profiler_enable__ (true);
 
-    case 'off'
+    case "off"
       __profiler_enable__ (false);
 
-    case 'clear'
+    case "clear"
       __profiler_reset__ ();
 
-    case 'resume'
+    case "resume"
       __profiler_enable__ (true);
 
-    case 'status'
+    case "status"
       enabled = __profiler_enable__ ();
       if (enabled)
-        enabled = 'on';
+        enabled = "on";
       else
-        enabled = 'off';
+        enabled = "off";
       endif
-      retval = struct ('ProfilerStatus', enabled);
+      retval = struct ("ProfilerStatus", enabled);
 
-    case 'info'
+    case "info"
       [flat, tree] = __profiler_data__ ();
-      retval = struct ('FunctionTable', flat, 'Hierarchical', tree);
+      retval = struct ("FunctionTable", flat, "Hierarchical", tree);
 
     otherwise
       warning ("profile: Unrecognized option '%s'", option);
@@ -105,47 +105,50 @@ endfunction
 
 
 %!demo
-%! profile ('on');
+%! profile on;
 %! A = rand (100);
 %! B = expm (A);
-%! profile ('off');
-%! profile ('resume');
+%! profile off;
+%! profile resume;
 %! C = sqrtm (A);
-%! profile ('off');
-%! T = profile ('info');
+%! profile off;
+%! T = profile ("info");
 %! profshow (T);
-
-%!error profile ();
-%!error profile ('on', 2);
 
 %!test
 %! on_struct.ProfilerStatus = "on";
 %! off_struct.ProfilerStatus = "off";
-%! profile ('on');
+%! profile ("on");
 %! result = logm (rand (200) + 10 * eye (200));
-%! assert (profile ('status'), on_struct);
-%! profile ('off');
-%! assert (profile ('status'), off_struct);
-%! profile ('resume');
+%! assert (profile ("status"), on_struct);
+%! profile ("off");
+%! assert (profile ("status"), off_struct);
+%! profile ("resume");
 %! result = logm (rand (200) + 10 * eye (200));
-%! profile ('off');
-%! assert (profile ('status'), off_struct);
-%! info = profile ('info');
+%! profile ("off");
+%! assert (profile ("status"), off_struct);
+%! info = profile ("info");
 %! assert (isstruct (info));
 %! assert (size (info), [1, 1]);
-%! assert (fieldnames (info), {'FunctionTable'; 'Hierarchical'});
+%! assert (fieldnames (info), {"FunctionTable"; "Hierarchical"});
 %! ftbl = info.FunctionTable;
-%! assert (fieldnames (ftbl), {'FunctionName'; 'TotalTime'; 'NumCalls'; 'IsRecursive'; 'Parents'; 'Children'});
+%! assert (fieldnames (ftbl), {"FunctionName"; "TotalTime"; "NumCalls"; "IsRecursive"; "Parents"; "Children"});
 %! hier = info.Hierarchical;
-%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'TotalTime'; 'NumCalls'; 'Children'});
-%! profile ('clear');
-%! info = profile ('info');
+%! assert (fieldnames (hier), {"Index"; "SelfTime"; "TotalTime"; "NumCalls"; "Children"});
+%! profile ("clear");
+%! info = profile ("info");
 %! assert (isstruct (info));
 %! assert (size (info), [1, 1]);
-%! assert (fieldnames (info), {'FunctionTable'; 'Hierarchical'});
+%! assert (fieldnames (info), {"FunctionTable"; "Hierarchical"});
 %! ftbl = info.FunctionTable;
 %! assert (size (ftbl), [0, 1]);
-%! assert (fieldnames (ftbl), {'FunctionName'; 'TotalTime'; 'NumCalls'; 'IsRecursive'; 'Parents'; 'Children'});
+%! assert (fieldnames (ftbl), {"FunctionName"; "TotalTime"; "NumCalls"; "IsRecursive"; "Parents"; "Children"});
 %! hier = info.Hierarchical;
 %! assert (size (hier), [0, 1]);
-%! assert (fieldnames (hier), {'Index'; 'SelfTime'; 'NumCalls'; 'Children'});
+%! assert (fieldnames (hier), {"Index"; "SelfTime"; "NumCalls"; "Children"});
+
+%% Test input validation
+%!error profile ()
+%!error profile ("on", 2)
+%!error profile ("INVALID_OPTION");
+

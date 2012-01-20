@@ -81,20 +81,22 @@ function profshow (data, n = 20)
 
 endfunction
 
+
 %!demo
-%! profile ("on");
+%! profile on;
 %! A = rand (100);
 %! B = expm (A);
-%! profile ("off");
+%! profile off;
 %! T = profile ("info");
 %! profshow (T, 10);
 
 %!demo
-%! profile ("on");
+%! profile on;
 %! expm (rand (500) + eye (500));
-%! profile ("off");
+%! profile off;
 %! profshow (profile ("info"), 5);
 
 %!error profshow ();
 %!error profshow (1, 2, 3);
 %!error profshow (struct (), 1.2);
+

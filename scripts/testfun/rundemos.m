@@ -87,4 +87,6 @@ function retval = has_demos (f)
 endfunction
 
 
-%!error rundemos ("foo", 1);
+%!error rundemos ("foo", 1)
+%!error <DIRECTORY argument> rundemos ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
+

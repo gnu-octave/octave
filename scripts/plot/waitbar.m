@@ -92,8 +92,12 @@ function retval = waitbar (varargin)
     if (ischar (msg) || iscellstr (msg))
       th = get (ax, "title");
       curr_msg = get (th, "string");
+      ## graphics handles always store data as column vectors
+      if (iscellstr (msg))
+        msg = msg(:);  
+      endif
       cmp = strcmp (msg, curr_msg);
-      if (all (cmp(:)))
+      if (! all (cmp(:)))
         set (th, "string", msg);
       endif
     endif

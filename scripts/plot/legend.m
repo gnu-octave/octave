@@ -1037,7 +1037,7 @@ endfunction
 %! for i = 1:5
 %!   h = plot (1:100, i + rand(100,1)); hold on;
 %!   set (h, 'color', colororder(i,:));
-%!   labels = {labels{:}, cstrcat('Signal ', num2str (i))};
+%!   labels = {labels{:}, ['Signal ', num2str(i)]};
 %! end
 %! hold off;
 %! title ('Signals with random offset and uniform noise');
@@ -1052,7 +1052,7 @@ endfunction
 %! for i = 1:5
 %!   h = plot (1:100, i + rand (100,1)); hold on;
 %!   set (h, 'color', colororder(i,:));
-%!   labels = {labels{:}, cstrcat('Signal ', num2str (i))};
+%!   labels = {labels{:}, ['Signal ', num2str(i)]};
 %! end
 %! hold off;
 %! title ('Signals with random offset and uniform noise');

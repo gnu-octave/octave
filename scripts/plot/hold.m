@@ -136,7 +136,7 @@ endfunction
 %! z = peaks (x, y);
 %! contourf (x, y, z, 10);
 %! hold on;
-%! plot (vec (x), vec (y), '^');
+%! plot (x(:), y(:), '^');
 %! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], 'red');
 %! xlim ([-2.0 2.0]);
 %! ylim ([-2.0 2.0]);

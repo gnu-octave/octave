@@ -79,7 +79,7 @@ endfunction
 %! clf;
 %! contour3 (peaks (19));
 %! hold on;
-%! surface (peaks (19), "facecolor", "none", "edgecolor", "black");
+%! surface (peaks (19), 'facecolor', 'none', 'edgecolor', 'black');
 %! colormap (hot (64));
 %! axis tight;
 %! zlim auto;

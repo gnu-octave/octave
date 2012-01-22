@@ -129,94 +129,94 @@ endfunction
 
 %!demo
 %! clf;
-%! ha = {"left", "center", "right"};
-%! va = {"bottom", "middle", "top"};
+%! ha = {'left', 'center', 'right'};
+%! va = {'bottom', 'middle', 'top'};
 %! x = y = [0.25 0.5 0.75];
 %! for t = 0:30:359;
 %!   for nh = 1:numel(ha)
 %!     for nv = 1:numel(va)
-%!       text (x(nh), y(nv), "Hello World", ...
-%!             "rotation", t, ...
-%!             "horizontalalignment", ha{nh}, ...
-%!             "verticalalignment", va{nv});
-%!     endfor
-%!   endfor
-%! endfor
-%! set (gca, "xtick", [0.25, 0.5, 0.75], ...
-%!           "xticklabel", ha, ...
-%!           "ytick", [0.25, 0.5, 0.75], ...
-%!           "yticklabel", va);
+%!       text (x(nh), y(nv), 'Hello World', ...
+%!             'rotation', t, ...
+%!             'horizontalalignment', ha{nh}, ...
+%!             'verticalalignment', va{nv});
+%!     end
+%!   end
+%! end
+%! set (gca, 'xtick', [0.25, 0.5, 0.75], ...
+%!           'xticklabel', ha, ...
+%!           'ytick', [0.25, 0.5, 0.75], ...
+%!           'yticklabel', va);
 %! axis ([0 1 0 1]);
-%! xlabel ("horizontal alignment");
-%! ylabel ("vertical alignment");
-%! title ("text alignment and rotation (0:30:360 degrees)");
+%! xlabel ('horizontal alignment');
+%! ylabel ('vertical alignment');
+%! title ('text alignment and rotation (0:30:360 degrees)');
 
 %!demo
 %! clf;
-%! h = mesh (peaks, "edgecolor", 0.7 * [1 1 1], ...
-%!                  "facecolor", "none", ...
-%!                  "facealpha", 0);
+%! h = mesh (peaks, 'edgecolor', 0.7 * [1 1 1], ...
+%!                  'facecolor', 'none', ...
+%!                  'facealpha', 0);
 %! for t = 0:45:359;
-%!   text (25, 25, 0, "Vertical Alignment = Bottom", ...
-%!                    "rotation", t, ...
-%!                    "horizontalalignment", "left", ...
-%!                    "verticalalignment", "bottom");
-%! endfor
+%!   text (25, 25, 0, 'Vertical Alignment = Bottom', ...
+%!                    'rotation', t, ...
+%!                    'horizontalalignment', 'left', ...
+%!                    'verticalalignment', 'bottom');
+%! end
 %! caxis ([-100 100]);
-%! title ("Vertically Aligned at Bottom");
+%! title ('Vertically Aligned at Bottom');
 
 %!demo
 %! clf;
 %! axis ([0 8 0 8]);
-%! title (["1st title";"2nd title"]);
-%! xlabel (["1st xlabel";"2nd xlabel"]);
-%! ylabel (["1st ylabel";"2nd ylabel"]);
-%! text (4, 4, {"Hello", "World"}, ...
-%!       "horizontalalignment", "center", ...
-%!       "verticalalignment", "middle");
+%! title (['1st title';'2nd title']);
+%! xlabel (['1st xlabel';'2nd xlabel']);
+%! ylabel (['1st ylabel';'2nd ylabel']);
+%! text (4, 4, {'Hello', 'World'}, ...
+%!       'horizontalalignment', 'center', ...
+%!       'verticalalignment', 'middle');
 %! grid on;
 
 %!demo
 %! clf;
-%! h = mesh (peaks (), "edgecolor", 0.7 * [1 1 1], ...
-%!                     "facecolor", "none", ...
-%!                     "facealpha", 0);
-%! title (["1st title";"2nd title"]);
-%! xlabel (["1st xlabel";"2nd xlabel"]);
-%! ylabel (["1st ylabel";"2nd ylabel"]);
-%! zlabel (["1st zlabel";"2nd zlabel"]);
-%! text (0, 0, 5, {"Hello", "World"}, ...
-%!       "horizontalalignment", "center", ...
-%!       "verticalalignment", "middle");
+%! h = mesh (peaks (), 'edgecolor', 0.7 * [1 1 1], ...
+%!                     'facecolor', 'none', ...
+%!                     'facealpha', 0);
+%! title (['1st title';'2nd title']);
+%! xlabel (['1st xlabel';'2nd xlabel']);
+%! ylabel (['1st ylabel';'2nd ylabel']);
+%! zlabel (['1st zlabel';'2nd zlabel']);
+%! text (0, 0, 5, {'Hello', 'World'}, ...
+%!       'horizontalalignment', 'center', ...
+%!       'verticalalignment', 'middle');
 %! hold on;
-%! plot3 (0, 0, 5, "+k");
+%! plot3 (0, 0, 5, '+k');
 
 %!demo
 %! clf;
-%! h = text (0.5, 0.3, "char");
-%! assert ("char", class (get (h, "string")));
-%! h = text (0.5, 0.4, ["char row 1"; "char row 2"]);
-%! assert ("char", class (get (h, "string")));
-%! h = text (0.5, 0.6, {"cell2str (1,1)", "cell2str (1,2)"; "cell2str (2,1)", "cell2str (2,2)"});
-%! assert ("cell", class (get (h, "string")));
-%! h = text (0.5, 0.8, "foobar");
-%! set (h, "string", 1:3);
-%! h = text ([0.1, 0.1], [0.3, 0.4], "one string & two objects");
-%! assert ("char", class (get (h(1), "string")));
-%! assert ("char", class (get (h(2), "string")));
-%! h = text ([0.1, 0.1], [0.5, 0.6], {"one cellstr & two objects"});
-%! assert ("cell", class (get (h(1), "string")));
-%! assert ("cell", class (get (h(2), "string")));
-%! h = text ([0.1, 0.1], [0.7, 0.8], {"cellstr 1 object 1", "cellstr 2 object 2"});
-%! assert ("char", class (get (h(1), "string")));
-%! assert ("char", class (get (h(2), "string")));
-%! h = text ([0.1, 0.1], [0.1, 0.2], ["1st string & 1st object"; "2nd string & 2nd object"]);
-%! assert ("char", class (get (h(1), "string")));
-%! assert ("char", class (get (h(2), "string")));
-%! h = text (0.7, 0.6, "single string");
-%! assert ("char", class (get (h, "string")));
-%! h = text (0.7, 0.5, {"single cell-string"});
-%! assert ("cell", class (get (h, "string")));
+%! h = text (0.5, 0.3, 'char');
+%! assert ('char', class (get (h, 'string')));
+%! h = text (0.5, 0.4, ['char row 1'; 'char row 2']);
+%! assert ('char', class (get (h, 'string')));
+%! h = text (0.5, 0.6, {'cell2str (1,1)', 'cell2str (1,2)'; 'cell2str (2,1)', 'cell2str (2,2)'});
+%! assert ('cell', class (get (h, 'string')));
+%! h = text (0.5, 0.8, 'foobar');
+%! set (h, 'string', 1:3);
+%! h = text ([0.1, 0.1], [0.3, 0.4], 'one string & two objects');
+%! assert ('char', class (get (h(1), 'string')));
+%! assert ('char', class (get (h(2), 'string')));
+%! h = text ([0.1, 0.1], [0.5, 0.6], {'one cellstr & two objects'});
+%! assert ('cell', class (get (h(1), 'string')));
+%! assert ('cell', class (get (h(2), 'string')));
+%! h = text ([0.1, 0.1], [0.7, 0.8], {'cellstr 1 object 1', 'cellstr 2 object 2'});
+%! assert ('char', class (get (h(1), 'string')));
+%! assert ('char', class (get (h(2), 'string')));
+%! h = text ([0.1, 0.1], [0.1, 0.2], ['1st string & 1st object'; '2nd string & 2nd object']);
+%! assert ('char', class (get (h(1), 'string')));
+%! assert ('char', class (get (h(2), 'string')));
+%! h = text (0.7, 0.6, 'single string');
+%! assert ('char', class (get (h, 'string')));
+%! h = text (0.7, 0.5, {'single cell-string'});
+%! assert ('cell', class (get (h, 'string')));
 %! xlabel (1:2);
 %! ylabel (1:2);
 %! title (1:2);

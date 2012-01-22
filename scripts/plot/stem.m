@@ -102,31 +102,31 @@ endfunction
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, "r");
+%! h = stem (x, y, 'r');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, "-.k");
+%! h = stem (x, y, '-.k');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, "-.k.");
+%! h = stem (x, y, '-.k.');
 
 %!demo
 %! clf;
 %! x = 1:10;
 %! y = 2*x;
-%! h = stem (x, y, "filled");
+%! h = stem (x, y, 'filled');
 
 %!demo
 %! clf;
 %! x = (0 : 10)';
 %! y = [sin(x), cos(x)];
 %! h = stem (x, y);
-%! set (h(2), "color", "g");
-%! set (h(1), "basevalue", -1)
+%! set (h(2), 'color', 'g');
+%! set (h(1), 'basevalue', -1)
 

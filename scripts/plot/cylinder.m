@@ -90,5 +90,5 @@ endfunction
 %! clf;
 %! [x, y, z] = cylinder (10:-1:0,50);
 %! surf (x, y, z);
-%! title ("a cone");
+%! title ('a cone');
 

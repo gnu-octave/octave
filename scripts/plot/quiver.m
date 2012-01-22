@@ -86,14 +86,14 @@ endfunction
 %! clf;
 %! [x,y] = meshgrid (1:2:20);
 %! h = quiver (x,y, sin (2*pi*x/10), sin (2*pi*y/10));
-%! set (h, "maxheadsize", 0.33);
+%! set (h, 'maxheadsize', 0.33);
 
 %!demo
 %! clf;
-%! axis ("equal");
+%! axis ('equal');
 %! x = linspace (0, 3, 80);
 %! y = sin (2*pi*x);
 %! theta = 2*pi*x + pi/2;
 %! quiver (x, y, sin (theta)/10, cos (theta)/10);
-%! hold on; plot (x,y,"r"); hold off;
+%! hold on; plot (x,y,'r'); hold off;
 

@@ -60,7 +60,7 @@ endfunction
 
 
 %!demo
-%! uigetdir (pwd, "Select Directory");
+%! uigetdir (pwd, 'Select Directory');
 
 ## Remove from test statistics.  No real tests possible.
 %!assert (1)

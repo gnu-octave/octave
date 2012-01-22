@@ -147,7 +147,7 @@ endfunction
 %! clf;
 %! rand_1x11_data3 = [0.423650, 0.142331, 0.213195, 0.129301, 0.975891, 0.012872, 0.635327, 0.338829, 0.764997, 0.401798, 0.551850];
 %! rand_1x11_data4 = [0.682566, 0.456342, 0.132390, 0.341292, 0.108633, 0.601553, 0.040455, 0.146665, 0.309187, 0.586291, 0.540149];
-%! errorbar (0:10, rand_1x11_data3, rand_1x11_data4, ">");
+%! errorbar (0:10, rand_1x11_data3, rand_1x11_data4, '>');
 
 %!demo
 %! clf;
@@ -155,7 +155,7 @@ endfunction
 %! err = x/100;
 %! y1 = sin (x);
 %! y2 = cos (x);
-%! hg = errorbar (x, y1, err, "~", x, y2, err, ">");
+%! hg = errorbar (x, y1, err, '~', x, y2, err, '>');
 
 %!demo
 %! clf;
@@ -163,7 +163,7 @@ endfunction
 %! err = x/100;
 %! y1 = sin (x);
 %! y2 = cos (x);
-%! hg = errorbar (x, y1, err, err, "#r", x, y2, err, err, "#~");
+%! hg = errorbar (x, y1, err, err, '#r', x, y2, err, err, '#~');
 
 %!demo
 %! clf;
@@ -171,6 +171,6 @@ endfunction
 %! err = x/100;
 %! y1 = sin (x);
 %! y2 = cos (x);
-%! hg = errorbar (x, y1, err, err, err, err, "~>", ...
-%!                x, y2, err, err, err, err, "#~>-*");
+%! hg = errorbar (x, y1, err, err, err, err, '~>', ...
+%!                x, y2, err, err, err, err, '#~>-*');
 

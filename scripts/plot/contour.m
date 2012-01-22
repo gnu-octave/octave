@@ -89,5 +89,5 @@ endfunction
 %! [x, y] = meshgrid (x);
 %! z = sqrt (x.^2 + y.^2) ./ (x.^2 + y.^2 + 1);
 %! contourf (x, y, z, [0.4, 0.4]);
-%! title ("The hole should be filled with the background color");
+%! title ('The hole should be filled with the background color');
 

@@ -57,9 +57,9 @@ endfunction
 
 %!demo
 %! clf;
-%! old_state = rand ("state");
-%! restore_state = onCleanup (@() rand ("state", old_state));
-%! rand ("state", 10);
+%! old_state = rand ('state');
+%! restore_state = onCleanup (@() rand ('state', old_state));
+%! rand ('state', 10);
 %! N = 10;
 %! x = 3 - 6 * rand (N, N);
 %! y = 3 - 6 * rand (N, N);

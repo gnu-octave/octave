@@ -74,14 +74,14 @@ endfunction
 
 %!demo
 %! clf;
-%! pie ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
+%! pie ([3, 2, 1], [0, 0, 1], {'Cheddar', 'Swiss', 'Camembert'});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
 
 %!demo
 %! clf;
-%! pie ([0.17, 0.34, 0.41], {"Cheddar", "Swiss", "Camembert"});
+%! pie ([0.17, 0.34, 0.41], {'Cheddar', 'Swiss', 'Camembert'});
 %! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ("missing slice");
+%! title ('missing slice');
 

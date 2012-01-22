@@ -85,15 +85,15 @@ endfunction
 %! clf;
 %! x = randn (100, 1);
 %! y = randn (100, 1);
-%! scatter (x, y, "r");
-%! title ("Scatter plot with red bubbles");
+%! scatter (x, y, 'r');
+%! title ('Scatter plot with red bubbles');
 
 %!demo
 %! clf;
 %! x = randn (100, 1);
 %! y = randn (100, 1);
 %! scatter (x, y, [], sqrt (x.^2 + y.^2));
-%! title ("Scatter plot with bubble color determined by distance from origin");
+%! title ('Scatter plot with bubble color determined by distance from origin');
 
 %!demo
 %! clf;
@@ -102,9 +102,9 @@ endfunction
 %! x = rand_10x1_data1;
 %! y = rand_10x1_data2;
 %! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, s, s, "s", "filled");
-%! title ({"Scatter plot with filled square markers", ...
-%!         "size and color of markers determined by algorithm"});
+%! h = scatter (x, y, s, s, 's', 'filled');
+%! title ({'Scatter plot with filled square markers', ...
+%!         'size and color of markers determined by algorithm'});
 
 %!demo
 %! clf;
@@ -113,7 +113,7 @@ endfunction
 %! x = rand_10x1_data3;
 %! y = rand_10x1_data4;
 %! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, [], "r", "s", "filled");
+%! h = scatter (x, y, [], 'r', 's', 'filled');
 
 %!demo
 %! clf;
@@ -122,7 +122,7 @@ endfunction
 %! x = rand_10x1_data5;
 %! y = rand_10x1_data6;
 %! s = 10 - 10*log (x.^2 + y.^2);
-%! h = scatter (x, y, [], "r", "s");
+%! h = scatter (x, y, [], 'r', 's');
 
 %!demo
 %! clf;
@@ -132,28 +132,28 @@ endfunction
 %!     x = rand (n, 1);
 %!     y = rand (n, 1);
 %!     if (m > 1)
-%!       str = "Three Colors";
+%!       str = 'Three Colors';
 %!       idx = ceil (rand (n, 1) * 3);
 %!       colors = eye (3);
 %!       colors = colors(idx, :);
 %!     else
-%!       str = "Random Colors";
+%!       str = 'Random Colors';
 %!       colors = rand (n, m);
-%!     endif
+%!     end
 %!     if (n == 1)
-%!       str = sprintf ("%s: 1 point", str);
+%!       str = sprintf ('%s: 1 point', str);
 %!     elseif (n < 100)
-%!       str = sprintf ("%s: < 100 points", str);
+%!       str = sprintf ('%s: < 100 points', str);
 %!     else
-%!       str = sprintf ("%s: > 100 points", str);
-%!     endif
+%!       str = sprintf ('%s: > 100 points', str);
+%!     end
 %!     subplot (2,3,k);
 %!     k = k + 1;
-%!     scatter (x, y, 15, colors, "filled");
+%!     scatter (x, y, 15, colors, 'filled');
 %!     axis ([0 1 0 1]);
 %!     title (str);
-%!   endfor
-%! endfor
+%!   end
+%! end
 
 %!demo
 %! clf;
@@ -163,26 +163,26 @@ endfunction
 %!     x = rand (n, 1);
 %!     y = rand (n, 1);
 %!     if (m > 1)
-%!       str = "Three Colors";
+%!       str = 'Three Colors';
 %!       idx = ceil (rand (n, 1) * 3);
 %!       colors = eye (3);
 %!       colors = colors(idx, :);
 %!     else
-%!       str = "Random Colors";
+%!       str = 'Random Colors';
 %!       colors = rand (n, m);
-%!     endif
+%!     end
 %!     if (n == 1)
-%!       str = sprintf ("%s: 1 point", str);
+%!       str = sprintf ('%s: 1 point', str);
 %!     elseif (n < 100)
-%!       str = sprintf ("%s: < 100 points", str);
+%!       str = sprintf ('%s: < 100 points', str);
 %!     else
-%!       str = sprintf ("%s: > 100 points", str);
-%!     endif
+%!       str = sprintf ('%s: > 100 points', str);
+%!     end
 %!     subplot (2,3,k);
 %!     k = k + 1;
 %!     scatter (x, y, 15, colors);
 %!     axis ([0 1 0 1]);
 %!     title (str);
-%!   endfor
-%! endfor
+%!   end
+%! end
 

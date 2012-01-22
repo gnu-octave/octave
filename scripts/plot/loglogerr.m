@@ -67,6 +67,6 @@ endfunction
 %! y = wblpdf (x, 3, 2);
 %! eyu = 2*rand (size (y)) .* y;
 %! eyl = 0.5*rand (size (y)) .* y;
-%! loglogerr (x, y, eyl, eyu, "#~x-");
+%! loglogerr (x, y, eyl, eyu, '#~x-');
 %! xlim (x([1, end]));
 

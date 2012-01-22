@@ -87,9 +87,9 @@ endfunction
 
 %!demo
 %! clf;
-%! ezplot ("1/x");
+%! ezplot ('1/x');
 
 %!demo
 %! clf;
-%! ezplot (inline ("x^2 - y^2 = 1"));
+%! ezplot (inline ('x^2 - y^2 = 1'));
 

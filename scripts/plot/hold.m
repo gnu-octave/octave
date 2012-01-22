@@ -108,7 +108,7 @@ endfunction
 %! clf;
 %! hold on;
 %! imagesc (1 ./ hilb (4));
-%! plot (1:4, "-s");
+%! plot (1:4, '-s');
 %! hold off;
 
 %!demo
@@ -121,7 +121,7 @@ endfunction
 %!demo
 %! clf;
 %! hold on;
-%! plot (1:4, "-s");
+%! plot (1:4, '-s');
 %! imagesc (1 ./ hilb (4));
 %! hold off;
 
@@ -133,12 +133,12 @@ endfunction
 %! z = peaks (x, y);
 %! contourf (x, y, z, 10);
 %! hold on;
-%! plot (vec (x), vec (y), "^");
-%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], "red");
+%! plot (vec (x), vec (y), '^');
+%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], 'red');
 %! xlim ([-2.0 2.0]);
 %! ylim ([-2.0 2.0]);
-%! colorbar ("SouthOutside");
-%! title ("Test script for some plot functions");
+%! colorbar ('SouthOutside');
+%! title ('Test script for some plot functions');
 
 ##hold on
 %!test

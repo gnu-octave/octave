@@ -197,9 +197,9 @@ endfunction
 %! isosurface (x, y, z, v, 1);
 
 %!shared x, y, z, val
-%!  [x, y, z]  = meshgrid (0:1, 0:1, 0:1); ## Points for single
-%!  val        = [0, 0; 0, 0];             ## cube and a 3-D
-%!  val(:,:,2) = [0, 0; 1, 0];             ## array of values
+%!  [x, y, z]  = meshgrid (0:1, 0:1, 0:1); %% Points for single
+%!  val        = [0, 0; 0, 0];             %% cube and a 3-D
+%!  val(:,:,2) = [0, 0; 1, 0];             %% array of values
 %!test
 %!  fv = isosurface (x, y, z, val, 0.3);
 %!  assert (isfield (fv, "vertices"), true);

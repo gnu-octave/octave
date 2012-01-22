@@ -122,7 +122,7 @@ endfunction
 
 
 %!demo
-%! uiputfile ({"*.gif;*.png;*.jpg", "Supported Picture Formats"});
+%! uiputfile ({'*.gif;*.png;*.jpg', 'Supported Picture Formats'});
 
 ## Remove from test statistics.  No real tests possible.
 %!assert (1)

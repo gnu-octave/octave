@@ -360,22 +360,22 @@ endfunction
 %!
 %! subplot (221);
 %!  plot (t, x);
-%!  title ("normal plot");
+%!  title ('normal plot');
 %!
 %! subplot (222);
 %!  plot (t, x);
-%!  title ("square plot");
-%!  axis ("square");
+%!  title ('square plot');
+%!  axis ('square');
 %!
 %! subplot (223);
 %!  plot (t, x);
-%!  title ("equal plot");
-%!  axis ("equal");
+%!  title ('equal plot');
+%!  axis ('equal');
 %!
 %! subplot (224);
 %!  plot (t, x);
-%!  title ("normal plot again");
-%!  axis ("normal");
+%!  title ('normal plot again');
+%!  axis ('normal');
 
 %!demo
 %! clf;
@@ -384,13 +384,13 @@ endfunction
 %!
 %! subplot (121);
 %!  plot (t, x);
-%!  title ("ij plot");
-%!  axis ("ij");
+%!  title ('ij plot');
+%!  axis ('ij');
 %!
 %! subplot (122);
 %!  plot (t, x);
-%!  title ("xy plot");
-%!  axis ("xy");
+%!  title ('xy plot');
+%!  axis ('xy');
 
 %!demo
 %! clf;
@@ -399,48 +399,48 @@ endfunction
 %!
 %! subplot (331);
 %!  plot (t, x);
-%!  title ("x tics and labels");
-%!  axis ("ticx");
+%!  title ('x tics and labels');
+%!  axis ('ticx');
 %!
 %! subplot (332);
 %!  plot (t, x);
-%!  title ("y tics and labels");
-%!  axis ("ticy");
+%!  title ('y tics and labels');
+%!  axis ('ticy');
 %!
 %! subplot (333);
 %!  plot (t, x);
-%!  title ("axis off");
-%!  axis ("off");
+%!  title ('axis off');
+%!  axis ('off');
 %!
 %! subplot (334);
 %!  plot (t, x);
-%!  title ("x and y tics, x labels");
-%!  axis ("labelx","tic");
+%!  title ('x and y tics, x labels');
+%!  axis ('labelx','tic');
 %!
 %! subplot (335);
 %!  plot (t, x);
-%!  title ("x and y tics, y labels");
-%!  axis ("labely","tic");
+%!  title ('x and y tics, y labels');
+%!  axis ('labely','tic');
 %!
 %! subplot (336);
 %!  plot (t, x);
-%!  title ("all tics but no labels");
-%!  axis ("nolabel","tic");
+%!  title ('all tics but no labels');
+%!  axis ('nolabel','tic');
 %!
 %! subplot (337);
 %!  plot (t, x);
-%!  title ("x tics, no labels");
-%!  axis ("nolabel","ticx");
+%!  title ('x tics, no labels');
+%!  axis ('nolabel','ticx');
 %!
 %! subplot (338);
 %!  plot (t, x);
-%!  title ("y tics, no labels");
-%!  axis ("nolabel","ticy");
+%!  title ('y tics, no labels');
+%!  axis ('nolabel','ticy');
 %!
 %! subplot (339);
 %!  plot (t, x);
-%!  title ("all tics and labels");
-%!  axis ("on");
+%!  title ('all tics and labels');
+%!  axis ('on');
 
 %!demo
 %! clf;
@@ -449,43 +449,43 @@ endfunction
 %!
 %! subplot (321);
 %!  plot (t, x);
-%!  title ("axes at [0 3 0 1]");
+%!  title ('axes at [0 3 0 1]');
 %!  axis ([0,3,0,1]);
 %!
 %! subplot (322);
 %!  plot (t, x);
-%!  title ("auto");
-%!  axis ("auto");
+%!  title ('auto');
+%!  axis ('auto');
 %!
 %! subplot (323);
-%!  plot (t, x, ";sine [0:2pi];"); hold on;
-%!  plot (-3:3,-3:3, ";line (-3,-3)->(3,3);"); hold off;
-%!  title ("manual");
-%!  axis ("manual");
+%!  plot (t, x, ';sine [0:2pi];'); hold on;
+%!  plot (-3:3,-3:3, ';line (-3,-3)->(3,3);'); hold off;
+%!  title ('manual');
+%!  axis ('manual');
 %!
 %! subplot (324);
-%!  plot (t, x, ";sine [0:2pi];");
-%!  title ("axes at [0 3 0 1], then autox");
+%!  plot (t, x, ';sine [0:2pi];');
+%!  title ('axes at [0 3 0 1], then autox');
 %!  axis ([0,3,0,1]);
-%!  axis ("autox");
+%!  axis ('autox');
 %!
 %! subplot (325);
-%!  plot (t, x, ";sine [0:2p];");
-%!  title ("axes at [3 6 0 1], then autoy");
+%!  plot (t, x, ';sine [0:2p];');
+%!  title ('axes at [3 6 0 1], then autoy');
 %!  axis ([3,6,0,1]);
-%!  axis ("autoy");
+%!  axis ('autoy');
 %!
 %! subplot (326);
 %!  plot (t, sin(t), t, -2*sin(t/2));
-%!  axis ("tight");
-%!  title ("tight");
+%!  axis ('tight');
+%!  title ('tight');
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
 %! plot (x, sin(x));
 %! axis image;
-%! title ("image");
+%! title ('image');
 
 %!demo
 %! clf;
@@ -502,13 +502,13 @@ endfunction
 %! clf;
 %! x = -10:10;
 %! plot (x,x, x,-x);
-%! set (gca, "yscale", "log");
-%! legend ({"x >= 1", "x <= 1"}, "location", "north");
-%! title ("ylim = [1, 10]");
+%! set (gca, 'yscale', 'log');
+%! legend ({'x >= 1', 'x <= 1'}, 'location', 'north');
+%! title ('ylim = [1, 10]');
 
 %!demo
 %! clf;
-%! loglog (1:20, "-s");
+%! loglog (1:20, '-s');
 %! axis tight;
 
 %!demo
@@ -516,9 +516,9 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ("no plot box");
-%! set (gca, "xaxislocation", "zero");
-%! set (gca, "yaxislocation", "zero");
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'zero');
 %! box off;
 
 %!demo
@@ -526,9 +526,9 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ("no plot box");
-%! set (gca, "xaxislocation", "zero");
-%! set (gca, "yaxislocation", "left");
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'left');
 %! box off;
 
 %!demo
@@ -536,9 +536,9 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ("no plot box");
-%! set (gca, "xaxislocation", "zero");
-%! set (gca, "yaxislocation", "right");
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'right');
 %! box off;
 
 %!demo
@@ -546,9 +546,9 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ("no plot box");
-%! set (gca, "xaxislocation", "bottom");
-%! set (gca, "yaxislocation", "zero");
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'bottom');
+%! set (gca, 'yaxislocation', 'zero');
 %! box off;
 
 %!demo
@@ -556,9 +556,9 @@ endfunction
 %! x = -10:0.1:10;
 %! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
 %! plot (x, y);
-%! title ("no plot box");
-%! set (gca, "xaxislocation", "top");
-%! set (gca, "yaxislocation", "zero");
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'top');
+%! set (gca, 'yaxislocation', 'zero');
 %! box off;
 
 %!test

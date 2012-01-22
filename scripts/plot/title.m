@@ -48,16 +48,16 @@ endfunction
 %!demo
 %! clf;
 %! ax = axes ();
-%! xl = get (ax,"title");
-%! title ("Testing title");
-%! assert (get (xl, "string"), "Testing title");
+%! xl = get (ax,'title');
+%! title ('Testing title');
+%! assert (get (xl, 'string'), 'Testing title');
 
 %!demo
 %! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! xl = get (gca (), "title");
-%! title ("Testing title");
-%! assert (get (xl, "string"), "Testing title");
+%! xl = get (gca (), 'title');
+%! title ('Testing title');
+%! assert (get (xl, 'string'), 'Testing title');
 
 %!test
 %! hf = figure ("visible", "off");

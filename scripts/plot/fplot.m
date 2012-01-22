@@ -130,9 +130,9 @@ endfunction
 
 %!demo
 %! clf;
-%! fplot ("cos", [0, 2*pi]);
+%! fplot ('cos', [0, 2*pi]);
 
 %!demo
 %! clf;
-%! fplot ("[cos(x), sin(x)]", [0, 2*pi]);
+%! fplot ('[cos(x), sin(x)]', [0, 2*pi]);
 

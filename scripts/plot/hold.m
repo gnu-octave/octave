@@ -106,6 +106,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! hold on;
 %! imagesc (1 ./ hilb (4));
 %! plot (1:4, '-s');
@@ -113,6 +114,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! hold on;
 %! imagesc (1 ./ hilb (2));
 %! imagesc (1 ./ hilb (4));
@@ -120,6 +122,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! hold on;
 %! plot (1:4, '-s');
 %! imagesc (1 ./ hilb (4));
@@ -127,7 +130,7 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap (jet (64));
+%! colormap ('default');
 %! t = linspace (-3, 3, 50);
 %! [x, y] = meshgrid (t, t);
 %! z = peaks (x, y);

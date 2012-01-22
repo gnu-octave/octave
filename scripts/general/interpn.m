@@ -212,6 +212,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,4]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -222,6 +223,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,4]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -232,6 +234,7 @@ endfunction
 
 %!#demo  # FIXME: Uncomment when support for "cubic" has been added
 %! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -242,6 +245,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -252,6 +256,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! x = y = z = -1:1;
 %! f = @(x,y,z) x.^2 - y - z.^2;
 %! [xx, yy, zz] = meshgrid (x, y, z);

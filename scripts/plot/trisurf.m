@@ -74,6 +74,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! N = 31;
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x, y);
@@ -85,6 +86,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! N = 31;
 %! [x, y] = meshgrid (1:N);
 %! tri = delaunay (x, y);
@@ -96,6 +98,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! old_state = rand ('state');
 %! restore_state = onCleanup (@() rand ('state', old_state));
 %! rand ('state', 10);
@@ -108,6 +111,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
@@ -116,6 +120,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
@@ -124,6 +129,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;

@@ -446,6 +446,8 @@ endfunction
 
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,4]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -455,6 +457,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
 %! xi = linspace (min(x), max(x), 41);
@@ -464,6 +468,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,4]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -473,6 +479,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
 %! xi = linspace (min(x), max(x), 41);
@@ -482,6 +490,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -491,6 +501,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
 %! xi = linspace (min(x), max(x), 41);
@@ -500,6 +512,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -509,6 +523,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
 %! xi = linspace (min(x), max(x), 41);
@@ -518,6 +534,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! A = [13,-1,12;5,4,3;1,6,2];
 %! x = [0,1,2]; y = [10,11,12];
 %! xi = linspace (min(x), max(x), 17);
@@ -527,6 +545,8 @@ endfunction
 %! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! clf;
+%! colormap ("default");
 %! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
 %! xi = linspace (min(x), max(x), 41);

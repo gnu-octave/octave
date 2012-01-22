@@ -245,6 +245,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! x = linspace (-1, 1, 201);
 %! subplot (2,2,1);
 %!  plotyy (x,sin(pi*x), x,10*cos(pi*x));

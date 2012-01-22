@@ -87,7 +87,7 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap (jet (64));
+%! colormap ('default');
 %! [x,y] = meshgrid (-1:0.1:1);
 %! z = sin (2*pi * sqrt (x.^2 + y.^2));
 %! theta = 2*pi * sqrt (x.^2 + y.^2) + pi/2;
@@ -98,6 +98,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [x, y, z] = peaks (25);
 %! surf (x, y, z);
 %! hold on;
@@ -108,6 +109,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [x, y, z] = peaks (25);
 %! surf (x, y, z);
 %! hold on;

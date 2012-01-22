@@ -73,11 +73,13 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [x, y, z] = peaks ();
 %! contour (x, y, z);
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [theta, r] = meshgrid (linspace (0,2*pi,64), linspace (0,1,64));
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
@@ -85,6 +87,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! x = linspace (-2, 2);
 %! [x, y] = meshgrid (x);
 %! z = sqrt (x.^2 + y.^2) ./ (x.^2 + y.^2 + 1);

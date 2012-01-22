@@ -489,6 +489,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [x,y,z] = peaks (50);
 %! x1 = max (x(:));
 %! pcolor (x-x1, y-x1/2, z);

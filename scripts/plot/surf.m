@@ -67,11 +67,13 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [~,~,Z] = peaks ();
 %! surf (Z);
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [~,~,Z] = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! surf (Z, Fx+Fy);
@@ -79,6 +81,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [X,Y,Z] = sombrero ();
 %! [~,Fy] = gradient (Z);
 %! surf (X, Y, Z, Fy);

@@ -76,37 +76,42 @@ endfunction
 
 %!demo
 %! clf;
-%! colormap (jet (64));
+%! colormap ('default');
 %! sombrero ();
 %! shading faceted;
 %! title ('shading ''faceted''');
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! sombrero ();
 %! shading flat;
 %! title ('shading ''flat''');
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! sombrero ();
 %! shading interp;
 %! title ('shading ''interp''');
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! pcolor (peaks ());
 %! shading faceted;
 %! title ('shading ''faceted''');
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! pcolor (peaks ());
 %! shading flat;
 %! title ('shading ''flat''');
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! pcolor (peaks ());
 %! shading interp;
 %! title ('shading ''interp''');

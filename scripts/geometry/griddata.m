@@ -143,6 +143,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! x = 2*rand (100,1) - 1;
 %! y = 2*rand (size (x)) - 1;
 %! z = sin (2*(x.^2 + y.^2));
@@ -152,6 +153,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! x = 2*rand (1000,1) - 1;
 %! y = 2*rand (size (x)) - 1;
 %! z = sin (2*(x.^2 + y.^2));
@@ -161,10 +163,11 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! x = 2*rand (1000,1) - 1;
 %! y = 2*rand (size (x)) - 1;
 %! z = sin (2*(x.^2 + y.^2));
-%! [xx,yy] = meshgrid (linspace (-1, 1, 32));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
 %! griddata (x,y,z,xx,yy,"nearest");
 %! title ("nonuniform grid sampled at 1000 points with nearest neighbor");
 

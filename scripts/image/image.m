@@ -178,6 +178,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! img = 1 ./ hilb (11);
 %! x = -5:5;
 %! y = x;
@@ -202,6 +203,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! imagesc (g, g, sin (h));
@@ -213,6 +215,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! imagesc (g, g, sin (h));
@@ -225,6 +228,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ("default");
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! plot (g, 10.5 * ones (size (g)));

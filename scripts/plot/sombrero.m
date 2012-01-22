@@ -64,5 +64,6 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! sombrero ();
 

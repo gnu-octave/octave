@@ -84,11 +84,13 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [~,~,Z] = peaks ();
 %! pcolor (Z);
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [X,Y,Z] = sombrero ();
 %! [Fx,Fy] = gradient (Z);
 %! pcolor (X,Y,Fx+Fy);

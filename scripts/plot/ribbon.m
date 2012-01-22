@@ -87,6 +87,7 @@ endfunction
 
 %!demo
 %! clf;
+%! colormap ('default');
 %! [x, y, z] = sombrero ();
 %! [x, y] = meshgrid (x, y);
 %! ribbon (y, z);

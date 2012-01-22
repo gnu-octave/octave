@@ -23,21 +23,21 @@
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L}, @var{P})
 ## @deftypefnx {Function File} {} surfl (@dots{}, "light")
 ## Plot a lighted surface given matrices @var{x}, and @var{y} from
-## @code{meshgrid} and
-## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
-## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
-## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
-## correspond to different @var{x} values and rows of @var{z} correspond
-## to different @var{y} values.
+## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and
+## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors, then
+## a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns
+## of @var{z} correspond to different @var{x} values and rows of @var{z}
+## correspond to different @var{y} values.
 ##
-## The light direction can be specified using @var{L}.  It can be
-## given as 2-element vector [azimuth, elevation] in degrees or as 3-element
-## vector [lx, ly, lz].
-## The default value is rotated 45° counter-clockwise from the current view.
+## The light direction can be specified using @var{L}.  It can be given as a
+## 2-element vector [azimuth, elevation] in degrees or as a 3-element vector
+## [lx, ly, lz].  The default value is rotated 45 degrees counterclockwise
+## from the current view.
 ##
 ## The material properties of the surface can specified using a 4-element vector
 ## @var{P} = [@var{AM} @var{D} @var{SP} @var{exp}] which defaults to
 ## @var{p} = [0.55 0.6 0.4 10].
+##
 ## @table @asis
 ## @item "AM" strength of ambient light
 ##
@@ -49,17 +49,16 @@
 ## @end table
 ##
 ## The default lighting mode "cdata", changes the cdata property to give the
-## impression
-## of a lighted surface.  Please note: the alternative "light" mode, which
-## creates a light
-## object to illuminate the surface is not implemented (yet).
+## impression of a lighted surface.  Please note: the alternative "light"
+## mode, which creates a light object to illuminate the surface is not
+## implemented (yet).
 ##
 ## Example:
 ##
 ## @example
 ## @group
-## colormap(bone);
-## surfl(peaks);
+## colormap (bone);
+## surfl (peaks);
 ## shading interp;
 ## @end group
 ## @end example

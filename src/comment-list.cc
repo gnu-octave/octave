@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2011 John W. Eaton
+Copyright (C) 2000-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "lo-utils.h"
+#include "singleton-cleanup.h"
 
 #include "comment-list.h"
 #include "error.h"
@@ -52,7 +53,12 @@ octave_comment_buffer::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_comment_buffer ();
+    {
+      instance = new octave_comment_buffer ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

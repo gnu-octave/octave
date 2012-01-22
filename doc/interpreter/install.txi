@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -44,7 +44,241 @@ derived file.
 @cindex installing Octave
 
 The procedure for installing Octave from source on a Unix-like system is
-described below.  Building on other platforms will follow similar steps.
+described below.  Building on other platforms will follow similar
+steps.  Note that this description applies to Octave releases.  Building
+the development sources from the Mercurial archive requires additional
+steps as described in @ref{Building the Development Sources}.
+
+@menu
+* Build Dependencies::
+* Running Configure and Make::
+* Compiling Octave with 64-bit Indexing::
+* Installation Problems::
+@end menu
+
+@node Build Dependencies
+@section Build Dependencies
+
+Octave is a fairly large program with many build dependencies.  You may
+be able to find pre-packaged versions of the dependencies distributed as
+part of your system, or you may have to build some or all of them
+yourself.
+
+@menu
+* Tips for Specific Systems::
+* Build Tools::
+* External Packages::
+@end menu
+
+@node Tips for Specific Systems
+@subsection Tips for Specific Systems
+
+The names of pre-compiled packages vary by system and do not always
+match exactly the names listed above.
+
+You will usually need the development version of an external dependency
+so that you get the libraries and header files for building software,
+not just for running already compiled programs.  These packages
+typically have names that end with the suffix @code{-dev} or @code{-devel}.
+
+On systems with @code{apt-get} (Debian, Ubuntu, etc.), you may be able
+to install most of the tools and external packages using a command
+similar to
+
+@example
+apt-get build-dep octave
+@end example
+
+@noindent
+The specific package name may be @code{octave3.2} or @code{octave3.4}.
+The set of required tools and external dependencies does not change
+frequently, so it is not important that the version match exactly, but
+you should use the most recent one available.
+
+On systems with @code{yum} (Fedora, Red Hat, etc.), you may be able to
+install most of the tools and external packages using a command similar to
+
+@example
+yum-builddep octave
+@end example
+
+@noindent
+The @code{yum-builddep} utility is part of the @code{yum-utils} package.
+
+For either type of system, the package name may include a version
+number.  The set of required tools and external dependencies does not
+change frequently, so it is not important that the version exactly match
+the version you are installing, but you should use the most recent one
+available.
+
+@node Build Tools
+@subsection Build Tools
+
+The following tools are required:
+
+@table @asis
+@item C++, C, and Fortran compilers
+The Octave sources are primarily written in C++, but some portions are
+also written in C and Fortran.  The Octave sources are intended to be
+portable.  Recent versions of the GNU compiler collection (GCC) should
+work (@url{http://gcc.gnu.org}).  If you use GCC, you should avoid
+mixing versions.  For example, be sure that you are not using the
+obsolete @code{g77} Fortran compiler with modern versions of @code{gcc}
+and @code{g++}.
+
+@item GNU Make
+Tool for building software (@url{http://www.gnu.org/software/make}).
+Octave's build system requires GNU Make.  Other versions of Make will
+not work.  Fortunately, GNU Make is highly portable and easy to install.
+
+@item AWK, sed, and other Unix utilities
+Basic Unix system utilities are required for building Octave.  All will
+be available with any modern Unix system and also on Windows with either
+Cygwin or MinGW and MSYS.
+@end table
+
+Additionally, the following tools may be needed:
+
+@table @asis
+@item Bison
+Parser generator (@url{http://www.gnu.org/software/bison}).
+You will need Bison if you modify the @code{oct-parse.yy} source file or
+if you delete the files that are generated from it.
+
+@item Flex
+Lexer analyzer (@url{http://www.gnu.org/software/flex}).  You will need
+Flex if you modify the @code{lex.ll} source file or if you delete the
+files that are generated from it.
+
+@item Autoconf
+Package for software configuration
+(@url{http://www.gnu.org/software/autoconf}).  Autoconf is required if
+you modify Octave's @code{configure.ac} file or other files that it
+requires.
+
+@item Automake
+Package for Makefile generation
+(@url{http://www.gnu.org/software/automake}).  Automake is required if
+you modify Octave's @code{Makefile.am} files or other files that they
+depend on.
+
+@item Libtool
+Package for building software libraries
+(@url{http://www.gnu.org/software/libtool}).  Libtool is required by
+Automake.
+@end table
+
+@node External Packages
+@subsection External Packages
+
+The following external packages are required:
+
+@table @asis
+@item BLAS
+Basic Linear Algebra Subroutine library
+(@url{http://www.netlib.org/blas}).  Accelerated BLAS libraries such as
+ATLAS (@url{http://math-atlas.sourceforge.net}) are recommeded for
+better performance.
+@item LAPACK
+Linear Algebra Package (@url{http://www.netlib.org/lapack}).
+@item PCRE
+The Perl Compatible Regular Expression library (http://www.pcre.org).
+@end table
+
+The following external package is optional but strongly recommended:
+
+@table @asis
+@item GNU Readline
+Command-line editing library (@url{www.gnu.org/s/readline}).
+@end table
+
+If you wish to build Octave without GNU readline installed, you must use
+the @code{--disable-readline} option when running the configure script.
+
+The following external software packages are optional but recommended:
+
+@table @asis
+@item ARPACK
+Library for the solution of large-scale eigenvalue problems
+(@url{http://forge.scilab.org/index.php/p/arpack-ng}).  ARPACK is
+required to provide the functions @code{eigs} and @code{svds}.
+
+@item cURL
+Library for transferring data with URL syntax
+(@url{http://curl.haxx.se}).  cURL is required to provide the
+@code{urlread} and @code{urlwrite} functions and the @code{ftp} class.
+
+@item FFTW3
+Library for computing discrete Fourier transforms
+(@url{http://www.fftw.org}).  FFTW3 is used to provide better
+performance for functions that compute discrete Fourier transforms
+(@code{fft}, @code{ifft}, @code{fft2}, etc.)
+
+@item FLTK
+Portable GUI toolkit (@url{http://www.fltk.org}).  FLTK is currently
+used to provide windows for Octave's OpenGL-based graphics functions.
+
+@item fontconfig
+Library for configuring and customizing font access
+(@url{http://www.freedesktop.org/wiki/Software/fontconfig}).  Fontconfig
+is used to manage fonts for Octave's OpenGL-based graphics functions.
+
+@item FreeType
+Portable font engine (@url{http://www.freetype.org}).  FreeType is used
+to perform font rendering for Octave's OpenGL-based graphics functions.
+
+@item GLPK
+GNU Linear Programming Kit (@url{http://www.gnu.org/software/glpk}).
+GPLK is required for the function @code{glpk}.
+
+@item gnuplot
+Interactive graphics program (@url{http://www.gnuplot.info}).  gnuplot
+is currently the default graphics renderer for Octave.
+
+@item GraphicsMagick++
+Image processing library (@url{http://www.graphicsmagick.org}).
+GraphicsMagick++ is used to provide the @code{imread} and @code{imwrite}
+functions.
+
+@item HDF5
+Library for manipulating portable data files
+(@url{http://www.hdfgroup.org/HDF5}).  HDF5 is required for Octave's
+@code{load} and @code{save} commands to read and write HDF data files.
+
+@item OpenGL
+API for portable 2D and 3D graphics (@url{http://www.opengl.org}).  An
+OpenGL implementation is required to provide Octave's OpenGL-based
+graphics functions.  Octave's OpenGL-based graphics functions usually
+outperform the gnuplot-based graphics functions because plot data can be
+rendered directly instead of sending data and commands to gnuplot for
+interpretation and rendering.
+
+@item Qhull
+Computational geometry library (@url{http://www.qhull.org}).  Qhull is
+required to provide the functions @code{convhull}, @code{convhulln}, 
+@code{delaunay}, @code{delaunay3}, @code{delaunayn}, @code{voronoi}, and
+@code{voronoin}.
+
+@item QRUPDATE
+QR factorization updating library
+(@url{http://sourceforge.net/projects/qrupdate}).  QRUPDATE is used to
+provide improved performance for the functions @code{qrdelete},
+@code{qrinsert}, @code{qrshift}, and @code{qrupdate}.
+
+@item SuiteSparse
+Sparse matrix factorization library
+(@url{http://www.cise.ufl.edu/research/sparse/SuiteSparse}).
+SuiteSparse is required to provide sparse matrix factorizations and
+solution of linear equations for sparse systems.
+
+@item zlib
+Data compression library (@url{http://zlib.net}).  The zlib library is
+required for Octave's @code{load} and @code{save} commands to handle
+compressed data, including @sc{Matlab} v5 MAT files.
+@end table
+
+@node Running Configure and Make
+@section Running Configure and Make
 
 @itemize @bullet
 @item
@@ -82,7 +316,7 @@ recommended for general use.
 @item --disable-docs
 Disable building all forms of the documentation (Info, PDF, HTML).  The
 default is to build documentation, but your system will need functioning
-Texinfo and Tex installs for this to succeed.
+Texinfo and @TeX{} installs for this to succeed.
 
 @item --enable-float-truncate
 This option allows for truncation of intermediate floating point results
@@ -314,13 +548,8 @@ Image files that are distributed with Octave.
 @end table
 @end itemize
 
-@menu
-* Compiling Octave with 64-bit Indexing::       
-* Installation Problems::       
-@end menu
-
 @node Compiling Octave with 64-bit Indexing  
-@appendixsec Compiling Octave with 64-bit Indexing
+@section Compiling Octave with 64-bit Indexing
 
 Note: the following only applies to systems that have 64-bit pointers.
 Configuring Octave with @option{--enable-64} cannot magically make a
@@ -585,7 +814,7 @@ please submit a bug report.
 @end itemize
 
 @node Installation Problems
-@appendixsec Installation Problems
+@section Installation Problems
 
 This section contains a list of problems (and some apparent problems
 that don't really mean anything is wrong) that may show up during
@@ -747,7 +976,7 @@ when compiling @file{Array.cc} and @file{Matrix.cc}, try recompiling
 these files without @option{-g}.
 
 @item
-Some people have reported that calls to shell_cmd and the pager do not
+Some people have reported that calls to system() and the pager do not
 work on SunOS systems.  This is apparently due to having
 @w{@code{G_HAVE_SYS_WAIT}} defined to be 0 instead of 1 when compiling
 @code{libg++}.

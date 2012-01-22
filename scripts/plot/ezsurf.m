@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} ezsurf (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezsurf (@dots{})
 ##
-## Plots the surface defined by a function.  @var{f} is a string, inline
+## Plot the surface defined by a function.  @var{f} is a string, inline
 ## function or function handle with two arguments defining the function.  By
 ## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
 ## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.
@@ -44,8 +44,8 @@
 ## If the argument 'circ' is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a graphics handle to the created
+## surface object.
 ##
 ## @example
 ## @group
@@ -79,14 +79,21 @@ function retval = ezsurf (varargin)
   if (nargout > 0)
     retval = h;
   endif
+
 endfunction
 
+
 %!demo
-%! f = @(x,y) sqrt(abs(x .* y)) ./ (1 + x.^2 + y.^2);
+%! clf;
+%! colormap ('default');
+%! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezsurf (f, [-3, 3]);
 
 %!demo
+%! clf;
+%! colormap ('default');
 %! fx = @(s,t) cos (s) .* cos(t);
 %! fy = @(s,t) sin (s) .* cos(t);
 %! fz = @(s,t) sin (t);
 %! ezsurf (fx, fy, fz, [-pi,pi,-pi/2,pi/2], 20);
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -112,6 +112,13 @@ tree_index_expression::~tree_index_expression (void)
       std::list<tree_argument_list *>::iterator p = args.begin ();
       delete *p;
       args.erase (p);
+    }
+
+  while (! dyn_field.empty ())
+    {
+      std::list<tree_expression *>::iterator p = dyn_field.begin ();
+      delete *p;
+      dyn_field.erase (p);
     }
 }
 

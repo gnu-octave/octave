@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -413,7 +413,7 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 
       if (error_state || (val < 0 || (! xisinf (val) && val != xround (val))))
         {
-          error ("find: N must be a nonnegative integer");
+          error ("find: N must be a non-negative integer");
           return retval;
         }
       else if (! xisinf (val))

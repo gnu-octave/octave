@@ -1,4 +1,4 @@
-## Copyright (C) 2011 Michael Goffioul
+## Copyright (C) 2012 Michael Goffioul
 ##
 ## This file is part of Octave.
 ##
@@ -29,8 +29,8 @@
 
 function uiresume (h)
 
-  if (! ishandle (h) || ! strcmp (get (h, "type"), "figure"))
-    error ("uiresume: invalid figure handle");
+  if (! isfigure (h))
+    error ("uiresume: invalid figure handle H");
   endif
 
   try

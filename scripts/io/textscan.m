@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 Ben Abbott <bpabbott@mac.com>
+## Copyright (C) 2010-2012 Ben Abbott <bpabbott@mac.com>
 ##
 ## This file is part of Octave.
 ##
@@ -104,14 +104,11 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     whitespace = " \b\t";
   else
     ## Check if there's at least one string format specifier
-    fmt = strrep (format, "%", " %");
-    fmt = regexp (fmt, '[^ ]+', 'match');
-    fmt = strtrim (fmt(strmatch ("%", fmt)))
-    has_str_fmt = all (cellfun ("isempty", strfind (strtrim (fmt(strmatch ("%", fmt))), 's')));
-    ## If there is a format, AND whitespace value = empty,
+    has_str_fmt = regexp (format, '%[*]?\d*s', "once");
+    ## If there is a string format AND whitespace value = empty,
     ## don't add a space (char(32)) to whitespace
-    if (! (isempty (args{ipos+1}) &&  has_str_fmt))
-      args{ipos+1} = unique ([" ", whitespace]);
+    if (! (isempty (args{ipos+1}) && has_str_fmt))
+      args{ipos+1} = unique ([" ", args{ipos+1}]);
     endif
   endif
 
@@ -185,7 +182,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   if (! isempty (endofline))
     if (ischar (args{endofline + 1}))
       eol_char = args{endofline + 1};
-      if (isempty (strmatch (eol_char, {"", "\n", "\r", "\r\n"}, 'exact')))
+      if (! any (strcmp (eol_char, {"", "\n", "\r", "\r\n"})))
         error ("textscan: illegal EndOfLine character value specified");
       endif
     else
@@ -195,10 +192,10 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
     eol_srch_len = min (length (str), 3000);
     ## First try DOS (CRLF)
-    if (! isempty (findstr ("\r\n", str(1 : eol_srch_len))))
+    if (! isempty (strfind ("\r\n", str(1 : eol_srch_len))))
       eol_char = "\r\n";
     ## Perhaps old Macintosh? (CR)
-    elseif (! isempty (findstr ("\r", str(1 : eol_srch_len))))
+    elseif (! isempty (strfind ("\r", str(1 : eol_srch_len))))
       eol_char = "\r";
     ## Otherwise, use plain UNIX (LF)
     else

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2011 John W. Eaton
+Copyright (C) 2009-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -72,6 +72,8 @@ public:
 private:
 
   static display_info *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   // Height, width, and depth of the display.
   int ht;

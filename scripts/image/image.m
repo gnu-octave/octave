@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2011 John W. Eaton
+## Copyright (C) 1994-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
+## @deftypefnx {Function File} {@var{h} =} image (@dots{})
 ## Display a matrix as a color image.  The elements of @var{img} are indices
 ## into the current colormap, and the colormap will be scaled so that the
 ## extremes of @var{img} are mapped to the extremes of the colormap.
@@ -35,6 +36,8 @@
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata,1)}.
+##
+## The optional return value @var{h} is a graphics handle to the image.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
@@ -95,7 +98,7 @@ endfunction
 ## Adapted-By: jwe
 
 function h = __img__ (x, y, img, varargin)
-
+  
   newplot ();
 
   if (isempty (img))
@@ -112,6 +115,15 @@ function h = __img__ (x, y, img, varargin)
 
   xdata = [x(1), x(end)];
   ydata = [y(1), y(end)];
+
+  dx = diff (x);
+  dy = diff (y);
+  dx = std (dx) / mean (abs (dx));
+  dy = std (dy) / mean (abs (dy));
+  tol = 100*eps;
+  if (any (dx > tol) || any (dy > tol))
+    warning ("Image does not map to non-linearly spaced coordinates")
+  endif
 
   ca = gca ();
 
@@ -163,64 +175,69 @@ function h = __img__ (x, y, img, varargin)
 
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
+%! colormap ("default");
 %! img = 1 ./ hilb (11);
 %! x = -5:5;
 %! y = x;
-%! subplot (2,2,1)
-%! h = image (abs(x), abs(y), img);
-%! set (h, "cdatamapping", "scaled")
-%! ylabel ("limits = [4.5, 15.5]")
-%! title ('image (abs(x), abs(y), img)')
-%! subplot (2,2,2)
-%! h = image (-x, y, img);
-%! set (h, "cdatamapping", "scaled")
-%! title ('image (-x, y, img)')
-%! subplot (2,2,3)
-%! h = image (x, -y, img);
-%! set (h, "cdatamapping", "scaled")
-%! title ('image (x, -y, img)')
-%! ylabel ("limits = [-5.5, 5.5]")
-%! subplot (2,2,4)
-%! h = image (-x, -y, img);
-%! set (h, "cdatamapping", "scaled")
-%! title ('image (-x, -y, img)')
+%! subplot (2,2,1);
+%!  h = image (abs(x), abs(y), img);
+%!  set (h, "cdatamapping", "scaled");
+%!  ylabel ("limits = [4.5, 15.5]");
+%!  title ("image (abs(x), abs(y), img)");
+%! subplot (2,2,2);
+%!  h = image (-x, y, img);
+%!  set (h, "cdatamapping", "scaled");
+%!  title ("image (-x, y, img)");
+%! subplot (2,2,3);
+%!  h = image (x, -y, img);
+%!  set (h, "cdatamapping", "scaled");
+%!  title ("image (x, -y, img)");
+%!  ylabel ("limits = [-5.5, 5.5]");
+%! subplot (2,2,4);
+%!  h = image (-x, -y, img);
+%!  set (h, "cdatamapping", "scaled");
+%!  title ("image (-x, -y, img)");
 
 %!demo
-%! clf
+%! clf;
+%! colormap ("default");
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! imagesc (g, g, sin (h));
-%! hold on
+%! hold on;
 %! imagesc (g, g+12, cos (h/2));
-%! axis ([0 10 0 22])
-%! hold off
-%! title ("two consecutive images")
+%! axis ([0 10 0 22]);
+%! hold off;
+%! title ("two consecutive images");
 
 %!demo
-%! clf
+%! clf;
+%! colormap ("default");
 %! g = 0.1:0.1:10;
 %! h = g'*g;
 %! imagesc (g, g, sin (h));
-%! hold all
-%! plot (g, 11.0 * ones (size (g)))
+%! hold all;
+%! plot (g, 11.0 * ones (size (g)));
 %! imagesc (g, g+12, cos (h/2));
-%! axis ([0 10 0 22])
-%! hold off
-%! title ("image, line, image")
+%! axis ([0 10 0 22]);
+%! hold off;
+%! title ("image, line, image");
 
 %!demo
-%! clf
+%! clf;
+%! colormap ("default");
 %! g = 0.1:0.1:10;
 %! h = g'*g;
-%! plot (g, 10.5 * ones (size (g)))
-%! hold all
+%! plot (g, 10.5 * ones (size (g)));
+%! hold all;
 %! imagesc (g, g, sin (h));
-%! plot (g, 11.0 * ones (size (g)))
+%! plot (g, 11.0 * ones (size (g)));
 %! imagesc (g, g+12, cos (h/2));
-%! plot (g, 11.5 * ones (size (g)))
-%! axis ([0 10 0 22])
-%! hold off
-%! title ("line, image, line, image, line")
+%! plot (g, 11.5 * ones (size (g)));
+%! axis ([0 10 0 22]);
+%! hold off;
+%! title ("line, image, line, image, line");
 

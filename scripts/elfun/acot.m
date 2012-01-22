@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2011 John W. Eaton
+## Copyright (C) 1994-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -30,18 +30,18 @@ function y = acot (x)
     print_usage ();
   endif
 
-  y = atan (1./x);
+  y = atan (1 ./ x);
 
 endfunction
+
 
 %!test
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
 %! x = [rt3, 1, rt3/3, 0, -rt3/3, -1, -rt3];
 %! v = [pi/6, pi/4, pi/3, pi/2, -pi/3, -pi/4, -pi/6];
-%! assert(all (abs (acot (x) - v) < sqrt (eps)));
+%! assert (all (abs (acot (x) - v) < sqrt (eps)));
 
-%!error acot ();
-
-%!error acot (1, 2);
+%!error acot ()
+%!error acot (1, 2)
 

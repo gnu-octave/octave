@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 Kai Habel, David Bateman
+## Copyright (C) 2007-2012 Kai Habel, David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -55,8 +55,9 @@
 ## @end table
 ##
 ## The default method is @code{"linear"}.
-## The optional return value @var{h} is a vector of handles to the
-## surface graphic objects.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## surface object.
 ##
 ## Examples:
 ##
@@ -179,10 +180,20 @@ function h = slice (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
+%! colormap ('default');
 %! [x, y, z] = meshgrid (linspace (-8, 8, 32));
 %! v = sin (sqrt (x.^2 + y.^2 + z.^2)) ./ (sqrt (x.^2 + y.^2 + z.^2));
 %! slice (x, y, z, v, [], 0, []);
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! [x, y, z] = meshgrid (linspace (-8, 8, 32));
+%! v = sin (sqrt (x.^2 + y.^2 + z.^2)) ./ (sqrt (x.^2 + y.^2 + z.^2));
 %! [xi, yi] = meshgrid (linspace (-7, 7));
 %! zi = xi + yi;
 %! slice (x, y, z, v, xi, yi, zi);
+

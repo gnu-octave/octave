@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {[@var{x}, @var{p}, @var{n}, @var{k}, @var{d}] =} unmkpp (@var{pp})
 ##
 ## Extract the components of a piecewise polynomial structure @var{pp}.
-## These are as follows:
+## The components are:
 ##
 ## @table @asis
 ## @item @var{x}
@@ -43,7 +43,7 @@
 ## Number of polynomials defined for each interval.
 ## @end table
 ##
-## @seealso{mkpp, ppval, spline}
+## @seealso{mkpp, ppval, spline, pchip}
 ## @end deftypefn
 
 function [x, P, n, k, d] = unmkpp (pp)

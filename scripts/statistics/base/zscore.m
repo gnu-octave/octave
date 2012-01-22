@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2011 Kurt Hornik
+## Copyright (C) 1995-2012 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -17,23 +17,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} zscore (@var{x})
-## @deftypefnx {Function File} {} zscore (@var{x}, @var{dim})
+## @deftypefn  {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x})
+## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt})
+## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt}, @var{dim})
 ## If @var{x} is a vector, subtract its mean and divide by its standard
-## deviation.
+## deviation. If the standard deviation is zero, divide by 1 instead.
+## The optional parameter @var{opt} determines the normalization to use
+## when computing the standard deviation and is the same as the
+## corresponding parameter for @code{std}.
 ##
 ## If @var{x} is a matrix, do the above along the first non-singleton
-## dimension.
-## If the optional argument @var{dim} is given, operate along this dimension.
-## @seealso{center}
+## dimension. If the third optional argument @var{dim} is given, operate
+## along this dimension.
+##
+## The mean and standard deviation along @var{dim} are given in @var{mu}
+## and @var{sigma} respectively.
+##
+## @seealso{mean, std, center}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Subtract mean and divide by standard deviation
 
-function z = zscore (x, dim)
+function [z, mu, sigma] = zscore (x, opt, dim)
 
-  if (nargin != 1 && nargin != 2)
+  if (nargin < 1 || nargin > 3 )
     print_usage ();
   endif
 
@@ -41,9 +49,17 @@ function z = zscore (x, dim)
     error ("zscore: X must be a numeric vector or matrix");
   endif
 
+  if (nargin < 2)
+    opt = 0;
+  else
+    if (opt != 0 && opt != 1 || ! isscalar(opt))
+      error("zscore: OPT must be empty, 0, or 1");
+    endif
+  endif
+
   nd = ndims (x);
   sz = size (x);
-  if (nargin != 2)
+  if (nargin < 3)
     ## Find the first non-singleton dimension.
     (dim = find (sz > 1, 1)) || (dim = 1);
   else
@@ -57,11 +73,17 @@ function z = zscore (x, dim)
   if (n == 0)
     z = x;
   else
-    x = center (x, dim); # center also promotes integer to double for next line
-    z = zeros (sz, class (x));
-    s = std (x, [], dim);
+
+    if (isinteger (x))
+      x = double (x);
+    endif
+
+    mu = mean (x, dim);
+    sigma = std (x, opt, dim);
+    s = sigma;
     s(s==0) = 1;
-    z = bsxfun (@rdivide, x, s);
+    ## FIXME: Use normal broadcasting once we can disable that warning
+    z = bsxfun (@rdivide, bsxfun (@minus, x, mu), s);
   endif
 
 endfunction
@@ -79,6 +101,6 @@ endfunction
 %!error zscore (['A'; 'B'])
 %!error zscore (1, ones(2,2))
 %!error zscore (1, 1.5)
-%!error zscore (1, 0)
+%!error zscore (1, 1, 0)
 %!error zscore (1, 3)
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 Regents of the University of California
+## Copyright (C) 2007-2012 Regents of the University of California
 ##
 ## This file is part of Octave.
 ##
@@ -238,53 +238,54 @@ function [est, v, w, iter] = onenormest (varargin)
   v(ind_best) = 1;
 endfunction
 
+
 %!demo
-%!  N = 100;
-%!  A = randn(N) + eye(N);
-%!  [L,U,P] = lu(A);
-%!  nm1inv = onenormest(@(x) U\(L\(P*x)), @(x) P'*(L'\(U'\x)), N, 30)
-%!  norm(inv(A), 1)
+%! N = 100;
+%! A = randn (N) + eye (N);
+%! [L,U,P] = lu (A);
+%! nm1inv = onenormest (@(x) U\(L\(P*x)), @(x) P'*(L'\(U'\x)), N, 30)
+%! norm (inv (A), 1)
 
 %!test
-%!  N = 10;
-%!  A = ones (N);
-%!  [nm1, v1, w1] = onenormest (A);
-%!  [nminf, vinf, winf] = onenormest (A', 6);
-%!  assert (nm1, N, -2*eps);
-%!  assert (nminf, N, -2*eps);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! N = 10;
+%! A = ones (N);
+%! [nm1, v1, w1] = onenormest (A);
+%! [nminf, vinf, winf] = onenormest (A', 6);
+%! assert (nm1, N, -2*eps);
+%! assert (nminf, N, -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
 
 %!test
-%!  N = 10;
-%!  A = ones (N);
-%!  [nm1, v1, w1] = onenormest (@(x) A*x, @(x) A'*x, N, 3);
-%!  [nminf, vinf, winf] = onenormest (@(x) A'*x, @(x) A*x, N, 3);
-%!  assert (nm1, N, -2*eps);
-%!  assert (nminf, N, -2*eps);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! N = 10;
+%! A = ones (N);
+%! [nm1, v1, w1] = onenormest (@(x) A*x, @(x) A'*x, N, 3);
+%! [nminf, vinf, winf] = onenormest (@(x) A'*x, @(x) A*x, N, 3);
+%! assert (nm1, N, -2*eps);
+%! assert (nminf, N, -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
 
 %!test
-%!  N = 5;
-%!  A = hilb (N);
-%!  [nm1, v1, w1] = onenormest (A);
-%!  [nminf, vinf, winf] = onenormest (A', 6);
-%!  assert (nm1, norm (A, 1), -2*eps);
-%!  assert (nminf, norm (A, inf), -2*eps);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! N = 5;
+%! A = hilb (N);
+%! [nm1, v1, w1] = onenormest (A);
+%! [nminf, vinf, winf] = onenormest (A', 6);
+%! assert (nm1, norm (A, 1), -2*eps);
+%! assert (nminf, norm (A, inf), -2*eps);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
 
 ## Only likely to be within a factor of 10.
 %!test
-%!  old_state = rand ("state");
-%!  restore_state = onCleanup (@() rand ("state", old_state));
-%!  rand ('state', 42);  % Initialize to guarantee reproducible results
-%!  N = 100;
-%!  A = rand (N);
-%!  [nm1, v1, w1] = onenormest (A);
-%!  [nminf, vinf, winf] = onenormest (A', 6);
-%!  assert (nm1, norm (A, 1), -.1);
-%!  assert (nminf, norm (A, inf), -.1);
-%!  assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%!  assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ('state', 42);  % Initialize to guarantee reproducible results
+%! N = 100;
+%! A = rand (N);
+%! [nm1, v1, w1] = onenormest (A);
+%! [nminf, vinf, winf] = onenormest (A', 6);
+%! assert (nm1, norm (A, 1), -.1);
+%! assert (nminf, norm (A, inf), -.1);
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)

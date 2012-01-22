@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2011 John W. Eaton
+## Copyright (C) 1996-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -37,7 +37,7 @@ function h = figure (varargin)
   init_new_figure = false;
   if (mod (nargs, 2) == 1)
     tmp = varargin{1};
-    if (ishandle (tmp) && strcmp (get (tmp, "type"), "figure"))
+    if (isfigure (tmp))
       f = tmp;
       varargin(1) = [];
       nargs--;
@@ -63,7 +63,16 @@ function h = figure (varargin)
 
   if (rem (nargs, 2) == 0)
     if (isnan (f) || init_new_figure)
-      f = __go_figure__ (f, varargin{:});
+      if (ismac () && strcmp (graphics_toolkit (), "fltk"))
+        ## FIXME - Hack for fltk-aqua to work around bug # 31931
+        f = __go_figure__ (f);
+        drawnow ();
+        if (! isempty (varargin))
+          set (f, varargin{:});
+        endif
+      else
+        f = __go_figure__ (f, varargin{:});
+      endif
     elseif (nargs > 0)
       set (f, varargin{:});
     endif

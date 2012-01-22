@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -45,33 +45,34 @@ function retval = zlim (varargin)
   endif
 endfunction
 
+
 %!demo
-%! clf ();
+%! clf;
 %! line ();
 %! zlim ([0.2, 0.8]);
-%! title ("zlim is [0.2, 0.8]");
+%! title ('zlim is [0.2, 0.8]');
 %! assert (zlim (), [0.2, 0.8]);
 
 %!demo
-%! clf ();
+%! clf;
 %! line ();
 %! zlim ('auto');
-%! title ("zlim is auto");
-%! assert (zlim ("mode"), "auto");
+%! title ('zlim is auto');
+%! assert (zlim ('mode'), 'auto');
 
 %!demo
-%! clf ();
+%! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! zlim ([0.2, 0.8]);
-%! title ("zlim is [0.2, 0.8]");
+%! title ('zlim is [0.2, 0.8]');
 %! assert (zlim (), [0.2, 0.8]);
 
 %!demo
-%! clf ();
+%! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! zlim ('auto');
-%! title ("zlim is auto");
-%! assert (zlim ("mode"), "auto");
+%! title ('zlim is auto');
+%! assert (zlim ('mode'), 'auto');
 
 %!test
 %! hf = figure ("visible", "off");
@@ -94,3 +95,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2011 John W. Eaton
+## Copyright (C) 1996-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -74,19 +74,26 @@ function h = surfc (varargin)
 
 endfunction
 
-%!demo
-%! clf
-%! [~,~,Z]=peaks;
-%! surfc(Z);
 
 %!demo
-%! [~,~,Z]=sombrero;
-%! [Fx,Fy] = gradient(Z);
-%! surfc(Z,Fx+Fy);
+%! clf;
+%! colormap ('default');
+%! [~,~,Z] = peaks ();
+%! surfc (Z);
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! [~,~,Z] = sombrero ();
+%! [Fx,Fy] = gradient (Z);
+%! surfc (Z, Fx+Fy);
 %! shading interp;
 
 %!demo
-%! [X,Y,Z]=sombrero;
-%! [~,Fy] = gradient(Z);
-%! surfc(X,Y,Z,Fy);
+%! clf;
+%! colormap ('default');
+%! [X,Y,Z] = sombrero ();
+%! [~,Fy] = gradient (Z);
+%! surfc (X,Y,Z,Fy);
 %! shading interp;
+

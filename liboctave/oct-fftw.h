@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2011 John W. Eaton
+Copyright (C) 2001-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -44,7 +44,7 @@ protected:
 
 public:
 
-  ~octave_fftw_planner (void) { }
+  ~octave_fftw_planner (void);
 
   enum FftwMethod
   {
@@ -107,6 +107,8 @@ private:
   octave_fftw_planner& operator = (const octave_fftw_planner&);
 
   static octave_fftw_planner *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   fftw_plan
   do_create_plan (int dir, const int rank, const dim_vector dims,
@@ -179,7 +181,7 @@ protected:
 
 public:
 
-  ~octave_float_fftw_planner (void) { }
+  ~octave_float_fftw_planner (void);
 
   enum FftwMethod
   {
@@ -242,6 +244,8 @@ private:
   octave_float_fftw_planner& operator = (const octave_float_fftw_planner&);
 
   static octave_float_fftw_planner *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   fftwf_plan
   do_create_plan (int dir, const int rank, const dim_vector dims,

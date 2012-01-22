@@ -1,7 +1,7 @@
 // Template sparse classes
 /*
 
-Copyright (C) 2004-2011 David Bateman
+Copyright (C) 2004-2012 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -147,8 +147,12 @@ protected:
     {
       if (rep->count > 1)
         {
-          --rep->count;
-          rep = new SparseRep (*rep);
+          SparseRep *r = new SparseRep (*rep);
+
+          if (--rep->count == 0)
+            delete rep;
+
+          rep = r;
         }
     }
 
@@ -165,18 +169,17 @@ private:
 
   typename Sparse<T>::SparseRep *nil_rep (void) const
     {
-      static typename Sparse<T>::SparseRep *nr
-        = new typename Sparse<T>::SparseRep ();
-
-      nr->count++;
-
-      return nr;
+      static typename Sparse<T>::SparseRep nr;
+      return &nr;
     }
 
 public:
 
   Sparse (void)
-    : rep (nil_rep ()), dimensions (dim_vector(0,0)) { }
+    : rep (nil_rep ()), dimensions (dim_vector(0,0))
+    {
+      rep->count++;
+    }
 
   explicit Sparse (octave_idx_type n)
     : rep (new typename Sparse<T>::SparseRep (n)),

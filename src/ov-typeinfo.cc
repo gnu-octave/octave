@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -24,10 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include "ov-typeinfo.h"
+#include "Array.h"
+#include "singleton-cleanup.h"
 
 #include "defun.h"
 #include "error.h"
+#include "ov-typeinfo.h"
 
 const int
 octave_value_typeinfo::init_tab_sz (16);
@@ -35,14 +37,18 @@ octave_value_typeinfo::init_tab_sz (16);
 octave_value_typeinfo *
 octave_value_typeinfo::instance (0);
 
-#include <Array.h>
-
 bool
 octave_value_typeinfo::instance_ok (void)
 {
   bool retval = true;
+
   if (! instance)
-    instance = new octave_value_typeinfo ();
+    {
+      instance = new octave_value_typeinfo ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

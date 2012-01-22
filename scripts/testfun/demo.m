@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -35,8 +35,9 @@
 ## @example
 ## @group
 ##   %!demo
-##   %! t=0:0.01:2*pi; x = sin(t);
-##   %! plot (t,x)
+##   %! t = 0:0.01:2*pi;
+##   %! x = sin (t);
+##   %! plot (t,x);
 ##   %! %-------------------------------------------------
 ##   %! % the figure window shows one cycle of a sine wave
 ## @end group
@@ -122,11 +123,19 @@ function demo (name, n)
     ## Process each demo without failing
     try
       block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
-      ## Use an environment without variables
-      eval (cstrcat ("function __demo__()\n", block, "\nendfunction"));
-      ## Display the code that will be executed before executing it
-      printf ("%s example %d:%s\n\n", name, doidx(i), block);
-      __demo__;
+      ## FIXME: need to check for embedded test functions, which cause
+      ## segfaults, until issues with subfunctions in functions are resolved.
+      embed_func = regexp (block, '^\s*function ', 'once', 'lineanchors');
+      if (isempty (embed_func))
+        ## Use an environment without variables
+        eval (cstrcat ("function __demo__()\n", block, "\nendfunction"));
+        ## Display the code that will be executed before executing it
+        printf ("%s example %d:%s\n\n", name, doidx(i), block);
+        __demo__;
+      else
+        error (["Functions embedded in %!demo blocks are not allowed.\n", ...
+                "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
+      endif
     catch
       ## Let the programmer know which demo failed.
       printf ("%s example %d: failed\n%s\n", name, doidx(i), lasterr ());
@@ -136,9 +145,11 @@ function demo (name, n)
 
 endfunction
 
+
 %!demo
-%! t=0:0.01:2*pi; x = sin(t);
-%! plot (t,x)
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
+%! plot (t,x);
 %! %-------------------------------------------------
 %! % the figure window shows one cycle of a sine wave
 

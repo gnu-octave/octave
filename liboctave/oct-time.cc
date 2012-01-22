@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2011 John W. Eaton
+Copyright (C) 1999-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-error.h"
 #include "lo-math.h"
 #include "lo-utils.h"
+#include "oct-locbuf.h"
 #include "oct-time.h"
 
 octave_time::octave_time (const octave_base_tm& tm)
@@ -52,6 +53,10 @@ octave_time::octave_time (const octave_base_tm& tm)
   t.tm_wday = tm.wday ();
   t.tm_yday = tm.yday ();
   t.tm_isdst = tm.isdst ();
+
+#if defined (HAVE_STRUCT_TM_GMTOFF)
+  t.tm_gmtoff = tm.gmtoff ();
+#endif
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
   std::string s = tm.zone ();
@@ -98,29 +103,17 @@ octave_time::stamp (void)
 //
 // So, we no longer check limits here.
 
-#if 0
-#define DEFINE_SET_INT_FIELD_FCN(f, lo, hi) \
+#define DEFINE_SET_FIELD_FCN(type, f, lo, hi) \
   octave_base_tm& \
-  octave_base_tm::f (int v) \
-  { \
-    if (v < lo || v > hi) \
-      (*current_liboctave_error_handler) \
-        ("invalid value specified for " #f); \
- \
-    tm_ ## f = v; \
- \
-    return *this; \
-  }
-#else
-#define DEFINE_SET_INT_FIELD_FCN(f, lo, hi) \
-  octave_base_tm& \
-  octave_base_tm::f (int v) \
+  octave_base_tm::f (type v) \
   { \
     tm_ ## f = v; \
  \
     return *this; \
   }
-#endif
+
+#define DEFINE_SET_INT_FIELD_FCN(f, lo, hi) \
+  DEFINE_SET_FIELD_FCN (int, f, lo, hi)
 
 DEFINE_SET_INT_FIELD_FCN (usec, 0, 1000000)
 DEFINE_SET_INT_FIELD_FCN (sec, 0, 61)
@@ -132,6 +125,7 @@ DEFINE_SET_INT_FIELD_FCN (year, INT_MIN, INT_MAX)
 DEFINE_SET_INT_FIELD_FCN (wday, 0, 6)
 DEFINE_SET_INT_FIELD_FCN (yday, 0, 365)
 DEFINE_SET_INT_FIELD_FCN (isdst, 0, 1)
+DEFINE_SET_FIELD_FCN (long, gmtoff, -86400, 0)
 
 octave_base_tm&
 octave_base_tm::zone (const std::string& s)
@@ -162,6 +156,10 @@ octave_base_tm::strftime (const std::string& fmt) const
       t.tm_wday = tm_wday;
       t.tm_yday = tm_yday;
       t.tm_isdst = tm_isdst;
+
+#if defined (HAVE_STRUCT_TM_GMTOFF)
+      t.tm_gmtoff = tm_gmtoff;
+#endif
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
       char *ps = strsave (tm_zone.c_str ());
@@ -215,6 +213,10 @@ octave_base_tm::init (void *p)
   tm_yday = t->tm_yday;
   tm_isdst = t->tm_isdst;
 
+#if defined (HAVE_STRUCT_TM_GMTOFF)
+  tm_gmtoff = t->tm_gmtoff;
+#endif
+
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
   if (t->tm_zone)
     tm_zone = t->tm_zone;
@@ -259,12 +261,16 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   t.tm_yday = 0;
   t.tm_isdst = 0;
 
+#if defined (HAVE_STRUCT_TM_GMTOFF)
+  t.tm_gmtoff = 0;
+#endif
+
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
   char *ps = strsave ("");
   t.tm_zone = ps;
 #endif
 
-  char *p = strsave (str.c_str ());
+  const char *p = str.c_str ();
 
   char *q = gnulib::strptime (p, fmt.c_str (), &t);
 
@@ -286,8 +292,6 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
     nchars = q - p + 1;
   else
     nchars = 0;
-
-  delete [] p;
 
   octave_base_tm::init (&t);
 

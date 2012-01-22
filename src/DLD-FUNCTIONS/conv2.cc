@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2011 Andy Adler
+Copyright (C) 1999-2012 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -34,24 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 
 enum Shape { SHAPE_FULL, SHAPE_SAME, SHAPE_VALID };
 
-/*
-%!test
-%! b = [0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18];
-%! assert(conv2([0,1;1,2],[1,2,3;4,5,6;7,8,9]),b);
-
-%!test
-%! b = single([0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18]);
-%! assert(conv2(single([0,1;1,2]),single([1,2,3;4,5,6;7,8,9])),b);
-
-%!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6]),
-%!        [1,4,4;5,18,16;14,48,40;19,62,48;15,48,36;]);
-
-%!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6], "full"),
-%!        conv2 (1:3, 1:2, [1,2;3,4;5,6]));
-
-*/
-
-
 DEFUN_DLD (conv2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Loadable Function} {} conv2 (@var{A}, @var{B})\n\
@@ -67,21 +49,24 @@ Return the full convolution.  (default)\n\
 \n\
 @item @var{shape} = \"same\"\n\
 Return the central part of the convolution with the same size as @var{A}.\n\
+The central part of the convolution begins at the indices\n\
+@code{floor ([size(@var{B})/2] + 1)}.\n\
 \n\
 @item @var{shape} = \"valid\"\n\
 Return only the parts which do not include zero-padded edges.\n\
+The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 @end table\n\
 \n\
 When the third argument is a matrix, return the convolution of the matrix\n\
 @var{m} by the vector @var{v1} in the column direction and by the vector\n\
-@var{v2} in the row direction\n\
+@var{v2} in the row direction.\n\
 @seealso{conv, convn}\n\
 @end deftypefn")
 {
   octave_value retval;
   octave_value tmp;
   int nargin = args.length ();
-  std::string shape = "full"; //default
+  std::string shape = "full";   // default
   bool separable = false;
   convn_type ct;
 
@@ -237,31 +222,88 @@ When the third argument is a matrix, return the convolution of the matrix\n\
    return retval;
 }
 
+/*
+%!test
+%! c = [0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18];
+%! assert (conv2 ([0,1;1,2], [1,2,3;4,5,6;7,8,9]), c);
+
+%!test
+%! c = single ([0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18]);
+%! assert (conv2 (single ([0,1;1,2]), single ([1,2,3;4,5,6;7,8,9])), c);
+
+%!test
+%! c = [1,4,4;5,18,16;14,48,40;19,62,48;15,48,36];
+%! assert (conv2 (1:3, 1:2, [1,2;3,4;5,6]), c);
+
+%!assert (conv2 (1:3, 1:2, [1,2;3,4;5,6], "full"),
+%!        conv2 (1:3, 1:2, [1,2;3,4;5,6]));
+
+%% Test shapes
+%!shared A, B, C
+%! A = rand (3, 4);
+%! B = rand (4);
+%! C = conv2 (A, B);
+%!assert (conv2 (A,B, "full"), C)
+%!assert (conv2 (A,B, "same"), C(3:5,3:6))
+%!assert (conv2 (A,B, "valid"), zeros (0, 1))
+%!assert (size (conv2 (B,A, "valid")), [2 1])
+
+%!test
+%! B = rand (5);
+%! C = conv2 (A, B);
+%!assert (conv2 (A,B, "full"), C)
+%!assert (conv2 (A,B, "same"), C(3:5,3:6))
+%!assert (conv2 (A,B, "valid"), zeros (0, 0))
+%!assert (size (conv2 (B,A, "valid")), [3 2])
+
+%% Clear shared variables so they are not reported for tests below
+%!shared
+
+%% Test cases from Bug #34893
+%!assert (conv2 ([1:5;1:5], [1:2], 'same'), [4 7 10 13 10; 4 7 10 13 10])
+%!assert (conv2 ([1:5;1:5]', [1:2]', 'same'), [4 7 10 13 10; 4 7 10 13 10]')
+%!#assert (conv2 ([1:5;1:5], [1:2], 'valid'), [4 7 10 13; 4 7 10 13])
+%!assert (conv2 ([1:5;1:5]', [1:2]', 'valid'), [4 7 10 13; 4 7 10 13]')
+
+%% Test input validation
+%!error conv2 ()
+%!error conv2 (1)
+%!error <SHAPE type not valid> conv2 (1,2, "NOT_A_SHAPE")
+%% Test alternate calling form which should be 2 vectors and a matrix
+%!error conv2 (ones (2), 1, 1)
+%!error conv2 (1, ones (2), 1)
+
+*/
+
 DEFUN_DLD (convn, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
-Return the n-D convolution of @var{A} and @var{B} where the size\n\
-of @var{C} is given by\n\
+@deftypefn  {Loadable Function} {@var{C} =} convn (@var{A}, @var{B})\n\
+@deftypefnx {Loadable Function} {@var{C} =} convn (@var{A}, @var{B}, @var{shape})\n\
+Return the n-D convolution of @var{A} and @var{B}.  The size of the result\n\
+is determined by the optional @var{shape} argument which takes the following\n\
+values\n\
 \n\
 @table @asis\n\
 @item @var{shape} = \"full\"\n\
-Return the full convolution.\n\
+Return the full convolution.  (default)\n\
 \n\
 @item @var{shape} = \"same\"\n\
 Return central part of the convolution with the same size as @var{A}.\n\
+The central part of the convolution begins at the indices\n\
+@code{floor ([size(@var{B})/2] + 1)}.\n\
 \n\
 @item @var{shape} = \"valid\"\n\
 Return only the parts which do not include zero-padded edges.\n\
+The size of the result is @code{max (size (A) - size (B) + 1, 0)}.\n\
 @end table\n\
 \n\
-By default @var{shape} is @samp{\"full\"}.\n\
 @seealso{conv2, conv}\n\
 @end deftypefn")
 {
   octave_value retval;
   octave_value tmp;
   int nargin = args.length ();
-  std::string shape = "full"; //default
+  std::string shape = "full";   // default
   convn_type ct;
 
   if (nargin < 2 || nargin > 3)
@@ -337,3 +379,7 @@ By default @var{shape} is @samp{\"full\"}.\n\
 
    return retval;
 }
+
+/*
+ FIXME: Need tests for convn in addition to conv2.
+*/

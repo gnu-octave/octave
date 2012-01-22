@@ -1,4 +1,4 @@
-## Copyright (C) 2011 John W. Eaton
+## Copyright (C) 2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@
 ## Return a handle @var{h} to a new waitbar object.  The waitbar is
 ## filled to fraction @var{frac} which must be in the range [0, 1].  The
 ## optional message @var{msg} is centered and displayed above the waitbar.
-## The appearance of the waitbar figure window can be configured by passing 
+## The appearance of the waitbar figure window can be configured by passing
 ## property/value pairs to the function.
 ## 
 ## When called with a single input the current waitbar, if it exists, is
@@ -92,8 +92,12 @@ function retval = waitbar (varargin)
     if (ischar (msg) || iscellstr (msg))
       th = get (ax, "title");
       curr_msg = get (th, "string");
+      ## graphics handles always store data as column vectors
+      if (iscellstr (msg))
+        msg = msg(:);  
+      endif
       cmp = strcmp (msg, curr_msg);
-      if (all (cmp(:)))
+      if (! all (cmp(:)))
         set (th, "string", msg);
       endif
     endif
@@ -132,46 +136,46 @@ endfunction
 
 
 %!demo
-%! h = waitbar (0, "0.00%");
+%! h = waitbar (0, '0.00%');
 %! for i = 0:0.01:1
-%!   waitbar (i, h, sprintf ("%.2f%%", 100*i));
-%! endfor
+%!   waitbar (i, h, sprintf ('%.2f%%', 100*i));
+%! end
 %! close (h);
 
 %!demo
-%! h = waitbar (0, "please wait...");
+%! h = waitbar (0, 'please wait...');
 %! for i = 0:0.01:0.6
 %!   waitbar (i);
-%! endfor
-%! i = 0.3
-%! waitbar (i, h, "don't you hate taking a step backward?")
+%! end
+%! i = 0.3;
+%! waitbar (i, h, 'don''t you hate taking a step backward?');
 %! pause (0.5);
 %! for i = i:0.005:0.7
 %!   waitbar (i, h);
-%! endfor
-%! waitbar (i, h, "or stalling?")
+%! end
+%! waitbar (i, h, 'or stalling?');
 %! pause (1);
 %! for i = i:0.003:0.8
-%!   waitbar (i, h, "just a little longer now")
-%! endfor
+%!   waitbar (i, h, 'just a little longer now');
+%! end
 %! for i = i:0.001:1
-%!   waitbar (i, h, "please don't be impatient")
-%! endfor
+%!   waitbar (i, h, 'please don''t be impatient');
+%! end
 %! close (h);
 
 %!demo
-%! h1 = waitbar (0, "Waitbar #1");
-%! h2 = waitbar (0, "Waitbar #2");
-%! h2pos = get (h2, "position");
-%! h2pos(1) += h2pos(3) + 50;
-%! set (h2, "position", h2pos);
+%! h1 = waitbar (0, 'Waitbar #1');
+%! h2 = waitbar (0, 'Waitbar #2');
+%! h2pos = get (h2, 'position');
+%! h2pos(1) = h2pos(1) + (h2pos(3) + 50);
+%! set (h2, 'position', h2pos);
 %! pause (0.5);
 %! for i = 1:4
 %!   waitbar (i/4, h1);
 %!   pause (0.5);
 %!   waitbar (i/4, h2);
 %!   pause (0.5);
-%! endfor
+%! end
 %! pause (0.5);
 %! close (h1);
 %! close (h2);

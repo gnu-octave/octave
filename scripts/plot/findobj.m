@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 Ben Abbott
+## Copyright (C) 2007-2012 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {@var{h} =} findobj ('flat', @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, '-depth', @var{d}, @dots{})
-## Find object with specified property values.  The simplest form is
+## Find graphics object with specified property values.  The simplest form is
 ##
 ## @example
 ## findobj (@var{prop_name}, @var{prop_Value})
@@ -243,6 +243,7 @@ function h = findobj (varargin)
   h = reshape (h, [numel(h), 1]);
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -255,3 +256,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -133,7 +133,7 @@ endfunction
 
 
 %!demo
-%! strtok("this is the life")
+%! strtok ("this is the life")
 %! % split at the first space, returning "this"
 
 %!demo

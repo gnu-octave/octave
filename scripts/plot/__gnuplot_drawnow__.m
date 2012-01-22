@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 John W. Eaton
+## Copyright (C) 2005-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -122,8 +122,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     ## toolkit.
     [term, opts_str] = gnuplot_trim_term (term);
     term = lower (term);
-    if (strcmpi (term, "lua"))
-      ## Replace "lau tikz" with
+    if (strcmp (term, "lua"))
+      ## Replace "lua tikz" with just "tikz"
       term = "tikz";
       opts_str = strrep (opts_str, "tikz", "");
     endif
@@ -147,10 +147,10 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
     if (! isempty (h) && isfigure (h))
 
       ## Generate gnuplot title string for plot windows.
-      if (output_to_screen (term) && ~strcmp (term, "dumb"))
+      if (output_to_screen (term) && ! strcmp (term, "dumb"))
         fig.numbertitle = get (h, "numbertitle");
         fig.name = strrep (get (h, "name"), "\"", "\\\"");
-        if (strcmpi (get (h, "numbertitle"), "on"))
+        if (strcmp (get (h, "numbertitle"), "on"))
           title_str = sprintf ("Figure %d", h);
         else
           title_str = "";
@@ -186,8 +186,8 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         gnuplot_pos = position_in_pixels(1:2);
         gnuplot_size = position_in_pixels(3:4);
         if (! (output_to_screen (term)
-               || any (strcmp (term, {"emf", "gif", "jpeg", "pbm", "png", ...
-                                      "pngcairo", "svg"}))))
+               || any (strcmp (term, {"canvas", "emf", "gif", "jpeg", ...
+                                      "pbm", "png", "pngcairo", "svg"}))))
           ## Convert to inches
           gnuplot_pos = gnuplot_pos / 72;
           gnuplot_size = gnuplot_size / 72;
@@ -205,12 +205,12 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           endif
           switch (term)
           case terminals_with_size
-            size_str = sprintf ("size %g,%g", gnuplot_size);
+            size_str = sprintf ("size %.12g,%.12g", gnuplot_size);
           case "tikz"
             size_str = sprintf ("size %gin,%gin", gnuplot_size);
           case "dumb"
             new_stream = 1;
-            if (~isempty (getenv ("COLUMNS")) && ~isempty (getenv ("LINES")))
+            if (! isempty (getenv ("COLUMNS")) && ! isempty (getenv ("LINES")))
               ## Let dumb use full text screen size (minus prompt lines).
               n = sprintf ("%i", -2 - length (find (sprintf ("%s", PS1) == "\n")));
               ## n = the number of times \n appears in PS1

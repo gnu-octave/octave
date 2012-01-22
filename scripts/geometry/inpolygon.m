@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 Frederick (Rick) A Niles
+## Copyright (C) 2006-2012 Frederick (Rick) A Niles
 ##               and S�ren Hauberg
 ##
 ## This file is part of Octave.
@@ -84,60 +84,64 @@ function [in, on] = inpolygon (x, y, xv, yv)
 
 endfunction
 
-%!demo
-%!  xv=[ 0.05840, 0.48375, 0.69356, 1.47478, 1.32158, \
-%!       1.94545, 2.16477, 1.87639, 1.18218, 0.27615, \
-%!       0.05840 ];
-%!  yv=[ 0.60628, 0.04728, 0.50000, 0.50000, 0.02015, \
-%!       0.18161, 0.78850, 1.13589, 1.33781, 1.04650, \
-%!       0.60628 ];
-%! xa=[0:0.1:2.3];
-%! ya=[0:0.1:1.4];
-%! [x,y]=meshgrid(xa,ya);
-%! [in,on]=inpolygon(x,y,xv,yv);
-%!
-%! inside=in & !on;
-%! plot(xv,yv)
-%! hold on
-%! plot(x(inside),y(inside),"@g")
-%! plot(x(~in),y(~in),"@m")
-%! plot(x(on),y(on),"@b")
-%! hold off
-%! disp("Green points are inside polygon, magenta are outside,");
-%! disp("and blue are on boundary.");
 
 %!demo
-%!  xv=[ 0.05840, 0.48375, 0.69356, 1.47478, 1.32158, \
-%!       1.94545, 2.16477, 1.87639, 1.18218, 0.27615, \
-%!       0.05840, 0.73295, 1.28913, 1.74221, 1.16023, \
-%!       0.73295, 0.05840 ];
-%!  yv=[ 0.60628, 0.04728, 0.50000, 0.50000, 0.02015, \
-%!       0.18161, 0.78850, 1.13589, 1.33781, 1.04650, \
-%!       0.60628, 0.82096, 0.67155, 0.96114, 1.14833, \
-%!       0.82096, 0.60628];
-%! xa=[0:0.1:2.3];
-%! ya=[0:0.1:1.4];
-%! [x,y]=meshgrid(xa,ya);
-%! [in,on]=inpolygon(x,y,xv,yv);
+%! xv = [ 0.05840, 0.48375, 0.69356, 1.47478, 1.32158, ...
+%!        1.94545, 2.16477, 1.87639, 1.18218, 0.27615, ...
+%!        0.05840 ];
+%! yv = [ 0.60628, 0.04728, 0.50000, 0.50000, 0.02015, ...
+%!        0.18161, 0.78850, 1.13589, 1.33781, 1.04650, ...
+%!        0.60628 ];
+%! xa = [0:0.1:2.3];
+%! ya = [0:0.1:1.4];
+%! [x,y] = meshgrid (xa, ya);
+%! [in,on] = inpolygon (x, y, xv, yv);
+%! inside = in & !on;
 %!
-%! inside=in & ~ on;
-%! plot(xv,yv)
-%! hold on
-%! plot(x(inside),y(inside),"@g")
-%! plot(x(~in),y(~in),"@m")
-%! plot(x(on),y(on),"@b")
-%! hold off
-%! disp("Green points are inside polygon, magenta are outside,");
-%! disp("and blue are on boundary.");
+%! clf;
+%! plot (xv, yv);
+%! hold on;
+%! plot (x(inside), y(inside), "@g")
+%! plot (x(!in), y(!in), "@m");
+%! plot (x(on), y(on), "@b");
+%! hold off;
+%! disp ("Green points are inside polygon, magenta are outside,");
+%! disp ("and blue are on boundary.");
 
-%!error inpolygon ();
-%!error inpolygon (1, 2);
-%!error inpolygon (1, 2, 3);
-
-%!error inpolygon (1, [1,2], [3, 4], [5, 6]);
-%!error inpolygon ([1,2], [3, 4], [5, 6], 1);
+%!demo
+%!  xv = [ 0.05840, 0.48375, 0.69356, 1.47478, 1.32158, ...
+%!         1.94545, 2.16477, 1.87639, 1.18218, 0.27615, ...
+%!         0.05840, 0.73295, 1.28913, 1.74221, 1.16023, ...
+%!         0.73295, 0.05840 ];
+%!  yv = [ 0.60628, 0.04728, 0.50000, 0.50000, 0.02015, ...
+%!         0.18161, 0.78850, 1.13589, 1.33781, 1.04650, ...
+%!         0.60628, 0.82096, 0.67155, 0.96114, 1.14833, ...
+%!         0.82096, 0.60628];
+%! xa = [0:0.1:2.3];
+%! ya = [0:0.1:1.4];
+%! [x,y] = meshgrid (xa, ya);
+%! [in,on] = inpolygon (x, y, xv, yv);
+%! inside = in & !on;
+%!
+%! clf;
+%! plot (xv, yv);
+%! hold on;
+%! plot (x(inside), y(inside), "@g");
+%! plot (x(!in), y(!in), "@m");
+%! plot (x(on), y(on), "@b");
+%! hold off;
+%! disp ("Green points are inside polygon, magenta are outside,");
+%! disp ("and blue are on boundary.");
 
 %!test
 %! [in, on] = inpolygon ([1, 0], [1, 0], [-1, -1, 1, 1], [-1, 1, 1, -1]);
 %! assert (in, [false, true]);
 %! assert (on, [true, false]);
+
+%% Test input validation
+%!error inpolygon ()
+%!error inpolygon (1, 2)
+%!error inpolygon (1, 2, 3)
+%!error inpolygon (1, [1,2], [3, 4], [5, 6])
+%!error inpolygon ([1,2], [3, 4], [5, 6], 1)
+

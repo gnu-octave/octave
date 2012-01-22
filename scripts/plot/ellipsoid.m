@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 Sylvain Pelissier
+## Copyright (C) 2007-2012 Sylvain Pelissier
 ##
 ## This file is part of Octave.
 ##
@@ -69,5 +69,8 @@ function [xx, yy, zz] = ellipsoid (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! ellipsoid (0, 0, 1, 2, 3, 4, 20);
+

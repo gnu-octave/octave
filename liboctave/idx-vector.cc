@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2009-2010 VZLU Prague
 
@@ -331,7 +331,10 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
       data = d;
 
       if (err)
+      {
+        delete [] data;
         gripe_invalid_index ();
+      }
     }
 }
 

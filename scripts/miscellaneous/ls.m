@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -46,46 +46,49 @@ function retval = ls (varargin)
     ls_command ();
   endif
 
-  if (iscellstr (varargin))
+  if (! iscellstr (varargin))
+    error ("ls: all arguments must be character strings");
+  endif
 
+  if (nargin > 0)
     args = tilde_expand (varargin);
-
-    if (nargin > 0)
-      ## FIXME -- this will fail for filenames that contain single quote
-      ## characters...
-      cmd = sprintf (" '%s'", args{:});
+    if (ispc () && ! isunix ())
+      ## shell (cmd.exe) on MinGW uses '^' as escape character
+      args = regexprep (args, '([^\w.*? -])', '^$1');
     else
-      cmd = "";
+      args = regexprep (args, '([^\w.*? -])', '\$1');
     endif
-
-    cmd = sprintf ("%s%s", __ls_command__, cmd);
-
-    if (page_screen_output () || nargout > 0)
-
-      [status, output] = system (cmd);
-
-      if (status == 0)
-        if (nargout == 0)
-          puts (output);
-        else
-          retval = strvcat (regexp (output, '\S+', 'match'){:});
-        endif
-      else
-        error ("ls: command exited abnormally with status %d\n", status);
-      endif
-
-    else
-      ## Just let the output flow if the pager is off.  That way the
-      ## output from things like "ls -R /" will show up immediately and
-      ## we won't have to buffer all the output.
-      system (cmd);
-    endif
-
+    args = sprintf ("%s ", args{:});
   else
-    error ("ls: expecting all arguments to be character strings");
+    args = "";
+  endif
+
+  cmd = sprintf ("%s %s", __ls_command__, args);
+
+  if (page_screen_output () || nargout > 0)
+    [status, output] = system (cmd);
+
+    if (status != 0)
+      error ("ls: command exited abnormally with status %d\n", status);
+    elseif (nargout == 0)
+      puts (output);
+    else
+      retval = strvcat (regexp (output, '\S+', 'match'){:});
+    endif
+  else
+    ## Just let the output flow if the pager is off.  That way the
+    ## output from things like "ls -R /" will show up immediately and
+    ## we won't have to buffer all the output.
+    system (cmd);
   endif
 
 endfunction
+
+
+%!test
+%! list = ls ();
+%! assert (ischar (list));
+%! assert (! isempty (list));
 
 %!error ls (1);
 

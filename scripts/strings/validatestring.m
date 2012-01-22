@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Bill Denney
+## Copyright (C) 2008-2012 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -39,18 +39,18 @@
 ## specific.
 ##
 ## Examples:
+## @c Set example in small font to prevent overfull line
 ##
-## @example
+## @smallexample
 ## @group
 ## validatestring ("r", @{"red", "green", "blue"@})
-##    @result{} "red"
+## @result{} "red"
 ##
 ## validatestring ("b", @{"red", "green", "blue", "black"@})
-##    @result{} error: validatestring: multiple unique matches were found for 'b':
-##       blue, black
+## @result{} error: validatestring: multiple unique matches were found for 'b':
+##    blue, black
 ## @end group
-## @end example
-##
+## @end smallexample
 ## 
 ## @seealso{strcmp, strcmpi}
 ## @end deftypefn

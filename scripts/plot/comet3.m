@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 Ben Abbott and John W. Eaton
+## Copyright (C) 2010-2012 Ben Abbott and John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -80,7 +80,9 @@ function comet3 (varargin)
 
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
 %! t = 0:pi/20:5*pi;
 %! comet3 (cos(t), sin(t), t, 0.01);
+

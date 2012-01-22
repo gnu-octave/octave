@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -55,27 +55,37 @@ elements of a matrix or vector.
 Indices may be scalars, vectors, ranges, or the special operator
 @samp{:}, which may be used to select entire rows or columns.
 
-Vectors are indexed using a single index expression.  Matrices may be
-indexed using one or two indices.  When using a single index
-expression, the elements of the matrix are taken in column-first order;
-the dimensions of the output match those of the index expression.  For
-example,
+Vectors are indexed using a single index expression.  Matrices (2-D)
+and higher multi-dimensional arrays are indexed using either one index
+or @math{N} indices where @math{N} is the dimension of the array.
+When using a single index expression to index 2-D or higher data the
+elements of the array are taken in column-first order (like Fortran).
+
+The output from indexing assumes the dimensions of the index
+expression.  For example:
 
 @example
 @group
-a(2)       # a scalar
-a(1:2)     # a row vector
-a([1; 2])  # a column vector
+a(2)       # result is a scalar
+a(1:2)     # result is a row vector
+a([1; 2])  # result is a column vector
 @end group
 @end example
 
 As a special case, when a colon is used as a single index, the output
-is a column vector containing all the elements of the vector or matrix.
-For example:
+is a column vector containing all the elements of the vector or
+matrix.  For example:
 
 @example
-a(:)       # a column vector
+@group
+a(:)       # result is a column vector
+a(:)'      # result is a row vector
+@end group
 @end example
+
+The above two code idioms are often used in place of @code{reshape}
+when a simple vector, rather than an arbitrarily sized array, is
+needed.
 
 Given the matrix
 
@@ -84,32 +94,89 @@ a = [1, 2; 3, 4]
 @end example
 
 @noindent
-all of the following expressions are equivalent
+all of the following expressions are equivalent and select the first
+row of the matrix.
 
 @example
 @group
-a(1, [1, 2])
-a(1, 1:2)
-a(1, :)
+a(1, [1, 2])  # row 1, columns 1 and 2
+a(1, 1:2)     # row 1, columns in range 1-2
+a(1, :)       # row 1, all columns
 @end group
 @end example
 
-@noindent
-and select the first row of the matrix.
+@cindex @code{end}, indexing
+@cindex :end
 
-In general, an array with @samp{n} dimensions can be indexed using @samp{m}
-indices.  If @code{n == m}, each index corresponds to its respective dimension.
-The set of index tuples determining the result is formed by the Cartesian
-product of the index vectors (or ranges or scalars).  If @code{n < m}, then the
-array is padded by trailing singleton dimensions.  If @code{n > m}, the last
-@code{n-m+1} dimensions are folded into a single dimension with extent equal to
-product of extents of the original dimensions.
+In index expressions the keyword @code{end} automatically refers to
+the last entry for a particular dimension.  This magic index can also
+be used in ranges and typically eliminates the needs to call
+@code{size} or @code{length} to gather array bounds before indexing.
+For example:
 
-@c FIXED -- sections on variable prefer_zero_one_indexing were removed
+@example
+@group
+a = [1, 2, 3, 4];
 
-Indexing a scalar with a vector of ones can be used to create a
-vector the same size as the index vector, with each element equal to
-the value of the original scalar.  For example, the following statements
+a(1:end/2)        # first half of a => [1, 2]
+a(end + 1) = 5;   # append element 
+a(end) = [];      # delete element 
+a(1:2:end)        # odd elements of a => [1, 3]
+a(2:2:end)        # even elements of a => [2, 4]
+a(end:-1:1)       # reversal of a => [4, 3, 2 , 1]
+@end group
+@end example
+
+@menu
+* Advanced Indexing::
+@end menu
+
+@node Advanced Indexing
+@subsection Advanced Indexing
+
+An array with @samp{n} dimensions can be indexed using @samp{m}
+indices.  More generally, the set of index tuples determining the
+result is formed by the Cartesian product of the index vectors (or
+ranges or scalars).
+
+For the ordinary and most common case, @w{@code{m == n}}, and each
+index corresponds to its respective dimension.  If @w{@code{m < n}}
+and every index is less than the size of the array in the
+@math{i^{th}} dimension, @code{m(i) < n(i)}, then the index expression
+is padded with trailing singleton dimensions (@code{[ones (m-n, 1)]}).
+If @w{@code{m < n}} but one of the indices @code{m(i)} is outside the
+size of the current array, then the last @w{@code{n-m+1}} dimensions
+are folded into a single dimension with an extent equal to the product
+of extents of the original dimensions.  This is easiest to understand
+with an example.
+
+@example
+a = reshape (1:8, 2, 2, 2)  # Create 3-D array
+a =
+
+ans(:,:,1) =
+
+   1   3
+   2   4
+
+ans(:,:,2) =
+
+   5   7
+   6   8
+
+a(2,1,2);   # Case (m == n): ans = 6
+a(2,1);     # Case (m < n), idx within array:
+            # equivalent to a(2,1,1), ans = 2
+a(2,4);     # Case (m < n), idx outside array:
+            # Dimension 2 & 3 folded into new dimension of size 2x2 = 4
+            # Select 2nd row, 4th element of [2, 4, 6, 8], ans = 8
+@end example
+
+One advanced use of indexing is to create arrays filled with a single
+value.  This can be done by using an index of ones on a scalar value.
+The result is an object with the dimensions of the index expression
+and every element equal to the original scalar.  For example, the
+following statements
 
 @example
 @group
@@ -121,8 +188,8 @@ a(ones (1, 4))
 @noindent
 produce a vector whose four elements are all equal to 13.
 
-Similarly, indexing a scalar with two vectors of ones can be used to
-create a matrix.  For example the following statements
+Similarly, by indexing a scalar with two vectors of ones it is
+possible to create a matrix.  The following statements
 
 @example
 @group
@@ -132,20 +199,35 @@ a(ones (1, 2), ones (1, 3))
 @end example
 
 @noindent
-create a 2 by 3 matrix with all elements equal to 13.
+create a 2x3 matrix with all elements equal to 13.
 
 The last example could also be written as
 
 @example
 @group
-13 (ones (2, 3))
+13(ones (2, 3))
 @end group
 @end example
 
-It should be, noted that @code{ones (1, n)} (a row vector of ones) results in a
-range (with zero increment), and is therefore more efficient when used in index
-expression than other forms of @dfn{ones}.  In particular, when @samp{r} is a
-row vector, the expressions
+It is more efficient to use indexing rather than the code construction
+@code{scalar * ones (N, M, @dots{})} because it avoids the unnecessary
+multiplication operation.  Moreover, multiplication may not be
+defined for the object to be replicated whereas indexing an array is
+always defined.  The following code shows how to create a 2x3 cell
+array from a base unit which is not itself a scalar.
+
+@example
+@group
+@{"Hello"@}(ones (2, 3))
+@end group
+@end example
+
+It should be, noted that @code{ones (1, n)} (a row vector of ones)
+results in a range (with zero increment).  A range is stored
+internally as a starting value, increment, end value, and total number
+of values; hence, it is more efficient for storage than a vector or
+matrix of ones whenever the number of elements is greater than 4.  In
+particular, when @samp{r} is a row vector, the expressions
 
 @example
   r(ones (1, n), :)
@@ -156,17 +238,22 @@ row vector, the expressions
 @end example
 
 @noindent
-will produce identical results, but the first one will be significantly
-faster, at least for @samp{r} and @samp{n} large enough.  The reason is that
-in the first case the index is kept in a compressed form, which allows Octave
-to choose a more efficient algorithm to handle the expression.
+will produce identical results, but the first one will be
+significantly faster, at least for @samp{r} and @samp{n} large enough.
+In the first case the index is held in compressed form as a range
+which allows Octave to choose a more efficient algorithm to handle the
+expression.
 
-In general, for an user unaware of these subtleties, it is best to use
-the function @dfn{repmat} for spreading arrays into bigger ones.
+A general recommendation, for a user unaware of these subtleties, is
+to use the function @code{repmat} for replicating smaller arrays into
+bigger ones.
 
-It is also possible to create a matrix with different values.  The
-following example creates a 10 dimensional row vector @math{a} containing
-the values
+A second use of indexing is to speed up code.  Indexing is a fast
+operation and judicious use of it can reduce the requirement for
+looping over individual array elements which is a slow operation.
+
+Consider the following example which creates a 10-element row vector
+@math{a} containing the values
 @tex
 $a_i = \sqrt{i}$.
 @end tex
@@ -183,20 +270,22 @@ endfor
 @end example
 
 @noindent
-Note that it is quite inefficient to create a vector using a loop like
-the one shown in the example above.  In this particular case, it would
-have been much more efficient to use the expression
+It is quite inefficient to create a vector using a loop like this.  In
+this case, it would have been much more efficient to use the
+expression
 
 @example
 a = sqrt (1:10);
 @end example
 
 @noindent
-thus avoiding the loop entirely.  In cases where a loop is still
-required, or a number of values must be combined to form a larger
-matrix, it is generally much faster to set the size of the matrix first,
-and then insert elements using indexing commands.  For example, given a
-matrix @code{a},
+which avoids the loop entirely.
+
+In cases where a loop cannot be avoided, or a number of values must be
+combined to form a larger matrix, it is generally faster to set the
+size of the matrix first (pre-allocate storage), and then insert
+elements using indexing commands.  For example, given a matrix
+@code{a},
 
 @example
 @group
@@ -221,8 +310,8 @@ endfor
 @end example
 
 @noindent
-particularly for large matrices because Octave does not have to
-repeatedly resize the result.
+because Octave does not have to repeatedly resize the intermediate
+result.
 
 @DOCSTRING(sub2ind)
 
@@ -423,36 +512,39 @@ the recursion depth and prevents Octave from recursing infinitely.
 @cindex complex-conjugate transpose
 
 The following arithmetic operators are available, and work on scalars
-and matrices.
+and matrices.  The element-by-element operators and functions broadcast
+(@pxref{Broadcasting}).
 
 @table @asis
 @item @var{x} + @var{y}
 @opindex +
 Addition.  If both operands are matrices, the number of rows and columns
-must both agree.  If one operand is a scalar, its value is added to
-all the elements of the other operand.
+must both agree, or they must be broadcastable to the same shape.
 
 @item @var{x} .+ @var{y}
 @opindex .+
-Element by element addition.  This operator is equivalent to @code{+}.
+Element-by-element addition.  This operator is equivalent to @code{+}.
 
 @item @var{x} - @var{y}
 @opindex -
 Subtraction.  If both operands are matrices, the number of rows and
-columns of both must agree.
+columns of both must agree, or they must be broadcastable to the same
+shape.
 
 @item @var{x} .- @var{y}
-Element by element subtraction.  This operator is equivalent to @code{-}.
+Element-by-element subtraction.  This operator is equivalent to @code{-}.
 
 @item @var{x} * @var{y}
 @opindex *
-Matrix multiplication.  The number of columns of @var{x} must agree
-with the number of rows of @var{y}.
+Matrix multiplication.  The number of columns of @var{x} must agree with
+the number of rows of @var{y}, or they must be broadcastable to the same
+shape.
 
 @item @var{x} .* @var{y}
 @opindex .*
-Element by element multiplication.  If both operands are matrices, the
-number of rows and columns must both agree.
+Element-by-element multiplication.  If both operands are matrices, the
+number of rows and columns must both agree, or they must be
+broadcastable to the same shape.
 
 @item @var{x} / @var{y}
 @opindex /
@@ -470,7 +562,7 @@ a minimum norm solution is computed.
 
 @item @var{x} ./ @var{y}
 @opindex ./
-Element by element right division.
+Element-by-element right division.
 
 @item @var{x} \ @var{y}
 @opindex \
@@ -488,7 +580,7 @@ a minimum norm solution is computed.
 
 @item @var{x} .\ @var{y}
 @opindex .\
-Element by element left division.  Each element of @var{y} is divided
+Element-by-element left division.  Each element of @var{y} is divided
 by each corresponding element of @var{x}.
 
 @item @var{x} ^ @var{y}
@@ -509,8 +601,13 @@ The implementation of this operator needs to be improved.
 @itemx @var{x} .** @var{y}
 @opindex .**
 @opindex .^
-Element by element power operator.  If both operands are matrices, the
-number of rows and columns must both agree.
+Element-by-element power operator.  If both operands are matrices, the
+number of rows and columns must both agree, or they must be
+broadcastable to the same shape.  If several complex results are
+possible, the one with smallest non-negative argument (angle) is taken.
+This rule may return a complex root even when a real root is also possible.
+Use @code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a
+real result is preferred.
 
 @item -@var{x}
 @opindex -
@@ -535,7 +632,7 @@ conj (x.')
 Transpose.
 @end table
 
-Note that because Octave's element by element operators begin with a
+Note that because Octave's element-by-element operators begin with a
 @samp{.}, there is a possible ambiguity for statements like
 
 @example
@@ -626,7 +723,8 @@ such as equality.  They are written using
 
 All of Octave's comparison operators return a value of 1 if the
 comparison is true, or 0 if it is false.  For matrix values, they all
-work on an element-by-element basis.  For example:
+work on an element-by-element basis.  Broadcasting rules apply.
+@xref{Broadcasting}.  For example:
 
 @example
 @group
@@ -636,9 +734,9 @@ work on an element-by-element basis.  For example:
 @end group
 @end example
 
-If one operand is a scalar and the other is a matrix, the scalar is
-compared to each element of the matrix in turn, and the result is the
-same size as the matrix.
+According to broadcasting rules, if one operand is a scalar and the
+other is a matrix, the scalar is compared to each element of the matrix
+in turn, and the result is the same size as the matrix.
 
 @table @code
 @item @var{x} < @var{y}
@@ -773,8 +871,8 @@ Each element of the result is true if the corresponding element of
 @var{boolean} is false.
 @end table
 
-For matrix operands, these operators work on an element-by-element
-basis.  For example, the expression
+These operators work on an element-by-element basis.  For example, the
+expression
 
 @example
 [1, 0; 0, 1] & [1, 0; 2, 3]
@@ -783,8 +881,8 @@ basis.  For example, the expression
 @noindent
 returns a two by two identity matrix.
 
-For the binary operators, the dimensions of the operands must conform if
-both are matrices.  If one of the operands is a scalar and the other a
+For the binary operators, broadcasting rules apply.  @xref{Broadcasting}.
+In particular, if one of the operands is a scalar and the other a
 matrix, the operator is applied to the scalar and each element of the
 matrix.
 

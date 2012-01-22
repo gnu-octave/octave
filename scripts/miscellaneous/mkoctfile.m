@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 Keith Goodman
+## Copyright (C) 2006-2012 Keith Goodman
 ##
 ## This file is part of Octave.
 ##
@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} mkoctfile [-options] file @dots{}
+## @deftypefnx {Function File} {[@var{output}, @var{status} =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C,
 ## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the
@@ -25,7 +26,9 @@
 ## application.
 ##
 ## @code{mkoctfile} can be called from the shell prompt or from the Octave
-## prompt.
+## prompt.  Calling it from the Octave prompt simply delegates the
+## call to the shell prompt.  The output is stored in the @var{output}
+## variable and the exit status in the @var{status} variable.
 ##
 ## @code{mkoctfile} accepts the following options, all of which are optional
 ## except for the file name of the code you wish to compile:
@@ -137,7 +140,7 @@
 ## @end table
 ## @end deftypefn
 
-function mkoctfile (varargin)
+function [output, status] = mkoctfile (varargin)
 
   bindir = octave_config_info ("bindir");
 
@@ -148,9 +151,15 @@ function mkoctfile (varargin)
     cmd = cstrcat (cmd, " \"", varargin{i}, "\"");
   endfor
 
-  status = system (cmd);
+  [sys, out] = system (cmd);
 
-  if (status == 127)
+  if (nargout > 0)
+    [output, status] = deal (out, sys);
+  else
+    printf ("%s", out);
+  endif
+
+  if (sys == 127)
     warning ("unable to find mkoctfile in expected location: `%s'",
              shell_script);
 

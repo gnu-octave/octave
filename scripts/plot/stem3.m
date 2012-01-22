@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -52,6 +52,9 @@ function h = stem3 (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! theta = 0:0.2:6;
-%! stem3 (cos (theta), sin (theta), theta)
+%! stem3 (cos(theta), sin(theta), theta);
+

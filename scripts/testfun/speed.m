@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -357,16 +357,16 @@ endfunction
 %%        because of another bug (#34497).
 %!demo
 %!  fstr_build_orig = cstrcat (
-%!  "function x = build_orig (n)\n",
-%!  "  ## extend the target vector on the fly\n",
-%!  "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
-%!  "endfunction");
+%!    "function x = build_orig (n)\n",
+%!    "  ## extend the target vector on the fly\n",
+%!    "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
+%!    "endfunction");
 %!  fstr_build = cstrcat (
-%!  "function x = build (n)\n",
-%!  "  ## preallocate the target vector\n",
-%!  "  x = zeros (1, n*100);\n",
-%!  "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
-%!  "endfunction");
+%!    "function x = build (n)\n",
+%!    "  ## preallocate the target vector\n",
+%!    "  x = zeros (1, n*100);\n",
+%!    "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
+%!    "endfunction");
 %!
 %!  disp ("-----------------------");
 %!  disp (fstr_build_orig);
@@ -381,20 +381,21 @@ endfunction
 %!  disp ("Preallocated vector test.\nThis takes a little while...");
 %!  speed("build (n)", "", 1000, "build_orig (n)");
 %!  clear -f build build_orig
+%!  disp ("-----------------------");
 %!  disp ("Note how much faster it is to pre-allocate a vector.");
 %!  disp ("Notice the peak speedup ratio.");
 
 %!demo
 %!  fstr_build_orig = cstrcat (
-%!  "function x = build_orig (n)\n",
-%!  "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
-%!  "endfunction");
+%!    "function x = build_orig (n)\n",
+%!    "  for i=0:n-1, x([1:100]+i*100) = 1:100; endfor\n",
+%!    "endfunction");
 %!  fstr_build = cstrcat (
-%!  "function x = build (n)\n",
-%!  "  idx = [1:100]';\n",
-%!  "  x = idx(:,ones(1,n));\n",
-%!  "  x = reshape (x, 1, n*100);\n",
-%!  "endfunction");
+%!    "function x = build (n)\n",
+%!    "  idx = [1:100]';\n",
+%!    "  x = idx(:,ones(1,n));\n",
+%!    "  x = reshape (x, 1, n*100);\n",
+%!    "endfunction");
 %!
 %!  disp ("-----------------------");
 %!  disp (fstr_build_orig);
@@ -425,7 +426,8 @@ endfunction
 %! assert (isnumeric (T_f2));
 %! assert (length (T_f2) > 10);
 
-%% This test is known to fail on operating systems with low resolution timers such as MinGW
+%% This test is known to fail on operating systems with low resolution timers
+%% such as MinGW
 %!xtest
 %! [order, n, T_f1, T_f2] = speed ("sum (x)", "", [100, 1000], "v = 0; for i = 1:length (x), v += x(i); endfor");
 %! assert (isstruct (order));

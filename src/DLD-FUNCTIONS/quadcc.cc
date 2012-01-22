@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2011 Pedro Gonnet
+Copyright (C) 2010-2012 Pedro Gonnet
 
 This file is part of Octave.
 
@@ -30,11 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct.h"
 #include "parse.h"
 #include "ov-fcn-handle.h"
-
-#if ! defined (HAVE_COPYSIGN) && defined (HAVE__COPYSIGN)
-#define copysign _copysign
-#define HAVE_COPYSIGN 1
-#endif
 
 /* Define the size of the interval heap. */
 #define cquad_heapsize                  200
@@ -1655,7 +1650,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
       wrap = true;
       for (i = 0; i <= nivals; i++)
         if (xisinf (iivals[i]))
-          iivals[i] = copysign (1.0, iivals[i]);
+          iivals[i] = gnulib::copysign (1.0, iivals[i]);
         else
           iivals[i] = 2.0 * atan (iivals[i]) / M_PI;
     }
@@ -2020,7 +2015,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                                   && ivl->c[0] / iv->c[0] > 2);
           if (ivl->ndiv > ndiv_max && 2 * ivl->ndiv > ivl->rdepth)
             {
-              igral = copysign (octave_Inf, igral);
+              igral = gnulib::copysign (octave_Inf, igral);
               warning ("quadcc: divergent integral detected");
               break;
             }
@@ -2116,7 +2111,7 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
                                   && ivr->c[0] / iv->c[0] > 2);
           if (ivr->ndiv > ndiv_max && 2 * ivr->ndiv > ivr->rdepth)
             {
-              igral = copysign (octave_Inf, igral);
+              igral = gnulib::copysign (octave_Inf, igral);
               warning ("quadcc: divergent integral detected");
               break;
             }

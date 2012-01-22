@@ -2,7 +2,7 @@ dnl configure.in
 dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl Copyright (C) 1993-2011 John W. Eaton
+dnl Copyright (C) 1993-2012 John W. Eaton
 ### 
 ### This file is part of Octave.
 ### 
@@ -27,14 +27,14 @@ dnl Copyright (C) 1993-2011 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT([GNU Octave], [3.5.0+], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.6.0], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
-OCTAVE_API_VERSION_NUMBER="45"
+OCTAVE_API_VERSION_NUMBER="48"
 OCTAVE_API_VERSION="api-v$OCTAVE_API_VERSION_NUMBER+"
-OCTAVE_RELEASE_DATE="2011-01-22"
-OCTAVE_COPYRIGHT="Copyright (C) 2011 John W. Eaton and others."
+OCTAVE_RELEASE_DATE="2012-01-15"
+OCTAVE_COPYRIGHT="Copyright (C) 2012 John W. Eaton and others."
 AC_SUBST(OCTAVE_VERSION)
 AC_SUBST(OCTAVE_API_VERSION_NUMBER)
 AC_SUBST(OCTAVE_API_VERSION)
@@ -171,9 +171,18 @@ USE_OCTAVE_ALLOCATOR=false
 AC_ARG_ENABLE(octave-allocator,
   [AS_HELP_STRING([--enable-octave-allocator],
      [use the obsolete octave_allocator class for many of Octave's objects (mostly octave_value types).  You probably do NOT want to enable this feature.  (default is no)])],
-  [if test "$enableval" = yes; then USE_ALLOCATOR=true; fi], [])
+  [if test "$enableval" = yes; then USE_OCTAVE_ALLOCATOR=true; fi], [])
 if $USE_OCTAVE_ALLOCATOR; then
   AC_DEFINE(USE_OCTAVE_ALLOCATOR, 1, [Define to use octave_allocator class.])
+fi
+
+USE_ATOMIC_REFCOUNT=false
+AC_ARG_ENABLE(atomic-refcount,
+  [AS_HELP_STRING([--enable-atomic-refcount],
+     [use atomic operations for internal reference counting. This is required for thread-safe behavior.  (default is no)])],
+  [if test "$enableval" = yes; then USE_ATOMIC_REFCOUNT=true; fi], [])
+if $USE_ATOMIC_REFCOUNT; then
+  AC_DEFINE(USE_ATOMIC_REFCOUNT, 1, [Define to use atomic operations for reference counting.])
 fi
 
 ### Make it possible to disable running Make in the doc directory.
@@ -640,7 +649,7 @@ OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
 
 OCTAVE_CHECK_LIBRARY(qhull, QHull,
   [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
-  [qhull/qhull_a.h], [qh_qhull], [], [],
+  [qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h], [qh_qhull], [], [],
   [warn_qhull=
    OCTAVE_CHECK_QHULL_VERSION
    OCTAVE_CHECK_QHULL_OK([TEXINFO_QHULL="@set HAVE_QHULL"
@@ -653,12 +662,17 @@ REGEX_LIBS=
 
 pcre_fail_msg="to build Octave, you must have the PCRE library and header files installed"
 
-## NB: no need to do separate check for pcre.h header -- checking
-## macros is good enough
+AC_CHECK_HEADERS([pcre.h pcre/pcre.h])
+
 AC_CACHE_CHECK([whether pcre.h defines the macros we need],
   [ac_cv_pcre_h_macros_present],
   [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
+#if defined (HAVE_PCRE_H)
 #include <pcre.h>
+#elif defined (HAVE_PCRE_PCRE_H)
+#include <pcre.h>
+#error "NO PCRE HEADER"
+#endif
 #if defined (PCRE_INFO_NAMECOUNT) \
   && defined (PCRE_INFO_NAMEENTRYSIZE) \
   && defined (PCRE_INFO_NAMETABLE)
@@ -1673,6 +1687,19 @@ if test -n "$UMFPACK_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
+save_LIBS="$LIBS"
+LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
+OCTAVE_CHECK_LIBRARY(arpack, ARPACK,
+  [ARPACK not found.  The eigs function will be disabled.],
+  [],
+  [dseupd],
+  [Fortran 77], [don't use the ARPACK library, disable eigs function],
+  [warn_arpack=
+   OCTAVE_CHECK_ARPACK_OK([
+     AC_DEFINE(HAVE_ARPACK, 1, [Define if ARPACK is available.])], [
+     warn_arpack="ARPACK library found, but seems not to work properly -- disabling eigs function"])])
+LIBS="$save_LIBS"
+
 ### Enable dynamic linking.  --enable-shared implies this, so
 ### --enable-dl is only need if you are only building static libraries
 ### and want to try dynamic linking too (works on some systems, for
@@ -1999,7 +2026,7 @@ esac
 
 AC_ARG_ENABLE([no-undefined],
   [AS_HELP_STRING([--enable-no-undefined],
-    [pass -no-undefined to libtool when linking linking Octave and its shared libraries (on by default)])],
+    [pass -no-undefined to libtool when linking Octave and its shared libraries (on by default)])],
   [case "${enableval}" in
     yes) NO_UNDEFINED_LDFLAG="-no-undefined" ;;
     no)  NO_UNDEFINED_LDFLAG="" ;;
@@ -2113,7 +2140,7 @@ fi
 AC_CHECK_FUNCS(basename canonicalize_file_name \
   chmod dup2 endgrent endpwent execvp expm1 expm1f fork \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
-  getppid getpwent getpwuid getuid getwd _kbhit kill \
+  getppid getpwent getpwuid getuid getwd _kbhit \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
   mkstemp pipe putenv \
   realpath resolvepath rindex roundl select setgrent setlocale \
@@ -2603,6 +2630,9 @@ typedef unsigned long ino_t;
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 
 #include <stdint.h>
+
+/* Tag indicating octave config.h has been included */
+#define OCTAVE_CONFIG_INCLUDED 1
 ])
 
 ### Do the substitutions in all the Makefiles.
@@ -2647,6 +2677,9 @@ Octave is now configured for $canonical_host_type
   AMD CPPFLAGS:                $AMD_CPPFLAGS
   AMD LDFLAGS:                 $AMD_LDFLAGS
   AMD libraries:               $AMD_LIBS
+  ARPACK CPPFLAGS:             $ARPACK_CPPFLAGS
+  ARPACK LDFLAGS:              $ARPACK_LDFLAGS
+  ARPACK libraries:            $ARPACK_LIBS
   BLAS libraries:              $BLAS_LIBS
   CAMD CPPFLAGS:               $CAMD_CPPFLAGS
   CAMD LDFLAGS:                $CAMD_LDFLAGS
@@ -2892,7 +2925,7 @@ if $USE_64_BIT_IDX_T; then
   AC_MSG_WARN([Make.  This should work automatically for gfortran.  If])
   AC_MSG_WARN([you use another compiler, you will need to set this])
   AC_MSG_WARN([variable on the configure command line.  You must also])
-  AC_MSG_WARN([compile the BLAS, LAPACK, QRUPDATE, and SuiteSparse])
+  AC_MSG_WARN([compile the ARPACK, BLAS, LAPACK, QRUPDATE, and SuiteSparse])
   AC_MSG_WARN([libraries to use 8 byte signed integers for array indexing.])
   AC_MSG_WARN([])
   warn_msg_printed=true
@@ -2976,6 +3009,22 @@ if test -n "$warn_gnuplot"; then
   AC_MSG_WARN([Setting default value to $GNUPLOT])
   AC_MSG_WARN([])
 
+  warn_msg_printed=true
+fi
+
+if $USE_ATOMIC_REFCOUNT; then
+  AC_MSG_WARN([])
+  AC_MSG_WARN([Using atomic reference counting.])
+  AC_MSG_WARN([This feature allows to access octave data safely from])
+  AC_MSG_WARN([another thread, for instance from a GUI. However this])
+  AC_MSG_WARN([results in a small performance penalty in the octave])
+  AC_MSG_WARN([interpreter.])
+  AC_MSG_WARN([])
+  if $USE_OCTAVE_ALLOCATOR; then
+    AC_MSG_WARN([Thread-safe behavior is not guaranteed unless you also])
+    AC_MSG_WARN([disable the use of the octave_allocator class.])
+    AC_MSG_WARN([])
+  fi
   warn_msg_printed=true
 fi
 

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -117,8 +117,6 @@ different measures from those of the basic descriptive statistics.
 @DOCSTRING(zscore)
 
 @DOCSTRING(histc)
-
-@DOCSTRING(cut)
 
 @c FIXME: really want to put a reference to unique here
 @c @DOCSTRING(values)
@@ -305,9 +303,9 @@ alphabetical order).
   @tab @code{poisscdf}
   @tab @code{poissinv}
 @item Standard Normal Distribution
-  @tab @code{stdtormal_pdf}
-  @tab @code{stdtormal_cdf}
-  @tab @code{stdtormal_inv}
+  @tab @code{stdnormal_pdf}
+  @tab @code{stdnormal_cdf}
+  @tab @code{stdnormal_inv}
 @item t (Student) Distribution
   @tab @code{tpdf}
   @tab @code{tcdf}

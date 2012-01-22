@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 David Bateman
+## Copyright (C) 2006-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -25,12 +25,17 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function y = atand (x)
+
   if (nargin != 1)
     print_usage ();
   endif
+
   y = 180 ./ pi .* atan (x);
+
 endfunction
 
-%!error(atand())
-%!error(atand(1,2))
-%!assert(atand(0:10:90),180./pi.*atan(0:10:90),-10*eps)
+
+%!assert (atand (0:10:90), 180./pi.*atan (0:10:90), -10*eps)
+
+%!error atand ()
+%!error atand (1, 2)

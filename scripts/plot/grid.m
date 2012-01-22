@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2011 John W. Eaton
+## Copyright (C) 1993-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -98,24 +98,23 @@ function grid (varargin)
 
 endfunction
 
+
 %!demo
-%! clf
-%! subplot (2,2,1)
-%! plot (1:100)
-%! grid minor
-%! grid minor
-%! grid
-%! title ("no grid")
-%! subplot (2,2,2)
-%! plot (1:100)
-%! grid
-%! title ("grid on")
-%! subplot (2,2,3)
-%! plot (1:100)
-%! grid minor
-%! title ("grid minor")
-%! subplot (2,2,4)
-%! semilogy (1:100)
-%! grid minor
-%! title ("grid minor")
+%! clf;
+%! subplot (2,2,1);
+%!  plot (1:100);
+%!  grid off;
+%!  title ('no grid');
+%! subplot (2,2,2);
+%!  plot (1:100);
+%!  grid on;
+%!  title ('grid on');
+%! subplot (2,2,3);
+%!  plot (1:100);
+%!  grid minor;
+%!  title ('grid minor');
+%! subplot (2,2,4);
+%!  semilogy (1:100);
+%!  grid minor;
+%!  title ('grid minor');
 

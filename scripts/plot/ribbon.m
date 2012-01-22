@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 Kai Habel
+## Copyright (C) 2007-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -23,16 +23,19 @@
 ## Plot a ribbon plot for the columns of @var{y} vs.  @var{x}.  The
 ## optional parameter @var{width} specifies the width of a single ribbon
 ## (default is 0.75).  If @var{x} is omitted, a vector containing the
-## row numbers is assumed (1:rows(Y)).  If requested, return a vector
-## @var{h} of the handles to the surface objects.
-## @seealso{gca, colorbar}
+## row numbers is assumed (1:rows(Y)).
+##
+## The optional return value @var{h} is a vector of graphics handles to
+## the surface objects representing each ribbon.
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel at gmx.de>
 
-function h = ribbon (x, y, width)
+function h = ribbon (x, y, width = 0.75)
 
-  newplot ();
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  endif
 
   if (nargin == 1)
     y = x;
@@ -41,51 +44,52 @@ function h = ribbon (x, y, width)
     endif
     [nr, nc] = size (y);
     x = repmat ((1:nr)', 1, nc);
-    width = 0.75;
-  elseif (nargin == 2)
-    width = 0.75;
-  elseif (nargin != 3)
-    print_usage ();
   endif
 
   if (isvector (x) && isvector (y))
     if (length (x) != length (y))
-      error ("ribbon: in case of vectors, X and Y must have same length");
+      error ("ribbon: vectors X and Y must have the same length");
     else
       [x, y] = meshgrid (x, y);
     endif
   else
-    if (! size_equal(x, y))
-      error ("ribbon: in case of matrices, X and Y must have same size");
+    if (! size_equal (x, y))
+      error ("ribbon: matrices X and Y must have the same size");
     endif
   endif
 
+  newplot ();
+
   [nr, nc] = size (y);
-  tmp = zeros (1, nc);
+  htmp = zeros (nc, 1);
 
   for c = nc:-1:1
     zz = [y(:,c), y(:,c)];
     yy = x(:,c);
     xx = [c - width / 2, c + width / 2];
     [xx, yy] = meshgrid (xx, yy);
-    cc = ones (size (zz)) * c;
-    tmp(c) = surface (xx, yy, zz, cc);
+    cc = repmat (c, size (zz));
+    htmp(c) = surface (xx, yy, zz, cc);
   endfor
 
-  ax = get (tmp(c), "parent");
-
   if (! ishold ())
-    set (ax, "view", [-37.5, 30], "box", "off", "xgrid", "on",
-         "ygrid", "on", "zgrid", "on");
+    ax = get (htmp(1), "parent");
+    set (ax, "view", [-37.5, 30], "box", "off", 
+             "xgrid", "on", "ygrid", "on", "zgrid", "on");
   endif
 
   if (nargout > 0)
-    h = tmp;
+    h = htmp;
   endif
 
 endfunction
 
+
 %!demo
+%! clf;
+%! colormap ('default');
 %! [x, y, z] = sombrero ();
 %! [x, y] = meshgrid (x, y);
 %! ribbon (y, z);
+
+%!FIXME: Could have some input validation tests here

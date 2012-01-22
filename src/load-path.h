@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2006-2011 John W. Eaton
+Copyright (C) 2006-2012 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -442,6 +442,8 @@ private:
   mutable method_map_type method_map;
 
   static load_path *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static hook_fcn_ptr add_hook;
 

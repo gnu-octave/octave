@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -60,6 +60,8 @@ public:
 private:
 
   static oct_mach_info *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   // The floating point format for the current machine.
   mutable float_format native_float_fmt;

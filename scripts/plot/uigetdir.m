@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 Kai Habel
+## Copyright (C) 2010-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -58,9 +58,10 @@ function dirname = uigetdir (init_path = pwd, dialog_name = "Select Directory to
 
 endfunction
 
+
 %!demo
-%! uigetdir(pwd, "Select Directory")
+%! uigetdir (pwd, 'Select Directory');
 
 ## Remove from test statistics.  No real tests possible.
-%!test
-%! assert (1);
+%!assert (1)
+

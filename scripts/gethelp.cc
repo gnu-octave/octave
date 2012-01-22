@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1999-2011 John W. Eaton
+Copyright (C) 1999-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -31,7 +31,7 @@ looks_like_octave_copyright (const std::string& s)
   // Perhaps someday we will want to do more here, so leave this as a
   // separate function.
 
-  return (s.substr (0, 9) == "Copyright");
+  return (s.substr (0, 9) == "Copyright" || s.substr (0, 6) == "Author");
 }
 
 // Eat whitespace and comments from FFILE, returning the text of the

@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 Kai Habel
+## Copyright (C) 2007-2012 Kai Habel
 ## Copyright (C) 2003 Shai Ayal
 ##
 ## This file is part of Octave.
@@ -78,14 +78,21 @@ function [c, h] = contourf (varargin)
     c = ctmp;
     h = htmp;
   endif
+
 endfunction
 
-%!demo
-%! [x, y, z] = peaks (50);
-%! contourf (x, y, z, -7:9)
 
 %!demo
-%! [theta, r] = meshgrid (linspace (0, 2*pi, 64), linspace(0,1,64));
+%! clf;
+%! colormap ('default');
+%! [x, y, z] = peaks (50);
+%! contourf (x, y, z, -7:9);
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! [theta, r] = meshgrid (linspace (0,2*pi,64), linspace (0,1,64));
 %! [X, Y] = pol2cart (theta, r);
-%! Z = sin(2*theta).*(1-r);
-%! contourf(X, Y, abs(Z), 10)
+%! Z = sin (2*theta) .* (1-r);
+%! contourf (X, Y, abs (Z), 10);
+

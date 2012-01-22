@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2011 Paul Kienzle
+## Copyright (C) 2001-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -27,7 +27,7 @@
 ## along the dimension @var{dim}.
 ##
 ## @code{interpft} assumes that the interpolated function is periodic,
-## and so assumptions are made about the end points of the interpolation.
+## and so assumptions are made about the endpoints of the interpolation.
 ##
 ## @seealso{interp1}
 ## @end deftypefn
@@ -92,25 +92,28 @@ endfunction
 
 
 %!demo
+%! clf;
 %! t = 0 : 0.3 : pi; dt = t(2)-t(1);
 %! n = length (t); k = 100;
 %! ti = t(1) + [0 : k-1]*dt*n/k;
 %! y = sin (4*t + 0.3) .* cos (3*t - 0.1);
 %! yp = sin (4*ti + 0.3) .* cos (3*ti - 0.1);
-%! plot (ti, yp, 'g', ti, interp1(t, y, ti, 'spline'), 'b', ...
-%!       ti, interpft (y, k), 'c', t, y, 'r+');
-%! legend ('sin(4t+0.3)cos(3t-0.1','spline','interpft','data');
+%! plot (ti, yp, 'g', ti, interp1(t, y, ti, "spline"), 'b', ...
+%!       ti, interpft (y, k), 'c', t, y, "r+");
+%! legend ("sin(4t+0.3)cos(3t-0.1)", "spline", "interpft", "data");
 
 %!shared n,y
 %! x = [0:10]'; y = sin(x); n = length (x);
-%!assert (interpft(y, n), y, 20*eps);
-%!assert (interpft(y', n), y', 20*eps);
-%!assert (interpft([y,y],n), [y,y], 20*eps);
+%!assert (interpft (y, n), y, 20*eps);
+%!assert (interpft (y', n), y', 20*eps);
+%!assert (interpft ([y,y],n), [y,y], 20*eps);
 
 %% Test input validation
 %!error interpft ()
 %!error interpft (1)
 %!error interpft (1,2,3)
-%!error (interpft(1,[n,n]))
-%!error (interpft(1,2,0))
-%!error (interpft(1,2,3))
+%!error <N must be a scalar integer> interpft (1,[2,2])
+%!error <N must be a scalar integer> interpft (1,2.1)
+%!error <invalid dimension DIM> interpft (1,2,0)
+%!error <invalid dimension DIM> interpft (1,2,3)
+

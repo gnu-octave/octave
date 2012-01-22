@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -704,7 +704,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        if (is_valid_bsxfun (a_dims, b_dims)) \
+        if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           { \
             return bsxfun_pow (a, b); \
           } \
@@ -730,7 +730,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        if (is_valid_bsxfun (a_dims, b_dims)) \
+        if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           { \
             return bsxfun_pow (a, b); \
           } \
@@ -756,7 +756,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        if (is_valid_bsxfun (a_dims, b_dims)) \
+        if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           { \
             return bsxfun_pow (a, b); \
           } \
@@ -782,7 +782,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        if (is_valid_bsxfun (a_dims, b_dims)) \
+        if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           { \
             return bsxfun_pow (a, b); \
           } \
@@ -808,7 +808,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     dim_vector b_dims = b.dims (); \
     if (a_dims != b_dims) \
       { \
-        if (is_valid_bsxfun (a_dims, b_dims)) \
+        if (is_valid_bsxfun ("operator .^", a_dims, b_dims))     \
           { \
             return bsxfun_pow (a, b); \
           } \

@@ -1,5 +1,5 @@
-## Copyright (C) 2008-2011 Julian Schnidder
-## Copyright (C) 2011 Carnë Draug
+## Copyright (C) 2008-2012 Julian Schnidder
+## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
 ##

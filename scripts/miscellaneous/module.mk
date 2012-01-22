@@ -20,6 +20,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/dos.m \
   miscellaneous/dump_prefs.m \
   miscellaneous/edit.m \
+	miscellaneous/fact.m \
   miscellaneous/fileattrib.m \
   miscellaneous/fileparts.m \
   miscellaneous/fullfile.m \
@@ -67,6 +68,7 @@ miscellaneous_FCN_FILES = \
   miscellaneous/unpack.m \
   miscellaneous/untar.m \
   miscellaneous/unzip.m \
+  miscellaneous/usejava.m \
   miscellaneous/ver.m \
   miscellaneous/version.m \
   miscellaneous/warning_ids.m \

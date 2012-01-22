@@ -1,7 +1,7 @@
 // Template array classes
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 Copyright (C) 2008-2009 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
@@ -43,7 +43,7 @@ protected:
 
 public:
 
-  using Array<T>::element_type;
+  using typename Array<T>::element_type;
 
   DiagArray2 (void)
     : Array<T> (), d1 (0), d2 (0) { }

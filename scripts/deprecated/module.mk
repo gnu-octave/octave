@@ -1,6 +1,7 @@
 FCN_FILE_DIRS += deprecated
 
 deprecated_FCN_FILES = \
+  deprecated/__error_text__.m \
   deprecated/autocor.m \
   deprecated/autocov.m \
   deprecated/betai.m \
@@ -11,6 +12,7 @@ deprecated_FCN_FILES = \
   deprecated/cquad.m \
   deprecated/cut.m \
   deprecated/dispatch.m \
+  deprecated/error_text.m \
   deprecated/fstat.m \
   deprecated/gammai.m \
   deprecated/glpkmex.m \
@@ -24,8 +26,7 @@ deprecated_FCN_FILES = \
   deprecated/replot.m \
   deprecated/saveimage.m \
   deprecated/setstr.m \
-  deprecated/sphcat.m \
-  deprecated/spvcat.m \
+  deprecated/shell_cmd.m \
   deprecated/strerror.m \
   deprecated/studentize.m \
   deprecated/sylvester_matrix.m \

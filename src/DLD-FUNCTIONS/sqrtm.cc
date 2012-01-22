@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2011 Ross Lippert and Paul Kienzle
+Copyright (C) 2001-2012 Ross Lippert and Paul Kienzle
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -230,6 +230,12 @@ Mathematics, Manchester, England, January 1999.\n\
     {
       gripe_square_matrix_required ("sqrtm");
       return retval;
+    }
+
+  if (nargout > 1)
+    {
+      retval.resize (1, 2);
+      retval(2) = -1.0;
     }
 
   if (arg.is_diag_matrix ())

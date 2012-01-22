@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -141,14 +141,21 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
 
 endfunction
 
+
 %!demo
-%! colormap (jet (64))
-%! [x, y, z] = peaks(10);
+%! clf;
+%! colormap ('default');
+%! [x, y, z] = peaks (10);
 %! surfnorm (x, y, z);
 
 %!demo
-%! surfnorm (peaks(10));
+%! clf;
+%! colormap ('default');
+%! surfnorm (peaks (10));
 
 %!demo
-%! surfnorm (peaks(32));
-%! shading interp
+%! clf;
+%! colormap ('default');
+%! surfnorm (peaks (32));
+%! shading interp;
+

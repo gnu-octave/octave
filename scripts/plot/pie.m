@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} pie (@dots{}, @var{labels})
 ## @deftypefnx {Function File} {} pie (@var{h}, @dots{});
 ## @deftypefnx {Function File} {@var{h} =} pie (@dots{});
-## Produce a pie chart.
+## Produce a 2-D pie chart.
 ##
 ## Called with a single vector argument, produces a pie chart of the
 ## elements in @var{x}, with the size of the slice determined by percentage
@@ -34,7 +34,8 @@
 ## If given @var{labels} is a cell array of strings of the same length as
 ## @var{x}, giving the labels of each of the slices of the pie chart.
 ##
-## The optional return value @var{h} provides a handle to the patch object.
+## The optional return value @var{h} is a list of handles to the patch
+## and text objects generating the plot.
 ##
 ## @seealso{pie3, bar, stem}
 ## @end deftypefn
@@ -65,17 +66,22 @@ function retval = pie (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! pie ([3, 2, 1], [0, 0, 1]);
-%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 
 %!demo
-%! pie ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
-%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! clf;
+%! pie ([3, 2, 1], [0, 0, 1], {'Cheddar', 'Swiss', 'Camembert'});
+%! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
 
 %!demo
-%! pie ([0.17, 0.34, 0.41], {"Cheddar", "Swiss", "Camembert"});
-%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! clf;
+%! pie ([0.17, 0.34, 0.41], {'Cheddar', 'Swiss', 'Camembert'});
+%! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ("missing slice");
+%! title ('missing slice');
+

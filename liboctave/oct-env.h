@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -114,6 +114,9 @@ private:
 
   // The real thing.
   static octave_env *instance;
+
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   // TRUE means follow symbolic links that point to directories just
   // as if they are real directories.

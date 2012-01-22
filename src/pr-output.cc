@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -3952,6 +3952,7 @@ DEFUN (fixed_point_format, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} fixed_point_format ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} fixed_point_format (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} fixed_point_format (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 use a scaled format to print matrix values such that the largest\n\
 element may be written with a single leading digit with the scaling\n\
@@ -3976,6 +3977,10 @@ ans =\n\
 Notice that first value appears to be zero when it is actually 1.  For\n\
 this reason, you should be careful when setting\n\
 @code{fixed_point_format} to a nonzero value.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{format, output_max_field_width, output_precision}\n\
 @end deftypefn")
 {
@@ -3986,6 +3991,7 @@ DEFUN (print_empty_dimensions, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} print_empty_dimensions (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether the\n\
 dimensions of empty matrices are printed along with the empty matrix\n\
 symbol, @samp{[]}.  For example, the expression\n\
@@ -4000,6 +4006,10 @@ will print\n\
 @example\n\
 ans = [](3x0)\n\
 @end example\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{format}\n\
 @end deftypefn")
 {
@@ -4010,6 +4020,7 @@ DEFUN (split_long_rows, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} split_long_rows ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} split_long_rows (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} split_long_rows (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether rows of a matrix\n\
 may be split when displayed to a terminal window.  If the rows are split,\n\
 Octave will display the matrix in a series of smaller pieces, each of\n\
@@ -4033,6 +4044,10 @@ ans =\n\
   0.44672  0.94303  0.56564  0.82150\n\
 @end group\n\
 @end example\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{format}\n\
 @end deftypefn")
 {
@@ -4043,8 +4058,13 @@ DEFUN (output_max_field_width, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} output_max_field_width ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} output_max_field_width (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} output_max_field_width (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the maximum width\n\
 of a numeric output field.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_precision}\n\
 @end deftypefn")
 {
@@ -4055,8 +4075,13 @@ DEFUN (output_precision, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} output_precision ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} output_precision (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} output_precision (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the minimum number of\n\
 significant figures to display for numeric output.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{format, fixed_point_format, output_max_field_width}\n\
 @end deftypefn")
 {

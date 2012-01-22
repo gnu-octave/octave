@@ -1,5 +1,5 @@
-## Copyright (C) 2008-2011 Radek Salac
-## Copyright (C) 2011 Carlo de Falco
+## Copyright (C) 2008-2012 Radek Salac
+## Copyright (C) 2012 Carlo de Falco
 ##
 ## This file is part of Octave.
 ##
@@ -206,11 +206,12 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
 
 endfunction
 
+
 %!demo
 %! % Solve system of A*x=b
-%! A = [5 -1 3;-1 2 -2;3 -2 3]
-%! b = [7;-1;4]
-%! [x, flag, relres, iter, resvec] = bicgstab(A, b)
+%! A = [5 -1 3;-1 2 -2;3 -2 3];
+%! b = [7;-1;4];
+%! [x, flag, relres, iter, resvec] = bicgstab (A, b)
 
 %!shared A, b, n, M1, M2
 %!

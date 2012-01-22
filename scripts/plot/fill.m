@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,7 +22,11 @@
 ## @deftypefnx {Function File} {} fill (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} fill (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} fill (@dots{})
-## Create one or more filled patch objects, returning a patch object for each.
+## Create one or more filled patch objects.
+##
+## The optional return value @var{h} is an array of graphics handles to
+## the created patch objects.
+## @seealso{patch}
 ## @end deftypefn
 
 function retval = fill (varargin)
@@ -42,16 +46,16 @@ function retval = fill (varargin)
         set (h, "nextplot", "add");
       endif
       if (i == length (iargs))
-        args = varargin (iargs(i):end);
+        args = varargin(iargs(i):end);
       else
-        args = varargin (iargs(i):iargs(i+1)-1);
+        args = varargin(iargs(i):iargs(i+1)-1);
       endif
       newplot ();
       [tmp, fail] = __patch__ (h, args{:});
       if (fail)
-        print_usage();
+        print_usage ();
       endif
-      htmp (end + 1) = tmp;
+      htmp(end + 1, 1) = tmp;
     endfor
     if (strncmp (nextplot, "replace", 7))
       set (h, "nextplot", nextplot);
@@ -70,7 +74,7 @@ function iargs = __find_patches__ (varargin)
   iargs = [];
   i = 1;
   while (i < nargin)
-    iargs (end + 1) = i;
+    iargs(end + 1) = i;
     if (ischar (varargin{i})
         && (strcmpi (varargin{i}, "faces")
             || strcmpi (varargin{i}, "vertices")))
@@ -92,17 +96,10 @@ function iargs = __find_patches__ (varargin)
         elseif (ischar (varargin{i}))
           colspec = tolower (varargin{i});
           collen = length (colspec);
-
-          if (strncmp (colspec, "blue", collen)
-              || strncmp (colspec, "black", collen)
-              || strncmp (colspec, "k", collen)
-              || strncmp (colspec, "black", collen)
-              || strncmp (colspec, "red", collen)
-              || strncmp (colspec, "green", collen)
-              || strncmp (colspec, "yellow", collen)
-              || strncmp (colspec, "magenta", collen)
-              || strncmp (colspec, "cyan", collen)
-              || strncmp (colspec, "white", collen))
+          if (any (strncmp (colspec, 
+                            {"blue", "black", "k", "red", "green", ...
+                             "yellow", "magenta", "cyan", "white"},
+                            collen)))
             i++;
             break;
           endif
@@ -112,14 +109,17 @@ function iargs = __find_patches__ (varargin)
       endwhile
     endif
   endwhile
+
 endfunction
 
+
 %!demo
-%! clf
-%! t1 = (1/16:1/8:1)'*2*pi;
-%! t2 = ((1/16:1/8:1)' + 1/32)*2*pi;
-%! x1 = sin(t1) - 0.8;
-%! y1 = cos(t1);
-%! x2 = sin(t2) + 0.8;
-%! y2 = cos(t2);
-%! h = fill(x1,y1,'r',x2,y2,'g');
+%! clf;
+%! t1 = (1/16:1/8:1) * 2*pi;
+%! t2 = ((1/16:1/8:1) + 1/32) * 2*pi;
+%! x1 = sin (t1) - 0.8;
+%! y1 = cos (t1);
+%! x2 = sin (t2) + 0.8;
+%! y2 = cos (t2);
+%! h = fill (x1,y1,'r', x2,y2,'g');
+

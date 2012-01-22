@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David BAteman
+## Copyright (C) 2007-2012 David BAteman
 ##
 ## This file is part of Octave.
 ##
@@ -74,12 +74,15 @@ function [c, h] = contour3 (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! contour3 (peaks (19));
-%! hold on
-%! surface (peaks (19), "facecolor", "none", "edgecolor", "black")
-%! colormap hot
-%! axis tight
-%! zlim auto
-%! hold off
-%! box off
+%! hold on;
+%! surface (peaks (19), 'facecolor', 'none', 'edgecolor', 'black');
+%! colormap (hot (64));
+%! axis tight;
+%! zlim auto;
+%! box off;
+%! hold off;
+

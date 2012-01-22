@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1995-2011 John W. Eaton
+Copyright (C) 1995-2012 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -755,14 +755,19 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
 
       // Try the fast case.
       bool all_same = true;
-      for (octave_idx_type i = 0; i < n; i++)
+
+      if (nf > 0)
         {
-          all_same = map_list[idx].xkeys.is_same (map_list[i].xkeys);
-          if (! all_same)
-            break;
+          for (octave_idx_type i = 0; i < n; i++)
+            {
+              all_same = map_list[idx].xkeys.is_same (map_list[i].xkeys);
+
+              if (! all_same)
+                break;
+            }
         }
 
-      if (all_same)
+      if (all_same && nf > 0)
         do_cat (dim, n, map_list, retval);
       else
         {

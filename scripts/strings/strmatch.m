@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ## Copyright (C) 2003 Alois Schloegl
 ## Copyright (C) 2010 VZLU Prague
 ##
@@ -26,7 +26,6 @@
 ## array of strings.  If the third argument @code{"exact"} is not given, then
 ## @var{s} only needs to match @var{A} up to the length of @var{s}.
 ## Trailing spaces and nulls in @var{s} and @var{A} are ignored when matching.
-## option.
 ##
 ## For example:
 ##
@@ -44,7 +43,8 @@
 ## @end example
 ##
 ## @strong{Caution:} @code{strmatch} is scheduled for deprecation.  Use
-## @code{strcmpi} or @code{strncmpi} in all new code.
+## @code{strncmp} (normal case), or @code{strcmp} ("exact" case), or
+## @code{regexp} in all new code.
 ## @seealso{strfind, findstr, strcmp, strncmp, strcmpi, strncmpi, find}
 ## @end deftypefn
 

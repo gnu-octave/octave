@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -133,6 +133,8 @@ function hg = __scatter__ (varargin)
   addlistener (hg, "cdata", @update_data);
   addlistener (hg, "sizedata", @update_data);
 
+  one_explicit_color = ischar (c) || isequal (size (c), [1, 3]);
+
   if (numel (x) <= 100)
 
     ## For small number of points, we'll construct an object for each point.
@@ -141,7 +143,7 @@ function hg = __scatter__ (varargin)
       s = repmat (s, numel(x), 1);
     endif
 
-    if (ischar (c) || rows(c) == 1)
+    if (one_explicit_color)
       for i = 1 : numel (x)
         if (filled)
           h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
@@ -160,6 +162,9 @@ function hg = __scatter__ (varargin)
         endif
       endfor
     else
+      if (rows (c) == 1)
+        c = ones (rows (x), 1) * c;
+      endif
       for i = 1 : numel (x)
         if (filled)
           h = __go_patch__ (hg, "xdata", x(i), "ydata", y(i), "zdata", z(i,:),
@@ -189,24 +194,28 @@ function hg = __scatter__ (varargin)
     ## For larger numbers of points, we split the points by common color.
 
     vert = [x, y, z];
-
-    if (ischar (c) || rows (c) == 1)
-      h = render_size_color (hg, vert, s, c, marker, filled, false);
-    elseif (columns (c) == 1)
+    if (one_explicit_color)
       h = render_size_color (hg, vert, s, c, marker, filled, true);
     else
-      [cc, idx] = unique_idx (c, "rows");
-      if (isscalar (s))
-        for i = 1:rows (x)
-          h = render_size_color (hg, vert(idx{i},:), s, cc(i,:),
-                                 marker, filled, true);
-        endfor
-      else
-        for i = 1:rows (x)
-          h = render_size_color (hg, vert(idx{i},:), s(idx{i}), cc(i,:),
-                                 marker, filled, true);
-        endfor
+      if (rows (c) == 1)
+        c = ones (rows (x), 1) * c;
       endif
+      ## We want to group points by colour. So first get all the unique colours
+      [cc, ~, c_to_cc] = unique (c, "rows");
+
+      for i = 1:rows (cc)
+        ## Now for each possible unique colour, get the logical index of
+        ## points that correspond to that colour
+        idx = (i == c_to_cc);
+        if (isscalar (s))
+          h = render_size_color (hg, vert(idx, :), s, c(idx,:),
+                                 marker, filled, true);
+        else
+          h = render_size_color (hg, vert(idx, :), s(idx), c(idx,:),
+                                 marker, filled, true);
+        endif
+      endfor
+
     endif
   endif
 
@@ -226,14 +235,14 @@ function hg = __scatter__ (varargin)
   addproperty ("marker", hg, "patchmarker", marker);
   if (filled)
     addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", "none");
-    if (ischar (c) || rows (c) == 1)
+    if (one_explicit_color)
       addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", c);
     else
       addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "flat");
     endif
   else
     addproperty ("markerfacecolor", hg, "patchmarkerfacecolor", "none");
-    if (ischar (c) || rows (c) == 1)
+    if (one_explicit_color)
       addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", c);
     else
       addproperty ("markeredgecolor", hg, "patchmarkeredgecolor", "flat");
@@ -250,48 +259,31 @@ function hg = __scatter__ (varargin)
 
 endfunction
 
-function [y, idx] =  unique_idx (x, byrows)
-  if (nargin == 2)
-    [xx, idx] = sortrows (x);
-    n = rows (x);
-    jdx = find (any (xx(1:n-1,:) != xx(2:n,:), 2));
-    jdx(end+1) = n;
-    y = xx(jdx,:);
-  else
-    [xx, idx] = sort (x);
-    n = length (x);
-    jdx = find (xx(1:n-1,:) != xx(2:n,:));
-    jdx(end+1) = n;
-    y = xx(jdx);
-  endif
-
-  if (nargin == 2 || columns (x) == 1)
-    idx = mat2cell (idx, diff ([0; jdx]), 1);
-  else
-    idx = mat2cell (idx, 1, diff ([0, jdx]));
-  endif
-endfunction
-
 function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
   if (isscalar (s))
     x = vert(:,1);
     y = vert(:,2);
     z = vert(:,3:end);
-    if (ischar (c) || !isflat)
+    toolkit = get (ancestor (hg, "figure"), "__graphics_toolkit__");
+    ## Does gnuplot only support triangles with different vertex colors ?
+    ## TODO - Verify gnuplot can only support one color. If RGB triplets
+    ##        can be assigned to each vertex, then fix __go_draw_axe__.m
+    gnuplot_hack = numel (x) > 1 && strcmp (toolkit, "gnuplot");
+    if (ischar (c) || ! isflat || gnuplot_hack)
       if (filled)
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel(x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
                           "markeredgecolor", "none",
-                          "markerfacecolor", c,
+                          "markerfacecolor", c(1,:),
                           "markersize", s, "linestyle", "none");
       else
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
                           "faces", 1:numel(x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
-                          "markeredgecolor", c,
+                          "markeredgecolor", c(1,:),
                           "markerfacecolor", "none",
                           "markersize", s, "linestyle", "none");
       endif
@@ -303,7 +295,7 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "none",
                           "markerfacecolor", "flat",
-                          "cdata", c, "facevertexcdata", c(:),
+                          "cdata", c, "facevertexcdata", c,
                           "linestyle", "none");
       else
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
@@ -312,15 +304,16 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "flat",
                           "markerfacecolor", "none",
-                          "cdata", c, "facevertexcdata", c(:),
+                          "cdata", c, "facevertexcdata", c,
                           "linestyle", "none");
       endif
     endif
   else
     ## FIXME: round the size to one decimal place. It's not quite right, though.
-    [ss, idx] = unique_idx (ceil (s*10) / 10);
+    [ss, ~, s_to_ss] = unique (ceil (s*10) / 10);
     for i = 1:rows (ss)
-      h = render_size_color (hg, vert(idx{i},:), ss(i), c,
+      idx = (i == s_to_ss);
+      h = render_size_color (hg, vert(idx,:), ss(i), c,
                              marker, filled, isflat);
     endfor
   endif

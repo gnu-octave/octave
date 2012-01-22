@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Ben Abbott
+## Copyright (C) 2008-2012 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -25,11 +25,12 @@
 ## @seealso{OCTAVE_HOME}
 ## @end deftypefn
 
-function val = matlabroot ()
+function retval = matlabroot ()
 
-  val = OCTAVE_HOME;
+  retval = OCTAVE_HOME;
 
 endfunction
+
 
 %!assert (matlabroot(), OCTAVE_HOME())
 

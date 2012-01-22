@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2011 John W. Eaton
+Copyright (C) 2009-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -323,7 +323,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
         octave_idx_type steps = rng.nelem ();
         double b = rng.base ();
         double increment = rng.inc ();
-        bool quit = false;
 
         for (octave_idx_type i = 0; i < steps; i++)
           {
@@ -362,8 +361,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
       {
         // A matrix or cell is reshaped to 2 dimensions and iterated by
         // columns.
-
-        bool quit = false;
 
         dim_vector dv = rhs.dims ().redim (2);
 
@@ -1196,9 +1193,14 @@ DEFUN (max_recursion_depth, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} max_recursion_depth ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} max_recursion_depth (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} max_recursion_depth (@var{new_val}, \"local\")\n\
 Query or set the internal limit on the number of times a function may\n\
 be called recursively.  If the limit is exceeded, an error message is\n\
 printed and control returns to the top level.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (max_recursion_depth);
@@ -1219,10 +1221,15 @@ DEFUN (silent_functions, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} silent_functions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} silent_functions (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} silent_functions (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether internal\n\
 output from a function is suppressed.  If this option is disabled,\n\
 Octave will display the results produced by evaluating expressions\n\
 within a function body that are not terminated with a semicolon.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (silent_functions);

@@ -1,4 +1,4 @@
-@c Copyright (C) 2008-2011 David Bateman
+@c Copyright (C) 2008-2012 David Bateman
 @c Copyright (C) 2009 VZLU Prague
 @c
 @c This file is part of Octave.
@@ -54,18 +54,18 @@ a small understand of the polynomial class itself is necessary to
 fully grasp the techniques described.
 
 The polynomial class is used to represent polynomials of the form
-
-@example
-@group
 @tex
-$a_0 + a_1 x + a_2 x^2 + \ldots a_n x^n$
+$$
+a_0 + a_1 x + a_2 x^2 + \ldots a_n x^n
+$$
 @end tex
 @ifnottex
+
+@example
 a0 + a1 * x + a2 * x^2 + @dots{} + an * x^n
-@end ifnottex
-@end group
 @end example
 
+@end ifnottex
 @noindent
 where
 @tex
@@ -130,9 +130,9 @@ To check where a variable is a user class, the @code{isobject} and
 @group
 p = polynomial ([1, 0, 1]);
 isobject (p)
-@result{} 1
+  @result{} 1
 isa (p, "polynomial")
-@result{} 1
+  @result{} 1
 @end group
 @end example
 
@@ -157,7 +157,7 @@ For example:
 @group
 p = polynomial ([1, 0, 1]);
 ismethod (p, "roots")
-@result{} 1
+  @result{} 1
 @end group
 @end example
 
@@ -319,7 +319,7 @@ follows:
 @group
 p = polynomial([1,2,3,4]);
 p(end-1)
-@result{} 3
+  @result{} 3
 @end group
 @end example
 

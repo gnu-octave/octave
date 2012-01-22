@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2011 John W. Eaton
+## Copyright (C) 1993-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -173,6 +173,8 @@
 ## If the first argument is an axis handle, then plot into these axes,
 ## rather than the current axis handle returned by @code{gca}.
 ##
+## The optional return value @var{h} is a graphics handle to the created plot.
+##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, bar,
 ## stairs, errorbar, xlabel, ylabel, title, print}
 ## @end deftypefn
@@ -201,3 +203,7 @@ function retval = plot (varargin)
   endif
 
 endfunction
+
+
+%% FIXME: Need demo or test for function
+

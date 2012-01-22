@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1992-2011 John W. Eaton
+Copyright (C) 1992-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -88,5 +88,4 @@ For more information, visit http://www.octave.org/help-wanted.html"
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
     ("  For details, type `warranty'.") "\n\n" \
   "For information about changes from previous versions, type `news'."
-
 #endif

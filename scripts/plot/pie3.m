@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ## Copyright (C) 2010 Kai Habel
 ##
 ## This file is part of Octave.
@@ -35,8 +35,8 @@
 ## If given @var{labels} is a cell array of strings of the same length as
 ## @var{x}, giving the labels of each of the slices of the pie chart.
 ##
-## The optional return value @var{h} provides a handle list to patch, surface
-## and text objects generating this plot.
+## The optional return value @var{h} is a list of graphics handles to the patch,
+## surface, and text objects generating the plot.
 ##
 ## @seealso{pie, bar, stem}
 ## @end deftypefn
@@ -67,17 +67,22 @@ function retval = pie3 (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! pie3 ([5:-1:1], [0, 0, 1, 0, 0]);
-%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 
 %!demo
-%! pie3 ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
-%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! clf;
+%! pie3 ([3, 2, 1], [0, 0, 1], {'Cheddar', 'Swiss', 'Camembert'});
+%! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
 
 %!demo
-%! pie3 ([0.17, 0.34, 0.41], {"Cheddar", "Swiss", "Camembert"});
-%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! clf;
+%! pie3 ([0.17, 0.34, 0.41], {'Cheddar', 'Swiss', 'Camembert'});
+%! colormap ([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
 %! axis ([-2,2,-2,2]);
-%! title ("missing slice");
+%! title ('missing slice');
+

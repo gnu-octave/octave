@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 S�ren Hauberg
+## Copyright (C) 2005-2012 S�ren Hauberg
 ## Copyright (C) 2010 VZLU Prague, a.s.
 ##
 ## This file is part of Octave.
@@ -946,6 +946,15 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
                                     global_install);
   endif
+
+  ## If there's a NEWS file, mention it
+  ## we are checking if desc exists too because it's possible to ge to this point
+  ## without creating it such as giving an invalid filename for the package
+  if (exist ("desc", "var") && exist (fullfile (desc.dir, "packinfo", "NEWS"), "file"))
+    printf ("For information about changes from previous versions of the %s package, run 'news (\"%s\")'.\n",
+            desc.name, desc.name);
+  endif
+
 endfunction
 
 function uninstall (pkgnames, handle_deps, verbose, local_list,
@@ -1874,7 +1883,7 @@ function write_index (desc, dir, index_file, global_install)
   endif
 
   ## Get classes in dir
-  class_idx = strmatch ("@", files);
+  class_idx = find (strncmp (files, '@', 1));
   for k = 1:length (class_idx)
     class_name = files {class_idx (k)};
     class_dir = fullfile (dir, class_name);
@@ -1997,21 +2006,21 @@ function [out1, out2] = installed_packages (local_list, global_list)
   ## Now check if the package is loaded.
   tmppath = strrep (path(), "\\", "/");
   for i = 1:length (installed_pkgs_lst)
-    if (findstr (tmppath, strrep (installed_pkgs_lst{i}.dir, "\\", "/")))
+    if (strfind (tmppath, strrep (installed_pkgs_lst{i}.dir, '\', '/')))
       installed_pkgs_lst{i}.loaded = true;
     else
       installed_pkgs_lst{i}.loaded = false;
     endif
   endfor
   for i = 1:length (local_packages)
-    if (findstr (tmppath, strrep (local_packages{i}.dir, "\\", "/")))
+    if (strfind (tmppath, strrep (local_packages{i}.dir, '\', '/')))
       local_packages{i}.loaded = true;
     else
       local_packages{i}.loaded = false;
     endif
   endfor
   for i = 1:length (global_packages)
-    if (findstr (tmppath, strrep (global_packages{i}.dir, "\\", "/")))
+    if (strfind (tmppath, strrep (global_packages{i}.dir, '\', '/')))
       global_packages{i}.loaded = true;
     else
       global_packages{i}.loaded = false;
@@ -2190,13 +2199,8 @@ endfunction
 
 function [status_out, msg_out] = rm_rf (dir)
   if (exist (dir))
-    crr = confirm_recursive_rmdir ();
-    unwind_protect
-      confirm_recursive_rmdir (false);
-      [status, msg] = rmdir (dir, "s");
-    unwind_protect_cleanup
-      confirm_recursive_rmdir (crr);
-    end_unwind_protect
+    crr = confirm_recursive_rmdir (false, "local");
+    [status, msg] = rmdir (dir, "s");
   else
     status = 1;
     msg = "";
@@ -2394,7 +2398,7 @@ function dep = is_architecture_dependent (nm)
     else
       isglob = false;
     endif
-    pos = findstr (nm, ext);
+    pos = strfind (nm, ext);
     if (pos)
       if (! isglob && (length(nm) - pos(end) != length(ext) - 1))
         continue;

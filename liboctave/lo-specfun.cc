@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 Copyright (C) 2010 Jaroslav Hajek
 Copyright (C) 2010 VZLU Prague
 
@@ -851,6 +851,13 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
         yi = 0.0;
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
+    }
+  else if (is_integer_value (alpha))
+    {
+      // zbesi can overflow as z->0, and cause troubles for generic case below
+      alpha = -alpha;
+      Complex tmp = zbesi (z, alpha, kode, ierr);
+      retval = bessel_return_value (tmp, ierr);
     }
   else
     {

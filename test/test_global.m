@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 John W. Eaton
+## Copyright (C) 2006-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -19,19 +19,21 @@
 %% test/octave.test/global/global-1.m
 %!test
 %! global G = 1;
-%! assert(G,1)
+%! assert (G,1);
 
 %% test/octave.test/global/global-2.m
 %!function f ()
 %!  global G;
-%!  assert(G,1);
+%!  assert (G,1);
+%!endfunction
 %!test
 %! global G = 1;
 %! f;
 
 %% test/octave.test/global/global-3.m
 %!function f ()
-%!  fail("G");
+%!  fail ("G");
+%!endfunction
 %!test
 %! global G = 1;
 %! f();
@@ -39,25 +41,29 @@
 %% test/octave.test/global/global-4.m
 %!function f ()
 %!  global H = 1;
+%!endfunction
 %!test
 %!  f;
-%!  fail("H");
+%!  fail ("H");
 
 %% test/octave.test/global/global-5.m
 %!function f ()
 %!  global H = 1;
+%!endfunction
 %!test
 %!function g ()
-%!  fail("H");
+%!  fail ("H");
 %!test
 %! g();
 
 %% test/octave.test/global/global-6.m
 %!function f ()
 %!  global H = 1;
+%!endfunction
 %!function g ()
 %!  global H;
-%!  assert(H,1);
+%!  assert (H,1);
+%!endfunction
 %!test
 %! f();
 %! g();
@@ -66,17 +72,20 @@
 %!test
 %!function f ()
 %!  global H = 1;
+%!endfunction
 %!test
-%! fail("H");
+%! fail ("H");
 
 %% test/octave.test/global/global-8.m
 %!function f ()
 %!  global H = 1;
+%!endfunction
 %!function g ()
 %!  global H;
-%!  assert(H,1)
+%!  assert (H,1);
+%!endfunction
 %!test
 %! f;
-%! clear H
+%! clear H;
 %! g;
 

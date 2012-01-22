@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 David Bateman
+## Copyright (C) 2009-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +18,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ascii (@var{f})
-## Put the FTP connection @var{f} into ascii mode.
+## Set the FTP connection @var{f} to use ASCII mode for transfers.
+## ASCII mode is only appropriate for text files as it will convert
+## the remote host's newline representation to the local host's newline
+## representation.
+##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 

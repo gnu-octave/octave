@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 Hoxide Ma
+## Copyright (C) 2005-2012 Hoxide Ma
 ##
 ## This file is part of Octave.
 ##
@@ -198,11 +198,16 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
 
 endfunction
 
+
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]+10; y=[-10,-9,-8];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,bicubic(x,y,A,xi,yi));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4]+10;
+%! y = [-10,-9,-8];
+%! xi = linspace (min (x), max (x), 17);
+%! yi = linspace (min (y), max (y), 26)';
+%! mesh (xi, yi, bicubic (x,y,A,xi,yi));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
+

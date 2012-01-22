@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Kai Habel
+## Copyright (C) 2000-2012 Kai Habel
 ## Copyright (C) 2006 David Bateman
 ##
 ## This file is part of Octave.
@@ -20,23 +20,22 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{pp} =} spline (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
+## Return the cubic spline interpolant of points @var{x} and @var{y}.
+## 
+## When called with two arguments, return the piecewise polynomial @var{pp}
+## that may be used with @code{ppval} to evaluate the polynomial at specific
+## points.  When called with a third input argument, @code{spline} evaluates
+## the spline at the points @var{xi}.  The third calling form @code{spline
+## (@var{x}, @var{y}, @var{xi})} is equivalent to @code{ppval (spline
+## (@var{x}, @var{y}), @var{xi})}.
 ##
-## Return the cubic spline interpolant of @var{y} at points @var{x}.
-## If called with two arguments, @code{spline} returns the piecewise
-## polynomial @var{pp} that may later be used with @code{ppval} to
-## evaluate the polynomial at specific points.
-## If called with a third input argument, @code{spline} evaluates the
-## spline at the points @var{xi}.  There is an equivalence
-## between @code{ppval (spline (@var{x}, @var{y}), @var{xi})} and
-## @code{spline (@var{x}, @var{y}, @var{xi})}.
-##
-## The variable @var{x} must be a vector of length @var{n}, and @var{y}
-## can be either a vector or array.  In the case where @var{y} is a
-## vector, it can have a length of either @var{n} or @code{@var{n} + 2}.
-## If the length of @var{y} is @var{n}, then the 'not-a-knot' end
-## condition is used.  If the length of @var{y} is @code{@var{n} + 2},
-## then the first and last values of the vector @var{y} are the values
-## of the first derivative of the cubic spline at the end-points.
+## The variable @var{x} must be a vector of length @var{n}.  @var{y} can be
+## either a vector or array.  If @var{y} is a vector it must have a length of
+## either @var{n} or @code{@var{n} + 2}.  If the length of @var{y} is
+## @var{n}, then the "not-a-knot" end condition is used.  If the length of
+## @var{y} is @code{@var{n} + 2}, then the first and last values of the
+## vector @var{y} are the values of the first derivative of the cubic spline
+## at the endpoints.
 ##
 ## If @var{y} is an array, then the size of @var{y} must have the form
 ## @tex
@@ -52,7 +51,7 @@
 ## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n} + 2]}.
 ## @end ifnottex
-## The array is then reshaped internally to a matrix where the leading
+## The array is reshaped internally to a matrix where the leading
 ## dimension is given by
 ## @tex
 ## $$s_1 s_2 \cdots s_k$$
@@ -61,9 +60,10 @@
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
 ## and each row of this matrix is then treated separately.  Note that this
-## is exactly the opposite treatment than @code{interp1} and is done
-## for compatibility.
-## @seealso{ppval, mkpp, unmkpp}
+## is exactly opposite to @code{interp1} but is done for @sc{matlab}
+## compatibility.
+##
+## @seealso{pchip, ppval, mkpp, unmkpp}
 ## @end deftypefn
 
 ## This code is based on csape.m from octave-forge, but has been
@@ -107,7 +107,7 @@ function ret = spline (x, y, xi)
     a = a(2:end-1,:);
   endif
 
-  if (~issorted (x))
+  if (! issorted (x))
     [x, idx] = sort(x);
     a = a(idx,:);
   endif
@@ -244,37 +244,38 @@ function ret = spline (x, y, xi)
 
 endfunction
 
+
 %!demo
-%! x = 0:10; y = sin(x);
-%! xspline = 0:0.1:10; yspline = spline(x,y,xspline);
-%! title("spline fit to points from sin(x)");
-%! plot(xspline,sin(xspline),"r",xspline,yspline,"g-",x,y,"b+");
-%! legend("original","interpolation","interpolation points");
+%! x = 0:10; y = sin (x);
+%! xspline = 0:0.1:10; yspline = spline (x,y,xspline);
+%! title ("spline fit to points from sin(x)");
+%! plot (xspline,sin(xspline),"r", xspline,yspline,"g-", x,y,"b+");
+%! legend ("original", "interpolation", "interpolation points");
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
 %!shared x,y,abserr
-%! x = [0:10]; y = sin(x); abserr = 1e-14;
-%!assert (spline(x,y,x), y, abserr);
-%!assert (spline(x,y,x'), y', abserr);
-%!assert (spline(x',y',x'), y', abserr);
-%!assert (spline(x',y',x), y, abserr);
-%!assert (isempty(spline(x',y',[])));
-%!assert (isempty(spline(x,y,[])));
-%!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x,[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x',[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
-%!assert (spline(x',[y;y],x'), [spline(x,y,x);spline(x,y,x)],abserr)
+%! x = [0:10]; y = sin (x); abserr = 1e-14;
+%!assert (spline (x,y,x), y, abserr)
+%!assert (spline (x,y,x'), y', abserr)
+%!assert (spline (x',y',x'), y', abserr)
+%!assert (spline (x',y',x), y, abserr)
+%!assert (isempty (spline (x',y',[])))
+%!assert (isempty (spline (x,y,[])))
+%!assert (spline (x,[y;y],x), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x,[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x',[y;y],x), [spline(x,y,x);spline(x,y,x)], abserr)
+%!assert (spline (x',[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
 %! y = cos(x) + i*sin(x);
-%!assert (spline(x,y,x), y, abserr)
-%!assert (real(spline(x,y,x)), real(y), abserr);
-%!assert (real(spline(x,y,x.')), real(y).', abserr);
-%!assert (real(spline(x.',y.',x.')), real(y).', abserr);
-%!assert (real(spline(x.',y,x)), real(y), abserr);
-%!assert (imag(spline(x,y,x)), imag(y), abserr);
-%!assert (imag(spline(x,y,x.')), imag(y).', abserr);
-%!assert (imag(spline(x.',y.',x.')), imag(y).', abserr);
-%!assert (imag(spline(x.',y,x)), imag(y), abserr);
+%!assert (spline (x,y,x), y, abserr)
+%!assert (real (spline (x,y,x)), real (y), abserr)
+%!assert (real (spline (x,y,x.')), real (y).', abserr)
+%!assert (real (spline (x.',y.',x.')), real (y).', abserr)
+%!assert (real (spline (x.',y,x)), real (y), abserr)
+%!assert (imag (spline (x,y,x)), imag (y), abserr)
+%!assert (imag (spline (x,y,x.')), imag (y).', abserr)
+%!assert (imag (spline (x.',y.',x.')), imag (y).', abserr)
+%!assert (imag (spline (x.',y,x)), imag (y), abserr)
 %!test
 %! xnan = 5;
 %! y(x==xnan) = NaN;
@@ -303,3 +304,4 @@ endfunction
 %! pp = spline (x,y);
 %! [x,P] = unmkpp (pp);
 %! assert (norm (P-[7,-9,1,3]), 0, abserr);
+

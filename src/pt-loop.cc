@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -91,6 +91,7 @@ tree_do_until_command::accept (tree_walker& tw)
 
 tree_simple_for_command::~tree_simple_for_command (void)
 {
+  delete lhs;
   delete expr;
   delete maxproc;
   delete list;
@@ -119,6 +120,7 @@ tree_simple_for_command::accept (tree_walker& tw)
 
 tree_complex_for_command::~tree_complex_for_command (void)
 {
+  delete lhs;
   delete expr;
   delete list;
   delete lead_comm;

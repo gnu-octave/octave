@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,8 +22,9 @@
 ## Plot a triangular mesh in 3D@.  The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned
 ## from @code{delaunay}.  The variable @var{z} is value at the point
-## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic
-## handle of the plot.
+## @code{(@var{x}, @var{y})}.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{triplot, trisurf, delaunay3}
 ## @end deftypefn
 
@@ -55,9 +56,10 @@ endfunction
 
 
 %!demo
-%! old_state = rand ("state");
-%! restore_state = onCleanup (@() rand ("state", old_state));
-%! rand ("state", 10);
+%! clf;
+%! old_state = rand ('state');
+%! restore_state = onCleanup (@() rand ('state', old_state));
+%! rand ('state', 10);
 %! N = 10;
 %! x = 3 - 6 * rand (N, N);
 %! y = 3 - 6 * rand (N, N);

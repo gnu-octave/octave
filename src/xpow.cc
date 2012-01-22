@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -1245,7 +1245,7 @@ elem_xpow (const NDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           //Potentially complex results
           NDArray xa = octave_value_extract<NDArray> (a);
@@ -1333,7 +1333,7 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           return bsxfun_pow (a, b);
         }
@@ -1432,7 +1432,7 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           return bsxfun_pow (a, b);
         }
@@ -1482,7 +1482,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           return bsxfun_pow (a, b);
         }
@@ -2598,7 +2598,7 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           //Potentially complex results
           FloatNDArray xa = octave_value_extract<FloatNDArray> (a);
@@ -2686,7 +2686,7 @@ elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           return bsxfun_pow (a, b);
         }
@@ -2785,7 +2785,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           return bsxfun_pow (a, b);
         }
@@ -2835,7 +2835,7 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 
   if (a_dims != b_dims)
     {
-      if (is_valid_bsxfun (a_dims, b_dims))
+      if (is_valid_bsxfun ("operator .^", a_dims, b_dims))
         {
           return bsxfun_pow (a, b);
         }

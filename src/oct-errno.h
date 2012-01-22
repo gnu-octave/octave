@@ -1,7 +1,7 @@
 // oct-errno.h.in
 /*
 
-Copyright (C) 2005-2011 John W. Eaton
+Copyright (C) 2005-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -42,6 +42,8 @@ public:
   ~octave_errno (void) { }
 
   static bool instance_ok (void);
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static int lookup (const std::string& name);
 

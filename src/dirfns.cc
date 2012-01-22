@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1994-2011 John W. Eaton
+Copyright (C) 1994-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -187,8 +187,8 @@ system-dependent error message.\n\
           if (dir)
             {
               string_vector dirlist = dir.read ();
-              retval(0) = Cell (dirlist.sort ());
               retval(1) = 0.0;
+              retval(0) = Cell (dirlist.sort ());
             }
           else
             {
@@ -487,12 +487,10 @@ system-dependent error message.\n\
 
           int status = octave_readlink (symlink, result, msg);
 
-          retval(0) = result;
-
-          retval(1) = status;
-
           if (status < 0)
             retval(2) = msg;
+          retval(1) = status;
+          retval(0) = result;
         }
     }
   else
@@ -772,8 +770,13 @@ DEFUN (confirm_recursive_rmdir, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} confirm_recursive_rmdir ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} confirm_recursive_rmdir (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} confirm_recursive_rmdir (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will ask for confirmation before recursively removing a directory tree.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (confirm_recursive_rmdir);

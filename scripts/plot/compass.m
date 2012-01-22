@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -31,17 +31,17 @@
 ## The style to use for the plot can be defined with a line style @var{style}
 ## in a similar manner to the line styles used with the @code{plot} command.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a vector of graphics handles to the
+## line objects representing the drawn vectors.
 ##
 ## @example
 ## @group
-## a = toeplitz([1;randn(9,1)],[1,randn(1,9)]);
+## a = toeplitz ([1;randn(9,1)], [1,randn(1,9)]);
 ## compass (eig (a))
 ## @end group
 ## @end example
 ##
-## @seealso{plot, polar, quiver, feather}
+## @seealso{polar, quiver, feather, plot}
 ## @end deftypefn
 
 function retval = compass (varargin)
@@ -112,6 +112,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! randn_9x1_data = [-2.555884; 0.394974; -0.191871; -1.147024; 1.355425; -0.437335; -0.014370; -0.941312; 1.240300];
 %! randn_1x9_data = [1.42934, -1.10821, -1.70404, 0.63357, -0.68337, -1.19771, -0.96502, -1.12810, 0.22457];
 %! a = toeplitz ([1;randn_9x1_data], [1,randn_1x9_data]);

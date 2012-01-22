@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} ezplot3 (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezplot3 (@dots{})
 ##
-## Plots in three-dimensions the curve defined parametrically.
+## Plot a parametrically defined curve in three dimensions.
 ## @var{fx}, @var{fy}, and @var{fz} are strings, inline functions
 ## or function handles with one arguments defining the function.  By
 ## default the plot is over the domain @code{-2*pi < @var{x} < 2*pi}
@@ -32,8 +32,7 @@
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
 ## value of @var{t}.  @var{n} is a scalar defining the number of points to use.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a graphics handle to the created plot.
 ##
 ## @example
 ## @group
@@ -58,10 +57,14 @@ function retval = ezplot3 (varargin)
   if (nargout > 0)
     retval = h;
   endif
+
 endfunction
 
+
 %!demo
+%! clf;
 %! fx = @(t) cos (t);
 %! fy = @(t) sin (t);
 %! fz = @(t) t;
 %! ezplot3 (fx, fy, fz, [0, 10*pi], 100);
+

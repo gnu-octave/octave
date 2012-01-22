@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011 Jordi Gutiérrez Hermoso <jordigh@octave.org>
+Copyright (C) 2012 Jordi Gutiérrez Hermoso <jordigh@octave.org>
 
 This file is part of Octave.
 
@@ -26,10 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "dim-vector.h"
+#include "lo-error.h"
 
 inline
 bool
-is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
+is_valid_bsxfun (const std::string& name, const dim_vector& dx,
+                 const dim_vector& dy)
 {
   for (int i = 0; i < std::min (dx.length (), dy.length ()); i++)
     {
@@ -38,6 +40,10 @@ is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
       if (! ( (xk == yk) || (xk == 1 && yk > 1) || (xk > 1 && yk == 1)))
         return false;
     }
+
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:broadcast", "%s: automatic broadcasting operation applied", name.c_str ());
+
   return true;
 }
 
@@ -46,7 +52,8 @@ is_valid_bsxfun (const dim_vector& dx, const dim_vector& dy)
 // different here.
 inline
 bool
-is_valid_inplace_bsxfun (const dim_vector& dr, const dim_vector& dx)
+is_valid_inplace_bsxfun (const std::string& name, const dim_vector& dr,
+                         const dim_vector& dx)
 {
   octave_idx_type drl = dr.length (), dxl = dx.length ();
   if (drl < dxl)
@@ -60,6 +67,10 @@ is_valid_inplace_bsxfun (const dim_vector& dr, const dim_vector& dx)
       if (! ( (rk == xk) || (rk > 1 && xk == 1)))
         return false;
     }
+
+  (*current_liboctave_warning_with_id_handler)
+    ("Octave:broadcast", "%s: automatic broadcasting operation applied", name.c_str ());
+
   return true;
 }
 

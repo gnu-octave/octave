@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -2216,8 +2216,13 @@ DEFUN (struct_levels_to_print, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} struct_levels_to_print ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} struct_levels_to_print (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} struct_levels_to_print (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the number of\n\
 structure levels to display.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (struct_levels_to_print,
@@ -2228,11 +2233,16 @@ DEFUN (print_struct_array_contents, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} print_struct_array_contents ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_struct_array_contents (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} print_struct_array_contents (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies whether to print struct\n\
 array contents.  If true, values of struct array elements are printed.\n\
 This variable does not affect scalar structures.  Their elements\n\
 are always printed.  In both cases, however, printing will be limited to\n\
 the number of levels specified by @var{struct_levels_to_print}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (print_struct_array_contents);

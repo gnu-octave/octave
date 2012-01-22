@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Kai Habel
+## Copyright (C) 2000-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -85,6 +85,7 @@ endfunction
 
 
 %!demo
+%! clf;
 %! x = -3:0.05:3;
 %! y = abs (sin (x));
 %! k = convhull (x, y);

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -67,20 +67,20 @@ abs (3 + 4i)\n\
 }
 
 /*
-%!assert(abs (1), 1);
-%!assert(abs (-3.5), 3.5);
-%!assert(abs (3+4i), 5);
-%!assert(abs (3-4i), 5);
-%!assert(abs ([1.1, 3i; 3+4i, -3-4i]), [1.1, 3; 5, 5]);
+%!assert (abs (1), 1)
+%!assert (abs (-3.5), 3.5)
+%!assert (abs (3+4i), 5)
+%!assert (abs (3-4i), 5)
+%!assert (abs ([1.1, 3i; 3+4i, -3-4i]), [1.1, 3; 5, 5])
 
-%!assert(abs (single(1)), single(1));
-%!assert(abs (single(-3.5)), single(3.5));
-%!assert(abs (single(3+4i)), single(5));
-%!assert(abs (single(3-4i)), single(5));
-%!assert(abs (single([1.1, 3i; 3+4i, -3-4i])), single([1.1, 3; 5, 5]));
+%!assert (abs (single (1)), single (1))
+%!assert (abs (single (-3.5)), single (3.5))
+%!assert (abs (single (3+4i)), single (5))
+%!assert (abs (single (3-4i)), single (5))
+%!assert (abs (single ([1.1, 3i; 3+4i, -3-4i])), single ([1.1, 3; 5, 5]))
 
-%!error abs ();
-%!error abs (1, 2);
+%!error abs ()
+%!error abs (1, 2)
 */
 
 DEFUN (acos, args, ,
@@ -100,22 +100,22 @@ Compute the inverse cosine in radians for each element of @var{x}.\n\
 }
 
 /*
-%!test
+%!shared rt2, rt3
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
-%! v = [0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi];
+
+%!test
 %! x = [1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1];
-%! assert(acos (x), v, sqrt(eps));
+%! v = [0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi];
+%! assert (acos (x), v, sqrt (eps));
 
 %!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! v = single ([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
 %! x = single ([1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1]);
-%! assert(acos (x), v, sqrt(eps('single')));
+%! v = single ([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! assert (acos (x), v, sqrt (eps ('single')));
 
-%!error acos ();
-%!error acos (1, 2);
+%!error acos ()
+%!error acos (1, 2)
 */
 
 DEFUN (acosh, args, ,
@@ -136,17 +136,17 @@ Compute the inverse hyperbolic cosine for each element of @var{x}.\n\
 
 /*
 %!test
-%! v = [0, pi/2*i, pi*i, pi/2*i];
 %! x = [1, 0, -1, 0];
-%! assert(acosh (x), v, sqrt(eps));
+%! v = [0, pi/2*i, pi*i, pi/2*i];
+%! assert (acosh (x), v, sqrt (eps));
 
 %!test
-%! v = single([0, pi/2*i, pi*i, pi/2*i]);
-%! x = single([1, 0, -1, 0]);
-%! assert(acosh (x), v, sqrt (eps('single')));
+%! x = single ([1, 0, -1, 0]);
+%! v = single ([0, pi/2*i, pi*i, pi/2*i]);
+%! assert (acosh (x), v, sqrt (eps ('single')));
 
-%!error acosh ();
-%!error acosh (1, 2);
+%!error acosh ()
+%!error acosh (1, 2)
 */
 
 DEFUN (angle, args, ,
@@ -197,26 +197,26 @@ arg (3 + 4i)\n\
 }
 
 /*
-%!assert(arg (1), 0);
-%!assert(arg (i), pi/2);
-%!assert(arg (-1), pi);
-%!assert(arg (-i), -pi/2);
-%!assert(arg ([1, i; -1, -i]), [0, pi/2; pi, -pi/2]);
+%!assert (arg (1), 0)
+%!assert (arg (i), pi/2)
+%!assert (arg (-1), pi)
+%!assert (arg (-i), -pi/2)
+%!assert (arg ([1, i; -1, -i]), [0, pi/2; pi, -pi/2])
 
-%!assert(arg (single(1)), single(0));
-%!assert(arg (single(i)), single(pi/2));
+%!assert (arg (single (1)), single (0))
+%!assert (arg (single (i)), single (pi/2))
 %!test
 %! if (ismac ())
 %!   ## Avoid failing for a MacOS feature
-%!   assert(arg (single(-1)), single(pi), 2*eps(single(1)));
+%!   assert (arg (single (-1)), single (pi), 2*eps (single (1)));
 %! else
-%!   assert(arg (single(-1)), single(pi));
+%!   assert (arg (single (-1)), single (pi));
 %! endif
-%!assert(arg (single(-i)), single(-pi/2));
-%!assert(arg (single([1, i; -1, -i])), single([0, pi/2; pi, -pi/2]), 2e1*eps('single'));
+%!assert (arg (single (-i)), single (-pi/2))
+%!assert (arg (single ([1, i; -1, -i])), single ([0, pi/2; pi, -pi/2]), 2e1*eps ('single'))
 
-%!error arg ();
-%!error arg (1, 2);
+%!error arg ()
+%!error arg (1, 2)
 */
 
 DEFUN (asin, args, ,
@@ -239,11 +239,12 @@ Compute the inverse sine in radians for each element of @var{x}.\n\
 %!test
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
-%! v = [0, pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6, 0];
 %! x = [0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0];
-%! assert(all (abs (asin (x) - v) < sqrt (eps)));
-%!error asin ();
-%!error asin (1, 2);
+%! v = [0, pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6, 0];
+%! assert (all (abs (asin (x) - v) < sqrt (eps)));
+
+%!error asin ()
+%!error asin (1, 2)
 */
 
 DEFUN (asinh, args, ,
@@ -266,15 +267,15 @@ Compute the inverse hyperbolic sine for each element of @var{x}.\n\
 %!test
 %! v = [0, pi/2*i, 0, -pi/2*i];
 %! x = [0, i, 0, -i];
-%! assert(asinh (x), v,  sqrt (eps));
+%! assert (asinh (x), v,  sqrt (eps));
 
 %!test
-%! v = single([0, pi/2*i, 0, -pi/2*i]);
-%! x = single([0, i, 0, -i]);
-%! assert(asinh (x), v,  sqrt (eps('single')));
+%! v = single ([0, pi/2*i, 0, -pi/2*i]);
+%! x = single ([0, i, 0, -i]);
+%! assert (asinh (x), v,  sqrt (eps ('single')));
 
-%!error asinh ();
-%!error asinh (1, 2);
+%!error asinh ()
+%!error asinh (1, 2)
 */
 
 DEFUN (atan, args, ,
@@ -294,22 +295,22 @@ Compute the inverse tangent in radians for each element of @var{x}.\n\
 }
 
 /*
-%!test
+%!shared rt2, rt3
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
+
+%!test
 %! v = [0, pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6, 0];
 %! x = [0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0];
-%! assert(atan (x), v, sqrt (eps));
+%! assert (atan (x), v, sqrt (eps));
 
 %!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! v = single([0, pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6, 0]);
-%! x = single([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
-%! assert(atan (x), v, sqrt (eps('single')));
+%! v = single ([0, pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6, 0]);
+%! x = single ([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
+%! assert (atan (x), v, sqrt (eps ('single')));
 
-%!error atan ();
-%!error atan (1, 2);
+%!error atan ()
+%!error atan (1, 2)
 */
 
 DEFUN (atanh, args, ,
@@ -332,15 +333,15 @@ Compute the inverse hyperbolic tangent for each element of @var{x}.\n\
 %!test
 %! v = [0, 0];
 %! x = [0, 0];
-%! assert(atanh (x), v, sqrt (eps));
+%! assert (atanh (x), v, sqrt (eps));
 
 %!test
-%! v = single([0, 0]);
-%! x = single([0, 0]);
-%! assert(atanh (x), v, sqrt (eps('single')));
+%! v = single ([0, 0]);
+%! x = single ([0, 0]);
+%! assert (atanh (x), v, sqrt (eps ('single')));
 
-%!error atanh ();
-%!error atanh (1, 2);
+%!error atanh ()
+%!error atanh (1, 2)
 */
 
 DEFUN (cbrt, args, ,
@@ -370,6 +371,9 @@ negative.\n\
 %!assert (cbrt (NaN), NaN)
 %!assert (cbrt (2^300), 2^100)
 %!assert (cbrt (125*2^300), 5*2^100)
+
+%!error cbrt ()
+%!error cbrt (1, 2)
 */
 
 DEFUN (ceil, args, ,
@@ -399,19 +403,19 @@ ceil ([-2.7, 2.7])\n\
 
 /*
 %% double precision
-%!assert(ceil ([2, 1.1, -1.1, -1]), [2, 2, -1, -1]);
+%!assert (ceil ([2, 1.1, -1.1, -1]), [2, 2, -1, -1])
 
-%% compelx double precison
-%!assert(ceil ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 2+2i, -1-i, -1-i]);
+%% complex double precison
+%!assert (ceil ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 2+2i, -1-i, -1-i])
 
 %% single precision
-%!assert(ceil (single([2, 1.1, -1.1, -1])), single([2, 2, -1, -1]));
+%!assert (ceil (single ([2, 1.1, -1.1, -1])), single ([2, 2, -1, -1]))
 
-%% compelx single preci
-%!assert(ceil (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single([2+2i, 2+2i, -1-i, -1-i]));
+%% complex single precision
+%!assert (ceil (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single ([2+2i, 2+2i, -1-i, -1-i]))
 
-%!error ceil ();
-%!error ceil (1, 2);
+%!error ceil ()
+%!error ceil (1, 2)
 */
 
 DEFUN (conj, args, ,
@@ -437,20 +441,20 @@ $\\bar{z} = x - iy$.\n\
 }
 
 /*
-%!assert(conj (1), 1);
-%!assert(conj (i), -i)
-%!assert(conj (1+i), 1-i)
-%!assert(conj (1-i), 1+i)
-%!assert(conj ([-1, -i; -1+i, -1-i]), [-1, i; -1-i, -1+i]);
+%!assert (conj (1), 1)
+%!assert (conj (i), -i)
+%!assert (conj (1+i), 1-i)
+%!assert (conj (1-i), 1+i)
+%!assert (conj ([-1, -i; -1+i, -1-i]), [-1, i; -1-i, -1+i])
 
-%!assert(conj (single(1)), single(1));
-%!assert(conj (single(i)), single(-i))
-%!assert(conj (single(1+i)), single(1-i))
-%!assert(conj (single(1-i)), single(1+i))
-%!assert(conj (single([-1, -i; -1+i, -1-i])), single([-1, i; -1-i, -1+i]));
+%!assert (conj (single (1)), single (1))
+%!assert (conj (single (i)), single (-i))
+%!assert (conj (single (1+i)), single (1-i))
+%!assert (conj (single (1-i)), single (1+i))
+%!assert (conj (single ([-1, -i; -1+i, -1-i])), single ([-1, i; -1-i, -1+i]))
 
-%!error conj ();
-%!error conj (1, 2);
+%!error conj ()
+%!error conj (1, 2)
 */
 
 DEFUN (cos, args, ,
@@ -470,22 +474,24 @@ Compute the cosine for each element of @var{x} in radians.\n\
 }
 
 /*
-%!test
+%!shared rt2, rt3
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
+
+%!test
 %! x = [0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi];
 %! v = [1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1];
-%! assert(cos (x), v, sqrt (eps));
+%! assert (cos (x), v, sqrt (eps));
 
 %!test
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
-%! x = single([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
-%! v = single([1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1]);
-%! assert(cos (x), v, sqrt (eps('single')));
+%! x = single ([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! v = single ([1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1]);
+%! assert (cos (x), v, sqrt (eps ('single')));
 
-%!error cos ();
-%!error cos (1, 2);
+%!error cos ()
+%!error cos (1, 2)
 */
 
 DEFUN (cosh, args, ,
@@ -508,15 +514,15 @@ Compute the hyperbolic cosine for each element of @var{x}.\n\
 %!test
 %! x = [0, pi/2*i, pi*i, 3*pi/2*i];
 %! v = [1, 0, -1, 0];
-%! assert(cosh (x), v, sqrt (eps));
+%! assert (cosh (x), v, sqrt (eps));
 
 %!test
-%! x = single([0, pi/2*i, pi*i, 3*pi/2*i]);
-%! v = single([1, 0, -1, 0]);
-%! assert(cosh (x), v, sqrt (eps ('single')));
+%! x = single ([0, pi/2*i, pi*i, 3*pi/2*i]);
+%! v = single ([1, 0, -1, 0]);
+%! assert (cosh (x), v, sqrt (eps ('single')));
 
-%!error cosh ();
-%!error cosh (1, 2);
+%!error cosh ()
+%!error cosh (1, 2)
 */
 
 DEFUN (erf, args, ,
@@ -556,28 +562,31 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 
 /*
 %!test
-%! a = -1i*sqrt(-1/(6.4187*6.4187));
-%! assert (erf(a), erf(real(a)));
+%! a = -1i*sqrt (-1/(6.4187*6.4187));
+%! assert (erf (a), erf (real (a)));
 
 %!test
-%! x=[0,.5,1];
-%! v=[0, .520499877813047, .842700792949715];
-%! assert(all(abs(erf(x)-v)<1.e-10) &&  all(abs(erf(-x)+v)<1.e-10) && all(abs(erfc(x)+v-1)<1.e-10) && all(abs(erfinv(v)-x)<1.e-10));
+%! x = [0,.5,1];
+%! v = [0, .520499877813047, .842700792949715];
+%! assert (all (abs (erf (x)-v) < 1.e-10));
+%! assert (all (abs (erf (-x)+v) < 1.e-10));
+%! assert (all (abs (erfc (x)+v-1) < 1.e-10));
+%! assert (all (abs (erfinv (v)-x) < 1.e-10));
 
 %!test
-%! a = -1i*sqrt(single (-1/(6.4187*6.4187)));
-%! assert (erf(a), erf(real(a)));
+%! a = -1i*sqrt (single (-1/(6.4187*6.4187)));
+%! assert (erf (a), erf (real (a)));
 
 %!test
-%! x=single ([0,.5,1]);
-%! v=single ([0, .520499877813047, .842700792949715]);
-%! assert(all(abs(erf(x)-v)<1.e-6) &&  all(abs(erf(-x)+v)<1.e-6) && all(abs(erfc(x)+v-1)<1.e-6) && all(abs(erfinv(v)-x)<1.e-6));
+%! x = single ([0,.5,1]);
+%! v = single ([0, .520499877813047, .842700792949715]);
+%! assert (all (abs (erf (x)-v) < 1.e-6));
+%! assert (all (abs (erf (-x)+v) < 1.e-6));
+%! assert (all (abs (erfc (x)+v-1) < 1.e-6));
+%! assert (all (abs (erfinv (v)-x) < 1.e-6));
 
-%% test/octave.test/arith/erf-2.m
-%!error erf();
-
-%% test/octave.test/arith/erf-3.m
-%!error erf(1,2);
+%!error erf ()
+%!error erf (1, 2)
 */
 
 DEFUN (erfinv, args, ,
@@ -613,6 +622,9 @@ Compute the inverse error function, i.e., @var{y} such that\n\
 %% exceptional
 %!assert (erfinv ([-1, 1, 1.1, -2.1]), [-Inf, Inf, NaN, NaN])
 %!error erfinv (1+2i)
+
+%!error erfinv ()
+%!error erfinv (1, 2)
 */
 
 DEFUN (erfc, args, ,
@@ -639,8 +651,11 @@ $1 - {\\rm erf} (z)$.\n\
 
 /*
 %!test
-%! a = -1i*sqrt(-1/(6.4187*6.4187));
-%! assert (erfc(a), erfc(real(a)));
+%! a = -1i*sqrt (-1/(6.4187*6.4187));
+%! assert (erfc (a), erfc (real (a)));
+
+%!error erfc ()
+%!error erfc (1, 2)
 */
 
 DEFUN (erfcx, args, ,
@@ -671,6 +686,13 @@ exp (z^2) * erfc (x)\n\
   return retval;
 }
 
+/*
+%% FIXME: Need a test for erfcx
+
+%!error erfcx ()
+%!error erfcx (1, 2)
+*/
+
 DEFUN (exp, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\
@@ -696,16 +718,16 @@ exponential, see @ref{Linear Algebra}.\n\
 }
 
 /*
-%!assert(exp ([0, 1, -1, -1000]), [1, e, 1/e, 0], sqrt (eps));
-%!assert(exp (1+i), e * (cos (1) + sin (1) * i), sqrt (eps));
-%!assert(exp (single([0, 1, -1, -1000])), single([1, e, 1/e, 0]), sqrt (eps('single')));
-%!assert(exp (single(1+i)), single (e * (cos (1) + sin (1) * i)), sqrt (eps('single')));
+%!assert (exp ([0, 1, -1, -1000]), [1, e, 1/e, 0], sqrt (eps))
+%!assert (exp (1+i), e * (cos (1) + sin (1) * i), sqrt (eps))
+%!assert (exp (single ([0, 1, -1, -1000])), single ([1, e, 1/e, 0]), sqrt (eps ('single')))
+%!assert (exp (single (1+i)), single (e * (cos (1) + sin (1) * i)), sqrt (eps ('single')))
 
-%!error exp ();
-%!error exp (1, 2);
+%!assert (exp ([Inf, -Inf, NaN]), [Inf 0 NaN])
+%!assert (exp (single ([Inf, -Inf, NaN])), single ([Inf 0 NaN]))
 
-%!assert(exp (Inf) == Inf && exp (-Inf) == 0 && isnan (exp (NaN)));
-%!assert(exp (Inf ('single')) == Inf('single') && exp (-Inf('single')) == 0 && isnan (exp (NaN('single'))));
+%!error exp ()
+%!error exp (1, 2)
 */
 
 DEFUN (expm1, args, ,
@@ -730,6 +752,16 @@ accurately in the neighborhood of zero.\n\
 
   return retval;
 }
+
+/*
+%!assert (expm1 (2*eps), 2*eps, 1e-29)
+
+%!assert (expm1 ([Inf, -Inf, NaN]), [Inf -1 NaN])
+%!assert (expm1 (single ([Inf, -Inf, NaN])), single ([Inf -1 NaN]))
+
+%!error expm1 ()
+%!error expm1 (1, 2)
+*/
 
 DEFUN (isfinite, args, ,
     "-*- texinfo -*-\n\
@@ -758,13 +790,16 @@ finite ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert(!(finite (Inf)));
-%!assert(!(finite (NaN)));
-%!assert(finite (rand(1,10)));
+%!assert (!finite (Inf))
+%!assert (!finite (NaN))
+%!assert (finite (rand (1,10)))
 
-%!assert(!(finite (single(Inf))));
-%!assert(!(finite (single(NaN))));
-%!assert(finite (single(rand(1,10))));
+%!assert (!finite (single (Inf)))
+%!assert (!finite (single (NaN)))
+%!assert (finite (single (rand (1,10))))
+
+%!error finite ()
+%!error finite (1, 2)
 */
 
 DEFUN (fix, args, ,
@@ -793,13 +828,13 @@ fix ([-2.7, 2.7])\n\
 }
 
 /*
-%!assert(fix ([1.1, 1, -1.1, -1]), [1, 1, -1, -1]);
-%!assert(fix ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i]), [1+i, 1+i, -1-i, -1-i]);
-%!assert(fix (single([1.1, 1, -1.1, -1])), single([1, 1, -1, -1]));
-%!assert(fix (single([1.1+1.1i, 1+i, -1.1-1.1i, -1-i])), single([1+i, 1+i, -1-i, -1-i]));
+%!assert (fix ([1.1, 1, -1.1, -1]), [1, 1, -1, -1])
+%!assert (fix ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i]), [1+i, 1+i, -1-i, -1-i])
+%!assert (fix (single ([1.1, 1, -1.1, -1])), single ([1, 1, -1, -1]))
+%!assert (fix (single ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i])), single ([1+i, 1+i, -1-i, -1-i]))
 
-%!error fix ();
-%!error fix (1, 2);
+%!error fix ()
+%!error fix (1, 2)
 */
 
 DEFUN (floor, args, ,
@@ -828,13 +863,13 @@ floor ([-2.7, 2.7])\n\
 }
 
 /*
-%!assert(floor ([2, 1.1, -1.1, -1]), [2, 1, -2, -1]);
-%!assert(floor ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 1+i, -2-2i, -1-i]);
-%!assert(floor (single ([2, 1.1, -1.1, -1])), single ([2, 1, -2, -1]));
-%!assert(floor (single([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single([2+2i, 1+i, -2-2i, -1-i]));
+%!assert (floor ([2, 1.1, -1.1, -1]), [2, 1, -2, -1])
+%!assert (floor ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 1+i, -2-2i, -1-i])
+%!assert (floor (single ([2, 1.1, -1.1, -1])), single ([2, 1, -2, -1]))
+%!assert (floor (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single ([2+2i, 1+i, -2-2i, -1-i]))
 
-%!error floor ();
-%!error floor (1, 2);
+%!error floor ()
+%!error floor (1, 2)
 */
 
 DEFUN (gamma, args, ,
@@ -874,31 +909,31 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 
 /*
 %!test
-%! a = -1i*sqrt(-1/(6.4187*6.4187));
-%! assert (gamma(a), gamma(real(a)));
+%! a = -1i*sqrt (-1/(6.4187*6.4187));
+%! assert (gamma (a), gamma (real (a)));
 
 %!test
 %! x = [.5, 1, 1.5, 2, 3, 4, 5];
 %! v = [sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24];
-%! assert(gamma(x), v, sqrt(eps))
+%! assert (gamma (x), v, sqrt (eps));
 
 %!test
-%! a = single(-1i*sqrt(-1/(6.4187*6.4187)));
-%! assert (gamma(a), gamma(real(a)));
+%! a = single (-1i*sqrt (-1/(6.4187*6.4187)));
+%! assert (gamma (a), gamma (real (a)));
 
 %!test
-%! x = single([.5, 1, 1.5, 2, 3, 4, 5]);
-%! v = single([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
-%! assert(gamma(x), v, sqrt(eps('single')))
+%! x = single ([.5, 1, 1.5, 2, 3, 4, 5]);
+%! v = single ([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
+%! assert (gamma (x), v, sqrt (eps ('single')));
 
 %!test
 %! x = [-1, 0, 1, Inf];
 %! v = [Inf, Inf, 1, Inf];
-%! assert (gamma(x), v);
-%! assert (gamma(single (x)), single (v));
+%! assert (gamma (x), v);
+%! assert (gamma (single (x)), single (v));
 
-%!error gamma();
-%!error gamma(1,2);
+%!error gamma ()
+%!error gamma (1, 2)
 */
 
 DEFUN (imag, args, ,
@@ -918,18 +953,18 @@ Return the imaginary part of @var{z} as a real number.\n\
 }
 
 /*
-%!assert(imag (1), 0);
-%!assert(imag (i), 1);
-%!assert(imag (1+i), 1);
-%!assert(imag ([i, 1; 1, i]), full (eye (2)));
+%!assert (imag (1), 0)
+%!assert (imag (i), 1)
+%!assert (imag (1+i), 1)
+%!assert (imag ([i, 1; 1, i]), full (eye (2)))
 
-%!assert(imag (single(1)), single(0));
-%!assert(imag (single(i)), single(1));
-%!assert(imag (single(1+i)), single(1));
-%!assert(imag (single([i, 1; 1, i])), full (eye (2,'single')));
+%!assert (imag (single (1)), single (0))
+%!assert (imag (single (i)), single (1))
+%!assert (imag (single (1+i)), single (1))
+%!assert (imag (single ([i, 1; 1, i])), full (eye (2,'single')))
 
-%!error imag ();
-%!error imag (1, 2);
+%!error imag ()
+%!error imag (1, 2)
 */
 
 DEFUNX ("isalnum", Fisalnum, args, ,
@@ -952,15 +987,15 @@ letters or digits and false where they are not.  This is equivalent to\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result ((toascii("A"):toascii("Z"))+1) = 1;
-%! result ((toascii("0"):toascii("9"))+1) = 1;
-%! result ((toascii("a"):toascii("z"))+1) = 1;
-%! assert(all (isalnum (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(toascii ("A":"Z") + 1) = true;
+%! result(toascii ("0":"9") + 1) = true;
+%! result(toascii ("a":"z") + 1) = true;
+%! assert (all (isalnum (charset) == result));
 
-%!error isalnum (1, 2);
-%!error isalnum ();
+%!error isalnum ()
+%!error isalnum (1, 2)
 */
 
 DEFUNX ("isalpha", Fisalpha, args, ,
@@ -983,14 +1018,14 @@ letters and false where they are not.  This is equivalent to\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result ((toascii("A"):toascii("Z"))+1) = 1;
-%! result ((toascii("a"):toascii("z"))+1) = 1;
-%! assert(all (isalpha (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(toascii ("A":"Z") + 1) = true;
+%! result(toascii ("a":"z") + 1) = true;
+%! assert (all (isalpha (charset) == result));
 
-%!error isalpha (1, 2);
-%!error isalpha ();
+%!error isalpha ()
+%!error isalpha (1, 2)
 */
 
 DEFUNX ("isascii", Fisascii, args, ,
@@ -1012,12 +1047,12 @@ not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = ones (1, 128);
-%! assert(all (isascii (charset) == result));
+%! charset = char (0:127);
+%! result = true (1, 128);
+%! assert (all (isascii (charset) == result));
 
-%!error isascii (1, 2);
-%!error isascii ();
+%!error isascii ()
+%!error isascii (1, 2)
 */
 
 DEFUNX ("iscntrl", Fiscntrl, args, ,
@@ -1038,16 +1073,15 @@ control characters and false where they are not.\n\
 }
 
 /*
-%% test/octave.test/string/iscntrl-1.m
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result (1:32) = 1;
-%! result (128) = 1;
-%! assert(all (iscntrl (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(1:32) = true;
+%! result(128) = true;
+%! assert (all (iscntrl (charset) == result));
 
-%!error iscntrl (1, 2);
-%!error iscntrl ();
+%!error iscntrl ()
+%!error iscntrl (1, 2)
 */
 
 DEFUNX ("isdigit", Fisdigit, args, ,
@@ -1069,13 +1103,13 @@ decimal digits (0-9) and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result ((toascii("0"):toascii("9"))+1) = 1;
-%! assert(all (isdigit (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(toascii ("0":"9") + 1) = true;
+%! assert (all (isdigit (charset) == result));
 
-%!error isdigit (1, 2);
-%!error isdigit ();
+%!error isdigit ()
+%!error isdigit (1, 2)
 */
 
 DEFUN (isinf, args, ,
@@ -1104,17 +1138,20 @@ isinf ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert(isinf (Inf));
-%!assert(!isinf (NaN));
-%!assert(!(isinf (NA)));
-%!assert(isinf (rand(1,10)), false(1,10));
-%!assert(isinf([NaN -Inf -1 0 1 Inf NA]), [false, true, false, false, false, true, false]);
+%!assert (isinf (Inf))
+%!assert (!isinf (NaN))
+%!assert (!isinf (NA))
+%!assert (isinf (rand(1,10)), false (1,10))
+%!assert (isinf ([NaN -Inf -1 0 1 Inf NA]), [false, true, false, false, false, true, false])
 
-%!assert(isinf (single(Inf)));
-%!assert(!(isinf (single(NaN))));
-%!assert(!(isinf (single(NA))));
-%!assert(isinf (single(rand(1,10))), false(1,10));
-%!assert(isinf(single([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false]);
+%!assert (isinf (single (Inf)))
+%!assert (!isinf (single (NaN)))
+%!assert (!isinf (single (NA)))
+%!assert (isinf (single (rand(1,10))), false (1,10))
+%!assert (isinf (single ([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false])
+
+%!error isinf ()
+%!error isinf (1, 2)
 */
 
 DEFUNX ("isgraph", Fisgraph, args, ,
@@ -1137,13 +1174,13 @@ not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result (34:127) = 1;
-%! assert(all (isgraph (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(34:127) = true;
+%! assert (all (isgraph (charset) == result));
 
-%!error isgraph (1, 2);
-%!error isgraph ();
+%!error isgraph ()
+%!error isgraph (1, 2)
 */
 
 DEFUNX ("islower", Fislower, args, ,
@@ -1165,13 +1202,13 @@ lowercase letters and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result ((toascii("a"):toascii("z"))+1) = 1;
-%! assert(all (islower (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(toascii ("a":"z") + 1) = true;
+%! assert (all (islower (charset) == result));
 
-%!error islower (1, 2);
-%!error islower ();
+%!error islower ()
+%!error islower (1, 2)
 */
 
 DEFUN (isna, args, ,
@@ -1200,17 +1237,20 @@ isna ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert(!(isna (Inf)));
-%!assert(!isna (NaN));
-%!assert(isna (NA));
-%!assert(isna (rand(1,10)), false(1,10));
-%!assert(isna([NaN -Inf -1 0 1 Inf NA]), [false, false, false, false, false, false, true]);
+%!assert (!isna (Inf))
+%!assert (!isna (NaN))
+%!assert (isna (NA))
+%!assert (isna (rand(1,10)), false (1,10))
+%!assert (isna ([NaN -Inf -1 0 1 Inf NA]), [false, false, false, false, false, false, true])
 
-%!assert(!(isna (single(Inf))));
-%!assert(!isna (single(NaN)));
-%!assert(isna (single(NA)));
-%!assert(isna (single(rand(1,10))), false(1,10));
-%!assert(isna(single([NaN -Inf -1 0 1 Inf NA])), [false, false, false, false, false, false, true]);
+%!assert (!isna (single (Inf)))
+%!assert (!isna (single (NaN)))
+%!assert (isna (single (NA)))
+%!assert (isna (single (rand(1,10))), false (1,10))
+%!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])), [false, false, false, false, false, false, true])
+
+%!error isna ()
+%!error isna (1, 2)
 */
 
 DEFUN (isnan, args, ,
@@ -1239,17 +1279,20 @@ isnan ([13, Inf, NA, NaN])\n\
 }
 
 /*
-%!assert(!(isnan (Inf)));
-%!assert(isnan (NaN));
-%!assert(isnan (NA));
-%!assert(isnan (rand(1,10)), false(1,10));
-%!assert(isnan([NaN -Inf -1 0 1 Inf NA]), [true, false, false, false, false, false, true]);
+%!assert (!isnan (Inf))
+%!assert (isnan (NaN))
+%!assert (isnan (NA))
+%!assert (isnan (rand(1,10)), false (1,10))
+%!assert (isnan ([NaN -Inf -1 0 1 Inf NA]), [true, false, false, false, false, false, true])
 
-%!assert(!(isnan (single(Inf))));
-%!assert(isnan (single(NaN)));
-%!assert(isnan (single(NA)));
-%!assert(isnan (single(rand(1,10))), false(1,10));
-%!assert(isnan(single([NaN -Inf -1 0 1 Inf NA])), [true, false, false, false, false, false, true]);
+%!assert (!isnan (single (Inf)))
+%!assert (isnan (single (NaN)))
+%!assert (isnan (single (NA)))
+%!assert (isnan (single (rand(1,10))), false (1,10))
+%!assert (isnan (single ([NaN -Inf -1 0 1 Inf NA])), [true, false, false, false, false, false, true])
+
+%!error isnan ()
+%!error isnan (1, 2)
 */
 
 DEFUNX ("isprint", Fisprint, args, ,
@@ -1272,16 +1315,13 @@ are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result (33:127) = 1;
-%! if (ispc () && ! isunix ())
-%!   result(10) = 1;
-%! endif
-%! assert(all (isprint (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(33:127) = true;
+%! assert (all (isprint (charset) == result));
 
-%!error isprint (1, 2);
-%!error isprint ();
+%!error isprint ()
+%!error isprint (1, 2)
 */
 
 DEFUNX ("ispunct", Fispunct, args, ,
@@ -1303,16 +1343,16 @@ punctuation characters and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result (34:48) = 1;
-%! result (59:65) = 1;
-%! result (92:97) = 1;
-%! result (124:127) = 1;
-%! assert(all (ispunct (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(34:48) = true;
+%! result(59:65) = true;
+%! result(92:97) = true;
+%! result(124:127) = true;
+%! assert (all (ispunct (charset) == result));
 
-%!error ispunct (1, 2);
-%!error ispunct ();
+%!error ispunct ()
+%!error ispunct (1, 2)
 */
 
 DEFUNX ("isspace", Fisspace, args, ,
@@ -1335,13 +1375,13 @@ vertical tab) and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result (toascii (" \f\n\r\t\v")+1) = 1;
-%! assert(all (isspace (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(toascii (" \f\n\r\t\v") + 1) = true;
+%! assert (all (isspace (charset) == result));
 
-%!error isspace (1, 2);
-%!error isspace ();
+%!error isspace ()
+%!error isspace (1, 2)
 */
 
 DEFUNX ("isupper", Fisupper, args, ,
@@ -1363,13 +1403,13 @@ uppercase letters and false where they are not.\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result ((toascii("A"):toascii("Z"))+1) = 1;
-%! assert(all (isupper (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(toascii ("A":"Z") + 1) = true;
+%! assert (all (isupper (charset) == result));
 
-%!error isupper (1, 2);
-%!error isupper ();
+%!error isupper ()
+%!error isupper (1, 2)
 */
 
 DEFUNX ("isxdigit", Fisxdigit, args, ,
@@ -1391,15 +1431,15 @@ hexadecimal digits (0-9 and @nospell{a-fA-F}).\n\
 
 /*
 %!test
-%! charset = setstr (0:127);
-%! result = zeros (1, 128);
-%! result ((toascii("A"):toascii("F"))+1) = 1;
-%! result ((toascii("0"):toascii("9"))+1) = 1;
-%! result ((toascii("a"):toascii("f"))+1) = 1;
-%! assert(all (isxdigit (charset) == result));
+%! charset = char (0:127);
+%! result = false (1, 128);
+%! result(toascii ("A":"F") + 1) = true;
+%! result(toascii ("0":"9") + 1) = true;
+%! result(toascii ("a":"f") + 1) = true;
+%! assert (all (isxdigit (charset) == result));
 
-%!error isxdigit (1, 2);
-%!error isxdigit ();
+%!error isxdigit ()
+%!error isxdigit (1, 2)
 */
 
 DEFUN (lgamma, args, ,
@@ -1421,31 +1461,31 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 
 /*
 %!test
-%! a = -1i*sqrt(-1/(6.4187*6.4187));
+%! a = -1i*sqrt (-1/(6.4187*6.4187));
 %! assert (lgamma(a), lgamma(real(a)));
 
 %!test
 %! x = [.5, 1, 1.5, 2, 3, 4, 5];
 %! v = [sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24];
-%! assert(lgamma(x), log(v), sqrt(eps))
+%! assert (lgamma(x), log(v), sqrt (eps))
 
 %!test
-%! a = single(-1i*sqrt(-1/(6.4187*6.4187)));
+%! a = single (-1i*sqrt (-1/(6.4187*6.4187)));
 %! assert (lgamma(a), lgamma(real(a)));
 
 %!test
-%! x = single([.5, 1, 1.5, 2, 3, 4, 5]);
-%! v = single([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
-%! assert(lgamma(x), log(v), sqrt(eps ('single')))
+%! x = single ([.5, 1, 1.5, 2, 3, 4, 5]);
+%! v = single ([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
+%! assert (lgamma(x), log(v), sqrt (eps ('single')))
 
 %!test
 %! x = [-1, 0, 1, Inf];
 %! v = [Inf, Inf, 0, Inf];
 %! assert (lgamma(x), v);
-%! assert (lgamma(single (x)), single(v));
+%! assert (lgamma(single (x)), single (v));
 
-%!error lgamma();
-%!error lgamma(1,2);
+%!error lgamma()
+%!error lgamma(1,2)
 */
 
 DEFUN (log, args, ,
@@ -1473,14 +1513,14 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 }
 
 /*
-%!assert(log ([1, e, e^2]), [0, 1, 2], sqrt (eps));
-%!assert(log ([-0.5, -1.5, -2.5]), log([0.5, 1.5, 2.5]) + pi*1i, sqrt (eps));
+%!assert (log ([1, e, e^2]), [0, 1, 2], sqrt (eps))
+%!assert (log ([-0.5, -1.5, -2.5]), log([0.5, 1.5, 2.5]) + pi*1i, sqrt (eps))
 
-%!assert(log (single([1, e, e^2])), single([0, 1, 2]), sqrt (eps('single')));
-%!assert(log (single([-0.5, -1.5, -2.5])), single(log([0.5, 1.5, 2.5]) + pi*1i), 4*eps('single'));
+%!assert (log (single ([1, e, e^2])), single ([0, 1, 2]), sqrt (eps ('single')))
+%!assert (log (single ([-0.5, -1.5, -2.5])), single (log([0.5, 1.5, 2.5]) + pi*1i), 4*eps ('single'))
 
-%!error log ();
-%!error log (1, 2);
+%!error log ()
+%!error log (1, 2)
 */
 
 DEFUN (log10, args, ,
@@ -1500,11 +1540,11 @@ Compute the base-10 logarithm of each element of @var{x}.\n\
 }
 
 /*
-%!assert(log10 ([0.01, 0.1, 1, 10, 100]), [-2, -1, 0, 1, 2], sqrt (eps));
-%!assert(log10 (single([0.01, 0.1, 1, 10, 100])), single([-2, -1, 0, 1, 2]), sqrt (eps ('single')));
+%!assert (log10 ([0.01, 0.1, 1, 10, 100]), [-2, -1, 0, 1, 2], sqrt (eps))
+%!assert (log10 (single ([0.01, 0.1, 1, 10, 100])), single ([-2, -1, 0, 1, 2]), sqrt (eps ('single')))
 
-%!error log10 ();
-%!error log10 (1, 2);
+%!error log10 ()
+%!error log10 (1, 2)
 */
 
 DEFUN (log1p, args, ,
@@ -1530,6 +1570,14 @@ accurately in the neighborhood of zero.\n\
   return retval;
 }
 
+/*
+%!assert (log1p ([0, 2*eps, -2*eps]), [0, 2*eps, -2*eps], 1e-29)
+%!assert (log1p (single ([0, 2*eps, -2*eps])), single([0, 2*eps, -2*eps]), 1e-29)
+
+%!error log1p ()
+%!error log1p (1, 2)
+*/
+
 DEFUN (real, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} real (@var{z})\n\
@@ -1547,18 +1595,18 @@ Return the real part of @var{z}.\n\
 }
 
 /*
-%!assert(real (1), 1);
-%!assert(real (i), 0);
-%!assert(real (1+i), 1);
-%!assert(real ([1, i; i, 1]), full (eye (2)));
+%!assert (real (1), 1)
+%!assert (real (i), 0)
+%!assert (real (1+i), 1)
+%!assert (real ([1, i; i, 1]), full (eye (2)))
 
-%!assert(real (single(1)), single(1));
-%!assert(real (single(i)), single(0));
-%!assert(real (single(1+i)), single(1));
-%!assert(real (single([1, i; i, 1])), full (eye (2,'single')));
+%!assert (real (single (1)), single (1))
+%!assert (real (single (i)), single (0))
+%!assert (real (single (1+i)), single (1))
+%!assert (real (single ([1, i; i, 1])), full (eye (2,'single')))
 
-%!error real ();
-%!error real (1, 2);
+%!error real ()
+%!error real (1, 2)
 */
 
 DEFUN (round, args, ,
@@ -1587,24 +1635,24 @@ round ([-2.7, 2.7])\n\
 }
 
 /*
-%!assert(round (1), 1);
-%!assert(round (1.1), 1);
-%!assert(round (5.5), 6);
-%!assert(round (i), i);
-%!assert(round (2.5+3.5i), 3+4i);
-%!assert(round (-2.6), -3);
-%!assert(round ([1.1, -2.4; -3.7, 7.1]), [1, -2; -4, 7]);
+%!assert (round (1), 1)
+%!assert (round (1.1), 1)
+%!assert (round (5.5), 6)
+%!assert (round (i), i)
+%!assert (round (2.5+3.5i), 3+4i)
+%!assert (round (-2.6), -3)
+%!assert (round ([1.1, -2.4; -3.7, 7.1]), [1, -2; -4, 7])
 
-%!assert(round (single(1)), single(1));
-%!assert(round (single(1.1)), single(1));
-%!assert(round (single(5.5)), single(6));
-%!assert(round (single(i)), single(i));
-%!assert(round (single(2.5+3.5i)), single(3+4i));
-%!assert(round (single(-2.6)), single(-3));
-%!assert(round (single([1.1, -2.4; -3.7, 7.1])), single([1, -2; -4, 7]));
+%!assert (round (single (1)), single (1))
+%!assert (round (single (1.1)), single (1))
+%!assert (round (single (5.5)), single (6))
+%!assert (round (single (i)), single (i))
+%!assert (round (single (2.5+3.5i)), single (3+4i))
+%!assert (round (single (-2.6)), single (-3))
+%!assert (round (single ([1.1, -2.4; -3.7, 7.1])), single ([1, -2; -4, 7]))
 
-%!error round ();
-%!error round (1, 2);
+%!error round ()
+%!error round (1, 2)
 */
 
 DEFUN (roundb, args, ,
@@ -1624,6 +1672,29 @@ return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
 
   return retval;
 }
+
+/*
+%!assert (roundb (1), 1)
+%!assert (roundb (1.1), 1)
+%!assert (roundb (1.5), 2)
+%!assert (roundb (4.5), 4)
+%!assert (roundb (i), i)
+%!assert (roundb (2.5+3.5i), 2+4i)
+%!assert (roundb (-2.6), -3)
+%!assert (roundb ([1.1, -2.4; -3.7, 7.1]), [1, -2; -4, 7])
+
+%!assert (roundb (single (1)), single (1))
+%!assert (roundb (single (1.1)), single (1))
+%!assert (roundb (single (1.5)), single (2))
+%!assert (roundb (single (4.5)), single (4))
+%!assert (roundb (single (i)), single (i))
+%!assert (roundb (single (2.5+3.5i)), single (2+4i))
+%!assert (roundb (single (-2.6)), single (-3))
+%!assert (roundb (single ([1.1, -2.4; -3.7, 7.1])), single ([1, -2; -4, 7]))
+
+%!error roundb ()
+%!error roundb (1, 2)
+*/
 
 DEFUN (sign, args, ,
     "-*- texinfo -*-\n\
@@ -1659,18 +1730,18 @@ For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 }
 
 /*
-%!assert(sign (-2) , -1);
-%!assert(sign (3), 1);
-%!assert(sign (0), 0);
-%!assert(sign ([1, -pi; e, 0]), [1, -1; 1, 0]);
+%!assert (sign (-2) , -1)
+%!assert (sign (0), 0)
+%!assert (sign (3), 1)
+%!assert (sign ([1, -pi; e, 0]), [1, -1; 1, 0])
 
-%!assert(sign (single(-2)) , single(-1));
-%!assert(sign (single(3)), single(1));
-%!assert(sign (single(0)), single(0));
-%!assert(sign (single([1, -pi; e, 0])), single([1, -1; 1, 0]));
+%!assert (sign (single (-2)) , single (-1))
+%!assert (sign (single (0)), single (0))
+%!assert (sign (single (3)), single (1))
+%!assert (sign (single ([1, -pi; e, 0])), single ([1, -1; 1, 0]))
 
-%!error sign ();
-%!error sign (1, 2);
+%!error sign ()
+%!error sign (1, 2)
 */
 
 DEFUN (sin, args, ,
@@ -1690,22 +1761,22 @@ Compute the sine for each element of @var{x} in radians.\n\
 }
 
 /*
-%!test
+%!shared rt2, rt3
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
+
+%!test
 %! x = [0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi];
 %! v = [0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0];
-%! assert(sin (x), v, sqrt (eps));
+%! assert (sin (x), v, sqrt (eps));
 
 %!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! x = single([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
-%! v = single([0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0]);
-%! assert(sin (x), v, sqrt (eps('single')));
+%! x = single ([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! v = single ([0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0]);
+%! assert (sin (x), v, sqrt (eps ('single')));
 
-%!error sin ();
-%!error sin (1, 2);
+%!error sin ()
+%!error sin (1, 2)
 */
 
 DEFUN (sinh, args, ,
@@ -1728,15 +1799,15 @@ Compute the hyperbolic sine for each element of @var{x}.\n\
 %!test
 %! x = [0, pi/2*i, pi*i, 3*pi/2*i];
 %! v = [0, i, 0, -i];
-%! assert(sinh (x), v, sqrt (eps));
+%! assert (sinh (x), v, sqrt (eps));
 
 %!test
-%! x = single([0, pi/2*i, pi*i, 3*pi/2*i]);
-%! v = single([0, i, 0, -i]);
-%! assert(sinh (x), v, sqrt (eps('single')));
+%! x = single ([0, pi/2*i, pi*i, 3*pi/2*i]);
+%! v = single ([0, i, 0, -i]);
+%! assert (sinh (x), v, sqrt (eps ('single')));
 
-%!error sinh ();
-%!error sinh (1, 2);
+%!error sinh ()
+%!error sinh (1, 2)
 */
 
 DEFUN (sqrt, args, ,
@@ -1758,18 +1829,18 @@ a complex result is returned.  To compute the matrix square root, see\n\
 }
 
 /*
-%!assert(sqrt (4), 2)
-%!assert(sqrt (-1), i)
-%!assert(sqrt (1+i), exp (0.5 * log (1+i)), sqrt (eps));
-%!assert(sqrt([4, -4; i, 1-i]), [2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))], sqrt(eps));
+%!assert (sqrt (4), 2)
+%!assert (sqrt (-1), i)
+%!assert (sqrt (1+i), exp (0.5 * log (1+i)), sqrt (eps))
+%!assert (sqrt ([4, -4; i, 1-i]), [2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))], sqrt (eps))
 
-%!assert(sqrt (single(4)), single(2))
-%!assert(sqrt (single(-1)), single(i))
-%!assert(sqrt (single(1+i)), single(exp (0.5 * log (1+i))), sqrt (eps('single')));
-%!assert(sqrt(single([4, -4; i, 1-i])), single([2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))]), sqrt(eps('single')));
+%!assert (sqrt (single (4)), single (2))
+%!assert (sqrt (single (-1)), single (i))
+%!assert (sqrt (single (1+i)), single (exp (0.5 * log (1+i))), sqrt (eps ('single')))
+%!assert (sqrt (single ([4, -4; i, 1-i])), single ([2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))]), sqrt (eps ('single')))
 
-%!error sqrt ();
-%!error sqrt (1, 2);
+%!error sqrt ()
+%!error sqrt (1, 2)
 */
 
 DEFUN (tan, args, ,
@@ -1789,22 +1860,22 @@ Compute the tangent for each element of @var{x} in radians.\n\
 }
 
 /*
-%!test
+%!shared rt2, rt3
 %! rt2 = sqrt (2);
 %! rt3 = sqrt (3);
+
+%!test
 %! x = [0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi];
 %! v = [0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0];
-%! assert(tan (x), v,  sqrt (eps));
+%! assert (tan (x), v,  sqrt (eps));
 
 %!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! x = single([0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
-%! v = single([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
-%! assert(tan (x), v,  sqrt (eps('single')));
+%! x = single ([0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! v = single ([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
+%! assert (tan (x), v,  sqrt (eps ('single')));
 
-%!error tan ();
-%!error tan (1, 2);
+%!error tan ()
+%!error tan (1, 2)
 */
 
 DEFUN (tanh, args, ,
@@ -1827,15 +1898,15 @@ Compute hyperbolic tangent for each element of @var{x}.\n\
 %!test
 %! x = [0, pi*i];
 %! v = [0, 0];
-%! assert(tanh (x), v, sqrt (eps));
+%! assert (tanh (x), v, sqrt (eps));
 
 %!test
-%! x = single([0, pi*i]);
-%! v = single([0, 0]);
-%! assert(tanh (x), v, sqrt (eps('single')));
+%! x = single ([0, pi*i]);
+%! v = single ([0, 0]);
+%! assert (tanh (x), v, sqrt (eps ('single')));
 
-%!error tanh ();
-%!error tanh (1, 2);
+%!error tanh ()
+%!error tanh (1, 2)
 */
 
 DEFUNX ("toascii", Ftoascii, args, ,
@@ -1863,14 +1934,15 @@ toascii (\"ASCII\")\n\
 }
 
 /*
-%!assert(toascii (char (0:127)), 0:127);
-%!assert(toascii (" ":"@"), 32:64);
-%!assert(toascii ("A":"Z"), 65:90);
-%!assert(toascii ("[":"`"), 91:96);
-%!assert(toascii ("a":"z"), 97:122);
-%!assert(toascii ("{":"~"), 123:126);
-%!error toascii (1, 2);
-%!error toascii (1, 2);
+%!assert (toascii (char (0:127)), 0:127)
+%!assert (toascii (" ":"@"), 32:64)
+%!assert (toascii ("A":"Z"), 65:90)
+%!assert (toascii ("[":"`"), 91:96)
+%!assert (toascii ("a":"z"), 97:122)
+%!assert (toascii ("{":"~"), 123:126)
+
+%!error toascii ()
+%!error toascii (1, 2)
 */
 
 DEFUNX ("tolower", Ftolower, args, ,
@@ -1902,26 +1974,26 @@ tolower (\"MiXeD cAsE 123\")\n\
 DEFALIAS (lower, tolower);
 
 /*
-%!error <Invalid call to tolower> tolower();
-%!error <Invalid call to tolower> lower();
-%!error tolower (1, 2);
-%!assert(tolower("OCTAVE"), "octave");
-%!assert(tolower("123OCTave!_&"), "123octave!_&");
-%!assert(tolower({"ABC", "DEF", {"GHI", {"JKL"}}}), {"abc", "def", {"ghi", {"jkl"}}});
-%!assert(tolower(["ABC"; "DEF"]), ["abc"; "def"]);
-%!assert(tolower({["ABC"; "DEF"]}), {["abc";"def"]});
-%!assert(tolower(68), "d");
-%!assert(tolower({[68, 68; 68, 68]}), {["dd";"dd"]});
+%!assert (tolower("OCTAVE"), "octave")
+%!assert (tolower("123OCTave!_&"), "123octave!_&")
+%!assert (tolower({"ABC", "DEF", {"GHI", {"JKL"}}}), {"abc", "def", {"ghi", {"jkl"}}})
+%!assert (tolower(["ABC"; "DEF"]), ["abc"; "def"])
+%!assert (tolower({["ABC"; "DEF"]}), {["abc";"def"]})
+%!assert (tolower(68), "d")
+%!assert (tolower({[68, 68; 68, 68]}), {["dd";"dd"]})
 %!test
 %!  a(3,3,3,3) = "D";
 %!  assert(tolower(a)(3,3,3,3), "d");
 
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = charset;
-%! result ((toascii("A"):toascii("Z"))+1) \
-%! = result ((toascii("a"):toascii("z"))+1);
-%! assert(all (tolower (charset) == result));
+%! result(toascii ("A":"Z") + 1) = result(toascii ("a":"z") + 1);
+%! assert (all (tolower (charset) == result));
+
+%!error <Invalid call to tolower> tolower()
+%!error <Invalid call to tolower> lower()
+%!error tolower (1, 2)
 */
 
 DEFUNX ("toupper", Ftoupper, args, ,
@@ -1953,25 +2025,25 @@ toupper (\"MiXeD cAsE 123\")\n\
 DEFALIAS (upper, toupper);
 
 /*
-%!error <Invalid call to toupper> toupper();
-%!error <Invalid call to toupper> upper();
-%!error toupper (1, 2);
-%!assert(toupper("octave"), "OCTAVE");
-%!assert(toupper("123OCTave!_&"), "123OCTAVE!_&");
-%!assert(toupper({"abc", "def", {"ghi", {"jkl"}}}), {"ABC", "DEF", {"GHI", {"JKL"}}});
-%!assert(toupper(["abc"; "def"]), ["ABC"; "DEF"]);
-%!assert(toupper({["abc"; "def"]}), {["ABC";"DEF"]});
-%!assert(toupper(100), "D");
-%!assert(toupper({[100, 100; 100, 100]}), {["DD";"DD"]});
+%!assert (toupper ("octave"), "OCTAVE")
+%!assert (toupper ("123OCTave!_&"), "123OCTAVE!_&")
+%!assert (toupper ({"abc", "def", {"ghi", {"jkl"}}}), {"ABC", "DEF", {"GHI", {"JKL"}}})
+%!assert (toupper (["abc"; "def"]), ["ABC"; "DEF"])
+%!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})
+%!assert (toupper (100), "D")
+%!assert (toupper ({[100, 100; 100, 100]}), {["DD";"DD"]})
 %!test
 %!  a(3,3,3,3) = "d";
-%!  assert(toupper(a)(3,3,3,3), "D");
+%!  assert(toupper (a)(3,3,3,3), "D");
 %!test
-%! charset = setstr (0:127);
+%! charset = char (0:127);
 %! result = charset;
-%! result ((toascii("a"):toascii("z"))+1) \
-%! = result ((toascii("A"):toascii("Z"))+1);
-%! assert(all (toupper (charset) == result));
+%! result(toascii  ("a":"z") + 1) = result(toascii  ("A":"Z") + 1);
+%! assert (all (toupper (charset) == result));
+
+%!error <Invalid call to toupper> toupper()
+%!error <Invalid call to toupper> upper()
+%!error toupper (1, 2)
 */
 
 DEFALIAS (gammaln, lgamma);

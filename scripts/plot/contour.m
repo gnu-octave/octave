@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2011 Shai Ayal
+## Copyright (C) 1993-2012 Shai Ayal
 ##
 ## This file is part of Octave.
 ##
@@ -70,23 +70,27 @@ function [c, h] = contour (varargin)
 
 endfunction
 
+
 %!demo
-%! clf ()
+%! clf;
+%! colormap ('default');
 %! [x, y, z] = peaks ();
 %! contour (x, y, z);
 
 %!demo
-%! clf ()
-%! [theta, r] = meshgrid (linspace (0, 2*pi, 64), linspace(0,1,64));
+%! clf;
+%! colormap ('default');
+%! [theta, r] = meshgrid (linspace (0,2*pi,64), linspace (0,1,64));
 %! [X, Y] = pol2cart (theta, r);
-%! Z = sin(2*theta).*(1-r);
-%! contour(X, Y, abs(Z), 10)
+%! Z = sin (2*theta) .* (1-r);
+%! contour (X, Y, abs(Z), 10);
 
 %!demo
-%! clf ()
+%! clf;
+%! colormap ('default');
 %! x = linspace (-2, 2);
 %! [x, y] = meshgrid (x);
-%! z = sqrt (x.^2 + y.^2) ./ (x.^2 + y.^2+1);
-%! contourf (x, y, z, [0.4, 0.4])
-%! title ("The hole should be filled with the background color")
+%! z = sqrt (x.^2 + y.^2) ./ (x.^2 + y.^2 + 1);
+%! contourf (x, y, z, [0.4, 0.4]);
+%! title ('The hole should be filled with the background color');
 

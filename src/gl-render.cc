@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2011 Michael Goffioul
+Copyright (C) 2008-2012 Michael Goffioul
 
 This file is part of Octave.
 
@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <lo-mappers.h>
 #include "oct-locbuf.h"
+#include "oct-refcount.h"
 #include "gl-render.h"
 #include "txt-eng.h"
 #include "txt-eng-ft.h"
@@ -2460,7 +2461,7 @@ opengl_renderer::draw_text (const text::properties& props)
   if (props.get_string ().is_empty ())
     return;
 
-  const Matrix pos = xform.scale (props.get_data_position ());
+  Matrix pos = xform.scale (props.get_data_position ());
   const Matrix bbox = props.get_extent_matrix ();
 
   // FIXME: handle margin and surrounding box
@@ -2468,7 +2469,7 @@ opengl_renderer::draw_text (const text::properties& props)
 
   glEnable (GL_BLEND);
   glEnable (GL_ALPHA_TEST);
-  glRasterPos3d (pos(0), pos(1), pos(2));
+  glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
   glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
   glDrawPixels (bbox(2), bbox(3),
                 GL_RGBA, GL_UNSIGNED_BYTE, props.get_pixels ().data ());

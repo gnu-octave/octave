@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2011 John W. Eaton
+## Copyright (C) 1995-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -328,38 +328,38 @@ function pos = subplot_position (rows, cols, index, position_property)
 endfunction
 
 %!demo
-%! clf
+%! clf;
 %! r = 3;
 %! c = 3;
 %! fmt = {'horizontalalignment', 'center', 'verticalalignment', 'middle'};
-%! for n = 1:(r*c)
-%!   subplot (r, c, n)
-%!   xlabel (sprintf ("xlabel #%d", n))
-%!   ylabel (sprintf ("ylabel #%d", n))
-%!   title (sprintf ("title #%d", n))
-%!   text (0.5, 0.5, sprintf('subplot(%d,%d,%d)', r, c, n), fmt{:})
-%!   axis ([0 1 0 1])
-%! endfor
-%! subplot (r, c, 1:3)
-%! xlabel (sprintf ("xlabel #%d:%d", 1, 3))
-%! ylabel (sprintf ("ylabel #%d:%d", 1, 3))
-%! title (sprintf ("title #%d:%d", 1, 3))
-%! text (0.5, 0.5, sprintf('subplot(%d,%d,%d:%d)', r, c, 1, 3), fmt{:})
-%! axis ([0 1 0 1])
+%! for n = 1 : r*c
+%!   subplot (r, c, n);
+%!   xlabel (sprintf ('xlabel #%d', n));
+%!   ylabel (sprintf ('ylabel #%d', n));
+%!   title (sprintf ('title #%d', n));
+%!   text (0.5, 0.5, sprintf('subplot(%d,%d,%d)', r, c, n), fmt{:});
+%!   axis ([0 1 0 1]);
+%! end
+%! subplot (r, c, 1:3);
+%! xlabel (sprintf ('xlabel #%d:%d', 1, 3));
+%! ylabel (sprintf ('ylabel #%d:%d', 1, 3));
+%! title (sprintf ('title #%d:%d', 1, 3));
+%! text (0.5, 0.5, sprintf('subplot(%d,%d,%d:%d)', r, c, 1, 3), fmt{:});
+%! axis ([0 1 0 1]);
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:1;
 %! for n = 1:4
-%!   subplot (2, 2, n, "align")
-%!   plot (x, x)
-%!   xlabel (sprintf ("xlabel (2,2,%d)", n))
-%!   ylabel (sprintf ("ylabel (2,2,%d)", n))
-%!   title (sprintf ("title (2,2,%d)", n))
-%! endfor
-%! subplot (1, 2, 1, "align")
-%! plot (x, x)
-%! xlabel ("xlabel (1,2,1)")
-%! ylabel ("ylabel (1,2,1)")
-%! title ("title (1,2,1)")
+%!   subplot (2, 2, n, 'align');
+%!   plot (x, x);
+%!   xlabel (sprintf ('xlabel (2,2,%d)', n));
+%!   ylabel (sprintf ('ylabel (2,2,%d)', n));
+%!   title (sprintf ('title (2,2,%d)', n));
+%! end
+%! subplot (1, 2, 1, 'align');
+%! plot (x, x);
+%! xlabel ('xlabel (1,2,1)');
+%! ylabel ('ylabel (1,2,1)');
+%! title ('title (1,2,1)');
 

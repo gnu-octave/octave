@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 Kai Habel
+## Copyright (C) 2009-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -23,21 +23,21 @@
 ## @deftypefnx {Function File} {} surfl (@var{x}, @var{y}, @var{z}, @var{L}, @var{P})
 ## @deftypefnx {Function File} {} surfl (@dots{}, "light")
 ## Plot a lighted surface given matrices @var{x}, and @var{y} from
-## @code{meshgrid} and
-## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
-## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
-## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
-## correspond to different @var{x} values and rows of @var{z} correspond
-## to different @var{y} values.
+## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and
+## @var{y} coordinates of the mesh.  If @var{x} and @var{y} are vectors, then
+## a typical vertex is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns
+## of @var{z} correspond to different @var{x} values and rows of @var{z}
+## correspond to different @var{y} values.
 ##
-## The light direction can be specified using @var{L}.  It can be
-## given as 2-element vector [azimuth, elevation] in degrees or as 3-element
-## vector [lx, ly, lz].
-## The default value is rotated 45° counter-clockwise from the current view.
+## The light direction can be specified using @var{L}.  It can be given as a
+## 2-element vector [azimuth, elevation] in degrees or as a 3-element vector
+## [lx, ly, lz].  The default value is rotated 45 degrees counterclockwise
+## from the current view.
 ##
 ## The material properties of the surface can specified using a 4-element vector
 ## @var{P} = [@var{AM} @var{D} @var{SP} @var{exp}] which defaults to
 ## @var{p} = [0.55 0.6 0.4 10].
+##
 ## @table @asis
 ## @item "AM" strength of ambient light
 ##
@@ -49,17 +49,16 @@
 ## @end table
 ##
 ## The default lighting mode "cdata", changes the cdata property to give the
-## impression
-## of a lighted surface.  Please note: the alternative "light" mode, which
-## creates a light
-## object to illuminate the surface is not implemented (yet).
+## impression of a lighted surface.  Please note: the alternative "light"
+## mode, which creates a light object to illuminate the surface is not
+## implemented (yet).
 ##
 ## Example:
 ##
 ## @example
 ## @group
-## colormap(bone);
-## surfl(peaks);
+## colormap (bone);
+## surfl (peaks);
 ## shading interp;
 ## @end group
 ## @end example
@@ -80,12 +79,12 @@ function retval = surfl (varargin)
     ## Check for lighting type.
     use_cdata = true;
     if (ischar (varargin{end}))
-      lstr = varargin{end};
-      if (strncmp (tolower (lstr), "light", 5))
+      lstr = tolower (varargin{end});
+      if (strncmp (lstr, "light", 5))
         warning ("light method not supported (yet), using cdata method instead");
         ## This can be implemented when light objects are supported.
         use_cdata = false;
-      elseif (strncmp (tolower (lstr), "cdata", 5))
+      elseif (strncmp (lstr, "cdata", 5))
         use_cdata = true;
       else
         error ("surfl: unknown lighting method");
@@ -123,7 +122,7 @@ function retval = surfl (varargin)
       endif
     endif
 
-    tmp = surface (varargin{:});
+    htmp = surface (varargin{:});
     if (! ishold ())
       set (h, "view", [-37.5, 30],
            "xgrid", "on", "ygrid", "on", "zgrid", "on", "clim", [0 1]);
@@ -144,7 +143,7 @@ function retval = surfl (varargin)
       lv = (R * vv.').';
     endif
 
-    vn = get (tmp, "vertexnormals");
+    vn = get (htmp, "vertexnormals");
     dar = get (h, "plotboxaspectratio");
     vn(:,:,1) *= dar(1);
     vn(:,:,2) *= dar(2);
@@ -152,36 +151,38 @@ function retval = surfl (varargin)
 
     ## Normalize vn.
     vn = vn ./ repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
-    [nr, nc] = size(get(tmp, "zdata"));
+    [nr, nc] = size(get(htmp, "zdata"));
 
     ## Ambient, diffuse, and specular term.
     cdata = (r(1) * ones (nr, nc)
              + r(2) * diffuse  (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv)
              + r(3) * specular (vn(:,:,1), vn(:,:,2), vn(:,:,3), lv, vv, r(4)));
 
-    set (tmp, "cdata", cdata ./ sum (r(1:3)));
+    set (htmp, "cdata", cdata ./ sum (r(1:3)));
 
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect
 
   if (nargout > 0)
-    retval = tmp;
+    retval = htmp;
   endif
 
 endfunction
 
+
 %!demo
-%! clf
-%! [X,Y,Z]=sombrero;
-%! colormap(copper);
-%! surfl(X,Y,Z);
+%! clf;
+%! [X,Y,Z] = sombrero ();
+%! colormap (copper (64));
+%! surfl (X,Y,Z);
 %! shading interp;
 
 %!demo
-%! [X,Y,Z]=sombrero;
-%! colormap(copper);
-%! [az, el] = view;
-%! surfl(X,Y,Z,[az+225,el],[0.2 0.6 0.4 25]);
+%! clf;
+%! [X,Y,Z] = sombrero ();
+%! colormap (copper (64));
+%! [az, el] = view ();
+%! surfl (X,Y,Z, [az+225,el], [0.2 0.6 0.4 25]);
 %! shading interp;
 

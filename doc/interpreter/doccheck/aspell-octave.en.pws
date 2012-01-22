@@ -38,11 +38,13 @@ Autoload
 autoloaded
 autoloading
 Autoloading
+Automake
 autoregression
 autoregressions
 autoscaled
 AutoScaling
 AWK
+awt
 backend
 Backends
 backends
@@ -81,7 +83,9 @@ bracketx
 brackety
 breakpoint
 Brenan
+broadcastable
 Brockwell
+BSX
 builtin
 builtins
 ButtonDownFcn
@@ -161,6 +165,10 @@ csymamd
 ctranspose
 CTRL
 CTS
+cummax
+cummin
+cumprod
+cumsum
 cURL
 Cuthill
 cxsparse
@@ -225,6 +233,7 @@ eigenvector
 eigenvectors
 eigs
 Ekerdt
+elementwise
 Elfers
 elseif
 emacs
@@ -298,6 +307,7 @@ fpdf
 fprintf
 FreeBSD
 freespacing
+FreeType
 freetype
 frnd
 frob
@@ -332,6 +342,7 @@ glibc
 globbing
 glpk
 GLS
+gnulib
 gnuplot
 Gnuplot
 gnuplot's
@@ -341,6 +352,7 @@ goto
 Goto
 gotos
 GPL
+GPLK
 gplot
 grabdemo
 GradObj
@@ -350,6 +362,7 @@ grayscale
 Graz
 griddata
 gswin
+GUIs
 gunzipped
 gz
 gzip
@@ -395,6 +408,7 @@ Hyndman
 Hypergeometric
 hypergeometric
 IEEE
+ifelse
 iff
 ifft
 ifftn
@@ -438,6 +452,7 @@ ji
 jpeg
 JPEG
 jpg
+jvm
 keybindings
 keypress
 Kolmogorov
@@ -475,6 +490,7 @@ libcruft
 libcurl
 liblapack
 liboctave
+Libtool
 licensors
 lineanchors
 linefeeds
@@ -539,8 +555,10 @@ Metafile
 metafiles
 Metafont
 mex
+mget
 Michelsen
 Microsystems
+MinGW
 minima
 Minimizers
 Minitab
@@ -548,6 +566,7 @@ minval
 MIP
 miscompiled
 Misra
+mkdir
 mkoctfile
 mldivide
 mmd
@@ -561,7 +580,9 @@ Moler
 Montanet
 mpoles
 mpower
+mput
 mrdivide
+MSYS
 mtimes
 Multi
 multi
@@ -598,6 +619,7 @@ nnz
 nocompute
 nolabel
 noncommercially
+nonconformant
 nonsmooth
 nonzeros
 noperm
@@ -613,6 +635,7 @@ notin
 nthargout
 NTSC
 nul
+Numpy
 Nx
 nzmax
 oct
@@ -733,6 +756,8 @@ reimported
 Reindent
 relicensing
 ren
+renderer
+repelems
 repmat
 resampled
 resampling
@@ -749,6 +774,7 @@ Riccati
 Rightarrow
 rightarrow
 rline
+rmdir
 RMS
 rnd
 roffset
@@ -768,6 +794,7 @@ Schur
 SCO
 screenful
 se
+sed
 seealso
 semidefinite
 Sep
@@ -778,6 +805,7 @@ signum
 SIGNUM
 sim
 SIMAX
+SIMD
 simplechol
 simplecholperm
 simplematrix
@@ -861,6 +889,7 @@ subsref
 substring
 substrings
 SuiteSparse
+sumsq
 SunOS
 superiorto
 supradiagonal
@@ -894,6 +923,7 @@ TikZ
 tinv
 Tisseur
 Tisseur's
+tmp
 Toeplitz
 tokenExtents
 TolF
@@ -978,6 +1008,8 @@ Villadsen
 voronoi
 Voronoi
 Wa
+waitbar
+waitbars
 wallis
 wblcdf
 wblinv
@@ -1029,6 +1061,7 @@ xyz
 ydata
 yerrorbar
 yerrorbars
+ylim
 yy
 YY
 yyyy
@@ -1039,3 +1072,4 @@ Zechner
 zer
 Ziggurat
 zlib
+zlim

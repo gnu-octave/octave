@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2011 John W. Eaton
+## Copyright (C) 1993-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -21,7 +21,9 @@
 ## @deftypefnx {Function File} {} title (@var{string}, @var{p1}, @var{v1}, @dots{})
 ## @deftypefnx {Function File} {} title (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} title (@dots{})
-## Create a title object and return a handle to it.
+## Create a title object for a plot.
+##
+## The optional return value @var{h} is a graphics handle to the created object.
 ## @end deftypefn
 
 ## Author: jwe
@@ -42,27 +44,28 @@ function retval = title (varargin)
 
 endfunction
 
-%!demo
-%! clf ();
-%! ax=axes();
-%! xl = get(ax,"title");
-%! title("Testing title")
-%! assert(get(xl,"string"),"Testing title")
 
 %!demo
-%! clf ();
+%! clf;
+%! ax = axes ();
+%! xl = get (ax,'title');
+%! title ('Testing title');
+%! assert (get (xl, 'string'), 'Testing title');
+
+%!demo
+%! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
-%! xl = get(gca (), "title");
-%! title("Testing title")
-%! assert(get(xl,"string"),"Testing title")
+%! xl = get (gca (), 'title');
+%! title ('Testing title');
+%! assert (get (xl, 'string'), 'Testing title');
 
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   ax=axes();
-%!   xl = get(ax,"title");
-%!   title("Testing title")
-%!   assert(get(xl,"string"),"Testing title")
+%!   ax = axes();
+%!   xl = get (ax,"title");
+%!   title ("Testing title");
+%!   assert (get (xl, "string"), "Testing title");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -71,9 +74,10 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
-%!   xl = get(gca (), "title");
-%!   title("Testing title")
-%!   assert(get(xl,"string"),"Testing title")
+%!   xl = get (gca (), "title");
+%!   title ("Testing title");
+%!   assert (get (xl, "string"), "Testing title");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

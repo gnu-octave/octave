@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -152,6 +152,8 @@ private:
   private:
 
     static static_members *instance;
+
+    static void cleanup_instance (void) { delete instance; instance = 0; }
 
     static bool instance_ok (void);
 

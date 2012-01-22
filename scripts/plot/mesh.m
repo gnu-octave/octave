@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2011 John W. Eaton
+## Copyright (C) 1993-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -32,6 +32,9 @@
 ## The color of the mesh is derived from the @code{colormap}
 ## and the value of @var{z}.  Optionally the color of the mesh can be
 ## specified independent of @var{z}, by adding a fourth matrix, @var{c}.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## surface object.
 ## @seealso{colormap, contour, meshgrid, surf}
 ## @end deftypefn
 
@@ -58,3 +61,7 @@ function h = mesh (varargin)
   endif
 
 endfunction
+
+
+%% FIXME: Need demo or test for function
+

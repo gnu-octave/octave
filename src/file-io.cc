@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -43,9 +43,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdio>
 
 #include <iostream>
+#include <locale>
 #include <stack>
+#include <stdexcept>
 #include <vector>
 
+#include <fcntl.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -1069,7 +1072,7 @@ converted.\n\
 DEFUN (fscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, \"C\")\n\
++@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{locale})\n\
 In the first form, read from @var{fid} according to @var{template},\n\
 returning the result in the matrix @var{val}.\n\
 \n\
@@ -1108,7 +1111,10 @@ In the second form, read from @var{fid} according to @var{template},\n\
 with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
-conversions is returned in @var{count}\n\
+conversions is returned in @var{count}. It permits to explicitly\n\
+specify a locale to take into account langage specific features, \n\
+such as decimal separator. This operation restores the previous locales\n\
+setting at the end of the conversion.\n\
 @ifclear OCTAVE_MANUAL\n\
 \n\
 See the Formatted Input section of the GNU Octave manual for a\n\
@@ -1130,7 +1136,25 @@ complete description of the syntax of the template string.\n\
       if (! error_state)
         {
           if (args(1).is_string ())
-            retval = os.oscanf (args(1), who);
+            {
+              std::locale oldloc;
+              try
+                {
+                  // Use args(2) val as the new locale setting. Keep
+                  // old val for restoring afterwards.
+                  oldloc = 
+                    os.imbue (std::locale (args(2).string_value ().c_str ()));
+                  
+                }
+              catch (std::runtime_error)
+                {
+                  // Display a warning if the specified locale is unknown
+                  warning ("fscanf: invalid locale. Try `locale -a' for a list of supported values.");
+                  oldloc = std::locale::classic ();
+                }
+              retval = os.oscanf (args(1), who);
+              os.imbue (oldloc);
+            }
           else
             ::error ("%s: format TEMPLATE must be a string", who.c_str ());
         }
@@ -1198,7 +1222,7 @@ get_sscanf_data (const octave_value& val)
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}, @var{pos}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{locale})\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.  In addition to the values\n\
@@ -1223,8 +1247,22 @@ is returned in @var{pos}.\n\
 
           if (os.is_valid ())
             {
-              if (args(1).is_string ())
-                retval = os.oscanf (args(1), who);
+              if (args(1).is_string ()) 
+                {
+                  // Use args(2) val as the new locale setting. As the os
+                  // object is short lived, we don't need to restore
+                  // locale afterwards.
+                  try
+                    {  
+                      os.imbue (std::locale (args(2).string_value ().c_str ()));
+                    }
+                  catch (std::runtime_error)
+                    {
+                      // Display a warning if the specified locale is unknown
+                      warning ("sscanf: invalid locale. Try `locale -a' for a list of supported values.");
+                    }
+                  retval = os.oscanf (args(1), who);
+                }              
               else
                 ::error ("%s: format TEMPLATE must be a string", who.c_str ());
             }
@@ -1292,10 +1330,16 @@ is returned in @var{pos}.\n\
   return retval;
 }
 
+/*
+%!test
+%! assert(sscanf('1,2', '%f', 'C'), 1)
+%! assert(sscanf('1,2', '%f', 'fr_FR'), 1.2)
+*/
+
 DEFUN (scanf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}, @var{errmsg}]] =} scanf (@var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}]] =} scanf (@var{template}, @var{locale}))\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\
@@ -1878,6 +1922,9 @@ use @code{fclose} for the same purpose.\n\
 
 DEFUNX ("tmpnam", Ftmpnam, args, ,
  "-*- texinfo -*-\n\
+@c List other forms of function in documentation index\n\
+@findex octave_tmp_file_name\n\
+\n\
 @deftypefn  {Built-in Function} {} tmpnam ()\n\
 @deftypefnx {Built-in Function} {} tmpnam (@var{dir})\n\
 @deftypefnx {Built-in Function} {} tmpnam (@var{dir}, @var{prefix})\n\
@@ -1981,7 +2028,7 @@ must be @code{XXXXXX} and these are replaced with a string that makes the\n\
 filename unique.  The file is then created with mode read/write and\n\
 permissions that are system dependent (on GNU/Linux systems, the permissions\n\
 will be 0600 for versions of glibc 2.0.7 and later).  The file is opened\n\
-with the @w{@code{O_EXCL}} flag.\n\
+in binary mode and with the @w{@code{O_EXCL}} flag.\n\
 \n\
 If the optional argument @var{delete} is supplied and is true,\n\
 the file will be deleted automatically when Octave exits, or when\n\
@@ -2011,7 +2058,7 @@ error message.\n\
           OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
           strcpy (tmp, tmpl8.c_str ());
 
-          int fd = gnulib::mkstemp (tmp);
+          int fd = gnulib::mkostemp (tmp, O_BINARY);
 
           if (fd < 0)
             {
@@ -2020,7 +2067,7 @@ error message.\n\
             }
           else
             {
-              const char *fopen_mode = "w+";
+              const char *fopen_mode = "w+b";
 
               FILE *fid = fdopen (fd, fopen_mode);
 
@@ -2177,7 +2224,7 @@ DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
 @deftypefn  {Built-in Function} {} SEEK_SET ()\n\
 @deftypefnx {Built-in Function} {} SEEK_CUR ()\n\
 @deftypefnx {Built-in Function} {} SEEK_END ()\n\
-Return the value required to request that @code{fseek} perform\n\
+Return the numerical value to pass to @code{fseek} to perform\n\
 one of the following actions:\n\
 @table @code\n\
 @item SEEK_SET\n\
@@ -2189,6 +2236,7 @@ Position file relative to the current position.\n\
 @item SEEK_END\n\
 Position file relative to the end.\n\
 @end table\n\
+@seealso{fseek}\n\
 @end deftypefn")
 {
   return const_value ("SEEK_SET", args, -1);
@@ -2197,7 +2245,9 @@ Position file relative to the end.\n\
 DEFUNX ("SEEK_CUR", FSEEK_CUR, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} SEEK_CUR ()\n\
-See SEEK_SET.\n\
+Return the numerical value to pass to @code{fseek} to\n\
+position the file pointer relative to the current position.\n\
+@seealso{SEEK_SET, SEEK_END}.\n\
 @end deftypefn")
 {
   return const_value ("SEEK_CUR", args, 0);
@@ -2206,7 +2256,9 @@ See SEEK_SET.\n\
 DEFUNX ("SEEK_END", FSEEK_END, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} SEEK_END ()\n\
-See SEEK_SET.\n\
+Return the numerical value to pass to @code{fseek} to\n\
+position the file pointer relative to the end of the file.\n\
+@seealso{SEEK_SET, SEEK_CUR}.\n\
 @end deftypefn")
 {
   return const_value ("SEEK_END", args, 1);

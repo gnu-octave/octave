@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 John W. Eaton
+## Copyright (C) 2005-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -441,6 +441,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
     while (! isempty (kids))
 
       obj = get (kids(end));
+
       if (isfield (obj, "units"))
         units = obj.units;
         unwind_protect
@@ -452,7 +453,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       endif
       kids = kids(1:(end-1));
 
-      if (strcmpi (obj.visible, "off"))
+      if (strcmp (obj.visible, "off"))
         continue;
       endif
 
@@ -694,10 +695,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      ccol = cdat;
                    endif
                    if (strncmp (obj.facecolor, "flat", 4))
-                     if (numel(ccol) == 3)
+                     if (isequal (size (ccol), [1, 3]))
+                       ## RGB Triplet
                        color = ccol;
                      elseif (nd == 3 && numel (xcol) == 3)
-                       ccdat = ccol * ones (3,1);
+                       ccdat = ccol;
                      else
                        if (cdatadirect)
                          r = round (ccol);
@@ -1542,7 +1544,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       keypos = hlgnd.location;
       if (ischar (keypos))
         keypos = lower (keypos);
-        keyout = findstr (keypos, "outside");
+        keyout = strfind (keypos, "outside");
         if (! isempty (keyout))
           inout = "outside";
           keypos = keypos(1:keyout-1);
@@ -2204,7 +2206,6 @@ function ticklabel = ticklabel_to_cell (ticklabel)
   endif
   if (ischar (ticklabel))
     if (size (ticklabel, 1) == 1 && any (ticklabel == "|"))
-      n = setdiff (findstr (ticklabel, "|"), findstr (ticklabel, '\|'));
       ticklabel = strsplit (ticklabel, "|");
     else
       ticklabel = cellstr (ticklabel);
@@ -2302,7 +2303,35 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
         warning ("latex markup not supported for text objects");
         warned_latex = true;
       endif
+    elseif (enhanced)
+      str = no_super_sub_scripts (str);
     endif
+  endif
+endfunction
+
+function str = no_super_sub_scripts (str)
+  if (iscellstr (str))
+    labels = str;
+  else
+    labels = cellstr (str);
+  endif
+  for marker = "_^" 
+    for m = 1 : numel(labels)
+      n1 = strfind (labels{m}, sprintf ("\\%s", marker));
+      n2 = strfind (labels{m}, marker);
+      if (! isempty (n1))
+        n1 = n1 + 1;
+        n2 = setdiff (n2, n1);
+      end
+      for n = numel(n2):-1:1
+        labels{m} = [labels{m}(1:n2(n)-1), "\\", labels{m}(n2(n):end)]
+      endfor
+    endfor
+  endfor
+  if (iscellstr (str))
+    str = labels;
+  else
+    str = char (labels);
   endif
 endfunction
 

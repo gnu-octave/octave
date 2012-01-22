@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2010-2011 VZLU Prague
+Copyright (C) 2010-2012 VZLU Prague
 
 This file is part of Octave.
 
@@ -137,7 +137,7 @@ convolve (const MArray<T>& a, const MArray<R>& b,
       Array<idx_vector> sidx (dim_vector (nd, 1));
 
       for (int i = 0; i < nd; i++)
-        sidx(i) = idx_vector::make_range ((bdims(i)-1)/2, 1, adims(i));
+        sidx(i) = idx_vector::make_range (bdims(i)/2, 1, adims(i));
       c = c.index (sidx);
     }
 

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2011 Carlo de Falco
+Copyright (C) 2009-2012 Carlo de Falco
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -239,15 +239,19 @@ Multiplication operator.\n\
   pair_type ("**",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} **\n\
-Power operator.\n\
-@seealso{power, ^, .**, .^}\n\
+Power operator.  This may return complex results for real inputs.  Use\n\
+@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
+real results when possible.\n\
+@seealso{power, ^, .**, .^, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type ("^",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} ^\n\
-Power operator.\n\
-@seealso{power, **, .^, .**}\n\
+Power operator.  This may return complex results for real inputs.  Use\n\
+@code{realsqrt}, @code{cbrt}, @code{nthroot}, or @code{realroot} to obtain\n\
+real results when possible.\n\
+@seealso{power, **, .^, .**, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type ("+",
@@ -304,15 +308,21 @@ Element by element multiplication operator.\n\
   pair_type (".**",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .*\n\
-Element by element power operator.\n\
-@seealso{**, ^, .^, power}\n\
+Element by element power operator.  If several complex results are possible,\n\
+returns the one with smallest non-negative argument (angle).  Use\n\
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
+real result is preferred.\n\
+@seealso{**, ^, .^, power, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type (".^",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} .^\n\
-Element by element power operator.\n\
-@seealso{.**, ^, **, power}\n\
+Element by element power operator.  If several complex results are possible,\n\
+returns the one with smallest non-negative argument (angle).  Use\n\
+@code{realpow}, @code{realsqrt}, @code{cbrt}, or @code{nthroot} if a\n\
+real result is preferred.\n\
+@seealso{.**, ^, **, power, realpow, realsqrt, cbrt, nthroot}\n\
 @end deftypefn"),
 
   pair_type ("./",
@@ -617,7 +627,7 @@ The default statement in a switch block (similar to else in an if block).\n\
 
   pair_type ("parfor",
     "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} for @var{i} = @var{range}\n\
+@deftypefn  {Keyword} {} for @var{i} = @var{range}\n\
 @deftypefnx {Keyword} {} for (@var{i} = @var{range}, @var{maxproc})\n\
 Begin a for loop that may execute in parallel.\n\
 \n\
@@ -640,13 +650,6 @@ subsequent calls to the same function.  The difference between persistent\n\
 variables and global variables is that persistent variables are local in \n\
 scope to a particular function and are not visible elsewhere.\n\
 @seealso{global}\n\
-@end deftypefn"),
-
-  pair_type ("replot",
-    "-*- texinfo -*-\n\
-@deftypefn {Keyword} {} replot\n\
-Replot a graphic.\n\
-@seealso{plot}\n\
 @end deftypefn"),
 
   pair_type ("return",
@@ -1268,6 +1271,7 @@ DEFUN (doc_cache_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} doc_cache_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} doc_cache_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} doc_cache_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave documentation cache file.  A cache file significantly improves\n\
 the performance of the @code{lookfor} command.  The default value is \n\
@@ -1277,6 +1281,10 @@ and @var{version} is the Octave version number.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_DOC_CACHE_FILE}}, or the command line argument\n\
 @samp{--doc-cache-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1287,6 +1295,7 @@ DEFUN (info_file, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_file ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 Octave info file.  The default value is\n\
 @file{@var{octave-home}/info/octave.info}, in\n\
@@ -1294,6 +1303,10 @@ which @var{octave-home} is the root directory of the Octave installation.\n\
 The default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_FILE}}, or the command line argument\n\
 @samp{--info-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_program, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1304,6 +1317,7 @@ DEFUN (info_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} info_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} info_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 info program to run.  The default value is\n\
 @file{@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info}\n\
@@ -1313,6 +1327,10 @@ is the system type (for example, @code{i686-pc-linux-gnu}).  The\n\
 default value may be overridden by the environment variable\n\
 @w{@env{OCTAVE_INFO_PROGRAM}}, or the command line argument\n\
 @samp{--info-program NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, doc, help, makeinfo_program}\n\
 @end deftypefn")
 {
@@ -1323,9 +1341,14 @@ DEFUN (makeinfo_program, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} makeinfo_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} makeinfo_program (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} makeinfo_program (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
 program that Octave runs to format help text containing\n\
 Texinfo markup commands.  The default value is @code{makeinfo}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{info_file, info_program, doc, help}\n\
 @end deftypefn")
 {
@@ -1336,9 +1359,14 @@ DEFUN (suppress_verbose_help_message, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} suppress_verbose_help_message (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave\n\
 will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (suppress_verbose_help_message);

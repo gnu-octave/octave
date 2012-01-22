@@ -7,7 +7,8 @@ BEGIN {
   print "EXTRA_DIST += \\"
   print "  DLD-FUNCTIONS/config-module.sh \\"
   print "  DLD-FUNCTIONS/config-module.awk \\"
-  print "  DLD-FUNCTIONS/module-files"
+  print "  DLD-FUNCTIONS/module-files \\"
+  print "  DLD-FUNCTIONS/oct-qhull.h"
   print ""
 }
 /^#.*/ { next; }

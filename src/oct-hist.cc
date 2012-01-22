@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -734,6 +734,7 @@ DEFUN (history_timestamp_format_string, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} history_timestamp_format_string ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} history_timestamp_format_string (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the format string\n\
 for the comment line that is written to the history file when Octave\n\
 exits.  The format string is passed to @code{strftime}.  The default\n\
@@ -742,6 +743,10 @@ value is\n\
 @example\n\
 \"# Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
 @end example\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{strftime, history_file, history_size, saving_history}\n\
 @end deftypefn")
 {
@@ -752,8 +757,13 @@ DEFUN (saving_history, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} saving_history ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} saving_history (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} saving_history (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @seealso{history_control, history_file, history_size, history_timestamp_format_string}\n\
 @end deftypefn")
 {

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 Paul Kienzle
+## Copyright (C) 2005-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -127,8 +127,12 @@ function fplot (fn, limits, n, fmt)
   endif
 endfunction
 
-%!demo
-%! fplot ("cos", [0, 2*pi])
 
 %!demo
-%! fplot ("[cos(x), sin(x)]", [0, 2*pi])
+%! clf;
+%! fplot ('cos', [0, 2*pi]);
+
+%!demo
+%! clf;
+%! fplot ('[cos(x), sin(x)]', [0, 2*pi]);
+

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -27,9 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <list>
 
+#include "file-stat.h"
 #include "oct-env.h"
 #include "oct-time.h"
-#include "file-stat.h"
+#include "singleton-cleanup.h"
 
 #include <defaults.h>
 
@@ -77,6 +78,8 @@ private:
   void do_display (void) const;
 
   static octave_shlib_list *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static bool instance_ok (void);
 
@@ -148,7 +151,12 @@ octave_shlib_list::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_shlib_list ();
+    {
+      instance = new octave_shlib_list ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {
@@ -213,6 +221,8 @@ private:
 
   static octave_mex_file_list *instance;
 
+  static void cleanup_instance (void) { delete instance; instance = 0; }
+
   static bool instance_ok (void);
 
   // List of libraries we have loaded.
@@ -258,7 +268,12 @@ octave_mex_file_list::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_mex_file_list ();
+    {
+      instance = new octave_mex_file_list ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {
@@ -295,7 +310,12 @@ octave_dynamic_loader::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_dynamic_loader ();
+    {
+      instance = new octave_dynamic_loader ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

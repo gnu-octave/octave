@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -139,26 +139,28 @@ function y = cplxpair (z, tol, dim)
 
 endfunction
 
+
 %!demo
 %! [ cplxpair(exp(2i*pi*[0:4]'/5)), exp(2i*pi*[3; 2; 4; 1; 0]/5) ]
 
-%!assert (isempty(cplxpair([])));
-%!assert (cplxpair(1), 1)
-%!assert (cplxpair([1+1i, 1-1i]), [1-1i, 1+1i])
-%!assert (cplxpair([1+1i, 1+1i, 1, 1-1i, 1-1i, 2]), \
-%!        [1-1i, 1+1i, 1-1i, 1+1i, 1, 2])
-%!assert (cplxpair([1+1i; 1+1i; 1; 1-1i; 1-1i; 2]), \
-%!        [1-1i; 1+1i; 1-1i; 1+1i; 1; 2])
-%!assert (cplxpair([0, 1, 2]), [0, 1, 2]);
+%!assert (isempty (cplxpair ([])))
+%!assert (cplxpair (1), 1)
+%!assert (cplxpair ([1+1i, 1-1i]), [1-1i, 1+1i])
+%!assert (cplxpair ([1+1i, 1+1i, 1, 1-1i, 1-1i, 2]), ...
+%!                  [1-1i, 1+1i, 1-1i, 1+1i, 1, 2])
+%!assert (cplxpair ([1+1i; 1+1i; 1; 1-1i; 1-1i; 2]), ...
+%!                  [1-1i; 1+1i; 1-1i; 1+1i; 1; 2])
+%!assert (cplxpair ([0, 1, 2]), [0, 1, 2])
 
 %!shared z
-%! z=exp(2i*pi*[4; 3; 5; 2; 6; 1; 0]/7);
-%!assert (cplxpair(z(randperm(7))), z);
-%!assert (cplxpair(z(randperm(7))), z);
-%!assert (cplxpair(z(randperm(7))), z);
-%!assert (cplxpair([z(randperm(7)),z(randperm(7))]),[z,z])
-%!assert (cplxpair([z(randperm(7)),z(randperm(7))],[],1),[z,z])
-%!assert (cplxpair([z(randperm(7)).';z(randperm(7)).'],[],2),[z.';z.'])
+%! z = exp (2i*pi*[4; 3; 5; 2; 6; 1; 0]/7);
+%!assert (cplxpair (z(randperm (7))), z)
+%!assert (cplxpair (z(randperm (7))), z)
+%!assert (cplxpair (z(randperm (7))), z)
+%!assert (cplxpair ([z(randperm(7)),z(randperm(7))]), [z,z])
+%!assert (cplxpair ([z(randperm(7)),z(randperm(7))],[],1), [z,z])
+%!assert (cplxpair ([z(randperm(7)).';z(randperm(7)).'],[],2), [z.';z.'])
 
 %!## tolerance test
-%!assert (cplxpair([1i, -1i, 1+(1i*eps)],2*eps), [-1i, 1i, 1+(1i*eps)]);
+%!assert (cplxpair ([1i, -1i, 1+(1i*eps)],2*eps), [-1i, 1i, 1+(1i*eps)])
+

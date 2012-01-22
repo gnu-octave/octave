@@ -1,4 +1,4 @@
-## Copyright (C) 1993-2011 John W. Eaton
+## Copyright (C) 1993-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
-## The optional return value @var{h} provides a handle to the "bar series"
+## The optional return value @var{h} is a handle to the created "bar series"
 ## object with one handle per column of the variable @var{y}.  This
 ## series allows common elements of the group of bar series objects to
 ## be changed in a single bar series and the same properties are changed
@@ -93,3 +93,7 @@ function varargout = bar (varargin)
   varargout = cell (nargout, 1);
   [varargout{:}] = __bar__ (true, "bar", varargin{:});
 endfunction
+
+
+%% FIXME: Need demo or test for function
+

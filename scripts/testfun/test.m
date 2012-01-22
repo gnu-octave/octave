@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 Paul Kienzle
+## Copyright (C) 2005-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -456,8 +456,12 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 ### TESTIF
 
     elseif (strcmp (__type, "testif"))
-      [__e, __feat] = regexp (__code, '^\s*(\S+)', 'end', 'tokens');
-      if (isempty (findstr (octave_config_info ("DEFS"), __feat{1}{1})))
+      __e = regexp (__code, '.$', 'lineanchors', 'once');
+      ## Strip comment any comment from testif line before looking for features
+      __feat_line = strtok (__code(1:__e), '#%'); 
+      __feat = regexp (__feat_line, '\w+', 'match');
+      __have_feat = strfind (octave_config_info ("DEFS"), __feat); 
+      if (any (cellfun ("isempty", __have_feat)))
         __xskip++;
         __istest = 0;
         __code = ""; # Skip the code.
@@ -491,9 +495,17 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     ## evaluate code for test, shared, and assert.
     if (! isempty(__code))
       try
-        eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
-                       __shared_r,__shared, __code));
-        eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
+        ## FIXME: need to check for embedded test functions, which cause
+        ## segfaults, until issues with subfunctions in functions are resolved.
+        embed_func = regexp (__code, '^\s*function ', 'once', 'lineanchors');
+        if (isempty (embed_func))
+          eval (sprintf ("function %s__test__(%s)\n%s\nendfunction",
+                         __shared_r,__shared, __code));
+          eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
+        else
+          error (["Functions embedded in %!test blocks are not allowed.\n", ...
+                  "Use the %!function/%!endfunction syntax instead to define shared functions for testing.\n"]);
+        endif
       catch
         if (strcmp (__type, "xtest"))
            __msg = sprintf ("%sknown failure\n%s", __signal_fail, lasterr ());
@@ -793,15 +805,15 @@ endfunction
 
 %!## demo blocks
 %!demo                   # multiline demo block
-%! t=[0:0.01:2*pi]; x=sin(t);
-%! plot(t,x);
+%! t = [0:0.01:2*pi]; x = sin (t);
+%! plot (t,x);
 %! % you should now see a sine wave in your figure window
 %!demo a=3               # single line demo blocks work too
 
 %!## this is a comment block. it can contain anything.
 %!##
 %! it is the "#" as the block type that makes it a comment
-%! and it  stays as a comment even through continuation lines
+%! and it stays as a comment even through continuation lines
 %! which means that it works well with commenting out whole tests
 
 % !# failure tests.  All the following should fail. These tests should
@@ -826,3 +838,4 @@ endfunction
 % ! ## These don't signal an error, so the test for an error fails. Note
 % ! ## that the call doesn't reference the current fid (it is unavailable),
 % ! ## so of course the informational message is not printed in the log.
+

@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 Bill Denney
+## Copyright (C) 2005-2012 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -17,19 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} savepath (@var{file})
-## Save the portion of the current function search path, that is
-## not set during Octave's initialization process, to @var{file}.
+## @deftypefn  {Function File} {} savepath ()
+## @deftypefnx {Function File} {} savepath (@var{file})
+## @deftypefnx {Function File} {@var{status} =} savepath (@dots{})
+## Save the unique portion of the current function search path that is
+## not set during Octave's initialization process to @var{file}.
 ## If @var{file} is omitted, @file{~/.octaverc} is used.  If successful,
 ## @code{savepath} returns 0.
-## @seealso{path, addpath, rmpath, genpath, pathdef, pathsep}
+## @seealso{path, addpath, rmpath, genpath, pathdef}
 ## @end deftypefn
 
 ## Author: Bill Denney <bill@givebillmoney.com>
 
-function varargout = savepath (file)
+function retval = savepath (file)
 
-  retval = 1;
+  ret = 1;
 
   beginstring = "## Begin savepath auto-created section, do not edit";
   endstring   = "## End savepath auto-created section";
@@ -38,40 +40,30 @@ function varargout = savepath (file)
     file = fullfile ("~", ".octaverc");
   endif
 
-  ## parse the file if it exists to see if we should replace a section
-  ## or create a section
-  startline = 0;
-  endline = 0;
+  ## parse the file if it exists to see if we should replace an
+  ## existing section or create a new section
+  startline = endline = 0;
   filelines = {};
   if (exist (file) == 2)
-    ## read in all lines of the file
     [fid, msg] = fopen (file, "rt");
     if (fid < 0)
       error ("savepath: could not open file, %s: %s", file, msg);
     endif
     unwind_protect
       linenum = 0;
-      while (linenum >= 0)
-        result = fgetl (fid);
-        if (isnumeric (result))
-          ## end at the end of file
-          linenum = -1;
-        else
-          linenum = linenum + 1;
-          filelines{linenum} = result;
-          ## find the first and last lines if they exist in the file
-          if (strcmp (result, beginstring))
-            startline = linenum;
-          elseif (strcmp (result, endstring))
-            endline = linenum;
-          endif
+      while (ischar (line = fgetl (fid)))
+        filelines{++linenum} = line;
+        ## find the first and last lines if they exist in the file
+        if (strcmp (line, beginstring))
+          startline = linenum;
+        elseif (strcmp (line, endstring))
+          endline = linenum;
         endif
       endwhile
     unwind_protect_cleanup
       closeread = fclose (fid);
       if (closeread < 0)
-        error ("savepath: could not close file after reading, %s",
-               file);
+        error ("savepath: could not close file after reading, %s", file);
       endif
     end_unwind_protect
   endif
@@ -116,15 +108,16 @@ function varargout = savepath (file)
     workingpath = parsepath (path);
     command_line_path = parsepath (command_line_path ());
     octave_path = parsepath (getenv ("OCTAVE_PATH"));
-    if (isempty (pathdef ()))
+    pathdef = pathdef ();
+    if (isempty (pathdef))
       ## This occurs when running octave via run-octave. In this instance
       ## the entire path is specified via the command line and pathdef()
       ## is empty.
-      [tmp, n] = setdiff (workingpath, octave_path);
+      [~, n] = setdiff (workingpath, octave_path);
       default_path = command_line_path;
     else
-      [tmp, n] = setdiff (workingpath, union (command_line_path, octave_path));
-      default_path = parsepath (pathdef ());
+      [~, n] = setdiff (workingpath, union (command_line_path, octave_path));
+      default_path = parsepath (pathdef);
     endif
     ## This is the path we'd like to preserve when octave is run.
     path_to_preserve = workingpath (sort (n));
@@ -133,34 +126,33 @@ function varargout = savepath (file)
     [pkg_user, pkg_system] = pkg ("list");
     pkg_user_path = cell (1, numel (pkg_user));
     pkg_system_path = cell (1, numel (pkg_system));
-    for n = 1:numel(pkg_user)
+    for n = 1:numel (pkg_user)
       pkg_user_path{n} = pkg_user{n}.archprefix;
     endfor
-    for n = 1:numel(pkg_system)
+    for n = 1:numel (pkg_system)
       pkg_system_path{n} = pkg_system{n}.archprefix;
     endfor
     pkg_path = union (pkg_user_path, pkg_system_path);
 
     ## Rely on Octave's initialization to include the pkg path elements.
     if (! isempty (pkg_path))
-      [tmp, n] = setdiff (path_to_preserve, strcat (pkg_path, ":"));
-      path_to_preserve = path_to_preserve (sort (n));
+      [~, n] = setdiff (path_to_preserve, strcat (pkg_path, ":"));
+      path_to_preserve = path_to_preserve(sort (n));
     endif
 
     ## Split the path to be saved into two groups. Those path elements that
     ## belong at the beginning and those at the end.
     if (! isempty (default_path))
-      n1 = strmatch (default_path{1}, path_to_preserve, "exact");
-      n2 = strmatch (default_path{end}, path_to_preserve, "exact");
+      n1 = find (strcmp (default_path{1}, path_to_preserve));
+      n2 = find (strcmp (default_path{end}, path_to_preserve));
       n_middle = round (0.5*(n1+n2));
-      [tmp, n] = setdiff (path_to_preserve, default_path);
-      path_to_save = path_to_preserve (sort (n));
+      [~, n] = setdiff (path_to_preserve, default_path);
+      path_to_save = path_to_preserve(sort (n));
       ## Remove pwd
-      path_to_save = path_to_save (! strcmpi (path_to_save,
-                                              strcat (".", pathsep)));
+      path_to_save = path_to_save(! strcmp (path_to_save, ["." pathsep]));
       n = ones (size (path_to_save));
-      for m = 1:numel(path_to_save)
-        n(m) = strmatch (path_to_save{m}, path_to_preserve);
+      for m = 1:numel (path_to_save)
+        n(m) = find (strcmp (path_to_save{m}, path_to_preserve));
       endfor
       path_to_save_begin = path_to_save(n <= n_middle);
       path_to_save_end   = path_to_save(n > n_middle);
@@ -199,16 +191,16 @@ function varargout = savepath (file)
     endif
   end_unwind_protect
 
-  retval = 0;
+  ret = 0;
 
-  if (nargout == 1)
-    varargout{1} = retval;
+  if (nargout > 0)
+    retval = ret;
   endif
 
 endfunction
 
 function path_elements = parsepath (p)
   pat = sprintf ('([^%s]+[%s$])', pathsep, pathsep);
-  [~, ~, ~, path_elements] = regexpi (strcat (p, pathsep), pat);
+  path_elements = regexpi (strcat (p, pathsep), pat, "match");
 endfunction
 

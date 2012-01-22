@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,6 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
+## @c List other forms of function in documentation index
+## @findex ylim
+## @findex zlim
+##
 ## @deftypefn  {Function File} {@var{xl} =} xlim ()
 ## @deftypefnx {Function File} {} xlim (@var{xl})
 ## @deftypefnx {Function File} {@var{m} =} xlim ('mode')
@@ -45,34 +49,34 @@ function retval = xlim (varargin)
   endif
 endfunction
 
+
 %!demo
-%! clf ();
+%! clf;
 %! line ();
 %! xlim ([0.2, 0.8]);
-%! title ("xlim is [0.2, 0.8]");
+%! title ('xlim is [0.2, 0.8]');
 %! assert (xlim (), [0.2, 0.8]);
 
 %!demo
-%! clf ();
+%! clf;
 %! line ();
 %! xlim ('auto');
-%! title ("xlim is auto");
-%! assert (xlim ("mode"), "auto");
+%! title ('xlim is auto');
+%! assert (xlim ('mode'), 'auto');
 
 %!demo
-%! clf ();
+%! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! xlim ([0.2, 0.8]);
-%! title ("xlim is [0.2, 0.8]");
+%! title ('xlim is [0.2, 0.8]');
 %! assert (xlim (), [0.2, 0.8]);
 
 %!demo
-%! clf ();
+%! clf;
 %! plot3 ([0,1], [0,1], [0,1]);
 %! xlim ('auto');
-%! title ("xlim is auto");
-%! assert (xlim ("mode"), "auto");
-
+%! title ('xlim is auto');
+%! assert (xlim ('mode'), 'auto');
 
 %!test
 %! hf = figure ("visible", "off");
@@ -94,3 +98,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

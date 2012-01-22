@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -58,6 +58,7 @@ Free Software Foundation, Inc.
 #include "oct-env.h"
 #include "oct-passwd.h"
 #include "oct-syscalls.h"
+#include "singleton-cleanup.h"
 
 octave_env::octave_env (void)
   : follow_symbolic_links (true), verbatim_pwd (true),
@@ -81,7 +82,12 @@ octave_env::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_env ();
+    {
+      instance = new octave_env ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -834,9 +834,10 @@ octave_main (int argc, char **argv, int embedded)
 
   // If stdin is not a tty, then we are reading commands from a pipe or
   // a redirected file.
-  stdin_is_tty = isatty (fileno (stdin));
+  stdin_is_tty = gnulib::isatty (fileno (stdin));
 
-  interactive = (! embedded && stdin_is_tty && isatty (fileno (stdout)));
+  interactive = (! embedded && stdin_is_tty
+                 && gnulib::isatty (fileno (stdout)));
 
   if (! interactive && ! forced_line_editing)
     line_editing = false;
@@ -901,7 +902,11 @@ octave_main (int argc, char **argv, int embedded)
       execute_command_line_file (argv[last_arg_idx]);
 
       if (! persist)
-        clean_up_and_exit (error_state ? 1 : 0);
+        {
+          quitting_gracefully = true;
+
+          clean_up_and_exit (error_state ? 1 : 0);
+        }
     }
 
   // Avoid counting commands executed from startup files.
@@ -939,6 +944,8 @@ octave_main (int argc, char **argv, int embedded)
 
   if (retval == 1 && ! error_state)
     retval = 0;
+
+  quitting_gracefully = true;
 
   clean_up_and_exit (retval);
 

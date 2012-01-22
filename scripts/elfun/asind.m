@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 David Bateman
+## Copyright (C) 2006-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -25,12 +25,17 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function y = asind (x)
+
   if (nargin != 1)
     print_usage ();
   endif
-  y = asin(x) .* 180 ./ pi;
+
+  y = asin (x) .* 180 ./ pi;
+
 endfunction
 
-%!error(asind())
-%!error(asind(1,2))
-%!assert(asind(0:0.1:1),180/pi*asin(0:0.1:1),-10*eps)
+
+%!assert (asind (0:0.1:1), 180/pi*asin (0:0.1:1), -10*eps)
+
+%!error asind ()
+%!error asind (1, 2)

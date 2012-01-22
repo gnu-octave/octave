@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2011 David Bateman
+Copyright (C) 2005-2012 David Bateman
 
 This file is part of Octave.
 
@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dbleLU.h"
 #include "CmplxLU.h"
 
+#ifdef HAVE_ARPACK
 typedef ColumnVector (*EigsFunc) (const ColumnVector &x, int &eigs_error);
 typedef ComplexColumnVector (*EigsComplexFunc)
   (const ComplexColumnVector &x, int &eigs_error);
@@ -3829,6 +3830,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              ComplexColumnVector &resid, std::ostream& os,
                              double tol = DBL_EPSILON, bool rvec = false,
                              bool cholB = 0, int disp = 0, int maxit = 300);
+#endif
 
 #ifndef _MSC_VER
 template static octave_idx_type

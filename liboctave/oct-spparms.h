@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2011 David Bateman
+Copyright (C) 2004-2012 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -94,6 +94,8 @@ private:
   string_vector keys;
 
   static octave_sparse_params *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   void do_defaults (void);
 

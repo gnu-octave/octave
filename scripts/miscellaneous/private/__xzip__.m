@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Thorsten Meyer
+## Copyright (C) 2008-2012 Thorsten Meyer
 ## based on the original gzip function by David Bateman
 ##
 ## This file is part of Octave.
@@ -99,13 +99,8 @@ function entries = __xzip__ (commandname, extension,
   unwind_protect_cleanup
     cd (cwd);
     if (nargin == 4)
-      crr = confirm_recursive_rmdir ();
-      unwind_protect
-        confirm_recursive_rmdir (false);
-        rmdir (outdir, "s");
-      unwind_protect_cleanup
-        confirm_recursive_rmdir (crr);
-      end_unwind_protect
+      confirm_recursive_rmdir (false, "local");
+      rmdir (outdir, "s");
     endif
   end_unwind_protect
 

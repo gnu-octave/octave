@@ -1,4 +1,4 @@
-@c Copyright (C) 2004-2011 David Bateman
+@c Copyright (C) 2004-2012 David Bateman
 @c
 @c This file is part of Octave.
 @c
@@ -222,8 +222,6 @@ diagonal defined.
 @DOCSTRING(spdiags)
 
 @DOCSTRING(speye)
-
-@DOCSTRING(spfun)
 
 @DOCSTRING(spones)
 

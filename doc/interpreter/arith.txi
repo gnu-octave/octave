@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -188,10 +188,6 @@ cos (pi/2)
 @DOCSTRING(cumprod)
 
 @DOCSTRING(sumsq)
-
-@DOCSTRING(accumarray)
-
-@DOCSTRING(accumdim)
 
 @node Utility Functions
 @section Utility Functions

@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 David Bateman
+## Copyright (C) 2006-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -27,18 +27,23 @@
 ## Author: David Bateman <dbateman@free.fr>
 
 function y = tand (x)
+
   if (nargin != 1)
     print_usage ();
   endif
+
   I0 = x / 180;
   I90 = (x-90) / 180;
   y = tan (I0 .* pi);
   y(I0 == fix (I0) & finite (I0)) = 0;
   y(I90 == fix (I90) & finite (I90)) = Inf;
-endfunction;
 
-%!error(tand())
-%!error(tand(1,2))
-%!assert(tand(10:10:80),tan(pi*[10:10:80]/180),-10*eps)
-%!assert(tand([0,180,360]) == 0)
-%!assert(tand([90,270]) == Inf)
+endfunction
+
+
+%!assert (tand (10:10:80), tan (pi*[10:10:80]/180), -10*eps)
+%!assert (tand ([0, 180, 360]) == 0)
+%!assert (tand ([90, 270]) == Inf)
+
+%!error tand ()
+%!error tand (1, 2)

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2011 David Bateman
+Copyright (C) 2004-2012 David Bateman
 
 This file is part of Octave.
 
@@ -661,10 +661,9 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
   if (nargin > 0)
     {
-      std::string fun = args(0).string_value ();
-
-      if (! error_state)
+      if (args(0).is_string ())
         {
+          std::string fun = args(0).string_value ();
           string_vector fargs;
 
           if (nargin == 1)
@@ -673,8 +672,9 @@ If the second argument is an integer @var{n}, the arguments are\n\
               bool in_string = false;
               std::string tmp_arg;
               size_t i = 0;
+              size_t fun_length = fun.length ();
 
-              while (i < fun.length ())
+              while (i < fun_length)
                 {
                   bool terminate_arg = false;
                   char c = fun[i++];
@@ -698,7 +698,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
                     else
                       {
                         // Before we do anything remove trailing whitespaces.
-                        while (i < fun.length () && isspace (c))
+                        while (i < fun_length && isspace (c))
                           c = fun[i++];
 
                         // Do we have a variable or a function?
@@ -710,13 +710,24 @@ If the second argument is an integer @var{n}, the arguments are\n\
                             is_arg = false;
                           }
                       }
+                  else if (! is_arg)
+                    {
+                      if (c == 'e' || c == 'E')
+                        {
+                          // possible number in exponent form, not arg
+                          if (isdigit (fun[i])
+                              || fun[i] == '-' || fun[i] == '+')
+                            continue;
+                        }
+                      is_arg = true;
+                      tmp_arg.append (1, c);
+                    }
                   else
                     {
                       tmp_arg.append (1, c);
-                      is_arg = true;
                     }
 
-                  if (terminate_arg || (i == fun.length () && is_arg))
+                  if (terminate_arg || (i == fun_length && is_arg))
                     {
                       bool have_arg = false;
 
@@ -731,7 +742,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
                           tmp_arg != "NaN" && tmp_arg != "nan" &&
                           tmp_arg != "Inf" && tmp_arg != "inf" &&
                           tmp_arg != "NA" && tmp_arg != "pi" &&
-                          tmp_arg != "eps")
+                          tmp_arg != "e" && tmp_arg != "eps")
                         fargs.append (tmp_arg);
 
                       tmp_arg = std::string ();
@@ -744,6 +755,12 @@ If the second argument is an integer @var{n}, the arguments are\n\
             }
           else if (nargin == 2 && args(1).is_numeric_type ())
             {
+              if (! args(1).is_scalar_type ()) 
+                {
+                  error ("inline: N must be an integer");
+                  return retval;
+                }
+              
               int n = args(1).int_value ();
 
               if (! error_state)
@@ -763,7 +780,7 @@ If the second argument is an integer @var{n}, the arguments are\n\
                     }
                   else
                     {
-                      error ("inline: N must be positive or zero");
+                      error ("inline: N must be a positive integer or zero");
                       return retval;
                     }
                 }
@@ -779,11 +796,12 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
               for (int i = 1; i < nargin; i++)
                 {
-                  std::string s = args(i).string_value ();
-
-                  if (! error_state)
-                    fargs(i-1) = s;
-                  else
+                  if (args(i).is_string ())
+                    {
+                      std::string s = args(i).string_value ();
+                      fargs(i-1) = s;
+                    }
+                    else
                     {
                       error ("inline: expecting string arguments");
                       return retval;
@@ -804,9 +822,17 @@ If the second argument is an integer @var{n}, the arguments are\n\
 
 /*
 %!shared fn
-%! fn = inline ("x.^2 + 1","x");
+%! fn = inline ("x.^2 + 1");
 %!assert (feval (fn, 6), 37)
 %!assert (fn (6), 37)
+%% FIXME: Need tests for other 2 calling forms of inline()
+
+%% Test input validation 
+%!error inline ()
+%!error <STR argument must be a string> inline (1)
+%!error <N must be an integer> inline ("2", ones (2,2))
+%!error <N must be a positive integer> inline ("2", -1)
+%!error <expecting string arguments> inline ("2", "x", -1, "y")
 */
 
 DEFUN (formula, args, ,
@@ -836,6 +862,16 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 
   return retval;
 }
+
+/*
+%!assert (formula (fn), "x.^2 + 1")
+%!assert (formula (fn), char (fn))
+
+%% Test input validation
+%!error formula ()
+%!error formula (1, 2)
+%!error <FUN must be an inline function> formula (1)
+*/
 
 DEFUN (argnames, args, ,
   "-*- texinfo -*-\n\
@@ -873,6 +909,17 @@ the arguments of the inline function @var{fun}.\n\
   return retval;
 }
 
+/*
+%!assert (argnames (fn), {"x"})
+%!assert (argnames (inline ("1e-3*y + 2e4*z")), {"y"; "z"})
+%!assert (argnames (inline ("2", 2)), {"x"; "P1"; "P2"})
+
+%% Test input validation
+%!error argnames ()
+%!error argnames (1, 2)
+%!error <FUN must be an inline function> argnames (1)
+*/
+
 DEFUN (vectorize, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} vectorize (@var{fun})\n\
@@ -892,6 +939,7 @@ quadv (fcn, 0, 3)\n\
    @result{} 6\n\
 @end group\n\
 @end example\n\
+@seealso{inline, formula, argnames}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -914,7 +962,7 @@ quadv (fcn, 0, 3)\n\
           if (old)
             old_func = old->fcn_text ();
           else
-            error ("vectorize: must be a string or inline function");
+            error ("vectorize: FUN must be a string or inline function");
         }
 
       if (! error_state)
@@ -955,3 +1003,18 @@ quadv (fcn, 0, 3)\n\
 
   return retval;
 }
+
+/*
+%!assert (char (vectorize (fn)), "x.^2 + 1")
+%!assert (char (vectorize (inline ("1e-3*y + 2e4*z"))), "1e-3.*y + 2e4.*z")
+%!assert (char (vectorize (inline ("2**x^5"))), "2.**x.^5")
+%!assert (vectorize ("x.^2 + 1"), "x.^2 + 1")
+%!assert (vectorize ("1e-3*y + 2e4*z"), "1e-3.*y + 2e4.*z")
+%!assert (vectorize ("2**x^5"), "2.**x.^5")
+
+%% Test input validation
+%!error vectorize ()
+%!error vectorize (1, 2)
+%!error <FUN must be a string or inline function> vectorize (1)
+*/
+

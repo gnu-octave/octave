@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 Copyright (C) 2010 VZLU Prague
 
 This file is part of Octave.
@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "vasnprintf.h"
 
 #include "quit.h"
 
@@ -1194,10 +1196,10 @@ float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
   return m;
 }
 
-int
+size_t
 octave_format (std::ostream& os, const char *fmt, ...)
 {
-  int retval = -1;
+  size_t retval;
 
   va_list args;
   va_start (args, fmt);
@@ -1209,123 +1211,43 @@ octave_format (std::ostream& os, const char *fmt, ...)
   return retval;
 }
 
-int
+size_t
 octave_vformat (std::ostream& os, const char *fmt, va_list args)
 {
-  int retval = -1;
+  std::string s = octave_vasprintf (fmt, args);
 
-#if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
+  os << s;
 
-  std::streambuf *sb = os.rdbuf ();
+  return s.length ();
+}
 
-  if (sb)
+std::string
+octave_vasprintf (const char *fmt, va_list args)
+{
+  std::string retval;
+
+  char *result;
+
+  int status = gnulib::vasprintf (&result, fmt, args);
+
+  if (status >= 0)
     {
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-      retval = sb->vform (fmt, args);
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      retval = result;
+      ::free (result);
     }
-
-#else
-
-  char *s = octave_vsnprintf (fmt, args);
-
-  if (s)
-    {
-      os << s;
-
-      retval = strlen (s);
-    }
-
-#endif
 
   return retval;
 }
 
-// We manage storage.  User should not free it, and its contents are
-// only valid until next call to vsnprintf.
-
-// Interrupts might happen if someone makes a call with something that
-// will require a very large buffer.  If we are interrupted in that
-// case, we should make the buffer size smaller for the next call.
-
-#define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1; \
-  delete [] buf; \
-  buf = 0; \
-  size = initial_size; \
-  octave_rethrow_exception (); \
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
-
-#if defined __GNUC__ && defined __va_copy
-#define SAVE_ARGS(saved_args, args) __va_copy (saved_args, args)
-#elif defined va_copy
-#define SAVE_ARGS(saved_args, args) va_copy (saved_args, args)
-#else
-#define SAVE_ARGS(saved_args, args) saved_args = args
-#endif
-
-char *
-octave_vsnprintf (const char *fmt, va_list args)
+std::string
+octave_asprintf (const char *fmt, ...)
 {
-  static const size_t initial_size = 100;
-
-  static size_t size = initial_size;
-
-  static char *buf = 0;
-
-  volatile int nchars = 0;
-
-  if (! buf)
-    buf = new char [size];
-
-  if (! buf)
-    return 0;
-
-  while (1)
-    {
-      va_list saved_args;
-
-      SAVE_ARGS (saved_args, args);
-
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
-
-      nchars = octave_raw_vsnprintf (buf, size, fmt, saved_args);
-
-      va_end (saved_args);
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-      // Cast to avoid signed/unsigned comparison is safe due to
-      // short-circuiting
-      if (nchars > -1 && static_cast<size_t>(nchars) < size)
-        break;
-      else
-        {
-          delete [] buf;
-
-          size = nchars + 1;;
-
-          buf = new char [size];
-
-          if (! buf)
-            return 0;
-        }
-    }
-
-  return buf;
-}
-
-char *
-octave_snprintf (const char *fmt, ...)
-{
-  char *retval = 0;
+  std::string retval;
 
   va_list args;
   va_start (args, fmt);
 
-  retval = octave_vsnprintf (fmt, args);
+  retval = octave_vasprintf (fmt, args);
 
   va_end (args);
 

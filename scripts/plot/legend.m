@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 David Bateman
+## Copyright (C) 2010-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -147,7 +147,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     if (isscalar (kids))
       kids = get(kids, "children")(:);
     else
-      kids = [get(kids, "children"){:}](:);
+      kids = flipud ([get(kids, "children"){:}](:));
     endif
   endif
   nargs = numel (varargin);
@@ -195,7 +195,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
   ## Validate the position type is valid
   outside = false;
-  inout = findstr (position, "outside");
+  inout = strfind (position, "outside");
   if (! isempty (inout))
     outside = true;
     position = position(1:inout-1);
@@ -378,13 +378,15 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               break;
             endif
           elseif (! warned)
-            warned = true;
-            warning ("legend: ignoring extra labels");
+            break;
           endif
         else
           error ("legend: expecting argument to be a character string");
         endif
       endfor
+      if (i < nargs && ! warned)
+        warning ("legend: ignoring extra labels");
+      endif
     else
       k = nkids;
       while (k > 0)
@@ -440,7 +442,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         endif
         if (strcmp (position, "default"))
           position = get (hlegend, "location");
-          inout = findstr (position, "outside");
+          inout = strfind (position, "outside");
           if (! isempty (inout))
             outside = true;
             position = position(1:inout-1);
@@ -816,22 +818,14 @@ function updatelegend (h, d)
 endfunction
 
 function updatelegendtext (h, d)
+  hax = get (h, "userdata").handle;
   kids = get (h, "children");
-  k = numel (kids);
-  in = get (h, "interpreter");
-  tc = get (h, "textcolor");
-  while (k > 0)
-    typ = get (kids(k), "type");
-    while (k > 0 && ! strcmp (typ, "text"))
-      typ = get (kids(--k), "type");
-    endwhile
-    if (k > 0)
-      set (kids (k), "interpreter", in, "color", tc);
-      if (--k == 0)
-        break;
-      endif
-    endif
-  endwhile
+  text_kids = findobj (kids, "-property", "interpreter", "type", "text");
+  interpreter = get (h, "interpreter");
+  textcolor = get (h, "textcolor");
+  set (kids, "interpreter", interpreter, "color", textcolor);
+  hobj = cell2mat (get (kids, "userdata"));
+  set (hobj, "interpreter", interpreter);
 endfunction
 
 function hideshowlegend (h, d, ca, pos1, pos2)
@@ -978,177 +972,216 @@ function updateline (h, d, hlegend, linelength)
   endif
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
 %! x = 0:1;
-%! plot (x, x, ";I am Blue;", x, 2*x, ";I am Green;", x, 3*x, ";I am Red;")
+%! plot (x,x,';I am Blue;', x,2*x,';I am Green;', x,3*x,';I am Red;');
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:1;
-%! plot (x, x, ";I am Blue;", x, 2*x, x, 3*x, ";I am Red;")
-%! title ("Blue and Green keys, with Green mising")
+%! plot (x, x, ';\alpha;',  ...
+%!       x, 2*x, ';\beta=2\alpha;',  ...
+%!       x, 3*x, ';\gamma=3\alpha;');
 
 %!demo
-%! clf
-%! plot(1:10, 1:10, 1:10, fliplr(1:10));
-%! title("incline is blue and decline is green");
-%! legend({"I am blue", "I am green"}, "location", "east");
-%! legend({"I am blue", "I am green"}, "location", "east");
-%! legend hide
-%! legend show
+%! clf;
+%! x = 0:1;
+%! plot (x,x,';I am Blue;', x,2*x, x,3*x,';I am Red;');
+%! title ('Blue and Green keys, with Green missing');
 
 %!demo
-%! clf
-%! plot(1:10, 1:10, 1:10, fliplr(1:10));
-%! title("Legend is hidden")
-%! legend({"I am blue", "I am green"}, "location", "east");
-%! legend hide
+%! clf;
+%! plot (1:10, 1:10, 1:10, fliplr (1:10));
+%! title ('incline is blue and decline is green');
+%! legend ({'I am blue', 'I am green'}, 'location', 'east');
 
 %!demo
-%! clf
-%! plot(1:10, 1:10, 1:10, fliplr(1:10));
-%! title("Legend with box on")
-%! legend({"I am blue", "I am green"}, "location", "east");
-%! legend boxon
+%! clf;
+%! plot (1:10, 1:10, 1:10, fliplr (1:10));
+%! title ('Legend is hidden')
+%! legend ({'I am blue', 'I am green'}, 'location', 'east');
+%! legend hide;
 
 %!demo
-%! clf
-%! plot(1:10, 1:10, 1:10, fliplr(1:10));
-%! title("Legend with text to the right")
-%! legend({"I am blue", "I am green"}, "location", "east");
-%! legend right
+%! clf;
+%! plot (1:10, 1:10, 1:10, fliplr (1:10));
+%! title ('Legend with box on');
+%! legend ({'I am blue', 'I am green'}, 'location', 'east');
+%! legend boxon;
 
 %!demo
-%! clf
-%! plot(1:10, 1:10);
-%! title("a very long label can sometimes cause problems");
-%! legend({"hello world"}, "location", "northeastoutside");
+%! clf;
+%! plot (1:10, 1:10, 1:10, fliplr (1:10));
+%! title ('Legend with text to the right');
+%! legend ({'I am blue', 'I am green'}, 'location', 'east');
+%! legend right;
 
 %!demo
-%! clf
-%! plot(1:10, 1:10);
-%! title("a very long label can sometimes cause problems");
-%! legend("hello world", "location", "northeastoutside");
+%! clf;
+%! plot (1:10, 1:10);
+%! title ('a very long label can sometimes cause problems');
+%! legend ({'hello world'}, 'location', 'northeastoutside');
 
 %!demo
-%! clf
+%! clf;
+%! plot (1:10, 1:10);
+%! title ('a very long label can sometimes cause problems');
+%! legend ('hello world', 'location', 'northeastoutside');
+
+%!demo
+%! clf;
 %! labels = {};
-%! colororder = get (gca, "colororder");
+%! colororder = get (gca, 'colororder');
 %! for i = 1:5
-%!   h = plot(1:100, i + rand(100,1)); hold on;
-%!   set (h, "color", colororder(i,:))
-%!   labels = {labels{:}, cstrcat("Signal ", num2str(i))};
-%! endfor
+%!   h = plot (1:100, i + rand(100,1)); hold on;
+%!   set (h, 'color', colororder(i,:));
+%!   labels = {labels{:}, cstrcat('Signal ', num2str (i))};
+%! end
 %! hold off;
-%! title("Signals with random offset and uniform noise")
-%! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
-%! legend(labels, "location", "southoutside");
-%! legend("boxon");
+%! title ('Signals with random offset and uniform noise');
+%! xlabel ('Sample Nr [k]'); ylabel ('Amplitude [V]');
+%! legend (labels, 'location', 'southoutside');
+%! legend ('boxon');
 
 %!demo
-%! clf
+%! clf;
 %! labels = {};
-%! colororder = get (gca, "colororder");
+%! colororder = get (gca, 'colororder');
 %! for i = 1:5
-%!   h = plot(1:100, i + rand(100,1)); hold on;
-%!   set (h, "color", colororder(i,:))
-%!   labels = {labels{:}, cstrcat("Signal ", num2str(i))};
-%! endfor
+%!   h = plot (1:100, i + rand (100,1)); hold on;
+%!   set (h, 'color', colororder(i,:));
+%!   labels = {labels{:}, cstrcat('Signal ', num2str (i))};
+%! end
 %! hold off;
-%! title("Signals with random offset and uniform noise")
-%! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
-%! legend(labels{:}, "location", "southoutside")
-%! legend("boxon")
+%! title ('Signals with random offset and uniform noise');
+%! xlabel ('Sample Nr [k]'); ylabel ('Amplitude [V]');
+%! legend (labels{:}, 'location', 'southoutside');
+%! legend ('boxon');
 
 %!demo
-%! clf
+%! clf;
 %! x = linspace (0, 10);
 %! plot (x, x);
-%! hold ("on");
-%! stem (x, x.^2, 'g')
-%! legend ("linear");
-%! hold ("off");
+%! hold on;
+%! stem (x, x.^2, 'g');
+%! legend ('linear');
+%! hold off;
 
 %!demo
-%! clf
+%! clf;
 %! x = linspace (0, 10);
 %! plot (x, x, x, x.^2);
-%! legend ("linear");
+%! legend ('linear');
 
 %!demo
-%! clf
+%! clf;
 %! x = linspace (0, 10);
 %! plot (x, x, x, x.^2);
-%! legend ("linear", "quadratic");
+%! legend ('linear', 'quadratic');
 
 %!demo
-%! clf
+%! clf;
 %! rand_2x3_data1 = [0.341447, 0.171220, 0.284370; 0.039773, 0.731725, 0.779382];
 %! bar (rand_2x3_data1);
 %! ylim ([0 1.0]);
-%! legend ({"1st Bar", "2nd Bar", "3rd Bar"});
+%! legend ({'1st Bar', '2nd Bar', '3rd Bar'});
 
 %!demo
-%! clf
+%! clf;
 %! rand_2x3_data2 = [0.44804, 0.84368, 0.23012; 0.72311, 0.58335, 0.90531];
 %! bar (rand_2x3_data2);
 %! ylim ([0 1.2]);
-%! legend ("1st Bar", "2nd Bar", "3rd Bar");
-%! legend right
+%! legend ('1st Bar', '2nd Bar', '3rd Bar');
+%! legend right;
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:0.1:7;
-%! h = plot (x, sin(x), x, cos(x), x, sin(x.^2/10), x, cos(x.^2/10));
-%! title ("Only the sin() objects have keylabels");
-%! legend (h([1, 3]), {"sin(x)", "sin(x^2/10)"}, "location", "southwest");
+%! h = plot (x,sin(x), x,cos(x), x,sin(x.^2/10), x,cos(x.^2/10));
+%! title ('Only the sin() objects have keylabels');
+%! legend (h([1, 3]), {'sin(x)', 'sin(x^2/10)'}, 'location', 'southwest');
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin(x), ";sin(x);")
-%! hold all
-%! plot (x, cos(x), ";cos(x);")
-%! hold off
+%! plot (x, sin(x), ';sin(x);');
+%! hold all;
+%! plot (x, cos(x), ';cos(x);');
+%! hold off;
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin(x), ";sin(x);")
-%! hold all
-%! plot (x, cos(x), ";cos(x);")
-%! hold off
-%! legend ({"sin(x)", "cos(x)"}, "location", "northeastoutside")
+%! plot (x, sin(x), ';sin(x);');
+%! hold all;
+%! plot (x, cos(x), ';cos(x);');
+%! hold off;
+%! legend ({'sin(x)', 'cos(x)'}, 'location', 'northeastoutside');
 
 %!demo
-%! clf
+%! clf;
 %! x = 0:10;
 %! plot (x, rand (11));
-%! xlabel ("Indices")
-%! ylabel ("Random Values")
-%! title ("Legend ""off"" should delete the legend")
-%! legend (cellstr (num2str ((1:10)')), "location", "northeastoutside")
-%! legend off
-%! axis ([0, 10, 0 1])
+%! xlabel ('Indices');
+%! ylabel ('Random Values');
+%! title ('Legend ''off'' should delete the legend');
+%! legend (cellstr (num2str ((1:10)')), 'location', 'northeastoutside');
+%! legend off;
+%! axis ([0, 10, 0 1]);
 
 %!demo
-%! clf
-%! x = 0:4;
-%! subplot (2, 2, 1)
-%! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "northwestoutside")
-%! legend boxon
-%! subplot (2, 2, 2)
-%! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "northeastoutside")
-%! legend boxon
+%! clf;
+%! x = (1:5)';
+%! subplot (2, 2, 1);
+%!  plot (x, rand (numel (x)));
+%!  legend (cellstr (num2str (x)), 'location', 'northwestoutside');
+%!  legend boxon;
+%! subplot (2, 2, 2);
+%!  plot (x, rand (numel (x)));
+%!  legend (cellstr (num2str (x)), 'location', 'northeastoutside');
+%!  legend boxon;
 %! subplot (2, 2, 3);
-%! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "southwestoutside")
-%! legend boxon
-%! subplot (2, 2, 4)
-%! plot (x, rand (numel (x)));
-%! legend (cellstr (num2str ((1:10)')), "location", "southeastoutside")
-%! legend boxon
+%!  plot (x, rand (numel (x)));
+%!  legend (cellstr (num2str (x)), 'location', 'southwestoutside');
+%!  legend boxon;
+%! subplot (2, 2, 4);
+%!  plot (x, rand (numel (x)));
+%!  legend (cellstr (num2str (x)), 'location', 'southeastoutside');
+%!  legend boxon;
+
+%!demo
+%! clf;
+%! plot (rand (2));
+%! title ('Warn of extra labels');
+%! legend ('Hello', 'World', 'interpreter', 'foobar');
+
+%!demo
+%! clf;
+%! plot (rand (2));
+%! title ('Turn off TeX interpreter');
+%! h = legend ('Hello_World', 'foo^bar');
+%! set (h, 'interpreter', 'none');
+
+%!demo
+%! x = 0:10;
+%! y1 = rand (size (x));
+%! y2 = rand (size (x));
+%! [ax, h1, h2] = plotyy (x, y1, x, y2);
+%! legend ([h1, h2], {'Blue', 'Green'}, 'location', 'south');
+
+%!demo
+%! x = 0:10;
+%! y1 = rand (size (x));
+%! y2 = rand (size (x));
+%! [ax, h1, h2] = plotyy (x, y1, x, y2);
+%! legend ({'Blue', 'Green'}, 'location', 'south');
+
+%!demo
+%! x = 0:10;
+%! y1 = rand (size (x));
+%! y2 = rand (size (x));
+%! [ax, h1, h2] = plotyy (x, y1, x, y2);
+%! legend ('Blue', 'Green', 'location', 'south');
 

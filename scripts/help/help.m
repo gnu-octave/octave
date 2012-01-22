@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 S�ren Hauberg
+## Copyright (C) 2009-2012 S�ren Hauberg
 ##
 ## This file is part of Octave.
 ##
@@ -181,5 +181,6 @@ function do_contents (name)
 endfunction
 
 
-%!assert (! isempty (findstr (help ("ls"), "List directory contents")))
+%!assert (! isempty (strfind (help ("ls"), "List directory contents")))
 %!error <invalid input> help (42)
+

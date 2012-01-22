@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -419,8 +419,13 @@ DEFUN (save_precision, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} save_precision ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} save_precision (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} save_precision (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the number of\n\
 digits to keep when saving data in text format.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE_WITH_LIMITS (save_precision, -1, INT_MAX);

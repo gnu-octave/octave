@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2011 John W. Eaton
+## Copyright (C) 1996-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -170,6 +170,8 @@ function retval = plot3 (varargin)
 
       if (! size_equal (x, y, z))
         error ("plot3: x, y, and z must have the same shape");
+      elseif (ndims (x) > 2)
+        error ("plot3: x, y, and z must not have more than two dimensions");
       endif
 
       for i = 1 : columns (x)
@@ -222,6 +224,8 @@ function retval = plot3 (varargin)
 
       if (! size_equal (x, y, z))
         error ("plot3: x, y, and z must have the same shape");
+      elseif (ndims (x) > 2)
+        error ("plot3: x, y, and z must not have more than two dimensions");
       endif
 
       options =  __default_plot_options__ ();
@@ -294,6 +298,8 @@ function retval = plot3 (varargin)
 
     if (! size_equal (x, y, z))
       error ("plot3: x, y, and z must have the same shape");
+    elseif (ndims (x) > 2)
+      error ("plot3: x, y, and z must not have more than two dimensions");
     endif
 
     options =  __default_plot_options__ ();
@@ -332,7 +338,10 @@ function retval = plot3 (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! z = [0:0.05:5];
-%! plot3 (cos(2*pi*z), sin(2*pi*z), z, ";helix;");
-%! plot3 (z, exp(2i*pi*z), ";complex sinusoid;");
+%! plot3 (cos(2*pi*z), sin(2*pi*z), z, ';helix;');
+%! plot3 (z, exp(2i*pi*z), ';complex sinusoid;');
+

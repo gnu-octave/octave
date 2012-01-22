@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2011 David Bateman
+Copyright (C) 2004-2012 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -177,7 +177,7 @@ to have a common size.\n\
 
 
                if (! error_state && (m < 0 || n < 0))
-                 error ("sparse: dimensions must be nonnegative");
+                 error ("sparse: dimensions must be non-negative");
              }
            else if (nargin != 3)
              print_usage ();

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -1391,6 +1391,7 @@ DEFUN (string_fill_char, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} string_fill_char ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} string_fill_char (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} string_fill_char (@var{new_val}, \"local\")\n\
 Query or set the internal variable used to pad all rows of a character\n\
 matrix to the same length.  It must be a single character.  The default\n\
 value is @code{\" \"} (a single space).  For example:\n\
@@ -1404,6 +1405,10 @@ string_fill_char (\"X\");\n\
         \"strings\"\n\
 @end group\n\
 @end example\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (string_fill_char);

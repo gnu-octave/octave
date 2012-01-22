@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2011 John W. Eaton
+Copyright (C) 2004-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,7 +33,7 @@ intNDArray : public MArray<T>
 {
 public:
 
-  using MArray<T>::element_type;
+  using typename MArray<T>::element_type;
 
   intNDArray (void) : MArray<T> () { }
 

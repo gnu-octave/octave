@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 Ben Abbott
+## Copyright (C) 2010-2012 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -89,45 +89,46 @@ function varargout = daspect (varargin)
 
 endfunction
 
-%!demo
-%! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! axis square
-%! daspect ([1 1 1])
-%! title ("square plot-box with axis limits [0, 4, -2, 2]")
 
 %!demo
+%! clf;
 %! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! axis ([0 4 -1 1])
-%! daspect ([2 1 1])
-%! title ("square plot-box with axis limits [0, 4, -1, 1]")
+%! plot (x,cos(x), x,sin(x));
+%! axis square;
+%! daspect ([1 1 1]);
+%! title ('square plot-box with axis limits [0, 4, -2, 2]');
 
 %!demo
+%! clf;
 %! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! daspect ([1 2 1])
-%! pbaspect ([2 1 1])
-%! title ("2x1 plot box with axis limits [0, 4, -2, 2]")
+%! plot (x,cos (x), x,sin (x));
+%! axis ([0 4 -1 1]);
+%! daspect ([2 1 1]);
+%! title ('square plot-box with axis limits [0, 4, -1, 1]');
 
 %!demo
+%! clf;
 %! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! axis square
-%! set (gca, "activepositionproperty", "position")
-%! daspect ([1 1 1])
-%! title ("square plot-box with axis limits [0, 4, -2, 2]")
+%! plot (x,cos(x), x,sin(x));
+%! daspect ([1 2 1]);
+%! pbaspect ([2 1 1]);
+%! title ('2x1 plot box with axis limits [0, 4, -2, 2]');
 
 %!demo
+%! clf;
 %! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! axis ([0 4 -1 1])
-%! set (gca, "activepositionproperty", "position")
-%! daspect ([2 1 1])
-%! title ("square plot-box with axis limits [0, 4, -1, 1]")
+%! plot (x,cos(x), x, sin(x));
+%! axis square;
+%! set (gca, 'activepositionproperty', 'position');
+%! daspect ([1 1 1]);
+%! title ('square plot-box with axis limits [0, 4, -2, 2]');
+
+%!demo
+%! clf;
+%! x = 0:0.01:4;
+%! plot (x,cos(x), x,sin(x));
+%! axis ([0 4 -1 1]);
+%! set (gca, 'activepositionproperty', 'position');
+%! daspect ([2 1 1]);
+%! title ('square plot-box with axis limits [0, 4, -1, 1]');
 

@@ -1,6 +1,6 @@
 # Makefile for octave's doc/faq directory
 #
-# Copyright (C) 1996-2011 John W. Eaton
+# Copyright (C) 1996-2012 John W. Eaton
 #
 # This file is part of Octave.
 # 

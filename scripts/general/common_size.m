@@ -1,4 +1,4 @@
-## Copyright (C) 1995-2011 Kurt Hornik
+## Copyright (C) 1995-2012 Kurt Hornik
 ## Copyright (C) 2009 VZLU Prague
 ## Copyright (C) 2009 Jaroslav Hajek
 ##

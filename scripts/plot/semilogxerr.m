@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Teemu Ikonen
+## Copyright (C) 2000-2012 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -60,9 +60,12 @@ function retval = semilogxerr (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
 %! x = exp (log(0.01):0.2:log(10));
 %! y = wblpdf (x, 2, 2);
 %! ey = 0.5*rand (size (y)) .* y;
-%! semilogxerr (x, y, ey, "#~x-")
-%! xlim (x([1, end]))
+%! semilogxerr (x, y, ey, '#~x-');
+%! xlim (x([1, end]));
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2011 John W. Eaton
+## Copyright (C) 1994-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -34,12 +34,12 @@ function y = coth (x)
 
 endfunction
 
+
 %!test
 %! x = [pi/2*i, 3*pi/2*i];
 %! v = [0, 0];
-%! assert(all (abs (coth (x) - v) < sqrt (eps)));
+%! assert (all (abs (coth (x) - v) < sqrt (eps)));
 
-%!error coth ();
-
-%!error coth (1, 2);
+%!error coth ()
+%!error coth (1, 2)
 

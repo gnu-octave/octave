@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004-2011 David Bateman
+Copyright (C) 2004-2012 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 
 This file is part of Octave.
@@ -113,8 +113,8 @@ time.\n\
         retval(0) =  octave_sparse_params::get_vals ();
       else if (nargout == 2)
         {
-          retval (0) = octave_sparse_params::get_keys ();
           retval (1) = octave_sparse_params::get_vals ();
+          retval (0) = octave_sparse_params::get_keys ();
         }
       else
         error ("spparms: too many output arguments");

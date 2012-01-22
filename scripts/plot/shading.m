@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 Kai Habel
+## Copyright (C) 2006-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -73,24 +73,46 @@ function shading (varargin)
 
 endfunction
 
-%!demo
-%! clf
-%! colormap (jet)
-%! sombrero
-%! shading faceted
-%! title("shading ""faceted""")
 
 %!demo
-%! sombrero
-%! shading interp
-%! title("shading ""interp""")
+%! clf;
+%! colormap ('default');
+%! sombrero ();
+%! shading faceted;
+%! title ('shading ''faceted''');
 
 %!demo
-%! pcolor (peaks ())
-%! shading faceted
-%! title("shading ""faceted""")
+%! clf;
+%! colormap ('default');
+%! sombrero ();
+%! shading flat;
+%! title ('shading ''flat''');
 
 %!demo
-%! pcolor (peaks ())
-%! shading interp
-%! title("shading ""interp""")
+%! clf;
+%! colormap ('default');
+%! sombrero ();
+%! shading interp;
+%! title ('shading ''interp''');
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! pcolor (peaks ());
+%! shading faceted;
+%! title ('shading ''faceted''');
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! pcolor (peaks ());
+%! shading flat;
+%! title ('shading ''flat''');
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! pcolor (peaks ());
+%! shading interp;
+%! title ('shading ''interp''');
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2011 John W. Eaton
+## Copyright (C) 1994-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -51,8 +51,7 @@
 ## @end ifnottex
 ## The eigenvalues of the companion matrix are equal to the roots of the
 ## polynomial.
-## @seealso{poly, roots, residue, conv, deconv, polyval, polyderiv,
-## polyint}
+## @seealso{roots, poly, eig}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

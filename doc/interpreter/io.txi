@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -582,7 +582,7 @@ Conversions}, for details.
 
 @item @samp{%x}, @samp{%X}
 Print an integer as an unsigned hexadecimal number.  @samp{%x} uses
-lower-case letters and @samp{%X} uses upper-case.  @xref{Integer
+lowercase letters and @samp{%X} uses uppercase.  @xref{Integer
 Conversions}, for details.
 
 @item @samp{%f}
@@ -591,13 +591,13 @@ Print a floating-point number in normal (fixed-point) notation.
 
 @item @samp{%e}, @samp{%E}
 Print a floating-point number in exponential notation.  @samp{%e} uses
-lower-case letters and @samp{%E} uses upper-case.  @xref{Floating-Point
+lowercase letters and @samp{%E} uses uppercase.  @xref{Floating-Point
 Conversions}, for details.
 
 @item @samp{%g}, @samp{%G}
 Print a floating-point number in either normal (fixed-point) or
 exponential notation, whichever is more appropriate for its magnitude.
-@samp{%g} uses lower-case letters and @samp{%G} uses upper-case.
+@samp{%g} uses lowercase letters and @samp{%G} uses uppercase.
 @xref{Floating-Point Conversions}, for details.
 
 @item @samp{%c}

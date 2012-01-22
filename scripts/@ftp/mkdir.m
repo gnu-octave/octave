@@ -1,4 +1,4 @@
-## Copyright (C) 2009-2011 David Bateman
+## Copyright (C) 2009-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -19,6 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mkdir (@var{f}, @var{path})
 ## Create the remote directory @var{path}, over the FTP connection @var{f}.
+##
 ## @var{f} is an FTP object returned by the @code{ftp} function.
 ## @end deftypefn
 

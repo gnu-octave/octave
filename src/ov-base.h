@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -167,9 +167,9 @@ DEF_CLASS_TO_BTYP (char, btyp_char);
   const std::string t::c_name (c); \
   void t::register_type (void) \
     { \
-      t_id = octave_value_typeinfo::register_type (t::t_name, \
-                                                   t::c_name, \
-                                                   octave_value (new t ())); \
+      static t exemplar; \
+      octave_value v (&exemplar, true); \
+      t_id = octave_value_typeinfo::register_type (t::t_name, t::c_name, v); \
     }
 
 // A base value type, so that derived types only have to redefine what

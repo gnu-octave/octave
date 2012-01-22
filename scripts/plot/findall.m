@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Bill Denney
+## Copyright (C) 2008-2012 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{h} =} findall (@var{prop_name}, @var{prop_value})
 ## @deftypefnx {Function File} {@var{h} =} findall (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findall (@var{h}, "-depth", @var{d}, @dots{})
-## Find object with specified property values including hidden handles.
+## Find graphics object with specified property values including hidden handles.
 ##
 ## This function performs the same function as @code{findobj}, but it
 ## includes hidden objects in its search.  For full documentation, see
@@ -43,12 +43,18 @@ function h = findall (varargin)
 
 endfunction
 
-%!test
+
+%!testif HAVE_FLTK
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("fltk");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   h = findall (hf);
-%!   all_handles = {"uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "uimenu"; "figure"};
-%!   assert (get (h, 'type'), all_handles)
+%!   all_handles(1:13,1) = {"uimenu"};
+%!   all_handles(14) = {"figure"};
+%!   assert (get (h, "type"), all_handles);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
+

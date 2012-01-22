@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2011 John W. Eaton
+## Copyright (C) 1996-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -37,26 +37,21 @@ function retval = isvector (x)
 
 endfunction
 
-%!assert(isvector (1));
-%!assert(isvector ([1; 2; 3]));
-%!assert(!(isvector ([])));
-%!assert(!(isvector ([1, 2; 3, 4])));
 
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((isvector ("t")));
+%!assert (isvector (1))
+%!assert (isvector ([1; 2; 3]))
+%!assert (isvector ([]), false)
+%!assert (isvector ([1, 2; 3, 4]), false)
 
-%!test
-%! warning ("off", "Octave:str-to-num");
-%! assert((isvector ("test")));
-
-%!assert(!(isvector (["test"; "ing"])));
+%!assert (isvector ("t"))
+%!assert (isvector ("test"))
+%!assert (isvector (["test"; "ing"]), false)
 
 %!test
 %! s.a = 1;
-%! assert((isvector (s)));
+%! assert (isvector (s));
 
 %% Test input validation
-%!error isvector ();
-%!error isvector ([1, 2], 2);
+%!error isvector ()
+%!error isvector ([1, 2], 2)
 

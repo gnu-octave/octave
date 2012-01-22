@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 John W. Eaton, Shai Ayal, Kai Habel
+## Copyright (C) 2007-2012 John W. Eaton, Shai Ayal, Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -29,6 +29,7 @@
 
 function [h, failed] = __patch__ (p, varargin)
 
+  h = NaN;
   failed = false;
 
   is_numeric_arg = cellfun (@isnumeric, varargin);
@@ -128,11 +129,29 @@ function [h, failed] = __patch__ (p, varargin)
           else
             error ("patch: color value not valid");
           endif
-        elseif (size (c, ndims (c)) == 3)
+        elseif (isvector (c) && numel (c) == 3)
           args{7} = "facecolor";
           args{8} = c;
           args{9} = "cdata";
           args{10} = [];
+        elseif (ndims (c) == 3 && size (c, 3) == 3)
+          ## CDATA is specified as RGB data
+          if ((size (c, 1) == 1 && size (c, 2) == 1) ...
+              || (size (c, 1) == 1 && size (c, 2) == columns (x)))
+            ## Single patch color or per-face color
+            args{7} = "facecolor";
+            args{8} = "flat";
+            args{9} = "cdata";
+            args{10} = c;
+          elseif (size (c, 1) == rows (x) && size (c, 2) == columns (x))
+            ## Per-vertex color
+            args{7} = "facecolor";
+            args{8} = "interp";
+            args{9} = "cdata";
+            agrs{10} = c;
+          else
+            error ("patch: color value not valid");
+          endif
         else
           ## Color Vectors
           if (isempty (c))
@@ -231,11 +250,8 @@ function args = setdata (args)
       fc = [0, 1, 0];
     endif
     args = {"facecolor", fc, args{:}};
-  else
-    fc = args {idx};
   endif
 
-  nr = size (faces, 2);
   nc = size (faces, 1);
   idx = faces .';
   t1 = isnan (idx);
@@ -258,8 +274,10 @@ function args = setdata (args)
       c = cat(3, reshape (fvc(idx, 1), size(idx)),
               reshape (fvc(idx, 2), size(idx)),
               reshape (fvc(idx, 3), size(idx)));
-    else
+    elseif (isempty (fvc))
       c = [];
+    else ## if (size (fvc, 2) == 1)
+      c = permute (fvc(faces), [2, 1]);
     endif
   endif
   args = {"xdata", x, "ydata", y, "zdata", z, "cdata", c, args{:}};
@@ -302,25 +320,25 @@ function args = setvertexdata (args)
       fc = [0, 1, 0];
     endif
     args = {"facecolor", fc, args{:}};
-  else
-    fc = args {idx};
   endif
 
   [nr, nc] = size (x);
+  if (nr == 1 && nc > 1)
+    nr = nc;
+    nc = 1;
+  end
   if (!isempty (z))
     vert = [x(:), y(:), z(:)];
   else
     vert = [x(:), y(:)];
   endif
-  faces = reshape (1:numel(x), rows (x), columns (x));
+  faces = reshape (1:numel(x), nr, nc);
   faces = faces';
 
   if (ndims (c) == 3)
     fvc = reshape (c, size (c, 1) * size (c, 2), size(c, 3));
-  elseif (isvector (c))
-    fvc = c(:);
   else
-    fvc = c.'(:);
+    fvc = c(:);
   endif
 
   args = {"faces", faces, "vertices", vert, "facevertexcdata", fvc, args{:}};

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2008-2011 Michael Goffioul
+Copyright (C) 2008-2012 Michael Goffioul
 
 This file is part of Octave.
 
@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_octave_mutex_h)
 #define octave_octave_mutex_h 1
 
+#include "oct-refcount.h"
+
 class octave_mutex;
 
 class
@@ -42,7 +44,7 @@ public:
   virtual bool try_lock (void);
 
 private:
-  int count;
+  octave_refcount<int> count;
 };
 
 class

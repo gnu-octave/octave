@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -562,7 +562,9 @@ description.
 
 Here is a description of an imaginary function @code{foo}:
 
-@deftypefn {Function} {} foo (@var{x}, @var{y}, @dots{})
+@deftypefn  {Function File} {} foo (@var{x})
+@deftypefnx {Function File} {} foo (@var{x}, @var{y})
+@deftypefnx {Function File} {} foo (@var{x}, @var{y}, @dots{})
 The function @code{foo} subtracts @var{x} from @var{y}, then adds the
 remaining arguments to the result.  If @var{y} is not supplied, then the
 number 19 is used by default.

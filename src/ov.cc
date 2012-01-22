@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -65,6 +65,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-class.h"
+#include "ov-oncleanup.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
 #include "ov-builtin.h"
@@ -2689,6 +2690,7 @@ install_types (void)
   octave_null_str::register_type ();
   octave_null_sq_str::register_type ();
   octave_lazy_index::register_type ();
+  octave_oncleanup::register_type ();
 }
 
 DEFUN (sizeof, args, ,

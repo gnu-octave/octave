@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 Michael Goffioul and Kai Habel
+## Copyright (C) 2007-2012 Michael Goffioul and Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -85,7 +85,11 @@ function [xx, yy, zz] = cylinder (varargin)
 
 endfunction
 
+
 %!demo
+%! clf;
+%! colormap ('default');
 %! [x, y, z] = cylinder (10:-1:0,50);
 %! surf (x, y, z);
-%! title ("a cone")
+%! title ('a cone');
+

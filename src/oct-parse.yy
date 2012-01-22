@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 Copyright (C) 2009 David Grundberg
 Copyright (C) 2009-2010 VZLU Prague
 
@@ -1899,8 +1899,6 @@ fold (tree_binary_expression *e)
   tree_expression *op1 = e->lhs ();
   tree_expression *op2 = e->rhs ();
 
-  octave_value::binary_op op_type = e->op_type ();
-
   if (op1->is_constant () && op2->is_constant ())
     {
       octave_value tmp = e->rvalue1 ();
@@ -3266,7 +3264,7 @@ looks_like_copyright (const std::string& s)
     {
       size_t offset = s.find_first_not_of (" \t");
 
-      retval = (s.substr (offset, 9) == "Copyright");
+      retval = (s.substr (offset, 9) == "Copyright" || s.substr (offset, 6) == "Author");
     }
 
   return retval;
@@ -3565,7 +3563,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           int status = yyparse ();
 
-          delete global_command;
+          // Use an unwind-protect cleanup function so that the
+          // global_command list will be deleted in the event of an
+          // interrupt.
+
+          frame.add_fcn (cleanup_statement_list, &global_command);
 
           fcn_ptr = primary_fcn_ptr;
 
@@ -3608,7 +3610,7 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
     {
       symbol_found = true;
 
-      FILE *fptr = fopen (file.c_str (), "r");
+      FILE *fptr = gnulib::fopen (file.c_str (), "r");
 
       if (fptr)
         {
@@ -4345,6 +4347,14 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
         {
           if (command_list)
             {
+              unwind_protect inner_frame;
+
+              // Use an unwind-protect cleanup function so that the
+              // global_command list will be deleted in the event of an
+              // interrupt.
+
+              inner_frame.add_fcn (cleanup_statement_list, &command_list);
+
               tree_statement *stmt = 0;
 
               if (command_list->length () == 1
@@ -4380,10 +4390,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
                 command_list->accept (*current_evaluator);
               else
                 error ("eval: invalid use of statement list");
-
-              delete command_list;
-
-              command_list = 0;
 
               if (error_state
                   || tree_return_command::returning
@@ -4428,9 +4434,20 @@ eval_string (const octave_value& arg, bool silent, int& parse_status,
   return eval_string (s, silent, parse_status, nargout);
 }
 
+void
+cleanup_statement_list (tree_statement_list **lst)
+{
+  if (*lst)
+    {
+      delete *lst;
+      *lst = 0;
+    }
+}
+
 DEFUN (eval, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} eval (@var{try}, @var{catch})\n\
+@deftypefn  {Built-in Function} {} eval (@var{try})\n\
+@deftypefnx {Built-in Function} {} eval (@var{try}, @var{catch})\n\
 Parse the string @var{try} and evaluate it as if it were an Octave\n\
 program.  If that fails, evaluate the optional string @var{catch}.\n\
 The string @var{try} is evaluated in the current context,\n\
@@ -4454,6 +4471,11 @@ eval ('error (\"This is a bad example\");',\n\
         This is a bad example\n\
 @end group\n\
 @end example\n\
+\n\
+Consider using try/catch blocks instead if you are only using @code{eval}\n\
+as an error-capturing mechanism rather than for the execution of arbitrary\n\
+code strings.\n\
+@seealso{evalin}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4500,84 +4522,34 @@ eval ('error (\"This is a bad example\");',\n\
 
 /*
 
-%% test/octave.test/eval/eval-1.m
-%!#test
+%!shared x
 %! x = 1;
-%! assert(eval ("x"),1);
 
-%% test/octave.test/eval/eval-2.m
+%!assert (eval ("x"), 1)
+%!assert (eval ("x;"))
+%!assert (eval ("x;"), 1);
+
 %!test
-%! x = 1;
-%! assert(eval ("x;"));
+%! y = eval ("x");
+%! assert (y, 1);
 
-%% test/octave.test/eval/eval-3.m
 %!test
-%! x = 1;
-%! assert(eval ("x;"),1);
+%! y = eval ("x;");
+%! assert (y, 1);
 
-%% FIXME
-%% Disable this test as adding the ";" is redundant with eval-1 and
-%% in any case is a syntax error with assert
-%% test/octave.test/eval/eval-4.m
-%!#test
-%! x = 1;
-%! assert(eval ("x");,1);
-
-%% test/octave.test/eval/eval-5.m
-%!test
-%! eval ("flipud = 2;");
-%! assert(flipud,2);
-
-%% test/octave.test/eval/eval-6.m
-%!function y = f ()
-%!  eval ("flipud = 2;");
-%!  y = flipud;
-%!test
-%! assert(f,2);
-
-%% test/octave.test/eval/eval-7.m
-%!#test
-%! eval ("x = 1");
-%! assert(x,1);
-
-%% test/octave.test/eval/eval-8.m
 %!test
 %! eval ("x = 1;")
-%! assert(x,1);
+%! assert (x,1);
 
-%% test/octave.test/eval/eval-9.m
 %!test
-%! eval ("x = 1;");
-%! assert(x,1);
+%! eval ("flipud = 2;");
+%! assert (flipud, 2);
 
-%% test/octave.test/eval/eval-10.m
-%!#test
-%! eval ("x = 1")
-%! assert(x,1);
-
-%% test/octave.test/eval/eval-11.m
-%!test
-%! x = 1;
-%! y = eval ("x");
-%! assert(y,1);
-
-%% test/octave.test/eval/eval-12.m
-%!test
-%! x = 1;
-%! y = eval ("x;");
-%! assert(y,1);
-
-%% test/octave.test/eval/eval-13.m
-%!test
-%! x = 1;
-%! y = eval ("x;");
-%! assert(y,1);
-
-%% test/octave.test/eval/eval-14.m
-%!test
-%! x = 1;
-%! y = eval ("x");
-%! assert(y,1);
+%!function y = __f ()
+%!  eval ("flipud = 2;");
+%!  y = flipud;
+%!endfunction
+%!assert (__f(), 2)
 
 */
 
@@ -4586,6 +4558,7 @@ DEFUN (assignin, args, ,
 @deftypefn {Built-in Function} {} assignin (@var{context}, @var{varname}, @var{value})\n\
 Assign @var{value} to @var{varname} in context @var{context}, which\n\
 may be either @code{\"base\"} or @code{\"caller\"}.\n\
+@seealso{evalin}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -4635,10 +4608,12 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
 DEFUN (evalin, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
+@deftypefn  {Built-in Function} {} evalin (@var{context}, @var{try})\n\
+@deftypefnx {Built-in Function} {} evalin (@var{context}, @var{try}, @var{catch})\n\
 Like @code{eval}, except that the expressions are evaluated in the\n\
 context @var{context}, which may be either @code{\"caller\"} or\n\
 @code{\"base\"}.\n\
+@seealso{eval, assignin}\n\
 @end deftypefn")
 {
   octave_value_list retval;

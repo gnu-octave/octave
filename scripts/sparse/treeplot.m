@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 Ivana Varekova
+## Copyright (C) 2005-2012 Ivana Varekova
 ##
 ## This file is part of Octave.
 ##
@@ -196,10 +196,14 @@ function treeplot (tree, node_style = "ko", edge_style = "r")
 
 endfunction
 
-%!demo
-%! % Plot a simple tree plot
-%! treeplot([2 4 2 0 6 4 6])
 
 %!demo
+%! clf;
+%! treeplot ([2 4 2 0 6 4 6]);
+%! % Plot a simple tree plot
+
+%!demo
+%! clf;
+%! treeplot ([2 4 2 0 6 4 6], "b+", "g");
 %! % Plot a simple tree plot defining the edge and node styles
-%! treeplot([2 4 2 0 6 4 6], "b+", "g")
+

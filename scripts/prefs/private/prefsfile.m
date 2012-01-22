@@ -1,4 +1,4 @@
-## Copyright (C) 2011 John W. Eaton
+## Copyright (C) 2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -26,25 +26,6 @@
 function retval = prefsfile ()
 
   retval = "~/.octave_prefs";
-
-  ## Transition users to new filename if necessary
-  ## FIXME: Delete before 3.6.0 release
-  oldname = tilde_expand ("~/.octave-prefs");
-  if (exist (oldname, "file"))
-    newname = tilde_expand (retval); 
-    if (exist (newname, "file"))
-      error (["Octave uses the file ~/.octave_prefs to store preferences.\n",...
-              "       The old file name was ~/.octave-prefs.\n",...
-              "       Both files exist."...
-              "  User must manually delete one of the files.\n"]);
-    endif
-    status = movefile (oldname, newname);
-    if (! status)
-      error (["Octave uses the file ~/.octave_prefs to store preferences.\n",
-             "        The old file name was ~/.octave-prefs.\n",
-             "        User must manually rename the old file to the new name.\n"]);
-    endif
-  endif
 
 endfunction
 

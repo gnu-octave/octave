@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -288,7 +288,7 @@ raw_mode (bool on, bool wait)
   static bool curr_on = false;
 
   int tty_fd = STDIN_FILENO;
-  if (! isatty (tty_fd))
+  if (! gnulib::isatty (tty_fd))
     {
       if (interactive)
         error ("stdin is not a tty!");
@@ -896,7 +896,7 @@ tilde_expand (\"~/bin\")\n\
 %!   setenv ("HOME", "foobar");
 %! endif
 %! home = getenv ("HOME");
-%! assert (tilde_expand ("~/foobar"), [home filesep() "foobar"]);
+%! assert (tilde_expand ("~/foobar"), strcat (home, "/foobar"));
 %! assert (tilde_expand ("/foo/bar"), "/foo/bar");
 %! assert (tilde_expand ("foo/bar"), "foo/bar");
 */

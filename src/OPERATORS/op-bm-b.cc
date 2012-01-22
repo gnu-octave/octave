@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2001-2011 Cai Jianming
+Copyright (C) 2001-2012 Cai Jianming
 
 This file is part of Octave.
 

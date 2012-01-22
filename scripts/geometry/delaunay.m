@@ -1,4 +1,4 @@
-## Copyright (C) 1999-2011 Kai Habel
+## Copyright (C) 1999-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -102,8 +102,9 @@ endfunction
 %! T = delaunay (x,y);
 %! VX = [ x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1)) ];
 %! VY = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];
-%! axis ([0,1,0,1]);
+%! clf;
 %! plot (VX,VY,"b", x,y,"r*");
+%! axis ([0,1,0,1]);
 
 %!testif HAVE_QHULL
 %! x = [-1, 0, 1, 0];

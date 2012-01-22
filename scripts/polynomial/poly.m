@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2011 John W. Eaton
+## Copyright (C) 1994-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -38,13 +38,12 @@
 ## numerical performance the @code{eig} function should be used to compute
 ## eigenvalues.
 ##
-## If @var{x} is a vector, @code{poly (@var{x})} is a vector of the coefficients
-## of the polynomial whose roots are the elements of @var{x}.  That is,
-## if @var{c} is a polynomial, then the elements of
-## @code{@var{d} = roots (poly (@var{c}))} are contained in @var{c}.
-## The vectors @var{c} and @var{d} are not identical, however, due to sorting
-## and numerical errors.
-## @seealso{eig, roots}
+## If @var{x} is a vector, @code{poly (@var{x})} is a vector of the
+## coefficients of the polynomial whose roots are the elements of @var{x}. 
+## That is, if @var{c} is a polynomial, then the elements of @code{@var{d} =
+## roots (poly (@var{c}))} are contained in @var{c}.  The vectors @var{c} and
+## @var{d} are not identical, however, due to sorting and numerical errors.
+## @seealso{roots, eig}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

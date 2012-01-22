@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -107,7 +107,7 @@ for a definition), and then finding its eigenvalues.
 @section Derivatives / Integrals / Transforms
 
 Octave comes with functions for computing the derivative and the integral
-of a polynomial.  The functions @code{polyderiv} and @code{polyint}
+of a polynomial.  The functions @code{polyder} and @code{polyint}
 both return new polynomials describing the result.  As an example we'll
 compute the definite integral of @math{p(x) = x^2 + 1} from 0 to 3.
 
@@ -119,8 +119,6 @@ area = polyval(integral, 3) - polyval(integral, 0)
 @result{} 12
 @end group
 @end example
-
-@DOCSTRING(polyderiv)
 
 @DOCSTRING(polyder)
 

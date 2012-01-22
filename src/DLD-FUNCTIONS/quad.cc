@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -474,29 +474,33 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
 
 /*
 
-%!function y = f (x)
+%!function y = __f (x)
 %! y = x + 1;
+%!endfunction
+
 %!test
-%! [v, ier, nfun, err] = quad ("f", 0, 5);
+%! [v, ier, nfun, err] = quad ("__f", 0, 5);
 %! assert(ier == 0 && abs (v - 17.5) < sqrt (eps) && nfun > 0 &&
 %!        err < sqrt (eps))
 %!test
-%! [v, ier, nfun, err] = quad ("f", single(0), single(5));
+%! [v, ier, nfun, err] = quad ("__f", single(0), single(5));
 %! assert(ier == 0 && abs (v - 17.5) < sqrt (eps ("single")) && nfun > 0 &&
 %!        err < sqrt (eps ("single")))
 
-%!function y = f (x)
+%!function y = __f (x)
 %!  y = x .* sin (1 ./ x) .* sqrt (abs (1 - x));
+%!endfunction
+
 %!test
-%!  [v, ier, nfun, err] = quad ("f", 0.001, 3);
+%!  [v, ier, nfun, err] = quad ("__f", 0.001, 3);
 %! assert((ier == 0 || ier == 1) && abs (v - 1.98194120273598) < sqrt (eps) && nfun > 0);
 %!test
-%!  [v, ier, nfun, err] = quad ("f", single(0.001), single(3));
+%!  [v, ier, nfun, err] = quad ("__f", single(0.001), single(3));
 %! assert((ier == 0 || ier == 1) && abs (v - 1.98194120273598) < sqrt (eps ("single")) && nfun > 0);
 
 %!error <Invalid call to quad> quad ();
 
-%!error <Invalid call to quad> quad ("f", 1, 2, 3, 4, 5);
+%!error <Invalid call to quad> quad ("__f", 1, 2, 3, 4, 5);
 
 %!test
 %! quad_options ("absolute tolerance", eps);

@@ -1,7 +1,7 @@
 // Template sparse array class
 /*
 
-Copyright (C) 2004-2011 David Bateman
+Copyright (C) 2004-2012 David Bateman
 Copyright (C) 1998-2004 Andy Adler
 Copyright (C) 2010 VZLU Prague
 
@@ -667,7 +667,7 @@ Sparse<T>::Sparse (const Array<T>& a)
 template <class T>
 Sparse<T>::~Sparse (void)
 {
-  if (--rep->count <= 0)
+  if (--rep->count == 0)
     delete rep;
 }
 
@@ -677,7 +677,7 @@ Sparse<T>::operator = (const Sparse<T>& a)
 {
   if (this != &a)
     {
-      if (--rep->count <= 0)
+      if (--rep->count == 0)
         delete rep;
 
       rep = a.rep;

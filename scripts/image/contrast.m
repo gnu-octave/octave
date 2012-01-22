@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 David Bateman
+## Copyright (C) 2008-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,10 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} contrast (@var{x}, @var{n})
+## @deftypefn  {Function File} {} contrast (@var{x})
+## @deftypefnx {Function File} {} contrast (@var{x}, @var{n})
 ## Return a gray colormap that maximizes the contrast in an image.  The
 ## returned colormap will have @var{n} rows.  If @var{n} is not defined
-## then the size of the current colormap is used instead.
+## then the size of the current colormap is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -42,9 +43,19 @@ function map = contrast (x, n)
   minm = min (map);
   map = (map - minm) ./ (max (map) - minm);
   map = [map, map, map];
+
 endfunction
 
-%!assert (contrast(1:100,10),[([0:9]/9)',([0:9]/9)',([0:9]/9)'],1e-10)
+
 %!demo
-%! image (reshape (1:100, 10, 10))
-%! colormap (contrast (1:100,10))
+%! clf;
+%! img = reshape (1:100, 10, 10);
+%! image (img);
+%! colormap (gray (10));
+%! title ("Image with default 256 gray levels");
+%! input ("Press <enter> to continue: ", "s");
+%! colormap (contrast (img));
+%! title ("Image with contrast enhanced");
+
+%!assert (contrast (1:100,10), [([0:9]/9)',([0:9]/9)',([0:9]/9)'], 1e-10)
+

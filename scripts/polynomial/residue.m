@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2011 John W. Eaton
+## Copyright (C) 1994-2012 John W. Eaton
 ## Copyright (C) 2007 Ben Abbott
 ##
 ## This file is part of Octave.
@@ -136,7 +136,7 @@
 ## @end example
 ##
 ## @end ifnottex
-## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyint}
+## @seealso{mpoles, poly, roots, conv, deconv}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

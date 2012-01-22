@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Kai Habel
+## Copyright (C) 2000-2012 Kai Habel
 ## Copyright (C) 2009 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -446,99 +446,119 @@ endfunction
 
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! xi = linspace (min(x), max(x), 41);
+%! yi = linspace (min(y), max(y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "linear"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,4]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,4]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! xi = linspace (min(x), max(x), 41);
+%! yi = linspace (min(y), max(y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "nearest"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! xi = linspace (min(x), max(x), 41);
+%! yi = linspace (min(y), max(y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "pchip"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! xi = linspace (min(x), max(x), 41);
+%! yi = linspace (min(y), max(y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "cubic"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! A=[13,-1,12;5,4,3;1,6,2];
-%! x=[0,1,2]; y=[10,11,12];
-%! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! clf;
+%! colormap ("default");
+%! A = [13,-1,12;5,4,3;1,6,2];
+%! x = [0,1,2]; y = [10,11,12];
+%! xi = linspace (min(x), max(x), 17);
+%! yi = linspace (min(y), max(y), 26)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
-%! [x,y,A] = peaks(10);
+%! clf;
+%! colormap ("default");
+%! [x,y,A] = peaks (10);
 %! x = x(1,:)'; y = y(:,1);
-%! xi=linspace(min(x),max(x),41);
-%! yi=linspace(min(y),max(y),41)';
-%! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
-%! [x,y] = meshgrid(x,y);
-%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+%! xi = linspace (min(x), max(x), 41);
+%! yi = linspace (min(y), max(y), 41)';
+%! mesh (xi,yi,interp2 (x,y,A,xi,yi, "spline"));
+%! [x,y] = meshgrid (x,y);
+%! hold on; plot3 (x(:),y(:),A(:),"b*"); hold off;
 
 %!test % simple test
 %!  x = [1,2,3];
 %!  y = [4,5,6,7];
-%!  [X, Y] = meshgrid(x,y);
+%!  [X, Y] = meshgrid (x,y);
 %!  Orig = X.^2 + Y.^3;
 %!  xi = [1.2,2, 1.5];
 %!  yi = [6.2, 4.0, 5.0]';
@@ -547,7 +567,7 @@ endfunction
 %!    [243,   245.4,  243.9;
 %!      65.6,  68,     66.5;
 %!     126.6, 129,    127.5];
-%!  Result = interp2(x,y,Orig, xi, yi);
+%!  Result = interp2 (x,y,Orig, xi, yi);
 %!
 %!  assert(Result, Expected, 1000*eps);
 

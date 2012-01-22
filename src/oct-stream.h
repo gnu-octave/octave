@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -37,6 +37,7 @@ class octave_value_list;
 #include "data-conv.h"
 #include "lo-utils.h"
 #include "mach-info.h"
+#include "oct-refcount.h"
 
 class
 OCTINTERP_API
@@ -370,6 +371,12 @@ public:
 
   virtual std::ostream *output_stream (void) { return 0; }
 
+  // If the derived class is locale-aware, it must implement this function 
+  // in order to set a new locale. By default, this function avoids messing 
+  // with locales and ignores its input argument.
+  virtual std::locale imbue ( const std::locale & loc ) 
+    { return std::locale::classic (); }
+  
   // Return TRUE if this stream is open.
 
   bool is_open (void) const { return open_state; }
@@ -427,7 +434,7 @@ protected:
 private:
 
   // A reference count.
-  octave_idx_type count;
+  octave_refcount<octave_idx_type> count;
 
   // The permission bits for the file.  Should be some combination of
   // std::ios::open_mode bits.
@@ -612,7 +619,23 @@ public:
   {
     return rep ? rep->output_stream () : 0;
   }
-
+  
+  std::locale imbue (const std::locale & loc )
+    {
+      if (!rep) return std::locale::classic ();
+      
+      std::istream *is = rep->input_stream ();
+      std::ostream *os = rep->output_stream ();
+      
+      if (os) 
+        {
+          if (is)
+            (void) is->imbue (loc);
+          return os->imbue (loc);
+        }
+      return is ? is->imbue (loc) : std::locale::classic ();
+    }
+  
   void clearerr (void) { if (rep) rep->clearerr (); }
 
 private:
@@ -688,6 +711,8 @@ private:
   mutable ostrl_map::const_iterator lookup_cache;
 
   static octave_stream_list *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   int do_insert (octave_stream& os);
 

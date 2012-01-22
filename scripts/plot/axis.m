@@ -1,4 +1,4 @@
-## Copyright (C) 1994-2011 John W. Eaton
+## Copyright (C) 1994-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -309,9 +309,9 @@ function lims = __get_tight_lims__ (ca, ax)
   ## Get the limits for axis ("tight").
   ## AX should be one of "x", "y", or "z".
   kids = findobj (ca, "-property", strcat (ax, "data"));
-  ## Since contours set the cdata for the patches to the hggroup zdata property, exclude
-  ## hgroups when determining the tight limits.
-  hg_kids = findobj (ca, "-property", strcat (ax, "data"), "type", "hggroup");
+  ## The data properties for hggroups mirror their children.
+  ## Exclude the redundant hgroup values.
+  hg_kids = findobj (kids, "type", "hggroup");
   kids = setdiff (kids, hg_kids);
   if (isempty (kids))
     ## Return the current limits.
@@ -319,20 +319,23 @@ function lims = __get_tight_lims__ (ca, ax)
   else
     data = get (kids, strcat (ax, "data"));
     scale = get (ca, strcat (ax, "scale"));
-    if (strcmp (scale, "log") && any (data > 0))
-      data(data<=0) = NaN;
+    if (! iscell (data))
+      data = {data};
+    end
+    if (strcmp (scale, "log"))
+      tmp = data;
+      data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);
+      n = cellfun (@isempty, data);
+      data(n) = cellfun (@(x) x(x<0), tmp(n), "uniformoutput", false);
     endif
-    if (iscell (data))
-      data = data (find (! cellfun ("isempty", data)));
-      if (! isempty (data))
-        lims_min = min (cellfun ("min", cellfun ("min", data, 'uniformoutput', false)(:)));
-        lims_max = max (cellfun ("max", cellfun ("max", data, 'uniformoutput', false)(:)));
-        lims = [lims_min, lims_max];
-      else
-        lims = [0, 1];
-      endif
+    data = cellfun (@(x) x(isfinite(x)), data, "uniformoutput", false);
+    data = data(! cellfun ("isempty", data));
+    if (! isempty (data))
+      lims_min = min (cellfun (@(x) min (x(:)), data(:)));
+      lims_max = max (cellfun (@(x) max (x(:)), data(:)));
+      lims = [lims_min, lims_max];
     else
-      lims = [min(data(:)), max(data(:))];
+      lims = [0, 1];
     endif
   endif
 
@@ -349,201 +352,236 @@ function __do_tight_option__ (ca)
 
 endfunction
 
-%!demo
-%! clf
-%! t=0:0.01:2*pi; x=sin(t);
-%!
-%! subplot(221);
-%! plot(t, x);
-%! title("normal plot");
-%!
-%! subplot(222);
-%! plot(t, x);
-%! title("square plot");
-%! axis("square");
-%!
-%! subplot(223);
-%! plot(t, x);
-%! title("equal plot");
-%! axis("equal");
-%!
-%! subplot(224);
-%! plot(t, x);
-%! title("normal plot again");
-%! axis("normal");
 
 %!demo
-%! clf
-%! t=0:0.01:2*pi; x=sin(t);
+%! clf;
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
 %!
-%! subplot(121);
-%! plot(t, x);
-%! title("ij plot");
-%! axis("ij");
+%! subplot (221);
+%!  plot (t, x);
+%!  title ('normal plot');
 %!
-%! subplot(122);
-%! plot(t, x);
-%! title("xy plot");
-%! axis("xy");
+%! subplot (222);
+%!  plot (t, x);
+%!  title ('square plot');
+%!  axis ('square');
+%!
+%! subplot (223);
+%!  plot (t, x);
+%!  title ('equal plot');
+%!  axis ('equal');
+%!
+%! subplot (224);
+%!  plot (t, x);
+%!  title ('normal plot again');
+%!  axis ('normal');
 
 %!demo
-%! clf
-%! t=0:0.01:2*pi; x=sin(t);
+%! clf;
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
 %!
-%! subplot(331);
-%! plot(t, x);
-%! title("x tics and labels");
-%! axis("ticx");
+%! subplot (121);
+%!  plot (t, x);
+%!  title ('ij plot');
+%!  axis ('ij');
 %!
-%! subplot(332);
-%! plot(t, x);
-%! title("y tics and labels");
-%! axis("ticy");
-%!
-%! subplot(333);
-%! plot(t, x);
-%! title("axis off");
-%! axis("off");
-%!
-%! subplot(334);
-%! plot(t, x);
-%! title("x and y tics, x labels");
-%! axis("labelx","tic");
-%!
-%! subplot(335);
-%! plot(t, x);
-%! title("x and y tics, y labels");
-%! axis("labely","tic");
-%!
-%! subplot(336);
-%! plot(t, x);
-%! title("all tics but no labels");
-%! axis("nolabel","tic");
-%!
-%! subplot(337);
-%! plot(t, x);
-%! title("x tics, no labels");
-%! axis("nolabel","ticx");
-%!
-%! subplot(338);
-%! plot(t, x);
-%! title("y tics, no labels");
-%! axis("nolabel","ticy");
-%!
-%! subplot(339);
-%! plot(t, x);
-%! title("all tics and labels");
-%! axis("on");
+%! subplot (122);
+%!  plot (t, x);
+%!  title ('xy plot');
+%!  axis ('xy');
 
 %!demo
-%! clf
-%! t=0:0.01:2*pi; x=sin(t);
+%! clf;
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
 %!
-%! subplot(321);
-%! plot(t, x);
-%! title("axes at [0 3 0 1]")
-%! axis([0,3,0,1]);
+%! subplot (331);
+%!  plot (t, x);
+%!  title ('x tics and labels');
+%!  axis ('ticx');
 %!
-%! subplot(322);
-%! plot(t, x);
-%! title("auto");
-%! axis("auto");
+%! subplot (332);
+%!  plot (t, x);
+%!  title ('y tics and labels');
+%!  axis ('ticy');
 %!
-%! subplot(323);
-%! plot(t, x, ";sine [0:2pi];"); hold on;
-%! plot(-3:3,-3:3, ";line (-3,-3)->(3,3);"); hold off;
-%! title("manual");
-%! axis("manual");
+%! subplot (333);
+%!  plot (t, x);
+%!  title ('axis off');
+%!  axis ('off');
 %!
-%! subplot(324);
-%! plot(t, x, ";sine [0:2pi];");
-%! title("axes at [0 3 0 1], then autox");
-%! axis([0,3,0,1]); axis("autox");
+%! subplot (334);
+%!  plot (t, x);
+%!  title ('x and y tics, x labels');
+%!  axis ('labelx','tic');
 %!
-%! subplot(325);
-%! plot(t, x, ";sine [0:2p];");
-%! axis([3,6,0,1]); axis("autoy");
-%! title("axes at [3 6 0 1], then autoy");
+%! subplot (335);
+%!  plot (t, x);
+%!  title ('x and y tics, y labels');
+%!  axis ('labely','tic');
 %!
-%! subplot(326);
-%! plot(t, sin(t), t, -2*sin(t/2))
-%! axis("tight");
-%! title("tight");
+%! subplot (336);
+%!  plot (t, x);
+%!  title ('all tics but no labels');
+%!  axis ('nolabel','tic');
+%!
+%! subplot (337);
+%!  plot (t, x);
+%!  title ('x tics, no labels');
+%!  axis ('nolabel','ticx');
+%!
+%! subplot (338);
+%!  plot (t, x);
+%!  title ('y tics, no labels');
+%!  axis ('nolabel','ticy');
+%!
+%! subplot (339);
+%!  plot (t, x);
+%!  title ('all tics and labels');
+%!  axis ('on');
 
 %!demo
-%! clf
-%! axis image
-%! x=0:0.1:10;
-%! plot(x,sin(x))
-%! axis image
-%! title("image")
+%! clf;
+%! t = 0:0.01:2*pi;
+%! x = sin (t);
+%!
+%! subplot (321);
+%!  plot (t, x);
+%!  title ('axes at [0 3 0 1]');
+%!  axis ([0,3,0,1]);
+%!
+%! subplot (322);
+%!  plot (t, x);
+%!  title ('auto');
+%!  axis ('auto');
+%!
+%! subplot (323);
+%!  plot (t, x, ';sine [0:2pi];'); hold on;
+%!  plot (-3:3,-3:3, ';line (-3,-3)->(3,3);'); hold off;
+%!  title ('manual');
+%!  axis ('manual');
+%!
+%! subplot (324);
+%!  plot (t, x, ';sine [0:2pi];');
+%!  title ('axes at [0 3 0 1], then autox');
+%!  axis ([0,3,0,1]);
+%!  axis ('autox');
+%!
+%! subplot (325);
+%!  plot (t, x, ';sine [0:2p];');
+%!  title ('axes at [3 6 0 1], then autoy');
+%!  axis ([3,6,0,1]);
+%!  axis ('autoy');
+%!
+%! subplot (326);
+%!  plot (t, sin(t), t, -2*sin(t/2));
+%!  axis ('tight');
+%!  title ('tight');
 
 %!demo
-%! clf
-%! [x,y,z] = peaks(50);
-%! x1 = max(x(:));
-%! pcolor(x-x1,y-x1/2,z)
-%! hold on
-%! [x,y,z] = sombrero;
-%! s = x1/max(x(:));
-%! pcolor(s*x+x1,s*y+x1/2,5*z)
-%! axis tight
+%! clf;
+%! x = 0:0.1:10;
+%! plot (x, sin(x));
+%! axis image;
+%! title ('image');
 
 %!demo
-%! clf
+%! clf;
+%! colormap ('default');
+%! [x,y,z] = peaks (50);
+%! x1 = max (x(:));
+%! pcolor (x-x1, y-x1/2, z);
+%! hold on;
+%! [x,y,z] = sombrero ();
+%! s = x1 / max (x(:));
+%! pcolor (s*x+x1, s*y+x1/2, 5*z);
+%! axis tight;
+
+%!demo
+%! clf;
 %! x = -10:10;
-%! plot (x, x, x, -x)
-%! set (gca, "yscale", "log")
-%! legend ({"x >= 1", "x <= 1"}, "location", "north")
-%! title ("ylim = [1, 10]")
+%! plot (x,x, x,-x);
+%! set (gca, 'yscale', 'log');
+%! legend ({'x >= 1', 'x <= 1'}, 'location', 'north');
+%! title ('ylim = [1, 10]');
 
 %!demo
-%! clf
-%! loglog (1:20, "-s")
-%! axis tight
+%! clf;
+%! loglog (1:20, '-s');
+%! axis tight;
 
 %!demo
+%! clf;
 %! x = -10:0.1:10;
-%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
-%! plot (x, y)
-%! title ("no plot box")
-%! set (gca, "xaxislocation", "zero")
-%! set (gca, "yaxislocation", "zero")
-%! box off
+%! y = sin (x)./(1 + abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'zero');
+%! box off;
 
 %!demo
+%! clf;
 %! x = -10:0.1:10;
-%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
-%! plot (x, y)
-%! title ("no plot box")
-%! set (gca, "xaxislocation", "zero")
-%! set (gca, "yaxislocation", "left")
-%! box off
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'left');
+%! box off;
 
 %!demo
+%! clf;
 %! x = -10:0.1:10;
-%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
-%! plot (x, y)
-%! title ("no plot box")
-%! set (gca, "xaxislocation", "zero")
-%! set (gca, "yaxislocation", "right")
-%! box off
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'zero');
+%! set (gca, 'yaxislocation', 'right');
+%! box off;
 
 %!demo
+%! clf;
 %! x = -10:0.1:10;
-%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
-%! plot (x, y)
-%! title ("no plot box")
-%! set (gca, "xaxislocation", "bottom")
-%! set (gca, "yaxislocation", "zero")
-%! box off
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'bottom');
+%! set (gca, 'yaxislocation', 'zero');
+%! box off;
 
 %!demo
+%! clf;
 %! x = -10:0.1:10;
-%! y = sin(x)./(1+abs(x)) + x*0.1 - .4;
-%! plot (x, y)
-%! title ("no plot box")
-%! set (gca, "xaxislocation", "top")
-%! set (gca, "yaxislocation", "zero")
-%! box off
+%! y = sin (x)./(1+abs (x)) + 0.1*x - 0.4;
+%! plot (x, y);
+%! title ('no plot box');
+%! set (gca, 'xaxislocation', 'top');
+%! set (gca, 'yaxislocation', 'zero');
+%! box off;
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot (11:20, [21:24, NaN, -Inf, 27:30]);
+%!   hold all;
+%!   plot (11:20, 25.5 + rand (10));
+%!   axis tight;
+%!   assert (axis (), [11 20 21 30]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   a = logspace (-5, 1, 10);
+%!   loglog (a, -a);
+%!   axis tight;
+%!   assert (axis (), [1e-5, 10, -10, -1e-5]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 

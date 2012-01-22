@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -282,6 +282,7 @@ DEFUN (do_braindead_shortcircuit_evaluation, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} do_braindead_shortcircuit_evaluation ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} do_braindead_shortcircuit_evaluation (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} do_braindead_shortcircuit_evaluation (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will\n\
 do short-circuit evaluation of @samp{|} and @samp{&} operators inside the\n\
 conditions of if or while statements.\n\
@@ -291,6 +292,10 @@ not be used unless you are porting old code that relies on this feature.\n\
 \n\
 To obtain short-circuit behavior for logical expressions in new programs,\n\
 you should always use the @samp{&&} and @samp{||} operators.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (do_braindead_shortcircuit_evaluation);

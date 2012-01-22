@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2011 Shai Ayal
+Copyright (C) 2007-2012 Shai Ayal
 
 This file is part of Octave.
 
@@ -29,9 +29,14 @@ To initialize:
 
 */
 
+// PKG_ADD: register_graphics_toolkit ("fltk");
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "defun-dld.h"
+#include "error.h"
 
 #if defined (HAVE_FLTK)
 
@@ -67,8 +72,6 @@ To initialize:
 #include "cmd-edit.h"
 #include "lo-ieee.h"
 
-#include "defun-dld.h"
-#include "error.h"
 #include "file-ops.h"
 #include "gl-render.h"
 #include "gl2ps-renderer.h"
@@ -659,7 +662,8 @@ public:
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp)
     : Fl_Window (xx, yy, ww, hh, "octave"), window_label (), shift (0),
       ndim (2), fp (xfp), canvas (0), autoscale (0), togglegrid (0),
-      panzoom (0), rotate (0), help (0), status (0)
+      panzoom (0), rotate (0), help (0), status (0),
+      ax_obj (), pos_x (0), pos_y (0)
   {
     callback (window_close, static_cast<void*> (this));
     size_range (4*status_h, 2*status_h);
@@ -749,9 +753,6 @@ public:
     status->hide ();
     uimenu->hide ();
     this->hide ();
-    delete canvas;
-    delete status;
-    delete uimenu;
   }
 
   double number (void) { return fp.get___myhandle__ ().value (); }
@@ -971,6 +972,9 @@ private:
   Fl_Button* rotate;
   Fl_Button* help;
   Fl_Output* status;
+  graphics_object ax_obj;
+  int pos_x;
+  int pos_y;
 
   void axis_auto (void)
   {
@@ -1177,9 +1181,6 @@ private:
 
   int handle (int event)
   {
-    static int px0,py0;
-    static graphics_object ax0;
-
     graphics_handle gh;
 
     graphics_object fig = gh_manager::get_object (fp.get___myhandle__ ());
@@ -1255,17 +1256,17 @@ private:
             break;
 
           case FL_PUSH:
-            px0 = Fl::event_x ();
-            py0 = Fl::event_y ();
+            pos_x = Fl::event_x ();
+            pos_y = Fl::event_y ();
 
             set_currentpoint (Fl::event_x (), Fl::event_y ());
 
-            gh = pixel2axes_or_ca (px0, py0);
+            gh = pixel2axes_or_ca (pos_x, pos_y);
 
             if (gh.ok ())
               {
-                ax0 = gh_manager::get_object (gh);
-                set_axes_currentpoint (ax0, px0, py0);
+                ax_obj = gh_manager::get_object (gh);
+                set_axes_currentpoint (ax_obj, pos_x, pos_y);
               }
 
             fp.execute_windowbuttondownfcn ();
@@ -1284,42 +1285,44 @@ private:
 
             if (Fl::event_button () == 1)
               {
-                if (ax0 && ax0.isa ("axes"))
+                if (ax_obj && ax_obj.isa ("axes"))
                   {
                     if (gui_mode == pan_zoom)
-                      pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+                      pixel2status (ax_obj, pos_x, pos_y,
+                                    Fl::event_x (), Fl::event_y ());
                     else
-                      view2status (ax0);
+                      view2status (ax_obj);
                     axes::properties& ap =
-                      dynamic_cast<axes::properties&> (ax0.get_properties ());
+                      dynamic_cast<axes::properties&> (ax_obj.get_properties ());
 
                     double x0, y0, x1, y1;
                     Matrix pos = fp.get_position ().matrix_value ();
-                    pixel2pos (ax0, px0, py0, x0, y0);
-                    pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                    pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                    pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
 
                     if (gui_mode == pan_zoom)
                       ap.translate_view (x0 - x1, y0 - y1);
                     else if (gui_mode == rotate_zoom)
                       {
                         double daz, del;
-                        daz = (Fl::event_x () - px0) / pos(2) * 360;
-                        del = (Fl::event_y () - py0) / pos(3) * 360;
+                        daz = (Fl::event_x () - pos_x) / pos(2) * 360;
+                        del = (Fl::event_y () - pos_y) / pos(3) * 360;
                         ap.rotate_view (del, daz);
                       }
 
-                    px0 = Fl::event_x ();
-                    py0 = Fl::event_y ();
+                    pos_x = Fl::event_x ();
+                    pos_y = Fl::event_y ();
                     mark_modified ();
                   }
                 return 1;
               }
             else if (Fl::event_button () == 3)
               {
-                pixel2status (ax0, px0, py0, Fl::event_x (), Fl::event_y ());
+                pixel2status (ax_obj, pos_x, pos_y,
+                              Fl::event_x (), Fl::event_y ());
                 Matrix zoom_box (1,4,0);
-                zoom_box (0) = px0;
-                zoom_box (1) = py0;
+                zoom_box (0) = pos_x;
+                zoom_box (1) = pos_y;
                 zoom_box (2) =  Fl::event_x ();
                 zoom_box (3) =  Fl::event_y ();
                 canvas->set_zoom_box (zoom_box);
@@ -1364,10 +1367,10 @@ private:
               {
                 if ( Fl::event_clicks () == 1)
                   {
-                    if (ax0 && ax0.isa ("axes"))
+                    if (ax_obj && ax_obj.isa ("axes"))
                       {
                         axes::properties& ap =
-                          dynamic_cast<axes::properties&> (ax0.get_properties ());
+                          dynamic_cast<axes::properties&> (ax_obj.get_properties ());
                         ap.set_xlimmode ("auto");
                         ap.set_ylimmode ("auto");
                         ap.set_zlimmode ("auto");
@@ -1382,35 +1385,43 @@ private:
                   {
                     canvas->zoom (false);
                     double x0,y0,x1,y1;
-                    if (ax0 && ax0.isa ("axes"))
+                    if (ax_obj && ax_obj.isa ("axes"))
                       {
                         axes::properties& ap =
-                          dynamic_cast<axes::properties&> (ax0.get_properties ());
-                        pixel2pos (ax0, px0, py0, x0, y0);
-                        pixel2pos (ax0, Fl::event_x (), Fl::event_y (), x1, y1);
+                          dynamic_cast<axes::properties&> (ax_obj.get_properties ());
+                        pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
+                        int pos_x1 = Fl::event_x ();
+                        int pos_y1 = Fl::event_y ();
+                        pixel2pos (ax_obj, pos_x1, pos_y1, x1, y1);
                         Matrix xl (1,2,0);
                         Matrix yl (1,2,0);
-                        if (x0 < x1)
+                        int dx = abs (pos_x - pos_x1);
+                        int dy = abs (pos_y - pos_y1);
+                        // Smallest zoom box must be 4 pixels square
+                        if ((dx > 4) && (dy > 4))
                           {
-                            xl(0) = x0;
-                            xl(1) = x1;
+                            if (x0 < x1)
+                              {
+                                xl(0) = x0;
+                                xl(1) = x1;
+                              }
+                            else
+                              {
+                                xl(0) = x1;
+                                xl(1) = x0;
+                              }
+                            if (y0 < y1)
+                              {
+                                yl(0) = y0;
+                                yl(1) = y1;
+                              }
+                            else
+                              {
+                                yl(0) = y1;
+                                yl(1) = y0;
+                              }
+                            ap.zoom (xl, yl);
                           }
-                        else
-                          {
-                            xl(0) = x1;
-                            xl(1) = x0;
-                          }
-                        if (y0 < y1)
-                          {
-                            yl(0) = y0;
-                            yl(1) = y1;
-                          }
-                        else
-                          {
-                            yl(0) = y1;
-                            yl(1) = y0;
-                          }
-                        ap.zoom (xl, yl);
                         mark_modified ();
                       }
                   }
@@ -1768,12 +1779,12 @@ figure_manager *figure_manager::instance = 0;
 std::string figure_manager::fltk_idx_header="fltk index=";
 int figure_manager::curr_index = 1;
 
-static bool toolkit_registered = false;
+static bool toolkit_loaded = false;
 
 static int
 __fltk_redraw__ (void)
 {
-  if (toolkit_registered)
+  if (toolkit_loaded)
     {
       // We scan all figures and add those which use FLTK.
       graphics_object obj = gh_manager::get_object (0);
@@ -1937,31 +1948,42 @@ public:
     sz(1) = Fl::h ();
     return sz;
   }
+
+  void close (void)
+  {
+    if (toolkit_loaded)
+      {
+        munlock ("__init_fltk__");
+
+        figure_manager::close_all ();
+        gtk_manager::unload_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
+        toolkit_loaded = false;
+
+        octave_value_list args;
+        args(0) = "__fltk_redraw__";
+        feval ("remove_input_event_hook", args, 0);
+
+        // FIXME ???
+        Fl::wait (fltk_maxtime);
+      }
+  }
 };
 
 // Initialize the fltk graphics toolkit.
 
 DEFUN_DLD (__init_fltk__, , , "")
 {
-  static bool remove_fltk_registered = false;
-
-  if (! toolkit_registered)
+  if (! toolkit_loaded)
     {
       mlock ();
 
-      graphics_toolkit::register_toolkit (new fltk_graphics_toolkit);
-      toolkit_registered = true;
+      graphics_toolkit tk (new fltk_graphics_toolkit ());
+      gtk_manager::load_toolkit (tk);
+      toolkit_loaded = true;
 
       octave_value_list args;
       args(0) = "__fltk_redraw__";
       feval ("add_input_event_hook", args, 0);
-
-      if (! remove_fltk_registered)
-        {
-          octave_add_atexit_function ("__remove_fltk__");
-
-          remove_fltk_registered = true;
-        }
     }
 
   octave_value retval;
@@ -1971,29 +1993,6 @@ DEFUN_DLD (__init_fltk__, , , "")
 DEFUN_DLD (__fltk_redraw__, , , "")
 {
   __fltk_redraw__ ();
-
-  return octave_value ();
-}
-
-// Delete the fltk graphics toolkit.
-
-DEFUN_DLD (__remove_fltk__, , , "")
-{
-  if (toolkit_registered)
-    {
-      munlock ("__init_fltk__");
-
-      figure_manager::close_all ();
-      graphics_toolkit::unregister_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME);
-      toolkit_registered = false;
-
-      octave_value_list args;
-      args(0) = "__fltk_redraw__";
-      feval ("remove_input_event_hook", args, 0);
-
-      // FIXME ???
-      Fl::wait (fltk_maxtime);
-    }
 
   return octave_value ();
 }
@@ -2013,6 +2012,8 @@ DEFUN_DLD (__fltk_maxtime__, args, ,"")
   return retval;
 }
 
+#endif
+
 // FIXME -- This function should be abstracted and made potentially
 // available to all graphics toolkits.  This suggests putting it in
 // graphics.cc as is done for drawnow() and having the master
@@ -2030,6 +2031,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{gui_mode}\n\
 @end deftypefn")
 {
+#if defined (HAVE_FLTK)
   octave_value retval = wheel_zoom_speed;
 
   if (args.length () == 1)
@@ -2041,6 +2043,10 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
     }
 
   return retval;
+#else
+  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
 DEFUN_DLD (gui_mode, args, ,
@@ -2064,6 +2070,7 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
 @seealso{mouse_wheel_zoom}\n\
 @end deftypefn")
 {
+#if defined (HAVE_FLTK)
   caseless_str mode_str;
 
   if (gui_mode == pan_zoom)
@@ -2098,6 +2105,9 @@ This function is currently implemented only for the FLTK graphics toolkit.\n\
     error ("MODE must be one of the strings: \"2D\", \"3D\", or \"none\"");
 
   return octave_value (mode_str);
+#else
+  error ("mouse_wheel_zoom: not available without OpenGL and FLTK libraries");
+  return octave_value ();
+#endif
 }
 
-#endif

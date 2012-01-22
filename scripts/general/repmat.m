@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
@@ -20,12 +20,13 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} repmat (@var{A}, @var{m})
 ## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n})
-## @deftypefnx {Function File} {} repmat (@var{A}, @var{m}, @var{n}, @var{p}, @dots{})
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n}])
 ## @deftypefnx {Function File} {} repmat (@var{A}, [@var{m} @var{n} @var{p} @dots{}])
 ## Form a block matrix of size @var{m} by @var{n}, with a copy of matrix
 ## @var{A} as each element.  If @var{n} is not specified, form an
-## @var{m} by @var{m} block matrix.
+## @var{m} by @var{m} block matrix. For copying along more than two
+## dimensions, specify the number of times to copy across each dimension
+## @var{m}, @var{n}, @var{p}, @dots{}, in a vector in the second argument.
 ## @seealso{repelems}
 ## @end deftypefn
 

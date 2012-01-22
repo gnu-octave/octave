@@ -1,6 +1,6 @@
 # Makefile for octave's src directory
 #
-# Copyright (C) 1993-2011 John W. Eaton
+# Copyright (C) 1993-2012 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -179,6 +179,7 @@ OV_INCLUDES = \
   ov-lazy-idx.h \
   ov-mex-fcn.h \
   ov-null-mat.h \
+  ov-oncleanup.h \
   ov-perm.h \
   ov-range.h \
   ov-re-diag.h \
@@ -230,7 +231,6 @@ PT_INCLUDES = \
 
 octinclude_HEADERS = \
   Cell.h \
-  base-list.h \
   builtins.h \
   c-file-ptr-stream.h \
   comment-list.h \
@@ -357,6 +357,7 @@ OV_SRC = \
   ov-lazy-idx.cc \
   ov-mex-fcn.cc \
   ov-null-mat.cc \
+  ov-oncleanup.cc \
   ov-perm.cc \
   ov-range.cc \
   ov-re-diag.cc \
@@ -514,7 +515,7 @@ liboctinterp_la_LIBADD = \
   $(LIBOCTINTERP_LINK_DEPS)
 
 # Increment these as needed and according to the rules in the libtool manual:
-liboctinterp_current = 0
+liboctinterp_current = 1
 liboctinterp_revision = 0
 liboctinterp_age = 0
 

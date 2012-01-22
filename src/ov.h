@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 Copyright (C) 2009-2010 VZLU Prague
 
 This file is part of Octave.
@@ -315,8 +315,12 @@ public:
     {
       if (rep->count > 1)
         {
-          --rep->count;
-          rep = rep->unique_clone ();
+	  octave_base_value *r = rep->unique_clone ();
+
+          if (--rep->count == 0)
+            delete rep;
+
+          rep = r;
         }
     }
 
@@ -327,8 +331,12 @@ public:
     {
       if (rep->count > obsolete_copies + 1)
         {
-          --rep->count;
-          rep = rep->unique_clone ();
+          octave_base_value *r = rep->unique_clone ();
+
+          if (--rep->count == 0)
+            delete rep;
+
+          rep = r;
         }
     }
 

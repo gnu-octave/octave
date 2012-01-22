@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002-2011 Andy Adler
+Copyright (C) 2002-2012 Andy Adler
 Copyright (C) 2008 Thomas L. Scofield
 Copyright (C) 2010 David Grundberg
 
@@ -212,7 +212,8 @@ read_images (const std::vector<Magick::Image>& imvec,
   idim(3) = nframes;
 
   Magick::ImageType type = imvec[0].type ();
-  const int divisor = (((1 << QuantumDepth) - 1) / ((1 << depth) - 1));
+  const int divisor = ((uint64_t (1) << QuantumDepth) - 1) / 
+                      ((uint64_t (1) << depth) - 1);
 
   switch (type)
     {

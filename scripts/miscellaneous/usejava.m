@@ -1,4 +1,4 @@
-## Copyright (C) 2011 Rik Wehbring
+## Copyright (C) 2012 Rik Wehbring
 ##
 ## This file is part of Octave.
 ##
@@ -36,7 +36,7 @@
 ## Swing components for lightweight GUIs.
 ## @end table
 ##
-## This function is provided for compatability with @sc{matlab} scripts which
+## This function is provided for compatibility with @sc{matlab} scripts which
 ## may alter their behavior based on the availability of Java.  Octave does
 ## not implement an interface to Java and this function always returns
 ## @code{false}.

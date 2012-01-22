@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2003-2011 John W. Eaton
+Copyright (C) 2003-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -159,6 +159,8 @@ public:
 private:
 
   static octave_rand *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   enum
   {

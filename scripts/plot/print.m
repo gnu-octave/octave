@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 David Bateman
+## Copyright (C) 2008-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -369,6 +369,10 @@ function print (varargin)
           fontsize = str2double (opts.fontsize);
         else
           fontsize = opts.fontsize;
+        endif
+        if (! isempty (opts.scalefontsize) && ! opt.scalefontsize != 1)
+          ## This is done to work around the bbox being whole numbers.
+          fontsize = fontsize * opts.scalefontsize;
         endif
         set (h(ishandle(h)), "fontsize", fontsize);
       endif

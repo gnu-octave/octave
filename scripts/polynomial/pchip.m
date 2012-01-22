@@ -1,4 +1,4 @@
-## Copyright (C) 2001-2011 Kai Habel
+## Copyright (C) 2001-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -19,16 +19,19 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{pp} =} pchip (@var{x}, @var{y})
 ## @deftypefnx {Function File} {@var{yi} =} pchip (@var{x}, @var{y}, @var{xi})
+## Return the Piecewise Cubic Hermite Interpolating Polynomial (pchip) of
+## points @var{x} and @var{y}.
 ##
-## Piecewise Cubic Hermite interpolating polynomial.  Called with two
-## arguments, the piecewise polynomial @var{pp} is returned, that may
-## later be used with @code{ppval} to evaluate the polynomial at
-## specific points.
+## If called with two arguments, return the piecewise polynomial @var{pp}
+## that may be used with @code{ppval} to evaluate the polynomial at specific
+## points.  When called with a third input argument, @code{pchip} evaluates
+## the pchip polynomial at the points @var{xi}.  The third calling form is
+## equivalent to @code{ppval (pchip (@var{x}, @var{y}), @var{xi})}.
 ##
 ## The variable @var{x} must be a strictly monotonic vector (either
-## increasing or decreasing).  While @var{y} can be either a vector or
-## an array.  In the case where @var{y} is a vector, it must have the
-## length @var{n}.  If @var{y} is an array, then the size of @var{y} must
+## increasing or decreasing) of length @var{n}.  @var{y} can be either a
+## vector or array.  If @var{y} is a vector then it must be the same length
+## @var{n} as @var{x}.  If @var{y} is an array then the size of @var{y} must
 ## have the form
 ## @tex
 ## $$[s_1, s_2, \cdots, s_k, n]$$
@@ -36,7 +39,7 @@
 ## @ifnottex
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n}]}
 ## @end ifnottex
-## The array is then reshaped internally to a matrix where the leading
+## The array is reshaped internally to a matrix where the leading
 ## dimension is given by
 ## @tex
 ## $$s_1 s_2 \cdots s_k$$
@@ -44,14 +47,9 @@
 ## @ifnottex
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifnottex
-## and each row in this matrix is then treated separately.  Note that this
-## is exactly the opposite treatment than @code{interp1} and is done
-## for compatibility.
-##
-## Called with a third input argument, @code{pchip} evaluates the
-## piecewise polynomial at the points @var{xi}.  There is an equivalence
-## between @code{ppval (pchip (@var{x}, @var{y}), @var{xi})} and
-## @code{pchip (@var{x}, @var{y}, @var{xi})}.
+## and each row of this matrix is then treated separately.  Note that this
+## is exactly opposite to @code{interp1} but is done for @sc{matlab}
+## compatibility.
 ##
 ## @seealso{spline, ppval, mkpp, unmkpp}
 ## @end deftypefn
@@ -127,45 +125,47 @@ function ret = pchip (x, y, xi)
 
 endfunction
 
+
 %!demo
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
 %! xi = 0:0.01:8;
-%! yspline = spline(x,y,xi);
-%! ypchip = pchip(x,y,xi);
-%! title("pchip and spline fit to discontinuous function");
-%! plot(xi,yspline,xi,ypchip,"-",x,y,"+");
-%! legend ("spline","pchip","data");
+%! yspline = spline (x,y,xi);
+%! ypchip = pchip (x,y,xi);
+%! title ("pchip and spline fit to discontinuous function");
+%! plot (xi,yspline, xi,ypchip,"-", x,y,"+");
+%! legend ("spline", "pchip", "data");
 %! %-------------------------------------------------------------------
 %! % confirm that pchip agreed better to discontinuous data than spline
 
 %!shared x,y,y2,pp,yi1,yi2,yi3
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
-%!assert (pchip(x,y,x), y);
-%!assert (pchip(x,y,x'), y');
-%!assert (pchip(x',y',x'), y');
-%!assert (pchip(x',y',x), y);
-%!assert (isempty(pchip(x',y',[])));
-%!assert (isempty(pchip(x,y,[])));
-%!assert (pchip(x,[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
-%!assert (pchip(x,[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
-%!assert (pchip(x',[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
-%!assert (pchip(x',[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x,y,x), y)
+%!assert (pchip (x,y,x'), y')
+%!assert (pchip (x',y',x'), y')
+%!assert (pchip (x',y',x), y)
+%!assert (isempty (pchip(x',y',[])))
+%!assert (isempty (pchip(x,y,[])))
+%!assert (pchip (x,[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x,[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x',[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
+%!assert (pchip (x',[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
 %!test
-%! x=(0:8)*pi/4;y=[sin(x);cos(x)];
-%! y2(:,:,1)=y;y2(:,:,2)=y+1;y2(:,:,3)=y-1;
-%! pp=pchip(x,shiftdim(y2,2));
-%! yi1=ppval(pp,(1:4)*pi/4);
-%! yi2=ppval(pp,repmat((1:4)*pi/4,[5,1]));
-%! yi3=ppval(pp,[pi/2,pi]);
-%!assert(size(pp.coefs),[48,4]);
-%!assert(pp.pieces,8);
-%!assert(pp.order,4);
-%!assert(pp.dim,[3,2]);
-%!assert(ppval(pp,pi),[0,-1;1,0;-1,-2],1e-14);
-%!assert(yi3(:,:,2),ppval(pp,pi),1e-14);
-%!assert(yi3(:,:,1),[1,0;2,1;0,-1],1e-14);
-%!assert(squeeze(yi1(1,2,:)),[1/sqrt(2); 0; -1/sqrt(2);-1],1e-14);
-%!assert(size(yi2),[3,2,5,4]);
-%!assert(squeeze(yi2(1,2,3,:)),[1/sqrt(2); 0; -1/sqrt(2);-1],1e-14);
+%! x = (0:8)*pi/4; y = [sin(x);cos(x)];
+%! y2(:,:,1) = y; y2(:,:,2) = y+1; y2(:,:,3) = y-1;
+%! pp = pchip (x, shiftdim (y2,2));
+%! yi1 = ppval (pp, (1:4)*pi/4);
+%! yi2 = ppval (pp, repmat ((1:4)*pi/4, [5,1]));
+%! yi3 = ppval (pp, [pi/2,pi]);
+%!assert (size (pp.coefs), [48,4])
+%!assert (pp.pieces, 8)
+%!assert (pp.order, 4)
+%!assert (pp.dim, [3,2])
+%!assert (ppval (pp,pi), [0,-1;1,0;-1,-2], 1e-14)
+%!assert (yi3(:,:,2), ppval(pp,pi), 1e-14)
+%!assert (yi3(:,:,1), [1,0;2,1;0,-1], 1e-14)
+%!assert (squeeze (yi1(1,2,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
+%!assert (size (yi2), [3,2,5,4])
+%!assert (squeeze (yi2(1,2,3,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
+

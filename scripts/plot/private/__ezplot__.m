@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -117,10 +117,10 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
   elseif (isa (fun, "function_handle"))
     fstr = func2str (fun);
-    if (length (findstr (fstr, ")")) != 0)
-      args = regexp (substr (fstr, 3, findstr (fstr, ")")(1) - 3),
+    if (! isempty (strfind (fstr, ')')))
+      args = regexp (substr (fstr, 3, strfind (fstr, ')')(1) - 3),
                      '(\w+)', 'tokens');
-    fstr = substr (fstr, findstr (fstr, ")")(1) + 1);
+    fstr = substr (fstr, strfind (fstr, ')')(1) + 1);
     else
       args = {{"x"}};
     endif
@@ -175,10 +175,10 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     elseif (isa (funy, "function_handle"))
       parametric = true;
       fstry = func2str (funy);
-      if (length (findstr (fstry, ")")) != 0)
-        args = regexp (substr (fstry, 3, findstr (fstry, ")")(1) - 3),
+      if (! isempty (strfind (fstry, ')')))
+        args = regexp (substr (fstry, 3, strfind (fstry, ')')(1) - 3),
                        '(\w+)', 'tokens');
-        fstry = substr (fstry, findstr (fstry, ")")(1) + 1);
+        fstry = substr (fstry, strfind (fstry, ')')(1) + 1);
       else
         args = {{"y"}};
       endif
@@ -216,12 +216,12 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
         fstrz = formula (funz);
       elseif (isa (funz, "function_handle"))
         fstrz = func2str (funz);
-        args = regexp (substr (fstrz, 3, findstr (fstrz, ")")(1) - 3),
+        args = regexp (substr (fstrz, 3, strfind (fstrz, ')')(1) - 3),
                        '(\w+)', 'tokens');
         if (length (args) != nargs)
           error ("%s: excepting a function of %d arguments", func, nargs);
         endif
-        fstrz = substr (fstrz, findstr (fstrz, ")")(1) + 1);
+        fstrz = substr (fstrz, strfind (fstrz, ')')(1) + 1);
       else
         error ("%s: parametric plots expect 3 functions", func);
       endif

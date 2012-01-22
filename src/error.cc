@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -118,9 +118,6 @@ bool discard_error_messages = false;
 
 // TRUE means warning messages are turned off.
 bool discard_warning_messages = false;
-
-// The message buffer.
-static std::ostringstream *error_message_buffer = 0;
 
 void
 reset_error_handler (void)
@@ -263,16 +260,7 @@ verror (bool save_last_error, std::ostream& os,
         Vlast_error_stack = initialize_last_error_stack ();
     }
 
-  if (buffer_error_messages)
-    {
-      if (error_message_buffer)
-        msg_string = "error: " + msg_string;
-      else
-        error_message_buffer = new std::ostringstream ();
-
-      *error_message_buffer << msg_string;
-    }
-  else
+  if (! buffer_error_messages)
     {
       octave_diary << msg_string;
       os << msg_string;
@@ -564,7 +552,8 @@ check_state (const std::string& state)
 }
 
 // For given warning ID, return 0 if warnings are disabled, 1 if
-// enabled, and 2 if this ID should be an error instead of a warning.
+// enabled, and 2 if the given ID should be an error instead of a
+// warning.
 
 int
 warning_enabled (const std::string& id)
@@ -610,8 +599,9 @@ warning_enabled (const std::string& id)
         }
     }
 
+  // If "all" is not present, assume warnings are enabled.
   if (all_state == -1)
-    panic_impossible ();
+    all_state = 1;
 
   if (all_state == 0)
     {
@@ -1105,6 +1095,10 @@ DEFUN (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} warning (@var{template}, @dots{})\n\
 @deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {} warning (\"on\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
+@deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
 functions (@pxref{Formatted Output}) and print the resulting message\n\
@@ -1118,14 +1112,19 @@ The optional message identifier allows users to enable or disable\n\
 warnings tagged by @var{id}.  The special identifier @samp{\"all\"} may\n\
 be used to set the state of all warnings.\n\
 \n\
-@deftypefnx {Built-in Function} {} warning (\"on\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
-@deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
-Set or query the state of a particular warning using the identifier\n\
-@var{id}.  If the identifier is omitted, a value of @samp{\"all\"} is\n\
-assumed.  If you set the state of a warning to @samp{\"error\"}, the\n\
-warning named by @var{id} is handled as if it were an error instead.\n\
+If the first argument is @samp{\"on\"} or @samp{\"off\"}, set the state\n\
+of a particular warning using the identifier @var{id}.  If the first\n\
+argument is @samp{\"query\"}, query the state of this warning instead.\n\
+If the identifier is omitted, a value of @samp{\"all\"} is assumed.  If\n\
+you set the state of a warning to @samp{\"error\"}, the warning named by\n\
+@var{id} is handled as if it were an error instead.  So, for example, the\n\
+following handles all warnings as errors:\n\
+\n\
+@example\n\
+@group\n\
+warning (\"error\");\n\
+@end group\n\
+@end example\n\
 @seealso{warning_ids}\n\
 @end deftypefn")
 {
@@ -1489,8 +1488,8 @@ DEFUN (lasterror, args, ,
 @deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
 @deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
 @deftypefnx {Built-in Function} {} lasterror ('reset')\n\
-Query or set the last error message structure.  When called without arguments\n\
-, return a structure containing the last error message and other\n\
+Query or set the last error message structure.  When called without\n\
+arguments, return a structure containing the last error message and other\n\
 information related to this error.  The elements of the structure are:\n\
 \n\
 @table @asis\n\
@@ -1587,7 +1586,7 @@ set to their default values.\n\
               if (! error_state && new_err.contains ("stack"))
                 {
                   octave_scalar_map new_err_stack =
-                    new_err.getfield("identifier").scalar_map_value ();
+                    new_err.getfield("stack").scalar_map_value ();
 
                   if (! error_state && new_err_stack.contains ("file"))
                     {
@@ -1774,8 +1773,13 @@ DEFUN (beep_on_error, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} beep_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} beep_on_error (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} beep_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to ring the terminal bell before printing an error message.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (beep_on_error);
@@ -1785,10 +1789,15 @@ DEFUN (debug_on_error, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_error ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_error (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_on_error (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when an error is encountered.  This will also\n\
 inhibit printing of the normal traceback message (you will only see\n\
 the top-level error message).\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_error);
@@ -1798,8 +1807,13 @@ DEFUN (debug_on_warning, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{val} =} debug_on_warning ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} debug_on_warning (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} debug_on_warning (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave will try\n\
 to enter the debugger when a warning is encountered.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (debug_on_warning);

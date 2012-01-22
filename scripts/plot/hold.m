@@ -1,4 +1,4 @@
-## Copyright (C) 2005-2011 John W. Eaton
+## Copyright (C) 2005-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -94,57 +94,61 @@ function hold (varargin)
 
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
 %! A = rand (100);
 %! [X, Y] = find (A > 0.9);
-%! imshow (A)
-%! hold on
-%! plot (X, Y, 'o')
-%! hold off
+%! imshow (A);
+%! hold on;
+%! plot (X, Y, 'o');
+%! hold off;
 
 %!demo
-%! clf
-%! hold on
-%! imagesc(1./hilb(4));
-%! plot (1:4, "-s")
-%! hold off
+%! clf;
+%! colormap ('default');
+%! hold on;
+%! imagesc (1 ./ hilb (4));
+%! plot (1:4, '-s');
+%! hold off;
 
 %!demo
-%! clf
-%! hold on
-%! imagesc(1./hilb(2));
-%! imagesc(1./hilb(4));
-%! hold off
+%! clf;
+%! colormap ('default');
+%! hold on;
+%! imagesc (1 ./ hilb (2));
+%! imagesc (1 ./ hilb (4));
+%! hold off;
 
 %!demo
-%! clf
-%! hold on
-%! plot (1:4, "-s")
-%! imagesc(1./hilb(4));
-%! hold off
+%! clf;
+%! colormap ('default');
+%! hold on;
+%! plot (1:4, '-s');
+%! imagesc (1 ./ hilb (4));
+%! hold off;
 
 %!demo
-%! clf
-%! colormap (jet)
+%! clf;
+%! colormap ('default');
 %! t = linspace (-3, 3, 50);
 %! [x, y] = meshgrid (t, t);
 %! z = peaks (x, y);
 %! contourf (x, y, z, 10);
-%! hold ("on");
-%! plot (vec (x), vec (y), "^");
-%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], "red");
+%! hold on;
+%! plot (vec (x), vec (y), '^');
+%! patch ([-1.0 1.0 1.0 -1.0 -1.0], [-1.0 -1.0 1.0 1.0 -1.0], 'red');
 %! xlim ([-2.0 2.0]);
 %! ylim ([-2.0 2.0]);
-%! colorbar ("SouthOutside");
-%! title ("Test script for some plot functions");
+%! colorbar ('SouthOutside');
+%! title ('Test script for some plot functions');
 
 ##hold on
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   p = plot ([0 1]);
-%!   assert (!ishold);
+%!   assert (! ishold);
 %!   hold on;
 %!   assert (ishold);
 %!   p1 = fill ([0 1 1], [0 0 1],"black");
@@ -160,14 +164,15 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   p = plot ([0 1]);
-%!   assert (!ishold);
+%!   assert (! ishold);
 %!   hold on;
 %!   assert (ishold);
 %!   p1 = fill ([0 1 1], [0 0 1],"black");
-%!   hold off
+%!   hold off;
 %!   p2 = fill ([0 1 0], [0 1 1], "red");
 %!   assert (length (get (hf, "children")), 1);
 %!   assert (length (get (gca, "children")), 1);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

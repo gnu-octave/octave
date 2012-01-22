@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 David Bateman
+## Copyright (C) 2010-2012 Shai Ayal
 ##
 ## This file is part of Octave.
 ##
@@ -17,11 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
-## Return which mouse buttons were pressed and keys were hit on the current
-## figure.  If @var{n} is defined, then wait for @var{n} mouse clicks
-## before returning.  If @var{n} is not defined, then @code{ginput} will
-## loop until the return key is pressed.
+## @deftypefn {Function File} {@var{args} =} __print_parse_opts__ (@var{propname}, @var{propvalue})
+## @deftypefnx {Function File} {@var{args} =} __print_parse_opts__ (@var{struct})
+## Undocumented internal function.
 ## @end deftypefn
 
 function arg_st = __print_parse_opts__ (varargin)
@@ -38,6 +36,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.fig2dev_binary = __quote_path__ (__find_binary__ ("fig2dev"));
   arg_st.fontsize = "";
   arg_st.font = "";
+  arg_st.scalefontsize = 1;
   arg_st.force_solid = 0; # 0=default, -1=dashed, +1=solid
   arg_st.formatted_for_printing = false;
   arg_st.ghostscript.binary = __quote_path__ (__ghostscript_binary__ ());
@@ -328,8 +327,12 @@ function arg_st = __print_parse_opts__ (varargin)
       arg_st.ghostscript.pageoffset = paperposition(1:2);
     endif
   else
-    ## Convert canvas size to points from pixles.
-    arg_st.canvas_size = arg_st.canvas_size * 72 / arg_st.ghostscript.resolution;
+    ## Convert canvas size to points from pixels.
+    if (! isempty (arg_st.fontsize))
+      ## Work around the eps bbox having whole numbers (both gnuplot & gl2ps).
+      arg_st.scalefontsize = arg_st.ghostscript.resolution / 72;
+    endif
+    arg_st.ghostscript.resolution = 72;
     arg_st.ghostscript.papersize = arg_st.canvas_size;
     arg_st.ghostscript.epscrop = true;
     arg_st.ghostscript.pageoffset = [0, 0];

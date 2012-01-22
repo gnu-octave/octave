@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -41,7 +41,8 @@
 ## If the argument 'filled' is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
-## The optional return value @var{h} provides a handle to the patch object
+## The optional return value @var{h} is a graphics handle to the hggroup
+## object representing the points.
 ##
 ## @example
 ## @group
@@ -83,24 +84,27 @@ endfunction
 
 
 %!demo
+%! clf;
 %! [x, y, z] = peaks (20);
 %! scatter3 (x(:), y(:), z(:), [], z(:));
+%! %% Default scatter3 with constant size bubbles and color determined by Z
 
 %!demo
-%! x = rand (20,1);
-%! y = rand (20,1);
-%! z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 10, z(:), "s");
+%! clf;
+%! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
+%! scatter3 (x(:), y(:), z(:), 10, z(:), 's');
+%! %% scatter3 using a square marker of size 10 and color determined by Z
 
 %!demo
-%! x = rand (20,1);
-%! y = rand (20,1);
-%! z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), "s");
+%! clf;
+%! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
+%! scatter3 (x(:), y(:), z(:), 20*z(:), [], 's');
+%! %% scatter3 using a square marker whose size is determined by Z
 
 %!demo
-%! x = rand (20,1);
-%! y = rand (20,1);
-%! z = rand (20,1);
-%! scatter3 (x(:), y(:), z(:), 20*z(:), [], "s");
+%! clf;
+%! x = rand (20,1);  y = rand (20,1);  z = rand (20,1);
+%! scatter3 (x(:), y(:), z(:), 20*z(:), z(:), 's');
+%! %% scatter3 using a square marker.
+%! %% Size and color of marker are determined by Z
 

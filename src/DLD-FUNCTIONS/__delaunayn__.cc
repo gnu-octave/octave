@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000-2011 Kai Habel
+Copyright (C) 2000-2012 Kai Habel
 
 This file is part of Octave.
 
@@ -50,14 +50,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-obj.h"
 
-#ifdef HAVE_QHULL
-extern "C" {
-#include <qhull/qhull_a.h>
-}
-
-#ifdef NEED_QHULL_VERSION
+#if defined (HAVE_QHULL)
+# include "oct-qhull.h"
+# if defined (NEED_QHULL_VERSION)
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
-#endif
+# endif
 #endif
 
 DEFUN_DLD (__delaunayn__, args, ,
@@ -70,7 +67,7 @@ Undocumented internal function.\n\
 {
   octave_value_list retval;
 
-#ifdef HAVE_QHULL
+#if defined (HAVE_QHULL)
 
   retval(0) = 0.0;
 

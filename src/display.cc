@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2011 John W. Eaton
+Copyright (C) 2009-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -27,12 +27,14 @@ along with Octave; see the file COPYING.  If not, see
 #include <cstdlib>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-#include <Windows.h>
+#include <windows.h>
 #elif defined (HAVE_FRAMEWORK_CARBON)
 #include <Carbon/Carbon.h>
 #elif defined (HAVE_X_WINDOWS)
 #include <X11/Xlib.h>
 #endif
+
+#include "singleton-cleanup.h"
 
 #include "display.h"
 #include "error.h"
@@ -118,6 +120,8 @@ display_info::init (bool query)
                 }
               else
                 warning ("X11 display has no default screen");
+
+              XCloseDisplay (display);
             }
           else
             warning ("unable to open X11 DISPLAY");
@@ -138,7 +142,12 @@ display_info::instance_ok (bool query)
   bool retval = true;
 
   if (! instance)
-    instance = new display_info (query);
+    {
+      instance = new display_info (query);
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {

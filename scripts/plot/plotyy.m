@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -226,43 +226,44 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   endif
 endfunction
 
+
 %!demo
-%! clf
+%! clf;
 %! x = 0:0.1:2*pi;
 %! y1 = sin (x);
 %! y2 = exp (x - 1);
-%! ax = plotyy (x, y1, x - 1, y2, @plot, @semilogy);
-%! xlabel ("X");
-%! ylabel (ax(1), "Axis 1");
-%! ylabel (ax(2), "Axis 2");
-%! axes (ax(1))
-%! text (0.5, 0.5, "Left Axis", ...
-%!       "color", [0 0 1], "horizontalalignment", "center")
-%! axes (ax(2))
-%! text (4.5, 80, "Right Axis", ...
-%!       "color", [0 0.5 0], "horizontalalignment", "center")
+%! ax = plotyy (x,y1, x-1,y2, @plot, @semilogy);
+%! xlabel ('X');
+%! ylabel (ax(1), 'Axis 1');
+%! ylabel (ax(2), 'Axis 2');
+%! axes (ax(1));
+%! text (0.5, 0.5, 'Left Axis', ...
+%!       'color', [0 0 1], 'horizontalalignment', 'center');
+%! axes (ax(2));
+%! text (4.5, 80, 'Right Axis', ...
+%!       'color', [0 0.5 0], 'horizontalalignment', 'center');
 
 %!demo
-%! clf
+%! clf;
+%! colormap ('default');
 %! x = linspace (-1, 1, 201);
-%! subplot (2, 2, 1)
-%! plotyy (x, sin(pi*x), x, 10*cos(pi*x))
-%! subplot (2, 2, 2)
-%! surf (peaks (25))
-%! subplot (2, 2, 3)
-%! contour (peaks (25))
-%! subplot (2, 2, 4)
-%! plotyy (x, 10*sin(2*pi*x), x, cos(2*pi*x))
-%! axis square
+%! subplot (2,2,1);
+%!  plotyy (x,sin(pi*x), x,10*cos(pi*x));
+%! subplot (2,2,2);
+%!  surf (peaks (25));
+%! subplot (2,2,3);
+%!  contour (peaks (25));
+%! subplot (2,2,4);
+%!  plotyy (x,10*sin(2*pi*x), x,cos(2*pi*x));
+%! axis square;
 
 %!demo
-%! clf
+%! clf;
 %! x = linspace (-1, 1, 201);
-%! subplot (1, 1, 1);
 %! hax = plotyy (x, sin(pi*x), x, cos(pi*x));
-%! ylabel ("Blue and on the Left")
-%! ylabel (hax(2), "Green and on the Right")
-%! xlabel ("xlabel")
+%! ylabel ('Blue on the Left');
+%! ylabel (hax(2), 'Green on the Right');
+%! xlabel ('xlabel');
 
 function deleteplotyy (h, d, ax2, t2)
   if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes")

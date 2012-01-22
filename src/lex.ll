@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -83,6 +83,7 @@ along with Octave; see the file COPYING.  If not, see
 // via the gnulib namespace.
 #define fprintf GNULIB_NAMESPACE::fprintf
 #define fwrite GNULIB_NAMESPACE::fwrite
+#define isatty GNULIB_NAMESPACE::isatty
 #define malloc GNULIB_NAMESPACE::malloc
 #define realloc GNULIB_NAMESPACE::realloc
 #endif
@@ -1141,9 +1142,11 @@ reset_parser (void)
 
   // Only ask for input from stdin if we are expecting interactive
   // input.
-  if ((interactive || forced_interactive)
+
+  if (! quitting_gracefully
+      && (interactive || forced_interactive)
       && ! (reading_fcn_file
-        || reading_classdef_file
+            || reading_classdef_file
             || reading_script_file
             || get_input_from_eval_string
             || input_from_startup_file))
@@ -1414,6 +1417,22 @@ void
 delete_buffer (YY_BUFFER_STATE buf)
 {
   yy_delete_buffer (buf);
+}
+
+// Delete all buffers from the stack.
+void
+clear_all_buffers (void)
+{                 
+  while (current_buffer ())
+    octave_pop_buffer_state ();
+}
+
+void
+cleanup_parser (void)
+{
+  reset_parser ();
+
+  clear_all_buffers ();
 }
 
 // Restore a buffer (for unwind-prot).

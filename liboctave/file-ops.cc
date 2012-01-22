@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -42,11 +42,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-env.h"
+#include "oct-locbuf.h"
 #include "oct-passwd.h"
 #include "pathlen.h"
 #include "quit.h"
+#include "singleton-cleanup.h"
 #include "str-vec.h"
-#include "oct-locbuf.h"
 
 file_ops *file_ops::instance = 0;
 
@@ -73,13 +74,16 @@ file_ops::instance_ok (void)
       instance = new file_ops (system_dir_sep_char, system_dir_sep_str,
                                system_dir_sep_chars);
 
-      if (! instance)
-        {
-          (*current_liboctave_error_handler)
-            ("unable to create file_ops object!");
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
-          retval = false;
-        }
+  if (! instance)
+    {
+      (*current_liboctave_error_handler)
+        ("unable to create file_ops object!");
+
+      retval = false;
     }
 
   return retval;

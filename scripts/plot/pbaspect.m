@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 Ben Abbott
+## Copyright (C) 2010-2012 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -89,25 +89,26 @@ function varargout = pbaspect (varargin)
 
 endfunction
 
-%!demo
-%! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! pbaspect ([1 1 1])
-%! title ("plot box should be square")
 
 %!demo
+%! clf;
 %! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! pbaspect ([2 1 1])
-%! title ("plot box aspect ratio should be 2x1")
+%! plot (x,cos(x), x,sin(x));
+%! pbaspect ([1 1 1]);
+%! title ('plot box is square');
 
 %!demo
+%! clf;
+%! x = 0:0.01:4;;
+%! plot (x,cos(x), x,sin(x));
+%! pbaspect ([2 1 1]);
+%! title ('plot box aspect ratio is 2x1');
+
+%!demo
+%! clf;
 %! x = 0:0.01:4;
-%! clf
-%! plot (x, cos (x), x, sin (x))
-%! daspect ([1 1 1])
-%! pbaspect ([2 1 1])
-%! title ("plot box should be 2x1, and axes [0 4 -1 1]")
+%! plot (x,cos(x), x,sin(x));
+%! daspect ([1 1 1]);
+%! pbaspect ([2 1 1]);
+%! title ('plot box is 2x1, and axes [0 4 -1 1]');
 

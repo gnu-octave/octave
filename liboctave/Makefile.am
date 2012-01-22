@@ -1,6 +1,6 @@
 # Makefile for octave's liboctave directory
 #
-# Copyright (C) 1993-2011 John W. Eaton
+# Copyright (C) 1993-2012 John W. Eaton
 #
 # This file is part of Octave.
 #
@@ -187,6 +187,7 @@ INCS = \
   Range.h \
   base-dae.h \
   base-de.h \
+  base-list.h \
   base-min.h \
   bsxfun.h \
   byte-swap.h \
@@ -243,7 +244,8 @@ INCS = \
   randgamma.h \
   randmtzig.h \
   randpoisson.h \
-  regex-match.h \
+  regexp.h \
+  singleton-cleanup.h \
   sparse-sort.h \
   sparse-util.h \
   statdefs.h \
@@ -451,7 +453,8 @@ LIBOCTAVE_CXX_SOURCES = \
   oct-time.cc \
   oct-uname.cc \
   pathsearch.cc \
-  regex-match.cc \
+  regexp.cc \
+  singleton-cleanup.cc \
   sparse-sort.cc \
   sparse-util.cc \
   str-vec.cc \
@@ -517,7 +520,7 @@ liboctave_la_CPPFLAGS = \
 
 # Increment these as needed and according to the rules in the libtool
 # manual:
-liboctave_current = 0
+liboctave_current = 1
 liboctave_revision = 0
 liboctave_age = 0
 

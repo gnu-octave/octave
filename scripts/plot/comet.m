@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 Ben Abbott
+## Copyright (C) 2008-2012 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -78,11 +78,11 @@ function comet (varargin)
 
 endfunction
 
-%!demo
-%! clf
-%! t = 0:.1:2*pi;
-%! x = cos(2*t).*(cos(t).^2);
-%! y = sin(2*t).*(sin(t).^2);
-%! comet(x,y)
 
+%!demo
+%! clf;
+%! t = 0:.1:2*pi;
+%! x = cos (2*t) .* (cos (t).^2);
+%! y = sin (2*t) .* (sin (t).^2);
+%! comet (x, y);
 

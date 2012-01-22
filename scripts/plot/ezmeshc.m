@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} ezmeshc (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezmeshc (@dots{})
 ##
-## Plots the mesh and contour lines defined by a function.  @var{f} is a string,
+## Plot the mesh and contour lines defined by a function.  @var{f} is a string,
 ## inline function or function handle with two arguments defining the function.
 ## By default the plot is over the domain @code{-2*pi < @var{x} < 2*pi} and
 ## @code{-2*pi < @var{y} < 2*pi} with 60 points in each dimension.
@@ -44,8 +44,9 @@
 ## If the argument 'circ' is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
-## The optional return value @var{h} provides a list of handles to the
-## the parts of the vector field (body, arrow and marker).
+## The optional return value @var{h} is a 2-element vector with a graphics
+## handle for the created mesh plot and a second handle for the created contour
+## plot.
 ##
 ## @example
 ## @group
@@ -68,8 +69,13 @@ function retval = ezmeshc (varargin)
   if (nargout > 0)
     retval = h;
   endif
+
 endfunction
 
+
 %!demo
-%! f = @(x,y) sqrt(abs(x .* y)) ./ (1 + x.^2 + y.^2);
+%! clf;
+%! colormap ('default');
+%! f = @(x,y) sqrt (abs (x .* y)) ./ (1 + x.^2 + y.^2);
 %! ezmeshc (f, [-3, 3]);
+

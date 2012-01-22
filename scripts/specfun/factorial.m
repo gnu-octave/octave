@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -30,7 +30,7 @@ function x = factorial (n)
   if (nargin != 1)
     print_usage ();
   elseif (any (n(:) < 0 | n(:) != fix (n(:))))
-    error ("factorial: N must all be nonnegative integers");
+    error ("factorial: N must all be non-negative integers");
   endif
   x = round (gamma (n+1));
 endfunction
@@ -38,5 +38,5 @@ endfunction
 %!assert (factorial(5), prod(1:5))
 %!assert (factorial([1,2;3,4]), [1,2;6,24])
 %!assert (factorial(70), exp(sum(log(1:70))), -128*eps)
-%!fail ('factorial(5.5)', "must all be nonnegative integers")
-%!fail ('factorial(-3)', "must all be nonnegative integers")
+%!fail ('factorial(5.5)', "must all be non-negative integers")
+%!fail ('factorial(-3)', "must all be non-negative integers")

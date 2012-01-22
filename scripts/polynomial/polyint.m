@@ -1,4 +1,4 @@
-## Copyright (C) 1996-2011 John W. Eaton
+## Copyright (C) 1996-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -22,8 +22,7 @@
 ## Return the coefficients of the integral of the polynomial whose
 ## coefficients are represented by the vector @var{p}.  The variable
 ## @var{k} is the constant of integration, which by default is set to zero.
-## @seealso{poly, polyderiv, polyreduce, roots, conv, deconv, residue,
-## filter, polyval, polyvalm}
+## @seealso{polyder, polyval}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

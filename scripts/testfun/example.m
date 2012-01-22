@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2011 Paul Kienzle
+## Copyright (C) 2000-2012 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -83,10 +83,13 @@ function [code_r, idx_r] = example (name, n)
 
 endfunction
 
-%!## warning: don't modify the demos without modifying the tests!
+
+## WARNING: don't modify the demos without modifying the tests!
 %!demo
 %! example ('example');
+
 %!demo
+%! clf;
 %! t=0:0.01:2*pi; x = sin(t);
 %! plot (t,x)
 
@@ -94,9 +97,10 @@ endfunction
 %!test
 %! [code, idx] = example ('example');
 %! assert (code, ...
-%!         "\n example ('example');\n t=0:0.01:2*pi; x = sin(t);\n plot (t,x)")
-%! assert (idx, [1, 23, 63]);
+%!         "\n example ('example');\n clf;\n t=0:0.01:2*pi; x = sin(t);\n plot (t,x)")
+%! assert (idx, [1, 23, 69]);
 
 %% Test input validation
-%!error example;
-%!error example('example', 3, 5)
+%!error example
+%!error example ('example', 3, 5)
+

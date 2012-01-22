@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 Copyright (C) 2009 VZLU Prague
 
 This file is part of Octave.
@@ -31,12 +31,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "glob-match.h"
-#include "regex-match.h"
+#include "regexp.h"
 
 class tree_argument_list;
 class octave_user_function;
 
 #include "oct-obj.h"
+#include "oct-refcount.h"
 #include "ov.h"
 
 class
@@ -81,12 +82,14 @@ public:
       return instance_ok () ? instance->do_scopes () : std::list<scope_id> ();
     }
 
+    static void create_instance (void);
+
     static bool instance_ok (void)
     {
       bool retval = true;
 
       if (! instance)
-        instance = new scope_id_cache ();
+        create_instance ();
 
       if (! instance)
         {
@@ -107,6 +110,8 @@ public:
     scope_id_cache& operator = (const scope_id_cache&);
 
     static scope_id_cache *instance;
+
+    static void cleanup_instance (void) { delete instance; instance = 0; }
 
     // The next available scope not in the free list.
     scope_id next_available;
@@ -383,7 +388,7 @@ public:
 
       fcn_info *finfo;
 
-      size_t count;
+      octave_refcount<size_t> count;
 
     private:
 
@@ -724,7 +729,7 @@ public:
 
       octave_value built_in_function;
 
-      size_t count;
+      octave_refcount<size_t> count;
 
     private:
 
@@ -1679,7 +1684,7 @@ public:
   {
     std::list<symbol_record> retval;
 
-    regex_match pat (pattern);
+    ::regexp pat (pattern);
 
     for (global_table_const_iterator p = global_table.begin ();
          p != global_table.end (); p++)
@@ -1688,7 +1693,7 @@ public:
         // the results from regexp_variables and regexp_global_variables
         // may be handled the same way.
 
-        if (pat.match (p->first))
+        if (pat.is_match (p->first))
           retval.push_back (symbol_record (p->first, p->second,
                                            symbol_record::global));
       }
@@ -2310,7 +2315,7 @@ private:
 
   void do_clear_variable_regexp (const std::string& pat)
   {
-    regex_match pattern (pat);
+    ::regexp pattern (pat);
 
     for (table_iterator p = table.begin (); p != table.end (); p++)
       {
@@ -2318,7 +2323,7 @@ private:
 
         if (sr.is_defined () || sr.is_global ())
           {
-            if (pattern.match (sr.name ()))
+            if (pattern.is_match (sr.name ()))
               sr.clear ();
           }
       }
@@ -2385,11 +2390,11 @@ private:
   {
     std::list<symbol_record> retval;
 
-    regex_match pat (pattern);
+    ::regexp pat (pattern);
 
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
       {
-        if (pat.match (p->first))
+        if (pat.is_match (p->first))
           {
             const symbol_record& sr = p->second;
 

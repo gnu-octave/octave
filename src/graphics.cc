@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2011 John W. Eaton
+Copyright (C) 2007-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,10 +36,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <sstream>
 
+#include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-locbuf.h"
+#include "singleton-cleanup.h"
 
-#include "cmd-edit.h"
 #include "cutils.h"
 #include "defun.h"
 #include "display.h"
@@ -47,7 +49,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 #include "input.h"
 #include "ov.h"
-#include "oct-locbuf.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
@@ -283,7 +284,8 @@ default_axes_tick (void)
 static Matrix
 default_axes_ticklength (void)
 {
-  Matrix m (1, 2, 0.01);
+  Matrix m (1, 2, 0.0);
+  m(0) = 0.01;
   m(1) = 0.025;
   return m;
 }
@@ -350,7 +352,8 @@ default_panel_position (void)
 
   retval(0) = 0;
   retval(1) = 0;
-  retval(2) = retval(3) = 0.5;
+  retval(2) = 0.5;
+  retval(3) = 0.5;
 
   return retval;
 }
@@ -2322,6 +2325,114 @@ gca (void)
 }
 
 static void
+delete_graphics_object (const graphics_handle& h)
+{
+  if (h.ok ())
+    {
+      graphics_object obj = gh_manager::get_object (h);
+
+      // Don't do recursive deleting, due to callbacks
+      if (! obj.get_properties ().is_beingdeleted ())
+        {
+          graphics_handle parent_h = obj.get_parent ();
+
+          graphics_object parent_obj =
+            gh_manager::get_object (parent_h);
+
+          // NOTE: free the handle before removing it from its
+          //       parent's children, such that the object's
+          //       state is correct when the deletefcn callback
+          //       is executed
+
+          gh_manager::free (h);
+
+          // A callback function might have already deleted
+          // the parent
+          if (parent_obj.valid_object ())
+            parent_obj.remove_child (h);
+
+          Vdrawnow_requested = true;
+        }
+    }
+}
+
+static void
+delete_graphics_object (double val)
+{
+  delete_graphics_object (gh_manager::lookup (val));
+}
+
+static void
+delete_graphics_objects (const NDArray vals)
+{
+  for (octave_idx_type i = 0; i < vals.numel (); i++)
+    delete_graphics_object (vals.elem (i));
+}
+
+static void
+close_figure (const graphics_handle& handle)
+{
+  octave_value closerequestfcn = xget (handle, "closerequestfcn");
+
+  OCTAVE_SAFE_CALL (gh_manager::execute_callback, (handle, closerequestfcn));
+}
+
+static void
+force_close_figure (const graphics_handle& handle)
+{
+  // Remove the deletefcn and closerequestfcn callbacks and delete the
+  // object directly.
+
+  xset (handle, "deletefcn", Matrix ());
+  xset (handle, "closerequestfcn", Matrix ());
+
+  delete_graphics_object (handle);
+}
+
+void
+gh_manager::do_close_all_figures (void)
+{
+  // FIXME -- should we process or discard pending events?
+
+  event_queue.clear ();
+
+  // Don't use figure_list_iterator because we'll be removing elements
+  // from the list elsewhere.
+
+  Matrix hlist = do_figure_handle_list (true);
+
+  for (octave_idx_type i = 0; i < hlist.numel (); i++)
+    {
+      graphics_handle h = gh_manager::lookup (hlist(i));
+
+      if (h.ok ())
+        close_figure (h);
+    }
+
+  // They should all be closed now.  If not, force them to close.
+
+  hlist = do_figure_handle_list (true);
+
+  for (octave_idx_type i = 0; i < hlist.numel (); i++)
+    {
+      graphics_handle h = gh_manager::lookup (hlist(i));
+
+      if (h.ok ())
+        force_close_figure (h);
+    }
+
+  // None left now, right?
+
+  hlist = do_figure_handle_list (true);
+
+  assert (hlist.numel () == 0);
+
+  // Clear all callback objects from our list.
+
+  callback_objects.clear ();
+}
+
+static void
 adopt (const graphics_handle& p, const graphics_handle& h)
 {
   graphics_object parent_obj = gh_manager::get_object (p);
@@ -2416,6 +2527,7 @@ base_graphics_toolkit::finalize (const graphics_handle& h)
 
   finalize (go);
 }
+
 // ---------------------------------------------------------------------
 
 void
@@ -2653,135 +2765,6 @@ base_properties::delete_listener (const caseless_str& nm,
 
 // ---------------------------------------------------------------------
 
-class gnuplot_toolkit : public base_graphics_toolkit
-{
-public:
-  gnuplot_toolkit (void)
-      : base_graphics_toolkit ("gnuplot") { }
-
-  ~gnuplot_toolkit (void) { }
-
-  bool is_valid (void) const { return true; }
-
-  bool initialize (const graphics_object& go)
-    {
-      return go.isa ("figure");
-    }
-
-  void finalize (const graphics_object& go)
-    {
-      if (go.isa ("figure"))
-        {
-          const figure::properties& props =
-              dynamic_cast<const figure::properties&> (go.get_properties ());
-
-          send_quit (props.get___plot_stream__ ());
-        }
-    }
-
-  void update (const graphics_object& go, int id)
-    {
-      if (go.isa ("figure"))
-        {
-          graphics_object obj (go);
-
-          figure::properties& props =
-              dynamic_cast<figure::properties&> (obj.get_properties ());
-
-          switch (id)
-            {
-            case base_properties::ID_VISIBLE:
-              if (! props.is_visible ())
-                {
-                  send_quit (props.get___plot_stream__ ());
-                  props.set___plot_stream__ (Matrix ());
-                  props.set___enhanced__ (false);
-                }
-              break;
-            }
-        }
-    }
-
-  void redraw_figure (const graphics_object& go) const
-    {
-      octave_value_list args;
-      args(0) = go.get_handle ().as_octave_value ();
-      feval ("__gnuplot_drawnow__", args);
-    }
-
-  void print_figure (const graphics_object& go, const std::string& term,
-                     const std::string& file, bool mono,
-                     const std::string& debug_file) const
-    {
-      octave_value_list args;
-      if (! debug_file.empty ())
-        args(4) = debug_file;
-      args(3) = mono;
-      args(2) = file;
-      args(1) = term;
-      args(0) = go.get_handle ().as_octave_value ();
-      feval ("__gnuplot_drawnow__", args);
-    }
-
-  Matrix get_canvas_size (const graphics_handle&) const
-    {
-      Matrix sz (1, 2, 0.0);
-      return sz;
-    }
-
-  double get_screen_resolution (void) const
-    { return 72.0; }
-
-  Matrix get_screen_size (void) const
-    { return Matrix (1, 2, 0.0); }
-
-private:
-  void send_quit (const octave_value& pstream) const
-    {
-      if (! pstream.is_empty ())
-        {
-          octave_value_list args;
-          Matrix fids = pstream.matrix_value ();
-
-          if (! error_state)
-            {
-              args(1) = "\nquit;\n";
-              args(0) = fids(0);
-              feval ("fputs", args);
-
-              args.resize (1);
-              feval ("fflush", args);
-              feval ("pclose", args);
-
-              if (fids.numel () > 1)
-                {
-                  args(0) = fids(1);
-                  feval ("pclose", args);
-
-                  if (fids.numel () > 2)
-                    {
-                      args(0) = fids(2);
-                      feval ("waitpid", args);
-                    }
-                }
-            }
-        }
-    }
-};
-
-graphics_toolkit
-graphics_toolkit::default_toolkit (void)
-{
-  if (available_toolkits.size () == 0)
-    register_toolkit (new gnuplot_toolkit ());
-
-  return available_toolkits["gnuplot"];
-}
-
-std::map<std::string, graphics_toolkit> graphics_toolkit::available_toolkits;
-
-// ---------------------------------------------------------------------
-
 void
 base_graphics_object::update_axis_limits (const std::string& axis_type)
 {
@@ -2936,7 +2919,8 @@ root_figure::properties::set_currentfigure (const octave_value& v)
     {
       currentfigure = val;
 
-      gh_manager::push_figure (val);
+      if (val.ok ())
+        gh_manager::push_figure (val);
     }
   else
     gripe_set_invalid ("currentfigure");
@@ -5698,7 +5682,7 @@ axes::properties::get_axis_limits (double xmin, double xmax,
             }
           if ((min_val <= 0 && max_val > 0))
             {
-              warning ("axis: omitting nonpositive data in log plot");
+              warning ("axis: omitting non-positive data in log plot");
               min_val = min_pos;
             }
           // FIXME -- maybe this test should also be relative?
@@ -5745,8 +5729,8 @@ axes::properties::get_axis_limits (double xmin, double xmax,
 
   retval.resize (1, 2);
 
-  retval(0) = min_val;
   retval(1) = max_val;
+  retval(0) = min_val;
 
   return retval;
 }
@@ -7392,7 +7376,16 @@ gh_manager::gh_manager (void)
   handle_map[0] = graphics_object (new root_figure ());
 
   // Make sure the default graphics toolkit is registered.
-  graphics_toolkit::default_toolkit ();
+  gtk_manager::default_toolkit ();
+}
+
+void
+gh_manager::create_instance (void)
+{
+  instance = new gh_manager ();
+
+  if (instance)
+    singleton_cleanup_list::add (cleanup_instance);
 }
 
 graphics_handle
@@ -8156,6 +8149,8 @@ values or lists respectively.\n\
 
   int nargin = args.length ();
 
+  bool use_cell_format = false;
+
   if (nargin == 1 || nargin == 2)
     {
       if (args(0).is_empty())
@@ -8169,8 +8164,6 @@ values or lists respectively.\n\
       if (! error_state)
         {
           octave_idx_type len = hcv.length ();
-
-          vals.resize (dim_vector (len, 1));
 
           if (nargin == 1 && len > 1)
             {
@@ -8197,31 +8190,74 @@ values or lists respectively.\n\
 
           if (! error_state)
             {
-              for (octave_idx_type n = 0; n < len; n++)
+              if (nargin > 1 && args(1).is_cellstr ())
                 {
-                  graphics_object obj = gh_manager::get_object (hcv(n));
+                  Array<std::string> plist = args(1).cellstr_value ();
 
-                  if (obj)
+                  if (! error_state)
                     {
-                      if (nargin == 1)
-                        vals(n) = obj.get ();
-                      else
-                        {
-                          caseless_str property = args(1).string_value ();
+                      octave_idx_type plen = plist.numel ();
 
-                          if (! error_state)
-                            vals(n) = obj.get (property);
+                      use_cell_format = true;
+
+                      vals.resize (dim_vector (len, plen));
+
+                      for (octave_idx_type n = 0; ! error_state && n < len; n++)
+                        {
+                          graphics_object obj = gh_manager::get_object (hcv(n));
+
+                          if (obj)
+                            {
+                              for (octave_idx_type m = 0; ! error_state && m < plen; m++)
+                                {
+                                  caseless_str property = plist(m);
+
+                                  vals(n, m) = obj.get (property);
+                                }
+                            }
                           else
                             {
-                              error ("get: expecting property name as second argument");
+                              error ("get: invalid handle (= %g)", hcv(n));
                               break;
                             }
                         }
                     }
                   else
+                    error ("get: expecting property name or cell array of property names as second argument");
+                }
+              else
+                {
+                  caseless_str property;
+
+                  if (nargin > 1)
                     {
-                      error ("get: invalid handle (= %g)", hcv(n));
-                      break;
+                      property = args(1).string_value ();
+
+                      if (error_state)
+                        error ("get: expecting property name or cell array of property names as second argument");
+                    }
+
+                  vals.resize (dim_vector (len, 1));
+
+                  if (! error_state)
+                    {
+                      for (octave_idx_type n = 0; ! error_state && n < len; n++)
+                        {
+                          graphics_object obj = gh_manager::get_object (hcv(n));
+
+                          if (obj)
+                            {
+                              if (nargin == 1)
+                                vals(n) = obj.get ();
+                              else
+                                vals(n) = obj.get (property);
+                            }
+                          else
+                            {
+                              error ("get: invalid handle (= %g)", hcv(n));
+                              break;
+                            }
+                        }
                     }
                 }
             }
@@ -8234,23 +8270,28 @@ values or lists respectively.\n\
 
   if (! error_state)
     {
-      octave_idx_type len = vals.numel ();
-
-      if (len == 0)
-        retval = Matrix ();
-      else if (len == 1)
-        retval = vals(0);
-      else if (len > 1 && nargin == 1)
-        {
-          OCTAVE_LOCAL_BUFFER (octave_scalar_map, tmp, len);
-
-          for (octave_idx_type n = 0; n < len; n++)
-            tmp[n] = vals(n).scalar_map_value ();
-
-          retval = octave_map::cat (0, len, tmp);
-        }
-      else
+      if (use_cell_format)
         retval = vals;
+      else
+        {
+          octave_idx_type len = vals.numel ();
+
+          if (len == 0)
+            retval = Matrix ();
+          else if (len == 1)
+            retval = vals(0);
+          else if (len > 1 && nargin == 1)
+            {
+              OCTAVE_LOCAL_BUFFER (octave_scalar_map, tmp, len);
+
+              for (octave_idx_type n = 0; n < len; n++)
+                tmp[n] = vals(n).scalar_map_value ();
+
+              retval = octave_map::cat (0, len, tmp);
+            }
+          else
+            retval = vals;
+        }
     }
 
   return retval;
@@ -8724,40 +8765,7 @@ Undocumented internal function.\n\
             }
 
           if (! error_state)
-            {
-              for (octave_idx_type i = 0; i < vals.numel (); i++)
-                {
-                  h = gh_manager::lookup (vals.elem (i));
-
-                  if (h.ok ())
-                    {
-                      graphics_object obj = gh_manager::get_object (h);
-
-                      // Don't do recursive deleting, due to callbacks
-                      if (! obj.get_properties ().is_beingdeleted ())
-                        {
-                          graphics_handle parent_h = obj.get_parent ();
-
-                          graphics_object parent_obj =
-                            gh_manager::get_object (parent_h);
-
-                          // NOTE: free the handle before removing it from its
-                          //       parent's children, such that the object's
-                          //       state is correct when the deletefcn callback
-                          //       is executed
-
-                          gh_manager::free (h);
-
-                          // A callback function might have already deleted
-                          // the parent
-                          if (parent_obj.valid_object ())
-                            parent_obj.remove_child (h);
-
-                          Vdrawnow_requested = true;
-                        }
-                    }
-                }
-            }
+            delete_graphics_objects (vals);
         }
       else
         error ("delete: invalid graphics object");
@@ -8939,15 +8947,100 @@ Internal function: returns the pixel size of the image in normalized units.\n\
   return retval;
 }
 
+gtk_manager *gtk_manager::instance = 0;
+
+void
+gtk_manager::create_instance (void)
+{
+  instance = new gtk_manager ();
+
+  if (instance)
+    singleton_cleanup_list::add (cleanup_instance);
+}
+
+graphics_toolkit
+gtk_manager::do_get_toolkit (void) const
+{
+  graphics_toolkit retval;
+
+  const_loaded_toolkits_iterator pl = loaded_toolkits.find (dtk);
+
+  if (pl == loaded_toolkits.end ())
+    {
+      const_available_toolkits_iterator pa = available_toolkits.find (dtk);
+
+      if (pa != available_toolkits.end ())
+        {
+          octave_value_list args;
+          args(0) = dtk;
+          feval ("graphics_toolkit", args);
+
+          if (! error_state)
+            pl = loaded_toolkits.find (dtk);
+
+          if (error_state || pl == loaded_toolkits.end ())
+            error ("failed to load %s graphics toolkit", dtk.c_str ());
+          else
+            retval = pl->second;
+        }
+      else
+        error ("default graphics toolkit `%s' is not available!",
+               dtk.c_str ());
+    }
+  else
+    retval = pl->second;
+
+  return retval;
+}
+
 DEFUN (available_graphics_toolkits, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_graphics_toolkits ()\n\
 Return a cell array of registered graphics toolkits.\n\
+@seealso{graphics_toolkit, register_graphics_toolkit}\n\
 @end deftypefn")
 {
   gh_manager::auto_lock guard;
 
-  return octave_value (graphics_toolkit::available_toolkits_list ());
+  return octave_value (gtk_manager::available_toolkits_list ());
+}
+
+DEFUN (register_graphics_toolkit, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} register_graphics_toolkit (@var{toolkit})\n\
+List @var{toolkit} as an available graphics toolkit.\n\
+@seealso{available_graphics_toolkits}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  gh_manager::auto_lock guard;
+
+  if (args.length () == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+        gtk_manager::register_toolkit (name);
+      else
+        error ("register_graphics_toolkit: expecting character string");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (loaded_graphics_toolkits, , ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} loaded_graphics_toolkits ()\n\
+Return a cell array of the currently loaded graphics toolkits.\n\
+@seealso{available_graphics_toolkits}\n\
+@end deftypefn")
+{
+  gh_manager::auto_lock guard;
+
+  return octave_value (gtk_manager::loaded_toolkits_list ());
 }
 
 DEFUN (drawnow, args, ,
@@ -8964,7 +9057,6 @@ undocumented.\n\
 @end deftypefn")
 {
   static int drawnow_executing = 0;
-  static bool __go_close_all_registered__ = false;
 
   octave_value retval;
 
@@ -8977,13 +9069,6 @@ undocumented.\n\
 
   if (++drawnow_executing <= 1)
     {
-      if (! __go_close_all_registered__)
-        {
-          octave_add_atexit_function ("__go_close_all__");
-
-          __go_close_all_registered__ = true;
-        }
-
       if (args.length () == 0 || args.length () == 1)
         {
           Matrix hlist = gh_manager::figure_handle_list (true);

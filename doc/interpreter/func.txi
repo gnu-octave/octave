@@ -1,4 +1,4 @@
-@c Copyright (C) 1996-2011 John W. Eaton
+@c Copyright (C) 1996-2012 John W. Eaton
 @c
 @c This file is part of Octave.
 @c
@@ -290,8 +290,8 @@ dimensions, and it is often desirable to give the individual return
 values distinct names.
 
 It is possible to use the @code{nthargout} function to obtain only some
-of the return values or several at once in a cell array. @ref{Cell Array
-Objects}
+of the return values or several at once in a cell array.
+@ref{Cell Array Objects}
 
 @DOCSTRING(nthargout)
 
@@ -1145,6 +1145,8 @@ f (pi/4)
 @end group
 @end example
 
+@DOCSTRING(is_function_handle)
+
 @DOCSTRING(functions)
 
 @DOCSTRING(func2str)
@@ -1224,8 +1226,6 @@ writing @code{f(x)}.
 @DOCSTRING(argnames)
 
 @DOCSTRING(formula)
-
-@DOCSTRING(vectorize)
 
 @DOCSTRING(symvar)
 
@@ -1349,6 +1349,9 @@ Functions for displaying and printing two- and three-dimensional graphs.
 
 @item polynomial
 Functions for manipulating polynomials.
+
+@item prefs
+Functions implementing user-defined preferences.
 
 @item set
 Functions for creating and manipulating sets of unique values.

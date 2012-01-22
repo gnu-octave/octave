@@ -1,4 +1,4 @@
-## Copyright (C) 2007-2011 David Bateman
+## Copyright (C) 2007-2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,8 +22,9 @@
 ## Plot a triangular surface in 3D@.  The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned
 ## from @code{delaunay}.  The variable @var{z} is value at the point
-## @code{(@var{x}, @var{y})}.  The output argument @var{h} is the graphic
-## handle of the plot.
+## @code{(@var{x}, @var{y})}.
+##
+## The optional return value @var{h} is a graphics handle to the created plot.
 ## @seealso{triplot, trimesh, delaunay3}
 ## @end deftypefn
 
@@ -72,9 +73,35 @@ endfunction
 
 
 %!demo
-%! old_state = rand ("state");
-%! restore_state = onCleanup (@() rand ("state", old_state));
-%! rand ("state", 10);
+%! clf;
+%! colormap ('default');
+%! N = 31;
+%! [x, y] = meshgrid (1:N);
+%! tri = delaunay (x, y);
+%! z = peaks (N);
+%! h = trisurf (tri, x, y, z, 'facecolor', 'interp');
+%! axis tight;
+%! zlim auto;
+%! title (sprintf ('facecolor = %s', get (h, 'facecolor')));
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! N = 31;
+%! [x, y] = meshgrid (1:N);
+%! tri = delaunay (x, y);
+%! z = peaks (N);
+%! h = trisurf (tri, x, y, z, 'facecolor', 'flat');
+%! axis tight;
+%! zlim auto;
+%! title (sprintf ('facecolor = %s', get (h, 'facecolor')));
+
+%!demo
+%! clf;
+%! colormap ('default');
+%! old_state = rand ('state');
+%! restore_state = onCleanup (@() rand ('state', old_state));
+%! rand ('state', 10);
 %! N = 10;
 %! x = 3 - 6 * rand (N, N);
 %! y = 3 - 6 * rand (N, N);
@@ -83,23 +110,29 @@ endfunction
 %! trisurf (tri, x(:), y(:), z(:));
 
 %!demo
+%! clf;
+%! colormap ('default');
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z)
+%! trisurf (tri, x, y, z);
 
 %!demo
+%! clf;
+%! colormap ('default');
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, "facecolor", "interp")
+%! trisurf (tri, x, y, z, 'facecolor', 'interp');
 
 %!demo
+%! clf;
+%! colormap ('default');
 %! x = rand (100, 1);
 %! y = rand (100, 1);
 %! z = x.^2 + y.^2;
 %! tri = delaunay (x, y);
-%! trisurf (tri, x, y, z, "facecolor", "interp", "edgecolor", "k")
+%! trisurf (tri, x, y, z, 'facecolor', 'interp', 'edgecolor', 'k');
 

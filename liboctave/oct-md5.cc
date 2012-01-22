@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007-2011 David Bateman
+Copyright (C) 2007-2012 David Bateman
 
 This file is part of Octave.
 
@@ -62,7 +62,7 @@ oct_md5_file (const std::string file)
 {
   std::string retval;
 
-  FILE *ifile = fopen (file.c_str (), "rb");
+  FILE *ifile = gnulib::fopen (file.c_str (), "rb");
 
   if (ifile)
     {

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -208,11 +208,15 @@ protected:
       type_conv_ops (dim_vector (init_tab_sz, init_tab_sz), 0),
       widening_ops (dim_vector (init_tab_sz, init_tab_sz), 0)  { }
 
+  ~octave_value_typeinfo (void) { }
+
 private:
 
   static const int init_tab_sz;
 
   static octave_value_typeinfo *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   int num_types;
 

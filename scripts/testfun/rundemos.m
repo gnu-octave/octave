@@ -1,4 +1,4 @@
-## Copyright (C) 2008-2011 John W. Eaton
+## Copyright (C) 2008-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -62,7 +62,11 @@ function run_all_demos (directory)
     if (length (f) > 2 && strcmp (f((end-1):end), ".m"))
       f = fullfile (directory, f);
       if (has_demos (f))
-        demo (f);
+        try
+          demo (f);
+        catch
+          printf ("error: %s\n\n", lasterror().message)
+        end_try_catch
         if (i != numel (flist))
           input ("Press <enter> to continue: ", "s");
         endif
@@ -78,8 +82,11 @@ function retval = has_demos (f)
   else
     str = fscanf (fid, "%s");
     fclose (fid);
-    retval = findstr (str, "%!demo");
+    retval = strfind (str, "%!demo");
   endif
 endfunction
 
-%!error rundemos ("foo", 1);
+
+%!error rundemos ("foo", 1)
+%!error <DIRECTORY argument> rundemos ("#_TOTALLY_/_INVALID_/_PATHNAME_#")
+

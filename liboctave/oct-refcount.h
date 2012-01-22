@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011 Jaroslav Hajek
+Copyright (C) 2012 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -23,6 +23,30 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_refcount_h)
 #define octave_refcount_h 1
 
+#ifndef OCTAVE_CONFIG_INCLUDED
+# error "The file <octave/config.h> must be included before oct-refcount.h."
+#endif
+
+#if defined (USE_ATOMIC_REFCOUNT) && (defined (_MSC_VER) || defined (__GNUC__))
+# if defined (_MSC_VER)
+#  include <intrin.h>
+#  define OCTREFCOUNT_ATOMIC_INCREMENT(x) _InterlockedIncrement((long*)x)
+#  define OCTREFCOUNT_ATOMIC_DECREMENT(x) _InterlockedDecrement((long*)x)
+#  define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) _InterlockedExchangeAdd((long*)x,  1)
+#  define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) _InterlockedExchangeAdd((long*)x, -1)
+# elif defined (__GNUC__)
+#  define OCTREFCOUNT_ATOMIC_INCREMENT(x) __sync_add_and_fetch(x,  1)
+#  define OCTREFCOUNT_ATOMIC_DECREMENT(x) __sync_add_and_fetch(x, -1)
+#  define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) __sync_fetch_and_add(x,  1)
+#  define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) __sync_fetch_and_add(x, -1)
+# endif
+#else // Generic non-locking versions
+# define OCTREFCOUNT_ATOMIC_INCREMENT(x) ++(*(x))
+# define OCTREFCOUNT_ATOMIC_DECREMENT(x) --(*(x))
+# define OCTREFCOUNT_ATOMIC_INCREMENT_POST(x) (*(x))++
+# define OCTREFCOUNT_ATOMIC_DECREMENT_POST(x) (*(x))--
+#endif
+
 // Encapsulates a reference counter.
 template <class T>
 class octave_refcount
@@ -35,28 +59,28 @@ public:
   // Increment/Decrement. int is postfix.
   count_type operator++(void)
     {
-      return ++count;
+      return OCTREFCOUNT_ATOMIC_INCREMENT (&count);
     }
 
   count_type operator++(int)
     {
-      return count++;
+      return OCTREFCOUNT_ATOMIC_INCREMENT_POST (&count);
     }
 
   count_type operator--(void)
     {
-      return --count;
+      return OCTREFCOUNT_ATOMIC_DECREMENT (&count);
     }
 
   count_type operator--(int)
     {
-      return count--;
+      return OCTREFCOUNT_ATOMIC_DECREMENT_POST (&count);
     }
 
-  operator count_type (void) const { return count; }
-
-  // For low-level optimizations only.
-  count_type& direct (void) const { return count; }
+  operator count_type (void) const
+    {
+      return static_cast<count_type const volatile&> (count);
+    }
 
 private:
   count_type count;

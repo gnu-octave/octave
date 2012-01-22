@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2011 John W. Eaton
+Copyright (C) 1996-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -40,8 +40,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
-#include "str-vec.h"
 #include "quit.h"
+#include "singleton-cleanup.h"
+#include "str-vec.h"
 
 #include "error.h"
 #include "gripes.h"
@@ -3916,7 +3917,12 @@ octave_stream_list::instance_ok (void)
   bool retval = true;
 
   if (! instance)
-    instance = new octave_stream_list ();
+    {
+      instance = new octave_stream_list ();
+
+      if (instance)
+        singleton_cleanup_list::add (cleanup_instance);
+    }
 
   if (! instance)
     {
@@ -4175,9 +4181,9 @@ octave_stream_list::do_get_info (int fid) const
     {
       retval.resize (3);
 
-      retval(0) = os.name ();
-      retval(1) = octave_stream::mode_as_string (os.mode ());
       retval(2) = oct_mach_info::float_format_as_string (os.float_format ());
+      retval(1) = octave_stream::mode_as_string (os.mode ());
+      retval(0) = os.name ();
     }
   else
     ::error ("invalid file id = %d", fid);

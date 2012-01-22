@@ -1,4 +1,4 @@
-## Copyright (C) 2006-2011 Alexander Barth
+## Copyright (C) 2006-2012 Alexander Barth
 ##
 ## This file is part of Octave.
 ##

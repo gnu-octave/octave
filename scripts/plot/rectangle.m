@@ -1,4 +1,4 @@
-## Copyright (C) 2011 David Bateman
+## Copyright (C) 2012 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -44,9 +44,10 @@
 ## min (pos (1:2)) / max (pos (1:2)) * curv
 ## @end example
 ##
-## Other properties are passed to the underlying patch command.  If called
-## with an output argument, @code{rectangle} returns the handle to the
-## rectangle.
+## Other properties are passed to the underlying patch command. 
+## 
+## The optional return value @var{h} is a graphics handle to the created
+## rectangle object.
 ## @end deftypefn
 ## @seealso{patch}
 
@@ -204,18 +205,18 @@ endfunction
 
 
 %!demo
-%! close all
-%! axis equal
-%! rectangle ("Position", [0.05, 0.05, 0.9, 0.9], "Curvature", [0.5, 0.5]);
+%! clf;
+%! axis equal;
+%! rectangle ('Position', [0.05, 0.05, 0.9, 0.9], 'Curvature', [0.5, 0.5]);
 
 %!demo
-%! close all
-%! axis equal
-%! rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature", 1.0);
+%! clf;
+%! axis equal;
+%! rectangle ('Position', [0.05, 0.05, 0.9, 0.4], 'Curvature', 1.0);
 
 %!demo
-%! close all
-%! axis equal
-%! h = rectangle ("Position", [0.05, 0.05, 0.9, 0.4], "Curvature",  1.0);
-%! set (h, "FaceColor", [0, 1, 0]);
+%! clf;
+%! axis equal;
+%! h = rectangle ('Position', [0.05, 0.05, 0.9, 0.4], 'Curvature', 1.0);
+%! set (h, 'FaceColor', [0, 1, 0]);
 

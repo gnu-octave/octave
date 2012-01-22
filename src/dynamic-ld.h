@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1993-2011 John W. Eaton
+Copyright (C) 1993-2012 John W. Eaton
 
 This file is part of Octave.
 
@@ -63,6 +63,8 @@ private:
   octave_dynamic_loader& operator = (const octave_dynamic_loader&);
 
   static octave_dynamic_loader *instance;
+
+  static void cleanup_instance (void) { delete instance; instance = 0; }
 
   static bool instance_ok (void);
 

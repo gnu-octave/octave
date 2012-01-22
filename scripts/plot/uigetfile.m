@@ -1,4 +1,4 @@
-## Copyright (C) 2010-2011 Kai Habel
+## Copyright (C) 2010-2012 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -98,9 +98,10 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     for i = 1 : length (varargin)
       val = varargin{i};
       if (ischar (val))
-        if (strncmpi (val, "multiselect", 11))
+        val = tolower (val);
+        if (strncmp (val, "multiselect", 11))
           idx1 = i;
-        elseif (strncmpi (val, "position", 8))
+        elseif (strncmp (val, "position", 8))
           idx2 = i;
         endif
       endif
@@ -185,9 +186,10 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
 
 endfunction
 
+
 %!demo
-%! uigetfile({"*.gif;*.png;*.jpg", "Supported Picture Formats"})
+%! uigetfile ({'*.gif;*.png;*.jpg', 'Supported Picture Formats'});
 
 ## Remove from test statistics.  No real tests possible.
-%!test
-%! assert (1);
+%!assert (1);
+

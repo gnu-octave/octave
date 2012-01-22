@@ -1,4 +1,4 @@
-## Copyright (C) 2004-2011 John W. Eaton
+## Copyright (C) 2004-2012 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{status}, @var{text}] =} unix (@var{command})
-## @deftypefnx {Function File} {[@var{status}, @var{text}] =} unix (@var{command}, "-echo")
+## @deftypefn  {Function File} {} unix ("@var{command}")
+## @deftypefnx {Function File} {@var{status} =} unix ("@var{command}")
+## @deftypefnx {Function File} {[@var{status}, @var{text}] =} unix ("@var{command}")
+## @deftypefnx {Function File} {[@dots{}] =} unix ("@var{command}", "-echo")
 ## Execute a system command if running under a Unix-like operating
 ## system, otherwise do nothing.  Return the exit status of the program
-## in @var{status} and any output sent to the standard output in
-## @var{text}.  If the optional second argument @code{"-echo"} is given,
-## then also send the output from the command to the standard output.
-## @seealso{isunix, ispc, system}
+## in @var{status} and any output from the command in @var{text}.
+## When called with no output argument, or the "-echo" argument is
+## given, then @var{text} is also sent to standard output.
+## @seealso{dos, system, isunix, ispc}
 ## @end deftypefn
 
 ## Author: octave-forge ???
@@ -42,3 +44,27 @@ function [status, text] = unix (command, echo_arg)
   endif
 
 endfunction
+
+
+%!test
+%! cmd = ls_command ();
+%! old_wstate = warning ("query");
+%! warning ("off", "Octave:undefined-return-values");
+%! unwind_protect
+%!   [status, output] = unix (cmd);
+%! unwind_protect_cleanup
+%!   warning (old_wstate); 
+%! end_unwind_protect
+%!
+%! if (isunix ())
+%!   assert (status, 0);
+%!   assert (ischar (output));
+%!   assert (! isempty (output));
+%! else
+%!   assert (status, []);
+%!   assert (output, []);
+%! endif
+
+%!error unix ()
+%!error unix (1, 2, 3)
+

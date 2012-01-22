@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2005-2011 David Bateman
+Copyright (C) 2005-2012 David Bateman
 Copyright (C) 1998-2005 Andy Adler
 
 This file is part of Octave.
@@ -178,7 +178,7 @@ public:
 
   virtual ~sparse_base_chol (void)
     {
-      if (--rep->count <= 0)
+      if (--rep->count == 0)
         delete rep;
     }
 
@@ -186,7 +186,7 @@ public:
     {
       if (this != &a)
         {
-          if (--rep->count <= 0)
+          if (--rep->count == 0)
             delete rep;
 
           rep = a.rep;

@@ -167,7 +167,7 @@ endfunction
 %! h1 = waitbar (0, 'Waitbar #1');
 %! h2 = waitbar (0, 'Waitbar #2');
 %! h2pos = get (h2, 'position');
-%! h2pos(1) += (h2pos(3) + 50);
+%! h2pos(1) = h2pos(1) + (h2pos(3) + 50);
 %! set (h2, 'position', h2pos);
 %! pause (0.5);
 %! for i = 1:4

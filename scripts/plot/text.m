@@ -131,7 +131,8 @@ endfunction
 %! clf;
 %! ha = {'left', 'center', 'right'};
 %! va = {'bottom', 'middle', 'top'};
-%! x = y = [0.25 0.5 0.75];
+%! x = [0.25 0.5 0.75];
+%! y = x;
 %! for t = 0:30:359;
 %!   for nh = 1:numel(ha)
 %!     for nv = 1:numel(va)

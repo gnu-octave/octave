@@ -17,8 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} colormap (@var{map})
-## @deftypefnx {Function File} {} colormap ("default")
+## @deftypefn  {Function File} {@var{cmap} =} colormap ()
+## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{map})
+## @deftypefnx {Function File} {@var{cmap} =} colormap ("default")
 ## Set the current colormap.
 ##
 ## @code{colormap (@var{map})} sets the current colormap to @var{map}.  The

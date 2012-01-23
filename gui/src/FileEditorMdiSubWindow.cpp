@@ -251,7 +251,7 @@ FileEditorMdiSubWindow::runFile ()
 {
   if (m_editor->isModified ())
     saveFile(m_fileName);
-  m_terminalView->sendText (QString ("run \'%1\'\n").arg (m_fileName));
+  //m_terminalView->sendText (QString ("run \'%1\'\n").arg (m_fileName));
   //m_terminalView->widget ()->setFocus ();
 }
 
@@ -338,7 +338,7 @@ FileEditorMdiSubWindow::prevBookmark ()
 
 // function for setting the already existing lexer from MainWindow
 void
-FileEditorMdiSubWindow::initEditor (AbstractTerminalView* terminalView,
+FileEditorMdiSubWindow::initEditor (QTerminal* terminalView,
                                     LexerOctaveGui* lexer,
                                     MainWindow* mainWindow)
 {

@@ -28,7 +28,6 @@
 #include <Qsci/qsciapis.h>
 #include <QMdiSubWindow>
 #include "ResourceManager.h"
-#include "AbstractTerminalView.h"
 #include "OctaveLink.h"
 #include "WorkspaceView.h"
 #include "HistoryDockWidget.h"
@@ -36,6 +35,7 @@
 #include "BrowserWidget.h"
 #include "irc/IRCWidget.h"
 #include "lexer/lexeroctavegui.h"
+#include "QTerminal.h"
 
 class NonClosableMdiSubWindow : public QMdiSubWindow
 {
@@ -62,7 +62,7 @@ Q_OBJECT public:
   MainWindow (QWidget * parent = 0);
   ~MainWindow ();
 
-  AbstractTerminalView *terminalView ()
+  QTerminal *terminalView ()
   {
     return m_terminalView;
   }
@@ -113,7 +113,7 @@ private:
   QMdiArea *m_centralMdiArea;
 
   // Mdi sub windows.
-  AbstractTerminalView *m_terminalView;
+  QTerminal *m_terminalView;
   BrowserWidget *m_documentationWidget;
   IRCWidget *m_ircWidget;
 

@@ -25,8 +25,8 @@ OctaveMainThread::OctaveMainThread (QObject * parent):QThread (parent)
 void
 OctaveMainThread::run ()
 {
-  int argc = 3;
-  const char *argv[] = { "OctaveGUI", "--interactive", "--line-editing" };
+  int argc = 2;
+  const char *argv[] = { "OctaveGUI", "--interactive" };
   octave_main (argc, (char **) argv, 1);
   emit ready();
   main_loop ();

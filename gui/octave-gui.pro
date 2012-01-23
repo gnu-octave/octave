@@ -31,14 +31,14 @@ TRANSLATIONS        += languages/generic.ts \
                        languages/es-es.ts \
                        languages/ru-ru.ts \
                        languages/uk-ua.ts           # Available translations
-LIBS                += -lqscintilla2 $$system(mkoctfile -p LIBS) $$system(mkoctfile -p OCTAVE_LIBS)
+LIBS                += -lqscintilla2 -Lqterminal/libqterminal -lqterminal $$system(mkoctfile -p LIBS) $$system(mkoctfile -p OCTAVE_LIBS)
 
 mac {
     CONFIG -= app_bundle
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += src src/terminal src/qirc src/backend \
+INCLUDEPATH         += src src/terminal src/qirc src/backend qterminal/libqterminal \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -88,17 +88,11 @@ SOURCES +=\
     src/backend/OctaveMainThread.cpp \
     src/irc/IRCClientImpl.cpp \
     src/backend/ReadlineAdapter.cpp \
-    src/WelcomeWizard.cpp \
-    src/AbstractTerminalView.cpp
+    src/WelcomeWizard.cpp
 
 unix {
 SOURCES +=\
-    src/TerminalHighlighter.cpp \
-    src/TerminalView.cpp \
-    src/terminal/KPty.cpp \
-    src/terminal/KPtyDevice.cpp \
-    src/terminal/LinuxTerminalEmulation.cpp \
-    src/terminal/TerminalEmulation.cpp
+    src/TerminalHighlighter.cpp
 }
 
 win32 {
@@ -127,17 +121,11 @@ HEADERS += \
     src/irc/IRCClientInterface.h \
     src/irc/IRCClientImpl.h \
     src/backend/ReadlineAdapter.h \
-    src/WelcomeWizard.h \
-    src/AbstractTerminalView.h
+    src/WelcomeWizard.h
 
 unix {
 HEADERS += \
-    src/TerminalHighlighter.h \
-    src/TerminalView.h \
-    src/terminal/KPtyDevice.h \
-    src/terminal/KPty.h \
-    src/terminal/LinuxTerminalEmulation.h \
-    src/terminal/TerminalEmulation.h
+    src/TerminalHighlighter.h
 }
 
 win32 {

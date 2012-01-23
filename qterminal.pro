@@ -1,4 +1,4 @@
 TEMPLATE 	= subdirs
-SUBDIRS 	= lib src
+SUBDIRS 	= libqterminal qterminal
 
 OPTIONS 	+= ordered

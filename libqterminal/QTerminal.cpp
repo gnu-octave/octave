@@ -24,6 +24,7 @@ using namespace Konsole;
 
 QTerminal::QTerminal(QWidget *parent)
     : QWidget(parent) {
+    setMinimumSize(600, 400);
     init();
     
     setFocus(Qt::OtherFocusReason);
@@ -140,6 +141,8 @@ void QTerminal::setReadOnly(bool readonly)
 void QTerminal::resizeEvent(QResizeEvent*)
 {
     m_terminalDisplay->resize(this->size());
+    m_terminalDisplay->updateImage();
+    m_terminalDisplay->update();
 }
 
 void QTerminal::sessionFinished()

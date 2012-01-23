@@ -27,12 +27,12 @@ HEADERS  = BlockArray.h \
            QTerminal.h \
            Screen.h \
            ScreenWindow.h \
-           Session.h \
            ShellCommand.h \
            TerminalCharacterDecoder.h \
-           TerminalDisplay.h \
            Vt102Emulation.h \
-    PseudoTerminal.h
+    PseudoTerminal.h \
+    SessionModel.h \
+    SessionView.h
 SOURCES  = BlockArray.cpp \
            Emulation.cpp \
            Filter.cpp \
@@ -45,9 +45,9 @@ SOURCES  = BlockArray.cpp \
            QTerminal.cpp \
            Screen.cpp \
            ScreenWindow.cpp \
-           Session.cpp \
            ShellCommand.cpp \
            TerminalCharacterDecoder.cpp \
-           TerminalDisplay.cpp \
            Vt102Emulation.cpp \
-    PseudoTerminal.cpp
+    PseudoTerminal.cpp \
+    SessionModel.cpp \
+    SessionView.cpp

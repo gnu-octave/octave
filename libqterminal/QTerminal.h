@@ -21,8 +21,8 @@
 #define Q_TERMINAL
 
 #include <QtGui>
-#include "Session.h"
-#include "TerminalDisplay.h"
+#include "SessionModel.h"
+#include "SessionView.h"
 
 class QTerminal : public QWidget
 {
@@ -78,8 +78,8 @@ protected slots:
     
 private:
     void init();
-    TerminalDisplay *m_terminalDisplay;
-    Session *m_session;
+    SessionView *m_terminalDisplay;
+    SessionModel *m_session;
 };
 
 #endif // Q_TERMINAL

@@ -37,7 +37,7 @@ class KProcess;
 
 class Emulation;
 class PseudoTerminal;
-class TerminalDisplay;
+class SessionView;
 
 /**
  * Represents a terminal session consisting of a pseudo-teletype and a terminal emulation.
@@ -50,8 +50,7 @@ class TerminalDisplay;
  * or send input to the program in the terminal in the form of keypresses and mouse
  * activity.
  */
-class Session : public QObject
-{
+class SessionModel : public QObject {
 Q_OBJECT
 
 public:
@@ -71,8 +70,8 @@ public:
    * falls back to using the program specified in the SHELL environment
    * variable.
    */
-  Session(int masterFd = -1, int slaveFd = -1);
-  ~Session();
+  SessionModel(int masterFd = -1, int slaveFd = -1);
+  ~SessionModel();
 
   /**
    * Returns true if the session is currently running.  This will be true
@@ -104,7 +103,7 @@ public:
    * Views can be removed using removeView().  The session is automatically
    * closed when the last view is removed.
    */
-  void addView(TerminalDisplay* widget);
+  void addView(SessionView* widget);
   /**
    * Removes a view from this session.  When the last view is removed,
    * the session will be closed automatically.
@@ -112,12 +111,12 @@ public:
    * @p widget will no longer display output from or send input
    * to the terminal
    */
-  void removeView(TerminalDisplay* widget);
+  void removeView(SessionView* widget);
 
   /**
    * Returns the views connected to this session
    */
-  QList<TerminalDisplay*> views() const;
+  QList<SessionView*> views() const;
 
   /**
    * Returns the terminal emulation instance being used to encode / decode
@@ -269,7 +268,7 @@ public:
   /** Returns the session's title for the specified @p role. */
   QString title(TitleRole role) const;
   /** Convenience method used to read the name property.  Returns title(Session::NameRole). */
-  QString nameTitle() const { return title(Session::NameRole); }
+  QString nameTitle() const { return title(SessionModel::NameRole); }
 
   /** Sets the name of the icon associated with this session. */
   void setIconName(const QString& iconName);
@@ -488,7 +487,7 @@ private:
   PseudoTerminal*          _shellProcess;
   Emulation*    _emulation;
 
-  QList<TerminalDisplay*> _views;
+  QList<SessionView*> _views;
 
   bool           _monitorActivity;
   bool           _monitorSilence;
@@ -556,12 +555,12 @@ public:
     ~SessionGroup();
 
     /** Adds a session to the group. */
-    void addSession( Session* session );
+    void addSession( SessionModel* session );
     /** Removes a session from the group. */
-    void removeSession( Session* session );
+    void removeSession( SessionModel* session );
 
     /** Returns the list of sessions currently in the group. */
-    QList<Session*> sessions() const;
+    QList<SessionModel*> sessions() const;
 
     /**
      * Sets whether a particular session is a master within the group.
@@ -571,9 +570,9 @@ public:
      * @param session The session whoose master status should be changed.
      * @param master True to make this session a master or false otherwise
      */
-    void setMasterStatus( Session* session , bool master );
+    void setMasterStatus( SessionModel* session , bool master );
     /** Returns the master status of a session.  See setMasterStatus() */
-    bool masterStatus( Session* session ) const;
+    bool masterStatus( SessionModel* session ) const;
 
     /**
      * This enum describes the options for propagating certain activity or
@@ -602,13 +601,13 @@ public:
     int masterMode() const;
 
 private:
-    void connectPair(Session* master , Session* other);
-    void disconnectPair(Session* master , Session* other);
+    void connectPair(SessionModel* master , SessionModel* other);
+    void disconnectPair(SessionModel* master , SessionModel* other);
     void connectAll(bool connect);
-    QList<Session*> masters() const;
+    QList<SessionModel*> masters() const;
 
     // maps sessions to their master status
-    QHash<Session*,bool> _sessions;
+    QHash<SessionModel*,bool> _sessions;
 
     int _masterMode;
 };

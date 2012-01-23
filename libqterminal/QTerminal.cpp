@@ -41,9 +41,9 @@ void QTerminal::init()
     dup2 (fds, 1);
     dup2 (fds, 2);
 
-    m_session = new Session(fdm, fds);
+    m_session = new SessionModel(fdm, fds);
 
-    m_session->setTitle(Session::NameRole, "QTermWidget");
+    m_session->setTitle(SessionModel::NameRole, "QTermWidget");
     m_session->setProgram("/bin/bash");
     QStringList args("");
     m_session->setArguments(args);
@@ -54,10 +54,10 @@ void QTerminal::init()
     m_session->setDarkBackground(true);
     m_session->setKeyBindings("");
 
-    m_terminalDisplay = new TerminalDisplay(this);
-    m_terminalDisplay->setBellMode(TerminalDisplay::NotifyBell);
+    m_terminalDisplay = new SessionView(this);
+    m_terminalDisplay->setBellMode(SessionView::NotifyBell);
     m_terminalDisplay->setTerminalSizeHint(true);
-    m_terminalDisplay->setTripleClickMode(TerminalDisplay::SelectWholeLine);
+    m_terminalDisplay->setTripleClickMode(SessionView::SelectWholeLine);
     m_terminalDisplay->setTerminalSizeStartup(true);
     m_terminalDisplay->setRandomSeed(m_session->sessionId() * 31);
     m_terminalDisplay->setSize(80, 40);
@@ -70,7 +70,7 @@ void QTerminal::init()
 
     m_session->run();
     m_session->addView(m_terminalDisplay);
-    m_terminalDisplay->setScrollBarPosition(TerminalDisplay::ScrollBarRight);
+    m_terminalDisplay->setScrollBarPosition(SessionView::ScrollBarRight);
 
     connect(m_session, SIGNAL(finished()), this, SLOT(sessionFinished()));
 }

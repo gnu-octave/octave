@@ -23,7 +23,7 @@
 */
 
 // Own
-#include "Session.h"
+#include "SessionModel.h"
 
 // Standard
 #include <assert.h>
@@ -39,13 +39,13 @@
 #include <QtCore>
 
 #include "PseudoTerminal.h"
-#include "TerminalDisplay.h"
+#include "SessionView.h"
 #include "ShellCommand.h"
 #include "Vt102Emulation.h"
 
-int Session::lastSessionId = 0;
+int SessionModel::lastSessionId = 0;
 
-Session::Session(int masterFd, int slaveFd) :
+SessionModel::SessionModel(int masterFd, int slaveFd) :
     _shellProcess(0)
   , _emulation(0)
   , _monitorActivity(false)
@@ -118,7 +118,7 @@ Session::Session(int masterFd, int slaveFd) :
     connect(_monitorTimer, SIGNAL(timeout()), this, SLOT(monitorTimerDone()));
 }
 
-WId Session::windowId() const
+WId SessionModel::windowId() const
 {
     // Returns a window ID for this session which is used
     // to set the WINDOWID environment variable in the shell
@@ -147,43 +147,43 @@ WId Session::windowId() const
     }
 }
 
-void Session::setDarkBackground(bool darkBackground)
+void SessionModel::setDarkBackground(bool darkBackground)
 {
     _hasDarkBackground = darkBackground;
 }
-bool Session::hasDarkBackground() const
+bool SessionModel::hasDarkBackground() const
 {
     return _hasDarkBackground;
 }
-bool Session::isRunning() const
+bool SessionModel::isRunning() const
 {
     return _shellProcess->isRunning();
 }
 
-void Session::setCodec(QTextCodec* codec)
+void SessionModel::setCodec(QTextCodec* codec)
 {
     emulation()->setCodec(codec);
 }
 
-void Session::setProgram(const QString& program)
+void SessionModel::setProgram(const QString& program)
 {
     _program = ShellCommand::expand(program);
 }
-void Session::setInitialWorkingDirectory(const QString& dir)
+void SessionModel::setInitialWorkingDirectory(const QString& dir)
 {
     _initialWorkingDir = ShellCommand::expand(dir);
 }
-void Session::setArguments(const QStringList& arguments)
+void SessionModel::setArguments(const QStringList& arguments)
 {
     _arguments = ShellCommand::expand(arguments);
 }
 
-QList<TerminalDisplay*> Session::views() const
+QList<SessionView*> SessionModel::views() const
 {
     return _views;
 }
 
-void Session::addView(TerminalDisplay* widget)
+void SessionModel::addView(SessionView* widget)
 {
     Q_ASSERT( !_views.contains(widget) );
 
@@ -220,16 +220,16 @@ void Session::addView(TerminalDisplay* widget)
     
 }
 
-void Session::viewDestroyed(QObject* view)
+void SessionModel::viewDestroyed(QObject* view)
 {
-    TerminalDisplay* display = (TerminalDisplay*)view;
+    SessionView* display = (SessionView*)view;
 
     Q_ASSERT( _views.contains(display) );
 
     removeView(display);
 }
 
-void Session::removeView(TerminalDisplay* widget)
+void SessionModel::removeView(SessionView* widget)
 {
     _views.removeAll(widget);
 
@@ -256,7 +256,7 @@ void Session::removeView(TerminalDisplay* widget)
     }
 }
 
-void Session::run()
+void SessionModel::run()
 {
     //check that everything is in place to run the session
     if (_program.isEmpty())
@@ -321,7 +321,7 @@ void Session::run()
     emit started();
 }
 
-void Session::setUserTitle( int what, const QString &caption )
+void SessionModel::setUserTitle( int what, const QString &caption )
 {
     //set to true if anything is actually changed (eg. old _nameTitle != new _nameTitle )
     bool modified = false;
@@ -366,7 +366,7 @@ void Session::setUserTitle( int what, const QString &caption )
     if (what == 30)
     {
         if ( _nameTitle != caption ) {
-            setTitle(Session::NameRole,caption);
+            setTitle(SessionModel::NameRole,caption);
             return;
         }
     }
@@ -398,18 +398,18 @@ void Session::setUserTitle( int what, const QString &caption )
     	emit titleChanged();
 }
 
-QString Session::userTitle() const
+QString SessionModel::userTitle() const
 {
     return _userTitle;
 }
-void Session::setTabTitleFormat(TabTitleContext context , const QString& format)
+void SessionModel::setTabTitleFormat(TabTitleContext context , const QString& format)
 {
     if ( context == LocalTabTitle )
         _localTabTitleFormat = format;
     else if ( context == RemoteTabTitle )
         _remoteTabTitleFormat = format;
 }
-QString Session::tabTitleFormat(TabTitleContext context) const
+QString SessionModel::tabTitleFormat(TabTitleContext context) const
 {
     if ( context == LocalTabTitle )
         return _localTabTitleFormat;
@@ -419,7 +419,7 @@ QString Session::tabTitleFormat(TabTitleContext context) const
     return QString();
 }
 
-void Session::monitorTimerDone()
+void SessionModel::monitorTimerDone()
 {
     //FIXME: The idea here is that the notification popup will appear to tell the user than output from
     //the terminal has stopped and the popup will disappear when the user activates the session.
@@ -443,7 +443,7 @@ void Session::monitorTimerDone()
     _notifiedActivity=false;
 }
 
-void Session::activityStateSet(int state)
+void SessionModel::activityStateSet(int state)
 {
     if (state==NOTIFYBELL)
     {
@@ -476,18 +476,18 @@ void Session::activityStateSet(int state)
     emit stateChanged(state);
 }
 
-void Session::onViewSizeChange(int /*height*/, int /*width*/)
+void SessionModel::onViewSizeChange(int /*height*/, int /*width*/)
 {
     updateTerminalSize();
 }
-void Session::onEmulationSizeChange(int lines , int columns)
+void SessionModel::onEmulationSizeChange(int lines , int columns)
 {
     setSize( QSize(lines,columns) );
 }
 
-void Session::updateTerminalSize()
+void SessionModel::updateTerminalSize()
 {
-    QListIterator<TerminalDisplay*> viewIter(_views);
+    QListIterator<SessionView*> viewIter(_views);
 
     int minLines = -1;
     int minColumns = -1;
@@ -501,7 +501,7 @@ void Session::updateTerminalSize()
     //select largest number of lines and columns that will fit in all visible views
     while ( viewIter.hasNext() )
     {
-        TerminalDisplay* view = viewIter.next();
+        SessionView* view = viewIter.next();
         if ( view->isHidden() == false &&
              view->lines() >= VIEW_LINES_THRESHOLD &&
              view->columns() >= VIEW_COLUMNS_THRESHOLD )
@@ -519,7 +519,7 @@ void Session::updateTerminalSize()
     }
 }
 
-void Session::refresh()
+void SessionModel::refresh()
 {
     // attempt to get the shell process to redraw the display
     //
@@ -540,12 +540,12 @@ void Session::refresh()
     _shellProcess->setWindowSize(existingSize.height(),existingSize.width());
 }
 
-bool Session::sendSignal(int signal)
+bool SessionModel::sendSignal(int signal)
 {
     return _shellProcess->kill(signal);
 }
 
-void Session::close()
+void SessionModel::close()
 {
     _autoClose = true;
     _wantedClose = true;
@@ -556,26 +556,26 @@ void Session::close()
     }
 }
 
-void Session::sendText(const QString &text) const
+void SessionModel::sendText(const QString &text) const
 {
     _emulation->sendText(text);
 }
 
-Session::~Session()
+SessionModel::~SessionModel()
 {
     delete _emulation;
     delete _shellProcess;
     //  delete _zmodemProc;
 }
 
-void Session::setProfileKey(const QString& key)
+void SessionModel::setProfileKey(const QString& key)
 {
     _profileKey = key;
     emit profileChanged(key);
 }
-QString Session::profileKey() const { return _profileKey; }
+QString SessionModel::profileKey() const { return _profileKey; }
 
-void Session::done(int exitStatus)
+void SessionModel::done(int exitStatus)
 {
     if (!_autoClose)
     {
@@ -611,37 +611,37 @@ void Session::done(int exitStatus)
     emit finished();
 }
 
-Emulation* Session::emulation() const
+Emulation* SessionModel::emulation() const
 {
     return _emulation;
 }
 
-QString Session::keyBindings() const
+QString SessionModel::keyBindings() const
 {
     return _emulation->keyBindings();
 }
 
-QStringList Session::environment() const
+QStringList SessionModel::environment() const
 {
     return _environment;
 }
 
-void Session::setEnvironment(const QStringList& environment)
+void SessionModel::setEnvironment(const QStringList& environment)
 {
     _environment = environment;
 }
 
-int Session::sessionId() const
+int SessionModel::sessionId() const
 {
     return _sessionId;
 }
 
-void Session::setKeyBindings(const QString &id)
+void SessionModel::setKeyBindings(const QString &id)
 {
     _emulation->setKeyBindings(id);
 }
 
-void Session::setTitle(TitleRole role , const QString& newTitle)
+void SessionModel::setTitle(TitleRole role , const QString& newTitle)
 {
     if ( title(role) != newTitle )
     {
@@ -654,7 +654,7 @@ void Session::setTitle(TitleRole role , const QString& newTitle)
     }
 }
 
-QString Session::title(TitleRole role) const
+QString SessionModel::title(TitleRole role) const
 {
     if ( role == NameRole )
         return _nameTitle;
@@ -664,7 +664,7 @@ QString Session::title(TitleRole role) const
         return QString();
 }
 
-void Session::setIconName(const QString& iconName)
+void SessionModel::setIconName(const QString& iconName)
 {
     if ( iconName != _iconName )
     {
@@ -673,53 +673,53 @@ void Session::setIconName(const QString& iconName)
     }
 }
 
-void Session::setIconText(const QString& iconText)
+void SessionModel::setIconText(const QString& iconText)
 {
     _iconText = iconText;
     //kDebug(1211)<<"Session setIconText " <<  _iconText;
 }
 
-QString Session::iconName() const
+QString SessionModel::iconName() const
 {
     return _iconName;
 }
 
-QString Session::iconText() const
+QString SessionModel::iconText() const
 {
     return _iconText;
 }
 
-void Session::setHistoryType(const HistoryType &hType)
+void SessionModel::setHistoryType(const HistoryType &hType)
 {
     _emulation->setHistory(hType);
 }
 
-const HistoryType& Session::historyType() const
+const HistoryType& SessionModel::historyType() const
 {
     return _emulation->history();
 }
 
-void Session::clearHistory()
+void SessionModel::clearHistory()
 {
     _emulation->clearHistory();
 }
 
-QStringList Session::arguments() const
+QStringList SessionModel::arguments() const
 {
     return _arguments;
 }
 
-QString Session::program() const
+QString SessionModel::program() const
 {
     return _program;
 }
 
 // unused currently
-bool Session::isMonitorActivity() const { return _monitorActivity; }
+bool SessionModel::isMonitorActivity() const { return _monitorActivity; }
 // unused currently
-bool Session::isMonitorSilence()  const { return _monitorSilence; }
+bool SessionModel::isMonitorSilence()  const { return _monitorSilence; }
 
-void Session::setMonitorActivity(bool _monitor)
+void SessionModel::setMonitorActivity(bool _monitor)
 {
     _monitorActivity=_monitor;
     _notifiedActivity=false;
@@ -727,7 +727,7 @@ void Session::setMonitorActivity(bool _monitor)
     activityStateSet(NOTIFYNORMAL);
 }
 
-void Session::setMonitorSilence(bool _monitor)
+void SessionModel::setMonitorSilence(bool _monitor)
 {
     if (_monitorSilence==_monitor)
         return;
@@ -743,7 +743,7 @@ void Session::setMonitorSilence(bool _monitor)
     activityStateSet(NOTIFYNORMAL);
 }
 
-void Session::setMonitorSilenceSeconds(int seconds)
+void SessionModel::setMonitorSilenceSeconds(int seconds)
 {
     _silenceSeconds=seconds;
     if (_monitorSilence) {
@@ -751,12 +751,12 @@ void Session::setMonitorSilenceSeconds(int seconds)
     }
 }
 
-void Session::setAddToUtmp(bool set)
+void SessionModel::setAddToUtmp(bool set)
 {
     _addToUtmp = set;
 }
 
-void Session::setFlowControlEnabled(bool enabled)
+void SessionModel::setFlowControlEnabled(bool enabled)
 {
     if (_flowControl == enabled)
   	return;
@@ -768,7 +768,7 @@ void Session::setFlowControlEnabled(bool enabled)
 
     emit flowControlEnabledChanged(enabled);
 }
-bool Session::flowControlEnabled() const
+bool SessionModel::flowControlEnabled() const
 {
     return _flowControl;
 }
@@ -885,29 +885,29 @@ void Session::zmodemFinished()
   }
 }
 */
-void Session::onReceiveBlock( const char* buf, int len )
+void SessionModel::onReceiveBlock( const char* buf, int len )
 {
     _emulation->receiveData( buf, len );
     emit receivedData( QString::fromLatin1( buf, len ) );
 }
 
-QSize Session::size()
+QSize SessionModel::size()
 {
     return _emulation->imageSize();
 }
 
-void Session::setSize(const QSize& size)
+void SessionModel::setSize(const QSize& size)
 {
     if ((size.width() <= 1) || (size.height() <= 1))
         return;
 
     emit resizeRequest(size);
 }
-int Session::foregroundProcessId() const
+int SessionModel::foregroundProcessId() const
 {
     return _shellProcess->foregroundProcessGroup();
 }
-int Session::processId() const
+int SessionModel::processId() const
 {
     return _shellProcess->pid();
 }
@@ -922,23 +922,23 @@ SessionGroup::~SessionGroup()
     connectAll(false);
 }
 int SessionGroup::masterMode() const { return _masterMode; }
-QList<Session*> SessionGroup::sessions() const { return _sessions.keys(); }
-bool SessionGroup::masterStatus(Session* session) const { return _sessions[session]; }
+QList<SessionModel*> SessionGroup::sessions() const { return _sessions.keys(); }
+bool SessionGroup::masterStatus(SessionModel* session) const { return _sessions[session]; }
 
-void SessionGroup::addSession(Session* session)
+void SessionGroup::addSession(SessionModel* session)
 {
     _sessions.insert(session,false);
 
-    QListIterator<Session*> masterIter(masters());
+    QListIterator<SessionModel*> masterIter(masters());
 
     while ( masterIter.hasNext() )
         connectPair(masterIter.next(),session);
 }
-void SessionGroup::removeSession(Session* session)
+void SessionGroup::removeSession(SessionModel* session)
 {
     setMasterStatus(session,false);
 
-    QListIterator<Session*> masterIter(masters());
+    QListIterator<SessionModel*> masterIter(masters());
 
     while ( masterIter.hasNext() )
         disconnectPair(masterIter.next(),session);
@@ -952,22 +952,22 @@ void SessionGroup::setMasterMode(int mode)
     connectAll(false);
     connectAll(true);
 }
-QList<Session*> SessionGroup::masters() const
+QList<SessionModel*> SessionGroup::masters() const
 {
     return _sessions.keys(true);
 }
 void SessionGroup::connectAll(bool connect)
 {
-    QListIterator<Session*> masterIter(masters());
+    QListIterator<SessionModel*> masterIter(masters());
 
     while ( masterIter.hasNext() )
     {
-        Session* master = masterIter.next();
+        SessionModel* master = masterIter.next();
 
-        QListIterator<Session*> otherIter(_sessions.keys());
+        QListIterator<SessionModel*> otherIter(_sessions.keys());
         while ( otherIter.hasNext() )
         {
-            Session* other = otherIter.next();
+            SessionModel* other = otherIter.next();
 
             if ( other != master )
             {
@@ -979,7 +979,7 @@ void SessionGroup::connectAll(bool connect)
         }
     }
 }
-void SessionGroup::setMasterStatus(Session* session, bool master) {
+void SessionGroup::setMasterStatus(SessionModel* session, bool master) {
     bool wasMaster = _sessions[session];
     _sessions[session] = master;
 
@@ -988,9 +988,9 @@ void SessionGroup::setMasterStatus(Session* session, bool master) {
         return;
     }
 
-    QListIterator<Session*> iter(_sessions.keys());
+    QListIterator<SessionModel*> iter(_sessions.keys());
     while (iter.hasNext()) {
-        Session* other = iter.next();
+        SessionModel* other = iter.next();
 
         if (other != session) {
             if (master) {
@@ -1002,7 +1002,7 @@ void SessionGroup::setMasterStatus(Session* session, bool master) {
     }
 }
 
-void SessionGroup::connectPair(Session* master , Session* other)
+void SessionGroup::connectPair(SessionModel* master , SessionModel* other)
 {
     //    qDebug() << k_funcinfo;
 
@@ -1014,7 +1014,7 @@ void SessionGroup::connectPair(Session* master , Session* other)
                  SLOT(sendString(const char*,int)) );
     }
 }
-void SessionGroup::disconnectPair(Session* master , Session* other)
+void SessionGroup::disconnectPair(SessionModel* master , SessionModel* other)
 {
     //    qDebug() << k_funcinfo;
 

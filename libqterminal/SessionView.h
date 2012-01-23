@@ -59,14 +59,14 @@ class ScreenWindow;
  *
  * TODO More documentation
  */
-class TerminalDisplay : public QWidget
+class SessionView : public QWidget
 {
    Q_OBJECT
 
 public:
     /** Constructs a new terminal display widget with the specified parent. */
-    TerminalDisplay(QWidget *parent=0);
-    virtual ~TerminalDisplay();
+    SessionView(QWidget *parent=0);
+    virtual ~SessionView();
 
     /** Returns the terminal color palette used by the display. */
     const ColorEntry* colorTable() const;
@@ -492,7 +492,7 @@ signals:
      *
      * This can be used to display a context menu.
      */
-    void configureRequest( TerminalDisplay*, int state, const QPoint& position );
+    void configureRequest( SessionView*, int state, const QPoint& position );
 
    void isBusySelecting(bool);
    void sendStringToEmu(const char*);

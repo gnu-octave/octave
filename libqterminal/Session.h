@@ -75,7 +75,7 @@ public:
    * falls back to using the program specified in the SHELL environment
    * variable.
    */
-  Session();
+  Session(int masterFd = -1, int slaveFd = -1);
   ~Session();
 
   /**
@@ -522,7 +522,8 @@ private:
 
   QStringList    _environment;
   int            _sessionId;
-
+  int            _masterFd;
+  int            _slaveFd;
   QString        _initialWorkingDir;
 
   // ZModem

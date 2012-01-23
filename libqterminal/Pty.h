@@ -66,6 +66,8 @@ Q_OBJECT
      * name of the program to start and appropriate arguments.
      */
     Pty();
+    Pty(int masterFd, int slaveFd);
+
     ~Pty();
 
     /**
@@ -92,7 +94,9 @@ Q_OBJECT
                const QStringList& arguments, 
                const QStringList& environment, 
                ulong winid, 
-               bool addToUtmp
+               bool addToUtmp,
+               int masterFd,
+               int slaveFd
 //               const QString& dbusService,
 //               const QString& dbusSession
              );

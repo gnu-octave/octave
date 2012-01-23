@@ -18,6 +18,7 @@
 						
 
 #include "QTerminal.h"
+#include "pty.h"
 
 using namespace Konsole;
 
@@ -33,7 +34,15 @@ QTerminal::QTerminal(QWidget *parent)
 
 void QTerminal::init()
 {
-    m_session = new Session();
+    int fdm;
+    int fds;
+    openpty (&fdm, &fds, 0, 0, 0);
+
+    dup2 (fds, 0);
+    dup2 (fds, 1);
+    dup2 (fds, 2);
+
+    m_session = new Session(fdm, fds);
 
     m_session->setTitle(Session::NameRole, "QTermWidget");
     m_session->setProgram("/bin/bash");

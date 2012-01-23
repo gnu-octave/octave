@@ -41,6 +41,7 @@ public:
    * Constructor
    */
   KPty();
+  KPty(int masterFd, int slaveFd);
 
   /**
    * Destructor:

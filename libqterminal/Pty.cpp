@@ -152,8 +152,10 @@ int Pty::start(const QString& program,
                const QStringList& programArguments, 
                const QStringList& environment, 
                ulong winid, 
-               bool addToUtmp
-//               const QString& dbusService, 
+               bool addToUtmp,
+               int masterFd,
+               int slaveFd
+//               const QString& dbusService,
 //               const QString& dbusSession)
 		)
 {
@@ -188,7 +190,7 @@ int Pty::start(const QString& program,
   if (!environment.contains("LANGUAGE"))
       setEnvironment("LANGUAGE",QString());
 
-  setUsePty(All, addToUtmp);
+  setUsePty(All, addToUtmp, masterFd, slaveFd);
 
   pty()->open();
   
@@ -247,7 +249,26 @@ Pty::Pty()
           this, SLOT(writeReady()));
   _pty = new KPty;
 
-  setUsePty(All, false); // utmp will be overridden later
+  setUsePty(All, false, -1, -1); // utmp will be overridden later
+}
+
+Pty::Pty(int masterFd, int slaveFd)
+    : _bufferFull(false),
+      _windowColumns(0),
+      _windowLines(0),
+      _eraseChar(0),
+      _xonXoff(true),
+      _utf8(true)
+{
+  connect(this, SIGNAL(receivedStdout(K3Process *, char *, int )),
+          this, SLOT(dataReceived(K3Process *,char *, int)));
+  connect(this, SIGNAL(processExited(K3Process *)),
+          this, SLOT(donePty()));
+  connect(this, SIGNAL(wroteStdin(K3Process *)),
+          this, SLOT(writeReady()));
+  _pty = new KPty(masterFd, slaveFd);
+
+  setUsePty(All, false, masterFd, slaveFd); // utmp will be overridden later
 }
 
 Pty::~Pty()

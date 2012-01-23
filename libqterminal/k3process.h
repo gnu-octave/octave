@@ -514,7 +514,7 @@ public:
    * start (there is only one pty, so they cannot be distinguished).
    * @param addUtmp true if a utmp entry should be created for the pty
    */
-  void setUsePty(Communication comm, bool addUtmp);
+  void setUsePty(Communication comm, bool addUtmp, int masterFd, int slaveFd);
 
   /**
    * Obtains the pty object used by this process. The return value is

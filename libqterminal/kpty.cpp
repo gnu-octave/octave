@@ -152,6 +152,12 @@ KPtyPrivate::KPtyPrivate(KPty* parent) :
 {
 }
 
+KPtyPrivate::KPtyPrivate(KPty *parent, int _masterFd, int _slaveFd):
+    masterFd(_masterFd), slaveFd(_slaveFd), ownMaster(true), q_ptr(parent)
+{
+}
+
+
 KPtyPrivate::~KPtyPrivate()
 {
 }
@@ -172,6 +178,11 @@ KPty::KPty() :
 {
 }
 
+KPty::KPty(int masterFd, int slaveFd) :
+    d_ptr(new KPtyPrivate(this, masterFd, slaveFd))
+{
+}
+
 KPty::KPty(KPtyPrivate *d) :
     d_ptr(d)
 {
@@ -188,8 +199,9 @@ bool KPty::open()
 {
   Q_D(KPty);
 
-  if (d->masterFd >= 0)
-    return true;
+  if (d->masterFd >= 0) {
+      return true;
+  }
 
   d->ownMaster = true;
 
@@ -353,7 +365,6 @@ bool KPty::open()
 #endif
 
 #endif /* HAVE_OPENPTY */
-
   fcntl(d->masterFd, F_SETFD, FD_CLOEXEC);
   fcntl(d->slaveFd, F_SETFD, FD_CLOEXEC);
 

@@ -242,6 +242,7 @@ void K3Process::clearArguments()
 
 bool K3Process::start(RunMode runmode, Communication comm)
 {
+
   if (runs) {
     qDebug() << "Attempted to start an already running process" << endl;
     return false;
@@ -299,6 +300,7 @@ bool K3Process::start(RunMode runmode, Communication comm)
   if (pipe(fd))
      fd[0] = fd[1] = -1; // Pipe failed.. continue
 
+
   // we don't use vfork() because
   // - it has unclear semantics and is not standardized
   // - we do way too much magic in the child
@@ -345,7 +347,12 @@ bool K3Process::start(RunMode runmode, Communication comm)
         const char *executable = arglist[0];
         if (!d->executable.isEmpty())
            executable = d->executable.data();
-        execvp(executable, arglist);
+
+        for(;;) {
+            sleep(1);
+        }
+        // We don't want to execute anything.
+        //execvp(executable, arglist);
 
         char resultByte = 1;
         ssize_t result = write(fd[1], &resultByte, 1);
@@ -367,8 +374,11 @@ bool K3Process::start(RunMode runmode, Communication comm)
   if (!commSetupDoneP())
     qDebug() << "Could not finish comm setup in parent!" << endl;
 
+  return true;
+  /*
   // Check whether client could be started.
   close(fd[1]);
+
   for(;;)
   {
      char resultByte;
@@ -392,11 +402,14 @@ bool K3Process::start(RunMode runmode, Communication comm)
   close(fd[0]);
 
   runs = true;
+  for(;;) { sleep(1); }
+
   switch (runmode)
   {
   case Block:
     for (;;)
     {
+
       commClose(); // drain only, unless obsolete reimplementation
       if (!runs)
       {
@@ -428,7 +441,8 @@ bool K3Process::start(RunMode runmode, Communication comm)
     input_data = 0; // Discard any data for stdin that might still be there
     break;
   }
-  return true;
+
+  return true;*/
 }
 
 
@@ -721,13 +735,17 @@ void K3Process::setUseShell(bool useShell, const char *shell)
     d->shell = "/bin/sh";
 }
 
-void K3Process::setUsePty(Communication usePty, bool addUtmp)
+void K3Process::setUsePty(Communication usePty, bool addUtmp, int masterFd, int slaveFd)
 {
   d->usePty = usePty;
   d->addUtmp = addUtmp;
   if (usePty) {
-    if (!d->pty)
-      d->pty = new KPty;
+    if (!d->pty) {
+      if(masterFd >= 0)
+          d->pty = new KPty(masterFd, slaveFd);
+      else
+          d->pty = new KPty;
+    }
   } else {
     delete d->pty;
     d->pty = 0;

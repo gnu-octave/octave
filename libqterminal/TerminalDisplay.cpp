@@ -47,7 +47,6 @@
 #include "konsole_wcwidth.h"
 #include "ScreenWindow.h"
 #include "TerminalCharacterDecoder.h"
-#include "ColorTables.h"
 
 using namespace Konsole;
 
@@ -300,7 +299,7 @@ TerminalDisplay::TerminalDisplay(QWidget *parent)
 //  QCursor::setAutoHideCursor( this, true );
   
   setUsesMouse(true);
-  setColorTable(whiteonblack_color_table); 
+  setColorTable(base_color_table);
 //  setColorTable(blackonlightyellow_color_table); 
   setMouseTracking(true);
 

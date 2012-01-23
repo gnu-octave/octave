@@ -29,20 +29,9 @@ int main(int argc, char *argv[])
     QMainWindow *mainWindow = new QMainWindow();
 
     QTerminal *terminal = new QTerminal();
-    
-    QFont font = QApplication::font();
-    font.setFamily("Monospace");
-    font.setPointSize(12);
-    
-    terminal->setTerminalFont(font);
-    
-    //console->setColorScheme(COLOR_SCHEME_BLACK_ON_LIGHT_YELLOW);
-    terminal->setScrollBarPosition(QTerminal::ScrollBarRight);
-    //console->setReadOnly(true);
-    
+
     mainWindow->setCentralWidget(terminal);
-    mainWindow->resize(902, 810);
-    
+    mainWindow->resize(600, 400);
     QObject::connect(terminal, SIGNAL(finished()), mainWindow, SLOT(close()));
 
     mainWindow->show();    

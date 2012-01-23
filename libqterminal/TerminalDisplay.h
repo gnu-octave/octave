@@ -31,7 +31,6 @@
 // Konsole
 #include "Filter.h"
 #include "Character.h"
-#include "ColorTables.h"
 
 class QDrag;
 class QDragEnterEvent;

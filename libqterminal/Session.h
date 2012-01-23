@@ -35,13 +35,9 @@
 
 class KProcess;
 
-namespace Konsole
-{
-
 class Emulation;
-class Pty;
+class PseudoTerminal;
 class TerminalDisplay;
-//class ZModemDialog;
 
 /**
  * Represents a terminal session consisting of a pseudo-teletype and a terminal emulation.
@@ -489,7 +485,7 @@ private:
 
   int            _uniqueIdentifier;
 
-  Pty*          _shellProcess;
+  PseudoTerminal*          _shellProcess;
   Emulation*    _emulation;
 
   QList<TerminalDisplay*> _views;
@@ -616,7 +612,5 @@ private:
 
     int _masterMode;
 };
-
-}
 
 #endif

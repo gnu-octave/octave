@@ -38,12 +38,10 @@
 #include <QtCore/QStringList>
 #include <QtCore>
 
-#include "Pty.h"
+#include "PseudoTerminal.h"
 #include "TerminalDisplay.h"
 #include "ShellCommand.h"
 #include "Vt102Emulation.h"
-
-using namespace Konsole;
 
 int Session::lastSessionId = 0;
 
@@ -79,9 +77,9 @@ Session::Session(int masterFd, int slaveFd) :
 
     //create teletype for I/O with shell process
     if(_masterFd >= 0) {
-        _shellProcess = new Pty(_masterFd, _slaveFd);
+        _shellProcess = new PseudoTerminal(_masterFd, _slaveFd);
     } else {
-        _shellProcess = new Pty();
+        _shellProcess = new PseudoTerminal();
     }
 
     //create emulation backend
@@ -1029,4 +1027,3 @@ void SessionGroup::disconnectPair(Session* master , Session* other)
     }
 }
 
-//#include "moc_Session.cpp"

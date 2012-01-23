@@ -33,9 +33,6 @@
 // Local
 #include "Character.h"
 
-namespace Konsole
-{
-
 /**
  * A filter processes blocks of text looking for certain patterns (such as URLs or keywords from a list)
  * and marks the areas which match the filter's patterns as 'hotspots'.
@@ -379,5 +376,4 @@ private:
     QList<int>* _linePositions;
 };
 
-}
 #endif //FILTER_H

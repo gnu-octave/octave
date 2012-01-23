@@ -28,9 +28,6 @@
 // Qt
 #include <QtGui/QColor>
 
-namespace Konsole
-{
-
 /** 
  * An entry in a terminal display's color palette. 
  *
@@ -289,9 +286,6 @@ inline void CharacterColor::toggleIntensive()
   {
     _v = !_v;
   }
-}
-
-
 }
 
 #endif // CHARACTERCOLOR_H

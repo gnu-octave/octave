@@ -25,9 +25,6 @@
 // Qt
 #include <QtCore/QStringList>
 
-namespace Konsole
-{
-
 /** 
  * A class to parse and extract information about shell commands. 
  *
@@ -87,8 +84,6 @@ public:
 private:
     QStringList _arguments;    
 };
-
-}
 
 #endif // SHELLCOMMAND_H
 

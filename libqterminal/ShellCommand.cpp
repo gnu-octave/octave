@@ -25,9 +25,6 @@
 //some versions of gcc(4.3) require explicit include
 #include <cstdlib>
 
-
-using namespace Konsole;
-
 // expands environment variables in 'text'
 // function copied from kdelibs/kio/kio/kurlcompletion.cpp
 static bool expandEnv(QString& text);

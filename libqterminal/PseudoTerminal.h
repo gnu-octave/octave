@@ -33,10 +33,6 @@
 
 #include "k3process.h"
 
-
-namespace Konsole
-{
-
 /**
  * The Pty class is used to start the terminal process, 
  * send data to it, receive data from it and manipulate 
@@ -50,7 +46,7 @@ namespace Konsole
  * To start the terminal process, call the start() method
  * with the program name and appropriate arguments. 
  */
-class Pty: public K3Process
+class PseudoTerminal: public K3Process
 {
 Q_OBJECT
 
@@ -65,10 +61,10 @@ Q_OBJECT
      * To start the terminal process, call the run() method with the 
      * name of the program to start and appropriate arguments.
      */
-    Pty();
-    Pty(int masterFd, int slaveFd);
+    PseudoTerminal();
+    PseudoTerminal(int masterFd, int slaveFd);
 
-    ~Pty();
+    ~PseudoTerminal();
 
     /**
      * Starts the terminal process.  
@@ -241,7 +237,5 @@ Q_OBJECT
     bool _utf8;
     KPty *_pty;
 };
-
-}
 
 #endif // PTY_H

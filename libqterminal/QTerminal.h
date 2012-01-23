@@ -24,8 +24,6 @@
 #include "Session.h"
 #include "TerminalDisplay.h"
 
-using namespace Konsole;
-
 class QTerminal : public QWidget
 {
     Q_OBJECT

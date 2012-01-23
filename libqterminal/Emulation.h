@@ -30,14 +30,10 @@
 
 // Qt 
 #include <QtGui/QKeyEvent>
-//#include <QPointer>
+
 #include <QtCore/QTextCodec>
 #include <QtCore/QTextStream>
 #include <QtCore/QTimer>
-
-
-namespace Konsole
-{
 
 class KeyboardTranslator;
 class HistoryType;
@@ -459,7 +455,5 @@ private:
   QTimer _bulkTimer2;
   
 };
-
-}
 
 #endif // ifndef EMULATION_H

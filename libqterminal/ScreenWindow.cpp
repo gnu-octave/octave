@@ -28,8 +28,6 @@
 // Konsole
 #include "Screen.h"
 
-using namespace Konsole;
-
 ScreenWindow::ScreenWindow(QObject* parent)
     : QObject(parent)
 	, _windowBuffer(0)
@@ -41,6 +39,7 @@ ScreenWindow::ScreenWindow(QObject* parent)
     , _scrollCount(0)
 {
 }
+
 ScreenWindow::~ScreenWindow()
 {
 	delete[] _windowBuffer;
@@ -293,4 +292,3 @@ void ScreenWindow::notifyOutputChanged()
     emit outputChanged(); 
 }
 
-//#include "moc_ScreenWindow.cpp"

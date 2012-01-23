@@ -65,10 +65,6 @@
 #include <QtCore/QFile>
 #include <QtCore/QSocketNotifier>
 
-//#include <kdebug.h>
-//#include <kstandarddirs.h>
-//#include <kuser.h>
-
 
 //////////////////
 // private data //
@@ -1072,5 +1068,3 @@ bool K3ShellProcess::start(RunMode runmode, Communication comm)
   return K3Process::start(runmode, comm);
 }
 
-
-//#include "moc_k3process.cpp"

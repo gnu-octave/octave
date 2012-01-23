@@ -20,8 +20,6 @@
 #include "QTerminal.h"
 #include "pty.h"
 
-using namespace Konsole;
-
 QTerminal::QTerminal(QWidget *parent)
     : QWidget(parent) {
     setMinimumSize(600, 400);

@@ -42,11 +42,6 @@
 #define MODE_NewLine   5
 #define MODES_SCREEN   6
 
-namespace Konsole
-{
-
-/*!
-*/
 struct ScreenParm
 {
   int mode[MODES_SCREEN];
@@ -656,7 +651,5 @@ private:
 
     static Character defaultChar;
 };
-
-}
 
 #endif // SCREEN_H

@@ -24,7 +24,6 @@ HEADERS  = BlockArray.h \
            kpty.h \
            kpty_p.h \
            LineFont.h \
-           Pty.h \
            QTerminal.h \
            Screen.h \
            ScreenWindow.h \
@@ -32,7 +31,8 @@ HEADERS  = BlockArray.h \
            ShellCommand.h \
            TerminalCharacterDecoder.h \
            TerminalDisplay.h \
-           Vt102Emulation.h
+           Vt102Emulation.h \
+    PseudoTerminal.h
 SOURCES  = BlockArray.cpp \
            Emulation.cpp \
            Filter.cpp \
@@ -42,7 +42,6 @@ SOURCES  = BlockArray.cpp \
            KeyboardTranslator.cpp \
            konsole_wcwidth.cpp \
            kpty.cpp \
-           Pty.cpp \
            QTerminal.cpp \
            Screen.cpp \
            ScreenWindow.cpp \
@@ -50,4 +49,5 @@ SOURCES  = BlockArray.cpp \
            ShellCommand.cpp \
            TerminalCharacterDecoder.cpp \
            TerminalDisplay.cpp \
-           Vt102Emulation.cpp
+           Vt102Emulation.cpp \
+    PseudoTerminal.cpp

@@ -23,9 +23,6 @@
 // Own
 #include "Vt102Emulation.h"
 
-//#include <config-konsole.h>
-
-
 #if defined(__osf__) || defined(__APPLE__)
 #define AVOID_XKB
 #endif
@@ -59,7 +56,6 @@ void scrolllock_set_off();
 void scrolllock_set_on();
 #endif
 
-using namespace Konsole;
 
 /* VT102 Terminal Emulation
 

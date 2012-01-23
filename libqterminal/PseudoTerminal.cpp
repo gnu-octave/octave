@@ -21,7 +21,7 @@
 */
 
 // Own
-#include "Pty.h"
+#include "PseudoTerminal.h"
 
 // System
 #include <sys/types.h>
@@ -34,19 +34,14 @@
 #include <QtCore>
 
 // KDE
-//#include <KStandardDirs>
-//#include <KLocale>
-//#include <KDebug>
 #include "kpty.h"
 
-using namespace Konsole;
-
-void Pty::donePty()
+void PseudoTerminal::donePty()
 {
   emit done(exitStatus());
 }
 
-void Pty::setWindowSize(int lines, int cols)
+void PseudoTerminal::setWindowSize(int lines, int cols)
 {
   _windowColumns = cols;
   _windowLines = lines;
@@ -54,12 +49,12 @@ void Pty::setWindowSize(int lines, int cols)
   if (pty()->masterFd() >= 0)
     pty()->setWinSize(lines, cols);
 }
-QSize Pty::windowSize() const
+QSize PseudoTerminal::windowSize() const
 {
     return QSize(_windowColumns,_windowLines);
 }
 
-void Pty::setXonXoff(bool enable)
+void PseudoTerminal::setXonXoff(bool enable)
 {
   _xonXoff = enable;
 
@@ -76,7 +71,7 @@ void Pty::setXonXoff(bool enable)
   }
 }
 
-void Pty::setUtf8Mode(bool enable)
+void PseudoTerminal::setUtf8Mode(bool enable)
 {
 #ifdef IUTF8 // XXX not a reasonable place to check it.
   _utf8 = enable;
@@ -95,7 +90,7 @@ void Pty::setUtf8Mode(bool enable)
 #endif
 }
 
-void Pty::setErase(char erase)
+void PseudoTerminal::setErase(char erase)
 {
   _eraseChar = erase;
   
@@ -112,7 +107,7 @@ void Pty::setErase(char erase)
   }  
 }
 
-char Pty::erase() const
+char PseudoTerminal::erase() const
 {
 	if (pty()->masterFd() >= 0)
 	{
@@ -125,7 +120,7 @@ char Pty::erase() const
 	return _eraseChar;
 }
 
-void Pty::addEnvironmentVariables(const QStringList& environment)
+void PseudoTerminal::addEnvironmentVariables(const QStringList& environment)
 {
     QListIterator<QString> iter(environment);
     while (iter.hasNext())
@@ -148,7 +143,7 @@ void Pty::addEnvironmentVariables(const QStringList& environment)
     }
 }
 
-int Pty::start(const QString& program, 
+int PseudoTerminal::start(const QString& program,
                const QStringList& programArguments, 
                const QStringList& environment, 
                ulong winid, 
@@ -223,7 +218,7 @@ int Pty::start(const QString& program,
 
 }
 
-void Pty::setWriteable(bool writeable)
+void PseudoTerminal::setWriteable(bool writeable)
 {
   struct stat sbuf;
   stat(pty()->ttyName(), &sbuf);
@@ -233,7 +228,7 @@ void Pty::setWriteable(bool writeable)
     chmod(pty()->ttyName(), sbuf.st_mode & ~(S_IWGRP|S_IWOTH));
 }
 
-Pty::Pty()
+PseudoTerminal::PseudoTerminal()
     : _bufferFull(false),
       _windowColumns(0),
       _windowLines(0),
@@ -252,7 +247,7 @@ Pty::Pty()
   setUsePty(All, false, -1, -1); // utmp will be overridden later
 }
 
-Pty::Pty(int masterFd, int slaveFd)
+PseudoTerminal::PseudoTerminal(int masterFd, int slaveFd)
     : _bufferFull(false),
       _windowColumns(0),
       _windowLines(0),
@@ -271,19 +266,19 @@ Pty::Pty(int masterFd, int slaveFd)
   setUsePty(All, false, masterFd, slaveFd); // utmp will be overridden later
 }
 
-Pty::~Pty()
+PseudoTerminal::~PseudoTerminal()
 {
     delete _pty;
 }
 
-void Pty::writeReady()
+void PseudoTerminal::writeReady()
 {
   _pendingSendJobs.erase(_pendingSendJobs.begin());
   _bufferFull = false;
   doSendJobs();
 }
 
-void Pty::doSendJobs() {
+void PseudoTerminal::doSendJobs() {
   if(_pendingSendJobs.isEmpty())
   {
      emit bufferEmpty(); 
@@ -301,24 +296,24 @@ void Pty::doSendJobs() {
   _bufferFull = true;
 }
 
-void Pty::appendSendJob(const char* s, int len)
+void PseudoTerminal::appendSendJob(const char* s, int len)
 {
   _pendingSendJobs.append(SendJob(s,len));
 }
 
-void Pty::sendData(const char* s, int len)
+void PseudoTerminal::sendData(const char* s, int len)
 {
   appendSendJob(s,len);
   if (!_bufferFull)
      doSendJobs();
 }
 
-void Pty::dataReceived(K3Process *,char *buf, int len)
+void PseudoTerminal::dataReceived(K3Process *,char *buf, int len)
 {
   emit receivedData(buf,len);
 }
 
-void Pty::lockPty(bool lock)
+void PseudoTerminal::lockPty(bool lock)
 {
   if (lock)
     suspend();
@@ -326,7 +321,7 @@ void Pty::lockPty(bool lock)
     resume();
 }
 
-int Pty::foregroundProcessGroup() const
+int PseudoTerminal::foregroundProcessGroup() const
 {
     int pid = tcgetpgrp(pty()->masterFd());
 
@@ -338,4 +333,3 @@ int Pty::foregroundProcessGroup() const
     return 0;
 }
 
-//#include "moc_Pty.cpp"

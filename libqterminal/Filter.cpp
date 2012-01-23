@@ -34,14 +34,8 @@
 #include <QtCore/QSharedData>
 #include <QtCore>
 
-// KDE
-//#include <KLocale>
-//#include <KRun>
-
 // Konsole
 #include "TerminalCharacterDecoder.h"
-
-using namespace Konsole;
 
 FilterChain::~FilterChain()
 {

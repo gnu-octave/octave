@@ -35,9 +35,6 @@
 #include <QtCore>
 #include <QtGui>
 
-
-using namespace Konsole;
-
 //and this is default now translator - default.keytab from original Konsole
 const char* KeyboardTranslatorManager::defaultTranslatorText = 
 #include "ExtendedDefaultTranslator.h"

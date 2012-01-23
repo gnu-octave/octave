@@ -127,9 +127,6 @@ extern "C" {
 # endif
 #endif
 
-//#include <kdebug.h>
-//#include <kstandarddirs.h>	// findExe
-
 #include <QtCore>
 
 // not defined on HP-UX for example

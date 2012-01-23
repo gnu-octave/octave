@@ -20,8 +20,8 @@
     02110-1301  USA.
 */
 
-#ifndef TEHISTORY_H
-#define TEHISTORY_H
+#ifndef HISTORY_H
+#define HISTORY_H
 
 // Qt
 #include <QtCore/QBitRef>
@@ -32,13 +32,6 @@
 #include "BlockArray.h"
 #include "Character.h"
 
-namespace Konsole
-{
-
-#if 1
-/*
-   An extendable tmpfile(1) based buffer.
-*/
 
 class HistoryFile
 {
@@ -75,7 +68,6 @@ private:
   //when readWriteBalance goes below this threshold, the file will be mmap'ed automatically
   static const int MAP_THRESHOLD = -1000;
 };
-#endif
 
 //////////////////////////////////////////////////////////////////////
 
@@ -124,7 +116,6 @@ protected:
 
 };
 
-#if 1
 
 //////////////////////////////////////////////////////////////////////
 // File-based history (e.g. file log, no limitation in length)
@@ -209,7 +200,6 @@ public:
 
 };*/
 
-#endif
 
 //////////////////////////////////////////////////////////////////////
 // Nothing-based history (no history :-)
@@ -306,7 +296,7 @@ protected:
   size_t m_size;
 };
 
-#if 1 
+
 class HistoryTypeFile : public HistoryType
 {
 public:
@@ -337,8 +327,4 @@ protected:
   unsigned int m_nbLines;
 };
 
-#endif
-
-}
-
-#endif // TEHISTORY_H
+#endif // HISTORY_H

@@ -49,19 +49,6 @@
 #include "TerminalCharacterDecoder.h"
 #include "ScreenWindow.h"
 
-using namespace Konsole;
-
-/* ------------------------------------------------------------------------- */
-/*                                                                           */
-/*                               Emulation                                  */
-/*                                                                           */
-/* ------------------------------------------------------------------------- */
-
-//#define CNTL(c) ((c)-'@')
-
-/*!
-*/
-
 Emulation::Emulation() :
   _currentScreen(0),
   _codec(0),

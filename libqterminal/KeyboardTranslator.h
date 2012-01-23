@@ -110,9 +110,6 @@ static struct K_GLOBAL_STATIC_STRUCT_NAME(NAME)                                \
 class QIODevice;
 class QTextStream;
 
-namespace Konsole
-{
-
 /** 
  * A convertor which maps between key sequences pressed by the user and the
  * character strings which should be sent to the terminal and commands
@@ -648,10 +645,6 @@ inline void KeyboardTranslator::Entry::setStateMask( States stateMask )
 }
 inline KeyboardTranslator::States KeyboardTranslator::Entry::stateMask() const { return _stateMask; }
 
-}
-
-Q_DECLARE_METATYPE(Konsole::KeyboardTranslator::Entry)
-Q_DECLARE_METATYPE(const Konsole::KeyboardTranslator*)
 
 #endif // KEYBOARDTRANSLATOR_H
 

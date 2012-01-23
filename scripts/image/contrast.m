@@ -50,11 +50,14 @@ endfunction
 %!demo
 %! clf;
 %! img = reshape (1:100, 10, 10);
-%! image (img);
-%! colormap (gray (10));
-%! title ("Image with default 256 gray levels");
-%! input ("Press <enter> to continue: ", "s");
-%! colormap (contrast (img));
+%! imagesc (img);
+%! colormap (gray (64));
+%! title ("Image with default 64 gray levels");
+%! pos = get (gcf, "position");
+%! pos(1) += pos(3) + 15;
+%! figure ("position", pos); 
+%! colormap (contrast (img, 10));
+%! imagesc (img);
 %! title ("Image with contrast enhanced");
 
 %!assert (contrast (1:100,10), [([0:9]/9)',([0:9]/9)',([0:9]/9)'], 1e-10)

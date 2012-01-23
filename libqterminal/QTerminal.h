@@ -78,8 +78,8 @@ protected slots:
     
 private:
     void init();
-    SessionView *m_terminalDisplay;
-    SessionModel *m_session;
+    SessionView *m_sessionView;
+    SessionModel *m_sessionModel;
 };
 
 #endif // Q_TERMINAL

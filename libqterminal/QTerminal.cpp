@@ -26,9 +26,9 @@ QTerminal::QTerminal(QWidget *parent)
     init();
     
     setFocus(Qt::OtherFocusReason);
-    m_terminalDisplay->resize(this->size());
+    m_sessionView->resize(this->size());
     
-    this->setFocusProxy(m_terminalDisplay);
+    this->setFocusProxy(m_sessionView);
 }
 
 void QTerminal::init()
@@ -41,26 +41,26 @@ void QTerminal::init()
     dup2 (fds, 1);
     dup2 (fds, 2);
 
-    m_session = new SessionModel(fdm, fds);
+    m_sessionModel = new SessionModel(fdm, fds);
 
-    m_session->setTitle(SessionModel::NameRole, "QTermWidget");
-    m_session->setProgram("/bin/bash");
+    m_sessionModel->setTitle(SessionModel::NameRole, "QTermWidget");
+    m_sessionModel->setProgram("/bin/bash");
     QStringList args("");
-    m_session->setArguments(args);
-    m_session->setAutoClose(true);
-    m_session->setCodec(QTextCodec::codecForName("UTF-8"));
-    m_session->setFlowControlEnabled(true);
-    m_session->setHistoryType(HistoryTypeBuffer(1000));
-    m_session->setDarkBackground(true);
-    m_session->setKeyBindings("");
+    m_sessionModel->setArguments(args);
+    m_sessionModel->setAutoClose(true);
+    m_sessionModel->setCodec(QTextCodec::codecForName("UTF-8"));
+    m_sessionModel->setFlowControlEnabled(true);
+    m_sessionModel->setHistoryType(HistoryTypeBuffer(1000));
+    m_sessionModel->setDarkBackground(true);
+    m_sessionModel->setKeyBindings("");
 
-    m_terminalDisplay = new SessionView(this);
-    m_terminalDisplay->setBellMode(SessionView::NotifyBell);
-    m_terminalDisplay->setTerminalSizeHint(true);
-    m_terminalDisplay->setTripleClickMode(SessionView::SelectWholeLine);
-    m_terminalDisplay->setTerminalSizeStartup(true);
-    m_terminalDisplay->setRandomSeed(m_session->sessionId() * 31);
-    m_terminalDisplay->setSize(80, 40);
+    m_sessionView = new SessionView(this);
+    m_sessionView->setBellMode(SessionView::NotifyBell);
+    m_sessionView->setTerminalSizeHint(true);
+    m_sessionView->setTripleClickMode(SessionView::SelectWholeLine);
+    m_sessionView->setTerminalSizeStartup(true);
+    m_sessionView->setRandomSeed(m_sessionModel->sessionId() * 31);
+    m_sessionView->setSize(80, 40);
     
     QFont font = QApplication::font(); 
     font.setFamily("Monospace");
@@ -68,11 +68,11 @@ void QTerminal::init()
     font.setStyleHint(QFont::TypeWriter);
     setTerminalFont(font);  
 
-    m_session->run();
-    m_session->addView(m_terminalDisplay);
-    m_terminalDisplay->setScrollBarPosition(SessionView::ScrollBarRight);
+    m_sessionModel->run();
+    m_sessionModel->addView(m_sessionView);
+    m_sessionView->setScrollBarPosition(SessionView::ScrollBarRight);
 
-    connect(m_session, SIGNAL(finished()), this, SLOT(sessionFinished()));
+    connect(m_sessionModel, SIGNAL(finished()), this, SLOT(sessionFinished()));
 }
 
 QTerminal::~QTerminal()
@@ -83,64 +83,64 @@ QTerminal::~QTerminal()
 
 void QTerminal::setTerminalFont(QFont &font)
 {
-    if(!m_terminalDisplay)
+    if(!m_sessionView)
 	return;
-    m_terminalDisplay->setVTFont(font);
+    m_sessionView->setVTFont(font);
 }
 
 void QTerminal::setShellProgram(const QString &progname)
 {
-    if(!m_session)
+    if(!m_sessionModel)
 	return;
-    m_session->setProgram(progname);
+    m_sessionModel->setProgram(progname);
 }
 
 void QTerminal::setWorkingDirectory(const QString& dir)
 {
-    if(!m_session)
+    if(!m_sessionModel)
         return;
-    m_session->setInitialWorkingDirectory(dir);
+    m_sessionModel->setInitialWorkingDirectory(dir);
 }
 
 void QTerminal::setArgs(QStringList &args)
 {
-    if (!m_session)
+    if (!m_sessionModel)
 	return;
-    m_session->setArguments(args);
+    m_sessionModel->setArguments(args);
 }
 
 void QTerminal::setTextCodec(QTextCodec *codec)
 {
-    if(!m_session)
+    if(!m_sessionModel)
 	return;
-    m_session->setCodec(codec);
+    m_sessionModel->setCodec(codec);
 }
 
 void QTerminal::setSize(int h, int v)
 {
-    if(!m_terminalDisplay)
+    if(!m_sessionView)
 	return;
-    m_terminalDisplay->setSize(h, v);
+    m_sessionView->setSize(h, v);
 }
 
 void QTerminal::setHistorySize(int lines)
 {
     if(lines < 0)
-        m_session->setHistoryType(HistoryTypeFile());
+        m_sessionModel->setHistoryType(HistoryTypeFile());
     else
-        m_session->setHistoryType(HistoryTypeBuffer(lines));
+        m_sessionModel->setHistoryType(HistoryTypeBuffer(lines));
 }
 
 void QTerminal::setReadOnly(bool readonly)
 {
-    m_terminalDisplay->setReadOnly(readonly);
+    m_sessionView->setReadOnly(readonly);
 }
 
 void QTerminal::resizeEvent(QResizeEvent*)
 {
-    m_terminalDisplay->resize(this->size());
-    m_terminalDisplay->updateImage();
-    m_terminalDisplay->update();
+    m_sessionView->resize(this->size());
+    m_sessionView->updateImage();
+    m_sessionView->update();
 }
 
 void QTerminal::sessionFinished()
@@ -150,38 +150,38 @@ void QTerminal::sessionFinished()
 
 void QTerminal::copyClipboard()
 {
-    m_terminalDisplay->copyClipboard();
+    m_sessionView->copyClipboard();
 }
 
 void QTerminal::pasteClipboard()
 {
-    m_terminalDisplay->pasteClipboard();
+    m_sessionView->pasteClipboard();
 }
 
 void QTerminal::setFlowControlEnabled(bool enabled)
 {
-    m_session->setFlowControlEnabled(enabled);
+    m_sessionModel->setFlowControlEnabled(enabled);
 }
 
 bool QTerminal::flowControlEnabled(void)
 {
-    return m_session->flowControlEnabled();
+    return m_sessionModel->flowControlEnabled();
 }
 
 void QTerminal::setFlowControlWarningEnabled(bool enabled)
 {
     if(flowControlEnabled()) {
-        m_terminalDisplay->setFlowControlWarningEnabled(enabled);
+        m_sessionView->setFlowControlWarningEnabled(enabled);
     }
 }
 
 void QTerminal::setEnvironment(const QStringList& environment)
 {
-    m_session->setEnvironment(environment);
+    m_sessionModel->setEnvironment(environment);
 }
 
 void* QTerminal::getTerminalDisplay()
 {
-    return static_cast<void*>(m_terminalDisplay);
+    return static_cast<void*>(m_sessionView);
 }
 

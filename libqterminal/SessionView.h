@@ -65,7 +65,7 @@ class SessionView : public QWidget
 
 public:
     /** Constructs a new terminal display widget with the specified parent. */
-    SessionView(QWidget *parent=0);
+    SessionView(QWidget *parent = 0);
     virtual ~SessionView();
 
     /** Returns the terminal color palette used by the display. */

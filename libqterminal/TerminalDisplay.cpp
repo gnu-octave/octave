@@ -300,7 +300,6 @@ TerminalDisplay::TerminalDisplay(QWidget *parent)
   
   setUsesMouse(true);
   setColorTable(base_color_table);
-//  setColorTable(blackonlightyellow_color_table); 
   setMouseTracking(true);
 
   // Enable drag and drop 

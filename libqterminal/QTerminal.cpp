@@ -18,7 +18,7 @@
 						
 
 #include "QTerminal.h"
-#include "pty.h"
+#include "kpty.h"
 
 QTerminal::QTerminal(QWidget *parent)
     : QWidget(parent) {
@@ -33,9 +33,10 @@ QTerminal::QTerminal(QWidget *parent)
 
 void QTerminal::init()
 {
-    int fdm;
-    int fds;
-    openpty (&fdm, &fds, 0, 0, 0);
+    KPty *kpty = new KPty();
+    kpty->open();
+    int fdm = kpty->masterFd();
+    int fds = kpty->slaveFd();
 
     dup2 (fds, 0);
     dup2 (fds, 1);

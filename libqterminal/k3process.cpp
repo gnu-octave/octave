@@ -243,6 +243,7 @@ bool K3Process::start(RunMode runmode, Communication comm)
     qDebug() << "Attempted to start an already running process" << endl;
     return false;
   }
+/*
 
   uint n = arguments.count();
   if (n == 0) {
@@ -275,14 +276,14 @@ bool K3Process::start(RunMode runmode, Communication comm)
       for (uint i = 0; i < n; i++)
          arglist[i] = arguments[i].data();
       arglist[n] = 0;
-  }
+  }*/
 
   run_mode = runmode;
 
   if (!setupCommunication(comm))
   {
       qDebug() << "Could not setup Communication!" << endl;
-      free(arglist);
+      //free(arglist);
       return false;
   }
 
@@ -292,21 +293,24 @@ bool K3Process::start(RunMode runmode, Communication comm)
   struct passwd *pw = geteuid() ? 0 : getpwuid(getuid());
 #endif
 
+/*
   int fd[2];
-  if (pipe(fd))
-     fd[0] = fd[1] = -1; // Pipe failed.. continue
 
-
+  if (pipe(fd)) {
+      qDebug("Pipe failed!");
+      fd[0] = fd[1] = -1; // Pipe failed.. continue
+  }
+*/
   // we don't use vfork() because
   // - it has unclear semantics and is not standardized
   // - we do way too much magic in the child
-  pid_ = fork();
-  if (pid_ == 0) {
+  //pid_ = fork();
+  //if (pid_ == 0) {
         // The child process
 
-        close(fd[0]);
+        //close(fd[0]);
         // Closing of fd[1] indicates that the execvp() succeeded!
-        fcntl(fd[1], F_SETFD, FD_CLOEXEC);
+        //fcntl(fd[1], F_SETFD, FD_CLOEXEC);
 
         if (!commSetupDoneC())
           qDebug() << "Could not finish comm setup in child!" << endl;
@@ -339,42 +343,37 @@ bool K3Process::start(RunMode runmode, Communication comm)
 
         if (runmode == DontCare || runmode == OwnGroup)
           setsid();
-
+/*
         const char *executable = arglist[0];
         if (!d->executable.isEmpty())
            executable = d->executable.data();
-
-        for(;;) {
-            sleep(1);
-        }
-        // We don't want to execute anything.
+*/
         //execvp(executable, arglist);
 
-        char resultByte = 1;
-        ssize_t result = write(fd[1], &resultByte, 1);
-	if (result<0) {
-	    qDebug() << "Write failed with the error code " << result << endl;
-	}
-        _exit(-1);
-  } else if (pid_ == -1) {
+        //char resultByte = 1;
+        //ssize_t result = write(fd[1], &resultByte, 1);
+        //if (result<0) {
+        //    qDebug() << "Write failed with the error code " << result << endl;
+        //}
+        //_exit(-1);
+  /*} else if (pid_ == -1) {
         // forking failed
 
         // commAbort();
         pid_ = 0;
         free(arglist);
         return false;
-  }
+  }*/
   // the parent continues here
-  free(arglist);
+  //free(arglist);
 
   if (!commSetupDoneP())
     qDebug() << "Could not finish comm setup in parent!" << endl;
 
-  return true;
-  /*
   // Check whether client could be started.
-  close(fd[1]);
+  //close(fd[1]);
 
+  /*
   for(;;)
   {
      char resultByte;
@@ -396,16 +395,14 @@ bool K3Process::start(RunMode runmode, Communication comm)
      break; // success
   }
   close(fd[0]);
-
+*/
   runs = true;
-  for(;;) { sleep(1); }
-
+  return true;
   switch (runmode)
   {
   case Block:
     for (;;)
     {
-
       commClose(); // drain only, unless obsolete reimplementation
       if (!runs)
       {
@@ -438,7 +435,7 @@ bool K3Process::start(RunMode runmode, Communication comm)
     break;
   }
 
-  return true;*/
+  return true;
 }
 
 
@@ -929,6 +926,7 @@ int K3Process::commSetupDoneP()
 int K3Process::commSetupDoneC()
 {
   int ok = 1;
+
   if (d->usePty & Stdin) {
     if (dup2(d->pty->slaveFd(), STDIN_FILENO) < 0) ok = 0;
   } else if (communication & Stdin) {

@@ -32,6 +32,7 @@
 
 // Konsole
 #include "History.h"
+#include "kpty.h"
 
 class KProcess;
 
@@ -70,7 +71,7 @@ public:
    * falls back to using the program specified in the SHELL environment
    * variable.
    */
-  SessionModel(int masterFd = -1, int slaveFd = -1);
+  SessionModel(KPty *kpty);
   ~SessionModel();
 
   /**
@@ -484,7 +485,7 @@ private:
 
   int            _uniqueIdentifier;
 
-  PseudoTerminal*          _shellProcess;
+  PseudoTerminal* _shellProcess;
   Emulation*    _emulation;
 
   QList<SessionView*> _views;

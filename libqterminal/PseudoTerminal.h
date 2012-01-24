@@ -62,7 +62,7 @@ Q_OBJECT
      * name of the program to start and appropriate arguments.
      */
     PseudoTerminal();
-    PseudoTerminal(int masterFd, int slaveFd);
+    PseudoTerminal(KPty *kpty);
 
     ~PseudoTerminal();
 
@@ -90,9 +90,7 @@ Q_OBJECT
                const QStringList& arguments, 
                const QStringList& environment, 
                ulong winid, 
-               bool addToUtmp,
-               int masterFd,
-               int slaveFd
+               bool addToUtmp
 //               const QString& dbusService,
 //               const QString& dbusSession
              );

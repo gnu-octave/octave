@@ -35,14 +35,13 @@ void QTerminal::init()
 {
     KPty *kpty = new KPty();
     kpty->open();
-    int fdm = kpty->masterFd();
     int fds = kpty->slaveFd();
 
     dup2 (fds, 0);
     dup2 (fds, 1);
     dup2 (fds, 2);
 
-    m_sessionModel = new SessionModel(fdm, fds);
+    m_sessionModel = new SessionModel(kpty);
 
     m_sessionModel->setTitle(SessionModel::NameRole, "QTermWidget");
     m_sessionModel->setProgram("/bin/bash");

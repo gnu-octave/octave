@@ -147,9 +147,7 @@ int PseudoTerminal::start(const QString& program,
                const QStringList& programArguments, 
                const QStringList& environment, 
                ulong winid, 
-               bool addToUtmp,
-               int masterFd,
-               int slaveFd
+               bool addToUtmp
 //               const QString& dbusService,
 //               const QString& dbusSession)
 		)
@@ -185,7 +183,7 @@ int PseudoTerminal::start(const QString& program,
   if (!environment.contains("LANGUAGE"))
       setEnvironment("LANGUAGE",QString());
 
-  setUsePty(All, addToUtmp, masterFd, slaveFd);
+  setUsePty(All, addToUtmp, _pty);
 
   pty()->open();
   
@@ -244,10 +242,10 @@ PseudoTerminal::PseudoTerminal()
           this, SLOT(writeReady()));
   _pty = new KPty;
 
-  setUsePty(All, false, -1, -1); // utmp will be overridden later
+  setUsePty(All, false); // utmp will be overridden later
 }
 
-PseudoTerminal::PseudoTerminal(int masterFd, int slaveFd)
+PseudoTerminal::PseudoTerminal(KPty *kpty)
     : _bufferFull(false),
       _windowColumns(0),
       _windowLines(0),
@@ -261,9 +259,9 @@ PseudoTerminal::PseudoTerminal(int masterFd, int slaveFd)
           this, SLOT(donePty()));
   connect(this, SIGNAL(wroteStdin(K3Process *)),
           this, SLOT(writeReady()));
-  _pty = new KPty(masterFd, slaveFd);
+  _pty = kpty;
 
-  setUsePty(All, false, masterFd, slaveFd); // utmp will be overridden later
+  setUsePty(All, false, _pty); // utmp will be overridden later
 }
 
 PseudoTerminal::~PseudoTerminal()

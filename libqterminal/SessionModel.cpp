@@ -45,7 +45,7 @@
 
 int SessionModel::lastSessionId = 0;
 
-SessionModel::SessionModel(int masterFd, int slaveFd) :
+SessionModel::SessionModel(KPty *kpty) :
     _shellProcess(0)
   , _emulation(0)
   , _monitorActivity(false)
@@ -67,8 +67,6 @@ SessionModel::SessionModel(int masterFd, int slaveFd) :
   //   , _zmodemProgress(0)
   , _hasDarkBackground(false)
 {
-    _masterFd = masterFd;
-    _slaveFd = slaveFd;
 
     //prepare DBus communication
     //    new SessionAdaptor(this);
@@ -76,11 +74,7 @@ SessionModel::SessionModel(int masterFd, int slaveFd) :
     //    QDBusConnection::sessionBus().registerObject(QLatin1String("/Sessions/")+QString::number(_sessionId), this);
 
     //create teletype for I/O with shell process
-    if(_masterFd >= 0) {
-        _shellProcess = new PseudoTerminal(_masterFd, _slaveFd);
-    } else {
-        _shellProcess = new PseudoTerminal();
-    }
+    _shellProcess = new PseudoTerminal(kpty);
 
     //create emulation backend
     _emulation = new Vt102Emulation();
@@ -307,9 +301,7 @@ void SessionModel::run()
                                       arguments,
                                       _environment << backgroundColorHint,
                                       windowId(),
-                                      _addToUtmp,
-                                      _masterFd,
-                                      _slaveFd);
+                                      _addToUtmp);
 
     if (result < 0)
     {

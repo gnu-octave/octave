@@ -731,16 +731,13 @@ void K3Process::setUseShell(bool useShell, const char *shell)
     d->shell = "/bin/sh";
 }
 
-void K3Process::setUsePty(Communication usePty, bool addUtmp, int masterFd, int slaveFd)
+void K3Process::setUsePty(Communication usePty, bool addUtmp, KPty *kpty)
 {
   d->usePty = usePty;
   d->addUtmp = addUtmp;
   if (usePty) {
     if (!d->pty) {
-      if(masterFd >= 0)
-          d->pty = new KPty(masterFd, slaveFd);
-      else
-          d->pty = new KPty;
+          d->pty = kpty;
     }
   } else {
     delete d->pty;

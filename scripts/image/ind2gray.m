@@ -17,11 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ind2gray (@var{x}, @var{map})
-## Convert an Octave indexed image to a gray scale intensity image.
+## @deftypefn  {Function File} {} ind2gray (@var{x})
+## @deftypefnx {Function File} {} ind2gray (@var{x}, @var{map})
+## Convert a color indexed image to a gray scale intensity image.
 ## If @var{map} is omitted, the current colormap is used to determine the
 ## intensities.
-## @seealso{gray2ind, rgb2ntsc, image, colormap}
+## @seealso{gray2ind, ind2rgb}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

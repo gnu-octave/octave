@@ -17,9 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{rgb_map} =} hsv2rgb (@var{hsv_map})
-## Transform a colormap or image from the HSV space to the RGB space.
-## @seealso{rgb2hsv}
+## @deftypefn  {Function File} {@var{rgb_map} =} hsv2rgb (@var{hsv_map})
+## @deftypefnx {Function File} {@var{rgb_img} =} hsv2rgb (@var{hsv_img})
+## Transform a colormap or image from hue-saturation-value (HSV) space to
+## red-green-blue (RGB) space.
+## @seealso{rgb2hsv, ind2rgb, ntsc2rgb}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>
@@ -27,10 +29,10 @@
 
 function rgb_map = hsv2rgb (hsv_map)
 
-## Each color value x = (r,g,b) is calculated with
-## x = (1-sat)*val+sat*val*f_x(hue)
-## where f_x(hue) is a piecewise defined function for
-## each color with f_r(hue-2/3) = f_g(hue) = f_b(hue-1/3).
+  ## Each color value x = (r,g,b) is calculated with
+  ## x = (1-sat)*val+sat*val*f_x(hue)
+  ## where f_x(hue) is a piecewise defined function for
+  ## each color with f_r(hue-2/3) = f_g(hue) = f_b(hue-1/3).
 
   if (nargin != 1)
     print_usage ();

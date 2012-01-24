@@ -120,6 +120,7 @@ chisquare
 chol
 Cholesky
 cholmod
+chrominance
 cindex
 circ
 circshift

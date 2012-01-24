@@ -20,12 +20,12 @@
 ## @deftypefn  {Function File} {@var{cmap} =} colormap ()
 ## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{map})
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("default")
-## Set the current colormap.
+## Query or set the current colormap.
 ##
 ## @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
-## color map should be an @var{n} row by 3 column matrix.  The columns
+## colormap should be an @var{n} row by 3 column matrix.  The columns
 ## contain red, green, and blue intensities respectively.  All entries
-## should be between 0 and 1 inclusive.  The new colormap is returned.
+## must be between 0 and 1 inclusive.  The new colormap is returned.
 ##
 ## @code{colormap ("default")} restores the default colormap (the
 ## @code{jet} map with 64 entries).  The default colormap is returned.

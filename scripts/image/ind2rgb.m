@@ -17,13 +17,14 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
-## @deftypefnx {Function File} {[@var{R}, @var{R}, @var{R}] =} ind2rgb (@var{x}, @var{map})
+## @deftypefn  {Function File} {@var{rgb} =} ind2rgb (@var{x})
+## @deftypefnx {Function File} {@var{rgb} =} ind2rgb (@var{x}, @var{map})
+## @deftypefnx {Function File} {[@var{R}, @var{G}, @var{B}] =} ind2rgb (@dots{})
 ## Convert an indexed image to red, green, and blue color components.
 ## If the colormap doesn't contain enough colors, pad it with the
 ## last color in the map.
 ## If @var{map} is omitted, the current colormap is used for the conversion.
-## @seealso{rgb2ind, image, imshow, ind2gray, gray2ind}
+## @seealso{rgb2ind, ind2gray, hsv2rgb, ntsc2rgb}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

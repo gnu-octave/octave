@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
 ## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{R}, @var{G}, @var{B})
-## Convert an RGB image to an Octave indexed image.
-## @seealso{ind2rgb, rgb2ntsc}
+## Convert an image in red-green-blue (RGB) space to an indexed image.
+## @seealso{ind2rgb, rgb2hsv, rgb2ntsc}
 ## @end deftypefn
 
 ## Bugs: The color map may have duplicate entries.

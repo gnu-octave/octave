@@ -3464,6 +3464,7 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
 {
   Matrix pos = get_paperposition ().matrix_value ();
   Matrix sz = get_papersize ().matrix_value ();
+  caseless_str porient = get_paperorientation ();
 
   pos (0) = pos (0) / sz(0);
   pos (1) = pos (1) / sz(1);
@@ -3498,7 +3499,15 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
         }
     }
   else
-    sz = papersize_from_type (punits, typ);
+    {
+      sz = papersize_from_type (punits, typ);
+      if (porient.compare ("landscape"))
+        {
+          double tmp = sz (0);
+          sz (0) = sz (1);
+          sz (1) = tmp;
+        }
+    }
 
   pos (0) = pos (0) * sz(0);
   pos (1) = pos (1) * sz(1);
@@ -3513,18 +3522,166 @@ void
 figure::properties::update_papertype (void)
 {
   caseless_str typ = get_papertype ();
-
   if (! typ.compare ("<custom>"))
-    // Call papersize.set rather than set_papersize to avoid loops between
-    // update_papersize and update_papertype
-    papersize.set (octave_value (papersize_from_type (get_paperunits (), typ)));
+    {
+      Matrix sz = papersize_from_type (get_paperunits (), typ);
+      caseless_str porient = get_paperorientation ();
+      if (porient.compare ("landscape"))
+        {
+          double tmp = sz (0);
+          sz (0) = sz (1);
+          sz (1) = tmp;
+        }
+      // Call papersize.set rather than set_papersize to avoid loops between
+      // update_papersize and update_papertype
+      papersize.set (octave_value (sz));
+    }
 }
 
 void
 figure::properties::update_papersize (void)
 {
-  papertype.set ("<custom>");
+  Matrix sz = get_papersize ().matrix_value ();
+  if (sz (0) > sz (1))
+    {
+      double tmp = sz (0);
+      sz (0) = sz (1);
+      sz (1) = tmp;
+      papersize.set (octave_value (sz));
+      caseless_str porient = "landscape";
+      paperorientation.set (octave_value (porient));
+    }
+  else
+    {
+      caseless_str porient = "portrait";
+      paperorientation.set (octave_value (porient));
+    }
+  caseless_str punits = get_paperunits ();
+  if (punits.compare ("centimeters"))
+    {
+      sz (0) = sz (0) / 2.54;
+      sz (1) = sz (1) / 2.54;
+    }
+  else if (punits.compare ("points"))
+    {
+      sz (0) = sz (0) / 72.0;
+      sz (1) = sz (1) / 72.0;
+    }
+  if (punits.compare ("normalized"))
+    {
+      caseless_str typ = get_papertype ();
+      if (typ.compare ("<custom>"))
+        error ("set: can't set the papertype to <custom> when the paperunits is normalized");
+    }
+  else
+    {
+      // TODO - the papersizes info is also in papersize_from_type(). Both should be
+      // rewritten to avoid the duplication.
+      caseless_str typ = "<custom>";
+      double mm2in = 1.0 / 25.4;
+      double tol = 0.01;
+      if (std::abs (sz (0) - 8.5) + std::abs (sz (1) - 11.0) < tol)
+        typ = "usletter";
+      else if (std::abs (sz (0) - 8.5) + std::abs (sz (1) - 14.0) < tol)
+        typ = "uslegal";
+      else if (std::abs (sz (0) - 11.0) + std::abs (sz (1) - 17.0) < tol)
+        typ = "tabloid";
+      else if (std::abs (sz (0) - 841.0 * mm2in) + std::abs (sz (1) - 1198.0 * mm2in) < tol)
+        typ = "a0";
+      else if (std::abs (sz (0) - 594.0 * mm2in) + std::abs (sz (1) - 841.0 * mm2in) < tol)
+        typ = "a1";
+      else if (std::abs (sz (0) - 420.0 * mm2in) + std::abs (sz (1) - 594.0 * mm2in) < tol)
+        typ = "a2";
+      else if (std::abs (sz (0) - 297.0 * mm2in) + std::abs (sz (1) - 420.0 * mm2in) < tol)
+        typ = "a3";
+      else if (std::abs (sz (0) - 210.0 * mm2in) + std::abs (sz (1) - 297.0 * mm2in) < tol)
+        typ = "a4";
+      else if (std::abs (sz (0) - 148.0 * mm2in) + std::abs (sz (1) - 210.0 * mm2in) < tol)
+        typ = "a5";
+      else if (std::abs (sz (0) - 1029.0 * mm2in) + std::abs (sz (1) - 1456.0 * mm2in) < tol)
+        typ = "b0";
+      else if (std::abs (sz (0) - 728.0 * mm2in) + std::abs (sz (1) - 1028.0 * mm2in) < tol)
+        typ = "b1";
+      else if (std::abs (sz (0) - 514.0 * mm2in) + std::abs (sz (1) - 728.0 * mm2in) < tol)
+        typ = "b2";
+      else if (std::abs (sz (0) - 364.0 * mm2in) + std::abs (sz (1) - 514.0 * mm2in) < tol)
+        typ = "b3";
+      else if (std::abs (sz (0) - 257.0 * mm2in) + std::abs (sz (1) - 364.0 * mm2in) < tol)
+        typ = "b4";
+      else if (std::abs (sz (0) - 182.0 * mm2in) + std::abs (sz (1) - 257.0 * mm2in) < tol)
+        typ = "b5";
+      else if (std::abs (sz (0) - 9.0) + std::abs (sz (1) - 12.0) < tol)
+        typ = "arch-a";
+      else if (std::abs (sz (0) - 12.0) + std::abs (sz (1) - 18.0) < tol)
+        typ = "arch-b";
+      else if (std::abs (sz (0) - 18.0) + std::abs (sz (1) - 24.0) < tol)
+        typ = "arch-c";
+      else if (std::abs (sz (0) - 24.0) + std::abs (sz (1) - 36.0) < tol)
+        typ = "arch-d";
+      else if (std::abs (sz (0) - 36.0) + std::abs (sz (1) - 48.0) < tol)
+        typ = "arch-e";
+      else if (std::abs (sz (0) - 8.5) + std::abs (sz (1) - 11.0) < tol)
+        typ = "a";
+      else if (std::abs (sz (0) - 11.0) + std::abs (sz (1) - 17.0) < tol)
+        typ = "b";
+      else if (std::abs (sz (0) - 17.0) + std::abs (sz (1) - 22.0) < tol)
+        typ = "c";
+      else if (std::abs (sz (0) - 22.0) + std::abs (sz (1) - 34.0) < tol)
+        typ = "d";
+      else if (std::abs (sz (0) - 34.0) + std::abs (sz (1) - 43.0) < tol)
+        typ = "e";
+      // Call papertype.set rather than set_papertype to avoid loops between
+      // update_papersize and update_papertype
+      papertype.set (typ);
+    }
 }
+
+void
+figure::properties::update_paperorientation (void)
+{
+  caseless_str porient = get_paperorientation ();
+  Matrix sz = get_papersize ().matrix_value ();
+  Matrix pos = get_paperposition ().matrix_value ();
+  if ((sz (0) > sz (1) && porient.compare ("portrait"))
+      || (sz (0) < sz (1) && porient.compare ("landscape")))
+    {
+      double tmp = sz (0);
+      sz (0) = sz (1);
+      sz (1) = tmp;
+      tmp = pos (0);
+      pos (0) = pos (1);
+      pos (1) = tmp;
+      tmp = pos (2);
+      pos (2) = pos (3);
+      pos (3) = tmp;
+      // Call papertype.set rather than set_papertype to avoid loops between
+      // update_papersize and update_papertype
+      papersize.set (octave_value (sz));
+      paperposition.set (octave_value (pos));
+    }
+}
+
+/*
+%!test
+%! figure (1, "visible", false);
+%! tol = 100 * eps ();
+%! set (gcf (), "paperorientation", "portrait")
+%! set (gcf (), "paperunits", "inches")
+%! set (gcf (), "papertype", "usletter")
+%! assert (get (gcf (), "papersize"), [8.5, 11.0], tol)
+%! set (gcf (), "paperorientation", "landscape")
+%! assert (get (gcf (), "papersize"), [11.0, 8.5], tol)
+%! set (gcf (), "paperunits", "centimeters")
+%! assert (get (gcf (), "papersize"), [11.0, 8.5] * 2.54, tol)
+%! set (gcf (), "papertype", "a4");
+%! assert (get (gcf (), "papersize"), [29.7, 21.0], tol)
+%! set (gcf (), "paperunits", "inches", "papersize", [8.5, 11.0])
+%! assert (get (gcf (), "papertype"), "usletter")
+%! assert (get (gcf (), "paperorientation"), "portrait")
+%! set (gcf (), "papersize", [11.0, 8.5])
+%! assert (get (gcf (), "papertype"), "usletter")
+%! assert (get (gcf (), "paperorientation"), "landscape")
+*/
 
 void
 figure::properties::set_units (const octave_value& v)

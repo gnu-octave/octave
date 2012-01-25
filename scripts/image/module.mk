@@ -32,6 +32,7 @@ image_FCN_FILES = \
   image/rgb2hsv.m \
   image/rgb2ind.m \
   image/rgb2ntsc.m \
+  image/spinmap.m \
   image/spring.m \
   image/summer.m \
   image/white.m \

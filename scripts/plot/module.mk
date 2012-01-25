@@ -166,7 +166,6 @@ plot_FCN_FILES = \
   plot/sombrero.m \
   plot/specular.m \
   plot/sphere.m \
-  plot/spinmap.m \
   plot/stairs.m \
   plot/stem.m \
   plot/stem3.m \

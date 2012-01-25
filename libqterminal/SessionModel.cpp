@@ -53,27 +53,13 @@ SessionModel::SessionModel(KPty *kpty) :
   , _autoClose(true)
   , _wantedClose(false)
   , _silenceSeconds(10)
-  , _addToUtmp(false)  // disabled by default because of a bug encountered on certain systems
-  // which caused Konsole to hang when closing a tab and then opening a new
-  // one.  A 'QProcess destroyed while still running' warning was being
-  // printed to the terminal.  Likely a problem in KPty::logout()
-  // or KPty::login() which uses a QProcess to start /usr/bin/utempter
+  , _addToUtmp(false)
   , _flowControl(true)
   , _fullScripting(false)
   , _sessionId(0)
-  //   , _zmodemBusy(false)
-  //   , _zmodemProc(0)
-  //   , _zmodemProgress(0)
   , _hasDarkBackground(false)
 {
     _kpty = kpty;
-    //prepare DBus communication
-    //    new SessionAdaptor(this);
-    //_sessionId = ++lastSessionId;
-    //    QDBusConnection::sessionBus().registerObject(QLatin1String("/Sessions/")+QString::number(_sessionId), this);
-
-    //create teletype for I/O with shell process
-    //_shellProcess = new PseudoTerminal(kpty);
 
     //create emulation backend
     _emulation = new Vt102Emulation();
@@ -116,35 +102,6 @@ SessionModel::SessionModel(KPty *kpty) :
     _monitorTimer = new QTimer(this);
     _monitorTimer->setSingleShot(true);
     connect(_monitorTimer, SIGNAL(timeout()), this, SLOT(monitorTimerDone()));
-}
-
-WId SessionModel::windowId() const
-{
-    // Returns a window ID for this session which is used
-    // to set the WINDOWID environment variable in the shell
-    // process.
-    //
-    // Sessions can have multiple views or no views, which means
-    // that a single ID is not always going to be accurate.
-    //
-    // If there are no views, the window ID is just 0.  If
-    // there are multiple views, then the window ID for the
-    // top-level window which contains the first view is
-    // returned
-
-    if ( _views.count() == 0 )
-        return 0;
-    else
-    {
-        QWidget* window = _views.first();
-
-        Q_ASSERT( window );
-
-        while ( window->parentWidget() != 0 )
-            window = window->parentWidget();
-
-        return window->winId();
-    }
 }
 
 void SessionModel::setDarkBackground(bool darkBackground)
@@ -230,7 +187,8 @@ void SessionModel::viewDestroyed(QObject* view)
 
 void SessionModel::sendData(const char *buf, int len)
 {
-    ::write(_kpty->masterFd(), buf, len);
+    ssize_t bytesWritten = ::write(_kpty->masterFd(), buf, len);
+    (void)bytesWritten;
 }
 
 void SessionModel::removeView(SessionView* widget)
@@ -262,65 +220,6 @@ void SessionModel::removeView(SessionView* widget)
 
 void SessionModel::run()
 {
-    /*
-    //check that everything is in place to run the session
-    if (_program.isEmpty())
-        qDebug() << "Session::run() - program to run not set.";
-    if (_arguments.isEmpty())
-        qDebug() << "Session::run() - no command line arguments specified.";
-
-    // Upon a KPty error, there is no description on what that error was...
-    // Check to see if the given program is executable.
-    QString exec = QFile::encodeName(_program);
-
-    // if 'exec' is not specified, fall back to default shell.  if that
-    // is not set then fall back to /bin/sh
-    if ( exec.isEmpty() )
-        exec = getenv("SHELL");
-    if ( exec.isEmpty() )
-        exec = "/bin/sh";
-
-    // if no arguments are specified, fall back to shell
-    QStringList arguments =  _arguments.join(QChar(' ')).isEmpty() ?
-                QStringList() << exec : _arguments;
-    QString pexec = exec;
-
-    if ( pexec.isEmpty() ) {
-        qDebug()<<"can not execute "<<exec<<endl;
-        QTimer::singleShot(1, this, SIGNAL(finished()));
-        return;
-    }
-
-    //  QString cwd_save = QDir::currentPath();
-    QString cwd = QDir::currentPath();
-    if (!_initialWorkingDir.isEmpty())
-        _shellProcess->setWorkingDirectory(_initialWorkingDir);
-    else
-        _shellProcess->setWorkingDirectory(cwd);
-    //    _shellProcess->setWorkingDirectory(QDir::homePath());
-
-    _shellProcess->setXonXoff(_flowControl);
-    _shellProcess->setErase(_emulation->getErase());
-
-    // this is not strictly accurate use of the COLORFGBG variable.  This does not
-    // tell the terminal exactly which colors are being used, but instead approximates
-    // the color scheme as "black on white" or "white on black" depending on whether
-    // the background color is deemed dark or not
-    QString backgroundColorHint = _hasDarkBackground ? "COLORFGBG=15;0" : "COLORFGBG=0;15";
-
-    int result = _shellProcess->start(QFile::encodeName(_program),
-                                      arguments,
-                                      _environment << backgroundColorHint,
-                                      windowId(),
-                                      _addToUtmp);
-
-    if (result < 0)
-    {
-        return;
-    }
-
-    _shellProcess->setWriteable(false);  // We are reachable via kwrited.
-*/
     emit started();
 }
 
@@ -524,40 +423,12 @@ void SessionModel::updateTerminalSize()
 
 void SessionModel::refresh()
 {
-    // attempt to get the shell process to redraw the display
-    //
-    // this requires the program running in the shell
-    // to cooperate by sending an update in response to
-    // a window size change
-    //
-    // the window size is changed twice, first made slightly larger and then
-    // resized back to its normal size so that there is actually a change
-    // in the window size (some shells do nothing if the
-    // new and old sizes are the same)
-    //
-    // if there is a more 'correct' way to do this, please
-    // send an email with method or patches to konsole-devel@kde.org
-
-    //const QSize existingSize = _shellProcess->windowSize();
-    //_shellProcess->setWindowSize(existingSize.height(),existingSize.width()+1);
-    //_shellProcess->setWindowSize(existingSize.height(),existingSize.width());
-}
-
-bool SessionModel::sendSignal(int signal)
-{
-    return 0; //_shellProcess->kill(signal);
 }
 
 void SessionModel::close()
 {
     _autoClose = true;
     _wantedClose = true;
-    /*
-    if (!_shellProcess->isRunning() || !sendSignal(SIGHUP))
-    {
-        // Forced close.
-        QTimer::singleShot(1, this, SIGNAL(finished()));
-    }*/
 }
 
 void SessionModel::sendText(const QString &text) const
@@ -568,8 +439,6 @@ void SessionModel::sendText(const QString &text) const
 SessionModel::~SessionModel()
 {
     delete _emulation;
-    //delete _shellProcess;
-    //  delete _zmodemProc;
 }
 
 void SessionModel::setProfileKey(const QString& key)
@@ -579,40 +448,8 @@ void SessionModel::setProfileKey(const QString& key)
 }
 QString SessionModel::profileKey() const { return _profileKey; }
 
-void SessionModel::done(int exitStatus)
+void SessionModel::done(int)
 {
-    /*
-    if (!_autoClose)
-    {
-        _userTitle = ("<Finished>");
-        emit titleChanged();
-        return;
-    }
-    if (!_wantedClose && (exitStatus || _shellProcess->signalled()))
-    {
-        QString message;
-
-        if (_shellProcess->normalExit())
-            message.sprintf ("Session '%s' exited with status %d.", _nameTitle.toAscii().data(), exitStatus);
-        else if (_shellProcess->signalled())
-        {
-            if (_shellProcess->coreDumped())
-            {
-
-                message.sprintf("Session '%s' exited with signal %d and dumped core.", _nameTitle.toAscii().data(), _shellProcess->exitSignal());
-            }
-            else {
-                message.sprintf("Session '%s' exited with signal %d.", _nameTitle.toAscii().data(), _shellProcess->exitSignal());
-            }
-        }
-        else
-            message.sprintf ("Session '%s' exited unexpectedly.", _nameTitle.toAscii().data());
-
-        //FIXME: See comments in Session::monitorTimerDone()
-        //    KNotification::event("Finished", message , QPixmap(),
-        //                         QApplication::activeWindow(),
-        //                         KNotification::CloseWhenWidgetActivated);
-    }*/
     emit finished();
 }
 
@@ -681,7 +518,6 @@ void SessionModel::setIconName(const QString& iconName)
 void SessionModel::setIconText(const QString& iconText)
 {
     _iconText = iconText;
-    //kDebug(1211)<<"Session setIconText " <<  _iconText;
 }
 
 QString SessionModel::iconName() const
@@ -777,119 +613,6 @@ bool SessionModel::flowControlEnabled() const
 {
     return _flowControl;
 }
-//void Session::fireZModemDetected()
-//{
-//  if (!_zmodemBusy)
-//  {
-//    QTimer::singleShot(10, this, SIGNAL(zmodemDetected()));
-//    _zmodemBusy = true;
-//  }
-//}
-
-//void Session::cancelZModem()
-//{
-//  _shellProcess->sendData("\030\030\030\030", 4); // Abort
-//  _zmodemBusy = false;
-//}
-
-//void Session::startZModem(const QString &zmodem, const QString &dir, const QStringList &list)
-//{
-//  _zmodemBusy = true;
-//  _zmodemProc = new KProcess();
-//  _zmodemProc->setOutputChannelMode( KProcess::SeparateChannels );
-//
-//  *_zmodemProc << zmodem << "-v" << list;
-//
-//  if (!dir.isEmpty())
-//     _zmodemProc->setWorkingDirectory(dir);
-//
-//  _zmodemProc->start();
-//
-//  connect(_zmodemProc,SIGNAL (readyReadStandardOutput()),
-//          this, SLOT(zmodemReadAndSendBlock()));
-//  connect(_zmodemProc,SIGNAL (readyReadStandardError()),
-//          this, SLOT(zmodemReadStatus()));
-//  connect(_zmodemProc,SIGNAL (finished(int,QProcess::ExitStatus)),
-//          this, SLOT(zmodemFinished()));
-//
-//  disconnect( _shellProcess,SIGNAL(block_in(const char*,int)), this, SLOT(onReceiveBlock(const char*,int)) );
-//  connect( _shellProcess,SIGNAL(block_in(const char*,int)), this, SLOT(zmodemRcvBlock(const char*,int)) );
-//
-//  _zmodemProgress = new ZModemDialog(QApplication::activeWindow(), false,
-//                                    i18n("ZModem Progress"));
-//
-//  connect(_zmodemProgress, SIGNAL(user1Clicked()),
-//          this, SLOT(zmodemDone()));
-//
-//  _zmodemProgress->show();
-//}
-
-/*void Session::zmodemReadAndSendBlock()
-{
-  _zmodemProc->setReadChannel( QProcess::StandardOutput );
-  QByteArray data = _zmodemProc->readAll();
-
-  if ( data.count() == 0 )
-      return;
-
-  _shellProcess->sendData(data.constData(),data.count());
-}
-*/
-/*
-void Session::zmodemReadStatus()
-{
-  _zmodemProc->setReadChannel( QProcess::StandardError );
-  QByteArray msg = _zmodemProc->readAll();
-  while(!msg.isEmpty())
-  {
-     int i = msg.indexOf('\015');
-     int j = msg.indexOf('\012');
-     QByteArray txt;
-     if ((i != -1) && ((j == -1) || (i < j)))
-     {
-       msg = msg.mid(i+1);
-     }
-     else if (j != -1)
-     {
-       txt = msg.left(j);
-       msg = msg.mid(j+1);
-     }
-     else
-     {
-       txt = msg;
-       msg.truncate(0);
-     }
-     if (!txt.isEmpty())
-       _zmodemProgress->addProgressText(QString::fromLocal8Bit(txt));
-  }
-}
-*/
-/*
-void Session::zmodemRcvBlock(const char *data, int len)
-{
-  QByteArray ba( data, len );
-
-  _zmodemProc->write( ba );
-}
-*/
-/*
-void Session::zmodemFinished()
-{
-  if (_zmodemProc)
-  {
-    delete _zmodemProc;
-    _zmodemProc = 0;
-    _zmodemBusy = false;
-
-    disconnect( _shellProcess,SIGNAL(block_in(const char*,int)), this ,SLOT(zmodemRcvBlock(const char*,int)) );
-    connect( _shellProcess,SIGNAL(block_in(const char*,int)), this, SLOT(onReceiveBlock(const char*,int)) );
-
-    _shellProcess->sendData("\030\030\030\030", 4); // Abort
-    _shellProcess->sendData("\001\013\n", 3); // Try to get prompt back
-    _zmodemProgress->transferDone();
-  }
-}
-*/
 
 void SessionModel::onReceiveBlock( const char* buf, int len )
 {
@@ -909,127 +632,3 @@ void SessionModel::setSize(const QSize& size)
 
     emit resizeRequest(size);
 }
-int SessionModel::foregroundProcessId() const
-{
-    return 0; //_shellProcess->foregroundProcessGroup();
-}
-int SessionModel::processId() const
-{
-    return 0; //_shellProcess->pid();
-}
-
-SessionGroup::SessionGroup()
-    : _masterMode(0)
-{
-}
-SessionGroup::~SessionGroup()
-{
-    // disconnect all
-    connectAll(false);
-}
-int SessionGroup::masterMode() const { return _masterMode; }
-QList<SessionModel*> SessionGroup::sessions() const { return _sessions.keys(); }
-bool SessionGroup::masterStatus(SessionModel* session) const { return _sessions[session]; }
-
-void SessionGroup::addSession(SessionModel* session)
-{
-    _sessions.insert(session,false);
-
-    QListIterator<SessionModel*> masterIter(masters());
-
-    while ( masterIter.hasNext() )
-        connectPair(masterIter.next(),session);
-}
-void SessionGroup::removeSession(SessionModel* session)
-{
-    setMasterStatus(session,false);
-
-    QListIterator<SessionModel*> masterIter(masters());
-
-    while ( masterIter.hasNext() )
-        disconnectPair(masterIter.next(),session);
-
-    _sessions.remove(session);
-}
-void SessionGroup::setMasterMode(int mode)
-{
-    _masterMode = mode;
-
-    connectAll(false);
-    connectAll(true);
-}
-QList<SessionModel*> SessionGroup::masters() const
-{
-    return _sessions.keys(true);
-}
-void SessionGroup::connectAll(bool connect)
-{
-    QListIterator<SessionModel*> masterIter(masters());
-
-    while ( masterIter.hasNext() )
-    {
-        SessionModel* master = masterIter.next();
-
-        QListIterator<SessionModel*> otherIter(_sessions.keys());
-        while ( otherIter.hasNext() )
-        {
-            SessionModel* other = otherIter.next();
-
-            if ( other != master )
-            {
-                if ( connect )
-                    connectPair(master,other);
-                else
-                    disconnectPair(master,other);
-            }
-        }
-    }
-}
-void SessionGroup::setMasterStatus(SessionModel* session, bool master) {
-    bool wasMaster = _sessions[session];
-    _sessions[session] = master;
-
-    if ((!wasMaster && !master)
-            || (wasMaster && master)) {
-        return;
-    }
-
-    QListIterator<SessionModel*> iter(_sessions.keys());
-    while (iter.hasNext()) {
-        SessionModel* other = iter.next();
-
-        if (other != session) {
-            if (master) {
-                connectPair(session, other);
-            } else {
-                disconnectPair(session, other);
-            }
-        }
-    }
-}
-
-void SessionGroup::connectPair(SessionModel* master , SessionModel* other)
-{
-    //    qDebug() << k_funcinfo;
-
-    if ( _masterMode & CopyInputToAll )
-    {
-        qDebug() << "Connection session " << master->nameTitle() << "to" << other->nameTitle();
-
-        connect( master->emulation() , SIGNAL(sendData(const char*,int)) , other->emulation() ,
-                 SLOT(sendString(const char*,int)) );
-    }
-}
-void SessionGroup::disconnectPair(SessionModel* master , SessionModel* other)
-{
-    //    qDebug() << k_funcinfo;
-
-    if ( _masterMode & CopyInputToAll )
-    {
-        qDebug() << "Disconnecting session " << master->nameTitle() << "from" << other->nameTitle();
-
-        disconnect( master->emulation() , SIGNAL(sendData(const char*,int)) , other->emulation() ,
-                    SLOT(sendString(const char*,int)) );
-    }
-}
-

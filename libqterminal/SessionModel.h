@@ -58,7 +58,6 @@ Q_OBJECT
 
 public:
   Q_PROPERTY(QString name READ nameTitle)
-  Q_PROPERTY(int processId READ processId)
   Q_PROPERTY(QString keyBindings READ keyBindings WRITE setKeyBindings)
   Q_PROPERTY(QSize size READ size WRITE setSize)
 
@@ -286,9 +285,6 @@ public:
   /** Specifies whether a utmp entry should be created for the pty used by this session. */
   void setAddToUtmp(bool);
 
-  /** Sends the specified @p signal to the terminal process. */
-  bool sendSignal(int signal);
-
   /**
    * Specifies whether to close the session automatically when the terminal
    * process terminates.
@@ -309,11 +305,6 @@ public:
    */
   void sendText(const QString& text) const;
 
-  /**
-   * Returns the process id of the terminal process.
-   * This is the id used by the system API to refer to the process.
-   */
-  int processId() const;
 
   /**
    * Returns the process id of the terminal's foreground process.
@@ -356,10 +347,6 @@ public:
    * shell to redraw the prompt line.
    */
   void refresh();
-
-//  void startZModem(const QString &rz, const QString &dir, const QStringList &list);
-//  void cancelZModem();
-//  bool isZModemBusy() { return _zmodemBusy; }
 
 public slots:
 
@@ -433,9 +420,6 @@ signals:
   /** TODO: Document me. */
   void openUrlRequest(const QString& url);
 
-  /** TODO: Document me. */
-//  void zmodemDetected();
-
   /**
    * Emitted when the terminal process requests a change
    * in the size of the terminal window.
@@ -462,8 +446,6 @@ signals:
 private slots:
   void done(int);
 
-//  void fireZModemDetected();
-
   void onReceiveBlock( const char* buffer, int len );
   void monitorTimerDone();
 
@@ -475,10 +457,6 @@ private slots:
   //automatically detach views from sessions when view is destroyed
   void viewDestroyed(QObject* view);
 
-//  void zmodemReadStatus();
-//  void zmodemReadAndSendBlock();
-//  void zmodemRcvBlock(const char *data, int len);
-//  void zmodemFinished();
   void sendData(const char* buf, int len);
 
 private:
@@ -526,12 +504,7 @@ private:
   QString        _initialWorkingDir;
   SelfListener  *_selfListener;
   KPty         * _kpty;
-  // ZModem
-//  bool           _zmodemBusy;
-//  KProcess*      _zmodemProc;
-//  ZModemDialog*  _zmodemProgress;
 
-  // Color/Font Changes by ESC Sequences
 
   QColor         _modifiedBackground; // as set by: echo -en '\033]11;Color\007
 
@@ -543,78 +516,5 @@ private:
 
 };
 
-/**
- * Provides a group of sessions which is divided into master and slave sessions.
- * Activity in master sessions can be propagated to all sessions within the group.
- * The type of activity which is propagated and method of propagation is controlled
- * by the masterMode() flags.
- */
-class SessionGroup : public QObject
-{
-Q_OBJECT
-
-public:
-    /** Constructs an empty session group. */
-    SessionGroup();
-    /** Destroys the session group and removes all connections between master and slave sessions. */
-    ~SessionGroup();
-
-    /** Adds a session to the group. */
-    void addSession( SessionModel* session );
-    /** Removes a session from the group. */
-    void removeSession( SessionModel* session );
-
-    /** Returns the list of sessions currently in the group. */
-    QList<SessionModel*> sessions() const;
-
-    /**
-     * Sets whether a particular session is a master within the group.
-     * Changes or activity in the group's master sessions may be propagated
-     * to all the sessions in the group, depending on the current masterMode()
-     *
-     * @param session The session whoose master status should be changed.
-     * @param master True to make this session a master or false otherwise
-     */
-    void setMasterStatus( SessionModel* session , bool master );
-    /** Returns the master status of a session.  See setMasterStatus() */
-    bool masterStatus( SessionModel* session ) const;
-
-    /**
-     * This enum describes the options for propagating certain activity or
-     * changes in the group's master sessions to all sessions in the group.
-     */
-    enum MasterMode
-    {
-        /**
-         * Any input key presses in the master sessions are sent to all
-         * sessions in the group.
-         */
-        CopyInputToAll = 1
-    };
-
-    /**
-     * Specifies which activity in the group's master sessions is propagated
-     * to all sessions in the group.
-     *
-     * @param mode A bitwise OR of MasterMode flags.
-     */
-    void setMasterMode( int mode );
-    /**
-     * Returns a bitwise OR of the active MasterMode flags for this group.
-     * See setMasterMode()
-     */
-    int masterMode() const;
-
-private:
-    void connectPair(SessionModel* master , SessionModel* other);
-    void disconnectPair(SessionModel* master , SessionModel* other);
-    void connectAll(bool connect);
-    QList<SessionModel*> masters() const;
-
-    // maps sessions to their master status
-    QHash<SessionModel*,bool> _sessions;
-
-    int _masterMode;
-};
 
 #endif

@@ -3029,6 +3029,8 @@ root_figure::properties::update_units (void)
   else if (xunits.compare ("normalized"))
     {
       ss = Matrix (1, 4, 1.0);
+      ss(0) = 0;
+      ss(1) = 0;
     }
   else if (xunits.compare ("points"))
     {
@@ -3040,6 +3042,23 @@ root_figure::properties::update_units (void)
 
   set_screensize (ss);
 }
+
+/*
+%!test
+%! set (0, "units", "pixels")
+%! sz = get (0, "screensize") - [1, 1, 0, 0];
+%! dpi = get (0, "screenpixelsperinch");
+%! set (0, "units", "inches")
+%! assert (get (0, "screensize"), sz / dpi, 0.5 / dpi) 
+%! set (0, "units", "centimeters")
+%! assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54)
+%! set (0, "units", "points")
+%! assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72)
+%! set (0, "units", "normalized")
+%! assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0])
+%! set (0, "units", "pixels")
+%! assert (get (0, "screensize"), sz + [1, 1, 0, 0])
+*/
 
 void
 root_figure::properties::remove_child (const graphics_handle& gh)
@@ -3685,6 +3704,17 @@ figure::properties::update_units (const caseless_str& old_units)
   set_position (convert_position (get_position ().matrix_value (), old_units,
                                   get_units (), screen_size_pixels ()));
 }
+
+/*
+%!test
+%! figure (1, "visible", false)
+%! set (0, "units", "pixels")
+%! rsz = get (0, "screensize");
+%! set (gcf (), "units", "pixels")
+%! fsz = get (gcf (), "position");
+%! set (gcf (), "units", "normalized")
+%! assert (get (gcf (), "position"), (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]))
+*/
 
 std::string
 figure::properties::get_title (void) const

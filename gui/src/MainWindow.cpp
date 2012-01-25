@@ -318,7 +318,7 @@ MainWindow::construct ()
 
   // Chat subwindow.
   m_ircWidgetSubWindow = new NonClosableMdiSubWindow (this);
-  m_ircWidgetSubWindow->setWidget (m_ircWidget);
+  m_ircWidgetSubWindow->setWidget(m_ircWidget);
   m_centralMdiArea->addSubWindow (m_ircWidgetSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
 
   m_ircWidgetSubWindow->setObjectName ("ChatWidgetSubWindow");

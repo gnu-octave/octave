@@ -31,7 +31,7 @@ TRANSLATIONS        += languages/generic.ts \
                        languages/es-es.ts \
                        languages/ru-ru.ts \
                        languages/uk-ua.ts           # Available translations
-LIBS                += -lqscintilla2 -Lqterminal/libqterminal -lqterminal $$system(mkoctfile -p LIBS) $$system(mkoctfile -p OCTAVE_LIBS)
+LIBS                += -lqscintilla2  $$system(mkoctfile -p LIBS) $$system(mkoctfile -p OCTAVE_LIBS)
 
 mac {
     CONFIG -= app_bundle
@@ -52,7 +52,7 @@ mac {
 }
 
 unix {
-    LIBS +=  -lutil
+    LIBS +=  -lutil -Lqterminal/libqterminal -lqterminal
 }
 
 win32-g++ {

@@ -101,10 +101,10 @@ SessionModel::SessionModel(KPty *kpty) :
     _selfListener = new SelfListener(kpty->masterFd());
     _selfListener->start();
     connect( _selfListener, SIGNAL(recvData(const char*,int)),
-             this, SLOT(onReceiveBlock(const char*,int)));
+             this, SLOT(onReceiveBlock(const char*,int)), Qt::BlockingQueuedConnection);
 
     connect( _emulation, SIGNAL(sendData(const char*,int))
-             ,this,SLOT(sendData(const char*,int)) );
+             ,this,SLOT(sendData(const char*,int)));
 
     //connect( _emulation,SIGNAL(lockPtyRequest(bool)),_shellProcess,SLOT(lockPty(bool)) );
     //connect( _emulation,SIGNAL(useUtf8Request(bool)),_shellProcess,SLOT(setUtf8Mode(bool)) );

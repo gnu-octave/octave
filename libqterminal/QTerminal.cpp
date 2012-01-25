@@ -54,6 +54,7 @@ void QTerminal::init()
     m_sessionModel->setDarkBackground(true);
     m_sessionModel->setKeyBindings("");
 
+
     m_sessionView = new SessionView(this);
     m_sessionView->setBellMode(SessionView::NotifyBell);
     m_sessionView->setTerminalSizeHint(true);

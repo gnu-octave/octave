@@ -30,6 +30,8 @@
 #include <QtCore>
 #include <QWidget>
 
+#include "SelfListener.h"
+
 // Konsole
 #include "History.h"
 #include "kpty.h"
@@ -477,6 +479,7 @@ private slots:
 //  void zmodemReadAndSendBlock();
 //  void zmodemRcvBlock(const char *data, int len);
 //  void zmodemFinished();
+  void sendData(const char* buf, int len);
 
 private:
 
@@ -521,7 +524,8 @@ private:
   int            _masterFd;
   int            _slaveFd;
   QString        _initialWorkingDir;
-
+  SelfListener  *_selfListener;
+  KPty         * _kpty;
   // ZModem
 //  bool           _zmodemBusy;
 //  KProcess*      _zmodemProc;

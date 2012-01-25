@@ -38,7 +38,6 @@
 #include <QtCore/QStringList>
 #include <QtCore>
 
-#include "PseudoTerminal.h"
 #include "SessionView.h"
 #include "ShellCommand.h"
 #include "Vt102Emulation.h"
@@ -67,14 +66,14 @@ SessionModel::SessionModel(KPty *kpty) :
   //   , _zmodemProgress(0)
   , _hasDarkBackground(false)
 {
-
+    _kpty = kpty;
     //prepare DBus communication
     //    new SessionAdaptor(this);
-    _sessionId = ++lastSessionId;
+    //_sessionId = ++lastSessionId;
     //    QDBusConnection::sessionBus().registerObject(QLatin1String("/Sessions/")+QString::number(_sessionId), this);
 
     //create teletype for I/O with shell process
-    _shellProcess = new PseudoTerminal(kpty);
+    //_shellProcess = new PseudoTerminal(kpty);
 
     //create emulation backend
     _emulation = new Vt102Emulation();
@@ -94,17 +93,24 @@ SessionModel::SessionModel(KPty *kpty) :
     //        SLOT(onEmulationSizeChange(int,int)) );
 
     //connect teletype to emulation backend
-    _shellProcess->setUtf8Mode(_emulation->utf8());
+    //_shellProcess->setUtf8Mode(_emulation->utf8());
 
-    connect( _shellProcess,SIGNAL(receivedData(const char*,int)),this,
-             SLOT(onReceiveBlock(const char*,int)) );
-    connect( _emulation,SIGNAL(sendData(const char*,int)),_shellProcess,
-             SLOT(sendData(const char*,int)) );
-    connect( _emulation,SIGNAL(lockPtyRequest(bool)),_shellProcess,SLOT(lockPty(bool)) );
-    connect( _emulation,SIGNAL(useUtf8Request(bool)),_shellProcess,SLOT(setUtf8Mode(bool)) );
+    //connect( _shellProcess,SIGNAL(receivedData(const char*,int)),this,
+    //         SLOT(onReceiveBlock(const char*,int)) );
+
+    _selfListener = new SelfListener(kpty->masterFd());
+    _selfListener->start();
+    connect( _selfListener, SIGNAL(recvData(const char*,int)),
+             this, SLOT(onReceiveBlock(const char*,int)));
+
+    connect( _emulation, SIGNAL(sendData(const char*,int))
+             ,this,SLOT(sendData(const char*,int)) );
+
+    //connect( _emulation,SIGNAL(lockPtyRequest(bool)),_shellProcess,SLOT(lockPty(bool)) );
+    //connect( _emulation,SIGNAL(useUtf8Request(bool)),_shellProcess,SLOT(setUtf8Mode(bool)) );
 
 
-    connect( _shellProcess,SIGNAL(done(int)), this, SLOT(done(int)) );
+    //connect( _shellProcess,SIGNAL(done(int)), this, SLOT(done(int)) );
 
     //setup timer for monitoring session activity
     _monitorTimer = new QTimer(this);
@@ -151,7 +157,7 @@ bool SessionModel::hasDarkBackground() const
 }
 bool SessionModel::isRunning() const
 {
-    return _shellProcess->isRunning();
+    return true; //_shellProcess->isRunning();
 }
 
 void SessionModel::setCodec(QTextCodec* codec)
@@ -210,8 +216,7 @@ void SessionModel::addView(SessionView* widget)
     QObject::connect( widget ,SIGNAL(destroyed(QObject*)) , this ,
                       SLOT(viewDestroyed(QObject*)) );
     //slot for close
-    QObject::connect(this, SIGNAL(finished()), widget, SLOT(close()));		    
-    
+    //QObject::connect(this, SIGNAL(finished()), widget, SLOT(close()));
 }
 
 void SessionModel::viewDestroyed(QObject* view)
@@ -221,6 +226,11 @@ void SessionModel::viewDestroyed(QObject* view)
     Q_ASSERT( _views.contains(display) );
 
     removeView(display);
+}
+
+void SessionModel::sendData(const char *buf, int len)
+{
+    ::write(_kpty->masterFd(), buf, len);
 }
 
 void SessionModel::removeView(SessionView* widget)
@@ -252,6 +262,7 @@ void SessionModel::removeView(SessionView* widget)
 
 void SessionModel::run()
 {
+    /*
     //check that everything is in place to run the session
     if (_program.isEmpty())
         qDebug() << "Session::run() - program to run not set.";
@@ -309,7 +320,7 @@ void SessionModel::run()
     }
 
     _shellProcess->setWriteable(false);  // We are reachable via kwrited.
-
+*/
     emit started();
 }
 
@@ -507,7 +518,7 @@ void SessionModel::updateTerminalSize()
     if ( minLines > 0 && minColumns > 0 )
     {
         _emulation->setImageSize( minLines , minColumns );
-        _shellProcess->setWindowSize( minLines , minColumns );
+        //_shellProcess->setWindowSize( minLines , minColumns );
     }
 }
 
@@ -527,25 +538,26 @@ void SessionModel::refresh()
     // if there is a more 'correct' way to do this, please
     // send an email with method or patches to konsole-devel@kde.org
 
-    const QSize existingSize = _shellProcess->windowSize();
-    _shellProcess->setWindowSize(existingSize.height(),existingSize.width()+1);
-    _shellProcess->setWindowSize(existingSize.height(),existingSize.width());
+    //const QSize existingSize = _shellProcess->windowSize();
+    //_shellProcess->setWindowSize(existingSize.height(),existingSize.width()+1);
+    //_shellProcess->setWindowSize(existingSize.height(),existingSize.width());
 }
 
 bool SessionModel::sendSignal(int signal)
 {
-    return _shellProcess->kill(signal);
+    return 0; //_shellProcess->kill(signal);
 }
 
 void SessionModel::close()
 {
     _autoClose = true;
     _wantedClose = true;
+    /*
     if (!_shellProcess->isRunning() || !sendSignal(SIGHUP))
     {
         // Forced close.
         QTimer::singleShot(1, this, SIGNAL(finished()));
-    }
+    }*/
 }
 
 void SessionModel::sendText(const QString &text) const
@@ -556,7 +568,7 @@ void SessionModel::sendText(const QString &text) const
 SessionModel::~SessionModel()
 {
     delete _emulation;
-    delete _shellProcess;
+    //delete _shellProcess;
     //  delete _zmodemProc;
 }
 
@@ -569,6 +581,7 @@ QString SessionModel::profileKey() const { return _profileKey; }
 
 void SessionModel::done(int exitStatus)
 {
+    /*
     if (!_autoClose)
     {
         _userTitle = ("<Finished>");
@@ -599,7 +612,7 @@ void SessionModel::done(int exitStatus)
         //    KNotification::event("Finished", message , QPixmap(),
         //                         QApplication::activeWindow(),
         //                         KNotification::CloseWhenWidgetActivated);
-    }
+    }*/
     emit finished();
 }
 
@@ -755,8 +768,8 @@ void SessionModel::setFlowControlEnabled(bool enabled)
 
     _flowControl = enabled;
 
-    if (_shellProcess)
-	_shellProcess->setXonXoff(_flowControl);
+    //if (_shellProcess)
+    //	_shellProcess->setXonXoff(_flowControl);
 
     emit flowControlEnabledChanged(enabled);
 }
@@ -877,6 +890,7 @@ void Session::zmodemFinished()
   }
 }
 */
+
 void SessionModel::onReceiveBlock( const char* buf, int len )
 {
     _emulation->receiveData( buf, len );
@@ -897,11 +911,11 @@ void SessionModel::setSize(const QSize& size)
 }
 int SessionModel::foregroundProcessId() const
 {
-    return _shellProcess->foregroundProcessGroup();
+    return 0; //_shellProcess->foregroundProcessGroup();
 }
 int SessionModel::processId() const
 {
-    return _shellProcess->pid();
+    return 0; //_shellProcess->pid();
 }
 
 SessionGroup::SessionGroup()

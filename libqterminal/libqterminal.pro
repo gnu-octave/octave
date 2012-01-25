@@ -17,8 +17,6 @@ HEADERS  = BlockArray.h \
            ExtendedDefaultTranslator.h \
            Filter.h \
            History.h \
-           k3process.h \
-           k3processcontroller.h \
            KeyboardTranslator.h \
            konsole_wcwidth.h \
            kpty.h \
@@ -30,15 +28,13 @@ HEADERS  = BlockArray.h \
            ShellCommand.h \
            TerminalCharacterDecoder.h \
            Vt102Emulation.h \
-    PseudoTerminal.h \
     SessionModel.h \
-    SessionView.h
+    SessionView.h \
+    SelfListener.h
 SOURCES  = BlockArray.cpp \
            Emulation.cpp \
            Filter.cpp \
            History.cpp \
-           k3process.cpp \
-           k3processcontroller.cpp \
            KeyboardTranslator.cpp \
            konsole_wcwidth.cpp \
            kpty.cpp \
@@ -48,6 +44,6 @@ SOURCES  = BlockArray.cpp \
            ShellCommand.cpp \
            TerminalCharacterDecoder.cpp \
            Vt102Emulation.cpp \
-    PseudoTerminal.cpp \
     SessionModel.cpp \
-    SessionView.cpp
+    SessionView.cpp \
+    SelfListener.cpp

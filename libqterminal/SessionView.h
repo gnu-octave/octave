@@ -418,12 +418,6 @@ public slots:
      * display.
      */
     void pasteSelection();
-
-	/** 
- 	  * Changes whether the flow control warning box should be shown when the flow control
- 	  * stop key (Ctrl+S) are pressed.
- 	  */
-	void setFlowControlWarningEnabled(bool enabled);
 	
     /** 
 	 * Causes the widget to display or hide a message informing the user that terminal

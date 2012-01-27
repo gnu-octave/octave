@@ -261,7 +261,6 @@ SessionView::SessionView(QWidget *parent)
 ,_possibleTripleClick(false)
 ,_resizeWidget(0)
 ,_resizeTimer(0)
-,_flowControlWarningEnabled(false)
 ,_outputSuspendedLabel(0)
 ,_lineSpacing(0)
 ,_colorsInverted(false)
@@ -2284,34 +2283,11 @@ void SessionView::pasteSelection()
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-void SessionView::setFlowControlWarningEnabled( bool enable )
-{
-	_flowControlWarningEnabled = enable;
-	
-	// if the dialog is currently visible and the flow control warning has 
-	// been disabled then hide the dialog
-	if (!enable)
-		outputSuspended(false);
-}
-
 void SessionView::keyPressEvent( QKeyEvent* event )
 {
 //qDebug("%s %d keyPressEvent and key is %d", __FILE__, __LINE__, event->key());
 
     bool emitKeyPressSignal = true;
-
-    // XonXoff flow control
-    if (event->modifiers() & Qt::ControlModifier && _flowControlWarningEnabled)
-	{
-		if ( event->key() == Qt::Key_S ) {
-		//qDebug("%s %d keyPressEvent, output suspended", __FILE__, __LINE__);
-				emit flowControlKeyPressed(true /*output suspended*/);
-		}
-		else if ( event->key() == Qt::Key_Q ) {
-		//qDebug("%s %d keyPressEvent, output enabled", __FILE__, __LINE__);
-				emit flowControlKeyPressed(false /*output enabled*/);
-		}
-	}
 
     // Keyboard-based navigation
     if ( event->modifiers() == Qt::ShiftModifier )

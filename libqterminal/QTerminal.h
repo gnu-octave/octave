@@ -30,36 +30,12 @@ class QTerminal : public QWidget
 public:
     QTerminal(QWidget *parent = 0);
     ~QTerminal();
-
-    void startShellProgram();
     
     void setTerminalFont(QFont &font); 
-
-    void setEnvironment(const QStringList& environment);
-
-    void setShellProgram(const QString &progname);
-
-    void setWorkingDirectory(const QString& dir);
-
     void setArgs(QStringList &args);
-
     void setTextCodec(QTextCodec *codec);
-
     void setSize(int h, int v);
-
     void setHistorySize(int lines);
-
-    void setFlowControlEnabled(bool enabled);
-
-    bool flowControlEnabled(void);
-
-    /**
-     * Sets whether the flow control warning box should be shown
-     * when the flow control stop key (Ctrl+S) is pressed.
-     */
-    void setFlowControlWarningEnabled(bool enabled);
-
-
     void setReadOnly(bool);
             
 signals:
@@ -69,9 +45,9 @@ public slots:
     void copyClipboard();
     void pasteClipboard();
         
-protected: 
+protected:
+    void focusInEvent(QFocusEvent *focusEvent);
     virtual void resizeEvent(QResizeEvent *);
-    void *getTerminalDisplay();
     
 protected slots:
     void sessionFinished();        

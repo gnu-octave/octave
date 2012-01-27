@@ -25,7 +25,6 @@ HEADERS  = BlockArray.h \
            QTerminal.h \
            Screen.h \
            ScreenWindow.h \
-           ShellCommand.h \
            TerminalCharacterDecoder.h \
            Vt102Emulation.h \
     SessionModel.h \
@@ -41,7 +40,6 @@ SOURCES  = BlockArray.cpp \
            QTerminal.cpp \
            Screen.cpp \
            ScreenWindow.cpp \
-           ShellCommand.cpp \
            TerminalCharacterDecoder.cpp \
            Vt102Emulation.cpp \
     SessionModel.cpp \

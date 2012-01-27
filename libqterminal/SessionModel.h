@@ -57,7 +57,6 @@ class SessionModel : public QObject {
 Q_OBJECT
 
 public:
-  Q_PROPERTY(QString name READ nameTitle)
   Q_PROPERTY(QString keyBindings READ keyBindings WRITE setKeyBindings)
   Q_PROPERTY(QSize size READ size WRITE setSize)
 
@@ -75,11 +74,6 @@ public:
   SessionModel(KPty *kpty);
   ~SessionModel();
 
-  /**
-   * Returns true if the session is currently running.  This will be true
-   * after run() has been called successfully.
-   */
-  bool isRunning() const;
 
   /**
    * Sets the profile associated with this session.
@@ -126,76 +120,7 @@ public:
    */
   Emulation*  emulation() const;
 
-  /**
-   * Returns the environment of this session as a list of strings like
-   * VARIABLE=VALUE
-   */
-  QStringList environment() const;
-  /**
-   * Sets the environment for this session.
-   * @p environment should be a list of strings like
-   * VARIABLE=VALUE
-   */
-  void setEnvironment(const QStringList& environment);
 
-  /** Returns the unique ID for this session. */
-  int sessionId() const;
-
-  /**
-   * Return the session title set by the user (ie. the program running
-   * in the terminal), or an empty string if the user has not set a custom title
-   */
-  QString userTitle() const;
-
-  /**
-   * This enum describes the contexts for which separate
-   * tab title formats may be specified.
-   */
-  enum TabTitleContext
-  {
-    /** Default tab title format */
-    LocalTabTitle,
-    /**
-     * Tab title format used session currently contains
-     * a connection to a remote computer (via SSH)
-     */
-    RemoteTabTitle
-  };
-  /**
-   * Sets the format used by this session for tab titles.
-   *
-   * @param context The context whoose format should be set.
-   * @param format The tab title format.  This may be a mixture
-   * of plain text and dynamic elements denoted by a '%' character
-   * followed by a letter.  (eg. %d for directory).  The dynamic
-   * elements available depend on the @p context
-   */
-  void setTabTitleFormat(TabTitleContext context , const QString& format);
-  /** Returns the format used by this session for tab titles. */
-  QString tabTitleFormat(TabTitleContext context) const;
-
-
-  /** Returns the arguments passed to the shell process when run() is called. */
-  QStringList arguments() const;
-  /** Returns the program name of the shell process started when run() is called. */
-  QString program() const;
-
-  /**
-   * Sets the command line arguments which the session's program will be passed when
-   * run() is called.
-   */
-  void setArguments(const QStringList& arguments);
-  /** Sets the program to be executed when run() is called. */
-  void setProgram(const QString& program);
-
-  /** Returns the session's current working directory. */
-  QString initialWorkingDirectory() { return _initialWorkingDir; }
-
-  /**
-   * Sets the initial working directory for the session when it is run
-   * This has no effect once the session has been started.
-   */
-  void setInitialWorkingDirectory( const QString& dir );
 
   /**
    * Sets the type of history store used by this session.
@@ -254,33 +179,6 @@ public:
   /** Returns the name of the key bindings used by this session. */
   QString keyBindings() const;
 
-  /**
-   * This enum describes the available title roles.
-   */
-  enum TitleRole
-  {
-      /** The name of the session. */
-      NameRole,
-      /** The title of the session which is displayed in tabs etc. */
-      DisplayedTitleRole
-  };
-
-  /** Sets the session's title for the specified @p role to @p title. */
-  void setTitle(TitleRole role , const QString& title);
-  /** Returns the session's title for the specified @p role. */
-  QString title(TitleRole role) const;
-  /** Convenience method used to read the name property.  Returns title(Session::NameRole). */
-  QString nameTitle() const { return title(SessionModel::NameRole); }
-
-  /** Sets the name of the icon associated with this session. */
-  void setIconName(const QString& iconName);
-  /** Returns the name of the icon associated with this session. */
-  QString iconName() const;
-
-  /** Sets the text of the icon associated with this session. */
-  void setIconText(const QString& iconText);
-  /** Returns the text of the icon associated with this session. */
-  QString iconText() const;
 
   /** Specifies whether a utmp entry should be created for the pty used by this session. */
   void setAddToUtmp(bool);
@@ -292,26 +190,10 @@ public:
   void setAutoClose(bool b) { _autoClose = b; }
 
   /**
-   * Sets whether flow control is enabled for this terminal
-   * session.
-   */
-  void setFlowControlEnabled(bool enabled);
-
-  /** Returns whether flow control is enabled for this terminal session. */
-  bool flowControlEnabled() const;
-
-  /**
    * Sends @p text to the current foreground terminal program.
    */
   void sendText(const QString& text) const;
 
-
-  /**
-   * Returns the process id of the terminal's foreground process.
-   * This is initially the same as processId() but can change
-   * as the user starts other programs inside the terminal.
-   */
-  int foregroundProcessId() const;
 
   /** Returns the terminal session's window size in lines and columns. */
   QSize size();
@@ -363,13 +245,6 @@ public slots:
    * signal to be emitted.
    */
   void close();
-
-  /**
-   * Changes the session title or other customizable aspects of the terminal
-   * emulation display. For a list of what may be changed see the
-   * Emulation::titleChanged() signal.
-   */
-  void setUserTitle( int, const QString &caption );
 
 signals:
 
@@ -436,13 +311,6 @@ signals:
    */
   void profileChangeCommandReceived(const QString& text);
 
- /**
-  * Emitted when the flow control state changes.
-  *
-  * @param enabled True if flow control is enabled or false otherwise.
-  */
-  void flowControlEnabledChanged(bool enabled);
-
 private slots:
   void done(int);
 
@@ -481,27 +349,12 @@ private:
 
   int            _silenceSeconds;
 
-  QString        _nameTitle;
-  QString        _displayTitle;
-  QString        _userTitle;
-
-  QString        _localTabTitleFormat;
-  QString        _remoteTabTitleFormat;
-
-  QString        _iconName;
-  QString        _iconText; // as set by: echo -en '\033]1;IconText\007
   bool           _addToUtmp;
-  bool           _flowControl;
   bool           _fullScripting;
 
-  QString        _program;
-  QStringList    _arguments;
-
-  QStringList    _environment;
-  int            _sessionId;
   int            _masterFd;
   int            _slaveFd;
-  QString        _initialWorkingDir;
+
   SelfListener  *_selfListener;
   KPty         * _kpty;
 
@@ -511,9 +364,6 @@ private:
   QString        _profileKey;
 
   bool _hasDarkBackground;
-
-  static int lastSessionId;
-
 };
 
 

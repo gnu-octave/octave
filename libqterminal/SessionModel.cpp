@@ -39,10 +39,7 @@
 #include <QtCore>
 
 #include "SessionView.h"
-#include "ShellCommand.h"
 #include "Vt102Emulation.h"
-
-int SessionModel::lastSessionId = 0;
 
 SessionModel::SessionModel(KPty *kpty) :
     _shellProcess(0)
@@ -54,22 +51,15 @@ SessionModel::SessionModel(KPty *kpty) :
   , _wantedClose(false)
   , _silenceSeconds(10)
   , _addToUtmp(false)
-  , _flowControl(true)
   , _fullScripting(false)
-  , _sessionId(0)
   , _hasDarkBackground(false)
 {
     _kpty = kpty;
 
     //create emulation backend
     _emulation = new Vt102Emulation();
-
-    connect( _emulation, SIGNAL( titleChanged( int, const QString & ) ),
-             this, SLOT( setUserTitle( int, const QString & ) ) );
     connect( _emulation, SIGNAL( stateSet(int) ),
              this, SLOT( activityStateSet(int) ) );
-    //    connect( _emulation, SIGNAL( zmodemDetected() ), this ,
-    //            SLOT( fireZModemDetected() ) );
     connect( _emulation, SIGNAL( changeTabTextColorRequest( int ) ),
              this, SIGNAL( changeTabTextColorRequest( int ) ) );
     connect( _emulation, SIGNAL(profileChangeCommandReceived(const QString&)),
@@ -77,12 +67,6 @@ SessionModel::SessionModel(KPty *kpty) :
     // TODO
     // connect( _emulation,SIGNAL(imageSizeChanged(int,int)) , this ,
     //        SLOT(onEmulationSizeChange(int,int)) );
-
-    //connect teletype to emulation backend
-    //_shellProcess->setUtf8Mode(_emulation->utf8());
-
-    //connect( _shellProcess,SIGNAL(receivedData(const char*,int)),this,
-    //         SLOT(onReceiveBlock(const char*,int)) );
 
     _selfListener = new SelfListener(kpty->masterFd());
     _selfListener->start();
@@ -112,27 +96,10 @@ bool SessionModel::hasDarkBackground() const
 {
     return _hasDarkBackground;
 }
-bool SessionModel::isRunning() const
-{
-    return true; //_shellProcess->isRunning();
-}
 
 void SessionModel::setCodec(QTextCodec* codec)
 {
     emulation()->setCodec(codec);
-}
-
-void SessionModel::setProgram(const QString& program)
-{
-    _program = ShellCommand::expand(program);
-}
-void SessionModel::setInitialWorkingDirectory(const QString& dir)
-{
-    _initialWorkingDir = ShellCommand::expand(dir);
-}
-void SessionModel::setArguments(const QStringList& arguments)
-{
-    _arguments = ShellCommand::expand(arguments);
 }
 
 QList<SessionView*> SessionModel::views() const
@@ -223,104 +190,6 @@ void SessionModel::run()
     emit started();
 }
 
-void SessionModel::setUserTitle( int what, const QString &caption )
-{
-    //set to true if anything is actually changed (eg. old _nameTitle != new _nameTitle )
-    bool modified = false;
-
-    // (btw: what=0 changes _userTitle and icon, what=1 only icon, what=2 only _nameTitle
-    if ((what == 0) || (what == 2)) 
-    {
-       	if ( _userTitle != caption ) {
-            _userTitle = caption;
-            modified = true;
-        }
-    }
-
-    if ((what == 0) || (what == 1))
-    {
-        if ( _iconText != caption ) {
-            _iconText = caption;
-            modified = true;
-        }
-    }
-
-    if (what == 11) 
-    {
-        QString colorString = caption.section(';',0,0);
-        qDebug() << __FILE__ << __LINE__ << ": setting background colour to " << colorString;
-        QColor backColor = QColor(colorString);
-        if (backColor.isValid()){// change color via \033]11;Color\007
-            if (backColor != _modifiedBackground)
-            {
-                _modifiedBackground = backColor;
-
-                // bail out here until the code to connect the terminal display
-                // to the changeBackgroundColor() signal has been written
-                // and tested - just so we don't forget to do this.
-                Q_ASSERT( 0 );
-
-                emit changeBackgroundColorRequest(backColor);
-            }
-        }
-    }
-
-    if (what == 30)
-    {
-        if ( _nameTitle != caption ) {
-            setTitle(SessionModel::NameRole,caption);
-            return;
-        }
-    }
-
-    if (what == 31) 
-    {
-        QString cwd=caption;
-        cwd=cwd.replace( QRegExp("^~"), QDir::homePath() );
-        emit openUrlRequest(cwd);
-    }
-
-    // change icon via \033]32;Icon\007
-    if (what == 32) 
-    { 
-    	if ( _iconName != caption ) {
-            _iconName = caption;
-
-            modified = true;
-        }
-    }
-
-    if (what == 50) 
-    {
-        emit profileChangeCommandReceived(caption);
-        return;
-    }
-
-    if ( modified )
-    	emit titleChanged();
-}
-
-QString SessionModel::userTitle() const
-{
-    return _userTitle;
-}
-void SessionModel::setTabTitleFormat(TabTitleContext context , const QString& format)
-{
-    if ( context == LocalTabTitle )
-        _localTabTitleFormat = format;
-    else if ( context == RemoteTabTitle )
-        _remoteTabTitleFormat = format;
-}
-QString SessionModel::tabTitleFormat(TabTitleContext context) const
-{
-    if ( context == LocalTabTitle )
-        return _localTabTitleFormat;
-    else if ( context == RemoteTabTitle )
-        return _remoteTabTitleFormat;
-
-    return QString();
-}
-
 void SessionModel::monitorTimerDone()
 {
     //FIXME: The idea here is that the notification popup will appear to tell the user than output from
@@ -349,9 +218,7 @@ void SessionModel::activityStateSet(int state)
 {
     if (state==NOTIFYBELL)
     {
-        QString s; s.sprintf("Bell in session '%s'",_nameTitle.toAscii().data());
-
-        emit bellRequest( s );
+        emit bellRequest("");
     }
     else if (state==NOTIFYACTIVITY)
     {
@@ -463,71 +330,9 @@ QString SessionModel::keyBindings() const
     return _emulation->keyBindings();
 }
 
-QStringList SessionModel::environment() const
-{
-    return _environment;
-}
-
-void SessionModel::setEnvironment(const QStringList& environment)
-{
-    _environment = environment;
-}
-
-int SessionModel::sessionId() const
-{
-    return _sessionId;
-}
-
 void SessionModel::setKeyBindings(const QString &id)
 {
     _emulation->setKeyBindings(id);
-}
-
-void SessionModel::setTitle(TitleRole role , const QString& newTitle)
-{
-    if ( title(role) != newTitle )
-    {
-        if ( role == NameRole )
-            _nameTitle = newTitle;
-        else if ( role == DisplayedTitleRole )
-            _displayTitle = newTitle;
-
-        emit titleChanged();
-    }
-}
-
-QString SessionModel::title(TitleRole role) const
-{
-    if ( role == NameRole )
-        return _nameTitle;
-    else if ( role == DisplayedTitleRole )
-        return _displayTitle;
-    else
-        return QString();
-}
-
-void SessionModel::setIconName(const QString& iconName)
-{
-    if ( iconName != _iconName )
-    {
-        _iconName = iconName;
-        emit titleChanged();
-    }
-}
-
-void SessionModel::setIconText(const QString& iconText)
-{
-    _iconText = iconText;
-}
-
-QString SessionModel::iconName() const
-{
-    return _iconName;
-}
-
-QString SessionModel::iconText() const
-{
-    return _iconText;
 }
 
 void SessionModel::setHistoryType(const HistoryType &hType)
@@ -543,16 +348,6 @@ const HistoryType& SessionModel::historyType() const
 void SessionModel::clearHistory()
 {
     _emulation->clearHistory();
-}
-
-QStringList SessionModel::arguments() const
-{
-    return _arguments;
-}
-
-QString SessionModel::program() const
-{
-    return _program;
 }
 
 // unused currently
@@ -595,23 +390,6 @@ void SessionModel::setMonitorSilenceSeconds(int seconds)
 void SessionModel::setAddToUtmp(bool set)
 {
     _addToUtmp = set;
-}
-
-void SessionModel::setFlowControlEnabled(bool enabled)
-{
-    if (_flowControl == enabled)
-  	return;
-
-    _flowControl = enabled;
-
-    //if (_shellProcess)
-    //	_shellProcess->setXonXoff(_flowControl);
-
-    emit flowControlEnabledChanged(enabled);
-}
-bool SessionModel::flowControlEnabled() const
-{
-    return _flowControl;
 }
 
 void SessionModel::onReceiveBlock( const char* buf, int len )

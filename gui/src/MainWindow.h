@@ -33,9 +33,9 @@
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
 #include "BrowserWidget.h"
-#include "irc/IRCWidget.h"
 #include "lexer/lexeroctavegui.h"
 #include "QTerminal.h"
+#include "QIRCWidget.h"
 
 class NonClosableMdiSubWindow : public QMdiSubWindow
 {
@@ -115,7 +115,7 @@ private:
   // Mdi sub windows.
   QTerminal *m_terminalView;
   BrowserWidget *m_documentationWidget;
-  IRCWidget *m_ircWidget;
+  QIRCWidget *m_ircWidget;
 
   NonClosableMdiSubWindow *m_terminalViewSubWindow;
   NonClosableMdiSubWindow *m_documentationWidgetSubWindow;
@@ -135,7 +135,6 @@ private:
 
   // Flag for closing whole application
   bool m_closeApplication;
-
 };
 
 #endif // MAINWINDOW_H

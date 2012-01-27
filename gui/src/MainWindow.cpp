@@ -288,7 +288,7 @@ MainWindow::construct ()
   // Setup essential MDI Windows.
   m_terminalView = new QTerminal(this);
   m_documentationWidget = new BrowserWidget (this);
-  m_ircWidget = new IRCWidget (this);
+  m_ircWidget = new QIRCWidget (this);
 
   // Octave Terminal subwindow.
   m_terminalViewSubWindow = new NonClosableMdiSubWindow (this);
@@ -329,6 +329,8 @@ MainWindow::construct ()
   m_ircWidgetSubWindow->setFocusProxy (m_ircWidget);
   m_ircWidgetSubWindow->setMinimumSize (300, 300);
   connect (m_ircWidget, SIGNAL (unreadMessages (bool)), this, SLOT (handleUnreadMessages (bool)));
+
+  m_ircWidget->connectToServer("irc.freenode.net", "Octave-GUI-User", "#octave");
 
   m_lexer = NULL;  // initialise the empty lexer for the edtiors
 

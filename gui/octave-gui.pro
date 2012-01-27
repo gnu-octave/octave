@@ -31,14 +31,17 @@ TRANSLATIONS        += languages/generic.ts \
                        languages/es-es.ts \
                        languages/ru-ru.ts \
                        languages/uk-ua.ts           # Available translations
-LIBS                += -lqscintilla2  $$system(mkoctfile -p LIBS) $$system(mkoctfile -p OCTAVE_LIBS)
+LIBS                += -lqscintilla2  \
+                       -Lqirc/libqirc -lqirc \
+                        $$system(mkoctfile -p LIBS) \
+                        $$system(mkoctfile -p OCTAVE_LIBS)
 
 mac {
     CONFIG -= app_bundle
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += src src/terminal src/qirc src/backend qterminal/libqterminal \
+INCLUDEPATH         += src src/terminal src/backend qterminal/libqterminal qirc/libqirc \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -78,7 +81,6 @@ SOURCES +=\
     src/FileEditorMdiSubWindow.cpp \
     src/BrowserWidget.cpp \
     src/ImageViewerMdiSubWindow.cpp \
-    src/irc/IRCWidget.cpp \
     src/SettingsDialog.cpp \
     src/OctaveGUI.cpp \
     src/ResourceManager.cpp \
@@ -86,7 +88,6 @@ SOURCES +=\
     src/backend/OctaveCallbackThread.cpp \
     src/backend/OctaveLink.cpp \
     src/backend/OctaveMainThread.cpp \
-    src/irc/IRCClientImpl.cpp \
     src/backend/ReadlineAdapter.cpp \
     src/WelcomeWizard.cpp
 
@@ -111,15 +112,12 @@ HEADERS += \
     src/FileEditorMdiSubWindow.h \
     src/BrowserWidget.h \
     src/ImageViewerMdiSubWindow.h \
-    src/irc/IRCWidget.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
     src/CommandLineParser.h \
     src/backend/OctaveCallbackThread.h \
     src/backend/OctaveLink.h \
     src/backend/OctaveMainThread.h \
-    src/irc/IRCClientInterface.h \
-    src/irc/IRCClientImpl.h \
     src/backend/ReadlineAdapter.h \
     src/WelcomeWizard.h
 

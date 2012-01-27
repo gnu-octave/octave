@@ -92,8 +92,7 @@ SOURCES +=\
     src/WelcomeWizard.cpp
 
 unix {
-SOURCES +=\
-    src/TerminalHighlighter.cpp
+SOURCES +=
 }
 
 win32 {
@@ -122,8 +121,7 @@ HEADERS += \
     src/WelcomeWizard.h
 
 unix {
-HEADERS += \
-    src/TerminalHighlighter.h
+HEADERS +=
 }
 
 win32 {

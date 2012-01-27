@@ -1,5 +1,6 @@
 /*  Copyright (C) 2008 e_k (e_k@users.sourceforge.net)
-    
+    Copyright (C) 2012 Jacob Dawid <jacob.dawid@googlemail.com>
+
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
     License as published by the Free Software Foundation; either
@@ -21,7 +22,7 @@
 #define Q_TERMINAL
 
 #include <QtGui>
-#include "SessionModel.h"
+#include "TerminalModel.h"
 #include "SessionView.h"
 
 class QTerminal : public QWidget
@@ -55,7 +56,7 @@ protected slots:
 private:
     void init();
     SessionView *m_sessionView;
-    SessionModel *m_sessionModel;
+    TerminalModel *m_sessionModel;
 };
 
 #endif // Q_TERMINAL

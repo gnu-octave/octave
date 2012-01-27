@@ -5,6 +5,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright (C) 2012 Jacob Dawid <jacob.dawid@googlemail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +24,7 @@
 */
 
 // Own
-#include "SessionModel.h"
+#include "TerminalModel.h"
 
 // Standard
 #include <assert.h>
@@ -41,7 +42,7 @@
 #include "SessionView.h"
 #include "Vt102Emulation.h"
 
-SessionModel::SessionModel(KPty *kpty) :
+TerminalModel::TerminalModel(KPty *kpty) :
     _shellProcess(0)
   , _emulation(0)
   , _monitorActivity(false)
@@ -88,26 +89,26 @@ SessionModel::SessionModel(KPty *kpty) :
     connect(_monitorTimer, SIGNAL(timeout()), this, SLOT(monitorTimerDone()));
 }
 
-void SessionModel::setDarkBackground(bool darkBackground)
+void TerminalModel::setDarkBackground(bool darkBackground)
 {
     _hasDarkBackground = darkBackground;
 }
-bool SessionModel::hasDarkBackground() const
+bool TerminalModel::hasDarkBackground() const
 {
     return _hasDarkBackground;
 }
 
-void SessionModel::setCodec(QTextCodec* codec)
+void TerminalModel::setCodec(QTextCodec* codec)
 {
     emulation()->setCodec(codec);
 }
 
-QList<SessionView*> SessionModel::views() const
+QList<SessionView*> TerminalModel::views() const
 {
     return _views;
 }
 
-void SessionModel::addView(SessionView* widget)
+void TerminalModel::addView(SessionView* widget)
 {
     Q_ASSERT( !_views.contains(widget) );
 
@@ -143,7 +144,7 @@ void SessionModel::addView(SessionView* widget)
     //QObject::connect(this, SIGNAL(finished()), widget, SLOT(close()));
 }
 
-void SessionModel::viewDestroyed(QObject* view)
+void TerminalModel::viewDestroyed(QObject* view)
 {
     SessionView* display = (SessionView*)view;
 
@@ -152,13 +153,13 @@ void SessionModel::viewDestroyed(QObject* view)
     removeView(display);
 }
 
-void SessionModel::sendData(const char *buf, int len)
+void TerminalModel::sendData(const char *buf, int len)
 {
     ssize_t bytesWritten = ::write(_kpty->masterFd(), buf, len);
     (void)bytesWritten;
 }
 
-void SessionModel::removeView(SessionView* widget)
+void TerminalModel::removeView(SessionView* widget)
 {
     _views.removeAll(widget);
 
@@ -185,12 +186,12 @@ void SessionModel::removeView(SessionView* widget)
     }
 }
 
-void SessionModel::run()
+void TerminalModel::run()
 {
     emit started();
 }
 
-void SessionModel::monitorTimerDone()
+void TerminalModel::monitorTimerDone()
 {
     //FIXME: The idea here is that the notification popup will appear to tell the user than output from
     //the terminal has stopped and the popup will disappear when the user activates the session.
@@ -214,7 +215,7 @@ void SessionModel::monitorTimerDone()
     _notifiedActivity=false;
 }
 
-void SessionModel::activityStateSet(int state)
+void TerminalModel::activityStateSet(int state)
 {
     if (state==NOTIFYBELL)
     {
@@ -245,16 +246,16 @@ void SessionModel::activityStateSet(int state)
     emit stateChanged(state);
 }
 
-void SessionModel::onViewSizeChange(int /*height*/, int /*width*/)
+void TerminalModel::onViewSizeChange(int /*height*/, int /*width*/)
 {
     updateTerminalSize();
 }
-void SessionModel::onEmulationSizeChange(int lines , int columns)
+void TerminalModel::onEmulationSizeChange(int lines , int columns)
 {
     setSize( QSize(lines,columns) );
 }
 
-void SessionModel::updateTerminalSize()
+void TerminalModel::updateTerminalSize()
 {
     QListIterator<SessionView*> viewIter(_views);
 
@@ -288,74 +289,74 @@ void SessionModel::updateTerminalSize()
     }
 }
 
-void SessionModel::refresh()
+void TerminalModel::refresh()
 {
 }
 
-void SessionModel::close()
+void TerminalModel::close()
 {
     _autoClose = true;
     _wantedClose = true;
 }
 
-void SessionModel::sendText(const QString &text) const
+void TerminalModel::sendText(const QString &text) const
 {
     _emulation->sendText(text);
 }
 
-SessionModel::~SessionModel()
+TerminalModel::~TerminalModel()
 {
     delete _emulation;
 }
 
-void SessionModel::setProfileKey(const QString& key)
+void TerminalModel::setProfileKey(const QString& key)
 {
     _profileKey = key;
     emit profileChanged(key);
 }
-QString SessionModel::profileKey() const { return _profileKey; }
+QString TerminalModel::profileKey() const { return _profileKey; }
 
-void SessionModel::done(int)
+void TerminalModel::done(int)
 {
     emit finished();
 }
 
-Emulation* SessionModel::emulation() const
+Emulation* TerminalModel::emulation() const
 {
     return _emulation;
 }
 
-QString SessionModel::keyBindings() const
+QString TerminalModel::keyBindings() const
 {
     return _emulation->keyBindings();
 }
 
-void SessionModel::setKeyBindings(const QString &id)
+void TerminalModel::setKeyBindings(const QString &id)
 {
     _emulation->setKeyBindings(id);
 }
 
-void SessionModel::setHistoryType(const HistoryType &hType)
+void TerminalModel::setHistoryType(const HistoryType &hType)
 {
     _emulation->setHistory(hType);
 }
 
-const HistoryType& SessionModel::historyType() const
+const HistoryType& TerminalModel::historyType() const
 {
     return _emulation->history();
 }
 
-void SessionModel::clearHistory()
+void TerminalModel::clearHistory()
 {
     _emulation->clearHistory();
 }
 
 // unused currently
-bool SessionModel::isMonitorActivity() const { return _monitorActivity; }
+bool TerminalModel::isMonitorActivity() const { return _monitorActivity; }
 // unused currently
-bool SessionModel::isMonitorSilence()  const { return _monitorSilence; }
+bool TerminalModel::isMonitorSilence()  const { return _monitorSilence; }
 
-void SessionModel::setMonitorActivity(bool _monitor)
+void TerminalModel::setMonitorActivity(bool _monitor)
 {
     _monitorActivity=_monitor;
     _notifiedActivity=false;
@@ -363,7 +364,7 @@ void SessionModel::setMonitorActivity(bool _monitor)
     activityStateSet(NOTIFYNORMAL);
 }
 
-void SessionModel::setMonitorSilence(bool _monitor)
+void TerminalModel::setMonitorSilence(bool _monitor)
 {
     if (_monitorSilence==_monitor)
         return;
@@ -379,7 +380,7 @@ void SessionModel::setMonitorSilence(bool _monitor)
     activityStateSet(NOTIFYNORMAL);
 }
 
-void SessionModel::setMonitorSilenceSeconds(int seconds)
+void TerminalModel::setMonitorSilenceSeconds(int seconds)
 {
     _silenceSeconds=seconds;
     if (_monitorSilence) {
@@ -387,23 +388,23 @@ void SessionModel::setMonitorSilenceSeconds(int seconds)
     }
 }
 
-void SessionModel::setAddToUtmp(bool set)
+void TerminalModel::setAddToUtmp(bool set)
 {
     _addToUtmp = set;
 }
 
-void SessionModel::onReceiveBlock( const char* buf, int len )
+void TerminalModel::onReceiveBlock( const char* buf, int len )
 {
     _emulation->receiveData( buf, len );
     emit receivedData( QString::fromLatin1( buf, len ) );
 }
 
-QSize SessionModel::size()
+QSize TerminalModel::size()
 {
     return _emulation->imageSize();
 }
 
-void SessionModel::setSize(const QSize& size)
+void TerminalModel::setSize(const QSize& size)
 {
     if ((size.width() <= 1) || (size.height() <= 1))
         return;

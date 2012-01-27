@@ -5,6 +5,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright (C) 2012 Jacob Dawid <jacob.dawid@googlemail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,8 +23,8 @@
     02110-1301  USA.
 */
 
-#ifndef SESSION_H
-#define SESSION_H
+#ifndef TERMINALMODEL_H
+#define TERMINALMODEL_H
 
 // Qt
 #include <QtCore/QStringList>
@@ -53,7 +54,7 @@ class SessionView;
  * or send input to the program in the terminal in the form of keypresses and mouse
  * activity.
  */
-class SessionModel : public QObject {
+class TerminalModel : public QObject {
 Q_OBJECT
 
 public:
@@ -71,8 +72,8 @@ public:
    * falls back to using the program specified in the SHELL environment
    * variable.
    */
-  SessionModel(KPty *kpty);
-  ~SessionModel();
+  TerminalModel(KPty *kpty);
+  ~TerminalModel();
 
 
   /**
@@ -367,4 +368,4 @@ private:
 };
 
 
-#endif
+#endif // TERMINALMODEL_H

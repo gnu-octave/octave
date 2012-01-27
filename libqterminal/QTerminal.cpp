@@ -42,7 +42,7 @@ void QTerminal::init()
     dup2 (fds, 1);
     dup2 (fds, 2);
 
-    m_sessionModel = new SessionModel(kpty);
+    m_sessionModel = new TerminalModel(kpty);
 
     m_sessionModel->setAutoClose(true);
     m_sessionModel->setCodec(QTextCodec::codecForName("UTF-8"));

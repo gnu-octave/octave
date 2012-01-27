@@ -27,9 +27,9 @@ HEADERS  = BlockArray.h \
            ScreenWindow.h \
            TerminalCharacterDecoder.h \
            Vt102Emulation.h \
-    SessionView.h \
     SelfListener.h \
-    TerminalModel.h
+    TerminalModel.h \
+    TerminalView.h
 SOURCES  = BlockArray.cpp \
            Emulation.cpp \
            Filter.cpp \
@@ -42,6 +42,6 @@ SOURCES  = BlockArray.cpp \
            ScreenWindow.cpp \
            TerminalCharacterDecoder.cpp \
            Vt102Emulation.cpp \
-    SessionView.cpp \
     SelfListener.cpp \
-    TerminalModel.cpp
+    TerminalModel.cpp \
+    TerminalView.cpp

@@ -39,7 +39,7 @@
 #include <QtCore/QStringList>
 #include <QtCore>
 
-#include "SessionView.h"
+#include "TerminalView.h"
 #include "Vt102Emulation.h"
 
 TerminalModel::TerminalModel(KPty *kpty) :
@@ -103,12 +103,12 @@ void TerminalModel::setCodec(QTextCodec* codec)
     emulation()->setCodec(codec);
 }
 
-QList<SessionView*> TerminalModel::views() const
+QList<TerminalView*> TerminalModel::views() const
 {
     return _views;
 }
 
-void TerminalModel::addView(SessionView* widget)
+void TerminalModel::addView(TerminalView* widget)
 {
     Q_ASSERT( !_views.contains(widget) );
 
@@ -146,7 +146,7 @@ void TerminalModel::addView(SessionView* widget)
 
 void TerminalModel::viewDestroyed(QObject* view)
 {
-    SessionView* display = (SessionView*)view;
+    TerminalView* display = (TerminalView*)view;
 
     Q_ASSERT( _views.contains(display) );
 
@@ -159,7 +159,7 @@ void TerminalModel::sendData(const char *buf, int len)
     (void)bytesWritten;
 }
 
-void TerminalModel::removeView(SessionView* widget)
+void TerminalModel::removeView(TerminalView* widget)
 {
     _views.removeAll(widget);
 
@@ -257,7 +257,7 @@ void TerminalModel::onEmulationSizeChange(int lines , int columns)
 
 void TerminalModel::updateTerminalSize()
 {
-    QListIterator<SessionView*> viewIter(_views);
+    QListIterator<TerminalView*> viewIter(_views);
 
     int minLines = -1;
     int minColumns = -1;
@@ -271,7 +271,7 @@ void TerminalModel::updateTerminalSize()
     //select largest number of lines and columns that will fit in all visible views
     while ( viewIter.hasNext() )
     {
-        SessionView* view = viewIter.next();
+        TerminalView* view = viewIter.next();
         if ( view->isHidden() == false &&
              view->lines() >= VIEW_LINES_THRESHOLD &&
              view->columns() >= VIEW_COLUMNS_THRESHOLD )

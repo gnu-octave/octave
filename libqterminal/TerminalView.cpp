@@ -5,6 +5,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
     
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright (C) 2012 Jacob Dawid <jacob.dawid@googlemail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +24,7 @@
 */
 
 // Own
-#include "SessionView.h"
+#include "TerminalView.h"
 
 // Qt
 #include <QtGui/QApplication>
@@ -61,8 +62,8 @@
 // scroll increment used when dragging selection at top/bottom of window.
 
 // static
-bool SessionView::_antialiasText = true;
-bool SessionView::HAVE_TRANSPARENCY = false;
+bool TerminalView::_antialiasText = true;
+bool TerminalView::HAVE_TRANSPARENCY = false;
 
 /* ------------------------------------------------------------------------- */
 /*                                                                           */
@@ -78,11 +79,11 @@ bool SessionView::HAVE_TRANSPARENCY = false;
    IBMPC (rgb) Black   Blue    Green   Cyan    Red     Magenta Yellow  White
 */
 
-ScreenWindow* SessionView::screenWindow() const
+ScreenWindow* TerminalView::screenWindow() const
 {
     return _screenWindow;
 }
-void SessionView::setScreenWindow(ScreenWindow* window)
+void TerminalView::setScreenWindow(ScreenWindow* window)
 {
     // disconnect existing screen window if any
     if ( _screenWindow )
@@ -101,12 +102,12 @@ void SessionView::setScreenWindow(ScreenWindow* window)
     }
 }
 
-const ColorEntry* SessionView::colorTable() const
+const ColorEntry* TerminalView::colorTable() const
 {
   return _colorTable;
 }
 
-void SessionView::setColorTable(const ColorEntry table[])
+void TerminalView::setColorTable(const ColorEntry table[])
 {
   for (int i = 0; i < TABLE_COLORS; i++)
       _colorTable[i] = table[i];
@@ -156,7 +157,7 @@ unsigned short vt100_graphics[32] =
   0x252c, 0x2502, 0x2264, 0x2265, 0x03C0, 0x2260, 0x00A3, 0x00b7
 };
 
-void SessionView::fontChange(const QFont&)
+void TerminalView::fontChange(const QFont&)
 {
   QFontMetrics fm(font());
   _fontHeight = fm.height() + _lineSpacing;
@@ -190,7 +191,7 @@ void SessionView::fontChange(const QFont&)
   update();
 }
 
-void SessionView::setVTFont(const QFont& f)
+void TerminalView::setVTFont(const QFont& f)
 {
   QFont font = f;
 
@@ -213,7 +214,7 @@ void SessionView::setVTFont(const QFont& f)
   }
 }
 
-void SessionView::setFont(const QFont &)
+void TerminalView::setFont(const QFont &)
 {
   // ignore font change request if not coming from konsole itself
 }
@@ -224,7 +225,7 @@ void SessionView::setFont(const QFont &)
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-SessionView::SessionView(QWidget *parent)
+TerminalView::TerminalView(QWidget *parent)
 :QWidget(parent)
 ,_screenWindow(0)
 ,_allowBell(true)
@@ -316,12 +317,9 @@ SessionView::SessionView(QWidget *parent)
   _gridLayout->setMargin(0);
 
   setLayout( _gridLayout ); 
-
-  //set up a warning message when the user presses Ctrl+S to avoid confusion
-  connect( this,SIGNAL(flowControlKeyPressed(bool)),this,SLOT(outputSuspended(bool)) );
 }
 
-SessionView::~SessionView()
+TerminalView::~TerminalView()
 {
   qApp->removeEventFilter( this );
   
@@ -454,7 +452,7 @@ static void drawLineChar(QPainter& paint, int x, int y, int w, int h, uchar code
 
 }
 
-void SessionView::drawLineCharString(	QPainter& painter, int x, int y, const QString& str,
+void TerminalView::drawLineCharString(	QPainter& painter, int x, int y, const QString& str,
 									const Character* attributes)
 {
 		const QPen& currentPen = painter.pen();
@@ -476,15 +474,15 @@ void SessionView::drawLineCharString(	QPainter& painter, int x, int y, const QSt
 		painter.setPen( currentPen );
 }
 
-void SessionView::setKeyboardCursorShape(KeyboardCursorShape shape)
+void TerminalView::setKeyboardCursorShape(KeyboardCursorShape shape)
 {
     _cursorShape = shape;
 }
-SessionView::KeyboardCursorShape SessionView::keyboardCursorShape() const
+TerminalView::KeyboardCursorShape TerminalView::keyboardCursorShape() const
 {
     return _cursorShape;
 }
-void SessionView::setKeyboardCursorColor(bool useForegroundColor, const QColor& color)
+void TerminalView::setKeyboardCursorColor(bool useForegroundColor, const QColor& color)
 {
     if (useForegroundColor)
         _cursorColor = QColor(); // an invalid color means that
@@ -495,12 +493,12 @@ void SessionView::setKeyboardCursorColor(bool useForegroundColor, const QColor& 
     else
         _cursorColor = color;
 }
-QColor SessionView::keyboardCursorColor() const
+QColor TerminalView::keyboardCursorColor() const
 {
     return _cursorColor;
 }
 
-void SessionView::setOpacity(qreal opacity)
+void TerminalView::setOpacity(qreal opacity)
 {
     QColor color(_blendColor);
     color.setAlphaF(opacity);
@@ -519,7 +517,7 @@ void SessionView::setOpacity(qreal opacity)
     _blendColor = color.rgba();
 }
 
-void SessionView::drawBackground(QPainter& painter, const QRect& rect, const QColor& backgroundColor, bool useOpacitySetting )
+void TerminalView::drawBackground(QPainter& painter, const QRect& rect, const QColor& backgroundColor, bool useOpacitySetting )
 {
         // the area of the widget showing the contents of the terminal display is drawn
         // using the background color from the color scheme set with setColorTable()
@@ -552,7 +550,7 @@ void SessionView::drawBackground(QPainter& painter, const QRect& rect, const QCo
         painter.fillRect(scrollBarArea,_scrollBar->palette().background());
 }
 
-void SessionView::drawCursor(QPainter& painter,
+void TerminalView::drawCursor(QPainter& painter,
                                  const QRect& rect,
                                  const QColor& foregroundColor,
                                  const QColor& /*backgroundColor*/,
@@ -605,7 +603,7 @@ void SessionView::drawCursor(QPainter& painter,
     }
 }
 
-void SessionView::drawCharacters(QPainter& painter,
+void TerminalView::drawCharacters(QPainter& painter,
                                      const QRect& rect,
                                      const QString& text,
                                      const Character* style,
@@ -652,7 +650,7 @@ void SessionView::drawCharacters(QPainter& painter,
 	}
 }
 
-void SessionView::drawTextFragment(QPainter& painter ,
+void TerminalView::drawTextFragment(QPainter& painter ,
                                        const QRect& rect,
                                        const QString& text, 
                                        const Character* style)
@@ -679,8 +677,8 @@ void SessionView::drawTextFragment(QPainter& painter ,
     painter.restore();
 }
 
-void SessionView::setRandomSeed(uint randomSeed) { _randomSeed = randomSeed; }
-uint SessionView::randomSeed() const { return _randomSeed; }
+void TerminalView::setRandomSeed(uint randomSeed) { _randomSeed = randomSeed; }
+uint TerminalView::randomSeed() const { return _randomSeed; }
 
 #if 0
 /*!
@@ -715,7 +713,7 @@ void TerminalDisplay::setCursorPos(const int curx, const int cury)
 // scrolled aligns properly with the character grid - 
 // which has a top left point at (_leftMargin,_topMargin) , 
 // a cell width of _fontWidth and a cell height of _fontHeight).    
-void SessionView::scrollImage(int lines , const QRect& screenWindowRegion)
+void TerminalView::scrollImage(int lines , const QRect& screenWindowRegion)
 {
 	// if the flow control warning is enabled this will interfere with the 
 	// scrolling optimisations and cause artifacts.  the simple solution here
@@ -791,7 +789,7 @@ void SessionView::scrollImage(int lines , const QRect& screenWindowRegion)
     scroll( 0 , _fontHeight * (-lines) , scrollRect );
 }
 
-QRegion SessionView::hotSpotRegion() const
+QRegion TerminalView::hotSpotRegion() const
 {
 	QRegion region;
 	foreach( Filter::HotSpot* hotSpot , _filterChain->hotSpots() )
@@ -807,7 +805,7 @@ QRegion SessionView::hotSpotRegion() const
 	return region;
 }
 
-void SessionView::processFilters()
+void TerminalView::processFilters()
 {
 	if (!_screenWindow)
 		return;
@@ -830,7 +828,7 @@ void SessionView::processFilters()
 	update( preUpdateHotSpots | postUpdateHotSpots );
 }
 
-void SessionView::updateImage()
+void TerminalView::updateImage()
 {
   if ( !_screenWindow )
       return;
@@ -1015,7 +1013,7 @@ void SessionView::updateImage()
 
 }
 
-void SessionView::showResizeNotification()
+void TerminalView::showResizeNotification()
 {
   if (_terminalSizeHint && isVisible())
   {
@@ -1047,7 +1045,7 @@ void SessionView::showResizeNotification()
   }
 }
 
-void SessionView::setBlinkingCursor(bool blink)
+void TerminalView::setBlinkingCursor(bool blink)
 {
   _hasBlinkingCursor=blink;
   
@@ -1064,7 +1062,7 @@ void SessionView::setBlinkingCursor(bool blink)
   }
 }
 
-void SessionView::paintEvent( QPaintEvent* pe )
+void TerminalView::paintEvent( QPaintEvent* pe )
 {
 //qDebug("%s %d paintEvent", __FILE__, __LINE__);
   QPainter paint(this);
@@ -1083,7 +1081,7 @@ void SessionView::paintEvent( QPaintEvent* pe )
   paint.end();
 }
 
-QPoint SessionView::cursorPosition() const
+QPoint TerminalView::cursorPosition() const
 {
 	if (_screenWindow)
 		return _screenWindow->cursorPosition();
@@ -1091,7 +1089,7 @@ QPoint SessionView::cursorPosition() const
 		return QPoint(0,0);
 }
 
-QRect SessionView::preeditRect() const
+QRect TerminalView::preeditRect() const
 {
     const int preeditLength = string_width(_inputMethodData.preeditString);
 
@@ -1104,7 +1102,7 @@ QRect SessionView::preeditRect() const
                  _fontHeight);
 }   
 
-void SessionView::drawInputMethodPreeditString(QPainter& painter , const QRect& rect)
+void TerminalView::drawInputMethodPreeditString(QPainter& painter , const QRect& rect)
 {
     if ( _inputMethodData.preeditString.isEmpty() ) {
         return;
@@ -1123,12 +1121,12 @@ void SessionView::drawInputMethodPreeditString(QPainter& painter , const QRect& 
     _inputMethodData.previousPreeditRect = rect; 
 }
 
-FilterChain* SessionView::filterChain() const
+FilterChain* TerminalView::filterChain() const
 {
     return _filterChain;
 }
 
-void SessionView::paintFilters(QPainter& painter)
+void TerminalView::paintFilters(QPainter& painter)
 {
 //qDebug("%s %d paintFilters", __FILE__, __LINE__);
 
@@ -1209,7 +1207,7 @@ void SessionView::paintFilters(QPainter& painter)
         }
     }
 }
-void SessionView::drawContents(QPainter &paint, const QRect &rect)
+void TerminalView::drawContents(QPainter &paint, const QRect &rect)
 {
 //qDebug("%s %d drawContents and rect x=%d y=%d w=%d h=%d", __FILE__, __LINE__, rect.x(), rect.y(),rect.width(),rect.height());
 
@@ -1350,7 +1348,7 @@ void SessionView::drawContents(QPainter &paint, const QRect &rect)
   delete [] disstrU;
 }
 
-void SessionView::blinkEvent()
+void TerminalView::blinkEvent()
 {
   _blinking = !_blinking;
 
@@ -1360,7 +1358,7 @@ void SessionView::blinkEvent()
   update();
 }
 
-QRect SessionView::imageToWidget(const QRect& imageArea) const
+QRect TerminalView::imageToWidget(const QRect& imageArea) const
 {
 //qDebug("%s %d imageToWidget", __FILE__, __LINE__);
     QRect result;
@@ -1372,7 +1370,7 @@ QRect SessionView::imageToWidget(const QRect& imageArea) const
     return result;
 }
 
-void SessionView::blinkCursorEvent()
+void TerminalView::blinkCursorEvent()
 {
   _cursorBlinking = !_cursorBlinking;
 
@@ -1387,12 +1385,12 @@ void SessionView::blinkCursorEvent()
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-void SessionView::resizeEvent(QResizeEvent*)
+void TerminalView::resizeEvent(QResizeEvent*)
 {
   updateImageSize();
 }
 
-void SessionView::propagateSize()
+void TerminalView::propagateSize()
 {
   if (_isFixedSize)
   {
@@ -1406,7 +1404,7 @@ void SessionView::propagateSize()
      updateImageSize();
 }
 
-void SessionView::updateImageSize()
+void TerminalView::updateImageSize()
 {
 //qDebug("%s %d updateImageSize", __FILE__, __LINE__);
   Character* oldimg = _image;
@@ -1454,11 +1452,11 @@ void SessionView::updateImageSize()
 //this allows  
 //TODO: Perhaps it would be better to have separate signals for show and hide instead of using
 //the same signal as the one for a content size change 
-void SessionView::showEvent(QShowEvent*)
+void TerminalView::showEvent(QShowEvent*)
 {
     emit changedContentSizeSignal(_contentHeight,_contentWidth);
 }
-void SessionView::hideEvent(QHideEvent*)
+void TerminalView::hideEvent(QHideEvent*)
 {
     emit changedContentSizeSignal(_contentHeight,_contentWidth);
 }
@@ -1469,7 +1467,7 @@ void SessionView::hideEvent(QHideEvent*)
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-void SessionView::scrollBarPositionChanged(int)
+void TerminalView::scrollBarPositionChanged(int)
 {
   if ( !_screenWindow ) 
       return;
@@ -1486,7 +1484,7 @@ void SessionView::scrollBarPositionChanged(int)
   updateImage();
 }
 
-void SessionView::setScroll(int cursor, int slines)
+void TerminalView::setScroll(int cursor, int slines)
 {
 //qDebug("%s %d setScroll", __FILE__, __LINE__);
   // update _scrollBar if the range or value has changed,
@@ -1509,7 +1507,7 @@ void SessionView::setScroll(int cursor, int slines)
   connect(_scrollBar, SIGNAL(valueChanged(int)), this, SLOT(scrollBarPositionChanged(int)));
 }
 
-void SessionView::setScrollBarPosition(ScrollBarPosition position)
+void TerminalView::setScrollBarPosition(ScrollBarPosition position)
 {
   if (_scrollbarLocation == position) {
 //      return; 
@@ -1527,7 +1525,7 @@ void SessionView::setScrollBarPosition(ScrollBarPosition position)
   update();
 }
 
-void SessionView::mousePressEvent(QMouseEvent* ev)
+void TerminalView::mousePressEvent(QMouseEvent* ev)
 {
   if ( _possibleTripleClick && (ev->button()==Qt::LeftButton) ) {
     mouseTripleClickEvent(ev);
@@ -1607,7 +1605,7 @@ void SessionView::mousePressEvent(QMouseEvent* ev)
   }
 }
 
-QList<QAction*> SessionView::filterActions(const QPoint& position)
+QList<QAction*> TerminalView::filterActions(const QPoint& position)
 {
   int charLine, charColumn;
   getCharacterPosition(position,charLine,charColumn);
@@ -1617,7 +1615,7 @@ QList<QAction*> SessionView::filterActions(const QPoint& position)
   return spot ? spot->actions() : QList<QAction*>();
 }
 
-void SessionView::mouseMoveEvent(QMouseEvent* ev)
+void TerminalView::mouseMoveEvent(QMouseEvent* ev)
 {
   int charLine = 0;
   int charColumn = 0;
@@ -1716,7 +1714,7 @@ void TerminalDisplay::setSelectionEnd()
 }
 #endif
 
-void SessionView::extendSelection(const QPoint& position) {
+void TerminalView::extendSelection(const QPoint& position) {
   QPoint pos = position;
 
   if (!_screenWindow) {
@@ -1733,7 +1731,6 @@ void SessionView::extendSelection(const QPoint& position) {
   // this widget.
 
   // Adjust position within text area bounds. See FIXME above.
-  QPoint oldpos = pos;
   if (pos.x() < tLx + _leftMargin) {
       pos.setX(tLx + _leftMargin);
   }
@@ -1930,7 +1927,7 @@ void SessionView::extendSelection(const QPoint& position) {
   }
 }
 
-void SessionView::mouseReleaseEvent(QMouseEvent* ev)
+void TerminalView::mouseReleaseEvent(QMouseEvent* ev)
 {
     if ( !_screenWindow )
         return;
@@ -1981,7 +1978,7 @@ void SessionView::mouseReleaseEvent(QMouseEvent* ev)
   }
 }
 
-void SessionView::getCharacterPosition(const QPoint& widgetPoint,int& line,int& column) const
+void TerminalView::getCharacterPosition(const QPoint& widgetPoint,int& line,int& column) const
 {
 
     column = (widgetPoint.x() + _fontWidth/2 -contentsRect().left()-_leftMargin) / _fontWidth;
@@ -2004,7 +2001,7 @@ void SessionView::getCharacterPosition(const QPoint& widgetPoint,int& line,int& 
         column = _usedColumns;
 }
 
-void SessionView::updateLineProperties()
+void TerminalView::updateLineProperties()
 {
     if ( !_screenWindow ) 
         return;
@@ -2012,7 +2009,7 @@ void SessionView::updateLineProperties()
     _lineProperties = _screenWindow->getLineProperties();    
 }
 
-void SessionView::mouseDoubleClickEvent(QMouseEvent* ev)
+void TerminalView::mouseDoubleClickEvent(QMouseEvent* ev)
 {
   if ( ev->button() != Qt::LeftButton) return;
   if ( !_screenWindow ) return;
@@ -2102,7 +2099,7 @@ void SessionView::mouseDoubleClickEvent(QMouseEvent* ev)
                      SLOT(tripleClickTimeout()));
 }
 
-void SessionView::wheelEvent( QWheelEvent* ev )
+void TerminalView::wheelEvent( QWheelEvent* ev )
 {
   if (ev->orientation() != Qt::Vertical)
     return;
@@ -2122,12 +2119,12 @@ void SessionView::wheelEvent( QWheelEvent* ev )
   }
 }
 
-void SessionView::tripleClickTimeout()
+void TerminalView::tripleClickTimeout()
 {
   _possibleTripleClick=false;
 }
 
-void SessionView::mouseTripleClickEvent(QMouseEvent* ev)
+void TerminalView::mouseTripleClickEvent(QMouseEvent* ev)
 {
   if ( !_screenWindow ) return;
 
@@ -2189,7 +2186,7 @@ void SessionView::mouseTripleClickEvent(QMouseEvent* ev)
 }
 
 
-bool SessionView::focusNextPrevChild( bool next )
+bool TerminalView::focusNextPrevChild( bool next )
 {
   if (next)
     return false; // This disables changing the active part in konqueror
@@ -2198,7 +2195,7 @@ bool SessionView::focusNextPrevChild( bool next )
 }
 
 
-int SessionView::charClass(quint16 ch) const
+int TerminalView::charClass(quint16 ch) const
 {
     QChar qch=QChar(ch);
     if ( qch.isSpace() ) return ' ';
@@ -2210,17 +2207,17 @@ int SessionView::charClass(quint16 ch) const
     return 1;
 }
 
-void SessionView::setWordCharacters(const QString& wc)
+void TerminalView::setWordCharacters(const QString& wc)
 {
 	_wordCharacters = wc;
 }
 
-void SessionView::setUsesMouse(bool on)
+void TerminalView::setUsesMouse(bool on)
 {
   _mouseMarks = on;
   setCursor( _mouseMarks ? Qt::IBeamCursor : Qt::ArrowCursor );
 }
-bool SessionView::usesMouse() const
+bool TerminalView::usesMouse() const
 {
     return _mouseMarks;
 }
@@ -2233,7 +2230,7 @@ bool SessionView::usesMouse() const
 
 #undef KeyPress
 
-void SessionView::emitSelection(bool useXselection,bool appendReturn)
+void TerminalView::emitSelection(bool useXselection,bool appendReturn)
 {
   if ( !_screenWindow ) 
       return;
@@ -2253,12 +2250,12 @@ void SessionView::emitSelection(bool useXselection,bool appendReturn)
   }
 }
 
-void SessionView::setSelection(const QString& t)
+void TerminalView::setSelection(const QString& t)
 {
   QApplication::clipboard()->setText(t, QClipboard::Selection);
 }
 
-void SessionView::copyClipboard()
+void TerminalView::copyClipboard()
 {
   if ( !_screenWindow )
       return;
@@ -2267,12 +2264,12 @@ void SessionView::copyClipboard()
   QApplication::clipboard()->setText(text);
 }
 
-void SessionView::pasteClipboard()
+void TerminalView::pasteClipboard()
 {
   emitSelection(false,false);
 }
 
-void SessionView::pasteSelection()
+void TerminalView::pasteSelection()
 {
   emitSelection(true,false);
 }
@@ -2283,7 +2280,7 @@ void SessionView::pasteSelection()
 /*                                                                           */
 /* ------------------------------------------------------------------------- */
 
-void SessionView::keyPressEvent( QKeyEvent* event )
+void TerminalView::keyPressEvent( QKeyEvent* event )
 {
 //qDebug("%s %d keyPressEvent and key is %d", __FILE__, __LINE__, event->key());
 
@@ -2356,7 +2353,7 @@ void SessionView::keyPressEvent( QKeyEvent* event )
     }
 }
 
-void SessionView::inputMethodEvent( QInputMethodEvent* event )
+void TerminalView::inputMethodEvent( QInputMethodEvent* event )
 {
     QKeyEvent keyEvent(QEvent::KeyPress,0,Qt::NoModifier,event->commitString());
     emit keyPressedSignal(&keyEvent);
@@ -2366,7 +2363,7 @@ void SessionView::inputMethodEvent( QInputMethodEvent* event )
     
     event->accept();
 }
-QVariant SessionView::inputMethodQuery( Qt::InputMethodQuery query ) const
+QVariant TerminalView::inputMethodQuery( Qt::InputMethodQuery query ) const
 {
     const QPoint cursorPos = _screenWindow ? _screenWindow->cursorPosition() : QPoint(0,0);
     switch ( query ) 
@@ -2403,7 +2400,7 @@ QVariant SessionView::inputMethodQuery( Qt::InputMethodQuery query ) const
     return QVariant();
 }
 
-bool SessionView::event( QEvent *e )
+bool TerminalView::event( QEvent *e )
 {
   if ( e->type() == QEvent::ShortcutOverride )
   {
@@ -2442,17 +2439,17 @@ bool SessionView::event( QEvent *e )
   return QWidget::event( e );
 }
 
-void SessionView::setBellMode(int mode)
+void TerminalView::setBellMode(int mode)
 {
   _bellMode=mode;
 }
 
-void SessionView::enableBell()
+void TerminalView::enableBell()
 {
     _allowBell = true;
 }
 
-void SessionView::bell(const QString&)
+void TerminalView::bell(const QString&)
 {
   if (_bellMode==NoBell) return;
 
@@ -2480,7 +2477,7 @@ void SessionView::bell(const QString&)
   }
 }
 
-void SessionView::swapColorTable()
+void TerminalView::swapColorTable()
 {
   ColorEntry color = _colorTable[1];
   _colorTable[1]=_colorTable[0];
@@ -2489,7 +2486,7 @@ void SessionView::swapColorTable()
   update();
 }
 
-void SessionView::clearImage()
+void TerminalView::clearImage()
 {
   // We initialize _image[_imageSize] too. See makeImage()
   for (int i = 0; i <= _imageSize; i++)
@@ -2503,7 +2500,7 @@ void SessionView::clearImage()
   }
 }
 
-void SessionView::calcGeometry()
+void TerminalView::calcGeometry()
 {
   _scrollBar->resize(QApplication::style()->pixelMetric(QStyle::PM_ScrollBarExtent),
                     contentsRect().height());
@@ -2540,7 +2537,7 @@ void SessionView::calcGeometry()
   }
 }
 
-void SessionView::makeImage()
+void TerminalView::makeImage()
 {
 //qDebug("%s %d makeImage", __FILE__, __LINE__);
   calcGeometry();
@@ -2560,7 +2557,7 @@ void SessionView::makeImage()
 }
 
 // calculate the needed size
-void SessionView::setSize(int columns, int lines)
+void TerminalView::setSize(int columns, int lines)
 {
   //FIXME - Not quite correct, a small amount of additional space
   // will be used for margins, the scrollbar etc.
@@ -2577,7 +2574,7 @@ void SessionView::setSize(int columns, int lines)
   }
 }
 
-void SessionView::setFixedSize(int cols, int lins)
+void TerminalView::setFixedSize(int cols, int lins)
 {
   _isFixedSize = true;
   
@@ -2596,7 +2593,7 @@ void SessionView::setFixedSize(int cols, int lins)
   QWidget::setFixedSize(_size);
 }
 
-QSize SessionView::sizeHint() const
+QSize TerminalView::sizeHint() const
 {
   return _size;
 }
@@ -2608,13 +2605,13 @@ QSize SessionView::sizeHint() const
 /*                                                                       */
 /* --------------------------------------------------------------------- */
 
-void SessionView::dragEnterEvent(QDragEnterEvent* event)
+void TerminalView::dragEnterEvent(QDragEnterEvent* event)
 {
   if (event->mimeData()->hasFormat("text/plain"))
       event->acceptProposedAction();
 }
 
-void SessionView::dropEvent(QDropEvent* event)
+void TerminalView::dropEvent(QDropEvent* event)
 {
 //  KUrl::List urls = KUrl::List::fromMimeData(event->mimeData());
 
@@ -2652,7 +2649,7 @@ void SessionView::dropEvent(QDropEvent* event)
   }
 }
 
-void SessionView::doDrag()
+void TerminalView::doDrag()
 {
   dragInfo.state = diDragging;
   dragInfo.dragObject = new QDrag(this);
@@ -2663,7 +2660,7 @@ void SessionView::doDrag()
   // Don't delete the QTextDrag object.  Qt will delete it when it's done with it.
 }
 
-void SessionView::outputSuspended(bool suspended)
+void TerminalView::outputSuspended(bool suspended)
 {
 	//create the label when this function is first called
 	if (!_outputSuspendedLabel)
@@ -2707,12 +2704,12 @@ void SessionView::outputSuspended(bool suspended)
 	_outputSuspendedLabel->setVisible(suspended);
 }
 
-uint SessionView::lineSpacing() const
+uint TerminalView::lineSpacing() const
 {
   return _lineSpacing;
 }
 
-void SessionView::setLineSpacing(uint i)
+void TerminalView::setLineSpacing(uint i)
 {
   _lineSpacing = i;
   setVTFont(font()); // Trigger an update.

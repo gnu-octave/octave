@@ -41,7 +41,7 @@ class KProcess;
 
 class Emulation;
 class PseudoTerminal;
-class SessionView;
+class TerminalView;
 
 /**
  * Represents a terminal session consisting of a pseudo-teletype and a terminal emulation.
@@ -100,7 +100,7 @@ public:
    * Views can be removed using removeView().  The session is automatically
    * closed when the last view is removed.
    */
-  void addView(SessionView* widget);
+  void addView(TerminalView* widget);
   /**
    * Removes a view from this session.  When the last view is removed,
    * the session will be closed automatically.
@@ -108,12 +108,12 @@ public:
    * @p widget will no longer display output from or send input
    * to the terminal
    */
-  void removeView(SessionView* widget);
+  void removeView(TerminalView* widget);
 
   /**
    * Returns the views connected to this session
    */
-  QList<SessionView*> views() const;
+  QList<TerminalView*> views() const;
 
   /**
    * Returns the terminal emulation instance being used to encode / decode
@@ -338,7 +338,7 @@ private:
   PseudoTerminal* _shellProcess;
   Emulation*    _emulation;
 
-  QList<SessionView*> _views;
+  QList<TerminalView*> _views;
 
   bool           _monitorActivity;
   bool           _monitorSilence;

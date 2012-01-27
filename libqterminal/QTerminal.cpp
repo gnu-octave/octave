@@ -50,10 +50,10 @@ void QTerminal::init()
     m_sessionModel->setDarkBackground(true);
     m_sessionModel->setKeyBindings("");
 
-    m_sessionView = new SessionView(this);
-    m_sessionView->setBellMode(SessionView::NotifyBell);
+    m_sessionView = new TerminalView(this);
+    m_sessionView->setBellMode(TerminalView::NotifyBell);
     m_sessionView->setTerminalSizeHint(true);
-    m_sessionView->setTripleClickMode(SessionView::SelectWholeLine);
+    m_sessionView->setTripleClickMode(TerminalView::SelectWholeLine);
     m_sessionView->setTerminalSizeStartup(true);
     m_sessionView->setSize(80, 40);
     
@@ -65,9 +65,10 @@ void QTerminal::init()
 
     m_sessionModel->run();
     m_sessionModel->addView(m_sessionView);
-    m_sessionView->setScrollBarPosition(SessionView::ScrollBarRight);
+    m_sessionView->setScrollBarPosition(TerminalView::ScrollBarRight);
 
     connect(m_sessionModel, SIGNAL(finished()), this, SLOT(sessionFinished()));
+    setFocusProxy(m_sessionView);
 }
 
 QTerminal::~QTerminal()

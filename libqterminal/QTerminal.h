@@ -23,7 +23,7 @@
 
 #include <QtGui>
 #include "TerminalModel.h"
-#include "SessionView.h"
+#include "TerminalView.h"
 
 class QTerminal : public QWidget
 {
@@ -55,7 +55,7 @@ protected slots:
     
 private:
     void init();
-    SessionView *m_sessionView;
+    TerminalView *m_sessionView;
     TerminalModel *m_sessionModel;
 };
 

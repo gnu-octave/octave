@@ -3,6 +3,7 @@
     Copyright (C) 1997,1998 by Lars Doelle <lars.doelle@on-line.de>
 
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>, Copyright (C)2008
+    Copyright (C) 2012 Jacob Dawid <jacob.dawid@googlemail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +21,8 @@
     02110-1301  USA.
 */
 
-#ifndef TERMINALDISPLAY_H
-#define TERMINALDISPLAY_H
+#ifndef TERMINALVIEW_H
+#define TERMINALVIEW_H
 
 // Qt
 #include <QtGui/QColor>
@@ -59,14 +60,14 @@ class ScreenWindow;
  *
  * TODO More documentation
  */
-class SessionView : public QWidget
+class TerminalView : public QWidget
 {
    Q_OBJECT
 
 public:
     /** Constructs a new terminal display widget with the specified parent. */
-    SessionView(QWidget *parent = 0);
-    virtual ~SessionView();
+    TerminalView(QWidget *parent = 0);
+    virtual ~TerminalView();
 
     /** Returns the terminal color palette used by the display. */
     const ColorEntry* colorTable() const;
@@ -486,7 +487,7 @@ signals:
      *
      * This can be used to display a context menu.
      */
-    void configureRequest( SessionView*, int state, const QPoint& position );
+    void configureRequest( TerminalView*, int state, const QPoint& position );
 
    void isBusySelecting(bool);
    void sendStringToEmu(const char*);
@@ -749,4 +750,4 @@ public:
     }
 };
 
-#endif // TERMINALDISPLAY_H
+#endif // TERMINALVIEW_H

@@ -24,6 +24,7 @@ image_FCN_FILES = \
   image/ind2gray.m \
   image/ind2rgb.m \
   image/jet.m \
+  image/lines.m \
   image/ntsc2rgb.m \
   image/ocean.m \
   image/pink.m \

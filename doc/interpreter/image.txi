@@ -147,6 +147,8 @@ between 0 and 1.
 
 @DOCSTRING(jet)
 
+@DOCSTRING(lines)
+
 @DOCSTRING(ocean)
 
 @DOCSTRING(pink)

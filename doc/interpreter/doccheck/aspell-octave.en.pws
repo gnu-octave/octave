@@ -139,6 +139,7 @@ colamd
 collectoutput
 colorbar
 colormap
+ColorOrder
 colperm
 Comint
 Commandline

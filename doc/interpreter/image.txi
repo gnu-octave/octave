@@ -127,6 +127,8 @@ between 0 and 1.
 
 @DOCSTRING(colormap)
 
+@DOCSTRING(rgbplot)
+
 @DOCSTRING(autumn)
 
 @DOCSTRING(bone)
@@ -166,9 +168,9 @@ between 0 and 1.
 An additional colormap is @code{gmap40}.  This code map contains only
 colors with integer values of the red, green and blue components.  This
 is a workaround for a limitation of gnuplot 4.0, that does not allow the color
-of line or patch objects to be set, and so @code{gmap40} is useful for gnuplot
-4.0 users, and in particular in conjunction with the @var{bar},
-@var{barh} or @var{contour} functions.
+of line or patch objects to be set.  @code{gmap40} is chiefly useful to gnuplot
+4.0 users, and particularly in conjunction with the @var{bar}, @var{surf},
+and @var{contour} functions.
 
 @DOCSTRING(gmap40)
 

@@ -1,3 +1,27 @@
+Summary of important user-visible changes for version 3.8:
+---------------------------------------------------------
+
+ ** Other new functions added in 3.8.0:
+
+      rgbplot
+
+ ** Deprecated functions.
+
+    The following functions were deprecated in Octave 3.4 and have been
+    removed from Octave 3.8.
+                                           
+      autocor    dispatch              is_global   saveimage 
+      autocov    fstat                 krylovb     strerror  
+      betai      gammai                perror      strerror  
+      cellidx    glpkmex               perror      values    
+      cquad      is_duplicate_entry    replot                      
+      
+    The following functions have been deprecated in Octave 3.8 and will
+    be removed from Octave 3.12 (or whatever version is the second major
+    release after 3.8):
+
+
+
 Summary of important user-visible changes for version 3.6:
 ---------------------------------------------------------
 

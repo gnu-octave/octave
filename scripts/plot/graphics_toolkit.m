@@ -83,13 +83,13 @@ endfunction
 %! end_unwind_protect
 
 %!testif HAVE_FLTK
-%!  old_toolkit = graphics_toolkit ();
-%!  switch old_toolkit
-%!    case {"gnuplot"}
-%!      new_toolkit = "fltk";
-%!    otherwise
-%!      new_toolkit = "gnuplot";
-%!  endswitch
-%!  assert (graphics_toolkit (new_toolkit), old_toolkit)
-%!  assert (graphics_toolkit (old_toolkit), new_toolkit)
+%! old_toolkit = graphics_toolkit ();
+%! switch old_toolkit
+%!   case {"gnuplot"}
+%!     new_toolkit = "fltk";
+%!   otherwise
+%!     new_toolkit = "gnuplot";
+%! endswitch
+%! assert (graphics_toolkit (new_toolkit), old_toolkit)
+%! assert (graphics_toolkit (old_toolkit), new_toolkit)
 

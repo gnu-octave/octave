@@ -17,8 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} figure (@var{n})
-## @deftypefnx {Function File} {} figure (@var{n}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {Function File} {} figure
+## @deftypefnx {Function File} {} figure @var{n}
+## @deftypefnx {Function File} {} figure (@var{n})
+## @deftypefnx {Function File} {} figure (@var{n}, "@var{property}", @var{value}, @dots{})
 ## Set the current plot window to plot window @var{n}.  If no arguments are
 ## specified, the next available window number is chosen.
 ##
@@ -37,6 +39,9 @@ function h = figure (varargin)
   init_new_figure = false;
   if (mod (nargs, 2) == 1)
     tmp = varargin{1};
+    if (ischar (tmp))
+      tmp = str2double (tmp);
+    endif
     if (isfigure (tmp))
       f = tmp;
       varargin(1) = [];
@@ -54,7 +59,7 @@ function h = figure (varargin)
   ## Check to see if we already have a figure on the screen.  If we do,
   ## then update it if it is different from the figure we are creating
   ## or switching to.
-  cf = get (0, "currentfigure");
+  cf = get (0, "currentfigure");   # Can't use gcf() because it calls figure()
   if (! isempty (cf) && cf != 0)
     if (isnan (f) || cf != f)
       drawnow ();
@@ -64,7 +69,7 @@ function h = figure (varargin)
   if (rem (nargs, 2) == 0)
     if (isnan (f) || init_new_figure)
       if (ismac () && strcmp (graphics_toolkit (), "fltk"))
-        ## FIXME - Hack for fltk-aqua to work around bug # 31931
+        ## FIXME - Hack for fltk-aqua to work around bug #31931
         f = __go_figure__ (f);
         drawnow ();
         if (! isempty (varargin))
@@ -81,9 +86,8 @@ function h = figure (varargin)
     print_usage ();
   endif
 
-  cf = get (0, "currentfigure");
-  if (strcmp (get (cf, "__graphics_toolkit__"), "fltk"))
-    __add_default_menu__ (cf);
+  if (strcmp (get (f, "__graphics_toolkit__"), "fltk"))
+    __add_default_menu__ (f);
   endif
 
   if (nargout > 0)

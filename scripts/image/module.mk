@@ -4,6 +4,7 @@ image_FCN_FILES = \
   image/autumn.m \
   image/bone.m \
   image/brighten.m \
+  image/colorcube.m \
   image/colormap.m \
   image/contrast.m \
   image/cool.m \

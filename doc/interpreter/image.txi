@@ -133,6 +133,8 @@ between 0 and 1.
 
 @DOCSTRING(bone)
 
+@DOCSTRING(colorcube)
+
 @DOCSTRING(cool)
 
 @DOCSTRING(copper)

@@ -40,9 +40,8 @@ function map = prism (n)
     print_usage ();
   endif
 
-  p = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
-
-  map = [repmat(p, fix(n/6), 1); p(1:rem (n, 6), :)];
+  C = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
+  map = C(rem (0:(n-1), 6) + 1, :);
 
 endfunction
 

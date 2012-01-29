@@ -45,16 +45,14 @@ function map = ocean (n)
   cutin = fix (n/3);
 
   dr = (n - 1) / cutin;
-
   r = prepad ([0:dr:(n-1)], n)';
 
   dg = (n - 1) / (2 * cutin);
-
-  g = prepad([0:dg:(n-1)], n)';
+  g = prepad ([0:dg:(n-1)], n)';
 
   b = [0:(n-1)]';
 
-  map = [ r, g, b ] / (n - 1);
+  map = [r, g, b] / (n - 1);
 
 endfunction
 

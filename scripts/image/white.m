@@ -39,11 +39,7 @@ function map = white (n)
     print_usage ();
   endif
 
-  if (n > 0)
-    map = ones (n, 3);
-  else
-    map = [];
-  endif
+  map = ones (n, 3);
 
 endfunction
 

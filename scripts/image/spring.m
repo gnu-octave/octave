@@ -43,7 +43,7 @@ function map = spring (n)
     map = [1, 0, 1];
   elseif (n > 1)
     r = ones (n, 1);
-    g = (0:n - 1)' ./ (n - 1);
+    g = [0:(n-1)]' / (n - 1);
     b = 1 - g;
     map = [r, g, b];
   else

@@ -39,9 +39,9 @@ function map = lines (n)
     print_usage ();
   endif
 
-  c = get (gca, "colororder");
-  nr = rows (c);
-  map = c(rem (0:(n-1), nr) + 1, :);
+  C = get (gca, "colororder");
+  nr = rows (C);
+  map = C(rem (0:(n-1), nr) + 1, :);
 
 endfunction
 

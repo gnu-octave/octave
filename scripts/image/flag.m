@@ -40,14 +40,8 @@ function map = flag (n)
     print_usage ();
   endif
 
-  p = [1, 0, 0; 1, 1, 1; 0, 0, 1; 0, 0, 0];
-  if (rem(n,4) == 0)
-    map = kron (ones (n / 4, 1), p);
-  else
-    m1 = kron (ones (fix (n / 4), 1), p);
-    m2 = p(1:rem (n, 4), :);
-    map = [m1; m2];
-  endif
+  C = [1, 0, 0; 1, 1, 1; 0, 0, 1; 0, 0, 0];
+  map = C(rem (0:(n-1), 4) + 1, :);
 
 endfunction
 

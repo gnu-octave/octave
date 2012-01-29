@@ -27,6 +27,7 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 ## Date:  06/03/2000
+
 function map = summer (n)
 
   if (nargin == 0)
@@ -42,10 +43,9 @@ function map = summer (n)
   if (n == 1)
     map = [0, 0.5, 0.4];
   elseif (n > 1)
-    r = (0:n - 1)' ./ (n - 1);
-    g = 0.5 + r ./ 2;
+    r = [0:(n-1)]' / (n - 1);
+    g = 0.5 + r / 2;
     b = 0.4 * ones (n, 1);
-
     map = [r, g, b];
   else
     map = [];

@@ -42,7 +42,7 @@ function map = cool (n)
   if (n == 1)
     map = [0, 1, 1];
   elseif (n > 1)
-    r = (0:n - 1)' ./ (n - 1);
+    r = [0:(n-1)]' / (n - 1);
     g = 1 - r;
     b = ones (n, 1);
     map = [r, g, b];

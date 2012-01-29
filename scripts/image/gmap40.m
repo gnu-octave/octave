@@ -40,12 +40,8 @@ function map = gmap40 (n)
     print_usage ();
   endif
 
-  if (n >= 1)
-    map = repmat ([1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1],
-          ceil (n / 6), 1) (1:n, :);
-  else
-    map = [];
-  endif
+  C = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
+  map = C(rem (0:(n-1), 6) + 1, :);
 
 endfunction
 

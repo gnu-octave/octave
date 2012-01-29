@@ -44,7 +44,7 @@ function map = autumn (n)
     map = [1, 0, 0];
   elseif (n > 1)
     r = ones (n, 1);
-    g = (0:n - 1)' ./ (n - 1);
+    g = [0:(n-1)]' / (n - 1);
     b = zeros (n, 1);
     map = [r, g, b];
   else

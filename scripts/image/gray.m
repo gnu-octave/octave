@@ -42,9 +42,9 @@ function map = gray (n)
     print_usage ();
   endif
 
-  gr = [0:(n-1)]';
+  gr = [0:(n-1)]' / (n - 1);
 
-  map = [ gr, gr, gr ] / (n - 1);
+  map = [gr, gr, gr];
 
 endfunction
 

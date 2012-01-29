@@ -2310,7 +2310,7 @@ private:
 
   ~gtk_manager (void) { }
 
-  static void create_instance (void);
+  OCTINTERP_API static void create_instance (void);
 
   static bool instance_ok (void)
   {
@@ -2331,7 +2331,7 @@ private:
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  static gtk_manager *instance;
+  OCTINTERP_API static gtk_manager *instance;
 
   // The name of the default toolkit.
   std::string dtk;

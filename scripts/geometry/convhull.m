@@ -45,13 +45,9 @@ function H = convhull (x, y, options)
     print_usage ();
   endif
 
-  if (! isvector(x))
-    x = x(:);
-  endif
-
-  if (! isvector(y))
-    y = y(:);
-  endif
+  ## convhulln expects column vectors
+  x = x(:);
+  y = y(:);
 
   if (length (x) != length (y))
     error ("convhull: X and Y must have the same size");

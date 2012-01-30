@@ -78,29 +78,6 @@ public:
   void closeSlave();
 
   /**
-   * Creates a new session and process group and makes this pty the
-   * controlling tty.
-   */
-  void setCTty();
-
-  /**
-   * Creates an utmp entry for the tty.
-   * This function must be called after calling setCTty and
-   * making this pty the stdin.
-   * @param user the user to be logged on
-   * @param remotehost the host from which the login is coming. This is
-   *  @em not the local host. For remote logins it should be the hostname
-   *  of the client. For local logins from inside an X session it should
-   *  be the name of the X display. Otherwise it should be empty.
-   */
-  void login(const char *user = 0, const char *remotehost = 0);
-
-  /**
-   * Removes the utmp entry for this tty.
-   */
-  void logout();
-
-  /**
    * Wrapper around tcgetattr(3).
    *
    * This function can be used only while the PTY is open.

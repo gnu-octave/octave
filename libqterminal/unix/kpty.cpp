@@ -71,6 +71,7 @@
 # include <util.h>
 #endif
 
+/*
 #ifdef HAVE_UTEMPTER
 extern "C" {
 # include <utempter.h>
@@ -87,6 +88,7 @@ extern "C" {
 #  define _PATH_WTMPX _WTMPX_FILE
 # endif
 #endif
+*/
 
 /* for HP-UX (some versions) the extern C is needed, and for other
    platforms it doesn't hurt */
@@ -405,178 +407,6 @@ void KPty::close()
    }
    ::close(d->masterFd);
    d->masterFd = -1;
-}
-
-void KPty::setCTty()
-{
-    Q_D(KPty);
-
-    // Setup job control //////////////////////////////////
-
-    // Become session leader, process group leader,
-    // and get rid of the old controlling terminal.
-    setsid();
-
-    // make our slave pty the new controlling terminal.
-#ifdef TIOCSCTTY
-    ioctl(d->slaveFd, TIOCSCTTY, 0);
-#else
-    // __svr4__ hack: the first tty opened after setsid() becomes controlling tty
-    ::close(::open(d->ttyName, O_WRONLY, 0));
-#endif
-
-    // make our new process group the foreground group on the pty
-    int pgrp = getpid();
-#if defined(_POSIX_VERSION) || defined(__svr4__)
-    tcsetpgrp(d->slaveFd, pgrp);
-#elif defined(TIOCSPGRP)
-    ioctl(d->slaveFd, TIOCSPGRP, (char *)&pgrp);
-#endif
-}
-
-void KPty::login(const char *user, const char *remotehost)
-{
-#ifdef HAVE_UTEMPTER
-    Q_D(KPty);
-
-    addToUtmp(d->ttyName, remotehost, d->masterFd);
-    Q_UNUSED(user);
-#else
-# ifdef HAVE_UTMPX
-    struct utmpx l_struct;
-# else
-    struct utmp l_struct;
-# endif
-    memset(&l_struct, 0, sizeof(l_struct));
-    // note: strncpy without terminators _is_ correct here. man 4 utmp
-
-    if (user)
-      strncpy(l_struct.ut_name, user, sizeof(l_struct.ut_name));
-
-    if (remotehost) {
-      strncpy(l_struct.ut_host, remotehost, sizeof(l_struct.ut_host));
-# ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
-      l_struct.ut_syslen = qMin(strlen(remotehost), sizeof(l_struct.ut_host));
-# endif
-    }
-
-# ifndef __GLIBC__
-    Q_D(KPty);
-    const char *str_ptr = d->ttyName.data();
-    if (!memcmp(str_ptr, "/dev/", 5))
-        str_ptr += 5;
-    strncpy(l_struct.ut_line, str_ptr, sizeof(l_struct.ut_line));
-#  ifdef HAVE_STRUCT_UTMP_UT_ID
-    strncpy(l_struct.ut_id,
-            str_ptr + strlen(str_ptr) - sizeof(l_struct.ut_id),
-            sizeof(l_struct.ut_id));
-#  endif
-# endif
-
-# ifdef HAVE_UTMPX
-    gettimeofday(&l_struct.ut_tv, 0);
-# else
-    l_struct.ut_time = time(0);
-# endif
-
-# ifdef HAVE_LOGIN
-#  ifdef HAVE_LOGINX
-    ::loginx(&l_struct);
-#  else
-    ::login(&l_struct);
-#  endif
-# else
-#  ifdef HAVE_STRUCT_UTMP_UT_TYPE
-    l_struct.ut_type = USER_PROCESS;
-#  endif
-#  ifdef HAVE_STRUCT_UTMP_UT_PID
-    l_struct.ut_pid = getpid();
-#   ifdef HAVE_STRUCT_UTMP_UT_SESSION
-    l_struct.ut_session = getsid(0);
-#   endif
-#  endif
-#  ifdef HAVE_UTMPX
-    utmpxname(_PATH_UTMPX);
-    setutxent();
-    pututxline(&l_struct);
-    endutxent();
-    updwtmpx(_PATH_WTMPX, &l_struct);
-#  else
-    utmpname(_PATH_UTMP);
-    setutent();
-    pututline(&l_struct);
-    endutent();
-    updwtmp(_PATH_WTMP, &l_struct);
-#  endif
-# endif
-#endif
-}
-
-void KPty::logout()
-{
-#ifdef HAVE_UTEMPTER
-    Q_D(KPty);
-
-    removeLineFromUtmp(d->ttyName, d->masterFd);
-#else
-    Q_D(KPty);
-
-    const char *str_ptr = d->ttyName.data();
-    if (!memcmp(str_ptr, "/dev/", 5))
-        str_ptr += 5;
-# ifdef __GLIBC__
-    else {
-        const char *sl_ptr = strrchr(str_ptr, '/');
-        if (sl_ptr)
-            str_ptr = sl_ptr + 1;
-    }
-# endif
-# ifdef HAVE_LOGIN
-#  ifdef HAVE_LOGINX
-    ::logoutx(str_ptr, 0, DEAD_PROCESS);
-#  else
-    ::logout(str_ptr);
-#  endif
-# else
-#  ifdef HAVE_UTMPX
-    struct utmpx l_struct, *ut;
-#  else
-    struct utmp l_struct, *ut;
-#  endif
-    memset(&l_struct, 0, sizeof(l_struct));
-
-    strncpy(l_struct.ut_line, str_ptr, sizeof(l_struct.ut_line));
-
-#  ifdef HAVE_UTMPX
-    utmpxname(_PATH_UTMPX);
-    setutxent();
-    if ((ut = getutxline(&l_struct))) {
-#  else
-    utmpname(_PATH_UTMP);
-    setutent();
-    if ((ut = getutline(&l_struct))) {
-#  endif
-        memset(ut->ut_name, 0, sizeof(*ut->ut_name));
-        memset(ut->ut_host, 0, sizeof(*ut->ut_host));
-#  ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
-        ut->ut_syslen = 0;
-#  endif
-#  ifdef HAVE_STRUCT_UTMP_UT_TYPE
-        ut->ut_type = DEAD_PROCESS;
-#  endif
-#  ifdef HAVE_UTMPX
-        gettimeofday(ut->ut_tv, 0);
-        pututxline(ut);
-    }
-    endutxent();
-#  else
-        ut->ut_time = time(0);
-        pututline(ut);
-    }
-    endutent();
-#  endif
-# endif
-#endif
 }
 
 // XXX Supposedly, tc[gs]etattr do not work with the master on Solaris.

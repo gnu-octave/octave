@@ -285,25 +285,8 @@ MainWindow::construct ()
   m_filesDockWidget->setStatusTip (tr ("Browse your files."));
   m_statusBar = new QStatusBar (this);
 
-  // Setup essential MDI Windows.
-  m_terminalView = new QTerminal(this);
-  m_documentationWidget = new BrowserWidget (this);
-  m_ircWidget = new QIRCWidget (this);
-
-  // Octave Terminal subwindow.
-  m_terminalViewSubWindow = new NonClosableMdiSubWindow (this);
-  m_terminalViewSubWindow->setWidget (m_terminalView);
-  m_centralMdiArea->addSubWindow (m_terminalViewSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
-
-  m_terminalViewSubWindow->setObjectName ("OctaveTerminalSubWindow");
-  m_terminalViewSubWindow->setWindowTitle (tr ("Terminal"));
-  m_terminalViewSubWindow
-      ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Terminal));
-  m_terminalViewSubWindow->setFocusProxy (m_terminalView);
-  m_terminalViewSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
-  m_terminalViewSubWindow->setMinimumSize (300, 300);
-
   // Documentation subwindow.
+  m_documentationWidget = new BrowserWidget (this);
   m_documentationWidgetSubWindow = new NonClosableMdiSubWindow (this);
   m_documentationWidgetSubWindow->setWidget (m_documentationWidget);
   m_centralMdiArea->addSubWindow (m_documentationWidgetSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
@@ -316,7 +299,24 @@ MainWindow::construct ()
   m_documentationWidgetSubWindow->setStatusTip (tr ("Browse the Octave documentation for help."));
   m_documentationWidgetSubWindow->setMinimumSize (300, 300);
 
+  // Octave Terminal subwindow.
+  m_terminalView = new QTerminal(this);
+  m_terminalViewSubWindow = new NonClosableMdiSubWindow (this);
+  m_terminalViewSubWindow->setWidget (m_terminalView);
+  m_centralMdiArea->addSubWindow (m_terminalViewSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
+
+  m_terminalViewSubWindow->setObjectName ("OctaveTerminalSubWindow");
+  m_terminalViewSubWindow->setWindowTitle (tr ("Terminal"));
+  m_terminalViewSubWindow
+      ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Terminal));
+  m_terminalViewSubWindow->setFocusProxy (m_terminalView);
+  m_terminalViewSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
+  m_terminalViewSubWindow->setMinimumSize (300, 300);
+
   // Chat subwindow.
+  // Deactivated in the development process.
+  /*
+  m_ircWidget = new QIRCWidget (this);
   m_ircWidgetSubWindow = new NonClosableMdiSubWindow (this);
   m_ircWidgetSubWindow->setWidget(m_ircWidget);
   m_centralMdiArea->addSubWindow (m_ircWidgetSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
@@ -328,9 +328,10 @@ MainWindow::construct ()
   m_ircWidgetSubWindow->setStatusTip(tr ("Instantly chat with other Octave users for help."));
   m_ircWidgetSubWindow->setFocusProxy (m_ircWidget);
   m_ircWidgetSubWindow->setMinimumSize (300, 300);
-  connect (m_ircWidget, SIGNAL (unreadMessages (bool)), this, SLOT (handleUnreadMessages (bool)));
+  //connect (m_ircWidget, SIGNAL (unreadMessages (bool)), this, SLOT (handleUnreadMessages (bool)));
 
   m_ircWidget->connectToServer("irc.freenode.net", "Octave-GUI-User", "#octave");
+  */
 
   m_lexer = NULL;  // initialise the empty lexer for the edtiors
 
@@ -386,8 +387,8 @@ MainWindow::construct ()
   connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
   connect (m_filesDockWidget, SIGNAL (activeChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
 
-  connect (this, SIGNAL (settingsChanged ()), m_workspaceView, SLOT (noticeSettings ()));
-  connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
+  //connect (this, SIGNAL (settingsChanged ()), m_workspaceView, SLOT (noticeSettings ()));
+  //connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
   connect (this, SIGNAL (settingsChanged ()), m_filesDockWidget, SLOT (noticeSettings ()));
 
   connect (m_filesDockWidget, SIGNAL (openFile (QString)), this, SLOT (handleOpenFileRequest (QString)));

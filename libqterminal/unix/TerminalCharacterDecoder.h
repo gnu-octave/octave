@@ -24,7 +24,7 @@
 #ifndef TERMINAL_CHARACTER_DECODER_H
 #define TERMINAL_CHARACTER_DECODER_H
 
-#include "Character.h"
+#include "unix/Character.h"
 
 class QTextStream;
 

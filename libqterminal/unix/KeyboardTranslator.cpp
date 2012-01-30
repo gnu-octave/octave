@@ -22,7 +22,7 @@
 */
 
 // Own
-#include "KeyboardTranslator.h"
+#include "unix/KeyboardTranslator.h"
 
 // System
 #include <ctype.h>

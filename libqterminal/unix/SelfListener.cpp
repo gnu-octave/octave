@@ -1,4 +1,4 @@
-#include "SelfListener.h"
+#include "unix/SelfListener.h"
 
 SelfListener::SelfListener(int a, QObject *parent) :
     QThread(parent) {

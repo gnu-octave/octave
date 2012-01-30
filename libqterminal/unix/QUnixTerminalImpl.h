@@ -22,9 +22,9 @@
 #define Q_TERMINAL
 
 #include <QtGui>
-#include "kpty.h"
-#include "TerminalModel.h"
-#include "TerminalView.h"
+#include "unix/kpty.h"
+#include "unix/TerminalModel.h"
+#include "unix/TerminalView.h"
 
 class QTerminal : public QWidget
 {

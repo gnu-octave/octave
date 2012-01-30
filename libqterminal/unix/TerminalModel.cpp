@@ -24,7 +24,7 @@
 */
 
 // Own
-#include "TerminalModel.h"
+#include "unix/TerminalModel.h"
 
 // Standard
 #include <assert.h>
@@ -39,8 +39,8 @@
 #include <QtCore/QStringList>
 #include <QtCore>
 
-#include "TerminalView.h"
-#include "Vt102Emulation.h"
+#include "unix/TerminalView.h"
+#include "unix/Vt102Emulation.h"
 
 TerminalModel::TerminalModel(KPty *kpty) :
     _shellProcess(0)

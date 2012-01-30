@@ -22,7 +22,7 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "kpty_p.h"
+#include "unix/kpty_p.h"
 
 #ifdef __sgi
 #define __svr4__

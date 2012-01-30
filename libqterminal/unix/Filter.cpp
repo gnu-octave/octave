@@ -20,7 +20,7 @@
 */
 
 // Own
-#include "Filter.h"
+#include "unix/Filter.h"
 
 // System
 #include <iostream>
@@ -35,7 +35,7 @@
 #include <QtCore>
 
 // Konsole
-#include "TerminalCharacterDecoder.h"
+#include "unix/TerminalCharacterDecoder.h"
 
 FilterChain::~FilterChain()
 {

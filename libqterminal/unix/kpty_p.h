@@ -23,7 +23,7 @@
 #ifndef kpty_p_h
 #define kpty_p_h
 
-#include "kpty.h"
+#include "unix/kpty.h"
 
 #include <QtCore/QByteArray>
 

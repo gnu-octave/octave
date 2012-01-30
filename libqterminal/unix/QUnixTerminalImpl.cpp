@@ -19,8 +19,8 @@
 						
 #include <QDebug>
 
-#include "QUnixTerminalImpl.h"
-#include "kpty.h"
+#include "unix/QUnixTerminalImpl.h"
+#include "unix/kpty.h"
 
 #include <termios.h>
 

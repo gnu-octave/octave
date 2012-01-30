@@ -31,8 +31,8 @@
 #include <QtCore/QVarLengthArray>
 
 // Konsole
-#include "Character.h"
-#include "History.h"
+#include "unix/Character.h"
+#include "unix/History.h"
 
 #define MODE_Origin    0
 #define MODE_Wrap      1

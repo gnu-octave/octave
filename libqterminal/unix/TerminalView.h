@@ -30,8 +30,8 @@
 #include <QtGui/QWidget>
 
 // Konsole
-#include "Filter.h"
-#include "Character.h"
+#include "unix/Filter.h"
+#include "unix/Character.h"
 
 class QDrag;
 class QDragEnterEvent;

@@ -39,8 +39,8 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <windows.h>
 #include <cstring>
 
-#include "QWinTerminalImpl.h"
-#include "QTerminalColors.h"
+#include "win32/QWinTerminalImpl.h"
+#include "win32/QTerminalColors.h"
 
 // Uncomment to log activity to LOGFILENAME
 // #define DEBUG_QCONSOLE

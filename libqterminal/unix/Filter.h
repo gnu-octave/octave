@@ -31,7 +31,7 @@
 #include <QtCore/QRegExp>
 
 // Local
-#include "Character.h"
+#include "unix/Character.h"
 
 /**
  * A filter processes blocks of text looking for certain patterns (such as URLs or keywords from a list)

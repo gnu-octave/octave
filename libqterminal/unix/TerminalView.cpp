@@ -24,7 +24,7 @@
 */
 
 // Own
-#include "TerminalView.h"
+#include "unix/TerminalView.h"
 
 // Qt
 #include <QtGui/QApplication>
@@ -44,10 +44,10 @@
 #include <QtCore>
 #include <QtGui>
 
-#include "Filter.h"
-#include "konsole_wcwidth.h"
-#include "ScreenWindow.h"
-#include "TerminalCharacterDecoder.h"
+#include "unix/Filter.h"
+#include "unix/konsole_wcwidth.h"
+#include "unix/ScreenWindow.h"
+#include "unix/TerminalCharacterDecoder.h"
 
 #ifndef loc
 #define loc(X,Y) ((Y)*_columns+(X))

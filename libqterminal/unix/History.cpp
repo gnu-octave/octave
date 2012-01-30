@@ -21,7 +21,7 @@
 */
 
 // Own
-#include "History.h"
+#include "unix/History.h"
 
 // System
 #include <iostream>

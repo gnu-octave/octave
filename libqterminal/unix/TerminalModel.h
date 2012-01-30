@@ -31,11 +31,11 @@
 #include <QtCore>
 #include <QWidget>
 
-#include "SelfListener.h"
+#include "unix/SelfListener.h"
 
 // Konsole
-#include "History.h"
-#include "kpty.h"
+#include "unix/History.h"
+#include "unix/kpty.h"
 
 class KProcess;
 

@@ -7,7 +7,7 @@
  * Markus Kuhn -- 2001-01-12 -- public domain
  */
 
-#include "konsole_wcwidth.h"
+#include "unix/konsole_wcwidth.h"
 
 struct interval {
   unsigned short first;

@@ -29,8 +29,8 @@
 #include <QtCore>
 
 // Konsole
-#include "BlockArray.h"
-#include "Character.h"
+#include "unix/BlockArray.h"
+#include "unix/Character.h"
 
 
 class HistoryFile

@@ -21,7 +21,7 @@
 */
 
 // Own
-#include "Vt102Emulation.h"
+#include "unix/Vt102Emulation.h"
 
 #if defined(__osf__) || defined(__APPLE__)
 #define AVOID_XKB
@@ -48,8 +48,8 @@
 //#include <klocale.h>
 
 // Konsole
-#include "KeyboardTranslator.h"
-#include "Screen.h"
+#include "unix/KeyboardTranslator.h"
+#include "unix/Screen.h"
 
 #if defined(HAVE_XKB)
 void scrolllock_set_off();

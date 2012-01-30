@@ -22,7 +22,7 @@
 */
 
 // Own
-#include "BlockArray.h"
+#include "unix/BlockArray.h"
 
 #include <QtCore>
 

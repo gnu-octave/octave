@@ -39,6 +39,7 @@ public:
     void setSize(int h, int v);
     void setHistorySize(int lines);
     void setReadOnly(bool);
+    void sendText(QString text);
             
 signals:
     void finished();

@@ -129,6 +129,11 @@ void QTerminal::setReadOnly(bool readonly)
     m_sessionView->setReadOnly(readonly);
 }
 
+void QTerminal::sendText(QString text)
+{
+    m_sessionModel->sendText(text);
+}
+
 void QTerminal::focusInEvent(QFocusEvent *focusEvent)
 {
     Q_UNUSED(focusEvent);

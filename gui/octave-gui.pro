@@ -80,7 +80,6 @@ SOURCES +=\
     src/FilesDockWidget.cpp \
     src/FileEditorMdiSubWindow.cpp \
     src/BrowserWidget.cpp \
-    src/ImageViewerMdiSubWindow.cpp \
     src/SettingsDialog.cpp \
     src/OctaveGUI.cpp \
     src/ResourceManager.cpp \
@@ -103,7 +102,6 @@ HEADERS += \
     src/FilesDockWidget.h \
     src/FileEditorMdiSubWindow.h \
     src/BrowserWidget.h \
-    src/ImageViewerMdiSubWindow.h \
     src/SettingsDialog.h \
     src/ResourceManager.h \
     src/CommandLineParser.h \

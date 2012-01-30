@@ -60,18 +60,6 @@ WorkspaceView::WorkspaceView (QWidget * parent) : QDockWidget
   m_variablesTreeWidget->setAnimated (true);
 
   connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
-
-  setStyleSheet(
-      " QDockWidget { "
-      "   border:1px solid rgba(200, 200, 200, 255); "
-      "   background-color: qlineargradient(spread:pad, "
-      "   x1:0.1, y1:0, x2:0.9, y2:1, "
-      "   stop:0.256444 rgba(255, 215, 215, 255), "
-      "   stop:0.550888 rgba(255, 255, 255, 255), "
-      "   stop:0.780424 rgba(255, 215, 215, 255)); "
-      " } "
-      );
-
   connect (OctaveLink::instance(), SIGNAL (symbolTableChanged()), this, SLOT (fetchSymbolTable()));
 }
 

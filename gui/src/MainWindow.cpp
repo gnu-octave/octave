@@ -24,7 +24,6 @@
 #include <QMessageBox>
 #include "MainWindow.h"
 #include "FileEditorMdiSubWindow.h"
-#include "ImageViewerMdiSubWindow.h"
 #include "SettingsDialog.h"
 
 #define VERSION_STRING "Octave GUI (0.8.8)"

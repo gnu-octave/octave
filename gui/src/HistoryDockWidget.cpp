@@ -49,17 +49,6 @@ HistoryDockWidget::construct ()
   connect (m_filterLineEdit, SIGNAL (textEdited (QString)), &m_sortFilterProxyModel, SLOT (setFilterWildcard(QString)));
   connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this, SLOT (handleDoubleClick (QModelIndex)));
   connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
-
-  setStyleSheet(
-      " QDockWidget { "
-      "   border:1px solid rgba(200, 200, 200, 255); "
-      "   background-color: qlineargradient(spread:pad, "
-      "   x1:0.1, y1:0, x2:0.9, y2:1, "
-      "   stop:0.256444 rgba(215, 255, 215, 255), "
-      "   stop:0.550888 rgba(255, 255, 255, 255), "
-      "   stop:0.780424 rgba(215, 255, 215, 255)); "
-      " } "
-      );
 }
 
 void

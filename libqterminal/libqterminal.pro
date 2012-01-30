@@ -12,7 +12,7 @@ unix {
 DEFINES 	+= HAVE_POSIX_OPENPT	    
 #or DEFINES 	+= HAVE_GETPT
 
-INCLUDE_PATH += unix
+INCLUDEPATH += unix
 HEADERS  = unix/BlockArray.h \
            unix/Character.h \
            unix/CharacterColor.h \
@@ -52,7 +52,7 @@ SOURCES  = unix/BlockArray.cpp \
 }
 
 win32 {
-INCLUDE_PATH += win32
+INCLUDEPATH += win32
 HEADERS  = win32/QTerminalColors.h \
 		   win32/QWinTerminalImpl.h
 

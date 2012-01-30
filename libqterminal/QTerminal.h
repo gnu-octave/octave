@@ -23,10 +23,10 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef QTERMINAL_H
 #define QTERMINAL_H
 
-#ifdef Q_OS_UNIX
-	#include "unix/QUnixTerminalImpl.h"
+#ifdef __WIN32
+    #include "win32/QWinTerminalImpl.h"
 #else
-	#include "win32/QWinTerminalImpl.h"
+    #include "unix/QUnixTerminalImpl.h"
 #endif
 
 #endif // QTERMINAL_H

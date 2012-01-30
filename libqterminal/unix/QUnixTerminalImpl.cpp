@@ -19,7 +19,7 @@
 						
 #include <QDebug>
 
-#include "QTerminal.h"
+#include "QUnixTerminalImpl.h"
 #include "kpty.h"
 
 #include <termios.h>

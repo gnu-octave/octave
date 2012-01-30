@@ -36,7 +36,7 @@ class QConsoleView;
 
 //////////////////////////////////////////////////////////////////////////////
 
-class QConsole : public QWidget
+class QTerminal : public QWidget
 {
   Q_OBJECT
   friend class QConsolePrivate;
@@ -44,9 +44,9 @@ class QConsole : public QWidget
   friend class QConsoleView;
 
 public:
-  QConsole (QWidget* parent = 0);
-  QConsole (const QString& cmd, QWidget* parent = 0);
-  ~QConsole (void);
+  QTerminal (QWidget* parent = 0);
+  QTerminal (const QString& cmd, QWidget* parent = 0);
+  ~QTerminal (void);
 
   void sendText (const QString& s);
 

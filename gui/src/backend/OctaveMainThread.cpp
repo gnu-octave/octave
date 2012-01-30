@@ -25,6 +25,7 @@ OctaveMainThread::OctaveMainThread (QObject * parent):QThread (parent)
 void
 OctaveMainThread::run ()
 {
+  setlocale(LC_ALL, "en_US.UTF-8");
   int argc = 1;
   const char *argv[] = { "OctaveGUI" };
   emit ready();

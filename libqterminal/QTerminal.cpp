@@ -137,6 +137,13 @@ void QTerminal::focusInEvent(QFocusEvent *focusEvent)
     m_sessionView->update();
 }
 
+void QTerminal::showEvent(QShowEvent *)
+{
+    m_sessionView->updateImage();
+    m_sessionView->repaint();
+    m_sessionView->update();
+}
+
 void QTerminal::resizeEvent(QResizeEvent*)
 {
     m_sessionView->resize(this->size());

@@ -49,6 +49,7 @@ public slots:
         
 protected:
     void focusInEvent(QFocusEvent *focusEvent);
+    void showEvent(QShowEvent *);
     virtual void resizeEvent(QResizeEvent *);
     
 protected slots:

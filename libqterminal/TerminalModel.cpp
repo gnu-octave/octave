@@ -393,7 +393,7 @@ void TerminalModel::setAddToUtmp(bool set)
     _addToUtmp = set;
 }
 
-void TerminalModel::onReceiveBlock( const char* buf, int len )
+void TerminalModel::onReceiveBlock(const char* buf, int len )
 {
     _emulation->receiveData( buf, len );
     emit receivedData( QString::fromLatin1( buf, len ) );

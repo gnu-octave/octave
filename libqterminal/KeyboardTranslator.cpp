@@ -146,7 +146,6 @@ KeyboardTranslator* KeyboardTranslatorManager::loadTranslator(const QString& nam
 
 const KeyboardTranslator* KeyboardTranslatorManager::defaultTranslator()
 {
-    qDebug() << "Loading default translator from text";
     QBuffer textBuffer;
     textBuffer.setData(defaultTranslatorText,strlen(defaultTranslatorText));
 

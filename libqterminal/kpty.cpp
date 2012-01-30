@@ -365,6 +365,10 @@ bool KPty::open()
   fcntl(d->masterFd, F_SETFD, FD_CLOEXEC);
   fcntl(d->slaveFd, F_SETFD, FD_CLOEXEC);
 
+  struct ::termios t;
+  tcGetAttr(&t);
+  t.c_lflag &= ~ECHOCTL;
+  tcSetAttr(&t);
   return true;
 }
 

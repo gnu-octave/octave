@@ -315,7 +315,7 @@ signals:
 private slots:
   void done(int);
 
-  void onReceiveBlock( const char* buffer, int len );
+  void onReceiveBlock(const char* buffer, int len );
   void monitorTimerDone();
 
   void onViewSizeChange(int height, int width);

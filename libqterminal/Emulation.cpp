@@ -252,116 +252,16 @@ void Emulation::receiveData(const char* text, int length)
 
 	bufferedUpdate();
     	
-    QString unicodeText = _decoder->toUnicode(text,length);
+        QString unicodeText = _decoder->toUnicode(text,length);
 
 	//send characters to terminal emulator
-	for (int i=0;i<unicodeText.length();i++)
+        for (int i=0;i<unicodeText.length();i++)
 	{
-		receiveChar(unicodeText[i].unicode());
-	}
-
-	//look for z-modem indicator
-	//-- someone who understands more about z-modems that I do may be able to move
-	//this check into the above for loop?
-	for (int i=0;i<length;i++)
-	{
-		if (text[i] == '\030')
-    		{
-      			if ((length-i-1 > 3) && (strncmp(text+i+1, "B00", 3) == 0))
-      				emit zmodemDetected();
-    		}
+                receiveChar(unicodeText[i].unicode());
 	}
 }
-
-//OLDER VERSION
-//This version of onRcvBlock was commented out because
-//	a)  It decoded incoming characters one-by-one, which is slow in the current version of Qt (4.2 tech preview)
-//	b)  It messed up decoding of non-ASCII characters, with the result that (for example) chinese characters
-//	    were not printed properly.
-//
-//There is something about stopping the _decoder if "we get a control code halfway a multi-byte sequence" (see below)
-//which hasn't been ported into the newer function (above).  Hopefully someone who understands this better
-//can find an alternative way of handling the check.  
-
-
-/*void Emulation::onRcvBlock(const char *s, int len)
-{
-  emit notifySessionState(NOTIFYACTIVITY);
-  
-  bufferedUpdate();
-  for (int i = 0; i < len; i++)
-  {
-
-    QString result = _decoder->toUnicode(&s[i],1);
-    int reslen = result.length();
-
-    // If we get a control code halfway a multi-byte sequence
-    // we flush the _decoder and continue with the control code.
-    if ((s[i] < 32) && (s[i] > 0))
-    {
-       // Flush _decoder
-       while(!result.length())
-          result = _decoder->toUnicode(&s[i],1);
-       reslen = 1;
-       result.resize(reslen);
-       result[0] = QChar(s[i]);
-    }
-
-    for (int j = 0; j < reslen; j++)
-    {
-      if (result[j].characterategory() == QChar::Mark_NonSpacing)
-         _currentScreen->compose(result.mid(j,1));
-      else
-         onRcvChar(result[j].unicode());
-    }
-    if (s[i] == '\030')
-    {
-      if ((len-i-1 > 3) && (strncmp(s+i+1, "B00", 3) == 0))
-      	emit zmodemDetected();
-    }
-  }
-}*/
 
 // Selection --------------------------------------------------------------- --
-
-#if 0
-void Emulation::onSelectionBegin(const int x, const int y, const bool columnmode) {
-  if (!connected) return;
-  _currentScreen->setSelectionStart( x,y,columnmode);
-  showBulk();
-}
-
-void Emulation::onSelectionExtend(const int x, const int y) {
-  if (!connected) return;
-  _currentScreen->setSelectionEnd(x,y);
-  showBulk();
-}
-
-void Emulation::setSelection(const bool preserve_line_breaks) {
-  if (!connected) return;
-  QString t = _currentScreen->selectedText(preserve_line_breaks);
-  if (!t.isNull()) 
-  {
-    QListIterator< TerminalDisplay* > viewIter(_views);
-
-    while (viewIter.hasNext())    
-        viewIter.next()->setSelection(t);
-  }
-}
-
-void Emulation::testIsSelected(const int x, const int y, bool &selected)
-{
-  if (!connected) return;
-  selected=_currentScreen->isSelected(x,y);
-}
-
-void Emulation::clearSelection() {
-  if (!connected) return;
-  _currentScreen->clearSelection();
-  showBulk();
-}
-
-#endif 
 
 void Emulation::writeToStream( TerminalCharacterDecoder* _decoder , 
                                int startLine ,
@@ -524,7 +424,3 @@ ExtendedCharTable::~ExtendedCharTable()
 
 // global instance
 ExtendedCharTable ExtendedCharTable::instance;
-
-
-//#include "moc_Emulation.cpp"
-

@@ -17,32 +17,25 @@
     Boston, MA 02110-1301, USA.
 */
 						
+#include <QDebug>
 
 #include "QTerminal.h"
 #include "kpty.h"
 
+#include <termios.h>
+
 QTerminal::QTerminal(QWidget *parent)
     : QWidget(parent) {
     setMinimumSize(600, 400);
-    init();
-    
-    setFocus(Qt::OtherFocusReason);
-    m_sessionView->resize(this->size());
-    
-    this->setFocusProxy(m_sessionView);
+    initialize();
 }
 
-void QTerminal::init()
+void QTerminal::initialize()
 {
-    KPty *kpty = new KPty();
-    kpty->open();
-    int fds = kpty->slaveFd();
+    m_kpty = new KPty();
+    m_kpty->open();
 
-    dup2 (fds, 0);
-    dup2 (fds, 1);
-    dup2 (fds, 2);
-
-    m_sessionModel = new TerminalModel(kpty);
+    m_sessionModel = new TerminalModel(m_kpty);
 
     m_sessionModel->setAutoClose(true);
     m_sessionModel->setCodec(QTextCodec::codecForName("UTF-8"));
@@ -69,6 +62,32 @@ void QTerminal::init()
 
     connect(m_sessionModel, SIGNAL(finished()), this, SLOT(sessionFinished()));
     setFocusProxy(m_sessionView);
+
+    setFocus(Qt::OtherFocusReason);
+    m_sessionView->resize(this->size());
+
+    connectToPty();
+}
+
+void QTerminal::connectToPty()
+{
+    int fds = m_kpty->slaveFd();
+
+    dup2 (fds, STDIN_FILENO);
+    dup2 (fds, STDOUT_FILENO);
+    dup2 (fds, STDERR_FILENO);
+
+    if(!isatty(STDIN_FILENO)) {
+        qDebug("Error: stdin is not a tty.");
+    }
+
+    if(!isatty(STDOUT_FILENO)) {
+        qDebug("Error: stdout is not a tty.");
+    }
+
+    if(!isatty(STDERR_FILENO)) {
+        qDebug("Error: stderr is not a tty.");
+    }
 }
 
 QTerminal::~QTerminal()

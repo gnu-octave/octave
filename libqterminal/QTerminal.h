@@ -22,6 +22,7 @@
 #define Q_TERMINAL
 
 #include <QtGui>
+#include "kpty.h"
 #include "TerminalModel.h"
 #include "TerminalView.h"
 
@@ -54,9 +55,12 @@ protected slots:
     void sessionFinished();        
     
 private:
-    void init();
+    void initialize();
+    void connectToPty();
+
     TerminalView *m_sessionView;
     TerminalModel *m_sessionModel;
+    KPty *m_kpty;
 };
 
 #endif // Q_TERMINAL

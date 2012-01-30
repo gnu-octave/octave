@@ -3,7 +3,7 @@ VERSION		= 0.1.0
 DESTDIR 	= .
 TARGET		= qterminal
 
-CONFIG		+= staticlib
+CONFIG		+= qt staticlib
 
 QT += core gui
 
@@ -58,5 +58,5 @@ SOURCES  = win32/QTerminalColors.cpp \
 		   win32/QWinTerminalImpl.cpp
 }
 
-HEADERS  = QTerminal.h \
+HEADERS  += QTerminal.h \
 		   QTerminal

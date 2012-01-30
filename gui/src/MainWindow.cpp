@@ -27,7 +27,7 @@
 #include "ImageViewerMdiSubWindow.h"
 #include "SettingsDialog.h"
 
-#define VERSION_STRING "Octave GUI (0.8.5)"
+#define VERSION_STRING "Octave GUI (0.8.7)"
 
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {

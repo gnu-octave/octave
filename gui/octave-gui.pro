@@ -41,7 +41,7 @@ mac {
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += src src/terminal src/backend qterminal/libqterminal qirc/libqirc \
+INCLUDEPATH         += src src/backend qterminal/libqterminal qirc/libqirc \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -95,13 +95,6 @@ unix {
 SOURCES +=
 }
 
-win32 {
-SOURCES += \
-    src/WinTerminalView.cpp \
-    src/terminal/win32/QConsole.cpp \
-    src/terminal/win32/QConsoleColors.cpp
-}
-
 HEADERS += \
     src/lexer/lexeroctavegui.h \
     src/MainWindow.h \
@@ -122,14 +115,6 @@ HEADERS += \
 
 unix {
 HEADERS +=
-}
-
-win32 {
-HEADERS += \
-    src/WinTerminalView.h \
-    src/terminal/win32/QConsole.h \
-    src/terminal/win32/QConsoleColors.h
-INCLUDEPATH += src/terminal/win32
 }
 
 FORMS += \

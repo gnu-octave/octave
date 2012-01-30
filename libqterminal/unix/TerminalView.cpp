@@ -832,6 +832,7 @@ void TerminalView::updateImage()
 {
   if ( !_screenWindow )
       return;
+  updateLineProperties();
 
   // optimization - scroll the existing image where possible and 
   // avoid expensive text drawing for parts of the image that 
@@ -841,7 +842,7 @@ void TerminalView::updateImage()
   _screenWindow->resetScrollCount();
 
   Character* const newimg = _screenWindow->getImage();
-  int lines = _screenWindow->windowLines();
+  int lines = _screenWindow->windowLines() + 1;
   int columns = _screenWindow->windowColumns();
 
   setScroll( _screenWindow->currentLine() , _screenWindow->lineCount() );
@@ -1064,6 +1065,7 @@ void TerminalView::setBlinkingCursor(bool blink)
 
 void TerminalView::paintEvent( QPaintEvent* pe )
 {
+  updateImage();
 //qDebug("%s %d paintEvent", __FILE__, __LINE__);
   QPainter paint(this);
 //qDebug("%s %d paintEvent %d %d", __FILE__, __LINE__, paint.window().top(), paint.window().right());

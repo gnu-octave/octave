@@ -7,41 +7,58 @@ CONFIG		+= staticlib
 
 QT += core gui
 
+unix {
+
 DEFINES 	+= HAVE_POSIX_OPENPT	    
 #or DEFINES 	+= HAVE_GETPT
 
-HEADERS  = BlockArray.h \
-           Character.h \
-           CharacterColor.h \
-           Emulation.h \
-           ExtendedDefaultTranslator.h \
-           Filter.h \
-           History.h \
-           KeyboardTranslator.h \
-           konsole_wcwidth.h \
-           kpty.h \
-           kpty_p.h \
-           LineFont.h \
-           QTerminal.h \
-           Screen.h \
-           ScreenWindow.h \
-           TerminalCharacterDecoder.h \
-           Vt102Emulation.h \
-    SelfListener.h \
-    TerminalModel.h \
-    TerminalView.h
-SOURCES  = BlockArray.cpp \
-           Emulation.cpp \
-           Filter.cpp \
-           History.cpp \
-           KeyboardTranslator.cpp \
-           konsole_wcwidth.cpp \
-           kpty.cpp \
-           QTerminal.cpp \
-           Screen.cpp \
-           ScreenWindow.cpp \
-           TerminalCharacterDecoder.cpp \
-           Vt102Emulation.cpp \
-    SelfListener.cpp \
-    TerminalModel.cpp \
-    TerminalView.cpp
+INCLUDE_PATH += unix
+HEADERS  = unix/BlockArray.h \
+           unix/Character.h \
+           unix/CharacterColor.h \
+           unix/Emulation.h \
+           unix/ExtendedDefaultTranslator.h \
+           unix/Filter.h \
+           unix/History.h \
+           unix/KeyboardTranslator.h \
+           unix/konsole_wcwidth.h \
+           unix/kpty.h \
+           unix/kpty_p.h \
+           unix/LineFont.h \
+           unix/QUnixTerminalImpl.h \
+           unix/Screen.h \
+           unix/ScreenWindow.h \
+           unix/TerminalCharacterDecoder.h \
+           unix/Vt102Emulation.h \
+    	   unix/SelfListener.h \
+           unix/TerminalModel.h \
+           unix/TerminalView.h
+
+SOURCES  = unix/BlockArray.cpp \
+           unix/Emulation.cpp \
+           unix/Filter.cpp \
+           unix/History.cpp \
+           unix/KeyboardTranslator.cpp \
+           unix/konsole_wcwidth.cpp \
+           unix/kpty.cpp \
+           unix/QUnixTerminalImpl.cpp \
+           unix/Screen.cpp \
+           unix/ScreenWindow.cpp \
+           unix/TerminalCharacterDecoder.cpp \
+           unix/Vt102Emulation.cpp \
+    	   unix/SelfListener.cpp \
+           unix/TerminalModel.cpp \
+           unix/TerminalView.cpp
+}
+
+win32 {
+INCLUDE_PATH += win32
+HEADERS  = win32/QTerminalColors.h \
+		   win32/QWinTerminalImpl.h
+
+SOURCES  = win32/QTerminalColors.cpp \
+		   win32/QWinTerminalImpl.cpp
+}
+
+HEADERS  = QTerminal.h \
+		   QTerminal

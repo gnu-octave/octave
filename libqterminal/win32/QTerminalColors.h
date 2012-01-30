@@ -1,16 +1,15 @@
 /*
 
-Copyright (C) 2012 Michael Goffioul.
-Copyright (C) 2012 Jacob Dawid.
+Copyright (C) 2011 Michael Goffioul.
 
-This file is part of QTerminal.
+This file is part of QConsole.
 
 Foobar is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-QTerminal is distributed in the hope that it will be useful,
+QConsole is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
@@ -20,13 +19,20 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#ifndef QTERMINAL_H
-#define QTERMINAL_H
+#ifndef __QConsoleColors_h__
+#define __QConsoleColors_h__ 1
 
-#ifdef Q_OS_UNIX
-	#include "unix/QUnixTerminalImpl.h"
-#else
-	#include "win32/QWinTerminalImpl.h"
-#endif
+#include <QColor>
+#include <QMap>
 
-#endif // QTERMINAL_H
+//////////////////////////////////////////////////////////////////////////////
+
+class QConsoleColors : public QMap<int, QColor>
+{
+public:
+  QConsoleColors (void);
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+#endif // __QConsoleColors_h__

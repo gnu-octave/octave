@@ -125,7 +125,7 @@ MainWindow::handleSaveWorkspaceRequest ()
   QString selectedFile =
     QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
                                   ResourceManager::instance ()->homePath ());
-  //m_terminalView->sendText (QString ("save \'%1\'\n").arg (selectedFile));
+  m_terminalView->sendText (QString ("save \'%1\'\n").arg (selectedFile));
   m_terminalView->setFocus ();
 }
 
@@ -135,21 +135,21 @@ MainWindow::handleLoadWorkspaceRequest ()
   QString selectedFile =
     QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
                                   ResourceManager::instance ()->homePath ());
-  //m_terminalView->sendText (QString ("load \'%1\'\n").arg (selectedFile));
+  m_terminalView->sendText (QString ("load \'%1\'\n").arg (selectedFile));
   m_terminalView->setFocus ();
 }
 
 void
 MainWindow::handleClearWorkspaceRequest ()
 {
-  //m_terminalView->sendText ("clear\n");
+  m_terminalView->sendText ("clear\n");
   m_terminalView->setFocus ();
 }
 
 void
 MainWindow::handleCommandDoubleClicked (QString command)
 {
-  //m_terminalView->sendText (command);
+  m_terminalView->sendText(command);
   m_terminalView->setFocus ();
 }
 

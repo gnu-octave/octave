@@ -686,28 +686,28 @@ void QConsolePrivate::sendConsoleText (const QString& s)
 
 //////////////////////////////////////////////////////////////////////////////
 
-QUnixTerminalImpl::QUnixTerminalImpl (QWidget* parent)
+QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
     : d (new QConsolePrivate (this))
 {
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-QUnixTerminalImpl::QUnixTerminalImpl (const QString& cmd, QWidget* parent)
+QWinTerminalImpl::QWinTerminalImpl (const QString& cmd, QWidget* parent)
     : d (new QConsolePrivate (this, cmd))
 {
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-QUnixTerminalImpl::~QUnixTerminalImpl (void)
+QWinTerminalImpl::~QWinTerminalImpl (void)
 {
   delete d;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::viewResizeEvent (QConsoleView*, QResizeEvent*)
+void QWinTerminalImpl::viewResizeEvent (QConsoleView*, QResizeEvent*)
 {
   d->updateConsoleSize (true);
   d->grabConsoleBuffer ();
@@ -715,7 +715,7 @@ void QUnixTerminalImpl::viewResizeEvent (QConsoleView*, QResizeEvent*)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
+void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
 {
   QPainter p (w);
   int cw = d->m_charSize.width (), ch = d->m_charSize.height ();
@@ -805,7 +805,7 @@ void QUnixTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::wheelEvent (QWheelEvent* event)
+void QWinTerminalImpl::wheelEvent (QWheelEvent* event)
 {
   if (! d->m_inWheelEvent)
     {
@@ -818,7 +818,7 @@ void QUnixTerminalImpl::wheelEvent (QWheelEvent* event)
 
 //////////////////////////////////////////////////////////////////////////////
 
-bool QUnixTerminalImpl::winEvent (MSG* msg, long* result)
+bool QWinTerminalImpl::winEvent (MSG* msg, long* result)
 {
   switch (msg->message)
     {
@@ -839,35 +839,35 @@ bool QUnixTerminalImpl::winEvent (MSG* msg, long* result)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::scrollValueChanged (int value)
+void QWinTerminalImpl::scrollValueChanged (int value)
 {
   d->setScrollValue (value);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::monitorConsole (void)
+void QWinTerminalImpl::monitorConsole (void)
 {
   d->monitorConsole ();
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::focusInEvent (QFocusEvent* event)
+void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
 {
   QWidget::focusInEvent (event);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::start (void)
+void QWinTerminalImpl::start (void)
 {
   d->startCommand ();
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QUnixTerminalImpl::sendText (const QString& s)
+void QWinTerminalImpl::sendText (const QString& s)
 {
   d->sendConsoleText (s);
 }

@@ -20,9 +20,6 @@ TEMPLATE            = app                           # Build as application
 TARGET              = octave-gui                    # Name of the target binary
 
 DESTDIR             = ../bin                           # Destination of the output
-UI_DIR              = ui-files                      # Folder for ui files
-MOC_DIR             = moc-files                     # Folder for moc files
-OBJECTS_DIR         = object-files                  # Folder for object files
 
 TRANSLATIONS        += languages/generic.ts \
                        languages/de-de.ts \

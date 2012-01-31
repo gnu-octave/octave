@@ -44,13 +44,13 @@ INCLUDEPATH         += src src/backend qterminal/libqterminal qirc/libqirc \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
-    INCFLAGS += -I/opt/local-native/include
+    INCFLAGS += -I/opt/local/include
 }
 
 QMAKE_LIBDIR        += $$system(octave-config -p OCTLIBDIR)
 
 mac {
-    LFLAGS += -L/opt/local-native/lib
+    LFLAGS += -L/opt/local/lib
 }
 
 unix {

@@ -25,8 +25,24 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifdef __WIN32
     #include "win32/QWinTerminalImpl.h"
+    class QTerminal : public QWinTerminalImpl
+    {
+        Q_OBJECT
+    public:
+        QTerminal(QWidget *parent = 0)
+            : QWinTerminalImpl(parent) { }
+        ~QTerminal() { }
+    };
 #else
     #include "unix/QUnixTerminalImpl.h"
+    class QTerminal : public QUnixTerminalImpl
+    {
+        Q_OBJECT
+    public:
+        QTerminal(QWidget *parent = 0)
+            : QUnixTerminalImpl(parent) { }
+        ~QTerminal() { }
+    };
 #endif
 
 #endif // QTERMINAL_H

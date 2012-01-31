@@ -18,31 +18,25 @@
 */
 						    
 
-#ifndef Q_TERMINAL
-#define Q_TERMINAL
+#ifndef Q_UNIXTERMINALIMPL
+#define Q_UNIXTERMINALIMPL
 
 #include <QtGui>
 #include "unix/kpty.h"
 #include "unix/TerminalModel.h"
 #include "unix/TerminalView.h"
+#include "QTerminalInterface.h"
 
-class QTerminal : public QWidget
+class QUnixTerminalImpl : public QTerminalInterface
 {
     Q_OBJECT
 public:
-    QTerminal(QWidget *parent = 0);
-    ~QTerminal();
+    QUnixTerminalImpl(QWidget *parent = 0);
+    virtual ~QUnixTerminalImpl();
     
     void setTerminalFont(QFont &font); 
-    void setArgs(QStringList &args);
-    void setTextCodec(QTextCodec *codec);
     void setSize(int h, int v);
-    void setHistorySize(int lines);
-    void setReadOnly(bool);
     void sendText(QString text);
-            
-signals:
-    void finished();
 
 public slots:
     void copyClipboard();
@@ -51,10 +45,7 @@ public slots:
 protected:
     void focusInEvent(QFocusEvent *focusEvent);
     void showEvent(QShowEvent *);
-    virtual void resizeEvent(QResizeEvent *);
-    
-protected slots:
-    void sessionFinished();        
+    virtual void resizeEvent(QResizeEvent *);   
     
 private:
     void initialize();
@@ -65,4 +56,4 @@ private:
     KPty *m_kpty;
 };
 
-#endif // Q_TERMINAL
+#endif // Q_UNIXTERMINALIMPL

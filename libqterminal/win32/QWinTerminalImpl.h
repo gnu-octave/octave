@@ -23,7 +23,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define __QConsole_h__ 1
 
 #include <QWidget>
-
+#include "QTerminalInterface.h"
 class QFocusEvent;
 class QKeyEvent;
 class QPaintEvent;
@@ -36,7 +36,7 @@ class QConsoleView;
 
 //////////////////////////////////////////////////////////////////////////////
 
-class QTerminal : public QWidget
+class QWinTerminalImpl : public QTerminalInterface
 {
   Q_OBJECT
   friend class QConsolePrivate;
@@ -44,9 +44,9 @@ class QTerminal : public QWidget
   friend class QConsoleView;
 
 public:
-  QTerminal (QWidget* parent = 0);
-  QTerminal (const QString& cmd, QWidget* parent = 0);
-  ~QTerminal (void);
+  QWinTerminalImpl (QWidget* parent = 0);
+  QWinTerminalImpl (const QString& cmd, QWidget* parent = 0);
+  ~QWinTerminalImpl (void);
 
   void sendText (const QString& s);
 

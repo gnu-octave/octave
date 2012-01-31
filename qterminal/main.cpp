@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
 
     mainWindow->setCentralWidget(terminal);
     mainWindow->resize(600, 400);
-    QObject::connect(terminal, SIGNAL(finished()), mainWindow, SLOT(close()));
 
     mainWindow->show();    
     return app.exec();

@@ -59,4 +59,5 @@ SOURCES  = win32/QTerminalColors.cpp \
 }
 
 HEADERS  += QTerminal.h \
-		   QTerminal
+		   QTerminal \
+    QTerminalInterface.h

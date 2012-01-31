@@ -24,13 +24,13 @@
 
 #include <termios.h>
 
-QTerminal::QTerminal(QWidget *parent)
-    : QWidget(parent) {
+QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
+    : QTerminalInterface(parent) {
     setMinimumSize(600, 400);
     initialize();
 }
 
-void QTerminal::initialize()
+void QUnixTerminalImpl::initialize()
 {
     m_kpty = new KPty();
     m_kpty->open();
@@ -60,7 +60,6 @@ void QTerminal::initialize()
     m_sessionModel->addView(m_sessionView);
     m_sessionView->setScrollBarPosition(TerminalView::ScrollBarRight);
 
-    connect(m_sessionModel, SIGNAL(finished()), this, SLOT(sessionFinished()));
     setFocusProxy(m_sessionView);
 
     setFocus(Qt::OtherFocusReason);
@@ -69,7 +68,7 @@ void QTerminal::initialize()
     connectToPty();
 }
 
-void QTerminal::connectToPty()
+void QUnixTerminalImpl::connectToPty()
 {
     int fds = m_kpty->slaveFd();
 
@@ -90,51 +89,31 @@ void QTerminal::connectToPty()
     }
 }
 
-QTerminal::~QTerminal()
+QUnixTerminalImpl::~QUnixTerminalImpl()
 {
     emit destroyed();
 }
 
-void QTerminal::setTerminalFont(QFont &font)
+void QUnixTerminalImpl::setTerminalFont(QFont &font)
 {
     if(!m_sessionView)
 	return;
     m_sessionView->setVTFont(font);
 }
 
-void QTerminal::setTextCodec(QTextCodec *codec)
-{
-    if(!m_sessionModel)
-	return;
-    m_sessionModel->setCodec(codec);
-}
-
-void QTerminal::setSize(int h, int v)
+void QUnixTerminalImpl::setSize(int h, int v)
 {
     if(!m_sessionView)
 	return;
     m_sessionView->setSize(h, v);
 }
 
-void QTerminal::setHistorySize(int lines)
-{
-    if(lines < 0)
-        m_sessionModel->setHistoryType(HistoryTypeFile());
-    else
-        m_sessionModel->setHistoryType(HistoryTypeBuffer(lines));
-}
-
-void QTerminal::setReadOnly(bool readonly)
-{
-    m_sessionView->setReadOnly(readonly);
-}
-
-void QTerminal::sendText(QString text)
+void QUnixTerminalImpl::sendText(QString text)
 {
     m_sessionModel->sendText(text);
 }
 
-void QTerminal::focusInEvent(QFocusEvent *focusEvent)
+void QUnixTerminalImpl::focusInEvent(QFocusEvent *focusEvent)
 {
     Q_UNUSED(focusEvent);
     m_sessionView->updateImage();
@@ -142,14 +121,14 @@ void QTerminal::focusInEvent(QFocusEvent *focusEvent)
     m_sessionView->update();
 }
 
-void QTerminal::showEvent(QShowEvent *)
+void QUnixTerminalImpl::showEvent(QShowEvent *)
 {
     m_sessionView->updateImage();
     m_sessionView->repaint();
     m_sessionView->update();
 }
 
-void QTerminal::resizeEvent(QResizeEvent*)
+void QUnixTerminalImpl::resizeEvent(QResizeEvent*)
 {
     m_sessionView->resize(this->size());
     m_sessionView->updateImage();
@@ -157,17 +136,12 @@ void QTerminal::resizeEvent(QResizeEvent*)
     m_sessionView->update();
 }
 
-void QTerminal::sessionFinished()
-{
-    emit finished();
-}
-
-void QTerminal::copyClipboard()
+void QUnixTerminalImpl::copyClipboard()
 {
     m_sessionView->copyClipboard();
 }
 
-void QTerminal::pasteClipboard()
+void QUnixTerminalImpl::pasteClipboard()
 {
     m_sessionView->pasteClipboard();
 }

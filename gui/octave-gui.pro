@@ -39,6 +39,11 @@ mac {
     CONFIG -= app_bundle
 }
 
+system(qirc/qmake)
+system(qirc/make)
+system(qterminal/qmake)
+system(qterminal/make)
+
 # Includepaths and libraries to link against:
 INCLUDEPATH         += src src/backend qterminal/libqterminal qirc/libqirc \
                        $$system(mkoctfile -p INCFLAGS)

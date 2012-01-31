@@ -17,7 +17,5 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 
-./get-qterminal.sh
-./get-qirc.sh
 qmake-qt4 octave-gui.pro
 make

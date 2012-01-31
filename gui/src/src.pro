@@ -62,7 +62,7 @@ win32-g++ {
 win32-msvc* {
     DEFINES += QSCINTILLA_DLL
     #CONFIG += console
-    include(../msvc-debug.pri)
+    include(msvc-debug.pri)
 }
 
 QMAKE_LFLAGS        += $$LFLAGS $$system(mkoctfile -p RLD_FLAG)

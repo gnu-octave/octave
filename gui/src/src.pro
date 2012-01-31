@@ -19,7 +19,7 @@ QT                  += core gui webkit network	    # Qt modules
 TEMPLATE            = app                           # Build as application
 TARGET              = octave-gui                    # Name of the target binary
 
-DESTDIR             = bin                           # Destination of the output
+DESTDIR             = ../bin                           # Destination of the output
 UI_DIR              = ui-files                      # Folder for ui files
 MOC_DIR             = moc-files                     # Folder for moc files
 OBJECTS_DIR         = object-files                  # Folder for object files
@@ -31,7 +31,8 @@ TRANSLATIONS        += languages/generic.ts \
                        languages/ru-ru.ts \
                        languages/uk-ua.ts           # Available translations
 LIBS                += -lqscintilla2  \
-                       -Lqirc/libqirc -lqirc \
+                       -L../qirc/libqirc -lqirc \
+					   -L../qterminal/libqterminal -lqterminal \
                         $$system(mkoctfile -p LIBS) \
                         $$system(mkoctfile -p OCTAVE_LIBS)
 
@@ -39,13 +40,8 @@ mac {
     CONFIG -= app_bundle
 }
 
-system(qirc/qmake)
-system(qirc/make)
-system(qterminal/qmake)
-system(qterminal/make)
-
 # Includepaths and libraries to link against:
-INCLUDEPATH         += src src/backend qterminal/libqterminal qirc/libqirc \
+INCLUDEPATH         += . backend ../qterminal/libqterminal ../qirc/libqirc \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -59,7 +55,7 @@ mac {
 }
 
 unix {
-    LIBS +=  -lutil -Lqterminal/libqterminal -lqterminal
+    LIBS += -lutil
 }
 
 win32-g++ {
@@ -69,7 +65,7 @@ win32-g++ {
 win32-msvc* {
     DEFINES += QSCINTILLA_DLL
     #CONFIG += console
-    include(msvc-debug.pri)
+    include(../msvc-debug.pri)
 }
 
 QMAKE_LFLAGS        += $$LFLAGS $$system(mkoctfile -p RLD_FLAG)
@@ -77,48 +73,40 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 
 # Files associated with the project:
 SOURCES +=\
-    src/lexer/lexeroctavegui.cpp \
-    src/MainWindow.cpp \
-    src/WorkspaceView.cpp \
-    src/HistoryDockWidget.cpp \
-    src/FilesDockWidget.cpp \
-    src/FileEditorMdiSubWindow.cpp \
-    src/BrowserWidget.cpp \
-    src/SettingsDialog.cpp \
-    src/OctaveGUI.cpp \
-    src/ResourceManager.cpp \
-    src/CommandLineParser.cpp \
-    src/backend/OctaveCallbackThread.cpp \
-    src/backend/OctaveLink.cpp \
-    src/backend/OctaveMainThread.cpp \
-    src/backend/ReadlineAdapter.cpp \
-    src/WelcomeWizard.cpp
-
-unix {
-SOURCES +=
-}
+    lexer/lexeroctavegui.cpp \
+    MainWindow.cpp \
+    WorkspaceView.cpp \
+    HistoryDockWidget.cpp \
+    FilesDockWidget.cpp \
+    FileEditorMdiSubWindow.cpp \
+    BrowserWidget.cpp \
+    SettingsDialog.cpp \
+    OctaveGUI.cpp \
+    ResourceManager.cpp \
+    CommandLineParser.cpp \
+    backend/OctaveCallbackThread.cpp \
+    backend/OctaveLink.cpp \
+    backend/OctaveMainThread.cpp \
+    backend/ReadlineAdapter.cpp \
+    WelcomeWizard.cpp
 
 HEADERS += \
-    src/lexer/lexeroctavegui.h \
-    src/MainWindow.h \
-    src/WorkspaceView.h \
-    src/HistoryDockWidget.h \
-    src/FilesDockWidget.h \
-    src/FileEditorMdiSubWindow.h \
-    src/BrowserWidget.h \
-    src/SettingsDialog.h \
-    src/ResourceManager.h \
-    src/CommandLineParser.h \
-    src/backend/OctaveCallbackThread.h \
-    src/backend/OctaveLink.h \
-    src/backend/OctaveMainThread.h \
-    src/backend/ReadlineAdapter.h \
-    src/WelcomeWizard.h
-
-unix {
-HEADERS +=
-}
+    lexer/lexeroctavegui.h \
+    MainWindow.h \
+    WorkspaceView.h \
+    HistoryDockWidget.h \
+    FilesDockWidget.h \
+    FileEditorMdiSubWindow.h \
+    BrowserWidget.h \
+    SettingsDialog.h \
+    ResourceManager.h \
+    CommandLineParser.h \
+    backend/OctaveCallbackThread.h \
+    backend/OctaveLink.h \
+    backend/OctaveMainThread.h \
+    backend/ReadlineAdapter.h \
+    WelcomeWizard.h
 
 FORMS += \
-    src/SettingsDialog.ui \
-    src/WelcomeWizard.ui
+    SettingsDialog.ui \
+    WelcomeWizard.ui

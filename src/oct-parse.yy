@@ -1395,11 +1395,13 @@ fcn_name        : identifier
                   }
                 | GET '.' identifier
                   {
+                    lexer_flags.parsed_function_name.top () = true;
                     lexer_flags.maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
                 | SET '.' identifier
                   {
+                    lexer_flags.parsed_function_name.top () = true;
                     lexer_flags.maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
@@ -3515,7 +3517,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
               reading_classdef_file = true;
               reading_fcn_file = false;
-              reading_script_file = false;
+              // FIXME -- Should classdef files be handled as
+              // scripts or separately?  Currently, without setting up
+              // for reading script files, parsing classdef files
+              // fails.
+              reading_script_file = true;
             }
           else
             {

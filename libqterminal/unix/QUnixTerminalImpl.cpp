@@ -5,18 +5,18 @@
     modify it under the terms of the GNU Library General Public
     License as published by the Free Software Foundation; either
     version 2 of the License, or (at your option) any later version.
-		
+
     This library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
     Library General Public License for more details.
-				
+
     You should have received a copy of the GNU Library General Public License
     along with this library; see the file COPYING.LIB.  If not, write to
     the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 */
-						
+
 #include <QDebug>
 
 #include "unix/QUnixTerminalImpl.h"
@@ -32,39 +32,38 @@ QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
 
 void QUnixTerminalImpl::initialize()
 {
+    m_terminalView = new TerminalView(this);
+    m_terminalView->setBellMode(TerminalView::NotifyBell);
+    m_terminalView->setTerminalSizeHint(true);
+    m_terminalView->setTripleClickMode(TerminalView::SelectWholeLine);
+    m_terminalView->setTerminalSizeStartup(true);
+    m_terminalView->setSize(80, 40);
+    m_terminalView->setScrollBarPosition(TerminalView::ScrollBarRight);
+
+#ifdef Q_OS_MAC
+    QFont font = QFont("Monaco");
+    font.setStyleHint(QFont::TypeWriter);
+    font.setPointSize(11);
+#else
+    QFont font = QFont("Monospace");
+    font.setStyleHint(QFont::TypeWriter);
+    font.setPointSize(10);
+#endif
+    setTerminalFont(font);
+    setFocusProxy(m_terminalView);
+    setFocus(Qt::OtherFocusReason);
+
     m_kpty = new KPty();
     m_kpty->open();
 
-    m_sessionModel = new TerminalModel(m_kpty);
-
-    m_sessionModel->setAutoClose(true);
-    m_sessionModel->setCodec(QTextCodec::codecForName("UTF-8"));
-    m_sessionModel->setHistoryType(HistoryTypeBuffer(1000));
-    m_sessionModel->setDarkBackground(true);
-    m_sessionModel->setKeyBindings("");
-
-    m_sessionView = new TerminalView(this);
-    m_sessionView->setBellMode(TerminalView::NotifyBell);
-    m_sessionView->setTerminalSizeHint(true);
-    m_sessionView->setTripleClickMode(TerminalView::SelectWholeLine);
-    m_sessionView->setTerminalSizeStartup(true);
-    m_sessionView->setSize(80, 40);
-    
-    QFont font = QApplication::font(); 
-    font.setFamily("Monospace");
-    font.setPointSize(10);
-    font.setStyleHint(QFont::TypeWriter);
-    setTerminalFont(font);  
-
-    m_sessionModel->run();
-    m_sessionModel->addView(m_sessionView);
-    m_sessionView->setScrollBarPosition(TerminalView::ScrollBarRight);
-
-    setFocusProxy(m_sessionView);
-
-    setFocus(Qt::OtherFocusReason);
-    m_sessionView->resize(this->size());
-
+    m_terminalModel = new TerminalModel(m_kpty);
+    m_terminalModel->setAutoClose(true);
+    m_terminalModel->setCodec(QTextCodec::codecForName("UTF-8"));
+    m_terminalModel->setHistoryType(HistoryTypeBuffer(1000));
+    m_terminalModel->setDarkBackground(true);
+    m_terminalModel->setKeyBindings("");
+    m_terminalModel->run();
+    m_terminalModel->addView(m_terminalView);
     connectToPty();
 }
 
@@ -96,53 +95,53 @@ QUnixTerminalImpl::~QUnixTerminalImpl()
 
 void QUnixTerminalImpl::setTerminalFont(QFont &font)
 {
-    if(!m_sessionView)
-	return;
-    m_sessionView->setVTFont(font);
+    if(!m_terminalView)
+        return;
+    m_terminalView->setVTFont(font);
 }
 
 void QUnixTerminalImpl::setSize(int h, int v)
 {
-    if(!m_sessionView)
-	return;
-    m_sessionView->setSize(h, v);
+    if(!m_terminalView)
+        return;
+    m_terminalView->setSize(h, v);
 }
 
 void QUnixTerminalImpl::sendText(QString text)
 {
-    m_sessionModel->sendText(text);
+    m_terminalModel->sendText(text);
 }
 
 void QUnixTerminalImpl::focusInEvent(QFocusEvent *focusEvent)
 {
     Q_UNUSED(focusEvent);
-    m_sessionView->updateImage();
-    m_sessionView->repaint();
-    m_sessionView->update();
+    m_terminalView->updateImage();
+    m_terminalView->repaint();
+    m_terminalView->update();
 }
 
 void QUnixTerminalImpl::showEvent(QShowEvent *)
 {
-    m_sessionView->updateImage();
-    m_sessionView->repaint();
-    m_sessionView->update();
+    m_terminalView->updateImage();
+    m_terminalView->repaint();
+    m_terminalView->update();
 }
 
 void QUnixTerminalImpl::resizeEvent(QResizeEvent*)
 {
-    m_sessionView->resize(this->size());
-    m_sessionView->updateImage();
-    m_sessionView->repaint();
-    m_sessionView->update();
+    m_terminalView->resize(this->size());
+    m_terminalView->updateImage();
+    m_terminalView->repaint();
+    m_terminalView->update();
 }
 
 void QUnixTerminalImpl::copyClipboard()
 {
-    m_sessionView->copyClipboard();
+    m_terminalView->copyClipboard();
 }
 
 void QUnixTerminalImpl::pasteClipboard()
 {
-    m_sessionView->pasteClipboard();
+    m_terminalView->pasteClipboard();
 }
 

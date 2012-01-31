@@ -51,8 +51,8 @@ private:
     void initialize();
     void connectToPty();
 
-    TerminalView *m_sessionView;
-    TerminalModel *m_sessionModel;
+    TerminalView *m_terminalView;
+    TerminalModel *m_terminalModel;
     KPty *m_kpty;
 };
 

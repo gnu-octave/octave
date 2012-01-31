@@ -132,16 +132,16 @@ tree_global_command::accept (tree_walker& tw)
 // Static.
 
 tree_command *
-tree_static_command::dup (symbol_table::scope_id scope,
+tree_persistent_command::dup (symbol_table::scope_id scope,
                           symbol_table::context_id context) const
 {
   return
-    new tree_static_command (init_list ? init_list->dup (scope, context) : 0,
-                             line (), column ());
+    new tree_persistent_command (init_list ? init_list->dup (scope, context) : 0,
+                                 line (), column ());
 }
 
 void
-tree_static_command::accept (tree_walker& tw)
+tree_persistent_command::accept (tree_walker& tw)
 {
-  tw.visit_static_command (*this);
+  tw.visit_persistent_command (*this);
 }

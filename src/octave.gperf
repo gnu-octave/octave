@@ -60,6 +60,7 @@ enum octave_kw_id
   methods_kw,
   otherwise_kw,
   parfor_kw,
+  persistent_kw,
   properties_kw,
   return_kw,
   set_kw,
@@ -106,11 +107,11 @@ if, IF, if_kw
 methods, METHODS, methods_kw
 otherwise, OTHERWISE, otherwise_kw
 parfor, PARFOR, parfor_kw
-persistent, STATIC, static_kw
+persistent, PERSISTENT, persistent_kw
 properties, PROPERTIES, properties_kw
 return, FUNC_RET, return_kw
 set, SET, set_kw
-static, STATIC, static_kw
+static, PERSISTENT, static_kw
 switch, SWITCH, switch_kw
 try, TRY, try_kw
 until, UNTIL, until_kw

@@ -215,7 +215,7 @@ tree_evaluator::visit_global_command (tree_global_command& cmd)
 }
 
 void
-tree_evaluator::visit_static_command (tree_static_command& cmd)
+tree_evaluator::visit_persistent_command (tree_persistent_command& cmd)
 {
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());

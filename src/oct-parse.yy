@@ -446,7 +446,7 @@ make_statement (T *arg)
 %token <tok_val> BREAK CONTINUE FUNC_RET
 %token <tok_val> UNWIND CLEANUP
 %token <tok_val> TRY CATCH
-%token <tok_val> GLOBAL STATIC
+%token <tok_val> GLOBAL PERSISTENT
 %token <tok_val> FCN_HANDLE
 %token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
 %token <tok_val> METAQUERY
@@ -997,9 +997,9 @@ declaration     : GLOBAL parsing_decl_list decl1
                     $$ = make_decl_command (GLOBAL, $1, $3);
                     lexer_flags.looking_at_decl_list = false;
                   }
-                | STATIC parsing_decl_list decl1
+                | PERSISTENT parsing_decl_list decl1
                   {
-                    $$ = make_decl_command (STATIC, $1, $3);
+                    $$ = make_decl_command (PERSISTENT, $1, $3);
                     lexer_flags.looking_at_decl_list = false;
                   }
                 ;
@@ -3091,9 +3091,9 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
       retval = new tree_global_command (lst, l, c);
       break;
 
-    case STATIC:
+    case PERSISTENT:
       if (current_function_depth > 0)
-        retval = new tree_static_command (lst, l, c);
+        retval = new tree_persistent_command (lst, l, c);
       else
         {
           if (reading_script_file)

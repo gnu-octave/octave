@@ -1497,10 +1497,26 @@ is_keyword_token (const std::string& s)
           lexer_flags.at_beginning_of_statement = true;
           break;
 
+        case static_kw:
+          if ((reading_fcn_file || reading_script_file
+               || reading_classdef_file)
+              && ! curr_fcn_file_full_name.empty ())
+            warning_with_id ("Octave:deprecated-keyword",
+                             "the `static' keyword is obsolete and will be removed from a future version of Octave; please use `persistent' instead; near line %d of file `%s'",
+                             input_line_number,
+                             curr_fcn_file_full_name.c_str ());
+          else
+            warning_with_id ("Octave:deprecated-keyword",
+                             "the `static' keyword is obsolete and will be removed from a future version of Octave; please use `persistent' instead; near line %d",
+                             input_line_number);
+          // fall through ...
+
+        case persistent_kw:
+          break;
+
         case case_kw:
         case elseif_kw:
         case global_kw:
-        case static_kw:
         case until_kw:
           break;
 
@@ -3694,7 +3710,7 @@ display_token (int tok)
     case TRY: std::cerr << "TRY\n"; break;
     case CATCH: std::cerr << "CATCH\n"; break;
     case GLOBAL: std::cerr << "GLOBAL\n"; break;
-    case STATIC: std::cerr << "STATIC\n"; break;
+    case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
     case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
     case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
     case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;

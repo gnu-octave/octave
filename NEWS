@@ -22,6 +22,13 @@ Summary of important user-visible changes for version 3.8:
     be removed from Octave 3.12 (or whatever version is the second major
     release after 3.8):
 
+      <none yet>
+
+    The following keywords have been deprecated in Octave 3.8 and will
+    be removed from Octave 3.12 (or whatever version is the second major
+    release after 3.8):
+
+      static
 
 
 Summary of important user-visible changes for version 3.6:

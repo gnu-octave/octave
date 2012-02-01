@@ -428,20 +428,20 @@ FileEditorMdiSubWindow::construct ()
   m_editor->setMarginType (3, QsciScintilla::SymbolMargin);
   m_editor->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
   // other features
-  if ( settings->value ("editor/highlightActualLine",true).toBool () )
+  if ( settings->value ("editor/highlightCurrentLine",true).toBool () )
     {
       m_editor->setCaretLineVisible(true);
-      m_editor->setCaretLineBackgroundColor(QColor(255,255,200));
+      m_editor->setCaretLineBackgroundColor(QColor(245,245,245));
     }
-  m_editor->setBraceMatching (QsciScintilla::SloppyBraceMatch);
+  m_editor->setBraceMatching (QsciScintilla::StrictBraceMatch);
   m_editor->setAutoIndent (true);
   m_editor->setIndentationWidth (2);
   m_editor->setIndentationsUseTabs (false);
   if ( settings->value ("editor/codeCompletion",true).toBool () )
     {
-      m_editor->autoCompleteFromAll();
-      m_editor->setAutoCompletionSource(QsciScintilla::AcsAPIs);
-      m_editor->setAutoCompletionThreshold (3);
+      m_editor->autoCompleteFromAll ();
+      m_editor->setAutoCompletionSource(QsciScintilla::AcsAll);
+      m_editor->setAutoCompletionThreshold (1);
     }
   m_editor->setUtf8 (true);
   m_longTitle = settings->value ("editor/longWindowTitle",true).toBool ();

@@ -34,7 +34,7 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor").toBool ());
   ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
-  ui->editor_highlightActualLine->setChecked (settings->value ("editor/highlightActualLine",true).toBool () );
+  ui->editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine",true).toBool () );
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
   ui->editor_fontName->setCurrentFont (QFont (settings->value ("editor/fontName","Courier").toString()) );
   ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());
@@ -59,6 +59,33 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->proxyPort->setText (settings->value ("proxyPort").toString ());
   ui->proxyUserName->setText (settings->value ("proxyUserName").toString ());
   ui->proxyPassword->setText (settings->value ("proxyPassword").toString ());
+
+  // Short cuts
+  QStringList headerLabels;
+  headerLabels << "Modifier" << "Key" << "Action";
+  ui->shortcutTableWidget->setColumnCount (3);
+  ui->shortcutTableWidget->setRowCount (10);
+  ui->shortcutTableWidget->horizontalHeader ()->setStretchLastSection (true);
+  ui->shortcutTableWidget->setHorizontalHeaderLabels (headerLabels);
+  ui->shortcutTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+  ui->shortcutTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+  /*
+  newAction->setShortcut(QKeySequence::New);
+  openAction->setShortcut(QKeySequence::Open);
+  saveAction->setShortcut(QKeySequence::Save);
+  saveAsAction->setShortcut(QKeySequence::SaveAs);
+  undoAction->setShortcut(QKeySequence::Undo);
+  redoAction->setShortcut(QKeySequence::Redo);
+  m_copyAction->setShortcut(QKeySequence::Copy);
+  m_cutAction->setShortcut(QKeySequence::Cut);
+  pasteAction->setShortcut(QKeySequence::Paste);
+  runAction->setShortcut(Qt::Key_F5);
+  nextBookmarkAction->setShortcut(Qt::Key_F2);
+  prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
+  toggleBookmarkAction->setShortcut(Qt::Key_F7);
+  commentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_R);
+  uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);*/
 }
 
 SettingsDialog::~SettingsDialog ()
@@ -72,7 +99,7 @@ SettingsDialog::~SettingsDialog ()
   settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());
-  settings->setValue ("editor/highlightActualLine", ui->editor_highlightActualLine->isChecked ());
+  settings->setValue ("editor/highlightCurrentLine", ui->editor_highlightCurrentLine->isChecked ());
   settings->setValue ("editor/codeCompletion", ui->editor_codeCompletion->isChecked ());
   settings->setValue ("editor/fontName", ui->editor_fontName->currentFont().family());
   settings->setValue ("editor/fontSize", ui->editor_fontSize->value());

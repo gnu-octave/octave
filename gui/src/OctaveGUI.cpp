@@ -43,7 +43,7 @@ main (int argc, char *argv[])
           settings->setValue ("useCustomFileEditor", false);
           settings->setValue ("customFileEditor", "emacs");
           settings->setValue ("editor/showLineNumbers", true);
-          settings->setValue ("editor/highlightActualLine", true);
+          settings->setValue ("editor/highlightCurrentLine", true);
           settings->setValue ("editor/codeCompletion", true);
           settings->setValue ("editor/fontName", "Monospace");
           settings->setValue ("editor/fontSize", 10);

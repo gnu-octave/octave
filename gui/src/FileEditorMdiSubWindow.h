@@ -41,7 +41,9 @@ enum MARKER
 
 class FileEditorMdiSubWindow:public QMdiSubWindow
 {
-Q_OBJECT public:
+Q_OBJECT
+
+public:
   FileEditorMdiSubWindow (QWidget * parent = 0);
   ~FileEditorMdiSubWindow ();
   void loadFile (QString fileName);

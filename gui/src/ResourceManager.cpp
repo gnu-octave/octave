@@ -49,7 +49,7 @@ ResourceManager::reloadSettings ()
 {
   QDesktopServices desktopServices;
   m_homePath = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  setSettings(m_homePath + "/.octave-gui");
+  setSettings(m_homePath + "/.config/octave-gui/settings");
 }
 
 void

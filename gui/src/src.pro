@@ -29,7 +29,7 @@ TRANSLATIONS        += languages/generic.ts \
                        languages/uk-ua.ts           # Available translations
 LIBS                += -lqscintilla2  \
                        -L../qirc/libqirc -lqirc \
-					   -L../qterminal/libqterminal -lqterminal \
+                                           -L../qterminal/libqterminal -lqterminal \
                         $$system(mkoctfile -p LIBS) \
                         $$system(mkoctfile -p OCTAVE_LIBS)
 
@@ -46,6 +46,9 @@ mac {
 }
 
 QMAKE_LIBDIR        += $$system(octave-config -p OCTLIBDIR)
+unix {
+    QMAKE_RPATHDIR += $$system(octave-config -p OCTLIBDIR)
+}
 
 mac {
     LFLAGS += -L/opt/local/lib

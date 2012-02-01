@@ -415,105 +415,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="chatTab">
-      <attribute name="title">
-       <string>Chat</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QCheckBox" name="connectOnStartup">
-           <property name="text">
-            <string>Connect to #octave on startup</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="showMessageOfTheDay">
-           <property name="text">
-            <string>Show message of the day</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="showTopic">
-           <property name="text">
-            <string>Show topic</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="autoIdentification">
-           <property name="text">
-            <string>Automatically identify on NickServ</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Warning: Your password will be stored in ~/.octavegui in human-readable format. Do not enter your password if you worry about security issues.</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Password:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="nickServPassword">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="echoMode">
-              <enum>QLineEdit::Password</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
   </layout>
@@ -521,34 +422,50 @@
  <resources/>
  <connections>
   <connection>
-   <sender>useCustomFileEditor</sender>
+   <sender>useProxyServer</sender>
    <signal>toggled(bool)</signal>
-   <receiver>customFileEditor</receiver>
+   <receiver>label_4</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>111</x>
-     <y>62</y>
+     <x>249</x>
+     <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>343</x>
-     <y>63</y>
+     <x>69</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>autoIdentification</sender>
+   <sender>useProxyServer</sender>
    <signal>toggled(bool)</signal>
-   <receiver>nickServPassword</receiver>
+   <receiver>label_3</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>261</x>
-     <y>139</y>
+     <x>249</x>
+     <y>59</y>
     </hint>
     <hint type="destinationlabel">
-     <x>384</x>
-     <y>229</y>
+     <x>59</x>
+     <y>91</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_5</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>44</x>
+     <y>152</y>
     </hint>
    </hints>
   </connection>
@@ -601,98 +518,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>useProxyServer</sender>
+   <sender>useCustomFileEditor</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_3</receiver>
+   <receiver>customFileEditor</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
+     <x>111</x>
+     <y>62</y>
     </hint>
     <hint type="destinationlabel">
-     <x>59</x>
-     <y>91</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_4</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>69</x>
-     <y>122</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_5</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>44</x>
-     <y>152</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>proxyUserName</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>364</x>
-     <y>184</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>proxyPassword</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>364</x>
-     <y>214</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>useProxyServer</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_6</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>249</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>68</x>
-     <y>182</y>
+     <x>343</x>
+     <y>63</y>
     </hint>
    </hints>
   </connection>
@@ -741,6 +578,54 @@
     <hint type="destinationlabel">
      <x>249</x>
      <y>112</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyUserName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>364</x>
+     <y>184</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>proxyPassword</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>364</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useProxyServer</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_6</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>68</x>
+     <y>182</y>
     </hint>
    </hints>
   </connection>

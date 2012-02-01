@@ -119,6 +119,23 @@ MainWindow::openWebPage (QString url)
 }
 
 void
+MainWindow::openChat ()
+{
+    if (!m_ircWidget)
+      {
+        m_ircWidget = new QIRCWidget ();
+        m_ircWidget->setWindowTitle ("Chat");
+        m_ircWidget->connectToServer ("irc.freenode.net", "Octave-GUI-User", "#octave");
+      }
+
+    if (!m_ircWidget->isVisible ())
+      {
+          m_ircWidget->setVisible (true);
+          m_ircWidget->raise ();
+      }
+}
+
+void
 MainWindow::handleSaveWorkspaceRequest ()
 {
   QString selectedFile =
@@ -150,23 +167,6 @@ MainWindow::handleCommandDoubleClicked (QString command)
 {
   m_terminalView->sendText(command);
   m_terminalView->setFocus ();
-}
-
-void
-MainWindow::handleUnreadMessages (bool yes)
-{
-  if (yes)
-    {
-      m_ircWidgetSubWindow
-        ->setWindowIcon
-          (ResourceManager::instance ()->icon (ResourceManager::ChatNewMessage));
-    }
-  else
-    {
-      m_ircWidgetSubWindow
-        ->setWindowIcon
-          (ResourceManager::instance ()->icon (ResourceManager::Chat));
-    }
 }
 
 void
@@ -270,6 +270,8 @@ MainWindow::construct ()
   m_closeApplication = false;   // flag for editor files when closed
   setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Octave));
 
+  m_ircWidget = 0;
+
   // Initialize MDI area.
   m_centralMdiArea = new QMdiArea (this);
   m_centralMdiArea->setObjectName ("CentralMdiArea");
@@ -312,26 +314,6 @@ MainWindow::construct ()
   m_terminalViewSubWindow->setStatusTip (tr ("Enter your commands into the Octave terminal."));
   m_terminalViewSubWindow->setMinimumSize (300, 300);
 
-  // Chat subwindow.
-  // Deactivated in the development process.
-  /*
-  m_ircWidget = new QIRCWidget (this);
-  m_ircWidgetSubWindow = new NonClosableMdiSubWindow (this);
-  m_ircWidgetSubWindow->setWidget(m_ircWidget);
-  m_centralMdiArea->addSubWindow (m_ircWidgetSubWindow, Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint);
-
-  m_ircWidgetSubWindow->setObjectName ("ChatWidgetSubWindow");
-  m_ircWidgetSubWindow->setWindowTitle (tr ("Chat"));
-  m_ircWidgetSubWindow
-      ->setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Chat));
-  m_ircWidgetSubWindow->setStatusTip(tr ("Instantly chat with other Octave users for help."));
-  m_ircWidgetSubWindow->setFocusProxy (m_ircWidget);
-  m_ircWidgetSubWindow->setMinimumSize (300, 300);
-  //connect (m_ircWidget, SIGNAL (unreadMessages (bool)), this, SLOT (handleUnreadMessages (bool)));
-
-  m_ircWidget->connectToServer("irc.freenode.net", "Octave-GUI-User", "#octave");
-  */
-
   m_lexer = NULL;  // initialise the empty lexer for the edtiors
 
   QMenu *controlMenu = menuBar ()->addMenu (tr ("Octave"));
@@ -362,6 +344,8 @@ MainWindow::construct ()
   QAction *clearWorkspaceAction = workspaceMenu->addAction (tr ("Clear"));
 
   QMenu *communityMenu = menuBar ()->addMenu (tr ("Community"));
+  QAction *openChatAction = communityMenu->addAction (tr ("Chat"));
+  communityMenu->addSeparator();
   QAction *reportBugAction = communityMenu->addAction (tr ("Report Bug"));
   QAction *agoraAction = communityMenu->addAction (tr ("Agora"));
   QAction *octaveForgeAction = communityMenu->addAction (tr ("Octave Forge"));
@@ -373,6 +357,7 @@ MainWindow::construct ()
   connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));
   connect (alignWindowsAction, SIGNAL (triggered ()), this, SLOT (alignMdiWindows ()));
   connect (openEditorAction, SIGNAL (triggered ()), this, SLOT (openEditor ()));
+  connect (openChatAction, SIGNAL (triggered ()), this, SLOT (openChat ()));
   connect (reportBugAction, SIGNAL (triggered ()), this, SLOT (openBugTrackerPage ()));
   connect (agoraAction, SIGNAL (triggered ()), this, SLOT (openAgoraPage ()));
   connect (octaveForgeAction, SIGNAL (triggered ()), this, SLOT (openOctaveForgePage ()));

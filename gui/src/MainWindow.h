@@ -87,11 +87,11 @@ public slots:
   void handleOpenFileRequest (QString fileName);
   void reportStatusMessage (QString statusMessage);
   void openWebPage (QString url);
+  void openChat ();
   void handleSaveWorkspaceRequest ();
   void handleLoadWorkspaceRequest ();
   void handleClearWorkspaceRequest ();
   void handleCommandDoubleClicked (QString command);
-  void handleUnreadMessages (bool yes);
   void alignMdiWindows ();
   void openEditor ();
   void openEditorFile (QString fileName);
@@ -119,7 +119,6 @@ private:
 
   NonClosableMdiSubWindow *m_terminalViewSubWindow;
   NonClosableMdiSubWindow *m_documentationWidgetSubWindow;
-  NonClosableMdiSubWindow *m_ircWidgetSubWindow;
 
   // Dock widgets.
   WorkspaceView *m_workspaceView;

@@ -251,8 +251,8 @@ FileEditorMdiSubWindow::runFile ()
 {
   if (m_editor->isModified ())
     saveFile(m_fileName);
-  //m_terminalView->sendText (QString ("run \'%1\'\n").arg (m_fileName));
-  //m_terminalView->widget ()->setFocus ();
+  m_terminalView->sendText (QString ("run \'%1\'\n").arg (m_fileName));
+  m_terminalView->setFocus ();
 }
 
 

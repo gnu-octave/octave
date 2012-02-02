@@ -27,9 +27,12 @@ TRANSLATIONS        += languages/generic.ts \
                        languages/es-es.ts \
                        languages/ru-ru.ts \
                        languages/uk-ua.ts           # Available translations
+
+win32-msvc*: include(msvc.pri)
+
 LIBS                += -lqscintilla2  \
-                       -L../qirc/libqirc -lqirc \
-                                           -L../qterminal/libqterminal -lqterminal \
+                       -L../qirc/libqirc/$$LIBDIR_SUFFIX -lqirc \
+                       -L../qterminal/libqterminal/$$LIBDIR_SUFFIX -lqterminal \
                         $$system(mkoctfile -p LIBS) \
                         $$system(mkoctfile -p OCTAVE_LIBS)
 
@@ -64,8 +67,7 @@ win32-g++ {
 
 win32-msvc* {
     DEFINES += QSCINTILLA_DLL
-    #CONFIG += console
-    include(msvc-debug.pri)
+    QMAKE_CXXFLAGS += -wd4244
 }
 
 QMAKE_LFLAGS        += $$LFLAGS $$system(mkoctfile -p RLD_FLAG)

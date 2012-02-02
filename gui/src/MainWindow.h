@@ -27,6 +27,7 @@
 #include <QQueue>
 #include <Qsci/qsciapis.h>
 #include <QMdiSubWindow>
+#include <QCloseEvent>
 #include "ResourceManager.h"
 #include "OctaveLink.h"
 #include "WorkspaceView.h"

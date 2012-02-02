@@ -27,7 +27,13 @@ along with Octave; see the file COPYING.  If not, see
 
 extern "C" {
 
-#if defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
+#if defined (HAVE_LIBQHULL_LIBQHULL_H)
+# include <libqhull/libqhull.h>
+# include <libqhull/qset.h>
+# include <libqhull/geom.h>
+# include <libqhull/poly.h>
+# include <libqhull/io.h>
+#elif defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
 # if defined (HAVE_QHULL_LIBQHULL_H)
 #  include <qhull/libqhull.h>
 # else

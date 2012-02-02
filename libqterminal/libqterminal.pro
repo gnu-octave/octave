@@ -60,6 +60,10 @@ SOURCES  = win32/QTerminalColors.cpp \
 		   win32/QWinTerminalImpl.cpp
 }
 
+win32-msvc* {
+	include(../msvc.pri)
+}
+
 HEADERS  += QTerminal.h \
 		   QTerminal \
     QTerminalInterface.h

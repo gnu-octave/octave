@@ -32,18 +32,13 @@ public:
     QTerminalInterface(QWidget *parent = 0) : QWidget(parent) { }
     virtual ~QTerminalInterface() { }
 
-    virtual void setTerminalFont(QFont &font) = 0;
+    virtual void setTerminalFont(const QFont& font) = 0;
     virtual void setSize(int h, int v) = 0;
-    virtual void sendText(QString text) = 0;
+    virtual void sendText(const QString& text) = 0;
 
 public slots:
     virtual void copyClipboard() = 0;
     virtual void pasteClipboard() = 0;
-
-protected:
-    virtual void focusInEvent(QFocusEvent *focusEvent) = 0;
-    virtual void showEvent(QShowEvent *) = 0;
-    virtual void resizeEvent(QResizeEvent *) = 0;
 };
 
 #endif // QTERMINALINTERFACE_H

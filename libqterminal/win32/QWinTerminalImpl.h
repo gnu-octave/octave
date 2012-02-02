@@ -48,7 +48,13 @@ public:
   QWinTerminalImpl (const QString& cmd, QWidget* parent = 0);
   ~QWinTerminalImpl (void);
 
+  void setTerminalFont (const QFont& font);
+  void setSize (int columns, int lines);
   void sendText (const QString& s);
+
+public slots:
+  void copyClipboard (void);
+  void pasteClipboard (void);
 
 signals:
   void terminated (void);

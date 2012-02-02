@@ -23,7 +23,9 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef QTERMINAL_H
 #define QTERMINAL_H
 
-#ifdef __WIN32
+#include <QtGlobal>
+
+#ifdef Q_OS_WIN32
     #include "win32/QWinTerminalImpl.h"
     class QTerminal : public QWinTerminalImpl
     {

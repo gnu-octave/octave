@@ -39,14 +39,18 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <windows.h>
 #include <cstring>
 
-#include "win32/QWinTerminalImpl.h"
-#include "win32/QTerminalColors.h"
+#include "QWinTerminalImpl.h"
+#include "QTerminalColors.h"
 
 // Uncomment to log activity to LOGFILENAME
 // #define DEBUG_QCONSOLE
 #define LOGFILENAME "QConsole.log"
 // Uncomment to create hidden console window
 #define HIDDEN_CONSOLE
+
+#ifdef _MSC_VER
+# pragma warning(disable : 4996)
+#endif
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +90,7 @@ class QConsolePrivate
   friend class QWinTerminalImpl;
 
 public:
-  QConsolePrivate (QUnixTerminalImpl* parent, const QString& cmd = QString ());
+  QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd = QString ());
   ~QConsolePrivate (void);
 
   void updateConsoleSize (bool sync = false);
@@ -135,7 +139,7 @@ private:
 
 //////////////////////////////////////////////////////////////////////////////
 
-QConsolePrivate::QConsolePrivate (QUnixTerminalImpl* parent, const QString& cmd)
+QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
     : q (parent), m_command (cmd), m_process (NULL), m_inWheelEvent (false)
 {
   log (NULL);
@@ -342,6 +346,8 @@ void QConsolePrivate::log (const char* fmt, ...)
       FILE* flog = fopen (LOGFILENAME, "w");
       fclose (flog);
     }
+#else
+  Q_UNUSED (fmt);
 #endif
 }
 
@@ -599,7 +605,12 @@ void QConsolePrivate::monitorConsole (void)
 
 void QConsolePrivate::startCommand (void)
 {
-  if (! m_command.isEmpty ())
+  QString cmd = m_command;
+
+  if (cmd.isEmpty ())
+    cmd = qgetenv ("COMSPEC").constData ();
+
+  if (! cmd.isEmpty ())
     {
       STARTUPINFO si;
       PROCESS_INFORMATION pi;
@@ -609,7 +620,7 @@ void QConsolePrivate::startCommand (void)
       ZeroMemory (&pi, sizeof (pi));
 
       if (CreateProcessW (NULL,
-                          (LPWSTR)m_command.unicode (),
+                          (LPWSTR)cmd.unicode (),
                           NULL,
                           NULL,
                           TRUE,
@@ -687,14 +698,14 @@ void QConsolePrivate::sendConsoleText (const QString& s)
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (QWidget* parent)
-    : d (new QConsolePrivate (this))
+    : QTerminalInterface (parent), d (new QConsolePrivate (this))
 {
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 QWinTerminalImpl::QWinTerminalImpl (const QString& cmd, QWidget* parent)
-    : d (new QConsolePrivate (this, cmd))
+    : QTerminalInterface (parent), d (new QConsolePrivate (this, cmd))
 {
 }
 
@@ -872,3 +883,29 @@ void QWinTerminalImpl::sendText (const QString& s)
   d->sendConsoleText (s);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::setTerminalFont (const QFont& f)
+{
+  Q_UNUSED (f);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::setSize (int columns, int lines)
+{
+  Q_UNUSED (columns);
+  Q_UNUSED (lines);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::copyClipboard (void)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void QWinTerminalImpl::pasteClipboard (void)
+{
+}

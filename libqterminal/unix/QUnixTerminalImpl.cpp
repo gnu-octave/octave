@@ -93,7 +93,7 @@ QUnixTerminalImpl::~QUnixTerminalImpl()
     emit destroyed();
 }
 
-void QUnixTerminalImpl::setTerminalFont(QFont &font)
+void QUnixTerminalImpl::setTerminalFont(const QFont &font)
 {
     if(!m_terminalView)
         return;
@@ -107,7 +107,7 @@ void QUnixTerminalImpl::setSize(int h, int v)
     m_terminalView->setSize(h, v);
 }
 
-void QUnixTerminalImpl::sendText(QString text)
+void QUnixTerminalImpl::sendText(const QString& text)
 {
     m_terminalModel->sendText(text);
 }

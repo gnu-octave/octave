@@ -34,9 +34,9 @@ public:
     QUnixTerminalImpl(QWidget *parent = 0);
     virtual ~QUnixTerminalImpl();
     
-    void setTerminalFont(QFont &font); 
+    void setTerminalFont(const QFont &font); 
     void setSize(int h, int v);
-    void sendText(QString text);
+    void sendText(const QString& text);
 
 public slots:
     void copyClipboard();

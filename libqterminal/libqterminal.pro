@@ -7,6 +7,8 @@ CONFIG		+= qt staticlib
 
 QT += core gui
 
+INCLUDEPATH	+= .
+
 unix {
 
 DEFINES 	+= HAVE_POSIX_OPENPT	    

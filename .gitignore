@@ -3,3 +3,6 @@
 *.o
 *.a
 Makefile*
+*.pdb
+debug/
+release/

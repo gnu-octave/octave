@@ -6511,10 +6511,17 @@ axes::properties::translate_view (double delta_x, double delta_y)
   double max_neg_y = -octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
-  xlims (0) += delta_x;
-  xlims (1) += delta_x;
-  ylims (0) += delta_y;
-  ylims (1) += delta_y;
+  if (! xscale_is ("log"))
+    {
+      xlims (0) += delta_x;
+      xlims (1) += delta_x;
+    }
+
+  if (! yscale_is ("log"))
+    {
+      ylims (0) += delta_y;
+      ylims (1) += delta_y;
+    }
 
   zoom (xlims, ylims, false);
 }

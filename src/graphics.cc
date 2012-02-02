@@ -5808,12 +5808,6 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
         }
       lims = tmp_lims;
     }
-  else
-    {
-      // adjust min and max tics if they are out of limits
-      i1 = static_cast<int> (std::ceil (lo / tick_sep));
-      i2 = static_cast<int> (gnulib::floor (hi / tick_sep));
-    }
 
   Matrix tmp_ticks (1, i2-i1+1);
   for (int i = 0; i <= i2-i1; i++)
@@ -6395,6 +6389,58 @@ double force_in_range (const double x, const double lower, const double upper)
     { return x; }
 }
 
+static Matrix
+do_zoom (double val, double factor, const Matrix& lims, bool is_logscale)
+{
+  Matrix new_lims = lims;
+
+  double lo = lims(0);
+  double hi = lims(1);
+
+  bool is_negative = lo < 0 && hi < 0;
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = hi;
+          hi = std::log10 (-lo);
+          lo = std::log10 (-tmp);
+          val = std::log10 (-val);
+        }
+      else
+        {
+          hi = std::log10 (hi);
+          lo = std::log10 (lo);
+          val = std::log10 (val);
+        }
+    }
+
+  // Perform the zooming
+  lo = val + factor * (lo - val);
+  hi = val + factor * (hi - val);
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = -std::pow (10.0, hi);
+          hi = -std::pow (10.0, lo);
+          lo = tmp;
+        }
+      else
+        {
+          lo = std::pow (10.0, lo);
+          hi = std::pow (10.0, hi);
+        }
+    }
+
+  new_lims(0) = lo;
+  new_lims(1) = hi;
+
+  return new_lims;
+}
+
 void
 axes::properties::zoom_about_point (double x, double y, double factor,
                                     bool push_to_zoom_stack)
@@ -6417,11 +6463,8 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   double max_neg_y = -octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
-  // Perform the zooming
-  xlims (0) = x + factor * (xlims (0) - x);
-  xlims (1) = x + factor * (xlims (1) - x);
-  ylims (0) = y + factor * (ylims (0) - y);
-  ylims (1) = y + factor * (ylims (1) - y);
+  xlims = do_zoom (x, factor, xlims, xscale_is ("log"));
+  ylims = do_zoom (y, factor, ylims, yscale_is ("log"));
 
   zoom (xlims, ylims, push_to_zoom_stack);
 }

@@ -227,6 +227,8 @@
 %!
 %! delete matrix.ascii;
 
+%!error <unable to find file> load ("")
+
 %% FIXME: This test is disabled as it writes to stdout and there is no easy
 %% way to recover output.  Need to spawn new octave process and pipe stdout
 %% somewhere to treat this case.

@@ -121,10 +121,20 @@ Undocumented internal function.\n\
 
       sprintf (flags, "qhull d %s", options.c_str ());
 
-      // Replace the 0 pointer with stdout for debugging information
-      FILE *outfile = 0;
+      // Replace the outfile pointer with stdout for debugging information.
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
+      FILE *outfile = gnulib::fopen ("NUL", "w");
+#else
+      FILE *outfile = gnulib::fopen ("/dev/null", "w");
+#endif
       FILE *errfile = stderr;
-      
+          
+      if  (! outfile)
+        {
+          error ("__delaunayn__: Unable to create temporary file for output.");
+          return retval;
+        }
+
       int exitcode = qh_new_qhull (dim, n, pt_array, 
                                    ismalloc, flags, outfile, errfile);
       if (! exitcode)

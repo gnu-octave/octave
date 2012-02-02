@@ -115,9 +115,19 @@ Undocumented internal function.\n\
 
   boolT ismalloc = false;
 
-  // Replace the 0 pointer with stdout for debugging information
-  FILE *outfile = 0;
+  // Replace the outfile pointer with stdout for debugging information.
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
+  FILE *outfile = gnulib::fopen ("NUL", "w");
+#else
+  FILE *outfile = gnulib::fopen ("/dev/null", "w");
+#endif
   FILE *errfile = stderr;
+      
+  if  (! outfile)
+    {
+      error ("__voronoi__: Unable to create temporary file for output.");
+      return retval;
+    }
 
   // qh_new_qhull command and points arguments are not const...
 

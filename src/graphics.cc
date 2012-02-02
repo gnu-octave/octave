@@ -6659,8 +6659,68 @@ axes::properties::zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_st
   update_ylim (false);
 }
 
+static Matrix
+do_translate (double x0, double x1, const Matrix& lims, bool is_logscale)
+{
+  Matrix new_lims = lims;
+
+  double lo = lims(0);
+  double hi = lims(1);
+
+  bool is_negative = lo < 0 && hi < 0;
+
+  double delta;
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = hi;
+          hi = std::log10 (-lo);
+          lo = std::log10 (-tmp);
+          x0 = -x0;
+          x1 = -x1;
+        }
+      else
+        {
+          hi = std::log10 (hi);
+          lo = std::log10 (lo);
+        }
+
+      delta = std::log10 (x0) - std::log10 (x1);
+    }
+  else
+    {
+      delta = x0 - x1;
+    }
+
+  // Perform the translation
+  lo += delta;
+  hi += delta;
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = -std::pow (10.0, hi);
+          hi = -std::pow (10.0, lo);
+          lo = tmp;
+        }
+      else
+        {
+          lo = std::pow (10.0, lo);
+          hi = std::pow (10.0, hi);
+        }
+    }
+
+  new_lims(0) = lo;
+  new_lims(1) = hi;
+
+  return new_lims;
+}
+
 void
-axes::properties::translate_view (double delta_x, double delta_y)
+axes::properties::translate_view (double x0, double x1, double y0, double y1)
 {
   // FIXME: Do we need error checking here?
   Matrix xlims = get_xlim ().matrix_value ();
@@ -6680,17 +6740,8 @@ axes::properties::translate_view (double delta_x, double delta_y)
   double max_neg_y = -octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
-  if (! xscale_is ("log"))
-    {
-      xlims (0) += delta_x;
-      xlims (1) += delta_x;
-    }
-
-  if (! yscale_is ("log"))
-    {
-      ylims (0) += delta_y;
-      ylims (1) += delta_y;
-    }
+  xlims = do_translate (x0, x1, xlims, xscale_is ("log"));
+  ylims = do_translate (y0, y1, ylims, yscale_is ("log"));
 
   zoom (xlims, ylims, false);
 }

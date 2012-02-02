@@ -1301,7 +1301,7 @@ private:
                     pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
 
                     if (gui_mode == pan_zoom)
-                      ap.translate_view (x0 - x1, y0 - y1);
+                      ap.translate_view (x0, x1, y0, y1);
                     else if (gui_mode == rotate_zoom)
                       {
                         double daz, del;

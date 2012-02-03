@@ -40,6 +40,8 @@ class octave_user_function;
 #include "oct-refcount.h"
 #include "ov.h"
 
+#include "oct-mutex.h"
+
 class
 OCTINTERP_API
 symbol_table
@@ -1961,6 +1963,9 @@ private:
   // Map from symbol names to symbol info.
   std::map<std::string, symbol_record> table;
 
+  // Mutex for symbol table access.
+  octave_mutex table_mutex;
+
   // The associated user code (may be null).
   octave_user_function *curr_fcn;
 
@@ -2065,12 +2070,14 @@ private:
 
   void insert_symbol_record (const symbol_record& sr)
   {
+    octave_autolock lock (table_mutex);
     table[sr.name ()] = sr;
   }
 
   void
   do_dup_scope (symbol_table& new_symbol_table) const
   {
+	octave_autolock lock (table_mutex);
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
       new_symbol_table.insert_symbol_record (p->second.dup ());
   }
@@ -2087,6 +2094,7 @@ private:
 
   void do_inherit (symbol_table& donor_table, context_id donor_context)
   {
+    octave_autolock lock (table_mutex);
     for (table_iterator p = table.begin (); p != table.end (); p++)
       {
         symbol_record& sr = p->second;
@@ -2124,6 +2132,7 @@ private:
 
   symbol_record& do_insert (const std::string& name)
   {
+    octave_autolock lock (table_mutex);
     table_iterator p = table.find (name);
 
     return p == table.end ()
@@ -2132,6 +2141,7 @@ private:
 
   void do_force_variable (const std::string& name, context_id context)
   {
+    octave_autolock lock (table_mutex);
     table_iterator p = table.find (name);
 
     if (p == table.end ())
@@ -2146,6 +2156,7 @@ private:
 
   octave_value& do_varref (const std::string& name, context_id context)
   {
+    octave_autolock lock (table_mutex);
     table_iterator p = table.find (name);
 
     if (p == table.end ())
@@ -2160,6 +2171,7 @@ private:
 
   octave_value do_varval (const std::string& name, context_id context) const
   {
+    octave_autolock lock (table_mutex);
     table_const_iterator p = table.find (name);
 
     return (p != table.end ()) ? p->second.varval (context) : octave_value ();
@@ -2175,6 +2187,7 @@ private:
 
   octave_value do_persistent_varval (const std::string& name)
   {
+    octave_autolock lock (table_mutex);
     persistent_table_const_iterator p = persistent_table.find (name);
 
     return (p != persistent_table.end ()) ? p->second : octave_value ();
@@ -2182,6 +2195,7 @@ private:
 
   void do_erase_persistent (const std::string& name)
   {
+    octave_autolock lock (table_mutex);
     persistent_table_iterator p = persistent_table.find (name);
 
     if (p != persistent_table.end ())
@@ -2190,6 +2204,7 @@ private:
 
   bool do_is_variable (const std::string& name) const
   {
+    octave_autolock lock (table_mutex);
     bool retval = false;
 
     table_const_iterator p = table.find (name);
@@ -2206,12 +2221,14 @@ private:
 
   void do_push_context (void)
   {
+    octave_autolock lock (table_mutex);
     for (table_iterator p = table.begin (); p != table.end (); p++)
       p->second.push_context ();
   }
 
   void do_pop_context (void)
   {
+    octave_autolock lock (table_mutex);
     for (table_iterator p = table.begin (); p != table.end (); )
       {
         if (p->second.pop_context () == 0)
@@ -2223,12 +2240,14 @@ private:
 
   void do_clear_variables (void)
   {
+    octave_autolock lock (table_mutex);
     for (table_iterator p = table.begin (); p != table.end (); p++)
       p->second.clear ();
   }
 
   void do_clear_objects (void)
   {
+    octave_autolock lock (table_mutex);
     for (table_iterator p = table.begin (); p != table.end (); p++)
       {
         symbol_record& sr = p->second;
@@ -2240,12 +2259,14 @@ private:
 
  void do_unmark_forced_variables (void)
   {
+    octave_autolock lock (table_mutex);
     for (table_iterator p = table.begin (); p != table.end (); p++)
       p->second.unmark_forced ();
   }
 
   void do_clear_global (const std::string& name)
   {
+    octave_autolock lock (table_mutex);
     table_iterator p = table.find (name);
 
     if (p != table.end ())
@@ -2265,6 +2286,7 @@ private:
 
   void do_clear_variable (const std::string& name)
   {
+    octave_autolock lock (table_mutex);
     table_iterator p = table.find (name);
 
     if (p != table.end ())
@@ -2273,6 +2295,7 @@ private:
 
   void do_clear_global_pattern (const std::string& pat)
   {
+    octave_autolock lock (table_mutex);
     glob_match pattern (pat);
 
     for (table_iterator p = table.begin (); p != table.end (); p++)
@@ -2299,6 +2322,7 @@ private:
 
   void do_clear_variable_pattern (const std::string& pat)
   {
+    octave_autolock lock (table_mutex);
     glob_match pattern (pat);
 
     for (table_iterator p = table.begin (); p != table.end (); p++)
@@ -2315,6 +2339,7 @@ private:
 
   void do_clear_variable_regexp (const std::string& pat)
   {
+    octave_autolock lock (table_mutex);
     ::regexp pattern (pat);
 
     for (table_iterator p = table.begin (); p != table.end (); p++)
@@ -2347,6 +2372,7 @@ private:
   std::list<symbol_record>
   do_all_variables (context_id context, bool defined_only) const
   {
+    octave_autolock lock (table_mutex);
     std::list<symbol_record> retval;
 
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
@@ -2365,6 +2391,7 @@ private:
   std::list<symbol_record> do_glob (const std::string& pattern,
                                     bool vars_only = false) const
   {
+    octave_autolock lock (table_mutex);
     std::list<symbol_record> retval;
 
     glob_match pat (pattern);
@@ -2388,6 +2415,7 @@ private:
   std::list<symbol_record> do_regexp (const std::string& pattern,
                                       bool vars_only = false) const
   {
+    octave_autolock lock (table_mutex);
     std::list<symbol_record> retval;
 
     ::regexp pat (pattern);
@@ -2410,6 +2438,7 @@ private:
 
   std::list<std::string> do_variable_names (void)
   {
+    octave_autolock lock (table_mutex);
     std::list<std::string> retval;
 
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
@@ -2445,6 +2474,7 @@ private:
 
   bool do_is_local_variable (const std::string& name) const
   {
+    octave_autolock lock (table_mutex);
     table_const_iterator p = table.find (name);
 
     return (p != table.end ()
@@ -2454,6 +2484,7 @@ private:
 
   bool do_is_global (const std::string& name) const
   {
+    octave_autolock lock (table_mutex);
     table_const_iterator p = table.find (name);
 
     return p != table.end () && p->second.is_global ();

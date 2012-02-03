@@ -210,27 +210,46 @@ public:
 
       symbol_record_rep (const std::string& nm, const octave_value& v,
                          unsigned int sc)
-        : name (nm), value_stack (), storage_class (sc), finfo (), count (1)
+        : finfo(), name (nm), value_stack (), storage_class (sc), count (1)
       {
+		octave_autolock lock (value_stack_mutex);
         value_stack.push_back (v);
       }
+
+      ~symbol_record_rep (void)
+      {
+	      // Lock all resources one after another to guarantee noone is still
+ 		  // accessing them.
+		  octave_autolock name_lock (name_mutex);
+		  octave_autolock value_stack_lock (value_stack_mutex);
+		  octave_autolock storage_class_lock (storage_class_mutex);
+	  }
 
       void force_variable (context_id context)
       {
         octave_value& val = varref (context);
-
+ 
         if (! val.is_defined ())
-          mark_forced ();
+          {
+            mark_forced ();
+		  }
       }
 
       octave_value& varref (context_id context)
       {
         if (is_global ())
-          return symbol_table::global_varref (name);
+          {
+		    octave_autolock lock (name_mutex);
+            return symbol_table::global_varref (name);
+          }
         else if (is_persistent ())
-          return symbol_table::persistent_varref (name);
+          {
+		    octave_autolock lock (name_mutex);
+            return symbol_table::persistent_varref (name);
+		  }
         else
           {
+            octave_autolock lock (value_stack_mutex);
             context_id n = value_stack.size ();
             while (n++ <= context)
               value_stack.push_back (octave_value ());
@@ -242,11 +261,18 @@ public:
       octave_value varval (context_id context) const
       {
         if (is_global ())
-          return symbol_table::global_varval (name);
+	      {
+		    octave_autolock lock (name_mutex);
+            return symbol_table::global_varval (name);
+		  }
         else if (is_persistent ())
-          return symbol_table::persistent_varval (name);
+		  {
+		    octave_autolock lock (name_mutex);
+            return symbol_table::persistent_varval (name);
+		  }
         else
           {
+		    octave_autolock lock (value_stack_mutex);
             if (context < value_stack.size ())
               return value_stack[context];
             else
@@ -257,7 +283,10 @@ public:
       void push_context (void)
       {
         if (! (is_persistent () || is_global ()))
+        {
+		  octave_autolock lock (value_stack_mutex);
           value_stack.push_back (octave_value ());
+		}
       }
 
       // If pop_context returns 0, we are out of values and this element
@@ -280,6 +309,7 @@ public:
 
         if (! (is_persistent () || is_global ()))
           {
+			octave_autolock lock (value_stack_mutex);
             value_stack.pop_back ();
             retval = value_stack.size ();
           }
@@ -316,51 +346,166 @@ public:
         return (! is_local () || is_defined (context) || is_forced ());
       }
 
-      bool is_local (void) const { return storage_class & local; }
-      bool is_automatic (void) const { return storage_class & automatic; }
-      bool is_formal (void) const { return storage_class & formal; }
-      bool is_hidden (void) const { return storage_class & hidden; }
-      bool is_inherited (void) const { return storage_class & inherited; }
-      bool is_global (void) const { return storage_class & global; }
-      bool is_persistent (void) const { return storage_class & persistent; }
-      bool is_forced (void) const { return storage_class & forced; }
+      bool is_local (void) const
+      {
+		octave_autolock lock (storage_class_mutex);
+        return storage_class & local;
+      }
 
-      void mark_local (void) { storage_class |= local; }
-      void mark_automatic (void) { storage_class |= automatic; }
-      void mark_formal (void) { storage_class |= formal; }
-      void mark_hidden (void) { storage_class |= hidden; }
-      void mark_inherited (void) { storage_class |= inherited; }
+      bool is_automatic (void) const
+	  {
+		octave_autolock lock (storage_class_mutex);
+		return storage_class & automatic;
+	  }
+
+      bool is_formal (void) const
+	  {
+		octave_autolock lock (storage_class_mutex);
+		return storage_class & formal;
+	  }
+
+      bool is_hidden (void) const
+	  {
+		octave_autolock lock (storage_class_mutex);
+		return storage_class & hidden;
+      }
+
+      bool is_inherited (void) const
+      {
+		octave_autolock lock (storage_class_mutex);
+		return storage_class & inherited;
+	  }
+
+      bool is_global (void) const
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    return storage_class & global;
+      }
+
+      bool is_persistent (void) const
+	  {
+		octave_autolock lock (storage_class_mutex);
+		return storage_class & persistent;
+      }
+
+      bool is_forced (void) const
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    return storage_class & forced;
+	  }
+
+      void mark_local (void)
+      {
+		octave_autolock lock (storage_class_mutex);
+		storage_class |= local;
+	  }
+
+      void mark_automatic (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    storage_class |= automatic;
+	  }
+
+      void mark_formal (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    storage_class |= formal;
+	  }
+
+      void mark_hidden (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    storage_class |= hidden;
+	  }
+
+      void mark_inherited (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    storage_class |= inherited;
+	  }
+
       void mark_global (void)
       {
         if (is_persistent ())
           error ("can't make persistent variable %s global", name.c_str ());
         else
-          storage_class |= global;
+	      {
+		    octave_autolock lock (storage_class_mutex);
+          	storage_class |= global;
+		  }
       }
+
       void mark_persistent (void)
       {
         if (is_global ())
           error ("can't make global variable %s persistent", name.c_str ());
         else
-          storage_class |= persistent;
+          {
+		    octave_autolock lock (storage_class_mutex);
+            storage_class |= persistent;
+	      }
       }
-      void mark_forced (void) { storage_class |= forced; }
 
-      void unmark_local (void) { storage_class &= ~local; }
-      void unmark_automatic (void) { storage_class &= ~automatic; }
-      void unmark_formal (void) { storage_class &= ~formal; }
-      void unmark_hidden (void) { storage_class &= ~hidden; }
-      void unmark_inherited (void) { storage_class &= ~inherited; }
-      void unmark_global (void) { storage_class &= ~global; }
-      void unmark_persistent (void) { storage_class &= ~persistent; }
-      void unmark_forced (void) { storage_class &= ~forced; }
+      void mark_forced (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+		storage_class |= forced;
+	  }
+
+      void unmark_local (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+		storage_class &= ~local;
+	  }
+
+      void unmark_automatic (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+		storage_class &= ~automatic;
+	  }
+
+      void unmark_formal (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+		storage_class &= ~formal;
+	  }
+
+      void unmark_hidden (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    storage_class &= ~hidden;
+	  }
+
+      void unmark_inherited (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    storage_class &= ~inherited;
+	  }
+
+      void unmark_global (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+	    storage_class &= ~global;
+	  }
+
+      void unmark_persistent (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+		storage_class &= ~persistent;
+	  }
+
+      void unmark_forced (void)
+	  {
+		octave_autolock lock (storage_class_mutex);
+		storage_class &= ~forced;
+	  }
 
       void init_persistent (void)
       {
         if (! is_defined (xcurrent_context))
           {
             mark_persistent ();
-
+            octave_autolock lock (name_mutex);
             varref (xcurrent_context) = symbol_table::persistent_varval (name);
           }
         // FIXME -- this causes trouble with recursive calls.
@@ -371,28 +516,74 @@ public:
       void erase_persistent (void)
       {
         unmark_persistent ();
+        octave_autolock lock (name_mutex);
         symbol_table::erase_persistent (name);
       }
 
       symbol_record_rep *dup (void) const
       {
+        octave_autolock name_lock (name_mutex);
+        octave_autolock storage_class_lock (storage_class_mutex);
         return new symbol_record_rep (name, varval (xcurrent_context),
                                       storage_class);
       }
 
       void dump (std::ostream& os, const std::string& prefix) const;
 
+	  std::string get_name (void)
+      {
+        octave_autolock lock (name_mutex);
+	    return name;
+	  }
+
+	  void set_name (std::string _name)
+      {
+        octave_autolock lock (name_mutex);
+        name = _name;
+      }
+
+	  int get_reference_count (void)
+	  {
+		octave_autolock lock (count_mutex);
+		return static_cast <int> (count);
+	  }
+
+	  int increment_reference_count (void)
+	  {
+	    octave_autolock lock (count_mutex);
+		count++;
+		return static_cast <int> (count);
+	  }
+
+	  int decrement_reference_count (void)
+	  {
+	    octave_autolock lock (count_mutex);
+		count--;
+		return static_cast <int> (count);
+	  }
+
+	  unsigned int get_storage_class (void)
+ 	  {
+		octave_autolock lock (storage_class_mutex);
+	    return storage_class;
+	  }
+
+      fcn_info *finfo;
+
+    private:
       std::string name;
 
       std::deque<octave_value> value_stack;
 
       unsigned int storage_class;
 
-      fcn_info *finfo;
-
       octave_refcount<size_t> count;
 
-    private:
+	  // Thread-safety:
+	  octave_mutex name_mutex;
+	  octave_mutex value_stack_mutex;
+	  octave_mutex storage_class_mutex;
+	  octave_mutex count_mutex;
 
       // No copying!
 
@@ -411,18 +602,18 @@ public:
     symbol_record (const symbol_record& sr)
       : rep (sr.rep)
     {
-      rep->count++;
+      rep->increment_reference_count ();
     }
 
     symbol_record& operator = (const symbol_record& sr)
     {
       if (this != &sr)
         {
-          if (--rep->count == 0)
+          if (rep->decrement_reference_count () == 0)
             delete rep;
 
           rep = sr.rep;
-          rep->count++;
+          rep->increment_reference_count ();
         }
 
       return *this;
@@ -430,13 +621,13 @@ public:
 
     ~symbol_record (void)
     {
-      if (--rep->count == 0)
+      if (rep->decrement_reference_count () == 0)
         delete rep;
     }
 
     symbol_record dup (void) const { return symbol_record (rep->dup ()); }
 
-    std::string name (void) const { return rep->name; }
+    std::string name (void) const { return rep->get_name (); }
 
     octave_value find (const octave_value_list& args = octave_value_list ()) const;
 
@@ -502,7 +693,7 @@ public:
 
     void erase_persistent (void) { rep->erase_persistent (); }
 
-    unsigned int xstorage_class (void) const { return rep->storage_class; }
+    unsigned int xstorage_class (void) const { return rep->get_storage_class (); }
 
     void
     dump (std::ostream& os, const std::string& prefix = std::string ()) const
@@ -511,7 +702,6 @@ public:
     }
 
   private:
-
     symbol_record_rep *rep;
 
     symbol_record (symbol_record_rep *new_rep) : rep (new_rep) { }
@@ -2008,7 +2198,10 @@ private:
   symbol_table (void)
     : table_name (), table (), curr_fcn (0), persistent_table () { }
 
-  ~symbol_table (void) { }
+  ~symbol_table (void)
+  {
+	octave_autolock lock (table_mutex);
+  }
 
   static symbol_table *get_instance (scope_id scope, bool create = true)
   {

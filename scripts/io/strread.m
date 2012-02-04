@@ -439,14 +439,13 @@ function varargout = strread (str, format = "%f", varargin)
       iwrd = 1; iwrdp = 0; iwrdl = length (words{iwrd});
       for ii = 1:numel (fmt_words)
 
+        nxt_wrd = 0;
+
         if (idf(ii))
           ## Literal expected
           if (isempty (strfind (fmt_words{ii}, words(iwrd))))
             ## Not found in current word; supposed to be in next word
-            ++iwrd; iwrdp = 0;
-            if (ii < numel (fmt_words))
-              iwrdl = length (words{iwrd});
-            endif
+            nxt_wrd = 1;
           else
             ## Found it in current word.  Subtract literal length
             iwrdp += length (fmt_words{ii});
@@ -455,34 +454,28 @@ function varargout = strread (str, format = "%f", varargin)
               warning ("strread: literal '%s' (fmt spec # %d) does not match data", ...
                 fmt_words{ii}, ii);
               ## Word assumed to be completely "used up". Next word
-              ++iwrd; iwrdp = 0;
-              if (ii < numel (fmt_words))
-                iwrdl = length (words{iwrd});
-              endif
+              nxt_wrd = 1;
             elseif (iwrdp == iwrdl)
               ## Word completely "used up". Next word
-              ++iwrd; iwrdp = 0;
-              if (ii < numel (fmt_words))
-                iwrdl = length (words{iwrd});
-              endif
+              nxt_wrd = 1;
             endif
           endif
 
         elseif (idg(ii))
           ## Fixed width specifier (%N or %*N): read just a part of word
-            iwrdp += floor ...
-             (str2double (fmt_words{ii}(regexp(fmt_words{ii}, '\d') : end-1)));
-            if (iwrdp > iwrdl)
-              ## Match error. Field extends beyond word boundary.
-              warning  ...
-              ("strread: field width '%s' (fmt spec # %d) extends beyond actual word limit", ...
-                 fmt_words{ii}, ii);
-              ## Assume word to be completely "used up".  Next word
-              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
-            elseif (iwrdp == iwrdl)
-              ## Word completely "used up".  Next word
-              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
-            endif
+          iwrdp += floor ...
+           (str2double (fmt_words{ii}(regexp(fmt_words{ii}, '\d') : end-1)));
+          if (iwrdp > iwrdl)
+            ## Match error. Field extends beyond word boundary.
+            warning  ...
+            ("strread: field width '%s' (fmt spec # %d) extends beyond actual word limit", ...
+               fmt_words{ii}, ii);
+            ## Assume word to be completely "used up".  Next word
+            nxt_wrd = 1;
+          elseif (iwrdp == iwrdl)
+            ## Word completely "used up".  Next word
+            nxt_wrd = 1;
+          endif
 
         else
           ## A simple format conv. specifier. Either (1) uses rest of word, or
@@ -492,20 +485,25 @@ function varargout = strread (str, format = "%f", varargin)
             ## Next fmt_word is a literal...
             if (! index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}))
               ## ...but not found in current word => field uses rest of word
-              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
+              nxt_wrd = 1;
             else
               ## ..or it IS found.  Add inferred width of current conversion field
               iwrdp += index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}) - 1;
             endif
           elseif (iwrdp < iwrdl)
             ## No bordering literal to the right => field occupies (rest of) word
-            ++iwrd; iwrdp = 0;
-            if (ii < numel (fmt_words))
-              iwrdl = length (words{iwrd});
-            endif
+            nxt_wrd = 1;
           endif
 
         endif
+
+        if (nxt_wrd)
+          ++iwrd; iwrdp = 0;
+          if (ii < numel (fmt_words))
+            iwrdl = length (words{iwrd});
+          endif
+        endif
+
       endfor
       ## Done
       words_period = max (iwrd - 1, 1);
@@ -670,7 +668,7 @@ function varargout = strread (str, format = "%f", varargin)
               k++;
             case "s"
               if (pad_out)
-                data(end+1:num_lines) = {""}
+                data(end+1:num_lines) = {""};
               endif
               varargout{k} = strtrunc (data, swidth)';
               k++;

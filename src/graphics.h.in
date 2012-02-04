@@ -222,10 +222,7 @@ public:
     {
       Matrix retval (m.rows (), m.cols ());
 
-      if (m.any_element_is_positive ())
-        do_scale (m.data (), retval.fortran_vec (), m.numel ());
-      else
-        do_neg_scale (m.data (), retval.fortran_vec (), m.numel ());
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
 
       return retval;
     }
@@ -234,10 +231,7 @@ public:
     {
       NDArray retval (m.dims ());
 
-      if (m.any_element_is_positive ())
-        do_scale (m.data (), retval.fortran_vec (), m.numel ());
-      else
-        do_neg_scale (m.data (), retval.fortran_vec (), m.numel ());
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
 
       return retval;
     }
@@ -255,13 +249,47 @@ private:
   void do_scale (const double *src, double *dest, int n) const
     {
       for (int i = 0; i < n; i++)
-        dest[i] = log10(src[i]);
+        dest[i] = log10 (src[i]);
+    }
+};
+
+class neg_log_scaler : public base_scaler
+{
+public:
+  neg_log_scaler (void) { }
+
+  Matrix scale (const Matrix& m) const
+    {
+      Matrix retval (m.rows (), m.cols ());
+
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
+
+      return retval;
     }
 
-  void do_neg_scale (const double *src, double *dest, int n) const
+  NDArray scale (const NDArray& m) const
+    {
+      NDArray retval (m.dims ());
+
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
+
+      return retval;
+    }
+
+  double scale (double d) const
+    { return -log10 (-d); }
+
+  double unscale (double d) const
+    { return -pow (10.0, -d); }
+
+  base_scaler* clone (void) const
+    { return new neg_log_scaler (); }
+
+private:
+  void do_scale (const double *src, double *dest, int n) const
     {
       for (int i = 0; i < n; i++)
-        dest[i] = -log10(-src[i]);
+        dest[i] = -log10 (-src[i]);
     }
 };
 
@@ -275,7 +303,8 @@ public:
   scaler (const std::string& s)
     : rep (s == "log"
            ? new log_scaler ()
-           : (s == "linear" ? new lin_scaler () : new base_scaler ()))
+           : (s == "neglog" ? new neg_log_scaler ()
+              : (s == "linear" ? new lin_scaler () : new base_scaler ())))
     { }
 
   ~scaler (void) { delete rep; }
@@ -318,6 +347,8 @@ public:
 
       if (s == "log")
         rep = new log_scaler ();
+      else if (s == "neglog")
+        rep = new neg_log_scaler ();
       else if (s == "linear")
         rep = new lin_scaler ();
       else
@@ -3814,9 +3845,32 @@ public:
     void init (void);
 
   private:
-    void update_xscale (void) { sx = get_xscale (); }
-    void update_yscale (void) { sy = get_yscale (); }
-    void update_zscale (void) { sz = get_zscale (); }
+
+    std::string
+    get_scale (const std::string& scale, const Matrix& lims)
+    {
+      std::string retval = scale;
+
+      if (scale == "log" && lims.numel () > 1 && lims(0) < 0 && lims(1) < 0)
+        retval = "neglog";
+
+      return retval;
+    }
+
+    void update_xscale (void)
+    {
+      sx = get_scale (get_xscale (), xlim.get ().matrix_value ());
+    }
+
+    void update_yscale (void)
+    {
+      sy = get_scale (get_yscale (), ylim.get ().matrix_value ());
+    }
+
+    void update_zscale (void)
+    {
+      sz = get_scale (get_zscale (), zlim.get ().matrix_value ());
+    }
 
     void update_view (void) { sync_positions (); }
     void update_dataaspectratio (void) { sync_positions (); }
@@ -3968,6 +4022,8 @@ public:
 
       fix_limits (xlim);
 
+      update_xscale ();
+
       if (do_clr_zoom)
         zoom_stack.clear ();
 
@@ -3983,6 +4039,8 @@ public:
 
       fix_limits (ylim);
 
+      update_yscale ();
+
       if (do_clr_zoom)
         zoom_stack.clear ();
 
@@ -3997,6 +4055,8 @@ public:
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
 
       fix_limits (zlim);
+
+      update_zscale ();
 
       zoom_stack.clear ();
 

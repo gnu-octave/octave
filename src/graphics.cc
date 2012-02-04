@@ -6632,11 +6632,8 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   double max_neg_y = -octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
-  if (! xscale_is ("log"))
-    xlims = do_zoom (x, factor, xlims, xscale_is ("log"));
-
-  if (! yscale_is ("log"))
-    ylims = do_zoom (y, factor, ylims, yscale_is ("log"));
+  xlims = do_zoom (x, factor, xlims, xscale_is ("log"));
+  ylims = do_zoom (y, factor, ylims, yscale_is ("log"));
 
   zoom (xlims, ylims, push_to_zoom_stack);
 }

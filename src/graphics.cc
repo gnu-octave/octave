@@ -6463,10 +6463,10 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   double max_neg_y = -octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
-  if (! xscale_is ("log"))
+  if (! (xscale_is ("log") && xlims(0) < 0 && xlims(1) < 0))
     xlims = do_zoom (x, factor, xlims, xscale_is ("log"));
 
-  if (! yscale_is ("log"))
+  if (! (yscale_is ("log") && ylims(0) < 0 && ylims(1) < 0))
     ylims = do_zoom (y, factor, ylims, yscale_is ("log"));
 
   zoom (xlims, ylims, push_to_zoom_stack);
@@ -6475,6 +6475,14 @@ axes::properties::zoom_about_point (double x, double y, double factor,
 void
 axes::properties::zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_stack)
 {
+  // FIXME: Do we need error checking here?
+  Matrix xlims = get_xlim ().matrix_value ();
+  Matrix ylims = get_ylim ().matrix_value ();
+
+  if ((xscale_is ("log") && xlims(0) < 0 && xlims(1) < 0)
+      || (yscale_is ("log") && ylims(0) < 0 && ylims(1) < 0))
+    return;
+
   if (push_to_zoom_stack)
     {
       zoom_stack.push_front (xlimmode.get ());

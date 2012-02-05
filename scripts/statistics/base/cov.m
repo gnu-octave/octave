@@ -86,7 +86,7 @@ function c = cov (x, y = [], opt = 0)
 
   ## Special case, scalar has zero covariance
   if (isscalar (x))
-    if (isa (x, 'single'))
+    if (isa (x, "single"))
       c = single (0);
     else
       c = 0;

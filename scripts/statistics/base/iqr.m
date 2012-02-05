@@ -60,8 +60,8 @@ function y = iqr (x, dim)
   ## can take a matrix, rather than just a vector argument.
   n = sz(dim);
   sz(dim) = 1;
-  if (isa (x, 'single'))
-    y = zeros (sz, 'single');
+  if (isa (x, "single"))
+    y = zeros (sz, "single");
   else
     y = zeros (sz);
   endif

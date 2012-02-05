@@ -69,7 +69,7 @@ function rho = spearman (x, y = [])
   endif
 
   ## Restore class cleared by ranks
-  if (isa (x, 'single') || isa (y, 'single'))
+  if (isa (x, "single") || isa (y, "single"))
     rho = single (rho);
   endif
 

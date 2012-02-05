@@ -92,8 +92,8 @@ function retval = std (x, opt = 0, dim)
 
   n = sz(dim);
   if (n == 1 || isempty (x))
-    if (isa (x, 'single'))
-      retval = zeros (sz, 'single');
+    if (isa (x, "single"))
+      retval = zeros (sz, "single");
     else
       retval = zeros (sz);
     endif

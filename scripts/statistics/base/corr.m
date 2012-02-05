@@ -56,7 +56,7 @@ function retval = corr (x, y = [])
 
   ## Special case, scalar is always 100% correlated with itself
   if (isscalar (x))
-    if (isa (x, 'single'))
+    if (isa (x, "single"))
       retval = single (1);
     else
       retval = 1;

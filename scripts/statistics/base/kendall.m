@@ -99,10 +99,10 @@ function tau = kendall (x, y = [])
     endif
   endif
 
-  if (isa (x, 'single') || isa (y, 'single'))
-    cls = 'single';
+  if (isa (x, "single") || isa (y, "single"))
+    cls = "single";
   else
-    cls = 'double';
+    cls = "double";
   endif
   r   = ranks (x);
   m   = sign (kron (r, ones (n, 1, cls)) - kron (ones (n, 1, cls), r));

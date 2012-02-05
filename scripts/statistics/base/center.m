@@ -70,7 +70,7 @@ endfunction
 %!assert(center (int8 ([1,2,3])), [-1,0,1])
 %!assert(center (logical ([1, 0, 0, 1])), [0.5, -0.5, -0.5, 0.5])
 %!assert(center (ones (3,2,0,2)), zeros (3,2,0,2))
-%!assert(center (ones (3,2,0,2, 'single')), zeros (3,2,0,2, 'single'))
+%!assert(center (ones (3,2,0,2, "single")), zeros (3,2,0,2, "single"))
 %!assert(center (magic (3)), [3,-4,1;-2,0,2;-1,4,-3])
 %!assert(center ([1 2 3; 6 5 4], 2), [-1 0 1; 1 0 -1])
 

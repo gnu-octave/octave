@@ -387,10 +387,12 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  octave_call_stack::push (this, local_scope, call_depth);
+  int context = is_anonymous_function () ? 0 : call_depth;
+
+  octave_call_stack::push (this, local_scope, context);
   frame.add_fcn (octave_call_stack::pop);
 
-  if (call_depth > 0)
+  if (call_depth > 0 && ! is_anonymous_function ())
     {
       symbol_table::push_context ();
 

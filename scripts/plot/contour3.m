@@ -34,8 +34,8 @@
 ## @group
 ## contour3 (peaks (19));
 ## hold on
-## surface (peaks (19), "facecolor", "none", "EdgeColor", "black")
-## colormap hot
+## surface (peaks (19), "facecolor", "none", "EdgeColor", "black");
+## colormap hot;
 ## @end group
 ## @end example
 ##

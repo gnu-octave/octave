@@ -36,8 +36,8 @@
 ##
 ## @example
 ## @group
-## phi = [0 : 15 : 360] * pi / 180;
-## feather (sin (phi), cos (phi))
+## phi = [0 : 15 : 360] * pi/180;
+## feather (sin (phi), cos (phi));
 ## @end group
 ## @end example
 ##

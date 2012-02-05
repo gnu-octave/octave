@@ -29,9 +29,9 @@
 ##
 ## @example
 ## @group
-## [@var{m}, @var{n}] = size(@var{A})
-## @var{s} = eigs([sparse(@var{m}, @var{m}), @var{A};
-##                     @var{A}', sparse(@var{n}, @var{n})])
+## [@var{m}, @var{n}] = size (@var{A});
+## @var{s} = eigs ([sparse(@var{m}, @var{m}), @var{A};
+##                      @var{A}', sparse(@var{n}, @var{n})])
 ## @end group
 ## @end example
 ##

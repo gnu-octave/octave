@@ -42,7 +42,7 @@
 ## weaken the singularities.  For example:
 ##
 ## @example
-## quadgk(@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
+## quadgk (@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
 ## @end example
 ##
 ## @noindent
@@ -89,7 +89,7 @@
 ## computation, or both.  For example,
 ##
 ## @example
-## quadgk (@@(x) abs (1 - x.^2), 0, 2, 'Waypoints', 1)
+## quadgk (@@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1)
 ## @end example
 ##
 ## @noindent

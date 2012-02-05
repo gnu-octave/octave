@@ -32,7 +32,7 @@
 ## @example
 ## @group
 ## strsplit ("a,b,c", ",")
-##        @result{}
+##       @result{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b
@@ -40,7 +40,7 @@
 ##           @}
 ##
 ## strsplit (["a,b" ; "cde"], ",")
-##        @result{}
+##       @result{}
 ##           @{
 ##             [1,1] = a
 ##             [1,2] = b

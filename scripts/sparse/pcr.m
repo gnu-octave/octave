@@ -101,16 +101,16 @@
 ##
 ## @example
 ## @group
-##      n = 10;
-##      A = sparse (diag (1:n));
-##      b = rand (N, 1);
+## n = 10;
+## A = sparse (diag (1:n));
+## b = rand (N, 1);
 ## @end group
 ## @end example
 ##
 ## @sc{Example 1:} Simplest use of @code{pcr}
 ##
 ## @example
-##   x = pcr(A, b)
+## x = pcr (A, b)
 ## @end example
 ##
 ## @sc{Example 2:} @code{pcr} with a function which computes
@@ -118,11 +118,11 @@
 ##
 ## @example
 ## @group
-##   function y = apply_a (x)
-##     y = [1:10]'.*x;
-##   endfunction
+## function y = apply_a (x)
+##   y = [1:10]' .* x;
+## endfunction
 ##
-##   x = pcr ("apply_a", b)
+## x = pcr ("apply_a", b)
 ## @end group
 ## @end example
 ##
@@ -132,15 +132,15 @@
 ##
 ## @example
 ## @group
-##   function y = apply_m (x)
-##     k = floor (length(x)-2);
-##     y = x;
-##     y(1:k) = x(1:k)./[1:k]';
-##   endfunction
+## function y = apply_m (x)
+##   k = floor (length (x) - 2);
+##   y = x;
+##   y(1:k) = x(1:k) ./ [1:k]';
+## endfunction
 ##
-##   [x, flag, relres, iter, resvec] = ...
-##                      pcr (A, b, [], [], "apply_m")
-##   semilogy([1:iter+1], resvec);
+## [x, flag, relres, iter, resvec] = ...
+##                    pcr (A, b, [], [], "apply_m")
+## semilogy ([1:iter+1], resvec);
 ## @end group
 ## @end example
 ##
@@ -149,13 +149,14 @@
 ##
 ## @example
 ## @group
-##   function y = apply_m (x, varargin)
-##     k = varargin@{1@};
-##     y = x; y(1:k) = x(1:k)./[1:k]';
-##   endfunction
+## function y = apply_m (x, varargin)
+##   k = varargin@{1@};
+##   y = x;
+##   y(1:k) = x(1:k) ./ [1:k]';
+## endfunction
 ##
-##   [x, flag, relres, iter, resvec] = ...
-##                      pcr (A, b, [], [], "apply_m"', [], 3)
+## [x, flag, relres, iter, resvec] = ...
+##                    pcr (A, b, [], [], "apply_m"', [], 3)
 ## @end group
 ## @end example
 ##

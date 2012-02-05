@@ -42,7 +42,7 @@
 ## @example
 ## @group
 ## bincoeff (5, 2)
-##      @result{} 10
+##    @result{} 10
 ## @end group
 ## @end example
 ##

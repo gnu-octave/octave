@@ -25,9 +25,9 @@
 ## @example
 ## @group
 ## chop (-pi, 5, 10)
-##      @result{} -3.14200000000000
+##    @result{} -3.14200000000000
 ## chop (-pi, 5, 5)
-##      @result{} -3.14150000000000
+##    @result{} -3.14150000000000
 ## @end group
 ## @end example
 ## @end deftypefn

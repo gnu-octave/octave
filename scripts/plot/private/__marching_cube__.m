@@ -49,7 +49,7 @@
 ## @example
 ## @group
 ## N = 20;
-## lin = linspace(0, 2, N);
+## lin = linspace (0, 2, N);
 ## [x, y, z] = meshgrid (lin, lin, lin);
 ##
 ## c = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
@@ -70,11 +70,11 @@
 ##             "FaceColor", "interp", "EdgeColor", "none");
 ##
 ## ## Revert normals
-## set (pa, "VertexNormals", -get(pa, "VertexNormals"));
+## set (pa, "VertexNormals", -get (pa, "VertexNormals"));
 ##
 ## ## Set lightning (available with the JHandles package)
 ## # set (pa, "FaceLighting", "gouraud");
-## # light( "Position", [1 1 5]);
+## # light ( "Position", [1 1 5]);
 ## @end group
 ## @end example
 ##

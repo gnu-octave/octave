@@ -28,7 +28,7 @@
 ## @example
 ## @group
 ## function b = myclass (a)
-##  b = class (struct ("a", a), "myclass");
+##   b = class (struct ("a", a), "myclass");
 ## endfunction
 ## @end group
 ## @end example
@@ -39,7 +39,7 @@
 ## @example
 ## @group
 ## function idx = subsindex (a)
-##  idx = double (a.a) - 1.0;
+##   idx = double (a.a) - 1.0;
 ## endfunction
 ## @end group
 ## @end example

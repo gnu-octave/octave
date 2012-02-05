@@ -80,34 +80,34 @@
 ## c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
 ## figure (); # Open another figure window
 ##
-## subplot (2, 2, 1); view (-38, 20);
+## subplot (2,2,1); view (-38, 20);
 ## [f, v] = isosurface (x, y, z, c, iso);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "none");
-## set (gca, "PlotBoxAspectRatioMode","manual", ...
+## set (gca, "PlotBoxAspectRatioMode", "manual", ...
 ##           "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceColor", "green", "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]); # Available with the JHandles package
 ##
-## subplot (2, 2, 2); view (-38, 20);
+## subplot (2,2,2); view (-38, 20);
 ## p = patch ("Faces", f, "Vertices", v, "EdgeColor", "blue");
-## set (gca, "PlotBoxAspectRatioMode","manual", ...
+## set (gca, "PlotBoxAspectRatioMode", "manual", ...
 ##           "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceColor", "none", "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]);
 ##
-## subplot (2, 2, 3); view (-38, 20);
+## subplot (2,2,3); view (-38, 20);
 ## [f, v, c] = isosurface (x, y, z, c, iso, y);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", c, \
+## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", c, ...
 ##            "FaceColor", "interp", "EdgeColor", "none");
-## set (gca, "PlotBoxAspectRatioMode","manual", ...
+## set (gca, "PlotBoxAspectRatioMode", "manual", ...
 ##           "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]);
 ##
-## subplot (2, 2, 4); view (-38, 20);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", c, \
+## subplot (2,2,4); view (-38, 20);
+## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", c, ...
 ##            "FaceColor", "interp", "EdgeColor", "blue");
-## set (gca, "PlotBoxAspectRatioMode","manual", ...
+## set (gca, "PlotBoxAspectRatioMode", "manual", ...
 ##           "PlotBoxAspectRatio", [1 1 1]);
 ## # set (p, "FaceLighting", "phong");
 ## # light ("Position", [1 1 5]);

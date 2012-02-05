@@ -66,8 +66,8 @@
 ##
 ## @example
 ## @group
-## bar (rand(10,3))
-## colormap (summer ())
+## bar (rand (10, 3));
+## colormap (summer (64));
 ## @end group
 ## @end example
 ##
@@ -77,7 +77,7 @@
 ##
 ## @example
 ## @group
-## h = bar (rand(10,3))
+## h = bar (rand (10, 3));
 ## set (h(1), "facecolor", "r")
 ## set (h(2), "facecolor", "g")
 ## set (h(3), "facecolor", "b")

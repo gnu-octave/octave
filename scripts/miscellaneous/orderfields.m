@@ -38,7 +38,7 @@
 ## @example
 ## @group
 ## s = struct("d", 4, "b", 2, "a", 1, "c", 3);
-## t1 = orderfields(s)
+## t1 = orderfields (s)
 ##      @result{} t1 =
 ##         @{
 ##           a =  1
@@ -49,7 +49,7 @@
 ## @end group
 ## @group
 ## t = struct("d", @{@}, "c", @{@}, "b", "a", @{@});
-## t2 = orderfields(s, t)
+## t2 = orderfields (s, t)
 ##      @result{} t2 =
 ##         @{
 ##           d =  4
@@ -59,7 +59,7 @@
 ##         @}
 ## @end group
 ## @group
-## t3 = orderfields(s, [3, 2, 4, 1]);
+## t3 = orderfields (s, [3, 2, 4, 1]);
 ##      @result{} t3 =
 ##         @{
 ##           a =  1
@@ -69,18 +69,19 @@
 ##         @}
 ## @end group
 ## @group
-## [t4, p] = orderfields(s, @{"d", "c", "b", "a"@})
-##      @result{} t4 = @{
+## [t4, p] = orderfields (s, @{"d", "c", "b", "a"@})
+##      @result{} t4 =
+##         @{
 ##           d =  4
 ##           c =  3
 ##           b =  2
 ##           a =  1
 ##         @}
-##      p =
-##         1
-##         4
-##         2
-##         3
+##         p =
+##            1
+##            4
+##            2
+##            3
 ## @end group
 ## @end example
 ##

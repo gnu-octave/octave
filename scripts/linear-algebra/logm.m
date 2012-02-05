@@ -26,7 +26,7 @@
 ## implementation utilizes a Pad@'e approximant and the identity
 ##
 ## @example
-## logm(@var{A}) = 2^k * logm(@var{A}^(1 / 2^k))
+## logm (@var{A}) = 2^k * logm (@var{A}^(1 / 2^k))
 ## @end example
 ##
 ## The optional argument @var{opt_iters} is the maximum number of square roots

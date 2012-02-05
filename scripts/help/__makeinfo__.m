@@ -41,7 +41,7 @@
 ## will be expanded to the text
 ##
 ## @example
-## See also: arg1, arg2@, ...
+## See also: arg1, arg2, ...
 ## @end example
 ##
 ## @noindent

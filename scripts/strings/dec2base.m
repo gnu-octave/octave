@@ -25,7 +25,7 @@
 ## @example
 ## @group
 ## dec2base (123, 3)
-##      @result{} "11120"
+##    @result{} "11120"
 ## @end group
 ## @end example
 ##
@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## dec2base (123, "aei")
-##      @result{} "eeeia"
+##    @result{} "eeeia"
 ## @end group
 ## @end example
 ##

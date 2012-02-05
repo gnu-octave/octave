@@ -24,7 +24,7 @@
 ## @example
 ## @group
 ## cstrcat ("ab   ", "cd")
-##      @result{} "ab   cd"
+##       @result{} "ab   cd"
 ## @end group
 ## @end example
 ##
@@ -32,8 +32,7 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## cstrcat (s, s, s)
-##      @result{} ans =
-##         "ab ab ab "
+##      @result{} "ab ab ab "
 ##         "cdecdecde"
 ## @end group
 ## @end example

@@ -51,7 +51,7 @@
 ##
 ## @example
 ## @group
-## hist (randn (1, 100), 25, "facecolor", "r", "edgecolor", "b")
+## hist (randn (1, 100), 25, "facecolor", "r", "edgecolor", "b");
 ## @end group
 ## @end example
 ##
@@ -60,8 +60,8 @@
 ##
 ## @example
 ## @group
-## hist (rand (10, 3))
-## colormap (summer ())
+## hist (rand (10, 3));
+## colormap (summer ());
 ## @end group
 ## @end example
 ##

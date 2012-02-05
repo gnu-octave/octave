@@ -30,7 +30,7 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## strcat (s, s, s)
-##      @result{} ans =
+##     @result{}
 ##         "ab ab ab "
 ##         "cdecdecde"
 ## @end group
@@ -40,7 +40,7 @@
 ## @group
 ## s = @{ "ab"; "cde" @};
 ## strcat (s, s, s)
-##      @result{} ans =
+##     @result{}
 ##         @{
 ##           [1,1] = ababab
 ##           [2,1] = cdecdecde

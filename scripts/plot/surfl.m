@@ -58,8 +58,8 @@
 ##
 ## @example
 ## @group
-## colormap(bone);
-## surfl(peaks);
+## colormap (bone (64));
+## surfl (peaks);
 ## shading interp;
 ## @end group
 ## @end example

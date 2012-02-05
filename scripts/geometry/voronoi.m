@@ -42,12 +42,12 @@
 ##
 ## @example
 ## @group
-##   x = rand (10, 1);
-##   y = rand (size (x));
-##   h = convhull (x, y);
-##   [vx, vy] = voronoi (x, y);
-##   plot (vx, vy, "-b", x, y, "o", x(h), y(h), "-g")
-##   legend ("", "points", "hull");
+## x = rand (10, 1);
+## y = rand (size (x));
+## h = convhull (x, y);
+## [vx, vy] = voronoi (x, y);
+## plot (vx, vy, "-b", x, y, "o", x(h), y(h), "-g");
+## legend ("", "points", "hull");
 ## @end group
 ## @end example
 ##

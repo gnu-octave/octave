@@ -27,10 +27,10 @@
 ## @example
 ## @group
 ## computer ()
-##      @print{} i586-pc-linux-gnu
+##    @print{} i586-pc-linux-gnu
 ##
 ## x = computer ()
-##      @result{} x = "i586-pc-linux-gnu"
+##    @result{} x = "i586-pc-linux-gnu"
 ## @end group
 ## @end example
 ##

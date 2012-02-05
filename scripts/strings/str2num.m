@@ -27,9 +27,8 @@
 ## str2num ("3.141596")
 ##       @result{} 3.141596
 ##
-## str2num (["1, 2, 3"; "4, 5, 6"]);
-##       @result{} ans =
-##          1  2  3
+## str2num (["1, 2, 3"; "4, 5, 6"])
+##       @result{} 1  2  3
 ##          4  5  6
 ## @end group
 ## @end example

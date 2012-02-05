@@ -29,7 +29,7 @@
 ## @ifnottex
 ##
 ## @example
-## kurtosis (x) = N^(-1) std(x)^(-4) sum ((x - mean(x)).^4) - 3
+## kurtosis (x) = 1/N std(x)^(-4) sum ((x - mean(x)).^4) - 3
 ## @end example
 ##
 ## @end ifnottex

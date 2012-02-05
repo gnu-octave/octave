@@ -48,8 +48,8 @@
 ##
 ## @example
 ## @group
-## [c, h] = contour (peaks(), -4 : 6);
-## clabel (c, h, -4 : 2 : 6, 'fontsize', 12);
+## [c, h] = contour (peaks (), -4 : 6);
+## clabel (c, h, -4:2:6, "fontsize", 12);
 ## @end group
 ## @end example
 ##

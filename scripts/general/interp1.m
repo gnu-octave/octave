@@ -87,7 +87,7 @@
 ## near = interp1 (xp, yp, xf, "nearest");
 ## plot (xf, yf, "r", xf, lin, "g", xf, spl, "b",
 ##       xf, cub, "c", xf, near, "m", xp, yp, "r*");
-## legend ("original", "linear", "spline", "cubic", "nearest")
+## legend ("original", "linear", "spline", "cubic", "nearest");
 ## @end group
 ## @end example
 ##

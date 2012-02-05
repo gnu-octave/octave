@@ -27,7 +27,7 @@
 ## @ifnottex
 ##
 ## @example
-## logit(@var{p}) = log (@var{p} / (1-@var{p}))
+## logit (@var{p}) = log (@var{p} / (1-@var{p}))
 ## @end example
 ##
 ## @end ifnottex

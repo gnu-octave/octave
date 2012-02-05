@@ -54,9 +54,7 @@
 ## the histogram and @var{pax} the corresponding axes objects.
 ##
 ## @example
-## @group
-## plotmatrix (randn (100, 3), 'g+')
-## @end group
+## plotmatrix (randn (100, 3), "g+")
 ## @end example
 ##
 ## @end deftypefn

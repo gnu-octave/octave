@@ -23,7 +23,6 @@
 ##
 ## @example
 ## @group
-##
 ## int2str (123)
 ##      @result{} "123"
 ##

@@ -27,7 +27,7 @@
 ## @ifnottex
 ##
 ## @example
-##    c(x) = c(1) * x^n + @dots{} + c(n) x + c(n+1)
+## c(x) = c(1) * x^n + @dots{} + c(n) x + c(n+1)
 ## @end example
 ##
 ## @end ifnottex

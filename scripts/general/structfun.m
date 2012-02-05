@@ -47,7 +47,7 @@
 ## s.name2 = "Jill Jones";
 ## structfun (@@(x) regexp (x, '(\w+)$', "matches")@{1@}, s,
 ##            "UniformOutput", false)
-##     @result{}
+## @result{}
 ##    @{
 ##      name1 = Smith
 ##      name2 = Jones

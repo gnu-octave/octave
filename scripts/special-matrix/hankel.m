@@ -29,7 +29,7 @@
 ## @var{r}, has the elements
 ## @tex
 ## $$
-## H (i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
+## H(i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
 ## $$
 ## @end tex
 ## @ifnottex

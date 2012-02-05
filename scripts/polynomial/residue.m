@@ -33,9 +33,9 @@
 ##
 ## @example
 ## @group
-##  B(s)    M       r(m)         N
-##  ---- = SUM -------------  + SUM k(i)*s^(N-i)
-##  A(s)   m=1 (s-p(m))^e(m)    i=1
+## B(s)    M       r(m)         N
+## ---- = SUM -------------  + SUM k(i)*s^(N-i)
+## A(s)   m=1 (s-p(m))^e(m)    i=1
 ## @end group
 ## @end example
 ##
@@ -52,11 +52,11 @@
 ## @group
 ## b = [1, 1, 1];
 ## a = [1, -5, 8, -4];
-## [r, p, k, e] = residue (b, a);
-##      @result{} r = [-2; 7; 3]
-##      @result{} p = [2; 2; 1]
-##      @result{} k = [](0x0)
-##      @result{} e = [1; 2; 1]
+## [r, p, k, e] = residue (b, a)
+##    @result{} r = [-2; 7; 3]
+##    @result{} p = [2; 2; 1]
+##    @result{} k = [](0x0)
+##    @result{} e = [1; 2; 1]
 ## @end group
 ## @end example
 ##
@@ -95,12 +95,11 @@
 ## r = [-2; 7; 3];
 ## p = [2; 2; 1];
 ## k = [1, 0];
-## [b, a] = residue (r, p, k);
-##      @result{} b = [1, -5, 9, -3, 1]
-##      @result{} a = [1, -5, 8, -4]
+## [b, a] = residue (r, p, k)
+##    @result{} b = [1, -5, 9, -3, 1]
+##    @result{} a = [1, -5, 8, -4]
 ##
 ## where mpoles is used to determine e = [1; 2; 1]
-##
 ## @end group
 ## @end example
 ##
@@ -112,9 +111,9 @@
 ## p = [2; 1; 2];
 ## k = [1, 0];
 ## e = [2; 1; 1];
-## [b, a] = residue (r, p, k, e);
-##      @result{} b = [1, -5, 9, -3, 1]
-##      @result{} a = [1, -5, 8, -4]
+## [b, a] = residue (r, p, k, e)
+##    @result{} b = [1, -5, 9, -3, 1]
+##    @result{} a = [1, -5, 8, -4]
 ## @end group
 ## @end example
 ##
@@ -129,9 +128,9 @@
 ##
 ## @example
 ## @group
-##     -2        7        3         s^4 - 5s^3 + 9s^2 - 3s + 1
-##    ----- + ------- + ----- + s = --------------------------
-##    (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
+##  -2        7        3         s^4 - 5s^3 + 9s^2 - 3s + 1
+## ----- + ------- + ----- + s = --------------------------
+## (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
 ## @end group
 ## @end example
 ##

@@ -27,10 +27,10 @@
 ##
 ## @example
 ## @group
-## roots(poly(eye(3)))
-## @result{} 1.00001 + 0.00001i
-## @result{} 1.00001 - 0.00001i
-## @result{} 0.99999 + 0.00000i
+## roots (poly (eye (3)))
+##     @result{} 1.00001 + 0.00001i
+##        1.00001 - 0.00001i
+##        0.99999 + 0.00000i
 ## @end group
 ## @end example
 ##

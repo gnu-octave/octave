@@ -23,6 +23,7 @@ include $(top_srcdir)/build-aux/common.mk
 FCN_FILES = \
   fntests.m \
   test_args.m \
+  test_bug_31371.m \
   test_diag_perm.m \
   test_error.m \
   test_eval-catch.m \

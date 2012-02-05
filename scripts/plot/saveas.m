@@ -50,10 +50,9 @@
 ##
 ## @example
 ## @group
-## figure (1);
 ## clf ();
 ## surf (peaks);
-## saveas(1, "figure1.png");
+## saveas (1, "figure1.png");
 ## @end group
 ## @end example
 ##

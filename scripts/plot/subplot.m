@@ -56,7 +56,7 @@
 ## the grid locations specified.  The first demo illustrates an example:
 ##
 ## @example
-## @code{demo ("subplot", 1)}
+## demo ("subplot", 1)
 ## @end example
 ##
 ## @end ifnottex

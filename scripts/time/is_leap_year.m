@@ -26,7 +26,7 @@
 ## @example
 ## @group
 ## is_leap_year (2000)
-##      @result{} 1
+##    @result{} 1
 ## @end group
 ## @end example
 ## @seealso{weekday, eomday, calendar}

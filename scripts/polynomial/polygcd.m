@@ -25,16 +25,16 @@
 ## Together with deconv, you can reduce a ratio of two polynomials.
 ## The tolerance @var{tol} defaults to @code{sqrt(eps)}.
 ##
-## @strong{Caution:} This is a numerically unstable algorithm and should not be used on large polynomials.
+## @strong{Caution:} This is a numerically unstable algorithm and should not
+## be used on large polynomials.
 ##
 ## Example code:
 ##
 ## @example
 ## @group
-## polygcd (poly(1:8), poly(3:12)) - poly(3:8)
+## polygcd (poly (1:8), poly (3:12)) - poly (3:8)
 ## @result{} [ 0, 0, 0, 0, 0, 0, 0 ]
-## deconv (poly(1:8), polygcd (poly(1:8), poly(3:12))) ...
-##   - poly(1:2)
+## deconv (poly (1:8), polygcd (poly (1:8), poly (3:12))) - poly(1:2)
 ## @result{} [ 0, 0, 0 ]
 ## @end group
 ## @end example

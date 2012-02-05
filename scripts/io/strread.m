@@ -34,6 +34,7 @@
 ## The string @var{format} describes how the words in @var{str} should be
 ## parsed.
 ## It may contain any combination of the following specifiers:
+##
 ## @table @code
 ## @item %s
 ## The word is parsed as a string.
@@ -84,6 +85,7 @@
 ##
 ## Optional numeric argument @var{format_repeat} can be used for
 ## limiting the number of items read:
+##
 ## @table @asis
 ## @item -1
 ## (default) read all of the string until the end.
@@ -91,7 +93,6 @@
 ## @item N
 ## Read N times @var{nargout} items.  0 (zero) is an acceptable
 ## value for @var{format_repeat}.
-##
 ## @end table
 ##
 ## The behavior of @code{strread} can be changed via property-value

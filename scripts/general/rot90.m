@@ -28,8 +28,8 @@
 ## @example
 ## @group
 ## rot90 ([1, 2; 3, 4], -1)
-##      @result{}  3  1
-##          4  2
+##     @result{}  3  1
+##         4  2
 ## @end group
 ## @end example
 ##

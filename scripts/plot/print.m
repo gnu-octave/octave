@@ -234,9 +234,9 @@
 ##
 ## @example
 ## @group
-## figure (1)
-## clf ()
-## surf (peaks)
+## figure (1);
+## clf ();
+## surf (peaks);
 ## print -dsvg figure1.svg
 ## @end group
 ## @end example
@@ -245,9 +245,9 @@
 ##
 ## @example
 ## @group
-## figure (1)
-## clf ()
-## surf (peaks)
+## figure (1);
+## clf ();
+## surf (peaks);
 ## print -dcdj550
 ## @end group
 ## @end example

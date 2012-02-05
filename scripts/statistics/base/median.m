@@ -34,9 +34,9 @@
 ##
 ## @example
 ## @group
-##             x(ceil(N/2)),             N odd
-## median(x) =
-##             (x(N/2) + x((N/2)+1))/2,  N even
+##               x(ceil(N/2))             N odd
+## median (x) =
+##              (x(N/2) + x((N/2)+1))/2   N even
 ## @end group
 ## @end example
 ##

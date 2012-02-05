@@ -27,7 +27,7 @@
 ## @ifnottex
 ##
 ## @example
-## cloglog(x) = - log (- log (@var{x}))
+## cloglog (x) = - log (- log (@var{x}))
 ## @end example
 ##
 ## @end ifnottex

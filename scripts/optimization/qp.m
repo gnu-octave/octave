@@ -33,8 +33,8 @@
 ##
 ## @example
 ## @group
-##      min 0.5 x'*H*x + x'*q
-##       x
+## min 0.5 x'*H*x + x'*q
+##  x
 ## @end group
 ## @end example
 ##
@@ -49,9 +49,9 @@
 ##
 ## @example
 ## @group
-##      A*x = b
-##      lb <= x <= ub
-##      A_lb <= A_in*x <= A_ub
+## A*x = b
+## lb <= x <= ub
+## A_lb <= A_in*x <= A_ub
 ## @end group
 ## @end example
 ##

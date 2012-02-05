@@ -32,11 +32,11 @@
 ## @example
 ## @group
 ## strjust (["a"; "ab"; "abc"; "abcd"])
-##      @result{} ans =
-##            a
-##           ab
-##          abc
-##         abcd
+##      @result{}
+##         "   a"
+##         "  ab"
+##         " abc"
+##         "abcd"
 ## @end group
 ## @end example
 ## @seealso{deblank, strrep, strtrim, untabify}

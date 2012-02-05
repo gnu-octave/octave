@@ -65,7 +65,7 @@
 ##
 ## @example
 ## @group
-## while (c = getc())
+## while (c = getc ())
 ##   @dots{}
 ## @end group
 ## @end example
@@ -93,7 +93,7 @@
 ##
 ## @example
 ## @group
-## while ((c = getc()))
+## while ((c = getc ()))
 ##   @dots{}
 ## @end group
 ## @end example
@@ -213,7 +213,7 @@
 ## @example
 ## @group
 ## [ "f", 111, 111 ]
-##      @result{} "foo"
+## @result{} "foo"
 ## @end group
 ## @end example
 ##
@@ -231,7 +231,7 @@
 ##
 ## @example
 ## @group
-## do_braindead_shortcircuit_evaluation(1)
+## do_braindead_shortcircuit_evaluation (1)
 ## @end group
 ## @end example
 ##
@@ -295,7 +295,7 @@
 ## @example
 ## @group
 ## "abc" + 0
-##      @result{} 97 98 99
+## @result{} 97 98 99
 ## @end group
 ## @end example
 ##

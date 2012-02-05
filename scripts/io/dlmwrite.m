@@ -40,6 +40,7 @@
 ##
 ## In addition, the following keyword value pairs may appear at the end
 ## of the argument list:
+##
 ## @table @asis
 ## @item "append"
 ## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
@@ -49,9 +50,9 @@
 ##
 ## @item "newline"
 ## The character(s) to use to separate each row.  Three special cases
-## exist for this option.  @samp{"unix"} is changed into '\n',
-## @samp{"pc"} is changed into '\r\n', and @samp{"mac"} is changed
-## into '\r'.  Other values for this option are kept as is.
+## exist for this option.  @samp{"unix"} is changed into "\n",
+## @samp{"pc"} is changed into "\r\n", and @samp{"mac"} is changed
+## into "\r".  Other values for this option are kept as is.
 ##
 ## @item "roffset"
 ## See @var{r} above.

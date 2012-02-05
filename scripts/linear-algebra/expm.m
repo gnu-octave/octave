@@ -28,7 +28,7 @@
 ## @ifnottex
 ##
 ## @example
-## expm(A) = I + A + A^2/2! + A^3/3! + @dots{}
+## expm (A) = I + A + A^2/2! + A^3/3! + @dots{}
 ## @end example
 ##
 ## @end ifnottex

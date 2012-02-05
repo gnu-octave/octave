@@ -39,7 +39,7 @@
 ## @example
 ## @group
 ## x = 1:10;
-## y = ones (1, length (x))*2.*x;
+## y = 2*x;
 ## stem (x, y, "r");
 ## @end group
 ## @end example
@@ -55,7 +55,7 @@
 ##
 ## @example
 ## @group
-## x = [0 : 10]';
+## x = [0:10]';
 ## y = [sin(x), cos(x)]
 ## h = stem (x, y);
 ## set (h(2), "color", "g");
@@ -64,7 +64,7 @@
 ## @end example
 ##
 ## @noindent
-## changes the color of the second "stem series"  and moves the base line
+## changes the color of the second "stem series" and moves the base line
 ## of the first.
 ## @seealso{bar, barh, plot}
 ## @end deftypefn

@@ -30,7 +30,7 @@
 ## @ifnottex
 ##
 ## @example
-##    shape * scale^(-shape) * x^(shape-1) * exp (-(x/scale)^shape)
+## shape * scale^(-shape) * x^(shape-1) * exp (-(x/scale)^shape)
 ## @end example
 ##
 ## @end ifnottex

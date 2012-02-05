@@ -26,7 +26,7 @@
 ## @example
 ## @group
 ## dec2bin (bitset (10, 1))
-## @result{} 1011
+##   @result{} 1011
 ## @end group
 ## @end example
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}

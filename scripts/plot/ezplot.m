@@ -35,7 +35,7 @@
 ## < 2*pi} with 60 by 60 in the mesh.  For example:
 ##
 ## @example
-## ezplot (@@(@var{x}, @var{y}) @var{x} .^ 2 - @var{y} .^ 2 - 1)
+## ezplot (@@(@var{x}, @var{y}) @var{x}.^2 - @var{y}.^2 - 1)
 ## @end example
 ##
 ## If two functions are passed as strings, inline functions or function

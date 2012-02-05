@@ -27,8 +27,8 @@
 ## @example
 ## @group
 ## flipdim ([1, 2; 3, 4], 2)
-##      @result{}  2  1
-##          4  3
+##       @result{}  2  1
+##           4  3
 ## @end group
 ## @end example
 ## @seealso{fliplr, flipud, rot90, rotdim}

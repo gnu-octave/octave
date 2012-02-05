@@ -25,7 +25,7 @@
 ## @group
 ## ss(1,2).fd(3).b = 5;
 ## getfield (ss, @{1,2@}, "fd", @{3@}, "b")
-##      @result{} ans = 5
+##    @result{} 5
 ## @end group
 ## @end example
 ##
@@ -36,7 +36,7 @@
 ## @group
 ## i1 = @{1,2@}; i2 = "fd"; i3 = @{3@}; i4= "b";
 ## ss(i1@{:@}).(i2)(i3@{:@}).(i4)
-##      @result{} ans = 5
+##    @result{} 5
 ##
 ## @end group
 ## @end example

@@ -34,12 +34,12 @@
 ##
 ## @example
 ## @group
-##   %!demo
-##   %! t = 0:0.01:2*pi;
-##   %! x = sin (t);
-##   %! plot (t,x);
-##   %! %-------------------------------------------------
-##   %! % the figure window shows one cycle of a sine wave
+## %!demo
+## %! t = 0:0.01:2*pi;
+## %! x = sin (t);
+## %! plot (t, x);
+## %! %-------------------------------------------------
+## %! % the figure window shows one cycle of a sine wave
 ## @end group
 ## @end example
 ##
@@ -53,7 +53,7 @@
 ## with the code
 ##
 ## @example
-##    %! input("Press <enter> to continue: ","s");
+## %! input("Press <enter> to continue: ","s");
 ## @end example
 ##
 ## @noindent
@@ -72,12 +72,12 @@
 ##
 ## @example
 ## @group
-##   %!demo if 1
-##   %!  function y=f(x)
-##   %!    y=x;
-##   %!  endfunction
-##   %!  f(3)
-##   %! endif
+## %!demo if 1
+## %!  function y=f(x)
+## %!    y=x;
+## %!  endfunction
+## %!  f(3)
+## %! endif
 ## @end group
 ## @end example
 ##

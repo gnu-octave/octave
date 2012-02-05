@@ -30,7 +30,7 @@
 ## function b = saveobj (a)
 ##   b = a;
 ##   if (isempty (b.field))
-##      b.field = initfield(b);
+##      b.field = initfield (b);
 ##   endif
 ## endfunction
 ## @end group

@@ -33,8 +33,8 @@
 ##
 ## @example
 ## @group
-##      min phi (x)
-##       x
+## min phi (x)
+##  x
 ## @end group
 ## @end example
 ##
@@ -49,9 +49,9 @@
 ##
 ## @example
 ## @group
-##      g(x)  = 0
-##      h(x) >= 0
-##      lb <= x <= ub
+## g(x)  = 0
+## h(x) >= 0
+## lb <= x <= ub
 ## @end group
 ## @end example
 ##
@@ -102,9 +102,9 @@
 ##
 ## @example
 ## @group
-##                 [ d f(x)   d f(x)        d f(x) ]
-##     transpose ( [ ------   -----   ...   ------ ] )
-##                 [  dx_1     dx_2          dx_N  ]
+##             [ d f(x)   d f(x)        d f(x) ]
+## transpose ( [ ------   -----   ...   ------ ] )
+##             [  dx_1     dx_2          dx_N  ]
 ## @end group
 ## @end example
 ##
@@ -155,7 +155,7 @@
 ## endfunction
 ##
 ## function obj = phi (x)
-##   obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+##   obj = exp (prod (x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
 ## endfunction
 ##
 ## x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];

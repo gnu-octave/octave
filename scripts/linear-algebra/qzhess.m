@@ -37,8 +37,8 @@
 ## The Hessenberg-triangular decomposition is the first step in
 ## Moler and Stewart's QZ@tie{}decomposition algorithm.
 ##
-## Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
-## edition}.
+## Algorithm taken from Golub and Van Loan,
+## @cite{Matrix Computations, 2nd edition}.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

@@ -30,7 +30,7 @@
 ## @group
 ## x = 3.141;
 ## genvarname ("x", who ())
-## @result{} x1
+##   @result{} x1
 ## @end group
 ## @end example
 ##
@@ -40,11 +40,11 @@
 ## @example
 ## @group
 ## genvarname (@{"foo", "foo"@})
-## @result{}
-## @{
-##   [1,1] = foo
-##   [1,2] = foo1
-## @}
+##   @result{}
+##      @{
+##        [1,1] = foo
+##        [1,2] = foo1
+##      @}
 ## @end group
 ## @end example
 ##
@@ -55,8 +55,8 @@
 ## @example
 ## @group
 ## name = genvarname ("x");
-## eval([name " = 42"]);
-## @result{} x =  42
+## eval ([name " = 42"]);
+##   @result{} x =  42
 ## @end group
 ## @end example
 ##
@@ -68,13 +68,12 @@
 ## for i = 1:3
 ##   x.(genvarname ("a", fieldnames (x))) = i;
 ## endfor
-## @result{}
-## x =
-## @{
-##   a =  1
-##   a1 =  2
-##   a2 =  3
-## @}
+##   @result{} x =
+##      @{
+##        a =  1
+##        a1 =  2
+##        a2 =  3
+##      @}
 ## @end group
 ## @end example
 ##

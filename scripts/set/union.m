@@ -27,7 +27,7 @@
 ## @example
 ## @group
 ## union ([1, 2, 4], [2, 3, 5])
-##      @result{} [1, 2, 3, 4, 5]
+##     @result{} [1, 2, 3, 4, 5]
 ## @end group
 ## @end example
 ##
@@ -37,18 +37,17 @@
 ##
 ## @example
 ## @group
-## union([1, 2; 2, 3], [1, 2; 3, 4], "rows")
-##      @result{}  1   2
-##     2   3
-##     3   4
+## union ([1, 2; 2, 3], [1, 2; 3, 4], "rows")
+##    @result{}  1   2
+##        2   3
+##        3   4
 ## @end group
 ## @end example
 ##
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} union (@var{a}, @var{b})
 ##
 ## Return index vectors @var{ia} and @var{ib} such that @code{a(ia)} and
-## @code{b(ib)} are
-## disjoint sets whose union is @var{c}.
+## @code{b(ib)} are disjoint sets whose union is @var{c}.
 ##
 ## @seealso{intersect, setdiff, unique}
 ## @end deftypefn

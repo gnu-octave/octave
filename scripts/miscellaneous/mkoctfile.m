@@ -124,16 +124,16 @@
 ##
 ## @example
 ## @group
-##                   .c    C source
-##                   .cc   C++ source
-##                   .C    C++ source
-##                   .cpp  C++ source
-##                   .f    Fortran source (fixed form)
-##                   .F    Fortran source (fixed form)
-##                   .f90  Fortran source (free form)
-##                   .F90  Fortran source (free form)
-##                   .o    object file
-##                   .a    library file
+##    .c    C source
+##    .cc   C++ source
+##    .C    C++ source
+##    .cpp  C++ source
+##    .f    Fortran source (fixed form)
+##    .F    Fortran source (fixed form)
+##    .f90  Fortran source (free form)
+##    .F90  Fortran source (free form)
+##    .o    object file
+##    .a    library file
 ## @end group
 ## @end example
 ##

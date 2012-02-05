@@ -33,7 +33,7 @@
 ## @ifnottex
 ##
 ## @example
-## corr(x,y) = cov(x,y)/(std(x)*std(y))
+## corr (x,y) = cov (x,y) / (std (x) * std (y))
 ## @end example
 ##
 ## @end ifnottex

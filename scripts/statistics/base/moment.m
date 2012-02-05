@@ -43,6 +43,7 @@
 ##
 ## The optional string @var{type} specifies the type of moment to be computed.
 ## Valid options are:
+##
 ## @table @asis
 ## @item "c"
 ##   Central Moment.  The moment about the mean defined as
@@ -72,7 +73,7 @@
 ##
 ## @example
 ## @group
-## 1/N SUM_i ( abs(x(i)) )^p
+## 1/N SUM_i ( abs (x(i)) )^p
 ## @end group
 ## @end example
 ##
@@ -89,7 +90,7 @@
 ##
 ## @example
 ## @group
-## 1/N SUM_i ( abs(x(i) - mean(x)) )^p
+## 1/N SUM_i ( abs (x(i) - mean(x)) )^p
 ## @end group
 ## @end example
 ##

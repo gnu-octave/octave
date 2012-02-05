@@ -62,9 +62,6 @@ extern bool reading_startup_message_printed;
 // TRUE means input is coming from startup file.
 extern bool input_from_startup_file;
 
-// Keep track of symbol table information when parsing functions.
-extern std::stack<symbol_table::scope_id> symtab_context;
-
 // Name of the current class when we are parsing class methods or
 // constructors.
 extern std::string current_class_name;

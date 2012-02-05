@@ -68,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lex.h"
 #include "ov.h"
 #include "parse.h"
+#include "parse-private.h"
 #include "pt-all.h"
 #include "symtab.h"
 #include "token.h"
@@ -1113,8 +1114,7 @@ reset_parser (void)
 
   parser_end_of_input = false;
 
-  while (! symtab_context.empty ())
-    symtab_context.pop ();
+  parser_symtab_context.clear ();
 
   // We do want a prompt by default.
   promptflag = 1;

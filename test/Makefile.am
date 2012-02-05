@@ -49,6 +49,7 @@ FCN_FILES = \
   test_unwind.m \
   test_while.m
 
+include bug-35448/module.mk
 include classes/module.mk
 include class-concat/module.mk
 include ctor-vs-method/module.mk

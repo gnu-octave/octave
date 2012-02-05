@@ -68,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
+#include "parse-private.h"
 #include "pt-all.h"
 #include "pt-eval.h"
 #include "symtab.h"
@@ -126,7 +127,7 @@ static int parsing_subfunctions = false;
 static bool endfunction_found = false;
 
 // Keep track of symbol table information when parsing functions.
-std::stack<symbol_table::scope_id> symtab_context;
+symtab_context parser_symtab_context;
 
 // Name of the current class when we are parsing class methods or
 // constructors.
@@ -365,11 +366,8 @@ make_statement (T *arg)
     { \
       global_command = 0; \
       yyerrok; \
-      if (! symtab_context.empty ()) \
-        { \
-          symbol_table::set_scope (symtab_context.top ()); \
-          symtab_context.pop (); \
-        } \
+      if (! parser_symtab_context.empty ()) \
+        parser_symtab_context.pop (); \
       if (interactive || forced_interactive) \
         YYACCEPT; \
       else \
@@ -1224,7 +1222,8 @@ push_fcn_symtab : // empty
                     if (max_function_depth < current_function_depth)
                       max_function_depth = current_function_depth;
 
-                    symtab_context.push (symbol_table::current_scope ());
+                    parser_symtab_context.push ();
+
                     symbol_table::set_scope (symbol_table::alloc_scope ());
 
                     if (! reading_script_file && current_function_depth == 1
@@ -1246,7 +1245,7 @@ param_list_beg  : '('
 
                     if (lexer_flags.looking_at_function_handle)
                       {
-                        symtab_context.push (symbol_table::current_scope ());
+                        parser_symtab_context.push ();
                         symbol_table::set_scope (symbol_table::alloc_scope ());
                         lexer_flags.looking_at_function_handle--;
                         lexer_flags.looking_at_anon_fcn_args = true;
@@ -2124,12 +2123,10 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   symbol_table::scope_id fcn_scope = symbol_table::current_scope ();
 
-  if (symtab_context.empty ())
+  if (parser_symtab_context.empty ())
     panic_impossible ();
 
-  symbol_table::set_scope (symtab_context.top ());
-
-  symtab_context.pop ();
+  parser_symtab_context.pop ();
 
   stmt->set_print_flag (false);
 
@@ -2972,11 +2969,10 @@ finish_function (tree_parameter_list *ret_list,
 static void
 recover_from_parsing_function (void)
 {
-  if (symtab_context.empty ())
+  if (parser_symtab_context.empty ())
     panic_impossible ();
 
-  symbol_table::set_scope (symtab_context.top ());
-  symtab_context.pop ();
+  parser_symtab_context.pop ();
 
   if (reading_fcn_file && current_function_depth == 1
       && ! parsing_subfunctions)

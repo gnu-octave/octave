@@ -284,6 +284,7 @@ octinclude_HEADERS = \
   ops.h \
   pager.h \
   parse.h \
+  parse-private.h \
   pr-output.h \
   procstream.h \
   profiler.h \

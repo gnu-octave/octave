@@ -8,7 +8,7 @@
 %! T = @(t,f) t;
 %! F = @(t,f) f;
 %! 
-%! % Church Numerals in MATLAB
+%! % Church Numerals
 %! Zero  = @(f,x) x;
 %! One   = @(f,x) f(x);
 %! Two   = @(f,x) f(f(x));

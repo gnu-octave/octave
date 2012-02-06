@@ -49,6 +49,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "defun-dld.h"
 #include "error.h"
 #include "oct-obj.h"
+#include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
 # include "oct-qhull.h"
@@ -56,6 +57,12 @@ along with Octave; see the file COPYING.  If not, see
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
 # endif
 #endif
+
+static void
+close_fcn (FILE *f)
+{
+  gnulib::fclose (f);
+}
 
 DEFUN_DLD (__delaunayn__, args, ,
            "-*- texinfo -*-\n\
@@ -121,6 +128,8 @@ Undocumented internal function.\n\
 
       sprintf (flags, "qhull d %s", options.c_str ());
 
+      unwind_protect frame;
+
       // Replace the outfile pointer with stdout for debugging information.
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
       FILE *outfile = gnulib::fopen ("NUL", "w");
@@ -128,10 +137,12 @@ Undocumented internal function.\n\
       FILE *outfile = gnulib::fopen ("/dev/null", "w");
 #endif
       FILE *errfile = stderr;
-          
-      if  (! outfile)
+
+      if (outfile)
+        frame.add_fcn (close_fcn, outfile);
+      else
         {
-          error ("__delaunayn__: Unable to create temporary file for output.");
+          error ("__delaunayn__: unable to create temporary file for output");
           return retval;
         }
 

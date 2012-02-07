@@ -121,6 +121,14 @@ function [beta, sigma, r] = ols (y, x)
     r = y - x * beta;
   endif
   if (isargout (2))
+
+    ## z is of full rank, avoid the SVD in rnk
+    if (p == 0)
+      rnk = columns (z);
+    else
+      rnk = rank (z);
+    endif
+
     sigma = r' * r / (nr - rnk);
   endif
 

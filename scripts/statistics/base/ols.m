@@ -121,6 +121,14 @@ function [beta, sigma, r] = ols (y, x)
     r = y - x * beta;
   endif
   if (isargout (2))
+
+    ## z is of full rank, avoid the SVD in rnk
+    if (p == 0)
+      rnk = columns (z);
+    else
+      rnk = rank (z);
+    endif
+
     sigma = r' * r / (nr - rnk);
   endif
 
@@ -132,6 +140,27 @@ endfunction
 %! y = 3*x + 2;
 %! x = [x, ones(5,1)];
 %! assert (ols(y,x), [3; 2], 50*eps)
+
+%!test
+%! x = [1, 2; 3, 4];
+%! y = [1; 2];
+%! [b, s, r] = ols (x, y);
+%! assert (b, [1.4, 2], 2*eps);
+%! assert (s, [0.2, 0; 0, 0], 2*eps);
+%! assert (r, [-0.4, 0; 0.2, 0], 2*eps);
+
+%!test
+%! x = [1, 2; 3, 4];
+%! y = [1; 2];
+%! [b, s] = ols (x, y);
+%! assert (b, [1.4, 2], 2*eps);
+%! assert (s, [0.2, 0; 0, 0], 2*eps);
+
+%!test
+%! x = [1, 2; 3, 4];
+%! y = [1; 2];
+%! b = ols (x, y);
+%! assert (b, [1.4, 2], 2*eps);
 
 %% Test input validation
 %!error ols ();

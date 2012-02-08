@@ -1,19 +1,20 @@
 %!test
 %! % Work around MATLAB bug where f(x)(y) is invalid syntax
 %! % (This bug does not apply to Octave)
-%! C = @(f,x) f(x);
-%! C2 = @(f,x,y) f(x,y);
+%!
+%! C = @(fcn,x) fcn(x);
+%! C2 = @(fcn,x,y) fcn(x,y);
 %! 
 %! % Church Booleans
 %! T = @(t,f) t;
 %! F = @(t,f) f;
 %! 
 %! % Church Numerals
-%! Zero  = @(f,x) x;
-%! One   = @(f,x) f(x);
-%! Two   = @(f,x) f(f(x));
-%! Three = @(f,x) f(f(f(x)));
-%! Four  = @(f,x) f(f(f(f(x))));
+%! Zero  = @(fcn,x) x;
+%! One   = @(fcn,x) fcn(x);
+%! Two   = @(fcn,x) fcn(fcn(x));
+%! Three = @(fcn,x) fcn(fcn(fcn(x)));
+%! Four  = @(fcn,x) fcn(fcn(fcn(fcn(x))));
 %! 
 %! % Arithmetic Operations
 %! Inc = @(a) @(f,x) f(a(f,x)); % Increment
@@ -23,18 +24,18 @@
 %! Sub = @(a,b) b(Dec, a);
 %! 
 %! % Renderer - Convert church numeral to "real" number
-%! render = @(n) n(@(n) n+1,0);
+%! Render = @(n) n(@(n) n+1,0);
 %! 
 %! % Predicates
-%! iszero = @(n) n(@(x) F, T);
+%! Iszero = @(n) n(@(x) F, T);
 %! 
 %! % Y combinator implements recursion
-%! Y = @(f) C(@(g) f(@(x) C(g(g), x)), ...
-%!            @(g) f(@(x) C(g(g), x)));
+%! Ycomb = @(f) C(@(g) f(@(x) C(g(g), x)), ...
+%!                @(g) f(@(x) C(g(g), x)));
+%!
+%! Factorial = Ycomb(@(f) @(n) C(C2(Iszero(n), ...
+%!                   @(d) One, @(d) Mult(n, f(Dec(n)))),0));
 %! 
-%! Factorial = Y(@(f) @(n) C(C2(iszero(n), ...
-%!               @(d) One, @(d) Mult(n, f(Dec(n)))),0));
-%! 
-%! assert (render(Factorial(Two), 2))
-%! assert (render(Factorial(Three), 3))
-%! assert (render(Factorial(Four), 12))
+%! assert (Render (Factorial (Two)), 2)
+%! assert (Render (Factorial (Three)), 6)
+%! assert (Render (Factorial (Four)), 24)

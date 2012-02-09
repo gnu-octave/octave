@@ -134,7 +134,7 @@ endfunction
 %!assert (conv (b,a,"same"), [28, 34, 40]);
 
 %!assert (conv (a,b,"valid"), [10, 16, 22, 28, 34, 40, 46, 52]);
-%!assert (conv (b,a,"valid"), zeros (1,0);
+%!assert (conv (b,a,"valid"), zeros (1,0));
 
 
 %% Test input validation

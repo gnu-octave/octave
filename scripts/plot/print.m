@@ -397,7 +397,7 @@ function print (varargin)
   unwind_protect_cleanup
     ## restore modified properties
     if (isstruct (props))
-      for n = 1:numel(props)
+      for n = numel(props):-1:1
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif

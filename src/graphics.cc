@@ -3043,6 +3043,16 @@ root_figure::properties::update_units (void)
   set_screensize (ss);
 }
 
+Matrix
+root_figure::properties::get_boundingbox (bool internal, const Matrix&) const
+{
+  Matrix screen_size = screen_size_pixels ();
+  Matrix pos = Matrix (1, 4, 0);
+  pos(2) = screen_size(0);
+  pos(3) = screen_size(1);
+  return pos;
+}
+
 /*
 %!test
 %! set (0, "units", "pixels")

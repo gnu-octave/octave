@@ -1168,12 +1168,30 @@ private:
     pos(2) = ww;
     pos(3) = hh - status_h - menu_h;
 
-    fp.set_position (pos);
+    graphics_object obj = gh_manager::get_object (0);
+    base_properties& rp = obj.get_properties ();
+    Matrix screen_size = rp.get_boundingbox (true);
+    pos(0)--;
+    pos(1)--;
+    pos(1) = screen_size(3) - pos(1) - pos(3);
+    fp.set_boundingbox (pos, true);
+  }
+
+  Matrix get_figure_position (void)
+  {
+    graphics_object obj = gh_manager::get_object (0);
+    base_properties& rp = obj.get_properties ();
+    Matrix screen_size = rp.get_boundingbox (true);
+    Matrix pos = fp.get_boundingbox (true);
+    pos(1) = screen_size(3) - pos(1) - pos(3);
+    pos(0)++;
+    pos(1)++;
+    return pos;
   }
 
   void draw (void)
   {
-    Matrix pos = fp.get_position ().matrix_value ();
+    Matrix pos = get_figure_position ();
     Fl_Window::resize (pos(0), pos(1), pos(2), pos(3) + status_h + menu_h);
 
     return Fl_Window::draw ();
@@ -1296,7 +1314,7 @@ private:
                       dynamic_cast<axes::properties&> (ax_obj.get_properties ());
 
                     double x0, y0, x1, y1;
-                    Matrix pos = fp.get_position ().matrix_value ();
+                    Matrix pos = get_figure_position ();
                     pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
                     pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
 

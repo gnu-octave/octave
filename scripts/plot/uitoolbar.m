@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uitoolbar ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uitoolbar (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{handle} =} uitoolbar ("Name", value, @dots{})
+## @deftypefnx {Function File} {@var{handle} =} uitoolbar (@var{parent}, "Name", value, @dots{})
 ## @end deftypefn
 
 ## Author: goffioul

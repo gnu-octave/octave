@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} ezsurf (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {} ezsurf (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezsurf (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezsurf (@dots{}, 'circ')
+## @deftypefnx {Function File} {} ezsurf (@dots{}, "circ")
 ## @deftypefnx {Function File} {} ezsurf (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezsurf (@dots{})
 ##
@@ -41,7 +41,7 @@
 ## function @code{[@var{fx} (@var{s}, @var{t}), @var{fy} (@var{s}, @var{t}),
 ## @var{fz} (@var{s}, @var{t})]}.
 ##
-## If the argument 'circ' is given, then the function is plotted over a disk
+## If the argument "circ" is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created

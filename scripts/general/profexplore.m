@@ -21,7 +21,7 @@
 ## Interactively explore hierarchical profiler output.
 ##
 ## Assuming @var{data} is the structure with profile data returned by
-## @code{profile ('info')}, this command opens an interactive prompt
+## @code{profile ("info")}, this command opens an interactive prompt
 ## that can be used to explore the call-tree.  Type @kbd{help} to get a list
 ## of possible commands.
 ## @seealso{profile, profshow}
@@ -45,7 +45,7 @@ function profexplore (data)
 endfunction
 
 ## This is the worker function.  tree is the current subtree we want to
-## display / explore.  parents is a string containing the already 'rendered'
+## display / explore.  parents is a string containing the already "rendered"
 ## data for the parents which is displayed on top of the list of current
 ## children.  prefix is the prefix to add to each line rendered; this
 ## is just a string of spaces to get indentation right.

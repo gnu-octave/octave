@@ -21,8 +21,8 @@
 ## @deftypefnx {Command} {} profile off
 ## @deftypefnx {Command} {} profile resume
 ## @deftypefnx {Command} {} profile clear
-## @deftypefnx {Function File} {@var{S} =} profile ('status')
-## @deftypefnx {Function File} {@var{T} =} profile ('info')
+## @deftypefnx {Function File} {@var{S} =} profile ("status")
+## @deftypefnx {Function File} {@var{T} =} profile ("info")
 ## Control the built-in profiler.
 ##
 ## @table @code
@@ -32,7 +32,7 @@
 ##
 ## @item profile off
 ## Stop profiling.  The collected data can later be retrieved and examined
-## with calls like @code{S = profile ('info')}.
+## with calls like @code{S = profile ("info")}.
 ##
 ## @item profile clear
 ## Clear all collected profiler data.
@@ -41,12 +41,12 @@
 ## Restart profiling without cleaning up the old data and instead
 ## all newly collected statistics are added to the already existing ones.
 ##
-## @item @var{S} = profile ('status')
+## @item @var{S} = profile ("status")
 ## Return a structure filled with certain information about the current status
 ## of the profiler.  At the moment, the only field is @code{ProfilerStatus}
-## which is either 'on' or 'off'.
+## which is either "on" or "off".
 ##
-## @item @var{T} = profile ('info')
+## @item @var{T} = profile ("info")
 ## Return the collected profiling statistics in the structure @var{T}.
 ## The flat profile is returned in the field @code{FunctionTable} which is an
 ## array of structures, each entry corresponding to a function which was called

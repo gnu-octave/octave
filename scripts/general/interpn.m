@@ -29,7 +29,7 @@
 ## at a location given by the parameters @var{x1}, @var{x2}, @dots{}, @var{xn}.
 ## The parameters @var{x1}, @var{x2}, @dots{}, @var{xn} are either
 ## @var{n}-dimensional arrays of the same size as the array @var{v} in
-## the 'ndgrid' format or vectors.  The parameters @var{y1}, etc. respect a
+## the "ndgrid" format or vectors.  The parameters @var{y1}, etc. respect a
 ## similar format to @var{x1}, etc., and they represent the points at which
 ## the array @var{vi} is interpolated.
 ##
@@ -42,21 +42,21 @@
 ## Method is one of:
 ##
 ## @table @asis
-## @item 'nearest'
+## @item "nearest"
 ## Return the nearest neighbor.
 ##
-## @item 'linear'
+## @item "linear"
 ## Linear interpolation from nearest neighbors.
 ##
-## @item 'cubic'
+## @item "cubic"
 ## Cubic interpolation from four nearest neighbors (not implemented yet).
 ##
-## @item 'spline'
+## @item "spline"
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve.
 ## @end table
 ##
-## The default method is 'linear'.
+## The default method is "linear".
 ##
 ## If @var{extrapval} is the scalar value, use it to replace the values
 ## beyond the endpoints with that number.  If @var{extrapval} is missing,

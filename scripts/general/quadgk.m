@@ -78,7 +78,7 @@
 ## unacceptable error are subdivided and re-evaluated.  If the number of
 ## subintervals exceeds 650 subintervals at any point then a poor
 ## convergence is signaled and the current estimate of the integral is
-## returned.  The property 'MaxIntervalCount' can be used to alter the
+## returned.  The property "MaxIntervalCount" can be used to alter the
 ## number of subintervals that can exist before exiting.
 ##
 ## @item WayPoints

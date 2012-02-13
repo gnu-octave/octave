@@ -22,7 +22,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} fail (@var{code})
 ## @deftypefnx {Function File} {} fail (@var{code}, @var{pattern})
-## @deftypefnx {Function File} {} fail (@var{code}, 'warning', @var{pattern})
+## @deftypefnx {Function File} {} fail (@var{code}, "warning", @var{pattern})
 ##
 ## Return true if @var{code} fails with an error message matching
 ## @var{pattern}, otherwise produce an error.  Note that @var{code}

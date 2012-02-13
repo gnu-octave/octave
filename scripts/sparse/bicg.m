@@ -40,8 +40,8 @@
 ## The preconditioner @var{P} is given as @code{P = M1 * M2}.
 ## Both @var{M1} and @var{M2} can be passed as a matrix or as
 ## a function handle or inline function @code{g} such that
-## @code{g(x, 'notransp') = M1 \ x} or @code{g(x, 'notransp') = M2 \ x} and
-## @code{g(x, 'transp') = M1' \ x} or @code{g(x, 'transp') = M2' \ x}.
+## @code{g(x, "notransp") = M1 \ x} or @code{g(x, "notransp") = M2 \ x} and
+## @code{g(x, "transp") = M1' \ x} or @code{g(x, "transp") = M2' \ x}.
 ##
 ## If called with more than one output parameter
 ##

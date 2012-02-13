@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{zl} =} zlim ()
 ## @deftypefnx {Function File} {} zlim (@var{zl})
-## @deftypefnx {Function File} {@var{m} =} zlim ('mode')
+## @deftypefnx {Function File} {@var{m} =} zlim ("mode")
 ## @deftypefnx {Function File} {} zlim (@var{m})
 ## @deftypefnx {Function File} {} zlim (@var{h}, @dots{})
 ## Get or set the limits of the z-axis of the current plot.  Called without
@@ -28,8 +28,8 @@
 ## to this value.
 ##
 ## The current mode for calculation of the z-axis can be returned with a
-## call @code{zlim ('mode')}, and can be either 'auto' or 'manual'.  The
-## current plotting mode can be set by passing either 'auto' or 'manual'
+## call @code{zlim ("mode")}, and can be either "auto" or "manual".  The
+## current plotting mode can be set by passing either "auto" or "manual"
 ## as the argument.
 ##
 ## If passed a handle as the first argument, then operate on this handle

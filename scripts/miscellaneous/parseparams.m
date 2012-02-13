@@ -40,7 +40,7 @@
 ## @end group
 ## @end example
 ##
-## The parseparams function may be used to separate 'regular'
+## The parseparams function may be used to separate "regular"
 ## arguments and additional arguments given as property/value pairs of
 ## the @var{varargin} cell array.
 ##

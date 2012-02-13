@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} ezmesh (@var{fx}, @var{fy}, @var{fz})
 ## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezmesh (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezmesh (@dots{}, 'circ')
+## @deftypefnx {Function File} {} ezmesh (@dots{}, "circ")
 ## @deftypefnx {Function File} {} ezmesh (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezmesh (@dots{})
 ##
@@ -41,7 +41,7 @@
 ## function @code{[@var{fx} (@var{s}, @var{t}), @var{fy} (@var{s}, @var{t}),
 ## @var{fz} (@var{s}, @var{t})]}.
 ##
-## If the argument 'circ' is given, then the function is plotted over a disk
+## If the argument "circ" is given, then the function is plotted over a disk
 ## centered on the middle of the domain @var{dom}.
 ##
 ## The optional return value @var{h} is a graphics handle to the created 

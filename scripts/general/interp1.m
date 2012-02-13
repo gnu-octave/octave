@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@var{y}, @var{xi})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{method})
 ## @deftypefnx {Function File} {@var{yi} =} interp1 (@dots{}, @var{extrap})
-## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, 'pp')
+## @deftypefnx {Function File} {@var{pp} =} interp1 (@dots{}, "pp")
 ##
 ## One-dimensional interpolation.  Interpolate @var{y}, defined at the
 ## points @var{x}, at the points @var{xi}.  The sample points @var{x}
@@ -33,19 +33,19 @@
 ## Method is one of:
 ##
 ## @table @asis
-## @item 'nearest'
+## @item "nearest"
 ## Return the nearest neighbor.
 ##
-## @item 'linear'
+## @item "linear"
 ## Linear interpolation from nearest neighbors
 ##
-## @item 'pchip'
+## @item "pchip"
 ## Piecewise cubic Hermite interpolating polynomial
 ##
-## @item 'cubic'
+## @item "cubic"
 ## Cubic interpolation (same as @code{pchip})
 ##
-## @item 'spline'
+## @item "spline"
 ## Cubic spline interpolation---smooth first and second derivatives
 ## throughout the curve
 ## @end table
@@ -53,18 +53,18 @@
 ## Appending '*' to the start of the above method forces @code{interp1}
 ## to assume that @var{x} is uniformly spaced, and only @code{@var{x}
 ## (1)} and @code{@var{x} (2)} are referenced.  This is usually faster,
-## and is never slower.  The default method is 'linear'.
+## and is never slower.  The default method is "linear".
 ##
-## If @var{extrap} is the string 'extrap', then extrapolate values beyond
+## If @var{extrap} is the string "extrap", then extrapolate values beyond
 ## the endpoints.  If @var{extrap} is a number, replace values beyond the
 ## endpoints with that number.  If @var{extrap} is missing, assume NA.
 ##
-## If the string argument 'pp' is specified, then @var{xi} should not be
+## If the string argument "pp" is specified, then @var{xi} should not be
 ## supplied and @code{interp1} returns the piecewise polynomial that
 ## can later be used with @code{ppval} to evaluate the interpolation.
 ## There is an equivalence, such that @code{ppval (interp1 (@var{x},
-## @var{y}, @var{method}, 'pp'), @var{xi}) == interp1 (@var{x}, @var{y},
-## @var{xi}, @var{method}, 'extrap')}.
+## @var{y}, @var{method}, "pp"), @var{xi}) == interp1 (@var{x}, @var{y},
+## @var{xi}, @var{method}, "extrap")}.
 ##
 ## Duplicate points in @var{x} specify a discontinuous interpolant.  There
 ## should be at most 2 consecutive points with the same value.
@@ -353,7 +353,7 @@ endfunction
 
 ## For each type of interpolated test, confirm that the interpolated
 ## value at the knots match the values at the knots.  Points away
-## from the knots are requested, but only 'nearest' and 'linear'
+## from the knots are requested, but only "nearest" and "linear"
 ## confirm they are the correct values.
 
 %!shared xp, yp, xi, style

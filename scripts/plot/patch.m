@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{fv})
-## @deftypefnx {Function File} {} patch ('Faces', @var{f}, 'Vertices', @var{v}, @dots{})
+## @deftypefnx {Function File} {} patch ("Faces", @var{f}, "Vertices", @var{v}, @dots{})
 ## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} patch (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} patch (@dots{})

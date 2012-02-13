@@ -22,7 +22,7 @@
 ## Show flat profiler results.
 ##
 ## This command prints out profiler data as a flat profile.  @var{data} is the
-## structure returned by @code{profile ('info')}.  If @var{n} is given, it
+## structure returned by @code{profile ("info")}.  If @var{n} is given, it
 ## specifies the number of functions to show in the profile; functions are
 ## sorted in descending order by total time spent in them.  If there are more
 ## than @var{n} included in the profile, those will not be shown.  @var{n}

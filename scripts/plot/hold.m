@@ -20,7 +20,7 @@
 ## @deftypefn  {Command} {} hold
 ## @deftypefnx {Command} {} hold @var{state}
 ## @deftypefnx {Function File} {} hold (@var{hax}, @dots{})
-## Toggle or set the 'hold' state of the plotting engine which determines
+## Toggle or set the "hold" state of the plotting engine which determines
 ## whether new graphic objects are added to the plot or replace the existing
 ## objects.
 ##
@@ -39,13 +39,13 @@
 ## command.  (default).
 ##
 ## @item hold
-## Toggle the current 'hold' state.
+## Toggle the current hold state.
 ## @end table
 ##
 ## When given the additional argument @var{hax}, the hold state is modified
 ## only for the given axis handle.
 ##
-## To query the current 'hold' state use the @code{ishold} function.
+## To query the current hold state use the @code{ishold} function.
 ## @seealso{ishold, cla, newplot, clf}
 ## @end deftypefn
 

@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} setxor (@var{a}, @var{b})
-## @deftypefnx {Function File} {} setxor (@var{a}, @var{b}, 'rows')
+## @deftypefnx {Function File} {} setxor (@var{a}, @var{b}, "rows")
 ## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} setxor (@var{a}, @var{b})
 ##
 ## Return the elements exclusive to @var{a} or @var{b}, sorted in ascending

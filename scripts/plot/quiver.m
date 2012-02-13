@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} quiver (@var{x}, @var{y}, @var{u}, @var{v})
 ## @deftypefnx {Function File} {} quiver (@dots{}, @var{s})
 ## @deftypefnx {Function File} {} quiver (@dots{}, @var{style})
-## @deftypefnx {Function File} {} quiver (@dots{}, 'filled')
+## @deftypefnx {Function File} {} quiver (@dots{}, "filled")
 ## @deftypefnx {Function File} {} quiver (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} quiver (@dots{})
 ##
@@ -40,7 +40,7 @@
 ## The style to use for the plot can be defined with a line style @var{style}
 ## in a similar manner to the line styles used with the @code{plot} command.
 ## If a marker is specified then markers at the grid points of the vectors are
-## printed rather than arrows.  If the argument 'filled' is given then the
+## printed rather than arrows.  If the argument "filled" is given then the
 ## markers as filled.
 ##
 ## The optional return value @var{h} is a graphics handle to a quiver object.

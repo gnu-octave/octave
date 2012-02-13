@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{handle} =} uicontrol ('Name', value, @dots{})
-## @deftypefnx {Function File} {@var{handle} =} uicontrol (@var{parent}, 'Name', value, @dots{})
+## @deftypefn  {Function File} {@var{handle} =} uicontrol ("Name", value, @dots{})
+## @deftypefnx {Function File} {@var{handle} =} uicontrol (@var{parent}, "Name", value, @dots{})
 ## @deftypefnx {Function File} {} uicontrol (@var{handle})
 ## @end deftypefn
 

@@ -136,7 +136,7 @@
 ## [user_packages, system_packages] = pkg ("list")
 ## @end example
 ##
-## The option '-forge' lists packages available at the Octave-Forge repository.
+## The option "-forge" lists packages available at the Octave-Forge repository.
 ## This requires an internet connection and the cURL library.  For example:
 ##
 ## @example
@@ -145,7 +145,7 @@
 ##
 ## @item describe
 ## Show a short description of the named installed packages, with the option
-## '-verbose' also list functions provided by the package.  For example,
+## "-verbose" also list functions provided by the package.  For example,
 ##
 ## @example
 ## pkg describe -verbose all

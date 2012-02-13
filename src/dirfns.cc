@@ -687,10 +687,10 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 DEFUN (filesep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} filesep ()\n\
-@deftypefnx {Built-in Function} {} filesep ('all')\n\
+@deftypefnx {Built-in Function} {} filesep (\"all\")\n\
 Return the system-dependent character used to separate directory names.\n\
 \n\
-If 'all' is given, the function returns all valid file separators in\n\
+If \"all\" is given, the function returns all valid file separators in\n\
 the form of a string.  The list of file separators is system-dependent.\n\
 It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
 @samp{\\} (forward and backward slashes) under Windows.\n\

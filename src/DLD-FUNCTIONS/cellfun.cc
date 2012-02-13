@@ -257,8 +257,8 @@ DEFUN_DLD (cellfun, args, nargout,
 @deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{C})\n\
 @deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{C}, @var{D})\n\
 @deftypefnx {Loadable Function} {[@var{a}, @dots{}] =} cellfun (@dots{})\n\
-@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'ErrorHandler', @var{errfunc})\n\
-@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'UniformOutput', @var{val})\n\
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, \"UniformOutput\", @var{val})\n\
 \n\
 Evaluate the function named @var{name} on the elements of the cell array\n\
 @var{C}.  Elements in @var{C} are passed on to the named function\n\
@@ -332,7 +332,7 @@ automatically expanded to the size of the other arguments.\n\
 \n\
 If the parameter \"UniformOutput\" is set to true (the default), then the\n\
 function must return scalars which will be concatenated into the return\n\
-array(s).  If 'UniformOutput' is false, the outputs are concatenated into a\n\
+array(s).  If \"UniformOutput\" is false, the outputs are concatenated into a\n\
 cell array (or cell arrays).  For example:\n\
 \n\
 @example\n\
@@ -343,7 +343,7 @@ cellfun (\"tolower\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
 @end group\n\
 @end example\n\
 \n\
-Given the parameter 'ErrorHandler', then @var{errfunc} defines a function to\n\
+Given the parameter \"ErrorHandler\", then @var{errfunc} defines a function to\n\
 call in case @var{func} generates an error.  The form of the function is\n\
 \n\
 @example\n\

@@ -65,9 +65,9 @@ DEFUN_DLD (chol, args, nargout,
 @deftypefn  {Loadable Function} {@var{R} =} chol (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{R}, @var{p}] =} chol (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S})\n\
-@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, 'vector')\n\
-@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, 'lower')\n\
-@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, 'upper')\n\
+@deftypefnx {Loadable Function} {[@var{R}, @var{p}, @var{Q}] =} chol (@var{S}, \"vector\")\n\
+@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, \"lower\")\n\
+@deftypefnx {Loadable Function} {[@var{L}, @dots{}] =} chol (@dots{}, \"upper\")\n\
 @cindex Cholesky factorization\n\
 Compute the Cholesky@tie{}factor, @var{R}, of the symmetric positive definite\n\
 matrix @var{A}, where\n\
@@ -103,7 +103,7 @@ $ R^T R = Q^T A Q$.\n\
 @end ifnottex\n\
 \n\
 The sparsity preserving permutation is generally returned as a matrix.\n\
-However, given the flag 'vector', @var{Q} will be returned as a vector\n\
+However, given the flag \"vector\", @var{Q} will be returned as a vector\n\
 such that\n\
 @tex\n\
 $ R^T R = A (Q, Q)$.\n\
@@ -116,7 +116,7 @@ $ R^T R = A (Q, Q)$.\n\
 \n\
 @end ifnottex\n\
 \n\
-Called with either a sparse or full matrix and using the 'lower' flag,\n\
+Called with either a sparse or full matrix and using the \"lower\" flag,\n\
 @code{chol} returns the lower triangular factorization such that\n\
 @tex\n\
 $ L L^T = A $.\n\
@@ -129,7 +129,7 @@ $ L L^T = A $.\n\
 \n\
 @end ifnottex\n\
 \n\
-For full matrices, if the 'lower' flag is set only the lower triangular part\n\
+For full matrices, if the \"lower\" flag is set only the lower triangular part\n\
 of the matrix is used for the factorization, otherwise the upper triangular\n\
 part is used.\n\
 \n\

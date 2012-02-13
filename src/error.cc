@@ -1487,7 +1487,7 @@ DEFUN (lasterror, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {@var{lasterr} =} lasterror ()\n\
 @deftypefnx {Built-in Function} {} lasterror (@var{err})\n\
-@deftypefnx {Built-in Function} {} lasterror ('reset')\n\
+@deftypefnx {Built-in Function} {} lasterror (\"reset\")\n\
 Query or set the last error message structure.  When called without\n\
 arguments, return a structure containing the last error message and other\n\
 information related to this error.  The elements of the structure are:\n\
@@ -1523,7 +1523,7 @@ The last error structure may be set by passing a scalar structure, @var{err},\n\
 as input.  Any fields of @var{err} that match those above are set while any\n\
 unspecified fields are initialized with default values.\n\
 \n\
-If @code{lasterror} is called with the argument 'reset', all fields are\n\
+If @code{lasterror} is called with the argument \"reset\", all fields are\n\
 set to their default values.\n\
 @seealso{lasterr}\n\
 @end deftypefn")

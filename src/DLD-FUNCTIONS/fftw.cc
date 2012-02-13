@@ -34,10 +34,10 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (fftw, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{method} =} fftw ('planner')\n\
-@deftypefnx {Loadable Function} {} fftw ('planner', @var{method})\n\
-@deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom')\n\
-@deftypefnx {Loadable Function} {} fftw ('dwisdom', @var{wisdom})\n\
+@deftypefn  {Loadable Function} {@var{method} =} fftw (\"planner\")\n\
+@deftypefnx {Loadable Function} {} fftw (\"planner\", @var{method})\n\
+@deftypefnx {Loadable Function} {@var{wisdom} =} fftw (\"dwisdom\")\n\
+@deftypefnx {Loadable Function} {} fftw (\"dwisdom\", @var{wisdom})\n\
 \n\
 Manage @sc{fftw} wisdom data.  Wisdom data can be used to significantly\n\
 accelerate the calculation of the FFTs, but implies an initial cost\n\
@@ -68,31 +68,31 @@ the @code{fftw} function.  There are five different manners in which the\n\
 wisdom can be treated:\n\
 \n\
 @table @asis\n\
-@item 'estimate'\n\
+@item \"estimate\"\n\
 Specifies that no run-time measurement of the optimal means of\n\
 calculating a particular is performed, and a simple heuristic is used\n\
 to pick a (probably sub-optimal) plan.  The advantage of this method is\n\
 that there is little or no overhead in the generation of the plan, which\n\
 is appropriate for a Fourier transform that will be calculated once.\n\
 \n\
-@item 'measure'\n\
+@item \"measure\"\n\
 In this case a range of algorithms to perform the transform is considered\n\
 and the best is selected based on their execution time.\n\
 \n\
-@item 'patient'\n\
-Similar to 'measure', but a wider range of algorithms is considered.\n\
+@item \"patient\"\n\
+Similar to \"measure\", but a wider range of algorithms is considered.\n\
 \n\
-@item 'exhaustive'\n\
-Like 'measure', but all possible algorithms that may be used to\n\
+@item \"exhaustive\"\n\
+Like \"measure\", but all possible algorithms that may be used to\n\
 treat the transform are considered.\n\
 \n\
-@item 'hybrid'\n\
+@item \"hybrid\"\n\
 As run-time measurement of the algorithm can be expensive, this is a\n\
-compromise where 'measure' is used for transforms up to the size of 8192\n\
-and beyond that the 'estimate' method is used.\n\
+compromise where \"measure\" is used for transforms up to the size of 8192\n\
+and beyond that the \"estimate\" method is used.\n\
 @end table\n\
 \n\
-The default method is 'estimate'.  The current method can\n\
+The default method is \"estimate\".  The current method can\n\
 be queried with\n\
 \n\
 @example\n\

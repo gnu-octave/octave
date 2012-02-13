@@ -1093,14 +1093,14 @@ DEFUN (cumsum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cumsum (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'native')\n\
-@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'double')\n\
-@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'extra')\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, \"native\")\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, \"double\")\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, \"extra\")\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-See @code{sum} for an explanation of the optional parameters 'native',\n\
-'double', and 'extra'.\n\
+See @code{sum} for an explanation of the optional parameters \"native\",\n\
+\"double\", and \"extra\".\n\
 @seealso{sum, cumprod}\n\
 @end deftypefn")
 {
@@ -5869,7 +5869,7 @@ sort ([1, 2; 2, 3; 3, 1])\n\
 If the optional argument @var{dim} is given, then the matrix is sorted\n\
 along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
 defines the order in which the values will be sorted.  Valid values of\n\
-@code{mode} are `ascend' or `descend'.\n\
+@code{mode} are \"ascend\" or \"descend\".\n\
 \n\
 The @code{sort} function may also be used to produce a matrix\n\
 containing the original row indices of the elements in the sorted\n\

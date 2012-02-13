@@ -91,7 +91,7 @@ range are ignored.\n\
 All other fields in @var{opts} are ignored.  The outputs from @code{luinc}\n\
 are the same as for @code{lu}.\n\
 \n\
-Given the string argument 'vector', @code{luinc} returns the values of\n\
+Given the string argument \"vector\", @code{luinc} returns the values of\n\
 @var{p} @var{q} as vector values.\n\
 @seealso{sparse, lu}\n\
 @end deftypefn")

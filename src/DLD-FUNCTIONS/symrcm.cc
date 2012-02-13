@@ -422,7 +422,7 @@ Return the symmetric reverse Cuthill-McKee permutation of @var{S}.\n\
 @var{p} is a permutation vector such that\n\
 @code{@var{S}(@var{p}, @var{p})} tends to have its diagonal elements\n\
 closer to the diagonal than @var{S}.  This is a good preordering for LU\n\
-or Cholesky@tie{}factorization of matrices that come from 'long, skinny'\n\
+or Cholesky@tie{}factorization of matrices that come from ``long, skinny''\n\
 problems.  It works for both symmetric and asymmetric @var{S}.\n\
 \n\
 The algorithm represents a heuristic approach to the NP-complete\n\

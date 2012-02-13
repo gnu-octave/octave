@@ -173,7 +173,7 @@ such that the first row corresponds to an index of zero.\n\
 The @var{range} parameter may be a 4-element vector containing the upper\n\
 left and lower right corner @code{[@var{R0},@var{C0},@var{R1},@var{C1}]}\n\
 where the lowest index value is zero.  Alternatively, a spreadsheet style\n\
-range such as 'A2..Q15' or 'T1:AA5' can be used.  The lowest alphabetical\n\
+range such as \"A2..Q15\" or \"T1:AA5\" can be used.  The lowest alphabetical\n\
 index 'A' refers to the first column.  The lowest row index is 1.\n\
 \n\
 @var{file} should be a file name or file id given by @code{fopen}.  In the\n\

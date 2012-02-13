@@ -36,7 +36,8 @@ function y = probit (p)
 
 endfunction
 
-%!assert(probit([-1, 0, 0.5, 1, 2]), [NaN, -Inf, 0, Inf, NaN]);
+
+%!assert (probit ([-1, 0, 0.5, 1, 2]), [NaN, -Inf, 0, Inf, NaN])
 
 %% Test input validation
 %!error probit ()

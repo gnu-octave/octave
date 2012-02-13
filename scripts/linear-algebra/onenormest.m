@@ -253,8 +253,8 @@ endfunction
 %! [nminf, vinf, winf] = onenormest (A', 6);
 %! assert (nm1, N, -2*eps);
 %! assert (nminf, N, -2*eps);
-%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 %!test
 %! N = 10;
@@ -263,8 +263,8 @@ endfunction
 %! [nminf, vinf, winf] = onenormest (@(x) A'*x, @(x) A*x, N, 3);
 %! assert (nm1, N, -2*eps);
 %! assert (nminf, N, -2*eps);
-%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 %!test
 %! N = 5;
@@ -273,8 +273,8 @@ endfunction
 %! [nminf, vinf, winf] = onenormest (A', 6);
 %! assert (nm1, norm (A, 1), -2*eps);
 %! assert (nminf, norm (A, inf), -2*eps);
-%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
 
 ## Only likely to be within a factor of 10.
 %!test
@@ -287,5 +287,6 @@ endfunction
 %! [nminf, vinf, winf] = onenormest (A', 6);
 %! assert (nm1, norm (A, 1), -.1);
 %! assert (nminf, norm (A, inf), -.1);
-%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps)
-%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps)
+%! assert (norm (w1, 1), nm1 * norm (v1, 1), -2*eps);
+%! assert (norm (winf, 1), nminf * norm (vinf, 1), -2*eps);
+

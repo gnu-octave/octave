@@ -116,15 +116,15 @@ endfunction
 %! assert (c ,c_exp);
 %! assert (c2,c_exp );
 
-%!assert(mode ([2,3,1,2,3,4],1),[2,3,1,2,3,4]);
-%!assert(mode ([2,3,1,2,3,4],2),2);
-%!assert(mode ([2,3,1,2,3,4]),2);
-%!assert(mode (single([2,3,1,2,3,4])), single(2));
-%!assert(mode (int8([2,3,1,2,3,4])), int8(2));
+%!assert (mode ([2,3,1,2,3,4],1),[2,3,1,2,3,4])
+%!assert (mode ([2,3,1,2,3,4],2),2)
+%!assert (mode ([2,3,1,2,3,4]),2)
+%!assert (mode (single ([2,3,1,2,3,4])), single (2))
+%!assert (mode (int8 ([2,3,1,2,3,4])), int8 (2))
 
-%!assert(mode ([2;3;1;2;3;4],1),2);
-%!assert(mode ([2;3;1;2;3;4],2),[2;3;1;2;3;4]);
-%!assert(mode ([2;3;1;2;3;4]),2);
+%!assert (mode ([2;3;1;2;3;4],1),2)
+%!assert (mode ([2;3;1;2;3;4],2),[2;3;1;2;3;4])
+%!assert (mode ([2;3;1;2;3;4]),2)
 
 %!shared x
 %! x(:,:,1) = toeplitz (1:3);
@@ -160,7 +160,7 @@ endfunction
 %!error mode (1, 2, 3)
 %!error mode ({1 2 3})
 %!error mode (['A'; 'B'])
-%!error mode (1, ones(2,2))
+%!error mode (1, ones (2,2))
 %!error mode (1, 1.5)
 %!error mode (1, 0)
 %!error mode (1, 3)

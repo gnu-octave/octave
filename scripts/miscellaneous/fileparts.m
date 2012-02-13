@@ -59,6 +59,7 @@ function [directory, name, extension, version] = fileparts (filename)
 
 endfunction
 
+
 %!test
 %! [d, n, e] = fileparts ("file");
 %! assert (strcmp (d, "") && strcmp (n, "file") && strcmp (e, ""));
@@ -94,3 +95,4 @@ endfunction
 %!test
 %! [d, n, e] = fileparts (".ext");
 %! assert (strcmp (d, "") && strcmp (n, char (zeros (1, 0))) && strcmp (e, ".ext"));
+

@@ -52,8 +52,9 @@ function setappdata (h, varargin)
 
 endfunction
 
+
 %!test
-%! setappdata (0, "hello", "world")
-%! assert (isappdata (0, "hello"), true)
-%!assert (getappdata (0, "hello"), "world")
+%! setappdata (0, "hello", "world");
+%! assert (isappdata (0, "hello"), true);
+%! assert (getappdata (0, "hello"), "world");
 

@@ -35,11 +35,13 @@ function retval = isfigure (h)
 
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   assert (isfigure (hf));
-%!   assert (!isfigure (-hf));
+%!   assert (! isfigure (-hf));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

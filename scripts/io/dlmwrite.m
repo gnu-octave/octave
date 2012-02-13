@@ -197,13 +197,13 @@ endfunction
 
 %!test
 %! f = tmpnam ();
-%! dlmwrite (f,[1,2;3,4],'precision','%5.2f','newline','unix','roffset',1,'coffset',1);
+%! dlmwrite (f,[1,2;3,4],"precision","%5.2f","newline","unix","roffset",1,"coffset",1);
 %! fid = fopen (f,"rt");
-%! f1 = char (fread (fid,Inf,'char')');
+%! f1 = char (fread (fid,Inf,"char")');
 %! fclose (fid);
-%! dlmwrite (f,[5,6],'precision','%5.2f','newline','unix','coffset',1,'delimiter',',','-append');
+%! dlmwrite (f,[5,6],"precision","%5.2f","newline","unix","coffset",1,"delimiter",",","-append");
 %! fid = fopen (f,"rt");
-%! f2 = char (fread (fid,Inf,'char')');
+%! f2 = char (fread (fid,Inf,"char")');
 %! fclose (fid);
 %! unlink (f);
 %!

@@ -73,11 +73,13 @@ function [varargout] = deal (varargin)
 
 endfunction
 
+
 %!test
-%! [a,b]=deal(1,2);
-%! assert(a,1);
-%! assert(b,2);
+%! [a,b] = deal (1,2);
+%! assert (a, 1);
+%! assert (b, 2);
 %!test
-%! [a,b]=deal(1);
-%! assert(a,1);
-%! assert(b,1);
+%! [a,b] = deal (1);
+%! assert (a, 1);
+%! assert (b, 1);
+

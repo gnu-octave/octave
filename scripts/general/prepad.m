@@ -83,17 +83,19 @@ function y = prepad (x, l, c, dim)
 
 endfunction
 
-%!error prepad ();
-%!error prepad (1);
-%!error prepad (1,2,3,4,5);
-%!error prepad ([1,2], 2, 2,3);
 
-%!assert (prepad ([1,2], 4), [0,0,1,2]);
-%!assert (prepad ([1;2], 4), [0;0;1;2]);
+%!assert (prepad ([1,2], 4), [0,0,1,2])
+%!assert (prepad ([1;2], 4), [0;0;1;2])
 
-%!assert (prepad ([1,2], 4, 2), [2,2,1,2]);
-%!assert (prepad ([1;2], 4, 2), [2;2;1;2]);
+%!assert (prepad ([1,2], 4, 2), [2,2,1,2])
+%!assert (prepad ([1;2], 4, 2), [2;2;1;2])
 
-%!assert (prepad ([1,2], 2, 2, 1), [2,2;1,2]);
+%!assert (prepad ([1,2], 2, 2, 1), [2,2;1,2])
 
 ## FIXME -- we need tests for multidimensional arrays.
+
+%!error prepad ()
+%!error prepad (1)
+%!error prepad (1,2,3,4,5)
+%!error prepad ([1,2], 2, 2,3)
+

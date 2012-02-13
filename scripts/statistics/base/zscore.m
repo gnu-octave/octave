@@ -89,17 +89,17 @@ function [z, mu, sigma] = zscore (x, opt, dim)
 endfunction
 
 
-%!assert(zscore ([1,2,3]), [-1,0,1])
-%!assert(zscore (single([1,2,3])), single([-1,0,1]))
-%!assert(zscore (int8([1,2,3])), [-1,0,1])
-%!assert(zscore (ones (3,2,2,2)), zeros (3,2,2,2))
-%!assert(zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
+%!assert (zscore ([1,2,3]), [-1,0,1])
+%!assert (zscore (single ([1,2,3])), single ([-1,0,1]))
+%!assert (zscore (int8 ([1,2,3])), [-1,0,1])
+%!assert (zscore (ones (3,2,2,2)), zeros (3,2,2,2))
+%!assert (zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
 
 %% Test input validation
 %!error zscore ()
 %!error zscore (1, 2, 3)
 %!error zscore (['A'; 'B'])
-%!error zscore (1, ones(2,2))
+%!error zscore (1, ones (2,2))
 %!error zscore (1, 1.5)
 %!error zscore (1, 1, 0)
 %!error zscore (1, 3)

@@ -106,16 +106,16 @@ function retval = var (x, opt = 0, dim)
 endfunction
 
 
-%!assert(var (13), 0);
-%!assert(var (single(13)), single(0));
-%!assert(var ([1,2,3]), 1);
-%!assert(var ([1,2,3], 1), 2/3, eps);
-%!assert(var ([1,2,3], [], 1), [0,0,0]);
+%!assert (var (13), 0)
+%!assert (var (single (13)), single (0))
+%!assert (var ([1,2,3]), 1)
+%!assert (var ([1,2,3], 1), 2/3, eps)
+%!assert (var ([1,2,3], [], 1), [0,0,0])
 
 %% Test input validation
 %!error var ()
 %!error var (1,2,3,4)
 %!error var (['A'; 'B'])
-%!error var (1, -1);
-%!error var ([],1)
+%!error var (1, -1)
+%!error var ([], 1)
 

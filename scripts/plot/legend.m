@@ -1035,7 +1035,7 @@ endfunction
 %! labels = {};
 %! colororder = get (gca, 'colororder');
 %! for i = 1:5
-%!   h = plot (1:100, i + rand(100,1)); hold on;
+%!   h = plot (1:100, i + rand (100,1)); hold on;
 %!   set (h, 'color', colororder(i,:));
 %!   labels = {labels{:}, ['Signal ', num2str(i)]};
 %! end
@@ -1101,24 +1101,24 @@ endfunction
 %! x = 0:0.1:7;
 %! h = plot (x,sin(x), x,cos(x), x,sin(x.^2/10), x,cos(x.^2/10));
 %! title ('Only the sin() objects have keylabels');
-%! legend (h([1, 3]), {'sin(x)', 'sin(x^2/10)'}, 'location', 'southwest');
+%! legend (h([1, 3]), {'sin (x)', 'sin (x^2/10)'}, 'location', 'southwest');
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin(x), ';sin(x);');
+%! plot (x, sin (x), ';sin (x);');
 %! hold all;
-%! plot (x, cos(x), ';cos(x);');
+%! plot (x, cos (x), ';cos (x);');
 %! hold off;
 
 %!demo
 %! clf;
 %! x = 0:0.1:10;
-%! plot (x, sin(x), ';sin(x);');
+%! plot (x, sin (x), ';sin (x);');
 %! hold all;
-%! plot (x, cos(x), ';cos(x);');
+%! plot (x, cos (x), ';cos (x);');
 %! hold off;
-%! legend ({'sin(x)', 'cos(x)'}, 'location', 'northeastoutside');
+%! legend ({'sin (x)', 'cos (x)'}, 'location', 'northeastoutside');
 
 %!demo
 %! clf;
@@ -1134,19 +1134,19 @@ endfunction
 %!demo
 %! clf;
 %! x = (1:5)';
-%! subplot (2, 2, 1);
+%! subplot (2,2,1);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'northwestoutside');
 %!  legend boxon;
-%! subplot (2, 2, 2);
+%! subplot (2,2,2);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'northeastoutside');
 %!  legend boxon;
-%! subplot (2, 2, 3);
+%! subplot (2,2,3);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'southwestoutside');
 %!  legend boxon;
-%! subplot (2, 2, 4);
+%! subplot (2,2,4);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'southeastoutside');
 %!  legend boxon;

@@ -141,7 +141,7 @@ endfunction
 
 
 %!assert (nchoosek (80,10), bincoeff (80,10))
-%!assert (nchoosek(1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
+%!assert (nchoosek (1:5,3), [1:3;1,2,4;1,2,5;1,3,4;1,3,5;1,4,5;2:4;2,3,5;2,4,5;3:5])
 
 %% Test input validation
 %!warning nchoosek (100,45);

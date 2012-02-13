@@ -47,8 +47,8 @@ endfunction
 
 %!test
 %! t = time ();
-%! assert(strcmp (asctime (localtime (t)), ctime (t)));
+%! assert (strcmp (asctime (localtime (t)), ctime (t)));
 
-%!error asctime ();
-%!error asctime (1, 2);
+%!error asctime ()
+%!error asctime (1, 2)
 

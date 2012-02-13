@@ -151,6 +151,7 @@ function r = pick_rand_diag (n, k)
 
 endfunction
 
+
 %!test
 %! s = sprandsym (10, 0.1);
 %! assert (issparse (s));
@@ -168,7 +169,7 @@ endfunction
 %% Test input validation
 %!error sprandsym ()
 %!error sprandsym (1, 2, 3)
-%!error sprandsym (ones(3), 0.5)
+%!error sprandsym (ones (3), 0.5)
 %!error sprandsym (3.5, 0.5)
 %!error sprandsym (0, 0.5)
 %!error sprandsym (3, -1)

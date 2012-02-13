@@ -109,32 +109,32 @@ endfunction
 %!test
 %! a = 1:10;
 %! b = 1:3;
-%!assert (size (conv (a,b)), [1, numel(a)+numel(b)-1]);
-%!assert (size (conv (b,a)), [1, numel(a)+numel(b)-1]);
+%!assert (size (conv (a,b)), [1, numel(a)+numel(b)-1])
+%!assert (size (conv (b,a)), [1, numel(a)+numel(b)-1])
 
 %!test
 %! a = (1:10).';
-%!assert (size (conv (a,b)), [numel(a)+numel(b)-1, 1]);
-%!assert (size (conv (b,a)), [numel(a)+numel(b)-1, 1]);
+%!assert (size (conv (a,b)), [numel(a)+numel(b)-1, 1])
+%!assert (size (conv (b,a)), [numel(a)+numel(b)-1, 1])
 
 %!test
 %! a = 1:10;
 %! b = (1:3).';
-%!assert (size (conv (a,b)), [1, numel(a)+numel(b)-1]);
-%!assert (size (conv (b,a)), [1, numel(a)+numel(b)-1]);
+%!assert (size (conv (a,b)), [1, numel(a)+numel(b)-1])
+%!assert (size (conv (b,a)), [1, numel(a)+numel(b)-1])
 
 %!test
 %! a = 1:10;
 %! b = 1:3;
 
-%!assert (conv (a,b,"full"), conv (a,b));
-%!assert (conv (b,a,"full"), conv (b,a));
+%!assert (conv (a,b,"full"), conv (a,b))
+%!assert (conv (b,a,"full"), conv (b,a))
 
-%!assert (conv (a,b,"same"), [4, 10, 16, 22, 28, 34, 40, 46, 52, 47]);
-%!assert (conv (b,a,"same"), [28, 34, 40]);
+%!assert (conv (a,b,"same"), [4, 10, 16, 22, 28, 34, 40, 46, 52, 47])
+%!assert (conv (b,a,"same"), [28, 34, 40])
 
-%!assert (conv (a,b,"valid"), [10, 16, 22, 28, 34, 40, 46, 52]);
-%!assert (conv (b,a,"valid"), zeros (1,0));
+%!assert (conv (a,b,"valid"), [10, 16, 22, 28, 34, 40, 46, 52])
+%!assert (conv (b,a,"valid"), zeros (1,0))
 
 
 %% Test input validation

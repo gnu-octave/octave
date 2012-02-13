@@ -68,8 +68,8 @@ function [m, state] = str2num (s)
 endfunction
 
 
-%!assert(str2num ("-1.3e2"), -130);
-%!assert(str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4]);
+%!assert (str2num ("-1.3e2"), -130)
+%!assert (str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4])
 
 %!test
 %! [x, state] = str2num ("pi");

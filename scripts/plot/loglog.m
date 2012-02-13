@@ -67,7 +67,7 @@ endfunction
 %! clf;
 %! t = 1:0.01:10;
 %! x = sort ((t .* (1 + rand (size (t)))) .^ 2);
-%! y = ((t .* (1 + rand (size (t)))) .^ 2);
+%! y = (t .* (1 + rand (size (t)))) .^ 2;
 %! loglog (x, y);
 
 %!demo

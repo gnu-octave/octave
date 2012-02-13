@@ -39,6 +39,7 @@ function r = colon (varargin)
   endif
 endfunction
 
+
 %!error colon (1)
 
 ## FIXME -- what does colon () mean since it doesn't set a return value?

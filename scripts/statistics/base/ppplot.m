@@ -79,6 +79,6 @@ endfunction
 
 
 %% Test input validation
-%!error ppplot ();
-%!error ppplot (ones(2,2));
+%!error ppplot ()
+%!error ppplot (ones (2,2))
 

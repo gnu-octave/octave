@@ -135,6 +135,7 @@ function vi = interp3 (varargin)
   endif
 endfunction
 
+
 %!test
 %! x = y = z = -1:1;
 %! f = @(x,y,z) x.^2 - y - z.^2;
@@ -142,9 +143,9 @@ endfunction
 %! v = f (xx,yy,zz);
 %! xi = yi = zi = -1:0.5:1;
 %! [xxi, yyi, zzi] = meshgrid (xi, yi, zi);
-%! vi = interp3(x, y, z, v, xxi, yyi, zzi);
+%! vi = interp3 (x, y, z, v, xxi, yyi, zzi);
 %! [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
-%! vi2 = interpn(x, y, z, v, xxi, yyi, zzi);
+%! vi2 = interpn (x, y, z, v, xxi, yyi, zzi);
 %! assert (vi, vi2);
 
 %!shared z, zout, tol
@@ -164,3 +165,4 @@ endfunction
 %!assert (interp3 (z), zout, tol)
 %!assert (interp3 (z, "linear"), zout, tol)
 %!assert (interp3 (z, "spline"), zout, tol)
+

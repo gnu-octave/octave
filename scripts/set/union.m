@@ -83,18 +83,17 @@ function [y, ia, ib] = union (a, b, varargin)
 
 endfunction
 
-%!assert(all (all (union ([1, 2, 4], [2, 3, 5]) == [1, 2, 3, 4, 5])));
 
-%!assert(all (all (union ([1; 2; 4], [2, 3, 5]) == [1, 2, 3, 4, 5])));
-
-%!assert(all (all (union ([1, 2, 3], [5; 7; 9]) == [1, 2, 3, 5, 7, 9])));
-
-%!error union (1);
-
-%!error union (1, 2, 3);
+%!assert (union ([1, 2, 4], [2, 3, 5]), [1, 2, 3, 4, 5]);
+%!assert (union ([1; 2; 4], [2, 3, 5]), [1, 2, 3, 4, 5]);
+%!assert (union ([1, 2, 3], [5; 7; 9]), [1, 2, 3, 5, 7, 9]);
 
 %!test
-%! a = [3, 1, 4, 1, 5]; b = [1, 2, 3, 4];
+%! a = [3, 1, 4, 1, 5];  b = [1, 2, 3, 4];
 %! [y, ia, ib] = union (a, b.');
-%! assert(y, [1, 2, 3, 4, 5]);
-%! assert(y, sort([a(ia), b(ib)]));
+%! assert (y, [1, 2, 3, 4, 5]);
+%! assert (y, sort ([a(ia), b(ib)]));
+
+%!error union (1)
+%!error union (1, 2, 3)
+

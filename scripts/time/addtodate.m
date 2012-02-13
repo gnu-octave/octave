@@ -77,7 +77,7 @@ endfunction
 
 ## tests
 %!shared d
-%!  d = datenum (2008, 1, 1);
+%! d = datenum (2008, 1, 1);
 ## Identity
 %!assert (addtodate (d, 0, "year"), d)
 %!assert (addtodate (d, 0, "month"), d)

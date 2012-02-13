@@ -32,5 +32,8 @@ function retval = isunix ()
 
 endfunction
 
-%!error isunix (1);
-%!assert (islogical (isunix ()));
+
+%!assert (islogical (isunix ()))
+
+%!error isunix (1)
+

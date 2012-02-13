@@ -260,7 +260,7 @@ endfunction
 %!demo
 %! clf;
 %! x = linspace (-1, 1, 201);
-%! hax = plotyy (x, sin(pi*x), x, cos(pi*x));
+%! hax = plotyy (x, sin (pi*x), x, cos (pi*x));
 %! ylabel ('Blue on the Left');
 %! ylabel (hax(2), 'Green on the Right');
 %! xlabel ('xlabel');

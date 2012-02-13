@@ -85,7 +85,10 @@ function [c, maxsize, endian] = computer (a)
 
 endfunction
 
-%!assert((ischar (computer ())
-%! && computer () == octave_config_info ("canonical_host_type")));
-%!assert(ischar (computer ("arch")));
-%!error computer (2);
+
+%!assert (ischar (computer ()))
+%!assert (computer (), octave_config_info ("canonical_host_type"))
+%!assert (ischar (computer ("arch")))
+
+%!error computer (2)
+

@@ -202,6 +202,7 @@ function [x_coordinate, y_coordinate, height, s] = treelayout (tree, permutation
   endif
 endfunction
 
+
 %!test
 %! % Compute a simple tree layout
 %! [x, y, h, s] = treelayout ([0, 1, 2, 2]);
@@ -225,3 +226,4 @@ endfunction
 %! assert (y, [0, 0, 0, 3]);
 %! assert (h, 0);
 %! assert (s, 1);
+

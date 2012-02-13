@@ -152,7 +152,7 @@ endfunction
 %!assert (pchip (x',[y;y],x), [pchip(x,y,x);pchip(x,y,x)])
 %!assert (pchip (x',[y;y],x'), [pchip(x,y,x);pchip(x,y,x)])
 %!test
-%! x = (0:8)*pi/4; y = [sin(x);cos(x)];
+%! x = (0:8)*pi/4; y = [sin(x); cos(x)];
 %! y2(:,:,1) = y; y2(:,:,2) = y+1; y2(:,:,3) = y-1;
 %! pp = pchip (x, shiftdim (y2,2));
 %! yi1 = ppval (pp, (1:4)*pi/4);
@@ -163,7 +163,7 @@ endfunction
 %!assert (pp.order, 4)
 %!assert (pp.dim, [3,2])
 %!assert (ppval (pp,pi), [0,-1;1,0;-1,-2], 1e-14)
-%!assert (yi3(:,:,2), ppval(pp,pi), 1e-14)
+%!assert (yi3(:,:,2), ppval (pp,pi), 1e-14)
 %!assert (yi3(:,:,1), [1,0;2,1;0,-1], 1e-14)
 %!assert (squeeze (yi1(1,2,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
 %!assert (size (yi2), [3,2,5,4])

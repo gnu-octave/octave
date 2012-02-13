@@ -103,18 +103,18 @@ function b = bincoeff (n, k)
 endfunction
 
 
-%!assert(bincoeff (4, 2), 6)
-%!assert(bincoeff (2, 4), 0)
-%!assert(bincoeff (-4, 2), 10)
-%!assert(bincoeff (5, 2), 10)
-%!assert(bincoeff (50, 6), 15890700)
-%!assert(bincoeff (0.4, 2), -.12, 8*eps)
+%!assert (bincoeff (4, 2), 6)
+%!assert (bincoeff (2, 4), 0)
+%!assert (bincoeff (-4, 2), 10)
+%!assert (bincoeff (5, 2), 10)
+%!assert (bincoeff (50, 6), 15890700)
+%!assert (bincoeff (0.4, 2), -.12, 8*eps)
 
-%!assert(bincoeff ([4 NaN 4], [-1, 2, 2.5]), NaN (1, 3))
+%!assert (bincoeff ([4 NaN 4], [-1, 2, 2.5]), NaN (1, 3))
 
 %% Test input validation
-%!error bincoeff ();
-%!error bincoeff (1, 2, 3);
-%!error bincoeff (ones(3),ones(2))
-%!error bincoeff (ones(2),ones(3))
+%!error bincoeff ()
+%!error bincoeff (1, 2, 3)
+%!error bincoeff (ones (3),ones (2))
+%!error bincoeff (ones (2),ones (3))
 

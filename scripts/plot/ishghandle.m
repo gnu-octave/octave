@@ -27,32 +27,33 @@ function retval = ishghandle (h)
   retval = ishandle (h);
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   assert (ishghandle (hf));
-%!   assert (!ishghandle (-hf));
+%!   assert (! ishghandle (-hf));
 %!   l = line;
-%!   ax = gca();
+%!   ax = gca;
 %!   assert (ishghandle (ax));
-%!   assert (!ishghandle (-ax));
+%!   assert (! ishghandle (-ax));
 %!   assert (ishghandle (l));
-%!   assert (!ishghandle (-l));
+%!   assert (! ishghandle (-l));
 %!   p = patch;
 %!   assert (ishghandle (p));
-%!   assert (!ishghandle (-p));
+%!   assert (! ishghandle (-p));
 %!   s = surface;
 %!   assert (ishghandle (s));
-%!   assert (!ishghandle (-s));
+%!   assert (! ishghandle (-s));
 %!   t = text;
 %!   assert (ishghandle (t));
-%!   assert (!ishghandle (-t));
+%!   assert (! ishghandle (-t));
 %!   i = image;
 %!   assert (ishghandle (i));
-%!   assert (!ishghandle (-i));
+%!   assert (! ishghandle (-i));
 %!   hg = hggroup;
 %!   assert (ishghandle (hg));
-%!   assert (!ishghandle (-hg));
+%!   assert (! ishghandle (-hg));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

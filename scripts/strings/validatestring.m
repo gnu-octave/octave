@@ -138,12 +138,13 @@ endfunction
 
 
 %!shared strarray
-%!  strarray = {"octave" "Oct" "octopus" "octaves"};
+%! strarray = {"octave" "Oct" "octopus" "octaves"};
 %!assert (validatestring ("octave", strarray), "octave")
 %!assert (validatestring ("oct", strarray), "Oct")
 %!assert (validatestring ("octa", strarray), "octave")
-%!  strarray = {"abc1" "def" "abc2"};
+%! strarray = {"abc1" "def" "abc2"};
 %!assert (validatestring ("d", strarray), "def")
+
 %!error <'xyz' does not match any> validatestring ("xyz", strarray)
 %!error <Function: DUMMY_TEST> validatestring ("xyz", strarray, "DUMMY_TEST")
 %!error <Function: DUMMY_TEST Variable: DUMMY_VAR:> validatestring ("xyz", strarray, "DUMMY_TEST", "DUMMY_VAR")

@@ -53,11 +53,11 @@ function b = dec2bin (d, len)
 endfunction
 
 
-%!assert(dec2bin (14), "1110");
-%!assert(dec2bin (14, 6), "001110");
-%!assert(dec2bin ({1, 2; 3, 4}), ["001"; "011"; "010"; "100"]);
+%!assert (dec2bin (14), "1110")
+%!assert (dec2bin (14, 6), "001110")
+%!assert (dec2bin ({1, 2; 3, 4}), ["001"; "011"; "010"; "100"])
 
 %%Test input validation
-%!error dec2bin ();
-%!error dec2bin (1, 2, 3);
+%!error dec2bin ()
+%!error dec2bin (1, 2, 3)
 

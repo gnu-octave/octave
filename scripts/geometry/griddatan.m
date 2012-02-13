@@ -85,22 +85,24 @@ function yi = griddatan (x, y, xi, method, varargin)
 
 endfunction
 
-%!testif HAVE_QHULL
-%! [xx,yy] = meshgrid(linspace(-1,1,32));
-%! xi = [xx(:), yy(:)];
-%! x = (2 * rand(100,2) - 1);
-%! x = [x;1,1;1,-1;-1,-1;-1,1];
-%! y = sin(2*(sum(x.^2,2)));
-%! zz = griddatan(x,y,xi,'linear');
-%! zz2 = griddata(x(:,1),x(:,2),y,xi(:,1),xi(:,2),'linear');
-%! assert (zz, zz2, 1e-10)
 
 %!testif HAVE_QHULL
-%! [xx,yy] = meshgrid(linspace(-1,1,32));
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
 %! xi = [xx(:), yy(:)];
-%! x = (2 * rand(100,2) - 1);
+%! x = 2*rand (100,2) - 1;
 %! x = [x;1,1;1,-1;-1,-1;-1,1];
-%! y = sin(2*(sum(x.^2,2)));
-%! zz = griddatan(x,y,xi,'nearest');
-%! zz2 = griddata(x(:,1),x(:,2),y,xi(:,1),xi(:,2),'nearest');
-%! assert (zz, zz2, 1e-10)
+%! y = sin (2 * sum (x.^2,2));
+%! zz = griddatan (x,y,xi,"linear");
+%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"linear");
+%! assert (zz, zz2, 1e-10);
+
+%!testif HAVE_QHULL
+%! [xx,yy] = meshgrid (linspace (-1,1,32));
+%! xi = [xx(:), yy(:)];
+%! x = 2*rand (100,2) - 1;
+%! x = [x;1,1;1,-1;-1,-1;-1,1];
+%! y = sin (2*sum (x.^2,2));
+%! zz = griddatan (x,y,xi,"nearest");
+%! zz2 = griddata (x(:,1),x(:,2),y,xi(:,1),xi(:,2),"nearest");
+%! assert (zz, zz2, 1e-10);
+

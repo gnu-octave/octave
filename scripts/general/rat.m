@@ -151,10 +151,12 @@ function [n,d] = rat(x,tol)
 
 endfunction
 
-%!error rat ();
-%!error rat (1, 2, 3);
 
 %!test
 %! [n, d] = rat ([0.5, 0.3, 1/3]);
 %! assert (n, [1, 3, 1]);
 %! assert (d, [2, 10, 3]);
+
+%!error rat ();
+%!error rat (1, 2, 3);
+

@@ -73,26 +73,26 @@ endfunction
 %!shared x,y
 %! x = [-Inf 1 2 Inf];
 %! y = [0, 0.5, 1/2*(1+erf(1/sqrt(2))), 1];
-%!assert(normcdf (x, ones(1,4), ones(1,4)), y);
-%!assert(normcdf (x, 1, ones(1,4)), y);
-%!assert(normcdf (x, ones(1,4), 1), y);
-%!assert(normcdf (x, [0 -Inf NaN Inf], 1), [y(1) NaN NaN NaN]);
-%!assert(normcdf (x, 1, [Inf NaN -1 0]), [NaN NaN NaN NaN]);
-%!assert(normcdf ([x(1:2) NaN x(4)], 1, 1), [y(1:2) NaN y(4)]);
+%!assert (normcdf (x, ones (1,4), ones (1,4)), y)
+%!assert (normcdf (x, 1, ones (1,4)), y)
+%!assert (normcdf (x, ones (1,4), 1), y)
+%!assert (normcdf (x, [0 -Inf NaN Inf], 1), [y(1) NaN NaN NaN])
+%!assert (normcdf (x, 1, [Inf NaN -1 0]), [NaN NaN NaN NaN])
+%!assert (normcdf ([x(1:2) NaN x(4)], 1, 1), [y(1:2) NaN y(4)])
 
 %% Test class of input preserved
-%!assert(normcdf ([x, NaN], 1, 1), [y, NaN]);
-%!assert(normcdf (single([x, NaN]), 1, 1), single([y, NaN]), eps("single"));
-%!assert(normcdf ([x, NaN], single(1), 1), single([y, NaN]), eps("single"));
-%!assert(normcdf ([x, NaN], 1, single(1)), single([y, NaN]), eps("single"));
+%!assert (normcdf ([x, NaN], 1, 1), [y, NaN])
+%!assert (normcdf (single ([x, NaN]), 1, 1), single ([y, NaN]), eps ("single"))
+%!assert (normcdf ([x, NaN], single (1), 1), single ([y, NaN]), eps ("single"))
+%!assert (normcdf ([x, NaN], 1, single (1)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error normcdf ()
 %!error normcdf (1,2)
 %!error normcdf (1,2,3,4)
-%!error normcdf (ones(3),ones(2),ones(2))
-%!error normcdf (ones(2),ones(3),ones(2))
-%!error normcdf (ones(2),ones(2),ones(3))
+%!error normcdf (ones (3), ones (2), ones (2))
+%!error normcdf (ones (2), ones (3), ones (2))
+%!error normcdf (ones (2), ones (2), ones (3))
 %!error normcdf (i, 2, 2)
 %!error normcdf (2, i, 2)
 %!error normcdf (2, 2, i)

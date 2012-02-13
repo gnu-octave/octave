@@ -737,29 +737,29 @@ endfunction
 %! assert (b, 2);
 
 %!test
-%! str = '';
+%! str = "";
 %! a = rand (10, 1);
 %! b = char (randi ([65, 85], 10, 1));
 %! for k = 1:10
 %!   str = sprintf ('%s %.6f %s\n', str, a(k), b(k));
 %! endfor
-%! [aa, bb] = strread (str, '%f %s');
+%! [aa, bb] = strread (str, "%f %s");
 %! assert (a, aa, 1e-6);
 %! assert (cellstr (b), bb);
 
 %!test
-%! str = '';
+%! str = "";
 %! a = rand (10, 1);
 %! b = char (randi ([65, 85], 10, 1));
 %! for k = 1:10
 %!   str = sprintf ('%s %.6f %s\n', str, a(k), b(k));
 %! endfor
-%! aa = strread (str, '%f %*s');
+%! aa = strread (str, "%f %*s");
 %! assert (a, aa, 1e-6);
 
 %!test
 %! str = sprintf ('/* this is\nacomment*/ 1 2 3');
-%! a = strread (str, '%f', 'commentstyle', 'c');
+%! a = strread (str, "%f", "commentstyle", "c");
 %! assert (a, [1; 2; 3]);
 
 %!test
@@ -783,9 +783,9 @@ endfunction
 %!test
 %! # Bug #33536
 %! [a, b, c] = strread ("1,,2", "%s%s%s", "delimiter", ",");
-%! assert (a{1}, '1');
-%! assert (b{1}, '');
-%! assert (c{1}, '2');
+%! assert (a{1}, "1");
+%! assert (b{1}, "");
+%! assert (c{1}, "2");
 
 %!test
 %! # Bug #33536
@@ -794,17 +794,17 @@ endfunction
 
 %!test
 %! dat = "Data file.\r\n=  =  =  =  =\r\nCOMPANY    : <Company name>\r\n";
-%! a = strread (dat, "%s", 'delimiter', "\n", 'whitespace', '', 'endofline', "\r\n");
+%! a = strread (dat, "%s", "delimiter", "\n", "whitespace", "", "endofline", "\r\n");
 %! assert (a{2}, "=  =  =  =  =");
 %! assert (double (a{3}(end-5:end)), [32 110 97 109 101 62]);
 
 %!test
-%! [a, b, c, d] = strread ("1,2,3,,5,6", "%d%f%d%f", 'delimiter', ',');
+%! [a, b, c, d] = strread ("1,2,3,,5,6", "%d%f%d%f", "delimiter", ",");
 %! assert (c, int32 (3));
 %! assert (d, NaN);
 
 %!test
-%! [a, b, c, d] = strread ("1,2,3,,5,6\n", "%d%d%f%d", 'delimiter', ',');
+%! [a, b, c, d] = strread ("1,2,3,,5,6\n", "%d%d%f%d", "delimiter", ",");
 %! assert (c, [3; NaN]);
 %! assert (d, int32 ([0; 0]));
 
@@ -816,12 +816,12 @@ endfunction
 %1 assert (c, 0.3567);
 
 %!test
-%! [a, b] = strread('0.41 8.24 3.57 6.24 9.27', "%f%f", 2, 'delimiter', ' ');
+%! [a, b] = strread ("0.41 8.24 3.57 6.24 9.27", "%f%f", 2, "delimiter", " ");
 %1 assert (a, [0.41; 3.57]);
 
 %!test
 %! # TreatAsEmpty
-%! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", 'delimiter', ',', 'TreatAsEmpty', 'NN');
+%! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", "delimiter", ",", "TreatAsEmpty", "NN");
 %! assert (c, int32 ([3; 0]));
 %! assert (d, [NaN; NaN]);
 
@@ -830,13 +830,13 @@ endfunction
 %! str = "Text1Text2Text\nText398Text4Text\nText57Text";
 %! [a, b] = strread (str, "Text%dText%1sText");
 %! assert (a, int32 ([1; 398; 57]));
-%! assert (b(1:2), {'2'; '4'});
+%! assert (b(1:2), {"2"; "4"});
 %! assert (isempty (b{3}), true);
 
 %% MultipleDelimsAsOne
 %!test
 %! str = "11, 12, 13,, 15\n21,, 23, 24, 25\n,, 33, 34, 35";
-%! [a b c d] = strread (str, "%f %f %f %f", 'delimiter', ',', 'multipledelimsasone', 1, 'endofline', "\n");
+%! [a b c d] = strread (str, "%f %f %f %f", "delimiter", ",", "multipledelimsasone", 1, "endofline", "\n");
 %! assert (a', [11, 21, NaN]);
 %! assert (b', [12, 23, 33]);
 %! assert (c', [13, 24, 34]);
@@ -887,3 +887,4 @@ endfunction
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
+

@@ -197,30 +197,30 @@ endfunction
 %! isosurface (x, y, z, v, 1);
 
 %!shared x, y, z, val
-%!  [x, y, z]  = meshgrid (0:1, 0:1, 0:1); %% Points for single
-%!  val        = [0, 0; 0, 0];             %% cube and a 3-D
-%!  val(:,:,2) = [0, 0; 1, 0];             %% array of values
+%! [x, y, z]  = meshgrid (0:1, 0:1, 0:1); %% Points for single
+%! val        = [0, 0; 0, 0];             %% cube and a 3-D
+%! val(:,:,2) = [0, 0; 1, 0];             %% array of values
 %!test
-%!  fv = isosurface (x, y, z, val, 0.3);
-%!  assert (isfield (fv, "vertices"), true);
-%!  assert (isfield (fv, "faces"), true);
-%!  assert (size (fv.vertices), [3 3]);
-%!  assert (size (fv.faces), [1 3]);
+%! fv = isosurface (x, y, z, val, 0.3);
+%! assert (isfield (fv, "vertices"), true);
+%! assert (isfield (fv, "faces"), true);
+%! assert (size (fv.vertices), [3 3]);
+%! assert (size (fv.faces), [1 3]);
 %!test
-%!  fvc = isosurface (x, y, z, val, .3, y);
-%!  assert (isfield (fvc, "vertices"), true);
-%!  assert (isfield (fvc, "faces"), true);
-%!  assert (isfield (fvc, "facevertexcdata"), true);
-%!  assert (size (fvc.vertices), [3 3]);
-%!  assert (size (fvc.faces), [1 3]);
-%!  assert (size (fvc.facevertexcdata), [3 1]);
+%! fvc = isosurface (x, y, z, val, .3, y);
+%! assert (isfield (fvc, "vertices"), true);
+%! assert (isfield (fvc, "faces"), true);
+%! assert (isfield (fvc, "facevertexcdata"), true);
+%! assert (size (fvc.vertices), [3 3]);
+%! assert (size (fvc.faces), [1 3]);
+%! assert (size (fvc.facevertexcdata), [3 1]);
 %!test
-%!  [f, v] = isosurface (x, y, z, val, .3);
-%!  assert (size (f), [1 3]);
-%!  assert (size (v), [3 3]);
+%! [f, v] = isosurface (x, y, z, val, .3);
+%! assert (size (f), [1 3]);
+%! assert (size (v), [3 3]);
 %!test
-%!  [f, v, c] = isosurface (x, y, z, val, .3, y);
-%!  assert (size (f), [1 3]);
-%!  assert (size (v), [3 3]);
-%!  assert (size (c), [3 1]);
+%! [f, v, c] = isosurface (x, y, z, val, .3, y);
+%! assert (size (f), [1 3]);
+%! assert (size (v), [3 3]);
+%! assert (size (c), [3 1]);
 

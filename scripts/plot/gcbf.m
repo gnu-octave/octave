@@ -32,5 +32,6 @@ function fig = gcbf ()
 
 endfunction
 
-%!test
-%! assert (isempty (gcbf ));
+
+%!assert (isempty (gcbf))
+

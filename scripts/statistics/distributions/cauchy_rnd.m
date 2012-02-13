@@ -98,35 +98,35 @@ function rnd = cauchy_rnd (location, scale, varargin)
 endfunction
 
 
-%!assert(size (cauchy_rnd (1,2)), [1, 1]);
-%!assert(size (cauchy_rnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (cauchy_rnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (cauchy_rnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (cauchy_rnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (cauchy_rnd (1, 2, 3)), [3, 3]);
-%!assert(size (cauchy_rnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (cauchy_rnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (cauchy_rnd (1,2)), [1, 1])
+%!assert (size (cauchy_rnd (ones (2,1), 2)), [2, 1])
+%!assert (size (cauchy_rnd (ones (2,2), 2)), [2, 2])
+%!assert (size (cauchy_rnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (cauchy_rnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (cauchy_rnd (1, 2, 3)), [3, 3])
+%!assert (size (cauchy_rnd (1, 2, [4 1])), [4, 1])
+%!assert (size (cauchy_rnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (cauchy_rnd (1, 2)), "double");
-%!assert(class (cauchy_rnd (single(1), 2)), "single");
-%!assert(class (cauchy_rnd (single([1 1]), 2)), "single");
-%!assert(class (cauchy_rnd (1, single(2))), "single");
-%!assert(class (cauchy_rnd (1, single([2 2]))), "single");
+%!assert (class (cauchy_rnd (1, 2)), "double")
+%!assert (class (cauchy_rnd (single (1), 2)), "single")
+%!assert (class (cauchy_rnd (single ([1 1]), 2)), "single")
+%!assert (class (cauchy_rnd (1, single (2))), "single")
+%!assert (class (cauchy_rnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error cauchy_rnd ()
 %!error cauchy_rnd (1)
-%!error cauchy_rnd (ones(3),ones(2))
-%!error cauchy_rnd (ones(2),ones(3))
+%!error cauchy_rnd (ones (3), ones (2))
+%!error cauchy_rnd (ones (2), ones (3))
 %!error cauchy_rnd (i, 2)
 %!error cauchy_rnd (2, i)
 %!error cauchy_rnd (1,2, -1)
-%!error cauchy_rnd (1,2, ones(2))
+%!error cauchy_rnd (1,2, ones (2))
 %!error cauchy_rnd (1,2, [2 -1 2])
-%!error cauchy_rnd (1,2, 1, ones(2))
+%!error cauchy_rnd (1,2, 1, ones (2))
 %!error cauchy_rnd (1,2, 1, -1)
-%!error cauchy_rnd (ones(2,2), 2, 3)
-%!error cauchy_rnd (ones(2,2), 2, [3, 2])
-%!error cauchy_rnd (ones(2,2), 2, 2, 3)
+%!error cauchy_rnd (ones (2,2), 2, 3)
+%!error cauchy_rnd (ones (2,2), 2, [3, 2])
+%!error cauchy_rnd (ones (2,2), 2, 2, 3)
 

@@ -41,3 +41,4 @@ endfunction
 
 %!error cscd ()
 %!error cscd (1, 2)
+

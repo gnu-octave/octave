@@ -371,7 +371,7 @@ endfunction
 %! assert (opts.use_color, 1);
 %! assert (opts.send_to_printer, true);
 %! assert (opts.canvas_size, [576, 432]);
-%! assert (opts.ghostscript.device, "pswrite")
+%! assert (opts.ghostscript.device, "pswrite");
 
 #%!test
 %! opts = __print_parse_opts__ ("test.pdf", "-S640,480");
@@ -383,7 +383,7 @@ endfunction
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, 1);
 %! assert (opts.append_to_file, false);
-%! assert (opts.ghostscript.device, "pswrite")
+%! assert (opts.ghostscript.device, "pswrite");
 %! assert (opts.ghostscript.epscrop, false);
 
 #%!test
@@ -391,13 +391,13 @@ endfunction
 %! assert (opts.tight_flag, true);
 %! assert (opts.send_to_printer, true);
 %! assert (opts.use_color, -1);
-%! assert (opts.ghostscript.device, "")
+%! assert (opts.ghostscript.device, "");
 
 #%!test
 %! opts = __print_parse_opts__ ("-djpg", "foobar", "-mono", "-loose");
-%! assert (opts.devopt, "jpeg")
-%! assert (opts.name, "foobar.jpg")
-%! assert (opts.ghostscript.device, "jpeg")
+%! assert (opts.devopt, "jpeg");
+%! assert (opts.name, "foobar.jpg");
+%! assert (opts.ghostscript.device, "jpeg");
 %! assert (opts.ghostscript.epscrop, true);
 %! assert (opts.ghostscript.papersize, "");
 %! assert (opts.ghostscript.pageoffset, [0, 0]);
@@ -407,20 +407,20 @@ endfunction
 
 #%!test
 %! opts = __print_parse_opts__ ("-ddeskjet", "foobar", "-mono", "-Pmyprinter");
-%! assert (opts.ghostscript.output, "foobar.deskjet")
-%! assert (opts.ghostscript.device, "deskjet")
-%! assert (opts.devopt, "deskjet")
+%! assert (opts.ghostscript.output, "foobar.deskjet");
+%! assert (opts.ghostscript.device, "deskjet");
+%! assert (opts.devopt, "deskjet");
 %! assert (opts.send_to_printer, true);
 %! assert (opts.printer, "-Pmyprinter");
 %! assert (opts.use_color, -1);
 
 #%!test
 %! opts = __print_parse_opts__ ("-f5", "-dljet3");
-%! assert (opts.ghostscript.device, "ljet3")
-%! assert (strfind (opts.ghostscript.output, ".ljet3"))
-%! assert (opts.devopt, "ljet3")
+%! assert (opts.ghostscript.device, "ljet3");
+%! assert (strfind (opts.ghostscript.output, ".ljet3"));
+%! assert (opts.devopt, "ljet3");
 %! assert (opts.send_to_printer, true);
-%! assert (opts.figure, 5)
+%! assert (opts.figure, 5);
 
 function cmd = __quote_path__ (cmd)
   if (any (cmd == " ") && ! (cmd(1) == """" && cmd(end) == """"))

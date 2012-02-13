@@ -101,63 +101,64 @@ function x = repmat (A, m, n)
 
 endfunction
 
+
 # Test various methods of providing size parameters
 %!shared x
 %! x = [1 2;3 4];
-%!assert(repmat(x, [1 1]), repmat(x, 1));
-%!assert(repmat(x, [3 3]), repmat(x, 3));
-%!assert(repmat(x, [1 1]), repmat(x, 1, 1));
-%!assert(repmat(x, [1 3]), repmat(x, 1, 3));
-%!assert(repmat(x, [3 1]), repmat(x, 3, 1));
-%!assert(repmat(x, [3 3]), repmat(x, 3, 3));
+%!assert (repmat (x, [1 1]), repmat (x, 1))
+%!assert (repmat (x, [3 3]), repmat (x, 3))
+%!assert (repmat (x, [1 1]), repmat (x, 1, 1))
+%!assert (repmat (x, [1 3]), repmat (x, 1, 3))
+%!assert (repmat (x, [3 1]), repmat (x, 3, 1))
+%!assert (repmat (x, [3 3]), repmat (x, 3, 3))
 
 # Tests for numel==1 case:
 %!shared x, r
 %! x = [ 65 ];
-%! r = kron(ones(2,2), x);
-%!assert(r, repmat(x, [2 2]));
-%!assert(char(r), repmat(char(x), [2 2]));
-%!assert(int8(r), repmat(int8(x), [2 2]));
+%! r = kron (ones (2,2), x);
+%!assert (r, repmat (x, [2 2]))
+%!assert (char (r), repmat (char (x), [2 2]))
+%!assert (int8 (r), repmat (int8 (x), [2 2]))
 
 # Tests for ndims==2 case:
 %!shared x, r
 %! x = [ 65 66 67 ];
-%! r = kron(ones(2,2), x);
-%!assert(r, repmat(x, [2 2]));
-%!assert(char(r), repmat(char(x), [2 2]));
-%!assert(int8(r), repmat(int8(x), [2 2]));
+%! r = kron (ones (2,2), x);
+%!assert (r, repmat (x, [2 2]))
+%!assert (char (r), repmat (char (x), [2 2]))
+%!assert (int8 (r), repmat (int8 (x), [2 2]))
 
 # Tests for dim>2 case:
 %!shared x, r
 %! x = [ 65 66 67 ];
-%! r = kron(ones(2,2), x);
+%! r = kron (ones (2,2), x);
 %! r(:,:,2) = r(:,:,1);
-%!assert(r, repmat(x, [2 2 2]));
-%!assert(char(r), repmat(char(x), [2 2 2]));
-%!assert(int8(r), repmat(int8(x), [2 2 2]));
+%!assert (r, repmat (x, [2 2 2]))
+%!assert (char (r), repmat (char (x), [2 2 2]))
+%!assert (int8 (r), repmat (int8 (x), [2 2 2]))
 
 # Test that sparsity is kept
-%!assert(sparse(4,4), repmat(sparse(2,2),[2 2]));
+%!assert (sparse (4,4), repmat (sparse (2,2),[2 2]))
 
+%!assert (size (repmat (".", -1, 1)), [0, 1])
+%!assert (size (repmat (".", 1, -1)), [1, 0])
 
-%!assert (size (repmat (".", -1, 1)), [0, 1]);
-%!assert (size (repmat (".", 1, -1)), [1, 0]);
-%!error (size (repmat (".", -1, -1)));
-
-%!assert (size (repmat (1, [1, 0])), [1, 0]);
-%!assert (size (repmat (1, [5, 0])), [5, 0]);
-%!assert (size (repmat (1, [0, 1])), [0, 1]);
-%!assert (size (repmat (1, [0, 5])), [0, 5]);
+%!assert (size (repmat (1, [1, 0])), [1, 0])
+%!assert (size (repmat (1, [5, 0])), [5, 0])
+%!assert (size (repmat (1, [0, 1])), [0, 1])
+%!assert (size (repmat (1, [0, 5])), [0, 5])
 
 %!shared x
 %! x = struct ("a", [], "b", []);
-%!assert (size (repmat (x, [1, 0])), [1, 0]);
-%!assert (size (repmat (x, [5, 0])), [5, 0]);
-%!assert (size (repmat (x, [0, 1])), [0, 1]);
-%!assert (size (repmat (x, [0, 5])), [0, 5]);
+%!assert (size (repmat (x, [1, 0])), [1, 0])
+%!assert (size (repmat (x, [5, 0])), [5, 0])
+%!assert (size (repmat (x, [0, 1])), [0, 1])
+%!assert (size (repmat (x, [0, 5])), [0, 5])
 
-%!assert (size (repmat ({1}, [1, 0])), [1, 0]);
-%!assert (size (repmat ({1}, [5, 0])), [5, 0]);
-%!assert (size (repmat ({1}, [0, 1])), [0, 1]);
-%!assert (size (repmat ({1}, [0, 5])), [0, 5]);
+%!assert (size (repmat ({1}, [1, 0])), [1, 0])
+%!assert (size (repmat ({1}, [5, 0])), [5, 0])
+%!assert (size (repmat ({1}, [0, 1])), [0, 1])
+%!assert (size (repmat ({1}, [0, 5])), [0, 5])
+
+%!error (size (repmat (".", -1, -1)))
 

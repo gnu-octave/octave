@@ -37,7 +37,9 @@ function vs = version ()
 
 endfunction
 
-%!assert(ischar (version ()) && strcmp (version (), OCTAVE_VERSION));
+
+%!assert (ischar (version ()))
+%!assert (version (), OCTAVE_VERSION)
 
 %!warning version (1);
 

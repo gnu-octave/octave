@@ -141,8 +141,8 @@ function retval = optimset (varargin)
 endfunction
 
 
-%!assert (optimget (optimset ('tolx', 1e-2), 'tOLx'), 1e-2)
-%!assert (isfield (optimset ('tolFun', 1e-3), 'TolFun'))
+%!assert (optimget (optimset ("tolx", 1e-2), "tOLx"), 1e-2)
+%!assert (isfield (optimset ("tolFun", 1e-3), "TolFun"))
 
 %!error (optimset ("%NOT_A_REAL_FUNCTION_NAME%"))
 

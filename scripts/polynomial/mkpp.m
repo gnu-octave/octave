@@ -88,27 +88,27 @@ endfunction
 %! pp = mkpp (x, [m(:),b(:)]);
 %! xi = linspace (0,pi,50);
 %! plot (x,t,"x", xi,ppval (pp,xi));
-%! legend ("control","interp");
+%! legend ("control", "interp");
 
 %!shared b,c,pp
 %! b = 1:3; c = 1:24; pp = mkpp (b,c);
-%!assert (pp.pieces, 2);
-%!assert (pp.order, 12);
-%!assert (pp.dim, 1);
-%!assert (size (pp.coefs), [2,12]);
+%!assert (pp.pieces, 2)
+%!assert (pp.order, 12)
+%!assert (pp.dim, 1)
+%!assert (size (pp.coefs), [2,12])
 %! pp = mkpp(b,c,2);
-%!assert (pp.pieces, 2);
-%!assert (pp.order, 6);
-%!assert (pp.dim, 2);
-%!assert (size (pp.coefs), [4,6]);
+%!assert (pp.pieces, 2)
+%!assert (pp.order, 6)
+%!assert (pp.dim, 2)
+%!assert (size (pp.coefs), [4,6])
 %! pp = mkpp(b,c,3);
-%!assert (pp.pieces, 2);
-%!assert (pp.order, 4);
-%!assert (pp.dim, 3);
-%!assert (size (pp.coefs), [6,4]);
+%!assert (pp.pieces, 2)
+%!assert (pp.order, 4)
+%!assert (pp.dim, 3)
+%!assert (size (pp.coefs), [6,4])
 %! pp = mkpp(b,c,[2,3]);
-%!assert (pp.pieces, 2);
-%!assert (pp.order, 2);
-%!assert (pp.dim, [2,3]);
-%!assert (size (pp.coefs), [12,2]);
+%!assert (pp.pieces, 2)
+%!assert (pp.order, 2)
+%!assert (pp.dim, [2,3])
+%!assert (size (pp.coefs), [12,2])
 

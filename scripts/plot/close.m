@@ -80,6 +80,7 @@ function close_all_figures (close_hidden_figs)
 
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
@@ -91,3 +92,4 @@ endfunction
 %!     close (hf);
 %!   endif
 %! end_unwind_protect
+

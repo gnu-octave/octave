@@ -59,15 +59,15 @@ function rnd = logistic_rnd (varargin)
 endfunction
 
 
-%!assert(size (logistic_rnd (3)), [3, 3]);
-%!assert(size (logistic_rnd ([4 1])), [4, 1]);
-%!assert(size (logistic_rnd (4,1)), [4, 1]);
+%!assert (size (logistic_rnd (3)), [3, 3])
+%!assert (size (logistic_rnd ([4 1])), [4, 1])
+%!assert (size (logistic_rnd (4,1)), [4, 1])
 
 %% Test input validation
 %!error logistic_rnd ()
 %!error logistic_rnd (-1)
-%!error logistic_rnd (ones(2))
+%!error logistic_rnd (ones (2))
 %!error logistic_rnd ([2 -1 2])
-%!error logistic_rnd (1, ones(2))
+%!error logistic_rnd (1, ones (2))
 %!error logistic_rnd (1, -1)
 

@@ -100,25 +100,27 @@ function z = idivide (x, y, op)
   endif
 endfunction
 
+
 %!shared a, af, b, bf
-%! a = int8(3);
+%! a = int8 (3);
 %! af = 3;
-%! b = int8([-4, 4]);
+%! b = int8 ([-4, 4]);
 %! bf = [-4, 4];
 
 %!assert (idivide (a, b), int8 ([0, 0]))
-%!assert (idivide (a, b, "floor"), int8([-1, 0]))
+%!assert (idivide (a, b, "floor"), int8 ([-1, 0]))
 %!assert (idivide (a, b, "ceil"), int8 ([0, 1]))
 %!assert (idivide (a, b, "round"), int8 ([-1, 1]))
 
 %!assert (idivide (af, b), int8 ([0, 0]))
-%!assert (idivide (af, b, "floor"), int8([-1, 0]))
+%!assert (idivide (af, b, "floor"), int8 ([-1, 0]))
 %!assert (idivide (af, b, "ceil"), int8 ([0, 1]))
 %!assert (idivide (af, b, "round"), int8 ([-1, 1]))
 
 %!assert (idivide (a, bf), int8 ([0, 0]))
-%!assert (idivide (a, bf, "floor"), int8([-1, 0]))
+%!assert (idivide (a, bf, "floor"), int8 ([-1, 0]))
 %!assert (idivide (a, bf, "ceil"), int8 ([0, 1]))
 %!assert (idivide (a, bf, "round"), int8 ([-1, 1]))
 
-%!error (idivide (uint8(1), int8(1)))
+%!error (idivide (uint8 (1), int8 (1)))
+

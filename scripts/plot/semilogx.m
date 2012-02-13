@@ -102,7 +102,7 @@ endfunction
 %! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b = logspace (-5, 1, 10);
-%!   semilogx (a, b)
+%!   semilogx (a, b);
 %!   assert (get (gca, "xscale"), "log");
 %!   assert (get (gca, "yscale"), "linear");
 %! unwind_protect_cleanup

@@ -71,14 +71,15 @@ function [theta, phi, r] = cart2sph (x, y, z)
 
 endfunction
 
+
 %!test
 %! x = [0, 1, 2];
 %! y = [0, 1, 2];
 %! z = [0, 1, 2];
 %! [t, p, r] = cart2sph (x, y, z);
 %! assert (t, [0, pi/4, pi/4], eps);
-%! assert (p, [0, 1, 1]*atan(sqrt(0.5)), eps);
-%! assert (r, [0, 1, 2]*sqrt(3), eps);
+%! assert (p, [0, 1, 1]*atan (sqrt (0.5)), eps);
+%! assert (r, [0, 1, 2]*sqrt (3), eps);
 
 %!test
 %! x = 0;
@@ -87,7 +88,7 @@ endfunction
 %! [t, p, r] = cart2sph (x, y, z);
 %! assert (t, [0, 1, 1] * pi/2, eps);
 %! assert (p, [0, 1, 1] * pi/4, eps);
-%! assert (r, [0, 1, 2] * sqrt(2), eps);
+%! assert (r, [0, 1, 2] * sqrt (2), eps);
 
 %!test
 %! x = [0, 1, 2];
@@ -96,7 +97,7 @@ endfunction
 %! [t, p, r] = cart2sph (x, y, z);
 %! assert (t, [0, 0, 0]);
 %! assert (p, [0, 1, 1] * pi/4);
-%! assert (r, [0, 1, 2] * sqrt(2));
+%! assert (r, [0, 1, 2] * sqrt (2));
 
 %!test
 %! x = [0, 1, 2];
@@ -105,9 +106,10 @@ endfunction
 %! [t, p, r] = cart2sph (x, y, z);
 %! assert (t, [0, 1, 1] * pi/4);
 %! assert (p, [0, 0, 0]);
-%! assert (r, [0, 1, 2] * sqrt(2));
+%! assert (r, [0, 1, 2] * sqrt (2));
 
 %!test
 %! C = [0, 0, 0; 1, 0, 1; 2, 0, 2];
 %! S = [0, 0, 0; 0, pi/4, sqrt(2); 0, pi/4, 2*sqrt(2)];
-%! assert (cart2sph(C), S, eps);
+%! assert (cart2sph (C), S, eps);
+

@@ -86,21 +86,21 @@ endfunction
 
 ## WARNING: don't modify the demos without modifying the tests!
 %!demo
-%! example ('example');
+%! example ("example");
 
 %!demo
 %! clf;
-%! t=0:0.01:2*pi; x = sin(t);
+%! t = 0:0.01:2*pi;  x = sin (t);
 %! plot (t,x)
 
-%!assert (example('example',1), "\n example ('example');");
+%!assert (example ("example",1), "\n example (\"example\");");
 %!test
-%! [code, idx] = example ('example');
+%! [code, idx] = example ("example");
 %! assert (code, ...
-%!         "\n example ('example');\n clf;\n t=0:0.01:2*pi; x = sin(t);\n plot (t,x)")
-%! assert (idx, [1, 23, 69]);
+%!         "\n example (\"example\");\n clf;\n t = 0:0.01:2*pi;  x = sin (t);\n plot (t,x)")
+%! assert (idx, [1, 23, 73]);
 
 %% Test input validation
 %!error example
-%!error example ('example', 3, 5)
+%!error example ("example", 3, 5)
 

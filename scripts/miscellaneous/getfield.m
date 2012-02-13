@@ -60,9 +60,11 @@ function obj = getfield (s, varargin)
   endif
 endfunction
 
+
 %!test
 %! x.a = "hello";
-%! assert(getfield(x,"a"),"hello");
+%! assert (getfield (x, "a"), "hello");
 %!test
 %! ss(1,2).fd(3).b = 5;
-%! assert(getfield(ss,{1,2},'fd',{3},'b'),5)
+%! assert (getfield (ss,{1,2},"fd",{3},"b"), 5);
+

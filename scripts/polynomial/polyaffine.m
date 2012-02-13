@@ -30,7 +30,6 @@
 ## @seealso{polyval, polyfit}
 ## @end deftypefn
 
-
 function g = polyaffine (f, mu)
 
    if (nargin != 2)

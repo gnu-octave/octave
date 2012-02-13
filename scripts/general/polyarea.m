@@ -61,10 +61,12 @@ function a = polyarea (x, y, dim)
   endif
 endfunction
 
+
 %!shared x, y
 %! x = [1;1;3;3;1];
 %! y = [1;3;3;1;1];
-%!assert (polyarea(x,y), 4, eps)
-%!assert (polyarea([x,x],[y,y]), [4,4], eps)
-%!assert (polyarea([x,x],[y,y],1), [4,4], eps)
-%!assert (polyarea([x,x]',[y,y]',2), [4;4], eps)
+%!assert (polyarea (x,y), 4, eps)
+%!assert (polyarea ([x,x],[y,y]), [4,4], eps)
+%!assert (polyarea ([x,x],[y,y],1), [4,4], eps)
+%!assert (polyarea ([x,x]',[y,y]',2), [4;4], eps)
+

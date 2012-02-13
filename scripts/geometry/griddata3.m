@@ -66,7 +66,7 @@ endfunction
 %! z = 2 * rand (1000, 1) - 1;
 %! v = x.^2 + y.^2 + z.^2;
 %! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
-%! vi = griddata3 (x, y, z, v, xi, yi, zi, 'linear');
+%! vi = griddata3 (x, y, z, v, xi, yi, zi, "linear");
 %! vv = vi - xi.^2 - yi.^2 - zi.^2;
 %! assert (max (abs (vv(:))), 0, 0.1);
 
@@ -79,6 +79,7 @@ endfunction
 %! z = 2 * rand (1000, 1) - 1;
 %! v = x.^2 + y.^2 + z.^2;
 %! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
-%! vi = griddata3 (x, y, z, v, xi, yi, zi, 'nearest');
+%! vi = griddata3 (x, y, z, v, xi, yi, zi, "nearest");
 %! vv = vi - xi.^2 - yi.^2 - zi.^2;
 %! assert (max (abs (vv(:))), 0, 0.1)
+

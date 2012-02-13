@@ -64,10 +64,11 @@ function A = perms (v)
   endif
 endfunction
 
-%!error perms ();
-%!error perms (1, 2);
 
-%!assert (perms ([1,2,3]), [1,2,3;2,1,3;1,3,2;2,3,1;3,1,2;3,2,1]);
-%!assert (perms (1:3), perms ([1,2,3]));
+%!assert (perms ([1,2,3]), [1,2,3;2,1,3;1,3,2;2,3,1;3,1,2;3,2,1])
+%!assert (perms (1:3), perms ([1,2,3]))
+%!assert (perms (int8 ([1,2,3])), int8 ([1,2,3;2,1,3;1,3,2;2,3,1;3,1,2;3,2,1]))
 
-%!assert (perms (int8([1,2,3])), int8([1,2,3;2,1,3;1,3,2;2,3,1;3,1,2;3,2,1]));
+%!error perms ()
+%!error perms (1, 2)
+

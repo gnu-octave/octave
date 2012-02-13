@@ -90,6 +90,6 @@ endfunction
 %!   otherwise
 %!     new_toolkit = "gnuplot";
 %! endswitch
-%! assert (graphics_toolkit (new_toolkit), old_toolkit)
-%! assert (graphics_toolkit (old_toolkit), new_toolkit)
+%! assert (graphics_toolkit (new_toolkit), old_toolkit);
+%! assert (graphics_toolkit (old_toolkit), new_toolkit);
 

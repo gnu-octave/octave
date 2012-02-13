@@ -198,14 +198,15 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
 
 endfunction
 
-## Tests
+
 %!test
 %! C = [1 0;0 1;2 1];
 %! d = [1;3;-2];
-%! assert (lsqnonneg (C, d), [0;0.5], 100*eps)
+%! assert (lsqnonneg (C, d), [0;0.5], 100*eps);
 
 %!test
 %! C = [0.0372 0.2869;0.6861 0.7071;0.6233 0.6245;0.6344 0.6170];
 %! d = [0.8587;0.1781;0.0747;0.8405];
 %! xnew = [0;0.6929];
-%! assert (lsqnonneg (C, d), xnew, 0.0001)
+%! assert (lsqnonneg (C, d), xnew, 0.0001);
+

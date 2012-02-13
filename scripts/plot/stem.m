@@ -128,5 +128,5 @@ endfunction
 %! y = [sin(x), cos(x)];
 %! h = stem (x, y);
 %! set (h(2), 'color', 'g');
-%! set (h(1), 'basevalue', -1)
+%! set (h(1), 'basevalue', -1);
 

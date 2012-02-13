@@ -359,5 +359,6 @@ endfunction
 
 %!shared opt0
 %! opt0 = optimset ("tolx", 0);
-%!assert(fzero(@cos, [0, 3], opt0), pi/2, 10*eps)
-%!assert(fzero(@(x) x^(1/3) - 1e-8, [0,1], opt0), 1e-24, 1e-22*eps)
+%!assert (fzero (@cos, [0, 3], opt0), pi/2, 10*eps)
+%!assert (fzero (@(x) x^(1/3) - 1e-8, [0,1], opt0), 1e-24, 1e-22*eps)
+

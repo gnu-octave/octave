@@ -91,9 +91,9 @@ endfunction
 %! assert (size (x4) == [1, 10] && x4(1) == 10 && abs (x4(10) - pi) < sqrt (eps));
 
 %% Test input validation
-%!error logspace ();
-%!error logspace (1, 2, 3, 4);
-%!error logspace ([1, 2; 3, 4], 5, 6);
-%!error logspace (1, [1, 2; 3, 4], 6);
-%!error logspace (1, 2, [1, 2; 3, 4]);
+%!error logspace ()
+%!error logspace (1, 2, 3, 4)
+%!error logspace ([1, 2; 3, 4], 5, 6)
+%!error logspace (1, [1, 2; 3, 4], 6)
+%!error logspace (1, 2, [1, 2; 3, 4])
 

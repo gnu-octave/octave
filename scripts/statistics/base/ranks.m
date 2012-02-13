@@ -86,12 +86,12 @@ function y = ranks (x, dim)
 endfunction
 
 
-%!assert(ranks (1:2:10), 1:5);
-%!assert(ranks (10:-2:1), 5:-1:1);
-%!assert(ranks ([2, 1, 2, 4]), [2.5, 1, 2.5, 4]);
-%!assert(ranks (ones(1, 5)), 3*ones(1, 5));
-%!assert(ranks (1e6*ones(1, 5)), 3*ones(1, 5));
-%!assert(ranks (rand (1, 5), 1), ones(1, 5));
+%!assert (ranks (1:2:10), 1:5)
+%!assert (ranks (10:-2:1), 5:-1:1)
+%!assert (ranks ([2, 1, 2, 4]), [2.5, 1, 2.5, 4])
+%!assert (ranks (ones (1, 5)), 3*ones (1, 5))
+%!assert (ranks (1e6*ones (1, 5)), 3*ones (1, 5))
+%!assert (ranks (rand (1, 5), 1), ones (1, 5))
 
 %% Test input validation
 %!error ranks ()

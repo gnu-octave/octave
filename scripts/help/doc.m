@@ -106,6 +106,10 @@ function retval = doc (fname)
 
 endfunction
 
-%!test if exist( info_file ()) != 2 && exist (sprintf ("%s.gz", info_file ())) != 2
-%!       error ("Info file %s or %s.gz does not exist!", info_file (), info_file ());
-%!     endif
+
+%!test
+%! ifile = info_file ();
+%! if (exist (ifile) != 2 && exist (sprintf ("%s.gz", ifile)) != 2)
+%!   error ("Info file %s or %s.gz does not exist!", ifile, ifile);
+%! endif
+

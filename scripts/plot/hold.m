@@ -151,7 +151,7 @@ endfunction
 %!   assert (! ishold);
 %!   hold on;
 %!   assert (ishold);
-%!   p1 = fill ([0 1 1], [0 0 1],"black");
+%!   p1 = fill ([0 1 1], [0 0 1], "black");
 %!   p2 = fill ([0 1 0], [0 1 1], "red");
 %!   assert (length (get (hf, "children")), 1);
 %!   assert (length (get (gca, "children")), 3);
@@ -167,7 +167,7 @@ endfunction
 %!   assert (! ishold);
 %!   hold on;
 %!   assert (ishold);
-%!   p1 = fill ([0 1 1], [0 0 1],"black");
+%!   p1 = fill ([0 1 1], [0 0 1], "black");
 %!   hold off;
 %!   p2 = fill ([0 1 0], [0 1 1], "red");
 %!   assert (length (get (hf, "children")), 1);

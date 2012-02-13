@@ -81,7 +81,7 @@ endfunction
 %!error statistics ()
 %!error statistics (1, 2, 3)
 %!error statistics (['A'; 'B'])
-%!error statistics (1, ones(2,2))
+%!error statistics (1, ones (2,2))
 %!error statistics (1, 1.5)
 %!error statistics (1, 0)
 %!error statistics (1, 3)

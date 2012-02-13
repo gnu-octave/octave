@@ -114,33 +114,33 @@ endfunction
 
 %!shared b, x, r
 %!test
-%!  b = [1 1];
-%!  x = [1, zeros(1,9)];
-%!  assert(fftfilt(b,  x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
-%!  assert(fftfilt(b,  x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
-%!  assert(fftfilt(b.',x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
-%!  assert(fftfilt(b.',x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
+%! b = [1 1];
+%! x = [1, zeros(1,9)];
+%! assert (fftfilt (b,  x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
+%! assert (fftfilt (b,  x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
+%! assert (fftfilt (b.',x  ), [1 1 0 0 0 0 0 0 0 0]  , eps);
+%! assert (fftfilt (b.',x.'), [1 1 0 0 0 0 0 0 0 0].', eps);
 
 %!test
-%!  r = sqrt(1/2) * (1+i);
-%!  b = b*r;
-%!  assert(fftfilt(b, x  ), r*[1 1 0 0 0 0 0 0 0 0]  , eps);
-%!  assert(fftfilt(b, r*x), r*r*[1 1 0 0 0 0 0 0 0 0], eps);
-%!  assert(fftfilt(b, x.'), r*[1 1 0 0 0 0 0 0 0 0].', eps);
+%! r = sqrt (1/2) * (1+i);
+%! b = b*r;
+%! assert (fftfilt (b, x  ), r*[1 1 0 0 0 0 0 0 0 0]  , eps);
+%! assert (fftfilt (b, r*x), r*r*[1 1 0 0 0 0 0 0 0 0], eps);
+%! assert (fftfilt (b, x.'), r*[1 1 0 0 0 0 0 0 0 0].', eps);
 
 %!test
-%!  b = [1 1];
-%!  x = zeros (10,3); x(1,1)=-1; x(1,2)=1;
-%!  y0 = zeros (10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
-%!  y = fftfilt (b, x);
-%!  assert (y,y0);
+%! b = [1 1];
+%! x = zeros (10,3); x(1,1)=-1; x(1,2)=1;
+%! y0 = zeros (10,3); y0(1:2,1)=-1; y0(1:2,2)=1;
+%! y = fftfilt (b, x);
+%! assert (y,y0);
 
 %!test
-%!  b  = rand (10, 1);
-%!  x  = rand (10, 1);
-%!  y0 = filter (b, 1, x);
-%!  y  = filter (b, 1, x);
-%!  assert (y, y0);
+%! b  = rand (10, 1);
+%! x  = rand (10, 1);
+%! y0 = filter (b, 1, x);
+%! y  = filter (b, 1, x);
+%! assert (y, y0);
 
 %% Test input validation
 %!error fftfilt (1)

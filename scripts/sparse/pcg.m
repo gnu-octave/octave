@@ -433,7 +433,6 @@ endfunction
 %!  legend ("absolute residual", "absolute preconditioned residual");
 
 %!demo
-%!
 %!  # Full output from pcg, including the eigenvalue estimates
 %!  # We use the 1-D Laplacian matrix for A, and cond(A) = O(N^2)
 %!  # and that's the reason we need some preconditioner; here we take

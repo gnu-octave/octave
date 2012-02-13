@@ -74,22 +74,22 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.3934693402873666 1 2];
-%!assert(expinv (x, 2*ones(1,5)), [NaN 0 1 Inf NaN], eps);
-%!assert(expinv (x, 2), [NaN 0 1 Inf NaN], eps);
-%!assert(expinv (x, 2*[1 0 NaN 1 1]), [NaN NaN NaN Inf NaN], eps);
-%!assert(expinv ([x(1:2) NaN x(4:5)], 2), [NaN 0 NaN Inf NaN], eps);
+%!assert (expinv (x, 2*ones (1,5)), [NaN 0 1 Inf NaN], eps)
+%!assert (expinv (x, 2), [NaN 0 1 Inf NaN], eps)
+%!assert (expinv (x, 2*[1 0 NaN 1 1]), [NaN NaN NaN Inf NaN], eps)
+%!assert (expinv ([x(1:2) NaN x(4:5)], 2), [NaN 0 NaN Inf NaN], eps)
 
 %% Test class of input preserved
-%!assert(expinv ([x, NaN], 2), [NaN 0 1 Inf NaN NaN], eps);
-%!assert(expinv (single([x, NaN]), 2), single([NaN 0 1 Inf NaN NaN]), eps);
-%!assert(expinv ([x, NaN], single(2)), single([NaN 0 1 Inf NaN NaN]), eps);
+%!assert (expinv ([x, NaN], 2), [NaN 0 1 Inf NaN NaN], eps)
+%!assert (expinv (single ([x, NaN]), 2), single ([NaN 0 1 Inf NaN NaN]), eps)
+%!assert (expinv ([x, NaN], single (2)), single ([NaN 0 1 Inf NaN NaN]), eps)
 
 %% Test input validation
 %!error expinv ()
 %!error expinv (1)
 %!error expinv (1,2,3)
-%!error expinv (ones(3),ones(2))
-%!error expinv (ones(2),ones(3))
+%!error expinv (ones (3), ones (2))
+%!error expinv (ones (2), ones (3))
 %!error expinv (i, 2)
 %!error expinv (2, i)
 

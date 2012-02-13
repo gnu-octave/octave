@@ -52,11 +52,11 @@ function y = fliplr (x)
 
 endfunction
 
-%!assert((fliplr ([1, 2; 3, 4]) == [2, 1; 4, 3]
-%! && fliplr ([1, 2; 3, 4; 5, 6]) == [2, 1; 4, 3; 6, 5]
-%! && fliplr ([1, 2, 3; 4, 5, 6]) == [3, 2, 1; 6, 5, 4]));
 
-%!error fliplr();
+%!assert (fliplr ([1, 2; 3, 4]), [2, 1; 4, 3])
+%!assert (fliplr ([1, 2; 3, 4; 5, 6]), [2, 1; 4, 3; 6, 5])
+%!assert (fliplr ([1, 2, 3; 4, 5, 6]), [3, 2, 1; 6, 5, 4])
 
-%!error fliplr (1, 2);
+%!error fliplr()
+%!error fliplr (1, 2)
 

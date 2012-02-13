@@ -198,14 +198,15 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x = [], option
 
 endfunction
 
-## Tests
+
 %!test
 %! C = [5 2;2 2];
 %! d = [3; -1];
-%! assert (pqpnonneg (C, d), [0;0.5], 100*eps)
+%! assert (pqpnonneg (C, d), [0;0.5], 100*eps);
 
 ## Test equivalence of lsq and pqp
 %!test
 %! C = rand (20, 10);
 %! d = rand (20, 1);
-%! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps)
+%! assert (pqpnonneg (C'*C, -C'*d), lsqnonneg (C, d), 100*eps);
+

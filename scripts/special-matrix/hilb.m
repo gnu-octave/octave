@@ -75,5 +75,5 @@ endfunction
 
 %!error hilb ()
 %!error hilb (1, 2)
-%!error <N must be a scalar integer> hilb (ones(2))
+%!error <N must be a scalar integer> hilb (ones (2))
 

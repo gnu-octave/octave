@@ -53,6 +53,7 @@ function filename = fullfile (varargin)
 
 endfunction
 
+
 %!shared fs, fsx, xfs, fsxfs, xfsy
 %! fs = filesep ();
 %! fsx = cstrcat (fs, "x");
@@ -78,3 +79,4 @@ endfunction
 %!assert (fullfile (fs, xfs), fsxfs)
 %!assert (fullfile (fsx, fs), fsxfs)
 %!assert (fullfile (fs, "x", fs), fsxfs)
+

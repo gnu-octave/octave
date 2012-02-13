@@ -148,6 +148,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   end_unwind_protect
 endfunction
 
+
 ## No test needed for internal helper function.
 %!assert (1)
 

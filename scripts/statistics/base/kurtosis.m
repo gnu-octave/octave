@@ -87,13 +87,13 @@ endfunction
 %! y = [x, 2*x];
 %! assert (kurtosis (y), [-1.4, -1.4], sqrt (eps));
 
-%!assert (kurtosis (single(1)), single(0));
+%!assert (kurtosis (single (1)), single (0))
 
 %% Test input validation
 %!error kurtosis ()
 %!error kurtosis (1, 2, 3)
 %!error kurtosis (['A'; 'B'])
-%!error kurtosis (1, ones(2,2))
+%!error kurtosis (1, ones (2,2))
 %!error kurtosis (1, 1.5)
 %!error kurtosis (1, 0)
 %!error kurtosis (1, 3)

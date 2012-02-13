@@ -74,15 +74,15 @@ function s = strtrim (s)
 endfunction
 
 
-%!assert (strtrim ("    abc  "), "abc");
-%!assert (strtrim ("  "), "");
-%!assert (strtrim ("abc"), "abc");
-%!assert (strtrim ([" abc   "; "   def   "]), ["abc  "; "  def"]);
-%!assert (strtrim ({" abc   "; "   def   "}), {"abc"; "def"});
-%!assert (strtrim ({" abc   ", {"   def   "}}), {"abc", {"def"}});
+%!assert (strtrim ("    abc  "), "abc")
+%!assert (strtrim ("  "), "")
+%!assert (strtrim ("abc"), "abc")
+%!assert (strtrim ([" abc   "; "   def   "]), ["abc  "; "  def"])
+%!assert (strtrim ({" abc   "; "   def   "}), {"abc"; "def"})
+%!assert (strtrim ({" abc   ", {"   def   "}}), {"abc", {"def"}})
 
-%!error <Invalid call to strtrim> strtrim ();
-%!error <Invalid call to strtrim> strtrim ("abc", "def");
-%!error <argument must be a string> strtrim (1);
-%!error <argument must be a string> strtrim ({[]});
+%!error <Invalid call to strtrim> strtrim ()
+%!error <Invalid call to strtrim> strtrim ("abc", "def")
+%!error <argument must be a string> strtrim (1)
+%!error <argument must be a string> strtrim ({[]})
 

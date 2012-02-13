@@ -163,10 +163,12 @@ function varargout = isocolors(varargin)
   endswitch
 endfunction
 
+
 %!test
-%!  [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
-%!  c = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
-%!  [f, v] = isosurface (x, y, z, c, .4);
-%!  cdat = isocolors (x, y, z, c, v);
-%!  assert (size (cdat, 1) == size (v, 1));
+%! [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
+%! c = (x-.5).^2 + (y-.5).^2 + (z-.5).^2;
+%! [f, v] = isosurface (x, y, z, c, .4);
+%! cdat = isocolors (x, y, z, c, v);
+%! assert (rows (cdat) == rows (v));
 ## Can't create a patch handle for tests without a figure
+

@@ -190,19 +190,19 @@ endfunction
 %! assert (r{7}, "");
 
 %% Simple check for 2, 3, and 4 delimeters
-%!assert(strtok ("this is", "i "), "th");
-%!assert(strtok ("this is", "ij "), "th");
-%!assert(strtok ("this is", "ijk "), "th");
+%!assert (strtok ("this is", "i "), "th")
+%!assert (strtok ("this is", "ij "), "th")
+%!assert (strtok ("this is", "ijk "), "th")
 
 %% Test all cases for 8 delimiters since a different
 %!# algorithm is used when more than 7 delimiters
-%!assert (strtok ("","jklmnop "), "");
-%!assert (strtok ("this","jklmnop "), "this");
-%!assert (strtok ("this ","jklmnop "), "this");
-%!assert (strtok ("this is","jklmnop "), "this");
-%!assert (strtok (" this","jklmnop "), "this");
-%!assert (strtok (" this ","jklmnop "), "this");
-%!assert (strtok (" ","jklmnop "), ""(1:0));
+%!assert (strtok ("","jklmnop "), "")
+%!assert (strtok ("this","jklmnop "), "this")
+%!assert (strtok ("this ","jklmnop "), "this")
+%!assert (strtok ("this is","jklmnop "), "this")
+%!assert (strtok (" this","jklmnop "), "this")
+%!assert (strtok (" this ","jklmnop "), "this")
+%!assert (strtok (" ","jklmnop "), ""(1:0))
 
 %% Test 'bad' string orientations
 %!assert (strtok (" this ".'), "this".');   # delimiter at start and end
@@ -213,7 +213,7 @@ endfunction
 %! for ch = "\t\n\v\f\r"
 %!   [t, r] = strtok (cstrcat ("beg", ch, "end"));
 %!   assert (t, "beg");
-%!   assert (r, cstrcat (ch, "end"))
+%!   assert (r, cstrcat (ch, "end"));
 %! endfor
 
 %% Test input validation

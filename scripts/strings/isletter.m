@@ -36,5 +36,7 @@ function retval = isletter (s)
 
 endfunction
 
-%!error isletter();
-%!error isletter("a", "b");
+
+%!error isletter ()
+%!error isletter ("a", "b")
+

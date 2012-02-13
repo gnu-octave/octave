@@ -228,7 +228,6 @@ endfunction;
 %! M2 = spdiags ([4*ones(n,1) -ones(n,1)], 0:1, n, n);
 %! [x, flag, relres, iter, resvec] = bicg (A, b, tol, maxit, M1, M2);
 %! assert (x, ones (size (b)), 1e-7);
-%!
 
 %!function y = afun (x, t, a)
 %!  switch t
@@ -260,3 +259,4 @@ endfunction;
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = bicg (A, b, tol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
+

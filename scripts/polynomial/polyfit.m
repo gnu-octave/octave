@@ -116,23 +116,13 @@ function [p, s, mu] = polyfit (x, y, n)
 
 endfunction
 
-%!test
-%! x = [-2, -1, 0, 1, 2];
-%! assert(all (all (abs (polyfit (x, x.^2+x+1, 2) - [1, 1, 1]) < sqrt (eps))));
 
-%!error(polyfit ([1, 2; 3, 4], [1, 2, 3, 4], 2))
-
-%!test
+%!shared x
 %! x = [-2, -1, 0, 1, 2];
-%! assert(all (all (abs (polyfit (x, x.^2+x+1, 3) - [0, 1, 1, 1]) < sqrt (eps))));
-
-%!test
-%! x = [-2, -1, 0, 1, 2];
-%! fail("polyfit (x, x.^2+x+1)");
-
-%!test
-%! x = [-2, -1, 0, 1, 2];
-%! fail("polyfit (x, x.^2+x+1, [])");
+%!assert (polyfit (x, x.^2+x+1, 2), [1, 1, 1], sqrt (eps))
+%!assert (polyfit (x, x.^2+x+1, 3), [0, 1, 1, 1], sqrt (eps))
+%!fail ("polyfit (x, x.^2+x+1)")
+%!fail ("polyfit (x, x.^2+x+1, [])")
 
 ## Test difficult case where scaling is really needed. This example
 ## demonstrates the rather poor result which occurs when the dependent
@@ -146,32 +136,33 @@ endfunction
 %!       315600.7143, 315602.9508, 315605.1765 ];
 %! [p1, s1] = polyfit (x, y, 10);
 %! [p2, s2, mu] = polyfit (x, y, 10);
-%! assert (s2.normr < s1.normr)
+%! assert (s2.normr < s1.normr);
 
 %!test
 %! x = 1:4;
 %! p0 = [1i, 0, 2i, 4];
 %! y0 = polyval (p0, x);
-%! p = polyfit (x, y0, numel(p0)-1);
-%! assert (p, p0, 1000*eps)
+%! p = polyfit (x, y0, numel (p0) - 1);
+%! assert (p, p0, 1000*eps);
 
 %!test
 %! x = 1000 + (-5:5);
 %! xn = (x - mean (x)) / std (x);
 %! pn = ones (1,5);
 %! y = polyval (pn, xn);
-%! [p, s, mu] = polyfit (x, y, numel(pn)-1);
-%! [p2, s2] = polyfit (x, y, numel(pn)-1);
-%! assert (p, pn, s.normr)
-%! assert (s.yf, y, s.normr)
-%! assert (mu, [mean(x), std(x)])
-%! assert (s.normr/s2.normr < sqrt(eps))
+%! [p, s, mu] = polyfit (x, y, numel (pn) - 1);
+%! [p2, s2] = polyfit (x, y, numel (pn) - 1);
+%! assert (p, pn, s.normr);
+%! assert (s.yf, y, s.normr);
+%! assert (mu, [mean(x), std(x)]);
+%! assert (s.normr/s2.normr < sqrt (eps));
 
 %!test
 %! x = [1, 2, 3; 4, 5, 6];
 %! y = [0, 0, 1; 1, 0, 0];
 %! p = polyfit (x, y, 5);
-%! expected = [0, 1, -14, 65, -112, 60]/12;
-%! assert (p, expected, sqrt(eps))
+%! expected = [0, 1, -14, 65, -112, 60] / 12;
+%! assert (p, expected, sqrt (eps));
 
+%!error <vectors of the same size> polyfit ([1, 2; 3, 4], [1, 2, 3, 4], 2)
 

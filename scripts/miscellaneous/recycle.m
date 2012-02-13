@@ -51,16 +51,18 @@ function retval = recycle (state)
         error ("recycle: invalid value of STATE = `%s'", state);
       endif
     else
-      error ("recycle: expecting STATE to be a character string");
+      error ("recycle: STATE must be a character string");
     endif
   endif
 
 endfunction
 
-%!error recycle ("on");
-%!error recycle ("on", "and I mean it");
-%!error recycle (1);
 
 %!test
 %! recycle ("off");
 %! assert (recycle ("off"), "off");
+
+%!error <recycling files is not implemented> recycle ("on")
+%!error recycle ("on", "and I mean it")
+%!error <STATE must be a character string> recycle (1)
+

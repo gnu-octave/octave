@@ -98,17 +98,17 @@ function out = base2dec (s, base)
 endfunction
 
 
-%!assert(base2dec ("11120", 3), 123);
-%!assert(base2dec ("yyyzx", "xyz"), 123);
-%!assert(base2dec ("-1", 2), NaN);
-%!assert(base2dec ({"A1", "1A"}, 16), [161; 26]);
+%!assert (base2dec ("11120", 3), 123)
+%!assert (base2dec ("yyyzx", "xyz"), 123)
+%!assert (base2dec ("-1", 2), NaN)
+%!assert (base2dec ({"A1", "1A"}, 16), [161; 26])
 
 %%Test input validation
-%!error base2dec ();
-%!error base2dec ("11120");
-%!error base2dec ("11120", 3, 4);
-%!error base2dec ("11120", "1231");
-%!error base2dec ("11120", "12 3");
-%!error base2dec ("11120", ones(2));
-%!error base2dec ("11120", 37);
+%!error base2dec ()
+%!error base2dec ("11120")
+%!error base2dec ("11120", 3, 4)
+%!error base2dec ("11120", "1231")
+%!error base2dec ("11120", "12 3")
+%!error base2dec ("11120", ones (2))
+%!error base2dec ("11120", 37)
 

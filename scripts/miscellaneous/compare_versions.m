@@ -200,54 +200,54 @@ function out = compare_versions (v1, v2, operator)
 
 endfunction
 
+
 ## tests
 ## test both equality symbols
 ## test arbitrarily long equality
-%!assert(compare_versions("1.1.0.0.0", "1.1", "=="), true)
-%!assert(compare_versions("1", "1.1", "<"), true)
-%!assert(compare_versions("1.1", "1.1", "<="), true)
-%!assert(compare_versions("1.1", "1.1.1", "<="), true)
-%!assert(compare_versions("1.23", "1.24", "=<"), true)
+%!assert (compare_versions ("1.1.0.0.0", "1.1", "=="), true)
+%!assert (compare_versions ("1", "1.1", "<"), true)
+%!assert (compare_versions ("1.1", "1.1", "<="), true)
+%!assert (compare_versions ("1.1", "1.1.1", "<="), true)
+%!assert (compare_versions ("1.23", "1.24", "=<"), true)
 ## test different length numbers
-%!assert(compare_versions("23.2000", "23.1", ">"), true)
-%!assert(compare_versions("0.0.2", "0.0.1", ">="), true)
-%!assert(compare_versions("0.2", "0.0.100", "=>"), true)
-%!assert(compare_versions("0.1", "0.2", "!="), true)
-%!assert(compare_versions("0.1", "0.2", "~="), true)
+%!assert (compare_versions ("23.2000", "23.1", ">"), true)
+%!assert (compare_versions ("0.0.2", "0.0.1", ">="), true)
+%!assert (compare_versions ("0.2", "0.0.100", "=>"), true)
+%!assert (compare_versions ("0.1", "0.2", "!="), true)
+%!assert (compare_versions ("0.1", "0.2", "~="), true)
 
 ## test alphanumeric strings
-%!assert(compare_versions("1a", "1b", "<"), true)
-%!assert(compare_versions("a", "1", "<"), true)
-%!assert(compare_versions("1a", "1b", ">"), false)
-%!assert(compare_versions("a", "1", ">"), false)
-%!assert(compare_versions("1.1.0a", "1.1.0b", "=="), false)
-%!assert(compare_versions("1.1.0a", "1.1.0b", "!="), true)
-%!assert(compare_versions("1.1.0test", "1.1.0b", "=="), false)
-%!assert(compare_versions("1.1.0test", "1.1.0test", "=="), true)
+%!assert (compare_versions ("1a", "1b", "<"), true)
+%!assert (compare_versions ("a", "1", "<"), true)
+%!assert (compare_versions ("1a", "1b", ">"), false)
+%!assert (compare_versions ("a", "1", ">"), false)
+%!assert (compare_versions ("1.1.0a", "1.1.0b", "=="), false)
+%!assert (compare_versions ("1.1.0a", "1.1.0b", "!="), true)
+%!assert (compare_versions ("1.1.0test", "1.1.0b", "=="), false)
+%!assert (compare_versions ("1.1.0test", "1.1.0test", "=="), true)
 
 ## make sure that it won't just give true output
-%!assert(compare_versions("1", "0", "=="), false)
+%!assert (compare_versions ("1", "0", "=="), false)
 ## test arbitrarily long equality
-%!assert(compare_versions("1.1.1.0.0", "1.1", "=="), false)
-%!assert(compare_versions("1.1", "1", "<"), false)
-%!assert(compare_versions("2", "1.1", "<="), false)
-%!assert(compare_versions("1.1.1", "1.1", "<="), false)
-%!assert(compare_versions("1.25", "1.24", "=<"), false)
+%!assert (compare_versions ("1.1.1.0.0", "1.1", "=="), false)
+%!assert (compare_versions ("1.1", "1", "<"), false)
+%!assert (compare_versions ("2", "1.1", "<="), false)
+%!assert (compare_versions ("1.1.1", "1.1", "<="), false)
+%!assert (compare_versions ("1.25", "1.24", "=<"), false)
 ## test different length numbers
-%!assert(compare_versions("23.2", "23.100", ">"), false)
-%!assert(compare_versions("0.0.0.2", "0.0.1", ">="), false)
-%!assert(compare_versions("0.0.20", "0.10.2", "=>"), false)
-%!assert(compare_versions("0.1", "0.1", "!="), false)
-%!assert(compare_versions("0.1", "0.1", "~="), false)
+%!assert (compare_versions ("23.2", "23.100", ">"), false)
+%!assert (compare_versions ("0.0.0.2", "0.0.1", ">="), false)
+%!assert (compare_versions ("0.0.20", "0.10.2", "=>"), false)
+%!assert (compare_versions ("0.1", "0.1", "!="), false)
+%!assert (compare_versions ("0.1", "0.1", "~="), false)
 
 %% Test input validation
-%!error(compare_versions(0.1, "0.1", "=="))
-%!error(compare_versions("0.1", 0.1, "=="))
-%!error(compare_versions(["0";".";"1"], "0.1", "=="))
-%!error(compare_versions("0.1", ["0";".";"1"], "=="))
-%!error(compare_versions("0.1", "0.1", "<>"))
-%!error(compare_versions("0.1", "0.1", "!>"))
-%!error(compare_versions("0.1", "0.1", "="))
-%!error(compare_versions("0.1", "0.1", "aa"))
-
+%!error (compare_versions (0.1, "0.1", "=="))
+%!error (compare_versions ("0.1", 0.1, "=="))
+%!error (compare_versions (["0";".";"1"], "0.1", "=="))
+%!error (compare_versions ("0.1", ["0";".";"1"], "=="))
+%!error (compare_versions ("0.1", "0.1", "<>"))
+%!error (compare_versions ("0.1", "0.1", "!>"))
+%!error (compare_versions ("0.1", "0.1", "="))
+%!error (compare_versions ("0.1", "0.1", "aa"))
 

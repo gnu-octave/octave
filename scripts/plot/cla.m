@@ -89,14 +89,16 @@ function cla (varargin)
 
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   plot (1:10)
-%!   cla ()
+%!   plot (1:10);
+%!   cla ();
 %!   kids = get (gca, "children");
-%!   cla ()
+%!   cla ();
 %! unwind_protect_cleanup
-%!   close (hf)
+%!   close (hf);
 %! end_unwind_protect
-%! assert (numel (kids), 0)
+%! assert (numel (kids), 0);
+

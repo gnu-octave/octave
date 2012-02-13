@@ -165,7 +165,7 @@ endfunction
 %!assert (hadamard (2), [1,1;1,-1])
 %!test
 %! for n = [1,2,4,8,12,24,48,20,28,2^9]
-%!   h = hadamard(n);
+%!   h = hadamard (n);
 %!   assert (norm (h*h' - n*eye (n)), 0);
 %! endfor
 

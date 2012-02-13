@@ -64,21 +64,20 @@ endfunction
 %! y = polyval (p, x);
 %! pp = spline (x, y);
 %! jj = ppjumps (pp);
-%! assert (jj, [0 0], eps)
+%! assert (jj, [0 0], eps);
 
 %!test
-%!
 %! breaks = [0 1 2];
 %! pp1 = poly (-[1 2 3]);
 %! pp2 = poly (-([1 2 3]+1));
 %! pp = mkpp (breaks, [pp1;pp2]);
-%! assert (ppjumps (pp), 0, eps)
+%! assert (ppjumps (pp), 0, eps);
 
 %!test
-%!
 %! breaks = [0 1 2];
 %! pp1 = poly (-[1 2 3]);
 %! pp2 = poly (([1 2 3]+1));
 %! pp = mkpp (breaks, [pp1;pp2]);
 %! j  = - 2 * polyval (pp1, 1);
-%! assert (ppjumps (pp), j, eps)
+%! assert (ppjumps (pp), j, eps);
+

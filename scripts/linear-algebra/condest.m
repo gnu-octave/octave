@@ -236,4 +236,5 @@ endfunction
 %! A = hilb (N);
 %! [rcondA, v] = condest (A);
 %! x = A*v;
-%! assert (norm(x, inf), 0, eps);
+%! assert (norm (x, inf), 0, eps);
+

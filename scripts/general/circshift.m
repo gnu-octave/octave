@@ -98,7 +98,7 @@ endfunction
 %!error circshift ()
 %!error circshift (1)
 %!error circshift (1,2,3)
-%!error circshift (1, ones(2,2))
+%!error circshift (1, ones (2,2))
 %!error circshift (1, [1 2 3])
 %!error circshift (1, 1.5)
 

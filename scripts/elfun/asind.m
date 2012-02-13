@@ -35,7 +35,8 @@ function y = asind (x)
 endfunction
 
 
-%!assert (asind (0:0.1:1), 180/pi*asin (0:0.1:1), -10*eps)
+%!assert (asind (0:0.1:1), 180/pi * asin (0:0.1:1), -10*eps)
 
 %!error asind ()
 %!error asind (1, 2)
+

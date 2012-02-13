@@ -97,23 +97,23 @@ function idx = strmatch (s, A, exact)
 endfunction
 
 
-%!assert (strmatch("a", {"aaa", "bab", "bbb"}), 1);
-%!assert (strmatch ("apple", "apple juice"), 1);
-%!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]), [1; 2]);
-%!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}), [1; 2]);
-%!assert (strmatch ("apple pie", "apple"), []);
-%!assert (strmatch ("a ", "a"), 1);
-%!assert (strmatch ("a", "a \0", "exact"), 1);
-%!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1);
-%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4]);
-%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4]);
+%!assert (strmatch ("a", {"aaa", "bab", "bbb"}), 1)
+%!assert (strmatch ("apple", "apple juice"), 1)
+%!assert (strmatch ("apple", ["apple pie"; "apple juice"; "an apple"]), [1; 2])
+%!assert (strmatch ("apple", {"apple pie"; "apple juice"; "tomato"}), [1; 2])
+%!assert (strmatch ("apple pie", "apple"), [])
+%!assert (strmatch ("a ", "a"), 1)
+%!assert (strmatch ("a", "a \0", "exact"), 1)
+%!assert (strmatch ("a b", {"a b", "a c", "c d"}), 1)
+%!assert (strmatch ("", {"", "foo", "bar", ""}), [1, 4])
+%!assert (strmatch ('', { '', '% comment', 'var a = 5', ''}, 'exact'), [1,4])
 
 %% Test input validation
-%!error <Invalid call to strmatch> strmatch();
-%!error <Invalid call to strmatch> strmatch("a");
-%!error <Invalid call to strmatch> strmatch("a", "aaa", "exact", 1);
-%!error <S must be a string> strmatch(1, "aaa");
-%!error <S must be a string> strmatch(char ("a", "bb"), "aaa");
-%!error <A must be a string> strmatch("a", 1);
-%!error <A must be a string> strmatch("a", {"hello", [1]});
+%!error <Invalid call to strmatch> strmatch ()
+%!error <Invalid call to strmatch> strmatch ("a")
+%!error <Invalid call to strmatch> strmatch ("a", "aaa", "exact", 1)
+%!error <S must be a string> strmatch (1, "aaa")
+%!error <S must be a string> strmatch (char ("a", "bb"), "aaa")
+%!error <A must be a string> strmatch ("a", 1)
+%!error <A must be a string> strmatch ("a", {"hello", [1]})
 

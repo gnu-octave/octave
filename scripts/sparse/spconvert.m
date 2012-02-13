@@ -65,3 +65,4 @@ endfunction
 %!error spconvert ([1 2])
 %!error spconvert ([1 2 3i])
 %!error spconvert ([1 2 3 4 5])
+

@@ -42,20 +42,22 @@ function entries = bzip2 (varargin)
 
 endfunction
 
+
 %!xtest
-%!  # test for correct cleanup of temporary files
-%!  unwind_protect
-%!    filename = tmpnam;
-%!    dummy    = 1;
-%!    save(filename, "dummy");
-%!    n_tmpfiles_before = length(find(strncmp("oct-", cellstr(ls(P_tmpdir)), 4)));
-%!    entry = bzip2(filename);
-%!    n_tmpfiles_after = length(find(strncmp("oct-", cellstr(ls(P_tmpdir)), 4)));
-%!    if (n_tmpfiles_before != n_tmpfiles_after)
-%!      error("bzip2 has not cleaned up temporary files correctly!");
-%!    endif
-%!  unwind_protect_cleanup
-%!    delete(filename);
-%!    [path, basename, extension] = fileparts(filename);
-%!    delete([basename, extension, ".bz2"]);
-%!  end_unwind_protect
+%! # test for correct cleanup of temporary files
+%! unwind_protect
+%!   filename = tmpnam;
+%!   dummy    = 1;
+%!   save (filename, "dummy");
+%!   n_tmpfiles_before = length (find (strncmp ("oct-", cellstr (ls (P_tmpdir)), 4)));
+%!   entry = bzip2 (filename);
+%!   n_tmpfiles_after = length (find (strncmp ("oct-", cellstr (ls (P_tmpdir)), 4)));
+%!   if (n_tmpfiles_before != n_tmpfiles_after)
+%!     error ("bzip2 has not cleaned up temporary files correctly!");
+%!   endif
+%! unwind_protect_cleanup
+%!   delete (filename);
+%!   [path, basename, extension] = fileparts (filename);
+%!   delete ([basename, extension, ".bz2"]);
+%! end_unwind_protect
+

@@ -50,6 +50,7 @@ function h = gca ()
 
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! ax = axes;
@@ -58,3 +59,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

@@ -60,12 +60,14 @@ function obj = setfield (obj, varargin)
   endif
 endfunction
 
+
 %!test
 %! x.a = "hello";
-%! x = setfield(x,"b","world");
-%! y = struct("a","hello","b","world");
-%! assert(x,y);
+%! x = setfield (x, "b", "world");
+%! y = struct ("a", "hello", "b", "world");
+%! assert (x,y);
 %!test
-%! oo(1,1).f0= 1;
-%! oo = setfield(oo,{1,2},"fd",{3},"b", 6);
-%! assert (oo(1,2).fd(3).b, 6)
+%! oo(1,1).f0 = 1;
+%! oo = setfield (oo,{1,2},"fd",{3},"b", 6);
+%! assert (oo(1,2).fd(3).b, 6);
+

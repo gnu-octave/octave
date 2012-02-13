@@ -50,7 +50,7 @@ function retval = betaln (a, b)
 endfunction
 
 
-%!assert (betaln (3,4), log (beta(3,4)),eps);
+%!assert (betaln (3,4), log (beta (3,4)), eps)
 
 %% Test input validation
 %!error (betaln (1))

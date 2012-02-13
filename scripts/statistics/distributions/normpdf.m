@@ -73,25 +73,25 @@ endfunction
 %!shared x,y
 %! x = [-Inf 1 2 Inf];
 %! y = 1/sqrt(2*pi)*exp (-(x-1).^2/2);
-%!assert(normpdf (x, ones(1,4), ones(1,4)), y);
-%!assert(normpdf (x, 1, ones(1,4)), y);
-%!assert(normpdf (x, ones(1,4), 1), y);
-%!assert(normpdf (x, [0 -Inf NaN Inf], 1), [y(1) NaN NaN NaN]);
-%!assert(normpdf (x, 1, [Inf NaN -1 0]), [NaN NaN NaN NaN]);
-%!assert(normpdf ([x, NaN], 1, 1), [y, NaN]);
+%!assert (normpdf (x, ones (1,4), ones (1,4)), y)
+%!assert (normpdf (x, 1, ones (1,4)), y)
+%!assert (normpdf (x, ones (1,4), 1), y)
+%!assert (normpdf (x, [0 -Inf NaN Inf], 1), [y(1) NaN NaN NaN])
+%!assert (normpdf (x, 1, [Inf NaN -1 0]), [NaN NaN NaN NaN])
+%!assert (normpdf ([x, NaN], 1, 1), [y, NaN])
 
 %% Test class of input preserved
-%!assert(normpdf (single([x, NaN]), 1, 1), single([y, NaN]), eps("single"));
-%!assert(normpdf ([x, NaN], single(1), 1), single([y, NaN]), eps("single"));
-%!assert(normpdf ([x, NaN], 1, single(1)), single([y, NaN]), eps("single"));
+%!assert (normpdf (single ([x, NaN]), 1, 1), single ([y, NaN]), eps ("single"))
+%!assert (normpdf ([x, NaN], single (1), 1), single ([y, NaN]), eps ("single"))
+%!assert (normpdf ([x, NaN], 1, single (1)), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error normpdf ()
 %!error normpdf (1,2)
 %!error normpdf (1,2,3,4)
-%!error normpdf (ones(3),ones(2),ones(2))
-%!error normpdf (ones(2),ones(3),ones(2))
-%!error normpdf (ones(2),ones(2),ones(3))
+%!error normpdf (ones (3), ones (2), ones (2))
+%!error normpdf (ones (2), ones (3), ones (2))
+%!error normpdf (ones (2), ones (2), ones (3))
 %!error normpdf (i, 2, 2)
 %!error normpdf (2, i, 2)
 %!error normpdf (2, 2, i)

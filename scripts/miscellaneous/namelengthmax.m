@@ -31,4 +31,4 @@ function n = namelengthmax ()
 endfunction
 
 
-%!assert (namelengthmax, 63)
+%!assert (namelengthmax (), 63)

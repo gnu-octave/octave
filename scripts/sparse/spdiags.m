@@ -87,8 +87,7 @@ function [A, c] = spdiags (v, c, m, n)
 
 endfunction
 
-%!test
-%assert(spdiags(zeros(1,0),1,1,1),0)
 
-%!test
-%assert(spdiags(zeros(0,1),1,1,1),0)
+%!assert (spdiags (zeros (1,0),1,1,1), sparse (0))
+%!assert (spdiags (zeros (0,1),1,1,1), sparse (0))
+

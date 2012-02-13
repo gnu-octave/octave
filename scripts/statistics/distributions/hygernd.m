@@ -110,39 +110,39 @@ function rnd = hygernd (t, m, n, varargin)
 endfunction
 
 
-%!assert(size (hygernd (4,2,2)), [1, 1]);
-%!assert(size (hygernd (4*ones(2,1), 2,2)), [2, 1]);
-%!assert(size (hygernd (4*ones(2,2), 2,2)), [2, 2]);
-%!assert(size (hygernd (4, 2*ones(2,1), 2)), [2, 1]);
-%!assert(size (hygernd (4, 2*ones(2,2), 2)), [2, 2]);
-%!assert(size (hygernd (4, 2, 2*ones(2,1))), [2, 1]);
-%!assert(size (hygernd (4, 2, 2*ones(2,2))), [2, 2]);
-%!assert(size (hygernd (4, 2, 2, 3)), [3, 3]);
-%!assert(size (hygernd (4, 2, 2, [4 1])), [4, 1]);
-%!assert(size (hygernd (4, 2, 2, 4, 1)), [4, 1]);
+%!assert (size (hygernd (4,2,2)), [1, 1])
+%!assert (size (hygernd (4*ones (2,1), 2,2)), [2, 1])
+%!assert (size (hygernd (4*ones (2,2), 2,2)), [2, 2])
+%!assert (size (hygernd (4, 2*ones (2,1), 2)), [2, 1])
+%!assert (size (hygernd (4, 2*ones (2,2), 2)), [2, 2])
+%!assert (size (hygernd (4, 2, 2*ones (2,1))), [2, 1])
+%!assert (size (hygernd (4, 2, 2*ones (2,2))), [2, 2])
+%!assert (size (hygernd (4, 2, 2, 3)), [3, 3])
+%!assert (size (hygernd (4, 2, 2, [4 1])), [4, 1])
+%!assert (size (hygernd (4, 2, 2, 4, 1)), [4, 1])
 
-%!assert(class (hygernd (4,2,2)), "double");
-%!assert(class (hygernd (single(4),2,2)), "single");
-%!assert(class (hygernd (single([4 4]),2,2)), "single");
-%!assert(class (hygernd (4,single(2),2)), "single");
-%!assert(class (hygernd (4,single([2 2]),2)), "single");
-%!assert(class (hygernd (4,2,single(2))), "single");
-%!assert(class (hygernd (4,2,single([2 2]))), "single");
+%!assert (class (hygernd (4,2,2)), "double")
+%!assert (class (hygernd (single (4),2,2)), "single")
+%!assert (class (hygernd (single ([4 4]),2,2)), "single")
+%!assert (class (hygernd (4,single (2),2)), "single")
+%!assert (class (hygernd (4,single ([2 2]),2)), "single")
+%!assert (class (hygernd (4,2,single (2))), "single")
+%!assert (class (hygernd (4,2,single ([2 2]))), "single")
 
 %% Test input validation
 %!error hygernd ()
 %!error hygernd (1)
 %!error hygernd (1,2)
-%!error hygernd (ones(3),ones(2),ones(2), 2)
-%!error hygernd (ones(2),ones(3),ones(2), 2)
-%!error hygernd (ones(2),ones(2),ones(3), 2)
+%!error hygernd (ones (3), ones (2), ones (2), 2)
+%!error hygernd (ones (2), ones (3), ones (2), 2)
+%!error hygernd (ones (2), ones (2), ones (3), 2)
 %!error hygernd (i, 2, 2)
 %!error hygernd (2, i, 2)
 %!error hygernd (2, 2, i)
 %!error hygernd (4,2,2, -1)
-%!error hygernd (4,2,2, ones(2))
+%!error hygernd (4,2,2, ones (2))
 %!error hygernd (4,2,2, [2 -1 2])
-%!error hygernd (4*ones(2),2,2, 3)
-%!error hygernd (4*ones(2),2,2, [3, 2])
-%!error hygernd (4*ones(2),2,2, 3, 2)
+%!error hygernd (4*ones (2),2,2, 3)
+%!error hygernd (4*ones (2),2,2, [3, 2])
+%!error hygernd (4*ones (2),2,2, 3, 2)
 

@@ -52,9 +52,9 @@ endfunction
 
 
 ## There really isn't that much to test here
-%!assert(blanks (0), "")
-%!assert(blanks (5), "     ")
-%!assert(blanks (10), "          ")
+%!assert (blanks (0), "")
+%!assert (blanks (5), "     ")
+%!assert (blanks (10), "          ")
 
 %% Test input validation
 %!error blanks ()

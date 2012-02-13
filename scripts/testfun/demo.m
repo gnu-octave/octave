@@ -149,9 +149,10 @@ endfunction
 %!demo
 %! t = 0:0.01:2*pi;
 %! x = sin (t);
-%! plot (t,x);
+%! plot (t, x);
 %! %-------------------------------------------------
 %! % the figure window shows one cycle of a sine wave
 
-%!error demo ();
-%!error demo (1, 2, 3);
+%!error demo ()
+%!error demo (1, 2, 3)
+

@@ -153,7 +153,8 @@ function [text, status] = first_sentence_html (help_text, max_len)
   text = first_sentence_plain_text (help_text, max_len);
 endfunction
 
-%!assert (strcmp (get_first_help_sentence('get_first_help_sentence'), "Return the first sentence of a function's help text."));
+
+%!assert (get_first_help_sentence ('get_first_help_sentence'), "Return the first sentence of a function's help text.")
 
 %% Test input validation
 %!error get_first_help_sentence ()

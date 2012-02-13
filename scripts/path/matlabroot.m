@@ -32,5 +32,6 @@ function retval = matlabroot ()
 endfunction
 
 
-%!assert (matlabroot(), OCTAVE_HOME())
+
+%!assert (matlabroot (), OCTAVE_HOME ())
 

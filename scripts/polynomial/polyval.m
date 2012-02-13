@@ -93,20 +93,20 @@ function [y, dy] = polyval (p, x, s = [], mu)
 
 endfunction
 
-%!test
-%! fail("polyval([1,0;0,1],0:10)");
+
+%!fail ("polyval ([1,0;0,1],0:10)")
 
 %!test
 %! r = 0:10:50;
 %! p = poly (r);
-%! p = p / max(abs(p));
-%! x = linspace(0,50,11);
-%! y = polyval(p,x) + 0.25*sin(100*x);
-%! [pf, s] = polyfit (x, y, numel(r));
+%! p = p / max (abs (p));
+%! x = linspace (0,50,11);
+%! y = polyval (p,x) + 0.25*sin (100*x);
+%! [pf, s] = polyfit (x, y, numel (r));
 %! [y1, delta] = polyval (pf, x, s);
 %! expected = [0.37235, 0.35854, 0.32231, 0.32448, 0.31328, ...
 %!    0.32036, 0.31328, 0.32448, 0.32231, 0.35854, 0.37235];
-%! assert (delta, expected, 0.00001)
+%! assert (delta, expected, 0.00001);
 
 %!test
 %! x = 10 + (-2:2);
@@ -115,38 +115,39 @@ endfunction
 %! [pn, s, mu] = polyfit (x, y, numel (x) - 1);
 %! y1 = polyval (p, x);
 %! yn = polyval (pn, x, [], mu);
-%! assert (y1, y, sqrt(eps))
-%! assert (yn, y, sqrt(eps))
+%! assert (y1, y, sqrt (eps));
+%! assert (yn, y, sqrt (eps));
 
 %!test
 %! p = [0, 1, 0];
 %! x = 1:10;
-%! assert (x, polyval(p,x), eps)
+%! assert (x, polyval (p,x), eps);
 %! x = x(:);
-%! assert (x, polyval(p,x), eps)
+%! assert (x, polyval (p,x), eps);
 %! x = reshape(x, [2, 5]);
-%! assert (x, polyval(p,x), eps)
+%! assert (x, polyval (p,x), eps);
 %! x = reshape(x, [5, 2]);
-%! assert (x, polyval(p,x), eps)
-%! x = reshape(x, [1, 1, 5, 2]);
-%! assert (x, polyval(p,x), eps)
+%! assert (x, polyval (p,x), eps);
+%! x = reshape (x, [1, 1, 5, 2]);
+%! assert (x, polyval (p,x), eps);
 
 %!test
 %! p = [1];
 %! x = 1:10;
-%! y = ones(size(x));
-%! assert (y, polyval(p,x), eps)
+%! y = ones (size (x));
+%! assert (y, polyval (p,x), eps);
 %! x = x(:);
-%! y = ones(size(x));
-%! assert (y, polyval(p,x), eps)
-%! x = reshape(x, [2, 5]);
-%! y = ones(size(x));
-%! assert (y, polyval(p,x), eps)
-%! x = reshape(x, [5, 2]);
-%! y = ones(size(x));
-%! assert (y, polyval(p,x), eps)
-%! x = reshape(x, [1, 1, 5, 2]);
+%! y = ones (size (x));
+%! assert (y, polyval (p,x), eps);
+%! x = reshape (x, [2, 5]);
+%! y = ones (size (x));
+%! assert (y, polyval (p,x), eps);
+%! x = reshape (x, [5, 2]);
+%! y = ones (size (x));
+%! assert (y, polyval (p,x), eps);
+%! x = reshape (x, [1, 1, 5, 2]);
 
 %!assert (zeros (1, 10), polyval ([], 1:10))
 %!assert ([], polyval (1, []))
 %!assert ([], polyval ([], []))
+

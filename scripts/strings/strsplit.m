@@ -114,5 +114,5 @@ endfunction
 %!error strsplit ("abc", "b", true, 4)
 %!error <S and SEP must be string values> strsplit (123, "b")
 %!error <S and SEP must be string values> strsplit ("abc", 1)
-%!error <STRIP_EMPTY must be a scalar value> strsplit ("abc", "def", ones(3,3))
+%!error <STRIP_EMPTY must be a scalar value> strsplit ("abc", "def", ones (3,3))
 

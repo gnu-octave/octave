@@ -150,5 +150,5 @@ endfunction
 %% Test input validation
 %!error profile ()
 %!error profile ("on", 2)
-%!error profile ("INVALID_OPTION");
+%!error profile ("INVALID_OPTION")
 

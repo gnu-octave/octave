@@ -89,6 +89,7 @@ function varargout = imread (filename, varargin)
 
 endfunction
 
+
 %!testif HAVE_MAGICK
 %! vpng = [ ...
 %!  137,  80,  78,  71,  13,  10,  26,  10,   0,   0, ...
@@ -107,11 +108,12 @@ endfunction
 %!   16,  28, 160,  16,   0, 197, 214,  13,  34,  74, ...
 %!  117, 213,  17,   0,   0,   0,   0,  73,  69,  78, ...
 %!   68, 174,  66,  96, 130];
-%! fid = fopen('test.png', 'wb');
-%! fwrite(fid, vpng);
-%! fclose(fid);
-%! A = imread('test.png');
-%! delete('test.png');
-%! assert(A(:,:,1), uint8 ([0, 255, 0; 255, 237, 255; 0, 255, 0]));
-%! assert(A(:,:,2), uint8 ([0, 255, 0; 255,  28, 255; 0, 255, 0]));
-%! assert(A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));
+%! fid = fopen ("test.png", "wb");
+%! fwrite (fid, vpng);
+%! fclose (fid);
+%! A = imread ("test.png");
+%! delete ("test.png");
+%! assert (A(:,:,1), uint8 ([0, 255, 0; 255, 237, 255; 0, 255, 0]));
+%! assert (A(:,:,2), uint8 ([0, 255, 0; 255,  28, 255; 0, 255, 0]));
+%! assert (A(:,:,3), uint8 ([0, 255, 0; 255,  36, 255; 0, 255, 0]));
+

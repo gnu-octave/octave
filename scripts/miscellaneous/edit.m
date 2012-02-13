@@ -504,6 +504,7 @@ function ret = default_user (long_form)
 
 endfunction
 
+
 %!test
 %! s.editor = edit ("get", "editor");
 %! s.home = edit ("get", "home");

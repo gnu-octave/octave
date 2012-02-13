@@ -93,7 +93,7 @@ endfunction
 %! theta = 2*pi * sqrt (x.^2 + y.^2) + pi/2;
 %! quiver3 (x, y, z, sin (theta), cos (theta), ones (size (z)));
 %! hold on;
-%! mesh (x,y,z);
+%! mesh (x, y, z);
 %! hold off;
 
 %!demo

@@ -60,15 +60,15 @@ function rnd = stdnormal_rnd (varargin)
 endfunction
 
 
-%!assert(size (stdnormal_rnd (3)), [3, 3]);
-%!assert(size (stdnormal_rnd ([4 1])), [4, 1]);
-%!assert(size (stdnormal_rnd (4,1)), [4, 1]);
+%!assert (size (stdnormal_rnd (3)), [3, 3])
+%!assert (size (stdnormal_rnd ([4 1])), [4, 1])
+%!assert (size (stdnormal_rnd (4,1)), [4, 1])
 
 %% Test input validation
 %!error stdnormal_rnd ()
 %!error stdnormal_rnd (-1)
-%!error stdnormal_rnd (ones(2))
+%!error stdnormal_rnd (ones (2))
 %!error stdnormal_rnd ([2 -1 2])
-%!error stdnormal_rnd (1, ones(2))
+%!error stdnormal_rnd (1, ones (2))
 %!error stdnormal_rnd (1, -1)
 

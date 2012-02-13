@@ -116,7 +116,8 @@ function [multp, indx] = mpoles (p, tol, reorder)
 
 endfunction
 
+
 %!test
 %! [mp, n] = mpoles ([0 0], 0.01);
-%! assert (mp, [1; 2])
+%! assert (mp, [1; 2]);
 

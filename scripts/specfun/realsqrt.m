@@ -33,8 +33,11 @@ function y = realsqrt (x)
   endif
 endfunction
 
-%!assert (sqrt(1:5),realsqrt(1:5))
+
+%!assert (sqrt (1:5), realsqrt (1:5))
 %!test
 %! x = rand (10,10);
-%! assert (sqrt(x),realsqrt(x))
-%!error (realsqrt(-1))
+%! assert (sqrt (x), realsqrt (x));
+
+%!error <produced complex result> realsqrt (-1)
+

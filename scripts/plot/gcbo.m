@@ -42,5 +42,7 @@ function [h, fig] = gcbo ()
 
 endfunction
 
+
 %!test
-%! assert (isempty (gcbo ));
+%! assert (isempty (gcbo));
+

@@ -140,6 +140,7 @@ function [cout, lev] = contourc (varargin)
 
 endfunction
 
+
 %!test
 %! x = 0:2;
 %! y = x;
@@ -147,7 +148,6 @@ endfunction
 %! [c_actual, lev_actual]= contourc (x, y, z, 2:3);
 %! c_expected = [2, 1, 1, 2, 2, 3, 1.5, 2; 4, 2, 2, 1, 1, 2, 2, 1.5];
 %! lev_expected = [2 3];
-%! assert (c_actual, c_expected, eps)
-%! assert (lev_actual, lev_expected, eps)
-
+%! assert (c_actual, c_expected, eps);
+%! assert (lev_actual, lev_expected, eps);
 

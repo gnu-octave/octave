@@ -55,28 +55,30 @@ function retval = beta (a, b)
 
 endfunction
 
+
 %!test
-%! a=[1, 1.5, 2, 3];
-%! b=[4, 3, 2, 1];
-%! v1=beta(a,b);
-%! v2=beta(b,a);
-%! v3=gamma(a).*gamma(b)./gamma(a+b);
-%! assert(all(abs(v1-v2)<sqrt(eps)) && all(abs(v2-v3)<sqrt(eps)));
+%! a = [1, 1.5, 2, 3];
+%! b = [4, 3, 2, 1];
+%! v1 = beta (a,b);
+%! v2 = beta (b,a);
+%! v3 = gamma (a).*gamma (b) ./ gamma (a+b);
+%! assert (v1, v2, sqrt (eps));
+%! assert (v2, v3, sqrt (eps));
 
-%!error beta();
-
-%!error beta(1);
-
-%!assert (1, beta (1, 1))
+%!assert (beta (1, 1), 1)
 
 %!test
 %! a = 2:10;
 %! tol = 10 * max (a) * eps;
-%! assert (-a, beta (-1./a, 1), tol)
-%! assert (-a, beta (1, -1./a), tol)
+%! assert (-a, beta (-1./a, 1), tol);
+%! assert (-a, beta (1, -1./a), tol);
 
 %!test
 %! a = 0.25 + (0:5) * 0.5;
 %! tol = 10 * max (a) * eps;
-%! assert (zeros (size (a)), beta (a, -a), tol)
-%! assert (zeros (size (a)), beta (-a, a), tol)
+%! assert (zeros (size (a)), beta (a, -a), tol);
+%! assert (zeros (size (a)), beta (-a, a), tol);
+
+%!error beta ()
+%!error beta (1)
+

@@ -54,6 +54,7 @@ function S = sprand (m, n, d)
 
 endfunction
 
+
 %!test
 %! s = sprand (4, 10, 0.1);
 %! assert (size (s), [4, 10]);
@@ -71,10 +72,10 @@ endfunction
 %!error sprand ()
 %!error sprand (1, 2)
 %!error sprand (1, 2, 3, 4)
-%!error sprand (ones(3), 3, 0.5)
+%!error sprand (ones (3), 3, 0.5)
 %!error sprand (3.5, 3, 0.5)
 %!error sprand (0, 3, 0.5)
-%!error sprand (3, ones(3), 0.5)
+%!error sprand (3, ones (3), 0.5)
 %!error sprand (3, 3.5, 0.5)
 %!error sprand (3, 0, 0.5)
 %!error sprand (3, 3, -1)

@@ -98,35 +98,35 @@ function rnd = frnd (m, n, varargin)
 endfunction
 
 
-%!assert(size (frnd (1,2)), [1, 1]);
-%!assert(size (frnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (frnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (frnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (frnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (frnd (1, 2, 3)), [3, 3]);
-%!assert(size (frnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (frnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (frnd (1,2)), [1, 1])
+%!assert (size (frnd (ones (2,1), 2)), [2, 1])
+%!assert (size (frnd (ones (2,2), 2)), [2, 2])
+%!assert (size (frnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (frnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (frnd (1, 2, 3)), [3, 3])
+%!assert (size (frnd (1, 2, [4 1])), [4, 1])
+%!assert (size (frnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (frnd (1, 2)), "double");
-%!assert(class (frnd (single(1), 2)), "single");
-%!assert(class (frnd (single([1 1]), 2)), "single");
-%!assert(class (frnd (1, single(2))), "single");
-%!assert(class (frnd (1, single([2 2]))), "single");
+%!assert (class (frnd (1, 2)), "double")
+%!assert (class (frnd (single (1), 2)), "single")
+%!assert (class (frnd (single ([1 1]), 2)), "single")
+%!assert (class (frnd (1, single (2))), "single")
+%!assert (class (frnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error frnd ()
 %!error frnd (1)
-%!error frnd (ones(3),ones(2))
-%!error frnd (ones(2),ones(3))
+%!error frnd (ones (3), ones (2))
+%!error frnd (ones (2), ones (3))
 %!error frnd (i, 2)
 %!error frnd (2, i)
 %!error frnd (1,2, -1)
-%!error frnd (1,2, ones(2))
+%!error frnd (1,2, ones (2))
 %!error frnd (1, 2, [2 -1 2])
-%!error frnd (1,2, 1, ones(2))
+%!error frnd (1,2, 1, ones (2))
 %!error frnd (1,2, 1, -1)
-%!error frnd (ones(2,2), 2, 3)
-%!error frnd (ones(2,2), 2, [3, 2])
-%!error frnd (ones(2,2), 2, 2, 3)
+%!error frnd (ones (2,2), 2, 3)
+%!error frnd (ones (2,2), 2, [3, 2])
+%!error frnd (ones (2,2), 2, 2, 3)
 

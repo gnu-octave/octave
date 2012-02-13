@@ -286,7 +286,7 @@ endfunction
 
 %!test
 %! result = legendre (0, 0:0.1:1);
-%! assert (result, full(ones(1,11)));
+%! assert (result, full (ones (1,11)));
 
 %!test
 %! result = legendre (3, [-1,0,1;1,0,-1]);
@@ -303,13 +303,14 @@ endfunction
 %! assert (result, expected);
 
 %% Check correct invocation
-%!error legendre ();
-%!error legendre (1);
-%!error legendre (1,2,3,4);
-%!error legendre ([1, 2], [-1, 0, 1]);
-%!error legendre (-1, [-1, 0, 1]);
-%!error legendre (1.1, [-1, 0, 1]);
-%!error legendre (1, [-1+i, 0, 1]);
-%!error legendre (1, [-2, 0, 1]);
-%!error legendre (1, [-1, 0, 2]);
-%!error legendre (1, [-1, 0, 1], "badnorm");
+%!error legendre ()
+%!error legendre (1)
+%!error legendre (1,2,3,4)
+%!error legendre ([1, 2], [-1, 0, 1])
+%!error legendre (-1, [-1, 0, 1])
+%!error legendre (1.1, [-1, 0, 1])
+%!error legendre (1, [-1+i, 0, 1])
+%!error legendre (1, [-2, 0, 1])
+%!error legendre (1, [-1, 0, 2])
+%!error legendre (1, [-1, 0, 1], "badnorm")
+

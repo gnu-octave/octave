@@ -79,22 +79,23 @@ function retval = skewness (x, dim)
 endfunction
 
 
-%!assert(skewness ([-1,0,1]), 0);
-%!assert(skewness ([-2,0,1]) < 0);
-%!assert(skewness ([-1,0,2]) > 0);
-%!assert(skewness ([-3,0,1]) == -1*skewness([-1,0,3]));
+%!assert (skewness ([-1,0,1]), 0)
+%!assert (skewness ([-2,0,1]) < 0)
+%!assert (skewness ([-1,0,2]) > 0)
+%!assert (skewness ([-3,0,1]) == -1*skewness ([-1,0,3]))
 %!test
 %! x = [0; 0; 0; 1];
 %! y = [x, 2*x];
 %! assert(all (abs (skewness (y) - [0.75, 0.75]) < sqrt (eps)));
 
-%!assert (skewness (single(1)), single(0));
+%!assert (skewness (single (1)), single (0))
 
 %% Test input validation
 %!error skewness ()
 %!error skewness (1, 2, 3)
 %!error skewness (['A'; 'B'])
-%!error skewness (1, ones(2,2))
+%!error skewness (1, ones (2,2))
 %!error skewness (1, 1.5)
 %!error skewness (1, 0)
 %!error skewness (1, 3)
+

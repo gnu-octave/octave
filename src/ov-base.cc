@@ -1538,11 +1538,11 @@ For example:\n\
 @example\n\
 @group\n\
 s = speye (3);\n\
-sparse_auto_mutate (false)\n\
+sparse_auto_mutate (false);\n\
 s(:, 1) = 1;\n\
 typeinfo (s)\n\
 @result{} sparse matrix\n\
-sparse_auto_mutate (true)\n\
+sparse_auto_mutate (true);\n\
 s(1, :) = 1;\n\
 typeinfo (s)\n\
 @result{} matrix\n\

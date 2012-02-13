@@ -612,7 +612,7 @@ Note that if @var{L}, @var{U}, @var{P} is a pivoted LU@tie{}factorization\n\
 as obtained by @code{lu}:\n\
 \n\
 @example\n\
-  [@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
+[@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -620,14 +620,14 @@ then a factorization of @xcode{@var{A}+@var{x}*@var{y}.'} can be obtained\n\
 either as\n\
 \n\
 @example\n\
-  [@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\
+[@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\
 @end example\n\
 \n\
 @noindent\n\
 or\n\
 \n\
 @example\n\
-  [@var{L1}, @var{U1}, @var{P1}] = lu (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
+[@var{L1}, @var{U1}, @var{P1}] = lu (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
 @end example\n\
 \n\
 The first form uses the unpivoted algorithm, which is faster, but less\n\

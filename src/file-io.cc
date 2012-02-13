@@ -1853,9 +1853,10 @@ fid = popen (\"ls -ltr / | tail -3\", \"r\");\n\
 while (ischar (s = fgets (fid)))\n\
   fputs (stdout, s);\n\
 endwhile\n\
-     @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc\n\
-     @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib\n\
-     @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
+\n\
+   @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc\n\
+   @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib\n\
+   @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
 @end group\n\
 @end example\n\
 @end deftypefn")

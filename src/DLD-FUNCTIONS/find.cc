@@ -347,7 +347,7 @@ one long vector (like Fortran arrays are stored).  For example:\n\
 @example\n\
 @group\n\
 find (eye (2))\n\
-     @result{} [ 1; 4 ]\n\
+  @result{} [ 1; 4 ]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -357,8 +357,8 @@ indices of nonzero elements of a matrix.  For example:\n\
 @example\n\
 @group\n\
 [i, j] = find (2 * eye (2))\n\
-     @result{} i = [ 1; 2 ]\n\
-     @result{} j = [ 1; 2 ]\n\
+    @result{} i = [ 1; 2 ]\n\
+    @result{} j = [ 1; 2 ]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -368,9 +368,9 @@ containing the nonzero values.  For example:\n\
 @example\n\
 @group\n\
 [i, j, v] = find (3 * eye (2))\n\
-     @result{} i = [ 1; 2 ]\n\
-     @result{} j = [ 1; 2 ]\n\
-     @result{} v = [ 3; 3 ]\n\
+       @result{} i = [ 1; 2 ]\n\
+       @result{} j = [ 1; 2 ]\n\
+       @result{} v = [ 3; 3 ]\n\
 @end group\n\
 @end example\n\
 \n\

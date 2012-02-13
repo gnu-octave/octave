@@ -361,7 +361,7 @@ For example:\n\
 @group\n\
 global x\n\
 isglobal (\"x\")\n\
-     @result{} 1\n\
+   @result{} 1\n\
 @end group\n\
 @end example\n\
 @seealso{isvarname, exist}\n\

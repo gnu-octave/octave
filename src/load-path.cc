@@ -2137,7 +2137,7 @@ In addition to accepting individual directory arguments, lists of\n\
 directory names separated by @code{pathsep} are also accepted.  For example:\n\
 \n\
 @example\n\
-addpath (\"dir1:/dir2:~/dir3\");\n\
+addpath (\"dir1:/dir2:~/dir3\")\n\
 @end example\n\
 @seealso{path, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
@@ -2248,7 +2248,7 @@ In addition to accepting individual directory arguments, lists of\n\
 directory names separated by @code{pathsep} are also accepted.  For example:\n\
 \n\
 @example\n\
-rmpath (\"dir1:/dir2:~/dir3\");\n\
+rmpath (\"dir1:/dir2:~/dir3\")\n\
 @end example\n\
 @seealso{path, addpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")

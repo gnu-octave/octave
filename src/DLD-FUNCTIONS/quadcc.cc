@@ -1485,7 +1485,7 @@ The function @var{f} must be vectorized and must return a vector of output\n\
 values if given a vector of input values.  For example,\n\
 \n\
 @example\n\
-   f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
+f = @@(x) x .* sin (1./x) .* sqrt (abs (1 - x));\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -1505,7 +1505,7 @@ For the example above, which has a discontinuity at x=1, the call to\n\
 @code{quadcc} would be as follows\n\
 \n\
 @example\n\
-   int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
+int = quadcc (f, a, b, 1.0e-6, [ 1 ]);\n\
 @end example\n\
 \n\
 The result of the integration is returned in @var{q}.\n\

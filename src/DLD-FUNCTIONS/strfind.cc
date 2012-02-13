@@ -164,7 +164,7 @@ strfind (\"abababa\", \"aba\")\n\
      @result{} [1, 3, 5]\n\
 \n\
 strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
-     @result{} ans =\n\
+     @result{}\n\
         @{\n\
           [1,1] =\n\
 \n\
@@ -331,7 +331,7 @@ with the string @var{rep} and return the result.  For example:\n\
 @example\n\
 @group\n\
 strrep (\"This is a test string\", \"is\", \"&%$\")\n\
-     @result{} \"Th&%$ &%$ a test string\"\n\
+    @result{}  \"Th&%$ &%$ a test string\"\n\
 @end group\n\
 @end example\n\
 \n\

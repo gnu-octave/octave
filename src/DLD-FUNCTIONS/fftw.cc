@@ -47,7 +47,7 @@ wisdom to be shared between applications other than Octave.  Alternatively,\n\
 the @code{fftw} function can be used to import wisdom.  For example,\n\
 \n\
 @example\n\
-@var{wisdom} = fftw ('dwisdom')\n\
+@var{wisdom} = fftw (\"dwisdom\")\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -57,7 +57,7 @@ and @code{load} commands respectively.  This existing wisdom can be\n\
 reimported as follows\n\
 \n\
 @example\n\
-fftw ('dwisdom', @var{wisdom})\n\
+fftw (\"dwisdom\", @var{wisdom})\n\
 @end example\n\
 \n\
 If @var{wisdom} is an empty matrix, then the wisdom used is cleared.\n\
@@ -96,14 +96,14 @@ The default method is 'estimate'.  The current method can\n\
 be queried with\n\
 \n\
 @example\n\
-@var{method} = fftw ('planner')\n\
+@var{method} = fftw (\"planner\")\n\
 @end example\n\
 \n\
 @noindent\n\
 or set by using\n\
 \n\
 @example\n\
-fftw ('planner', @var{method})\n\
+fftw (\"planner\", @var{method})\n\
 @end example\n\
 \n\
 Note that calculated wisdom will be lost when restarting Octave.  However,\n\

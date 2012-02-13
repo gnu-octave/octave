@@ -269,10 +269,11 @@ do\n\
 until (done)\n\
 fclose (out);\n\
 waitpid (pid);\n\
-     @print{} these\n\
-     @print{} strings\n\
-     @print{} some\n\
-     @print{} are\n\
+\n\
+   @print{} these\n\
+   @print{} strings\n\
+   @print{} some\n\
+   @print{} are\n\
 @end example\n\
 \n\
 Note that @code{popen2}, unlike @code{popen}, will not \"reap\" the\n\
@@ -949,25 +950,25 @@ For example:\n\
 \n\
 @example\n\
 [s, err, msg] = stat (\"/vmlinuz\")\n\
-      @result{} s =\n\
-        @{\n\
-          atime = 855399756\n\
-          rdev = 0\n\
-          ctime = 847219094\n\
-          uid = 0\n\
-          size = 389218\n\
-          blksize = 4096\n\
-          mtime = 847219094\n\
-          gid = 6\n\
-          nlink = 1\n\
-          blocks = 768\n\
-          mode = -rw-r--r--\n\
-          modestr = -rw-r--r--\n\
-          ino = 9316\n\
-          dev = 2049\n\
-        @}\n\
-     @result{} err = 0\n\
-     @result{} msg =\n\
+  @result{} s =\n\
+     @{\n\
+       atime = 855399756\n\
+       rdev = 0\n\
+       ctime = 847219094\n\
+       uid = 0\n\
+       size = 389218\n\
+       blksize = 4096\n\
+       mtime = 847219094\n\
+       gid = 6\n\
+       nlink = 1\n\
+       blocks = 768\n\
+       mode = -rw-r--r--\n\
+       modestr = -rw-r--r--\n\
+       ino = 9316\n\
+       dev = 2049\n\
+     @}\n\
+  @result{} err = 0\n\
+  @result{} msg =\n\
 @end example\n\
 @end deftypefn")
 {
@@ -1203,13 +1204,13 @@ Return system information in the structure.  For example:\n\
 @example\n\
 @group\n\
 uname ()\n\
-     @result{} @{\n\
-           sysname = x86_64\n\
-           nodename = segfault\n\
-           release = 2.6.15-1-amd64-k8-smp\n\
-           version = Linux\n\
-           machine = #2 SMP Thu Feb 23 04:57:49 UTC 2006\n\
-         @}\n\
+   @result{} @{\n\
+         sysname = x86_64\n\
+         nodename = segfault\n\
+         release = 2.6.15-1-amd64-k8-smp\n\
+         version = Linux\n\
+         machine = #2 SMP Thu Feb 23 04:57:49 UTC 2006\n\
+      @}\n\
 @end group\n\
 @end example\n\
 \n\

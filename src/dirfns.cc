@@ -570,25 +570,25 @@ names.  For example:\n\
 \n\
 @example\n\
 ls\n\
-     @result{}\n\
-        file1  file2  file3  myfile1 myfile1b\n\
+   @result{}\n\
+      file1  file2  file3  myfile1 myfile1b\n\
 glob (\"*file1\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] = file1\n\
-          [2,1] = myfile1\n\
-        @}\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = file1\n\
+        [2,1] = myfile1\n\
+      @}\n\
 glob (\"myfile?\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] = myfile1\n\
-        @}\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = myfile1\n\
+      @}\n\
 glob (\"file[12]\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] = file1\n\
-          [2,1] = file2\n\
-        @}\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = file1\n\
+        [2,1] = file2\n\
+      @}\n\
 @end example\n\
 @seealso{ls, dir, readdir}\n\
 @end deftypefn")

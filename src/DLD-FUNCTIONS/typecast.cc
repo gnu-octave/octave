@@ -95,20 +95,20 @@ of @var{x} and @var{class} must be one of the built-in numeric classes:\n\
 \n\
 @example\n\
 @group\n\
-  \"logical\"\n\
-  \"char\"\n\
-  \"int8\"\n\
-  \"int16\"\n\
-  \"int32\"\n\
-  \"int64\"\n\
-  \"uint8\"\n\
-  \"uint16\"\n\
-  \"uint32\"\n\
-  \"uint64\"\n\
-  \"double\"\n\
-  \"single\"\n\
-  \"double complex\"\n\
-  \"single complex\"\n\
+\"logical\"\n\
+\"char\"\n\
+\"int8\"\n\
+\"int16\"\n\
+\"int32\"\n\
+\"int64\"\n\
+\"uint8\"\n\
+\"uint16\"\n\
+\"uint32\"\n\
+\"uint64\"\n\
+\"double\"\n\
+\"single\"\n\
+\"double complex\"\n\
+\"single complex\"\n\
 @end group\n\
 @end example\n\
 \n\
@@ -129,8 +129,8 @@ An example of the use of typecast on a little-endian machine is\n\
 @example\n\
 @group\n\
 @var{x} = uint16 ([1, 65535]);\n\
-typecast (@var{x}, 'uint8')\n\
-@result{} [   0,   1, 255, 255]\n\
+typecast (@var{x}, \"uint8\")\n\
+  @result{} [   0,   1, 255, 255]\n\
 @end group\n\
 @end example\n\
 @seealso{cast, bitunpack, bitpack, swapbytes}\n\
@@ -280,17 +280,17 @@ Return a new array @var{y} resulting from interpreting an array\n\
 \n\
 @example\n\
 @group\n\
-  \"char\"\n\
-  \"int8\"\n\
-  \"int16\"\n\
-  \"int32\"\n\
-  \"int64\"\n\
-  \"uint8\"\n\
-  \"uint16\"\n\
-  \"uint32\"\n\
-  \"uint64\"\n\
-  \"double\"\n\
-  \"single\"\n\
+\"char\"\n\
+\"int8\"\n\
+\"int16\"\n\
+\"int32\"\n\
+\"int64\"\n\
+\"uint8\"\n\
+\"uint16\"\n\
+\"uint32\"\n\
+\"uint64\"\n\
+\"double\"\n\
+\"single\"\n\
 @end group\n\
 @end example\n\
 \n\
@@ -388,17 +388,17 @@ Return an array @var{y} corresponding to the raw bit patterns of\n\
 \n\
 @example\n\
 @group\n\
-  \"char\"\n\
-  \"int8\"\n\
-  \"int16\"\n\
-  \"int32\"\n\
-  \"int64\"\n\
-  \"uint8\"\n\
-  \"uint16\"\n\
-  \"uint32\"\n\
-  \"uint64\"\n\
-  \"double\"\n\
-  \"single\"\n\
+\"char\"\n\
+\"int8\"\n\
+\"int16\"\n\
+\"int32\"\n\
+\"int64\"\n\
+\"uint8\"\n\
+\"uint16\"\n\
+\"uint32\"\n\
+\"uint64\"\n\
+\"double\"\n\
+\"single\"\n\
 @end group\n\
 @end example\n\
 \n\

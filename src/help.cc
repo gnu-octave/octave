@@ -587,7 +587,7 @@ Declare variables to have global scope.\n\
 @example\n\
 @group\n\
 global @var{x};\n\
-if isempty (@var{x})\n\
+if (isempty (@var{x}))\n\
   x = 1;\n\
 endif\n\
 @end group\n\

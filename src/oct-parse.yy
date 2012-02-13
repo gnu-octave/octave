@@ -4219,9 +4219,9 @@ offer.  For example,\n\
 @group\n\
 @var{f} = @@exp;\n\
 feval (@var{f}, 1)\n\
-     @result{} 2.7183\n\
+    @result{} 2.7183\n\
 @var{f} (1)\n\
-     @result{} 2.7183\n\
+    @result{} 2.7183\n\
 @end group\n\
 @end example\n\
 \n\
@@ -4459,7 +4459,7 @@ The following example makes the variable @var{a} with the approximate\n\
 value 3.1416 available.\n\
 \n\
 @example\n\
-eval(\"a = acos(-1);\");\n\
+eval (\"a = acos(-1);\");\n\
 @end example\n\
 \n\
 If an error occurs during the evaluation of @var{try} the @var{catch}\n\

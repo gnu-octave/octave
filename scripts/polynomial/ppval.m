@@ -103,7 +103,7 @@ function yi = ppval (pp, xi)
 endfunction
 
 
-%!shared b,c,pp,pp2,xi,abserr
+%!shared b, c, pp, pp2, xi, abserr
 %! b = 1:3;
 %! c = ones (2);
 %! pp = mkpp (b, c);

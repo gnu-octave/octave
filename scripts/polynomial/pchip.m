@@ -138,7 +138,7 @@ endfunction
 %! %-------------------------------------------------------------------
 %! % confirm that pchip agreed better to discontinuous data than spline
 
-%!shared x,y,y2,pp,yi1,yi2,yi3
+%!shared x, y, y2, pp, yi1, yi2, yi3
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
 %!assert (pchip (x,y,x), y)

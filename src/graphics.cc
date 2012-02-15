@@ -3254,10 +3254,11 @@ figure::properties::set_position (const octave_value& v,
   if (! error_state)
     {
       Matrix old_bb, new_bb;
+      bool modified = false;
 
-      old_bb = get_boundingbox ();
-      position.set (v, true, do_notify_toolkit);
-      new_bb = get_boundingbox ();
+      old_bb = get_boundingbox (true);
+      modified = position.set (v, false, do_notify_toolkit);
+      new_bb = get_boundingbox (true);
 
       if (old_bb != new_bb)
         {
@@ -3268,7 +3269,11 @@ figure::properties::set_position (const octave_value& v,
             }
         }
 
-      mark_modified ();
+      if (modified)
+        {
+          position.run_listeners (POSTSET);
+          mark_modified ();
+        }
     }
 }
 
@@ -3711,8 +3716,8 @@ figure::properties::set_units (const octave_value& v)
 void
 figure::properties::update_units (const caseless_str& old_units)
 {
-  set_position (convert_position (get_position ().matrix_value (), old_units,
-                                  get_units (), screen_size_pixels ()));
+  position.set (convert_position (get_position ().matrix_value (), old_units,
+                                  get_units (), screen_size_pixels ()), false);
 }
 
 /*

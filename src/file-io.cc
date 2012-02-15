@@ -1112,7 +1112,7 @@ with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
 conversions is returned in @var{count}. It permits to explicitly\n\
-specify a locale to take into account langage specific features, \n\
+specify a locale to take into account language specific features, \n\
 such as decimal separator. This operation restores the previous locales\n\
 setting at the end of the conversion.\n\
 @ifclear OCTAVE_MANUAL\n\

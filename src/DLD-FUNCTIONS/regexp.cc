@@ -457,6 +457,7 @@ Match any character\n\
 \n\
 @item * + ? @{@}\n\
 Repetition operators, representing\n\
+\n\
 @table @code\n\
 @item *\n\
 Match zero or more times\n\

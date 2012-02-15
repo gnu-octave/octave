@@ -64,6 +64,7 @@
 ##
 ## @item -d@var{device}
 ##   Output device, where @var{device} is one of:
+##
 ##   @table @code
 ##   @item ps
 ##   @itemx ps2

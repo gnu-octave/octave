@@ -554,6 +554,7 @@ Given an array of pattern strings (as a char array or a cell array) in\n\
 them, or an empty cell array if no patterns match.  The pattern strings are\n\
 interpreted as filename globbing patterns (as they are used by Unix shells).\n\
 Within a pattern\n\
+\n\
 @table @code\n\
 @itemx *\n\
 matches any string, including the null string,\n\

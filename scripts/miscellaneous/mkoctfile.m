@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} mkoctfile [-options] file @dots{}
+## @deftypefn  {Command} {} mkoctfile [-options] file @dots{}
 ## @deftypefnx {Function File} {[@var{output}, @var{status} =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C,

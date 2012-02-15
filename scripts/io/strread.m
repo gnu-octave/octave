@@ -102,6 +102,7 @@
 ## @item "commentstyle"
 ## Parts of @var{str} are considered comments and will be skipped.
 ## @var{value} is the comment style and can be any of the following.
+##
 ## @itemize
 ## @item "shell"
 ## Everything from @code{#} characters to the nearest end-of-line is skipped.

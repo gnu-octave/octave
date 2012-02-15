@@ -49,6 +49,7 @@
 ##
 ## @itemize @minus
 ## @item @var{flag} indicates the exit status:
+##
 ## @table @asis
 ## @item 0 : iteration converged to within the specified tolerance
 ##

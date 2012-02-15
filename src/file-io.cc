@@ -1072,7 +1072,7 @@ converted.\n\
 DEFUN (fscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{locale})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{locale})\n\
 In the first form, read from @var{fid} according to @var{template},\n\
 returning the result in the matrix @var{val}.\n\
 \n\
@@ -1111,9 +1111,9 @@ In the second form, read from @var{fid} according to @var{template},\n\
 with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
-conversions is returned in @var{count}. It permits to explicitly\n\
+conversions is returned in @var{count}.  It permits to explicitly\n\
 specify a locale to take into account language specific features, \n\
-such as decimal separator. This operation restores the previous locales\n\
+such as decimal separator.  This operation restores the previous locales\n\
 setting at the end of the conversion.\n\
 @ifclear OCTAVE_MANUAL\n\
 \n\
@@ -2227,6 +2227,7 @@ DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
 @deftypefnx {Built-in Function} {} SEEK_END ()\n\
 Return the numerical value to pass to @code{fseek} to perform\n\
 one of the following actions:\n\
+\n\
 @table @code\n\
 @item SEEK_SET\n\
 Position file relative to the beginning.\n\

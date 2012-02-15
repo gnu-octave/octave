@@ -31,6 +31,7 @@
 ## optional initial guess for @var{x}.
 ##
 ## Outputs:
+##
 ## @itemize @bullet
 ## @item resnorm
 ##
@@ -50,6 +51,7 @@
 ## @item output
 ##
 ## A structure with two fields:
+##
 ## @itemize @bullet
 ## @item "algorithm": The algorithm used ("nnls")
 ##

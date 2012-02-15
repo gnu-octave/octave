@@ -702,7 +702,7 @@ DEFUN (nargout, args, ,
 Within a function, return the number of values the caller expects to\n\
 receive.  If called with the optional argument @var{fcn}, a function\n\
 name or handle, return the number of declared output values that the\n\
-function can produce. If the final output argument is @var{varargout}\n\
+function can produce.  If the final output argument is @var{varargout}\n\
 the returned value is negative.\n\
 \n\
 For example,\n\
@@ -728,12 +728,14 @@ In the second usage,\n\
 nargout (@@histc) \% or nargout ('histc')\n\
 @end example\n\
 \n\
+@noindent\n\
 will return 2, because @code{histc} has two outputs, whereas\n\
 \n\
 @example\n\
 nargout (@@deal)\n\
 @end example\n\
 \n\
+@noindent\n\
 will return -1, because @code{deal} has a variable number of outputs.\n\
 \n\
 At the top level, @code{nargout} with no argument is undefined.\n\

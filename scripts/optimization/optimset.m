@@ -25,6 +25,7 @@
 ## Create options struct for optimization functions.
 ##
 ## Valid parameters are:
+##
 ## @itemize @bullet
 ## @item AutoScaling
 ##

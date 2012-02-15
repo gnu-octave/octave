@@ -74,6 +74,7 @@
 ## Octave's @env{EDITOR} built-in function, which comes from
 ## @code{getenv("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
 ## In place of the function name.  For example,
+##
 ## @table @samp
 ## @item [EDITOR, " %s"]
 ## Use the editor which Octave uses for @code{edit_history}.
@@ -110,6 +111,7 @@
 ## Be sure to use @code{<user@@host>} as your format.
 ##
 ## @item license
+##
 ## @table @samp
 ## @item gpl
 ## GNU General Public License (default).

@@ -21,13 +21,13 @@
 ## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt})
 ## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt}, @var{dim})
 ## If @var{x} is a vector, subtract its mean and divide by its standard
-## deviation. If the standard deviation is zero, divide by 1 instead.
+## deviation.  If the standard deviation is zero, divide by 1 instead.
 ## The optional parameter @var{opt} determines the normalization to use
 ## when computing the standard deviation and is the same as the
 ## corresponding parameter for @code{std}.
 ##
 ## If @var{x} is a matrix, do the above along the first non-singleton
-## dimension. If the third optional argument @var{dim} is given, operate
+## dimension.  If the third optional argument @var{dim} is given, operate
 ## along this dimension.
 ##
 ## The mean and standard deviation along @var{dim} are given in @var{mu}

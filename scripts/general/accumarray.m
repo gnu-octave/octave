@@ -92,7 +92,7 @@
 ## @end example
 ##
 ## The sparse option can be used as an alternative to the @code{sparse}
-## constructor (@pxref{doc-sparse}). Thus
+## constructor (@pxref{doc-sparse}).  Thus
 ##
 ## @example
 ## sparse (@var{i}, @var{j}, @var{sv})
@@ -106,7 +106,7 @@
 ## @end example
 ##
 ## @noindent
-## For repeated indices, @code{sparse} adds the corresponding value. To
+## For repeated indices, @code{sparse} adds the corresponding value.  To
 ## take the minimum instead, use @code{min} as an accumulator function:
 ##
 ## @example

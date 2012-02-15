@@ -1532,6 +1532,7 @@ libraries.\n\
 \n\
 The list of variables to save may use wildcard patterns containing\n\
 the following special characters:\n\
+\n\
 @table @code\n\
 @item ?\n\
 Match any single character.\n\

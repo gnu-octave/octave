@@ -343,8 +343,8 @@ cellfun (\"tolower\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
 @end group\n\
 @end example\n\
 \n\
-Given the parameter \"ErrorHandler\", then @var{errfunc} defines a function to\n\
-call in case @var{func} generates an error.  The form of the function is\n\
+Given the parameter \"ErrorHandler\", then @var{errfunc} defines a function\n\
+to call in case @var{func} generates an error.  The form of the function is\n\
 \n\
 @example\n\
 function [@dots{}] = errfunc (@var{s}, @dots{})\n\

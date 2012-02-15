@@ -2055,6 +2055,7 @@ DEFUN_DLD (gui_mode, args, ,
 @deftypefnx {Built-in Function} {} gui_mode (@var{mode})\n\
 Query or set the GUI mode for the current graphics toolkit.\n\
 The @var{mode} argument can be one of the following strings:\n\
+\n\
 @table @asis\n\
 @item '2d'\n\
 Allows panning and zooming of current axes.\n\

@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @cindex warning ids
+##
 ## @table @code
 ## @item Octave:abbreviated-property-match
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.

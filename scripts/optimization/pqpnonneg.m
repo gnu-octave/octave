@@ -30,6 +30,7 @@
 ## definite.  @var{x0} is an optional initial guess for @var{x}.
 ##
 ## Outputs:
+##
 ## @itemize @bullet
 ## @item minval
 ##
@@ -45,6 +46,7 @@
 ## @item output
 ##
 ## A structure with two fields:
+##
 ## @itemize @bullet
 ## @item "algorithm": The algorithm used ("nnls")
 ##

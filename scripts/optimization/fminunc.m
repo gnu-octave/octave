@@ -350,10 +350,8 @@ function [fx, gx] = guarded_eval (fun, x)
     gx = [];
   endif
 
-  if (! (isreal (fx) && isreal (jx)))
+  if (! (isreal (fx) && isreal (gx)))
     error ("fminunc:notreal", "fminunc: non-real value encountered");
-  elseif (complexeqn && ! (isnumeric (fx) && isnumeric(jx)))
-    error ("fminunc:notnum", "fminunc: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
     error ("fminunc:isnan", "fminunc: NaN value encountered");
   endif

@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} sprandsym (@var{s})
 ## Generate a symmetric random sparse matrix.  The size of the matrix will be
 ## @var{n} by @var{n}, with a density of values given by @var{d}.
-## @var{d} should be between 0 and 1. Values will be normally
+## @var{d} should be between 0 and 1.  Values will be normally
 ## distributed with mean of zero and variance 1.
 ##
 ## If called with a single matrix argument, a random sparse matrix is

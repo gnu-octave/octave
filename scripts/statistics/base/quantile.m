@@ -51,10 +51,10 @@
 ## interpolation function respecting each methods' representative cdf.
 ##
 ## @enumerate 4
-## @item Method 4: p(k) = k / n. That is, linear interpolation of the
+## @item Method 4: p(k) = k / n.  That is, linear interpolation of the
 ## empirical cdf.
 ##
-## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function
+## @item Method 5: p(k) = (k - 0.5) / n.  That is a piecewise linear function
 ## where the knots are the values midway through the steps of the empirical
 ## cdf.
 ##

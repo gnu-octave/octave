@@ -17,8 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
-## @deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
+## @deftypefn  {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+## @deftypefnx {Function File} {@var{zi} =} griddata (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{method})
+## @deftypefnx {Function File} {[@var{xi}, @var{yi}, @var{zi}] =} griddata (@dots{})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
 ## The function is defined by @code{@var{z} = f (@var{x}, @var{y})}.
@@ -30,7 +31,7 @@
 ##
 ## The interpolation method can be @code{"nearest"}, @code{"cubic"} or
 ## @code{"linear"}.  If method is omitted it defaults to @code{"linear"}.
-## @seealso{delaunay}
+## @seealso{griddata3, griddatan, delaunay}
 ## @end deftypefn
 
 ## Author:      Kai Habel <kai.habel@gmx.de>

@@ -57,7 +57,7 @@
 ##
 ## @example
 ## @group
-## colormap (bone);
+## colormap (bone (64));
 ## surfl (peaks);
 ## shading interp;
 ## @end group

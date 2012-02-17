@@ -92,12 +92,12 @@ function t = substr (s, offset, len)
 endfunction
 
 
-%!assert (substr ("This is a test string", 6, 9), "is a test");
-%!assert (substr ("This is a test string", -11), "test string");
-%!assert (substr ("This is a test string", -11, 4), "test");
-%!assert (substr ("This is a test string", -11, -7), "test");
-%!assert (substr ("This is a test string", 1, -7), "This is a test");
-%!assert (isempty (substr ("This is a test string", 1, 0)));
+%!assert (substr ("This is a test string", 6, 9), "is a test")
+%!assert (substr ("This is a test string", -11), "test string")
+%!assert (substr ("This is a test string", -11, 4), "test")
+%!assert (substr ("This is a test string", -11, -7), "test")
+%!assert (substr ("This is a test string", 1, -7), "This is a test")
+%!assert (isempty (substr ("This is a test string", 1, 0)))
 
 %% Test input validation
 %!error substr ()

@@ -91,27 +91,27 @@ function rnd = exprnd (lambda, varargin)
 endfunction
 
 
-%!assert(size (exprnd (2)), [1, 1]);
-%!assert(size (exprnd (ones(2,1))), [2, 1]);
-%!assert(size (exprnd (ones(2,2))), [2, 2]);
-%!assert(size (exprnd (1, 3)), [3, 3]);
-%!assert(size (exprnd (1, [4 1])), [4, 1]);
-%!assert(size (exprnd (1, 4, 1)), [4, 1]);
+%!assert (size (exprnd (2)), [1, 1])
+%!assert (size (exprnd (ones (2,1))), [2, 1])
+%!assert (size (exprnd (ones (2,2))), [2, 2])
+%!assert (size (exprnd (1, 3)), [3, 3])
+%!assert (size (exprnd (1, [4 1])), [4, 1])
+%!assert (size (exprnd (1, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (exprnd (1)), "double");
-%!assert(class (exprnd (single(1))), "single");
-%!assert(class (exprnd (single([1 1]))), "single");
+%!assert (class (exprnd (1)), "double")
+%!assert (class (exprnd (single (1))), "single")
+%!assert (class (exprnd (single ([1 1]))), "single")
 
 %% Test input validation
 %!error exprnd ()
 %!error exprnd (1, -1)
-%!error exprnd (1, ones(2))
+%!error exprnd (1, ones (2))
 %!error exprnd (i)
 %!error exprnd (1, [2 -1 2])
 %!error exprnd (1, 2, -1)
-%!error exprnd (1, 2, ones(2))
-%!error exprnd (ones(2,2), 3)
-%!error exprnd (ones(2,2), [3, 2])
-%!error exprnd (ones(2,2), 2, 3)
+%!error exprnd (1, 2, ones (2))
+%!error exprnd (ones (2,2), 3)
+%!error exprnd (ones (2,2), [3, 2])
+%!error exprnd (ones (2,2), 2, 3)
 

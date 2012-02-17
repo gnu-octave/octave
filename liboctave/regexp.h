@@ -33,7 +33,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "base-list.h"
 #include "str-vec.h"
 
-class regexp
+class
+OCTAVE_API
+regexp
 {
 public:
 

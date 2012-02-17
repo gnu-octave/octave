@@ -19,12 +19,12 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} example @var{name}
 ## @deftypefnx {Command} {} example @var{name} @var{n}
-## @deftypefnx {Function File} {} example ('@var{name}')
-## @deftypefnx {Function File} {} example ('@var{name}', @var{n})
+## @deftypefnx {Function File} {} example ("@var{name}")
+## @deftypefnx {Function File} {} example ("@var{name}", @var{n})
 ## @deftypefnx {Function File} {[@var{s}, @var{idx}] =} example (@dots{})
 ##
 ## Display the code for example @var{n} associated with the function
-## '@var{name}', but do not run it.  If @var{n} is not specified, all examples
+## "@var{name}", but do not run it.  If @var{n} is not specified, all examples
 ## are displayed.
 ##
 ## When called with output arguments, the examples are returned in the form of
@@ -86,21 +86,21 @@ endfunction
 
 ## WARNING: don't modify the demos without modifying the tests!
 %!demo
-%! example ('example');
+%! example ("example");
 
 %!demo
 %! clf;
-%! t=0:0.01:2*pi; x = sin(t);
+%! t = 0:0.01:2*pi;  x = sin (t);
 %! plot (t,x)
 
-%!assert (example('example',1), "\n example ('example');");
+%!assert (example ("example",1), "\n example (\"example\");");
 %!test
-%! [code, idx] = example ('example');
+%! [code, idx] = example ("example");
 %! assert (code, ...
-%!         "\n example ('example');\n clf;\n t=0:0.01:2*pi; x = sin(t);\n plot (t,x)")
-%! assert (idx, [1, 23, 69]);
+%!         "\n example (\"example\");\n clf;\n t = 0:0.01:2*pi;  x = sin (t);\n plot (t,x)")
+%! assert (idx, [1, 23, 73]);
 
 %% Test input validation
 %!error example
-%!error example ('example', 3, 5)
+%!error example ("example", 3, 5)
 

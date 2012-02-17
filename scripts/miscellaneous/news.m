@@ -68,3 +68,4 @@ endfunction
 %!error news (1, 2)
 %!error <PACKAGE must be a string> news (1)
 %!error <Package .* is not installed> news ("__NOT_A_VALID_PKG_NAME__")
+

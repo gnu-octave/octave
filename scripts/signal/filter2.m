@@ -24,13 +24,13 @@
 ## Possible values are:
 ##
 ## @table @asis
-## @item 'full'
+## @item "full"
 ## pad @var{x} with zeros on all sides before filtering.
 ##
-## @item 'same'
+## @item "same"
 ## unpadded @var{x} (default)
 ##
-## @item 'valid'
+## @item "valid"
 ## trim @var{x} after filtering so edge effects are no included.
 ## @end table
 ##

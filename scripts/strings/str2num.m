@@ -27,9 +27,8 @@
 ## str2num ("3.141596")
 ##       @result{} 3.141596
 ##
-## str2num (["1, 2, 3"; "4, 5, 6"]);
-##       @result{} ans =
-##          1  2  3
+## str2num (["1, 2, 3"; "4, 5, 6"])
+##       @result{} 1  2  3
 ##          4  5  6
 ## @end group
 ## @end example
@@ -69,8 +68,8 @@ function [m, state] = str2num (s)
 endfunction
 
 
-%!assert(str2num ("-1.3e2"), -130);
-%!assert(str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4]);
+%!assert (str2num ("-1.3e2"), -130)
+%!assert (str2num ("[1, 2; 3, 4]"), [1, 2; 3, 4])
 
 %!test
 %! [x, state] = str2num ("pi");

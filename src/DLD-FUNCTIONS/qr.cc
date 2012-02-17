@@ -113,7 +113,7 @@ $$\n\
 @ifnottex\n\
 \n\
 @example\n\
-@code{min norm(A x - b)}\n\
+min norm(A x - b)\n\
 @end example\n\
 \n\
 @end ifnottex\n\

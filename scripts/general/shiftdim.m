@@ -36,12 +36,12 @@
 ## @group
 ## x = ones (1, 2, 3);
 ## size (shiftdim (x, -1))
-##      @result{} [1, 1, 2, 3]
+##    @result{} [1, 1, 2, 3]
 ## size (shiftdim (x, 1))
-##      @result{} [2, 3]
-## [b, ns] = shiftdim (x);
-##      @result{} b =  [1, 1, 1; 1, 1, 1]
-##      @result{} ns = 1
+##    @result{} [2, 3]
+## [b, ns] = shiftdim (x)
+##    @result{} b = [1, 1, 1; 1, 1, 1]
+##    @result{} ns = 1
 ## @end group
 ## @end example
 ## @seealso {reshape, permute, ipermute, circshift, squeeze}
@@ -90,11 +90,12 @@ endfunction
 %! assert (ns, 2);
 %! assert (shiftdim (y, -2), x);
 %! assert (size (shiftdim (x, 2)), [4 2]);
-%!assert (size (shiftdim (rand (0, 1, 2))), [0 1 2]);
+
+%!assert (size (shiftdim (rand (0, 1, 2))), [0 1 2])
 
 %% Test input validation
-%!error(shiftdim ());
-%!error(shiftdim (1,2,3));
-%!error(shiftdim (1, ones (2)));
-%!error(shiftdim (1, 1.5));
+%!error (shiftdim ())
+%!error (shiftdim (1,2,3))
+%!error (shiftdim (1, ones (2)))
+%!error (shiftdim (1, 1.5))
 

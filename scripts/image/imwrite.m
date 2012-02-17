@@ -187,14 +187,15 @@ function imwrite (img, varargin)
 
 endfunction
 
+
 %% Test input validation
-%!error imwrite ()                           # Wrong # of args
-%!error imwrite (1)                          # Wrong # of args
-%!error imwrite ({"cell"}, "filename.jpg")   # Wrong class for img
-%!error imwrite (1, [], "filename.jpg")      # Empty image map
-%!error imwrite (1, 2, 3)                    # No filename specified
-%!error imwrite (1, "filename")              # No fmt specified
-%!error imwrite (1, "filename", "junk")      # Invalid fmt specified
-%!error imwrite ([], "filename.jpg")         # Empty img matrix
-%!error imwrite (spones(2), "filename.jpg")  # Invalid sparse img
+%!error imwrite ()                            # Wrong # of args
+%!error imwrite (1)                           # Wrong # of args
+%!error imwrite ({"cell"}, "filename.jpg")    # Wrong class for img
+%!error imwrite (1, [], "filename.jpg")       # Empty image map
+%!error imwrite (1, 2, 3)                     # No filename specified
+%!error imwrite (1, "filename")               # No fmt specified
+%!error imwrite (1, "filename", "junk")       # Invalid fmt specified
+%!error imwrite ([], "filename.jpg")          # Empty img matrix
+%!error imwrite (spones (2), "filename.jpg")  # Invalid sparse img
 

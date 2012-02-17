@@ -131,11 +131,11 @@ endfunction
 
 
 %!test
-%! f = tmpnam();
+%! f = tmpnam ();
 %! d = rand (5, 3);
-%! dlmwrite (f, d, 'precision', '%5.2f');
+%! dlmwrite (f, d, "precision", "%5.2f");
 %! [a, b, c] = textread (f, "%f %f %f", "delimiter", ",", "headerlines", 3);
-%! unlink(f);
+%! unlink (f);
 %! assert (a, d(4:5, 1), 1e-2);
 %! assert (b, d(4:5, 2), 1e-2);
 %! assert (c, d(4:5, 3), 1e-2);
@@ -143,6 +143,6 @@ endfunction
 %% Test input validation
 %!error textread ()
 %!error textread (1)
-%!error <arguments must be strings> textread (1, '%f')
+%!error <arguments must be strings> textread (1, "%f")
 %!error <arguments must be strings> textread ("fname", 1)
 

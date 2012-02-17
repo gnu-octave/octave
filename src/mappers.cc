@@ -386,7 +386,7 @@ complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
 @example\n\
 @group\n\
 ceil ([-2.7, 2.7])\n\
-   @result{}  -2   3\n\
+    @result{} -2    3\n\
 @end group\n\
 @end example\n\
 @seealso{floor, round, fix}\n\
@@ -542,8 +542,8 @@ $$\n\
                           z\n\
                          /\n\
 erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
-                         /\n\
-                      t=0\n\
+                        /\n\
+                     t=0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -595,7 +595,7 @@ DEFUN (erfinv, args, ,
 Compute the inverse error function, i.e., @var{y} such that\n\
 \n\
 @example\n\
-  erf (@var{y}) == @var{x}\n\
+erf (@var{y}) == @var{x}\n\
 @end example\n\
 @seealso{erf, erfc, erfcx}\n\
 @end deftypefn")
@@ -812,7 +812,7 @@ is equivalent to rounding towards zero.  If @var{x} is complex, return\n\
 @example\n\
 @group\n\
 fix ([-2.7, 2.7])\n\
-   @result{} -2   2\n\
+   @result{} -2    2\n\
 @end group\n\
 @end example\n\
 @seealso{ceil, floor, round}\n\
@@ -847,7 +847,7 @@ complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
 @example\n\
 @group\n\
 floor ([-2.7, 2.7])\n\
-     @result{} -3   2\n\
+     @result{} -3    2\n\
 @end group\n\
 @end example\n\
 @seealso{ceil, round, fix}\n\
@@ -889,8 +889,8 @@ $$\n\
               infinity\n\
              /\n\
 gamma (z) = | t^(z-1) exp (-t) dt.\n\
-             /\n\
-          t=0\n\
+            /\n\
+         t=0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1122,7 +1122,7 @@ For example:\n\
 @example\n\
 @group\n\
 isinf ([13, Inf, NA, NaN])\n\
-     @result{} [ 0, 1, 0, 0 ]\n\
+      @result{} [ 0, 1, 0, 0 ]\n\
 @end group\n\
 @end example\n\
 @seealso{isfinite, isnan, isna}\n\
@@ -1263,7 +1263,7 @@ NA values are also considered NaN values.  For example:\n\
 @example\n\
 @group\n\
 isnan ([13, Inf, NA, NaN])\n\
-     @result{} [ 0, 0, 1, 1 ]\n\
+      @result{} [ 0, 0, 1, 1 ]\n\
 @end group\n\
 @end example\n\
 @seealso{isna, isinf, isfinite}\n\
@@ -1619,7 +1619,7 @@ are two nearest integers, return the one further away from zero.\n\
 @example\n\
 @group\n\
 round ([-2.7, 2.7])\n\
-     @result{} -3   3\n\
+     @result{} -3    3\n\
 @end group\n\
 @end example\n\
 @seealso{ceil, floor, fix, roundb}\n\
@@ -1956,7 +1956,7 @@ characters are left unchanged.  For example:\n\
 @example\n\
 @group\n\
 tolower (\"MiXeD cAsE 123\")\n\
-     @result{} \"mixed case 123\"\n\
+      @result{} \"mixed case 123\"\n\
 @end group\n\
 @end example\n\
 @seealso{toupper}\n\
@@ -2007,7 +2007,7 @@ characters are left unchanged.  For example:\n\
 @example\n\
 @group\n\
 toupper (\"MiXeD cAsE 123\")\n\
-     @result{} \"MIXED CASE 123\"\n\
+      @result{} \"MIXED CASE 123\"\n\
 @end group\n\
 @end example\n\
 @seealso{tolower}\n\

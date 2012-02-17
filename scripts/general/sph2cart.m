@@ -71,6 +71,7 @@ function [x, y, z] = sph2cart (theta, phi, r)
 
 endfunction
 
+
 %!test
 %! t = [0, 0, 0];
 %! p = [0, 0, 0];
@@ -110,5 +111,5 @@ endfunction
 %!test
 %! S = [ 0, 0, 1; 0.5*pi, 0, 1; pi, 0, 1];
 %! C = [ 1, 0, 0; 0, 1, 0; -1, 0, 0];
-%! assert (sph2cart(S), C, eps);
+%! assert (sph2cart (S), C, eps);
 

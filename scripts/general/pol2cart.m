@@ -80,27 +80,28 @@ function [x, y, z] = pol2cart (theta, r, z)
 
 endfunction
 
+
 %!test
 %! t = [0, 0.5, 1] * pi;
 %! r = 1;
 %! [x, y] = pol2cart (t, r);
-%! assert (x, [1, 0, -1], sqrt(eps));
-%! assert (y, [0, 1,  0], sqrt(eps));
+%! assert (x, [1, 0, -1], sqrt (eps));
+%! assert (y, [0, 1,  0], sqrt (eps));
 
 %!test
 %! t = [0, 1, 1] * pi/4;
-%! r = sqrt(2) * [0, 1, 2];
+%! r = sqrt (2) * [0, 1, 2];
 %! [x, y] = pol2cart (t, r);
-%! assert (x, [0, 1, 2], sqrt(eps));
-%! assert (y, [0, 1, 2], sqrt(eps));
+%! assert (x, [0, 1, 2], sqrt (eps));
+%! assert (y, [0, 1, 2], sqrt (eps));
 
 %!test
 %! t = [0, 1, 1] * pi/4;
-%! r = sqrt(2) * [0, 1, 2];
+%! r = sqrt (2) * [0, 1, 2];
 %! z = [0, 1, 2];
 %! [x, y, z2] = pol2cart (t, r, z);
-%! assert (x, [0, 1, 2], sqrt(eps));
-%! assert (y, [0, 1, 2], sqrt(eps));
+%! assert (x, [0, 1, 2], sqrt (eps));
+%! assert (y, [0, 1, 2], sqrt (eps));
 %! assert (z, z2);
 
 %!test
@@ -108,8 +109,8 @@ endfunction
 %! r = [0, 1, 2];
 %! z = [0, 1, 2];
 %! [x, y, z2] = pol2cart (t, r, z);
-%! assert (x, [0, 1, 2], sqrt(eps));
-%! assert (y, [0, 0, 0], sqrt(eps));
+%! assert (x, [0, 1, 2], sqrt (eps));
+%! assert (y, [0, 0, 0], sqrt (eps));
 %! assert (z, z2);
 
 %!test
@@ -117,8 +118,8 @@ endfunction
 %! r = 1;
 %! z = [0, 1, 2];
 %! [x, y, z2] = pol2cart (t, r, z);
-%! assert (x, [1, 1, 1] / sqrt(2), eps);
-%! assert (y, [1, 1, 1] / sqrt(2), eps);
+%! assert (x, [1, 1, 1] / sqrt (2), eps);
+%! assert (y, [1, 1, 1] / sqrt (2), eps);
 %! assert (z, z2);
 
 %!test
@@ -127,16 +128,16 @@ endfunction
 %! z = 1;
 %! [x, y, z2] = pol2cart (t, r, z);
 %! assert (x, [1, 2, 3], eps);
-%! assert (y, [0, 0, 0] / sqrt(2), eps);
+%! assert (y, [0, 0, 0] / sqrt (2), eps);
 %! assert (z, z2);
 
 %!test
 %! P = [0, 0; pi/4, sqrt(2); pi/4, 2*sqrt(2)];
 %! C = [0, 0; 1, 1; 2, 2];
-%! assert (pol2cart(P), C, sqrt(eps));
+%! assert (pol2cart (P), C, sqrt (eps));
 
 %!test
 %! P = [0, 0, 0; pi/4, sqrt(2), 1; pi/4, 2*sqrt(2), 2];
 %! C = [0, 0, 0; 1, 1, 1; 2, 2, 2];
-%! assert (pol2cart(P), C, sqrt(eps));
+%! assert (pol2cart (P), C, sqrt (eps));
 

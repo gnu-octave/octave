@@ -25,16 +25,16 @@
 ## @example
 ## @group
 ## c = @{1, 2, @{31, 32@}@};
-## celldisp(c, "b")
-##      @result{}
-##         b@{1@} =
-##          1
-##         b@{2@} =
-##          2
-##         b@{3@}@{1@} =
-##          31
-##         b@{3@}@{2@} =
-##          32
+## celldisp (c, "b")
+##    @result{}
+##       b@{1@} =
+##        1
+##       b@{2@} =
+##        2
+##       b@{3@}@{1@} =
+##        31
+##       b@{3@}@{2@} =
+##        32
 ## @end group
 ## @end example
 ##
@@ -83,6 +83,7 @@ endfunction
 %! c = {1, 2, {31, 32}};
 %! celldisp (c, "b")
 
-%!error celldisp ();
-%!error celldisp ({}, "name", 1);
-%!error celldisp (1);
+%!error celldisp ()
+%!error celldisp ({}, "name", 1)
+%!error celldisp (1)
+

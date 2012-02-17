@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Command} {} demo @var{name}
 ## @deftypefnx {Command} {} demo @var{name} @var{n}
-## @deftypefnx {Function File} {} demo ('@var{name}')
-## @deftypefnx {Function File} {} demo ('@var{name}', @var{n})
+## @deftypefnx {Function File} {} demo ("@var{name}")
+## @deftypefnx {Function File} {} demo ("@var{name}", @var{n})
 ##
 ## Run example code block @var{n} associated with the function @var{name}.
 ## If @var{n} is not specified, all examples are run.
@@ -34,12 +34,12 @@
 ##
 ## @example
 ## @group
-##   %!demo
-##   %! t = 0:0.01:2*pi;
-##   %! x = sin (t);
-##   %! plot (t,x);
-##   %! %-------------------------------------------------
-##   %! % the figure window shows one cycle of a sine wave
+## %!demo
+## %! t = 0:0.01:2*pi;
+## %! x = sin (t);
+## %! plot (t, x);
+## %! %-------------------------------------------------
+## %! % the figure window shows one cycle of a sine wave
 ## @end group
 ## @end example
 ##
@@ -53,7 +53,7 @@
 ## with the code
 ##
 ## @example
-##    %! input("Press <enter> to continue: ","s");
+## %! input("Press <enter> to continue: ","s");
 ## @end example
 ##
 ## @noindent
@@ -65,19 +65,19 @@
 ## Also, because demo evaluates within a function context, you cannot
 ## define new functions inside a demo.  If you must have function blocks,
 ## rather than just anonymous functions or inline functions, you will have to
-## use @code{eval(example('function',n))} to see them.  Because eval only
+## use @code{eval(example("function",n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
 ## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
 ## with the 'if' on the same line as 'demo'.  For example:
 ##
 ## @example
 ## @group
-##   %!demo if 1
-##   %!  function y=f(x)
-##   %!    y=x;
-##   %!  endfunction
-##   %!  f(3)
-##   %! endif
+## %!demo if 1
+## %!  function y=f(x)
+## %!    y=x;
+## %!  endfunction
+## %!  f(3)
+## %! endif
 ## @end group
 ## @end example
 ##
@@ -149,9 +149,10 @@ endfunction
 %!demo
 %! t = 0:0.01:2*pi;
 %! x = sin (t);
-%! plot (t,x);
+%! plot (t, x);
 %! %-------------------------------------------------
 %! % the figure window shows one cycle of a sine wave
 
-%!error demo ();
-%!error demo (1, 2, 3);
+%!error demo ()
+%!error demo (1, 2, 3)
+

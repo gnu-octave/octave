@@ -443,15 +443,14 @@ In this case the greatest common divisor is calculated for each element\n\
 individually.  All elements must be ordinary or Gaussian (complex)\n\
 integers.  Note that for Gaussian integers, the gcd is not unique up to\n\
 units (multiplication by 1, -1, @var{i} or -@var{i}), so an arbitrary\n\
-greatest common divisor amongst four possible is returned.  For example,\n\
+greatest common divisor amongst four possible is returned.\n\
 \n\
-@noindent\n\
-and\n\
+Example code:\n\
 \n\
 @example\n\
 @group\n\
 gcd ([15, 9], [20, 18])\n\
-    @result{}  5  9\n\
+   @result{}  5  9\n\
 @end group\n\
 @end example\n\
 \n\

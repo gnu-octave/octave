@@ -20,24 +20,24 @@
 ## @deftypefn  {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
 ## @deftypefnx {Function File} {@var{h} =} image (@dots{})
-## Display a matrix as a color image.  The elements of @var{img} are indices
-## into the current colormap, and the colormap will be scaled so that the
-## extremes of @var{img} are mapped to the extremes of the colormap.
+## Display a matrix as a color image.
 ##
+## The elements of @var{img} are indices into the current colormap.
 ## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
+## @var{x} and @var{y}.  If you are using gnuplot 4.1 or earlier, these
 ## variables are ignored.
+##
+## The optional return value @var{h} is a graphics handle to the image.
 ##
 ## Implementation Note: The origin (0, 0) for images is located in the
 ## upper left.  For ordinary plots, the origin is located in the lower
 ## left.  Octave handles this inversion by plotting the data normally,
 ## and then reversing the direction of the y-axis by setting the
-## @code{ydir} property to @code{"reverse"}.  This has implications whenever
+## @code{ydir} property to "reverse".  This has implications whenever
 ## an image and an ordinary plot need to be overlaid.  The recommended
 ## solution is to display the image and then plot the reversed ydata
 ## using, for example, @code{flipud (ydata,1)}.
 ##
-## The optional return value @var{h} is a graphics handle to the image.
 ## @seealso{imshow, imagesc, colormap}
 ## @end deftypefn
 
@@ -90,7 +90,7 @@ endfunction
 ## Generic image creation.
 ##
 ## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}. If you're not using gnuplot 4.2 or later, these
+## @var{x} and @var{y}.  If you're not using gnuplot 4.2 or later, these
 ## variables are ignored.
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -457,6 +457,7 @@ Match any character\n\
 \n\
 @item * + ? @{@}\n\
 Repetition operators, representing\n\
+\n\
 @table @code\n\
 @item *\n\
 Match zero or more times\n\
@@ -1078,7 +1079,7 @@ The replacement string may contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  For example,\n\
 \n\
 @example\n\
-regexprep(\"Bill Dunn\",'(\\w+) (\\w+)','$2, $1')\n\
+regexprep (\"Bill Dunn\", '(\\w+) (\\w+)', '$2, $1')\n\
 @end example\n\
 \n\
 @noindent\n\

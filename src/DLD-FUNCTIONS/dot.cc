@@ -262,9 +262,9 @@ then of size @code{[m,n,@dots{}]} and is computed as follows:\n\
 \n\
 @example\n\
 @group\n\
-  for i = 1:prod (size (@var{A})(3:end))\n\
-    @var{C}(:,:,i) = @var{A}(:,:,i) * @var{B}(:,:,i)\n\
-  endfor\n\
+for i = 1:prod (size (@var{A})(3:end))\n\
+  @var{C}(:,:,i) = @var{A}(:,:,i) * @var{B}(:,:,i)\n\
+endfor\n\
 @end group\n\
 @end example\n\
 @end deftypefn")

@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} hidden ()
 ## Manipulation the mesh hidden line removal.  Called with no argument
 ## the hidden line removal is toggled.  The argument @var{mode} can be either
-## 'on' or 'off' and the set of the hidden line removal is set accordingly.
+## "on" or "off" and the set of the hidden line removal is set accordingly.
 ## @seealso{mesh, meshc, surf}
 ## @end deftypefn
 

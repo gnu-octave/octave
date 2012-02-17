@@ -148,6 +148,7 @@ function [q, nfun, hmin] = simpsonstp (f, a, b, c, fa, fb, fc, q0,
   endif
 endfunction
 
+
 %!assert (quadv (@sin, 0, 2 * pi), 0, 1e-5)
 %!assert (quadv (@sin, 0, pi), 2, 1e-5)
 
@@ -159,3 +160,4 @@ endfunction
 
 %% Handles matrix-valued functions
 %!assert (quadv (@(x) [ x, x, x; x, 1./sqrt(x), x; x, x, x ], 0, 1 ), [0.5, 0.5, 0.5; 0.5, 2, 0.5; 0.5, 0.5, 0.5], 1e-5)
+

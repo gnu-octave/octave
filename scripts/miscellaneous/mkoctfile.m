@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {} mkoctfile [-options] file @dots{}
+## @deftypefn  {Command} {} mkoctfile [-options] file @dots{}
 ## @deftypefnx {Function File} {[@var{output}, @var{status} =} mkoctfile (@dots{})
 ##
 ## The @code{mkoctfile} function compiles source code written in C,
@@ -124,16 +124,16 @@
 ##
 ## @example
 ## @group
-##                   .c    C source
-##                   .cc   C++ source
-##                   .C    C++ source
-##                   .cpp  C++ source
-##                   .f    Fortran source (fixed form)
-##                   .F    Fortran source (fixed form)
-##                   .f90  Fortran source (free form)
-##                   .F90  Fortran source (free form)
-##                   .o    object file
-##                   .a    library file
+##    .c    C source
+##    .cc   C++ source
+##    .C    C++ source
+##    .cpp  C++ source
+##    .f    Fortran source (fixed form)
+##    .F    Fortran source (fixed form)
+##    .f90  Fortran source (free form)
+##    .F90  Fortran source (free form)
+##    .o    object file
+##    .a    library file
 ## @end group
 ## @end example
 ##

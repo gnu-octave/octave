@@ -297,7 +297,7 @@ endfunction
 %!assert (datevec ("15:38:21.25", "HH:MM:SS.FFF"), [nowvec(1:3),15,38,21.025])
 
 # Other tests
-%!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]')
+%!assert (datenum (datevec ([-1e4:1e4])), [-1e4:1e4]');
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
 %! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));

@@ -41,6 +41,7 @@
 ##
 ## If given, the parameter @var{string_param1} has value
 ## @var{value1}.  @var{string_param1} can be any of the following:
+##
 ## @table @asis
 ## @item "displayrange"
 ## @var{value1} is the display range as described above.

@@ -51,7 +51,7 @@
 ##
 ## @example
 ## @group
-## hist (randn (1, 100), 25, "facecolor", "r", "edgecolor", "b")
+## hist (randn (1, 100), 25, "facecolor", "r", "edgecolor", "b");
 ## @end group
 ## @end example
 ##
@@ -60,8 +60,8 @@
 ##
 ## @example
 ## @group
-## hist (rand (10, 3))
-## colormap (summer ())
+## hist (rand (10, 3));
+## colormap (summer ());
 ## @end group
 ## @end example
 ##
@@ -168,30 +168,31 @@ function [nn, xx] = hist (y, varargin)
 
 endfunction
 
+
 %!test
-%!  [nn,xx]=hist([1:4],3);
-%!  assert(xx, [1.5,2.5,3.5]);
-%!  assert(nn, [2,1,1]);
+%! [nn,xx] = hist ([1:4], 3);
+%! assert (xx, [1.5,2.5,3.5]);
+%! assert (nn, [2,1,1]);
 %!test
-%!  [nn,xx]=hist([1:4]',3);
-%!  assert(xx, [1.5,2.5,3.5]);
-%!  assert(nn, [2,1,1]);
+%! [nn,xx] = hist ([1:4]', 3);
+%! assert (xx, [1.5,2.5,3.5]);
+%! assert (nn, [2,1,1]);
 %!test
-%!  [nn,xx]=hist([1 1 1 NaN NaN NaN 2 2 3],[1 2 3]);
-%!  assert(xx, [1,2,3]);
-%!  assert(nn, [3,2,1]);
+%! [nn,xx] = hist ([1 1 1 NaN NaN NaN 2 2 3],[1 2 3]);
+%! assert (xx, [1,2,3]);
+%! assert (nn, [3,2,1]);
 %!test
-%!  [nn,xx]=hist([[1:4]',[1:4]'],3);
-%!  assert(xx, [1.5;2.5;3.5]);
-%!  assert(nn, [[2,1,1]',[2,1,1]']);
-%!assert(hist(1,1),1);
+%! [nn,xx] = hist ([[1:4]', [1:4]'], 3);
+%! assert (xx, [1.5;2.5;3.5]);
+%! assert (nn, [[2,1,1]',[2,1,1]']);
 %!test
-%!  for n = [10, 30, 100, 1000]
-%!    assert(sum(hist([1:n], n)), n);
-%!    assert(sum(hist([1:n], [2:n-1])), n);
-%!    assert(sum(hist([1:n], [1:n])), n);
-%!    assert(sum(hist([1:n], 29)), n);
-%!    assert(sum(hist([1:n], 30)), n);
-%!  endfor
-%!test
-%!  assert (size (hist(randn(750,240), 200)), [200,240]);
+%! for n = [10, 30, 100, 1000]
+%!   assert (sum (hist ([1:n], n)), n);
+%!   assert (sum (hist ([1:n], [2:n-1])), n);
+%!   assert (sum (hist ([1:n], [1:n])), n);
+%!   assert (sum (hist ([1:n], 29)), n);
+%!   assert (sum (hist ([1:n], 30)), n);
+%! endfor
+%!assert (hist (1,1), 1)
+%!assert (size (hist (randn (750,240), 200)), [200,240])
+

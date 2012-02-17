@@ -47,3 +47,4 @@ endfunction
 
 %!error tand ()
 %!error tand (1, 2)
+

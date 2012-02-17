@@ -45,10 +45,10 @@ endfunction
 %!shared x,y
 %! x = [-Inf 0 1 Inf];
 %! y = [0, 0.5, 1/2*(1+erf(1/sqrt(2))), 1];
-%!assert(stdnormal_cdf ([x, NaN]), [y, NaN]);
+%!assert (stdnormal_cdf ([x, NaN]), [y, NaN])
 
 %% Test class of input preserved
-%!assert(stdnormal_cdf (single([x, NaN])), single([y, NaN]), eps("single"));
+%!assert (stdnormal_cdf (single ([x, NaN])), single ([y, NaN]), eps ("single"))
 
 %% Test input validation
 %!error stdnormal_cdf ()

@@ -255,6 +255,7 @@ function C = colloutp (C)
 
 endfunction
 
+
 %!test
 %! str = "1,  2,  3,  4\n 5,  ,  ,  8\n 9, 10, 11, 12";
 %! fmtstr = "%f %d %f %s";
@@ -275,7 +276,7 @@ endfunction
 
 #%!test
 #%! str = "13, 72, NA, str1, 25\r\n// Middle line\r\n36, na, 05, str3, 6";
-#%! a = textscan(str, '%d %n %f %s %n', 'delimiter', ',','treatAsEmpty', {'NA', 'na'},'commentStyle', '//');
+#%! a = textscan (str, "%d %n %f %s %n", "delimiter", ",","treatAsEmpty", {"NA", "na"},"commentStyle", "//");
 #%! assert (a{1}, int32([13; 36]));
 #%! assert (a{2}, [72; NaN]);
 #%! assert (a{3}, [NaN; 5]);
@@ -288,7 +289,7 @@ endfunction
 %! str = [str "Km:2 = hhhRjjj miles3hour\r\n"];
 %! str = [str "Km:25 = hhhZ\r\n"];
 %! fmt = "Km:%d = hhh%1sjjj miles%dhour";
-%! a = textscan (str, fmt, 'delimiter', ' ');
+%! a = textscan (str, fmt, "delimiter", " ");
 %! assert (a{1}', int32([10 15 2 25]));
 %! assert (a{2}', {'B' 'J' 'R' 'Z'});
 %! assert (a{3}', int32([16 241 3 0]));
@@ -298,9 +299,9 @@ endfunction
 %! c = textscan ("L1\nL2", "%s");
 %! assert (c{:}, {"L1"; "L2"});
 
-%% Test with endofline parameter set to '' (empty) - newline should be in word
+%% Test with endofline parameter set to "" (empty) - newline should be in word
 %!test
-%! c = textscan ("L1\nL2", "%s", 'endofline', '');
+%! c = textscan ("L1\nL2", "%s", "endofline", "");
 %! assert (int8(c{:}{:}), int8([ 76,  49,  10,  76,  50 ]));
 
 %!test
@@ -315,7 +316,7 @@ endfunction
 %! b = [b; 8*b/5; 8*b*1000/5];
 %! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
 %! fmt = "%f miles%s %s %f (%f) kilometers %*s";
-%! c = textscan (str, fmt, 'collectoutput', 1);
+%! c = textscan (str, fmt, "collectoutput", 1);
 %! assert (size(c{3}), [10, 2]);
 %! assert (size(c{2}), [10, 2]);
 

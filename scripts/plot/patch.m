@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{z}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{fv})
-## @deftypefnx {Function File} {} patch ('Faces', @var{f}, 'Vertices', @var{v}, @dots{})
+## @deftypefnx {Function File} {} patch ("Faces", @var{f}, "Vertices", @var{v}, @dots{})
 ## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} patch (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} patch (@dots{})
@@ -106,7 +106,7 @@ endfunction
 %! y2 = cos (t2);
 %! vert = [x1, y1; x2, y2];
 %! fac = [1:8,NaN(1,8);9:24];
-%! patch ('Faces',fac, 'Vertices',vert, 'FaceVertexCData', [0, 1, 0; 0, 0, 1]);
+%! patch ('Faces',fac, 'Vertices',vert, 'FaceVertexCData',[0, 1, 0; 0, 0, 1]);
 
 %!demo
 %! %% Property change on multiple patches
@@ -117,7 +117,7 @@ endfunction
 %! y1 = cos (t1);
 %! x2 = sin (t2) + 0.8;
 %! y2 = cos (t2);
-%! h = patch ([x1,x2], [y1,y2], cat (3,[0,0],[1,0],[0,1]));
+%! h = patch ([x1,x2], [y1,y2], cat (3, [0,0],[1,0],[0,1]));
 %! pause (1);
 %! set (h, 'FaceColor', 'r');
 
@@ -156,12 +156,12 @@ endfunction
 %! colormap (jet (64));
 %! x = [0 1 1 0];
 %! y = [0 0 1 1];
-%! subplot (2, 1, 1);
+%! subplot (2,1,1);
 %!  title ('Blue, Light-Green, and Red Horizontal Bars');
 %!  patch (x, y + 0, 1);
 %!  patch (x, y + 1, 2);
 %!  patch (x, y + 2, 3);
-%! subplot (2, 1, 2);
+%! subplot (2,1,2);
 %!  title ('Blue, Light-Green, and Red Vertical Bars');
 %!  patch (x + 0, y, 1 * ones (size (x)));
 %!  patch (x + 1, y, 2 * ones (size (x)));
@@ -172,12 +172,12 @@ endfunction
 %! colormap (jet (64));
 %! x = [0 1 1 0];
 %! y = [0 0 1 1];
-%! subplot (2, 1, 1);
+%! subplot (2,1,1);
 %!  title ('Blue horizontal bars: Dark to Light');
 %!  patch (x, y + 0, 1, 'cdatamapping', 'direct');
 %!  patch (x, y + 1, 9, 'cdatamapping', 'direct');
 %!  patch (x, y + 2, 17, 'cdatamapping', 'direct');
-%! subplot (2, 1, 2);
+%! subplot (2,1,2);
 %!  title ('Blue vertical bars: Dark to Light');
 %!  patch (x + 0, y, 1 * ones (size (x)), 'cdatamapping', 'direct');
 %!  patch (x + 1, y, 9 * ones (size (x)), 'cdatamapping', 'direct');

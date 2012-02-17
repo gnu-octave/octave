@@ -84,5 +84,5 @@ endfunction
 %!demo
 %! clf;
 %! t = 0:pi/20:5*pi;
-%! comet3 (cos(t), sin(t), t, 0.01);
+%! comet3 (cos (t), sin (t), t, 0.01);
 

@@ -40,8 +40,8 @@ DEFUN_DLD (spparms, args, nargout,
 @deftypefnx {Loadable Function} {[@var{keys}, @var{vals}] =} spparms ()\n\
 @deftypefnx {Loadable Function} {@var{val} =} spparms (@var{key})\n\
 @deftypefnx {Loadable Function} { } spparms (@var{vals})\n\
-@deftypefnx {Loadable Function} { } spparms ('defaults')\n\
-@deftypefnx {Loadable Function} { } spparms ('tight')\n\
+@deftypefnx {Loadable Function} { } spparms (\"defaults\")\n\
+@deftypefnx {Loadable Function} { } spparms (\"tight\")\n\
 @deftypefnx {Loadable Function} { } spparms (@var{key}, @var{val})\n\
 Query or set the parameters used by the sparse solvers and factorization\n\
 functions.  The first four calls above get information about the current\n\
@@ -97,9 +97,9 @@ Flag whether the @sc{umfpack} or mmd solvers are used for the LU, '\\' and\n\
 The value of individual keys can be set with\n\
 @code{spparms (@var{key}, @var{val})}.\n\
 The default values can be restored with the special keyword\n\
-'defaults'.  The special keyword 'tight' can be used to set the mmd solvers\n\
-to attempt a sparser solution at the potential cost of longer running\n\
-time.\n\
+\"defaults\".  The special keyword \"tight\" can be used to set the mmd\n\
+solvers to attempt a sparser solution at the potential cost of longer\n\
+running time.\n\
 @end deftypefn")
 {
   octave_value_list retval;

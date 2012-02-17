@@ -27,7 +27,7 @@
 ## @ifnottex
 ##
 ## @example
-## logit(@var{p}) = log (@var{p} / (1-@var{p}))
+## logit (@var{p}) = log (@var{p} / (1-@var{p}))
 ## @end example
 ##
 ## @end ifnottex
@@ -50,10 +50,11 @@ endfunction
 
 %!test
 %! p = [0.01:0.01:0.99];
-%! assert(logit (p), log (p ./ (1-p)), 25*eps)
+%! assert (logit (p), log (p ./ (1-p)), 25*eps);
 
-%!assert(logit ([-1, 0, 0.5, 1, 2]), [NaN, -Inf, 0, +Inf, NaN])
+%!assert (logit ([-1, 0, 0.5, 1, 2]), [NaN, -Inf, 0, +Inf, NaN])
 
 %% Test input validation
 %!error logit ()
 %!error logit (1, 2)
+

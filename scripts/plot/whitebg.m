@@ -144,6 +144,7 @@ function whitebg (varargin)
   endif
 endfunction
 
+
 %!test
 %! dac = get (0, "defaultaxescolor");
 %! dfc = get (0, "defaultfigurecolor");
@@ -162,3 +163,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

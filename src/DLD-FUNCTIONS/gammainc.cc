@@ -50,8 +50,8 @@ $$\n\
                                  x\n\
                        1        /\n\
 gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
-                   gamma (a)    /\n\
-                             t=0\n\
+                  gamma (a)    /\n\
+                            t=0\n\
 @end group\n\
 @end example\n\
 \n\

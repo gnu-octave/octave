@@ -44,10 +44,10 @@ endfunction
 %!shared x,y
 %! x = [-Inf -log(2) 0 log(2) Inf];
 %! y = [0, 1/4, 1/2, 3/4, 1]; 
-%!assert(laplace_cdf ([x, NaN]), [y, NaN]);
+%!assert (laplace_cdf ([x, NaN]), [y, NaN])
 
 %% Test class of input preserved
-%!assert(laplace_cdf (single([x, NaN])), single([y, NaN]));
+%!assert (laplace_cdf (single ([x, NaN])), single ([y, NaN]))
 
 %% Test input validation
 %!error laplace_cdf ()

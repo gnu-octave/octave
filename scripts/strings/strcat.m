@@ -30,7 +30,7 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## strcat (s, s, s)
-##      @result{} ans =
+##     @result{}
 ##         "ab ab ab "
 ##         "cdecdecde"
 ## @end group
@@ -40,7 +40,7 @@
 ## @group
 ## s = @{ "ab"; "cde" @};
 ## strcat (s, s, s)
-##      @result{} ans =
+##     @result{}
 ##         @{
 ##           [1,1] = ababab
 ##           [2,1] = cdecdecde
@@ -96,32 +96,31 @@ endfunction
 
 ## test the dimensionality
 ## 1d
-%!assert(strcat("ab ", "ab "), "abab")
-%!assert(strcat({"ab "}, "ab "), {"ab ab"})
-%!assert(strcat("ab ", {"ab "}), {"abab "})
-%!assert(strcat({"ab "}, {"ab "}), {"ab ab "})
-%!assert(strcat("", "ab"), "ab")
-%!assert(strcat("", {"ab"}, {""}), {"ab"})
+%!assert (strcat ("ab ", "ab "), "abab")
+%!assert (strcat ({"ab "}, "ab "), {"ab ab"})
+%!assert (strcat ("ab ", {"ab "}), {"abab "})
+%!assert (strcat ({"ab "}, {"ab "}), {"ab ab "})
+%!assert (strcat ("", "ab"), "ab")
+%!assert (strcat ("", {"ab"}, {""}), {"ab"})
 ## 2d
-%!assert(strcat(["ab ";"cde"], ["ab ";"cde"]), ["abab  ";"cdecde"])
+%!assert (strcat (["ab ";"cde"], ["ab ";"cde"]), ["abab  ";"cdecde"])
 
 ## test for deblanking implied trailing spaces of character input
-%!assert((strcmp (strcat ("foo", "bar"), "foobar")
-%!        && strcmp (strcat (["a"; "bb"], ["foo"; "bar"]), ["afoo "; "bbbar"])));
+%!assert (strcat ("foo", "bar"), "foobar")
+%!assert (strcat (["a"; "bb"], ["foo"; "bar"]), ["afoo "; "bbbar"])
 
 ## test for mixing character and cell inputs
-%!assert(all (strcmp (strcat ("a", {"bc", "de"}, "f"), {"abcf", "adef"})))
+%!assert (strcat ("a", {"bc", "de"}, "f"), {"abcf", "adef"})
 
 ## test for scalar strings with vector strings
-%!assert(all (strcmp (strcat (["a"; "b"], "c"), ["ac"; "bc"])))
+%!assert (strcat (["a"; "b"], "c"), ["ac"; "bc"])
 
 ## test with cells with strings of differing lengths
-%!assert(all (strcmp (strcat ({"a", "bb"}, "ccc"), {"accc", "bbccc"})))
-%!assert(all (strcmp (strcat ("a", {"bb", "ccc"}), {"abb", "accc"})))
-
-%!error strcat ();
+%!assert (all (strcmp (strcat ({"a", "bb"}, "ccc"), {"accc", "bbccc"})))
+%!assert (all (strcmp (strcat ("a", {"bb", "ccc"}), {"abb", "accc"})))
 
 %!assert (strcat (1, 2), strcat (char(1), char(2)))
+%!assert (strcat ("", 2), strcat ([], char(2)))
 
-%!assert (strcat ('', 2), strcat ([], char(2)))
+%!error strcat ()
 

@@ -43,9 +43,8 @@ function map = winter (n)
     map = [0, 0, 1];
   elseif (n > 1)
     r = zeros (n, 1);
-    g = (0:n - 1)' ./ (n - 1);
-    b = 1 - g ./ 2;
-
+    g = [0:(n-1)]' / (n - 1);
+    b = 1 - g / 2;
     map = [r, g, b];
   else
     map = [];

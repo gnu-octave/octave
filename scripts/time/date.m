@@ -25,7 +25,7 @@
 ## @example
 ## @group
 ## date ()
-##      @result{} "20-Aug-1993"
+##   @result{} "20-Aug-1993"
 ## @end group
 ## @end example
 ## @seealso{now, clock, datestr, localtime}
@@ -39,5 +39,6 @@ function retval = date ()
 
 endfunction
 
-%!assert(strcmp (date (), strftime ("%d-%b-%Y", localtime (time ()))));
+
+%!assert (strcmp (date (), strftime ("%d-%b-%Y", localtime (time ()))))
 

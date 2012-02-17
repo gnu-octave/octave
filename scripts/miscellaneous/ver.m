@@ -107,17 +107,18 @@ function varargout = ver (package = "")
 
 endfunction
 
+
 %!test
 %! result = ver;
-%! assert (result(1).Name, "Octave")
-%! assert (result(1).Version, version)
+%! assert (result(1).Name, "Octave");
+%! assert (result(1).Version, version);
 %! result = ver ("octave");
-%! assert (result(1).Name, "Octave")
-%! assert (result(1).Version, version)
+%! assert (result(1).Name, "Octave");
+%! assert (result(1).Version, version);
 
 %!test
 %! lst = pkg ("list");
-%! for n=1:numel(lst)
+%! for n = 1:numel (lst)
 %!   expected = lst{n}.name;
 %!   result = ver (expected);
 %!   assert (result.Name, expected);

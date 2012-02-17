@@ -387,10 +387,12 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  octave_call_stack::push (this, local_scope, call_depth);
+  int context = is_anonymous_function () ? 0 : call_depth;
+
+  octave_call_stack::push (this, local_scope, context);
   frame.add_fcn (octave_call_stack::pop);
 
-  if (call_depth > 0)
+  if (call_depth > 0 && ! is_anonymous_function ())
     {
       symbol_table::push_context ();
 
@@ -700,7 +702,7 @@ DEFUN (nargout, args, ,
 Within a function, return the number of values the caller expects to\n\
 receive.  If called with the optional argument @var{fcn}, a function\n\
 name or handle, return the number of declared output values that the\n\
-function can produce. If the final output argument is @var{varargout}\n\
+function can produce.  If the final output argument is @var{varargout}\n\
 the returned value is negative.\n\
 \n\
 For example,\n\
@@ -726,12 +728,14 @@ In the second usage,\n\
 nargout (@@histc) \% or nargout ('histc')\n\
 @end example\n\
 \n\
+@noindent\n\
 will return 2, because @code{histc} has two outputs, whereas\n\
 \n\
 @example\n\
 nargout (@@deal)\n\
 @end example\n\
 \n\
+@noindent\n\
 will return -1, because @code{deal} has a variable number of outputs.\n\
 \n\
 At the top level, @code{nargout} with no argument is undefined.\n\

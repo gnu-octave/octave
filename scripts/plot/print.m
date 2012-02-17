@@ -64,6 +64,7 @@
 ##
 ## @item -d@var{device}
 ##   Output device, where @var{device} is one of:
+##
 ##   @table @code
 ##   @item ps
 ##   @itemx ps2
@@ -234,9 +235,9 @@
 ##
 ## @example
 ## @group
-## figure (1)
-## clf ()
-## surf (peaks)
+## figure (1);
+## clf ();
+## surf (peaks);
 ## print -dsvg figure1.svg
 ## @end group
 ## @end example
@@ -245,9 +246,9 @@
 ##
 ## @example
 ## @group
-## figure (1)
-## clf ()
-## surf (peaks)
+## figure (1);
+## clf ();
+## surf (peaks);
 ## print -dcdj550
 ## @end group
 ## @end example
@@ -283,21 +284,29 @@ function print (varargin)
     ## Modify properties as specified by options
     props = [];
 
+    drawnow ();
+
+    ## print() requires figure units to be "pixels"
+    props(1).h = opts.figure;
+    props(1).name = "units";
+    props(1).value = {get(opts.figure, "units")};
+    set (opts.figure, "units", "pixels");
+
     ## graphics toolkit tranlates figure position to eps bbox in points
     fpos = get (opts.figure, "position");
-    props(1).h = opts.figure;
-    props(1).name = "position";
-    props(1).value = {fpos};
+    props(2).h = opts.figure;
+    props(2).name = "position";
+    props(2).value = {fpos};
     fpos(3:4) = opts.canvas_size;
     set (opts.figure, "position", fpos);
 
     ## Set figure background to none. This is done both for
     ## consistency with Matlab and to elliminate the visible
     ## box along the figure's perimeter.
-    props(2).h = opts.figure;
-    props(2).name = "color";
-    props(2).value{1} = get (props(2).h, props(2).name);
-    set (props(2).h, props(2).name, "none");
+    props(3).h = opts.figure;
+    props(3).name = "color";
+    props(3).value{1} = get (props(3).h, props(3).name);
+    set (props(3).h, "color", "none");
 
     if (opts.force_solid != 0)
       h = findall (opts.figure, "-property", "linestyle");
@@ -389,7 +398,7 @@ function print (varargin)
   unwind_protect_cleanup
     ## restore modified properties
     if (isstruct (props))
-      for n = 1:numel(props)
+      for n = numel(props):-1:1
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif

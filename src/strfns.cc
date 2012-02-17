@@ -64,13 +64,13 @@ For example:\n\
 @example\n\
 @group\n\
 char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
-     @result{} [\"abc    \"\n\
-         \"       \"\n\
-         \"98     \"\n\
-         \"99     \"\n\
-         \"d      \"\n\
-         \"str1   \"\n\
-         \"half   \"]\n\
+   @result{} [\"abc    \"\n\
+       \"       \"\n\
+       \"98     \"\n\
+       \"99     \"\n\
+       \"d      \"\n\
+       \"str1   \"\n\
+       \"half   \"]\n\
 @end group\n\
 @end example\n\
 @seealso{strvcat, cellstr}\n\
@@ -195,12 +195,12 @@ For example:\n\
 @example\n\
 @group\n\
 strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n\
-     @result{} [\"abc    \"\n\
-         \"98     \"\n\
-         \"99     \"\n\
-         \"d      \"\n\
-         \"str1   \"\n\
-         \"half   \"]\n\
+      @result{} [\"abc    \"\n\
+          \"98     \"\n\
+          \"99     \"\n\
+          \"d      \"\n\
+          \"str1   \"\n\
+          \"half   \"]\n\
 @end group\n\
 @end example\n\
 @seealso{char, strcat, cstrcat}\n\
@@ -665,7 +665,7 @@ the same, and 0 otherwise.\n\
 @example\n\
 @group\n\
 strncmp (\"abce\", \"abcd\", 3)\n\
-     @result{} 1\n\
+      @result{} 1\n\
 @end group\n\
 @end example\n\
 \n\
@@ -867,9 +867,9 @@ For example:\n\
 @smallexample\n\
 @group\n\
 list_in_columns (@{\"abc\", \"def\", \"ghijkl\", \"mnop\", \"qrs\", \"tuv\"@}, 20)\n\
-     @result{} ans = abc     mnop\n\
-            def     qrs\n\
-            ghijkl  tuv\n\
+     @result{} abc     mnop\n\
+        def     qrs\n\
+        ghijkl  tuv\n\
 \n\
 whos ans\n\
      @result{}\n\

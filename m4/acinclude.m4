@@ -937,7 +937,13 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION],
     octave_cv_lib_qhull_version,  [
       AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
-#if defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
+#if defined (HAVE_LIBQHULL_LIBQHULL_H)
+# include <libqhull/libqhull.h>
+# include <libqhull/qset.h>
+# include <libqhull/geom.h>
+# include <libqhull/poly.h>
+# include <libqhull/io.h>
+#elif defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
 # if defined (HAVE_QHULL_LIBQHULL_H)
 #  include <qhull/libqhull.h>
 # else
@@ -974,7 +980,13 @@ AC_DEFUN([OCTAVE_CHECK_QHULL_OK],
     octave_cv_lib_qhull_ok, [
       AC_RUN_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
-#if defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
+#if defined (HAVE_LIBQHULL_LIBQHULL_H)
+# include <libqhull/libqhull.h>
+# include <libqhull/qset.h>
+# include <libqhull/geom.h>
+# include <libqhull/poly.h>
+# include <libqhull/io.h>
+#elif defined (HAVE_QHULL_LIBQHULL_H) || defined (HAVE_QHULL_QHULL_H)
 # if defined (HAVE_QHULL_LIBQHULL_H)
 #  include <qhull/libqhull.h>
 # else

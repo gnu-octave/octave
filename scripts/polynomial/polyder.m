@@ -91,9 +91,10 @@ function [q, d] = polyder (p, a)
 endfunction
 
 
-%!assert(all (all (polyder ([1, 2, 3]) == [2, 2])));
-%!assert(polyder (13) == 0);
+%!assert (polyder ([1, 2, 3], [2, 2]))
+%!assert (polyder (13), 0)
 
-%!error polyder ([]);
-%!error polyder ([1, 2; 3, 4]);
+%!error polyder ([])
+%!error polyder (1,2,3)
+%!error <argument must be a vector> polyder ([1, 2; 3, 4])
 

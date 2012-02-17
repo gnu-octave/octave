@@ -32,8 +32,9 @@ function retval = isdir (f)
 
 endfunction
 
-%!error isdir ();
-%!error isdir (1, 2);
+%!assert (isdir (pwd ()))
+%!assert (! isdir ("this is highly unlikely to be a directory name"))
 
-%!assert (isdir (pwd ()));
-%!assert (! isdir ("this is highly unlikely to be a directory name"));
+%!error isdir ()
+%!error isdir (1, 2)
+

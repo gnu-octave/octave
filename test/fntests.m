@@ -265,26 +265,30 @@ try
     dxf += xf;
     dsk += sk;
   endfor
-  printf ("\nSummary:\n\n  PASS %6d\n", dp);
+  puts ("\nSummary:\n\n");
   nfail = dn - dp;
-  printf ("  FAIL %6d\n", nfail);
+  printf ("  PASS    %6d\n", dp);
+  printf ("  FAIL    %6d\n", nfail);
   if (dxf > 0)
-    if (dxf > 1)
-      t1 = "were";
-      t2 = "failures";
-    else
-      t1 = "was";
-      t2 = "failure";
-    endif
-    printf ("\nThere %s %d expected %s (see fntests.log for details).\n",
-            t1, dxf, t2);
-    puts ("\nExpected failures are known bugs.  Please help improve Octave\n");
-    puts ("by contributing fixes for them.\n");
+    printf ("  XFAIL   %6d\n", dxf);
   endif
   if (dsk > 0)
-    printf ("\nThere were %d skipped tests (see fntests.log for details).\n", dsk);
-    puts ("Skipped tests are features that are disabled in this version of Octave\n");
-    puts ("because the needed libraries were not present when Octave was built.\n");
+    printf ("  SKIPPED %6d\n", dsk);
+  endif
+  puts ("\n");
+  puts ("See the file test/fntests.log for additional details.\n");
+  if (dxf > 0)
+    puts ("\n");
+    puts ("Expected failures (listed as XFAIL above) are known bugs.\n");
+    puts ("Please help improve Octave by contributing fixes for them.\n");
+  endif
+  if (dsk > 0)
+    puts ("\n");
+    puts ("Tests are most often skipped because the features they require\n");
+    puts ("have been disabled.  Features are most often disabled because\n");
+    puts ("they require dependencies that were not present when Octave\n");
+    puts ("was built.  The configure script should have printed a summary\n");
+    puts ("at the end of its run indicating which dependencies were not found.\n");
   endif
 
   ## Weed out deprecated and private functions

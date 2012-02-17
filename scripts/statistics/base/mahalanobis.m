@@ -71,10 +71,11 @@ endfunction
 
 
 %% Test input validation
-%!error mahalanobis ();
-%!error mahalanobis (1, 2, 3);
-%!error mahalanobis ('A', 'B');
-%!error mahalanobis ([1, 2], ['A', 'B']);
-%!error mahalanobis (ones (2,2,2));
-%!error mahalanobis (ones (2,2), ones (2,2,2));
-%!error mahalanobis (ones (2,2), ones (2,3));
+%!error mahalanobis ()
+%!error mahalanobis (1, 2, 3)
+%!error mahalanobis ('A', 'B')
+%!error mahalanobis ([1, 2], ['A', 'B'])
+%!error mahalanobis (ones (2,2,2))
+%!error mahalanobis (ones (2,2), ones (2,2,2))
+%!error mahalanobis (ones (2,2), ones (2,3))
+

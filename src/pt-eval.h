@@ -60,7 +60,7 @@ public:
 
   void visit_global_command (tree_global_command&);
 
-  void visit_static_command (tree_static_command&);
+  void visit_persistent_command (tree_persistent_command&);
 
   void visit_decl_elt (tree_decl_elt&);
 

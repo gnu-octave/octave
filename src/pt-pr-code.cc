@@ -165,7 +165,7 @@ tree_print_code::visit_global_command (tree_global_command& cmd)
 }
 
 void
-tree_print_code::visit_static_command (tree_static_command& cmd)
+tree_print_code::visit_persistent_command (tree_persistent_command& cmd)
 {
   do_decl_command (cmd);
 }

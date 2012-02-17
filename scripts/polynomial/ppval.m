@@ -102,15 +102,21 @@ function yi = ppval (pp, xi)
 
 endfunction
 
-%!shared b,c,pp,pp2,xi,abserr
-%! b = 1:3; c = ones(2); pp=mkpp(b,c);abserr = 1e-14;pp2=mkpp(b,[c;c],2);
+
+%!shared b, c, pp, pp2, xi, abserr
+%! b = 1:3;
+%! c = ones (2);
+%! pp = mkpp (b, c);
+%! abserr = 1e-14;
+%! pp2 = mkpp (b, [c;c], 2);
 %! xi = [1.1 1.3 1.9 2.1];
-%!assert (ppval(pp,1.1), 1.1, abserr);
-%!assert (ppval(pp,2.1), 1.1, abserr);
-%!assert (ppval(pp,xi), [1.1 1.3 1.9 1.1], abserr);
-%!assert (ppval(pp,xi.'), [1.1 1.3 1.9 1.1].', abserr);
-%!assert (ppval(pp2,1.1), [1.1;1.1], abserr);
-%!assert (ppval(pp2,2.1), [1.1;1.1], abserr);
-%!assert (ppval(pp2,xi), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr);
-%!assert (ppval(pp2,xi'), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr);
-%!assert (size(ppval(pp2,[xi;xi])), [2 2 4]);
+%!assert (ppval (pp, 1.1), 1.1, abserr)
+%!assert (ppval (pp, 2.1), 1.1, abserr)
+%!assert (ppval (pp, xi), [1.1 1.3 1.9 1.1], abserr)
+%!assert (ppval (pp, xi.'), [1.1 1.3 1.9 1.1].', abserr)
+%!assert (ppval (pp2, 1.1), [1.1;1.1], abserr)
+%!assert (ppval (pp2, 2.1), [1.1;1.1], abserr)
+%!assert (ppval (pp2, xi), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
+%!assert (ppval (pp2, xi'), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
+%!assert (size (ppval (pp2, [xi;xi])), [2 2 4])
+

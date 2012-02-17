@@ -27,10 +27,10 @@
 ## @example
 ## @group
 ## computer ()
-##      @print{} i586-pc-linux-gnu
+##    @print{} i586-pc-linux-gnu
 ##
 ## x = computer ()
-##      @result{} x = "i586-pc-linux-gnu"
+##    @result{} x = "i586-pc-linux-gnu"
 ## @end group
 ## @end example
 ##
@@ -85,7 +85,10 @@ function [c, maxsize, endian] = computer (a)
 
 endfunction
 
-%!assert((ischar (computer ())
-%! && computer () == octave_config_info ("canonical_host_type")));
-%!assert(ischar (computer ("arch")));
-%!error computer (2);
+
+%!assert (ischar (computer ()))
+%!assert (computer (), octave_config_info ("canonical_host_type"))
+%!assert (ischar (computer ("arch")))
+
+%!error computer (2)
+

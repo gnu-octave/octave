@@ -22,19 +22,18 @@
 ##
 ## @example
 ## @group
-## [@var{c} * eye(@var{m}, @var{m}),@var{A}; @var{A}', zeros(@var{n},
-## @var{n})]
+## [@var{c} * eye(@var{m}, @var{m}), @var{A};
+##             @var{A}', zeros(@var{n}, @var{n})]
 ## @end group
 ## @end example
 ##
 ## @noindent
 ## This is related to the least squares solution of
-## @code{@var{A} \\ @var{b}}, by
+## @code{@var{A} \ @var{b}}, by
 ##
 ## @example
 ## @group
-## @var{s} * [ @var{r} / @var{c}; x] = [@var{b}, zeros(@var{n},
-## columns(@var{b})]
+## @var{s} * [ @var{r} / @var{c}; x] = [ @var{b}, zeros(@var{n}, columns(@var{b})) ]
 ## @end group
 ## @end example
 ##
@@ -53,7 +52,7 @@
 ##
 ## @example
 ## @group
-## m = 11; n = 10; mn = max(m ,n);
+## m = 11; n = 10; mn = max (m, n);
 ## A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],
 ##              [-1, 0, 1], m, n);
 ## x0 = A \ ones (m,1);
@@ -91,12 +90,14 @@ function s = spaugment (A, c)
   s = [ c * speye(m, m), A; A', sparse(n, n)];
 endfunction
 
+
 %!testif HAVE_UMFPACK
-%! m = 11; n = 10; mn = max(m ,n);
+%! m = 11; n = 10; mn = max (m ,n);
 %! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
 %! x0 = A \ ones (m,1);
 %! s = spaugment (A);
 %! [L, U, P, Q] = lu (s);
 %! x1 = Q * (U \ (L \ (P  * [ones(m,1); zeros(n,1)])));
 %! x1 = x1(end - n + 1 : end);
-%! assert (x1, x0, 1e-6)
+%! assert (x1, x0, 1e-6);
+

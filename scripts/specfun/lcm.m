@@ -51,11 +51,11 @@ function l = lcm (varargin)
 
 endfunction
 
-%!assert(lcm (3, 5, 7, 15) == 105);
+
+%!assert (lcm (3, 5, 7, 15), 105)
 
 %!error lcm ();
-
 %!test
 %! s.a = 1;
-%! fail("lcm (s)");
+%! fail ("lcm (s)");
 

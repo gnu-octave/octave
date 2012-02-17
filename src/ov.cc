@@ -2811,12 +2811,12 @@ a matrix\n\
 @example\n\
 @group\n\
 val = magic(3)\n\
-     @result{} val = [ 8   1   6\n\
-                3   5   7\n\
-                4   9   2 ]\n\
+    @result{} val = [ 8   1   6\n\
+               3   5   7\n\
+               4   9   2 ]\n\
 idx.type = \"()\";\n\
 idx.subs = @{\":\", 1:2@};\n\
-subsref(val, idx)\n\
+subsref (val, idx)\n\
      @result{} [ 8   1\n\
           3   5\n\
           4   9 ]\n\
@@ -2873,13 +2873,13 @@ The following example shows how to set the two first columns of a\n\
 \n\
 @example\n\
 @group\n\
-val = magic(3);\n\
+val = magic (3);\n\
 idx.type = \"()\";\n\
 idx.subs = @{\":\", 1:2@};\n\
 subsasgn (val, idx, 0)\n\
-     @result{} [ 0   0   6\n\
-          0   0   7\n\
-          0   0   2 ]\n\
+     @result{}  [ 0   0   6\n\
+           0   0   7\n\
+           0   0   2 ]\n\
 @end group\n\
 @end example\n\
 \n\

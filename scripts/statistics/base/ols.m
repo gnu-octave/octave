@@ -121,6 +121,14 @@ function [beta, sigma, r] = ols (y, x)
     r = y - x * beta;
   endif
   if (isargout (2))
+
+    ## z is of full rank, avoid the SVD in rnk
+    if (p == 0)
+      rnk = columns (z);
+    else
+      rnk = rank (z);
+    endif
+
     sigma = r' * r / (nr - rnk);
   endif
 
@@ -131,14 +139,36 @@ endfunction
 %! x = [1:5]';
 %! y = 3*x + 2;
 %! x = [x, ones(5,1)];
-%! assert (ols(y,x), [3; 2], 50*eps)
+%! assert (ols (y,x), [3; 2], 50*eps)
+
+%!test
+%! x = [1, 2; 3, 4];
+%! y = [1; 2];
+%! [b, s, r] = ols (x, y);
+%! assert (b, [1.4, 2], 2*eps);
+%! assert (s, [0.2, 0; 0, 0], 2*eps);
+%! assert (r, [-0.4, 0; 0.2, 0], 2*eps);
+
+%!test
+%! x = [1, 2; 3, 4];
+%! y = [1; 2];
+%! [b, s] = ols (x, y);
+%! assert (b, [1.4, 2], 2*eps);
+%! assert (s, [0.2, 0; 0, 0], 2*eps);
+
+%!test
+%! x = [1, 2; 3, 4];
+%! y = [1; 2];
+%! b = ols (x, y);
+%! assert (b, [1.4, 2], 2*eps);
 
 %% Test input validation
-%!error ols ();
-%!error ols (1);
-%!error ols (1, 2, 3);
-%!error ols ([true, true], [1, 2]);
-%!error ols ([1, 2], [true, true]);
-%!error ols (ones (2,2,2), ones (2,2));
-%!error ols (ones (2,2), ones (2,2,2));
-%!error ols (ones(1,2), ones(2,2));
+%!error ols ()
+%!error ols (1)
+%!error ols (1, 2, 3)
+%!error ols ([true, true], [1, 2])
+%!error ols ([1, 2], [true, true])
+%!error ols (ones (2,2,2), ones (2,2))
+%!error ols (ones (2,2), ones (2,2,2))
+%!error ols (ones (1,2), ones (2,2))
+

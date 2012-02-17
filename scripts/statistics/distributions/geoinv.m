@@ -64,22 +64,22 @@ endfunction
 
 %!shared x
 %! x = [-1 0 0.75 1 2];
-%!assert(geoinv (x, 0.5*ones(1,5)), [NaN 0 1 Inf NaN]);
-%!assert(geoinv (x, 0.5), [NaN 0 1 Inf NaN]);
-%!assert(geoinv (x, 0.5*[1 -1 NaN 4 1]), [NaN NaN NaN NaN NaN]);
-%!assert(geoinv ([x(1:2) NaN x(4:5)], 0.5), [NaN 0 NaN Inf NaN]);
+%!assert (geoinv (x, 0.5*ones (1,5)), [NaN 0 1 Inf NaN])
+%!assert (geoinv (x, 0.5), [NaN 0 1 Inf NaN])
+%!assert (geoinv (x, 0.5*[1 -1 NaN 4 1]), [NaN NaN NaN NaN NaN])
+%!assert (geoinv ([x(1:2) NaN x(4:5)], 0.5), [NaN 0 NaN Inf NaN])
 
 %% Test class of input preserved
-%!assert(geoinv ([x, NaN], 0.5), [NaN 0 1 Inf NaN NaN]);
-%!assert(geoinv (single([x, NaN]), 0.5), single([NaN 0 1 Inf NaN NaN]));
-%!assert(geoinv ([x, NaN], single(0.5)), single([NaN 0 1 Inf NaN NaN]));
+%!assert (geoinv ([x, NaN], 0.5), [NaN 0 1 Inf NaN NaN])
+%!assert (geoinv (single ([x, NaN]), 0.5), single ([NaN 0 1 Inf NaN NaN]))
+%!assert (geoinv ([x, NaN], single (0.5)), single ([NaN 0 1 Inf NaN NaN]))
 
 %% Test input validation
 %!error geoinv ()
 %!error geoinv (1)
 %!error geoinv (1,2,3)
-%!error geoinv (ones(3),ones(2))
-%!error geoinv (ones(2),ones(3))
+%!error geoinv (ones (3), ones (2))
+%!error geoinv (ones (2), ones (3))
 %!error geoinv (i, 2)
 %!error geoinv (2, i)
 

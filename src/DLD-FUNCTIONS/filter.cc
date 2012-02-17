@@ -304,9 +304,9 @@ $$\n\
 \n\
 @smallexample\n\
 @group\n\
-   N                   M\n\
-  SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)      for 1<=n<=length(x)\n\
-  k=0                 k=0\n\
+ N                   M\n\
+SUM a(k+1) y(n-k) = SUM b(k+1) x(n-k)    for 1<=n<=length(x)\n\
+k=0                 k=0\n\
 @end group\n\
 @end smallexample\n\
 \n\
@@ -333,9 +333,9 @@ $$\n\
 \n\
 @smallexample\n\
 @group\n\
-            N                   M\n\
-  y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
-           k=1                 k=0\n\
+          N                   M\n\
+y(n) = - SUM c(k+1) y(n-k) + SUM d(k+1) x(n-k)  for 1<=n<=length(x)\n\
+         k=1                 k=0\n\
 @end group\n\
 @end smallexample\n\
 \n\
@@ -370,13 +370,13 @@ $$\n\
 \n\
 @example\n\
 @group\n\
-             M\n\
-            SUM d(k+1) z^(-k)\n\
-            k=0\n\
-  H(z) = ----------------------\n\
-               N\n\
-          1 + SUM c(k+1) z^(-k)\n\
-              k=1\n\
+          M\n\
+         SUM d(k+1) z^(-k)\n\
+         k=0\n\
+H(z) = ---------------------\n\
+            N\n\
+       1 + SUM c(k+1) z^(-k)\n\
+           k=1\n\
 @end group\n\
 @end example\n\
 \n\

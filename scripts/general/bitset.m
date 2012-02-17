@@ -26,7 +26,7 @@
 ## @example
 ## @group
 ## dec2bin (bitset (10, 1))
-## @result{} 1011
+##   @result{} 1011
 ## @end group
 ## @end example
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
@@ -93,8 +93,6 @@ function C = bitset (A, n, val)
 
 endfunction
 
-%!error bitset (1);
-%!error bitset (1, 2, 3, 4);
 
 %!test
 %! assert (bitset ([0, 10], [3, 3]), [4, 14]);
@@ -106,17 +104,17 @@ endfunction
 %!   endfor
 %! endfor
 
-%!error bitset (0, 0);
-%!error bitset (0, 55);
+%!error bitset (0, 0)
+%!error bitset (0, 55)
+%!error bitset (int8 (0), 9)
+%!error bitset (uint8 (0), 9)
+%!error bitset (int16 (0), 17)
+%!error bitset (uint16 (0), 17)
+%!error bitset (int32 (0), 33)
+%!error bitset (uint32 (0), 33)
+%!error bitset (int64 (0), 65)
+%!error bitset (uint64 (0), 65)
 
-%!error bitset (int8 (0), 9);
-%!error bitset (uint8 (0), 9);
+%!error bitset (1)
+%!error bitset (1, 2, 3, 4)
 
-%!error bitset (int16 (0), 17);
-%!error bitset (uint16 (0), 17);
-
-%!error bitset (int32 (0), 33);
-%!error bitset (uint32 (0), 33);
-
-%!error bitset (int64 (0), 65);
-%!error bitset (uint64 (0), 65);

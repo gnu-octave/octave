@@ -62,4 +62,5 @@ endfunction
 %! str = which ("dot");
 %! assert (str(end-6:end), "dot.oct");
 
-%!assert (which ("NO_NAME"), "");
+%!assert (which ("_NO_SUCH_NAME_"), "")
+

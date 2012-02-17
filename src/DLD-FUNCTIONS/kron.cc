@@ -245,7 +245,7 @@ Form the Kronecker product of two or more matrices, defined block by \n\
 block as\n\
 \n\
 @example\n\
-x = [a(i, j) b]\n\
+x = [ a(i,j)*b ]\n\
 @end example\n\
 \n\
 For example:\n\
@@ -253,9 +253,9 @@ For example:\n\
 @example\n\
 @group\n\
 kron (1:4, ones (3, 1))\n\
-      @result{}  1  2  3  4\n\
-          1  2  3  4\n\
-          1  2  3  4\n\
+     @result{}  1  2  3  4\n\
+         1  2  3  4\n\
+         1  2  3  4\n\
 @end group\n\
 @end example\n\
 \n\

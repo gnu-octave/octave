@@ -25,7 +25,7 @@
 ## @example
 ## @group
 ## dec2base (123, 3)
-##      @result{} "11120"
+##    @result{} "11120"
 ## @end group
 ## @end example
 ##
@@ -40,7 +40,7 @@
 ## @example
 ## @group
 ## dec2base (123, "aei")
-##      @result{} "eeeia"
+##    @result{} "eeeia"
 ## @end group
 ## @end example
 ##
@@ -119,23 +119,23 @@ endfunction
 
 
 %!test
-%! s0 = '';
+%! s0 = "";
 %! for n = 1:13
 %!   for b = 2:16
 %!     pp = dec2base (b^n+1, b);
-%!     assert (dec2base(b^n, b), ['1',s0,'0']);
-%!     assert (dec2base(b^n+1, b), ['1',s0,'1']);
+%!     assert (dec2base (b^n, b), ['1',s0,'0']);
+%!     assert (dec2base (b^n+1, b), ['1',s0,'1']);
 %!   endfor
 %!   s0 = [s0,'0'];
 %! endfor
 
 %!test
-%! digits='0123456789ABCDEF';
+%! digits = "0123456789ABCDEF";
 %! for n = 1:13
 %!   for b = 2:16
-%!     pm = dec2base(b^n-1, b);
+%!     pm = dec2base (b^n-1, b);
 %!     assert (length (pm), n);
-%!     assert (all (pm==digits(b)));
+%!     assert (all (pm == digits(b)));
 %!   endfor
 %! endfor
 
@@ -144,12 +144,12 @@ endfunction
 %!   assert (dec2base (0, b), '0');
 %! endfor
 
-%!assert(dec2base (0, 2, 4), "0000");
-%!assert(dec2base (2^51-1, 2), ...
-%!       '111111111111111111111111111111111111111111111111111');
-%!assert(dec2base(uint64(2)^63-1, 16), '7FFFFFFFFFFFFFFF');
-%!assert(dec2base([1, 2; 3, 4], 2, 3), ["001"; "011"; "010"; "100"]);
-%!assert(dec2base({1, 2; 3, 4}, 2, 3), ["001"; "011"; "010"; "100"]);
+%!assert (dec2base (0, 2, 4), "0000")
+%!assert (dec2base (2^51-1, 2), ...
+%!        "111111111111111111111111111111111111111111111111111")
+%!assert (dec2base (uint64 (2)^63-1, 16), "7FFFFFFFFFFFFFFF")
+%!assert (dec2base ([1, 2; 3, 4], 2, 3), ["001"; "011"; "010"; "100"])
+%!assert (dec2base ({1, 2; 3, 4}, 2, 3), ["001"; "011"; "010"; "100"])
 
 %%Test input validation
 %!error dec2base ()

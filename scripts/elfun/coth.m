@@ -38,7 +38,7 @@ endfunction
 %!test
 %! x = [pi/2*i, 3*pi/2*i];
 %! v = [0, 0];
-%! assert (all (abs (coth (x) - v) < sqrt (eps)));
+%! assert (coth (x), v, sqrt (eps));
 
 %!error coth ()
 %!error coth (1, 2)

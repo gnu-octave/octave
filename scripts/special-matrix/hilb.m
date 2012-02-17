@@ -22,13 +22,13 @@
 ## of a Hilbert matrix is defined as
 ## @tex
 ## $$
-## H (i, j) = {1 \over (i + j - 1)}
+## H(i, j) = {1 \over (i + j - 1)}
 ## $$
 ## @end tex
 ## @ifnottex
 ##
 ## @example
-## H (i, j) = 1 / (i + j - 1)
+## H(i, j) = 1 / (i + j - 1)
 ## @end example
 ##
 ## @end ifnottex
@@ -41,9 +41,9 @@
 ## @example
 ## @group
 ## cond (rand (5))
-##     @result{} 14.392
+##    @result{} 14.392
 ## cond (hilb (5))
-##     @result{} 4.7661e+05
+##    @result{} 4.7661e+05
 ## @end group
 ## @end example
 ##
@@ -75,5 +75,5 @@ endfunction
 
 %!error hilb ()
 %!error hilb (1, 2)
-%!error <N must be a scalar integer> hilb (ones(2))
+%!error <N must be a scalar integer> hilb (ones (2))
 

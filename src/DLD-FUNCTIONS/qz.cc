@@ -322,9 +322,9 @@ $$ AA = Q^T AZ, BB = Q^T BZ $$\n\
 @example\n\
 @group\n\
 \n\
-    A * V = B * V * diag (@var{lambda})\n\
-    W' * A = diag (@var{lambda}) * W' * B\n\
-    AA = Q * A * Z, BB = Q * B * Z\n\
+A * V = B * V * diag (@var{lambda})\n\
+W' * A = diag (@var{lambda}) * W' * B\n\
+AA = Q * A * Z, BB = Q * B * Z\n\
 \n\
 @end group\n\
 @end example\n\
@@ -344,6 +344,7 @@ the generalized eigenvectors @var{V}, @var{W}, nor the orthogonal matrix\n\
 @item opt\n\
 for ordering eigenvalues of the GEP pencil.  The leading block\n\
 of the revised pencil contains all eigenvalues that satisfy:\n\
+\n\
 @table @asis\n\
 @item \"N\"\n\
 = unordered (default)\n\

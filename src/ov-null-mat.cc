@@ -96,6 +96,7 @@ string.  Indexed assignment with such a value on the right-hand side should\n\
 delete array elements.  This function should be used when overloading\n\
 indexed assignment for user-defined classes instead of @code{isempty}, to\n\
 distinguish the cases:\n\
+\n\
 @table @asis\n\
 @item @code{A(I) = []}\n\
 This should delete elements if @code{I} is nonempty.\n\

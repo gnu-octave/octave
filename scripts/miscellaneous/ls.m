@@ -90,5 +90,5 @@ endfunction
 %! assert (ischar (list));
 %! assert (! isempty (list));
 
-%!error ls (1);
+%!error ls (1)
 

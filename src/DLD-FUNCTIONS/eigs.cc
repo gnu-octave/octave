@@ -184,32 +184,32 @@ scalar, the @var{k} eigenvalues closest to @var{sigma} are returned.  If\n\
 @var{sigma} is a string, it must have one of the following values.\n\
 \n\
 @table @asis\n\
-@item 'lm'\n\
+@item \"lm\"\n\
 Largest Magnitude (default).\n\
 \n\
-@item 'sm'\n\
+@item \"sm\"\n\
 Smallest Magnitude.\n\
 \n\
-@item 'la'\n\
+@item \"la\"\n\
 Largest Algebraic (valid only for real symmetric problems).\n\
 \n\
-@item 'sa'\n\
+@item \"sa\"\n\
 Smallest Algebraic (valid only for real symmetric problems).\n\
 \n\
-@item 'be'\n\
+@item \"be\"\n\
 Both Ends, with one more from the high-end if @var{k} is odd (valid only for\n\
 real symmetric problems).\n\
 \n\
-@item 'lr'\n\
+@item \"lr\"\n\
 Largest Real part (valid only for complex or unsymmetric problems).\n\
 \n\
-@item 'sr'\n\
+@item \"sr\"\n\
 Smallest Real part (valid only for complex or unsymmetric problems).\n\
 \n\
-@item 'li'\n\
+@item \"li\"\n\
 Largest Imaginary part (valid only for complex or unsymmetric problems).\n\
 \n\
-@item 'si'\n\
+@item \"si\"\n\
 Smallest Imaginary part (valid only for complex or unsymmetric problems).\n\
 @end table\n\
 \n\
@@ -270,10 +270,10 @@ the value of @var{sigma}.  The four possible forms are\n\
 \n\
 @table @code\n\
 @item A * x\n\
-if @var{sigma} is not given or is a string other than 'sm'.\n\
+if @var{sigma} is not given or is a string other than \"sm\".\n\
 \n\
 @item A \\ x\n\
-if @var{sigma} is 0 or 'sm'.\n\
+if @var{sigma} is 0 or \"sm\".\n\
 \n\
 @item (A - sigma * I) \\ x\n\
 for the standard eigenvalue problem, where @code{I} is the identity matrix of\n\

@@ -111,7 +111,7 @@ tree_breakpoint::visit_global_command (tree_global_command& cmd)
 }
 
 void
-tree_breakpoint::visit_static_command (tree_static_command& cmd)
+tree_breakpoint::visit_persistent_command (tree_persistent_command& cmd)
 {
   do_decl_command (cmd);
 }

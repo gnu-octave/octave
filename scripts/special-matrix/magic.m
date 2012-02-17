@@ -80,13 +80,13 @@ endfunction
 
 
 %!test
-%! for i=3:30
+%! for i = 3:30
 %!   A = magic (i);
 %!   assert (norm(diff([sum(diag(A)),sum(diag(flipud(A))),sum(A),sum(A')])),0);
 %! endfor
 
 %!assert (isempty (magic (0)))
-%!assert (magic(1), 1)
+%!assert (magic (1), 1)
 
 %% Test input validation
 %!error magic ()

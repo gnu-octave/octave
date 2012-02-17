@@ -49,6 +49,7 @@
 ##
 ## @itemize @minus
 ## @item @var{flag} indicates the exit status:
+##
 ## @table @asis
 ## @item 0 : iteration converged to within the specified tolerance
 ##
@@ -197,22 +198,23 @@ endfunction
 %! dim = 100;
 %!test
 %! A = spdiags ([-ones(dim,1) 2*ones(dim,1) ones(dim,1)], [-1:1], dim, dim);
-%! b = ones(dim, 1);
-%! x = gmres (A, b, 10, 1e-10, dim, @(x) x./diag(A), [],  b);
-%! assert(x, A\b, 1e-9*norm(x,inf));
+%! b = ones (dim, 1);
+%! x = gmres (A, b, 10, 1e-10, dim, @(x) x ./ diag (A), [], b);
+%! assert (x, A\b, 1e-9*norm (x, Inf));
 %!
 %!test
-%! x = gmres (A, b, dim, 1e-10, 1e4, @(x) diag(diag(A))\x, [],  b);
-%! assert(x, A\b, 1e-7*norm(x,inf));
+%! x = gmres (A, b, dim, 1e-10, 1e4, @(x) diag (diag (A)) \ x, [], b);
+%! assert(x, A\b, 1e-7*norm (x, Inf));
 %!
 %!test
 %! A = spdiags ([[1./(2:2:2*(dim-1)) 0]; 1./(1:2:2*dim-1); [0 1./(2:2:2*(dim-1))]]', -1:1, dim, dim);
 %! A = A'*A;
 %! b = rand (dim, 1);
-%! [x, resids] = gmres (@(x) A*x, b, dim, 1e-10, dim, @(x) x./diag(A), [],  []);
-%! assert(x, A\b, 1e-9*norm(x,inf))
-%! x = gmres (@(x) A*x, b, dim, 1e-10, 1e6, @(x) diag(diag(A))\x, [],  []);
-%! assert(x, A\b, 1e-9*norm(x,inf));
+%! [x, resids] = gmres (@(x) A*x, b, dim, 1e-10, dim, @(x) x./diag (A), [], []);
+%! assert (x, A\b, 1e-9*norm (x, Inf));
+%! x = gmres (@(x) A*x, b, dim, 1e-10, 1e6, @(x) diag (diag (A)) \ x, [], []);
+%! assert (x, A\b, 1e-9*norm (x, Inf));
 %!test
-%! x =  gmres (@(x) A*x, b, dim, 1e-10, 1e6, @(x) x./diag(A), [],  []);
-%! assert(x, A\b, 1e-7*norm(x,inf));
+%! x = gmres (@(x) A*x, b, dim, 1e-10, 1e6, @(x) x./diag(A), [], []);
+%! assert (x, A\b, 1e-7*norm (x, Inf));
+

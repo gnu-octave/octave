@@ -106,35 +106,35 @@ function rnd = nbinrnd (n, p, varargin)
 endfunction
 
 
-%!assert(size (nbinrnd (2, 1/2)), [1, 1]);
-%!assert(size (nbinrnd (2*ones(2,1), 1/2)), [2, 1]);
-%!assert(size (nbinrnd (2*ones(2,2), 1/2)), [2, 2]);
-%!assert(size (nbinrnd (2, 1/2*ones(2,1))), [2, 1]);
-%!assert(size (nbinrnd (2, 1/2*ones(2,2))), [2, 2]);
-%!assert(size (nbinrnd (2, 1/2, 3)), [3, 3]);
-%!assert(size (nbinrnd (2, 1/2, [4 1])), [4, 1]);
-%!assert(size (nbinrnd (2, 1/2, 4, 1)), [4, 1]);
+%!assert (size (nbinrnd (2, 1/2)), [1, 1])
+%!assert (size (nbinrnd (2*ones (2,1), 1/2)), [2, 1])
+%!assert (size (nbinrnd (2*ones (2,2), 1/2)), [2, 2])
+%!assert (size (nbinrnd (2, 1/2*ones (2,1))), [2, 1])
+%!assert (size (nbinrnd (2, 1/2*ones (2,2))), [2, 2])
+%!assert (size (nbinrnd (2, 1/2, 3)), [3, 3])
+%!assert (size (nbinrnd (2, 1/2, [4 1])), [4, 1])
+%!assert (size (nbinrnd (2, 1/2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (nbinrnd (2, 1/2)), "double");
-%!assert(class (nbinrnd (single(2), 1/2)), "single");
-%!assert(class (nbinrnd (single([2 2]), 1/2)), "single");
-%!assert(class (nbinrnd (2, single(1/2))), "single");
-%!assert(class (nbinrnd (2, single([1/2 1/2]))), "single");
+%!assert (class (nbinrnd (2, 1/2)), "double")
+%!assert (class (nbinrnd (single (2), 1/2)), "single")
+%!assert (class (nbinrnd (single ([2 2]), 1/2)), "single")
+%!assert (class (nbinrnd (2, single (1/2))), "single")
+%!assert (class (nbinrnd (2, single ([1/2 1/2]))), "single")
 
 %% Test input validation
 %!error nbinrnd ()
 %!error nbinrnd (1)
-%!error nbinrnd (ones(3),ones(2))
-%!error nbinrnd (ones(2),ones(3))
+%!error nbinrnd (ones (3), ones (2))
+%!error nbinrnd (ones (2), ones (3))
 %!error nbinrnd (i, 2)
 %!error nbinrnd (2, i)
 %!error nbinrnd (1,2, -1)
-%!error nbinrnd (1,2, ones(2))
+%!error nbinrnd (1,2, ones (2))
 %!error nbinrnd (1, 2, [2 -1 2])
-%!error nbinrnd (1,2, 1, ones(2))
+%!error nbinrnd (1,2, 1, ones (2))
 %!error nbinrnd (1,2, 1, -1)
-%!error nbinrnd (ones(2,2), 2, 3)
-%!error nbinrnd (ones(2,2), 2, [3, 2])
-%!error nbinrnd (ones(2,2), 2, 2, 3)
+%!error nbinrnd (ones (2,2), 2, 3)
+%!error nbinrnd (ones (2,2), 2, [3, 2])
+%!error nbinrnd (ones (2,2), 2, 2, 3)
 

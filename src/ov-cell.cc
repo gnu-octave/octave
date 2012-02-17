@@ -1395,24 +1395,24 @@ cell array will have a dimension vector corresponding to\n\
 \n\
 @example\n\
 @group\n\
-  s = struct('name', @{'Peter', 'Hannah', 'Robert'@},\n\
-             'age', @{23, 16, 3@});\n\
-  c = struct2cell(s)\n\
-     @result{} c = @{1x1x3 Cell Array@}\n\
-  c(1,1,:)(:)\n\
-     @result{} ans =\n\
-        @{\n\
-          [1,1] = Peter\n\
-          [2,1] = Hannah\n\
-          [3,1] = Robert\n\
-        @}\n\
-  c(2,1,:)(:)\n\
-     @result{} ans =\n\
-        @{\n\
-          [1,1] = 23\n\
-          [2,1] = 16\n\
-          [3,1] = 3\n\
-        @}\n\
+s = struct (\"name\", @{\"Peter\", \"Hannah\", \"Robert\"@},\n\
+           \"age\", @{23, 16, 3@});\n\
+c = struct2cell (s)\n\
+   @result{} c = @{1x1x3 Cell Array@}\n\
+c(1,1,:)(:)\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = Peter\n\
+        [2,1] = Hannah\n\
+        [3,1] = Robert\n\
+      @}\n\
+c(2,1,:)(:)\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = 23\n\
+        [2,1] = 16\n\
+        [3,1] = 3\n\
+      @}\n\
 @end group\n\
 @end example\n\
 \n\

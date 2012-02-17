@@ -26,8 +26,8 @@
 ## colormap.  Values outside this range are clamped to the first and last
 ## colormap entries.
 ##
-## If @var{limits} is 'auto', then automatic colormap scaling is applied,
-## whereas if @var{limits} is 'manual' the colormap scaling is set to manual.
+## If @var{limits} is "auto", then automatic colormap scaling is applied,
+## whereas if @var{limits} is "manual" the colormap scaling is set to manual.
 ##
 ## Called without any arguments to current color axis limits are returned.
 ##

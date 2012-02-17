@@ -74,20 +74,19 @@ function retval = cond (A, p)
 
 endfunction
 
+
 %!test
-%! y= [7, 2, 3; 1, 3, 4; 6, 4, 5];
+%! y = [7, 2, 3; 1, 3, 4; 6, 4, 5];
 %! tol = 1e-6;
-%! type = {1, 2, 'fro', 'inf', inf};
-%! for n = 1:numel(type)
+%! type = {1, 2, "fro", "inf", inf};
+%! for n = 1:numel (type)
 %!   rcondition(n) = 1 / cond (y, type{n});
 %! endfor
 %! assert (rcondition, [0.017460, 0.019597, 0.018714, 0.012022, 0.012022], tol);
 
-%!assert (abs (cond ([1, 2; 2, 1]) - 3) < sqrt (eps));
+%!assert (cond ([1, 2; 2, 1]), 3, sqrt (eps))
+%!assert (cond ([1, 2, 3; 4, 5, 6; 7, 8, 9]) > 1.0e+16)
 
-%!assert (cond ([1, 2, 3; 4, 5, 6; 7, 8, 9]) > 1.0e+16);
-
-%!error cond ();
-
-%!error cond (1, 2, 3);
+%!error cond ()
+%!error cond (1, 2, 3)
 

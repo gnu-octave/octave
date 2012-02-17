@@ -1,4 +1,5 @@
 ## Copyright (C) 2012 Rik Wehbring
+## Parts Copyright (C) 2012 Philip Nienhuis <prnienhuis@users.sf.net>
 ##
 ## This file is part of Octave.
 ##
@@ -18,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} usejava (@var{feature})
-## Return true if the specific Sun Java element @var{feature} is available.
+## Return true if the Java element @var{feature} is available.
 ##
 ## Possible features are:
 ##
@@ -36,10 +37,12 @@
 ## Swing components for lightweight GUIs.
 ## @end table
 ##
-## This function is provided for compatibility with @sc{matlab} scripts which
-## may alter their behavior based on the availability of Java.  Octave does
-## not implement an interface to Java and this function always returns
-## @code{false}.
+## @code{usejava} determines if specific Java features are available in an
+## Octave session.  This function is provided for compatibility with scripts
+## which may alter their behavior based on the availability of Java.  The
+## feature "desktop" always returns @code{false} as Octave has no Java-based
+## desktop.  Other features may be available if the Octave-Forge Java package
+## has been installed.
 ## @end deftypefn
 
 function retval = usejava (feature)
@@ -48,16 +51,35 @@ function retval = usejava (feature)
     print_usage ();
   endif
 
-  if (! any (strcmp (feature, {"awt", "desktop", "jvm", "swing"})))
-    error ("usejava: unrecognized feature '%s'", feature);
-  endif
-
   retval = false;
+
+  switch feature
+    ## For each feature, try javamethods() on a Java class of a feature
+    case "awt"
+      try
+        dum = javamethods ("java.awt.Frame");
+        retval = true;
+      end_try_catch
+    case "desktop"
+      ## Octave has no Java based GUI/desktop, leave retval = false
+    case "jvm"
+      try
+        dum = javamethods ("java.lang.Runtime");
+        retval = true;
+      end_try_catch
+    case "swing"
+      try
+        dum = javamethods ("javax.swing.Popup");
+        retval = true;
+      end_try_catch
+    otherwise
+      error ("usejava: unrecognized feature '%s'", feature);
+  endswitch
 
 endfunction
 
 
-%!assert (usejava ("awt"), false)
+%!assert (usejava ("desktop"), false)
 
 %% Test input validation
 %!error usejava ()

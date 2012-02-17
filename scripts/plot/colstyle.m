@@ -64,6 +64,7 @@ function [l, c, m, msg] = colstyle (style)
 
 endfunction
 
+
 %!test
 %! [l, c, m, msg] = colstyle ("r:x");
 %! assert (isempty (msg));

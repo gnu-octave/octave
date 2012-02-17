@@ -91,27 +91,27 @@ function rnd = trnd (n, varargin)
 endfunction
 
 
-%!assert(size (trnd (2)), [1, 1]);
-%!assert(size (trnd (ones(2,1))), [2, 1]);
-%!assert(size (trnd (ones(2,2))), [2, 2]);
-%!assert(size (trnd (1, 3)), [3, 3]);
-%!assert(size (trnd (1, [4 1])), [4, 1]);
-%!assert(size (trnd (1, 4, 1)), [4, 1]);
+%!assert (size (trnd (2)), [1, 1])
+%!assert (size (trnd (ones (2,1))), [2, 1])
+%!assert (size (trnd (ones (2,2))), [2, 2])
+%!assert (size (trnd (1, 3)), [3, 3])
+%!assert (size (trnd (1, [4 1])), [4, 1])
+%!assert (size (trnd (1, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (trnd (1)), "double");
-%!assert(class (trnd (single(1))), "single");
-%!assert(class (trnd (single([1 1]))), "single");
+%!assert (class (trnd (1)), "double")
+%!assert (class (trnd (single (1))), "single")
+%!assert (class (trnd (single ([1 1]))), "single")
 
 %% Test input validation
 %!error trnd ()
 %!error trnd (1, -1)
-%!error trnd (1, ones(2))
+%!error trnd (1, ones (2))
 %!error trnd (i)
 %!error trnd (1, [2 -1 2])
-%!error trnd (1, 2, ones(2))
+%!error trnd (1, 2, ones (2))
 %!error trnd (1, 2, -1)
-%!error trnd (ones(2,2), 3)
-%!error trnd (ones(2,2), [3, 2])
-%!error trnd (ones(2,2), 2, 3)
+%!error trnd (ones (2,2), 3)
+%!error trnd (ones (2,2), [3, 2])
+%!error trnd (ones (2,2), 2, 3)
 

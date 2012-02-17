@@ -3376,8 +3376,8 @@ You can convert the string back into a matrix as follows:\n\
 \n\
 @example\n\
 @group\n\
-   r = rats(hilb(4));\n\
-   x = str2num(r)\n\
+r = rats (hilb (4));\n\
+x = str2num (r)\n\
 @end group\n\
 @end example\n\
 \n\

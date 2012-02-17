@@ -29,9 +29,9 @@
 ##
 ## @example
 ## @group
-## [@var{m}, @var{n}] = size(@var{A})
-## @var{s} = eigs([sparse(@var{m}, @var{m}), @var{A};
-##                     @var{A}', sparse(@var{n}, @var{n})])
+## [@var{m}, @var{n}] = size (@var{A});
+## @var{s} = eigs ([sparse(@var{m}, @var{m}), @var{A};
+##                      @var{A}', sparse(@var{n}, @var{n})])
 ## @end group
 ## @end example
 ##
@@ -240,6 +240,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
   endif
 
 endfunction
+
 
 %!shared n, k, A, u, s, v, opts, rand_state, randn_state
 %! n = 100;

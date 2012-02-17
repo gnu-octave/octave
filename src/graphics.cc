@@ -3029,6 +3029,8 @@ root_figure::properties::update_units (void)
   else if (xunits.compare ("normalized"))
     {
       ss = Matrix (1, 4, 1.0);
+      ss(0) = 0;
+      ss(1) = 0;
     }
   else if (xunits.compare ("points"))
     {
@@ -3040,6 +3042,33 @@ root_figure::properties::update_units (void)
 
   set_screensize (ss);
 }
+
+Matrix
+root_figure::properties::get_boundingbox (bool internal, const Matrix&) const
+{
+  Matrix screen_size = screen_size_pixels ();
+  Matrix pos = Matrix (1, 4, 0);
+  pos(2) = screen_size(0);
+  pos(3) = screen_size(1);
+  return pos;
+}
+
+/*
+%!test
+%! set (0, "units", "pixels")
+%! sz = get (0, "screensize") - [1, 1, 0, 0];
+%! dpi = get (0, "screenpixelsperinch");
+%! set (0, "units", "inches")
+%! assert (get (0, "screensize"), sz / dpi, 0.5 / dpi) 
+%! set (0, "units", "centimeters")
+%! assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54)
+%! set (0, "units", "points")
+%! assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72)
+%! set (0, "units", "normalized")
+%! assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0])
+%! set (0, "units", "pixels")
+%! assert (get (0, "screensize"), sz + [1, 1, 0, 0])
+*/
 
 void
 root_figure::properties::remove_child (const graphics_handle& gh)
@@ -3225,10 +3254,11 @@ figure::properties::set_position (const octave_value& v,
   if (! error_state)
     {
       Matrix old_bb, new_bb;
+      bool modified = false;
 
-      old_bb = get_boundingbox ();
-      position.set (v, true, do_notify_toolkit);
-      new_bb = get_boundingbox ();
+      old_bb = get_boundingbox (true);
+      modified = position.set (v, false, do_notify_toolkit);
+      new_bb = get_boundingbox (true);
 
       if (old_bb != new_bb)
         {
@@ -3239,7 +3269,11 @@ figure::properties::set_position (const octave_value& v,
             }
         }
 
-      mark_modified ();
+      if (modified)
+        {
+          position.run_listeners (POSTSET);
+          mark_modified ();
+        }
     }
 }
 
@@ -3465,11 +3499,12 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
   Matrix pos = get_paperposition ().matrix_value ();
   Matrix sz = get_papersize ().matrix_value ();
 
-  pos (0) = pos (0) / sz(0);
-  pos (1) = pos (1) / sz(1);
-  pos (2) = pos (2) / sz(0);
-  pos (3) = pos (3) / sz(1);
+  pos(0) /= sz(0);
+  pos(1) /= sz(1);
+  pos(2) /= sz(0);
+  pos(3) /= sz(1);
 
+  std::string porient = get_paperorientation ();
   caseless_str punits = get_paperunits ();
   caseless_str typ = get_papertype ();
 
@@ -3477,33 +3512,37 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
     {
       if (old_paperunits.compare ("centimeters"))
         {
-          sz (0) = sz (0) / 2.54;
-          sz (1) = sz (1) / 2.54;
+          sz(0) /= 2.54;
+          sz(1) /= 2.54;
         }
       else if (old_paperunits.compare ("points"))
         {
-          sz (0) = sz (0) / 72.0;
-          sz (1) = sz (1) / 72.0;
+          sz(0) /= 72.0;
+          sz(1) /= 72.0;
         }
 
       if (punits.compare ("centimeters"))
         {
-          sz(0) = sz(0) * 2.54;
-          sz(1) = sz(1) * 2.54;
+          sz(0) *= 2.54;
+          sz(1) *= 2.54;
         }
-      else if (old_paperunits.compare ("points"))
+      else if (punits.compare ("points"))
         {
-          sz (0) = sz (0) * 72.0;
-          sz (1) = sz (1) * 72.0;
+          sz(0) *= 72.0;
+          sz(1) *= 72.0;
         }
     }
   else
-    sz = papersize_from_type (punits, typ);
+    {
+      sz = papersize_from_type (punits, typ);
+      if (porient == "landscape")
+        std::swap (sz(0), sz(1));
+    }
 
-  pos (0) = pos (0) * sz(0);
-  pos (1) = pos (1) * sz(1);
-  pos (2) = pos (2) * sz(0);
-  pos (3) = pos (3) * sz(1);
+  pos(0) *= sz(0);
+  pos(1) *= sz(1);
+  pos(2) *= sz(0);
+  pos(3) *= sz(1);
 
   papersize.set (octave_value (sz));
   paperposition.set (octave_value (pos));
@@ -3513,18 +3552,152 @@ void
 figure::properties::update_papertype (void)
 {
   caseless_str typ = get_papertype ();
-
   if (! typ.compare ("<custom>"))
-    // Call papersize.set rather than set_papersize to avoid loops between
-    // update_papersize and update_papertype
-    papersize.set (octave_value (papersize_from_type (get_paperunits (), typ)));
+    {
+      Matrix sz = papersize_from_type (get_paperunits (), typ);
+      if (get_paperorientation () == "landscape")
+        std::swap (sz(0), sz(1));
+      // Call papersize.set rather than set_papersize to avoid loops
+      // between update_papersize and update_papertype
+      papersize.set (octave_value (sz));
+    }
 }
 
 void
 figure::properties::update_papersize (void)
 {
-  papertype.set ("<custom>");
+  Matrix sz = get_papersize ().matrix_value ();
+  if (sz(0) > sz(1))
+    {
+      std::swap (sz(0), sz(1));
+      papersize.set (octave_value (sz));
+      paperorientation.set (octave_value ("landscape"));
+    }
+  else
+    {
+      paperorientation.set ("portrait");
+    }
+  std::string punits = get_paperunits ();
+  if (punits == "centimeters")
+    {
+      sz(0) /= 2.54;
+      sz(1) /= 2.54;
+    }
+  else if (punits == "points")
+    {
+      sz(0) = 72.0;
+      sz(1) = 72.0;
+    }
+  if (punits == "normalized")
+    {
+      caseless_str typ = get_papertype ();
+      if (get_papertype () == "<custom>")
+        error ("set: can't set the papertype to <custom> when the paperunits is normalized");
+    }
+  else
+    {
+      // TODO - the papersizes info is also in papersize_from_type().
+      // Both should be rewritten to avoid the duplication.
+      std::string typ = "<custom>";
+      const double mm2in = 1.0 / 25.4;
+      const double tol = 0.01;
+
+      if (std::abs (sz(0) - 8.5) + std::abs (sz(1) - 11.0) < tol)
+        typ = "usletter";
+      else if (std::abs (sz(0) - 8.5) + std::abs (sz(1) - 14.0) < tol)
+        typ = "uslegal";
+      else if (std::abs (sz(0) - 11.0) + std::abs (sz(1) - 17.0) < tol)
+        typ = "tabloid";
+      else if (std::abs (sz(0) - 841.0 * mm2in) + std::abs (sz(1) - 1198.0 * mm2in) < tol)
+        typ = "a0";
+      else if (std::abs (sz(0) - 594.0 * mm2in) + std::abs (sz(1) - 841.0 * mm2in) < tol)
+        typ = "a1";
+      else if (std::abs (sz(0) - 420.0 * mm2in) + std::abs (sz(1) - 594.0 * mm2in) < tol)
+        typ = "a2";
+      else if (std::abs (sz(0) - 297.0 * mm2in) + std::abs (sz(1) - 420.0 * mm2in) < tol)
+        typ = "a3";
+      else if (std::abs (sz(0) - 210.0 * mm2in) + std::abs (sz(1) - 297.0 * mm2in) < tol)
+        typ = "a4";
+      else if (std::abs (sz(0) - 148.0 * mm2in) + std::abs (sz(1) - 210.0 * mm2in) < tol)
+        typ = "a5";
+      else if (std::abs (sz(0) - 1029.0 * mm2in) + std::abs (sz(1) - 1456.0 * mm2in) < tol)
+        typ = "b0";
+      else if (std::abs (sz(0) - 728.0 * mm2in) + std::abs (sz(1) - 1028.0 * mm2in) < tol)
+        typ = "b1";
+      else if (std::abs (sz(0) - 514.0 * mm2in) + std::abs (sz(1) - 728.0 * mm2in) < tol)
+        typ = "b2";
+      else if (std::abs (sz(0) - 364.0 * mm2in) + std::abs (sz(1) - 514.0 * mm2in) < tol)
+        typ = "b3";
+      else if (std::abs (sz(0) - 257.0 * mm2in) + std::abs (sz(1) - 364.0 * mm2in) < tol)
+        typ = "b4";
+      else if (std::abs (sz(0) - 182.0 * mm2in) + std::abs (sz(1) - 257.0 * mm2in) < tol)
+        typ = "b5";
+      else if (std::abs (sz(0) - 9.0)  + std::abs (sz(1) - 12.0) < tol)
+        typ = "arch-a";
+      else if (std::abs (sz(0) - 12.0) + std::abs (sz(1) - 18.0) < tol)
+        typ = "arch-b";
+      else if (std::abs (sz(0) - 18.0) + std::abs (sz(1) - 24.0) < tol)
+        typ = "arch-c";
+      else if (std::abs (sz(0) - 24.0) + std::abs (sz(1) - 36.0) < tol)
+        typ = "arch-d";
+      else if (std::abs (sz(0) - 36.0) + std::abs (sz(1) - 48.0) < tol)
+        typ = "arch-e";
+      else if (std::abs (sz(0) - 8.5)  + std::abs (sz(1) - 11.0) < tol)
+        typ = "a";
+      else if (std::abs (sz(0) - 11.0) + std::abs (sz(1) - 17.0) < tol)
+        typ = "b";
+      else if (std::abs (sz(0) - 17.0) + std::abs (sz(1) - 22.0) < tol)
+        typ = "c";
+      else if (std::abs (sz(0) - 22.0) + std::abs (sz(1) - 34.0) < tol)
+        typ = "d";
+      else if (std::abs (sz(0) - 34.0) + std::abs (sz(1) - 43.0) < tol)
+        typ = "e";
+      // Call papertype.set rather than set_papertype to avoid loops between
+      // update_papersize and update_papertype
+      papertype.set (typ);
+    }
 }
+
+void
+figure::properties::update_paperorientation (void)
+{
+  std::string porient = get_paperorientation ();
+  Matrix sz = get_papersize ().matrix_value ();
+  Matrix pos = get_paperposition ().matrix_value ();
+  if ((sz(0) > sz(1) && porient == "portrait")
+      || (sz(0) < sz(1) && porient == "landscape"))
+    {
+      std::swap (sz(0), sz(1));
+      std::swap (pos(0), pos(1));
+      std::swap (pos(2), pos(3));
+      // Call papertype.set rather than set_papertype to avoid loops
+      // between update_papersize and update_papertype
+      papersize.set (octave_value (sz));
+      paperposition.set (octave_value (pos));
+    }
+}
+
+/*
+%!test
+%! figure (1, "visible", false);
+%! tol = 100 * eps ();
+%! set (gcf (), "paperorientation", "PORTRAIT")
+%! set (gcf (), "paperunits", "inches")
+%! set (gcf (), "papertype", "USletter")
+%! assert (get (gcf (), "papersize"), [8.5, 11.0], tol)
+%! set (gcf (), "paperorientation", "Landscape")
+%! assert (get (gcf (), "papersize"), [11.0, 8.5], tol)
+%! set (gcf (), "paperunits", "centimeters")
+%! assert (get (gcf (), "papersize"), [11.0, 8.5] * 2.54, tol)
+%! set (gcf (), "papertype", "a4");
+%! assert (get (gcf (), "papersize"), [29.7, 21.0], tol)
+%! set (gcf (), "paperunits", "inches", "papersize", [8.5, 11.0])
+%! assert (get (gcf (), "papertype"), "usletter")
+%! assert (get (gcf (), "paperorientation"), "portrait")
+%! set (gcf (), "papersize", [11.0, 8.5])
+%! assert (get (gcf (), "papertype"), "usletter")
+%! assert (get (gcf (), "paperorientation"), "landscape")
+*/
 
 void
 figure::properties::set_units (const octave_value& v)
@@ -3543,9 +3716,20 @@ figure::properties::set_units (const octave_value& v)
 void
 figure::properties::update_units (const caseless_str& old_units)
 {
-  set_position (convert_position (get_position ().matrix_value (), old_units,
-                                  get_units (), screen_size_pixels ()));
+  position.set (convert_position (get_position ().matrix_value (), old_units,
+                                  get_units (), screen_size_pixels ()), false);
 }
+
+/*
+%!test
+%! figure (1, "visible", false)
+%! set (0, "units", "pixels")
+%! rsz = get (0, "screensize");
+%! set (gcf (), "units", "pixels")
+%! fsz = get (gcf (), "position");
+%! set (gcf (), "units", "normalized")
+%! assert (get (gcf (), "position"), (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]))
+*/
 
 std::string
 figure::properties::get_title (void) const
@@ -5808,12 +5992,6 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
         }
       lims = tmp_lims;
     }
-  else
-    {
-      // adjust min and max tics if they are out of limits
-      i1 = static_cast<int> (std::ceil (lo / tick_sep));
-      i2 = static_cast<int> (gnulib::floor (hi / tick_sep));
-    }
 
   Matrix tmp_ticks (1, i2-i1+1);
   for (int i = 0; i <= i2-i1; i++)
@@ -5832,7 +6010,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
 
   ticks = tmp_ticks;
 
-  int n = is_logscale ? 9 : 4;
+  int n = is_logscale ? 8 : 4;
   Matrix tmp_mticks (1, n * (tmp_ticks.numel () - 1));
 
   for (int i = 0; i < tmp_ticks.numel ()-1; i++)
@@ -6395,6 +6573,58 @@ double force_in_range (const double x, const double lower, const double upper)
     { return x; }
 }
 
+static Matrix
+do_zoom (double val, double factor, const Matrix& lims, bool is_logscale)
+{
+  Matrix new_lims = lims;
+
+  double lo = lims(0);
+  double hi = lims(1);
+
+  bool is_negative = lo < 0 && hi < 0;
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = hi;
+          hi = std::log10 (-lo);
+          lo = std::log10 (-tmp);
+          val = std::log10 (-val);
+        }
+      else
+        {
+          hi = std::log10 (hi);
+          lo = std::log10 (lo);
+          val = std::log10 (val);
+        }
+    }
+
+  // Perform the zooming
+  lo = val + factor * (lo - val);
+  hi = val + factor * (hi - val);
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = -std::pow (10.0, hi);
+          hi = -std::pow (10.0, lo);
+          lo = tmp;
+        }
+      else
+        {
+          lo = std::pow (10.0, lo);
+          hi = std::pow (10.0, hi);
+        }
+    }
+
+  new_lims(0) = lo;
+  new_lims(1) = hi;
+
+  return new_lims;
+}
+
 void
 axes::properties::zoom_about_point (double x, double y, double factor,
                                     bool push_to_zoom_stack)
@@ -6417,11 +6647,8 @@ axes::properties::zoom_about_point (double x, double y, double factor,
   double max_neg_y = -octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
-  // Perform the zooming
-  xlims (0) = x + factor * (xlims (0) - x);
-  xlims (1) = x + factor * (xlims (1) - x);
-  ylims (0) = y + factor * (ylims (0) - y);
-  ylims (1) = y + factor * (ylims (1) - y);
+  xlims = do_zoom (x, factor, xlims, xscale_is ("log"));
+  ylims = do_zoom (y, factor, ylims, yscale_is ("log"));
 
   zoom (xlims, ylims, push_to_zoom_stack);
 }
@@ -6447,8 +6674,68 @@ axes::properties::zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_st
   update_ylim (false);
 }
 
+static Matrix
+do_translate (double x0, double x1, const Matrix& lims, bool is_logscale)
+{
+  Matrix new_lims = lims;
+
+  double lo = lims(0);
+  double hi = lims(1);
+
+  bool is_negative = lo < 0 && hi < 0;
+
+  double delta;
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = hi;
+          hi = std::log10 (-lo);
+          lo = std::log10 (-tmp);
+          x0 = -x0;
+          x1 = -x1;
+        }
+      else
+        {
+          hi = std::log10 (hi);
+          lo = std::log10 (lo);
+        }
+
+      delta = std::log10 (x0) - std::log10 (x1);
+    }
+  else
+    {
+      delta = x0 - x1;
+    }
+
+  // Perform the translation
+  lo += delta;
+  hi += delta;
+
+  if (is_logscale)
+    {
+      if (is_negative)
+        {
+          double tmp = -std::pow (10.0, hi);
+          hi = -std::pow (10.0, lo);
+          lo = tmp;
+        }
+      else
+        {
+          lo = std::pow (10.0, lo);
+          hi = std::pow (10.0, hi);
+        }
+    }
+
+  new_lims(0) = lo;
+  new_lims(1) = hi;
+
+  return new_lims;
+}
+
 void
-axes::properties::translate_view (double delta_x, double delta_y)
+axes::properties::translate_view (double x0, double x1, double y0, double y1)
 {
   // FIXME: Do we need error checking here?
   Matrix xlims = get_xlim ().matrix_value ();
@@ -6468,10 +6755,8 @@ axes::properties::translate_view (double delta_x, double delta_y)
   double max_neg_y = -octave_Inf;
   get_children_limits (miny, maxy, min_pos_y, max_neg_y, kids, 'y');
 
-  xlims (0) += delta_x;
-  xlims (1) += delta_x;
-  ylims (0) += delta_y;
-  ylims (1) += delta_y;
+  xlims = do_translate (x0, x1, xlims, xscale_is ("log"));
+  ylims = do_translate (y0, y1, ylims, yscale_is ("log"));
 
   zoom (xlims, ylims, false);
 }

@@ -81,30 +81,34 @@ function [b, r] = deconv (y, a)
 
 endfunction
 
+
 %!test
 %! [b, r] = deconv ([3, 6, 9, 9], [1, 2, 3]);
-%! assert(all (all (b == [3, 0])) && all (all (r == [0, 0, 0, 9])));
+%! assert (b, [3, 0]);
+%! assert (r, [0, 0, 0, 9]);
 
 %!test
 %! [b, r] = deconv ([3, 6], [1, 2, 3]);
-%! assert(b == 0 && all (all (r == [3, 6])));
+%! assert (b, 0);
+%! assert (r, [3, 6]);
 
 %!test
 %! [b, r] = deconv ([3, 6], [1; 2; 3]);
-%! assert(b == 0 && all (all (r == [3, 6])));
+%! assert (b, 0);
+%! assert (r, [3, 6]);
 
 %!test
 %! [b,r] = deconv ([3; 6], [1; 2; 3]);
-%! assert (b == 0 && all (all (r == [3; 6])))
+%! assert (b, 0);
+%! assert (r, [3; 6]);
 
 %!test
 %! [b, r] = deconv ([3; 6], [1, 2, 3]);
-%! assert (b == 0 && all (all (r == [3; 6])))
+%! assert (b, 0);
+%! assert (r, [3; 6]);
 
-%!test
-%! assert (deconv ((1:3)',[1, 1]), [1; 1])
+%!assert (deconv ((1:3)',[1, 1]), [1; 1])
 
-%!error [b, r] = deconv ([3, 6], [1, 2; 3, 4]);
-
-%!error [b, r] = deconv ([3, 6; 1, 2], [1, 2, 3]);
+%!error [b, r] = deconv ([3, 6], [1, 2; 3, 4])
+%!error [b, r] = deconv ([3, 6; 1, 2], [1, 2, 3])
 

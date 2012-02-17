@@ -24,8 +24,8 @@
 ##
 ## @example
 ## @group
-## a = myclass (@dots{})
-## b = myclass (@dots{})
+## a = myclass (@dots{});
+## b = myclass (@dots{});
 ## c = a : b
 ## @end group
 ## @end example
@@ -38,6 +38,7 @@ function r = colon (varargin)
     error ("colon: not defined for class \"%s\"", class(varargin{1}));
   endif
 endfunction
+
 
 %!error colon (1)
 

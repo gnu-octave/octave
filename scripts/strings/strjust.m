@@ -32,11 +32,11 @@
 ## @example
 ## @group
 ## strjust (["a"; "ab"; "abc"; "abcd"])
-##      @result{} ans =
-##            a
-##           ab
-##          abc
-##         abcd
+##      @result{}
+##         "   a"
+##         "  ab"
+##         " abc"
+##         "abcd"
 ## @end group
 ## @end example
 ## @seealso{deblank, strrep, strtrim, untabify}
@@ -97,16 +97,16 @@ endfunction
 
 
 %!assert (strjust (["a"; "ab"; "abc"; "abcd"]),
-%!        ["   a";"  ab"; " abc"; "abcd"]);
+%!        ["   a";"  ab"; " abc"; "abcd"])
 %!assert (strjust ([" a"; "  ab"; "abc"; "abcd"], "left"),
-%!        ["a   "; "ab  "; "abc "; "abcd"]);
+%!        ["a   "; "ab  "; "abc "; "abcd"])
 %!assert (strjust (["a"; "ab"; "abc"; "abcd"], "CENTER"),
-%!        [" a  "; " ab"; "abc "; "abcd"]);
-%!assert (strjust (["";""]), "");
+%!        [" a  "; " ab"; "abc "; "abcd"])
+%!assert (strjust (["";""]), "")
 
 %% Test input validation
 %!error <Invalid call to strjust> strjust ()
 %!error <Invalid call to strjust> strjust (["a";"ab"], "center", 1)
-%!error <S must be a string> strjust (ones(3,3))
-%!error <S must be a string> strjust (char (ones(3,3,3)))
+%!error <S must be a string> strjust (ones (3,3))
+%!error <S must be a string> strjust (char (ones (3,3,3)))
 

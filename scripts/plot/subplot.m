@@ -56,7 +56,7 @@
 ## the grid locations specified.  The first demo illustrates an example:
 ##
 ## @example
-## @code{demo ("subplot", 1)}
+## demo ("subplot", 1)
 ## @end example
 ##
 ## @end ifnottex
@@ -327,6 +327,7 @@ function pos = subplot_position (rows, cols, index, position_property)
 
 endfunction
 
+
 %!demo
 %! clf;
 %! r = 3;
@@ -351,13 +352,13 @@ endfunction
 %! clf;
 %! x = 0:1;
 %! for n = 1:4
-%!   subplot (2, 2, n, 'align');
+%!   subplot (2,2,n, 'align');
 %!   plot (x, x);
 %!   xlabel (sprintf ('xlabel (2,2,%d)', n));
 %!   ylabel (sprintf ('ylabel (2,2,%d)', n));
 %!   title (sprintf ('title (2,2,%d)', n));
 %! end
-%! subplot (1, 2, 1, 'align');
+%! subplot (1,2,1, 'align');
 %! plot (x, x);
 %! xlabel ('xlabel (1,2,1)');
 %! ylabel ('ylabel (1,2,1)');

@@ -81,6 +81,7 @@ function [theta, r, z] = cart2pol (x, y, z)
 
 endfunction
 
+
 %!test
 %! x = [0, 1, 2];
 %! y = 0;
@@ -92,16 +93,16 @@ endfunction
 %! x = [0, 1, 2];
 %! y = [0, 1, 2];
 %! [t, r] = cart2pol (x, y);
-%! assert (t, [0, pi/4, pi/4], sqrt(eps));
-%! assert (r, sqrt(2)*[0, 1, 2], sqrt(eps));
+%! assert (t, [0, pi/4, pi/4], sqrt (eps));
+%! assert (r, sqrt (2)*[0, 1, 2], sqrt (eps));
 
 %!test
 %! x = [0, 1, 2];
 %! y = [0, 1, 2];
 %! z = [0, 1, 2];
 %! [t, r, z2] = cart2pol (x, y, z);
-%! assert (t, [0, pi/4, pi/4], sqrt(eps));
-%! assert (r, sqrt(2)*[0, 1, 2], sqrt(eps));
+%! assert (t, [0, pi/4, pi/4], sqrt (eps));
+%! assert (r, sqrt (2)*[0, 1, 2], sqrt (eps));
 %! assert (z, z2);
 
 %!test
@@ -134,10 +135,10 @@ endfunction
 %!test
 %! C = [0, 0; 1, 1; 2, 2];
 %! P = [0, 0; pi/4, sqrt(2); pi/4, 2*sqrt(2)];
-%! assert (cart2pol (C), P, sqrt(eps));
+%! assert (cart2pol (C), P, sqrt (eps));
 
 %!test
 %! C = [0, 0, 0; 1, 1, 1; 2, 2, 2];
 %! P = [0, 0, 0; pi/4, sqrt(2), 1; pi/4, 2*sqrt(2), 2];
-%! assert (cart2pol (C), P, sqrt(eps));
+%! assert (cart2pol (C), P, sqrt (eps));
 

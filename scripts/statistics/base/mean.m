@@ -127,25 +127,25 @@ endfunction
 %! x = -10:10;
 %! y = x';
 %! z = [y, y+10];
-%! assert(mean (x) == 0);
-%! assert(mean (y) == 0);
-%! assert(mean (z) == [0, 10]);
+%! assert (mean (x), 0);
+%! assert (mean (y), 0);
+%! assert (mean (z), [0, 10]);
 
-%!assert(mean (magic(3), 1), [5, 5, 5]);
-%!assert(mean (magic(3), 2), [5; 5; 5]);
-%!assert(mean ([2 8], 'g'), 4);
-%!assert(mean ([4 4 2], 'h'), 3);
-%!assert(mean (logical ([1 0 1 1])), 0.75);
-%!assert(mean (single ([1 0 1 1])), single (0.75));
+%!assert (mean (magic (3), 1), [5, 5, 5])
+%!assert (mean (magic (3), 2), [5; 5; 5])
+%!assert (mean ([2 8], "g"), 4)
+%!assert (mean ([4 4 2], "h"), 3)
+%!assert (mean (logical ([1 0 1 1])), 0.75)
+%!assert (mean (single ([1 0 1 1])), single (0.75))
 
 %% Test input validation
-%!error mean ();
-%!error mean (1, 2, 3, 4);
-%!error mean ({1:5});
-%!error mean (1, 2, 3);
-%!error mean (1, ones(2,2));
-%!error mean (1, 1.5);
-%!error mean (1, 0);
-%!error mean (1, 3);
-%!error mean (1, 'b');
+%!error mean ()
+%!error mean (1, 2, 3, 4)
+%!error mean ({1:5})
+%!error mean (1, 2, 3)
+%!error mean (1, ones(2,2))
+%!error mean (1, 1.5)
+%!error mean (1, 0)
+%!error mean (1, 3)
+%!error mean (1, "b")
 

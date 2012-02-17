@@ -50,8 +50,8 @@
 ## @smallexample
 ## function [] = isofinish (p)
 ##   set (gca, "PlotBoxAspectRatioMode", "manual", ...
-##             "PlotBoxAspectRatio",[1 1 1]);
-##   set (p, "VertexNormals", -get(p,"VertexNormals")); # Revert normals
+##             "PlotBoxAspectRatio", [1 1 1]);
+##   set (p, "VertexNormals", -get (p,"VertexNormals")); # Revert normals
 ##   set (p, "FaceColor", "interp");
 ##   ## set (p, "FaceLighting", "phong");
 ##   ## light ("Position", [1 1 5]); # Available with JHandles
@@ -64,27 +64,27 @@
 ## c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
 ## figure (); # Open another figure window
 ##
-## subplot (2, 2, 1); view (-38, 20);
+## subplot (2,2,1); view (-38, 20);
 ## [f, v, cdat] = isosurface (x, y, z, c, iso, y);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
+## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
 ##            "FaceColor", "interp", "EdgeColor", "none");
 ## isofinish (p); ## Call user function isofinish
 ##
-## subplot (2, 2, 2); view (-38, 20);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
+## subplot (2,2,2); view (-38, 20);
+## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
 ##            "FaceColor", "interp", "EdgeColor", "none");
 ## isonormals (x, y, z, c, p); # Directly modify patch
 ## isofinish (p);
 ##
-## subplot (2, 2, 3); view (-38, 20);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
+## subplot (2,2,3); view (-38, 20);
+## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
 ##            "FaceColor", "interp", "EdgeColor", "none");
 ## n = isonormals (x, y, z, c, v); # Compute normals of isosurface
 ## set (p, "VertexNormals", n);    # Manually set vertex normals
 ## isofinish (p);
 ##
-## subplot (2, 2, 4); view (-38, 20);
-## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, \
+## subplot (2,2,4); view (-38, 20);
+## p = patch ("Faces", f, "Vertices", v, "FaceVertexCData", cdat, ...
 ##            "FaceColor", "interp", "EdgeColor", "none");
 ## isonormals (x, y, z, c, v, "negate"); # Use reverse directly
 ## isofinish (p);
@@ -148,16 +148,18 @@ function varargout = isonormals(varargin)
   endswitch
 endfunction
 
+
 %!test
-%!  [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
-%!  c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
-%!  [f, v, cdat] = isosurface (x, y, z, c, .4, y);
-%!  n = isonormals (x, y, z, c, v);
-%!  assert (size (v), size (n));
+%! [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
+%! c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
+%! [f, v, cdat] = isosurface (x, y, z, c, .4, y);
+%! n = isonormals (x, y, z, c, v);
+%! assert (size (v), size (n));
 %!test
-%!  [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
-%!  c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
-%!  [f, v, cdat] = isosurface (x, y, z, c, .4, y);
-%!  np = isonormals (x, y, z, c, v);
-%!  nn = isonormals (x, y, z, c, v, "negate");
-%!  assert (all (np == -nn));
+%! [x, y, z] = meshgrid (0:.5:2, 0:.5:2, 0:.5:2);
+%! c = abs ((x-.5).^2 + (y-.5).^2 + (z-.5).^2);
+%! [f, v, cdat] = isosurface (x, y, z, c, .4, y);
+%! np = isonormals (x, y, z, c, v);
+%! nn = isonormals (x, y, z, c, v, "negate");
+%! assert (np, -nn);
+

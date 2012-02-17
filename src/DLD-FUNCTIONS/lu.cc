@@ -69,7 +69,7 @@ DEFUN_DLD (lu, args, nargout,
 @deftypefnx {Loadable Function} {[@var{L}, @var{U}, @var{P}, @var{Q}, @var{R}] =} lu (@var{S})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} lu (@var{S}, @var{thres})\n\
 @deftypefnx {Loadable Function} {@var{y} =} lu (@dots{})\n\
-@deftypefnx {Loadable Function} {[@dots{}] =} lu (@dots{}, 'vector')\n\
+@deftypefnx {Loadable Function} {[@dots{}] =} lu (@dots{}, \"vector\")\n\
 @cindex LU decomposition\n\
 Compute the LU@tie{}decomposition of @var{A}.  If @var{A} is full\n\
 subroutines from\n\
@@ -125,7 +125,7 @@ element defines the pivoting tolerance for the unsymmetric @sc{umfpack}\n\
 pivoting strategy and the second for the symmetric strategy.  By default,\n\
 the values defined by @code{spparms} are used ([0.1, 0.001]).\n\
 \n\
-Given the string argument 'vector', @code{lu} returns the values of @var{P}\n\
+Given the string argument \"vector\", @code{lu} returns the values of @var{P}\n\
 and @var{Q} as vector values, such that for full matrix, @code{@var{A}\n\
 (@var{P},:) = @var{L} * @var{U}}, and @code{@var{R}(@var{P},:) * @var{A}\n\
 (:, @var{Q}) = @var{L} * @var{U}}.\n\
@@ -612,7 +612,7 @@ Note that if @var{L}, @var{U}, @var{P} is a pivoted LU@tie{}factorization\n\
 as obtained by @code{lu}:\n\
 \n\
 @example\n\
-  [@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
+[@var{L}, @var{U}, @var{P}] = lu (@var{A});\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -620,14 +620,14 @@ then a factorization of @xcode{@var{A}+@var{x}*@var{y}.'} can be obtained\n\
 either as\n\
 \n\
 @example\n\
-  [@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\
+[@var{L1}, @var{U1}] = lu (@var{L}, @var{U}, @var{P}*@var{x}, @var{y})\n\
 @end example\n\
 \n\
 @noindent\n\
 or\n\
 \n\
 @example\n\
-  [@var{L1}, @var{U1}, @var{P1}] = lu (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
+[@var{L1}, @var{U1}, @var{P1}] = lu (@var{L}, @var{U}, @var{P}, @var{x}, @var{y})\n\
 @end example\n\
 \n\
 The first form uses the unpivoted algorithm, which is faster, but less\n\

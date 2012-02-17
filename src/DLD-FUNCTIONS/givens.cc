@@ -56,8 +56,8 @@ For example:\n\
 @example\n\
 @group\n\
 givens (1, 1)\n\
-     @result{}   0.70711   0.70711\n\
-         -0.70711   0.70711\n\
+   @result{}   0.70711   0.70711\n\
+       -0.70711   0.70711\n\
 @end group\n\
 @end example\n\
 @end deftypefn")

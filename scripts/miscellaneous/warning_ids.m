@@ -18,6 +18,7 @@
 
 ## -*- texinfo -*-
 ## @cindex warning ids
+##
 ## @table @code
 ## @item Octave:abbreviated-property-match
 ## By default, the @code{Octave:abbreviated-property-match} warning is enabled.
@@ -65,7 +66,7 @@
 ##
 ## @example
 ## @group
-## while (c = getc())
+## while (c = getc ())
 ##   @dots{}
 ## @end group
 ## @end example
@@ -93,7 +94,7 @@
 ##
 ## @example
 ## @group
-## while ((c = getc()))
+## while ((c = getc ()))
 ##   @dots{}
 ## @end group
 ## @end example
@@ -213,7 +214,7 @@
 ## @example
 ## @group
 ## [ "f", 111, 111 ]
-##      @result{} "foo"
+## @result{} "foo"
 ## @end group
 ## @end example
 ##
@@ -231,7 +232,7 @@
 ##
 ## @example
 ## @group
-## do_braindead_shortcircuit_evaluation(1)
+## do_braindead_shortcircuit_evaluation (1)
 ## @end group
 ## @end example
 ##
@@ -295,7 +296,7 @@
 ## @example
 ## @group
 ## "abc" + 0
-##      @result{} 97 98 99
+## @result{} 97 98 99
 ## @end group
 ## @end example
 ##
@@ -320,5 +321,7 @@ function warning_ids ()
   help ("warning_ids");
 endfunction
 
+
 ## Remove from test statistics.  No real tests possible
 %!assert (1)
+

@@ -23,7 +23,7 @@
 ##
 ## @deftypefn  {Function File} {@var{xl} =} xlim ()
 ## @deftypefnx {Function File} {} xlim (@var{xl})
-## @deftypefnx {Function File} {@var{m} =} xlim ('mode')
+## @deftypefnx {Function File} {@var{m} =} xlim ("mode")
 ## @deftypefnx {Function File} {} xlim (@var{m})
 ## @deftypefnx {Function File} {} xlim (@var{h}, @dots{})
 ## Get or set the limits of the x-axis of the current plot.  Called without
@@ -32,8 +32,8 @@
 ## to this value.
 ##
 ## The current mode for calculation of the x-axis can be returned with a
-## call @code{xlim ('mode')}, and can be either 'auto' or 'manual'.  The
-## current plotting mode can be set by passing either 'auto' or 'manual'
+## call @code{xlim ("mode")}, and can be either "auto" or "manual".  The
+## current plotting mode can be set by passing either "auto" or "manual"
 ## as the argument.
 ##
 ## If passed a handle as the first argument, then operate on this handle

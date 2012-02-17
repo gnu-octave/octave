@@ -71,27 +71,27 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 2 3];
 %! y = [0 1/4 3/4 1 1];
-%!assert(binocdf (x, 2*ones(1,5), 0.5*ones(1,5)), y);
-%!assert(binocdf (x, 2, 0.5*ones(1,5)), y);
-%!assert(binocdf (x, 2*ones(1,5), 0.5), y);
-%!assert(binocdf (x, 2*[0 -1 NaN 1.1 1], 0.5), [0 NaN NaN NaN 1]);
-%!assert(binocdf (x, 2, 0.5*[0 -1 NaN 3 1]), [0 NaN NaN NaN 1]);
-%!assert(binocdf ([x(1:2) NaN x(4:5)], 2, 0.5), [y(1:2) NaN y(4:5)]);
+%!assert (binocdf (x, 2*ones (1,5), 0.5*ones (1,5)), y)
+%!assert (binocdf (x, 2, 0.5*ones (1,5)), y)
+%!assert (binocdf (x, 2*ones (1,5), 0.5), y)
+%!assert (binocdf (x, 2*[0 -1 NaN 1.1 1], 0.5), [0 NaN NaN NaN 1])
+%!assert (binocdf (x, 2, 0.5*[0 -1 NaN 3 1]), [0 NaN NaN NaN 1])
+%!assert (binocdf ([x(1:2) NaN x(4:5)], 2, 0.5), [y(1:2) NaN y(4:5)])
 
 %% Test class of input preserved
-%!assert(binocdf ([x, NaN], 2, 0.5), [y, NaN]);
-%!assert(binocdf (single([x, NaN]), 2, 0.5), single([y, NaN]));
-%!assert(binocdf ([x, NaN], single(2), 0.5), single([y, NaN]));
-%!assert(binocdf ([x, NaN], 2, single(0.5)), single([y, NaN]));
+%!assert (binocdf ([x, NaN], 2, 0.5), [y, NaN])
+%!assert (binocdf (single ([x, NaN]), 2, 0.5), single ([y, NaN]))
+%!assert (binocdf ([x, NaN], single (2), 0.5), single ([y, NaN]))
+%!assert (binocdf ([x, NaN], 2, single (0.5)), single ([y, NaN]))
 
 %% Test input validation
 %!error binocdf ()
 %!error binocdf (1)
 %!error binocdf (1,2)
 %!error binocdf (1,2,3,4)
-%!error binocdf (ones(3),ones(2),ones(2))
-%!error binocdf (ones(2),ones(3),ones(2))
-%!error binocdf (ones(2),ones(2),ones(3))
+%!error binocdf (ones (3), ones (2), ones (2))
+%!error binocdf (ones (2), ones (3), ones (2))
+%!error binocdf (ones (2), ones (2), ones (3))
 %!error binocdf (i, 2, 2)
 %!error binocdf (2, i, 2)
 %!error binocdf (2, 2, i)

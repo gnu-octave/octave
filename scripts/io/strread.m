@@ -34,6 +34,7 @@
 ## The string @var{format} describes how the words in @var{str} should be
 ## parsed.
 ## It may contain any combination of the following specifiers:
+##
 ## @table @code
 ## @item %s
 ## The word is parsed as a string.
@@ -84,6 +85,7 @@
 ##
 ## Optional numeric argument @var{format_repeat} can be used for
 ## limiting the number of items read:
+##
 ## @table @asis
 ## @item -1
 ## (default) read all of the string until the end.
@@ -91,7 +93,6 @@
 ## @item N
 ## Read N times @var{nargout} items.  0 (zero) is an acceptable
 ## value for @var{format_repeat}.
-##
 ## @end table
 ##
 ## The behavior of @code{strread} can be changed via property-value
@@ -101,6 +102,7 @@
 ## @item "commentstyle"
 ## Parts of @var{str} are considered comments and will be skipped.
 ## @var{value} is the comment style and can be any of the following.
+##
 ## @itemize
 ## @item "shell"
 ## Everything from @code{#} characters to the nearest end-of-line is skipped.
@@ -439,14 +441,13 @@ function varargout = strread (str, format = "%f", varargin)
       iwrd = 1; iwrdp = 0; iwrdl = length (words{iwrd});
       for ii = 1:numel (fmt_words)
 
+        nxt_wrd = 0;
+
         if (idf(ii))
           ## Literal expected
           if (isempty (strfind (fmt_words{ii}, words(iwrd))))
             ## Not found in current word; supposed to be in next word
-            ++iwrd; iwrdp = 0;
-            if (ii < numel (fmt_words))
-              iwrdl = length (words{iwrd});
-            endif
+            nxt_wrd = 1;
           else
             ## Found it in current word.  Subtract literal length
             iwrdp += length (fmt_words{ii});
@@ -455,34 +456,28 @@ function varargout = strread (str, format = "%f", varargin)
               warning ("strread: literal '%s' (fmt spec # %d) does not match data", ...
                 fmt_words{ii}, ii);
               ## Word assumed to be completely "used up". Next word
-              ++iwrd; iwrdp = 0;
-              if (ii < numel (fmt_words))
-                iwrdl = length (words{iwrd});
-              endif
+              nxt_wrd = 1;
             elseif (iwrdp == iwrdl)
               ## Word completely "used up". Next word
-              ++iwrd; iwrdp = 0;
-              if (ii < numel (fmt_words))
-                iwrdl = length (words{iwrd});
-              endif
+              nxt_wrd = 1;
             endif
           endif
 
         elseif (idg(ii))
           ## Fixed width specifier (%N or %*N): read just a part of word
-            iwrdp += floor ...
-             (str2double (fmt_words{ii}(regexp(fmt_words{ii}, '\d') : end-1)));
-            if (iwrdp > iwrdl)
-              ## Match error. Field extends beyond word boundary.
-              warning  ...
-              ("strread: field width '%s' (fmt spec # %d) extends beyond actual word limit", ...
-                 fmt_words{ii}, ii);
-              ## Assume word to be completely "used up".  Next word
-              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
-            elseif (iwrdp == iwrdl)
-              ## Word completely "used up".  Next word
-              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
-            endif
+          iwrdp += floor ...
+           (str2double (fmt_words{ii}(regexp(fmt_words{ii}, '\d') : end-1)));
+          if (iwrdp > iwrdl)
+            ## Match error. Field extends beyond word boundary.
+            warning  ...
+            ("strread: field width '%s' (fmt spec # %d) extends beyond actual word limit", ...
+               fmt_words{ii}, ii);
+            ## Assume word to be completely "used up".  Next word
+            nxt_wrd = 1;
+          elseif (iwrdp == iwrdl)
+            ## Word completely "used up".  Next word
+            nxt_wrd = 1;
+          endif
 
         else
           ## A simple format conv. specifier. Either (1) uses rest of word, or
@@ -492,20 +487,25 @@ function varargout = strread (str, format = "%f", varargin)
             ## Next fmt_word is a literal...
             if (! index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}))
               ## ...but not found in current word => field uses rest of word
-              ++iwrd; iwrdp = 0; iwrdl = length (words{iwrd});
+              nxt_wrd = 1;
             else
               ## ..or it IS found.  Add inferred width of current conversion field
               iwrdp += index (words{iwrd}(iwrdp+1:end), fmt_words{ii+1}) - 1;
             endif
           elseif (iwrdp < iwrdl)
             ## No bordering literal to the right => field occupies (rest of) word
-            ++iwrd; iwrdp = 0;
-            if (ii < numel (fmt_words))
-              iwrdl = length (words{iwrd});
-            endif
+            nxt_wrd = 1;
           endif
 
         endif
+
+        if (nxt_wrd)
+          ++iwrd; iwrdp = 0;
+          if (ii < numel (fmt_words))
+            iwrdl = length (words{iwrd});
+          endif
+        endif
+
       endfor
       ## Done
       words_period = max (iwrd - 1, 1);
@@ -670,7 +670,7 @@ function varargout = strread (str, format = "%f", varargin)
               k++;
             case "s"
               if (pad_out)
-                data(end+1:num_lines) = {""}
+                data(end+1:num_lines) = {""};
               endif
               varargout{k} = strtrunc (data, swidth)';
               k++;
@@ -738,29 +738,29 @@ endfunction
 %! assert (b, 2);
 
 %!test
-%! str = '';
+%! str = "";
 %! a = rand (10, 1);
 %! b = char (randi ([65, 85], 10, 1));
 %! for k = 1:10
 %!   str = sprintf ('%s %.6f %s\n', str, a(k), b(k));
 %! endfor
-%! [aa, bb] = strread (str, '%f %s');
+%! [aa, bb] = strread (str, "%f %s");
 %! assert (a, aa, 1e-6);
 %! assert (cellstr (b), bb);
 
 %!test
-%! str = '';
+%! str = "";
 %! a = rand (10, 1);
 %! b = char (randi ([65, 85], 10, 1));
 %! for k = 1:10
 %!   str = sprintf ('%s %.6f %s\n', str, a(k), b(k));
 %! endfor
-%! aa = strread (str, '%f %*s');
+%! aa = strread (str, "%f %*s");
 %! assert (a, aa, 1e-6);
 
 %!test
 %! str = sprintf ('/* this is\nacomment*/ 1 2 3');
-%! a = strread (str, '%f', 'commentstyle', 'c');
+%! a = strread (str, "%f", "commentstyle", "c");
 %! assert (a, [1; 2; 3]);
 
 %!test
@@ -784,9 +784,9 @@ endfunction
 %!test
 %! # Bug #33536
 %! [a, b, c] = strread ("1,,2", "%s%s%s", "delimiter", ",");
-%! assert (a{1}, '1');
-%! assert (b{1}, '');
-%! assert (c{1}, '2');
+%! assert (a{1}, "1");
+%! assert (b{1}, "");
+%! assert (c{1}, "2");
 
 %!test
 %! # Bug #33536
@@ -795,17 +795,17 @@ endfunction
 
 %!test
 %! dat = "Data file.\r\n=  =  =  =  =\r\nCOMPANY    : <Company name>\r\n";
-%! a = strread (dat, "%s", 'delimiter', "\n", 'whitespace', '', 'endofline', "\r\n");
+%! a = strread (dat, "%s", "delimiter", "\n", "whitespace", "", "endofline", "\r\n");
 %! assert (a{2}, "=  =  =  =  =");
 %! assert (double (a{3}(end-5:end)), [32 110 97 109 101 62]);
 
 %!test
-%! [a, b, c, d] = strread ("1,2,3,,5,6", "%d%f%d%f", 'delimiter', ',');
+%! [a, b, c, d] = strread ("1,2,3,,5,6", "%d%f%d%f", "delimiter", ",");
 %! assert (c, int32 (3));
 %! assert (d, NaN);
 
 %!test
-%! [a, b, c, d] = strread ("1,2,3,,5,6\n", "%d%d%f%d", 'delimiter', ',');
+%! [a, b, c, d] = strread ("1,2,3,,5,6\n", "%d%d%f%d", "delimiter", ",");
 %! assert (c, [3; NaN]);
 %! assert (d, int32 ([0; 0]));
 
@@ -817,12 +817,12 @@ endfunction
 %1 assert (c, 0.3567);
 
 %!test
-%! [a, b] = strread('0.41 8.24 3.57 6.24 9.27', "%f%f", 2, 'delimiter', ' ');
+%! [a, b] = strread ("0.41 8.24 3.57 6.24 9.27", "%f%f", 2, "delimiter", " ");
 %1 assert (a, [0.41; 3.57]);
 
 %!test
 %! # TreatAsEmpty
-%! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", 'delimiter', ',', 'TreatAsEmpty', 'NN');
+%! [a, b, c, d] = strread ("1,2,3,NN,5,6\n", "%d%d%d%f", "delimiter", ",", "TreatAsEmpty", "NN");
 %! assert (c, int32 ([3; 0]));
 %! assert (d, [NaN; NaN]);
 
@@ -831,13 +831,13 @@ endfunction
 %! str = "Text1Text2Text\nText398Text4Text\nText57Text";
 %! [a, b] = strread (str, "Text%dText%1sText");
 %! assert (a, int32 ([1; 398; 57]));
-%! assert (b(1:2), {'2'; '4'});
+%! assert (b(1:2), {"2"; "4"});
 %! assert (isempty (b{3}), true);
 
 %% MultipleDelimsAsOne
 %!test
 %! str = "11, 12, 13,, 15\n21,, 23, 24, 25\n,, 33, 34, 35";
-%! [a b c d] = strread (str, "%f %f %f %f", 'delimiter', ',', 'multipledelimsasone', 1, 'endofline', "\n");
+%! [a b c d] = strread (str, "%f %f %f %f", "delimiter", ",", "multipledelimsasone", 1, "endofline", "\n");
 %! assert (a', [11, 21, NaN]);
 %! assert (b', [12, 23, 33]);
 %! assert (c', [13, 24, 34]);
@@ -888,3 +888,4 @@ endfunction
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
+

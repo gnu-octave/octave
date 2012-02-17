@@ -222,10 +222,7 @@ public:
     {
       Matrix retval (m.rows (), m.cols ());
 
-      if (m.any_element_is_positive ())
-        do_scale (m.data (), retval.fortran_vec (), m.numel ());
-      else
-        do_neg_scale (m.data (), retval.fortran_vec (), m.numel ());
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
 
       return retval;
     }
@@ -234,10 +231,7 @@ public:
     {
       NDArray retval (m.dims ());
 
-      if (m.any_element_is_positive ())
-        do_scale (m.data (), retval.fortran_vec (), m.numel ());
-      else
-        do_neg_scale (m.data (), retval.fortran_vec (), m.numel ());
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
 
       return retval;
     }
@@ -255,13 +249,47 @@ private:
   void do_scale (const double *src, double *dest, int n) const
     {
       for (int i = 0; i < n; i++)
-        dest[i] = log10(src[i]);
+        dest[i] = log10 (src[i]);
+    }
+};
+
+class neg_log_scaler : public base_scaler
+{
+public:
+  neg_log_scaler (void) { }
+
+  Matrix scale (const Matrix& m) const
+    {
+      Matrix retval (m.rows (), m.cols ());
+
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
+
+      return retval;
     }
 
-  void do_neg_scale (const double *src, double *dest, int n) const
+  NDArray scale (const NDArray& m) const
+    {
+      NDArray retval (m.dims ());
+
+      do_scale (m.data (), retval.fortran_vec (), m.numel ());
+
+      return retval;
+    }
+
+  double scale (double d) const
+    { return -log10 (-d); }
+
+  double unscale (double d) const
+    { return -pow (10.0, -d); }
+
+  base_scaler* clone (void) const
+    { return new neg_log_scaler (); }
+
+private:
+  void do_scale (const double *src, double *dest, int n) const
     {
       for (int i = 0; i < n; i++)
-        dest[i] = -log10(-src[i]);
+        dest[i] = -log10 (-src[i]);
     }
 };
 
@@ -275,7 +303,8 @@ public:
   scaler (const std::string& s)
     : rep (s == "log"
            ? new log_scaler ()
-           : (s == "linear" ? new lin_scaler () : new base_scaler ()))
+           : (s == "neglog" ? new neg_log_scaler ()
+              : (s == "linear" ? new lin_scaler () : new base_scaler ())))
     { }
 
   ~scaler (void) { delete rep; }
@@ -318,6 +347,8 @@ public:
 
       if (s == "log")
         rep = new log_scaler ();
+      else if (s == "neglog")
+        rep = new neg_log_scaler ();
       else if (s == "linear")
         rep = new lin_scaler ();
       else
@@ -2310,7 +2341,7 @@ private:
 
   ~gtk_manager (void) { }
 
-  static void create_instance (void);
+  OCTINTERP_API static void create_instance (void);
 
   static bool instance_ok (void)
   {
@@ -2331,7 +2362,7 @@ private:
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
 
-  static gtk_manager *instance;
+  OCTINTERP_API static gtk_manager *instance;
 
   // The name of the default toolkit.
   std::string dtk;
@@ -3123,6 +3154,9 @@ public:
   public:
     void remove_child (const graphics_handle& h);
 
+    Matrix get_boundingbox (bool internal = false,
+                            const Matrix& parent_pix_size = Matrix ()) const;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
@@ -3340,7 +3374,7 @@ public:
       callback_property closerequestfcn , "closereq"
       handle_property currentaxes S , graphics_handle ()
       array_property colormap , jet_colormap ()
-      radio_property paperorientation , "{portrait}|landscape|rotated"
+      radio_property paperorientation U , "{portrait}|landscape|rotated"
       color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
       array_property alphamap , Matrix (64, 1, 1)
       string_property currentcharacter r , ""
@@ -3663,7 +3697,7 @@ public:
     void zoom_about_point (double x, double y, double factor,
                            bool push_to_zoom_stack = true);
     void zoom (const Matrix& xl, const Matrix& yl, bool push_to_zoom_stack = true);
-    void translate_view (double delta_x, double delta_y);
+    void translate_view (double x0, double x1, double y0, double y1);
     void rotate_view (double delta_az, double delta_el);
     void unzoom (void);
     void clear_zoom_stack (void);
@@ -3814,9 +3848,32 @@ public:
     void init (void);
 
   private:
-    void update_xscale (void) { sx = get_xscale (); }
-    void update_yscale (void) { sy = get_yscale (); }
-    void update_zscale (void) { sz = get_zscale (); }
+
+    std::string
+    get_scale (const std::string& scale, const Matrix& lims)
+    {
+      std::string retval = scale;
+
+      if (scale == "log" && lims.numel () > 1 && lims(0) < 0 && lims(1) < 0)
+        retval = "neglog";
+
+      return retval;
+    }
+
+    void update_xscale (void)
+    {
+      sx = get_scale (get_xscale (), xlim.get ().matrix_value ());
+    }
+
+    void update_yscale (void)
+    {
+      sy = get_scale (get_yscale (), ylim.get ().matrix_value ());
+    }
+
+    void update_zscale (void)
+    {
+      sz = get_scale (get_zscale (), zlim.get ().matrix_value ());
+    }
 
     void update_view (void) { sync_positions (); }
     void update_dataaspectratio (void) { sync_positions (); }
@@ -3968,6 +4025,8 @@ public:
 
       fix_limits (xlim);
 
+      update_xscale ();
+
       if (do_clr_zoom)
         zoom_stack.clear ();
 
@@ -3983,6 +4042,8 @@ public:
 
       fix_limits (ylim);
 
+      update_yscale ();
+
       if (do_clr_zoom)
         zoom_stack.clear ();
 
@@ -3997,6 +4058,8 @@ public:
         calc_ticklabels (ztick, zticklabel, zscale.is ("log"));
 
       fix_limits (zlim);
+
+      update_zscale ();
 
       zoom_stack.clear ();
 

@@ -2033,15 +2033,15 @@ If @var{dim} is omitted, a value of 1 is assumed.\n\
 \n\
 @example\n\
 @group\n\
-A = cell2struct (@{'Peter', 'Hannah', 'Robert';\n\
+A = cell2struct (@{\"Peter\", \"Hannah\", \"Robert\";\n\
                    185, 170, 168@},\n\
-                 @{'Name','Height'@}, 1);\n\
+                 @{\"Name\",\"Height\"@}, 1);\n\
 A(1)\n\
-     @result{} ans =\n\
-        @{\n\
-          Name   = Peter\n\
-          Height = 185\n\
-        @}\n\
+   @result{}\n\
+      @{\n\
+        Name   = Peter\n\
+        Height = 185\n\
+      @}\n\
 \n\
 @end group\n\
 @end example\n\

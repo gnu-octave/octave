@@ -67,23 +67,24 @@ function y = detrend (x, p = 1)
 
 endfunction
 
-%!test
-%! N=32;
-%! x = (0:1:N-1)/N + 2;
-%! y = detrend(x);
-%! assert(all (all (abs (y) < 20*eps)));
 
 %!test
-%! N=32;
+%! N = 32;
+%! x = (0:1:N-1)/N + 2;
+%! y = detrend (x);
+%! assert (abs (y(:)) < 20*eps);
+
+%!test
+%! N = 32;
 %! t = (0:1:N-1)/N;
 %! x = t .* t + 2;
-%! y = detrend(x,2);
-%! assert(all (all (abs (y) < 30*eps)));
+%! y = detrend (x,2);
+%! assert (abs (y(:)) < 30*eps);
 
 %!test
-%! N=32;
+%! N = 32;
 %! t = (0:1:N-1)/N;
 %! x = [t;4*t-3]';
-%! y = detrend(x);
-%! assert(all (all (abs (y) < 20*eps)));
+%! y = detrend (x);
+%! assert (abs (y(:)) < 20*eps);
 

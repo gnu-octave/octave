@@ -39,8 +39,10 @@ function retval = is_valid_file_id (fid)
 
 endfunction
 
+
 %!assert (is_valid_file_id (stdout))
 %!assert (! is_valid_file_id ([1,2;3,4]))
 %!assert (! is_valid_file_id ("not_a_file_id"))
 %!assert (! is_valid_file_id (-1))
 %!assert (! is_valid_file_id (pi))
+

@@ -35,11 +35,14 @@ function z = realpow (x, y)
   endif
 endfunction
 
+
 %!assert (power (1:10, 0.5:0.5:5), realpow (1:10, 0.5:0.5:5))
 %!assert ([1:10] .^ [0.5:0.5:5], realpow (1:10, 0.5:0.5:5))
 %!test
 %! x = rand (10,10);
 %! y = randn (10,10);
-%! assert (x.^y,realpow(x,y))
-%!assert (realpow(1i,2),-1)
-%!error (realpow(-1, 1/2))
+%! assert (x.^y, realpow (x,y));
+%!assert (realpow (1i,2), -1)
+
+%!error <produced complex result> realpow (-1, 1/2)
+

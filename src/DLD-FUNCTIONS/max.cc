@@ -576,7 +576,7 @@ is unspecified it defaults to column-wise operation.  For example:\n\
 @example\n\
 @group\n\
 cummin ([5 4 6 2 3 1])\n\
-    @result{}  5  4  4  2  2  1\n\
+   @result{}  5  4  4  2  2  1\n\
 @end group\n\
 @end example\n\
 \n\
@@ -618,7 +618,7 @@ is unspecified it defaults to column-wise operation.  For example:\n\
 @example\n\
 @group\n\
 cummax ([1 3 2 6 4 5])\n\
-    @result{}  1  3  3  6  6  6\n\
+   @result{}  1  3  3  6  6  6\n\
 @end group\n\
 @end example\n\
 \n\

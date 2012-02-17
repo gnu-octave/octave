@@ -102,7 +102,7 @@ endfunction
 %! unwind_protect
 %!   a = logspace (-5, 1, 10);
 %!   b = logspace (-5, 1, 10);
-%!   semilogx (a, b)
+%!   semilogx (a, b);
 %!   assert (get (gca, "xscale"), "log");
 %!   assert (get (gca, "yscale"), "linear");
 %! unwind_protect_cleanup
@@ -112,11 +112,11 @@ endfunction
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   a = logspace (-5, 1, 10);
-%!   b =-logspace (-5, 1, 10);
+%!   a =-logspace (-5, 1, 10);
+%!   b = logspace (-5, 1, 10);
 %!   semilogx (a, b);
 %!   axis tight;
-%!   assert (all (get (gca, "ytick") < 0));
+%!   assert (all (get (gca, "xtick") < 0));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

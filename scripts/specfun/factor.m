@@ -82,14 +82,15 @@ function [x, n] = factor (q)
 
 endfunction
 
+
+%!assert (factor (1), 1)
 %!test
-%!  assert(factor(1),1);
-%!  for i=2:20
-%!     p = factor(i);
-%!     assert(prod(p),i);
-%!     assert(all(isprime(p)));
-%!     [p,n] = factor(i);
-%!     assert(prod(p.^n),i);
-%!     assert(all([0,p]!=[p,0]));
-%!  endfor
+%! for i = 2:20
+%!   p = factor (i);
+%!   assert (prod (p), i);
+%!   assert (all (isprime (p)));
+%!   [p,n] = factor (i);
+%!   assert (prod (p.^n), i);
+%!   assert (all ([0,p] != [p,0]));
+%! endfor
 

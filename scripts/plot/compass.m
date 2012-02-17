@@ -37,7 +37,7 @@
 ## @example
 ## @group
 ## a = toeplitz ([1;randn(9,1)], [1,randn(1,9)]);
-## compass (eig (a))
+## compass (eig (a));
 ## @end group
 ## @end example
 ##

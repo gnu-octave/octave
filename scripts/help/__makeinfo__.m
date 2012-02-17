@@ -41,7 +41,7 @@
 ## will be expanded to the text
 ##
 ## @example
-## See also: arg1, arg2@, ...
+## See also: arg1, arg2, ...
 ## @end example
 ##
 ## @noindent
@@ -86,10 +86,13 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     error ("__makeinfo__: third input argument must be a function handle");
   endif
 
-
-  ## It seems like makeinfo sometimes gets angry if the first character
-  ## on a line is a space, so we remove these.
-  text = strrep (text, "\n ", "\n");
+  ## Formatting in m-files has an extra space at the beginning of every line.
+  ## Remove these unwanted spaces if present.  First text char is "\n" delim.
+  if (text(2) == " ")
+    text = strrep (text, "\n ", "\n");
+  endif
+  ## Texinfo crashes if @end tex does not appear first on the line.
+  text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
 
   ## Handle @seealso macro
   see_also_pat = '@seealso *\{(.*)\}';
@@ -144,6 +147,7 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
     endif
   end_unwind_protect
 endfunction
+
 
 ## No test needed for internal helper function.
 %!assert (1)

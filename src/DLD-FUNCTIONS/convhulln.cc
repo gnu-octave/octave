@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-obj.h"
 #include "parse.h"
+#include "unwind-prot.h"
 
 #if defined (HAVE_QHULL)
 # include "oct-qhull.h"
@@ -47,6 +48,12 @@ along with Octave; see the file COPYING.  If not, see
 char qh_version[] = "convhulln.oct 2007-07-24";
 # endif
 #endif
+
+static void
+close_fcn (FILE *f)
+{
+  gnulib::fclose (f);
+}
 
 DEFUN_DLD (convhulln, args, nargout,
   "-*- texinfo -*-\n\
@@ -128,10 +135,24 @@ convex hull is calculated.\n\n\
 
   boolT ismalloc = false;
 
-  // Replace the 0 pointer with stdout for debugging information.
-  FILE *outfile = 0;
+  unwind_protect frame;
+
+  // Replace the outfile pointer with stdout for debugging information.
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM)
+  FILE *outfile = gnulib::fopen ("NUL", "w");
+#else
+  FILE *outfile = gnulib::fopen ("/dev/null", "w");
+#endif
   FILE *errfile = stderr;
-      
+
+  if (outfile)
+    frame.add_fcn (close_fcn, outfile);
+  else
+    {
+      error ("convhulln: unable to create temporary file for output");
+      return retval;
+    }
+
   // qh_new_qhull command and points arguments are not const...
 
   std::string cmd = "qhull" + options;
@@ -268,11 +289,16 @@ convex hull is calculated.\n\n\
 /*
 %!testif HAVE_QHULL
 %! cube = [0 0 0;1 0 0;1 1 0;0 1 0;0 0 1;1 0 1;1 1 1;0 1 1];
-%! [h, v] = convhulln (cube);
-%! assert (size (h), [6 4]); 
-%! h = sortrows (sort (h, 2), [1:4]);
-%! assert (h, [1 2 3 4; 1 2 5 6; 1 4 5 8; 2 3 6 7; 3 4 7 8; 5 6 7 8]);
+%! [h, v] = convhulln (cube, "Qt");
+%! assert (size (h), [12 3]); 
+%! h = sortrows (sort (h, 2), [1:3]);
+%! assert (h, [1 2 4; 1 2 6; 1 4 8; 1 5 6; 1 5 8; 2 3 4; 2 3 7; 2 6 7; 3 4 7; 4 7 8; 5 6 7; 5 7 8]);
 %! assert (v, 1, 10*eps);
+%! [h2, v2] = convhulln (cube); % Test defaut option = "Qt"
+%! assert (size (h2), size (h))
+%! h2 = sortrows (sort (h2, 2), [1:3]);
+%! assert (h2, h);
+%! assert (v2, v, 10*eps);
 
 %!testif HAVE_QHULL
 %! cube = [0 0 0;1 0 0;1 1 0;0 1 0;0 0 1;1 0 1;1 1 1;0 1 1];

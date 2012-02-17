@@ -43,6 +43,7 @@
 ##
 ## The optional string @var{type} specifies the type of moment to be computed.
 ## Valid options are:
+##
 ## @table @asis
 ## @item "c"
 ##   Central Moment.  The moment about the mean defined as
@@ -72,7 +73,7 @@
 ##
 ## @example
 ## @group
-## 1/N SUM_i ( abs(x(i)) )^p
+## 1/N SUM_i ( abs (x(i)) )^p
 ## @end group
 ## @end example
 ##
@@ -89,7 +90,7 @@
 ##
 ## @example
 ## @group
-## 1/N SUM_i ( abs(x(i) - mean(x)) )^p
+## 1/N SUM_i ( abs (x(i) - mean(x)) )^p
 ## @end group
 ## @end example
 ##
@@ -178,21 +179,21 @@ endfunction
 %! assert (moment (x,1), mean (x), 1e1*eps);
 %! assert (moment (x,2), meansq (x), 1e1*eps);
 %! assert (moment (x,1,2), mean (x,2), 1e1*eps);
-%! assert (moment (x,1,'c'), mean (center (x)), 1e1*eps);
-%! assert (moment (x,1,'a'), mean (abs (x)), 1e1*eps);
+%! assert (moment (x,1,"c"), mean (center (x)), 1e1*eps);
+%! assert (moment (x,1,"a"), mean (abs (x)), 1e1*eps);
 
-%!assert (moment (single([1 2 3]),1), single(2));
+%!assert (moment (single ([1 2 3]), 1), single (2))
 
 %% Test input validation
 %!error moment ()
 %!error moment (1)
 %!error moment (1, 2, 3, 4, 5)
 %!error moment (['A'; 'B'], 2)
-%!error moment (ones(2,0,3), 2)
+%!error moment (ones (2,0,3), 2)
 %!error moment (1, true)
-%!error moment (1, ones(2,2))
+%!error moment (1, ones (2,2))
 %!error moment (1, 2, 3, 4)
-%!error moment (1, 2, ones(2,2))
+%!error moment (1, 2, ones (2,2))
 %!error moment (1, 2, 1.5)
 %!error moment (1, 2, 4)
 

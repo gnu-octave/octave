@@ -29,7 +29,7 @@
 ## size of the values of @var{x}.
 ##
 ## The variable @var{explode} is a vector of the same length as @var{x} that
-## if non zero 'explodes' the slice from the pie chart.
+## if non zero "explodes" the slice from the pie chart.
 ##
 ## If given @var{labels} is a cell array of strings of the same length as
 ## @var{x}, giving the labels of each of the slices of the pie chart.

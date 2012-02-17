@@ -554,6 +554,7 @@ Given an array of pattern strings (as a char array or a cell array) in\n\
 them, or an empty cell array if no patterns match.  The pattern strings are\n\
 interpreted as filename globbing patterns (as they are used by Unix shells).\n\
 Within a pattern\n\
+\n\
 @table @code\n\
 @itemx *\n\
 matches any string, including the null string,\n\
@@ -570,25 +571,25 @@ names.  For example:\n\
 \n\
 @example\n\
 ls\n\
-     @result{}\n\
-        file1  file2  file3  myfile1 myfile1b\n\
+   @result{}\n\
+      file1  file2  file3  myfile1 myfile1b\n\
 glob (\"*file1\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] = file1\n\
-          [2,1] = myfile1\n\
-        @}\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = file1\n\
+        [2,1] = myfile1\n\
+      @}\n\
 glob (\"myfile?\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] = myfile1\n\
-        @}\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = myfile1\n\
+      @}\n\
 glob (\"file[12]\")\n\
-     @result{}\n\
-        @{\n\
-          [1,1] = file1\n\
-          [2,1] = file2\n\
-        @}\n\
+   @result{}\n\
+      @{\n\
+        [1,1] = file1\n\
+        [2,1] = file2\n\
+      @}\n\
 @end example\n\
 @seealso{ls, dir, readdir}\n\
 @end deftypefn")
@@ -687,10 +688,10 @@ fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
 DEFUN (filesep, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} filesep ()\n\
-@deftypefnx {Built-in Function} {} filesep ('all')\n\
+@deftypefnx {Built-in Function} {} filesep (\"all\")\n\
 Return the system-dependent character used to separate directory names.\n\
 \n\
-If 'all' is given, the function returns all valid file separators in\n\
+If \"all\" is given, the function returns all valid file separators in\n\
 the form of a string.  The list of file separators is system-dependent.\n\
 It is @samp{/} (forward slash) under UNIX or @w{Mac OS X}, @samp{/} and\n\
 @samp{\\} (forward and backward slashes) under Windows.\n\

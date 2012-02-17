@@ -51,10 +51,10 @@
 ## interpolation function respecting each methods' representative cdf.
 ##
 ## @enumerate 4
-## @item Method 4: p(k) = k / n. That is, linear interpolation of the
+## @item Method 4: p(k) = k / n.  That is, linear interpolation of the
 ## empirical cdf.
 ##
-## @item Method 5: p(k) = (k - 0.5) / n. That is a piecewise linear function
+## @item Method 5: p(k) = (k - 0.5) / n.  That is a piecewise linear function
 ## where the knots are the values midway through the steps of the empirical
 ## cdf.
 ##
@@ -157,7 +157,7 @@ endfunction
 %! p = 0.5;
 %! x = sort (rand (11));
 %! q = quantile (x, p);
-%! assert (q, x(6,:))
+%! assert (q, x(6,:));
 %! x = x.';
 %! q = quantile (x, p, 2);
 %! assert (q, x(:,6));
@@ -174,9 +174,9 @@ endfunction
 %!      1.0000   1.7500   2.5000   3.2500   4.0000
 %!      1.0000   1.4167   2.5000   3.5833   4.0000
 %!      1.0000   1.4375   2.5000   3.5625   4.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -191,9 +191,9 @@ endfunction
 %!      1.0000   2.0000   3.0000   4.0000   5.0000
 %!      1.0000   1.6667   3.0000   4.3333   5.0000
 %!      1.0000   1.6875   3.0000   4.3125   5.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -208,9 +208,9 @@ endfunction
 %!      1.0000   1.7500   3.5000   6.0000   9.0000
 %!      1.0000   1.4167   3.5000   7.3333   9.0000
 %!      1.0000   1.4375   3.5000   7.2500   9.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -225,9 +225,9 @@ endfunction
 %!      1.0000    2.0000    5.0000    9.0000   11.0000
 %!      1.0000    1.6667    5.0000    9.6667   11.0000
 %!      1.0000    1.6875    5.0000    9.6250   11.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -242,9 +242,9 @@ endfunction
 %!      6.0000   10.2500   11.5000   14.2500   16.0000
 %!      6.0000    9.8333   11.5000   15.0000   16.0000
 %!      6.0000    9.8750   11.5000   15.0000   16.0000];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -260,9 +260,9 @@ endfunction
 %!      -2.551474  -0.571522  -0.067751   0.106855   0.495271
 %!      -2.551474  -0.591566  -0.067751   0.146459   0.495271
 %!      -2.551474  -0.590801  -0.067751   0.140686   0.495271];
-%! for m = (1:9)
+%! for m = 1:9
 %!   q = quantile (x, p, 1, m).';
-%!   assert (q, a(m,:), 0.0001)
+%!   assert (q, a(m,:), 0.0001);
 %! endfor
 
 %!test
@@ -274,11 +274,11 @@ endfunction
 %!      0.933100, 0.931200, 0.963500, 0.779600, 0.846100];
 %! tol = 0.00001;
 %! x(5,5) = NaN;
-%! assert (quantile(x, p, 1), [0.27950, 0.79780, 0.32960, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1), [0.27950, 0.79780, 0.32960, 0.55670, 0.44460], tol);
 %! x(1,1) = NaN;
-%! assert (quantile(x, p, 1), [0.35415, 0.79780, 0.32960, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1), [0.35415, 0.79780, 0.32960, 0.55670, 0.44460], tol);
 %! x(3,3) = NaN;
-%! assert (quantile(x, p, 1), [0.35415, 0.79780, 0.42590, 0.55670, 0.44460], tol);
+%! assert (quantile (x, p, 1), [0.35415, 0.79780, 0.42590, 0.55670, 0.44460], tol);
 
 %!test
 %! sx = [2, 3, 4];

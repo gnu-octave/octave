@@ -42,7 +42,7 @@
 ## weaken the singularities.  For example:
 ##
 ## @example
-## quadgk(@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
+## quadgk (@@(x) 1 ./ (sqrt (x) .* (x + 1)), 0, Inf)
 ## @end example
 ##
 ## @noindent
@@ -78,7 +78,7 @@
 ## unacceptable error are subdivided and re-evaluated.  If the number of
 ## subintervals exceeds 650 subintervals at any point then a poor
 ## convergence is signaled and the current estimate of the integral is
-## returned.  The property 'MaxIntervalCount' can be used to alter the
+## returned.  The property "MaxIntervalCount" can be used to alter the
 ## number of subintervals that can exist before exiting.
 ##
 ## @item WayPoints
@@ -89,7 +89,7 @@
 ## computation, or both.  For example,
 ##
 ## @example
-## quadgk (@@(x) abs (1 - x.^2), 0, 2, 'Waypoints', 1)
+## quadgk (@@(x) abs (1 - x.^2), 0, 2, "Waypoints", 1)
 ## @end example
 ##
 ## @noindent
@@ -440,22 +440,24 @@ function t = __quadgk_finite_waypoint__ (x, a, b)
   t = real ((sqrt(3) .* 1i * (1 - k .^ 2) - (1 + k .^ 2)) ./ 2 ./ k);
 endfunction
 
+
+%!assert (quadgk (@sin,-pi,pi), 0, 1e-6)
+%!assert (quadgk (inline ("sin"),-pi,pi), 0, 1e-6)
+%!assert (quadgk ("sin",-pi,pi), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi, "waypoints", 0, "MaxIntervalCount", 100, "reltol", 1e-3, "abstol", 1e-6, "trace", false), 0, 1e-6)
+%!assert (quadgk (@sin,-pi,pi, 1e-6,false), 0, 1e-6)
+
+%!assert (quadgk (@sin,-pi,0), -2, 1e-6)
+%!assert (quadgk (@sin,0,pi), 2, 1e-6)
+%!assert (quadgk (@(x) 1./sqrt (x),0,1), 2, 1e-6)
+%!assert (quadgk (@(x) abs (1 - x.^2),0,2, "Waypoints", 1), 2, 1e-6)
+%!assert (quadgk (@(x) 1./(sqrt (x) .* (x+1)),0,Inf), pi, 1e-6)
+%!assert (quadgk (@(z) log (z),1+1i,1+1i, "WayPoints", [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
+
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,Inf), sqrt (pi), 1e-6)
+%!assert (quadgk (@(x) exp (-x .^ 2),-Inf,0), sqrt (pi)/2, 1e-6)
+
 %error (quadgk (@sin))
 %error (quadgk (@sin, -pi))
-%error (quadgk (@sin, -pi, pi, 'DummyArg'))
+%error (quadgk (@sin, -pi, pi, "DummyArg"))
 
-%!assert (quadgk(@sin,-pi,pi), 0, 1e-6)
-%!assert (quadgk(inline('sin'),-pi,pi), 0, 1e-6)
-%!assert (quadgk('sin',-pi,pi), 0, 1e-6)
-%!assert (quadgk(@sin,-pi,pi,'waypoints', 0, 'MaxIntervalCount', 100, 'reltol', 1e-3, 'abstol', 1e-6, 'trace', false), 0, 1e-6)
-%!assert (quadgk(@sin,-pi,pi,1e-6,false), 0, 1e-6)
-
-%!assert (quadgk(@sin,-pi,0), -2, 1e-6)
-%!assert (quadgk(@sin,0,pi), 2, 1e-6)
-%!assert (quadgk(@(x) 1./sqrt(x), 0, 1), 2, 1e-6)
-%!assert (quadgk (@(x) abs (1 - x.^2), 0, 2, 'Waypoints', 1), 2, 1e-6)
-%!assert (quadgk(@(x) 1./(sqrt(x).*(x+1)), 0, Inf), pi, 1e-6)
-%!assert (quadgk (@(z) log (z), 1+1i, 1+1i, 'WayPoints', [1-1i, -1,-1i, -1+1i]), -pi * 1i, 1e-6)
-
-%!assert (quadgk (@(x) exp(-x .^ 2), -Inf, Inf), sqrt(pi), 1e-6)
-%!assert (quadgk (@(x) exp(-x .^ 2), -Inf, 0), sqrt(pi)/2, 1e-6)

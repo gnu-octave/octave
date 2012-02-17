@@ -27,8 +27,8 @@
 ## @example
 ## @group
 ## flipdim ([1, 2; 3, 4], 2)
-##      @result{}  2  1
-##          4  3
+##       @result{}  2  1
+##           4  3
 ## @end group
 ## @end example
 ## @seealso{fliplr, flipud, rot90, rotdim}
@@ -57,11 +57,13 @@ function y = flipdim (x, dim)
 
 endfunction
 
-%!error flipdim ();
-%!error flipdim (1, 2, 3);
 
-%!assert (flipdim ([1,2;3,4]), flipdim ([1,2 ; 3,4], 1));
-%!assert (flipdim ([1,2;3,4], 2), [2,1;4,3]);
-%!assert (flipdim ([1,2;3,4], 3), [1,2;3,4]);
+%!assert (flipdim ([1,2;3,4]), flipdim ([1,2 ; 3,4], 1))
+%!assert (flipdim ([1,2;3,4], 2), [2,1;4,3])
+%!assert (flipdim ([1,2;3,4], 3), [1,2;3,4])
 
 ## FIXME -- we need tests for multidimensional arrays.
+
+%!error flipdim ()
+%!error flipdim (1, 2, 3)
+

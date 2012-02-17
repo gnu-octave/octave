@@ -246,3 +246,4 @@ endfunction
 %! b = sum (A, 2);
 %! [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, [], diag (diag (A)));
 %! assert (x, ones (size (b)), 1e-7);
+

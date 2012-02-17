@@ -23,7 +23,6 @@
 ##
 ## @example
 ## @group
-##
 ## int2str (123)
 ##      @result{} "123"
 ##
@@ -114,10 +113,12 @@ function fmt = get_fmt (x, sep)
 
 endfunction
 
-%!assert (strcmp (int2str (-123), "-123") && strcmp (int2str (1.2), "1"));
-%!assert (all (int2str ([1, 2, 3; 4, 5, 6]) == ["1  2  3";"4  5  6"]));
-%!assert (int2str([]), "");
 
-%!error int2str ();
-%!error int2str (1, 2);
+%!assert (int2str (-123), "-123")
+%!assert (int2str (1.2), "1")
+%!assert (int2str ([1, 2, 3; 4, 5, 6]), ["1  2  3";"4  5  6"])
+%!assert (int2str ([]), "")
+
+%!error int2str ()
+%!error int2str (1, 2)
 

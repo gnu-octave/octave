@@ -98,35 +98,35 @@ function rnd = lognrnd (mu, sigma, varargin)
 endfunction
 
 
-%!assert(size (lognrnd (1,2)), [1, 1]);
-%!assert(size (lognrnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (lognrnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (lognrnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (lognrnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (lognrnd (1, 2, 3)), [3, 3]);
-%!assert(size (lognrnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (lognrnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (lognrnd (1,2)), [1, 1])
+%!assert (size (lognrnd (ones (2,1), 2)), [2, 1])
+%!assert (size (lognrnd (ones (2,2), 2)), [2, 2])
+%!assert (size (lognrnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (lognrnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (lognrnd (1, 2, 3)), [3, 3])
+%!assert (size (lognrnd (1, 2, [4 1])), [4, 1])
+%!assert (size (lognrnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (lognrnd (1, 2)), "double");
-%!assert(class (lognrnd (single(1), 2)), "single");
-%!assert(class (lognrnd (single([1 1]), 2)), "single");
-%!assert(class (lognrnd (1, single(2))), "single");
-%!assert(class (lognrnd (1, single([2 2]))), "single");
+%!assert (class (lognrnd (1, 2)), "double")
+%!assert (class (lognrnd (single (1), 2)), "single")
+%!assert (class (lognrnd (single ([1 1]), 2)), "single")
+%!assert (class (lognrnd (1, single (2))), "single")
+%!assert (class (lognrnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error lognrnd ()
 %!error lognrnd (1)
-%!error lognrnd (ones(3),ones(2))
-%!error lognrnd (ones(2),ones(3))
+%!error lognrnd (ones (3), ones (2))
+%!error lognrnd (ones (2), ones (3))
 %!error lognrnd (i, 2)
 %!error lognrnd (2, i)
 %!error lognrnd (1,2, -1)
-%!error lognrnd (1,2, ones(2))
+%!error lognrnd (1,2, ones (2))
 %!error lognrnd (1, 2, [2 -1 2])
-%!error lognrnd (1,2, 1, ones(2))
+%!error lognrnd (1,2, 1, ones (2))
 %!error lognrnd (1,2, 1, -1)
-%!error lognrnd (ones(2,2), 2, 3)
-%!error lognrnd (ones(2,2), 2, [3, 2])
-%!error lognrnd (ones(2,2), 2, 2, 3)
+%!error lognrnd (ones (2,2), 2, 3)
+%!error lognrnd (ones (2,2), 2, [3, 2])
+%!error lognrnd (ones (2,2), 2, 2, 3)
 

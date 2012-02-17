@@ -27,10 +27,10 @@
 ##
 ## @example
 ## @group
-## roots(poly(eye(3)))
-## @result{} 1.00001 + 0.00001i
-## @result{} 1.00001 - 0.00001i
-## @result{} 0.99999 + 0.00000i
+## roots (poly (eye (3)))
+##     @result{} 1.00001 + 0.00001i
+##        1.00001 - 0.00001i
+##        0.99999 + 0.00000i
 ## @end group
 ## @end example
 ##
@@ -81,11 +81,10 @@ function y = poly (x)
 
 endfunction
 
-%!assert(all (all (poly ([1, 2, 3]) == [1, -6, 11, -6])));
 
-%!assert(all (all (abs (poly ([1, 2; 3, 4]) - [1, -5, -2]) < sqrt (eps))));
+%!assert (poly ([]), 1)
+%!assert (poly ([1, 2, 3]), [1, -6, 11, -6])
+%!assert (poly ([1, 2; 3, 4]), [1, -5, -2], sqrt (eps))
 
-%!error poly ([1, 2, 3; 4, 5, 6]);
-
-%!assert(poly ([]),1);
+%!error poly ([1, 2, 3; 4, 5, 6])
 

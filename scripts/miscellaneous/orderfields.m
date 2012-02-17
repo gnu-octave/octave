@@ -38,7 +38,7 @@
 ## @example
 ## @group
 ## s = struct("d", 4, "b", 2, "a", 1, "c", 3);
-## t1 = orderfields(s)
+## t1 = orderfields (s)
 ##      @result{} t1 =
 ##         @{
 ##           a =  1
@@ -49,7 +49,7 @@
 ## @end group
 ## @group
 ## t = struct("d", @{@}, "c", @{@}, "b", "a", @{@});
-## t2 = orderfields(s, t)
+## t2 = orderfields (s, t)
 ##      @result{} t2 =
 ##         @{
 ##           d =  4
@@ -59,7 +59,7 @@
 ##         @}
 ## @end group
 ## @group
-## t3 = orderfields(s, [3, 2, 4, 1]);
+## t3 = orderfields (s, [3, 2, 4, 1]);
 ##      @result{} t3 =
 ##         @{
 ##           a =  1
@@ -69,18 +69,19 @@
 ##         @}
 ## @end group
 ## @group
-## [t4, p] = orderfields(s, @{"d", "c", "b", "a"@})
-##      @result{} t4 = @{
+## [t4, p] = orderfields (s, @{"d", "c", "b", "a"@})
+##      @result{} t4 =
+##         @{
 ##           d =  4
 ##           c =  3
 ##           b =  2
 ##           a =  1
 ##         @}
-##      p =
-##         1
-##         4
-##         2
-##         3
+##         p =
+##            1
+##            4
+##            2
+##            3
 ## @end group
 ## @end example
 ##
@@ -161,27 +162,28 @@ function [t, p] = orderfields (s1, s2)
 
 endfunction
 
+
 %!shared a, b, c
 %! a = struct ("foo", {1, 2}, "bar", {3, 4});
 %! b = struct ("bar", 6, "foo", 5);
 %! c = struct ("bar", {7, 8}, "foo", 9);
 %!test
 %! a(2) = orderfields (b, a);
-%! assert (a(2).foo, 5)
-%! assert (a(2).bar, 6)
+%! assert (a(2).foo, 5);
+%! assert (a(2).bar, 6);
 %!test
 %! [a(2), p] = orderfields (b, [2 1]);
-%! assert (a(2).foo, 5)
-%! assert (a(2).bar, 6)
+%! assert (a(2).foo, 5);
+%! assert (a(2).bar, 6);
 %! assert (p, [2; 1]);
 %!test
 %! a(2) = orderfields (b, fieldnames (a));
-%! assert (a(2).foo, 5)
-%! assert (a(2).bar, 6)
+%! assert (a(2).foo, 5);
+%! assert (a(2).bar, 6);
 %!test
 %! a(1:2) = orderfields (c, fieldnames (a));
-%! assert (a(2).foo, 9)
-%! assert (a(2).bar, 8)
+%! assert (a(2).foo, 9);
+%! assert (a(2).bar, 8);
 
 %!test
 %! aa.x = {1, 2};
@@ -192,3 +194,4 @@ endfunction
 %! aa(2) = orderfields (bb, aa);
 %! assert (aa(2).x, 8);
 %! assert (aa(2).y{1}, 6);
+

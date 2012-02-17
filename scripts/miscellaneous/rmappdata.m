@@ -37,8 +37,9 @@ function rmappdata (h, varargin)
 
 endfunction
 
+
 %!test
-%! setappdata (0, "hello", "world")
-%! rmappdata (0, "hello")
-%! assert (isappdata (0, "hello"), false)
+%! setappdata (0, "hello", "world");
+%! rmappdata (0, "hello");
+%! assert (isappdata (0, "hello"), false);
 

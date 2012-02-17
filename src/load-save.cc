@@ -649,7 +649,7 @@ Force Octave to assume the file is in Octave's text format.\n\
   std::string orig_fname = "";
 
   // Function called with Matlab-style ["filename", options] syntax
-  if (argc > 1 && argv[1].at(0) != '-')
+  if (argc > 1 && ! argv[1].empty () && argv[1].at(0) != '-')
     {
       orig_fname = argv[1];
       i++;
@@ -1532,6 +1532,7 @@ libraries.\n\
 \n\
 The list of variables to save may use wildcard patterns containing\n\
 the following special characters:\n\
+\n\
 @table @code\n\
 @item ?\n\
 Match any single character.\n\

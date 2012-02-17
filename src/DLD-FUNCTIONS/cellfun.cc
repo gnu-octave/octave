@@ -257,8 +257,8 @@ DEFUN_DLD (cellfun, args, nargout,
 @deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{C})\n\
 @deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{C}, @var{D})\n\
 @deftypefnx {Loadable Function} {[@var{a}, @dots{}] =} cellfun (@dots{})\n\
-@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'ErrorHandler', @var{errfunc})\n\
-@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'UniformOutput', @var{val})\n\
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, \"ErrorHandler\", @var{errfunc})\n\
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, \"UniformOutput\", @var{val})\n\
 \n\
 Evaluate the function named @var{name} on the elements of the cell array\n\
 @var{C}.  Elements in @var{C} are passed on to the named function\n\
@@ -303,7 +303,7 @@ function can return one or more output arguments.  For example:\n\
 @example\n\
 @group\n\
 cellfun (\"atan2\", @{1, 0@}, @{0, 1@})\n\
-     @result{}ans = [1.57080   0.00000]\n\
+     @result{} [ 1.57080   0.00000 ]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -330,21 +330,21 @@ Note that per default the output argument(s) are arrays of the same size as\n\
 the input arguments.  Input arguments that are singleton (1x1) cells will be\n\
 automatically expanded to the size of the other arguments.\n\
 \n\
-If the parameter 'UniformOutput' is set to true (the default), then the\n\
+If the parameter \"UniformOutput\" is set to true (the default), then the\n\
 function must return scalars which will be concatenated into the return\n\
-array(s).  If 'UniformOutput' is false, the outputs are concatenated into a\n\
+array(s).  If \"UniformOutput\" is false, the outputs are concatenated into a\n\
 cell array (or cell arrays).  For example:\n\
 \n\
 @example\n\
 @group\n\
 cellfun (\"tolower\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
-         \"UniformOutput\",false)\n\
-@result{} ans = @{\"foo\", \"bar\", \"foobar\"@}\n\
+         \"UniformOutput\", false)\n\
+@result{} @{\"foo\", \"bar\", \"foobar\"@}\n\
 @end group\n\
 @end example\n\
 \n\
-Given the parameter 'ErrorHandler', then @var{errfunc} defines a function to\n\
-call in case @var{func} generates an error.  The form of the function is\n\
+Given the parameter \"ErrorHandler\", then @var{errfunc} defines a function\n\
+to call in case @var{func} generates an error.  The form of the function is\n\
 \n\
 @example\n\
 function [@dots{}] = errfunc (@var{s}, @dots{})\n\
@@ -360,8 +360,8 @@ of the element that caused the error.  For example:\n\
 @example\n\
 @group\n\
 function y = foo (s, x), y = NaN; endfunction\n\
-cellfun (\"factorial\", @{-1,2@}, 'ErrorHandler', @@foo)\n\
-@result{} ans = [NaN 2]\n\
+cellfun (\"factorial\", @{-1,2@}, \"ErrorHandler\", @@foo)\n\
+@result{} [NaN 2]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1042,7 +1042,7 @@ example:\n\
 @example\n\
 @group\n\
 arrayfun (@@atan2, [1, 0], [0, 1])\n\
-@result{} ans = [1.5708   0.0000]\n\
+     @result{} [ 1.5708   0.0000 ]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1056,12 +1056,12 @@ concatenated in a cell array.  For example:\n\
 @example\n\
 @group\n\
 arrayfun (@@(x,y) x:y, \"abc\", \"def\", \"UniformOutput\", false)\n\
-@result{} ans =\n\
-    @{\n\
-      [1,1] = abcd\n\
-      [1,2] = bcde\n\
-      [1,3] = cdef\n\
-    @}\n\
+@result{}\n\
+   @{\n\
+     [1,1] = abcd\n\
+     [1,2] = bcde\n\
+     [1,3] = cdef\n\
+   @}\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1075,18 +1075,18 @@ example:\n\
 @result{}\n\
 A =\n\
 @{\n\
-  [1,1] =  1\n\
-  [2,1] = [](0x0)\n\
+   [1,1] =  1\n\
+   [2,1] = [](0x0)\n\
 @}\n\
 B =\n\
 @{\n\
-  [1,1] =  1\n\
-  [2,1] = [](0x0)\n\
+   [1,1] =  1\n\
+   [2,1] = [](0x0)\n\
 @}\n\
 C =\n\
 @{\n\
-  [1,1] =  10\n\
-  [2,1] = [](0x0)\n\
+   [1,1] =  10\n\
+   [2,1] = [](0x0)\n\
 @}\n\
 @end group\n\
 @end example\n\
@@ -1115,11 +1115,11 @@ example:\n\
 @group\n\
 function y = ferr (s, x), y = \"MyString\"; endfunction\n\
 arrayfun (@@str2num, [1234],\n\
-           \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
-@result{} ans =\n\
-    @{\n\
+          \"UniformOutput\", false, \"ErrorHandler\", @@ferr)\n\
+@result{}\n\
+   @{\n\
      [1,1] = MyString\n\
-    @}\n\
+   @}\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1810,24 +1810,24 @@ elements of @var{A} are placed into @var{C} in slices.  For example:\n\
 \n\
 @example\n\
 @group\n\
-num2cell([1,2;3,4])\n\
-     @result{} ans =\n\
-        @{\n\
-          [1,1] =  1\n\
-          [2,1] =  3\n\
-          [1,2] =  2\n\
-          [2,2] =  4\n\
-        @}\n\
-num2cell([1,2;3,4],1)\n\
-     @result{} ans =\n\
-        @{\n\
-          [1,1] =\n\
-             1\n\
-             3\n\
-          [1,2] =\n\
-             2\n\
-             4\n\
-        @}\n\
+num2cell ([1,2;3,4])\n\
+   @result{}\n\
+      @{\n\
+        [1,1] =  1\n\
+        [2,1] =  3\n\
+        [1,2] =  2\n\
+        [2,2] =  4\n\
+      @}\n\
+num2cell ([1,2;3,4],1)\n\
+   @result{}\n\
+      @{\n\
+        [1,1] =\n\
+           1\n\
+           3\n\
+        [1,2] =\n\
+           2\n\
+           4\n\
+      @}\n\
 @end group\n\
 @end example\n\
 \n\
@@ -2149,25 +2149,26 @@ arguments are assumed to equal @code{size (@var{A},@var{i})}.\n\
 An example of the use of mat2cell is\n\
 \n\
 @example\n\
-mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
-@result{} @{\n\
-  [1,1] =\n\
+mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
+@result{}\n\
+@{\n\
+   [1,1] =\n\
 \n\
-     1   5   9\n\
-     2   6  10\n\
-     3   7  11\n\
+      1   5   9\n\
+      2   6  10\n\
+      3   7  11\n\
 \n\
-  [2,1] =\n\
+   [2,1] =\n\
 \n\
-     4   8  12\n\
+      4   8  12\n\
 \n\
-  [1,2] =\n\
+   [1,2] =\n\
 \n\
-    13\n\
-    14\n\
-    15\n\
+     13\n\
+     14\n\
+     15\n\
 \n\
-  [2,2] = 16\n\
+   [2,2] = 16\n\
 @}\n\
 @end example\n\
 @seealso{num2cell, cell2mat}\n\
@@ -2430,10 +2431,10 @@ Given a cell array of matrices @var{x}, this function computes\n\
 \n\
 @example\n\
 @group\n\
-  Y = cell (size (X));\n\
-  for i = 1:numel (X)\n\
-    Y@{i@} = X@{i@}(varargin@{:@});\n\
-  endfor\n\
+Y = cell (size (X));\n\
+for i = 1:numel (X)\n\
+  Y@{i@} = X@{i@}(varargin@{:@});\n\
+endfor\n\
 @end group\n\
 @end example\n\
 @seealso{cellslices, cellfun}\n\

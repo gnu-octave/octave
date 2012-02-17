@@ -32,12 +32,13 @@ function retval = isequal (x1, varargin)
 
 endfunction
 
+
 ## test size and shape
-%!assert(isequal([1,2,3,4],[1,2,3,4]), true)
-%!assert(isequal([1;2;3;4],[1;2;3;4]), true)
-%!assert(isequal([1,2,3,4],[1;2;3;4]), false)
-%!assert(isequal([1,2,3,4],[1,2;3,4]), false)
-%!assert(isequal([1,2,3,4],[1,3;2,4]), false)
+%!assert (isequal ([1,2,3,4],[1,2,3,4]), true)
+%!assert (isequal ([1;2;3;4],[1;2;3;4]), true)
+%!assert (isequal ([1,2,3,4],[1;2;3;4]), false)
+%!assert (isequal ([1,2,3,4],[1,2;3,4]), false)
+%!assert (isequal ([1,2,3,4],[1,3;2,4]), false)
 
 %!test
 %! A = 1:8;
@@ -55,20 +56,21 @@ endfunction
 %! assert (isequal (A, B), false);
 
 ## test for equality
-%!assert(isequal([1,2,3,4],[1,2,3,4]), true)
-%!assert(isequal(['a','b','c','d'],['a','b','c','d']), true)
+%!assert (isequal ([1,2,3,4],[1,2,3,4]), true)
+%!assert (isequal (['a','b','c','d'],['a','b','c','d']), true)
 ## Test multi-line strings
-%!assert(isequal(["test";"strings"],["test";"strings"],["test";"strings"]), true)
+%!assert (isequal (["test";"strings"],["test";"strings"],["test";"strings"]), true)
 ## test for inequality
-%!assert(isequal([1,2,3,4],[1;2;3;4]),false)
-%!assert(isequal({1,2,3,4},[1,2,3,4]),false)
-%!assert(isequal([1,2,3,4],{1,2,3,4}),false)
-%!assert(isequal([1,2,NaN,4],[1,2,NaN,4]),false)
-%!assert(isequal(['a','b','c','d'],['a';'b';'c';'d']),false)
-%!assert(isequal({'a','b','c','d'},{'a';'b';'c';'d'}),false)
+%!assert (isequal ([1,2,3,4],[1;2;3;4]), false)
+%!assert (isequal ({1,2,3,4},[1,2,3,4]), false)
+%!assert (isequal ([1,2,3,4],{1,2,3,4}), false)
+%!assert (isequal ([1,2,NaN,4],[1,2,NaN,4]), false)
+%!assert (isequal (['a','b','c','d'],['a';'b';'c';'d']), false)
+%!assert (isequal ({'a','b','c','d'},{'a';'b';'c';'d'}), false)
 ## test for equality (struct)
-%!assert(isequal(struct('a',1,'b',2),struct('a',1,'b',2)),true)
-%!assert(isequal(struct('a',1,'b',2),struct('a',1,'b',2),struct('a',1,'b',2)),true)
-%!assert(isequal(struct('a','abc','b',2),struct('a','abc','b',2)),true)
+%!assert (isequal (struct ('a',1,'b',2),struct ('a',1,'b',2)), true)
+%!assert (isequal (struct ('a',1,'b',2),struct ('a',1,'b',2),struct ('a',1,'b',2)), true)
+%!assert (isequal (struct ('a',"abc",'b',2),struct ('a',"abc",'b',2)), true)
 ## test for inequality (struct)
-%!assert(isequal(struct('a',NaN,'b',2),struct('a',NaN,'b',2),struct('a',NaN,'b',2)),false)
+%!assert (isequal (struct ('a',NaN,'b',2),struct ('a',NaN,'b',2),struct ('a',NaN,'b',2)), false)
+

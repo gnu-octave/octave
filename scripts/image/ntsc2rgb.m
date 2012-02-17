@@ -17,9 +17,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ntsc2rgb (@var{yiq})
-## Transform a colormap or image from NTSC to RGB.
-## @seealso{rgb2ntsc}
+## @deftypefn  {Function File} {@var{rgb_map} =} ntsc2rgb (@var{yiq_map})
+## @deftypefnx {Function File} {@var{rgb_img} =} ntsc2rgb (@var{yiq_img})
+## Transform a colormap or image from luminance-chrominance (NTSC) space to
+## red-green-blue (RGB) space.
+## @seealso{rgb2ntsc, hsv2rgb, ind2rgb}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

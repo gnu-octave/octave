@@ -33,9 +33,9 @@
 ##
 ## @example
 ## @group
-##  B(s)    M       r(m)         N
-##  ---- = SUM -------------  + SUM k(i)*s^(N-i)
-##  A(s)   m=1 (s-p(m))^e(m)    i=1
+## B(s)    M       r(m)         N
+## ---- = SUM -------------  + SUM k(i)*s^(N-i)
+## A(s)   m=1 (s-p(m))^e(m)    i=1
 ## @end group
 ## @end example
 ##
@@ -52,11 +52,11 @@
 ## @group
 ## b = [1, 1, 1];
 ## a = [1, -5, 8, -4];
-## [r, p, k, e] = residue (b, a);
-##      @result{} r = [-2; 7; 3]
-##      @result{} p = [2; 2; 1]
-##      @result{} k = [](0x0)
-##      @result{} e = [1; 2; 1]
+## [r, p, k, e] = residue (b, a)
+##    @result{} r = [-2; 7; 3]
+##    @result{} p = [2; 2; 1]
+##    @result{} k = [](0x0)
+##    @result{} e = [1; 2; 1]
 ## @end group
 ## @end example
 ##
@@ -95,12 +95,11 @@
 ## r = [-2; 7; 3];
 ## p = [2; 2; 1];
 ## k = [1, 0];
-## [b, a] = residue (r, p, k);
-##      @result{} b = [1, -5, 9, -3, 1]
-##      @result{} a = [1, -5, 8, -4]
+## [b, a] = residue (r, p, k)
+##    @result{} b = [1, -5, 9, -3, 1]
+##    @result{} a = [1, -5, 8, -4]
 ##
 ## where mpoles is used to determine e = [1; 2; 1]
-##
 ## @end group
 ## @end example
 ##
@@ -112,9 +111,9 @@
 ## p = [2; 1; 2];
 ## k = [1, 0];
 ## e = [2; 1; 1];
-## [b, a] = residue (r, p, k, e);
-##      @result{} b = [1, -5, 9, -3, 1]
-##      @result{} a = [1, -5, 8, -4]
+## [b, a] = residue (r, p, k, e)
+##    @result{} b = [1, -5, 9, -3, 1]
+##    @result{} a = [1, -5, 8, -4]
 ## @end group
 ## @end example
 ##
@@ -129,9 +128,9 @@
 ##
 ## @example
 ## @group
-##     -2        7        3         s^4 - 5s^3 + 9s^2 - 3s + 1
-##    ----- + ------- + ----- + s = --------------------------
-##    (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
+##  -2        7        3         s^4 - 5s^3 + 9s^2 - 3s + 1
+## ----- + ------- + ----- + s = --------------------------
+## (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
 ## @end group
 ## @end example
 ##
@@ -352,23 +351,24 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
 
 endfunction
 
+
 %!test
 %! b = [1, 1, 1];
 %! a = [1, -5, 8, -4];
 %! [r, p, k, e] = residue (b, a);
-%! assert (abs (r - [-2; 7; 3]) < 1e-12
-%!   && abs (p - [2; 2; 1]) < 1e-12
-%!   && isempty (k)
-%!   && e == [1; 2; 1]);
+%! assert (r, [-2; 7; 3], 1e-12);
+%! assert (p, [2; 2; 1], 1e-12);
+%! assert (isempty (k));
+%! assert (e, [1; 2; 1]);
 %! k = [1 0];
 %! b = conv (k, a) + prepad (b, numel (k) + numel (a) - 1, 0);
 %! a = a;
 %! [br, ar] = residue (r, p, k);
-%! assert ((abs (br - b) < 1e-12
-%!   && abs (ar - a) < 1e-12));
+%! assert (br, b, 1e-12);
+%! assert (ar, a, 1e-12);
 %! [br, ar] = residue (r, p, k, e);
-%! assert ((abs (br - b) < 1e-12
-%!   && abs (ar - a) < 1e-12));
+%! assert (br, b, 1e-12);
+%! assert (ar, a, 1e-12);
 
 %!test
 %! b = [1, 0, 1];
@@ -376,12 +376,13 @@ endfunction
 %! [r, p, k, e] = residue (b, a);
 %! r1 = [-5i; 12; +5i; 12]/54;
 %! p1 = [+3i; +3i; -3i; -3i];
-%! assert (abs (r - r1) < 1e-12 && abs (p - p1) < 1e-12
-%!   && isempty (k)
-%!   && e == [1; 2; 1; 2]);
+%! assert (r, r1, 1e-12);
+%! assert (p, p1, 1e-12);
+%! assert (isempty (k));
+%! assert (e, [1; 2; 1; 2]);
 %! [br, ar] = residue (r, p, k);
-%! assert ((abs (br - b) < 1e-12
-%!   && abs (ar - a) < 1e-12));
+%! assert (br, b, 1e-12);
+%! assert (ar, a, 1e-12);
 
 %!test
 %! r = [7; 3; -2];
@@ -389,14 +390,14 @@ endfunction
 %! k = [1 0];
 %! e = [2; 1; 1];
 %! [b, a] = residue (r, p, k, e);
-%! assert ((abs (b - [1, -5, 9, -3, 1]) < 1e-12
-%!   && abs (a - [1, -5, 8, -4]) < 1e-12));
+%! assert (b, [1, -5, 9, -3, 1], 1e-12);
+%! assert (a, [1, -5, 8, -4], 1e-12);
 %! [rr, pr, kr, er] = residue (b, a);
-%! [jnk, n] = mpoles(p);
-%! assert ((abs (rr - r(n)) < 1e-12
-%!   && abs (pr - p(n)) < 1e-12
-%!   && abs (kr - k) < 1e-12
-%!   && abs (er - e(n)) < 1e-12));
+%! [jnk, n] = mpoles (p);
+%! assert (rr, r(n), 1e-12);
+%! assert (pr, p(n), 1e-12);
+%! assert (kr, k, 1e-12);
+%! assert (er, e(n), 1e-12);
 
 %!test
 %! b = [1];
@@ -404,12 +405,13 @@ endfunction
 %! [r, p, k, e] = residue (b, a);
 %! r1 = [0; 1];
 %! p1 = [-5; -5];
-%! assert (abs (r - r1) < 1e-12 && abs (p - p1) < 1e-12
-%!   && isempty (k)
-%!   && e == [1; 2]);
+%! assert (r, r1, 1e-12);
+%! assert (p, p1, 1e-12);
+%! assert (isempty (k));
+%! assert (e, [1; 2]);
 %! [br, ar] = residue (r, p, k);
-%! assert ((abs (br - b) < 1e-12
-%!   && abs (ar - a) < 1e-12));
+%! assert (br, b, 1e-12);
+%! assert (ar, a, 1e-12);
 
 ## The following test is due to Bernard Grung (bug #34266)
 %!xtest
@@ -429,3 +431,4 @@ endfunction
 %! [br, ar] = residue (r, p, k, e);
 %! assert (br, b, 1e-8);
 %! assert (ar, a, 1e-8);
+

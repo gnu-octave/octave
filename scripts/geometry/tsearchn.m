@@ -82,26 +82,28 @@ function Beta = cart2bary (T, P)
   Beta (:,end+1) = 1 - sum(Beta, 2);
 endfunction
 
+
 %!shared x, tri
 %! x = [-1,-1;-1,1;1,-1];
 %! tri = [1, 2, 3];
 %!test
 %! [idx, p] = tsearchn (x,tri,[-1,-1]);
-%! assert (idx, 1)
-%! assert (p, [1,0,0], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [1,0,0], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[-1,1]);
-%! assert (idx, 1)
-%! assert (p, [0,1,0], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [0,1,0], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[1,-1]);
-%! assert (idx, 1)
-%! assert (p, [0,0,1], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [0,0,1], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[-1/3,-1/3]);
-%! assert (idx, 1)
-%! assert (p, [1/3,1/3,1/3], 1e-12)
+%! assert (idx, 1);
+%! assert (p, [1/3,1/3,1/3], 1e-12);
 %!test
 %! [idx, p] = tsearchn (x,tri,[1,1]);
-%! assert (idx, NaN)
-%! assert (p, [NaN, NaN, NaN])
+%! assert (idx, NaN);
+%! assert (p, [NaN, NaN, NaN]);
+

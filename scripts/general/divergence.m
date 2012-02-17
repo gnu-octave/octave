@@ -105,8 +105,10 @@ function retval = divergence (varargin)
 
 endfunction
 
+
 %!test
-%! [X,Y]=meshgrid(-20:20,-22:22);
-%! div = divergence(X-Y,Y);
-%! assert(all(div(:)==2));
-%! assert(size_equal(X,Y,div));
+%! [X,Y] = meshgrid (-20:20,-22:22);
+%! div = divergence (X-Y,Y);
+%! assert (all (div(:) == 2));
+%! assert (size_equal (X,Y,div));
+

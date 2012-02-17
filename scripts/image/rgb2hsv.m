@@ -17,16 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb})
-## Transform a colormap or image from the RGB space to the HSV space.
+## @deftypefn  {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb})
+## @deftypefnx {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb})
+## Transform a colormap or image from red-green-blue (RGB) space to
+## hue-saturation-value (HSV) space.
 ##
-## A color in the RGB space consists of the red, green and blue intensities.
+## A color in the RGB space consists of red, green, and blue intensities.
 ##
-## In the HSV space each color is represented by their hue, saturation
-## and value (brightness).  Value gives the amount of light in the color.
-## Hue describes the dominant wavelength.
-## Saturation is the amount of hue mixed into the color.
-## @seealso{hsv2rgb}
+## A color in HSV space is represented by hue, saturation and value
+## (brightness) levels.  Value gives the amount of light in the color.  Hue
+## describes the dominant wavelength.  Saturation is the amount of hue mixed
+## into the color.
+## @seealso{hsv2rgb, rgb2ind, rgb2ntsc}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

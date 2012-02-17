@@ -33,8 +33,8 @@
 ##
 ## @example
 ## @group
-##    fplot ("cos", [0, 2*pi])
-##    fplot ("[cos(x), sin(x)]", [0, 2*pi])
+## fplot ("cos", [0, 2*pi])
+## fplot ("[cos(x), sin(x)]", [0, 2*pi])
 ## @end group
 ## @end example
 ## @seealso{plot}

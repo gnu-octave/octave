@@ -30,7 +30,7 @@
 ## @group
 ## x = 3.141;
 ## genvarname ("x", who ())
-## @result{} x1
+##   @result{} x1
 ## @end group
 ## @end example
 ##
@@ -40,11 +40,11 @@
 ## @example
 ## @group
 ## genvarname (@{"foo", "foo"@})
-## @result{}
-## @{
-##   [1,1] = foo
-##   [1,2] = foo1
-## @}
+##   @result{}
+##      @{
+##        [1,1] = foo
+##        [1,2] = foo1
+##      @}
 ## @end group
 ## @end example
 ##
@@ -55,8 +55,8 @@
 ## @example
 ## @group
 ## name = genvarname ("x");
-## eval([name " = 42"]);
-## @result{} x =  42
+## eval ([name " = 42"]);
+##   @result{} x =  42
 ## @end group
 ## @end example
 ##
@@ -68,13 +68,12 @@
 ## for i = 1:3
 ##   x.(genvarname ("a", fieldnames (x))) = i;
 ## endfor
-## @result{}
-## x =
-## @{
-##   a =  1
-##   a1 =  2
-##   a2 =  3
-## @}
+##   @result{} x =
+##      @{
+##        a =  1
+##        a1 =  2
+##        a2 =  3
+##      @}
 ## @end group
 ## @end example
 ##
@@ -173,31 +172,31 @@ function varname = genvarname (str, exclusions)
 
 endfunction
 
-## Tests
+
 ## a single argument
-%!assert(genvarname("a"), "a")
+%!assert (genvarname ("a"), "a")
 ## a single argument with a non-conflicting exception
-%!assert(genvarname("a", "b"), "a")
+%!assert (genvarname ("a", "b"), "a")
 ## a single argument with a conflicting exception
-%!assert(genvarname("a", "a"), "a1")
+%!assert (genvarname ("a", "a"), "a1")
 ## a single argument as a cell
-%!assert(genvarname({"a"}), {"a"})
-%!assert(genvarname({"a"}, "b"), {"a"})
-%!assert(genvarname({"a"}, {"b"}), {"a"})
-%!assert(genvarname({"a"}, "a"), {"a1"})
-%!assert(genvarname({"a"}, {"a"}), {"a1"})
+%!assert (genvarname ({"a"}), {"a"})
+%!assert (genvarname ({"a"}, "b"), {"a"})
+%!assert (genvarname ({"a"}, {"b"}), {"a"})
+%!assert (genvarname ({"a"}, "a"), {"a1"})
+%!assert (genvarname ({"a"}, {"a"}), {"a1"})
 ## Test different arguments
 ## orientation
-%!assert(genvarname({"a" "b"}), {"a" "b"})
-%!assert(genvarname({"a";"b"}), {"a";"b"})
-%!assert(genvarname({"a" "a"}), {"a" "a1"})
-%!assert(genvarname({"a" "b";"c" "d"}), {"a" "b";"c" "d"})
-%!assert(genvarname({"a" "a" "a";"a" "a" "a"}), {"a" "a2" "a4";"a1" "a3" "a5"})
+%!assert (genvarname ({"a" "b"}), {"a" "b"})
+%!assert (genvarname ({"a";"b"}), {"a";"b"})
+%!assert (genvarname ({"a" "a"}), {"a" "a1"})
+%!assert (genvarname ({"a" "b";"c" "d"}), {"a" "b";"c" "d"})
+%!assert (genvarname ({"a" "a" "a";"a" "a" "a"}), {"a" "a2" "a4";"a1" "a3" "a5"})
 ## more than one repetition
-%!assert(genvarname({"a" "a" "a"}), {"a" "a1" "a2"})
-%!assert(genvarname({"a" "a" "a"}, {"a" "a1" "a2"}), {"a3" "a4" "a5"})
+%!assert (genvarname ({"a" "a" "a"}), {"a" "a1" "a2"})
+%!assert (genvarname ({"a" "a" "a"}, {"a" "a1" "a2"}), {"a3" "a4" "a5"})
 ## more than one repetition not in order
-%!assert(genvarname({"a" "b" "a" "b" "a"}), {"a" "b" "a1" "b1" "a2"})
+%!assert (genvarname ({"a" "b" "a" "b" "a"}), {"a" "b" "a1" "b1" "a2"})
 ## Variable name munging
 %!assert (genvarname ("__x__"), "_x_")
 %!assert (genvarname ("123456789"), "_123456789")
@@ -207,3 +206,4 @@ endfunction
 %!assert (genvarname ({"", "", ""}), {"x", "x1", "x2"})
 %!assert (genvarname ("if"), "_if")
 %!assert (genvarname ({"if", "if", "if"}), {"_if", "_if1", "_if2"})
+

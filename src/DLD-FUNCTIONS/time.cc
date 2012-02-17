@@ -149,7 +149,7 @@ gmtime (time ())\n\
            yday = 47\n\
            isdst = 0\n\
            zone = CST\n\
-         @}\n\
+        @}\n\
 @end group\n\
 @end example\n\
 @seealso{strftime, strptime, localtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
@@ -213,7 +213,7 @@ localtime (time ())\n\
            yday = 47\n\
            isdst = 0\n\
            zone = CST\n\
-         @}\n\
+        @}\n\
 @end group\n\
 @end example\n\
 @seealso{strftime, strptime, gmtime, mktime, time, now, date, clock, datenum, datestr, datevec, calendar, weekday}\n\
@@ -329,7 +329,7 @@ output without change.  For example:\n\
 @example\n\
 @group\n\
 strftime (\"%r (%Z) %A %e %B %Y\", localtime (time ()))\n\
-     @result{} \"01:15:06 AM (CST) Monday 17 February 1997\"\n\
+      @result{} \"01:15:06 AM (CST) Monday 17 February 1997\"\n\
 @end group\n\
 @end example\n\
 \n\

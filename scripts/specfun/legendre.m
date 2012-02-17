@@ -43,7 +43,7 @@
 ## @example
 ## @group
 ##  m        m       2  m/2   d^m
-## P(x) = (-1) * (1-x  )    * ----  P (x)
+## P(x) = (-1) * (1-x  )    * ----  P(x)
 ##  n                         dx^m   n
 ## @end group
 ## @end example
@@ -62,9 +62,9 @@
 ##
 ## @example
 ## @group
-##           1     d^n   2    n
-## P (x) = ------ [----(x - 1)  ]
-##  n      2^n n!  dx^n
+##           1    d^n   2    n
+## P(x) = ------ [----(x - 1) ]
+##  n     2^n n!  dx^n
 ## @end group
 ## @end example
 ##
@@ -75,7 +75,7 @@
 ##
 ## @example
 ## @group
-##  x  |   -1.0   |   -0.9   |  -0.8
+##  x  |   -1.0   |   -0.9   |   -0.8
 ## ------------------------------------
 ## m=0 | -1.00000 | -0.47250 | -0.08000
 ## m=1 |  0.00000 | -1.99420 | -1.98000
@@ -100,9 +100,9 @@
 ##
 ## @example
 ## @group
-##   0       0
-## SP (x) = P (x)
-##   n       n
+##   0      0
+## SP(x) = P(x)
+##   n      n
 ## @end group
 ## @end example
 ##
@@ -119,9 +119,9 @@
 ##
 ## @example
 ## @group
-##   m       m          m    2(n-m)! 0.5
-## SP (x) = P (x) * (-1)  * [-------]
-##   n       n               (n+m)!
+##   m      m         m    2(n-m)! 0.5
+## SP(x) = P(x) * (-1)  * [-------]
+##   n      n              (n+m)!
 ## @end group
 ## @end example
 ##
@@ -143,9 +143,9 @@
 ##
 ## @example
 ## @group
-##   m       m          m    (n+0.5)(n-m)! 0.5
-## NP (x) = P (x) * (-1)  * [-------------]
-##   n       n                   (n+m)!
+##   m      m         m    (n+0.5)(n-m)! 0.5
+## NP(x) = P(x) * (-1)  * [-------------]
+##   n      n                  (n+m)!
 ## @end group
 ## @end example
 ##
@@ -286,7 +286,7 @@ endfunction
 
 %!test
 %! result = legendre (0, 0:0.1:1);
-%! assert (result, full(ones(1,11)));
+%! assert (result, full (ones (1,11)));
 
 %!test
 %! result = legendre (3, [-1,0,1;1,0,-1]);
@@ -303,13 +303,14 @@ endfunction
 %! assert (result, expected);
 
 %% Check correct invocation
-%!error legendre ();
-%!error legendre (1);
-%!error legendre (1,2,3,4);
-%!error legendre ([1, 2], [-1, 0, 1]);
-%!error legendre (-1, [-1, 0, 1]);
-%!error legendre (1.1, [-1, 0, 1]);
-%!error legendre (1, [-1+i, 0, 1]);
-%!error legendre (1, [-2, 0, 1]);
-%!error legendre (1, [-1, 0, 2]);
-%!error legendre (1, [-1, 0, 1], "badnorm");
+%!error legendre ()
+%!error legendre (1)
+%!error legendre (1,2,3,4)
+%!error legendre ([1, 2], [-1, 0, 1])
+%!error legendre (-1, [-1, 0, 1])
+%!error legendre (1.1, [-1, 0, 1])
+%!error legendre (1, [-1+i, 0, 1])
+%!error legendre (1, [-2, 0, 1])
+%!error legendre (1, [-1, 0, 2])
+%!error legendre (1, [-1, 0, 1], "badnorm")
+

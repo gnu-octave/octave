@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s}, @var{c})
-## @deftypefnx {Function File} {} scatter3 (@dots{}, 'filled')
+## @deftypefnx {Function File} {} scatter3 (@dots{}, "filled")
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} scatter3 (@var{h}, @dots{})
@@ -38,7 +38,7 @@
 ##
 ## The marker to use can be changed with the @var{style} argument, that is a
 ## string defining a marker in the same manner as the @code{plot} command.
-## If the argument 'filled' is given then the markers as filled.  All
+## If the argument "filled" is given then the markers as filled.  All
 ## additional arguments are passed to the underlying patch command.
 ##
 ## The optional return value @var{h} is a graphics handle to the hggroup

@@ -876,7 +876,7 @@ For example:\n\
 @example\n\
 @group\n\
 s = urlread (\"http://www.google.com/search\", \"get\",\n\
-             @{\"query\", \"octave\"@});\n\
+            @{\"query\", \"octave\"@});\n\
 @end group\n\
 @end example\n\
 @seealso{urlwrite}\n\

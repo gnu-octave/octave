@@ -81,11 +81,12 @@ function y = nthroot (x, n)
 
 endfunction
 
-%!assert (nthroot(-32,5), -2);
-%!assert (nthroot(81,4), 3);
-%!assert (nthroot(Inf,4), Inf);
-%!assert (nthroot(-Inf,7), -Inf);
-%!assert (nthroot(-Inf,-7), 0);
+
+%!assert (nthroot (-32,5), -2);
+%!assert (nthroot (81,4), 3);
+%!assert (nthroot (Inf,4), Inf);
+%!assert (nthroot (-Inf,7), -Inf);
+%!assert (nthroot (-Inf,-7), 0);
 
 %% Test input validation
 %!error (nthroot ())

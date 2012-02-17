@@ -51,8 +51,12 @@ function ppi = ppint (pp, c)
 
 endfunction
 
+
 %!shared x,y,pp,ppi
-%! x=0:8;y=[ones(size(x));x+1];pp=spline(x,y);
-%! ppi=ppint(pp);
-%!assert(ppval(ppi,x),[x;0.5*x.^2+x],1e-14)
-%!assert(ppi.order,5)
+%! x = 0:8;
+%! y = [ ones(size(x)); x+1 ];
+%! pp = spline (x, y);
+%! ppi = ppint (pp);
+%!assert (ppval (ppi, x), [x; 0.5*x.^2 + x], 1e-14)
+%!assert (ppi.order, 5)
+

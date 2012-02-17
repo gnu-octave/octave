@@ -1072,7 +1072,7 @@ converted.\n\
 DEFUN (fscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{locale})\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{locale})\n\
 In the first form, read from @var{fid} according to @var{template},\n\
 returning the result in the matrix @var{val}.\n\
 \n\
@@ -1111,9 +1111,9 @@ In the second form, read from @var{fid} according to @var{template},\n\
 with each conversion specifier in @var{template} corresponding to a\n\
 single scalar return value.  This form is more `C-like', and also\n\
 compatible with previous versions of Octave.  The number of successful\n\
-conversions is returned in @var{count}. It permits to explicitly\n\
-specify a locale to take into account langage specific features, \n\
-such as decimal separator. This operation restores the previous locales\n\
+conversions is returned in @var{count}.  It permits to explicitly\n\
+specify a locale to take into account language specific features, \n\
+such as decimal separator.  This operation restores the previous locales\n\
 setting at the end of the conversion.\n\
 @ifclear OCTAVE_MANUAL\n\
 \n\
@@ -1339,7 +1339,7 @@ is returned in @var{pos}.\n\
 DEFUN (scanf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}]] =} scanf (@var{template}, @var{locale}))\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} scanf (@var{template}, @var{locale})\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\
@@ -1853,9 +1853,10 @@ fid = popen (\"ls -ltr / | tail -3\", \"r\");\n\
 while (ischar (s = fgets (fid)))\n\
   fputs (stdout, s);\n\
 endwhile\n\
-     @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc\n\
-     @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib\n\
-     @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
+\n\
+   @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc\n\
+   @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib\n\
+   @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
 @end group\n\
 @end example\n\
 @end deftypefn")
@@ -2226,6 +2227,7 @@ DEFUNX ("SEEK_SET", FSEEK_SET, args, ,
 @deftypefnx {Built-in Function} {} SEEK_END ()\n\
 Return the numerical value to pass to @code{fseek} to perform\n\
 one of the following actions:\n\
+\n\
 @table @code\n\
 @item SEEK_SET\n\
 Position file relative to the beginning.\n\

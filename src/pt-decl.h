@@ -207,20 +207,20 @@ private:
   tree_global_command& operator = (const tree_global_command&);
 };
 
-// Static.
+// Persistent.
 
 class
-tree_static_command : public tree_decl_command
+tree_persistent_command : public tree_decl_command
 {
 public:
 
-  tree_static_command (int l = -1, int c = -1)
-    : tree_decl_command ("static", l, c) { }
+  tree_persistent_command (int l = -1, int c = -1)
+    : tree_decl_command ("persistent", l, c) { }
 
-  tree_static_command (tree_decl_init_list *t, int l = -1, int c = -1)
-    : tree_decl_command ("static", t, l, c) { }
+  tree_persistent_command (tree_decl_init_list *t, int l = -1, int c = -1)
+    : tree_decl_command ("persistent", t, l, c) { }
 
-  ~tree_static_command (void) { }
+  ~tree_persistent_command (void) { }
 
   tree_command *dup (symbol_table::scope_id scope,
                      symbol_table::context_id context) const;
@@ -233,9 +233,9 @@ private:
 
   // No copying!
 
-  tree_static_command (const tree_static_command&);
+  tree_persistent_command (const tree_persistent_command&);
 
-  tree_static_command& operator = (const tree_static_command&);
+  tree_persistent_command& operator = (const tree_persistent_command&);
 };
 
 #endif

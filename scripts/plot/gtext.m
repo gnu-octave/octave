@@ -44,6 +44,7 @@ function gtext (s, varargin)
 
 endfunction
 
+
 ## Remove from test statistics.  No real tests possible.
-%!test
-%! assert (1);
+%!assert (1)
+

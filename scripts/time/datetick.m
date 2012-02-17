@@ -65,7 +65,7 @@ endfunction
 %! plot (yr, pr);
 %! xlabel ("year");
 %! ylabel ("average price");
-%! ax = gca ();
+%! ax = gca;
 %! set (ax, "xtick", datenum (1990:5:2005,1,1));
 %! datetick (2, "keepticks");
 %! set (ax, "ytick", 12:16);

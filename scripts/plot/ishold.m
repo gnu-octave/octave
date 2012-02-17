@@ -55,15 +55,16 @@ function retval = ishold (h)
 
 endfunction
 
+
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   assert (!ishold);
+%!   assert (! ishold);
 %!   assert (isempty (get (hf, "currentaxes")));
 %!   assert (get (hf, "NextPlot"), "add");
 %!   l = plot ([0 1]);
-%!   assert (!ishold);
-%!   assert (!ishold (gca));
+%!   assert (! ishold);
+%!   assert (! ishold (gca));
 %!   assert (get (gca, "NextPlot"), "replace");
 %!   assert (get (hf, "NextPlot"), "add");
 %!   hold;
@@ -77,3 +78,4 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+

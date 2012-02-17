@@ -55,6 +55,7 @@ function narginchk (minargs, maxargs)
 
 endfunction
 
+
 %!function f (nargs, varargin)
 %! narginchk (nargs(1), nargs(2));
 %!endfunction
@@ -64,6 +65,6 @@ endfunction
 
 %!test
 %! f([1,1])
-
 %!test
 %! f([1,5], 2, 3, 4, 5)
+

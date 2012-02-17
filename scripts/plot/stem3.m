@@ -56,5 +56,5 @@ endfunction
 %!demo
 %! clf;
 %! theta = 0:0.2:6;
-%! stem3 (cos(theta), sin(theta), theta);
+%! stem3 (cos (theta), sin (theta), theta);
 

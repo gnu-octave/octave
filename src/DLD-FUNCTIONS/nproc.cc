@@ -35,6 +35,7 @@ Return the current number of available processors.\n\
 \n\
 If called with the optional argument @var{query}, modify how processors\n\
 are counted as follows:\n\
+\n\
 @table @code\n\
 @item all\n\
 total number of processors.\n\

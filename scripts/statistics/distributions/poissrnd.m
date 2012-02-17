@@ -94,27 +94,27 @@ function rnd = poissrnd (lambda, varargin)
 endfunction
 
 
-%!assert(size (poissrnd (2)), [1, 1]);
-%!assert(size (poissrnd (ones(2,1))), [2, 1]);
-%!assert(size (poissrnd (ones(2,2))), [2, 2]);
-%!assert(size (poissrnd (1, 3)), [3, 3]);
-%!assert(size (poissrnd (1, [4 1])), [4, 1]);
-%!assert(size (poissrnd (1, 4, 1)), [4, 1]);
+%!assert (size (poissrnd (2)), [1, 1])
+%!assert (size (poissrnd (ones (2,1))), [2, 1])
+%!assert (size (poissrnd (ones (2,2))), [2, 2])
+%!assert (size (poissrnd (1, 3)), [3, 3])
+%!assert (size (poissrnd (1, [4 1])), [4, 1])
+%!assert (size (poissrnd (1, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (poissrnd (2)), "double");
-%!assert(class (poissrnd (single(2))), "single");
-%!assert(class (poissrnd (single([2 2]))), "single");
+%!assert (class (poissrnd (2)), "double")
+%!assert (class (poissrnd (single (2))), "single")
+%!assert (class (poissrnd (single ([2 2]))), "single")
 
 %% Test input validation
 %!error poissrnd ()
 %!error poissrnd (1, -1)
-%!error poissrnd (1, ones(2))
-%!error poissrnd (1, 2, ones(2))
+%!error poissrnd (1, ones (2))
+%!error poissrnd (1, 2, ones (2))
 %!error poissrnd (i)
 %!error poissrnd (1, 2, -1)
 %!error poissrnd (1, [2 -1 2])
-%!error poissrnd (ones(2,2), 3)
-%!error poissrnd (ones(2,2), [3, 2])
-%!error poissrnd (ones(2,2), 2, 3)
+%!error poissrnd (ones (2,2), 3)
+%!error poissrnd (ones (2,2), [3, 2])
+%!error poissrnd (ones (2,2), 2, 3)
 

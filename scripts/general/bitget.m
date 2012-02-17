@@ -80,8 +80,6 @@ function C = bitget (A, n)
 
 endfunction
 
-%!error bitget (1);
-%!error bitget (1, 2, 3);
 
 %!test
 %! assert (bitget ([4, 14], [3, 3]), logical ([1, 1]));
@@ -93,17 +91,21 @@ endfunction
 %!   endfor
 %! endfor
 
-%!error bitget (0, 0);
-%!error bitget (0, 55);
+%!error bitget (0, 0)
+%!error bitget (0, 55)
 
-%!error bitget (int8 (0), 9);
-%!error bitget (uint8 (0), 9);
+%!error bitget (int8 (0), 9)
+%!error bitget (uint8 (0), 9)
 
-%!error bitget (int16 (0), 17);
-%!error bitget (uint16 (0), 17);
+%!error bitget (int16 (0), 17)
+%!error bitget (uint16 (0), 17)
 
-%!error bitget (int32 (0), 33);
-%!error bitget (uint32 (0), 33);
+%!error bitget (int32 (0), 33)
+%!error bitget (uint32 (0), 33)
 
-%!error bitget (int64 (0), 65);
-%!error bitget (uint64 (0), 65);
+%!error bitget (int64 (0), 65)
+%!error bitget (uint64 (0), 65)
+
+%!error bitget (1)
+%!error bitget (1, 2, 3)
+

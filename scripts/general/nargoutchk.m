@@ -104,21 +104,21 @@ function msg = nargoutchk (minargs, maxargs, nargs, outtype)
 
 endfunction
 
-## Tests
+
 %!shared stnul, stmin, stmax
-%!  stnul = resize (struct ("message", "", "identifier", ""), 0, 1);
-%!  stmin = struct ("message", "not enough output arguments",
-%!                  "identifier", "Octave:nargoutchk:not-enough-outputs");
-%!  stmax = struct ("message", "too many output arguments",
-%!                  "identifier", "Octave:nargoutchk:too-many-outputs");
+%! stnul = resize (struct ("message", "", "identifier", ""), 0, 1);
+%! stmin = struct ("message", "not enough output arguments",
+%!                 "identifier", "Octave:nargoutchk:not-enough-outputs");
+%! stmax = struct ("message", "too many output arguments",
+%!                 "identifier", "Octave:nargoutchk:too-many-outputs");
 %!assert (nargoutchk (0, 1, 0), "")
 %!assert (nargoutchk (0, 1, 1), "")
 %!assert (nargoutchk (1, 1, 0), "not enough output arguments")
 %!assert (nargoutchk (0, 1, 2), "too many output arguments")
 %!assert (nargoutchk (0, 1, 2, "string"), "too many output arguments")
 ## Struct outputs
-%!assert (isequal (nargoutchk (0, 1, 0, "struct"), stnul))
-%!assert (isequal (nargoutchk (0, 1, 1, "struct"), stnul))
+%!assert (nargoutchk (0, 1, 0, "struct"), stnul)
+%!assert (nargoutchk (0, 1, 1, "struct"), stnul)
 %!assert (nargoutchk (1, 1, 0, "struct"), stmin)
 %!assert (nargoutchk (0, 1, 2, "struct"), stmax)
 

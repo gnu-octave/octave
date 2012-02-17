@@ -17,12 +17,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} contrast (@var{x})
-## @deftypefnx {Function File} {} contrast (@var{x}, @var{n})
+## @deftypefn  {Function File} {@var{map} =} contrast (@var{x})
+## @deftypefnx {Function File} {@var{map} =} contrast (@var{x}, @var{n})
 ## Return a gray colormap that maximizes the contrast in an image.  The
 ## returned colormap will have @var{n} rows.  If @var{n} is not defined
 ## then the size of the current colormap is used.
-## @seealso{colormap}
+## @seealso{colormap, brighten}
 ## @end deftypefn
 
 function map = contrast (x, n)
@@ -50,11 +50,14 @@ endfunction
 %!demo
 %! clf;
 %! img = reshape (1:100, 10, 10);
-%! image (img);
-%! colormap (gray (10));
-%! title ("Image with default 256 gray levels");
-%! input ("Press <enter> to continue: ", "s");
-%! colormap (contrast (img));
+%! imagesc (img);
+%! colormap (gray (64));
+%! title ("Image with default 64 gray levels");
+%! pos = get (gcf, "position");
+%! pos(1) += pos(3) + 15;
+%! figure ("position", pos); 
+%! colormap (contrast (img, 10));
+%! imagesc (img);
 %! title ("Image with contrast enhanced");
 
 %!assert (contrast (1:100,10), [([0:9]/9)',([0:9]/9)',([0:9]/9)'], 1e-10)

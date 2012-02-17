@@ -17,10 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{img}, @var{map}] =} gray2ind (@var{I}, @var{n})
+## @deftypefn  {Function File} {[@var{img} =} gray2ind (@var{I})
+## @deftypefnx {Function File} {[@var{img} =} gray2ind (@var{I}, @var{n})
+## @deftypefnx {Function File} {[@var{img}, @var{map} =} gray2ind (@dots{})
 ## Convert a gray scale intensity image to an Octave indexed image.
-## The indexed image will consist of @var{n} different intensity values.  If not
-## given @var{n} will default to 64.
+## The indexed image will consist of @var{n} different intensity values.
+## If not given @var{n} defaults to 64.
+## @seealso{ind2gray, rgb2ind} 
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

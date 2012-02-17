@@ -21,13 +21,13 @@
 ## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt})
 ## @deftypefnx {Function File} {[@var{z}, @var{mu}, @var{sigma}] =} zscore (@var{x}, @var{opt}, @var{dim})
 ## If @var{x} is a vector, subtract its mean and divide by its standard
-## deviation. If the standard deviation is zero, divide by 1 instead.
+## deviation.  If the standard deviation is zero, divide by 1 instead.
 ## The optional parameter @var{opt} determines the normalization to use
 ## when computing the standard deviation and is the same as the
 ## corresponding parameter for @code{std}.
 ##
 ## If @var{x} is a matrix, do the above along the first non-singleton
-## dimension. If the third optional argument @var{dim} is given, operate
+## dimension.  If the third optional argument @var{dim} is given, operate
 ## along this dimension.
 ##
 ## The mean and standard deviation along @var{dim} are given in @var{mu}
@@ -89,17 +89,17 @@ function [z, mu, sigma] = zscore (x, opt, dim)
 endfunction
 
 
-%!assert(zscore ([1,2,3]), [-1,0,1])
-%!assert(zscore (single([1,2,3])), single([-1,0,1]))
-%!assert(zscore (int8([1,2,3])), [-1,0,1])
-%!assert(zscore (ones (3,2,2,2)), zeros (3,2,2,2))
-%!assert(zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
+%!assert (zscore ([1,2,3]), [-1,0,1])
+%!assert (zscore (single ([1,2,3])), single ([-1,0,1]))
+%!assert (zscore (int8 ([1,2,3])), [-1,0,1])
+%!assert (zscore (ones (3,2,2,2)), zeros (3,2,2,2))
+%!assert (zscore ([2,0,-2;0,2,0;-2,-2,2]), [1,0,-1;0,1,0;-1,-1,1])
 
 %% Test input validation
 %!error zscore ()
 %!error zscore (1, 2, 3)
 %!error zscore (['A'; 'B'])
-%!error zscore (1, ones(2,2))
+%!error zscore (1, ones (2,2))
 %!error zscore (1, 1.5)
 %!error zscore (1, 1, 0)
 %!error zscore (1, 3)

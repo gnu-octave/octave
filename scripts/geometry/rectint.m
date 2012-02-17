@@ -111,21 +111,22 @@ function area = rectint (a, b)
 
 endfunction
 
-## Tests
+
 ## Exactly overlapping
-%!assert(rectint([0 0 1 1], [0 0 1 1]), 1)
+%!assert (rectint ([0 0 1 1], [0 0 1 1]), 1)
 ## rect2 completely enclosed by rect1
-%!assert(rectint([-1 -1 3 3], [0 0 1 1]), 1)
+%!assert (rectint ([-1 -1 3 3], [0 0 1 1]), 1)
 ## rect1 completely enclosed by rect2
-%!assert(rectint([0 0 1 1], [-1 -1 3 3]), 1)
+%!assert (rectint ([0 0 1 1], [-1 -1 3 3]), 1)
 ## rect1 right and top in rect2
-%!assert(rectint([-1 -1 1.5 1.5], [0 0 1 1]), 0.25)
+%!assert (rectint ([-1 -1 1.5 1.5], [0 0 1 1]), 0.25)
 ## rect2 right and top in rect1
-%!assert(rectint([0 0 1 1], [-1 -1 1.5 1.5]), 0.25)
+%!assert (rectint ([0 0 1 1], [-1 -1 1.5 1.5]), 0.25)
 ## no overlap - shared corner
-%!assert(rectint([0 0 1 1], [1 1 2 2]), 0)
+%!assert (rectint ([0 0 1 1], [1 1 2 2]), 0)
 ## no overlap - shared edge
-%!assert(rectint([0 0 1 1], [0 1 2 2]), 0)
+%!assert (rectint ([0 0 1 1], [0 1 2 2]), 0)
 ## Correct orientation of output
-%!assert(rectint([0 0 1 1;0.5 0.5 1 1;-1 -1 2 2], [1 1 2 2]), [0;0.25;0])
-%!assert(rectint([1 1 2 2], [0 0 1 1;0.5 0.5 1 1;-1 -1 2 2]), [0 0.25 0])
+%!assert (rectint ([0 0 1 1;0.5 0.5 1 1;-1 -1 2 2], [1 1 2 2]), [0;0.25;0])
+%!assert (rectint ([1 1 2 2], [0 0 1 1;0.5 0.5 1 1;-1 -1 2 2]), [0 0.25 0])
+

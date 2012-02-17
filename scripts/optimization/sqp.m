@@ -33,8 +33,8 @@
 ##
 ## @example
 ## @group
-##      min phi (x)
-##       x
+## min phi (x)
+##  x
 ## @end group
 ## @end example
 ##
@@ -49,9 +49,9 @@
 ##
 ## @example
 ## @group
-##      g(x)  = 0
-##      h(x) >= 0
-##      lb <= x <= ub
+## g(x)  = 0
+## h(x) >= 0
+## lb <= x <= ub
 ## @end group
 ## @end example
 ##
@@ -102,9 +102,9 @@
 ##
 ## @example
 ## @group
-##                 [ d f(x)   d f(x)        d f(x) ]
-##     transpose ( [ ------   -----   ...   ------ ] )
-##                 [  dx_1     dx_2          dx_N  ]
+##             [ d f(x)   d f(x)        d f(x) ]
+## transpose ( [ ------   -----   ...   ------ ] )
+##             [  dx_1     dx_2          dx_N  ]
 ## @end group
 ## @end example
 ##
@@ -155,7 +155,7 @@
 ## endfunction
 ##
 ## function obj = phi (x)
-##   obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+##   obj = exp (prod (x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
 ## endfunction
 ##
 ## x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
@@ -733,6 +733,7 @@ function report (iter, qp_iter, alpha, nfun, obj)
 
 endfunction
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Test Code
 
@@ -743,7 +744,7 @@ endfunction
 %!endfunction
 %!
 %!function obj = __phi (x)
-%!  obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+%!  obj = exp (prod (x)) - 0.5*(x(1)^3 + x(2)^3 + 1)^2;
 %!endfunction
 %!
 %!test
@@ -760,22 +761,23 @@ endfunction
 %!
 %! obj_opt = 0.0539498477702739;
 %!
-%! assert (all (abs (x-x_opt) < 5*sqrt (eps)) && abs (obj-obj_opt) < sqrt (eps));
+%! assert (x, x_opt, 5*sqrt (eps));
+%! assert (obj, obj_opt, sqrt (eps));
 
 %% Test input validation
 %!error sqp ()
 %!error sqp (1)
 %!error sqp (1,2,3,4,5,6,7,8,9)
 %!error sqp (1,2,3,4,5)
-%!error sqp (ones(2,2))
-%!error sqp (1,cell(4,1))
-%!error sqp (1,cell(3,1),cell(3,1))
-%!error sqp (1,cell(3,1),cell(2,1),cell(3,1))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),ones(2,2),[])
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],ones(2,2))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),1,-1)
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],ones(2,2))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],-1)
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],1.5)
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],[],ones(2,2))
-%!error sqp (1,cell(3,1),cell(2,1),cell(2,1),[],[],[],-1)
+%!error sqp (ones (2,2))
+%!error sqp (1, cell (4,1))
+%!error sqp (1, cell (3,1), cell (3,1))
+%!error sqp (1, cell (3,1), cell (2,1), cell (3,1))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1), ones (2,2),[])
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[], ones (2,2))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),1,-1)
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[], ones (2,2))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],-1)
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],1.5)
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[], ones (2,2))
+%!error sqp (1, cell (3,1), cell (2,1), cell (2,1),[],[],[],-1)

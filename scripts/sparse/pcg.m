@@ -124,17 +124,17 @@
 ##
 ## @example
 ## @group
-##      n = 10;
-##      A = diag (sparse (1:n));
-##      b = rand (n, 1);
-##      [l, u, p, q] = luinc (A, 1.e-3);
+## n = 10;
+## A = diag (sparse (1:n));
+## b = rand (n, 1);
+## [l, u, p, q] = luinc (A, 1.e-3);
 ## @end group
 ## @end example
 ##
 ## @sc{Example 1:} Simplest use of @code{pcg}
 ##
 ## @example
-##   x = pcg(A,b)
+## x = pcg (A,b)
 ## @end example
 ##
 ## @sc{Example 2:} @code{pcg} with a function which computes
@@ -142,18 +142,18 @@
 ##
 ## @example
 ## @group
-##   function y = apply_a (x)
-##     y = [1:N]'.*x;
-##   endfunction
+## function y = apply_a (x)
+##   y = [1:N]' .* x;
+## endfunction
 ##
-##   x = pcg ("apply_a", b)
+## x = pcg ("apply_a", b)
 ## @end group
 ## @end example
 ##
 ## @sc{Example 3:} @code{pcg} with a preconditioner: @var{l} * @var{u}
 ##
 ## @example
-## x = pcg (A, b, 1.e-6, 500, l*u);
+## x = pcg (A, b, 1.e-6, 500, l*u)
 ## @end example
 ##
 ## @sc{Example 4:} @code{pcg} with a preconditioner: @var{l} * @var{u}.
@@ -161,7 +161,7 @@
 ## are easier to invert
 ##
 ## @example
-## x = pcg (A, b, 1.e-6, 500, l, u);
+## x = pcg (A, b, 1.e-6, 500, l, u)
 ## @end example
 ##
 ## @sc{Example 5:} Preconditioned iteration, with full diagnostics.  The
@@ -170,15 +170,15 @@
 ##
 ## @example
 ## @group
-##   function y = apply_m (x)
-##     k = floor (length (x) - 2);
-##     y = x;
-##     y(1:k) = x(1:k)./[1:k]';
-##   endfunction
+## function y = apply_m (x)
+##   k = floor (length (x) - 2);
+##   y = x;
+##   y(1:k) = x(1:k) ./ [1:k]';
+## endfunction
 ##
-##   [x, flag, relres, iter, resvec, eigest] = ...
-##                      pcg (A, b, [], [], "apply_m");
-##   semilogy (1:iter+1, resvec);
+## [x, flag, relres, iter, resvec, eigest] = ...
+##                    pcg (A, b, [], [], "apply_m");
+## semilogy (1:iter+1, resvec);
 ## @end group
 ## @end example
 ##
@@ -187,14 +187,14 @@
 ##
 ## @example
 ## @group
-##   function y = apply_M (x, varargin)
+## function y = apply_M (x, varargin)
 ##   K = varargin@{1@};
 ##   y = x;
-##   y(1:K) = x(1:K)./[1:K]';
-##   endfunction
+##   y(1:K) = x(1:K) ./ [1:K]';
+## endfunction
 ##
-##   [x, flag, relres, iter, resvec, eigest] = ...
-##        pcg (A, b, [], [], "apply_m", [], [], 3)
+## [x, flag, relres, iter, resvec, eigest] = ...
+##      pcg (A, b, [], [], "apply_m", [], [], 3)
 ## @end group
 ## @end example
 ##
@@ -216,8 +216,7 @@
 
 ## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
 ## Modified by: Vittoria Rezzonico <vittoria.rezzonico@epfl.ch>
-##    - Add the ability to provide the pre-conditioner as two separate
-## matrices
+##  - Add the ability to provide the pre-conditioner as two separate matrices
 
 function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2, x0, varargin)
 
@@ -434,7 +433,6 @@ endfunction
 %!  legend ("absolute residual", "absolute preconditioned residual");
 
 %!demo
-%!
 %!  # Full output from pcg, including the eigenvalue estimates
 %!  # We use the 1-D Laplacian matrix for A, and cond(A) = O(N^2)
 %!  # and that's the reason we need some preconditioner; here we take

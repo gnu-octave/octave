@@ -41,8 +41,9 @@ function res = isappdata (h, name)
 
 endfunction
 
+
 %!test
-%! setappdata (0, "hello", "world")
-%! assert (isappdata (0, "hello"), true)
-%!assert (isappdata (0, "foobar"), false)
+%! setappdata (0, "hello", "world");
+%! assert (isappdata (0, "hello"), true);
+%! assert (isappdata (0, "foobar"), false);
 

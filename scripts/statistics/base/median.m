@@ -34,9 +34,9 @@
 ##
 ## @example
 ## @group
-##             x(ceil(N/2)),             N odd
-## median(x) =
-##             (x(N/2) + x((N/2)+1))/2,  N even
+##               x(ceil(N/2))             N odd
+## median (x) =
+##              (x(N/2) + x((N/2)+1))/2   N even
 ## @end group
 ## @end example
 ##
@@ -94,20 +94,20 @@ endfunction
 %! y = [1, 2, 3, 4, 5, 6, 7];
 %! y2 = y';
 %!
-%! assert(median (x) == median (x2) && median (x) == 3.5);
-%! assert(median (y) == median (y2) && median (y) == 4);
-%! assert(median ([x2, 2*x2]) == [3.5, 7]);
-%! assert(median ([y2, 3*y2]) == [4, 12]);
+%! assert (median (x) == median (x2) && median (x) == 3.5);
+%! assert (median (y) == median (y2) && median (y) == 4);
+%! assert (median ([x2, 2*x2]), [3.5, 7]);
+%! assert (median ([y2, 3*y2]), [4, 12]);
 
-%!assert(median (single([1,2,3])), single(2));
-%!assert(median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN]);
+%!assert (median (single ([1,2,3])), single (2))
+%!assert (median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN])
 
 %% Test input validation
-%!error median ();
-%!error median (1, 2, 3);
-%!error median ({1:5});
-%!error median (['A'; 'B']);
-%!error median (1, ones(2,2));
-%!error median (1, 1.5);
-%!error median (1, 0);
+%!error median ()
+%!error median (1, 2, 3)
+%!error median ({1:5})
+%!error median (['A'; 'B'])
+%!error median (1, ones(2,2))
+%!error median (1, 1.5)
+%!error median (1, 0)
 

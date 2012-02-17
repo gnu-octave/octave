@@ -40,13 +40,8 @@ function map = prism (n)
     print_usage ();
   endif
 
-  p = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
-
-  if (rem (n, 6) == 0)
-    map = kron(ones (fix (n / 6), 1), p);
-  else
-    map = [kron(ones (fix (n / 6), 1), p); p(1:rem (n, 6), :)];
-  endif
+  C = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
+  map = C(rem (0:(n-1), 6) + 1, :);
 
 endfunction
 

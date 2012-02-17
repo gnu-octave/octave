@@ -81,3 +81,4 @@ endfunction
 %! c = sort (cellstr ({ [], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]}));
 %! p = sort (cellstr (powerset ([1, 2, 3])));
 %! assert (p, c);
+

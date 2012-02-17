@@ -118,24 +118,22 @@ function r = roots (v)
 
 endfunction
 
+
 %!test
 %! p = [poly([3 3 3 3]), 0 0 0 0];
 %! r = sort (roots (p));
-%! assert (r, [0; 0; 0; 0; 3; 3; 3; 3], 0.001)
+%! assert (r, [0; 0; 0; 0; 3; 3; 3; 3], 0.001);
 
-%!assert(all (all (abs (roots ([1, -6, 11, -6]) - [3; 2; 1]) < sqrt (eps))));
-
-%!assert(isempty (roots ([])));
-
-%!error roots ([1, 2; 3, 4]);
-
-%!assert(isempty (roots (1)));
-
-%!error roots ([1, 2; 3, 4]);
-
-%!error roots ([1 Inf 1]);
-
-%!error roots ([1 NaN 1]);
+%!assert (isempty (roots ([])))
+%!assert (isempty (roots (1)))
+%!assert (roots ([1, -6, 11, -6]), [3; 2; 1], sqrt (eps))
 
 %!assert(roots ([1e-200, -1e200, 1]), 1e-200)
 %!assert(roots ([1e-200, -1e200 * 1i, 1]), -1e-200 * 1i)
+
+%!error roots ()
+%!error roots (1,2)
+%!error roots ([1, 2; 3, 4])
+%!error <inputs must not contain Inf or NaN> roots ([1 Inf 1])
+%!error <inputs must not contain Inf or NaN> roots ([1 NaN 1])
+

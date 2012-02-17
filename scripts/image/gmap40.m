@@ -23,8 +23,8 @@
 ## magenta and cyan.  This colormap is specifically designed for users of
 ## gnuplot 4.0 where these 6 colors are the allowable ones for patch objects.
 ## The argument @var{n} must be a scalar.
-## If unspecified, a length of 6 is assumed.  Larger values
-## of @var{n} result in a repetition of the above colors.
+## If unspecified, a length of 6 is assumed.  Larger values of @var{n} result
+## in a repetition of the above colors.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -40,12 +40,8 @@ function map = gmap40 (n)
     print_usage ();
   endif
 
-  if (n >= 1)
-    map = repmat ([1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1],
-          ceil (n / 6), 1) (1:n, :);
-  else
-    map = [];
-  endif
+  C = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
+  map = C(rem (0:(n-1), 6) + 1, :);
 
 endfunction
 

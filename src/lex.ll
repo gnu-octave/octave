@@ -68,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lex.h"
 #include "ov.h"
 #include "parse.h"
+#include "parse-private.h"
 #include "pt-all.h"
 #include "symtab.h"
 #include "token.h"
@@ -1113,8 +1114,7 @@ reset_parser (void)
 
   parser_end_of_input = false;
 
-  while (! symtab_context.empty ())
-    symtab_context.pop ();
+  parser_symtab_context.clear ();
 
   // We do want a prompt by default.
   promptflag = 1;
@@ -1497,10 +1497,26 @@ is_keyword_token (const std::string& s)
           lexer_flags.at_beginning_of_statement = true;
           break;
 
+        case static_kw:
+          if ((reading_fcn_file || reading_script_file
+               || reading_classdef_file)
+              && ! curr_fcn_file_full_name.empty ())
+            warning_with_id ("Octave:deprecated-keyword",
+                             "the `static' keyword is obsolete and will be removed from a future version of Octave; please use `persistent' instead; near line %d of file `%s'",
+                             input_line_number,
+                             curr_fcn_file_full_name.c_str ());
+          else
+            warning_with_id ("Octave:deprecated-keyword",
+                             "the `static' keyword is obsolete and will be removed from a future version of Octave; please use `persistent' instead; near line %d",
+                             input_line_number);
+          // fall through ...
+
+        case persistent_kw:
+          break;
+
         case case_kw:
         case elseif_kw:
         case global_kw:
-        case static_kw:
         case until_kw:
           break;
 
@@ -3451,7 +3467,14 @@ lexical_feedback::init (void)
 bool
 is_keyword (const std::string& s)
 {
-  return octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0;
+  // Parsing function names like "set.property_name" inside
+  // classdef-style class definitions is simplified by handling the
+  // "set" and "get" portions of the names using the same mechanism as
+  // is used for keywords.  However, they are not really keywords in
+  // the language, so omit them from the list of possible keywords.
+
+  return (octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0
+          && ! (s == "set" || s == "get"));
 }
 
 DEFUN (iskeyword, args, ,
@@ -3474,10 +3497,22 @@ is omitted, return a list of keywords.\n\
 
   if (argc == 1)
     {
+      // Neither set and get are keywords.  See the note in the
+      // is_keyword function for additional details.
+
       string_vector lst (TOTAL_KEYWORDS);
 
+      int j = 0;
+
       for (int i = 0; i < TOTAL_KEYWORDS; i++)
-        lst[i] = wordlist[i].name;
+        {
+          std::string tmp = wordlist[i].name;
+
+          if (! (tmp == "set" || tmp == "get"))
+            lst[j++] = tmp;
+        }
+
+      lst.resize (j);
 
       retval = Cell (lst.sort ());
     }
@@ -3675,7 +3710,7 @@ display_token (int tok)
     case TRY: std::cerr << "TRY\n"; break;
     case CATCH: std::cerr << "CATCH\n"; break;
     case GLOBAL: std::cerr << "GLOBAL\n"; break;
-    case STATIC: std::cerr << "STATIC\n"; break;
+    case PERSISTENT: std::cerr << "PERSISTENT\n"; break;
     case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
     case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
     case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;

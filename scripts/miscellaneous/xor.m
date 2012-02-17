@@ -60,12 +60,12 @@ function z = xor (x, y)
 
 endfunction
 
-%!assert((xor ([1, 1, 0, 0], [0, 1, 0, 1]) == [1, 0, 0, 1]
-%! && xor ([i, i, 0, 0], [1, 0, 1, 0]) == [0, 1, 1, 0]));
 
-%!assert(all (all (xor (eye (2), fliplr (eye (2))) == ones (2))));
+%!assert (xor ([1, 1, 0, 0], [0, 1, 0, 1]), logical ([1, 0, 0, 1]))
+%!assert (xor ([i, i, 0, 0], [1, 0, 1, 0]), logical ([0, 1, 1, 0]))
 
-%!error xor ();
+%!assert (xor (eye (2), fliplr (eye (2))), logical (ones (2)))
 
-%!error xor (1, 2, 3);
+%!error xor ()
+%!error xor (1, 2, 3)
 

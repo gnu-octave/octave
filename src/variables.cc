@@ -361,7 +361,7 @@ For example:\n\
 @group\n\
 global x\n\
 isglobal (\"x\")\n\
-     @result{} 1\n\
+   @result{} 1\n\
 @end group\n\
 @end example\n\
 @seealso{isvarname, exist}\n\
@@ -1798,6 +1798,7 @@ summarized in a table with the following default entries.\n\
 @table @asis\n\
 @item Attr\n\
 Attributes of the listed variable.  Possible attributes are:\n\
+\n\
 @table @asis\n\
 @item blank\n\
 Variable in local scope\n\
@@ -2298,6 +2299,7 @@ will clear the variable definition and restore the definition of\n\
 clear the function definition.\n\
 \n\
 The following options are available in both long and short form\n\
+\n\
 @table @code\n\
 @item -all, -a\n\
 Clears all local and global user-defined variables and all functions\n\

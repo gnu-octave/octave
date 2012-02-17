@@ -182,8 +182,8 @@ moving from one column to next, filling up all rows in each column.\n\
 @example\n\
 @group\n\
 [r, c] = ind2sub ([3, 3], 8)\n\
-@result{} r =  2\n\
-   c =  3\n\
+    @result{} r =  2\n\
+    @result{} c =  3\n\
 @end group\n\
 @end example\n\
 @seealso{sub2ind}\n\

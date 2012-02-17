@@ -159,19 +159,19 @@ endfunction
 %! assert (datenum (t(1,:), t(2,:), t(3,:), t(4,:), t(5,:), t(6,:)), n, 2*eps);
 
 ## Test mixed vectors and scalars
-%!assert (datenum([2008;2009], 1, 1), [datenum(2008, 1, 1);datenum(2009, 1, 1)]);
-%!assert (datenum(2008, [1;2], 1), [datenum(2008, 1, 1);datenum(2008, 2, 1)]);
-%!assert (datenum(2008, 1, [1;2]), [datenum(2008, 1, 1);datenum(2008, 1, 2)]);
-%!assert (datenum([2008;2009], [1;2], 1), [datenum(2008, 1, 1);datenum(2009, 2, 1)]);
-%!assert (datenum([2008;2009], 1, [1;2]), [datenum(2008, 1, 1);datenum(2009, 1, 2)]);
-%!assert (datenum(2008, [1;2], [1;2]), [datenum(2008, 1, 1);datenum(2008, 2, 2)]);
+%!assert (datenum ([2008;2009],1,1), [datenum(2008,1,1);datenum(2009,1,1)])
+%!assert (datenum (2008, [1;2], 1), [datenum(2008,1,1);datenum(2008,2,1)])
+%!assert (datenum (2008, 1, [1;2]), [datenum(2008,1,1);datenum(2008,1,2)])
+%!assert (datenum ([2008;2009], [1;2], 1), [datenum(2008,1,1);datenum(2009,2,1)])
+%!assert (datenum ([2008;2009], 1, [1;2]), [datenum(2008,1,1);datenum(2009,1,2)])
+%!assert (datenum (2008, [1;2], [1;2]), [datenum(2008,1,1);datenum(2008,2,2)])
 ## And the other orientation
-%!assert (datenum([2008 2009], 1, 1), [datenum(2008, 1, 1) datenum(2009, 1, 1)]);
-%!assert (datenum(2008, [1 2], 1), [datenum(2008, 1, 1) datenum(2008, 2, 1)]);
-%!assert (datenum(2008, 1, [1 2]), [datenum(2008, 1, 1) datenum(2008, 1, 2)]);
-%!assert (datenum([2008 2009], [1 2], 1), [datenum(2008, 1, 1) datenum(2009, 2, 1)]);
-%!assert (datenum([2008 2009], 1, [1 2]), [datenum(2008, 1, 1) datenum(2009, 1, 2)]);
-%!assert (datenum(2008, [1 2], [1 2]), [datenum(2008, 1, 1) datenum(2008, 2, 2)]);
+%!assert (datenum ([2008 2009], 1, 1), [datenum(2008,1,1) datenum(2009,1,1)])
+%!assert (datenum (2008, [1 2], 1), [datenum(2008,1,1) datenum(2008,2,1)])
+%!assert (datenum (2008, 1, [1 2]), [datenum(2008,1,1) datenum(2008,1,2)])
+%!assert (datenum ([2008 2009], [1 2], 1), [datenum(2008,1,1) datenum(2009,2,1)])
+%!assert (datenum ([2008 2009], 1, [1 2]), [datenum(2008,1,1) datenum(2009,1,2)])
+%!assert (datenum (2008, [1 2], [1 2]), [datenum(2008,1,1) datenum(2008,2,2)])
 ## Test string and cellstr inputs
 %!assert (datenum ("5/19/2001"), 730990)
 %!assert (datenum ({"5/19/2001"}), 730990)

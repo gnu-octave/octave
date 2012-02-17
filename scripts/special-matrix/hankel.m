@@ -29,7 +29,7 @@
 ## @var{r}, has the elements
 ## @tex
 ## $$
-## H (i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
+## H(i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
 ## $$
 ## @end tex
 ## @ifnottex
@@ -91,8 +91,8 @@ endfunction
 %!assert (hankel (1:3,3:4), [1,2;2,3;3,4])
 %!assert (hankel (1:3,4:6), [1,2,3;2,3,5;3,5,6])
 
-%!error hankel ();
-%!error hankel (1, 2, 3);
+%!error hankel ()
+%!error hankel (1, 2, 3)
 %!error <C must be a vector> hankel ([1, 2; 3, 4])
 %!error <C and R must be vectors> hankel (1:4, [1, 2; 3, 4])
 

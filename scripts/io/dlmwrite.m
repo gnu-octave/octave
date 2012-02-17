@@ -40,6 +40,7 @@
 ##
 ## In addition, the following keyword value pairs may appear at the end
 ## of the argument list:
+##
 ## @table @asis
 ## @item "append"
 ## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
@@ -49,9 +50,9 @@
 ##
 ## @item "newline"
 ## The character(s) to use to separate each row.  Three special cases
-## exist for this option.  @samp{"unix"} is changed into '\n',
-## @samp{"pc"} is changed into '\r\n', and @samp{"mac"} is changed
-## into '\r'.  Other values for this option are kept as is.
+## exist for this option.  @samp{"unix"} is changed into "\n",
+## @samp{"pc"} is changed into "\r\n", and @samp{"mac"} is changed
+## into "\r".  Other values for this option are kept as is.
 ##
 ## @item "roffset"
 ## See @var{r} above.
@@ -196,13 +197,13 @@ endfunction
 
 %!test
 %! f = tmpnam ();
-%! dlmwrite (f,[1,2;3,4],'precision','%5.2f','newline','unix','roffset',1,'coffset',1);
+%! dlmwrite (f,[1,2;3,4],"precision","%5.2f","newline","unix","roffset",1,"coffset",1);
 %! fid = fopen (f,"rt");
-%! f1 = char (fread (fid,Inf,'char')');
+%! f1 = char (fread (fid,Inf,"char")');
 %! fclose (fid);
-%! dlmwrite (f,[5,6],'precision','%5.2f','newline','unix','coffset',1,'delimiter',',','-append');
+%! dlmwrite (f,[5,6],"precision","%5.2f","newline","unix","coffset",1,"delimiter",",","-append");
 %! fid = fopen (f,"rt");
-%! f2 = char (fread (fid,Inf,'char')');
+%! f2 = char (fread (fid,Inf,"char")');
 %! fclose (fid);
 %! unlink (f);
 %!

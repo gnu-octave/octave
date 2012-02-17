@@ -26,4 +26,5 @@ function retval = mexext ()
   retval = "mex";
 endfunction
 
+
 %!assert (mexext (), "mex")

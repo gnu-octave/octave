@@ -519,13 +519,40 @@ load_path::do_initialize (bool set_initial_path)
   else
     xpath = sys_path;
 
-  do_set (xpath, false);
+  do_set (xpath, false, true);
 }
 
 void
-load_path::do_clear (void)
+load_path::do_clear (std::set<std::string>& new_elts)
 {
-  dir_info_list.clear ();
+  bool warn_default_path_clobbered = false;
+  for (dir_info_list_iterator i = dir_info_list.begin();
+       i != dir_info_list.end();
+       /* conditionally advance iterator in loop body */)
+    {
+      //Don't remove it if it's gonna be added again, but remove it from
+      //list of items to add, to avoid duplicates later on
+      std::set<std::string>::iterator j = new_elts.find(i->dir_name);
+      if (j != new_elts.end())
+        {
+          new_elts.erase(j);
+          i++;
+        }
+      else
+        {
+          //Warn if removing a default directory and not immediately adding
+          //it back again
+          if(i->is_init)
+            warn_default_path_clobbered = true;
+          i = dir_info_list.erase(i);
+        }
+    }
+
+  if (warn_default_path_clobbered)
+    warning_with_id ("Octave:remove-init-dir",
+                     "default load path altered.  Some built-in functions may "
+                     "not be found.  Try restoredefaultpath() to recover it.");
+
   fcn_map.clear ();
   private_fcn_map.clear ();
   method_map.clear ();
@@ -565,9 +592,10 @@ split_path (const std::string& p)
 }
 
 void
-load_path::do_set (const std::string& p, bool warn)
+load_path::do_set (const std::string& p, bool warn, bool is_init)
 {
-  std::list<std::string> elts = split_path (p);
+  std::list<std::string> elts_l = split_path (p);
+  std::set<std::string> elts(elts_l.begin(), elts_l.end());
 
   // Temporarily disable add hook.
 
@@ -576,12 +604,12 @@ load_path::do_set (const std::string& p, bool warn)
 
   add_hook = 0;
 
-  do_clear ();
+  do_clear (elts);
 
-  for (std::list<std::string>::const_iterator i = elts.begin ();
+  for (std::set<std::string>::const_iterator i = elts.begin ();
        i != elts.end ();
        i++)
-    do_append (*i, warn);
+    do_append (*i, warn, is_init);
 
   // Restore add hook and execute for all newly added directories.
   frame.run_top ();
@@ -599,10 +627,10 @@ load_path::do_set (const std::string& p, bool warn)
 }
 
 void
-load_path::do_append (const std::string& dir, bool warn)
+load_path::do_append (const std::string& dir, bool warn, bool is_init)
 {
   if (! dir.empty ())
-    do_add (dir, true, warn);
+    do_add (dir, true, warn, is_init);
 }
 
 void
@@ -631,7 +659,8 @@ strip_trailing_separators (const std::string& dir_arg)
 }
 
 void
-load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
+load_path::do_add (const std::string& dir_arg, bool at_end, bool warn,
+                   bool is_init)
 {
   size_t len = dir_arg.length ();
 
@@ -656,6 +685,7 @@ load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
           if (fs.is_dir ())
             {
               dir_info di (dir);
+              di.is_init = is_init;
 
               if (! error_state)
                 {
@@ -2137,7 +2167,7 @@ In addition to accepting individual directory arguments, lists of\n\
 directory names separated by @code{pathsep} are also accepted.  For example:\n\
 \n\
 @example\n\
-addpath (\"dir1:/dir2:~/dir3\");\n\
+addpath (\"dir1:/dir2:~/dir3\")\n\
 @end example\n\
 @seealso{path, rmpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")
@@ -2248,7 +2278,7 @@ In addition to accepting individual directory arguments, lists of\n\
 directory names separated by @code{pathsep} are also accepted.  For example:\n\
 \n\
 @example\n\
-rmpath (\"dir1:/dir2:~/dir3\");\n\
+rmpath (\"dir1:/dir2:~/dir3\")\n\
 @end example\n\
 @seealso{path, addpath, genpath, pathdef, savepath, pathsep}\n\
 @end deftypefn")

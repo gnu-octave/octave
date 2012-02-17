@@ -46,16 +46,18 @@ function c = hamming (m)
 
 endfunction
 
-%!assert (hamming (1), 1);
-%!assert (hamming (2), (0.54 - 0.46)*ones(2,1));
-%!assert (hamming (16), fliplr (hamming (16)));
-%!assert (hamming (15), fliplr (hamming (15)));
+
+%!assert (hamming (1), 1)
+%!assert (hamming (2), (0.54 - 0.46)*ones (2,1))
+%!assert (hamming (16), fliplr (hamming (16)))
+%!assert (hamming (15), fliplr (hamming (15)))
 %!test
 %! N = 15;
 %! A = hamming (N);
 %! assert (A (ceil (N/2)), 1);
 
-%!error hamming ();
-%!error hamming (0.5);
-%!error hamming (-1);
-%!error hamming (ones(1,4));
+%!error hamming ()
+%!error hamming (0.5)
+%!error hamming (-1)
+%!error hamming (ones (1,4))
+

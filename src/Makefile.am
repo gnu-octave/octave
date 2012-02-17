@@ -284,6 +284,7 @@ octinclude_HEADERS = \
   ops.h \
   pager.h \
   parse.h \
+  parse-private.h \
   pr-output.h \
   procstream.h \
   profiler.h \
@@ -484,9 +485,11 @@ include TEMPLATE-INST/module.mk
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLD_FUNCTIONS_LIBS:.la=.oct)
   OCT_STAMP_FILES = $(subst DLD-FUNCTIONS/,DLD-FUNCTIONS/$(am__leading_dot),$(DLD_FUNCTIONS_LIBS:.la=.oct-stamp))
+  DLD_LIBOCTINTERP_LIBADD = liboctinterp.la
 else
   OCT_FILES =
   OCT_STAMP_FILES =
+  DLD_LIBOCTINTERP_LIBADD =
 endif
 
 liboctinterp_la_SOURCES = \

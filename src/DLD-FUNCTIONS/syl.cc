@@ -53,7 +53,7 @@ using standard @sc{lapack} subroutines.  For example:\n\
 @example\n\
 @group\n\
 syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
-     @result{} [ -0.50000, -0.66667; -0.66667, -0.50000 ]\n\
+   @result{} [ -0.50000, -0.66667; -0.66667, -0.50000 ]\n\
 @end group\n\
 @end example\n\
 @end deftypefn")

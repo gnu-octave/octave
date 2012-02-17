@@ -382,7 +382,7 @@ endfunction
 %! colormap ('default');
 %! n = 64; x = kron (1:n, ones (n,1)); x = abs (x - x.');
 %! imagesc (x);
-%! colorbar ('peer', gca (), 'northoutside');
+%! colorbar ('peer', gca, 'northoutside');
 
 %!demo
 %! clf;

@@ -168,9 +168,10 @@ endfunction
 %! n = histc (x, 0:10, 2);
 %! assert (n, repmat ([repmat(100, 1, 10), 1], [2, 1, 3]));
 
-%!error histc ();
-%!error histc (1);
-%!error histc (1, 2, 3, 4);
-%!error histc ([1:10 1+i], 2);
-%!error histc (1:10, []);
-%!error histc (1, 1, 3);
+%!error histc ()
+%!error histc (1)
+%!error histc (1, 2, 3, 4)
+%!error histc ([1:10 1+i], 2)
+%!error histc (1:10, [])
+%!error histc (1, 1, 3)
+

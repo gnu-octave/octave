@@ -119,7 +119,7 @@ corresponding column of the matrix are nonzero.  For example:\n\
 @example\n\
 @group\n\
 all ([2, 3; 1, 0]))\n\
-     @result{} [ 1, 0 ]\n\
+    @result{} [ 1, 0 ]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -168,7 +168,7 @@ corresponding column of the matrix are nonzero.  For example:\n\
 @example\n\
 @group\n\
 any (eye (2, 4))\n\
-     @result{} [ 1, 1, 0, 0 ]\n\
+ @result{} [ 1, 1, 0, 0 ]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -178,7 +178,7 @@ If the optional argument @var{dim} is supplied, work along dimension\n\
 @example\n\
 @group\n\
 any (eye (2, 4), 2)\n\
-     @result{} [ 1; 1 ]\n\
+ @result{} [ 1; 1 ]\n\
 @end group\n\
 @end example\n\
 @seealso{all}\n\
@@ -365,8 +365,8 @@ the arguments are accumulated from left to right:\n\
 \n\
 @example\n\
 @group\n\
-  hypot (hypot (@var{x}, @var{y}), @var{z})\n\
-  hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
+hypot (hypot (@var{x}, @var{y}), @var{z})\n\
+hypot (hypot (hypot (@var{x}, @var{y}), @var{z}), @var{w}), etc.\n\
 @end group\n\
 @end example\n\
 @end deftypefn")
@@ -1093,14 +1093,14 @@ DEFUN (cumsum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} cumsum (@var{x})\n\
 @deftypefnx {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'native')\n\
-@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'double')\n\
-@deftypefnx {Built-in Function} {} cumsum (@dots{}, 'extra')\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, \"native\")\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, \"double\")\n\
+@deftypefnx {Built-in Function} {} cumsum (@dots{}, \"extra\")\n\
 Cumulative sum of elements along dimension @var{dim}.  If @var{dim}\n\
 is omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-See @code{sum} for an explanation of the optional parameters 'native',\n\
-'double', and 'extra'.\n\
+See @code{sum} for an explanation of the optional parameters \"native\",\n\
+\"double\", and \"extra\".\n\
 @seealso{sum, cumprod}\n\
 @end deftypefn")
 {
@@ -1256,10 +1256,10 @@ vector is placed on the main diagonal.  For example:\n\
 @example\n\
 @group\n\
 diag ([1, 2, 3], 1)\n\
-     @result{}  0  1  0  0\n\
-         0  0  2  0\n\
-         0  0  0  3\n\
-         0  0  0  0\n\
+   @result{}  0  1  0  0\n\
+       0  0  2  0\n\
+       0  0  0  3\n\
+       0  0  0  0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1866,7 +1866,7 @@ Arrays may also be concatenated horizontally using the syntax for creating\n\
 new matrices.  For example:\n\
 \n\
 @example\n\
-@var{hcat} = [ @var{array1}, @var{array2}, @dots{} ];\n\
+@var{hcat} = [ @var{array1}, @var{array2}, @dots{} ]\n\
 @end example\n\
 @seealso{cat, vertcat}\n\
 @end deftypefn")
@@ -2075,7 +2075,7 @@ Arrays may also be concatenated vertically using the syntax for creating\n\
 new matrices.  For example:\n\
 \n\
 @example\n\
-@var{vcat} = [ @var{array1}; @var{array2}; @dots{} ];\n\
+@var{vcat} = [ @var{array1}; @var{array2}; @dots{} ]\n\
 @end example\n\
 @seealso{cat, horzcat}\n\
 @end deftypefn")
@@ -2100,17 +2100,17 @@ Return the concatenation of N-D array objects, @var{array1},\n\
 A = ones (2, 2);\n\
 B = zeros (2, 2);\n\
 cat (2, A, B)\n\
-    @result{} 1 1 0 0\n\
-       1 1 0 0\n\
+  @result{} 1 1 0 0\n\
+     1 1 0 0\n\
 @end group\n\
 @end example\n\
 \n\
 Alternatively, we can concatenate @var{A} and @var{B} along the\n\
-second dimension the following way:\n\
+second dimension in the following way:\n\
 \n\
 @example\n\
 @group\n\
-[A, B].\n\
+[A, B]\n\
 @end group\n\
 @end example\n\
 \n\
@@ -2121,16 +2121,15 @@ following example shows:\n\
 @example\n\
 @group\n\
 cat (4, ones (2, 2), zeros (2, 2))\n\
-    @result{} ans =\n\
+  @result{} ans(:,:,1,1) =\n\
 \n\
-       ans(:,:,1,1) =\n\
+       1 1\n\
+       1 1\n\
 \n\
-         1 1\n\
-         1 1\n\
+     ans(:,:,1,2) =\n\
 \n\
-       ans(:,:,1,2) =\n\
-         0 0\n\
-         0 0\n\
+       0 0\n\
+       0 0\n\
 @end group\n\
 @end example\n\
 @seealso{horzcat, vertcat}\n\
@@ -2386,8 +2385,8 @@ Trailing singleton dimensions are not counted.\n\
 \n\
 @example\n\
 @group\n\
-  ndims (ones (4, 1, 2, 1))\n\
-     @result{} 3\n\
+ndims (ones (4, 1, 2, 1))\n\
+    @result{} 3\n\
 @end group\n\
 @end example\n\
 @end deftypefn")
@@ -2411,16 +2410,16 @@ Optionally, if indices @var{idx1}, @var{idx2}, @dots{} are supplied,\n\
 return the number of elements that would result from the indexing\n\
 \n\
 @example\n\
-  @var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
+@var{a}(@var{idx1}, @var{idx2}, @dots{})\n\
 @end example\n\
 \n\
 Note that the indices do not have to be numerical.  For example,\n\
 \n\
 @example\n\
 @group\n\
-  @var{a} = 1;\n\
-  @var{b} = ones (2, 3);\n\
-  numel (@var{a}, @var{b});\n\
+@var{a} = 1;\n\
+@var{b} = ones (2, 3);\n\
+numel (@var{a}, @var{b})\n\
 @end group\n\
 @end example\n\
 \n\
@@ -2463,11 +2462,11 @@ etc.  For example:\n\
 @example\n\
 @group\n\
 size ([1, 2; 3, 4; 5, 6])\n\
-     @result{} [ 3, 2 ]\n\
+   @result{} [ 3, 2 ]\n\
 \n\
 [nr, nc] = size ([1, 2; 3, 4; 5, 6])\n\
-     @result{} nr = 3\n\
-     @result{} nc = 2\n\
+    @result{} nr = 3\n\
+    @result{} nc = 2\n\
 @end group\n\
 @end example\n\
 \n\
@@ -2477,7 +2476,7 @@ corresponding dimension.  For example,\n\
 @example\n\
 @group\n\
 size ([1, 2; 3, 4; 5, 6], 2)\n\
-     @result{} 2\n\
+    @result{} 2\n\
 @end group\n\
 @end example\n\
 \n\
@@ -2650,31 +2649,32 @@ DEFUN (sum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} sum (@var{x})\n\
 @deftypefnx {Built-in Function} {} sum (@var{x}, @var{dim})\n\
-@deftypefnx {Built-in Function} {} sum (@dots{}, 'native')\n\
-@deftypefnx {Built-in Function} {} sum (@dots{}, 'double')\n\
-@deftypefnx {Built-in Function} {} sum (@dots{}, 'extra')\n\
+@deftypefnx {Built-in Function} {} sum (@dots{}, \"native\")\n\
+@deftypefnx {Built-in Function} {} sum (@dots{}, \"double\")\n\
+@deftypefnx {Built-in Function} {} sum (@dots{}, \"extra\")\n\
 Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
 omitted, it defaults to the first non-singleton dimension.\n\
 \n\
-If the optional argument 'native' is given, then the sum is performed\n\
+If the optional argument \"native\" is given, then the sum is performed\n\
 in the same type as the original argument, rather than in the default\n\
 double type.  For example:\n\
 \n\
 @example\n\
 @group\n\
 sum ([true, true])\n\
-  @result{} 2\n\
-sum ([true, true], 'native')\n\
-  @result{} true\n\
+   @result{} 2\n\
+sum ([true, true], \"native\")\n\
+   @result{} true\n\
 @end group\n\
 @end example\n\
 \n\
-On the contrary, if 'double' is given, the sum is performed in double\n\
+On the contrary, if \"double\" is given, the sum is performed in double\n\
 precision even for single precision inputs.\n\
 \n\
-For double precision inputs, 'extra' indicates that a more accurate algorithm\n\
-than straightforward summation is to be used.  For single precision inputs,\n\
-'extra' is the same as 'double'.  Otherwise, 'extra' has no effect.\n\
+For double precision inputs, \"extra\" indicates that a more accurate\n\
+algorithm than straightforward summation is to be used.  For single precision\n\
+inputs, \"extra\" is the same as \"double\".  Otherwise, \"extra\" has no\n\
+effect.\n\
 @seealso{cumsum, sumsq, prod}\n\
 @end deftypefn")
 {
@@ -3010,8 +3010,7 @@ For example:\n\
 @example\n\
 @group\n\
 complex ([1, 2], [3, 4])\n\
-@result{}\n\
-   1 + 3i   2 + 4i\n\
+  @result{} [ 1 + 3i   2 + 4i ]\n\
 @end group\n\
 @end example\n\
 @seealso{real, imag, iscomplex}\n\
@@ -3944,9 +3943,8 @@ produce infinity are division by zero and overflow.\n\
 \n\
 @example\n\
 @group\n\
-[1/0 e^800]\n\
-@result{}\n\
-Inf   Inf\n\
+[ 1/0 e^800 ]\n\
+@result{} Inf   Inf\n\
 @end group\n\
 @end example\n\
 \n\
@@ -4539,9 +4537,9 @@ respectively.  For example:\n\
 @example\n\
 @group\n\
 eye (3)\n\
-     @result{}  1  0  0\n\
-         0  1  0\n\
-         0  0  1\n\
+ @result{}  1  0  0\n\
+     0  1  0\n\
+     0  0  1\n\
 @end group\n\
 @end example\n\
 \n\
@@ -4783,7 +4781,7 @@ otherwise, the element is set to zero.\n\
 In other words, the statement\n\
 \n\
 @example\n\
-  y = resize (x, dv);\n\
+y = resize (x, dv)\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -4791,10 +4789,12 @@ is equivalent to the following code:\n\
 \n\
 @example\n\
 @group\n\
-  y = zeros (dv, class (x));\n\
-  sz = min (dv, size (x));\n\
-  for i = 1:length (sz), idx@{i@} = 1:sz(i); endfor\n\
-  y(idx@{:@}) = x(idx@{:@});\n\
+y = zeros (dv, class (x));\n\
+sz = min (dv, size (x));\n\
+for i = 1:length (sz)\n\
+  idx@{i@} = 1:sz(i);\n\
+endfor\n\
+y(idx@{:@}) = x(idx@{:@});\n\
 @end group\n\
 @end example\n\
 \n\
@@ -4873,8 +4873,8 @@ matrix.\n\
 @example\n\
 @group\n\
 reshape ([1, 2, 3, 4], 2, 2)\n\
-     @result{}  1  3\n\
-         2  4\n\
+      @result{}  1  3\n\
+          2  4\n\
 @end group\n\
 @end example\n\
 \n\
@@ -5436,7 +5436,7 @@ If more arguments are given, the summation is applied\n\
 cumulatively from left to right:\n\
 \n\
 @example\n\
-  (@dots{}((x1 + x2) + x3) + @dots{})\n\
+(@dots{}((x1 + x2) + x3) + @dots{})\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
@@ -5467,7 +5467,7 @@ If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
 @example\n\
-  (@dots{}((x1 * x2) * x3) * @dots{})\n\
+(@dots{}((x1 * x2) * x3) * @dots{})\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
@@ -5579,7 +5579,7 @@ If more arguments are given, the multiplication is applied\n\
 cumulatively from left to right:\n\
 \n\
 @example\n\
-  (@dots{}((x1 .* x2) .* x3) .* @dots{})\n\
+(@dots{}((x1 .* x2) .* x3) .* @dots{})\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
@@ -5638,7 +5638,7 @@ If more arguments are given, the logical and is applied\n\
 cumulatively from left to right:\n\
 \n\
 @example\n\
-  (@dots{}((x1 & x2) & x3) & @dots{})\n\
+(@dots{}((x1 & x2) & x3) & @dots{})\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
@@ -5659,7 +5659,7 @@ If more arguments are given, the logical or is applied\n\
 cumulatively from left to right:\n\
 \n\
 @example\n\
-  (@dots{}((x1 | x2) | x3) | @dots{})\n\
+(@dots{}((x1 | x2) | x3) | @dots{})\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
@@ -5698,7 +5698,7 @@ of type @code{uint64} and the wall-clock timer is not started.\n\
 @example\n\
 @group\n\
 t = tic; sleep (5); (double (tic ()) - double (t)) * 1e-6\n\
-     @result{} 5\n\
+      @result{} 5\n\
 @end group\n\
 @end example\n\
 \n\
@@ -5860,16 +5860,16 @@ For example:\n\
 @example\n\
 @group\n\
 sort ([1, 2; 2, 3; 3, 1])\n\
-     @result{}  1  1\n\
-         2  2\n\
-         3  3\n\
+   @result{}  1  1\n\
+       2  2\n\
+       3  3\n\
 @end group\n\
 @end example\n\
 \n\
 If the optional argument @var{dim} is given, then the matrix is sorted\n\
 along the dimension defined by @var{dim}.  The optional argument @code{mode}\n\
 defines the order in which the values will be sorted.  Valid values of\n\
-@code{mode} are `ascend' or `descend'.\n\
+@code{mode} are \"ascend\" or \"descend\".\n\
 \n\
 The @code{sort} function may also be used to produce a matrix\n\
 containing the original row indices of the elements in the sorted\n\
@@ -5878,12 +5878,12 @@ matrix.  For example:\n\
 @example\n\
 @group\n\
 [s, i] = sort ([1, 2; 2, 3; 3, 1])\n\
-     @result{} s = 1  1\n\
-            2  2\n\
-            3  3\n\
-     @result{} i = 1  3\n\
-            2  1\n\
-            3  2\n\
+  @result{} s = 1  1\n\
+         2  2\n\
+         3  3\n\
+  @result{} i = 1  3\n\
+         2  1\n\
+         3  2\n\
 @end group\n\
 @end example\n\
 \n\
@@ -5896,9 +5896,9 @@ and for any ties by phase angle (@code{angle (z)}).  For example:\n\
 @example\n\
 @group\n\
 sort ([1+i; 1; 1-i])\n\
-     @result{} 1 + 0i\n\
-        1 - 1i\n\
-        1 + 1i\n\
+    @result{} 1 + 0i\n\
+       1 - 1i\n\
+       1 + 1i\n\
 @end group\n\
 @end example\n\
 \n\

@@ -27,7 +27,7 @@ dnl Copyright (C) 1993-2012 John W. Eaton
 EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
-AC_INIT([GNU Octave], [3.6.0], [http://octave.org/bugs.html], [octave])
+AC_INIT([GNU Octave], [3.7.0+], [http://octave.org/bugs.html], [octave])
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION arg
 OCTAVE_VERSION="$PACKAGE_VERSION"
@@ -649,7 +649,7 @@ OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS
 
 OCTAVE_CHECK_LIBRARY(qhull, QHull,
   [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
-  [qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h], [qh_qhull], [], [],
+  [libqhull/libqhull.h qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h], [qh_qhull], [], [],
   [warn_qhull=
    OCTAVE_CHECK_QHULL_VERSION
    OCTAVE_CHECK_QHULL_OK([TEXINFO_QHULL="@set HAVE_QHULL"
@@ -2140,7 +2140,7 @@ fi
 AC_CHECK_FUNCS(basename canonicalize_file_name \
   chmod dup2 endgrent endpwent execvp expm1 expm1f fork \
   getegid geteuid getgid getgrent getgrgid getgrnam getpgrp getpid \
-  getppid getpwent getpwuid getuid getwd _kbhit \
+  getppid getpwent getpwuid getuid getwd _kbhit kill \
   lgamma lgammaf lgamma_r lgammaf_r localtime_r log1p log1pf \
   mkstemp pipe putenv \
   realpath resolvepath rindex roundl select setgrent setlocale \

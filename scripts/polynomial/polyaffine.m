@@ -24,12 +24,11 @@
 ## representing:
 ##
 ## @example
-## g(x) = f((x-@var{mu}(1))/@var{mu}(2)).
+## g(x) = f( (x - @var{mu}(1)) / @var{mu}(2) )
 ## @end example
 ##
 ## @seealso{polyval, polyfit}
 ## @end deftypefn
-
 
 function g = polyaffine (f, mu)
 

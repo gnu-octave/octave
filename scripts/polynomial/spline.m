@@ -247,8 +247,8 @@ endfunction
 
 %!demo
 %! x = 0:10; y = sin (x);
-%! xspline = 0:0.1:10; yspline = spline (x,y,xspline);
-%! title ("spline fit to points from sin(x)");
+%! xspline = 0:0.1:10;  yspline = spline (x,y,xspline);
+%! title ("spline fit to points from sin (x)");
 %! plot (xspline,sin(xspline),"r", xspline,yspline,"g-", x,y,"b+");
 %! legend ("original", "interpolation", "interpolation points");
 %! %--------------------------------------------------------
@@ -266,7 +266,7 @@ endfunction
 %!assert (spline (x,[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
 %!assert (spline (x',[y;y],x), [spline(x,y,x);spline(x,y,x)], abserr)
 %!assert (spline (x',[y;y],x'), [spline(x,y,x);spline(x,y,x)], abserr)
-%! y = cos(x) + i*sin(x);
+%! y = cos (x) + i*sin (x);
 %!assert (spline (x,y,x), y, abserr)
 %!assert (real (spline (x,y,x)), real (y), abserr)
 %!assert (real (spline (x,y,x.')), real (y).', abserr)

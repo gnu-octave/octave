@@ -68,22 +68,22 @@ endfunction
 %!shared x,y
 %! x = [-1 0 1 Inf];
 %! y = [0 0.5 0.75 1];
-%!assert(geocdf (x, 0.5*ones(1,4)), y);
-%!assert(geocdf (x, 0.5), y);
-%!assert(geocdf (x, 0.5*[-1 NaN 4 1]), [NaN NaN NaN y(4)]);
-%!assert(geocdf ([x(1:2) NaN x(4)], 0.5), [y(1:2) NaN y(4)]);
+%!assert (geocdf (x, 0.5*ones (1,4)), y)
+%!assert (geocdf (x, 0.5), y)
+%!assert (geocdf (x, 0.5*[-1 NaN 4 1]), [NaN NaN NaN y(4)])
+%!assert (geocdf ([x(1:2) NaN x(4)], 0.5), [y(1:2) NaN y(4)])
 
 %% Test class of input preserved
-%!assert(geocdf ([x, NaN], 0.5), [y, NaN]);
-%!assert(geocdf (single([x, NaN]), 0.5), single([y, NaN]));
-%!assert(geocdf ([x, NaN], single(0.5)), single([y, NaN]));
+%!assert (geocdf ([x, NaN], 0.5), [y, NaN])
+%!assert (geocdf (single ([x, NaN]), 0.5), single ([y, NaN]))
+%!assert (geocdf ([x, NaN], single (0.5)), single ([y, NaN]))
 
 %% Test input validation
 %!error geocdf ()
 %!error geocdf (1)
 %!error geocdf (1,2,3)
-%!error geocdf (ones(3),ones(2))
-%!error geocdf (ones(2),ones(3))
+%!error geocdf (ones (3), ones (2))
+%!error geocdf (ones (2), ones (3))
 %!error geocdf (i, 2)
 %!error geocdf (2, i)
 

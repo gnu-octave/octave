@@ -70,40 +70,42 @@ function retval = orient (varargin)
 
 endfunction
 
+
 %!shared papersize, paperposition, tallpaperposition, hfig
-%!  papersize = [8.5, 11];
-%!  paperposition = [0.25, 2.5, 8, 6];
-%!  tallpaperposition = [0.25, 0.25, (papersize-0.5)];
-%!  hfig = figure ();
-%!  set (hfig, "visible", "off")
-%!  set (hfig, "paperorientation", "portrait")
-%!  set (hfig, "papersize", papersize)
-%!  set (hfig, "paperposition", paperposition)
+%! papersize = [8.5, 11];
+%! paperposition = [0.25, 2.5, 8, 6];
+%! tallpaperposition = [0.25, 0.25, (papersize-0.5)];
+%! hfig = figure ();
+%! set (hfig, "visible", "off");
+%! set (hfig, "paperorientation", "portrait");
+%! set (hfig, "papersize", papersize);
+%! set (hfig, "paperposition", paperposition);
 %!test
-%!  orient portrait
-%!  assert (orient, "portrait") # default
-%!  assert (get (hfig, "papersize"), papersize)
-%!  assert (get (hfig, "paperposition"), paperposition)
+%! orient portrait;
+%! assert (orient, "portrait")   # default
+%! assert (get (hfig, "papersize"), papersize);
+%! assert (get (hfig, "paperposition"), paperposition);
 %!test
-%!  orient landscape
-%!  assert (orient,"landscape") # change to landscape
-%!  assert (get (hfig, "papersize"), papersize([2, 1]))
-%!  assert (get (hfig, "paperposition"), paperposition([2, 1, 4, 3]))
+%! orient landscape;
+%! assert (orient,"landscape")   # change to landscape
+%! assert (get (hfig, "papersize"), papersize([2, 1]));
+%! assert (get (hfig, "paperposition"), paperposition([2, 1, 4, 3]));
 %!test
-%!  orient portrait # change back to portrait
-%!  assert (orient, "portrait")
-%!  assert (get (hfig, "papersize"), papersize)
-%!  assert (get (hfig, "paperposition"), paperposition)
+%! orient portrait   # change back to portrait
+%! assert (orient, "portrait");
+%! assert (get (hfig, "papersize"), papersize);
+%! assert (get (hfig, "paperposition"), paperposition);
 %!test
-%!  orient landscape
-%!  orient tall
-%!  assert (orient, "portrait")
-%!  assert (get (hfig, "papersize"), papersize)
-%!  assert (get (hfig, "paperposition"), tallpaperposition)
+%! orient landscape;
+%! orient tall;
+%! assert (orient, "portrait");
+%! assert (get (hfig, "papersize"), papersize);
+%! assert (get (hfig, "paperposition"), tallpaperposition);
 %!fail ("orient ('nobody')", "unknown ORIENTATION")
 %!test
-%!  orient portrait # errors don't change the state
-%!  assert (orient, "portrait")
-%!  assert (get (hfig, "papersize"), papersize)
-%!  assert (get (hfig, "paperposition"), tallpaperposition)
-%!  close (hfig)
+%! orient portrait   # errors don't change the state
+%! assert (orient, "portrait");
+%! assert (get (hfig, "papersize"), papersize);
+%! assert (get (hfig, "paperposition"), tallpaperposition);
+%! close (hfig);
+

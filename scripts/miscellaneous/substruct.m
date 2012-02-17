@@ -24,7 +24,7 @@
 ##
 ## @example
 ## @group
-## idx = substruct("()", @{3, ":"@})
+## idx = substruct ("()", @{3, ":"@})
 ##      @result{}
 ##        idx =
 ##        @{
@@ -36,9 +36,8 @@
 ##          @}
 ##        @}
 ## x = [1, 2, 3; 4, 5, 6; 7, 8, 9];
-## subsref(x, idx)
-##      @result{} ans =
-##         7  8  9
+## subsref (x, idx)
+##    @result{} 7  8  9
 ## @end group
 ## @end example
 ## @seealso{subsref, subsasgn}
@@ -74,6 +73,7 @@ function retval = substruct (varargin)
 
 endfunction
 
+
 %!test
 %! x(1,1).type = "()";
 %! x(1,2).type = "{}";
@@ -82,9 +82,11 @@ endfunction
 %! x(1,2).subs = {":"};
 %! x(1,3).subs = "foo";
 %! y = substruct ("()", {1,2,3}, "{}", {":"}, ".", "foo");
-%! assert(x,y);
-%!error assert(substruct);
-%!error assert(substruct (1, 2, 3));
-%!error assert(substruct ("x", 1));
-%!error assert(substruct ("()", [1,2,3]));
-%!error assert(substruct (".", {1,2,3}));
+%! assert (x,y);
+
+%!error substruct ()
+%!error substruct (1, 2, 3)
+%!error substruct ("x", 1)
+%!error substruct ("()", [1,2,3])
+%!error substruct (".", {1,2,3})
+

@@ -4,6 +4,7 @@ image_FCN_FILES = \
   image/autumn.m \
   image/bone.m \
   image/brighten.m \
+  image/colorcube.m \
   image/colormap.m \
   image/contrast.m \
   image/cool.m \
@@ -24,6 +25,7 @@ image_FCN_FILES = \
   image/ind2gray.m \
   image/ind2rgb.m \
   image/jet.m \
+  image/lines.m \
   image/ntsc2rgb.m \
   image/ocean.m \
   image/pink.m \
@@ -32,6 +34,8 @@ image_FCN_FILES = \
   image/rgb2hsv.m \
   image/rgb2ind.m \
   image/rgb2ntsc.m \
+  image/rgbplot.m \
+  image/spinmap.m \
   image/spring.m \
   image/summer.m \
   image/white.m \

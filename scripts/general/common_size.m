@@ -79,7 +79,6 @@ function [errorcode, varargout] = common_size (varargin)
   endif
 endfunction
 
-%!error common_size ();
 
 %!test
 %! m = [1,2;3,4];
@@ -88,3 +87,6 @@ endfunction
 %! assert (a, m);
 %! assert (b, [3,3;3,3]);
 %! assert (c, [5,5;5,5]);
+
+%!error common_size ()
+

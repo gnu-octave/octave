@@ -68,6 +68,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "toplev.h"
 #include "pager.h"
 #include "parse.h"
+#include "parse-private.h"
 #include "pt-all.h"
 #include "pt-eval.h"
 #include "symtab.h"
@@ -126,7 +127,7 @@ static int parsing_subfunctions = false;
 static bool endfunction_found = false;
 
 // Keep track of symbol table information when parsing functions.
-std::stack<symbol_table::scope_id> symtab_context;
+symtab_context parser_symtab_context;
 
 // Name of the current class when we are parsing class methods or
 // constructors.
@@ -365,11 +366,8 @@ make_statement (T *arg)
     { \
       global_command = 0; \
       yyerrok; \
-      if (! symtab_context.empty ()) \
-        { \
-          symbol_table::set_scope (symtab_context.top ()); \
-          symtab_context.pop (); \
-        } \
+      if (! parser_symtab_context.empty ()) \
+        parser_symtab_context.pop (); \
       if (interactive || forced_interactive) \
         YYACCEPT; \
       else \
@@ -446,7 +444,7 @@ make_statement (T *arg)
 %token <tok_val> BREAK CONTINUE FUNC_RET
 %token <tok_val> UNWIND CLEANUP
 %token <tok_val> TRY CATCH
-%token <tok_val> GLOBAL STATIC
+%token <tok_val> GLOBAL PERSISTENT
 %token <tok_val> FCN_HANDLE
 %token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
 %token <tok_val> METAQUERY
@@ -997,9 +995,9 @@ declaration     : GLOBAL parsing_decl_list decl1
                     $$ = make_decl_command (GLOBAL, $1, $3);
                     lexer_flags.looking_at_decl_list = false;
                   }
-                | STATIC parsing_decl_list decl1
+                | PERSISTENT parsing_decl_list decl1
                   {
-                    $$ = make_decl_command (STATIC, $1, $3);
+                    $$ = make_decl_command (PERSISTENT, $1, $3);
                     lexer_flags.looking_at_decl_list = false;
                   }
                 ;
@@ -1224,7 +1222,8 @@ push_fcn_symtab : // empty
                     if (max_function_depth < current_function_depth)
                       max_function_depth = current_function_depth;
 
-                    symtab_context.push (symbol_table::current_scope ());
+                    parser_symtab_context.push ();
+
                     symbol_table::set_scope (symbol_table::alloc_scope ());
 
                     if (! reading_script_file && current_function_depth == 1
@@ -1246,7 +1245,7 @@ param_list_beg  : '('
 
                     if (lexer_flags.looking_at_function_handle)
                       {
-                        symtab_context.push (symbol_table::current_scope ());
+                        parser_symtab_context.push ();
                         symbol_table::set_scope (symbol_table::alloc_scope ());
                         lexer_flags.looking_at_function_handle--;
                         lexer_flags.looking_at_anon_fcn_args = true;
@@ -1395,11 +1394,13 @@ fcn_name        : identifier
                   }
                 | GET '.' identifier
                   {
+                    lexer_flags.parsed_function_name.top () = true;
                     lexer_flags.maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
                 | SET '.' identifier
                   {
+                    lexer_flags.parsed_function_name.top () = true;
                     lexer_flags.maybe_classdef_get_set_method = false;
                     $$ = $3;
                   }
@@ -2122,12 +2123,10 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   symbol_table::scope_id fcn_scope = symbol_table::current_scope ();
 
-  if (symtab_context.empty ())
+  if (parser_symtab_context.empty ())
     panic_impossible ();
 
-  symbol_table::set_scope (symtab_context.top ());
-
-  symtab_context.pop ();
+  parser_symtab_context.pop ();
 
   stmt->set_print_flag (false);
 
@@ -2970,11 +2969,10 @@ finish_function (tree_parameter_list *ret_list,
 static void
 recover_from_parsing_function (void)
 {
-  if (symtab_context.empty ())
+  if (parser_symtab_context.empty ())
     panic_impossible ();
 
-  symbol_table::set_scope (symtab_context.top ());
-  symtab_context.pop ();
+  parser_symtab_context.pop ();
 
   if (reading_fcn_file && current_function_depth == 1
       && ! parsing_subfunctions)
@@ -3089,9 +3087,9 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
       retval = new tree_global_command (lst, l, c);
       break;
 
-    case STATIC:
+    case PERSISTENT:
       if (current_function_depth > 0)
-        retval = new tree_static_command (lst, l, c);
+        retval = new tree_persistent_command (lst, l, c);
       else
         {
           if (reading_script_file)
@@ -3515,7 +3513,11 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
               reading_classdef_file = true;
               reading_fcn_file = false;
-              reading_script_file = false;
+              // FIXME -- Should classdef files be handled as
+              // scripts or separately?  Currently, without setting up
+              // for reading script files, parsing classdef files
+              // fails.
+              reading_script_file = true;
             }
           else
             {
@@ -4217,9 +4219,9 @@ offer.  For example,\n\
 @group\n\
 @var{f} = @@exp;\n\
 feval (@var{f}, 1)\n\
-     @result{} 2.7183\n\
+    @result{} 2.7183\n\
 @var{f} (1)\n\
-     @result{} 2.7183\n\
+    @result{} 2.7183\n\
 @end group\n\
 @end example\n\
 \n\
@@ -4457,7 +4459,7 @@ The following example makes the variable @var{a} with the approximate\n\
 value 3.1416 available.\n\
 \n\
 @example\n\
-eval(\"a = acos(-1);\");\n\
+eval (\"a = acos(-1);\");\n\
 @end example\n\
 \n\
 If an error occurs during the evaluation of @var{try} the @var{catch}\n\

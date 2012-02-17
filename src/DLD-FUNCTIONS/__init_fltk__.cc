@@ -1168,12 +1168,12 @@ private:
     pos(2) = ww;
     pos(3) = hh - status_h - menu_h;
 
-    fp.set_position (pos);
+    fp.set_boundingbox (pos, true);
   }
 
   void draw (void)
   {
-    Matrix pos = fp.get_position ().matrix_value ();
+    Matrix pos = fp.get_boundingbox (true);
     Fl_Window::resize (pos(0), pos(1), pos(2), pos(3) + status_h + menu_h);
 
     return Fl_Window::draw ();
@@ -1296,12 +1296,12 @@ private:
                       dynamic_cast<axes::properties&> (ax_obj.get_properties ());
 
                     double x0, y0, x1, y1;
-                    Matrix pos = fp.get_position ().matrix_value ();
+                    Matrix pos = fp.get_boundingbox (true);
                     pixel2pos (ax_obj, pos_x, pos_y, x0, y0);
                     pixel2pos (ax_obj, Fl::event_x (), Fl::event_y (), x1, y1);
 
                     if (gui_mode == pan_zoom)
-                      ap.translate_view (x0 - x1, y0 - y1);
+                      ap.translate_view (x0, x1, y0, y1);
                     else if (gui_mode == rotate_zoom)
                       {
                         double daz, del;
@@ -2055,6 +2055,7 @@ DEFUN_DLD (gui_mode, args, ,
 @deftypefnx {Built-in Function} {} gui_mode (@var{mode})\n\
 Query or set the GUI mode for the current graphics toolkit.\n\
 The @var{mode} argument can be one of the following strings:\n\
+\n\
 @table @asis\n\
 @item '2d'\n\
 Allows panning and zooming of current axes.\n\

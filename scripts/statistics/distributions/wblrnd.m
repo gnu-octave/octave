@@ -98,35 +98,35 @@ function rnd = wblrnd (scale, shape, varargin)
 endfunction
 
 
-%!assert(size (wblrnd (1,2)), [1, 1]);
-%!assert(size (wblrnd (ones(2,1), 2)), [2, 1]);
-%!assert(size (wblrnd (ones(2,2), 2)), [2, 2]);
-%!assert(size (wblrnd (1, 2*ones(2,1))), [2, 1]);
-%!assert(size (wblrnd (1, 2*ones(2,2))), [2, 2]);
-%!assert(size (wblrnd (1, 2, 3)), [3, 3]);
-%!assert(size (wblrnd (1, 2, [4 1])), [4, 1]);
-%!assert(size (wblrnd (1, 2, 4, 1)), [4, 1]);
+%!assert (size (wblrnd (1,2)), [1, 1])
+%!assert (size (wblrnd (ones (2,1), 2)), [2, 1])
+%!assert (size (wblrnd (ones (2,2), 2)), [2, 2])
+%!assert (size (wblrnd (1, 2*ones (2,1))), [2, 1])
+%!assert (size (wblrnd (1, 2*ones (2,2))), [2, 2])
+%!assert (size (wblrnd (1, 2, 3)), [3, 3])
+%!assert (size (wblrnd (1, 2, [4 1])), [4, 1])
+%!assert (size (wblrnd (1, 2, 4, 1)), [4, 1])
 
 %% Test class of input preserved
-%!assert(class (wblrnd (1, 2)), "double");
-%!assert(class (wblrnd (single(1), 2)), "single");
-%!assert(class (wblrnd (single([1 1]), 2)), "single");
-%!assert(class (wblrnd (1, single(2))), "single");
-%!assert(class (wblrnd (1, single([2 2]))), "single");
+%!assert (class (wblrnd (1, 2)), "double")
+%!assert (class (wblrnd (single (1), 2)), "single")
+%!assert (class (wblrnd (single ([1 1]), 2)), "single")
+%!assert (class (wblrnd (1, single (2))), "single")
+%!assert (class (wblrnd (1, single ([2 2]))), "single")
 
 %% Test input validation
 %!error wblrnd ()
 %!error wblrnd (1)
-%!error wblrnd (ones(3),ones(2))
-%!error wblrnd (ones(2),ones(3))
+%!error wblrnd (ones (3), ones (2))
+%!error wblrnd (ones (2), ones (3))
 %!error wblrnd (i, 2)
 %!error wblrnd (2, i)
 %!error wblrnd (1,2, -1)
-%!error wblrnd (1,2, ones(2))
+%!error wblrnd (1,2, ones (2))
 %!error wblrnd (1, 2, [2 -1 2])
-%!error wblrnd (1,2, 1, ones(2))
+%!error wblrnd (1,2, 1, ones (2))
 %!error wblrnd (1,2, 1, -1)
-%!error wblrnd (ones(2,2), 2, 3)
-%!error wblrnd (ones(2,2), 2, [3, 2])
-%!error wblrnd (ones(2,2), 2, 2, 3)
+%!error wblrnd (ones (2,2), 2, 3)
+%!error wblrnd (ones (2,2), 2, [3, 2])
+%!error wblrnd (ones (2,2), 2, 2, 3)
 

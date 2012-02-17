@@ -28,9 +28,9 @@
 ## @example
 ## @group
 ## x = 0:0.1:10;
-## subplot (1, 2, 1);
+## subplot (1,2,1);
 ## h1 = plot (x, sin (x));
-## subplot (1, 2, 2);
+## subplot (1,2,2);
 ## h2 = plot (x, cos (x));
 ## hlink = linkprop ([h1, h2], @{"color","linestyle"@});
 ## set (h1, "color", "green");

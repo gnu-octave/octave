@@ -87,29 +87,30 @@ endfunction
 %!test
 %! a = [3 2 4 5 7 6 5 1 0 13 13];
 %! b = [3 5 12 1 1 7];
-%! [c,ia,ib] = intersect(a,b);
-%! assert(c,[1 3 5 7]);
-%! assert(ia,[8 1 7 5]);
-%! assert(ib,[5 1 2 6]);
-%! assert(a(ia),c);
-%! assert(b(ib),c);
+%! [c,ia,ib] = intersect (a, b);
+%! assert (c, [1 3 5 7]);
+%! assert (ia, [8 1 7 5]);
+%! assert (ib, [5 1 2 6]);
+%! assert (a(ia), c);
+%! assert (b(ib), c);
 %!test
 %! a = [1,1,2;1,4,5;2,1,7];
 %! b = [1,4,5;2,3,4;1,1,2;9,8,7];
-%! [c,ia,ib] = intersect(a,b,'rows');
-%! assert(c,[1,1,2;1,4,5]);
-%! assert(ia,[1;2]);
-%! assert(ib,[3;1]);
-%! assert(a(ia,:),c);
-%! assert(b(ib,:),c);
+%! [c,ia,ib] = intersect (a, b, "rows");
+%! assert (c, [1,1,2;1,4,5]);
+%! assert (ia, [1;2]);
+%! assert (ib, [3;1]);
+%! assert (a(ia,:), c);
+%! assert (b(ib,:), c);
 %!test
 %! a = [1 1 1 2 2 2];
 %! b = [1 2 3 4 5 6];
-%! c = intersect(a,b);
+%! c = intersect (a, b);
 %! assert(c, [1,2]);
 %!test
 %! a = [1 2 3 4; 5 6 7 8; 9 10 11 12];
-%! [b, ia, ib] = intersect(a, a, "rows");
-%! assert(b, a);
-%! assert(ia, [1:3]');
-%! assert(ib, [1:3]');
+%! [b, ia, ib] = intersect (a, a, "rows");
+%! assert (b, a);
+%! assert (ia, [1:3]');
+%! assert (ib, [1:3]');
+

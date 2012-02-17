@@ -46,12 +46,14 @@ function [idx, d] = dsearchn (x, tri, xi, outval)
   endif
 endfunction
 
+
 %!shared x, tri
 %! x = [-1,-1;-1,1;1,-1];
 %! tri = [1,2,3];
-%!assert (dsearchn(x,tri,[1,1/3]), 3);
-%!assert (dsearchn(x,tri,[1,1/3],NaN), NaN);
-%!assert (dsearchn(x,tri,[1,1/3],NA), NA);
-%!assert (dsearchn(x,tri,[1/3,1]), 2);
-%!assert (dsearchn(x,tri,[1/3,1],NaN), NaN);
-%!assert (dsearchn(x,tri,[1/3,1],NA), NA);
+%!assert (dsearchn (x,tri,[1,1/3]), 3)
+%!assert (dsearchn (x,tri,[1,1/3],NaN), NaN)
+%!assert (dsearchn (x,tri,[1,1/3],NA), NA)
+%!assert (dsearchn (x,tri,[1/3,1]), 2)
+%!assert (dsearchn (x,tri,[1/3,1],NaN), NaN)
+%!assert (dsearchn (x,tri,[1/3,1],NA), NA)
+

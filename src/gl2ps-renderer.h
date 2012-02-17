@@ -52,13 +52,14 @@ protected:
   void draw_pixels (GLsizei w, GLsizei h, GLenum format,
                     GLenum type, const GLvoid *data);
 
-  void set_linestyle (const std::string& s, bool use_stipple)
+  void set_linestyle (const std::string& s, bool use_stipple = false)
   {
     opengl_renderer::set_linestyle (s, use_stipple);
-    if (use_stipple)
-      gl2psEnable (GL2PS_LINE_STIPPLE);
-    else
+
+    if (s == "-" && ! use_stipple)
       gl2psDisable (GL2PS_LINE_STIPPLE);
+    else
+      gl2psEnable (GL2PS_LINE_STIPPLE);
   }
 
   void set_polygon_offset (bool on, double offset = 0.0)

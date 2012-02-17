@@ -1339,7 +1339,7 @@ is returned in @var{pos}.\n\
 DEFUN (scanf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {[@var{val}, @var{count}, @var{errmsg}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}]] =} scanf (@var{template}, @var{locale}))\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} scanf (@var{template}, @var{locale})\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\

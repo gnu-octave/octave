@@ -1047,21 +1047,6 @@ endfunction
 
 %!demo
 %! clf;
-%! labels = {};
-%! colororder = get (gca, 'colororder');
-%! for i = 1:5
-%!   h = plot (1:100, i + rand (100,1)); hold on;
-%!   set (h, 'color', colororder(i,:));
-%!   labels = {labels{:}, ['Signal ', num2str(i)]};
-%! end
-%! hold off;
-%! title ('Signals with random offset and uniform noise');
-%! xlabel ('Sample Nr [k]'); ylabel ('Amplitude [V]');
-%! legend (labels{:}, 'location', 'southoutside');
-%! legend ('boxon');
-
-%!demo
-%! clf;
 %! x = linspace (0, 10);
 %! plot (x, x);
 %! hold on;

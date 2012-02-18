@@ -393,10 +393,6 @@ function print (varargin)
       opts = __gnuplot_print__ (opts);
     otherwise
       opts = __fltk_print__ (opts);
-      if (isunix ())
-        ## FIXME - Is there a way to explicitly determine the pid numbers?
-        waitpid (0);
-      endif
     endswitch
 
   unwind_protect_cleanup

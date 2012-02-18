@@ -354,8 +354,11 @@ function [fx, gx] = guarded_eval (fun, x)
     error ("fminunc:notreal", "fminunc: non-real value encountered");
   elseif (any (isnan (fx(:))))
     error ("fminunc:isnan", "fminunc: NaN value encountered");
+  elseif (any (isinf (fx(:))))
+    error ("fminunc:isinf", "fminunc: Inf value encountered");
   endif
 endfunction
+
 
 %!function f = __rosenb (x)
 %!  n = length (x);
@@ -373,6 +376,12 @@ endfunction
 %! assert (info > 0);
 %! assert (x, ones (1, 4), tol);
 %! assert (fval, 0, tol);
+%% Test FunValCheck works correctly
+%!assert (fminunc (@(x) x^2, 1, optimset ("FunValCheck", "on")), 0, eps)
+%!error <non-real value> fminunc (@(x) x + i, 1, optimset ("FunValCheck", "on"))
+%!error <NaN value> fminunc (@(x) x + NaN, 1, optimset ("FunValCheck", "on"))
+%!error <Inf value> fminunc (@(x) x + Inf, 1, optimset ("FunValCheck", "on"))
+
 
 ## Solve the double dogleg trust-region minimization problem:
 ## Minimize 1/2*norm(r*x)^2  subject to the constraint norm(d.*x) <= delta,

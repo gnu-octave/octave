@@ -151,7 +151,7 @@ function opts = __fltk_print__ (opts)
   ## Tell gl2ps to use different rendering options for 2D plots
   haxes = findall (opts.figure, "type", "axes");
   vw = get (haxes, "view");
-  if (iscell (v))
+  if (iscell (vw))
     vw = vertcat (vw{:});
   end
   is2D = all (abs (vw(:,2)) == 90);

@@ -4933,11 +4933,11 @@ axes::properties::update_axes_layout (void)
   Matrix viewmat = get_view ().matrix_value ();
   nearhoriz = std::abs(viewmat(1)) <= 5;
 
-  update_ticklengths ();
+  update_ticklength ();
 }
 
 void
-axes::properties::update_ticklengths (void)
+axes::properties::update_ticklength (void)
 {
   bool mode2d = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
                   (ystate > AXE_DEPTH_DIR ? 1 : 0) +
@@ -4955,10 +4955,15 @@ axes::properties::update_ticklengths (void)
   double ticksign = (tickdirmode_is ("auto") ?
                      (mode2d ? -1 : 1) :
                      (tickdir_is ("in") ? -1 : 1));
-  // FIXME: use ticklength property
-  xticklen = ticksign*7;
-  yticklen = ticksign*7;
-  zticklen = ticksign*7;
+
+  Matrix bbox = get_boundingbox (true);
+  Matrix ticklen = get_ticklength ().matrix_value ();
+  ticklen(0) = ticklen(0) * std::max (bbox(2), bbox(3));
+  ticklen(1) = ticklen(1) * std::max (bbox(2), bbox(3));
+
+  xticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
+  yticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
+  zticklen = ticksign * (mode2d ? ticklen(0) : ticklen(1));
 
   xtickoffset = (mode2d ? std::max (0., xticklen) : std::abs (xticklen)) + 5;
   ytickoffset = (mode2d ? std::max (0., yticklen) : std::abs (yticklen)) + 5;
@@ -4969,6 +4974,22 @@ axes::properties::update_ticklengths (void)
   update_zlabel_position ();
   update_title_position ();
 }
+
+/*
+%!demo
+%!  clf
+%!  subplot (2, 1, 1)
+%!  plot (rand (3))
+%!  xlabel xlabel
+%!  ylabel ylabel
+%!  title title
+%!  subplot (2, 1, 2)
+%!  plot (rand (3))
+%!  set (gca, "ticklength", get (gca, "ticklength") * 2, "tickdir", "out")
+%!  xlabel xlabel
+%!  ylabel ylabel
+%!  title title
+*/
 
 static bool updating_xlabel_position = false;
 

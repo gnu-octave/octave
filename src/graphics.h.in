@@ -3824,7 +3824,7 @@ public:
       radio_property projection , "{orthographic}|perpective"
       radio_property tickdir mu , "{in}|out"
       radio_property tickdirmode u , "{auto}|manual"
-      array_property ticklength , default_axes_ticklength ()
+      array_property ticklength u , default_axes_ticklength ()
       array_property tightinset r , Matrix (1, 4, 0.0)
       // FIXME -- uicontextmenu should be moved here.
       radio_property units SU , "{normalized}|inches|centimeters|points|pixels|characters"
@@ -3897,9 +3897,9 @@ public:
     void update_ydir (void) { update_camera (); update_axes_layout (); }
     void update_zdir (void) { update_camera (); update_axes_layout (); }
 
-    void update_ticklengths (void);
-    void update_tickdir (void) { update_ticklengths (); }
-    void update_tickdirmode (void) { update_ticklengths (); }
+    void update_ticklength (void);
+    void update_tickdir (void) { update_ticklength (); }
+    void update_tickdirmode (void) { update_ticklength (); }
 
     void update_xtick (void)
       {

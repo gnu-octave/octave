@@ -20,9 +20,11 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
+## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
-  -I$(top_srcdir)/libcruft/misc
+  -I../libgnu -I$(top_srcdir)/libgnu \
+  -I$(top_srcdir)/libcruft/misc \
+  @CPPFLAGS@
 
 EXTRA_DIST = \
   config-ops.sh \

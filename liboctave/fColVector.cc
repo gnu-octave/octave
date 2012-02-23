@@ -211,12 +211,17 @@ operator * (const FloatMatrix& m, const FloatColumnVector& a)
 
       if (nr != 0)
         {
-          float *y = retval.fortran_vec ();
+          if (nc == 0)
+            retval.fill (0.0);
+          else
+            {
+              float *y = retval.fortran_vec ();
 
-          F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                                   nr, nc, 1.0f, m.data (), nr,
-                                   a.data (), 1, 0.0f, y, 1
-                                   F77_CHAR_ARG_LEN (1)));
+              F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+                                       nr, nc, 1.0f, m.data (), nr,
+                                       a.data (), 1, 0.0f, y, 1
+                                       F77_CHAR_ARG_LEN (1)));
+            }
         }
     }
 

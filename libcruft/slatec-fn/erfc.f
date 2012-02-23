@@ -121,6 +121,11 @@ C
       ENDIF
       FIRST = .FALSE.
 C
+      IF (ISNAN(X)) THEN
+         ERFC = X
+         RETURN
+      ENDIF
+C
       IF (X.GT.XSML) GO TO 20
 C
 C ERFC(X) = 1.0 - ERF(X) FOR X .LT. XSML
@@ -149,8 +154,7 @@ C
       IF (X.LT.0.) ERFC = 2.0 - ERFC
       RETURN
 C
- 40   CALL XERMSG ('SLATEC', 'ERFC', 'X SO BIG ERFC UNDERFLOWS', 1, 1)
-      ERFC = 0.
+ 40   ERFC = 0.
       RETURN
 C
       END

@@ -191,6 +191,11 @@ C
       ENDIF
       FIRST = .FALSE.
 C
+      IF (ISNAN(X)) THEN
+         DERFC = X
+         RETURN
+      ENDIF
+C
       IF (X.GT.XSML) GO TO 20
 C
 C ERFC(X) = 1.0 - ERF(X)  FOR  X .LT. XSML
@@ -219,8 +224,7 @@ C
       IF (X.LT.0.D0) DERFC = 2.0D0 - DERFC
       RETURN
 C
- 40   CALL XERMSG ('SLATEC', 'DERFC', 'X SO BIG ERFC UNDERFLOWS', 1, 1)
-      DERFC = 0.D0
+ 40   DERFC = 0.D0
       RETURN
 C
       END

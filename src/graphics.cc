@@ -4942,19 +4942,11 @@ axes::properties::update_ticklength (void)
   bool mode2d = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
                   (ystate > AXE_DEPTH_DIR ? 1 : 0) +
                   (zstate > AXE_DEPTH_DIR ? 1 : 0)) == 2);
-  if (tickdirmode_is ("auto"))
-  {
-    // FIXME: tickdir should be updated (code below comes
-    //        from JHandles)
-    //autoMode++;
-    //TickDir.set(mode2d ? "in" : "out", true);
-    //autoMode--;
-  }
 
-  //double ticksign = (tickdir_is ("in") ? -1 : 1);
-  double ticksign = (tickdirmode_is ("auto") ?
-                     (mode2d ? -1 : 1) :
-                     (tickdir_is ("in") ? -1 : 1));
+  if (tickdirmode_is ("auto"))
+    tickdir.set (mode2d ? "in" : "out", true);
+
+  double ticksign = (tickdir_is ("in") ? -1 : 1);
 
   Matrix bbox = get_boundingbox (true);
   Matrix ticklen = get_ticklength ().matrix_value ();

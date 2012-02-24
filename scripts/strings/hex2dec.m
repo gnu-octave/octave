@@ -24,9 +24,9 @@
 ## @example
 ## @group
 ## hex2dec ("12B")
-##      @result{} 299
+##       @result{} 299
 ## hex2dec ("12b")
-##      @result{} 299
+##       @result{} 299
 ## @end group
 ## @end example
 ##

@@ -32,8 +32,8 @@
 ## @group
 ## s = [ "ab"; "cde" ];
 ## cstrcat (s, s, s)
-##      @result{} "ab ab ab "
-##         "cdecdecde"
+##       @result{} "ab ab ab "
+##          "cdecdecde"
 ## @end group
 ## @end example
 ## @seealso{strcat, char, strvcat}

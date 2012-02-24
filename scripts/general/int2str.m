@@ -32,7 +32,7 @@
 ##         4  5  6
 ##
 ## whos s
-##      @result{} s =
+##      @result{}
 ##       Attr Name        Size                     Bytes  Class
 ##       ==== ====        ====                     =====  =====
 ##            s           2x7                         14  char

@@ -1400,9 +1400,9 @@ value is @code{\" \"} (a single space).  For example:\n\
 @group\n\
 string_fill_char (\"X\");\n\
 [ \"these\"; \"are\"; \"strings\" ]\n\
-     @result{}  \"theseXX\"\n\
-         \"areXXXX\"\n\
-         \"strings\"\n\
+      @result{}  \"theseXX\"\n\
+          \"areXXXX\"\n\
+          \"strings\"\n\
 @end group\n\
 @end example\n\
 \n\

@@ -24,7 +24,7 @@
 ## @example
 ## @group
 ## bin2dec ("1110")
-##      @result{} 14
+##       @result{} 14
 ## @end group
 ## @end example
 ##

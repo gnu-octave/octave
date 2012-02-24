@@ -187,14 +187,14 @@ matrix) you can use the @code{ischar} function in combination with the
 
 @example
 @group
-ischar(collection)
-     @result{} ans = 1
+ischar (collection)
+     @result{} 1
 
-ischar(collection) && isvector(collection)
-     @result{} ans = 0
+ischar (collection) && isvector (collection)
+     @result{} 0
 
-ischar("my string") && isvector("my string")
-     @result{} ans = 1
+ischar ("my string") && isvector ("my string")
+     @result{} 1
 @end group
 @end example
 
@@ -243,9 +243,8 @@ character for each element, as in the following example:
 
 @example
 @group
-char([98, 97, 110, 97, 110, 97])
-     @result{} ans =
-       banana
+char ([98, 97, 110, 97, 110, 97])
+   @result{} banana
 @end group
 @end example
 
@@ -256,16 +255,14 @@ horizontally.  For example:
 
 @example
 @group
-char("an apple", "two pears")
-     @result{} ans =
-       an apple
+char ("an apple", "two pears")
+    @result{} an apple
        two pears
 @end group
 
 @group
-strcat("oc", "tave", " is", " good", " for you")
-     @result{} ans =
-       octave is good for you
+strcat ("oc", "tave", " is", " good", " for you")
+     @result{} octave is good for you
 @end group
 @end example
 
@@ -275,18 +272,16 @@ eliminates empty strings.
 
 @example
 @group
-char("orange", "green", "", "red")
-     @result{} ans =
-       orange
+char ("orange", "green", "", "red")
+    @result{} orange
        green 
              
        red   
 @end group
 
 @group
-strvcat("orange", "green", "", "red")
-     @result{} ans =
-       orange
+strvcat ("orange", "green", "", "red")
+    @result{} orange
        green 
        red  
 @end group
@@ -299,21 +294,20 @@ concatenates within the cells of the cell arrays:
 
 @example
 @group
-char(@{"red", "green", "", "blue"@})
-     @result{} ans =
-       red  
-       green
+char (@{"red", "green", "", "blue"@})
+     @result{} red  
+        green
 
-       blue 
+        blue 
 @end group
 
 @group
-strcat(@{"abc"; "ghi"@}, @{"def"; "jkl"@})
-     @result{} ans =
-       @{
-         [1,1] = abcdef
-         [2,1] = ghijkl
-       @}
+strcat (@{"abc"; "ghi"@}, @{"def"; "jkl"@})
+     @result{}
+        @{
+          [1,1] = abcdef
+          [2,1] = ghijkl
+        @}
 @end group
 @end example
 
@@ -323,17 +317,15 @@ kinds of behavior can be useful as can be seen in the examples:
 
 @example
 @group
-strcat(["dir1";"directory2"], ["/";"/"], ["file1";"file2"])
-     @result{} ans =
-       dir1/file1      
-       directory2/file2
+strcat (["dir1";"directory2"], ["/";"/"], ["file1";"file2"])
+     @result{} dir1/file1      
+        directory2/file2
 @end group
 @group
 
-cstrcat(["thirteen apples"; "a banana"], [" 5$";" 1$"])
-     @result{} ans =
-       thirteen apples 5$
-       a banana        1$
+cstrcat (["thirteen apples"; "a banana"], [" 5$";" 1$"])
+      @result{} thirteen apples 5$
+         a banana        1$
 @end group
 @end example
 
@@ -467,7 +459,7 @@ a hexadecimal number to a floating point number.
 @example
 @group
 hex2dec ("FF")
-     @result{} ans = 255
+      @result{} 255
 @end group
 @end example
 

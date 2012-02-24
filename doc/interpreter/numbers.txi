@@ -773,9 +773,9 @@ changed.  For example,
 @example
 @group
 x = ones (2, 2);
-x (1, 1) = single (2)
-    @result{} x = 2   1
-           1   1
+x(1, 1) = single (2)
+   @result{} x = 2   1
+          1   1
 @end group
 @end example
 

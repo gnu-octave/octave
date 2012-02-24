@@ -23,7 +23,7 @@
 ## @example
 ## @group
 ## blanks (10);
-## whos ans;
+## whos ans
 ##      @result{}
 ##       Attr Name        Size                     Bytes  Class
 ##       ==== ====        ====                     =====  =====

@@ -423,8 +423,17 @@ endfunction
 %! assert (opts.figure, 5);
 
 function cmd = __quote_path__ (cmd)
-  if (any (cmd == " ") && ! (cmd(1) == """" && cmd(end) == """"))
-    cmd = strcat ("""", strrep (cmd, """", """"""), """");
+  if (! isempty (cmd))
+    is_quoted = all (cmd([1, end]) == "'");
+    if (! is_quoted)
+      dos_shell = ! isunix () && ispc ();
+      if (dos_shell && any (cmd == "/"))
+        cmd = strrep (cmd, "/", "\\");
+      endif
+      if (any (cmd == " "))
+        cmd = strcat ("""", strrep (cmd, """", """"""), """");
+      endif
+    endif
   endif
 endfunction
 

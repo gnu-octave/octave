@@ -63,5 +63,28 @@ function h = mesh (varargin)
 endfunction
 
 
-%% FIXME: Need demo or test for function
+%!demo
+%! clf ();
+%! x = logspace(0,1,11);
+%! z = x'*x;
+%! mesh (x, x, z, z.^2);
+%! xlabel xlabel
+%! ylabel ylabel
+%! zlabel "linear scale"
+%! if (strcmp (get (gcf, "__graphics_toolkit__"), "gnuplot"))
+%!   title ("Gnuplot's mesh color is correct")
+%! endif
+
+%!demo
+%! clf ();
+%! x = logspace(0,1,11);
+%! z = x'*x;
+%! mesh (x, x, z, z.^2);
+%! set (gca, "zscale", "log")
+%! xlabel xlabel
+%! ylabel ylabel
+%! zlabel "log scale"
+%! if (strcmp (get (gcf, "__graphics_toolkit__"), "gnuplot"))
+%!   title ({"Gnuplot's mesh color is wrong", "This a Gnuplot bug"})
+%! endif
 

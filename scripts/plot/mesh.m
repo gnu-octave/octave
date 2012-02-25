@@ -71,9 +71,6 @@ endfunction
 %! xlabel xlabel
 %! ylabel ylabel
 %! zlabel "linear scale"
-%! if (strcmp (get (gcf, "__graphics_toolkit__"), "gnuplot"))
-%!   title ("Gnuplot's mesh color is correct")
-%! endif
 
 %!demo
 %! clf ();
@@ -85,6 +82,6 @@ endfunction
 %! ylabel ylabel
 %! zlabel "log scale"
 %! if (strcmp (get (gcf, "__graphics_toolkit__"), "gnuplot"))
-%!   title ({"Gnuplot's mesh color is wrong", "This a Gnuplot bug"})
+%!   title ({"Gnuplot: mesh color is wrong", "This a Gnuplot bug"})
 %! endif
 

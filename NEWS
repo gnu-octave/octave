@@ -46,7 +46,7 @@ Summary of important user-visible changes for version 3.6:
     http://forge.scilab.org/index.php/p/arpack-ng
 
  ** Many of Octave's binary operators (.*, .^, +, -, ...) now perform
-    automatic broadcasting for array operations that allows you to use
+    automatic broadcasting for array operations which allows you to use
     operator notation instead of calling bsxfun or expanding arrays (and
     unnecessarily wasting memory) with repmat or similar idioms.  For
     example, to scale the columns of a matrix by the elements of a row
@@ -108,7 +108,7 @@ Summary of important user-visible changes for version 3.6:
 
     negative binomial function has been extended to real, non-integer
     inputs.  The discrete_inv fucntion now returns v(1) for 0 instead of
-    NaN.  The nbincdf fucntion has bbeen recoded to use a closed form
+    NaN.  The nbincdf fucntion has been recoded to use a closed form
     solution with betainc.
 
  ** strread, textscan, and textread have been completely revamped.

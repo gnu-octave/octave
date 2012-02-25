@@ -374,9 +374,9 @@ public:
   // If the derived class is locale-aware, it must implement this function 
   // in order to set a new locale. By default, this function avoids messing 
   // with locales and ignores its input argument.
-  virtual std::locale imbue ( const std::locale & loc ) 
+  virtual std::locale imbue ( const std::locale &)
     { return std::locale::classic (); }
-  
+
   // Return TRUE if this stream is open.
 
   bool is_open (void) const { return open_state; }

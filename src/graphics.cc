@@ -6882,13 +6882,21 @@ text::properties::get_data_position (void) const
 Matrix
 text::properties::get_extent_matrix (void) const
 {
+  // FIXME: Should this function also add the (x,y) base position?
   return extent.get ().matrix_value ();
 }
 
 octave_value
 text::properties::get_extent (void) const
 {
+  // FIXME: This doesn't work right for 3D plots.
+  // (It doesn't in Matlab either, at least not in version 6.5.)
   Matrix m = extent.get ().matrix_value ();
+  Matrix pos = get_position ().matrix_value ();
+  Matrix p = convert_text_position (pos, *this, get_units (), "pixels");
+
+  m(0) += p(0);
+  m(1) += p(1);
 
   return convert_text_position (m, *this, "pixels", get_units ());
 }
@@ -6936,6 +6944,10 @@ text::properties::update_text_extent (void)
 
   renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
                            halign, valign, get_rotation ());
+  /* The bbox is relative to the text's position.
+     We'll leave it that way, because get_position() does not return
+     valid results when the text is first constructed.
+     Conversion to proper coordinates is performed in get_extent. */
   set_extent (bbox);
 
 #endif

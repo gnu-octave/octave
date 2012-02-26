@@ -177,11 +177,17 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
               endif
             case "uimenu"
               ## ignore uimenu objects
+              kids(i) = [];
             otherwise
               error ("__go_draw_figure__: unknown object class, %s", type);
           endswitch
         endfor
-        fputs (plot_stream, "\nunset multiplot;\n");
+        if (isempty (kids))
+          fputs (plot_stream, "\nreset; clear;\n");
+          fflush (plot_stream);
+        else
+          fputs (plot_stream, "\nunset multiplot;\n");
+        endif
       else
         fputs (plot_stream, "\nreset; clear;\n");
         fflush (plot_stream);

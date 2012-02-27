@@ -38,7 +38,7 @@ function str = fileread (filename)
   endif
 
   unwind_protect
-    str = fread (fid, "*char");
+    str = (fread (fid, "*char")).';
   unwind_protect_cleanup
     fclose (fid);
   end_unwind_protect

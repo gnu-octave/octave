@@ -197,6 +197,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
                                  "gif", "jpeg", "latex", "pbm", "pdf", ...
                                  "pdfcairo", "postscript", "png", "pngcairo", ...
                                  "pstex", "pslatex", "svg", "tikz"};
+          if (__gnuplot_has_feature__ ("windows_figure_position"))
+            terminals_with_size{end+1} = "windows";
+          endif
           if (__gnuplot_has_feature__ ("x11_figure_position"))
             terminals_with_size{end+1} = "x11";
           endif
@@ -226,9 +229,11 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
           otherwise
             size_str = "";
           endswitch
-          if (strncmpi (term, "x11", 3)
-              && __gnuplot_has_feature__ ("x11_figure_position"))
-            ## X11 allows the window to be positioned as well.
+          if ((strncmpi (term, "x11", 3)
+               && __gnuplot_has_feature__ ("x11_figure_position"))
+              || (strcmpi (term, "windows")
+                  && __gnuplot_has_feature__ ("windows_figure_position")))
+            ## X11/Windows allows the window to be positioned as well.
             units = get (0, "units");
             unwind_protect
               set (0, "units", "pixels");
@@ -237,7 +242,7 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
               set (0, "units", units);
             end_unwind_protect
             if (all (screen_size > 0))
-              ## For X11, set the figure positon as well as the size
+              ## For X11/Windows, set the figure positon as well as the size
               ## gnuplot position is UL, Octave's is LL (same for screen/window)
               gnuplot_pos(2) = screen_size(2) - gnuplot_pos(2) - gnuplot_size(2);
               gnuplot_pos = max (gnuplot_pos, 1);

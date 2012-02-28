@@ -34,7 +34,8 @@ function res = __gnuplot_has_feature__ (feature)
               "epslatexstandalone_terminal",
               "screen_coordinates_for_{lrtb}margin",
               "variable_GPVAL_TERMINALS",
-              "key_has_font_properties"};
+              "key_has_font_properties",
+              "windows_figure_position"};
 
   if (isempty (has_features))
     try
@@ -43,8 +44,8 @@ function res = __gnuplot_has_feature__ (feature)
       ## Don't throw an error if gnuplot isn't installed
       gnuplot_version = "0.0.0";
     end_try_catch
-    versions = {"4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4"};
-    operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
+    versions = {"4.2.5", "4.4", "4.4", "4.4", "4.2", "4.2", "4.4", "4.4", "4.4", "4.4"};
+    operators = {">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">=", ">="};
     have_features = logical (zeros (size (features)));
     for n = 1 : numel (have_features)
       has_features(n) = compare_versions (gnuplot_version, versions{n}, operators{n});

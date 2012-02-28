@@ -179,7 +179,7 @@ private:
     if (print_mode)
       {
         FILE *fp = octave_popen (print_cmd.c_str (), "w");
-        glps_renderer rend (fileno (fp), print_term);
+        glps_renderer rend (fp, print_term);
 
         rend.draw (gh_manager::get_object (number));
 

@@ -31,8 +31,8 @@ OCTINTERP_API
 glps_renderer : public opengl_renderer
 {
 public:
-  glps_renderer (const int _fid, const std::string& _term)
-    : opengl_renderer () , fid (_fid), term (_term),
+  glps_renderer (FILE *_fp, const std::string& _term)
+    : opengl_renderer () , fp (_fp), term (_term),
     fontsize (), fontname () { }
 
   ~glps_renderer (void) { }
@@ -78,7 +78,7 @@ protected:
 
 private:
   int alignment_to_mode (int ha, int va) const;
-  int fid;
+  FILE *fp;
   caseless_str term;
   double fontsize;
   std::string fontname;

@@ -431,11 +431,13 @@ This is one way to normalize columns of a matrix @var{X} to unit norm:
 @example
 @group
   s = norm (X, "columns");
-  X = diag (s) / X;
+  X /= diag (s);
 @end group
 @end example
 
-The same can also be accomplished with broadcasting:
+@noindent
+The same can also be accomplished with broadcasting
+(@pxref{Broadcasting}):
 
 @example
 @group
@@ -454,7 +456,7 @@ in earlier versions of Octave, but slowly.
 @end example
 
 @noindent
-Finally, here's how you solve a linear system @code{A*x = b} 
+Finally, here's how you solve a linear system @code{A*x = b}
 with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 
 @example

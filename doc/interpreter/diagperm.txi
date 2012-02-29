@@ -426,12 +426,21 @@ using the pivoted LU@tie{}factorization:
 @end example
 
 @noindent
-This is how you normalize columns of a matrix @var{X} to unit norm:
+This is one way to normalize columns of a matrix @var{X} to unit norm:
 
 @example
 @group
   s = norm (X, "columns");
-  X = diag (s) \ X;
+  X = diag (s) / X;
+@end group
+@end example
+
+The same can also be accomplished with broadcasting:
+
+@example
+@group
+  s = norm (X, "columns");
+  X ./= s;
 @end group
 @end example
 

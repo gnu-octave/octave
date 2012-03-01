@@ -1751,7 +1751,8 @@ function desc = get_description (filename)
         value = strip (line (colon+1:end));
         if (length (value) == 0)
             fclose (fid);
-            error ("the keyword %s has an empty value", desc.keywords{end});
+            error ("The keyword `%s' of the package `%s' has an empty value",
+                    keyword, desc.name);
         endif
         desc.(keyword) = value;
       endif

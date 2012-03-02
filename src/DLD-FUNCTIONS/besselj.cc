@@ -930,43 +930,40 @@ return @code{NaN}.\n\
 %!assert(besselh(-alpha,2,x,1), I*(jx - I*yx)*exp(I*x), 100*eps)
 
 
-%  Tests contributed by Robert T. Short.
-%  Tests are based on the properties and tables in A&S:
-%   Abramowitz and Stegun, "Handbook of Mathematical Functions",
-%   1972.
+Tests contributed by Robert T. Short.
+Tests are based on the properties and tables in A&S:
+ Abramowitz and Stegun, "Handbook of Mathematical Functions",
+ 1972.
 
-%  For regular Bessel functions, there are 3 tests.  These compare
-%  octave results against Tables 9.1, 9.2, and 9.4 in A&S.  Tables
-%  9.1 and 9.2 are good to only a few decimal places, so any
-%  failures should be considered a broken implementation.  Table
-%  9.4 is an extended table for larger orders and arguments.  There
-%  are some differences between octave and Table 9.4, mostly in
-%  the last decimal place but in a very few instances the errors
-%  are in the last two places.  The comparison tolerance has been
-%  changed to reflect this.
+For regular Bessel functions, there are 3 tests. These compare octave
+results against Tables 9.1, 9.2, and 9.4 in A&S. Tables 9.1 and 9.2
+are good to only a few decimal places, so any failures should be
+considered a broken implementation. Table 9.4 is an extended table
+for larger orders and arguments. There are some differences between
+Octave and Table 9.4, mostly in the last decimal place but in a very
+few instances the errors are in the last two places. The comparison
+tolerance has been changed to reflect this.
 
-%  Similarly for modifed Bessel functions, there are 3 tests.  
-%  These compare octave results against Tables 9.8, 9.9, and
-%  9.11 in A&S.  Tables 9.8 and 9.9 are good to only a few 
-%  decimal places, so any failures should be considered a broken
-%  implementation.  Table 9.11 is an extended table for larger 
-%  orders and arguments.  There are some differences between 
-%  octave and Table 9.11, mostly in the last decimal place but
-%  in a very few instances the errors are in the last two places.
-%  The comparison tolerance has been changed to reflect this.
+Similarly for modifed Bessel functions, there are 3 tests. These
+compare octave results against Tables 9.8, 9.9, and 9.11 in A&S.
+Tables 9.8 and 9.9 are good to only a few decimal places, so any
+failures should be considered a broken implementation. Table 9.11 is
+an extended table for larger orders and arguments. There are some
+differences between octave and Table 9.11, mostly in the last decimal
+place but in a very few instances the errors are in the last two
+places. The comparison tolerance has been changed to reflect this.
 
-%  For spherical Bessel functions, there are also three tests,
-%  comparing octave results to Tables 10.1, 10.2, and 10.4 in
-%  A&s.  Very similar comments may be made here as in the previous
-%  lines.  At this time, modified spherical Bessel function
-%  tests are not included - maybe someday when I have some time...
+For spherical Bessel functions, there are also three tests, comparing
+octave results to Tables 10.1, 10.2, and 10.4 in A&S. Very similar
+comments may be made here as in the previous lines. At this time,
+modified spherical Bessel function tests are not included.
 
 % Table 9.1 - J and Y for integer orders 0, 1, 2.
 % Compare against excerpts of Table 9.1, Abramowitz and Stegun.
 %!test
 %! n = 0:2;
 %! z = (0:2.5:17.5)';
-%! 
+%!
 %! Jt = [[ 1.000000000000000,  0.0000000000,  0.0000000000];
 %!       [-0.048383776468198,  0.4970941025,  0.4460590584];
 %!       [-0.177596771314338, -0.3275791376,  0.0465651163];
@@ -975,7 +972,7 @@ return @code{NaN}.\n\
 %!       [ 0.146884054700421, -0.1654838046, -0.1733614634];
 %!       [-0.014224472826781,  0.2051040386,  0.0415716780];
 %!       [-0.103110398228686, -0.1634199694,  0.0844338303]];
-%! 
+%!
 %! Yt = [[-Inf,          -Inf,         -Inf         ];
 %!       [ 0.4980703596,  0.1459181380, -0.38133585 ];
 %!       [-0.3085176252,  0.1478631434,  0.36766288 ];
@@ -984,18 +981,19 @@ return @code{NaN}.\n\
 %!       [-0.1712143068, -0.1538382565,  0.14660019 ];
 %!       [ 0.2054642960,  0.0210736280, -0.20265448 ];
 %!       [-0.1604111925,  0.0985727987,  0.17167666 ]];
-%! 
+%!
 %! J = besselj(n,z);
 %! Y = bessely(n,z);
 %! assert(Jt(:,1), J(:,1), 0.5e-10);
 %! assert(Yt(:,1), Y(:,1), 0.5e-10);
 %! assert(Jt(:,2:3), J(:,2:3), 0.5e-10);
 
-% Table 9.2 - J and Y for integer orders 3-9.
+Table 9.2 - J and Y for integer orders 3-9.
+
 %!test
 %!  n = (3:9);
 %!  z = (0:2:20).';
-%!  
+%!
 %!  Jt = [[ 0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00, 0.0000e+00];
 %!        [ 1.2894e-01, 3.3996e-02, 7.0396e-03, 1.2024e-03, 1.7494e-04, 2.2180e-05, 2.4923e-06];
 %!        [ 4.3017e-01, 2.8113e-01, 1.3209e-01, 4.9088e-02, 1.5176e-02, 4.0287e-03, 9.3860e-04];
@@ -1007,7 +1005,7 @@ return @code{NaN}.\n\
 %!        [-4.3847e-02,-2.0264e-01,-5.7473e-02, 1.6672e-01, 1.8251e-01,-7.0211e-03,-1.8953e-01];
 %!        [ 1.8632e-01, 6.9640e-02,-1.5537e-01,-1.5596e-01, 5.1399e-02, 1.9593e-01, 1.2276e-01];
 %!        [-9.8901e-02, 1.3067e-01, 1.5117e-01,-5.5086e-02,-1.8422e-01,-7.3869e-02, 1.2513e-01]];
-%!  
+%!
 %!  Yt = [[       -Inf,       -Inf,       -Inf,       -Inf,       -Inf,       -Inf,       -Inf];
 %!        [-1.1278e+00,-2.7659e+00,-9.9360e+00,-4.6914e+01,-2.7155e+02,-1.8539e+03,-1.4560e+04];
 %!        [-1.8202e-01,-4.8894e-01,-7.9585e-01,-1.5007e+00,-3.7062e+00,-1.1471e+01,-4.2178e+01];
@@ -1019,19 +1017,20 @@ return @code{NaN}.\n\
 %!        [-1.9637e-01,-7.3222e-05, 1.9633e-01, 1.2278e-01,-1.0425e-01,-2.1399e-01,-1.0975e-01];
 %!        [ 3.3724e-02,-1.7722e-01,-1.1249e-01, 1.1472e-01, 1.8897e-01, 3.2253e-02,-1.6030e-01];
 %!        [ 1.4967e-01, 1.2409e-01,-1.0004e-01,-1.7411e-01,-4.4312e-03, 1.7101e-01, 1.4124e-01]];
-%!  
+%!
 %!  n = (3:9);
 %!  z = (0:2:20).';
 %!  J=besselj(n,z);
 %!  Y=bessely(n,z);
 %!
-%!  assert(max(abs(J(1,:)))==0);
-%!  assert(max(max(J(2:end,:)./Jt(2:end,:)-1))<5e-5);
-%!  assert(Yt(1,:)==Y(1,:));
-%!  assert(max(max(Y(2:end,:)./Yt(2:end,:)-1))<5e-5);
+%!  assert(J(1,:), zeros (1, columns (J)));
+%!  assert(J(2:end,:), Jt(2:end,:), -5e-5);
+%!  assert(Yt(1,:), Y(1,:));
+%!  assert(Y(2:end,:), Yt(2:end,:), -5e-5);
 
-% Table 9.4 - J and Y for various integer orders and arguments.
-%!test
+Table 9.4 - J and Y for various integer orders and arguments.
+
+%!xtest
 %! Jt = [[7.651976866e-01,   2.238907791e-01,  -1.775967713e-01,  -2.459357645e-01,  5.581232767e-02,  1.998585030e-02];
 %!       [2.497577302e-04,   7.039629756e-03,   2.611405461e-01,  -2.340615282e-01, -8.140024770e-02, -7.419573696e-02];
 %!       [2.630615124e-10,   2.515386283e-07,   1.467802647e-03,   2.074861066e-01, -1.138478491e-01, -5.473217694e-02];
@@ -1041,7 +1040,7 @@ return @code{NaN}.\n\
 %!       [1.107915851e-60,   1.196077458e-48,   8.702241617e-33,   6.030895312e-21, -1.381762812e-01,  7.270175482e-02];
 %!       [2.906004948e-80,   3.224095839e-65,   2.294247616e-45,   1.784513608e-30,  1.214090219e-01, -3.869833973e-02];
 %!       [8.431828790e-189,  1.060953112e-158,  6.267789396e-119,  6.597316064e-89,  1.115927368e-21,  9.636667330e-02]];
-%! 
+%!
 %! Yt = [[8.825696420e-02,   5.103756726e-01,  -3.085176252e-01,   5.567116730e-02, -9.806499547e-02, -7.724431337e-02]
 %!       [2.604058666e+02,  -9.935989128e+00,  -4.536948225e-01,   1.354030477e-01, -7.854841391e-02, -2.948019628e-02]
 %!       [1.216180143e+08,  -1.291845422e+05,  -2.512911010e+01,  -3.598141522e-01,  5.723897182e-03,  5.833157424e-02]
@@ -1056,11 +1055,12 @@ return @code{NaN}.\n\
 %! z = [1,2,5,10,50,100];
 %! J = besselj(n.',z.').';
 %! Y = bessely(n.',z.').';
-%!  assert(max(max(J./Jt-1))<1e-9);
-%!  assert(max(max(Y./Yt-1))<1e-9);
+%!  assert(J, Jt, -1e-9);
+%!  assert(Y, Yt, -1e-9);
 
-% Table 9.8 - I and K for integer orders 0, 1, 2.
-%!test
+Table 9.8 - I and K for integer orders 0, 1, 2.
+
+%!xtest
 %! n  = 0:2;
 %! z1 = [0.1;2.5;5.0];
 %! z2 = [7.5;10.0;15.0;20.0];
@@ -1071,15 +1071,16 @@ return @code{NaN}.\n\
 %!          [ 0.1278333372   0.1212626814   0.103580801    0.3916319344   0.4107665704   0.47378525   ];
 %!          [ 0.1038995314   0.1003741751   0.090516308    0.3210023535   0.3315348950   0.36520701   ];
 %!          [ 0.0897803119   0.0875062222   0.081029690    0.2785448768   0.2854254970   0.30708743   ]];
-%! 
+%!
 %! tbl = [besseli(n,z1,1), besselk(n,z1)];
 %! tbl(:,3) = tbl(:,3).*(exp(z1).*z1.^(-2));
 %! tbl(:,6) = tbl(:,6).*(exp(-z1).*z1.^(2));
 %! tbl = [tbl;[besseli(n,z2,1),besselk(n,z2,1)]];
-%! 
-%! assert(max(max((tbl-rtbl)./rtbl)<1e-8));
+%!
+%! assert(tbl, rtbl, -1e-8);
 
-% Table 9.9 - I and K for orders 3-9.
+Table 9.9 - I and K for orders 3-9.
+
 %!test
 %! It = [[  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00  0.0000e+00];
 %!       [  2.8791e-02  6.8654e-03  1.3298e-03  2.1656e-04  3.0402e-05  3.7487e-06  4.1199e-07];
@@ -1092,7 +1093,7 @@ return @code{NaN}.\n\
 %!       [  7.5256e-02  6.0155e-02  4.5179e-02  3.1918e-02  2.1240e-02  1.3333e-02  7.9071e-03];
 %!       [  7.3263e-02  6.0059e-02  4.6571e-02  3.4186e-02  2.3780e-02  1.5691e-02  9.8324e-03];
 %!       [  7.1300e-02  5.9640e-02  4.7444e-02  3.5917e-02  2.5894e-02  1.7792e-02  1.1661e-02]];
-%! 
+%!
 %! Kt = [
 %!      [         Inf         Inf         Inf         Inf         Inf         Inf         Inf];
 %!      [  4.7836e+00  1.6226e+01  6.9687e+01  3.6466e+02  2.2576e+03  1.6168e+04  1.3160e+05];
@@ -1105,18 +1106,19 @@ return @code{NaN}.\n\
 %!      [  4.0829e-01  5.0414e-01  6.6036e-01  9.1686e-01  1.3480e+00  2.0964e+00  3.4444e+00];
 %!      [  3.7411e-01  4.5162e-01  5.7483e-01  7.7097e-01  1.0888e+00  1.6178e+00  2.5269e+00];
 %!      [  3.4684e-01  4.1114e-01  5.1130e-01  6.6679e-01  9.1137e-01  1.3048e+00  1.9552e+00]];
-%! 
+%!
 %! n = (3:9);
 %! z = (0:2:20).';
 %! I=besseli(n,z,1);
 %! K=besselk(n,z,1);
-%! 
-%! assert(max(abs(I(1,:)))==0);
-%! assert(max(max(I(2:end,:)./It(2:end,:)-1))<5e-5);
-%! assert(Kt(1,:)==K(1,:));
-%! assert(max(max(K(2:end,:)./Kt(2:end,:)-1))<5e-5);
+%!
+%! assert(abs (I(1,:)), zeros(1, columns(I)));
+%! assert(I(2:end,:), It(2:end,:), -5e-5);
+%! assert(Kt(1,:), K(1,:));
+%! assert(K(2:end,:), Kt(2:end,:), -5e-5);
 
-% Table 9.11 - I and K for various integer orders and arguments.
+Table 9.11 - I and K for various integer orders and arguments.
+
 %!test
 %! It = [[   1.266065878e+00    2.279585302e+00    2.723987182e+01    2.815716628e+03     2.93255378e+20     1.07375171e+42 ];
 %!       [   2.714631560e-04    9.825679323e-03    2.157974547e+00    7.771882864e+02     2.27854831e+20     9.47009387e+41 ];
@@ -1127,7 +1129,7 @@ return @code{NaN}.\n\
 %!       [   1.121509741e-60    1.255869192e-48    1.180426980e-32    2.042123274e-20     6.00717897e+13     3.84170550e+38 ];
 %!       [   2.934635309e-80    3.353042830e-65    2.931469647e-45    4.756894561e-30     1.76508024e+10     4.82195809e+36 ];
 %!       [   8.473674008e-189   1.082171475e-158   7.093551489e-119   1.082344202e-88     2.72788795e-16     4.64153494e+21 ]];
-%! 
+%!
 %! Kt = [[   4.210244382e-01    1.138938727e-01    3.691098334e-03    1.778006232e-05     3.41016774e-23     4.65662823e-45 ];
 %!       [   3.609605896e+02    9.431049101e+00    3.270627371e-02    5.754184999e-05     4.36718224e-23     5.27325611e-45 ];
 %!       [   1.807132899e+08    1.624824040e+05    9.758562829e+00    1.614255300e-03     9.15098819e-23     7.65542797e-45 ];
@@ -1137,84 +1139,84 @@ return @code{NaN}.\n\
 %!       [   1.114220651e+58    9.940839886e+45    1.050756722e+30    5.938224681e+17     1.29986971e-16     1.20842080e-41 ];
 %!       [   3.406896854e+77    2.979981740e+62    3.394322243e+42    2.061373775e+27     4.00601349e-13     9.27452265e-40 ];
 %!       [   5.900333184e+185   4.619415978e+155   7.039860193e+115   4.596674084e+85     1.63940352e+13     7.61712963e-25 ]];
-%! 
+%!
 %! n = [(0:5:20).';30;40;50;100];
 %! z = [1,2,5,10,50,100];
 %! I = besseli(n.',z.').';
 %! K = besselk(n.',z.').';
-%! assert(max(max(I./It-1))<5e-9);
-%! assert(max(max(K./Kt-1))<5e-9);
+%! assert(I, It, -5e-9);
+%! assert(K, Kt, -5e-9);
 
-%  The next section checks that negative integer orders
-%  and positive integer orders are appropriately related.
+The next section checks that negative integer orders and positive
+integer orders are appropriately related.
 
 %!test
 %! n=(0:2:20);
-%! err1 = max(besselj(n,1)-besselj(-n,1));
-%! assert(err1<1e-8);
-%! err2 = max(besselj(n+1,1)+besselj(-n-1,1));
-%! assert(err2<1e-8);
+%! assert(besselj(n,1), besselj(-n,1), 1e-8);
+%! assert(-besselj(n+1,1), besselj(-n-1,1), 1e-8);
 
-% besseli(n,z) = besseli(-n,z);
+besseli(n,z) = besseli(-n,z);
+
 %!test
 %! n=(0:2:20);
-%! err = max(max(besseli(n,1)-besseli(-n,1)));
-%! assert(err<1e-8);
+%! assert(besseli(n,1), besseli(-n,1), 1e-8);
 
-% Table 10.1 - j and y for integer orders 0, 1, 2.
-% Compare against excerpts of Table 10.1, Abramowitz and Stegun.
+Table 10.1 - j and y for integer orders 0, 1, 2.
+Compare against excerpts of Table 10.1, Abramowitz and Stegun.
+
 %!test
 %! n = (0:2);
 %! z = [0.1;(2.5:2.5:10.0).'];
-%! 
+%!
 %! jt = [[ 9.9833417e-01  3.33000119e-02  6.6619061e-04 ];
 %!       [ 2.3938886e-01  4.16212989e-01  2.6006673e-01 ];
 %!       [-1.9178485e-01 -9.50894081e-02  1.3473121e-01 ];
 %!       [    1.2507e-01     -2.9542e-02    -1.3688e-01 ];
 %!       [   -5.4402e-02      7.8467e-02     7.7942e-02 ]];
-%! 
+%!
 %! yt = [[-9.9500417e+00  -1.0049875e+02 -3.0050125e+03 ];
 %!       [ 3.2045745e-01  -1.1120588e-01 -4.5390450e-01 ];
 %!       [-5.6732437e-02   1.8043837e-01  1.6499546e-01 ];
 %!       [   -4.6218e-02     -1.3123e-01    -6.2736e-03 ];
 %!       [    8.3907e-02      6.2793e-02    -6.5069e-02 ]];
-%! 
+%!
 %! j = sqrt((pi/2)./z).*besselj(n+1/2,z);
 %! y = sqrt((pi/2)./z).*bessely(n+1/2,z);
-%! assert(max(max(jt./j-1)), 0, 5e-5);
-%! assert(max(max(yt./y-1)), 0, 5e-5);
+%! assert(jt, j, -5e-5);
+%! assert(yt, y, -5e-5);
 
-% Table 10.2 - j and y for orders 3-8.
-% Compare against excerpts of Table 10.2, Abramowitzh and Stegun.
-%
-%  Important note: In A&S, y_4(0.1) = -1.0507e+7, but octave
-%  returns y_4(0.1) = -1.0508e+07 (-10507503.75).  If I compute
-%  the same term using a series, the difference is in the eighth
-%  significant digit so I left the octave results in place.
-%  
+Table 10.2 - j and y for orders 3-8.
+Compare against excerpts of Table 10.2, Abramowitzh and Stegun.
+
+ Important note: In A&S, y_4(0.1) = -1.0507e+7, but Octave returns
+ y_4(0.1) = -1.0508e+07 (-10507503.75). If I compute the same term using
+ a series, the difference is in the eighth significant digit so I left
+ the Octave results in place.
+
 %!test
 %! n = (3:8);
 %! z = (0:2.5:10).'; z(1)=0.1;
-%! 
+%!
 %! jt = [[ 9.5185e-06  1.0577e-07  9.6163e-10  7.3975e-12  4.9319e-14  2.9012e-16];
 %!       [ 1.0392e-01  3.0911e-02  7.3576e-03  1.4630e-03  2.5009e-04  3.7516e-05];
 %!       [ 2.2982e-01  1.8702e-01  1.0681e-01  4.7967e-02  1.7903e-02  5.7414e-03];
 %!       [-6.1713e-02  7.9285e-02  1.5685e-01  1.5077e-01  1.0448e-01  5.8188e-02];
 %!       [-3.9496e-02 -1.0559e-01 -5.5535e-02  4.4501e-02  1.1339e-01  1.2558e-01]];
-%! 
+%!
 %! yt = [[-1.5015e+05 -1.0508e+07 -9.4553e+08 -1.0400e+11 -1.3519e+13 -2.0277e+15];
 %!       [-7.9660e-01 -1.7766e+00 -5.5991e+00 -2.2859e+01 -1.1327e+02 -6.5676e+02];
 %!       [-1.5443e-02 -1.8662e-01 -3.2047e-01 -5.1841e-01 -1.0274e+00 -2.5638e+00];
 %!       [ 1.2705e-01  1.2485e-01  2.2774e-02 -9.1449e-02 -1.8129e-01 -2.7112e-01];
 %!       [-9.5327e-02 -1.6599e-03  9.3834e-02  1.0488e-01  4.2506e-02 -4.1117e-02]];
-%! 
+%!
 %! j = sqrt((pi/2)./z).*besselj(n+1/2,z);
 %! y = sqrt((pi/2)./z).*bessely(n+1/2,z);
-%! 
-%! assert(max(max(jt./j-1)), 0, 5e-5);
-%! assert(max(max(yt./y-1)), 0, 5e-5);
+%!
+%! assert(jt, j, -5e-5);
+%! assert(yt, y, -5e-5);
 
-% Table 10.4 - j and y for various integer orders and arguments.
+Table 10.4 - j and y for various integer orders and arguments.
+
 %!test
 %! jt = [[ 8.414709848e-01    4.546487134e-01   -1.917848549e-01   -5.440211109e-02   -5.247497074e-03   -5.063656411e-03];
 %!       [ 9.256115861e-05    2.635169770e-03    1.068111615e-01   -5.553451162e-02   -2.004830056e-02   -9.290148935e-03];
@@ -1225,7 +1227,7 @@ return @code{NaN}.\n\
 %!       [ 1.538210374e-61    1.660978779e-49    1.210347583e-33    8.435671634e-22   -2.606336952e-02    1.043410851e-02];
 %!       [ 3.615274717e-81    4.011575290e-66    2.857479350e-46    2.230696023e-31    1.882910737e-02    5.797140882e-04];
 %!       [7.444727742e-190   9.367832591e-160   5.535650303e-120    5.832040182e-90    1.019012263e-22    1.088047701e-02]];
-%! 
+%!
 %! yt = [[ -5.403023059e-01    2.080734183e-01   -5.673243709e-02    8.390715291e-02   -1.929932057e-02   -8.623188723e-03]
 %!       [ -9.994403434e+02   -1.859144531e+01   -3.204650467e-01    9.383354168e-02   -6.971131965e-04    3.720678486e-03]
 %!       [ -6.722150083e+08   -3.554147201e+05   -2.665611441e+01   -1.724536721e-01    1.352468751e-02    1.002577737e-02]
@@ -1240,8 +1242,8 @@ return @code{NaN}.\n\
 %! z = [1,2,5,10,50,100];
 %! j = sqrt((pi/2)./z).*besselj((n+1/2).',z.').';
 %! y = sqrt((pi/2)./z).*bessely((n+1/2).',z.').';
-%! assert(max(max(j./jt-1))<1e-9);
-%! assert(max(max(y./yt-1))<1e-9);
+%! assert(j, jt, -1e-9);
+%! assert(y, yt, -1e-9);
 
 
 

@@ -3113,22 +3113,23 @@ Sylvester (const FloatMatrix& a, const FloatMatrix& b, const FloatMatrix& c)
 
 // matrix by matrix -> matrix operations
 
-/* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests
-%!assert(single([1 2 3]) * single([ 4 ; 5 ; 6]), single(32), 5e-7)
-%!assert(single([1 2 ; 3 4 ]) * single([5 ; 6]), single([17 ; 39 ]), 5e-7)
-%!assert(single([1 2 ; 3 4 ]) * single([5 6 ; 7 8]), single([19 22; 43 50]), 5e-7)
-*/
+/*
+## Simple Dot Product, Matrix-Vector, and Matrix-Matrix Unit tests
+%!assert (single ([1 2 3]) * single ([ 4 ; 5 ; 6]), single (32), 5e-7)
+%!assert (single ([1 2 ; 3 4]) * single ([5 ; 6]), single ([17 ; 39]), 5e-7)
+%!assert (single ([1 2 ; 3 4]) * single ([5 6 ; 7 8]), single ([19 22; 43 50]), 5e-7)
 
-/* Test some simple identities
+## Test some simple identities
 %!shared M, cv, rv
-%! M = single(randn(10,10));
-%! cv = single(randn(10,1));
-%! rv = single(randn(1,10));
-%!assert([M*cv,M*cv],M*[cv,cv],5e-6)
-%!assert([M'*cv,M'*cv],M'*[cv,cv],5e-6)
-%!assert([rv*M;rv*M],[rv;rv]*M,5e-6)
-%!assert([rv*M';rv*M'],[rv;rv]*M',5e-6)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],5e-6)
+%! M = single (randn (10,10));
+%! cv = single (randn (10,1));
+%! rv = single (randn (1,10));
+%!assert ([M*cv,M*cv], M*[cv,cv], 5e-6)
+%!assert ([M'*cv,M'*cv], M'*[cv,cv], 5e-6)
+%!assert ([rv*M;rv*M], [rv;rv]*M, 5e-6)
+%!assert ([rv*M';rv*M'], [rv;rv]*M', 5e-6)
+%!assert (2*rv*cv, [rv,rv]*[cv;cv], 5e-6)
+
 */
 
 static char

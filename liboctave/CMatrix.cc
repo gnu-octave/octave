@@ -3702,25 +3702,27 @@ operator * (const Matrix& m, const ComplexMatrix& a)
     return ComplexMatrix (m) * a;
 }
 
-/* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests
-%!assert([1+i 2+i 3+i] * [ 4+i ; 5+i ; 6+i], 29+21i, 1e-14)
-%!assert([1+i 2+i ; 3+i 4+i ] * [5+i ; 6+i], [15 + 14i ; 37 + 18i], 1e-14)
-%!assert([1+i 2+i ; 3+i 4+i ] * [5+i 6+i ; 7+i 8+i], [17 + 15i 20 + 17i; 41 + 19i 48 + 21i], 1e-14)
-%!assert([1 i]*[i 0]', -i);
-*/
+/*
 
-/* Test some simple identities
+## Simple Dot Product, Matrix-Vector, and Matrix-Matrix Unit tests
+%!assert ([1+i 2+i 3+i] * [ 4+i ; 5+i ; 6+i], 29+21i, 1e-14)
+%!assert ([1+i 2+i ; 3+i 4+i ] * [5+i ; 6+i], [15 + 14i ; 37 + 18i], 1e-14)
+%!assert ([1+i 2+i ; 3+i 4+i ] * [5+i 6+i ; 7+i 8+i], [17 + 15i 20 + 17i; 41 + 19i 48 + 21i], 1e-14)
+%!assert ([1 i]*[i 0]', -i);
+
+## Test some simple identities
 %!shared M, cv, rv
-%! M = randn(10,10)+i*rand(10,10);
-%! cv = randn(10,1)+i*rand(10,1);
-%! rv = randn(1,10)+i*rand(1,10);
-%!assert([M*cv,M*cv],M*[cv,cv],1e-14)
-%!assert([M.'*cv,M.'*cv],M.'*[cv,cv],1e-14)
-%!assert([M'*cv,M'*cv],M'*[cv,cv],1e-14)
-%!assert([rv*M;rv*M],[rv;rv]*M,1e-14)
-%!assert([rv*M.';rv*M.'],[rv;rv]*M.',1e-14)
-%!assert([rv*M';rv*M'],[rv;rv]*M',1e-14)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
+%! M = randn (10,10) + i*rand (10,10);
+%! cv = randn (10,1) + i*rand (10,1);
+%! rv = randn (1,10) + i*rand (1,10);
+%!assert ([M*cv,M*cv], M*[cv,cv], 1e-14)
+%!assert ([M.'*cv,M.'*cv], M.'*[cv,cv], 1e-14)
+%!assert ([M'*cv,M'*cv], M'*[cv,cv], 1e-14)
+%!assert ([rv*M;rv*M], [rv;rv]*M, 1e-14)
+%!assert ([rv*M.';rv*M.'], [rv;rv]*M.', 1e-14)
+%!assert ([rv*M';rv*M'], [rv;rv]*M', 1e-14)
+%!assert (2*rv*cv, [rv,rv]*[cv;cv], 1e-14)
+
 */
 
 static inline char

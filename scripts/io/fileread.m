@@ -53,7 +53,7 @@ endfunction
 %! fprintf (fid, "%s\n", cstr{:});
 %! fclose (fid);
 %! str = fileread (fname);
-%! assert (str', [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
+%! assert (str, [cstr{1} "\n" cstr{2} "\n" cstr{3} "\n"]);
 %! unlink (fname);
 
 %% Test input validation

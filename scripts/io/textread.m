@@ -71,8 +71,8 @@ function varargout = textread (filename, format = "%f", varargin)
     fskipl (fid, varargin{headerlines + 1});
     varargin(headerlines:headerlines+1) = [];
   endif
-
-  if (nargin > 2 && isnumeric (varargin{1}))
+  
+  if (! isempty (varargin) && isnumeric (varargin{1}))
     nlines = varargin{1};
   else
     nlines = Inf;
@@ -139,6 +139,14 @@ endfunction
 %! assert (a, d(4:5, 1), 1e-2);
 %! assert (b, d(4:5, 2), 1e-2);
 %! assert (c, d(4:5, 3), 1e-2);
+
+%!test
+%! f = tmpnam ();
+%! d = rand (7, 2);
+%! dlmwrite (f, d, "precision", "%5.2f");
+%! [a, b] = textread (f, "%f, %f", "headerlines", 1);
+%! unlink (f);
+%! assert (a, d(2:7, 1), 1e-2);
 
 %% Test input validation
 %!error textread ()

@@ -70,8 +70,7 @@ include m4/module.mk
 # Subdirectories in which to run `make all'.
 SUBDIRS = libgnu libcruft liboctave src scripts @DOCDIR@ examples test
 
-if AMCOND_BUILD_DOCS
-else
+if ! AMCOND_BUILD_DOCS
 dist-hook:
 	echo "Documentation disabled.  Cannot package distribution!" ; exit 1;
 endif
@@ -119,8 +118,10 @@ run-octave: run-octave.in Makefile
 	  cp $< $@; \
 	fi
 
+if AMCOND_BUILD_DOCS
 AUTHORS BUGS INSTALL.OCTAVE:
 	$(MAKE) -C doc/interpreter ../../$@
+endif
 .PHONY: AUTHORS BUGS INSTALL.OCTAVE
 
 ChangeLog:

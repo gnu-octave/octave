@@ -369,46 +369,44 @@ exit status, it will linger until Octave exits.\n\
 }
 
 /*
-
 %!test
-%!  if (isunix())
-%!    [in, out, pid] = popen2 ("sort", "-r");
-%!    EAGAIN = errno ("EAGAIN");
-%!  else
-%!    [in, out, pid] = popen2 ("sort", "/R");
-%!    EAGAIN = errno ("EINVAL");
-%!  endif
-%!  fputs (in, "these\nare\nsome\nstrings\n");
-%!  fclose (in);
-%!  done = false;
-%!  str = {};
-%!  idx = 0;
-%!  errs = 0;
-%!  do
-%!     if (!isunix())
-%!       errno (0);
-%!     endif
-%!     s = fgets (out);
-%!     if (ischar (s))
-%!       idx++;
-%!       str{idx} = s;
-%!     elseif (errno () == EAGAIN)
-%!       fclear (out);
-%!       sleep (0.1);
-%!       if (++errs == 100)
-%!         done = true;
-%!       endif
-%!     else
+%! if (isunix ())
+%!   [in, out, pid] = popen2 ("sort", "-r");
+%!   EAGAIN = errno ("EAGAIN");
+%! else
+%!   [in, out, pid] = popen2 ("sort", "/R");
+%!   EAGAIN = errno ("EINVAL");
+%! endif
+%! fputs (in, "these\nare\nsome\nstrings\n");
+%! fclose (in);
+%! done = false;
+%! str = {};
+%! idx = 0;
+%! errs = 0;
+%! do
+%!   if (!isunix ())
+%!     errno (0);
+%!   endif
+%!   s = fgets (out);
+%!   if (ischar (s))
+%!     idx++;
+%!     str{idx} = s;
+%!   elseif (errno () == EAGAIN)
+%!     fclear (out);
+%!     sleep (0.1);
+%!     if (++errs == 100)
 %!       done = true;
 %!     endif
-%!  until (done)
-%!  fclose (out);
-%!  if (isunix())
-%!    assert(str,{"these\n","strings\n","some\n","are\n"})
-%!  else
-%!    assert(str,{"these\r\n","strings\r\n","some\r\n","are\r\n"})
-%!  end
-
+%!   else
+%!     done = true;
+%!   endif
+%! until (done)
+%! fclose (out);
+%! if (isunix ())
+%!   assert(str, {"these\n","strings\n","some\n","are\n"});
+%! else
+%!   assert(str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
+%! endif
 */
 
 DEFUNX ("fcntl", Ffcntl, args, ,

@@ -1207,7 +1207,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (max_recursion_depth (1, 2));
 %!test
 %! orig_val = max_recursion_depth ();
 %! old_val = max_recursion_depth (2*orig_val);
@@ -1215,6 +1214,8 @@ variable value is restored when exiting the function.\n\
 %! assert (max_recursion_depth (), 2*orig_val);
 %! max_recursion_depth (orig_val);
 %! assert (max_recursion_depth (), orig_val);
+
+%!error (max_recursion_depth (1, 2))
 */
 
 DEFUN (silent_functions, args, nargout,
@@ -1236,7 +1237,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (silent_functions (1, 2));
 %!test
 %! orig_val = silent_functions ();
 %! old_val = silent_functions (! orig_val);
@@ -1244,4 +1244,6 @@ variable value is restored when exiting the function.\n\
 %! assert (silent_functions (), ! orig_val);
 %! silent_functions (orig_val);
 %! assert (silent_functions (), orig_val);
+
+%!error (silent_functions (1, 2))
 */

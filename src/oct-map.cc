@@ -448,10 +448,10 @@ octave_map::squeeze (void) const
 }
 
 /*
-%!# test preservation of xkeys by squeeze
+## test preservation of xkeys by squeeze
 %!test
-%!  x(1,1,1,1).d = 10; x(3,5,1,7).a = "b"; x(2,4,1,7).f = 27;
-%!  assert (fieldnames (squeeze (x)), {"d"; "a"; "f"});
+%! x(1,1,1,1).d = 10;  x(3,5,1,7).a = "b";  x(2,4,1,7).f = 27;
+%! assert (fieldnames (squeeze (x)), {"d"; "a"; "f"});
 */
 
 octave_map
@@ -482,10 +482,10 @@ octave_map::permute (const Array<int>& vec, bool inv) const
 }
 
 /*
-%!# test preservation of key order by permute
+## test preservation of key order by permute
 %!test
-%!  x(1,1,1,1).d = 10; x(3,5,1,7).a = "b"; x(2,4,1,7).f = 27;
-%!  assert (fieldnames (permute (x, [3, 4, 1, 2])), {"d"; "a"; "f"});
+%! x(1,1,1,1).d = 10;  x(3,5,1,7).a = "b";  x(2,4,1,7).f = 27;
+%! assert (fieldnames (permute (x, [3, 4, 1, 2])), {"d"; "a"; "f"});
 */
 
 octave_map
@@ -507,12 +507,12 @@ octave_map::transpose (void) const
 }
 
 /*
-%!# test preservation of key order by transpose
+## test preservation of key order by transpose
 %!test
-%!  x(1,1).d = 10; x(3,5).a = "b"; x(2,4).f = 27;
-%!  assert (fieldnames (transpose (x)), {"d"; "a"; "f"});
-%!  assert (fieldnames (x'), {"d"; "a"; "f"});
-%!  assert (fieldnames (x.'), {"d"; "a"; "f"});
+%! x(1,1).d = 10;  x(3,5).a = "b";  x(2,4).f = 27;
+%! assert (fieldnames (transpose (x)), {"d"; "a"; "f"});
+%! assert (fieldnames (x'), {"d"; "a"; "f"});
+%! assert (fieldnames (x.'), {"d"; "a"; "f"});
 */
 
 octave_map
@@ -542,10 +542,10 @@ octave_map::reshape (const dim_vector& dv) const
 }
 
 /*
-%!# test preservation of key order by reshape
+## test preservation of key order by reshape
 %!test
-%!  x(1,1).d = 10; x(4,6).a = "b"; x(2,4).f = 27;
-%!  assert (fieldnames (reshape (x, 3, 8)), {"d"; "a"; "f"});
+%! x(1,1).d = 10;  x(4,6).a = "b";  x(2,4).f = 27;
+%! assert (fieldnames (reshape (x, 3, 8)), {"d"; "a"; "f"});
 */
 
 void
@@ -804,23 +804,23 @@ octave_map::cat (int dim, octave_idx_type n, const octave_map *map_list)
 }
 
 /*
-%!# test preservation of key order by concatenation
+## test preservation of key order by concatenation
 %!test
-%!  x(1, 1).d = 10; x(4, 6).a = "b"; x(2, 4).f = 27;
-%!  y(1, 6).f = 11; y(1, 6).a = "c"; y(1, 6).d = 33;
-%!  assert (fieldnames ([x; y]), {"d"; "a"; "f"});
+%! x(1, 1).d = 10;  x(4, 6).a = "b";  x(2, 4).f = 27;
+%! y(1, 6).f = 11;  y(1, 6).a = "c";  y(1, 6).d = 33;
+%! assert (fieldnames ([x; y]), {"d"; "a"; "f"});
 
 %!test
-%!  s = struct ();
-%!  sr = [s,s];
-%!  sc = [s;s];
-%!  sm = [s,s;s,s];
-%!  assert (nfields (sr), 0);
-%!  assert (nfields (sc), 0);
-%!  assert (nfields (sm), 0);
-%!  assert (size (sr), [1, 2]);
-%!  assert (size (sc), [2, 1]);
-%!  assert (size (sm), [2, 2]);
+%! s = struct ();
+%! sr = [s,s];
+%! sc = [s;s];
+%! sm = [s,s;s,s];
+%! assert (nfields (sr), 0);
+%! assert (nfields (sc), 0);
+%! assert (nfields (sm), 0);
+%! assert (size (sr), [1, 2]);
+%! assert (size (sc), [2, 1]);
+%! assert (size (sm), [2, 2]);
 */
 
 octave_map
@@ -1250,10 +1250,10 @@ octave_map::delete_elements (const octave_value_list& idx)
 }
 
 /*
-%!# test preservation of key order by indexing
+## test preservation of key order by indexing
 %!test
-%!  x(1, 1).d = 10; x(4, 6).a = "b"; x(2, 4).f = 27;
-%!  assert (fieldnames (x([1, 2], [2:5])), {"d"; "a"; "f"});
+%! x(1, 1).d = 10;  x(4, 6).a = "b";  x(2, 4).f = 27;
+%! assert (fieldnames (x([1, 2], [2:5])), {"d"; "a"; "f"});
 */
 
 octave_map

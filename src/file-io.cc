@@ -1144,7 +1144,7 @@ complete description of the syntax of the template string.\n\
                   // old val for restoring afterwards.
                   oldloc = 
                     os.imbue (std::locale (args(2).string_value ().c_str ()));
-                  
+
                 }
               catch (std::runtime_error)
                 {
@@ -1332,8 +1332,8 @@ is returned in @var{pos}.\n\
 
 /*
 %!test
-%! assert(sscanf('1,2', '%f', 'C'), 1)
-%! assert(sscanf('1,2', '%f', 'fr_FR'), 1.2)
+%! assert (sscanf ("1,2", "%f", "C"), 1)
+%! assert (sscanf ("1,2", "%f", "fr_FR"), 1.2)
 */
 
 DEFUN (scanf, args, nargout,

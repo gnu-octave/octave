@@ -84,13 +84,10 @@ Convert @var{x} to 32-bit integer type.\n\
 }
 
 /*
-
 %!assert (class (int32 (1)), "int32")
 %!assert (int32 (1.25), int32 (1))
 %!assert (int32 (1.5), int32 (2))
 %!assert (int32 (-1.5), int32 (-2))
 %!assert (int32 (2^33), int32 (2^32-1))
 %!assert (int32 (-2^33), int32 (-2^32))
-
 */
-

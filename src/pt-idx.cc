@@ -601,13 +601,13 @@ tree_index_expression::lvalue (void)
 
 /*
 %!test
-%! clear x
-%! clear y
+%! clear x;
+%! clear y;
 %! y = 3;
 %! x(y(end)) = 1;
 %! assert (x, [0, 0, 1]);
-%! clear x
-%! clear y
+%! clear x;
+%! clear y;
 %! y = {3};
 %! x(y{end}) = 1;
 %! assert (x, [0, 0, 1]);

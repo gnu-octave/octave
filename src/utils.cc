@@ -117,14 +117,14 @@ Return true if @var{name} is a valid variable name.\n\
 }
 
 /*
-%!error isvarname ();
-%!error isvarname ("foo", "bar");
+%!assert (isvarname ("foo"), true)
+%!assert (isvarname ("_foo"), true)
+%!assert (isvarname ("_1"), true)
+%!assert (isvarname ("1foo"), false)
+%!assert (isvarname (""), false)
 
-%!assert (isvarname ("foo"), true);
-%!assert (isvarname ("_foo"), true);
-%!assert (isvarname ("_1"), true);
-%!assert (isvarname ("1foo"), false);
-%!assert (isvarname (""), false);
+%!error isvarname ()
+%!error isvarname ("foo", "bar");
 */
 
 // Return TRUE if F and G are both names for the same file.
@@ -339,9 +339,6 @@ name in the path.  If no files are found, return an empty cell array.\n\
 }
 
 /*
-%!error file_in_loadpath ();
-%!error file_in_loadpath ("foo", "bar", 1);
-
 %!test
 %! f = file_in_loadpath ("plot.m");
 %! assert (ischar (f));
@@ -354,6 +351,9 @@ name in the path.  If no files are found, return an empty cell array.\n\
 %!test
 %! lst = file_in_loadpath ("$$probably_!!_not_&&_a_!!_file$$", "all");
 %! assert (lst, {});
+
+%!error file_in_loadpath ()
+%!error file_in_loadpath ("foo", "bar", 1)
 */
 
 DEFUN (file_in_path, args, ,
@@ -422,10 +422,6 @@ name in the path.  If no files are found, return an empty cell array.\n\
 }
 
 /*
-%!error file_in_path ();
-%!error file_in_path ("foo");
-%!error file_in_path ("foo", "bar", "baz", 1);
-
 %!test
 %! f = file_in_path (path (), "plot.m");
 %! assert (ischar (f));
@@ -438,6 +434,10 @@ name in the path.  If no files are found, return an empty cell array.\n\
 %!test
 %! lst = file_in_path (path (), "$$probably_!!_not_&&_a_!!_file$$", "all");
 %! assert (lst, {});
+
+%!error file_in_path ()
+%!error file_in_path ("foo")
+%!error file_in_path ("foo", "bar", "baz", 1)
 */
 
 std::string
@@ -674,19 +674,19 @@ Convert special characters in @var{string} to their escaped forms.\n\
 }
 
 /*
-%!error do_string_escapes ();
-%!error do_string_escapes ("foo", "bar");
+%!assert (do_string_escapes ('foo\nbar'), "foo\nbar")
+%!assert (do_string_escapes ("foo\\nbar"), "foo\nbar")
+%!assert (do_string_escapes ("foo\\nbar"), ["foo", char(10), "bar"])
+%!assert ("foo\nbar", ["foo", char(10), "bar"])
 
-%!assert (do_string_escapes ('foo\nbar'), "foo\nbar");
-%!assert (do_string_escapes ("foo\\nbar"), "foo\nbar");
-%!assert (do_string_escapes ("foo\\nbar"), ["foo", char(10), "bar"]);
-%!assert ("foo\nbar", ["foo", char(10), "bar"]);
-
-%!assert (do_string_escapes ('\a\b\f\n\r\t\v'), "\a\b\f\n\r\t\v");
-%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"), "\a\b\f\n\r\t\v");
+%!assert (do_string_escapes ('\a\b\f\n\r\t\v'), "\a\b\f\n\r\t\v")
+%!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"), "\a\b\f\n\r\t\v")
 %!assert (do_string_escapes ("\\a\\b\\f\\n\\r\\t\\v"),
-%!        char ([7, 8, 12, 10, 13, 9, 11]));
-%!assert ("\a\b\f\n\r\t\v", char ([7, 8, 12, 10, 13, 9, 11]));
+%!        char ([7, 8, 12, 10, 13, 9, 11]))
+%!assert ("\a\b\f\n\r\t\v", char ([7, 8, 12, 10, 13, 9, 11]))
+
+%!error do_string_escapes ()
+%!error do_string_escapes ("foo", "bar")
 */
 
 const char *
@@ -796,17 +796,17 @@ representation.\n\
 }
 
 /*
-%!error undo_string_escapes ();
-%!error undo_string_escapes ("foo", "bar");
+%!assert (undo_string_escapes ("foo\nbar"), 'foo\nbar')
+%!assert (undo_string_escapes ("foo\nbar"), "foo\\nbar")
+%!assert (undo_string_escapes (["foo", char(10), "bar"]), "foo\\nbar")
 
-%!assert (undo_string_escapes ("foo\nbar"), 'foo\nbar');
-%!assert (undo_string_escapes ("foo\nbar"), "foo\\nbar");
-%!assert (undo_string_escapes (["foo", char(10), "bar"]), "foo\\nbar");
-
-%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), '\a\b\f\n\r\t\v');
-%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), "\\a\\b\\f\\n\\r\\t\\v");
+%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), '\a\b\f\n\r\t\v')
+%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), "\\a\\b\\f\\n\\r\\t\\v")
 %!assert (undo_string_escapes (char ([7, 8, 12, 10, 13, 9, 11])),
-%!        "\\a\\b\\f\\n\\r\\t\\v");
+%!        "\\a\\b\\f\\n\\r\\t\\v")
+
+%!error undo_string_escapes ()
+%!error undo_string_escapes ("foo", "bar")
 */
 
 DEFUN (is_absolute_filename, args, ,
@@ -828,10 +828,10 @@ Return true if @var{file} is an absolute filename.\n\
 }
 
 /*
-%!error is_absolute_filename ();
-%!error is_absolute_filename ("foo", "bar");
+## FIXME: We need system-dependent tests here.
 
-FIXME -- we need system-dependent tests here.
+%!error is_absolute_filename ()
+%!error is_absolute_filename ("foo", "bar")
 */
 
 DEFUN (is_rooted_relative_filename, args, ,
@@ -853,10 +853,10 @@ Return true if @var{file} is a rooted-relative filename.\n\
 }
 
 /*
-%!error is_rooted_relative_filename ();
-%!error is_rooted_relative_filename ("foo", "bar");
+## FIXME: We need system-dependent tests here.
 
-FIXME -- we need system-dependent tests here.
+%!error is_rooted_relative_filename ()
+%!error is_rooted_relative_filename ("foo", "bar")
 */
 
 DEFUN (make_absolute_filename, args, ,
@@ -884,10 +884,10 @@ Return the full name of @var{file}, relative to the current directory.\n\
 }
 
 /*
-%!error make_absolute_filename ();
-%!error make_absolute_filename ("foo", "bar");
+## FIXME: We need system-dependent tests here.
 
-FIXME -- we need system-dependent tests here.
+%!error make_absolute_filename ()
+%!error make_absolute_filename ("foo", "bar")
 */
 
 DEFUN (find_dir_in_path, args, ,
@@ -931,10 +931,10 @@ containing all name matches rather than just the first.\n\
 }
 
 /*
-%!error find_dir_in_path ();
-%!error find_dir_in_path ("foo", "bar", 1);
+## FIXME: We need system-dependent tests here.
 
-FIXME -- need to create tests using current path, pathsep, and dirsep.
+%!error find_dir_in_path ()
+%!error find_dir_in_path ("foo", "bar", 1)
 */
 
 DEFUNX ("errno", Ferrno, args, ,
@@ -982,9 +982,7 @@ if @var{name} is not found.\n\
 }
 
 /*
-%!error errno ("foo", 1);
-
-%!assert (isnumeric (errno ()));
+%!assert (isnumeric (errno ()))
 
 %!test
 %! lst = errno_list ();
@@ -994,6 +992,8 @@ if @var{name} is not found.\n\
 %! errno (oldval);
 %! newval = errno ();
 %! assert (oldval, newval);
+
+%!error errno ("foo", 1)
 */
 
 DEFUN (errno_list, args, ,
@@ -1013,9 +1013,9 @@ Return a structure containing the system-dependent errno values.\n\
 }
 
 /*
-%!error errno_list ("foo");
+%!assert (isstruct (errno_list ()))
 
-%!assert (isstruct (errno_list ()));
+%!error errno_list ("foo")
 */
 
 static void
@@ -1331,11 +1331,11 @@ subsequent indexing using @var{ind} will not perform the check again.\n\
 }
 
 /*
-%!error isindex ();
+%!assert (isindex ([1, 2, 3]))
+%!assert (isindex (1:3))
+%!assert (isindex ([1, 2, -3]), false)
 
-%!assert (isindex ([1, 2, 3]));
-%!assert (isindex (1:3));
-%!assert (isindex ([1, 2, -3]), false);
+%!error isindex ()
 */
 
 octave_value_list

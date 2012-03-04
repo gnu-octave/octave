@@ -1471,14 +1471,14 @@ c(2,1,:)(:)\n\
 
 /*
 %!test
-%!  keys = cellstr (char (floor (rand (11,10)*24+65)))';
-%!  vals = cellfun(@(x) mat2cell(rand (19,1), ones (19,1), 1), ...
-%!           mat2cell([1:11]', ones(11,1), 1), "uniformoutput", false)';
-%!  s = struct ([keys; vals]{:});
-%!  t = cell2struct ([vals{:}], keys, 2);
-%!  assert (s, t);
-%!  assert (struct2cell (s), [vals{:}]');
-%!  assert (fieldnames (s), keys');
+%! keys = cellstr (char (floor (rand (11,10)*24+65)))';
+%! vals = cellfun (@(x) mat2cell (rand (19,1), ones (19,1), 1), ...
+%!          mat2cell ([1:11]', ones (11,1), 1), "uniformoutput", false)';
+%! s = struct ([keys; vals]{:});
+%! t = cell2struct ([vals{:}], keys, 2);
+%! assert (s, t);
+%! assert (struct2cell (s), [vals{:}]');
+%! assert (fieldnames (s), keys');
 */
 
 mxArray *

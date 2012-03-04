@@ -1288,7 +1288,6 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 #endif
 
 /*
-
 %!test
 %! a = 2;
 %! f = @(x) a + x;
@@ -1302,26 +1301,25 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name)
 %! hdld2 = hdld;
 %! hbi2 = hbi;
 %! modes = {"-text", "-binary"};
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_HDF5")))
+%! if (!isempty (findstr (octave_config_info ("DEFS"), "HAVE_HDF5")))
 %!   modes(end+1) = "-hdf5";
 %! endif
 %! for i = 1:numel (modes)
 %!   mode = modes{i};
-%!   nm = tmpnam();
+%!   nm = tmpnam ();
 %!   unwind_protect
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!     clear f2 g2 hm2 hdld2 hbi2
 %!     load (nm);
-%!     assert (f(2),f2(2));
-%!     assert (g(2),g2(2));
-%!     assert (g(3),g2(3));
+%!     assert (f (2), f2 (2));
+%!     assert (g (2), g2 (2));
+%!     assert (g (3), g2 (3));
 %!     unlink (nm);
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!   unwind_protect_cleanup
 %!     unlink (nm);
 %!   end_unwind_protect
 %! endfor
-
 */
 
 void
@@ -1592,7 +1590,7 @@ make_fcn_handle (const std::string& nm, bool local_funcs)
 %!      "&", "and";
 %!      "|", "or"};
 %! for i = 1:rows (x)
-%!   assert (functions (str2func (x{i,1})).function, x{i,2})
+%!   assert (functions (str2func (x{i,1})).function, x{i,2});
 %! endfor
 */
 
@@ -1759,7 +1757,6 @@ are ignored in the lookup.\n\
 }
 
 /*
-
 %!function y = __testrecursionfunc (f, x, n)
 %!  if (nargin < 3)
 %!    n = 0;
@@ -1768,12 +1765,11 @@ are ignored in the lookup.\n\
 %!    y = f (x);
 %!  else
 %!    n++;
-%!    y = __testrecursionfunc (@(x) f(2*x), x, n);
+%!    y = __testrecursionfunc (@(x) f (2*x), x, n);
 %!  endif
 %!endfunction
 %!
 %!assert (__testrecursionfunc (@(x) x, 1), 8)
-
 */
 
 DEFUN (is_function_handle, args, ,
@@ -1802,11 +1798,10 @@ Return true if @var{x} is a function handle.\n\
 %!assert (is_function_handle (fh))
 %!assert (! is_function_handle ({fh}))
 %!assert (! is_function_handle (1))
-%!error is_function_handle ();
-%!error is_function_handle (1, 2);
 
+%!error is_function_handle ()
+%!error is_function_handle (1, 2)
 */
-
 
 octave_fcn_binder::octave_fcn_binder (const octave_value& f,
                                       const octave_value& root,

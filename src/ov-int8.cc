@@ -84,12 +84,10 @@ Convert @var{x} to 8-bit integer type.\n\
 }
 
 /*
-
 %!assert (class (int8 (1)), "int8")
 %!assert (int8 (1.25), int8 (1))
 %!assert (int8 (1.5), int8 (2))
 %!assert (int8 (-1.5), int8 (-2))
 %!assert (int8 (2^9), int8 (2^8-1))
 %!assert (int8 (-2^9), int8 (-2^8))
-
 */

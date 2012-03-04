@@ -841,7 +841,6 @@ Convert @var{x} to single precision type.\n\
 }
 
 /*
-
 %!assert (class (single(1)), "single")
 %!assert (class (single(1 + i)), "single")
 %!assert (class (single (int8 (1))), "single")
@@ -865,6 +864,4 @@ Convert @var{x} to single precision type.\n\
 %! y = single (x);
 %! assert (class (x), "double");
 %! assert (class (y), "single");
-
 */
-

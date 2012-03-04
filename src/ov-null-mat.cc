@@ -120,7 +120,6 @@ This should give an error if @code{I} is nonempty.\n\
 }
 
 /*
-
 %!assert (isnull ([]), true)
 %!assert (isnull ([1]), false)
 %!assert (isnull (zeros (0,3)), false)
@@ -131,5 +130,4 @@ This should give an error if @code{I} is nonempty.\n\
 %!test
 %! x = [];
 %! assert (isnull (x), false);
-
 */

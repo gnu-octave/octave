@@ -425,7 +425,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (EDITOR (1, 2));
 %!test
 %! orig_val = EDITOR ();
 %! old_val = EDITOR ("X");
@@ -433,6 +432,8 @@ variable value is restored when exiting the function.\n\
 %! assert (EDITOR (), "X");
 %! EDITOR (orig_val);
 %! assert (EDITOR (), orig_val);
+
+%!error (EDITOR (1, 2))
 */
 
 DEFUN (EXEC_PATH, args, nargout,
@@ -460,7 +461,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (EXEC_PATH (1, 2));
 %!test
 %! orig_val = EXEC_PATH ();
 %! old_val = EXEC_PATH ("X");
@@ -468,6 +468,8 @@ variable value is restored when exiting the function.\n\
 %! assert (EXEC_PATH (), "X");
 %! EXEC_PATH (orig_val);
 %! assert (EXEC_PATH (), orig_val);
+
+%!error (EXEC_PATH (1, 2))
 */
 
 DEFUN (IMAGE_PATH, args, nargout,
@@ -487,7 +489,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (IMAGE_PATH (1, 2));
 %!test
 %! orig_val = IMAGE_PATH ();
 %! old_val = IMAGE_PATH ("X");
@@ -495,6 +496,8 @@ variable value is restored when exiting the function.\n\
 %! assert (IMAGE_PATH (), "X");
 %! IMAGE_PATH (orig_val);
 %! assert (IMAGE_PATH (), orig_val);
+
+%!error (IMAGE_PATH (1, 2))
 */
 
 DEFUN (OCTAVE_HOME, args, ,
@@ -514,8 +517,8 @@ Return the name of the top-level Octave installation directory.\n\
 }
 
 /*
-%!error OCTAVE_HOME (1);
-%!assert (ischar (OCTAVE_HOME ()));
+%!assert (ischar (OCTAVE_HOME ()))
+%!error OCTAVE_HOME (1)
 */
 
 DEFUNX ("OCTAVE_VERSION", FOCTAVE_VERSION, args, ,
@@ -537,6 +540,6 @@ Return the version number of Octave, as a string.\n\
 }
 
 /*
-%!error OCTAVE_VERSION (1);
-%!assert (ischar (OCTAVE_VERSION ()));
+%!assert (ischar (OCTAVE_VERSION ()))
+%!error OCTAVE_VERSION (1)
 */

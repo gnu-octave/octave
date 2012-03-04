@@ -84,13 +84,10 @@ Convert @var{x} to unsigned 16-bit integer type.\n\
 }
 
 /*
-
 %!assert (class (uint16 (1)), "uint16")
 %!assert (uint16 (1.25), uint16 (1))
 %!assert (uint16 (1.5), uint16 (2))
 %!assert (uint16 (-1.5), uint16 (0))
 %!assert (uint16 (2^17), uint16 (2^16-1))
 %!assert (uint16 (-2^17), uint16 (0))
-
 */
-

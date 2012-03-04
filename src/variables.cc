@@ -580,17 +580,17 @@ Check only for directories.\n\
 
 /*
 %!test
-%!  if (isunix ())
-%!    assert (exist ("/tmp") == 7);
-%!    assert (exist ("/tmp", "file") == 7);
-%!    assert (exist ("/tmp", "dir") == 7);
-%!    assert (exist ("/bin/sh") == 2);
-%!    assert (exist ("/bin/sh", "file") == 2);
-%!    assert (exist ("/bin/sh", "dir") == 0);
-%!    assert (exist ("/dev/null") == 2);
-%!    assert (exist ("/dev/null", "file") == 2);
-%!    assert (exist ("/dev/null", "dir") == 0);
-%!  endif
+%! if (isunix ())
+%!   assert (exist ("/tmp") == 7);
+%!   assert (exist ("/tmp", "file") == 7);
+%!   assert (exist ("/tmp", "dir") == 7);
+%!   assert (exist ("/bin/sh") == 2);
+%!   assert (exist ("/bin/sh", "file") == 2);
+%!   assert (exist ("/bin/sh", "dir") == 0);
+%!   assert (exist ("/dev/null") == 2);
+%!   assert (exist ("/dev/null", "file") == 2);
+%!   assert (exist ("/dev/null", "dir") == 0);
+%! endif
 */
 
 octave_value

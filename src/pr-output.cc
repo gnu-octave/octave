@@ -3555,12 +3555,12 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 %! foo.cell = {foo.real, foo.complex, foo.char};
 %! fields = fieldnames (foo);
 %! for f = 1:numel(fields)
-%!   format loose
+%!   format loose;
 %!   loose = disp (foo.(fields{f}));
-%!   format compact
+%!   format compact;
 %!   compact = disp (foo.(fields{f}));
 %!   expected = strrep (loose, "\n\n", "\n");
-%!   assert (expected, compact)
+%!   assert (expected, compact);
 %! endfor
 */
 

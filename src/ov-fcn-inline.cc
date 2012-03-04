@@ -825,9 +825,9 @@ If the second argument is an integer @var{n}, the arguments are\n\
 %! fn = inline ("x.^2 + 1");
 %!assert (feval (fn, 6), 37)
 %!assert (fn (6), 37)
-%% FIXME: Need tests for other 2 calling forms of inline()
+## FIXME: Need tests for other 2 calling forms of inline()
 
-%% Test input validation 
+## Test input validation 
 %!error inline ()
 %!error <STR argument must be a string> inline (1)
 %!error <N must be an integer> inline ("2", ones (2,2))
@@ -867,7 +867,7 @@ Note that @code{char (@var{fun})} is equivalent to\n\
 %!assert (formula (fn), "x.^2 + 1")
 %!assert (formula (fn), char (fn))
 
-%% Test input validation
+## Test input validation
 %!error formula ()
 %!error formula (1, 2)
 %!error <FUN must be an inline function> formula (1)
@@ -914,7 +914,7 @@ the arguments of the inline function @var{fun}.\n\
 %!assert (argnames (inline ("1e-3*y + 2e4*z")), {"y"; "z"})
 %!assert (argnames (inline ("2", 2)), {"x"; "P1"; "P2"})
 
-%% Test input validation
+## Test input validation
 %!error argnames ()
 %!error argnames (1, 2)
 %!error <FUN must be an inline function> argnames (1)
@@ -1012,9 +1012,8 @@ quadv (fcn, 0, 3)\n\
 %!assert (vectorize ("1e-3*y + 2e4*z"), "1e-3.*y + 2e4.*z")
 %!assert (vectorize ("2**x^5"), "2.**x.^5")
 
-%% Test input validation
+## Test input validation
 %!error vectorize ()
 %!error vectorize (1, 2)
 %!error <FUN must be a string or inline function> vectorize (1)
 */
-

@@ -302,7 +302,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-
 %!test
 %! x = 0;
 %! do_braindead_shortcircuit_evaluation (0);
@@ -313,6 +312,4 @@ variable value is restored when exiting the function.\n\
 %! if (1 | (x = 0))
 %! endif
 %! assert (x, 1);
-
 */
-

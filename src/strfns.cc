@@ -152,23 +152,23 @@ char ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"])\n
 
 /*
 %!assert (char (), '');
-%!assert (char (100) == "d");
-%!assert (all(char (100,100) == ["d";"d"]));
-%!assert (all(char ({100,100}) == ["d";"d"]));
-%!assert (all(char ([100,100]) == ["dd"]));
-%!assert (all(char ({100,{100}}) == ["d";"d"]));
-%!assert (all(char (100, [], 100) == ["d";" ";"d"]))
-%!assert (all(char ({100, [], 100}) == ["d";" ";"d"]))
-%!assert (all(char ({100,{100, {""}}}) == ["d";"d";" "]))
-%!assert (all(char (["a";"be"], {"c", 100}) == ["a";"be";"c";"d"]))
-%!assert(strcmp (char ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
-%!assert(strcmp (char ([65, 83, 67, 73, 73]), "ASCII"));
+%!assert (char (100), "d");
+%!assert (char (100,100), ["d";"d"])
+%!assert (char ({100,100}), ["d";"d"])
+%!assert (char ([100,100]), ["dd"])
+%!assert (char ({100,{100}}), ["d";"d"])
+%!assert (char (100, [], 100), ["d";" ";"d"])
+%!assert (char ({100, [], 100}), ["d";" ";"d"])
+%!assert (char ({100,{100, {""}}}), ["d";"d";" "])
+%!assert (char (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
+%!assert (char ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
+%!assert (char ([65, 83, 67, 73, 73]), "ASCII")
 
 %!test
 %! x = char ("foo", "bar", "foobar");
-%! assert((strcmp (x(1,:), "foo   ")
-%! && strcmp (x(2,:), "bar   ")
-%! && strcmp (x(3,:), "foobar")));
+%! assert (x(1,:), "foo   ");
+%! assert (x(2,:), "bar   ");
+%! assert (x(3,:), "foobar");
 */
 
 DEFUN (strvcat, args, ,
@@ -286,18 +286,19 @@ strvcat ([97, 98, 99], \"\", @{\"98\", \"99\", 100@}, \"str1\", [\"ha\", \"lf\"]
 }
 
 /*
-%!error <Invalid call to strvcat> strvcat()
 %!assert (strvcat (""), "");
 %!assert (strvcat (100) == "d");
-%!assert (all(strvcat (100,100) == ["d";"d"]));
-%!assert (all(strvcat ({100,100}) == ["d";"d"]));
-%!assert (all(strvcat ([100,100]) == ["dd"]));
-%!assert (all(strvcat ({100,{100}}) == ["d";"d"]));
-%!assert (all(strvcat (100, [], 100) == ["d";"d"]))
-%!assert (all(strvcat ({100, [], 100}) == ["d";"d"]))
-%!assert (all(strvcat ({100,{100, {""}}}) == ["d";"d"]))
-%!assert (all(strvcat (["a";"be"], {"c", 100}) == ["a";"be";"c";"d"]))
-%!assert(strcmp (strvcat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
+%!assert (strvcat (100,100), ["d";"d"])
+%!assert (strvcat ({100,100}), ["d";"d"])
+%!assert (strvcat ([100,100]), ["dd"])
+%!assert (strvcat ({100,{100}}), ["d";"d"])
+%!assert (strvcat (100, [], 100), ["d";"d"])
+%!assert (strvcat ({100, [], 100}), ["d";"d"])
+%!assert (strvcat ({100,{100, {""}}}), ["d";"d"])
+%!assert (strvcat (["a";"be"], {"c", 100}), ["a";"be";"c";"d"])
+%!assert (strvcat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"])
+
+%!error strvcat ()
 */
 
 
@@ -321,19 +322,20 @@ Return true if @var{x} is a character array.\n\
 }
 
 /*
-%!assert (ischar ("a"), logical (1));
-%!assert (ischar (["ab";"cd"]), logical (1));
-%!assert (ischar ({"ab"}), logical (0));
-%!assert (ischar (1), logical (0));
-%!assert(ischar ([1, 2]), logical (0));
-%!assert(ischar ([]), logical (0));
-%!assert(ischar ([1, 2; 3, 4]), logical (0));
-%!assert(ischar (""), logical (1));
-%!assert(ischar ("test"), logical (1));
-%!assert(ischar (["test"; "ing"]), logical (1));
-%!assert(ischar (struct ("foo", "bar")), logical (0));
-%!error <Invalid call to ischar> ischar ();
-%!error <Invalid call to ischar> ischar ("test", 1);
+%!assert (ischar ("a"), true)
+%!assert (ischar (["ab";"cd"]), true)
+%!assert (ischar ({"ab"}), false)
+%!assert (ischar (1), false)
+%!assert (ischar ([1, 2]), false)
+%!assert (ischar ([]), false)
+%!assert (ischar ([1, 2; 3, 4]), false)
+%!assert (ischar (""), true)
+%!assert (ischar ("test"), true)
+%!assert (ischar (["test"; "ing"]), true)
+%!assert (ischar (struct ("foo", "bar")), false)
+
+%!error ischar ()
+%!error ischar ("test", 1)
 */
 
 static octave_value
@@ -589,51 +591,51 @@ This is just the opposite of the corresponding C library function.\n\
 }
 
 /*
-%!error <Invalid call to strcmp> strcmp ();
-%!error <Invalid call to strcmp> strcmp ("foo", "bar", 3);
-%!
 %!shared x
-%!  x = char (zeros (0, 2));
-%!assert (strcmp ('', x) == false);
-%!assert (strcmp (x, '') == false);
-%!assert (strcmp (x, x) == true);
-## %!assert (strcmp ({''}, x) == true);
-## %!assert (strcmp ({x}, '') == false);
-## %!assert (strcmp ({x}, x) == true);
-## %!assert (strcmp ('', {x}) == false);
-## %!assert (strcmp (x, {''}) == false);
-## %!assert (strcmp (x, {x}) == true);
-## %!assert (all (strcmp ({x; x}, '') == [false; false]));
-## %!assert (all (strcmp ({x; x}, {''}) == [false; false]));
-## %!assert (all (strcmp ('', {x; x}) == [false; false]));
-## %!assert (all (strcmp ({''}, {x; x}) == [false; false]));
-%!assert (strcmp ({'foo'}, x) == false);
-%!assert (strcmp ({'foo'}, 'foo') == true);
-%!assert (strcmp ({'foo'}, x) == false);
-%!assert (strcmp (x, {'foo'}) == false);
-%!assert (strcmp ('foo', {'foo'}) == true);
-%!assert (strcmp (x, {'foo'}) == false);
+%! x = char (zeros (0, 2));
+%!assert (strcmp ("", x), false)
+%!assert (strcmp (x, ""), false)
+%!assert (strcmp (x, x), true)
+## %!assert (strcmp ({""}, x), true)
+## %!assert (strcmp ({x}, ""), false)
+## %!assert (strcmp ({x}, x), true)
+## %!assert (strcmp ("", {x}), false)
+## %!assert (strcmp (x, {""}), false)
+## %!assert (strcmp (x, {x}), true)
+## %!assert (strcmp ({x; x}, ""), [false; false])
+## %!assert (strcmp ({x; x}, {""}), [false; false])
+## %!assert (strcmp ("", {x; x}), [false; false])
+## %!assert (strcmp ({""}, {x; x}), [false; false])
+%!assert (strcmp ({"foo"}, x), false)
+%!assert (strcmp ({"foo"}, "foo"), true)
+%!assert (strcmp ({"foo"}, x), false)
+%!assert (strcmp (x, {"foo"}), false)
+%!assert (strcmp ("foo", {"foo"}), true)
+%!assert (strcmp (x, {"foo"}), false)
 %!shared y
-%!  y = char (zeros (2, 0));
-%!assert (strcmp ('', y) == false);
-%!assert (strcmp (y, '') == false);
-%!assert (strcmp (y, y) == true);
-%!assert (all (strcmp ({''}, y) == [true; true]));
-%!assert (strcmp ({y}, '') == true);
-%!assert (all (strcmp ({y}, y) == [true; true]));
-%!assert (all (strcmp ('', {y}) == [true; true]));
-%!assert (all (strcmp (y, {''}) == [true; true]));
-%!assert (all (strcmp (y, {y}) == [true; true]));
-%!assert (all (strcmp ({y; y}, '') == [true; true]));
-%!assert (all (strcmp ({y; y}, {''}) == [true; true]));
-%!assert (all (strcmp ('', {y; y}) == [true; true]));
-%!assert (all (strcmp ({''}, {y; y}) == [true; true]));
-%!assert (all (strcmp ({'foo'}, y) == [false; false]));
-%!assert (all (strcmp ({'foo'}, y) == [false; false]));
-%!assert (all (strcmp (y, {'foo'}) == [false; false]));
-%!assert (all (strcmp (y, {'foo'}) == [false; false]));
-%!assert (strcmp ("foobar", "foobar"), true);
-%!assert (strcmp ("fooba", "foobar"), false);
+%! y = char (zeros (2, 0));
+%!assert (strcmp ("", y), false)
+%!assert (strcmp (y, ""), false)
+%!assert (strcmp (y, y), true)
+%!assert (strcmp ({""}, y), [true; true])
+%!assert (strcmp ({y}, ""), true)
+%!assert (strcmp ({y}, y), [true; true])
+%!assert (strcmp ("", {y}), true)
+%!assert (strcmp (y, {""}), [true; true])
+%!assert (strcmp (y, {y}), [true; true])
+%!assert (strcmp ({y; y}, ""), [true; true])
+%!assert (strcmp ({y; y}, {""}), [true; true])
+%!assert (strcmp ("", {y; y}), [true; true])
+%!assert (strcmp ({""}, {y; y}), [true; true])
+%!assert (strcmp ({"foo"}, y), [false; false])
+%!assert (strcmp ({"foo"}, y), [false; false])
+%!assert (strcmp (y, {"foo"}), [false; false])
+%!assert (strcmp (y, {"foo"}), [false; false])
+%!assert (strcmp ("foobar", "foobar"), true)
+%!assert (strcmp ("fooba", "foobar"), false)
+
+%!error strcmp ()
+%!error strcmp ("foo", "bar", 3)
 */
 
 // Apparently, Matlab ignores the dims with strncmp. It also
@@ -712,15 +714,16 @@ This is just the opposite of the corresponding C library function.\n\
 }
 
 /*
-%!error <Invalid call to strncmp> strncmp ();
-%!error <Invalid call to strncmp> strncmp ("abc", "def");
-%!assert (strncmp ("abce", "abc", 3) == 1)
-%!assert (strncmp (100, 100, 1) == 0)
-%!assert (all (strncmp ("abce", {"abcd", "bca", "abc"}, 3) == [1, 0, 1]))
-%!assert (all (strncmp ("abc",  {"abcd", "bca", "abc"}, 4) == [0, 0, 0]))
-%!assert (all (strncmp ({"abcd", "bca", "abc"},"abce", 3) == [1, 0, 1]))
-%!assert (all (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3) == [1, 1, 0]))
-%!assert (all (strncmp("abc", {"abcd", 10}, 2) == [1, 0]))
+%!assert (strncmp ("abce", "abc", 3), true)
+%!assert (strncmp (100, 100, 1), false)
+%!assert (strncmp ("abce", {"abcd", "bca", "abc"}, 3), logical ([1, 0, 1]))
+%!assert (strncmp ("abc",  {"abcd", "bca", "abc"}, 4), logical ([0, 0, 0]))
+%!assert (strncmp ({"abcd", "bca", "abc"},"abce", 3), logical ([1, 0, 1]))
+%!assert (strncmp ({"abcd", "bca", "abc"},{"abcd", "bca", "abe"}, 3), logical ([1, 1, 0]))
+%!assert (strncmp ("abc", {"abcd", 10}, 2), logical ([1, 0]))
+
+%!error strncmp ()
+%!error strncmp ("abc", "def")
 */
 
 // case-insensitive character equality functor
@@ -783,7 +786,7 @@ This is just the opposite of the corresponding C library function.\n\
 }
 
 /*
-%!assert (strcmpi("abc123", "ABC123"), logical(1));
+%!assert (strcmpi ("abc123", "ABC123"), true)
 */
 
 // Like strncmp.
@@ -850,7 +853,7 @@ This is just the opposite of the corresponding C library function.\n\
 }
 
 /*
-%!assert (strncmpi("abc123", "ABC456", 3), logical(1));
+%!assert (strncmpi ("abc123", "ABC456", 3), true)
 */
 
 DEFUN (list_in_columns, args, ,
@@ -923,15 +926,16 @@ whos ans\n\
 }
 
 /*
-%!error <Invalid call to list_in_columns> list_in_columns ();
-%!error <Invalid call to list_in_columns> list_in_columns (["abc", "def"], 20, 2);
-%!error <invalid conversion from string to real scalar> list_in_columns (["abc", "def"], "a");
 %!test
-%!  input  = {"abc", "def", "ghijkl", "mnop", "qrs", "tuv"};
-%!  result = "abc     mnop\ndef     qrs\nghijkl  tuv\n";
-%!  assert (list_in_columns (input, 20) == result);
+%! input  = {"abc", "def", "ghijkl", "mnop", "qrs", "tuv"};
+%! result = "abc     mnop\ndef     qrs\nghijkl  tuv\n";
+%! assert (list_in_columns (input, 20), result);
 %!test
-%!  input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
-%!  result = "abc     mnop  \ndef     qrs   \nghijkl  tuv   \n";
-%!  assert (list_in_columns (input, 20) == result);
+%! input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
+%! result = "abc     mnop  \ndef     qrs   \nghijkl  tuv   \n";
+%! assert (list_in_columns (input, 20), result);
+
+%!error list_in_columns ()
+%!error list_in_columns (["abc", "def"], 20, 2)
+%!error <invalid conversion from string to real scalar> list_in_columns (["abc", "def"], "a")
 */

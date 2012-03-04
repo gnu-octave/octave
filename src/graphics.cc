@@ -1967,13 +1967,13 @@ graphics_object::set (const octave_value_list& args)
 }
 
 /*
-%!# test set with name, value pairs
+## test set with name, value pairs
 %!test
-%!  set(gcf, "visible", "off");
-%!  h = plot (1:10, 10:-1:1);
-%!  set (h, "linewidth", 10, "marker", "x");
-%!  assert (get (h, "linewidth"), 10);
-%!  assert (get (h, "marker"), "x");
+%! set (gcf, "visible", "off");
+%! h = plot (1:10, 10:-1:1);
+%! set (h, "linewidth", 10, "marker", "x");
+%! assert (get (h, "linewidth"), 10);
+%! assert (get (h, "marker"), "x");
 */
 
 // Set properties given in two cell arrays containing names and values.
@@ -2002,34 +2002,34 @@ graphics_object::set (const Array<std::string>& names,
 }
 
 /*
-%!# test set with cell array arguments
+## test set with cell array arguments
 %!test
-%!  set (gcf, "visible", "off");
-%!  h = plot (1:10, 10:-1:1);
-%!  set (h, {"linewidth", "marker"}, {10, "x"});
-%!  assert (get(h, "linewidth"), 10);
-%!  assert (get(h, "marker"), "x");
+%! set (gcf, "visible", "off");
+%! h = plot (1:10, 10:-1:1);
+%! set (h, {"linewidth", "marker"}, {10, "x"});
+%! assert (get (h, "linewidth"), 10);
+%! assert (get (h, "marker"), "x");
 
-%!# test set with multiple handles and cell array arguments
+## test set with multiple handles and cell array arguments
 %!test
-%!  set (gcf, "visible", "off");
-%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%!  set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"});
-%!  assert (get (h, "linewidth"), {10; 5});
-%!  assert (get (h, "marker"), {"x"; "o"});
-%!  set (h, {"linewidth", "marker"}, {10, "x"});
-%!  assert (get (h, "linewidth"), {10; 10});
-%!  assert (get (h, "marker"), {"x"; "x"});
+%! set (gcf, "visible", "off");
+%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%! set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"});
+%! assert (get (h, "linewidth"), {10; 5});
+%! assert (get (h, "marker"), {"x"; "o"});
+%! set (h, {"linewidth", "marker"}, {10, "x"});
+%! assert (get (h, "linewidth"), {10; 10});
+%! assert (get (h, "marker"), {"x"; "x"});
 
 %!error <set: number of graphics handles must match number of value rows>
-%!  set (gcf, "visible", "off");
-%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%!  set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"; 7, "."});
+%! set (gcf, "visible", "off");
+%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%! set (h, {"linewidth", "marker"}, {10, "x"; 5, "o"; 7, "."});
 
 %!error <set: number of names must match number of value columns>
-%!  set (gcf, "visible", "off");
-%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%!  set (h, {"linewidth"}, {10, "x"; 5, "o"});
+%! set (gcf, "visible", "off");
+%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%! set (h, {"linewidth"}, {10, "x"; 5, "o"});
 */
 
 // Set properties given in a struct array
@@ -2051,16 +2051,16 @@ graphics_object::set (const octave_map& m)
 }
 
 /*
-%!# test set with struct arguments
+## test set with struct arguments
 %!test
-%!  set (gcf, "visible", "off");
-%!  h = plot (1:10, 10:-1:1);
-%!  set (h, struct ("linewidth", 10, "marker", "x"));
-%!  assert (get (h, "linewidth"), 10);
-%!  assert (get (h, "marker"), "x");
-%!  h = plot (1:10, 10:-1:1, 1:10, 1:10);
-%!  set (h, struct ("linewidth", {5, 10}));
-%!  assert (get(h, "linewidth"), {10; 10});
+%! set (gcf, "visible", "off");
+%! h = plot (1:10, 10:-1:1);
+%! set (h, struct ("linewidth", 10, "marker", "x"));
+%! assert (get (h, "linewidth"), 10);
+%! assert (get (h, "marker"), "x");
+%! h = plot (1:10, 10:-1:1, 1:10, 1:10);
+%! set (h, struct ("linewidth", {5, 10}));
+%! assert (get (h, "linewidth"), {10; 10});
 */
 
 // Set a property to a value or to its (factory) default value.
@@ -2101,15 +2101,15 @@ graphics_object::set_value_or_default (const caseless_str& name,
 }
 
 /*
-%!# test setting of default values
+## test setting of default values
 %!test
-%!  set (gcf, "visible", "off");
-%!  h = plot (1:10, 10:-1:1);
-%!  set (0, "defaultlinelinewidth", 20);
-%!  set (h, "linewidth", "default");
-%!  assert (get (h, "linewidth"), 20);
-%!  set (h, "linewidth", "factory");
-%!  assert (get (h, "linewidth"), 0.5);
+%! set (gcf, "visible", "off");
+%! h = plot (1:10, 10:-1:1);
+%! set (0, "defaultlinelinewidth", 20);
+%! set (h, "linewidth", "default");
+%! assert (get (h, "linewidth"), 20);
+%! set (h, "linewidth", "factory");
+%! assert (get (h, "linewidth"), 0.5);
 */
 
 static double
@@ -3055,19 +3055,19 @@ root_figure::properties::get_boundingbox (bool internal, const Matrix&) const
 
 /*
 %!test
-%! set (0, "units", "pixels")
+%! set (0, "units", "pixels");
 %! sz = get (0, "screensize") - [1, 1, 0, 0];
 %! dpi = get (0, "screenpixelsperinch");
-%! set (0, "units", "inches")
-%! assert (get (0, "screensize"), sz / dpi, 0.5 / dpi) 
-%! set (0, "units", "centimeters")
-%! assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54)
-%! set (0, "units", "points")
-%! assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72)
-%! set (0, "units", "normalized")
-%! assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0])
-%! set (0, "units", "pixels")
-%! assert (get (0, "screensize"), sz + [1, 1, 0, 0])
+%! set (0, "units", "inches");
+%! assert (get (0, "screensize"), sz / dpi, 0.5 / dpi);
+%! set (0, "units", "centimeters");
+%! assert (get (0, "screensize"), sz / dpi * 2.54, 0.5 / dpi * 2.54);
+%! set (0, "units", "points");
+%! assert (get (0, "screensize"), sz / dpi * 72, 0.5 / dpi * 72);
+%! set (0, "units", "normalized");
+%! assert (get (0, "screensize"), [0.0, 0.0, 1.0, 1.0]);
+%! set (0, "units", "pixels");
+%! assert (get (0, "screensize"), sz + [1, 1, 0, 0]);
 */
 
 void
@@ -3681,22 +3681,23 @@ figure::properties::update_paperorientation (void)
 %!test
 %! figure (1, "visible", false);
 %! tol = 100 * eps ();
-%! set (gcf (), "paperorientation", "PORTRAIT")
-%! set (gcf (), "paperunits", "inches")
-%! set (gcf (), "papertype", "USletter")
-%! assert (get (gcf (), "papersize"), [8.5, 11.0], tol)
-%! set (gcf (), "paperorientation", "Landscape")
-%! assert (get (gcf (), "papersize"), [11.0, 8.5], tol)
-%! set (gcf (), "paperunits", "centimeters")
-%! assert (get (gcf (), "papersize"), [11.0, 8.5] * 2.54, tol)
+%! ## UPPER case and MiXed case is part of test and should not be changed.
+%! set (gcf (), "paperorientation", "PORTRAIT");
+%! set (gcf (), "paperunits", "inches");
+%! set (gcf (), "papertype", "USletter");
+%! assert (get (gcf (), "papersize"), [8.5, 11.0], tol);
+%! set (gcf (), "paperorientation", "Landscape");
+%! assert (get (gcf (), "papersize"), [11.0, 8.5], tol);
+%! set (gcf (), "paperunits", "centimeters");
+%! assert (get (gcf (), "papersize"), [11.0, 8.5] * 2.54, tol);
 %! set (gcf (), "papertype", "a4");
-%! assert (get (gcf (), "papersize"), [29.7, 21.0], tol)
-%! set (gcf (), "paperunits", "inches", "papersize", [8.5, 11.0])
-%! assert (get (gcf (), "papertype"), "usletter")
-%! assert (get (gcf (), "paperorientation"), "portrait")
-%! set (gcf (), "papersize", [11.0, 8.5])
-%! assert (get (gcf (), "papertype"), "usletter")
-%! assert (get (gcf (), "paperorientation"), "landscape")
+%! assert (get (gcf (), "papersize"), [29.7, 21.0], tol);
+%! set (gcf (), "paperunits", "inches", "papersize", [8.5, 11.0]);
+%! assert (get (gcf (), "papertype"), "usletter");
+%! assert (get (gcf (), "paperorientation"), "portrait");
+%! set (gcf (), "papersize", [11.0, 8.5]);
+%! assert (get (gcf (), "papertype"), "usletter");
+%! assert (get (gcf (), "paperorientation"), "landscape");
 */
 
 void
@@ -3722,13 +3723,13 @@ figure::properties::update_units (const caseless_str& old_units)
 
 /*
 %!test
-%! figure (1, "visible", false)
-%! set (0, "units", "pixels")
+%! figure (1, "visible", false);
+%! set (0, "units", "pixels");
 %! rsz = get (0, "screensize");
-%! set (gcf (), "units", "pixels")
+%! set (gcf (), "units", "pixels");
 %! fsz = get (gcf (), "position");
-%! set (gcf (), "units", "normalized")
-%! assert (get (gcf (), "position"), (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]))
+%! set (gcf (), "units", "normalized");
+%! assert (get (gcf (), "position"), (fsz - [1, 1, 0, 0]) ./ rsz([3, 4, 3, 4]));
 */
 
 std::string
@@ -4968,19 +4969,21 @@ axes::properties::update_ticklength (void)
 }
 
 /*
+## FIXME: A demo can't be called in a C++ file.  This should be made a test
+## or moved to a .m file where it can be called.
 %!demo
-%!  clf
-%!  subplot (2, 1, 1)
-%!  plot (rand (3))
-%!  xlabel xlabel
-%!  ylabel ylabel
-%!  title title
-%!  subplot (2, 1, 2)
-%!  plot (rand (3))
-%!  set (gca, "ticklength", get (gca, "ticklength") * 2, "tickdir", "out")
-%!  xlabel xlabel
-%!  ylabel ylabel
-%!  title title
+%! clf;
+%! subplot (2,1,1);
+%! plot (rand (3));
+%! xlabel xlabel;
+%! ylabel ylabel;
+%! title title;
+%! subplot (2,1,2);
+%! plot (rand (3));
+%! set (gca, "ticklength", get (gca, "ticklength") * 2, "tickdir", "out");
+%! xlabel xlabel;
+%! ylabel ylabel;
+%! title title;
 */
 
 static bool updating_xlabel_position = false;
@@ -8608,7 +8611,7 @@ values or lists respectively.\n\
 }
 
 /*
-%!assert (get (findobj (0, 'Tag', 'nonexistenttag'), 'nonexistentproperty'), [])
+%!assert (get (findobj (0, "Tag", "nonexistenttag"), "nonexistentproperty"), [])
 */
 
 // Return all properties from the graphics handle @var{h}.

@@ -538,12 +538,11 @@ $$\n\
 \n\
 @example\n\
 @group\n\
-@c spacing appears odd here, but is correct after Makeinfo\n\
-                          z\n\
-                         /\n\
-erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
-                        /\n\
-                     t=0\n\
+                        z\n\
+              2        /\n\
+erf (z) = --------- *  | e^(-t^2) dt\n\
+          sqrt (pi)    /\n\
+                    t=0\n\
 @end group\n\
 @end example\n\
 \n\
@@ -885,9 +884,8 @@ $$\n\
 \n\
 @example\n\
 @group\n\
-@c spacing appears odd here, but is correct after Makeinfo\n\
-              infinity\n\
-             /\n\
+             infinity\n\
+            /\n\
 gamma (z) = | t^(z-1) exp (-t) dt.\n\
             /\n\
          t=0\n\

@@ -46,12 +46,11 @@ $$\n\
 \n\
 @smallexample\n\
 @group\n\
-@c spacing appears odd here, but is correct after Makeinfo\n\
-                                     x\n\
-                          1         /\n\
-betainc (x, a, b) = -----------    | t^(a-1) (1-t)^(b-1) dt.\n\
-                     beta (a, b)   /\n\
-                                t=0\n\
+                                   x\n\
+                          1       /\n\
+betainc (x, a, b) = -----------   | t^(a-1) (1-t)^(b-1) dt.\n\
+                    beta (a, b)   /\n\
+                               t=0\n\
 @end group\n\
 @end smallexample\n\
 \n\

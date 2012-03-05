@@ -404,13 +404,18 @@ To read a line and discard the terminating newline see @code{fgetl}.\n\
 
 DEFUN (fskipl, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fskipl (@var{fid}, @var{count})\n\
-Skip a given number of lines, i.e., discards characters until an end-of-line\n\
-is met exactly @var{count}-times, or end-of-file occurs.\n\
+@deftypefn  {Built-in Function} {@var{nlines} =} fskipl (@var{fid})\n\
+@deftypefnx {Built-in Function} {@var{nlines} =} fskipl (@var{fid}, @var{count})\n\
+@deftypefnx {Built-in Function} {@var{nlines} =} fskipl (@var{fid}, Inf)\n\
+Read and skip @var{count} lines from the file descriptor @var{fid}.\n\
+@code{fskipl} discards characters until an end-of-line is encountered exactly\n\
+@var{count}-times, or until the end-of-file marker is found.\n\
+\n\
+If @var{count} is omitted, it defaults to 1.  @var{count} may also be\n\
+@code{Inf}, in which case lines are skipped until the end of the file.\n\
+This form is suitable for counting the number of lines in a file.\n\
+\n\
 Returns the number of lines skipped (end-of-line sequences encountered).\n\
-If @var{count} is omitted, it defaults to 1. @var{count} may also be\n\
-@code{Inf}, in which case lines are skipped to the end of file.\n\
-This form is suitable for counting lines in a file.\n\
 @seealso{fgetl, fgets}\n\
 @end deftypefn")
 {

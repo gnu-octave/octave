@@ -302,7 +302,8 @@ stream before calling @code{input}.\n\
 
 DEFUN (fgetl, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})\n\
+@deftypefn  {Built-in Function} {@var{str} =} fgetl (@var{fid})\n\
+@deftypefnx {Built-in Function} {@var{str} =} fgetl (@var{fid}, @var{len})\n\
 Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, excluding\n\
 the possible trailing newline, are returned as a string.\n\
@@ -311,7 +312,9 @@ If @var{len} is omitted, @code{fgetl} reads until the next newline\n\
 character.\n\
 \n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
-@seealso{fread, fscanf}\n\
+\n\
+To read a line and return the terminating newline see @code{fgets}.\n\
+@seealso{fgets, fputs, fopen, fread, fscanf}\n\
 @end deftypefn")
 {
   static std::string who = "fgetl";
@@ -350,8 +353,8 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
 DEFUN (fgets, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {} fgets (@var{fid})\n\
-@deftypefnx {Built-in Function} {} fgets (@var{fid}, @var{len})\n\
+@deftypefn  {Built-in Function} {@var{str} =} fgets (@var{fid})\n\
+@deftypefnx {Built-in Function} {@var{str} =} fgets (@var{fid}, @var{len})\n\
 Read characters from a file, stopping after a newline, or EOF,\n\
 or @var{len} characters have been read.  The characters read, including\n\
 the possible trailing newline, are returned as a string.\n\
@@ -360,7 +363,9 @@ If @var{len} is omitted, @code{fgets} reads until the next newline\n\
 character.\n\
 \n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
-@seealso{fputs, fopen, fread, fscanf}\n\
+\n\
+To read a line and discard the terminating newline see @code{fgetl}.\n\
+@seealso{fgetl, fputs, fopen, fread, fscanf}\n\
 @end deftypefn")
 {
   static std::string who = "fgets";

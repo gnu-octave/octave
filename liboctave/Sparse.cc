@@ -1404,7 +1404,11 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           if (idx.is_range () && idx.increment () == -1)
             {
               retval = Sparse<T> (nr, 1, nz);
-              std::reverse_copy (ridx (), ridx () + nz, retval.ridx ());
+
+              for (octave_idx_type j = 0; j < nz; j++)
+                retval.ridx (j) = nr - ridx (nz - j - 1) - 1;
+
+              copy_or_memcpy (2, cidx (), retval.cidx ());
               std::reverse_copy (data (), data () + nz, retval.data ());
             }
           else
@@ -2725,6 +2729,10 @@ Sparse<T>::array_value () const
 %!test test_sparse_slice([2 2], 22, [2,2]);
 %!test test_sparse_slice([2 2], 22, 3);
 %!test test_sparse_slice([2 2], 22, 4);
+
+bug #35570:
+
+%!assert (speye (3,1)(3:-1:1), sparse ([0; 0; 1]))
 
 */
 

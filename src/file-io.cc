@@ -217,7 +217,7 @@ DEFUN (fclose, args, ,
 Close the specified file.  If successful, @code{fclose} returns 0,\n\
 otherwise, it returns -1.  The second form of the @code{fclose} call closes\n\
 all open files except @code{stdout}, @code{stderr}, and @code{stdin}.\n\
-@seealso{fopen, fseek, ftell}\n\
+@seealso{fopen, freport}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -236,6 +236,7 @@ DEFUN (fclear, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} fclear (@var{fid})\n\
 Clear the stream state for the specified file.\n\
+@seealso{fopen}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -314,7 +315,7 @@ character.\n\
 If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 \n\
 To read a line and return the terminating newline see @code{fgets}.\n\
-@seealso{fgets, fputs, fopen, fread, fscanf}\n\
+@seealso{fgets, fscanf, fread, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fgetl";
@@ -365,7 +366,7 @@ character.\n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 \n\
 To read a line and discard the terminating newline see @code{fgetl}.\n\
-@seealso{fgetl, fputs, fopen, fread, fscanf}\n\
+@seealso{fputs, fgetl, fscanf, fread, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fgets";
@@ -416,7 +417,7 @@ If @var{count} is omitted, it defaults to 1.  @var{count} may also be\n\
 This form is suitable for counting the number of lines in a file.\n\
 \n\
 Returns the number of lines skipped (end-of-line sequences encountered).\n\
-@seealso{fgetl, fgets}\n\
+@seealso{fgetl, fgets, fscanf, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fskipl";
@@ -668,7 +669,7 @@ Cray floating format.\n\
 @noindent\n\
 however, conversions are currently only supported for @samp{native}\n\
 @samp{ieee-be}, and @samp{ieee-le} formats.\n\
-@seealso{fclose, fgets, fputs, fread, fseek, ferror, fprintf, fscanf, ftell, fwrite}\n\
+@seealso{fclose, fgets, fgetl, fscanf, fread, fputs, fdisp, fprintf, fwrite, fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -753,6 +754,7 @@ freport ()\n\
      @print{}       3     r  myfile\n\
 @end group\n\
 @end example\n\
+@seealso{fopen, fclose}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -773,6 +775,7 @@ DEFUN (frewind, args, nargout,
 Move the file pointer to the beginning of the file @var{fid}, returning\n\
 0 for success, and -1 if an error was encountered.  It is equivalent to\n\
 @code{fseek (@var{fid}, 0, SEEK_SET)}.\n\
+@seealso{fseek, ftell, fopen}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -799,18 +802,19 @@ Move the file pointer to the beginning of the file @var{fid}, returning\n\
 
 DEFUN (fseek, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} fseek (@var{fid}, @var{offset}, @var{origin})\n\
+@deftypefn  {Built-in Function} {} fseek (@var{fid}, @var{offset})\n\
+@deftypefnx {Built-in Function} {} fseek (@var{fid}, @var{offset}, @var{origin})\n\
+@deftypefnx {Built-in Function} {@var{status} =} fseek (@dots{})\n\
 Set the file pointer to any location within the file @var{fid}.\n\
 \n\
 The pointer is positioned @var{offset} characters from the @var{origin},\n\
 which may be one of the predefined variables @w{@code{SEEK_CUR}} (current\n\
 position), @w{@code{SEEK_SET}} (beginning), or @w{@code{SEEK_END}} (end of\n\
 file) or strings \"cof\", \"bof\" or \"eof\".  If @var{origin} is omitted,\n\
-@w{@code{SEEK_SET}} is assumed.  The offset must be zero, or a value returned\n\
-by @code{ftell} (in which case @var{origin} must be @w{@code{SEEK_SET}}).\n\
+@w{@code{SEEK_SET}} is assumed.  @var{offset} may be positive, negative, or zero but not all combinations of @var{origin} and @var{offset} can be realized.\n\
 \n\
 Return 0 on success and -1 on error.\n\
-@seealso{ftell, fopen, fclose}\n\
+@seealso{fskipl, frewind, ftell, fopen}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -840,7 +844,7 @@ DEFUN (ftell, args, ,
 @deftypefn {Built-in Function} {} ftell (@var{fid})\n\
 Return the position of the file pointer as the number of characters\n\
 from the beginning of the file @var{fid}.\n\
-@seealso{fseek, fopen, fclose}\n\
+@seealso{fseek, feof, fopen}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -866,7 +870,7 @@ DEFUN (fprintf, args, nargout,
 This function is just like @code{printf}, except that the output is\n\
 written to the stream @var{fid} instead of @code{stdout}.\n\
 If @var{fid} is omitted, the output is written to @code{stdout}.\n\
-@seealso{printf, sprintf, fread, fscanf, fopen, fclose}\n\
+@seealso{fputs, fdisp, fwrite, fscanf, printf, sprintf, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fprintf";
@@ -977,7 +981,7 @@ DEFUN (fputs, args, ,
 Write a string to a file with no formatting.\n\
 \n\
 Return a non-negative number on success and EOF on error.\n\
-@seealso{scanf, sscanf, fread, fprintf, fgets, fscanf}\n\
+@seealso{fdisp, fprintf, fwrite, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fputs";
@@ -1005,6 +1009,7 @@ DEFUN (puts, args, ,
 Write a string to the standard output with no formatting.\n\
 \n\
 Return a non-negative number on success and EOF on error.\n\
+@seealso{fputs, disp}\n\
 @end deftypefn")
 {
   static std::string who = "puts";
@@ -1130,7 +1135,7 @@ setting at the end of the conversion.\n\
 See the Formatted Input section of the GNU Octave manual for a\n\
 complete description of the syntax of the template string.\n\
 @end ifclear\n\
-@seealso{scanf, sscanf, fread, fprintf, fgets, fputs}\n\
+@seealso{fgets, fgetl, fread, scanf, sscanf, fopen}\n\
 @end deftypefn")
 {
   static std::string who = "fscanf";
@@ -1599,7 +1604,7 @@ Conversions are currently only supported for @code{\"ieee-be\"} and\n\
 \n\
 The data read from the file is returned in @var{val}, and the number of\n\
 values read is returned in @code{count}\n\
-@seealso{fwrite, fopen, fclose}\n\
+@seealso{fwrite, fgets, fgetl, fscanf, fopen}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1716,7 +1721,7 @@ optional, and are interpreted as described for @code{fread}.\n\
 \n\
 The behavior of @code{fwrite} is undefined if the values in @var{data}\n\
 are too large to fit in the specified precision.\n\
-@seealso{fread, fopen, fclose}\n\
+@seealso{fread, fputs, fprintf, fopen}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -1769,7 +1774,7 @@ Return 1 if an end-of-file condition has been encountered for a given\n\
 file and 0 otherwise.  Note that it will only return 1 if the end of the\n\
 file has already been encountered, not if the next read operation will\n\
 result in an end-of-file condition.\n\
-@seealso{fread, fopen, fclose}\n\
+@seealso{fread, fopen}\n\
 @end deftypefn")
 {
   octave_value retval = -1;
@@ -1791,7 +1796,8 @@ result in an end-of-file condition.\n\
 
 DEFUNX ("ferror", Fferror, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid}, \"clear\")\n\
+@deftypefn  {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid})\n\
+@deftypefnx {Built-in Function} {[@var{err}, @var{msg}] =} ferror (@var{fid}, \"clear\")\n\
 Return 1 if an error condition has been encountered for the file ID\n\
 @var{fid} and 0 otherwise.  Note that it will only return 1 if an error\n\
 has already been encountered, not if the next operation will result in\n\
@@ -1799,6 +1805,7 @@ an error condition.\n\
 \n\
 The second argument is optional.  If it is supplied, also clear the\n\
 error condition.\n\
+@seealso{fclear, fopen}\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -431,7 +431,7 @@ function cmd = __quote_path__ (cmd)
         cmd = strrep (cmd, "/", "\\");
       endif
       if (any (cmd == " "))
-        cmd = strcat ("""", strrep (cmd, """", """"""), """");
+        cmd = strcat ('"', strrep (cmd, '"', '""') ,'"');
       endif
     endif
   endif

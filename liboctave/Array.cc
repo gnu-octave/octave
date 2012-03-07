@@ -2253,6 +2253,7 @@ Array<T>::nth_element (const idx_vector& n, int dim) const
 
   dv(dim) = std::min (nn, ns);
   dv.chop_trailing_singletons ();
+  dim = std::min (dv.length (), dim);
 
   Array<T> m (dv);
 

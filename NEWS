@@ -210,6 +210,10 @@ Summary of important user-visible changes for version 3.6:
       __error_text__     studentize
       error_text         sylvester_matrix
 
+ ** The following functions have been modified for Matlab compatibility:
+
+      randperm
+
 Summary of important user-visible changes for version 3.4.3:
 -----------------------------------------------------------
 

@@ -124,21 +124,21 @@ w32_set_octave_home (void)
       mod_info.dwSize = sizeof (mod_info);
 
       if (Module32First (h, &mod_info))
-	{
-	  do
-	    {
-	      std::string mod_name (mod_info.szModule);
+        {
+          do
+            {
+              std::string mod_name (mod_info.szModule);
 
-	      if (mod_name.find ("octinterp") != std::string::npos)
-		{
-		  bin_dir = mod_info.szExePath;
-		  if (bin_dir[bin_dir.length () - 1] != '\\')
-		    bin_dir.append (1, '\\');
-		  break;
-		}
-	    }
-	  while (Module32Next (h, &mod_info));
-	}
+              if (mod_name.find ("octinterp") != std::string::npos)
+                {
+                  bin_dir = mod_info.szExePath;
+                  if (bin_dir[bin_dir.length () - 1] != '\\')
+                    bin_dir.append (1, '\\');
+                  break;
+                }
+            }
+          while (Module32Next (h, &mod_info));
+       }
 
       CloseHandle (h);
     }

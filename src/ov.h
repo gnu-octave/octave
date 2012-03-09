@@ -315,7 +315,7 @@ public:
     {
       if (rep->count > 1)
         {
-	  octave_base_value *r = rep->unique_clone ();
+          octave_base_value *r = rep->unique_clone ();
 
           if (--rep->count == 0)
             delete rep;

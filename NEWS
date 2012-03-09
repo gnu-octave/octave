@@ -79,7 +79,7 @@ Summary of important user-visible changes for version 3.6:
       rem
       xor
 
-    additionally, since the A op= B assginment operators are equivalent
+    additionally, since the A op= B assignment operators are equivalent
     to A = A op B, the following operators are also affected:
 
       +=  -=  .+=  .-=  .*=  ./=  .\=  .^=  .**=  &=  |=
@@ -107,8 +107,8 @@ Summary of important user-visible changes for version 3.6:
     scripts.
 
     negative binomial function has been extended to real, non-integer
-    inputs.  The discrete_inv fucntion now returns v(1) for 0 instead of
-    NaN.  The nbincdf fucntion has been recoded to use a closed form
+    inputs.  The discrete_inv function now returns v(1) for 0 instead of
+    NaN.  The nbincdf function has been recoded to use a closed form
     solution with betainc.
 
  ** strread, textscan, and textread have been completely revamped.
@@ -170,7 +170,7 @@ Summary of important user-visible changes for version 3.6:
     string now supported.
 
     datestr: Numerical formats 21, 22, 29 changed to match Matlab.
-             Now accepts cellstr inputs.
+             Now accepts cellstr input.
 
  ** The following warning IDs have been removed:
 
@@ -199,7 +199,7 @@ Summary of important user-visible changes for version 3.6:
     The uiXXX functions above are experimental.
 
     Except for uiwait and uiresume, the uiXXX functions are not
-    supported with the the FLTK+OpenGL graphics toolkit.
+    supported with the FLTK+OpenGL graphics toolkit.
 
     The gnuplot graphics toolkit does not support any of the uiXXX
     functions nor the waitfor function.
@@ -242,6 +242,10 @@ Summary of important user-visible changes for version 3.6:
       corrcoef           shell_cmd 
       __error_text__     studentize
       error_text         sylvester_matrix
+
+ ** The following functions have been modified for Matlab compatibility:
+
+      randperm
 
 Summary of important user-visible changes for version 3.4.3:
 -----------------------------------------------------------

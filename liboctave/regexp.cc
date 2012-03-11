@@ -371,8 +371,21 @@ regexp::match (const std::string& buffer)
                       || ovector[2*i-1] != ovector[2*i+1])
                     {
                       if (namecount > 0)
-                        named_tokens(named_idx(i-pos_offset-1)) =
-                          std::string (*(listptr+nidx[i-pos_offset-1]));
+                        {
+                          // FIXME: Should probably do this with a map()
+                          // rather than a linear search.  However,
+                          // the number of captured, named expressions
+                          // is usually pretty small (< 4)
+                          for (int j = 0; j < namecount; j++)
+                            {
+                              if (nidx[j] == i)
+                                { 
+                                  named_tokens(named_idx(j)) =
+                                    std::string (*(listptr+i-pos_offset));
+                                  break;
+                                }
+                            }
+                        }
 
                       tokens(pos_match++) = std::string (*(listptr+i));
                     }

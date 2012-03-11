@@ -333,8 +333,7 @@ regexp::match (const std::string& buffer)
             {
               if (ovector[2*i] >= 0 && ovector[2*i+1] > 0
                   && (i == 1 || ovector[2*i] != ovector[2*i-2]
-                      || ovector[2*i-1] != ovector[2*i+1])
-                  && ovector[2*i] >= 0 && ovector[2*i+1] > 0)
+                      || ovector[2*i-1] != ovector[2*i+1]))
                 {
                   token_extents(pos_match,0) = double (ovector[2*i]+1);
                   token_extents(pos_match++,1) = double (ovector[2*i+1]);

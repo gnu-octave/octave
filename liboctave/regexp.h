@@ -89,7 +89,7 @@ public:
   std::string replace (const std::string& buffer,
                        const std::string& replacement);
 
-  struct opts
+  class opts
   {
   public:
 

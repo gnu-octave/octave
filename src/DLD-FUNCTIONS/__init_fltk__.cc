@@ -668,6 +668,14 @@ public:
     callback (window_close, static_cast<void*> (this));
     size_range (4*status_h, 2*status_h);
 
+    // FIXME: The function below is only available in FLTK >= 1.3
+    // At some point support for FLTK 1.1 will be dropped in Octave.
+    // At that point this function should be uncommented.
+    // The current solution is to call xclass() before show() for each window.
+    // Set WM_CLASS which allows window managers to properly group related
+    // windows.  Otherwise, the class is just "FLTK"
+    //default_xclass ("Octave");
+
     begin ();
     {
 
@@ -722,6 +730,13 @@ public:
       canvas->mode (FL_DEPTH | FL_DOUBLE );
       if (fp.is_visible ())
         {
+          // FIXME: This code should be removed when Octave drops support
+          // for FLTK 1.1.  Search for default_xclass in this file to find
+          // code that should be uncommented to take its place.
+          //
+          // Set WM_CLASS which allows window managers to properly group
+          // related windows.  Otherwise, the class is just "FLTK"
+          xclass ("Octave");
           show ();
           if (fp.get_currentaxes ().ok())
             show_canvas ();

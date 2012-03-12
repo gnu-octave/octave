@@ -21,17 +21,29 @@
 ## @deftypefnx {Function File} {} print (@var{options})
 ## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
-## Print a graph, or save it to a file
-##
-## @var{filename} defines the file name of the output file.  If the
-## file name has no suffix, one is inferred from the specified
-## device and appended to the file name.  If no
-## filename is specified, the output is sent to the printer.
+## Print a graph, or save it to a file. Both output formatted for 
+## printing (PDF and PostScript), and many bitmapped and vector
+## image formats are supported.
 ##
 ## @var{h} specifies the figure handle.  If no handle is specified
 ## the handle for the current figure is used.
 ##
-## @var{options}:
+## @var{filename} defines the name of the output file.  If the
+## file name has no suffix, one is inferred from the specified
+## device and appended to the file name.  If no filename is
+## specified, the output is sent to the printer.
+##
+## For output to a printer, to a PostScript file, or a PDF file,
+## the paper size is specified by the figure's @code{papersize}
+## property. The location and size of the image on the page are
+## specified by the figure's @code{paperposition} property. The
+## orientation of the page is specified by the figure's
+## @code{paperorientation} property.
+##
+## The width and height of images are specified by the figure's
+## @code{paperpositon(3:4)} property values.
+##
+## The @code{print} command supports several @var{options}:
 ##
 ## @table @code
 ## @item -f@var{h}

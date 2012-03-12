@@ -834,15 +834,22 @@ The result of which can be seen in @ref{fig:extendedtext}
 @cindex printing plots
 @cindex saving plots
 
-The @code{print} command allows you to save plots in a variety of
-formats.  For example,
+The @code{print} command allows you to send plots to you printer and
+to save plots in a variety of formats.  For example,
+
+@example
+print -dpsc
+@end example
+
+@noindent
+prints the current figure to a color PostScript printer. And,
 
 @example
 print -deps foo.eps
 @end example
 
 @noindent
-writes the current figure to an encapsulated PostScript file called
+saves the current figure to an encapsulated PostScript file called
 @file{foo.eps}.
 
 @DOCSTRING(print)

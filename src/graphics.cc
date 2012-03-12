@@ -3656,6 +3656,11 @@ figure::properties::update_papersize (void)
       // update_papersize and update_papertype
       papertype.set (typ);
     }
+  if (get_paperorientation () == "landscape")
+    {
+      std::swap (sz(0), sz(1));
+      papersize.set (octave_value (sz));
+    }
 }
 
 void

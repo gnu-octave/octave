@@ -104,7 +104,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   s = 2^k * u * s * u';
 
   ## Remove small complex values (O(eps)) which may have entered calculation
-  if (real_eig)
+  if (real_eig && isreal(A))
     s = real (s);
   endif
 
@@ -162,6 +162,7 @@ endfunction
 %!assert (logm (10), log (10))
 %!assert (full (logm (eye (3))), logm (full (eye (3))))
 %!assert (full (logm (10*eye (3))), logm (full (10*eye (3))), 8*eps)
+%!assert (logm (expm ([0 1i; -1i 0])), [0 1i; -1i 0], 10 * eps)
 
 %% Test input validation
 %!error logm ()

@@ -29,6 +29,7 @@ interactive Octave sessions, or in external files, and can be called just
 like built-in functions.
 
 @menu
+* Introduction to Function and Script Files::
 * Defining Functions::          
 * Multiple Return Values::      
 * Variable-length Argument Lists::  
@@ -42,6 +43,31 @@ like built-in functions.
 * Commands::
 * Organization of Functions::   
 @end menu
+
+@node  Introduction to Function and Script Files
+@section  Introduction to Function and Script Files
+
+There are six different things covered in this section.
+@enumerate
+@item
+Typing in a function at the command prompt.
+@item
+Storing a group of commands in a file - called a script file.
+@item
+Storing a function in a file - called a function file.
+@item
+Sub-functions in function files.
+@item
+Multiple functions in one script file.
+@item
+Private functions.
+@end enumerate
+
+Both function files and script files end with an extension of .m, for
+@sc{Matlab} compatibility. If you want more than one independent
+functions in a file, it must be a script file (@pxref{Script Files}),
+and to use these functions you must execute the script file before you
+can use the functions that are in the script file.
 
 @node Defining Functions
 @section Defining Functions

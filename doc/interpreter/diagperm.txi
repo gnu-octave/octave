@@ -23,7 +23,7 @@
 * Basic Usage::          Creation and Manipulation of Diagonal and Permutation Matrices
 * Matrix Algebra::       Linear Algebra with Diagonal and Permutation Matrices
 * Function Support::     Functions That Are Aware of These Matrices
-* Example Codes::        Some Examples of Usage
+* Example Code::         Some Examples of Usage
 * Zeros Treatment::      The Differences in Treatment of Zero Elements
 @end menu
 
@@ -412,7 +412,7 @@ sparse matrix.
 The @dfn{find} function will also work efficiently with a permutation matrix,
 making it possible to conveniently obtain the permutation indices.
 
-@node Example Codes
+@node Example Code
 @section Some Examples of Usage
 
 The following can be used to solve a linear system @code{A*x = b}
@@ -426,12 +426,23 @@ using the pivoted LU@tie{}factorization:
 @end example
 
 @noindent
-This is how you normalize columns of a matrix @var{X} to unit norm:
+This is one way to normalize columns of a matrix @var{X} to unit norm:
 
 @example
 @group
   s = norm (X, "columns");
-  X = diag (s) \ X;
+  X /= diag (s);
+@end group
+@end example
+
+@noindent
+The same can also be accomplished with broadcasting
+(@pxref{Broadcasting}):
+
+@example
+@group
+  s = norm (X, "columns");
+  X ./= s;
 @end group
 @end example
 
@@ -445,7 +456,7 @@ in earlier versions of Octave, but slowly.
 @end example
 
 @noindent
-Finally, here's how you solve a linear system @code{A*x = b} 
+Finally, here's how you solve a linear system @code{A*x = b}
 with Tikhonov regularization (ridge regression) using SVD (a skeleton only):
 
 @example

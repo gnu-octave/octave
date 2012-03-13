@@ -439,6 +439,8 @@ w32_sigint_handler (DWORD sig)
         break;
 
       case CTRL_CLOSE_EVENT:
+        clean_up_and_exit (0);
+        break;
       case CTRL_LOGOFF_EVENT:
       case CTRL_SHUTDOWN_EVENT:
       default:
@@ -957,9 +959,10 @@ Return a structure containing Unix signal names and their defined values.\n\
 }
 
 /*
-%!error SIG (1);
-%!assert (isstruct (SIG ()));
-%!assert (! isempty (SIG ()));
+%!assert (isstruct (SIG ()))
+%!assert (! isempty (SIG ()))
+
+%!error SIG (1)
 */
 
 DEFUN (debug_on_interrupt, args, nargout,
@@ -981,7 +984,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (debug_on_interrupt (1, 2));
 %!test
 %! orig_val = debug_on_interrupt ();
 %! old_val = debug_on_interrupt (! orig_val);
@@ -989,6 +991,8 @@ variable value is restored when exiting the function.\n\
 %! assert (debug_on_interrupt (), ! orig_val);
 %! debug_on_interrupt (orig_val);
 %! assert (debug_on_interrupt (), orig_val);
+
+%!error (debug_on_interrupt (1, 2))
 */
 
 DEFUN (sighup_dumps_octave_core, args, nargout,
@@ -1009,7 +1013,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (sighup_dumps_octave_core (1, 2));
 %!test
 %! orig_val = sighup_dumps_octave_core ();
 %! old_val = sighup_dumps_octave_core (! orig_val);
@@ -1017,6 +1020,8 @@ variable value is restored when exiting the function.\n\
 %! assert (sighup_dumps_octave_core (), ! orig_val);
 %! sighup_dumps_octave_core (orig_val);
 %! assert (sighup_dumps_octave_core (), orig_val);
+
+%!error (sighup_dumps_octave_core (1, 2))
 */
 
 DEFUN (sigterm_dumps_octave_core, args, nargout,
@@ -1037,7 +1042,6 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-%!error (sigterm_dumps_octave_core (1, 2));
 %!test
 %! orig_val = sigterm_dumps_octave_core ();
 %! old_val = sigterm_dumps_octave_core (! orig_val);
@@ -1045,4 +1049,6 @@ variable value is restored when exiting the function.\n\
 %! assert (sigterm_dumps_octave_core (), ! orig_val);
 %! sigterm_dumps_octave_core (orig_val);
 %! assert (sigterm_dumps_octave_core (), orig_val);
+
+%!error (sigterm_dumps_octave_core (1, 2))
 */

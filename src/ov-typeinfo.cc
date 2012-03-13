@@ -620,72 +620,88 @@ currently installed data types.\n\
 }
 
 /*
-%!error typeinfo ("foo", 1);
+%!assert (iscellstr (typeinfo ()))
 
-%!assert (iscellstr (typeinfo ()));
+%!assert (typeinfo ({"cell"}), "cell")
 
-%!assert (typeinfo (false), "bool");
-%!assert (typeinfo ([true, false]), "bool matrix");
+%!assert (typeinfo (1), "scalar")
+%!assert (typeinfo (double (1)), "scalar")
+%!assert (typeinfo (i), "complex scalar")
 
-%!assert (typeinfo (1:2), "range");
-
-%!assert (typeinfo ("string"), "string");
-%!assert (typeinfo ('string'), "sq_string");
-
+%!assert (typeinfo ([1, 2]), "matrix")
+%!assert (typeinfo (double ([1, 2])), "matrix")
 %!assert (typeinfo (diag ([1, 2])), "diagonal matrix")
+%!assert (typeinfo ([i, 2]), "complex matrix")
 %!assert (typeinfo (diag ([i, 2])), "complex diagonal matrix")
-%!assert (typeinfo (single (diag ([1, 2]))), "float diagonal matrix")
-%!assert (typeinfo (single (diag ([i, 2]))), "float complex diagonal matrix")
-%!assert (typeinfo (diag (single ([1, 2]))), "float diagonal matrix")
-%!assert (typeinfo (diag (single ([i, 2]))), "float complex diagonal matrix")
 
-%!assert (typeinfo ([]), "null_matrix");
-%!assert (typeinfo (""), "null_string");
-%!assert (typeinfo (''), "null_sq_string");
+%!assert (typeinfo (1:2), "range")
 
-%!assert (typeinfo (1), "scalar");
-%!assert (typeinfo (double (1)), "scalar");
-%!assert (typeinfo ([1, 2]), "matrix");
-%!assert (typeinfo (double ([1, 2])), "matrix");
+%!assert (typeinfo (false), "bool")
+%!assert (typeinfo ([true, false]), "bool matrix")
 
-%!assert (typeinfo (i), "complex scalar");
-%!assert (typeinfo ([i, 2]), "complex matrix");
+%!assert (typeinfo ("string"), "string")
+%!assert (typeinfo ('string'), "sq_string")
 
-%!assert (typeinfo (single (1)), "float scalar");
-%!assert (typeinfo (single ([1, 2])), "float matrix");
+%!assert (typeinfo (int8 (1)), "int8 scalar")
+%!assert (typeinfo (int16 (1)), "int16 scalar")
+%!assert (typeinfo (int32 (1)), "int32 scalar")
+%!assert (typeinfo (int64 (1)), "int64 scalar")
+%!assert (typeinfo (uint8 (1)), "uint8 scalar")
+%!assert (typeinfo (uint16 (1)), "uint16 scalar")
+%!assert (typeinfo (uint32 (1)), "uint32 scalar")
+%!assert (typeinfo (uint64 (1)), "uint64 scalar")
 
-%!assert (typeinfo (single (i)), "float complex scalar");
-%!assert (typeinfo (single ([i, 2])), "float complex matrix");
+%!assert (typeinfo (int8 ([1,2])), "int8 matrix")
+%!assert (typeinfo (int16 ([1,2])), "int16 matrix")
+%!assert (typeinfo (int32 ([1,2])), "int32 matrix")
+%!assert (typeinfo (int64 ([1,2])), "int64 matrix")
+%!assert (typeinfo (uint8 ([1,2])), "uint8 matrix")
+%!assert (typeinfo (uint16 ([1,2])), "uint16 matrix")
+%!assert (typeinfo (uint32 ([1,2])), "uint32 matrix")
+%!assert (typeinfo (uint64 ([1,2])), "uint64 matrix")
 
-%!assert (typeinfo (sparse (eye (10))), "sparse matrix");
-%!assert (typeinfo (sparse (i * eye (10))), "sparse complex matrix");
-%!assert (typeinfo (logical (sparse (i * eye (10)))), "sparse bool matrix");
-
-%!assert (typeinfo (int8 (1)), "int8 scalar");
-%!assert (typeinfo (int16 (1)), "int16 scalar");
-%!assert (typeinfo (int32 (1)), "int32 scalar");
-%!assert (typeinfo (int64 (1)), "int64 scalar");
-%!assert (typeinfo (uint8 (1)), "uint8 scalar");
-%!assert (typeinfo (uint16 (1)), "uint16 scalar");
-%!assert (typeinfo (uint32 (1)), "uint32 scalar");
-%!assert (typeinfo (uint64 (1)), "uint64 scalar");
-
-%!test
-%! s.a = 1;
-%! assert (typeinfo (s), "scalar struct");
+%!assert (typeinfo (sparse ([true, false])), "sparse bool matrix")
+%!assert (typeinfo (logical (sparse (i * eye (10)))), "sparse bool matrix")
+%!assert (typeinfo (sparse ([1,2])), "sparse matrix")
+%!assert (typeinfo (sparse (eye (10))), "sparse matrix")
+%!assert (typeinfo (sparse ([i,2])), "sparse complex matrix")
+%!assert (typeinfo (sparse (i * eye (10))), "sparse complex matrix")
 
 %!test
 %! s(2).a = 1;
 %! assert (typeinfo (s), "struct");
 
-%!assert (typeinfo ({"cell"}), "cell");
+%!test
+%! s.a = 1;
+%! assert (typeinfo (s), "scalar struct");
 
-%!assert (typeinfo (@sin), "function handle");
-%!assert (typeinfo (@(x) x), "function handle");
+## FIXME: This doesn't work as a test for comma-separated list
+%!#test
+%! clist = {1, 2, 3};
+%! assert (typeinfo (clist{:}), "cs-list");
 
-%!assert (typeinfo (inline ('x^2')), "inline function");
+%!assert (typeinfo (@sin), "function handle")
+%!assert (typeinfo (@(x) x), "function handle")
 
+%!assert (typeinfo (inline ("x^2")), "inline function")
+
+%!assert (typeinfo (single (1)), "float scalar")
+%!assert (typeinfo (single (i)), "float complex scalar")
+%!assert (typeinfo (single ([1, 2])), "float matrix")
+
+%!assert (typeinfo (single (diag ([1, 2]))), "float diagonal matrix")
+%!assert (typeinfo (diag (single ([1, 2]))), "float diagonal matrix")
+%!assert (typeinfo (single (diag ([i, 2]))), "float complex diagonal matrix")
+%!assert (typeinfo (diag (single ([i, 2]))), "float complex diagonal matrix")
+
+%!assert (typeinfo (eye(3)(:,[1 3 2])), "permutation matrix")
 %!test
 %! [l, u, p] = lu (rand (3));
 %! assert (typeinfo (p), "permutation matrix");
+
+%!assert (typeinfo ([]), "null_matrix")
+%!assert (typeinfo (""), "null_string")
+%!assert (typeinfo (''), "null_sq_string")
+
+%!error typeinfo ("foo", 1)
 */

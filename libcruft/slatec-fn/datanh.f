@@ -68,8 +68,14 @@ C***FIRST EXECUTABLE STATEMENT  DATANH
       FIRST = .FALSE.
 C
       Y = ABS(X)
-      IF (Y .GE. 1.D0) CALL XERMSG ('SLATEC', 'DATANH', 'ABS(X) GE 1',
-     +   2, 2)
+      IF (Y .GE. 1.D0) THEN
+         IF (Y .GT. 1.D0) THEN 
+            DATANH = (X - X) / (X - X)
+         ELSE
+            DATANH = X / 0.D0
+         ENDIF
+         RETURN
+      ENDIF
 C
       IF (1.D0-Y .LT. DXREL) CALL XERMSG ('SLATEC', 'DATANH',
      +   'ANSWER LT HALF PRECISION BECAUSE ABS(X) TOO NEAR 1', 1, 1)

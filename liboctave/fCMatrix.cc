@@ -3698,25 +3698,27 @@ operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
     return m * FloatComplexMatrix (a);
 }
 
-/* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests
-%!assert(single([1+i 2+i 3+i]) * single([ 4+i ; 5+i ; 6+i]), single(29+21i), 5e-7)
-%!assert(single([1+i 2+i ; 3+i 4+i ]) * single([5+i ; 6+i]), single([15 + 14i ; 37 + 18i]), 5e-7)
-%!assert(single([1+i 2+i ; 3+i 4+i ]) * single([5+i 6+i ; 7+i 8+i]), single([17 + 15i 20 + 17i; 41 + 19i 48 + 21i]), 5e-7)
-%!assert(single([1 i])*single([i 0])', single(-i));
-*/
+/*
 
-/* Test some simple identities
+## Simple Dot Product, Matrix-Vector, and Matrix-Matrix Unit tests
+%!assert (single ([1+i 2+i 3+i]) * single ([ 4+i ; 5+i ; 6+i]), single (29+21i), 5e-7)
+%!assert (single ([1+i 2+i ; 3+i 4+i]) * single ([5+i ; 6+i]), single ([15 + 14i ; 37 + 18i]), 5e-7)
+%!assert (single ([1+i 2+i ; 3+i 4+i ]) * single ([5+i 6+i ; 7+i 8+i]), single ([17 + 15i 20 + 17i; 41 + 19i 48 + 21i]), 5e-7)
+%!assert (single ([1 i])*single ([i 0])', single (-i))
+
+## Test some simple identities
 %!shared M, cv, rv
-%! M = single(randn(10,10))+i*single(rand(10,10));
-%! cv = single(randn(10,1))+i*single(rand(10,1));
-%! rv = single(randn(1,10))+i*single(rand(1,10));
-%!assert([M*cv,M*cv],M*[cv,cv],5e-6)
-%!assert([M.'*cv,M.'*cv],M.'*[cv,cv],5e-6)
-%!assert([M'*cv,M'*cv],M'*[cv,cv],5e-6)
-%!assert([rv*M;rv*M],[rv;rv]*M,5e-6)
-%!assert([rv*M.';rv*M.'],[rv;rv]*M.',5e-6)
-%!assert([rv*M';rv*M'],[rv;rv]*M',5e-6)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],5e-6)
+%! M = single (randn (10,10))+ i*single (rand (10,10));
+%! cv = single (randn (10,1))+ i*single (rand (10,1));
+%! rv = single (randn (1,10))+ i*single (rand (1,10));
+%!assert ([M*cv,M*cv], M*[cv,cv], 5e-6)
+%!assert ([M.'*cv,M.'*cv], M.'*[cv,cv], 5e-6)
+%!assert ([M'*cv,M'*cv], M'*[cv,cv], 5e-6)
+%!assert ([rv*M;rv*M], [rv;rv]*M, 5e-6)
+%!assert ([rv*M.';rv*M.'], [rv;rv]*M.', 5e-6)
+%!assert ([rv*M';rv*M'], [rv;rv]*M', 5e-6)
+%!assert (2*rv*cv, [rv,rv]*[cv;cv], 5e-6)
+
 */
 
 static char

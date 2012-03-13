@@ -2944,7 +2944,7 @@ and @samp{subs}, return @var{rhs}.\n\
 %!      0    8    0   18    0
 %!      0    0   14    0    0
 %!      0   10   15   20    0];
-%! assert (a,b);
+%! assert (a, b);
 
 %!test
 %! c = num2cell (reshape ([1:25],5,5));
@@ -2989,7 +2989,6 @@ and @samp{subs}, return @var{rhs}.\n\
 %! t.b = "There";
 %! t.c = 163;
 %! assert (s, t);
-
 */
 
 DEFUN (is_sq_string, args, ,
@@ -3010,10 +3009,11 @@ Return true if @var{x} is a single-quoted character string.\n\
 }
 
 /*
-%!assert (is_sq_string ('foo'), true);
-%!assert (is_sq_string ("foo"), false);
-%!assert (is_sq_string (1.0), false);
-%!assert (is_sq_string ({2.0}), false);
+%!assert (is_sq_string ('foo'), true)
+%!assert (is_sq_string ("foo"), false)
+%!assert (is_sq_string (1.0), false)
+%!assert (is_sq_string ({2.0}), false)
+
 %!error is_sq_string ()
 %!error is_sq_string ('foo', 2)
 */
@@ -3036,10 +3036,11 @@ Return true if @var{x} is a double-quoted character string.\n\
 }
 
 /*
-%!assert (is_dq_string ("foo"), true);
-%!assert (is_dq_string ('foo'), false);
-%!assert (is_dq_string (1.0), false);
-%!assert (is_dq_string ({2.0}), false);
+%!assert (is_dq_string ("foo"), true)
+%!assert (is_dq_string ('foo'), false)
+%!assert (is_dq_string (1.0), false)
+%!assert (is_dq_string ({2.0}), false)
+
 %!error is_dq_string ()
 %!error is_dq_string ("foo", 2)
 */

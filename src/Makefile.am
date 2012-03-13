@@ -20,11 +20,13 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
+## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
+  -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
-  -I. -I$(srcdir)
+  -I. -I$(srcdir) \
+  @CPPFLAGS@
 
 AUTOMAKE_OPTIONS = subdir-objects
 
@@ -519,7 +521,7 @@ liboctinterp_la_LIBADD = \
 
 # Increment these as needed and according to the rules in the libtool manual:
 liboctinterp_current = 1
-liboctinterp_revision = 0
+liboctinterp_revision = 1
 liboctinterp_age = 0
 
 liboctinterp_version_info = $(liboctinterp_current):$(liboctinterp_revision):$(liboctinterp_age)
@@ -659,6 +661,7 @@ __fltk_uigetfile__.lo __fltk_uigetfile__.o: \
 __init_fltk__.lo __init_fltk__.o: \
   AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
 
+if AMCOND_BUILD_DOCS
 .DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
@@ -681,6 +684,9 @@ gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE) .DOCSTRINGS
+else
+all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE)
+endif
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
 octave-config.cc: octave-config.cc.in Makefile

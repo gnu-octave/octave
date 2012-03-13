@@ -641,7 +641,7 @@ Alternatively, use (?x) in the pattern.\n\
   if (nargin < 2)
     print_usage ();
   else if (args(0).is_cell () || args(1).is_cell ())
-    retval = octcellregexp (args, nargout, "regexp");
+    retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexp");
   else
     retval = octregexp (args, nargout, "regexp");
 
@@ -769,9 +769,19 @@ Alternatively, use (?x) in the pattern.\n\
 %! assert (nm.last{1},'Davis');
 %! assert (nm.last{2},'Rogers');
 
+## Tests for named tokens
 %!test
 %! # Parenthesis in named token (ie (int)) causes a problem
 %! assert (regexp('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
+
+%!test
+%! ## Mix of named and unnamed tokens can cause segfault (bug #35683)
+%! str = "abcde";
+%! ptn = '(?<T1>a)(\w+)(?<T2>d\w+)';
+%! tokens = regexp (str, ptn, "names");
+%! assert (isstruct (tokens) && numel (tokens) == 1);
+%! assert (tokens.T1, "a");
+%! assert (tokens.T2, "de");
 
 %!assert(regexp("abc\nabc",'.'),[1:7])
 %!assert(regexp("abc\nabc",'.','dotall'),[1:7])
@@ -879,7 +889,7 @@ syntax of the search pattern.\n\
   if (nargin < 2)
     print_usage ();
   else if (args(0).is_cell () || args(1).is_cell ())
-    retval = octcellregexp (args, nargout, "regexpi", true);
+    retval = octcellregexp (args, (nargout > 0 ? nargout : 1), "regexpi", true);
   else
     retval = octregexp (args, nargout, "regexpi", true);
 

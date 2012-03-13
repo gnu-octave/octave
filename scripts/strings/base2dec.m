@@ -89,7 +89,7 @@ function out = base2dec (s, base)
   table = NaN (1, 256);
   table(toascii (symbols(1:base))) = 0 : base-1;
   table(toascii (" ")) = 0;
-  s = table(toascii (s));
+  s = reshape (table(toascii (s)), size (s));
 
   ## Multiply the resulting digits by the appropriate power
   ## and sum the rows.
@@ -102,6 +102,9 @@ endfunction
 %!assert (base2dec ("yyyzx", "xyz"), 123)
 %!assert (base2dec ("-1", 2), NaN)
 %!assert (base2dec ({"A1", "1A"}, 16), [161; 26])
+
+%% Bug #35621
+%!assert (base2dec (["0"; "1"], 2), [0; 1])
 
 %%Test input validation
 %!error base2dec ()

@@ -43,14 +43,6 @@ glps_renderer::draw (const graphics_object& go)
     {
       in_draw = true;
 
-      FILE *fp = fdopen (fid, "wb");
-
-      if (! fp)
-        {
-          error ("gl2ps-renderer: fdopen failed");
-          return;
-        }
-
       GLint buffsize = 0, state = GL2PS_OVERFLOW;
       GLint viewport[4];
 
@@ -72,11 +64,15 @@ glps_renderer::draw (const graphics_object& go)
       GLint gl2ps_text = 0;
       if (term.find ("notxt") != std::string::npos) gl2ps_text = GL2PS_NO_TEXT;
 
+      // Default sort order optimizes for 3D plots
+      GLint gl2ps_sort = GL2PS_BSP_SORT;
+      if (term.find ("is2D") != std::string::npos) gl2ps_sort = GL2PS_NO_SORT;
+
       while (state == GL2PS_OVERFLOW)
         {
           buffsize += 1024*1024;
           gl2psBeginPage ("glps_renderer figure", "Octave", viewport,
-                          gl2ps_term, GL2PS_BSP_SORT,
+                          gl2ps_term, gl2ps_sort,
                           (GL2PS_SILENT | GL2PS_SIMPLE_LINE_OFFSET
                            | GL2PS_NO_BLENDING | GL2PS_OCCLUSION_CULL
                            | GL2PS_BEST_ROOT | gl2ps_text
@@ -87,8 +83,6 @@ glps_renderer::draw (const graphics_object& go)
           opengl_renderer::draw (go);
           state = gl2psEndPage ();
         }
-
-      gnulib::fclose (fp);
 
       in_draw = 0;
     }

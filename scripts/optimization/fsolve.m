@@ -450,6 +450,8 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
     error ("fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
     error ("fsolve:isnan", "fsolve: NaN value encountered");
+  elseif (any (isinf (fx(:))))
+    error ("fsolve:isinf", "fsolve: Inf value encountered");
   endif
 endfunction
 

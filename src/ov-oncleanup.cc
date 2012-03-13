@@ -211,17 +211,15 @@ For similar functionality @xref{The @code{unwind_protect} Statement}.\n\
 }
 
 /*
-
 %!test
 %! old_wstate = warning ("query");
 %! unwind_protect
 %!   trigger = onCleanup (@() warning ("on", "__MY_WARNING__"));
 %!   warning ("off", "__MY_WARNING__");
 %!   assert ((warning ("query", "__MY_WARNING__")).state, "off");
-%!   clear trigger
+%!   clear trigger;
 %!   assert ((warning ("query", "__MY_WARNING__")).state, "on");
 %! unwind_protect_cleanup
 %!   warning (old_wstate);
 %! end_unwind_protect
-
 */

@@ -34,8 +34,11 @@
 ## @item FinDiffType
 ##
 ## @item FunValCheck
-## When enabled, display an error if the objective function returns a complex
-## value or NaN@.  Must be set to "on" or "off" [default].
+## When enabled, display an error if the objective function returns an invalid
+## value (a complex value, NaN, or Inf).  Must be set to "on" or "off"
+## [default].  Note: the functions @code{fzero} and @code{fminbnd} correctly
+## handle Inf values and only complex values or NaN will cause an error in this
+## case. 
 ##
 ## @item GradObj
 ## When set to "on", the function to be minimized must return a second argument

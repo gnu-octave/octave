@@ -93,13 +93,13 @@ BEGIN {
 
           if (list_cc_files)
             {
-              print cc_file;
+              printf (" %s", cc_file);
               next;
             }
 
           if (list_h_files)
             {
-              print h_file;
+              printf (" %s", h_file);
               next;
             }
 

@@ -478,7 +478,7 @@ AC_DEFUN([OCTAVE_PROG_FLEX], [
       LEXLIB=
     ;;
     *)
-      LEX='$(top_srcdir)/missing flex'
+      LEX='$(top_srcdir)/build-aux/missing flex'
       warn_flex="I didn't find flex, but it's only a problem if you need to reconstruct lex.cc"
       AC_MSG_WARN([$warn_flex])
     ;;
@@ -494,7 +494,7 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
     bison*)
     ;;
     *)
-      YACC='$(top_srcdir)/missing bison'
+      YACC='$(top_srcdir)/build-aux/missing bison'
       warn_bison="I didn't find bison, but it's only a problem if you need to reconstruct parse.cc"
       AC_MSG_WARN([$warn_bison])
     ;;
@@ -553,7 +553,7 @@ dnl OCTAVE_PROG_GPERF
 AC_DEFUN([OCTAVE_PROG_GPERF], [
   AC_CHECK_PROG(GPERF, gperf, gperf, [])
   if test -z "$GPERF"; then
-    GPERF='$(top_srcdir)/missing gperf'
+    GPERF='$(top_srcdir)/build-aux/missing gperf'
     warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
     AC_MSG_WARN([$warn_gperf])
   fi
@@ -574,7 +574,7 @@ AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   esac
   AC_CHECK_PROGS(GHOSTSCRIPT, [$gs_names])
   if test -z "$GHOSTSCRIPT"; then
-    GHOSTSCRIPT='$(top_srcdir)/missing gs'
+    GHOSTSCRIPT='$(top_srcdir)/build-aux/missing gs'
     warn_ghostscript="I didn't find ghostscript, so reconstructing figures for the manual will fail, and saving graphics in some output formats will fail when using Octave"
     AC_MSG_WARN([$warn_ghostscript])
   fi
@@ -587,7 +587,7 @@ dnl OCTAVE_PROG_TEXI2DVI
 AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
   AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
   if test -z "$TEXI2DVI"; then
-    TEXI2DVI='$(top_srcdir)/missing texi2dvi'
+    TEXI2DVI='$(top_srcdir)/build-aux/missing texi2dvi'
     warn_texi2dvi="I didn't find texi2dvi, but it's only a problem if you need to reconstruct the DVI version of the manual"
     AC_MSG_WARN([$warn_texi2dvi])
   fi
@@ -610,7 +610,7 @@ AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
     missing=false;
   fi
   if $missing; then
-    TEXI2PDF='$(top_srcdir)/missing texi2pdf'
+    TEXI2PDF='$(top_srcdir)/build-aux/missing texi2pdf'
     warn_texi2pdf="I didn't find texi2pdf, but it's only a problem if you need to reconstruct the PDF version of the manual"
     AC_MSG_WARN([$warn_texi2pdf])
   fi

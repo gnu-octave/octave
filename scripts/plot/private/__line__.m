@@ -35,8 +35,8 @@ function h = __line__ (p, varargin)
 
   nvargs = numel (varargin);
 
-  if (nvargs > 1 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
-    if (nvargs > 2 && isnumeric (varargin{3}))
+  if (nvargs > 1 && ! ischar (varargin{1}) && ! ischar (varargin{2}))
+    if (nvargs > 2 && ! ischar (varargin{3}))
       num_data_args = 3;
     else
       num_data_args = 2;
@@ -90,11 +90,14 @@ function h = __line__ (p, varargin)
   data = cell (1, 3);
 
   if (num_data_args > 1)
-    data(1) = varargin{1};
-    data(2) = varargin{2};
-    if (num_data_args == 3)
-      data(3) = varargin{3};
-    endif
+    data(1:num_data_args) = varargin(1:num_data_args);
+    for i = 1:num_data_args
+      if (islogical (data{i}))
+        data(i) = double (data{i});
+      elseif (iscomplex (data{i}))
+        data(i) = real (data{i});
+      endif
+    endfor
   endif
 
   data_args = reshape ({"xdata", "ydata", "zdata"; data{:}}, [1, 6]);

@@ -74,7 +74,11 @@ image_DATA = $(IMAGES)
 
 FCN_FILES_IN = $(GEN_FCN_FILES:.m=.in)
 
+if AMCOND_BUILD_DOCS
 all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES) .DOCSTRINGS
+else
+all-local: $(GEN_FCN_FILES) $(PKG_ADD_FILES)
+endif
 
 octave_dirstamp = $(am__leading_dot)dirstamp
 
@@ -320,6 +324,7 @@ time/$(octave_dirstamp):
 	$(MKDIR_P) time
 	: > time/$(octave_dirstamp)
 
+if AMCOND_BUILD_DOCS
 ## Program compiled only to help build documentation.  No installation needed.
 noinst_PROGRAMS = gethelp
 
@@ -335,6 +340,7 @@ gethelp_SOURCES = gethelp.cc
 	@$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
 	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
+endif
 
 $(GEN_FCN_FILES) : %.m : %.in Makefile
 	@$(do_subst_config_vals)

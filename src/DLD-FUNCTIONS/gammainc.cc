@@ -47,8 +47,8 @@ $$\n\
 \n\
 @example\n\
 @group\n\
-                                 x\n\
-                       1        /\n\
+                                x\n\
+                       1       /\n\
 gammainc (x, a) = ---------    | exp (-t) t^(a-1) dt\n\
                   gamma (a)    /\n\
                             t=0\n\

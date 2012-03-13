@@ -20,19 +20,24 @@
 ## @deftypefn  {Function File} {} ezpolar (@var{f})
 ## @deftypefnx {Function File} {} ezpolar (@dots{}, @var{dom})
 ## @deftypefnx {Function File} {} ezpolar (@dots{}, @var{n})
-## @deftypefnx {Function File} {} ezpolar (@var{h}, @dots{})
+## @deftypefnx {Function File} {} ezpolar (@var{hax}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} ezpolar (@dots{})
 ##
-## Plot a function in polar coordinates.  The function @var{f} is either
-## a string, inline function or function handle with one arguments defining
-## the function.  By default the plot is over the domain @code{0 < @var{x} <
-## 2*pi} with 60 points.
+## Plot a function in polar coordinates.  The function @var{f} is
+## a string, inline function, or function handle with a single argument.
+## The expected form of the function is
+## @code{@var{rho} = @var{f}(@var{theta})}.
+## By default the plot is over the domain @code{0 < @var{theta} < 2*pi} with 60
+## points.
 ##
 ## If @var{dom} is a two element vector, it represents the minimum and maximum
-## value of both @var{t}.  @var{n} is a scalar defining the number of points to
-## use.
+## values of @var{theta}.  @var{n} is a scalar defining the number of points to
+## use.  If the optional input @var{hax} is given then the plot is placed into
+## the specified axes rather than the current axes.
 ##
 ## The optional return value @var{h} is a graphics handle to the created plot.
+##
+## Example:
 ##
 ## @example
 ## ezpolar (@@(t) 1 + sin (t));

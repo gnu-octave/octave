@@ -249,7 +249,8 @@ octave_struct::subsref (const std::string& type,
 
 /*
 %!test
-%! x(1).a.a = 1; x(2).a.a = 2;
+%! x(1).a.a = 1;
+%! x(2).a.a = 2;
 %! assert (size (x), [1, 2]);
 %! assert (x(1).a.a, 1);
 %! assert (x(2).a.a, 2);
@@ -691,25 +692,6 @@ scalar (const dim_vector& dims)
   return dims.length () == 2 && dims (0) == 1 && dims (1) == 1;
 }
 
-/*
-%!shared x
-%! x(1).a=1; x(2).a=2; x(1).b=3; x(2).b=3;
-%!assert(struct('a',1,'b',3),x(1))
-%!assert(isempty(x([])))
-%!assert(isempty(struct('a',{},'b',{})))
-%!assert(struct('a',{1,2},'b',{3,3}),x)
-%!assert(struct('a',{1,2},'b',3),x)
-%!assert(struct('a',{1,2},'b',{3}),x)
-%!assert(struct('b',3,'a',{1,2}),x)
-%!assert(struct('b',{3},'a',{1,2}),x)
-%!test x=struct([]);
-%!assert(size(x),[0,0]);
-%!assert(isstruct(x));
-%!assert(isempty(fieldnames(x)));
-%!fail("struct('a',{1,2},'b',{1,2,3})","dimensions of parameter 2 do not match those of parameter 4")
-%!fail("struct(1,2,3,4)","struct: expecting alternating \"field\", VALUE pairs");
-%!fail("struct('1',2,'3')","struct: expecting alternating \"field\", VALUE pairs");
-*/
 
 bool
 octave_struct::save_ascii (std::ostream& os)
@@ -1189,7 +1171,8 @@ octave_scalar_struct::subsref (const std::string& type,
 
 /*
 %!test
-%! x(1).a.a = 1; x(2).a.a = 2;
+%! x(1).a.a = 1;
+%! x(2).a.a = 2;
 %! assert (size (x), [1, 2]);
 %! assert (x(1).a.a, 1);
 %! assert (x(2).a.a, 2);
@@ -1712,25 +1695,6 @@ octave_scalar_struct::fast_elem_insert_self (void *where, builtin_type_t btyp) c
   else
     return false;
 }
-/*
-%!shared x
-%! x(1).a=1; x(2).a=2; x(1).b=3; x(2).b=3;
-%!assert(struct('a',1,'b',3),x(1))
-%!assert(isempty(x([])))
-%!assert(isempty(struct('a',{},'b',{})))
-%!assert(struct('a',{1,2},'b',{3,3}),x)
-%!assert(struct('a',{1,2},'b',3),x)
-%!assert(struct('a',{1,2},'b',{3}),x)
-%!assert(struct('b',3,'a',{1,2}),x)
-%!assert(struct('b',{3},'a',{1,2}),x)
-%!test x=struct([]);
-%!assert(size(x),[0,0]);
-%!assert(isstruct(x));
-%!assert(isempty(fieldnames(x)));
-%!fail("struct('a',{1,2},'b',{1,2,3})","dimensions of parameter 2 do not match those of parameter 4")
-%!fail("struct(1,2,3,4)","struct: expecting alternating \"field\", VALUE pairs");
-%!fail("struct('1',2,'3')","struct: expecting alternating \"field\", VALUE pairs");
-*/
 
 DEFUN (struct, args, ,
   "-*- texinfo -*-\n\
@@ -1874,6 +1838,26 @@ If the argument is an object, return the underlying struct.\n\
   return octave_value (map);
 }
 
+/*
+%!shared x
+%! x(1).a=1;  x(2).a=2;  x(1).b=3;  x(2).b=3;
+%!assert (struct ("a",1, "b",3), x(1))
+%!assert (isempty (x([])))
+%!assert (isempty (struct ("a",{}, "b",{})))
+%!assert (struct ("a",{1,2}, "b",{3,3}), x)
+%!assert (struct ("a",{1,2}, "b",3), x)
+%!assert (struct ("a",{1,2}, "b",{3}), x)
+%!assert (struct ("b",3, "a",{1,2}), x)
+%!assert (struct ("b",{3}, "a",{1,2}), x)
+%!test x = struct ([]);
+%!assert (size (x), [0,0])
+%!assert (isstruct (x))
+%!assert (isempty (fieldnames (x)))
+%!fail ('struct ("a",{1,2},"b",{1,2,3})', 'dimensions of parameter 2 do not match those of parameter 4')
+%!fail ('struct (1,2,3,4)', 'struct: expecting alternating "field", VALUE pairs')
+%!fail ('struct ("1",2,"3")', 'struct: expecting alternating "field", VALUE pairs')
+*/
+
 DEFUN (isstruct, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} isstruct (@var{x})\n\
@@ -1928,10 +1912,10 @@ argument that is not a structure.\n\
 }
 
 /*
-%!# test preservation of fieldname order
+## test preservation of fieldname order
 %!test
-%!  x(3).d=1; x(2).a=2; x(1).b=3; x(2).c=3;
-%!  assert(fieldnames(x), {"d"; "a"; "b"; "c"});
+%! x(3).d=1;  x(2).a=2; x(1).b=3;  x(2).c=3;
+%! assert (fieldnames (x), {"d"; "a"; "b"; "c"});
 */
 
 DEFUN (isfield, args, ,
@@ -2012,15 +1996,15 @@ Return the number of fields of the structure @var{s}.\n\
 }
 
 /*
-%!# test isfield
+## test isfield
 %!test
-%!  x(3).d=1; x(2).a=2; x(1).b=3; x(2).c=3;
-%!  assert (isfield (x, 'b'));
-%!assert (isfield (struct('a', '1'), 'a'));
-%!assert (isfield ({1}, 'c'), false);
-%!assert (isfield (struct('a', '1'), 10), false);
-%!assert (isfield (struct('a', 'b'), "a "), false);
-%!assert (isfield (struct('a', 1, 'b', 2), {'a', 'c'}), [true, false]);
+%! x(3).d=1;  x(2).a=2;  x(1).b=3;  x(2).c=3;
+%! assert (isfield (x, "b"));
+%!assert (isfield (struct("a", "1"), "a"))
+%!assert (isfield ({1}, "c"), false)
+%!assert (isfield (struct("a", "1"), 10), false)
+%!assert (isfield (struct("a", "b"), "a "), false)
+%!assert (isfield (struct("a", 1, "b", 2), {"a", "c"}), [true, false])
 */
 
 DEFUN (cell2struct, args, ,
@@ -2138,15 +2122,15 @@ A(1)\n\
 }
 
 /*
-%!# test cell2struct versus struct2cell
+## test cell2struct versus struct2cell
 %!test
-%!  keys = cellstr (char (floor (rand (100,10)*24+65)))';
-%!  vals = mat2cell(rand (100,1), ones (100,1), 1)';
-%!  s = struct ([keys; vals]{:});
-%!  t = cell2struct (vals, keys, 2);
-%!  assert (s, t);
-%!  assert (struct2cell (s), vals');
-%!  assert (fieldnames (s), keys');
+%! keys = cellstr (char (floor (rand (100,10)*24+65)))';
+%! vals = mat2cell (rand (100,1), ones (100,1), 1)';
+%! s = struct ([keys; vals]{:});
+%! t = cell2struct (vals, keys, 2);
+%! assert (s, t);
+%! assert (struct2cell (s), vals');
+%! assert (fieldnames (s), keys');
 
 %!assert (cell2struct ({1; 2}, {"a"; "b"}), struct ("a", 1, "b", 2));
 */
@@ -2204,12 +2188,12 @@ the named fields.\n\
 }
 
 /*
-%!# test rmfield
+## test rmfield
 %!test
-%!  x(3).d=1; x(2).a=2; x(1).b=3; x(2).c=3; x(6).f="abc123";
-%!  y = rmfield (x, {"a", "f"});
-%!  assert (fieldnames (y), {"d"; "b"; "c"});
-%!  assert (size (y), [1, 6]);
+%! x(3).d=1;  x(2).a=2;  x(1).b=3;  x(2).c=3;  x(6).f="abc123";
+%! y = rmfield (x, {"a", "f"});
+%! assert (fieldnames (y), {"d"; "b"; "c"});
+%! assert (size (y), [1, 6]);
 */
 
 DEFUN (struct_levels_to_print, args, nargout,

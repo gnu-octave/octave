@@ -177,14 +177,17 @@ function retval = __plt1__ (h, x1, options, properties)
   [nr, nc] = size (x1);
   if (nr == 1)
     x1 = x1.';
-    tmp = nr;
-    nr = nc;
-    nc = tmp;
+    [nr, nc] = deal (nc, nr);   # Swap rows and columns
   endif
-  x1_i = imag (x1);
-  if (any (any (x1_i)))
-    x2 = x1_i;
-    x1 = real (x1);
+  if (iscomplex (x1))
+    x1_i = imag (x1);
+    if (any ((x1_i(:))))
+      x2 = x1_i;
+      x1 = real (x1);
+    else
+      x2 = x1;
+      x1 = (1:nr)';
+    endif
   else
     x2 = x1;
     x1 = (1:nr)';
@@ -212,11 +215,15 @@ function retval = __plt2__ (h, x1, x2, options, properties)
     error ("__plt1__: options must be a struct array");
   endif
 
-  if (any (any (imag (x1))))
+  if (islogical (x1))
+    x1 = int8 (x1);
+  elseif (iscomplex ((x1)))
     x1 = real (x1);
   endif
 
-  if (any (any (imag (x2))))
+  if (islogical (x2))
+    x2 = int8 (x2);
+  elseif (iscomplex (x2))
     x2 = real (x2);
   endif
 

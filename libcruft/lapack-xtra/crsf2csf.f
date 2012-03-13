@@ -25,6 +25,9 @@ c
        real c(n-1),s(n-1)
        real x,y,z
        integer j
+       do j = 1,n-1
+          c(j) = 1
+       end do
        j = 1
        do while (j < n)
 c apply previous rotations to rows
@@ -33,10 +36,9 @@ c apply previous rotations to rows
          y = t(j+1,j)
          if (y /= 0) then
 c 2x2 block, form Givens rotation [c, i*s; i*s, c]
-           x = t(j,j)
            z = t(j,j+1)
            c(j) = sqrt(z/(z-y))
-           s(j) = sign(sqrt(-y/(z-y)),z)
+           s(j) = sqrt(y/(y-z))
 c apply new rotation to t(j:j+1,j)
            call crcrot1(2,t(j,j),c(j),s(j))
 c apply all rotations to t(1:j+1,j+1)
@@ -45,10 +47,8 @@ c apply new rotation to columns j,j+1
            call crcrot2(j+1,t(1,j),t(1,j+1),c(j),s(j))
 c zero subdiagonal entry, skip next row
            t(j+1,j) = 0
-           c(j+1) = 1
            j = j + 2
          else
-           c(j) = 1
            j = j + 1
          end if
        end do

@@ -1531,11 +1531,10 @@ need to recompiled.\n\
 %! assert (ignore_function_time_stamp (), "system");
 %! ignore_function_time_stamp (old_state);
 
-%% Test input validation
+## Test input validation
 %!error (ignore_function_time_stamp ("all", "all"))
 %!error (ignore_function_time_stamp ("UNKNOWN_VALUE"))
 %!error (ignore_function_time_stamp (42))
-
 */
 
 DEFUN (__current_scope__, , ,

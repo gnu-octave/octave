@@ -129,10 +129,10 @@ private:
   {
     if (count () > 1)
       {
-	octave_idx_type *new_rep = clonerep ();
+        octave_idx_type *new_rep = clonerep ();
 
-	if (OCTREFCOUNT_ATOMIC_DECREMENT(&(count())) == 0)
-	  freerep ();
+        if (OCTREFCOUNT_ATOMIC_DECREMENT(&(count())) == 0)
+          freerep ();
 
         rep = new_rep;
       }

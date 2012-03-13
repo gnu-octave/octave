@@ -23,7 +23,7 @@
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 ## @var{n} that minimizes the least-squares-error of the fit to the points
 ## @code{[@var{x}, @var{y}]}. If @var{n} is a logical vector, it is used
-## as a mask to selectivelly force the corresponding polynomial
+## as a mask to selectively force the corresponding polynomial
 ## coefficients to be used or ignored.
 ##
 ## The polynomial coefficients are returned in a row vector.

@@ -31,8 +31,8 @@ OCTINTERP_API
 glps_renderer : public opengl_renderer
 {
 public:
-  glps_renderer (const int _fid, const std::string& _term)
-    : opengl_renderer () , fid (_fid), term (_term),
+  glps_renderer (FILE *_fp, const std::string& _term)
+    : opengl_renderer () , fp (_fp), term (_term),
     fontsize (), fontname () { }
 
   ~glps_renderer (void) { }
@@ -52,13 +52,14 @@ protected:
   void draw_pixels (GLsizei w, GLsizei h, GLenum format,
                     GLenum type, const GLvoid *data);
 
-  void set_linestyle (const std::string& s, bool use_stipple)
+  void set_linestyle (const std::string& s, bool use_stipple = false)
   {
     opengl_renderer::set_linestyle (s, use_stipple);
-    if (use_stipple)
-      gl2psEnable (GL2PS_LINE_STIPPLE);
-    else
+
+    if (s == "-" && ! use_stipple)
       gl2psDisable (GL2PS_LINE_STIPPLE);
+    else
+      gl2psEnable (GL2PS_LINE_STIPPLE);
   }
 
   void set_polygon_offset (bool on, double offset = 0.0)
@@ -77,7 +78,7 @@ protected:
 
 private:
   int alignment_to_mode (int ha, int va) const;
-  int fid;
+  FILE *fp;
   caseless_str term;
   double fontsize;
   std::string fontname;

@@ -376,4 +376,9 @@ Note also that @var{U} and @var{T} are not unique.\n\
 %! assert (norm (tril (T, -1)), 0)
 %! assert (norm (U * U'), 1, 1e-14)
 
+%!test
+%! A = [0, 1;-1, 0];
+%! [u, t] = schur (A);
+%! [U, T] = rsf2csf (u,t);
+%! assert (U * T * U', A, 1e-14)
 */

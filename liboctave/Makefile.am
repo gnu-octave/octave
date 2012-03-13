@@ -20,9 +20,11 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
+## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  @CPPFLAGS@ -I../libgnu -I$(top_srcdir)/libgnu \
-  -I$(top_srcdir)/libcruft/misc
+  -I../libgnu -I$(top_srcdir)/libgnu \
+  -I$(top_srcdir)/libcruft/misc \
+  @CPPFLAGS@
 
 EXTRA_DIST = \
   config-ops.sh \
@@ -521,7 +523,7 @@ liboctave_la_CPPFLAGS = \
 # Increment these as needed and according to the rules in the libtool
 # manual:
 liboctave_current = 1
-liboctave_revision = 0
+liboctave_revision = 1
 liboctave_age = 0
 
 liboctave_version_info = $(liboctave_current):$(liboctave_revision):$(liboctave_age)

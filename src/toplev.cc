@@ -1484,12 +1484,13 @@ specified option.\n\
 }
 
 /*
-%!error octave_config_info (1, 2);
-%!assert (ischar (octave_config_info ("version")));
+%!assert (ischar (octave_config_info ("version")))
 %!test
 %! x = octave_config_info ();
 %! assert (isstruct (x));
 %! assert (! isempty (x));
+
+%!error octave_config_info (1, 2)
 */
 
 #if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)

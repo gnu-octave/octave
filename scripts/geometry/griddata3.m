@@ -17,13 +17,13 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v} @var{xi}, @var{yi}, @var{zi})
-## @deftypefnx {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v} @var{xi}, @var{yi}, @var{zi}, @var{method})
-## @deftypefnx {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v} @var{xi}, @var{yi}, @var{zi}, @var{method}, @var{options})
+## @deftypefn  {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi})
+## @deftypefnx {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method})
+## @deftypefnx {Function File} {@var{vi} =} griddata3 (@var{x}, @var{y}, @var{z}, @var{v}, @var{xi}, @var{yi}, @var{zi}, @var{method}, @var{options})
 ##
 ## Generate a regular mesh from irregular data using interpolation.
-## The function is defined by @code{@var{y} = f (@var{x},@var{y},@var{z})}.
-## The interpolation points are all @var{xi}.
+## The function is defined by @code{@var{v} = f (@var{x}, @var{y}, @var{z})}.
+## The interpolation points are specified by @var{xi}, @var{yi}, @var{zi}.
 ##
 ## The interpolation method can be @code{"nearest"} or @code{"linear"}.
 ## If method is omitted it defaults to @code{"linear"}.

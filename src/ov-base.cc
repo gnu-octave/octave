@@ -1558,14 +1558,13 @@ variable value is restored when exiting the function.\n\
 }
 
 /*
-
 %!test
- s = speye(3);
- sparse_auto_mutate (false);
- s(:, 1) = 1;
- assert (typeinfo (s), "sparse matrix");
- sparse_auto_mutate (true);
- s(1, :) = 1;
- assert (typeinfo (s), "matrix");
-
+%! s = speye (3);
+%! sparse_auto_mutate (false);
+%! s(:, 1) = 1;
+%! assert (typeinfo (s), "sparse matrix");
+%! sparse_auto_mutate (true);
+%! s(1, :) = 1;
+%! assert (typeinfo (s), "matrix");
+%! sparse_auto_mutate (false);
 */

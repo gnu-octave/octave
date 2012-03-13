@@ -981,7 +981,6 @@ Convert @var{x} to double precision type.\n\
 }
 
 /*
-
 %!assert (class (double (single (1))), "double")
 %!assert (class (double (single (1 + i))), "double")
 %!assert (class (double (int8 (1))), "double")
@@ -1010,5 +1009,4 @@ Convert @var{x} to double precision type.\n\
 %! y = double (x);
 %! assert (class (x), "single");
 %! assert (class (y), "double");
-
 */

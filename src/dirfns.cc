@@ -617,35 +617,34 @@ glob (\"file[12]\")\n\
 
 /*
 %!test
-%!  tmpdir = tmpnam;
-%!  filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
-%!  if (mkdir (tmpdir))
-%!    cwd = pwd;
-%!    cd (tmpdir);
-%!    if strcmp (canonicalize_file_name (pwd), ...
-%!               canonicalize_file_name (tmpdir))
-%!      a = 0;
-%!      for n = 1:5
-%!        save (filename{n}, "a");
-%!      endfor
-%!    else
-%!      rmdir (tmpdir);
-%!      error ("Couldn't change to temporary dir");
-%!    endif
-%!  else
-%!    error ("Couldn't create temporary directory");
-%!  endif
-%!  result1 = glob ("*file1");
-%!  result2 = glob ("myfile?");
-%!  result3 = glob ("file[12]");
-%!  for n = 1:5
-%!    delete (filename{n});
-%!  endfor
-%!  cd (cwd);
-%!  rmdir (tmpdir);
-%!  assert (result1, {"file1"; "myfile1"});
-%!  assert (result2, {"myfile1"});
-%!  assert (result3, {"file1"; "file2"});
+%! tmpdir = tmpnam;
+%! filename = {"file1", "file2", "file3", "myfile1", "myfile1b"};
+%! if (mkdir (tmpdir))
+%!   cwd = pwd;
+%!   cd (tmpdir);
+%!   if strcmp (canonicalize_file_name (pwd), canonicalize_file_name (tmpdir))
+%!     a = 0;
+%!     for n = 1:5
+%!       save (filename{n}, "a");
+%!     endfor
+%!   else
+%!     rmdir (tmpdir);
+%!     error ("Couldn't change to temporary dir");
+%!   endif
+%! else
+%!   error ("Couldn't create temporary directory");
+%! endif
+%! result1 = glob ("*file1");
+%! result2 = glob ("myfile?");
+%! result3 = glob ("file[12]");
+%! for n = 1:5
+%!   delete (filename{n});
+%! endfor
+%! cd (cwd);
+%! rmdir (tmpdir);
+%! assert (result1, {"file1"; "myfile1"});
+%! assert (result2, {"myfile1"});
+%! assert (result3, {"file1"; "file2"});
 */
 
 DEFUNX ("fnmatch", Ffnmatch, args, ,

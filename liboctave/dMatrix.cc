@@ -3113,26 +3113,28 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 
 // matrix by matrix -> matrix operations
 
-/* Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests
-%!assert([1 2 3] * [ 4 ; 5 ; 6], 32, 1e-14)
-%!assert([1 2 ; 3 4 ] * [5 ; 6], [17 ; 39 ], 1e-14)
-%!assert([1 2 ; 3 4 ] * [5 6 ; 7 8], [19 22; 43 50], 1e-14)
-*/
+/*
 
-/* Test some simple identities
+## Simple Dot Product, Matrix-Vector and Matrix-Matrix Unit tests
+%!assert ([1 2 3] * [ 4 ; 5 ; 6], 32, 1e-14)
+%!assert ([1 2 ; 3 4 ] * [5 ; 6], [17 ; 39 ], 1e-14)
+%!assert ([1 2 ; 3 4 ] * [5 6 ; 7 8], [19 22; 43 50], 1e-14)
+
+## Test some simple identities
 %!shared M, cv, rv, Mt, rvt
-%! M = randn(10,10)+100*eye(10,10);
+%! M = randn (10,10) + 100*eye (10,10);
 %! Mt = M';
-%! cv = randn(10,1);
-%! rv = randn(1,10);
+%! cv = randn (10,1);
+%! rv = randn (1,10);
 %! rvt = rv';
-%!assert([M*cv,M*cv],M*[cv,cv],1e-13)
-%!assert([M'*cv,M'*cv],M'*[cv,cv],1e-13)
-%!assert([rv*M;rv*M],[rv;rv]*M,1e-13)
-%!assert([rv*M';rv*M'],[rv;rv]*M',1e-13)
-%!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-13)
-%!assert(M'\cv,Mt\cv,1e-14)
-%!assert(M'\rv',Mt\rvt,1e-14)
+%!assert ([M*cv,M*cv], M*[cv,cv], 1e-13)
+%!assert ([M'*cv,M'*cv], M'*[cv,cv], 1e-13)
+%!assert ([rv*M;rv*M], [rv;rv]*M, 1e-13)
+%!assert ([rv*M';rv*M'], [rv;rv]*M', 1e-13)
+%!assert (2*rv*cv, [rv,rv]*[cv;cv], 1e-13)
+%!assert (M'\cv, Mt\cv, 1e-14)
+%!assert (M'\rv', Mt\rvt, 1e-14)
+
 */
 
 static inline char

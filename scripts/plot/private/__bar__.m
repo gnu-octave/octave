@@ -82,7 +82,9 @@ function varargout = __bar__ (vertical, func, varargin)
         [linespec, valid] = __pltopt__ (func, varargin{idx}, false);
         if (valid)
           have_line_spec = true;
-          newargs = [{"facecolor", linespec.color}, newargs]
+          ## FIXME: strange parse error requires semicolon to be spaced
+          ##        away from closing ']' on next line.
+          newargs = [{"facecolor", linespec.color}, newargs] ;
           idx++;
           continue;
         endif

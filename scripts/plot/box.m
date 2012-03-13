@@ -17,11 +17,16 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} box (@var{arg})
-## @deftypefnx {Function File} {} box (@var{h}, @dots{})
+## @deftypefn  {Function File} {} box
+## @deftypefnx {Function File} {} box ("on")
+## @deftypefnx {Function File} {} box ("off")
+## @deftypefnx {Function File} {} box (@var{hax}, @dots{})
 ## Control the display of a border around the plot.
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
 ## omitted, the current box state is toggled.
+##
+## If the first argument is an axis handle, @var{hax}, operate on the
+## specified axis object.
 ## @seealso{grid}
 ## @end deftypefn
 
@@ -29,14 +34,11 @@
 
 function box (varargin)
 
-  h = gca ();
-
-  box_state = get (h, "box");
-
-  nargs = numel (varargin);
+  [ax, varargin, nargs] = __plt_get_axis_arg__ ("box", varargin{:});
 
   if (nargs == 0)
-    if (strcmpi (box_state, "on"))
+    box_state = get (ax, "box");
+    if (strcmp (box_state, "on"))
       box_state = "off";
     else
       box_state = "on";
@@ -49,13 +51,15 @@ function box (varargin)
       elseif (strcmpi (state, "on"))
         box_state = "on";
       else
-        print_usage ();
+        error ('box: argument must be "on" or "off"');
       endif
+    else
+      error ('box: argument must be "on" or "off"');
     endif
   else
     print_usage ();
   endif
 
-  set (h, "box", box_state);
+  set (ax, "box", box_state);
 
 endfunction

@@ -212,12 +212,17 @@ operator * (const Matrix& m, const ColumnVector& a)
 
       if (nr != 0)
         {
-          double *y = retval.fortran_vec ();
+          if (nc == 0)
+            retval.fill (0.0);
+          else
+            {
+              double *y = retval.fortran_vec ();
 
-          F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-                                   nr, nc, 1.0, m.data (), nr,
-                                   a.data (), 1, 0.0, y, 1
-                                   F77_CHAR_ARG_LEN (1)));
+              F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+                                       nr, nc, 1.0, m.data (), nr,
+                                       a.data (), 1, 0.0, y, 1
+                                       F77_CHAR_ARG_LEN (1)));
+            }
         }
     }
 

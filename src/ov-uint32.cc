@@ -84,12 +84,10 @@ Convert @var{x} to unsigned 32-bit integer type.\n\
 }
 
 /*
-
 %!assert (class (uint32 (1)), "uint32")
 %!assert (uint32 (1.25), uint32 (1))
 %!assert (uint32 (1.5), uint32 (2))
 %!assert (uint32 (-1.5), uint32 (0))
 %!assert (uint32 (2^33), uint32 (2^32-1))
 %!assert (uint32 (-2^33), uint32 (0))
-
 */

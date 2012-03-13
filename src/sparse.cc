@@ -78,7 +78,8 @@ their values are derived from the maximum index in the vectors @var{i} and\n\
 \n\
 @strong{Note}: if multiple values are specified with the same\n\
 @var{i}, @var{j} indices, the corresponding values in @var{s} will\n\
-be added.\n\
+be added. See @code{accumarray} for an example of how to produce different\n\
+behavior, such as taking the minimum instead.\n\
 \n\
 The following are all equivalent:\n\
 \n\
@@ -98,7 +99,7 @@ same @var{i}, @var{j} indices, the last specified value will be used.\n\
 \n\
 If any of @var{sv}, @var{i} or @var{j} are scalars, they are expanded\n\
 to have a common size.\n\
-@seealso{full}\n\
+@seealso{full, accumarray}\n\
 @end deftypefn")
 {
    octave_value retval;

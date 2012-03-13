@@ -124,21 +124,21 @@ w32_set_octave_home (void)
       mod_info.dwSize = sizeof (mod_info);
 
       if (Module32First (h, &mod_info))
-	{
-	  do
-	    {
-	      std::string mod_name (mod_info.szModule);
+        {
+          do
+            {
+              std::string mod_name (mod_info.szModule);
 
-	      if (mod_name.find ("octinterp") != std::string::npos)
-		{
-		  bin_dir = mod_info.szExePath;
-		  if (bin_dir[bin_dir.length () - 1] != '\\')
-		    bin_dir.append (1, '\\');
-		  break;
-		}
-	    }
-	  while (Module32Next (h, &mod_info));
-	}
+              if (mod_name.find ("octinterp") != std::string::npos)
+                {
+                  bin_dir = mod_info.szExePath;
+                  if (bin_dir[bin_dir.length () - 1] != '\\')
+                    bin_dir.append (1, '\\');
+                  break;
+                }
+            }
+          while (Module32Next (h, &mod_info));
+       }
 
       CloseHandle (h);
     }
@@ -608,7 +608,7 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 DEFALIAS (setenv, putenv);
 
 /*
-%!assert (ischar (getenv ("OCTAVE_HOME")));
+%!assert (ischar (getenv ("OCTAVE_HOME")))
 %!test
 %! setenv ("dummy_variable_that_cannot_matter", "foobar");
 %! assert (getenv ("dummy_variable_that_cannot_matter"), "foobar");
@@ -722,9 +722,10 @@ clc;\n\
 }
 
 /*
-%!error (pause (1, 2));
 %!test
 %! pause (1);
+
+%!error (pause (1, 2))
 */
 
 DEFUN (sleep, args, ,
@@ -757,10 +758,11 @@ Suspend the execution of the program for the given number of seconds.\n\
 }
 
 /*
-%!error (sleep ());
-%!error (sleep (1, 2));
 %!test
 %! sleep (1);
+
+%!error (sleep ())
+%!error (sleep (1, 2))
 */
 
 DEFUN (usleep, args, ,
@@ -800,10 +802,11 @@ of time less than one second, @code{usleep} will pause the execution for\n\
 }
 
 /*
-%!error (usleep ());
-%!error (usleep (1, 2));
 %!test
 %! usleep (1000);
+
+%!error (usleep ())
+%!error (usleep (1, 2))
 */
 
 // FIXME -- maybe this should only return 1 if IEEE floating
@@ -823,7 +826,7 @@ for floating point calculations.  No actual tests are performed.\n\
 }
 
 /*
-%!assert (islogical (isieee ()));
+%!assert (islogical (isieee ()))
 */
 
 DEFUN (native_float_format, , ,
@@ -838,7 +841,7 @@ Return the native floating point format as a string\n\
 }
 
 /*
-%!assert (ischar (native_float_format ()));
+%!assert (ischar (native_float_format ()))
 */
 
 DEFUN (tilde_expand, args, ,

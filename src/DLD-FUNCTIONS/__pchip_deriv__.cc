@@ -69,6 +69,13 @@ Undocumented internal function.\n\
           FloatMatrix ymat (args(1).float_matrix_value ());
 
           octave_idx_type nx = xvec.length ();
+
+          if (nx < 2)
+            {
+              error ("__pchip_deriv__: X must be at least of length 2");
+              return retval;
+            }
+
           octave_idx_type nyr = ymat.rows ();
           octave_idx_type nyc = ymat.columns ();
 
@@ -109,6 +116,13 @@ Undocumented internal function.\n\
           Matrix ymat (args(1).matrix_value ());
 
           octave_idx_type nx = xvec.length ();
+
+          if (nx < 2)
+            {
+              error ("__pchip_deriv__: X must be at least of length 2");
+              return retval;
+            }
+
           octave_idx_type nyr = ymat.rows ();
           octave_idx_type nyc = ymat.columns ();
 

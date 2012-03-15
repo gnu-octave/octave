@@ -125,7 +125,6 @@ function ret = pchip (x, y, xi)
 
 endfunction
 
-
 %!demo
 %! x = 0:8;
 %! y = [1, 1, 1, 1, 0.5, 0, 0, 0, 0];
@@ -169,3 +168,5 @@ endfunction
 %!assert (size (yi2), [3,2,5,4])
 %!assert (squeeze (yi2(1,2,3,:)), [1/sqrt(2); 0; -1/sqrt(2);-1], 1e-14)
 
+%!error (pchip (1,2));
+%!error (pchip (1,2,3));

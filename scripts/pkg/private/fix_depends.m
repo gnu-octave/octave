@@ -26,7 +26,7 @@
 ## This function returns a cell of structures with the following fields:
 ##   package, version, operator
 function deps_cell = fix_depends (depends)
-  deps = split_by (tolower (depends), ",");
+  deps = strtrim (strsplit (tolower (depends), ","));
   deps_cell = cell (1, length (deps));
 
   ## For each dependency.
@@ -37,7 +37,7 @@ function deps_cell = fix_depends (depends)
     ## Does the dependency specify a version
     ## Example: package(>= version).
     if (length (lpar) == 1 && length (rpar) == 1)
-      package = tolower (strip (dep(1:lpar-1)));
+      package = tolower (strtrim (dep(1:lpar-1)));
       sub = dep(lpar(1)+1:rpar(1)-1);
       parts = strsplit (sub, " ", true);
       if (length (parts) != 2)
@@ -54,7 +54,7 @@ function deps_cell = fix_depends (depends)
   ## we say that the version should be greater than
   ## or equal to "0.0.0".
   else
-    package = tolower (strip (dep));
+    package = tolower (strtrim (dep));
     operator = ">=";
     version  = "0.0.0";
   endif

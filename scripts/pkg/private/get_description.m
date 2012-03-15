@@ -38,7 +38,7 @@ function desc = get_description (filename)
     elseif (isspace(line(1)))
       ## Continuation lines
       if (exist ("keyword", "var") && isfield (desc, keyword))
-        desc.(keyword) = cstrcat (desc.(keyword), " ", rstrip(line));
+        desc.(keyword) = cstrcat (desc.(keyword), " ", deblank (line));
       endif
     else
       ## Keyword/value pair
@@ -47,8 +47,8 @@ function desc = get_description (filename)
         disp ("skipping line");
       else
         colon = colon(1);
-        keyword = tolower (strip (line(1:colon-1)));
-        value = strip (line (colon+1:end));
+        keyword = tolower (strtrim (line(1:colon-1)));
+        value = strtrim (line (colon+1:end));
         if (length (value) == 0)
             fclose (fid);
             error ("The keyword `%s' of the package `%s' has an empty value",

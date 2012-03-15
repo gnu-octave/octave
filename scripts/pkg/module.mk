@@ -36,11 +36,8 @@ pkg_PRIVATE_FCN_FILES = \
   pkg/private/rebuild.m \
   pkg/private/repackage.m \
   pkg/private/rm_rf.m \
-  pkg/private/rstrip.m \
   pkg/private/save_order.m \
   pkg/private/shell.m \
-  pkg/private/split_by.m \
-  pkg/private/strip.m \
   pkg/private/uninstall.m \
   pkg/private/unload_packages.m \
   pkg/private/verify_directory.m \

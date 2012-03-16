@@ -259,12 +259,25 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 
   ## If the package requested that it is autoloaded, or the installer
   ## requested that it is, then mark the package as autoloaded.
+  str_true = {"true", "on", "yes", "1"};
   for i = length (descriptions):-1:1
-    if (autoload > 0 || (autoload == 0 && isautoload (descriptions(i))))
+
+    desc_autoload = false;
+    if (isfield (descriptions{i}, "autoload"))
+      a = descriptions{i}.autoload;
+      desc_autoload = ((isnumeric (a) && a > 0)
+                       || (ischar (a) 
+                           && any (strcmpi (a, str_true))));
+    endif
+
+    if (autoload > 0 || desc_autoload)
       fclose (fopen (fullfile (descriptions{i}.dir, "packinfo",
                                ".autoload"), "wt"));
       descriptions{i}.autoload = 1;
+    else
+      descriptions{i}.autoload = 0;
     endif
+
   endfor
 
   ## Add the packages to the package list.
@@ -309,7 +322,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   if (length (descriptions) > 0)
     idx = [];
     for i = 1:length (descriptions)
-      if (isautoload (descriptions(i)))
+      if (descriptions{i}.autoload > 0)
         nm = descriptions{i}.name;
         for j = 1:length (installed_pkgs_lst)
           if (strcmp (nm, installed_pkgs_lst{j}.name))

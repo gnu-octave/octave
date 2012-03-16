@@ -1,6 +1,11 @@
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
+ ** Warning IDs renamed:
+
+    Octave:array-as-scalar => Octave:array-to-scalar
+    Octave:array-as-vector => Octave:array-to-vector
+
  ** Other new functions added in 3.8.0:
 
       colorcube

@@ -100,7 +100,7 @@ octave_sparse_bool_matrix::double_value (bool) const
   if (numel () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-as-scalar",
+        gripe_implicit_conversion ("Octave:array-to-scalar",
                                    "bool sparse matrix", "real scalar");
 
       retval = matrix (0, 0);
@@ -121,7 +121,7 @@ octave_sparse_bool_matrix::complex_value (bool) const
   if (rows () > 0 && columns () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-as-scalar",
+        gripe_implicit_conversion ("Octave:array-to-scalar",
                                    "bool sparse matrix", "complex scalar");
 
       retval = matrix (0, 0);

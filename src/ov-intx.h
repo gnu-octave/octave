@@ -104,7 +104,7 @@ public:
 
       if (numel () > 0)
         {
-          gripe_implicit_conversion ("Octave:array-as-scalar",
+          gripe_implicit_conversion ("Octave:array-to-scalar",
                                      type_name (), "real scalar");
 
           retval = matrix(0).double_value ();
@@ -123,7 +123,7 @@ public:
 
       if (numel () > 0)
         {
-          gripe_implicit_conversion ("Octave:array-as-scalar",
+          gripe_implicit_conversion ("Octave:array-to-scalar",
                                      type_name (), "real scalar");
 
           retval = matrix(0).float_value ();

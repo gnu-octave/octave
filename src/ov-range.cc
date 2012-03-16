@@ -175,7 +175,7 @@ octave_range::double_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "range", "real scalar");
 
       retval = range.base ();
@@ -195,7 +195,7 @@ octave_range::float_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "range", "real scalar");
 
       retval = range.base ();
@@ -277,7 +277,7 @@ octave_range::complex_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "range", "complex scalar");
 
       retval = range.base ();
@@ -299,7 +299,7 @@ octave_range::float_complex_value (bool) const
 
   if (nel > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "range", "complex scalar");
 
       retval = range.base ();

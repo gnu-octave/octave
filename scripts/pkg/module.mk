@@ -23,7 +23,6 @@ pkg_PRIVATE_FCN_FILES = \
   pkg/private/install.m \
   pkg/private/installed_packages.m \
   pkg/private/is_architecture_dependent.m \
-  pkg/private/issuperuser.m \
   pkg/private/list_forge_packages.m \
   pkg/private/load_package_dirs.m \
   pkg/private/load_packages.m \

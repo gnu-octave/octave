@@ -33,8 +33,8 @@ function finish_installation (desc, packdir, global_install)
       cd (wd);
     catch
       cd (wd);
-      rm_rf (desc.dir);
-      rm_rf (getarchdir (desc), global_install);
+      rmdir (desc.dir, "s");
+      rmdir (getarchdir (desc), "s");
       rethrow (lasterror ());
     end_try_catch
   endif

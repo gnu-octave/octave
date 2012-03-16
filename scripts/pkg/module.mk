@@ -34,7 +34,6 @@ pkg_PRIVATE_FCN_FILES = \
   pkg/private/print_package_description.m \
   pkg/private/rebuild.m \
   pkg/private/repackage.m \
-  pkg/private/rm_rf.m \
   pkg/private/save_order.m \
   pkg/private/shell.m \
   pkg/private/uninstall.m \

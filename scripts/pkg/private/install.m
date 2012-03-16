@@ -144,7 +144,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rm_rf (tmpdirs{i});
+      rmdir (tmpdirs{i}, "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -198,7 +198,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rm_rf (tmpdirs{i});
+      rmdir (tmpdirs{i}, "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -217,7 +217,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rm_rf (tmpdirs{i});
+      rmdir (tmpdirs{i}, "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -236,11 +236,11 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rm_rf (tmpdirs{i});
+      rmdir (tmpdirs{i}, "s");
     endfor
     for i = 1:length (descriptions)
-      rm_rf (descriptions{i}.dir);
-      rm_rf (getarchdir (descriptions{i}));
+      rmdir (descriptions{i}.dir, "s");
+      rmdir (getarchdir (descriptions{i}), "s");
     endfor
     rethrow (lasterror ());
   end_try_catch
@@ -251,8 +251,8 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     if (dirempty (descriptions{i}.dir, {"packinfo", "doc"})
         && dirempty (getarchdir (descriptions{i})))
       warning ("package %s is empty\n", descriptions{i}.name);
-      rm_rf (descriptions{i}.dir);
-      rm_rf (getarchdir (descriptions{i}));
+      rmdir (descriptions{i}.dir, "s");
+      rmdir (getarchdir (descriptions{i}), "s");
       descriptions(i) = [];
     endif
   endfor
@@ -296,10 +296,10 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   catch
     ## Something went wrong, delete tmpdirs.
     for i = 1:length (tmpdirs)
-      rm_rf (tmpdirs{i});
+      rmdir (tmpdirs{i}, "s");
     endfor
     for i = 1:length (descriptions)
-      rm_rf (descriptions{i}.dir);
+      rmdir (descriptions{i}.dir, "s");
     endfor
     if (global_install)
       printf ("error: couldn't append to %s\n", global_list);
@@ -311,8 +311,8 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 
   ## All is well, let's clean up.
   for i = 1:length (tmpdirs)
-    [status, msg] = rm_rf (tmpdirs{i});
-    if (status != 1)
+    [status, msg] = rmdir (tmpdirs{i}, "s");
+    if (status != 1 && exist (tmpdirs{i}, "dir"))
       warning ("couldn't clean up after my self: %s\n", msg);
     endif
   endfor

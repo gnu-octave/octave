@@ -82,7 +82,7 @@ function repackage (builddir, buildlist)
       end_try_catch
     unwind_protect_cleanup
       if (exist (pack.name, "dir"))
-        rm_rf (pack.name);
+        rmdir (pack.name, "s");
       endif
       cd (wd);
     end_unwind_protect

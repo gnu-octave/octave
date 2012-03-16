@@ -51,7 +51,7 @@ function build (files, handle_deps, autoload, verbose)
   unwind_protect_cleanup
     unload_packages ({"all"}, handle_deps, buildlist, "");
     if (exist (installdir, "dir"))
-      rm_rf (installdir);
+      rmdir (installdir, "s");
     endif
     if (exist (buildlist, "file"))
       unlink (buildlist);

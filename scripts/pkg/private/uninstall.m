@@ -112,16 +112,16 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       endif
     endif
     if (exist (desc.dir, "dir"))
-      [status, msg] = rm_rf (desc.dir);
-      if (status != 1)
+      [status, msg] = rmdir (desc.dir, "s");
+      if (status != 1 && exist (desc.dir, "dir"))
         error ("couldn't delete directory %s: %s", desc.dir, msg);
       endif
-      [status, msg] = rm_rf (getarchdir (desc));
-      if (status != 1)
+      [status, msg] = rmdir (getarchdir (desc), "s");
+      if (status != 1 && exist (getarchdir (desc), "dir"))
         error ("couldn't delete directory %s: %s", getarchdir (desc), msg);
       endif
       if (dirempty (desc.archprefix))
-        rm_rf (desc.archprefix);
+        rmdir (desc.archprefix, "s");
       endif
     else
       warning ("directory %s previously lost", desc.dir);

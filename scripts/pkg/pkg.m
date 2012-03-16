@@ -268,6 +268,9 @@ function [local_packages, global_packages] = pkg (varargin)
   persistent local_list = tilde_expand (fullfile ("~", ".octave_packages"));
   persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave",
                                      "octave_packages");
+
+  confirm_recursive_rmdir (false, "local");
+
   mlock ();
 
   global_install = issuperuser ();

@@ -41,7 +41,7 @@ function prepare_installation (desc, packdir)
   if (! exist (inst_dir, "dir"))
     [status, msg] = mkdir (inst_dir);
     if (status != 1)
-      rm_rf (desc.dir);
+      rmdir (desc.dir, "s");
       error ("the 'inst' directory did not exist and could not be created: %s",
              msg);
     endif

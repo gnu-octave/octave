@@ -40,7 +40,7 @@ function copy_files (desc, packdir, global_install)
   if (! dirempty (instdir))
     [status, output] = copyfile (fullfile (instdir, "*"), desc.dir);
     if (status != 1)
-      rm_rf (desc.dir);
+      rmdir (desc.dir, "s");
       error ("couldn't copy files to the installation directory");
     endif
     if (exist (fullfile (desc.dir, getarch ()), "dir")
@@ -55,39 +55,39 @@ function copy_files (desc, packdir, global_install)
             if (! exist (octm3, "dir"))
               [status, output] = mkdir (octm3);
               if (status != 1)
-                rm_rf (desc.dir);
+                rmdir (desc.dir, "s");
                 error ("couldn't create installation directory %s : %s",
                        octm3, output);
               endif
             endif
             [status, output] = mkdir (octm2);
             if (status != 1)
-              rm_rf (desc.dir);
+              rmdir (desc.dir, "s");
               error ("couldn't create installation directory %s : %s",
                      octm2, output);
             endif
           endif
           [status, output] = mkdir (octm1);
           if (status != 1)
-            rm_rf (desc.dir);
+            rmdir (desc.dir, "s");
             error ("couldn't create installation directory %s : %s",
                    octm1, output);
           endif
         endif
         [status, output] = mkdir (octfiledir);
         if (status != 1)
-          rm_rf (desc.dir);
+          rmdir (desc.dir, "s");
           error ("couldn't create installation directory %s : %s",
           octfiledir, output);
         endif
       endif
       [status, output] = movefile (fullfile (desc.dir, getarch (), "*"),
                                    octfiledir);
-      rm_rf (fullfile (desc.dir, getarch ()));
+      rmdir (fullfile (desc.dir, getarch ()), "s");
 
       if (status != 1)
-        rm_rf (desc.dir);
-        rm_rf (octfiledir);
+        rmdir (desc.dir, "s");
+        rmdir (octfiledir, "s");
         error ("couldn't copy files to the installation directory");
       endif
     endif
@@ -98,8 +98,8 @@ function copy_files (desc, packdir, global_install)
   packinfo = fullfile (desc.dir, "packinfo");
   [status, msg] = mkdir (packinfo);
   if (status != 1)
-    rm_rf (desc.dir);
-    rm_rf (octfiledir);
+    rmdir (desc.dir, "s");
+    rmdir (octfiledir, "s");
     error ("couldn't create packinfo directory: %s", msg);
   endif
 
@@ -119,8 +119,8 @@ function copy_files (desc, packdir, global_install)
       write_index (desc, fullfile (packdir, "inst"),
                    fullfile (packinfo, "INDEX"), global_install);
     catch
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
+      rmdir (desc.dir, "s");
+      rmdir (octfiledir, "s");
       rethrow (lasterror ());
     end_try_catch
   endif

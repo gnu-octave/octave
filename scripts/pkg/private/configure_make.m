@@ -56,7 +56,7 @@ function configure_make (desc, packdir, verbose)
                                          "./configure --prefix=\"",
                                          desc.dir, "\"", flags));
       if (status != 0)
-        rm_rf (desc.dir);
+        rmdir (desc.dir, "s");
         error ("the configure script returned the following error: %s", output);
       elseif (verbose)
         printf("%s", output);
@@ -68,7 +68,7 @@ function configure_make (desc, packdir, verbose)
     if (exist (fullfile (src, "Makefile"), "file"))
       [status, output] = shell (cstrcat (scenv, "make -C '", src, "'"));
       if (status != 0)
-        rm_rf (desc.dir);
+        rmdir (desc.dir, "s");
         error ("'make' returned the following error: %s", output);
       elseif (verbose)
         printf("%s", output);
@@ -134,7 +134,7 @@ function configure_make (desc, packdir, verbose)
           endif
           [status, output] = copyfile (archindependent, instdir);
           if (status != 1)
-            rm_rf (desc.dir);
+            rmdir (desc.dir, "s");
             error ("Couldn't copy files from 'src' to 'inst': %s", output);
           endif
         endif
@@ -149,7 +149,7 @@ function configure_make (desc, packdir, verbose)
           endif
           [status, output] = copyfile (archdependent, archdir);
           if (status != 1)
-            rm_rf (desc.dir);
+            rmdir (desc.dir, "s");
             error ("Couldn't copy files from 'src' to 'inst': %s", output);
           endif
         endif

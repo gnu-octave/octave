@@ -30,8 +30,8 @@ function packinfo_copy_file (filename, requirement, packdir, packinfo, desc, oct
   else
     [status, output] = copyfile (filepath, packinfo);
     if (status != 1)
-      rm_rf (desc.dir);
-      rm_rf (octfiledir);
+      rmdir (desc.dir, "s");
+      rmdir (octfiledir, "s");
       error ("Couldn't copy %s file: %s", filename, output);
     endif
   endif

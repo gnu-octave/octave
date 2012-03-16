@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} repackage (@var{builddir},@
-## @vat{buildlist})
+## @var{buildlist})
 ## Undocumented internal function.
 ## @end deftypefn
 

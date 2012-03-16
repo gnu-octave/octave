@@ -81,8 +81,27 @@ function out = base2dec (s, base)
     s = toupper (s);
   endif
 
-  ## Right justify the values before anything else.
-  s = strjust (s, "right");
+  ## Right justify the values and squeeze out any spaces.
+  ## This looks complicated, but indexing solution is very fast
+  ## compared to alternatives which use cellstr or cellfun or looping.
+  [nr, nc] = size (s);
+  if (nc > 1)   # Bug #35621
+    s = s.';
+    nonbl = s != " ";
+    num_nonbl = sum (nonbl);
+    nc = max (num_nonbl);
+    num_blank = nc - num_nonbl;
+    R = repmat ([1 2; 0 0], 1, nr);
+    R(2, 1:2:2*nr) = num_blank;
+    R(2, 2:2:2*nr) = num_nonbl;
+    idx = repelems ([false, true], R);
+    idx = reshape (idx, nc, nr);
+    
+    ## Create a blank matrix and position the nonblank characters.
+    s2 = repmat (" ", nc, nr);
+    s2(idx) = s(nonbl);
+    s = s2.';
+  endif
 
   ## Lookup value of symbols in symbol table, with invalid symbols
   ## evaluating to NaN and space evaluating to 0.

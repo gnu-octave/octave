@@ -28,6 +28,16 @@
 ## @end group
 ## @end example
 ##
+## Spaces are ignored during conversion and may be used to make the binary
+## number more readable.
+##
+## @example
+## @group
+## bin2dec ("1000 0001")
+##      @result{} 129
+## @end group
+## @end example
+##
 ## If @var{s} is a string matrix, return a column vector with one converted
 ## number per row of @var{s}; Invalid rows evaluate to NaN@.
 ##
@@ -54,6 +64,8 @@ endfunction
 %!assert(bin2dec ("1110"), 14);
 %!assert(bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1);
 %!assert(bin2dec ({"1110", "1111"}), [14; 15]);
+%!assert (bin2dec ("1 0 1"), 5)
+%!assert (bin2dec (char ("1 0 1", "   1111")), [5; 15]);
 
 %%Test input validation
 %!error bin2dec ();

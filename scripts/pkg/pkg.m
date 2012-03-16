@@ -273,7 +273,9 @@ function [local_packages, global_packages] = pkg (varargin)
 
   mlock ();
 
-  global_install = issuperuser ();
+  ## If user is superuser set global_istall to true
+  ## FIXME: is it OK to set this always true on windows?
+  global_install = ((ispc () && ! isunix ()) || (geteuid () == 0));
 
   if (prefix == -1)
     if (global_install)

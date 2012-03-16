@@ -24,9 +24,9 @@
 ## @end deftypefn
 
 function archprefix = getarchprefix (desc, global_install)
-  if ((nargin == 2 && global_install) || (nargin < 2 && issuperuser ()))
+  if (global_install)
     archprefix = fullfile (octave_config_info ("libdir"), "octave",
-                           "packages", cstrcat(desc.name, "-", desc.version));
+                           "packages", cstrcat (desc.name, "-", desc.version));
   else
     archprefix = desc.dir;
   endif

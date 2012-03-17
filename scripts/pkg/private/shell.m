@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{status}, @var{output}] =} shell (@var{cmd})
+## @deftypefn {Function File} {[@var{status}, @var{output}] =} shell (@var{cmd})
 ## Undocumented internal function.
 ## @end deftypefn
 

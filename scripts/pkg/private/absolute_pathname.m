@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pth} =} absolute_pathname (@var{pth})
+## @deftypefn {Function File} {@var{pth} =} absolute_pathname (@var{pth})
 ## Undocumented internal function.
 ## @end deftypefn
 

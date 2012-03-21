@@ -130,8 +130,8 @@
 ## @item mode
 ## This value determines whether the editor should be started in async mode
 ## (editor is started in the background and Octave continues) or sync mode
-## (Octave waits until the editor exits).  Set it to "async" to start the editor
-## in async mode.  The default is "sync" (see also "system").
+## (Octave waits until the editor exits).  Set it to "sync" to start the editor
+## in sync mode.  The default is "async" (see also "system").
 ##
 ## @item editinplace
 ## Determines whether files should be edited in place, without regard to

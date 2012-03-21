@@ -217,7 +217,7 @@ glps_renderer::draw_text (const text::properties& props)
 
   // FIXME: handle margin and surrounding box
 
-  glRasterPos3d (pos(0), pos(1), pos(2));
+  glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
 
   octave_value string_prop = props.get_string ();
 

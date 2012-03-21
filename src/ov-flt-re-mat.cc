@@ -96,7 +96,7 @@ octave_float_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "real matrix", "real scalar");
 
       retval = matrix (0, 0);
@@ -114,7 +114,7 @@ octave_float_matrix::float_value (bool) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "real matrix", "real scalar");
 
       retval = matrix (0, 0);
@@ -148,7 +148,7 @@ octave_float_matrix::complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "real matrix", "complex scalar");
 
       retval = matrix (0, 0);
@@ -168,7 +168,7 @@ octave_float_matrix::float_complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  "real matrix", "complex scalar");
 
       retval = matrix (0, 0);

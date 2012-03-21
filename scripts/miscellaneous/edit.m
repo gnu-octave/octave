@@ -421,7 +421,7 @@ SUCH DAMAGE.\
       endif
       ## If we are shadowing an m-file, paste the code for the m-file.
       if (any (exists == [2, 103]))
-        code = cstrcat ("\\ ", strrep (type (name), "\n", "\n// "));
+        code = cstrcat ("\\ ", strrep (type (name){1}, "\n", "\n// "));
       else
         code = " ";
       endif
@@ -437,7 +437,7 @@ SUCH DAMAGE.\
       ## If we are editing a function defined on the fly, paste the
       ## code.
       if (any (exists == [2, 103]))
-        body = type (name);
+        body = type (name){1};
       else
         body = cstrcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
       endif

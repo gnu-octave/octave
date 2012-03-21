@@ -114,7 +114,7 @@ octave_sparse_complex_matrix::double_value (bool force_conversion) const
   if (numel () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-as-scalar",
+        gripe_implicit_conversion ("Octave:array-to-scalar",
                                    "complex sparse matrix", "real scalar");
 
       retval = std::real (matrix (0, 0));
@@ -150,7 +150,7 @@ octave_sparse_complex_matrix::complex_value (bool) const
   if (numel () > 0)
     {
       if (numel () > 1)
-        gripe_implicit_conversion ("Octave:array-as-scalar",
+        gripe_implicit_conversion ("Octave:array-to-scalar",
                                    "complex sparse matrix", "real scalar");
 
       retval = matrix (0, 0);

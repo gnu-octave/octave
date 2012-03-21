@@ -217,7 +217,7 @@ octave_base_diag<DMT, MT>::double_value (bool force_conversion) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  type_name (), "real scalar");
 
       retval = helper_getreal (el_type (matrix (0, 0)));
@@ -241,7 +241,7 @@ octave_base_diag<DMT, MT>::float_value (bool force_conversion) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  type_name (), "real scalar");
 
       retval = helper_getreal (el_type (matrix (0, 0)));
@@ -262,7 +262,7 @@ octave_base_diag<DMT, MT>::complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  type_name (), "complex scalar");
 
       retval = matrix (0, 0);
@@ -283,7 +283,7 @@ octave_base_diag<DMT, MT>::float_complex_value (bool) const
 
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
+      gripe_implicit_conversion ("Octave:array-to-scalar",
                                  type_name (), "complex scalar");
 
       retval = matrix (0, 0);

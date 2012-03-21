@@ -5577,7 +5577,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
           text::properties& text_props = reinterpret_cast<text::properties&>
             (gh_manager::get_object (text_handle).get_properties ());
 
-          Matrix text_pos = text_props.get_position ().matrix_value ();
+          Matrix text_pos = text_props.get_data_position ();
           text_pos = xform.transform (text_pos(0), text_pos(1), text_pos(2));
           if (text_props.get_string ().is_empty ())
             {

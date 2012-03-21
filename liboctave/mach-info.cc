@@ -237,19 +237,19 @@ oct_mach_info::float_format_as_string (float_format flt_fmt)
   switch (flt_fmt)
     {
     case flt_fmt_ieee_big_endian:
-      retval = "ieee_big_endian";
+      retval = "ieee-be";
       break;
 
     case flt_fmt_ieee_little_endian:
-      retval = "ieee_little_endian";
+      retval = "ieee-le";
       break;
 
     case flt_fmt_vax_d:
-      retval = "vax_d_float";
+      retval = "vaxd";
       break;
 
     case flt_fmt_vax_g:
-      retval = "vax_g_float";
+      retval = "vaxg";
       break;
 
     case flt_fmt_cray:

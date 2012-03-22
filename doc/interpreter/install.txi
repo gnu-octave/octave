@@ -65,16 +65,19 @@ part of your system, or you may have to build some or all of them
 yourself.
 
 @menu
-* Tips for Specific Systems::
+* Obtaining the Depencies Automatically::
 * Build Tools::
 * External Packages::
 @end menu
 
-@node Tips for Specific Systems
-@subsection Tips for Specific Systems
+@node Obtaining the Depencies Automatically
+@subsection Obtaining the Depencies Automatically
 
-The names of pre-compiled packages vary by system and do not always
-match exactly the names listed above.
+On some systems you can obtain many of Octave's build dependencies
+automatically. The commands for doing this vary by system. Similarly,
+the names of pre-compiled packages vary by system and do not always
+match exactly the names listed in @ref{Build Tools} and @ref{External
+Packages}.
 
 You will usually need the development version of an external dependency
 so that you get the libraries and header files for building software,

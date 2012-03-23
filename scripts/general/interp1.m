@@ -248,9 +248,13 @@ function yi = interp1 (x, y, varargin)
     if (ispp)
       y = shiftdim (reshape (y, szy), 1);
       yi = pchip (x, y);
+      yi.orient = "first";
     else
       y = shiftdim (y, 1);
       yi = pchip (x, y, reshape (xi, szx));
+      if (! isvector (y))
+        yi = shiftdim (yi, 1);
+      endif
     endif
   case {"spline", "*spline"}
     if (nx == 2 || starmethod)
@@ -260,9 +264,13 @@ function yi = interp1 (x, y, varargin)
     if (ispp)
       y = shiftdim (reshape (y, szy), 1);
       yi = spline (x, y);
+      yi.orient = "first";
     else
       y = shiftdim (y, 1);
       yi = spline (x, y, reshape (xi, szx));
+      if (! isvector (y))
+        yi = shiftdim (yi, 1);
+      endif
     endif
   otherwise
     error ("interp1: invalid method '%s'", method);
@@ -280,20 +288,11 @@ function yi = interp1 (x, y, varargin)
         yi(outliers) = extrap;
         yi = reshape (yi, szx);
       elseif (!isvector (yi))
-        if (strcmp (method, "pchip") || strcmp (method, "*pchip")
-          ||strcmp (method, "cubic") || strcmp (method, "*cubic")
-          ||strcmp (method, "spline") || strcmp (method, "*spline"))
-          yi(:, outliers) = extrap;
-          yi = shiftdim(yi, 1);
-        else
-          yi(outliers, :) = extrap;
-        endif
+        yi(outliers, :) = extrap;
       else
         yi(outliers.') = extrap;
       endif
     endif
-  else
-    yi.orient = "first";
   endif
 
 endfunction

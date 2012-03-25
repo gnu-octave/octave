@@ -163,6 +163,12 @@ function varargout = strread (str, format = "%f", varargin)
   if (nargin < 1)
     print_usage ();
   endif
+  
+  if (isempty (str))
+    ## Return empty args (no match), rather than raising an error
+    varargout = cell (1, nargout);
+    return;
+  endif
 
   if (isempty (format))
     format = "%f";
@@ -888,4 +894,11 @@ endfunction
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
+
+%!test
+%! # Bug #35999
+%! [a, b, c] = strread ("", "%f");
+%! assert (isempty (a));
+%! assert (isempty (b));
+%! assert (isempty (c));
 

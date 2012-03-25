@@ -1434,10 +1434,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
               data{i}(end,:) = clim(2) * (data{i}(end, :) - 0.5) / cmap_sz;
              endif
           endfor
-          fprintf (plot_stream, "set cbrange [%g:%g];\n", clim(1), clim(2) *
+          fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n", clim(1), clim(2) *
                    (cmap_sz + rows(addedcmap)) / cmap_sz);
         else
-          fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
+          fprintf (plot_stream, "set cbrange [%.15e:%.15e];\n", clim);
         endif
       else
         fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz +

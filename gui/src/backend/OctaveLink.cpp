@@ -16,7 +16,6 @@
  */
 
 #include "OctaveLink.h"
-#include "oct-mutex.h"
 
 OctaveLink OctaveLink::m_singleton;
 
@@ -119,7 +118,6 @@ QList < SymbolRecord > OctaveLink::symbolTable ()
 {
   m_symbolTableBuffer.clear ();
   std::list < SymbolRecord > allVariables = symbol_table::all_variables ();
-
   std::list < SymbolRecord >::iterator iterator;
   for (iterator = allVariables.begin (); iterator != allVariables.end ();
        iterator++)

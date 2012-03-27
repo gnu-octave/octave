@@ -3585,8 +3585,8 @@ figure::properties::update_papersize (void)
     }
   else if (punits == "points")
     {
-      sz(0) = 72.0;
-      sz(1) = 72.0;
+      sz(0) /= 72.0;
+      sz(1) /= 72.0;
     }
   if (punits == "normalized")
     {
@@ -3656,12 +3656,47 @@ figure::properties::update_papersize (void)
       // update_papersize and update_papertype
       papertype.set (typ);
     }
+  if (punits == "centimeters")
+    {
+      sz(0) *= 2.54;
+      sz(1) *= 2.54;
+    }
+  else if (punits == "points")
+    {
+      sz(0) *= 72.0;
+      sz(1) *= 72.0;
+    }
   if (get_paperorientation () == "landscape")
     {
       std::swap (sz(0), sz(1));
       papersize.set (octave_value (sz));
     }
 }
+
+/*
+%!test
+%! figure (1, "visible", "off");
+%! set (1, "paperunits", "inches");
+%! set (1, "papersize", [5, 4])
+%! set (1, "paperunits", "points");
+%! assert (get (1, "papersize"), [5, 4] * 72, 1)
+%! papersize = get (gcf, "papersize");
+%! set (1, "papersize", papersize + 1);
+%! set (1, "papersize", papersize)
+%! assert (get (1, "papersize"), [5, 4] * 72, 1)
+%! close (1)
+%!test
+%! figure (1, "visible", "off");
+%! set (1, "paperunits", "inches");
+%! set (1, "papersize", [5, 4])
+%! set (1, "paperunits", "centimeters");
+%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72)
+%! papersize = get (gcf, "papersize");
+%! set (1, "papersize", papersize + 1);
+%! set (1, "papersize", papersize)
+%! assert (get (1, "papersize"), [5, 4] * 2.54, 2.54/72)
+%! close (1)
+*/
 
 void
 figure::properties::update_paperorientation (void)

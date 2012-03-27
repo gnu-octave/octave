@@ -442,7 +442,7 @@ octcellregexp (const octave_value_list &args, int nargout,
 
 DEFUN_DLD (regexp, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})\n\
+@deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexp (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexp (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 Regular expression string matching.  Search for @var{pat} in @var{str} and\n\
 return the positions and substrings of any matches, or empty values if there\n\
@@ -872,7 +872,7 @@ Alternatively, use (?x) in the pattern.\n\
 
 DEFUN_DLD (regexpi, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexpi (@var{str}, @var{pat})\n\
+@deftypefn  {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}, @var{sp}] =} regexpi (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, \"@var{opt1}\", @dots{})\n\
 \n\
 Case insensitive regular expression string matching.  Search for @var{pat} in\n\

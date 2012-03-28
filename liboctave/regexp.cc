@@ -148,7 +148,7 @@ regexp::compile_internal (void)
           size_t tmp_pos1 = new_pos + 2;
           size_t tmp_pos2 = tmp_pos1;
 
-          while (tmp_pos1 <= pattern.length () && brackets > 0)
+          while (tmp_pos1 < pattern.length () && brackets > 0)
             {
               char ch = pattern.at (tmp_pos1);
 

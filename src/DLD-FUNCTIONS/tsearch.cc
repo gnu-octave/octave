@@ -176,11 +176,11 @@ points @code{(@var{xi}, @var{yi})}.  For points outside the convex hull,\n\
 %! x = [-1;-1;1];
 %! y = [-1;1;-1];
 %! tri = [1, 2, 3];
-%!error (tsearch())
 %!assert (tsearch (x,y,tri,-1,-1), 1)
 %!assert (tsearch (x,y,tri, 1,-1), 1)
 %!assert (tsearch (x,y,tri,-1, 1), 1)
 %!assert (tsearch (x,y,tri,-1/3, -1/3), 1)
 %!assert (tsearch (x,y,tri, 1, 1), NaN)
 
+%!error tsearch ()
 */

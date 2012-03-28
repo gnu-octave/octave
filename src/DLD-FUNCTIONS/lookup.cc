@@ -373,25 +373,25 @@ at most n-1).\n\
 }
 
 /*
-%!assert (lookup(1:3, 0.5), 0)     # value before table
-%!assert (lookup(1:3, 3.5), 3)     # value after table error
-%!assert (lookup(1:3, 1.5), 1)     # value within table error
-%!assert (lookup(1:3, [3,2,1]), [3,2,1])
-%!assert (lookup([1:4]', [1.2, 3.5]'), [1, 3]');
-%!assert (lookup([1:4], [1.2, 3.5]'), [1, 3]');
-%!assert (lookup([1:4]', [1.2, 3.5]), [1, 3]);
-%!assert (lookup([1:4], [1.2, 3.5]), [1, 3]);
-%!assert (lookup(1:3, [3, 2, 1]), [3, 2, 1]);
-%!assert (lookup([3:-1:1], [3.5, 3, 1.2, 2.5, 2.5]), [0, 1, 2, 1, 1])
-%!assert (isempty(lookup([1:3], [])))
-%!assert (isempty(lookup([1:3]', [])))
-%!assert (lookup(1:3, [1, 2; 3, 0.5]), [1, 2; 3, 0]);
-%!assert (lookup(1:4, [1, 1.2; 3, 2.5], "m"), [1, 0; 3, 0]);
-%!assert (lookup(4:-1:1, [1, 1.2; 3, 2.5], "m"), [4, 0; 2, 0]);
-%!assert (lookup(1:4, [1, 1.2; 3, 2.5], "b"), logical ([1, 0; 3, 0]));
-%!assert (lookup(4:-1:1, [1, 1.2; 3, 2.5], "b"), logical ([4, 0; 2, 0]));
+%!assert (lookup (1:3, 0.5), 0)     # value before table
+%!assert (lookup (1:3, 3.5), 3)     # value after table error
+%!assert (lookup (1:3, 1.5), 1)     # value within table error
+%!assert (lookup (1:3, [3,2,1]), [3,2,1])
+%!assert (lookup ([1:4]', [1.2, 3.5]'), [1, 3]')
+%!assert (lookup ([1:4], [1.2, 3.5]'), [1, 3]')
+%!assert (lookup ([1:4]', [1.2, 3.5]), [1, 3])
+%!assert (lookup ([1:4], [1.2, 3.5]), [1, 3])
+%!assert (lookup (1:3, [3, 2, 1]), [3, 2, 1])
+%!assert (lookup ([3:-1:1], [3.5, 3, 1.2, 2.5, 2.5]), [0, 1, 2, 1, 1])
+%!assert (isempty (lookup ([1:3], [])))
+%!assert (isempty (lookup ([1:3]', [])))
+%!assert (lookup (1:3, [1, 2; 3, 0.5]), [1, 2; 3, 0])
+%!assert (lookup (1:4, [1, 1.2; 3, 2.5], "m"), [1, 0; 3, 0])
+%!assert (lookup (4:-1:1, [1, 1.2; 3, 2.5], "m"), [4, 0; 2, 0])
+%!assert (lookup (1:4, [1, 1.2; 3, 2.5], "b"), logical ([1, 0; 3, 0]))
+%!assert (lookup (4:-1:1, [1, 1.2; 3, 2.5], "b"), logical ([4, 0; 2, 0]))
 %!
-%!assert (lookup({"apple","lemon","orange"}, {"banana","kiwi"; "ananas","mango"}), [1,1;0,2])
-%!assert (lookup({"apple","lemon","orange"}, "potato"), 3)
-%!assert (lookup({"orange","lemon","apple"}, "potato"), 0)
+%!assert (lookup ({"apple","lemon","orange"}, {"banana","kiwi"; "ananas","mango"}), [1,1;0,2])
+%!assert (lookup ({"apple","lemon","orange"}, "potato"), 3)
+%!assert (lookup ({"orange","lemon","apple"}, "potato"), 0)
 */

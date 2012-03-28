@@ -260,20 +260,17 @@ Mathematics, Manchester, England, January 1999.\n\
 }
 
 /*
-
 %!assert (sqrtm (2*ones (2)), ones (2), 3*eps)
 
 ## The following two tests are from the reference in the docstring above.
-
 %!test
 %! x = [0 1; 0 0];
-%! assert (any (isnan (sqrtm (x))(:) ))
+%! assert (any (isnan (sqrtm (x))(:)));
 
 %!test
-%! x = eye (4); x(2,2) = x(3,3) = 2^-26; x(1,4) = 1;
-%! z = eye (4); z(2,2) = z(3,3) = 2^-13; z(1,4) = 0.5;
-%! [y, err] = sqrtm(x);
-%! assert (y, z)
-%! assert (err, 0)   ## Yes, this one has to hold exactly
-
+%! x = eye (4);  x(2,2) = x(3,3) = 2^-26;  x(1,4) = 1;
+%! z = eye (4);  z(2,2) = z(3,3) = 2^-13;  z(1,4) = 0.5;
+%! [y, err] = sqrtm (x);
+%! assert (y, z);
+%! assert (err, 0);   ## Yes, this one has to hold exactly
 */

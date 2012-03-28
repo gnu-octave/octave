@@ -139,9 +139,10 @@ On exit, @var{y} is a unit vector such that:\n\
 }
 
 /*
-
 %!test
-%! for ii=1:100; assert (abs (mgorth (randn (5, 1), eye (5, 4))), [0 0 0 0 1]', eps); endfor
+%! for ii=1:100
+%!   assert (abs (mgorth (randn (5, 1), eye (5, 4))), [0 0 0 0 1]', eps);
+%! endfor
 
 %!test
 %! a = hilb (5);
@@ -150,5 +151,4 @@ On exit, @var{y} is a unit vector such that:\n\
 %!   a(:, ii) = mgorth (a(:, ii), a(:, 1:ii-1));
 %! endfor
 %! assert (a' * a, eye (5), 1e10);
-
 */

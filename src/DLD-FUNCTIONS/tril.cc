@@ -407,7 +407,6 @@ See the documentation for the @code{tril} function (@pxref{tril}).\n\
 }
 
 /*
-
 %!test
 %! a = [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12];
 %!
@@ -419,10 +418,13 @@ See the documentation for the @code{tril} function (@pxref{tril}).\n\
 %! lm3 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 10, 0, 0];
 %! lm4 = [0, 0, 0; 0, 0, 0; 0, 0, 0; 0, 0, 0];
 %!
-%! assert((tril (a, -4) == lm4 && tril (a, -3) == lm3
-%! && tril (a, -2) == lm2 && tril (a, -1) == lm1
-%! && tril (a) == l0 && tril (a, 1) == l1 && tril (a, 2) == l2));
+%! assert (tril (a, -4), lm4); 
+%! assert (tril (a, -3), lm3);
+%! assert (tril (a, -2), lm2);
+%! assert (tril (a, -1), lm1);
+%! assert (tril (a), l0);
+%! assert (tril (a, 1), l1);
+%! assert (tril (a, 2), l2);
 
-%!error tril ();
-
+%!error tril ()
 */

@@ -533,10 +533,8 @@ function.  Instead use @code{imread}.\n\
 }
 
 /*
-
 ## No test needed for internal helper function.
 %!assert (1)
-
 */
 
 #ifdef HAVE_MAGICK
@@ -925,10 +923,8 @@ return retval;
 }
 
 /*
-
 ## No test needed for internal helper function.
 %!assert (1)
-
 */
 
 #ifdef HAVE_MAGICK
@@ -1150,10 +1146,8 @@ not be using this function.  Instead use @code{imfinfo}.\n\
 }
 
 /*
-
 ## No test needed for internal helper function.
 %!assert (1)
-
 */
 
 #undef GET_PARAM
@@ -1217,8 +1211,6 @@ Undocumented internal function.\n\
 }
 
 /*
-
 ## No test needed for internal helper function.
 %!assert (1)
-
 */

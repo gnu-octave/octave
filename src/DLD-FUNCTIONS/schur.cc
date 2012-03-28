@@ -275,23 +275,21 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 }
 
 /*
-
 %!test
 %! a = [1, 2, 3; 4, 5, 9; 7, 8, 6];
 %! [u, s] = schur (a);
-%! assert(u' * a * u, s, sqrt (eps));
+%! assert (u' * a * u, s, sqrt (eps));
 
 %!test
-%! a = single([1, 2, 3; 4, 5, 9; 7, 8, 6]);
+%! a = single ([1, 2, 3; 4, 5, 9; 7, 8, 6]);
 %! [u, s] = schur (a);
-%! assert(u' * a * u, s, sqrt (eps('single')));
+%! assert (u' * a * u, s, sqrt (eps ("single")));
 
 %!test
-%! fail("schur ([1, 2; 3, 4], 2)","warning");
+%! fail("schur ([1, 2; 3, 4], 2)", "warning");
 
-%!error <Invalid call to schur> schur ();
-%!error schur ([1, 2, 3; 4, 5, 6]);
-
+%!error schur ()
+%!error <argument must be a square matrix> schur ([1, 2, 3; 4, 5, 6])
 */
 
 DEFUN_DLD (rsf2csf, args, nargout,
@@ -361,24 +359,23 @@ Note also that @var{U} and @var{T} are not unique.\n\
 }
 
 /*
-
 %!test
 %! A = [1, 1, 1, 2; 1, 2, 1, 1; 1, 1, 3, 1; -2, 1, 1, 1];
 %! [u, t] = schur (A);
 %! [U, T] = rsf2csf (u, t);
-%! assert (norm (u * t * u' - U * T * U'), 0, 1e-12)
-%! assert (norm (A - U * T * U'), 0, 1e-12)
+%! assert (norm (u * t * u' - U * T * U'), 0, 1e-12);
+%! assert (norm (A - U * T * U'), 0, 1e-12);
 
 %!test
 %! A = rand (10);
 %! [u, t] = schur (A);
 %! [U, T] = rsf2csf (u, t);
-%! assert (norm (tril (T, -1)), 0)
-%! assert (norm (U * U'), 1, 1e-14)
+%! assert (norm (tril (T, -1)), 0);
+%! assert (norm (U * U'), 1, 1e-14);
 
 %!test
 %! A = [0, 1;-1, 0];
 %! [u, t] = schur (A);
 %! [U, T] = rsf2csf (u,t);
-%! assert (U * T * U', A, 1e-14)
+%! assert (U * T * U', A, 1e-14);
 */

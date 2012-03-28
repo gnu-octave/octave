@@ -135,10 +135,8 @@ Undocumented internal function.\n\
 }
 
 /*
-
 ## No test needed for internal helper function.
 %!assert (1)
-
 */
 
 #endif

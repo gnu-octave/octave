@@ -173,19 +173,17 @@ Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).\n\
 }
 
 /*
-
 %!test
 %! a = [1, 2, 3; 5, 4, 6; 8, 7, 9];
 %! [p, h] = hess (a);
-%! assert(p * h * p', a, sqrt(eps));
+%! assert (p * h * p', a, sqrt (eps));
 
 %!test
-%! a = single([1, 2, 3; 5, 4, 6; 8, 7, 9]);
+%! a = single ([1, 2, 3; 5, 4, 6; 8, 7, 9]);
 %! [p, h] = hess (a);
-%! assert(p * h * p', a, sqrt(eps ('single')));
+%! assert (p * h * p', a, sqrt (eps ("single")));
 
-%!error <Invalid call to hess> hess ();
-%!error <Invalid call to hess> hess ([1, 2; 3, 4], 2);
-%!error hess ([1, 2; 3, 4; 5, 6]);
-
+%!error hess ()
+%!error hess ([1, 2; 3, 4], 2)
+%!error <argument must be a square matrix> hess ([1, 2; 3, 4; 5, 6])
 */

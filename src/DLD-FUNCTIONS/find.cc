@@ -570,28 +570,28 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 }
 
 /*
-%!assert(find (char ([0, 97])), 2);
-%!assert(find ([1, 0, 1, 0, 1]), [1, 3, 5]);
-%!assert(find ([1; 0; 3; 0; 1]), [1; 3; 5]);
-%!assert(find ([0, 0, 2; 0, 3, 0; -1, 0, 0]), [3; 5; 7]);
+%!assert (find (char ([0, 97])), 2)
+%!assert (find ([1, 0, 1, 0, 1]), [1, 3, 5])
+%!assert (find ([1; 0; 3; 0; 1]), [1; 3; 5])
+%!assert (find ([0, 0, 2; 0, 3, 0; -1, 0, 0]), [3; 5; 7])
 
 %!test
 %! [i, j, v] = find ([0, 0, 2; 0, 3, 0; -1, 0, 0]);
 %!
-%! assert(i, [3; 2; 1]);
-%! assert(j, [1; 2; 3]);
-%! assert(v, [-1; 3; 2]);
+%! assert (i, [3; 2; 1]);
+%! assert (j, [1; 2; 3]);
+%! assert (v, [-1; 3; 2]);
 
-%!assert(find (single([1, 0, 1, 0, 1])), [1, 3, 5]);
-%!assert(find (single([1; 0; 3; 0; 1])), [1; 3; 5]);
-%!assert(find (single([0, 0, 2; 0, 3, 0; -1, 0, 0])), [3; 5; 7]);
+%!assert (find (single ([1, 0, 1, 0, 1])), [1, 3, 5])
+%!assert (find (single ([1; 0; 3; 0; 1])), [1; 3; 5])
+%!assert (find (single ([0, 0, 2; 0, 3, 0; -1, 0, 0])), [3; 5; 7])
 
 %!test
-%! [i, j, v] = find (single([0, 0, 2; 0, 3, 0; -1, 0, 0]));
+%! [i, j, v] = find (single ([0, 0, 2; 0, 3, 0; -1, 0, 0]));
 %!
-%! assert(i, [3; 2; 1]);
-%! assert(j, [1; 2; 3]);
-%! assert(v, single([-1; 3; 2]));
+%! assert (i, [3; 2; 1]);
+%! assert (j, [1; 2; 3]);
+%! assert (v, single ([-1; 3; 2]));
 
 %!test
 %! pcol = [5 1 4 3 2];
@@ -617,6 +617,5 @@ b = sparse (i, j, v, sz(1), sz(2));\n\
 %!assert (find ([2 0 1 0 5 0], Inf), [1, 3, 5])
 %!assert (find ([2 0 1 0 5 0], Inf, "last"), [1, 3, 5])
 
-%!error <Invalid call to find> find ();
-
+%!error find ()
 */

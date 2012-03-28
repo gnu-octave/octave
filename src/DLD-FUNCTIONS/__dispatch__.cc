@@ -131,8 +131,6 @@ DEFUN_DLD (__dispatch__, args, nargout,
 }
 
 /*
-
 ## No test needed for internal helper function.
 %!assert (1)
-
 */

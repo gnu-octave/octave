@@ -260,10 +260,10 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 %!shared
 
 %% Test cases from Bug #34893
-%!assert (conv2 ([1:5;1:5], [1:2], 'same'), [4 7 10 13 10; 4 7 10 13 10])
-%!assert (conv2 ([1:5;1:5]', [1:2]', 'same'), [4 7 10 13 10; 4 7 10 13 10]')
-%!#assert (conv2 ([1:5;1:5], [1:2], 'valid'), [4 7 10 13; 4 7 10 13])
-%!assert (conv2 ([1:5;1:5]', [1:2]', 'valid'), [4 7 10 13; 4 7 10 13]')
+%!assert (conv2 ([1:5;1:5], [1:2], "same"), [4 7 10 13 10; 4 7 10 13 10])
+%!assert (conv2 ([1:5;1:5]', [1:2]', "same"), [4 7 10 13 10; 4 7 10 13 10]')
+%!#assert (conv2 ([1:5;1:5], [1:2], "valid"), [4 7 10 13; 4 7 10 13])
+%!assert (conv2 ([1:5;1:5]', [1:2]', "valid"), [4 7 10 13; 4 7 10 13]')
 
 %% Test input validation
 %!error conv2 ()
@@ -272,7 +272,6 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 %% Test alternate calling form which should be 2 vectors and a matrix
 %!error conv2 (ones (2), 1, 1)
 %!error conv2 (1, ones (2), 1)
-
 */
 
 DEFUN_DLD (convn, args, ,

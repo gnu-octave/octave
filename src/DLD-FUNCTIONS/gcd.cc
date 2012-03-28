@@ -515,16 +515,14 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 }
 
 /*
+%!assert (gcd (200, 300, 50, 35), 5)
+%!assert (gcd (int16 (200), int16 (300), int16 (50), int16 (35)), int16 (5))
+%!assert (gcd (uint64 (200), uint64 (300), uint64 (50), uint64 (35)), uint64 (5))
+%!assert (gcd (18-i, -29+3i), -3-4i)
 
-%!assert(gcd (200, 300, 50, 35), 5)
-%!assert(gcd (int16(200), int16(300), int16(50), int16(35)), int16(5))
-%!assert(gcd (uint64(200), uint64(300), uint64(50), uint64(35)), uint64(5))
-%!assert(gcd (18-i, -29+3i), -3-4i)
-
-%!error <Invalid call to gcd> gcd ();
+%!error gcd ()
 
 %!test
 %! s.a = 1;
-%! fail("gcd (s)");
-
+%! fail ("gcd (s)");
 */

@@ -254,83 +254,81 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 }
 
 /*
-
-%!assert(eig ([1, 2; 2, 1]), [-1; 3], sqrt (eps));
+%!assert (eig ([1, 2; 2, 1]), [-1; 3], sqrt (eps))
 
 %!test
 %! [v, d] = eig ([1, 2; 2, 1]);
 %! x = 1 / sqrt (2);
-%! assert(d, [-1, 0; 0, 3], sqrt (eps));
-%! assert(v, [-x, x; x, x], sqrt (eps));
+%! assert (d, [-1, 0; 0, 3], sqrt (eps));
+%! assert (v, [-x, x; x, x], sqrt (eps));
 
-%!assert(eig (single ([1, 2; 2, 1])), single([-1; 3]), sqrt (eps('single')));
-
-%!test
-%! [v, d] = eig (single([1, 2; 2, 1]));
-%! x = single(1 / sqrt (2));
-%! assert(d, single([-1, 0; 0, 3]), sqrt (eps('single')));
-%! assert(v, [-x, x; x, x], sqrt (eps('single')));
+%!assert (eig (single ([1, 2; 2, 1])), single ([-1; 3]), sqrt (eps ("single")))
 
 %!test
-%! A = [1, 2; -1, 1]; B = [3, 3; 1, 2];
+%! [v, d] = eig (single ([1, 2; 2, 1]));
+%! x = single (1 / sqrt (2));
+%! assert (d, single ([-1, 0; 0, 3]), sqrt (eps ("single")));
+%! assert (v, [-x, x; x, x], sqrt (eps ("single")));
+
+%!test
+%! A = [1, 2; -1, 1];  B = [3, 3; 1, 2];
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
 %!test
-%! A = single([1, 2; -1, 1]); B = single([3, 3; 1, 2]);
+%! A = single ([1, 2; -1, 1]);  B = single ([3, 3; 1, 2]);
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps ("single")));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps ("single")));
 
 %!test
-%! A = [1, 2; 2, 1]; B = [3, -2; -2, 3];
+%! A = [1, 2; 2, 1];  B = [3, -2; -2, 3];
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
 %!test
-%! A = single([1, 2; 2, 1]); B = single([3, -2; -2, 3]);
+%! A = single ([1, 2; 2, 1]);  B = single ([3, -2; -2, 3]);
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps ("single")));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps ("single")));
 
 %!test
-%! A = [1+3i, 2+i; 2-i, 1+3i]; B = [5+9i, 2+i; 2-i, 5+9i];
+%! A = [1+3i, 2+i; 2-i, 1+3i];  B = [5+9i, 2+i; 2-i, 5+9i];
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
 %!test
-%! A = single([1+3i, 2+i; 2-i, 1+3i]); B = single([5+9i, 2+i; 2-i, 5+9i]);
+%! A = single ([1+3i, 2+i; 2-i, 1+3i]);  B = single ([5+9i, 2+i; 2-i, 5+9i]);
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps ("single")));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps ("single")));
 
 %!test
-%! A = [1+3i, 2+3i; 3-8i, 8+3i]; B = [8+i, 3+i; 4-9i, 3+i];
+%! A = [1+3i, 2+3i; 3-8i, 8+3i];  B = [8+i, 3+i; 4-9i, 3+i];
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
 %!test
-%! A = single([1+3i, 2+3i; 3-8i, 8+3i]); B = single([8+i, 3+i; 4-9i, 3+i]);
+%! A = single ([1+3i, 2+3i; 3-8i, 8+3i]);  B = single ([8+i, 3+i; 4-9i, 3+i]);
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps('single')));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps('single')));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps ("single")));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps ("single")));
 
 %!test
-%! A = [1, 2; 3, 8]; B = [8, 3; 4, 3];
+%! A = [1, 2; 3, 8];  B = [8, 3; 4, 3];
 %! [v, d] = eig (A, B);
-%! assert(A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
-%! assert(A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
+%! assert (A * v(:, 1), d(1, 1) * B * v(:, 1), sqrt (eps));
+%! assert (A * v(:, 2), d(2, 2) * B * v(:, 2), sqrt (eps));
 
-%!error <Invalid call to eig> eig ();
-%!error <Invalid call to eig> eig ([1, 2; 3, 4], [4, 3; 2, 1], 1);
-%!error eig ([1, 2; 3, 4], 2);
-%!error eig ([1, 2; 3, 4; 5, 6]);
-%!error eig ("abcd");
-%!error eig ([1 2 ; 2 3], "abcd");
-%!error eig (false, [1 2 ; 2 3]);
-
+%!error eig ()
+%!error eig ([1, 2; 3, 4], [4, 3; 2, 1], 1)
+%!error <EIG requires same size matrices> eig ([1, 2; 3, 4], 2)
+%!error <argument must be a square matrix> eig ([1, 2; 3, 4; 5, 6])
+%!error <wrong type argument> eig ("abcd")
+%!error <wrong type argument> eig ([1 2 ; 2 3], "abcd")
+%!error <wrong type argument> eig (false, [1 2 ; 2 3])
 */

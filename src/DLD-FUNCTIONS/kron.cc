@@ -289,10 +289,9 @@ Since the Kronecker product is associative, this is well-defined.\n\
 
 
 /*
-
 %!test
-%! x = ones(2);
-%! assert( kron (x, x), ones (4));
+%! x = ones (2);
+%! assert (kron (x, x), ones (4));
 
 %!shared x, y, z
 %! x =  [1, 2];
@@ -301,5 +300,4 @@ Since the Kronecker product is associative, this is well-defined.\n\
 %!assert (kron (1:4, ones (3, 1)), z)
 %!assert (kron (x, y, z), kron (kron (x, y), z))
 %!assert (kron (x, y, z), kron (x, kron (y, z)))
-
 */

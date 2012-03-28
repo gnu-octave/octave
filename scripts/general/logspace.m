@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} logspace (@var{a}, @var{b})
-## @deftypefnx {Function File} {} logspace (@var{b}, @var{b}, @var{n})
+## @deftypefnx {Function File} {} logspace (@var{a}, @var{b}, @var{n})
 ## @deftypefnx {Function File} {} logspace (@var{a}, pi, @var{n})
 ## Return a row vector with @var{n} elements logarithmically spaced from
 ## @tex

@@ -1,5 +1,8 @@
 FCN_FILE_DIRS += polynomial
 
+plot_PRIVATE_FCN_FILES = \
+	polynomial/private/__splinefit__.m
+
 polynomial_FCN_FILES = \
   polynomial/compan.m \
   polynomial/conv.m \
@@ -24,6 +27,7 @@ polynomial_FCN_FILES = \
   polynomial/residue.m \
   polynomial/roots.m \
   polynomial/spline.m \
+  polynomial/splinefit.m \
   polynomial/unmkpp.m
 
 FCN_FILES += $(polynomial_FCN_FILES)

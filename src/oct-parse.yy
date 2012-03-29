@@ -2823,8 +2823,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
   // file.  Matlab doesn't provide a diagnostic (it ignores the stated
   // name).
   if (! autoloading && reading_fcn_file
-      && (current_function_depth == 1
-          && ! (parsing_subfunctions || lexer_flags.parsing_class_method)))
+      && current_function_depth == 1 && ! parsing_subfunctions)
   {
     // FIXME -- should curr_fcn_file_name already be
     // preprocessed when we get here?  It seems to only be a

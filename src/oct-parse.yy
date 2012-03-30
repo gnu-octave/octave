@@ -2941,15 +2941,16 @@ finish_function (tree_parameter_list *ret_list,
                                              primary_fcn_scope);
         }
 
-      if (! reading_fcn_file)
+      if (! reading_fcn_file && current_function_depth == 1)
         {
           // We are either reading a script file or defining a function
           // at the command line, so this definition creates a
           // tree_function object that is placed in the parse tree.
           // Otherwise, it is just inserted in the symbol table,
-          // either as a subfunction (see above), or as the primary
-          // function for the file, via primary_fcn_ptr (see also
-          // load_fcn_from_file,, parse_fcn_file, and
+          // either as a subfunction or nested function (see above),
+          // or as the primary function for the file, via
+          // primary_fcn_ptr (see also load_fcn_from_file,,
+          // parse_fcn_file, and
           // symbol_table::fcn_info::fcn_info_rep::find_user_function).
 
           retval = new tree_function_def (fcn);

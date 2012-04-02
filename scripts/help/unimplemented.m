@@ -360,7 +360,6 @@ function list = missing_functions ()
   "surf2patch",
   "symmlq",
   "syntax",
-  "tetramesh",
   "texlabel",
   "textwrap",
   "tfqmr",

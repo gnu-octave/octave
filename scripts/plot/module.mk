@@ -175,6 +175,7 @@ plot_FCN_FILES = \
   plot/surfc.m \
   plot/surfl.m \
   plot/surfnorm.m \
+  plot/tetramesh.m \
   plot/text.m \
   plot/title.m \
   plot/trimesh.m \

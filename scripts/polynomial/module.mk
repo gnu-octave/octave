@@ -1,6 +1,6 @@
 FCN_FILE_DIRS += polynomial
 
-plot_PRIVATE_FCN_FILES = \
+polynomial_PRIVATE_FCN_FILES = \
 	polynomial/private/__splinefit__.m
 
 polynomial_FCN_FILES = \

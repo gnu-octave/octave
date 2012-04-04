@@ -5233,6 +5233,12 @@ the norms of each column and return a row vector.\n\
 %! fhi = single (1e+300);
 %!assert (norm (flo*m2,"fro"), single (sqrt (30)*flo), -eps ("single"))
 %!assert (norm (fhi*m2,"fro"), single (sqrt (30)*fhi), -eps ("single"))
+
+%!test
+%! ## Test for norm returning NaN on sparse matrix (bug #30631)
+%! A = sparse (2,2); 
+%! A(2,1) = 1;
+%! assert (norm (A), 1);
 */
 
 static octave_value

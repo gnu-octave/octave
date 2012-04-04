@@ -415,7 +415,7 @@ R higham (const MatrixT& m, R p, R tol, int maxiter,
   // the OSE part
   VectorT y(m.rows (), 1, 0), z(m.rows (), 1);
   typedef typename VectorT::element_type RR;
-  RR lambda = 0, mu = 0;
+  RR lambda = 0, mu = 1;
   for (octave_idx_type k = 0; k < m.columns (); k++)
     {
       octave_quit ();

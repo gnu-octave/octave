@@ -4719,9 +4719,7 @@ if fewer than two values are requested.\n\
 %! assert (size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2);
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
 
-%#assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
-
-%!fail ("linspace ([1, 2; 3, 4], 5, 6)", "warning")
+%assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)

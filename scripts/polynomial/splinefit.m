@@ -181,10 +181,10 @@ function pp = splinefit (x, y, breaks, varargin)
   endif
   fields = fieldnames (props);
   for f = 1:numel(fields)
-    if (! any (strcmp (fields{f}, {"periodic", "robust", "beta", ...
-                                   "order", "constraints"})))
-      error (sprintf ("%s:invalidproperty", mfilename ()),
-             sprintf ("""%s"" is not recongizied", fields{f}))
+    if (! any (strcmp (fields{f},
+                       {"periodic", "robust", "beta", "order", "constraints"})))
+      error ("splinefit:invalidproperty",
+             "unrecognized property '%s'", fields{f});
     endif
   endfor
   args = {};
@@ -198,15 +198,14 @@ function pp = splinefit (x, y, breaks, varargin)
     if (0 < props.beta && props.beta < 1)
       args{end+1} = props.beta;
     else
-      error (sprintf ("%s:invalidbeta", mfilename),
-             "Invalid beta parameter (0 < beta < 1)")
+      error ("splinefit:invalidbeta", "invalid beta parameter (0 < beta < 1)");
     endif
   endif
   if (isfield (props, "order"))
     if (props.order >= 0)
       args{end+1} = props.order + 1;
     else
-      error (sprintf ("%s:invalidorder", mfilename), "Invalid order")
+      error ("splinefit:invalidorder", "invalid order");
     endif
   endif
   if (isfield (props, "constraints"))

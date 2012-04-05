@@ -87,9 +87,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// Expand escape sequences even in single quoted strings (Matlab compatibility)
-bool Vsingle_quote_escape_processing = false;
-
 // We are likely to have a lot of octave_value objects to allocate, so
 // make the grow_size large.
 DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
@@ -3047,42 +3044,3 @@ Return true if @var{x} is a double-quoted character string.\n\
 %!error is_dq_string ()
 %!error is_dq_string ("foo", 2)
 */
-
-DEFUN (single_quote_escape_processing, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn  {Built-in Function} {@var{val} =} single_quote_escape_processing ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} single_quote_escape_processing (@var{new_val})\n\
-@deftypefnx {Built-in Function} {} single_quote_escape_processing (@var{new_val}, \"local\")\n\
-Query or set the internal variable that controls whether Octave processes\n\
-escape sequences within single quoted strings.\n\
-\n\
-Ordinarily, escape sequences such as \"\\n\" => newline are only processed\n\
-in double quoted strings.  However, @sc{matlab} performs escape sequence\n\
-processing even for single quoted strings for certain functions.  This\n\
-variable enables @sc{matlab} compatibility for these instances:\n\
-\n\
-@table @code\n\
-@item printf\n\
-@itemx sprintf\n\
-@itemx fprintf\n\
-Process format specification string @var{template}.\n\
-\n\
-@item error\n\
-Process format specification string @var{template}.\n\
-\n\
-@item regexp\n\
-@itemx regexpi\n\
-Process pattern string @var{pat}.\n\
-\n\
-@item regexprep\n\
-Process pattern string @var{pat} and replacement string @var{repstr}.\n\
-@end table\n\
-\n\
-When called from inside a function with the \"local\" option, the variable is\n\
-changed locally for the function and any subroutines it calls.  The original\n\
-variable value is restored when exiting the function.\n\
-@seealso{printf, sprintf, fprintf, error, regexp, regexpi, regexprep}\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (single_quote_escape_processing);
-}

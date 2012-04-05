@@ -615,7 +615,6 @@ maximum_braindamage (void)
                          "%%-- %D %I:%M %p --%%");
   bind_internal_variable ("page_screen_output", false);
   bind_internal_variable ("print_empty_dimensions", false);
-  bind_internal_variable ("single_quote_escape_processing", true);
 
   disable_warning ("Octave:abbreviated-property-match");
   disable_warning ("Octave:fopen-file-in-path");

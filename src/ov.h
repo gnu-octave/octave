@@ -1387,4 +1387,7 @@ DEF_DUMMY_VALUE_EXTRACTOR (char, 0)
 DEF_DUMMY_VALUE_EXTRACTOR (octave_value, octave_value ())
 #undef DEF_DUMMY_VALUE_EXTRACTOR
 
+// Expand escape sequences even in single quoted strings (Matlab compatibility)
+extern bool Vsingle_quote_escape_processing;
+
 #endif

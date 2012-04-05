@@ -69,8 +69,8 @@ Types}, for more information about creating matrices.
 In double-quoted strings, the backslash character is used to introduce
 @dfn{escape sequences} that represent other characters.  For example,
 @samp{\n} embeds a newline character in a double-quoted string and
-@samp{\"} embeds a double quote character.  In single-quoted strings, backslash
-is not a special character.  Here is an example showing the difference:
+@samp{\"} embeds a double quote character.  In single-quoted strings, the
+backslash is not a special character.  An example showing the difference is
 
 @example
 @group
@@ -81,7 +81,7 @@ toascii ('\n')
 @end group
 @end example
 
-Here is a table of all the escape sequences used in Octave (within
+Below is a table of all escape sequences recognized by Octave (within
 double quoted strings).  They are the same as those used in the C 
 programming language.
 
@@ -147,12 +147,20 @@ example,
 @end group
 @end example
 
-In scripts the two different string types can be distinguished if necessary
+In scripts the two different string types can be distinguished, if necessary,
 by using @code{is_dq_string} and @code{is_sq_string}.
 
 @DOCSTRING(is_dq_string)
 
 @DOCSTRING(is_sq_string)
+
+The use of double quotes for strings with escape sequences and single quotes
+for verbatim input is quite straightforward.  However, @sc{matlab} behavior
+is inconsistent in this regard and in certain instances will do escape sequence
+processing even within single quotes.  When absolute compatibility is essential
+Octave can perform the same processing.
+
+@DOCSTRING(single_quote_escape_processing)
 
 @node Character Arrays
 @section Character Arrays

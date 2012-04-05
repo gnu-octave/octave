@@ -460,7 +460,7 @@ make_statement (T *arg)
 // Nonterminals we construct.
 %type <comment_type> stash_comment function_beg classdef_beg
 %type <comment_type> properties_beg methods_beg events_beg enum_beg
-%type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
+%type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep opt_comma
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -906,7 +906,7 @@ assign_lhs      : simple_expr
                     $$ = new tree_argument_list ($1);
                     $$->mark_as_simple_assign_lhs ();
                   }
-                | '[' arg_list CLOSE_BRACE
+                | '[' arg_list opt_comma CLOSE_BRACE
                   {
                     $$ = $2;
                     lexer_flags.looking_at_matrix_or_assign_lhs = false;
@@ -1670,6 +1670,12 @@ opt_sep         : // empty
                   { $$ = 0; }
                 | sep
                   { $$ = $1; }
+                ;
+
+opt_comma       : // empty
+                  { $$ = 0; }
+                | ','
+                  { $$ = ','; }
                 ;
 
 %%
@@ -4552,6 +4558,11 @@ code strings.\n\
 %!  y = flipud;
 %!endfunction
 %!assert (__f(), 2)
+
+% bug #35645
+%!test
+%! [a,] = gcd (1,2);
+%! [a,b,] = gcd (1, 2);
 
 */
 

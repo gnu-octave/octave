@@ -177,7 +177,7 @@ endfunction
 
 ## generate something for the texinfo @image command to process
 function image_as_txt(nm)
-  fid = fopen (sprintf ("##s.txt", nm), "wt");
+  fid = fopen (sprintf ("%s.txt", nm), "wt");
   fputs (fid, "\n");
   fputs (fid, "+---------------------------------+\n");
   fputs (fid, "| Image unavailable in text mode. |\n");

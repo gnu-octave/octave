@@ -890,7 +890,7 @@ Installation
 
 Build Dependencies
 
-* Obtaining the Depencies Automatically::
+* Obtaining the Dependencies Automatically::
 * Build Tools::
 * External Packages::
 

@@ -224,13 +224,13 @@ The result of which can be seen in @ref{fig:splinefit2}.
 @float Figure,fig:splinefit2
 @center @image{splinefit2,4in}
 @caption{Comparison of a piecewise constant, linear, quadratic, cubic, and
-quartic polynomials with 8 breaks to noisey data. The higher order solutions
+quartic polynomials with 8 breaks to noisy data. The higher order solutions
 more accurately represent the underlying function, but come with the
 expense of computational complexity.}
 @end float
 @end ifnotinfo
 
-When the underlying function to provide a fit to is periodice, @code{splitfit}
+When the underlying function to provide a fit to is periodic, @code{splinefit}
 is able to apply the boundary conditions needed to manifest a periodic fit.
 This is demonstrated by the code below.
 
@@ -265,9 +265,9 @@ and without, periodic boundary conditions.}
 @end float
 @end ifnotinfo
 
-More complex constaints may be added as well. For example, the code below
+More complex constraints may be added as well. For example, the code below
 illustrates a periodic fit with values that have been clamped end point values
-and a second periodic fit wihh hinged end point values.
+and a second periodic fit with hinged end point values.
 
 @example
 @group
@@ -310,7 +310,7 @@ hinged.}
 The @code{splinefit} function also provides the convenience of a @var{robust}
 fitting, where the effect of outlying data is reduced.  In the example below,
 three different fits are provided.  Two with differing levels of outlier
-suppressin and a third illustrating the non-robust solution.
+suppression and a third illustrating the non-robust solution.
 
 @example
 @group
@@ -347,11 +347,11 @@ The result of which can be seen in @ref{fig:splinefit6}.
 
 @float Figure,fig:splinefit6
 @center @image{splinefit6,4in}
-@caption{Comparison of two differnet levels of robust fitting (@var{beta} = 0.25 and 0.75) to noisy data combined with outlying data. A standard fit is also included.}
+@caption{Comparison of two different levels of robust fitting (@var{beta} = 0.25 and 0.75) to noisy data combined with outlying data. A standard fit is also included.}
 @end float
 @end ifnotinfo
 
-The function, @code{ppval}, evaluates the piecewise polyomials, created
+The function, @code{ppval}, evaluates the piecewise polynomials, created
 by @code{mkpp} or other means, and @code{unmkpp} returns detailed
 information about the piecewise polynomial.
 

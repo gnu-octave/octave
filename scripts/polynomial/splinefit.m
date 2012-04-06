@@ -58,7 +58,7 @@
 ## P+@var{order} degrees of freedom.  With periodic boundary conditions
 ## the degrees of freedom are reduced to P.
 ##
-## The optional property, @var{constaints}, is a structure specifying
+## The optional property, @var{constraints}, is a structure specifying
 ## linear constraints on the fit.  The structure has three fields, "xc",
 ## "yc", and "cc".
 ##
@@ -66,7 +66,7 @@
 ## @item "xc"
 ## x-locations of the constraints (vector) with a size identical to @var{x}.
 ## @item "yc"
-## Constaining values with a size identical to @var{y}.  The default
+## Constraining values with a size identical to @var{y}.  The default
 ## is an array of zeros.
 ## @item "cc"
 ## Coefficients (matrix).  The default is an array of ones.  The number of

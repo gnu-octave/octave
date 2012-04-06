@@ -46,7 +46,15 @@ function h = __line__ (p, varargin)
   endif
 
   if (num_data_args > 0 && ! size_equal (varargin{1:num_data_args}))
-    error ("line: number of X, Y, and Z points must be equal");
+    n = 1:num_data_args;
+    m = cellfun (@numel, varargin(1:num_data_args));
+    [~, m] = max (m);
+    b = ones (size (varargin{m(1)}));
+    try
+      varargin(n) = cellfun (@(x) bsxfun (@times, b, x), varargin(n), "uniformoutput", false);
+    catch
+      error ("line: number of X, Y, and Z points must be equal");
+    end_try_catch
   endif
 
   if (rem (nvargs - num_data_args, 2) != 0)

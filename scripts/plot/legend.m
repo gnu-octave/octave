@@ -468,7 +468,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         if (strcmp (orientation, "default"))
           orientation = "vertical";
         endif
-        box = "off";
+        box = "on";
       endif
 
       ## Get axis size and fontsize in points.
@@ -505,9 +505,10 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           addprops = true;
           hlegend = axes ("tag", "legend", "userdata", struct ("handle", ud),
                           "box", box,
-                          "xtick", [], "ytick", [], "xticklabel", "",
-                          "yticklabel", "", "zticklabel", "",
-                          "xlim", [0, 1], "ylim", [0, 1], "visible", "off",
+                          "xtick", [], "ytick", [],
+                          "xticklabel", "", "yticklabel", "", "zticklabel", "",
+                          "xlim", [0, 1], "ylim", [0, 1], 
+                          "visible", ifelse (strcmp (box, "on"), "on", "off"), 
                           "activepositionproperty", "position");
         else
           addprops = false;
@@ -1007,9 +1008,9 @@ endfunction
 %!demo
 %! clf;
 %! plot (1:10, 1:10, 1:10, fliplr (1:10));
-%! title ('Legend with box on');
+%! title ('Legend with box off');
 %! legend ({'I am blue', 'I am green'}, 'location', 'east');
-%! legend boxon;
+%! legend boxoff;
 
 %!demo
 %! clf;
@@ -1043,7 +1044,6 @@ endfunction
 %! title ('Signals with random offset and uniform noise');
 %! xlabel ('Sample Nr [k]'); ylabel ('Amplitude [V]');
 %! legend (labels, 'location', 'southoutside');
-%! legend ('boxon');
 
 %!demo
 %! clf;
@@ -1122,19 +1122,15 @@ endfunction
 %! subplot (2,2,1);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'northwestoutside');
-%!  legend boxon;
 %! subplot (2,2,2);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'northeastoutside');
-%!  legend boxon;
 %! subplot (2,2,3);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'southwestoutside');
-%!  legend boxon;
 %! subplot (2,2,4);
 %!  plot (x, rand (numel (x)));
 %!  legend (cellstr (num2str (x)), 'location', 'southeastoutside');
-%!  legend boxon;
 
 %!demo
 %! clf;

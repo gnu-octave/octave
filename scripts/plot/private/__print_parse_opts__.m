@@ -153,7 +153,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (arg_st.ghostscript.resolution == 0)
     ## Do as Matlab does.
-    arg_st.ghostscript.resolution = num2str (get (0, "screenpixelsperinch"));
+    arg_st.ghostscript.resolution = get (0, "screenpixelsperinch");
   endif
 
   if (isempty (arg_st.orientation))

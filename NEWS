@@ -1,6 +1,16 @@
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
+ ** Redundant terminal comma accepted by parser
+
+    A redundant terminal comma is now accepted in matrix
+    definitions which allows writing code such as 
+
+    [a,...
+     b,...
+     c,...
+    ] = deal (1,2,3)
+
  ** Warning IDs renamed:
 
     Octave:array-as-scalar => Octave:array-to-scalar

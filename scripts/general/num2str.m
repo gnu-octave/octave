@@ -60,6 +60,16 @@
 
 ## Author: jwe
 
+## FIXME: Matlab output is essentially sprintf ("%p+8.pg", x)
+## where precision p is log10(x) + 4.  This produces differently sized
+## columns for matrix input with both integer and floating point values
+## which can look rather odd.  For the time being (2012/04/07) we prefer
+## Octave's output over strict compatibility.
+
+## FIXME: Switch from "%d" decimal format to "%g" floating point format
+## is based on intmax ("int32").  On 64-bit machines we should probably use
+## intmax ("int64").
+
 function retval = num2str (x, arg)
 
   if (nargin != 1 && nargin != 2)
@@ -70,12 +80,48 @@ function retval = num2str (x, arg)
     retval = x;
   elseif (isempty (x))
     retval = "";
-  elseif (iscomplex (x))
+  elseif (isreal (x))
+    if (nargin == 2)
+      if (ischar (arg))
+        fmt = arg;
+      else
+        if (isnumeric (x) && x == fix (x)
+            && abs (x) < min (10 .^ arg, intmax ("int32")))
+          fmt = sprintf ("%%%dd  ", arg);
+        else
+          fmt = sprintf ("%%%d.%dg", arg+7, arg);
+        endif
+      endif
+    else
+      if (isnumeric (x) && x == fix (x) && abs (x) < 1e10)
+        if (any (x(:) != 0))
+          dgt = floor (log10 (max (abs (x(:))))) + (any (x(:) < 0)) + 2;
+        else
+          dgt = 2;
+        endif
+        if (any (abs (x(:)) > intmax ("int32")))
+          fmt = sprintf ("%%%dg  ", dgt);
+        else
+          fmt = sprintf ("%%%dd  ", dgt);
+        endif
+      elseif (isscalar (x))
+        fmt = "%11.5g";
+      else
+        fmt = "%11.5g";
+      endif
+    endif
+    fmt = cstrcat (deblank (repmat (fmt, 1, columns (x))), "\n");
+    nd = ndims (x);
+    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
+    tmp(end) = "";
+    retval = strtrim (char (strsplit (tmp, "\n")));
+  else  # complex x
     if (nargin == 2)
       if (ischar (arg))
         fmt = cstrcat (arg, "%-+", arg(2:end), "i");
       else
-        if (isnumeric (x) && x == fix (x) && abs (x) < (10 .^ arg))
+        if (isnumeric (x) && x == fix (x)
+            && abs (x) < min (10 .^ arg, intmax ("int32")))
           fmt = sprintf ("%%%dd%%-+%ddi  ", arg, arg);
         else
           fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
@@ -84,15 +130,15 @@ function retval = num2str (x, arg)
     else
       ## Setup a suitable format string
       if (isnumeric (x) && x == fix (x) && abs (x) < 1e10)
-        if (max (abs (real (x(:)))) == 0)
-          dgt1 = 2;
-        else
+        if (any (real (x(:)) != 0))
           dgt1 = ceil (log10 (max (max (abs (real (x(:)))),
                                    max (abs (imag (x(:))))))) + 2;
+        else
+          dgt1 = 2;
         endif
-        dgt2 = dgt1 - (min (real (x(:))) >= 0);
+        dgt2 = dgt1 - (any (real (x(:)) >= 0));
 
-        if (length (abs (x) == x) > 0)
+        if (any (abs (x(:)) > intmax ("int32")))
           fmt = sprintf("%%%dg%%+-%dgi  ", dgt2, dgt1);
         else
           fmt = sprintf("%%%dd%%+-%ddi  ", dgt2, dgt1);
@@ -106,8 +152,7 @@ function retval = num2str (x, arg)
 
     ## Manipulate the complex value to have real values in the odd
     ## columns and imaginary values in the even columns.
-    sz = size (x);
-    nc = sz(2);
+    nc = columns (x);
     nd = ndims (x);
     perm = fix ([1:0.5:nc+0.5]);
     perm(2:2:2*nc) = perm(2:2:2*nc) + nc;
@@ -137,41 +182,7 @@ function retval = num2str (x, arg)
       endif
     endwhile
 
-    tmp(length (tmp)) = "";
-    retval = char (strtrim (strsplit (tmp, "\n")));
-  else
-    if (nargin == 2)
-      if (ischar (arg))
-        fmt = arg;
-      else
-        if (isnumeric (x) && x == fix (x) && abs (x) < (10 .^ arg))
-          fmt = sprintf ("%%%dd  ", arg);
-        else
-          fmt = sprintf ("%%%d.%dg", arg+7, arg);
-        endif
-      endif
-    else
-      if (isnumeric (x) && x == fix (x) && abs (x) < 1e10)
-        if (max (abs (x(:))) == 0)
-          dgt = 2;
-        else
-          dgt = floor (log10 (max (abs(x(:))))) + (min (real (x(:))) < 0) + 2;
-        endif
-        if (length (abs (x) == x) > 0)
-          fmt = sprintf ("%%%dg  ", dgt);
-        else
-          fmt = sprintf ("%%%dd  ", dgt);
-        endif
-      elseif (isscalar (x))
-        fmt = "%11.5g";
-      else
-        fmt = "%11.5g";
-      endif
-    endif
-    fmt = cstrcat (deblank (repmat (fmt, 1, columns (x))), "\n");
-    nd = ndims (x);
-    tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
-    tmp(length (tmp)) = "";
+    tmp(end) = "";
     retval = strtrim (char (strsplit (tmp, "\n")));
   endif
 
@@ -183,6 +194,12 @@ endfunction
 %!assert (num2str (123.456, 4), "123.5")
 %!assert (num2str ([1, 1.34; 3, 3.56], "%5.1f"),  ["1.0  1.3"; "3.0  3.6"])
 %!assert (num2str (1.234 + 27.3i), "1.234+27.3i")
+
+%!assert (num2str (19440606), "19440606")
+%!assert (num2str (2^33), "8.58993e+09")
+%!assert (num2str (-2^33), "-8.58993e+09")
+%!assert (num2str (2^33+1i), "8.58993e+09+1i")
+%!assert (num2str (-2^33+1i), "-8.58993e+09+1i")
 
 %!error num2str ()
 %!error num2str (1, 2, 3)

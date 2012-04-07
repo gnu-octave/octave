@@ -1,6 +1,18 @@
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
+ ** 'emptymatch', 'noemptymatch' options added to regular expressions.
+
+    With this addition Octave now accepts the entire set of Matlab options
+    for regular expressions.  'noemptymatch' is the default, but 'emptymatch'
+    has certain uses where you need to match an assertion rather than actual
+    characters.  For example, 
+
+    regexprep ('World', '^', 'Hello ', 'emptymatch')
+      => Hello World
+
+    where the pattern is actually the assertion '^' or start-of-line.
+
  ** Redundant terminal comma accepted by parser
 
     A redundant terminal comma is now accepted in matrix

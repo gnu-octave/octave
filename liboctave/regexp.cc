@@ -315,9 +315,9 @@ regexp::match (const std::string& buffer)
         }
       else if (matches == PCRE_ERROR_NOMATCH)
         break;
-      else if (ovector[1] <= ovector[0])
+      else if (ovector[1] <= ovector[0] && ! options.emptymatch ())
         {
-          // Zero sized match.  Skip to next char.
+          // Zero length match.  Skip to next char.
           idx = ovector[0] + 1;
           if (idx < buffer.length ())
             continue;
@@ -400,7 +400,16 @@ regexp::match (const std::string& buffer)
           regexp::match_element new_elem (named_tokens, tokens, match_string,
                                           token_extents, start, end);
           lst.push_back (new_elem);
-          idx = ovector[1];
+
+          if (ovector[1] <= ovector[0])
+          {
+            // Zero length match.  Skip to next char.
+            idx = ovector[0] + 1;
+            if (idx <= buffer.length ())
+              continue;
+          }
+          else 
+            idx = ovector[1];
 
           if (options.once () || idx >= buffer.length ())
             break;

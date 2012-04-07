@@ -77,12 +77,16 @@ parse_options (regexp::opts& options, const octave_value_list& args,
         options.lineanchors (false);
       else if (str.find ("literalspacing", 0) == 0)
         options.freespacing (false);
+      else if (str.find ("noemptymatch", 0) == 0)
+        options.emptymatch (false);
       else if (str.find ("dotexceptnewline", 0) == 0)
         options.dotexceptnewline (true);
       else if (str.find ("lineanchors", 0) == 0)
         options.lineanchors (true);
       else if (str.find ("freespacing", 0) == 0)
         options.freespacing (true);
+      else if (str.find ("emptymatch", 0) == 0)
+        options.emptymatch (true);
       else if (str.find ("start", 0) == 0
                || str.find ("end", 0) == 0
                || str.find ("tokenextents", 0) == 0
@@ -257,7 +261,9 @@ octregexp (const octave_value_list &args, int nargout,
                   || str.find ("dotall", 0) == 0
                   || str.find ("dotexceptnewline", 0) == 0
                   || str.find ("literalspacing", 0) == 0
-                  || str.find ("freespacing", 0) == 0)
+                  || str.find ("freespacing", 0) == 0
+                  || str.find ("noemptymatch", 0) == 0
+                  || str.find ("emptymatch", 0) == 0)
                 continue;
               else if (str.find ("start", 0) == 0)
                 k = 0;
@@ -488,8 +494,8 @@ Escape sequences defined below can also be used inside list\n\
 operators.  For example, a template for a floating point number might be\n\
 @code{[-+.\\d]+}.\n\
 \n\
-@item ()\n\
-Grouping operator\n\
+@item () (?:)\n\
+Grouping operator.  The first form, parentheses only, also creates a token.\n\
 \n\
 @item |\n\
 Alternation operator.  Match one of a choice of regular expressions.  The\n\
@@ -562,7 +568,8 @@ being used as the fieldname.  A named token is denoted by\n\
 @code{(?<name>@dots{})}.\n\
 \n\
 @item sp\n\
-A cell array of the text not returned by match.\n\
+A cell array of the text not returned by match, i.e., what remains if you\n\
+split the string based on @var{pat}.\n\
 @end table\n\
 \n\
 Particular output arguments, or the order of the output arguments, can be\n\
@@ -629,6 +636,15 @@ The pattern may include arbitrary whitespace and also comments beginning with\n\
 the character @samp{#}.\n\
 \n\
 Alternatively, use (?x) in the pattern.\n\
+\n\
+@item noemptymatch\n\
+Zero-length matches are not returned.  (default)\n\
+\n\
+@item emptymatch\n\
+Return zero-length matches.\n\
+\n\
+@code{regexp ('a', 'b*', 'emptymatch'} returns @code{[1 2]} because there are\n\
+zero or more 'b' characters at positions 1 and end-of-string.\n\
 \n\
 @end table\n\
 @seealso{regexpi, strfind, regexprep}\n\
@@ -809,6 +825,46 @@ Alternatively, use (?x) in the pattern.\n\
 %! assert (regexp ("this word", '(?-x)s w', 'literalspacing'), 4);
 %! assert (regexp ("this word", 's w', 'freespacing'), zeros (1,0));
 %! assert (regexp ("this word", '(?x)s w'), zeros (1,0));
+
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '[VOCT]*', 'noemptymatch');
+%! assert (s, [1 5]);
+%! assert (e, [3 5]);
+%! assert (te, { zeros(0,2), zeros(0,2) });
+%! assert (m, { "OCT", "V" });
+%! assert (t, { cell(1,0), cell(1,0) });
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "A", "E" });
+
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '([VOCT]*)', 'noemptymatch');
+%! assert (s, [1 5]);
+%! assert (e, [3 5]);
+%! assert (te, { [1 3], [5 5] });
+%! assert (m, { "OCT", "V" });
+%! assert (t, { {"OCT"}, {"V"} });
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "A", "E" });
+
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '[VOCT]*', 'emptymatch');
+%! assert (s, [1 4 5 6 7]);
+%! assert (e, [3 3 5 5 6]);
+%! assert (te, repmat ({zeros(0,2)}, [1, 5]));
+%! assert (m, { "OCT", "", "V", "", "" });
+%! assert (t, repmat({cell(1,0)}, [1, 5]));
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "", "A", "", "E", "" });
+
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '([VOCT]*)', 'emptymatch');
+%! assert (s, [1 4 5 6 7]);
+%! assert (e, [3 3 5 5 6]);
+%! assert (te, { [1 3], [4 3], [5 5], [6 5], [7 6] });
+%! assert (m, { "OCT", "", "V", "", "" });
+%! assert (t, { {"OCT"}, {""}, {"V"}, {""}, {""} });
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "", "A", "", "E", "" });
 
 %!error regexp ('string', 'tri', 'BadArg')
 %!error regexp ('string')
@@ -1212,6 +1268,10 @@ This option is present for compatibility but is ignored.\n\
 
 ## Return the original if no match
 %!assert (regexprep ('hello', 'world', 'earth'), 'hello')
+
+## Test emptymatch
+%!assert (regexprep ('World', '^', 'Hello '), 'World')
+%!assert (regexprep ('World', '^', 'Hello ', 'emptymatch'), 'Hello World')
 
 ## Test a general replacement
 %!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_"), "a_b_c_d_e_f_g")

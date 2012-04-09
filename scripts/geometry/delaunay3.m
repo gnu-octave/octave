@@ -42,7 +42,7 @@
 ## To append user options to the defaults it is necessary to repeat the 
 ## default arguments in @var{options}.  Use a null string to pass no arguments.
 ##
-## @seealso{delaunay, delaunayn, convhull, voronoi}
+## @seealso{delaunay, delaunayn, convhull, voronoi, tetramesh}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

@@ -191,7 +191,6 @@ function list = missing_functions ()
   "gco",
   "getframe",
   "getpixelposition",
-  "gmres",
   "grabcode",
   "graymon",
   "gsvd",

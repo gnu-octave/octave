@@ -44,6 +44,93 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+// Replace backslash escapes in a string with the real values.  We need
+// this special function instead of the one in utils.cc because the set
+// of escape sequences used in regexps is different from those used in
+// the *printf functions.
+
+static std::string
+do_regexp_string_escapes (const std::string& s)
+{
+  std::string retval;
+
+  size_t i = 0;
+  size_t j = 0;
+  size_t len = s.length ();
+
+  retval.resize (len);
+
+  while (j < len)
+    {
+      if (s[j] == '\\' && j+1 < len)
+        {
+          switch (s[++j])
+            {
+            case '$':
+              retval[i] = '$';
+              break;
+
+            case 'a':
+              retval[i] = '\a';
+              break;
+
+            case 'b': // backspace
+              retval[i] = '\b';
+              break;
+
+            case 'f': // formfeed
+              retval[i] = '\f';
+              break;
+
+            case 'n': // newline
+              retval[i] = '\n';
+              break;
+
+            case 'r': // carriage return
+              retval[i] = '\r';
+              break;
+
+            case 't': // horizontal tab
+              retval[i] = '\t';
+              break;
+
+            case 'v': // vertical tab
+              retval[i] = '\v';
+              break;
+
+            case '\\': // backslash
+              retval[i] = '\\';
+              break;
+
+#if 0
+// FIXME -- to be complete, we need to handle \oN, \o{N}, \xN, and
+// \x{N}.  Hex digits may be upper or lower case.  Brackets are
+// optional, so \x5Bz is the same as \x{5B}z.
+
+            case 'o': // octal number
+            case 'x': // hex number
+#endif
+
+            default:
+              retval[i] = '\\';
+              retval[++i] = s[j];
+              break;
+            }
+        }
+      else
+        {
+          retval[i] = s[j];
+        }
+
+      i++;
+      j++;
+    }
+
+  retval.resize (i);
+
+  return retval;
+}
+
 static void
 parse_options (regexp::opts& options, const octave_value_list& args,
                const std::string& who, int skip, bool& extra_args)
@@ -113,9 +200,12 @@ octregexp (const octave_value_list &args, int nargout,
   if (error_state)
     return retval;
 
-  const std::string pattern = args(1).string_value ();
+  std::string pattern = args(1).string_value ();
   if (error_state)
     return retval;
+  // Matlab compatibility.
+  if (args(1).is_sq_string ())
+    pattern = do_regexp_string_escapes (pattern);
 
   regexp::opts options;
   options.case_insensitive (case_insensitive);
@@ -921,6 +1011,9 @@ zero or more 'b' characters at positions 1 and end-of-string.\n\
 %! [a, b] = regexp (str, "[o]+", "match", "split");
 %! assert (a, {"oo"});
 %! assert (b, {"f", " bar"});
+
+%!assert (regexp ("\n", '\n'), 1);
+%!assert (regexp ("\n", "\n"), 1);
 */
 
 DEFUN_DLD (regexpi, args, nargout,
@@ -1078,6 +1171,9 @@ syntax of the search pattern.\n\
 %!assert (regexpi ({'asdfg-dfd', '-dfd-dfd-', 'qasfdfdaq'}, '-'), {6, [1,5,9], zeros(1,0)})
 %!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
 %!assert (regexpi ('Strings', {'t', 's'}), {2, [1, 7]})
+
+%!assert (regexpi ("\n", '\n'), 1);
+%!assert (regexpi ("\n", "\n"), 1);
 */
 
 static octave_value
@@ -1092,13 +1188,19 @@ octregexprep (const octave_value_list &args, const std::string &who)
   if (error_state)
     return retval;
 
-  const std::string pattern = args(1).string_value ();
+  std::string pattern = args(1).string_value ();
   if (error_state)
     return retval;
+  // Matlab compatibility.
+  if (args(1).is_sq_string ())
+    pattern = do_regexp_string_escapes (pattern);
 
-  const std::string replacement = args(2).string_value ();
+  std::string replacement = args(2).string_value ();
   if (error_state)
     return retval;
+  // Matlab compatibility.
+  if (args(2).is_sq_string ())
+    replacement = do_regexp_string_escapes (replacement);
 
   // Pack options excluding 'tokenize' and various output
   // reordering strings into regexp arg list
@@ -1300,4 +1402,7 @@ This option is present for compatibility but is ignored.\n\
 
 # Nasty lookbehind expression
 %!assert (regexprep ('x^(-1)+y(-1)+z(-1)=0', '(?<=[a-z]+)\(\-[1-9]*\)', '_minus1'),'x^(-1)+y_minus1+z_minus1=0')
+
+%!assert (regexprep ("\n", '\n', "X"), "X");
+%!assert (regexprep ("\n", "\n", "X"), "X");
 */

@@ -1,4 +1,7 @@
-EXTRA_DIST += slatec-fn/module.mk
+EXTRA_DIST += \
+  slatec-fn/module.mk \
+  slatec-fn/derfc.in.f \
+  slatec-fn/erfc.in.f
 
 libcruft_la_SOURCES += \
   slatec-fn/albeta.f \
@@ -65,3 +68,11 @@ libcruft_la_SOURCES += \
   slatec-fn/xsgmainc.f \
   slatec-fn/xgamma.f \
   slatec-fn/xbetai.f
+
+slatec-fn/erfc.f: slatec-fn/erfc.in.f Makefile
+	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t
+	mv $@-t $@
+
+slatec-fn/derfc.f: slatec-fn/derfc.in.f Makefile
+	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t
+	mv $@-t $@

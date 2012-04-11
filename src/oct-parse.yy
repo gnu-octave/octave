@@ -115,6 +115,11 @@ bool input_from_startup_file = false;
 //     nested function.
 static int current_function_depth = 0;
 
+// A stack holding the nested function scopes being parsed.
+// We don't use std::stack, because we want the clear method. Also, we
+// must access one from the top
+static std::vector<symbol_table::scope_id> function_scopes;
+
 // Maximum function depth detected. Just here to determine whether
 // we have nested functions or just implicitly ended subfunctions.
 static int max_function_depth = 0;
@@ -1225,6 +1230,8 @@ push_fcn_symtab : // empty
                     parser_symtab_context.push ();
 
                     symbol_table::set_scope (symbol_table::alloc_scope ());
+
+                    function_scopes.push_back (symbol_table::current_scope ());
 
                     if (! reading_script_file && current_function_depth == 1
                         && ! parsing_subfunctions)
@@ -2867,7 +2874,11 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       if (current_function_depth > 1 || parsing_subfunctions)
         {
           fcn->stash_parent_fcn_name (curr_fcn_file_name);
-          fcn->stash_parent_fcn_scope (primary_fcn_scope);
+
+          if (current_function_depth > 1)
+            fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size()-2]);
+          else
+            fcn->stash_parent_fcn_scope (primary_fcn_scope);
         }
 
       if (lexer_flags.parsing_class_method)
@@ -2943,9 +2954,21 @@ finish_function (tree_parameter_list *ret_list,
         {
           fcn->mark_as_subfunction ();
 
-          symbol_table::install_subfunction (nm, octave_value (fcn),
-                                             primary_fcn_scope);
+          if (endfunction_found && function_scopes.size () > 1)
+            {
+              symbol_table::scope_id pscope
+                = function_scopes[function_scopes.size()-2];
+
+              symbol_table::install_nestfunction (nm, octave_value (fcn),
+                                                  pscope);
+            }
+          else
+            symbol_table::install_subfunction (nm, octave_value (fcn),
+                                               primary_fcn_scope);
         }
+
+      if (current_function_depth == 1 && fcn)
+        symbol_table::update_nest (fcn->scope ());
 
       if (! reading_fcn_file && current_function_depth == 1)
         {
@@ -2985,6 +3008,7 @@ recover_from_parsing_function (void)
     parsing_subfunctions = true;
 
   current_function_depth--;
+  function_scopes.pop_back ();
 
   lexer_flags.defining_func--;
   lexer_flags.parsed_function_name.pop ();
@@ -3454,6 +3478,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   frame.protect_var (line_editing);
   frame.protect_var (current_class_name);
   frame.protect_var (current_function_depth);
+  frame.protect_var (function_scopes);
   frame.protect_var (max_function_depth);
   frame.protect_var (parsing_subfunctions);
   frame.protect_var (endfunction_found);
@@ -3464,6 +3489,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   line_editing = false;
   current_class_name = dispatch_type;
   current_function_depth = 0;
+  function_scopes.clear ();
   max_function_depth = 0;
   parsing_subfunctions = false;
   endfunction_found = false;
@@ -3582,11 +3608,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
           if (status != 0)
             error ("parse error while reading %s file %s",
                    file_type.c_str(), ff.c_str ());
-          else if (reading_fcn_file && endfunction_found
-                   && max_function_depth > 1)
-            warning_with_id ("Octave:nested-functions-coerced",
-                             "nested functions are coerced into subfunctions "
-                             "in file %s", ff.c_str ());
         }
       else
         {
@@ -4298,6 +4319,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   frame.protect_var (line_editing);
   frame.protect_var (current_eval_string);
   frame.protect_var (current_function_depth);
+  frame.protect_var (function_scopes);
   frame.protect_var (max_function_depth);
   frame.protect_var (parsing_subfunctions);
   frame.protect_var (endfunction_found);
@@ -4312,6 +4334,7 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   parser_end_of_input = false;
   line_editing = false;
   current_function_depth = 0;
+  function_scopes.clear ();
   max_function_depth = 0;
   parsing_subfunctions = false;
   endfunction_found = false;

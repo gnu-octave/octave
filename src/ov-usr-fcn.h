@@ -177,6 +177,12 @@ public:
 
   ~octave_user_function (void);
 
+  symbol_table::context_id active_context () const
+  {
+    return is_anonymous_function ()
+      ? 0 : static_cast<symbol_table::context_id>(call_depth);
+  }
+
   octave_function *function_value (bool = false) { return this; }
 
   octave_user_function *user_function_value (bool = false) { return this; }
@@ -276,6 +282,10 @@ public:
          : cname == dispatch_class ())
       : false;
   }
+
+  bool is_nested_function (void) const { return nested_function; }
+
+  void mark_as_nested_function (void) { nested_function = true; }
 
   void mark_as_class_constructor (void) { class_constructor = true; }
 
@@ -399,6 +409,9 @@ private:
 
   // TRUE means this is an anonymous function.
   bool anonymous_function;
+
+  // TRUE means this is a nested function. (either a child or parent)
+  bool nested_function;
 
   // TRUE means this function is the constructor for class object.
   bool class_constructor;

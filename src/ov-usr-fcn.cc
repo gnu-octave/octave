@@ -188,8 +188,9 @@ octave_user_function::octave_user_function
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
-    anonymous_function (false), class_constructor (false),
-    class_method (false), parent_scope (-1), local_scope (sid),
+    anonymous_function (false), nested_function(false),
+    class_constructor (false), class_method (false),
+    parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
 {
   if (cmd_list)
@@ -387,7 +388,7 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  int context = is_anonymous_function () ? 0 : call_depth;
+  int context = active_context ();
 
   octave_call_stack::push (this, local_scope, context);
   frame.add_fcn (octave_call_stack::pop);

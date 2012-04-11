@@ -78,11 +78,25 @@ symbol_table::scope_id_cache::create_instance (void)
   singleton_cleanup_list::add (cleanup_instance);
 }
 
+symbol_table::context_id
+symbol_table::symbol_record::symbol_record_rep::active_context (void) const
+{
+  octave_user_function *fcn = curr_fcn;
+
+  // FIXME -- If active_context () == -1, then it does not make much
+  // sense to use this symbol_record. This means an attempt at accessing
+  // a variable from a function that has not been called yet is
+  // happening. This should be cleared up when an implementing closures.
+
+  return fcn && fcn->active_context () != static_cast<context_id> (-1)
+    ? fcn->active_context () : xcurrent_context;
+}
+
 void
 symbol_table::symbol_record::symbol_record_rep::dump
   (std::ostream& os, const std::string& prefix) const
 {
-  octave_value val = varval (xcurrent_context);
+  octave_value val = varval ();
 
   os << prefix << name;
 
@@ -625,40 +639,23 @@ symbol_table::fcn_info::fcn_info_rep::xfind (const octave_value_list& args,
       // subfunctions if we are currently executing a function defined
       // from a .m file.
 
-      scope_val_iterator r = subfunctions.find (xcurrent_scope);
-
       octave_user_function *curr_fcn = symbol_table::get_curr_fcn ();
 
-      if (r != subfunctions.end ())
+      for (scope_id scope = xcurrent_scope; scope >= 0;)
         {
-          // FIXME -- out-of-date check here.
-
-          return r->second;
-        }
-      else
-        {
-          if (curr_fcn)
+          scope_val_iterator r = subfunctions.find (scope);
+          if (r != subfunctions.end ())
             {
-              // FIXME -- maybe it would be better if we could just get
-              // a pointer to the parent function so we would have
-              // access to all info about it instead of only being able
-              // to query the current function for specific bits of info
-              // about its parent function?
+              // FIXME -- out-of-date check here.
 
-              scope_id pscope = curr_fcn->parent_fcn_scope ();
-
-              if (pscope > 0)
-                {
-                  r = subfunctions.find (pscope);
-
-                  if (r != subfunctions.end ())
-                    {
-                      // FIXME -- out-of-date check here.
-
-                      return r->second;
-                    }
-                }
+              return r->second;
             }
+
+          octave_user_function *scope_curr_fcn = get_curr_fcn (scope);
+          if (scope_curr_fcn)
+            scope = scope_curr_fcn->parent_fcn_scope ();
+          else
+            scope = -1;
         }
 
       // Private function.
@@ -896,29 +893,21 @@ symbol_table::fcn_info::fcn_info_rep::x_builtin_find (void)
   // subfunctions if we are currently executing a function defined
   // from a .m file.
 
-  scope_val_iterator r = subfunctions.find (xcurrent_scope);
-
-  if (r != subfunctions.end ())
+  for (scope_id scope = xcurrent_scope; scope >= 0;)
     {
-      // FIXME -- out-of-date check here.
-
-      return r->second;
-    }
-  else if (curr_fcn)
-    {
-      scope_id pscope = curr_fcn->parent_fcn_scope ();
-
-      if (pscope > 0)
+      scope_val_iterator r = subfunctions.find (scope);
+      if (r != subfunctions.end ())
         {
-          r = subfunctions.find (pscope);
+          // FIXME -- out-of-date check here.
 
-          if (r != subfunctions.end ())
-            {
-              // FIXME -- out-of-date check here.
-
-              return r->second;
-            }
+          return r->second;
         }
+
+      octave_user_function *scope_curr_fcn = get_curr_fcn (scope);
+      if (scope_curr_fcn)
+        scope = scope_curr_fcn->parent_fcn_scope ();
+      else
+        scope = -1;
     }
 
   return octave_value ();
@@ -1142,6 +1131,23 @@ symbol_table::fcn_info::fcn_info_rep::dump
         os << tprefix << "dispatch: " << fcn_file_name (p->second)
            << " [" << p->first << "]\n";
     }
+}
+
+void
+symbol_table::install_nestfunction (const std::string& name,
+                                    const octave_value& fcn,
+                                    scope_id parent_scope)
+{
+  install_subfunction (name, fcn, parent_scope);
+
+  // Stash the nest_parent for resolving variables after parsing is done.
+  octave_function *fv = fcn.function_value();
+
+  symbol_table *fcn_table = get_instance (fv->scope());
+
+  symbol_table *parent_table = get_instance (parent_scope);
+
+  parent_table->add_nest_child (*fcn_table);
 }
 
 octave_value
@@ -1454,6 +1460,44 @@ void symbol_table::cleanup (void)
       // deleting other scopes.
       delete inst;
     }
+}
+
+void
+symbol_table::do_update_nest (void)
+{
+  if (nest_parent || nest_children.size ())
+    curr_fcn->mark_as_nested_function ();
+
+  if (nest_parent)
+    {
+      // fix bad symbol_records
+      for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
+        {
+          symbol_record &ours = ti->second;
+          symbol_record parents;
+          if (! ours.is_formal ()
+              && nest_parent->look_nonlocal (ti->first, parents))
+            {
+              if (ours.is_global () || ours.is_persistent ())
+                ::error ("global and persistent may only be used in the topmost level in which a nested variable is used");
+                
+              if (! ours.is_formal ())
+                {
+                  ours.invalidate ();
+                  ti->second = parents;
+                }
+            }
+          else
+            ours.set_curr_fcn (curr_fcn);
+        }
+    }
+  else if (nest_children.size())
+    for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
+      ti->second.set_curr_fcn (curr_fcn);
+
+  for (std::vector<symbol_table*>::iterator iter = nest_children.begin ();
+       iter != nest_children.end (); ++iter)
+    (*iter)->do_update_nest ();
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,

@@ -18,6 +18,9 @@ Summary of important user-visible changes for version 3.8:
     strings.  The regexprep function now processes backslash escapes in
     single-quoted replacement strings.
 
+ ** Octave now supports nested functions with scoping rules that are
+    compatible with Matlab.
+
  ** Redundant terminal comma accepted by parser
 
     A redundant terminal comma is now accepted in matrix

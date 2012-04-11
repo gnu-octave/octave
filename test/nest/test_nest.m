@@ -16,19 +16,27 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%!assert (recursive_nest (), 25);
+################################################################################
+## This file actually executes the tests on nested functions.
+##
+## It relies on the function files defined in the nest/ directory.
+################################################################################
 
-%!assert (recursive_nest2 (), 20);
+%!assert (recursive_nest (), 25)
 
-%!assert (recursive_nest3 (), 5);
+%!assert (recursive_nest2 (), 20)
 
-%!assert (script_nest (), 5);
+%!assert (recursive_nest3 (), 5)
 
-%!assert (arg_ret (), 10);
+%!assert (script_nest (), 5)
 
-%!assert (varg_nest (-1), 6);
+%!assert (arg_ret (), 10)
 
-%!assert (varg_nest2, 5);
+%!assert (arg_nest, 1)
+
+%!assert (varg_nest (-1), 6)
+
+%!assert (varg_nest2, 5)
 
 %!test
 %! scope0;
@@ -39,8 +47,7 @@
 %!test
 %! scope3;
 
-%!assert (arg_nest, 1);
+%!error <D' undefined near line 7> scope2
+%!error <handles to nested functions are not yet supported> no_closure (0)
+%!error <handles to nested functions are not yet supported> no_closure (1)
 
-%!error <D' undefined near line 7> scope2;
-%!error <handles to nested functions are not yet supported> no_closure (0);
-%!error <handles to nested functions are not yet supported> no_closure (1);

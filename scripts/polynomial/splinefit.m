@@ -27,9 +27,9 @@
 ## may be evaluated using @code{ppval}.
 ##
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
-## @var{p} is a positive integer defining the number of linearly spaced
-## intervals along @var{x}.  @var{p} is the number of intervalas and
-## @var{p}+1 is the number of breaks.
+## @var{p} is a positive integer defining the number of intervals along @var{x},
+## and @var{p}+1 is the number of breaks. The number of points in each interval
+## differ by no more than 1.
 ##
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "robust", @var{robust})
@@ -53,21 +53,21 @@
 ## outlying data.  Values close to unity may cause instability or rank
 ## deficiency.
 ##
-## @var{order} sets the order polynomials used to construct the spline.
+## The splines are constructed of polynomials with degree @var{order}.
 ## The default is a cubic, @var{order}=3.  A spline with P pieces has
 ## P+@var{order} degrees of freedom.  With periodic boundary conditions
 ## the degrees of freedom are reduced to P.
 ##
-## The optional property, @var{constraints}, is a structure specifying
+## The optional property, @var{constaints}, is a structure specifying
 ## linear constraints on the fit.  The structure has three fields, "xc",
 ## "yc", and "cc".
 ##
 ## @table @asis
 ## @item "xc"
-## x-locations of the constraints (vector) with a size identical to @var{x}.
+## Vector of the x-locations of the constraints.
 ## @item "yc"
-## Constraining values with a size identical to @var{y}.  The default
-## is an array of zeros.
+## Constaining values at the locations, @var{xc}.
+## The default is an array of zeros.
 ## @item "cc"
 ## Coefficients (matrix).  The default is an array of ones.  The number of
 ## rows is limited to the order of the piece-wise polynomials, @var{order}.
@@ -79,10 +79,10 @@
 ## @example
 ## @group
 ## @tex
-## $cc(1,j) \cdot y(x) + cc(2,j) \cdot y\prime(x) + ... = yc(:,\dots,:,j), \quad x = xc(j)$.
+## $cc(1,j) \cdot y(xc(j)) + cc(2,j) \cdot y\prime(xc(j)) + ... = yc(:,\dots,:,j)$.
 ## @end tex
 ## @ifnottex
-## cc(1,j) * y(x) + cc(2,j) * y'(x) + ... = yc(:,...,:,j),  x = xc(j).
+## cc(1,j) * y(xc(j)) + cc(2,j) * y'(xc(j)) + ... = yc(:,...,:,j).
 ## @end ifnottex
 ## @end group
 ## @end example
@@ -130,7 +130,7 @@
 %! y = sin (x) + 0.1 * randn (size (x));
 %! % Breaks
 %! breaks = [0:5, 2*pi];
-%! % Constraints: y(0) = 0, y"(0) = 1 and y(3) + y"(3) = 0
+%! % Constraints: y(0) = 0, y'(0) = 1 and y(3) + y"(3) = 0
 %! xc = [0 0 3];
 %! yc = [0 1 0];
 %! cc = [1 0 1; 0 1 0; 0 0 1];

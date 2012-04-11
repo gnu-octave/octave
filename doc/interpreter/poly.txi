@@ -184,9 +184,10 @@ that is not present in the underlying function.}
 @end float
 @end ifnotinfo
 
-The piece-wise polynomial fit provided by @code{splinefit} provides 
-continuous derivatives up to the @var{order} of the fit.  This can
-be demonstrated by the code
+The piece-wise polynomial fit, provided by @code{splinefit}, has
+continuous derivatives up to the @var{order}-1. For example, a cubic fit
+has continuous first and second derivatives.   This is demonstrated by
+the code
 
 @example
 @group
@@ -260,14 +261,14 @@ The result of which can be seen in @ref{fig:splinefit3}.
 
 @float Figure,fig:splinefit3
 @center @image{splinefit3,4in}
-@caption{Comparison of piecewise cubic fits to a noisy periodic function with,
-and without, periodic boundary conditions.}
+@caption{Comparison of piecewise polynomial fits to a noisy periodic
+function with, and without, periodic boundary conditions.}
 @end float
 @end ifnotinfo
 
 More complex constraints may be added as well. For example, the code below
-illustrates a periodic fit with values that have been clamped end point values
-and a second periodic fit with hinged end point values.
+illustrates a periodic fit with values that have been clamped at the end points,
+and a second periodic fit which is hinged at the end points.
 
 @example
 @group
@@ -276,7 +277,7 @@ x = 2 * pi * rand (1, 200);
 y = sin (2 * x) + 0.1 * randn (size (x));
 ## Breaks
 breaks = linspace (0, 2 * pi, 10);
-## Clamped endpoints, y = y" = 0
+## Clamped endpoints, y = y' = 0
 xc = [0, 0, 2*pi, 2*pi];
 cc = [(eye (2)), (eye (2))];
 con = struct ("xc", xc, "cc", cc);
@@ -347,7 +348,8 @@ The result of which can be seen in @ref{fig:splinefit6}.
 
 @float Figure,fig:splinefit6
 @center @image{splinefit6,4in}
-@caption{Comparison of two different levels of robust fitting (@var{beta} = 0.25 and 0.75) to noisy data combined with outlying data. A standard fit is also included.}
+@caption{Comparison of two different levels of robust fitting (@var{beta} = 0.25 and 0.75) to noisy data combined with outlying data. A conventional fit, without
+robust fitting (@var{beta} = 0) is also included.}
 @end float
 @end ifnotinfo
 

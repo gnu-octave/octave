@@ -23,7 +23,6 @@ libcruft_la_SOURCES += \
   slatec-fn/dbetai.f \
   slatec-fn/dcsevl.f \
   slatec-fn/derf.f \
-  slatec-fn/derfc.f \
   slatec-fn/dgami.f \
   slatec-fn/dgamit.f \
   slatec-fn/dgamlm.f \
@@ -36,7 +35,6 @@ libcruft_la_SOURCES += \
   slatec-fn/dpchim.f \
   slatec-fn/dpchst.f \
   slatec-fn/erf.f \
-  slatec-fn/erfc.f \
   slatec-fn/gami.f \
   slatec-fn/gamit.f \
   slatec-fn/gamlim.f \
@@ -68,6 +66,10 @@ libcruft_la_SOURCES += \
   slatec-fn/xsgmainc.f \
   slatec-fn/xgamma.f \
   slatec-fn/xbetai.f
+
+nodist_libcruft_la_SOURCES += \
+  slatec-fn/derfc.f \
+  slatec-fn/erfc.f
 
 slatec-fn/erfc.f: slatec-fn/erfc.in.f Makefile
 	$(SED) -e "${F77_ISNAN_MACRO}" < $< > $@-t

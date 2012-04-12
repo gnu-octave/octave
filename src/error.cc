@@ -764,7 +764,7 @@ extern octave_value_list Fsprintf (const octave_value_list&, int);
 
 static std::string
 handle_message (error_fun f, const char *id, const char *msg,
-                const octave_value_list& args)
+                const octave_value_list& args, bool have_fmt)
 {
   std::string retval;
 
@@ -776,7 +776,7 @@ handle_message (error_fun f, const char *id, const char *msg,
     {
       octave_value arg;
 
-      if (nargin > 1)
+      if (have_fmt)
         {
           octave_value_list tmp = Fsprintf (args, 1);
           arg = tmp(0);
@@ -962,6 +962,56 @@ location of the error.  Typically @var{err} is returned from\n\
   return retval;
 }
 
+// Determine whether the first argument to error or warning function
+// should be handled as the message identifier or as the format string.
+
+static bool
+maybe_extract_message_id (const std::string& caller,
+                          const octave_value_list& args,
+                          octave_value_list& nargs,
+                          std::string& id)
+{
+  nargs = args;
+  id = std::string ();
+
+  int nargin = args.length ();
+
+  bool have_fmt = nargin > 1;
+
+  if (nargin > 0)
+    {
+      std::string arg1 = args(0).string_value ();
+
+      if (! error_state)
+        {
+          // For compatibility with Matlab, an identifier must contain
+          // ':', but not at the beginning or the end, and it must not
+          // contain '%' (even if it is not a valid conversion operator).
+
+          if (arg1.find ('%') == std::string::npos
+              && arg1.find (':') != std::string::npos
+              && arg1[0] != ':'
+              && arg1[arg1.length()-1] != ':')
+            {
+              if (nargin > 1)
+                {
+                  id = arg1;
+
+                  nargs.resize (nargin-1);
+
+                  for (int i = 1; i < nargin; i++)
+                    nargs(i-1) = args(i);
+                }
+              else
+                nargs(0) = "call to " + caller
+                  + " with message identifier requires message";
+            }
+        }
+    }
+
+  return have_fmt;
+}
+
 DEFUN (error, args, ,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} error (@var{template}, @dots{})\n\
@@ -1031,26 +1081,9 @@ error: nargin != 1\n\
     print_usage ();
   else
     {
-      if (nargin > 1)
-        {
-          std::string arg1 = args(0).string_value ();
+      bool have_fmt = false;
 
-          if (! error_state)
-            {
-              if (arg1.find ('%') == std::string::npos)
-                {
-                  id = arg1;
-
-                  nargs.resize (nargin-1);
-
-                  for (int i = 1; i < nargin; i++)
-                    nargs(i-1) = args(i);
-                }
-            }
-          else
-            return retval;
-        }
-      else if (nargin == 1 && args(0).is_map ())
+      if (nargin == 1 && args(0).is_map ())
         {
           // empty struct is not an error.  return and resume calling function.
           if (args(0).is_empty ())
@@ -1084,8 +1117,16 @@ error: nargin != 1\n\
           // structure, but that will require some more significant
           // surgery on handle_message, error_with_id, etc.
         }
+      else
+        {
+          have_fmt = maybe_extract_message_id ("error", args, nargs, id);
 
-      handle_message (error_with_id, id.c_str (), "unspecified error", nargs);
+          if (error_state)
+            return retval;
+        }
+
+      handle_message (error_with_id, id.c_str (), "unspecified error",
+                      nargs, have_fmt);
     }
 
   return retval;
@@ -1399,30 +1440,16 @@ warning (\"error\");\n\
 
       std::string id;
 
-      if (nargin > 1)
-        {
-          std::string arg1 = args(0).string_value ();
+      bool have_fmt = maybe_extract_message_id ("warning", args, nargs, id);
 
-          if (! error_state)
-            {
-              if (arg1.find ('%') == std::string::npos)
-                {
-                  id = arg1;
-
-                  nargs.resize (nargin-1);
-
-                  for (int i = 1; i < nargin; i++)
-                    nargs(i-1) = args(i);
-                }
-            }
-          else
-            return retval;
-        }
+      if (error_state)
+        return retval;
 
       std::string prev_msg = Vlast_warning_message;
 
       std::string curr_msg = handle_message (warning_with_id, id.c_str (),
-                                             "unspecified warning", nargs);
+                                             "unspecified warning", nargs,
+                                             have_fmt);
 
       if (nargout > 0)
         retval = prev_msg;
@@ -1765,7 +1792,7 @@ to check for the proper number of arguments.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  handle_message (usage_with_id, "", "unknown", args);
+  handle_message (usage_with_id, "", "unknown", args, true);
   return retval;
 }
 

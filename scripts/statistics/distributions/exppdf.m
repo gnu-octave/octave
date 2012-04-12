@@ -53,10 +53,10 @@ function pdf = exppdf (x, lambda)
   pdf(k) = NaN;
 
   k = (x >= 0) & (x < Inf) & (lambda > 0);
-  if isscalar (lambda)
-    pdf(k) = exp (- x(k) / lambda) / lambda;
+  if (isscalar (lambda))
+    pdf(k) = exp (-x(k) / lambda) / lambda;
   else
-    pdf(k) = exp (- x(k) ./ lambda(k)) ./ lambda(k);
+    pdf(k) = exp (-x(k) ./ lambda(k)) ./ lambda(k);
   endif
 
 endfunction

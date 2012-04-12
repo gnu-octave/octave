@@ -51,7 +51,7 @@ function num = menu (title, varargin)
       varargin = varargin{1};
       nopt = length (varargin);
       for i = 1:nopt
-        while iscell (varargin{i})
+        while (iscell (varargin{i}))
           varargin{i} = varargin{i}{1};
         endwhile
       endfor

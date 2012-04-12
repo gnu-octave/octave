@@ -326,7 +326,7 @@ function args = setvertexdata (args)
   if (nr == 1 && nc > 1)
     nr = nc;
     nc = 1;
-  end
+  endif
   if (!isempty (z))
     vert = [x(:), y(:), z(:)];
   else

@@ -69,9 +69,9 @@ function [pval, t, df] = t_test_2 (x, y, alt)
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
-  elseif strcmp (alt, ">")
+  elseif (strcmp (alt, ">"))
     pval = 1 - cdf;
-  elseif strcmp (alt, "<")
+  elseif (strcmp (alt, "<"))
     pval = cdf;
   else
     error ("t_test_2: option %s not recognized", alt);

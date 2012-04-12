@@ -24,8 +24,8 @@
 ## @end deftypefn
 
 
-function f = fact()
-  persistent wisdom = \
+function f = fact ()
+  persistent wisdom = ...
       {
        "Richard Stallman takes notes in binary.";
        "Richard Stallman doesn't need sudo. I will make him a sandwich anyway.";
@@ -240,7 +240,7 @@ function f = fact()
        };
 
   w = wisdom{randi([1, numel(wisdom)])};
-  if nargout > 0
+  if (nargout > 0)
     f = w;
   else
     w = wordwrap (w);
@@ -254,14 +254,15 @@ function out = wordwrap (w)
   out = "\n";
   i = 1;
   numwords = numel (wc);
-  while i <= numwords;
+  while (i <= numwords);
     line = wc{i};
-    while (i < numwords && length (newline = cstrcat (line, " ", wc{i+1})) < cols)
+    while (i < numwords
+           && length (newline = cstrcat (line, " ", wc{i+1})) < cols)
       line = newline;
       i++;
     endwhile
     out = cstrcat (out, line, "\n");
     i++;
   endwhile
-  out = cstrcat(out, "\n");
+  out = cstrcat (out, "\n");
 endfunction

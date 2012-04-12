@@ -53,7 +53,7 @@
 
 function y = regexptranslate (op, s)
 
-  if nargin != 2
+  if (nargin != 2)
     print_usage ();
   endif
 

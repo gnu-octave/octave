@@ -55,7 +55,7 @@ function [X_out, Y_out, Z_out] = peaks (x, y)
   if (nargin == 0)
     x = y = linspace (-3, 3, 49);
   elseif (nargin == 1)
-    if length(x) > 1
+    if (length (x) > 1)
       y = x;
     else
       x = y = linspace (-3, 3, x);
@@ -69,8 +69,8 @@ function [X_out, Y_out, Z_out] = peaks (x, y)
     Y = y;
   endif
 
-  Z = 3 * (1 - X) .^ 2 .* exp(- X .^ 2 - (Y + 1) .^ 2) \
-      - 10 * (X / 5 - X .^ 3 - Y .^ 5) .* exp(- X .^ 2 - Y .^ 2) \
+  Z = 3 * (1 - X) .^ 2 .* exp(- X .^ 2 - (Y + 1) .^ 2) ...
+      - 10 * (X / 5 - X .^ 3 - Y .^ 5) .* exp(- X .^ 2 - Y .^ 2) ...
       - 1 / 3 * exp(- (X + 1) .^ 2 - Y .^ 2);
 
   if (nargout == 0)

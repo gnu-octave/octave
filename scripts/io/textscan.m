@@ -234,10 +234,10 @@ function C = colloutp (C)
 
   ## Start at rightmost column and work backwards to avoid ptr mixup
   ii = numel (C);
-  while ii > 1
+  while (ii > 1)
     clss1 = class (C{ii});
     jj = ii;
-    while  (jj > 1 && strcmp (clss1, class (C{jj - 1})))
+    while (jj > 1 && strcmp (clss1, class (C{jj - 1})))
       ## Column to the left is still same class; check next column to the left
       --jj;
     endwhile

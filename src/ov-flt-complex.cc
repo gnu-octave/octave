@@ -228,6 +228,12 @@ octave_float_complex::resize (const dim_vector& dv, bool fill) const
     }
 }
 
+octave_value
+octave_float_complex::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return FloatComplexDiagMatrix (Array<FloatComplex> (dim_vector (1, 1), scalar), m, n);
+}
+
 bool
 octave_float_complex::save_ascii (std::ostream& os)
 {

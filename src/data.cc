@@ -1281,11 +1281,14 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
   else if (nargin == 3)
     {
       octave_value arg0 = args(0);
-      if (arg0.ndims () == 2 && (args(0).rows () == 1 || args(0).columns () == 1))
+
+      if (arg0.ndims () == 2 && (arg0.rows () == 1 || arg0.columns () == 1))
         {
-          octave_idx_type m = args(1).int_value (), n = args(2).int_value ();
+          octave_idx_type m = args(1).int_value ();
+          octave_idx_type n = args(2).int_value ();
+
           if (! error_state)
-            retval = arg0.diag ().resize (dim_vector (m, n), true);
+            retval = arg0.diag (m, n);
           else
             error ("diag: invalid dimensions");
         }
@@ -1341,7 +1344,15 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!error diag (ones (2), 3, 3)
 %!error diag (1:3, -4, 3)
 
- */
+%!assert (diag (1, 3, 3), diag ([1, 0, 0]))
+%!assert (diag (i, 3, 3), diag ([i, 0, 0]))
+%!assert (diag (single (1), 3, 3), diag ([single(1), 0, 0]))
+%!assert (diag (single (i), 3, 3), diag ([single(i), 0, 0]))
+%!assert (diag ([1, 2], 3, 3), diag ([1, 2, 0]))
+%!assert (diag ([1, 2]*i, 3, 3), diag ([1, 2, 0]*i))
+%!assert (diag (single ([1, 2]), 3, 3), diag (single ([1, 2, 0])))
+%!assert (diag (single ([1, 2]*i), 3, 3), diag (single ([1, 2, 0]*i)))
+*/
 
 DEFUN (prod, args, ,
   "-*- texinfo -*-\n\

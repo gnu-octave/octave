@@ -121,6 +121,13 @@ octave_base_scalar<ST>::diag (octave_idx_type k) const
 }
 
 template <class ST>
+octave_value
+octave_base_scalar<ST>::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return Array<ST> (dim_vector (1, 1), scalar).diag (m, n);
+}
+
+template <class ST>
 bool
 octave_base_scalar<ST>::is_true (void) const
 {

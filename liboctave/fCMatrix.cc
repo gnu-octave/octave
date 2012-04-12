@@ -3235,6 +3235,23 @@ FloatComplexMatrix::diag (octave_idx_type k) const
   return MArray<FloatComplex>::diag (k);
 }
 
+FloatComplexDiagMatrix
+FloatComplexMatrix::diag (octave_idx_type m, octave_idx_type n) const
+{
+  FloatComplexDiagMatrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr == 1 || nc == 1)
+    retval = FloatComplexDiagMatrix (*this, m, n);
+  else
+    (*current_liboctave_error_handler)
+      ("diag: expecting vector argument");
+
+  return retval;
+}
+
 bool
 FloatComplexMatrix::row_is_real_only (octave_idx_type i) const
 {

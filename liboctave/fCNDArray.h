@@ -142,6 +142,8 @@ public:
 
   FloatComplexNDArray diag (octave_idx_type k = 0) const;
 
+  FloatComplexNDArray diag (octave_idx_type m, octave_idx_type n) const;
+
   FloatComplexNDArray& changesign (void)
     {
       MArray<FloatComplex>::changesign ();

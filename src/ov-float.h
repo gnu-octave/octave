@@ -211,6 +211,8 @@ public:
     return boolNDArray (dim_vector (1, 1), scalar);
   }
 
+  octave_value diag (octave_idx_type m, octave_idx_type n) const;
+
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   void increment (void) { ++scalar; }

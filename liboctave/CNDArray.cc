@@ -862,6 +862,12 @@ ComplexNDArray::diag (octave_idx_type k) const
   return MArray<Complex>::diag (k);
 }
 
+ComplexNDArray
+ComplexNDArray::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return MArray<Complex>::diag (m, n);
+}
+
 // This contains no information on the array structure !!!
 std::ostream&
 operator << (std::ostream& os, const ComplexNDArray& a)

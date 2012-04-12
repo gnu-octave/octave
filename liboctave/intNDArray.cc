@@ -69,6 +69,13 @@ intNDArray<T>::diag (octave_idx_type k) const
   return MArray<T>::diag (k);
 }
 
+template <class T>
+intNDArray<T>
+intNDArray<T>::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return MArray<T>::diag (m, n);
+}
+
 // FIXME -- this is not quite the right thing.
 
 template <class T>

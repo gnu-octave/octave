@@ -178,6 +178,8 @@ public:
 
   octave_value diag (octave_idx_type k = 0) const;
 
+  octave_value diag (octave_idx_type m, octave_idx_type n) const;
+
   octave_value reshape (const dim_vector& new_dims) const;
 
   octave_value squeeze (void) const;

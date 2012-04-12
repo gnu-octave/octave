@@ -162,7 +162,6 @@ kron (const PermMatrix& a, const PermMatrix& b)
   return c;
 }
 
-
 template <class MTA, class MTB>
 octave_value
 do_kron (const octave_value& a, const octave_value& b)
@@ -183,12 +182,18 @@ dispatch_kron (const octave_value& a, const octave_value& b)
       if (b.is_diag_matrix () && a.rows () == a.columns ()
           && b.rows () == b.columns ())
         {
-          octave_value_list tmp;
-          tmp(0) = a.diag ();
-          tmp(1) = b.diag ();
-          tmp = dispatch_kron (tmp, 1);
-          if (tmp.length () == 1)
-            retval = tmp(0).diag ();
+          // We have two diagonal matrices, the product of those will be
+          // another diagonal matrix.  To do that efficiently, extract
+          // the diagonals as vectors and compute the product.  That
+          // will be another vector, which we then use to construct a
+          // diagonal matrix object.  Note that this will fail if our
+          // digaonal matrix object is modified to allow the non-zero
+          // values to be stored off of the principal diagonal (i.e., if
+          // diag ([1,2], 3) is modified to return a diagonal matrix
+          // object instead of a full matrix object).
+
+          octave_value tmp = dispatch_kron (a.diag (), b.diag ());
+          retval = tmp.diag ();
         }
       else if (a.is_single_type () || b.is_single_type ())
         {
@@ -289,7 +294,6 @@ Since the Kronecker product is associative, this is well-defined.\n\
 
 
 /*
-
 %!test
 %! x = ones(2);
 %! assert( kron (x, x), ones (4));
@@ -302,4 +306,17 @@ Since the Kronecker product is associative, this is well-defined.\n\
 %!assert (kron (x, y, z), kron (kron (x, y), z))
 %!assert (kron (x, y, z), kron (x, kron (y, z)))
 
+
+%!assert (kron (diag ([1, 2]), diag ([3, 4])), diag ([3, 4, 6, 8]))
+
+%% Test for two diag matrices.  See the comments above in
+%% dispatch_kron for this case.
+%%
+%!test
+%! expected = zeros (16, 16);
+%! expected (1, 11) = 3;
+%! expected (2, 12) = 4;
+%! expected (5, 15) = 6;
+%! expected (6, 16) = 8;
+%! assert (kron (diag ([1, 2], 2), diag ([3, 4], 2)), expected)
 */

@@ -1603,7 +1603,7 @@ if test "$ac_cv_header_unordered_map" = "yes"; then
     AC_LANG_PROGRAM([
       #include <unordered_map>
     ], [
-      std::unordered_map m;
+      std::unordered_map<int,int> m;
     ])], [], [unordered_map_requires_tr1_namespace=yes])
 elif test "$ac_cv_header_tr1_unordered_map" = "yes"; then
   unordered_map_requires_tr1_namespace=yes

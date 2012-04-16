@@ -318,7 +318,13 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
      << ", cols = " << nc
      << ", nnz = " << nz;
 
-  double dnel = matrix.numel ();
+  // Avoid calling numel here since it can easily overflow
+  // octave_idx_type even when there is no real problem storing the
+  // sparse array.
+
+  double dnr = nr;
+  double dnc = nc;
+  double dnel = dnr * dnc;
 
   if (dnel > 0)
     {

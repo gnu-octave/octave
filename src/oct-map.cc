@@ -971,7 +971,7 @@ octave_map::assign (const idx_vector& i, const octave_map& rhs)
       octave_idx_type nf = nfields ();
 
       for (octave_idx_type k = 0; k < nf; k++)
-        xvals[k].assign (i, rhs.xvals[k]);
+        xvals[k].assign (i, rhs.xvals[k], Matrix ());
 
       if (nf > 0)
         dimensions = xvals[0].dims ();
@@ -1014,7 +1014,7 @@ octave_map::assign (const idx_vector& i, const idx_vector& j,
       octave_idx_type nf = nfields ();
 
       for (octave_idx_type k = 0; k < nf; k++)
-        xvals[k].assign (i, j, rhs.xvals[k]);
+        xvals[k].assign (i, j, rhs.xvals[k], Matrix ());
 
       if (nf > 0)
         dimensions = xvals[0].dims ();
@@ -1057,7 +1057,7 @@ octave_map::assign (const Array<idx_vector>& ia,
       octave_idx_type nf = nfields ();
 
       for (octave_idx_type k = 0; k < nf; k++)
-        xvals[k].assign (ia, rhs.xvals[k]);
+        xvals[k].assign (ia, rhs.xvals[k], Matrix ());
 
       if (nf > 0)
         dimensions = xvals[0].dims ();
@@ -1169,6 +1169,13 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
   if (! error_state && &ref == &tmp)
     setfield (k, tmp);
 }
+
+/*
+%!test
+%! rhs.b = 1;
+%! a(3) = rhs;
+%! assert ({a.b}, {[], [], 1})
+*/
 
 void
 octave_map::delete_elements (const idx_vector& i)

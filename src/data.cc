@@ -1294,7 +1294,20 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
         {
           octave_idx_type m = args(1).int_value (), n = args(2).int_value ();
           if (! error_state)
-            retval = arg0.diag ().resize (dim_vector (m, n), true);
+            {
+              if (arg0.is_cell ())
+                {
+                  Cell rhs = arg0.cell_value ();
+                  Cell tmp (m, n);
+
+                  for (octave_idx_type i = 0; i < rhs.numel (); i++)
+                    tmp.xelem (i, i) = rhs.xelem (i);
+
+                  retval = tmp;
+                }
+              else
+                retval = arg0.diag ().resize (dim_vector (m, n), true);
+            }
           else
             error ("diag: invalid dimensions");
         }
@@ -1343,6 +1356,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 ## Test non-square size
 %!assert(diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
+%!assert (diag (1, 2, 3), [1,0,0; 0,0,0]);
+%!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]});
+%!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]});
 
 %% Test input validation
 %!error <Invalid call to diag> diag ();

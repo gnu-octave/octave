@@ -1337,6 +1337,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 ## Test non-square size
 %!assert(diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
+%!assert (diag (1, 2, 3), [1,0,0; 0,0,0]);
+%!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]});
+%!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]});
 
 %% Test input validation
 %!error <Invalid call to diag> diag ()

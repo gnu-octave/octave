@@ -262,8 +262,17 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 %% Test cases from Bug #34893
 %!assert (conv2 ([1:5;1:5], [1:2], 'same'), [4 7 10 13 10; 4 7 10 13 10])
 %!assert (conv2 ([1:5;1:5]', [1:2]', 'same'), [4 7 10 13 10; 4 7 10 13 10]')
-%!#assert (conv2 ([1:5;1:5], [1:2], 'valid'), [4 7 10 13; 4 7 10 13])
+%!assert (conv2 ([1:5;1:5], [1:2], 'valid'), [4 7 10 13; 4 7 10 13])
 %!assert (conv2 ([1:5;1:5]', [1:2]', 'valid'), [4 7 10 13; 4 7 10 13]')
+
+%!xtest
+%! rand ("seed", 42);
+%! x = rand (100);
+%! y = ones (5);
+%! A = conv2 (x, y)(5:end-4,5:end-4);
+%! B = conv2 (x, y, "valid");
+%! assert (B, A); ## Yes, this test is for *exact* equivalence.
+
 
 %% Test input validation
 %!error conv2 ()

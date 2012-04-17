@@ -70,7 +70,7 @@ c
       do k = 1,na-nb+1
         do j = 1,nb
           do i = 1,mb
-            call caxpy(ma-mb+1,b(i,j),a(mb+1-i,k+j-1),1,c(1,k),1)
+            call caxpy(ma-mb+1,b(i,j),a(mb+1-i,k+nb-j),1,c(1,k),1)
           end do
         end do
       end do

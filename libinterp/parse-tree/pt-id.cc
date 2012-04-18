@@ -94,6 +94,8 @@ tree_identifier::rvalue (int nargout)
           retval = val;
         }
     }
+  else if (sym->is_added_static ())
+    static_workspace_error ();
   else
     eval_undefined_error ();
 
@@ -116,6 +118,9 @@ tree_identifier::rvalue1 (int nargout)
 octave_lvalue
 tree_identifier::lvalue (void)
 {
+  if (sym->is_added_static ())
+    static_workspace_error ();
+
   return octave_lvalue (&(sym->varref ()));
 }
 

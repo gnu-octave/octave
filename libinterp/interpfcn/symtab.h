@@ -199,6 +199,10 @@ public:
     // temporary variables forced into symbol table for parsing
     static const unsigned int forced = 128;
 
+    // this symbol may NOT become a variable.
+    // (symbol added to a static workspace)
+    static const unsigned int added_static = 256;
+
   private:
 
     class
@@ -348,6 +352,7 @@ public:
       bool is_global (void) const { return storage_class & global; }
       bool is_persistent (void) const { return storage_class & persistent; }
       bool is_forced (void) const { return storage_class & forced; }
+      bool is_added_static (void) const {return storage_class & added_static; }
 
       void mark_local (void) { storage_class |= local; }
       void mark_automatic (void) { storage_class |= automatic; }
@@ -369,6 +374,7 @@ public:
           storage_class |= persistent;
       }
       void mark_forced (void) { storage_class |= forced; }
+      void mark_added_static (void) { storage_class |= added_static; }
 
       void unmark_local (void) { storage_class &= ~local; }
       void unmark_automatic (void) { storage_class &= ~automatic; }
@@ -378,6 +384,7 @@ public:
       void unmark_global (void) { storage_class &= ~global; }
       void unmark_persistent (void) { storage_class &= ~persistent; }
       void unmark_forced (void) { storage_class &= ~forced; }
+      void unmark_added_static (void) { storage_class &= ~added_static; }
 
       void init_persistent (void)
       {
@@ -535,6 +542,7 @@ public:
     bool is_inherited (void) const { return rep->is_inherited (); }
     bool is_persistent (void) const { return rep->is_persistent (); }
     bool is_forced (void) const { return rep->is_forced (); }
+    bool is_added_static (void) const { return rep->is_added_static (); }
 
     void mark_local (void) { rep->mark_local (); }
     void mark_automatic (void) { rep->mark_automatic (); }
@@ -544,6 +552,7 @@ public:
     void mark_global (void) { rep->mark_global (); }
     void mark_persistent (void) { rep->mark_persistent (); }
     void mark_forced (void) { rep->mark_forced (); }
+    void mark_added_static (void) { rep->mark_added_static (); }
 
     void unmark_local (void) { rep->unmark_local (); }
     void unmark_automatic (void) { rep->unmark_automatic (); }
@@ -553,6 +562,7 @@ public:
     void unmark_global (void) { rep->unmark_global (); }
     void unmark_persistent (void) { rep->unmark_persistent (); }
     void unmark_forced (void) { rep->unmark_forced (); }
+    void unmark_added_static (void) { rep->unmark_added_static (); }
 
     void init_persistent (void) { rep->init_persistent (); }
 
@@ -1207,13 +1217,23 @@ public:
 
   static octave_value& varref (const std::string& name,
                                scope_id scope = xcurrent_scope,
-                               context_id context = xdefault_context)
+                               context_id context = xdefault_context,
+                               bool force_add = false)
   {
     static octave_value foobar;
 
     symbol_table *inst = get_instance (scope);
 
-    return inst ? inst->do_varref (name, context) : foobar;
+    return inst ? inst->do_varref (name, context, force_add) : foobar;
+  }
+
+  // Convenience function to greatly simplify
+  // octave_user_function::bind_automatic_vars
+  static octave_value& force_varref (const std::string& name,
+                                     scope_id scope = xcurrent_scope,
+                                     context_id context = xdefault_context)
+  {
+    return varref (name, scope, context, true);
   }
 
   static octave_value varval (const std::string& name,
@@ -2110,6 +2130,9 @@ private:
   // The associated user code (may be null).
   octave_user_function *curr_fcn;
 
+  // If true then no variables can be added.
+  bool static_workspace;
+
   // Map from names of global variables to values.
   static std::map<std::string, octave_value> global_table;
 
@@ -2150,7 +2173,7 @@ private:
 
   symbol_table (scope_id scope)
     : my_scope (scope), table_name (), table (), nest_children (), nest_parent (0),
-    curr_fcn (0), persistent_table () { }
+    curr_fcn (0), static_workspace (false), persistent_table () { }
 
   ~symbol_table (void) { }
 
@@ -2278,18 +2301,23 @@ private:
 
   octave_value do_builtin_find (const std::string& name);
 
-  symbol_record& do_insert (const std::string& name)
+  symbol_record& do_insert (const std::string& name, bool force_add = false)
   {
     table_iterator p = table.find (name);
 
     if (p == table.end ())
       {
-        symbol_record parent_symbol;
+        symbol_record ret (my_scope, name);
 
-        if (nest_parent && nest_parent->look_nonlocal (name, parent_symbol))
-          return table[name] = parent_symbol;
+        if (nest_parent && nest_parent->look_nonlocal (name, ret))
+          return table[name] = ret;
         else
-          return table[name] = symbol_record (my_scope, name, octave_value ());
+          {
+            if (static_workspace && ! force_add)
+              ret.mark_added_static ();
+
+            return table[name] = ret;
+          }
       }
     else
       return p->second;
@@ -2309,13 +2337,13 @@ private:
       p->second.force_variable (context);
   }
 
-  octave_value& do_varref (const std::string& name, context_id context)
+  octave_value& do_varref (const std::string& name, context_id context, bool force_add)
   {
     table_iterator p = table.find (name);
 
     if (p == table.end ())
       {
-        symbol_record& sr = do_insert (name);
+        symbol_record& sr = do_insert (name, force_add);
 
         return sr.varref (context);
       }

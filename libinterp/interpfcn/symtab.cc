@@ -1492,8 +1492,11 @@ symbol_table::do_update_nest (void)
         }
     }
   else if (nest_children.size ())
-    for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
-      ti->second.set_curr_fcn (curr_fcn);
+    {
+      static_workspace = true;
+      for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
+        ti->second.set_curr_fcn (curr_fcn);
+    }
 
   for (std::vector<symbol_table*>::iterator iter = nest_children.begin ();
        iter != nest_children.end (); ++iter)

@@ -109,6 +109,12 @@ public:
 
   void eval_undefined_error (void);
 
+  void static_workspace_error (void)
+  {
+    ::error ("can not add variable \"%s\" to a static workspace",
+             name ().c_str ());
+  }
+
   tree_identifier *dup (symbol_table::scope_id scope,
                         symbol_table::context_id context) const;
 

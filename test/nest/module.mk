@@ -1,6 +1,7 @@
 nest_FCN_FILES = \
   nest/arg_nest.m \
   nest/arg_ret.m \
+  nest/nest_eval.m \
   nest/no_closure.m \
   nest/persistent_nest.m \
   nest/recursive_nest.m \

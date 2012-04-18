@@ -1881,7 +1881,7 @@ bind_ans (const octave_value& val, bool print)
         }
       else
         {
-          symbol_table::varref (ans) = val;
+          symbol_table::force_varref (ans) = val;
 
           if (print)
             val.print_with_name (octave_stdout, ans);

@@ -581,8 +581,8 @@ octave_user_function::bind_automatic_vars
       // which might be redefined in a function.  Keep the old argn name
       // for backward compatibility of functions that use it directly.
 
-      symbol_table::varref ("argn") = arg_names;
-      symbol_table::varref (".argn.") = Cell (arg_names);
+      symbol_table::force_varref ("argn") = arg_names;
+      symbol_table::force_varref (".argn.") = Cell (arg_names);
 
       symbol_table::mark_hidden (".argn.");
 
@@ -590,8 +590,8 @@ octave_user_function::bind_automatic_vars
       symbol_table::mark_automatic (".argn.");
     }
 
-  symbol_table::varref (".nargin.") = nargin;
-  symbol_table::varref (".nargout.") = nargout;
+  symbol_table::force_varref (".nargin.") = nargin;
+  symbol_table::force_varref (".nargout.") = nargout;
 
   symbol_table::mark_hidden (".nargin.");
   symbol_table::mark_hidden (".nargout.");

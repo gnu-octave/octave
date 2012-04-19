@@ -162,6 +162,7 @@ plot_FCN_FILES = \
   plot/semilogyerr.m \
   plot/shading.m \
   plot/shg.m \
+  plot/shrinkfaces.m \
   plot/slice.m \
   plot/sombrero.m \
   plot/specular.m \

@@ -339,7 +339,6 @@ function list = missing_functions ()
   "serial",
   "setpixelposition",
   "showplottool",
-  "shrinkfaces",
   "smooth3",
   "snapnow",
   "sound",

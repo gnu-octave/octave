@@ -63,7 +63,7 @@ Summary of important user-visible changes for version 3.8:
 
       colorcube   splinefit
       lines       tetramesh
-      rgbplot
+      rgbplot     shrinkfaces
 
  ** Deprecated functions.
 

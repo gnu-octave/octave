@@ -363,6 +363,8 @@ three-dimensional plots.
 
 @DOCSTRING(isocolors)
 
+@DOCSTRING(shrinkfaces)
+
 @DOCSTRING(diffuse)
 
 @DOCSTRING(specular)

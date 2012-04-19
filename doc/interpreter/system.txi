@@ -53,7 +53,7 @@ the following elements:
 Microseconds after the second (0-999999).
 
 @item sec
-Seconds after the minute (0-61).  This number can be 61 to account
+Seconds after the minute (0-60).  This number can be 60 to account
 for leap seconds.
 
 @item min

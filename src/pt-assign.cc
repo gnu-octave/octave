@@ -431,7 +431,30 @@ tree_multi_assignment::rvalue (int)
                     }
                 }
               else
-                error ("element number %d undefined in return list", k+1);
+                {
+                  // This can happen for a function like
+                  //
+                  //   function varargout = f ()
+                  //     varargout{1} = nargout;
+                  //   endfunction
+                  //
+                  // called with
+                  //
+                  //    [a, ~] = f ();
+                  //
+                  // Then the list of of RHS values will contain one
+                  // element but we are iterating over the list of all
+                  // RHS values.  We shouldn't complain that a value we
+                  // don't need is missing from the list.
+
+                  if (ult.is_black_hole ())
+                    {
+                      k++;
+                      continue;
+                    }
+                  else
+                    error ("element number %d undefined in return list", k+1);
+                }
             }
 
           if (error_state)
@@ -466,6 +489,19 @@ tree_multi_assignment::rvalue (int)
 
   return retval;
 }
+
+/*
+%!function varargout = f ()
+%!  varargout{1} = nargout;
+%!endfunction
+%!
+%!test
+%! [a, ~] = f ();
+%! assert (a, 2);
+%!test
+%! [a, ~, ~, ~, ~] = f ();
+%! assert (a, 5);
+*/
 
 std::string
 tree_multi_assignment::oper (void) const

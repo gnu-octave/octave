@@ -178,7 +178,6 @@ function list = missing_functions ()
   "figurepalette",
   "filebrowser",
   "fill3",
-  "findfigs",
   "fitsinfo",
   "fitsread",
   "flow",

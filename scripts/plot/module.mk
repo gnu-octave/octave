@@ -98,6 +98,7 @@ plot_FCN_FILES = \
   plot/figure.m \
   plot/fill.m \
   plot/findall.m \
+  plot/findfigs.m \
   plot/findobj.m \
   plot/fplot.m \
   plot/gca.m \

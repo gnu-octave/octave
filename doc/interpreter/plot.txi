@@ -1154,6 +1154,8 @@ objects.
 
 @DOCSTRING(allchild)
 
+@DOCSTRING(findfigs)
+
 @node Graphics Object Properties
 @subsection Graphics Object Properties
 @cindex graphics object properties

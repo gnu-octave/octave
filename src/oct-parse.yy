@@ -373,7 +373,8 @@ make_statement (T *arg)
       yyerrok; \
       if (! parser_symtab_context.empty ()) \
         parser_symtab_context.pop (); \
-      if (interactive || forced_interactive) \
+      if ((interactive || forced_interactive)   \
+          && ! get_input_from_eval_string)      \
         YYACCEPT; \
       else \
         YYABORT; \

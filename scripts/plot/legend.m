@@ -276,7 +276,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
   if (strcmp (show, "off"))
     if (! isempty (hlegend))
-      set (get (hlegend, "children"), "visible", "off");
+      set (findobj (hlegend), "visible", "off");
       hlegend = [];
     endif
     hobjects = [];
@@ -284,7 +284,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     text_strings = {};
   elseif (strcmp (show, "on"))
     if (! isempty (hlegend))
-      set (get (hlegend, "children"), "visible", "on");
+      set (findobj (hlegend), "visible", "on");
     else
       hobjects = [];
       hplots  = [];
@@ -435,7 +435,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
         text_strings = {};
       endif
     else
-      ## Delete the old legend if it exists
+      ## Preserve the old legend if it exists
       if (! isempty (hlegend))
         if (strcmp (textpos, "default"))
           textpos = get (hlegend, "textposition");
@@ -454,10 +454,6 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           orientation = get (hlegend, "orientation");
         endif
         box = get (hlegend, "box");
-        fkids = get (fig, "children");
-
-        delete (hlegend);
-        hlegend = [];
       else
         if (strcmp (textpos, "default"))
           textpos = "left";
@@ -507,15 +503,14 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                           "box", box,
                           "xtick", [], "ytick", [],
                           "xticklabel", "", "yticklabel", "", "zticklabel", "",
-                          "xlim", [0, 1], "ylim", [0, 1], 
-                          "visible", ifelse (strcmp (box, "on"), "on", "off"), 
+                          "xlim", [0, 1], "ylim", [0, 1],
+                          "visible", ifelse (strcmp (box, "on"), "on", "off"),
                           "activepositionproperty", "position");
         else
           addprops = false;
           axes (hlegend);
           delete (get (hlegend, "children"));
         endif
-
         ## Add text label to the axis first, checking their extents
         nentries = numel (hplots);
         texthandle = [];
@@ -973,6 +968,12 @@ function updateline (h, d, hlegend, linelength)
   endif
 endfunction
 
+%!demo
+%! plot (rand (2,2)) ;
+%! h = legend ('a', 'b') ;
+%! legend ('right') ;
+%! set (h, 'textposition', 'left')
+%! set (h, 'textposition', 'right')
 
 %!demo
 %! clf;

@@ -196,7 +196,6 @@ AC_ARG_ENABLE(docs,
      AC_MSG_WARN([$warn_docs])
    fi], [])
 AC_SUBST(DOCDIR)
-AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
@@ -1900,6 +1899,16 @@ OCTAVE_PROG_GPERF
 OCTAVE_PROG_GHOSTSCRIPT
 OCTAVE_PROG_TEXI2DVI
 OCTAVE_PROG_TEXI2PDF
+
+### Need to disable building documentation if gnuplot was not found,
+### unless it was already disabled previously.
+
+if test -n "$DOCDIR" && test -n "$warn_gnuplot"; then
+  DOCDIR=
+  warn_docs="building documentation disabled because gnuplot was not found; make dist will fail"
+  AC_MSG_WARN([$warn_docs])
+fi
+AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 
 ### Even though we include config.h, we need to have the preprocessor
 ### defines available in a variable for the testif feature of the

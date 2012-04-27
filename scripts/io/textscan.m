@@ -163,7 +163,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     headerlines = find (strcmpi (args, "headerlines"), 1);
     ## Beware of zero valued headerline, fskipl would skip to EOF
     if (! isempty (headerlines) && (args{headerlines + 1} > 0))
-      fskipl (fid, varargin{headerlines + 1});
+      fskipl (fid, args{headerlines + 1});
       args(headerlines:headerlines+1) = [];
       st_pos = ftell (fid);
     endif

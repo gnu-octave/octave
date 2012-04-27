@@ -1581,8 +1581,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       else
         fontspec = "";
       endif
-      fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s;\n",
-               inout, pos, box, reverse, horzvert, fontspec);
+      colorspec = get_text_colorspec (hlgnd.textcolor, mono);
+      fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s %s;\n",
+               inout, pos, box, reverse, horzvert, fontspec, colorspec);
     else
       fputs (plot_stream, "unset key;\n");
     endif

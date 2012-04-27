@@ -974,6 +974,7 @@ endfunction
 %! legend ('right') ;
 %! set (h, 'textposition', 'left')
 %! set (h, 'textposition', 'right')
+%! set (h, 'textcolor', [1 0 1])
 
 %!demo
 %! clf;

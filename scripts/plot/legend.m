@@ -819,9 +819,7 @@ function updatelegendtext (h, d)
   text_kids = findobj (kids, "-property", "interpreter", "type", "text");
   interpreter = get (h, "interpreter");
   textcolor = get (h, "textcolor");
-  set (kids, "interpreter", interpreter, "color", textcolor);
-  hobj = cell2mat (get (kids, "userdata"));
-  set (hobj, "interpreter", interpreter);
+  set (text_kids, "interpreter", interpreter, "color", textcolor);
 endfunction
 
 function hideshowlegend (h, d, ca, pos1, pos2)

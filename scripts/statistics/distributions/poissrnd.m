@@ -76,7 +76,7 @@ function rnd = poissrnd (lambda, varargin)
   endif
 
   if (isscalar (lambda))
-    if (lambda > 0 && lambda < Inf)
+    if (lambda >= 0 && lambda < Inf)
       rnd = randp (lambda, sz);
       if (strcmp (cls, "single"))
         rnd = single (rnd);
@@ -87,12 +87,11 @@ function rnd = poissrnd (lambda, varargin)
   else
     rnd = NaN (sz, cls);
 
-    k = (lambda > 0) & (lambda < Inf);
+    k = (lambda >= 0) & (lambda < Inf);
     rnd(k) = randp (lambda(k));
   endif
 
 endfunction
-
 
 %!assert(size (poissrnd (2)), [1, 1]);
 %!assert(size (poissrnd (ones(2,1))), [2, 1]);
@@ -117,4 +116,7 @@ endfunction
 %!error poissrnd (ones(2,2), 3)
 %!error poissrnd (ones(2,2), [3, 2])
 %!error poissrnd (ones(2,2), 2, 3)
+
+%!assert (poissrnd (0, 1, 1), 0)
+%!assert (poissrnd ([0, 0, 0], [1, 3]), [0 0 0])
 

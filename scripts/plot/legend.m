@@ -285,6 +285,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
   elseif (strcmp (show, "on"))
     if (! isempty (hlegend))
       set (findobj (hlegend), "visible", "on");
+      ## NOTE - Matlab sets both "visible", and "box" to "on"
+      set (hlegend, "visible", get (hlegend, "box"));
     else
       hobjects = [];
       hplots  = [];
@@ -978,6 +980,9 @@ endfunction
 %! clf;
 %! x = 0:1;
 %! plot (x,x,';I am Blue;', x,2*x,';I am Green;', x,3*x,';I am Red;');
+%! legend boxon
+%! legend hide
+%! legend show
 
 %!demo
 %! clf;

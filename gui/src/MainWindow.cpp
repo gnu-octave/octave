@@ -201,6 +201,18 @@ MainWindow::processSettingsDialogRequest ()
   delete settingsDialog;
   emit settingsChanged ();
   ResourceManager::instance ()->updateNetworkSettings ();
+  updateTerminalFont();
+}
+
+void
+MainWindow::updateTerminalFont ()
+{
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  QFont font = QFont();
+  //font.setStyleHint(QFont::TypeWriter);
+  font.setFamily(settings->value("terminal/fontName").toString());
+  font.setPointSize(settings->value("terminal/fontSize").toInt ());
+  m_terminalView->setTerminalFont(font);
 }
 
 void
@@ -392,6 +404,7 @@ MainWindow::construct ()
   setStatusBar (m_statusBar);
 
   readSettings ();
+  updateTerminalFont();
   openWebPage ("http://www.gnu.org/software/octave/doc/interpreter/");
 }
 

@@ -102,6 +102,7 @@ public slots:
   void processSettingsDialogRequest ();
   void showAboutOctave ();
   void showAboutQt ();
+  void updateTerminalFont ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);

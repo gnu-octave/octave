@@ -36,6 +36,7 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include <stdarg.h>
 #define WIN32_LEAN_AND_MEAN
+#define _WIN32_WINNT 0x0500 
 #include <windows.h>
 #include <cstring>
 

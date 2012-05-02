@@ -1,5 +1,4 @@
 TEMPLATE	= app
-DESTDIR 	= .
 
 QT += core gui
 

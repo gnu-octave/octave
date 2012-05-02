@@ -1,6 +1,5 @@
 TEMPLATE	= lib
 VERSION		= 0.1.0
-DESTDIR 	= .
 TARGET		= qterminal
 
 CONFIG		+= qt staticlib

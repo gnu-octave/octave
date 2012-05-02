@@ -82,7 +82,7 @@ octave_base_diag<DMT, MT>::do_index_op (const octave_value_list& idx,
 
       if (idx0.is_scalar () && idx1.is_scalar ())
         {
-          retval = matrix.checkelem (idx0(0), idx1(0));
+          retval = matrix.elem (idx0(0), idx1(0));
         }
       else
         {

@@ -784,7 +784,7 @@ single_type_concat (Array<T>& result,
         {
           // Optimize all scalars case.
           result.clear (dv);
-          assert (result.numel () == row.length ());
+          assert (static_cast<size_t> (result.numel ()) == row.length ());
           octave_idx_type i = 0;
           for (tm_row_const::iterator q = row.begin ();
                q != row.end () && ! error_state; q++)

@@ -2530,7 +2530,7 @@ Array<T>::diag (octave_idx_type m, octave_idx_type n) const
 
   if (ndims () == 2 && (rows () == 1 || cols () == 1))
     {
-      retval.resize (m, n, resize_fill_value ());
+      retval.resize (dim_vector (m, n), resize_fill_value ());
 
       for (octave_idx_type i = 0; i < numel (); i++)
         retval.xelem (i, i) = xelem (i);

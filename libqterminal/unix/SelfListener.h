@@ -2,6 +2,7 @@
 #define SELFLISTENER_H
 
 #include <QThread>
+#include <unistd.h>
 
 class SelfListener : public QThread
 {

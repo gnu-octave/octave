@@ -196,8 +196,9 @@ MainWindow::openOctaveForgePage ()
 void
 MainWindow::processSettingsDialogRequest ()
 {
-  SettingsDialog settingsDialog (this);
-  settingsDialog.exec ();
+  SettingsDialog *settingsDialog = new SettingsDialog (this);
+  settingsDialog->exec ();
+  delete settingsDialog;
   emit settingsChanged ();
   ResourceManager::instance ()->updateNetworkSettings ();
 }

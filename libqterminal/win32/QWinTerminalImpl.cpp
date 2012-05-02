@@ -888,7 +888,9 @@ void QWinTerminalImpl::sendText (const QString& s)
 
 void QWinTerminalImpl::setTerminalFont (const QFont& f)
 {
-  Q_UNUSED (f);
+  d->m_font = f;
+  d->m_consoleView->setFont (f);
+  d->updateConsoleSize (true);
 }
 
 //////////////////////////////////////////////////////////////////////////////

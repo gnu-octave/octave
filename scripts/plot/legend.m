@@ -272,6 +272,9 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     else
       error ("legend: expecting argument to be a character string");
     endif
+  elseif (nargs > 1 && iscellstr (varargin{1}))
+    varargin = {varargin{1}{:}, varargin{2:end}};
+    nargs = numel (varargin);
   endif
 
   if (strcmp (show, "off"))
@@ -967,6 +970,11 @@ function updateline (h, d, hlegend, linelength)
     endif
   endif
 endfunction
+
+%!demo
+%! plot (rand (2))
+%! legend ({'foo'}, 'bar', 'boxoff')
+%! title ('legend() should warn about an extra label')
 
 %!demo
 %! plot (rand (2,2)) ;

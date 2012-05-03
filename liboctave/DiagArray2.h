@@ -119,15 +119,22 @@ public:
   T& dgelem (octave_idx_type i)
     { return Array<T>::elem (i); }
 
-  T checkelem (octave_idx_type r, octave_idx_type c) const;
+  void check_idx (octave_idx_type r, octave_idx_type c) const;
 
   T operator () (octave_idx_type r, octave_idx_type c) const
     {
 #if defined (BOUNDS_CHECKING)
-      return checkelem (r, c);
-#else
-      return elem (r, c);
+      check_idx (r, c);
 #endif
+      return elem (r, c);
+    }
+
+  T& operator () (octave_idx_type r, octave_idx_type c)
+    {
+#if defined (BOUNDS_CHECKING)
+      check_idx (r, c);
+#endif
+      return elem (r, c);
     }
 
   // No checking.

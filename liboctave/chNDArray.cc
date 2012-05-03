@@ -133,6 +133,12 @@ charNDArray::diag (octave_idx_type k) const
   return Array<char>::diag (k);
 }
 
+charNDArray
+charNDArray::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return Array<char>::diag (m, n);
+}
+
 NDS_CMP_OPS (charNDArray, char)
 NDS_BOOL_OPS (charNDArray, char)
 

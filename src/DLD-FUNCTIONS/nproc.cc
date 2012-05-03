@@ -85,8 +85,6 @@ variable.\n\
 }
 
 /*
-
-%% Must always report at least 1 cpu available
+## Must always report at least 1 cpu available
 %!assert (nproc () >= 1);
-
 */

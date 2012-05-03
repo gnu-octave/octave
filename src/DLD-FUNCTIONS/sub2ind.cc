@@ -123,51 +123,48 @@ linear_index = sub2ind ([3, 3], 2, 3)\n\
 }
 
 /*
-
-# Test input validation
-%!error <sub2ind: dimension vector > sub2ind([10 10.5], 1, 1);
-%!error <subscript indices > sub2ind([10 10], 1.5, 1);
-%!error <subscript indices > sub2ind([10 10], 1, 1.5);
-
-# Test evaluation
-%!shared s1, s2, s3, in
-%! s1 = [   1   1   1   1 ;   2   2   2   2 ];
-%! s2 = [   1   1   2   2 ;   1   1   2   2 ];
-%! s3 = [   1   2   1   2 ;   1   2   1   2 ];
-%! in = [   1 101  11 111 ;   2 102  12 112 ];
-%!assert (sub2ind([10 10 10], s1, s2, s3), in);
-%!shared
+## Test evaluation
+%!test
+%! s1 = [ 1   1   1   1 ; 2   2   2   2 ];
+%! s2 = [ 1   1   2   2 ; 1   1   2   2 ];
+%! s3 = [ 1   2   1   2 ; 1   2   1   2 ];
+%! in = [ 1 101  11 111 ; 2 102  12 112 ];
+%! assert (sub2ind ([10 10 10], s1, s2, s3), in);
 
 # Test low index
-%!assert (sub2ind([10 10 10], 1, 1, 1), 1);
-%!error <subscript indices > sub2ind([10 10 10], 0, 1, 1);
-%!error <subscript indices > sub2ind([10 10 10], 1, 0, 1);
-%!error <subscript indices > sub2ind([10 10 10], 1, 1, 0);
+%!assert (sub2ind ([10 10 10], 1, 1, 1), 1)
+%!error <subscript indices> sub2ind ([10 10 10], 0, 1, 1)
+%!error <subscript indices> sub2ind ([10 10 10], 1, 0, 1)
+%!error <subscript indices> sub2ind ([10 10 10], 1, 1, 0)
 
 # Test high index
-%!assert (sub2ind([10 10 10], 10, 10, 10), 1000);
-%!error <sub2ind: index out of range> sub2ind([10 10 10], 11, 10, 10);
-%!error <sub2ind: index out of range> sub2ind([10 10 10], 10, 11, 10);
-%!error <sub2ind: index out of range> sub2ind([10 10 10], 10, 10, 11);
+%!assert (sub2ind ([10 10 10], 10, 10, 10), 1000)
+%!error <index out of range> sub2ind ([10 10 10], 11, 10, 10)
+%!error <index out of range> sub2ind ([10 10 10], 10, 11, 10)
+%!error <index out of range> sub2ind ([10 10 10], 10, 10, 11)
 
 # Test high index in the trailing dimensions
-%!assert (sub2ind([10, 1], 2, 1, 1), 2);
-%!error <sub2ind: index out of range> sub2ind([10, 1], 1, 2, 1);
-%!error <sub2ind: index out of range> sub2ind([10, 1], 1, 1, 2);
-%!assert (sub2ind([10 10], 2, 2, 1), 12);
-%!error <sub2ind: index out of range> sub2ind([10 10], 2, 1, 2);
-%!error <sub2ind: index out of range> sub2ind([10 10], 1, 2, 2);
+%!assert (sub2ind ([10, 1], 2, 1, 1), 2)
+%!error <index out of range> sub2ind ([10, 1], 1, 2, 1)
+%!error <index out of range> sub2ind ([10, 1], 1, 1, 2)
+%!assert (sub2ind ([10 10], 2, 2, 1), 12)
+%!error <index out of range> sub2ind ([10 10], 2, 1, 2)
+%!error <index out of range> sub2ind ([10 10], 1, 2, 2)
 
 # Test handling of empty arguments
-%!assert (sub2ind([10 10], zeros(0,0), zeros(0,0)), zeros(0,0));
-%!assert (sub2ind([10 10], zeros(2,0), zeros(2,0)), zeros(2,0));
-%!assert (sub2ind([10 10], zeros(0,2), zeros(0,2)), zeros(0,2));
-%!error <sub2ind: all subscripts .* same size> sub2ind([10 10 10], zeros(0,2), zeros(2,0));
+%!assert (sub2ind ([10 10], zeros (0,0), zeros (0,0)), zeros (0,0))
+%!assert (sub2ind ([10 10], zeros (2,0), zeros (2,0)), zeros (2,0))
+%!assert (sub2ind ([10 10], zeros (0,2), zeros (0,2)), zeros (0,2))
+%!error <all subscripts .* same size> sub2ind ([10 10 10], zeros (0,2), zeros (2,0))
 
 # Test handling of arguments of different size
-%!error <sub2ind: all subscripts .* same size> sub2ind([10 10], ones(1,2), ones(1,3));
-%!error <sub2ind: all subscripts .* same size> sub2ind([10 10], ones(1,2), ones(2,1));
+%!error <all subscripts .* same size> sub2ind ([10 10], ones (1,2), ones (1,3))
+%!error <all subscripts .* same size> sub2ind ([10 10], ones (1,2), ones (2,1))
 
+## Test input validation
+%!error <dimension vector> sub2ind ([10 10.5], 1, 1)
+%!error <subscript indices> sub2ind ([10 10], 1.5, 1)
+%!error <subscript indices> sub2ind ([10 10], 1, 1.5)
 */
 
 DEFUN_DLD (ind2sub, args, nargout,

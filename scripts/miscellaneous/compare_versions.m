@@ -141,22 +141,22 @@ function out = compare_versions (v1, v2, operator)
   endif
 
   ## Determine the operator.
-  if any (ismember (operator, "="))
+  if (any (ismember (operator, "=")))
     equal_op = true;
   else
     equal_op = false;
   endif
-  if any (ismember (operator, "~!"))
+  if (any (ismember (operator, "~!")))
     not_op = true;
   else
     not_op = false;
   endif
-  if any (ismember (operator, "<"))
+  if (any (ismember (operator, "<")))
     lt_op = true;
   else
     lt_op = false;
   endif
-  if any (ismember (operator, ">"))
+  if (any (ismember (operator, ">")))
     gt_op = true;
   else
     gt_op = false;

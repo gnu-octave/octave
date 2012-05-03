@@ -98,6 +98,12 @@ octave_float_scalar::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
+octave_float_scalar::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return FloatDiagMatrix (Array<float> (dim_vector (1, 1), scalar), m, n);
+}
+
+octave_value
 octave_float_scalar::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;

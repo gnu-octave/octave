@@ -237,18 +237,16 @@ but avoids forming a temporary array and is faster.  When @var{X} and\n\
 }
 
 /*
-
-%! assert(dot ([1, 2], [2, 3]), 11);
+%!assert (dot ([1, 2], [2, 3]), 8)
 
 %!test
 %! x = [2, 1; 2, 1];
 %! y = [-0.5, 2; 0.5, -2];
-%! assert(dot (x, y), [0 0]);
+%! assert (dot (x, y), [0 0]);
 
 %!test
-%! x = [ 1+i, 3-i; 1-i, 3-i];
-%! assert(dot (x, x), [4, 20]);
-
+%! x = [1+i, 3-i; 1-i, 3-i];
+%! assert (dot (x, x), [4, 20]);
 */
 
 DEFUN_DLD (blkmm, args, ,
@@ -357,12 +355,10 @@ endfor\n\
 }
 
 /*
-
 %!test
 %! x(:,:,1) = [1 2; 3 4];
 %! x(:,:,2) = [1 1; 1 1];
 %! z(:,:,1) = [7 10; 15 22];
 %! z(:,:,2) = [2 2; 2 2];
-%! assert(blkmm (x,x),z);
-
+%! assert (blkmm (x,x), z);
 */

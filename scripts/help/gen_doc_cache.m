@@ -34,7 +34,7 @@
 function gen_doc_cache (out_file = "doc-cache", directory = [])
 
   ## Check input
-  if (!ischar (out_file))
+  if (! ischar (out_file))
     print_usage ();
   endif
 
@@ -42,11 +42,11 @@ function gen_doc_cache (out_file = "doc-cache", directory = [])
   if (isempty (directory))
     cache = gen_builtin_cache ();
   elseif (iscell (directory))
-    if all(cellfun (@ischar, directory))
+    if (all (cellfun (@ischar, directory)))
       cache = gen_doc_cache_in_dir (directory);
     else
       error ("gen_doc_cache: cell must contain only strings");
-    end
+    endif
   elseif (ischar (directory))
      cache = gen_doc_cache_in_dir (directory);
   else
@@ -120,15 +120,15 @@ function cache = gen_doc_cache_in_dir (directory)
   dir_in_path = ismember (directory, strsplit (path (), pathsep ()));
 
   # dirs not in path
-  if !iscell (directory)
+  if (! iscell (directory))
     directory = {directory};
-  end
+  endif
   dirs_notpath = {directory{!dir_in_path}};
 
   # add them
-  if !isempty (dirs_notpath)
+  if (! isempty (dirs_notpath))
     cellfun (@addpath, dirs_notpath);
-  end
+  endif
 
   # create cache
   func = @(s_) create_cache (__list_functions__ (s_));
@@ -138,9 +138,9 @@ function cache = gen_doc_cache_in_dir (directory)
   cache = [cache{:}];
 
   #remove dirs form path
-  if !isempty (dirs_notpath)
+  if (! isempty (dirs_notpath))
     cellfun (@rmpath, dirs_notpath);
-  end
+  endif
 
 endfunction
 

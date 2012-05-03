@@ -199,22 +199,22 @@ function __datetick__ (varargin)
   endif
 
   if (isempty (form))
-    r = max(ticks) - min(ticks);
-    if r < 10/60/24
+    r = max (ticks) - min (ticks);
+    if (r < 10/60/24)
       ## minutes and seconds
       form = 13;
-    elseif r < 2
+    elseif (r < 2)
       ## hours
       form = 15;
-    elseif r < 15
+    elseif (r < 15)
       ## days
       form = 8;
-    elseif r < 365
+    elseif (r < 365)
       ## FIXME -- FORM should be 19 for European users who use dd/mm
       ## instead of mm/dd.  How can that be determined automatically?
       ## months
       form = 6;
-    elseif r < 90*12
+    elseif (r < 90*12)
       ## quarters
       form = 27;
     else

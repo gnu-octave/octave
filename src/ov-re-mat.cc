@@ -272,6 +272,24 @@ octave_matrix::diag (octave_idx_type k) const
   return retval;
 }
 
+octave_value
+octave_matrix::diag (octave_idx_type m, octave_idx_type n) const
+{
+  octave_value retval;
+
+  if (matrix.ndims () == 2
+      && (matrix.rows () == 1 || matrix.columns () == 1))
+    {
+      Matrix mat = matrix.matrix_value ();
+
+      retval = mat.diag (m, n);
+    }
+  else
+    error ("diag: expecting vector argument");
+
+  return retval;
+}
+
 // We override these two functions to allow reshaping both
 // the matrix and the index cache.
 octave_value

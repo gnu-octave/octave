@@ -139,6 +139,8 @@ public:
 
   octave_value diag (octave_idx_type k = 0) const;
 
+  octave_value diag (octave_idx_type m, octave_idx_type n) const;
+
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     { return range.sort (dim, mode); }
 

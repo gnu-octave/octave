@@ -66,6 +66,8 @@ public:
 
   intNDArray diag (octave_idx_type k = 0) const;
 
+  intNDArray diag (octave_idx_type m, octave_idx_type n) const;
+
   intNDArray& changesign (void)
     {
       MArray<T>::changesign ();

@@ -243,6 +243,12 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
     }
 }
 
+octave_value
+octave_complex::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return ComplexDiagMatrix (Array<Complex> (dim_vector (1, 1), scalar), m, n);
+}
+
 bool
 octave_complex::save_ascii (std::ostream& os)
 {

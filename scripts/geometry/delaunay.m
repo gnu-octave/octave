@@ -56,7 +56,7 @@
 ## plot (VX, VY, "b", x, y, "r*");
 ## @end group
 ## @end example
-## @seealso{delaunay3, delaunayn, convhull, voronoi}
+## @seealso{delaunay3, delaunayn, convhull, voronoi, triplot, trimesh, trisurf}
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

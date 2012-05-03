@@ -56,8 +56,8 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
 
   ## Get default options if requested.
   if (nargin == 1 && ischar (fun) && strcmp (fun, 'defaults'))
-    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8, \
-    "OutputFcn", [], "FunValCheck", "off");
+    x = optimset ("MaxIter", Inf, "MaxFunEvals", Inf, "TolX", 1e-8,
+                  "OutputFcn", [], "FunValCheck", "off");
     return;
   endif
 

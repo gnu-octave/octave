@@ -142,6 +142,8 @@ public:
 
   ComplexNDArray diag (octave_idx_type k = 0) const;
 
+  ComplexNDArray diag (octave_idx_type m, octave_idx_type n) const;
+
   ComplexNDArray& changesign (void)
     {
       MArray<Complex>::changesign ();

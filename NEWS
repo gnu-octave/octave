@@ -6,6 +6,59 @@ Summary of important user-visible changes for version 4.0:
 Summary of important user-visible changes for version 3.8:
 ---------------------------------------------------------
 
+ ** Octave now supports nested functions with scoping rules that are
+    compatible with Matlab.  A nested function is one declared and defined
+    within the body of another function.  The nested function is only
+    accessible from within the enclosing function which makes it one
+    method for making private functions whose names do not conflict with those
+    in the global namespace (See also subfunctions and private functions).
+    In addition, variables in the enclosing function are visible within the
+    nested function.  This makes it possible to have a pseudo-global variable
+    which can be seen by a group of functions, but which is not visible in
+    the global namespace.
+    
+    Example:
+    function outerfunc (...)
+      ...
+      function nested1 (...)
+        ...
+        function nested2 (...)
+           ...
+        endfunction
+      endfunction
+
+      function nested3 (...)
+        ...
+      endfunction
+    endfunction
+
+ ** 'emptymatch', 'noemptymatch' options added to regular expressions.
+
+    With this addition Octave now accepts the entire set of Matlab options
+    for regular expressions.  'noemptymatch' is the default, but 'emptymatch'
+    has certain uses where you need to match an assertion rather than actual
+    characters.  For example, 
+
+    regexprep ('World', '^', 'Hello ', 'emptymatch')
+      => Hello World
+
+    where the pattern is actually the assertion '^' or start-of-line.
+
+ ** For compatibility with Matlab, the regexp, regexpi, and regexprep
+    functions now process backslash escapes in single-quoted pattern
+    strings.  In addition, the regexprep function now processes backslash
+    escapes in single-quoted replacement strings.
+
+ ** Redundant terminal comma accepted by parser
+
+    A redundant terminal comma is now accepted in matrix
+    definitions which allows writing code such as 
+
+    [a,...
+     b,...
+     c,...
+    ] = deal (1,2,3)
+
  ** Warning IDs renamed:
 
     Octave:array-as-scalar => Octave:array-to-scalar
@@ -13,9 +66,10 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      colorcube
-      lines
-      rgbplot
+      colorcube   splinefit
+      lines       tetramesh
+      rgbplot     shrinkfaces
+      findfigs
 
  ** Deprecated functions.
 

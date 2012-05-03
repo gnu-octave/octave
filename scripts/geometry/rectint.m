@@ -43,7 +43,7 @@ function area = rectint (a, b)
     error ("rectint: A must have 4 columns");
   elseif (columns (b) != 4)
     error ("rectint: B must have 4 columns");
-  elseif any ([a(:,3:4);b(:,3:4)](:) < 0)
+  elseif (any ([a(:,3:4);b(:,3:4)](:) < 0))
     error ("rectint: all widths and heights must be > 0");
   endif
 
@@ -105,7 +105,7 @@ function area = rectint (a, b)
 
   endfor
 
-  if swapinputs
+  if (swapinputs)
     area = area';
   endif
 

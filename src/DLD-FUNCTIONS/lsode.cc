@@ -475,25 +475,27 @@ parameters for @code{lsode}.\n\
 
 /*
 
-%% dassl-1.m
-%%
-%% Test lsode() function
-%%
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         20 May 1998
-%%
-%% Problem
-%%
-%%    y1' = -y2,   y1(0) = 1
-%%    y2' =  y1,   y2(0) = 0
-%%
-%% Solution
-%%
-%%    y1(t) = cos(t)
-%%    y2(t) = sin(t)
+## dassl-1.m
+##
+## Test lsode() function
+##
+## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+##         Comalco Research and Technology
+##         20 May 1998
+##
+## Problem
+##
+##    y1' = -y2,   y1(0) = 1
+##    y2' =  y1,   y2(0) = 0
+##
+## Solution
+##
+##    y1(t) = cos(t)
+##    y2(t) = sin(t)
+##
 %!function xdot = __f (x, t)
 %!  xdot = [-x(2); x(1)];
+%!endfunction
 %!test
 %!
 %! x0 = [1; 0];
@@ -502,15 +504,15 @@ parameters for @code{lsode}.\n\
 %!
 %! tol = 500 * lsode_options ("relative tolerance");
 %!
-%!
 %! x = lsode ("__f", x0, t);
 %!
 %! y = [cos(t), sin(t)];
 %!
-%! assert(all (all (abs (x - y) < tol)));
+%! assert (x, y, tol);
 
 %!function xdotdot = __f (x, t)
 %!  xdotdot = [x(2); -x(1)];
+%!endfunction
 %!test
 %!
 %! x0 = [1; 0];
@@ -521,10 +523,11 @@ parameters for @code{lsode}.\n\
 %!
 %! y = [1, 0; 1, 0];
 %!
-%! assert(all (all (abs (x - y) < tol)));
+%! assert (x, y, tol);
 
 %!function xdot = __f (x, t)
 %!  xdot = x;
+%!endfunction
 %!test
 %!
 %! x0 = 1;
@@ -535,12 +538,11 @@ parameters for @code{lsode}.\n\
 %!
 %! y = [1; e];
 %!
-%! assert(all (all (abs (x - y) < tol)));
+%! assert (x, y, tol);
 
 %!test
 %! lsode_options ("absolute tolerance", eps);
-%! assert(lsode_options ("absolute tolerance") == eps);
+%! assert (lsode_options ("absolute tolerance") == eps);
 
-%!error <Invalid call to lsode_options> lsode_options ("foo", 1, 2);
-
+%!error lsode_options ("foo", 1, 2)
 */

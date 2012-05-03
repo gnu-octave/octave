@@ -1417,6 +1417,10 @@ void
 delete_buffer (YY_BUFFER_STATE buf)
 {
   yy_delete_buffer (buf);
+
+  // Prevent invalid yyin from being used by yyrestart.
+  if (! current_buffer ())
+    yyin = 0; 
 }
 
 // Delete all buffers from the stack.

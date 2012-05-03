@@ -264,6 +264,24 @@ octave_float_matrix::diag (octave_idx_type k) const
 }
 
 octave_value
+octave_float_matrix::diag (octave_idx_type m, octave_idx_type n) const
+{
+  octave_value retval;
+
+  if (matrix.ndims () == 2
+      && (matrix.rows () == 1 || matrix.columns () == 1))
+    {
+      FloatMatrix mat = matrix.matrix_value ();
+
+      retval = mat.diag (m, n);
+    }
+  else
+    error ("diag: expecting vector argument");
+
+  return retval;
+}
+
+octave_value
 octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;

@@ -153,7 +153,7 @@ function opts = __fltk_print__ (opts)
   vw = get (haxes, "view");
   if (iscell (vw))
     vw = vertcat (vw{:});
-  end
+  endif
   is2D = all (abs (vw(:,2)) == 90);
   if (is2D)
     gl2ps_device{end} = [gl2ps_device{end}, "is2D"];

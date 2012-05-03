@@ -363,6 +363,8 @@ three-dimensional plots.
 
 @DOCSTRING(isocolors)
 
+@DOCSTRING(shrinkfaces)
+
 @DOCSTRING(diffuse)
 
 @DOCSTRING(specular)
@@ -1151,6 +1153,8 @@ objects.
 @DOCSTRING(ancestor)
 
 @DOCSTRING(allchild)
+
+@DOCSTRING(findfigs)
 
 @node Graphics Object Properties
 @subsection Graphics Object Properties

@@ -128,7 +128,7 @@ private:
   {
     symbol_table::scope_id curr_scope = symbol_table::current_scope ();
 
-    if (scope != curr_scope)
+    if (scope != curr_scope || ! sym.is_valid ())
       {
         scope = curr_scope;
         sym = symbol_table::insert (sym.name ());

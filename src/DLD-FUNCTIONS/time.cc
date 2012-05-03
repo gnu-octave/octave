@@ -122,9 +122,7 @@ value returned by @code{time} was 856163706.\n\
 }
 
 /*
-
-%!assert(time () > 0);
-
+%!assert (time () > 0)
 */
 
 DEFUN_DLD (gmtime, args, ,
@@ -171,25 +169,22 @@ gmtime (time ())\n\
 }
 
 /*
-
 %!test
 %! ts = gmtime (time ());
-%! assert((isstruct (ts)
-%! && isfield (ts, "usec")
-%! && isfield (ts, "year")
-%! && isfield (ts, "mon")
-%! && isfield (ts, "mday")
-%! && isfield (ts, "sec")
-%! && isfield (ts, "min")
-%! && isfield (ts, "wday")
-%! && isfield (ts, "hour")
-%! && isfield (ts, "isdst")
-%! && isfield (ts, "yday")));
+%! assert (isstruct (ts));
+%! assert (isfield (ts, "usec"));
+%! assert (isfield (ts, "year"));
+%! assert (isfield (ts, "mon"));
+%! assert (isfield (ts, "mday"));
+%! assert (isfield (ts, "sec"));
+%! assert (isfield (ts, "min"));
+%! assert (isfield (ts, "wday"));
+%! assert (isfield (ts, "hour"));
+%! assert (isfield (ts, "isdst"));
+%! assert (isfield (ts, "yday"));
 
-%!error <Invalid call to gmtime> gmtime ();
-
-%!error <Invalid call to gmtime> gmtime (1, 2);
-
+%!error gmtime ()
+%!error gmtime (1, 2)
 */
 
 DEFUN_DLD (localtime, args, ,
@@ -235,25 +230,22 @@ localtime (time ())\n\
 }
 
 /*
-
 %!test
 %! ts = localtime (time ());
-%! assert((isstruct (ts)
-%! && isfield (ts, "usec")
-%! && isfield (ts, "year")
-%! && isfield (ts, "mon")
-%! && isfield (ts, "mday")
-%! && isfield (ts, "sec")
-%! && isfield (ts, "min")
-%! && isfield (ts, "wday")
-%! && isfield (ts, "hour")
-%! && isfield (ts, "isdst")
-%! && isfield (ts, "yday")));
+%! assert (isstruct (ts));
+%! assert (isfield (ts, "usec"));
+%! assert (isfield (ts, "year"));
+%! assert (isfield (ts, "mon"));
+%! assert (isfield (ts, "mday"));
+%! assert (isfield (ts, "sec"));
+%! assert (isfield (ts, "min"));
+%! assert (isfield (ts, "wday"));
+%! assert (isfield (ts, "hour"));
+%! assert (isfield (ts, "isdst"));
+%! assert (isfield (ts, "yday"));
 
-%!error <Invalid call to localtime> localtime ();
-
-%!error <Invalid call to localtime> localtime (1, 2);
-
+%!error localtime ()
+%!error localtime (1, 2)
 */
 
 DEFUN_DLD (mktime, args, ,
@@ -296,21 +288,18 @@ mktime (localtime (time ()))\n\
 }
 
 /*
-
 %!test
 %! t = time ();
-%! assert(fix (mktime (localtime (t))) == fix (t));
+%! assert (fix (mktime (localtime (t))) == fix (t));
 
-%!error <Invalid call to mktime> mktime ();
-
-%!error <Invalid call to mktime> mktime (1, 2, 3);
-
-%% These tests fail on systems with mktime functions of limited
-%% intelligence:
+## These tests fail on systems with mktime functions of limited
+## intelligence:
 %!assert (datestr (datenum (1969, 1, 1), 0), "01-Jan-1969 00:00:00")
 %!assert (datestr (datenum (1901, 1, 1), 0), "01-Jan-1901 00:00:00")
 %!assert (datestr (datenum (1795, 1, 1), 0), "01-Jan-1795 00:00:00")
 
+%!error mktime ()
+%!error mktime (1, 2, 3)
 */
 
 DEFUN_DLD (strftime, args, ,
@@ -498,17 +487,14 @@ Year (1970-).\n\
 }
 
 /*
+%!assert (ischar (strftime ("%%%n%t%H%I%k%l", localtime (time ()))));
+%!assert (ischar (strftime ("%M%p%r%R%s%S%T", localtime (time ()))));
+%!assert (ischar (strftime ("%X%Z%z%a%A%b%B", localtime (time ()))));
+%!assert (ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ()))));
+%!assert (ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ()))));
 
-%!assert((ischar (strftime ("%%%n%t%H%I%k%l", localtime (time ())))
-%! && ischar (strftime ("%M%p%r%R%s%S%T", localtime (time ())))
-%! && ischar (strftime ("%X%Z%z%a%A%b%B", localtime (time ())))
-%! && ischar (strftime ("%c%C%d%e%D%h%j", localtime (time ())))
-%! && ischar (strftime ("%m%U%w%W%x%y%Y", localtime (time ())))));
-
-%!error <Invalid call to strftime> strftime ();
-
-%!error <Invalid call to strftime> strftime ("foo", localtime (time ()), 1);
-
+%!error strftime ()
+%!error strftime ("foo", localtime (time ()), 1)
 */
 
 DEFUN_DLD (strptime, args, ,

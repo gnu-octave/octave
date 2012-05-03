@@ -96,12 +96,15 @@ The result of which can be seen in @ref{fig:delaunay}.
 
 Octave has the functions @code{triplot}, @code{trimesh}, and @code{trisurf}
 to plot the Delaunay triangulation of a 2-dimensional set of points.
+@code{tetramesh} will plot the triangulation of a 3-dimensional set of points.
 
 @DOCSTRING(triplot)
 
 @DOCSTRING(trimesh)
 
 @DOCSTRING(trisurf)
+
+@DOCSTRING(tetramesh)
 
 The difference between @code{triplot}, and @code{trimesh} or @code{triplot},
 is that the former only plots the 2-dimensional triangulation itself, whereas

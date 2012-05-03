@@ -247,17 +247,15 @@ strfind (@{\"abababa\", \"bebebe\", \"ab\"@}, \"aba\")\n\
 }
 
 /*
+%!assert (strfind ("abababa", "aba"), [1, 3, 5])
+%!assert (strfind ("abababa", "aba", "overlaps", false), [1, 5])
+%!assert (strfind ({"abababa", "bla", "bla"}, "a"), {[1, 3, 5, 7], 3, 3})
+%!assert (strfind ("Linux _is_ user-friendly. It just isn't ignorant-friendly or idiot-friendly.", "friendly"), [17, 50, 68])
 
-%!error strfind ();
-%!error strfind ("foo", "bar", 1);
-%!error strfind ("foo", 100);
-%!error strfind (100, "foo");
-
-%!assert (strfind ("abababa", "aba"), [1, 3, 5]);
-%!assert (strfind ("abababa", "aba", "overlaps", false), [1, 5]);
-%!assert (strfind ({"abababa", "bla", "bla"}, "a"), {[1, 3, 5, 7], 3, 3});
-%!assert (strfind ("Linux _is_ user-friendly. It just isn't ignorant-friendly or idiot-friendly.", "friendly"), [17, 50, 68]);
-
+%!error strfind ()
+%!error strfind ("foo", "bar", 1)
+%!error <PATTERN must be a string> strfind ("foo", 100)
+%!error <first argument must be a string> strfind (100, "foo")
 */
 
 static Array<char>
@@ -407,14 +405,11 @@ done for each element and a cell array is returned.\n\
 }
 
 /*
+%!assert (strrep ("This is a test string", "is", "&%$"),
+%!                "Th&%$ &%$ a test string")
+%!assert (strrep ("abababc", "abab", "xyz"), "xyzxyzc")
+%!assert (strrep ("abababc", "abab", "xyz", "overlaps", false), "xyzabc")
 
-%!assert(strcmp (strrep ("This is a test string", "is", "&%$"),
-%! "Th&%$ &%$ a test string"));
-%!assert(strrep ("abababc", "abab", "xyz"), "xyzxyzc");
-%!assert(strrep ("abababc", "abab", "xyz", "overlaps", false), "xyzabc");
-
-%!error strrep ();
-
-%!error strrep ("foo", "bar", 3, 4);
-
+%!error strrep ()
+%!error strrep ("foo", "bar", 3, 4)
 */

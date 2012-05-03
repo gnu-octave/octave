@@ -79,7 +79,7 @@ function ret = pchip (x, y, xi)
   if (isvector (y))
     y = y(:).'; ##row vector
     szy = size (y);
-    if !(size_equal (x, y))
+    if (! size_equal (x, y))
       error ("pchip: length of X and Y must match")
     endif
   else
@@ -96,7 +96,7 @@ function ret = pchip (x, y, xi)
     h = diff (x);
     y = fliplr (y);
   elseif (any (h <= 0))
-    error("pchip: X must be strictly monotonic");
+    error ("pchip: X must be strictly monotonic");
   endif
 
   f1 = y(:, 1:n-1);

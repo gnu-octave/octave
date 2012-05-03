@@ -65,13 +65,13 @@ part of your system, or you may have to build some or all of them
 yourself.
 
 @menu
-* Obtaining the Depencies Automatically::
+* Obtaining the Dependencies Automatically::
 * Build Tools::
 * External Packages::
 @end menu
 
-@node Obtaining the Depencies Automatically
-@subsection Obtaining the Depencies Automatically
+@node Obtaining the Dependencies Automatically
+@subsection Obtaining the Dependencies Automatically
 
 On some systems you can obtain many of Octave's build dependencies
 automatically. The commands for doing this vary by system. Similarly,

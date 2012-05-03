@@ -59,7 +59,7 @@ function rgb_map = hsv2rgb (hsv_map)
   endif
 
   ## set values <0 to 0 and >1 to 1
-  hsv_map = (hsv_map >= 0 & hsv_map <= 1) .* hsv_map \
+  hsv_map = (hsv_map >= 0 & hsv_map <= 1) .* hsv_map ...
       + (hsv_map < 0) .* 0 + (hsv_map > 1);
 
   ## fill rgb map with v*(1-s)

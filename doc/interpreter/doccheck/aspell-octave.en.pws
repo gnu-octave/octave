@@ -66,6 +66,7 @@ binoinv
 binopdf
 binornd
 Biomathematics
+bitmapped
 bitmax
 bitwise
 bivariate
@@ -830,6 +831,7 @@ spdiags
 Spearman's
 speye
 spfun
+splinefit
 spmatrix
 spones
 spparms
@@ -1039,6 +1041,7 @@ Wl
 wp
 wspace
 xb
+xc
 xcorr
 xdigit
 xerrorbar
@@ -1060,6 +1063,7 @@ xy
 xyerrorbar
 xyerrorbars
 xyz
+yc
 ydata
 yerrorbar
 yerrorbars

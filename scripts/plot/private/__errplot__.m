@@ -219,7 +219,7 @@ function h = __errplot__ (fstr, p, varargin)
     tlgnd(end+1) = fmt.key;
 
     legend (gca(), hlgnd, tlgnd);
-  end 
+  endif
 
 endfunction
 

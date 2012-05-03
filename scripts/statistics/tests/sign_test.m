@@ -68,9 +68,9 @@ function [pval, b, n] = sign_test (x, y, alt)
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
-  elseif strcmp (alt, ">")
+  elseif (strcmp (alt, ">"))
     pval = 1 - cdf;
-  elseif strcmp (alt, "<")
+  elseif (strcmp (alt, "<"))
     pval = cdf;
   else
     error ("sign_test: option %s not recognized", alt);

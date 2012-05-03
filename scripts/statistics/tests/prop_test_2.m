@@ -65,9 +65,9 @@ function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);
-  elseif strcmp (alt, ">")
+  elseif (strcmp (alt, ">"))
     pval = 1 - cdf;
-  elseif strcmp (alt, "<")
+  elseif (strcmp (alt, "<"))
     pval = cdf;
   else
     error ("prop_test_2: option %s not recognized", alt);

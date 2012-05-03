@@ -3239,6 +3239,23 @@ ComplexMatrix::diag (octave_idx_type k) const
   return MArray<Complex>::diag (k);
 }
 
+ComplexDiagMatrix
+ComplexMatrix::diag (octave_idx_type m, octave_idx_type n) const
+{
+  ComplexDiagMatrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr == 1 || nc == 1)
+    retval = ComplexDiagMatrix (*this, m, n);
+  else
+    (*current_liboctave_error_handler)
+      ("diag: expecting vector argument");
+
+  return retval;
+}
+
 bool
 ComplexMatrix::row_is_real_only (octave_idx_type i) const
 {

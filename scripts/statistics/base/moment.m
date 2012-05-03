@@ -165,7 +165,7 @@ function m = moment (x, p, opt1, opt2)
   if (any (type == "c"))
     x = center (x, dim);
   endif
-  if any (type == "a")
+  if (any (type == "a"))
     x = abs (x);
   endif
 

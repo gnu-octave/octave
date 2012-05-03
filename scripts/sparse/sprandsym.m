@@ -119,7 +119,7 @@ function r = pick_rand_diag (n, k)
   ## numerically to avoid overflow.
 
   ## Degenerate case
-  if k == 1
+  if (k == 1)
     r = 1;
     return
   endif

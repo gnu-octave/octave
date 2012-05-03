@@ -95,7 +95,7 @@
 
 function [est, v, w, iter] = onenormest (varargin)
 
-  if (size (varargin, 2) < 1 || size (varargin, 2) > 4)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
@@ -103,31 +103,31 @@ function [est, v, w, iter] = onenormest (varargin)
   itmax = 10;
 
   if (ismatrix (varargin{1}))
-    n = size (varargin{1}, 1);
-    if n != size (varargin{1}, 2),
+    [n, nc] = size (varargin{1});
+    if (n != nc)
       error ("onenormest: matrix must be square");
     endif
     apply = @(x) varargin{1} * x;
     apply_t = @(x) varargin{1}' * x;
-    if (size (varargin) > 1)
+    if (nargin > 1)
       t = varargin{2};
     else
       t = min (n, default_t);
     endif
-    issing = isa (varargin {1}, "single");
+    issing = isa (varargin{1}, "single");
   else
-    if (size (varargin, 2) < 3)
-      print_usage();
+    if (nargin < 3)
+      print_usage ();
     endif
-    n = varargin{3};
     apply = varargin{1};
     apply_t = varargin{2};
-    if (size (varargin) > 3)
+    n = varargin{3};
+    if (nargin > 3)
       t = varargin{4};
     else
       t = default_t;
     endif
-    issing = isa (varargin {3}, "single");
+    issing = isa (n, "single");
   endif
 
   ## Initial test vectors X.
@@ -175,7 +175,7 @@ function [est, v, w, iter] = onenormest (varargin)
 
     ## Test if any of S are approximately parallel to previous S
     ## vectors or current S vectors.  If everything is parallel,
-    ## stop. Otherwise, replace any parallel vectors with
+    ## stop.  Otherwise, replace any parallel vectors with
     ## rand{-1,+1}.
     partest = any (abs (S_old' * S - n) < 4*eps*n);
     if (all (partest))
@@ -201,8 +201,7 @@ function [est, v, w, iter] = onenormest (varargin)
 
     Z = feval (apply_t, S);
 
-    ## Now find the largest non-previously-visted index per
-    ## vector.
+    ## Now find the largest non-previously-visted index per vector.
     h = max (abs (Z),2);
     [mh, mhi] = max (h);
     if (iter >= 2 && mhi == ind_best)
@@ -216,10 +215,10 @@ function [est, v, w, iter] = onenormest (varargin)
         ## Visited all these before, so stop.
         break;
       endif
-      ind = ind (!been_there (ind));
+      ind = ind(! been_there(ind));
       if (length (ind) < t)
         ## There aren't enough new vectors, so we're practically
-        ## in a cycle. Stop.
+        ## in a cycle.  Stop.
         break;
       endif
     endif
@@ -229,13 +228,14 @@ function [est, v, w, iter] = onenormest (varargin)
     for zz = 1 : t
       X(ind(zz),zz) = 1;
     endfor
-    been_there (ind (1 : t)) = 1;
+    been_there(ind(1 : t)) = 1;
   endfor
 
-  ## The estimate est and vector w are set in the loop above. The
-  ## vector v selects the ind_best column of A.
+  ## The estimate est and vector w are set in the loop above.
+  ## The vector v selects the ind_best column of A.
   v = zeros (n, 1);
   v(ind_best) = 1;
+
 endfunction
 
 

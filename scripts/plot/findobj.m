@@ -148,16 +148,16 @@ function h = findobj (varargin)
           na = na + 1;
           if (na <= numel(args))
             if (ischar (args{na}))
-              if strcmpi(args{na}, "-and")
+              if (strcmpi (args{na}, "-and"))
                 logicaloperator{np} = "and";
                 na = na+1;
-              elseif strcmpi(args{na}, "-or")
+              elseif (strcmpi (args{na}, "-or"))
                 logicaloperator{np} = "or";
                 na = na+1;
-              elseif strcmpi(args{na}, "-xor")
+              elseif (strcmpi (args{na}, "-xor"))
                 logicaloperator{np} = "xor";
                 na = na+1;
-              elseif strcmpi(args{na}, "-not")
+              elseif (strcmpi (args{na}, "-not"))
                 logicaloperator{np} = "not";
                 na = na+1;
               endif
@@ -173,7 +173,7 @@ function h = findobj (varargin)
         endif
       else
         ## This is sloppy ... but works like Matlab.
-        if strcmpi(args{na}, "-not")
+        if (strcmpi (args{na}, "-not"))
           h = [];
           return
         endif
@@ -213,7 +213,7 @@ function h = findobj (varargin)
           else
             if (regularexpression(np))
               match = regexp (p.(pname{np}), pvalue{np});
-              if isempty (match)
+              if (isempty (match))
                 match = 0;
               endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))

@@ -248,6 +248,13 @@ octave_range::diag (octave_idx_type k) const
           : octave_value (range.diag (k)));
 }
 
+octave_value
+octave_range::diag (octave_idx_type m, octave_idx_type n) const
+{
+  Matrix mat = range.matrix_value ();
+
+  return mat.diag (m, n);
+}
 
 bool
 octave_range::is_true (void) const

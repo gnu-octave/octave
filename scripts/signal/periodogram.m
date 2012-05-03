@@ -122,7 +122,7 @@ function [pxx, f] = periodogram (x, varargin)
 
   if (strcmp (range, "onesided"))
     range = 1;
-  elseif strcmp (range, "twosided")
+  elseif (strcmp (range, "twosided"))
     range = 2;
   else
     range = 2-isreal (x);

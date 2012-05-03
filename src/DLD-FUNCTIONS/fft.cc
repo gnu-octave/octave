@@ -177,24 +177,23 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 }
 
 /*
+%!assert (fft ([]), [])
+%!assert (fft (zeros (10,0)), zeros (10,0))
+%!assert (fft (zeros (0,10)), zeros (0,10))
+%!assert (fft (0), 0)
+%!assert (fft (1), 1)
+%!assert (fft (ones (2,2)), [2,2; 0,0])
+%!assert (fft (eye (2,2)), [1,1; 1,-1])
 
-%!error(fft())
-%!assert(fft([]), [])
-%!assert(fft(zeros(10,0)), zeros(10,0))
-%!assert(fft(zeros(0,10)), zeros(0,10))
-%!assert(fft(0), 0)
-%!assert(fft(1), 1)
-%!assert(fft(ones(2,2)), [2,2; 0,0])
-%!assert(fft(eye(2,2)), [1,1; 1,-1])
+%!assert (fft (single ([])), single ([]))
+%!assert (fft (zeros (10,0,"single")), zeros (10,0,"single"))
+%!assert (fft (zeros (0,10,"single")), zeros (0,10,"single"))
+%!assert (fft (single (0)), single (0))
+%!assert (fft (single (1)), single (1))
+%!assert (fft (ones (2,2,"single")), single ([2,2; 0,0]))
+%!assert (fft (eye (2,2,"single")), single ([1,1; 1,-1]))
 
-%!assert(fft(single([])), single([]))
-%!assert(fft(zeros(10,0,'single')), zeros(10,0,'single'))
-%!assert(fft(zeros(0,10,'single')), zeros(0,10,'single'))
-%!assert(fft(single(0)), single(0))
-%!assert(fft(single(1)), single(1))
-%!assert(fft(ones(2,2,'single')), single([2,2; 0,0]))
-%!assert(fft(eye(2,2,'single')), single([1,1; 1,-1]))
-
+%!error (fft ())
 */
 
 
@@ -256,67 +255,65 @@ dimension of the matrix along which the inverse FFT is performed\n\
 }
 
 /*
-
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
 %!test
-%! N=64;
-%! n=4;
+%! N = 64;
+%! n = 4;
 %! t = 2*pi*(0:1:N-1)/N;
-%! s = cos(n*t);
-%! S = fft(s);
+%! s = cos (n*t);
+%! S = fft (s);
 %!
-%! answer = zeros (size(t));
+%! answer = zeros (size (t));
 %! answer(n+1) = N/2;
 %! answer(N-n+1) = N/2;
 %!
-%! assert(S, answer, 4*N*eps);
+%! assert (S, answer, 4*N*eps);
 
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
 %!test
-%! N=64;
-%! n=7;
+%! N = 64;
+%! n = 7;
 %! t = 2*pi*(0:1:N-1)/N;
-%! s = cos(n*t);
+%! s = cos (n*t);
 %!
 %! S = zeros (size(t));
 %! S(n+1) = N/2;
 %! S(N-n+1) = N/2;
 %!
-%! assert(ifft(S), s, 4*N*eps);
+%! assert (ifft (S), s, 4*N*eps);
 
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
 %!test
-%! N=64;
-%! n=4;
+%! N = 64;
+%! n = 4;
 %! t = single (2*pi*(0:1:N-1)/N);
-%! s = cos(n*t);
-%! S = fft(s);
+%! s = cos (n*t);
+%! S = fft (s);
 %!
-%! answer = zeros (size(t),'single');
+%! answer = zeros (size (t), "single");
 %! answer(n+1) = N/2;
 %! answer(N-n+1) = N/2;
 %!
-%! assert(S, answer, 4*N*eps('single'));
+%! assert (S, answer, 4*N*eps ("single"));
 
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
 %!test
-%! N=64;
-%! n=7;
+%! N = 64;
+%! n = 7;
 %! t = 2*pi*(0:1:N-1)/N;
-%! s = cos(n*t);
+%! s = cos (n*t);
 %!
-%! S = zeros (size(t),'single');
+%! S = zeros (size (t), "single");
 %! S(n+1) = N/2;
 %! S(N-n+1) = N/2;
 %!
-%! assert(ifft(S), s, 4*N*eps('single'));
-
+%! assert (ifft (S), s, 4*N*eps ("single"));
 */

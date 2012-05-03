@@ -456,12 +456,10 @@ x = @var{R} \\ @var{C}\n\
 }
 
 /*
-
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
 %! [q, r] = qr (a);
-%!
 %! [qe, re] = qr (a, 0);
 %!
 %! assert (q * r, a, sqrt (eps));
@@ -470,8 +468,7 @@ x = @var{R} \\ @var{C}\n\
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
-%! [q, r, p] = qr (a);  # not giving right dimensions. FIXME
-%!
+%! [q, r, p] = qr (a);  # FIXME: not giving right dimensions. 
 %! [qe, re, pe] = qr (a, 0);
 %!
 %! assert (q * r, a * p, sqrt (eps));
@@ -481,7 +478,6 @@ x = @var{R} \\ @var{C}\n\
 %! a = [0, 2; 2, 1; 1, 2];
 %!
 %! [q, r] = qr (a);
-%!
 %! [qe, re] = qr (a, 0);
 %!
 %! assert (q * r, a, sqrt (eps));
@@ -491,27 +487,26 @@ x = @var{R} \\ @var{C}\n\
 %! a = [0, 2; 2, 1; 1, 2];
 %!
 %! [q, r, p] = qr (a);
-%!
 %! [qe, re, pe] = qr (a, 0);
 %!
 %! assert (q * r, a * p, sqrt (eps));
 %! assert (qe * re, a(:, pe), sqrt (eps));
 
-%!error <Invalid call to qr> qr ();
-%!error <Invalid call to qr> qr ([1, 2; 3, 4], 0, 2);
+%!error qr ()
+%!error qr ([1, 2; 3, 4], 0, 2)
 
 %!function retval = __testqr (q, r, a, p)
-%!  tol = 100*eps (class(q));
+%!  tol = 100*eps (class (q));
 %!  retval = 0;
 %!  if (nargin == 3)
-%!    n1 = norm (q*r-a);
-%!    n2 = norm (q'*q-eye(columns(q)));
+%!    n1 = norm (q*r - a);
+%!    n2 = norm (q'*q - eye (columns (q)));
 %!    retval = (n1 < tol && n2 < tol);
 %!  else
-%!    n1 = norm (q'*q-eye(columns(q)));
+%!    n1 = norm (q'*q - eye (columns (q)));
 %!    retval = (n1 < tol);
 %!    if (isvector (p))
-%!      n2 = norm (q*r-a(:,p));
+%!      n2 = norm (q*r - a(:,p));
 %!      retval = (retval && n2 < tol);
 %!    else
 %!      n2 = norm (q*r - a*p);
@@ -521,237 +516,226 @@ x = @var{R} \\ @var{C}\n\
 %!endfunction
 
 %!test
-%!
 %! t = ones (24, 1);
 %! j = 1;
 %!
-%! if false # eliminate big matrix tests
-%!   a = rand(5000,20);
-%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%! if (false)  # eliminate big matrix tests
+%!   a = rand (5000, 20);
+%!   [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%!   [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%!   [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%!   [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a', p);
 %!
 %!   a = a+1i*eps;
-%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%!   [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%!   [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%!   [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%!   [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a', p);
 %! endif
 %!
 %! a = [ ones(1,15); sqrt(eps)*eye(15) ];
-%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
+%! [q,r]   = qr (a);   t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a');  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a);   t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a');  t(j++) = __testqr (q, r, a', p);
 %!
 %! a = a+1i*eps;
-%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
+%! [q,r]   = qr (a);   t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a');  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a);   t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a');  t(j++) = __testqr (q, r, a', p);
 %!
 %! a = [ ones(1,15); sqrt(eps)*eye(15) ];
-%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%! [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a', p);
 %!
 %! a = a+1i*eps;
-%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%! [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a', p);
 %!
-%! a = [
-%! 611   196  -192   407    -8   -52   -49    29
-%! 196   899   113  -192   -71   -43    -8   -44
-%! -192   113   899   196    61    49     8    52
-%! 407  -192   196   611     8    44    59   -23
-%! -8   -71    61     8   411  -599   208   208
-%! -52   -43    49    44  -599   411   208   208
-%! -49    -8     8    59   208   208    99  -911
-%! 29   -44    52   -23   208   208  -911    99
-%! ];
-%! [q,r] = qr(a);
+%! a = [ 611   196  -192   407    -8   -52   -49    29
+%!       196   899   113  -192   -71   -43    -8   -44
+%!      -192   113   899   196    61    49     8    52
+%!       407  -192   196   611     8    44    59   -23
+%!        -8   -71    61     8   411  -599   208   208
+%!       -52   -43    49    44  -599   411   208   208
+%!       -49    -8     8    59   208   208    99  -911
+%!        29   -44    52   -23   208   208  -911    99 ];
+%! [q,r] = qr (a);
 %!
-%! assert(all (t) && norm(q*r-a) < 5000*eps);
+%! assert (all (t) && norm (q*r - a) < 5000*eps);
 
 %!test
 %! a = single ([0, 2, 1; 2, 1, 2]);
 %!
 %! [q, r] = qr (a);
-%!
 %! [qe, re] = qr (a, 0);
 %!
-%! assert (q * r, a, sqrt (eps ('single')));
-%! assert (qe * re, a, sqrt (eps ('single')));
+%! assert (q * r, a, sqrt (eps ("single")));
+%! assert (qe * re, a, sqrt (eps ("single")));
 
 %!test
-%! a = single([0, 2, 1; 2, 1, 2]);
+%! a = single ([0, 2, 1; 2, 1, 2]);
 %!
-%! [q, r, p] = qr (a);  # not giving right dimensions. FIXME
-%!
+%! [q, r, p] = qr (a);  # FIXME: not giving right dimensions.
 %! [qe, re, pe] = qr (a, 0);
 %!
-%! assert (q * r, a * p, sqrt (eps('single')));
-%! assert (qe * re, a(:, pe), sqrt (eps('single')));
+%! assert (q * r, a * p, sqrt (eps ("single")));
+%! assert (qe * re, a(:, pe), sqrt (eps ("single")));
 
 %!test
-%! a = single([0, 2; 2, 1; 1, 2]);
+%! a = single ([0, 2; 2, 1; 1, 2]);
 %!
 %! [q, r] = qr (a);
-%!
 %! [qe, re] = qr (a, 0);
 %!
-%! assert (q * r, a, sqrt (eps('single')));
-%! assert (qe * re, a, sqrt (eps('single')));
+%! assert (q * r, a, sqrt (eps ("single")));
+%! assert (qe * re, a, sqrt (eps ("single")));
 
 %!test
-%! a = single([0, 2; 2, 1; 1, 2]);
+%! a = single ([0, 2; 2, 1; 1, 2]);
 %!
 %! [q, r, p] = qr (a);
-%!
 %! [qe, re, pe] = qr (a, 0);
 %!
-%! assert (q * r, a * p, sqrt (eps('single')));
-%! assert (qe * re, a(:, pe), sqrt (eps('single')));
+%! assert (q * r, a * p, sqrt (eps ("single")));
+%! assert (qe * re, a(:, pe), sqrt (eps ("single")));
 
-%!error <Invalid call to qr> qr ();
-%!error <Invalid call to qr> qr ([1, 2; 3, 4], 0, 2);
+%!error qr ()
+%!error qr ([1, 2; 3, 4], 0, 2)
 
 %!test
-%!
 %! t = ones (24, 1);
 %! j = 1;
 %!
-%! if false # eliminate big matrix tests
-%!   a = rand(5000,20);
-%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%! if (false)  # eliminate big matrix tests
+%!   a = rand (5000,20);
+%!   [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%!   [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%!   [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%!   [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a', p);
 %!
-%!   a = a+1i*eps('single');
-%!   [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%!   [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%!   [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%!   [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%!   a = a+1i*eps ("single");
+%!   [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%!   [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%!   [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%!   [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a', p);
 %! endif
 %!
-%! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
-%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
+%! a = [ ones(1,15); sqrt(eps("single"))*eye(15) ];
+%! [q,r]   = qr (a);   t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a');  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a);   t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a');  t(j++) = __testqr (q, r, a', p);
 %!
-%! a = a+1i*eps('single');
-%! [q,r]=qr(a); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a'); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a'); t(j++) = __testqr(q,r,a',p);
+%! a = a+1i*eps ("single");
+%! [q,r]   = qr (a);   t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a');  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a);   t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a');  t(j++) = __testqr (q, r, a', p);
 %!
-%! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
-%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%! a = [ ones(1,15); sqrt(eps("single"))*eye(15) ];
+%! [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a', p);
 %!
-%! a = a+1i*eps('single');
-%! [q,r]=qr(a,0); t(j++) = __testqr(q,r,a);
-%! [q,r]=qr(a',0); t(j++) = __testqr(q,r,a');
-%! [q,r,p]=qr(a,0); t(j++) = __testqr(q,r,a,p);
-%! [q,r,p]=qr(a',0); t(j++) = __testqr(q,r,a',p);
+%! a = a+1i*eps ("single");
+%! [q,r]   = qr (a, 0);  t(j++) = __testqr (q, r, a);
+%! [q,r]   = qr (a',0);  t(j++) = __testqr (q, r, a');
+%! [q,r,p] = qr (a, 0);  t(j++) = __testqr (q, r, a, p);
+%! [q,r,p] = qr (a',0);  t(j++) = __testqr (q, r, a',p);
 %!
-%! a = [
-%! 611   196  -192   407    -8   -52   -49    29
-%! 196   899   113  -192   -71   -43    -8   -44
-%! -192   113   899   196    61    49     8    52
-%! 407  -192   196   611     8    44    59   -23
-%! -8   -71    61     8   411  -599   208   208
-%! -52   -43    49    44  -599   411   208   208
-%! -49    -8     8    59   208   208    99  -911
-%! 29   -44    52   -23   208   208  -911    99
-%! ];
-%! [q,r] = qr(a);
+%! a = [ 611   196  -192   407    -8   -52   -49    29
+%!       196   899   113  -192   -71   -43    -8   -44
+%!      -192   113   899   196    61    49     8    52
+%!       407  -192   196   611     8    44    59   -23
+%!        -8   -71    61     8   411  -599   208   208
+%!       -52   -43    49    44  -599   411   208   208
+%!       -49    -8     8    59   208   208    99  -911
+%!        29   -44    52   -23   208   208  -911    99 ];
+%! [q,r] = qr (a);
 %!
-%! assert(all (t) && norm(q*r-a) < 5000*eps('single'));
+%! assert (all (t) && norm (q*r-a) < 5000*eps ("single"));
 
-%% The deactivated tests below can't be tested till rectangular back-subs is
-%% implemented for sparse matrices.
+## The deactivated tests below can't be tested till rectangular back-subs is
+## implemented for sparse matrices.
 
 %!testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = sprandn(n,n,d)+speye(n,n);
-%! r = qr(a);
-%! assert(r'*r,a'*a,1e-10)
+%! n = 20;  d = 0.2;
+%! a = sprandn (n,n,d) + speye (n,n);
+%! r = qr (a);
+%! assert (r'*r, a'*a, 1e-10)
 
 %!testif HAVE_COLAMD
-%! n = 20; d= 0.2;
-%! a = sprandn(n,n,d)+speye(n,n);
-%! q = symamd(a);
+%! n = 20;  d = 0.2;
+%! a = sprandn (n,n,d) + speye (n,n);
+%! q = symamd (a);
 %! a = a(q,q);
-%! r = qr(a);
-%! assert(r'*r,a'*a,1e-10)
+%! r = qr (a);
+%! assert (r'*r, a'*a, 1e-10)
 
 %!testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = sprandn(n,n,d)+speye(n,n);
-%! [c,r] = qr(a,ones(n,1));
-%! assert (r\c,full(a)\ones(n,1),10e-10)
+%! n = 20;  d = 0.2;
+%! a = sprandn (n,n,d) + speye (n,n);
+%! [c,r] = qr (a, ones (n,1));
+%! assert (r\c, full (a)\ones (n,1), 10e-10)
 
 %!testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = sprandn(n,n,d)+speye(n,n);
-%! b = randn(n,2);
-%! [c,r] = qr(a,b);
-%! assert (r\c,full(a)\b,10e-10)
+%! n = 20;  d = 0.2;
+%! a = sprandn (n,n,d) + speye (n,n);
+%! b = randn (n,2);
+%! [c,r] = qr (a, b);
+%! assert (r\c, full (a)\b, 10e-10)
 
 %% Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = sprandn(n,n+1,d)+speye(n,n+1);
-%! b = randn(n,2);
-%! [c,r] = qr(a,b);
-%! assert (r\c,full(a)\b,10e-10)
+%! n = 20;  d = 0.2;
+%! a = sprandn (n,n+1,d) + speye (n,n+1);
+%! b = randn (n,2);
+%! [c,r] = qr (a, b);
+%! assert (r\c, full (a)\b, 10e-10)
 
 %!testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = 1i*sprandn(n,n,d)+speye(n,n);
-%! r = qr(a);
-%! assert(r'*r,a'*a,1e-10)
+%! n = 20;  d = 0.2;
+%! a = 1i*sprandn (n,n,d) + speye (n,n);
+%! r = qr (a);
+%! assert (r'*r,a'*a,1e-10)
 
 %!testif HAVE_COLAMD
-%! n = 20; d= 0.2;
-%! a = 1i*sprandn(n,n,d)+speye(n,n);
-%! q = symamd(a);
+%! n = 20;  d = 0.2;
+%! a = 1i*sprandn (n,n,d) + speye (n,n);
+%! q = symamd (a);
 %! a = a(q,q);
-%! r = qr(a);
-%! assert(r'*r,a'*a,1e-10)
+%! r = qr (a);
+%! assert (r'*r, a'*a, 1e-10)
 
 %!testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = 1i*sprandn(n,n,d)+speye(n,n);
-%! [c,r] = qr(a,ones(n,1));
-%! assert (r\c,full(a)\ones(n,1),10e-10)
+%! n = 20;  d = 0.2;
+%! a = 1i*sprandn (n,n,d) + speye (n,n);
+%! [c,r] = qr (a, ones (n,1));
+%! assert (r\c, full (a)\ones (n,1), 10e-10)
 
 %!testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = 1i*sprandn(n,n,d)+speye(n,n);
-%! b = randn(n,2);
-%! [c,r] = qr(a,b);
-%! assert (r\c,full(a)\b,10e-10)
+%! n = 20;  d = 0.2;
+%! a = 1i*sprandn (n,n,d) + speye (n,n);
+%! b = randn (n,2);
+%! [c,r] = qr (a, b);
+%! assert (r\c, full (a)\b, 10e-10)
 
 %% Test under-determined systems!!
 %!#testif HAVE_CXSPARSE
-%! n = 20; d= 0.2;
-%! a = 1i*sprandn(n,n+1,d)+speye(n,n+1);
-%! b = randn(n,2);
-%! [c,r] = qr(a,b);
-%! assert (r\c,full(a)\b,10e-10)
+%! n = 20;  d = 0.2;
+%! a = 1i*sprandn (n,n+1,d) + speye (n,n+1);
+%! b = randn (n,2);
+%! [c,r] = qr (a, b);
+%! assert (r\c, full (a)\b, 10e-10)
 
-%!error qr(sprandn(10,10,0.2),ones(10,1));
-
+%!error qr (sprandn (10,10,0.2), ones (10,1))
 */
 
 static
@@ -885,6 +869,7 @@ The QR@tie{}factorization supplied may be either full\n\
 
   return retval;
 }
+
 /*
 %!shared A, u, v, Ac, uc, vc
 %! A = [0.091364  0.613038  0.999083;
@@ -921,32 +906,32 @@ The QR@tie{}factorization supplied may be either full\n\
 %!
 
 %!test
-%! [Q,R] = qr(A);
-%! [Q,R] = qrupdate(Q,R,u,v);
-%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - A - u*v'),Inf) < norm(A)*1e1*eps)
+%! [Q,R] = qr (A);
+%! [Q,R] = qrupdate (Q, R, u, v);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R)-R), Inf) == 0);
+%! assert (norm (vec (Q*R - A - u*v'), Inf) < norm (A)*1e1*eps);
 %!
 %!test
-%! [Q,R] = qr(Ac);
-%! [Q,R] = qrupdate(Q,R,uc,vc);
-%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - Ac - uc*vc'),Inf) < norm(Ac)*1e1*eps)
+%! [Q,R] = qr (Ac);
+%! [Q,R] = qrupdate (Q, R, uc, vc);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R)-R), Inf) == 0);
+%! assert (norm (vec (Q*R - Ac - uc*vc'), Inf) < norm (Ac)*1e1*eps);
 
 %!test
-%! [Q,R] = qr(single(A));
-%! [Q,R] = qrupdate(Q,R,single(u),single(v));
-%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - single(A) - single(u)*single(v)'),Inf) < norm(single(A))*1e1*eps('single'))
+%! [Q,R] = qr (single (A));
+%! [Q,R] = qrupdate (Q, R, single (u), single (v));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R)-R), Inf) == 0);
+%! assert (norm (vec (Q*R - single (A) - single (u)*single (v)'), Inf) < norm (single (A))*1e1*eps ("single"));
 %!
 %!test
-%! [Q,R] = qr(single(Ac));
-%! [Q,R] = qrupdate(Q,R,single(uc),single(vc));
-%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - single(Ac) - single(uc)*single(vc)'),Inf) < norm(single(Ac))*1e1*eps('single'))
+%! [Q,R] = qr (single (Ac));
+%! [Q,R] = qrupdate (Q, R, single (uc), single (vc));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R)-R), Inf) == 0);
+%! assert (norm (vec (Q*R - single (Ac) - single (uc)*single (vc)'), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */
 
 DEFUN_DLD (qrinsert, args, ,
@@ -1110,62 +1095,62 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 
 /*
 %!test
-%! [Q,R] = qr(A);
-%! [Q,R] = qrinsert(Q,R,3,u);
-%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(:,1:2) u A(:,3)]),Inf) < norm(A)*1e1*eps)
+%! [Q,R] = qr (A);
+%! [Q,R] = qrinsert (Q, R, 3, u);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [A(:,1:2) u A(:,3)]), Inf) < norm (A)*1e1*eps);
 %!test
-%! [Q,R] = qr(Ac);
-%! [Q,R] = qrinsert(Q,R,3,uc);
-%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [Ac(:,1:2) uc Ac(:,3)]),Inf) < norm(Ac)*1e1*eps)
+%! [Q,R] = qr (Ac);
+%! [Q,R] = qrinsert (Q, R, 3, uc);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [Ac(:,1:2) uc Ac(:,3)]), Inf) < norm (Ac)*1e1*eps);
 %!test
 %! x = [0.85082  0.76426  0.42883 ];
 %!
-%! [Q,R] = qr(A);
-%! [Q,R] = qrinsert(Q,R,3,x,'row');
-%! assert(norm(vec(Q'*Q - eye(6)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(1:2,:);x;A(3:5,:)]),Inf) < norm(A)*1e1*eps)
+%! [Q,R] = qr (A);
+%! [Q,R] = qrinsert (Q, R, 3, x, "row");
+%! assert (norm (vec (Q'*Q - eye (6)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [A(1:2,:);x;A(3:5,:)]), Inf) < norm (A)*1e1*eps);
 %!test
 %! x = [0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ];
 %!
-%! [Q,R] = qr(Ac);
-%! [Q,R] = qrinsert(Q,R,3,x,'row');
-%! assert(norm(vec(Q'*Q - eye(6)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [Ac(1:2,:);x;Ac(3:5,:)]),Inf) < norm(Ac)*1e1*eps)
+%! [Q,R] = qr (Ac);
+%! [Q,R] = qrinsert (Q, R, 3, x, "row");
+%! assert (norm (vec (Q'*Q - eye (6)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [Ac(1:2,:);x;Ac(3:5,:)]), Inf) < norm (Ac)*1e1*eps);
 
 %!test
-%! [Q,R] = qr(single(A));
-%! [Q,R] = qrinsert(Q,R,3,single(u));
-%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - single([A(:,1:2) u A(:,3)])),Inf) < norm(single(A))*1e1*eps('single'))
+%! [Q,R] = qr (single (A));
+%! [Q,R] = qrinsert (Q, R, 3, single (u));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - single ([A(:,1:2) u A(:,3)])), Inf) < norm (single (A))*1e1*eps ("single"));
 %!test
-%! [Q,R] = qr(single(Ac));
-%! [Q,R] = qrinsert(Q,R,3,single(uc));
-%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - single([Ac(:,1:2) uc Ac(:,3)])),Inf) < norm(single(Ac))*1e1*eps('single'))
+%! [Q,R] = qr (single (Ac));
+%! [Q,R] = qrinsert (Q, R, 3, single (uc));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - single ([Ac(:,1:2) uc Ac(:,3)])), Inf) < norm (single (Ac))*1e1*eps ("single"));
 %!test
-%! x = single([0.85082  0.76426  0.42883 ]);
+%! x = single ([0.85082  0.76426  0.42883 ]);
 %!
-%! [Q,R] = qr(single(A));
-%! [Q,R] = qrinsert(Q,R,3,x,'row');
-%! assert(norm(vec(Q'*Q - eye(6,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - single([A(1:2,:);x;A(3:5,:)])),Inf) < norm(single(A))*1e1*eps('single'))
+%! [Q,R] = qr (single (A));
+%! [Q,R] = qrinsert (Q, R, 3, x, "row");
+%! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf) < norm (single (A))*1e1*eps ("single"));
 %!test
-%! x = single([0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ]);
+%! x = single ([0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ]);
 %!
-%! [Q,R] = qr(single(Ac));
-%! [Q,R] = qrinsert(Q,R,3,x,'row');
-%! assert(norm(vec(Q'*Q - eye(6,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - single([Ac(1:2,:);x;Ac(3:5,:)])),Inf) < norm(single(Ac))*1e1*eps('single'))
+%! [Q,R] = qr (single (Ac));
+%! [Q,R] = qrinsert (Q, R, 3, x, "row");
+%! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */
 
 DEFUN_DLD (qrdelete, args, ,
@@ -1322,11 +1307,11 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %!       0.265712  0.268003  0.783553  0.238409;
 %!       0.669966  0.743851  0.457255  0.445057 ];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3);
-%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 16*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps)
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 16*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps);
 %!
 %!test
 %! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1335,11 +1320,11 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %!       0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
 %!       0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3);
-%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 16*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps)
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 16*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps);
 %!
 %!test
 %! AA = [0.091364  0.613038  0.027504  0.999083;
@@ -1348,11 +1333,11 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %!       0.265712  0.268003  0.783553  0.238409;
 %!       0.669966  0.743851  0.457255  0.445057 ];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3,'row');
-%! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps)
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3, "row");
+%! assert (norm (vec (Q'*Q - eye (4)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps);
 %!
 %!test
 %! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1361,76 +1346,76 @@ If @var{orient} is @code{\"row\"}, full factorization is needed.\n\
 %!       0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
 %!       0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3,'row');
-%! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps)
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3, "row");
+%! assert (norm (vec (Q'*Q - eye (4)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps);
 
 %!test
-%! AA = single([0.091364  0.613038  0.027504  0.999083;
-%!              0.594638  0.425302  0.562834  0.603537;
-%!              0.383594  0.291238  0.742073  0.085574;
-%!              0.265712  0.268003  0.783553  0.238409;
-%!              0.669966  0.743851  0.457255  0.445057 ]);
+%! AA = single ([0.091364  0.613038  0.027504  0.999083;
+%!               0.594638  0.425302  0.562834  0.603537;
+%!               0.383594  0.291238  0.742073  0.085574;
+%!               0.265712  0.268003  0.783553  0.238409;
+%!               0.669966  0.743851  0.457255  0.445057 ]);
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3);
-%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps('single'))
-%!
-%!test
-%! AA = single([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
-%!              0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
-%!              0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
-%!              0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
-%!              0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ]) * I;
-%!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3);
-%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3);
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps ("single"));
 %!
 %!test
-%! AA = single([0.091364  0.613038  0.027504  0.999083;
-%!              0.594638  0.425302  0.562834  0.603537;
-%!              0.383594  0.291238  0.742073  0.085574;
-%!              0.265712  0.268003  0.783553  0.238409;
-%!              0.669966  0.743851  0.457255  0.445057 ]);
+%! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%!               0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
+%!               0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
+%!               0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
+%!               0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ]) * I;
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3,'row');
-%! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1.5e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3);
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps ("single"));
+%!
+%!test
+%! AA = single ([0.091364  0.613038  0.027504  0.999083;
+%!               0.594638  0.425302  0.562834  0.603537;
+%!               0.383594  0.291238  0.742073  0.085574;
+%!               0.265712  0.268003  0.783553  0.238409;
+%!               0.669966  0.743851  0.457255  0.445057 ]);
+%!
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3, "row");
+%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1.5e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
 %!testif HAVE_QRUPDATE
 %! # Same test as above but with more precicision
-%! AA = single([0.091364  0.613038  0.027504  0.999083;
-%!              0.594638  0.425302  0.562834  0.603537;
-%!              0.383594  0.291238  0.742073  0.085574;
-%!              0.265712  0.268003  0.783553  0.238409;
-%!              0.669966  0.743851  0.457255  0.445057 ]);
+%! AA = single ([0.091364  0.613038  0.027504  0.999083;
+%!               0.594638  0.425302  0.562834  0.603537;
+%!               0.383594  0.291238  0.742073  0.085574;
+%!               0.265712  0.268003  0.783553  0.238409;
+%!               0.669966  0.743851  0.457255  0.445057 ]);
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3,'row');
-%! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3, "row");
+%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
 %!
 %!test
-%! AA = single([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
 %!              0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
 %!              0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
 %!              0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
 %!              0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ]) * I;
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrdelete(Q,R,3,'row');
-%! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrdelete (Q, R, 3, "row");
+%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps ("single"));
 */
 
 DEFUN_DLD (qrshift, args, ,
@@ -1537,77 +1522,77 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 
   return retval;
 }
+
 /*
 %!test
 %! AA = A.';
-%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
 %!
-%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
 %!
 %!test
 %! AA = Ac.';
-%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
 %!
-%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
-
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
 
 %!test
 %! AA = single (A).';
-%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps ("single"));
 %!
-%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps ("single"));
 %!
 %!test
-%! AA = single(Ac).';
-%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%! AA = single (Ac).';
+%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps ("single"));
 %!
-%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
-%! [Q,R] = qr(AA);
-%! [Q,R] = qrshift(Q,R,i,j);
-%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
-%! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
+%! [Q,R] = qr (AA);
+%! [Q,R] = qrshift (Q, R, i, j);
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1*eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf) == 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps ("single"));
 */

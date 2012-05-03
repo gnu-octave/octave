@@ -1281,11 +1281,14 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
   else if (nargin == 3)
     {
       octave_value arg0 = args(0);
-      if (arg0.ndims () == 2 && (args(0).rows () == 1 || args(0).columns () == 1))
+
+      if (arg0.ndims () == 2 && (arg0.rows () == 1 || arg0.columns () == 1))
         {
-          octave_idx_type m = args(1).int_value (), n = args(2).int_value ();
+          octave_idx_type m = args(1).int_value ();
+          octave_idx_type n = args(2).int_value ();
+
           if (! error_state)
-            retval = arg0.diag ().resize (dim_vector (m, n), true);
+            retval = arg0.diag (m, n);
           else
             error ("diag: invalid dimensions");
         }
@@ -1334,6 +1337,9 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 ## Test non-square size
 %!assert(diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
+%!assert (diag (1, 2, 3), [1,0,0; 0,0,0]);
+%!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]});
+%!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]});
 
 %% Test input validation
 %!error <Invalid call to diag> diag ()
@@ -1341,7 +1347,15 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 %!error diag (ones (2), 3, 3)
 %!error diag (1:3, -4, 3)
 
- */
+%!assert (diag (1, 3, 3), diag ([1, 0, 0]))
+%!assert (diag (i, 3, 3), diag ([i, 0, 0]))
+%!assert (diag (single (1), 3, 3), diag ([single(1), 0, 0]))
+%!assert (diag (single (i), 3, 3), diag ([single(i), 0, 0]))
+%!assert (diag ([1, 2], 3, 3), diag ([1, 2, 0]))
+%!assert (diag ([1, 2]*i, 3, 3), diag ([1, 2, 0]*i))
+%!assert (diag (single ([1, 2]), 3, 3), diag (single ([1, 2, 0])))
+%!assert (diag (single ([1, 2]*i), 3, 3), diag (single ([1, 2, 0]*i)))
+*/
 
 DEFUN (prod, args, ,
   "-*- texinfo -*-\n\
@@ -4719,9 +4733,7 @@ if fewer than two values are requested.\n\
 %! assert (size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2);
 %! assert (size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2);
 
-%#assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
-
-%!fail ("linspace ([1, 2; 3, 4], 5, 6)", "warning")
+%assert (linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6))
 
 %!error linspace ()
 %!error linspace (1, 2, 3, 4)
@@ -5233,6 +5245,12 @@ the norms of each column and return a row vector.\n\
 %! fhi = single (1e+300);
 %!assert (norm (flo*m2,"fro"), single (sqrt (30)*flo), -eps ("single"))
 %!assert (norm (fhi*m2,"fro"), single (sqrt (30)*fhi), -eps ("single"))
+
+%!test
+%! ## Test for norm returning NaN on sparse matrix (bug #30631)
+%! A = sparse (2,2); 
+%! A(2,1) = 1;
+%! assert (norm (A), 1);
 */
 
 static octave_value

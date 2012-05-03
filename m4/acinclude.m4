@@ -329,6 +329,28 @@ AC_DEFUN([OCTAVE_F77_FLAG], [
   fi
 ])
 dnl
+dnl Check to see whether Fortran compiler has the intrinsic function ISNAN.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FORTRAN_HAVE_ISNAN], [
+  AC_LANG_PUSH(Fortran 77)
+  AC_CACHE_CHECK([whether $F77 has the intrinsic function ISNAN],
+                 [octave_cv_fortran_have_isnan],
+[AC_COMPILE_IFELSE(
+[      program foo
+      implicit none
+      real x
+      double precision y
+      if (isnan(x)) then
+         print *, 'x is NaN'
+      end if
+      if (isnan(y)) then
+         print *, 'y is NaN'
+      end if
+      end program], [octave_cv_fortran_have_isnan=yes], [octave_cv_fortran_have_isnan=no]
+)])
+  AC_LANG_POP(Fortran 77)      
+])
+dnl
 dnl Check to see whether the default Fortran INTEGER is 64 bits wide.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FORTRAN_INTEGER_SIZE], [

@@ -1581,8 +1581,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
       else
         fontspec = "";
       endif
-      fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s;\n",
-               inout, pos, box, reverse, horzvert, fontspec);
+      colorspec = get_text_colorspec (hlgnd.textcolor, mono);
+      fprintf (plot_stream, "set key %s %s;\nset key %s %s %s %s %s;\n",
+               inout, pos, box, reverse, horzvert, fontspec, colorspec);
     else
       fputs (plot_stream, "unset key;\n");
     endif
@@ -2322,7 +2323,7 @@ function str = no_super_sub_scripts (str)
       if (! isempty (n1))
         n1 = n1 + 1;
         n2 = setdiff (n2, n1);
-      end
+      endif
       for n = numel(n2):-1:1
         labels{m} = [labels{m}(1:n2(n)-1), "\\", labels{m}(n2(n):end)];
       endfor
@@ -2339,7 +2340,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   persistent sym = __setup_sym_table__ ();
   persistent flds = fieldnames (sym);
 
-  [s, e, m] = regexp(str,'\\([a-zA-Z]+|0)','start','end','matches');
+  [s, e, m] = regexp(str,'\\\\([a-zA-Z]+|0)','start','end','matches');
 
   for i = length (s) : -1 : 1
     ## special case for "\0"  and replace with "{/Symbol \306}'

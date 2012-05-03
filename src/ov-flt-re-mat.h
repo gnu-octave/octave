@@ -164,6 +164,8 @@ public:
 
   octave_value diag (octave_idx_type k = 0) const;
 
+  octave_value diag (octave_idx_type m, octave_idx_type n) const;
+
   // Use matrix_ref here to clear index cache.
   void increment (void) { matrix_ref () += 1.0; }
 

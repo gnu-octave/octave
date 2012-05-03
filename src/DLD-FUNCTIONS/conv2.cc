@@ -265,7 +265,7 @@ When the third argument is a matrix, return the convolution of the matrix\n\
 %!assert (conv2 ([1:5;1:5], [1:2], 'valid'), [4 7 10 13; 4 7 10 13])
 %!assert (conv2 ([1:5;1:5]', [1:2]', 'valid'), [4 7 10 13; 4 7 10 13]')
 
-%!xtest
+%!test
 %! rand ("seed", 42);
 %! x = rand (100);
 %! y = ones (5);

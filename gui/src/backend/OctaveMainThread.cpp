@@ -27,7 +27,7 @@ OctaveMainThread::run ()
 {
   setlocale(LC_ALL, "en_US.UTF-8");
   int argc = 1;
-  const char *argv[] = { "OctaveGUI" };
+  const char *argv[] = { "octave" };
   emit ready();
   octave_main (argc, (char **) argv, 0);
 }

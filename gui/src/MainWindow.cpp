@@ -26,8 +26,6 @@
 #include "FileEditor.h"
 #include "SettingsDialog.h"
 
-#define VERSION_STRING "Octave GUI (0.8.8)"
-
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {
   // We have to set up all our windows, before we finally launch octave.
@@ -310,7 +308,7 @@ MainWindow::construct ()
   connect (loadWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleLoadWorkspaceRequest ()));
   connect (clearWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleClearWorkspaceRequest ()));
 
-  setWindowTitle (QString (VERSION_STRING));
+  setWindowTitle ("Octave");
 
   addDockWidget (Qt::LeftDockWidgetArea, m_workspaceView);
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);

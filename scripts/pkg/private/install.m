@@ -268,7 +268,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
                            && any (strcmpi (a, str_true))));
     endif
 
-    if (autoload > 0 || desc_autoload)
+    if (autoload > 0 || (autoload == 0 && desc_autoload))
       fclose (fopen (fullfile (descriptions{i}.dir, "packinfo",
                                ".autoload"), "wt"));
       descriptions{i}.autoload = 1;

@@ -591,6 +591,7 @@ DEFUN (more, args, ,
 Turn output pagination on or off.  Without an argument, @code{more}\n\
 toggles the current state.\n\
 The current state can be determined via @code{page_screen_output}.\n\
+@seealso{page_screen_output, page_output_immediately, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -650,6 +651,7 @@ flush it to the pager.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+@seealso{page_screen_output, more, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (page_output_immediately);
@@ -669,6 +671,7 @@ backward on the output.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
+@seealso{more, page_output_immediately, PAGER, PAGER_FLAGS}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (page_screen_output);
@@ -688,7 +691,7 @@ normally @code{\"less\"}, @code{\"more\"}, or\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{more, page_screen_output, page_output_immediately, PAGER_FLAGS}\n\
+@seealso{PAGER_FLAGS, page_output_immediately, more, page_screen_output}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER);
@@ -705,7 +708,7 @@ to the pager.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{PAGER}\n\
+@seealso{PAGER, more, page_screen_output, page_output_immediately}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER_FLAGS);

@@ -63,7 +63,7 @@ function inv = expinv (x, lambda)
   inv(k) = Inf;
 
   k = (x >= 0) & (x < 1) & (lambda > 0);
-  if isscalar (lambda)
+  if (isscalar (lambda))
     inv(k) = - lambda * log (1 - x(k));
   else
     inv(k) = - lambda(k) .* log (1 - x(k));

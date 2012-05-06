@@ -134,6 +134,12 @@ boolNDArray::diag (octave_idx_type k) const
   return Array<bool>::diag (k);
 }
 
+boolNDArray
+boolNDArray::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return Array<bool>::diag (m, n);
+}
+
 NDND_BOOL_OPS (boolNDArray, boolNDArray)
 NDND_CMP_OPS (boolNDArray, boolNDArray)
 

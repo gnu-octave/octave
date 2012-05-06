@@ -196,7 +196,6 @@ AC_ARG_ENABLE(docs,
      AC_MSG_WARN([$warn_docs])
    fi], [])
 AC_SUBST(DOCDIR)
-AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 
 ### If possible, use a 64-bit integer type for array dimensions and indexing.
 
@@ -592,6 +591,14 @@ AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
 if test -z "$F77"; then
   AC_MSG_ERROR([in order to build octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
 fi
+
+OCTAVE_CHECK_FORTRAN_HAVE_ISNAN
+F77_ISNAN_MACRO=
+if test "x$octave_cv_fortran_have_isnan" = xno; then
+   AC_MSG_NOTICE([substituting ISNAN(X) with X.NE.X in fortran sources])
+   F77_ISNAN_MACRO="s|ISNAN(\(@<:@^)@:>@*\))|(\1.NE.\1)|"
+fi
+AC_SUBST(F77_ISNAN_MACRO)
 
 OCTAVE_CHECK_FORTRAN_INTEGER_SIZE
 if test "x$octave_cv_fortran_integer_size" = xno; then
@@ -2109,7 +2116,7 @@ if test "$ac_cv_header_unordered_map" = "yes"; then
     AC_LANG_PROGRAM([
       #include <unordered_map>
     ], [
-      std::unordered_map m;
+      std::unordered_map<int,int> m;
     ])], [], [unordered_map_requires_tr1_namespace=yes])
 elif test "$ac_cv_header_tr1_unordered_map" = "yes"; then
   unordered_map_requires_tr1_namespace=yes
@@ -2406,6 +2413,16 @@ OCTAVE_PROG_GPERF
 OCTAVE_PROG_GHOSTSCRIPT
 OCTAVE_PROG_TEXI2DVI
 OCTAVE_PROG_TEXI2PDF
+
+### Need to disable building documentation if gnuplot was not found,
+### unless it was already disabled previously.
+
+if test -n "$DOCDIR" && test -n "$warn_gnuplot"; then
+  DOCDIR=
+  warn_docs="building documentation disabled because gnuplot was not found; make dist will fail"
+  AC_MSG_WARN([$warn_docs])
+fi
+AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 
 ### Even though we include config.h, we need to have the preprocessor
 ### defines available in a variable for the testif feature of the

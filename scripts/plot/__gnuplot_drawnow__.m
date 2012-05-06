@@ -259,9 +259,9 @@ function enhanced = gnuplot_set_term (plot_stream, new_stream, h, term, file)
         size_str = "";
       endif
     else
-      if isempty (h)
+      if (isempty (h))
         disp ("gnuplot_set_term: figure handle is empty");
-      elseif !isfigure(h)
+      elseif (! isfigure (h))
         disp ("gnuplot_set_term: not a figure handle");
       endif
       title_str = "";

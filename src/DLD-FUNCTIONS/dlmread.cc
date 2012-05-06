@@ -480,21 +480,20 @@ fields.  The default is zero.\n\
 }
 
 /*
-
 %!shared file
 %! file = tmpnam ();
 %! fid = fopen (file, "wt");
 %! fwrite (fid, "1, 2, 3\n4, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
 
-%!assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12]);
-%!assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12]);
-%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8]);
-%!assert (dlmread (file, ",", "B1..C2"), [2, 3; 5, 6]);
-%!assert (dlmread (file, ",", "B1:C2"), [2, 3; 5, 6]);
-%!assert (dlmread (file, ",", "..C2"), [1, 2, 3; 4, 5, 6]);
-%!assert (dlmread (file, ",", 0, 1), [2, 3; 5, 6; 8, 9; 11, 12]);
-%!assert (dlmread (file, ",", "B1.."), [2, 3; 5, 6; 8, 9; 11, 12]);
+%!assert (dlmread (file), [1, 2, 3; 4, 5, 6; 7, 8, 9;10, 11, 12])
+%!assert (dlmread (file, ","), [1, 2, 3; 4, 5, 6; 7, 8, 9; 10, 11, 12])
+%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4, 5; 7, 8])
+%!assert (dlmread (file, ",", "B1..C2"), [2, 3; 5, 6])
+%!assert (dlmread (file, ",", "B1:C2"), [2, 3; 5, 6])
+%!assert (dlmread (file, ",", "..C2"), [1, 2, 3; 4, 5, 6])
+%!assert (dlmread (file, ",", 0, 1), [2, 3; 5, 6; 8, 9; 11, 12])
+%!assert (dlmread (file, ",", "B1.."), [2, 3; 5, 6; 8, 9; 11, 12])
 %!error (dlmread (file, ",", [0 1]))
 
 %!test
@@ -506,17 +505,16 @@ fields.  The default is zero.\n\
 %! fwrite (fid, "1, 2, 3\n4+4i, 5, 6\n7, 8, 9\n10, 11, 12");
 %! fclose (fid);
 
-%!assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
-%!assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
-%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8]);
-%!assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8]);
-%!assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8]);
-%!assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8]);
-%!assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
-%!assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12]);
+%!assert (dlmread (file), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
+%!assert (dlmread (file, ","), [1, 2, 3; 4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
+%!assert (dlmread (file, ",", [1, 0, 2, 1]), [4 + 4i, 5; 7, 8])
+%!assert (dlmread (file, ",", "A2..B3"), [4 + 4i, 5; 7, 8])
+%!assert (dlmread (file, ",", "A2:B3"), [4 + 4i, 5; 7, 8])
+%!assert (dlmread (file, ",", "..B3"), [1, 2; 4 + 4i, 5; 7, 8])
+%!assert (dlmread (file, ",", 1, 0), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
+%!assert (dlmread (file, ",", "A2.."), [4 + 4i, 5, 6; 7, 8, 9; 10, 11, 12])
 %!error (dlmread (file, ",", [0 1]))
 
 %!test
 %! unlink (file);
-
 */

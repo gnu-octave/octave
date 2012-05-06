@@ -97,27 +97,27 @@ BUILT_NODISTFILES = \
 
 EXTRA_DIST = \
   Makefile.in \
-  defaults.h.in \
+  defaults.in.h \
   DOCSTRINGS \
   find-defun-files.sh \
   genprops.awk \
   gl2ps.c \
-  graphics.h.in \
+  graphics.in.h \
   mk-errno-list \
   mk-pkg-add \
   mkbuiltins \
   mkdefs \
   mkgendoc \
-  mkoctfile.cc.in \
-  mkoctfile.in \
+  mkoctfile.in.cc \
+  mkoctfile.in.sh \
   mkops \
-  mxarray.h.in \
-  oct-conf.h.in \
-  oct-errno.cc.in \
-  octave-config.cc.in \
-  octave-config.in \
+  mxarray.in.h \
+  oct-conf.in.h \
+  oct-errno.in.cc \
+  octave-config.in.cc \
+  octave-config.in.sh \
   octave.gperf \
-  version.h.in \
+  version.in.h \
   $(BUILT_DISTFILES)
 
 OPT_HANDLERS = \
@@ -581,14 +581,14 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
 ## may change default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
-defaults.h: defaults.h.in Makefile
+defaults.h: defaults.in.h Makefile
 	@$(do_subst_default_vals)
 
-graphics.h: graphics.h.in genprops.awk Makefile
+graphics.h: graphics.in.h genprops.awk Makefile
 	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
 	mv $@-t $@
 
-oct-conf.h: oct-conf.h.in Makefile
+oct-conf.h: oct-conf.in.h Makefile
 	@$(do_subst_config_vals)
 
 ## Don't use a pipeline to process gperf output since if gperf
@@ -601,12 +601,12 @@ oct-gperf.h: octave.gperf
 	mv $@-t $@
 	rm -f $@-t1
 
-mxarray.h: mxarray.h.in Makefile
+mxarray.h: mxarray.in.h Makefile
 	$(SED) < $< \
 	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
 	mv $@-t $@
 
-version.h: version.h.in Makefile
+version.h: version.in.h Makefile
 	$(SED) < $< \
 	  -e "s|%OCTAVE_API_VERSION_NUMBER%|${OCTAVE_API_VERSION_NUMBER}|" \
 	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
@@ -619,7 +619,7 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
 	mv $@-t $@
 
-graphics-props.cc: graphics.h.in genprops.awk Makefile
+graphics-props.cc: graphics.in.h genprops.awk Makefile
 	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
 	mv $@-t $@
 
@@ -627,7 +627,7 @@ ops.cc: $(OPERATORS_SRC) mkops
 	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
 	mv $@-t $@
 
-oct-errno.cc: oct-errno.cc.in Makefile
+oct-errno.cc: oct-errno.in.cc Makefile
 	if test -n "$(PERL)"; then \
 	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
 	elif test -n "$(PYTHON)"; then \
@@ -689,17 +689,17 @@ all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE)
 endif
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
-octave-config.cc: octave-config.cc.in Makefile
+octave-config.cc: octave-config.in.cc Makefile
 	@$(do_subst_default_vals)
 
-mkoctfile.cc: mkoctfile.cc.in Makefile
+mkoctfile.cc: mkoctfile.in.cc Makefile
 	@$(do_subst_config_vals)
 else
-octave-config: octave-config.in Makefile
+octave-config: octave-config.in.sh Makefile
 	@$(do_subst_default_vals)
 	chmod a+rx $@
 
-mkoctfile: mkoctfile.in Makefile
+mkoctfile: mkoctfile.in.sh Makefile
 	@$(do_subst_config_vals)
 	chmod a+rx $@
 endif

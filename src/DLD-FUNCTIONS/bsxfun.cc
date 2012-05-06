@@ -662,17 +662,17 @@ dimensionality as the other array.\n\
 %! b = mean (a, 1);
 %! c = mean (a, 2);
 %! f = @minus;
-%!error(bsxfun (f));
-%!error(bsxfun (f, a));
-%!error(bsxfun (a, b));
-%!error(bsxfun (a, b, c));
-%!error(bsxfun (f, a, b, c));
-%!error(bsxfun (f, ones(4, 0), ones(4, 4)))
-%!assert(bsxfun (f, ones(4, 0), ones(4, 1)), zeros(4, 0));
-%!assert(bsxfun (f, ones(1, 4), ones(4, 1)), zeros(4, 4));
-%!assert(bsxfun (f, a, b), a - repmat(b, 4, 1));
-%!assert(bsxfun (f, a, c), a - repmat(c, 1, 4));
-%!assert(bsxfun ("minus", ones(1, 4), ones(4, 1)), zeros(4, 4));
+%!error (bsxfun (f))
+%!error (bsxfun (f, a))
+%!error (bsxfun (a, b))
+%!error (bsxfun (a, b, c))
+%!error (bsxfun (f, a, b, c))
+%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0))
+%!assert (bsxfun (f, ones (1, 4), ones (4, 1)), zeros (4, 4))
+%!assert (bsxfun (f, a, b), a - repmat (b, 4, 1))
+%!assert (bsxfun (f, a, c), a - repmat (c, 1, 4))
+%!assert (bsxfun ("minus", ones (1, 4), ones (4, 1)), zeros (4, 4))
 
 %!shared a, b, c, f
 %! a = randn (4, 4);
@@ -680,17 +680,17 @@ dimensionality as the other array.\n\
 %! b = mean (a, 1);
 %! c = mean (a, 2);
 %! f = @minus;
-%!error(bsxfun (f));
-%!error(bsxfun (f, a));
-%!error(bsxfun (a, b));
-%!error(bsxfun (a, b, c));
-%!error(bsxfun (f, a, b, c));
-%!error(bsxfun (f, ones(4, 0), ones(4, 4)))
-%!assert(bsxfun (f, ones(4, 0), ones(4, 1)), zeros(4, 0));
-%!assert(bsxfun (f, ones(1, 4), ones(4, 1)), zeros(4, 4));
-%!assert(bsxfun (f, a, b), a - repmat(b, 4, 1));
-%!assert(bsxfun (f, a, c), a - repmat(c, 1, 4));
-%!assert(bsxfun ("minus", ones(1, 4), ones(4, 1)), zeros(4, 4));
+%!error (bsxfun (f))
+%!error (bsxfun (f, a))
+%!error (bsxfun (a, b))
+%!error (bsxfun (a, b, c))
+%!error (bsxfun (f, a, b, c))
+%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0))
+%!assert (bsxfun (f, ones (1, 4), ones (4, 1)), zeros (4, 4))
+%!assert (bsxfun (f, a, b), a - repmat (b, 4, 1))
+%!assert (bsxfun (f, a, c), a - repmat (c, 1, 4))
+%!assert (bsxfun ("minus", ones (1, 4), ones (4, 1)), zeros (4, 4))
 
 %!shared a, b, c, f
 %! a = randn (4, 4);
@@ -698,33 +698,33 @@ dimensionality as the other array.\n\
 %! b = mean (a, 1);
 %! c = mean (a, 2);
 %! f = @minus;
-%!error(bsxfun (f));
-%!error(bsxfun (f, a));
-%!error(bsxfun (a, b));
-%!error(bsxfun (a, b, c));
-%!error(bsxfun (f, a, b, c));
-%!error(bsxfun (f, ones(4, 0), ones(4, 4)))
-%!assert(bsxfun (f, ones(4, 0), ones(4, 1)), zeros(4, 0));
-%!assert(bsxfun (f, ones(1, 4), ones(4, 1)), zeros(4, 4));
-%!assert(bsxfun (f, a, b), a - repmat(b, 4, 1));
-%!assert(bsxfun (f, a, c), a - repmat(c, 1, 4));
-%!assert(bsxfun ("minus", ones(1, 4), ones(4, 1)), zeros(4, 4));
+%!error (bsxfun (f))
+%!error (bsxfun (f, a))
+%!error (bsxfun (a, b))
+%!error (bsxfun (a, b, c))
+%!error (bsxfun (f, a, b, c))
+%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0))
+%!assert (bsxfun (f, ones (1, 4), ones (4, 1)), zeros (4, 4))
+%!assert (bsxfun (f, a, b), a - repmat (b, 4, 1))
+%!assert (bsxfun (f, a, c), a - repmat (c, 1, 4))
+%!assert (bsxfun ("minus", ones (1, 4), ones (4, 1)), zeros (4, 4))
 
 %!shared a, b, c, f
 %! a = randn (4, 4);
 %! b = a (1, :);
 %! c = a (:, 1);
 %! f = @(x, y) x == y;
-%!error(bsxfun (f));
-%!error(bsxfun (f, a));
-%!error(bsxfun (a, b));
-%!error(bsxfun (a, b, c));
-%!error(bsxfun (f, a, b, c));
-%!error(bsxfun (f, ones(4, 0), ones(4, 4)))
-%!assert(bsxfun (f, ones(4, 0), ones(4, 1)), zeros(4, 0, "logical"));
-%!assert(bsxfun (f, ones(1, 4), ones(4, 1)), ones(4, 4, "logical"));
-%!assert(bsxfun (f, a, b), a == repmat(b, 4, 1));
-%!assert(bsxfun (f, a, c), a == repmat(c, 1, 4));
+%!error (bsxfun (f))
+%!error (bsxfun (f, a))
+%!error (bsxfun (a, b))
+%!error (bsxfun (a, b, c))
+%!error (bsxfun (f, a, b, c))
+%!error (bsxfun (f, ones (4, 0), ones (4, 4)))
+%!assert (bsxfun (f, ones (4, 0), ones (4, 1)), zeros (4, 0, "logical"))
+%!assert (bsxfun (f, ones (1, 4), ones (4, 1)), ones (4, 4, "logical"))
+%!assert (bsxfun (f, a, b), a == repmat (b, 4, 1))
+%!assert (bsxfun (f, a, c), a == repmat (c, 1, 4))
 
 %!shared a, b, c, d, f
 %! a = randn (4, 4, 4);
@@ -732,43 +732,43 @@ dimensionality as the other array.\n\
 %! c = mean (a, 2);
 %! d = mean (a, 3);
 %! f = @minus;
-%!error(bsxfun (f, ones([4, 0, 4]), ones([4, 4, 4])));
-%!assert(bsxfun (f, ones([4, 0, 4]), ones([4, 1, 4])), zeros([4, 0, 4]));
-%!assert(bsxfun (f, ones([4, 4, 0]), ones([4, 1, 1])), zeros([4, 4, 0]));
-%!assert(bsxfun (f, ones([1, 4, 4]), ones([4, 1, 4])), zeros([4, 4, 4]));
-%!assert(bsxfun (f, ones([4, 4, 1]), ones([4, 1, 4])), zeros([4, 4, 4]));
-%!assert(bsxfun (f, ones([4, 1, 4]), ones([1, 4, 4])), zeros([4, 4, 4]));
-%!assert(bsxfun (f, ones([4, 1, 4]), ones([1, 4, 1])), zeros([4, 4, 4]));
-%!assert(bsxfun (f, a, b), a - repmat(b, [4, 1, 1]));
-%!assert(bsxfun (f, a, c), a - repmat(c, [1, 4, 1]));
-%!assert(bsxfun (f, a, d), a - repmat(d, [1, 1, 4]));
-%!assert(bsxfun ("minus", ones([4, 0, 4]), ones([4, 1, 4])), zeros([4, 0, 4]));
+%!error (bsxfun (f, ones ([4, 0, 4]), ones ([4, 4, 4])))
+%!assert (bsxfun (f, ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
+%!assert (bsxfun (f, ones ([4, 4, 0]), ones ([4, 1, 1])), zeros ([4, 4, 0]))
+%!assert (bsxfun (f, ones ([1, 4, 4]), ones ([4, 1, 4])), zeros ([4, 4, 4]))
+%!assert (bsxfun (f, ones ([4, 4, 1]), ones ([4, 1, 4])), zeros ([4, 4, 4]))
+%!assert (bsxfun (f, ones ([4, 1, 4]), ones ([1, 4, 4])), zeros ([4, 4, 4]))
+%!assert (bsxfun (f, ones ([4, 1, 4]), ones ([1, 4, 1])), zeros ([4, 4, 4]))
+%!assert (bsxfun (f, a, b), a - repmat (b, [4, 1, 1]))
+%!assert (bsxfun (f, a, c), a - repmat (c, [1, 4, 1]))
+%!assert (bsxfun (f, a, d), a - repmat (d, [1, 1, 4]))
+%!assert (bsxfun ("minus", ones ([4, 0, 4]), ones ([4, 1, 4])), zeros ([4, 0, 4]))
 
-%% The below is a very hard case to treat
-%!assert(bsxfun (f, ones([4, 1, 4, 1]), ones([1, 4, 1, 4])), zeros([4, 4, 4, 4]));
+%% The test below is a very hard case to treat
+%!assert (bsxfun (f, ones ([4, 1, 4, 1]), ones ([1, 4, 1, 4])), zeros ([4, 4, 4, 4]));
 
 %!shared a, b, aa, bb
 %! a = randn (3, 1, 3);
 %! aa = a(:, ones (1, 3), :, ones (1, 3));
 %! b = randn (1, 3, 3, 3);
 %! bb = b(ones (1, 3), :, :, :);
-%!assert (bsxfun (@plus, a, b), aa + bb);
-%!assert (bsxfun (@minus, a, b), aa - bb);
-%!assert (bsxfun (@times, a, b), aa .* bb);
-%!assert (bsxfun (@rdivide, a, b), aa ./ bb);
-%!assert (bsxfun (@ldivide, a, b), aa .\ bb);
-%!assert (bsxfun (@power, a, b), aa .^ bb);
-%!assert (bsxfun (@power, abs (a), b), abs (aa) .^ bb);
-%!assert (bsxfun (@eq, round (a), round (b)), round (aa) == round (bb));
-%!assert (bsxfun (@ne, round (a), round (b)), round (aa) != round (bb));
-%!assert (bsxfun (@lt, a, b), aa < bb);
-%!assert (bsxfun (@le, a, b), aa <= bb);
-%!assert (bsxfun (@gt, a, b), aa > bb);
-%!assert (bsxfun (@ge, a, b), aa >= bb);
-%!assert (bsxfun (@min, a, b), min (aa, bb));
-%!assert (bsxfun (@max, a, b), max (aa, bb));
-%!assert (bsxfun (@and, a > 0, b > 0), (aa > 0) & (bb > 0));
-%!assert (bsxfun (@or, a > 0, b > 0), (aa > 0) | (bb > 0));
+%!assert (bsxfun (@plus, a, b), aa + bb)
+%!assert (bsxfun (@minus, a, b), aa - bb)
+%!assert (bsxfun (@times, a, b), aa .* bb)
+%!assert (bsxfun (@rdivide, a, b), aa ./ bb)
+%!assert (bsxfun (@ldivide, a, b), aa .\ bb)
+%!assert (bsxfun (@power, a, b), aa .^ bb)
+%!assert (bsxfun (@power, abs (a), b), abs (aa) .^ bb)
+%!assert (bsxfun (@eq, round (a), round (b)), round (aa) == round (bb))
+%!assert (bsxfun (@ne, round (a), round (b)), round (aa) != round (bb))
+%!assert (bsxfun (@lt, a, b), aa < bb)
+%!assert (bsxfun (@le, a, b), aa <= bb)
+%!assert (bsxfun (@gt, a, b), aa > bb)
+%!assert (bsxfun (@ge, a, b), aa >= bb)
+%!assert (bsxfun (@min, a, b), min (aa, bb))
+%!assert (bsxfun (@max, a, b), max (aa, bb))
+%!assert (bsxfun (@and, a > 0, b > 0), (aa > 0) & (bb > 0))
+%!assert (bsxfun (@or, a > 0, b > 0), (aa > 0) | (bb > 0))
 
 %% Test automatic bsxfun
 %
@@ -779,10 +779,10 @@ dimensionality as the other array.\n\
 %!
 %! float_types = {@single, @double};
 %! int_types = {@int8, @int16, @int32, @int64, \
-%!             @uint8, @uint16, @uint32, @uint64};
+%!              @uint8, @uint16, @uint32, @uint64};
 %!
-%! x = rand (3)*10-5;
-%! y = rand (3,1)*10-5;
+%! x = rand (3) * 10-5;
+%! y = rand (3,1) * 10-5;
 %!
 %! for i=1:length (funs)
 %!   for j = 1:length(float_types)

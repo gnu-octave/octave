@@ -2783,6 +2783,23 @@ FloatMatrix::diag (octave_idx_type k) const
   return MArray<float>::diag (k);
 }
 
+FloatDiagMatrix
+FloatMatrix::diag (octave_idx_type m, octave_idx_type n) const
+{
+  FloatDiagMatrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr == 1 || nc == 1)
+    retval = FloatDiagMatrix (*this, m, n);
+  else
+    (*current_liboctave_error_handler)
+      ("diag: expecting vector argument");
+
+  return retval;
+}
+
 FloatColumnVector
 FloatMatrix::row_min (void) const
 {

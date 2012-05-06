@@ -837,6 +837,12 @@ FloatNDArray::diag (octave_idx_type k) const
   return MArray<float>::diag (k);
 }
 
+FloatNDArray
+FloatNDArray::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return MArray<float>::diag (m, n);
+}
+
 // This contains no information on the array structure !!!
 std::ostream&
 operator << (std::ostream& os, const FloatNDArray& a)

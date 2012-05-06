@@ -188,8 +188,9 @@ octave_user_function::octave_user_function
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
-    anonymous_function (false), class_constructor (false),
-    class_method (false), parent_scope (-1), local_scope (sid),
+    anonymous_function (false), nested_function(false),
+    class_constructor (false), class_method (false),
+    parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
 {
   if (cmd_list)
@@ -387,7 +388,7 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  int context = is_anonymous_function () ? 0 : call_depth;
+  int context = active_context ();
 
   octave_call_stack::push (this, local_scope, context);
   frame.add_fcn (octave_call_stack::pop);
@@ -601,6 +602,9 @@ octave_user_function::bind_automatic_vars
   if (takes_varargs ())
     symbol_table::varref ("varargin") = va_args.cell_value ();
 
+  // Force .ignored. variable to be undefined by default.
+  symbol_table::varref (".ignored.") = octave_value ();
+
   if (lvalue_list)
     {
       octave_idx_type nbh = 0;
@@ -622,11 +626,11 @@ octave_user_function::bind_automatic_vars
             }
 
           symbol_table::varref (".ignored.") = bh;
-
-          symbol_table::mark_hidden (".ignored.");
-          symbol_table::mark_automatic (".ignored.");
         }
     }
+
+  symbol_table::mark_hidden (".ignored.");
+  symbol_table::mark_automatic (".ignored.");
 }
 
 DEFUN (nargin, args, ,
@@ -923,3 +927,40 @@ element-by-element and a logical array is returned.  At the top level,\n\
 
   return retval;
 }
+
+/*
+%!function [x, y] = try_isargout ()
+%!  if (isargout (1))
+%!    if (isargout (2))
+%!      x = 1; y = 2;
+%!    else
+%!      x = -1;
+%!    endif
+%!  else
+%!    if (isargout (2))
+%!      y = -2;
+%!    else
+%!      error ("no outputs requested");
+%!    endif
+%!  endif
+%!endfunction
+%!
+%!test
+%! [x, y] = try_isargout ();
+%! assert ([x, y], [1, 2]);
+%!
+%!test
+%! [x, ~] = try_isargout ();
+%! assert (x, -1);
+%!
+%!test
+%! [~, y] = try_isargout ();
+%! assert (y, -2);
+%!
+%!error [~, ~] = try_isargout ();
+%!
+%% Check to see that isargout isn't sticky:
+%!test
+%! [x, y] = try_isargout ();
+%! assert ([x, y], [1, 2]);
+*/

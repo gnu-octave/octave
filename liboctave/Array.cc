@@ -2524,6 +2524,26 @@ Array<T>::diag (octave_idx_type k) const
 
 template <class T>
 Array<T>
+Array<T>::diag (octave_idx_type m, octave_idx_type n) const
+{
+  Array<T> retval;
+
+  if (ndims () == 2 && (rows () == 1 || cols () == 1))
+    {
+      retval.resize (dim_vector (m, n), resize_fill_value ());
+
+      for (octave_idx_type i = 0; i < numel (); i++)
+        retval.xelem (i, i) = xelem (i);
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("cat: invalid dimension");
+
+  return retval;
+}
+
+template <class T>
+Array<T>
 Array<T>::cat (int dim, octave_idx_type n, const Array<T> *array_list)
 {
   // Default concatenation.

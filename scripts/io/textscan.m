@@ -52,8 +52,11 @@
 ## have been encountered.  If set to 0 or false, return an error and no data.
 ## @end itemize
 ##
-## The optional input @var{n} specifes the number of times to use
-## @var{format} when parsing, i.e., the format repeat count.
+## When reading from a character string, optional input argument @var{n}
+## specifes the number of times @var{format} should be used (i.e., to limit
+## the amount of data read).
+## When reading fro file, @var{n} specifes the number of data lines to read;
+## in this sense it differs slightly from the format repeat count in strread.
 ##
 ## The output @var{C} is a cell array whose length is given by the number
 ## of format specifiers.
@@ -66,6 +69,8 @@
 
 function [C, position] = textscan (fid, format = "%f", varargin)
 
+  BUFLENGTH = 4096;               ## Read buffer
+  
   ## Check input
   if (nargin < 1)
     print_usage ();
@@ -88,6 +93,11 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     nlines = args{1};
   else
     nlines = Inf;
+  endif
+  if (nlines < 1)
+    printf ("textscan: N = 0, no data read\n");
+    C = [];
+    return
   endif
 
   if (! any (strcmpi (args, "emptyvalue")))
@@ -148,26 +158,17 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     endif
     str = fid;
   else
+    st_pos = ftell (fid);
     ## Skip header lines if requested
     headerlines = find (strcmpi (args, "headerlines"), 1);
     ## Beware of zero valued headerline, fskipl would skip to EOF
     if (! isempty (headerlines) && (args{headerlines + 1} > 0))
-      fskipl (fid, varargin{headerlines + 1});
+      fskipl (fid, args{headerlines + 1});
       args(headerlines:headerlines+1) = [];
+      st_pos = ftell (fid);
     endif
-    if (isfinite (nlines) && (nlines >= 0))
-      str = tmp_str = "";
-      n = 0;
-      ## FIXME: Can this be done without slow loop?
-      while (ischar (tmp_str) && n++ < nlines)
-        tmp_str = fgets (fid);
-        if (ischar (tmp_str))
-          str = strcat (str, tmp_str);
-        endif
-      endwhile
-    else
-      str = fread (fid, "char=>char").';
-    endif
+    ## Read a first file chunk. Rest follows after endofline processing
+    [str, count] = fscanf (fid, "%c", BUFLENGTH);
   endif
 
   ## Check for empty result
@@ -189,8 +190,8 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       error ("textscan: character value required for EndOfLine");
     endif
   else
-    ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
-    eol_srch_len = min (length (str), 3000);
+    ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
+    eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
     if (! isempty (strfind ("\r\n", str(1 : eol_srch_len))))
       eol_char = "\r\n";
@@ -202,7 +203,47 @@ function [C, position] = textscan (fid, format = "%f", varargin)
       eol_char = "\n";
     endif
     ## Set up the default endofline param value
-    args(end+1:end+2) = {'endofline', eol_char};
+    args(end+1:end+2) = {"endofline", eol_char};
+  endif
+
+  if (!ischar (fid))
+    ## Now that we know what EOL looks like, we can process format_repeat_count.
+    ## FIXME The below isn't ML-compatible: counts lines, not format string uses
+    if (isfinite (nlines) && (nlines >= 0))
+      l_eol_char = length (eol_char);
+      eoi = findstr (str, eol_char);
+      n_eoi = length (eoi);
+      nblks = 0;
+      ## Avoid slow repeated str concatenation, first seek requested end of data
+      while (n_eoi < nlines && count == BUFLENGTH)
+        [nstr, count] = fscanf (fid, "%c", BUFLENGTH);
+        if (count > 0)
+          ## Watch out for multichar EOL being missed across buffer boundaries
+          if (l_eol_char > 1)
+            str = [str(end - length (eol_char) + 2 : end) nstr];
+          else
+            str = nstr;
+          endif
+          eoi = findstr (str, eol_char);
+          n_eoi += numel (eoi);
+          ++nblks;
+        endif
+      endwhile
+      ## OK, found EOL delimiting last requested line. Compute ptr (incl. EOL)
+      if (isempty (eoi))
+        printf ("textscan: format repeat count specified but no endofline found\n");
+        data_size = nblks * BUFLENGTH + count;
+      else
+        ## Compute data size to read incl complete EOL
+        data_size = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi) \
+                    + l_eol_char - 1;
+      endif
+      fseek (fid, st_pos, "bof");
+      str = fscanf (fid, "%c", data_size);
+    else
+      fseek (fid, st_pos, "bof");
+      str = fread (fid, "char=>char").';
+    endif
   endif
 
   ## Determine the number of data fields
@@ -223,6 +264,7 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
 
   if (nargout == 2)
+    ## Remember file position (persistent var)
     position = ftell (fid);
   endif
 
@@ -234,10 +276,10 @@ function C = colloutp (C)
 
   ## Start at rightmost column and work backwards to avoid ptr mixup
   ii = numel (C);
-  while ii > 1
+  while (ii > 1)
     clss1 = class (C{ii});
     jj = ii;
-    while  (jj > 1 && strcmp (clss1, class (C{jj - 1})))
+    while (jj > 1 && strcmp (clss1, class (C{jj - 1})))
       ## Column to the left is still same class; check next column to the left
       --jj;
     endwhile

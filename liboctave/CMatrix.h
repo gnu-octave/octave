@@ -357,6 +357,8 @@ public:
 
   ComplexMatrix diag (octave_idx_type k = 0) const;
 
+  ComplexDiagMatrix diag (octave_idx_type m, octave_idx_type n) const;
+
   bool row_is_real_only (octave_idx_type) const;
   bool column_is_real_only (octave_idx_type) const;
 

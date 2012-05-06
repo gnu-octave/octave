@@ -529,61 +529,59 @@ information.\n\
 }
 
 /*
-
 %!assert(lu ([1, 2; 3, 4]), [3, 4; 1/3, 2/3], eps);
 
 %!test
 %! [l, u] = lu ([1, 2; 3, 4]);
-%! assert(l, [1/3, 1; 1, 0], sqrt (eps));
-%! assert(u, [3, 4; 0, 2/3], sqrt (eps));
+%! assert (l, [1/3, 1; 1, 0], sqrt (eps));
+%! assert (u, [3, 4; 0, 2/3], sqrt (eps));
 
 %!test
 %! [l, u, p] = lu ([1, 2; 3, 4]);
-%! assert(l, [1, 0; 1/3, 1], sqrt (eps));
-%! assert(u, [3, 4; 0, 2/3], sqrt (eps));
-%! assert(p(:,:), [0, 1; 1, 0], sqrt (eps));
+%! assert (l, [1, 0; 1/3, 1], sqrt (eps));
+%! assert (u, [3, 4; 0, 2/3], sqrt (eps));
+%! assert (p(:,:), [0, 1; 1, 0], sqrt (eps));
 
 %!test
-%! [l, u, p] = lu ([1, 2; 3, 4],'vector');
-%! assert(l, [1, 0; 1/3, 1], sqrt (eps));
-%! assert(u, [3, 4; 0, 2/3], sqrt (eps));
-%! assert(p, [2;1], sqrt (eps));
+%! [l, u, p] = lu ([1, 2; 3, 4], "vector");
+%! assert (l, [1, 0; 1/3, 1], sqrt (eps));
+%! assert (u, [3, 4; 0, 2/3], sqrt (eps));
+%! assert (p, [2;1], sqrt (eps));
 
 %!test
-%! [l u p] = lu ([1, 2; 3, 4; 5, 6]);
-%! assert(l, [1, 0; 1/5, 1; 3/5, 1/2], sqrt (eps));
-%! assert(u, [5, 6; 0, 4/5], sqrt (eps));
-%! assert(p(:,:), [0, 0, 1; 1, 0, 0; 0 1 0], sqrt (eps));
+%! [l, u, p] = lu ([1, 2; 3, 4; 5, 6]);
+%! assert (l, [1, 0; 1/5, 1; 3/5, 1/2], sqrt (eps));
+%! assert (u, [5, 6; 0, 4/5], sqrt (eps));
+%! assert (p(:,:), [0, 0, 1; 1, 0, 0; 0 1 0], sqrt (eps));
 
-%!assert(lu (single([1, 2; 3, 4])), single([3, 4; 1/3, 2/3]), eps('single'));
-
-%!test
-%! [l, u] = lu (single([1, 2; 3, 4]));
-%! assert(l, single([1/3, 1; 1, 0]), sqrt (eps('single')));
-%! assert(u, single([3, 4; 0, 2/3]), sqrt (eps('single')));
+%!assert (lu (single ([1, 2; 3, 4])), single ([3, 4; 1/3, 2/3]), eps ("single"))
 
 %!test
-%! [l, u, p] = lu (single([1, 2; 3, 4]));
-%! assert(l, single([1, 0; 1/3, 1]), sqrt (eps('single')));
-%! assert(u, single([3, 4; 0, 2/3]), sqrt (eps('single')));
-%! assert(p(:,:), single([0, 1; 1, 0]), sqrt (eps('single')));
+%! [l, u] = lu (single ([1, 2; 3, 4]));
+%! assert (l, single ([1/3, 1; 1, 0]), sqrt (eps ("single")));
+%! assert (u, single ([3, 4; 0, 2/3]), sqrt (eps ("single")));
 
 %!test
-%! [l, u, p] = lu (single([1, 2; 3, 4]),'vector');
-%! assert(l, single([1, 0; 1/3, 1]), sqrt (eps('single')));
-%! assert(u, single([3, 4; 0, 2/3]), sqrt (eps('single')));
-%! assert(p, single([2;1]), sqrt (eps('single')));
+%! [l, u, p] = lu (single ([1, 2; 3, 4]));
+%! assert (l, single ([1, 0; 1/3, 1]), sqrt (eps ("single")));
+%! assert (u, single ([3, 4; 0, 2/3]), sqrt (eps ("single")));
+%! assert (p(:,:), single ([0, 1; 1, 0]), sqrt (eps ("single")));
 
 %!test
-%! [l u p] = lu (single([1, 2; 3, 4; 5, 6]));
-%! assert(l, single([1, 0; 1/5, 1; 3/5, 1/2]), sqrt (eps('single')));
-%! assert(u, single([5, 6; 0, 4/5]), sqrt (eps('single')));
-%! assert(p(:,:), single([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps('single')));
+%! [l, u, p] = lu (single ([1, 2; 3, 4]), "vector");
+%! assert (l, single ([1, 0; 1/3, 1]), sqrt (eps ("single")));
+%! assert (u, single ([3, 4; 0, 2/3]), sqrt (eps ("single")));
+%! assert (p, single ([2;1]), sqrt (eps ("single")));
 
-%!error <Invalid call to lu> lu ();
-%!error lu ([1, 2; 3, 4], 2);
+%!test
+%! [l u p] = lu (single ([1, 2; 3, 4; 5, 6]));
+%! assert (l, single ([1, 0; 1/5, 1; 3/5, 1/2]), sqrt (eps ("single")));
+%! assert (u, single ([5, 6; 0, 4/5]), sqrt (eps ("single")));
+%! assert (p(:,:), single ([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps ("single")));
 
- */
+%!error lu ()
+%!error <can not define pivoting threshold> lu ([1, 2; 3, 4], 2)
+*/
 
 static
 bool check_lu_dims (const octave_value& l, const octave_value& u,
@@ -785,75 +783,75 @@ recompute the factorization from scratch.\n\
 %!      0.43167 ];
 %!
 %! Ac = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
-%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
-%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
-%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
-%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
+%!       0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
+%!       0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
+%!       0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
+%!       0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
 %!
 %! uc = [0.20351 + 0.05401i;
-%!      0.13141 + 0.43708i;
-%!      0.29808 + 0.08789i;
-%!      0.69821 + 0.38844i;
-%!      0.74871 + 0.25821i ];
+%!       0.13141 + 0.43708i;
+%!       0.29808 + 0.08789i;
+%!       0.69821 + 0.38844i;
+%!       0.74871 + 0.25821i ];
 %!
 %! vc = [0.85839 + 0.29468i;
-%!      0.20820 + 0.93090i;
-%!      0.86184 + 0.34689i ];
+%!       0.20820 + 0.93090i;
+%!       0.86184 + 0.34689i ];
 %!
 
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(A);
-%! [L,U] = luupdate(L,U,P*u,v);
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
+%! [L,U,P] = lu (A);
+%! [L,U] = luupdate (L,U,P*u,v);
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - A - u*v.'), Inf) < norm (A)*1e1*eps);
 %!
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(Ac);
-%! [L,U] = luupdate(L,U,P*uc,vc);
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - Ac - uc*vc.'),Inf) < norm(Ac)*1e1*eps)
+%! [L,U,P] = lu (Ac);
+%! [L,U] = luupdate (L,U,P*uc,vc);
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - Ac - uc*vc.'), Inf) < norm (Ac)*1e1*eps);
 
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(single(A));
-%! [L,U] = luupdate(L,U,P*single(u),single(v));
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
+%! [L,U,P] = lu (single (A));
+%! [L,U] = luupdate (L,U,P*single (u), single (v));
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - single (A) - single (u)*single (v).'), Inf) < norm (single (A))*1e1*eps ("single"));
 %!
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(single(Ac));
-%! [L,U] = luupdate(L,U,P*single(uc),single(vc));
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - single(Ac) - single(uc)*single(vc).'),Inf) < norm(single(Ac))*1e1*eps('single'))
+%! [L,U,P] = lu (single (Ac));
+%! [L,U] = luupdate (L,U,P*single (uc),single (vc));
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - single (Ac) - single (uc)*single (vc).'), Inf) < norm (single (Ac))*1e1*eps ("single"));
 
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(A);
-%! [L,U,P] = luupdate(L,U,P,u,v);
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - A - u*v.'),Inf) < norm(A)*1e1*eps)
+%! [L,U,P] = lu (A);
+%! [L,U,P] = luupdate (L,U,P,u,v);
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - A - u*v.'), Inf) < norm (A)*1e1*eps);
 %!
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(Ac);
-%! [L,U,P] = luupdate(L,U,P,uc,vc);
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - Ac - uc*vc.'),Inf) < norm(Ac)*1e1*eps)
+%! [L,U,P] = lu (Ac);
+%! [L,U,P] = luupdate (L,U,P,uc,vc);
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - Ac - uc*vc.'), Inf) < norm (Ac)*1e1*eps);
 
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(single(A));
-%! [L,U,P] = luupdate(L,U,P,single(u),single(v));
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - single(A) - single(u)*single(v).'),Inf) < norm(single(A))*1e1*eps('single'))
+%! [L,U,P] = lu (single (A));
+%! [L,U,P] = luupdate (L,U,P,single (u),single (v));
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - single (A) - single (u)*single (v).'), Inf) < norm (single (A))*1e1*eps ("single"));
 %!
 %!testif HAVE_QRUPDATE_LUU
-%! [L,U,P] = lu(single(Ac));
-%! [L,U,P] = luupdate(L,U,P,single(uc),single(vc));
-%! assert(norm(vec(tril(L)-L),Inf) == 0)
-%! assert(norm(vec(triu(U)-U),Inf) == 0)
-%! assert(norm(vec(P'*L*U - single(Ac) - single(uc)*single(vc).'),Inf) < norm(single(Ac))*1e1*eps('single'))
+%! [L,U,P] = lu (single (Ac));
+%! [L,U,P] = luupdate (L,U,P,single (uc),single (vc));
+%! assert (norm (vec (tril (L)-L), Inf) == 0);
+%! assert (norm (vec (triu (U)-U), Inf) == 0);
+%! assert (norm (vec (P'*L*U - single (Ac) - single (uc)*single (vc).'), Inf) < norm (single (Ac))*1e1*eps ("single"));
 */

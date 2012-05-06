@@ -44,6 +44,93 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+// Replace backslash escapes in a string with the real values.  We need
+// this special function instead of the one in utils.cc because the set
+// of escape sequences used in regexps is different from those used in
+// the *printf functions.
+
+static std::string
+do_regexp_string_escapes (const std::string& s)
+{
+  std::string retval;
+
+  size_t i = 0;
+  size_t j = 0;
+  size_t len = s.length ();
+
+  retval.resize (len);
+
+  while (j < len)
+    {
+      if (s[j] == '\\' && j+1 < len)
+        {
+          switch (s[++j])
+            {
+            case '$':
+              retval[i] = '$';
+              break;
+
+            case 'a':
+              retval[i] = '\a';
+              break;
+
+            case 'b': // backspace
+              retval[i] = '\b';
+              break;
+
+            case 'f': // formfeed
+              retval[i] = '\f';
+              break;
+
+            case 'n': // newline
+              retval[i] = '\n';
+              break;
+
+            case 'r': // carriage return
+              retval[i] = '\r';
+              break;
+
+            case 't': // horizontal tab
+              retval[i] = '\t';
+              break;
+
+            case 'v': // vertical tab
+              retval[i] = '\v';
+              break;
+
+            case '\\': // backslash
+              retval[i] = '\\';
+              break;
+
+#if 0
+// FIXME -- to be complete, we need to handle \oN, \o{N}, \xN, and
+// \x{N}.  Hex digits may be upper or lower case.  Brackets are
+// optional, so \x5Bz is the same as \x{5B}z.
+
+            case 'o': // octal number
+            case 'x': // hex number
+#endif
+
+            default:
+              retval[i] = '\\';
+              retval[++i] = s[j];
+              break;
+            }
+        }
+      else
+        {
+          retval[i] = s[j];
+        }
+
+      i++;
+      j++;
+    }
+
+  retval.resize (i);
+
+  return retval;
+}
+
 static void
 parse_options (regexp::opts& options, const octave_value_list& args,
                const std::string& who, int skip, bool& extra_args)
@@ -77,12 +164,16 @@ parse_options (regexp::opts& options, const octave_value_list& args,
         options.lineanchors (false);
       else if (str.find ("literalspacing", 0) == 0)
         options.freespacing (false);
+      else if (str.find ("noemptymatch", 0) == 0)
+        options.emptymatch (false);
       else if (str.find ("dotexceptnewline", 0) == 0)
         options.dotexceptnewline (true);
       else if (str.find ("lineanchors", 0) == 0)
         options.lineanchors (true);
       else if (str.find ("freespacing", 0) == 0)
         options.freespacing (true);
+      else if (str.find ("emptymatch", 0) == 0)
+        options.emptymatch (true);
       else if (str.find ("start", 0) == 0
                || str.find ("end", 0) == 0
                || str.find ("tokenextents", 0) == 0
@@ -109,9 +200,12 @@ octregexp (const octave_value_list &args, int nargout,
   if (error_state)
     return retval;
 
-  const std::string pattern = args(1).string_value ();
+  std::string pattern = args(1).string_value ();
   if (error_state)
     return retval;
+  // Matlab compatibility.
+  if (args(1).is_sq_string ())
+    pattern = do_regexp_string_escapes (pattern);
 
   regexp::opts options;
   options.case_insensitive (case_insensitive);
@@ -257,7 +351,9 @@ octregexp (const octave_value_list &args, int nargout,
                   || str.find ("dotall", 0) == 0
                   || str.find ("dotexceptnewline", 0) == 0
                   || str.find ("literalspacing", 0) == 0
-                  || str.find ("freespacing", 0) == 0)
+                  || str.find ("freespacing", 0) == 0
+                  || str.find ("noemptymatch", 0) == 0
+                  || str.find ("emptymatch", 0) == 0)
                 continue;
               else if (str.find ("start", 0) == 0)
                 k = 0;
@@ -488,8 +584,8 @@ Escape sequences defined below can also be used inside list\n\
 operators.  For example, a template for a floating point number might be\n\
 @code{[-+.\\d]+}.\n\
 \n\
-@item ()\n\
-Grouping operator\n\
+@item () (?:)\n\
+Grouping operator.  The first form, parentheses only, also creates a token.\n\
 \n\
 @item |\n\
 Alternation operator.  Match one of a choice of regular expressions.  The\n\
@@ -562,7 +658,8 @@ being used as the fieldname.  A named token is denoted by\n\
 @code{(?<name>@dots{})}.\n\
 \n\
 @item sp\n\
-A cell array of the text not returned by match.\n\
+A cell array of the text not returned by match, i.e., what remains if you\n\
+split the string based on @var{pat}.\n\
 @end table\n\
 \n\
 Particular output arguments, or the order of the output arguments, can be\n\
@@ -630,6 +727,15 @@ the character @samp{#}.\n\
 \n\
 Alternatively, use (?x) in the pattern.\n\
 \n\
+@item noemptymatch\n\
+Zero-length matches are not returned.  (default)\n\
+\n\
+@item emptymatch\n\
+Return zero-length matches.\n\
+\n\
+@code{regexp ('a', 'b*', 'emptymatch'} returns @code{[1 2]} because there are\n\
+zero or more 'b' characters at positions 1 and end-of-string.\n\
+\n\
 @end table\n\
 @seealso{regexpi, strfind, regexprep}\n\
 @end deftypefn")
@@ -649,130 +755,129 @@ Alternatively, use (?x) in the pattern.\n\
 }
 
 /*
-
 ## PCRE_ERROR_MATCHLIMIT test
 %!test
-%! s=sprintf('\t4\n0000\t-0.00\t-0.0000\t4\t-0.00\t-0.0000\t4\n0000\t-0.00\t-0.0000\t0\t-0.00\t-');
-%! ws = warning("query");
+%! s = sprintf ('\t4\n0000\t-0.00\t-0.0000\t4\t-0.00\t-0.0000\t4\n0000\t-0.00\t-0.0000\t0\t-0.00\t-');
+%! ws = warning ("query");
 %! unwind_protect
-%!   warning("off");
-%!   regexp(s, '(\s*-*\d+[.]*\d*\s*)+\n');
+%!   warning ("off");
+%!   regexp (s, '(\s*-*\d+[.]*\d*\s*)+\n');
 %! unwind_protect_cleanup
-%!   warning(ws);
+%!   warning (ws);
 %! end_unwind_protect
 
-## seg-fault test
-%!assert(regexp("abcde","."),[1,2,3,4,5])
+## segfault test
+%!assert (regexp ("abcde", "."), [1,2,3,4,5])
 ## Infinite loop test
-%!assert (isempty (regexp("abcde", "")))
+%!assert (isempty (regexp ("abcde", "")))
 
 ## Check that anchoring of pattern works correctly
-%!assert(regexp('abcabc','^abc'),1);
-%!assert(regexp('abcabc','abc$'),4);
-%!assert(regexp('abcabc','^abc$'),zeros(1,0));
+%!assert (regexp ('abcabc', '^abc'), 1)
+%!assert (regexp ('abcabc', 'abc$'), 4)
+%!assert (regexp ('abcabc', '^abc$'), zeros (1,0))
 
 %!test
-%! [s, e, te, m, t] = regexp(' No Match ', 'f(.*)uck');
-%! assert (s,zeros(1,0))
-%! assert (e,zeros(1,0))
-%! assert (te,cell(1,0))
-%! assert (m, cell(1,0))
-%! assert (t, cell(1,0))
+%! [s, e, te, m, t] = regexp (' No Match ', 'f(.*)uck');
+%! assert (s, zeros (1,0));
+%! assert (e, zeros (1,0));
+%! assert (te, cell (1,0));
+%! assert (m, cell (1,0));
+%! assert (t, cell (1,0));
 
 %!test
-%! [s, e, te, m, t] = regexp(' FiRetrUck ', 'f(.*)uck');
-%! assert (s,zeros(1,0))
-%! assert (e,zeros(1,0))
-%! assert (te,cell(1,0))
-%! assert (m, cell(1,0))
-%! assert (t, cell(1,0))
+%! [s, e, te, m, t] = regexp (' FiRetrUck ', 'f(.*)uck');
+%! assert (s, zeros (1,0));
+%! assert (e, zeros (1,0));
+%! assert (te, cell (1,0));
+%! assert (m, cell (1,0));
+%! assert (t, cell (1,0));
 
 %!test
-%! [s, e, te, m, t] = regexp(' firetruck ', 'f(.*)uck');
-%! assert (s,2)
-%! assert (e,10)
-%! assert (te{1},[3,7])
-%! assert (m{1}, 'firetruck')
-%! assert (t{1}{1}, 'iretr')
+%! [s, e, te, m, t] = regexp (' firetruck ', 'f(.*)uck');
+%! assert (s, 2);
+%! assert (e, 10);
+%! assert (te{1}, [3, 7]);
+%! assert (m{1}, 'firetruck');
+%! assert (t{1}{1}, 'iretr');
 
 %!test
-%! [s, e, te, m, t] = regexp('short test string','\w*r\w*');
-%! assert (s,[1,12])
-%! assert (e,[5,17])
-%! assert (size(te), [1,2])
-%! assert (isempty(te{1}))
-%! assert (isempty(te{2}))
-%! assert (m{1},'short')
-%! assert (m{2},'string')
-%! assert (size(t), [1,2])
-%! assert (isempty(t{1}))
-%! assert (isempty(t{2}))
+%! [s, e, te, m, t] = regexp ('short test string', '\w*r\w*');
+%! assert (s, [1, 12]);
+%! assert (e, [5, 17]);
+%! assert (size (te), [1, 2]);
+%! assert (isempty (te{1}));
+%! assert (isempty (te{2}));
+%! assert (m{1}, 'short');
+%! assert (m{2}, 'string');
+%! assert (size (t), [1, 2]);
+%! assert (isempty (t{1}));
+%! assert (isempty (t{2}));
 
 %!test
-%! [s, e, te, m, t] = regexp('short test string','\w*r\w*','once');
-%! assert (s,1)
-%! assert (e,5)
-%! assert (isempty(te))
-%! assert (m,'short')
-%! assert (isempty(t))
+%! [s, e, te, m, t] = regexp ('short test string', '\w*r\w*', 'once');
+%! assert (s, 1);
+%! assert (e, 5);
+%! assert (isempty (te));
+%! assert (m, 'short');
+%! assert (isempty (t));
 
 %!test
-%! [m, te, e, s, t] = regexp('short test string','\w*r\w*','once', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%! assert (s,1)
-%! assert (e,5)
-%! assert (isempty(te))
-%! assert (m,'short')
-%! assert (isempty(t))
+%! [m, te, e, s, t] = regexp ('short test string', '\w*r\w*', 'once', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%! assert (s, 1);
+%! assert (e, 5);
+%! assert (isempty (te));
+%! assert (m, 'short');
+%! assert (isempty (t));
 
 %!test
-%! [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'short test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'short')
-%! assert (t{1}{2},'test')
-%! assert (size(nm), [1,1])
-%! assert (!isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1';'word2'})
-%! assert (nm.word1,'short')
-%! assert (nm.word2,'test')
+%! [s, e, te, m, t, nm] = regexp ('short test string', '(?<word1>\w*t)\s*(?<word2>\w*t)');
+%! assert (s, 1);
+%! assert (e, 10);
+%! assert (size (te), [1, 1]);
+%! assert (te{1}, [1,5; 7,10]);
+%! assert (m{1}, 'short test');
+%! assert (size (t), [1, 1]);
+%! assert (t{1}{1}, 'short');
+%! assert (t{1}{2}, 'test');
+%! assert (size (nm), [1, 1]);
+%! assert (! isempty (fieldnames (nm)));
+%! assert (sort (fieldnames (nm)), {'word1';'word2'});
+%! assert (nm.word1, 'short');
+%! assert (nm.word2, 'test');
 
 %!test
-%! [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'short test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'short')
-%! assert (t{1}{2},'test')
-%! assert (size(nm), [1,1])
-%! assert (!isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1';'word2'})
-%! assert (nm.word1,'short')
-%! assert (nm.word2,'test')
+%! [nm, m, te, e, s, t] = regexp ('short test string', '(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%! assert (s, 1);
+%! assert (e, 10);
+%! assert (size (te), [1, 1]);
+%! assert (te{1}, [1,5; 7,10]);
+%! assert (m{1}, 'short test');
+%! assert (size (t), [1, 1]);
+%! assert (t{1}{1}, 'short');
+%! assert (t{1}{2}, 'test');
+%! assert (size (nm), [1, 1]);
+%! assert (!isempty (fieldnames (nm)));
+%! assert (sort (fieldnames (nm)), {'word1';'word2'});
+%! assert (nm.word1, 'short');
+%! assert (nm.word2, 'test');
 
 %!test
-%! [t, nm] = regexp("John Davis\nRogers, James",'(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)','tokens','names');
-%! assert (size(t), [1,2]);
-%! assert (t{1}{1},'John');
-%! assert (t{1}{2},'Davis');
-%! assert (t{2}{1},'Rogers');
-%! assert (t{2}{2},'James');
-%! assert (size(nm), [1,1]);
-%! assert (nm.first{1},'John');
-%! assert (nm.first{2},'James');
-%! assert (nm.last{1},'Davis');
-%! assert (nm.last{2},'Rogers');
+%! [t, nm] = regexp ("John Davis\nRogers, James", '(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)', 'tokens', 'names');
+%! assert (size (t), [1, 2]);
+%! assert (t{1}{1}, 'John');
+%! assert (t{1}{2}, 'Davis');
+%! assert (t{2}{1}, 'Rogers');
+%! assert (t{2}{2}, 'James');
+%! assert (size (nm), [1, 1]);
+%! assert (nm.first{1}, 'John');
+%! assert (nm.first{2}, 'James');
+%! assert (nm.last{1}, 'Davis');
+%! assert (nm.last{2}, 'Rogers');
 
 ## Tests for named tokens
 %!test
 %! # Parenthesis in named token (ie (int)) causes a problem
-%! assert (regexp('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
+%! assert (regexp ('qwe int asd', ['(?<typestr>(int))'], 'names'), struct ('typestr', 'int'));
 
 %!test
 %! ## Mix of named and unnamed tokens can cause segfault (bug #35683)
@@ -783,51 +888,90 @@ Alternatively, use (?x) in the pattern.\n\
 %! assert (tokens.T1, "a");
 %! assert (tokens.T2, "de");
 
-%!assert(regexp("abc\nabc",'.'),[1:7])
-%!assert(regexp("abc\nabc",'.','dotall'),[1:7])
+%!assert (regexp ("abc\nabc", '.'), [1:7])
+%!assert (regexp ("abc\nabc", '.', 'dotall'), [1:7])
 %!test
-%! assert(regexp("abc\nabc",'(?s).'),[1:7])
-%! assert(regexp("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
-%! assert(regexp("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
+%! assert (regexp ("abc\nabc", '(?s).'), [1:7]);
+%! assert (regexp ("abc\nabc", '.', 'dotexceptnewline'), [1,2,3,5,6,7]);
+%! assert (regexp ("abc\nabc", '(?-s).'), [1,2,3,5,6,7]);
 
-%!assert(regexp("caseCaSe",'case'),1)
-%!assert(regexp("caseCaSe",'case',"matchcase"),1)
-%!assert(regexp("caseCaSe",'case',"ignorecase"),[1,5])
+%!assert (regexp ("caseCaSe", 'case'), 1)
+%!assert (regexp ("caseCaSe", 'case', "matchcase"), 1)
+%!assert (regexp ("caseCaSe", 'case', "ignorecase"), [1,5])
 %!test
-%! assert(regexp("caseCaSe",'(?-i)case'),1)
-%! assert(regexp("caseCaSe",'(?i)case'),[1,5])
+%! assert (regexp ("caseCaSe", '(?-i)case'), 1);
+%! assert (regexp ("caseCaSe", '(?i)case'), [1, 5]);
 
-%!assert (regexp("abc\nabc",'c$'),7)
-%!assert (regexp("abc\nabc",'c$',"stringanchors"),7)
+%!assert (regexp ("abc\nabc", 'c$'), 7)
+%!assert (regexp ("abc\nabc", 'c$', "stringanchors"), 7)
 %!test
-%! assert (regexp("abc\nabc",'(?-m)c$'),7)
-%! assert (regexp("abc\nabc",'c$',"lineanchors"),[3,7])
-%! assert (regexp("abc\nabc",'(?m)c$'),[3,7])
+%! assert (regexp ("abc\nabc", '(?-m)c$'), 7);
+%! assert (regexp ("abc\nabc", 'c$',"lineanchors"), [3, 7]);
+%! assert (regexp ("abc\nabc", '(?m)c$'), [3,7]);
 
-%!assert (regexp("this word",'s w'),4)
-%!assert (regexp("this word",'s w','literalspacing'),4)
+%!assert (regexp ("this word", 's w'), 4)
+%!assert (regexp ("this word", 's w', 'literalspacing'), 4)
 %!test
-%! assert (regexp("this word",'(?-x)s w','literalspacing'),4)
-%! assert (regexp("this word",'s w','freespacing'),zeros(1,0))
-%! assert (regexp("this word",'(?x)s w'),zeros(1,0))
+%! assert (regexp ("this word", '(?-x)s w', 'literalspacing'), 4);
+%! assert (regexp ("this word", 's w', 'freespacing'), zeros (1,0));
+%! assert (regexp ("this word", '(?x)s w'), zeros (1,0));
 
-%!error regexp('string', 'tri', 'BadArg');
-%!error regexp('string');
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '[VOCT]*', 'noemptymatch');
+%! assert (s, [1 5]);
+%! assert (e, [3 5]);
+%! assert (te, { zeros(0,2), zeros(0,2) });
+%! assert (m, { "OCT", "V" });
+%! assert (t, { cell(1,0), cell(1,0) });
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "A", "E" });
 
-%!assert(regexp({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},'-'),{6;[1,5,9];zeros(1,0)})
-%!assert(regexp({'asdfg-dfd','-dfd-dfd-','qasfdfdaq'},'-'),{6,[1,5,9],zeros(1,0)})
-%!assert(regexp({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},{'-';'f';'q'}),{6;[3,7];[1,9]})
-%!assert(regexp('Strings',{'t','s'}),{2,7})
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '([VOCT]*)', 'noemptymatch');
+%! assert (s, [1 5]);
+%! assert (e, [3 5]);
+%! assert (te, { [1 3], [5 5] });
+%! assert (m, { "OCT", "V" });
+%! assert (t, { {"OCT"}, {"V"} });
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "A", "E" });
+
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '[VOCT]*', 'emptymatch');
+%! assert (s, [1 4 5 6 7]);
+%! assert (e, [3 3 5 5 6]);
+%! assert (te, repmat ({zeros(0,2)}, [1, 5]));
+%! assert (m, { "OCT", "", "V", "", "" });
+%! assert (t, repmat({cell(1,0)}, [1, 5]));
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "", "A", "", "E", "" });
+
+%!test
+%! [s, e, te, m, t, nm, sp] = regexp ('OCTAVE', '([VOCT]*)', 'emptymatch');
+%! assert (s, [1 4 5 6 7]);
+%! assert (e, [3 3 5 5 6]);
+%! assert (te, { [1 3], [4 3], [5 5], [6 5], [7 6] });
+%! assert (m, { "OCT", "", "V", "", "" });
+%! assert (t, { {"OCT"}, {""}, {"V"}, {""}, {""} });
+%! assert (isempty (fieldnames (nm)));
+%! assert (sp, { "", "", "A", "", "E", "" });
+
+%!error regexp ('string', 'tri', 'BadArg')
+%!error regexp ('string')
+
+%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1,0)})
+%!assert (regexp ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
+%!assert (regexp ('Strings', {'t','s'}), {2, 7})
 
 ## Test case for lookaround operators
 %!test
-%! assert(regexp('Iraq','q(?!u)'),4)
-%! assert(regexp('quit','q(?!u)'), zeros(1,0))
-%! assert(regexp('quit','q(?=u)','match'), {'q'})
-%! assert(regexp("quit",'q(?=u+)','match'), {'q'})
-%! assert(regexp("qit",'q(?=u+)','match'), cell(1,0))
-%! assert(regexp("qit",'q(?=u*)','match'), {'q'})
-%! assert(regexp('thingamabob','(?<=a)b'), 9)
+%! assert (regexp ('Iraq', 'q(?!u)'), 4);
+%! assert (regexp ('quit', 'q(?!u)'), zeros (1, 0));
+%! assert (regexp ('quit', 'q(?=u)' , 'match'), {'q'});
+%! assert (regexp ("quit", 'q(?=u+)', 'match'), {'q'});
+%! assert (regexp ("qit",  'q(?=u+)', 'match'), cell (1, 0));
+%! assert (regexp ("qit",  'q(?=u*)', 'match'), {'q'});
+%! assert (regexp ('thingamabob', '(?<=a)b'), 9);
 
 ## Tests for split option.
 %!shared str
@@ -846,8 +990,8 @@ Alternatively, use (?x) in the pattern.\n\
 %! assert (b, {"foo bar foo"});
 %!test
 %! [a, b] = regexp (str, "fx.", "match", "split", "once");
-%! assert (a, "");
-%! assert (b, "foo bar foo")
+%! assert (a, "");;
+%! assert (b, "foo bar foo");
 
 %!shared str
 %! str = "foo bar";
@@ -868,6 +1012,8 @@ Alternatively, use (?x) in the pattern.\n\
 %! assert (a, {"oo"});
 %! assert (b, {"f", " bar"});
 
+%!assert (regexp ("\n", '\n'), 1);
+%!assert (regexp ("\n", "\n"), 1);
 */
 
 DEFUN_DLD (regexpi, args, nargout,
@@ -897,138 +1043,138 @@ syntax of the search pattern.\n\
 }
 
 /*
-
-## seg-fault test
-%!assert(regexpi("abcde","."),[1,2,3,4,5])
+## segfault test
+%!assert (regexpi ("abcde", "."), [1,2,3,4,5])
 
 ## Check that anchoring of pattern works correctly
-%!assert(regexpi('abcabc','^ABC'),1);
-%!assert(regexpi('abcabc','ABC$'),4);
-%!assert(regexpi('abcabc','^ABC$'),zeros(1,0));
+%!assert (regexpi ('abcabc', '^ABC'), 1)
+%!assert (regexpi ('abcabc', 'ABC$'), 4)
+%!assert (regexpi ('abcabc', '^ABC$'), zeros (1,0))
 
 %!test
-%! [s, e, te, m, t] = regexpi(' No Match ', 'f(.*)uck');
-%! assert (s,zeros(1,0))
-%! assert (e,zeros(1,0))
-%! assert (te,cell(1,0))
-%! assert (m, cell(1,0))
-%! assert (t, cell(1,0))
+%! [s, e, te, m, t] = regexpi (' No Match ', 'f(.*)uck');
+%! assert (s, zeros (1,0));
+%! assert (e, zeros (1,0));
+%! assert (te, cell (1,0));
+%! assert (m, cell (1,0));
+%! assert (t, cell (1,0));
 
 %!test
-%! [s, e, te, m, t] = regexpi(' FiRetrUck ', 'f(.*)uck');
-%! assert (s,2)
-%! assert (e,10)
-%! assert (te{1},[3,7])
-%! assert (m{1}, 'FiRetrUck')
-%! assert (t{1}{1}, 'iRetr')
+%! [s, e, te, m, t] = regexpi (' FiRetrUck ', 'f(.*)uck');
+%! assert (s, 2);
+%! assert (e, 10);
+%! assert (te{1}, [3, 7]);
+%! assert (m{1}, 'FiRetrUck');
+%! assert (t{1}{1}, 'iRetr');
 
 %!test
-%! [s, e, te, m, t] = regexpi(' firetruck ', 'f(.*)uck');
-%! assert (s,2)
-%! assert (e,10)
-%! assert (te{1},[3,7])
-%! assert (m{1}, 'firetruck')
-%! assert (t{1}{1}, 'iretr')
+%! [s, e, te, m, t] = regexpi (' firetruck ', 'f(.*)uck');
+%! assert (s, 2);
+%! assert (e, 10);
+%! assert (te{1}, [3, 7]);
+%! assert (m{1}, 'firetruck');
+%! assert (t{1}{1}, 'iretr');
 
 %!test
-%! [s, e, te, m, t] = regexpi('ShoRt Test String','\w*r\w*');
-%! assert (s,[1,12])
-%! assert (e,[5,17])
-%! assert (size(te), [1,2])
-%! assert (isempty(te{1}))
-%! assert (isempty(te{2}))
-%! assert (m{1},'ShoRt')
-%! assert (m{2},'String')
-%! assert (size(t), [1,2])
-%! assert (isempty(t{1}))
-%! assert (isempty(t{2}))
+%! [s, e, te, m, t] = regexpi ('ShoRt Test String', '\w*r\w*');
+%! assert (s, [1, 12]);
+%! assert (e, [5, 17]);
+%! assert (size (te), [1, 2]);
+%! assert (isempty (te{1}));
+%! assert (isempty (te{2}));
+%! assert (m{1}, 'ShoRt');
+%! assert (m{2}, 'String');
+%! assert (size (t), [1, 2]);
+%! assert (isempty (t{1}));
+%! assert (isempty (t{2}));
 
 %!test
-%! [s, e, te, m, t] = regexpi('ShoRt Test String','\w*r\w*','once');
-%! assert (s,1)
-%! assert (e,5)
-%! assert (isempty(te))
-%! assert (m,'ShoRt')
-%! assert (isempty(t))
+%! [s, e, te, m, t] = regexpi ('ShoRt Test String', '\w*r\w*', 'once');
+%! assert (s, 1);
+%! assert (e, 5);
+%! assert (isempty (te));
+%! assert (m, 'ShoRt');
+%! assert (isempty (t));
 
 %!test
-%! [m, te, e, s, t] = regexpi('ShoRt Test String','\w*r\w*','once', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%! assert (s,1)
-%! assert (e,5)
-%! assert (isempty(te))
-%! assert (m,'ShoRt')
-%! assert (isempty(t))
+%! [m, te, e, s, t] = regexpi ('ShoRt Test String', '\w*r\w*', 'once', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%! assert (s, 1);
+%! assert (e, 5);
+%! assert (isempty (te));
+%! assert (m, 'ShoRt');
+%! assert (isempty (t));
 
 %!test
-%! [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'ShoRt Test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'ShoRt')
-%! assert (t{1}{2},'Test')
-%! assert (size(nm), [1,1])
-%! assert (!isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1';'word2'})
-%! assert (nm.word1,'ShoRt')
-%! assert (nm.word2,'Test')
+%! [s, e, te, m, t, nm] = regexpi ('ShoRt Test String', '(?<word1>\w*t)\s*(?<word2>\w*t)');
+%! assert (s, 1);
+%! assert (e, 10);
+%! assert (size (te), [1, 1]);
+%! assert (te{1}, [1,5; 7,10]);
+%! assert (m{1}, 'ShoRt Test');
+%! assert (size (t), [1, 1]);
+%! assert (t{1}{1}, 'ShoRt');
+%! assert (t{1}{2}, 'Test');
+%! assert (size (nm), [1, 1]);
+%! assert (! isempty (fieldnames (nm)));
+%! assert (sort (fieldnames (nm)), {'word1';'word2'});
+%! assert (nm.word1, 'ShoRt');
+%! assert (nm.word2, 'Test');
 
 %!test
-%! [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%! assert (s,1)
-%! assert (e,10)
-%! assert (size(te), [1,1])
-%! assert (te{1}, [1 5; 7, 10])
-%! assert (m{1},'ShoRt Test')
-%! assert (size(t),[1,1])
-%! assert (t{1}{1},'ShoRt')
-%! assert (t{1}{2},'Test')
-%! assert (size(nm), [1,1])
-%! assert (!isempty(fieldnames(nm)))
-%! assert (sort(fieldnames(nm)),{'word1';'word2'})
-%! assert (nm.word1,'ShoRt')
-%! assert (nm.word2,'Test')
+%! [nm, m, te, e, s, t] = regexpi ('ShoRt Test String', '(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%! assert (s, 1);
+%! assert (e, 10);
+%! assert (size (te), [1, 1]);
+%! assert (te{1}, [1,5; 7,10]);
+%! assert (m{1}, 'ShoRt Test');
+%! assert (size (t), [1, 1]);
+%! assert (t{1}{1}, 'ShoRt');
+%! assert (t{1}{2}, 'Test');
+%! assert (size (nm), [1, 1]);
+%! assert (!isempty (fieldnames (nm)));
+%! assert (sort (fieldnames (nm)), {'word1';'word2'});
+%! assert (nm.word1, 'ShoRt');
+%! assert (nm.word2, 'Test');
 
-%!assert(regexpi("abc\nabc",'.'),[1:7])
-%!assert(regexpi("abc\nabc",'.','dotall'),[1:7])
+%!assert (regexpi ("abc\nabc", '.'), [1:7])
+%!assert (regexpi ("abc\nabc", '.', 'dotall'), [1:7])
 %!test
-%! assert(regexpi("abc\nabc",'(?s).'),[1:7])
-%! assert(regexpi("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
-%! assert(regexpi("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
+%! assert (regexpi ("abc\nabc", '(?s).'), [1:7]);
+%! assert (regexpi ("abc\nabc", '.', 'dotexceptnewline'), [1,2,3,5,6,7]);
+%! assert (regexpi ("abc\nabc", '(?-s).'), [1,2,3,5,6,7]);
 
-%!assert(regexpi("caseCaSe",'case'),[1,5])
-%!assert(regexpi("caseCaSe",'case',"matchcase"),1)
-%!assert(regexpi("caseCaSe",'case',"ignorecase"),[1,5])
+%!assert (regexpi ("caseCaSe", 'case'), [1, 5])
+%!assert (regexpi ("caseCaSe", 'case', "matchcase"), 1)
+%!assert (regexpi ("caseCaSe", 'case', "ignorecase"), [1, 5])
 %!test
-%! assert(regexpi("caseCaSe",'(?-i)case'),1)
-%! assert(regexpi("caseCaSe",'(?i)case'),[1,5])
+%! assert (regexpi ("caseCaSe", '(?-i)case'), 1);
+%! assert (regexpi ("caseCaSe", '(?i)case'), [1, 5]);
 
-%!assert (regexpi("abc\nabc",'C$'),7)
-%!assert (regexpi("abc\nabc",'C$',"stringanchors"),7)
+%!assert (regexpi ("abc\nabc", 'C$'), 7)
+%!assert (regexpi ("abc\nabc", 'C$', "stringanchors"), 7)
 %!test
-%! assert (regexpi("abc\nabc",'(?-m)C$'),7)
-%! assert (regexpi("abc\nabc",'C$',"lineanchors"),[3,7])
-%! assert (regexpi("abc\nabc",'(?m)C$'),[3,7])
+%! assert (regexpi ("abc\nabc", '(?-m)C$'), 7);
+%! assert (regexpi ("abc\nabc", 'C$', "lineanchors"), [3, 7]);
+%! assert (regexpi ("abc\nabc", '(?m)C$'), [3, 7]);
 
-%!assert (regexpi("this word",'S w'),4)
-%!assert (regexpi("this word",'S w','literalspacing'),4)
+%!assert (regexpi ("this word", 'S w'), 4)
+%!assert (regexpi ("this word", 'S w', 'literalspacing'), 4)
 %!test
-%! assert (regexpi("this word",'(?-x)S w','literalspacing'),4)
-%! assert (regexpi("this word",'S w','freespacing'),zeros(1,0))
-%! assert (regexpi("this word",'(?x)S w'),zeros(1,0))
+%! assert (regexpi ("this word", '(?-x)S w', 'literalspacing'), 4);
+%! assert (regexpi ("this word", 'S w', 'freespacing'), zeros (1,0));
+%! assert (regexpi ("this word", '(?x)S w'), zeros (1,0));
 
-%!error regexpi('string', 'tri', 'BadArg');
-%!error regexpi('string');
+%!error regexpi ('string', 'tri', 'BadArg')
+%!error regexpi ('string')
 
-%!assert(regexpi({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},'-'),{6;[1,5,9];zeros(1,0)})
-%!assert(regexpi({'asdfg-dfd','-dfd-dfd-','qasfdfdaq'},'-'),{6,[1,5,9],zeros(1,0)})
-%!assert(regexpi({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},{'-';'f';'q'}),{6;[3,7];[1,9]})
-%!assert(regexpi('Strings',{'t','s'}),{2,[1,7]})
+%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, '-'), {6;[1,5,9];zeros(1, 0)})
+%!assert (regexpi ({'asdfg-dfd', '-dfd-dfd-', 'qasfdfdaq'}, '-'), {6, [1,5,9], zeros(1,0)})
+%!assert (regexpi ({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'}, {'-';'f';'q'}), {6;[3,7];[1,9]})
+%!assert (regexpi ('Strings', {'t', 's'}), {2, [1, 7]})
 
+%!assert (regexpi ("\n", '\n'), 1);
+%!assert (regexpi ("\n", "\n"), 1);
 */
-
 
 static octave_value
 octregexprep (const octave_value_list &args, const std::string &who)
@@ -1042,13 +1188,19 @@ octregexprep (const octave_value_list &args, const std::string &who)
   if (error_state)
     return retval;
 
-  const std::string pattern = args(1).string_value ();
+  std::string pattern = args(1).string_value ();
   if (error_state)
     return retval;
+  // Matlab compatibility.
+  if (args(1).is_sq_string ())
+    pattern = do_regexp_string_escapes (pattern);
 
-  const std::string replacement = args(2).string_value ();
+  std::string replacement = args(2).string_value ();
   if (error_state)
     return retval;
+  // Matlab compatibility.
+  if (args(2).is_sq_string ())
+    replacement = do_regexp_string_escapes (replacement);
 
   // Pack options excluding 'tokenize' and various output
   // reordering strings into regexp arg list
@@ -1196,56 +1348,61 @@ This option is present for compatibility but is ignored.\n\
 /*
 %!test  # Replace with empty
 %! xml = '<!-- This is some XML --> <tag v="hello">some stuff<!-- sample tag--></tag>';
-%! t = regexprep(xml,'<[!?][^>]*>','');
-%! assert(t,' <tag v="hello">some stuff</tag>')
+%! t = regexprep (xml, '<[!?][^>]*>', '');
+%! assert (t, ' <tag v="hello">some stuff</tag>');
 
 %!test  # Replace with non-empty
 %! xml = '<!-- This is some XML --> <tag v="hello">some stuff<!-- sample tag--></tag>';
-%! t = regexprep(xml,'<[!?][^>]*>','?');
-%! assert(t,'? <tag v="hello">some stuff?</tag>')
+%! t = regexprep (xml, '<[!?][^>]*>', '?');
+%! assert (t, '? <tag v="hello">some stuff?</tag>');
 
 %!test  # Check that 'tokenize' is ignored
 %! xml = '<!-- This is some XML --> <tag v="hello">some stuff<!-- sample tag--></tag>';
-%! t = regexprep(xml,'<[!?][^>]*>','','tokenize');
-%! assert(t,' <tag v="hello">some stuff</tag>')
+%! t = regexprep (xml, '<[!?][^>]*>', '', 'tokenize');
+%! assert (t, ' <tag v="hello">some stuff</tag>');
 
 ## Test capture replacement
 %!test
 %! data = "Bob Smith\nDavid Hollerith\nSam Jenkins";
 %! result = "Smith, Bob\nHollerith, David\nJenkins, Sam";
-%! t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2, $1');
-%! assert(t,result)
+%! t = regexprep (data, '(?m)^(\w+)\s+(\w+)$', '$2, $1');
+%! assert (t, result);
 
 ## Return the original if no match
-%!assert(regexprep('hello','world','earth'),'hello')
+%!assert (regexprep ('hello', 'world', 'earth'), 'hello')
+
+## Test emptymatch
+%!assert (regexprep ('World', '^', 'Hello '), 'World')
+%!assert (regexprep ('World', '^', 'Hello ', 'emptymatch'), 'Hello World')
 
 ## Test a general replacement
-%!assert(regexprep("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_"), "a_b_c_d_e_f_g");
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_"), "a_b_c_d_e_f_g")
 
 ## Make sure it works at the beginning and end
-%!assert(regexprep("a[b]c{d}e-f=g", "a", "_"), "_[b]c{d}e-f=g");
-%!assert(regexprep("a[b]c{d}e-f=g", "g", "_"), "a[b]c{d}e-f=_");
+%!assert (regexprep ("a[b]c{d}e-f=g", "a", "_"), "_[b]c{d}e-f=g")
+%!assert (regexprep ("a[b]c{d}e-f=g", "g", "_"), "a[b]c{d}e-f=_")
 
 ## Options
-%!assert(regexprep("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_", "once"), "a_b]c{d}e-f=g");
-%!assert(regexprep("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "ignorecase"), "a_b_c_d_e_f_g");
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Za-z0-9_]", "_", "once"), "a_b]c{d}e-f=g")
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "ignorecase"), "a_b_c_d_e_f_g")
 
 ## Option combinations
-%!assert(regexprep("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "once", "ignorecase"), "a_b]c{d}e-f=g");
+%!assert (regexprep ("a[b]c{d}e-f=g", "[^A-Z0-9_]", "_", "once", "ignorecase"), "a_b]c{d}e-f=g")
 
 ## End conditions on replacement
-%!assert(regexprep("abc","(b)",".$1"),"a.bc");
-%!assert(regexprep("abc","(b)","$1"),"abc");
-%!assert(regexprep("abc","(b)","$1."),"ab.c");
-%!assert(regexprep("abc","(b)","$1.."),"ab..c");
+%!assert (regexprep ("abc", "(b)", ".$1"), "a.bc");
+%!assert (regexprep ("abc", "(b)", "$1"), "abc");
+%!assert (regexprep ("abc", "(b)", "$1."), "ab.c");
+%!assert (regexprep ("abc", "(b)", "$1.."), "ab..c");
 
 ## Test cell array arguments
-%!assert(regexprep("abc",{"b","a"},"?"),"??c")
-%!assert(regexprep({"abc","cba"},"b","?"),{"a?c","c?a"})
-%!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"!?c","c?!"})
+%!assert (regexprep ("abc", {"b","a"}, "?"), "??c")
+%!assert (regexprep ({"abc","cba"}, "b", "?"), {"a?c","c?a"})
+%!assert (regexprep ({"abc","cba"}, {"b","a"}, {"?","!"}), {"!?c","c?!"})
 
 # Nasty lookbehind expression
-%!test
-%! assert(regexprep('x^(-1)+y(-1)+z(-1)=0','(?<=[a-z]+)\(\-[1-9]*\)','_minus1'),'x^(-1)+y_minus1+z_minus1=0')
+%!assert (regexprep ('x^(-1)+y(-1)+z(-1)=0', '(?<=[a-z]+)\(\-[1-9]*\)', '_minus1'),'x^(-1)+y_minus1+z_minus1=0')
 
+%!assert (regexprep ("\n", '\n', "X"), "X");
+%!assert (regexprep ("\n", "\n", "X"), "X");
 */

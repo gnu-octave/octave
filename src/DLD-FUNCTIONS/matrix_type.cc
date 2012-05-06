@@ -508,110 +508,114 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
 }
 
 /*
-
-## FIXME
+## FIXME:
 ## Disable tests for lower under-determined and upper over-determined
 ## matrices as this detection is disabled in MatrixType due to issues
 ## of non minimum norm solution being found.
 
-%!assert(matrix_type(speye(10,10)),"Diagonal");
-%!assert(matrix_type(speye(10,10)([2:10,1],:)),"Permuted Diagonal");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1;sparse(9,1);1]]),"Upper");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1;sparse(9,1);1]](:,[2,1,3:11])),"Permuted Upper");
-%!assert(matrix_type([speye(10,10),sparse(10,1);1,sparse(1,9),1]),"Lower");
-%!assert(matrix_type([speye(10,10),sparse(10,1);1,sparse(1,9),1]([2,1,3:11],:)),"Permuted Lower");
-%!test
-%! bnd=spparms("bandden");
-%! spparms("bandden",0.5);
-%! a = spdiags(rand(10,3)-0.5,[-1,0,1],10,10);
-%! assert(matrix_type(a),"Tridiagonal");
-%! assert(matrix_type(a'+a+2*speye(10)),"Tridiagonal Positive Definite");
-%! spparms("bandden",bnd);
-%!test
-%! bnd=spparms("bandden");
-%! spparms("bandden",0.5);
-%! a = spdiags(randn(10,4),[-2:1],10,10);
-%! assert(matrix_type(a),"Banded");
-%! assert(matrix_type(a'*a),"Banded Positive Definite");
-%! spparms("bandden",bnd);
-%!test
-%! a=[speye(10,10),[sparse(9,1);1];-1,sparse(1,9),1];
-%! assert(matrix_type(a),"Full");
-%! assert(matrix_type(a'*a),"Positive Definite");
-%!assert(matrix_type(speye(10,11)),"Diagonal");
-%!assert(matrix_type(speye(10,11)([2:10,1],:)),"Permuted Diagonal");
-%!assert(matrix_type(speye(11,10)),"Diagonal");
-%!assert(matrix_type(speye(11,10)([2:11,1],:)),"Permuted Diagonal");
-%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]]),"Upper");
-%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]](:,[2,1,3:12])),"Permuted Upper");
-%!assert(matrix_type([speye(11,9),[1;sparse(8,1);1;0]]),"Upper");
-%!assert(matrix_type([speye(11,9),[1;sparse(8,1);1;0]](:,[2,1,3:10])),"Permuted Upper");
-%#!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]),"Lower");
-%#!assert(matrix_type([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]([2,1,3:12],:)),"Permuted Lower");
-%!assert(matrix_type([speye(9,11);[1,sparse(1,8),1,0]]),"Lower");
-%!assert(matrix_type([speye(9,11);[1,sparse(1,8),1,0]]([2,1,3:10],:)),"Permuted Lower");
-%!assert(matrix_type(spdiags(randn(10,4),[-2:1],10,9)),"Rectangular")
-
-%!assert(matrix_type(1i*speye(10,10)),"Diagonal");
-%!assert(matrix_type(1i*speye(10,10)([2:10,1],:)),"Permuted Diagonal");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1i;sparse(9,1);1]]),"Upper");
-%!assert(matrix_type([[speye(10,10);sparse(1,10)],[1i;sparse(9,1);1]](:,[2,1,3:11])),"Permuted Upper");
-%!assert(matrix_type([speye(10,10),sparse(10,1);1i,sparse(1,9),1]),"Lower");
-%!assert(matrix_type([speye(10,10),sparse(10,1);1i,sparse(1,9),1]([2,1,3:11],:)),"Permuted Lower");
-%!test
-%! bnd=spparms("bandden");
-%! spparms("bandden",0.5);
-%! assert(matrix_type(spdiags(1i*randn(10,3),[-1,0,1],10,10)),"Tridiagonal");
-%! a = 1i*(rand(9,1)-0.5);a=[[a;0],ones(10,1),[0;-a]];
-%! assert(matrix_type(spdiags(a,[-1,0,1],10,10)),"Tridiagonal Positive Definite");
-%! spparms("bandden",bnd);
-%!test
-%! bnd=spparms("bandden");
-%! spparms("bandden",0.5);
-%! assert(matrix_type(spdiags(1i*randn(10,4),[-2:1],10,10)),"Banded");
-%! a = 1i*(rand(9,2)-0.5);a=[[a;[0,0]],ones(10,1),[[0;-a(:,2)],[0;0;-a(1:8,1)]]];
-%! assert(matrix_type(spdiags(a,[-2:2],10,10)),"Banded Positive Definite");
-%! spparms("bandden",bnd);
-%!test
-%! a=[speye(10,10),[sparse(9,1);1i];-1,sparse(1,9),1];
-%! assert(matrix_type(a),"Full");
-%! assert(matrix_type(a'*a),"Positive Definite");
-%!assert(matrix_type(1i*speye(10,11)),"Diagonal");
-%!assert(matrix_type(1i*speye(10,11)([2:10,1],:)),"Permuted Diagonal");
-%!assert(matrix_type(1i*speye(11,10)),"Diagonal");
-%!assert(matrix_type(1i*speye(11,10)([2:11,1],:)),"Permuted Diagonal");
-%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]]),"Upper");
-%#!assert(matrix_type([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]](:,[2,1,3:12])),"Permuted Upper");
-%!assert(matrix_type([speye(11,9),[1i;sparse(8,1);1i;0]]),"Upper");
-%!assert(matrix_type([speye(11,9),[1i;sparse(8,1);1i;0]](:,[2,1,3:10])),"Permuted Upper");
-%#!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]),"Lower");
-%#!assert(matrix_type([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]([2,1,3:12],:)),"Permuted Lower");
-%!assert(matrix_type([speye(9,11);[1i,sparse(1,8),1i,0]]),"Lower");
-%!assert(matrix_type([speye(9,11);[1i,sparse(1,8),1i,0]]([2,1,3:10],:)),"Permuted Lower");
-%!assert(matrix_type(1i*spdiags(randn(10,4),[-2:1],10,9)),"Rectangular")
+%!assert (matrix_type (speye (10,10)), "Diagonal")
+%!assert (matrix_type (speye (10,10)([2:10,1],:)), "Permuted Diagonal")
+%!assert (matrix_type ([[speye(10,10);sparse(1,10)],[1;sparse(9,1);1]]), "Upper")
+%!assert (matrix_type ([[speye(10,10);sparse(1,10)],[1;sparse(9,1);1]](:,[2,1,3:11])), "Permuted Upper")
+%!assert (matrix_type ([speye(10,10),sparse(10,1);1,sparse(1,9),1]), "Lower")
+%!assert (matrix_type ([speye(10,10),sparse(10,1);1,sparse(1,9),1]([2,1,3:11],:)), "Permuted Lower")
 
 %!test
-%! a = matrix_type(spdiags(randn(10,3),[-1,0,1],10,10),"Singular");
-%! assert(matrix_type(a),"Singular");
-
-%!assert(matrix_type(triu(ones(10,10))),"Upper");
-%!assert(matrix_type(triu(ones(10,10),-1)),"Full");
-%!assert(matrix_type(tril(ones(10,10))),"Lower");
-%!assert(matrix_type(tril(ones(10,10),1)),"Full");
-%!assert(matrix_type(10*eye(10,10) + ones(10,10)), "Positive Definite");
-%!assert(matrix_type(ones(11,10)),"Rectangular")
+%! bnd = spparms ("bandden");
+%! spparms ("bandden", 0.5);
+%! a = spdiags (rand (10,3)-0.5,[-1,0,1],10,10);
+%! assert (matrix_type (a), "Tridiagonal");
+%! assert (matrix_type (a'+a+2*speye (10)), "Tridiagonal Positive Definite");
+%! spparms ("bandden", bnd);
 %!test
-%! a = matrix_type(ones(10,10),"Singular");
-%! assert(matrix_type(a),"Singular");
-
-%!assert(matrix_type(triu(1i*ones(10,10))),"Upper");
-%!assert(matrix_type(triu(1i*ones(10,10),-1)),"Full");
-%!assert(matrix_type(tril(1i*ones(10,10))),"Lower");
-%!assert(matrix_type(tril(1i*ones(10,10),1)),"Full");
-%!assert(matrix_type(10*eye(10,10) + 1i*triu(ones(10,10),1) -1i*tril(ones(10,10),-1)), "Positive Definite");
-%!assert(matrix_type(ones(11,10)),"Rectangular")
+%! bnd=spparms ("bandden");
+%! spparms ("bandden", 0.5);
+%! a = spdiags (randn (10,4),[-2:1],10,10);
+%! assert (matrix_type (a), "Banded");
+%! assert (matrix_type (a'*a), "Banded Positive Definite");
+%! spparms ("bandden", bnd);
 %!test
-%! a = matrix_type(ones(10,10),"Singular");
-%! assert(matrix_type(a),"Singular");
+%! a = [speye(10,10),[sparse(9,1);1];-1,sparse(1,9),1];
+%! assert (matrix_type (a), "Full");
+%! assert (matrix_type (a'*a), "Positive Definite");
 
+%!assert (matrix_type (speye (10,11)), "Diagonal")
+%!assert (matrix_type (speye (10,11)([2:10,1],:)), "Permuted Diagonal")
+%!assert (matrix_type (speye (11,10)), "Diagonal")
+%!assert (matrix_type (speye (11,10)([2:11,1],:)), "Permuted Diagonal")
+%#!assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]]), "Upper")
+%#!assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]](:,[2,1,3:12])), "Permuted Upper")
+%!assert (matrix_type ([speye(11,9),[1;sparse(8,1);1;0]]), "Upper")
+%!assert (matrix_type ([speye(11,9),[1;sparse(8,1);1;0]](:,[2,1,3:10])), "Permuted Upper")
+%#!assert (matrix_type ([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]), "Lower")
+%#!assert (matrix_type ([speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]]([2,1,3:12],:)), "Permuted Lower")
+%!assert (matrix_type ([speye(9,11);[1,sparse(1,8),1,0]]), "Lower")
+%!assert (matrix_type ([speye(9,11);[1,sparse(1,8),1,0]]([2,1,3:10],:)), "Permuted Lower")
+%!assert (matrix_type (spdiags (randn (10,4),[-2:1],10,9)), "Rectangular")
+
+%!assert (matrix_type (1i*speye (10,10)), "Diagonal")
+%!assert (matrix_type (1i*speye (10,10)([2:10,1],:)), "Permuted Diagonal")
+%!assert (matrix_type ([[speye(10,10);sparse(1,10)],[1i;sparse(9,1);1]]), "Upper")
+%!assert (matrix_type ([[speye(10,10);sparse(1,10)],[1i;sparse(9,1);1]](:,[2,1,3:11])), "Permuted Upper")
+%!assert (matrix_type ([speye(10,10),sparse(10,1);1i,sparse(1,9),1]), "Lower")
+%!assert (matrix_type ([speye(10,10),sparse(10,1);1i,sparse(1,9),1]([2,1,3:11],:)), "Permuted Lower")
+
+%!test
+%! bnd = spparms ("bandden");
+%! spparms ("bandden", 0.5);
+%! assert (matrix_type (spdiags (1i*randn (10,3),[-1,0,1],10,10)), "Tridiagonal");
+%! a = 1i*(rand (9,1)-0.5);
+%! a = [[a;0],ones(10,1),[0;-a]];
+%! assert (matrix_type (spdiags (a,[-1,0,1],10,10)), "Tridiagonal Positive Definite");
+%! spparms ("bandden", bnd);
+%!test
+%! bnd = spparms ("bandden");
+%! spparms ("bandden", 0.5);
+%! assert (matrix_type (spdiags (1i*randn (10,4),[-2:1],10,10)), "Banded");
+%! a = 1i*(rand (9,2)-0.5);
+%! a = [[a;[0,0]],ones(10,1),[[0;-a(:,2)],[0;0;-a(1:8,1)]]];
+%! assert (matrix_type (spdiags (a,[-2:2],10,10)), "Banded Positive Definite");
+%! spparms ("bandden", bnd);
+%!test
+%! a = [speye(10,10),[sparse(9,1);1i];-1,sparse(1,9),1];
+%! assert (matrix_type (a), "Full");
+%! assert (matrix_type (a'*a), "Positive Definite");
+
+%!assert (matrix_type (1i*speye (10,11)), "Diagonal")
+%!assert (matrix_type (1i*speye (10,11)([2:10,1],:)), "Permuted Diagonal")
+%!assert (matrix_type (1i*speye (11,10)), "Diagonal")
+%!assert (matrix_type (1i*speye (11,10)([2:11,1],:)), "Permuted Diagonal")
+%#!assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]]), "Upper")
+%#!assert (matrix_type ([[speye(10,10);sparse(1,10)],[[1i,1i];sparse(9,2);[1i,1i]]](:,[2,1,3:12])), "Permuted Upper")
+%!assert (matrix_type ([speye(11,9),[1i;sparse(8,1);1i;0]]), "Upper")
+%!assert (matrix_type ([speye(11,9),[1i;sparse(8,1);1i;0]](:,[2,1,3:10])), "Permuted Upper")
+%#!assert (matrix_type ([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]), "Lower")
+%#!assert (matrix_type ([speye(10,10),sparse(10,1);[1i;1i],sparse(2,9),[1i;1i]]([2,1,3:12],:)), "Permuted Lower")
+%!assert (matrix_type ([speye(9,11);[1i,sparse(1,8),1i,0]]), "Lower")
+%!assert (matrix_type ([speye(9,11);[1i,sparse(1,8),1i,0]]([2,1,3:10],:)), "Permuted Lower")
+%!assert (matrix_type (1i*spdiags(randn(10,4),[-2:1],10,9)), "Rectangular")
+
+%!test
+%! a = matrix_type (spdiags (randn (10,3),[-1,0,1],10,10), "Singular");
+%! assert (matrix_type (a), "Singular");
+
+%!assert (matrix_type (triu (ones(10,10))), "Upper")
+%!assert (matrix_type (triu (ones(10,10),-1)), "Full")
+%!assert (matrix_type (tril (ones(10,10))), "Lower")
+%!assert (matrix_type (tril (ones(10,10),1)), "Full")
+%!assert (matrix_type (10*eye (10,10) + ones (10,10)), "Positive Definite")
+%!assert (matrix_type (ones (11,10)), "Rectangular")
+%!test
+%! a = matrix_type (ones (10,10), "Singular");
+%! assert (matrix_type (a), "Singular");
+
+%!assert (matrix_type (triu (1i*ones (10,10))), "Upper")
+%!assert (matrix_type (triu (1i*ones (10,10),-1)), "Full")
+%!assert (matrix_type (tril (1i*ones (10,10))), "Lower")
+%!assert (matrix_type (tril (1i*ones (10,10),1)), "Full")
+%!assert (matrix_type (10*eye (10,10) + 1i*triu (ones (10,10),1) -1i*tril (ones (10,10),-1)), "Positive Definite")
+%!assert (matrix_type (ones (11,10)), "Rectangular")
+%!test
+%! a = matrix_type (ones (10,10), "Singular");
+%! assert (matrix_type (a), "Singular");
 */

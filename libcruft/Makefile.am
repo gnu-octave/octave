@@ -31,6 +31,8 @@ octlib_LTLIBRARIES = libcruft.la
 
 libcruft_la_SOURCES =
 
+nodist_libcruft_la_SOURCES =
+
 libcruft_la_FFLAGS = $(F77_INTEGER_8_FLAG)
 
 libcruft_la_CPPFLAGS = \
@@ -98,5 +100,5 @@ ranlib.def: $(libranlib_la_SOURCES) mkf77def
 
 EXTRA_DIST += mkf77def.in
 
-DISTCLEANFILES = cruft.def ranlib.def
+DISTCLEANFILES = cruft.def ranlib.def $(nodist_libcruft_la_SOURCES)
 

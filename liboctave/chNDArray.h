@@ -96,6 +96,7 @@ public:
 
   charNDArray diag (octave_idx_type k = 0) const;
 
+  charNDArray diag (octave_idx_type m, octave_idx_type n) const;
 };
 
 NDS_CMP_OP_DECLS (charNDArray, char, OCTAVE_API)

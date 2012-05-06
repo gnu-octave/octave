@@ -315,3 +315,9 @@ Cell::diag (octave_idx_type k) const
 {
   return Array<octave_value>::diag (k);
 }
+
+Cell
+Cell::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return Array<octave_value>::diag (m, n);
+}

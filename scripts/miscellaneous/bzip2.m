@@ -31,7 +31,7 @@
 function entries = bzip2 (varargin)
 
   if (nargin == 1 || nargin == 2)
-    if nargout == 0
+    if (nargout == 0)
       __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});
     else
       entries = __xzip__ ("bzip2", "bz2", "bzip2 %s", varargin{:});

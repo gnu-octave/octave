@@ -98,6 +98,7 @@ plot_FCN_FILES = \
   plot/figure.m \
   plot/fill.m \
   plot/findall.m \
+  plot/findfigs.m \
   plot/findobj.m \
   plot/fplot.m \
   plot/gca.m \
@@ -162,6 +163,7 @@ plot_FCN_FILES = \
   plot/semilogyerr.m \
   plot/shading.m \
   plot/shg.m \
+  plot/shrinkfaces.m \
   plot/slice.m \
   plot/sombrero.m \
   plot/specular.m \
@@ -175,6 +177,7 @@ plot_FCN_FILES = \
   plot/surfc.m \
   plot/surfl.m \
   plot/surfnorm.m \
+  plot/tetramesh.m \
   plot/text.m \
   plot/title.m \
   plot/trimesh.m \

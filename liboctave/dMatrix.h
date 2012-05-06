@@ -316,6 +316,8 @@ public:
 
   Matrix diag (octave_idx_type k = 0) const;
 
+  DiagMatrix diag (octave_idx_type m, octave_idx_type n) const;
+
   ColumnVector row_min (void) const;
   ColumnVector row_max (void) const;
 

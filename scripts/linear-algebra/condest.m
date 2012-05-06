@@ -132,7 +132,7 @@ function [est, v] = condest (varargin)
     have_A = true;
 
     if (nargin > 1)
-      if (isscalar (varargin{2}))
+      if (! is_function_handle (varargin{2}))
         t = varargin{2};
         have_t = true;
       elseif (nargin > 2)

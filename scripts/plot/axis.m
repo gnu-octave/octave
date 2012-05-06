@@ -180,7 +180,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
       __do_tight_option__ (ca);
     elseif (strcmpi (ax, "square"))
       set (ca, "plotboxaspectratio", [1, 1, 1]);
-    elseif  (strcmp (ax, "equal"))
+    elseif (strcmp (ax, "equal"))
       if (strcmp (get (get (ca, "parent"), "__graphics_toolkit__"), "gnuplot"))
         ## FIXME - gnuplot applies the aspect ratio activepostionproperty.
         set (ca, "activepositionproperty", "position");
@@ -321,7 +321,7 @@ function lims = __get_tight_lims__ (ca, ax)
     scale = get (ca, strcat (ax, "scale"));
     if (! iscell (data))
       data = {data};
-    end
+    endif
     if (strcmp (scale, "log"))
       tmp = data;
       data = cellfun (@(x) x(x>0), tmp, "uniformoutput", false);
@@ -346,7 +346,7 @@ function __do_tight_option__ (ca)
   set (ca,
        "xlim", __get_tight_lims__ (ca, "x"),
        "ylim", __get_tight_lims__ (ca, "y"));
-  if __calc_dimensions__ (ca) > 2
+  if (__calc_dimensions__ (ca) > 2)
     set (ca, "zlim", __get_tight_lims__ (ca, "z"));
   endif
 

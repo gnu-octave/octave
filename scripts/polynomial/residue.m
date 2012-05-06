@@ -285,7 +285,7 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
     k = [];
   endif
 
-  if numel (e)
+  if (numel (e))
     indx = 1:numel(p);
   else
     [e, indx] = mpoles (p, toler, 0);
@@ -297,7 +297,7 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
 
   for n = indx
     pn = [1, -p(n)];
-    if n == 1
+    if (n == 1)
       pden = pn;
     else
       pden = conv (pden, pn);

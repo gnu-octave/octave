@@ -41,13 +41,15 @@
 ## delimiters.
 ## @end itemize
 ##
-## The optional input @var{n} specifes the number of times to use
-## @var{format} when parsing, i.e., the format repeat count.
+## The optional input @var{n} specifes the number of data lines to read; in
+## this sense it differs slightly from the format repeat count in strread.
 ##
 ## @seealso{strread, load, dlmread, fscanf, textscan}
 ## @end deftypefn
 
 function varargout = textread (filename, format = "%f", varargin)
+
+  BUFLENGTH = 4096;       # Read buffer to speed up processing @var{n}
 
   ## Check input
   if (nargin < 1)
@@ -56,6 +58,17 @@ function varargout = textread (filename, format = "%f", varargin)
 
   if (! ischar (filename) || ! ischar (format))
     error ("textread: FILENAME and FORMAT arguments must be strings");
+  endif
+
+  if (! isempty (varargin) && isnumeric (varargin{1}))
+    nlines = varargin{1};
+  else
+    nlines = Inf;
+  endif
+  if (nlines < 1)
+    printf ("textread: N = 0, no data read\n");
+    varargout = cell (1, nargout);
+    return
   endif
 
   ## Read file
@@ -71,28 +84,13 @@ function varargout = textread (filename, format = "%f", varargin)
     fskipl (fid, varargin{headerlines + 1});
     varargin(headerlines:headerlines+1) = [];
   endif
-  
-  if (! isempty (varargin) && isnumeric (varargin{1}))
-    nlines = varargin{1};
-  else
-    nlines = Inf;
-  endif
+  st_pos = ftell (fid);
 
-  if (isfinite (nlines) && (nlines >= 0))
-    str = tmp_str = "";
-    n = 0;
-    ## FIXME: Can this be done without slow loop?
-    while (ischar (tmp_str) && n++ <= nlines)
-      str = strcat (str, tmp_str);
-      tmp_str = fgets (fid);
-    endwhile
-  else
-    str = fread (fid, "char=>char").';
-  endif
-  fclose (fid);
-
-  if (isempty (str))
+  ## Read a first file chunk. Rest follows after endofline processing
+  [str, count] = fscanf (fid, "%c", BUFLENGTH);
+  if (isempty (str) || count < 1)
     warning ("textread: empty file");
+    varargout = cell (1, nargout);
     return;
   endif
 
@@ -103,8 +101,8 @@ function varargout = textread (filename, format = "%f", varargin)
       error ("textread: character value required for EndOfLine");
     endif
   else
-    ## Determine EOL from file.  Search for EOL candidates in first 3000 chars
-    eol_srch_len = min (length (str), 3000);
+    ## Determine EOL from file.  Search for EOL candidates in first BUFLENGTH chars
+    eol_srch_len = min (length (str), BUFLENGTH);
     ## First try DOS (CRLF)
     if (! isempty (strfind ("\r\n", str(1 : eol_srch_len))))
       eol_char = "\r\n";
@@ -116,12 +114,49 @@ function varargout = textread (filename, format = "%f", varargin)
       eol_char = "\n";
     endif
     ## Set up default endofline param value
-    varargin(end+1:end+2) = {'endofline', eol_char};
+    varargin(end+1:end+2) = {"endofline", eol_char};
   endif
-
+ 
+  ## Now that we know what EOL looks like, we can process format_repeat_count.
+  ## FIXME The below isn't ML-compatible: counts lines, not format string uses
+  if (isfinite (nlines) && (nlines > 0))
+    l_eol_char = length (eol_char);
+    eoi = findstr (str, eol_char);
+    n_eoi = length (eoi);
+    nblks = 0;
+    ## Avoid slow repeated str concatenation, first seek requested end of data
+    while (n_eoi < nlines && count == BUFLENGTH)
+      [nstr, count] = fscanf (fid, "%c", BUFLENGTH);
+      if (count > 0)
+        ## Watch out for multichar EOL being missed across buffer boundaries
+        if (l_eol_char > 1)
+          str = [str(end - length (eol_char) + 2 : end) nstr];
+        else
+          str = nstr;
+        endif
+        eoi = findstr (str, eol_char);
+        n_eoi += numel (eoi);
+        ++nblks;
+      endif
+    endwhile
+    ## Found EOL delimiting last requested line. Compute ptr (incl. EOL)
+    if (isempty (eoi))
+      printf ("textread: format repeat count specified but no endofline found\n");
+      eoi_pos = nblks * BUFLENGTH + count;
+    else
+      eoi_pos = (nblks * BUFLENGTH) + eoi(end + min (nlines, n_eoi) - n_eoi);
+    endif
+    fseek (fid, st_pos, "bof");
+    str = fscanf (fid, "%c", eoi_pos);
+  else
+    fseek (fid, st_pos, "bof");
+    str = fread(fid, "char=>char").';
+  endif
+  fclose (fid);
+ 
   ## Set up default whitespace param value if needed
-  if (isempty (find (strcmpi ('whitespace', varargin))))
-    varargin(end+1:end+2) = {'whitespace', " \b\t"};
+  if (isempty (find (strcmpi ("whitespace", varargin))))
+    varargin(end+1:end+2) = {"whitespace", " \b\t"};
   endif
 
   ## Call strread to make it do the real work

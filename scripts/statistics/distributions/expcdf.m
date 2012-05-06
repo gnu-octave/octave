@@ -59,10 +59,10 @@ function cdf = expcdf (x, lambda)
   cdf(k) = 1;
 
   k = (x > 0) & (x < Inf) & (lambda > 0);
-  if isscalar (lambda)
-    cdf(k) = 1 - exp (- x(k) / lambda);
+  if (isscalar (lambda))
+    cdf(k) = 1 - exp (-x(k) / lambda);
   else
-    cdf(k) = 1 - exp (- x(k) ./ lambda(k));
+    cdf(k) = 1 - exp (-x(k) ./ lambda(k));
   endif
 
 endfunction

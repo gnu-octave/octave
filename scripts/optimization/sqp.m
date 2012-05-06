@@ -697,8 +697,8 @@ function res = cf_ub_lb (x, lbidx, ubidx)
   if (isempty (__sqp_cifcn__))
     res = [x(lbidx,1)-__sqp_lb__; __sqp_ub__-x(ubidx,1)];
   else
-    res = [feval(__sqp_cifcn__,x); \
-           x(lbidx,1)-__sqp_lb__; __sqp_ub__-x(ubidx,1)];
+    res = [feval(__sqp_cifcn__,x); x(lbidx,1)-__sqp_lb__;
+           __sqp_ub__-x(ubidx,1)];
   endif
 
 endfunction

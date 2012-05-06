@@ -51,10 +51,10 @@ function group = cut (x, breaks)
   if (!isvector (x))
     error ("cut: X must be a vector");
   endif
-  if isscalar (breaks)
+  if (isscalar (breaks))
     breaks = linspace (min (x), max (x), breaks + 1);
     breaks(1) = breaks(1) - 1;
-  elseif isvector (breaks)
+  elseif (isvector (breaks))
     breaks = sort (breaks);
   else
     error ("cut: BREAKS must be a scalar or vector");
@@ -62,7 +62,7 @@ function group = cut (x, breaks)
 
   group = NaN (size (x));
   m = length (breaks);
-  if any (k = find ((x >= min (breaks)) & (x < max (breaks))))
+  if (any (k = find ((x >= min (breaks)) & (x < max (breaks)))))
     n = length (k);
     group(k) = sum ((ones (m, 1) * reshape (x(k), 1, n))
                     >= (reshape (breaks, m, 1) * ones (1, n)));

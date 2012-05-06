@@ -208,23 +208,23 @@ gammainc (@var{x}, @var{a}) @equiv{} 1 - gammainc (@var{x}, @var{a}, \"upper\")\
 }
 
 /*
-
 %!test
 %! a = [.5 .5 .5 .5 .5];
 %! x = [0 1 2 3 4];
-%! v1 = sqrt(pi)*erf(x)./gamma(a);
-%! v3 = gammainc(x.*x,a);
-%! assert(v1, v3, sqrt(eps));
+%! v1 = sqrt (pi)*erf (x)./gamma (a);
+%! v3 = gammainc (x.*x, a);
+%! assert (v1, v3, sqrt (eps));
 
-%!assert (gammainc(0:4,0.5,"upper"), 1-gammainc(0:4,0.5),1e-10)
+%!assert (gammainc (0:4,0.5, "upper"), 1-gammainc (0:4,0.5), 1e-10)
 
 %!test
 %! a = single ([.5 .5 .5 .5 .5]);
-%! x = single([0 1 2 3 4]);
-%! v1 = sqrt(pi('single'))*erf(x)./gamma(a);
-%! v3 = gammainc(x.*x,a);
-%! assert(v1, v3, sqrt(eps('single')));
+%! x = single ([0 1 2 3 4]);
+%! v1 = sqrt (pi ("single"))*erf (x)./gamma (a);
+%! v3 = gammainc (x.*x, a);
+%! assert (v1, v3, sqrt (eps ("single")));
 
-%!assert (gammainc(single(0:4),single(0.5),"upper"), single(1)-gammainc(single(0:4),single(0.5)),single(1e-7))
-
+%!assert (gammainc (single (0:4), single (0.5), "upper"), 
+%!        single (1)-gammainc (single (0:4), single (0.5)),
+%!        single (1e-7))
 */

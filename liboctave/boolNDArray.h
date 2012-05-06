@@ -103,6 +103,7 @@ public:
 
   boolNDArray diag (octave_idx_type k = 0) const;
 
+  boolNDArray diag (octave_idx_type m, octave_idx_type n) const;
 };
 
 NDND_BOOL_OP_DECLS (boolNDArray, boolNDArray, OCTAVE_API)

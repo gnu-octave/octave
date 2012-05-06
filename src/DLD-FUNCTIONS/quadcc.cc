@@ -2238,28 +2238,26 @@ Mathematical Software, Vol. 37, Issue 3, Article No. 3, 2010.\n\
 
 
 /*
+%!assert (quadcc (@sin, -pi, pi), 0, 1e-6)
+%!assert (quadcc (inline ("sin"),- pi, pi), 0, 1e-6)
+%!assert (quadcc ("sin", -pi, pi), 0, 1e-6)
 
-%!assert (quadcc(@sin,-pi,pi), 0, 1e-6)
-%!assert (quadcc(inline('sin'),-pi,pi), 0, 1e-6)
-%!assert (quadcc('sin',-pi,pi), 0, 1e-6)
+%!assert (quadcc (@sin, -pi, 0), -2, 1e-6)
+%!assert (quadcc (@sin, 0, pi), 2, 1e-6)
+%!assert (quadcc (@(x) 1./sqrt (x), 0, 1), 2, 1e-6)
+%!assert (quadcc (@(x) 1./(sqrt (x).*(x+1)), 0, Inf), pi, 1e-6)
 
-%!assert (quadcc(@sin,-pi,0), -2, 1e-6)
-%!assert (quadcc(@sin,0,pi), 2, 1e-6)
-%!assert (quadcc(@(x) 1./sqrt(x), 0, 1), 2, 1e-6)
-%!assert (quadcc(@(x) 1./(sqrt(x).*(x+1)), 0, Inf), pi, 1e-6)
-
-%!assert (quadcc (@(x) exp(-x .^ 2), -Inf, Inf), sqrt(pi), 1e-6)
-%!assert (quadcc (@(x) exp(-x .^ 2), -Inf, 0), sqrt(pi)/2, 1e-6)
+%!assert (quadcc (@(x) exp (-x .^ 2), -Inf, Inf), sqrt (pi), 1e-6)
+%!assert (quadcc (@(x) exp (-x .^ 2), -Inf, 0), sqrt (pi)/2, 1e-6)
 
 %% Test input validation
 %!error (quadcc ())
 %!error (quadcc (@sin))
 %!error (quadcc (@sin, 0))
-%!error (quadcc (@sin, ones(2), pi))
+%!error (quadcc (@sin, ones (2), pi))
 %!error (quadcc (@sin, -i, pi))
-%!error (quadcc (@sin, 0, ones(2)))
+%!error (quadcc (@sin, 0, ones (2)))
 %!error (quadcc (@sin, 0, i))
 %!error (quadcc (@sin, 0, pi, 0))
 %!error (quadcc (@sin, 0, pi, 1e-6, [ i ]))
-
 */

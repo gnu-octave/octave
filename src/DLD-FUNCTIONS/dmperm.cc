@@ -172,20 +172,19 @@ Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
 }
 
 /*
+%!testif HAVE_CXSPARSE
+%! n = 20;
+%! a = speye (n,n);
+%! a = a(randperm (n),:);
+%! assert (a(dmperm (a),:), speye (n));
 
 %!testif HAVE_CXSPARSE
-%! n=20;
-%! a=speye(n,n);a=a(randperm(n),:);
-%! assert(a(dmperm(a),:),speye(n))
-
-%!testif HAVE_CXSPARSE
-%! n=20;
-%! d=0.2;
-%! a=tril(sprandn(n,n,d),-1)+speye(n,n);
-%! a=a(randperm(n),randperm(n));
-%! [p,q,r,s]=dmperm(a);
-%! assert(tril(a(p,q),-1),sparse(n,n))
-
+%! n = 20;
+%! d = 0.2;
+%! a = tril (sprandn (n,n,d), -1) + speye (n,n);
+%! a = a(randperm (n), randperm (n));
+%! [p,q,r,s] = dmperm (a);
+%! assert (tril (a(p,q), -1), sparse (n, n));
 */
 
 DEFUN_DLD (sprank, args, nargout,
@@ -221,11 +220,10 @@ numerical rank of the matrix @var{S} is bounded by\n\
 }
 
 /*
-
-%!error(sprank(1,2));
 %!testif HAVE_CXSPARSE
-%! assert(sprank(speye(20)), 20)
+%! assert (sprank (speye (20)), 20)
 %!testif HAVE_CXSPARSE
-%! assert(sprank([1,0,2,0;2,0,4,0]),2)
+%! assert (sprank ([1,0,2,0;2,0,4,0]), 2)
 
+%!error sprank (1,2)
 */

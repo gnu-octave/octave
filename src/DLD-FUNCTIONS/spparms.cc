@@ -178,7 +178,6 @@ running time.\n\
 }
 
 /*
-
 %!test
 %! old_vals = spparms ();  # save state
 %! spparms ("defaults");
@@ -196,13 +195,14 @@ running time.\n\
 %! spparms (old_vals);     # restore state
 
 %% Test input validation
-%!error (spparms (1, 2, 3))
-%!error ([x, y, z] = spparms ())
-%!error (spparms ("UNKNOWN_KEY"))
-%!error (spparms ({1, 2, 3}))
-%!error (spparms (ones (14, 1)))
-%!error (spparms (1, 1))
-%!error (spparms ("ths_rel", "hello"))
-%!error (spparms ("UNKNOWN_KEY", 1))
-
+%!error <too many input arguments> spparms (1, 2, 3)
+%!error <too many output arguments> [x, y, z] = spparms ()
+%!error <KEY not recognized> spparms ("UNKNOWN_KEY")
+%!#error <input must be a string> spparms ({1, 2, 3})
+%!error spparms ({1, 2, 3})
+%!error <too many elements in vector VALS> spparms (ones (14, 1))
+%!error <first argument must be a string> spparms (1, 1)
+%!#error <second argument must be a real scalar> spparms ("ths_rel", "hello")
+%!error spparms ("ths_rel", "hello")
+%!error <KEY not found> spparms ("UNKNOWN_KEY", 1)
 */

@@ -316,6 +316,8 @@ public:
 
   FloatMatrix diag (octave_idx_type k = 0) const;
 
+  FloatDiagMatrix diag (octave_idx_type m, octave_idx_type n) const;
+
   FloatColumnVector row_min (void) const;
   FloatColumnVector row_max (void) const;
 

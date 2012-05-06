@@ -95,11 +95,13 @@ public:
 
     opts (void)
       : x_case_insensitive (false), x_dotexceptnewline (false),
-        x_freespacing (false), x_lineanchors (false), x_once (false) { }
+        x_emptymatch (false), x_freespacing (false), x_lineanchors (false),
+        x_once (false) { }
 
     opts (const opts& o)
       : x_case_insensitive (o.x_case_insensitive),
         x_dotexceptnewline (o.x_dotexceptnewline),
+        x_emptymatch (o.x_emptymatch),
         x_freespacing (o.x_freespacing),
         x_lineanchors (o.x_lineanchors),
         x_once (o.x_once)
@@ -111,6 +113,7 @@ public:
         {
           x_case_insensitive = o.x_case_insensitive;
           x_dotexceptnewline = o.x_dotexceptnewline;
+          x_emptymatch = o.x_emptymatch;
           x_freespacing = o.x_freespacing;
           x_lineanchors = o.x_lineanchors;
           x_once = o.x_once;
@@ -123,12 +126,14 @@ public:
 
     void case_insensitive (bool val) { x_case_insensitive = val; }
     void dotexceptnewline (bool val) { x_dotexceptnewline = val; }
+    void emptymatch (bool val) { x_emptymatch = val; }
     void freespacing (bool val) { x_freespacing = val; }
     void lineanchors (bool val) { x_lineanchors = val; }
     void once (bool val) { x_once = val; }
 
     bool case_insensitive (void) const { return x_case_insensitive; }
     bool dotexceptnewline (void) const { return x_dotexceptnewline; }
+    bool emptymatch (void) const { return x_emptymatch; }
     bool freespacing (void) const { return x_freespacing; }
     bool lineanchors (void) const { return x_lineanchors; }
     bool once (void) const { return x_once; }
@@ -137,6 +142,7 @@ public:
 
     bool x_case_insensitive;
     bool x_dotexceptnewline;
+    bool x_emptymatch;
     bool x_freespacing;
     bool x_lineanchors;
     bool x_once;

@@ -877,6 +877,12 @@ NDArray::diag (octave_idx_type k) const
   return MArray<double>::diag (k);
 }
 
+NDArray
+NDArray::diag (octave_idx_type m, octave_idx_type n) const
+{
+  return MArray<double>::diag (m, n);
+}
+
 // This contains no information on the array structure !!!
 std::ostream&
 operator << (std::ostream& os, const NDArray& a)

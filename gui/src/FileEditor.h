@@ -20,7 +20,7 @@
 
 #include "MainWindow.h"
 
-#include <QMdiSubWindow>
+#include <QWidget>
 #include <QToolBar>
 #include <QAction>
 #include <QMenuBar>
@@ -39,13 +39,13 @@ enum MARKER
     MARKER_BREAKPOINT
   };
 
-class FileEditorMdiSubWindow:public QMdiSubWindow
+class FileEditor : public QWidget
 {
 Q_OBJECT
 
 public:
-  FileEditorMdiSubWindow (QWidget * parent = 0);
-  ~FileEditorMdiSubWindow ();
+  FileEditor (QWidget * parent = 0);
+  ~FileEditor ();
   void loadFile (QString fileName);
   void initEditor (QTerminal *terminalView,
                    LexerOctaveGui *lexer,
@@ -59,13 +59,7 @@ public slots:
   void saveFile (QString fileName);
   void saveFileAs ();
 
-  void showToolTipNew ();
-  void showToolTipOpen ();
-  void showToolTipSave ();
-  void showToolTipSaveAs ();
-  void showToolTipUndo ();
-  void showToolTipRedo ();
-  void registerModified (bool modified);
+  void setModified (bool modified);
 
 protected:
   void closeEvent(QCloseEvent *event);

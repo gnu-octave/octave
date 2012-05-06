@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = qterminal qirc src
+SUBDIRS = qterminal src

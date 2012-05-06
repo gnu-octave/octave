@@ -121,12 +121,15 @@ QList < SymbolRecord > OctaveLink::symbolTable ()
   std::list < SymbolRecord >::iterator iterator;
   for (iterator = allVariables.begin (); iterator != allVariables.end ();
        iterator++)
-    m_symbolTableBuffer.append (iterator->dup());
+    {
+      SymbolRecord s = iterator->dup ();
+      m_symbolTableBuffer.append (s);
+    }
   return m_symbolTableBuffer;
 }
 
 void
-OctaveLink::updateHistoryModel ()
+OctaveLink::triggerUpdateHistoryModel ()
 {
   // Determine the client's (our) history length and the one of the server.
   int clientHistoryLength = m_historyModel->rowCount ();

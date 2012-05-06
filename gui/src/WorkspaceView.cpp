@@ -59,8 +59,10 @@ WorkspaceView::WorkspaceView (QWidget * parent) : QDockWidget
   m_variablesTreeWidget->setAlternatingRowColors (true);
   m_variablesTreeWidget->setAnimated (true);
 
-  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
-  connect (OctaveLink::instance(), SIGNAL (symbolTableChanged()), this, SLOT (fetchSymbolTable()));
+  connect (this, SIGNAL (visibilityChanged (bool)),
+           this, SLOT(handleVisibilityChanged (bool)));
+  connect (OctaveLink::instance(), SIGNAL (updateSymbolTable ()),
+           this, SLOT (fetchSymbolTable ()));
 }
 
 void
@@ -68,7 +70,7 @@ WorkspaceView::updateTreeEntry (QTreeWidgetItem * treeItem, SymbolRecord symbolR
 {
   treeItem->setData (0, 0, QString (symbolRecord.name ().c_str ()));
   treeItem->setData (1, 0,
-		     QString (symbolRecord.varval ().type_name ().c_str ()));
+             QString (symbolRecord.varval ().type_name ().c_str ()));
   treeItem->setData (2, 0,
 		     OctaveLink::octaveValueAsQString (symbolRecord.
 						       varval ()));

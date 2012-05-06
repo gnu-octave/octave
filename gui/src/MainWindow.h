@@ -18,6 +18,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+// Qt includes
 #include <QtGui/QMainWindow>
 #include <QThread>
 #include <QTabWidget>
@@ -25,32 +26,22 @@
 #include <QStatusBar>
 #include <QToolBar>
 #include <QQueue>
-#include <Qsci/qsciapis.h>
 #include <QMdiSubWindow>
 #include <QCloseEvent>
+
+// QScintilla includes
+#include <Qsci/qsciapis.h>
+#include "lexer/lexeroctavegui.h"
+
+// QTerminal includes
+#include "QTerminal.h"
+
+// Own includes
 #include "ResourceManager.h"
 #include "OctaveLink.h"
 #include "WorkspaceView.h"
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
-#include "BrowserWidget.h"
-#include "lexer/lexeroctavegui.h"
-#include "QTerminal.h"
-#include "QIRCWidget.h"
-
-class NonClosableMdiSubWindow : public QMdiSubWindow
-{
-  Q_OBJECT
-public:
-  explicit NonClosableMdiSubWindow (QWidget *parent = 0)
-    : QMdiSubWindow (parent) { }
-  virtual ~NonClosableMdiSubWindow () { }
-protected:
-  void closeEvent (QCloseEvent *closeEvent)
-  {
-    closeEvent->ignore ();
-  }
-};
 
 /**
   * \class MainWindow
@@ -85,23 +76,19 @@ signals:
   void settingsChanged ();
 
 public slots:
-  void handleOpenFileRequest (QString fileName);
+  void openExistingFile (QString fileName);
   void reportStatusMessage (QString statusMessage);
-  void openWebPage (QString url);
-  void openChat ();
   void handleSaveWorkspaceRequest ();
   void handleLoadWorkspaceRequest ();
   void handleClearWorkspaceRequest ();
   void handleCommandDoubleClicked (QString command);
-  void alignMdiWindows ();
-  void openEditor ();
-  void openEditorFile (QString fileName);
+  void newFile ();
+  void newEditorWindow (QString fileName);
   void openBugTrackerPage ();
   void openAgoraPage ();
   void openOctaveForgePage ();
   void processSettingsDialogRequest ();
   void showAboutOctave ();
-  void showAboutQt ();
   void updateTerminalFont ();
 
 protected:
@@ -112,15 +99,8 @@ protected:
 private:
   void construct ();
   void establishOctaveLink ();
-  QMdiArea *m_centralMdiArea;
 
-  // Mdi sub windows.
   QTerminal *m_terminalView;
-  BrowserWidget *m_documentationWidget;
-  QIRCWidget *m_ircWidget;
-
-  NonClosableMdiSubWindow *m_terminalViewSubWindow;
-  NonClosableMdiSubWindow *m_documentationWidgetSubWindow;
 
   // Dock widgets.
   WorkspaceView *m_workspaceView;

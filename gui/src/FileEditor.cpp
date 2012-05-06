@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FileEditorMdiSubWindow.h"
+#include "FileEditor.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>
@@ -25,18 +25,18 @@
 #include <QStyle>
 #include <QTextStream>
 
-FileEditorMdiSubWindow::FileEditorMdiSubWindow (QWidget * parent):QMdiSubWindow
-  (parent)
+FileEditor::FileEditor (QWidget * parent)
+    : QWidget (parent)
 {
   construct ();
 }
 
-FileEditorMdiSubWindow::~FileEditorMdiSubWindow ()
+FileEditor::~FileEditor ()
 {
 }
 
 void
-FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
+FileEditor::closeEvent(QCloseEvent *event)
 {
   if ( m_mainWindow->isCloseApplication() )
     {
@@ -54,7 +54,7 @@ FileEditorMdiSubWindow::closeEvent(QCloseEvent *event)
 }
 
 void
-FileEditorMdiSubWindow::handleMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
+FileEditor::handleMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
 {
   Q_UNUSED (state);
   if ( margin == 1 )  // marker margin
@@ -68,7 +68,7 @@ FileEditorMdiSubWindow::handleMarginClicked(int margin, int line, Qt::KeyboardMo
 }
 
 void
-FileEditorMdiSubWindow::newWindowTitle(bool modified)
+FileEditor::newWindowTitle(bool modified)
 {
   QString title(m_fileName);
   if ( !m_longTitle )
@@ -85,7 +85,7 @@ FileEditorMdiSubWindow::newWindowTitle(bool modified)
 }
 
 void
-FileEditorMdiSubWindow::handleCopyAvailable(bool enableCopy)
+FileEditor::handleCopyAvailable(bool enableCopy)
 {
   m_copyAction->setEnabled(enableCopy);
   m_cutAction->setEnabled(enableCopy);
@@ -93,7 +93,7 @@ FileEditorMdiSubWindow::handleCopyAvailable(bool enableCopy)
 
 
 void
-FileEditorMdiSubWindow::openFile ()
+FileEditor::openFile ()
 {
     if (checkFileModified ("Open File",QMessageBox::Cancel)==QMessageBox::Cancel)
       {
@@ -114,14 +114,14 @@ FileEditorMdiSubWindow::openFile ()
 }
 
 void
-FileEditorMdiSubWindow::loadFile (QString fileName)
+FileEditor::loadFile (QString fileName)
 {
   QFile file (fileName);
   if (!file.open (QFile::ReadOnly))
     {
       QMessageBox::warning (this, tr ("File Editor"),
-			    tr ("Cannot read file %1:\n%2.").arg (fileName).
-			    arg (file.errorString ()));
+        tr ("Cannot read file %1:\n%2.").arg (fileName).
+        arg (file.errorString ()));
       return;
     }
 
@@ -137,12 +137,13 @@ FileEditorMdiSubWindow::loadFile (QString fileName)
 }
 
 void
-FileEditorMdiSubWindow::newFile ()
+FileEditor::newFile ()
 {
     if (checkFileModified ("Create New File",QMessageBox::Cancel)==QMessageBox::Cancel)
       {
         return; // existing file not saved and creating new file canceled by user
       }
+
     m_fileName = UNNAMED_FILE;
     newWindowTitle (false); // window title (no modification)
     m_editor->setText ("");
@@ -150,7 +151,7 @@ FileEditorMdiSubWindow::newFile ()
 }
 
 int
-FileEditorMdiSubWindow::checkFileModified (QString msg, int cancelButton)
+FileEditor::checkFileModified (QString msg, int cancelButton)
 {
   int decision = QMessageBox::Yes;
   if (m_editor->isModified ())
@@ -182,13 +183,13 @@ FileEditorMdiSubWindow::checkFileModified (QString msg, int cancelButton)
 }
 
 void
-FileEditorMdiSubWindow::saveFile ()
+FileEditor::saveFile ()
 {
   saveFile(m_fileName);
 }
 
 void
-FileEditorMdiSubWindow::saveFile (QString saveFileName)
+FileEditor::saveFile (QString saveFileName)
 {
   // it is a new file with the name "<unnamed>" -> call saveFielAs
   if (saveFileName==UNNAMED_FILE || saveFileName.isEmpty ())
@@ -219,7 +220,7 @@ FileEditorMdiSubWindow::saveFile (QString saveFileName)
 }
 
 void
-FileEditorMdiSubWindow::saveFileAs ()
+FileEditor::saveFileAs ()
 {
   QString saveFileName(m_fileName);
   QFileDialog dlg(this);
@@ -247,7 +248,7 @@ FileEditorMdiSubWindow::saveFileAs ()
 
 // handle the run command
 void
-FileEditorMdiSubWindow::runFile ()
+FileEditor::runFile ()
 {
   if (m_editor->isModified ())
     saveFile(m_fileName);
@@ -258,17 +259,17 @@ FileEditorMdiSubWindow::runFile ()
 
 // (un)comment selected text
 void
-FileEditorMdiSubWindow::commentSelectedText ()
+FileEditor::commentSelectedText ()
 {
   doCommentSelectedText (true);
 }
 void
-FileEditorMdiSubWindow::uncommentSelectedText ()
+FileEditor::uncommentSelectedText ()
 {
   doCommentSelectedText (false);
 }
 void
-FileEditorMdiSubWindow::doCommentSelectedText (bool comment)
+FileEditor::doCommentSelectedText (bool comment)
 {
   if ( m_editor->hasSelectedText() )
     {
@@ -298,13 +299,13 @@ FileEditorMdiSubWindow::doCommentSelectedText (bool comment)
 
 // remove bookmarks
 void
-FileEditorMdiSubWindow::removeBookmark ()
+FileEditor::removeBookmark ()
 {
   m_editor->markerDeleteAll(MARKER_BOOKMARK);
 }
 // toggle bookmark
 void
-FileEditorMdiSubWindow::toggleBookmark ()
+FileEditor::toggleBookmark ()
 {
   int line,cur;
   m_editor->getCursorPosition(&line,&cur);
@@ -315,7 +316,7 @@ FileEditorMdiSubWindow::toggleBookmark ()
 }
 // goto next bookmark
 void
-FileEditorMdiSubWindow::nextBookmark ()
+FileEditor::nextBookmark ()
 {
   int line,cur,nextline;
   m_editor->getCursorPosition(&line,&cur);
@@ -326,7 +327,7 @@ FileEditorMdiSubWindow::nextBookmark ()
 }
 // goto previous bookmark
 void
-FileEditorMdiSubWindow::prevBookmark ()
+FileEditor::prevBookmark ()
 {
   int line,cur,prevline;
   m_editor->getCursorPosition(&line,&cur);
@@ -338,7 +339,7 @@ FileEditorMdiSubWindow::prevBookmark ()
 
 // function for setting the already existing lexer from MainWindow
 void
-FileEditorMdiSubWindow::initEditor (QTerminal* terminalView,
+FileEditor::initEditor (QTerminal* terminalView,
                                     LexerOctaveGui* lexer,
                                     MainWindow* mainWindow)
 {
@@ -348,56 +349,17 @@ FileEditorMdiSubWindow::initEditor (QTerminal* terminalView,
   m_mainWindow = mainWindow;  // get the MainWindow for chekcing state at subwindow close
 }
 
-// TODO: Do we still need tool tips in the status bar? Tool tips are now
-//       shown directly at the theme icons
 void
-FileEditorMdiSubWindow::showToolTipNew ()
-{
-  m_statusBar->showMessage ("Create a new file", 2000);
-}
-
-void
-FileEditorMdiSubWindow::showToolTipOpen ()
-{
-  m_statusBar->showMessage ("Open a file", 2000);
-}
-
-void
-FileEditorMdiSubWindow::showToolTipSave ()
-{
-  m_statusBar->showMessage ("Save the file", 2000);
-}
-
-void
-FileEditorMdiSubWindow::showToolTipSaveAs ()
-{
-  m_statusBar->showMessage ("Save the file as", 2000);
-}
-
-void
-FileEditorMdiSubWindow::showToolTipUndo ()
-{
-  m_statusBar->showMessage ("Revert previous changes", 2000);
-}
-
-void
-FileEditorMdiSubWindow::showToolTipRedo ()
-{
-  m_statusBar->showMessage ("Append previous changes", 2000);
-}
-
-void
-FileEditorMdiSubWindow::registerModified (bool modified)
+FileEditor::setModified (bool modified)
 {
   m_modified = modified;
 }
 
 void
-FileEditorMdiSubWindow::construct ()
+FileEditor::construct ()
 {
   QSettings *settings = ResourceManager::instance ()->settings ();
   QStyle *style = QApplication::style ();
-  setWidget (new QWidget ());
 
   m_menuBar = new QMenuBar (this);
   m_toolBar = new QToolBar (this);
@@ -449,9 +411,6 @@ FileEditorMdiSubWindow::construct ()
   // The Actions
 
   // Theme icons with QStyle icons as fallback
-  QAction *closeAction = new QAction (
-        QIcon::fromTheme("window-close",style->standardIcon (QStyle::SP_DialogCloseButton)),
-        tr("&Close File"), m_toolBar);
   QAction *newAction = new QAction (
         QIcon::fromTheme("document-new",style->standardIcon (QStyle::SP_FileIcon)),
         tr("&New File"), m_toolBar);
@@ -506,8 +465,6 @@ FileEditorMdiSubWindow::construct ()
   uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);
 
   // toolbar
-  m_toolBar->setIconSize(QSize(16,16)); // smaller icons (make configurable in user settings?)
-  m_toolBar->addAction (closeAction);
   m_toolBar->addAction (newAction);
   m_toolBar->addAction (openAction);
   m_toolBar->addAction (saveAction);
@@ -528,7 +485,6 @@ FileEditorMdiSubWindow::construct ()
   fileMenu->addAction(saveAction);
   fileMenu->addAction(saveAsAction);
   fileMenu->addSeparator();
-  fileMenu->addAction (closeAction);
   m_menuBar->addMenu(fileMenu);
   QMenu *editMenu = new QMenu(tr("&Edit"),m_menuBar);
   editMenu->addAction(undoAction);
@@ -557,9 +513,8 @@ FileEditorMdiSubWindow::construct ()
   layout->addWidget (m_editor);
   layout->addWidget (m_statusBar);
   layout->setMargin (2);
-  widget ()->setLayout (layout);
+  setLayout (layout);
 
-  connect (closeAction, SIGNAL (triggered()), this, SLOT (close()));
   connect (newAction, SIGNAL (triggered ()), this, SLOT (newFile ()));
   connect (openAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
   connect (undoAction, SIGNAL (triggered ()), m_editor, SLOT (undo ()));
@@ -577,14 +532,6 @@ FileEditorMdiSubWindow::construct ()
   connect (commentSelectedAction, SIGNAL (triggered ()), this, SLOT (commentSelectedText ()));
   connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (uncommentSelectedText ()));
 
-  // TODO: Do we still need tool tips in the status bar? Tool tips are now
-  //       shown directly at the theme icons
-  connect (newAction, SIGNAL (hovered ()), this, SLOT (showToolTipNew ()));
-  connect (openAction, SIGNAL (hovered ()), this, SLOT (showToolTipOpen ()));
-  connect (undoAction, SIGNAL (hovered ()), this, SLOT (showToolTipUndo ()));
-  connect (redoAction, SIGNAL (hovered ()), this, SLOT (showToolTipRedo ()));
-  connect (saveAction, SIGNAL (hovered ()), this, SLOT (showToolTipSave ()));
-  connect (saveAsAction, SIGNAL (hovered ()), this,SLOT (showToolTipSaveAs ()));
 
   // connect modified signal
   connect (m_editor, SIGNAL (modificationChanged(bool)), this, SLOT (newWindowTitle(bool)) );

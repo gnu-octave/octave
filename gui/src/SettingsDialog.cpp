@@ -56,33 +56,6 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->proxyPort->setText (settings->value ("proxyPort").toString ());
   ui->proxyUserName->setText (settings->value ("proxyUserName").toString ());
   ui->proxyPassword->setText (settings->value ("proxyPassword").toString ());
-
-  // Short cuts
-  QStringList headerLabels;
-  headerLabels << "Modifier" << "Key" << "Action";
-  ui->shortcutTableWidget->setColumnCount (3);
-  ui->shortcutTableWidget->setRowCount (10);
-  ui->shortcutTableWidget->horizontalHeader ()->setStretchLastSection (true);
-  ui->shortcutTableWidget->setHorizontalHeaderLabels (headerLabels);
-  ui->shortcutTableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-  ui->shortcutTableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-
-  /*
-  newAction->setShortcut(QKeySequence::New);
-  openAction->setShortcut(QKeySequence::Open);
-  saveAction->setShortcut(QKeySequence::Save);
-  saveAsAction->setShortcut(QKeySequence::SaveAs);
-  undoAction->setShortcut(QKeySequence::Undo);
-  redoAction->setShortcut(QKeySequence::Redo);
-  m_copyAction->setShortcut(QKeySequence::Copy);
-  m_cutAction->setShortcut(QKeySequence::Cut);
-  pasteAction->setShortcut(QKeySequence::Paste);
-  runAction->setShortcut(Qt::Key_F5);
-  nextBookmarkAction->setShortcut(Qt::Key_F2);
-  prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
-  toggleBookmarkAction->setShortcut(Qt::Key_F7);
-  commentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_R);
-  uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);*/
 }
 
 SettingsDialog::~SettingsDialog ()

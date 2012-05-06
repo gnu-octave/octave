@@ -31,7 +31,6 @@ TRANSLATIONS        += languages/generic.ts \
 win32-msvc*: include(msvc.pri)
 
 LIBS                += -lqscintilla2  \
-                       -L../qirc/libqirc/$$LIBDIR_SUFFIX -lqirc \
                        -L../qterminal/libqterminal/$$LIBDIR_SUFFIX -lqterminal \
                         $$system(mkoctfile -p LIBS) \
                         $$system(mkoctfile -p OCTAVE_LIBS)
@@ -41,7 +40,7 @@ mac {
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += . backend ../qterminal/libqterminal ../qirc/libqirc \
+INCLUDEPATH         += . backend ../qterminal/libqterminal \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -80,8 +79,6 @@ SOURCES +=\
     WorkspaceView.cpp \
     HistoryDockWidget.cpp \
     FilesDockWidget.cpp \
-    FileEditorMdiSubWindow.cpp \
-    BrowserWidget.cpp \
     SettingsDialog.cpp \
     OctaveGUI.cpp \
     ResourceManager.cpp \
@@ -90,7 +87,8 @@ SOURCES +=\
     backend/OctaveLink.cpp \
     backend/OctaveMainThread.cpp \
     backend/ReadlineAdapter.cpp \
-    WelcomeWizard.cpp
+    WelcomeWizard.cpp \
+    FileEditor.cpp
 
 HEADERS += \
     lexer/lexeroctavegui.h \
@@ -98,8 +96,6 @@ HEADERS += \
     WorkspaceView.h \
     HistoryDockWidget.h \
     FilesDockWidget.h \
-    FileEditorMdiSubWindow.h \
-    BrowserWidget.h \
     SettingsDialog.h \
     ResourceManager.h \
     CommandLineParser.h \
@@ -107,7 +103,8 @@ HEADERS += \
     backend/OctaveLink.h \
     backend/OctaveMainThread.h \
     backend/ReadlineAdapter.h \
-    WelcomeWizard.h
+    WelcomeWizard.h \
+    FileEditor.h
 
 FORMS += \
     SettingsDialog.ui \

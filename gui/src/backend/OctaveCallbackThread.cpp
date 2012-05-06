@@ -39,9 +39,9 @@ OctaveCallbackThread::run ()
   bool running = true;
   while (running)
     {
-      OctaveLink::instance ()->emitSymbolTableChanged();
-      OctaveLink::instance ()->updateHistoryModel ();
-      usleep (500000);
+      OctaveLink::instance ()->triggerUpdateSymbolTable ();
+      OctaveLink::instance ()->triggerUpdateHistoryModel ();
+      usleep (1000000);
 
       m_runningSemaphore->acquire ();
       running = m_running;

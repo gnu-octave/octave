@@ -111,12 +111,12 @@ public:
     */
   QList < SymbolRecord > copyCurrentSymbolTable ();
 
-  void updateHistoryModel ();
+  void triggerUpdateHistoryModel ();
   QStringListModel *historyModel ();
-  void emitSymbolTableChanged() { emit symbolTableChanged(); }
+  void triggerUpdateSymbolTable() { emit updateSymbolTable(); }
 
 signals:
-  void symbolTableChanged ();
+  void updateSymbolTable ();
 
 private:
   OctaveLink ();

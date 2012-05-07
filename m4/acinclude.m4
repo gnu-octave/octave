@@ -406,6 +406,25 @@ rm -f conftest.$ac_objext fintsize.$ac_objext
 ])
 dnl
 dnl
+dnl Adds warnings to final summary
+dnl
+AC_DEFUN([OCTAVE_CONFIGURE_WARNING], [
+  AC_MSG_WARN([$][$1])
+  m4_set_add([summary_warning_list], [$1])
+])
+dnl
+dnl
+dnl Prints final summary
+dnl
+AC_DEFUN([OCTAVE_CONFIGURE_WARNING_SUMMARY], [
+  m4_set_foreach([summary_warning_list], [elt], [
+    if test -n "[$]elt"; then
+      AC_MSG_WARN([$]elt)
+      warn_msg_printed=true
+    fi])
+])
+dnl
+dnl
 dnl
 dnl OCTAVE_CHECK_LIBRARY(LIBRARY, DOC-NAME, WARN-MSG, HEADER, FUNC,
 dnl                      LANG, DOC-STRING, EXTRA-CHECK)
@@ -446,6 +465,8 @@ AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
 
   [TEXINFO_]m4_toupper([$1])=
   warn_$1="$3"
+  m4_set_add([summary_warning_list], [warn_$1])
+
   if test -n "$m4_toupper([$1])_LIBS"; then
     octave_check_library_save_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$m4_toupper([$1])_CPPFLAGS $CPPFLAGS"

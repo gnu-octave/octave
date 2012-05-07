@@ -38,18 +38,23 @@ FileEditor::~FileEditor ()
 void
 FileEditor::closeEvent(QCloseEvent *event)
 {
-  if ( m_mainWindow->isCloseApplication() )
+  if ( m_mainWindow->closing () )
     {
       // close wohle application: save file or not if modified
-      checkFileModified ("Close Octave GUI",0); // no cancel possible
+      checkFileModified ("Closing Octave", 0); // no cancel possible
+      event->accept ();
     }
   else
     {
       // ignore close event if file is not saved and user cancels closing this window
-      if (checkFileModified ("Close File",QMessageBox::Cancel)==QMessageBox::Cancel)
-        event->ignore();
+      if (checkFileModified ("Close File",QMessageBox::Cancel) == QMessageBox::Cancel)
+        {
+          event->ignore ();
+        }
       else
-        event->accept();
+        {
+          event->accept();
+        }
     }
 }
 

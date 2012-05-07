@@ -55,40 +55,9 @@ MainWindow::newEditorWindow (QString fileName)
 {
   FileEditor *fileEditor = new FileEditor ();
   fileEditor->setAttribute (Qt::WA_DeleteOnClose);
-  // check whether lexer is already prepared and prepare it if not
-  if ( m_lexer == NULL )
-    {
-      // this has to be done only once, not for each editor
-      m_lexer = new LexerOctaveGui();
-      // Editor font (default or from settings)
-      QSettings *settings = ResourceManager::instance ()->settings ();
-      m_lexer->setDefaultFont( QFont(
-                  settings->value ("editor/fontName","Courier").toString (),
-                  settings->value ("editor/fontSize",10).toInt () ) );
-      // TODO: Autoindent not working as it should
-      m_lexer->setAutoIndentStyle(QsciScintilla::AiMaintain ||
-                                  QsciScintilla::AiOpening  ||
-                                  QsciScintilla::AiClosing);
-      // The API info that is used for auto completion
-      // TODO: Where to store a file with API info (raw or prepared?)?
-      // TODO: Also provide infos on octave-forge functions?
-      // TODO: Also provide infos on function parameters?
-      // By now, use the keywords-list from syntax highlighting
-       m_lexerAPI = new QsciAPIs(m_lexer);
-       QString keyword;
-       QStringList keywordList;
-       keyword     = m_lexer->keywords(1);  // get whole string with all keywords
-       keywordList = keyword.split(QRegExp("\\s+"));  // split into single strings
-       int i;
-       for ( i=0; i<keywordList.size(); i++ )
-         {
-           m_lexerAPI->add(keywordList.at(i));  // add single strings to the API
-         }
-       m_lexerAPI->prepare();           // prepare API info ... this make take some time
-    }
   fileEditor->initEditor(m_terminalView, m_lexer, this);   // init necessary informations for editor
 
-  if ( fileName.isEmpty() )
+  if (fileName.isEmpty ())
     fileEditor->newFile ();
   else
     fileEditor->loadFile (fileName);
@@ -205,7 +174,7 @@ MainWindow::closeEvent (QCloseEvent * closeEvent)
 {
   reportStatusMessage (tr ("Saving data and shutting down."));
   writeSettings ();
-  m_closeApplication = true;  // inform editor window that whole application is closed
+  m_closing = true;  // inform editor window that whole application is closed
   OctaveLink::instance ()->terminateOctave();
 
   QMainWindow::closeEvent (closeEvent);
@@ -232,7 +201,7 @@ void
 MainWindow::construct ()
 {
   // TODO: Check this.
-  m_closeApplication = false;   // flag for editor files when closed
+  m_closing = false;   // flag for editor files when closed
   setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Octave));
 
   // Setup dockable widgets and the status bar.
@@ -314,6 +283,38 @@ MainWindow::construct ()
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);
   addDockWidget (Qt::RightDockWidgetArea, m_filesDockWidget);
   setStatusBar (m_statusBar);
+
+  // this has to be done only once, not for each editor
+  m_lexer = new LexerOctaveGui ();
+
+  // Editor font (default or from settings)
+  QSettings *settings = ResourceManager::instance ()->settings ();
+  m_lexer->setDefaultFont (QFont (
+              settings->value ("editor/fontName","Courier").toString (),
+              settings->value ("editor/fontSize",10).toInt ()));
+
+  // TODO: Autoindent not working as it should
+  m_lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
+                               QsciScintilla::AiOpening  ||
+                               QsciScintilla::AiClosing);
+
+  // The API info that is used for auto completion
+  // TODO: Where to store a file with API info (raw or prepared?)?
+  // TODO: Also provide infos on octave-forge functions?
+  // TODO: Also provide infos on function parameters?
+  // By now, use the keywords-list from syntax highlighting
+   m_lexerAPI = new QsciAPIs (m_lexer);
+
+   QString keyword;
+   QStringList keywordList;
+   keyword = m_lexer->keywords (1);  // get whole string with all keywords
+   keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
+   int i;
+   for (i=0; i<keywordList.size(); i++)
+     {
+       m_lexerAPI->add (keywordList.at (i));  // add single strings to the API
+     }
+   m_lexerAPI->prepare ();           // prepare API info ... this make take some time
 
   readSettings ();
   updateTerminalFont();

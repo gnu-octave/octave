@@ -67,9 +67,9 @@ Q_OBJECT public:
   {
     return m_filesDockWidget;
   }
-  bool isCloseApplication ()
+  bool closing ()
   {
-    return m_closeApplication;
+    return m_closing;
   }
 
 signals:
@@ -115,7 +115,7 @@ private:
   QStatusBar *m_statusBar;
 
   // Flag for closing whole application
-  bool m_closeApplication;
+  bool m_closing;
 };
 
 #endif // MAINWINDOW_H

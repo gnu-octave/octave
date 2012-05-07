@@ -125,7 +125,7 @@ FilesDockWidget::itemDoubleClicked (const QModelIndex & index)
           QString editor = settings->value ("customFileEditor").toString ();
           QStringList arguments;
           arguments << fileInfo.filePath ();
-          QProcess::execute (editor, arguments);
+          QProcess::startDetached (editor, arguments);
         }
       else
         {

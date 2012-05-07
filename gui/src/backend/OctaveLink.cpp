@@ -122,7 +122,7 @@ QList < SymbolRecord > OctaveLink::symbolTable ()
   for (iterator = allVariables.begin (); iterator != allVariables.end ();
        iterator++)
     {
-      SymbolRecord s = iterator->dup ();
+      SymbolRecord s = iterator->dup (symbol_table::global_scope ());
       m_symbolTableBuffer.append (s);
     }
   return m_symbolTableBuffer;

@@ -44,6 +44,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "unwind-prot.h"
 
+//FIXME: This should be part of tree_evaluator
+#include "pt-jit.h"
+static tree_jit jiter;
+
 static tree_evaluator std_evaluator;
 
 tree_evaluator *current_evaluator = &std_evaluator;
@@ -679,6 +683,9 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 {
   tree_command *cmd = stmt.command ();
   tree_expression *expr = stmt.expression ();
+
+  if (! Vdebugging && ! Vecho_executing_commands && jiter.execute (stmt))
+    return;
 
   if (cmd || expr)
     {

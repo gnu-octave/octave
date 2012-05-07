@@ -711,6 +711,58 @@ OCTAVE_CHECK_LIBRARY(z, ZLIB,
   [ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files.],
   [zlib.h], [gzclearerr])
 
+### Check for the llvm library
+dnl
+dnl
+dnl llvm is odd and has its own pkg-config like script. We should probably check
+dnl for existance and 
+dnl
+
+LLVM_CONFIG=llvm-config
+LLVM_CPPFLAGS=
+LLVM_LDFLAGS=
+LLVM_LIBS=
+
+LLVM_LDFLAGS=`$LLVM_CONFIG --ldflags`
+LLVM_LIBS=`$LLVM_CONFIG --libs`
+LLVM_CPPFLAGS=`$LLVM_CONFIG --cxxflags`
+
+warn_llvm="LLVM library fails tests. JIT compilation will be disabled."
+
+save_CPPFLAGS="$CPPFLAGS"
+save_LIBS="$LIBS"
+save_LDFLAGS="$LDFLAGS"
+CPPFLAGS="$LLVM_CPPFLAGS $CPPFLAGS"
+LIBS="$LLVM_LIBS $LIBS"
+LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+AC_LANG_PUSH(C++)
+  AC_CHECK_HEADER([llvm/LLVMContext.h], [
+  AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
+    AC_TRY_LINK([#include <llvm/LLVMContext.h>], [llvm::getGlobalContext ()], [
+      AC_MSG_RESULT(yes)
+      warn_llvm=
+    ], [
+      AC_MSG_RESULT(no)
+    ])
+  ])
+AC_LANG_POP(C++)
+CPPFLAGS="$save_CPPFLAGS"
+LIBS="$save_LIBS"
+LDFLAGS="$save_LDFLAGS"
+
+if test -z "$warn_llvm"; then
+  AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available.])
+else
+  LLVM_CPPFLAGS=
+  LLVM_LDFLAGS=
+  LLVM_LIBS=
+fi
+AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available.])
+
+AC_SUBST(LLVM_CPPFLAGS)
+AC_SUBST(LLVM_LDFLAGS)
+AC_SUBST(LLVM_LIBS)
+
 ### Check for HDF5 library.
 
 save_CPPFLAGS="$CPPFLAGS"
@@ -2222,6 +2274,9 @@ Octave is now configured for $canonical_host_type
   Magick++ CPPFLAGS:           $MAGICK_CPPFLAGS
   Magick++ LDFLAGS:            $MAGICK_LDFLAGS
   Magick++ libraries:          $MAGICK_LIBS
+  LLVM CPPFLAGS:               $LLVM_CPPFLAGS
+  LLVM LDFLAGS:                $LLVM_LDFLAGS
+  LLVM Libraries:              $LLVM_LIBS
   HDF5 CPPFLAGS:               $HDF5_CPPFLAGS
   HDF5 LDFLAGS:                $HDF5_LDFLAGS
   HDF5 libraries:              $HDF5_LIBS
@@ -2389,6 +2444,11 @@ fi
 
 if test -n "$warn_zlib"; then
   AC_MSG_WARN([$warn_zlib])
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_llvm"; then
+  AC_MSG_WARN([$warn_llvm])
   warn_msg_printed=true
 fi
 

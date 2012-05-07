@@ -484,7 +484,7 @@ public:
       return symbol_record (rep->dup (new_scope));
     }
 
-    std::string name (void) const { return rep->name; }
+    const std::string& name (void) const { return rep->name; }
 
     octave_value
     find (const octave_value_list& args = octave_value_list ()) const;

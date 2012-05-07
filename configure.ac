@@ -193,7 +193,7 @@ AC_ARG_ENABLE(docs,
   [if test "$enableval" = no; then
      DOCDIR=
      warn_docs="building documentation disabled; make dist will fail"
-     AC_MSG_WARN([$warn_docs])
+     OCTAVE_CONFIGURE_WARNING([warn_docs])
    fi], [])
 AC_SUBST(DOCDIR)
 
@@ -217,12 +217,12 @@ if $USE_64_BIT_IDX_T; then
       AC_DEFINE(IDX_TYPE_LONG, 1, [Define to 1 if octave index type is long])
     else
       warn_64_bit="no suitable type found for octave_idx_type so disabling 64-bit features"
-      AC_MSG_WARN([$warn_64_bit])
+      OCTAVE_CONFIGURE_WARNING([warn_64_bit])
       USE_64_BIT_IDX_T=false
     fi
   else
     warn_64_bit="pointers are not 64-bits wide so disabling 64-bit features"
-    AC_MSG_WARN([$warn_64_bit])
+    OCTAVE_CONFIGURE_WARNING([warn_64_bit])
     USE_64_BIT_IDX_T=false
   fi
 fi
@@ -286,7 +286,7 @@ gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | \
 case "$gcc_version" in
   [12].*)
     warn_gcc_version="gcc version $gcc_version is likely to cause problems"
-    AC_MSG_WARN([$warn_gcc_version])
+    OCTAVE_CONFIGURE_WARNING([warn_gcc_version])
   ;;
 esac
 
@@ -834,13 +834,15 @@ AC_SUBST(MAGICK_LIBS)
 ## libraries needed for native graphics renderer
 
 warn_freetype=""
+native_graphics=true
 
 check_opengl=false
 AC_ARG_WITH([opengl],
   [AS_HELP_STRING([--without-opengl], [don't use OpenGL libraries, disable native graphics])],
   [if test "x$withval" = xno; then
      warn_opengl="--without-opengl specified.  Native graphics will be disabled."
-     AC_MSG_WARN([$warn_opengl])
+     OCTAVE_CONFIGURE_WARNING([warn_opengl])
+     native_graphics=false
    else
      check_opengl=true
    fi],
@@ -856,6 +858,8 @@ GRAPHICS_CFLAGS=
 if test -z "$OPENGL_LIBS"; then
   if $check_opengl; then
     warn_fltk_opengl="OpenGL libs (GL and GLU) not found. Native graphics will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
+    native_graphics=false
   fi
 fi
 
@@ -868,6 +872,11 @@ if test -n "$OPENGL_LIBS"; then
     XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],
     [warn_freetype="FreeType library not found.  Native graphics will be disabled."])
 
+  if test -n "$warn_freetype"; then
+    OCTAVE_CONFIGURE_WARNING([warn_freetype])
+    native_graphics=false
+  fi
+
   ## fontconfig library
 
   warn_fontconfig=""
@@ -879,6 +888,11 @@ if test -n "$OPENGL_LIBS"; then
       AC_DEFINE(HAVE_FONTCONFIG, 1, [Define to 1 if fontconfig is present])], [
       have_fontconfig=no
       warn_fontconfig="Fontconfig library not found.  Native graphics will be disabled."])
+  fi
+
+  if test -n "$warn_fontconfig"; then
+    OCTAVE_CONFIGURE_WARNING([warn_fontconfig])
+    native_graphics=false
   fi
 
   ## fltk (www.fltk.org)
@@ -916,6 +930,8 @@ if test -n "$OPENGL_LIBS"; then
 
   if test "$FLTK_CONFIG" = "no" ; then
     warn_fltk_config="FLTK config script not found.  Native graphics will be disabled."
+    OCTAVE_CONFIGURE_WARNING([warn_fltk_config])
+    native_graphics=false
   else
     FLTK_CFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --cflags`"
     FLTK_LDFLAGS="`$FLTK_CONFIG $fltkconf_args --use-gl --ldflags`"
@@ -942,6 +958,9 @@ if test -n "$OPENGL_LIBS"; then
     if test -z "$warn_fltk_opengl"; then
       GRAPHICS_CFLAGS="$FLTK_CFLAGS"
       GRAPHICS_LIBS="$FLTK_LDFLAGS"
+    else
+      OCTAVE_CONFIGURE_WARNING([warn_fltk_opengl])
+      native_graphics=false
     fi
     CFLAGS="$save_CFLAGS"
   fi
@@ -1906,7 +1925,7 @@ OCTAVE_PROG_TEXI2PDF
 if test -n "$DOCDIR" && test -n "$warn_gnuplot"; then
   DOCDIR=
   warn_docs="building documentation disabled because gnuplot was not found; make dist will fail"
-  AC_MSG_WARN([$warn_docs])
+  OCTAVE_CONFIGURE_WARNING([warn_docs])
 fi
 AM_CONDITIONAL([AMCOND_BUILD_DOCS], [test -n "$DOCDIR"])
 
@@ -2257,6 +2276,8 @@ Octave is now configured for $canonical_host_type
 
 warn_msg_printed=false
 
+OCTAVE_CONFIGURE_WARNING_SUMMARY
+
 if $ENABLE_DYNAMIC_LINKING; then
   if $SHARED_LIBS; then
     true
@@ -2265,156 +2286,6 @@ if $ENABLE_DYNAMIC_LINKING; then
     AC_MSG_WARN([Are you sure that is what you want to do?])
     warn_msg_printed=true
   fi
-fi
-
-if test -n "$gxx_only"; then
-  AC_MSG_WARN([$gxx_only])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_gcc_version"; then
-  AC_MSG_WARN([$warn_gcc_version])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_gcc_only"; then
-  AC_MSG_WARN([$warn_gcc_only])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_readline"; then
-  AC_MSG_WARN([$warn_readline])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_termlibs"; then
-  AC_MSG_WARN([$warn_termlibs])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_gperf"; then
-  AC_MSG_WARN([$warn_gperf])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_flex"; then
-  AC_MSG_WARN([$warn_flex])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_bison"; then
-  AC_MSG_WARN([$warn_bison])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_less"; then
-  AC_MSG_WARN([$warn_less])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_umfpack"; then
-  AC_MSG_WARN([$warn_umfpack])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_qrupdate"; then
-  AC_MSG_WARN([$warn_qrupdate])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_amd"; then
-  AC_MSG_WARN([$warn_amd])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_colamd"; then
-  AC_MSG_WARN([$warn_colamd])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_ccolamd"; then
-  AC_MSG_WARN([$warn_ccolamd])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_cholmod"; then
-  AC_MSG_WARN([$warn_cholmod])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_cxsparse"; then
-  AC_MSG_WARN([$warn_cxsparse])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_curl"; then
-  AC_MSG_WARN([$warn_curl])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_fftw"; then
-  AC_MSG_WARN([$warn_fftw])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_glpk"; then
-  AC_MSG_WARN([$warn_glpk])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_magick"; then
-  AC_MSG_WARN([$warn_magick])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_hdf5"; then
-  AC_MSG_WARN([$warn_hdf5])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_regex"; then
-  AC_MSG_WARN([$warn_regex])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_pcre"; then
-  AC_MSG_WARN([$warn_pcre])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_qhull"; then
-  AC_MSG_WARN([$warn_qhull])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_zlib"; then
-  AC_MSG_WARN([$warn_zlib])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_ghostscript"; then
-  AC_MSG_WARN([$warn_ghostscript])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_texi2dvi"; then
-  AC_MSG_WARN([$warn_texi2dvi])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_texi2pdf"; then
-  AC_MSG_WARN([$warn_texi2pdf])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_docs"; then
-  AC_MSG_WARN([$warn_docs])
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_64_bit"; then
-  AC_MSG_WARN([$warn_64_bit])
-  warn_msg_printed=true
 fi
 
 if $USE_64_BIT_IDX_T; then
@@ -2444,37 +2315,6 @@ if $USE_OPENMP; then
   AC_MSG_WARN([certainity that the results returned by Octave with])
   AC_MSG_WARN([this option enabled will be correct.])
   AC_MSG_WARN([])
-  warn_msg_printed=true
-fi
-
-native_graphics=true
-if test -n "$warn_opengl"; then
-  AC_MSG_WARN([$warn_opengl])
-  native_graphics=false
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_freetype"; then
-  AC_MSG_WARN([$warn_freetype])
-  native_graphics=false
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_fontconfig"; then
-  AC_MSG_WARN([$warn_fontconfig])
-  native_graphics=false
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_fltk_config"; then
-  AC_MSG_WARN([$warn_fltk_config])
-  native_graphics=false
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_fltk_opengl"; then
-  AC_MSG_WARN([$warn_fltk_opengl])
-  native_graphics=false
   warn_msg_printed=true
 fi
 

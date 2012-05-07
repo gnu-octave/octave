@@ -1143,11 +1143,11 @@ symbol_table::install_nestfunction (const std::string& name,
   // Stash the nest_parent for resolving variables after parsing is done.
   octave_function *fv = fcn.function_value();
 
-  symbol_table *fcn_table = get_instance (fv->scope());
+  symbol_table *fcn_table_loc = get_instance (fv->scope());
 
   symbol_table *parent_table = get_instance (parent_scope);
 
-  parent_table->add_nest_child (*fcn_table);
+  parent_table->add_nest_child (*fcn_table_loc);
 }
 
 octave_value

@@ -3044,7 +3044,7 @@ root_figure::properties::update_units (void)
 }
 
 Matrix
-root_figure::properties::get_boundingbox (bool internal, const Matrix&) const
+root_figure::properties::get_boundingbox (bool, const Matrix&) const
 {
   Matrix screen_size = screen_size_pixels ();
   Matrix pos = Matrix (1, 4, 0);

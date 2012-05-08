@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2009-2012 John W. Eaton
+Copyright (C) 2012 Max Brister <max@2bass.com>
 
 This file is part of Octave.
 

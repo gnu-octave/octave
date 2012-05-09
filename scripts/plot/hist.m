@@ -149,7 +149,7 @@ function [nn, xx] = hist (y, varargin)
   if (nargin > 2 && ! ischar (varargin{iarg}))
     ## Normalise the histogram.
     norm = varargin{iarg++};
-    freq = freq /  sum(! isnan (y)) * norm;
+    freq = freq / sum(! isnan (y)) * norm;
   endif
 
   if (nargout > 0)
@@ -179,6 +179,10 @@ endfunction
 %! assert (nn, [2,1,1]);
 %!test
 %! [nn,xx] = hist ([1 1 1 NaN NaN NaN 2 2 3],[1 2 3]);
+%! assert (xx, [1,2,3]);
+%! assert (nn, [3,2,1]);
+%!test
+%! [nn,xx] = hist ([1 1 1 NaN NaN NaN 2 2 3],[1 2 3], 6);
 %! assert (xx, [1,2,3]);
 %! assert (nn, [3,2,1]);
 %!test

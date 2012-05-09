@@ -358,7 +358,10 @@ value of @var{v}, not @var{v} itself.\n\
 \n\
 By default, the generator is initialized from @code{/dev/urandom} if it is\n\
 available, otherwise from CPU time, wall clock time, and the current\n\
-fraction of a second.\n\
+fraction of a second.  Note that this differs from @sc{Matlab}, which\n\
+always initializes the state to the same state at startup.  To obtain\n\
+behavior comparable to @sc{Matlab}, initialize with a deterministic state\n\
+vector in Octave's startup files (@pxref{Startup Files}).\n\
 \n\
 To compute the pseudo-random sequence, @code{rand} uses the Mersenne\n\
 Twister with a period of @math{2^{19937}-1} (See M. Matsumoto and\n\

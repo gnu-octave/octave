@@ -320,21 +320,19 @@ time/$(octave_dirstamp):
 	$(MKDIR_P) time
 	: > time/$(octave_dirstamp)
 
-## Program compiled only to help build documentation.  No installation needed.
-noinst_PROGRAMS = gethelp
+if AMCOND_BUILD_DOCS
 
-gethelp_SOURCES = gethelp.cc
-
-.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) mkdoc $(gethelp_SOURCES) Makefile
-	@$(MAKE) $(AM_MAKEFLAGS) gethelp$(BUILD_EXEEXT)
+.DOCSTRINGS: $(FCN_FILES) $(GEN_FCN_FILES) mkdoc.pl Makefile
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 	fi
 	@echo "creating .DOCSTRINGS from .m script files"
-	@$(srcdir)/mkdoc "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
+	@$(PERL) $(srcdir)/mkdoc.pl "$(srcdir)" $(FCN_FILES) -- $(GEN_FCN_FILES) > $@
 	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
+
+endif
 
 $(GEN_FCN_FILES) : %.m : %.in Makefile
 	@$(do_subst_config_vals)
@@ -421,7 +419,7 @@ EXTRA_DIST += \
   $(FCN_FILES_IN) \
   $(GEN_FCN_FILES) \
   DOCSTRINGS \
-  mkdoc \
+  mkdoc.pl \
   mk-pkg-add
 
 DISTCLEANFILES = \

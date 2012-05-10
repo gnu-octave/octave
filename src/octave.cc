@@ -150,7 +150,8 @@ static bool persist = false;
 #define NO_SITE_FILE_OPTION 11
 #define NO_WINDOW_SYSTEM_OPTION 12
 #define PERSIST_OPTION 13
-#define TRADITIONAL_OPTION 14
+#define TEXI_MACROS_FILE_OPTION 14
+#define TRADITIONAL_OPTION 15
 struct option long_opts[] =
   {
     { "braindead",        no_argument,       0, TRADITIONAL_OPTION },
@@ -176,6 +177,7 @@ struct option long_opts[] =
     { "persist",          no_argument,       0, PERSIST_OPTION },
     { "quiet",            no_argument,       0, 'q' },
     { "silent",           no_argument,       0, 'q' },
+    { "texi-macros-file", required_argument, 0, TEXI_MACROS_FILE_OPTION },
     { "traditional",      no_argument,       0, TRADITIONAL_OPTION },
     { "verbose",          no_argument,       0, 'V' },
     { "version",          no_argument,       0, 'v' },
@@ -534,6 +536,7 @@ Options:\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --silent, -q            Don't print message at startup.\n\
+  --texi-macros-file FILE Use doc cache file FILE.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
   --verbose, -V           Enable verbose output in some cases.\n\
   --version, -v           Print version number and exit.\n\
@@ -809,6 +812,11 @@ octave_main (int argc, char **argv, int embedded)
 
         case PERSIST_OPTION:
           persist = true;
+          break;
+
+        case TEXI_MACROS_FILE_OPTION:
+          if (optarg)
+            bind_internal_variable ("texi_macros_file", optarg);
           break;
 
         case TRADITIONAL_OPTION:

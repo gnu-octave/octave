@@ -38,17 +38,20 @@ for i = 1:nfiles
     error ("unable to open %s for reading", file);
   else
     tmp = fread (fid, Inf, "*char")';
-    ## Strip off header lines
-    [~, text{i}] = strtok (tmp, doc_delim);
+    if (isempty (strfind (tmp, doc_delim)))
+      ## No delimiter, copy verbatim (this is the case for the file
+      ## containing macro definitions, for example).
+      text{i} = tmp;
+    else
+      ## Strip off header lines
+      [~, text{i}] = strtok (tmp, doc_delim);
+    endif
   endif
 endfor
 text = [text{:}, doc_delim];
 
-## Modify Octave-specific macros before passing to makeinfo
+## Strip Texinfo markers and docstring separators.
 text = regexprep (text, "-\\*- texinfo -\\*-[ \t]*[\r\n]*", "");
-text = regexprep (text, '@seealso *\{([^}]*)\}', "See also: $1.");
-text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
-text = regexprep (text, '@xcode *\{([^}]*)\}', "$1");
 text = strrep (text, '@', "@@");
 
 ## Write data to temporary file for input to makeinfo

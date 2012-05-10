@@ -36,6 +36,11 @@ extern OCTINTERP_API std::string raw_help (const std::string&, bool&);
 // (--doc-cache-file file)
 extern std::string Vdoc_cache_file;
 
+// Name of the file containing local Texinfo macros that are prepended
+// to doc strings before processing.
+// (--texi-macros-file)
+extern std::string Vtexi_macros_file;
+
 // Name of the info file specified on command line.
 // (--info-file file)
 extern std::string Vinfo_file;

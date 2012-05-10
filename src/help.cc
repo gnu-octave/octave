@@ -71,6 +71,11 @@ along with Octave; see the file COPYING.  If not, see
 // (--doc-cache-file file)
 std::string Vdoc_cache_file;
 
+// Name of the file containing local Texinfo macros that are prepended
+// to doc strings before processing.
+// (--texi-macros-file)
+std::string Vtexi_macros_file;
+
 // Name of the info file specified on command line.
 // (--info-file file)
 std::string Vinfo_file;
@@ -1289,6 +1294,30 @@ variable value is restored when exiting the function.\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (doc_cache_file);
+}
+
+DEFUN (texi_macros_file, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn  {Built-in Function} {@var{val} =} texi_macros_file ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} texi_macros_file (@var{new_val})\n\
+@deftypefnx {Built-in Function} {} texi_macros_file (@var{new_val}, \"local\")\n\
+Query or set the internal variable that specifies the name of the\n\
+file containing Texinfo macros that are prepended to doc strings\n\
+before they are passed to makeinfo.  The default value is \n\
+@file{@var{octave-home}/share/octave/@var{version}/etc/macros.texi},\n\
+in which @var{octave-home} is the root directory of the Octave installation,\n\
+and @var{version} is the Octave version number.\n\
+The default value may be overridden by the environment variable\n\
+@w{@env{OCTAVE_TEXI_MACROS_FILE}}, or the command line argument\n\
+@samp{--texi-macros-file NAME}.\n\
+\n\
+When called from inside a function with the \"local\" option, the variable is\n\
+changed locally for the function and any subroutines it calls.  The original\n\
+variable value is restored when exiting the function.\n\
+@seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (texi_macros_file);
 }
 
 DEFUN (info_file, args, nargout,

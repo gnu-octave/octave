@@ -48,10 +48,10 @@ public:
   Cell (const octave_value_list& ovl);
 
   Cell (octave_idx_type n, octave_idx_type m,
-        const octave_value& val = resize_fill_value ())
+        const octave_value& val = Matrix ())
     : Array<octave_value> (dim_vector (n, m), val) { }
 
-  Cell (const dim_vector& dv, const octave_value& val = resize_fill_value ())
+  Cell (const dim_vector& dv, const octave_value& val = Matrix ())
     : Array<octave_value> (dv, val) { }
 
   Cell (const Array<octave_value>& c)
@@ -86,7 +86,7 @@ public:
   using Array<octave_value>::assign;
 
   void assign (const octave_value_list& idx, const Cell& rhs,
-               const octave_value& fill_val = resize_fill_value ());
+               const octave_value& fill_val = Matrix ());
 
   Cell reshape (const dim_vector& new_dims) const
     { return Array<octave_value>::reshape (new_dims); }
@@ -110,7 +110,11 @@ public:
   bool any_element_is_nan (void) const { return false; }
   bool is_true (void) const { return false; }
 
-  static octave_value resize_fill_value (void) { return Matrix (); }
+  octave_value resize_fill_value (void) const
+  {
+    static Matrix rfv;
+    return rfv;
+  }
 
   Cell diag (octave_idx_type k = 0) const;
 

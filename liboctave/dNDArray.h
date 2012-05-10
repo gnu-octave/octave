@@ -150,8 +150,6 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const NDArray& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, NDArray& a);
 
-  static double resize_fill_value (void) { return 0; }
-
   NDArray diag (octave_idx_type k = 0) const;
 
   NDArray diag (octave_idx_type m, octave_idx_type n) const;

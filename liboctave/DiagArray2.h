@@ -150,8 +150,11 @@ public:
   T dgxelem (octave_idx_type i) const
     { return Array<T>::xelem (i); }
 
-  void resize (octave_idx_type n, octave_idx_type m,
-               const T& rfv = Array<T>::resize_fill_value ());
+  void resize (octave_idx_type n, octave_idx_type m, const T& rfv);
+  void resize (octave_idx_type n, octave_idx_type m)
+  {
+    resize (n, m, Array<T>::resize_fill_value ());
+  }
 
   DiagArray2<T> transpose (void) const;
   DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;

@@ -134,8 +134,7 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatComplexColumnVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatComplexColumnVector& a);
 
-  void resize (octave_idx_type n,
-               const FloatComplex& rfv = Array<FloatComplex>::resize_fill_value ())
+  void resize (octave_idx_type n, const FloatComplex& rfv = FloatComplex (0))
   {
     Array<FloatComplex>::resize (dim_vector (n, 1), rfv);
   }

@@ -86,8 +86,7 @@ public:
 
   charMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
 
-  void resize (octave_idx_type nr, octave_idx_type nc,
-               char rfv = resize_fill_value ())
+  void resize (octave_idx_type nr, octave_idx_type nc, char rfv = 0)
   {
     Array<char>::resize (dim_vector (nr, nc), rfv);
   }
@@ -103,9 +102,6 @@ public:
   friend std::ostream& operator << (std::ostream& os, const Matrix& a);
   friend std::istream& operator >> (std::istream& is, Matrix& a);
 #endif
-
-  static char resize_fill_value (void) { return '\0'; }
-
 };
 
 MS_CMP_OP_DECLS (charMatrix, char, OCTAVE_API)

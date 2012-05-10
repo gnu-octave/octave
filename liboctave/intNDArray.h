@@ -115,9 +115,6 @@ public:
 
   static octave_idx_type compute_index (Array<octave_idx_type>& ra_idx,
                             const dim_vector& dimensions);
-
-  static T resize_fill_value (void) { return 0; }
-
 };
 
 // i/o

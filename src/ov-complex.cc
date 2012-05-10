@@ -225,7 +225,7 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
 {
   if (fill)
     {
-      ComplexNDArray retval (dv, ComplexNDArray::resize_fill_value ());
+      ComplexNDArray retval (dv, Complex (0));
 
       if (dv.numel ())
         retval(0) = scalar;

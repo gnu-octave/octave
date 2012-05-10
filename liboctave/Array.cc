@@ -884,7 +884,8 @@ Array<T>::index (const Array<idx_vector>& ia) const
 // The default fill value.  Override if you want a different one.
 
 template <class T>
-const T& Array<T>::resize_fill_value ()
+T
+Array<T>::resize_fill_value (void) const
 {
   static T zero = T ();
   return zero;

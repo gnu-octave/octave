@@ -210,7 +210,7 @@ octave_float_complex::resize (const dim_vector& dv, bool fill) const
 {
   if (fill)
     {
-      FloatComplexNDArray retval (dv, FloatComplexNDArray::resize_fill_value ());
+      FloatComplexNDArray retval (dv, FloatComplex (0));
 
       if (dv.numel ())
         retval(0) = scalar;

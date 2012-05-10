@@ -5477,7 +5477,7 @@ DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x \\ y}} are equivalent.\n\
+This function and @w{@xcode{x @xbackslashchar{} y}} are equivalent.\n\
 @seealso{mrdivide, ldivide}\n\
 @end deftypefn")
 {
@@ -5594,7 +5594,7 @@ DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x .\\ y}} are equivalent.\n\
+This function and @w{@xcode{x .@xbackslashchar{} y}} are equivalent.\n\
 @seealso{rdivide, mldivide}\n\
 @end deftypefn")
 {

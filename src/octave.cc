@@ -536,7 +536,7 @@ Options:\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --silent, -q            Don't print message at startup.\n\
-  --texi-macros-file FILE Use doc cache file FILE.\n\
+  --texi-macros-file FILE Use Texinfo macros in FILE for makeinfo command.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
   --verbose, -V           Enable verbose output in some cases.\n\
   --version, -v           Print version number and exit.\n\

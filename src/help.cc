@@ -1302,7 +1302,7 @@ DEFUN (texi_macros_file, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} texi_macros_file (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} texi_macros_file (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the\n\
-file containing Texinfo macros that are prepended to doc strings\n\
+file containing Texinfo macros that are prepended to documentation strings\n\
 before they are passed to makeinfo.  The default value is \n\
 @file{@var{octave-home}/share/octave/@var{version}/etc/macros.texi},\n\
 in which @var{octave-home} is the root directory of the Octave installation,\n\
@@ -1314,7 +1314,7 @@ The default value may be overridden by the environment variable\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{lookfor, info_program, doc, help, makeinfo_program}\n\
+@seealso{makeinfo_program}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (texi_macros_file);
@@ -1378,7 +1378,7 @@ Texinfo markup commands.  The default value is @code{makeinfo}.\n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\
 variable value is restored when exiting the function.\n\
-@seealso{info_file, info_program, doc, help}\n\
+@seealso{texi_macros_file, info_file, info_program, doc, help}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (makeinfo_program);

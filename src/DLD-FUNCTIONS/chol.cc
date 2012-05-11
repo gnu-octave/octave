@@ -129,9 +129,9 @@ $ L L^T = A $.\n\
 \n\
 @end ifnottex\n\
 \n\
-For full matrices, if the \"lower\" flag is set only the lower triangular part\n\
-of the matrix is used for the factorization, otherwise the upper triangular\n\
-part is used.\n\
+For full matrices, if the \"lower\" flag is set only the lower triangular\n\
+part of the matrix is used for the factorization, otherwise the upper\n\
+triangular part is used.\n\
 \n\
 In general the lower triangular factorization is significantly faster for\n\
 sparse matrices.\n\
@@ -623,6 +623,7 @@ DEFUN_DLD (cholupdate, args, nargout,
 Update or downdate a Cholesky@tie{}factorization.  Given an upper triangular\n\
 matrix @var{R} and a column vector @var{u}, attempt to determine another\n\
 upper triangular matrix @var{R1} such that\n\
+\n\
 @itemize @bullet\n\
 @item\n\
 @var{R1}'*@var{R1} = @var{R}'*@var{R} + @var{u}*@var{u}'\n\
@@ -634,6 +635,7 @@ if @var{op} is \"-\"\n\
 @end itemize\n\
 \n\
 If @var{op} is \"-\", @var{info} is set to\n\
+\n\
 @itemize\n\
 @item 0 if the downdate was successful,\n\
 \n\
@@ -833,6 +835,7 @@ triangular, return the Cholesky@tie{}factorization of\n\
 @var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and\n\
 @w{p = [1:j-1,j+1:n+1]}.  @w{u(j)} should be positive.\n\
 On return, @var{info} is set to\n\
+\n\
 @itemize\n\
 @item 0 if the insertion was successful,\n\
 \n\

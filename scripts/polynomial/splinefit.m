@@ -17,18 +17,18 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
-## Fits a piecewise cubic spline with breaks (knots) @var{breaks} to the
+## @deftypefn {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{breaks})
+## Fit a piecewise cubic spline with breaks (knots) @var{breaks} to the
 ## noisy data, @var{x} and @var{y}.  @var{x} is a vector, and @var{y}
-## a vector or ND array.  If @var{y} is an ND array, then @var{x}(j)
-## is matched to @var{y}(:,...,:,j).
+## a vector or N-D array.  If @var{y} is an N-D array, then @var{x}(j)
+## is matched to @var{y}(:,@dots{},:,j).
 ##
-## The fitted spline is returned as a piece-wise polynomial, @var{pp}, and
+## The fitted spline is returned as a piecewise polynomial, @var{pp}, and
 ## may be evaluated using @code{ppval}.
 ##
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@var{x}, @var{y}, @var{p})
 ## @var{p} is a positive integer defining the number of intervals along @var{x},
-## and @var{p}+1 is the number of breaks. The number of points in each interval
+## and @var{p}+1 is the number of breaks.  The number of points in each interval
 ## differ by no more than 1.
 ##
 ## @deftypefnx {Function File} {@var{pp} =} splinefit (@dots{}, "periodic", @var{periodic})
@@ -39,7 +39,7 @@
 ##
 ## The optional property @var{periodic} is a logical value which specifies
 ## whether a periodic boundary condition is applied to the spline.  The
-## length of the period  is @code{max(@var{breaks})-min(@var{breaks})}.
+## length of the period is @code{max(@var{breaks})-min(@var{breaks})}.
 ## The default value is @code{false}.
 ##
 ## The optional property @var{robust} is a logical value which specifies
@@ -65,12 +65,14 @@
 ## @table @asis
 ## @item "xc"
 ## Vector of the x-locations of the constraints.
+##
 ## @item "yc"
 ## Constaining values at the locations, @var{xc}.
 ## The default is an array of zeros.
+##
 ## @item "cc"
 ## Coefficients (matrix).  The default is an array of ones.  The number of
-## rows is limited to the order of the piece-wise polynomials, @var{order}.
+## rows is limited to the order of the piecewise polynomials, @var{order}.
 ## @end table
 ##
 ## Constraints are linear combinations of derivatives of order 0 to

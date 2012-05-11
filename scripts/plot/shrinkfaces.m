@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} shrinkfaces (@var{p}, @var{sf})
+## @deftypefn  {Function File} {} shrinkfaces (@var{p}, @var{sf})
 ## @deftypefnx {Function File} {@var{nfv} =} shrinkfaces (@var{p}, @var{sf})
 ## @deftypefnx {Function File} {@var{nfv} =} shrinkfaces (@var{fv}, @var{sf})
 ## @deftypefnx {Function File} {@var{nfv} =} shrinkfaces (@var{f}, @var{v}, @var{sf})
@@ -40,7 +40,7 @@
 ## Performing the shrinking on faces which are not convex can lead to
 ## undesired results.
 ##
-## For example
+## For example,
 ##
 ## @example
 ## @group

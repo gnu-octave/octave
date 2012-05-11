@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} tetramesh (@var{T}, @var{X})
-## @deftypefnx {Function File} tetramesh (@var{T}, @var{X}, @var{C})
-## @deftypefnx {Function File} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
+## @deftypefn  {Function File} {} tetramesh (@var{T}, @var{X})
+## @deftypefnx {Function File} {} tetramesh (@var{T}, @var{X}, @var{C})
+## @deftypefnx {Function File} {} tetramesh (@dots{}, @var{property}, @var{val}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} tetramesh (@dots{})
 ##
 ## Display the tetrahedrons defined in the m-by-4 matrix @var{T}

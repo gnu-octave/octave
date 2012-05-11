@@ -272,16 +272,11 @@ dim_vector::redim (int n) const
     {
       dim_vector retval = alloc (n);
 
-      int pad = 0;
       for (int i = 0; i < n_dims; i++)
-        {
-          retval.rep[i] = rep[i];
-          if (rep[i] != 0)
-            pad = 1;
-        }
+        retval.rep[i] = rep[i];
 
       for (int i = n_dims; i < n; i++)
-        retval.rep[i] = pad;
+        retval.rep[i] = 1;
 
       return retval;
     }

@@ -2149,6 +2149,8 @@ A(1)\n\
 %!  assert (fieldnames (s), keys');
 
 %!assert (cell2struct ({1; 2}, {"a"; "b"}), struct ("a", 1, "b", 2));
+
+%!assert (cell2struct ({}, {"f"}, 3), struct ("f", {}));
 */
 
 

@@ -67,7 +67,7 @@
 ## Vector of the x-locations of the constraints.
 ##
 ## @item "yc"
-## Constaining values at the locations, @var{xc}.
+## Constraining values at the locations, @var{xc}.
 ## The default is an array of zeros.
 ##
 ## @item "cc"

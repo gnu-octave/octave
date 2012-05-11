@@ -41,7 +41,7 @@
 ## delimiters.
 ## @end itemize
 ##
-## The optional input @var{n} specifes the number of data lines to read; in
+## The optional input @var{n} specifies the number of data lines to read; in
 ## this sense it differs slightly from the format repeat count in strread.
 ##
 ## @seealso{strread, load, dlmread, fscanf, textscan}

@@ -53,9 +53,9 @@
 ## @end itemize
 ##
 ## When reading from a character string, optional input argument @var{n}
-## specifes the number of times @var{format} should be used (i.e., to limit
+## specifies the number of times @var{format} should be used (i.e., to limit
 ## the amount of data read).
-## When reading fro file, @var{n} specifes the number of data lines to read;
+## When reading fro file, @var{n} specifies the number of data lines to read;
 ## in this sense it differs slightly from the format repeat count in strread.
 ##
 ## The output @var{C} is a cell array whose length is given by the number

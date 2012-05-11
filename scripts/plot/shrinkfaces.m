@@ -57,7 +57,7 @@
 ## @end example
 ##
 ## @noindent
-## draws a triangulated 3/4 circle and the corresponding shrinked
+## draws a triangulated 3/4 circle and the corresponding shrunken
 ## version.
 ## @seealso{patch}
 ## @end deftypefn

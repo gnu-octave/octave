@@ -863,6 +863,7 @@ strcmp
 stringanchors
 strncmp
 strncmpi
+strread
 struct
 structs
 subarrays

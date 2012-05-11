@@ -1165,16 +1165,21 @@ void
 Array<T>::assign (const idx_vector& i, const idx_vector& j,
                   const Array<T>& rhs, const T& rfv)
 {
+  bool initial_dims_all_zero = dimensions.all_zero ();
+
   // Get RHS extents, discarding singletons.
   dim_vector rhdv = rhs.dims ();
+
   // Get LHS extents, allowing Fortran indexing in the second dim.
   dim_vector dv = dimensions.redim (2);
+
   // Check for out-of-bounds and form resizing dimensions.
   dim_vector rdv;
+
   // In the special when all dimensions are zero, colons are allowed
   // to inquire the shape of RHS.  The rules are more obscure, so we
   // solve that elsewhere.
-  if (dv.all_zero ())
+  if (initial_dims_all_zero)
     rdv = zero_dims_inquire (i, j, rhdv);
   else
     {
@@ -1268,6 +1273,8 @@ Array<T>::assign (const Array<idx_vector>& ia,
     assign (ia(0), ia(1), rhs, rfv);
   else if (ial > 0)
     {
+      bool initial_dims_all_zero = dimensions.all_zero ();
+
       // Get RHS extents, discarding singletons.
       dim_vector rhdv = rhs.dims ();
 
@@ -1280,7 +1287,7 @@ Array<T>::assign (const Array<idx_vector>& ia,
       // In the special when all dimensions are zero, colons are
       // allowed to inquire the shape of RHS.  The rules are more
       // obscure, so we solve that elsewhere.
-      if (dv.all_zero ())
+      if (initial_dims_all_zero)
         rdv = zero_dims_inquire (ia, rhdv);
       else
         {

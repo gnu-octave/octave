@@ -82,16 +82,6 @@ DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
 
 // A two-dimensional array with diagonal elements only.
 
-template <typename T>
-void
-DiagArray2<T>::check_idx (octave_idx_type r, octave_idx_type c) const
-{
-  if (r < 0 || r >= dim1 ())
-    gripe_index_out_of_range (2, 1, r+1, dim1 ());
-  if (c < 0 || c >= dim2 ())
-    gripe_index_out_of_range (2, 2, c+1, dim2 ());
-}
-
 template <class T>
 void
 DiagArray2<T>::resize (octave_idx_type r, octave_idx_type c,
@@ -120,4 +110,25 @@ DiagArray2<T>::array_value (void) const
     result.xelem (i, i) = dgelem (i);
 
   return result;
+}
+
+template <typename T>
+bool
+DiagArray2<T>::check_idx (octave_idx_type r, octave_idx_type c) const
+{
+  bool ok = true;
+
+  if (r < 0 || r >= dim1 ())
+    {
+      gripe_index_out_of_range (2, 1, r+1, dim1 ());
+      ok = false;
+    }
+
+  if (c < 0 || c >= dim2 ())
+    {
+      gripe_index_out_of_range (2, 2, c+1, dim2 ());
+      ok = false;
+    }
+
+  return ok;
 }

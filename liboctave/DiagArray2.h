@@ -119,22 +119,33 @@ public:
   T& dgelem (octave_idx_type i)
     { return Array<T>::elem (i); }
 
-  void check_idx (octave_idx_type r, octave_idx_type c) const;
+  T checkelem (octave_idx_type r, octave_idx_type c) const
+    {
+      return check_idx (r, c) ? elem (r, c) : T (0);
+    }
 
   T operator () (octave_idx_type r, octave_idx_type c) const
     {
 #if defined (BOUNDS_CHECKING)
-      check_idx (r, c);
-#endif
+      checkelem (r, c);
+#else
       return elem (r, c);
+#endif
+    }
+
+  T& checkelem (octave_idx_type r, octave_idx_type c)
+    {
+      static T zero (0);
+      return check_idx (r, c) ? elem (r, c) : zero;
     }
 
   T& operator () (octave_idx_type r, octave_idx_type c)
     {
 #if defined (BOUNDS_CHECKING)
-      check_idx (r, c);
-#endif
+      return checkelem (r, c);
+#else
       return elem (r, c);
+#endif
     }
 
   // No checking.
@@ -166,6 +177,10 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const
     { Array<T>::print_info (os, prefix); }
+
+private:
+
+  bool check_idx (octave_idx_type r, octave_idx_type c) const;
 };
 
 #endif

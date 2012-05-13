@@ -389,6 +389,8 @@ found.
 
 @DOCSTRING(makeinfo_program)
 
+@DOCSTRING(texi_macros_file)
+
 @DOCSTRING(doc_cache_file)
 
 @DOCSTRING(suppress_verbose_help_message)

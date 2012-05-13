@@ -79,7 +79,7 @@ octave_float_scalar::resize (const dim_vector& dv, bool fill) const
 {
   if (fill)
     {
-      FloatNDArray retval (dv, NDArray::resize_fill_value());
+      FloatNDArray retval (dv, 0);
 
       if (dv.numel ())
         retval(0) = scalar;

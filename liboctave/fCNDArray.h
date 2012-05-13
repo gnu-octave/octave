@@ -135,8 +135,6 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatComplexNDArray& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatComplexNDArray& a);
 
-  static FloatComplex resize_fill_value (void) { return FloatComplex (0.0, 0.0); }
-
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (float& max_val, float& min_val) const;
 

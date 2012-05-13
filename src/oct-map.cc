@@ -557,7 +557,7 @@ octave_map::resize (const dim_vector& dv, bool fill)
       for (octave_idx_type i = 0; i < nf; i++)
         {
           if (fill)
-            xvals[i].resize (dv, Cell::resize_fill_value ());
+            xvals[i].resize (dv, Matrix ());
           else
             xvals[i].resize (dv);
         }
@@ -1160,7 +1160,7 @@ octave_map::assign (const octave_value_list& idx, const std::string& k,
       for (octave_idx_type i = 0; i < nf; i++)
         {
           if (&xvals[i] != &ref)
-            xvals[i].resize (dimensions, Cell::resize_fill_value ());
+            xvals[i].resize (dimensions, Matrix ());
         }
 
       optimize_dimensions ();
@@ -1489,7 +1489,7 @@ Octave_map::resize (const dim_vector& dv, bool fill)
               Cell tmp = contents(p);
 
               if (fill)
-                tmp.resize (dv, Cell::resize_fill_value ());
+                tmp.resize (dv, Matrix ());
               else
                 tmp.resize (dv);
 
@@ -1669,7 +1669,7 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
       if (tmp_dims != dimensions)
         {
           for (iterator p = begin (); p != end (); p++)
-            contents(p).resize (tmp_dims, Cell::resize_fill_value ());
+            contents(p).resize (tmp_dims, Matrix ());
 
           dimensions = tmp_dims;
         }

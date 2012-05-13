@@ -112,8 +112,7 @@ public:
   friend std::ostream& operator << (std::ostream& os, const ComplexRowVector& a);
   friend std::istream& operator >> (std::istream& is, ComplexRowVector& a);
 
-  void resize (octave_idx_type n,
-               const Complex& rfv = Array<Complex>::resize_fill_value ())
+  void resize (octave_idx_type n, const Complex& rfv = Complex (0))
   {
     Array<Complex>::resize (dim_vector (1, n), rfv);
   }

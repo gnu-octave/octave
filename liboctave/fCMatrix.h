@@ -157,7 +157,7 @@ public:
   FloatComplexColumnVector column (octave_idx_type i) const;
 
   void resize (octave_idx_type nr, octave_idx_type nc,
-               const FloatComplex& rfv = resize_fill_value ())
+               const FloatComplex& rfv = FloatComplex (0))
   {
     MArray<FloatComplex>::resize (dim_vector (nr, nc), rfv);
   }
@@ -383,9 +383,6 @@ public:
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatComplexMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatComplexMatrix& a);
-
-  static FloatComplex resize_fill_value (void) { return FloatComplex (0.0, 0.0); }
-
 };
 
 extern OCTAVE_API FloatComplexMatrix conj (const FloatComplexMatrix& a);

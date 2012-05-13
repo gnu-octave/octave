@@ -97,7 +97,7 @@ Cell::Cell (const Array<std::string>& sa)
 // SV as possible.
 
 Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
-  : Array<octave_value> (dv, resize_fill_value ())
+  : Array<octave_value> (dv, Matrix ())
 {
   octave_idx_type n = sv.length ();
 
@@ -173,8 +173,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
         idx_vector i = idx_arg(0).index_vector ();
 
         if (! error_state)
-          retval = Array<octave_value>::index (i, resize_ok,
-                                               resize_fill_value ());
+          retval = Array<octave_value>::index (i, resize_ok, Matrix ());
       }
       break;
 
@@ -187,8 +186,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
             idx_vector j = idx_arg(1).index_vector ();
 
             if (! error_state)
-              retval = Array<octave_value>::index (i, j, resize_ok,
-                                                    resize_fill_value ());
+              retval = Array<octave_value>::index (i, j, resize_ok, Matrix ());
           }
       }
       break;
@@ -206,8 +204,7 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
           }
 
         if (!error_state)
-          retval = Array<octave_value>::index (iv, resize_ok,
-                                                resize_fill_value ());
+          retval = Array<octave_value>::index (iv, resize_ok, Matrix ());
       }
       break;
     }

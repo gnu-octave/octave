@@ -342,6 +342,9 @@ man1ext = @man1ext@
 # The full path to the default doc cache file.
 doc_cache_file = @doc_cache_file@
 
+# The full path to the default texi macros file.
+texi_macros_file_file = @texi_macros_file@
+
 # Where to install and expect the info files describing Octave..
 infodir = @infodir@
 
@@ -635,6 +638,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
   -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
+  -e "s|%OCTAVE_TEXI_MACROS_FILE%|\"${texi_macros_file}\"|" \
   -e "s|%OCTAVE_VERSION%|\"${version}\"|"
 $(simple_move_if_change_rule)
 endef

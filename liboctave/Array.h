@@ -450,46 +450,69 @@ public:
 
   Array<T> index (const Array<idx_vector>& ia) const;
 
-  static const T& resize_fill_value ();
+  virtual T resize_fill_value (void) const;
 
   // Resizing (with fill).
 
-  void resize1 (octave_idx_type n, const T& rfv = resize_fill_value ());
+  void resize1 (octave_idx_type n, const T& rfv);
+  void resize1 (octave_idx_type n) { resize1 (n, resize_fill_value ()); }
 
-  void resize (octave_idx_type n) GCC_ATTR_DEPRECATED
-    { resize1 (n); }
+  void resize (octave_idx_type n) GCC_ATTR_DEPRECATED { resize1 (n); }
 
-  void resize (octave_idx_type nr, octave_idx_type nc,
-               const T& rfv = resize_fill_value ()) GCC_ATTR_DEPRECATED
+  void resize (octave_idx_type nr, octave_idx_type nc, const T& rfv) GCC_ATTR_DEPRECATED
   {
     resize2 (nr, nc, rfv);
   }
 
-  void resize (const dim_vector& dv, const T& rfv = resize_fill_value ());
+  void resize (octave_idx_type nr, octave_idx_type nc) GCC_ATTR_DEPRECATED
+  {
+    resize2 (nr, nc, resize_fill_value ());
+  }
+
+  void resize (const dim_vector& dv, const T& rfv);
+  void resize (const dim_vector& dv) { resize (dv, resize_fill_value ()); }
 
   // Indexing with possible resizing and fill
   // FIXME -- this is really a corner case, that should better be
   // handled directly in liboctinterp.
 
-  Array<T> index (const idx_vector& i, bool resize_ok,
-                  const T& rfv = resize_fill_value ()) const;
+  Array<T> index (const idx_vector& i, bool resize_ok, const T& rfv) const;
+  Array<T> index (const idx_vector& i, bool resize_ok) const
+  {
+    return index (i, resize_ok, resize_fill_value ());
+  }
 
-  Array<T> index (const idx_vector& i, const idx_vector& j,
-                  bool resize_ok, const T& rfv = resize_fill_value ()) const;
+  Array<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok, const T& rfv) const;
+  Array<T> index (const idx_vector& i, const idx_vector& j, bool resize_ok) const
+  {
+    return index (i, j, resize_ok, resize_fill_value ());
+  }
 
-  Array<T> index (const Array<idx_vector>& ia,
-                  bool resize_ok, const T& rfv = resize_fill_value ()) const;
+  Array<T> index (const Array<idx_vector>& ia, bool resize_ok, const T& rfv) const;
+  Array<T> index (const Array<idx_vector>& ia, bool resize_ok) const
+  {
+    return index (ia, resize_ok, resize_fill_value ());
+  }
 
   // Indexed assignment (always with resize & fill).
 
-  void assign (const idx_vector& i, const Array<T>& rhs,
-               const T& rfv = resize_fill_value ());
+  void assign (const idx_vector& i, const Array<T>& rhs, const T& rfv);
+  void assign (const idx_vector& i, const Array<T>& rhs)
+  {
+    assign (i, rhs, resize_fill_value ());
+  }
 
-  void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs,
-               const T& rfv = resize_fill_value ());
+  void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs, const T& rfv);
+  void assign (const idx_vector& i, const idx_vector& j, const Array<T>& rhs)
+  {
+    assign (i, j, rhs, resize_fill_value ());
+  }
 
-  void assign (const Array<idx_vector>& ia, const Array<T>& rhs,
-               const T& rfv = resize_fill_value ());
+  void assign (const Array<idx_vector>& ia, const Array<T>& rhs, const T& rfv);
+  void assign (const Array<idx_vector>& ia, const Array<T>& rhs)
+  {
+    assign (ia, rhs, resize_fill_value ());
+  }
 
   // Deleting elements.
 
@@ -672,8 +695,11 @@ public:
 
 private:
 
-  void resize2 (octave_idx_type nr, octave_idx_type nc,
-                const T& rfv = resize_fill_value ());
+  void resize2 (octave_idx_type nr, octave_idx_type nc, const T& rfv);
+  void resize2 (octave_idx_type nr, octave_idx_type nc)                
+  {
+    resize2 (nr, nc, resize_fill_value ());
+  }
 
   static void instantiation_guard ();
 };

@@ -126,8 +126,7 @@ public:
 
   FloatColumnVector column (octave_idx_type i) const;
 
-  void resize (octave_idx_type nr, octave_idx_type nc,
-               float rfv = resize_fill_value ())
+  void resize (octave_idx_type nr, octave_idx_type nc, float rfv = 0)
   {
     MArray<float>::resize (dim_vector (nr, nc), rfv);
   }
@@ -334,9 +333,6 @@ public:
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatMatrix& a);
-
-  static float resize_fill_value (void) { return 0; }
-
 };
 
 // Publish externally used friend functions.

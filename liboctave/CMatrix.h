@@ -152,7 +152,7 @@ public:
   ComplexColumnVector column (octave_idx_type i) const;
 
   void resize (octave_idx_type nr, octave_idx_type nc,
-               const Complex& rfv = resize_fill_value ())
+               const Complex& rfv = Complex (0))
   {
     MArray<Complex>::resize (dim_vector (nr, nc), rfv);
   }
@@ -378,9 +378,6 @@ public:
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexMatrix& a);
-
-  static Complex resize_fill_value (void) { return Complex (0.0, 0.0); }
-
 };
 
 extern OCTAVE_API ComplexMatrix conj (const ComplexMatrix& a);

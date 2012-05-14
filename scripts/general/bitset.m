@@ -54,7 +54,7 @@ function A = bitset (A, n, val)
   elseif (isinteger (A))
     Bmax = intmax (cl);
     ## FIXME: Better way to get number of bits than regexping?
-    Amax = str2num (nthargout (4, @regexp, cl, "\d{1,2}"){1});
+    Amax = str2num (nthargout (4, @regexp, cl, '\d{1,2}'){1});
   else
     error ("bitset: invalid class %s", cl);
   endif

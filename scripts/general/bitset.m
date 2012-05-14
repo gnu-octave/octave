@@ -1,4 +1,5 @@
 ## Copyright (C) 2004-2012 David Bateman
+## Copyright (C) 2012 Jordi Gutiérrez Hermoso
 ##
 ## This file is part of Octave.
 ##
@@ -21,7 +22,8 @@
 ## @deftypefnx {Function File} {@var{C} =} bitset (@var{A}, @var{n}, @var{val})
 ## Set or reset bit(s) @var{n} of unsigned integers in @var{A}.
 ## @var{val} = 0 resets and @var{val} = 1 sets the bits.
-## The lowest significant bit is: @var{n} = 1
+## The lowest significant bit is: @var{n} = 1. All variables must be the
+## same size or scalars.
 ##
 ## @example
 ## @group
@@ -32,64 +34,53 @@
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
 ## @end deftypefn
 
-## Liberally based on the version by Kai Habel from octave-forge
-
-function C = bitset (A, n, val)
+function A = bitset (A, n, val)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
+  sz = size (A);
+
   if (nargin == 2)
-    val = 1;
+    val = true (sz);
   endif
 
-  if (isa (A, "double"))
-    Bmax = bitmax;
-    Amax = log2 (Bmax) + 1;
-    _conv = @double;
+  cl = class (A);
+
+  if (isfloat (A) && isreal (A))
+    Bmax = bitmax (cl);
+    Amax = log2 (Bmax);
+  elseif (isinteger (A))
+    Bmax = intmax (cl);
+    ## FIXME: Better way to get number of bits than regexping?
+    Amax = str2num (nthargout (4, @regexp, cl, "\d{1,2}"){1});
   else
-    if (isa (A, "uint8"))
-      Amax = 8;
-      _conv = @uint8;
-    elseif (isa (A, "uint16"))
-      Amax = 16;
-      _conv = @uint16;
-    elseif (isa (A, "uint32"))
-      Amax = 32;
-      _conv = @uint32;
-    elseif (isa (A, "uint64"))
-      Amax = 64;
-      _conv = @uint64;
-    elseif (isa (A, "int8"))
-      Amax = 8;
-      _conv = @int8;
-    elseif (isa (A, "int16"))
-      Amax = 16;
-      _conv = @int16;
-    elseif (isa (A, "int32"))
-      Amax = 32;
-      _conv = @int32;
-    elseif (isa (A, "int64"))
-      Amax = 64;
-      _conv = @int64;
-    else
-      error ("bitset: invalid class %s", class (A));
-    endif
-    Bmax = intmax (class (A));
+    error ("bitset: invalid class %s", cl);
   endif
 
-  m = double (n(:));
-  if (any (m < 1) || any (m > Amax))
+  if (any ((n < 1)(:)) || any ((n > Amax)(:)))
     error ("bitset: N must be in the range [1,%d]", Amax);
   endif
 
-  mask = bitshift (_conv (1), uint8 (n) - uint8 (1));
-  C = bitxor (A, bitand (A, mask));
+  mask = bitshift (cast (1, cl), uint8 (n) - uint8 (1));
 
-  if (val)
-    C = bitor (A, mask);
+  on = logical (val);
+  off = !on;
+
+  if (isscalar (mask))
+    onmask = mask;
+    offmask = mask;
+  else
+    if (! size_equal (A, n))
+      error ("bitset: N must be scalar or the same size as A");
+    endif
+    onmask = mask(on);
+    offmask = mask(off);
   endif
+
+  A(on) = bitor (A(on), onmask);
+  A(off) = bitand (A(off), bitcmp (offmask));
 
 endfunction
 
@@ -103,6 +94,9 @@ endfunction
 %!     assert (bitset (fcn ([0, 10]), [3, 3]), fcn ([4, 14]));
 %!   endfor
 %! endfor
+
+## Bug #36458
+%!assert (bitset(uint8 ([1, 2;3 4]), 1, [0 1; 0 1]), uint8 ([0, 3; 2 5]))
 
 %!error bitset (0, 0)
 %!error bitset (0, 55)

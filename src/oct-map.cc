@@ -1426,7 +1426,7 @@ Octave_map::stringfield (const std::string& k,
 string_vector
 Octave_map::keys (void) const
 {
-  assert (nfields () == key_list.size ());
+  assert (static_cast<size_t>(nfields ()) == key_list.size ());
 
   return string_vector (key_list);
 }

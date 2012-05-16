@@ -44,7 +44,7 @@ function map = hot (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0];
+    map = [1, 1, 1];
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x < 2/5) .* (5/2 * x) ...
@@ -54,7 +54,7 @@ function map = hot (n)
     b = (x >= 4/5) .* (5 * x - 4);
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

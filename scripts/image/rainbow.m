@@ -63,7 +63,7 @@ function map = rainbow (n)
 
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

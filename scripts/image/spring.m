@@ -50,7 +50,7 @@ function map = spring (n)
     b = 1 - g;
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

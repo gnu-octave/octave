@@ -50,7 +50,7 @@ function map = winter (n)
     b = 1 - g / 2;
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

@@ -51,7 +51,7 @@ function map = autumn (n)
     b = zeros (n, 1);
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

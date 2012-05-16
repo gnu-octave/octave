@@ -44,7 +44,7 @@ function map = jet (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0.5];
+    map = [0, 1, 1];
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x >= 3/8 & x < 5/8) .* (4 * x - 3/2) ...
@@ -58,7 +58,7 @@ function map = jet (n)
       + (x >= 3/8 & x < 5/8) .* (-4 * x + 5/2);
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

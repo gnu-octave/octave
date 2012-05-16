@@ -45,9 +45,14 @@ function map = gray (n)
     print_usage ();
   endif
 
-  gr = [0:(n-1)]' / (n - 1);
-
-  map = [gr, gr, gr];
+  if (n == 1)
+    map = [0, 0, 0];
+  elseif (n > 1)
+    gr = [0:(n-1)]' / (n - 1);
+    map = [gr, gr, gr];
+  else
+    map = zeros (0, 3);
+  endif
 
 endfunction
 

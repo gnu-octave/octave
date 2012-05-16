@@ -53,7 +53,7 @@ function map = copper (n)
     b = 1/2 * x;
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

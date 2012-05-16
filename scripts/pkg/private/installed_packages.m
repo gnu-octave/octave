@@ -40,11 +40,11 @@ function [out1, out2] = installed_packages (local_list, global_list)
   ## Locally installed packages take precedence.
   dup = [];
   for i = 1:length (installed_pkgs_lst)
-    if (find (dup, i))
+    if (any (dup == i))
       continue;
     endif
     for j = (i+1):length (installed_pkgs_lst)
-      if (find (dup, j))
+      if (any (dup == j))
         continue;
       endif
       if (strcmp (installed_pkgs_lst{i}.name, installed_pkgs_lst{j}.name))

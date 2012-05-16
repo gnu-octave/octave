@@ -28,6 +28,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "pink");
+## PKG_DEL: colormap ("unregister", "pink");
+
 function map = pink (n)
 
   if (nargin == 0)

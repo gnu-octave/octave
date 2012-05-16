@@ -31,6 +31,9 @@
 ## this colormap is not part of matlab, it is like the prism
 ## colormap map but with a continuous map
 
+## PKG_ADD: colormap ("register", "rainbow");
+## PKG_DEL: colormap ("unregister", "rainbow");
+
 function map = rainbow (n)
 
   if (nargin == 0)

@@ -28,6 +28,9 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
+## PKG_ADD: colormap ("register", "gmap40");
+## PKG_DEL: colormap ("unregister", "gmap40");
+
 function map = gmap40 (n)
 
   if (nargin == 0)

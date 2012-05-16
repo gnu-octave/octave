@@ -27,6 +27,9 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
+## PKG_ADD: colormap ("register", "lines");
+## PKG_DEL: colormap ("unregister", "lines");
+
 function map = lines (n)
 
   if (nargin == 0)

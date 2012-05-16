@@ -30,6 +30,9 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
+## PKG_ADD: colormap ("register", "gray");
+## PKG_DEL: colormap ("unregister", "gray");
+
 function map = gray (n)
 
   if (nargin == 0)

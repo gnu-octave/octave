@@ -765,8 +765,8 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 \?{IDENT}{S}* |
-\?{IDENT}.{IDENT}{S}* {
-    LEXER_DEBUG ("\?{IDENT}{S}* | \?{IDENT}.{IDENT}{S}*");
+\?{IDENT}\.{IDENT}{S}* {
+    LEXER_DEBUG ("\\?{IDENT}{S}*|\\?{IDENT}\\.{IDENT}{S}*");
 
     int id_tok = handle_meta_identifier ();
 
@@ -854,7 +854,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 \" {
-    LEXER_DEBUG ("\"");
+    LEXER_DEBUG ("\\"");
 
     current_input_column++;
     int tok = handle_string ('"');

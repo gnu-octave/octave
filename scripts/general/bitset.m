@@ -40,10 +40,8 @@ function A = bitset (A, n, val)
     print_usage ();
   endif
 
-  sz = size (A);
-
   if (nargin == 2)
-    val = true (sz);
+    val = true (size (A));
   endif
 
   cl = class (A);

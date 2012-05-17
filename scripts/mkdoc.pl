@@ -50,7 +50,7 @@ MFILE: foreach $m_fname (@ARGV)
     $fcn = $4;
   }
 
-  @help_txt = mygethelp ($fcn, $full_fname);
+  @help_txt = gethelp ($fcn, $full_fname);
   next MFILE if ($help_txt[0] eq "");
 
   print "$fcn\n";
@@ -69,7 +69,7 @@ MFILE: foreach $m_fname (@ARGV)
 ################################################################################
 # Subroutines
 ################################################################################
-sub mygethelp
+sub gethelp
 {
   ($fcn, $fname) = @_[0..1]; 
   open (FH, $fname) or return "";

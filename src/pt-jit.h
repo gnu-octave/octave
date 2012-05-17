@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <vector>
 
 #include "Array.h"
+#include "Range.h"
 #include "pt-walk.h"
 
 // -------------------- Current status --------------------
@@ -43,6 +44,19 @@ along with Octave; see the file COPYING.  If not, see
 // a = [1 2 3]
 // b = a + a;
 // will compile to do_binary_op (a, a).
+//
+// for loops with ranges compile. For example,
+// for i=1:1000
+//   result = i + 1;
+// endfor
+// Will compile. Nested for loops with constant bounds are also supported.
+//
+// TODO:
+// 1. Cleanup
+// 2. Support if statements
+// 3. Support iteration over matricies
+// 4. Check error state
+// 5. ...
 // ---------------------------------------------------------
 
 
@@ -66,8 +80,27 @@ class octave_base_value;
 class octave_value;
 class tree;
 
-// thrown when we should give up on JIT and interpret
-class jit_fail_exception : public std::exception {};
+// jit_range is compatable with the llvm range structure
+struct
+OCTINTERP_API
+jit_range
+{
+  jit_range (void) {}
+
+  jit_range (const Range& from) : base (from.base ()), limit (from.limit ()),
+    inc (from.inc ()), nelem (from.nelem ())
+    {}
+
+  operator Range () const
+  {
+    return Range (base, limit, inc);
+  }
+
+  double base;
+  double limit;
+  double inc;
+  octave_idx_type nelem;
+};
 
 // Used to keep track of estimated (infered) types during JIT. This is a
 // hierarchical type system which includes both concrete and abstract types.
@@ -109,9 +142,7 @@ private:
   jit_type *p;
   llvm::Type *llvm_type;
   int id;
-  int depth;
 };
-
 
 // Keeps track of overloads for a builtin function. Used for both type inference
 // and code generation.
@@ -146,6 +177,12 @@ public:
   void add_overload (const overload& func)
   {
     add_overload (func, func.arguments);
+  }
+
+  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0)
+  {
+    overload ol (f, e, r, arg0);
+    add_overload (ol);
   }
 
   void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
@@ -198,11 +235,23 @@ OCTINTERP_API
 jit_typeinfo
 {
 public:
-  jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e, llvm::Type *ov);
+  jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
 
   jit_type *get_any (void) const { return any; }
 
   jit_type *get_scalar (void) const { return scalar; }
+
+  llvm::Type *get_scalar_llvm (void) const { return scalar->to_llvm (); }
+
+  jit_type *get_range (void) const { return range; }
+
+  llvm::Type *get_range_llvm (void) const { return range->to_llvm (); }
+
+  jit_type *get_bool (void) const { return boolean; }
+
+  jit_type *get_index (void) const { return index; }
+
+  llvm::Type *get_index_llvm (void) const { return index->to_llvm (); }
 
   jit_type *type_of (const octave_value& ov) const;
 
@@ -225,6 +274,22 @@ public:
 
   const jit_function::overload& print_value (jit_type *to_print) const;
 
+  const jit_function::overload& get_simple_for_check (jit_type *bounds) const
+  {
+    return simple_for_check.get_overload (bounds, index);
+  }
+
+  const jit_function::overload& get_simple_for_index (jit_type *bounds) const
+  {
+    return simple_for_index.get_overload (bounds, index);
+  }
+
+  jit_type *get_simple_for_index_result (jit_type *bounds) const
+  {
+    const jit_function::overload& ol = get_simple_for_index (bounds);
+    return ol.result;
+  }
+
   // FIXME: generic creation should probably be handled seperatly
   void to_generic (jit_type *type, llvm::GenericValue& gv);
   void to_generic (jit_type *type, llvm::GenericValue& gv, octave_value ov);
@@ -233,6 +298,8 @@ public:
 
   void reset_generic (size_t nargs);
 private:
+  typedef std::map<std::string, jit_type *> type_map;
+
   jit_type *new_type (const std::string& name, bool force_init,
                       jit_type *parent, llvm::Type *llvm_type);
 
@@ -249,16 +316,261 @@ private:
   std::vector<jit_type*> id_to_type;
   jit_type *any;
   jit_type *scalar;
+  jit_type *range;
+  jit_type *boolean;
+  jit_type *index;
 
   std::vector<jit_function> binary_ops;
   jit_function assign_fn;
   jit_function print_fn;
+  jit_function simple_for_check;
+  jit_function simple_for_incr;
+  jit_function simple_for_index;
 
-  size_t scalar_out_idx;
+  size_t scalar_idx;
   std::vector<double> scalar_out;
 
-  size_t ov_out_idx;
+  size_t ov_idx;
   std::vector<octave_base_value*> ov_out;
+
+  size_t range_idx;
+  std::vector<jit_range> range_out;
+};
+
+class
+OCTINTERP_API
+jit_infer : public tree_walker
+{
+  typedef std::map<std::string, jit_type *> type_map;
+public:
+  jit_infer (jit_typeinfo *ti) : tinfo (ti), is_lvalue (false),
+                                  rvalue_type (0)
+  {}
+
+  const std::set<std::string>& get_argin () const { return argin; }
+
+  const type_map& get_types () const { return types; }
+
+  void infer (tree_simple_for_command& cmd, jit_type *bounds);
+
+  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
+
+  void visit_argument_list (tree_argument_list&);
+
+  void visit_binary_expression (tree_binary_expression&);
+
+  void visit_break_command (tree_break_command&);
+
+  void visit_colon_expression (tree_colon_expression&);
+
+  void visit_continue_command (tree_continue_command&);
+
+  void visit_global_command (tree_global_command&);
+
+  void visit_persistent_command (tree_persistent_command&);
+
+  void visit_decl_elt (tree_decl_elt&);
+
+  void visit_decl_init_list (tree_decl_init_list&);
+
+  void visit_simple_for_command (tree_simple_for_command&);
+
+  void visit_complex_for_command (tree_complex_for_command&);
+
+  void visit_octave_user_script (octave_user_script&);
+
+  void visit_octave_user_function (octave_user_function&);
+
+  void visit_octave_user_function_header (octave_user_function&);
+
+  void visit_octave_user_function_trailer (octave_user_function&);
+
+  void visit_function_def (tree_function_def&);
+
+  void visit_identifier (tree_identifier&);
+
+  void visit_if_clause (tree_if_clause&);
+
+  void visit_if_command (tree_if_command&);
+
+  void visit_if_command_list (tree_if_command_list&);
+
+  void visit_index_expression (tree_index_expression&);
+
+  void visit_matrix (tree_matrix&);
+
+  void visit_cell (tree_cell&);
+
+  void visit_multi_assignment (tree_multi_assignment&);
+
+  void visit_no_op_command (tree_no_op_command&);
+
+  void visit_constant (tree_constant&);
+
+  void visit_fcn_handle (tree_fcn_handle&);
+
+  void visit_parameter_list (tree_parameter_list&);
+
+  void visit_postfix_expression (tree_postfix_expression&);
+
+  void visit_prefix_expression (tree_prefix_expression&);
+
+  void visit_return_command (tree_return_command&);
+
+  void visit_return_list (tree_return_list&);
+
+  void visit_simple_assignment (tree_simple_assignment&);
+
+  void visit_statement (tree_statement&);
+
+  void visit_statement_list (tree_statement_list&);
+
+  void visit_switch_case (tree_switch_case&);
+
+  void visit_switch_case_list (tree_switch_case_list&);
+
+  void visit_switch_command (tree_switch_command&);
+
+  void visit_try_catch_command (tree_try_catch_command&);
+
+  void visit_unwind_protect_command (tree_unwind_protect_command&);
+
+  void visit_while_command (tree_while_command&);
+
+  void visit_do_until_command (tree_do_until_command&);
+private:
+  void infer_simple_for (tree_simple_for_command& cmd,
+                         jit_type *bounds);
+
+  void handle_identifier (const std::string& name, octave_value v);
+
+  jit_typeinfo *tinfo;
+
+  bool is_lvalue;
+  jit_type *rvalue_type;
+
+  type_map types;
+  std::set<std::string> argin;
+
+  std::vector<jit_type *> type_stack;
+};
+
+class
+OCTINTERP_API
+jit_generator : public tree_walker
+{
+  typedef std::map<std::string, jit_type *> type_map;
+public:
+  jit_generator (jit_typeinfo *ti, llvm::Module *module, tree &tee,
+                 const std::set<std::string>& argin,
+                 const type_map& infered_types, bool have_bounds = true);
+
+  llvm::Function *get_function () const { return function; }
+
+  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
+
+  void visit_argument_list (tree_argument_list&);
+
+  void visit_binary_expression (tree_binary_expression&);
+
+  void visit_break_command (tree_break_command&);
+
+  void visit_colon_expression (tree_colon_expression&);
+
+  void visit_continue_command (tree_continue_command&);
+
+  void visit_global_command (tree_global_command&);
+
+  void visit_persistent_command (tree_persistent_command&);
+
+  void visit_decl_elt (tree_decl_elt&);
+
+  void visit_decl_init_list (tree_decl_init_list&);
+
+  void visit_simple_for_command (tree_simple_for_command&);
+
+  void visit_complex_for_command (tree_complex_for_command&);
+
+  void visit_octave_user_script (octave_user_script&);
+
+  void visit_octave_user_function (octave_user_function&);
+
+  void visit_octave_user_function_header (octave_user_function&);
+
+  void visit_octave_user_function_trailer (octave_user_function&);
+
+  void visit_function_def (tree_function_def&);
+
+  void visit_identifier (tree_identifier&);
+
+  void visit_if_clause (tree_if_clause&);
+
+  void visit_if_command (tree_if_command&);
+
+  void visit_if_command_list (tree_if_command_list&);
+
+  void visit_index_expression (tree_index_expression&);
+
+  void visit_matrix (tree_matrix&);
+
+  void visit_cell (tree_cell&);
+
+  void visit_multi_assignment (tree_multi_assignment&);
+
+  void visit_no_op_command (tree_no_op_command&);
+
+  void visit_constant (tree_constant&);
+
+  void visit_fcn_handle (tree_fcn_handle&);
+
+  void visit_parameter_list (tree_parameter_list&);
+
+  void visit_postfix_expression (tree_postfix_expression&);
+
+  void visit_prefix_expression (tree_prefix_expression&);
+
+  void visit_return_command (tree_return_command&);
+
+  void visit_return_list (tree_return_list&);
+
+  void visit_simple_assignment (tree_simple_assignment&);
+
+  void visit_statement (tree_statement&);
+
+  void visit_statement_list (tree_statement_list&);
+
+  void visit_switch_case (tree_switch_case&);
+
+  void visit_switch_case_list (tree_switch_case_list&);
+
+  void visit_switch_command (tree_switch_command&);
+
+  void visit_try_catch_command (tree_try_catch_command&);
+
+  void visit_unwind_protect_command (tree_unwind_protect_command&);
+
+  void visit_while_command (tree_while_command&);
+
+  void visit_do_until_command (tree_do_until_command&);
+private:
+  typedef std::pair<jit_type *, llvm::Value *> value;
+
+  void emit_simple_for (tree_simple_for_command& cmd, value over,
+                        bool atleast_once);
+
+  void emit_print (const std::string& name, const value& v);
+
+  void push_value (jit_type *type, llvm::Value *v)
+  {
+    value_stack.push_back (value (type, v));
+  }
+
+  jit_typeinfo *tinfo;
+  llvm::Function *function;
+
+  bool is_lvalue;
+  std::map<std::string, value> variables;
+  std::vector<value> value_stack;
 };
 
 class
@@ -270,257 +582,17 @@ public:
 
   ~tree_jit (void);
 
-  bool execute (tree& tee);
+  bool execute (tree_simple_for_command& cmd, const octave_value& bounds);
+
+  jit_typeinfo *get_typeinfo (void) const { return tinfo; }
+
+  llvm::ExecutionEngine *get_engine (void) const { return engine; }
+
+  llvm::Module *get_module (void) const { return module; }
+
+  void optimize (llvm::Function *fn);
  private:
-  typedef std::map<std::string, jit_type *> type_map;
-
-  class
-  type_infer : public tree_walker
-  {
-  public:
-    type_infer (jit_typeinfo *ti) : tinfo (ti), is_lvalue (false),
-                                    rvalue_type (0)
-    {}
-
-    const std::set<std::string>& get_argin () const { return argin; }
-
-    const type_map& get_types () const { return types; }
-
-    void visit_anon_fcn_handle (tree_anon_fcn_handle&);
-
-    void visit_argument_list (tree_argument_list&);
-
-    void visit_binary_expression (tree_binary_expression&);
-
-    void visit_break_command (tree_break_command&);
-
-    void visit_colon_expression (tree_colon_expression&);
-
-    void visit_continue_command (tree_continue_command&);
-
-    void visit_global_command (tree_global_command&);
-
-    void visit_persistent_command (tree_persistent_command&);
-
-    void visit_decl_elt (tree_decl_elt&);
-
-    void visit_decl_init_list (tree_decl_init_list&);
-
-    void visit_simple_for_command (tree_simple_for_command&);
-
-    void visit_complex_for_command (tree_complex_for_command&);
-
-    void visit_octave_user_script (octave_user_script&);
-
-    void visit_octave_user_function (octave_user_function&);
-
-    void visit_octave_user_function_header (octave_user_function&);
-
-    void visit_octave_user_function_trailer (octave_user_function&);
-
-    void visit_function_def (tree_function_def&);
-
-    void visit_identifier (tree_identifier&);
-
-    void visit_if_clause (tree_if_clause&);
-
-    void visit_if_command (tree_if_command&);
-
-    void visit_if_command_list (tree_if_command_list&);
-
-    void visit_index_expression (tree_index_expression&);
-
-    void visit_matrix (tree_matrix&);
-
-    void visit_cell (tree_cell&);
-
-    void visit_multi_assignment (tree_multi_assignment&);
-
-    void visit_no_op_command (tree_no_op_command&);
-
-    void visit_constant (tree_constant&);
-
-    void visit_fcn_handle (tree_fcn_handle&);
-
-    void visit_parameter_list (tree_parameter_list&);
-
-    void visit_postfix_expression (tree_postfix_expression&);
-
-    void visit_prefix_expression (tree_prefix_expression&);
-
-    void visit_return_command (tree_return_command&);
-
-    void visit_return_list (tree_return_list&);
-
-    void visit_simple_assignment (tree_simple_assignment&);
-
-    void visit_statement (tree_statement&);
-
-    void visit_statement_list (tree_statement_list&);
-
-    void visit_switch_case (tree_switch_case&);
-
-    void visit_switch_case_list (tree_switch_case_list&);
-
-    void visit_switch_command (tree_switch_command&);
-
-    void visit_try_catch_command (tree_try_catch_command&);
-
-    void visit_unwind_protect_command (tree_unwind_protect_command&);
-
-    void visit_while_command (tree_while_command&);
-
-    void visit_do_until_command (tree_do_until_command&);
-  private:
-    void handle_identifier (const std::string& name, octave_value v);
-
-    jit_typeinfo *tinfo;
-
-    bool is_lvalue;
-    jit_type *rvalue_type;
-
-    type_map types;
-    std::set<std::string> argin;
-
-    std::vector<jit_type *> type_stack;
-  };
-
-  class
-  code_generator : public tree_walker
-  {
-  public:
-    code_generator (jit_typeinfo *ti, llvm::Module *module, tree &tee,
-                    const std::set<std::string>& argin,
-                    const type_map& infered_types);
-
-    llvm::Function *get_function () const { return function; }
-
-    void visit_anon_fcn_handle (tree_anon_fcn_handle&);
-
-    void visit_argument_list (tree_argument_list&);
-
-    void visit_binary_expression (tree_binary_expression&);
-
-    void visit_break_command (tree_break_command&);
-
-    void visit_colon_expression (tree_colon_expression&);
-
-    void visit_continue_command (tree_continue_command&);
-
-    void visit_global_command (tree_global_command&);
-
-    void visit_persistent_command (tree_persistent_command&);
-
-    void visit_decl_elt (tree_decl_elt&);
-
-    void visit_decl_init_list (tree_decl_init_list&);
-
-    void visit_simple_for_command (tree_simple_for_command&);
-
-    void visit_complex_for_command (tree_complex_for_command&);
-
-    void visit_octave_user_script (octave_user_script&);
-
-    void visit_octave_user_function (octave_user_function&);
-
-    void visit_octave_user_function_header (octave_user_function&);
-
-    void visit_octave_user_function_trailer (octave_user_function&);
-
-    void visit_function_def (tree_function_def&);
-
-    void visit_identifier (tree_identifier&);
-
-    void visit_if_clause (tree_if_clause&);
-
-    void visit_if_command (tree_if_command&);
-
-    void visit_if_command_list (tree_if_command_list&);
-
-    void visit_index_expression (tree_index_expression&);
-
-    void visit_matrix (tree_matrix&);
-
-    void visit_cell (tree_cell&);
-
-    void visit_multi_assignment (tree_multi_assignment&);
-
-    void visit_no_op_command (tree_no_op_command&);
-
-    void visit_constant (tree_constant&);
-
-    void visit_fcn_handle (tree_fcn_handle&);
-
-    void visit_parameter_list (tree_parameter_list&);
-
-    void visit_postfix_expression (tree_postfix_expression&);
-
-    void visit_prefix_expression (tree_prefix_expression&);
-
-    void visit_return_command (tree_return_command&);
-
-    void visit_return_list (tree_return_list&);
-
-    void visit_simple_assignment (tree_simple_assignment&);
-
-    void visit_statement (tree_statement&);
-
-    void visit_statement_list (tree_statement_list&);
-
-    void visit_switch_case (tree_switch_case&);
-
-    void visit_switch_case_list (tree_switch_case_list&);
-
-    void visit_switch_command (tree_switch_command&);
-
-    void visit_try_catch_command (tree_try_catch_command&);
-
-    void visit_unwind_protect_command (tree_unwind_protect_command&);
-
-    void visit_while_command (tree_while_command&);
-
-    void visit_do_until_command (tree_do_until_command&);
-  private:
-    typedef std::pair<jit_type *, llvm::Value *> value;
-
-    void emit_print (const std::string& name, const value& v);
-
-    void push_value (jit_type *type, llvm::Value *v)
-    {
-      value_stack.push_back (value (type, v));
-    }
-
-    jit_typeinfo *tinfo;
-    llvm::Function *function;
-
-    bool is_lvalue;
-    std::map<std::string, value> variables;
-    std::vector<value> value_stack;
-  };
-
-  class function_info
-  {
-  public:
-    function_info (tree_jit& tjit, tree& tee);
-
-    bool execute () const;
-
-    bool match () const;
-  private:
-    jit_typeinfo *tinfo;
-    llvm::ExecutionEngine *engine;
-    std::set<std::string> argin;
-    type_map types;
-    llvm::Function *function;
-  };
-
-  typedef std::list<function_info *> function_list;
-  typedef std::map<tree *, function_list> compiled_map;
-
-  static void fail (void)
-  {
-    throw jit_fail_exception ();
-  }
+  bool initialize (void);
 
   llvm::LLVMContext &context;
   llvm::Module *module;
@@ -529,8 +601,26 @@ public:
   llvm::ExecutionEngine *engine;
 
   jit_typeinfo *tinfo;
+};
 
-  compiled_map compiled;
+class
+OCTINTERP_API
+jit_info
+{
+public:
+  jit_info (tree_jit& tjit, tree_simple_for_command& cmd, jit_type *bounds);
+
+  bool execute (const octave_value& bounds) const;
+
+  bool match (void) const;
+private:
+  typedef std::map<std::string, jit_type *> type_map;
+  
+  jit_typeinfo *tinfo;
+  llvm::ExecutionEngine *engine;
+  std::set<std::string> argin;
+  type_map types;
+  llvm::Function *function;
 };
 
 #endif

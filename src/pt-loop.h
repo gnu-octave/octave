@@ -36,6 +36,9 @@ class tree_walker;
 #include "pt-cmd.h"
 #include "symtab.h"
 
+class jit_info;
+class jit_type;
+
 // While.
 
 class
@@ -180,7 +183,20 @@ public:
 
   void accept (tree_walker& tw);
 
+  // some functions use by tree_jit
+  jit_info *get_info (jit_type *type) const
+  {
+    compiled_map::const_iterator iter = compiled.find (type);
+    return iter != compiled.end () ? iter->second : 0;
+  }
+
+  void stash_info (jit_type *type, jit_info *jinfo)
+  {
+    compiled[type] = jinfo;
+  }
+
 private:
+  typedef std::map<jit_type *, jit_info *> compiled_map;
 
   // TRUE means operate in parallel (subject to the value of the
   // maxproc expression).
@@ -204,6 +220,9 @@ private:
 
   // Comment preceding ENDFOR token.
   octave_comment_list *trail_comm;
+
+  // a map from iterator types -> compiled functions
+  compiled_map compiled;
 
   // No copying!
 

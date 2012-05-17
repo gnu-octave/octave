@@ -310,6 +310,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (error_state || rhs.is_undefined ())
     return;
 
+  if (jiter.execute (cmd, rhs))
+    return;
+
   {
     tree_expression *lhs = cmd.left_hand_side ();
 
@@ -683,9 +686,6 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 {
   tree_command *cmd = stmt.command ();
   tree_expression *expr = stmt.expression ();
-
-  if (! Vdebugging && ! Vecho_executing_commands && jiter.execute (stmt))
-    return;
 
   if (cmd || expr)
     {

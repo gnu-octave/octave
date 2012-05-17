@@ -27,6 +27,9 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
+## PKG_ADD: colormap ("register", "lines");
+## PKG_DEL: colormap ("unregister", "lines");
+
 function map = lines (n)
 
   if (nargin == 0)
@@ -39,9 +42,15 @@ function map = lines (n)
     print_usage ();
   endif
 
-  C = get (gca, "colororder");
-  nr = rows (C);
-  map = C(rem (0:(n-1), nr) + 1, :);
+  if (n == 1)
+    map = [0, 0, 1];
+  elseif (n > 1)
+    C = get (gca, "colororder");
+    nr = rows (C);
+    map = C(rem (0:(n-1), nr) + 1, :);
+  else
+    map = zeros (0, 3);
+  endif
 
 endfunction
 

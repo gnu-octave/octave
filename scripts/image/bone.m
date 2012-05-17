@@ -28,6 +28,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "bone");
+## PKG_DEL: colormap ("unregister", "bone");
+
 function map = bone (n)
 
   if (nargin == 0)
@@ -41,7 +44,7 @@ function map = bone (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0];
+    map = [0.125, 0.125, 0.125];
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x < 3/4) .* (7/8 * x) ...
@@ -53,7 +56,7 @@ function map = bone (n)
       + (x >= 3/8) .* (7/8 * x + 1/8);
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

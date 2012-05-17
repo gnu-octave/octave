@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {@var{C} =} bitset (@var{A}, @var{n}, @var{val})
 ## Set or reset bit(s) @var{n} of unsigned integers in @var{A}.
 ## @var{val} = 0 resets and @var{val} = 1 sets the bits.
-## The lowest significant bit is: @var{n} = 1. All variables must be the
+## The lowest significant bit is: @var{n} = 1.  All variables must be the
 ## same size or scalars.
 ##
 ## @example
@@ -34,10 +34,14 @@
 ## @seealso{bitand, bitor, bitxor, bitget, bitcmp, bitshift, bitmax}
 ## @end deftypefn
 
-function A = bitset (A, n, val)
+function C = bitset (A, n, val)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
+  endif
+
+  if (any (A(:) < 0))
+    error ("bitset: A must be >= 0");
   endif
 
   sz = size (A);
@@ -53,8 +57,7 @@ function A = bitset (A, n, val)
     Amax = log2 (Bmax);
   elseif (isinteger (A))
     Bmax = intmax (cl);
-    ## FIXME: Better way to get number of bits than regexping?
-    Amax = str2num (nthargout (4, @regexp, cl, '\d{1,2}'){1});
+    Amax = round (log2 (Bmax));
   else
     error ("bitset: invalid class %s", cl);
   endif
@@ -79,8 +82,9 @@ function A = bitset (A, n, val)
     offmask = mask(off);
   endif
 
-  A(on) = bitor (A(on), onmask);
-  A(off) = bitand (A(off), bitcmp (offmask));
+  C = zeros (sz, cl);
+  C(on) = bitor (A(on), onmask);
+  C(off) = bitand (A(off), bitcmp (offmask));
 
 endfunction
 
@@ -96,19 +100,23 @@ endfunction
 %! endfor
 
 ## Bug #36458
-%!assert (bitset(uint8 ([1, 2;3 4]), 1, [0 1; 0 1]), uint8 ([0, 3; 2 5]))
-
-%!error bitset (0, 0)
-%!error bitset (0, 55)
-%!error bitset (int8 (0), 9)
-%!error bitset (uint8 (0), 9)
-%!error bitset (int16 (0), 17)
-%!error bitset (uint16 (0), 17)
-%!error bitset (int32 (0), 33)
-%!error bitset (uint32 (0), 33)
-%!error bitset (int64 (0), 65)
-%!error bitset (uint64 (0), 65)
+%!assert (bitset (uint8 ([1, 2;3 4]), 1, [0 1; 0 1]), uint8 ([0, 3; 2 5]))
 
 %!error bitset (1)
 %!error bitset (1, 2, 3, 4)
+%!error <A must be .= 0> bitset (-1, 2)
+%!error <invalid class char> bitset ("1", 2)
+%!error <N must be in the range \[1,53\]> bitset (0, 0)
+%!error <N must be in the range \[1,53\]> bitset (0, 55)
+%!error <N must be in the range \[1,8\]> bitset (uint8 (0), 0)
+%!error <N must be in the range \[1,8\]> bitset (uint8 (0), 9)
+%!error <N must be in the range \[1,7\]> bitset (int8 (0), 9)
+%!error <N must be in the range \[1,15\]> bitset (int16 (0), 17)
+%!error <N must be in the range \[1,16\]> bitset (uint16 (0), 17)
+%!error <N must be in the range \[1,31\]> bitset (int32 (0), 33)
+%!error <N must be in the range \[1,32\]> bitset (uint32 (0), 33)
+%!error <N must be in the range \[1,63\]> bitset (int64 (0), 65)
+%!error <N must be in the range \[1,64\]> bitset (uint64 (0), 65)
+%!error <N must be scalar or the same size as A> bitset (uint8 (1), [1 3])
+%!error <N must be scalar or the same size as A> bitset (uint8 (1:3), [1 3])
 

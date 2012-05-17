@@ -27,6 +27,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "white");
+## PKG_DEL: colormap ("unregister", "white");
+
 function map = white (n)
 
   if (nargin == 0)

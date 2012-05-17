@@ -1,4 +1,5 @@
 ## Copyright (C) 1994-2012 John W. Eaton
+## Copyright (C) 2012 Carnë Draug
 ##
 ## This file is part of Octave.
 ##
@@ -20,6 +21,9 @@
 ## @deftypefn  {Function File} {@var{cmap} =} colormap ()
 ## @deftypefnx {Function File} {@var{cmap} =} colormap (@var{map})
 ## @deftypefnx {Function File} {@var{cmap} =} colormap ("default")
+## @deftypefnx {Function File} {@var{cmap} =} colormap ("list")
+## @deftypefnx {Function File} {@var{cmap} =} colormap ("register", "name")
+## @deftypefnx {Function File} {@var{cmap} =} colormap ("unregister", "name")
 ## Query or set the current colormap.
 ##
 ## @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
@@ -30,6 +34,10 @@
 ## @code{colormap ("default")} restores the default colormap (the
 ## @code{jet} map with 64 entries).  The default colormap is returned.
 ##
+## @code{colormap ("list")} returns a cell array with all the available
+## colormaps.  The options `register' and `unregister' will add or remove the
+## colormap @var{name} to it.
+##
 ## With no arguments, @code{colormap} returns the current color map.
 ## @seealso{jet}
 ## @end deftypefn
@@ -38,17 +46,22 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function cmap = colormap (map)
+function cmap = colormap (map, name)
 
-  if (nargin > 1)
+  if (nargin > 2)
     print_usage ();
   endif
+
+  persistent map_list = cell ();
 
   if (nargin == 1)
 
     if (ischar (map))
       if (strcmp (map, "default"))
         map = jet (64);
+      elseif (strcmp (map, "list"))
+        cmap = map_list;
+        return;
       else
         map = feval (map);
       endif
@@ -65,6 +78,16 @@ function cmap = colormap (map)
       set (gcf (), "colormap", map);
     endif
 
+  elseif (nargin == 2)
+    if (! ischar (map) || all (! strcmp (map, {"register", "unregister"})))
+      print_usage ();
+    elseif (! ischar (name))
+      error ("colormap: to register/unregister a colormap, NAME must be a string");
+    elseif (strcmp (map, "register"))
+      map_list{end+1} = name;
+    elseif (strcmp (map, "unregister"))
+      map_list(strcmp (name, map_list)) = [];
+    endif
   endif
 
   ## Return current color map.

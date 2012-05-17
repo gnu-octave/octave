@@ -28,6 +28,9 @@
 ## @seealso{colormap}
 ## @end deftypefn
 
+## PKG_ADD: colormap ("register", "gmap40");
+## PKG_DEL: colormap ("unregister", "gmap40");
+
 function map = gmap40 (n)
 
   if (nargin == 0)
@@ -40,8 +43,12 @@ function map = gmap40 (n)
     print_usage ();
   endif
 
-  C = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
-  map = C(rem (0:(n-1), 6) + 1, :);
+  if (n > 1)
+    C = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
+    map = C(rem (0:(n-1), 6) + 1, :);
+  else
+    map = zeros (0, 3);
+  endif
 
 endfunction
 

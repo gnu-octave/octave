@@ -5,7 +5,7 @@ DO NOT put this file into the distribution.
 
 * Working from the repository
 
-These notes are intended to help people working on sources checked-out from
+These notes are intended to help people working on sources cloned from
 the savannah source code repository.
 These requirements do not apply when building from a distribution tarball.
 
@@ -13,7 +13,7 @@ These requirements do not apply when building from a distribution tarball.
 
 We've opted to keep only the highest-level sources in the repository.
 This eases our maintenance burden, (fewer merges, etc.), but imposes
-more requirements on anyone wishing to build from the just-checked-out
+more requirements on anyone wishing to build from the just-cloned
 sources.  For example, you have to use the latest stable versions of
 the maintainer tools we depend upon, including:
 
@@ -35,15 +35,15 @@ Only building the initial full source tree will be a bit painful.
 Later, after synchronizing from the repository, a plain `make' should
 be sufficient.
 
-** First checkout
+** First clone
 
-Obviously, if you are reading these notes, you did manage to check out
+If you are reading these notes, you may have already managed to clone
 this package from the repository.  For the record, you will find all the
 relevant information on downloading sources at:
 
   http://www.gnu.org/software/octave/download.html
 
-After checking out Octave, you will need to run the autogen.sh script:
+After cloning Octave, you will need to run the autogen.sh script:
 
   $ ./autogen.sh
 
@@ -51,8 +51,7 @@ This script will examine the source tree and generate some Makefile
 fragments and then runs the bootstrap script.  The bootstrap script comes
 from gnulib, but is kept in the Octave source archive.  It should be
 updated from the gnulib sources as necssary.  The bootstrap script takes
-care of checking out a copy of gnulib, running the autotools, and
-generating the configure script.
+care of running the autotools and generating the configure script.
 
 If you have a copy of gnulib in some directory apart from the Octave
 source tree, then pass the name of the directory containing gnulib-tool
@@ -66,12 +65,10 @@ manager, DIRNAME is likely to be /usr/bin or /usr/local/bin(where the
 gnulib-tool script resides).
 
 By using an external gnulib directory, you can share a single gnulib source
-tree among several projects.  Regardless of the location of the gnulib
-sources, the bootstrap script will try to update them if it appears
-that they are checked out using git.  Otherwise, it is your
-responsibility to keep the gnulib sources up to date.  They change
-frequently, so the best way to stay current is probably to use git to
-do the job.
+tree among several projects.  Since 2011, the gnulib sources are a Mercurial
+subrepository, so they will be automatically updated to the
+corresponding Mercurial revision if you update the working directory to
+a past revision not too far in the past.
 
 Additional options besides --gnulib-srcdir can be passed to autogen.sh and
 they will be forwarded without modification to the bootstrap script.
@@ -83,8 +80,8 @@ run
   $ make
   $ make check
 
-At this point, there should be no difference between your local copy,
-and the master copy:
+At this point, there should be no difference between your working tree
+and the currently visited hg revision:
 
   $ hg diff
 

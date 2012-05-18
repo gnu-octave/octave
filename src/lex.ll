@@ -1529,7 +1529,7 @@ is_keyword_token (const std::string& s)
               || (! reading_classdef_file
                   && (lexer_flags.defining_func
                       && ! (lexer_flags.looking_at_return_list
-                            || lexer_flags.parsed_function_name.top ())))
+                            || lexer_flags.parsed_function_name.top ()))))
             return 0;
 
           yylval.tok_val = new token (token::simple_end, l, c);

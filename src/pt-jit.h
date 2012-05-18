@@ -53,11 +53,10 @@ along with Octave; see the file COPYING.  If not, see
 // Will compile. Nested for loops with constant bounds are also supported.
 //
 // TODO:
-// 1. Cleanup
-// 2. Support if statements
-// 3. Support iteration over matricies
-// 4. Check error state
-// 5. ...
+// 1. Support if statements
+// 2. Support iteration over matricies
+// 3. Check error state
+// 4. ...
 // ---------------------------------------------------------
 
 

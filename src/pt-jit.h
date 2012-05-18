@@ -82,7 +82,6 @@ class tree;
 
 // jit_range is compatable with the llvm range structure
 struct
-OCTINTERP_API
 jit_range
 {
   jit_range (void) {}
@@ -109,7 +108,6 @@ jit_range
 // type a variable is, we assign it the any type. This allows us to generate
 // code even for the case of poor type inference.
 class
-OCTINTERP_API
 jit_type
 {
 public:
@@ -231,7 +229,6 @@ private:
 
 // Get information and manipulate jit types.
 class
-OCTINTERP_API
 jit_typeinfo
 {
 public:
@@ -338,7 +335,6 @@ private:
 };
 
 class
-OCTINTERP_API
 jit_infer : public tree_walker
 {
   typedef std::map<std::string, jit_type *> type_map;
@@ -456,7 +452,6 @@ private:
 };
 
 class
-OCTINTERP_API
 jit_generator : public tree_walker
 {
   typedef std::map<std::string, jit_type *> type_map;
@@ -574,7 +569,6 @@ private:
 };
 
 class
-OCTINTERP_API
 tree_jit
 {
 public:
@@ -604,7 +598,6 @@ public:
 };
 
 class
-OCTINTERP_API
 jit_info
 {
 public:

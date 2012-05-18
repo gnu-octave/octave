@@ -64,10 +64,6 @@ along with Octave; see the file COPYING.  If not, see
    http://www.math.keio.ac.jp/matumoto/emt.html
    email: matumoto@math.keio.ac.jp
 
-   * 2006-04-01 David Bateman
-   * * convert for use in octave, declaring static functions only used
-   *   here and adding oct_ to functions visible externally
-   * * inverse sense of ALLBITS
    * 2004-01-19 Paul Kienzle
    * * comment out main
    * add init_by_entropy, get_state, set_state
@@ -87,6 +83,15 @@ along with Octave; see the file COPYING.  If not, see
    *
    * 2005-02-23 Paul Kienzle
    * * fix -DHAVE_X86_32 flag and add -DUSE_X86_32=0|1 for explicit control
+   *
+   * 2006-04-01 David Bateman
+   * * convert for use in octave, declaring static functions only used
+   *   here and adding oct_ to functions visible externally
+   * * inverse sense of ALLBITS
+   *
+   * 2012-05-18 David Bateman
+   * * Remove randu64 and ALLBIT option
+   * * Add the single precision generators
    */
 
 /*
@@ -95,9 +100,6 @@ along with Octave; see the file COPYING.  If not, see
    Compile with -DHAVE_GETTIMEOFDAY if the gettimeofday function is
    available.  This is not necessary if your architecture has
    /dev/urandom defined.
-
-   Compile with -DALLBITS to disable 53-bit random numbers. This is about
-   50% slower than using 32-bit random numbers.
 
    Uses implicit -Di386 or explicit -DHAVE_X86_32 to determine if CPU=x86.
    You can force X86 behaviour with -DUSE_X86_32=1, or suppress it with
@@ -126,21 +128,28 @@ along with Octave; see the file COPYING.  If not, see
    static uint32_t randi32(void)   returns 32-bit unsigned int
    static uint64_t randi53(void)   returns 53-bit unsigned int
    static uint64_t randi54(void)   returns 54-bit unsigned int
-   static uint64_t randi64(void)   returns 64-bit unsigned int
-   static double randu32(void)     returns 32-bit uniform in (0,1)
+   static float randu32(void)     returns 32-bit uniform in (0,1)
    static double randu53(void)     returns 53-bit uniform in (0,1)
 
    double oct_randu(void)       returns M-bit uniform in (0,1)
    double oct_randn(void)       returns M-bit standard normal
    double oct_rande(void)       returns N-bit standard exponential
 
+   float oct_float_randu(void)       returns M-bit uniform in (0,1)
+   float oct_float_randn(void)       returns M-bit standard normal
+   float oct_float_rande(void)       returns N-bit standard exponential
+
    === Array generators ===
    void oct_fill_randi32(octave_idx_type, uint32_t [])
    void oct_fill_randi64(octave_idx_type, uint64_t [])
+
    void oct_fill_randu(octave_idx_type, double [])
    void oct_fill_randn(octave_idx_type, double [])
    void oct_fill_rande(octave_idx_type, double [])
 
+   void oct_fill_float_randu(octave_idx_type, float [])
+   void oct_fill_float_randn(octave_idx_type, float [])
+   void oct_fill_float_rande(octave_idx_type, float [])
 */
 
 #if defined (HAVE_CONFIG_H)
@@ -180,6 +189,7 @@ static uint32_t state[MT_N]; /* the array for the state vector  */
 static int left = 1;
 static int initf = 0;
 static int initt = 1;
+static int inittf = 1;
 
 /* initializes state[MT_N] with a seed */
 void
@@ -378,34 +388,14 @@ randi54 (void)
 #endif
 }
 
-#if 0
-// FIXME -- this doesn't seem to be used anywhere; should it be removed?
-static uint64_t
-randi64 (void)
-{
-  const uint32_t lo = randi32();
-  const uint32_t hi = randi32();
-#if HAVE_X86_32
-  uint64_t u;
-  uint32_t *p = (uint32_t *)&u;
-  p[0] = lo;
-  p[1] = hi;
-  return u;
-#else
-  return (((uint64_t)hi<<32)|lo);
-#endif
-}
-#endif
-
-#ifdef ALLBITS
 /* generates a random number on (0,1)-real-interval */
-static double
+static float
 randu32 (void)
 {
-  return ((double)randi32() + 0.5) * (1.0/4294967296.0);
+  return ((float)randi32() + 0.5) * (1.0/4294967296.0);
   /* divided by 2^32 */
 }
-#else
+
 /* generates a random number on (0,1) with 53-bit resolution */
 static double
 randu53 (void)
@@ -414,35 +404,22 @@ randu53 (void)
   const uint32_t b=randi32()>>6;
   return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
 }
-#endif
 
 /* Determine mantissa for uniform doubles */
 double
 oct_randu (void)
 {
-#ifdef ALLBITS
-  return randu32 ();
-#else
   return randu53 ();
-#endif
+}
+
+/* Determine mantissa for uniform floats */
+float
+oct_float_randu (void)
+{
+  return randu32 ();
 }
 
 /* ===== Ziggurat normal and exponential generators ===== */
-#ifdef ALLBITS
-# define ZIGINT uint32_t
-# define EMANTISSA 4294967296.0 /* 32 bit mantissa */
-# define ERANDI randi32() /* 32 bits for mantissa */
-# define NMANTISSA 2147483648.0 /* 31 bit mantissa */
-# define NRANDI randi32() /* 31 bits for mantissa + 1 bit sign */
-# define RANDU randu32()
-#else
-# define ZIGINT uint64_t
-# define EMANTISSA 9007199254740992.0  /* 53 bit mantissa */
-# define ERANDI randi53() /* 53 bits for mantissa */
-# define NMANTISSA EMANTISSA
-# define NRANDI randi54() /* 53 bits for mantissa + 1 bit sign */
-# define RANDU randu53()
-#endif
 
 #define ZIGGURAT_TABLE_SIZE 256
 
@@ -453,6 +430,13 @@ oct_randu (void)
 #define ZIGGURAT_EXP_R 7.69711747013104972
 #define ZIGGURAT_EXP_INV_R 0.129918765548341586
 #define EXP_SECTION_AREA 0.0039496598225815571993
+
+#define ZIGINT uint64_t
+#define EMANTISSA 9007199254740992.0  /* 53 bit mantissa */
+#define ERANDI randi53() /* 53 bits for mantissa */
+#define NMANTISSA EMANTISSA
+#define NRANDI randi54() /* 53 bits for mantissa + 1 bit sign */
+#define RANDU randu53()
 
 static ZIGINT ki[ZIGGURAT_TABLE_SIZE];
 static double wi[ZIGGURAT_TABLE_SIZE], fi[ZIGGURAT_TABLE_SIZE];
@@ -592,7 +576,6 @@ oct_randn (void)
        * Of course, different compilers and operating systems may
        * have something to do with this.
        */
-#if !defined(ALLBITS)
 # if HAVE_X86_32
       /* 53-bit mantissa, 1-bit sign, x86 32-bit architecture */
       double x;
@@ -615,14 +598,6 @@ oct_randn (void)
       const double x = ( r&1 ? -rabs : rabs) * wi[idx];
 # endif /* !HAVE_X86_32 */
       if (rabs < (int64_t)ki[idx])
-#else /* ALLBITS */
-      /* 32-bit mantissa */
-      const uint32_t r = randi32();
-      const uint32_t rabs = r&LMASK;
-      const int idx = (int)(r&0xFF);
-      const double x = ((int32_t)r) * wi[idx];
-      if (rabs < ki[idx])
-#endif /* ALLBITS */
         return x;        /* 99.3% of the time we return here 1st try */
       else if (idx == 0)
         {
@@ -677,6 +652,173 @@ oct_rande (void)
     }
 }
 
+#undef ZIGINT
+#undef EMANTISSA
+#undef ERANDI
+#undef NMANTISSA
+#undef NRANDI
+#undef RANDU
+
+#define ZIGINT uint32_t
+#define EMANTISSA 4294967296.0 /* 32 bit mantissa */
+#define ERANDI randi32() /* 32 bits for mantissa */
+#define NMANTISSA 2147483648.0 /* 31 bit mantissa */
+#define NRANDI randi32() /* 31 bits for mantissa + 1 bit sign */
+#define RANDU randu32()
+
+static ZIGINT fki[ZIGGURAT_TABLE_SIZE];
+static float fwi[ZIGGURAT_TABLE_SIZE], ffi[ZIGGURAT_TABLE_SIZE];
+static ZIGINT fke[ZIGGURAT_TABLE_SIZE];
+static float fwe[ZIGGURAT_TABLE_SIZE], ffe[ZIGGURAT_TABLE_SIZE];
+
+
+static void
+create_ziggurat_float_tables (void)
+{
+  int i;
+  float x, x1;
+
+  /* Ziggurat tables for the normal distribution */
+  x1 = ZIGGURAT_NOR_R;
+  fwi[255] = x1 / NMANTISSA;
+  ffi[255] = exp (-0.5 * x1 * x1);
+
+  /* Index zero is special for tail strip, where Marsaglia and Tsang
+   * defines this as
+   * k_0 = 2^31 * r * f(r) / v, w_0 = 0.5^31 * v / f(r), f_0 = 1,
+   * where v is the area of each strip of the ziggurat.
+   */
+  fki[0] = (ZIGINT) (x1 * ffi[255] / NOR_SECTION_AREA * NMANTISSA);
+  fwi[0] = NOR_SECTION_AREA / ffi[255] / NMANTISSA;
+  ffi[0] = 1.;
+
+  for (i = 254; i > 0; i--)
+    {
+      /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
+       * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
+       */
+      x = sqrt(-2. * log(NOR_SECTION_AREA / x1 + ffi[i+1]));
+      fki[i+1] = (ZIGINT)(x / x1 * NMANTISSA);
+      fwi[i] = x / NMANTISSA;
+      ffi[i] = exp (-0.5 * x * x);
+      x1 = x;
+    }
+
+  fki[1] = 0;
+
+  /* Zigurrat tables for the exponential distribution */
+  x1 = ZIGGURAT_EXP_R;
+  fwe[255] = x1 / EMANTISSA;
+  ffe[255] = exp (-x1);
+
+  /* Index zero is special for tail strip, where Marsaglia and Tsang
+   * defines this as
+   * k_0 = 2^32 * r * f(r) / v, w_0 = 0.5^32 * v / f(r), f_0 = 1,
+   * where v is the area of each strip of the ziggurat.
+   */
+  fke[0] = (ZIGINT) (x1 * ffe[255] / EXP_SECTION_AREA * EMANTISSA);
+  fwe[0] = EXP_SECTION_AREA / ffe[255] / EMANTISSA;
+  ffe[0] = 1.;
+
+  for (i = 254; i > 0; i--)
+    {
+      /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
+       * need inverse operator of y = exp(-x) -> x = -ln(y)
+       */
+      x = - log(EXP_SECTION_AREA / x1 + ffe[i+1]);
+      fke[i+1] = (ZIGINT)(x / x1 * EMANTISSA);
+      fwe[i] = x / EMANTISSA;
+      ffe[i] = exp (-x);
+      x1 = x;
+    }
+  fke[1] = 0;
+
+  inittf = 0;
+}
+
+/*
+ * Here is the guts of the algorithm. As Marsaglia and Tsang state the
+ * algorithm in their paper
+ *
+ * 1) Calculate a random signed integer j and let i be the index
+ *     provided by the rightmost 8-bits of j
+ * 2) Set x = j * w_i. If j < k_i return x
+ * 3) If i = 0, then return x from the tail
+ * 4) If [f(x_{i-1}) - f(x_i)] * U < f(x) - f(x_i), return x
+ * 5) goto step 1
+ *
+ * Where f is the functional form of the distribution, which for a normal
+ * distribution is exp(-0.5*x*x)
+ */
+
+float
+oct_float_randn (void)
+{
+  if (inittf)
+    create_ziggurat_float_tables();
+
+  while (1)
+    {
+      /* 32-bit mantissa */
+      const uint32_t r = randi32();
+      const uint32_t rabs = r&LMASK;
+      const int idx = (int)(r&0xFF);
+      const float x = ((int32_t)r) * fwi[idx];
+      if (rabs < fki[idx])
+        return x;        /* 99.3% of the time we return here 1st try */
+      else if (idx == 0)
+        {
+          /* As stated in Marsaglia and Tsang
+           *
+           * For the normal tail, the method of Marsaglia[5] provides:
+           * generate x = -ln(U_1)/r, y = -ln(U_2), until y+y > x*x,
+           * then return r+x. Except that r+x is always in the positive
+           * tail!!!! Any thing random might be used to determine the
+           * sign, but as we already have r we might as well use it
+           *
+           * [PAK] but not the bottom 8 bits, since they are all 0 here!
+           */
+          float xx, yy;
+          do
+            {
+              xx = - ZIGGURAT_NOR_INV_R * log (RANDU);
+              yy = - log (RANDU);
+            }
+          while ( yy+yy <= xx*xx);
+          return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
+        }
+      else if ((ffi[idx-1] - ffi[idx]) * RANDU + ffi[idx] < exp(-0.5*x*x))
+        return x;
+    }
+}
+
+float
+oct_float_rande (void)
+{
+  if (inittf)
+    create_ziggurat_float_tables();
+
+  while (1)
+    {
+      ZIGINT ri = ERANDI;
+      const int idx = (int)(ri & 0xFF);
+      const float x = ri * fwe[idx];
+      if (ri < fke[idx])
+        return x;               // 98.9% of the time we return here 1st try
+      else if (idx == 0)
+        {
+          /* As stated in Marsaglia and Tsang
+           *
+           * For the exponential tail, the method of Marsaglia[5] provides:
+           * x = r - ln(U);
+           */
+          return ZIGGURAT_EXP_R - log(RANDU);
+        }
+      else if ((ffe[idx-1] - ffe[idx]) * RANDU + ffe[idx] < exp(-x))
+        return x;
+    }
+}
+
 /* Array generators */
 void
 oct_fill_randu (octave_idx_type n, double *p)
@@ -700,4 +842,28 @@ oct_fill_rande (octave_idx_type n, double *p)
   octave_idx_type i;
   for (i = 0; i < n; i++)
     p[i] = oct_rande();
+}
+
+void
+oct_fill_float_randu (octave_idx_type n, float *p)
+{
+  octave_idx_type i;
+  for (i = 0; i < n; i++)
+    p[i] = oct_float_randu();
+}
+
+void
+oct_fill_float_randn (octave_idx_type n, float *p)
+{
+  octave_idx_type i;
+  for (i = 0; i < n; i++)
+    p[i] = oct_float_randn();
+}
+
+void
+oct_fill_float_rande (octave_idx_type n, float *p)
+{
+  octave_idx_type i;
+  for (i = 0; i < n; i++)
+    p[i] = oct_float_rande();
 }

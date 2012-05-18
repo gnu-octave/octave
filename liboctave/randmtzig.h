@@ -82,10 +82,18 @@ extern OCTAVE_API double oct_randu (void);
 extern OCTAVE_API double oct_randn (void);
 extern OCTAVE_API double oct_rande (void);
 
+extern OCTAVE_API float oct_float_randu (void);
+extern OCTAVE_API float oct_float_randn (void);
+extern OCTAVE_API float oct_float_rande (void);
+
 /* === Array generators === */
 extern OCTAVE_API void oct_fill_randu (octave_idx_type n, double *p);
 extern OCTAVE_API void oct_fill_randn (octave_idx_type n, double *p);
 extern OCTAVE_API void oct_fill_rande (octave_idx_type n, double *p);
+
+extern OCTAVE_API void oct_fill_float_randu (octave_idx_type n, float *p);
+extern OCTAVE_API void oct_fill_float_randn (octave_idx_type n, float *p);
+extern OCTAVE_API void oct_fill_float_rande (octave_idx_type n, float *p);
 
 #ifdef  __cplusplus
 }

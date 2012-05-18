@@ -27,8 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "dColVector.h"
-#include "dMatrix.h"
 #include "dNDArray.h"
+#include "fNDArray.h"
 #include "lo-ieee.h"
 
 class
@@ -136,12 +136,23 @@ public:
     return instance_ok () ? instance->do_scalar (a) : octave_NaN;
   }
 
-  // Return a matrix of numbers from the sequence, filled in column
-  // major order.
-  static Matrix matrix (octave_idx_type r, octave_idx_type c, double a = 1.0)
+  // Return the next number from the sequence.
+  static float float_scalar (float a = 1.0)
   {
-    return instance_ok () ? instance->do_matrix (r, c, a) : Matrix ();
+    return instance_ok () ? instance->do_float_scalar (a) : octave_Float_NaN;
   }
+
+  // Return an array of numbers from the sequence.
+  static Array<double> vector (octave_idx_type n, double a = 1.0)
+   {
+     return instance_ok () ? instance->do_vector (n, a) : Array<double> ();
+   }
+
+  // Return an array of numbers from the sequence.
+  static Array<float> float_vector (octave_idx_type n, float a = 1.0)
+   {
+     return instance_ok () ? instance->do_float_vector (n, a) : Array<float> ();
+   }
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
@@ -150,10 +161,12 @@ public:
     return instance_ok () ? instance->do_nd_array (dims, a) : NDArray ();
   }
 
-  // Return an array of numbers from the sequence.
-  static Array<double> vector (octave_idx_type n, double a = 1.0)
+
+  // Return an N-dimensional array of numbers from the sequence,
+  // filled in column major order.
+  static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
   {
-    return instance_ok () ? instance->do_vector (n, a) : Array<double> ();
+    return instance_ok () ? instance->do_float_nd_array (dims, a) : FloatNDArray ();
   }
 
 private:
@@ -220,16 +233,22 @@ private:
   // Return the next number from the sequence.
   double do_scalar (double a = 1.);
 
-  // Return a matrix of numbers from the sequence, filled in column
-  // major order.
-  Matrix do_matrix (octave_idx_type r, octave_idx_type c, double a = 1.);
+  // Return the next number from the sequence.
+  float do_float_scalar (float a = 1.);
+
+  // Return an array of numbers from the sequence.
+  Array<double> do_vector (octave_idx_type n, double a = 1.);
+
+  // Return an array of numbers from the sequence.
+  Array<float> do_float_vector (octave_idx_type n, float a = 1.);
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
   NDArray do_nd_array (const dim_vector& dims, double a = 1.);
 
-  // Return an array of numbers from the sequence.
-  Array<double> do_vector (octave_idx_type n, double a = 1.);
+  // Return an N-dimensional array of numbers from the sequence,
+  // filled in column major order.
+  FloatNDArray do_float_nd_array (const dim_vector& dims, float a = 1.);
 
   // Some helper functions.
 
@@ -248,6 +267,8 @@ private:
   void switch_to_generator (int dist);
 
   void fill (octave_idx_type len, double *v, double a);
+
+  void fill (octave_idx_type len, float *v, float a);
 };
 
 #endif

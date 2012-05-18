@@ -368,9 +368,73 @@ poisson_cdf_lookup(double lambda, double *p, size_t n)
   }
 }
 
+static void
+poisson_cdf_lookup_float(double lambda, float *p, size_t n)
+{
+  double t[TABLESIZE];
+
+  /* Precompute the table for the u up to and including 0.458.
+   * We will almost certainly need it. */
+  int intlambda = (int)floor(lambda);
+  double P;
+  int tableidx;
+  size_t i = n;
+
+  t[0] = P = exp(-lambda);
+  for (tableidx = 1; tableidx <= intlambda; tableidx++) {
+    P = P*lambda/(double)tableidx;
+    t[tableidx] = t[tableidx-1] + P;
+  }
+
+  while (i-- > 0) {
+    double u = RUNI;
+    int k = (u > 0.458 ? intlambda : 0);
+  nextk:
+    if ( u <= t[k] ) {
+      p[i] = (float) k;
+      continue;
+    }
+    if (++k < tableidx) goto nextk;
+
+    while (tableidx < TABLESIZE) {
+      P = P*lambda/(double)tableidx;
+      t[tableidx] = t[tableidx-1] + P;
+      if (t[tableidx] == t[tableidx-1]) t[tableidx] = 1.0;
+      tableidx++;
+      if (u <= t[tableidx-1]) break;
+    }
+
+    p[i] = (float)(tableidx-1);
+  }
+}
+
 /* From Press, et al., Numerical Recipes */
 static void
 poisson_rejection (double lambda, double *p, size_t n)
+{
+  double sq = sqrt(2.0*lambda);
+  double alxm = log(lambda);
+  double g = lambda*alxm - LGAMMA(lambda+1.0);
+  size_t i;
+
+  for (i = 0; i < n; i++)
+    {
+      double y, em, t;
+      do {
+        do {
+          y = tan(M_PI*RUNI);
+          em = sq * y + lambda;
+        } while (em < 0.0);
+        em = floor(em);
+        t = 0.9*(1.0+y*y)*exp(em*alxm-flogfak(em)-g);
+      } while (RUNI > t);
+      p[i] = em;
+    }
+}
+
+/* From Press, et al., Numerical Recipes */
+static void
+poisson_rejection_float (double lambda, float *p, size_t n)
 {
   double sq = sqrt(2.0*lambda);
   double alxm = log(lambda);
@@ -452,6 +516,71 @@ oct_randp (double L)
   } else if (L <= 1e8) {
     /* numerical recipes */
     poisson_rejection(L, &ret, 1);
+  } else if (INFINITE(L)) {
+    /* FIXME R uses NaN, but the normal approx. suggests that as
+     * limit should be inf. Which is correct? */
+    ret = NAN;
+  } else {
+    /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
+    ret = floor(RNOR*sqrt(L) + L + 0.5);
+    if (ret < 0.0) ret = 0.0; /* will probably never happen */
+  }
+  return ret;
+}
+
+/* Generate a set of poisson numbers with the same distribution */
+void
+oct_fill_float_randp (float FL, octave_idx_type n, float *p)
+{
+  double L = FL;
+  octave_idx_type i;
+  if (L < 0.0 || INFINITE(L))
+    {
+      for (i=0; i<n; i++)
+        p[i] = NAN;
+    }
+  else if (L <= 10.0)
+    {
+      poisson_cdf_lookup_float(L, p, n);
+    }
+  else if (L <= 1e8)
+    {
+      for (i=0; i<n; i++)
+        p[i] = pprsc(L);
+    }
+  else
+    {
+      /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
+      const double sqrtL = sqrt(L);
+      for (i = 0; i < n; i++)
+        {
+          p[i] = floor(RNOR*sqrtL + L + 0.5);
+          if (p[i] < 0.0)
+            p[i] = 0.0; /* will probably never happen */
+        }
+    }
+}
+
+/* Generate one poisson variate */
+float
+oct_float_randp (float FL)
+{
+  double L = FL;
+  float ret;
+  if (L < 0.0) ret = NAN;
+  else if (L <= 12.0) {
+    /* From Press, et al. Numerical recipes */
+    double g = exp(-L);
+    int em = -1;
+    double t = 1.0;
+    do {
+      ++em;
+      t *= RUNI;
+    } while (t > g);
+    ret = em;
+  } else if (L <= 1e8) {
+    /* numerical recipes */
+    poisson_rejection_float(L, &ret, 1);
   } else if (INFINITE(L)) {
     /* FIXME R uses NaN, but the normal approx. suggests that as
      * limit should be inf. Which is correct? */

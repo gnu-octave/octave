@@ -141,3 +141,59 @@ oct_randg (double a)
   oct_fill_randg(a,1,&ret);
   return ret;
 }
+
+#undef NAN
+#undef RUNI
+#undef RNOR
+#undef REXP
+#define NAN octave_Float_NaN
+#define RUNI oct_float_randu()
+#define RNOR oct_float_randn()
+#define REXP oct_float_rande()
+
+void
+oct_fill_float_randg (float a, octave_idx_type n, float *r)
+{
+  octave_idx_type i;
+  /* If a < 1, start by generating gamma(1+a) */
+  const float d =  (a < 1. ? 1.+a : a) - 1./3.;
+  const float c = 1./sqrt(9.*d);
+
+  /* Handle invalid cases */
+  if (a <= 0 || INFINITE(a))
+    {
+      for (i=0; i < n; i++)
+        r[i] = NAN;
+      return;
+    }
+
+  for (i=0; i < n; i++)
+    {
+      float x, xsq, v, u;
+    frestart:
+      x = RNOR;
+      v = (1+c*x);
+      v *= v*v;
+      if (v <= 0)
+        goto frestart; /* rare, so don't bother moving up */
+      u = RUNI;
+      xsq = x*x;
+      if (u >= 1.-0.0331*xsq*xsq && log(u) >= 0.5*xsq + d*(1-v+log(v)))
+        goto frestart;
+      r[i] = d*v;
+    }
+  if (a < 1)
+    { /* Use gamma(a) = gamma(1+a)*U^(1/a) */
+      /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
+      for (i = 0; i < n; i++)
+        r[i] *= exp(-REXP/a);
+    }
+}
+
+float
+oct_float_randg (float a)
+{
+  float ret;
+  oct_fill_float_randg(a,1,&ret);
+  return ret;
+}

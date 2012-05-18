@@ -100,6 +100,7 @@ EXTRA_DIST = \
   defaults.in.h \
   DOCSTRINGS \
   find-defun-files.sh \
+  gendoc.pl \
   genprops.awk \
   gl2ps.c \
   graphics.in.h \
@@ -107,7 +108,6 @@ EXTRA_DIST = \
   mk-pkg-add \
   mkbuiltins \
   mkdefs \
-  mkgendoc \
   mkoctfile.in.cc \
   mkoctfile.in.sh \
   mkops \
@@ -662,26 +662,15 @@ __init_fltk__.lo __init_fltk__.o: \
   AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
 
 if AMCOND_BUILD_DOCS
-.DOCSTRINGS: gendoc$(BUILD_EXEEXT)
+.DOCSTRINGS: $(ALL_DEF_FILES) gendoc.pl
 	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/DOCSTRINGS ] && [ ! -f DOCSTRINGS ]; then \
 		cp $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 		touch -r $(srcdir)/DOCSTRINGS DOCSTRINGS; \
 	fi
 	@echo "creating .DOCSTRINGS from .cc source files"
-	@./gendoc > $@
+	@$(PERL) $(srcdir)/gendoc.pl $(ALL_DEF_FILES) > $@
 	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
-
-doc-files: $(ALL_DEF_FILES)
-	echo $(ALL_DEF_FILES) > $@-t
-	mv $@-t $@
-
-gendoc.cc: doc-files mkgendoc
-	$(srcdir)/mkgendoc doc-files > $@-t
-	mv $@-t $@
-
-gendoc$(BUILD_EXEEXT): gendoc.cc
-	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
 all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE) .DOCSTRINGS
 else
@@ -769,9 +758,6 @@ endif
 CLEANFILES = \
   $(bin_SCRIPTS) \
   $(DLD_FUNCTIONS_PKG_ADD_FILE) \
-  doc-files \
-  gendoc.cc \
-  gendoc$(BUILD_EXEEXT) \
   graphics-props.cc \
   oct-parse.output
 

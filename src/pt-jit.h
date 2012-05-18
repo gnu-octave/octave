@@ -293,7 +293,7 @@ public:
 
   octave_value to_octave_value (jit_type *type, llvm::GenericValue& gv);
 
-  void reset_generic (size_t nargs);
+  void reset_generic (void);
 private:
   typedef std::map<std::string, jit_type *> type_map;
 
@@ -324,14 +324,9 @@ private:
   jit_function simple_for_incr;
   jit_function simple_for_index;
 
-  size_t scalar_idx;
-  std::vector<double> scalar_out;
-
-  size_t ov_idx;
-  std::vector<octave_base_value*> ov_out;
-
-  size_t range_idx;
-  std::vector<jit_range> range_out;
+  std::list<double> scalar_out;
+  std::list<octave_base_value *> ov_out;
+  std::list<jit_range> range_out;
 };
 
 class

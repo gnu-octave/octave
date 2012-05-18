@@ -497,18 +497,18 @@ jit_typeinfo::to_generic (jit_type *type, llvm::GenericValue& gv, octave_value o
     {
       octave_base_value *obv = ov.internal_rep ();
       obv->grab ();
-      ov_out[ov_idx] = obv;
-      gv.PointerVal = &ov_out[ov_idx++];
+      ov_out.push_back (obv);
+      gv.PointerVal = &ov_out.back ();
     }
   else if (type == scalar)
     {
-      scalar_out[scalar_idx] = ov.double_value ();
-      gv.PointerVal = &scalar_out[scalar_idx++];
+      scalar_out.push_back (ov.double_value ());
+      gv.PointerVal = &scalar_out.back ();
     }
   else if (type == range)
     {
-      range_out[range_idx] = ov.range_value ();
-      gv.PointerVal = &range_out[range_idx++];
+      range_out.push_back (ov.range_value ());
+      gv.PointerVal = &range_out.back ();
     }
   else
     assert (false && "Type not supported yet");
@@ -538,20 +538,11 @@ jit_typeinfo::to_octave_value (jit_type *type, llvm::GenericValue& gv)
 }
 
 void
-jit_typeinfo::reset_generic (size_t nargs)
+jit_typeinfo::reset_generic (void)
 {
-  scalar_idx = 0;
-  ov_idx = 0;
-  range_idx = 0;
-
-  if (scalar_out.size () < nargs)
-    scalar_out.resize (nargs);
-
-  if (ov_out.size () < nargs)
-    ov_out.resize (nargs);
-
-  if (range_out.size () < nargs)
-    range_out.resize (nargs);
+  scalar_out.clear ();
+  ov_out.clear ();
+  range_out.clear ();
 }
 
 jit_type*
@@ -1645,8 +1636,6 @@ jit_info::execute (const octave_value& bounds) const
   if (! function)
     return false;
 
-  tinfo->reset_generic (types.size ());
-
   std::vector<llvm::GenericValue> args (types.size ());
   size_t idx;
   type_map::const_iterator iter;
@@ -1673,6 +1662,8 @@ jit_info::execute (const octave_value& bounds) const
       octave_value result = tinfo->to_octave_value (iter->second, args[idx]);
       symbol_table::varref (iter->first) = result;
     }
+
+  tinfo->reset_generic ();
 
   return true;
 }

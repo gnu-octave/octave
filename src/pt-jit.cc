@@ -58,7 +58,6 @@ along with Octave; see the file COPYING.  If not, see
 // For now we leave this in so people tell when JIT actually happens
 static const bool debug_print = false;
 
-//FIXME: Move into tree_jit
 static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 
 // thrown when we should give up on JIT and interpret

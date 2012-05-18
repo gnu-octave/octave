@@ -287,8 +287,8 @@ public:
     return ol.result;
   }
 
-  // FIXME: generic creation should probably be handled seperatly
   void to_generic (jit_type *type, llvm::GenericValue& gv);
+
   void to_generic (jit_type *type, llvm::GenericValue& gv, octave_value ov);
 
   octave_value to_octave_value (jit_type *type, llvm::GenericValue& gv);

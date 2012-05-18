@@ -27,6 +27,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "cool");
+## PKG_DEL: colormap ("unregister", "cool");
+
 function map = cool (n)
 
   if (nargin == 0)
@@ -47,7 +50,7 @@ function map = cool (n)
     b = ones (n, 1);
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

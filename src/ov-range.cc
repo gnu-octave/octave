@@ -335,7 +335,7 @@ octave_range::resize (const dim_vector& dv, bool fill) const
 {
   NDArray retval = array_value ();
   if (fill)
-    retval.resize (dv, NDArray::resize_fill_value ());
+    retval.resize (dv, 0);
   else
     retval.resize (dv);
   return retval;

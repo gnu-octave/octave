@@ -119,22 +119,33 @@ public:
   T& dgelem (octave_idx_type i)
     { return Array<T>::elem (i); }
 
-  void check_idx (octave_idx_type r, octave_idx_type c) const;
+  T checkelem (octave_idx_type r, octave_idx_type c) const
+    {
+      return check_idx (r, c) ? elem (r, c) : T (0);
+    }
 
   T operator () (octave_idx_type r, octave_idx_type c) const
     {
 #if defined (BOUNDS_CHECKING)
-      check_idx (r, c);
-#endif
+      checkelem (r, c);
+#else
       return elem (r, c);
+#endif
+    }
+
+  T& checkelem (octave_idx_type r, octave_idx_type c)
+    {
+      static T zero (0);
+      return check_idx (r, c) ? elem (r, c) : zero;
     }
 
   T& operator () (octave_idx_type r, octave_idx_type c)
     {
 #if defined (BOUNDS_CHECKING)
-      check_idx (r, c);
-#endif
+      return checkelem (r, c);
+#else
       return elem (r, c);
+#endif
     }
 
   // No checking.
@@ -150,8 +161,11 @@ public:
   T dgxelem (octave_idx_type i) const
     { return Array<T>::xelem (i); }
 
-  void resize (octave_idx_type n, octave_idx_type m,
-               const T& rfv = Array<T>::resize_fill_value ());
+  void resize (octave_idx_type n, octave_idx_type m, const T& rfv);
+  void resize (octave_idx_type n, octave_idx_type m)
+  {
+    resize (n, m, Array<T>::resize_fill_value ());
+  }
 
   DiagArray2<T> transpose (void) const;
   DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;
@@ -166,6 +180,10 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const
     { Array<T>::print_info (os, prefix); }
+
+private:
+
+  bool check_idx (octave_idx_type r, octave_idx_type c) const;
 };
 
 #endif

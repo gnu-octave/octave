@@ -78,7 +78,7 @@ their values are derived from the maximum index in the vectors @var{i} and\n\
 \n\
 @strong{Note}: if multiple values are specified with the same\n\
 @var{i}, @var{j} indices, the corresponding values in @var{s} will\n\
-be added. See @code{accumarray} for an example of how to produce different\n\
+be added.  See @code{accumarray} for an example of how to produce different\n\
 behavior, such as taking the minimum instead.\n\
 \n\
 The following are all equivalent:\n\

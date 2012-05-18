@@ -96,8 +96,6 @@ public:
   // friend std::ostream& operator << (std::ostream& os, const NDArray& a);
   // friend std::istream& operator >> (std::istream& is, NDArray& a);
 
-  static bool resize_fill_value (void) { return false; }
-
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (double& max_val, double& min_val) const;
 

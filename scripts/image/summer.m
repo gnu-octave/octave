@@ -28,6 +28,9 @@
 ## Author:  Kai Habel <kai.habel@gmx.de>
 ## Date:  06/03/2000
 
+## PKG_ADD: colormap ("register", "summer");
+## PKG_DEL: colormap ("unregister", "summer");
+
 function map = summer (n)
 
   if (nargin == 0)
@@ -48,7 +51,7 @@ function map = summer (n)
     b = 0.4 * ones (n, 1);
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

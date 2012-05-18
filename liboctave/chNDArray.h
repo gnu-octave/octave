@@ -92,8 +92,6 @@ public:
   // friend std::ostream& operator << (std::ostream& os, const charNDArray& a);
   // friend std::istream& operator >> (std::istream& is, charNDArray& a);
 
-  static char resize_fill_value (void) { return '\0'; }
-
   charNDArray diag (octave_idx_type k = 0) const;
 
   charNDArray diag (octave_idx_type m, octave_idx_type n) const;

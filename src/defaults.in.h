@@ -56,6 +56,10 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_DOC_CACHE_FILE %OCTAVE_DOC_CACHE_FILE%
 #endif
 
+#ifndef OCTAVE_TEXI_MACROS_FILE
+#define OCTAVE_TEXI_MACROS_FILE %OCTAVE_TEXI_MACROS_FILE%
+#endif
+
 #ifndef OCTAVE_EXEC_PREFIX
 #define OCTAVE_EXEC_PREFIX %OCTAVE_EXEC_PREFIX%
 #endif

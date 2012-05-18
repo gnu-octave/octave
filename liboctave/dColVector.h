@@ -99,8 +99,7 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ColumnVector& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, ColumnVector& a);
 
-  void resize (octave_idx_type n,
-               const double& rfv = Array<double>::resize_fill_value ())
+  void resize (octave_idx_type n, const double& rfv = 0)
   {
     Array<double>::resize (dim_vector (n, 1), rfv);
   }

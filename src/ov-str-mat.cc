@@ -143,7 +143,7 @@ octave_char_matrix_str::resize (const dim_vector& dv, bool fill) const
 {
   charNDArray retval (matrix);
   if (fill)
-    retval.resize (dv, charNDArray::resize_fill_value ());
+    retval.resize (dv, 0);
   else
     retval.resize (dv);
   return octave_value (retval, is_sq_string () ? '\'' : '"');

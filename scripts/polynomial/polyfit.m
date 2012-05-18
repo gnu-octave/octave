@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {[@var{p}, @var{s}, @var{mu}] =} polyfit (@var{x}, @var{y}, @var{n})
 ## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 ## @var{n} that minimizes the least-squares-error of the fit to the points
-## @code{[@var{x}, @var{y}]}. If @var{n} is a logical vector, it is used
+## @code{[@var{x}, @var{y}]}.  If @var{n} is a logical vector, it is used
 ## as a mask to selectively force the corresponding polynomial
 ## coefficients to be used or ignored.
 ##
@@ -53,7 +53,7 @@
 ## @end table
 ##
 ## The second output may be used by @code{polyval} to calculate the
-## statistical error limits of the predicted values. In particular, the
+## statistical error limits of the predicted values.  In particular, the
 ## standard deviation of @var{p} coefficients is given by @*
 ## @code{sqrt (diag (s.C)/s.df)*s.normr}.
 ##

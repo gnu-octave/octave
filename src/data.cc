@@ -5477,7 +5477,7 @@ DEFUN (mldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x \\ y}} are equivalent.\n\
+This function and @w{@xcode{x @xbackslashchar{} y}} are equivalent.\n\
 @seealso{mrdivide, ldivide}\n\
 @end deftypefn")
 {
@@ -5594,7 +5594,7 @@ DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
-This function and @w{@xcode{x .\\ y}} are equivalent.\n\
+This function and @w{@xcode{x .@xbackslashchar{} y}} are equivalent.\n\
 @seealso{rdivide, mldivide}\n\
 @end deftypefn")
 {
@@ -5648,10 +5648,14 @@ static double tic_toc_timestamp = -1.0;
 DEFUN (tic, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} tic ()\n\
+@deftypefnx  {Built-in Function} {@var{id} =} tic ()\n\
 @deftypefnx {Built-in Function} {} toc ()\n\
+@deftypefnx {Built-in Function} {} toc (@var{id})\n\
+@deftypefnx {Built-in Function} {@var{val} =} toc (@dots{})\n\
 Set or check a wall-clock timer.  Calling @code{tic} without an\n\
-output argument sets the timer.  Subsequent calls to @code{toc}\n\
-return the number of seconds since the timer was set.  For example,\n\
+output argument sets the internal timer state.  Subsequent calls\n\
+to @code{toc} return the number of seconds since the timer was set.\n\
+For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -5665,38 +5669,23 @@ elapsed_time = toc ();\n\
 will set the variable @code{elapsed_time} to the number of seconds since\n\
 the most recent call to the function @code{tic}.\n\
 \n\
-If called with one output argument then this function returns a scalar\n\
-of type @code{uint64} and the wall-clock timer is not started.\n\
+If called with one output argument, @code{tic} returns a scalar\n\
+of type @code{uint64} that may be later passed to @code{toc}.\n\
 \n\
 @example\n\
 @group\n\
-t = tic; sleep (5); (double (tic ()) - double (t)) * 1e-6\n\
-      @result{} 5\n\
+id = tic; sleep (5); toc (id)\n\
+      @result{} 5.0010\n\
 @end group\n\
 @end example\n\
 \n\
-Nested timing with @code{tic} and @code{toc} is not supported.\n\
-Therefore @code{toc} will always return the elapsed time from the most\n\
-recent call to @code{tic}.\n\
+Calling @code{tic} and @code{toc} this way allows nested timing calls.\n\
 \n\
 If you are more interested in the CPU time that your process used, you\n\
 should use the @code{cputime} function instead.  The @code{tic} and\n\
 @code{toc} functions report the actual wall clock time that elapsed\n\
 between the calls.  This may include time spent processing other jobs or\n\
-doing nothing at all.  For example:\n\
-\n\
-@example\n\
-@group\n\
-tic (); sleep (5); toc ()\n\
-     @result{} 5\n\
-t = cputime (); sleep (5); cputime () - t\n\
-     @result{} 0\n\
-@end group\n\
-@end example\n\
-\n\
-@noindent\n\
-(This example also illustrates that the CPU timer may have a fairly\n\
-coarse resolution.)\n\
+doing nothing at all.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -5711,7 +5700,13 @@ coarse resolution.)\n\
   double tmp = now.double_value ();
 
   if (nargout > 0)
-    retval = static_cast<octave_uint64> (1e6 * tmp);
+    {
+      double ip = 0.0;
+      double frac = modf (tmp, &ip);
+      uint64_t microsecs = static_cast<uint64_t> (CLOCKS_PER_SEC * frac);
+      microsecs += CLOCKS_PER_SEC * static_cast<uint64_t> (ip);
+      retval = octave_uint64 (microsecs);
+    }
   else
     tic_toc_timestamp = tmp;
 
@@ -5721,6 +5716,8 @@ coarse resolution.)\n\
 DEFUN (toc, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} toc ()\n\
+@deftypefnx {Built-in Function} {} toc (@var{id})\n\
+@deftypefnx {Built-in Function} {@var{val} = } toc (@dots{})\n\
 See tic.\n\
 @end deftypefn")
 {
@@ -5728,29 +5725,58 @@ See tic.\n\
 
   int nargin = args.length ();
 
-  if (nargin != 0)
-    warning ("tic: ignoring extra arguments");
+  double start_time = tic_toc_timestamp;
 
-  if (tic_toc_timestamp < 0)
-    {
-      warning ("toc called before timer set");
-      if (nargout > 0)
-        retval = Matrix ();
-    }
+  if (nargin > 1)
+    print_usage ();
   else
     {
-      octave_time now;
+      if (nargin == 1)
+        {
+          octave_uint64 id = args(0).uint64_scalar_value ();
 
-      double tmp = now.double_value () - tic_toc_timestamp;
+          if (! error_state)
+            {
+              uint64_t val = id.value ();
 
-      if (nargout > 0)
-        retval = tmp;
-      else
-        octave_stdout << "Elapsed time is " << tmp << " seconds.\n";
+              start_time
+                = (static_cast<double> (val / CLOCKS_PER_SEC)
+                   + static_cast<double> (val % CLOCKS_PER_SEC) / CLOCKS_PER_SEC);
+
+              // FIXME -- should we also check to see whether the start
+              // time is after the beginning of this Octave session?
+            }
+          else
+            error ("toc: invalid ID");
+        }
+
+      if (! error_state)
+        {
+          if (start_time < 0)
+            error ("toc called before timer set");
+          else
+            {
+              octave_time now;
+
+              double tmp = now.double_value () - start_time;
+
+              if (nargout > 0)
+                retval = tmp;
+              else
+                octave_stdout << "Elapsed time is " << tmp << " seconds.\n";
+            }
+        }
     }
 
   return retval;
 }
+
+/*
+%!shared id
+%! id = tic ();
+%!assert (isa (id, "uint64"));
+%!assert (isa (toc (id), "double"));
+*/
 
 DEFUN (cputime, args, ,
   "-*- texinfo -*-\n\

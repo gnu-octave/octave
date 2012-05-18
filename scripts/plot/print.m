@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} print (@var{options})
 ## @deftypefnx {Function File} {} print (@var{filename}, @var{options})
 ## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
-## Print a graph, or save it to a file. Both output formatted for 
+## Print a graph, or save it to a file.  Both output formatted for 
 ## printing (PDF and PostScript), and many bitmapped and vector
 ## image formats are supported.
 ##
@@ -35,8 +35,8 @@
 ##
 ## For output to a printer, to a PostScript file, or a PDF file,
 ## the paper size is specified by the figure's @code{papersize}
-## property. The location and size of the image on the page are
-## specified by the figure's @code{paperposition} property. The
+## property.  The location and size of the image on the page are
+## specified by the figure's @code{paperposition} property.  The
 ## orientation of the page is specified by the figure's
 ## @code{paperorientation} property.
 ##

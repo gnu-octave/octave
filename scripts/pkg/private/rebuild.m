@@ -81,11 +81,11 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
 
     dup = [];
     for i = 1:length (descriptions)
-      if (find (dup, i))
+      if (any (dup == i))
         continue;
       endif
       for j = (i+1):length (descriptions)
-        if (find (dup, j))
+        if (any (dup == j))
           continue;
         endif
         if (strcmp (descriptions{i}.name, descriptions{j}.name))

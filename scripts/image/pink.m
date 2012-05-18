@@ -28,6 +28,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "pink");
+## PKG_DEL: colormap ("unregister", "pink");
+
 function map = pink (n)
 
   if (nargin == 0)
@@ -41,7 +44,7 @@ function map = pink (n)
   endif
 
   if (n == 1)
-    map = [0, 0, 0];
+    map = sqrt([1/3, 1/3, 1/3]);
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x < 3/8) .* (14/9 * x) ...
@@ -53,7 +56,7 @@ function map = pink (n)
       + (x >= 3/4) .* (2 * x - 1);
     map = sqrt ([r, g, b]);
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

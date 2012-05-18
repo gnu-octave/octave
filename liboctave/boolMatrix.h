@@ -84,14 +84,10 @@ public:
   friend std::istream& operator >> (std::istream& is, Matrix& a);
 #endif
 
-  void resize (octave_idx_type nr, octave_idx_type nc,
-               bool rfv = resize_fill_value ())
+  void resize (octave_idx_type nr, octave_idx_type nc, bool rfv = false)
   {
     Array<bool>::resize (dim_vector (nr, nc), rfv);
   }
-
-  static bool resize_fill_value (void) { return false; }
-
 };
 
 MM_BOOL_OP_DECLS (boolMatrix, boolMatrix, OCTAVE_API)

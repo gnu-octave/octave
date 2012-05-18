@@ -27,6 +27,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "winter");
+## PKG_DEL: colormap ("unregister", "winter");
+
 function map = winter (n)
 
   if (nargin == 0)
@@ -47,7 +50,7 @@ function map = winter (n)
     b = 1 - g / 2;
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

@@ -147,8 +147,6 @@ public:
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const FloatNDArray& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, FloatNDArray& a);
 
-  static float resize_fill_value (void) { return 0; }
-
   FloatNDArray diag (octave_idx_type k = 0) const;
 
   FloatNDArray diag (octave_idx_type m, octave_idx_type n) const;

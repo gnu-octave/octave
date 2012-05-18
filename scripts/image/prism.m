@@ -28,6 +28,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "prism");
+## PKG_DEL: colormap ("unregister", "prism");
+
 function map = prism (n)
 
   if (nargin == 0)
@@ -40,8 +43,14 @@ function map = prism (n)
     print_usage ();
   endif
 
-  C = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
-  map = C(rem (0:(n-1), 6) + 1, :);
+  if (n == 1)
+    map = [1 0 0];
+  elseif (n > 1)
+    C = [1, 0, 0; 1, 1/2, 0; 1, 1, 0; 0, 1, 0; 0, 0, 1; 2/3, 0, 1];
+    map = C(rem (0:(n-1), 6) + 1, :);
+  else
+    map = zeros (0, 3);
+  endif
 
 endfunction
 

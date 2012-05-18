@@ -88,7 +88,7 @@ public:
     return longest;
   }
 
-  void resize (octave_idx_type n, const std::string& rfv = resize_fill_value ())
+  void resize (octave_idx_type n, const std::string& rfv = std::string ())
   {
     Array<std::string>::resize (dim_vector (n, 1), rfv);
   }

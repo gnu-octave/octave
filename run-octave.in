@@ -45,6 +45,7 @@ d3_path=`echo "$d3_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s);
 LOADPATH="$d1_path:$d2_path:$d3_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 DOCFILE="$builddir/doc/interpreter/doc-cache"
+TEXIMACROSFILE="$top_srcdir/doc/interpreter/macros.texi"
 INFOFILE="$top_srcdir/doc/interpreter/octave.info"
 
 ## Checking for string equality below with prepended x's in order to
@@ -70,4 +71,4 @@ OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
   exec $builddir/libtool --mode=execute $driver \
     "$builddir/src/octave" --no-init-path --path="$LOADPATH" \
     --image-path="$IMAGEPATH" --doc-cache-file="$DOCFILE" \
-    --info-file="$INFOFILE" "$@"
+    --texi-macros-file="$TEXIMACROSFILE" --info-file="$INFOFILE" "$@"

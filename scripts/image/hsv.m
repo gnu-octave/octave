@@ -32,6 +32,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "hsv");
+## PKG_DEL: colormap ("unregister", "hsv");
+
 function map = hsv (n)
 
   if (nargin == 0)
@@ -50,7 +53,7 @@ function map = hsv (n)
     hue = linspace (0, 1, n)';
     map = hsv2rgb ([hue, ones(n,1), ones(n,1)]);
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

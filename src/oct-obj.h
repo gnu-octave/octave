@@ -91,8 +91,7 @@ public:
 
   bool empty (void) const { return length () == 0; }
 
-  void resize (octave_idx_type n, const octave_value& rfv
-               = Array<octave_value>::resize_fill_value ())
+  void resize (octave_idx_type n, const octave_value& rfv = octave_value ())
   {
     data.resize (dim_vector (1, n), rfv);
   }

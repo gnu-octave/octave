@@ -28,6 +28,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "copper");
+## PKG_DEL: colormap ("unregister", "copper");
+
 function map = copper (n)
 
   if (nargin == 0)
@@ -50,7 +53,7 @@ function map = copper (n)
     b = 1/2 * x;
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

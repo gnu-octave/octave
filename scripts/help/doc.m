@@ -86,7 +86,7 @@ function retval = doc (fname)
     have_fname = ! isempty (fname);
 
     if (have_fname)
-      status = system (sprintf ("%s --index-search %s", cmd, fname));
+      status = system (sprintf ("%s --index-search \"%s\"", cmd, fname));
     endif
 
     if (! (have_fname && status == 0))

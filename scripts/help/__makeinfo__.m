@@ -94,18 +94,15 @@ function [retval, status] = __makeinfo__ (text, output_type = "plain text", fsee
   ## Texinfo crashes if @end tex does not appear first on the line.
   text = regexprep (text, '^ +@end tex', '@end tex', 'lineanchors');
 
-  ## Handle @seealso macro
-  see_also_pat = '@seealso *\{(.*)\}';
-  args = regexp (text, see_also_pat, 'tokens');
-  for ii = 1:numel (args)
-    expanded = fsee_also (strtrim (strsplit (args{ii}{:}, ',', true)));
-    text = regexprep (text, see_also_pat, expanded, 'once');
-  endfor
-
-  ## Handle @nospell macro
-  text = regexprep (text, '@nospell *\{([^}]*)\}', "$1");
-  ## Handle @xcode macro
-  text = regexprep (text, '@xcode *\{([^}]*)\}', "$1");
+  file = texi_macros_file ();
+  fid = fopen (file, "r");
+  if (fid < 0)
+    error ("unable to open %s for reading", file);
+  else
+    macros_text = fread (fid, Inf, "*char")';
+    text = cstrcat (macros_text, text);
+  endif
+  fclose (fid);
 
   if (strcmpi (output_type, "texinfo"))
     status = 0;

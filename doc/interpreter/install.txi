@@ -196,7 +196,7 @@ Command-line editing library (@url{www.gnu.org/s/readline}).
 @end table
 
 If you wish to build Octave without GNU readline installed, you must use
-the @code{--disable-readline} option when running the configure script.
+the @option{--disable-readline} option when running the configure script.
 
 The following external software packages are optional but recommended:
 

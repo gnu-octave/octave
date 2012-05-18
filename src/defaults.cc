@@ -294,6 +294,16 @@ set_default_doc_cache_file (void)
 }
 
 static void
+set_default_texi_macros_file (void)
+{
+  std::string def_file = subst_octave_home (OCTAVE_TEXI_MACROS_FILE);
+
+  std::string env_file = octave_env::getenv ("OCTAVE_TEXI_MACROS_FILE");
+
+  Vtexi_macros_file = env_file.empty () ? def_file : env_file;
+}
+
+static void
 set_default_info_file (void)
 {
   std::string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
@@ -392,6 +402,8 @@ install_defaults (void)
   set_image_path ();
 
   set_default_doc_cache_file ();
+
+  set_default_texi_macros_file ();
 
   set_default_info_file ();
 

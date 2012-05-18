@@ -27,6 +27,9 @@
 
 ## Author:  Kai Habel <kai.habel@gmx.de>
 
+## PKG_ADD: colormap ("register", "spring");
+## PKG_DEL: colormap ("unregister", "spring");
+
 function map = spring (n)
 
   if (nargin == 0)
@@ -47,7 +50,7 @@ function map = spring (n)
     b = 1 - g;
     map = [r, g, b];
   else
-    map = [];
+    map = zeros (0, 3);
   endif
 
 endfunction

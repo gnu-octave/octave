@@ -381,8 +381,7 @@ public:
   // Force certain dimensionality, preserving numel ().  Missing
   // dimensions are set to 1, redundant are folded into the trailing
   // one.  If n = 1, the result is 2d and the second dim is 1
-  // (dim_vectors are always at least 2D).  If the original dimensions
-  // were all zero, the padding value is zero.
+  // (dim_vectors are always at least 2D).
 
   dim_vector redim (int n) const;
 

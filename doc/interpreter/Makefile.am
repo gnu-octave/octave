@@ -245,6 +245,7 @@ EXTRA_DIST = \
   images \
   images.awk \
   images.mk \
+  macros.texi \
   mk_doc_cache.m \
   mkcontrib.awk \
   munge-texi.pl \

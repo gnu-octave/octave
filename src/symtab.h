@@ -610,6 +610,12 @@ public:
       return &sym;
     }
 
+    symbol_record *operator-> (void) const
+    {
+      update ();
+      return &sym;
+    }
+
     // can be used to place symbol_record_ref in maps, we don't overload < as
     // it doesn't make any sense for symbol_record_ref
     struct comparator
@@ -621,7 +627,7 @@ public:
       }
     };
   private:
-    void update (void)
+    void update (void) const
     {
       scope_id curr_scope = symbol_table::current_scope ();
       if (scope != curr_scope || ! sym.is_valid ())
@@ -631,8 +637,8 @@ public:
         }
     }
 
-    scope_id scope;
-    symbol_record sym;
+    mutable scope_id scope;
+    mutable symbol_record sym;
   };
 
   class

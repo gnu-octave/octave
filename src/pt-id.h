@@ -114,6 +114,10 @@ public:
 
   void accept (tree_walker& tw);
 
+  symbol_table::symbol_record_ref symbol (void) const
+  {
+    return sym;
+  }
 private:
 
   // The symbol record that this identifier references.

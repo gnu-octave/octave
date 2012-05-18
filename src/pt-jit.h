@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Range.h"
 #include "pt-walk.h"
+#include "symtab.h"
 
 // -------------------- Current status --------------------
 // Simple binary operations (+-*/) on octave_scalar's (doubles) are optimized.
@@ -295,8 +296,6 @@ public:
 
   void reset_generic (void);
 private:
-  typedef std::map<std::string, jit_type *> type_map;
-
   jit_type *new_type (const std::string& name, bool force_init,
                       jit_type *parent, llvm::Type *llvm_type);
 
@@ -332,13 +331,15 @@ private:
 class
 jit_infer : public tree_walker
 {
-  typedef std::map<std::string, jit_type *> type_map;
 public:
+  // pair <argin, type>
+  typedef std::pair<bool, jit_type *> type_entry;
+  typedef std::map<symbol_table::symbol_record_ref, type_entry,
+                   symbol_table::symbol_record_ref::comparator> type_map;
+
   jit_infer (jit_typeinfo *ti) : tinfo (ti), is_lvalue (false),
                                   rvalue_type (0)
   {}
-
-  const std::set<std::string>& get_argin () const { return argin; }
 
   const type_map& get_types () const { return types; }
 
@@ -433,7 +434,7 @@ private:
   void infer_simple_for (tree_simple_for_command& cmd,
                          jit_type *bounds);
 
-  void handle_identifier (const std::string& name, octave_value v);
+  void handle_identifier (const symbol_table::symbol_record_ref& record);
 
   jit_typeinfo *tinfo;
 
@@ -441,7 +442,6 @@ private:
   jit_type *rvalue_type;
 
   type_map types;
-  std::set<std::string> argin;
 
   std::vector<jit_type *> type_stack;
 };
@@ -449,11 +449,11 @@ private:
 class
 jit_generator : public tree_walker
 {
-  typedef std::map<std::string, jit_type *> type_map;
 public:
-  jit_generator (jit_typeinfo *ti, llvm::Module *module, tree &tee,
-                 const std::set<std::string>& argin,
-                 const type_map& infered_types, bool have_bounds = true);
+  typedef jit_infer::type_map type_map;
+
+  jit_generator (jit_typeinfo *ti, llvm::Module *mod, tree_simple_for_command &cmd,
+                 jit_type *bounds, const type_map& infered_types);
 
   llvm::Function *get_function () const { return function; }
 
@@ -555,7 +555,14 @@ private:
     value_stack.push_back (value (type, v));
   }
 
+  void initialize (const std::vector<std::string>& names,
+                   const std::vector<bool>& argin,
+                   const std::vector<jit_type *> types);
+
+  void finalize (const std::vector<std::string>& names);
+
   jit_typeinfo *tinfo;
+  llvm::Module *module;
   llvm::Function *function;
 
   bool is_lvalue;
@@ -596,19 +603,19 @@ class
 jit_info
 {
 public:
+  typedef jit_infer::type_map type_map;
+
   jit_info (tree_jit& tjit, tree_simple_for_command& cmd, jit_type *bounds);
 
   bool execute (const octave_value& bounds) const;
 
   bool match (void) const;
 private:
-  typedef std::map<std::string, jit_type *> type_map;
-  
   jit_typeinfo *tinfo;
   llvm::ExecutionEngine *engine;
-  std::set<std::string> argin;
   type_map types;
   llvm::Function *function;
+  jit_type *bounds_t;
 };
 
 #endif

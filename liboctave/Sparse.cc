@@ -235,7 +235,7 @@ Sparse<T>::Sparse (const dim_vector& dv)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const dim_vector&): dimension mismatch");
   else
-    rep = new typename Sparse<T>::SparseRep (dv(0), dv(1));
+    rep = new typename Sparse<T>::SparseRep (dv(0), dv(1), 0);
 }
 
 template <class T>
@@ -301,10 +301,9 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     (*current_liboctave_error_handler)
       ("sparse: column index %d out of bound %d", r.extent (nc), nc);
 
-  rep = new SparseRep (nr, nc);
+  rep = new typename Sparse<T>::SparseRep (nr, nc, (nzm > 0 ? nzm : 0));
 
   dimensions = dim_vector (nr, nc);
-
 
   octave_idx_type n = a.numel (), rl = r.length (nr), cl = c.length (nc);
   bool a_scalar = n == 1;
@@ -324,6 +323,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       if (n == 1 && a(0) != T ())
         {
           change_capacity (nzm > 1 ? nzm : 1);
+          xcidx(0) = 0;
           xridx(0) = r(0);
           xdata(0) = a(0);
           for (octave_idx_type j = 0; j < nc; j++)
@@ -352,6 +352,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
             new_nz += rd[i-1] != rd[i];
           // Allocate result.
           change_capacity (nzm > new_nz ? nzm : new_nz);
+          xcidx (0) = 0;
           xcidx (1) = new_nz;
           octave_idx_type *rri = ridx ();
           T *rrd = data ();
@@ -494,6 +495,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
         new_nz += rd[i-1] != rd[i];
       // Allocate result.
       change_capacity (nzm > new_nz ? nzm : new_nz);
+      xcidx(0) = 0;
       xcidx(1) = new_nz;
       octave_idx_type *rri = ridx ();
       T *rrd = data ();

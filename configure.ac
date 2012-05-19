@@ -2888,8 +2888,9 @@ fi
 
 if $warn_msg_printed; then
   AC_MSG_NOTICE([])
-  AC_MSG_NOTICE([NOTE: libraries may be skipped if a library is not found OR])
-  AC_MSG_NOTICE([NOTE: if the library on your system is missing required features.])
+  AC_MSG_NOTICE([NOTE: Libraries or auxiliary programs may be skipped if they are])
+  AC_MSG_NOTICE([NOTE: not found OR if they are missing required features on your])
+  AC_MSG_NOTICE([NOTE: system. ])
 fi
 
 ### End of configure.

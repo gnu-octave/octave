@@ -522,8 +522,12 @@ AC_DEFUN([OCTAVE_PROG_FLEX], [
     ;;
     *)
       LEX='$(top_srcdir)/build-aux/missing flex'
-      warn_flex="I didn't find flex, but it's only a problem if you need to reconstruct lex.cc"
-      AC_MSG_WARN([$warn_flex])
+      warn_flex="
+
+I didn't find flex, but it's only a problem if you need to reconstruct
+lex.cc, which is the case if you're building from VCS sources.
+"
+      OCTAVE_CONFIGURE_WARNING([warn_flex])
     ;;
   esac
   AC_SUBST(LFLAGS)
@@ -538,8 +542,14 @@ AC_DEFUN([OCTAVE_PROG_BISON], [
     ;;
     *)
       YACC='$(top_srcdir)/build-aux/missing bison'
-      warn_bison="I didn't find bison, but it's only a problem if you need to reconstruct parse.cc"
-      AC_MSG_WARN([$warn_bison])
+      warn_bison="
+
+I didn't find bison, but it's only a problem if you need to
+reconstruct parse.cc, which is the case if you're building from VCS
+sources.
+
+"
+      OCTAVE_CONFIGURE_WARNING([warn_bison])
     ;;
   esac
 ])
@@ -562,7 +572,7 @@ else
   AC_CHECK_PROGS(DEFAULT_PAGER, $octave_possible_pagers, [])
   if test -z "$DEFAULT_PAGER"; then
     warn_less="I couldn't find \`less', \`more', \`page', or \`pg'"
-    AC_MSG_WARN([$warn_less])
+    OCTAVE_CONFIGURE_WARNING([warn_less])
   fi
 fi
 ])
@@ -581,10 +591,14 @@ else
     warn_gnuplot=yes
 
     GNUPLOT="$gp_default"
+    warn_gnuplot = "
 
-    AC_MSG_WARN([gnuplot not found.  It isn't necessary to have gnuplot])
-    AC_MSG_WARN([installed, but without native graphics or gnuplot])
-	 AC_MSG_WARN([you won't be able to use any of Octave's plotting commands.])
+gnuplot not found. It isn't necessary to have gnuplot installed, but
+without native graphics or gnuplot you won't be able to use any of
+Octave's plotting commands.
+
+"
+    OCTAVE_CONFIGURE_WARNING([warn_gnuplot])
   fi
 fi
 AC_SUBST(GNUPLOT)
@@ -597,8 +611,12 @@ AC_DEFUN([OCTAVE_PROG_GPERF], [
   AC_CHECK_PROG(GPERF, gperf, gperf, [])
   if test -z "$GPERF"; then
     GPERF='$(top_srcdir)/build-aux/missing gperf'
-    warn_gperf="I didn't find gperf, but it's only a problem if you need to reconstruct oct-gperf.h"
-    AC_MSG_WARN([$warn_gperf])
+    warn_gperf="
+
+I didn't find gperf, but it's only a problem if you need to
+reconstruct oct-gperf.h 
+"
+    OCTAVE_CONFIGURE_WARNING([warn_gperf])
   fi
   AC_SUBST(GPERF)
 ])
@@ -618,8 +636,14 @@ AC_DEFUN([OCTAVE_PROG_GHOSTSCRIPT], [
   AC_CHECK_PROGS(GHOSTSCRIPT, [$gs_names])
   if test -z "$GHOSTSCRIPT"; then
     GHOSTSCRIPT='$(top_srcdir)/build-aux/missing gs'
-    warn_ghostscript="I didn't find ghostscript, so reconstructing figures for the manual will fail, and saving graphics in some output formats will fail when using Octave"
-    AC_MSG_WARN([$warn_ghostscript])
+    warn_ghostscript="
+
+I didn't find ghostscript, so reconstructing figures for the manual
+will fail, and saving graphics in some output formats will fail when
+using Octave
+"
+
+    OCTAVE_CONFIGURE_WARNING([warn_ghostscript])
   fi
   AC_SUBST(GHOSTSCRIPT)
 ])
@@ -631,8 +655,12 @@ AC_DEFUN([OCTAVE_PROG_TEXI2DVI], [
   AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
   if test -z "$TEXI2DVI"; then
     TEXI2DVI='$(top_srcdir)/build-aux/missing texi2dvi'
-    warn_texi2dvi="I didn't find texi2dvi, but it's only a problem if you need to reconstruct the DVI version of the manual"
-    AC_MSG_WARN([$warn_texi2dvi])
+    warn_texi2dvi="
+
+I didn't find texi2dvi, but it's only a problem if you need to
+reconstruct the DVI version of the manual
+"
+    OCTAVE_CONFIGURE_WARNING([warn_texi2dvi])
   fi
   AC_SUBST(TEXI2DVI)
 ])
@@ -654,8 +682,12 @@ AC_DEFUN([OCTAVE_PROG_TEXI2PDF], [
   fi
   if $missing; then
     TEXI2PDF='$(top_srcdir)/build-aux/missing texi2pdf'
-    warn_texi2pdf="I didn't find texi2pdf, but it's only a problem if you need to reconstruct the PDF version of the manual"
-    AC_MSG_WARN([$warn_texi2pdf])
+    warn_texi2pdf="
+
+I didn't find texi2pdf, but it's only a problem if you need to
+reconstruct the PDF version of the manual
+"
+    OCTAVE_CONFIGURE_WARNING([warn_texi2pdf])
   fi
   AC_SUBST(TEXI2PDF)
 ])
@@ -1501,31 +1533,33 @@ main()
    else
      AC_MSG_RESULT([no])
      if test "$FT2_CONFIG" = "no" ; then
-       AC_MSG_WARN([
+     warn_ft2_config = "
 
-  The freetype-config script installed by FreeType 2 could not be found.
-  If FreeType 2 was installed in PREFIX, make sure PREFIX/bin is in
-  your path, or set the FT2_CONFIG environment variable to the
-  full path to freetype-config.
-       ])
+The freetype-config script installed by FreeType 2 could not be found.
+If FreeType 2 was installed in PREFIX, make sure PREFIX/bin is in your
+path, or set the FT2_CONFIG environment variable to the full path to
+freetype-config.
+"
+       OCTAVE_CONFIGURE_WARNING([warn_ft2_config])
      else
        if test x$ft_config_is_lt = xyes ; then
-         AC_MSG_WARN([
+       warn_ft2_too_old="
 
-  Your installed version of the FreeType 2 library is too old.
-  If you have different versions of FreeType 2, make sure that
-  correct values for --with-ft-prefix or --with-ft-exec-prefix
-  are used, or set the FT2_CONFIG environment variable to the
-  full path to freetype-config.
-         ])
+Your installed version of the FreeType 2 library is too old. If you
+have different versions of FreeType 2, make sure that correct values
+for --with-ft-prefix or --with-ft-exec-prefix are used, or set the
+FT2_CONFIG environment variable to the full path to freetype-config.
+"
+         OCTAVE_CONFIGURE_WARNING([warn_ft2_too_old])
        else
-         AC_MSG_WARN([
+         warn_ft2_failed="
 
-  The FreeType test program failed to run.  If your system uses
-  shared libraries and they are installed outside the normal
-  system library path, make sure the variable LD_LIBRARY_PATH
-  (or whatever is appropiate for your system) is correctly set.
-         ])
+The FreeType test program failed to run. If your system uses shared
+libraries and they are installed outside the normal system library
+path, make sure the variable LD_LIBRARY_PATH (or whatever is
+appropiate for your system) is correctly set.
+"
+         OCTAVE_CONFIGURE_WARNING([warn_ft2_failed])
        fi
      fi
 

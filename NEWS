@@ -64,6 +64,12 @@ Summary of important user-visible changes for version 3.8:
     Octave:array-as-scalar => Octave:array-to-scalar
     Octave:array-as-vector => Octave:array-to-vector
 
+ ** The colormap function now provides new options--"list", "register",
+    and "unregister"--to list all available colormap functions, and to
+    add or remove a function name from the list of known colormap
+    functions.  Packages that implement extra colormaps should use these
+    commands with PKG_ADD and PKG_DEL statements.
+
  ** Other new functions added in 3.8.0:
 
       colorcube   splinefit
@@ -93,12 +99,6 @@ Summary of important user-visible changes for version 3.8:
     release after 3.8):
 
       static
-
- ** The colormap function now provides new options "list", "register",
-    and "unregister" to list all available colormap functions, and to
-    add or remove a function name from teh list of known colormap
-    functions.  Packages that implement extra colormaps should use these
-    commands with PKG_ADD and PKG_DEL statements.
 
 Summary of important user-visible changes for version 3.6:
 ---------------------------------------------------------

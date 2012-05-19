@@ -198,6 +198,10 @@ contributors.texi: contributors.in
 
 ../../AUTHORS: preface.texi contributors.texi
 	rm -f AUTHORS
+	if [ "x$(srcdir)" != "x." ] && [ -f $(srcdir)/contributors.texi ] && [ ! -f contributors.texi ]; then \
+		cp $(srcdir)/contributors.texi contributors.texi; \
+		touch -r $(srcdir)/contributors.texi contributors.texi; \
+	fi
 	-$(MAKEINFO) -D AUTHORSONLY \
 	  --no-validate --no-headers --no-split --output AUTHORS $<
 	mv AUTHORS ../../AUTHORS
@@ -245,6 +249,7 @@ EXTRA_DIST = \
   images \
   images.awk \
   images.mk \
+  macros.texi \
   mk_doc_cache.m \
   mkcontrib.awk \
   munge-texi.pl \

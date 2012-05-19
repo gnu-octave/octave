@@ -1,3 +1,4 @@
+
 /*
 
 Copyright (C) 1996-2012 John W. Eaton
@@ -60,6 +61,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
   NDArray a;
   int idx = 0;
   dim_vector dims;
+  bool is_single = false;
 
   unwind_protect frame;
   // Restore current distribution on any exit.
@@ -67,6 +69,19 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                  octave_rand::distribution ());
 
   octave_rand::distribution (distribution);
+
+  if (nargin > 0 && args(nargin-1).is_string())
+    {
+      std::string s_arg = args(nargin-1).string_value ();
+
+      if (s_arg == "single")
+        {
+          is_single = true;
+          nargin--;
+        }
+      else if (s_arg == "double")
+        nargin--;
+    }
 
   if (additional_arg)
     {
@@ -298,27 +313,54 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
   dims.chop_trailing_singletons ();
 
-  if (additional_arg)
+  if (is_single)
     {
-      if (a.length() == 1)
-        return octave_rand::nd_array (dims, a(0));
-      else
+      if (additional_arg)
         {
-          if (a.dims() != dims)
+          if (a.length() == 1)
+            return octave_rand::float_nd_array (dims, a(0));
+          else
             {
-              error ("%s: mismatch in argument size", fcn);
-              return retval;
+              if (a.dims() != dims)
+                {
+                  error ("%s: mismatch in argument size", fcn);
+                  return retval;
+                }
+              octave_idx_type len = a.length ();
+              FloatNDArray m (dims);
+              float *v = m.fortran_vec ();
+              for (octave_idx_type i = 0; i < len; i++)
+                v[i] = octave_rand::float_scalar (a(i));
+              return m;
             }
-          octave_idx_type len = a.length ();
-          NDArray m (dims);
-          double *v = m.fortran_vec ();
-          for (octave_idx_type i = 0; i < len; i++)
-            v[i] = octave_rand::scalar (a(i));
-          return m;
         }
+      else
+        return octave_rand::float_nd_array (dims);
     }
   else
-    return octave_rand::nd_array (dims);
+    {
+      if (additional_arg)
+        {
+          if (a.length() == 1)
+            return octave_rand::nd_array (dims, a(0));
+          else
+            {
+              if (a.dims() != dims)
+                {
+                  error ("%s: mismatch in argument size", fcn);
+                  return retval;
+                }
+              octave_idx_type len = a.length ();
+              NDArray m (dims);
+              double *v = m.fortran_vec ();
+              for (octave_idx_type i = 0; i < len; i++)
+                v[i] = octave_rand::scalar (a(i));
+              return m;
+            }
+        }
+      else
+        return octave_rand::nd_array (dims);
+    }
 }
 
 DEFUN_DLD (rand, args, ,
@@ -332,6 +374,8 @@ DEFUN_DLD (rand, args, ,
 @deftypefnx {Loadable Function} {@var{v} =} rand (\"seed\")\n\
 @deftypefnx {Loadable Function} {} rand (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rand (\"seed\", \"reset\")\n\
+@deftypefnx {Loadable Function} {} rand (@dots{}, \"single\")\n\
+@deftypefnx {Loadable Function} {} rand (@dots{}, \"double\")\n\
 Return a matrix with random elements uniformly distributed on the\n\
 interval (0, 1).  The arguments are handled the same as the arguments\n\
 for @code{eye}.\n\
@@ -402,6 +446,9 @@ keyword \"state\" should be used to reset the state of the @code{rand}.\n\
 \n\
 The state or seed of the generator can be reset to a new random value\n\
 using the \"reset\" keyword.\n\
+\n\
+The class of the value returned can be controlled by a trailing \"double\"\n\
+or \"single\" argument. These are the only valid classes.\n\
 @seealso{randn, rande, randg, randp}\n\
 @end deftypefn")
 {
@@ -499,12 +546,17 @@ DEFUN_DLD (randn, args, ,
 @deftypefnx {Loadable Function} {@var{v} =} randn (\"seed\")\n\
 @deftypefnx {Loadable Function} {} randn (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randn (\"seed\", \"reset\")\n\
+@deftypefnx {Loadable Function} {} randn (@dots{}, \"single\")\n\
+@deftypefnx {Loadable Function} {} randn (@dots{}, \"double\")\n\
 Return a matrix with normally distributed random\n\
 elements having zero mean and variance one.  The arguments are\n\
 handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to a normal distribution.\n\
+\n\
+The class of the value returned can be controlled by a trailing \"double\"\n\
+or \"single\" argument. These are the only valid classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -565,11 +617,16 @@ DEFUN_DLD (rande, args, ,
 @deftypefnx {Loadable Function} {@var{v} =} rande (\"seed\")\n\
 @deftypefnx {Loadable Function} {} rande (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} rande (\"seed\", \"reset\")\n\
+@deftypefnx {Loadable Function} {} rande (@dots{}, \"single\")\n\
+@deftypefnx {Loadable Function} {} rande (@dots{}, \"double\")\n\
 Return a matrix with exponentially distributed random elements.  The\n\
 arguments are handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to an exponential distribution.\n\
+\n\
+The class of the value returned can be controlled by a trailing \"double\"\n\
+or \"single\" argument. These are the only valid classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -632,6 +689,8 @@ DEFUN_DLD (randg, args, ,
 @deftypefnx {Loadable Function} {@var{v} =} randg (\"seed\")\n\
 @deftypefnx {Loadable Function} {} randg (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randg (\"seed\", \"reset\")\n\
+@deftypefnx {Loadable Function} {} randg (@dots{}, \"single\")\n\
+@deftypefnx {Loadable Function} {} randg (@dots{}, \"double\")\n\
 Return a matrix with @code{gamma(@var{a},1)} distributed random elements.\n\
 The arguments are handled the same as the arguments for @code{rand},\n\
 except for the argument @var{a}.\n\
@@ -711,6 +770,9 @@ r = r / sum (r)\n\
 @end example\n\
 \n\
 @end table\n\
+\n\
+The class of the value returned can be controlled by a trailing \"double\"\n\
+or \"single\" argument. These are the only valid classes.\n\
 @seealso{rand, randn, rande, randp}\n\
 @end deftypefn")
 {
@@ -898,6 +960,8 @@ DEFUN_DLD (randp, args, ,
 @deftypefnx {Loadable Function} {@var{v} =} randp (\"seed\")\n\
 @deftypefnx {Loadable Function} {} randp (\"seed\", @var{v})\n\
 @deftypefnx {Loadable Function} {} randp (\"seed\", \"reset\")\n\
+@deftypefnx {Loadable Function} {} randp (@dots{}, \"single\")\n\
+@deftypefnx {Loadable Function} {} randp (@dots{}, \"double\")\n\
 Return a matrix with Poisson distributed random elements with mean value\n\
 parameter given by the first argument, @var{l}.  The arguments\n\
 are handled the same as the arguments for @code{rand}, except for the\n\
@@ -928,6 +992,9 @@ University Graz, Austria, 1994.\n\
 L. Montanet, et al., @cite{Review of Particle Properties}, Physical Review\n\
 D 50 p1284, 1994.\n\
 @end table\n\
+\n\
+The class of the value returned can be controlled by a trailing \"double\"\n\
+or \"single\" argument. These are the only valid classes.\n\
 @seealso{rand, randn, rande, randg}\n\
 @end deftypefn")
 {

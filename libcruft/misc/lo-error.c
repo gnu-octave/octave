@@ -110,6 +110,7 @@ liboctave_fatal (const char *fmt, ...)
 void
 liboctave_fatal_with_id (const char *id, const char *fmt, ...)
 {
+  (void) id; /*unused*/
   va_list args;
   va_start (args, fmt);
   verror ("fatal", fmt, args);
@@ -130,6 +131,7 @@ liboctave_warning (const char *fmt, ...)
 void
 liboctave_warning_with_id (const char *id, const char *fmt, ...)
 {
+  (void) id; /*unused*/
   va_list args;
   va_start (args, fmt);
   verror ("warning", fmt, args);

@@ -32,7 +32,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -197,6 +197,9 @@
           <widget class="QFontComboBox" name="terminal_fontName">
            <property name="editable">
             <bool>false</bool>
+           </property>
+           <property name="fontFilters">
+            <set>QFontComboBox::MonospacedFonts</set>
            </property>
           </widget>
          </item>

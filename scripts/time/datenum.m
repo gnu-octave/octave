@@ -85,6 +85,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
 
   ## Days until start of month assuming year starts March 1.
   persistent monthstart = [306; 337; 0; 31; 61; 92; 122; 153; 184; 214; 245; 275];
+  persistent monthlength = [31; 28; 31; 30; 31; 30; 31; 31; 30; 31; 30; 31];
 
   if (nargin == 0 || nargin > 6 || 
      (nargin > 2 && (ischar (year) || iscellstr (year))))
@@ -109,6 +110,19 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   endif
 
   month(month<1) = 1; ## For compatibility.  Otherwise allow negative months.
+
+  ## Treat fractional months, by converting the fraction to days
+  if (floor (month) != month)
+    fracmonth = month - floor (month);
+    month = floor (month);
+    if ((mod (month-1,12) + 1) == 2 && 
+        (floor (year/4) - floor (year/100) + floor (year/400)) != 0)
+      ## leap year
+      day += fracmonth * 29;
+    else
+      day += fracmonth * monthlength ((mod (month-1,12) + 1));
+    endif
+  endif
 
   ## Set start of year to March by moving Jan. and Feb. to previous year.
   ## Correct for months > 12 by moving to subsequent years.

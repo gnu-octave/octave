@@ -44,6 +44,7 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
         else
           bg_is_set = false;
         endif
+        fg_was_set = false;
 
         for i = nkids:-1:1
           type = get (kids(i), "type");
@@ -142,6 +143,11 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   if (isnumeric (fg) && strcmp (get (kids(i), "visible"), "on"))
                     fprintf (plot_stream, "set obj 2 rectangle from graph 0,0 to graph 1,1 behind fc rgb \"#%02x%02x%02x\"\n", 255 * fg);
                     fg_is_set = true;
+                    fg_was_set = true;
+                  elseif (fg_was_set)
+                    fprintf (plot_stream, "unset obj 2\n");
+                    fg_is_set = false;
+                    fg_was_set = false;
                   else
                     fg_is_set = false;
                   endif

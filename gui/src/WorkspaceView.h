@@ -19,7 +19,7 @@
 #define WORKSPACEVIEW_H
 
 #include <QDockWidget>
-#include <QTreeWidget>
+#include <QTreeView>
 #include <QSemaphore>
 #include "OctaveLink.h"
 
@@ -30,7 +30,6 @@ public:
   WorkspaceView (QWidget * parent = 0);
 
 public slots:
-  void fetchSymbolTable ();
   void handleVisibilityChanged (bool visible);
 
 signals:
@@ -41,12 +40,7 @@ protected:
   void closeEvent (QCloseEvent *event);
 
 private:
-  void updateFromSymbolTable (QList < SymbolRecord > symbolTable);
-  void updateTreeEntry (QTreeWidgetItem * treeItem, SymbolRecord symbolRecord);
-  void updateScope (int topLevelItemIndex, QList < SymbolRecord > symbolTable);
-
-  QTreeWidget *m_variablesTreeWidget;
-  QSemaphore *m_updateSemaphore;
+  QTreeView *m_workspaceTreeView;
 };
 
 #endif // WORKSPACEVIEW_H

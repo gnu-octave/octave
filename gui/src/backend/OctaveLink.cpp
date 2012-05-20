@@ -21,73 +21,17 @@ OctaveLink OctaveLink::m_singleton;
 
 OctaveLink::OctaveLink ():QObject ()
 {
-  m_symbolTableSemaphore = new QSemaphore (1);
   m_historyModel = new QStringListModel (this);
+  m_workspaceModel = new WorkspaceModel (this);
+
+  m_workspaceModel->insertTopLevelItem(0, new TreeItem ("Local"));
+  m_workspaceModel->insertTopLevelItem(1, new TreeItem ("Global"));
+  m_workspaceModel->insertTopLevelItem(2, new TreeItem ("Persistent"));
+  m_workspaceModel->insertTopLevelItem(3, new TreeItem ("Hidden"));
 }
 
 OctaveLink::~OctaveLink ()
 {
-}
-
-QString
-OctaveLink::octaveValueAsQString (OctaveValue octaveValue)
-{
-  // Convert single qouted string.
-  if (octaveValue.is_sq_string ())
-    {
-      return QString ("\'%1\'").arg (octaveValue.string_value ().c_str ());
-
-      // Convert double qouted string.
-    }
-  else if (octaveValue.is_dq_string ())
-    {
-      return QString ("\"%1\"").arg (octaveValue.string_value ().c_str ());
-
-      // Convert real scalar.
-    }
-  else if (octaveValue.is_real_scalar ())
-    {
-      return QString ("%1").arg (octaveValue.scalar_value ());
-
-      // Convert complex scalar.
-    }
-  else if (octaveValue.is_complex_scalar ())
-    {
-      return QString ("%1 + %2i").arg (octaveValue.scalar_value ()).
-	arg (octaveValue.complex_value ().imag ());
-
-      // Convert range.
-    }
-  else if (octaveValue.is_range ())
-    {
-      return QString ("%1 : %2 : %3").arg (octaveValue.range_value ().
-					   base ()).arg (octaveValue.
-							 range_value ().
-							 inc ()).
-	arg (octaveValue.range_value ().limit ());
-
-      // Convert real matrix.
-    }
-  else if (octaveValue.is_real_matrix ())
-    {
-      return QString ("%1x%2 matrix")
-          .arg (octaveValue.matrix_value ().rows ())
-          .arg (octaveValue.matrix_value ().cols ());
-
-      // Convert complex matrix.
-    }
-  else if (octaveValue.is_complex_matrix ())
-    {
-    return QString ("%1x%2 complex matrix")
-        .arg (octaveValue.matrix_value ().rows ())
-        .arg (octaveValue.matrix_value ().cols ());
-
-      // If everything else does not fit, we could not recognize the type.
-    }
-  else
-    {
-      return QString ("<Type not recognized>");
-    }
 }
 
 void
@@ -98,7 +42,7 @@ OctaveLink::launchOctave ()
   m_octaveCallbackThread = new OctaveCallbackThread (this);
 
   // Launch the second as soon as the first ist ready.
-  connect (m_octaveMainThread, SIGNAL(ready()), m_octaveCallbackThread, SLOT(start()));
+  connect (m_octaveMainThread, SIGNAL (ready ()), m_octaveCallbackThread, SLOT (start ()));
 
   // Start the first one.
   m_octaveMainThread->start ();
@@ -107,25 +51,11 @@ OctaveLink::launchOctave ()
 void
 OctaveLink::terminateOctave ()
 {
-  m_octaveCallbackThread->halt();
+  m_octaveCallbackThread->halt ();
   m_octaveCallbackThread->wait ();
 
   m_octaveMainThread->terminate ();
   //m_octaveMainThread->wait();
-}
-
-QList < SymbolRecord > OctaveLink::symbolTable ()
-{
-  m_symbolTableBuffer.clear ();
-  std::list < SymbolRecord > allVariables = symbol_table::all_variables ();
-  std::list < SymbolRecord >::iterator iterator;
-  for (iterator = allVariables.begin (); iterator != allVariables.end ();
-       iterator++)
-    {
-      SymbolRecord s = iterator->dup (symbol_table::global_scope ());
-      m_symbolTableBuffer.append (s);
-    }
-  return m_symbolTableBuffer;
 }
 
 void
@@ -146,8 +76,20 @@ OctaveLink::triggerUpdateHistoryModel ()
     }
 }
 
+void
+OctaveLink::triggerUpdateSymbolTable ()
+{
+  m_workspaceModel->updateFromSymbolTable();
+}
+
 QStringListModel *
 OctaveLink::historyModel ()
 {
   return m_historyModel;
+}
+
+WorkspaceModel *
+OctaveLink::workspaceModel ()
+{
+  return m_workspaceModel;
 }

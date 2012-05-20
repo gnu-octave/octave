@@ -72,11 +72,9 @@
 #include <QObject>
 #include <QStringListModel>
 
+#include "WorkspaceModel.h"
 #include "OctaveCallbackThread.h"
 #include "OctaveMainThread.h"
-
-typedef symbol_table::symbol_record SymbolRecord;
-typedef octave_value OctaveValue;
 
 /**
   * \class OctaveLink
@@ -91,43 +89,24 @@ public:
   {
     return &m_singleton;
   }
-  static QString
-  octaveValueAsQString (OctaveValue octaveValue);
 
   void launchOctave ();
   void terminateOctave ();
-  void acquireSymbolTable () { m_symbolTableSemaphore->acquire (); }
-  void releaseSymbolTable () { m_symbolTableSemaphore->release (); }
-
-  /**
-    * For performance reasons this is not thread safe. Before you use this,
-    * acquire a lock with acquireSymbolTable and releaseSymbolTable.
-    */
-  QList < SymbolRecord > symbolTable ();
-
-  /**
-    * Returns a copy of the current symbol table buffer.
-    * \return Copy of the current symbol table buffer.
-    */
-  QList < SymbolRecord > copyCurrentSymbolTable ();
+  QStringListModel *historyModel ();
+  WorkspaceModel *workspaceModel ();
 
   void triggerUpdateHistoryModel ();
-  QStringListModel *historyModel ();
-  void triggerUpdateSymbolTable() { emit updateSymbolTable(); }
-
-signals:
-  void updateSymbolTable ();
+  void triggerUpdateSymbolTable ();
 
 private:
   OctaveLink ();
   ~OctaveLink ();
 
-  /** Variable related member variables. */
-  QSemaphore * m_symbolTableSemaphore;
-  QList < SymbolRecord > m_symbolTableBuffer;
+  //QSemaphore * m_symbolTableSemaphore;
+  //QList < symbol_table::symbol_record > m_symbolTableBuffer;
 
-  /** History related member variables. */
   QStringListModel *m_historyModel;
+  WorkspaceModel *m_workspaceModel;
 
   // Threads for running octave and managing the data interaction.
   OctaveMainThread *m_octaveMainThread;

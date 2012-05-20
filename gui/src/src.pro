@@ -88,7 +88,8 @@ SOURCES +=\
     backend/OctaveMainThread.cpp \
     backend/ReadlineAdapter.cpp \
     WelcomeWizard.cpp \
-    FileEditor.cpp
+    FileEditor.cpp \
+    WorkspaceModel.cpp
 
 HEADERS += \
     lexer/lexeroctavegui.h \
@@ -104,7 +105,8 @@ HEADERS += \
     backend/OctaveMainThread.h \
     backend/ReadlineAdapter.h \
     WelcomeWizard.h \
-    FileEditor.h
+    FileEditor.h \
+    WorkspaceModel.h
 
 FORMS += \
     SettingsDialog.ui \

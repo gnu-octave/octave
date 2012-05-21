@@ -52,11 +52,12 @@ along with Octave; see the file COPYING.  If not, see
 // endfor
 // Will compile. Nested for loops with constant bounds are also supported.
 //
+// If statements/comparisons compile, but && and || do not.
+//
 // TODO:
-// 1. Support if statements
-// 2. Support iteration over matricies
-// 3. Check error state
-// 4. ...
+// 1. Support iteration over matricies
+// 2. Check error state
+// 3. ...
 // ---------------------------------------------------------
 
 
@@ -74,6 +75,7 @@ namespace llvm
   class LLVMContext;
   class Type;
   class GenericValue;
+  class Twine;
 }
 
 class octave_base_value;
@@ -267,7 +269,15 @@ public:
       return ol.result;
     }
 
-  const jit_function::overload& assign_op (jit_type *lhs, jit_type *rhs) const;
+  const jit_function::overload& grab (jit_type *ty) const
+  {
+    return grab_fn.get_overload (ty);
+  }
+
+  const jit_function::overload& release (jit_type *ty) const
+  {
+    return release_fn.get_overload (ty);
+  }
 
   const jit_function::overload& print_value (jit_type *to_print) const;
 
@@ -287,6 +297,11 @@ public:
     return ol.result;
   }
 
+  const jit_function::overload& get_logically_true (jit_type *conv) const
+  {
+    return logically_true.get_overload (conv);
+  }
+
   void to_generic (jit_type *type, llvm::GenericValue& gv);
 
   void to_generic (jit_type *type, llvm::GenericValue& gv, octave_value ov);
@@ -302,6 +317,61 @@ private:
 
   void add_binary_op (jit_type *ty, int op, int llvm_op);
 
+  void add_binary_icmp (jit_type *ty, int op, int llvm_op);
+
+  void add_binary_fcmp (jit_type *ty, int op, int llvm_op);
+
+  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
+                                   llvm::Type *arg0)
+  {
+    std::vector<llvm::Type *> args (1, arg0);
+    return create_function (name, ret, args);
+  }
+
+  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
+                                   jit_type *arg0)
+  {
+    return create_function (name, ret->to_llvm (), arg0->to_llvm ());
+  }
+
+  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
+                                   llvm::Type *arg0, llvm::Type *arg1)
+  {
+    std::vector<llvm::Type *> args (2);
+    args[0] = arg0;
+    args[1] = arg1;
+    return create_function (name, ret, args);
+  }
+
+  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
+                                   jit_type *arg0, jit_type *arg1)
+  {
+    return create_function (name, ret->to_llvm (), arg0->to_llvm (),
+                            arg1->to_llvm ());
+  }
+
+  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
+                                   llvm::Type *arg0, llvm::Type *arg1,
+                                   llvm::Type *arg2)
+  {
+    std::vector<llvm::Type *> args (3);
+    args[0] = arg0;
+    args[1] = arg1;
+    args[2] = arg2;
+    return create_function (name, ret, args);
+  }
+
+  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
+                                   jit_type *arg0, jit_type *arg1,
+                                   jit_type *arg2)
+  {
+    return create_function (name, ret->to_llvm (), arg0->to_llvm (),
+                            arg1->to_llvm (), arg2->to_llvm ());
+  }
+
+  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
+                                   const std::vector<llvm::Type *>& args);
+
   llvm::Module *module;
   llvm::ExecutionEngine *engine;
   int next_id;
@@ -316,11 +386,13 @@ private:
   jit_type *index;
 
   std::vector<jit_function> binary_ops;
-  jit_function assign_fn;
+  jit_function grab_fn;
+  jit_function release_fn;
   jit_function print_fn;
   jit_function simple_for_check;
   jit_function simple_for_incr;
   jit_function simple_for_index;
+  jit_function logically_true;
 
   std::list<double> scalar_out;
   std::list<octave_base_value *> ov_out;
@@ -434,6 +506,8 @@ private:
                          jit_type *bounds);
 
   void handle_identifier (const symbol_table::symbol_record_ref& record);
+
+  void merge (type_map& dest, const type_map& src);
 
   jit_typeinfo *tinfo;
 

@@ -53,9 +53,8 @@ MainWindow::newFile ()
 void
 MainWindow::newEditorWindow (QString fileName)
 {
-  FileEditor *fileEditor = new FileEditor ();
+  FileEditor *fileEditor = new FileEditor (m_terminalView, m_lexer, this);
   fileEditor->setAttribute (Qt::WA_DeleteOnClose);
-  fileEditor->initEditor(m_terminalView, m_lexer, this);   // init necessary informations for editor
 
   if (fileName.isEmpty ())
     fileEditor->newFile ();

@@ -56,6 +56,7 @@ void
 OctaveLink::terminateOctave ()
 {
   m_octaveMainThread->terminate ();
+  quit_allowed = true;
   m_octaveMainThread->wait();
 }
 

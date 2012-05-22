@@ -44,12 +44,9 @@ class FileEditor : public QWidget
 Q_OBJECT
 
 public:
-  FileEditor (QWidget * parent = 0);
+  FileEditor (QTerminal *terminalView, LexerOctaveGui *lexer, MainWindow *mainWindow);
   ~FileEditor ();
   void loadFile (QString fileName);
-  void initEditor (QTerminal *terminalView,
-                   LexerOctaveGui *lexer,
-                   MainWindow *mainWindow);
 
 public slots:
 

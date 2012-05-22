@@ -17,6 +17,7 @@
 
 #include "WorkspaceModel.h"
 #include <QTreeWidget>
+#include <QTime>
 
 WorkspaceModel::WorkspaceModel(QObject *parent)
   : QAbstractItemModel(parent)
@@ -146,7 +147,6 @@ void
 WorkspaceModel::updateFromSymbolTable ()
 {
   std::list < symbol_table::symbol_record > allVariables = symbol_table::all_variables ();
-
   // Split the symbol table into its different categories.
   QList < symbol_table::symbol_record* > localSymbolTable;
   QList < symbol_table::symbol_record* > globalSymbolTable;
@@ -184,71 +184,22 @@ WorkspaceModel::updateFromSymbolTable ()
   updateCategory (2, persistentSymbolTable);
   updateCategory (3, hiddenSymbolTable);
   reset();
+
   emit expandRequest();
 }
 
 void
-WorkspaceModel::updateCategory (int topLevelItemIndex, QList < symbol_table::symbol_record* > symbolTable)
+WorkspaceModel::updateCategory (int topLevelItemIndex, const QList < symbol_table::symbol_record* > &symbolTable)
 {
-  // This method may be a little bit confusing; variablesList is a complete list of all
-  // variables that are in the workspace currently.
   TreeItem *treeItem = topLevelItem (topLevelItemIndex);
+  treeItem->deleteChildItems();
 
-  // First we check, if any variables that exist in the model tree have to be updated
-  // or created. So we walk the variablesList check against the tree.
-  foreach (symbol_table::symbol_record *symbolRecord, symbolTable)
+  int symbolTableSize = symbolTable.size ();
+  for(int j = 0; j < symbolTableSize; j++)
     {
-      int childCount = treeItem->childCount ();
-      bool alreadyExists = false;
-      TreeItem *child;
-
-      // Search for the corresponding item in the tree. If it has been found, child
-      // will contain the appropriate QTreeWidgetItem* pointing at it.
-      for (int i = 0; i < childCount; i++)
-        {
-          child = treeItem->child (i);
-          if (child->data (0).toString () ==
-              QString (symbolRecord->name ().c_str ()))
-            {
-              alreadyExists = true;
-              break;
-            }
-        }
-
-      // If it already exists, just update it.
-      if (alreadyExists)
-        {
-          updateTreeEntry (child, symbolRecord);
-        }
-      else
-        {
-          // It does not exist, so create a new one and set the right values.
-          child = new TreeItem ();
-          updateTreeEntry (child, symbolRecord);
-          treeItem->addChild (child);
-        }
-    }
-
-  // Check the tree against the list for deleted variables.
-  for (int i = 0; i < treeItem->childCount (); i++)
-    {
-      bool existsInVariableList = false;
-      TreeItem *child = treeItem->child (i);
-      foreach (symbol_table::symbol_record *symbolRecord, symbolTable)
-        {
-          if (QString (symbolRecord->name ().c_str ()) ==
-              child->data (0).toString ())
-            {
-              existsInVariableList = true;
-            }
-        }
-
-      if (!existsInVariableList)
-        {
-          treeItem->removeChild (child);
-          delete child;
-          i--;
-        }
+      TreeItem *child = new TreeItem ();
+      updateTreeEntry (child, symbolTable[j]);
+      treeItem->addChild (child);
     }
 }
 

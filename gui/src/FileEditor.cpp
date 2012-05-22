@@ -25,10 +25,14 @@
 #include <QStyle>
 #include <QTextStream>
 
-FileEditor::FileEditor (QWidget * parent)
-    : QWidget (parent)
+FileEditor::FileEditor (QTerminal *terminalView, LexerOctaveGui *lexer, MainWindow *mainWindow)
+    : QWidget ()
 {
   construct ();
+  m_editor->setLexer (lexer);
+  m_terminalView = terminalView; // for sending commands to octave
+  m_mainWindow = mainWindow;  // get the MainWindow for chekcing state at subwindow close
+  show ();
 }
 
 FileEditor::~FileEditor ()
@@ -208,7 +212,7 @@ FileEditor::saveFile (QString saveFileName)
   if (!file.open (QFile::WriteOnly))
     {
       QMessageBox::warning (this, tr ("File Editor"),
-			    tr ("Cannot write file %1:\n%2.").
+                            tr ("Cannot write file %1:\n%2.").
           arg (saveFileName).arg (file.errorString ()));
       return;
     }
@@ -342,18 +346,6 @@ FileEditor::prevBookmark ()
   m_editor->setCursorPosition(prevline,0);
 }
 
-// function for setting the already existing lexer from MainWindow
-void
-FileEditor::initEditor (QTerminal* terminalView,
-                                    LexerOctaveGui* lexer,
-                                    MainWindow* mainWindow)
-{
-  m_editor->setLexer(lexer);
-  m_terminalView = terminalView; // for sending commands to octave
-                       // TODO: make a global commandOctave function?
-  m_mainWindow = mainWindow;  // get the MainWindow for chekcing state at subwindow close
-}
-
 void
 FileEditor::setModified (bool modified)
 {
@@ -483,7 +475,7 @@ FileEditor::construct ()
   m_toolBar->addSeparator();
   m_toolBar->addAction (runAction);
 
-  // menu bar  
+  // menu bar
   QMenu *fileMenu = new QMenu(tr("&File"),m_menuBar);
   fileMenu->addAction(newAction);
   fileMenu->addAction(openAction);
@@ -544,5 +536,4 @@ FileEditor::construct ()
   m_fileName = "";
   newWindowTitle (false);
   setWindowIcon(QIcon::fromTheme("accessories-text-editor",style->standardIcon (QStyle::SP_FileIcon)));
-  show ();
 }

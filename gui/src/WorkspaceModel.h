@@ -56,6 +56,7 @@
 
 // Qt includes
 #include <QAbstractItemModel>
+#include <QVector>
 
 class TreeItem
 {
@@ -73,7 +74,7 @@ public:
   }
 
   ~TreeItem() {
-    qDeleteAll(_childItems);
+     qDeleteAll(_childItems);
   }
 
   void insertChildItem(int at, TreeItem *item) {
@@ -84,6 +85,11 @@ public:
   void addChild(TreeItem *item) {
     item->_parentItem = this;
     _childItems.append(item);
+  }
+
+  void deleteChildItems() {
+      qDeleteAll(_childItems);
+      _childItems.clear();
   }
 
   void removeChild(TreeItem *item) {
@@ -154,7 +160,7 @@ public:
 
   void updateFromSymbolTable ();
   void updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord);
-  void updateCategory (int topLevelItemIndex, QList < symbol_table::symbol_record *> symbolTable);
+  void updateCategory (int topLevelItemIndex, const QList < symbol_table::symbol_record *> &symbolTable);
   QString octaveValueAsQString (const octave_value &octaveValue);
 
 signals:

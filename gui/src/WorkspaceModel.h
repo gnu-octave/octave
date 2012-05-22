@@ -92,7 +92,7 @@ public:
 
   QVariant data(int column) const
   {
-    return _itemData.value(column);
+    return _itemData[column];
   }
 
   void setData(int column, QVariant data)
@@ -101,7 +101,7 @@ public:
   }
 
   TreeItem *child(int row) {
-    return _childItems.value(row);
+    return _childItems[row];
   }
 
   int childCount() const {
@@ -153,9 +153,12 @@ public:
   TreeItem *topLevelItem (int at);
 
   void updateFromSymbolTable ();
-  void updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record symbolRecord);
-  void updateCategory (int topLevelItemIndex, QList < symbol_table::symbol_record > symbolTable);
-  QString octaveValueAsQString (octave_value octaveValue);
+  void updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord);
+  void updateCategory (int topLevelItemIndex, QList < symbol_table::symbol_record *> symbolTable);
+  QString octaveValueAsQString (const octave_value &octaveValue);
+
+signals:
+  void expandRequest();
 
 private:
   TreeItem *_rootItem;

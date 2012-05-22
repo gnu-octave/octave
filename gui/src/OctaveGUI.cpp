@@ -18,7 +18,6 @@
 #include <QtGui/QApplication>
 #include <QTranslator>
 #include <QSettings>
-#include "CommandLineParser.h"
 #include "WelcomeWizard.h"
 #include "ResourceManager.h"
 #include "MainWindow.h"
@@ -71,10 +70,6 @@ main (int argc, char *argv[])
         }
       else
         {
-          CommandLineParser commandLineParser;
-          commandLineParser.registerOption ("--config", "-c", "Tells OctaveGUI to use that configuration file.", true);
-          commandLineParser.parse (argc, argv);
-
           QSettings *settings = ResourceManager::instance ()->settings ();
           QString language = settings->value ("language").toString ();
 

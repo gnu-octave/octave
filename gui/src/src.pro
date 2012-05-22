@@ -82,11 +82,8 @@ SOURCES +=\
     SettingsDialog.cpp \
     OctaveGUI.cpp \
     ResourceManager.cpp \
-    CommandLineParser.cpp \
-    backend/OctaveCallbackThread.cpp \
     backend/OctaveLink.cpp \
     backend/OctaveMainThread.cpp \
-    backend/ReadlineAdapter.cpp \
     WelcomeWizard.cpp \
     FileEditor.cpp \
     WorkspaceModel.cpp
@@ -99,11 +96,8 @@ HEADERS += \
     FilesDockWidget.h \
     SettingsDialog.h \
     ResourceManager.h \
-    CommandLineParser.h \
-    backend/OctaveCallbackThread.h \
     backend/OctaveLink.h \
     backend/OctaveMainThread.h \
-    backend/ReadlineAdapter.h \
     WelcomeWizard.h \
     FileEditor.h \
     WorkspaceModel.h

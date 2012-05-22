@@ -17,6 +17,13 @@
 
 #include "OctaveLink.h"
 
+void octave_loop_hook_impl()
+{
+  OctaveLink::instance()->triggerUpdateHistoryModel();
+  OctaveLink::instance()->triggerUpdateSymbolTable();
+}
+
+
 OctaveLink OctaveLink::m_singleton;
 
 OctaveLink::OctaveLink ():QObject ()
@@ -39,10 +46,7 @@ OctaveLink::launchOctave ()
 {
   // Create both threads.
   m_octaveMainThread = new OctaveMainThread (this);
-  m_octaveCallbackThread = new OctaveCallbackThread (this);
-
-  // Launch the second as soon as the first ist ready.
-  connect (m_octaveMainThread, SIGNAL (ready ()), m_octaveCallbackThread, SLOT (start ()));
+  octave_loop_hook = octave_loop_hook_impl;
 
   // Start the first one.
   m_octaveMainThread->start ();
@@ -51,11 +55,8 @@ OctaveLink::launchOctave ()
 void
 OctaveLink::terminateOctave ()
 {
-  m_octaveCallbackThread->halt ();
-  m_octaveCallbackThread->wait ();
-
   m_octaveMainThread->terminate ();
-  //m_octaveMainThread->wait();
+  m_octaveMainThread->wait();
 }
 
 void

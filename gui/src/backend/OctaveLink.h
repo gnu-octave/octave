@@ -73,7 +73,6 @@
 #include <QStringListModel>
 
 #include "WorkspaceModel.h"
-#include "OctaveCallbackThread.h"
 #include "OctaveMainThread.h"
 
 /**
@@ -102,15 +101,11 @@ private:
   OctaveLink ();
   ~OctaveLink ();
 
-  //QSemaphore * m_symbolTableSemaphore;
-  //QList < symbol_table::symbol_record > m_symbolTableBuffer;
-
   QStringListModel *m_historyModel;
   WorkspaceModel *m_workspaceModel;
 
   // Threads for running octave and managing the data interaction.
   OctaveMainThread *m_octaveMainThread;
-  OctaveCallbackThread *m_octaveCallbackThread;
 
   static OctaveLink m_singleton;
 };

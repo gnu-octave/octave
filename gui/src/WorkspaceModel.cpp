@@ -135,12 +135,11 @@ WorkspaceModel::data(const QModelIndex &index, int role) const
 }
 
 void
-WorkspaceModel::updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record symbolRecord)
+WorkspaceModel::updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord)
 {
-  treeItem->setData (0, QString (symbolRecord.name ().c_str ()));
-  treeItem->setData (1, QString (symbolRecord.varval ().type_name ().c_str ()));
-  treeItem->setData (2, octaveValueAsQString (symbolRecord.varval ()));
-  emit dataChanged(index(treeItem->row(), 0), index(treeItem->row(), 2));
+  treeItem->setData (0, QString (symbolRecord->name ().c_str ()));
+  treeItem->setData (1, QString (symbolRecord->varval ().type_name ().c_str ()));
+  treeItem->setData (2, octaveValueAsQString (symbolRecord->varval ()));
 }
 
 void
@@ -149,10 +148,10 @@ WorkspaceModel::updateFromSymbolTable ()
   std::list < symbol_table::symbol_record > allVariables = symbol_table::all_variables ();
 
   // Split the symbol table into its different categories.
-  QList < symbol_table::symbol_record > localSymbolTable;
-  QList < symbol_table::symbol_record > globalSymbolTable;
-  QList < symbol_table::symbol_record > persistentSymbolTable;
-  QList < symbol_table::symbol_record > hiddenSymbolTable;
+  QList < symbol_table::symbol_record* > localSymbolTable;
+  QList < symbol_table::symbol_record* > globalSymbolTable;
+  QList < symbol_table::symbol_record* > persistentSymbolTable;
+  QList < symbol_table::symbol_record* > hiddenSymbolTable;
 
   for (std::list < symbol_table::symbol_record > ::iterator iterator = allVariables.begin ();
        iterator != allVariables.end (); iterator++)
@@ -161,22 +160,22 @@ WorkspaceModel::updateFromSymbolTable ()
       // but we want to distinguish that here.
       if (iterator->is_local () && !iterator->is_global () && !iterator->is_hidden ())
         {
-          localSymbolTable.append (iterator->dup (symbol_table::global_scope ()));
+          localSymbolTable.append (&(*iterator));
         }
 
       if (iterator->is_global ())
         {
-          globalSymbolTable.append (iterator->dup (symbol_table::global_scope ()));
+          globalSymbolTable.append (&(*iterator));
         }
 
       if (iterator->is_persistent ())
         {
-          persistentSymbolTable.append (iterator->dup (symbol_table::global_scope ()));
+          persistentSymbolTable.append (&(*iterator));
         }
 
       if (iterator->is_hidden ())
         {
-          hiddenSymbolTable.append (iterator->dup (symbol_table::global_scope ()));
+          hiddenSymbolTable.append (&(*iterator));
         }
     }
 
@@ -184,10 +183,12 @@ WorkspaceModel::updateFromSymbolTable ()
   updateCategory (1, globalSymbolTable);
   updateCategory (2, persistentSymbolTable);
   updateCategory (3, hiddenSymbolTable);
+  reset();
+  emit expandRequest();
 }
 
 void
-WorkspaceModel::updateCategory (int topLevelItemIndex, QList < symbol_table::symbol_record > symbolTable)
+WorkspaceModel::updateCategory (int topLevelItemIndex, QList < symbol_table::symbol_record* > symbolTable)
 {
   // This method may be a little bit confusing; variablesList is a complete list of all
   // variables that are in the workspace currently.
@@ -195,7 +196,7 @@ WorkspaceModel::updateCategory (int topLevelItemIndex, QList < symbol_table::sym
 
   // First we check, if any variables that exist in the model tree have to be updated
   // or created. So we walk the variablesList check against the tree.
-  foreach (symbol_table::symbol_record symbolRecord, symbolTable)
+  foreach (symbol_table::symbol_record *symbolRecord, symbolTable)
     {
       int childCount = treeItem->childCount ();
       bool alreadyExists = false;
@@ -207,7 +208,7 @@ WorkspaceModel::updateCategory (int topLevelItemIndex, QList < symbol_table::sym
         {
           child = treeItem->child (i);
           if (child->data (0).toString () ==
-              QString (symbolRecord.name ().c_str ()))
+              QString (symbolRecord->name ().c_str ()))
             {
               alreadyExists = true;
               break;
@@ -233,9 +234,9 @@ WorkspaceModel::updateCategory (int topLevelItemIndex, QList < symbol_table::sym
     {
       bool existsInVariableList = false;
       TreeItem *child = treeItem->child (i);
-      foreach (symbol_table::symbol_record symbolRecord, symbolTable)
+      foreach (symbol_table::symbol_record *symbolRecord, symbolTable)
         {
-          if (QString (symbolRecord.name ().c_str ()) ==
+          if (QString (symbolRecord->name ().c_str ()) ==
               child->data (0).toString ())
             {
               existsInVariableList = true;
@@ -252,7 +253,7 @@ WorkspaceModel::updateCategory (int topLevelItemIndex, QList < symbol_table::sym
 }
 
 QString
-WorkspaceModel::octaveValueAsQString (octave_value octaveValue)
+WorkspaceModel::octaveValueAsQString (const octave_value& octaveValue)
 {
   // Convert single qouted string.
   if (octaveValue.is_sq_string ())

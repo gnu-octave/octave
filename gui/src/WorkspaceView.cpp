@@ -41,7 +41,7 @@ WorkspaceView::WorkspaceView (QWidget * parent) : QDockWidget
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT(handleVisibilityChanged (bool)));
 
-  connect (OctaveLink::instance()->workspaceModel(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+  connect (OctaveLink::instance()->workspaceModel(), SIGNAL(expandRequest()),
            m_workspaceTreeView, SLOT(expandAll()));
 }
 

@@ -71,6 +71,7 @@
 #include <QSemaphore>
 #include <QObject>
 #include <QStringListModel>
+#include <QTimer>
 
 #include "WorkspaceModel.h"
 #include "OctaveMainThread.h"
@@ -95,7 +96,7 @@ public:
   WorkspaceModel *workspaceModel ();
 
   void triggerUpdateHistoryModel ();
-  void triggerUpdateSymbolTable ();
+  void triggerCacheSymbolTable ();
 
 private:
   OctaveLink ();
@@ -106,6 +107,7 @@ private:
 
   // Threads for running octave and managing the data interaction.
   OctaveMainThread *m_octaveMainThread;
+  QTimer _updateWorkspaceModelTimer;
 
   static OctaveLink m_singleton;
 };

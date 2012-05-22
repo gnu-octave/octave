@@ -25,6 +25,7 @@ WorkspaceModel::WorkspaceModel(QObject *parent)
   QList<QVariant> rootData;
   rootData << tr ("Name") << tr ("Type") << tr ("Value");
   _rootItem = new TreeItem(rootData);
+  _cachedSymbolTableSemaphore = new QSemaphore (1);
 }
 
 WorkspaceModel::~WorkspaceModel()
@@ -135,26 +136,34 @@ WorkspaceModel::data(const QModelIndex &index, int role) const
   return item->data(index.column());
 }
 
+
 void
-WorkspaceModel::updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord)
+WorkspaceModel::cacheSymbolTable ()
 {
-  treeItem->setData (0, QString (symbolRecord->name ().c_str ()));
-  treeItem->setData (1, QString (symbolRecord->varval ().type_name ().c_str ()));
-  treeItem->setData (2, octaveValueAsQString (symbolRecord->varval ()));
+  std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
+
+  _cachedSymbolTableSemaphore->acquire (1);
+  _cachedSymbolTable.clear();
+  for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
+       iterator != symbolTable.end (); iterator++)
+    {
+      _cachedSymbolTable.push_back((*iterator).dup(symbol_table::global_scope()));
+    }
+  _cachedSymbolTableSemaphore->release (1);
 }
 
 void
 WorkspaceModel::updateFromSymbolTable ()
 {
-  std::list < symbol_table::symbol_record > allVariables = symbol_table::all_variables ();
   // Split the symbol table into its different categories.
   QList < symbol_table::symbol_record* > localSymbolTable;
   QList < symbol_table::symbol_record* > globalSymbolTable;
   QList < symbol_table::symbol_record* > persistentSymbolTable;
   QList < symbol_table::symbol_record* > hiddenSymbolTable;
 
-  for (std::list < symbol_table::symbol_record > ::iterator iterator = allVariables.begin ();
-       iterator != allVariables.end (); iterator++)
+  _cachedSymbolTableSemaphore->acquire (1);
+  for (std::list < symbol_table::symbol_record > ::iterator iterator = _cachedSymbolTable.begin ();
+       iterator != _cachedSymbolTable.end (); iterator++)
     {
       // It's true that being global or hidden includes it's can mean it's also locally visible,
       // but we want to distinguish that here.
@@ -183,8 +192,8 @@ WorkspaceModel::updateFromSymbolTable ()
   updateCategory (1, globalSymbolTable);
   updateCategory (2, persistentSymbolTable);
   updateCategory (3, hiddenSymbolTable);
+ _cachedSymbolTableSemaphore->release (1);
   reset();
-
   emit expandRequest();
 }
 
@@ -192,6 +201,8 @@ void
 WorkspaceModel::updateCategory (int topLevelItemIndex, const QList < symbol_table::symbol_record* > &symbolTable)
 {
   TreeItem *treeItem = topLevelItem (topLevelItemIndex);
+
+  QModelIndex mi = index(treeItem->row(), 0);
   treeItem->deleteChildItems();
 
   int symbolTableSize = symbolTable.size ();
@@ -201,6 +212,14 @@ WorkspaceModel::updateCategory (int topLevelItemIndex, const QList < symbol_tabl
       updateTreeEntry (child, symbolTable[j]);
       treeItem->addChild (child);
     }
+}
+
+void
+WorkspaceModel::updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord)
+{
+  treeItem->setData (0, QString (symbolRecord->name ().c_str ()));
+  treeItem->setData (1, QString (symbolRecord->varval ().type_name ().c_str ()));
+  treeItem->setData (2, octaveValueAsQString (symbolRecord->varval ()));
 }
 
 QString

@@ -57,6 +57,7 @@
 // Qt includes
 #include <QAbstractItemModel>
 #include <QVector>
+#include <QSemaphore>
 
 class TreeItem
 {
@@ -158,15 +159,21 @@ public:
   void insertTopLevelItem (int at, TreeItem *treeItem);
   TreeItem *topLevelItem (int at);
 
-  void updateFromSymbolTable ();
+
+  void cacheSymbolTable ();
   void updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord);
   void updateCategory (int topLevelItemIndex, const QList < symbol_table::symbol_record *> &symbolTable);
   QString octaveValueAsQString (const octave_value &octaveValue);
+
+public slots:
+  void updateFromSymbolTable ();
 
 signals:
   void expandRequest();
 
 private:
+  QSemaphore *_cachedSymbolTableSemaphore;
+  std::list < symbol_table::symbol_record > _cachedSymbolTable;
   TreeItem *_rootItem;
 };
 

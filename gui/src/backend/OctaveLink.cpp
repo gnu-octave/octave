@@ -17,12 +17,12 @@
 
 #include "OctaveLink.h"
 
-void octave_loop_hook_impl()
+int update_hook_impl()
 {
   OctaveLink::instance()->triggerUpdateHistoryModel();
-  OctaveLink::instance()->triggerUpdateSymbolTable();
+  OctaveLink::instance()->triggerCacheSymbolTable();
+  return 0;
 }
-
 
 OctaveLink OctaveLink::m_singleton;
 
@@ -35,6 +35,11 @@ OctaveLink::OctaveLink ():QObject ()
   m_workspaceModel->insertTopLevelItem(1, new TreeItem ("Global"));
   m_workspaceModel->insertTopLevelItem(2, new TreeItem ("Persistent"));
   m_workspaceModel->insertTopLevelItem(3, new TreeItem ("Hidden"));
+
+  _updateWorkspaceModelTimer.setInterval (1000);
+  _updateWorkspaceModelTimer.setSingleShot (false);
+  connect(&_updateWorkspaceModelTimer, SIGNAL (timeout ()),
+    m_workspaceModel, SLOT (updateFromSymbolTable ()));
 }
 
 OctaveLink::~OctaveLink ()
@@ -46,9 +51,10 @@ OctaveLink::launchOctave ()
 {
   // Create both threads.
   m_octaveMainThread = new OctaveMainThread (this);
-  octave_loop_hook = octave_loop_hook_impl;
+  command_editor::add_event_hook(update_hook_impl);
   // Start the first one.
   m_octaveMainThread->start ();
+  _updateWorkspaceModelTimer.start ();
 }
 
 void
@@ -78,9 +84,9 @@ OctaveLink::triggerUpdateHistoryModel ()
 }
 
 void
-OctaveLink::triggerUpdateSymbolTable ()
+OctaveLink::triggerCacheSymbolTable ()
 {
-  m_workspaceModel->updateFromSymbolTable();
+  m_workspaceModel->cacheSymbolTable();
 }
 
 QStringListModel *

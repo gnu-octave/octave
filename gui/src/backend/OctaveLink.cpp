@@ -16,11 +16,14 @@
  */
 
 #include "OctaveLink.h"
+#include "load-path.h"
+#include <QDir>
 
 int update_hook_impl()
 {
   OctaveLink::instance()->triggerUpdateHistoryModel();
   OctaveLink::instance()->triggerCacheSymbolTable();
+  QDir::setCurrent(load_path::get_command_line_path().c_str());
   return 0;
 }
 

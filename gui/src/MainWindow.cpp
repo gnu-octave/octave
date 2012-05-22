@@ -340,7 +340,6 @@ MainWindow::construct ()
 
   connect (copyAction, SIGNAL (triggered()), m_terminalView, SLOT(copyClipboard ()));
   connect (pasteAction, SIGNAL (triggered()), m_terminalView, SLOT(pasteClipboard ()));
-
   setWindowTitle ("Octave");
 
   addDockWidget (Qt::LeftDockWidgetArea, m_workspaceView);

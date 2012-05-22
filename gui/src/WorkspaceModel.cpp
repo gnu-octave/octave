@@ -263,17 +263,17 @@ WorkspaceModel::octaveValueAsQString (const octave_value& octaveValue)
     }
   else if (octaveValue.is_real_matrix ())
     {
-      return QString ("%1x%2 matrix")
-          .arg (octaveValue.matrix_value ().rows ())
-          .arg (octaveValue.matrix_value ().cols ());
+      return QString ("%1x%2")
+          .arg (octaveValue.rows ())
+          .arg (octaveValue.columns ());
 
       // Convert complex matrix.
     }
   else if (octaveValue.is_complex_matrix ())
     {
-      return QString ("%1x%2 complex matrix")
-          .arg (octaveValue.matrix_value ().rows ())
-          .arg (octaveValue.matrix_value ().cols ());
+      return QString ("%1x%2")
+          .arg (octaveValue.rows ())
+          .arg (octaveValue.columns ());
 
       // If everything else does not fit, we could not recognize the type.
     }

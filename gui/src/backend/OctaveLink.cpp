@@ -47,7 +47,6 @@ OctaveLink::launchOctave ()
   // Create both threads.
   m_octaveMainThread = new OctaveMainThread (this);
   octave_loop_hook = octave_loop_hook_impl;
-
   // Start the first one.
   m_octaveMainThread->start ();
 }

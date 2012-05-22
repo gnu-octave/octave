@@ -28,6 +28,7 @@
 #include <QQueue>
 #include <QMdiSubWindow>
 #include <QCloseEvent>
+#include <QToolButton>
 
 // QScintilla includes
 #include <Qsci/qsciapis.h>
@@ -113,6 +114,10 @@ private:
 
   // Toolbars.
   QStatusBar *m_statusBar;
+
+  QLineEdit *m_currentDirectoryLineEdit;
+  QToolButton *m_currentDirectoryToolButton;
+  QToolButton *m_currentDirectoryUpToolButton;
 
   // Flag for closing whole application
   bool m_closing;

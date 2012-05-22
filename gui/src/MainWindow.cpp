@@ -250,14 +250,17 @@ MainWindow::construct ()
   QAction *cutAction
       = editMenu->addAction (QIcon::fromTheme ("edit-cut",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Cut"));
+  cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
 
   QAction *copyAction
       = editMenu->addAction (QIcon::fromTheme ("edit-copy",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Copy"));
+  copyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
 
   QAction *pasteAction
       = editMenu->addAction (QIcon::fromTheme ("edit-paste",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Paste"));
+  pasteAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_V));
 
   QAction *undoAction
       = editMenu->addAction (QIcon::fromTheme ("edit-undo",
@@ -334,6 +337,9 @@ MainWindow::construct ()
   connect (saveWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleSaveWorkspaceRequest ()));
   connect (loadWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleLoadWorkspaceRequest ()));
   connect (clearWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleClearWorkspaceRequest ()));
+
+  connect (copyAction, SIGNAL (triggered()), m_terminalView, SLOT(copyClipboard ()));
+  connect (pasteAction, SIGNAL (triggered()), m_terminalView, SLOT(pasteClipboard ()));
 
   setWindowTitle ("Octave");
 

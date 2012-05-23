@@ -25,331 +25,210 @@
 #include <QStyle>
 #include <QTextStream>
 
-FileEditor::FileEditor (QTerminal *terminalView, LexerOctaveGui *lexer, MainWindow *mainWindow)
-    : QWidget ()
+FileEditor::FileEditor (QTerminal *terminal, MainWindow *mainWindow)
+  : FileEditorInterface(terminal, mainWindow)
 {
   construct ();
-  m_editor->setLexer (lexer);
-  m_terminalView = terminalView; // for sending commands to octave
-  m_mainWindow = mainWindow;  // get the MainWindow for chekcing state at subwindow close
-  show ();
+
+  m_terminal = terminal;
+  m_mainWindow = mainWindow;
+  setVisible (false);
 }
 
 FileEditor::~FileEditor ()
 {
 }
 
-void
-FileEditor::closeEvent(QCloseEvent *event)
+LexerOctaveGui *
+FileEditor::lexer ()
 {
-  if ( m_mainWindow->closing () )
+  return m_lexer;
+}
+
+QTerminal *
+FileEditor::terminal ()
+{
+  return m_terminal;
+}
+
+MainWindow *
+FileEditor::mainWindow ()
+{
+  return m_mainWindow;
+}
+
+void
+FileEditor::requestNewFile ()
+{
+  FileEditorTab *fileEditorTab = new FileEditorTab (this);
+  if (fileEditorTab)
     {
-      // close wohle application: save file or not if modified
-      checkFileModified ("Closing Octave", 0); // no cancel possible
-      event->accept ();
+      addFileEditorTab (fileEditorTab);
+      fileEditorTab->newFile ();
     }
-  else
+}
+
+void
+FileEditor::requestOpenFile ()
+{
+  FileEditorTab *fileEditorTab = new FileEditorTab (this);
+  if (fileEditorTab)
     {
-      // ignore close event if file is not saved and user cancels closing this window
-      if (checkFileModified ("Close File",QMessageBox::Cancel) == QMessageBox::Cancel)
+      addFileEditorTab (fileEditorTab);
+      fileEditorTab->openFile ();
+    }
+}
+
+void
+FileEditor::requestOpenFile (QString fileName)
+{
+  FileEditorTab *fileEditorTab = new FileEditorTab (this);
+  if (fileEditorTab)
+    {
+      addFileEditorTab (fileEditorTab);
+      fileEditorTab->loadFile (fileName);
+    }
+}
+
+void
+FileEditor::requestUndo ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->undo ();
+}
+
+void
+FileEditor::requestRedo ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->redo ();
+}
+
+void
+FileEditor::requestCopy ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->copy ();
+}
+
+void
+FileEditor::requestCut ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->cut ();
+}
+
+void
+FileEditor::requestPaste ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->paste ();
+}
+
+void
+FileEditor::requestSaveFile ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->saveFile ();
+}
+
+void
+FileEditor::requestSaveFileAs ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->saveFileAs ();
+}
+
+void
+FileEditor::requestRunFile ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->runFile ();
+}
+
+void
+FileEditor::requestToggleBookmark ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->toggleBookmark ();
+}
+
+void
+FileEditor::requestNextBookmark ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->nextBookmark ();
+}
+
+void
+FileEditor::requestPreviousBookmark ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->previousBookmark ();
+}
+
+void
+FileEditor::requestRemoveBookmark ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->removeBookmark ();
+}
+
+void
+FileEditor::requestCommentSelectedText ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->commentSelectedText ();
+}
+
+void
+FileEditor::requestUncommentSelectedText ()
+{
+  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->uncommentSelectedText ();
+}
+
+void
+FileEditor::handleFileNameChanged (QString fileName)
+{
+  QObject *senderObject = sender ();
+  FileEditorTab *fileEditorTab = dynamic_cast<FileEditorTab*> (senderObject);
+  if (fileEditorTab)
+    {
+      for(int i = 0; i < m_tabWidget->count (); i++)
         {
-          event->ignore ();
-        }
-      else
-        {
-          event->accept();
-        }
-    }
-}
-
-void
-FileEditor::handleMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
-{
-  Q_UNUSED (state);
-  if ( margin == 1 )  // marker margin
-    {
-      unsigned int mask = m_editor->markersAtLine (line);
-      if (mask && (1 << MARKER_BOOKMARK))
-        m_editor->markerDelete(line,MARKER_BOOKMARK);
-      else
-        m_editor->markerAdd(line,MARKER_BOOKMARK);
-    }
-}
-
-void
-FileEditor::newWindowTitle(bool modified)
-{
-  QString title(m_fileName);
-  if ( !m_longTitle )
-    {
-      QFileInfo file(m_fileName);
-      title = file.fileName();
-    }
-  if ( modified )
-    {
-      setWindowTitle(title.prepend("* "));
-    }
-  else
-     setWindowTitle (title);
-}
-
-void
-FileEditor::handleCopyAvailable(bool enableCopy)
-{
-  m_copyAction->setEnabled(enableCopy);
-  m_cutAction->setEnabled(enableCopy);
-}
-
-
-void
-FileEditor::openFile ()
-{
-    if (checkFileModified ("Open File",QMessageBox::Cancel)==QMessageBox::Cancel)
-      {
-        return; // existing file not saved and opening another file canceled by user
-      }
-    QString openFileName;
-    QFileDialog dlg(this);
-    dlg.setNameFilter(SAVE_FILE_FILTER);
-    dlg.setAcceptMode(QFileDialog::AcceptOpen);
-    dlg.setViewMode(QFileDialog::Detail);
-    if ( dlg.exec() )
-      {
-        openFileName = dlg.selectedFiles().at(0);
-        if (openFileName.isEmpty ())
-          return;
-        loadFile(openFileName);
-      }
-}
-
-void
-FileEditor::loadFile (QString fileName)
-{
-  QFile file (fileName);
-  if (!file.open (QFile::ReadOnly))
-    {
-      QMessageBox::warning (this, tr ("File Editor"),
-        tr ("Cannot read file %1:\n%2.").arg (fileName).
-        arg (file.errorString ()));
-      return;
-    }
-
-  QTextStream in (&file);
-  QApplication::setOverrideCursor (Qt::WaitCursor);
-  m_editor->setText (in.readAll ());
-  QApplication::restoreOverrideCursor ();
-
-  m_fileName = fileName;
-  newWindowTitle (false); // window title (no modification)
-  m_statusBar->showMessage (tr ("File loaded."), 2000);
-  m_editor->setModified (false); // loaded file is not modified yet
-}
-
-void
-FileEditor::newFile ()
-{
-    if (checkFileModified ("Create New File",QMessageBox::Cancel)==QMessageBox::Cancel)
-      {
-        return; // existing file not saved and creating new file canceled by user
-      }
-
-    m_fileName = UNNAMED_FILE;
-    newWindowTitle (false); // window title (no modification)
-    m_editor->setText ("");
-    m_editor->setModified (false); // new file is not modified yet
-}
-
-int
-FileEditor::checkFileModified (QString msg, int cancelButton)
-{
-  int decision = QMessageBox::Yes;
-  if (m_editor->isModified ())
-    {
-      // file is modified but not saved, aks user what to do
-      decision = QMessageBox::warning (this,
-                                        msg,
-                                        tr ("The file %1\n"
-                                            "has been modified. Do you want to save the changes?").
-                                          arg (m_fileName),
-                                        QMessageBox::Save, QMessageBox::Discard, cancelButton );
-      if (decision == QMessageBox::Save)
-        {
-          saveFile ();
-          if (m_editor->isModified ())
+          if (m_tabWidget->widget (i) == fileEditorTab)
             {
-              // If the user attempted to save the file, but it's still
-              // modified, then probably something went wrong, so return cancel
-              // for cancel this operation or try to save files as if cancel not
-              // possible
-              if ( cancelButton )
-                return (QMessageBox::Cancel);
-              else
-                saveFileAs ();
+              m_tabWidget->setTabText (i, fileName);
             }
         }
     }
-  return (decision);
 }
 
 void
-FileEditor::saveFile ()
+FileEditor::handleTabCloseRequest (int index)
 {
-  saveFile(m_fileName);
-}
-
-void
-FileEditor::saveFile (QString saveFileName)
-{
-  // it is a new file with the name "<unnamed>" -> call saveFielAs
-  if (saveFileName==UNNAMED_FILE || saveFileName.isEmpty ())
-    {
-      saveFileAs();
-      return;
-    }
-
-  // open the file for writing
-  QFile file (saveFileName);
-  if (!file.open (QFile::WriteOnly))
-    {
-      QMessageBox::warning (this, tr ("File Editor"),
-                            tr ("Cannot write file %1:\n%2.").
-          arg (saveFileName).arg (file.errorString ()));
-      return;
-    }
-
-  // save the contents into the file
-  QTextStream out (&file);
-  QApplication::setOverrideCursor (Qt::WaitCursor);
-  out << m_editor->text ();
-  QApplication::restoreOverrideCursor ();
-  m_fileName = saveFileName;  // save file name for later use
-  newWindowTitle(false);      // set the window title to actual file name (not modified)
-  m_statusBar->showMessage (tr ("File %1 saved").arg(m_fileName), 2000);
-  m_editor->setModified (false); // files is save -> not modified
-}
-
-void
-FileEditor::saveFileAs ()
-{
-  QString saveFileName(m_fileName);
-  QFileDialog dlg(this);
-  if (saveFileName==UNNAMED_FILE || saveFileName.isEmpty ())
-    {
-      saveFileName = QDir::homePath();
-      dlg.setDirectory(saveFileName);
-    }
-  else
-    {
-      dlg.selectFile(saveFileName);
-    }
-  dlg.setNameFilter(SAVE_FILE_FILTER);
-  dlg.setDefaultSuffix("m");
-  dlg.setAcceptMode(QFileDialog::AcceptSave);
-  dlg.setViewMode(QFileDialog::Detail);
-  if ( dlg.exec() )
-    {
-      saveFileName = dlg.selectedFiles().at(0);
-      if (saveFileName.isEmpty ())
-        return;
-      saveFile(saveFileName);
-    }
-}
-
-// handle the run command
-void
-FileEditor::runFile ()
-{
-  if (m_editor->isModified ())
-    saveFile(m_fileName);
-  m_terminalView->sendText (QString ("run \'%1\'\n").arg (m_fileName));
-  m_terminalView->setFocus ();
-}
-
-
-// (un)comment selected text
-void
-FileEditor::commentSelectedText ()
-{
-  doCommentSelectedText (true);
-}
-void
-FileEditor::uncommentSelectedText ()
-{
-  doCommentSelectedText (false);
-}
-void
-FileEditor::doCommentSelectedText (bool comment)
-{
-  if ( m_editor->hasSelectedText() )
-    {
-      int lineFrom, lineTo, colFrom, colTo, i;
-      m_editor->getSelection (&lineFrom,&colFrom,&lineTo,&colTo);
-      if ( colTo == 0 )  // the beginning of last line is not selected
-        lineTo--;        // stop at line above
-      m_editor->beginUndoAction ();
-      for ( i=lineFrom; i<=lineTo; i++ )
-        {
-          if ( comment )
-            m_editor->insertAt("%",i,0);
-          else
-            {
-               QString line(m_editor->text(i));
-               if ( line.startsWith("%") )
-                {
-                  m_editor->setSelection(i,0,i,1);
-                  m_editor->removeSelectedText();
-                }
-            }
-        }
-      m_editor->endUndoAction ();
-    }
-}
-
-
-// remove bookmarks
-void
-FileEditor::removeBookmark ()
-{
-  m_editor->markerDeleteAll(MARKER_BOOKMARK);
-}
-// toggle bookmark
-void
-FileEditor::toggleBookmark ()
-{
-  int line,cur;
-  m_editor->getCursorPosition(&line,&cur);
-  if ( m_editor->markersAtLine (line) && (1 << MARKER_BOOKMARK) )
-    m_editor->markerDelete(line,MARKER_BOOKMARK);
-  else
-    m_editor->markerAdd(line,MARKER_BOOKMARK);
-}
-// goto next bookmark
-void
-FileEditor::nextBookmark ()
-{
-  int line,cur,nextline;
-  m_editor->getCursorPosition(&line,&cur);
-  if ( m_editor->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
-    line++; // we have a bookmark here, so start search from next line
-  nextline = m_editor->markerFindNext(line,(1 << MARKER_BOOKMARK));
-  m_editor->setCursorPosition(nextline,0);
-}
-// goto previous bookmark
-void
-FileEditor::prevBookmark ()
-{
-  int line,cur,prevline;
-  m_editor->getCursorPosition(&line,&cur);
-  if ( m_editor->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
-    line--; // we have a bookmark here, so start search from prev line
-  prevline = m_editor->markerFindPrevious(line,(1 << MARKER_BOOKMARK));
-  m_editor->setCursorPosition(prevline,0);
-}
-
-void
-FileEditor::setModified (bool modified)
-{
-  m_modified = modified;
+  FileEditorTab *fileEditorTab = dynamic_cast <FileEditorTab*> (m_tabWidget->widget (index));
+  if (fileEditorTab)
+    if (fileEditorTab->close ())
+      {
+        m_tabWidget->removeTab (index);
+        delete fileEditorTab;
+      }
 }
 
 void
@@ -361,104 +240,69 @@ FileEditor::construct ()
   m_menuBar = new QMenuBar (this);
   m_toolBar = new QToolBar (this);
   m_statusBar = new QStatusBar (this);
-  m_editor = new QsciScintilla (this);
-
-  // markers
-  m_editor->setMarginType (1, QsciScintilla::SymbolMargin);
-  m_editor->setMarginSensitivity(1,true);
-  m_editor->markerDefine(QsciScintilla::RightTriangle,MARKER_BOOKMARK);
-  connect(m_editor,SIGNAL(marginClicked(int,int,Qt::KeyboardModifiers)),
-          this,SLOT(handleMarginClicked(int,int,Qt::KeyboardModifiers)));
-
-  // line numbers
-  m_editor->setMarginsForegroundColor(QColor(96,96,96));
-  m_editor->setMarginsBackgroundColor(QColor(232,232,220));
-  if ( settings->value ("editor/showLineNumbers",true).toBool () )
-    {
-      QFont marginFont( settings->value ("editor/fontName","Courier").toString () ,
-                        settings->value ("editor/fontSize",10).toInt () );
-      m_editor->setMarginsFont( marginFont );
-      QFontMetrics metrics(marginFont);
-      m_editor->setMarginType (2, QsciScintilla::TextMargin);
-      m_editor->setMarginWidth(2, metrics.width("99999"));
-      m_editor->setMarginLineNumbers(2, true);
-    }
-  // code folding
-  m_editor->setMarginType (3, QsciScintilla::SymbolMargin);
-  m_editor->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
-  // other features
-  if ( settings->value ("editor/highlightCurrentLine",true).toBool () )
-    {
-      m_editor->setCaretLineVisible(true);
-      m_editor->setCaretLineBackgroundColor(QColor(245,245,245));
-    }
-  m_editor->setBraceMatching (QsciScintilla::StrictBraceMatch);
-  m_editor->setAutoIndent (true);
-  m_editor->setIndentationWidth (2);
-  m_editor->setIndentationsUseTabs (false);
-  if ( settings->value ("editor/codeCompletion",true).toBool () )
-    {
-      m_editor->autoCompleteFromAll ();
-      m_editor->setAutoCompletionSource(QsciScintilla::AcsAll);
-      m_editor->setAutoCompletionThreshold (1);
-    }
-  m_editor->setUtf8 (true);
-  m_longTitle = settings->value ("editor/longWindowTitle",true).toBool ();
-
-  // The Actions
+  m_tabWidget = new QTabWidget (this);
+  m_tabWidget->setTabsClosable (true);
+  //m_longTitle = settings->value ("editor/longWindowTitle",true).toBool ();
 
   // Theme icons with QStyle icons as fallback
   QAction *newAction = new QAction (
         QIcon::fromTheme("document-new",style->standardIcon (QStyle::SP_FileIcon)),
         tr("&New File"), m_toolBar);
+
   QAction *openAction = new QAction (
         QIcon::fromTheme("document-open",style->standardIcon (QStyle::SP_DirOpenIcon)),
         tr("&Open File"), m_toolBar);
+
   QAction *saveAction = new QAction (
         QIcon::fromTheme("document-save",style->standardIcon (QStyle::SP_DriveHDIcon)),
         tr("&Save File"), m_toolBar);
+
   QAction *saveAsAction = new QAction (
         QIcon::fromTheme("document-save-as",style->standardIcon (QStyle::SP_DriveFDIcon)),
         tr("Save File &As"), m_toolBar);
+
   QAction *undoAction = new QAction (
         QIcon::fromTheme("edit-undo",style->standardIcon (QStyle::SP_ArrowLeft)),
         tr("&Undo"), m_toolBar);
+
   QAction *redoAction = new QAction (
         QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
         tr("&Redo"), m_toolBar);
-  m_copyAction = new QAction (QIcon::fromTheme("edit-copy"),tr("&Copy"),m_toolBar);
-  m_cutAction = new QAction (QIcon::fromTheme("edit-cut"),tr("Cu&t"),m_toolBar);
-  QAction *pasteAction = new QAction (QIcon::fromTheme("edit-paste"),tr("&Paste"),m_toolBar);
-  QAction *nextBookmarkAction = new QAction (tr("&Next Bookmark"),m_toolBar);
-  QAction *prevBookmarkAction = new QAction (tr("Pre&vious Bookmark"),m_toolBar);
-  QAction *toggleBookmarkAction = new QAction (tr("Toggle &Bookmark"),m_toolBar);
-  QAction *removeBookmarkAction = new QAction (tr("&Remove All Bookmarks"),m_toolBar);
-  QAction *commentSelectedAction = new QAction (tr("&Comment Selected Text"),m_toolBar);
-  QAction *uncommentSelectedAction = new QAction (tr("&Uncomment Selected Text"),m_toolBar);
+
+  m_copyAction = new QAction (QIcon::fromTheme("edit-copy"), tr("&Copy"),m_toolBar);
+  m_cutAction = new QAction (QIcon::fromTheme("edit-cut"), tr("Cu&t"),m_toolBar);
+
+  QAction *pasteAction              = new QAction (QIcon::fromTheme ("edit-paste"), tr ("&Paste"),m_toolBar);
+  QAction *nextBookmarkAction       = new QAction (tr ("&Next Bookmark"),m_toolBar);
+  QAction *prevBookmarkAction       = new QAction (tr ("Pre&vious Bookmark"),m_toolBar);
+  QAction *toggleBookmarkAction     = new QAction (tr ("Toggle &Bookmark"),m_toolBar);
+  QAction *removeBookmarkAction     = new QAction (tr ("&Remove All Bookmarks"),m_toolBar);
+  QAction *commentSelectedAction    = new QAction (tr ("&Comment Selected Text"),m_toolBar);
+  QAction *uncommentSelectedAction  = new QAction (tr ("&Uncomment Selected Text"),m_toolBar);
+
   QAction *runAction = new QAction (
-        QIcon::fromTheme("media-play",style->standardIcon (QStyle::SP_MediaPlay)),
+        QIcon::fromTheme ("media-play", style->standardIcon (QStyle::SP_MediaPlay)),
         tr("&Run File"), m_toolBar);
 
   // some actions are disabled from the beginning
   m_copyAction->setEnabled(false);
   m_cutAction->setEnabled(false);
-  connect(m_editor,SIGNAL(copyAvailable(bool)),this,SLOT(handleCopyAvailable(bool)));
 
   // short cuts
-  newAction->setShortcut(QKeySequence::New);
-  openAction->setShortcut(QKeySequence::Open);
-  saveAction->setShortcut(QKeySequence::Save);
-  saveAsAction->setShortcut(QKeySequence::SaveAs);
-  undoAction->setShortcut(QKeySequence::Undo);
-  redoAction->setShortcut(QKeySequence::Redo);
-  m_copyAction->setShortcut(QKeySequence::Copy);
-  m_cutAction->setShortcut(QKeySequence::Cut);
-  pasteAction->setShortcut(QKeySequence::Paste);
-  runAction->setShortcut(Qt::Key_F5);
-  nextBookmarkAction->setShortcut(Qt::Key_F2);
-  prevBookmarkAction->setShortcut(Qt::SHIFT + Qt::Key_F2);
-  toggleBookmarkAction->setShortcut(Qt::Key_F7);
-  commentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_R);
+  newAction->setShortcut              (QKeySequence::New);
+  openAction->setShortcut             (QKeySequence::Open);
+  saveAction->setShortcut             (QKeySequence::Save);
+  saveAsAction->setShortcut           (QKeySequence::SaveAs);
+  undoAction->setShortcut             (QKeySequence::Undo);
+  redoAction->setShortcut             (QKeySequence::Redo);
+  m_copyAction->setShortcut           (QKeySequence::Copy);
+  m_cutAction->setShortcut            (QKeySequence::Cut);
+  pasteAction->setShortcut            (QKeySequence::Paste);
+  runAction->setShortcut              (Qt::Key_F5);
+  nextBookmarkAction->setShortcut     (Qt::Key_F2);
+  prevBookmarkAction->setShortcut     (Qt::SHIFT + Qt::Key_F2);
+  toggleBookmarkAction->setShortcut   (Qt::Key_F7);
+  commentSelectedAction->setShortcut  (Qt::CTRL + Qt::Key_R);
   uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);
 
   // toolbar
@@ -466,74 +310,118 @@ FileEditor::construct ()
   m_toolBar->addAction (openAction);
   m_toolBar->addAction (saveAction);
   m_toolBar->addAction (saveAsAction);
-  m_toolBar->addSeparator();
+  m_toolBar->addSeparator ();
   m_toolBar->addAction (undoAction);
   m_toolBar->addAction (redoAction);
   m_toolBar->addAction (m_copyAction);
   m_toolBar->addAction (m_cutAction);
   m_toolBar->addAction (pasteAction);
-  m_toolBar->addSeparator();
+  m_toolBar->addSeparator ();
   m_toolBar->addAction (runAction);
 
   // menu bar
-  QMenu *fileMenu = new QMenu(tr("&File"),m_menuBar);
-  fileMenu->addAction(newAction);
-  fileMenu->addAction(openAction);
-  fileMenu->addAction(saveAction);
-  fileMenu->addAction(saveAsAction);
-  fileMenu->addSeparator();
-  m_menuBar->addMenu(fileMenu);
-  QMenu *editMenu = new QMenu(tr("&Edit"),m_menuBar);
-  editMenu->addAction(undoAction);
-  editMenu->addAction(redoAction);
-  editMenu->addSeparator();
-  editMenu->addAction(m_copyAction);
-  editMenu->addAction(m_cutAction);
-  editMenu->addAction(pasteAction);
-  editMenu->addSeparator();
-  editMenu->addAction(commentSelectedAction);
-  editMenu->addAction(uncommentSelectedAction);
-  editMenu->addSeparator();
-  editMenu->addAction(toggleBookmarkAction);
-  editMenu->addAction(nextBookmarkAction);
-  editMenu->addAction(prevBookmarkAction);
-  editMenu->addAction(removeBookmarkAction);
-  m_menuBar->addMenu(editMenu);
-  QMenu *runMenu = new QMenu(tr("&Run"),m_menuBar);
-  runMenu->addAction(runAction);
-  m_menuBar->addMenu(runMenu);
+  QMenu *fileMenu = new QMenu (tr ("&File"), m_menuBar);
+  fileMenu->addAction (newAction);
+  fileMenu->addAction (openAction);
+  fileMenu->addAction (saveAction);
+  fileMenu->addAction (saveAsAction);
+  fileMenu->addSeparator ();
+  m_menuBar->addMenu (fileMenu);
 
+  QMenu *editMenu = new QMenu (tr ("&Edit"), m_menuBar);
+  editMenu->addAction (undoAction);
+  editMenu->addAction (redoAction);
+  editMenu->addSeparator ();
+  editMenu->addAction (m_copyAction);
+  editMenu->addAction (m_cutAction);
+  editMenu->addAction (pasteAction);
+  editMenu->addSeparator ();
+  editMenu->addAction (commentSelectedAction);
+  editMenu->addAction (uncommentSelectedAction);
+  editMenu->addSeparator ();
+  editMenu->addAction (toggleBookmarkAction);
+  editMenu->addAction (nextBookmarkAction);
+  editMenu->addAction (prevBookmarkAction);
+  editMenu->addAction (removeBookmarkAction);
+  m_menuBar->addMenu (editMenu);
+
+  QMenu *runMenu = new QMenu (tr ("&Run"), m_menuBar);
+  runMenu->addAction (runAction);
+  m_menuBar->addMenu (runMenu);
 
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (m_menuBar);
   layout->addWidget (m_toolBar);
-  layout->addWidget (m_editor);
+  layout->addWidget (m_tabWidget);
   layout->addWidget (m_statusBar);
-  layout->setMargin (2);
+  layout->setMargin (0);
   setLayout (layout);
 
-  connect (newAction, SIGNAL (triggered ()), this, SLOT (newFile ()));
-  connect (openAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
-  connect (undoAction, SIGNAL (triggered ()), m_editor, SLOT (undo ()));
-  connect (redoAction, SIGNAL (triggered ()), m_editor, SLOT (redo ()));
-  connect (m_copyAction, SIGNAL (triggered ()), m_editor, SLOT (copy ()));
-  connect (m_cutAction, SIGNAL (triggered ()), m_editor, SLOT (cut ()));
-  connect (pasteAction, SIGNAL (triggered ()), m_editor, SLOT (paste ()));
-  connect (saveAction, SIGNAL (triggered ()), this, SLOT (saveFile ()));
-  connect (saveAsAction, SIGNAL (triggered ()), this, SLOT (saveFileAs ()));
-  connect (runAction, SIGNAL (triggered ()), this, SLOT (runFile ()));
-  connect (toggleBookmarkAction, SIGNAL (triggered ()), this, SLOT (toggleBookmark ()));
-  connect (nextBookmarkAction, SIGNAL (triggered ()), this, SLOT (nextBookmark ()));
-  connect (prevBookmarkAction, SIGNAL (triggered ()), this, SLOT (prevBookmark ()));
-  connect (removeBookmarkAction, SIGNAL (triggered ()), this, SLOT (removeBookmark ()));
-  connect (commentSelectedAction, SIGNAL (triggered ()), this, SLOT (commentSelectedText ()));
-  connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (uncommentSelectedText ()));
+  connect (newAction,               SIGNAL (triggered ()), this, SLOT (requestNewFile ()));
+  connect (openAction,              SIGNAL (triggered ()), this, SLOT (requestOpenFile ()));
+  connect (undoAction,              SIGNAL (triggered ()), this, SLOT (requestUndo ()));
+  connect (redoAction,              SIGNAL (triggered ()), this, SLOT (requestRedo ()));
+  connect (m_copyAction,            SIGNAL (triggered ()), this, SLOT (requestCopy ()));
+  connect (m_cutAction,             SIGNAL (triggered ()), this, SLOT (requestCut ()));
+  connect (pasteAction,             SIGNAL (triggered ()), this, SLOT (requestPaste ()));
+  connect (saveAction,              SIGNAL (triggered ()), this, SLOT (requestSaveFile ()));
+  connect (saveAsAction,            SIGNAL (triggered ()), this, SLOT (requestSaveFileAs ()));
+  connect (runAction,               SIGNAL (triggered ()), this, SLOT (requestRunFile ()));
+  connect (toggleBookmarkAction,    SIGNAL (triggered ()), this, SLOT (requestToggleBookmark ()));
+  connect (nextBookmarkAction,      SIGNAL (triggered ()), this, SLOT (requestNextBookmark ()));
+  connect (prevBookmarkAction,      SIGNAL (triggered ()), this, SLOT (requestPreviousBookmark ()));
+  connect (removeBookmarkAction,    SIGNAL (triggered ()), this, SLOT (requestRemoveBookmark ()));
+  connect (commentSelectedAction,   SIGNAL (triggered ()), this, SLOT (requestCommentSelectedText ()));
+  connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (requestUncommentSelectedText ()));
+  connect (m_tabWidget, SIGNAL (tabCloseRequested (int)), this, SLOT (handleTabCloseRequest (int)));
 
+  // this has to be done only once, not for each editor
+  m_lexer = new LexerOctaveGui ();
 
-  // connect modified signal
-  connect (m_editor, SIGNAL (modificationChanged(bool)), this, SLOT (newWindowTitle(bool)) );
+  // Editor font (default or from settings)
+  m_lexer->setDefaultFont (QFont (
+                             settings->value ("editor/fontName","Courier").toString (),
+                             settings->value ("editor/fontSize",10).toInt ()));
 
-  m_fileName = "";
-  newWindowTitle (false);
-  setWindowIcon(QIcon::fromTheme("accessories-text-editor",style->standardIcon (QStyle::SP_FileIcon)));
+  // TODO: Autoindent not working as it should
+  m_lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
+                               QsciScintilla::AiOpening  ||
+                               QsciScintilla::AiClosing);
+
+  // The API info that is used for auto completion
+  // TODO: Where to store a file with API info (raw or prepared?)?
+  // TODO: Also provide infos on octave-forge functions?
+  // TODO: Also provide infos on function parameters?
+  // By now, use the keywords-list from syntax highlighting
+  m_lexerAPI = new QsciAPIs (m_lexer);
+
+  QString keyword;
+  QStringList keywordList;
+  keyword = m_lexer->keywords (1);  // get whole string with all keywords
+  keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
+  int i;
+  for (i = 0; i < keywordList.size (); i++)
+    {
+      m_lexerAPI->add (keywordList.at (i));  // add single strings to the API
+    }
+  m_lexerAPI->prepare ();           // prepare API info ... this make take some time
+  resize (500, 400);
+  setWindowIcon (QIcon::fromTheme ("accessories-text-editor", style->standardIcon (QStyle::SP_FileIcon)));
+  setWindowTitle ("Octave Editor");
+}
+
+void
+FileEditor::addFileEditorTab (FileEditorTab *fileEditorTab)
+{
+  m_tabWidget->addTab (fileEditorTab, "");
+  connect (fileEditorTab, SIGNAL(fileNameChanged(QString)),
+           this, SLOT(handleFileNameChanged(QString)));
+
+  m_tabWidget->setCurrentWidget (fileEditorTab);
+}
+
+FileEditorTab *
+FileEditor::activeEditorTab ()
+{
+  return dynamic_cast<FileEditorTab*> (m_tabWidget->currentWidget ());
 }

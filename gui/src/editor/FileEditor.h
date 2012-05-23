@@ -19,14 +19,16 @@
 #define FILEEDITORMDISUBWINDOW_H
 
 #include "MainWindow.h"
+#include "FileEditorInterface.h"
+#include "FileEditorTab.h"
 
-#include <QWidget>
 #include <QToolBar>
 #include <QAction>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QCloseEvent>
-#include <Qsci/qsciscintilla.h>
+#include <QTabWidget>
+#include <Qsci/qsciapis.h>
 // Not available in the Debian repos yet!
 // #include <Qsci/qscilexeroctave.h>
 #include "lexeroctavegui.h"
@@ -39,58 +41,56 @@ enum MARKER
     MARKER_BREAKPOINT
   };
 
-class FileEditor : public QWidget
+class FileEditor : public FileEditorInterface
 {
 Q_OBJECT
 
 public:
-  FileEditor (QTerminal *terminalView, LexerOctaveGui *lexer, MainWindow *mainWindow);
+  FileEditor (QTerminal *terminal, MainWindow *mainWindow);
   ~FileEditor ();
   void loadFile (QString fileName);
+  LexerOctaveGui *lexer ();
+  QTerminal *terminal ();
+  MainWindow *mainWindow ();
 
 public slots:
+  void requestNewFile ();
+  void requestOpenFile ();
+  void requestOpenFile (QString fileName);
 
-  void newFile ();
-  void openFile ();
-  void saveFile ();
-  void saveFile (QString fileName);
-  void saveFileAs ();
+  void requestUndo ();
+  void requestRedo ();
+  void requestCopy ();
+  void requestCut ();
+  void requestPaste ();
+  void requestSaveFile ();
+  void requestSaveFileAs ();
+  void requestRunFile ();
+  void requestToggleBookmark ();
+  void requestNextBookmark ();
+  void requestPreviousBookmark ();
+  void requestRemoveBookmark ();
+  void requestCommentSelectedText ();
+  void requestUncommentSelectedText ();
 
-  void setModified (bool modified);
-
-protected:
-  void closeEvent(QCloseEvent *event);
+  void handleFileNameChanged (QString fileName);
+  void handleTabCloseRequest (int index);
 
 private:
-  int checkFileModified (QString msg, int cancelButton);
   void construct ();
-  void doCommentSelectedText (bool comment);
+  void addFileEditorTab(FileEditorTab *fileEditorTab);
+  FileEditorTab *activeEditorTab();
+
   QMenuBar *m_menuBar;
   QToolBar *m_toolBar;
-  QsciScintilla *m_editor;
   QStatusBar *m_statusBar;
-  QString m_fileName;
-  QString m_fileNameShort;
-  QTerminal* m_terminalView;
   QAction* m_copyAction;
   QAction* m_cutAction;
-  MainWindow* m_mainWindow;
+  QTabWidget *m_tabWidget;
   int m_markerBookmark;
-  bool m_modified;
-  bool m_longTitle;
 
-private slots:
-  void newWindowTitle(bool modified);
-  void handleMarginClicked(int line, int margin, Qt::KeyboardModifiers state);
-  void handleCopyAvailable(bool enableCopy);
-  void runFile();
-  void removeBookmark ();
-  void toggleBookmark ();
-  void nextBookmark();
-  void prevBookmark();
-  void commentSelectedText();
-  void uncommentSelectedText();
-
+  LexerOctaveGui *m_lexer;
+  QsciAPIs *m_lexerAPI;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

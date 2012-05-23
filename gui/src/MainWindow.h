@@ -30,9 +30,8 @@
 #include <QCloseEvent>
 #include <QToolButton>
 
-// QScintilla includes
-#include <Qsci/qsciapis.h>
-#include "lexeroctavegui.h"
+// Editor includes
+#include "FileEditorInterface.h"
 
 // QTerminal includes
 #include "QTerminal.h"
@@ -77,14 +76,13 @@ signals:
   void settingsChanged ();
 
 public slots:
-  void openExistingFile (QString fileName);
   void reportStatusMessage (QString statusMessage);
   void handleSaveWorkspaceRequest ();
   void handleLoadWorkspaceRequest ();
   void handleClearWorkspaceRequest ();
   void handleCommandDoubleClicked (QString command);
   void newFile ();
-  void newEditorWindow (QString fileName);
+  void openFile ();
   void openBugTrackerPage ();
   void openAgoraPage ();
   void openOctaveForgePage ();
@@ -102,15 +100,12 @@ private:
   void establishOctaveLink ();
 
   QTerminal *m_terminalView;
+  FileEditorInterface *m_fileEditor;
 
   // Dock widgets.
   WorkspaceView *m_workspaceView;
   HistoryDockWidget *m_historyDockWidget;
   FilesDockWidget *m_filesDockWidget;
-
-  // Editor's lexer
-  LexerOctaveGui *m_lexer;
-  QsciAPIs *m_lexerAPI;
 
   // Toolbars.
   QStatusBar *m_statusBar;

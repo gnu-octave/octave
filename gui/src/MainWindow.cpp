@@ -43,30 +43,26 @@ MainWindow::~MainWindow ()
 }
 
 void
-MainWindow::openExistingFile (QString fileName)
-{
-  reportStatusMessage (tr ("Opening file.."));
-  newEditorWindow(fileName);
-}
-
-void
 MainWindow::newFile ()
 {
-  newEditorWindow(QString());
+  if (!m_fileEditor->isVisible ())
+    {
+      m_fileEditor->show ();
+    }
+  m_fileEditor->requestNewFile ();
+
 }
 
 void
-MainWindow::newEditorWindow (QString fileName)
+MainWindow::openFile ()
 {
-  FileEditor *fileEditor = new FileEditor (m_terminalView, m_lexer, this);
-  fileEditor->setAttribute (Qt::WA_DeleteOnClose);
+  if (!m_fileEditor->isVisible ())
+    {
+      m_fileEditor->show ();
+    }
+  m_fileEditor->requestOpenFile ();
 
-  if (fileName.isEmpty ())
-    fileEditor->newFile ();
-  else
-    fileEditor->loadFile (fileName);
 }
-
 
 void
 MainWindow::reportStatusMessage (QString statusMessage)
@@ -231,7 +227,7 @@ MainWindow::construct ()
   m_terminalView = new QTerminal(this);
   setCentralWidget (m_terminalView);
 
-  m_lexer = NULL;  // initialise the empty lexer for the edtiors
+  m_fileEditor = new FileEditor (m_terminalView, this);
 
   QMenu *fileMenu = menuBar ()->addMenu (tr ("&File"));
   QAction *newFileAction
@@ -250,25 +246,27 @@ MainWindow::construct ()
   QAction *cutAction
       = editMenu->addAction (QIcon::fromTheme ("edit-cut",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Cut"));
-  cutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
+  cutAction->setShortcut (QKeySequence::Cut);
 
   QAction *copyAction
       = editMenu->addAction (QIcon::fromTheme ("edit-copy",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Copy"));
-  copyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+  copyAction->setShortcut (QKeySequence::Copy);
 
   QAction *pasteAction
       = editMenu->addAction (QIcon::fromTheme ("edit-paste",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Paste"));
-  pasteAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_V));
+  pasteAction->setShortcut (QKeySequence::Paste);
 
   QAction *undoAction
       = editMenu->addAction (QIcon::fromTheme ("edit-undo",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Undo"));
+  undoAction->setShortcut (QKeySequence::Undo);
 
   QAction *redoAction
       = editMenu->addAction (QIcon::fromTheme ("edit-redo",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Redo"));
+  redoAction->setShortcut (QKeySequence::Redo);
 
   //QMenu *debugMenu = menuBar ()->addMenu (tr ("De&bug"));
   //QMenu *parallelMenu = menuBar ()->addMenu (tr ("&Parallel"));
@@ -296,7 +294,6 @@ MainWindow::construct ()
   QAction *aboutOctaveAction = helpMenu->addAction (tr ("About Octave"));
 
   // Toolbars
-
   QToolBar *mainToolBar = addToolBar ("Main");
   mainToolBar->addAction (newFileAction);
   mainToolBar->addAction (openFileAction);
@@ -315,6 +312,7 @@ MainWindow::construct ()
   connect (settingsAction, SIGNAL (triggered ()), this, SLOT (processSettingsDialogRequest ()));
   connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));
   connect (newFileAction, SIGNAL (triggered ()), this, SLOT (newFile ()));
+  connect (openFileAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
   connect (reportBugAction, SIGNAL (triggered ()), this, SLOT (openBugTrackerPage ()));
   connect (agoraAction, SIGNAL (triggered ()), this, SLOT (openAgoraPage ()));
   connect (octaveForgeAction, SIGNAL (triggered ()), this, SLOT (openOctaveForgePage ()));
@@ -331,7 +329,7 @@ MainWindow::construct ()
   //connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
   connect (this, SIGNAL (settingsChanged ()), m_filesDockWidget, SLOT (noticeSettings ()));
 
-  connect (m_filesDockWidget, SIGNAL (openFile (QString)), this, SLOT (openExistingFile (QString)));
+  connect (m_filesDockWidget, SIGNAL (openFile (QString)), m_fileEditor, SLOT (requestOpenFile (QString)));
   connect (m_historyDockWidget, SIGNAL (information (QString)), this, SLOT (reportStatusMessage (QString)));
   connect (m_historyDockWidget, SIGNAL (commandDoubleClicked (QString)), this, SLOT (handleCommandDoubleClicked (QString)));
   connect (saveWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleSaveWorkspaceRequest ()));
@@ -346,38 +344,6 @@ MainWindow::construct ()
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);
   addDockWidget (Qt::RightDockWidgetArea, m_filesDockWidget);
   setStatusBar (m_statusBar);
-
-  // this has to be done only once, not for each editor
-  m_lexer = new LexerOctaveGui ();
-
-  // Editor font (default or from settings)
-  QSettings *settings = ResourceManager::instance ()->settings ();
-  m_lexer->setDefaultFont (QFont (
-                             settings->value ("editor/fontName","Courier").toString (),
-                             settings->value ("editor/fontSize",10).toInt ()));
-
-  // TODO: Autoindent not working as it should
-  m_lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
-                               QsciScintilla::AiOpening  ||
-                               QsciScintilla::AiClosing);
-
-  // The API info that is used for auto completion
-  // TODO: Where to store a file with API info (raw or prepared?)?
-  // TODO: Also provide infos on octave-forge functions?
-  // TODO: Also provide infos on function parameters?
-  // By now, use the keywords-list from syntax highlighting
-  m_lexerAPI = new QsciAPIs (m_lexer);
-
-  QString keyword;
-  QStringList keywordList;
-  keyword = m_lexer->keywords (1);  // get whole string with all keywords
-  keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
-  int i;
-  for (i=0; i<keywordList.size(); i++)
-    {
-      m_lexerAPI->add (keywordList.at (i));  // add single strings to the API
-    }
-  m_lexerAPI->prepare ();           // prepare API info ... this make take some time
 
   readSettings ();
   updateTerminalFont();

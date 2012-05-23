@@ -79,8 +79,8 @@ function [A, c] = spdiags (v, c, m, n)
     ## Create new matrix of size mxn using v,c
     [j, i, v] = find (v);
     offset = max (min (c(:), n-m), 0);
-    j = j + offset(i);
-    i = j-c(:)(i);
+    j = j(:) + offset(i(:));
+    i = j - c(:)(i(:));
     idx = i > 0 & i <= m & j > 0 & j <= n;
     A = sparse (i(idx), j(idx), v(idx), m, n);
   endif
@@ -90,4 +90,4 @@ endfunction
 
 %!assert (spdiags (zeros (1,0),1,1,1), sparse (0))
 %!assert (spdiags (zeros (0,1),1,1,1), sparse (0))
-
+%!assert (spdiags ([0.5 -1 0.5], 0:2, 1, 1), sparse(0.5))

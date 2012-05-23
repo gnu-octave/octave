@@ -159,7 +159,7 @@ function __datetick__ (varargin)
       ## Day scale or less
       if (xmax - xmin < N / 24 / 60 / 60)
         scl = 1 / 24 / 60 / 60;
-      elseif (xmax - xmin < N / 24 / 6)
+      elseif (xmax - xmin < N / 24 / 60)
         scl = 1 / 24 / 60;
       else
         scl = 1 / 24;
@@ -186,7 +186,7 @@ function __datetick__ (varargin)
       elseif (maxyear - minyear < N)
         sep = __calc_tick_sep__ (minmonth , maxmonth);
         xmin = datenum (ymin, sep * floor (minmonth / sep), 1);
-        xmax = datenum (ymin, sep * ceil (maxmonth / sep), 1);
+        xmax = datenum (ymax, sep * ceil (maxmonth / sep), 1);
         nticks = ceil (maxmonth / sep) - floor (minmonth / sep) + 1;
       else
         sep = __calc_tick_sep__ (minyear , maxyear);

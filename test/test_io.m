@@ -250,6 +250,12 @@
 
 %!assert (sscanf (['ab'; 'cd'], '%s'), 'acbd')
 
+%!assert (sscanf ('02:08:30', '%i:%i:%i'), [2; 0]);
+%!assert (sscanf ('02:08:30', '%d:%d:%d'), [2; 8; 30]);
+
+%!assert (sscanf ('0177 08', '%i'), [127; 0; 8]);
+%!assert (sscanf ('0177 08', '%d'), [177; 8]);
+
 %!test
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);

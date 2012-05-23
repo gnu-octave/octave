@@ -44,6 +44,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "unwind-prot.h"
 
+//FIXME: This should be part of tree_evaluator
+#include "pt-jit.h"
+static tree_jit jiter;
+
 static tree_evaluator std_evaluator;
 
 tree_evaluator *current_evaluator = &std_evaluator;
@@ -304,6 +308,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   octave_value rhs = expr->rvalue1 ();
 
   if (error_state || rhs.is_undefined ())
+    return;
+
+  if (jiter.execute (cmd, rhs))
     return;
 
   {

@@ -35,12 +35,13 @@ class tree_walker;
 #include "base-list.h"
 #include "comment-list.h"
 #include "symtab.h"
+#include "pt.h"
 
 // A statement is either a command to execute or an expression to
 // evaluate.
 
 class
-tree_statement
+tree_statement : public tree
 {
 public:
 

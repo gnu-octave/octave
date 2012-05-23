@@ -29,7 +29,7 @@
 #include <Qsci/qsciscintilla.h>
 // Not available in the Debian repos yet!
 // #include <Qsci/qscilexeroctave.h>
-#include "lexer/lexeroctavegui.h"
+#include "lexeroctavegui.h"
 
 const char UNNAMED_FILE[]     = "<unnamed>";
 const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";

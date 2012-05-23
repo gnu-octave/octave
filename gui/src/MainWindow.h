@@ -32,7 +32,7 @@
 
 // QScintilla includes
 #include <Qsci/qsciapis.h>
-#include "lexer/lexeroctavegui.h"
+#include "lexeroctavegui.h"
 
 // QTerminal includes
 #include "QTerminal.h"

@@ -40,7 +40,7 @@ mac {
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += . backend ../qterminal/libqterminal \
+INCLUDEPATH         += . backend editor ../qterminal/libqterminal \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -74,7 +74,7 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 
 # Files associated with the project:
 SOURCES +=\
-    lexer/lexeroctavegui.cpp \
+    editor/lexeroctavegui.cpp \
     MainWindow.cpp \
     WorkspaceView.cpp \
     HistoryDockWidget.cpp \
@@ -85,11 +85,11 @@ SOURCES +=\
     backend/OctaveLink.cpp \
     backend/OctaveMainThread.cpp \
     WelcomeWizard.cpp \
-    FileEditor.cpp \
+    editor/FileEditor.cpp \
     WorkspaceModel.cpp
 
 HEADERS += \
-    lexer/lexeroctavegui.h \
+    editor/lexeroctavegui.h \
     MainWindow.h \
     WorkspaceView.h \
     HistoryDockWidget.h \
@@ -99,7 +99,7 @@ HEADERS += \
     backend/OctaveLink.h \
     backend/OctaveMainThread.h \
     WelcomeWizard.h \
-    FileEditor.h \
+    editor/FileEditor.h \
     WorkspaceModel.h
 
 FORMS += \

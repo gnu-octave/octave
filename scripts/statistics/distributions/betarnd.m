@@ -84,11 +84,8 @@ function rnd = betarnd (a, b, varargin)
 
   if (isscalar (a) && isscalar (b))
     if ((a > 0) && (a < Inf) && (b > 0) && (b < Inf))
-      r = randg (a, sz);
-      rnd = r ./ (r + randg (b, sz));
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      r = randg (a, sz, cls);
+      rnd = r ./ (r + randg (b, sz, cls));
     else
       rnd = NaN (sz, cls);
     endif
@@ -96,8 +93,8 @@ function rnd = betarnd (a, b, varargin)
     rnd = NaN (sz, cls);
 
     k = (a > 0) & (a < Inf) & (b > 0) & (b < Inf);
-    r = randg (a(k));
-    rnd(k) = r ./ (r + randg (b(k)));
+    r = randg (a(k), cls);
+    rnd(k) = r ./ (r + randg (b(k), cls));
   endif
 
 endfunction

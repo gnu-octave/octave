@@ -84,10 +84,7 @@ function rnd = gamrnd (a, b, varargin)
 
   if (isscalar (a) && isscalar (b))
     if ((a > 0) && (a < Inf) && (b > 0) && (b < Inf))
-      rnd = b * randg (a, sz);
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      rnd = b * randg (a, sz, cls);
     else 
       rnd = NaN (sz, cls);
     endif
@@ -95,7 +92,7 @@ function rnd = gamrnd (a, b, varargin)
     rnd = NaN (sz, cls);
 
     k = (a > 0) & (a < Inf) & (b > 0) & (b < Inf);
-    rnd(k) = b(k) .* randg (a(k));
+    rnd(k) = b(k) .* randg (a(k), cls);
   endif
 
 endfunction

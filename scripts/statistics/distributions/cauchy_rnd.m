@@ -84,7 +84,7 @@ function rnd = cauchy_rnd (location, scale, varargin)
 
   if (isscalar (location) && isscalar (scale))
     if (!isinf (location) && (scale > 0) && (scale < Inf))
-      rnd = location - cot (pi * rand (sz)) * scale;
+      rnd = location - cot (pi * rand (sz, cls)) * scale;
     else
       rnd = NaN (sz, cls);
     endif
@@ -92,7 +92,7 @@ function rnd = cauchy_rnd (location, scale, varargin)
     rnd = NaN (sz, cls);
 
     k = !isinf (location) & (scale > 0) & (scale < Inf);
-    rnd(k) = location(k)(:) - cot (pi * rand (sum (k(:)), 1)) .* scale(k)(:);
+    rnd(k) = location(k)(:) - cot (pi * rand (sum (k(:)), 1, cls)) .* scale(k)(:);
   endif
 
 endfunction

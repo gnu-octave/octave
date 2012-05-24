@@ -77,7 +77,7 @@ function rnd = exprnd (lambda, varargin)
 
   if (isscalar (lambda))
     if ((lambda > 0) && (lambda < Inf))
-      rnd = rande (sz) * lambda;
+      rnd = rande (sz, cls) * lambda;
     else
       rnd = NaN (sz, cls);
     endif
@@ -85,7 +85,7 @@ function rnd = exprnd (lambda, varargin)
     rnd = NaN (sz, cls);
 
     k = (lambda > 0) & (lambda < Inf);
-    rnd(k) = rande (sum (k(:)), 1) .* lambda(k)(:);
+    rnd(k) = rande (sum (k(:)), 1, cls) .* lambda(k)(:);
   endif
 
 endfunction

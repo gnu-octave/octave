@@ -84,10 +84,7 @@ function rnd = nbinrnd (n, p, varargin)
 
   if (isscalar (n) && isscalar (p))
     if ((n > 0) && (n < Inf) && (p > 0) && (p <= 1))
-      rnd = randp ((1 - p) ./ p .* randg (n, sz));
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      rnd = randp ((1 - p) ./ p .* randg (n, sz, cls), cls);
     elseif ((n > 0) && (n < Inf) && (p == 0))
       rnd = zeros (sz, cls);
     else
@@ -100,7 +97,7 @@ function rnd = nbinrnd (n, p, varargin)
     rnd(k) = 0;
 
     k = (n > 0) & (n < Inf) & (p > 0) & (p <= 1);
-    rnd(k) = randp ((1 - p(k)) ./ p(k) .* randg (n(k)));
+    rnd(k) = randp ((1 - p(k)) ./ p(k) .* randg (n(k), cls));
   endif
 
 endfunction

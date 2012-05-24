@@ -77,7 +77,7 @@ function rnd = geornd (p, varargin)
 
   if (isscalar (p))
     if (p > 0 && p < 1);
-      rnd = floor (- rande (sz) ./ log (1 - p));
+      rnd = floor (- rande (sz, cls) ./ log (1 - p));
     elseif (p == 0)
       rnd = Inf (sz, cls);
     elseif (p == 1)
@@ -86,10 +86,10 @@ function rnd = geornd (p, varargin)
       rnd = NaN (sz, cls);
     endif
   else
-    rnd = floor (- rande (sz) ./ log (1 - p));
+    rnd = floor (- rande (sz, cls) ./ log (1 - p));
 
     k = !(p >= 0) | !(p <= 1);
-  rnd(k) = NaN;
+    rnd(k) = NaN;
 
     k = (p == 0);
     rnd(k) = Inf;

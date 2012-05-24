@@ -77,10 +77,7 @@ function rnd = chi2rnd (n, varargin)
 
   if (isscalar (n))
     if ((n > 0) && (n < Inf))
-      rnd = 2 * randg (n/2, sz);
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      rnd = 2 * randg (n/2, sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
@@ -88,7 +85,7 @@ function rnd = chi2rnd (n, varargin)
     rnd = NaN (sz, cls);
 
     k = (n > 0) | (n < Inf);
-    rnd(k) = 2 * randg (n(k)/2);
+    rnd(k) = 2 * randg (n(k)/2, cls);
   endif
 
 endfunction

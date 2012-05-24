@@ -84,12 +84,12 @@ function rnd = lognrnd (mu, sigma, varargin)
 
   if (isscalar (mu) && isscalar (sigma))
     if ((sigma > 0) && (sigma < Inf))
-      rnd = exp (mu + sigma * randn (sz));
+      rnd = exp (mu + sigma * randn (sz, cls));
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd = exp (mu + sigma .* randn (sz));
+    rnd = exp (mu + sigma .* randn (sz, cls));
 
     k = (sigma < 0) | (sigma == Inf);
     rnd(k) = NaN;

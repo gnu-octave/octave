@@ -84,12 +84,12 @@ function rnd = wblrnd (scale, shape, varargin)
 
   if (isscalar (scale) && isscalar (shape))
     if ((scale > 0) && (scale < Inf) && (shape > 0) && (shape < Inf))
-      rnd = scale * rande (sz) .^ (1/shape);
+      rnd = scale * rande (sz, cls) .^ (1/shape);
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd = scale .* rande (sz) .^ (1./shape);
+    rnd = scale .* rande (sz, cls) .^ (1./shape);
 
     k = (scale <= 0) | (scale == Inf) | (shape <= 0) | (shape == Inf);
     rnd(k) = NaN;

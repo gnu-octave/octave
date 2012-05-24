@@ -77,7 +77,7 @@ function rnd = trnd (n, varargin)
 
   if (isscalar (n))
     if ((n > 0) && (n < Inf))
-      rnd = randn (sz) ./ sqrt (2*randg (n/2, sz) / n);
+      rnd = randn (sz, cls) ./ sqrt (2*randg (n/2, sz, cls) / n);
     else
       rnd = NaN (sz, cls);
     endif
@@ -85,7 +85,7 @@ function rnd = trnd (n, varargin)
     rnd = NaN (sz, cls);
 
     k = (n > 0) & (n < Inf);
-    rnd(k) = randn (sum (k(:)), 1) ./ sqrt (2*randg (n(k)/2) ./ n(k))(:);
+    rnd(k) = randn (sum (k(:)), 1, cls) ./ sqrt (2*randg (n(k)/2, cls) ./ n(k))(:);
   endif
 
 endfunction

@@ -84,7 +84,7 @@ function rnd = frnd (m, n, varargin)
 
   if (isscalar (m) && isscalar (n))
     if ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
-      rnd = n/m * randg (m/2, sz) ./ randg (n/2, sz);
+      rnd = n/m * randg (m/2, sz, cls) ./ randg (n/2, sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
@@ -92,7 +92,7 @@ function rnd = frnd (m, n, varargin)
     rnd = NaN (sz, cls);
 
     k = (m > 0) & (m < Inf) & (n > 0) & (n < Inf);
-    rnd(k) = n(k) ./ m(k) .* randg (m(k)/2) ./ randg (n(k)/2);
+    rnd(k) = n(k) ./ m(k) .* randg (m(k)/2, cls) ./ randg (n(k)/2, cls);
   endif
 
 endfunction

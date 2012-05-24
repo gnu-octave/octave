@@ -86,8 +86,11 @@ MainWindow::handleLoadWorkspaceRequest ()
   QString selectedFile =
       QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
                                     ResourceManager::instance ()->homePath ());
-  m_terminalView->sendText (QString ("load \'%1\'\n").arg (selectedFile));
-  m_terminalView->setFocus ();
+  if (!selectedFile.isEmpty ())
+    {
+      m_terminalView->sendText (QString ("load \'%1\'\n").arg (selectedFile));
+      m_terminalView->setFocus ();
+    }
 }
 
 void
@@ -228,7 +231,6 @@ MainWindow::construct ()
   setCentralWidget (m_terminalView);
 
   m_fileEditor = new FileEditor (m_terminalView, this);
-  addDockWidget (Qt::BottomDockWidgetArea, m_fileEditor);
 
   QMenu *fileMenu = menuBar ()->addMenu (tr ("&File"));
   QAction *newFileAction
@@ -345,9 +347,12 @@ MainWindow::construct ()
   connect (pasteAction, SIGNAL (triggered()), m_terminalView, SLOT(pasteClipboard ()));
   setWindowTitle ("Octave");
 
+  setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
+
   addDockWidget (Qt::LeftDockWidgetArea, m_workspaceView);
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);
   addDockWidget (Qt::RightDockWidgetArea, m_filesDockWidget);
+  addDockWidget (Qt::BottomDockWidgetArea, m_fileEditor);
   setStatusBar (m_statusBar);
 
   readSettings ();

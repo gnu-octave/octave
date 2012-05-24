@@ -228,6 +228,7 @@ MainWindow::construct ()
   setCentralWidget (m_terminalView);
 
   m_fileEditor = new FileEditor (m_terminalView, this);
+  addDockWidget (Qt::BottomDockWidgetArea, m_fileEditor);
 
   QMenu *fileMenu = menuBar ()->addMenu (tr ("&File"));
   QAction *newFileAction
@@ -284,6 +285,8 @@ MainWindow::construct ()
   showHistoryAction->setCheckable (true);
   QAction *showFileBrowserAction = windowMenu->addAction (tr ("File Browser"));
   showFileBrowserAction->setCheckable (true);
+  QAction *showEditorAction = windowMenu->addAction (tr ("Editor"));
+  showEditorAction->setCheckable (true);
 
   // Help menu
   QMenu *helpMenu = menuBar ()->addMenu (tr ("&Help"));
@@ -324,6 +327,8 @@ MainWindow::construct ()
   connect (m_historyDockWidget, SIGNAL (activeChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
   connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
   connect (m_filesDockWidget, SIGNAL (activeChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
+  connect (showEditorAction, SIGNAL (toggled (bool)), m_fileEditor, SLOT (setShown (bool)));
+  connect (m_fileEditor, SIGNAL (activeChanged (bool)), showEditorAction, SLOT (setChecked (bool)));
 
   //connect (this, SIGNAL (settingsChanged ()), m_workspaceView, SLOT (noticeSettings ()));
   //connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));

@@ -253,12 +253,13 @@ FileEditor::handleEditorStateChanged ()
 void
 FileEditor::construct ()
 {
+  QWidget *widget = new QWidget (this);
   QSettings *settings = ResourceManager::instance ()->settings ();
   QStyle *style = QApplication::style ();
 
-  m_menuBar = new QMenuBar (this);
-  m_toolBar = new QToolBar (this);
-  m_tabWidget = new QTabWidget (this);
+  m_menuBar = new QMenuBar (widget);
+  m_toolBar = new QToolBar (widget);
+  m_tabWidget = new QTabWidget (widget);
   m_tabWidget->setTabsClosable (true);
   //m_longTitle = settings->value ("editor/longWindowTitle",true).toBool ();
 
@@ -287,8 +288,8 @@ FileEditor::construct ()
         QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
         tr("&Redo"), m_toolBar);
 
-  m_copyAction = new QAction (QIcon::fromTheme("edit-copy"), tr("&Copy"),m_toolBar);
-  m_cutAction = new QAction (QIcon::fromTheme("edit-cut"), tr("Cu&t"),m_toolBar);
+  m_copyAction = new QAction (QIcon::fromTheme ("edit-copy"), tr ("&Copy"), m_toolBar);
+  m_cutAction = new QAction (QIcon::fromTheme ("edit-cut"), tr ("Cu&t"), m_toolBar);
 
   QAction *pasteAction              = new QAction (QIcon::fromTheme ("edit-paste"), tr ("&Paste"),m_toolBar);
   QAction *nextBookmarkAction       = new QAction (tr ("&Next Bookmark"),m_toolBar);
@@ -372,7 +373,8 @@ FileEditor::construct ()
   layout->addWidget (m_toolBar);
   layout->addWidget (m_tabWidget);
   layout->setMargin (0);
-  setLayout (layout);
+  widget->setLayout (layout);
+  setWidget (widget);
 
   connect (newAction,               SIGNAL (triggered ()), this, SLOT (requestNewFile ()));
   connect (openAction,              SIGNAL (triggered ()), this, SLOT (requestOpenFile ()));

@@ -18,21 +18,24 @@
 #ifndef FILEEDITORINTERFACE_H
 #define FILEEDITORINTERFACE_H
 
-#include <QWidget>
+#include <QDockWidget>
 
 class QTerminal;
 class MainWindow;
 
-class FileEditorInterface : public QWidget
+class FileEditorInterface : public QDockWidget
 {
   Q_OBJECT
 
   public:
     FileEditorInterface (QTerminal *terminal, MainWindow *mainWindow)
-      : QWidget ()
+      : QDockWidget ((QWidget*)mainWindow) // QDockWidget constructor is explicit, hence the cast.
     {
+      setObjectName ("FileEditor");
       m_terminal = terminal;
       m_mainWindow = mainWindow;
+
+      connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handleVisibilityChanged (bool)));
     }
 
     virtual ~FileEditorInterface () { }
@@ -41,9 +44,25 @@ class FileEditorInterface : public QWidget
     virtual void requestOpenFile () = 0;
     virtual void requestOpenFile (QString fileName) = 0;
 
+  signals:
+      void activeChanged (bool active);
+
   protected:
     QTerminal* m_terminal;
     MainWindow* m_mainWindow;
+
+    void closeEvent (QCloseEvent *event)
+    {
+      emit activeChanged (false);
+      QDockWidget::closeEvent (event);
+    }
+
+  protected slots:
+    void handleVisibilityChanged (bool visible)
+    {
+      if (visible)
+        emit activeChanged (true);
+    }
 };
 
 #endif // FILEEDITORINTERFACE_H

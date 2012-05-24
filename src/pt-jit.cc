@@ -47,7 +47,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <llvm/Transforms/IPO.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/Support/raw_os_ostream.h>
-#include <llvm/ExecutionEngine/GenericValue.h>
 
 #include "octave.h"
 #include "ov-fcn-handle.h"
@@ -559,74 +558,6 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
     return get_range ();
 
   return get_any ();
-}
-
-void
-jit_typeinfo::do_to_generic (jit_type *type, llvm::GenericValue& gv)
-{
-  if (type == any)
-    do_to_generic (type, gv, octave_value ());
-  else if (type == scalar)
-    do_to_generic (type, gv, octave_value (0));
-  else if (type == range)
-    do_to_generic (type, gv, octave_value (Range ()));
-  else
-    assert (false && "Type not supported yet");
-}
-
-void
-jit_typeinfo::do_to_generic (jit_type *type, llvm::GenericValue& gv, octave_value ov)
-{
-  if (type == any)
-    {
-      octave_base_value *obv = ov.internal_rep ();
-      obv->grab ();
-      ov_out.push_back (obv);
-      gv.PointerVal = &ov_out.back ();
-    }
-  else if (type == scalar)
-    {
-      scalar_out.push_back (ov.double_value ());
-      gv.PointerVal = &scalar_out.back ();
-    }
-  else if (type == range)
-    {
-      range_out.push_back (ov.range_value ());
-      gv.PointerVal = &range_out.back ();
-    }
-  else
-    assert (false && "Type not supported yet");
-}
-
-octave_value
-jit_typeinfo::do_to_octave_value (jit_type *type, llvm::GenericValue& gv)
-{
-  if (type == any)
-    {
-      octave_base_value **ptr = reinterpret_cast<octave_base_value **>(gv.PointerVal);
-      return octave_value (*ptr);
-    }
-  else if (type == scalar)
-    {
-      double *ptr = reinterpret_cast<double *>(gv.PointerVal);
-      return octave_value (*ptr);
-    }
-  else if (type == range)
-    {
-      jit_range *ptr = reinterpret_cast<jit_range *>(gv.PointerVal);
-      Range rng = *ptr;
-      return octave_value (rng);
-    }
-  else
-    assert (false && "Type not supported yet");
-}
-
-void
-jit_typeinfo::do_reset_generic (void)
-{
-  scalar_out.clear ();
-  ov_out.clear ();
-  range_out.clear ();
 }
 
 jit_type*

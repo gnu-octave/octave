@@ -81,7 +81,6 @@ namespace llvm
   class BasicBlock;
   class LLVMContext;
   class Type;
-  class GenericValue;
   class Twine;
 }
 
@@ -309,26 +308,6 @@ public:
   {
     return instance->do_cast (to, from);
   }
-
-  static void to_generic (jit_type *type, llvm::GenericValue& gv)
-  {
-    return instance->do_to_generic (type, gv);
-  }
-
-  static void to_generic (jit_type *type, llvm::GenericValue& gv, octave_value ov)
-  {
-    return instance->do_to_generic (type, gv, ov);
-  }
-
-  static octave_value to_octave_value (jit_type *type, llvm::GenericValue& gv)
-  {
-    return instance->do_to_octave_value (type, gv);
-  }
-
-  static void reset_generic (void)
-  {
-    instance->do_reset_generic ();
-  }
 private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
 
@@ -379,14 +358,6 @@ private:
     assert (static_cast<size_t>(op) < binary_ops.size ());
     return binary_ops[op];
   }
-
-  void do_to_generic (jit_type *type, llvm::GenericValue& gv);
-
-  void do_to_generic (jit_type *type, llvm::GenericValue& gv, octave_value ov);
-
-  octave_value do_to_octave_value (jit_type *type, llvm::GenericValue& gv);
-
-  void do_reset_generic (void);
 
   const jit_function& do_cast (jit_type *to)
   {
@@ -500,10 +471,6 @@ private:
 
   // type id -> identity function
   std::vector<llvm::Function *> identities;
-
-  std::list<double> scalar_out;
-  std::list<octave_base_value *> ov_out;
-  std::list<jit_range> range_out;
 };
 
 // The low level octave jit ir

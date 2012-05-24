@@ -232,6 +232,25 @@ FileEditor::handleTabCloseRequest (int index)
 }
 
 void
+FileEditor::activeTabChanged (int index)
+{
+  Q_UNUSED (index);
+  handleEditorStateChanged ();
+}
+
+void
+FileEditor::handleEditorStateChanged ()
+{
+  FileEditorTab *fileEditorTab = activeEditorTab ();
+  if (fileEditorTab)
+    {
+      bool copyAvailable = fileEditorTab->copyAvailable ();
+      m_copyAction->setEnabled (copyAvailable);
+      m_cutAction->setEnabled (copyAvailable);
+    }
+}
+
+void
 FileEditor::construct ()
 {
   QSettings *settings = ResourceManager::instance ()->settings ();
@@ -239,7 +258,6 @@ FileEditor::construct ()
 
   m_menuBar = new QMenuBar (this);
   m_toolBar = new QToolBar (this);
-  m_statusBar = new QStatusBar (this);
   m_tabWidget = new QTabWidget (this);
   m_tabWidget->setTabsClosable (true);
   //m_longTitle = settings->value ("editor/longWindowTitle",true).toBool ();
@@ -353,7 +371,6 @@ FileEditor::construct ()
   layout->addWidget (m_menuBar);
   layout->addWidget (m_toolBar);
   layout->addWidget (m_tabWidget);
-  layout->addWidget (m_statusBar);
   layout->setMargin (0);
   setLayout (layout);
 
@@ -374,6 +391,7 @@ FileEditor::construct ()
   connect (commentSelectedAction,   SIGNAL (triggered ()), this, SLOT (requestCommentSelectedText ()));
   connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (requestUncommentSelectedText ()));
   connect (m_tabWidget, SIGNAL (tabCloseRequested (int)), this, SLOT (handleTabCloseRequest (int)));
+  connect (m_tabWidget, SIGNAL (currentChanged(int)), this, SLOT (activeTabChanged (int)));
 
   // this has to be done only once, not for each editor
   m_lexer = new LexerOctaveGui ();
@@ -414,9 +432,10 @@ void
 FileEditor::addFileEditorTab (FileEditorTab *fileEditorTab)
 {
   m_tabWidget->addTab (fileEditorTab, "");
-  connect (fileEditorTab, SIGNAL(fileNameChanged(QString)),
+  connect (fileEditorTab, SIGNAL (fileNameChanged(QString)),
            this, SLOT(handleFileNameChanged(QString)));
-
+  connect (fileEditorTab, SIGNAL (editorStateChanged ()),
+           this, SLOT (handleEditorStateChanged ()));
   m_tabWidget->setCurrentWidget (fileEditorTab);
 }
 

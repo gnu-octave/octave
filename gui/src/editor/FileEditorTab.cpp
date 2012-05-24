@@ -74,6 +74,7 @@ FileEditorTab::FileEditorTab(FileEditor *fileEditor)
 
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (m_editArea);
+  layout->setMargin (0);
   setLayout (layout);
 
   // connect modified signal
@@ -86,8 +87,14 @@ FileEditorTab::FileEditorTab(FileEditor *fileEditor)
   newTitle (false);
 }
 
+bool
+FileEditorTab::copyAvailable ()
+{
+  return m_copyAvailable;
+}
+
 void
-FileEditorTab::closeEvent(QCloseEvent *event)
+FileEditorTab::closeEvent (QCloseEvent *event)
 {
   if (m_fileEditor->mainWindow ()->closing ())
     {
@@ -184,10 +191,8 @@ FileEditorTab::newTitle(bool modified)
 void
 FileEditorTab::handleCopyAvailable(bool enableCopy)
 {
-  /*
-  m_copyAction->setEnabled(enableCopy);
-  m_cutAction->setEnabled(enableCopy);
-  */
+  m_copyAvailable = enableCopy;
+  emit editorStateChanged ();
 }
 
 int

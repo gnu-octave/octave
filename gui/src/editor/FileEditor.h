@@ -75,6 +75,8 @@ public slots:
 
   void handleFileNameChanged (QString fileName);
   void handleTabCloseRequest (int index);
+  void activeTabChanged (int index);
+  void handleEditorStateChanged ();
 
 private:
   void construct ();
@@ -83,7 +85,6 @@ private:
 
   QMenuBar *m_menuBar;
   QToolBar *m_toolBar;
-  QStatusBar *m_statusBar;
   QAction* m_copyAction;
   QAction* m_cutAction;
   QTabWidget *m_tabWidget;

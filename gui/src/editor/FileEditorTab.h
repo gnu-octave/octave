@@ -28,6 +28,7 @@ class FileEditorTab : public QWidget
   Q_OBJECT
 public:
   FileEditorTab (FileEditor *fileEditor);
+  bool copyAvailable ();
 
 public slots:
   void newTitle(bool modified);
@@ -56,10 +57,11 @@ public slots:
   void runFile ();
 
 signals:
-  void fileNameChanged(QString fileName);
+  void fileNameChanged (QString fileName);
+  void editorStateChanged ();
 
 protected:
-  void closeEvent(QCloseEvent *event);
+  void closeEvent (QCloseEvent *event);
 
 private:
   int checkFileModified (QString msg, int cancelButton);
@@ -73,6 +75,7 @@ private:
 
   bool m_modified;
   bool m_longTitle;
+  bool m_copyAvailable;
 
   // TODO: Use QFileSystemWatcher to sync with disc.
 };

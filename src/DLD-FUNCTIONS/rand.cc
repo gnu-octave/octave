@@ -1086,14 +1086,19 @@ using std::unordered_map;
                   octave_idx_type k = i +
                     gnulib::floor (rvec[i] * (n - i));
 
-                  if (map.find(k) == map.end())
+                  //For shuffling first m entries, no need to use extra
+                  //storage
+                  if (k < m)
                     {
-                      map[k] = ivec[i];
-                      ivec[i] = k;
+                      std::swap (ivec[i], ivec[k]);
                     }
                   else
-                    std::swap (ivec[i], map[k]);
+                    {
+                      if (map.find (k) == map.end ())
+                        map[k] = k;
 
+                      std::swap (ivec[i], map[k]);
+                    }
                 }
             }
           else
@@ -1126,6 +1131,13 @@ using std::unordered_map;
 }
 
 /*
-%!assert(sort (randperm (20)),1:20)
-%!assert(length (randperm (20,10)), 10)
+%!assert (sort (randperm (20)), 1:20)
+%!assert (length (randperm (20,10)), 10)
+
+%!test
+%! rand ("seed", 0);
+%! for i = 1:100
+%!   p = randperm (305, 30);
+%!   assert (length (unique (p)), 30);
+%! endfor
 */

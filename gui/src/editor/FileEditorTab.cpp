@@ -82,6 +82,8 @@ FileEditorTab::FileEditorTab(FileEditor *fileEditor)
            this, SLOT (newTitle (bool)));
   connect (m_editArea, SIGNAL (copyAvailable (bool)),
            this, SLOT (handleCopyAvailable (bool)));
+  connect (&m_fileSystemWatcher, SIGNAL (fileChanged (QString)),
+           this, SLOT (fileHasChanged (QString)));
 
   m_fileName = "";
   newTitle (false);
@@ -105,7 +107,7 @@ FileEditorTab::closeEvent (QCloseEvent *event)
   else
     {
       // ignore close event if file is not saved and user cancels closing this window
-      if (checkFileModified ("Close File",QMessageBox::Cancel) == QMessageBox::Cancel)
+      if (checkFileModified ("Close File", QMessageBox::Cancel) == QMessageBox::Cancel)
         {
           event->ignore ();
         }
@@ -114,6 +116,13 @@ FileEditorTab::closeEvent (QCloseEvent *event)
           event->accept();
         }
     }
+}
+
+void
+FileEditorTab::setFileName (QString fileName)
+{
+  m_fileName = fileName;
+  updateTrackedFile ();
 }
 
 void
@@ -193,6 +202,17 @@ FileEditorTab::handleCopyAvailable(bool enableCopy)
 {
   m_copyAvailable = enableCopy;
   emit editorStateChanged ();
+}
+
+void
+FileEditorTab::updateTrackedFile ()
+{
+  QStringList trackedFiles = m_fileSystemWatcher.files ();
+  if (!trackedFiles.isEmpty ())
+    m_fileSystemWatcher.removePaths (trackedFiles);
+
+  if (m_fileName != UNNAMED_FILE)
+    m_fileSystemWatcher.addPath (m_fileName);
 }
 
 int
@@ -299,10 +319,10 @@ FileEditorTab::redo ()
 void
 FileEditorTab::setModified (bool modified)
 {
-  m_modified = modified;
+  m_editArea->setModified (true);
 }
 
-void
+bool
 FileEditorTab::openFile ()
 {
   QString openFileName;
@@ -310,18 +330,29 @@ FileEditorTab::openFile ()
   fileDialog.setNameFilter(SAVE_FILE_FILTER);
   fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
   fileDialog.setViewMode(QFileDialog::Detail);
-  if ( fileDialog.exec() )
+  if (fileDialog.exec () == QDialog::Accepted)
     {
       openFileName = fileDialog.selectedFiles().at(0);
       if (openFileName.isEmpty ())
-        return;
+        return false;
+
       loadFile(openFileName);
+      return true;
+    }
+  else
+    {
+      return false;
     }
 }
 
 void
 FileEditorTab::loadFile (QString fileName)
 {
+  if (!m_fileEditor->isVisible ())
+    {
+      m_fileEditor->show ();
+    }
+
   QFile file (fileName);
   if (!file.open (QFile::ReadOnly))
     {
@@ -336,35 +367,40 @@ FileEditorTab::loadFile (QString fileName)
   m_editArea->setText (in.readAll ());
   QApplication::restoreOverrideCursor ();
 
-  m_fileName = fileName;
+  setFileName (fileName);
+  updateTrackedFile ();
+
+
   newTitle (false); // window title (no modification)
-  //m_statusBar->showMessage (tr ("File loaded."), 2000);
   m_editArea->setModified (false); // loaded file is not modified yet
 }
 
 void
 FileEditorTab::newFile ()
 {
-  m_fileName = UNNAMED_FILE;
+  if (!m_fileEditor->isVisible ())
+    {
+      m_fileEditor->show ();
+    }
+
+  setFileName (UNNAMED_FILE);
   newTitle (false); // window title (no modification)
   m_editArea->setText ("");
   m_editArea->setModified (false); // new file is not modified yet
 }
 
-void
-FileEditorTab::saveFile ()
+bool FileEditorTab::saveFile()
 {
-  saveFile (m_fileName);
+  return saveFile (m_fileName);
 }
 
-void
+bool
 FileEditorTab::saveFile (QString saveFileName)
 {
   // it is a new file with the name "<unnamed>" -> call saveFielAs
   if (saveFileName == UNNAMED_FILE || saveFileName.isEmpty ())
     {
-      saveFileAs();
-      return;
+      return saveFileAs();
     }
 
   // open the file for writing
@@ -374,7 +410,7 @@ FileEditorTab::saveFile (QString saveFileName)
       QMessageBox::warning (this, tr ("Octave Editor"),
                             tr ("Could not open file %1 for write:\n%2.").
                             arg (saveFileName).arg (file.errorString ()));
-      return;
+      return false;
     }
 
   // save the contents into the file
@@ -382,13 +418,13 @@ FileEditorTab::saveFile (QString saveFileName)
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << m_editArea->text ();
   QApplication::restoreOverrideCursor ();
-  m_fileName = saveFileName;  // save file name for later use
+  setFileName (saveFileName);  // save file name for later use
   newTitle (false);      // set the window title to actual file name (not modified)
-  //m_statusBar->showMessage (tr ("File %1 saved").arg(m_fileName), 2000);
   m_editArea->setModified (false); // files is save -> not modified
+  return true;
 }
 
-void
+bool
 FileEditorTab::saveFileAs ()
 {
   QString saveFileName(m_fileName);
@@ -411,9 +447,12 @@ FileEditorTab::saveFileAs ()
     {
       saveFileName = fileDialog.selectedFiles ().at (0);
       if (saveFileName.isEmpty ())
-        return;
-      saveFile (saveFileName);
+        return false;
+
+      return saveFile (saveFileName);
     }
+
+  return false;
 }
 
 void
@@ -424,4 +463,52 @@ FileEditorTab::runFile ()
 
   m_fileEditor->terminal ()->sendText (QString ("run \'%1\'\n").arg (m_fileName));
   m_fileEditor->terminal ()->setFocus ();
+}
+
+void
+FileEditorTab::fileHasChanged (QString fileName)
+{
+  Q_UNUSED (fileName);
+  if (QFile::exists (m_fileName))
+    {
+      // Prevent popping up multiple message boxes when the file has been changed multiple times.
+      static bool alreadyAsking = false;
+      if (!alreadyAsking)
+        {
+          alreadyAsking = true;
+
+          int decision =
+          QMessageBox::warning (this, tr ("Octave Editor"),
+                                tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
+                                arg (m_fileName), QMessageBox::Yes, QMessageBox::No);
+
+          if (decision == QMessageBox::Yes)
+            {
+              loadFile (m_fileName);
+            }
+
+          alreadyAsking = false;
+        }
+    }
+  else
+    {
+      int decision =
+      QMessageBox::warning (this, tr ("Octave Editor"),
+                            tr ("It seems that \'%1\' has been deleted or renamed. Do you want to save it now?").
+                            arg (m_fileName), QMessageBox::Save, QMessageBox::Close);
+      if (decision == QMessageBox::Save)
+        {
+          if (!saveFileAs ())
+            {
+              setFileName (UNNAMED_FILE);
+              newTitle (true); // window title (no modification)
+              setModified (true);
+              updateTrackedFile ();
+            }
+        }
+      else
+        {
+          emit closeRequest ();
+        }
+    }
 }

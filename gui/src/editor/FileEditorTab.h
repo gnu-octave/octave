@@ -21,6 +21,7 @@
 #include <Qsci/qsciscintilla.h>
 #include <QWidget>
 #include <QCloseEvent>
+#include <QFileSystemWatcher>
 
 class FileEditor;
 class FileEditorTab : public QWidget
@@ -48,22 +49,27 @@ public slots:
 
   void setModified (bool modified);
 
-  void openFile ();
+  bool openFile();
   void loadFile (QString fileName);
   void newFile ();
-  void saveFile ();
-  void saveFile (QString saveFileName);
-  void saveFileAs ();
+  bool saveFile ();
+  bool saveFile(QString saveFileName);
+  bool saveFileAs();
   void runFile ();
+
+  void fileHasChanged (QString fileName);
 
 signals:
   void fileNameChanged (QString fileName);
   void editorStateChanged ();
+  void closeRequest ();
 
 protected:
   void closeEvent (QCloseEvent *event);
+  void setFileName (QString fileName);
 
 private:
+  void updateTrackedFile ();
   int checkFileModified (QString msg, int cancelButton);
   void doCommentSelectedText (bool comment);
 
@@ -73,11 +79,10 @@ private:
   QString m_fileName;
   QString m_fileNameShort;
 
-  bool m_modified;
   bool m_longTitle;
   bool m_copyAvailable;
 
-  // TODO: Use QFileSystemWatcher to sync with disc.
+  QFileSystemWatcher m_fileSystemWatcher;
 };
 
 #endif // FILEEDITORTAB_H

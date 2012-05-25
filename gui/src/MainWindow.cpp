@@ -45,23 +45,13 @@ MainWindow::~MainWindow ()
 void
 MainWindow::newFile ()
 {
-  if (!m_fileEditor->isVisible ())
-    {
-      m_fileEditor->show ();
-    }
   m_fileEditor->requestNewFile ();
-
 }
 
 void
 MainWindow::openFile ()
 {
-  if (!m_fileEditor->isVisible ())
-    {
-      m_fileEditor->show ();
-    }
   m_fileEditor->requestOpenFile ();
-
 }
 
 void

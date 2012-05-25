@@ -75,6 +75,7 @@ public slots:
 
   void handleFileNameChanged (QString fileName);
   void handleTabCloseRequest (int index);
+  void handleTabCloseRequest ();
   void activeTabChanged (int index);
   void handleEditorStateChanged ();
 

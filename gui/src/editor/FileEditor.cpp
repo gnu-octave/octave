@@ -75,13 +75,22 @@ FileEditor::requestOpenFile ()
   if (fileEditorTab)
     {
       addFileEditorTab (fileEditorTab);
-      fileEditorTab->openFile ();
+      if (!fileEditorTab->openFile ())
+        {
+          // If no file was loaded, remove the tab again.
+          m_tabWidget->removeTab (m_tabWidget->indexOf (fileEditorTab));
+        }
     }
 }
 
 void
 FileEditor::requestOpenFile (QString fileName)
 {
+  if (!isVisible ())
+    {
+      show ();
+    }
+
   FileEditorTab *fileEditorTab = new FileEditorTab (this);
   if (fileEditorTab)
     {
@@ -232,6 +241,18 @@ FileEditor::handleTabCloseRequest (int index)
 }
 
 void
+FileEditor::handleTabCloseRequest ()
+{
+  FileEditorTab *fileEditorTab = dynamic_cast <FileEditorTab*> (sender ());
+  if (fileEditorTab)
+    if (fileEditorTab->close ())
+      {
+        m_tabWidget->removeTab (m_tabWidget->indexOf (fileEditorTab));
+        delete fileEditorTab;
+      }
+}
+
+void
 FileEditor::activeTabChanged (int index)
 {
   Q_UNUSED (index);
@@ -261,7 +282,6 @@ FileEditor::construct ()
   m_toolBar = new QToolBar (widget);
   m_tabWidget = new QTabWidget (widget);
   m_tabWidget->setTabsClosable (true);
-  //m_longTitle = settings->value ("editor/longWindowTitle",true).toBool ();
 
   // Theme icons with QStyle icons as fallback
   QAction *newAction = new QAction (
@@ -438,6 +458,8 @@ FileEditor::addFileEditorTab (FileEditorTab *fileEditorTab)
            this, SLOT(handleFileNameChanged(QString)));
   connect (fileEditorTab, SIGNAL (editorStateChanged ()),
            this, SLOT (handleEditorStateChanged ()));
+  connect (fileEditorTab, SIGNAL (closeRequest ()),
+           this, SLOT (handleTabCloseRequest ()));
   m_tabWidget->setCurrentWidget (fileEditorTab);
 }
 

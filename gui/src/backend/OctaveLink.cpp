@@ -18,13 +18,19 @@
 #include "OctaveLink.h"
 #include "load-path.h"
 #include <QDir>
+#include <QApplication>
 
-int update_hook_impl()
+int octave_readline_hook ()
 {
-  OctaveLink::instance()->triggerUpdateHistoryModel();
-  OctaveLink::instance()->triggerCacheSymbolTable();
-  QDir::setCurrent(load_path::get_command_line_path().c_str());
+  OctaveLink::instance ()->triggerUpdateHistoryModel ();
+  OctaveLink::instance ()->triggerCacheSymbolTable ();
+  QDir::setCurrent (load_path::get_command_line_path ().c_str ());
   return 0;
+}
+
+void octave_exit_hook (int status)
+{
+  OctaveLink::instance ()->terminateOctave ();
 }
 
 OctaveLink OctaveLink::m_singleton;
@@ -54,7 +60,9 @@ OctaveLink::launchOctave ()
 {
   // Create both threads.
   m_octaveMainThread = new OctaveMainThread (this);
-  command_editor::add_event_hook(update_hook_impl);
+  command_editor::add_event_hook (octave_readline_hook);
+  octave_exit = octave_exit_hook;
+
   // Start the first one.
   m_octaveMainThread->start ();
   _updateWorkspaceModelTimer.start ();
@@ -63,9 +71,7 @@ OctaveLink::launchOctave ()
 void
 OctaveLink::terminateOctave ()
 {
-  m_octaveMainThread->terminate ();
-  quit_allowed = true;
-  m_octaveMainThread->wait();
+  QMetaObject::invokeMethod (qApp, "quit");
 }
 
 void

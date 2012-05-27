@@ -161,12 +161,14 @@ KPtyPrivate::~KPtyPrivate()
 {
 }
 
+#ifndef HAVE_OPENPTY
 bool KPtyPrivate::chownpty(bool)
 {
 //    return !QProcess::execute(KStandardDirs::findExe("kgrantpty"),
 //        QStringList() << (grant?"--grant":"--revoke") << QString::number(masterFd));
     return true;
 }
+#endif
 
 /////////////////////////////
 // public member functions //
@@ -220,7 +222,7 @@ bool KPty::open()
   {
     d->masterFd = -1;
     d->slaveFd = -1;
-    qWarning(175) << "Can't open a pseudo teletype";
+    qWarning() << "Can't open a pseudo teletype";
     return false;
   }
   d->ttyName = ptsn;
@@ -303,14 +305,14 @@ bool KPty::open()
               p = getgrnam("wheel");
             gid_t gid = p ? p->gr_gid : getgid ();
 
-            if (!chown(d->ttyName.data(), getuid(), gid)) {
+	    if (!chown(d->ttyName.data(), getuid(), gid)) {
 	      chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IWGRP);
 	    }
-          }
-          goto gotpty;
-        }
-        ::close(d->masterFd);
-        d->masterFd = -1;
+	  }
+	  goto gotpty;
+	}
+	::close(d->masterFd);
+	d->masterFd = -1;
       }
     }
   }
@@ -391,19 +393,23 @@ void KPty::close()
    if (d->masterFd < 0)
       return;
    closeSlave();
+   if (d->ownMaster) {
+#ifndef HAVE_OPENPTY
    // don't bother resetting unix98 pty, it will go away after closing master anyway.
    if (memcmp(d->ttyName.data(), "/dev/pts/", 9)) {
       if (!geteuid()) {
          struct stat st;
          if (!stat(d->ttyName.data(), &st)) {
             if (!chown(d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1)) {
-	      chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
-	    }
+              chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
+            }
          }
       } else {
          fcntl(d->masterFd, F_SETFD, 0);
          d->chownpty(false);
       }
+   }
+   #endif
    }
    ::close(d->masterFd);
    d->masterFd = -1;

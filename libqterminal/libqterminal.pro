@@ -10,7 +10,7 @@ INCLUDEPATH	+= .
 
 unix {
 
-DEFINES 	+= HAVE_POSIX_OPENPT	    
+DEFINES 	+= HAVE_POSIX_OPENPT HAVE_PTY_H HAVE_OPENPTY
 #or DEFINES 	+= HAVE_GETPT
 
 HEADERS  = unix/BlockArray.h \
@@ -30,7 +30,7 @@ HEADERS  = unix/BlockArray.h \
            unix/ScreenWindow.h \
            unix/TerminalCharacterDecoder.h \
            unix/Vt102Emulation.h \
-    	   unix/SelfListener.h \
+         unix/SelfListener.h \
            unix/TerminalModel.h \
            unix/TerminalView.h
 
@@ -46,23 +46,23 @@ SOURCES  = unix/BlockArray.cpp \
            unix/ScreenWindow.cpp \
            unix/TerminalCharacterDecoder.cpp \
            unix/Vt102Emulation.cpp \
-    	   unix/SelfListener.cpp \
+         unix/SelfListener.cpp \
            unix/TerminalModel.cpp \
            unix/TerminalView.cpp
 }
 
 win32 {
 HEADERS  = win32/QTerminalColors.h \
-		   win32/QWinTerminalImpl.h
+       win32/QWinTerminalImpl.h
 
 SOURCES  = win32/QTerminalColors.cpp \
-		   win32/QWinTerminalImpl.cpp
+       win32/QWinTerminalImpl.cpp
 }
 
 win32-msvc* {
-	include(../msvc.pri)
+  include(../msvc.pri)
 }
 
 HEADERS  += QTerminal.h \
-		   QTerminal \
+       QTerminal \
     QTerminalInterface.h

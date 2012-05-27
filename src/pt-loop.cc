@@ -98,10 +98,7 @@ tree_simple_for_command::~tree_simple_for_command (void)
   delete list;
   delete lead_comm;
   delete trail_comm;
-
-  for (compiled_map::iterator iter = compiled.begin (); iter != compiled.end ();
-       ++iter)
-    delete iter->second;
+  delete compiled;
 }
 
 tree_command *

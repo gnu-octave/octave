@@ -37,7 +37,6 @@ class tree_walker;
 #include "symtab.h"
 
 class jit_info;
-class jit_type;
 
 // While.
 
@@ -149,7 +148,7 @@ public:
 
   tree_simple_for_command (int l = -1, int c = -1)
     : tree_command (l, c), parallel (false), lhs (0), expr (0),
-      maxproc (0), list (0), lead_comm (0), trail_comm (0) { }
+      maxproc (0), list (0), lead_comm (0), trail_comm (0), compiled (0) { }
 
   tree_simple_for_command (bool parallel_arg, tree_expression *le,
                            tree_expression *re,
@@ -160,7 +159,7 @@ public:
                            int l = -1, int c = -1)
     : tree_command (l, c), parallel (parallel_arg), lhs (le),
       expr (re), maxproc (maxproc_arg), list (lst),
-      lead_comm (lc), trail_comm (tc) { }
+      lead_comm (lc), trail_comm (tc), compiled (0) { }
 
   ~tree_simple_for_command (void);
 
@@ -184,20 +183,17 @@ public:
   void accept (tree_walker& tw);
 
   // some functions use by tree_jit
-  jit_info *get_info (jit_type *type) const
+  jit_info *get_info (void) const
   {
-    compiled_map::const_iterator iter = compiled.find (type);
-    return iter != compiled.end () ? iter->second : 0;
+    return compiled;
   }
 
-  void stash_info (jit_type *type, jit_info *jinfo)
+  void stash_info (jit_info *jinfo)
   {
-    compiled[type] = jinfo;
+    compiled = jinfo;
   }
 
 private:
-  typedef std::map<jit_type *, jit_info *> compiled_map;
-
   // TRUE means operate in parallel (subject to the value of the
   // maxproc expression).
   bool parallel;
@@ -221,8 +217,8 @@ private:
   // Comment preceding ENDFOR token.
   octave_comment_list *trail_comm;
 
-  // a map from iterator types -> compiled functions
-  compiled_map compiled;
+  // compiled version of the loop
+  jit_info *compiled;
 
   // No copying!
 

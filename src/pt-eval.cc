@@ -294,6 +294,9 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
+  if (jiter.execute (cmd))
+    return;
+
   // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();
 
@@ -683,9 +686,6 @@ tree_evaluator::visit_statement (tree_statement& stmt)
 {
   tree_command *cmd = stmt.command ();
   tree_expression *expr = stmt.expression ();
-
-  if (jiter.execute (stmt))
-    return;
 
   if (cmd || expr)
     {

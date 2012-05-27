@@ -47,7 +47,7 @@ public slots:
   void undo ();
   void redo ();
 
-  void setModified (bool modified);
+  void setModified (bool modified = true);
 
   bool openFile();
   void loadFile (QString fileName);

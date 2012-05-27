@@ -90,6 +90,7 @@ public slots:
   void processSettingsDialogRequest ();
   void showAboutOctave ();
   void updateTerminalFont ();
+  void prepareForQuit ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);

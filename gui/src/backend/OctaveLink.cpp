@@ -30,6 +30,7 @@ int octave_readline_hook ()
 
 void octave_exit_hook (int status)
 {
+  Q_UNUSED (status);
   OctaveLink::instance ()->terminateOctave ();
 }
 

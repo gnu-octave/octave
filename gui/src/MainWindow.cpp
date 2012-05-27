@@ -138,6 +138,12 @@ MainWindow::updateTerminalFont ()
 }
 
 void
+MainWindow::prepareForQuit ()
+{
+  writeSettings ();
+}
+
+void
 MainWindow::showAboutOctave ()
 {
   QString message =
@@ -168,7 +174,7 @@ MainWindow::closeEvent (QCloseEvent * closeEvent)
   reportStatusMessage (tr ("Saving data and shutting down."));
   writeSettings ();
   m_closing = true;  // inform editor window that whole application is closed
-  OctaveLink::instance ()->terminateOctave();
+  OctaveLink::instance ()->terminateOctave ();
 
   QMainWindow::closeEvent (closeEvent);
 }
@@ -220,7 +226,13 @@ MainWindow::construct ()
   m_terminal = new QTerminal(this);
   m_terminalDockWidget = new TerminalDockWidget (m_terminal, this);
 
-  //setCentralWidget (new QWidget (this));
+  /*
+  QWidget *dummyWidget = new QWidget ();
+  dummyWidget->setObjectName ("DummyWidget");
+  dummyWidget->setFixedSize (100, 100);
+  dummyWidget->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
+  setCentralWidget (dummyWidget);*/
+  //dummyWidget->hide ();
 
   m_fileEditor = new FileEditor (m_terminal, this);
 
@@ -277,9 +289,9 @@ MainWindow::construct ()
   showCommandWindowAction->setCheckable (true);
   QAction *showWorkspaceAction = windowMenu->addAction (tr ("Workspace"));
   showWorkspaceAction->setCheckable (true);
-  QAction *showHistoryAction = windowMenu->addAction (tr ("History"));
+  QAction *showHistoryAction = windowMenu->addAction (tr ("Command History"));
   showHistoryAction->setCheckable (true);
-  QAction *showFileBrowserAction = windowMenu->addAction (tr ("File Browser"));
+  QAction *showFileBrowserAction = windowMenu->addAction (tr ("Current Directory"));
   showFileBrowserAction->setCheckable (true);
   QAction *showEditorAction = windowMenu->addAction (tr ("Editor"));
   showEditorAction->setCheckable (true);
@@ -307,6 +319,8 @@ MainWindow::construct ()
   mainToolBar->addWidget (m_currentDirectoryLineEdit);
   mainToolBar->addWidget (m_currentDirectoryToolButton);
   mainToolBar->addWidget (m_currentDirectoryUpToolButton);
+
+  connect (qApp, SIGNAL(aboutToQuit ()), this, SLOT (prepareForQuit ()));
 
   connect (settingsAction, SIGNAL (triggered ()), this, SLOT (processSettingsDialogRequest ()));
   connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));

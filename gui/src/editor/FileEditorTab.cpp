@@ -319,7 +319,7 @@ FileEditorTab::redo ()
 void
 FileEditorTab::setModified (bool modified)
 {
-  m_editArea->setModified (true);
+  m_editArea->setModified (modified);
 }
 
 bool

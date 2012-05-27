@@ -66,8 +66,8 @@ MainWindow::handleSaveWorkspaceRequest ()
   QString selectedFile =
       QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
                                     ResourceManager::instance ()->homePath ());
-  m_terminalView->sendText (QString ("save \'%1\'\n").arg (selectedFile));
-  m_terminalView->setFocus ();
+  m_terminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
+  m_terminal->setFocus ();
 }
 
 void
@@ -78,23 +78,23 @@ MainWindow::handleLoadWorkspaceRequest ()
                                     ResourceManager::instance ()->homePath ());
   if (!selectedFile.isEmpty ())
     {
-      m_terminalView->sendText (QString ("load \'%1\'\n").arg (selectedFile));
-      m_terminalView->setFocus ();
+      m_terminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
+      m_terminal->setFocus ();
     }
 }
 
 void
 MainWindow::handleClearWorkspaceRequest ()
 {
-  m_terminalView->sendText ("clear\n");
-  m_terminalView->setFocus ();
+  m_terminal->sendText ("clear\n");
+  m_terminal->setFocus ();
 }
 
 void
 MainWindow::handleCommandDoubleClicked (QString command)
 {
-  m_terminalView->sendText(command);
-  m_terminalView->setFocus ();
+  m_terminal->sendText(command);
+  m_terminal->setFocus ();
 }
 
 void
@@ -134,7 +134,7 @@ MainWindow::updateTerminalFont ()
   //font.setStyleHint(QFont::TypeWriter);
   font.setFamily(settings->value("terminal/fontName").toString());
   font.setPointSize(settings->value("terminal/fontSize").toInt ());
-  m_terminalView->setTerminalFont(font);
+  m_terminal->setTerminalFont(font);
 }
 
 void
@@ -217,10 +217,12 @@ MainWindow::construct ()
   m_currentDirectoryUpToolButton->setIcon (style->standardIcon (QStyle::SP_FileDialogToParent));
 
   // Octave Terminal subwindow.
-  m_terminalView = new QTerminal(this);
-  setCentralWidget (m_terminalView);
+  m_terminal = new QTerminal(this);
+  m_terminalDockWidget = new TerminalDockWidget (m_terminal, this);
 
-  m_fileEditor = new FileEditor (m_terminalView, this);
+  //setCentralWidget (new QWidget (this));
+
+  m_fileEditor = new FileEditor (m_terminal, this);
 
   QMenu *fileMenu = menuBar ()->addMenu (tr ("&File"));
   QAction *newFileAction
@@ -271,6 +273,8 @@ MainWindow::construct ()
 
   // Window menu
   QMenu *windowMenu = menuBar ()->addMenu (tr ("&Window"));
+  QAction *showCommandWindowAction = windowMenu->addAction (tr ("Command Window"));
+  showCommandWindowAction->setCheckable (true);
   QAction *showWorkspaceAction = windowMenu->addAction (tr ("Workspace"));
   showWorkspaceAction->setCheckable (true);
   QAction *showHistoryAction = windowMenu->addAction (tr ("History"));
@@ -313,6 +317,8 @@ MainWindow::construct ()
   connect (octaveForgeAction, SIGNAL (triggered ()), this, SLOT (openOctaveForgePage ()));
   connect (aboutOctaveAction, SIGNAL (triggered ()), this, SLOT (showAboutOctave ()));
 
+  connect (showCommandWindowAction, SIGNAL (toggled (bool)), m_terminalDockWidget, SLOT (setShown (bool)));
+  connect (m_terminalDockWidget, SIGNAL (activeChanged (bool)), showCommandWindowAction, SLOT (setChecked (bool)));
   connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_workspaceView, SLOT (setShown (bool)));
   connect (m_workspaceView, SIGNAL (activeChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
   connect (showHistoryAction, SIGNAL (toggled (bool)), m_historyDockWidget, SLOT (setShown (bool)));
@@ -333,8 +339,8 @@ MainWindow::construct ()
   connect (loadWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleLoadWorkspaceRequest ()));
   connect (clearWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleClearWorkspaceRequest ()));
 
-  connect (copyAction, SIGNAL (triggered()), m_terminalView, SLOT(copyClipboard ()));
-  connect (pasteAction, SIGNAL (triggered()), m_terminalView, SLOT(pasteClipboard ()));
+  connect (copyAction, SIGNAL (triggered()), m_terminal, SLOT(copyClipboard ()));
+  connect (pasteAction, SIGNAL (triggered()), m_terminal, SLOT(pasteClipboard ()));
   setWindowTitle ("Octave");
 
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
@@ -343,6 +349,7 @@ MainWindow::construct ()
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);
   addDockWidget (Qt::RightDockWidgetArea, m_filesDockWidget);
   addDockWidget (Qt::BottomDockWidgetArea, m_fileEditor);
+  addDockWidget (Qt::BottomDockWidgetArea, m_terminalDockWidget);
   setStatusBar (m_statusBar);
 
   readSettings ();

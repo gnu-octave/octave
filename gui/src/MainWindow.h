@@ -42,6 +42,7 @@
 #include "WorkspaceView.h"
 #include "HistoryDockWidget.h"
 #include "FilesDockWidget.h"
+#include "TerminalDockWidget.h"
 
 /**
   * \class MainWindow
@@ -56,7 +57,7 @@ Q_OBJECT public:
 
   QTerminal *terminalView ()
   {
-    return m_terminalView;
+    return m_terminal;
   }
 
   HistoryDockWidget *historyDockWidget ()
@@ -99,13 +100,14 @@ private:
   void construct ();
   void establishOctaveLink ();
 
-  QTerminal *m_terminalView;
+  QTerminal *m_terminal;
   FileEditorInterface *m_fileEditor;
 
   // Dock widgets.
   WorkspaceView *m_workspaceView;
   HistoryDockWidget *m_historyDockWidget;
   FilesDockWidget *m_filesDockWidget;
+  TerminalDockWidget *m_terminalDockWidget;
 
   // Toolbars.
   QStatusBar *m_statusBar;

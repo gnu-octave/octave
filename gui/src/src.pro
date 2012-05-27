@@ -87,7 +87,8 @@ SOURCES +=\
     WelcomeWizard.cpp \
     editor/FileEditor.cpp \
     WorkspaceModel.cpp \
-    editor/FileEditorTab.cpp
+    editor/FileEditorTab.cpp \
+    TerminalDockWidget.cpp
 
 HEADERS += \
     editor/lexeroctavegui.h \
@@ -103,7 +104,8 @@ HEADERS += \
     editor/FileEditor.h \
     WorkspaceModel.h \
     editor/FileEditorInterface.h \
-    editor/FileEditorTab.h
+    editor/FileEditorTab.h \
+    TerminalDockWidget.h
 
 FORMS += \
     SettingsDialog.ui \

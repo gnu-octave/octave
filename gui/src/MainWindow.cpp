@@ -194,6 +194,7 @@ MainWindow::writeSettings ()
   QSettings *settings = ResourceManager::instance ()->settings ();
   settings->setValue ("MainWindow/geometry", saveGeometry ());
   settings->setValue ("MainWindow/windowState", saveState ());
+  settings->sync ();
 }
 
 void
@@ -224,6 +225,7 @@ MainWindow::construct ()
 
   // Octave Terminal subwindow.
   m_terminal = new QTerminal(this);
+  m_terminal->setObjectName ("OctaveTerminal");
   m_terminalDockWidget = new TerminalDockWidget (m_terminal, this);
 
   /*

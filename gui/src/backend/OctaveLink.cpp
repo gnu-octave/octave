@@ -72,7 +72,7 @@ OctaveLink::launchOctave ()
 void
 OctaveLink::terminateOctave ()
 {
-  QMetaObject::invokeMethod (qApp, "quit");
+  qApp->quit ();
 }
 
 void

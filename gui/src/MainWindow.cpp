@@ -39,7 +39,6 @@ MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 
 MainWindow::~MainWindow ()
 {
-  OctaveLink::instance ()->terminateOctave();
 }
 
 void
@@ -123,12 +122,13 @@ MainWindow::processSettingsDialogRequest ()
   delete settingsDialog;
   emit settingsChanged ();
   ResourceManager::instance ()->updateNetworkSettings ();
-  updateTerminalFont();
+  noticeSettings();
 }
 
 void
-MainWindow::updateTerminalFont ()
+MainWindow::noticeSettings ()
 {
+  // Set terminal font:
   QSettings *settings = ResourceManager::instance ()->settings ();
   QFont font = QFont();
   //font.setStyleHint(QFont::TypeWriter);
@@ -347,6 +347,7 @@ MainWindow::construct ()
   //connect (this, SIGNAL (settingsChanged ()), m_workspaceView, SLOT (noticeSettings ()));
   //connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
   connect (this, SIGNAL (settingsChanged ()), m_filesDockWidget, SLOT (noticeSettings ()));
+  connect (this, SIGNAL (settingsChanged ()), this, SLOT (noticeSettings ()));
 
   connect (m_filesDockWidget, SIGNAL (openFile (QString)), m_fileEditor, SLOT (requestOpenFile (QString)));
   connect (m_historyDockWidget, SIGNAL (information (QString)), this, SLOT (reportStatusMessage (QString)));
@@ -369,6 +370,5 @@ MainWindow::construct ()
   setStatusBar (m_statusBar);
 
   readSettings ();
-  updateTerminalFont();
 }
 

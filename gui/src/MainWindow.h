@@ -89,7 +89,7 @@ public slots:
   void openOctaveForgePage ();
   void processSettingsDialogRequest ();
   void showAboutOctave ();
-  void updateTerminalFont ();
+  void noticeSettings ();
   void prepareForQuit ();
 
 protected:

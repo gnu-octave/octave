@@ -35,10 +35,14 @@ void QUnixTerminalImpl::initialize()
     m_terminalView = new TerminalView(this);
     m_terminalView->setBellMode(TerminalView::NotifyBell);
     m_terminalView->setTerminalSizeHint(true);
+    m_terminalView->setContextMenuPolicy(Qt::CustomContextMenu);
     m_terminalView->setTripleClickMode(TerminalView::SelectWholeLine);
     m_terminalView->setTerminalSizeStartup(true);
     m_terminalView->setSize(80, 40);
     m_terminalView->setScrollBarPosition(TerminalView::ScrollBarRight);
+
+    connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(handleCustomContextMenuRequested(QPoint)));
 
 #ifdef Q_OS_MAC
     QFont font = QFont("Monaco");

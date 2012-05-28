@@ -24,12 +24,25 @@ along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 #define QTERMINALINTERFACE_H
 
 #include <QWidget>
+#include <QMenu>
 
 class QTerminalInterface : public QWidget
 {
     Q_OBJECT
 public:
-    QTerminalInterface(QWidget *parent = 0) : QWidget(parent) { }
+    QTerminalInterface(QWidget *parent = 0) : QWidget(parent) {
+      connect (this, SIGNAL(customContextMenuRequested(QPoint)),
+               this, SLOT(handleCustomContextMenuRequested(QPoint)));
+
+      setContextMenuPolicy (Qt::CustomContextMenu);
+
+      _contextMenu = new QMenu (this);
+      QAction *copyAction  = _contextMenu->addAction ("Copy");
+      QAction *pasteAction = _contextMenu->addAction ("Paste");
+
+      connect (copyAction, SIGNAL (triggered()), this, SLOT (copyClipboard()));
+      connect (pasteAction, SIGNAL (triggered()), this, SLOT (pasteClipboard()));
+    }
     virtual ~QTerminalInterface() { }
 
     virtual void setTerminalFont(const QFont& font) = 0;
@@ -39,6 +52,14 @@ public:
 public slots:
     virtual void copyClipboard() = 0;
     virtual void pasteClipboard() = 0;
+
+    virtual void handleCustomContextMenuRequested(QPoint at) {
+      _contextMenu->move (mapToGlobal(at));
+      _contextMenu->show ();
+    }
+
+private:
+    QMenu *_contextMenu;
 };
 
 #endif // QTERMINALINTERFACE_H

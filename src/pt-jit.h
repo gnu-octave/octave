@@ -253,14 +253,9 @@ jit_typeinfo
 public:
   static void initialize (llvm::Module *m, llvm::ExecutionEngine *e);
 
-  static jit_type *tunion (jit_type *lhs, jit_type *rhs)
+  static jit_type *join (jit_type *lhs, jit_type *rhs)
   {
-    return instance->do_union (lhs, rhs);
-  }
-
-  static jit_type *difference (jit_type *lhs, jit_type *rhs)
-  {
-    return instance->do_difference (lhs, rhs);
+    return instance->do_join (lhs, rhs);
   }
 
   static jit_type *get_any (void) { return instance->any; }
@@ -329,10 +324,8 @@ private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
 
   // FIXME: Do these methods really need to be in jit_typeinfo?
-  jit_type *do_union (jit_type *lhs, jit_type *rhs)
+  jit_type *do_join (jit_type *lhs, jit_type *rhs)
   {
-    // FIXME: Actually introduce a union type
-
     // empty case
     if (! lhs)
       return rhs;
@@ -967,7 +960,7 @@ public:
   {
     jit_type *infered = 0;
     for (size_t i = 0; i < argument_count (); ++i)
-      infered = jit_typeinfo::tunion (infered, argument_type (i));
+      infered = jit_typeinfo::join (infered, argument_type (i));
 
     if (infered != type ())
       {

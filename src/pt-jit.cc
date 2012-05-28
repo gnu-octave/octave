@@ -714,24 +714,26 @@ jit_block::to_llvm (void) const
 bool
 jit_call::infer (void)
 {
-  // FIXME explain algorithm
-  jit_type *current = type ();
+  // FIXME: explain algorithm
   for (size_t i = 0; i < argument_count (); ++i)
     {
-      jit_type *arg_type = argument_type (i);
-      jit_type *todo = jit_typeinfo::difference (arg_type, already_infered[i]);
-      if (todo)
-        {
-          already_infered[i] = todo;
-          jit_type *fresult = mfunction.get_result (already_infered);
-          current = jit_typeinfo::tunion (current, fresult);
-          already_infered[i] = arg_type;
-        }
+      already_infered[i] = argument_type (i);
+      if (! already_infered[i])
+        return false;
     }
 
-  if (current != type ())
+  jit_type *infered = mfunction.get_result (already_infered);
+  if (! infered && use_count ())
     {
-      stash_type (current);
+      std::stringstream ss;
+      ss << "Missing overload in type inference for ";
+      print (ss, 0);
+      fail (ss.str ());
+    }
+
+  if (infered != type ())
+    {
+      stash_type (infered);
       return true;
     }
 

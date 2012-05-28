@@ -242,7 +242,7 @@ warn_state = warning ("query", "quiet");
 warning ("on", "quiet");
 try
   page_screen_output (0);
-  warning ("off", "Octave:deprecated-functions");
+  warning ("off", "Octave:deprecated-function");
   fid = fopen ("fntests.log", "wt");
   if (fid < 0)
     error ("could not open fntests.log for writing");

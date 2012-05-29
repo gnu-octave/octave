@@ -513,7 +513,7 @@ jit_value
 public:
   jit_value (void) : llvm_value (0), ty (0), use_head (0), myuse_count (0) {}
 
-  virtual ~jit_value (void) {}
+  virtual ~jit_value (void);
 
   jit_type *type (void) const { return ty; }
 
@@ -568,7 +568,6 @@ protected:
 private:
   jit_type *ty;
   jit_use *use_head;
-  jit_use *use_tail;
   size_t myuse_count;
 };
 
@@ -865,13 +864,6 @@ public:
   jit_block (const std::string& aname) : mname (aname)
   {}
 
-  virtual ~jit_block ()
-  {
-    for (instruction_list::iterator iter = instructions.begin ();
-         iter != instructions.end (); ++iter)
-      delete *iter;
-  }
-
   const std::string& name (void) const { return mname; }
 
   jit_instruction *prepend (jit_instruction *instr);
@@ -926,8 +918,8 @@ public:
   const_iterator end (void) const { return instructions.begin (); }
 
   // search for the phi function with the given tag_name, if no function
-  // exists then a new phi node is created
-  jit_phi *search_phi (const std::string& tag_name, jit_value *adefault);
+  // exists then null is returned
+  jit_phi *search_phi (const std::string& tag_name);
 
   virtual std::ostream& print (std::ostream& os, size_t indent)
   {
@@ -1252,6 +1244,8 @@ public:
 
   jit_convert (llvm::Module *module, tree &tee);
 
+  ~jit_convert (void);
+
   llvm::Function *get_function (void) const { return function; }
 
   const std::vector<std::pair<std::string, bool> >& get_arguments(void) const
@@ -1408,9 +1402,12 @@ private:
   toplevel_map : public variable_map
   {
   public:
-    toplevel_map (jit_block *aentry) : variable_map (0, aentry) {}
+    toplevel_map (jit_convert& aconvert, jit_block *aentry)
+      : variable_map (0, aentry), convert (aconvert) {}
   protected:
     virtual jit_value *insert (const std::string& name, jit_value *pval);
+  private:
+    jit_convert& convert;
   };
 
   class
@@ -1476,11 +1473,11 @@ private:
 
   std::list<jit_block *> blocks;
 
-  std::list<jit_block *> cleanup_blocks;
-
   std::list<jit_instruction *> worklist;
 
   std::list<jit_value *> constants;
+
+  std::list<jit_value *> all_values;
 
   void do_assign (const std::string& lhs, jit_value *rhs, bool print);
 
@@ -1494,12 +1491,44 @@ private:
       worklist.push_back (use->user ());
   }
 
-  template <typename CONST_T>
-  CONST_T *get_const (typename CONST_T::pass_t v)
+  // this would be easier with variadic templates
+  template <typename T>
+  T *create (void)
   {
-    CONST_T *ret = new CONST_T (v);
-    constants.push_back (ret);
+    T *ret = new T();
+    track_value (ret);
     return ret;
+  }
+
+  template <typename T, typename ARG0>
+  T *create (const ARG0& arg0)
+  {
+    T *ret = new T(arg0);
+    track_value (ret);
+    return ret;
+  }
+
+  template <typename T, typename ARG0, typename ARG1>
+  T *create (const ARG0& arg0, const ARG1& arg1)
+  {
+    T *ret = new T(arg0, arg1);
+    track_value (ret);
+    return ret;
+  }
+
+  template <typename T, typename ARG0, typename ARG1, typename ARG2>
+  T *create (const ARG0& arg0, const ARG1& arg1, const ARG2& arg2)
+  {
+    T *ret = new T(arg0, arg1, arg2);
+    track_value (ret);
+    return ret;
+  }
+
+  void track_value (jit_value *value)
+  {
+    if (value->type ())
+      constants.push_back (value);
+    all_values.push_back (value);
   }
 
   // place phi nodes in the current block to merge ref with variables

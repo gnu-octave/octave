@@ -612,7 +612,7 @@ jit_typeinfo::new_type (const std::string& name, jit_type *parent,
 jit_block *
 jit_use::user_parent (void) const
 {
-  return usr->parent ();
+  return muser->parent ();
 }
 
 // -------------------- jit_value --------------------
@@ -660,11 +660,39 @@ jit_block::terminator (void) const
   return dynamic_cast<jit_terminator *> (last);
 }
 
+jit_block *
+jit_block::pred (size_t idx) const
+{
+  // FIXME: Make this O(1)
+  
+  // here we get the use in backwards order. This means we preserve phi
+  // information when new blocks are added
+  assert (idx < use_count ());
+  jit_use *use;
+  size_t real_idx = use_count () - idx - 1;
+  size_t i;
+  for (use = first_use (), i = 0; use && i < real_idx; ++i,
+         use = use->next ());
+    
+  return use->user_parent ();
+}
+
 llvm::Value *
 jit_block::pred_terminator_llvm (size_t idx) const
 {
   jit_terminator *term = pred_terminator (idx);
   return term ? term->to_llvm () : 0;
+}
+
+size_t
+jit_block::pred_index (jit_block *apred) const
+{
+  for (size_t i = 0; i < pred_count (); ++i)
+    if (pred (i) == apred)
+      return i;
+
+  fail ("No such predecessor");
+  return 0; // silly compiler, why you warn?
 }
 
 void
@@ -702,6 +730,21 @@ jit_block::succ_count (void) const
 {
   jit_terminator *term = terminator ();
   return term ? term->sucessor_count () : 0;
+}
+
+jit_phi *
+jit_block::search_phi (const std::string& tag_name, jit_value *adefault)
+{
+  jit_phi *ret;
+  for (iterator iter = begin (); iter != end ()
+         && (ret = dynamic_cast<jit_phi *> (*iter)); ++iter)
+    if (ret->tag () == tag_name)
+      return ret;
+
+  ret = new jit_phi (pred_count (), adefault);
+  ret->stash_tag (tag_name);
+  prepend (ret);
+  return ret;
 }
 
 llvm::BasicBlock *
@@ -952,7 +995,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   // we need to do iter phi manually, for_map handles the rest
   jit_phi *iter_phi = new jit_phi (2);
   iter_phi->stash_tag ("#iter");
-  iter_phi->stash_argument (1, init_iter);
+  iter_phi->stash_argument (0, init_iter);
   body->append (iter_phi);
 
   variable_map *merge_vars = variables;
@@ -978,19 +1021,19 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   check = block->append (new jit_call (jit_typeinfo::for_check, control,
                                        iter_inc));
   block->append (new jit_cond_break (check, body, tail));
-  iter_phi->stash_argument (0, iter_inc);
+  iter_phi->stash_argument (1, iter_inc);
   body_vars.finish_phi (*variables);
+  merge (tail, *merge_vars, block, body_vars);
 
   blocks.push_back (tail);
   prot_tail.discard ();
   block = tail;
-
   variables = merge_vars;
-  merge (body_vars);
+
   iter_phi = new jit_phi (2);
   iter_phi->stash_tag ("#iter");
-  iter_phi->stash_argument (0, iter_inc);
-  iter_phi->stash_argument (1, init_iter);
+  iter_phi->stash_argument (0, init_iter);
+  iter_phi->stash_argument (1, iter_inc);
   block->append (iter_phi);
   block->append (new jit_call (jit_typeinfo::release, iter_phi));
 }
@@ -1046,15 +1089,126 @@ jit_convert::visit_if_clause (tree_if_clause&)
 }
 
 void
-jit_convert::visit_if_command (tree_if_command&)
+jit_convert::visit_if_command (tree_if_command& cmd)
 {
-  fail ();
+  tree_if_command_list *lst = cmd.cmd_list ();
+  assert (lst); // jwe: Can this be null?
+  lst->accept (*this);
 }
 
 void
-jit_convert::visit_if_command_list (tree_if_command_list&)
+jit_convert::visit_if_command_list (tree_if_command_list& lst)
 {
-  fail ();
+  // Example code:
+  // if a == 1
+  //  c = c + 1;
+  // elseif b == 1
+  //  c = c + 2;
+  // else
+  //  c = c + 3;
+  // endif
+
+  // Generates:
+  // prev_block0: % pred - ?
+  //   #temp.0 = call binary== (a.0, 1)
+  //   cond_break #temp.0, if_body1, ifelse_cond2
+  // if_body1:
+  //   c.1 = call binary+ (c.0, 1)
+  //   break if_tail5
+  // ifelse_cond2:
+  //   #temp.1 = call binary== (b.0, 1)
+  //   cond_break #temp.1, ifelse_body3, else4
+  // ifelse_body3:
+  //   c.2 = call binary+ (c.0, 2)
+  //   break if_tail5
+  // else4:
+  //   c.3 = call binary+ (c.0, 3)
+  //   break if_tail5
+  // if_tail5:
+  //   c.4 = phi | if_body1 -> c.1
+  //             | ifelse_body3 -> c.2
+  //             | else4 -> c.3
+
+
+  tree_if_clause *last = lst.back ();
+  size_t last_else = static_cast<size_t> (last->is_else_clause ());
+
+  // entry_blocks represents the block you need to enter in order to execute
+  // the condition check for the ith clause. For the else, it is simple the
+  // else body. If there is no else body, then it is padded with the tail
+  std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
+  std::vector<variable_map *> branch_variables (lst.size (), 0);
+  std::vector<jit_block *> branch_blocks (lst.size (), 0); // final blocks
+  entry_blocks[0] = block;
+
+  // we need to construct blocks first, because they have jumps to eachother
+  tree_if_command_list::iterator iter = lst.begin ();
+  ++iter;
+  for (size_t i = 1; iter != lst.end (); ++iter, ++i)
+    {
+      tree_if_clause *tic = *iter;
+      if (tic->is_else_clause ())
+        entry_blocks[i] = new jit_block ("else");
+      else
+        entry_blocks[i] = new jit_block ("ifelse_cond");
+      cleanup_blocks.push_back (entry_blocks[i]);
+    }
+
+  jit_block *tail = new jit_block ("if_tail");
+  if (! last_else)
+    entry_blocks[entry_blocks.size () - 1] = tail;
+
+  // actually fill out the contents of our blocks. We store the variable maps
+  // at the end of each branch, this allows us to merge them in the tail
+  variable_map *prev_map = variables;
+  iter = lst.begin ();
+  for (size_t i = 0; iter != lst.end (); ++iter, ++i)
+    {
+      tree_if_clause *tic = *iter;
+      block = entry_blocks[i];
+      assert (block);
+      variables = prev_map;
+
+      if (i) // the first block is prev_block, so it has already been added
+        blocks.push_back (entry_blocks[i]);
+
+      if (! tic->is_else_clause ())
+        {
+          tree_expression *expr = tic->condition ();
+          jit_value *cond = visit (expr);
+
+          jit_block *body = new jit_block (i == 0 ? "if_body" : "ifelse_body");
+          blocks.push_back (body);
+
+          jit_instruction *br = new jit_cond_break (cond, body,
+                                                    entry_blocks[i + 1]);
+          block->append (br);
+          block = body;
+
+          variables = new compound_map (variables);
+          branch_variables[i] = variables;
+        }
+
+      tree_statement_list *stmt_lst = tic->commands ();
+      assert (stmt_lst); // jwe: Can this be null?
+      stmt_lst->accept (*this);
+
+      branch_variables[i] = variables;
+      branch_blocks[i] = block;
+      block->append (new jit_break (tail));
+    }
+
+  blocks.push_back (tail);
+
+  // We create phi nodes in the tail to merge blocks
+  for (size_t i = 0; i < branch_variables.size () - last_else; ++i)
+    {
+      merge (tail, *prev_map, branch_blocks[i], *branch_variables[i]);
+      delete branch_variables[i];
+    }
+
+  variables = prev_map;
+  block = tail;
 }
 
 void
@@ -1281,22 +1435,28 @@ jit_convert::visit (tree& tee)
 }
 
 void
-jit_convert::merge (const variable_map& ref)
+jit_convert::merge (jit_block *merge_block, variable_map& merge_vars,
+                    jit_block *incomming_block,
+                    const variable_map& incomming_vars)
 {
-  assert (variables->size () == ref.size ());
-  variable_map::iterator viter = variables->begin ();
-  variable_map::const_iterator riter = ref.begin ();
-  for (; viter != variables->end (); ++viter, ++riter)
+  size_t merge_idx = merge_block->pred_index (incomming_block);
+  for (variable_map::const_iterator iter = incomming_vars.begin ();
+       iter != incomming_vars.end (); ++iter)
     {
-      assert (viter->first == riter->first);
-      if (viter->second != riter->second)
+      const std::string& vname = iter->first;
+      jit_value *merge_val = merge_vars.get (vname);
+      jit_value *inc_val = iter->second;
+
+      if (merge_val != inc_val)
         {
-          jit_phi *phi = new jit_phi (2);
-          phi->stash_tag (viter->first);
-          block->prepend (phi);
-          phi->stash_argument (0, riter->second);
-          phi->stash_argument (1, viter->second);
-          viter->second = phi;
+          jit_phi *phi = dynamic_cast<jit_phi *> (merge_val);
+          if (! (phi && phi->parent () == merge_block))
+            {
+              phi = merge_block->search_phi (vname, merge_val);
+              merge_vars.set (vname, phi);
+            }
+
+          phi->stash_argument (merge_idx, inc_val);
         }
     }
 }

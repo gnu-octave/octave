@@ -46,7 +46,9 @@ along with Octave; see the file COPYING.  If not, see
 // b = a + a;
 // will compile to do_binary_op (a, a).
 //
-// For loops are compiled again! Additionally, make check passes using jit.
+// For loops are compiled again!
+// if, elseif, and else statements compile again!
+// Additionally, make check passes using jit.
 //
 // The octave low level IR is a linear IR, it works by converting everything to
 // calls to jit_functions. This turns expressions like c = a + b into
@@ -56,8 +58,8 @@ along with Octave; see the file COPYING.  If not, see
 //
 //
 // TODO:
-// 1. Support if statements
-// 2. Support error cases
+// 1. Support error cases
+// 2. Support break/continue
 // 3. Fix memory leaks in JIT
 // 4. Cleanup/documentation
 // 5. ...
@@ -566,6 +568,7 @@ protected:
 private:
   jit_type *ty;
   jit_use *use_head;
+  jit_use *use_tail;
   size_t myuse_count;
 };
 
@@ -625,68 +628,82 @@ class
 jit_use
 {
 public:
-  jit_use (void) : used (0), next_use (0), prev_use (0) {}
+  jit_use (void) : mvalue (0), mnext (0), mprev (0), muser (0), mindex (0) {}
+
+  // we should really have a move operator, but not until c++11 :(
+  jit_use (const jit_use& use) : mvalue (0), mnext (0), mprev (0), muser (0),
+                                 mindex (0)
+  {
+    *this = use;
+  }
 
   ~jit_use (void) { remove (); }
 
-  jit_value *value (void) const { return used; }
+  jit_use& operator= (const jit_use& use)
+  {
+    stash_value (use.value (), use.user (), use.index ());
+    return *this;
+  }
 
-  size_t index (void) const { return idx; }
+  jit_value *value (void) const { return mvalue; }
 
-  jit_instruction *user (void) const { return usr; }
+  size_t index (void) const { return mindex; }
+
+  jit_instruction *user (void) const { return muser; }
 
   jit_block *user_parent (void) const;
 
-  void stash_value (jit_value *new_value, jit_instruction *u = 0,
-                    size_t use_idx = -1)
+  void stash_value (jit_value *avalue, jit_instruction *auser = 0,
+                    size_t aindex = -1)
   {
     remove ();
 
-    used = new_value;
+    mvalue = avalue;
 
-    if (used)
+    if (mvalue)
       {
-        if (used->use_head)
+        if (mvalue->use_head)
           {
-            used->use_head->prev_use = this;
-            next_use = used->use_head;
+            mvalue->use_head->mprev = this;
+            mnext = mvalue->use_head;
           }
         
-        used->use_head = this;
-        ++used->myuse_count;
+        mvalue->use_head = this;
+        ++mvalue->myuse_count;
       }
 
-    idx = use_idx;
-    usr = u;
+    mindex = aindex;
+    muser = auser;
   }
 
-  jit_use *next (void) const { return next_use; }
+  jit_use *next (void) const { return mnext; }
 
-  jit_use *prev (void) const { return prev_use; }
+  jit_use *prev (void) const { return mprev; }
 private:
   void remove (void)
   {
-    if (used)
+    if (mvalue)
       {
-        if (this == used->use_head)
-            used->use_head = next_use;
+        if (this == mvalue->use_head)
+            mvalue->use_head = mnext;
 
-        if (prev_use)
-          prev_use->next_use = next_use;
+        if (mprev)
+          mprev->mnext = mnext;
 
-        if (next_use)
-          next_use->prev_use = prev_use;
+        if (mnext)
+          mnext->mprev = mprev;
 
-        next_use = prev_use = 0;
-        --used->myuse_count;
+        mnext = mprev = 0;
+        --mvalue->myuse_count;
+        mvalue = 0;
       }
   }
 
-  jit_value *used;
-  jit_use *next_use;
-  jit_use *prev_use;
-  jit_instruction *usr;
-  size_t idx;
+  jit_value *mvalue;
+  jit_use *mnext;
+  jit_use *mprev;
+  jit_instruction *muser;
+  size_t mindex;
 };
 
 class
@@ -697,10 +714,14 @@ public:
   jit_instruction (void) : id (next_id ()), mparent (0)
   {}
 
-  jit_instruction (size_t nargs)
+  jit_instruction (size_t nargs, jit_value *adefault = 0)
   : already_infered (nargs, reinterpret_cast<jit_type *>(0)), arguments (nargs),
     id (next_id ()), mparent (0)
-  {}
+  {
+    if (adefault)
+      for (size_t i = 0; i < nargs; ++i)
+        stash_argument (i, adefault);
+  }
 
   jit_instruction (jit_value *arg0)
     : already_infered (1, reinterpret_cast<jit_type *>(0)), arguments (1), 
@@ -772,6 +793,16 @@ public:
     return arguments.size ();
   }
 
+  void resize_arguments (size_t acount, jit_value *adefault = 0)
+  {
+    size_t old = arguments.size ();
+    arguments.resize (acount);
+
+    if (adefault)
+      for (size_t i = old; i < acount; ++i)
+        stash_argument (i, adefault);
+  }
+
   // argument types which have been infered already
   const std::vector<jit_type *>& argument_types (void) const
   { return already_infered; }
@@ -813,7 +844,7 @@ private:
     return ret++;
   }
 
-  std::vector<jit_use> arguments; // DO NOT resize
+  std::vector<jit_use> arguments;
 
   std::string mtag;
   size_t id;
@@ -821,6 +852,7 @@ private:
 };
 
 class jit_terminator;
+class jit_phi;
 
 class
 jit_block : public jit_value
@@ -848,18 +880,7 @@ public:
 
   jit_terminator *terminator (void) const;
 
-  jit_block *pred (size_t idx) const
-  {
-    // FIXME: We should probably make this O(1)
-    jit_use *puse = first_use ();
-    for (size_t i = 0; i < idx; ++i)
-      {
-        assert (puse);
-        puse = puse->next ();
-      }
-
-    return puse->user_parent ();
-  }
+  jit_block *pred (size_t idx) const;
 
   jit_terminator *pred_terminator (size_t idx) const
   {
@@ -876,7 +897,7 @@ public:
   // takes into account for the addition of phi merges
   llvm::BasicBlock *pred_llvm (size_t idx) const
   {
-    if (mpred_llvm.size () <= idx)
+    if (mpred_llvm.size () < pred_count ())
       mpred_llvm.resize (pred_count ());
 
     return mpred_llvm[idx] ? mpred_llvm[idx] : pred (idx)->to_llvm ();
@@ -887,19 +908,7 @@ public:
     return pred_llvm (pred_index (apred));
   }
 
-  size_t pred_index (jit_block *apred) const
-  {
-    jit_use *puse = first_use ();
-    size_t idx = 0;
-    while (puse->user_parent () != apred)
-      {
-        assert (puse);
-        puse = puse->next ();
-        ++idx;
-      }
-
-    return idx;
-  }
+  size_t pred_index (jit_block *apred) const;
 
   // create llvm phi merge blocks for all predecessors (if required)
   void create_merge (llvm::Function *inside, size_t pred_idx);
@@ -915,6 +924,10 @@ public:
   iterator end (void) { return instructions.end (); }
 
   const_iterator end (void) const { return instructions.begin (); }
+
+  // search for the phi function with the given tag_name, if no function
+  // exists then a new phi node is created
+  jit_phi *search_phi (const std::string& tag_name, jit_value *adefault);
 
   virtual std::ostream& print (std::ostream& os, size_t indent)
   {
@@ -953,7 +966,8 @@ class
 jit_phi : public jit_instruction
 {
 public:
-  jit_phi (size_t npred) : jit_instruction (npred)
+  jit_phi (size_t npred, jit_value *adefault = 0)
+    : jit_instruction (npred, adefault)
   {}
 
   virtual bool infer (void)
@@ -1347,6 +1361,8 @@ private:
                                                               mblock (ablock)
     {}
 
+    virtual ~variable_map () {}
+
     variable_map *parent (void) const { return mparent; }
 
     jit_block *block (void) const { return mblock; }
@@ -1419,8 +1435,8 @@ private:
            iter != for_body->end () && dynamic_cast<jit_phi *> (*iter); ++iter)
         {
           jit_instruction *node = *iter;
-          if (! node->argument (0))
-            node->stash_argument (0, from.get (node->tag ()));
+          if (! node->argument (1))
+            node->stash_argument (1, from.get (node->tag ()));
         }
     }
   protected:
@@ -1429,7 +1445,7 @@ private:
       jit_phi *ret = new jit_phi (2);
       ret->stash_tag (name);
       block ()->prepend (ret);
-      ret->stash_argument (1, pval);
+      ret->stash_argument (0, pval);
       return vars[name] = ret;
     }
   };
@@ -1460,6 +1476,8 @@ private:
 
   std::list<jit_block *> blocks;
 
+  std::list<jit_block *> cleanup_blocks;
+
   std::list<jit_instruction *> worklist;
 
   std::list<jit_value *> constants;
@@ -1486,7 +1504,9 @@ private:
 
   // place phi nodes in the current block to merge ref with variables
   // we assume the same number of deffinitions
-  void merge (const variable_map& ref);
+  void merge (jit_block *merge_block, variable_map& merge_vars,
+              jit_block *incomming_block,
+              const variable_map& incomming_vars);
 
   // this case is much simpler, just convert from the jit ir to llvm
   class

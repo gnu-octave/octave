@@ -29,6 +29,7 @@
 #include <QMdiSubWindow>
 #include <QCloseEvent>
 #include <QToolButton>
+#include <QComboBox>
 
 // Editor includes
 #include "FileEditorInterface.h"
@@ -91,6 +92,11 @@ public slots:
   void showAboutOctave ();
   void noticeSettings ();
   void prepareForQuit ();
+  void resetWindows ();
+  void updateCurrentWorkingDirectory (QString directory);
+  void changeCurrentWorkingDirectory ();
+  void changeCurrentWorkingDirectory (QString directory);
+  void currentWorkingDirectoryUp ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
@@ -113,7 +119,7 @@ private:
   // Toolbars.
   QStatusBar *m_statusBar;
 
-  QLineEdit *m_currentDirectoryLineEdit;
+  QComboBox *m_currentDirectoryComboBox;
   QToolButton *m_currentDirectoryToolButton;
   QToolButton *m_currentDirectoryUpToolButton;
 

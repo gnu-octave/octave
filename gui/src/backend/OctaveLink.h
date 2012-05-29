@@ -97,11 +97,15 @@ public:
   WorkspaceModel *workspaceModel ();
 
   void triggerUpdateHistoryModel ();
+  void updateCurrentWorkingDirectory ();
 
   void acquireSymbolInformation ();
   void releaseSymbolInformation ();
   void buildSymbolInformation ();
   const QList <SymbolInformation>& symbolInformation () const;
+
+signals:
+  void workingDirectoryChanged (QString directory);
 
 private:
   OctaveLink ();
@@ -117,6 +121,7 @@ private:
   QSemaphore *_symbolInformationSemaphore;
   QList <SymbolInformation> _symbolInformation;
 
+  QString _currentWorkingDirectory;
   static OctaveLink m_singleton;
 };
 #endif // OCTAVELINK_H

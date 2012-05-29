@@ -131,7 +131,6 @@ MainWindow::noticeSettings ()
   // Set terminal font:
   QSettings *settings = ResourceManager::instance ()->settings ();
   QFont font = QFont();
-  //font.setStyleHint(QFont::TypeWriter);
   font.setFamily(settings->value("terminal/fontName").toString());
   font.setPointSize(settings->value("terminal/fontSize").toInt ());
   m_terminal->setTerminalFont(font);
@@ -141,6 +140,54 @@ void
 MainWindow::prepareForQuit ()
 {
   writeSettings ();
+}
+
+void
+MainWindow::resetWindows ()
+{
+  // TODO: Implement.
+}
+
+void
+MainWindow::updateCurrentWorkingDirectory (QString directory)
+{
+  if(m_currentDirectoryComboBox->findText (directory) < 0)
+    {
+      if (m_currentDirectoryComboBox->count () > 31)
+        {
+          m_currentDirectoryComboBox->removeItem (0);
+        }
+      m_currentDirectoryComboBox->addItem (directory);
+      int index = m_currentDirectoryComboBox->findText (directory);
+      m_currentDirectoryComboBox->setCurrentIndex (index);
+    }
+}
+
+void
+MainWindow::changeCurrentWorkingDirectory ()
+{
+  QString selectedDirectory =
+      QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
+
+  if (!selectedDirectory.isEmpty ())
+    {
+      m_terminal->sendText (QString ("cd \'%1\'\n").arg (selectedDirectory));
+      m_terminal->setFocus ();
+    }
+}
+
+void
+MainWindow::changeCurrentWorkingDirectory (QString directory)
+{
+  m_terminal->sendText (QString ("cd \'%1\'\n").arg (directory));
+  m_terminal->setFocus ();
+}
+
+void
+MainWindow::currentWorkingDirectoryUp ()
+{
+  m_terminal->sendText ("cd ..\n");
+  m_terminal->setFocus ();
 }
 
 void
@@ -213,8 +260,11 @@ MainWindow::construct ()
   m_filesDockWidget->setStatusTip (tr ("Browse your files."));
   m_statusBar = new QStatusBar (this);
 
-  m_currentDirectoryLineEdit = new QLineEdit (QDir::currentPath (), this);
-  m_currentDirectoryLineEdit->setFixedWidth (300);
+  m_currentDirectoryComboBox = new QComboBox (this);
+  m_currentDirectoryComboBox->setFixedWidth (300);
+  m_currentDirectoryComboBox->setEditable (true);
+  m_currentDirectoryComboBox->setInsertPolicy (QComboBox::InsertAtTop);
+  m_currentDirectoryComboBox->setMaxVisibleItems (14);
 
   m_currentDirectoryToolButton = new QToolButton (this);
   m_currentDirectoryToolButton->setIcon (style->standardIcon (QStyle::SP_DirOpenIcon));
@@ -223,7 +273,7 @@ MainWindow::construct ()
   m_currentDirectoryUpToolButton->setIcon (style->standardIcon (QStyle::SP_FileDialogToParent));
 
   // Octave Terminal subwindow.
-  m_terminal = new QTerminal(this);
+  m_terminal = new QTerminal (this);
   m_terminal->setObjectName ("OctaveTerminal");
   m_terminalDockWidget = new TerminalDockWidget (m_terminal, this);
 
@@ -296,6 +346,9 @@ MainWindow::construct ()
   QAction *showEditorAction = windowMenu->addAction (tr ("Editor"));
   showEditorAction->setCheckable (true);
 
+  windowMenu->addSeparator ();
+  QAction *resetWindowsAction = windowMenu->addAction (tr ("Reset Windows"));
+
   // Help menu
   QMenu *helpMenu = menuBar ()->addMenu (tr ("&Help"));
   QAction *reportBugAction = helpMenu->addAction (tr ("Report Bug"));
@@ -316,7 +369,7 @@ MainWindow::construct ()
   mainToolBar->addAction (redoAction);
   mainToolBar->addSeparator ();
   mainToolBar->addWidget (new QLabel (tr ("Current Directory:")));
-  mainToolBar->addWidget (m_currentDirectoryLineEdit);
+  mainToolBar->addWidget (m_currentDirectoryComboBox);
   mainToolBar->addWidget (m_currentDirectoryToolButton);
   mainToolBar->addWidget (m_currentDirectoryUpToolButton);
 
@@ -341,7 +394,7 @@ MainWindow::construct ()
   connect (m_filesDockWidget, SIGNAL (activeChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
   connect (showEditorAction, SIGNAL (toggled (bool)), m_fileEditor, SLOT (setShown (bool)));
   connect (m_fileEditor, SIGNAL (activeChanged (bool)), showEditorAction, SLOT (setChecked (bool)));
-
+  connect (resetWindowsAction, SIGNAL (triggered ()), this, SLOT (resetWindows ()));
   //connect (this, SIGNAL (settingsChanged ()), m_workspaceView, SLOT (noticeSettings ()));
   //connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
   connect (this, SIGNAL (settingsChanged ()), m_filesDockWidget, SLOT (noticeSettings ()));
@@ -354,8 +407,18 @@ MainWindow::construct ()
   connect (loadWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleLoadWorkspaceRequest ()));
   connect (clearWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleClearWorkspaceRequest ()));
 
+  connect (m_currentDirectoryToolButton, SIGNAL (clicked ()),
+           this, SLOT (changeCurrentWorkingDirectory ()));
+  connect (m_currentDirectoryUpToolButton, SIGNAL (clicked ()),
+           this, SLOT(currentWorkingDirectoryUp()));
   connect (copyAction, SIGNAL (triggered()), m_terminal, SLOT(copyClipboard ()));
   connect (pasteAction, SIGNAL (triggered()), m_terminal, SLOT(pasteClipboard ()));
+
+  connect (OctaveLink::instance (), SIGNAL (workingDirectoryChanged (QString)),
+           this, SLOT (updateCurrentWorkingDirectory (QString)));
+  connect (m_currentDirectoryComboBox, SIGNAL (activated (QString)),
+           this, SLOT (changeCurrentWorkingDirectory (QString)));
+
   setWindowTitle ("Octave");
 
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);

@@ -17,6 +17,7 @@
 
 #include "OctaveLink.h"
 #include "load-path.h"
+#include "oct-env.h"
 #include <QDir>
 #include <QApplication>
 
@@ -24,7 +25,7 @@ int octave_readline_hook ()
 {
   OctaveLink::instance ()->triggerUpdateHistoryModel ();
   OctaveLink::instance ()->buildSymbolInformation ();
-  QDir::setCurrent (load_path::get_command_line_path ().c_str ());
+  OctaveLink::instance ()->updateCurrentWorkingDirectory ();
   return 0;
 }
 
@@ -52,6 +53,7 @@ OctaveLink::OctaveLink ():QObject ()
     m_workspaceModel, SLOT (updateFromSymbolTable ()));
 
   _symbolInformationSemaphore = new QSemaphore (1);
+  _currentWorkingDirectory = "";
 }
 
 OctaveLink::~OctaveLink ()
@@ -92,6 +94,18 @@ OctaveLink::triggerUpdateHistoryModel ()
           m_historyModel->insertRow (0);
           m_historyModel->setData (m_historyModel->index (0), QString (command_history::get_entry (i).c_str ()));
         }
+    }
+}
+
+void
+OctaveLink::updateCurrentWorkingDirectory ()
+{
+  QString _queriedWorkingDirectory = octave_env::get_current_directory ().c_str();
+  if (_currentWorkingDirectory != _queriedWorkingDirectory)
+    {
+      _currentWorkingDirectory = _queriedWorkingDirectory;
+      QDir::setCurrent (_currentWorkingDirectory);
+      emit workingDirectoryChanged (_currentWorkingDirectory);
     }
 }
 

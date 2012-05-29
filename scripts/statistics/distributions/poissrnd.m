@@ -77,10 +77,7 @@ function rnd = poissrnd (lambda, varargin)
 
   if (isscalar (lambda))
     if (lambda >= 0 && lambda < Inf)
-      rnd = randp (lambda, sz);
-      if (strcmp (cls, "single"))
-        rnd = single (rnd);
-      endif
+      rnd = randp (lambda, sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
@@ -88,7 +85,7 @@ function rnd = poissrnd (lambda, varargin)
     rnd = NaN (sz, cls);
 
     k = (lambda >= 0) & (lambda < Inf);
-    rnd(k) = randp (lambda(k));
+    rnd(k) = randp (lambda(k), cls);
   endif
 
 endfunction

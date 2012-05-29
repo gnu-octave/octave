@@ -84,12 +84,12 @@ function rnd = unifrnd (a, b, varargin)
 
   if (isscalar (a) && isscalar (b))
     if ((-Inf < a) && (a < b) && (b < Inf))
-      rnd =  a + (b - a) * rand (sz);
+      rnd =  a + (b - a) * rand (sz, cls);
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd =  a + (b - a) .* rand (sz);
+    rnd =  a + (b - a) .* rand (sz, cls);
 
     k = !(-Inf < a) | !(a < b) | !(b < Inf);
     rnd(k) = NaN;

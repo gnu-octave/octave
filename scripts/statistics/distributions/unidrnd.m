@@ -77,12 +77,12 @@ function rnd = unidrnd (n, varargin)
 
   if (isscalar (n))
     if (n > 0 && n == fix (n))
-      rnd = ceil (rand (sz) * n);
+      rnd = ceil (rand (sz, cls) * n);
     else
       rnd = NaN (sz, cls);
     endif
   else
-    rnd = ceil (rand (sz) .* n);
+    rnd = ceil (rand (sz, cls) .* n);
 
     k = ! (n > 0 & n == fix (n));
     rnd(k) = NaN;

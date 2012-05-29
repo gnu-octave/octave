@@ -20,7 +20,6 @@
 
 #include "ResourceManager.h"
 #include <QObject>
-
 #include <Qsci/qsciglobal.h>
 #include <Qsci/qscilexer.h>
 

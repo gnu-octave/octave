@@ -18,6 +18,7 @@
 #include "WorkspaceModel.h"
 #include <QTreeWidget>
 #include <QTime>
+#include "OctaveLink.h"
 
 WorkspaceModel::WorkspaceModel(QObject *parent)
   : QAbstractItemModel(parent)
@@ -25,7 +26,6 @@ WorkspaceModel::WorkspaceModel(QObject *parent)
   QList<QVariant> rootData;
   rootData << tr ("Name") << tr ("Type") << tr ("Value");
   _rootItem = new TreeItem(rootData);
-  _cachedSymbolTableSemaphore = new QSemaphore (1);
 }
 
 WorkspaceModel::~WorkspaceModel()
@@ -138,147 +138,35 @@ WorkspaceModel::data(const QModelIndex &index, int role) const
 
 
 void
-WorkspaceModel::cacheSymbolTable ()
-{
-  std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
-
-  _cachedSymbolTableSemaphore->acquire (1);
-  _cachedSymbolTable.clear();
-  for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
-       iterator != symbolTable.end (); iterator++)
-    {
-      _cachedSymbolTable.push_back((*iterator).dup(symbol_table::global_scope()));
-    }
-  _cachedSymbolTableSemaphore->release (1);
-}
-
-void
 WorkspaceModel::updateFromSymbolTable ()
 {
-  // Split the symbol table into its different categories.
-  QList < symbol_table::symbol_record* > localSymbolTable;
-  QList < symbol_table::symbol_record* > globalSymbolTable;
-  QList < symbol_table::symbol_record* > persistentSymbolTable;
-  QList < symbol_table::symbol_record* > hiddenSymbolTable;
+  topLevelItem (0)->deleteChildItems ();
+  topLevelItem (1)->deleteChildItems ();
+  topLevelItem (2)->deleteChildItems ();
+  topLevelItem (3)->deleteChildItems ();
 
-  _cachedSymbolTableSemaphore->acquire (1);
-  for (std::list < symbol_table::symbol_record > ::iterator iterator = _cachedSymbolTable.begin ();
-       iterator != _cachedSymbolTable.end (); iterator++)
-    {
-      // It's true that being global or hidden includes it's can mean it's also locally visible,
-      // but we want to distinguish that here.
-      if (iterator->is_local () && !iterator->is_global () && !iterator->is_hidden ())
-        {
-          localSymbolTable.append (&(*iterator));
-        }
+  OctaveLink::instance ()-> acquireSymbolInformation();
+  const QList <SymbolInformation>& symbolInformation = OctaveLink::instance() ->symbolInformation ();
 
-      if (iterator->is_global ())
-        {
-          globalSymbolTable.append (&(*iterator));
-        }
-
-      if (iterator->is_persistent ())
-        {
-          persistentSymbolTable.append (&(*iterator));
-        }
-
-      if (iterator->is_hidden ())
-        {
-          hiddenSymbolTable.append (&(*iterator));
-        }
-    }
-
-  updateCategory (0, localSymbolTable);
-  updateCategory (1, globalSymbolTable);
-  updateCategory (2, persistentSymbolTable);
-  updateCategory (3, hiddenSymbolTable);
- _cachedSymbolTableSemaphore->release (1);
-  reset();
-  emit expandRequest();
-}
-
-void
-WorkspaceModel::updateCategory (int topLevelItemIndex, const QList < symbol_table::symbol_record* > &symbolTable)
-{
-  TreeItem *treeItem = topLevelItem (topLevelItemIndex);
-
-  QModelIndex mi = index(treeItem->row(), 0);
-  treeItem->deleteChildItems();
-
-  int symbolTableSize = symbolTable.size ();
-  for(int j = 0; j < symbolTableSize; j++)
+  foreach (const SymbolInformation& s, symbolInformation)
     {
       TreeItem *child = new TreeItem ();
-      updateTreeEntry (child, symbolTable[j]);
-      treeItem->addChild (child);
-    }
-}
 
-void
-WorkspaceModel::updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord)
-{
-  treeItem->setData (0, QString (symbolRecord->name ().c_str ()));
-  treeItem->setData (1, QString (symbolRecord->varval ().type_name ().c_str ()));
-  treeItem->setData (2, octaveValueAsQString (symbolRecord->varval ()));
-}
+      child->setData (0, s._symbol);
+      child->setData (1, s._type);
+      child->setData (2, s._value);
 
-QString
-WorkspaceModel::octaveValueAsQString (const octave_value& octaveValue)
-{
-  // Convert single qouted string.
-  if (octaveValue.is_sq_string ())
-    {
-      return QString ("\'%1\'").arg (octaveValue.string_value ().c_str ());
+      switch (s._scope)
+        {
+          case SymbolInformation::Local:       topLevelItem (0)->addChild (child); break;
+          case SymbolInformation::Global:      topLevelItem (1)->addChild (child); break;
+          case SymbolInformation::Persistent:  topLevelItem (2)->addChild (child); break;
+          case SymbolInformation::Hidden:      topLevelItem (3)->addChild (child); break;
+        }
+    }
 
-      // Convert double qouted string.
-    }
-  else if (octaveValue.is_dq_string ())
-    {
-      return QString ("\"%1\"").arg (octaveValue.string_value ().c_str ());
+  OctaveLink::instance ()-> releaseSymbolInformation();
 
-      // Convert real scalar.
-    }
-  else if (octaveValue.is_real_scalar ())
-    {
-      return QString ("%1").arg (octaveValue.scalar_value ());
-
-      // Convert complex scalar.
-    }
-  else if (octaveValue.is_complex_scalar ())
-    {
-      return QString ("%1 + %2i").arg (octaveValue.scalar_value ()).
-          arg (octaveValue.complex_value ().imag ());
-
-      // Convert range.
-    }
-  else if (octaveValue.is_range ())
-    {
-      return QString ("%1 : %2 : %3").arg (octaveValue.range_value ().
-                                           base ()).arg (octaveValue.
-                                                         range_value ().
-                                                         inc ()).
-          arg (octaveValue.range_value ().limit ());
-
-      // Convert real matrix.
-    }
-  else if (octaveValue.is_real_matrix ())
-    {
-      return QString ("%1x%2")
-          .arg (octaveValue.rows ())
-          .arg (octaveValue.columns ());
-
-      // Convert complex matrix.
-    }
-  else if (octaveValue.is_complex_matrix ())
-    {
-      return QString ("%1x%2")
-          .arg (octaveValue.rows ())
-          .arg (octaveValue.columns ());
-
-      // If everything else does not fit, we could not recognize the type.
-    }
-  else
-    {
-      return QString ("<Type not recognized>");
-    }
+  reset();
+  emit expandRequest();
 }

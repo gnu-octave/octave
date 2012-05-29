@@ -23,7 +23,7 @@
 int octave_readline_hook ()
 {
   OctaveLink::instance ()->triggerUpdateHistoryModel ();
-  OctaveLink::instance ()->triggerCacheSymbolTable ();
+  OctaveLink::instance ()->buildSymbolInformation ();
   QDir::setCurrent (load_path::get_command_line_path ().c_str ());
   return 0;
 }
@@ -50,6 +50,8 @@ OctaveLink::OctaveLink ():QObject ()
   _updateWorkspaceModelTimer.setSingleShot (false);
   connect(&_updateWorkspaceModelTimer, SIGNAL (timeout ()),
     m_workspaceModel, SLOT (updateFromSymbolTable ()));
+
+  _symbolInformationSemaphore = new QSemaphore (1);
 }
 
 OctaveLink::~OctaveLink ()
@@ -94,9 +96,38 @@ OctaveLink::triggerUpdateHistoryModel ()
 }
 
 void
-OctaveLink::triggerCacheSymbolTable ()
+OctaveLink::acquireSymbolInformation ()
 {
-  m_workspaceModel->cacheSymbolTable();
+  _symbolInformationSemaphore->acquire (1);
+}
+
+void
+OctaveLink::releaseSymbolInformation ()
+{
+  _symbolInformationSemaphore->release (1);
+}
+
+void
+OctaveLink::buildSymbolInformation ()
+{
+  std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
+
+  acquireSymbolInformation ();
+  _symbolInformation.clear ();
+  for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
+     iterator != symbolTable.end (); iterator++)
+  {
+    SymbolInformation symbolInformation;
+    symbolInformation.fromSymbolRecord (*iterator);
+    _symbolInformation.push_back (symbolInformation);
+  }
+  releaseSymbolInformation ();
+}
+
+const QList <SymbolInformation>&
+OctaveLink::symbolInformation () const
+{
+  return _symbolInformation;
 }
 
 QStringListModel *

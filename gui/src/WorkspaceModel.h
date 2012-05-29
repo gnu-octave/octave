@@ -18,42 +18,6 @@
 #ifndef WORKSPACEMODEL_H
 #define WORKSPACEMODEL_H
 
-// Octave includes
-#undef PACKAGE_BUGREPORT
-#undef PACKAGE_NAME
-#undef PACKAGE_STRING
-#undef PACKAGE_TARNAME
-#undef PACKAGE_VERSION
-#undef PACKAGE_URL
-#include "octave/config.h"
-#include "octave/cmd-edit.h"
-#include "octave/error.h"
-#include "octave/file-io.h"
-#include "octave/input.h"
-#include "octave/lex.h"
-#include "octave/load-path.h"
-#include "octave/octave.h"
-#include "octave/oct-hist.h"
-#include "octave/oct-map.h"
-#include "octave/oct-obj.h"
-#include "octave/ops.h"
-#include "octave/ov.h"
-#include "octave/ov-usr-fcn.h"
-#include "octave/symtab.h"
-#include "octave/pt.h"
-#include "octave/pt-eval.h"
-#include "octave/config.h"
-#include "octave/Range.h"
-#include "octave/toplev.h"
-#include "octave/procstream.h"
-#include "octave/sighandlers.h"
-#include "octave/debug.h"
-#include "octave/sysdep.h"
-#include "octave/ov.h"
-#include "octave/unwind-prot.h"
-#include "octave/utils.h"
-#include "octave/variables.h"
-
 // Qt includes
 #include <QAbstractItemModel>
 #include <QVector>
@@ -159,12 +123,6 @@ public:
   void insertTopLevelItem (int at, TreeItem *treeItem);
   TreeItem *topLevelItem (int at);
 
-
-  void cacheSymbolTable ();
-  void updateTreeEntry (TreeItem * treeItem, symbol_table::symbol_record *symbolRecord);
-  void updateCategory (int topLevelItemIndex, const QList < symbol_table::symbol_record *> &symbolTable);
-  QString octaveValueAsQString (const octave_value &octaveValue);
-
 public slots:
   void updateFromSymbolTable ();
 
@@ -172,8 +130,7 @@ signals:
   void expandRequest();
 
 private:
-  QSemaphore *_cachedSymbolTableSemaphore;
-  std::list < symbol_table::symbol_record > _cachedSymbolTable;
+
   TreeItem *_rootItem;
 };
 

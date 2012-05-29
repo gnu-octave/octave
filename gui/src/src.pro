@@ -40,7 +40,7 @@ mac {
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += . backend editor ../qterminal/libqterminal \
+INCLUDEPATH         += . backend editor ../qterminal/libqterminal /usr/include/qt4 \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -105,7 +105,8 @@ HEADERS += \
     WorkspaceModel.h \
     editor/FileEditorInterface.h \
     editor/FileEditorTab.h \
-    TerminalDockWidget.h
+    TerminalDockWidget.h \
+    backend/SymbolInformation.h
 
 FORMS += \
     SettingsDialog.ui \

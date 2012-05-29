@@ -172,7 +172,6 @@ void
 MainWindow::closeEvent (QCloseEvent * closeEvent)
 {
   reportStatusMessage (tr ("Saving data and shutting down."));
-  writeSettings ();
   m_closing = true;  // inform editor window that whole application is closed
   OctaveLink::instance ()->terminateOctave ();
 
@@ -228,13 +227,12 @@ MainWindow::construct ()
   m_terminal->setObjectName ("OctaveTerminal");
   m_terminalDockWidget = new TerminalDockWidget (m_terminal, this);
 
-  /*
   QWidget *dummyWidget = new QWidget ();
-  dummyWidget->setObjectName ("DummyWidget");
-  dummyWidget->setFixedSize (100, 100);
+  dummyWidget->setObjectName ("CentralDummyWidget");
+  dummyWidget->resize (10, 10);
   dummyWidget->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
-  setCentralWidget (dummyWidget);*/
-  //dummyWidget->hide ();
+  dummyWidget->hide ();
+  setCentralWidget (dummyWidget);
 
   m_fileEditor = new FileEditor (m_terminal, this);
 
@@ -365,7 +363,7 @@ MainWindow::construct ()
   addDockWidget (Qt::LeftDockWidgetArea, m_workspaceView);
   addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);
   addDockWidget (Qt::RightDockWidgetArea, m_filesDockWidget);
-  addDockWidget (Qt::BottomDockWidgetArea, m_fileEditor);
+  addDockWidget (Qt::RightDockWidgetArea, m_fileEditor);
   addDockWidget (Qt::BottomDockWidgetArea, m_terminalDockWidget);
   setStatusBar (m_statusBar);
 

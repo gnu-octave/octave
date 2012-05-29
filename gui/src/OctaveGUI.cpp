@@ -83,7 +83,7 @@ main (int argc, char *argv[])
 
           MainWindow w;
           w.show ();
-          w.activateWindow();
+          //w.activateWindow();
           return application.exec ();
         }
     }

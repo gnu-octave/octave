@@ -75,6 +75,7 @@
 
 #include "WorkspaceModel.h"
 #include "OctaveMainThread.h"
+#include "SymbolInformation.h"
 
 /**
   * \class OctaveLink
@@ -96,7 +97,11 @@ public:
   WorkspaceModel *workspaceModel ();
 
   void triggerUpdateHistoryModel ();
-  void triggerCacheSymbolTable ();
+
+  void acquireSymbolInformation ();
+  void releaseSymbolInformation ();
+  void buildSymbolInformation ();
+  const QList <SymbolInformation>& symbolInformation () const;
 
 private:
   OctaveLink ();
@@ -108,6 +113,9 @@ private:
   // Threads for running octave and managing the data interaction.
   OctaveMainThread *m_octaveMainThread;
   QTimer _updateWorkspaceModelTimer;
+
+  QSemaphore *_symbolInformationSemaphore;
+  QList <SymbolInformation> _symbolInformation;
 
   static OctaveLink m_singleton;
 };

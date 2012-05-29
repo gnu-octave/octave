@@ -151,16 +151,13 @@ MainWindow::resetWindows ()
 void
 MainWindow::updateCurrentWorkingDirectory (QString directory)
 {
-  if(m_currentDirectoryComboBox->findText (directory) < 0)
+  if (m_currentDirectoryComboBox->count () > 31)
     {
-      if (m_currentDirectoryComboBox->count () > 31)
-        {
-          m_currentDirectoryComboBox->removeItem (0);
-        }
-      m_currentDirectoryComboBox->addItem (directory);
-      int index = m_currentDirectoryComboBox->findText (directory);
-      m_currentDirectoryComboBox->setCurrentIndex (index);
+      m_currentDirectoryComboBox->removeItem (0);
     }
+  m_currentDirectoryComboBox->addItem (directory);
+  int index = m_currentDirectoryComboBox->findText (directory);
+  m_currentDirectoryComboBox->setCurrentIndex (index);
 }
 
 void

@@ -1526,7 +1526,7 @@ private:
 
   void track_value (jit_value *value)
   {
-    if (value->type ())
+    if (value->type () && ! dynamic_cast<jit_instruction *>(value))
       constants.push_back (value);
     all_values.push_back (value);
   }

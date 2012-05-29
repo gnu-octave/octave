@@ -587,7 +587,7 @@ jit_typeinfo::create_identity (jit_type *type)
 jit_type *
 jit_typeinfo::do_type_of (const octave_value &ov) const
 {
-  if (ov.is_undefined () || ov.is_function ())
+  if (ov.is_function ())
     return 0;
 
   if (ov.is_double_type () && ov.is_real_scalar ())
@@ -819,7 +819,8 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
       if (jit_extract_argument *extract = dynamic_cast<jit_extract_argument *>(instr))
         {
           if (! extract->type ())
-            fail (); // we depend on an unknown type
+            // we depend on an unknown type
+            fail ("Unknown initial type: \"" + extract->tag () + "\""); 
           append_users (extract);
         }
     }

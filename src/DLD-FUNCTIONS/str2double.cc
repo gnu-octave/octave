@@ -54,15 +54,15 @@ single_num (std::istringstream& is, double& num)
       c = is.peek ();
     }
 
-  if (c == 'I')
+  if (std::toupper (c) == 'I')
     {
       // It's infinity.
       is.get ();
       char c1 = is.get (), c2 = is.get ();
-      if (c1 == 'n' && c2 == 'f')
+      if (std::tolower (c1) == 'n' && std::tolower (c2) == 'f')
         {
           num = octave_Inf;
-          is.peek (); // May sets EOF bit.
+          is.peek (); // May set EOF bit.
         }
       else
         is.setstate (std::ios::failbit); // indicate that read has failed.
@@ -127,13 +127,37 @@ extract_num (std::istringstream& is, double& num, bool& imag, bool& have_sign)
       c = is.peek ();
     }
 
-  // It's i*num or just i.
-  if (is_imag_unit (c))
+  // Imaginary number (i*num or just i), or maybe 'inf'.
+  if (c == 'i')
     {
-      imag = true;
+      // possible infinity.
       is.get ();
       c = is.peek ();
 
+      if (is.eof ())
+        {
+          // just 'i' and string is finished.  Return immediately.
+          imag = true;
+          num = 1.0;
+          if (negative)
+            num = -num;
+          return is;
+        }
+      else
+        { 
+          if (std::tolower (c) != 'n')
+            imag = true;
+          is.unget ();
+        }
+    }
+  else if (c == 'j')
+    imag = true;
+    
+  // It's i*num or just i
+  if (imag)
+    {
+      is.get ();
+      c = is.peek ();
       // Skip spaces after imaginary unit.
       while (isspace (c))
         {
@@ -369,8 +393,10 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double ("NaN"), NaN)
 %!assert (str2double ("NA"), NA)
 %!assert (str2double ("Inf"), Inf)
+%!assert (str2double ("iNF"), Inf)
 %!assert (str2double ("-Inf"), -Inf)
 %!assert (str2double ("Inf*i"), complex (0, Inf))
+%!assert (str2double ("iNF*i"), complex (0, Inf))
 %!assert (str2double ("NaN + Inf*i"), complex (NaN, Inf))
 %!assert (str2double ("Inf - Inf*i"), complex (Inf, -Inf))
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))

@@ -24,11 +24,11 @@
 #include <QSortFilterProxyModel>
 #include "octave-link.h"
 
-class HistoryDockWidget:public QDockWidget
+class history_dock_widget:public QDockWidget
 {
 Q_OBJECT
 public:
-  HistoryDockWidget (QWidget *parent = 0);
+  history_dock_widget (QWidget *parent = 0);
   void updateHistory (QStringList history);
 
 public slots:

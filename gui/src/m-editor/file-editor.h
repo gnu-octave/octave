@@ -41,22 +41,22 @@ enum MARKER
     MARKER_BREAKPOINT
   };
 
-class FileEditor : public FileEditorInterface
+class file_editor : public file_editor_interface
 {
 Q_OBJECT
 
 public:
-  FileEditor (QTerminal *terminal, MainWindow *mainWindow);
-  ~FileEditor ();
+  file_editor (QTerminal *terminal, main_window *mainWindow);
+  ~file_editor ();
   void loadFile (QString fileName);
-  LexerOctaveGui *lexer ();
+  lexer_octave_gui *lexer ();
   QTerminal *terminal ();
-  MainWindow *mainWindow ();
+  main_window *mainWindow ();
 
 public slots:
-  void requestNewFile ();
-  void requestOpenFile ();
-  void requestOpenFile (QString fileName);
+  void request_new_file ();
+  void request_open_file ();
+  void request_open_file (QString fileName);
 
   void requestUndo ();
   void requestRedo ();
@@ -81,8 +81,8 @@ public slots:
 
 private:
   void construct ();
-  void addFileEditorTab(FileEditorTab *fileEditorTab);
-  FileEditorTab *activeEditorTab();
+  void addFileEditorTab(file_editor_tab *fileEditorTab);
+  file_editor_tab *activeEditorTab();
 
   QMenuBar *m_menuBar;
   QToolBar *m_toolBar;
@@ -91,7 +91,7 @@ private:
   QTabWidget *m_tabWidget;
   int m_markerBookmark;
 
-  LexerOctaveGui *m_lexer;
+  lexer_octave_gui *m_lexer;
   QsciAPIs *m_lexerAPI;
 };
 

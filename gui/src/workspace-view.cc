@@ -20,7 +20,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 
-WorkspaceView::WorkspaceView (QWidget * parent) : QDockWidget
+workspace_view::workspace_view (QWidget * parent) : QDockWidget
   (parent)
 {
   setObjectName ("WorkspaceView");
@@ -30,7 +30,7 @@ WorkspaceView::WorkspaceView (QWidget * parent) : QDockWidget
   m_workspaceTreeView->setHeaderHidden (false);
   m_workspaceTreeView->setAlternatingRowColors (true);
   m_workspaceTreeView->setAnimated (true);
-  m_workspaceTreeView->setModel(OctaveLink::instance()->workspaceModel());
+  m_workspaceTreeView->setModel(octave_link::instance()->workspaceModel());
 
   setWidget (new QWidget (this));
   QVBoxLayout *layout = new QVBoxLayout ();
@@ -41,19 +41,19 @@ WorkspaceView::WorkspaceView (QWidget * parent) : QDockWidget
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT(handleVisibilityChanged (bool)));
 
-  connect (OctaveLink::instance()->workspaceModel(), SIGNAL(expandRequest()),
+  connect (octave_link::instance()->workspaceModel(), SIGNAL(expandRequest()),
            m_workspaceTreeView, SLOT(expandAll()));
 }
 
 void
-WorkspaceView::handleVisibilityChanged (bool visible)
+workspace_view::handleVisibilityChanged (bool visible)
 {
   if (visible)
   emit activeChanged (true);
 }
 
 void
-WorkspaceView::closeEvent (QCloseEvent *event)
+workspace_view::closeEvent (QCloseEvent *event)
 {
   emit activeChanged (false);
   QDockWidget::closeEvent (event);

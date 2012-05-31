@@ -50,22 +50,22 @@
   *
   * Represents the main window.
   */
-class MainWindow:public QMainWindow
+class main_window:public QMainWindow
 {
 Q_OBJECT public:
-  MainWindow (QWidget * parent = 0);
-  ~MainWindow ();
+  main_window (QWidget * parent = 0);
+  ~main_window ();
 
   QTerminal *terminalView ()
   {
     return m_terminal;
   }
 
-  HistoryDockWidget *historyDockWidget ()
+  history_dock_widget *historyDockWidget ()
   {
     return m_historyDockWidget;
   }
-  FilesDockWidget *filesDockWidget ()
+  files_dock_widget *filesDockWidget ()
   {
     return m_filesDockWidget;
   }
@@ -108,13 +108,13 @@ private:
   void establishOctaveLink ();
 
   QTerminal *m_terminal;
-  FileEditorInterface *m_fileEditor;
+  file_editor_interface *m_fileEditor;
 
   // Dock widgets.
-  WorkspaceView *m_workspaceView;
-  HistoryDockWidget *m_historyDockWidget;
-  FilesDockWidget *m_filesDockWidget;
-  TerminalDockWidget *m_terminalDockWidget;
+  workspace_view *m_workspaceView;
+  history_dock_widget *m_historyDockWidget;
+  files_dock_widget *m_filesDockWidget;
+  terminal_dock_widget *m_terminalDockWidget;
 
   // Toolbars.
   QStatusBar *m_statusBar;

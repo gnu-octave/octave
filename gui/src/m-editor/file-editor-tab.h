@@ -23,66 +23,66 @@
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
 
-class FileEditor;
-class FileEditorTab : public QWidget
+class file_editor;
+class file_editor_tab : public QWidget
 {
   Q_OBJECT
 public:
-  FileEditorTab (FileEditor *fileEditor);
+  file_editor_tab (file_editor *fileEditor);
   bool copyAvailable ();
 
 public slots:
-  void newTitle(bool modified);
-  void handleCopyAvailable(bool enableCopy);
-  void handleMarginClicked (int line, int margin, Qt::KeyboardModifiers state);
-  void commentSelectedText ();
-  void uncommentSelectedText ();
-  void removeBookmark ();
-  void toggleBookmark ();
-  void nextBookmark ();
-  void previousBookmark ();
+  void new_title(bool modified);
+  void handle_copy_available(bool enableCopy);
+  void handle_margin_clicked (int line, int margin, Qt::KeyboardModifiers state);
+  void comment_selected_text ();
+  void uncomment_selected_text ();
+  void remove_bookmark ();
+  void toggle_bookmark ();
+  void next_bookmark ();
+  void previous_bookmark ();
   void cut ();
   void copy ();
   void paste ();
   void undo ();
   void redo ();
 
-  void setModified (bool modified = true);
+  void set_modified (bool modified = true);
 
-  bool openFile();
-  void loadFile (QString fileName);
-  void newFile ();
-  bool saveFile ();
-  bool saveFile(QString saveFileName);
-  bool saveFileAs();
-  void runFile ();
+  bool open_file ();
+  void load_file (QString fileName);
+  void new_file ();
+  bool save_file ();
+  bool save_file(QString saveFileName);
+  bool save_file_as();
+  void run_file ();
 
-  void fileHasChanged (QString fileName);
+  void file_has_changed (QString fileName);
 
 signals:
-  void fileNameChanged (QString fileName);
-  void editorStateChanged ();
-  void closeRequest ();
+  void file_name_changed (QString fileName);
+  void editor_state_changed ();
+  void close_request ();
 
 protected:
   void closeEvent (QCloseEvent *event);
-  void setFileName (QString fileName);
+  void set_file_name (QString fileName);
 
 private:
-  void updateTrackedFile ();
-  int checkFileModified (QString msg, int cancelButton);
-  void doCommentSelectedText (bool comment);
+  void update_tracked_file ();
+  int check_file_modified (QString msg, int cancelButton);
+  void do_comment_selected_text (bool comment);
 
-  FileEditor *m_fileEditor;
-  QsciScintilla *m_editArea;
+  file_editor *         _file_editor;
+  QsciScintilla *       _edit_area;
 
-  QString m_fileName;
-  QString m_fileNameShort;
+  QString               _file_name;
+  QString               _file_name_short;
 
-  bool m_longTitle;
-  bool m_copyAvailable;
+  bool                  _long_title;
+  bool                  _copy_available;
 
-  QFileSystemWatcher m_fileSystemWatcher;
+  QFileSystemWatcher    _file_system_watcher;
 };
 
 #endif // FILEEDITORTAB_H

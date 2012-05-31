@@ -17,7 +17,7 @@
 
 #include "terminal-dockwidget.h"
 
-TerminalDockWidget::TerminalDockWidget (QTerminal *terminal, QWidget *parent)
+terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *parent)
   : QDockWidget (parent)
 {
   setObjectName ("TerminalDockWidget");

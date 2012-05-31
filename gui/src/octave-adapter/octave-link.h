@@ -81,11 +81,11 @@
   * \class OctaveLink
   * Manages a link to an octave instance.
   */
-class OctaveLink:public QObject
+class octave_link:public QObject
 {
   Q_OBJECT
 public:
-  static OctaveLink *
+  static octave_link *
   instance ()
   {
     return &m_singleton;
@@ -94,7 +94,7 @@ public:
   void launchOctave ();
   void terminateOctave ();
   QStringListModel *historyModel ();
-  WorkspaceModel *workspaceModel ();
+  workspace_model *workspaceModel ();
 
   void triggerUpdateHistoryModel ();
   void updateCurrentWorkingDirectory ();
@@ -108,20 +108,20 @@ signals:
   void workingDirectoryChanged (QString directory);
 
 private:
-  OctaveLink ();
-  ~OctaveLink ();
+  octave_link ();
+  ~octave_link ();
 
   QStringListModel *m_historyModel;
-  WorkspaceModel *m_workspaceModel;
+  workspace_model *m_workspaceModel;
 
   // Threads for running octave and managing the data interaction.
-  OctaveMainThread *m_octaveMainThread;
+  octave_main_thread *m_octaveMainThread;
   QTimer _updateWorkspaceModelTimer;
 
   QSemaphore *_symbolInformationSemaphore;
   QList <SymbolInformation> _symbolInformation;
 
   QString _currentWorkingDirectory;
-  static OctaveLink m_singleton;
+  static octave_link m_singleton;
 };
 #endif // OCTAVELINK_H

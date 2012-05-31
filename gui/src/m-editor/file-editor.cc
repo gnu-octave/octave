@@ -25,8 +25,8 @@
 #include <QStyle>
 #include <QTextStream>
 
-FileEditor::FileEditor (QTerminal *terminal, MainWindow *mainWindow)
-  : FileEditorInterface(terminal, mainWindow)
+file_editor::file_editor (QTerminal *terminal, main_window *mainWindow)
+  : file_editor_interface(terminal, mainWindow)
 {
   construct ();
 
@@ -35,47 +35,47 @@ FileEditor::FileEditor (QTerminal *terminal, MainWindow *mainWindow)
   setVisible (false);
 }
 
-FileEditor::~FileEditor ()
+file_editor::~file_editor ()
 {
 }
 
-LexerOctaveGui *
-FileEditor::lexer ()
+lexer_octave_gui *
+file_editor::lexer ()
 {
   return m_lexer;
 }
 
 QTerminal *
-FileEditor::terminal ()
+file_editor::terminal ()
 {
   return m_terminal;
 }
 
-MainWindow *
-FileEditor::mainWindow ()
+main_window *
+file_editor::mainWindow ()
 {
   return m_mainWindow;
 }
 
 void
-FileEditor::requestNewFile ()
+file_editor::request_new_file ()
 {
-  FileEditorTab *fileEditorTab = new FileEditorTab (this);
+  file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
       addFileEditorTab (fileEditorTab);
-      fileEditorTab->newFile ();
+      fileEditorTab->new_file ();
     }
 }
 
 void
-FileEditor::requestOpenFile ()
+file_editor::request_open_file ()
 {
-  FileEditorTab *fileEditorTab = new FileEditorTab (this);
+  file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
       addFileEditorTab (fileEditorTab);
-      if (!fileEditorTab->openFile ())
+      if (!fileEditorTab->open_file ())
         {
           // If no file was loaded, remove the tab again.
           m_tabWidget->removeTab (m_tabWidget->indexOf (fileEditorTab));
@@ -84,138 +84,138 @@ FileEditor::requestOpenFile ()
 }
 
 void
-FileEditor::requestOpenFile (QString fileName)
+file_editor::request_open_file (QString fileName)
 {
   if (!isVisible ())
     {
       show ();
     }
 
-  FileEditorTab *fileEditorTab = new FileEditorTab (this);
+  file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
       addFileEditorTab (fileEditorTab);
-      fileEditorTab->loadFile (fileName);
+      fileEditorTab->load_file (fileName);
     }
 }
 
 void
-FileEditor::requestUndo ()
+file_editor::requestUndo ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
     activeFileEditorTab->undo ();
 }
 
 void
-FileEditor::requestRedo ()
+file_editor::requestRedo ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
     activeFileEditorTab->redo ();
 }
 
 void
-FileEditor::requestCopy ()
+file_editor::requestCopy ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
     activeFileEditorTab->copy ();
 }
 
 void
-FileEditor::requestCut ()
+file_editor::requestCut ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
     activeFileEditorTab->cut ();
 }
 
 void
-FileEditor::requestPaste ()
+file_editor::requestPaste ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
     activeFileEditorTab->paste ();
 }
 
 void
-FileEditor::requestSaveFile ()
+file_editor::requestSaveFile ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->saveFile ();
+    activeFileEditorTab->save_file ();
 }
 
 void
-FileEditor::requestSaveFileAs ()
+file_editor::requestSaveFileAs ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->saveFileAs ();
+    activeFileEditorTab->save_file_as ();
 }
 
 void
-FileEditor::requestRunFile ()
+file_editor::requestRunFile ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->runFile ();
+    activeFileEditorTab->run_file ();
 }
 
 void
-FileEditor::requestToggleBookmark ()
+file_editor::requestToggleBookmark ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->toggleBookmark ();
+    activeFileEditorTab->toggle_bookmark ();
 }
 
 void
-FileEditor::requestNextBookmark ()
+file_editor::requestNextBookmark ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->nextBookmark ();
+    activeFileEditorTab->next_bookmark ();
 }
 
 void
-FileEditor::requestPreviousBookmark ()
+file_editor::requestPreviousBookmark ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->previousBookmark ();
+    activeFileEditorTab->previous_bookmark ();
 }
 
 void
-FileEditor::requestRemoveBookmark ()
+file_editor::requestRemoveBookmark ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->removeBookmark ();
+    activeFileEditorTab->remove_bookmark ();
 }
 
 void
-FileEditor::requestCommentSelectedText ()
+file_editor::requestCommentSelectedText ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->commentSelectedText ();
+    activeFileEditorTab->comment_selected_text ();
 }
 
 void
-FileEditor::requestUncommentSelectedText ()
+file_editor::requestUncommentSelectedText ()
 {
-  FileEditorTab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = activeEditorTab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->uncommentSelectedText ();
+    activeFileEditorTab->uncomment_selected_text ();
 }
 
 void
-FileEditor::handleFileNameChanged (QString fileName)
+file_editor::handleFileNameChanged (QString fileName)
 {
   QObject *senderObject = sender ();
-  FileEditorTab *fileEditorTab = dynamic_cast<FileEditorTab*> (senderObject);
+  file_editor_tab *fileEditorTab = dynamic_cast<file_editor_tab*> (senderObject);
   if (fileEditorTab)
     {
       for(int i = 0; i < m_tabWidget->count (); i++)
@@ -229,9 +229,9 @@ FileEditor::handleFileNameChanged (QString fileName)
 }
 
 void
-FileEditor::handleTabCloseRequest (int index)
+file_editor::handleTabCloseRequest (int index)
 {
-  FileEditorTab *fileEditorTab = dynamic_cast <FileEditorTab*> (m_tabWidget->widget (index));
+  file_editor_tab *fileEditorTab = dynamic_cast <file_editor_tab*> (m_tabWidget->widget (index));
   if (fileEditorTab)
     if (fileEditorTab->close ())
       {
@@ -241,9 +241,9 @@ FileEditor::handleTabCloseRequest (int index)
 }
 
 void
-FileEditor::handleTabCloseRequest ()
+file_editor::handleTabCloseRequest ()
 {
-  FileEditorTab *fileEditorTab = dynamic_cast <FileEditorTab*> (sender ());
+  file_editor_tab *fileEditorTab = dynamic_cast <file_editor_tab*> (sender ());
   if (fileEditorTab)
     if (fileEditorTab->close ())
       {
@@ -253,16 +253,16 @@ FileEditor::handleTabCloseRequest ()
 }
 
 void
-FileEditor::activeTabChanged (int index)
+file_editor::activeTabChanged (int index)
 {
   Q_UNUSED (index);
   handleEditorStateChanged ();
 }
 
 void
-FileEditor::handleEditorStateChanged ()
+file_editor::handleEditorStateChanged ()
 {
-  FileEditorTab *fileEditorTab = activeEditorTab ();
+  file_editor_tab *fileEditorTab = activeEditorTab ();
   if (fileEditorTab)
     {
       bool copyAvailable = fileEditorTab->copyAvailable ();
@@ -272,10 +272,10 @@ FileEditor::handleEditorStateChanged ()
 }
 
 void
-FileEditor::construct ()
+file_editor::construct ()
 {
   QWidget *widget = new QWidget (this);
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->settings ();
   QStyle *style = QApplication::style ();
 
   m_menuBar = new QMenuBar (widget);
@@ -396,8 +396,8 @@ FileEditor::construct ()
   widget->setLayout (layout);
   setWidget (widget);
 
-  connect (newAction,               SIGNAL (triggered ()), this, SLOT (requestNewFile ()));
-  connect (openAction,              SIGNAL (triggered ()), this, SLOT (requestOpenFile ()));
+  connect (newAction,               SIGNAL (triggered ()), this, SLOT (request_new_file ()));
+  connect (openAction,              SIGNAL (triggered ()), this, SLOT (request_open_file ()));
   connect (undoAction,              SIGNAL (triggered ()), this, SLOT (requestUndo ()));
   connect (redoAction,              SIGNAL (triggered ()), this, SLOT (requestRedo ()));
   connect (m_copyAction,            SIGNAL (triggered ()), this, SLOT (requestCopy ()));
@@ -416,7 +416,7 @@ FileEditor::construct ()
   connect (m_tabWidget, SIGNAL (currentChanged(int)), this, SLOT (activeTabChanged (int)));
 
   // this has to be done only once, not for each editor
-  m_lexer = new LexerOctaveGui ();
+  m_lexer = new lexer_octave_gui ();
 
   // Editor font (default or from settings)
   m_lexer->setDefaultFont (QFont (
@@ -451,7 +451,7 @@ FileEditor::construct ()
 }
 
 void
-FileEditor::addFileEditorTab (FileEditorTab *fileEditorTab)
+file_editor::addFileEditorTab (file_editor_tab *fileEditorTab)
 {
   m_tabWidget->addTab (fileEditorTab, "");
   connect (fileEditorTab, SIGNAL (fileNameChanged(QString)),
@@ -463,8 +463,8 @@ FileEditor::addFileEditorTab (FileEditorTab *fileEditorTab)
   m_tabWidget->setCurrentWidget (fileEditorTab);
 }
 
-FileEditorTab *
-FileEditor::activeEditorTab ()
+file_editor_tab *
+file_editor::activeEditorTab ()
 {
-  return dynamic_cast<FileEditorTab*> (m_tabWidget->currentWidget ());
+  return dynamic_cast<file_editor_tab*> (m_tabWidget->currentWidget ());
 }

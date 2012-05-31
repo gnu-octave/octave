@@ -19,33 +19,33 @@
 #include <QFile>
 #include <QNetworkProxy>
 
-ResourceManager ResourceManager::m_singleton;
+resource_manager resource_manager::m_singleton;
 
-ResourceManager::ResourceManager ()
+resource_manager::resource_manager ()
 {
   m_settings = 0;
   reloadSettings ();
 }
 
-ResourceManager::~ResourceManager ()
+resource_manager::~resource_manager ()
 {
   delete m_settings;
 }
 
 QSettings *
-ResourceManager::settings ()
+resource_manager::settings ()
 {
   return m_settings;
 }
 
 QString
-ResourceManager::homePath ()
+resource_manager::homePath ()
 {
   return m_homePath;
 }
 
 void
-ResourceManager::reloadSettings ()
+resource_manager::reloadSettings ()
 {
   QDesktopServices desktopServices;
   m_homePath = desktopServices.storageLocation (QDesktopServices::HomeLocation);
@@ -53,7 +53,7 @@ ResourceManager::reloadSettings ()
 }
 
 void
-ResourceManager::setSettings (QString file)
+resource_manager::setSettings (QString file)
 {
   delete m_settings;
 
@@ -68,14 +68,14 @@ ResourceManager::setSettings (QString file)
 }
 
 QString
-ResourceManager::findTranslatorFile (QString language)
+resource_manager::findTranslatorFile (QString language)
 {
   // TODO: Quick hack to be able to test language files.
   return QString("../languages/%1.qm").arg(language);
 }
 
 QIcon
-ResourceManager::icon (Icon icon)
+resource_manager::icon (Icon icon)
 {
   if (m_icons.contains (icon))
     {
@@ -85,13 +85,13 @@ ResourceManager::icon (Icon icon)
 }
 
 bool
-ResourceManager::isFirstRun ()
+resource_manager::isFirstRun ()
 {
   return m_firstRun;
 }
 
 void
-ResourceManager::updateNetworkSettings ()
+resource_manager::updateNetworkSettings ()
 {
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
   if (m_settings->value ("useProxyServer").toBool ())
@@ -117,17 +117,17 @@ ResourceManager::updateNetworkSettings ()
 }
 
 void
-ResourceManager::loadIcons ()
+resource_manager::loadIcons ()
 {
-  m_icons [ResourceManager::Octave] = QIcon ("../media/logo.png");
-  m_icons [ResourceManager::Terminal] = QIcon ("../media/terminal.png");
-  m_icons [ResourceManager::Documentation] = QIcon ("../media/help_index.png");
-  m_icons [ResourceManager::Chat] = QIcon ("../media/chat.png");
-  m_icons [ResourceManager::ChatNewMessage] = QIcon ("../media/jabber_protocol.png");
+  m_icons [resource_manager::Octave] = QIcon ("../media/logo.png");
+  m_icons [resource_manager::Terminal] = QIcon ("../media/terminal.png");
+  m_icons [resource_manager::Documentation] = QIcon ("../media/help_index.png");
+  m_icons [resource_manager::Chat] = QIcon ("../media/chat.png");
+  m_icons [resource_manager::ChatNewMessage] = QIcon ("../media/jabber_protocol.png");
 }
 
 const char*
-ResourceManager::octaveKeywords ()
+resource_manager::octaveKeywords ()
 {
   return
       ".nargin. "

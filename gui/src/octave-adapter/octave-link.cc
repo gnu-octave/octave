@@ -23,24 +23,24 @@
 
 int octave_readline_hook ()
 {
-  OctaveLink::instance ()->triggerUpdateHistoryModel ();
-  OctaveLink::instance ()->buildSymbolInformation ();
-  OctaveLink::instance ()->updateCurrentWorkingDirectory ();
+  octave_link::instance ()->triggerUpdateHistoryModel ();
+  octave_link::instance ()->buildSymbolInformation ();
+  octave_link::instance ()->updateCurrentWorkingDirectory ();
   return 0;
 }
 
 void octave_exit_hook (int status)
 {
   Q_UNUSED (status);
-  OctaveLink::instance ()->terminateOctave ();
+  octave_link::instance ()->terminateOctave ();
 }
 
-OctaveLink OctaveLink::m_singleton;
+octave_link octave_link::m_singleton;
 
-OctaveLink::OctaveLink ():QObject ()
+octave_link::octave_link ():QObject ()
 {
   m_historyModel = new QStringListModel (this);
-  m_workspaceModel = new WorkspaceModel (this);
+  m_workspaceModel = new workspace_model (this);
 
   m_workspaceModel->insertTopLevelItem(0, new TreeItem ("Local"));
   m_workspaceModel->insertTopLevelItem(1, new TreeItem ("Global"));
@@ -56,15 +56,15 @@ OctaveLink::OctaveLink ():QObject ()
   _currentWorkingDirectory = "";
 }
 
-OctaveLink::~OctaveLink ()
+octave_link::~octave_link ()
 {
 }
 
 void
-OctaveLink::launchOctave ()
+octave_link::launchOctave ()
 {
   // Create both threads.
-  m_octaveMainThread = new OctaveMainThread (this);
+  m_octaveMainThread = new octave_main_thread (this);
   command_editor::add_event_hook (octave_readline_hook);
   octave_exit = octave_exit_hook;
 
@@ -74,13 +74,13 @@ OctaveLink::launchOctave ()
 }
 
 void
-OctaveLink::terminateOctave ()
+octave_link::terminateOctave ()
 {
   qApp->quit ();
 }
 
 void
-OctaveLink::triggerUpdateHistoryModel ()
+octave_link::triggerUpdateHistoryModel ()
 {
   // Determine the client's (our) history length and the one of the server.
   int clientHistoryLength = m_historyModel->rowCount ();
@@ -98,7 +98,7 @@ OctaveLink::triggerUpdateHistoryModel ()
 }
 
 void
-OctaveLink::updateCurrentWorkingDirectory ()
+octave_link::updateCurrentWorkingDirectory ()
 {
   QString _queriedWorkingDirectory = octave_env::get_current_directory ().c_str();
   if (_currentWorkingDirectory != _queriedWorkingDirectory)
@@ -110,19 +110,19 @@ OctaveLink::updateCurrentWorkingDirectory ()
 }
 
 void
-OctaveLink::acquireSymbolInformation ()
+octave_link::acquireSymbolInformation ()
 {
   _symbolInformationSemaphore->acquire (1);
 }
 
 void
-OctaveLink::releaseSymbolInformation ()
+octave_link::releaseSymbolInformation ()
 {
   _symbolInformationSemaphore->release (1);
 }
 
 void
-OctaveLink::buildSymbolInformation ()
+octave_link::buildSymbolInformation ()
 {
   std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
 
@@ -139,19 +139,19 @@ OctaveLink::buildSymbolInformation ()
 }
 
 const QList <SymbolInformation>&
-OctaveLink::symbolInformation () const
+octave_link::symbolInformation () const
 {
   return _symbolInformation;
 }
 
 QStringListModel *
-OctaveLink::historyModel ()
+octave_link::historyModel ()
 {
   return m_historyModel;
 }
 
-WorkspaceModel *
-OctaveLink::workspaceModel ()
+workspace_model *
+octave_link::workspaceModel ()
 {
   return m_workspaceModel;
 }

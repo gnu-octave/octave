@@ -18,9 +18,9 @@
 #include "welcome-wizard.h"
 #include "ui_welcome-wizard.h"
 
-WelcomeWizard::WelcomeWizard (QWidget *parent) :
+welcome_wizard::welcome_wizard (QWidget *parent) :
   QDialog (parent),
-  ui (new Ui::WelcomeWizard)
+  ui (new user_interface::welcome_wizard)
 {
   ui->setupUi (this);
   connect (ui->nextButton1, SIGNAL (clicked ()), this, SLOT (next ()));
@@ -34,19 +34,19 @@ WelcomeWizard::WelcomeWizard (QWidget *parent) :
   connect (ui->previousButton5, SIGNAL (clicked ()), this, SLOT (previous ()));
 }
 
-WelcomeWizard::~WelcomeWizard()
+welcome_wizard::~welcome_wizard()
 {
   delete ui;
 }
 
 void
-WelcomeWizard::next ()
+welcome_wizard::next ()
 {
   ui->stackedWidget->setCurrentIndex (ui->stackedWidget->currentIndex () + 1);
 }
 
 void
-WelcomeWizard::previous ()
+welcome_wizard::previous ()
 {
   ui->stackedWidget->setCurrentIndex (ui->stackedWidget->currentIndex () - 1);
 }

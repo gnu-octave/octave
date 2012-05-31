@@ -21,47 +21,47 @@
 #include <QDockWidget>
 
 class QTerminal;
-class MainWindow;
+class main_window;
 
-class FileEditorInterface : public QDockWidget
+class file_editor_interface : public QDockWidget
 {
   Q_OBJECT
 
   public:
-    FileEditorInterface (QTerminal *terminal, MainWindow *mainWindow)
+    file_editor_interface (QTerminal *terminal, main_window *mainWindow)
       : QDockWidget ((QWidget*)mainWindow) // QDockWidget constructor is explicit, hence the cast.
     {
       setObjectName ("FileEditor");
       m_terminal = terminal;
       m_mainWindow = mainWindow;
 
-      connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handleVisibilityChanged (bool)));
+      connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handle_visibility_changed (bool)));
     }
 
-    virtual ~FileEditorInterface () { }
+    virtual ~file_editor_interface () { }
   public slots:
-    virtual void requestNewFile () = 0;
-    virtual void requestOpenFile () = 0;
-    virtual void requestOpenFile (QString fileName) = 0;
+    virtual void request_new_file () = 0;
+    virtual void request_open_file () = 0;
+    virtual void request_open_file (QString fileName) = 0;
 
   signals:
-      void activeChanged (bool active);
+      void active_changed (bool active);
 
   protected:
     QTerminal* m_terminal;
-    MainWindow* m_mainWindow;
+    main_window* m_mainWindow;
 
     void closeEvent (QCloseEvent *event)
     {
-      emit activeChanged (false);
+      emit active_changed (false);
       QDockWidget::closeEvent (event);
     }
 
   protected slots:
-    void handleVisibilityChanged (bool visible)
+    void handle_visibility_changed (bool visible)
     {
       if (visible)
-        emit activeChanged (true);
+        emit active_changed (true);
     }
 };
 

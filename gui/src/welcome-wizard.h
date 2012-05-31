@@ -20,24 +20,24 @@
 
 #include <QDialog>
 
-namespace Ui {
-class WelcomeWizard;
+namespace user_interface {
+    class welcome_wizard;
 }
 
-class WelcomeWizard : public QDialog
+class welcome_wizard : public QDialog
 {
   Q_OBJECT
 
 public:
-  explicit WelcomeWizard(QWidget *parent = 0);
-  ~WelcomeWizard();
+  explicit welcome_wizard(QWidget *parent = 0);
+  ~welcome_wizard();
 
 public slots:
   void next ();
   void previous ();
 
 private:
-  Ui::WelcomeWizard *ui;
+  user_interface::welcome_wizard *ui;
 };
 
 #endif // WELCOMEWIZARD_H

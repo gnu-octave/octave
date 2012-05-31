@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WelcomeWizard</class>
- <widget class="QDialog" name="WelcomeWizard">
+ <class>welcome_wizard</class>
+ <widget class="QDialog" name="welcome_wizard">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -337,7 +337,7 @@
   <connection>
    <sender>finishButton</sender>
    <signal>clicked()</signal>
-   <receiver>WelcomeWizard</receiver>
+   <receiver>welcome_wizard</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

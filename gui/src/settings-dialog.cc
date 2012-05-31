@@ -20,12 +20,12 @@
 #include "ui_settings-dialog.h"
 #include <QSettings>
 
-SettingsDialog::SettingsDialog (QWidget * parent):
-QDialog (parent), ui (new Ui::SettingsDialog)
+settings_dialog::settings_dialog (QWidget * parent):
+QDialog (parent), ui (new user_interface::settings_dialog)
 {
   ui->setupUi (this);
 
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->settings ();
   ui->useCustomFileEditor->setChecked (settings->value ("useCustomFileEditor").toBool ());
   ui->customFileEditor->setText (settings->value ("customFileEditor").toString ());
   ui->editor_showLineNumbers->setChecked (settings->value ("editor/showLineNumbers",true).toBool () );
@@ -58,9 +58,9 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->proxyPassword->setText (settings->value ("proxyPassword").toString ());
 }
 
-SettingsDialog::~SettingsDialog ()
+settings_dialog::~settings_dialog ()
 {
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->settings ();
   settings->setValue ("useCustomFileEditor", ui->useCustomFileEditor->isChecked ());
   settings->setValue ("customFileEditor", ui->customFileEditor->text ());
   settings->setValue ("editor/showLineNumbers", ui->editor_showLineNumbers->isChecked ());

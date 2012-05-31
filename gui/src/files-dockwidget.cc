@@ -25,7 +25,7 @@
 #include <QProcess>
 #include <QDebug>
 
-FilesDockWidget::FilesDockWidget (QWidget *parent)
+files_dock_widget::files_dock_widget (QWidget *parent)
   : QDockWidget (parent)
 {
   setObjectName ("FilesDockWidget");
@@ -103,7 +103,7 @@ FilesDockWidget::FilesDockWidget (QWidget *parent)
 }
 
 void
-FilesDockWidget::itemDoubleClicked (const QModelIndex & index)
+files_dock_widget::itemDoubleClicked (const QModelIndex & index)
 {
   // Retrieve the file info associated with the model index.
   QFileInfo fileInfo = m_fileSystemModel->fileInfo (index);
@@ -120,7 +120,7 @@ FilesDockWidget::itemDoubleClicked (const QModelIndex & index)
   else
     {
       // Check if the user wants to use a custom file editor.
-      QSettings *settings = ResourceManager::instance ()->settings ();
+      QSettings *settings = resource_manager::instance ()->settings ();
       if (settings->value ("useCustomFileEditor").toBool ())
         {
           QString editor = settings->value ("customFileEditor").toString ();
@@ -136,13 +136,13 @@ FilesDockWidget::itemDoubleClicked (const QModelIndex & index)
 }
 
 void
-FilesDockWidget::setCurrentDirectory (QString currentDirectory)
+files_dock_widget::setCurrentDirectory (QString currentDirectory)
 {
   m_currentDirectory->setText (currentDirectory);
 }
 
 void
-FilesDockWidget::onUpDirectory (void)
+files_dock_widget::onUpDirectory (void)
 {
   QDir dir =
     QDir (m_fileSystemModel->filePath (m_fileTreeView->rootIndex ()));
@@ -154,7 +154,7 @@ FilesDockWidget::onUpDirectory (void)
 }
 
 void
-FilesDockWidget::currentDirectoryEntered ()
+files_dock_widget::currentDirectoryEntered ()
 {
   QFileInfo fileInfo (m_currentDirectory->text ());
   if (fileInfo.isDir ())
@@ -172,9 +172,9 @@ FilesDockWidget::currentDirectoryEntered ()
 }
 
 void
-FilesDockWidget::noticeSettings ()
+files_dock_widget::noticeSettings ()
 {
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->settings ();
   m_fileTreeView->setColumnHidden (0, !settings->value ("showFilenames").toBool ());
   m_fileTreeView->setColumnHidden (1, !settings->value ("showFileSize").toBool ());
   m_fileTreeView->setColumnHidden (2, !settings->value ("showFileType").toBool ());
@@ -185,14 +185,14 @@ FilesDockWidget::noticeSettings ()
 }
 
 void
-FilesDockWidget::handleVisibilityChanged (bool visible)
+files_dock_widget::handleVisibilityChanged (bool visible)
 {
   if (visible)
     emit activeChanged (true);
 }
 
 void
-FilesDockWidget::closeEvent (QCloseEvent *event)
+files_dock_widget::closeEvent (QCloseEvent *event)
 {
   emit activeChanged (false);
   QDockWidget::closeEvent (event);

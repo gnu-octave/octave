@@ -21,19 +21,19 @@
 
 #include <QDialog>
 
-namespace Ui
+namespace user_interface
 {
-  class SettingsDialog;
+  class settings_dialog;
 }
 
-class SettingsDialog:public QDialog
+class settings_dialog:public QDialog
 {
 Q_OBJECT public:
-  explicit SettingsDialog (QWidget * parent);
-  ~SettingsDialog ();
+  explicit settings_dialog (QWidget * parent);
+  ~settings_dialog ();
 
 private:
-  Ui::SettingsDialog * ui;
+  user_interface::settings_dialog * ui;
 };
 
 #endif // SETTINGSDIALOG_H

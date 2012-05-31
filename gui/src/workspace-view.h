@@ -23,11 +23,11 @@
 #include <QSemaphore>
 #include "octave-link.h"
 
-class WorkspaceView:public QDockWidget
+class workspace_view:public QDockWidget
 {
   Q_OBJECT
 public:
-  WorkspaceView (QWidget * parent = 0);
+  workspace_view (QWidget * parent = 0);
 
 public slots:
   void handleVisibilityChanged (bool visible);

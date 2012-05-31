@@ -19,11 +19,11 @@
 #define OCTAVEMAINTHREAD_H
 
 #include <QThread>
-class OctaveMainThread:public QThread
+class octave_main_thread:public QThread
 {
   Q_OBJECT
 public:
-  OctaveMainThread (QObject * parent);
+  octave_main_thread (QObject * parent);
 
 signals:
   void ready();

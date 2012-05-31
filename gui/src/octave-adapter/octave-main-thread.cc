@@ -18,12 +18,12 @@
 #include "octave-main-thread.h"
 #include "octave-link.h"
 
-OctaveMainThread::OctaveMainThread (QObject * parent):QThread (parent)
+octave_main_thread::octave_main_thread (QObject * parent):QThread (parent)
 {
 }
 
 void
-OctaveMainThread::run ()
+octave_main_thread::run ()
 {
   setlocale(LC_ALL, "en_US.UTF-8");
   int argc = 1;

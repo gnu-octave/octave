@@ -23,7 +23,7 @@
 #include <QMap>
 #include <QIcon>
 
-class ResourceManager
+class resource_manager
 {
 public:
   enum Icon
@@ -35,9 +35,9 @@ public:
     ChatNewMessage
   };
 
-  ~ResourceManager ();
+  ~resource_manager ();
 
-  static ResourceManager *
+  static resource_manager *
   instance ()
   {
     return &m_singleton;
@@ -55,12 +55,12 @@ public:
 
   const char *octaveKeywords ();
 private:
-  ResourceManager ();
+  resource_manager ();
 
   QSettings *m_settings;
   QString m_homePath;
   QMap <Icon, QIcon> m_icons;
-  static ResourceManager m_singleton;
+  static resource_manager m_singleton;
   bool m_firstRun;
 };
 

@@ -20,94 +20,94 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 
-FileEditorTab::FileEditorTab(FileEditor *fileEditor)
+file_editor_tab::file_editor_tab(file_editor *fileEditor)
   : QWidget ((QWidget*)fileEditor)
 {
-  QSettings *settings = ResourceManager::instance ()->settings ();
-  m_fileEditor = fileEditor;
-  m_fileName = "";
-  m_editArea = new QsciScintilla (this);
-  m_editArea->setLexer (fileEditor->lexer ());
+  QSettings *settings = resource_manager::instance ()->settings ();
+  _file_editor = fileEditor;
+  _file_name = "";
+  _edit_area = new QsciScintilla (this);
+  _edit_area->setLexer (fileEditor->lexer ());
 
   // markers
-  m_editArea->setMarginType (1, QsciScintilla::SymbolMargin);
-  m_editArea->setMarginSensitivity (1, true);
-  m_editArea->markerDefine (QsciScintilla::RightTriangle, MARKER_BOOKMARK);
-  connect (m_editArea, SIGNAL (marginClicked (int, int, Qt::KeyboardModifiers)),
-           this, SLOT (handleMarginClicked (int, int, Qt::KeyboardModifiers)));
+  _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
+  _edit_area->setMarginSensitivity (1, true);
+  _edit_area->markerDefine (QsciScintilla::RightTriangle, MARKER_BOOKMARK);
+  connect (_edit_area, SIGNAL (marginClicked (int, int, Qt::KeyboardModifiers)),
+           this, SLOT (handle_margin_clicked (int, int, Qt::KeyboardModifiers)));
 
   // line numbers
-  m_editArea->setMarginsForegroundColor(QColor(96,96,96));
-  m_editArea->setMarginsBackgroundColor(QColor(232,232,220));
+  _edit_area->setMarginsForegroundColor(QColor(96,96,96));
+  _edit_area->setMarginsBackgroundColor(QColor(232,232,220));
   if (settings->value ("editor/showLineNumbers",true).toBool ())
     {
       QFont marginFont( settings->value ("editor/fontName","Courier").toString () ,
                         settings->value ("editor/fontSize",10).toInt () );
-      m_editArea->setMarginsFont( marginFont );
+      _edit_area->setMarginsFont( marginFont );
       QFontMetrics metrics(marginFont);
-      m_editArea->setMarginType (2, QsciScintilla::TextMargin);
-      m_editArea->setMarginWidth(2, metrics.width("99999"));
-      m_editArea->setMarginLineNumbers(2, true);
+      _edit_area->setMarginType (2, QsciScintilla::TextMargin);
+      _edit_area->setMarginWidth(2, metrics.width("99999"));
+      _edit_area->setMarginLineNumbers(2, true);
     }
 
   // code folding
-  m_editArea->setMarginType (3, QsciScintilla::SymbolMargin);
-  m_editArea->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
+  _edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
+  _edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle , 3);
 
   // other features
   if (settings->value ("editor/highlightCurrentLine",true).toBool ())
     {
-      m_editArea->setCaretLineVisible(true);
-      m_editArea->setCaretLineBackgroundColor(QColor(245,245,245));
+      _edit_area->setCaretLineVisible(true);
+      _edit_area->setCaretLineBackgroundColor(QColor(245,245,245));
     }
-  m_editArea->setBraceMatching (QsciScintilla::StrictBraceMatch);
-  m_editArea->setAutoIndent (true);
-  m_editArea->setIndentationWidth (2);
-  m_editArea->setIndentationsUseTabs (false);
+  _edit_area->setBraceMatching (QsciScintilla::StrictBraceMatch);
+  _edit_area->setAutoIndent (true);
+  _edit_area->setIndentationWidth (2);
+  _edit_area->setIndentationsUseTabs (false);
   if (settings->value ("editor/codeCompletion",true).toBool ())
     {
-      m_editArea->autoCompleteFromAll ();
-      m_editArea->setAutoCompletionSource(QsciScintilla::AcsAll);
-      m_editArea->setAutoCompletionThreshold (1);
+      _edit_area->autoCompleteFromAll ();
+      _edit_area->setAutoCompletionSource(QsciScintilla::AcsAll);
+      _edit_area->setAutoCompletionThreshold (1);
     }
-  m_editArea->setUtf8 (true);
+  _edit_area->setUtf8 (true);
 
   QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (m_editArea);
+  layout->addWidget (_edit_area);
   layout->setMargin (0);
   setLayout (layout);
 
   // connect modified signal
-  connect (m_editArea, SIGNAL (modificationChanged (bool)),
-           this, SLOT (newTitle (bool)));
-  connect (m_editArea, SIGNAL (copyAvailable (bool)),
-           this, SLOT (handleCopyAvailable (bool)));
-  connect (&m_fileSystemWatcher, SIGNAL (fileChanged (QString)),
-           this, SLOT (fileHasChanged (QString)));
+  connect (_edit_area, SIGNAL (modificationChanged (bool)),
+           this, SLOT (new_title (bool)));
+  connect (_edit_area, SIGNAL (copyAvailable (bool)),
+           this, SLOT (handle_copy_available (bool)));
+  connect (&_file_system_watcher, SIGNAL (fileChanged (QString)),
+           this, SLOT (file_has_changed (QString)));
 
-  m_fileName = "";
-  newTitle (false);
+  _file_name = "";
+  new_title (false);
 }
 
 bool
-FileEditorTab::copyAvailable ()
+file_editor_tab::copyAvailable ()
 {
-  return m_copyAvailable;
+  return _copy_available;
 }
 
 void
-FileEditorTab::closeEvent (QCloseEvent *event)
+file_editor_tab::closeEvent (QCloseEvent *event)
 {
-  if (m_fileEditor->mainWindow ()->closing ())
+  if (_file_editor->mainWindow ()->closing ())
     {
       // close whole application: save file or not if modified
-      checkFileModified ("Closing Octave", 0); // no cancel possible
+      check_file_modified ("Closing Octave", 0); // no cancel possible
       event->accept ();
     }
   else
     {
       // ignore close event if file is not saved and user cancels closing this window
-      if (checkFileModified ("Close File", QMessageBox::Cancel) == QMessageBox::Cancel)
+      if (check_file_modified ("Close File", QMessageBox::Cancel) == QMessageBox::Cancel)
         {
           event->ignore ();
         }
@@ -119,119 +119,119 @@ FileEditorTab::closeEvent (QCloseEvent *event)
 }
 
 void
-FileEditorTab::setFileName (QString fileName)
+file_editor_tab::set_file_name (QString fileName)
 {
-  m_fileName = fileName;
-  updateTrackedFile ();
+  _file_name = fileName;
+  update_tracked_file ();
 }
 
 void
-FileEditorTab::handleMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
+file_editor_tab::handle_margin_clicked(int margin, int line, Qt::KeyboardModifiers state)
 {
   Q_UNUSED (state);
   if (margin == 1)  // marker margin
     {
-      unsigned int mask = m_editArea->markersAtLine (line);
+      unsigned int mask = _edit_area->markersAtLine (line);
       if (mask && (1 << MARKER_BOOKMARK))
-        m_editArea->markerDelete(line,MARKER_BOOKMARK);
+        _edit_area->markerDelete(line,MARKER_BOOKMARK);
       else
-        m_editArea->markerAdd(line,MARKER_BOOKMARK);
+        _edit_area->markerAdd(line,MARKER_BOOKMARK);
     }
 }
 
 void
-FileEditorTab::commentSelectedText ()
+file_editor_tab::comment_selected_text ()
 {
-  doCommentSelectedText (true);
+  do_comment_selected_text (true);
 }
 
 void
-FileEditorTab::uncommentSelectedText ()
+file_editor_tab::uncomment_selected_text ()
 {
-  doCommentSelectedText (false);
+  do_comment_selected_text (false);
 }
 
 void
-FileEditorTab::doCommentSelectedText (bool comment)
+file_editor_tab::do_comment_selected_text (bool comment)
 {
-  if ( m_editArea->hasSelectedText() )
+  if ( _edit_area->hasSelectedText() )
     {
       int lineFrom, lineTo, colFrom, colTo, i;
-      m_editArea->getSelection (&lineFrom,&colFrom,&lineTo,&colTo);
+      _edit_area->getSelection (&lineFrom,&colFrom,&lineTo,&colTo);
       if ( colTo == 0 )  // the beginning of last line is not selected
         lineTo--;        // stop at line above
-      m_editArea->beginUndoAction ();
+      _edit_area->beginUndoAction ();
       for ( i=lineFrom; i<=lineTo; i++ )
         {
           if ( comment )
-            m_editArea->insertAt("%",i,0);
+            _edit_area->insertAt("%",i,0);
           else
             {
-              QString line(m_editArea->text(i));
+              QString line(_edit_area->text(i));
               if ( line.startsWith("%") )
                 {
-                  m_editArea->setSelection(i,0,i,1);
-                  m_editArea->removeSelectedText();
+                  _edit_area->setSelection(i,0,i,1);
+                  _edit_area->removeSelectedText();
                 }
             }
         }
-      m_editArea->endUndoAction ();
+      _edit_area->endUndoAction ();
     }
 }
 
 void
-FileEditorTab::newTitle(bool modified)
+file_editor_tab::new_title(bool modified)
 {
-  QString title(m_fileName);
-  if ( !m_longTitle )
+  QString title(_file_name);
+  if ( !_long_title )
     {
-      QFileInfo file(m_fileName);
+      QFileInfo file(_file_name);
       title = file.fileName();
     }
 
   if ( modified )
     {
-      emit fileNameChanged (title.prepend("* "));
+      emit file_name_changed (title.prepend("* "));
     }
   else
-    emit fileNameChanged (title);
+    emit file_name_changed (title);
 }
 
 void
-FileEditorTab::handleCopyAvailable(bool enableCopy)
+file_editor_tab::handle_copy_available(bool enableCopy)
 {
-  m_copyAvailable = enableCopy;
-  emit editorStateChanged ();
+  _copy_available = enableCopy;
+  emit editor_state_changed ();
 }
 
 void
-FileEditorTab::updateTrackedFile ()
+file_editor_tab::update_tracked_file ()
 {
-  QStringList trackedFiles = m_fileSystemWatcher.files ();
+  QStringList trackedFiles = _file_system_watcher.files ();
   if (!trackedFiles.isEmpty ())
-    m_fileSystemWatcher.removePaths (trackedFiles);
+    _file_system_watcher.removePaths (trackedFiles);
 
-  if (m_fileName != UNNAMED_FILE)
-    m_fileSystemWatcher.addPath (m_fileName);
+  if (_file_name != UNNAMED_FILE)
+    _file_system_watcher.addPath (_file_name);
 }
 
 int
-FileEditorTab::checkFileModified (QString msg, int cancelButton)
+file_editor_tab::check_file_modified (QString msg, int cancelButton)
 {
   int decision = QMessageBox::Yes;
-  if (m_editArea->isModified ())
+  if (_edit_area->isModified ())
     {
       // file is modified but not saved, aks user what to do
       decision = QMessageBox::warning (this,
                                        msg,
                                        tr ("The file %1\n"
                                            "has been modified. Do you want to save the changes?").
-                                       arg (m_fileName),
+                                       arg (_file_name),
                                        QMessageBox::Save, QMessageBox::Discard, cancelButton );
       if (decision == QMessageBox::Save)
         {
-          saveFile ();
-          if (m_editArea->isModified ())
+          save_file ();
+          if (_edit_area->isModified ())
             {
               // If the user attempted to save the file, but it's still
               // modified, then probably something went wrong, so return cancel
@@ -240,7 +240,7 @@ FileEditorTab::checkFileModified (QString msg, int cancelButton)
               if ( cancelButton )
                 return (QMessageBox::Cancel);
               else
-                saveFileAs ();
+                save_file_as ();
             }
         }
     }
@@ -248,82 +248,82 @@ FileEditorTab::checkFileModified (QString msg, int cancelButton)
 }
 
 void
-FileEditorTab::removeBookmark ()
+file_editor_tab::remove_bookmark ()
 {
-  m_editArea->markerDeleteAll(MARKER_BOOKMARK);
+  _edit_area->markerDeleteAll(MARKER_BOOKMARK);
 }
 
 void
-FileEditorTab::toggleBookmark ()
+file_editor_tab::toggle_bookmark ()
 {
   int line,cur;
-  m_editArea->getCursorPosition(&line,&cur);
-  if ( m_editArea->markersAtLine (line) && (1 << MARKER_BOOKMARK) )
-    m_editArea->markerDelete(line,MARKER_BOOKMARK);
+  _edit_area->getCursorPosition(&line,&cur);
+  if ( _edit_area->markersAtLine (line) && (1 << MARKER_BOOKMARK) )
+    _edit_area->markerDelete(line,MARKER_BOOKMARK);
   else
-    m_editArea->markerAdd(line,MARKER_BOOKMARK);
+    _edit_area->markerAdd(line,MARKER_BOOKMARK);
 }
 
 void
-FileEditorTab::nextBookmark ()
+file_editor_tab::next_bookmark ()
 {
   int line,cur,nextline;
-  m_editArea->getCursorPosition(&line,&cur);
-  if ( m_editArea->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
+  _edit_area->getCursorPosition(&line,&cur);
+  if ( _edit_area->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
     line++; // we have a bookmark here, so start search from next line
-  nextline = m_editArea->markerFindNext(line,(1 << MARKER_BOOKMARK));
-  m_editArea->setCursorPosition(nextline,0);
+  nextline = _edit_area->markerFindNext(line,(1 << MARKER_BOOKMARK));
+  _edit_area->setCursorPosition(nextline,0);
 }
 
 void
-FileEditorTab::previousBookmark ()
+file_editor_tab::previous_bookmark ()
 {
   int line,cur,prevline;
-  m_editArea->getCursorPosition(&line,&cur);
-  if ( m_editArea->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
+  _edit_area->getCursorPosition(&line,&cur);
+  if ( _edit_area->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
     line--; // we have a bookmark here, so start search from prev line
-  prevline = m_editArea->markerFindPrevious(line,(1 << MARKER_BOOKMARK));
-  m_editArea->setCursorPosition(prevline,0);
+  prevline = _edit_area->markerFindPrevious(line,(1 << MARKER_BOOKMARK));
+  _edit_area->setCursorPosition(prevline,0);
 }
 
 void
-FileEditorTab::cut ()
+file_editor_tab::cut ()
 {
-  m_editArea->cut ();
+  _edit_area->cut ();
 }
 
 void
-FileEditorTab::copy ()
+file_editor_tab::copy ()
 {
-  m_editArea->copy ();
+  _edit_area->copy ();
 }
 
 void
-FileEditorTab::paste ()
+file_editor_tab::paste ()
 {
-  m_editArea->paste ();
+  _edit_area->paste ();
 }
 
 void
-FileEditorTab::undo ()
+file_editor_tab::undo ()
 {
-  m_editArea->undo ();
+  _edit_area->undo ();
 }
 
 void
-FileEditorTab::redo ()
+file_editor_tab::redo ()
 {
-  m_editArea->redo ();
+  _edit_area->redo ();
 }
 
 void
-FileEditorTab::setModified (bool modified)
+file_editor_tab::set_modified (bool modified)
 {
-  m_editArea->setModified (modified);
+  _edit_area->setModified (modified);
 }
 
 bool
-FileEditorTab::openFile ()
+file_editor_tab::open_file ()
 {
   QString openFileName;
   QFileDialog fileDialog(this);
@@ -336,7 +336,7 @@ FileEditorTab::openFile ()
       if (openFileName.isEmpty ())
         return false;
 
-      loadFile(openFileName);
+      load_file(openFileName);
       return true;
     }
   else
@@ -346,11 +346,11 @@ FileEditorTab::openFile ()
 }
 
 void
-FileEditorTab::loadFile (QString fileName)
+file_editor_tab::load_file (QString fileName)
 {
-  if (!m_fileEditor->isVisible ())
+  if (!_file_editor->isVisible ())
     {
-      m_fileEditor->show ();
+      _file_editor->show ();
     }
 
   QFile file (fileName);
@@ -364,43 +364,43 @@ FileEditorTab::loadFile (QString fileName)
 
   QTextStream in (&file);
   QApplication::setOverrideCursor (Qt::WaitCursor);
-  m_editArea->setText (in.readAll ());
+  _edit_area->setText (in.readAll ());
   QApplication::restoreOverrideCursor ();
 
-  setFileName (fileName);
-  updateTrackedFile ();
+  set_file_name (fileName);
+  update_tracked_file ();
 
 
-  newTitle (false); // window title (no modification)
-  m_editArea->setModified (false); // loaded file is not modified yet
+  new_title (false); // window title (no modification)
+  _edit_area->setModified (false); // loaded file is not modified yet
 }
 
 void
-FileEditorTab::newFile ()
+file_editor_tab::new_file ()
 {
-  if (!m_fileEditor->isVisible ())
+  if (!_file_editor->isVisible ())
     {
-      m_fileEditor->show ();
+      _file_editor->show ();
     }
 
-  setFileName (UNNAMED_FILE);
-  newTitle (false); // window title (no modification)
-  m_editArea->setText ("");
-  m_editArea->setModified (false); // new file is not modified yet
+  set_file_name (UNNAMED_FILE);
+  new_title (false); // window title (no modification)
+  _edit_area->setText ("");
+  _edit_area->setModified (false); // new file is not modified yet
 }
 
-bool FileEditorTab::saveFile()
+bool file_editor_tab::save_file()
 {
-  return saveFile (m_fileName);
+  return save_file (_file_name);
 }
 
 bool
-FileEditorTab::saveFile (QString saveFileName)
+file_editor_tab::save_file (QString saveFileName)
 {
   // it is a new file with the name "<unnamed>" -> call saveFielAs
   if (saveFileName == UNNAMED_FILE || saveFileName.isEmpty ())
     {
-      return saveFileAs();
+      return save_file_as();
     }
 
   // open the file for writing
@@ -416,18 +416,18 @@ FileEditorTab::saveFile (QString saveFileName)
   // save the contents into the file
   QTextStream out (&file);
   QApplication::setOverrideCursor (Qt::WaitCursor);
-  out << m_editArea->text ();
+  out << _edit_area->text ();
   QApplication::restoreOverrideCursor ();
-  setFileName (saveFileName);  // save file name for later use
-  newTitle (false);      // set the window title to actual file name (not modified)
-  m_editArea->setModified (false); // files is save -> not modified
+  set_file_name (saveFileName);  // save file name for later use
+  new_title (false);      // set the window title to actual file name (not modified)
+  _edit_area->setModified (false); // files is save -> not modified
   return true;
 }
 
 bool
-FileEditorTab::saveFileAs ()
+file_editor_tab::save_file_as ()
 {
-  QString saveFileName(m_fileName);
+  QString saveFileName(_file_name);
   QFileDialog fileDialog(this);
   if (saveFileName == UNNAMED_FILE || saveFileName.isEmpty ())
     {
@@ -449,27 +449,27 @@ FileEditorTab::saveFileAs ()
       if (saveFileName.isEmpty ())
         return false;
 
-      return saveFile (saveFileName);
+      return save_file (saveFileName);
     }
 
   return false;
 }
 
 void
-FileEditorTab::runFile ()
+file_editor_tab::run_file ()
 {
-  if (m_editArea->isModified ())
-    saveFile(m_fileName);
+  if (_edit_area->isModified ())
+    save_file(_file_name);
 
-  m_fileEditor->terminal ()->sendText (QString ("run \'%1\'\n").arg (m_fileName));
-  m_fileEditor->terminal ()->setFocus ();
+  _file_editor->terminal ()->sendText (QString ("run \'%1\'\n").arg (_file_name));
+  _file_editor->terminal ()->setFocus ();
 }
 
 void
-FileEditorTab::fileHasChanged (QString fileName)
+file_editor_tab::file_has_changed (QString fileName)
 {
   Q_UNUSED (fileName);
-  if (QFile::exists (m_fileName))
+  if (QFile::exists (_file_name))
     {
       // Prevent popping up multiple message boxes when the file has been changed multiple times.
       static bool alreadyAsking = false;
@@ -480,11 +480,11 @@ FileEditorTab::fileHasChanged (QString fileName)
           int decision =
           QMessageBox::warning (this, tr ("Octave Editor"),
                                 tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
-                                arg (m_fileName), QMessageBox::Yes, QMessageBox::No);
+                                arg (_file_name), QMessageBox::Yes, QMessageBox::No);
 
           if (decision == QMessageBox::Yes)
             {
-              loadFile (m_fileName);
+              load_file (_file_name);
             }
 
           alreadyAsking = false;
@@ -495,20 +495,20 @@ FileEditorTab::fileHasChanged (QString fileName)
       int decision =
       QMessageBox::warning (this, tr ("Octave Editor"),
                             tr ("It seems that \'%1\' has been deleted or renamed. Do you want to save it now?").
-                            arg (m_fileName), QMessageBox::Save, QMessageBox::Close);
+                            arg (_file_name), QMessageBox::Save, QMessageBox::Close);
       if (decision == QMessageBox::Save)
         {
-          if (!saveFileAs ())
+          if (!save_file_as ())
             {
-              setFileName (UNNAMED_FILE);
-              newTitle (true); // window title (no modification)
-              setModified (true);
-              updateTrackedFile ();
+              set_file_name (UNNAMED_FILE);
+              new_title (true); // window title (no modification)
+              set_modified (true);
+              update_tracked_file ();
             }
         }
       else
         {
-          emit closeRequest ();
+          emit close_request ();
         }
     }
 }

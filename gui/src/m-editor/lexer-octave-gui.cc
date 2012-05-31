@@ -22,21 +22,21 @@
 // -----------------------------------------------------
 // Some basic functions
 // -----------------------------------------------------
-LexerOctaveGui::LexerOctaveGui(QObject *parent)
+lexer_octave_gui::lexer_octave_gui(QObject *parent)
     : QsciLexer(parent)  // inherit from base lexer
 {
 }
 
-LexerOctaveGui::~LexerOctaveGui()
+lexer_octave_gui::~lexer_octave_gui()
 {
 }
 
-const char *LexerOctaveGui::language() const
+const char *lexer_octave_gui::language() const
 {
   return "Octave";  // return the name of the language
 }
 
-const char *LexerOctaveGui::lexer() const
+const char *lexer_octave_gui::lexer() const
 {
   return "octave";  // return the name of the lexer
 }
@@ -44,7 +44,7 @@ const char *LexerOctaveGui::lexer() const
 // -----------------------------------------------------
 // The colors for syntax highlighting
 // -----------------------------------------------------
-QColor LexerOctaveGui::defaultColor(int style) const
+QColor lexer_octave_gui::defaultColor(int style) const
 {
     switch (style)
       {
@@ -72,7 +72,7 @@ QColor LexerOctaveGui::defaultColor(int style) const
 // -----------------------------------------------------
 // The font decorations for highlighting
 // -----------------------------------------------------
-QFont LexerOctaveGui::defaultFont(int style) const
+QFont lexer_octave_gui::defaultFont(int style) const
 {
     QFont f;
 
@@ -99,7 +99,7 @@ QFont LexerOctaveGui::defaultFont(int style) const
 // -----------------------------------------------------
 // Style names
 // -----------------------------------------------------
-QString LexerOctaveGui::description(int style) const
+QString lexer_octave_gui::description(int style) const
 {
     switch (style)
       {
@@ -130,11 +130,11 @@ QString LexerOctaveGui::description(int style) const
 // The set of keywords for highlighting
 // TODO: How to define a second set?
 // -----------------------------------------------------
-const char *LexerOctaveGui::keywords(int set) const
+const char *lexer_octave_gui::keywords(int set) const
 {
     if (set == 1)
       {
-        return ResourceManager::instance ()->octaveKeywords ();
+        return resource_manager::instance ()->octaveKeywords ();
       }
     return 0;
 }

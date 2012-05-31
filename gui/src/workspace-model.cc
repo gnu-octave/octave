@@ -20,7 +20,7 @@
 #include <QTime>
 #include "octave-link.h"
 
-WorkspaceModel::WorkspaceModel(QObject *parent)
+workspace_model::workspace_model(QObject *parent)
   : QAbstractItemModel(parent)
 {
   QList<QVariant> rootData;
@@ -28,13 +28,13 @@ WorkspaceModel::WorkspaceModel(QObject *parent)
   _rootItem = new TreeItem(rootData);
 }
 
-WorkspaceModel::~WorkspaceModel()
+workspace_model::~workspace_model()
 {
   delete _rootItem;
 }
 
 QModelIndex
-WorkspaceModel::index(int row, int column, const QModelIndex &parent) const
+workspace_model::index(int row, int column, const QModelIndex &parent) const
 {
   if (!hasIndex(row, column, parent))
     return QModelIndex();
@@ -54,7 +54,7 @@ WorkspaceModel::index(int row, int column, const QModelIndex &parent) const
 }
 
 QModelIndex
-WorkspaceModel::parent(const QModelIndex &index) const
+workspace_model::parent(const QModelIndex &index) const
 {
   if (!index.isValid())
     return QModelIndex();
@@ -69,7 +69,7 @@ WorkspaceModel::parent(const QModelIndex &index) const
 }
 
 int
-WorkspaceModel::rowCount(const QModelIndex &parent) const
+workspace_model::rowCount(const QModelIndex &parent) const
 {
   TreeItem *parentItem;
   if (parent.column() > 0)
@@ -84,7 +84,7 @@ WorkspaceModel::rowCount(const QModelIndex &parent) const
 }
 
 int
-WorkspaceModel::columnCount(const QModelIndex &parent) const
+workspace_model::columnCount(const QModelIndex &parent) const
 {
   if (parent.isValid())
     return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
@@ -93,19 +93,19 @@ WorkspaceModel::columnCount(const QModelIndex &parent) const
 }
 
 void
-WorkspaceModel::insertTopLevelItem(int at, TreeItem *treeItem)
+workspace_model::insertTopLevelItem(int at, TreeItem *treeItem)
 {
   _rootItem->insertChildItem(at, treeItem);
 }
 
 TreeItem *
-WorkspaceModel::topLevelItem (int at)
+workspace_model::topLevelItem (int at)
 {
   return _rootItem->child(at);
 }
 
 Qt::ItemFlags
-WorkspaceModel::flags(const QModelIndex &index) const
+workspace_model::flags(const QModelIndex &index) const
 {
   if (!index.isValid())
     return 0;
@@ -114,7 +114,7 @@ WorkspaceModel::flags(const QModelIndex &index) const
 }
 
 QVariant
-WorkspaceModel::headerData(int section, Qt::Orientation orientation, int role) const
+workspace_model::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     return _rootItem->data(section);
@@ -123,7 +123,7 @@ WorkspaceModel::headerData(int section, Qt::Orientation orientation, int role) c
 }
 
 QVariant
-WorkspaceModel::data(const QModelIndex &index, int role) const
+workspace_model::data(const QModelIndex &index, int role) const
 {
   if (!index.isValid())
     return QVariant();
@@ -138,15 +138,15 @@ WorkspaceModel::data(const QModelIndex &index, int role) const
 
 
 void
-WorkspaceModel::updateFromSymbolTable ()
+workspace_model::updateFromSymbolTable ()
 {
   topLevelItem (0)->deleteChildItems ();
   topLevelItem (1)->deleteChildItems ();
   topLevelItem (2)->deleteChildItems ();
   topLevelItem (3)->deleteChildItems ();
 
-  OctaveLink::instance ()-> acquireSymbolInformation();
-  const QList <SymbolInformation>& symbolInformation = OctaveLink::instance() ->symbolInformation ();
+  octave_link::instance ()-> acquireSymbolInformation();
+  const QList <SymbolInformation>& symbolInformation = octave_link::instance() ->symbolInformation ();
 
   foreach (const SymbolInformation& s, symbolInformation)
     {
@@ -165,7 +165,7 @@ WorkspaceModel::updateFromSymbolTable ()
         }
     }
 
-  OctaveLink::instance ()-> releaseSymbolInformation();
+  octave_link::instance ()-> releaseSymbolInformation();
 
   reset();
   emit expandRequest();

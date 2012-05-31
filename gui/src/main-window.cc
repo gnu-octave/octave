@@ -30,51 +30,51 @@
 #include "file-editor.h"
 #include "settings-dialog.h"
 
-MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
+main_window::main_window (QWidget * parent):QMainWindow (parent)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
-  OctaveLink::instance ()->launchOctave();
+  octave_link::instance ()->launchOctave();
 }
 
-MainWindow::~MainWindow ()
+main_window::~main_window ()
 {
 }
 
 void
-MainWindow::newFile ()
+main_window::newFile ()
 {
-  m_fileEditor->requestNewFile ();
+  m_fileEditor->request_new_file ();
 }
 
 void
-MainWindow::openFile ()
+main_window::openFile ()
 {
-  m_fileEditor->requestOpenFile ();
+  m_fileEditor->request_open_file ();
 }
 
 void
-MainWindow::reportStatusMessage (QString statusMessage)
+main_window::reportStatusMessage (QString statusMessage)
 {
   m_statusBar->showMessage (statusMessage, 1000);
 }
 
 void
-MainWindow::handleSaveWorkspaceRequest ()
+main_window::handleSaveWorkspaceRequest ()
 {
   QString selectedFile =
       QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
-                                    ResourceManager::instance ()->homePath ());
+                                    resource_manager::instance ()->homePath ());
   m_terminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
   m_terminal->setFocus ();
 }
 
 void
-MainWindow::handleLoadWorkspaceRequest ()
+main_window::handleLoadWorkspaceRequest ()
 {
   QString selectedFile =
       QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
-                                    ResourceManager::instance ()->homePath ());
+                                    resource_manager::instance ()->homePath ());
   if (!selectedFile.isEmpty ())
     {
       m_terminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
@@ -83,53 +83,53 @@ MainWindow::handleLoadWorkspaceRequest ()
 }
 
 void
-MainWindow::handleClearWorkspaceRequest ()
+main_window::handleClearWorkspaceRequest ()
 {
   m_terminal->sendText ("clear\n");
   m_terminal->setFocus ();
 }
 
 void
-MainWindow::handleCommandDoubleClicked (QString command)
+main_window::handleCommandDoubleClicked (QString command)
 {
   m_terminal->sendText(command);
   m_terminal->setFocus ();
 }
 
 void
-MainWindow::openBugTrackerPage ()
+main_window::openBugTrackerPage ()
 {
   QDesktopServices::openUrl (QUrl ("http://savannah.gnu.org/bugs/?group=octave"));
 }
 
 void
-MainWindow::openAgoraPage ()
+main_window::openAgoraPage ()
 {
   QDesktopServices::openUrl (QUrl ("http://agora.panocha.org.mx/"));
 }
 
 void
-MainWindow::openOctaveForgePage ()
+main_window::openOctaveForgePage ()
 {
   QDesktopServices::openUrl (QUrl ("http://octave.sourceforge.net/"));
 }
 
 void
-MainWindow::processSettingsDialogRequest ()
+main_window::processSettingsDialogRequest ()
 {
-  SettingsDialog *settingsDialog = new SettingsDialog (this);
+  settings_dialog *settingsDialog = new settings_dialog (this);
   settingsDialog->exec ();
   delete settingsDialog;
   emit settingsChanged ();
-  ResourceManager::instance ()->updateNetworkSettings ();
+  resource_manager::instance ()->updateNetworkSettings ();
   noticeSettings();
 }
 
 void
-MainWindow::noticeSettings ()
+main_window::noticeSettings ()
 {
   // Set terminal font:
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->settings ();
   QFont font = QFont();
   font.setFamily(settings->value("terminal/fontName").toString());
   font.setPointSize(settings->value("terminal/fontSize").toInt ());
@@ -137,19 +137,19 @@ MainWindow::noticeSettings ()
 }
 
 void
-MainWindow::prepareForQuit ()
+main_window::prepareForQuit ()
 {
   writeSettings ();
 }
 
 void
-MainWindow::resetWindows ()
+main_window::resetWindows ()
 {
   // TODO: Implement.
 }
 
 void
-MainWindow::updateCurrentWorkingDirectory (QString directory)
+main_window::updateCurrentWorkingDirectory (QString directory)
 {
   if (m_currentDirectoryComboBox->count () > 31)
     {
@@ -161,7 +161,7 @@ MainWindow::updateCurrentWorkingDirectory (QString directory)
 }
 
 void
-MainWindow::changeCurrentWorkingDirectory ()
+main_window::changeCurrentWorkingDirectory ()
 {
   QString selectedDirectory =
       QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
@@ -174,21 +174,21 @@ MainWindow::changeCurrentWorkingDirectory ()
 }
 
 void
-MainWindow::changeCurrentWorkingDirectory (QString directory)
+main_window::changeCurrentWorkingDirectory (QString directory)
 {
   m_terminal->sendText (QString ("cd \'%1\'\n").arg (directory));
   m_terminal->setFocus ();
 }
 
 void
-MainWindow::currentWorkingDirectoryUp ()
+main_window::currentWorkingDirectoryUp ()
 {
   m_terminal->sendText ("cd ..\n");
   m_terminal->setFocus ();
 }
 
 void
-MainWindow::showAboutOctave ()
+main_window::showAboutOctave ()
 {
   QString message =
       "GNU Octave\n"
@@ -213,47 +213,47 @@ MainWindow::showAboutOctave ()
 }
 
 void
-MainWindow::closeEvent (QCloseEvent * closeEvent)
+main_window::closeEvent (QCloseEvent * closeEvent)
 {
   reportStatusMessage (tr ("Saving data and shutting down."));
   m_closing = true;  // inform editor window that whole application is closed
-  OctaveLink::instance ()->terminateOctave ();
+  octave_link::instance ()->terminateOctave ();
 
   QMainWindow::closeEvent (closeEvent);
 }
 
 void
-MainWindow::readSettings ()
+main_window::readSettings ()
 {
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->settings ();
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
   emit settingsChanged ();
 }
 
 void
-MainWindow::writeSettings ()
+main_window::writeSettings ()
 {
-  QSettings *settings = ResourceManager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->settings ();
   settings->setValue ("MainWindow/geometry", saveGeometry ());
   settings->setValue ("MainWindow/windowState", saveState ());
   settings->sync ();
 }
 
 void
-MainWindow::construct ()
+main_window::construct ()
 {
   QStyle *style = QApplication::style ();
   // TODO: Check this.
   m_closing = false;   // flag for editor files when closed
-  setWindowIcon (ResourceManager::instance ()->icon (ResourceManager::Octave));
+  setWindowIcon (resource_manager::instance ()->icon (resource_manager::Octave));
 
   // Setup dockable widgets and the status bar.
-  m_workspaceView = new WorkspaceView (this);
+  m_workspaceView = new workspace_view (this);
   m_workspaceView->setStatusTip (tr ("View the variables in the active workspace."));
-  m_historyDockWidget = new HistoryDockWidget (this);
+  m_historyDockWidget = new history_dock_widget (this);
   m_historyDockWidget->setStatusTip (tr ("Browse and search the command history."));
-  m_filesDockWidget = new FilesDockWidget (this);
+  m_filesDockWidget = new files_dock_widget (this);
   m_filesDockWidget->setStatusTip (tr ("Browse your files."));
   m_statusBar = new QStatusBar (this);
 
@@ -272,7 +272,7 @@ MainWindow::construct ()
   // Octave Terminal subwindow.
   m_terminal = new QTerminal (this);
   m_terminal->setObjectName ("OctaveTerminal");
-  m_terminalDockWidget = new TerminalDockWidget (m_terminal, this);
+  m_terminalDockWidget = new terminal_dock_widget (m_terminal, this);
 
   QWidget *dummyWidget = new QWidget ();
   dummyWidget->setObjectName ("CentralDummyWidget");
@@ -281,7 +281,7 @@ MainWindow::construct ()
   dummyWidget->hide ();
   setCentralWidget (dummyWidget);
 
-  m_fileEditor = new FileEditor (m_terminal, this);
+  m_fileEditor = new file_editor (m_terminal, this);
 
   QMenu *fileMenu = menuBar ()->addMenu (tr ("&File"));
   QAction *newFileAction
@@ -411,7 +411,7 @@ MainWindow::construct ()
   connect (copyAction, SIGNAL (triggered()), m_terminal, SLOT(copyClipboard ()));
   connect (pasteAction, SIGNAL (triggered()), m_terminal, SLOT(pasteClipboard ()));
 
-  connect (OctaveLink::instance (), SIGNAL (workingDirectoryChanged (QString)),
+  connect (octave_link::instance (), SIGNAL (workingDirectoryChanged (QString)),
            this, SLOT (updateCurrentWorkingDirectory (QString)));
   connect (m_currentDirectoryComboBox, SIGNAL (activated (QString)),
            this, SLOT (changeCurrentWorkingDirectory (QString)));

@@ -102,13 +102,13 @@ private:
   TreeItem *_parentItem;
 };
 
-class WorkspaceModel : public QAbstractItemModel
+class workspace_model : public QAbstractItemModel
 {
   Q_OBJECT
 
 public:
-  WorkspaceModel(QObject *parent = 0);
-  ~WorkspaceModel();
+  workspace_model(QObject *parent = 0);
+  ~workspace_model();
 
   QVariant data(const QModelIndex &index, int role) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;

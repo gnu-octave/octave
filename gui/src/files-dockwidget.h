@@ -33,11 +33,11 @@
 #include <QDockWidget>
 #include <QLineEdit>
 
-class FilesDockWidget : public QDockWidget
+class files_dock_widget : public QDockWidget
 {
   Q_OBJECT
 public:
-  FilesDockWidget (QWidget *parent = 0);
+  files_dock_widget (QWidget *parent = 0);
 
 public slots:
   /** Slot for handling a change in directory via double click. */

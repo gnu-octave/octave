@@ -28,12 +28,12 @@ main (int argc, char *argv[])
   QApplication application (argc, argv);
   while (true)
     {
-      if (ResourceManager::instance ()->isFirstRun ())
+      if (resource_manager::instance ()->isFirstRun ())
         {
-          WelcomeWizard welcomeWizard;
+          welcome_wizard welcomeWizard;
           int returnCode = welcomeWizard.exec ();
 
-          QSettings *settings = ResourceManager::instance ()->settings ();
+          QSettings *settings = resource_manager::instance ()->settings ();
           settings->setValue ("connectOnStartup", true);
           settings->setValue ("showMessageOfTheDay", true);
           settings->setValue ("showTopic", true);
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
           settings->setValue ("proxyUserName", "");
           settings->setValue ("proxyPassword", "");
           settings->sync ();
-          ResourceManager::instance ()->reloadSettings ();
+          resource_manager::instance ()->reloadSettings ();
 
           application.quit ();
           // We are in an infinite loop, so everything else than a return
@@ -70,18 +70,18 @@ main (int argc, char *argv[])
         }
       else
         {
-          QSettings *settings = ResourceManager::instance ()->settings ();
+          QSettings *settings = resource_manager::instance ()->settings ();
           QString language = settings->value ("language").toString ();
 
-          QString translatorFile = ResourceManager::instance ()->findTranslatorFile (language);
+          QString translatorFile = resource_manager::instance ()->findTranslatorFile (language);
           QTranslator translator;
           translator.load (translatorFile);
           application.installTranslator (&translator);
 
-          ResourceManager::instance ()->updateNetworkSettings ();
-          ResourceManager::instance ()->loadIcons ();
+          resource_manager::instance ()->updateNetworkSettings ();
+          resource_manager::instance ()->loadIcons ();
 
-          MainWindow w;
+          main_window w;
           w.show ();
           //w.activateWindow();
           return application.exec ();

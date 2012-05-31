@@ -24,7 +24,7 @@
 #include <Qsci/qscilexer.h>
 
 
-class LexerOctaveGui : public QsciLexer
+class lexer_octave_gui : public QsciLexer
 {
     Q_OBJECT
 
@@ -43,8 +43,8 @@ public:
         DoubleQuotedString = 8
       };
 
-    LexerOctaveGui(QObject *parent = 0);
-    virtual ~LexerOctaveGui();
+    lexer_octave_gui(QObject *parent = 0);
+    virtual ~lexer_octave_gui();
     const char *language() const;
     const char *lexer() const;
     QColor defaultColor(int style) const;
@@ -53,8 +53,8 @@ public:
     QString description(int style) const;
 
 private:
-    LexerOctaveGui(const LexerOctaveGui &);
-    LexerOctaveGui &operator=(const LexerOctaveGui &);
+    lexer_octave_gui(const lexer_octave_gui &);
+    lexer_octave_gui &operator=(const lexer_octave_gui &);
 };
 
 #endif

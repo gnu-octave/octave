@@ -18,16 +18,16 @@
 #include "history-dockwidget.h"
 #include <QVBoxLayout>
 
-HistoryDockWidget::HistoryDockWidget (QWidget * parent):QDockWidget (parent)
+history_dock_widget::history_dock_widget (QWidget * parent):QDockWidget (parent)
 {
   setObjectName ("HistoryDockWidget");
   construct ();
 }
 
 void
-HistoryDockWidget::construct ()
+history_dock_widget::construct ()
 {
-  m_sortFilterProxyModel.setSourceModel(OctaveLink::instance ()->historyModel());
+  m_sortFilterProxyModel.setSourceModel(octave_link::instance ()->historyModel());
   m_historyListView = new QListView (this);
   m_historyListView->setModel (&m_sortFilterProxyModel);
   m_historyListView->setAlternatingRowColors (true);
@@ -52,20 +52,20 @@ HistoryDockWidget::construct ()
 }
 
 void
-HistoryDockWidget::handleDoubleClick (QModelIndex modelIndex)
+history_dock_widget::handleDoubleClick (QModelIndex modelIndex)
 {
   emit commandDoubleClicked (modelIndex.data().toString());
 }
 
 void
-HistoryDockWidget::handleVisibilityChanged (bool visible)
+history_dock_widget::handleVisibilityChanged (bool visible)
 {
   if (visible)
     emit activeChanged (true);
 }
 
 void
-HistoryDockWidget::closeEvent (QCloseEvent *event)
+history_dock_widget::closeEvent (QCloseEvent *event)
 {
   emit activeChanged (false);
   QDockWidget::closeEvent (event);

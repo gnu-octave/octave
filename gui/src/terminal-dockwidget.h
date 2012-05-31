@@ -21,11 +21,11 @@
 #include <QDockWidget>
 #include "QTerminal.h"
 
-class TerminalDockWidget : public QDockWidget
+class terminal_dock_widget : public QDockWidget
 {
   Q_OBJECT
 public:
-  TerminalDockWidget (QTerminal *terminal, QWidget *parent = 0);
+  terminal_dock_widget (QTerminal *terminal, QWidget *parent = 0);
 
 signals:
     void activeChanged (bool active);

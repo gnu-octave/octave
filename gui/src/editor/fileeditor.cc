@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "FileEditor.h"
+#include "fileeditor.h"
 #include <QVBoxLayout>
 #include <QApplication>
 #include <QFile>

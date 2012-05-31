@@ -15,9 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ResourceManager.h"
-#include "SettingsDialog.h"
-#include "ui_SettingsDialog.h"
+#include "resourcemanager.h"
+#include "settingsdialog.h"
+#include "ui_settingsdialog.h"
 #include <QSettings>
 
 SettingsDialog::SettingsDialog (QWidget * parent):
@@ -32,7 +32,7 @@ QDialog (parent), ui (new Ui::SettingsDialog)
   ui->editor_highlightCurrentLine->setChecked (settings->value ("editor/highlightCurrentLine",true).toBool () );
   ui->editor_codeCompletion->setChecked (settings->value ("editor/codeCompletion",true).toBool () );
   ui->editor_fontName->setCurrentFont (QFont (settings->value ("editor/fontName","Courier").toString()) );
-  ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());  
+  ui->editor_fontSize->setValue (settings->value ("editor/fontSize",10).toInt ());
   ui->editor_longWindowTitle->setChecked (settings->value ("editor/longWindowTitle",true).toBool ());
   ui->terminal_fontName->setCurrentFont (QFont (settings->value ("terminal/fontName","Courier").toString()) );
   ui->terminal_fontSize->setValue (settings->value ("terminal/fontSize",10).toInt ());

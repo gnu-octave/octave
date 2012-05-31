@@ -26,9 +26,9 @@
 #include <QMessageBox>
 #include <QIcon>
 
-#include "MainWindow.h"
-#include "FileEditor.h"
-#include "SettingsDialog.h"
+#include "mainwindow.h"
+#include "fileeditor.h"
+#include "settingsdialog.h"
 
 MainWindow::MainWindow (QWidget * parent):QMainWindow (parent)
 {

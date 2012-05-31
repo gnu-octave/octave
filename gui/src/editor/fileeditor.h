@@ -18,9 +18,9 @@
 #ifndef FILEEDITORMDISUBWINDOW_H
 #define FILEEDITORMDISUBWINDOW_H
 
-#include "MainWindow.h"
-#include "FileEditorInterface.h"
-#include "FileEditorTab.h"
+#include "mainwindow.h"
+#include "fileeditorinterface.h"
+#include "fileeditortab.h"
 
 #include <QToolBar>
 #include <QAction>

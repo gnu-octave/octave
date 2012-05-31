@@ -18,7 +18,7 @@
 #ifndef LEXEROCTAVE_H
 #define LEXEROCTAVE_H
 
-#include "ResourceManager.h"
+#include "resourcemanager.h"
 #include <QObject>
 #include <Qsci/qsciglobal.h>
 #include <Qsci/qscilexer.h>

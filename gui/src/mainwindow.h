@@ -32,18 +32,18 @@
 #include <QComboBox>
 
 // Editor includes
-#include "FileEditorInterface.h"
+#include "fileeditorinterface.h"
 
 // QTerminal includes
 #include "QTerminal.h"
 
 // Own includes
-#include "ResourceManager.h"
-#include "OctaveLink.h"
-#include "WorkspaceView.h"
-#include "HistoryDockWidget.h"
-#include "FilesDockWidget.h"
-#include "TerminalDockWidget.h"
+#include "resourcemanager.h"
+#include "octavelink.h"
+#include "workspaceview.h"
+#include "historydockwidget.h"
+#include "filesdockwidget.h"
+#include "terminaldockwidget.h"
 
 /**
   * \class MainWindow

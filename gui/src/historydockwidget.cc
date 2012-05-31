@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "HistoryDockWidget.h"
+#include "historydockwidget.h"
 #include <QVBoxLayout>
 
 HistoryDockWidget::HistoryDockWidget (QWidget * parent):QDockWidget (parent)

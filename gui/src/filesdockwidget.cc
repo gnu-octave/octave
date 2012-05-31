@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ResourceManager.h"
-#include "FilesDockWidget.h"
+#include "resourcemanager.h"
+#include "filesdockwidget.h"
 
 #include <QApplication>
 #include <QFileInfo>

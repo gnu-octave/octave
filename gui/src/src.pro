@@ -74,40 +74,40 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 
 # Files associated with the project:
 SOURCES +=\
-    editor/lexeroctavegui.cpp \
-    MainWindow.cpp \
-    WorkspaceView.cpp \
-    HistoryDockWidget.cpp \
-    FilesDockWidget.cpp \
-    SettingsDialog.cpp \
-    OctaveGUI.cpp \
-    ResourceManager.cpp \
-    backend/OctaveLink.cpp \
-    backend/OctaveMainThread.cpp \
-    WelcomeWizard.cpp \
-    editor/FileEditor.cpp \
-    WorkspaceModel.cpp \
-    editor/FileEditorTab.cpp \
-    TerminalDockWidget.cpp
+    backend/octavelink.cc \
+    backend/octavemainthread.cc \
+    editor/lexeroctavegui.cc \
+    editor/fileeditor.cc \
+    editor/fileeditortab.cc \
+    mainwindow.cc \
+    workspaceview.cc \
+    historydockwidget.cc \
+    filesdockwidget.cc \
+    settingsdialog.cc \
+    octavegui.cc \
+    resourcemanager.cc \
+    welcomewizard.cc \
+    workspacemodel.cc \
+    terminaldockwidget.cc
 
 HEADERS += \
+    backend/octavelink.h \
+    backend/octavemainthread.h \
+    backend/symbolinformation.h \
     editor/lexeroctavegui.h \
-    MainWindow.h \
-    WorkspaceView.h \
-    HistoryDockWidget.h \
-    FilesDockWidget.h \
-    SettingsDialog.h \
-    ResourceManager.h \
-    backend/OctaveLink.h \
-    backend/OctaveMainThread.h \
-    WelcomeWizard.h \
-    editor/FileEditor.h \
-    WorkspaceModel.h \
-    editor/FileEditorInterface.h \
-    editor/FileEditorTab.h \
-    TerminalDockWidget.h \
-    backend/SymbolInformation.h
+    editor/fileeditor.h \
+    editor/fileeditorinterface.h \
+    editor/fileeditortab.h \
+    mainwindow.h \
+    workspaceview.h \
+    historydockwidget.h \
+    filesdockwidget.h \
+    settingsdialog.h \
+    resourcemanager.h \
+    welcomewizard.h \
+    workspacemodel.h \
+    terminaldockwidget.h
 
 FORMS += \
-    SettingsDialog.ui \
-    WelcomeWizard.ui
+    settingsdialog.ui \
+    welcomewizard.ui

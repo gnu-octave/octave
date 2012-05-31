@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "WelcomeWizard.h"
-#include "ui_WelcomeWizard.h"
+#include "welcomewizard.h"
+#include "ui_welcomewizard.h"
 
 WelcomeWizard::WelcomeWizard (QWidget *parent) :
   QDialog (parent),

@@ -18,9 +18,9 @@
 #include <QtGui/QApplication>
 #include <QTranslator>
 #include <QSettings>
-#include "welcomewizard.h"
-#include "resourcemanager.h"
-#include "mainwindow.h"
+#include "welcome-wizard.h"
+#include "resource-manager.h"
+#include "main-window.h"
 
 int
 main (int argc, char *argv[])

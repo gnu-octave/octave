@@ -15,32 +15,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef WORKSPACEVIEW_H
-#define WORKSPACEVIEW_H
+#include "octave-main-thread.h"
+#include "octave-link.h"
 
-#include <QDockWidget>
-#include <QTreeView>
-#include <QSemaphore>
-#include "octavelink.h"
-
-class WorkspaceView:public QDockWidget
+OctaveMainThread::OctaveMainThread (QObject * parent):QThread (parent)
 {
-  Q_OBJECT
-public:
-  WorkspaceView (QWidget * parent = 0);
+}
 
-public slots:
-  void handleVisibilityChanged (bool visible);
-
-signals:
-  /** Custom signal that tells if a user has clicke away that dock widget. */
-  void activeChanged (bool active);
-
-protected:
-  void closeEvent (QCloseEvent *event);
-
-private:
-  QTreeView *m_workspaceTreeView;
-};
-
-#endif // WORKSPACEVIEW_H
+void
+OctaveMainThread::run ()
+{
+  setlocale(LC_ALL, "en_US.UTF-8");
+  int argc = 1;
+  const char *argv[] = { "" };
+  emit ready();
+  octave_main (argc, (char **) argv, 0);
+}

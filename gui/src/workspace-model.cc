@@ -15,10 +15,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "workspacemodel.h"
+#include "workspace-model.h"
 #include <QTreeWidget>
 #include <QTime>
-#include "octavelink.h"
+#include "octave-link.h"
 
 WorkspaceModel::WorkspaceModel(QObject *parent)
   : QAbstractItemModel(parent)

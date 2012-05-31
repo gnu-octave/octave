@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "octavelink.h"
+#include "octave-link.h"
 #include "load-path.h"
 #include "oct-env.h"
 #include <QDir>

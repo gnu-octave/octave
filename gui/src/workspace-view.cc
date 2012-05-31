@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "workspaceview.h"
+#include "workspace-view.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>

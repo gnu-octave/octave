@@ -73,9 +73,9 @@
 #include <QStringListModel>
 #include <QTimer>
 
-#include "workspacemodel.h"
-#include "octavemainthread.h"
-#include "symbolinformation.h"
+#include "workspace-model.h"
+#include "octave-main-thread.h"
+#include "symbol-information.h"
 
 /**
   * \class OctaveLink

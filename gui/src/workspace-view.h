@@ -15,40 +15,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HISTORYDOCKWIDGET_H
-#define HISTORYDOCKWIDGET_H
+#ifndef WORKSPACEVIEW_H
+#define WORKSPACEVIEW_H
 
 #include <QDockWidget>
-#include <QLineEdit>
-#include <QListView>
-#include <QSortFilterProxyModel>
-#include "octavelink.h"
+#include <QTreeView>
+#include <QSemaphore>
+#include "octave-link.h"
 
-class HistoryDockWidget:public QDockWidget
+class WorkspaceView:public QDockWidget
 {
-Q_OBJECT
+  Q_OBJECT
 public:
-  HistoryDockWidget (QWidget *parent = 0);
-  void updateHistory (QStringList history);
+  WorkspaceView (QWidget * parent = 0);
 
 public slots:
   void handleVisibilityChanged (bool visible);
 
 signals:
-  void information (QString message);
-  void commandDoubleClicked (QString command);
-  /** Custom signal that tells if a user has clicked away that dock widget. */
+  /** Custom signal that tells if a user has clicke away that dock widget. */
   void activeChanged (bool active);
+
 protected:
   void closeEvent (QCloseEvent *event);
-private slots:
-  void handleDoubleClick (QModelIndex modelIndex);
 
 private:
-  void construct ();
-  QListView *m_historyListView;
-  QLineEdit *m_filterLineEdit;
-  QSortFilterProxyModel m_sortFilterProxyModel;
+  QTreeView *m_workspaceTreeView;
 };
 
-#endif // HISTORYDOCKWIDGET_H
+#endif // WORKSPACEVIEW_H

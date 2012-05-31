@@ -15,7 +15,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "lexeroctavegui.h"
+#include "lexer-octave-gui.h"
 #include <qcolor.h>
 #include <qfont.h>
 

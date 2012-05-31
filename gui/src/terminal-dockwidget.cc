@@ -15,19 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "octavemainthread.h"
-#include "octavelink.h"
+#include "terminal-dockwidget.h"
 
-OctaveMainThread::OctaveMainThread (QObject * parent):QThread (parent)
+TerminalDockWidget::TerminalDockWidget (QTerminal *terminal, QWidget *parent)
+  : QDockWidget (parent)
 {
-}
+  setObjectName ("TerminalDockWidget");
+  setWindowTitle (tr ("Command Window"));
+  setWidget (terminal);
 
-void
-OctaveMainThread::run ()
-{
-  setlocale(LC_ALL, "en_US.UTF-8");
-  int argc = 1;
-  const char *argv[] = { "" };
-  emit ready();
-  octave_main (argc, (char **) argv, 0);
+  connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handleVisibilityChanged (bool)));
 }

@@ -18,9 +18,9 @@
 #ifndef FILEEDITORMDISUBWINDOW_H
 #define FILEEDITORMDISUBWINDOW_H
 
-#include "mainwindow.h"
-#include "fileeditorinterface.h"
-#include "fileeditortab.h"
+#include "main-window.h"
+#include "file-editor-interface.h"
+#include "file-editor-tab.h"
 
 #include <QToolBar>
 #include <QAction>
@@ -31,7 +31,7 @@
 #include <Qsci/qsciapis.h>
 // Not available in the Debian repos yet!
 // #include <Qsci/qscilexeroctave.h>
-#include "lexeroctavegui.h"
+#include "lexer-octave-gui.h"
 
 const char UNNAMED_FILE[]     = "<unnamed>";
 const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";

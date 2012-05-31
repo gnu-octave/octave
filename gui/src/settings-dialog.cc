@@ -15,9 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "resourcemanager.h"
-#include "settingsdialog.h"
-#include "ui_settingsdialog.h"
+#include "resource-manager.h"
+#include "settings-dialog.h"
+#include "ui_settings-dialog.h"
 #include <QSettings>
 
 SettingsDialog::SettingsDialog (QWidget * parent):

@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "fileeditortab.h"
-#include "fileeditor.h"
+#include "file-editor-tab.h"
+#include "file-editor.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
 

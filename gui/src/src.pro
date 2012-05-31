@@ -40,7 +40,7 @@ mac {
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += . backend editor ../qterminal/libqterminal /usr/include/qt4 \
+INCLUDEPATH         += . octave-adapter m-editor ../qterminal/libqterminal /usr/include/qt4 \
                        $$system(mkoctfile -p INCFLAGS)
 INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
 mac {
@@ -74,40 +74,40 @@ QMAKE_CXXFLAGS      += $$INCFLAGS
 
 # Files associated with the project:
 SOURCES +=\
-    backend/octavelink.cc \
-    backend/octavemainthread.cc \
-    editor/lexeroctavegui.cc \
-    editor/fileeditor.cc \
-    editor/fileeditortab.cc \
-    mainwindow.cc \
-    workspaceview.cc \
-    historydockwidget.cc \
-    filesdockwidget.cc \
-    settingsdialog.cc \
-    octavegui.cc \
-    resourcemanager.cc \
-    welcomewizard.cc \
-    workspacemodel.cc \
-    terminaldockwidget.cc
+    octave-adapter/octave-link.cc \
+    octave-adapter/octave-main-thread.cc \
+    m-editor/lexer-octave-gui.cc \
+    m-editor/file-editor.cc \
+    m-editor/file-editor-tab.cc \
+    main-window.cc \
+    workspace-view.cc \
+    history-dockwidget.cc \
+    files-dockwidget.cc \
+    settings-dialog.cc \
+    octave-gui.cc \
+    resource-manager.cc \
+    welcome-wizard.cc \
+    workspace-model.cc \
+    terminal-dockwidget.cc
 
 HEADERS += \
-    backend/octavelink.h \
-    backend/octavemainthread.h \
-    backend/symbolinformation.h \
-    editor/lexeroctavegui.h \
-    editor/fileeditor.h \
-    editor/fileeditorinterface.h \
-    editor/fileeditortab.h \
-    mainwindow.h \
-    workspaceview.h \
-    historydockwidget.h \
-    filesdockwidget.h \
-    settingsdialog.h \
-    resourcemanager.h \
-    welcomewizard.h \
-    workspacemodel.h \
-    terminaldockwidget.h
+    octave-adapter/octave-link.h \
+    octave-adapter/octave-main-thread.h \
+    octave-adapter/symbol-information.h \
+    m-editor/lexer-octave-gui.h \
+    m-editor/file-editor.h \
+    m-editor/file-editor-interface.h \
+    m-editor/file-editor-tab.h \
+    main-window.h \
+    workspace-view.h \
+    history-dockwidget.h \
+    files-dockwidget.h \
+    settings-dialog.h \
+    resource-manager.h \
+    welcome-wizard.h \
+    workspace-model.h \
+    terminal-dockwidget.h
 
 FORMS += \
-    settingsdialog.ui \
-    welcomewizard.ui
+    settings-dialog.ui \
+    welcome-wizard.ui

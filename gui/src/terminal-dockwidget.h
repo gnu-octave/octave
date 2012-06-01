@@ -28,13 +28,13 @@ public:
   terminal_dock_widget (QTerminal *terminal, QWidget *parent = 0);
 
 signals:
-    void activeChanged (bool active);
+    void active_changed (bool active);
 
 public slots:
-    void handleVisibilityChanged (bool visible)
+    void handle_visibility_changed (bool visible)
     {
       if (visible)
-        emit activeChanged (true);
+        emit active_changed (true);
     }
 };
 

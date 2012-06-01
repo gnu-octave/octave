@@ -25,7 +25,7 @@ workspace_model::workspace_model(QObject *parent)
 {
   QList<QVariant> rootData;
   rootData << tr ("Name") << tr ("Type") << tr ("Value");
-  _rootItem = new TreeItem(rootData);
+  _rootItem = new tree_item(rootData);
 }
 
 workspace_model::~workspace_model()
@@ -39,14 +39,14 @@ workspace_model::index(int row, int column, const QModelIndex &parent) const
   if (!hasIndex(row, column, parent))
     return QModelIndex();
 
-  TreeItem *parentItem;
+  tree_item *parentItem;
 
   if (!parent.isValid())
     parentItem = _rootItem;
   else
-    parentItem = static_cast<TreeItem*>(parent.internalPointer());
+    parentItem = static_cast<tree_item*>(parent.internalPointer());
 
-  TreeItem *childItem = parentItem->child(row);
+  tree_item *childItem = parentItem->child(row);
   if (childItem)
     return createIndex(row, column, childItem);
   else
@@ -59,8 +59,8 @@ workspace_model::parent(const QModelIndex &index) const
   if (!index.isValid())
     return QModelIndex();
 
-  TreeItem *childItem = static_cast<TreeItem*>(index.internalPointer());
-  TreeItem *parentItem = childItem->parent();
+  tree_item *childItem = static_cast<tree_item*>(index.internalPointer());
+  tree_item *parentItem = childItem->parent();
 
   if (parentItem == _rootItem)
     return QModelIndex();
@@ -71,35 +71,35 @@ workspace_model::parent(const QModelIndex &index) const
 int
 workspace_model::rowCount(const QModelIndex &parent) const
 {
-  TreeItem *parentItem;
+  tree_item *parentItem;
   if (parent.column() > 0)
     return 0;
 
   if (!parent.isValid())
     parentItem = _rootItem;
   else
-    parentItem = static_cast<TreeItem*>(parent.internalPointer());
+    parentItem = static_cast<tree_item*>(parent.internalPointer());
 
-  return parentItem->childCount();
+  return parentItem->child_count();
 }
 
 int
 workspace_model::columnCount(const QModelIndex &parent) const
 {
   if (parent.isValid())
-    return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+    return static_cast<tree_item*>(parent.internalPointer())->column_count();
   else
-    return _rootItem->columnCount();
+    return _rootItem->column_count();
 }
 
 void
-workspace_model::insertTopLevelItem(int at, TreeItem *treeItem)
+workspace_model::insert_top_level_item(int at, tree_item *treeItem)
 {
-  _rootItem->insertChildItem(at, treeItem);
+  _rootItem->insert_child_item(at, treeItem);
 }
 
-TreeItem *
-workspace_model::topLevelItem (int at)
+tree_item *
+workspace_model::top_level_item (int at)
 {
   return _rootItem->child(at);
 }
@@ -131,42 +131,42 @@ workspace_model::data(const QModelIndex &index, int role) const
   if (role != Qt::DisplayRole)
     return QVariant();
 
-  TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+  tree_item *item = static_cast<tree_item*>(index.internalPointer());
 
   return item->data(index.column());
 }
 
 
 void
-workspace_model::updateFromSymbolTable ()
+workspace_model::update_from_symbol_table ()
 {
-  topLevelItem (0)->deleteChildItems ();
-  topLevelItem (1)->deleteChildItems ();
-  topLevelItem (2)->deleteChildItems ();
-  topLevelItem (3)->deleteChildItems ();
+  top_level_item (0)->delete_child_items ();
+  top_level_item (1)->delete_child_items ();
+  top_level_item (2)->delete_child_items ();
+  top_level_item (3)->delete_child_items ();
 
-  octave_link::instance ()-> acquireSymbolInformation();
-  const QList <SymbolInformation>& symbolInformation = octave_link::instance() ->symbolInformation ();
+  octave_link::instance ()-> acquire_symbol_information();
+  const QList <symbol_information>& symbolInformation = octave_link::instance() ->get_symbol_information ();
 
-  foreach (const SymbolInformation& s, symbolInformation)
+  foreach (const symbol_information& s, symbolInformation)
     {
-      TreeItem *child = new TreeItem ();
+      tree_item *child = new tree_item ();
 
-      child->setData (0, s._symbol);
-      child->setData (1, s._type);
-      child->setData (2, s._value);
+      child->set_data (0, s._symbol);
+      child->set_data (1, s._type);
+      child->set_data (2, s._value);
 
       switch (s._scope)
         {
-          case SymbolInformation::Local:       topLevelItem (0)->addChild (child); break;
-          case SymbolInformation::Global:      topLevelItem (1)->addChild (child); break;
-          case SymbolInformation::Persistent:  topLevelItem (2)->addChild (child); break;
-          case SymbolInformation::Hidden:      topLevelItem (3)->addChild (child); break;
+          case symbol_information::local:       top_level_item (0)->add_child (child); break;
+          case symbol_information::global:      top_level_item (1)->add_child (child); break;
+          case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
+          case symbol_information::hidden:      top_level_item (3)->add_child (child); break;
         }
     }
 
-  octave_link::instance ()-> releaseSymbolInformation();
+  octave_link::instance ()-> release_symbol_information();
 
   reset();
-  emit expandRequest();
+  emit expand_request();
 }

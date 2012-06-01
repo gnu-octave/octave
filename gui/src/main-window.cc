@@ -34,7 +34,7 @@ main_window::main_window (QWidget * parent):QMainWindow (parent)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
-  octave_link::instance ()->launchOctave();
+  octave_link::instance ()->launch_octave();
 }
 
 main_window::~main_window ()
@@ -42,153 +42,153 @@ main_window::~main_window ()
 }
 
 void
-main_window::newFile ()
+main_window::new_file ()
 {
-  m_fileEditor->request_new_file ();
+  _file_editor->request_new_file ();
 }
 
 void
-main_window::openFile ()
+main_window::open_file ()
 {
-  m_fileEditor->request_open_file ();
+  _file_editor->request_open_file ();
 }
 
 void
-main_window::reportStatusMessage (QString statusMessage)
+main_window::report_status_message (QString statusMessage)
 {
-  m_statusBar->showMessage (statusMessage, 1000);
+  _status_bar->showMessage (statusMessage, 1000);
 }
 
 void
-main_window::handleSaveWorkspaceRequest ()
+main_window::handle_save_workspace_request ()
 {
   QString selectedFile =
       QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
-                                    resource_manager::instance ()->homePath ());
-  m_terminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
-  m_terminal->setFocus ();
+                                    resource_manager::instance ()->get_home_path ());
+  _terminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
+  _terminal->setFocus ();
 }
 
 void
-main_window::handleLoadWorkspaceRequest ()
+main_window::handle_load_workspace_request ()
 {
   QString selectedFile =
       QFileDialog::getOpenFileName (this, tr ("Load Workspace"),
-                                    resource_manager::instance ()->homePath ());
+                                    resource_manager::instance ()->get_home_path ());
   if (!selectedFile.isEmpty ())
     {
-      m_terminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
-      m_terminal->setFocus ();
+      _terminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
+      _terminal->setFocus ();
     }
 }
 
 void
-main_window::handleClearWorkspaceRequest ()
+main_window::handle_clear_workspace_request ()
 {
-  m_terminal->sendText ("clear\n");
-  m_terminal->setFocus ();
+  _terminal->sendText ("clear\n");
+  _terminal->setFocus ();
 }
 
 void
-main_window::handleCommandDoubleClicked (QString command)
+main_window::handle_command_double_clicked (QString command)
 {
-  m_terminal->sendText(command);
-  m_terminal->setFocus ();
+  _terminal->sendText(command);
+  _terminal->setFocus ();
 }
 
 void
-main_window::openBugTrackerPage ()
+main_window::open_bug_tracker_page ()
 {
   QDesktopServices::openUrl (QUrl ("http://savannah.gnu.org/bugs/?group=octave"));
 }
 
 void
-main_window::openAgoraPage ()
+main_window::open_agora_page ()
 {
   QDesktopServices::openUrl (QUrl ("http://agora.panocha.org.mx/"));
 }
 
 void
-main_window::openOctaveForgePage ()
+main_window::open_octave_forge_page ()
 {
   QDesktopServices::openUrl (QUrl ("http://octave.sourceforge.net/"));
 }
 
 void
-main_window::processSettingsDialogRequest ()
+main_window::process_settings_dialog_request ()
 {
   settings_dialog *settingsDialog = new settings_dialog (this);
   settingsDialog->exec ();
   delete settingsDialog;
-  emit settingsChanged ();
-  resource_manager::instance ()->updateNetworkSettings ();
-  noticeSettings();
+  emit settings_changed ();
+  resource_manager::instance ()->update_network_settings ();
+  notice_settings();
 }
 
 void
-main_window::noticeSettings ()
+main_window::notice_settings ()
 {
   // Set terminal font:
-  QSettings *settings = resource_manager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->get_settings ();
   QFont font = QFont();
   font.setFamily(settings->value("terminal/fontName").toString());
   font.setPointSize(settings->value("terminal/fontSize").toInt ());
-  m_terminal->setTerminalFont(font);
+  _terminal->setTerminalFont(font);
 }
 
 void
-main_window::prepareForQuit ()
+main_window::prepare_for_quit ()
 {
-  writeSettings ();
+  write_settings ();
 }
 
 void
-main_window::resetWindows ()
+main_window::reset_windows ()
 {
   // TODO: Implement.
 }
 
 void
-main_window::updateCurrentWorkingDirectory (QString directory)
+main_window::update_current_working_directory (QString directory)
 {
-  if (m_currentDirectoryComboBox->count () > 31)
+  if (_current_directory_combo_box->count () > 31)
     {
-      m_currentDirectoryComboBox->removeItem (0);
+      _current_directory_combo_box->removeItem (0);
     }
-  m_currentDirectoryComboBox->addItem (directory);
-  int index = m_currentDirectoryComboBox->findText (directory);
-  m_currentDirectoryComboBox->setCurrentIndex (index);
+  _current_directory_combo_box->addItem (directory);
+  int index = _current_directory_combo_box->findText (directory);
+  _current_directory_combo_box->setCurrentIndex (index);
 }
 
 void
-main_window::changeCurrentWorkingDirectory ()
+main_window::change_current_working_directory ()
 {
   QString selectedDirectory =
       QFileDialog::getExistingDirectory(this, tr ("Set working direcotry"));
 
   if (!selectedDirectory.isEmpty ())
     {
-      m_terminal->sendText (QString ("cd \'%1\'\n").arg (selectedDirectory));
-      m_terminal->setFocus ();
+      _terminal->sendText (QString ("cd \'%1\'\n").arg (selectedDirectory));
+      _terminal->setFocus ();
     }
 }
 
 void
-main_window::changeCurrentWorkingDirectory (QString directory)
+main_window::change_current_working_directory (QString directory)
 {
-  m_terminal->sendText (QString ("cd \'%1\'\n").arg (directory));
-  m_terminal->setFocus ();
+  _terminal->sendText (QString ("cd \'%1\'\n").arg (directory));
+  _terminal->setFocus ();
 }
 
 void
-main_window::currentWorkingDirectoryUp ()
+main_window::current_working_directory_up ()
 {
-  m_terminal->sendText ("cd ..\n");
-  m_terminal->setFocus ();
+  _terminal->sendText ("cd ..\n");
+  _terminal->setFocus ();
 }
 
 void
-main_window::showAboutOctave ()
+main_window::show_about_octave ()
 {
   QString message =
       "GNU Octave\n"
@@ -215,26 +215,26 @@ main_window::showAboutOctave ()
 void
 main_window::closeEvent (QCloseEvent * closeEvent)
 {
-  reportStatusMessage (tr ("Saving data and shutting down."));
-  m_closing = true;  // inform editor window that whole application is closed
-  octave_link::instance ()->terminateOctave ();
+  report_status_message (tr ("Saving data and shutting down."));
+  _closing = true;  // inform editor window that whole application is closed
+  octave_link::instance ()->terminate_octave ();
 
   QMainWindow::closeEvent (closeEvent);
 }
 
 void
-main_window::readSettings ()
+main_window::read_settings ()
 {
-  QSettings *settings = resource_manager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->get_settings ();
   restoreGeometry (settings->value ("MainWindow/geometry").toByteArray ());
   restoreState (settings->value ("MainWindow/windowState").toByteArray ());
-  emit settingsChanged ();
+  emit settings_changed ();
 }
 
 void
-main_window::writeSettings ()
+main_window::write_settings ()
 {
-  QSettings *settings = resource_manager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->get_settings ();
   settings->setValue ("MainWindow/geometry", saveGeometry ());
   settings->setValue ("MainWindow/windowState", saveState ());
   settings->sync ();
@@ -245,34 +245,34 @@ main_window::construct ()
 {
   QStyle *style = QApplication::style ();
   // TODO: Check this.
-  m_closing = false;   // flag for editor files when closed
-  setWindowIcon (resource_manager::instance ()->icon (resource_manager::Octave));
+  _closing = false;   // flag for editor files when closed
+  setWindowIcon (resource_manager::instance ()->get_icon (resource_manager::octave));
 
   // Setup dockable widgets and the status bar.
-  m_workspaceView = new workspace_view (this);
-  m_workspaceView->setStatusTip (tr ("View the variables in the active workspace."));
-  m_historyDockWidget = new history_dock_widget (this);
-  m_historyDockWidget->setStatusTip (tr ("Browse and search the command history."));
-  m_filesDockWidget = new files_dock_widget (this);
-  m_filesDockWidget->setStatusTip (tr ("Browse your files."));
-  m_statusBar = new QStatusBar (this);
+  _workspace_view           = new workspace_view (this);
+  _workspace_view->setStatusTip (tr ("View the variables in the active workspace."));
+  _history_dock_widget      = new history_dock_widget (this);
+  _history_dock_widget->setStatusTip (tr ("Browse and search the command history."));
+  _files_dock_widget        = new files_dock_widget (this);
+  _files_dock_widget->setStatusTip (tr ("Browse your files."));
+  _status_bar               = new QStatusBar (this);
 
-  m_currentDirectoryComboBox = new QComboBox (this);
-  m_currentDirectoryComboBox->setFixedWidth (300);
-  m_currentDirectoryComboBox->setEditable (true);
-  m_currentDirectoryComboBox->setInsertPolicy (QComboBox::InsertAtTop);
-  m_currentDirectoryComboBox->setMaxVisibleItems (14);
+  _current_directory_combo_box = new QComboBox (this);
+  _current_directory_combo_box->setFixedWidth (300);
+  _current_directory_combo_box->setEditable (true);
+  _current_directory_combo_box->setInsertPolicy (QComboBox::InsertAtTop);
+  _current_directory_combo_box->setMaxVisibleItems (14);
 
-  m_currentDirectoryToolButton = new QToolButton (this);
-  m_currentDirectoryToolButton->setIcon (style->standardIcon (QStyle::SP_DirOpenIcon));
+  _current_directory_tool_button = new QToolButton (this);
+  _current_directory_tool_button->setIcon (style->standardIcon (QStyle::SP_DirOpenIcon));
 
-  m_currentDirectoryUpToolButton = new QToolButton (this);
-  m_currentDirectoryUpToolButton->setIcon (style->standardIcon (QStyle::SP_FileDialogToParent));
+  _current_directory_up_tool_button = new QToolButton (this);
+  _current_directory_up_tool_button->setIcon (style->standardIcon (QStyle::SP_FileDialogToParent));
 
   // Octave Terminal subwindow.
-  m_terminal = new QTerminal (this);
-  m_terminal->setObjectName ("OctaveTerminal");
-  m_terminalDockWidget = new terminal_dock_widget (m_terminal, this);
+  _terminal = new QTerminal (this);
+  _terminal->setObjectName ("OctaveTerminal");
+  _terminal_dock_widget = new terminal_dock_widget (_terminal, this);
 
   QWidget *dummyWidget = new QWidget ();
   dummyWidget->setObjectName ("CentralDummyWidget");
@@ -281,152 +281,171 @@ main_window::construct ()
   dummyWidget->hide ();
   setCentralWidget (dummyWidget);
 
-  m_fileEditor = new file_editor (m_terminal, this);
+  _file_editor = new file_editor (_terminal, this);
 
-  QMenu *fileMenu = menuBar ()->addMenu (tr ("&File"));
-  QAction *newFileAction
-    = fileMenu->addAction (QIcon::fromTheme ("document-new",
+  QMenu *file_menu = menuBar ()->addMenu (tr ("&File"));
+  QAction *new_file_action
+    = file_menu->addAction (QIcon::fromTheme ("document-new",
       style->standardIcon (QStyle::SP_FileIcon)), tr ("New File"));
 
-  QAction *openFileAction
-      = fileMenu->addAction (QIcon::fromTheme ("document-open",
+  QAction *open_file_action
+      = file_menu->addAction (QIcon::fromTheme ("document-open",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Open File"));
 
-  QAction *settingsAction = fileMenu->addAction (tr ("Settings"));
-  fileMenu->addSeparator ();
-  QAction *exitAction = fileMenu->addAction (tr ("Exit"));
+  QAction *settings_action = file_menu->addAction (tr ("Settings"));
+  file_menu->addSeparator ();
+  QAction *exit_action = file_menu->addAction (tr ("Exit"));
 
-  QMenu *editMenu = menuBar ()->addMenu (tr ("&Edit"));
-  QAction *cutAction
-      = editMenu->addAction (QIcon::fromTheme ("edit-cut",
+  QMenu *edit_menu = menuBar ()->addMenu (tr ("&Edit"));
+  QAction *cut_action
+      = edit_menu->addAction (QIcon::fromTheme ("edit-cut",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Cut"));
-  cutAction->setShortcut (QKeySequence::Cut);
+  cut_action->setShortcut (QKeySequence::Cut);
 
-  QAction *copyAction
-      = editMenu->addAction (QIcon::fromTheme ("edit-copy",
+  QAction *copy_action
+      = edit_menu->addAction (QIcon::fromTheme ("edit-copy",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Copy"));
-  copyAction->setShortcut (QKeySequence::Copy);
+  copy_action->setShortcut (QKeySequence::Copy);
 
-  QAction *pasteAction
-      = editMenu->addAction (QIcon::fromTheme ("edit-paste",
+  QAction *paste_action
+      = edit_menu->addAction (QIcon::fromTheme ("edit-paste",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Paste"));
-  pasteAction->setShortcut (QKeySequence::Paste);
+  paste_action->setShortcut (QKeySequence::Paste);
 
-  QAction *undoAction
-      = editMenu->addAction (QIcon::fromTheme ("edit-undo",
+  QAction *undo_action
+      = edit_menu->addAction (QIcon::fromTheme ("edit-undo",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Undo"));
-  undoAction->setShortcut (QKeySequence::Undo);
+  undo_action->setShortcut (QKeySequence::Undo);
 
-  QAction *redoAction
-      = editMenu->addAction (QIcon::fromTheme ("edit-redo",
+  QAction *redo_action
+      = edit_menu->addAction (QIcon::fromTheme ("edit-redo",
         style->standardIcon (QStyle::SP_FileIcon)), tr ("Redo"));
-  redoAction->setShortcut (QKeySequence::Redo);
+  redo_action->setShortcut (QKeySequence::Redo);
 
   //QMenu *debugMenu = menuBar ()->addMenu (tr ("De&bug"));
   //QMenu *parallelMenu = menuBar ()->addMenu (tr ("&Parallel"));
 
-  QMenu *desktopMenu = menuBar ()->addMenu (tr ("&Desktop"));
-  QAction *loadWorkspaceAction = desktopMenu->addAction (tr ("Load workspace"));
-  QAction *saveWorkspaceAction = desktopMenu->addAction (tr ("Save workspace"));
-  QAction *clearWorkspaceAction = desktopMenu->addAction (tr ("Clear workspace"));
+  QMenu *   desktop_menu = menuBar ()->addMenu (tr ("&Desktop"));
+  QAction * load_workspace_action       = desktop_menu->addAction (tr ("Load workspace"));
+  QAction * save_workspace_action       = desktop_menu->addAction (tr ("Save workspace"));
+  QAction * clear_workspace_action      = desktop_menu->addAction (tr ("Clear workspace"));
 
   // Window menu
-  QMenu *windowMenu = menuBar ()->addMenu (tr ("&Window"));
-  QAction *showCommandWindowAction = windowMenu->addAction (tr ("Command Window"));
-  showCommandWindowAction->setCheckable (true);
-  QAction *showWorkspaceAction = windowMenu->addAction (tr ("Workspace"));
-  showWorkspaceAction->setCheckable (true);
-  QAction *showHistoryAction = windowMenu->addAction (tr ("Command History"));
-  showHistoryAction->setCheckable (true);
-  QAction *showFileBrowserAction = windowMenu->addAction (tr ("Current Directory"));
-  showFileBrowserAction->setCheckable (true);
-  QAction *showEditorAction = windowMenu->addAction (tr ("Editor"));
-  showEditorAction->setCheckable (true);
-
-  windowMenu->addSeparator ();
-  QAction *resetWindowsAction = windowMenu->addAction (tr ("Reset Windows"));
+  QMenu *   window_menu = menuBar ()->addMenu (tr ("&Window"));
+  QAction * show_command_window_action  = window_menu->addAction (tr ("Command Window"));
+            show_command_window_action->setCheckable (true);
+  QAction * show_workspace_action       = window_menu->addAction (tr ("Workspace"));
+            show_workspace_action->setCheckable (true);
+  QAction * show_history_action         = window_menu->addAction (tr ("Command History"));
+            show_history_action->setCheckable (true);
+  QAction * show_file_browser_action    = window_menu->addAction (tr ("Current Directory"));
+            show_file_browser_action->setCheckable (true);
+  QAction * show_editor_action          = window_menu->addAction (tr ("Editor"));
+            show_editor_action->setCheckable (true);
+  window_menu->addSeparator ();
+  QAction * reset_windows_action        = window_menu->addAction (tr ("Reset Windows"));
 
   // Help menu
-  QMenu *helpMenu = menuBar ()->addMenu (tr ("&Help"));
-  QAction *reportBugAction = helpMenu->addAction (tr ("Report Bug"));
-  QAction *agoraAction = helpMenu->addAction (tr ("Visit Agora"));
-  QAction *octaveForgeAction = helpMenu->addAction (tr ("Visit Octave Forge"));
-  helpMenu->addSeparator ();
-  QAction *aboutOctaveAction = helpMenu->addAction (tr ("About Octave"));
+  QMenu *   help_menu = menuBar ()->addMenu (tr ("&Help"));
+  QAction * report_bug_action           = help_menu->addAction (tr ("Report Bug"));
+  QAction * agora_action                = help_menu->addAction (tr ("Visit Agora"));
+  QAction * octave_forge_action         = help_menu->addAction (tr ("Visit Octave Forge"));
+  help_menu->addSeparator ();
+  QAction * about_octave_action         = help_menu->addAction (tr ("About Octave"));
 
   // Toolbars
-  QToolBar *mainToolBar = addToolBar ("Main");
-  mainToolBar->addAction (newFileAction);
-  mainToolBar->addAction (openFileAction);
-  mainToolBar->addSeparator ();
-  mainToolBar->addAction (cutAction);
-  mainToolBar->addAction (copyAction);
-  mainToolBar->addAction (pasteAction);
-  mainToolBar->addAction (undoAction);
-  mainToolBar->addAction (redoAction);
-  mainToolBar->addSeparator ();
-  mainToolBar->addWidget (new QLabel (tr ("Current Directory:")));
-  mainToolBar->addWidget (m_currentDirectoryComboBox);
-  mainToolBar->addWidget (m_currentDirectoryToolButton);
-  mainToolBar->addWidget (m_currentDirectoryUpToolButton);
+  QToolBar *main_tool_bar = addToolBar ("Main");
+            main_tool_bar->addAction (new_file_action);
+            main_tool_bar->addAction (open_file_action);
+            main_tool_bar->addSeparator ();
+            main_tool_bar->addAction (cut_action);
+            main_tool_bar->addAction (copy_action);
+            main_tool_bar->addAction (paste_action);
+            main_tool_bar->addAction (undo_action);
+            main_tool_bar->addAction (redo_action);
+            main_tool_bar->addSeparator ();
+            main_tool_bar->addWidget (new QLabel (tr ("Current Directory:")));
+            main_tool_bar->addWidget (_current_directory_combo_box);
+            main_tool_bar->addWidget (_current_directory_tool_button);
+            main_tool_bar->addWidget (_current_directory_up_tool_button);
 
-  connect (qApp, SIGNAL(aboutToQuit ()), this, SLOT (prepareForQuit ()));
-
-  connect (settingsAction, SIGNAL (triggered ()), this, SLOT (processSettingsDialogRequest ()));
-  connect (exitAction, SIGNAL (triggered ()), this, SLOT (close ()));
-  connect (newFileAction, SIGNAL (triggered ()), this, SLOT (newFile ()));
-  connect (openFileAction, SIGNAL (triggered ()), this, SLOT (openFile ()));
-  connect (reportBugAction, SIGNAL (triggered ()), this, SLOT (openBugTrackerPage ()));
-  connect (agoraAction, SIGNAL (triggered ()), this, SLOT (openAgoraPage ()));
-  connect (octaveForgeAction, SIGNAL (triggered ()), this, SLOT (openOctaveForgePage ()));
-  connect (aboutOctaveAction, SIGNAL (triggered ()), this, SLOT (showAboutOctave ()));
-
-  connect (showCommandWindowAction, SIGNAL (toggled (bool)), m_terminalDockWidget, SLOT (setShown (bool)));
-  connect (m_terminalDockWidget, SIGNAL (activeChanged (bool)), showCommandWindowAction, SLOT (setChecked (bool)));
-  connect (showWorkspaceAction, SIGNAL (toggled (bool)), m_workspaceView, SLOT (setShown (bool)));
-  connect (m_workspaceView, SIGNAL (activeChanged (bool)), showWorkspaceAction, SLOT (setChecked (bool)));
-  connect (showHistoryAction, SIGNAL (toggled (bool)), m_historyDockWidget, SLOT (setShown (bool)));
-  connect (m_historyDockWidget, SIGNAL (activeChanged (bool)), showHistoryAction, SLOT (setChecked (bool)));
-  connect (showFileBrowserAction, SIGNAL (toggled (bool)), m_filesDockWidget, SLOT (setShown (bool)));
-  connect (m_filesDockWidget, SIGNAL (activeChanged (bool)), showFileBrowserAction, SLOT (setChecked (bool)));
-  connect (showEditorAction, SIGNAL (toggled (bool)), m_fileEditor, SLOT (setShown (bool)));
-  connect (m_fileEditor, SIGNAL (activeChanged (bool)), showEditorAction, SLOT (setChecked (bool)));
-  connect (resetWindowsAction, SIGNAL (triggered ()), this, SLOT (resetWindows ()));
-  //connect (this, SIGNAL (settingsChanged ()), m_workspaceView, SLOT (noticeSettings ()));
-  //connect (this, SIGNAL (settingsChanged ()), m_historyDockWidget, SLOT (noticeSettings ()));
-  connect (this, SIGNAL (settingsChanged ()), m_filesDockWidget, SLOT (noticeSettings ()));
-  connect (this, SIGNAL (settingsChanged ()), this, SLOT (noticeSettings ()));
-
-  connect (m_filesDockWidget, SIGNAL (openFile (QString)), m_fileEditor, SLOT (requestOpenFile (QString)));
-  connect (m_historyDockWidget, SIGNAL (information (QString)), this, SLOT (reportStatusMessage (QString)));
-  connect (m_historyDockWidget, SIGNAL (commandDoubleClicked (QString)), this, SLOT (handleCommandDoubleClicked (QString)));
-  connect (saveWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleSaveWorkspaceRequest ()));
-  connect (loadWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleLoadWorkspaceRequest ()));
-  connect (clearWorkspaceAction, SIGNAL (triggered ()), this, SLOT (handleClearWorkspaceRequest ()));
-
-  connect (m_currentDirectoryToolButton, SIGNAL (clicked ()),
-           this, SLOT (changeCurrentWorkingDirectory ()));
-  connect (m_currentDirectoryUpToolButton, SIGNAL (clicked ()),
-           this, SLOT(currentWorkingDirectoryUp()));
-  connect (copyAction, SIGNAL (triggered()), m_terminal, SLOT(copyClipboard ()));
-  connect (pasteAction, SIGNAL (triggered()), m_terminal, SLOT(pasteClipboard ()));
-
-  connect (octave_link::instance (), SIGNAL (workingDirectoryChanged (QString)),
-           this, SLOT (updateCurrentWorkingDirectory (QString)));
-  connect (m_currentDirectoryComboBox, SIGNAL (activated (QString)),
-           this, SLOT (changeCurrentWorkingDirectory (QString)));
+  connect (qApp,                        SIGNAL (aboutToQuit ()),
+           this,                        SLOT   (prepare_for_quit ()));
+  connect (settings_action,             SIGNAL (triggered ()),
+           this,                        SLOT   (process_settings_dialog_request ()));
+  connect (exit_action,                 SIGNAL (triggered ()),
+           this,                        SLOT   (close ()));
+  connect (new_file_action,             SIGNAL (triggered ()),
+           this,                        SLOT   (new_file ()));
+  connect (open_file_action,            SIGNAL (triggered ()),
+           this,                        SLOT   (open_file ()));
+  connect (report_bug_action,           SIGNAL (triggered ()),
+           this,                        SLOT   (open_bug_tracker_page ()));
+  connect (agora_action,                SIGNAL (triggered ()),
+           this,                        SLOT   (open_agora_page ()));
+  connect (octave_forge_action,         SIGNAL (triggered ()),
+           this,                        SLOT   (open_octave_forge_page ()));
+  connect (about_octave_action,         SIGNAL (triggered ()),
+           this,                        SLOT   (show_about_octave ()));
+  connect (show_command_window_action,  SIGNAL (toggled (bool)),
+           _terminal_dock_widget,       SLOT   (setShown (bool)));
+  connect (_terminal_dock_widget,       SIGNAL (active_changed (bool)),
+           show_command_window_action,  SLOT   (setChecked (bool)));
+  connect (show_workspace_action,       SIGNAL (toggled (bool)),
+           _workspace_view,             SLOT   (setShown (bool)));
+  connect (_workspace_view,             SIGNAL (active_changed (bool)),
+           show_workspace_action,       SLOT   (setChecked (bool)));
+  connect (show_history_action,         SIGNAL (toggled (bool)),
+           _history_dock_widget,        SLOT   (setShown (bool)));
+  connect (_history_dock_widget,        SIGNAL (active_changed (bool)),
+           show_history_action,         SLOT   (setChecked (bool)));
+  connect (show_file_browser_action,    SIGNAL (toggled (bool)),
+           _files_dock_widget,          SLOT   (setShown (bool)));
+  connect (_files_dock_widget,          SIGNAL (active_changed (bool)),
+           show_file_browser_action,    SLOT   (setChecked (bool)));
+  connect (show_editor_action,          SIGNAL (toggled (bool)),
+           _file_editor,                SLOT   (setShown (bool)));
+  connect (_file_editor,                SIGNAL (active_changed (bool)),
+           show_editor_action,          SLOT   (setChecked (bool)));
+  connect (reset_windows_action,        SIGNAL (triggered ()),
+           this,                        SLOT   (reset_windows ()));
+  connect (this,                        SIGNAL (settings_changed ()),
+           _files_dock_widget,          SLOT   (notice_settings ()));
+  connect (this,                        SIGNAL (settings_changed ()),
+           this,                        SLOT   (notice_settings ()));
+  connect (_files_dock_widget,          SIGNAL (open_file (QString)),
+           _file_editor,                SLOT   (request_open_file (QString)));
+  connect (_history_dock_widget,        SIGNAL (information (QString)),
+           this,                        SLOT   (report_status_message (QString)));
+  connect (_history_dock_widget,        SIGNAL (command_double_clicked (QString)),
+           this,                        SLOT   (handle_command_double_clicked (QString)));
+  connect (save_workspace_action,       SIGNAL (triggered ()),
+           this,                        SLOT   (handle_save_workspace_request ()));
+  connect (load_workspace_action,       SIGNAL (triggered ()),
+           this,                        SLOT   (handle_load_workspace_request ()));
+  connect (clear_workspace_action,      SIGNAL (triggered ()),
+           this,                        SLOT   (handle_clear_workspace_request ()));
+  connect (_current_directory_tool_button, SIGNAL (clicked ()),
+           this,                        SLOT   (change_current_working_directory ()));
+  connect (_current_directory_up_tool_button, SIGNAL (clicked ()),
+           this,                        SLOT   (current_working_directory_up()));
+  connect (copy_action,                 SIGNAL (triggered()),
+           _terminal,                   SLOT   (copyClipboard ()));
+  connect (paste_action,                SIGNAL (triggered()),
+           _terminal,                   SLOT   (pasteClipboard ()));
+  connect (octave_link::instance (),    SIGNAL (working_directory_changed (QString)),
+           this,                        SLOT (update_current_working_directory (QString)));
+  connect (_current_directory_combo_box, SIGNAL (activated (QString)),
+           this,                        SLOT (change_current_working_directory (QString)));
 
   setWindowTitle ("Octave");
-
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);
-
-  addDockWidget (Qt::LeftDockWidgetArea, m_workspaceView);
-  addDockWidget (Qt::LeftDockWidgetArea, m_historyDockWidget);
-  addDockWidget (Qt::RightDockWidgetArea, m_filesDockWidget);
-  addDockWidget (Qt::RightDockWidgetArea, m_fileEditor);
-  addDockWidget (Qt::BottomDockWidgetArea, m_terminalDockWidget);
-  setStatusBar (m_statusBar);
-
-  readSettings ();
+  addDockWidget (Qt::LeftDockWidgetArea, _workspace_view);
+  addDockWidget (Qt::LeftDockWidgetArea, _history_dock_widget);
+  addDockWidget (Qt::RightDockWidgetArea, _files_dock_widget);
+  addDockWidget (Qt::RightDockWidgetArea, _file_editor);
+  addDockWidget (Qt::BottomDockWidgetArea, _terminal_dock_widget);
+  setStatusBar (_status_bar);
+  read_settings ();
 }
 

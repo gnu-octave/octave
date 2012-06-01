@@ -29,7 +29,7 @@ class file_editor_tab : public QWidget
   Q_OBJECT
 public:
   file_editor_tab (file_editor *fileEditor);
-  bool copyAvailable ();
+  bool copy_available ();
 
 public slots:
   void new_title(bool modified);

@@ -29,20 +29,20 @@ class history_dock_widget:public QDockWidget
 Q_OBJECT
 public:
   history_dock_widget (QWidget *parent = 0);
-  void updateHistory (QStringList history);
+  void update_history (QStringList history);
 
 public slots:
-  void handleVisibilityChanged (bool visible);
+  void handle_visibility_changed (bool visible);
 
 signals:
   void information (QString message);
-  void commandDoubleClicked (QString command);
+  void command_double_clicked (QString command);
   /** Custom signal that tells if a user has clicked away that dock widget. */
-  void activeChanged (bool active);
+  void active_changed (bool active);
 protected:
   void closeEvent (QCloseEvent *event);
 private slots:
-  void handleDoubleClick (QModelIndex modelIndex);
+  void handle_double_click (QModelIndex modelIndex);
 
 private:
   void construct ();

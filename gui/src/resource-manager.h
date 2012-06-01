@@ -26,13 +26,13 @@
 class resource_manager
 {
 public:
-  enum Icon
+  enum icon
   {
-    Octave,
-    Terminal,
-    Documentation,
-    Chat,
-    ChatNewMessage
+    octave,
+    terminal,
+    documentation,
+    chat,
+    chat_new_message
   };
 
   ~resource_manager ();
@@ -40,28 +40,28 @@ public:
   static resource_manager *
   instance ()
   {
-    return &m_singleton;
+    return &_singleton;
   }
 
-  QSettings *settings ();
-  QString homePath ();
-  void reloadSettings ();
-  void setSettings (QString file);
-  QString findTranslatorFile (QString language);
-  void updateNetworkSettings ();
-  void loadIcons ();
-  QIcon icon (Icon icon);
-  bool isFirstRun ();
+  QSettings *get_settings ();
+  QString get_home_path ();
+  void reload_settings ();
+  void set_settings (QString file);
+  QString find_translator_file (QString language);
+  void update_network_settings ();
+  void load_icons ();
+  QIcon get_icon (icon i);
+  bool is_first_run ();
+  const char *octave_keywords ();
 
-  const char *octaveKeywords ();
 private:
   resource_manager ();
 
-  QSettings *m_settings;
-  QString m_homePath;
-  QMap <Icon, QIcon> m_icons;
-  static resource_manager m_singleton;
-  bool m_firstRun;
+  QSettings *_settings;
+  QString _home_path;
+  QMap <icon, QIcon> _icons;
+  static resource_manager _singleton;
+  bool _first_run;
 };
 
 #endif // RESOURCEMANAGER_H

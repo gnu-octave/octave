@@ -21,7 +21,7 @@
 
 #include <QDialog>
 
-namespace user_interface
+namespace Ui
 {
   class settings_dialog;
 }
@@ -33,7 +33,7 @@ Q_OBJECT public:
   ~settings_dialog ();
 
 private:
-  user_interface::settings_dialog * ui;
+  Ui::settings_dialog * ui;
 };
 
 #endif // SETTINGSDIALOG_H

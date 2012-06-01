@@ -56,75 +56,62 @@ Q_OBJECT public:
   main_window (QWidget * parent = 0);
   ~main_window ();
 
-  QTerminal *terminalView ()
-  {
-    return m_terminal;
-  }
-
-  history_dock_widget *historyDockWidget ()
-  {
-    return m_historyDockWidget;
-  }
-  files_dock_widget *filesDockWidget ()
-  {
-    return m_filesDockWidget;
-  }
-  bool closing ()
-  {
-    return m_closing;
-  }
+  QTerminal *get_terminal_view () { return _terminal; }
+  history_dock_widget *get_history_dock_widget () { return _history_dock_widget; }
+  files_dock_widget *get_files_dock_widget () { return _files_dock_widget; }
+  bool is_closing () { return _closing; }
 
 signals:
-  void settingsChanged ();
+  void settings_changed ();
 
 public slots:
-  void reportStatusMessage (QString statusMessage);
-  void handleSaveWorkspaceRequest ();
-  void handleLoadWorkspaceRequest ();
-  void handleClearWorkspaceRequest ();
-  void handleCommandDoubleClicked (QString command);
-  void newFile ();
-  void openFile ();
-  void openBugTrackerPage ();
-  void openAgoraPage ();
-  void openOctaveForgePage ();
-  void processSettingsDialogRequest ();
-  void showAboutOctave ();
-  void noticeSettings ();
-  void prepareForQuit ();
-  void resetWindows ();
-  void updateCurrentWorkingDirectory (QString directory);
-  void changeCurrentWorkingDirectory ();
-  void changeCurrentWorkingDirectory (QString directory);
-  void currentWorkingDirectoryUp ();
+  void report_status_message (QString statusMessage);
+  void handle_save_workspace_request ();
+  void handle_load_workspace_request ();
+  void handle_clear_workspace_request ();
+  void handle_command_double_clicked (QString command);
+  void new_file ();
+  void open_file ();
+  void open_bug_tracker_page ();
+  void open_agora_page ();
+  void open_octave_forge_page ();
+  void process_settings_dialog_request ();
+  void show_about_octave ();
+  void notice_settings ();
+  void prepare_for_quit ();
+  void reset_windows ();
+  void update_current_working_directory (QString directory);
+  void change_current_working_directory ();
+  void change_current_working_directory (QString directory);
+  void current_working_directory_up ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
-  void readSettings ();
-  void writeSettings ();
+  void read_settings ();
+  void write_settings ();
 
 private:
   void construct ();
-  void establishOctaveLink ();
+  void establish_octave_link ();
 
-  QTerminal *m_terminal;
-  file_editor_interface *m_fileEditor;
+  QTerminal *               _terminal;
+  file_editor_interface *   _file_editor;
 
   // Dock widgets.
-  workspace_view *m_workspaceView;
-  history_dock_widget *m_historyDockWidget;
-  files_dock_widget *m_filesDockWidget;
-  terminal_dock_widget *m_terminalDockWidget;
+  workspace_view *          _workspace_view;
+  history_dock_widget *     _history_dock_widget;
+  files_dock_widget *       _files_dock_widget;
+  terminal_dock_widget *    _terminal_dock_widget;
 
   // Toolbars.
-  QStatusBar *m_statusBar;
+  QStatusBar *              _status_bar;
 
-  QComboBox *m_currentDirectoryComboBox;
-  QToolButton *m_currentDirectoryToolButton;
-  QToolButton *m_currentDirectoryUpToolButton;
+  QComboBox *               _current_directory_combo_box;
+  QToolButton *             _current_directory_tool_button;
+  QToolButton *             _current_directory_up_tool_button;
 
   // Flag for closing whole application
-  bool m_closing;
+  bool                      _closing;
 };
 
 #endif // MAINWINDOW_H

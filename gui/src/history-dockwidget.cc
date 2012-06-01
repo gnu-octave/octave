@@ -27,7 +27,7 @@ history_dock_widget::history_dock_widget (QWidget * parent):QDockWidget (parent)
 void
 history_dock_widget::construct ()
 {
-  m_sortFilterProxyModel.setSourceModel(octave_link::instance ()->historyModel());
+  m_sortFilterProxyModel.setSourceModel(octave_link::instance ()->get_history_model());
   m_historyListView = new QListView (this);
   m_historyListView->setModel (&m_sortFilterProxyModel);
   m_historyListView->setAlternatingRowColors (true);
@@ -47,26 +47,26 @@ history_dock_widget::construct ()
   widget ()->setLayout (layout);
 
   connect (m_filterLineEdit, SIGNAL (textEdited (QString)), &m_sortFilterProxyModel, SLOT (setFilterWildcard(QString)));
-  connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this, SLOT (handleDoubleClick (QModelIndex)));
-  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
+  connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this, SLOT (handle_double_click (QModelIndex)));
+  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handle_visibility_changed(bool)));
 }
 
 void
-history_dock_widget::handleDoubleClick (QModelIndex modelIndex)
+history_dock_widget::handle_double_click (QModelIndex modelIndex)
 {
-  emit commandDoubleClicked (modelIndex.data().toString());
+  emit command_double_clicked (modelIndex.data().toString());
 }
 
 void
-history_dock_widget::handleVisibilityChanged (bool visible)
+history_dock_widget::handle_visibility_changed (bool visible)
 {
   if (visible)
-    emit activeChanged (true);
+    emit active_changed (true);
 }
 
 void
 history_dock_widget::closeEvent (QCloseEvent *event)
 {
-  emit activeChanged (false);
+  emit active_changed (false);
   QDockWidget::closeEvent (event);
 }

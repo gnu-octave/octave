@@ -41,24 +41,22 @@ public:
 
 public slots:
   /** Slot for handling a change in directory via double click. */
-  void itemDoubleClicked (const QModelIndex & index);
+  void item_double_clicked (const QModelIndex & index);
 
   /** Slot for handling the up-directory button in the toolbar. */
-  void onUpDirectory ();
-
-  void setCurrentDirectory (QString currentDirectory);
-
-  void currentDirectoryEntered ();
+  void do_up_directory ();
+  void set_current_directory (QString currentDirectory);
+  void current_directory_entered ();
 
   /** Tells the widget to notice settings that are probably new. */
-  void noticeSettings ();
-  void handleVisibilityChanged (bool visible);
+  void notice_settings ();
+  void handle_visibility_changed (bool visible);
 
 signals:
-  void openFile (QString fileName);
+  void open_file (QString fileName);
 
   /** Custom signal that tells if a user has clicke away that dock widget. */
-  void activeChanged (bool active);
+  void active_changed (bool active);
 
 protected:
   void closeEvent (QCloseEvent *event);
@@ -66,20 +64,20 @@ protected:
 private:
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
 
-    /** Toolbar for file and directory manipulation. */
-    QToolBar * m_navigationToolBar;
+  /** Toolbar for file and directory manipulation. */
+  QToolBar *        _navigation_tool_bar;
 
-    /** Variables for the up-directory action. */
-  QIcon m_directoryIcon;
-  QAction *m_directoryUpAction;
-  QToolButton *upDirectoryButton;
+  /** Variables for the up-directory action. */
+  QIcon             _directory_icon;
+  QAction *         _directory_up_action;
+  QToolButton *     _up_directory_button;
 
-    /** The file system model. */
-  QFileSystemModel *m_fileSystemModel;
+  /** The file system model. */
+  QFileSystemModel *_file_system_model;
 
-    /** The file system view. */
-  QTreeView *m_fileTreeView;
-  QLineEdit *m_currentDirectory;
+  /** The file system view. */
+  QTreeView *       _file_tree_view;
+  QLineEdit *       _current_directory;
 };
 
 #endif // FILESDOCKWIDGET_H

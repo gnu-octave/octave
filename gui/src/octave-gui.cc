@@ -28,12 +28,12 @@ main (int argc, char *argv[])
   QApplication application (argc, argv);
   while (true)
     {
-      if (resource_manager::instance ()->isFirstRun ())
+      if (resource_manager::instance ()->is_first_run ())
         {
           welcome_wizard welcomeWizard;
           int returnCode = welcomeWizard.exec ();
 
-          QSettings *settings = resource_manager::instance ()->settings ();
+          QSettings *settings = resource_manager::instance ()->get_settings ();
           settings->setValue ("connectOnStartup", true);
           settings->setValue ("showMessageOfTheDay", true);
           settings->setValue ("showTopic", true);
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
           settings->setValue ("proxyUserName", "");
           settings->setValue ("proxyPassword", "");
           settings->sync ();
-          resource_manager::instance ()->reloadSettings ();
+          resource_manager::instance ()->reload_settings ();
 
           application.quit ();
           // We are in an infinite loop, so everything else than a return
@@ -70,16 +70,16 @@ main (int argc, char *argv[])
         }
       else
         {
-          QSettings *settings = resource_manager::instance ()->settings ();
+          QSettings *settings = resource_manager::instance ()->get_settings ();
           QString language = settings->value ("language").toString ();
 
-          QString translatorFile = resource_manager::instance ()->findTranslatorFile (language);
+          QString translatorFile = resource_manager::instance ()->find_translator_file (language);
           QTranslator translator;
           translator.load (translatorFile);
           application.installTranslator (&translator);
 
-          resource_manager::instance ()->updateNetworkSettings ();
-          resource_manager::instance ()->loadIcons ();
+          resource_manager::instance ()->update_network_settings ();
+          resource_manager::instance ()->load_icons ();
 
           main_window w;
           w.show ();

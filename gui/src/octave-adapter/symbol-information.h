@@ -57,14 +57,14 @@
 #include "octave/utils.h"
 #include "octave/variables.h"
 
-typedef struct SymbolInformation
+typedef struct symbol_information
 {
   enum Scope
   {
-    Local       = 0,
-    Global      = 1,
-    Persistent  = 2,
-    Hidden      = 3
+    local       = 0,
+    global      = 1,
+    persistent  = 2,
+    hidden      = 3
   };
 
   QString _symbol;
@@ -79,7 +79,7 @@ typedef struct SymbolInformation
   }
 
   bool
-  equals (const SymbolInformation& other) const
+  equals (const symbol_information& other) const
   {
     if (hash () == other.hash ())
       {
@@ -91,47 +91,47 @@ typedef struct SymbolInformation
   }
 
   bool
-  fromSymbolRecord (const symbol_table::symbol_record& symbolRecord)
+  from_symbol_record (const symbol_table::symbol_record& symbol_record)
   {
-    if (symbolRecord.is_local () && !symbolRecord.is_global () && !symbolRecord.is_hidden ())
-      _scope = Local;
-    else if (symbolRecord.is_global ())
-      _scope = Global;
-    else if (symbolRecord.is_persistent ())
-      _scope = Persistent;
-    else if (symbolRecord.is_hidden ())
-      _scope = Hidden;
+    if (symbol_record.is_local () && !symbol_record.is_global () && !symbol_record.is_hidden ())
+      _scope = local;
+    else if (symbol_record.is_global ())
+      _scope = global;
+    else if (symbol_record.is_persistent ())
+      _scope = persistent;
+    else if (symbol_record.is_hidden ())
+      _scope = hidden;
 
-    _symbol = QString (symbolRecord.name ().c_str ());
-    _type   = QString (symbolRecord.varval ().type_name ().c_str ());
-    octave_value octaveValue = symbolRecord.varval ();
+    _symbol = QString (symbol_record.name ().c_str ());
+    _type   = QString (symbol_record.varval ().type_name ().c_str ());
+    octave_value ov = symbol_record.varval ();
 
     // For every type, convert to a human readable string.
-    if (octaveValue.is_sq_string ())
-      _value = QString ("\'%1\'").arg (octaveValue.string_value ().c_str ());
-    else if (octaveValue.is_dq_string ())
-      _value = QString ("\"%1\"").arg (octaveValue.string_value ().c_str ());
-    else if (octaveValue.is_real_scalar ())
-      _value = QString ("%1").arg (octaveValue.scalar_value ());
-    else if (octaveValue.is_complex_scalar ())
-      _value = QString ("%1 + %2i").arg (octaveValue.scalar_value ())
-                                   .arg (octaveValue.complex_value ().imag ());
-    else if (octaveValue.is_range ())
-      _value =  QString ("%1 : %2 : %3").arg (octaveValue.range_value ().base ())
-                                        .arg (octaveValue.range_value ().inc ())
-                                        .arg (octaveValue.range_value ().limit ());
-    else if (octaveValue.is_real_matrix ())
-      _value = QString ("%1x%2").arg (octaveValue.rows ())
-                                .arg (octaveValue.columns ());
-    else if (octaveValue.is_complex_matrix ())
-      _value = QString ("%1x%2").arg (octaveValue.rows ())
-                                .arg (octaveValue.columns ());
+    if (ov.is_sq_string ())
+      _value = QString ("\'%1\'").arg (ov.string_value ().c_str ());
+    else if (ov.is_dq_string ())
+      _value = QString ("\"%1\"").arg (ov.string_value ().c_str ());
+    else if (ov.is_real_scalar ())
+      _value = QString ("%1").arg (ov.scalar_value ());
+    else if (ov.is_complex_scalar ())
+      _value = QString ("%1 + %2i").arg (ov.scalar_value ())
+                                   .arg (ov.complex_value ().imag ());
+    else if (ov.is_range ())
+      _value =  QString ("%1 : %2 : %3").arg (ov.range_value ().base ())
+                                        .arg (ov.range_value ().inc ())
+                                        .arg (ov.range_value ().limit ());
+    else if (ov.is_real_matrix ())
+      _value = QString ("%1x%2").arg (ov.rows ())
+                                .arg (ov.columns ());
+    else if (ov.is_complex_matrix ())
+      _value = QString ("%1x%2").arg (ov.rows ())
+                                .arg (ov.columns ());
     else
       _value = QString ("<Type not recognized>");
 
     return true;
   }
-} SymbolInformation;
+} symbol_information;
 
 
 

@@ -24,5 +24,5 @@ terminal_dock_widget::terminal_dock_widget (QTerminal *terminal, QWidget *parent
   setWindowTitle (tr ("Command Window"));
   setWidget (terminal);
 
-  connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handleVisibilityChanged (bool)));
+  connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handle_visibility_changed (bool)));
 }

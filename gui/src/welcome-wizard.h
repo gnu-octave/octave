@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-namespace user_interface {
+namespace Ui {
     class welcome_wizard;
 }
 
@@ -37,7 +37,7 @@ public slots:
   void previous ();
 
 private:
-  user_interface::welcome_wizard *ui;
+  Ui::welcome_wizard *_ui;
 };
 
 #endif // WELCOMEWIZARD_H

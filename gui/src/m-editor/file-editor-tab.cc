@@ -23,7 +23,7 @@
 file_editor_tab::file_editor_tab(file_editor *fileEditor)
   : QWidget ((QWidget*)fileEditor)
 {
-  QSettings *settings = resource_manager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->get_settings ();
   _file_editor = fileEditor;
   _file_name = "";
   _edit_area = new QsciScintilla (this);
@@ -80,7 +80,7 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   // connect modified signal
   connect (_edit_area, SIGNAL (modificationChanged (bool)),
            this, SLOT (new_title (bool)));
-  connect (_edit_area, SIGNAL (copyAvailable (bool)),
+  connect (_edit_area, SIGNAL (copy_available (bool)),
            this, SLOT (handle_copy_available (bool)));
   connect (&_file_system_watcher, SIGNAL (fileChanged (QString)),
            this, SLOT (file_has_changed (QString)));
@@ -90,7 +90,7 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
 }
 
 bool
-file_editor_tab::copyAvailable ()
+file_editor_tab::copy_available ()
 {
   return _copy_available;
 }
@@ -98,7 +98,7 @@ file_editor_tab::copyAvailable ()
 void
 file_editor_tab::closeEvent (QCloseEvent *event)
 {
-  if (_file_editor->mainWindow ()->closing ())
+  if (_file_editor->mainWindow ()->is_closing ())
     {
       // close whole application: save file or not if modified
       check_file_modified ("Closing Octave", 0); // no cancel possible

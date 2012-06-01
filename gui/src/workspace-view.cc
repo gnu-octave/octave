@@ -26,35 +26,35 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   setObjectName ("WorkspaceView");
   setWindowTitle (tr ("Workspace"));
 
-  m_workspaceTreeView = new QTreeView (this);
-  m_workspaceTreeView->setHeaderHidden (false);
-  m_workspaceTreeView->setAlternatingRowColors (true);
-  m_workspaceTreeView->setAnimated (true);
-  m_workspaceTreeView->setModel(octave_link::instance()->workspaceModel());
+  _workspace_tree_view = new QTreeView (this);
+  _workspace_tree_view->setHeaderHidden (false);
+  _workspace_tree_view->setAlternatingRowColors (true);
+  _workspace_tree_view->setAnimated (true);
+  _workspace_tree_view->setModel(octave_link::instance()->get_workspace_model());
 
   setWidget (new QWidget (this));
   QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (m_workspaceTreeView);
+  layout->addWidget (_workspace_tree_view);
   layout->setMargin (2);
   widget ()->setLayout (layout);
 
   connect (this, SIGNAL (visibilityChanged (bool)),
-           this, SLOT(handleVisibilityChanged (bool)));
+           this, SLOT(handle_visibility_changed (bool)));
 
-  connect (octave_link::instance()->workspaceModel(), SIGNAL(expandRequest()),
-           m_workspaceTreeView, SLOT(expandAll()));
+  connect (octave_link::instance()->get_workspace_model(), SIGNAL(expand_request()),
+           _workspace_tree_view, SLOT(expandAll()));
 }
 
 void
-workspace_view::handleVisibilityChanged (bool visible)
+workspace_view::handle_visibility_changed (bool visible)
 {
   if (visible)
-  emit activeChanged (true);
+  emit active_changed (true);
 }
 
 void
 workspace_view::closeEvent (QCloseEvent *event)
 {
-  emit activeChanged (false);
+  emit active_changed (false);
   QDockWidget::closeEvent (event);
 }

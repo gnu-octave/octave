@@ -23,37 +23,37 @@
 
 int octave_readline_hook ()
 {
-  octave_link::instance ()->triggerUpdateHistoryModel ();
-  octave_link::instance ()->buildSymbolInformation ();
-  octave_link::instance ()->updateCurrentWorkingDirectory ();
+  octave_link::instance ()->trigger_update_history_model ();
+  octave_link::instance ()->build_symbol_information ();
+  octave_link::instance ()->update_current_working_directory ();
   return 0;
 }
 
 void octave_exit_hook (int status)
 {
   Q_UNUSED (status);
-  octave_link::instance ()->terminateOctave ();
+  octave_link::instance ()->terminate_octave ();
 }
 
-octave_link octave_link::m_singleton;
+octave_link octave_link::_singleton;
 
 octave_link::octave_link ():QObject ()
 {
-  m_historyModel = new QStringListModel (this);
-  m_workspaceModel = new workspace_model (this);
+  _history_model = new QStringListModel (this);
+  _workspace_model = new workspace_model (this);
 
-  m_workspaceModel->insertTopLevelItem(0, new TreeItem ("Local"));
-  m_workspaceModel->insertTopLevelItem(1, new TreeItem ("Global"));
-  m_workspaceModel->insertTopLevelItem(2, new TreeItem ("Persistent"));
-  m_workspaceModel->insertTopLevelItem(3, new TreeItem ("Hidden"));
+  _workspace_model->insert_top_level_item(0, new tree_item ("Local"));
+  _workspace_model->insert_top_level_item(1, new tree_item ("Global"));
+  _workspace_model->insert_top_level_item(2, new tree_item ("Persistent"));
+  _workspace_model->insert_top_level_item(3, new tree_item ("Hidden"));
 
-  _updateWorkspaceModelTimer.setInterval (1000);
-  _updateWorkspaceModelTimer.setSingleShot (false);
-  connect(&_updateWorkspaceModelTimer, SIGNAL (timeout ()),
-    m_workspaceModel, SLOT (updateFromSymbolTable ()));
+  _update_workspace_model_timer.setInterval (1000);
+  _update_workspace_model_timer.setSingleShot (false);
+  connect(&_update_workspace_model_timer, SIGNAL (timeout ()),
+    _workspace_model, SLOT (update_from_symbol_table ()));
 
-  _symbolInformationSemaphore = new QSemaphore (1);
-  _currentWorkingDirectory = "";
+  _symbol_information_semaphore = new QSemaphore (1);
+  _current_working_directory = "";
 }
 
 octave_link::~octave_link ()
@@ -61,29 +61,29 @@ octave_link::~octave_link ()
 }
 
 void
-octave_link::launchOctave ()
+octave_link::launch_octave ()
 {
   // Create both threads.
-  m_octaveMainThread = new octave_main_thread (this);
+  _octave_main_thread = new octave_main_thread (this);
   command_editor::add_event_hook (octave_readline_hook);
   octave_exit = octave_exit_hook;
 
   // Start the first one.
-  m_octaveMainThread->start ();
-  _updateWorkspaceModelTimer.start ();
+  _octave_main_thread->start ();
+  _update_workspace_model_timer.start ();
 }
 
 void
-octave_link::terminateOctave ()
+octave_link::terminate_octave ()
 {
   qApp->quit ();
 }
 
 void
-octave_link::triggerUpdateHistoryModel ()
+octave_link::trigger_update_history_model ()
 {
   // Determine the client's (our) history length and the one of the server.
-  int clientHistoryLength = m_historyModel->rowCount ();
+  int clientHistoryLength = _history_model->rowCount ();
   int serverHistoryLength = command_history::length ();
 
   // If were behind the server, iterate through all new entries and add them to our history.
@@ -91,67 +91,67 @@ octave_link::triggerUpdateHistoryModel ()
     {
       for (int i = clientHistoryLength; i < serverHistoryLength; i++)
         {
-          m_historyModel->insertRow (0);
-          m_historyModel->setData (m_historyModel->index (0), QString (command_history::get_entry (i).c_str ()));
+          _history_model->insertRow (0);
+          _history_model->setData (_history_model->index (0), QString (command_history::get_entry (i).c_str ()));
         }
     }
 }
 
 void
-octave_link::updateCurrentWorkingDirectory ()
+octave_link::update_current_working_directory ()
 {
   QString _queriedWorkingDirectory = octave_env::get_current_directory ().c_str();
-  if (_currentWorkingDirectory != _queriedWorkingDirectory)
+  if (_current_working_directory != _queriedWorkingDirectory)
     {
-      _currentWorkingDirectory = _queriedWorkingDirectory;
-      QDir::setCurrent (_currentWorkingDirectory);
-      emit workingDirectoryChanged (_currentWorkingDirectory);
+      _current_working_directory = _queriedWorkingDirectory;
+      QDir::setCurrent (_current_working_directory);
+      emit working_directory_changed (_current_working_directory);
     }
 }
 
 void
-octave_link::acquireSymbolInformation ()
+octave_link::acquire_symbol_information ()
 {
-  _symbolInformationSemaphore->acquire (1);
+  _symbol_information_semaphore->acquire (1);
 }
 
 void
-octave_link::releaseSymbolInformation ()
+octave_link::release_symbol_information ()
 {
-  _symbolInformationSemaphore->release (1);
+  _symbol_information_semaphore->release (1);
 }
 
 void
-octave_link::buildSymbolInformation ()
+octave_link::build_symbol_information ()
 {
   std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
 
-  acquireSymbolInformation ();
-  _symbolInformation.clear ();
+  acquire_symbol_information ();
+  _symbol_information.clear ();
   for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
      iterator != symbolTable.end (); iterator++)
   {
-    SymbolInformation symbolInformation;
-    symbolInformation.fromSymbolRecord (*iterator);
-    _symbolInformation.push_back (symbolInformation);
+    symbol_information symbolInformation;
+    symbolInformation.from_symbol_record (*iterator);
+    _symbol_information.push_back (symbolInformation);
   }
-  releaseSymbolInformation ();
+  release_symbol_information ();
 }
 
-const QList <SymbolInformation>&
-octave_link::symbolInformation () const
+const QList <symbol_information>&
+octave_link::get_symbol_information () const
 {
-  return _symbolInformation;
+  return _symbol_information;
 }
 
 QStringListModel *
-octave_link::historyModel ()
+octave_link::get_history_model ()
 {
-  return m_historyModel;
+  return _history_model;
 }
 
 workspace_model *
-octave_link::workspaceModel ()
+octave_link::get_workspace_model ()
 {
-  return m_workspaceModel;
+  return _workspace_model;
 }

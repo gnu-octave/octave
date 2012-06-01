@@ -30,8 +30,8 @@ file_editor::file_editor (QTerminal *terminal, main_window *mainWindow)
 {
   construct ();
 
-  m_terminal = terminal;
-  m_mainWindow = mainWindow;
+  _terminal = terminal;
+  _main_window = mainWindow;
   setVisible (false);
 }
 
@@ -48,13 +48,13 @@ file_editor::lexer ()
 QTerminal *
 file_editor::terminal ()
 {
-  return m_terminal;
+  return _terminal;
 }
 
 main_window *
 file_editor::mainWindow ()
 {
-  return m_mainWindow;
+  return _main_window;
 }
 
 void
@@ -265,7 +265,7 @@ file_editor::handleEditorStateChanged ()
   file_editor_tab *fileEditorTab = activeEditorTab ();
   if (fileEditorTab)
     {
-      bool copyAvailable = fileEditorTab->copyAvailable ();
+      bool copyAvailable = fileEditorTab->copy_available ();
       m_copyAction->setEnabled (copyAvailable);
       m_cutAction->setEnabled (copyAvailable);
     }
@@ -275,7 +275,7 @@ void
 file_editor::construct ()
 {
   QWidget *widget = new QWidget (this);
-  QSettings *settings = resource_manager::instance ()->settings ();
+  QSettings *settings = resource_manager::instance ()->get_settings ();
   QStyle *style = QApplication::style ();
 
   m_menuBar = new QMenuBar (widget);

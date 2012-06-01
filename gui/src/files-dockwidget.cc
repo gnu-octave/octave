@@ -33,25 +33,25 @@ files_dock_widget::files_dock_widget (QWidget *parent)
   setWidget (new QWidget (this));
 
   // Create a toolbar
-  m_navigationToolBar = new QToolBar ("", widget ());
-  m_navigationToolBar->setAllowedAreas (Qt::TopToolBarArea);
-  m_navigationToolBar->setMovable (false);
-  m_navigationToolBar->setIconSize (QSize (20, 20));
+  _navigation_tool_bar = new QToolBar ("", widget ());
+  _navigation_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
+  _navigation_tool_bar->setMovable (false);
+  _navigation_tool_bar->setIconSize (QSize (20, 20));
 
   // Add a button to the toolbar with the QT standard icon for up-directory
   // TODO: Maybe change this to be an up-directory icon that is OS specific???
   QStyle *style = QApplication::style ();
-  m_directoryIcon = style->standardIcon (QStyle::SP_FileDialogToParent);
-  m_directoryUpAction = new QAction (m_directoryIcon, "", m_navigationToolBar);
-  m_directoryUpAction->setStatusTip (tr ("Move up one directory."));
+  _directory_icon = style->standardIcon (QStyle::SP_FileDialogToParent);
+  _directory_up_action = new QAction (_directory_icon, "", _navigation_tool_bar);
+  _directory_up_action->setStatusTip (tr ("Move up one directory."));
 
-  m_currentDirectory = new QLineEdit (m_navigationToolBar);
-  m_currentDirectory->setStatusTip (tr ("Enter the path or filename."));
+  _current_directory = new QLineEdit (_navigation_tool_bar);
+  _current_directory->setStatusTip (tr ("Enter the path or filename."));
 
-  m_navigationToolBar->addAction (m_directoryUpAction);
-  m_navigationToolBar->addWidget (m_currentDirectory);
-  connect (m_directoryUpAction, SIGNAL (triggered ()), this,
-           SLOT (onUpDirectory ()));
+  _navigation_tool_bar->addAction (_directory_up_action);
+  _navigation_tool_bar->addWidget (_current_directory);
+  connect (_directory_up_action, SIGNAL (triggered ()), this,
+           SLOT (do_up_directory ()));
 
   // TODO: Add other buttons for creating directories
 
@@ -60,67 +60,67 @@ files_dock_widget::files_dock_widget (QWidget *parent)
     homePath = QDir::homePath ();
   // TODO: This should occur after Octave has been initialized and the startup directory of Octave is established
 
-  m_fileSystemModel = new QFileSystemModel (this);
-  m_fileSystemModel->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
+  _file_system_model = new QFileSystemModel (this);
+  _file_system_model->setFilter (QDir::NoDotAndDotDot | QDir::AllEntries);
   QModelIndex
-    rootPathIndex = m_fileSystemModel->setRootPath (homePath);
+    rootPathIndex = _file_system_model->setRootPath (homePath);
 
   // Attach the model to the QTreeView and set the root index
-  m_fileTreeView = new QTreeView (widget ());
-  m_fileTreeView->setModel (m_fileSystemModel);
-  m_fileTreeView->setRootIndex (rootPathIndex);
-  m_fileTreeView->setSortingEnabled (true);
-  m_fileTreeView->setAlternatingRowColors (true);
-  m_fileTreeView->setAnimated (true);
-  m_fileTreeView->setColumnHidden (1, true);
-  m_fileTreeView->setColumnHidden (2, true);
-  m_fileTreeView->setColumnHidden (3, true);
-  m_fileTreeView->setStatusTip (tr ("Doubleclick a file to open it."));
+  _file_tree_view = new QTreeView (widget ());
+  _file_tree_view->setModel (_file_system_model);
+  _file_tree_view->setRootIndex (rootPathIndex);
+  _file_tree_view->setSortingEnabled (true);
+  _file_tree_view->setAlternatingRowColors (true);
+  _file_tree_view->setAnimated (true);
+  _file_tree_view->setColumnHidden (1, true);
+  _file_tree_view->setColumnHidden (2, true);
+  _file_tree_view->setColumnHidden (3, true);
+  _file_tree_view->setStatusTip (tr ("Doubleclick a file to open it."));
 
-  setCurrentDirectory (m_fileSystemModel->fileInfo (rootPathIndex).
+  set_current_directory (_file_system_model->fileInfo (rootPathIndex).
                        absoluteFilePath ());
 
-  connect (m_fileTreeView, SIGNAL (doubleClicked (const QModelIndex &)), this,
-           SLOT (itemDoubleClicked (const QModelIndex &)));
+  connect (_file_tree_view, SIGNAL (doubleClicked (const QModelIndex &)), this,
+           SLOT (item_double_clicked (const QModelIndex &)));
 
   // Layout the widgets vertically with the toolbar on top
   QVBoxLayout *
     layout = new QVBoxLayout ();
   layout->setSpacing (0);
-  layout->addWidget (m_navigationToolBar);
-  layout->addWidget (m_fileTreeView);
+  layout->addWidget (_navigation_tool_bar);
+  layout->addWidget (_file_tree_view);
   layout->setMargin (1);
   widget ()->setLayout (layout);
   // TODO: Add right-click contextual menus for copying, pasting, deleting files (and others)
 
-  connect (m_currentDirectory, SIGNAL (returnPressed ()), this,
-           SLOT (currentDirectoryEntered ()));
+  connect (_current_directory, SIGNAL (returnPressed ()), this,
+           SLOT (current_directory_entered ()));
   QCompleter *
-    completer = new QCompleter (m_fileSystemModel, this);
-  m_currentDirectory->setCompleter (completer);
+    completer = new QCompleter (_file_system_model, this);
+  _current_directory->setCompleter (completer);
 
-  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handleVisibilityChanged(bool)));
+  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handle_visibility_changed(bool)));
 }
 
 void
-files_dock_widget::itemDoubleClicked (const QModelIndex & index)
+files_dock_widget::item_double_clicked (const QModelIndex & index)
 {
   // Retrieve the file info associated with the model index.
-  QFileInfo fileInfo = m_fileSystemModel->fileInfo (index);
+  QFileInfo fileInfo = _file_system_model->fileInfo (index);
 
   // If it is a directory, cd into it.
   if (fileInfo.isDir ())
     {
-      m_fileSystemModel->setRootPath (fileInfo.absolutePath ());
-      m_fileTreeView->setRootIndex (index);
-      setCurrentDirectory (m_fileSystemModel->fileInfo (index).
+      _file_system_model->setRootPath (fileInfo.absolutePath ());
+      _file_tree_view->setRootIndex (index);
+      set_current_directory (_file_system_model->fileInfo (index).
                            absoluteFilePath ());
     }
   // Otherwise attempt to open it.
   else
     {
       // Check if the user wants to use a custom file editor.
-      QSettings *settings = resource_manager::instance ()->settings ();
+      QSettings *settings = resource_manager::instance ()->get_settings ();
       if (settings->value ("useCustomFileEditor").toBool ())
         {
           QString editor = settings->value ("customFileEditor").toString ();
@@ -130,70 +130,70 @@ files_dock_widget::itemDoubleClicked (const QModelIndex & index)
         }
       else
         {
-          emit openFile (fileInfo.filePath ());
+          emit open_file (fileInfo.filePath ());
         }
     }
 }
 
 void
-files_dock_widget::setCurrentDirectory (QString currentDirectory)
+files_dock_widget::set_current_directory (QString currentDirectory)
 {
-  m_currentDirectory->setText (currentDirectory);
+  _current_directory->setText (currentDirectory);
 }
 
 void
-files_dock_widget::onUpDirectory (void)
+files_dock_widget::do_up_directory (void)
 {
   QDir dir =
-    QDir (m_fileSystemModel->filePath (m_fileTreeView->rootIndex ()));
+    QDir (_file_system_model->filePath (_file_tree_view->rootIndex ()));
   dir.cdUp ();
-  m_fileSystemModel->setRootPath (dir.absolutePath ());
-  m_fileTreeView->setRootIndex (m_fileSystemModel->
+  _file_system_model->setRootPath (dir.absolutePath ());
+  _file_tree_view->setRootIndex (_file_system_model->
                                 index (dir.absolutePath ()));
-  setCurrentDirectory (dir.absolutePath ());
+  set_current_directory (dir.absolutePath ());
 }
 
 void
-files_dock_widget::currentDirectoryEntered ()
+files_dock_widget::current_directory_entered ()
 {
-  QFileInfo fileInfo (m_currentDirectory->text ());
+  QFileInfo fileInfo (_current_directory->text ());
   if (fileInfo.isDir ())
     {
-      m_fileTreeView->setRootIndex (m_fileSystemModel->
+      _file_tree_view->setRootIndex (_file_system_model->
                                     index (fileInfo.absolutePath ()));
-      m_fileSystemModel->setRootPath (fileInfo.absolutePath ());
-      setCurrentDirectory (fileInfo.absoluteFilePath ());
+      _file_system_model->setRootPath (fileInfo.absolutePath ());
+      set_current_directory (fileInfo.absoluteFilePath ());
     }
   else
     {
       if (QFile::exists (fileInfo.absoluteFilePath ()))
-        emit openFile (fileInfo.absoluteFilePath ());
+        emit open_file (fileInfo.absoluteFilePath ());
     }
 }
 
 void
-files_dock_widget::noticeSettings ()
+files_dock_widget::notice_settings ()
 {
-  QSettings *settings = resource_manager::instance ()->settings ();
-  m_fileTreeView->setColumnHidden (0, !settings->value ("showFilenames").toBool ());
-  m_fileTreeView->setColumnHidden (1, !settings->value ("showFileSize").toBool ());
-  m_fileTreeView->setColumnHidden (2, !settings->value ("showFileType").toBool ());
-  m_fileTreeView->setColumnHidden (3, !settings->value ("showLastModified").toBool ());
-  m_fileTreeView->setAlternatingRowColors (settings->value ("useAlternatingRowColors").toBool ());
+  QSettings *settings = resource_manager::instance ()->get_settings ();
+  _file_tree_view->setColumnHidden (0, !settings->value ("showFilenames").toBool ());
+  _file_tree_view->setColumnHidden (1, !settings->value ("showFileSize").toBool ());
+  _file_tree_view->setColumnHidden (2, !settings->value ("showFileType").toBool ());
+  _file_tree_view->setColumnHidden (3, !settings->value ("showLastModified").toBool ());
+  _file_tree_view->setAlternatingRowColors (settings->value ("useAlternatingRowColors").toBool ());
   //if (settings.value ("showHiddenFiles").toBool ())
   // TODO: React on option for hidden files.
 }
 
 void
-files_dock_widget::handleVisibilityChanged (bool visible)
+files_dock_widget::handle_visibility_changed (bool visible)
 {
   if (visible)
-    emit activeChanged (true);
+    emit active_changed (true);
 }
 
 void
 files_dock_widget::closeEvent (QCloseEvent *event)
 {
-  emit activeChanged (false);
+  emit active_changed (false);
   QDockWidget::closeEvent (event);
 }

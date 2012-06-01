@@ -23,83 +23,83 @@
 #include <QVector>
 #include <QSemaphore>
 
-class TreeItem
+class tree_item
 {
 public:
-  TreeItem(const QList<QVariant> &data, TreeItem *parent = 0) {
-    _parentItem = parent;
-    _itemData = data;
+  tree_item(const QList<QVariant> &data, tree_item *parent = 0) {
+    _parent_item = parent;
+    _item_data = data;
   }
 
-  TreeItem(QVariant data = QVariant(), TreeItem *parent = 0) {
+  tree_item(QVariant data = QVariant(), tree_item *parent = 0) {
     QList<QVariant> variantList;
     variantList << data << QVariant() << QVariant();
-    _parentItem = parent;
-    _itemData = variantList;
+    _parent_item = parent;
+    _item_data = variantList;
   }
 
-  ~TreeItem() {
-     qDeleteAll(_childItems);
+  ~tree_item() {
+     qDeleteAll(_child_items);
   }
 
-  void insertChildItem(int at, TreeItem *item) {
-    item->_parentItem = this;
-    _childItems.insert(at, item);
+  void insert_child_item(int at, tree_item *item) {
+    item->_parent_item = this;
+    _child_items.insert(at, item);
   }
 
-  void addChild(TreeItem *item) {
-    item->_parentItem = this;
-    _childItems.append(item);
+  void add_child(tree_item *item) {
+    item->_parent_item = this;
+    _child_items.append(item);
   }
 
-  void deleteChildItems() {
-      qDeleteAll(_childItems);
-      _childItems.clear();
+  void delete_child_items() {
+      qDeleteAll(_child_items);
+      _child_items.clear();
   }
 
-  void removeChild(TreeItem *item) {
-    _childItems.removeAll(item);
+  void remove_child(tree_item *item) {
+    _child_items.removeAll(item);
   }
 
   QVariant data(int column) const
   {
-    return _itemData[column];
+    return _item_data[column];
   }
 
-  void setData(int column, QVariant data)
+  void set_data(int column, QVariant data)
   {
-    _itemData[column] = data;
+    _item_data[column] = data;
   }
 
-  TreeItem *child(int row) {
-    return _childItems[row];
+  tree_item *child(int row) {
+    return _child_items[row];
   }
 
-  int childCount() const {
-    return _childItems.count();
+  int child_count() const {
+    return _child_items.count();
   }
 
-  int columnCount() const
+  int column_count() const
   {
-    return _itemData.count();
+    return _item_data.count();
   }
 
   int row() const {
-    if (_parentItem)
-      return _parentItem->_childItems.indexOf(const_cast<TreeItem*>(this));
+    if (_parent_item)
+      return _parent_item->_child_items.indexOf(const_cast<tree_item*>(this));
 
     return 0;
   }
 
-  TreeItem *parent()
+  tree_item *parent()
   {
-    return _parentItem;
+    return _parent_item;
   }
 
 private:
-  QList<TreeItem*> _childItems;
-  QList<QVariant> _itemData;
-  TreeItem *_parentItem;
+  QList<tree_item*> _child_items;
+  QList<QVariant> _item_data;
+  tree_item *_parent_item;
 };
 
 class workspace_model : public QAbstractItemModel
@@ -120,18 +120,18 @@ public:
   int rowCount(const QModelIndex &parent = QModelIndex()) const;
   int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-  void insertTopLevelItem (int at, TreeItem *treeItem);
-  TreeItem *topLevelItem (int at);
+  void insert_top_level_item (int at, tree_item *treeItem);
+  tree_item *top_level_item (int at);
 
 public slots:
-  void updateFromSymbolTable ();
+  void update_from_symbol_table ();
 
 signals:
-  void expandRequest();
+  void expand_request();
 
 private:
 
-  TreeItem *_rootItem;
+  tree_item *_rootItem;
 };
 
 #endif // WORKSPACEMODEL_H

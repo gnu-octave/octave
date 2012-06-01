@@ -23,24 +23,24 @@
 #include <QSemaphore>
 #include "octave-link.h"
 
-class workspace_view:public QDockWidget
+class workspace_view : public QDockWidget
 {
   Q_OBJECT
 public:
   workspace_view (QWidget * parent = 0);
 
 public slots:
-  void handleVisibilityChanged (bool visible);
+  void handle_visibility_changed (bool visible);
 
 signals:
   /** Custom signal that tells if a user has clicke away that dock widget. */
-  void activeChanged (bool active);
+  void active_changed (bool active);
 
 protected:
   void closeEvent (QCloseEvent *event);
 
 private:
-  QTreeView *m_workspaceTreeView;
+  QTreeView *_workspace_tree_view;
 };
 
 #endif // WORKSPACEVIEW_H

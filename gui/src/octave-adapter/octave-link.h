@@ -88,40 +88,40 @@ public:
   static octave_link *
   instance ()
   {
-    return &m_singleton;
+    return &_singleton;
   }
 
-  void launchOctave ();
-  void terminateOctave ();
-  QStringListModel *historyModel ();
-  workspace_model *workspaceModel ();
+  void launch_octave ();
+  void terminate_octave ();
+  QStringListModel *get_history_model ();
+  workspace_model *get_workspace_model ();
 
-  void triggerUpdateHistoryModel ();
-  void updateCurrentWorkingDirectory ();
+  void trigger_update_history_model ();
+  void update_current_working_directory ();
 
-  void acquireSymbolInformation ();
-  void releaseSymbolInformation ();
-  void buildSymbolInformation ();
-  const QList <SymbolInformation>& symbolInformation () const;
+  void acquire_symbol_information ();
+  void release_symbol_information ();
+  void build_symbol_information ();
+  const QList <symbol_information>& get_symbol_information () const;
 
 signals:
-  void workingDirectoryChanged (QString directory);
+  void working_directory_changed (QString directory);
 
 private:
   octave_link ();
   ~octave_link ();
 
-  QStringListModel *m_historyModel;
-  workspace_model *m_workspaceModel;
+  QStringListModel *_history_model;
+  workspace_model *_workspace_model;
 
   // Threads for running octave and managing the data interaction.
-  octave_main_thread *m_octaveMainThread;
-  QTimer _updateWorkspaceModelTimer;
+  octave_main_thread *_octave_main_thread;
+  QTimer _update_workspace_model_timer;
 
-  QSemaphore *_symbolInformationSemaphore;
-  QList <SymbolInformation> _symbolInformation;
+  QSemaphore *_symbol_information_semaphore;
+  QList <symbol_information> _symbol_information;
 
-  QString _currentWorkingDirectory;
-  static octave_link m_singleton;
+  QString _current_working_directory;
+  static octave_link _singleton;
 };
 #endif // OCTAVELINK_H

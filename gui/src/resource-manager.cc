@@ -19,84 +19,84 @@
 #include <QFile>
 #include <QNetworkProxy>
 
-resource_manager resource_manager::m_singleton;
+resource_manager resource_manager::_singleton;
 
 resource_manager::resource_manager ()
 {
-  m_settings = 0;
-  reloadSettings ();
+  _settings = 0;
+  reload_settings ();
 }
 
 resource_manager::~resource_manager ()
 {
-  delete m_settings;
+  delete _settings;
 }
 
 QSettings *
-resource_manager::settings ()
+resource_manager::get_settings ()
 {
-  return m_settings;
+  return _settings;
 }
 
 QString
-resource_manager::homePath ()
+resource_manager::get_home_path ()
 {
-  return m_homePath;
+  return _home_path;
 }
 
 void
-resource_manager::reloadSettings ()
+resource_manager::reload_settings ()
 {
   QDesktopServices desktopServices;
-  m_homePath = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  setSettings(m_homePath + "/.config/octave-gui/settings");
+  _home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
+  set_settings(_home_path + "/.config/octave-gui/settings");
 }
 
 void
-resource_manager::setSettings (QString file)
+resource_manager::set_settings (QString file)
 {
-  delete m_settings;
+  delete _settings;
 
-  m_firstRun = false;
+  _first_run = false;
   if (!QFile::exists (file))
-    m_firstRun = true;
+    _first_run = true;
 
   // If the settings file does not exist, QSettings automatically creates it.
   // Therefore we have to check if it exists before instantiating the settings object.
   // That way we can detect if the user ran this application before.
-  m_settings = new QSettings (file, QSettings::IniFormat);
+  _settings = new QSettings (file, QSettings::IniFormat);
 }
 
 QString
-resource_manager::findTranslatorFile (QString language)
+resource_manager::find_translator_file (QString language)
 {
   // TODO: Quick hack to be able to test language files.
   return QString("../languages/%1.qm").arg(language);
 }
 
 QIcon
-resource_manager::icon (Icon icon)
+resource_manager::get_icon (icon i)
 {
-  if (m_icons.contains (icon))
+  if (_icons.contains (i))
     {
-      return m_icons [icon];
+      return _icons [i];
     }
   return QIcon ();
 }
 
 bool
-resource_manager::isFirstRun ()
+resource_manager::is_first_run ()
 {
-  return m_firstRun;
+  return _first_run;
 }
 
 void
-resource_manager::updateNetworkSettings ()
+resource_manager::update_network_settings ()
 {
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-  if (m_settings->value ("useProxyServer").toBool ())
+  if (_settings->value ("useProxyServer").toBool ())
     {
-      QString proxyTypeString = m_settings->value ("proxyType").toString ();
+      QString proxyTypeString = _settings->value ("proxyType").toString ();
       if (proxyTypeString == "Socks5Proxy")
         {
           proxyType = QNetworkProxy::Socks5Proxy;
@@ -109,25 +109,25 @@ resource_manager::updateNetworkSettings ()
 
   QNetworkProxy proxy;
   proxy.setType (proxyType);
-  proxy.setHostName (m_settings->value ("proxyHostName").toString ());
-  proxy.setPort (m_settings->value ("proxyPort").toInt ());
-  proxy.setUser (m_settings->value ("proxyUserName").toString ());
-  proxy.setPassword (m_settings->value ("proxyPassword").toString ());
+  proxy.setHostName (_settings->value ("proxyHostName").toString ());
+  proxy.setPort (_settings->value ("proxyPort").toInt ());
+  proxy.setUser (_settings->value ("proxyUserName").toString ());
+  proxy.setPassword (_settings->value ("proxyPassword").toString ());
   QNetworkProxy::setApplicationProxy (proxy);
 }
 
 void
-resource_manager::loadIcons ()
+resource_manager::load_icons ()
 {
-  m_icons [resource_manager::Octave] = QIcon ("../media/logo.png");
-  m_icons [resource_manager::Terminal] = QIcon ("../media/terminal.png");
-  m_icons [resource_manager::Documentation] = QIcon ("../media/help_index.png");
-  m_icons [resource_manager::Chat] = QIcon ("../media/chat.png");
-  m_icons [resource_manager::ChatNewMessage] = QIcon ("../media/jabber_protocol.png");
+  _icons [resource_manager::octave] = QIcon ("../media/logo.png");
+  _icons [resource_manager::terminal] = QIcon ("../media/terminal.png");
+  _icons [resource_manager::documentation] = QIcon ("../media/help_index.png");
+  _icons [resource_manager::chat] = QIcon ("../media/chat.png");
+  _icons [resource_manager::chat_new_message] = QIcon ("../media/jabber_protocol.png");
 }
 
 const char*
-resource_manager::octaveKeywords ()
+resource_manager::octave_keywords ()
 {
   return
       ".nargin. "

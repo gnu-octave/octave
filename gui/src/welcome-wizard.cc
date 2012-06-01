@@ -20,34 +20,34 @@
 
 welcome_wizard::welcome_wizard (QWidget *parent) :
   QDialog (parent),
-  ui (new user_interface::welcome_wizard)
+  _ui (new Ui::welcome_wizard)
 {
-  ui->setupUi (this);
-  connect (ui->nextButton1, SIGNAL (clicked ()), this, SLOT (next ()));
-  connect (ui->nextButton2, SIGNAL (clicked ()), this, SLOT (next ()));
-  connect (ui->nextButton3, SIGNAL (clicked ()), this, SLOT (next ()));
-  connect (ui->nextButton4, SIGNAL (clicked ()), this, SLOT (next ()));
+  _ui->setupUi (this);
+  connect (_ui->nextButton1, SIGNAL (clicked ()), this, SLOT (next ()));
+  connect (_ui->nextButton2, SIGNAL (clicked ()), this, SLOT (next ()));
+  connect (_ui->nextButton3, SIGNAL (clicked ()), this, SLOT (next ()));
+  connect (_ui->nextButton4, SIGNAL (clicked ()), this, SLOT (next ()));
 
-  connect (ui->previousButton2, SIGNAL (clicked ()), this, SLOT (previous ()));
-  connect (ui->previousButton3, SIGNAL (clicked ()), this, SLOT (previous ()));
-  connect (ui->previousButton4, SIGNAL (clicked ()), this, SLOT (previous ()));
-  connect (ui->previousButton5, SIGNAL (clicked ()), this, SLOT (previous ()));
+  connect (_ui->previousButton2, SIGNAL (clicked ()), this, SLOT (previous ()));
+  connect (_ui->previousButton3, SIGNAL (clicked ()), this, SLOT (previous ()));
+  connect (_ui->previousButton4, SIGNAL (clicked ()), this, SLOT (previous ()));
+  connect (_ui->previousButton5, SIGNAL (clicked ()), this, SLOT (previous ()));
 }
 
 welcome_wizard::~welcome_wizard()
 {
-  delete ui;
+  delete _ui;
 }
 
 void
 welcome_wizard::next ()
 {
-  ui->stackedWidget->setCurrentIndex (ui->stackedWidget->currentIndex () + 1);
+  _ui->stackedWidget->setCurrentIndex (_ui->stackedWidget->currentIndex () + 1);
 }
 
 void
 welcome_wizard::previous ()
 {
-  ui->stackedWidget->setCurrentIndex (ui->stackedWidget->currentIndex () - 1);
+  _ui->stackedWidget->setCurrentIndex (_ui->stackedWidget->currentIndex () - 1);
 }
 

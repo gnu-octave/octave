@@ -32,8 +32,8 @@ class file_editor_interface : public QDockWidget
       : QDockWidget ((QWidget*)mainWindow) // QDockWidget constructor is explicit, hence the cast.
     {
       setObjectName ("FileEditor");
-      m_terminal = terminal;
-      m_mainWindow = mainWindow;
+      _terminal = terminal;
+      _main_window = mainWindow;
 
       connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handle_visibility_changed (bool)));
     }
@@ -48,8 +48,8 @@ class file_editor_interface : public QDockWidget
       void active_changed (bool active);
 
   protected:
-    QTerminal* m_terminal;
-    main_window* m_mainWindow;
+    QTerminal* _terminal;
+    main_window* _main_window;
 
     void closeEvent (QCloseEvent *event)
     {

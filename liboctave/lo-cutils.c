@@ -92,6 +92,8 @@ struct mkdir_options
 static void
 announce_mkdir (const char *dir, void *options)
 {
+  (void) dir;
+  (void) options;
   /* Do nothing */
 }
 

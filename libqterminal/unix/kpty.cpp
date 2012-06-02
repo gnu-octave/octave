@@ -61,14 +61,17 @@
 #include <unistd.h>
 #include <grp.h>
 
-#if defined(HAVE_PTY_H)
-# include <pty.h>
-#endif
-
-#ifdef HAVE_LIBUTIL_H
-# include <libutil.h>
-#elif defined(HAVE_UTIL_H)
+#ifdef Q_OS_MAC
 # include <util.h>
+#else
+# if defined(HAVE_PTY_H)
+#  include <pty.h>
+# endif
+# ifdef HAVE_LIBUTIL_H
+#  include <libutil.h>
+# elif defined(HAVE_UTIL_H)
+#  include <util.h>
+# endif
 #endif
 
 /*
@@ -305,16 +308,16 @@ bool KPty::open()
               p = getgrnam("wheel");
             gid_t gid = p ? p->gr_gid : getgid ();
 
-	    if (!chown(d->ttyName.data(), getuid(), gid)) {
-	      chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IWGRP);
-	    }
+		 if (!chown(d->ttyName.data(), getuid(), gid)) {
+			chmod(d->ttyName.data(), S_IRUSR|S_IWUSR|S_IWGRP);
+		 }
 	  }
 	  goto gotpty;
 	}
 	::close(d->masterFd);
 	d->masterFd = -1;
-      }
-    }
+		}
+	 }
   }
 
   qWarning() << "Can't open a pseudo teletype";

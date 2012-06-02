@@ -392,23 +392,23 @@ main_window::construct ()
   connect (about_octave_action,         SIGNAL (triggered ()),
            this,                        SLOT   (show_about_octave ()));
   connect (show_command_window_action,  SIGNAL (toggled (bool)),
-           _terminal_dock_widget,       SLOT   (setShown (bool)));
+           _terminal_dock_widget,       SLOT   (setVisible (bool)));
   connect (_terminal_dock_widget,       SIGNAL (active_changed (bool)),
            show_command_window_action,  SLOT   (setChecked (bool)));
   connect (show_workspace_action,       SIGNAL (toggled (bool)),
-           _workspace_view,             SLOT   (setShown (bool)));
+           _workspace_view,             SLOT   (setVisible (bool)));
   connect (_workspace_view,             SIGNAL (active_changed (bool)),
            show_workspace_action,       SLOT   (setChecked (bool)));
   connect (show_history_action,         SIGNAL (toggled (bool)),
-           _history_dock_widget,        SLOT   (setShown (bool)));
+           _history_dock_widget,        SLOT   (setVisible (bool)));
   connect (_history_dock_widget,        SIGNAL (active_changed (bool)),
            show_history_action,         SLOT   (setChecked (bool)));
   connect (show_file_browser_action,    SIGNAL (toggled (bool)),
-           _files_dock_widget,          SLOT   (setShown (bool)));
+           _files_dock_widget,          SLOT   (setVisible (bool)));
   connect (_files_dock_widget,          SIGNAL (active_changed (bool)),
            show_file_browser_action,    SLOT   (setChecked (bool)));
   connect (show_editor_action,          SIGNAL (toggled (bool)),
-           _file_editor,                SLOT   (setShown (bool)));
+           _file_editor,                SLOT   (setVisible (bool)));
   connect (_file_editor,                SIGNAL (active_changed (bool)),
            show_editor_action,          SLOT   (setChecked (bool)));
   connect (reset_windows_action,        SIGNAL (triggered ()),

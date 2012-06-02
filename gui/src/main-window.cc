@@ -215,11 +215,15 @@ main_window::show_about_octave ()
 void
 main_window::closeEvent (QCloseEvent * closeEvent)
 {
+  closeEvent->ignore ();
+  _terminal->sendText ("exit\n");
+    /*
   report_status_message (tr ("Saving data and shutting down."));
   _closing = true;  // inform editor window that whole application is closed
   octave_link::instance ()->terminate_octave ();
 
   QMainWindow::closeEvent (closeEvent);
+  */
 }
 
 void

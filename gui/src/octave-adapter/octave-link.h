@@ -75,6 +75,7 @@
 
 #include "workspace-model.h"
 #include "octave-main-thread.h"
+#include "octave-event.h"
 #include "symbol-information.h"
 
 /**

@@ -584,17 +584,17 @@ public:
   // Always access a symbol from the current scope.
   // Useful for scripts, as they may be executed in more than one scope.
   class
-  symbol_record_ref
+  symbol_reference
   {
   public:
-    symbol_record_ref (void) : scope (-1) {}
+    symbol_reference (void) : scope (-1) {}
 
-    symbol_record_ref (symbol_record record,
+    symbol_reference (symbol_record record,
                        scope_id curr_scope = symbol_table::current_scope ())
       : scope (curr_scope), sym (record)
     {}
 
-    symbol_record_ref& operator = (const symbol_record_ref& ref)
+    symbol_reference& operator = (const symbol_reference& ref)
     {
       scope = ref.scope;
       sym = ref.sym;
@@ -616,12 +616,12 @@ public:
       return &sym;
     }
 
-    // can be used to place symbol_record_ref in maps, we don't overload < as
-    // it doesn't make any sense for symbol_record_ref
+    // can be used to place symbol_reference in maps, we don't overload < as
+    // it doesn't make any sense for symbol_reference
     struct comparator
     {
-      bool operator ()(const symbol_record_ref& lhs,
-                       const symbol_record_ref& rhs) const
+      bool operator ()(const symbol_reference& lhs,
+                       const symbol_reference& rhs) const
       {
         return lhs.name () < rhs.name ();
       }

@@ -114,14 +114,14 @@ public:
 
   void accept (tree_walker& tw);
 
-  symbol_table::symbol_record_ref symbol (void) const
+  symbol_table::symbol_reference symbol (void) const
   {
     return sym;
   }
 private:
 
   // The symbol record that this identifier references.
-  symbol_table::symbol_record_ref sym;
+  symbol_table::symbol_reference sym;
 
   // No copying!
 

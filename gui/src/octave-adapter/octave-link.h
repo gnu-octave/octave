@@ -79,49 +79,87 @@
 
 /**
   * \class OctaveLink
-  * Manages a link to an octave instance.
+  * \brief Provides threadsafe access to octave.
+  * \author Jacob Dawid
+  * This class is a wrapper around octave and provides threadsafety by
+  * buffering access operations to octave and executing them in the readline
+  * even hook, which lives in the octave thread.
   */
-class octave_link:public QObject
+class octave_link : public QObject
 {
   Q_OBJECT
 public:
+  /** Provides a way to access the unique octave_link object. */
   static octave_link *
-  instance ()
-  {
-    return &_singleton;
-  }
+  instance () { return &_singleton; }
 
+  /** Starts octave. */
   void launch_octave ();
+
+  /** Attempts to close octave. */
   void terminate_octave ();
+
+  /** Returns the current history model. */
   QStringListModel *get_history_model ();
+
+  /** Returns the current workspace model. */
   workspace_model *get_workspace_model ();
 
+  /** Triggers an update of the history model. */
   void trigger_update_history_model ();
+
+  /** Updates the current working directory. */
   void update_current_working_directory ();
 
+  /** Acquires the symbol information. You need to acquire that before
+    * actually accessing it. Make sure that you release it properly in order
+    * to avoid deadlocks. */
   void acquire_symbol_information ();
+
+  /** Releases access to the symbol information. */
   void release_symbol_information ();
+
+  /** Update symbol information from octave's symboltable. */
   void build_symbol_information ();
+
+  /** Provides acces to the current symbol information.
+    * WARNING: Always acquire the symbol information before actually
+    * using it and make sure you release it properly afterwards.
+    */
   const QList <symbol_information>& get_symbol_information () const;
 
 signals:
+  /** Emitted, whenever the working directory of octave changed. */
   void working_directory_changed (QString directory);
 
 private:
+  /** Singleton. */
   octave_link ();
   ~octave_link ();
 
+  /** Stores the current history_model. */
   QStringListModel *_history_model;
+
+  /** Stores the current workspace model. */
   workspace_model *_workspace_model;
 
-  // Threads for running octave and managing the data interaction.
+  /** Thread running octave_main. */
   octave_main_thread *_octave_main_thread;
+
+  /** Timer for periodically updating the workspace model from the current
+    * symbol information. */
   QTimer _update_workspace_model_timer;
 
+  /** Semaphore to lock access to the symbol information. */
   QSemaphore *_symbol_information_semaphore;
+
+  /** Stores the current symbol information. */
   QList <symbol_information> _symbol_information;
 
+  /** Stores the last known current working directory of octave. */
   QString _current_working_directory;
+
+  /** Unique instance. Singelton! */
   static octave_link _singleton;
 };
 #endif // OCTAVELINK_H

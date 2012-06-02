@@ -19,16 +19,25 @@
 #define OCTAVEMAINTHREAD_H
 
 #include <QThread>
-class octave_main_thread:public QThread
+
+/**
+  * \class octave_main
+  * \brief This class represents a thread just running octave_main.
+  * \author Jacob Dawid
+  */
+class octave_main_thread : public QThread
 {
   Q_OBJECT
 public:
+  /** Creates a new thread running octave_main. */
   octave_main_thread (QObject * parent);
 
 signals:
+  /** This signal will be emitted when the thread is about to actually run octave_main. */
   void ready();
 
 protected:
+  /** Runs octave_main. */
   void run ();
 };
 

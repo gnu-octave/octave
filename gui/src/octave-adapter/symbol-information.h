@@ -57,6 +57,15 @@
 #include "octave/utils.h"
 #include "octave/variables.h"
 
+/**
+  * \struct symbol_information
+  * \brief Meta-information over a symbol-table entry.
+  * \author Jacob Dawid
+  * This struct is used to store meta information over a symbol entry.
+  * It reduces memory consumption, since it only stores relevant data
+  * about a symbol-table entry that will be used in the model for the
+  * graphical user interface.
+  */
 typedef struct symbol_information
 {
   enum Scope
@@ -72,12 +81,14 @@ typedef struct symbol_information
   QString _value;
   Scope   _scope;
 
+  /** Hashes the symbol information for quickly comparing it. */
   int
   hash () const
   {
     return qHash (_symbol) + qHash (_type) + qHash (_value) + (int)_scope;
   }
 
+  /** Compares two symbol information objects. */
   bool
   equals (const symbol_information& other) const
   {
@@ -90,6 +101,7 @@ typedef struct symbol_information
       }
   }
 
+  /** Extracts meta information from a given symbol record. */
   bool
   from_symbol_record (const symbol_table::symbol_record& symbol_record)
   {
@@ -132,7 +144,5 @@ typedef struct symbol_information
     return true;
   }
 } symbol_information;
-
-
 
 #endif // SYMBOLINFORMATION_H

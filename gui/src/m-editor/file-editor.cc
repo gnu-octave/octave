@@ -42,7 +42,7 @@ file_editor::~file_editor ()
 lexer_octave_gui *
 file_editor::lexer ()
 {
-  return m_lexer;
+  return _lexer;
 }
 
 QTerminal *
@@ -63,7 +63,7 @@ file_editor::request_new_file ()
   file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
-      addFileEditorTab (fileEditorTab);
+      add_file_editor_tab (fileEditorTab);
       fileEditorTab->new_file ();
     }
 }
@@ -74,11 +74,11 @@ file_editor::request_open_file ()
   file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
-      addFileEditorTab (fileEditorTab);
+      add_file_editor_tab (fileEditorTab);
       if (!fileEditorTab->open_file ())
         {
           // If no file was loaded, remove the tab again.
-          m_tabWidget->removeTab (m_tabWidget->indexOf (fileEditorTab));
+          _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));
         }
     }
 }
@@ -94,180 +94,180 @@ file_editor::request_open_file (QString fileName)
   file_editor_tab *fileEditorTab = new file_editor_tab (this);
   if (fileEditorTab)
     {
-      addFileEditorTab (fileEditorTab);
+      add_file_editor_tab (fileEditorTab);
       fileEditorTab->load_file (fileName);
     }
 }
 
 void
-file_editor::requestUndo ()
+file_editor::request_undo ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->undo ();
 }
 
 void
-file_editor::requestRedo ()
+file_editor::request_redo ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->redo ();
 }
 
 void
-file_editor::requestCopy ()
+file_editor::request_copy ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->copy ();
 }
 
 void
-file_editor::requestCut ()
+file_editor::request_cut ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->cut ();
 }
 
 void
-file_editor::requestPaste ()
+file_editor::request_paste ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->paste ();
 }
 
 void
-file_editor::requestSaveFile ()
+file_editor::request_save_file ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->save_file ();
 }
 
 void
-file_editor::requestSaveFileAs ()
+file_editor::request_save_file_as ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->save_file_as ();
 }
 
 void
-file_editor::requestRunFile ()
+file_editor::request_run_file ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->run_file ();
 }
 
 void
-file_editor::requestToggleBookmark ()
+file_editor::request_toggle_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->toggle_bookmark ();
 }
 
 void
-file_editor::requestNextBookmark ()
+file_editor::request_next_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->next_bookmark ();
 }
 
 void
-file_editor::requestPreviousBookmark ()
+file_editor::request_previous_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->previous_bookmark ();
 }
 
 void
-file_editor::requestRemoveBookmark ()
+file_editor::request_remove_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->remove_bookmark ();
 }
 
 void
-file_editor::requestCommentSelectedText ()
+file_editor::request_comment_selected_text ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->comment_selected_text ();
 }
 
 void
-file_editor::requestUncommentSelectedText ()
+file_editor::request_uncomment_selected_text ()
 {
-  file_editor_tab *activeFileEditorTab = activeEditorTab ();
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
     activeFileEditorTab->uncomment_selected_text ();
 }
 
 void
-file_editor::handleFileNameChanged (QString fileName)
+file_editor::handle_file_name_changed (QString fileName)
 {
   QObject *senderObject = sender ();
   file_editor_tab *fileEditorTab = dynamic_cast<file_editor_tab*> (senderObject);
   if (fileEditorTab)
     {
-      for(int i = 0; i < m_tabWidget->count (); i++)
+      for(int i = 0; i < _tab_widget->count (); i++)
         {
-          if (m_tabWidget->widget (i) == fileEditorTab)
+          if (_tab_widget->widget (i) == fileEditorTab)
             {
-              m_tabWidget->setTabText (i, fileName);
+              _tab_widget->setTabText (i, fileName);
             }
         }
     }
 }
 
 void
-file_editor::handleTabCloseRequest (int index)
+file_editor::handle_tab_close_request (int index)
 {
-  file_editor_tab *fileEditorTab = dynamic_cast <file_editor_tab*> (m_tabWidget->widget (index));
+  file_editor_tab *fileEditorTab = dynamic_cast <file_editor_tab*> (_tab_widget->widget (index));
   if (fileEditorTab)
     if (fileEditorTab->close ())
       {
-        m_tabWidget->removeTab (index);
+        _tab_widget->removeTab (index);
         delete fileEditorTab;
       }
 }
 
 void
-file_editor::handleTabCloseRequest ()
+file_editor::handle_tab_close_request ()
 {
   file_editor_tab *fileEditorTab = dynamic_cast <file_editor_tab*> (sender ());
   if (fileEditorTab)
     if (fileEditorTab->close ())
       {
-        m_tabWidget->removeTab (m_tabWidget->indexOf (fileEditorTab));
+        _tab_widget->removeTab (_tab_widget->indexOf (fileEditorTab));
         delete fileEditorTab;
       }
 }
 
 void
-file_editor::activeTabChanged (int index)
+file_editor::active_tab_changed (int index)
 {
   Q_UNUSED (index);
-  handleEditorStateChanged ();
+  handle_editor_state_changed ();
 }
 
 void
-file_editor::handleEditorStateChanged ()
+file_editor::handle_editor_state_changed ()
 {
-  file_editor_tab *fileEditorTab = activeEditorTab ();
-  if (fileEditorTab)
+  file_editor_tab *f = active_editor_tab ();
+  if (f)
     {
-      bool copyAvailable = fileEditorTab->copy_available ();
-      m_copyAction->setEnabled (copyAvailable);
-      m_cutAction->setEnabled (copyAvailable);
+      bool copy_available = f->copy_available ();
+      _copy_action->setEnabled (copy_available);
+      _cut_action->setEnabled (copy_available);
     }
 }
 
@@ -278,54 +278,54 @@ file_editor::construct ()
   QSettings *settings = resource_manager::instance ()->get_settings ();
   QStyle *style = QApplication::style ();
 
-  m_menuBar = new QMenuBar (widget);
-  m_toolBar = new QToolBar (widget);
-  m_tabWidget = new QTabWidget (widget);
-  m_tabWidget->setTabsClosable (true);
+  _menu_bar = new QMenuBar (widget);
+  _tool_bar = new QToolBar (widget);
+  _tab_widget = new QTabWidget (widget);
+  _tab_widget->setTabsClosable (true);
 
   // Theme icons with QStyle icons as fallback
   QAction *newAction = new QAction (
         QIcon::fromTheme("document-new",style->standardIcon (QStyle::SP_FileIcon)),
-        tr("&New File"), m_toolBar);
+        tr("&New File"), _tool_bar);
 
   QAction *openAction = new QAction (
         QIcon::fromTheme("document-open",style->standardIcon (QStyle::SP_DirOpenIcon)),
-        tr("&Open File"), m_toolBar);
+        tr("&Open File"), _tool_bar);
 
   QAction *saveAction = new QAction (
         QIcon::fromTheme("document-save",style->standardIcon (QStyle::SP_DriveHDIcon)),
-        tr("&Save File"), m_toolBar);
+        tr("&Save File"), _tool_bar);
 
   QAction *saveAsAction = new QAction (
         QIcon::fromTheme("document-save-as",style->standardIcon (QStyle::SP_DriveFDIcon)),
-        tr("Save File &As"), m_toolBar);
+        tr("Save File &As"), _tool_bar);
 
   QAction *undoAction = new QAction (
         QIcon::fromTheme("edit-undo",style->standardIcon (QStyle::SP_ArrowLeft)),
-        tr("&Undo"), m_toolBar);
+        tr("&Undo"), _tool_bar);
 
   QAction *redoAction = new QAction (
         QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
-        tr("&Redo"), m_toolBar);
+        tr("&Redo"), _tool_bar);
 
-  m_copyAction = new QAction (QIcon::fromTheme ("edit-copy"), tr ("&Copy"), m_toolBar);
-  m_cutAction = new QAction (QIcon::fromTheme ("edit-cut"), tr ("Cu&t"), m_toolBar);
+  _copy_action = new QAction (QIcon::fromTheme ("edit-copy"), tr ("&Copy"), _tool_bar);
+  _cut_action = new QAction (QIcon::fromTheme ("edit-cut"), tr ("Cu&t"), _tool_bar);
 
-  QAction *pasteAction              = new QAction (QIcon::fromTheme ("edit-paste"), tr ("&Paste"),m_toolBar);
-  QAction *nextBookmarkAction       = new QAction (tr ("&Next Bookmark"),m_toolBar);
-  QAction *prevBookmarkAction       = new QAction (tr ("Pre&vious Bookmark"),m_toolBar);
-  QAction *toggleBookmarkAction     = new QAction (tr ("Toggle &Bookmark"),m_toolBar);
-  QAction *removeBookmarkAction     = new QAction (tr ("&Remove All Bookmarks"),m_toolBar);
-  QAction *commentSelectedAction    = new QAction (tr ("&Comment Selected Text"),m_toolBar);
-  QAction *uncommentSelectedAction  = new QAction (tr ("&Uncomment Selected Text"),m_toolBar);
+  QAction *pasteAction              = new QAction (QIcon::fromTheme ("edit-paste"), tr ("&Paste"),_tool_bar);
+  QAction *nextBookmarkAction       = new QAction (tr ("&Next Bookmark"),_tool_bar);
+  QAction *prevBookmarkAction       = new QAction (tr ("Pre&vious Bookmark"),_tool_bar);
+  QAction *toggleBookmarkAction     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
+  QAction *removeBookmarkAction     = new QAction (tr ("&Remove All Bookmarks"),_tool_bar);
+  QAction *commentSelectedAction    = new QAction (tr ("&Comment Selected Text"),_tool_bar);
+  QAction *uncommentSelectedAction  = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
   QAction *runAction = new QAction (
         QIcon::fromTheme ("media-play", style->standardIcon (QStyle::SP_MediaPlay)),
-        tr("&Run File"), m_toolBar);
+        tr("&Run File"), _tool_bar);
 
   // some actions are disabled from the beginning
-  m_copyAction->setEnabled(false);
-  m_cutAction->setEnabled(false);
+  _copy_action->setEnabled(false);
+  _cut_action->setEnabled(false);
 
   // short cuts
   newAction->setShortcut              (QKeySequence::New);
@@ -334,8 +334,8 @@ file_editor::construct ()
   saveAsAction->setShortcut           (QKeySequence::SaveAs);
   undoAction->setShortcut             (QKeySequence::Undo);
   redoAction->setShortcut             (QKeySequence::Redo);
-  m_copyAction->setShortcut           (QKeySequence::Copy);
-  m_cutAction->setShortcut            (QKeySequence::Cut);
+  _copy_action->setShortcut           (QKeySequence::Copy);
+  _cut_action->setShortcut            (QKeySequence::Cut);
   pasteAction->setShortcut            (QKeySequence::Paste);
   runAction->setShortcut              (Qt::Key_F5);
   nextBookmarkAction->setShortcut     (Qt::Key_F2);
@@ -345,34 +345,34 @@ file_editor::construct ()
   uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);
 
   // toolbar
-  m_toolBar->addAction (newAction);
-  m_toolBar->addAction (openAction);
-  m_toolBar->addAction (saveAction);
-  m_toolBar->addAction (saveAsAction);
-  m_toolBar->addSeparator ();
-  m_toolBar->addAction (undoAction);
-  m_toolBar->addAction (redoAction);
-  m_toolBar->addAction (m_copyAction);
-  m_toolBar->addAction (m_cutAction);
-  m_toolBar->addAction (pasteAction);
-  m_toolBar->addSeparator ();
-  m_toolBar->addAction (runAction);
+  _tool_bar->addAction (newAction);
+  _tool_bar->addAction (openAction);
+  _tool_bar->addAction (saveAction);
+  _tool_bar->addAction (saveAsAction);
+  _tool_bar->addSeparator ();
+  _tool_bar->addAction (undoAction);
+  _tool_bar->addAction (redoAction);
+  _tool_bar->addAction (_copy_action);
+  _tool_bar->addAction (_cut_action);
+  _tool_bar->addAction (pasteAction);
+  _tool_bar->addSeparator ();
+  _tool_bar->addAction (runAction);
 
   // menu bar
-  QMenu *fileMenu = new QMenu (tr ("&File"), m_menuBar);
+  QMenu *fileMenu = new QMenu (tr ("&File"), _menu_bar);
   fileMenu->addAction (newAction);
   fileMenu->addAction (openAction);
   fileMenu->addAction (saveAction);
   fileMenu->addAction (saveAsAction);
   fileMenu->addSeparator ();
-  m_menuBar->addMenu (fileMenu);
+  _menu_bar->addMenu (fileMenu);
 
-  QMenu *editMenu = new QMenu (tr ("&Edit"), m_menuBar);
+  QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
   editMenu->addAction (undoAction);
   editMenu->addAction (redoAction);
   editMenu->addSeparator ();
-  editMenu->addAction (m_copyAction);
-  editMenu->addAction (m_cutAction);
+  editMenu->addAction (_copy_action);
+  editMenu->addAction (_cut_action);
   editMenu->addAction (pasteAction);
   editMenu->addSeparator ();
   editMenu->addAction (commentSelectedAction);
@@ -382,49 +382,49 @@ file_editor::construct ()
   editMenu->addAction (nextBookmarkAction);
   editMenu->addAction (prevBookmarkAction);
   editMenu->addAction (removeBookmarkAction);
-  m_menuBar->addMenu (editMenu);
+  _menu_bar->addMenu (editMenu);
 
-  QMenu *runMenu = new QMenu (tr ("&Run"), m_menuBar);
+  QMenu *runMenu = new QMenu (tr ("&Run"), _menu_bar);
   runMenu->addAction (runAction);
-  m_menuBar->addMenu (runMenu);
+  _menu_bar->addMenu (runMenu);
 
   QVBoxLayout *layout = new QVBoxLayout ();
-  layout->addWidget (m_menuBar);
-  layout->addWidget (m_toolBar);
-  layout->addWidget (m_tabWidget);
+  layout->addWidget (_menu_bar);
+  layout->addWidget (_tool_bar);
+  layout->addWidget (_tab_widget);
   layout->setMargin (0);
   widget->setLayout (layout);
   setWidget (widget);
 
   connect (newAction,               SIGNAL (triggered ()), this, SLOT (request_new_file ()));
   connect (openAction,              SIGNAL (triggered ()), this, SLOT (request_open_file ()));
-  connect (undoAction,              SIGNAL (triggered ()), this, SLOT (requestUndo ()));
-  connect (redoAction,              SIGNAL (triggered ()), this, SLOT (requestRedo ()));
-  connect (m_copyAction,            SIGNAL (triggered ()), this, SLOT (requestCopy ()));
-  connect (m_cutAction,             SIGNAL (triggered ()), this, SLOT (requestCut ()));
-  connect (pasteAction,             SIGNAL (triggered ()), this, SLOT (requestPaste ()));
-  connect (saveAction,              SIGNAL (triggered ()), this, SLOT (requestSaveFile ()));
-  connect (saveAsAction,            SIGNAL (triggered ()), this, SLOT (requestSaveFileAs ()));
-  connect (runAction,               SIGNAL (triggered ()), this, SLOT (requestRunFile ()));
-  connect (toggleBookmarkAction,    SIGNAL (triggered ()), this, SLOT (requestToggleBookmark ()));
-  connect (nextBookmarkAction,      SIGNAL (triggered ()), this, SLOT (requestNextBookmark ()));
-  connect (prevBookmarkAction,      SIGNAL (triggered ()), this, SLOT (requestPreviousBookmark ()));
-  connect (removeBookmarkAction,    SIGNAL (triggered ()), this, SLOT (requestRemoveBookmark ()));
-  connect (commentSelectedAction,   SIGNAL (triggered ()), this, SLOT (requestCommentSelectedText ()));
-  connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (requestUncommentSelectedText ()));
-  connect (m_tabWidget, SIGNAL (tabCloseRequested (int)), this, SLOT (handleTabCloseRequest (int)));
-  connect (m_tabWidget, SIGNAL (currentChanged(int)), this, SLOT (activeTabChanged (int)));
+  connect (undoAction,              SIGNAL (triggered ()), this, SLOT (request_undo ()));
+  connect (redoAction,              SIGNAL (triggered ()), this, SLOT (request_redo ()));
+  connect (_copy_action,            SIGNAL (triggered ()), this, SLOT (request_copy ()));
+  connect (_cut_action,             SIGNAL (triggered ()), this, SLOT (request_cut ()));
+  connect (pasteAction,             SIGNAL (triggered ()), this, SLOT (request_paste ()));
+  connect (saveAction,              SIGNAL (triggered ()), this, SLOT (request_save_file ()));
+  connect (saveAsAction,            SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
+  connect (runAction,               SIGNAL (triggered ()), this, SLOT (request_run_file ()));
+  connect (toggleBookmarkAction,    SIGNAL (triggered ()), this, SLOT (request_toggle_bookmark ()));
+  connect (nextBookmarkAction,      SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
+  connect (prevBookmarkAction,      SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));
+  connect (removeBookmarkAction,    SIGNAL (triggered ()), this, SLOT (request_remove_bookmark ()));
+  connect (commentSelectedAction,   SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
+  connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
+  connect (_tab_widget, SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
+  connect (_tab_widget, SIGNAL (currentChanged(int)), this, SLOT (active_tab_changed (int)));
 
   // this has to be done only once, not for each editor
-  m_lexer = new lexer_octave_gui ();
+  _lexer = new lexer_octave_gui ();
 
   // Editor font (default or from settings)
-  m_lexer->setDefaultFont (QFont (
+  _lexer->setDefaultFont (QFont (
                              settings->value ("editor/fontName","Courier").toString (),
                              settings->value ("editor/fontSize",10).toInt ()));
 
   // TODO: Autoindent not working as it should
-  m_lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
+  _lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
                                QsciScintilla::AiOpening  ||
                                QsciScintilla::AiClosing);
 
@@ -433,38 +433,38 @@ file_editor::construct ()
   // TODO: Also provide infos on octave-forge functions?
   // TODO: Also provide infos on function parameters?
   // By now, use the keywords-list from syntax highlighting
-  m_lexerAPI = new QsciAPIs (m_lexer);
+  _lexer_api = new QsciAPIs (_lexer);
 
   QString keyword;
   QStringList keywordList;
-  keyword = m_lexer->keywords (1);  // get whole string with all keywords
+  keyword = _lexer->keywords (1);  // get whole string with all keywords
   keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
   int i;
   for (i = 0; i < keywordList.size (); i++)
     {
-      m_lexerAPI->add (keywordList.at (i));  // add single strings to the API
+      _lexer_api->add (keywordList.at (i));  // add single strings to the API
     }
-  m_lexerAPI->prepare ();           // prepare API info ... this make take some time
+  _lexer_api->prepare ();           // prepare API info ... this make take some time
   resize (500, 400);
   setWindowIcon (QIcon::fromTheme ("accessories-text-editor", style->standardIcon (QStyle::SP_FileIcon)));
   setWindowTitle ("Octave Editor");
 }
 
 void
-file_editor::addFileEditorTab (file_editor_tab *fileEditorTab)
+file_editor::add_file_editor_tab (file_editor_tab *f)
 {
-  m_tabWidget->addTab (fileEditorTab, "");
-  connect (fileEditorTab, SIGNAL (fileNameChanged(QString)),
-           this, SLOT(handleFileNameChanged(QString)));
-  connect (fileEditorTab, SIGNAL (editorStateChanged ()),
-           this, SLOT (handleEditorStateChanged ()));
-  connect (fileEditorTab, SIGNAL (closeRequest ()),
-           this, SLOT (handleTabCloseRequest ()));
-  m_tabWidget->setCurrentWidget (fileEditorTab);
+  _tab_widget->addTab (f, "");
+  connect (f, SIGNAL (file_name_changed(QString)),
+           this, SLOT(handle_file_name_changed(QString)));
+  connect (f, SIGNAL (editor_state_changed ()),
+           this, SLOT (handle_editor_state_changed ()));
+  connect (f, SIGNAL (close_request ()),
+           this, SLOT (handle_tab_close_request ()));
+  _tab_widget->setCurrentWidget (f);
 }
 
 file_editor_tab *
-file_editor::activeEditorTab ()
+file_editor::active_editor_tab ()
 {
-  return dynamic_cast<file_editor_tab*> (m_tabWidget->currentWidget ());
+  return dynamic_cast<file_editor_tab*> (_tab_widget->currentWidget ());
 }

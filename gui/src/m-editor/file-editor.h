@@ -49,50 +49,50 @@ public:
   file_editor (QTerminal *terminal, main_window *mainWindow);
   ~file_editor ();
   void loadFile (QString fileName);
+
   lexer_octave_gui *lexer ();
-  QTerminal *terminal ();
-  main_window *mainWindow ();
+  QTerminal *       terminal ();
+  main_window *     mainWindow ();
 
 public slots:
   void request_new_file ();
   void request_open_file ();
   void request_open_file (QString fileName);
 
-  void requestUndo ();
-  void requestRedo ();
-  void requestCopy ();
-  void requestCut ();
-  void requestPaste ();
-  void requestSaveFile ();
-  void requestSaveFileAs ();
-  void requestRunFile ();
-  void requestToggleBookmark ();
-  void requestNextBookmark ();
-  void requestPreviousBookmark ();
-  void requestRemoveBookmark ();
-  void requestCommentSelectedText ();
-  void requestUncommentSelectedText ();
+  void request_undo ();
+  void request_redo ();
+  void request_copy ();
+  void request_cut ();
+  void request_paste ();
+  void request_save_file ();
+  void request_save_file_as ();
+  void request_run_file ();
+  void request_toggle_bookmark ();
+  void request_next_bookmark ();
+  void request_previous_bookmark ();
+  void request_remove_bookmark ();
+  void request_comment_selected_text ();
+  void request_uncomment_selected_text ();
 
-  void handleFileNameChanged (QString fileName);
-  void handleTabCloseRequest (int index);
-  void handleTabCloseRequest ();
-  void activeTabChanged (int index);
-  void handleEditorStateChanged ();
+  void handle_file_name_changed (QString fileName);
+  void handle_tab_close_request (int index);
+  void handle_tab_close_request ();
+  void active_tab_changed (int index);
+  void handle_editor_state_changed ();
 
 private:
   void construct ();
-  void addFileEditorTab(file_editor_tab *fileEditorTab);
-  file_editor_tab *activeEditorTab();
+  void add_file_editor_tab(file_editor_tab *f);
+  file_editor_tab *active_editor_tab();
 
-  QMenuBar *m_menuBar;
-  QToolBar *m_toolBar;
-  QAction* m_copyAction;
-  QAction* m_cutAction;
-  QTabWidget *m_tabWidget;
-  int m_markerBookmark;
-
-  lexer_octave_gui *m_lexer;
-  QsciAPIs *m_lexerAPI;
+  QMenuBar *        _menu_bar;
+  QToolBar *        _tool_bar;
+  QAction*          _copy_action;
+  QAction*          _cut_action;
+  QTabWidget *      _tab_widget;
+  int               _marker_bookmark;
+  lexer_octave_gui *_lexer;
+  QsciAPIs *        _lexer_api;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

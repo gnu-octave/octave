@@ -80,7 +80,7 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   // connect modified signal
   connect (_edit_area, SIGNAL (modificationChanged (bool)),
            this, SLOT (new_title (bool)));
-  connect (_edit_area, SIGNAL (copy_available (bool)),
+  connect (_edit_area, SIGNAL (copyAvailable (bool)),
            this, SLOT (handle_copy_available (bool)));
   connect (&_file_system_watcher, SIGNAL (fileChanged (QString)),
            this, SLOT (file_has_changed (QString)));

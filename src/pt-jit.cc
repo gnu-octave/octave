@@ -90,6 +90,13 @@ fail (const std::string& reason)
   throw jit_fail_exception (reason);
 }
 
+std::ostream& jit_print (std::ostream& os, jit_type *atype)
+{
+  if (! atype)
+    return os << "null";
+  return os << atype->name ();
+}
+
 // function that jit code calls
 extern "C" void
 octave_jit_print_any (const char *name, octave_base_value *obv)
@@ -618,11 +625,20 @@ jit_use::user_parent (void) const
 // -------------------- jit_value --------------------
 jit_value::~jit_value (void)
 {
+  replace_with (0);
+}
+
+void
+jit_value::replace_with (jit_value *value)
+{
   while (use_head)
     {
       jit_instruction *user = use_head->user ();
       size_t idx = use_head->index ();
-      user->stash_argument (idx, 0);
+      if (idx < user->argument_count ())
+        user->stash_argument (idx, value);
+      else
+        user->stash_tag (0);
     }
 }
 
@@ -636,11 +652,56 @@ jit_value::~jit_value (void)
 JIT_VISIT_IR_NOTEMPLATE
 #undef JIT_METH
 
+std::ostream&
+operator<< (std::ostream& os, const jit_value& value)
+{
+  return value.short_print (os);
+}
+
 // -------------------- jit_instruction --------------------
+void
+jit_instruction::push_variable (void)
+{
+  if (tag ())
+    tag ()->push (this);
+}
+
+void
+jit_instruction::pop_variable (void)
+{
+  if (tag ())
+    tag ()->pop ();
+}
+
 llvm::BasicBlock *
 jit_instruction::parent_llvm (void) const
 {
   return mparent->to_llvm ();
+}
+
+std::ostream&
+jit_instruction::short_print (std::ostream& os) const
+{
+  if (type ())
+    jit_print (os, type ()) << ": ";
+
+  if (tag ())
+    os << tag ()->name () << "." << id;
+  else
+    os << "#" << id;
+  return os;
+}
+
+jit_variable *
+jit_instruction::tag (void) const
+{
+  return reinterpret_cast<jit_variable *> (mtag.value ());
+}
+
+void
+jit_instruction::stash_tag (jit_variable *atag)
+{
+  mtag.stash_value (atag, this);
 }
 
 // -------------------- jit_block --------------------
@@ -656,6 +717,23 @@ jit_instruction *
 jit_block::append (jit_instruction *instr)
 {
   instructions.push_back (instr);
+  instr->stash_parent (this);
+  return instr;
+}
+
+jit_instruction *
+jit_block::insert_before (iterator loc, jit_instruction *instr)
+{
+  instructions.insert (loc, instr);
+  instr->stash_parent (this);
+  return instr;
+}
+
+jit_instruction *
+jit_block::insert_after (iterator loc, jit_instruction *instr)
+{
+  ++loc;
+  instructions.insert (loc, instr);
   instr->stash_parent (this);
   return instr;
 }
@@ -687,13 +765,6 @@ jit_block::pred (size_t idx) const
   return use->user_parent ();
 }
 
-llvm::Value *
-jit_block::pred_terminator_llvm (size_t idx) const
-{
-  jit_terminator *term = pred_terminator (idx);
-  return term ? term->to_llvm () : 0;
-}
-
 size_t
 jit_block::pred_index (jit_block *apred) const
 {
@@ -718,9 +789,10 @@ jit_block::create_merge (llvm::Function *inside, size_t pred_idx)
                                         to_llvm ());
           
       // fix the predecessor jump if it has been created
-      llvm::Value *term = pred_terminator_llvm (pred_idx);
-      if (term)
+      jit_terminator *jterm = pred_terminator (pred_idx);
+      if (jterm->has_llvm ())
         {
+          llvm::Value *term = jterm->to_llvm ();
           llvm::TerminatorInst *branch = llvm::cast<llvm::TerminatorInst> (term);
           for (size_t i = 0; i < branch->getNumSuccessors (); ++i)
             {
@@ -735,6 +807,13 @@ jit_block::create_merge (llvm::Function *inside, size_t pred_idx)
     }
 }
 
+jit_block *
+jit_block::succ (size_t i) const
+{
+  jit_terminator *term = terminator ();
+  return term->sucessor (i);
+}
+
 size_t
 jit_block::succ_count (void) const
 {
@@ -742,22 +821,196 @@ jit_block::succ_count (void) const
   return term ? term->sucessor_count () : 0;
 }
 
-jit_phi *
-jit_block::search_phi (const std::string& tag_name)
-{
-  jit_phi *ret = 0;
-  for (iterator iter = begin (); iter != end ()
-         && (ret = dynamic_cast<jit_phi *> (*iter)); ++iter)
-    if (ret->tag () == tag_name)
-      return ret;
-
-  return 0;
-}
-
 llvm::BasicBlock *
 jit_block::to_llvm (void) const
 {
   return llvm::cast<llvm::BasicBlock> (llvm_value);
+}
+
+std::ostream&
+jit_block::print_dom (std::ostream& os) const
+{
+  short_print (os);
+  os << ":\n";
+  os << "  mid: " << mid << std::endl;
+  os << "  pred: ";
+  for (size_t i = 0; i < pred_count (); ++i)
+    os << *pred (i) << " ";
+  os << std::endl;
+
+  os << "  succ: ";
+  for (size_t i = 0; i < succ_count (); ++i)
+    os << *succ (i) << " ";
+  os << std::endl;
+
+  os << "  idom: ";
+  if (idom)
+    os << *idom;
+  else
+    os << "NULL";
+  os << std::endl;
+  os << "  df: ";
+  for (df_iterator iter = df_begin (); iter != df_end (); ++iter)
+    os << **iter << " ";
+  os << std::endl;
+
+  os << "  dom_succ: ";
+  for (size_t i = 0; i < dom_succ.size (); ++i)
+    os << *dom_succ[i] << " ";
+
+  return os << std::endl;
+}
+
+void
+jit_block::compute_df (size_t visit_count)
+{
+  if (mvisit_count > visit_count)
+    return;
+  ++mvisit_count;
+
+  if (pred_count () >= 2)
+    {
+      for (size_t i = 0; i < pred_count (); ++i)
+        {
+          jit_block *runner = pred (i);
+          while (runner != idom)
+            {
+              runner->mdf.insert (this);
+              runner = runner->idom;
+            }
+        }
+    }
+
+  for (size_t i = 0; i < succ_count (); ++i)
+    succ (i)->compute_df (visit_count);
+}
+
+bool
+jit_block::update_idom (size_t visit_count)
+{
+  if (mvisit_count > visit_count)
+    return false;
+  ++mvisit_count;
+
+  if (! pred_count ())
+    return false;
+
+  bool changed = false;
+  for (size_t i = 0; i < pred_count (); ++i)
+    changed = pred (i)->update_idom (visit_count) || changed;
+
+  jit_block *new_idom = pred (0);
+  for (size_t i = 1; i < pred_count (); ++i)
+    {
+      jit_block *pidom = pred (i)->idom;
+      if (! new_idom)
+        new_idom = pidom;
+      else if (pidom)
+        new_idom = pidom->idom_intersect (new_idom);
+    }
+
+  if (idom != new_idom)
+    {
+      idom = new_idom;
+      return true;
+    }
+
+  return changed;
+}
+
+void
+jit_block::finish_phi (jit_block *apred)
+{
+  size_t pred_idx = pred_index (apred);
+  for (iterator iter = begin (); iter != end ()
+         && dynamic_cast<jit_phi *> (*iter); ++iter)
+    {
+      jit_instruction *phi = *iter;
+      jit_variable *var = phi->tag ();
+      phi->stash_argument (pred_idx, var->top ());
+    }
+}
+
+void
+jit_block::do_construct_ssa (jit_convert& convert, size_t visit_count)
+{
+  if (mvisit_count > visit_count)
+    return;
+  ++mvisit_count;
+
+  for (iterator iter = begin (); iter != end (); ++iter)
+    {
+      jit_instruction *instr = *iter;
+      bool isphi = dynamic_cast<jit_phi *> (instr);
+
+      if (! isphi)
+        {
+          for (size_t i = 0; i < instr->argument_count (); ++i)
+            {
+              jit_variable *var;
+              var = dynamic_cast<jit_variable *> (instr->argument (i));
+              if (var)
+                instr->stash_argument (i, var->top ());
+            }
+
+          // FIXME: Remove need for jit_store_argument dynamic cast
+          jit_variable *tag = instr->tag ();
+          if (tag && tag->has_top ()
+              && ! dynamic_cast<jit_store_argument *> (instr))
+            {
+              jit_call *rel = convert.create<jit_call> (jit_typeinfo::release,
+                                                        tag->top ());
+              insert_after (iter, rel);
+              ++iter;
+            }
+        }
+
+      instr->push_variable ();
+    }
+
+  for (size_t i = 0; i < succ_count (); ++i)
+    succ (i)->finish_phi (this);
+
+  for (size_t i = 0; i < dom_succ.size (); ++i)
+    dom_succ[i]->do_construct_ssa (convert, visit_count);
+
+  for (iterator iter = begin (); iter != end (); ++iter)
+    {
+      jit_instruction *instr = *iter;
+      instr->pop_variable ();
+    }
+}
+
+void
+jit_block::create_dom_tree (size_t visit_count)
+{
+  if (mvisit_count > visit_count)
+    return;
+  ++mvisit_count;
+
+  if (idom != this)
+    idom->dom_succ.push_back (this);
+
+  for (size_t i = 0; i < succ_count (); ++i)
+    succ (i)->create_dom_tree (visit_count);
+}
+
+jit_block *
+jit_block::idom_intersect (jit_block *b)
+{
+  jit_block *i = this;
+  jit_block *j = b;
+
+  while (i != j)
+    {
+      while (i->id () > j->id ())
+        i = i->idom;
+
+      while (j->id () > i->id ())
+        j = j->idom;
+    }
+
+  return i;
 }
 
 // -------------------- jit_call --------------------
@@ -792,45 +1045,39 @@ jit_call::infer (void)
 
 // -------------------- jit_convert --------------------
 jit_convert::jit_convert (llvm::Module *module, tree &tee)
+  : iterator_count (0), breaking (false)
 {
   jit_instruction::reset_ids ();
 
-  jit_block *entry_block = create<jit_block> ("body");
+  entry_block = create<jit_block> ("body");
+  blocks.push_back (entry_block);
   block = entry_block;
-  blocks.push_back (block);
-
-  toplevel_map tlevel (*this, block);
-  variables = &tlevel;
-  final_block = create<jit_block> ("final");
   visit (tee);
 
-  blocks.push_back (final_block);
-  block->append (create<jit_break> (final_block));
+  // FIXME: Remove if we no longer only compile loops
+  assert (! breaking);
+  assert (breaks.empty ());
+  assert (continues.empty ());
 
-  for (variable_map::iterator iter = variables->begin ();
-       iter != variables->end (); ++iter)
-    final_block->append (create<jit_store_argument> (iter->first, iter->second));
+  jit_block *final_block = block;
+  for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
+       
+    {
+      jit_variable *var = iter->second;
+      const std::string& name = var->name ();
+      if (name.size () && name[0] != '#')
+        final_block->append (create<jit_store_argument> (var));
+    }
 
-  // FIXME: Maybe we should remove dead code here?
+  construct_ssa (final_block);
 
   // initialize the worklist to instructions derived from constants
   for (std::list<jit_value *>::iterator iter = constants.begin ();
        iter != constants.end (); ++iter)
     append_users (*iter);
 
-  // also get anything from jit_extract_argument, as these have constant types
-  for (jit_block::iterator iter = entry_block->begin ();
-       iter != entry_block->end (); ++iter)
-    {
-      jit_instruction *instr = *iter;
-      if (jit_extract_argument *extract = dynamic_cast<jit_extract_argument *>(instr))
-        {
-          if (! extract->type ())
-            // we depend on an unknown type
-            fail ("Unknown initial type: \"" + extract->tag () + "\""); 
-          append_users (extract);
-        }
-    }
+  if (debug_print)
+      print_blocks ("octave jit ir");
 
   // FIXME: Describe algorithm here
   while (worklist.size ())
@@ -846,11 +1093,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
     {
       std::cout << "-------------------- Compiling tree --------------------\n";
       std::cout << tee.str_print_code () << std::endl;
-      std::cout << "-------------------- octave jit ir --------------------\n";
-      for (std::list<jit_block *>::iterator iter = blocks.begin ();
-           iter != blocks.end (); ++iter)
-        (*iter)->print (std::cout, 0);
-      std::cout << std::endl;
+      print_blocks ("octave jit ir");
     }
 
   // for now just init arguments from entry, later we will have to do something
@@ -859,11 +1102,11 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
        iter != entry_block->end (); ++iter)
     {
       if (jit_extract_argument *extract = dynamic_cast<jit_extract_argument *> (*iter))
-        arguments.push_back (std::make_pair (extract->tag (), true));
+        arguments.push_back (std::make_pair (extract->name (), true));
     }
 
   convert_llvm to_llvm;
-  function = to_llvm.convert (module, arguments, blocks, constants);
+  function = to_llvm.convert (module, arguments, blocks);
 
   if (debug_print)
     {
@@ -914,7 +1157,8 @@ jit_convert::visit_binary_expression (tree_binary_expression& be)
 void
 jit_convert::visit_break_command (tree_break_command&)
 {
-  fail ();
+  breaks.push_back (block);
+  breaking = true;
 }
 
 void
@@ -926,7 +1170,8 @@ jit_convert::visit_colon_expression (tree_colon_expression&)
 void
 jit_convert::visit_continue_command (tree_continue_command&)
 {
-  fail ();
+  continues.push_back (block);
+  breaking = true;
 }
 
 void
@@ -961,35 +1206,26 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   // better type inference bounds on variables defined and used only
   // inside the for loop (e.g. the index variable)
 
-  // prev_block: % pred = ?
-  //  #control.0 = % compute_control (note this will just be a temp)
-  //  #iter.0 = call for_init (#control.0) % Let type of control decide iter
-  //                                       % initial value and type
-  //  #temp.0 = call for_check (control.0, #iter.0)
-  //  cond_break #temp.0, for_body, for_tail
-  // for_body: % pred = for_init, for_cond
-  //  idxvar.2 = phi | for_init -> idxvar.1
-  //                 | for_body -> idxvar.3
-  //  #iter.1 = phi | for_init -> #iter.0
-  //                | for_body -> #iter.2
-  //  idxvar.3 = call for_index (#control.0, #iter.1)
-  //  % do loop body
-  //  #iter.2 = #iter.1 + 1 % release is implicit in iter reuse
-  //  #check = call for_check (#control.0, iter.2)
-  //  cond_break #check for_body, for_tail
-  // for_tail: % pred = prev_block, for_body
-  //  #iter.3 = phi | prev_block -> #iter.0
-  //                | for_body -> #iter.2
-  //  idxvar.4 = phi | prev_block -> idxvar.0
-  //                 | for_body -> idxvar.3
-  //  call release (#iter.3)
-  //  % rest of code
+  // If we are a nested for loop we need to store the previous breaks
+  assert (! breaking);
+  unwind_protect prot;
+  prot.protect_var (breaks);
+  prot.protect_var (continues);
+  prot.protect_var (breaking);
+  breaks.clear ();
 
   // FIXME: one of these days we will introduce proper lvalues...
   tree_identifier *lhs = dynamic_cast<tree_identifier *>(cmd.left_hand_side ());
   if (! lhs)
     fail ();
   std::string lhs_name = lhs->name ();
+
+  // we need a variable for our iterator, because it is used in multiple blocks
+  std::stringstream ss;
+  ss << "#iter" << iterator_count++;
+  std::string iter_name = ss.str ();
+  jit_variable *iterator = create<jit_variable> (iter_name);
+  vmap[iter_name] = iterator;
 
   jit_block *body = create<jit_block> ("for_body");
   blocks.push_back (body);
@@ -999,55 +1235,57 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   // do control expression, iter init, and condition check in prev_block (block)
   jit_value *control = visit (cmd.control_expr ());
   jit_call *init_iter = create<jit_call> (jit_typeinfo::for_init, control);
-  init_iter->stash_tag ("#iter");
+  init_iter->stash_tag (iterator);
   block->append (init_iter);
+  
   jit_value *check = block->append (create<jit_call> (jit_typeinfo::for_check,
-                                                      control, init_iter));
+                                                      control, iterator));
   block->append (create<jit_cond_break> (check, body, tail));
-
-  // we need to do iter phi manually, for_map handles the rest
-  jit_phi *iter_phi = create<jit_phi> (2);
-  iter_phi->stash_tag ("#iter");
-  iter_phi->stash_argument (0, init_iter);
-  body->append (iter_phi);
-
-  variable_map *merge_vars = variables;
-  for_map body_vars (variables, body);
-  variables = &body_vars;
   block = body;
 
-  // first thing we do in the for loop is bind our index from our itertor
-  jit_call *idx_rhs = create<jit_call> (jit_typeinfo::for_index, control, iter_phi);
+  // compute the syntactical iterator
+  jit_call *idx_rhs = create<jit_call> (jit_typeinfo::for_index, control, iterator);
   block->append (idx_rhs);
-  idx_rhs->stash_tag (lhs_name);
   do_assign (lhs_name, idx_rhs, false);
   
+  // do loop
   tree_statement_list *pt_body = cmd.body ();
   pt_body->accept (*this);
 
-  // increment iterator, check conditional, and repeat
+  if (breaking && continues.empty ())
+    {
+      // WTF are you doing user? Every branch was a continue, why did you have
+      // a loop??? Users are silly people...
+      finish_breaks (tail, breaks);
+      blocks.push_back (tail);
+      block = tail;
+      return;
+    }
+
+  // check our condition, continues jump to this block
+  jit_block *check_block = create<jit_block> ("for_check");
+  blocks.push_back (check_block);
+
+  if (! breaking)
+    block->append (create<jit_break> (check_block));
+  finish_breaks (check_block, continues);
+
+  block = check_block;
   const jit_function& add_fn = jit_typeinfo::binary_op (octave_value::op_add);
-  jit_call *iter_inc = create<jit_call> (add_fn, iter_phi,
-                                         create<jit_const_index> (1));
-  iter_inc->stash_tag ("#iter");
+  jit_instruction *one = create<jit_const_index> (1);
+  block->append (one);
+
+  jit_call *iter_inc = create<jit_call> (add_fn, iterator, one);
+  iter_inc->stash_tag (iterator);
   block->append (iter_inc);
   check = block->append (create<jit_call> (jit_typeinfo::for_check, control,
-                                           iter_inc));
+                                           iterator));
   block->append (create<jit_cond_break> (check, body, tail));
-  iter_phi->stash_argument (1, iter_inc);
-  body_vars.finish_phi (*variables);
-  merge (tail, *merge_vars, block, body_vars);
 
+  // breaks will go to our tail
   blocks.push_back (tail);
+  finish_breaks (tail, breaks);
   block = tail;
-  variables = merge_vars;
-
-  iter_phi = create<jit_phi> (2);
-  iter_phi->stash_tag ("#iter");
-  iter_phi->stash_argument (0, init_iter);
-  iter_phi->stash_argument (1, iter_inc);
-  block->append (iter_phi);
-  block->append (create<jit_call> (jit_typeinfo::release, iter_phi));
 }
 
 void
@@ -1090,8 +1328,8 @@ void
 jit_convert::visit_identifier (tree_identifier& ti)
 {
   const jit_function& fn = jit_typeinfo::grab ();
-  jit_value *var = variables->get (ti.name ());
-  result = block->append (create<jit_call> (fn, var));
+  jit_value *decl = get_variable (ti.name ());
+  result = block->append (create<jit_call> (fn, decl));
 }
 
 void
@@ -1119,6 +1357,10 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   // else
   //  c = c + 3;
   // endif
+
+  // ********************
+  // FIXME: Documentation no longer reflects current version
+  // ********************
 
   // Generates:
   // prev_block0: % pred - ?
@@ -1149,7 +1391,6 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   // the condition check for the ith clause. For the else, it is simple the
   // else body. If there is no else body, then it is padded with the tail
   std::vector<jit_block *> entry_blocks (lst.size () + 1 - last_else);
-  std::vector<variable_map *> branch_variables (lst.size (), 0);
   std::vector<jit_block *> branch_blocks (lst.size (), 0); // final blocks
   entry_blocks[0] = block;
 
@@ -1169,16 +1410,13 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
   if (! last_else)
     entry_blocks[entry_blocks.size () - 1] = tail;
 
-  // actually fill out the contents of our blocks. We store the variable maps
-  // at the end of each branch, this allows us to merge them in the tail
-  variable_map *prev_map = variables;
+  size_t num_incomming = 0; // number of incomming blocks to our tail
   iter = lst.begin ();
   for (size_t i = 0; iter != lst.end (); ++iter, ++i)
     {
       tree_if_clause *tic = *iter;
       block = entry_blocks[i];
       assert (block);
-      variables = prev_map;
 
       if (i) // the first block is prev_block, so it has already been added
         blocks.push_back (entry_blocks[i]);
@@ -1195,31 +1433,29 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
                                                         entry_blocks[i + 1]);
           block->append (br);
           block = body;
-
-          variables = new compound_map (variables);
-          branch_variables[i] = variables;
         }
 
       tree_statement_list *stmt_lst = tic->commands ();
       assert (stmt_lst); // jwe: Can this be null?
       stmt_lst->accept (*this);
 
-      branch_variables[i] = variables;
-      branch_blocks[i] = block;
-      block->append (create<jit_break> (tail));
+      if (breaking)
+        breaking = false;
+      else
+        {
+          ++num_incomming;
+          block->append (create<jit_break> (tail));
+        }
     }
 
-  blocks.push_back (tail);
-
-  // We create phi nodes in the tail to merge blocks
-  for (size_t i = 0; i < branch_variables.size () - last_else; ++i)
+  if (num_incomming || ! last_else)
     {
-      merge (tail, *prev_map, branch_blocks[i], *branch_variables[i]);
-      delete branch_variables[i];
+      blocks.push_back (tail);
+      block = tail;
     }
-
-  variables = prev_map;
-  block = tail;
+  else
+    // every branch broke, so we don't have a tail
+    breaking = true;
 }
 
 void
@@ -1267,7 +1503,9 @@ jit_convert::visit_constant (tree_constant& tc)
       result = create<jit_const_range> (rv);
     }
   else
-    fail ();
+    fail ("Unknown constant");
+
+  block->append (result);
 }
 
 void
@@ -1311,7 +1549,7 @@ jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
 {
   // resolve rhs
   tree_expression *rhs = tsa.right_hand_side ();
-  jit_value *rhsv = visit (rhs);
+  jit_instruction *rhsv = visit (rhs);
 
   // resolve lhs
   tree_expression *lhs = tsa.left_hand_side ();
@@ -1319,11 +1557,7 @@ jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
     fail ();
 
   std::string lhs_name = lhs->name ();
-  do_assign (lhs_name, rhsv, tsa.print_result ());
-  result = rhsv;
-
-  if (jit_instruction *instr = dynamic_cast<jit_instruction *>(rhsv))
-    instr->stash_tag (lhs_name);
+  result = do_assign (lhs_name, rhsv, tsa.print_result ());
 }
 
 void
@@ -1348,7 +1582,7 @@ jit_convert::visit_statement (tree_statement& stmt)
       else
         do_bind_ans = (! expr->is_assignment_expression ());
 
-      jit_value *expr_result = visit (expr);
+      jit_instruction *expr_result = visit (expr);
 
       if (do_bind_ans)
         do_assign ("ans", expr_result, expr->print_result ());
@@ -1373,6 +1607,9 @@ jit_convert::visit_statement_list (tree_statement_list& lst)
       // jwe: Can this ever be null?
       assert (elt);
       elt->accept (*this);
+
+      if (breaking)
+        break;
     }
 }
 
@@ -1418,86 +1655,113 @@ jit_convert::visit_do_until_command (tree_do_until_command&)
   fail ();
 }
 
-void
-jit_convert::do_assign (const std::string& lhs, jit_value *rhs, bool print)
+jit_variable *
+jit_convert::get_variable (const std::string& vname)
 {
-  const jit_function& release = jit_typeinfo::release ();
-  jit_value *current = variables->get (lhs);
-  block->append (create<jit_call> (release, current));
-  variables->set (lhs, rhs);
+  vmap_t::iterator iter;
+  iter = vmap.find (vname);
+  if (iter != vmap.end ())
+    return iter->second;
+
+  jit_variable *var = create<jit_variable> (vname);
+  octave_value val = symbol_table::find (vname);
+  jit_type *type = jit_typeinfo::type_of (val);
+  jit_extract_argument *extract;
+  extract = create<jit_extract_argument> (type, var);
+  entry_block->prepend (extract);
+
+  return vmap[vname] = var;
+}
+
+jit_instruction *
+jit_convert::do_assign (const std::string& lhs, jit_instruction *rhs,
+                        bool print)
+{
+  jit_variable *var = get_variable (lhs);
+  rhs->stash_tag (var);
 
   if (print)
     {
       const jit_function& print_fn = jit_typeinfo::print_value ();
       jit_const_string *name = create<jit_const_string> (lhs);
-      block->append (create<jit_call> (print_fn, name, rhs));
+      block->append (create<jit_call> (print_fn, name, var));
     }
+
+  return rhs;
 }
 
-jit_value *
+jit_instruction *
 jit_convert::visit (tree& tee)
 {
   result = 0;
   tee.accept (*this);
 
-  jit_value *ret = result;
+  jit_instruction *ret = result;
   result = 0;
   return ret;
 }
 
 void
-jit_convert::merge (jit_block *merge_block, variable_map& merge_vars,
-                    jit_block *incomming_block,
-                    const variable_map& incomming_vars)
+jit_convert::construct_ssa (jit_block *final_block)
 {
-  size_t pred_count = merge_block->pred_count ();
-  size_t merge_idx = merge_block->pred_index (incomming_block);
-  for (variable_map::const_iterator iter = incomming_vars.begin ();
-       iter != incomming_vars.end (); ++iter)
-    {
-      const std::string& vname = iter->first;
-      jit_value *merge_val = merge_vars.get (vname);
-      jit_value *inc_val = iter->second;
+  final_block->label ();
+  entry_block->compute_idom (final_block);
+  entry_block->compute_df ();
+  entry_block->create_dom_tree ();
 
-      if (merge_val != inc_val)
+  // insert phi nodes where needed
+  for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
+    {
+      jit_block::df_set visited, added_phi;
+      std::list<jit_block *> ssa_worklist;
+      iter->second->use_blocks (visited);
+      ssa_worklist.insert (ssa_worklist.begin (), visited.begin (), visited.end ());
+
+      while (ssa_worklist.size ())
         {
-          jit_phi *phi = dynamic_cast<jit_phi *> (merge_val);
-          if (! (phi && phi->parent () == merge_block))
+          jit_block *b = ssa_worklist.front ();
+          ssa_worklist.pop_front ();
+
+          for (jit_block::df_iterator diter = b->df_begin ();
+               diter != b->df_end (); ++diter)
             {
-              phi = merge_block->search_phi (vname);
-              if (! phi)
+              jit_block *dblock = *diter;
+              if (! added_phi.count (dblock))
                 {
-                  phi = create<jit_phi> (pred_count, merge_val);
-                  merge_block->prepend (phi);
+                  jit_phi *phi = create<jit_phi> (iter->second,
+                                                  dblock->pred_count ());
+                  dblock->prepend (phi);
+                  added_phi.insert (dblock);
                 }
 
-              merge_vars.set (vname, phi);
+              if (! visited.count (dblock))
+                {
+                  ssa_worklist.push_back (dblock);
+                  visited.insert (dblock);
+                }
             }
-
-          phi->stash_argument (merge_idx, inc_val);
         }
     }
+
+  entry_block->construct_ssa (*this);
 }
 
-// -------------------- jit_convert::toplevel_map --------------------
-jit_value *
-jit_convert::toplevel_map::insert (const std::string& name, jit_value *pval)
+void
+jit_convert::finish_breaks (jit_block *dest, const break_list& lst)
 {
-  assert (pval == 0); // we have no parent
-
-  jit_block *entry = block ();
-  octave_value val = symbol_table::find (name);
-  jit_type *type = jit_typeinfo::type_of (val);
-  jit_instruction *ret = convert.create<jit_extract_argument> (type, name);
-  return vars[name] = entry->prepend (ret);
+  for (break_list::const_iterator iter = lst.begin (); iter != lst.end ();
+       ++iter)
+    {
+      jit_block *b = *iter;
+      b->append (create<jit_break> (dest));
+    }
 }
 
 // -------------------- jit_convert::convert_llvm --------------------
 llvm::Function *
 jit_convert::convert_llvm::convert (llvm::Module *module,
                                     const std::vector<std::pair< std::string, bool> >& args,
-                                    const std::list<jit_block *>& blocks,
-                                    const std::list<jit_value *>& constants)
+                                    const std::list<jit_block *>& blocks)
 {
   jit_type *any = jit_typeinfo::get_any ();
 
@@ -1521,12 +1785,6 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
           llvm::Value *loaded_arg = builder.CreateConstInBoundsGEP1_32 (arg, i);
           arguments[args[i].first] = loaded_arg;
         }
-
-      // we need to generate llvm values for constants, as these don't appear in
-      // a block
-      for (std::list<jit_value *>::const_iterator iter = constants.begin ();
-           iter != constants.end (); ++iter)
-        visit (*iter);
 
       std::list<jit_block *>::const_iterator biter;
       for (biter = blocks.begin (); biter != blocks.end (); ++biter)
@@ -1667,12 +1925,12 @@ jit_convert::convert_llvm::visit (jit_call& call)
   const jit_function::overload& ol = call.overload ();
   if (! ol.function)
     fail ("No overload for: " + call.print_string ());
-  
+
   std::vector<llvm::Value *> args (call.argument_count ());
   for (size_t i = 0; i < call.argument_count (); ++i)
     args[i] = call.argument_llvm (i);
 
-  call.stash_llvm (builder.CreateCall (ol.function, args, call.tag ()));
+  call.stash_llvm (builder.CreateCall (ol.function, args));
 }
 
 void
@@ -1682,10 +1940,10 @@ jit_convert::convert_llvm::visit (jit_extract_argument& extract)
   if (! ol.function)
     fail ();
 
-  llvm::Value *arg = arguments[extract.tag ()];
+  llvm::Value *arg = arguments[extract.name ()];
   assert (arg);
   arg = builder.CreateLoad (arg);
-  extract.stash_llvm (builder.CreateCall (ol.function, arg, extract.tag ()));
+  extract.stash_llvm (builder.CreateCall (ol.function, arg, extract.name ()));
 }
 
 void
@@ -1698,7 +1956,7 @@ jit_convert::convert_llvm::visit (jit_store_argument& store)
 
   arg_value = builder.CreateCall (ol.function, arg_value);
 
-  llvm::Value *arg = arguments[store.tag ()];
+  llvm::Value *arg = arguments[store.name ()];
   store.stash_llvm (builder.CreateStore (arg_value, arg));
 }
 
@@ -1708,8 +1966,7 @@ jit_convert::convert_llvm::visit (jit_phi& phi)
   // we might not have converted all incoming branches, so we don't
   // set incomming branches now
   llvm::PHINode *node = llvm::PHINode::Create (phi.type_llvm (),
-                                               phi.argument_count (),
-                                               phi.tag ());
+                                               phi.argument_count ());
   builder.Insert (node);
   phi.stash_llvm (node);
 
@@ -1717,6 +1974,12 @@ jit_convert::convert_llvm::visit (jit_phi& phi)
   for (size_t i = 0; i < phi.argument_count (); ++i)
     if (phi.argument_type (i) != phi.type ())
       parent->create_merge (function, i);
+}
+
+void
+jit_convert::convert_llvm::visit (jit_variable&)
+{
+  fail ("ERROR: SSA construction should remove all variables");
 }
 
 // -------------------- tree_jit --------------------

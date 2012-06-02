@@ -3833,43 +3833,43 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
 #endif
 
 #ifndef _MSC_VER
-template static octave_idx_type
+template octave_idx_type
 lusolve (const SparseMatrix&, const SparseMatrix&, Matrix&);
 
-template static octave_idx_type
+template octave_idx_type
 lusolve (const SparseComplexMatrix&, const SparseComplexMatrix&,
          ComplexMatrix&);
 
-template static octave_idx_type
+template octave_idx_type
 lusolve (const Matrix&, const Matrix&, Matrix&);
 
-template static octave_idx_type
+template octave_idx_type
 lusolve (const ComplexMatrix&, const ComplexMatrix&, ComplexMatrix&);
 
-template static ComplexMatrix
+template ComplexMatrix
 ltsolve (const SparseComplexMatrix&, const ColumnVector&,
          const ComplexMatrix&);
 
-template static Matrix
+template Matrix
 ltsolve (const SparseMatrix&, const ColumnVector&, const Matrix&);
 
-template static ComplexMatrix
+template ComplexMatrix
 ltsolve (const ComplexMatrix&, const ColumnVector&, const ComplexMatrix&);
 
-template static Matrix
+template Matrix
 ltsolve (const Matrix&, const ColumnVector&, const Matrix&);
 
-template static ComplexMatrix
+template ComplexMatrix
 utsolve (const SparseComplexMatrix&, const ColumnVector&,
          const ComplexMatrix&);
 
-template static Matrix
+template Matrix
 utsolve (const SparseMatrix&, const ColumnVector&, const Matrix&);
 
-template static ComplexMatrix
+template ComplexMatrix
 utsolve (const ComplexMatrix&, const ColumnVector&, const ComplexMatrix&);
 
-template static Matrix
+template Matrix
 utsolve (const Matrix&, const ColumnVector&, const Matrix&);
 #endif
 

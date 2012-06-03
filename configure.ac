@@ -718,32 +718,56 @@ dnl
 dnl llvm is odd and has its own pkg-config like script. We should probably check
 dnl for existance and 
 dnl
+warn_llvm="LLVM library fails tests. JIT compilation will be disabled."
 
-LLVM_CONFIG=llvm-config
+AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
+if test "x$ac_cv_env_LLVM_CONFIG_set" != "xset"; then
+   AC_PATH_TOOL([LLVM_CONFIG], [llvm-config])
+fi
+
+AC_ARG_ENABLE([jit-debug],
+  AS_HELP_STRING([--enable-jit-debug], [Enable debug printing of jit IRs]))
+
+AS_IF([test "x$enable_jit_debug" = "xyes"], [
+  AC_DEFINE(OCTAVE_JIT_DEBUG, 1, [Define for jit debug printing])
+])
+
 LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
 
-LLVM_LDFLAGS=`$LLVM_CONFIG --ldflags`
-LLVM_LIBS=`$LLVM_CONFIG --libs`
-LLVM_CPPFLAGS=`$LLVM_CONFIG --cxxflags`
-
-warn_llvm="LLVM library fails tests. JIT compilation will be disabled."
+dnl llvm-config is messed up
+if  test -n "$LLVM_CONFIG"; then
+  LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
+  LLVM_LIBS=`$LLVM_CONFIG --libs`
+  dnl Use -isystem so we don't get warnings from llvm headers
+  LLVM_CPPFLAGS="-isystem `$LLVM_CONFIG --includedir`"
+fi
 
 save_CPPFLAGS="$CPPFLAGS"
 save_LIBS="$LIBS"
 save_LDFLAGS="$LDFLAGS"
-CPPFLAGS="$LLVM_CPPFLAGS $CPPFLAGS"
+dnl
+dnl We define some extra flags that llvm requires in order to include headers.
+dnl Idealy we should get these from llvm-config, but llvm-config isn't very
+dnl helpful.
+dnl
+CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
 LIBS="$LLVM_LIBS $LIBS"
 LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+
 AC_LANG_PUSH(C++)
   AC_CHECK_HEADER([llvm/LLVMContext.h], [
-  AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
-    AC_TRY_LINK([#include <llvm/LLVMContext.h>], [llvm::getGlobalContext ()], [
-      AC_MSG_RESULT(yes)
-      warn_llvm=
-    ], [
-      AC_MSG_RESULT(no)
+    AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
+      AC_COMPILE_IFELSE(
+        [AC_LANG_PROGRAM([[#include <llvm/LLVMContext.h>]],
+                         [[llvm::LLVMContext& ctx = llvm::getGlobalContext ();]])],
+        [
+         AC_MSG_RESULT([yes])
+         warn_llvm=
+         XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CPPFLAGS"
+        ],
+        [AC_MSG_RESULT([no])
     ])
   ])
 AC_LANG_POP(C++)
@@ -752,14 +776,13 @@ LIBS="$save_LIBS"
 LDFLAGS="$save_LDFLAGS"
 
 if test -z "$warn_llvm"; then
-  AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available.])
+  AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available])
 else
   LLVM_CPPFLAGS=
   LLVM_LDFLAGS=
   LLVM_LIBS=
   AC_MSG_WARN([$warn_llvm])
 fi
-AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available.])
 
 AC_SUBST(LLVM_CPPFLAGS)
 AC_SUBST(LLVM_LDFLAGS)

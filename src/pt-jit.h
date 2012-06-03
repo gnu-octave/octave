@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_tree_jit_h)
 #define octave_tree_jit_h 1
 
+#ifdef HAVE_LLVM
+
 #include <list>
 #include <map>
 #include <set>
@@ -1709,5 +1711,5 @@ private:
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;
 };
-
+#endif
 #endif

@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#ifdef HAVE_LLVM
+
 #include "pt-jit.h"
 
 #include <typeinfo>
@@ -54,10 +56,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "pt-all.h"
 
-// FIXME: Remove eventually
-// For now we leave this in so people tell when JIT actually happens
-static const bool debug_print = false;
-
 static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 
 static llvm::LLVMContext& context = llvm::getGlobalContext ();
@@ -84,11 +82,19 @@ fail (void)
   throw jit_fail_exception ();
 }
 
+#ifdef OCTAVE_JIT_DEBUG
 static void
 fail (const std::string& reason)
 {
   throw jit_fail_exception (reason);
 }
+#else
+static void
+fail (const std::string&)
+{
+  throw jit_fail_exception ();
+}
+#endif // OCTAVE_JIT_DEBUG
 
 std::ostream& jit_print (std::ostream& os, jit_type *atype)
 {
@@ -1076,8 +1082,9 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
        iter != constants.end (); ++iter)
     append_users (*iter);
 
-  if (debug_print)
-      print_blocks ("octave jit ir");
+#ifdef OCTAVE_JIT_DEBUG
+  print_blocks ("octave jit ir");
+#endif
 
   // FIXME: Describe algorithm here
   while (worklist.size ())
@@ -1089,12 +1096,11 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
         append_users (next);
     }
 
-  if (debug_print)
-    {
-      std::cout << "-------------------- Compiling tree --------------------\n";
-      std::cout << tee.str_print_code () << std::endl;
-      print_blocks ("octave jit ir");
-    }
+#ifdef OCTAVE_JIT_DEBUG
+  std::cout << "-------------------- Compiling tree --------------------\n";
+  std::cout << tee.str_print_code () << std::endl;
+  print_blocks ("octave jit ir");
+#endif
 
   // for now just init arguments from entry, later we will have to do something
   // more interesting
@@ -1108,14 +1114,13 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
   convert_llvm to_llvm;
   function = to_llvm.convert (module, arguments, blocks);
 
-  if (debug_print)
-    {
-      std::cout << "-------------------- llvm ir --------------------";
-      llvm::raw_os_ostream llvm_cout (std::cout);
-      function->print (llvm_cout);
-      std::cout << std::endl;
-      llvm::verifyFunction (*function);
-    }
+#ifdef OCTAVE_JIT_DEBUG
+  std::cout << "-------------------- llvm ir --------------------";
+  llvm::raw_os_ostream llvm_cout (std::cout);
+  function->print (llvm_cout);
+  std::cout << std::endl;
+  llvm::verifyFunction (*function);
+#endif
 }
 
 jit_convert::~jit_convert (void)
@@ -2066,8 +2071,10 @@ jit_info::jit_info (tree_jit& tjit, tree& tee)
     }
   catch (const jit_fail_exception& e)
     {
-      if (debug_print && e.known ())
+#ifdef OCTAVE_JIT_DEBUG
+      if (e.known ())
         std::cout << "jit fail: " << e.what () << std::endl;
+#endif
     }
 
   if (! fun)
@@ -2078,13 +2085,12 @@ jit_info::jit_info (tree_jit& tjit, tree& tee)
 
   tjit.optimize (fun);
 
-  if (debug_print)
-    {
-      std::cout << "-------------------- optimized llvm ir --------------------\n";
-      llvm::raw_os_ostream llvm_cout (std::cout);
-      fun->print (llvm_cout);
-      std::cout << std::endl;
-    }
+#ifdef OCTAVE_JIT_DEBUG
+  std::cout << "-------------------- optimized llvm ir --------------------\n";
+  llvm::raw_os_ostream llvm_cout (std::cout);
+  fun->print (llvm_cout);
+  std::cout << std::endl;
+#endif
 
   function = reinterpret_cast<jited_function>(engine->getPointerToFunction (fun));
 }
@@ -2134,3 +2140,4 @@ jit_info::match (void) const
 
   return true;
 }
+#endif

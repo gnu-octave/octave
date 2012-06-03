@@ -741,10 +741,11 @@ if  test -n "$LLVM_CONFIG"; then
   LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
   LLVM_LIBS=`$LLVM_CONFIG --libs`
   dnl Use -isystem so we don't get warnings from llvm headers
-  LLVM_CPPFLAGS="-isystem `$LLVM_CONFIG --includedir`"
+  LLVM_CXXFLAGS="-isystem `$LLVM_CONFIG --includedir`"
 fi
 
 save_CPPFLAGS="$CPPFLAGS"
+save_CXXFLAGS="$CXXFLAGS"
 save_LIBS="$LIBS"
 save_LDFLAGS="$LDFLAGS"
 dnl
@@ -752,7 +753,8 @@ dnl We define some extra flags that llvm requires in order to include headers.
 dnl Idealy we should get these from llvm-config, but llvm-config isn't very
 dnl helpful.
 dnl
-CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
+CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $CPPFLAGS"
+CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
 LIBS="$LLVM_LIBS $LIBS"
 LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
 
@@ -765,13 +767,14 @@ AC_LANG_PUSH(C++)
         [
          AC_MSG_RESULT([yes])
          warn_llvm=
-         XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CPPFLAGS"
+         XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS"
         ],
         [AC_MSG_RESULT([no])
     ])
   ])
 AC_LANG_POP(C++)
 CPPFLAGS="$save_CPPFLAGS"
+CXXFLAGS="$save_CXXFLAGS"
 LIBS="$save_LIBS"
 LDFLAGS="$save_LDFLAGS"
 

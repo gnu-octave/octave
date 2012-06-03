@@ -72,10 +72,12 @@
 #include <QObject>
 #include <QStringListModel>
 #include <QTimer>
+#include <QQueue>
 
 #include "workspace-model.h"
 #include "octave-main-thread.h"
 #include "octave-event.h"
+#include "octave-event-observer.h"
 #include "symbol-information.h"
 
 /**
@@ -86,7 +88,7 @@
   * buffering access operations to octave and executing them in the readline
   * even hook, which lives in the octave thread.
   */
-class octave_link : public QObject
+class octave_link : public QObject, public octave_event_observer
 {
   Q_OBJECT
 public:
@@ -129,6 +131,15 @@ public:
     */
   const QList <symbol_information>& get_symbol_information () const;
 
+  void process_events ();
+  void post_event (octave_event *e);
+  void event_accepted (octave_event *e) const;
+  void event_ignored (octave_event *e) const;
+
+
+  void request_working_directory_change (std::string directory);
+  void request_octave_exit ();
+
 signals:
   /** Emitted, whenever the working directory of octave changed. */
   void working_directory_changed (QString directory);
@@ -153,6 +164,12 @@ private:
 
   /** Semaphore to lock access to the symbol information. */
   QSemaphore *_symbol_information_semaphore;
+
+  /** Semaphore to lock access to the event queue. */
+  QSemaphore *_event_queue_semaphore;
+
+  /** Buffer for queueing events until they will be processed. */
+  QQueue <octave_event *> _event_queue;
 
   /** Stores the current symbol information. */
   QList <symbol_information> _symbol_information;

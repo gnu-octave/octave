@@ -284,42 +284,42 @@ file_editor::construct ()
   _tab_widget->setTabsClosable (true);
 
   // Theme icons with QStyle icons as fallback
-  QAction *newAction = new QAction (
+  QAction *new_action = new QAction (
         QIcon::fromTheme("document-new",style->standardIcon (QStyle::SP_FileIcon)),
         tr("&New File"), _tool_bar);
 
-  QAction *openAction = new QAction (
+  QAction *open_action = new QAction (
         QIcon::fromTheme("document-open",style->standardIcon (QStyle::SP_DirOpenIcon)),
         tr("&Open File"), _tool_bar);
 
-  QAction *saveAction = new QAction (
+  QAction *save_action = new QAction (
         QIcon::fromTheme("document-save",style->standardIcon (QStyle::SP_DriveHDIcon)),
         tr("&Save File"), _tool_bar);
 
-  QAction *saveAsAction = new QAction (
+  QAction *save_as_action = new QAction (
         QIcon::fromTheme("document-save-as",style->standardIcon (QStyle::SP_DriveFDIcon)),
         tr("Save File &As"), _tool_bar);
 
-  QAction *undoAction = new QAction (
+  QAction *undo_action = new QAction (
         QIcon::fromTheme("edit-undo",style->standardIcon (QStyle::SP_ArrowLeft)),
         tr("&Undo"), _tool_bar);
 
-  QAction *redoAction = new QAction (
+  QAction *redo_action = new QAction (
         QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
         tr("&Redo"), _tool_bar);
 
   _copy_action = new QAction (QIcon::fromTheme ("edit-copy"), tr ("&Copy"), _tool_bar);
-  _cut_action = new QAction (QIcon::fromTheme ("edit-cut"), tr ("Cu&t"), _tool_bar);
+  _cut_action  = new QAction (QIcon::fromTheme ("edit-cut"), tr ("Cu&t"), _tool_bar);
 
-  QAction *pasteAction              = new QAction (QIcon::fromTheme ("edit-paste"), tr ("&Paste"),_tool_bar);
-  QAction *nextBookmarkAction       = new QAction (tr ("&Next Bookmark"),_tool_bar);
-  QAction *prevBookmarkAction       = new QAction (tr ("Pre&vious Bookmark"),_tool_bar);
-  QAction *toggleBookmarkAction     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
-  QAction *removeBookmarkAction     = new QAction (tr ("&Remove All Bookmarks"),_tool_bar);
-  QAction *commentSelectedAction    = new QAction (tr ("&Comment Selected Text"),_tool_bar);
-  QAction *uncommentSelectedAction  = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
+  QAction *paste_action               = new QAction (QIcon::fromTheme ("edit-paste"), tr ("&Paste"),_tool_bar);
+  QAction *next_bookmark_action       = new QAction (tr ("&Next Bookmark"),_tool_bar);
+  QAction *previous_bookmark_action   = new QAction (tr ("Pre&vious Bookmark"),_tool_bar);
+  QAction *toggle_bookmark_action     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
+  QAction *remove_bookmark_action     = new QAction (tr ("&Remove All Bookmarks"),_tool_bar);
+  QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
+  QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
-  QAction *runAction = new QAction (
+  QAction *run_action = new QAction (
         QIcon::fromTheme ("media-play", style->standardIcon (QStyle::SP_MediaPlay)),
         tr("&Run File"), _tool_bar);
 
@@ -328,64 +328,79 @@ file_editor::construct ()
   _cut_action->setEnabled(false);
 
   // short cuts
-  newAction->setShortcut              (QKeySequence::New);
-  openAction->setShortcut             (QKeySequence::Open);
-  saveAction->setShortcut             (QKeySequence::Save);
-  saveAsAction->setShortcut           (QKeySequence::SaveAs);
-  undoAction->setShortcut             (QKeySequence::Undo);
-  redoAction->setShortcut             (QKeySequence::Redo);
-  _copy_action->setShortcut           (QKeySequence::Copy);
-  _cut_action->setShortcut            (QKeySequence::Cut);
-  pasteAction->setShortcut            (QKeySequence::Paste);
-  runAction->setShortcut              (Qt::Key_F5);
-  nextBookmarkAction->setShortcut     (Qt::Key_F2);
-  prevBookmarkAction->setShortcut     (Qt::SHIFT + Qt::Key_F2);
-  toggleBookmarkAction->setShortcut   (Qt::Key_F7);
-  commentSelectedAction->setShortcut  (Qt::CTRL + Qt::Key_R);
-  uncommentSelectedAction->setShortcut(Qt::CTRL + Qt::Key_T);
+  new_action->setShortcut                       (QKeySequence::New);
+  new_action->setShortcutContext                (Qt::WidgetShortcut);
+  open_action->setShortcut                      (QKeySequence::Open);
+  open_action->setShortcutContext               (Qt::WidgetShortcut);
+  save_action->setShortcut                      (QKeySequence::Save);
+  save_action->setShortcutContext               (Qt::WidgetShortcut);
+  save_as_action->setShortcut                   (QKeySequence::SaveAs);
+  save_as_action->setShortcutContext            (Qt::WidgetShortcut);
+  undo_action->setShortcut                      (QKeySequence::Undo);
+  undo_action->setShortcutContext               (Qt::WidgetShortcut);
+  redo_action->setShortcut                      (QKeySequence::Redo);
+  redo_action->setShortcutContext               (Qt::WidgetShortcut);
+  _copy_action->setShortcut                     (QKeySequence::Copy);
+  _copy_action->setShortcutContext              (Qt::WidgetShortcut);
+  _cut_action->setShortcut                      (QKeySequence::Cut);
+  _cut_action->setShortcutContext               (Qt::WidgetShortcut);
+  paste_action->setShortcut                     (QKeySequence::Paste);
+  paste_action->setShortcutContext              (Qt::WidgetShortcut);
+  run_action->setShortcut                       (Qt::Key_F5);
+  run_action->setShortcutContext                (Qt::WidgetShortcut);
+  next_bookmark_action->setShortcut             (Qt::Key_F2);
+  next_bookmark_action->setShortcutContext      (Qt::WidgetShortcut);
+  previous_bookmark_action->setShortcut         (Qt::SHIFT + Qt::Key_F2);
+  previous_bookmark_action->setShortcutContext  (Qt::WidgetShortcut);
+  toggle_bookmark_action->setShortcut           (Qt::Key_F7);
+  toggle_bookmark_action->setShortcutContext    (Qt::WidgetShortcut);
+  comment_selection_action->setShortcut         (Qt::CTRL + Qt::Key_R);
+  comment_selection_action->setShortcutContext  (Qt::WidgetShortcut);
+  uncomment_selection_action->setShortcut       (Qt::CTRL + Qt::Key_T);
+  uncomment_selection_action->setShortcutContext(Qt::WidgetShortcut);
 
   // toolbar
-  _tool_bar->addAction (newAction);
-  _tool_bar->addAction (openAction);
-  _tool_bar->addAction (saveAction);
-  _tool_bar->addAction (saveAsAction);
+  _tool_bar->addAction (new_action);
+  _tool_bar->addAction (open_action);
+  _tool_bar->addAction (save_action);
+  _tool_bar->addAction (save_as_action);
   _tool_bar->addSeparator ();
-  _tool_bar->addAction (undoAction);
-  _tool_bar->addAction (redoAction);
+  _tool_bar->addAction (undo_action);
+  _tool_bar->addAction (redo_action);
   _tool_bar->addAction (_copy_action);
   _tool_bar->addAction (_cut_action);
-  _tool_bar->addAction (pasteAction);
+  _tool_bar->addAction (paste_action);
   _tool_bar->addSeparator ();
-  _tool_bar->addAction (runAction);
+  _tool_bar->addAction (run_action);
 
   // menu bar
   QMenu *fileMenu = new QMenu (tr ("&File"), _menu_bar);
-  fileMenu->addAction (newAction);
-  fileMenu->addAction (openAction);
-  fileMenu->addAction (saveAction);
-  fileMenu->addAction (saveAsAction);
+  fileMenu->addAction (new_action);
+  fileMenu->addAction (open_action);
+  fileMenu->addAction (save_action);
+  fileMenu->addAction (save_as_action);
   fileMenu->addSeparator ();
   _menu_bar->addMenu (fileMenu);
 
   QMenu *editMenu = new QMenu (tr ("&Edit"), _menu_bar);
-  editMenu->addAction (undoAction);
-  editMenu->addAction (redoAction);
+  editMenu->addAction (undo_action);
+  editMenu->addAction (redo_action);
   editMenu->addSeparator ();
   editMenu->addAction (_copy_action);
   editMenu->addAction (_cut_action);
-  editMenu->addAction (pasteAction);
+  editMenu->addAction (paste_action);
   editMenu->addSeparator ();
-  editMenu->addAction (commentSelectedAction);
-  editMenu->addAction (uncommentSelectedAction);
+  editMenu->addAction (comment_selection_action);
+  editMenu->addAction (uncomment_selection_action);
   editMenu->addSeparator ();
-  editMenu->addAction (toggleBookmarkAction);
-  editMenu->addAction (nextBookmarkAction);
-  editMenu->addAction (prevBookmarkAction);
-  editMenu->addAction (removeBookmarkAction);
+  editMenu->addAction (toggle_bookmark_action);
+  editMenu->addAction (next_bookmark_action);
+  editMenu->addAction (previous_bookmark_action);
+  editMenu->addAction (remove_bookmark_action);
   _menu_bar->addMenu (editMenu);
 
   QMenu *runMenu = new QMenu (tr ("&Run"), _menu_bar);
-  runMenu->addAction (runAction);
+  runMenu->addAction (run_action);
   _menu_bar->addMenu (runMenu);
 
   QVBoxLayout *layout = new QVBoxLayout ();
@@ -396,22 +411,22 @@ file_editor::construct ()
   widget->setLayout (layout);
   setWidget (widget);
 
-  connect (newAction,               SIGNAL (triggered ()), this, SLOT (request_new_file ()));
-  connect (openAction,              SIGNAL (triggered ()), this, SLOT (request_open_file ()));
-  connect (undoAction,              SIGNAL (triggered ()), this, SLOT (request_undo ()));
-  connect (redoAction,              SIGNAL (triggered ()), this, SLOT (request_redo ()));
+  connect (new_action,               SIGNAL (triggered ()), this, SLOT (request_new_file ()));
+  connect (open_action,              SIGNAL (triggered ()), this, SLOT (request_open_file ()));
+  connect (undo_action,              SIGNAL (triggered ()), this, SLOT (request_undo ()));
+  connect (redo_action,              SIGNAL (triggered ()), this, SLOT (request_redo ()));
   connect (_copy_action,            SIGNAL (triggered ()), this, SLOT (request_copy ()));
   connect (_cut_action,             SIGNAL (triggered ()), this, SLOT (request_cut ()));
-  connect (pasteAction,             SIGNAL (triggered ()), this, SLOT (request_paste ()));
-  connect (saveAction,              SIGNAL (triggered ()), this, SLOT (request_save_file ()));
-  connect (saveAsAction,            SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
-  connect (runAction,               SIGNAL (triggered ()), this, SLOT (request_run_file ()));
-  connect (toggleBookmarkAction,    SIGNAL (triggered ()), this, SLOT (request_toggle_bookmark ()));
-  connect (nextBookmarkAction,      SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
-  connect (prevBookmarkAction,      SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));
-  connect (removeBookmarkAction,    SIGNAL (triggered ()), this, SLOT (request_remove_bookmark ()));
-  connect (commentSelectedAction,   SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
-  connect (uncommentSelectedAction, SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
+  connect (paste_action,             SIGNAL (triggered ()), this, SLOT (request_paste ()));
+  connect (save_action,              SIGNAL (triggered ()), this, SLOT (request_save_file ()));
+  connect (save_as_action,            SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
+  connect (run_action,               SIGNAL (triggered ()), this, SLOT (request_run_file ()));
+  connect (toggle_bookmark_action,    SIGNAL (triggered ()), this, SLOT (request_toggle_bookmark ()));
+  connect (next_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
+  connect (previous_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));
+  connect (remove_bookmark_action,    SIGNAL (triggered ()), this, SLOT (request_remove_bookmark ()));
+  connect (comment_selection_action,   SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
+  connect (uncomment_selection_action, SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
   connect (_tab_widget, SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
   connect (_tab_widget, SIGNAL (currentChanged(int)), this, SLOT (active_tab_changed (int)));
 

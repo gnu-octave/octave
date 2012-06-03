@@ -107,7 +107,8 @@ HEADERS += \
     welcome-wizard.h \
     workspace-model.h \
     terminal-dockwidget.h \
-    octave-adapter/octave-event.h
+    octave-adapter/octave-event.h \
+    octave-adapter/octave-event-observer.h
 
 FORMS += \
     settings-dialog.ui \

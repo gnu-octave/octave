@@ -26,6 +26,7 @@ int octave_readline_hook ()
   octave_link::instance ()->trigger_update_history_model ();
   octave_link::instance ()->build_symbol_information ();
   octave_link::instance ()->update_current_working_directory ();
+  octave_link::instance ()->process_events ();
   return 0;
 }
 
@@ -53,6 +54,7 @@ octave_link::octave_link ():QObject ()
     _workspace_model, SLOT (update_from_symbol_table ()));
 
   _symbol_information_semaphore = new QSemaphore (1);
+  _event_queue_semaphore = new QSemaphore (1);
   _current_working_directory = "";
 }
 
@@ -155,3 +157,61 @@ octave_link::get_workspace_model ()
 {
   return _workspace_model;
 }
+
+void
+octave_link::process_events ()
+{
+  _event_queue_semaphore->acquire ();
+  while (_event_queue.size () > 0)
+    {
+      octave_event * e = _event_queue.takeFirst ();
+      switch (e->get_event_type ())
+        {
+          case octave_event::exit_event:
+            clean_up_and_exit (0);
+            e->accept ();
+            break;
+
+          case octave_event::change_directory_event:
+            octave_change_directory_event * cde
+                = dynamic_cast <octave_change_directory_event *> (e);
+            if (cde)
+              {
+                std::string directory = cde->get_directory ();
+                if (octave_env::chdir (directory))
+                  e->accept ();
+                else
+                  e->ignore ();
+              }
+            break;
+        }
+    }
+  _event_queue_semaphore->release ();
+}
+
+void
+octave_link::post_event (octave_event *e)
+{
+  if (e)
+    {
+      _event_queue_semaphore->acquire ();
+      _event_queue.push_front (e);
+      _event_queue_semaphore->release ();
+    }
+}
+
+void
+octave_link::event_accepted (octave_event *e) const
+{ delete e; }
+
+void
+octave_link::event_ignored (octave_event *e) const
+{ delete e; }
+
+void
+octave_link::request_working_directory_change (std::string directory)
+{ post_event (new octave_change_directory_event (*this, directory)); }
+
+void
+octave_link::request_octave_exit ()
+{ post_event (new octave_exit_event (*this)); }

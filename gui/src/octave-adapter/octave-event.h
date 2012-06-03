@@ -18,6 +18,9 @@
 #ifndef OCTAVEEVENT_H
 #define OCTAVEEVENT_H
 
+#include <string>
+#include "octave-event-observer.h"
+
 /**
   * \class octave_event
   * \brief Base class for an octave event.
@@ -25,15 +28,58 @@
 class octave_event
 {
   public:
-    octave_event ()
+    enum event_type
     {
+      exit_event,
+      change_directory_event
+    };
 
-    }
+    octave_event (const octave_event_observer& o)
+      : _octave_event_observer (o)
+    { }
 
     virtual ~octave_event ()
-    {
+    { }
 
-    }
+    virtual event_type get_event_type () const = 0;
+
+    void accept ()
+    { _octave_event_observer.event_accepted (this); }
+
+    void ignore ()
+    { _octave_event_observer.event_ignored (this); }
+
+  private:
+    const octave_event_observer& _octave_event_observer;
+};
+
+class octave_exit_event : public octave_event
+{
+  public:
+    octave_exit_event (const octave_event_observer& o)
+      : octave_event (o)
+    { }
+
+    event_type get_event_type () const
+    { return octave_event::exit_event; }
+};
+
+class octave_change_directory_event : public octave_event
+{
+  public:
+    octave_change_directory_event (const octave_event_observer& o,
+                                   std::string directory)
+      : octave_event (o)
+    { _directory = directory; }
+
+    event_type get_event_type () const
+    { return octave_event::change_directory_event; }
+
+    std::string get_directory () const
+    { return _directory; }
+
+  private:
+    std::string _directory;
 };
 
 #endif // OCTAVEEVENT_H

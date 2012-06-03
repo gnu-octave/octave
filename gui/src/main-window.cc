@@ -176,8 +176,7 @@ main_window::change_current_working_directory ()
 void
 main_window::change_current_working_directory (QString directory)
 {
-  _terminal->sendText (QString ("cd \'%1\'\n").arg (directory));
-  _terminal->setFocus ();
+  octave_link::instance ()->request_working_directory_change (directory.toStdString ());
 }
 
 void
@@ -216,15 +215,8 @@ void
 main_window::closeEvent (QCloseEvent * closeEvent)
 {
   closeEvent->ignore ();
-  _terminal->sendText ("exit\n");
-    /*
-  report_status_message (tr ("Saving data and shutting down."));
-  _closing = true;  // inform editor window that whole application is closed
-  octave_link::instance ()->terminate_octave ();
-
-  QMainWindow::closeEvent (closeEvent);
-  */
-}
+  octave_link::instance ()->request_octave_exit ();
+ }
 
 void
 main_window::read_settings ()

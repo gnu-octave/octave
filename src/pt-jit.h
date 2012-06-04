@@ -95,8 +95,6 @@ class tree;
 struct
 jit_range
 {
-  jit_range (void) {}
-
   jit_range (const Range& from) : base (from.base ()), limit (from.limit ()),
     inc (from.inc ()), nelem (from.nelem ())
     {}
@@ -182,6 +180,16 @@ public:
       arguments[1] = arg1;
     }
 
+    overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
+              jit_type *arg1, jit_type *arg2) : function (f), can_error (e),
+                                                side_effects (s), result (r),
+                                                arguments (3)
+    {
+      arguments[0] = arg0;
+      arguments[1] = arg1;
+      arguments[2] = arg2;
+    }
+
     llvm::Function *function;
     bool can_error;
     bool side_effects;
@@ -204,6 +212,13 @@ public:
                      jit_type *arg1)
   {
     overload ol (f, e, s, r, arg0, arg1);
+    add_overload (ol);
+  }
+
+  void add_overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
+                     jit_type *arg1, jit_type *arg2)
+  {
+    overload ol (f, e, s, r, arg0, arg1, arg2);
     add_overload (ol);
   }
 
@@ -318,6 +333,11 @@ public:
   static const jit_function& for_index (void)
   {
     return instance->for_index_fn;
+  }
+
+  static const jit_function& make_range (void)
+  {
+    return instance->make_range_fn;
   }
 
   static const jit_function& cast (jit_type *result)
@@ -484,6 +504,7 @@ private:
   jit_function for_check_fn;
   jit_function for_index_fn;
   jit_function logically_true;
+  jit_function make_range_fn;
 
   // type id -> cast function TO that type
   std::vector<jit_function> casts;
@@ -774,6 +795,17 @@ public:
     stash_argument (0, arg0);
     stash_argument (1, arg1);
     stash_argument (2, arg2);
+  }
+
+  jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2,
+                   jit_value *arg3)
+    : already_infered (3, reinterpret_cast<jit_type *>(0)), arguments (4), 
+      id (next_id ()), mparent (0)
+  {
+    stash_argument (0, arg0);
+    stash_argument (1, arg1);
+    stash_argument (2, arg2);
+    stash_argument (3, arg3);
   }
 
   static void reset_ids (void)
@@ -1441,6 +1473,15 @@ public:
             jit_value *arg0, jit_value *arg1) : jit_instruction (arg0, arg1),
                                                 mfunction (afunction ()) {}
 
+  jit_call (const jit_function& (*afunction) (void),
+            jit_value *arg0, jit_value *arg1, jit_value *arg2)
+    : jit_instruction (arg0, arg1, arg2), mfunction (afunction ()) {}
+
+  jit_call (const jit_function& (*afunction) (void),
+            jit_value *arg0, jit_value *arg1, jit_value *arg2, jit_value *arg3)
+    : jit_instruction (arg0, arg1, arg2, arg3), mfunction (afunction ()) {}
+                                                
+
   const jit_function& function (void) const { return mfunction; }
 
   bool has_side_effects (void) const
@@ -1719,6 +1760,16 @@ public:
   T *create (const ARG0& arg0, const ARG1& arg1, const ARG2& arg2)
   {
     T *ret = new T(arg0, arg1, arg2);
+    track_value (ret);
+    return ret;
+  }
+
+  template <typename T, typename ARG0, typename ARG1, typename ARG2,
+            typename ARG3>
+  T *create (const ARG0& arg0, const ARG1& arg1, const ARG2& arg2,
+             const ARG3& arg3)
+  {
+    T *ret = new T(arg0, arg1, arg2, arg3);
     track_value (ret);
     return ret;
   }

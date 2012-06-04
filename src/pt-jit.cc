@@ -130,6 +130,13 @@ octave_jit_binary_any_any (octave_value::binary_op op, octave_base_value *lhs,
   return rep;
 }
 
+extern "C" octave_idx_type
+octave_jit_compute_nelem (double base, double limit, double inc)
+{
+  Range rng = Range (base, limit, inc);
+  return rng.nelem (); 
+}
+
 extern "C" void
 octave_jit_release_any (octave_base_value *obv)
 {
@@ -459,6 +466,37 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   llvm::verifyFunction (*fn);
   logically_true.add_overload (fn, false, false, boolean, boolean);
   logically_true.stash_name ("logically_true");
+
+  // make_range
+  // FIXME: May be benificial to implement all in LLVM
+  make_range_fn.stash_name ("make_range");
+  llvm::Function *compute_nelem
+    = create_function ("octave_jit_compute_nelem", index, scalar, scalar, scalar);
+  engine->addGlobalMapping (compute_nelem,
+                            reinterpret_cast<void*> (&octave_jit_compute_nelem));
+
+  fn = create_function ("octave_jit_make_range", range, scalar, scalar, scalar);
+  body = llvm::BasicBlock::Create (context, "body", fn);
+  builder.SetInsertPoint (body);
+  {
+    llvm::Function::arg_iterator args = fn->arg_begin ();
+    llvm::Value *base = args;
+    llvm::Value *limit = ++args;
+    llvm::Value *inc = ++args;
+    llvm::Value *nelem = builder.CreateCall3 (compute_nelem, base, limit, inc);
+
+    llvm::Value *dzero = llvm::ConstantFP::get (dbl, 0);
+    llvm::Value *izero = llvm::ConstantInt::get (index_t, 0);
+    llvm::Value *rng = llvm::ConstantStruct::get (range_t, dzero, dzero, dzero,
+                                                  izero, NULL);
+    rng = builder.CreateInsertValue (rng, base, 0);
+    rng = builder.CreateInsertValue (rng, limit, 1);
+    rng = builder.CreateInsertValue (rng, inc, 2);
+    rng = builder.CreateInsertValue (rng, nelem, 3);
+    builder.CreateRet (rng);
+  }
+  llvm::verifyFunction (*fn);
+  make_range_fn.add_overload (fn, false, false, range, scalar, scalar, scalar);
 
   casts[any->type_id ()].stash_name ("(any)");
   casts[scalar->type_id ()].stash_name ("(scalar)");
@@ -1058,6 +1096,8 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
         final_block->append (create<jit_store_argument> (var));
     }
 
+  print_blocks ("octave jit ir");
+
   construct_ssa (final_block);
 
   // initialize the worklist to instructions derived from constants
@@ -1148,9 +1188,25 @@ jit_convert::visit_break_command (tree_break_command&)
 }
 
 void
-jit_convert::visit_colon_expression (tree_colon_expression&)
+jit_convert::visit_colon_expression (tree_colon_expression& expr)
 {
-  fail ();
+  // in the futher we need to add support for classes and deal with rvalues
+  jit_instruction *base = visit (expr.base ());
+  jit_instruction *limit = visit (expr.limit ());
+  jit_instruction *increment;
+  tree_expression *tinc = expr.increment ();
+
+  if (tinc)
+    increment = visit (tinc);
+  else
+    {
+      increment = create<jit_const_scalar> (1);
+      block->append (increment);
+    }
+
+  result = block->append (create<jit_call> (jit_typeinfo::make_range, base,
+                                            limit, increment));
+                                            
 }
 
 void

@@ -163,19 +163,20 @@ class
 jit_function
 {
 public:
-  struct overload
+  struct
+  overload
   {
     overload (void) : function (0), can_error (true), result (0) {}
 
-    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0) :
-      function (f), can_error (e), result (r), arguments (1)
+    overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0) :
+      function (f), can_error (e), side_effects (s), result (r), arguments (1)
     {
       arguments[0] = arg0;
     }
 
-    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
-              jit_type *arg1) : function (f), can_error (e), result (r),
-                                arguments (2)
+    overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
+              jit_type *arg1) : function (f), can_error (e), side_effects (s),
+                                result (r), arguments (2)
     {
       arguments[0] = arg0;
       arguments[1] = arg1;
@@ -183,6 +184,7 @@ public:
 
     llvm::Function *function;
     bool can_error;
+    bool side_effects;
     jit_type *result;
     std::vector<jit_type*> arguments;
   };
@@ -192,16 +194,16 @@ public:
     add_overload (func, func.arguments);
   }
 
-  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0)
+  void add_overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0)
   {
-    overload ol (f, e, r, arg0);
+    overload ol (f, e, s, r, arg0);
     add_overload (ol);
   }
 
-  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
+  void add_overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
                      jit_type *arg1)
   {
-    overload ol (f, e, r, arg0, arg1);
+    overload ol (f, e, s, r, arg0, arg1);
     add_overload (ol);
   }
 
@@ -291,6 +293,11 @@ public:
   static const jit_function& release (void)
   {
     return instance->release_fn;
+  }
+
+  static const jit_function::overload& get_release (jit_type *type)
+  {
+    return instance->release_fn.get_overload (type);
   }
 
   static const jit_function& print_value (void)
@@ -490,19 +497,54 @@ private:
 // We convert the octave parse tree to this IR directly.
 
 #define JIT_VISIT_IR_NOTEMPLATE                 \
-  JIT_METH(block);                              \
-  JIT_METH(break);                              \
-  JIT_METH(cond_break);                         \
-  JIT_METH(call);                               \
-  JIT_METH(extract_argument);                   \
-  JIT_METH(store_argument);                     \
-  JIT_METH(phi);                                \
+  JIT_METH(block)                               \
+  JIT_METH(break)                               \
+  JIT_METH(cond_break)                          \
+  JIT_METH(call)                                \
+  JIT_METH(extract_argument)                    \
+  JIT_METH(store_argument)                      \
+  JIT_METH(phi)                                 \
   JIT_METH(variable)
 
+#define JIT_VISIT_IR_CONST                      \
+  JIT_METH(const_scalar)                        \
+  JIT_METH(const_index)                         \
+  JIT_METH(const_string)                        \
+  JIT_METH(const_range)
+
+#define JIT_VISIT_IR_ABSTRACT                   \
+  JIT_METH(instruction)                         \
+  JIT_METH(terminator)
+
 #define JIT_VISIT_IR_CLASSES                    \
-  JIT_VISIT_IR_NOTEMPLATE;                      \
+  JIT_VISIT_IR_NOTEMPLATE                       \
   JIT_VISIT_IR_CONST
 
+#define JIT_VISIT_IR_ALL                        \
+  JIT_VISIT_IR_CLASSES                          \
+  JIT_VISIT_IR_ABSTRACT
+
+// forward declare all ir classes
+#define JIT_METH(cname)                         \
+  class jit_ ## cname;
+
+JIT_VISIT_IR_ABSTRACT
+JIT_VISIT_IR_NOTEMPLATE
+
+#undef JIT_METH
+
+// constants are typedefs from jit_const
+template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T = T,
+          bool QUOTE=false>
+class jit_const;
+
+typedef jit_const<double, jit_typeinfo::get_scalar> jit_const_scalar;
+typedef jit_const<octave_idx_type, jit_typeinfo::get_index> jit_const_index;
+
+typedef jit_const<std::string, jit_typeinfo::get_string, const std::string&, true>
+jit_const_string;
+typedef jit_const<jit_range, jit_typeinfo::get_range, const jit_range&>
+jit_const_range;
 
 class jit_ir_walker;
 class jit_use;
@@ -566,6 +608,22 @@ public:
   {
     llvm_value = compiled;
   }
+
+#define JIT_METH(cname)                                         \
+  virtual bool is_ ## cname (void) const                        \
+  { return false; }                                             \
+                                                                \
+  virtual jit_ ## cname *to_ ## cname (void)                    \
+  { return 0; }                                                 \
+                                                                \
+  virtual const jit_ ## cname *to_ ## cname (void) const        \
+  { return 0; }
+
+JIT_VISIT_IR_NOTEMPLATE
+JIT_VISIT_IR_ABSTRACT
+
+#undef JIT_METH
+
 protected:
   std::ostream& print_indent (std::ostream& os, size_t indent) const
   {
@@ -583,8 +641,15 @@ private:
 
 std::ostream& operator<< (std::ostream& os, const jit_value& value);
 
-class jit_instruction;
-class jit_block;
+#define JIT_GEN_CASTS(cname)                                    \
+  virtual bool is_ ## cname (void) const                        \
+  { return true; }                                              \
+                                                                \
+  virtual jit_ ## cname *to_ ## cname (void)                    \
+  { return this; }                                              \
+                                                                \
+  virtual const jit_ ## cname *to_ ## cname (void) const        \
+  { return this; }
 
 class
 jit_use
@@ -614,6 +679,8 @@ public:
   jit_instruction *user (void) const { return muser; }
 
   jit_block *user_parent (void) const;
+
+  std::list<jit_block *> user_parent_location (void) const;
 
   void stash_value (jit_value *avalue, jit_instruction *auser = 0,
                     size_t aindex = -1)
@@ -667,8 +734,6 @@ private:
   jit_instruction *muser;
   size_t mindex;
 };
-
-class jit_variable;
 
 class
 jit_instruction : public jit_value
@@ -738,6 +803,20 @@ public:
     return argument_type (i)->to_llvm ();
   }
 
+  // generate functions of form argument_type where type is any subclass of
+  // jit_value
+#define JIT_METH(cname)                                 \
+  jit_ ## cname *argument_ ## cname (size_t i) const    \
+  {                                                     \
+    jit_value *arg = argument (i);                      \
+    return arg ? arg->to_ ## cname () : 0;              \
+  }
+
+JIT_VISIT_IR_ABSTRACT
+JIT_VISIT_IR_NOTEMPLATE
+
+#undef JIT_METH
+
   std::ostream& print_argument (std::ostream& os, size_t i) const
   {
     if (argument (i))
@@ -770,7 +849,13 @@ public:
   const std::vector<jit_type *>& argument_types (void) const
   { return already_infered; }
 
+  virtual bool dead (void) const { return false; }
+
+  virtual bool almost_dead (void) const { return false; }
+
   virtual bool infer (void) { return false; }
+
+  void remove (void);
 
   void push_variable (void);
 
@@ -780,17 +865,25 @@ public:
 
   jit_block *parent (void) const { return mparent; }
 
+  std::list<jit_instruction *>::iterator location (void) const
+  {
+    return mlocation;
+  }
+
   llvm::BasicBlock *parent_llvm (void) const;
 
-  void stash_parent (jit_block *aparent)
+  void stash_parent (jit_block *aparent,
+                     std::list<jit_instruction *>::iterator alocation)
   {
-    assert (! mparent);
     mparent = aparent;
+    mlocation = alocation;
   }
 
   jit_variable *tag (void) const;
 
   void stash_tag (jit_variable *atag);
+
+  JIT_GEN_CASTS (instruction)
 protected:
   std::vector<jit_type *> already_infered;
 private:
@@ -809,14 +902,15 @@ private:
 
   size_t id;
   jit_block *mparent;
+  std::list<jit_instruction *>::iterator mlocation;
 };
 
 // defnie accept methods for subclasses
 #define JIT_VALUE_ACCEPT(clname)                \
   virtual void accept (jit_ir_walker& walker);
 
-template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T = T,
-          bool QUOTE=false>
+template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T,
+          bool QUOTE>
 class
 jit_const : public jit_instruction
 {
@@ -847,24 +941,6 @@ private:
   T mvalue;
 };
 
-typedef jit_const<double, jit_typeinfo::get_scalar> jit_const_scalar;
-typedef jit_const<octave_idx_type, jit_typeinfo::get_index> jit_const_index;
-
-typedef jit_const<std::string, jit_typeinfo::get_string, const std::string&, true>
-jit_const_string;
-typedef jit_const<jit_range, jit_typeinfo::get_range, const jit_range&>
-jit_const_range;
-
-#define JIT_VISIT_IR_CONST                      \
-  JIT_METH(const_scalar);                       \
-  JIT_METH(const_index);                        \
-  JIT_METH(const_string);                       \
-  JIT_METH(const_range)
-
-class jit_terminator;
-class jit_phi;
-class jit_convert;
-
 class
 jit_block : public jit_value
 {
@@ -884,6 +960,8 @@ public:
 
   jit_instruction *prepend (jit_instruction *instr);
 
+  jit_instruction *prepend_after_phi (jit_instruction *instr);
+
   jit_instruction *append (jit_instruction *instr);
 
   jit_instruction *insert_before (iterator loc, jit_instruction *instr);
@@ -892,7 +970,9 @@ public:
 
   void remove (jit_block::iterator iter)
   {
+    jit_instruction *instr = *iter;
     instructions.erase (iter);
+    instr->stash_parent (0, instructions.end ());
   }
 
   jit_terminator *terminator (void) const;
@@ -1001,10 +1081,17 @@ public:
     create_dom_tree (mvisit_count);
   }
 
-  void construct_ssa (jit_convert& convert)
+  // visit blocks in the order of the dominator tree
+  // inorder - Run on the root first, then children
+  // postorder - Run on children first, then the root
+  template <typename func_type0, typename func_type1>
+  void visit_dom (func_type0 inorder, func_type1 postorder)
   {
-    do_construct_ssa (convert, mvisit_count);
+    do_visit_dom (mvisit_count, inorder, postorder);
   }
+
+  // call pop_varaible on all instructions
+  void pop_all (void);
 
   virtual std::ostream& print (std::ostream& os, size_t indent) const
   {
@@ -1036,18 +1123,18 @@ public:
   llvm::BasicBlock *to_llvm (void) const;
 
   JIT_VALUE_ACCEPT (block)
+  JIT_GEN_CASTS (block)
 private:
   void compute_df (size_t visit_count);
 
   bool update_idom (size_t visit_count);
 
-  void finish_phi (jit_block *pred);
-
-  void do_construct_ssa (jit_convert& convert, size_t visit_count);
-
   void create_dom_tree (size_t visit_count);
 
   jit_block *idom_intersect (jit_block *b);
+
+  template <typename func_type0, typename func_type1>
+  void do_visit_dom (size_t visit_count, func_type0 inorder, func_type1 postorder);
 
   static const size_t NO_ID = static_cast<size_t> (-1);
   size_t mvisit_count;
@@ -1060,6 +1147,54 @@ private:
   mutable std::vector<llvm::BasicBlock *> mpred_llvm;
 };
 
+// allow regular function pointers as well as pointers to members
+template <typename func_type>
+class jit_block_callback
+{
+public:
+  jit_block_callback (func_type afunction) : function (afunction) {}
+
+  void operator() (jit_block& block)
+  {
+    function (block);
+  }
+private:
+  func_type function;
+};
+
+template <>
+class jit_block_callback<void (jit_block::*)(void)>
+{
+public:
+  typedef void (jit_block::*func_type)(void);
+
+  jit_block_callback (func_type afunction) : function (afunction) {}
+
+  void operator() (jit_block& ablock)
+  {
+    (ablock.*function) ();
+  }
+private:
+  func_type function;
+};
+
+template <typename func_type0, typename func_type1>
+void
+jit_block::do_visit_dom (size_t visit_count, func_type0 inorder, func_type1 postorder)
+{
+  if (mvisit_count > visit_count)
+    return;
+  mvisit_count = visit_count + 1;
+
+  jit_block_callback<func_type0> inorder_cb (inorder);
+  inorder_cb (*this);
+
+  for (size_t i = 0; i < dom_succ.size (); ++i)
+    dom_succ[i]->do_visit_dom (visit_count, inorder, postorder);
+
+  jit_block_callback<func_type1> postorder_cb (postorder);
+  postorder_cb (*this);
+}
 
 
 // A non-ssa variable
@@ -1067,7 +1202,7 @@ class
 jit_variable : public jit_value
 {
 public:
-  jit_variable (const std::string& aname) : mname (aname) {}
+  jit_variable (const std::string& aname) : mname (aname), mlast_use (0) {}
 
   const std::string &name (void) const { return mname; }
 
@@ -1083,14 +1218,25 @@ public:
     return value_stack.top ();
   }
 
-  void push (jit_value *v)
+  void push (jit_instruction *v)
   {
     value_stack.push (v);
+    mlast_use = v;
   }
 
   void pop (void)
   {
     value_stack.pop ();
+  }
+
+  jit_instruction *last_use (void) const
+  {
+    return mlast_use;
+  }
+
+  void stash_last_use (jit_instruction *instr)
+  {
+    mlast_use = instr;
   }
 
   // blocks in which we are used
@@ -1110,9 +1256,11 @@ public:
   }
 
   JIT_VALUE_ACCEPT (variable)
+  JIT_GEN_CASTS (variable)
 private:
   std::string mname;
   std::stack<jit_value *> value_stack;
+  jit_instruction *mlast_use;
 };
 
 class
@@ -1123,6 +1271,16 @@ public:
     : jit_instruction (npred)
   {
     stash_tag (avariable);
+  }
+
+  virtual bool dead (void) const
+  {
+    return use_count () == 0;
+  }
+
+  virtual bool almost_dead (void) const
+  {
+    return use_count () <= 1;
   }
 
   virtual bool infer (void)
@@ -1167,6 +1325,7 @@ public:
   }
 
   JIT_VALUE_ACCEPT (phi);
+  JIT_GEN_CASTS (phi)
 };
 
 class
@@ -1197,6 +1356,8 @@ public:
   }
 
   virtual size_t sucessor_count (void) const = 0;
+
+  JIT_GEN_CASTS (terminator)
 };
 
 class
@@ -1220,6 +1381,7 @@ public:
   }
 
   JIT_VALUE_ACCEPT (break)
+  JIT_GEN_CASTS (break)
 };
 
 class
@@ -1258,6 +1420,7 @@ public:
   }
 
   JIT_VALUE_ACCEPT (cond_break)
+  JIT_GEN_CASTS (cond_break)
 };
 
 class
@@ -1279,6 +1442,11 @@ public:
                                                 mfunction (afunction ()) {}
 
   const jit_function& function (void) const { return mfunction; }
+
+  bool has_side_effects (void) const
+  {
+    return overload ().side_effects;
+  }
 
   const jit_function::overload& overload (void) const
   {
@@ -1302,9 +1470,14 @@ public:
     return os << ")";
   }
 
+  virtual bool dead (void) const;
+
+  virtual bool almost_dead (void) const;
+
   virtual bool infer (void);
 
   JIT_VALUE_ACCEPT (call)
+  JIT_GEN_CASTS (call)
 private:
   const jit_function& mfunction;
 };
@@ -1339,6 +1512,7 @@ public:
   }
 
   JIT_VALUE_ACCEPT (extract_argument)
+  JIT_GEN_CASTS (extract_argument)
 };
 
 class
@@ -1385,6 +1559,7 @@ public:
   }
 
   JIT_VALUE_ACCEPT (store_argument)
+  JIT_GEN_CASTS (store_argument)
 };
 
 class
@@ -1394,7 +1569,7 @@ public:
   virtual ~jit_ir_walker () {}
 
 #define JIT_METH(clname) \
-  virtual void visit (jit_ ## clname&) = 0
+  virtual void visit (jit_ ## clname&) = 0;
 
   JIT_VISIT_IR_CLASSES;
 
@@ -1548,6 +1723,9 @@ public:
     return ret;
   }
 private:
+  typedef std::list<jit_block *> block_list;
+  typedef block_list::iterator block_iterator;
+
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;
 
@@ -1597,6 +1775,10 @@ private:
 
   void construct_ssa (jit_block *final_block);
 
+  static void do_construct_ssa (jit_block& block);
+
+  void place_releases (void);
+
   void print_blocks (const std::string& header)
   {
     std::cout << "-------------------- " << header << " --------------------\n";
@@ -1621,13 +1803,20 @@ private:
     std::cout << std::endl;
   }
 
-  typedef std::list<jit_block *> break_list;
-
   bool breaking; // true if we are breaking OR continuing
-  break_list breaks;
-  break_list continues;
+  block_list breaks;
+  block_list continues;
 
-  void finish_breaks (jit_block *dest, const break_list& lst);
+  void finish_breaks (jit_block *dest, const block_list& lst);
+
+  struct release_placer
+  {
+    release_placer (jit_convert& aconvert) : convert (aconvert) {}
+
+    jit_convert& convert;
+
+    void operator() (jit_block& block);
+  };
 
   // this case is much simpler, just convert from the jit ir to llvm
   class
@@ -1648,6 +1837,7 @@ private:
     // name -> llvm argument
     std::map<std::string, llvm::Value *> arguments;
 
+    void finish_phi (jit_instruction *phi);
 
     void visit (jit_value *jvalue)
     {

@@ -17,8 +17,6 @@
 
 #include "octave-link.h"
 #include "load-path.h"
-#include <QDir>
-#include <QApplication>
 
 int octave_readline_hook ()
 {
@@ -29,15 +27,15 @@ int octave_readline_hook ()
 
 void octave_exit_hook (int status)
 {
-  Q_UNUSED (status);
-  qApp->quit ();
+  (void) status;
+  octave_link::instance ()->about_to_exit ();
 }
 
 octave_link octave_link::_singleton;
 
 octave_link::octave_link ()
 {
-  _event_queue_semaphore = new QSemaphore (1);
+  _event_queue_mutex = new octave_mutex ();
   _last_working_directory = "";
 }
 
@@ -77,7 +75,7 @@ octave_link::generate_events ()
 void
 octave_link::process_events ()
 {
-  _event_queue_semaphore->acquire ();
+  _event_queue_mutex->lock ();
   while (_event_queue.size () > 0)
     {
       octave_event * e = _event_queue.front ();
@@ -87,7 +85,7 @@ octave_link::process_events ()
       else
         e->reject ();
     }
-  _event_queue_semaphore->release ();
+  _event_queue_mutex->unlock ();
 }
 
 void
@@ -95,9 +93,9 @@ octave_link::post_event (octave_event *e)
 {
   if (e)
     {
-      _event_queue_semaphore->acquire ();
+      _event_queue_mutex->lock ();
       _event_queue.push (e);
-      _event_queue_semaphore->release ();
+      _event_queue_mutex->unlock ();
     }
 }
 
@@ -110,9 +108,8 @@ octave_link::event_reject (octave_event *e)
 { delete e; }
 
 void
-octave_link::request_working_directory_change (std::string directory)
-{ post_event (new octave_change_directory_event (*this, directory)); }
-
-void
-octave_link::request_octave_exit ()
-{ post_event (new octave_exit_event (*this)); }
+octave_link::about_to_exit ()
+{
+  if (_octave_event_listener)
+    _octave_event_listener->about_to_exit ();
+}

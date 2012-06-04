@@ -53,6 +53,7 @@
 #include "octave/unwind-prot.h"
 #include "octave/utils.h"
 #include "octave/variables.h"
+#include "oct-mutex.h"
 
 // Standard includes
 #include <iostream>
@@ -60,9 +61,6 @@
 #include <vector>
 #include <readline/readline.h>
 #include <queue>
-
-// Qt includes
-#include <QSemaphore>
 
 #include "workspace-model.h"
 #include "octave-main-thread.h"
@@ -83,8 +81,7 @@ class octave_link : public octave_event_observer
 {
 public:
   /** Provides a way to access the unique octave_link object. */
-  static octave_link *
-  instance () { return &_singleton; }
+  static octave_link * instance () { return &_singleton; }
 
   /** Starts octave. */
   void launch_octave ();
@@ -96,9 +93,7 @@ public:
   void event_accepted (octave_event *e);
   void event_reject (octave_event *e);
 
-  void request_working_directory_change (std::string directory);
-  void request_octave_exit ();
-
+  void about_to_exit ();
 private:
   /** Singleton. */
   octave_link ();
@@ -110,7 +105,7 @@ private:
   octave_main_thread *_octave_main_thread;
 
   /** Semaphore to lock access to the event queue. */
-  QSemaphore *_event_queue_semaphore;
+  octave_mutex *_event_queue_mutex;
 
   /** Buffer for queueing events until they will be processed. */
   std::queue <octave_event *> _event_queue;

@@ -45,17 +45,22 @@
 #include "files-dockwidget.h"
 #include "terminal-dockwidget.h"
 #include "octave-qt-event-listener.h"
+#include "octave-event-observer.h"
 
 /**
   * \class MainWindow
   *
   * Represents the main window.
   */
-class main_window:public QMainWindow
+class main_window
+    : public QMainWindow, public octave_event_observer
 {
 Q_OBJECT public:
   main_window (QWidget * parent = 0);
   ~main_window ();
+
+  void event_accepted (octave_event *e);
+  void event_reject (octave_event *e);
 
   QTerminal *get_terminal_view () { return _terminal; }
   history_dock_widget *get_history_dock_widget () { return _history_dock_widget; }

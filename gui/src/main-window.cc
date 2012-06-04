@@ -30,7 +30,8 @@
 #include "file-editor.h"
 #include "settings-dialog.h"
 
-main_window::main_window (QWidget * parent):QMainWindow (parent)
+main_window::main_window (QWidget * parent)
+  : QMainWindow (parent), octave_event_observer ()
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
@@ -47,6 +48,18 @@ main_window::main_window (QWidget * parent):QMainWindow (parent)
 
 main_window::~main_window ()
 {
+}
+
+void
+main_window::event_accepted (octave_event *e)
+{
+  delete e;
+}
+
+void
+main_window::event_reject (octave_event *e)
+{
+  delete e;
 }
 
 void
@@ -177,14 +190,17 @@ main_window::change_current_working_directory ()
   if (!selectedDirectory.isEmpty ())
     {
       octave_link::instance ()
-          ->request_working_directory_change (selectedDirectory.toStdString ());
+          ->post_event (new octave_change_directory_event (*this,
+                        selectedDirectory.toStdString ()));
     }
 }
 
 void
 main_window::change_current_working_directory (QString directory)
 {
-  octave_link::instance ()->request_working_directory_change (directory.toStdString ());
+  octave_link::instance ()
+      ->post_event (new octave_change_directory_event (*this,
+                    directory.toStdString ()));
 }
 
 void
@@ -223,7 +239,7 @@ void
 main_window::closeEvent (QCloseEvent * closeEvent)
 {
   closeEvent->ignore ();
-  octave_link::instance ()->request_octave_exit ();
+  octave_link::instance ()->post_event (new octave_exit_event (*this));
  }
 
 void

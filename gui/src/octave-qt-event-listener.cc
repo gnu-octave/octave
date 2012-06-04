@@ -16,6 +16,7 @@
  */
 
 #include "octave-qt-event-listener.h"
+#include <QApplication>
 
 octave_qt_event_listener::octave_qt_event_listener (QObject *parent)
   : QObject (parent), octave_event_listener ()
@@ -25,3 +26,9 @@ octave_qt_event_listener::octave_qt_event_listener (QObject *parent)
 void
 octave_qt_event_listener::current_directory_has_changed (std::string directory)
 { emit current_directory_changed (QString::fromStdString (directory)); }
+
+void
+octave_qt_event_listener::about_to_exit ()
+{
+  qApp->quit ();
+}

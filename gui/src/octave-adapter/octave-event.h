@@ -38,14 +38,14 @@
 class octave_event
 {
   public:
-    octave_event (const octave_event_observer& o)
+    octave_event (octave_event_observer& o)
       : _octave_event_observer (o)
     { }
 
     virtual ~octave_event ()
     { }
 
-    /** Performs what it necessary to make this event happen.
+    /** Performs what is necessary to make this event happen.
       * This code is thread-safe since it will be executed in the octave thread.
       * However, you should take care to keep this code as short as possible. */
     virtual bool perform () const = 0;
@@ -65,7 +65,31 @@ class octave_event
     { _octave_event_observer.event_reject (this); }
 
   private:
-    const octave_event_observer& _octave_event_observer;
+    octave_event_observer& _octave_event_observer;
+};
+
+class octave_update_history_event : public octave_event
+{
+  public:
+    /** Creates a new octave_exit_event. */
+    octave_update_history_event (octave_event_observer& o)
+      : octave_event (o)
+    { }
+
+    bool perform () const
+    { return true; /* Always grant. */ }
+};
+
+class octave_update_workspace_event : public octave_event
+{
+  public:
+    /** Creates a new octave_exit_event. */
+    octave_update_workspace_event (octave_event_observer& o)
+      : octave_event (o)
+    { }
+
+    bool perform () const
+    { return true; /* Always grant. */ }
 };
 
 /** Implements an octave exit event. */
@@ -73,7 +97,7 @@ class octave_exit_event : public octave_event
 {
   public:
     /** Creates a new octave_exit_event. */
-    octave_exit_event (const octave_event_observer& o)
+    octave_exit_event (octave_event_observer& o)
       : octave_event (o)
     { }
 
@@ -86,7 +110,7 @@ class octave_change_directory_event : public octave_event
 {
   public:
     /** Creates a new octave_change_directory_event. */
-    octave_change_directory_event (const octave_event_observer& o,
+    octave_change_directory_event (octave_event_observer& o,
                                    std::string directory)
       : octave_event (o)
     { _directory = directory; }

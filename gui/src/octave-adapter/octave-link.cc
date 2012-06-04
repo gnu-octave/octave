@@ -22,9 +22,6 @@
 
 int octave_readline_hook ()
 {
-  octave_link::instance ()->trigger_update_history_model ();
-  octave_link::instance ()->build_symbol_information ();
-
   octave_link::instance ()->generate_events ();
   octave_link::instance ()->process_events ();
   return 0;
@@ -40,9 +37,6 @@ octave_link octave_link::_singleton;
 
 octave_link::octave_link ()
 {
-  _history_model = new QStringListModel ();
-  _workspace_model = new workspace_model (qApp);
-  _symbol_information_semaphore = new QSemaphore (1);
   _event_queue_semaphore = new QSemaphore (1);
   _last_working_directory = "";
 }
@@ -64,73 +58,8 @@ octave_link::launch_octave ()
 }
 
 void
-octave_link::trigger_update_history_model ()
-{
-  // Determine the client's (our) history length and the one of the server.
-  int clientHistoryLength = _history_model->rowCount ();
-  int serverHistoryLength = command_history::length ();
-
-  // If were behind the server, iterate through all new entries and add them to our history.
-  if (clientHistoryLength < serverHistoryLength)
-    {
-      for (int i = clientHistoryLength; i < serverHistoryLength; i++)
-        {
-          _history_model->insertRow (0);
-          _history_model->setData (_history_model->index (0), QString (command_history::get_entry (i).c_str ()));
-        }
-    }
-}
-
-void
-octave_link::acquire_symbol_information ()
-{
-  _symbol_information_semaphore->acquire (1);
-}
-
-void
-octave_link::release_symbol_information ()
-{
-  _symbol_information_semaphore->release (1);
-}
-
-void
-octave_link::build_symbol_information ()
-{
-  std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
-
-  acquire_symbol_information ();
-  _symbol_information.clear ();
-  for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
-     iterator != symbolTable.end (); iterator++)
-  {
-    symbol_information symbolInformation;
-    symbolInformation.from_symbol_record (*iterator);
-    _symbol_information.push_back (symbolInformation);
-  }
-  release_symbol_information ();
-}
-
-const QList <symbol_information>&
-octave_link::get_symbol_information () const
-{
-  return _symbol_information;
-}
-
-void
 octave_link::register_event_listener (octave_event_listener *oel)
 { _octave_event_listener = oel; }
-
-QStringListModel *
-octave_link::get_history_model ()
-{
-  return _history_model;
-}
-
-workspace_model *
-octave_link::get_workspace_model ()
-{
-  return _workspace_model;
-}
 
 void
 octave_link::generate_events ()
@@ -173,11 +102,11 @@ octave_link::post_event (octave_event *e)
 }
 
 void
-octave_link::event_accepted (octave_event *e) const
+octave_link::event_accepted (octave_event *e)
 { delete e; }
 
 void
-octave_link::event_reject (octave_event *e) const
+octave_link::event_reject (octave_event *e)
 { delete e; }
 
 void

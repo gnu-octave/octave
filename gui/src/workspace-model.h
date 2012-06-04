@@ -24,6 +24,9 @@
 #include <QSemaphore>
 #include <QTimer>
 
+#include "symbol-information.h"
+#include "octave-event-observer.h"
+
 class tree_item
 {
 public:
@@ -103,13 +106,17 @@ private:
   tree_item *_parent_item;
 };
 
-class workspace_model : public QAbstractItemModel
+class workspace_model
+    : public QAbstractItemModel, public octave_event_observer
 {
   Q_OBJECT
 
 public:
-  workspace_model(QObject *parent = 0);
-  ~workspace_model();
+  workspace_model (QObject *parent = 0);
+  ~workspace_model ();
+
+  void event_accepted (octave_event *e);
+  void event_reject (octave_event *e);
 
   QVariant data(const QModelIndex &index, int role) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -125,12 +132,18 @@ public:
   tree_item *top_level_item (int at);
 
 public slots:
-  void update_from_symbol_table ();
+  void request_update_workspace ();
 
 signals:
   void expand_request();
 
 private:
+  /** Timer for periodically updating the workspace model from the current
+    * symbol information. */
+  QTimer _update_workspace_model_timer;
+
+  /** Stores the current symbol information. */
+  QList <symbol_information> _symbol_information;
   tree_item *_rootItem;
 };
 

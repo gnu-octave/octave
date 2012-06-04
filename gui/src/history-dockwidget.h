@@ -22,17 +22,24 @@
 #include <QLineEdit>
 #include <QListView>
 #include <QSortFilterProxyModel>
-#include "octave-link.h"
+#include <QStringListModel>
+#include <QTimer>
 
-class history_dock_widget:public QDockWidget
+#include "octave-link.h"
+#include "octave-event-observer.h"
+
+class history_dock_widget : public QDockWidget, public octave_event_observer
 {
 Q_OBJECT
 public:
   history_dock_widget (QWidget *parent = 0);
-  void update_history (QStringList history);
+
+  void event_accepted (octave_event *e);
+  void event_reject (octave_event *e);
 
 public slots:
   void handle_visibility_changed (bool visible);
+  void request_history_model_update ();
 
 signals:
   void information (QString message);
@@ -46,9 +53,14 @@ private slots:
 
 private:
   void construct ();
-  QListView *m_historyListView;
-  QLineEdit *m_filterLineEdit;
-  QSortFilterProxyModel m_sortFilterProxyModel;
+  QListView *_history_list_view;
+  QLineEdit *_filter_line_edit;
+  QSortFilterProxyModel _sort_filter_proxy_model;
+
+  /** Stores the current history_model. */
+  QStringListModel *_history_model;
+
+  QTimer _update_history_model_timer;
 };
 
 #endif // HISTORYDOCKWIDGET_H

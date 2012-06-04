@@ -42,9 +42,8 @@ protected:
 private:
   QTreeView *_workspace_tree_view;
 
-  /** Timer for periodically updating the workspace model from the current
-    * symbol information. */
-  QTimer _update_workspace_model_timer;
+  /** Stores the current workspace model. */
+  workspace_model *_workspace_model;
 };
 
 #endif // WORKSPACEVIEW_H

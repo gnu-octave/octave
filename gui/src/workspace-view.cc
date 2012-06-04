@@ -26,11 +26,13 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   setObjectName ("WorkspaceView");
   setWindowTitle (tr ("Workspace"));
 
+  _workspace_model = new workspace_model ();
+
   _workspace_tree_view = new QTreeView (this);
   _workspace_tree_view->setHeaderHidden (false);
   _workspace_tree_view->setAlternatingRowColors (true);
   _workspace_tree_view->setAnimated (true);
-  _workspace_tree_view->setModel(octave_link::instance()->get_workspace_model());
+  _workspace_tree_view->setModel (_workspace_model);
 
   setWidget (new QWidget (this));
   QVBoxLayout *layout = new QVBoxLayout ();
@@ -41,16 +43,8 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT(handle_visibility_changed (bool)));
 
-  connect (octave_link::instance()->get_workspace_model(), SIGNAL(expand_request()),
+  connect (_workspace_model, SIGNAL(expand_request()),
            _workspace_tree_view, SLOT(expandAll()));
-
-  connect(&_update_workspace_model_timer, SIGNAL (timeout ()),
-    octave_link::instance()->get_workspace_model(),
-          SLOT (update_from_symbol_table ()));
-
-  _update_workspace_model_timer.setInterval (1000);
-  _update_workspace_model_timer.setSingleShot (false);
-  _update_workspace_model_timer.start ();
 }
 
 void

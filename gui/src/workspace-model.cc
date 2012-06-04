@@ -21,7 +21,7 @@
 #include "octave-link.h"
 
 workspace_model::workspace_model(QObject *parent)
-  : QAbstractItemModel(parent)
+  : QAbstractItemModel(parent), octave_event_observer ()
 {
   QList<QVariant> rootData;
   rootData << tr ("Name") << tr ("Type") << tr ("Value");
@@ -31,11 +31,77 @@ workspace_model::workspace_model(QObject *parent)
   insert_top_level_item(1, new tree_item ("Global"));
   insert_top_level_item(2, new tree_item ("Persistent"));
   insert_top_level_item(3, new tree_item ("Hidden"));
+
+  connect(&_update_workspace_model_timer,
+          SIGNAL (timeout ()),
+          this,
+          SLOT (request_update_workspace()));
+
+  _update_workspace_model_timer.setInterval (500);
+  _update_workspace_model_timer.setSingleShot (false);
+  _update_workspace_model_timer.start ();
 }
 
 workspace_model::~workspace_model()
 {
   delete _rootItem;
+}
+
+void
+workspace_model::request_update_workspace ()
+{
+  octave_link::instance ()
+      ->post_event (new octave_update_workspace_event (*this));
+}
+
+void
+workspace_model::event_accepted (octave_event *e)
+{
+  if (dynamic_cast <octave_update_workspace_event*> (e))
+    {
+      std::list < symbol_table::symbol_record > symbolTable = symbol_table::all_variables ();
+
+      _symbol_information.clear ();
+      for (std::list < symbol_table::symbol_record > ::iterator iterator = symbolTable.begin ();
+         iterator != symbolTable.end (); iterator++)
+      {
+        symbol_information symbolInformation;
+        symbolInformation.from_symbol_record (*iterator);
+        _symbol_information.push_back (symbolInformation);
+      }
+
+      top_level_item (0)->delete_child_items ();
+      top_level_item (1)->delete_child_items ();
+      top_level_item (2)->delete_child_items ();
+      top_level_item (3)->delete_child_items ();
+
+      foreach (const symbol_information& s, _symbol_information)
+        {
+          tree_item *child = new tree_item ();
+
+          child->set_data (0, s._symbol);
+          child->set_data (1, s._type);
+          child->set_data (2, s._value);
+
+          switch (s._scope)
+            {
+              case symbol_information::local:       top_level_item (0)->add_child (child); break;
+              case symbol_information::global:      top_level_item (1)->add_child (child); break;
+              case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
+              case symbol_information::hidden:      top_level_item (3)->add_child (child); break;
+            }
+        }
+
+      reset();
+      emit expand_request();
+    }
+  delete e;
+}
+
+void
+workspace_model::event_reject (octave_event *e)
+{
+  delete e;
 }
 
 QModelIndex
@@ -141,37 +207,3 @@ workspace_model::data(const QModelIndex &index, int role) const
   return item->data(index.column());
 }
 
-
-void
-workspace_model::update_from_symbol_table ()
-{
-  top_level_item (0)->delete_child_items ();
-  top_level_item (1)->delete_child_items ();
-  top_level_item (2)->delete_child_items ();
-  top_level_item (3)->delete_child_items ();
-
-  octave_link::instance ()-> acquire_symbol_information();
-  const QList <symbol_information>& symbolInformation = octave_link::instance() ->get_symbol_information ();
-
-  foreach (const symbol_information& s, symbolInformation)
-    {
-      tree_item *child = new tree_item ();
-
-      child->set_data (0, s._symbol);
-      child->set_data (1, s._type);
-      child->set_data (2, s._value);
-
-      switch (s._scope)
-        {
-          case symbol_information::local:       top_level_item (0)->add_child (child); break;
-          case symbol_information::global:      top_level_item (1)->add_child (child); break;
-          case symbol_information::persistent:  top_level_item (2)->add_child (child); break;
-          case symbol_information::hidden:      top_level_item (3)->add_child (child); break;
-        }
-    }
-
-  octave_link::instance ()-> release_symbol_information();
-
-  reset();
-  emit expand_request();
-}

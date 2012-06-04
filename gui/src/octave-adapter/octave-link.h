@@ -62,17 +62,7 @@
 #include <queue>
 
 // Qt includes
-#include <QMutexLocker>
-#include <QMutex>
-#include <QFileInfo>
-#include <QList>
-#include <QString>
-#include <QStringList>
-#include <QVector>
 #include <QSemaphore>
-#include <QStringListModel>
-#include <QTimer>
-#include <QQueue>
 
 #include "workspace-model.h"
 #include "octave-main-thread.h"
@@ -98,40 +88,13 @@ public:
 
   /** Starts octave. */
   void launch_octave ();
-
-  /** Returns the current history model. */
-  QStringListModel *get_history_model ();
-
-  /** Returns the current workspace model. */
-  workspace_model *get_workspace_model ();
-
-  /** Triggers an update of the history model. */
-  void trigger_update_history_model ();
-
-  /** Acquires the symbol information. You need to acquire that before
-    * actually accessing it. Make sure that you release it properly in order
-    * to avoid deadlocks. */
-  void acquire_symbol_information ();
-
-  /** Releases access to the symbol information. */
-  void release_symbol_information ();
-
-  /** Update symbol information from octave's symboltable. */
-  void build_symbol_information ();
-
-  /** Provides acces to the current symbol information.
-    * WARNING: Always acquire the symbol information before actually
-    * using it and make sure you release it properly afterwards.
-    */
-  const QList <symbol_information>& get_symbol_information () const;
-
   void register_event_listener (octave_event_listener *oel);
 
   void generate_events ();
   void process_events ();
   void post_event (octave_event *e);
-  void event_accepted (octave_event *e) const;
-  void event_reject (octave_event *e) const;
+  void event_accepted (octave_event *e);
+  void event_reject (octave_event *e);
 
   void request_working_directory_change (std::string directory);
   void request_octave_exit ();
@@ -143,26 +106,14 @@ private:
 
   octave_event_listener *_octave_event_listener;
 
-  /** Stores the current history_model. */
-  QStringListModel *_history_model;
-
-  /** Stores the current workspace model. */
-  workspace_model *_workspace_model;
-
   /** Thread running octave_main. */
   octave_main_thread *_octave_main_thread;
-
-  /** Semaphore to lock access to the symbol information. */
-  QSemaphore *_symbol_information_semaphore;
 
   /** Semaphore to lock access to the event queue. */
   QSemaphore *_event_queue_semaphore;
 
   /** Buffer for queueing events until they will be processed. */
   std::queue <octave_event *> _event_queue;
-
-  /** Stores the current symbol information. */
-  QList <symbol_information> _symbol_information;
 
   /** Stores the last known current working directory of octave. */
   std::string _last_working_directory;

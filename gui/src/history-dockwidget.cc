@@ -18,37 +18,91 @@
 #include "history-dockwidget.h"
 #include <QVBoxLayout>
 
-history_dock_widget::history_dock_widget (QWidget * parent):QDockWidget (parent)
+history_dock_widget::history_dock_widget (QWidget * parent)
+  : QDockWidget (parent), octave_event_observer ()
 {
   setObjectName ("HistoryDockWidget");
   construct ();
 }
 
 void
+history_dock_widget::event_accepted (octave_event *e)
+{
+  if (dynamic_cast <octave_update_history_event*> (e))
+    {
+      // Determine the client's (our) history length and the one of the server.
+      int clientHistoryLength = _history_model->rowCount ();
+      int serverHistoryLength = command_history::length ();
+
+      // If were behind the server, iterate through all new entries and add
+      // them to our history.
+      if (clientHistoryLength < serverHistoryLength)
+        {
+          for (int i = clientHistoryLength; i < serverHistoryLength; i++)
+            {
+              _history_model->insertRow (0);
+              _history_model->setData (_history_model->index (0),
+                QString (command_history::get_entry (i).c_str ()));
+            }
+        }
+    }
+
+  delete e;
+}
+
+void
+history_dock_widget::event_reject (octave_event *e)
+{
+  delete e;
+}
+
+void
 history_dock_widget::construct ()
 {
-  m_sortFilterProxyModel.setSourceModel(octave_link::instance ()->get_history_model());
-  m_historyListView = new QListView (this);
-  m_historyListView->setModel (&m_sortFilterProxyModel);
-  m_historyListView->setAlternatingRowColors (true);
-  m_historyListView->setEditTriggers (QAbstractItemView::NoEditTriggers);
-  m_historyListView->setStatusTip (tr ("Doubleclick a command to transfer it to the terminal."));
-  m_filterLineEdit = new QLineEdit (this);
-  m_filterLineEdit->setStatusTip (tr ("Enter text to filter the command history."));
+  _history_model = new QStringListModel ();
+  _sort_filter_proxy_model.setSourceModel (_history_model);
+  _history_list_view = new QListView (this);
+  _history_list_view->setModel (&_sort_filter_proxy_model);
+  _history_list_view->setAlternatingRowColors (true);
+  _history_list_view->setEditTriggers (QAbstractItemView::NoEditTriggers);
+  _history_list_view->setStatusTip (tr ("Doubleclick a command to transfer it to the terminal."));
+  _filter_line_edit = new QLineEdit (this);
+  _filter_line_edit->setStatusTip (tr ("Enter text to filter the command history."));
   QVBoxLayout *layout = new QVBoxLayout ();
 
   setWindowTitle (tr ("Command History"));
   setWidget (new QWidget ());
 
-  layout->addWidget (m_historyListView);
-  layout->addWidget (m_filterLineEdit);
+  layout->addWidget (_history_list_view);
+  layout->addWidget (_filter_line_edit);
   layout->setMargin (2);
 
   widget ()->setLayout (layout);
 
-  connect (m_filterLineEdit, SIGNAL (textEdited (QString)), &m_sortFilterProxyModel, SLOT (setFilterWildcard(QString)));
-  connect (m_historyListView, SIGNAL (doubleClicked (QModelIndex)), this, SLOT (handle_double_click (QModelIndex)));
-  connect (this, SIGNAL (visibilityChanged(bool)), this, SLOT(handle_visibility_changed(bool)));
+  connect (_filter_line_edit,
+           SIGNAL (textEdited (QString)),
+           &_sort_filter_proxy_model,
+           SLOT (setFilterWildcard (QString)));
+
+  connect (_history_list_view,
+           SIGNAL (doubleClicked (QModelIndex)),
+           this,
+           SLOT (handle_double_click (QModelIndex)));
+
+  connect (this,
+           SIGNAL (visibilityChanged (bool)),
+           this,
+           SLOT (handle_visibility_changed (bool)));
+
+  _update_history_model_timer.setInterval (200);
+  _update_history_model_timer.setSingleShot (false);
+
+  connect (&_update_history_model_timer,
+           SIGNAL (timeout ()),
+           this,
+           SLOT (request_history_model_update ()));
+
+  _update_history_model_timer.start ();
 }
 
 void
@@ -62,6 +116,13 @@ history_dock_widget::handle_visibility_changed (bool visible)
 {
   if (visible)
     emit active_changed (true);
+}
+
+void
+history_dock_widget::request_history_model_update ()
+{
+  octave_link::instance ()
+      ->post_event (new octave_update_history_event (*this));
 }
 
 void

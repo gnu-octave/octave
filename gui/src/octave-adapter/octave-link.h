@@ -62,12 +62,10 @@
 #include <readline/readline.h>
 #include <queue>
 
-#include "workspace-model.h"
 #include "octave-main-thread.h"
 #include "octave-event.h"
 #include "octave-event-observer.h"
 #include "octave-event-listener.h"
-#include "symbol-information.h"
 
 /**
   * \class OctaveLink

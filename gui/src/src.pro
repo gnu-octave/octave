@@ -94,11 +94,14 @@ SOURCES +=\
 HEADERS += \
     octave-adapter/octave-link.h \
     octave-adapter/octave-main-thread.h \
-    octave-adapter/symbol-information.h \
+    octave-adapter/octave-event.h \
+    octave-adapter/octave-event-observer.h \
+    octave-adapter/octave-event-listener.h \
     m-editor/lexer-octave-gui.h \
     m-editor/file-editor.h \
     m-editor/file-editor-interface.h \
     m-editor/file-editor-tab.h \
+    symbol-information.h \
     main-window.h \
     workspace-view.h \
     history-dockwidget.h \
@@ -108,9 +111,6 @@ HEADERS += \
     welcome-wizard.h \
     workspace-model.h \
     terminal-dockwidget.h \
-    octave-adapter/octave-event.h \
-    octave-adapter/octave-event-observer.h \
-    octave-adapter/octave-event-listener.h \
     octave-qt-event-listener.h
 
 FORMS += \

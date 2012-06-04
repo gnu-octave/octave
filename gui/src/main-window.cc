@@ -34,6 +34,14 @@ main_window::main_window (QWidget * parent):QMainWindow (parent)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
+  _octave_qt_event_listener = new octave_qt_event_listener ();
+  octave_link::instance ()->register_event_listener (_octave_qt_event_listener);
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (current_directory_changed(QString)),
+           this,
+           SLOT (update_current_working_directory(QString)));
+
   octave_link::instance ()->launch_octave();
 }
 
@@ -168,8 +176,8 @@ main_window::change_current_working_directory ()
 
   if (!selectedDirectory.isEmpty ())
     {
-      _terminal->sendText (QString ("cd \'%1\'\n").arg (selectedDirectory));
-      _terminal->setFocus ();
+      octave_link::instance ()
+          ->request_working_directory_change (selectedDirectory.toStdString ());
     }
 }
 
@@ -429,8 +437,8 @@ main_window::construct ()
            _terminal,                   SLOT   (copyClipboard ()));
   connect (paste_action,                SIGNAL (triggered()),
            _terminal,                   SLOT   (pasteClipboard ()));
-  connect (octave_link::instance (),    SIGNAL (working_directory_changed (QString)),
-           this,                        SLOT (update_current_working_directory (QString)));
+//  connect (octave_link::instance (),    SIGNAL (working_directory_changed (QString)),
+//           this,                        SLOT (update_current_working_directory (QString)));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (change_current_working_directory (QString)));
 

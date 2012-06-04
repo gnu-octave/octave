@@ -20,20 +20,24 @@
 
 #include <string>
 #include "octave-event-observer.h"
+#include "oct-env.h"
+#include "toplev.h"
 
 /**
   * \class octave_event
   * \brief Base class for an octave event.
+  * In order to make communication with octave threadsafe, comunication is
+  * implemented via events. An application may create events and post them,
+  * however there is no guarantee events will be processed in a given time.
+  *
+  * In order to create an event, there must be an event observer. The event
+  * observer will be given the opportunity to react on the event as soon as
+  * it has been processed in the octave thread. Accepting and ignoring takes
+  * places in the octave thread.
   */
 class octave_event
 {
   public:
-    enum event_type
-    {
-      exit_event,
-      change_directory_event
-    };
-
     octave_event (const octave_event_observer& o)
       : _octave_event_observer (o)
     { }
@@ -41,42 +45,54 @@ class octave_event
     virtual ~octave_event ()
     { }
 
-    virtual event_type get_event_type () const = 0;
+    /** Performs what it necessary to make this event happen.
+      * This code is thread-safe since it will be executed in the octave thread.
+      * However, you should take care to keep this code as short as possible. */
+    virtual bool perform () const = 0;
 
+    /**
+      * Accepts this event. This allows the event observer to react properly
+      * onto the event.
+      */
     void accept ()
     { _octave_event_observer.event_accepted (this); }
 
-    void ignore ()
-    { _octave_event_observer.event_ignored (this); }
+    /**
+      * Rejects this event. This allows the event observer to react properly
+      * onto the event.
+      */
+    void reject ()
+    { _octave_event_observer.event_reject (this); }
 
   private:
     const octave_event_observer& _octave_event_observer;
 };
 
+/** Implements an octave exit event. */
 class octave_exit_event : public octave_event
 {
   public:
+    /** Creates a new octave_exit_event. */
     octave_exit_event (const octave_event_observer& o)
       : octave_event (o)
     { }
 
-    event_type get_event_type () const
-    { return octave_event::exit_event; }
+    bool perform () const
+    { clean_up_and_exit (0); return true; }
 };
 
+/** Implements a change directory events. */
 class octave_change_directory_event : public octave_event
 {
   public:
+    /** Creates a new octave_change_directory_event. */
     octave_change_directory_event (const octave_event_observer& o,
                                    std::string directory)
       : octave_event (o)
     { _directory = directory; }
 
-    event_type get_event_type () const
-    { return octave_event::change_directory_event; }
-
-    std::string get_directory () const
-    { return _directory; }
+    bool perform () const
+    { return octave_env::chdir (_directory); }
 
   private:
     std::string _directory;

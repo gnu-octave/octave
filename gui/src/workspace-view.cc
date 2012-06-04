@@ -43,6 +43,14 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
 
   connect (octave_link::instance()->get_workspace_model(), SIGNAL(expand_request()),
            _workspace_tree_view, SLOT(expandAll()));
+
+  connect(&_update_workspace_model_timer, SIGNAL (timeout ()),
+    octave_link::instance()->get_workspace_model(),
+          SLOT (update_from_symbol_table ()));
+
+  _update_workspace_model_timer.setInterval (1000);
+  _update_workspace_model_timer.setSingleShot (false);
+  _update_workspace_model_timer.start ();
 }
 
 void

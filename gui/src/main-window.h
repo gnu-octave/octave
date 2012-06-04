@@ -44,6 +44,7 @@
 #include "history-dockwidget.h"
 #include "files-dockwidget.h"
 #include "terminal-dockwidget.h"
+#include "octave-qt-event-listener.h"
 
 /**
   * \class MainWindow
@@ -109,6 +110,8 @@ private:
   QComboBox *               _current_directory_combo_box;
   QToolButton *             _current_directory_tool_button;
   QToolButton *             _current_directory_up_tool_button;
+
+  octave_qt_event_listener *_octave_qt_event_listener;
 
   // Flag for closing whole application
   bool                      _closing;

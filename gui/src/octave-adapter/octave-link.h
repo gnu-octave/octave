@@ -59,6 +59,7 @@
 #include <string>
 #include <vector>
 #include <readline/readline.h>
+#include <queue>
 
 // Qt includes
 #include <QMutexLocker>
@@ -69,7 +70,6 @@
 #include <QStringList>
 #include <QVector>
 #include <QSemaphore>
-#include <QObject>
 #include <QStringListModel>
 #include <QTimer>
 #include <QQueue>
@@ -78,6 +78,7 @@
 #include "octave-main-thread.h"
 #include "octave-event.h"
 #include "octave-event-observer.h"
+#include "octave-event-listener.h"
 #include "symbol-information.h"
 
 /**
@@ -86,11 +87,10 @@
   * \author Jacob Dawid
   * This class is a wrapper around octave and provides threadsafety by
   * buffering access operations to octave and executing them in the readline
-  * even hook, which lives in the octave thread.
+  * event hook, which lives in the octave thread.
   */
-class octave_link : public QObject, public octave_event_observer
+class octave_link : public octave_event_observer
 {
-  Q_OBJECT
 public:
   /** Provides a way to access the unique octave_link object. */
   static octave_link *
@@ -98,9 +98,6 @@ public:
 
   /** Starts octave. */
   void launch_octave ();
-
-  /** Attempts to close octave. */
-  void terminate_octave ();
 
   /** Returns the current history model. */
   QStringListModel *get_history_model ();
@@ -110,9 +107,6 @@ public:
 
   /** Triggers an update of the history model. */
   void trigger_update_history_model ();
-
-  /** Updates the current working directory. */
-  void update_current_working_directory ();
 
   /** Acquires the symbol information. You need to acquire that before
     * actually accessing it. Make sure that you release it properly in order
@@ -131,23 +125,23 @@ public:
     */
   const QList <symbol_information>& get_symbol_information () const;
 
+  void register_event_listener (octave_event_listener *oel);
+
+  void generate_events ();
   void process_events ();
   void post_event (octave_event *e);
   void event_accepted (octave_event *e) const;
-  void event_ignored (octave_event *e) const;
-
+  void event_reject (octave_event *e) const;
 
   void request_working_directory_change (std::string directory);
   void request_octave_exit ();
-
-signals:
-  /** Emitted, whenever the working directory of octave changed. */
-  void working_directory_changed (QString directory);
 
 private:
   /** Singleton. */
   octave_link ();
   ~octave_link ();
+
+  octave_event_listener *_octave_event_listener;
 
   /** Stores the current history_model. */
   QStringListModel *_history_model;
@@ -158,10 +152,6 @@ private:
   /** Thread running octave_main. */
   octave_main_thread *_octave_main_thread;
 
-  /** Timer for periodically updating the workspace model from the current
-    * symbol information. */
-  QTimer _update_workspace_model_timer;
-
   /** Semaphore to lock access to the symbol information. */
   QSemaphore *_symbol_information_semaphore;
 
@@ -169,13 +159,13 @@ private:
   QSemaphore *_event_queue_semaphore;
 
   /** Buffer for queueing events until they will be processed. */
-  QQueue <octave_event *> _event_queue;
+  std::queue <octave_event *> _event_queue;
 
   /** Stores the current symbol information. */
   QList <symbol_information> _symbol_information;
 
   /** Stores the last known current working directory of octave. */
-  QString _current_working_directory;
+  std::string _last_working_directory;
 
   /** Unique instance. Singelton! */
   static octave_link _singleton;

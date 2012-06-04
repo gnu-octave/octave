@@ -1,5 +1,5 @@
 /* OctaveGUI - A graphical user interface for Octave
- * Copyright (C) 2011 Jacob Dawid (jacob.dawid@googlemail.com)
+ * Copyright (C) 2012 Jacob Dawid (jacob.dawid@googlemail.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -15,30 +15,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OCTAVEMAINTHREAD_H
-#define OCTAVEMAINTHREAD_H
+#ifndef OCTAVEQTEVENTLISTENER_H
+#define OCTAVEQTEVENTLISTENER_H
 
-#include <QThread>
+#include <QObject>
+#include <QString>
+#include "octave-event-listener.h"
 
-/**
-  * \class octave_main
-  * \brief This class represents a thread just running octave_main.
-  * \author Jacob Dawid
-  */
-class octave_main_thread : public QThread
+class octave_qt_event_listener
+    : public QObject, public octave_event_listener
 {
-  Q_OBJECT
-public:
-  /** Creates a new thread running octave_main. */
-  octave_main_thread ();
+    Q_OBJECT
+  public:
+    octave_qt_event_listener (QObject *parent = 0);
 
-signals:
-  /** This signal will be emitted when the thread is about to actually run octave_main. */
-  void ready();
+    void current_directory_has_changed (std::string directory);
 
-protected:
-  /** Runs octave_main. */
-  void run ();
+  signals:
+    void current_directory_changed (QString directory);
 };
 
-#endif // OCTAVEMAINTHREAD_H
+#endif // OCTAVEQTEVENTLISTENER_H

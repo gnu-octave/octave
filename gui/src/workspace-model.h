@@ -22,6 +22,7 @@
 #include <QAbstractItemModel>
 #include <QVector>
 #include <QSemaphore>
+#include <QTimer>
 
 class tree_item
 {
@@ -130,7 +131,6 @@ signals:
   void expand_request();
 
 private:
-
   tree_item *_rootItem;
 };
 

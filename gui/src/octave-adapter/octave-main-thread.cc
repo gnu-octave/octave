@@ -18,7 +18,7 @@
 #include "octave-main-thread.h"
 #include "octave-link.h"
 
-octave_main_thread::octave_main_thread (QObject * parent):QThread (parent)
+octave_main_thread::octave_main_thread () : QThread ()
 {
 }
 

@@ -26,6 +26,11 @@ workspace_model::workspace_model(QObject *parent)
   QList<QVariant> rootData;
   rootData << tr ("Name") << tr ("Type") << tr ("Value");
   _rootItem = new tree_item(rootData);
+
+  insert_top_level_item(0, new tree_item ("Local"));
+  insert_top_level_item(1, new tree_item ("Global"));
+  insert_top_level_item(2, new tree_item ("Persistent"));
+  insert_top_level_item(3, new tree_item ("Hidden"));
 }
 
 workspace_model::~workspace_model()

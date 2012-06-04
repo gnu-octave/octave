@@ -15,30 +15,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef OCTAVEMAINTHREAD_H
-#define OCTAVEMAINTHREAD_H
+#ifndef OCTAVEEVENTLISTENER_H
+#define OCTAVEEVENTLISTENER_H
 
-#include <QThread>
+#include <string>
 
-/**
-  * \class octave_main
-  * \brief This class represents a thread just running octave_main.
-  * \author Jacob Dawid
-  */
-class octave_main_thread : public QThread
+class octave_event_listener
 {
-  Q_OBJECT
-public:
-  /** Creates a new thread running octave_main. */
-  octave_main_thread ();
+  public:
+    octave_event_listener () { }
+    virtual ~octave_event_listener () { }
 
-signals:
-  /** This signal will be emitted when the thread is about to actually run octave_main. */
-  void ready();
-
-protected:
-  /** Runs octave_main. */
-  void run ();
+    virtual void current_directory_has_changed (std::string directory) = 0;
 };
 
-#endif // OCTAVEMAINTHREAD_H
+#endif // OCTAVEEVENTLISTENER_H

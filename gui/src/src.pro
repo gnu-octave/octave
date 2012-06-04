@@ -88,7 +88,8 @@ SOURCES +=\
     resource-manager.cc \
     welcome-wizard.cc \
     workspace-model.cc \
-    terminal-dockwidget.cc
+    terminal-dockwidget.cc \
+    octave-qt-event-listener.cc
 
 HEADERS += \
     octave-adapter/octave-link.h \
@@ -108,7 +109,9 @@ HEADERS += \
     workspace-model.h \
     terminal-dockwidget.h \
     octave-adapter/octave-event.h \
-    octave-adapter/octave-event-observer.h
+    octave-adapter/octave-event-observer.h \
+    octave-adapter/octave-event-listener.h \
+    octave-qt-event-listener.h
 
 FORMS += \
     settings-dialog.ui \

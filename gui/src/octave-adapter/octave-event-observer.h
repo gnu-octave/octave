@@ -30,8 +30,17 @@ class octave_event_observer
     octave_event_observer () { }
     virtual ~octave_event_observer () { }
 
+    /**
+      * This will be called when an event has been accepted. Operations
+      * in this routine will be processed in the octave thread.
+      */
     virtual void event_accepted (octave_event *e) const = 0;
-    virtual void event_ignored (octave_event *e) const = 0;
+
+    /**
+      * This will be called when an event has been rejected. Operations
+      * in this routine will be processed in the octave thread.
+      */
+    virtual void event_reject (octave_event *e) const = 0;
 };
 
 #include "octave-event.h"

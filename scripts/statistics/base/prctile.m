@@ -59,7 +59,7 @@ function q = prctile (x, p = [], dim)
   endif
 
   nd = ndims (x);
-  if (nargin == 2)
+  if (nargin < 3)
     if (nd == 2)
       ## If a matrix or vector, always use 1st dimension.
       dim = 1;

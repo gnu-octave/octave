@@ -771,7 +771,7 @@ jit_block::prepend_after_phi (jit_instruction *instr)
   for (iterator iter = begin (); iter != end (); ++iter)
     {
       jit_instruction *temp = *iter;
-      if (! temp->is_phi ())
+      if (! isa<jit_phi> (temp))
         {
           insert_before (iter, instr);
           return instr;
@@ -813,7 +813,7 @@ jit_block::terminator (void) const
     return 0;
 
   jit_instruction *last = instructions.back ();
-  return last->to_terminator ();
+  return dynamic_cast<jit_terminator *> (last);
 }
 
 jit_block *
@@ -1127,10 +1127,8 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
   // more interesting
   for (jit_block::iterator iter = entry_block->begin ();
        iter != entry_block->end (); ++iter)
-    {
-      if (jit_extract_argument *extract = (*iter)->to_extract_argument ())
-        arguments.push_back (std::make_pair (extract->name (), true));
-    }
+    if (jit_extract_argument *extract = dynamic_cast<jit_extract_argument *> (*iter))
+      arguments.push_back (std::make_pair (extract->name (), true));
 
   convert_llvm to_llvm;
   function = to_llvm.convert (module, arguments, blocks);
@@ -1795,14 +1793,12 @@ jit_convert::do_construct_ssa (jit_block& block)
   for (jit_block::iterator iter = block.begin (); iter != block.end (); ++iter)
     {
       jit_instruction *instr = *iter;
-      if (! instr->is_phi ())
+      if (! isa<jit_phi> (instr))
         {
           for (size_t i = 0; i < instr->argument_count (); ++i)
             {
-              jit_variable *var;
-              var = instr->argument_variable (i);
-              assert (var == instr->argument (i)->to_variable ());
-              assert (var == dynamic_cast<jit_variable *> (instr->argument (i)));
+              jit_value *arg = instr->argument (i);
+              jit_variable *var = dynamic_cast<jit_variable *> (arg);
               if (var)
                 instr->stash_argument (i, var->top ());
             }
@@ -1818,7 +1814,7 @@ jit_convert::do_construct_ssa (jit_block& block)
       size_t pred_idx = finish->pred_index (&block);
 
       for (jit_block::iterator iter = finish->begin (); iter != finish->end ()
-             && (*iter)->is_phi (); ++iter)
+             && isa<jit_phi> (*iter); ++iter)
         {
           jit_instruction *phi = *iter;
           jit_variable *var = phi->tag ();
@@ -1854,7 +1850,8 @@ jit_convert::release_placer::operator() (jit_block& block)
       jit_instruction *instr = *iter;
       for (size_t i = 0; i < instr->argument_count (); ++i)
         {
-          jit_instruction *arg = instr->argument_instruction (i);
+          jit_value *varg = instr->argument (i);
+          jit_instruction *arg = dynamic_cast<jit_instruction *> (varg);
           if (arg && arg->tag ())
             {
               jit_variable *tag = arg->tag ();
@@ -1863,7 +1860,7 @@ jit_convert::release_placer::operator() (jit_block& block)
         }
 
       jit_variable *tag = instr->tag ();
-      if (tag && ! (instr->is_phi () || instr->is_store_argument ())
+      if (tag && ! (isa<jit_phi> (instr) || isa<jit_store_argument> (instr))
           && tag->has_top ())
         {
           jit_instruction *last_use = tag->last_use ();
@@ -1871,7 +1868,7 @@ jit_convert::release_placer::operator() (jit_block& block)
                                                         tag->top ());
           release->infer ();
           if (last_use && last_use->parent () == &block
-              && ! last_use->is_phi ())
+              && ! isa<jit_phi> (last_use))
             block.insert_after (last_use->location (), release);
           else
             block.prepend_after_phi (release);
@@ -1931,7 +1928,7 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
         {
           jit_block& block = **biter;
           for (jit_block::iterator piter = block.begin ();
-               piter != block.end () && (*piter)->is_phi (); ++piter)
+               piter != block.end () && isa<jit_phi> (*piter); ++piter)
             {
               jit_instruction *phi = *piter;
               finish_phi (phi);
@@ -1960,7 +1957,7 @@ jit_convert::convert_llvm::finish_phi (jit_instruction *phi)
   if (! can_remove && llvm_phi->hasOneUse () && phi->use_count () == 1)
     {
       jit_instruction *user = phi->first_use ()->user ();
-      can_remove = user->is_call (); // must be a remove
+      can_remove = isa<jit_call> (user); // must be a remove
     }
 
   if (can_remove)

@@ -62,12 +62,11 @@ along with Octave; see the file COPYING.  If not, see
 //
 //
 // TODO:
-// 1. Rename symbol_table::symbol_record_ref -> symbol_table::symbol_reference
+// 1. Support error cases
 // 2. Support some simple matrix case (and cleanup Octave low level IR)
-// 3. Support error cases
-// 4. Fix memory leaks in JIT
-// 5. Cleanup/documentation
-// 6. ...
+// 3. Fix memory leaks in JIT
+// 4. Cleanup/documentation
+// 5. ...
 // ---------------------------------------------------------
 
 
@@ -90,6 +89,14 @@ namespace llvm
 class octave_base_value;
 class octave_value;
 class tree;
+
+// Use like: isa<jit_phi> (value)
+// basically just a short cut type typing dyanmic_cast.
+template <typename T, typename U>
+bool isa (U *value)
+{
+  return dynamic_cast<T *> (value);
+}
 
 // jit_range is compatable with the llvm range structure
 struct
@@ -533,28 +540,22 @@ private:
   JIT_METH(const_string)                        \
   JIT_METH(const_range)
 
-#define JIT_VISIT_IR_ABSTRACT                   \
-  JIT_METH(instruction)                         \
-  JIT_METH(terminator)
-
 #define JIT_VISIT_IR_CLASSES                    \
   JIT_VISIT_IR_NOTEMPLATE                       \
   JIT_VISIT_IR_CONST
-
-#define JIT_VISIT_IR_ALL                        \
-  JIT_VISIT_IR_CLASSES                          \
-  JIT_VISIT_IR_ABSTRACT
 
 // forward declare all ir classes
 #define JIT_METH(cname)                         \
   class jit_ ## cname;
 
-JIT_VISIT_IR_ABSTRACT
 JIT_VISIT_IR_NOTEMPLATE
 
 #undef JIT_METH
 
-// constants are typedefs from jit_const
+// ABCs which aren't included in  JIT_VISIT_IR_ALL
+class jit_instruction;
+class jit_terminator;
+
 template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T = T,
           bool QUOTE=false>
 class jit_const;
@@ -630,21 +631,6 @@ public:
     llvm_value = compiled;
   }
 
-#define JIT_METH(cname)                                         \
-  virtual bool is_ ## cname (void) const                        \
-  { return false; }                                             \
-                                                                \
-  virtual jit_ ## cname *to_ ## cname (void)                    \
-  { return 0; }                                                 \
-                                                                \
-  virtual const jit_ ## cname *to_ ## cname (void) const        \
-  { return 0; }
-
-JIT_VISIT_IR_NOTEMPLATE
-JIT_VISIT_IR_ABSTRACT
-
-#undef JIT_METH
-
 protected:
   std::ostream& print_indent (std::ostream& os, size_t indent) const
   {
@@ -661,16 +647,6 @@ private:
 };
 
 std::ostream& operator<< (std::ostream& os, const jit_value& value);
-
-#define JIT_GEN_CASTS(cname)                                    \
-  virtual bool is_ ## cname (void) const                        \
-  { return true; }                                              \
-                                                                \
-  virtual jit_ ## cname *to_ ## cname (void)                    \
-  { return this; }                                              \
-                                                                \
-  virtual const jit_ ## cname *to_ ## cname (void) const        \
-  { return this; }
 
 class
 jit_use
@@ -835,20 +811,6 @@ public:
     return argument_type (i)->to_llvm ();
   }
 
-  // generate functions of form argument_type where type is any subclass of
-  // jit_value
-#define JIT_METH(cname)                                 \
-  jit_ ## cname *argument_ ## cname (size_t i) const    \
-  {                                                     \
-    jit_value *arg = argument (i);                      \
-    return arg ? arg->to_ ## cname () : 0;              \
-  }
-
-JIT_VISIT_IR_ABSTRACT
-JIT_VISIT_IR_NOTEMPLATE
-
-#undef JIT_METH
-
   std::ostream& print_argument (std::ostream& os, size_t i) const
   {
     if (argument (i))
@@ -914,8 +876,6 @@ JIT_VISIT_IR_NOTEMPLATE
   jit_variable *tag (void) const;
 
   void stash_tag (jit_variable *atag);
-
-  JIT_GEN_CASTS (instruction)
 protected:
   std::vector<jit_type *> already_infered;
 private:
@@ -1155,7 +1115,6 @@ public:
   llvm::BasicBlock *to_llvm (void) const;
 
   JIT_VALUE_ACCEPT (block)
-  JIT_GEN_CASTS (block)
 private:
   void compute_df (size_t visit_count);
 
@@ -1288,7 +1247,6 @@ public:
   }
 
   JIT_VALUE_ACCEPT (variable)
-  JIT_GEN_CASTS (variable)
 private:
   std::string mname;
   std::stack<jit_value *> value_stack;
@@ -1357,7 +1315,6 @@ public:
   }
 
   JIT_VALUE_ACCEPT (phi);
-  JIT_GEN_CASTS (phi)
 };
 
 class
@@ -1388,8 +1345,6 @@ public:
   }
 
   virtual size_t sucessor_count (void) const = 0;
-
-  JIT_GEN_CASTS (terminator)
 };
 
 class
@@ -1413,7 +1368,6 @@ public:
   }
 
   JIT_VALUE_ACCEPT (break)
-  JIT_GEN_CASTS (break)
 };
 
 class
@@ -1452,7 +1406,6 @@ public:
   }
 
   JIT_VALUE_ACCEPT (cond_break)
-  JIT_GEN_CASTS (cond_break)
 };
 
 class
@@ -1518,7 +1471,6 @@ public:
   virtual bool infer (void);
 
   JIT_VALUE_ACCEPT (call)
-  JIT_GEN_CASTS (call)
 private:
   const jit_function& mfunction;
 };
@@ -1553,7 +1505,6 @@ public:
   }
 
   JIT_VALUE_ACCEPT (extract_argument)
-  JIT_GEN_CASTS (extract_argument)
 };
 
 class
@@ -1600,7 +1551,6 @@ public:
   }
 
   JIT_VALUE_ACCEPT (store_argument)
-  JIT_GEN_CASTS (store_argument)
 };
 
 class
@@ -1952,5 +1902,11 @@ private:
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;
 };
+
+// some #defines we use in the header, but not the cc file
+#undef JIT_VISIT_IR_CLASSES
+#undef JIT_VISIT_IR_CONST
+#undef JIT_VALUE_ACCEPT
+
 #endif
 #endif

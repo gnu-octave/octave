@@ -341,12 +341,6 @@ extern void install_ops (void);
     return octave_value (f (v1.CONCAT2(e1, _value) (), v2.CONCAT2(e2, _value) ())); \
   }
 
-#define BINOP_NONCONFORMANT(msg) \
-  gripe_nonconformant (msg, \
-                       a1.rows (), a1.columns (), \
-                       a2.rows (), a2.columns ()); \
-  return octave_value ()
-
 #define CATOPDECL(name, a1, a2) \
   static octave_value \
   CONCAT2(oct_catop_, name) (octave_base_value& a1, const octave_base_value& a2, \

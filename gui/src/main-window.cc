@@ -290,10 +290,10 @@ main_window::construct ()
   _current_directory_combo_box->setMaxVisibleItems (14);
 
   _current_directory_tool_button = new QToolButton (this);
-  _current_directory_tool_button->setIcon (style->standardIcon (QStyle::SP_DirOpenIcon));
+  _current_directory_tool_button->setIcon (QIcon(":/actions/icons/search.png"));
 
   _current_directory_up_tool_button = new QToolButton (this);
-  _current_directory_up_tool_button->setIcon (style->standardIcon (QStyle::SP_FileDialogToParent));
+  _current_directory_up_tool_button->setIcon (QIcon(":/actions/icons/up.png"));
 
   // Octave Terminal subwindow.
   _terminal = new QTerminal (this);
@@ -311,41 +311,35 @@ main_window::construct ()
 
   QMenu *file_menu = menuBar ()->addMenu (tr ("&File"));
   QAction *new_file_action
-    = file_menu->addAction (QIcon::fromTheme ("document-new",
-      style->standardIcon (QStyle::SP_FileIcon)), tr ("New File"));
+      = file_menu->addAction (QIcon(":/actions/icons/filenew.png"), tr ("New File"));
 
   QAction *open_file_action
-      = file_menu->addAction (QIcon::fromTheme ("document-open",
-        style->standardIcon (QStyle::SP_FileIcon)), tr ("Open File"));
+      = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open File"));
 
-  QAction *settings_action = file_menu->addAction (tr ("Settings"));
+  QAction *settings_action
+      = file_menu->addAction (QIcon(":/actions/icons/configure.png"), tr ("Settings"));
   file_menu->addSeparator ();
   QAction *exit_action = file_menu->addAction (tr ("Exit"));
 
   QMenu *edit_menu = menuBar ()->addMenu (tr ("&Edit"));
   QAction *cut_action
-      = edit_menu->addAction (QIcon::fromTheme ("edit-cut",
-        style->standardIcon (QStyle::SP_FileIcon)), tr ("Cut"));
+      = edit_menu->addAction (QIcon(":/actions/icons/editcut.png"), tr ("Cut"));
   cut_action->setShortcut (QKeySequence::Cut);
 
   QAction *copy_action
-      = edit_menu->addAction (QIcon::fromTheme ("edit-copy",
-        style->standardIcon (QStyle::SP_FileIcon)), tr ("Copy"));
+      = edit_menu->addAction (QIcon(":/actions/icons/editcopy.png"), tr ("Copy"));
   copy_action->setShortcut (QKeySequence::Copy);
 
   QAction *paste_action
-      = edit_menu->addAction (QIcon::fromTheme ("edit-paste",
-        style->standardIcon (QStyle::SP_FileIcon)), tr ("Paste"));
+      = edit_menu->addAction (QIcon(":/actions/icons/editpaste.png"), tr ("Paste"));
   paste_action->setShortcut (QKeySequence::Paste);
 
   QAction *undo_action
-      = edit_menu->addAction (QIcon::fromTheme ("edit-undo",
-        style->standardIcon (QStyle::SP_FileIcon)), tr ("Undo"));
+      = edit_menu->addAction (QIcon(":/actions/icons/undo.png"), tr ("Undo"));
   undo_action->setShortcut (QKeySequence::Undo);
 
   QAction *redo_action
-      = edit_menu->addAction (QIcon::fromTheme ("edit-redo",
-        style->standardIcon (QStyle::SP_FileIcon)), tr ("Redo"));
+      = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
   redo_action->setShortcut (QKeySequence::Redo);
 
   //QMenu *debugMenu = menuBar ()->addMenu (tr ("De&bug"));
@@ -459,8 +453,6 @@ main_window::construct ()
            _terminal,                   SLOT   (copyClipboard ()));
   connect (paste_action,                SIGNAL (triggered()),
            _terminal,                   SLOT   (pasteClipboard ()));
-//  connect (octave_link::instance (),    SIGNAL (working_directory_changed (QString)),
-//           this,                        SLOT (update_current_working_directory (QString)));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (change_current_working_directory (QString)));
 

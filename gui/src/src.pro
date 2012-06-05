@@ -116,3 +116,6 @@ HEADERS += \
 FORMS += \
     settings-dialog.ui \
     welcome-wizard.ui
+
+RESOURCES += \
+    resource.qrc

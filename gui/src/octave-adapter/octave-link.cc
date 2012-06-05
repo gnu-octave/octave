@@ -37,6 +37,7 @@ octave_link::octave_link ()
 {
   _event_queue_mutex = new octave_mutex ();
   _last_working_directory = "";
+  _debugging_mode_active = false;
 }
 
 octave_link::~octave_link ()

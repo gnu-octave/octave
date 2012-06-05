@@ -284,34 +284,30 @@ file_editor::construct ()
   _tab_widget->setTabsClosable (true);
 
   // Theme icons with QStyle icons as fallback
-  QAction *new_action = new QAction (
-        QIcon::fromTheme("document-new",style->standardIcon (QStyle::SP_FileIcon)),
+  QAction *new_action = new QAction (QIcon(":/actions/icons/filenew.png"),
         tr("&New File"), _tool_bar);
 
-  QAction *open_action = new QAction (
-        QIcon::fromTheme("document-open",style->standardIcon (QStyle::SP_DirOpenIcon)),
+  QAction *open_action = new QAction (QIcon(":/actions/icons/fileopen.png"),
         tr("&Open File"), _tool_bar);
 
-  QAction *save_action = new QAction (
-        QIcon::fromTheme("document-save",style->standardIcon (QStyle::SP_DriveHDIcon)),
+  QAction *save_action = new QAction (QIcon(":/actions/icons/filesave.png"),
         tr("&Save File"), _tool_bar);
 
-  QAction *save_as_action = new QAction (
-        QIcon::fromTheme("document-save-as",style->standardIcon (QStyle::SP_DriveFDIcon)),
+  QAction *save_as_action = new QAction (QIcon(":/actions/icons/filesaveas.png"),
         tr("Save File &As"), _tool_bar);
 
-  QAction *undo_action = new QAction (
-        QIcon::fromTheme("edit-undo",style->standardIcon (QStyle::SP_ArrowLeft)),
+  QAction *undo_action = new QAction (QIcon(":/actions/icons/undo.png"),
         tr("&Undo"), _tool_bar);
 
-  QAction *redo_action = new QAction (
-        QIcon::fromTheme("edit-redo",style->standardIcon (QStyle::SP_ArrowRight)),
+  QAction *redo_action = new QAction (QIcon(":/actions/icons/redo.png"),
         tr("&Redo"), _tool_bar);
 
   _copy_action = new QAction (QIcon::fromTheme ("edit-copy"), tr ("&Copy"), _tool_bar);
   _cut_action  = new QAction (QIcon::fromTheme ("edit-cut"), tr ("Cu&t"), _tool_bar);
 
-  QAction *paste_action               = new QAction (QIcon::fromTheme ("edit-paste"), tr ("&Paste"),_tool_bar);
+  QAction *paste_action
+      = new QAction (QIcon (":/actions/icons/editpaste.png"),
+                     tr("Paste"), _tool_bar);
   QAction *next_bookmark_action       = new QAction (tr ("&Next Bookmark"),_tool_bar);
   QAction *previous_bookmark_action   = new QAction (tr ("Pre&vious Bookmark"),_tool_bar);
   QAction *toggle_bookmark_action     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
@@ -319,8 +315,7 @@ file_editor::construct ()
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
-  QAction *run_action = new QAction (
-        QIcon::fromTheme ("media-play", style->standardIcon (QStyle::SP_MediaPlay)),
+  QAction *run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
         tr("&Run File"), _tool_bar);
 
   // some actions are disabled from the beginning

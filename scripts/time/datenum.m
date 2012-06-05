@@ -109,7 +109,12 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
     endif
   endif
 
-  month(month<1) = 1; ## For compatibility.  Otherwise allow negative months.
+  if (! (isa (year, "double") && isa (month, "double") && isa (day, "double") &&
+         isa (hour, "double") && isa (minute, "double") && isa (second, "double")))
+    error ("datenum: all inputs must be of class double");
+  endif
+
+  month(month<1) = 1;  # For compatibility.  Otherwise allow negative months.
 
   ## Treat fractional months, by converting the fraction to days
   if (floor (month) != month)
@@ -195,5 +200,6 @@ endfunction
 %% Test input validation
 %!error datenum ()
 %!error datenum (1,2,3,4,5,6,7)
-%!error datenum ([1, 2])
-%!error datenum ([1,2,3,4,5,6,7])
+%!error <expected date vector containing> datenum ([1, 2])
+%!error <expected date vector containing> datenum ([1,2,3,4,5,6,7])
+%!error <all inputs must be of class double> datenum (int32 (2000), int32 (1), int32 (1))

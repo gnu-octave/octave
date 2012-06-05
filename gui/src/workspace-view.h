@@ -22,6 +22,7 @@
 #include <QTreeView>
 #include <QSemaphore>
 #include "octave-link.h"
+#include "workspace-model.h"
 
 class workspace_view : public QDockWidget
 {

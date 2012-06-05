@@ -110,6 +110,7 @@ private:
 
   /** Stores the last known current working directory of octave. */
   std::string _last_working_directory;
+  bool _debugging_mode_active;
 
   /** Unique instance. Singelton! */
   static octave_link _singleton;

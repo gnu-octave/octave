@@ -70,6 +70,18 @@ octave_link::generate_events ()
         _octave_event_listener
             ->current_directory_has_changed (_last_working_directory);
     }
+
+  if (_debugging_mode_active != tree_evaluator::debug_mode)
+    {
+      _debugging_mode_active = tree_evaluator::debug_mode;
+      if (_octave_event_listener)
+        {
+          if (_debugging_mode_active)
+            _octave_event_listener->entered_debug_mode ();
+          else
+            _octave_event_listener->quit_debug_mode ();
+        }
+    }
 }
 
 void

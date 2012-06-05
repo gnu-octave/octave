@@ -35,13 +35,6 @@ main_window::main_window (QWidget * parent)
 {
   // We have to set up all our windows, before we finally launch octave.
   construct ();
-  _octave_qt_event_listener = new octave_qt_event_listener ();
-  octave_link::instance ()->register_event_listener (_octave_qt_event_listener);
-
-  connect (_octave_qt_event_listener,
-           SIGNAL (current_directory_changed(QString)),
-           this,
-           SLOT (update_current_working_directory(QString)));
 
   octave_link::instance ()->launch_octave();
 }
@@ -208,6 +201,19 @@ main_window::current_working_directory_up ()
 {
   _terminal->sendText ("cd ..\n");
   _terminal->setFocus ();
+}
+
+
+void
+main_window::handle_entered_debug_mode ()
+{
+  setWindowTitle ("Octave (Debugging)");
+}
+
+void
+main_window::handle_quit_debug_mode ()
+{
+  setWindowTitle ("Octave");
 }
 
 void
@@ -467,5 +473,23 @@ main_window::construct ()
   addDockWidget (Qt::BottomDockWidgetArea, _terminal_dock_widget);
   setStatusBar (_status_bar);
   read_settings ();
+
+  _octave_qt_event_listener = new octave_qt_event_listener ();
+  octave_link::instance ()->register_event_listener (_octave_qt_event_listener);
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (current_directory_has_changed_signal (QString)),
+           this,
+           SLOT (update_current_working_directory (QString)));
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (entered_debug_mode_signal ()),
+           this,
+           SLOT(handle_entered_debug_mode ()));
+
+  connect (_octave_qt_event_listener,
+           SIGNAL (quit_debug_mode_signal ()),
+           this,
+           SLOT (handle_quit_debug_mode ()));
 }
 

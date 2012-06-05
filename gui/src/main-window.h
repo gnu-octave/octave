@@ -91,6 +91,9 @@ public slots:
   void change_current_working_directory (QString directory);
   void current_working_directory_up ();
 
+  void handle_entered_debug_mode ();
+  void handle_quit_debug_mode ();
+
 protected:
   void closeEvent (QCloseEvent * closeEvent);
   void read_settings ();

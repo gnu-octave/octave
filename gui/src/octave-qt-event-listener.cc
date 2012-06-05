@@ -25,10 +25,21 @@ octave_qt_event_listener::octave_qt_event_listener (QObject *parent)
 
 void
 octave_qt_event_listener::current_directory_has_changed (std::string directory)
-{ emit current_directory_changed (QString::fromStdString (directory)); }
+{
+  emit current_directory_has_changed_signal
+      (QString::fromStdString (directory));
+}
 
 void
 octave_qt_event_listener::about_to_exit ()
 {
   qApp->quit ();
 }
+
+void
+octave_qt_event_listener::entered_debug_mode ()
+{ emit entered_debug_mode_signal (); }
+
+void
+octave_qt_event_listener::quit_debug_mode ()
+{ emit quit_debug_mode_signal (); }

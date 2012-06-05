@@ -39,9 +39,7 @@ files_dock_widget::files_dock_widget (QWidget *parent)
   _navigation_tool_bar->setIconSize (QSize (20, 20));
 
   // Add a button to the toolbar with the QT standard icon for up-directory
-  // TODO: Maybe change this to be an up-directory icon that is OS specific???
-  QStyle *style = QApplication::style ();
-  _directory_icon = style->standardIcon (QStyle::SP_FileDialogToParent);
+  _directory_icon = QIcon(":/actions/icons/up.png");
   _directory_up_action = new QAction (_directory_icon, "", _navigation_tool_bar);
   _directory_up_action->setStatusTip (tr ("Move up one directory."));
 

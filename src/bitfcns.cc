@@ -44,6 +44,32 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <functional>
 
+#if !defined (HAVE_CXX_BITWISE_OP_TEMPLATES)
+namespace std 
+{
+  template <typename T>
+  struct bit_and 
+  {
+  public: 
+    T operator() (const T & op1, const T & op2) const { return (op1 & op2); }
+  };
+
+  template <typename T>
+  struct bit_or 
+  {
+  public: 
+    T operator() (const T & op1, const T & op2) const { return (op1 | op2); }
+  };
+
+  template <typename T>
+  struct bit_xor 
+  {
+  public: 
+    T operator() (const T & op1, const T & op2) const { return (op1 ^ op2); }
+  };
+}
+#endif
+
 template <typename OP, typename T>
 octave_value
 bitopxx(const OP& op, const std::string& fname,

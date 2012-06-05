@@ -113,7 +113,11 @@ AC_DEFUN([OCTAVE_CXX_BITWISE_OP_TEMPLATES],
 octave_cv_cxx_bitwise_op_templates,
 [AC_LANG_PUSH(C++)
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <functional>]],
-[[double x = 0.0, y = 1.0; double z1 = bit_and<double> (x, y); double z2 = bit_or<double> (x, y); double z1 = bit_xor<double> (x, y);]])],
+[[int x = 0;
+int y = 1;
+int z1 = std::bit_and<int>() (x, y);
+int z2 = std::bit_or<int>() (x, y);
+int z3 = std::bit_xor<int>() (x, y);]])],
 octave_cv_cxx_bitwise_op_templates=yes, octave_cv_cxx_bitwise_op_templates=no)])
 if test $octave_cv_cxx_bitwise_op_templates = yes; then
 AC_DEFINE(HAVE_CXX_BITWISE_OP_TEMPLATES,1,[Define if C++ library has templated bitwise operators])

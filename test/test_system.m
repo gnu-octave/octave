@@ -124,19 +124,11 @@
 
 %% test/octave.test/system/mk-rm-dir-1.m
 %!test
-%! ## FIXME: saving and restoring of pwd in olldir is a hack
-%! ##        'mkdir' should not change pwd but it does since
-%! ##        changeset 14679:a543ed02e673
-%! ##        which created 'mkdir -p' capabilities.  
-%! ##        When 'mkdir' has been corrected, delete this FIXME
-%! ##        and any lines with 'HACK'.
-%! olddir = pwd;   # HACK Line #1
 %! nm = tmpnam ();
 %! e1 = mkdir (nm);
 %! [s2, e2] = stat (nm);
 %! e3 = rmdir (nm);
 %! [s4, e4] = stat (nm);
-%! cd (olddir);    # HACK Line #2
 %! assert ((e1 && strcmp (s2.modestr(1), "d") && e3 && e4 < 0));
 
 %% test/octave.test/system/mkdir-1.m

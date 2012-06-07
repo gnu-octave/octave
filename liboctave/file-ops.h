@@ -122,8 +122,7 @@ extern OCTAVE_API int
 octave_mkdir (const std::string& nm, mode_t md);
 
 extern OCTAVE_API int
-octave_mkdir (const std::string& nm, mode_t md, std::string& msg,
-              bool make_parents = false);
+octave_mkdir (const std::string& nm, mode_t md, std::string& msg);
 
 extern OCTAVE_API int
 octave_mkfifo (const std::string& nm, mode_t md);

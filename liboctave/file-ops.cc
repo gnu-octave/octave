@@ -48,7 +48,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "singleton-cleanup.h"
 #include "str-vec.h"
-#include "lo-cutils.h"
 
 file_ops *file_ops::instance = 0;
 
@@ -362,32 +361,22 @@ file_ops::concat (const std::string& dir, const std::string& file)
        : dir + dir_sep_char () + file);
 }
 
-static int 
-make_ancestor (const char *, const char *component, void *options)
-{
-  mode_t* mode = reinterpret_cast<mode_t *>(options);
-  return gnulib::mkdir (component, *mode);
-}
 
 int
 octave_mkdir (const std::string& nm, mode_t md)
 {
   std::string msg;
-  return octave_mkdir (nm, md, msg, false);
+  return octave_mkdir (nm, md, msg);
 }
 
 int
-octave_mkdir (const std::string& name, mode_t mode, std::string& msg, 
-              bool make_parents)
+octave_mkdir (const std::string& name, mode_t mode, std::string& msg)
 {
   msg = std::string ();
 
   int status = -1;
 
-  if (make_parents)
-    status = octave_mkdir_parents (name.c_str (), mode, make_ancestor);
-  else
-    status = gnulib::mkdir (name.c_str (), mode);
+  status = gnulib::mkdir (name.c_str (), mode);
 
   if (status < 0)
     msg = gnulib::strerror (errno);

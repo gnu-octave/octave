@@ -76,6 +76,9 @@ private:
   bool mknown;
 };
 
+static void fail (void) GCC_ATTR_NORETURN;
+static void fail (const std::string&) GCC_ATTR_NORETURN;
+
 static void
 fail (void)
 {
@@ -865,7 +868,6 @@ jit_block::pred_index (jit_block *apred) const
       return i;
 
   fail ("No such predecessor");
-  return 0; // silly compiler, why you warn?
 }
 
 void

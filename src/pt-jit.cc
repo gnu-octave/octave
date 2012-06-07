@@ -384,16 +384,58 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   add_binary_op (scalar, octave_value::op_mul, llvm::Instruction::FMul);
   add_binary_op (scalar, octave_value::op_el_mul, llvm::Instruction::FMul);
 
-  // FIXME: Warn if rhs is zero
-  add_binary_op (scalar, octave_value::op_div, llvm::Instruction::FDiv);
-  add_binary_op (scalar, octave_value::op_el_div, llvm::Instruction::FDiv);
-
   add_binary_fcmp (scalar, octave_value::op_lt, llvm::CmpInst::FCMP_ULT);
   add_binary_fcmp (scalar, octave_value::op_le, llvm::CmpInst::FCMP_ULE);
   add_binary_fcmp (scalar, octave_value::op_eq, llvm::CmpInst::FCMP_UEQ);
   add_binary_fcmp (scalar, octave_value::op_ge, llvm::CmpInst::FCMP_UGE);
   add_binary_fcmp (scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
   add_binary_fcmp (scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
+
+  llvm::Function *gripe_div0 = create_function ("gripe_divide_by_zero", void_t);
+  engine->addGlobalMapping (gripe_div0,
+                            reinterpret_cast<void *> (&gripe_divide_by_zero));
+
+  // divide is annoying because it might error
+  fn = create_function ("octave_jit_div_scalar_scalar", scalar, scalar, scalar);
+  llvm::BasicBlock *body = llvm::BasicBlock::Create (context, "body", fn);
+  builder.SetInsertPoint (body);
+  {
+    llvm::BasicBlock *warn_block = llvm::BasicBlock::Create (context, "warn", fn);
+    llvm::BasicBlock *normal_block = llvm::BasicBlock::Create (context, "normal", fn);
+
+    llvm::Value *zero = llvm::ConstantFP::get (dbl, 0);
+    llvm::Value *check = builder.CreateFCmpUEQ (zero, ++fn->arg_begin ());
+    builder.CreateCondBr (check, warn_block, normal_block);
+
+    builder.SetInsertPoint (warn_block);
+    builder.CreateCall (gripe_div0);
+    builder.CreateBr (normal_block);
+
+    builder.SetInsertPoint (normal_block);
+    llvm::Value *ret = builder.CreateFDiv (fn->arg_begin (), ++fn->arg_begin ());
+    builder.CreateRet (ret);
+
+    jit_function::overload ol (fn, true, true, scalar, scalar, scalar);
+    binary_ops[octave_value::op_div].add_overload (ol);
+    binary_ops[octave_value::op_el_div].add_overload (ol);
+  }
+  llvm::verifyFunction (*fn);
+
+  // ldiv is the same as div with the operators reversed
+  llvm::Function *div = fn;
+  fn = create_function ("octave_jit_ldiv_scalar_scalar", scalar, scalar, scalar);
+  body = llvm::BasicBlock::Create (context, "body", fn);
+  builder.SetInsertPoint (body);
+  {
+    llvm::Value *ret = builder.CreateCall2 (div, ++fn->arg_begin (),
+                                            fn->arg_begin ());
+    builder.CreateRet (ret);
+
+    jit_function::overload ol (fn, true, true, scalar, scalar, scalar);
+    binary_ops[octave_value::op_ldiv].add_overload (ol);
+    binary_ops[octave_value::op_el_ldiv].add_overload (ol);
+  }
+  llvm::verifyFunction (*fn);
 
   // now for binary index operators
   add_binary_op (index, octave_value::op_add, llvm::Instruction::Add);
@@ -407,7 +449,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   for_init_fn.stash_name ("for_init");
 
   fn = create_function ("octave_jit_for_range_init", index, range);
-  llvm::BasicBlock *body = llvm::BasicBlock::Create (context, "body", fn); 
+  body = llvm::BasicBlock::Create (context, "body", fn);
   builder.SetInsertPoint (body);
   {
     llvm::Value *zero = llvm::ConstantInt::get (index_t, 0);

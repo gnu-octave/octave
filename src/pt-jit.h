@@ -440,6 +440,12 @@ private:
 
   void add_binary_fcmp (jit_type *ty, int op, int llvm_op);
 
+  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret)
+  {
+    std::vector<llvm::Type *> args;
+    return create_function (name, ret, args);
+  }
+
   llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
                                    llvm::Type *arg0)
   {

@@ -84,6 +84,7 @@ namespace llvm
   class LLVMContext;
   class Type;
   class Twine;
+  class GlobalVariable;
 }
 
 class octave_base_value;
@@ -356,6 +357,11 @@ public:
   {
     return instance->do_cast (to, from);
   }
+
+  static llvm::Value *insert_error_check (void)
+  {
+    return instance->do_insert_error_check ();
+  }
 private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
 
@@ -487,6 +493,8 @@ private:
 
   llvm::Function *create_identity (jit_type *type);
 
+  llvm::Value *do_insert_error_check (void);
+
   static jit_typeinfo *instance;
 
   llvm::Module *module;
@@ -494,6 +502,7 @@ private:
   int next_id;
 
   llvm::Type *ov_t;
+  llvm::GlobalVariable *lerror_state;
 
   std::vector<jit_type*> id_to_type;
   jit_type *any;
@@ -525,19 +534,21 @@ private:
 // We convert the octave parse tree to this IR directly.
 
 #define JIT_VISIT_IR_NOTEMPLATE                 \
-  JIT_METH(block)                               \
-  JIT_METH(break)                               \
-  JIT_METH(cond_break)                          \
-  JIT_METH(call)                                \
-  JIT_METH(extract_argument)                    \
-  JIT_METH(store_argument)                      \
-  JIT_METH(phi)                                 \
-  JIT_METH(variable)
+  JIT_METH(block);                              \
+  JIT_METH(break);                              \
+  JIT_METH(cond_break);                         \
+  JIT_METH(call);                               \
+  JIT_METH(extract_argument);                   \
+  JIT_METH(store_argument);                     \
+  JIT_METH(phi);                                \
+  JIT_METH(variable);                           \
+  JIT_METH(check_error);                        \
+  JIT_METH(assign)
 
 #define JIT_VISIT_IR_CONST                      \
-  JIT_METH(const_scalar)                        \
-  JIT_METH(const_index)                         \
-  JIT_METH(const_string)                        \
+  JIT_METH(const_scalar);                       \
+  JIT_METH(const_index);                        \
+  JIT_METH(const_string);                       \
   JIT_METH(const_range)
 
 #define JIT_VISIT_IR_CLASSES                    \
@@ -576,7 +587,8 @@ jit_value
 {
   friend class jit_use;
 public:
-  jit_value (void) : llvm_value (0), ty (0), use_head (0), myuse_count (0) {}
+  jit_value (void) : llvm_value (0), ty (0), use_head (0), myuse_count (0),
+                     mlast_use (0) {}
 
   virtual ~jit_value (void);
 
@@ -606,6 +618,13 @@ public:
     std::stringstream ss;
     print (ss);
     return ss.str ();
+  }
+
+  jit_instruction *last_use (void) const { return mlast_use; }
+
+  void stash_last_use (jit_instruction *alast_use)
+  {
+    mlast_use = alast_use;
   }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const = 0;
@@ -644,6 +663,7 @@ private:
   jit_type *ty;
   jit_use *use_head;
   size_t myuse_count;
+  jit_instruction *mlast_use;
 };
 
 std::ostream& operator<< (std::ostream& os, const jit_value& value);
@@ -737,12 +757,12 @@ jit_instruction : public jit_value
 {
 public:
   // FIXME: this code could be so much pretier with varadic templates...
-  jit_instruction (void) : id (next_id ()), mparent (0)
+  jit_instruction (void) : mid (next_id ()), mparent (0)
   {}
 
   jit_instruction (size_t nargs, jit_value *adefault = 0)
   : already_infered (nargs, reinterpret_cast<jit_type *>(0)), arguments (nargs),
-    id (next_id ()), mparent (0)
+    mid (next_id ()), mparent (0)
   {
     if (adefault)
       for (size_t i = 0; i < nargs; ++i)
@@ -751,14 +771,14 @@ public:
 
   jit_instruction (jit_value *arg0)
     : already_infered (1, reinterpret_cast<jit_type *>(0)), arguments (1), 
-      id (next_id ()), mparent (0)
+      mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
   }
 
   jit_instruction (jit_value *arg0, jit_value *arg1)
     : already_infered (2, reinterpret_cast<jit_type *>(0)), arguments (2), 
-      id (next_id ()), mparent (0)
+      mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
     stash_argument (1, arg1);
@@ -766,7 +786,7 @@ public:
 
   jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2)
     : already_infered (3, reinterpret_cast<jit_type *>(0)), arguments (3), 
-      id (next_id ()), mparent (0)
+      mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
     stash_argument (1, arg1);
@@ -776,7 +796,7 @@ public:
   jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2,
                    jit_value *arg3)
     : already_infered (3, reinterpret_cast<jit_type *>(0)), arguments (4), 
-      id (next_id ()), mparent (0)
+      mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
     stash_argument (1, arg1);
@@ -847,13 +867,13 @@ public:
 
   virtual bool almost_dead (void) const { return false; }
 
+  virtual void push_variable (void) {}
+
+  virtual void pop_variable (void) {}
+
   virtual bool infer (void) { return false; }
 
   void remove (void);
-
-  void push_variable (void);
-
-  void pop_variable (void);
 
   virtual std::ostream& short_print (std::ostream& os) const;
 
@@ -873,9 +893,7 @@ public:
     mlocation = alocation;
   }
 
-  jit_variable *tag (void) const;
-
-  void stash_tag (jit_variable *atag);
+  size_t id (void) const { return mid; }
 protected:
   std::vector<jit_type *> already_infered;
 private:
@@ -890,9 +908,7 @@ private:
 
   std::vector<jit_use> arguments;
 
-  jit_use mtag;
-
-  size_t id;
+  size_t mid;
   jit_block *mparent;
   std::list<jit_instruction *>::iterator mlocation;
 };
@@ -960,11 +976,12 @@ public:
 
   jit_instruction *insert_after (iterator loc, jit_instruction *instr);
 
-  void remove (jit_block::iterator iter)
+  iterator remove (iterator iter)
   {
     jit_instruction *instr = *iter;
-    instructions.erase (iter);
+    iter = instructions.erase (iter);
     instr->stash_parent (0, instructions.end ());
+    return iter;
   }
 
   jit_terminator *terminator (void) const;
@@ -1046,8 +1063,7 @@ public:
     for (size_t i = 0; i < pred_count (); ++i)
       pred (i)->label (visit_count, number);
 
-    mid = number;
-    ++number;
+    mid = number++;
   }
 
   // See for idom computation algorithm
@@ -1254,14 +1270,65 @@ private:
 };
 
 class
-jit_phi : public jit_instruction
+jit_assign_base : public jit_instruction
 {
 public:
-  jit_phi (jit_variable *avariable, size_t npred)
-    : jit_instruction (npred)
+  jit_assign_base (jit_variable *adest) : jit_instruction (), mdest (adest) {}
+
+  jit_assign_base (jit_variable *adest, size_t npred) : jit_instruction (npred),
+                                                        mdest (adest) {}
+
+  jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
+    : jit_instruction (arg0, arg1), mdest (adest) {}
+
+  jit_variable *dest (void) const { return mdest; }
+
+  virtual void push_variable (void)
   {
-    stash_tag (avariable);
+    mdest->push (this);
   }
+
+  virtual void pop_variable (void)
+  {
+    mdest->pop ();
+  }
+private:
+  jit_variable *mdest;
+};
+
+class
+jit_assign : public jit_assign_base
+{
+public:
+  jit_assign (jit_variable *adest, jit_instruction *asrc)
+    : jit_assign_base (adest, adest, asrc) {}
+
+  jit_instruction *src (void) const
+  {
+    return static_cast<jit_instruction *> (argument (1));
+  }
+
+  virtual void push_variable (void)
+  {
+    dest ()->push (src ());
+  }
+
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
+  {
+    return print_indent (os, indent) << *dest () << " = " << *src ();
+  }
+
+  JIT_VALUE_ACCEPT (assign);
+private:
+  jit_variable *mdest;
+};
+
+class
+jit_phi : public jit_assign_base
+{
+public:
+  jit_phi (jit_variable *adest, size_t npred) : jit_assign_base (adest, npred)
+  {}
 
   virtual bool dead (void) const
   {
@@ -1314,6 +1381,15 @@ public:
     return os;
   }
 
+  virtual std::ostream& short_print (std::ostream& os) const
+  {
+    if (type ())
+      jit_print (os, type ()) << ": ";
+
+    dest ()->short_print (os);
+    return os << "#" << id ();
+  }
+
   JIT_VALUE_ACCEPT (phi);
 };
 
@@ -1322,6 +1398,9 @@ jit_terminator : public jit_instruction
 {
 public:
   jit_terminator (jit_value *arg0) : jit_instruction (arg0) {}
+
+  jit_terminator (jit_value *arg0, jit_value *arg1)
+    : jit_instruction (arg0, arg1) {}
 
   jit_terminator (jit_value *arg0, jit_value *arg1, jit_value *arg2)
     : jit_instruction (arg0, arg1, arg2) {}
@@ -1451,7 +1530,7 @@ public:
   {
     print_indent (os, indent);
 
-    if (use_count () || tag ())
+    if (use_count ())
       short_print (os) << " = ";
     os << "call " << mfunction.name () << " (";
 
@@ -1475,20 +1554,46 @@ private:
   const jit_function& mfunction;
 };
 
+// FIXME: This is just ugly...
+// checks error_state, if error_state is false then goto the normal branche,
+// otherwise goto the error branch
 class
-jit_extract_argument : public jit_instruction
+jit_check_error : public jit_terminator
 {
 public:
-  jit_extract_argument (jit_type *atype, jit_variable *var)
-    : jit_instruction ()
+  jit_check_error (jit_block *normal, jit_block *error)
+    : jit_terminator (normal, error) {}
+
+  jit_block *sucessor (size_t idx) const
+  {
+    return static_cast<jit_block *> (argument (idx));
+  }
+
+  size_t sucessor_count (void) const { return 2; }
+
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
+  {
+    print_indent (os, indent) << "check_error: normal: ";
+    print_sucessor (os, 0) << " error: ";
+    return print_sucessor (os, 1);
+  }
+
+  JIT_VALUE_ACCEPT (jit_check_error)
+};
+
+class
+jit_extract_argument : public jit_assign_base
+{
+public:
+  jit_extract_argument (jit_type *atype, jit_variable *adest)
+    : jit_assign_base (adest)
   {
     stash_type (atype);
-    stash_tag (var);
   }
 
   const std::string& name (void) const
   {
-    return tag ()->name ();
+    return dest ()->name ();
   }
 
   const jit_function::overload& overload (void) const
@@ -1512,14 +1617,12 @@ jit_store_argument : public jit_instruction
 {
 public:
   jit_store_argument (jit_variable *var)
-    : jit_instruction (var)
-  {
-    stash_tag (var);
-  }
+  : jit_instruction (var), dest (var)
+  {}
 
   const std::string& name (void) const
   {
-    return tag ()->name ();
+    return dest->name ();
   }
 
   const jit_function::overload& overload (void) const
@@ -1546,11 +1649,20 @@ public:
   {
     jit_value *res = result ();
     print_indent (os, indent) << "store ";
-    short_print (os) << " = ";
-    return res->short_print (os);
+    dest->short_print (os);
+
+    if (! isa<jit_variable> (res))
+      {
+        os << " = ";
+        res->short_print (os);
+      }
+
+    return os;
   }
 
   JIT_VALUE_ACCEPT (store_argument)
+private:
+  jit_variable *dest;
 };
 
 class
@@ -1735,6 +1847,8 @@ private:
 
   jit_block *entry_block;
 
+  jit_block *final_block;
+
   jit_block *block;
 
   llvm::Function *function;
@@ -1774,7 +1888,7 @@ private:
     all_values.push_back (value);
   }
 
-  void construct_ssa (jit_block *final_block);
+  void construct_ssa (void);
 
   static void do_construct_ssa (jit_block& block);
 

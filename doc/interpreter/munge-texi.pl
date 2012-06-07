@@ -16,29 +16,29 @@ keys(%help_text) = 1800;
 # Load DOCSTRINGS into memory while expanding @seealso references
 foreach $DOCSTRING_file (@ARGV)
 {
-   open (DOCFH, $DOCSTRING_file) or die "Unable to open $DOCSTRING_file\n";
+  open (DOCFH, $DOCSTRING_file) or die "Unable to open $DOCSTRING_file\n";
 
-   # Skip comments
-   while (defined ($_ = <DOCFH>) and /$comment_line/o) {;}
+  # Skip comments
+  while (defined ($_ = <DOCFH>) and /$comment_line/o) {;}
 
-   # Validate DOCSTRING file format
-   die "invalid doc file format\n" if (! /$doc_delim/o);
-   
-   do 
-   {
-     chomp;
-     $symbol = substr ($_,1);
-     $docstring = extract_docstring ();
-     if ($help_text{$symbol})
-     {
-        warn "ignoring duplicate entry for $symbol\n";
-     }
-     else
-     {
-       $help_text{$symbol} = $docstring;
-     }
+  # Validate DOCSTRING file format
+  die "invalid doc file format\n" if (! /$doc_delim/o);
+  
+  do 
+  {
+    chomp;
+    $symbol = substr ($_,1);
+    $docstring = extract_docstring ();
+    if ($help_text{$symbol})
+    {
+      warn "ignoring duplicate entry for $symbol\n";
+    }
+    else
+    {
+      $help_text{$symbol} = $docstring;
+    }
 
-   } while (! eof);
+  } while (! eof);
 
 }
 
@@ -50,40 +50,40 @@ print '@c DO NOT EDIT!  Generated automatically by munge-texi.',"\n\n";
 
 TXI_LINE: while (<STDIN>)
 {
-   if (/^\s*\@DOCSTRING\((\S+)\)/)
-   {
-      $func = $1;
-      $docstring = $help_text{$func};
-      if (! $docstring)
-      {
-        warn "no docstring entry for $func\n";
-        next TXI_LINE;
-      }
-
-      $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
-      $docstring =~ s/^$tex_delim$/\@anchor{doc-$func}/m;
-      print $docstring,"\n";
-
+  if (/^\s*\@DOCSTRING\((\S+)\)/)
+  {
+    $func = $1;
+    $docstring = $help_text{$func};
+    if (! $docstring)
+    {
+      warn "no docstring entry for $func\n";
       next TXI_LINE;
-   }
-   if (/^\s*\@EXAMPLEFILE\((\S+)\)/)
-   {
-      $fname = "$top_srcdir/examples/$1";
-      print '@verbatim',"\n";
-      open (EXAMPFH, $fname) or die "unable to open example file $fname\n";
-      while (<EXAMPFH>) 
-      { 
-         print $_;
-         print "\n" if (eof and substr ($_, -1) ne "\n");
-      }
-      close (EXAMPFH);
-      print '@end verbatim',"\n\n";
+    }
 
-      next TXI_LINE;
-   }
+    $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
+    $docstring =~ s/^$tex_delim$/\@anchor{doc-$func}/m;
+    print $docstring,"\n";
 
-   # pass ordinary lines straight through to output
-   print $_;
+    next TXI_LINE;
+  }
+  if (/^\s*\@EXAMPLEFILE\((\S+)\)/)
+  {
+    $fname = "$top_srcdir/examples/$1";
+    print '@verbatim',"\n";
+    open (EXAMPFH, $fname) or die "unable to open example file $fname\n";
+    while (<EXAMPFH>) 
+    { 
+      print $_;
+      print "\n" if (eof and substr ($_, -1) ne "\n");
+    }
+    close (EXAMPFH);
+    print '@end verbatim',"\n\n";
+
+    next TXI_LINE;
+  }
+
+  # pass ordinary lines straight through to output
+  print $_;
 }
 
 
@@ -92,33 +92,33 @@ TXI_LINE: while (<STDIN>)
 ################################################################################
 sub extract_docstring
 {
-   my ($docstring, $arg_list, $func_list, $repl, $rest_of_line);
-   
-   while (defined ($_ = <DOCFH>) and ! /$doc_delim/o)
-   {
-      # expand any @seealso references
-      if (m'^@seealso{')
+  my ($docstring, $arg_list, $func_list, $repl, $rest_of_line);
+  
+  while (defined ($_ = <DOCFH>) and ! /$doc_delim/o)
+  {
+    # expand any @seealso references
+    if (m'^@seealso{')
+    {
+      # Join multiple lines until full macro body found
+      while (! /}/m) { $_ .= <DOCFH>; }
+
+      ($arg_list, $rest_of_line) = m'^@seealso{(.*)}(.*)?'s;
+     
+      $func_list = $arg_list;
+      $func_list =~ s/\s+//gs;
+      $repl = "";
+      foreach $func (split (/,/, $func_list))
       {
-         # Join multiple lines until full macro body found
-         while (! /}/m) { $_ .= <DOCFH>; }
-
-         ($arg_list, $rest_of_line) = m'^@seealso{(.*)}(.*)?'s;
-        
-         $func_list = $arg_list;
-         $func_list =~ s/\s+//gs;
-         $repl = "";
-         foreach $func (split (/,/, $func_list))
-         {
-            $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
-            $repl .= "\@ref{doc-$func,,$func}, ";
-         }
-         substr($repl,-2) = "";   # Remove last ', ' 
-         $_ = "\@seealso{$repl}$rest_of_line";
+        $func =~ s/^@/@@/;   # Texinfo uses @@ to produce '@'
+        $repl .= "\@ref{doc-$func,,$func}, ";
       }
+      substr($repl,-2) = "";   # Remove last ', ' 
+      $_ = "\@seealso{$repl}$rest_of_line";
+    }
 
-      $docstring .= $_;
-   }
+    $docstring .= $_;
+  }
 
-   return $docstring;
+  return $docstring;
 }
 

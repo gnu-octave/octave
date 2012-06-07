@@ -961,8 +961,18 @@ public:
   typedef df_set::const_iterator df_iterator;
 
   jit_block (const std::string& aname) : mvisit_count (0), mid (NO_ID), idom (0),
-                                         mname (aname)
+                                         mname (aname), mdead (false)
   {}
+
+  virtual bool dead (void) const { return mdead; }
+
+  void mark_dead (void) { mdead = true; }
+
+  // If we can merge with a sucessor, do so and return the now empty block
+  jit_block *maybe_merge ();
+
+  // merge another block into this block, leaving the merge block empty
+  void merge (jit_block& merge);
 
   const std::string& name (void) const { return mname; }
 
@@ -1069,12 +1079,12 @@ public:
   // See for idom computation algorithm
   // Cooper, Keith D.; Harvey, Timothy J; and Kennedy, Ken (2001).
   // "A Simple, Fast Dominance Algorithm"
-  void compute_idom (jit_block *final)
+  void compute_idom (jit_block *entry_block)
   {
     bool changed;
-    idom = this;
+    entry_block->idom = entry_block;
     do
-      changed = final->update_idom (mvisit_count);
+      changed = update_idom (mvisit_count);
     while (changed);
   }
 
@@ -1103,7 +1113,8 @@ public:
 
   virtual std::ostream& print (std::ostream& os, size_t indent) const
   {
-    print_indent (os, indent) << mname << ":        %pred = ";
+    print_indent (os, indent);
+    short_print (os) << ":        %pred = ";
     for (size_t i = 0; i < pred_count (); ++i)
       {
         print_pred (os, i);
@@ -1125,7 +1136,10 @@ public:
 
   virtual std::ostream& short_print (std::ostream& os) const
   {
-    return os << mname;
+    os << mname;
+    if (mid != NO_ID)
+      os << mid;
+    return os;
   }
 
   llvm::BasicBlock *to_llvm (void) const;
@@ -1152,6 +1166,7 @@ private:
   std::string mname;
   instruction_list instructions;
   mutable std::vector<llvm::BasicBlock *> mpred_llvm;
+  bool mdead;
 };
 
 // allow regular function pointers as well as pointers to members
@@ -1887,6 +1902,8 @@ private:
       constants.push_back (value);
     all_values.push_back (value);
   }
+
+  void merge_blocks (void);
 
   void construct_ssa (void);
 

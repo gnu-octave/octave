@@ -731,6 +731,55 @@ jit_instruction::short_print (std::ostream& os) const
 }
 
 // -------------------- jit_block --------------------
+jit_block *
+jit_block::maybe_merge ()
+{
+  if (succ_count () == 1 && succ (0) != this
+      && (succ (0)->pred_count () == 1 || instructions.size () == 1))
+    {
+      jit_block *to_merge = succ (0);
+      merge (*to_merge);
+      return to_merge;
+    }
+
+  return 0;
+}
+
+void
+jit_block::merge (jit_block& block)
+{
+  // the merge block will contain a new terminator
+  jit_terminator *old_term = terminator ();
+  if (old_term)
+    {
+      old_term->remove ();
+      for (size_t i = 0; i < old_term->argument_count (); ++i)
+        old_term->stash_argument (i, 0);
+    }
+
+  bool was_empty = end () == begin ();
+  iterator merge_begin = end ();
+  if (! was_empty)
+    --merge_begin;
+
+  instructions.splice (end (), block.instructions);
+  if (was_empty)
+    merge_begin = begin ();
+  else
+    ++merge_begin;
+
+  // now merge_begin points to the start of the new instructions, we must
+  // update their parent information
+  for (iterator iter = merge_begin; iter != end (); ++iter)
+    {
+      jit_instruction *instr = *iter;
+      instr->stash_parent (this, iter);
+    }
+
+  block.replace_with (this);
+  block.mark_dead ();
+}
+
 jit_instruction *
 jit_block::prepend (jit_instruction *instr)
 {
@@ -827,9 +876,9 @@ jit_block::create_merge (llvm::Function *inside, size_t pred_idx)
   jit_block *ipred = pred (pred_idx);
   if (! mpred_llvm[pred_idx] && ipred->pred_count () > 1)
     {
-      llvm::BasicBlock *merge;
-      merge = llvm::BasicBlock::Create (context, "phi_merge", inside,
-                                        to_llvm ());
+      llvm::BasicBlock *amerge;
+      amerge = llvm::BasicBlock::Create (context, "phi_merge", inside,
+                                         to_llvm ());
           
       // fix the predecessor jump if it has been created
       jit_terminator *jterm = pred_terminator (pred_idx);
@@ -840,13 +889,13 @@ jit_block::create_merge (llvm::Function *inside, size_t pred_idx)
           for (size_t i = 0; i < branch->getNumSuccessors (); ++i)
             {
               if (branch->getSuccessor (i) == to_llvm ())
-                branch->setSuccessor (i, merge);
+                branch->setSuccessor (i, amerge);
             }
         }
 
-      llvm::IRBuilder<> temp (merge);
+      llvm::IRBuilder<> temp (amerge);
       temp.CreateBr (to_llvm ());
-      mpred_llvm[pred_idx] = merge;
+      mpred_llvm[pred_idx] = amerge;
     }
 }
 
@@ -941,20 +990,6 @@ jit_block::update_idom (size_t visit_count)
   bool changed = false;
   for (size_t i = 0; i < pred_count (); ++i)
     changed = pred (i)->update_idom (visit_count) || changed;
-
-  if (! idom)
-    {
-      // one of our predecessors may have an idom of us, so if idom_intersect
-      // is called we need to have an idom. Assign idom to the pred with the
-      // lowest rpo id, as this prevents an infinite loop in idom_intersect
-      // FIXME: Textbook algorithm doesn't do this, ensure this is correct
-      size_t lowest_rpo = 0;
-      for (size_t i = 1; i < pred_count (); ++i)
-        if (pred (i)->id () < pred (lowest_rpo)->id ())
-          lowest_rpo = i;
-      idom = pred (lowest_rpo);
-      changed = true;
-    }
 
   jit_block *new_idom = pred (0);
   for (size_t i = 1; i < pred_count (); ++i)
@@ -1699,10 +1734,37 @@ jit_convert::visit (tree& tee)
 }
 
 void
+jit_convert::merge_blocks (void)
+{
+  for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();
+       ++iter)
+    {
+      jit_block *b = *iter;
+      jit_block *merged = b->maybe_merge ();
+
+      if (merged == final_block)
+        final_block = b;
+
+      if (merged == entry_block)
+        entry_block = b;
+    }
+
+  for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();)
+    {
+      jit_block *b = *iter;
+      if (b->dead ())
+        iter = blocks.erase (iter);
+      else
+        ++iter;
+    }
+}
+
+void
 jit_convert::construct_ssa (void)
 {
+  merge_blocks ();
   final_block->label ();
-  entry_block->compute_idom (final_block);
+  final_block->compute_idom (entry_block);
   entry_block->compute_df ();
   entry_block->create_dom_tree ();
 
@@ -1741,7 +1803,6 @@ jit_convert::construct_ssa (void)
     }
 
   entry_block->visit_dom (&jit_convert::do_construct_ssa, &jit_block::pop_all);
-  print_dom ();
 }
 
 void

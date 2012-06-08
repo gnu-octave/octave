@@ -931,7 +931,7 @@ private:
 template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T,
           bool QUOTE>
 class
-jit_const : public jit_instruction
+jit_const : public jit_value
 {
 public:
   typedef PASS_T pass_t;
@@ -946,7 +946,7 @@ public:
   virtual std::ostream& print (std::ostream& os, size_t indent) const
   {
     print_indent (os, indent);
-    short_print (os) << " = ";
+    jit_print (os, type ()) << ": ";
     if (QUOTE)
       os << "\"";
     os << mvalue;
@@ -1326,7 +1326,7 @@ class
 jit_assign : public jit_assign_base
 {
 public:
-  jit_assign (jit_variable *adest, jit_instruction *asrc)
+  jit_assign (jit_variable *adest, jit_value *asrc)
     : jit_assign_base (adest, adest, asrc) {}
 
   jit_instruction *src (void) const
@@ -1868,7 +1868,7 @@ private:
   type_bound_vector bounds;
 
   // used instead of return values from visit_* functions
-  jit_instruction *result;
+  jit_value *result;
 
   jit_block *entry_block;
 
@@ -1893,12 +1893,12 @@ private:
 
   jit_variable *get_variable (const std::string& vname);
 
-  jit_instruction *do_assign (const std::string& lhs, jit_instruction *rhs,
-                              bool print);
+  jit_value *do_assign (const std::string& lhs, jit_value *rhs, bool print);
+                        
 
-  jit_instruction *visit (tree *tee) { return visit (*tee); }
+  jit_value *visit (tree *tee) { return visit (*tee); }
 
-  jit_instruction *visit (tree& tee);
+  jit_value *visit (tree& tee);
 
   void append_users (jit_value *v)
   {
@@ -1967,7 +1967,8 @@ private:
   public:
     llvm::Function *convert (llvm::Module *module,
                              const std::vector<std::pair<std::string, bool> >& args,
-                             const std::list<jit_block *>& blocks);
+                             const std::list<jit_block *>& blocks,
+                             const std::list<jit_value *>& constants);
 
 #define JIT_METH(clname)                        \
     virtual void visit (jit_ ## clname&);

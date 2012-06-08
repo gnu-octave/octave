@@ -1226,7 +1226,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
       arguments.push_back (std::make_pair (extract->name (), true));
 
   convert_llvm to_llvm;
-  function = to_llvm.convert (module, arguments, blocks);
+  function = to_llvm.convert (module, arguments, blocks, constants);
 
 #ifdef OCTAVE_JIT_DEBUG
   std::cout << "-------------------- llvm ir --------------------";
@@ -1289,18 +1289,15 @@ void
 jit_convert::visit_colon_expression (tree_colon_expression& expr)
 {
   // in the futher we need to add support for classes and deal with rvalues
-  jit_instruction *base = visit (expr.base ());
-  jit_instruction *limit = visit (expr.limit ());
-  jit_instruction *increment;
+  jit_value *base = visit (expr.base ());
+  jit_value *limit = visit (expr.limit ());
+  jit_value *increment;
   tree_expression *tinc = expr.increment ();
 
   if (tinc)
     increment = visit (tinc);
   else
-    {
-      increment = create<jit_const_scalar> (1);
-      block->append (increment);
-    }
+    increment = create<jit_const_scalar> (1);
 
   result = block->append (create<jit_call> (jit_typeinfo::make_range, base,
                                             limit, increment));
@@ -1411,9 +1408,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
 
   block = check_block;
   const jit_function& add_fn = jit_typeinfo::binary_op (octave_value::op_add);
-  jit_instruction *one = create<jit_const_index> (1);
-  block->append (one);
-
+  jit_value *one = create<jit_const_index> (1);
   jit_call *iter_inc = create<jit_call> (add_fn, iterator, one);
   block->append (iter_inc);
   block->append (create<jit_assign> (iterator, iter_inc));
@@ -1528,9 +1523,9 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
       if (! tic->is_else_clause ())
         {
           tree_expression *expr = tic->condition ();
-          jit_instruction *cond = visit (expr);
-          cond = create<jit_call> (&jit_typeinfo::logically_true, cond);
-          block->append (cond);
+          jit_value *cond = visit (expr);
+          jit_instruction *check = create<jit_call> (&jit_typeinfo::logically_true, cond);
+          block->append (check);
 
           jit_block *next = create<jit_block> (block->name () + "a");
           blocks.push_back (next);
@@ -1540,7 +1535,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
           jit_block *body = create<jit_block> (i == 0 ? "if_body" : "ifelse_body");
           blocks.push_back (body);
 
-          jit_instruction *br = create<jit_cond_break> (cond, body,
+          jit_instruction *br = create<jit_cond_break> (check, body,
                                                         entry_blocks[i + 1]);
           block->append (br);
           block = body;
@@ -1615,8 +1610,6 @@ jit_convert::visit_constant (tree_constant& tc)
     }
   else
     fail ("Unknown constant");
-
-  block->append (result);
 }
 
 void
@@ -1660,7 +1653,7 @@ jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
 {
   // resolve rhs
   tree_expression *rhs = tsa.right_hand_side ();
-  jit_instruction *rhsv = visit (rhs);
+  jit_value *rhsv = visit (rhs);
 
   // resolve lhs
   tree_expression *lhs = tsa.left_hand_side ();
@@ -1693,7 +1686,7 @@ jit_convert::visit_statement (tree_statement& stmt)
       else
         do_bind_ans = (! expr->is_assignment_expression ());
 
-      jit_instruction *expr_result = visit (expr);
+      jit_value *expr_result = visit (expr);
 
       if (do_bind_ans)
         do_assign ("ans", expr_result, expr->print_result ());
@@ -1784,8 +1777,8 @@ jit_convert::get_variable (const std::string& vname)
   return vmap[vname] = var;
 }
 
-jit_instruction *
-jit_convert::do_assign (const std::string& lhs, jit_instruction *rhs,
+jit_value *
+jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
                         bool print)
 {
   jit_variable *var = get_variable (lhs);
@@ -1798,16 +1791,16 @@ jit_convert::do_assign (const std::string& lhs, jit_instruction *rhs,
       block->append (create<jit_call> (print_fn, name, var));
     }
 
-  return rhs;
+  return var;
 }
 
-jit_instruction *
+jit_value *
 jit_convert::visit (tree& tee)
 {
   result = 0;
   tee.accept (*this);
 
-  jit_instruction *ret = result;
+  jit_value *ret = result;
   result = 0;
   return ret;
 }
@@ -1990,7 +1983,8 @@ jit_convert::release_placer::operator() (jit_block& block)
 llvm::Function *
 jit_convert::convert_llvm::convert (llvm::Module *module,
                                     const std::vector<std::pair< std::string, bool> >& args,
-                                    const std::list<jit_block *>& blocks)
+                                    const std::list<jit_block *>& blocks,
+                                    const std::list<jit_value *>& constants)
 {
   jit_type *any = jit_typeinfo::get_any ();
 
@@ -2026,6 +2020,12 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
 
       jit_block *first = *blocks.begin ();
       builder.CreateBr (first->to_llvm ());
+
+      // constants aren't in the IR, we visit those first
+      for (std::list<jit_value *>::const_iterator iter = constants.begin ();
+           iter != constants.end (); ++iter)
+        if (! isa<jit_instruction> (*iter))
+          visit (*iter);
 
       // convert all instructions
       for (biter = blocks.begin (); biter != blocks.end (); ++biter)

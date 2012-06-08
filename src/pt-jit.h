@@ -348,6 +348,11 @@ public:
     return instance->make_range_fn;
   }
 
+  static const jit_function& logically_true (void)
+  {
+    return instance->logically_true_fn;
+  }
+
   static const jit_function& cast (jit_type *result)
   {
     return instance->do_cast (result);
@@ -525,7 +530,7 @@ private:
   jit_function for_init_fn;
   jit_function for_check_fn;
   jit_function for_index_fn;
-  jit_function logically_true;
+  jit_function logically_true_fn;
   jit_function make_range_fn;
 
   // type id -> cast function TO that type

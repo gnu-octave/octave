@@ -1625,9 +1625,8 @@ public:
   virtual std::ostream& print (std::ostream& os, size_t indent) const
   {
     print_indent (os, indent);
-    os << "exract ";
-    short_print (os);
-    return os;
+
+    return short_print (os) << " = extract " << name ();
   }
 
   JIT_VALUE_ACCEPT (extract_argument)

@@ -208,12 +208,49 @@ void
 main_window::handle_entered_debug_mode ()
 {
   setWindowTitle ("Octave (Debugging)");
+  _debug_menu->setEnabled (true);
 }
 
 void
 main_window::handle_quit_debug_mode ()
 {
   setWindowTitle ("Octave");
+  _debug_menu->setEnabled (false);
+}
+
+void
+main_window::debug_continue ()
+{
+  octave_link::instance ()
+      ->post_event (new octave_debug_continue_event (*this));
+}
+
+void
+main_window::debug_step_into ()
+{
+  octave_link::instance ()
+      ->post_event (new octave_debug_step_into_event (*this));
+}
+
+void
+main_window::debug_step_over ()
+{
+  octave_link::instance ()
+      ->post_event (new octave_debug_step_over_event (*this));
+}
+
+void
+main_window::debug_step_out ()
+{
+  octave_link::instance ()
+      ->post_event (new octave_debug_step_out_event (*this));
+}
+
+void
+main_window::debug_quit ()
+{
+  octave_link::instance ()
+      ->post_event (new octave_debug_quit_event (*this));
 }
 
 void
@@ -269,8 +306,6 @@ main_window::write_settings ()
 void
 main_window::construct ()
 {
-  QStyle *style = QApplication::style ();
-  // TODO: Check this.
   _closing = false;   // flag for editor files when closed
   setWindowIcon (resource_manager::instance ()->get_icon (resource_manager::octave));
 
@@ -342,7 +377,21 @@ main_window::construct ()
       = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
   redo_action->setShortcut (QKeySequence::Redo);
 
-  //QMenu *debugMenu = menuBar ()->addMenu (tr ("De&bug"));
+  _debug_menu = menuBar ()->addMenu (tr ("De&bug"));
+  QAction * debug_continue = _debug_menu->addAction (tr ("Continue"));
+  debug_continue->setShortcut (Qt::Key_F5);
+  QAction * debug_step_into = _debug_menu->addAction (tr ("Step into"));
+  debug_step_into->setShortcut (Qt::Key_F9);
+  QAction * debug_step_over = _debug_menu->addAction (tr ("Next"));
+  debug_step_over->setShortcut (Qt::Key_F10);
+  QAction * debug_step_out = _debug_menu->addAction (tr ("Step out"));
+  debug_step_out->setShortcut (Qt::Key_F11);
+  _debug_menu->addSeparator ();
+  QAction * debug_quit = _debug_menu->addAction (tr ("Quit"));
+  debug_quit->setShortcut (Qt::Key_Escape);
+  _debug_menu->setEnabled (false);
+
+
   //QMenu *parallelMenu = menuBar ()->addMenu (tr ("&Parallel"));
 
   QMenu *   desktop_menu = menuBar ()->addMenu (tr ("&Desktop"));
@@ -455,6 +504,16 @@ main_window::construct ()
            _terminal,                   SLOT   (pasteClipboard ()));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
            this,                        SLOT (change_current_working_directory (QString)));
+  connect (debug_continue,              SIGNAL (triggered ()),
+           this,                        SLOT (debug_continue ()));
+  connect (debug_step_into,             SIGNAL (triggered ()),
+           this,                        SLOT (debug_step_into ()));
+  connect (debug_step_over,             SIGNAL (triggered ()),
+           this,                        SLOT (debug_step_over ()));
+  connect (debug_step_out,              SIGNAL (triggered ()),
+           this,                        SLOT (debug_step_out ()));
+  connect (debug_quit,                  SIGNAL (triggered ()),
+           this,                        SLOT (debug_quit ()));
 
   setWindowTitle ("Octave");
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);

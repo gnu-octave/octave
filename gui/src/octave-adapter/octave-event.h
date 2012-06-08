@@ -135,10 +135,6 @@ class octave_debug_step_into_event : public octave_event
     bool perform () const
     {
       tree_evaluator::dbstep_flag = -1;
-      rl_line_buffer[0] = '\0';
-      rl_point = rl_end = 0;
-      rl_done = 1;
-      rl_forced_update_display ();
       return true;
     }
 };
@@ -153,10 +149,6 @@ class octave_debug_step_over_event : public octave_event
     bool perform () const
     {
       tree_evaluator::dbstep_flag = 1;
-      rl_line_buffer[0] = '\0';
-      rl_point = rl_end = 0;
-      rl_done = 1;
-      rl_forced_update_display ();
       return true;
     }
 };
@@ -171,46 +163,34 @@ class octave_debug_step_out_event : public octave_event
     bool perform () const
     {
       tree_evaluator::dbstep_flag = -2;
-      rl_line_buffer[0] = '\0';
-      rl_point = rl_end = 0;
-      rl_done = 1;
-      rl_forced_update_display ();
       return true;
     }
 };
 
-class octave_debug_step_continue_event : public octave_event
+class octave_debug_continue_event : public octave_event
 {
   public:
     /** Creates a new octave_debug_step_out_event. */
-    octave_debug_step_continue_event (octave_event_observer& o)
+    octave_debug_continue_event (octave_event_observer& o)
       : octave_event (o) { }
 
     bool perform () const
     {
       tree_evaluator::dbstep_flag = 0;
-      rl_line_buffer[0] = '\0';
-      rl_point = rl_end = 0;
-      rl_done = 1;
-      rl_forced_update_display ();
       return true;
     }
 };
 
-class octave_debug_step_break_event : public octave_event
+class octave_debug_quit_event : public octave_event
 {
   public:
     /** Creates a new octave_debug_step_out_event. */
-    octave_debug_step_break_event (octave_event_observer& o)
+    octave_debug_quit_event (octave_event_observer& o)
       : octave_event (o) { }
 
     bool perform () const
     {
       tree_evaluator::dbstep_flag = 0;
-      rl_line_buffer[0] = '\0';
-      rl_point = rl_end = 0;
-      rl_done = 1;
-      rl_forced_update_display ();
       return true;
     }
 };

@@ -93,6 +93,11 @@ public slots:
 
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
+  void debug_continue ();
+  void debug_step_into ();
+  void debug_step_over ();
+  void debug_step_out ();
+  void debug_quit ();
 
 protected:
   void closeEvent (QCloseEvent * closeEvent);
@@ -105,6 +110,7 @@ private:
 
   QTerminal *               _terminal;
   file_editor_interface *   _file_editor;
+  QMenu *                   _debug_menu;
 
   // Dock widgets.
   workspace_view *          _workspace_view;
@@ -114,7 +120,6 @@ private:
 
   // Toolbars.
   QStatusBar *              _status_bar;
-
   QComboBox *               _current_directory_combo_box;
   QToolButton *             _current_directory_tool_button;
   QToolButton *             _current_directory_up_tool_button;

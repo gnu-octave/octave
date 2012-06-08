@@ -510,7 +510,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                           "xticklabel", "", "yticklabel", "", "zticklabel", "",
                           "xlim", [0, 1], "ylim", [0, 1],
                           "visible", ifelse (strcmp (box, "on"), "on", "off"),
-                          "activepositionproperty", "position");
+                          "activepositionproperty", "position",
+                          "fontsize", ca_fontsize);
         else
           addprops = false;
           axes (hlegend);
@@ -525,11 +526,13 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           if (strcmp (textpos, "right"))
             texthandle = [texthandle, text(0, 0, text_strings {k},
                                            "horizontalalignment", "left",
-                                           "userdata", hplots(k))];
+                                           "userdata", hplots(k),
+                                           "fontsize", ca_fontsize)];
           else
             texthandle = [texthandle, text(0, 0, text_strings {k},
                                            "horizontalalignment", "right",
-                                           "userdata", hplots(k))];
+                                           "userdata", hplots(k),
+                                           "fontsize", ca_fontsize)];
           endif
           units = get (texthandle (end), "units");
           unwind_protect

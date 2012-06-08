@@ -38,7 +38,7 @@ workspace_model::workspace_model(QObject *parent)
           SLOT (request_update_workspace()));
 
   _update_workspace_model_timer.setInterval (500);
-  _update_workspace_model_timer.setSingleShot (false);
+  _update_workspace_model_timer.setSingleShot (true);
   _update_workspace_model_timer.start ();
 }
 
@@ -95,6 +95,10 @@ workspace_model::event_accepted (octave_event *e)
       reset();
       emit expand_request();
     }
+
+  // Post a new event in a given time.
+  // This prevents flooding the event queue when no events are being processed.
+  _update_workspace_model_timer.start ();
   delete e;
 }
 

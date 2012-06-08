@@ -123,6 +123,12 @@ octave_link::event_reject (octave_event *e)
 void
 octave_link::about_to_exit ()
 {
+  _event_queue_mutex->lock ();
+  while (!_event_queue.empty ())
+    _event_queue.pop ();
+
+  _event_queue_mutex->unlock ();
+
   if (_octave_event_listener)
     _octave_event_listener->about_to_exit ();
 }

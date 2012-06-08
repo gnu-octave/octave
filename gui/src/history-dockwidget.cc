@@ -47,6 +47,9 @@ history_dock_widget::event_accepted (octave_event *e)
         }
     }
 
+  // Post a new update event in a given time. This prevents flooding the
+  // event queue.
+  _update_history_model_timer.start ();
   delete e;
 }
 
@@ -95,7 +98,7 @@ history_dock_widget::construct ()
            SLOT (handle_visibility_changed (bool)));
 
   _update_history_model_timer.setInterval (200);
-  _update_history_model_timer.setSingleShot (false);
+  _update_history_model_timer.setSingleShot (true);
 
   connect (&_update_history_model_timer,
            SIGNAL (timeout ()),

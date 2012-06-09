@@ -172,26 +172,25 @@ public:
   struct
   overload
   {
-    overload (void) : function (0), can_error (true), result (0) {}
+    overload (void) : function (0), can_error (false), result (0) {}
 
-    overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0) :
-      function (f), can_error (e), side_effects (s), result (r), arguments (1)
+    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0) :
+      function (f), can_error (e), result (r), arguments (1)
     {
       arguments[0] = arg0;
     }
 
-    overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
-              jit_type *arg1) : function (f), can_error (e), side_effects (s),
+    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
+              jit_type *arg1) : function (f), can_error (e),
                                 result (r), arguments (2)
     {
       arguments[0] = arg0;
       arguments[1] = arg1;
     }
 
-    overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
+    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
               jit_type *arg1, jit_type *arg2) : function (f), can_error (e),
-                                                side_effects (s), result (r),
-                                                arguments (3)
+                                                result (r), arguments (3)
     {
       arguments[0] = arg0;
       arguments[1] = arg1;
@@ -200,7 +199,6 @@ public:
 
     llvm::Function *function;
     bool can_error;
-    bool side_effects;
     jit_type *result;
     std::vector<jit_type*> arguments;
   };
@@ -210,23 +208,23 @@ public:
     add_overload (func, func.arguments);
   }
 
-  void add_overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0)
+  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0)
   {
-    overload ol (f, e, s, r, arg0);
+    overload ol (f, e, r, arg0);
     add_overload (ol);
   }
 
-  void add_overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
+  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
                      jit_type *arg1)
   {
-    overload ol (f, e, s, r, arg0, arg1);
+    overload ol (f, e, r, arg0, arg1);
     add_overload (ol);
   }
 
-  void add_overload (llvm::Function *f, bool e, bool s, jit_type *r, jit_type *arg0,
+  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
                      jit_type *arg1, jit_type *arg2)
   {
-    overload ol (f, e, s, r, arg0, arg1, arg2);
+    overload ol (f, e, r, arg0, arg1, arg2);
     add_overload (ol);
   }
 
@@ -598,8 +596,8 @@ jit_value
 {
   friend class jit_use;
 public:
-  jit_value (void) : llvm_value (0), ty (0), use_head (0), myuse_count (0),
-                     mlast_use (0) {}
+  jit_value (void) : llvm_value (0), ty (0), use_head (0), use_tail (0),
+                     myuse_count (0), mlast_use (0) {}
 
   virtual ~jit_value (void);
 
@@ -662,7 +660,7 @@ public:
   }
 
 protected:
-  std::ostream& print_indent (std::ostream& os, size_t indent) const
+  std::ostream& print_indent (std::ostream& os, size_t indent = 0) const
   {
     for (size_t i = 0; i < indent * 8; ++i)
       os << " ";
@@ -673,6 +671,7 @@ protected:
 private:
   jit_type *ty;
   jit_use *use_head;
+  jit_use *use_tail;
   size_t myuse_count;
   jit_instruction *mlast_use;
 };
@@ -721,11 +720,13 @@ public:
       {
         if (mvalue->use_head)
           {
-            mvalue->use_head->mprev = this;
-            mnext = mvalue->use_head;
+            mvalue->use_tail->mnext = this;
+            mprev = mvalue->use_tail;
           }
+        else
+          mvalue->use_head = this;
         
-        mvalue->use_head = this;
+        mvalue->use_tail = this;
         ++mvalue->myuse_count;
       }
 
@@ -743,6 +744,9 @@ private:
       {
         if (this == mvalue->use_head)
             mvalue->use_head = mnext;
+
+        if (this == mvalue->use_tail)
+          mvalue->use_tail = mprev;
 
         if (mprev)
           mprev->mnext = mnext;
@@ -874,10 +878,6 @@ public:
   const std::vector<jit_type *>& argument_types (void) const
   { return already_infered; }
 
-  virtual bool dead (void) const { return false; }
-
-  virtual bool almost_dead (void) const { return false; }
-
   virtual void push_variable (void) {}
 
   virtual void pop_variable (void) {}
@@ -943,7 +943,7 @@ public:
 
   PASS_T value (void) const { return mvalue; }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     print_indent (os, indent);
     jit_print (os, type ()) << ": ";
@@ -972,10 +972,17 @@ public:
   typedef df_set::const_iterator df_iterator;
 
   jit_block (const std::string& aname) : mvisit_count (0), mid (NO_ID), idom (0),
-                                         mname (aname), mdead (false)
+                                         mname (aname), mdead (false),
+                                         malive (false)
   {}
 
-  virtual bool dead (void) const { return mdead; }
+  // if a block is alive, then it might be visited during execution
+  bool alive (void) const { return malive; }
+
+  void mark_alive (void) { malive = true; }
+
+  // dead blocks have already been removed from the CFG
+  bool dead (void) const { return mdead; }
 
   void mark_dead (void) { mdead = true; }
 
@@ -991,7 +998,12 @@ public:
 
   jit_instruction *prepend_after_phi (jit_instruction *instr);
 
-  jit_instruction *append (jit_instruction *instr);
+  template <typename T>
+  T *append (T *instr)
+  {
+    internal_append (instr);
+    return instr;
+  }
 
   jit_instruction *insert_before (iterator loc, jit_instruction *instr);
 
@@ -1013,6 +1025,9 @@ public:
   {
     return pred (idx)->terminator ();
   }
+
+  // is the jump from pred alive?
+  bool branch_alive (jit_block *asucc) const;
 
   std::ostream& print_pred (std::ostream& os, size_t idx) const
   {
@@ -1036,7 +1051,7 @@ public:
   size_t pred_index (jit_block *apred) const;
 
   // create llvm phi merge blocks for all predecessors (if required)
-  void create_merge (llvm::Function *inside, size_t pred_idx);
+  void create_merge (llvm::Function *inside, jit_block *apred);
 
   size_t pred_count (void) const { return use_count (); }
 
@@ -1122,7 +1137,7 @@ public:
   // call pop_varaible on all instructions
   void pop_all (void);
 
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     print_indent (os, indent);
     short_print (os) << ":        %pred = ";
@@ -1157,6 +1172,8 @@ public:
 
   JIT_VALUE_ACCEPT (block)
 private:
+  void internal_append (jit_instruction *instr);
+
   void compute_df (size_t visit_count);
 
   bool update_idom (size_t visit_count);
@@ -1178,6 +1195,7 @@ private:
   instruction_list instructions;
   mutable std::vector<llvm::BasicBlock *> mpred_llvm;
   bool mdead;
+  bool malive;
 };
 
 // allow regular function pointers as well as pointers to members
@@ -1283,7 +1301,7 @@ public:
       }
   }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     return print_indent (os, indent) << mname;
   }
@@ -1354,34 +1372,34 @@ jit_phi : public jit_assign_base
 {
 public:
   jit_phi (jit_variable *adest, size_t npred) : jit_assign_base (adest, npred)
-  {}
-
-  virtual bool dead (void) const
   {
-    return use_count () == 0;
+    mincomming.reserve (npred);
   }
 
-  virtual bool almost_dead (void) const
+  // removes arguments form dead incomming jumps
+  bool prune (void);
+
+  void add_incomming (jit_block *from, jit_value *value)
   {
-    return use_count () <= 1;
+    stash_argument (mincomming.size (), value);
+    mincomming.push_back (from);
   }
 
-  virtual bool infer (void)
+  jit_block *incomming (size_t i) const
   {
-    jit_type *infered = 0;
-    for (size_t i = 0; i < argument_count (); ++i)
-      infered = jit_typeinfo::join (infered, argument_type (i));
-
-    if (infered != type ())
-      {
-        stash_type (infered);
-        return true;
-      }
-
-    return false;
+    return mincomming[i];
   }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  llvm::BasicBlock *incomming_llvm (size_t i) const
+  {
+    jit_block *inc = incomming (i);
+    jit_block *p = parent ();
+    return p->pred_llvm (inc);
+  }
+
+  virtual bool infer (void);
+
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     std::stringstream ss;
     print_indent (ss, indent);
@@ -1417,21 +1435,28 @@ public:
   }
 
   JIT_VALUE_ACCEPT (phi);
+private:
+  std::vector<jit_block *> mincomming;
 };
 
 class
 jit_terminator : public jit_instruction
 {
 public:
-  jit_terminator (jit_value *arg0) : jit_instruction (arg0) {}
+  jit_terminator (size_t asucessor_count, jit_value *arg0)
+    : jit_instruction (arg0), malive (asucessor_count, false) {}
 
-  jit_terminator (jit_value *arg0, jit_value *arg1)
-    : jit_instruction (arg0, arg1) {}
+  jit_terminator (size_t asucessor_count, jit_value *arg0, jit_value *arg1)
+    : jit_instruction (arg0, arg1), malive (asucessor_count, false) {}
 
-  jit_terminator (jit_value *arg0, jit_value *arg1, jit_value *arg2)
-    : jit_instruction (arg0, arg1, arg2) {}
+  jit_terminator (size_t asucessor_count, jit_value *arg0, jit_value *arg1,
+                  jit_value *arg2)
+    : jit_instruction (arg0, arg1, arg2), malive (asucessor_count, false) {}
 
-  virtual jit_block *sucessor (size_t idx = 0) const = 0;
+  jit_block *sucessor (size_t idx = 0) const
+  {
+    return static_cast<jit_block *> (argument (idx));
+  }
 
   // return either our sucessors block directly, or the phi merge block
   // between us and our sucessor
@@ -1446,27 +1471,36 @@ public:
 
   std::ostream& print_sucessor (std::ostream& os, size_t idx = 0) const
   {
+    if (alive (idx))
+      os << "[live] ";
+    else
+      os << "[dead] ";
+
     return sucessor (idx)->short_print (os);
   }
 
-  virtual size_t sucessor_count (void) const = 0;
+  // Check if the jump to sucessor is live
+  bool alive (const jit_block *asucessor) const;
+  bool alive (size_t idx) const { return malive[idx]; }
+
+  size_t sucessor_count (void) const { return malive.size (); }
+
+  virtual bool infer (void);
+protected:
+  virtual bool check_alive (size_t) const { return true; }
+private:
+  std::vector<bool> malive;
 };
 
 class
 jit_break : public jit_terminator
 {
 public:
-  jit_break (jit_block *succ) : jit_terminator (succ) {}
+  jit_break (jit_block *succ) : jit_terminator (1, succ) {}
 
-  jit_block *sucessor (size_t idx = 0) const
-  {
-    jit_value *arg = argument (idx);
-    return static_cast<jit_block *> (arg);
-  }
+  virtual size_t sucessor_count (void) const { return 1; }
 
-  size_t sucessor_count (void) const { return 1; }
-
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     print_indent (os, indent) << "break: ";
     return print_sucessor (os);
@@ -1480,9 +1514,9 @@ jit_cond_break : public jit_terminator
 {
 public:
   jit_cond_break (jit_value *c, jit_block *ctrue, jit_block *cfalse)
-    : jit_terminator (c, ctrue, cfalse) {}
+    : jit_terminator (2, ctrue, cfalse, c) {}
 
-  jit_value *cond (void) const { return argument (0); }
+  jit_value *cond (void) const { return argument (2); }
 
   std::ostream& print_cond (std::ostream& os) const
   {
@@ -1494,15 +1528,9 @@ public:
     return cond ()->to_llvm ();
   }
 
-  jit_block *sucessor (size_t idx) const
-  {
-    jit_value *arg = argument (idx + 1);
-    return static_cast<jit_block *> (arg);
-  }
+  virtual size_t sucessor_count (void) const { return 2; }
 
-  size_t sucessor_count (void) const { return 2; }
-
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     print_indent (os, indent) << "cond_break: ";
     print_cond (os) << ", ";
@@ -1518,7 +1546,8 @@ jit_call : public jit_instruction
 {
 public:
   jit_call (const jit_function& afunction,
-            jit_value *arg0) : jit_instruction (arg0), mfunction (afunction) {}
+            jit_value *arg0) : jit_instruction (arg0), mfunction (afunction)
+  {}
 
   jit_call (const jit_function& (*afunction) (void),
             jit_value *arg0) : jit_instruction (arg0), mfunction (afunction ()) {}
@@ -1542,9 +1571,9 @@ public:
 
   const jit_function& function (void) const { return mfunction; }
 
-  bool has_side_effects (void) const
+  bool can_error (void) const
   {
-    return overload ().side_effects;
+    return overload ().can_error;
   }
 
   const jit_function::overload& overload (void) const
@@ -1552,7 +1581,7 @@ public:
     return mfunction.get_overload (argument_types ());
   }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     print_indent (os, indent);
 
@@ -1569,10 +1598,6 @@ public:
     return os << ")";
   }
 
-  virtual bool dead (void) const;
-
-  virtual bool almost_dead (void) const;
-
   virtual bool infer (void);
 
   JIT_VALUE_ACCEPT (call)
@@ -1587,24 +1612,27 @@ class
 jit_check_error : public jit_terminator
 {
 public:
-  jit_check_error (jit_block *normal, jit_block *error)
-    : jit_terminator (normal, error) {}
+  jit_check_error (jit_call *acheck_for, jit_block *normal, jit_block *error)
+    : jit_terminator (2, normal, error, acheck_for) {}
 
-  jit_block *sucessor (size_t idx) const
+  jit_call *check_for (void) const
   {
-    return static_cast<jit_block *> (argument (idx));
+    return static_cast<jit_call *> (argument (2));
   }
-
-  size_t sucessor_count (void) const { return 2; }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
-    print_indent (os, indent) << "check_error: normal: ";
-    print_sucessor (os, 0) << " error: ";
+    print_indent (os, indent) << "error_check " << *check_for () << ", ";
+    print_sucessor (os, 0) << ", ";
     return print_sucessor (os, 1);
   }
 
   JIT_VALUE_ACCEPT (jit_check_error)
+protected:
+  virtual bool check_alive (size_t idx) const
+  {
+    return idx == 0 ? true : check_for ()->can_error ();
+  }
 };
 
 class
@@ -1627,7 +1655,7 @@ public:
     return jit_typeinfo::cast (type (), jit_typeinfo::get_any ());
   }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     print_indent (os, indent);
 
@@ -1670,7 +1698,7 @@ public:
     return result ()->to_llvm ();
   }
 
-  virtual std::ostream& print (std::ostream& os, size_t indent) const
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
     jit_value *res = result ();
     print_indent (os, indent) << "store ";
@@ -1906,6 +1934,8 @@ private:
       worklist.push_back (use->user ());
   }
 
+  void append_users_term (jit_terminator *term);
+
   void track_value (jit_value *value)
   {
     if (value->type ())
@@ -1918,6 +1948,8 @@ private:
   void construct_ssa (void);
 
   static void do_construct_ssa (jit_block& block);
+
+  void remove_dead ();
 
   void place_releases (void);
 

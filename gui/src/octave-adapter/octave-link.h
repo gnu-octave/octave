@@ -61,6 +61,7 @@
 #include <vector>
 #include <readline/readline.h>
 #include <queue>
+#include <time.h>
 
 #include "octave-main-thread.h"
 #include "octave-event.h"
@@ -81,6 +82,15 @@ public:
   /** Provides a way to access the unique octave_link object. */
   static octave_link * instance () { return &_singleton; }
 
+  typedef struct
+  {
+    clock_t generate_events_start;
+    clock_t generate_events_stop;
+    clock_t process_events_start;
+    clock_t process_events_stop;
+    int     event_queue_size;
+  } performance_information;
+
   /** Starts octave. */
   void launch_octave ();
   void register_event_listener (octave_event_listener *oel);
@@ -92,6 +102,11 @@ public:
   void event_reject (octave_event *e);
 
   void about_to_exit ();
+
+  void entered_readline_hook ();
+  void finished_readline_hook ();
+  performance_information get_performance_information ();
+
 private:
   /** Singleton. */
   octave_link ();
@@ -111,6 +126,13 @@ private:
   /** Stores the last known current working directory of octave. */
   std::string _last_working_directory;
   bool _debugging_mode_active;
+
+  /** Semaphore to lock access to the performance information. */
+  octave_mutex *_performance_information_mutex;
+
+  /** Stores performance data. */
+  performance_information _next_performance_information;
+  performance_information _performance_information;
 
   /** Unique instance. Singelton! */
   static octave_link _singleton;

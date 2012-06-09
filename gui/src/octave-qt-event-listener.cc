@@ -43,3 +43,4 @@ octave_qt_event_listener::entered_debug_mode ()
 void
 octave_qt_event_listener::quit_debug_mode ()
 { emit quit_debug_mode_signal (); }
+

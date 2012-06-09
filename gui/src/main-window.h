@@ -30,6 +30,7 @@
 #include <QCloseEvent>
 #include <QToolButton>
 #include <QComboBox>
+#include <QTimer>
 
 // Editor includes
 #include "file-editor-interface.h"
@@ -99,6 +100,8 @@ public slots:
   void debug_step_out ();
   void debug_quit ();
 
+  void update_performance_information ();
+
 protected:
   void closeEvent (QCloseEvent * closeEvent);
   void read_settings ();
@@ -111,6 +114,7 @@ private:
   QTerminal *               _terminal;
   file_editor_interface *   _file_editor;
   QMenu *                   _debug_menu;
+  QTimer                    _update_performance_information_timer;
 
   // Dock widgets.
   workspace_view *          _workspace_view;

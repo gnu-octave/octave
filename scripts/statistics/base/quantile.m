@@ -17,7 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{q} =} quantile (@var{x}, @var{p})
+## @deftypefn  {Function File} {@var{q} =} quantile (@var{x})
+## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p})
 ## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim})
 ## @deftypefnx {Function File} {@var{q} =} quantile (@var{x}, @var{p}, @var{dim}, @var{method})
 ## For a sample, @var{x}, calculate the quantiles, @var{q}, corresponding to
@@ -28,6 +29,8 @@
 ## return them in a matrix, such that the i-th row of @var{q} contains
 ## the @var{p}(i)th quantiles of each column of @var{x}.
 ##
+## If @var{p} is unspecified, return the quantiles for
+## @code{[0.00 0.25 0.50 0.75 1.00]}.
 ## The optional argument @var{dim} determines the dimension along which
 ## the quantiles are calculated.  If @var{dim} is omitted, and @var{x} is
 ## a vector or matrix, it defaults to 1 (column-wise quantiles).  If

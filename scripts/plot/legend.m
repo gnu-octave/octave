@@ -510,7 +510,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
                           "xticklabel", "", "yticklabel", "", "zticklabel", "",
                           "xlim", [0, 1], "ylim", [0, 1],
                           "visible", ifelse (strcmp (box, "on"), "on", "off"),
-                          "activepositionproperty", "position");
+                          "activepositionproperty", "position",
+                          "fontsize", ca_fontsize);
         else
           addprops = false;
           axes (hlegend);
@@ -525,11 +526,13 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
           if (strcmp (textpos, "right"))
             texthandle = [texthandle, text(0, 0, text_strings {k},
                                            "horizontalalignment", "left",
-                                           "userdata", hplots(k))];
+                                           "userdata", hplots(k),
+                                           "fontsize", ca_fontsize)];
           else
             texthandle = [texthandle, text(0, 0, text_strings {k},
                                            "horizontalalignment", "right",
-                                           "userdata", hplots(k))];
+                                           "userdata", hplots(k),
+                                           "fontsize", ca_fontsize)];
           endif
           units = get (texthandle (end), "units");
           unwind_protect
@@ -712,6 +715,18 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
             addlistener(hplots(k), "markersize", {@updateline, hlegend, linelength});
             addlistener(hplots(k), "displayname", {@updateline, hlegend, linelength});
           case "patch"
+            facecolor = get (hplots(k), "facecolor");
+            edgecolor = get (hplots(k), "edgecolor");
+            cdata = get (hplots(k), "cdata");
+            if (! strcmp (facecolor, "none") || ! strcmp (edgecolor, "none"))
+              p1 = patch ("xdata", ([0, linelength, linelength, 0] +
+                                   xoffset + xk * xstep) / lpos(3),
+                         "ydata", (lpos(4) - yoffset -
+                                   [yk-0.3, yk-0.3, yk+0.3, yk+0.3] .* ystep) / lpos(4),
+                         "facecolor", facecolor, "edgecolor", edgecolor, "cdata", cdata,
+                         "userdata", hplots (k));
+              hobjects = [hobjects, p1];
+            endif
           case "surface"
           endswitch
           set (texthandle (k), "position", [(txoffset + xk * xstep) / lpos(3), ...

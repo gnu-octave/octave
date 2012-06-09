@@ -44,11 +44,10 @@ MFILE: foreach $m_fname (@ARGV)
 
   $full_fname = $srcdir . $m_fname;
   next MFILE unless ( $full_fname =~ m{(.*)/(@|)([^/]*)/(.*)\.m} );
-  if ($2) {
-    $fcn = "$2$3/$4";
-  } else {
-    $fcn = $4;
-  }
+  if ($2)
+    { $fcn = "$2$3/$4"; }
+  else
+    { $fcn = $4; }
 
   @help_txt = gethelp ($fcn, $full_fname);
   next MFILE if ($help_txt[0] eq "");

@@ -105,6 +105,27 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
+dnl See if the C++ library has the bit_and, bit_or and bit_xor
+dnl templates defined.
+dnl
+AC_DEFUN([OCTAVE_CXX_BITWISE_OP_TEMPLATES],
+[AC_CACHE_CHECK([whether bit_and, bit_or and bit_xor are defined in the c++ library],
+octave_cv_cxx_bitwise_op_templates,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <functional>]],
+[[int x = 0;
+int y = 1;
+int z1 = std::bit_and<int>() (x, y);
+int z2 = std::bit_or<int>() (x, y);
+int z3 = std::bit_xor<int>() (x, y);]])],
+octave_cv_cxx_bitwise_op_templates=yes, octave_cv_cxx_bitwise_op_templates=no)])
+if test $octave_cv_cxx_bitwise_op_templates = yes; then
+AC_DEFINE(HAVE_CXX_BITWISE_OP_TEMPLATES,1,[Define if C++ library has templated bitwise operators])
+fi
+AC_LANG_POP(C++)
+])
+
+dnl
 dnl See if the C++ library has functions to set real and imaginary
 dnl parts of complex numbers independently.
 dnl

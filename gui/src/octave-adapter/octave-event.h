@@ -23,6 +23,8 @@
 #include "oct-env.h"
 #include "pt-eval.h"
 #include "toplev.h"
+#include "parse.h"
+#include "debug.h"
 
 #include <readline/readline.h>
 
@@ -51,7 +53,7 @@ class octave_event
     /** Performs what is necessary to make this event happen.
       * This code is thread-safe since it will be executed in the octave thread.
       * However, you should take care to keep this code as short as possible. */
-    virtual bool perform () const = 0;
+    virtual bool perform () = 0;
 
     /**
       * Accepts this event. This allows the event observer to react properly
@@ -67,6 +69,25 @@ class octave_event
     void reject ()
     { _octave_event_observer.event_reject (this); }
 
+  protected:
+    void call_octave_function (std::string name,
+                               const octave_value_list& args = octave_value_list (),
+                               int nargout = 0)
+    {
+      try
+      {
+        feval (name, args, nargout);
+      } catch (...) { } // Ignore exceptions. Crashes without that.
+    }
+
+    void finish_readline_event () const
+    {
+      rl_line_buffer[0] = '\0';
+      rl_point = rl_end = 0;
+      rl_done = 1;
+      //rl_forced_update_display ();
+    }
+
   private:
     octave_event_observer& _octave_event_observer;
 };
@@ -79,7 +100,7 @@ class octave_update_history_event : public octave_event
       : octave_event (o)
     { }
 
-    bool perform () const
+    bool perform ()
     { return true; /* Always grant. */ }
 };
 
@@ -91,7 +112,7 @@ class octave_update_workspace_event : public octave_event
       : octave_event (o)
     { }
 
-    bool perform () const
+    bool perform ()
     { return true; /* Always grant. */ }
 };
 
@@ -104,7 +125,7 @@ class octave_exit_event : public octave_event
       : octave_event (o)
     { }
 
-    bool perform () const
+    bool perform ()
     { clean_up_and_exit (0); return true; }
 };
 
@@ -118,7 +139,7 @@ class octave_change_directory_event : public octave_event
       : octave_event (o)
     { _directory = directory; }
 
-    bool perform () const
+    bool perform ()
     { return octave_env::chdir (_directory); }
 
   private:
@@ -132,9 +153,12 @@ class octave_debug_step_into_event : public octave_event
     octave_debug_step_into_event (octave_event_observer& o)
       : octave_event (o) { }
 
-    bool perform () const
+    bool perform ()
     {
-      tree_evaluator::dbstep_flag = -1;
+      octave_value_list args;
+      args.append (octave_value ("in"));
+      call_octave_function ("dbstep", args);
+      finish_readline_event ();
       return true;
     }
 };
@@ -146,9 +170,10 @@ class octave_debug_step_over_event : public octave_event
     octave_debug_step_over_event (octave_event_observer& o)
       : octave_event (o) { }
 
-    bool perform () const
+    bool perform ()
     {
-      tree_evaluator::dbstep_flag = 1;
+      call_octave_function ("dbnext");
+      finish_readline_event ();
       return true;
     }
 };
@@ -160,9 +185,12 @@ class octave_debug_step_out_event : public octave_event
     octave_debug_step_out_event (octave_event_observer& o)
       : octave_event (o) { }
 
-    bool perform () const
+    bool perform ()
     {
-      tree_evaluator::dbstep_flag = -2;
+      octave_value_list args;
+      args.append (octave_value ("out"));
+      call_octave_function ("dbstep", args);
+      finish_readline_event ();
       return true;
     }
 };
@@ -174,9 +202,10 @@ class octave_debug_continue_event : public octave_event
     octave_debug_continue_event (octave_event_observer& o)
       : octave_event (o) { }
 
-    bool perform () const
+    bool perform ()
     {
-      tree_evaluator::dbstep_flag = 0;
+      call_octave_function ("dbcont");
+      finish_readline_event ();
       return true;
     }
 };
@@ -188,9 +217,10 @@ class octave_debug_quit_event : public octave_event
     octave_debug_quit_event (octave_event_observer& o)
       : octave_event (o) { }
 
-    bool perform () const
+    bool perform ()
     {
-      tree_evaluator::dbstep_flag = 0;
+      call_octave_function ("dbquit");
+      finish_readline_event ();
       return true;
     }
 };

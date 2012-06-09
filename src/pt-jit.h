@@ -597,9 +597,20 @@ jit_value
   friend class jit_use;
 public:
   jit_value (void) : llvm_value (0), ty (0), use_head (0), use_tail (0),
-                     myuse_count (0), mlast_use (0) {}
+                     myuse_count (0), mlast_use (0),
+		     min_worklist (false) {}
 
   virtual ~jit_value (void);
+  
+  bool in_worklist (void) const
+  {
+    return min_worklist;
+  }
+
+  void stash_in_worklist (bool ain_worklist)
+  {
+    min_worklist = ain_worklist;
+  }
 
   // replace all uses with
   void replace_with (jit_value *value);
@@ -674,6 +685,7 @@ private:
   jit_use *use_tail;
   size_t myuse_count;
   jit_instruction *mlast_use;
+  bool min_worklist;
 };
 
 std::ostream& operator<< (std::ostream& os, const jit_value& value);
@@ -1928,10 +1940,19 @@ private:
 
   jit_value *visit (tree& tee);
 
+  void push_worklist (jit_instruction *instr)
+  {
+    if (! instr->in_worklist ())
+      {
+	instr->stash_in_worklist (true);
+	worklist.push_back (instr);
+      }
+  }
+
   void append_users (jit_value *v)
   {
     for (jit_use *use = v->first_use (); use; use = use->next ())
-      worklist.push_back (use->user ());
+      push_worklist (use->user ());
   }
 
   void append_users_term (jit_terminator *term);

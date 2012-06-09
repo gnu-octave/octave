@@ -1285,6 +1285,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
     {
       jit_instruction *next = worklist.front ();
       worklist.pop_front ();
+      next->stash_in_worklist (false);
 
       if (next->infer ())
         {
@@ -1297,7 +1298,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
     }
 
   remove_dead ();
-
+  merge_blocks ();
   place_releases ();
 
 #ifdef OCTAVE_JIT_DEBUG
@@ -1904,10 +1905,11 @@ jit_convert::append_users_term (jit_terminator *term)
           jit_block *succ = term->sucessor (i);
           for (jit_block::iterator iter = succ->begin (); iter != succ->end ()
                  && isa<jit_phi> (*iter); ++iter)
-            worklist.push_back (*iter);
+            push_worklist (*iter);
 
-          if (succ->terminator ())
-            worklist.push_back (succ->terminator ());
+          jit_terminator *sterm = succ->terminator ();
+          if (sterm)
+            push_worklist (sterm);
         }
     }
 }

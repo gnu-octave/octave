@@ -30,7 +30,7 @@ TRANSLATIONS        += languages/generic.ts \
 
 win32-msvc*: include(msvc.pri)
 
-LIBS                += -lqscintilla2  \
+LIBS                += -lreadline -lqscintilla2  \
                        -L../qterminal/libqterminal/$$LIBDIR_SUFFIX -lqterminal \
                         $$system(mkoctfile -p LIBS) \
                         $$system(mkoctfile -p OCTAVE_LIBS)

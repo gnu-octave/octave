@@ -750,17 +750,15 @@ jit_use::user_parent (void) const
 
 // -------------------- jit_value --------------------
 jit_value::~jit_value (void)
-{
-  replace_with (0);
-}
+{}
 
 void
 jit_value::replace_with (jit_value *value)
 {
-  while (use_head)
+  while (first_use ())
     {
-      jit_instruction *user = use_head->user ();
-      size_t idx = use_head->index ();
+      jit_instruction *user = first_use ()->user ();
+      size_t idx = first_use ()->index ();
       user->stash_argument (idx, value);
     }
 }
@@ -805,13 +803,28 @@ jit_instruction::short_print (std::ostream& os) const
 }
 
 // -------------------- jit_block --------------------
+void
+jit_block::replace_with (jit_value *value)
+{
+  assert (isa<jit_block> (value));
+  jit_block *block = static_cast<jit_block *> (value);
+
+  jit_value::replace_with (block);
+
+  while (ILIST_T::first_use ())
+    {
+      jit_phi_incomming *incomming = ILIST_T::first_use ();
+      incomming->stash_value (block);
+    }
+}
+
 jit_block *
 jit_block::maybe_merge ()
 {
-  if (succ_count () == 1 && succ (0) != this
-      && (succ (0)->pred_count () == 1 || instructions.size () == 1))
+  if (successor_count () == 1 && successor (0) != this
+      && (successor (0)->use_count () == 1 || instructions.size () == 1))
     {
-      jit_block *to_merge = succ (0);
+      jit_block *to_merge = successor (0);
       merge (*to_merge);
       return to_merge;
     }
@@ -825,11 +838,7 @@ jit_block::merge (jit_block& block)
   // the merge block will contain a new terminator
   jit_terminator *old_term = terminator ();
   if (old_term)
-    {
-      old_term->remove ();
-      for (size_t i = 0; i < old_term->argument_count (); ++i)
-        old_term->stash_argument (i, 0);
-    }
+    old_term->remove ();
 
   bool was_empty = end () == begin ();
   iterator merge_begin = end ();
@@ -851,7 +860,6 @@ jit_block::merge (jit_block& block)
     }
 
   block.replace_with (this);
-  block.mark_dead ();
 }
 
 jit_instruction *
@@ -906,22 +914,12 @@ jit_block::insert_after (iterator loc, jit_instruction *instr)
 jit_terminator *
 jit_block::terminator (void) const
 {
+  assert (this);
   if (instructions.empty ())
     return 0;
 
   jit_instruction *last = instructions.back ();
   return dynamic_cast<jit_terminator *> (last);
-}
-
-jit_block *
-jit_block::pred (size_t idx) const
-{
-  // FIXME: Make this O(1)
-  assert (idx < use_count ());
-  jit_use *use;
-  size_t i;
-  for (use = first_use (), i = 0; use && i < idx; ++i, use = use->next ());
-  return use->user_parent ();
 }
 
 bool
@@ -930,59 +928,30 @@ jit_block::branch_alive (jit_block *asucc) const
   return terminator ()->alive (asucc);
 }
 
-size_t
-jit_block::pred_index (jit_block *apred) const
-{
-  for (size_t i = 0; i < pred_count (); ++i)
-    if (pred (i) == apred)
-      return i;
-
-  fail ("No such predecessor");
-}
-
-void
-jit_block::create_merge (llvm::Function *inside, jit_block *apred)
-{
-  mpred_llvm.resize (pred_count ());
-
-  size_t pred_idx = pred_index (apred);
-  if (! mpred_llvm[pred_idx] && apred->pred_count () > 1)
-    {
-      llvm::BasicBlock *amerge;
-      amerge = llvm::BasicBlock::Create (context, "phi_merge", inside,
-                                         to_llvm ());
-          
-      // fix the predecessor jump if it has been created
-      jit_terminator *jterm = pred_terminator (pred_idx);
-      if (jterm->has_llvm ())
-        {
-          llvm::Value *term = jterm->to_llvm ();
-          llvm::TerminatorInst *branch = llvm::cast<llvm::TerminatorInst> (term);
-          for (size_t i = 0; i < branch->getNumSuccessors (); ++i)
-            {
-              if (branch->getSuccessor (i) == to_llvm ())
-                branch->setSuccessor (i, amerge);
-            }
-        }
-
-      llvm::IRBuilder<> temp (amerge);
-      temp.CreateBr (to_llvm ());
-      mpred_llvm[pred_idx] = amerge;
-    }
-}
-
 jit_block *
-jit_block::succ (size_t i) const
+jit_block::successor (size_t i) const
 {
   jit_terminator *term = terminator ();
-  return term->sucessor (i);
+  return term->successor (i);
 }
 
 size_t
-jit_block::succ_count (void) const
+jit_block::successor_count (void) const
 {
   jit_terminator *term = terminator ();
-  return term ? term->sucessor_count () : 0;
+  return term ? term->successor_count () : 0;
+}
+
+llvm::BasicBlock *
+jit_block::branch_llvm (size_t idx) const
+{
+  return terminator ()->branch_llvm (idx);
+}
+
+llvm::BasicBlock *
+jit_block::branch_llvm (jit_block *succ) const
+{
+  return terminator ()->branch_llvm (succ);
 }
 
 llvm::BasicBlock *
@@ -997,14 +966,14 @@ jit_block::print_dom (std::ostream& os) const
   short_print (os);
   os << ":\n";
   os << "  mid: " << mid << std::endl;
-  os << "  pred: ";
-  for (size_t i = 0; i < pred_count (); ++i)
-    os << *pred (i) << " ";
+  os << "  predecessors: ";
+  for (jit_use *use = first_use (); use; use = use->next ())
+    os << *use->user_parent () << " ";
   os << std::endl;
 
-  os << "  succ: ";
-  for (size_t i = 0; i < succ_count (); ++i)
-    os << *succ (i) << " ";
+  os << "  successors: ";
+  for (size_t i = 0; i < successor_count (); ++i)
+    os << *successor (i) << " ";
   os << std::endl;
 
   os << "  idom: ";
@@ -1032,11 +1001,11 @@ jit_block::compute_df (size_t visit_count)
     return;
   ++mvisit_count;
 
-  if (pred_count () >= 2)
+  if (use_count () >= 2)
     {
-      for (size_t i = 0; i < pred_count (); ++i)
+      for (jit_use *use = first_use (); use; use = use->next ())
         {
-          jit_block *runner = pred (i);
+          jit_block *runner = use->user_parent ();
           while (runner != idom)
             {
               runner->mdf.insert (this);
@@ -1045,8 +1014,8 @@ jit_block::compute_df (size_t visit_count)
         }
     }
 
-  for (size_t i = 0; i < succ_count (); ++i)
-    succ (i)->compute_df (visit_count);
+  for (size_t i = 0; i < successor_count (); ++i)
+    successor (i)->compute_df (visit_count);
 }
 
 bool
@@ -1056,17 +1025,24 @@ jit_block::update_idom (size_t visit_count)
     return false;
   ++mvisit_count;
 
-  if (! pred_count ())
+  if (! use_count ())
     return false;
 
   bool changed = false;
-  for (size_t i = 0; i < pred_count (); ++i)
-    changed = pred (i)->update_idom (visit_count) || changed;
-
-  jit_block *new_idom = pred (0);
-  for (size_t i = 1; i < pred_count (); ++i)
+  for (jit_use *use = first_use (); use; use = use->next ())
     {
-      jit_block *pidom = pred (i)->idom;
+      jit_block *pred = use->user_parent ();
+      changed = pred->update_idom (visit_count) || changed;
+    }
+
+  jit_use *use = first_use ();
+  jit_block *new_idom = use->user_parent ();
+  use = use->next ();
+
+  for (; use; use = use->next ())
+    {
+      jit_block *pred = use->user_parent ();
+      jit_block *pidom = pred->idom;
       if (pidom)
         new_idom = pidom->idom_intersect (new_idom);
     }
@@ -1100,8 +1076,8 @@ jit_block::create_dom_tree (size_t visit_count)
   if (idom != this)
     idom->dom_succ.push_back (this);
 
-  for (size_t i = 0; i < succ_count (); ++i)
-    succ (i)->create_dom_tree (visit_count);
+  for (size_t i = 0; i < successor_count (); ++i)
+    successor (i)->create_dom_tree (visit_count);
 }
 
 jit_block *
@@ -1128,15 +1104,20 @@ jit_phi::prune (void)
 {
   jit_block *p = parent ();
   size_t new_idx = 0;
+  jit_value *unique = argument (1);
+
   for (size_t i = 0; i < argument_count (); ++i)
     {
       jit_block *inc = incomming (i);
       if (inc->branch_alive (p))
         {
+          if (unique != argument (i))
+            unique = 0;
+
           if (new_idx != i)
             {
               stash_argument (new_idx, argument (i));
-              mincomming[new_idx] = mincomming[i];
+              mincomming[new_idx].stash_value (inc);
             }
 
           ++new_idx;
@@ -1150,9 +1131,9 @@ jit_phi::prune (void)
     }
 
   assert (argument_count () > 0);
-  if (argument_count () == 1)
+  if (unique)
     {
-      replace_with (argument (0));
+      replace_with (unique);
       return true;
     }
 
@@ -1169,7 +1150,7 @@ jit_phi::infer (void)
   jit_type *infered = 0;
   for (size_t i = 0; i < argument_count (); ++i)
     {
-      jit_block *inc = mincomming[i];
+      jit_block *inc = incomming (i);
       if (inc->branch_alive (p))
         infered = jit_typeinfo::join (infered, argument_type (i));
     }
@@ -1184,15 +1165,40 @@ jit_phi::infer (void)
 }
 
 // -------------------- jit_terminator --------------------
-bool
-jit_terminator::alive (const jit_block *asucessor) const
+size_t
+jit_terminator::successor_index (const jit_block *asuccessor) const
 {
-  size_t scount = sucessor_count ();
+  size_t scount = successor_count ();
   for (size_t i = 0; i < scount; ++i)
-    if (sucessor (i) == asucessor)
-      return malive[i];
+    if (successor (i) == asuccessor)
+      return i;
 
   panic_impossible ();
+}
+
+void
+jit_terminator::create_merge (llvm::Function *function, jit_block *asuccessor)
+{
+  size_t idx = successor_index (asuccessor);
+  if (! mbranch_llvm[idx] && successor_count () > 1)
+    {
+      assert (parent ());
+      assert (parent_llvm ());
+      llvm::BasicBlock *merge = llvm::BasicBlock::Create (context, "phi_merge",
+                                                          function,
+                                                          parent_llvm ());
+
+      // fix the predecessor jump if it has been created
+      if (has_llvm ())
+        {
+          llvm::TerminatorInst *branch = to_llvm ();
+          branch->setSuccessor (idx, merge);
+        }
+
+      llvm::IRBuilder<> temp (merge);
+      temp.CreateBr (successor_llvm (idx));
+      mbranch_llvm[idx] = merge;
+    }
 }
 
 bool
@@ -1207,10 +1213,16 @@ jit_terminator::infer (void)
       {
         changed = true;
         malive[i] = true;
-        sucessor (i)->mark_alive ();
+        successor (i)->mark_alive ();
       }
 
   return changed;
+}
+
+llvm::TerminatorInst *
+jit_terminator::to_llvm (void) const
+{
+  return llvm::cast<llvm::TerminatorInst> (jit_value::to_llvm ());
 }
 
 // -------------------- jit_call --------------------
@@ -1251,7 +1263,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
 
   entry_block = create<jit_block> ("body");
   final_block = create<jit_block> ("final");
-  blocks.push_back (entry_block);
+  add_block (entry_block);
   entry_block->mark_alive ();
   block = entry_block;
   visit (tee);
@@ -1262,7 +1274,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
   assert (continues.empty ());
 
   block->append (create<jit_break> (final_block));
-  blocks.push_back (final_block);
+  add_block (final_block);
   
   for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
        
@@ -1363,7 +1375,7 @@ jit_convert::visit_binary_expression (tree_binary_expression& be)
 
   jit_block *normal = create<jit_block> (block->name ());
   block->append (create<jit_check_error> (call, normal, final_block));
-  blocks.push_back (normal);
+  add_block (normal);
   block = normal;
   result = call;
 }
@@ -1454,7 +1466,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   vmap[iter_name] = iterator;
 
   jit_block *body = create<jit_block> ("for_body");
-  blocks.push_back (body);
+  add_block (body);
 
   jit_block *tail = create<jit_block> ("for_tail");
 
@@ -1483,14 +1495,14 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
       // WTF are you doing user? Every branch was a continue, why did you have
       // a loop??? Users are silly people...
       finish_breaks (tail, breaks);
-      blocks.push_back (tail);
+      add_block (tail);
       block = tail;
       return;
     }
 
   // check our condition, continues jump to this block
   jit_block *check_block = create<jit_block> ("for_check");
-  blocks.push_back (check_block);
+  add_block (check_block);
 
   if (! breaking)
     block->append (create<jit_break> (check_block));
@@ -1507,7 +1519,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   block->append (create<jit_cond_break> (check, body, tail));
 
   // breaks will go to our tail
-  blocks.push_back (tail);
+  add_block (tail);
   finish_breaks (tail, breaks);
   block = tail;
 }
@@ -1608,7 +1620,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
       assert (block);
 
       if (i) // the first block is prev_block, so it has already been added
-        blocks.push_back (entry_blocks[i]);
+        add_block (entry_blocks[i]);
 
       if (! tic->is_else_clause ())
         {
@@ -1618,12 +1630,12 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
           block->append (check);
 
           jit_block *next = create<jit_block> (block->name ());
-          blocks.push_back (next);
+          add_block (next);
           block->append (create<jit_check_error> (check, next, final_block));
           block = next;
 
           jit_block *body = create<jit_block> (i == 0 ? "if_body" : "ifelse_body");
-          blocks.push_back (body);
+          add_block (body);
 
           jit_instruction *br = create<jit_cond_break> (check, body,
                                                         entry_blocks[i + 1]);
@@ -1646,7 +1658,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 
   if (num_incomming || ! last_else)
     {
-      blocks.push_back (tail);
+      add_block (tail);
       block = tail;
     }
   else
@@ -1898,11 +1910,11 @@ jit_convert::visit (tree& tee)
 void
 jit_convert::append_users_term (jit_terminator *term)
 {
-  for (size_t i = 0; i < term->sucessor_count (); ++i)
+  for (size_t i = 0; i < term->successor_count (); ++i)
     {
       if (term->alive (i))
         {
-          jit_block *succ = term->sucessor (i);
+          jit_block *succ = term->successor (i);
           for (jit_block::iterator iter = succ->begin (); iter != succ->end ()
                  && isa<jit_phi> (*iter); ++iter)
             push_worklist (*iter);
@@ -1917,27 +1929,27 @@ jit_convert::append_users_term (jit_terminator *term)
 void
 jit_convert::merge_blocks (void)
 {
+  std::vector<jit_block *> dead;
   for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();
        ++iter)
     {
       jit_block *b = *iter;
       jit_block *merged = b->maybe_merge ();
 
-      if (merged == final_block)
-        final_block = b;
+      if (merged)
+        {
+          if (merged == final_block)
+            final_block = b;
 
-      if (merged == entry_block)
-        entry_block = b;
+          if (merged == entry_block)
+            entry_block = b;
+
+          dead.push_back (merged);
+        }
     }
 
-  for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();)
-    {
-      jit_block *b = *iter;
-      if (b->dead ())
-        iter = blocks.erase (iter);
-      else
-        ++iter;
-    }
+  for (size_t i = 0; i < dead.size (); ++i)
+    blocks.erase (dead[i]->location ());
 }
 
 void
@@ -1969,7 +1981,7 @@ jit_convert::construct_ssa (void)
               if (! added_phi.count (dblock))
                 {
                   jit_phi *phi = create<jit_phi> (iter->second,
-                                                  dblock->pred_count ());
+                                                  dblock->use_count ());
                   dblock->prepend (phi);
                   added_phi.insert (dblock);
                 }
@@ -2008,15 +2020,15 @@ jit_convert::do_construct_ssa (jit_block& block)
       instr->push_variable ();
     }
 
-  // finish phi nodes of sucessors
-  for (size_t i = 0; i < block.succ_count (); ++i)
+  // finish phi nodes of successors
+  for (size_t i = 0; i < block.successor_count (); ++i)
     {
-      jit_block *finish = block.succ (i);
+      jit_block *finish = block.successor (i);
 
       for (jit_block::iterator iter = finish->begin (); iter != finish->end ()
              && isa<jit_phi> (*iter);)
         {
-          jit_phi *phi = dynamic_cast<jit_phi *> (*iter);
+          jit_phi *phi = static_cast<jit_phi *> (*iter);
           jit_variable *var = phi->dest ();
           if (var->has_top ())
             {
@@ -2063,9 +2075,9 @@ jit_convert::remove_dead ()
           // FIXME: A special case for jit_check_error, if we generalize to
           // we will need to change!
           jit_terminator *term = b->terminator ();
-          if (term && term->sucessor_count () == 2 && ! term->alive (1))
+          if (term && term->successor_count () == 2 && ! term->alive (0))
             {
-              jit_block *succ = term->sucessor (0);
+              jit_block *succ = term->successor (1);
               term->remove ();
               jit_break *abreak = b->append (create<jit_break> (succ));
               abreak->infer ();
@@ -2074,7 +2086,12 @@ jit_convert::remove_dead ()
           ++biter;
         }
       else
-        biter = blocks.erase (biter);
+        {
+          jit_terminator *term = b->terminator ();
+          if (term)
+            term->remove ();
+          biter = blocks.erase (biter);
+        }
     }
 }
 
@@ -2335,7 +2352,7 @@ jit_convert::convert_llvm::visit (jit_block& b)
 void
 jit_convert::convert_llvm::visit (jit_break& b)
 {
-  b.stash_llvm (builder.CreateBr (b.sucessor_llvm ()));
+  b.stash_llvm (builder.CreateBr (b.successor_llvm ()));
 }
 
 void
@@ -2343,7 +2360,7 @@ jit_convert::convert_llvm::visit (jit_cond_break& cb)
 {
   llvm::Value *cond = cb.cond_llvm ();
   llvm::Value *br;
-  br = builder.CreateCondBr (cond, cb.sucessor_llvm (0), cb.sucessor_llvm (1));
+  br = builder.CreateCondBr (cond, cb.successor_llvm (0), cb.successor_llvm (1));
   cb.stash_llvm (br);
 }
 
@@ -2398,10 +2415,14 @@ jit_convert::convert_llvm::visit (jit_phi& phi)
   builder.Insert (node);
   phi.stash_llvm (node);
 
-  jit_block *parent = phi.parent ();
+  jit_block *pblock = phi.parent ();
   for (size_t i = 0; i < phi.argument_count (); ++i)
     if (phi.argument_type (i) != phi.type ())
-      parent->create_merge (function, phi.incomming (i));
+      {
+        jit_block *inc = phi.incomming (i);
+        jit_terminator *term = inc->terminator ();
+        term->create_merge (function, pblock);
+      }
 }
 
 void
@@ -2414,8 +2435,8 @@ void
 jit_convert::convert_llvm::visit (jit_check_error& check)
 {
   llvm::Value *cond = jit_typeinfo::insert_error_check ();
-  llvm::Value *br = builder.CreateCondBr (cond, check.sucessor_llvm (1),
-                                          check.sucessor_llvm (0));
+  llvm::Value *br = builder.CreateCondBr (cond, check.successor_llvm (0),
+                                          check.successor_llvm (1));
   check.stash_llvm (br);
 }
 

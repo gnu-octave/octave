@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} legend (@var{str1}, @var{str2}, @dots{})
 ## @deftypefnx {Function File} {} legend (@var{matstr})
-## @deftypefnx {Function File} {} legend (@var{cell})
+## @deftypefnx {Function File} {} legend (@var{cellstr})
 ## @deftypefnx {Function File} {} legend (@dots{}, "location", @var{pos})
 ## @deftypefnx {Function File} {} legend (@dots{}, "orientation", @var{orient})
 ## @deftypefnx {Function File} {} legend (@var{hax}, @dots{})

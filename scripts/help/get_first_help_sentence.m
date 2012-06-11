@@ -81,9 +81,11 @@ endfunction
 ## This function extracts the first sentence from a plain text help text
 function [text, status] = first_sentence_plain_text (help_text, max_len)
   ## Extract first line by searching for a period (followed by a non-word
-  ## character to support periods in numbers or words) or a double line-end.
+  ## character to support periods in numbers or words)...
   period_idx   = regexp (help_text, '\.\W', "once");
-  line_end_idx = regexp (help_text, "\n\n", "once");
+  ## ... or a double line-end (we subtract 1 because we are not interested on
+  ## capturing the first newline)
+  line_end_idx = regexp (help_text, "\n\n", "once") -1;
   text = help_text (1:min ([period_idx; line_end_idx; max_len; length(help_text)]));
   status = 0;
 endfunction

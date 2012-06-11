@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-usr-fcn.h"
 #include "ov-scalar.h"
 #include "pt-all.h"
+#include "xpow.h"
 
 static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 
@@ -178,6 +179,15 @@ octave_jit_gripe_nan_to_logical_conversion (void)
     {
       gripe_library_execution_error ();
     }
+}
+
+extern "C" octave_base_value *
+octave_jit_xpow (double a, double b)
+{
+  octave_value ret = xpow (a, b);
+  octave_base_value *obv = ret.internal_rep ();
+  obv->grab ();
+  return obv;
 }
 
 // -------------------- jit_range --------------------
@@ -403,6 +413,15 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   add_binary_fcmp (scalar, octave_value::op_ge, llvm::CmpInst::FCMP_UGE);
   add_binary_fcmp (scalar, octave_value::op_gt, llvm::CmpInst::FCMP_UGT);
   add_binary_fcmp (scalar, octave_value::op_ne, llvm::CmpInst::FCMP_UNE);
+
+  llvm::Function *jxpow = create_function ("octave_jit_xpow", any, scalar,
+                                           scalar);
+  engine->addGlobalMapping (jxpow, reinterpret_cast<void *> (&octave_jit_xpow));
+  {
+    jit_function::overload ol (jxpow, false, any, scalar, scalar);
+    binary_ops[octave_value::op_pow].add_overload (ol);
+    binary_ops[octave_value::op_el_pow].add_overload (ol);
+  }
 
   llvm::Function *gripe_div0 = create_function ("gripe_divide_by_zero", void_t);
   engine->addGlobalMapping (gripe_div0,

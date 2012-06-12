@@ -73,7 +73,7 @@ endfunction
 
 %!shared x,y
 %! x = [-1 0 1 e Inf];
-%! y = [0, 0, 0.5, 1/2+1/2*erf(1/2), 1];
+%! y = [0, 0, 0.5, 1/2+1/2*erf((1/sqrt(2))*(1/sqrt(2))), 1];
 %!assert (logncdf (x, zeros (1,5), sqrt(2)*ones (1,5)), y)
 %!assert (logncdf (x, 0, sqrt(2)*ones (1,5)), y)
 %!assert (logncdf (x, zeros (1,5), sqrt(2)), y)

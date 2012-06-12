@@ -381,11 +381,11 @@ main_window::construct ()
 
   QAction *copy_action
       = edit_menu->addAction (QIcon(":/actions/icons/editcopy.png"), tr ("Copy"));
-  copy_action->setShortcut (QKeySequence::Copy);
+  copy_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_C);
 
   QAction *paste_action
       = edit_menu->addAction (QIcon(":/actions/icons/editpaste.png"), tr ("Paste"));
-  paste_action->setShortcut (QKeySequence::Paste);
+  paste_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_V);
 
   QAction *undo_action
       = edit_menu->addAction (QIcon(":/actions/icons/undo.png"), tr ("Undo"));

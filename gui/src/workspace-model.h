@@ -135,7 +135,7 @@ public slots:
   void request_update_workspace ();
 
 signals:
-  void expand_request();
+  void model_changed();
 
 private:
   /** Timer for periodically updating the workspace model from the current

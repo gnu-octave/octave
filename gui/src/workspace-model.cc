@@ -70,6 +70,7 @@ workspace_model::event_accepted (octave_event *e)
         _symbol_information.push_back (symbolInformation);
       }
 
+      beginResetModel();
       top_level_item (0)->delete_child_items ();
       top_level_item (1)->delete_child_items ();
       top_level_item (2)->delete_child_items ();
@@ -92,8 +93,8 @@ workspace_model::event_accepted (octave_event *e)
             }
         }
 
-      reset();
-      emit expand_request();
+      endResetModel();
+      emit model_changed();
     }
 
   // Post a new event in a given time.

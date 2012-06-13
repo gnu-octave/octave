@@ -32,6 +32,7 @@ public:
 
 public slots:
   void handle_visibility_changed (bool visible);
+  void model_changed ();
 
 signals:
   /** Custom signal that tells if a user has clicke away that dock widget. */
@@ -40,11 +41,23 @@ signals:
 protected:
   void closeEvent (QCloseEvent *event);
 
+protected slots:
+  void collapse_requested (QModelIndex index);
+  void expand_requested (QModelIndex index);
+
 private:
   QTreeView *_workspace_tree_view;
 
   /** Stores the current workspace model. */
   workspace_model *_workspace_model;
+
+  struct
+  {
+    bool local;
+    bool global;
+    bool persistent;
+    bool hidden;
+  } _explicit_collapse;
 };
 
 #endif // WORKSPACEVIEW_H

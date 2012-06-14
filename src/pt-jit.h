@@ -219,6 +219,43 @@ jit_range
 
 std::ostream& operator<< (std::ostream& os, const jit_range& rng);
 
+// jit_array is compatable with the llvm array/matrix structures
+template <typename T, typename U>
+struct
+jit_array
+{
+  jit_array (T& from) : ref_count (from.jit_ref_count ()),
+                        slice_data (from.jit_slice_data () - 1),
+                        slice_len (from.capacity ()),
+                        dimensions (from.jit_dimensions ()),
+                        array_rep (from.jit_array_rep ())
+  {
+    grab_dimensions ();
+  }
+
+  void grab_dimensions (void)
+  {
+    ++(dimensions[-2]);
+  }
+
+  operator T () const
+  {
+    return T (slice_data + 1, slice_len, dimensions, array_rep);
+  }
+
+  int *ref_count;
+
+  U *slice_data;
+  octave_idx_type slice_len;
+  octave_idx_type *dimensions;
+
+  void *array_rep;
+};
+
+typedef jit_array<NDArray, double> jit_matrix;
+
+std::ostream& operator<< (std::ostream& os, const jit_matrix& mat);
+
 // Used to keep track of estimated (infered) types during JIT. This is a
 // hierarchical type system which includes both concrete and abstract types.
 //
@@ -384,6 +421,8 @@ public:
 
   static jit_type *get_any (void) { return instance->any; }
 
+  static jit_type *get_matrix (void) { return instance->matrix; }
+
   static jit_type *get_scalar (void) { return instance->scalar; }
 
   static llvm::Type *get_scalar_llvm (void) { return instance->scalar->to_llvm (); }
@@ -443,6 +482,11 @@ public:
   static const jit_function& make_range (void)
   {
     return instance->make_range_fn;
+  }
+
+  static const jit_function& paren_subsref (void)
+  {
+    return instance->paren_subsref_fn;
   }
 
   static const jit_function& logically_true (void)
@@ -597,6 +641,18 @@ private:
   }
 
   llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
+                                   llvm::Type *arg0, llvm::Type *arg1,
+                                   llvm::Type *arg2, llvm::Type *arg3)
+  {
+    std::vector<llvm::Type *> args (4);
+    args[0] = arg0;
+    args[1] = arg1;
+    args[2] = arg2;
+    args[3] = arg3;
+    return create_function (name, ret, args);
+  }
+
+  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
                                    const std::vector<llvm::Type *>& args);
 
   llvm::Function *create_identity (jit_type *type);
@@ -609,11 +665,11 @@ private:
   llvm::ExecutionEngine *engine;
   int next_id;
 
-  llvm::Type *ov_t;
   llvm::GlobalVariable *lerror_state;
 
   std::vector<jit_type*> id_to_type;
   jit_type *any;
+  jit_type *matrix;
   jit_type *scalar;
   jit_type *range;
   jit_type *string;
@@ -629,6 +685,7 @@ private:
   jit_function for_index_fn;
   jit_function logically_true_fn;
   jit_function make_range_fn;
+  jit_function paren_subsref_fn;
 
   // type id -> cast function TO that type
   std::vector<jit_function> casts;
@@ -651,7 +708,8 @@ private:
   JIT_METH(phi);                                \
   JIT_METH(variable);                           \
   JIT_METH(check_error);                        \
-  JIT_METH(assign)
+  JIT_METH(assign)                              \
+  JIT_METH(argument)
 
 #define JIT_VISIT_IR_CONST                      \
   JIT_METH(const_scalar);                       \
@@ -830,18 +888,18 @@ public:
     : already_infered (nargs, reinterpret_cast<jit_type *>(0)),
       mid (next_id ()), mparent (0)
   {
-    arguments.reserve (nargs);
+    marguments.reserve (nargs);
   }
 
   jit_instruction (jit_value *arg0)
-    : already_infered (1, reinterpret_cast<jit_type *>(0)), arguments (1), 
+    : already_infered (1, reinterpret_cast<jit_type *>(0)), marguments (1), 
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
   }
 
   jit_instruction (jit_value *arg0, jit_value *arg1)
-    : already_infered (2, reinterpret_cast<jit_type *>(0)), arguments (2), 
+    : already_infered (2, reinterpret_cast<jit_type *>(0)), marguments (2), 
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
@@ -849,7 +907,7 @@ public:
   }
 
   jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2)
-    : already_infered (3, reinterpret_cast<jit_type *>(0)), arguments (3), 
+    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (3), 
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
@@ -859,7 +917,7 @@ public:
 
   jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2,
                    jit_value *arg3)
-    : already_infered (3, reinterpret_cast<jit_type *>(0)), arguments (4), 
+    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (4), 
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
@@ -875,7 +933,7 @@ public:
 
   jit_value *argument (size_t i) const
   {
-    return arguments[i].value ();
+    return marguments[i].value ();
   }
 
   llvm::Value *argument_llvm (size_t i) const
@@ -905,31 +963,33 @@ public:
 
   void stash_argument (size_t i, jit_value *arg)
   {
-    arguments[i].stash_value (arg, this, i);
+    marguments[i].stash_value (arg, this, i);
   }
 
   void push_argument (jit_value *arg)
   {
-    arguments.push_back (jit_use ());
-    stash_argument (arguments.size () - 1, arg);
+    marguments.push_back (jit_use ());
+    stash_argument (marguments.size () - 1, arg);
     already_infered.push_back (0);
   }
 
   size_t argument_count (void) const
   {
-    return arguments.size ();
+    return marguments.size ();
   }
 
   void resize_arguments (size_t acount, jit_value *adefault = 0)
   {
-    size_t old = arguments.size ();
-    arguments.resize (acount);
+    size_t old = marguments.size ();
+    marguments.resize (acount);
     already_infered.resize (acount);
 
     if (adefault)
       for (size_t i = old; i < acount; ++i)
         stash_argument (i, adefault);
   }
+
+  const std::vector<jit_use>& arguments (void) const { return marguments; }
 
   // argument types which have been infered already
   const std::vector<jit_type *>& argument_types (void) const
@@ -974,7 +1034,7 @@ private:
     return ret++;
   }
 
-  std::vector<jit_use> arguments;
+  std::vector<jit_use> marguments;
 
   size_t mid;
   jit_block *mparent;
@@ -982,8 +1042,28 @@ private:
 };
 
 // defnie accept methods for subclasses
-#define JIT_VALUE_ACCEPT(clname)                \
+#define JIT_VALUE_ACCEPT                        \
   virtual void accept (jit_ir_walker& walker);
+
+// for use as a dummy argument during conversion to LLVM
+class
+jit_argument : public jit_value
+{
+public:
+  jit_argument (jit_type *atype, llvm::Value *avalue)
+  {
+    stash_type (atype);
+    stash_llvm (avalue);
+  }
+
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
+  {
+    print_indent (os, indent);
+    return jit_print (os, type ()) << ": DUMMY";
+  }
+
+  JIT_VALUE_ACCEPT;
+};
 
 template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T,
           bool QUOTE>
@@ -1012,7 +1092,7 @@ public:
     return os;
   }
 
-  JIT_VALUE_ACCEPT (jit_const);
+  JIT_VALUE_ACCEPT;
 private:
   T mvalue;
 };
@@ -1212,7 +1292,7 @@ public:
   void stash_location (std::list<jit_block *>::iterator alocation)
   { mlocation = alocation; }
 
-  JIT_VALUE_ACCEPT (block);
+  JIT_VALUE_ACCEPT;
 private:
   void internal_append (jit_instruction *instr);
 
@@ -1370,7 +1450,7 @@ public:
     return print_indent (os, indent) << mname;
   }
 
-  JIT_VALUE_ACCEPT (variable)
+  JIT_VALUE_ACCEPT;
 private:
   std::string mname;
   std::stack<jit_value *> value_stack;
@@ -1426,7 +1506,7 @@ public:
     return print_indent (os, indent) << *dest () << " = " << *src ();
   }
 
-  JIT_VALUE_ACCEPT (assign);
+  JIT_VALUE_ACCEPT;
 private:
   jit_variable *mdest;
 };
@@ -1498,7 +1578,7 @@ public:
     return os << "#" << id ();
   }
 
-  JIT_VALUE_ACCEPT (phi);
+  JIT_VALUE_ACCEPT;
 private:
   std::vector<jit_phi_incomming> mincomming;
 };
@@ -1597,7 +1677,7 @@ public:
     return print_successor (os);
   }
 
-  JIT_VALUE_ACCEPT (break)
+  JIT_VALUE_ACCEPT;
 };
 
 class
@@ -1629,7 +1709,7 @@ public:
     return print_successor (os, 1);
   }
 
-  JIT_VALUE_ACCEPT (cond_break)
+  JIT_VALUE_ACCEPT;
 };
 
 class
@@ -1691,7 +1771,7 @@ public:
 
   virtual bool infer (void);
 
-  JIT_VALUE_ACCEPT (call)
+  JIT_VALUE_ACCEPT;
 private:
   const jit_function& mfunction;
 };
@@ -1718,7 +1798,7 @@ public:
     return print_successor (os, 0);
   }
 
-  JIT_VALUE_ACCEPT (jit_check_error)
+  JIT_VALUE_ACCEPT;
 protected:
   virtual bool check_alive (size_t idx) const
   {
@@ -1753,7 +1833,7 @@ public:
     return short_print (os) << " = extract " << name ();
   }
 
-  JIT_VALUE_ACCEPT (extract_argument)
+  JIT_VALUE_ACCEPT;
 };
 
 class
@@ -1804,7 +1884,7 @@ public:
     return os;
   }
 
-  JIT_VALUE_ACCEPT (store_argument)
+  JIT_VALUE_ACCEPT;
 private:
   jit_variable *dest;
 };
@@ -2103,6 +2183,8 @@ private:
   convert_llvm : public jit_ir_walker
   {
   public:
+    convert_llvm (jit_convert& jc) : jthis (jc) {}
+
     llvm::Function *convert (llvm::Module *module,
                              const std::vector<std::pair<std::string, bool> >& args,
                              const std::list<jit_block *>& blocks,
@@ -2129,7 +2211,30 @@ private:
     {
       jvalue.accept (*this);
     }
+
+    llvm::Value *create_call (const jit_function::overload& ol, jit_value *arg0)
+    {
+      std::vector<jit_value *> args (1, arg0);
+      return create_call (ol, args);
+    }
+
+    llvm::Value *create_call (const jit_function::overload& ol, jit_value *arg0,
+                              jit_value *arg1)
+    {
+      std::vector<jit_value *> args (2);
+      args[0] = arg0;
+      args[1] = arg1;
+
+      return create_call (ol, args);
+    }
+
+    llvm::Value *create_call (const jit_function::overload& ol,
+                              const std::vector<jit_value *>& jargs);
+
+    llvm::Value *create_call (const jit_function::overload& ol,
+                              const std::vector<jit_use>& uses);
   private:
+    jit_convert &jthis;
     llvm::Function *function;
   };
 };

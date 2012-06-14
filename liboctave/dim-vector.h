@@ -212,6 +212,12 @@ public:
 
   void chop_all_singletons (void);
 
+  // WARNING: Only call by jit
+  octave_idx_type *to_jit (void) const
+  {
+    return rep;
+  }
+
 private:
 
   static octave_idx_type *nil_rep (void)
@@ -219,9 +225,6 @@ private:
       static dim_vector zv (0, 0);
       return zv.rep;
     }
-
-  explicit dim_vector (octave_idx_type *r)
-    : rep (r) { }
 
 public:
 
@@ -232,6 +235,10 @@ public:
 
   dim_vector (const dim_vector& dv) : rep (dv.rep)
   { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
+
+  // FIXME: Should be private, but required by array constructor for jit
+  explicit dim_vector (octave_idx_type *r)
+    : rep (r) { }
 
   static dim_vector alloc (int n)
   {

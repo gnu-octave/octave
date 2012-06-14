@@ -64,6 +64,10 @@ public:
 
   NDArray (const charNDArray&);
 
+  // For jit support only
+  NDArray (double *sdata, octave_idx_type slen, octave_idx_type *adims, void *arep)
+    : MArray<double> (sdata, slen, adims, arep) { }
+
   NDArray& operator = (const NDArray& a)
     {
       MArray<double>::operator = (a);

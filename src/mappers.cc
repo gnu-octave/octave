@@ -547,7 +547,7 @@ erf (z) = --------- *  | e^(-t^2) dt\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{erfc, erfcx, erfinv}\n\
+@seealso{erfc, erfcx, erfinv, erfcinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -596,7 +596,7 @@ Compute the inverse error function, i.e., @var{y} such that\n\
 @example\n\
 erf (@var{y}) == @var{x}\n\
 @end example\n\
-@seealso{erf, erfc, erfcx}\n\
+@seealso{erf, erfc, erfcinv, erfcx}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -626,6 +626,44 @@ erf (@var{y}) == @var{x}\n\
 %!error erfinv (1, 2)
 */
 
+DEFUN (erfcinv, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} erfcinv (@var{x})\n\
+Compute the inverse complementary error function, i.e., @var{y} such that\n\
+\n\
+@example\n\
+erfc (@var{y}) == @var{x}\n\
+@end example\n\
+@seealso{erfinv, erf, erfc, erfcx}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).erfcinv ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+## middle region
+%!assert (erfc (erfcinv ([1.9 1.3 1 0.6 0.2])), [1.9 1.3 1 0.6 0.2], eps)
+%!assert (erfc (erfcinv (single ([1.9 1.3 1 0.6 0.2]))), single ([1.9 1.3 1 0.6 0.2]), 1e-8)
+## tail region
+%!assert (erfc (erfcinv ([0.001 0.01 1.9999 1.99999])), [0.001 0.01 1.9999 1.99999], eps)
+%!assert (erfc (erfcinv (single ([0.001 0.01 1.9999 1.99999]))), single ([0.001 0.01 1.9999 1.99999]), 1e-8)
+## backward - loss of accuracy
+%!assert (erfcinv (erfc ([-3 -1 -0.4 0.7 1.3 2.8])), [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
+%!assert (erfcinv (erfc (single ([-3 -1 -0.4 0.7 1.3 2.8]))), single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
+## exceptional
+%!assert (erfcinv ([2, 0, -0.1, 2.1]), [-Inf, Inf, NaN, NaN])
+%!error erfcinv (1+2i)
+
+%!error erfcinv ()
+%!error erfcinv (1, 2)
+*/
+
 DEFUN (erfc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
@@ -636,7 +674,7 @@ $1 - {\\rm erf} (z)$.\n\
 @ifnottex\n\
 @w{@code{1 - erf (@var{z})}}.\n\
 @end ifnottex\n\
-@seealso{erfcx, erf, erfinv}\n\
+@seealso{erfcx, erf, erfinv, erfcinv}\n\
 @end deftypefn")
 {
   octave_value retval;

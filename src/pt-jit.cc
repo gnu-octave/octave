@@ -1911,7 +1911,10 @@ jit_convert::visit_index_expression (tree_index_expression& exp)
     fail ("Bad number of arguments in tree_index_expression");
 
   tree_argument_list *arg_list = args.front ();
-  if (arg_list && arg_list->size () != 1)
+  if (! arg_list)
+    fail ("null argument list");
+
+  if (arg_list->size () != 1)
     fail ("Bad number of arguments in arg_list");
 
   tree_expression *tree_object = exp.expression ();

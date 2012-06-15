@@ -596,7 +596,7 @@ Compute the inverse error function, i.e., @var{y} such that\n\
 @example\n\
 erf (@var{y}) == @var{x}\n\
 @end example\n\
-@seealso{erf, erfc, erfcinv, erfcx}\n\
+@seealso{erf, erfc, erfcx, erfcinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -611,10 +611,10 @@ erf (@var{y}) == @var{x}\n\
 /*
 ## middle region
 %!assert (erf (erfinv ([-0.9 -0.3 0 0.4 0.8])), [-0.9 -0.3 0 0.4 0.8], eps)
-%!assert (erf (erfinv (single ([-0.9 -0.3 0 0.4 0.8]))), single ([-0.9 -0.3 0 0.4 0.8]), 1e-8)
+%!assert (erf (erfinv (single ([-0.9 -0.3 0 0.4 0.8]))), single ([-0.9 -0.3 0 0.4 0.8]), eps ("single"))
 ## tail region
 %!assert (erf (erfinv ([-0.999 -0.99 0.9999 0.99999])), [-0.999 -0.99 0.9999 0.99999], eps)
-%!assert (erf (erfinv (single ([-0.999 -0.99 0.9999 0.99999]))), single ([-0.999 -0.99 0.9999 0.99999]), 1e-8)
+%!assert (erf (erfinv (single ([-0.999 -0.99 0.9999 0.99999]))), single ([-0.999 -0.99 0.9999 0.99999]), eps ("single"))
 ## backward - loss of accuracy
 %!assert (erfinv (erf ([-3 -1 -0.4 0.7 1.3 2.8])), [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
 %!assert (erfinv (erf (single ([-3 -1 -0.4 0.7 1.3 2.8]))), single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
@@ -634,7 +634,7 @@ Compute the inverse complementary error function, i.e., @var{y} such that\n\
 @example\n\
 erfc (@var{y}) == @var{x}\n\
 @end example\n\
-@seealso{erfinv, erf, erfc, erfcx}\n\
+@seealso{erfc, erf, erfcx, erfinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -649,10 +649,10 @@ erfc (@var{y}) == @var{x}\n\
 /*
 ## middle region
 %!assert (erfc (erfcinv ([1.9 1.3 1 0.6 0.2])), [1.9 1.3 1 0.6 0.2], eps)
-%!assert (erfc (erfcinv (single ([1.9 1.3 1 0.6 0.2]))), single ([1.9 1.3 1 0.6 0.2]), 1e-8)
+%!assert (erfc (erfcinv (single ([1.9 1.3 1 0.6 0.2]))), single ([1.9 1.3 1 0.6 0.2]), eps ("single"))
 ## tail region
 %!assert (erfc (erfcinv ([0.001 0.01 1.9999 1.99999])), [0.001 0.01 1.9999 1.99999], eps)
-%!assert (erfc (erfcinv (single ([0.001 0.01 1.9999 1.99999]))), single ([0.001 0.01 1.9999 1.99999]), 1e-8)
+%!assert (erfc (erfcinv (single ([0.001 0.01 1.9999 1.99999]))), single ([0.001 0.01 1.9999 1.99999]), eps ("single"))
 ## backward - loss of accuracy
 %!assert (erfcinv (erfc ([-3 -1 -0.4 0.7 1.3 2.8])), [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
 %!assert (erfcinv (erfc (single ([-3 -1 -0.4 0.7 1.3 2.8]))), single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
@@ -674,7 +674,7 @@ $1 - {\\rm erf} (z)$.\n\
 @ifnottex\n\
 @w{@code{1 - erf (@var{z})}}.\n\
 @end ifnottex\n\
-@seealso{erfcx, erf, erfinv, erfcinv}\n\
+@seealso{erfcinv, erfcx, erf, erfinv}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -711,7 +711,7 @@ exp (z^2) * erfc (x)\n\
 @end example\n\
 \n\
 @end ifnottex\n\
-@seealso{erfc, erf, erfinv}\n\
+@seealso{erfc, erf, erfinv, erfcinv}\n\
 @end deftypefn")
 {
   octave_value retval;

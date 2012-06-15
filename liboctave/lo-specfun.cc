@@ -3240,7 +3240,7 @@ static double do_erfcinv (double x, bool refine)
     {  7.784695709041462e-03,  3.224671290700398e-01,
        2.445134137142996e+00,  3.754408661907416e+00 };
 
-  static const double spi2 =  8.862269254527579e-01; // sqrt(pi)/2.
+  static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
   static const double pi = 3.14159265358979323846;
   static const double pbreak = 0.95150;
   double y;
@@ -3274,7 +3274,7 @@ static double do_erfcinv (double x, bool refine)
   if (refine)
     {
       // One iteration of Halley's method gives full precision.
-      double u = (erf(y) - (1-x)) * spi2 * exp (y*y);
+      double u = (erf (y) - (1-x)) * spi2 * exp (y*y);
       y -= u / (1 + y*u);
     }
 

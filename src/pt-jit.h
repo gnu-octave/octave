@@ -2273,6 +2273,8 @@ jit_info
 public:
   jit_info (tree_jit& tjit, tree& tee);
 
+  ~jit_info (void);
+
   bool execute (void) const;
 
   bool match (void) const;
@@ -2283,6 +2285,7 @@ private:
 
   llvm::ExecutionEngine *engine;
   jited_function function;
+  llvm::Function *llvm_function;
 
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;

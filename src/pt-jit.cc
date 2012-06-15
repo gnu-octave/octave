@@ -2820,13 +2820,12 @@ tree_jit::optimize (llvm::Function *fn)
 
 // -------------------- jit_info --------------------
 jit_info::jit_info (tree_jit& tjit, tree& tee)
-  : engine (tjit.get_engine ())
+  : engine (tjit.get_engine ()), llvm_function (0)
 {
-  llvm::Function *fun = 0;
   try
     {
       jit_convert conv (tjit.get_module (), tee);
-      fun = conv.get_function ();
+      llvm_function = conv.get_function ();
       arguments = conv.get_arguments ();
       bounds = conv.get_bounds ();
     }
@@ -2838,22 +2837,28 @@ jit_info::jit_info (tree_jit& tjit, tree& tee)
 #endif
     }
 
-  if (! fun)
+  if (! llvm_function)
     {
       function = 0;
       return;
     }
 
-  tjit.optimize (fun);
+  tjit.optimize (llvm_function);
 
 #ifdef OCTAVE_JIT_DEBUG
   std::cout << "-------------------- optimized llvm ir --------------------\n";
   llvm::raw_os_ostream llvm_cout (std::cout);
-  fun->print (llvm_cout);
+  llvm_function->print (llvm_cout);
   std::cout << std::endl;
 #endif
 
-  function = reinterpret_cast<jited_function>(engine->getPointerToFunction (fun));
+  function = reinterpret_cast<jited_function>(engine->getPointerToFunction (llvm_function));
+}
+
+jit_info::~jit_info (void)
+{
+  if (llvm_function)
+    llvm_function->eraseFromParent ();
 }
 
 bool

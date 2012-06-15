@@ -23,8 +23,6 @@ along with Octave; see the file COPYING.  If not, see
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 
-#define OCTAVE_JIT_DEBUG
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

@@ -135,7 +135,7 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
   elseif (isempty (opts.output))
     cmd = sprintf ("%s %s", opts.binary, gs_opts);
   else
-    cmd = sprintf ("%s %s -sOutputFile=%s", opts.binary, gs_opts, opts.output);
+    cmd = sprintf ("%s %s -sOutputFile=\"%s\"", opts.binary, gs_opts, opts.output);
   endif
   if (! isempty (opts.prepend)
       && any (strcmpi (opts.device, {"pswrite", "ps2write", "pdfwrite"})))

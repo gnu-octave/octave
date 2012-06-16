@@ -32,6 +32,8 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
   opts.device = "";
   opts.epscrop = false;
   opts.antialiasing  = false;
+  opts.antialiasing_textalphabits = 4;,
+  opts.antialiasing_graphicsalphabits = 4;
   opts.resolution = 150;
   opts.papersize = "";
   opts.pageoffset = [0 0];
@@ -70,7 +72,9 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
 
   if (opts.antialiasing && isempty (strfind (opts.device, "write")))
     ## Apply anti-aliasing to all bitmap formats/devices
-    gs_opts = sprintf ("%s -dTextAlphaBits=4 -dGraphicsAlphaBits=4", gs_opts);
+    gs_opts = sprintf ("%s -dTextAlphaBits=%d -dGraphicsAlphaBits=%d",
+                       gs_opts, opts.antialiasing_textalphabits,
+                       opts.antialiasing_graphicsalphabits);
     gs_opts = sprintf ("%s -r%dx%d", gs_opts, [1, 1] * opts.resolution);
   elseif (any (strcmp (opts.device, {"pswrite", "ps2write", "pdfwrite"})))
     gs_opts = sprintf ("%s -dEmbedAllFonts=true", gs_opts);

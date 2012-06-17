@@ -162,7 +162,7 @@ function h = colorbar (varargin)
                   "yliminclude", "off", "zliminclude", "off",
                   "deletefcn", {@deletecolorbar, cax, obj});
 
-    set (cax, "deletefcn", {@resetaxis, obj});
+    set (cax, "deletefcn", {@resetaxis, ax, obj});
 
     addlistener (ax, "clim", {@update_colorbar_clim, hi, vertical});
     addlistener (ax, "plotboxaspectratio", {@update_colorbar_axis, cax, obj});
@@ -195,13 +195,15 @@ function deletecolorbar (h, d, hc, orig_props)
   endif
 endfunction
 
-function resetaxis (h, d, orig_props)
-  if (ishandle (h) && strcmp (get (h, "type"), "axes")
-      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
-      && ishandle (get (h, "axes")))
-     set (get (h, "axes"), "position", orig_props.position, ...
-                           "outerposition", orig_props.outerposition, ...
-                   "activepositionproperty", orig_props.activepositionproperty);
+function resetaxis (cax, d, ax, orig_props)
+  if (ishandle (ax) && strcmp (get (ax, "type"), "axes"))
+    dellistener (ax, "position")
+    units = get (ax, "units");
+    set (ax, "units", orig_props.units)
+    set (ax, "position", orig_props.position, ...
+             "outerposition", orig_props.outerposition, ...
+             "activepositionproperty", orig_props.activepositionproperty);
+    set (ax, "units", units)
   endif
 endfunction
 

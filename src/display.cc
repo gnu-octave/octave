@@ -41,6 +41,23 @@ along with Octave; see the file COPYING.  If not, see
 
 display_info *display_info::instance = 0;
 
+#if defined (HAVE_FRAMEWORK_CARBON) && ! defined (HAVE_CARBON_CGDISPLAYBITSPERPIXEL)
+// FIXME - This will only work for MacOS > 10.5. For earlier versions
+// this code is not needed (use CGDisplayBitsPerPixel instead).
+size_t DisplayBitsPerPixel (CGDirectDisplayID display)
+{
+  CGDisplayModeRef mode = CGDisplayCopyDisplayMode (display);
+  CFStringRef pixelEncoding = CGDisplayModeCopyPixelEncoding (mode);
+
+  if (CFStringCompare (pixelEncoding, CFSTR (IO32BitDirectPixels), 0) == 0)
+    return 32;
+  else if (CFStringCompare (pixelEncoding, CFSTR (IO16BitDirectPixels), 0) == 0)
+    return 16;
+  else 
+    return 8;
+}
+#endif
+
 void
 display_info::init (bool query)
 {
@@ -72,16 +89,21 @@ display_info::init (bool query)
 
       if (display)
         {
+#  if defined (HAVE_CARBON_CGDISPLAYBITSPERPIXEL)
+          // For MacOS < 10.7 use the line below
           dp = CGDisplayBitsPerPixel (display);
+#  else
+          // For MacOS > 10.5 use the line below
+          dp = DisplayBitsPerPixel (display);
+#  endif
 
           ht = CGDisplayPixelsHigh (display);
           wd = CGDisplayPixelsWide (display);
 
           CGSize sz_mm = CGDisplayScreenSize (display);
-
-          // On modern Mac systems (>= 10.5) CGSize is a struct keeping 2
-          // CGFloat values, but the CGFloat typedef is not present on
-          // older systems, so use double instead.
+          // For MacOS >= 10.6, CGSize is a struct keeping 2 CGFloat values,
+          // but the CGFloat typedef is not present on older systems,
+          // so use double instead.
           double ht_mm = sz_mm.height;
           double wd_mm = sz_mm.width;
 

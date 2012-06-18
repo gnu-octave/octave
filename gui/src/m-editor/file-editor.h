@@ -59,6 +59,9 @@ public slots:
   void request_open_file ();
   void request_open_file (QString fileName);
 
+  void handle_entered_debug_mode ();
+  void handle_quit_debug_mode ();
+
   void request_undo ();
   void request_redo ();
   void request_copy ();
@@ -87,6 +90,7 @@ private:
 
   QMenuBar *        _menu_bar;
   QToolBar *        _tool_bar;
+  QMenu *           _debug_menu;
   QAction*          _copy_action;
   QAction*          _cut_action;
   QTabWidget *      _tab_widget;

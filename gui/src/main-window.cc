@@ -207,6 +207,7 @@ void
 main_window::handle_entered_debug_mode ()
 {
   setWindowTitle ("Octave (Debugging)");
+  _file_editor->handle_entered_debug_mode ();
   _debug_menu->setEnabled (true);
 }
 
@@ -214,6 +215,7 @@ void
 main_window::handle_quit_debug_mode ()
 {
   setWindowTitle ("Octave");
+  _file_editor->handle_quit_debug_mode ();
   _debug_menu->setEnabled (false);
 }
 

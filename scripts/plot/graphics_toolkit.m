@@ -18,14 +18,17 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{name} =} graphics_toolkit ()
-## @deftypefnx {Function File} {@var{old_name} =} graphics_toolkit (@var{name})
+## Returns the default graphics toolkit. The default graphics toolkit value
+## is assigned to new figures.
+## @deftypefnx {Function File} {@var{name} =} graphics_toolkit (@var{hlist})
+## Returns the graphics toolkits for the figures with handles @var{hlist}.
+## @deftypefnx {Function File} {} graphics_toolkit (@var{name})
+## Sets the default graphics toolkit to @var{name}.  If the toolkit is not
+## already loaded, it is initialized by calling the function
+## @code{__init_@var{name}__}.
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
-## Query or set the default graphics toolkit to @var{name}.  If the
-## toolkit is not already loaded, it is first initialized by calling the
-## function @code{__init_@var{name}__}.
-##
-## When called with a list of figure handles, @var{hlist}, the graphics
-## toolkit is changed only for the listed figures.
+## Sets the graphics toolkit for the figues with handles @var{hlist} to
+## @var{name}.
 ## @seealso{available_graphics_toolkits}
 ## @end deftypefn
 
@@ -42,7 +45,11 @@ function retval = graphics_toolkit (name, hlist = [])
   if (nargin == 0)
     return;
   elseif (nargin == 1)
-    if (! ischar (name))
+    if (all (isfigure (name)))
+      hlist = name;
+      retval = get (hlist, "__graphics_toolkit__");
+      return
+    elseif (! ischar (name))
       error ("graphics_toolkit: invalid graphics toolkit NAME");
     endif
   elseif (nargin == 2)
@@ -77,7 +84,7 @@ endfunction
 %!   toolkit = graphics_toolkit ();
 %!   assert (get (0, "defaultfigure__graphics_toolkit__"), toolkit);
 %!   graphics_toolkit (hf, "fltk"); 
-%!   assert (get (hf, "__graphics_toolkit__"), "fltk");
+%!   assert (graphics_toolkit (hf), "fltk");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

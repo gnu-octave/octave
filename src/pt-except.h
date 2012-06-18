@@ -137,13 +137,13 @@ private:
   // body of code.
   tree_statement_list *cleanup_code;
 
-  // Comment preceding TRY token.
+  // Comment preceding UNWIND_PROTECT token.
   octave_comment_list *lead_comm;
 
-  // Comment preceding CATCH token.
+  // Comment preceding UNWIND_PROTECT_CLEANUP token.
   octave_comment_list *mid_comm;
 
-  // Comment preceding END_TRY_CATCH token.
+  // Comment preceding END_UNWIND_PROTECT token.
   octave_comment_list *trail_comm;
 
   // No copying!

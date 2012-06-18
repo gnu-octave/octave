@@ -169,7 +169,6 @@ function list = missing_functions ()
   "echodemo",
   "ellipj",
   "ellipke",
-  "erfcinv",
   "errordlg",
   "evalc",
   "exifread",

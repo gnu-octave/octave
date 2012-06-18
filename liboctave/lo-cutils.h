@@ -50,10 +50,6 @@ octave_w32_library_search (HINSTANCE handle, const char *name);
 OCTAVE_API pid_t
 octave_waitpid (pid_t pid, int *status, int options);
 
-OCTAVE_API int
-octave_mkdir_parents (const char *dir, mode_t mode,
-                      int (*make_ancestor) (char const *, char const *, void *));
-
 #ifdef __cplusplus
 }
 #endif

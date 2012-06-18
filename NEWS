@@ -70,13 +70,19 @@ Summary of important user-visible changes for version 3.8:
     functions.  Packages that implement extra colormaps should use these
     commands with PKG_ADD and PKG_DEL statements.
 
+ ** The datevec function has been extended for better Matlab compatibility.
+    It now accepts string inputs in the following numerical formats: 12, 21,
+    22, 26, 29, 31.  This is undocumented, but verifiable, Matlab behavior.
+    In addition, the default for formats which do not specify a date is
+    January 1st of the current year.  The previous default was the current day,
+    month, and year.  This may produce changes in existing scripts.
+
  ** Other new functions added in 3.8.0:
 
-      colorcube   splinefit
-      lines       tetramesh
-      rgbplot     shrinkfaces
-      findfigs
-
+      colorcube   lines         splinefit
+      erfcinv     rgbplot       tetramesh
+      findfigs    shrinkfaces
+      
  ** Deprecated functions.
 
     The following functions were deprecated in Octave 3.4 and have been

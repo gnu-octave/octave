@@ -271,7 +271,7 @@ message identifier.\n\
         }
       else
         {
-          int status = octave_mkdir (dirname, 0777, msg, true);
+          int status = octave_mkdir (dirname, 0777, msg);
 
           if (status < 0)
             {

@@ -688,6 +688,7 @@ public:
       umap_cosh,
       umap_erf,
       umap_erfinv,
+      umap_erfcinv,
       umap_erfc,
       umap_erfcx,
       umap_exp,

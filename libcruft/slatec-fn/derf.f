@@ -69,7 +69,7 @@ C
 C
 C ERF(X) = 1.0 - ERFC(X)  FOR  -1.0 .LE. X .LE. 1.0
 C
-      IF (Y.LE.SQEPS) DERF = 2.0D0*X*X/SQRTPI
+      IF (Y.LE.SQEPS) DERF = 2.0D0*X/SQRTPI
       IF (Y.GT.SQEPS) DERF = X*(1.0D0 + DCSEVL (2.D0*X*X-1.D0,
      1  ERFCS, NTERF))
       RETURN

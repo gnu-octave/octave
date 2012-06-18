@@ -158,6 +158,25 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
+dnl See if the Carbon Framework defines CGDisplayBitsPerPixel.
+dnl
+AC_DEFUN([OCTAVE_CARBON_CGDISPLAYBITSPERPIXEL],
+[AC_CACHE_CHECK([whether CGDisplayBitsPerPixel is defined in the Carbon Framework],
+octave_cv_carbon_cgdisplaybitsperpixel,
+[AC_LANG_PUSH(C++)
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+#include <Carbon/Carbon.h>
+]], [[
+CGDirectDisplayID display = CGMainDisplayID ();
+size_t depth = CGDisplayBitsPerPixel (display);
+]])],
+octave_cv_carbon_cgdisplaybitsperpixel=yes, octave_cv_carbon_cgdisplaybitsperpixel=no)])
+if test $octave_cv_carbon_cgdisplaybitsperpixel = yes; then
+AC_DEFINE(HAVE_CARBON_CGDISPLAYBITSPERPIXEL,1,[Define if Carbon Framework has CGDisplayBitsPerPixel])
+fi
+AC_LANG_POP(C++)
+])
+dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.

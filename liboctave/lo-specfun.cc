@@ -3221,6 +3221,76 @@ float erfinv (float x)
   return do_erfinv (x, false);
 }
 
+static double do_erfcinv (double x, bool refine)
+{
+  // Coefficients of rational approximation.
+  static const double a[] =
+    { -2.806989788730439e+01,  1.562324844726888e+02,
+      -1.951109208597547e+02,  9.783370457507161e+01,
+      -2.168328665628878e+01,  1.772453852905383e+00 };
+  static const double b[] =
+    { -5.447609879822406e+01,  1.615858368580409e+02,
+      -1.556989798598866e+02,  6.680131188771972e+01,
+      -1.328068155288572e+01 };
+  static const double c[] =
+    { -5.504751339936943e-03, -2.279687217114118e-01,
+      -1.697592457770869e+00, -1.802933168781950e+00,
+       3.093354679843505e+00,  2.077595676404383e+00 };
+  static const double d[] =
+    {  7.784695709041462e-03,  3.224671290700398e-01,
+       2.445134137142996e+00,  3.754408661907416e+00 };
+
+  static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
+  static const double pi = 3.14159265358979323846;
+  static const double pbreak = 0.95150;
+  double y;
+
+  // Select case.
+  if (x <= 1+pbreak && x >= 1-pbreak)
+    {
+      // Middle region.
+      const double q = 0.5*(1-x), r = q*q;
+      const double yn = (((((a[0]*r + a[1])*r + a[2])*r + a[3])*r + a[4])*r + a[5])*q;
+      const double yd = ((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1.0;
+      y = yn / yd;
+    }
+  else if (x < 2.0 && x > 0.0)
+    {
+      // Tail region.
+      const double q = x < 1 ? sqrt (-2*log (0.5*x)) : sqrt (-2*log (0.5*(2-x)));
+      const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
+      const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
+      y = yn / yd;
+      if (x < 1-pbreak)
+        y *= -1;
+    }
+  else if (x == 0.0)
+    return octave_Inf;
+  else if (x == 2.0)
+    return -octave_Inf;
+  else
+    return octave_NaN;
+
+  if (refine)
+    {
+      // One iteration of Halley's method gives full precision.
+      double u = (erf (y) - (1-x)) * spi2 * exp (y*y);
+      y -= u / (1 + y*u);
+    }
+
+  return y;
+}
+
+double erfcinv (double x)
+{
+  return do_erfcinv (x, true);
+}
+
+float erfcinv (float x)
+{
+  return do_erfcinv (x, false);
+}
+
 // Implementation based on the Fortran code by W.J.Cody
 // see http://www.netlib.org/specfun/erf.
 // Templatized and simplified workflow.

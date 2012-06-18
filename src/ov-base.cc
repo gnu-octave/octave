@@ -1191,6 +1191,7 @@ octave_base_value::get_umap_name (unary_mapper_t umap)
       "cosh",
       "erf",
       "erfinv",
+      "erfcinv",
       "erfc",
       "exp",
       "expm1",

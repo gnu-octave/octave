@@ -74,8 +74,18 @@
 ## orientation specified.  This options is equivalent to changing
 ## the figure's "paperorientation" property.
 ##
+## @item -TextAlphaBits=@var{n}
+## @itemx -GraphicsAlphaBits=@var{n}
+##   Octave is able to produce output for various printers, bitmaps, and
+## vector formats by using ghostscript.
+## For bitmap and printer output antialiasing is applied using
+## ghostscript's TextAlphaBits and GraphicsAlphaBits options.
+## The default number of bits for each is 4.
+## Allowed values, for @var{N}, are 1, 2, or 4.
+##
 ## @item -d@var{device}
-##   Output device, where @var{device} is one of:
+##   The available output format is specified by the option @var{device},
+##   and is one of:
 ##
 ##   @table @code
 ##   @item ps

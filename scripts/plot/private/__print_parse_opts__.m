@@ -49,6 +49,8 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.pageoffset = [];
   arg_st.ghostscript.resolution = 150;
   arg_st.ghostscript.antialiasing = false;
+  arg_st.ghostscript.antialiasing_textalphabits = 4;
+  arg_st.ghostscript.antialiasing_graphicsalphabits = 4;
   arg_st.loose = false;
   arg_st.lpr_binary = __quote_path__ (__find_binary__ ("lpr"));
   arg_st.name = "";
@@ -118,6 +120,20 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.fig2dev_binary = arg{10:end};
       elseif (strncmp (arg, "-PSTOEDIT:", 9))
         arg_st.pstoedit_binary = arg{10:end};
+      elseif (strncmpi (arg, "-textalphabits=", 15))
+        n = find (arg == "=");
+        if (! isempty (n) && n == numel (arg) - 1 && ismember (arg(end), "124"))
+          arg_st.ghostscript.antialiasing_textalphabits = str2num (arg(end));
+        else
+          error ("print: improper syntax, or value, for TextAlphaBits")
+        endif
+      elseif (strncmpi (arg, "-graphicsalphabits=", 19))
+        n = find (arg == "=");
+        if (! isempty (n) && n == numel (arg) - 1 && ismember (arg(end), "124"))
+          arg_st.ghostscript.antialiasing_graphicsalphabits = str2num (arg(end));
+        else
+          error ("print: improper syntax, or value, for GraphicsAlphaBits")
+        endif
       elseif ((length (arg) > 2) && arg(1:2) == "-G")
         arg_st.ghostscript.binary = file_in_path (getenv ("PATH"), arg(3:end));
         if (isempty (arg_st.ghostscript.binary))

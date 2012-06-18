@@ -1120,6 +1120,7 @@ public:
   MAPPER_FORWARD (cosh)
   MAPPER_FORWARD (erf)
   MAPPER_FORWARD (erfinv)
+  MAPPER_FORWARD (erfcinv)
   MAPPER_FORWARD (erfc)
   MAPPER_FORWARD (erfcx)
   MAPPER_FORWARD (exp)

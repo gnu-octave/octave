@@ -37,7 +37,7 @@ function inv = stdnormal_inv (x)
     error ("stdnormal_inv: X must not be complex");
   endif
 
-  inv = sqrt (2) * erfinv (2 * x - 1);
+  inv = - sqrt (2) * erfcinv (2 * x);
 
 endfunction
 

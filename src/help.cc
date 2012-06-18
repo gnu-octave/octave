@@ -144,14 +144,14 @@ String delimiter.\n\
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} #\n\
 Begin comment character.\n\
-@seealso{%, #@{}\n\
+@seealso{%, #@\\{}\n\
 @end deftypefn"),
 
   pair_type ("%",
     "-*- texinfo -*-\n\
 @deftypefn {Operator} {} %\n\
 Begin comment character.\n\
-@seealso{#, %@{}\n\
+@seealso{#, %@\\{}\n\
 @end deftypefn"),
 
   pair_type ("#{",
@@ -160,7 +160,7 @@ Begin comment character.\n\
 Begin block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{#@{}.\n\
 It is possible to nest block comments.\n\
-@seealso{%@{, #@}, #}\n\
+@seealso{%@\\{, #@\\}, #}\n\
 @end deftypefn"),
 
   pair_type ("%{",
@@ -169,7 +169,7 @@ It is possible to nest block comments.\n\
 Begin block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{%@{}.\n\
 It is possible to nest block comments.\n\
-@seealso{#@{, %@}, %}\n\
+@seealso{#@\\{, %@\\}, %}\n\
 @end deftypefn"),
 
   pair_type ("#}",
@@ -178,7 +178,7 @@ It is possible to nest block comments.\n\
 Close block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{#@}}.\n\
 It is possible to nest block comments.\n\
-@seealso{%@}, #@{, #}\n\
+@seealso{%@\\}, #@\\{, #}\n\
 @end deftypefn"),
 
   pair_type ("%}",
@@ -187,7 +187,7 @@ It is possible to nest block comments.\n\
 Close block comment.  There must be nothing else, other than\n\
 whitespace, in the line both before and after @code{%@}}.\n\
 It is possible to nest block comments.\n\
-@seealso{#@}, %@{, %}\n\
+@seealso{#@\\}, %@\\{, %}\n\
 @end deftypefn"),
 
   pair_type ("...",

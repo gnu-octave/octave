@@ -52,7 +52,8 @@ along with Octave; see the file COPYING.  If not, see
 // For loops are compiled again!
 // if, elseif, and else statements compile again!
 // break and continue now work!
-// Additionally, make check passes using jit.
+//
+// NOTE: Matrix access is currently broken!
 //
 // The octave low level IR is a linear IR, it works by converting everything to
 // calls to jit_functions. This turns expressions like c = a + b into
@@ -1001,6 +1002,11 @@ public:
 
   virtual void pop_variable (void) {}
 
+  virtual void construct_ssa (void)
+  {
+    do_construct_ssa (0, argument_count ());
+  }
+
   virtual bool infer (void) { return false; }
 
   void remove (void);
@@ -1025,6 +1031,10 @@ public:
 
   size_t id (void) const { return mid; }
 protected:
+
+  // Do SSA replacement on arguments in [start, end)
+  void do_construct_ssa (size_t start, size_t end);
+
   std::vector<jit_type *> already_infered;
 private:
   static size_t next_id (bool reset = false)
@@ -1467,8 +1477,8 @@ public:
   jit_assign_base (jit_variable *adest, size_t npred) : jit_instruction (npred),
                                                         mdest (adest) {}
 
-  jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
-    : jit_instruction (arg0, arg1), mdest (adest) {}
+  jit_assign_base (jit_variable *adest, jit_value *arg0)
+    : jit_instruction (arg0), mdest (adest) {}
 
   jit_variable *dest (void) const { return mdest; }
 
@@ -1481,6 +1491,15 @@ public:
   {
     mdest->pop ();
   }
+
+  virtual std::ostream& short_print (std::ostream& os) const
+  {
+    if (type ())
+      jit_print (os, type ()) << ": ";
+
+    dest ()->short_print (os);
+    return os << "#" << id ();
+  }
 private:
   jit_variable *mdest;
 };
@@ -1490,26 +1509,31 @@ jit_assign : public jit_assign_base
 {
 public:
   jit_assign (jit_variable *adest, jit_value *asrc)
-    : jit_assign_base (adest, adest, asrc) {}
+    : jit_assign_base (adest, asrc) {}
 
   jit_instruction *src (void) const
   {
-    return static_cast<jit_instruction *> (argument (1));
+    return static_cast<jit_instruction *> (argument (0));
   }
 
-  virtual void push_variable (void)
+  virtual bool infer (void)
   {
-    dest ()->push (src ());
+    jit_type *stype = src ()->type ();
+    if (stype != type())
+      {
+        stash_type (stype);
+        return true;
+      }
+
+    return false;
   }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
-    return print_indent (os, indent) << *dest () << " = " << *src ();
+    return print_indent (os, indent) << *this << " = " << *src ();
   }
 
   JIT_VALUE_ACCEPT;
-private:
-  jit_variable *mdest;
 };
 
 class
@@ -1543,6 +1567,8 @@ public:
     return inc->branch_llvm (parent ());
   }
 
+  virtual void construct_ssa (void) {}
+
   virtual bool infer (void);
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
@@ -1568,15 +1594,6 @@ public:
       }
 
     return os;
-  }
-
-  virtual std::ostream& short_print (std::ostream& os) const
-  {
-    if (type ())
-      jit_print (os, type ()) << ": ";
-
-    dest ()->short_print (os);
-    return os << "#" << id ();
   }
 
   JIT_VALUE_ACCEPT;

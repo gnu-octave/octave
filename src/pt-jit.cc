@@ -1046,6 +1046,18 @@ jit_instruction::short_print (std::ostream& os) const
   return os << "#" << mid;
 }
 
+void
+jit_instruction::do_construct_ssa (size_t start, size_t end)
+{
+  for (size_t i = start; i < end; ++i)
+    {
+      jit_value *arg = argument (i);
+      jit_variable *var = dynamic_cast<jit_variable *> (arg);
+      if (var)
+        stash_argument (i, var->top ());
+    }
+}
+
 // -------------------- jit_block --------------------
 void
 jit_block::replace_with (jit_value *value)
@@ -1800,9 +1812,7 @@ jit_convert::visit_function_def (tree_function_def&)
 void
 jit_convert::visit_identifier (tree_identifier& ti)
 {
-  const jit_function& fn = jit_typeinfo::grab ();
-  jit_value *decl = get_variable (ti.name ());
-  result = block->append (create<jit_call> (fn, decl));
+  result = get_variable (ti.name ());
 }
 
 void
@@ -2264,18 +2274,7 @@ jit_convert::do_construct_ssa (jit_block& block)
   for (jit_block::iterator iter = block.begin (); iter != block.end (); ++iter)
     {
       jit_instruction *instr = *iter;
-      if (! isa<jit_phi> (instr))
-        {
-          for (size_t i = isa<jit_assign> (instr); i < instr->argument_count ();
-               ++i)
-            {
-              jit_value *arg = instr->argument (i);
-              jit_variable *var = dynamic_cast<jit_variable *> (arg);
-              if (var)
-                instr->stash_argument (i, var->top ());
-            }
-        }
-
+      instr->construct_ssa ();
       instr->push_variable ();
     }
 
@@ -2679,8 +2678,10 @@ jit_convert::convert_llvm::visit (jit_error_check& check)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_assign&)
-{}
+jit_convert::convert_llvm::visit (jit_assign& assign)
+{
+  assign.stash_llvm (assign.src ()->to_llvm ());
+}
 
 void
 jit_convert::convert_llvm::visit (jit_argument&)

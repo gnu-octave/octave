@@ -1317,10 +1317,6 @@ private:
   instruction_list instructions;
   bool malive;
   std::list<jit_block *>::iterator mlocation;
-
-  jit_phi_incomming *use_head;
-  jit_phi_incomming *use_tail;
-  size_t myuse_count;
 };
 
 // keeps track of phi functions that use a block on incomming edges

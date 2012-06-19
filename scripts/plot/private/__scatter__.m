@@ -268,7 +268,8 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
     ## Does gnuplot only support triangles with different vertex colors ?
     ## TODO - Verify gnuplot can only support one color. If RGB triplets
     ##        can be assigned to each vertex, then fix __go_draw_axe__.m
-    gnuplot_hack = numel (x) > 1 && strcmp (toolkit, "gnuplot");
+    gnuplot_hack = (numel (x) > 1 && size(c, 2) == 3
+                    && strcmp (toolkit, "gnuplot"));
     if (ischar (c) || ! isflat || gnuplot_hack)
       if (filled)
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,

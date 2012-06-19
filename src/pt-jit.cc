@@ -1618,7 +1618,7 @@ jit_convert::visit_binary_expression (tree_binary_expression& be)
   jit_call *call = block->append (create<jit_call> (fn, lhsv, rhsv));
 
   jit_block *normal = create<jit_block> (block->name ());
-  block->append (create<jit_check_error> (call, normal, final_block));
+  block->append (create<jit_error_check> (call, normal, final_block));
   add_block (normal);
   block = normal;
   result = call;
@@ -1875,7 +1875,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 
           jit_block *next = create<jit_block> (block->name ());
           add_block (next);
-          block->append (create<jit_check_error> (check, next, final_block));
+          block->append (create<jit_error_check> (check, next, final_block));
           block = next;
 
           jit_block *body = create<jit_block> (i == 0 ? "if_body"
@@ -1940,7 +1940,7 @@ jit_convert::visit_index_expression (tree_index_expression& exp)
   block->append (call);
 
   jit_block *normal = create<jit_block> (block->name ());
-  block->append (create<jit_check_error> (call, normal, final_block));
+  block->append (create<jit_error_check> (call, normal, final_block));
   add_block (normal);
   block = normal;
   result = call;
@@ -2350,7 +2350,7 @@ jit_convert::remove_dead ()
       jit_block *b = *biter;
       if (b->alive ())
         {
-          // FIXME: A special case for jit_check_error, if we generalize to
+          // FIXME: A special case for jit_error_check, if we generalize to
           // we will need to change!
           jit_terminator *term = b->terminator ();
           if (term && term->successor_count () == 2 && ! term->alive (0))
@@ -2689,7 +2689,7 @@ jit_convert::convert_llvm::visit (jit_variable&)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_check_error& check)
+jit_convert::convert_llvm::visit (jit_error_check& check)
 {
   llvm::Value *cond = jit_typeinfo::insert_error_check ();
   llvm::Value *br = builder.CreateCondBr (cond, check.successor_llvm (0),

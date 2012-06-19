@@ -709,7 +709,7 @@ private:
   JIT_METH(store_argument);                     \
   JIT_METH(phi);                                \
   JIT_METH(variable);                           \
-  JIT_METH(check_error);                        \
+  JIT_METH(error_check);                        \
   JIT_METH(assign)                              \
   JIT_METH(argument)
 
@@ -1782,10 +1782,10 @@ private:
 // checks error_state, if error_state is false then goto the normal branche,
 // otherwise goto the error branch
 class
-jit_check_error : public jit_terminator
+jit_error_check : public jit_terminator
 {
 public:
-  jit_check_error (jit_call *acheck_for, jit_block *normal, jit_block *error)
+  jit_error_check (jit_call *acheck_for, jit_block *normal, jit_block *error)
     : jit_terminator (2, error, normal, acheck_for) {}
 
   jit_call *check_for (void) const

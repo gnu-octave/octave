@@ -700,8 +700,8 @@ private:
 
 #define JIT_VISIT_IR_NOTEMPLATE                 \
   JIT_METH(block);                              \
-  JIT_METH(break);                              \
-  JIT_METH(cond_break);                         \
+  JIT_METH(branch);                             \
+  JIT_METH(cond_branch);                        \
   JIT_METH(call);                               \
   JIT_METH(extract_argument);                   \
   JIT_METH(store_argument);                     \
@@ -1660,16 +1660,16 @@ private:
 };
 
 class
-jit_break : public jit_terminator
+jit_branch : public jit_terminator
 {
 public:
-  jit_break (jit_block *succ) : jit_terminator (1, succ) {}
+  jit_branch (jit_block *succ) : jit_terminator (1, succ) {}
 
   virtual size_t successor_count (void) const { return 1; }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
-    print_indent (os, indent) << "break: ";
+    print_indent (os, indent) << "branch: ";
     return print_successor (os);
   }
 
@@ -1677,10 +1677,10 @@ public:
 };
 
 class
-jit_cond_break : public jit_terminator
+jit_cond_branch : public jit_terminator
 {
 public:
-  jit_cond_break (jit_value *c, jit_block *ctrue, jit_block *cfalse)
+  jit_cond_branch (jit_value *c, jit_block *ctrue, jit_block *cfalse)
     : jit_terminator (2, ctrue, cfalse, c) {}
 
   jit_value *cond (void) const { return argument (2); }
@@ -1699,7 +1699,7 @@ public:
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
-    print_indent (os, indent) << "cond_break: ";
+    print_indent (os, indent) << "cond_branch: ";
     print_cond (os) << ", ";
     print_successor (os, 0) << ", ";
     return print_successor (os, 1);

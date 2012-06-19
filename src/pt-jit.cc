@@ -1506,7 +1506,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
   assert (breaks.empty ());
   assert (continues.empty ());
 
-  block->append (create<jit_break> (final_block));
+  block->append (create<jit_branch> (final_block));
   add_block (final_block);
   
   for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
@@ -1711,7 +1711,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   
   jit_value *check = block->append (create<jit_call> (jit_typeinfo::for_check,
                                                       control, iterator));
-  block->append (create<jit_cond_break> (check, body, tail));
+  block->append (create<jit_cond_branch> (check, body, tail));
   block = body;
 
   // compute the syntactical iterator
@@ -1738,7 +1738,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   add_block (check_block);
 
   if (! breaking)
-    block->append (create<jit_break> (check_block));
+    block->append (create<jit_branch> (check_block));
   finish_breaks (check_block, continues);
 
   block = check_block;
@@ -1749,7 +1749,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   block->append (create<jit_assign> (iterator, iter_inc));
   check = block->append (create<jit_call> (jit_typeinfo::for_check, control,
                                            iterator));
-  block->append (create<jit_cond_break> (check, body, tail));
+  block->append (create<jit_cond_branch> (check, body, tail));
 
   // breaks will go to our tail
   add_block (tail);
@@ -1870,7 +1870,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
           jit_block *body = create<jit_block> (i == 0 ? "if_body" : "ifelse_body");
           add_block (body);
 
-          jit_instruction *br = create<jit_cond_break> (check, body,
+          jit_instruction *br = create<jit_cond_branch> (check, body,
                                                         entry_blocks[i + 1]);
           block->append (br);
           block = body;
@@ -1885,7 +1885,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
       else
         {
           ++num_incomming;
-          block->append (create<jit_break> (tail));
+          block->append (create<jit_branch> (tail));
         }
     }
 
@@ -2343,7 +2343,7 @@ jit_convert::remove_dead ()
             {
               jit_block *succ = term->successor (1);
               term->remove ();
-              jit_break *abreak = b->append (create<jit_break> (succ));
+              jit_branch *abreak = b->append (create<jit_branch> (succ));
               abreak->infer ();
             }
 
@@ -2373,7 +2373,7 @@ jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
        ++iter)
     {
       jit_block *b = *iter;
-      b->append (create<jit_break> (dest));
+      b->append (create<jit_branch> (dest));
     }
 }
 
@@ -2605,13 +2605,13 @@ jit_convert::convert_llvm::visit (jit_block& b)
 }
 
 void
-jit_convert::convert_llvm::visit (jit_break& b)
+jit_convert::convert_llvm::visit (jit_branch& b)
 {
   b.stash_llvm (builder.CreateBr (b.successor_llvm ()));
 }
 
 void
-jit_convert::convert_llvm::visit (jit_cond_break& cb)
+jit_convert::convert_llvm::visit (jit_cond_branch& cb)
 {
   llvm::Value *cond = cb.cond_llvm ();
   llvm::Value *br;

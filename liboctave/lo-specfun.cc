@@ -3152,7 +3152,7 @@ FloatComplex rc_log1p (float x)
 // This algorithm is due to P. J. Acklam.
 // See http://home.online.no/~pjacklam/notes/invnorm/
 // The rational approximation has relative accuracy 1.15e-9 in the whole region.
-// For doubles, it is refined by a single step of Higham's 3rd order method.
+// For doubles, it is refined by a single step of Halley's 3rd order method.
 // For single precision, the accuracy is already OK, so we skip it to get
 // faster evaluation.
 
@@ -3175,7 +3175,7 @@ static double do_erfinv (double x, bool refine)
     {  7.784695709041462e-03,  3.224671290700398e-01,
        2.445134137142996e+00,  3.754408661907416e+00 };
 
-  static const double spi2 =  8.862269254527579e-01; // sqrt(pi)/2.
+  static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
   static const double pbreak = 0.95150;
   double ax = fabs (x), y;
 
@@ -3204,7 +3204,7 @@ static double do_erfinv (double x, bool refine)
   if (refine)
     {
       // One iteration of Halley's method gives full precision.
-      double u = (erf(y) - x) * spi2 * exp (y*y);
+      double u = (erf (y) - x) * spi2 * exp (y*y);
       y -= u / (1 + y*u);
     }
 

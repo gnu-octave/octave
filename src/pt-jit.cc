@@ -1615,13 +1615,7 @@ jit_convert::visit_binary_expression (tree_binary_expression& be)
   jit_value *rhsv = visit (rhs);
 
   const jit_function& fn = jit_typeinfo::binary_op (be.op_type ());
-  jit_call *call = block->append (create<jit_call> (fn, lhsv, rhsv));
-
-  jit_block *normal = create<jit_block> (block->name ());
-  block->append (create<jit_error_check> (call, normal, final_block));
-  add_block (normal);
-  block = normal;
-  result = call;
+  result = create_checked (fn, lhsv, rhsv);
 }
 
 void
@@ -1869,14 +1863,9 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
         {
           tree_expression *expr = tic->condition ();
           jit_value *cond = visit (expr);
-          jit_call *check = create<jit_call> (&jit_typeinfo::logically_true,
-                                              cond);
+          jit_call *check = create_checked (&jit_typeinfo::logically_true,
+                                            cond);
           block->append (check);
-
-          jit_block *next = create<jit_block> (block->name ());
-          add_block (next);
-          block->append (create<jit_error_check> (check, next, final_block));
-          block = next;
 
           jit_block *body = create<jit_block> (i == 0 ? "if_body"
                                                : "ifelse_body");
@@ -1935,15 +1924,7 @@ jit_convert::visit_index_expression (tree_index_expression& exp)
   tree_expression *arg0 = arg_list->front ();
   jit_value *index = visit (arg0);
 
-  jit_call *call = create<jit_call> (jit_typeinfo::paren_subsref, object,
-                                     index);
-  block->append (call);
-
-  jit_block *normal = create<jit_block> (block->name ());
-  block->append (create<jit_error_check> (call, normal, final_block));
-  add_block (normal);
-  block = normal;
-  result = call;
+  result = create_checked (jit_typeinfo::paren_subsref, object, index);
 }
 
 void

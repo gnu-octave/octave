@@ -2061,6 +2061,21 @@ public:
     track_value (ret);
     return ret;
   }
+
+  template <typename ARG0, typename ARG1>
+  jit_call *create_checked (const ARG0& arg0, const ARG1& arg1)
+  {
+    jit_call *ret = create<jit_call> (arg0, arg1);
+    return create_checked_impl (ret);
+  }
+
+  template <typename ARG0, typename ARG1, typename ARG2>
+  jit_call *create_checked (const ARG0& arg0, const ARG1& arg1,
+                            const ARG2& arg2)
+  {
+    jit_call *ret = create<jit_call> (arg0, arg1, arg2);
+    return create_checked_impl (ret);
+  }
 private:
   typedef std::list<jit_block *> block_list;
   typedef block_list::iterator block_iterator;
@@ -2096,6 +2111,18 @@ private:
   {
     blocks.push_back (ablock);
     ablock->stash_location (--blocks.end ());
+  }
+
+  jit_call *create_checked_impl (jit_call *ret)
+  {
+    block->append (ret);
+
+    jit_block *normal = create<jit_block> (block->name ());
+    block->append (create<jit_error_check> (ret, normal, final_block));
+    add_block (normal);
+    block = normal;
+
+    return ret;
   }
 
   jit_variable *get_variable (const std::string& vname);

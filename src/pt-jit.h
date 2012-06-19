@@ -62,16 +62,16 @@ along with Octave; see the file COPYING.  If not, see
 //
 //
 // TODO:
-// 1. Support error cases
-// 2. Support some simple matrix case (and cleanup Octave low level IR)
-// 3. Fix memory leaks in JIT
-// 4. Cleanup/documentation
-// 5. ...
+// 1. Support some simple matrix case (and cleanup Octave low level IR)
+// 2. Function calls
+// 3. Cleanup/documentation
+// 4. ...
 // ---------------------------------------------------------
 
 
-// we don't want to include llvm headers here, as they require __STDC_LIMIT_MACROS
-// and __STDC_CONSTANT_MACROS be defined in the entire compilation unit
+// we don't want to include llvm headers here, as they require
+// __STDC_LIMIT_MACROS and __STDC_CONSTANT_MACROS be defined in the entire
+// compilation unit
 namespace llvm
 {
   class Value;
@@ -152,7 +152,7 @@ public:
           }
         else
           ilist->use_head = sthis;
-        
+
         ilist->use_tail = sthis;
         ++ilist->muse_count;
       }
@@ -172,7 +172,7 @@ private:
         else
           // we are the use_head
           ilist->use_head = mnext;
-        
+
         if (mnext)
           mnext->mprev = mprev;
         else
@@ -203,8 +203,8 @@ struct
 jit_range
 {
   jit_range (const Range& from) : base (from.base ()), limit (from.limit ()),
-    inc (from.inc ()), nelem (from.nelem ())
-    {}
+                                  inc (from.inc ()), nelem (from.nelem ())
+  {}
 
   operator Range () const
   {
@@ -425,7 +425,8 @@ public:
 
   static jit_type *get_scalar (void) { return instance->scalar; }
 
-  static llvm::Type *get_scalar_llvm (void) { return instance->scalar->to_llvm (); }
+  static llvm::Type *get_scalar_llvm (void)
+  { return instance->scalar->to_llvm (); }
 
   static jit_type *get_range (void) { return instance->range; }
 
@@ -435,7 +436,8 @@ public:
 
   static jit_type *get_index (void) { return instance->index; }
 
-  static llvm::Type *get_index_llvm (void) { return instance->index->to_llvm (); }
+  static llvm::Type *get_index_llvm (void)
+  { return instance->index->to_llvm (); }
 
   static jit_type *type_of (const octave_value& ov)
   {
@@ -550,7 +552,7 @@ private:
   }
 
   jit_type *do_type_of (const octave_value &ov) const;
-  
+
   const jit_function& do_binary_op (int op) const
   {
     assert (static_cast<size_t>(op) < binary_ops.size ());
@@ -573,10 +575,10 @@ private:
   {
     return do_cast (to).get_overload (from);
   }
-  
+
   jit_type *new_type (const std::string& name, jit_type *parent,
                       llvm::Type *llvm_type);
-                      
+
 
   void add_print (jit_type *ty, void *call);
 
@@ -740,8 +742,8 @@ class jit_const;
 typedef jit_const<double, jit_typeinfo::get_scalar> jit_const_scalar;
 typedef jit_const<octave_idx_type, jit_typeinfo::get_index> jit_const_index;
 
-typedef jit_const<std::string, jit_typeinfo::get_string, const std::string&, true>
-jit_const_string;
+typedef jit_const<std::string, jit_typeinfo::get_string, const std::string&,
+                  true> jit_const_string;
 typedef jit_const<jit_range, jit_typeinfo::get_range, const jit_range&>
 jit_const_range;
 
@@ -753,10 +755,10 @@ jit_value : public jit_internal_list<jit_value, jit_use>
 {
 public:
   jit_value (void) : llvm_value (0), ty (0), mlast_use (0),
-		     min_worklist (false) {}
+                     min_worklist (false) {}
 
   virtual ~jit_value (void);
-  
+
   bool in_worklist (void) const
   {
     return min_worklist;
@@ -892,14 +894,14 @@ public:
   }
 
   jit_instruction (jit_value *arg0)
-    : already_infered (1, reinterpret_cast<jit_type *>(0)), marguments (1), 
+    : already_infered (1, reinterpret_cast<jit_type *>(0)), marguments (1),
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
   }
 
   jit_instruction (jit_value *arg0, jit_value *arg1)
-    : already_infered (2, reinterpret_cast<jit_type *>(0)), marguments (2), 
+    : already_infered (2, reinterpret_cast<jit_type *>(0)), marguments (2),
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
@@ -907,7 +909,7 @@ public:
   }
 
   jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2)
-    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (3), 
+    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (3),
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
@@ -917,7 +919,7 @@ public:
 
   jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2,
                    jit_value *arg3)
-    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (4), 
+    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (4),
       mid (next_id ()), mparent (0)
   {
     stash_argument (0, arg0);
@@ -956,7 +958,7 @@ public:
   std::ostream& print_argument (std::ostream& os, size_t i) const
   {
     if (argument (i))
-      return argument (i)->short_print (os); 
+      return argument (i)->short_print (os);
     else
       return os << "NULL";
   }
@@ -1100,7 +1102,8 @@ private:
 class jit_phi_incomming;
 
 class
-jit_block : public jit_value, public jit_internal_list<jit_block, jit_phi_incomming>
+jit_block : public jit_value, public jit_internal_list<jit_block,
+                                                       jit_phi_incomming>
 {
   typedef jit_internal_list<jit_block, jit_phi_incomming> ILIST_T;
 public:
@@ -1111,8 +1114,8 @@ public:
   typedef std::set<jit_block *> df_set;
   typedef df_set::const_iterator df_iterator;
 
-  jit_block (const std::string& aname) : mvisit_count (0), mid (NO_ID), idom (0),
-                                         mname (aname), malive (false)
+  jit_block (const std::string& aname) : mvisit_count (0), mid (NO_ID),
+                                         idom (0), mname (aname), malive (false)
   {}
 
   virtual void replace_with (jit_value *value);
@@ -1305,7 +1308,8 @@ private:
   jit_block *idom_intersect (jit_block *b);
 
   template <typename func_type0, typename func_type1>
-  void do_visit_dom (size_t visit_count, func_type0 inorder, func_type1 postorder);
+  void do_visit_dom (size_t visit_count, func_type0 inorder,
+                     func_type1 postorder);
 
   static const size_t NO_ID = static_cast<size_t> (-1);
   size_t mvisit_count;
@@ -1371,7 +1375,8 @@ private:
 
 template <typename func_type0, typename func_type1>
 void
-jit_block::do_visit_dom (size_t visit_count, func_type0 inorder, func_type1 postorder)
+jit_block::do_visit_dom (size_t visit_count, func_type0 inorder,
+                         func_type1 postorder)
 {
   if (mvisit_count > visit_count)
     return;
@@ -1717,7 +1722,8 @@ public:
   {}
 
   jit_call (const jit_function& (*afunction) (void),
-            jit_value *arg0) : jit_instruction (arg0), mfunction (afunction ()) {}
+            jit_value *arg0) : jit_instruction (arg0),
+                               mfunction (afunction ()) {}
 
   jit_call (const jit_function& afunction,
             jit_value *arg0, jit_value *arg1) : jit_instruction (arg0, arg1),
@@ -1734,7 +1740,7 @@ public:
   jit_call (const jit_function& (*afunction) (void),
             jit_value *arg0, jit_value *arg1, jit_value *arg2, jit_value *arg3)
     : jit_instruction (arg0, arg1, arg2, arg3), mfunction (afunction ()) {}
-                                                
+
 
   const jit_function& function (void) const { return mfunction; }
 
@@ -2095,7 +2101,7 @@ private:
   jit_variable *get_variable (const std::string& vname);
 
   jit_value *do_assign (const std::string& lhs, jit_value *rhs, bool print);
-                        
+
 
   jit_value *visit (tree *tee) { return visit (*tee); }
 
@@ -2105,8 +2111,8 @@ private:
   {
     if (! instr->in_worklist ())
       {
-	instr->stash_in_worklist (true);
-	worklist.push_back (instr);
+        instr->stash_in_worklist (true);
+        worklist.push_back (instr);
       }
   }
 

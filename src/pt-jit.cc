@@ -210,7 +210,7 @@ octave_jit_ginvalid_index (void)
 {
   try
     {
-      gripe_invalid_index ();      
+      gripe_invalid_index ();
     }
   catch (const octave_execution_exception&)
     {
@@ -357,7 +357,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   llvm::Type *bool_t = llvm::Type::getInt1Ty (context);
   llvm::Type *string_t = llvm::Type::getInt8Ty (context);
   string_t = string_t->getPointerTo ();
-  llvm::Type *index_t = llvm::Type::getIntNTy (context, sizeof(octave_idx_type) * 8);
+  llvm::Type *index_t = llvm::Type::getIntNTy (context,
+                                               sizeof(octave_idx_type) * 8);
 
   llvm::StructType *range_t = llvm::StructType::create (context, "range");
   std::vector<llvm::Type *> range_contents (4, scalar_t);
@@ -392,15 +393,16 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   lerror_state = new llvm::GlobalVariable (*module, bool_t, false,
                                            llvm::GlobalValue::ExternalLinkage,
                                            0, "error_state");
-  engine->addGlobalMapping (lerror_state, reinterpret_cast<void *> (&error_state));
+  engine->addGlobalMapping (lerror_state,
+                            reinterpret_cast<void *> (&error_state));
 
   // any with anything is an any op
   llvm::Function *fn;
   llvm::Type *binary_op_type
     = llvm::Type::getIntNTy (context, sizeof (octave_value::binary_op));
   llvm::Function *any_binary = create_function ("octave_jit_binary_any_any",
-                                                any->to_llvm (), binary_op_type,
-                                                any->to_llvm (), any->to_llvm ());
+                                                any_t, binary_op_type,
+                                                any_t, any_t);
   engine->addGlobalMapping (any_binary,
                             reinterpret_cast<void*>(&octave_jit_binary_any_any));
 
@@ -434,7 +436,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   // grab any
   fn = create_function ("octave_jit_grab_any", any, any);
-                        
   engine->addGlobalMapping (fn, reinterpret_cast<void*>(&octave_jit_grab_any));
   grab_fn.add_overload (fn, false, any, any);
   grab_fn.stash_name ("grab");
@@ -443,7 +444,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   llvm::Function *print_matrix = create_function ("octave_jit_print_matrix",
                                                   void_t,
                                                   matrix_t->getPointerTo ());
-  engine->addGlobalMapping (print_matrix, reinterpret_cast<void*>(&octave_jit_print_matrix));
+  engine->addGlobalMapping (print_matrix,
+                            reinterpret_cast<void*>(&octave_jit_print_matrix));
 
   fn = create_function ("octave_jit_grab_matrix", matrix, matrix);
   llvm::BasicBlock *body = llvm::BasicBlock::Create (context, "body", fn);
@@ -470,13 +472,14 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   // release any
   fn = create_function ("octave_jit_release_any", void_t, any_t);
-  engine->addGlobalMapping (fn, reinterpret_cast<void*>(&octave_jit_release_any));
+  engine->addGlobalMapping (fn,
+                            reinterpret_cast<void*>(&octave_jit_release_any));
   release_fn.add_overload (fn, false, 0, any);
   release_fn.stash_name ("release");
 
   // release matrix
-  llvm::Function *delete_mat = create_function ("octave_jit_delete_matrix", void_t,
-                                                matrix_t);
+  llvm::Function *delete_mat = create_function ("octave_jit_delete_matrix",
+                                                void_t, matrix_t);
   engine->addGlobalMapping (delete_mat,
                             reinterpret_cast<void*> (&octave_jit_delete_matrix));
 
@@ -539,8 +542,10 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   body = llvm::BasicBlock::Create (context, "body", fn);
   builder.SetInsertPoint (body);
   {
-    llvm::BasicBlock *warn_block = llvm::BasicBlock::Create (context, "warn", fn);
-    llvm::BasicBlock *normal_block = llvm::BasicBlock::Create (context, "normal", fn);
+    llvm::BasicBlock *warn_block = llvm::BasicBlock::Create (context, "warn",
+                                                             fn);
+    llvm::BasicBlock *normal_block = llvm::BasicBlock::Create (context,
+                                                               "normal", fn);
 
     llvm::Value *zero = llvm::ConstantFP::get (scalar_t, 0);
     llvm::Value *check = builder.CreateFCmpUEQ (zero, ++fn->arg_begin ());
@@ -551,7 +556,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateBr (normal_block);
 
     builder.SetInsertPoint (normal_block);
-    llvm::Value *ret = builder.CreateFDiv (fn->arg_begin (), ++fn->arg_begin ());
+    llvm::Value *ret = builder.CreateFDiv (fn->arg_begin (),
+                                           ++fn->arg_begin ());
     builder.CreateRet (ret);
 
     jit_function::overload ol (fn, true, scalar, scalar, scalar);
@@ -562,7 +568,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   // ldiv is the same as div with the operators reversed
   llvm::Function *div = fn;
-  fn = create_function ("octave_jit_ldiv_scalar_scalar", scalar, scalar, scalar);
+  fn = create_function ("octave_jit_ldiv_scalar_scalar", scalar, scalar,
+                        scalar);
   body = llvm::BasicBlock::Create (context, "body", fn);
   builder.SetInsertPoint (body);
   {
@@ -636,18 +643,21 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // logically true
   logically_true_fn.stash_name ("logically_true");
 
-  llvm::Function *gripe_nantl = create_function ("octave_jit_gripe_nan_to_logical_conversion", void_t);
+  llvm::Function *gripe_nantl
+    = create_function ("octave_jit_gripe_nan_to_logical_conversion", void_t);
   engine->addGlobalMapping (gripe_nantl, reinterpret_cast<void *> (&octave_jit_gripe_nan_to_logical_conversion));
-                            
 
   fn = create_function ("octave_jit_logically_true_scalar", boolean, scalar);
   body = llvm::BasicBlock::Create (context, "body", fn);
   builder.SetInsertPoint (body);
   {
-    llvm::BasicBlock *error_block = llvm::BasicBlock::Create (context, "error", fn);
-    llvm::BasicBlock *normal_block = llvm::BasicBlock::Create (context, "normal", fn);
+    llvm::BasicBlock *error_block = llvm::BasicBlock::Create (context, "error",
+                                                              fn);
+    llvm::BasicBlock *normal_block = llvm::BasicBlock::Create (context,
+                                                               "normal", fn);
 
-    llvm::Value *check = builder.CreateFCmpUNE (fn->arg_begin (), fn->arg_begin ());
+    llvm::Value *check = builder.CreateFCmpUNE (fn->arg_begin (),
+                                                fn->arg_begin ());
     builder.CreateCondBr (check, error_block, normal_block);
 
     builder.SetInsertPoint (error_block);
@@ -673,7 +683,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // FIXME: May be benificial to implement all in LLVM
   make_range_fn.stash_name ("make_range");
   llvm::Function *compute_nelem
-    = create_function ("octave_jit_compute_nelem", index, scalar, scalar, scalar);
+    = create_function ("octave_jit_compute_nelem", index, scalar, scalar,
+                       scalar);
   engine->addGlobalMapping (compute_nelem,
                             reinterpret_cast<void*> (&octave_jit_compute_nelem));
 
@@ -701,7 +712,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   make_range_fn.add_overload (fn, false, range, scalar, scalar, scalar);
 
   // paren_subsref
-  llvm::Function *ginvalid_index = create_function ("gipe_invalid_index", void_t);
+  llvm::Function *ginvalid_index = create_function ("gipe_invalid_index",
+                                                    void_t);
   engine->addGlobalMapping (ginvalid_index,
                             reinterpret_cast<void*> (&octave_jit_ginvalid_index));
 
@@ -721,7 +733,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
       ione = one;
     else
       ione = llvm::ConstantInt::get (int_t, 1);
-            
 
     llvm::Value *szero = llvm::ConstantFP::get (scalar_t, 0);
 
@@ -1387,7 +1398,7 @@ jit_phi::infer (void)
       if (inc->branch_alive (p))
         infered = jit_typeinfo::join (infered, argument_type (i));
     }
-  
+
   if (infered != type ())
     {
       stash_type (infered);
@@ -1508,9 +1519,8 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
 
   block->append (create<jit_branch> (final_block));
   add_block (final_block);
-  
+
   for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
-       
     {
       jit_variable *var = iter->second;
       const std::string& name = var->name ();
@@ -1556,7 +1566,8 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
   // more interesting
   for (jit_block::iterator iter = entry_block->begin ();
        iter != entry_block->end (); ++iter)
-    if (jit_extract_argument *extract = dynamic_cast<jit_extract_argument *> (*iter))
+    if (jit_extract_argument *extract
+        = dynamic_cast<jit_extract_argument *> (*iter))
       arguments.push_back (std::make_pair (extract->name (), true));
 
   convert_llvm to_llvm (*this);
@@ -1636,7 +1647,6 @@ jit_convert::visit_colon_expression (tree_colon_expression& expr)
 
   result = block->append (create<jit_call> (jit_typeinfo::make_range, base,
                                             limit, increment));
-                                            
 }
 
 void
@@ -1708,7 +1718,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   jit_call *init_iter = create<jit_call> (jit_typeinfo::for_init, control);
   block->append (init_iter);
   block->append (create<jit_assign> (iterator, init_iter));
-  
+
   jit_value *check = block->append (create<jit_call> (jit_typeinfo::for_check,
                                                       control, iterator));
   block->append (create<jit_cond_branch> (check, body, tail));
@@ -1718,7 +1728,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   jit_call *idx_rhs = create<jit_call> (jit_typeinfo::for_index, control, iterator);
   block->append (idx_rhs);
   do_assign (lhs_name, idx_rhs, false);
-  
+
   // do loop
   tree_statement_list *pt_body = cmd.body ();
   pt_body->accept (*this);
@@ -1859,7 +1869,8 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
         {
           tree_expression *expr = tic->condition ();
           jit_value *cond = visit (expr);
-          jit_call *check = create<jit_call> (&jit_typeinfo::logically_true, cond);
+          jit_call *check = create<jit_call> (&jit_typeinfo::logically_true,
+                                              cond);
           block->append (check);
 
           jit_block *next = create<jit_block> (block->name ());
@@ -1867,7 +1878,8 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
           block->append (create<jit_check_error> (check, next, final_block));
           block = next;
 
-          jit_block *body = create<jit_block> (i == 0 ? "if_body" : "ifelse_body");
+          jit_block *body = create<jit_block> (i == 0 ? "if_body"
+                                               : "ifelse_body");
           add_block (body);
 
           jit_instruction *br = create<jit_cond_branch> (check, body,
@@ -1923,7 +1935,8 @@ jit_convert::visit_index_expression (tree_index_expression& exp)
   tree_expression *arg0 = arg_list->front ();
   jit_value *index = visit (arg0);
 
-  jit_call *call = create<jit_call> (jit_typeinfo::paren_subsref, object, index);
+  jit_call *call = create<jit_call> (jit_typeinfo::paren_subsref, object,
+                                     index);
   block->append (call);
 
   jit_block *normal = create<jit_block> (block->name ());
@@ -2231,7 +2244,8 @@ jit_convert::construct_ssa (void)
       jit_block::df_set visited, added_phi;
       std::list<jit_block *> ssa_worklist;
       iter->second->use_blocks (visited);
-      ssa_worklist.insert (ssa_worklist.begin (), visited.begin (), visited.end ());
+      ssa_worklist.insert (ssa_worklist.begin (), visited.begin (),
+                           visited.end ());
 
       while (ssa_worklist.size ())
         {
@@ -2446,7 +2460,8 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
       for (biter = blocks.begin (); biter != blocks.end (); ++biter)
         {
           jit_block *jblock = *biter;
-          llvm::BasicBlock *block = llvm::BasicBlock::Create (context, jblock->name (),
+          llvm::BasicBlock *block = llvm::BasicBlock::Create (context,
+                                                              jblock->name (),
                                                               function);
           jblock->stash_llvm (block);
         }
@@ -2615,7 +2630,8 @@ jit_convert::convert_llvm::visit (jit_cond_branch& cb)
 {
   llvm::Value *cond = cb.cond_llvm ();
   llvm::Value *br;
-  br = builder.CreateCondBr (cond, cb.successor_llvm (0), cb.successor_llvm (1));
+  br = builder.CreateCondBr (cond, cb.successor_llvm (0),
+                             cb.successor_llvm (1));
   cb.stash_llvm (br);
 }
 
@@ -2852,7 +2868,8 @@ jit_info::jit_info (tree_jit& tjit, tree& tee)
   std::cout << std::endl;
 #endif
 
-  function = reinterpret_cast<jited_function>(engine->getPointerToFunction (llvm_function));
+  void *void_fn = engine->getPointerToFunction (llvm_function);
+  function = reinterpret_cast<jited_function> (void_fn);
 }
 
 jit_info::~jit_info (void)

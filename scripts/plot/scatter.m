@@ -91,6 +91,14 @@ endfunction
 %! clf
 %! x = randn (100, 1);
 %! y = randn (100, 1);
+%! c = x .* y;
+%! scatter (x, y, 20, c, "filled");
+%! title ('Scatter with colors');
+
+%!demo
+%! clf;
+%! x = randn (100, 1);
+%! y = randn (100, 1);
 %! scatter (x, y, [], sqrt (x.^2 + y.^2));
 
 %!demo

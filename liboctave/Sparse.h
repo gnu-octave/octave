@@ -86,18 +86,13 @@ protected:
           c[i] = 0;
       }
 
-    SparseRep (octave_idx_type nr, octave_idx_type nc) : d (0), r (0), c (new octave_idx_type [nc+1]), nzmx (0),
-      nrows (nr), ncols (nc), count (1)
-      {
-        for (octave_idx_type i = 0; i < nc + 1; i++)
-          c[i] = 0;
-      }
-
-    SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz) : d (new T [nz]),
-      r (new octave_idx_type [nz]), c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
+    SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz = 0)
+      : d (new T [nz]), r (new octave_idx_type [nz]),
+      c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
       ncols (nc), count (1)
       {
-        for (octave_idx_type i = 0; i < nc + 1; i++)
+        c[nc] = nz;
+        for (octave_idx_type i = 0; i < nc; i++)
           c[i] = 0;
       }
 

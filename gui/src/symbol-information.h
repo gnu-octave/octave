@@ -123,7 +123,7 @@ typedef struct symbol_information
       _value = QString ("\'%1\'").arg (ov.string_value ().c_str ());
     else if (ov.is_dq_string ())
       _value = QString ("\"%1\"").arg (ov.string_value ().c_str ());
-    else if (ov.is_real_scalar ())
+    else if (ov.is_real_scalar () && ! ov.is_bool_type ())
       _value = QString ("%1").arg (ov.scalar_value ());
     else if (ov.is_complex_scalar ())
       _value = QString ("%1 + %2i").arg (ov.scalar_value ())
@@ -132,14 +132,18 @@ typedef struct symbol_information
       _value =  QString ("%1 : %2 : %3").arg (ov.range_value ().base ())
                                         .arg (ov.range_value ().inc ())
                                         .arg (ov.range_value ().limit ());
-    else if (ov.is_matrix_type())
+    else if (ov.is_matrix_type ())
       _value = QString ("%1x%2").arg (ov.rows ())
                                 .arg (ov.columns ());
-    else if (ov.is_cell())
+    else if (ov.is_cell ())
       _value = QString ("%1x%2").arg (ov.rows ())
                                 .arg (ov.columns ());
-    else if (ov.is_bool_type () && !ov.is_matrix_type())
-      _value = ov.bool_value () ? "true" : "false";
+    else if (ov.is_bool_type ())
+      _value = ov.bool_value () ? QString ("true") : QString ("false");
+    else if (ov.is_function_handle ())
+      _value = QString ("FIXME: function handle found"); // See code for func2str for a possible solution
+    else if (ov.is_inline_function ())
+      _value = QString ("FIXME: inline function found"); // See code for formula for a possible solution
     else
       _value = QString ("<Type not recognized>");
 

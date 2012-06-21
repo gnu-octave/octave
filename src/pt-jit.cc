@@ -1336,7 +1336,12 @@ jit_block::maybe_split (jit_convert& convert, jit_block *asuccessor)
       term->stash_argument (idx, split);
       jit_branch *br = split->append (convert.create<jit_branch> (asuccessor));
       replace_in_phi (asuccessor, split);
-      br->infer ();
+
+      if (alive ())
+        {
+          split->mark_alive ();
+          br->infer ();
+        }
 
       return split;
     }

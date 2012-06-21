@@ -4284,7 +4284,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
-  color = "none";
+  color = color_values ("white");
   xcolor = color_values ("black");
   ycolor = color_values ("black");
   zcolor = color_values ("black");

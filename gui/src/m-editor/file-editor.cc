@@ -353,7 +353,7 @@ file_editor::construct ()
   _cut_action->setShortcutContext               (Qt::WindowShortcut);
   paste_action->setShortcut                     (QKeySequence::Paste);
   paste_action->setShortcutContext              (Qt::WindowShortcut);
-  run_action->setShortcut                       (Qt::Key_F5);
+  run_action->setShortcut                       (Qt::SHIFT + Qt::Key_F5);
   run_action->setShortcutContext                (Qt::WindowShortcut);
   next_bookmark_action->setShortcut             (Qt::Key_F2);
   next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);

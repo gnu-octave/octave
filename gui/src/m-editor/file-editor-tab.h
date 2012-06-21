@@ -32,7 +32,7 @@ public:
   bool copy_available ();
 
 public slots:
-  void new_title(bool modified);
+  void update_window_title(bool modified);
   void handle_copy_available(bool enableCopy);
   void handle_margin_clicked (int line, int margin, Qt::KeyboardModifiers state);
   void comment_selected_text ();

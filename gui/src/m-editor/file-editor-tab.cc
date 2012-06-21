@@ -79,14 +79,14 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
 
   // connect modified signal
   connect (_edit_area, SIGNAL (modificationChanged (bool)),
-           this, SLOT (new_title (bool)));
+           this, SLOT (update_window_title (bool)));
   connect (_edit_area, SIGNAL (copyAvailable (bool)),
            this, SLOT (handle_copy_available (bool)));
   connect (&_file_system_watcher, SIGNAL (fileChanged (QString)),
            this, SLOT (file_has_changed (QString)));
 
   _file_name = "";
-  new_title (false);
+  update_window_title (false);
 }
 
 bool
@@ -180,7 +180,7 @@ file_editor_tab::do_comment_selected_text (bool comment)
 }
 
 void
-file_editor_tab::new_title(bool modified)
+file_editor_tab::update_window_title(bool modified)
 {
   QString title(_file_name);
   if ( !_long_title )
@@ -371,7 +371,7 @@ file_editor_tab::load_file (QString fileName)
   update_tracked_file ();
 
 
-  new_title (false); // window title (no modification)
+  update_window_title (false); // window title (no modification)
   _edit_area->setModified (false); // loaded file is not modified yet
 }
 
@@ -384,7 +384,7 @@ file_editor_tab::new_file ()
     }
 
   set_file_name (UNNAMED_FILE);
-  new_title (false); // window title (no modification)
+  update_window_title (false); // window title (no modification)
   _edit_area->setText ("");
   _edit_area->setModified (false); // new file is not modified yet
 }
@@ -403,6 +403,9 @@ file_editor_tab::save_file (QString saveFileName)
       return save_file_as();
     }
 
+  QStringList watched_files = _file_system_watcher.files();
+  _file_system_watcher.removePaths(watched_files);
+
   // open the file for writing
   QFile file (saveFileName);
   if (!file.open (QFile::WriteOnly))
@@ -410,6 +413,7 @@ file_editor_tab::save_file (QString saveFileName)
       QMessageBox::warning (this, tr ("Octave Editor"),
                             tr ("Could not open file %1 for write:\n%2.").
                             arg (saveFileName).arg (file.errorString ()));
+      _file_system_watcher.addPaths (watched_files);
       return false;
     }
 
@@ -418,9 +422,12 @@ file_editor_tab::save_file (QString saveFileName)
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << _edit_area->text ();
   QApplication::restoreOverrideCursor ();
-  set_file_name (saveFileName);  // save file name for later use
-  new_title (false);      // set the window title to actual file name (not modified)
+  _file_name = saveFileName; // save file name for later use
+  update_window_title (false);      // set the window title to actual file name (not modified)
   _edit_area->setModified (false); // files is save -> not modified
+  file.close();
+
+  _file_system_watcher.addPaths (watched_files);
   return true;
 }
 
@@ -501,7 +508,7 @@ file_editor_tab::file_has_changed (QString fileName)
           if (!save_file_as ())
             {
               set_file_name (UNNAMED_FILE);
-              new_title (true); // window title (no modification)
+              update_window_title (true); // window title (no modification)
               set_modified (true);
               update_tracked_file ();
             }

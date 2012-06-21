@@ -336,35 +336,35 @@ file_editor::construct ()
 
   // short cuts
   new_action->setShortcut                       (QKeySequence::New);
-  new_action->setShortcutContext                (Qt::WidgetShortcut);
+  new_action->setShortcutContext                (Qt::WindowShortcut);
   open_action->setShortcut                      (QKeySequence::Open);
-  open_action->setShortcutContext               (Qt::WidgetShortcut);
+  open_action->setShortcutContext               (Qt::WindowShortcut);
   save_action->setShortcut                      (QKeySequence::Save);
-  save_action->setShortcutContext               (Qt::WidgetShortcut);
+  save_action->setShortcutContext               (Qt::WindowShortcut);
   save_as_action->setShortcut                   (QKeySequence::SaveAs);
-  save_as_action->setShortcutContext            (Qt::WidgetShortcut);
+  save_as_action->setShortcutContext            (Qt::WindowShortcut);
   undo_action->setShortcut                      (QKeySequence::Undo);
-  undo_action->setShortcutContext               (Qt::WidgetShortcut);
+  undo_action->setShortcutContext               (Qt::WindowShortcut);
   redo_action->setShortcut                      (QKeySequence::Redo);
-  redo_action->setShortcutContext               (Qt::WidgetShortcut);
+  redo_action->setShortcutContext               (Qt::WindowShortcut);
   _copy_action->setShortcut                     (QKeySequence::Copy);
-  _copy_action->setShortcutContext              (Qt::WidgetShortcut);
+  _copy_action->setShortcutContext              (Qt::WindowShortcut);
   _cut_action->setShortcut                      (QKeySequence::Cut);
-  _cut_action->setShortcutContext               (Qt::WidgetShortcut);
+  _cut_action->setShortcutContext               (Qt::WindowShortcut);
   paste_action->setShortcut                     (QKeySequence::Paste);
-  paste_action->setShortcutContext              (Qt::WidgetShortcut);
+  paste_action->setShortcutContext              (Qt::WindowShortcut);
   run_action->setShortcut                       (Qt::Key_F5);
-  run_action->setShortcutContext                (Qt::WidgetShortcut);
+  run_action->setShortcutContext                (Qt::WindowShortcut);
   next_bookmark_action->setShortcut             (Qt::Key_F2);
-  next_bookmark_action->setShortcutContext      (Qt::WidgetShortcut);
+  next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);
   previous_bookmark_action->setShortcut         (Qt::SHIFT + Qt::Key_F2);
-  previous_bookmark_action->setShortcutContext  (Qt::WidgetShortcut);
+  previous_bookmark_action->setShortcutContext  (Qt::WindowShortcut);
   toggle_bookmark_action->setShortcut           (Qt::Key_F7);
-  toggle_bookmark_action->setShortcutContext    (Qt::WidgetShortcut);
+  toggle_bookmark_action->setShortcutContext    (Qt::WindowShortcut);
   comment_selection_action->setShortcut         (Qt::CTRL + Qt::Key_R);
-  comment_selection_action->setShortcutContext  (Qt::WidgetShortcut);
+  comment_selection_action->setShortcutContext  (Qt::WindowShortcut);
   uncomment_selection_action->setShortcut       (Qt::CTRL + Qt::Key_T);
-  uncomment_selection_action->setShortcutContext(Qt::WidgetShortcut);
+  uncomment_selection_action->setShortcutContext(Qt::WindowShortcut);
 
   // toolbar
   _tool_bar->addAction (new_action);

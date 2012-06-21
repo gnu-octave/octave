@@ -132,12 +132,14 @@ typedef struct symbol_information
       _value =  QString ("%1 : %2 : %3").arg (ov.range_value ().base ())
                                         .arg (ov.range_value ().inc ())
                                         .arg (ov.range_value ().limit ());
-    else if (ov.is_real_matrix ())
+    else if (ov.is_matrix_type())
       _value = QString ("%1x%2").arg (ov.rows ())
                                 .arg (ov.columns ());
-    else if (ov.is_complex_matrix ())
+    else if (ov.is_cell())
       _value = QString ("%1x%2").arg (ov.rows ())
                                 .arg (ov.columns ());
+    else if (ov.is_bool_type () && !ov.is_matrix_type())
+      _value = ov.bool_value () ? "true" : "false";
     else
       _value = QString ("<Type not recognized>");
 

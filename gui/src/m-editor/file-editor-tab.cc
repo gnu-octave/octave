@@ -404,7 +404,8 @@ file_editor_tab::save_file (QString saveFileName)
     }
 
   QStringList watched_files = _file_system_watcher.files();
-  _file_system_watcher.removePaths(watched_files);
+  if (!watched_files.isEmpty ())
+    _file_system_watcher.removePaths(watched_files);
 
   // open the file for writing
   QFile file (saveFileName);
@@ -427,7 +428,8 @@ file_editor_tab::save_file (QString saveFileName)
   _edit_area->setModified (false); // files is save -> not modified
   file.close();
 
-  _file_system_watcher.addPaths (watched_files);
+  if (!watched_files.isEmpty ())
+    _file_system_watcher.addPaths (watched_files);
   return true;
 }
 

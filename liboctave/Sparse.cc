@@ -1246,7 +1246,8 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
           copy_or_memcpy (nz - ubi, tmp.data () + ubi, xdata () + lbi);
           copy_or_memcpy (nz - ubi, tmp.ridx () + ubi, xridx () + lbi);
           copy_or_memcpy (lb, tmp.cidx () + 1, cidx () + 1);
-          mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1, ubi - lbi);
+          mx_inline_sub (nc - ub, xcidx () + lb + 1,
+                         tmp.cidx () + ub + 1, ubi - lbi);
         }
       else
         *this = index (idx_i, idx_j.complement (nc));
@@ -2733,6 +2734,13 @@ Sparse<T>::array_value () const
 bug #35570:
 
 %!assert (speye (3,1)(3:-1:1), sparse ([0; 0; 1]))
+
+## Test removing columns (bug #36656)
+
+%!test
+%! s = sparse (magic (5));
+%! s(:,2:4) = [];
+%! assert (s, sparse (magic (5)(:, [1,5])));
 
 */
 

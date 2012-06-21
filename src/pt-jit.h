@@ -87,6 +87,7 @@ namespace llvm
   class Twine;
   class GlobalVariable;
   class TerminatorInst;
+  class PHINode;
 }
 
 class octave_base_value;
@@ -732,6 +733,8 @@ JIT_VISIT_IR_NOTEMPLATE
 
 #undef JIT_METH
 
+class jit_convert;
+
 // ABCs which aren't included in  JIT_VISIT_IR_ALL
 class jit_instruction;
 class jit_terminator;
@@ -800,6 +803,8 @@ public:
   {
     mlast_use = alast_use;
   }
+
+  virtual bool needs_release (void) const { return false; }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const = 0;
 
@@ -1124,11 +1129,16 @@ public:
   typedef std::set<jit_block *> df_set;
   typedef df_set::const_iterator df_iterator;
 
-  jit_block (const std::string& aname) : mvisit_count (0), mid (NO_ID),
-                                         idom (0), mname (aname), malive (false)
+  static const size_t NO_ID = static_cast<size_t> (-1);
+
+  jit_block (const std::string& aname, size_t avisit_count = 0)
+    : mvisit_count (avisit_count), mid (NO_ID), idom (0), mname (aname),
+      malive (false)
   {}
 
   virtual void replace_with (jit_value *value);
+
+  void replace_in_phi (jit_block *ablock, jit_block *with);
 
   // we have a new internal list, but we want to stay compatable with jit_value
   jit_use *first_use (void) const { return jit_value::first_use (); }
@@ -1161,7 +1171,17 @@ public:
 
   jit_instruction *insert_before (iterator loc, jit_instruction *instr);
 
+  jit_instruction *insert_before (jit_instruction *loc, jit_instruction *instr)
+  {
+    return insert_before (loc->location (), instr);
+  }
+
   jit_instruction *insert_after (iterator loc, jit_instruction *instr);
+
+  jit_instruction *insert_after (jit_instruction *loc, jit_instruction *instr)
+  {
+    return insert_after (loc->location (), instr);
+  }
 
   iterator remove (iterator iter)
   {
@@ -1175,10 +1195,6 @@ public:
 
   // is the jump from pred alive?
   bool branch_alive (jit_block *asucc) const;
-
-  llvm::BasicBlock *branch_llvm (size_t idx) const;
-
-  llvm::BasicBlock *branch_llvm (jit_block *succ) const;
 
   jit_block *successor (size_t i) const;
 
@@ -1286,6 +1302,14 @@ public:
     return os;
   }
 
+  // ...
+  jit_block *maybe_split (jit_convert& convert, jit_block *asuccessor);
+
+  jit_block *maybe_split (jit_convert& convert, jit_block& asuccessor)
+  {
+    return maybe_split (convert, &asuccessor);
+  }
+
   // print dominator infomration
   std::ostream& print_dom (std::ostream& os) const;
 
@@ -1321,7 +1345,6 @@ private:
   void do_visit_dom (size_t visit_count, func_type0 inorder,
                      func_type1 postorder);
 
-  static const size_t NO_ID = static_cast<size_t> (-1);
   size_t mvisit_count;
   size_t mid;
   jit_block *idom;
@@ -1338,7 +1361,9 @@ class
 jit_phi_incomming : public jit_internal_node<jit_block, jit_phi_incomming>
 {
 public:
-  jit_phi_incomming (void) {}
+  jit_phi_incomming (void) : muser (0) {}
+
+  jit_phi_incomming (jit_phi *auser) : muser (auser) {}
 
   jit_phi_incomming (const jit_phi_incomming& use) : jit_internal_node ()
   {
@@ -1348,8 +1373,15 @@ public:
   jit_phi_incomming& operator= (const jit_phi_incomming& use)
   {
     stash_value (use.value ());
+    muser = use.muser;
     return *this;
   }
+
+  jit_phi *user (void) const { return muser; }
+
+  jit_block *user_parent (void) const;
+private:
+  jit_phi *muser;
 };
 
 // allow regular function pointers as well as pointers to members
@@ -1365,6 +1397,16 @@ public:
   }
 private:
   func_type function;
+};
+
+template <>
+class jit_block_callback<int>
+{
+public:
+  jit_block_callback (int) {}
+
+  void operator() (jit_block&)
+  {}
 };
 
 template <>
@@ -1511,9 +1553,9 @@ public:
   jit_assign (jit_variable *adest, jit_value *asrc)
     : jit_assign_base (adest, asrc) {}
 
-  jit_instruction *src (void) const
+  jit_value *src (void) const
   {
-    return static_cast<jit_instruction *> (argument (0));
+    return argument (0);
   }
 
   virtual bool infer (void)
@@ -1552,7 +1594,7 @@ public:
   void add_incomming (jit_block *from, jit_value *value)
   {
     push_argument (value);
-    mincomming.push_back (jit_phi_incomming ());
+    mincomming.push_back (jit_phi_incomming (this));
     mincomming[mincomming.size () - 1].stash_value (from);
   }
 
@@ -1563,8 +1605,7 @@ public:
 
   llvm::BasicBlock *incomming_llvm (size_t i) const
   {
-    jit_block *inc = incomming (i);
-    return inc->branch_llvm (parent ());
+    return incomming (i)->to_llvm ();
   }
 
   virtual void construct_ssa (void) {}
@@ -1595,6 +1636,8 @@ public:
 
     return os;
   }
+
+  llvm::PHINode *to_llvm (void) const;
 
   JIT_VALUE_ACCEPT;
 private:
@@ -1645,9 +1688,6 @@ public:
   }
 
   size_t successor_index (const jit_block *asuccessor) const;
-
-  // create a merge block along the given edge
-  void create_merge (llvm::Function *function, jit_block *asuccessor);
 
   std::ostream& print_successor (std::ostream& os, size_t idx = 0) const
   {
@@ -1769,6 +1809,11 @@ public:
   const jit_function::overload& overload (void) const
   {
     return mfunction.get_overload (argument_types ());
+  }
+
+  virtual bool needs_release (void) const
+  {
+    return type () && jit_typeinfo::get_release (type ()).function;
   }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
@@ -2093,10 +2138,26 @@ public:
     jit_call *ret = create<jit_call> (arg0, arg1, arg2);
     return create_checked_impl (ret);
   }
-private:
+
   typedef std::list<jit_block *> block_list;
   typedef block_list::iterator block_iterator;
 
+  void append (jit_block *ablock);
+
+  void insert_before (block_iterator iter, jit_block *ablock);
+
+  void insert_before (jit_block *loc, jit_block *ablock)
+  {
+    insert_before (loc->location (), ablock);
+  }
+
+  void insert_after (block_iterator iter, jit_block *ablock);
+
+  void insert_after (jit_block *loc, jit_block *ablock)
+  {
+    insert_after (loc->location (), ablock);
+  }
+private:
   std::vector<std::pair<std::string, bool> > arguments;
   type_bound_vector bounds;
 
@@ -2124,19 +2185,13 @@ private:
   typedef std::map<std::string, jit_variable *> vmap_t;
   vmap_t vmap;
 
-  void add_block (jit_block *ablock)
-  {
-    blocks.push_back (ablock);
-    ablock->stash_location (--blocks.end ());
-  }
-
   jit_call *create_checked_impl (jit_call *ret)
   {
     block->append (ret);
 
     jit_block *normal = create<jit_block> (block->name ());
     block->append (create<jit_error_check> (ret, normal, final_block));
-    add_block (normal);
+    append (normal);
     block = normal;
 
     return ret;
@@ -2185,6 +2240,10 @@ private:
 
   void place_releases (void);
 
+  void simplify_phi (void);
+
+  void simplify_phi (jit_phi& phi);
+
   void print_blocks (const std::string& header)
   {
     std::cout << "-------------------- " << header << " --------------------\n";
@@ -2215,13 +2274,25 @@ private:
 
   void finish_breaks (jit_block *dest, const block_list& lst);
 
-  struct release_placer
-  {
-    release_placer (jit_convert& aconvert) : convert (aconvert) {}
+  typedef std::set<jit_instruction *> instr_set;
 
-    jit_convert& convert;
+  // compute per block information about temporaries
+  class
+  compute_temp
+  {
+  public:
+    compute_temp (jit_convert& aconvert);
 
     void operator() (jit_block& block);
+
+    instr_set &temp_out (jit_block& b)
+    {
+      return mtemp_out[b.id ()];
+    }
+  private:
+    jit_convert& convert;
+    std::vector<instr_set> mtemp_out;
+    bool changed;
   };
 
   // this case is much simpler, just convert from the jit ir to llvm
@@ -2246,7 +2317,7 @@ private:
     // name -> llvm argument
     std::map<std::string, llvm::Value *> arguments;
 
-    void finish_phi (jit_instruction *phi);
+    void finish_phi (jit_phi *phi);
 
     void visit (jit_value *jvalue)
     {

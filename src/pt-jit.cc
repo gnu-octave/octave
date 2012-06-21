@@ -137,7 +137,7 @@ extern "C" octave_idx_type
 octave_jit_compute_nelem (double base, double limit, double inc)
 {
   Range rng = Range (base, limit, inc);
-  return rng.nelem (); 
+  return rng.nelem ();
 }
 
 extern "C" void
@@ -222,7 +222,6 @@ extern "C" void
 octave_jit_gindex_range (int nd, int dim, octave_idx_type iext,
                          octave_idx_type ext)
 {
-  std::cout << "gindex_range\n";
   try
     {
       gripe_index_out_of_range (nd, dim, iext, ext);
@@ -1074,6 +1073,20 @@ jit_block::replace_with (jit_value *value)
     }
 }
 
+void
+jit_block::replace_in_phi (jit_block *ablock, jit_block *with)
+{
+  jit_phi_incomming *node = ILIST_T::first_use ();
+  while (node)
+    {
+      jit_phi_incomming *prev = node;
+      node = node->next ();
+
+      if (prev->user_parent () == ablock)
+        prev->stash_value (with);
+    }
+}
+
 jit_block *
 jit_block::maybe_merge ()
 {
@@ -1199,18 +1212,6 @@ jit_block::successor_count (void) const
 }
 
 llvm::BasicBlock *
-jit_block::branch_llvm (size_t idx) const
-{
-  return terminator ()->branch_llvm (idx);
-}
-
-llvm::BasicBlock *
-jit_block::branch_llvm (jit_block *succ) const
-{
-  return terminator ()->branch_llvm (succ);
-}
-
-llvm::BasicBlock *
 jit_block::to_llvm (void) const
 {
   return llvm::cast<llvm::BasicBlock> (llvm_value);
@@ -1322,6 +1323,27 @@ jit_block::pop_all (void)
     }
 }
 
+jit_block *
+jit_block::maybe_split (jit_convert& convert, jit_block *asuccessor)
+{
+  if (successor_count () > 1)
+    {
+      jit_terminator *term = terminator ();
+      size_t idx = term->successor_index (asuccessor);
+      jit_block *split = convert.create<jit_block> ("phi_split", mvisit_count);
+
+      convert.insert_after (this, split);
+      term->stash_argument (idx, split);
+      jit_branch *br = split->append (convert.create<jit_branch> (asuccessor));
+      replace_in_phi (asuccessor, split);
+      br->infer ();
+
+      return split;
+    }
+
+  return this;
+}
+
 void
 jit_block::create_dom_tree (size_t visit_count)
 {
@@ -1353,6 +1375,12 @@ jit_block::idom_intersect (jit_block *b)
 
   return i;
 }
+
+// -------------------- jit_phi_incomming --------------------
+
+jit_block *
+jit_phi_incomming::user_parent (void) const
+{ return muser->parent (); }
 
 // -------------------- jit_phi --------------------
 bool
@@ -1420,6 +1448,12 @@ jit_phi::infer (void)
   return false;
 }
 
+llvm::PHINode *
+jit_phi::to_llvm (void) const
+{
+  return llvm::cast<llvm::PHINode> (jit_value::to_llvm ());
+}
+
 // -------------------- jit_terminator --------------------
 size_t
 jit_terminator::successor_index (const jit_block *asuccessor) const
@@ -1430,31 +1464,6 @@ jit_terminator::successor_index (const jit_block *asuccessor) const
       return i;
 
   panic_impossible ();
-}
-
-void
-jit_terminator::create_merge (llvm::Function *function, jit_block *asuccessor)
-{
-  size_t idx = successor_index (asuccessor);
-  if (! mbranch_llvm[idx] && successor_count () > 1)
-    {
-      assert (parent ());
-      assert (parent_llvm ());
-      llvm::BasicBlock *merge = llvm::BasicBlock::Create (context, "phi_merge",
-                                                          function,
-                                                          parent_llvm ());
-
-      // fix the predecessor jump if it has been created
-      if (has_llvm ())
-        {
-          llvm::TerminatorInst *branch = to_llvm ();
-          branch->setSuccessor (idx, merge);
-        }
-
-      llvm::IRBuilder<> temp (merge);
-      temp.CreateBr (successor_llvm (idx));
-      mbranch_llvm[idx] = merge;
-    }
 }
 
 bool
@@ -1519,7 +1528,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
 
   entry_block = create<jit_block> ("body");
   final_block = create<jit_block> ("final");
-  add_block (entry_block);
+  append (entry_block);
   entry_block->mark_alive ();
   block = entry_block;
   visit (tee);
@@ -1530,7 +1539,7 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
   assert (continues.empty ());
 
   block->append (create<jit_branch> (final_block));
-  add_block (final_block);
+  append (final_block);
 
   for (vmap_t::iterator iter = vmap.begin (); iter != vmap.end (); ++iter)
     {
@@ -1566,6 +1575,8 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
 
   remove_dead ();
   merge_blocks ();
+  simplify_phi ();
+  final_block->label ();
   place_releases ();
 
 #ifdef OCTAVE_JIT_DEBUG
@@ -1715,7 +1726,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   vmap[iter_name] = iterator;
 
   jit_block *body = create<jit_block> ("for_body");
-  add_block (body);
+  append (body);
 
   jit_block *tail = create<jit_block> ("for_tail");
 
@@ -1744,14 +1755,14 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
       // WTF are you doing user? Every branch was a continue, why did you have
       // a loop??? Users are silly people...
       finish_breaks (tail, breaks);
-      add_block (tail);
+      append (tail);
       block = tail;
       return;
     }
 
   // check our condition, continues jump to this block
   jit_block *check_block = create<jit_block> ("for_check");
-  add_block (check_block);
+  append (check_block);
 
   if (! breaking)
     block->append (create<jit_branch> (check_block));
@@ -1768,7 +1779,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   block->append (create<jit_cond_branch> (check, body, tail));
 
   // breaks will go to our tail
-  add_block (tail);
+  append (tail);
   finish_breaks (tail, breaks);
   block = tail;
 }
@@ -1867,7 +1878,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
       assert (block);
 
       if (i) // the first block is prev_block, so it has already been added
-        add_block (entry_blocks[i]);
+        append (entry_blocks[i]);
 
       if (! tic->is_else_clause ())
         {
@@ -1879,7 +1890,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 
           jit_block *body = create<jit_block> (i == 0 ? "if_body"
                                                : "ifelse_body");
-          add_block (body);
+          append (body);
 
           jit_instruction *br = create<jit_cond_branch> (check, body,
                                                         entry_blocks[i + 1]);
@@ -1902,7 +1913,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 
   if (num_incomming || ! last_else)
     {
-      add_block (tail);
+      append (tail);
       block = tail;
     }
   else
@@ -2127,6 +2138,27 @@ void
 jit_convert::visit_do_until_command (tree_do_until_command&)
 {
   fail ();
+}
+
+void
+jit_convert::append (jit_block *ablock)
+{
+  blocks.push_back (ablock);
+  ablock->stash_location (--blocks.end ());
+}
+
+void
+jit_convert::insert_before (block_iterator iter, jit_block *ablock)
+{
+  iter = blocks.insert (iter, ablock);
+  ablock->stash_location (iter);
+}
+
+void
+jit_convert::insert_after (block_iterator iter, jit_block *ablock)
+{
+  ++iter;
+  insert_before (iter, ablock);
 }
 
 jit_variable *
@@ -2356,8 +2388,46 @@ jit_convert::remove_dead ()
 void
 jit_convert::place_releases (void)
 {
-  release_placer placer (*this);
-  entry_block->visit_dom (placer, &jit_block::pop_all);
+  compute_temp tinfo (*this);
+}
+
+void
+jit_convert::simplify_phi (void)
+{
+  for (block_list::iterator biter = blocks.begin (); biter != blocks.end ();
+       ++biter)
+    {
+      jit_block &ablock = **biter;
+      for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ()
+             && isa<jit_phi> (*iter); ++iter)
+        simplify_phi (*static_cast<jit_phi *> (*iter));
+    }
+}
+
+void
+jit_convert::simplify_phi (jit_phi& phi)
+{
+  jit_block& pblock = *phi.parent ();
+  const jit_function& cast_fn = jit_typeinfo::cast (phi.type ());
+  jit_variable *dest = phi.dest ();
+  for (size_t i = 0; i < phi.argument_count (); ++i)
+    {
+      jit_value *arg = phi.argument (i);
+      if (arg->type () != phi.type ())
+        {
+          jit_block *pred = phi.incomming (i);
+          jit_block *split = pred->maybe_split (*this, pblock);
+          jit_terminator *term = split->terminator ();
+          jit_instruction *cast = create<jit_call> (cast_fn, arg);
+          jit_assign *assign = create<jit_assign> (dest, cast);
+
+          split->insert_before (term, cast);
+          split->insert_before (term, assign);
+          cast->infer ();
+          assign->infer ();
+          phi.stash_argument (i, assign);
+        }
+    }
 }
 
 void
@@ -2371,38 +2441,76 @@ jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
     }
 }
 
-// -------------------- jit_convert::release_placer --------------------
-void
-jit_convert::release_placer::operator() (jit_block& block)
+// -------------------- jit_convert::compute_temp --------------------
+jit_convert::compute_temp::compute_temp (jit_convert& aconvert)
+  : convert (aconvert), mtemp_out (aconvert.final_block->id () + 1)
 {
-  for (jit_block::iterator iter = block.begin (); iter != block.end (); ++iter)
+  block_list& blocks = convert.blocks;
+
+  // initialze mtemp_out
+  for (block_list::iterator biter = blocks.begin (); biter != blocks.end ();
+       ++biter)
     {
-      jit_instruction *instr = *iter;
-      instr->stash_last_use (instr);
-
-      for (size_t i = 0; i < instr->argument_count (); ++i)
+      jit_block& block = **biter;
+      instr_set& tout = temp_out (block);
+      for (jit_block::iterator iter = block.begin (); iter != block.end ();
+           ++iter)
         {
-          jit_value *arg = instr->argument (i);
-          assert (arg);
-          arg->stash_last_use (instr);
-        }
+          jit_instruction *instr = *iter;
 
-      jit_assign *assign = dynamic_cast<jit_assign *> (instr);
-      if (assign && assign->dest ()->has_top ())
+          // check for temporaries that require release and live across
+          // multiple blocks
+          if (instr->needs_release ()
+              && instr->use_count () == 1
+              && instr->first_use ()->user_parent () != &block)
+            tout.insert (instr);
+
+          if (isa<jit_call> (instr))
+            {
+              // place releases for temporary arguments
+              for (size_t i = 0; i < instr->argument_count (); ++i)
+                {
+                  jit_value *arg = instr->argument (i);
+                  if (arg->needs_release ())
+                    {
+                      jit_call *release
+                        = convert.create<jit_call> (&jit_typeinfo::release,
+                                                    arg);
+                      release->infer ();
+                      block.insert_after (iter, release);
+                      ++iter;
+                    }
+                }
+            }
+        }
+    }
+
+  do
+    {
+      changed = false;
+      convert.entry_block->visit_dom (*this, 0);
+    }
+  while (changed);
+}
+
+void
+jit_convert::compute_temp::operator() (jit_block& block)
+{
+  instr_set& tout = temp_out (block);
+  for (jit_use *use = block.first_use (); use; use = use->next ())
+    {
+      jit_block& pred = *use->user_parent ();
+      instr_set& pred_tout = temp_out (pred);
+      for (instr_set::iterator iter = pred_tout.begin ();
+           iter != pred_tout.end (); ++ iter)
         {
-          jit_variable *var = assign->dest ();
-          jit_instruction *last_use = var->last_use ();
-          jit_call *release = convert.create<jit_call> (jit_typeinfo::release,
-                                                        var->top ());
-          release->infer ();
-          if (last_use && last_use->parent () == &block
-              && ! isa<jit_phi> (last_use))
-            block.insert_after (last_use->location (), release);
-          else
-            block.prepend_after_phi (release);
-        }
+          jit_instruction *instr = *iter;
+          jit_block *use_in = instr->parent ();
 
-      instr->push_variable ();
+          // FIXME: Only valid until we support try/catch or unwind_protect
+          if (use_in != &block && &block != convert.final_block)
+            changed = changed || tout.insert (instr).second;
+        }
     }
 }
 
@@ -2467,7 +2575,7 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
                piter != block.end () && isa<jit_phi> (*piter); ++piter)
             {
               jit_instruction *phi = *piter;
-              finish_phi (phi);
+              finish_phi (static_cast<jit_phi *> (phi));
             }
         }
 
@@ -2484,72 +2592,13 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
 }
 
 void
-jit_convert::convert_llvm::finish_phi (jit_instruction *aphi)
+jit_convert::convert_llvm::finish_phi (jit_phi *phi)
 {
-  jit_phi *phi = static_cast<jit_phi *> (aphi);
-  llvm::PHINode *llvm_phi = llvm::cast<llvm::PHINode> (phi->to_llvm ());
-
-  bool can_remove = ! phi->use_count ();
-  if (! can_remove && llvm_phi->hasOneUse () && phi->use_count () == 1)
+  llvm::PHINode *llvm_phi = phi->to_llvm ();
+  for (size_t i = 0; i < phi->argument_count (); ++i)
     {
-      jit_instruction *user = phi->first_use ()->user ();
-      can_remove = isa<jit_call> (user); // must be a remove
-    }
-
-  if (can_remove)
-    {
-      // replace with releases along each incomming branch
-      while (! llvm_phi->use_empty ())
-        {
-          llvm::Instruction *llvm_instr;
-          llvm_instr = llvm::cast<llvm::Instruction> (llvm_phi->use_back ());
-          llvm_instr->eraseFromParent ();
-        }
-
-      llvm_phi->eraseFromParent ();
-      phi->stash_llvm (0);
-
-      for (size_t i = 0; i < phi->argument_count (); ++i)
-        {
-          jit_value *arg = phi->argument (i);
-          if (arg->has_llvm () && phi->argument_type (i) != phi->type ())
-            {
-              llvm::BasicBlock *pred = phi->incomming_llvm (i);
-              builder.SetInsertPoint (--pred->end ());
-              const jit_function::overload& ol
-                = jit_typeinfo::get_release (phi->argument_type (i));
-              if (! ol.function)
-                {
-                  std::stringstream ss;
-                  ss << "No release for phi(" << i << "): ";
-                  phi->print (ss);
-                  fail (ss.str ());
-                }
-
-              create_call (ol, phi->argument (i));
-            }
-        }
-    }
-  else
-    {
-      for (size_t i = 0; i < phi->argument_count (); ++i)
-        {
-          llvm::BasicBlock *pred = phi->incomming_llvm (i);
-          if (phi->argument_type (i) == phi->type ())
-            llvm_phi->addIncoming (phi->argument_llvm (i), pred);
-          else
-            {
-              // add cast right before pred terminator
-              builder.SetInsertPoint (--pred->end ());
-
-              const jit_function::overload& ol
-                = jit_typeinfo::cast (phi->type (),
-                                      phi->argument_type (i));
-
-              llvm::Value *casted = create_call (ol, phi->argument (i));
-              llvm_phi->addIncoming (casted, pred);
-            }
-        }
+      llvm::BasicBlock *pred = phi->incomming_llvm (i);
+      llvm_phi->addIncoming (phi->argument_llvm (i), pred);
     }
 }
 
@@ -2651,15 +2700,6 @@ jit_convert::convert_llvm::visit (jit_phi& phi)
                                                phi.argument_count ());
   builder.Insert (node);
   phi.stash_llvm (node);
-
-  jit_block *pblock = phi.parent ();
-  for (size_t i = 0; i < phi.argument_count (); ++i)
-    if (phi.argument_type (i) != phi.type ())
-      {
-        jit_block *inc = phi.incomming (i);
-        jit_terminator *term = inc->terminator ();
-        term->create_merge (function, pblock);
-      }
 }
 
 void

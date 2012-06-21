@@ -198,10 +198,10 @@ main_window::change_current_working_directory (QString directory)
 void
 main_window::current_working_directory_up ()
 {
-  _terminal->sendText ("cd ..\n");
-  _terminal->setFocus ();
-}
+  octave_link::instance ()
+      ->post_event (new octave_change_directory_event (*this, ".."));
 
+}
 
 void
 main_window::handle_entered_debug_mode ()

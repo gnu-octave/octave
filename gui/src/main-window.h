@@ -116,6 +116,12 @@ private:
   QMenu *                   _debug_menu;
   QTimer                    _update_performance_information_timer;
 
+  QAction *                 _debug_continue;
+  QAction *                 _debug_step_into;
+  QAction *                 _debug_step_over;
+  QAction *                 _debug_step_out;
+  QAction *                 _debug_quit;
+
   // Dock widgets.
   workspace_view *          _workspace_view;
   history_dock_widget *     _history_dock_widget;

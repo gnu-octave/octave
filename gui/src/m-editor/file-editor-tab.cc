@@ -98,7 +98,7 @@ file_editor_tab::copy_available ()
 void
 file_editor_tab::closeEvent (QCloseEvent *event)
 {
-  if (_file_editor->mainWindow ()->is_closing ())
+  if (_file_editor->get_main_window ()->is_closing ())
     {
       // close whole application: save file or not if modified
       check_file_modified ("Closing Octave", 0); // no cancel possible

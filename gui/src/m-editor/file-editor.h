@@ -46,21 +46,20 @@ class file_editor : public file_editor_interface
 Q_OBJECT
 
 public:
-  file_editor (QTerminal *terminal, main_window *mainWindow);
+  file_editor (QTerminal *terminal, main_window *m);
   ~file_editor ();
   void loadFile (QString fileName);
 
   lexer_octave_gui *lexer ();
   QTerminal *       terminal ();
-  main_window *     mainWindow ();
+  main_window *     get_main_window ();
+
+  QMenu *           debug_menu();
 
 public slots:
   void request_new_file ();
   void request_open_file ();
   void request_open_file (QString fileName);
-
-  void handle_entered_debug_mode ();
-  void handle_quit_debug_mode ();
 
   void request_undo ();
   void request_redo ();

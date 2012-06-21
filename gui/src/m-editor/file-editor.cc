@@ -25,13 +25,13 @@
 #include <QStyle>
 #include <QTextStream>
 
-file_editor::file_editor (QTerminal *terminal, main_window *mainWindow)
-  : file_editor_interface(terminal, mainWindow)
+file_editor::file_editor (QTerminal *terminal, main_window *m)
+  : file_editor_interface(terminal, m)
 {
   construct ();
 
   _terminal = terminal;
-  _main_window = mainWindow;
+  _main_window = m;
   setVisible (false);
 }
 
@@ -52,9 +52,15 @@ file_editor::terminal ()
 }
 
 main_window *
-file_editor::mainWindow ()
+file_editor::get_main_window ()
 {
   return _main_window;
+}
+
+QMenu *
+file_editor::debug_menu ()
+{
+  return _debug_menu;
 }
 
 void
@@ -97,18 +103,6 @@ file_editor::request_open_file (QString fileName)
       add_file_editor_tab (fileEditorTab);
       fileEditorTab->load_file (fileName);
     }
-}
-
-void
-file_editor::handle_entered_debug_mode ()
-{
-
-}
-
-void
-file_editor::handle_quit_debug_mode ()
-{
-
 }
 
 void
@@ -353,7 +347,7 @@ file_editor::construct ()
   _cut_action->setShortcutContext               (Qt::WindowShortcut);
   paste_action->setShortcut                     (QKeySequence::Paste);
   paste_action->setShortcutContext              (Qt::WindowShortcut);
-  run_action->setShortcut                       (Qt::SHIFT + Qt::Key_F5);
+  run_action->setShortcut                       (Qt::SHIFT + Qt::Key_R);
   run_action->setShortcutContext                (Qt::WindowShortcut);
   next_bookmark_action->setShortcut             (Qt::Key_F2);
   next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);
@@ -407,17 +401,6 @@ file_editor::construct ()
   _menu_bar->addMenu (editMenu);
 
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
-  QAction * debug_continue = _debug_menu->addAction (tr ("Continue"));
-  debug_continue->setShortcut (Qt::Key_F5);
-  QAction * debug_step_into = _debug_menu->addAction (tr ("Step into"));
-  debug_step_into->setShortcut (Qt::Key_F9);
-  QAction * debug_step_over = _debug_menu->addAction (tr ("Next"));
-  debug_step_over->setShortcut (Qt::Key_F10);
-  QAction * debug_step_out = _debug_menu->addAction (tr ("Step out"));
-  debug_step_out->setShortcut (Qt::Key_F11);
-  _debug_menu->addSeparator ();
-  QAction * debug_quit = _debug_menu->addAction (tr ("Quit"));
-  debug_quit->setShortcut (Qt::Key_Escape);
   _menu_bar->addMenu (_debug_menu);
 
   QMenu *runMenu = new QMenu (tr ("&Run"), _menu_bar);

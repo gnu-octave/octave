@@ -1052,7 +1052,7 @@ jit_instruction::do_construct_ssa (size_t start, size_t end)
     {
       jit_value *arg = argument (i);
       jit_variable *var = dynamic_cast<jit_variable *> (arg);
-      if (var)
+      if (var && var->has_top ())
         stash_argument (i, var->top ());
     }
 }
@@ -2726,6 +2726,24 @@ void
 jit_convert::convert_llvm::visit (jit_assign& assign)
 {
   assign.stash_llvm (assign.src ()->to_llvm ());
+
+  jit_value *new_value = assign.src ();
+  if (isa<jit_assign_base> (new_value)) // only grab non-temporaries
+    {
+      const jit_function::overload& ol
+        = jit_typeinfo::get_grab (new_value->type ());
+      if (ol.function)
+        create_call (ol, new_value);
+    }
+
+  jit_value *overwrite = assign.overwrite ();
+  if (isa<jit_assign_base> (overwrite))
+    {
+      const jit_function::overload& ol
+        = jit_typeinfo::get_release (overwrite->type ());
+      if (ol.function)
+        create_call (ol, overwrite);
+    }
 }
 
 void

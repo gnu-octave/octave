@@ -453,6 +453,11 @@ public:
 
   static const jit_function& grab (void) { return instance->grab_fn; }
 
+  static const jit_function::overload& get_grab (jit_type *type)
+  {
+    return instance->grab_fn.get_overload (type);
+  }
+
   static const jit_function& release (void)
   {
     return instance->release_fn;
@@ -1519,8 +1524,8 @@ public:
   jit_assign_base (jit_variable *adest, size_t npred) : jit_instruction (npred),
                                                         mdest (adest) {}
 
-  jit_assign_base (jit_variable *adest, jit_value *arg0)
-    : jit_instruction (arg0), mdest (adest) {}
+  jit_assign_base (jit_variable *adest, jit_value *arg0, jit_value *arg1)
+    : jit_instruction (arg0, arg1), mdest (adest) {}
 
   jit_variable *dest (void) const { return mdest; }
 
@@ -1551,11 +1556,16 @@ jit_assign : public jit_assign_base
 {
 public:
   jit_assign (jit_variable *adest, jit_value *asrc)
-    : jit_assign_base (adest, asrc) {}
+    : jit_assign_base (adest, adest, asrc) {}
+
+  jit_value *overwrite (void) const
+  {
+    return argument (0);
+  }
 
   jit_value *src (void) const
   {
-    return argument (0);
+    return argument (1);
   }
 
   virtual bool infer (void)

@@ -1241,7 +1241,9 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
       else if (idx_j.is_cont_range (nc, lb, ub))
         {
           const Sparse<T> tmp = *this;
-          octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub), new_nz = nz - (ubi - lbi);
+          octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub),
+            new_nz = nz - (ubi - lbi);
+
           *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
           copy_or_memcpy (lbi, tmp.data (), data ());
           copy_or_memcpy (lbi, tmp.ridx (), ridx ());

@@ -1582,6 +1582,10 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
     {
       // It's actually vector indexing. The 1D index is specialized for that.
       retval = index (idx_i);
+
+      // If nr == 1 then the vector indexing will return a column vector!!
+      if (nr == 1)
+        retval.transpose();
     }
   else if (idx_i.is_scalar ())
     {
@@ -2741,6 +2745,11 @@ bug #35570:
 %! s = sparse (magic (5));
 %! s(:,2:4) = [];
 %! assert (s, sparse (magic (5)(:, [1,5])));
+
+%!test
+%! s = sparse([], [], [], 1, 1);
+%! s(1,:) = [];
+%! assert (s, sparse ([], [], [], 0, 1));
 
 */
 

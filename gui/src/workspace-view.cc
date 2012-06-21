@@ -33,6 +33,8 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   _workspace_tree_view->setAlternatingRowColors (true);
   //_workspace_tree_view->setAnimated (true);
   _workspace_tree_view->setModel (_workspace_model);
+  _workspace_tree_view->setTextElideMode (Qt::ElideRight);
+  _workspace_tree_view->setWordWrap (false);
 
   setWidget (new QWidget (this));
   QVBoxLayout *layout = new QVBoxLayout ();

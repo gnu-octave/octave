@@ -141,6 +141,7 @@ typedef struct symbol_information
     else
       _value = QString ("<Type not recognized>");
 
+    _value.replace("\n", "\\n");
     return true;
   }
 } symbol_information;

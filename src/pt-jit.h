@@ -230,7 +230,7 @@ jit_array
                         slice_data (from.jit_slice_data () - 1),
                         slice_len (from.capacity ()),
                         dimensions (from.jit_dimensions ()),
-                        array_rep (from.jit_array_rep ())
+                        array (new T (from))
   {
     grab_dimensions ();
   }
@@ -242,7 +242,7 @@ jit_array
 
   operator T () const
   {
-    return T (slice_data + 1, slice_len, dimensions, array_rep);
+    return *array;
   }
 
   int *ref_count;
@@ -251,7 +251,7 @@ jit_array
   octave_idx_type slice_len;
   octave_idx_type *dimensions;
 
-  void *array_rep;
+  T *array;
 };
 
 typedef jit_array<NDArray, double> jit_matrix;

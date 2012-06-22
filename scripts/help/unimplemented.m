@@ -98,7 +98,6 @@ function list = missing_functions ()
   "bar3",
   "bar3h",
   "bench",
-  "betaincinv",
   "bicgstabl",
   "brush",
   "builddocsearchdb",

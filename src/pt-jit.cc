@@ -125,8 +125,8 @@ extern "C" octave_base_value*
 octave_jit_binary_any_any (octave_value::binary_op op, octave_base_value *lhs,
                            octave_base_value *rhs)
 {
-  octave_value olhs (lhs);
-  octave_value orhs (rhs);
+  octave_value olhs (lhs, true);
+  octave_value orhs (rhs, true);
   octave_value result = do_binary_op (op, olhs, orhs);
   octave_base_value *rep = result.internal_rep ();
   rep->grab ();
@@ -1022,6 +1022,14 @@ operator<< (std::ostream& os, const jit_value& value)
   return value.short_print (os);
 }
 
+std::ostream&
+jit_print (std::ostream& os, jit_value *avalue)
+{
+  if (avalue)
+    return avalue->print (os);
+  return os << "NULL";
+}
+
 // -------------------- jit_instruction --------------------
 void
 jit_instruction::remove (void)
@@ -1332,7 +1340,12 @@ jit_block::maybe_split (jit_convert& convert, jit_block *asuccessor)
       size_t idx = term->successor_index (asuccessor);
       jit_block *split = convert.create<jit_block> ("phi_split", mvisit_count);
 
-      convert.insert_after (this, split);
+      // try to place splits where they make sense
+      if (id () < asuccessor->id ())
+        convert.insert_before (asuccessor, split);
+      else
+        convert.insert_after (this, split);
+
       term->stash_argument (idx, split);
       jit_branch *br = split->append (convert.create<jit_branch> (asuccessor));
       replace_in_phi (asuccessor, split);
@@ -1580,11 +1593,12 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
 
   remove_dead ();
   merge_blocks ();
-  simplify_phi ();
   final_block->label ();
   place_releases ();
+  simplify_phi ();
 
 #ifdef OCTAVE_JIT_DEBUG
+  final_block->label ();
   std::cout << "-------------------- Compiling tree --------------------\n";
   std::cout << tee.str_print_code () << std::endl;
   print_blocks ("octave jit ir");
@@ -2394,6 +2408,67 @@ void
 jit_convert::place_releases (void)
 {
   compute_temp tinfo (*this);
+
+  for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();
+       ++iter)
+    {
+      jit_block& ablock = **iter;
+      if (ablock.id () != jit_block::NO_ID)
+        {
+          release_temp (ablock, tinfo.temp_out (ablock));
+          release_dead_phi (ablock);
+        }
+    }
+
+}
+
+void
+jit_convert::release_temp (jit_block& ablock, const instr_set& temp)
+{
+  if (! temp.size ())
+    return;
+
+  jit_block *split = ablock.maybe_split (*this, final_block);
+  jit_terminator *term = split->terminator ();
+  for (instr_set::const_iterator iter = temp.begin (); iter != temp.end ();
+       ++iter)
+    {
+      jit_instruction *instr = *iter;
+      jit_call *release = create<jit_call> (&jit_typeinfo::release, instr);
+      split->insert_before (term, release);
+      release->infer ();
+    }
+}
+
+void
+jit_convert::release_dead_phi (jit_block& ablock)
+{
+  jit_block::iterator iter = ablock.begin ();
+  while (iter != ablock.end () && isa<jit_phi> (*iter))
+    {
+      jit_phi *phi = static_cast<jit_phi *> (*iter);
+      ++iter;
+
+      jit_use *use = phi->first_use ();
+      if (phi->use_count () == 1 && isa<jit_assign> (use->user ()))
+        {
+          // instead of releasing on assign, release on all incomming branches,
+          // this can get rid of casts inside loops
+          for (size_t i = 0; i < phi->argument_count (); ++i)
+            {
+              jit_value *arg = phi->argument (i);
+              jit_block *inc = phi->incomming (i);
+              jit_block *split = inc->maybe_split (*this, ablock);
+              jit_terminator *term = split->terminator ();
+              jit_call *release = create<jit_call> (jit_typeinfo::release, arg);
+              release->infer ();
+              split->insert_before (term, release);
+            }
+
+          phi->replace_with (0);
+          phi->remove ();
+        }
+    }
 }
 
 void
@@ -2466,9 +2541,26 @@ jit_convert::compute_temp::compute_temp (jit_convert& aconvert)
           // check for temporaries that require release and live across
           // multiple blocks
           if (instr->needs_release ()
-              && instr->use_count () == 1
-              && instr->first_use ()->user_parent () != &block)
-            tout.insert (instr);
+              && instr->use_count () >= 1)
+            {
+              bool parent_in_block = false;
+              jit_use *use = instr->first_use ();
+              while (use)
+                {
+                  // skip error checks, as they do not release their use
+                  if (! isa<jit_error_check> (use->user ())
+                      && use->user_parent () == &block)
+                    {
+                      parent_in_block = true;
+                      break;
+                    }
+
+                  use = use->next ();
+                }
+
+              if (! parent_in_block)
+                tout.insert (instr);
+            }
 
           if (isa<jit_call> (instr))
             {
@@ -2728,12 +2820,12 @@ jit_convert::convert_llvm::visit (jit_assign& assign)
   assign.stash_llvm (assign.src ()->to_llvm ());
 
   jit_value *new_value = assign.src ();
-  if (isa<jit_assign_base> (new_value)) // only grab non-temporaries
+  if (isa<jit_assign_base> (new_value))
     {
       const jit_function::overload& ol
         = jit_typeinfo::get_grab (new_value->type ());
       if (ol.function)
-        create_call (ol, new_value);
+        assign.stash_llvm (create_call (ol, new_value));
     }
 
   jit_value *overwrite = assign.overwrite ();

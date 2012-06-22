@@ -850,6 +850,7 @@ private:
 };
 
 std::ostream& operator<< (std::ostream& os, const jit_value& value);
+std::ostream& jit_print (std::ostream& os, jit_value *avalue);
 
 class
 jit_use : public jit_internal_node<jit_value, jit_use>
@@ -2248,7 +2249,13 @@ private:
 
   void remove_dead ();
 
+  typedef std::set<jit_instruction *> instr_set;
+
   void place_releases (void);
+
+  void release_temp (jit_block& ablock, const instr_set& temp);
+
+  void release_dead_phi (jit_block& ablock);
 
   void simplify_phi (void);
 
@@ -2283,8 +2290,6 @@ private:
   block_list continues;
 
   void finish_breaks (jit_block *dest, const block_list& lst);
-
-  typedef std::set<jit_instruction *> instr_set;
 
   // compute per block information about temporaries
   class

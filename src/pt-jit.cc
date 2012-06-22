@@ -2588,8 +2588,7 @@ jit_convert::convert_llvm::convert (llvm::Module *module,
 
   try
     {
-      llvm::BasicBlock *prelude = llvm::BasicBlock::Create (context, "prelude",
-                                                            function);
+      prelude = llvm::BasicBlock::Create (context, "prelude", function);
       builder.SetInsertPoint (prelude);
 
       llvm::Value *arg = function->arg_begin ();
@@ -2804,6 +2803,8 @@ llvm::Value *
 jit_convert::convert_llvm::create_call (const jit_function::overload& ol,
                                         const std::vector<jit_value *>& jargs)
 {
+  llvm::IRBuilder<> alloca_inserter (prelude, prelude->begin ());
+
    llvm::Function *fun = ol.function;
    if (! fun)
      fail ("Missing overload");
@@ -2822,7 +2823,7 @@ jit_convert::convert_llvm::create_call (const jit_function::overload& ol,
   llvm::Function::arg_iterator llvm_arg = fun->arg_begin ();
   if (sret)
     {
-      args[0] = builder.CreateAlloca (ol.result->to_llvm ());
+      args[0] = alloca_inserter.CreateAlloca (ol.result->to_llvm ());
       ++llvm_arg;
     }
 
@@ -2838,7 +2839,7 @@ jit_convert::convert_llvm::create_call (const jit_function::overload& ol,
         {
           // pass structure by pointer
           assert (arg_type->getPointerTo () == llvm_arg_type);
-          llvm::Value *new_arg = builder.CreateAlloca (arg_type);
+          llvm::Value *new_arg = alloca_inserter.CreateAlloca (arg_type);
           builder.CreateStore (arg, new_arg);
           args[i + sret] = new_arg;
         }

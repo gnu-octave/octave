@@ -2368,6 +2368,7 @@ private:
   private:
     jit_convert &jthis;
     llvm::Function *function;
+    llvm::BasicBlock *prelude;
   };
 };
 

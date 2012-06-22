@@ -154,7 +154,21 @@
 ##
 ## @end table
 ##
-## @seealso{textscan, textread, load, dlmread, fscanf}
+## When the number of words in @var{str} doesn't match an exact multiple
+## of the number of format conversion specifiers, strread's behavior
+## depends on the last character of @var{str}:
+##
+## @table @asis
+## @item last character = "\n"
+## Data columns are padded with empty fields or Nan so that all columns
+## have equal length 
+##
+## @item last character is not "\n"
+## Data columns are not padded; strread returns columns of unequal length
+##
+## @end table
+##
+# @seealso{textscan, textread, load, dlmread, fscanf}
 ## @end deftypefn
 
 function varargout = strread (str, format = "%f", varargin)

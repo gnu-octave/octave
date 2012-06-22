@@ -263,7 +263,9 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     endif
   elseif (eol_at_end)
      str(end-length (eol_char) + 1 : end) = "";
-  endif
+    ## A corner case: str may now be empty....
+    if (isempty (str)); return; endif
+   endif
 
   ## Call strread to make it do the real work
   C = cell (1, num_fields);
@@ -396,3 +398,7 @@ endfunction
 %!error <cannot provide position information> [C, pos] = textscan ("Hello World")
 %!error <character value required> textscan ("Hello World", '%s', 'EndOfLine', 3)
 
+%! Test incomplete first data line
+%! R = textscan (['Empty1' char(10)], 'Empty%d %f');
+%! assert (R{1}, int32(1));
+%! assert (isempty(R{2}), true);

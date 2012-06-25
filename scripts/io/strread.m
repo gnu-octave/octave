@@ -301,6 +301,13 @@ function varargout = strread (str, format = "%f", varargin)
     ## Format conversion specifiers following literals w/o space/delim
     ## in between are separate now.  Separate those w trailing literals
     idy2 = find (! cellfun ("isempty", strfind (fmt_words, "%")));
+
+    ## Check for unsupported format specifiers
+    errpat = '(\[.*\]|[cq]|[nfdu]8|[nfdu]16|[nfdu]32|[nfdu]64)';
+    if (! all (cellfun ("isempty", regexp (fmt_words(idy2), errpat))))
+      error ("strread: %q, %c, %[] or bit width format specifiers are not supported yet.");
+    endif
+
     a = strfind (fmt_words(idy2), "%");
     b = regexp (fmt_words(idy2), '[nfdus]', 'end');
     for jj = 1:numel (a)
@@ -931,3 +938,19 @@ endfunction
 %! assert (isempty (b));
 %! assert (isempty (c));
 
+%% Unsupported format specifiers
+%!test
+%!error <format specifiers are not supported> strread ('a', '%c')
+%!error <format specifiers are not supported> strread ('a', '%*c %d')
+%!error <format specifiers are not supported> strread ('a', '%q')
+%!error <format specifiers are not supported> strread ('a', '%*q %d')
+%!error <format specifiers are not supported> strread ('a', '%[a]')
+%!error <format specifiers are not supported> strread ('a', '%*[a] %d')
+%!error <format specifiers are not supported> strread ('a', '%[^a]')
+%!error <format specifiers are not supported> strread ('a', '%*[â] %d')
+%!error <format specifiers are not supported> strread ('a', '%d8')
+%!error <format specifiers are not supported> strread ('a', '%*d8 %s')
+%!error <format specifiers are not supported> strread ('a', '%f64')
+%!error <format specifiers are not supported> strread ('a', '%*f64 %s')
+%!error <format specifiers are not supported> strread ('a', '%u32')
+%!error <format specifiers are not supported> strread ('a', '%*u32 %d')

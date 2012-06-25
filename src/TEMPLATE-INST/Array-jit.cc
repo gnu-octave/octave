@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#ifdef HAVE_LLVM
+
 #include "Array.h"
 #include "Array.cc"
 
@@ -32,3 +34,5 @@ along with Octave; see the file COPYING.  If not, see
 NO_INSTANTIATE_ARRAY_SORT (jit_function::overload);
 
 INSTANTIATE_ARRAY (jit_function::overload, OCTINTERP_API);
+
+#endif

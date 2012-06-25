@@ -39,34 +39,25 @@ along with Octave; see the file COPYING.  If not, see
 
 // -------------------- Current status --------------------
 // Simple binary operations (+-*/) on octave_scalar's (doubles) are optimized.
-// However, there is no warning emitted on divide by 0. For example,
 // a = 5;
 // b = a * 5 + a;
 //
-// For other types all binary operations are compiled but not optimized. For
-// example,
-// a = [1 2 3]
-// b = a + a;
-// will compile to do_binary_op (a, a).
+// Indexing matrices with scalars works.
 //
-// For loops are compiled again!
-// if, elseif, and else statements compile again!
-// break and continue now work!
-//
-// NOTE: Matrix access is currently broken!
+// if, elseif, else, break, continue, and for compile. Compilation is triggered
+// at the start of a simple for loop.
 //
 // The octave low level IR is a linear IR, it works by converting everything to
 // calls to jit_functions. This turns expressions like c = a + b into
 // c = call binary+ (a, b)
-// The jit_functions contain information about overloads for differnt types. For
-// example, if we know a and b are scalars, then c must also be a scalar.
+// The jit_functions contain information about overloads for different types.
+// For, example, if we know a and b are scalars, then c must also be a scalar.
 //
 //
 // TODO:
-// 1. Support some simple matrix case (and cleanup Octave low level IR)
-// 2. Function calls
-// 3. Cleanup/documentation
-// 4. ...
+// 1. Function calls
+// 2. Cleanup/documentation
+// 3. ...
 // ---------------------------------------------------------
 
 
@@ -93,6 +84,7 @@ namespace llvm
 class octave_base_value;
 class octave_value;
 class tree;
+class tree_expression;
 
 template <typename HOLDER_T, typename SUB_T>
 class jit_internal_node;
@@ -498,6 +490,11 @@ public:
     return instance->paren_subsref_fn;
   }
 
+  static const jit_function& paren_subsasgn (void)
+  {
+    return instance->paren_subsasgn_fn;
+  }
+
   static const jit_function& logically_true (void)
   {
     return instance->logically_true_fn;
@@ -695,6 +692,7 @@ private:
   jit_function logically_true_fn;
   jit_function make_range_fn;
   jit_function paren_subsref_fn;
+  jit_function paren_subsasgn_fn;
 
   // type id -> cast function TO that type
   std::vector<jit_function> casts;
@@ -1557,7 +1555,7 @@ jit_assign : public jit_assign_base
 {
 public:
   jit_assign (jit_variable *adest, jit_value *asrc)
-    : jit_assign_base (adest, adest, asrc) {}
+    : jit_assign_base (adest, adest, asrc), martificial (false) {}
 
   jit_value *overwrite (void) const
   {
@@ -1568,6 +1566,13 @@ public:
   {
     return argument (1);
   }
+
+  // variables don't get modified in an SSA, but COW requires we modify
+  // variables. An artificial assign is for when a variable gets modified. We
+  // need an assign in the SSA, but the reference counts shouldn't be updated.
+  bool artificial (void) const { return martificial; }
+
+  void mark_artificial (void) { martificial = true; }
 
   virtual bool infer (void)
   {
@@ -1583,10 +1588,17 @@ public:
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
   {
-    return print_indent (os, indent) << *this << " = " << *src ();
+    print_indent (os, indent) << *this << " = " << *src ();
+
+    if (artificial ())
+      os << " [artificial]";
+
+    return os;
   }
 
   JIT_VALUE_ACCEPT;
+private:
+  bool martificial;
 };
 
 class
@@ -2150,6 +2162,14 @@ public:
     return create_checked_impl (ret);
   }
 
+  template <typename ARG0, typename ARG1, typename ARG2, typename ARG3>
+  jit_call *create_checked (const ARG0& arg0, const ARG1& arg1,
+                            const ARG2& arg2, const ARG3& arg3)
+  {
+    jit_call *ret = create<jit_call> (arg0, arg1, arg2, arg3);
+    return create_checked_impl (ret);
+  }
+
   typedef std::list<jit_block *> block_list;
   typedef block_list::iterator block_iterator;
 
@@ -2199,9 +2219,15 @@ private:
   jit_call *create_checked_impl (jit_call *ret)
   {
     block->append (ret);
+    create_check (ret);
+    return ret;
+  }
 
+  jit_error_check *create_check (jit_call *call)
+  {
     jit_block *normal = create<jit_block> (block->name ());
-    block->append (create<jit_error_check> (ret, normal, final_block));
+    jit_error_check *ret
+      = block->append (create<jit_error_check> (call, normal, final_block));
     append (normal);
     block = normal;
 
@@ -2210,8 +2236,13 @@ private:
 
   jit_variable *get_variable (const std::string& vname);
 
-  jit_value *do_assign (const std::string& lhs, jit_value *rhs, bool print);
+  std::pair<jit_value *, jit_value *> resolve (tree_index_expression& exp);
 
+  jit_value *do_assign (tree_expression *exp, jit_value *rhs,
+                        bool artificial = false);
+
+  jit_value *do_assign (const std::string& lhs, jit_value *rhs, bool print,
+                        bool artificial = false);
 
   jit_value *visit (tree *tee) { return visit (*tee); }
 

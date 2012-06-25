@@ -21,6 +21,7 @@
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d})
 ## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0})
+## @deftypefnx {Function File} {@var{x} =} lsqnonneg (@var{c}, @var{d}, @var{x0}, @var{options})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}] =} lsqnonneg (@dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{resnorm}, @var{residual}, @var{exitflag}] =} lsqnonneg (@dots{})
@@ -29,6 +30,9 @@
 ## Minimize @code{norm (@var{c}*@var{x} - d)} subject to
 ## @code{@var{x} >= 0}.  @var{c} and @var{d} must be real.  @var{x0} is an
 ## optional initial guess for @var{x}.
+## Currently, @code{lsqnonneg}
+## recognizes these options: @code{"MaxIter"}, @code{"TolX"}.
+## For a description of these options, see @ref{doc-optimset,,optimset}.
 ##
 ## Outputs:
 ##
@@ -147,7 +151,8 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     ## compute the gradient.
     w = c'*(d - c*x);
     w(p) = [];
-    if (! any (w > 0))
+    tolx = optimget (options, "TolX", 10*eps*norm (c, 1)*length (c));
+    if (! any (w > tolx))
       if (useqr)
         ## verify the solution achieved using qr updating.
         ## in the best case, this should only take a single step.

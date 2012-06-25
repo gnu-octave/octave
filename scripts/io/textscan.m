@@ -25,13 +25,13 @@
 ## @deftypefnx {Function File} {[@var{C}, @var{position}] =} textscan (@var{fid}, @dots{})
 ## Read data from a text file or string.
 ##
-## The file associated with @var{fid} is read and parsed according to
-## @var{format}.  The function behaves like @code{strread} except it works by
-## parsing a file instead of a string.  See the documentation of
-## @code{strread} for details.
+## The string @var{str} or file associated with @var{fid} is read from and
+## parsed according to @var{format}. The function behaves like @code{strread}
+## except it can also read from file instead of a string. See the documentation
+## of @code{strread} for details.
 ##
-## In addition to the options supported by
-## @code{strread}, this function supports a few more:
+## In addition to the options supported by @code{strread}, this function
+## supports a few more:
 ##
 ## @itemize
 ## @item "collectoutput":
@@ -50,16 +50,19 @@
 ## @item "returnonerror":
 ## If set to numerical 1 or true (default), return normally when read errors
 ## have been encountered.  If set to 0 or false, return an error and no data.
+## As the string or file is read by columns rather than by rows, and because
+## textscan is fairly forgiving as regards read errors, setting this option
+## may have little or no actual effect.
 ## @end itemize
 ##
 ## When reading from a character string, optional input argument @var{n}
 ## specifies the number of times @var{format} should be used (i.e., to limit
 ## the amount of data read).
-## When reading fro file, @var{n} specifies the number of data lines to read;
+## When reading from file, @var{n} specifies the number of data lines to read;
 ## in this sense it differs slightly from the format repeat count in strread.
 ##
-## The output @var{C} is a cell array whose length is given by the number
-## of format specifiers.
+## The output @var{C} is a cell array whose second dimension is determined
+## by the number of format specifiers.
 ##
 ## The second output, @var{position}, provides the position, in characters,
 ## from the beginning of the file.
@@ -80,12 +83,16 @@ function [C, position] = textscan (fid, format = "%f", varargin)
     format = "%f";
   endif
 
-  if (! (isa (fid, "double") && fid > 0) && ! ischar (fid))
-    error ("textscan: first argument must be a file id or character string");
-  endif
-
   if (! ischar (format))
     error ("textscan: FORMAT must be a string");
+  endif
+
+  ## Determine the number of data fields & initialize output array
+  num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
+  C = cell (1, num_fields);
+
+  if (! (isa (fid, "double") && fid > 0) && ! ischar (fid))
+    error ("textscan: first argument must be a file id or character string");
   endif
 
   args = varargin;
@@ -96,7 +103,6 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   endif
   if (nlines < 1)
     printf ("textscan: N = 0, no data read\n");
-    C = [];
     return
   endif
 
@@ -174,7 +180,6 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   ## Check for empty result
   if (isempty (str))
     warning ("textscan: no data read");
-    C = [];
     return;
   endif
 
@@ -249,10 +254,18 @@ function [C, position] = textscan (fid, format = "%f", varargin)
   ## Determine the number of data fields
   num_fields = numel (strfind (format, "%")) - numel (strfind (format, "%*"));
 
-  ## Strip trailing EOL to avoid returning stray missing values (f. strread)
-  if (strcmp (str(end-length (eol_char) + 1 : end), eol_char));
-    str(end-length (eol_char) + 1 : end) = "";
-  endif
+  ## Strip trailing EOL to avoid returning stray missing values (f. strread).
+  ## However, in case of CollectOutput request, presence of EOL is required
+  eol_at_end = strcmp (str(end-length (eol_char) + 1 : end), eol_char);
+  if (collop)
+    if (! eol_at_end)
+      str(end+1 : end+length (eol_char)) = eol_char;
+    endif
+  elseif (eol_at_end)
+     str(end-length (eol_char) + 1 : end) = "";
+    ## A corner case: str may now be empty....
+    if (isempty (str)); return; endif
+   endif
 
   ## Call strread to make it do the real work
   C = cell (1, num_fields);
@@ -316,14 +329,14 @@ endfunction
 %! assert (b(1,:)', c{1}, 1e-5);
 %! assert (b(2,:)', c{2}, 1e-5);
 
-#%!test
-#%! str = "13, 72, NA, str1, 25\r\n// Middle line\r\n36, na, 05, str3, 6";
-#%! a = textscan (str, "%d %n %f %s %n", "delimiter", ",","treatAsEmpty", {"NA", "na"},"commentStyle", "//");
-#%! assert (a{1}, int32([13; 36]));
-#%! assert (a{2}, [72; NaN]);
-#%! assert (a{3}, [NaN; 5]);
-#%! assert (a{4}, {"str1"; "str3"});
-#%! assert (a{5}, [25; 6]);
+%!test
+%! str = "13, 72, NA, str1, 25\r\n// Middle line\r\n36, na, 05, str3, 6";
+%! a = textscan (str, "%d %n %f %s %n", "delimiter", ",","treatAsEmpty", {"NA", "na"},"commentStyle", "//");
+%! assert (a{1}, int32([13; 36]));
+%! assert (a{2}, [72; NaN]);
+%! assert (a{3}, [NaN; 5]);
+%! assert (a{4}, {"str1"; "str3"});
+%! assert (a{5}, [25; 6]);
 
 %!test
 %! str = "Km:10 = hhhBjjj miles16hour\r\n";
@@ -362,6 +375,21 @@ endfunction
 %! assert (size(c{3}), [10, 2]);
 %! assert (size(c{2}), [10, 2]);
 
+%!test
+%% CollectOutput test with uneven column length files
+%! b = [10:10:100];
+%! b = [b; 8*b/5; 8*b*1000/5];
+%! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
+%! str = [str "110 miles/hr"];
+%! fmt = "%f miles%s %s %f (%f) kilometers %*s";
+%! c = textscan (str, fmt, "collectoutput", 1);
+%! assert (size(c{1}), [11, 1]);
+%! assert (size(c{3}), [11, 2]);
+%! assert (size(c{2}), [11, 2]);
+%! assert (c{3}(end), NaN);
+%! assert (c{2}{11, 1}, "/hr");
+%! assert (isempty (c{2}{11, 2}), true);
+
 %% Test input validation
 %!error textscan ()
 %!error textscan (single (4))
@@ -370,3 +398,7 @@ endfunction
 %!error <cannot provide position information> [C, pos] = textscan ("Hello World")
 %!error <character value required> textscan ("Hello World", '%s', 'EndOfLine', 3)
 
+%! Test incomplete first data line
+%! R = textscan (['Empty1' char(10)], 'Empty%d %f');
+%! assert (R{1}, int32(1));
+%! assert (isempty(R{2}), true);

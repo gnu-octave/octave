@@ -154,7 +154,21 @@
 ##
 ## @end table
 ##
-## @seealso{textscan, textread, load, dlmread, fscanf}
+## When the number of words in @var{str} doesn't match an exact multiple
+## of the number of format conversion specifiers, strread's behavior
+## depends on the last character of @var{str}:
+##
+## @table @asis
+## @item last character = "\n"
+## Data columns are padded with empty fields or Nan so that all columns
+## have equal length 
+##
+## @item last character is not "\n"
+## Data columns are not padded; strread returns columns of unequal length
+##
+## @end table
+##
+# @seealso{textscan, textread, load, dlmread, fscanf}
 ## @end deftypefn
 
 function varargout = strread (str, format = "%f", varargin)
@@ -445,7 +459,8 @@ function varargout = strread (str, format = "%f", varargin)
       ## Alternative below goes by simply parsing a first grab of words
       ## and counting words until the fmt_words array is exhausted:
       iwrd = 1; iwrdp = 0; iwrdl = length (words{iwrd});
-      for ii = 1:numel (fmt_words)
+      ii = 1;
+      while ii <= numel (fmt_words)
 
         nxt_wrd = 0;
 
@@ -507,12 +522,16 @@ function varargout = strread (str, format = "%f", varargin)
 
         if (nxt_wrd)
           ++iwrd; iwrdp = 0;
-          if (ii < numel (fmt_words))
+          if (iwrd > numel (words))
+            ## Apparently EOF; assume incomplete row already at L.1 of data
+            ii = numel (fmt_words);
+          elseif (ii < numel (fmt_words))
             iwrdl = length (words{iwrd});
           endif
         endif
+        ++ii;
 
-      endfor
+      endwhile
       ## Done
       words_period = max (iwrd - 1, 1);
       num_lines = ceil (num_words / words_period);
@@ -894,6 +913,16 @@ endfunction
 %! assert (a, [0.31; 0.60], 0.01)
 %! assert (b, [0.86; 0.72], 0.01)
 %! assert (c, [0.94; 0.87], 0.01)
+
+%!test
+%! [a, b] = strread (['Empty 1' char(10)], 'Empty%s %f');
+%! assert (a{1}, '1');
+%! assert (b, NaN);
+
+%!test
+%! [a, b] = strread (['Empty' char(10)], 'Empty%f %f');
+%! assert (a, NaN);
+%! assert (b, NaN);
 
 %!test
 %! # Bug #35999

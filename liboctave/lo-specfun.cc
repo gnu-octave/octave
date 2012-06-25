@@ -3152,7 +3152,7 @@ FloatComplex rc_log1p (float x)
 // This algorithm is due to P. J. Acklam.
 // See http://home.online.no/~pjacklam/notes/invnorm/
 // The rational approximation has relative accuracy 1.15e-9 in the whole region.
-// For doubles, it is refined by a single step of Higham's 3rd order method.
+// For doubles, it is refined by a single step of Halley's 3rd order method.
 // For single precision, the accuracy is already OK, so we skip it to get
 // faster evaluation.
 
@@ -3175,7 +3175,7 @@ static double do_erfinv (double x, bool refine)
     {  7.784695709041462e-03,  3.224671290700398e-01,
        2.445134137142996e+00,  3.754408661907416e+00 };
 
-  static const double spi2 =  8.862269254527579e-01; // sqrt(pi)/2.
+  static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
   static const double pbreak = 0.95150;
   double ax = fabs (x), y;
 
@@ -3204,7 +3204,7 @@ static double do_erfinv (double x, bool refine)
   if (refine)
     {
       // One iteration of Halley's method gives full precision.
-      double u = (erf(y) - x) * spi2 * exp (y*y);
+      double u = (erf (y) - x) * spi2 * exp (y*y);
       y -= u / (1 + y*u);
     }
 
@@ -3220,6 +3220,10 @@ float erfinv (float x)
 {
   return do_erfinv (x, false);
 }
+
+// The algorthim for erfcinv is an adaptation of the erfinv algorithm above
+// from P. J. Acklam.  It has been modified to run over the different input
+// domain of erfcinv.  See the notes for erfinv for an explanation.
 
 static double do_erfcinv (double x, bool refine)
 {
@@ -3241,12 +3245,12 @@ static double do_erfcinv (double x, bool refine)
        2.445134137142996e+00,  3.754408661907416e+00 };
 
   static const double spi2 = 8.862269254527579e-01; // sqrt(pi)/2.
-  static const double pi = 3.14159265358979323846;
-  static const double pbreak = 0.95150;
+  static const double pbreak_lo = 0.04850;  // 1-pbreak
+  static const double pbreak_hi = 1.95150;  // 1+pbreak
   double y;
 
   // Select case.
-  if (x <= 1+pbreak && x >= 1-pbreak)
+  if (x >= pbreak_lo && x <= pbreak_hi)
     {
       // Middle region.
       const double q = 0.5*(1-x), r = q*q;
@@ -3254,15 +3258,15 @@ static double do_erfcinv (double x, bool refine)
       const double yd = ((((b[0]*r + b[1])*r + b[2])*r + b[3])*r + b[4])*r + 1.0;
       y = yn / yd;
     }
-  else if (x < 2.0 && x > 0.0)
+  else if (x > 0.0 && x < 2.0)
     {
       // Tail region.
       const double q = x < 1 ? sqrt (-2*log (0.5*x)) : sqrt (-2*log (0.5*(2-x)));
       const double yn = ((((c[0]*q + c[1])*q + c[2])*q + c[3])*q + c[4])*q + c[5];
       const double yd = (((d[0]*q + d[1])*q + d[2])*q + d[3])*q + 1.0;
       y = yn / yd;
-      if (x < 1-pbreak)
-        y *= -1;
+      if (x < pbreak_lo)
+        y = -y;
     }
   else if (x == 0.0)
     return octave_Inf;

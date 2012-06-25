@@ -776,6 +776,10 @@ public:
     min_worklist = ain_worklist;
   }
 
+  // The block of the first use which is not a jit_error_check
+  // So this is not necessarily first_use ()->parent ().
+  jit_block *first_use_block (void);
+
   // replace all uses with
   virtual void replace_with (jit_value *value);
 
@@ -1235,16 +1239,15 @@ public:
     label (mvisit_count, number);
   }
 
-  void label (size_t visit_count, size_t& number)
+  void label (size_t avisit_count, size_t& number)
   {
-    if (mvisit_count > visit_count)
+    if (visited (avisit_count))
       return;
-    ++mvisit_count;
 
     for (jit_use *use = first_use (); use; use = use->next ())
       {
         jit_block *pred = use->user_parent ();
-        pred->label (visit_count, number);
+        pred->label (avisit_count, number);
       }
 
     mid = number++;
@@ -1273,13 +1276,14 @@ public:
     create_dom_tree (mvisit_count);
   }
 
-  // visit blocks in the order of the dominator tree
-  // inorder - Run on the root first, then children
-  // postorder - Run on children first, then the root
-  template <typename func_type0, typename func_type1>
-  void visit_dom (func_type0 inorder, func_type1 postorder)
+  jit_block *dom_successor (size_t idx) const
   {
-    do_visit_dom (mvisit_count, inorder, postorder);
+    return dom_succ[idx];
+  }
+
+  size_t dom_successor_count (void) const
+  {
+    return dom_succ.size ();
   }
 
   // call pop_varaible on all instructions
@@ -1333,21 +1337,33 @@ public:
   void stash_location (std::list<jit_block *>::iterator alocation)
   { mlocation = alocation; }
 
+  // used to prevent visiting the same node twice in the graph
+  size_t visit_count (void) const { return mvisit_count; }
+
+  // check if this node has been visited yet at the given visit count. If we
+  // have not been visited yet, mark us as visited.
+  bool visited (size_t avisit_count)
+  {
+    if (mvisit_count <= avisit_count)
+      {
+        mvisit_count = avisit_count + 1;
+        return false;
+      }
+
+    return true;
+  }
+
   JIT_VALUE_ACCEPT;
 private:
   void internal_append (jit_instruction *instr);
 
-  void compute_df (size_t visit_count);
+  void compute_df (size_t avisit_count);
 
-  bool update_idom (size_t visit_count);
+  bool update_idom (size_t avisit_count);
 
-  void create_dom_tree (size_t visit_count);
+  void create_dom_tree (size_t avisit_count);
 
   jit_block *idom_intersect (jit_block *b);
-
-  template <typename func_type0, typename func_type1>
-  void do_visit_dom (size_t visit_count, func_type0 inorder,
-                     func_type1 postorder);
 
   size_t mvisit_count;
   size_t mid;
@@ -1387,67 +1403,6 @@ public:
 private:
   jit_phi *muser;
 };
-
-// allow regular function pointers as well as pointers to members
-template <typename func_type>
-class jit_block_callback
-{
-public:
-  jit_block_callback (func_type afunction) : function (afunction) {}
-
-  void operator() (jit_block& block)
-  {
-    function (block);
-  }
-private:
-  func_type function;
-};
-
-template <>
-class jit_block_callback<int>
-{
-public:
-  jit_block_callback (int) {}
-
-  void operator() (jit_block&)
-  {}
-};
-
-template <>
-class jit_block_callback<void (jit_block::*)(void)>
-{
-public:
-  typedef void (jit_block::*func_type)(void);
-
-  jit_block_callback (func_type afunction) : function (afunction) {}
-
-  void operator() (jit_block& ablock)
-  {
-    (ablock.*function) ();
-  }
-private:
-  func_type function;
-};
-
-template <typename func_type0, typename func_type1>
-void
-jit_block::do_visit_dom (size_t visit_count, func_type0 inorder,
-                         func_type1 postorder)
-{
-  if (mvisit_count > visit_count)
-    return;
-  mvisit_count = visit_count + 1;
-
-  jit_block_callback<func_type0> inorder_cb (inorder);
-  inorder_cb (*this);
-
-  for (size_t i = 0; i < dom_succ.size (); ++i)
-    dom_succ[i]->do_visit_dom (visit_count, inorder, postorder);
-
-  jit_block_callback<func_type1> postorder_cb (postorder);
-  postorder_cb (*this);
-}
-
 
 // A non-ssa variable
 class
@@ -2276,15 +2231,13 @@ private:
 
   void construct_ssa (void);
 
-  static void do_construct_ssa (jit_block& block);
+  void do_construct_ssa (jit_block& block, size_t avisit_count);
 
   void remove_dead ();
 
-  typedef std::set<jit_instruction *> instr_set;
-
   void place_releases (void);
 
-  void release_temp (jit_block& ablock, const instr_set& temp);
+  void release_temp (jit_block& ablock, std::set<jit_value *>& temp);
 
   void release_dead_phi (jit_block& ablock);
 
@@ -2321,25 +2274,6 @@ private:
   block_list continues;
 
   void finish_breaks (jit_block *dest, const block_list& lst);
-
-  // compute per block information about temporaries
-  class
-  compute_temp
-  {
-  public:
-    compute_temp (jit_convert& aconvert);
-
-    void operator() (jit_block& block);
-
-    instr_set &temp_out (jit_block& b)
-    {
-      return mtemp_out[b.id ()];
-    }
-  private:
-    jit_convert& convert;
-    std::vector<instr_set> mtemp_out;
-    bool changed;
-  };
 
   // this case is much simpler, just convert from the jit ir to llvm
   class

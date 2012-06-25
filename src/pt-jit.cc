@@ -240,7 +240,6 @@ extern "C" void
 octave_jit_paren_subsasgn_impl (jit_matrix *mat, octave_idx_type index,
                                 double value)
 {
-  std::cout << "impl\n";
   NDArray *array = mat->array;
   if (array->nelem () < index)
     array->resize1 (index);
@@ -1057,6 +1056,21 @@ jit_use::user_parent (void) const
 jit_value::~jit_value (void)
 {}
 
+jit_block *
+jit_value::first_use_block (void)
+{
+  jit_use *use = first_use ();
+  while (use)
+    {
+      if (! isa<jit_error_check> (use->user ()))
+        return use->user_parent ();
+
+      use = use->next ();
+    }
+
+  return 0;
+}
+
 void
 jit_value::replace_with (jit_value *value)
 {
@@ -1322,11 +1336,10 @@ jit_block::print_dom (std::ostream& os) const
 }
 
 void
-jit_block::compute_df (size_t visit_count)
+jit_block::compute_df (size_t avisit_count)
 {
-  if (mvisit_count > visit_count)
+  if (visited (avisit_count))
     return;
-  ++mvisit_count;
 
   if (use_count () >= 2)
     {
@@ -1342,24 +1355,20 @@ jit_block::compute_df (size_t visit_count)
     }
 
   for (size_t i = 0; i < successor_count (); ++i)
-    successor (i)->compute_df (visit_count);
+    successor (i)->compute_df (avisit_count);
 }
 
 bool
-jit_block::update_idom (size_t visit_count)
+jit_block::update_idom (size_t avisit_count)
 {
-  if (mvisit_count > visit_count)
-    return false;
-  ++mvisit_count;
-
-  if (! use_count ())
+  if (visited (avisit_count) || ! use_count ())
     return false;
 
   bool changed = false;
   for (jit_use *use = first_use (); use; use = use->next ())
     {
       jit_block *pred = use->user_parent ();
-      changed = pred->update_idom (visit_count) || changed;
+      changed = pred->update_idom (avisit_count) || changed;
     }
 
   jit_use *use = first_use ();
@@ -1425,17 +1434,16 @@ jit_block::maybe_split (jit_convert& convert, jit_block *asuccessor)
 }
 
 void
-jit_block::create_dom_tree (size_t visit_count)
+jit_block::create_dom_tree (size_t avisit_count)
 {
-  if (mvisit_count > visit_count)
+  if (visited (avisit_count))
     return;
-  ++mvisit_count;
 
   if (idom != this)
     idom->dom_succ.push_back (this);
 
   for (size_t i = 0; i < successor_count (); ++i)
-    successor (i)->create_dom_tree (visit_count);
+    successor (i)->create_dom_tree (avisit_count);
 }
 
 jit_block *
@@ -2405,14 +2413,17 @@ jit_convert::construct_ssa (void)
         }
     }
 
-  entry_block->visit_dom (&jit_convert::do_construct_ssa, &jit_block::pop_all);
+  do_construct_ssa (*entry_block, entry_block->visit_count ());
 }
 
 void
-jit_convert::do_construct_ssa (jit_block& block)
+jit_convert::do_construct_ssa (jit_block& ablock, size_t avisit_count)
 {
+  if (ablock.visited (avisit_count))
+    return;
+
   // replace variables with their current SSA value
-  for (jit_block::iterator iter = block.begin (); iter != block.end (); ++iter)
+  for (jit_block::iterator iter = ablock.begin (); iter != ablock.end (); ++iter)
     {
       jit_instruction *instr = *iter;
       instr->construct_ssa ();
@@ -2420,9 +2431,9 @@ jit_convert::do_construct_ssa (jit_block& block)
     }
 
   // finish phi nodes of successors
-  for (size_t i = 0; i < block.successor_count (); ++i)
+  for (size_t i = 0; i < ablock.successor_count (); ++i)
     {
-      jit_block *finish = block.successor (i);
+      jit_block *finish = ablock.successor (i);
 
       for (jit_block::iterator iter = finish->begin (); iter != finish->end ()
              && isa<jit_phi> (*iter);)
@@ -2431,7 +2442,7 @@ jit_convert::do_construct_ssa (jit_block& block)
           jit_variable *var = phi->dest ();
           if (var->has_top ())
             {
-              phi->add_incomming (&block, var->top ());
+              phi->add_incomming (&ablock, var->top ());
               ++iter;
             }
           else
@@ -2443,6 +2454,11 @@ jit_convert::do_construct_ssa (jit_block& block)
             }
         }
     }
+
+  for (size_t i = 0; i < ablock.dom_successor_count (); ++i)
+    do_construct_ssa (*ablock.dom_successor (i), avisit_count);
+
+  ablock.pop_all ();
 }
 
 void
@@ -2497,34 +2513,67 @@ jit_convert::remove_dead ()
 void
 jit_convert::place_releases (void)
 {
-  compute_temp tinfo (*this);
-
+  std::set<jit_value *> temporaries;
   for (block_list::iterator iter = blocks.begin (); iter != blocks.end ();
        ++iter)
     {
       jit_block& ablock = **iter;
       if (ablock.id () != jit_block::NO_ID)
         {
-          release_temp (ablock, tinfo.temp_out (ablock));
+          release_temp (ablock, temporaries);
           release_dead_phi (ablock);
         }
     }
-
 }
 
 void
-jit_convert::release_temp (jit_block& ablock, const instr_set& temp)
+jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
 {
-  if (! temp.size ())
-    return;
-
-  jit_block *split = ablock.maybe_split (*this, final_block);
-  jit_terminator *term = split->terminator ();
-  for (instr_set::const_iterator iter = temp.begin (); iter != temp.end ();
+  for (jit_block::iterator iter = ablock.begin (); iter != ablock.end ();
        ++iter)
     {
       jit_instruction *instr = *iter;
-      jit_call *release = create<jit_call> (&jit_typeinfo::release, instr);
+
+      // check for temporaries that require release and live across
+      // multiple blocks
+      if (instr->needs_release ())
+        {
+          jit_block *fu_block = instr->first_use_block ();
+          if (fu_block && fu_block != &ablock)
+            temp.insert (instr);
+        }
+
+      if (isa<jit_call> (instr))
+        {
+          // place releases for temporary arguments
+          for (size_t i = 0; i < instr->argument_count (); ++i)
+            {
+              jit_value *arg = instr->argument (i);
+              if (arg->needs_release ())
+                {
+                  jit_call *release = create<jit_call> (&jit_typeinfo::release,
+                                                        arg);
+                  release->infer ();
+                  ablock.insert_after (iter, release);
+                  ++iter;
+                  temp.erase (arg);
+                }
+            }
+        }
+    }
+
+  if (! temp.size () || ! isa<jit_error_check> (ablock.terminator ()))
+    return;
+
+  // FIXME: If we support try/catch or unwind_protect final_block may not be the
+  // destination
+  jit_block *split = ablock.maybe_split (*this, final_block);
+  jit_terminator *term = split->terminator ();
+  for (std::set<jit_value *>::const_iterator iter = temp.begin ();
+       iter != temp.end (); ++iter)
+    {
+      jit_value *value = *iter;
+      jit_call *release = create<jit_call> (&jit_typeinfo::release, value);
       split->insert_before (term, release);
       release->infer ();
     }
@@ -2608,96 +2657,6 @@ jit_convert::finish_breaks (jit_block *dest, const block_list& lst)
     {
       jit_block *b = *iter;
       b->append (create<jit_branch> (dest));
-    }
-}
-
-// -------------------- jit_convert::compute_temp --------------------
-jit_convert::compute_temp::compute_temp (jit_convert& aconvert)
-  : convert (aconvert), mtemp_out (aconvert.final_block->id () + 1)
-{
-  block_list& blocks = convert.blocks;
-
-  // initialze mtemp_out
-  for (block_list::iterator biter = blocks.begin (); biter != blocks.end ();
-       ++biter)
-    {
-      jit_block& block = **biter;
-      instr_set& tout = temp_out (block);
-      for (jit_block::iterator iter = block.begin (); iter != block.end ();
-           ++iter)
-        {
-          jit_instruction *instr = *iter;
-
-          // check for temporaries that require release and live across
-          // multiple blocks
-          if (instr->needs_release ()
-              && instr->use_count () >= 1)
-            {
-              bool parent_in_block = false;
-              jit_use *use = instr->first_use ();
-              while (use)
-                {
-                  // skip error checks, as they do not release their use
-                  if (! isa<jit_error_check> (use->user ())
-                      && use->user_parent () == &block)
-                    {
-                      parent_in_block = true;
-                      break;
-                    }
-
-                  use = use->next ();
-                }
-
-              if (! parent_in_block)
-                tout.insert (instr);
-            }
-
-          if (isa<jit_call> (instr))
-            {
-              // place releases for temporary arguments
-              for (size_t i = 0; i < instr->argument_count (); ++i)
-                {
-                  jit_value *arg = instr->argument (i);
-                  if (arg->needs_release ())
-                    {
-                      jit_call *release
-                        = convert.create<jit_call> (&jit_typeinfo::release,
-                                                    arg);
-                      release->infer ();
-                      block.insert_after (iter, release);
-                      ++iter;
-                    }
-                }
-            }
-        }
-    }
-
-  do
-    {
-      changed = false;
-      convert.entry_block->visit_dom (*this, 0);
-    }
-  while (changed);
-}
-
-void
-jit_convert::compute_temp::operator() (jit_block& block)
-{
-  instr_set& tout = temp_out (block);
-  for (jit_use *use = block.first_use (); use; use = use->next ())
-    {
-      jit_block& pred = *use->user_parent ();
-      instr_set& pred_tout = temp_out (pred);
-      for (instr_set::iterator iter = pred_tout.begin ();
-           iter != pred_tout.end (); ++ iter)
-        {
-          jit_instruction *instr = *iter;
-          jit_block *use_in = instr->parent ();
-
-          // FIXME: Only valid until we support try/catch or unwind_protect
-          if (use_in != &block && &block != convert.final_block)
-            changed = changed || tout.insert (instr).second;
-        }
     }
 }
 

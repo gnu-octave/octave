@@ -118,4 +118,26 @@ extern OCTAVE_API int __lo_ieee_float_signbit (float);
 #define lo_ieee_signbit(x) (sizeof (x) == sizeof (float) ? \
                           __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
 
+#ifdef __cplusplus
+
+template <typename T>
+struct octave_numeric_limits
+{
+  static T NA (void) { return static_cast<T> (0); }
+};
+
+template <>
+struct octave_numeric_limits<double>
+{
+  static double NA (void) { return octave_NA; }
+};
+
+template <>
+struct octave_numeric_limits<float>
+{
+  static float NA (void) { return octave_Float_NA; }
+};
+
+#endif
+
 #endif

@@ -30,9 +30,7 @@ public:
   {
     octave,
     terminal,
-    documentation,
-    chat,
-    chat_new_message
+    documentation
   };
 
   ~resource_manager ();

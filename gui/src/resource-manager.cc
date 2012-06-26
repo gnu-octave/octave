@@ -24,6 +24,7 @@ resource_manager resource_manager::_singleton;
 resource_manager::resource_manager ()
 {
   _settings = 0;
+  _first_run = false;
   reload_settings ();
 }
 
@@ -49,21 +50,23 @@ resource_manager::reload_settings ()
 {
   QDesktopServices desktopServices;
   _home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  set_settings(_home_path + "/.config/octave-gui/settings");
+  QString settings_file = _home_path + "/.config/octave-gui/settings";
+
+  if (!QFile::exists (settings_file))
+   {
+     QFile::copy ("../default-settings", settings_file);
+     _first_run = true;
+   }
+  else
+     _first_run = false;
+
+  set_settings (settings_file);
 }
 
 void
 resource_manager::set_settings (QString file)
 {
   delete _settings;
-
-  _first_run = false;
-  if (!QFile::exists (file))
-    _first_run = true;
-
-  // If the settings file does not exist, QSettings automatically creates it.
-  // Therefore we have to check if it exists before instantiating the settings object.
-  // That way we can detect if the user ran this application before.
   _settings = new QSettings (file, QSettings::IniFormat);
 }
 
@@ -122,8 +125,6 @@ resource_manager::load_icons ()
   _icons [resource_manager::octave] = QIcon ("../media/logo.png");
   _icons [resource_manager::terminal] = QIcon ("../media/terminal.png");
   _icons [resource_manager::documentation] = QIcon ("../media/help_index.png");
-  _icons [resource_manager::chat] = QIcon ("../media/chat.png");
-  _icons [resource_manager::chat_new_message] = QIcon ("../media/jabber_protocol.png");
 }
 
 const char*

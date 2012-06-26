@@ -17,11 +17,12 @@
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
+#include "octave-link.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
 
 file_editor_tab::file_editor_tab(file_editor *fileEditor)
-  : QWidget ((QWidget*)fileEditor)
+  : QWidget ((QWidget*)fileEditor), octave_event_observer ()
 {
   QSettings *settings = resource_manager::instance ()->get_settings ();
   _file_editor = fileEditor;
@@ -93,6 +94,26 @@ bool
 file_editor_tab::copy_available ()
 {
   return _copy_available;
+}
+
+void
+file_editor_tab::event_accepted (octave_event *e)
+{
+  if (dynamic_cast<octave_run_file_event*> (e))
+    {
+      // File was run successfully.
+    }
+  delete e;
+}
+
+void
+file_editor_tab::event_reject (octave_event *e)
+{
+  if (dynamic_cast<octave_run_file_event*> (e))
+    {
+      // Running file failed.
+    }
+  delete e;
 }
 
 void
@@ -440,8 +461,15 @@ file_editor_tab::save_file_as ()
   QFileDialog fileDialog(this);
   if (saveFileName == UNNAMED_FILE || saveFileName.isEmpty ())
     {
-      saveFileName = QDir::homePath ();
-      fileDialog.setDirectory (saveFileName);
+      QString directory = QString::fromStdString
+          (octave_link::instance ()->get_last_working_directory ());
+
+      if (directory.isEmpty ())
+        {
+          directory = QDir::homePath ();
+        }
+
+      fileDialog.setDirectory (directory);
     }
   else
     {
@@ -471,7 +499,9 @@ file_editor_tab::run_file ()
     save_file(_file_name);
 
   _file_editor->terminal ()->sendText (QString ("run \'%1\'\n").arg (_file_name));
-  _file_editor->terminal ()->setFocus ();
+  // TODO: Sending a run event crashes for long scripts. Find out why.
+  //  octave_link::instance ()
+  //      ->post_event (new octave_run_file_event (*this, _file_name.toStdString ()));
 }
 
 void

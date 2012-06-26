@@ -20,6 +20,8 @@
 
 #include <string>
 #include "octave-event-observer.h"
+#include "octave/config.h"
+#include "symtab.h"
 #include "oct-env.h"
 #include "pt-eval.h"
 #include "toplev.h"
@@ -129,7 +131,30 @@ class octave_exit_event : public octave_event
     { clean_up_and_exit (0); return true; }
 };
 
-/** Implements a change directory events. */
+/** Implements an octave run file event. */
+class octave_run_file_event : public octave_event
+{
+  public:
+    /** Creates a new octave_run_file_event. */
+    octave_run_file_event (octave_event_observer& o,
+                           std::string file)
+      : octave_event (o)
+    { _file = file; }
+
+    bool perform ()
+    {
+      octave_value_list args;
+      args.append (octave_value (_file));
+      call_octave_function ("run", args);
+      finish_readline_event ();
+      return true;
+    }
+
+  private:
+    std::string _file;
+};
+
+/** Implements a change directory event. */
 class octave_change_directory_event : public octave_event
 {
   public:
@@ -144,6 +169,66 @@ class octave_change_directory_event : public octave_event
 
   private:
     std::string _directory;
+};
+
+/** Implements a clear workspace event. */
+class octave_clear_workspace_event : public octave_event
+{
+  public:
+    /** Creates a new octave_run_file_event. */
+    octave_clear_workspace_event (octave_event_observer& o)
+      : octave_event (o)
+    { }
+
+    bool perform ()
+    {
+      call_octave_function ("clear");
+      return true;
+    }
+};
+
+/** Implements a load workspace event. */
+class octave_load_workspace_event : public octave_event
+{
+  public:
+    /** Creates a new octave_change_directory_event. */
+    octave_load_workspace_event (octave_event_observer& o,
+                                 std::string file)
+      : octave_event (o)
+    { _file = file; }
+
+    bool perform ()
+    {
+      octave_value_list args;
+      args.append (octave_value (_file));
+      call_octave_function ("load", args);
+      return true;
+    }
+
+  private:
+    std::string _file;
+};
+
+/** Implements a save workspace event. */
+class octave_save_workspace_event : public octave_event
+{
+  public:
+    /** Creates a new octave_change_directory_event. */
+    octave_save_workspace_event (octave_event_observer& o,
+                                 std::string file)
+      : octave_event (o)
+    { _file = file; }
+
+    bool perform ()
+    {
+      octave_value_list args;
+      args.append (octave_value (_file));
+      call_octave_function ("save", args);
+      return true;
+    }
+
+  private:
+    std::string _file;
 };
 
 class octave_debug_step_into_event : public octave_event

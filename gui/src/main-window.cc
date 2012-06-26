@@ -78,8 +78,9 @@ main_window::handle_save_workspace_request ()
   QString selectedFile =
       QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
                                     resource_manager::instance ()->get_home_path ());
-  _terminal->sendText (QString ("save \'%1\'\n").arg (selectedFile));
-  _terminal->setFocus ();
+  octave_link::instance ()
+      ->post_event (new octave_save_workspace_event (*this,
+        selectedFile.toStdString()));
 }
 
 void
@@ -90,16 +91,17 @@ main_window::handle_load_workspace_request ()
                                     resource_manager::instance ()->get_home_path ());
   if (!selectedFile.isEmpty ())
     {
-      _terminal->sendText (QString ("load \'%1\'\n").arg (selectedFile));
-      _terminal->setFocus ();
+      octave_link::instance ()
+          ->post_event (new octave_load_workspace_event (*this,
+            selectedFile.toStdString()));
     }
 }
 
 void
 main_window::handle_clear_workspace_request ()
 {
-  _terminal->sendText ("clear\n");
-  _terminal->setFocus ();
+  octave_link::instance ()
+      ->post_event (new octave_clear_workspace_event (*this));
 }
 
 void

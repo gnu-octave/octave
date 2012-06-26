@@ -107,6 +107,8 @@ public:
   void finished_readline_hook ();
   performance_information get_performance_information ();
 
+  std::string get_last_working_directory ();
+
 private:
   /** Singleton. */
   octave_link ();

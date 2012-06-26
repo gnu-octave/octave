@@ -23,13 +23,18 @@
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
 
+#include "octave-event-observer.h"
+
 class file_editor;
-class file_editor_tab : public QWidget
+class file_editor_tab : public QWidget, public octave_event_observer
 {
   Q_OBJECT
 public:
   file_editor_tab (file_editor *fileEditor);
   bool copy_available ();
+
+  void event_accepted (octave_event *e);
+  void event_reject (octave_event *e);
 
 public slots:
   void update_window_title(bool modified);

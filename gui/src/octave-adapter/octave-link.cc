@@ -162,3 +162,9 @@ octave_link::get_performance_information ()
   _performance_information_mutex->unlock ();
   return p;
 }
+
+std::string
+octave_link::get_last_working_directory ()
+{
+  return _last_working_directory;
+}

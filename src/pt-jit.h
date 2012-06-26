@@ -53,9 +53,11 @@ along with Octave; see the file COPYING.  If not, see
 // The jit_functions contain information about overloads for different types.
 // For, example, if we know a and b are scalars, then c must also be a scalar.
 //
+// Support for function calls is in progress. Currently, calls to sin with a
+// scalar argument will compile.
 //
 // TODO:
-// 1. Function calls
+// 1. Function calls (In progress)
 // 2. Cleanup/documentation
 // 3. ...
 // ---------------------------------------------------------
@@ -681,6 +683,7 @@ private:
   jit_type *string;
   jit_type *boolean;
   jit_type *index;
+  jit_type *sin_type;
 
   std::vector<jit_function> binary_ops;
   jit_function grab_fn;

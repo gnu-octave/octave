@@ -152,5 +152,16 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args,
   return retval;
 }
 
+jit_type *
+octave_builtin::to_jit (void) const
+{
+  return jtype;
+}
+
+void
+octave_builtin::stash_jit (jit_type &type)
+{
+  jtype = &type;
+}
 
 const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = 0;

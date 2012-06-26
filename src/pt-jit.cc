@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <llvm/Module.h>
 #include <llvm/Function.h>
 #include <llvm/BasicBlock.h>
+#include <llvm/Intrinsics.h>
 #include <llvm/Support/IRBuilder.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
@@ -53,6 +54,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "octave.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
+#include "ov-builtin.h"
 #include "ov-scalar.h"
 #include "pt-all.h"
 
@@ -406,6 +408,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   boolean = new_type ("bool", any, bool_t);
   index = new_type ("index", any, index_t);
 
+  sin_type = new_type ("sin", any, any_t);
+
   casts.resize (next_id + 1);
   identities.resize (next_id + 1, 0);
 
@@ -474,6 +478,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   // release any
   fn = create_function ("octave_jit_release_any", void_t, any_t);
+  llvm::Function *release_any = fn;
   engine->addGlobalMapping (fn,
                             reinterpret_cast<void*>(&octave_jit_release_any));
   release_fn.add_overload (fn, false, 0, any);
@@ -892,6 +897,37 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // cast scalar <- scalar
   fn = create_identity (scalar);
   casts[scalar->type_id ()].add_overload (fn, false, scalar, scalar);
+
+
+  // -------------------- builtin functions --------------------
+
+  // FIXME: Handling this here is messy, but it's the easiest way for now
+  // FIXME: Come up with a nicer way of defining functions
+  octave_value ov_sin = symbol_table::builtin_find ("sin");
+  octave_builtin *bsin
+    = dynamic_cast<octave_builtin *> (ov_sin.internal_rep ());
+  if (bsin)
+    {
+      bsin->stash_jit (*sin_type);
+
+      llvm::Function *isin
+        = llvm::Intrinsic::getDeclaration (module, llvm::Intrinsic::sin,
+                                           llvm::makeArrayRef (scalar_t));
+      fn = create_function ("octave_jit_sin", scalar, any, scalar);
+      body = llvm::BasicBlock::Create (context, "body", fn);
+      builder.SetInsertPoint (body);
+      {
+        llvm::Value *ret = builder.CreateCall (isin, ++fn->arg_begin ());
+        builder.CreateRet (ret);
+      }
+      llvm::verifyFunction (*fn);
+      paren_subsref_fn.add_overload (fn, false, scalar, sin_type, scalar);
+      release_fn.add_overload (release_any, false, 0, sin_type);
+
+      fn = create_identity (any);
+      casts[any->type_id ()].add_overload (fn, false, any, sin_type);
+      casts[sin_type->type_id ()].add_overload (fn, false, sin_type, any);
+    }
 }
 
 void
@@ -1019,7 +1055,13 @@ jit_type *
 jit_typeinfo::do_type_of (const octave_value &ov) const
 {
   if (ov.is_function ())
-    return 0; // functions are not supported
+    {
+      // FIXME: This is ugly, we need to finalize how we want to to this, then
+      // have octave_value fully support the needed functionality
+      octave_builtin *builtin
+        = dynamic_cast<octave_builtin *> (ov.internal_rep ());
+      return builtin ? builtin->to_jit () : 0;
+    }
 
   if (ov.is_range ())
     return get_range ();

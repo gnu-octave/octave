@@ -195,8 +195,11 @@ octave_fgetl (FILE *f, bool& eof)
   return retval;
 }
 
+// Note that the caller is responsible for repositioning the stream on
+// failure.
+
 static inline double
-read_inf_nan_na (std::istream& is, char c0, char sign = '+')
+read_inf_nan_na (std::istream& is, char c0)
 {
   double d = 0.0;
 
@@ -209,21 +212,12 @@ read_inf_nan_na (std::istream& is, char c0, char sign = '+')
           {
             char c2 = is.get ();
             if (c2 == 'f' || c2 == 'F')
-              d = sign == '-' ? -octave_Inf : octave_Inf;
+              d = octave_Inf;
             else
-              {
-                is.putback (c2);
-                is.putback (c1);
-                is.putback (c0);
-                is.setstate (std::ios::failbit);
-              }
+              is.setstate (std::ios::failbit);
           }
         else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
+          is.setstate (std::ios::failbit);
       }
       break;
 
@@ -236,17 +230,10 @@ read_inf_nan_na (std::istream& is, char c0, char sign = '+')
             if (c2 == 'n' || c2 == 'N')
               d = octave_NaN;
             else
-              {
-                is.putback (c2);
-                d = octave_NA;
-              }
+              d = octave_NA;
           }
         else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
+          is.setstate (std::ios::failbit);
       }
       break;
 
@@ -265,40 +252,37 @@ octave_read_value (std::istream& is)
 {
   double d = 0.0;
 
+  // FIXME -- resetting stream position is likely to fail unless we are
+  // reading from a file.
+  std::ios::streampos pos = is.tellg ();
+
   char c1 = ' ';
 
   while (isspace (c1))
     c1 = is.get ();
 
+  bool neg = false;
+
   switch (c1)
     {
     case '-':
-      {
-        char c2 = 0;
-        c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_inf_nan_na (is, c2, c1);
-        else
-          {
-            is.putback (c2);
-            is.putback (c1);
-            is >> d;
-          }
-      }
-      break;
+      neg = true;
+      // fall through...
 
     case '+':
       {
         char c2 = 0;
         c2 = is.get ();
         if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_inf_nan_na (is, c2, c1);
+          d = read_inf_nan_na (is, c2);
         else
           {
             is.putback (c2);
-            is.putback (c1);
             is >> d;
           }
+
+        if (neg && ! is.fail ())
+          d = -d;
       }
       break;
 
@@ -310,6 +294,15 @@ octave_read_value (std::istream& is)
     default:
       is.putback (c1);
       is >> d;
+      break;
+    }
+
+  std::ios::iostate status = is.rdstate ();
+  if (status & std::ios::failbit)
+    {
+      is.clear ();
+      is.seekg (pos);
+      is.setstate (status);
     }
 
   return d;
@@ -358,6 +351,9 @@ octave_read_value (std::istream& is)
 
 }
 
+// Note that the caller is responsible for repositioning the stream on
+// failure.
+
 static inline float
 read_float_inf_nan_na (std::istream& is, char c0, char sign = '+')
 {
@@ -372,21 +368,12 @@ read_float_inf_nan_na (std::istream& is, char c0, char sign = '+')
           {
             char c2 = is.get ();
             if (c2 == 'f' || c2 == 'F')
-              d = sign == '-' ? -octave_Float_Inf : octave_Float_Inf;
+              d = octave_Float_Inf;
             else
-              {
-                is.putback (c2);
-                is.putback (c1);
-                is.putback (c0);
-                is.setstate (std::ios::failbit);
-              }
+              is.setstate (std::ios::failbit);
           }
         else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
+          is.setstate (std::ios::failbit);
       }
       break;
 
@@ -399,17 +386,10 @@ read_float_inf_nan_na (std::istream& is, char c0, char sign = '+')
             if (c2 == 'n' || c2 == 'N')
               d = octave_Float_NaN;
             else
-              {
-                is.putback (c2);
-                d = octave_Float_NA;
-              }
+              d = octave_Float_NA;
           }
         else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
+          is.setstate (std::ios::failbit);
       }
       break;
 
@@ -428,40 +408,37 @@ octave_read_value (std::istream& is)
 {
   float d = 0.0;
 
+  // FIXME -- resetting stream position is likely to fail unless we are
+  // reading from a file.
+  std::ios::streampos pos = is.tellg ();
+
   char c1 = ' ';
 
   while (isspace (c1))
     c1 = is.get ();
 
+  bool neg = false;
+
   switch (c1)
     {
     case '-':
-      {
-        char c2 = 0;
-        c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_float_inf_nan_na (is, c2, c1);
-        else
-          {
-            is.putback (c2);
-            is.putback (c1);
-            is >> d;
-          }
-      }
-      break;
+      neg = true;
+      // fall through...
 
     case '+':
       {
         char c2 = 0;
         c2 = is.get ();
         if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_float_inf_nan_na (is, c2, c1);
+          d = read_float_inf_nan_na (is, c2);
         else
           {
             is.putback (c2);
-            is.putback (c1);
             is >> d;
           }
+
+        if (neg && ! is.fail ())
+          d = -d;
       }
       break;
 
@@ -473,6 +450,15 @@ octave_read_value (std::istream& is)
     default:
       is.putback (c1);
       is >> d;
+      break;
+    }
+
+  std::ios::iostate status = is.rdstate ();
+  if (status & std::ios::failbit)
+    {
+      is.clear ();
+      is.seekg (pos);
+      is.setstate (status);
     }
 
   return d;

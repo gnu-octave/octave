@@ -549,7 +549,7 @@ width 0.6pt \tabskip=0pt\cr
 & $a >= b$ && ge (a, b) && Greater than or equal to operator&\cr
 & $a == b$ && eq (a, b) && Equal to operator&\cr
 & $a != b$ && ne (a, b) && Not equal to operator&\cr
-& $a \& b$ && and (a, b) && Logical and operator&\cr
+& $a & b$ && and (a, b) && Logical and operator&\cr
 & $a | b$ && or (a, b) && Logical or operator&\cr
 & $! b$ && not (a) && Logical not operator&\cr
 & $a'$ && ctranspose (a) && Complex conjugate transpose operator &\cr

@@ -87,9 +87,9 @@ public slots:
   void notice_settings ();
   void prepare_for_quit ();
   void reset_windows ();
-  void update_current_working_directory (QString directory);
+  void current_working_directory_has_changed (QString directory);
   void change_current_working_directory ();
-  void change_current_working_directory (QString directory);
+  void set_current_working_directory (QString directory);
   void current_working_directory_up ();
 
   void handle_entered_debug_mode ();

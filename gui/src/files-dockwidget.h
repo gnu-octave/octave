@@ -46,7 +46,8 @@ public slots:
   /** Slot for handling the up-directory button in the toolbar. */
   void do_up_directory ();
   void set_current_directory (QString currentDirectory);
-  void current_directory_entered ();
+  void handle_directory_entered ();
+  void display_directory (QString directory);
 
   /** Tells the widget to notice settings that are probably new. */
   void notice_settings ();
@@ -54,6 +55,7 @@ public slots:
 
 signals:
   void open_file (QString fileName);
+  void displayed_directory_changed (QString directory);
 
   /** Custom signal that tells if a user has clicke away that dock widget. */
   void active_changed (bool active);
@@ -63,6 +65,8 @@ protected:
 
 private:
   // TODO: Add toolbar with buttons for navigating the path, creating dirs, etc
+
+  QString           _last_current_directory;
 
   /** Toolbar for file and directory manipulation. */
   QToolBar *        _navigation_tool_bar;

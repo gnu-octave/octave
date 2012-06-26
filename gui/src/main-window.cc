@@ -162,7 +162,7 @@ main_window::reset_windows ()
 }
 
 void
-main_window::update_current_working_directory (QString directory)
+main_window::current_working_directory_has_changed (QString directory)
 {
   if (_current_directory_combo_box->count () > 31)
     {
@@ -171,6 +171,8 @@ main_window::update_current_working_directory (QString directory)
   _current_directory_combo_box->addItem (directory);
   int index = _current_directory_combo_box->findText (directory);
   _current_directory_combo_box->setCurrentIndex (index);
+
+  _files_dock_widget->set_current_directory (directory);
 }
 
 void
@@ -188,7 +190,7 @@ main_window::change_current_working_directory ()
 }
 
 void
-main_window::change_current_working_directory (QString directory)
+main_window::set_current_working_directory (QString directory)
 {
   octave_link::instance ()
       ->post_event (new octave_change_directory_event (*this,
@@ -524,6 +526,8 @@ main_window::construct ()
            this,                        SLOT   (notice_settings ()));
   connect (_files_dock_widget,          SIGNAL (open_file (QString)),
            _file_editor,                SLOT   (request_open_file (QString)));
+  connect (_files_dock_widget,          SIGNAL (displayed_directory_changed(QString)),
+           this,                        SLOT   (set_current_working_directory(QString)));
   connect (_history_dock_widget,        SIGNAL (information (QString)),
            this,                        SLOT   (report_status_message (QString)));
   connect (_history_dock_widget,        SIGNAL (command_double_clicked (QString)),
@@ -543,7 +547,7 @@ main_window::construct ()
   connect (paste_action,                SIGNAL (triggered()),
            _terminal,                   SLOT   (pasteClipboard ()));
   connect (_current_directory_combo_box, SIGNAL (activated (QString)),
-           this,                        SLOT (change_current_working_directory (QString)));
+           this,                        SLOT (set_current_working_directory (QString)));
   connect (_debug_continue,             SIGNAL (triggered ()),
            this,                        SLOT (debug_continue ()));
   connect (_debug_step_into,            SIGNAL (triggered ()),
@@ -571,7 +575,7 @@ main_window::construct ()
   connect (_octave_qt_event_listener,
            SIGNAL (current_directory_has_changed_signal (QString)),
            this,
-           SLOT (update_current_working_directory (QString)));
+           SLOT (current_working_directory_has_changed (QString)));
 
   connect (_octave_qt_event_listener,
            SIGNAL (entered_debug_mode_signal ()),

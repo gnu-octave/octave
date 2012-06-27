@@ -84,6 +84,7 @@ namespace llvm
 }
 
 class octave_base_value;
+class octave_builtin;
 class octave_value;
 class tree;
 class tree_expression;
@@ -329,6 +330,11 @@ public:
       arguments[2] = arg2;
     }
 
+    overload (llvm::Function *f, bool e, jit_type *r,
+              const std::vector<jit_type *>& aarguments)
+      : function (f), can_error (e), result (r), arguments (aarguments)
+    {}
+
     llvm::Function *function;
     bool can_error;
     jit_type *result;
@@ -357,6 +363,13 @@ public:
                      jit_type *arg1, jit_type *arg2)
   {
     overload ol (f, e, r, arg0, arg1, arg2);
+    add_overload (ol);
+  }
+
+  void add_overload (llvm::Function *f, bool e, jit_type *r,
+                     const std::vector<jit_type *>& args)
+  {
+    overload ol (f, e, r, args);
     add_overload (ol);
   }
 
@@ -660,12 +673,39 @@ private:
     return create_function (name, ret, args);
   }
 
+  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
+                                   const std::vector<jit_type *>& args);
+
   llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
                                    const std::vector<llvm::Type *>& args);
 
   llvm::Function *create_identity (jit_type *type);
 
   llvm::Value *do_insert_error_check (void);
+
+  void add_builtin (const std::string& name);
+
+  void register_intrinsic (const std::string& name, size_t id,
+                           jit_type *result, jit_type *arg0)
+  {
+    std::vector<jit_type *> args (1, arg0);
+    register_intrinsic (name, id, result, args);
+  }
+
+  void register_intrinsic (const std::string& name, size_t id, jit_type *result,
+                           const std::vector<jit_type *>& args);
+
+  void register_generic (const std::string& name, jit_type *result,
+                         jit_type *arg0)
+  {
+    std::vector<jit_type *> args (1, arg0);
+    register_generic (name, result, args);
+  }
+
+  void register_generic (const std::string& name, jit_type *result,
+                         const std::vector<jit_type *>& args);
+
+  octave_builtin *find_builtin (const std::string& name);
 
   static jit_typeinfo *instance;
 
@@ -683,7 +723,7 @@ private:
   jit_type *string;
   jit_type *boolean;
   jit_type *index;
-  jit_type *sin_type;
+  std::map<std::string, jit_type *> builtins;
 
   std::vector<jit_function> binary_ops;
   jit_function grab_fn;

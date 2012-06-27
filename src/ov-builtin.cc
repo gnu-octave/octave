@@ -164,4 +164,10 @@ octave_builtin::stash_jit (jit_type &type)
   jtype = &type;
 }
 
+octave_builtin::fcn
+octave_builtin::function (void) const
+{
+  return f;
+}
+
 const std::list<octave_lvalue> *octave_builtin::curr_lvalue_list = 0;

@@ -80,6 +80,8 @@ public:
 
   void stash_jit (jit_type& type);
 
+  fcn function (void) const;
+
   static const std::list<octave_lvalue> *curr_lvalue_list;
 
 protected:

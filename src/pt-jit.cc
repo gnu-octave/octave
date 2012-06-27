@@ -261,6 +261,55 @@ octave_jit_print_matrix (jit_matrix *m)
   std::cout << *m << std::endl;
 }
 
+static void
+gripe_bad_result (void)
+{
+  error ("incorrect type information given to the JIT compiler");
+}
+
+// FIXME: Add support for multiple outputs
+extern "C" octave_base_value *
+octave_jit_call (octave_builtin::fcn fn, size_t nargin,
+                 octave_base_value **argin, jit_type *result_type)
+{
+  octave_value_list ovl (nargin);
+  for (size_t i = 0; i < nargin; ++i)
+    ovl.xelem (i) = octave_value (argin[i]);
+
+  ovl = fn (ovl, 1);
+
+  // These type checks are not strictly required, but I'm guessing that
+  // incorrect types will be entered on occasion. This will be very difficult to
+  // debug unless we do the sanity check here.
+  if (result_type)
+    {
+      if (ovl.length () != 1)
+        {
+          gripe_bad_result ();
+          return 0;
+        }
+
+      octave_value& result = ovl.xelem (0);
+      jit_type *jtype = jit_typeinfo::join (jit_typeinfo::type_of (result),
+                                            result_type);
+      if (jtype != result_type)
+        {
+          gripe_bad_result ();
+          return 0;
+        }
+
+      octave_base_value *ret = result.internal_rep ();
+      ret->grab ();
+      return ret;
+    }
+
+  if (! (ovl.length () == 0
+         || (ovl.length () == 1 && ovl.xelem (0).is_undefined ())))
+    gripe_bad_result ();
+
+  return 0;
+}
+
 // -------------------- jit_range --------------------
 std::ostream&
 operator<< (std::ostream& os, const jit_range& rng)
@@ -407,8 +456,6 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   string = new_type ("string", any, string_t);
   boolean = new_type ("bool", any, bool_t);
   index = new_type ("index", any, index_t);
-
-  sin_type = new_type ("sin", any, any_t);
 
   casts.resize (next_id + 1);
   identities.resize (next_id + 1, 0);
@@ -900,33 +947,27 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
 
   // -------------------- builtin functions --------------------
+  add_builtin ("sin");
+  register_intrinsic ("sin", llvm::Intrinsic::sin, scalar, scalar);
+  register_generic ("sin", matrix, matrix);
 
-  // FIXME: Handling this here is messy, but it's the easiest way for now
-  // FIXME: Come up with a nicer way of defining functions
-  octave_value ov_sin = symbol_table::builtin_find ("sin");
-  octave_builtin *bsin
-    = dynamic_cast<octave_builtin *> (ov_sin.internal_rep ());
-  if (bsin)
+  add_builtin ("cos");
+  register_intrinsic ("cos", llvm::Intrinsic::cos, scalar, scalar);
+  register_generic ("cos", matrix, matrix);
+
+  add_builtin ("exp");
+  register_intrinsic ("exp", llvm::Intrinsic::cos, scalar, scalar);
+  register_generic ("exp", matrix, matrix);
+
+  casts.resize (next_id + 1);
+  fn = create_identity (any);
+  for (std::map<std::string, jit_type *>::iterator iter = builtins.begin ();
+       iter != builtins.end (); ++iter)
     {
-      bsin->stash_jit (*sin_type);
-
-      llvm::Function *isin
-        = llvm::Intrinsic::getDeclaration (module, llvm::Intrinsic::sin,
-                                           llvm::makeArrayRef (scalar_t));
-      fn = create_function ("octave_jit_sin", scalar, any, scalar);
-      body = llvm::BasicBlock::Create (context, "body", fn);
-      builder.SetInsertPoint (body);
-      {
-        llvm::Value *ret = builder.CreateCall (isin, ++fn->arg_begin ());
-        builder.CreateRet (ret);
-      }
-      llvm::verifyFunction (*fn);
-      paren_subsref_fn.add_overload (fn, false, scalar, sin_type, scalar);
-      release_fn.add_overload (release_any, false, 0, sin_type);
-
-      fn = create_identity (any);
-      casts[any->type_id ()].add_overload (fn, false, any, sin_type);
-      casts[sin_type->type_id ()].add_overload (fn, false, sin_type, any);
+      jit_type *btype = iter->second;
+      release_fn.add_overload (release_any, false, 0, btype);
+      casts[any->type_id ()].add_overload (fn, false, any, btype);
+      casts[btype->type_id ()].add_overload (fn, false, btype, any);
     }
 }
 
@@ -1014,6 +1055,19 @@ jit_typeinfo::add_binary_fcmp (jit_type *ty, int op, int llvm_op)
 }
 
 llvm::Function *
+jit_typeinfo::create_function (const llvm::Twine& name, jit_type *ret,
+                               const std::vector<jit_type *>& args)
+{
+  llvm::Type *void_t = llvm::Type::getVoidTy (context);
+  std::vector<llvm::Type *> llvm_args (args.size (), void_t);
+  for (size_t i = 0; i < args.size (); ++i)
+    if (args[i])
+      llvm_args[i] = args[i]->to_llvm ();
+
+  return create_function (name, ret ? ret->to_llvm () : void_t, llvm_args);
+}
+
+llvm::Function *
 jit_typeinfo::create_function (const llvm::Twine& name, llvm::Type *ret,
                                const std::vector<llvm::Type *>& args)
 {
@@ -1049,6 +1103,74 @@ llvm::Value *
 jit_typeinfo::do_insert_error_check (void)
 {
   return builder.CreateLoad (lerror_state);
+}
+
+void
+jit_typeinfo::add_builtin (const std::string& name)
+{
+  jit_type *btype = new_type (name, any, any->to_llvm ());
+  builtins[name] = btype;
+
+  octave_builtin *ov_builtin = find_builtin (name);
+  if (ov_builtin)
+    ov_builtin->stash_jit (*btype);
+}
+
+void
+jit_typeinfo::register_intrinsic (const std::string& name, size_t iid,
+                                  jit_type *result,
+                                  const std::vector<jit_type *>& args)
+{
+  jit_type *builtin_type = builtins[name];
+  size_t nargs = args.size ();
+  llvm::SmallVector<llvm::Type *, 5> llvm_args (nargs);
+  for (size_t i = 0; i < nargs; ++i)
+    llvm_args[i] = args[i]->to_llvm ();
+
+  llvm::Intrinsic::ID id = static_cast<llvm::Intrinsic::ID> (iid);
+  llvm::Function *ifun = llvm::Intrinsic::getDeclaration (module, id,
+                                                          llvm_args);
+  std::stringstream fn_name;
+  fn_name << "octave_jit_" << name;
+
+  std::vector<jit_type *> args1 (nargs + 1);
+  args1[0] = builtin_type;
+  std::copy (args.begin (), args.end (), args1.begin () + 1);
+
+  // The first argument will be the Octave function, but we already know that
+  // the function call is the equivalent of the intrinsic, so we ignore it and
+  // call the intrinsic with the remaining arguments.
+  llvm::Function *fn = create_function (fn_name.str (), result, args1);
+  llvm::BasicBlock *body = llvm::BasicBlock::Create (context, "body", fn);
+  builder.SetInsertPoint (body);
+
+  llvm::SmallVector<llvm::Value *, 5> fargs (nargs);
+  llvm::Function::arg_iterator iter = fn->arg_begin ();
+  ++iter;
+  for (size_t i = 0; i < nargs; ++i, ++iter)
+    fargs[i] = iter;
+
+  llvm::Value *ret = builder.CreateCall (ifun, fargs);
+  builder.CreateRet (ret);
+  llvm::verifyFunction (*fn);
+
+  paren_subsref_fn.add_overload (fn, false, result, args1);
+}
+
+octave_builtin *
+jit_typeinfo::find_builtin (const std::string& name)
+{
+  // FIXME: Finalize what we want to store in octave_builtin, then add functions
+  // to access these values in octave_value
+  octave_value ov_builtin = symbol_table::find (name);
+  return dynamic_cast<octave_builtin *> (ov_builtin.internal_rep ());
+}
+
+void
+jit_typeinfo::register_generic (const std::string&, jit_type *,
+                                const std::vector<jit_type *>&)
+{
+  // FIXME: Implement
 }
 
 jit_type *

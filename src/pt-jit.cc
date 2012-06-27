@@ -263,13 +263,30 @@ octave_jit_paren_subsasgn_matrix_range (jit_matrix *result, jit_matrix *mat,
   if (*array->jit_ref_count () == 1
       && index->all_elements_are_ints ())
     {
-      octave_idx_type base = static_cast<octave_idx_type> (index->base);
+      // this code is similar to idx_vector::fill, but we avoid allocating an
+      // idx_vector and its associated rep
+      octave_idx_type start = static_cast<octave_idx_type> (index->base) - 1;
+      octave_idx_type step = static_cast<octave_idx_type> (index->inc);
       octave_idx_type nelem = index->nelem;
-      if (base > 0 && base + nelem <= array->nelem ())
+      octave_idx_type final = start + nelem * step;
+      if (step < 0)
+        {
+          step = -step;
+          std::swap (final, start);
+        }
+
+      if (start >= 0 && final < mat->slice_len)
         {
           done = true;
+
           double *data = array->jit_slice_data ();
-          std::fill (data + base - 1, data + base + nelem - 1, value);
+          if (step == 1)
+            std::fill (data + start, data + start + nelem, value);
+          else
+            {
+              for (octave_idx_type i = start; i < final; i += step)
+                data[i] = value;
+            }
         }
     }
 

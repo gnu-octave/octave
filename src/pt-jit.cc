@@ -613,6 +613,10 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // now for binary index operators
   add_binary_op (index, octave_value::op_add, llvm::Instruction::Add);
 
+  // and binary bool operators
+  add_binary_op (boolean, octave_value::op_el_or, llvm::Instruction::Or);
+  add_binary_op (boolean, octave_value::op_el_and, llvm::Instruction::And);
+
   // now for printing functions
   print_fn.stash_name ("print");
   add_print (any, reinterpret_cast<void*> (&octave_jit_print_any));
@@ -1880,9 +1884,9 @@ jit_convert::visit_argument_list (tree_argument_list&)
 void
 jit_convert::visit_binary_expression (tree_binary_expression& be)
 {
+  // this is the case for bool_or and bool_and
   if (be.op_type () >= octave_value::num_binary_ops)
-    // this is the case for bool_or and bool_and
-    fail ();
+    fail ("Unsupported binary operator");
 
   tree_expression *lhs = be.lhs ();
   jit_value *lhsv = visit (lhs);

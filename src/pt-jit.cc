@@ -249,10 +249,39 @@ octave_jit_paren_subsasgn_impl (jit_matrix *mat, octave_idx_type index,
   double *data = array->fortran_vec ();
   data[index - 1] = value;
 
-  mat->ref_count = array->jit_ref_count ();
-  mat->slice_data = array->jit_slice_data () - 1;
-  mat->dimensions = array->jit_dimensions ();
-  mat->slice_len = array->nelem ();
+  mat->update ();
+}
+
+extern "C" void
+octave_jit_paren_subsasgn_matrix_range (jit_matrix *result, jit_matrix *mat,
+                                        jit_range *index, double value)
+{
+  NDArray *array = mat->array;
+  bool done = false;
+
+  // optimize for the simple case (no resizing and no errors)
+  if (*array->jit_ref_count () == 1
+      && index->all_elements_are_ints ())
+    {
+      octave_idx_type base = static_cast<octave_idx_type> (index->base);
+      octave_idx_type nelem = index->nelem;
+      if (base > 0 && base + nelem <= array->nelem ())
+        {
+          done = true;
+          double *data = array->jit_slice_data ();
+          std::fill (data + base - 1, data + base + nelem - 1, value);
+        }
+    }
+
+  if (! done)
+    {
+      idx_vector idx (*index);
+      NDArray avalue (dim_vector (1, 1));
+      avalue.xelem (0) = value;
+      array->assign (idx, avalue);
+    }
+
+  result->update (array);
 }
 
 extern "C" void
@@ -311,6 +340,13 @@ octave_jit_call (octave_builtin::fcn fn, size_t nargin,
 }
 
 // -------------------- jit_range --------------------
+bool
+jit_range::all_elements_are_ints () const
+{
+  Range r (*this);
+  return r.all_elements_are_ints ();
+}
+
 std::ostream&
 operator<< (std::ostream& os, const jit_range& rng)
 {
@@ -912,7 +948,12 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   llvm::verifyFunction (*fn);
   paren_subsasgn_fn.add_overload (fn, true, matrix, matrix, scalar, scalar);
 
-  // paren_subsasgn
+  fn = create_function ("octave_jit_paren_subsasgn_matrix_range", void_t,
+                        matrix_t->getPointerTo (), matrix_t->getPointerTo (),
+                        range_t->getPointerTo (), scalar_t);
+  engine->addGlobalMapping (fn,
+                            reinterpret_cast<void *> (&octave_jit_paren_subsasgn_matrix_range));
+  paren_subsasgn_fn.add_overload (fn, true, matrix, matrix, range, scalar);
 
   casts[any->type_id ()].stash_name ("(any)");
   casts[scalar->type_id ()].stash_name ("(scalar)");

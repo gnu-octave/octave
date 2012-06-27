@@ -208,6 +208,8 @@ jit_range
     return Range (base, limit, inc);
   }
 
+  bool all_elements_are_ints () const;
+
   double base;
   double limit;
   double inc;
@@ -221,13 +223,24 @@ template <typename T, typename U>
 struct
 jit_array
 {
-  jit_array (T& from) : ref_count (from.jit_ref_count ()),
-                        slice_data (from.jit_slice_data () - 1),
-                        slice_len (from.capacity ()),
-                        dimensions (from.jit_dimensions ()),
-                        array (new T (from))
+  jit_array (T& from) : array (new T (from))
   {
     grab_dimensions ();
+    update ();
+  }
+
+  void update (void)
+  {
+    ref_count = array->jit_ref_count ();
+    slice_data = array->jit_slice_data () - 1;
+    slice_len = array->capacity ();
+    dimensions = array->jit_dimensions ();
+  }
+
+  void update (T *aarray)
+  {
+    array = aarray;
+    update ();
   }
 
   void grab_dimensions (void)

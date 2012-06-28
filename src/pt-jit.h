@@ -775,6 +775,7 @@ private:
   JIT_METH(argument)
 
 #define JIT_VISIT_IR_CONST                      \
+  JIT_METH(const_bool);                         \
   JIT_METH(const_scalar);                       \
   JIT_METH(const_index);                        \
   JIT_METH(const_string);                       \
@@ -802,6 +803,7 @@ template <typename T, jit_type *(*EXTRACT_T)(void), typename PASS_T = T,
           bool QUOTE=false>
 class jit_const;
 
+typedef jit_const<bool, jit_typeinfo::get_bool> jit_const_bool;
 typedef jit_const<double, jit_typeinfo::get_scalar> jit_const_scalar;
 typedef jit_const<octave_idx_type, jit_typeinfo::get_index> jit_const_index;
 
@@ -2223,6 +2225,7 @@ private:
   std::list<jit_value *> all_values;
 
   size_t iterator_count;
+  size_t short_count;
 
   typedef std::map<std::string, jit_variable *> vmap_t;
   vmap_t vmap;

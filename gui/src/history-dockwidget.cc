@@ -106,6 +106,8 @@ history_dock_widget::construct ()
            SLOT (request_history_model_update ()));
 
   _update_history_model_timer.start ();
+
+  setFocusProxy (_filter_line_edit);
 }
 
 void

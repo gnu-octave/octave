@@ -92,6 +92,12 @@ public slots:
   void set_current_working_directory (QString directory);
   void current_working_directory_up ();
 
+  void focus_command_window ();
+  void focus_command_history ();
+  void focus_current_directory ();
+  void focus_workspace ();
+  void focus_editor ();
+
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
   void debug_continue ();

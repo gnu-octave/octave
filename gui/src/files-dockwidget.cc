@@ -97,6 +97,8 @@ files_dock_widget::files_dock_widget (QWidget *parent)
 
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT (handle_visibility_changed (bool)));
+
+  setFocusProxy (_current_directory);
 }
 
 void

@@ -208,6 +208,71 @@ main_window::current_working_directory_up ()
 }
 
 void
+main_window::focus_command_window ()
+{
+  if (!_terminal_dock_widget->isVisible ())
+    {
+      _terminal_dock_widget->setVisible (true);
+    }
+
+  _terminal->setFocus ();
+  _terminal->activateWindow ();
+  _terminal->raise ();
+}
+
+void
+main_window::focus_command_history ()
+{
+  if (!_history_dock_widget->isVisible ())
+    {
+      _history_dock_widget->setVisible (true);
+    }
+
+  _history_dock_widget->setFocus ();
+  _history_dock_widget->activateWindow ();
+  _history_dock_widget->raise ();
+}
+
+void
+main_window::focus_current_directory ()
+{
+  if (!_files_dock_widget->isVisible ())
+    {
+      _files_dock_widget->setVisible (true);
+    }
+
+  _files_dock_widget->setFocus ();
+  _files_dock_widget->activateWindow ();
+  _files_dock_widget->raise ();
+}
+
+void
+main_window::focus_workspace ()
+{
+  if (!_workspace_view->isVisible ())
+    {
+      _workspace_view->setVisible (true);
+    }
+
+  _workspace_view->setFocus ();
+  _workspace_view->activateWindow ();
+  _workspace_view->raise ();
+}
+
+void
+main_window::focus_editor ()
+{
+  if (!_file_editor->isVisible ())
+    {
+      _file_editor->setVisible (true);
+    }
+
+  _file_editor->setFocus ();
+  _file_editor->activateWindow ();
+  _file_editor->raise ();
+}
+
+void
 main_window::handle_entered_debug_mode ()
 {
   setWindowTitle ("Octave (Debugging)");
@@ -363,6 +428,7 @@ main_window::construct ()
   // Octave Terminal subwindow.
   _terminal = new QTerminal (this);
   _terminal->setObjectName ("OctaveTerminal");
+  _terminal->setFocusPolicy (Qt::StrongFocus);
   _terminal_dock_widget = new terminal_dock_widget (_terminal, this);
 
   QWidget *dummyWidget = new QWidget ();
@@ -375,21 +441,79 @@ main_window::construct ()
   _file_editor = new file_editor (_terminal, this);
 
   QMenu *file_menu = menuBar ()->addMenu (tr ("&File"));
-  QAction *new_file_action
-      = file_menu->addAction (QIcon(":/actions/icons/filenew.png"), tr ("New File"));
 
-  QAction *open_file_action
-      = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open File"));
+  QMenu *new_menu = file_menu->addMenu(tr ("New"));
 
-  QAction *settings_action
-      = file_menu->addAction (QIcon(":/actions/icons/configure.png"), tr ("Settings"));
+  QAction *new_script_action
+      = new_menu->addAction (QIcon(":/actions/icons/filenew.png"), tr ("Script"));
+  new_script_action->setShortcut (Qt::ControlModifier + Qt::Key_N);
+
+  QAction *new_function_action = new_menu->addAction (tr ("Function"));
+  new_function_action->setEnabled (false); // TODO: Make this work.
+  QAction *new_class_action = new_menu->addAction (tr ("Class"));
+  new_class_action->setEnabled (false); // TODO: Make this work.
+  QAction *new_enumeration_action = new_menu->addAction (tr ("Enumeration"));
+  new_enumeration_action->setEnabled (false); // TODO: Make this work.
+  QAction *new_figure_action = new_menu->addAction (tr ("Figure"));
+  new_figure_action->setEnabled (false); // TODO: Make this work.
+  QAction *new_variable_action = new_menu->addAction (tr ("Variable"));
+  new_variable_action->setEnabled (false); // TODO: Make this work.
+  QAction *new_model_action = new_menu->addAction (tr ("Model"));
+  new_model_action->setEnabled (false); // TODO: Make this work.
+  QAction *new_gui_action = new_menu->addAction (tr ("GUI"));
+  new_gui_action->setEnabled (false); // TODO: Make this work.
+
+  QAction *open_action
+      = file_menu->addAction (QIcon(":/actions/icons/fileopen.png"), tr ("Open..."));
+  open_action->setShortcut (Qt::ControlModifier + Qt::Key_O);
+
+  QAction *close_command_window_action
+      = file_menu->addAction (tr ("Close Command Window"));
+  close_command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_W);
+  close_command_window_action->setEnabled (false); // TODO: Make this work.
+
+  file_menu->addSeparator ();
+  QAction *import_data_action
+      = file_menu->addAction (tr ("Import Data..."));
+  import_data_action->setEnabled (false); // TODO: Make this work.
+
+  QAction *save_workspace_action
+      = file_menu->addAction (tr ("Save Workspace..."));
+  save_workspace_action->setShortcut (Qt::ControlModifier + Qt::Key_S);
+  file_menu->addSeparator ();
+
+  QAction *preferences_action
+      = file_menu->addAction (QIcon(":/actions/icons/configure.png"), tr ("Preferences..."));
+  file_menu->addSeparator ();
+  QAction *page_setup_action
+      = file_menu->addAction (tr ("Page Setup..."));
+  page_setup_action->setEnabled (false); // TODO: Make this work.
+  QAction *print_action
+      = file_menu->addAction (tr ("Print"));
+  print_action->setShortcut (Qt::ControlModifier + Qt::Key_P);
+  print_action->setEnabled (false); // TODO: Make this work.
+  QAction *print_selection_action
+      = file_menu->addAction (tr ("Print Selection..."));
+  print_selection_action->setEnabled (false); // TODO: Make this work.
+
   file_menu->addSeparator ();
   QAction *exit_action = file_menu->addAction (tr ("Exit"));
+  exit_action->setShortcut (Qt::ControlModifier + Qt::Key_Q);
+
 
   QMenu *edit_menu = menuBar ()->addMenu (tr ("&Edit"));
+  QAction *undo_action
+      = edit_menu->addAction (QIcon(":/actions/icons/undo.png"), tr ("Undo"));
+  undo_action->setShortcut (QKeySequence::Undo);
+
+  QAction *redo_action
+      = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
+  redo_action->setShortcut (QKeySequence::Redo);
+  edit_menu->addSeparator ();
+
   QAction *cut_action
       = edit_menu->addAction (QIcon(":/actions/icons/editcut.png"), tr ("Cut"));
-  cut_action->setShortcut (QKeySequence::Cut);
+  cut_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_X);
 
   QAction *copy_action
       = edit_menu->addAction (QIcon(":/actions/icons/editcopy.png"), tr ("Copy"));
@@ -399,13 +523,37 @@ main_window::construct ()
       = edit_menu->addAction (QIcon(":/actions/icons/editpaste.png"), tr ("Paste"));
   paste_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_V);
 
-  QAction *undo_action
-      = edit_menu->addAction (QIcon(":/actions/icons/undo.png"), tr ("Undo"));
-  undo_action->setShortcut (QKeySequence::Undo);
+  QAction *paste_to_workspace_action
+      = edit_menu->addAction (tr ("Paste To Workspace..."));
+  paste_to_workspace_action->setEnabled (false); // TODO: Make this work.
+  edit_menu->addSeparator ();
 
-  QAction *redo_action
-      = edit_menu->addAction (QIcon(":/actions/icons/redo.png"), tr ("Redo"));
-  redo_action->setShortcut (QKeySequence::Redo);
+  QAction *select_all_action
+      = edit_menu->addAction (tr ("Select All"));
+  select_all_action->setEnabled (false); // TODO: Make this work.
+  QAction *delete_action
+      = edit_menu->addAction (tr ("Delete"));
+  delete_action->setShortcut (Qt::Key_Delete);
+  delete_action->setEnabled (false); // TODO: Make this work.
+  edit_menu->addSeparator ();
+
+  QAction *find_action
+      = edit_menu->addAction (tr ("Find..."));
+  find_action->setEnabled (false); // TODO: Make this work.
+  QAction *find_files_action
+      = edit_menu->addAction (tr ("Find Files..."));
+  find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_F);
+  find_files_action->setEnabled (false); // TODO: Make this work.
+  edit_menu->addSeparator ();
+
+  QAction *clear_command_window_action
+      = edit_menu->addAction (tr ("Clear Command Window"));
+  clear_command_window_action->setEnabled (false); // TODO: Make this work.
+  QAction *clear_command_history
+      = edit_menu->addAction(tr ("Clear Command History"));
+  clear_command_history->setEnabled (false); // TODO: Make this work.
+  QAction * clear_workspace_action
+      = edit_menu->addAction (tr ("Clear Workspace"));
 
   _debug_menu = menuBar ()->addMenu (tr ("De&bug"));
 
@@ -440,23 +588,39 @@ main_window::construct ()
 
   QMenu *   desktop_menu = menuBar ()->addMenu (tr ("&Desktop"));
   QAction * load_workspace_action       = desktop_menu->addAction (tr ("Load workspace"));
-  QAction * save_workspace_action       = desktop_menu->addAction (tr ("Save workspace"));
-  QAction * clear_workspace_action      = desktop_menu->addAction (tr ("Clear workspace"));
+
 
   // Window menu
   QMenu *   window_menu = menuBar ()->addMenu (tr ("&Window"));
-  QAction * show_command_window_action  = window_menu->addAction (tr ("Command Window"));
-            show_command_window_action->setCheckable (true);
-  QAction * show_workspace_action       = window_menu->addAction (tr ("Workspace"));
-            show_workspace_action->setCheckable (true);
-  QAction * show_history_action         = window_menu->addAction (tr ("Command History"));
-            show_history_action->setCheckable (true);
-  QAction * show_file_browser_action    = window_menu->addAction (tr ("Current Directory"));
-            show_file_browser_action->setCheckable (true);
-  QAction * show_editor_action          = window_menu->addAction (tr ("Editor"));
-            show_editor_action->setCheckable (true);
+  QAction * show_command_window_action  = window_menu->addAction (tr ("Show Command Window"));
+  show_command_window_action->setCheckable (true);
+  show_command_window_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_0);
+  QAction * show_history_action         = window_menu->addAction (tr ("Show Command History"));
+  show_history_action->setCheckable (true);
+  show_history_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_1);
+  QAction * show_file_browser_action    = window_menu->addAction (tr ("Show Current Directory"));
+  show_file_browser_action->setCheckable (true);
+  show_file_browser_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_2);
+  QAction * show_workspace_action       = window_menu->addAction (tr ("Show Workspace"));
+  show_workspace_action->setCheckable (true);
+  show_workspace_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_3);
+  QAction * show_editor_action          = window_menu->addAction (tr ("Show Editor"));
+  show_editor_action->setCheckable (true);
+  show_editor_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_4);
+  window_menu->addSeparator ();
+  QAction * command_window_action  = window_menu->addAction (tr ("Command Window"));
+  command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_0);
+  QAction * history_action         = window_menu->addAction (tr ("Command History"));
+  history_action->setShortcut (Qt::ControlModifier + Qt::Key_1);
+  QAction * file_browser_action    = window_menu->addAction (tr ("Current Directory"));
+  file_browser_action->setShortcut (Qt::ControlModifier + Qt::Key_2);
+  QAction * workspace_action       = window_menu->addAction (tr ("Workspace"));
+  workspace_action->setShortcut (Qt::ControlModifier + Qt::Key_3);
+  QAction * editor_action          = window_menu->addAction (tr ("Editor"));
+  editor_action->setShortcut (Qt::ControlModifier + Qt::Key_4);
   window_menu->addSeparator ();
   QAction * reset_windows_action        = window_menu->addAction (tr ("Reset Windows"));
+  reset_windows_action->setEnabled (false); // TODO: Make this work.
 
   // Help menu
   QMenu *   help_menu = menuBar ()->addMenu (tr ("&Help"));
@@ -468,8 +632,8 @@ main_window::construct ()
 
   // Toolbars
   QToolBar *main_tool_bar = addToolBar ("Main");
-            main_tool_bar->addAction (new_file_action);
-            main_tool_bar->addAction (open_file_action);
+            main_tool_bar->addAction (new_script_action);
+            main_tool_bar->addAction (open_action);
             main_tool_bar->addSeparator ();
             main_tool_bar->addAction (cut_action);
             main_tool_bar->addAction (copy_action);
@@ -484,13 +648,13 @@ main_window::construct ()
 
   connect (qApp,                        SIGNAL (aboutToQuit ()),
            this,                        SLOT   (prepare_for_quit ()));
-  connect (settings_action,             SIGNAL (triggered ()),
+  connect (preferences_action,             SIGNAL (triggered ()),
            this,                        SLOT   (process_settings_dialog_request ()));
   connect (exit_action,                 SIGNAL (triggered ()),
            this,                        SLOT   (close ()));
-  connect (new_file_action,             SIGNAL (triggered ()),
+  connect (new_script_action,             SIGNAL (triggered ()),
            this,                        SLOT   (new_file ()));
-  connect (open_file_action,            SIGNAL (triggered ()),
+  connect (open_action,            SIGNAL (triggered ()),
            this,                        SLOT   (open_file ()));
   connect (report_bug_action,           SIGNAL (triggered ()),
            this,                        SLOT   (open_bug_tracker_page ()));
@@ -520,6 +684,18 @@ main_window::construct ()
            _file_editor,                SLOT   (setVisible (bool)));
   connect (_file_editor,                SIGNAL (active_changed (bool)),
            show_editor_action,          SLOT   (setChecked (bool)));
+
+  connect (command_window_action,       SIGNAL (triggered ()),
+           this,                        SLOT (focus_command_window ()));
+  connect (workspace_action,            SIGNAL (triggered ()),
+           this,                        SLOT (focus_workspace ()));
+  connect (history_action,              SIGNAL (triggered ()),
+           this,                        SLOT (focus_command_history ()));
+  connect (file_browser_action,         SIGNAL (triggered ()),
+           this,                        SLOT (focus_current_directory ()));
+  connect (editor_action,               SIGNAL (triggered ()),
+           this,                        SLOT (focus_editor ()));
+
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));
   connect (this,                        SIGNAL (settings_changed ()),

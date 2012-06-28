@@ -131,6 +131,12 @@ history_dock_widget::request_history_model_update ()
 }
 
 void
+history_dock_widget::reset_model ()
+{
+  _history_model->setStringList (QStringList ());
+}
+
+void
 history_dock_widget::closeEvent (QCloseEvent *event)
 {
   emit active_changed (false);

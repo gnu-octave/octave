@@ -40,6 +40,7 @@ public:
 public slots:
   void handle_visibility_changed (bool visible);
   void request_history_model_update ();
+  void reset_model ();
 
 signals:
   void information (QString message);

@@ -45,6 +45,11 @@ main_window::~main_window ()
 void
 main_window::event_accepted (octave_event *e)
 {
+  if (dynamic_cast<octave_clear_history_event*> (e))
+    {
+      // After clearing the history, we need to reset the model.
+      _history_dock_widget->reset_model ();
+    }
   delete e;
 }
 
@@ -102,6 +107,13 @@ main_window::handle_clear_workspace_request ()
 {
   octave_link::instance ()
       ->post_event (new octave_clear_workspace_event (*this));
+}
+
+void
+main_window::handle_clear_history_request()
+{
+  octave_link::instance ()
+      ->post_event (new octave_clear_history_event (*this));
 }
 
 void
@@ -555,7 +567,6 @@ main_window::construct ()
   clear_command_window_action->setEnabled (false); // TODO: Make this work.
   QAction *clear_command_history
       = edit_menu->addAction(tr ("Clear Command History"));
-  clear_command_history->setEnabled (false); // TODO: Make this work.
   QAction * clear_workspace_action
       = edit_menu->addAction (tr ("Clear Workspace"));
 
@@ -740,6 +751,9 @@ main_window::construct ()
            this,                        SLOT (debug_step_out ()));
   connect (_debug_quit,                 SIGNAL (triggered ()),
            this,                        SLOT (debug_quit ()));
+
+  connect (clear_command_history,       SIGNAL (triggered ()),
+           this,                        SLOT (handle_clear_history_request ()));
 
   setWindowTitle ("Octave");
   setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks);

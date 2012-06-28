@@ -76,6 +76,7 @@ public slots:
   void handle_save_workspace_request ();
   void handle_load_workspace_request ();
   void handle_clear_workspace_request ();
+  void handle_clear_history_request ();
   void handle_command_double_clicked (QString command);
   void new_file ();
   void open_file ();

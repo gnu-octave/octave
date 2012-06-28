@@ -27,6 +27,7 @@
 #include "toplev.h"
 #include "parse.h"
 #include "debug.h"
+#include "cmd-hist.h"
 
 #include <readline/readline.h>
 
@@ -229,6 +230,24 @@ class octave_save_workspace_event : public octave_event
 
   private:
     std::string _file;
+};
+
+class octave_clear_history_event : public octave_event
+{
+  public:
+    /** Creates a new octave_clear_history_event. */
+    octave_clear_history_event (octave_event_observer& o)
+      : octave_event (o)
+    { }
+
+    bool perform ()
+    {
+      int i;
+      while ((i = command_history::length ()) > 0) {
+          command_history::remove (i - 1);
+        }
+      return true;
+    }
 };
 
 class octave_debug_step_into_event : public octave_event

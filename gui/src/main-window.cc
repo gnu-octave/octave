@@ -215,6 +215,10 @@ main_window::focus_command_window ()
       _terminal_dock_widget->setVisible (true);
     }
 
+  _terminal_dock_widget->setFocus ();
+  _terminal_dock_widget->activateWindow ();
+  _terminal_dock_widget->raise ();
+
   _terminal->setFocus ();
   _terminal->activateWindow ();
   _terminal->raise ();

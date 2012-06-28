@@ -94,7 +94,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -103,7 +103,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  FloatNDArray a = a_arg.float_array_value ();
+                  Array<float> a = a_arg.float_array_value ();
 
                   if (! error_state)
                     {
@@ -116,7 +116,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -126,7 +126,7 @@ compatible dimensions.\n\
             }
           else
             {
-              FloatNDArray x = x_arg.float_array_value ();
+              Array<float> x = x_arg.float_array_value ();
 
               if (a_arg.is_scalar_type ())
                 {
@@ -143,7 +143,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -152,7 +152,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  FloatNDArray a = a_arg.float_array_value ();
+                  Array<float> a = a_arg.float_array_value ();
 
                   if (! error_state)
                     {
@@ -165,7 +165,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -195,7 +195,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -204,7 +204,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  NDArray a = a_arg.array_value ();
+                  Array<double> a = a_arg.array_value ();
 
                   if (! error_state)
                     {
@@ -217,7 +217,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -227,7 +227,7 @@ compatible dimensions.\n\
             }
           else
             {
-              NDArray x = x_arg.array_value ();
+              Array<double> x = x_arg.array_value ();
 
               if (a_arg.is_scalar_type ())
                 {
@@ -244,7 +244,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -253,7 +253,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  NDArray a = a_arg.array_value ();
+                  Array<double> a = a_arg.array_value ();
 
                   if (! error_state)
                     {
@@ -266,7 +266,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -283,7 +283,7 @@ compatible dimensions.\n\
 }
 
 /*
-%% test/octave.test/arith/betainc-1.m
+## Double precision
 %!test
 %! a = [1, 1.5, 2, 3];
 %! b = [4, 3, 2, 1];
@@ -295,7 +295,7 @@ compatible dimensions.\n\
 %! assert (v1, v2, sqrt (eps));
 %! assert (v3, v4, sqrt (eps));
 
-%% Single precision
+## Single precision
 %!test
 %! a = single ([1, 1.5, 2, 3]);
 %! b = single ([4, 3, 2, 1]);
@@ -307,7 +307,7 @@ compatible dimensions.\n\
 %! assert (v1, v2, sqrt (eps ("single")));
 %! assert (v3, v4, sqrt (eps ("single")));
 
-%% Mixed double/single precision
+## Mixed double/single precision
 %!test
 %! a = single ([1, 1.5, 2, 3]);
 %! b = [4, 3, 2, 1];
@@ -316,15 +316,11 @@ compatible dimensions.\n\
 %! x = [.2, .4, .6, .8];
 %! v3 = betainc (x, a, b);
 %! v4 = 1-betainc (1.-x, b, a);
-%! assert (v1, v2, sqrt (eps ('single')));
-%! assert (v3, v4, sqrt (eps ('single')));
+%! assert (v1, v2, sqrt (eps ("single")));
+%! assert (v3, v4, sqrt (eps ("single")));
 
-%% test/octave.test/arith/betainc-2.m
 %!error betainc ()
-
-%% test/octave.test/arith/betainc-3.m
-%!error betainc> betainc (1)
-
-%% test/octave.test/arith/betainc-4.m
-%!error betainc> betainc (1,2)
+%!error betainc (1)
+%!error betainc (1,2)
+%!error betainc (1,2,3,4)
 */

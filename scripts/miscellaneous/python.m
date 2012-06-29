@@ -18,26 +18,28 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {[@var{output}, @var{status}] =} python (@var{scriptfile})
-## @deftypefnx {Function File} {[@var{output}, @var{status}] =} python (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
-## Invoke python script @var{scriptfile} with possibly a list of
-## command line arguments.
-## Returns output in @var{output} and status
-## in @var{status}.
-## @seealso{system}
+## @deftypefn  {Function File} {@var{output} =} python (@var{scriptfile})
+## @deftypefnx {Function File} {@var{output} =} python (@var{scriptfile}, @var{argument1}, @var{argument2}, @dots{})
+## @deftypefnx {Function File} {[@var{output}, @var{status}] =} python (@dots{})
+## Invoke Python script @var{scriptfile}, possibly with a list of command line
+## arguments.  Return output in @var{output} and optional status in
+## @var{status}.  If @var{scriptfile} is not an absolute file name it is
+## is searched for in the current directory and then in the Octave loadpath.
+## @seealso{system, perl}
 ## @end deftypefn
 
 ## Author: Carnë Draug <carandraug+dev@gmail.com>
 
 function [output, status] = python (scriptfile = "-c ''", varargin)
 
-  ## VARARGIN is intialized to {}(1x0) if no additional arguments are
-  ## supplied, so there is no need to check for it, or provide an
-  ## initial value in the argument list of the function definition.
-
   if (ischar (scriptfile)
-      && ((nargin != 1 && iscellstr (varargin))
-          || (nargin == 1 && ! isempty (scriptfile))))
+      && (   (nargin == 1 && ! isempty (scriptfile))
+          || (nargin != 1 && iscellstr (varargin))))
+    if (! strcmp (scriptfile(1:2), "-c"))
+      ## Attempt to find file in loadpath.  No effect for absolute filenames.
+      scriptfile = file_in_loadpath (scriptfile);
+    endif
+
     [status, output] = system (cstrcat ("python ", scriptfile,
                                         sprintf (" %s", varargin{:})));
   else

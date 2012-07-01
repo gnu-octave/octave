@@ -174,7 +174,7 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
 
     x = x_old + V(:, 1:restart_it) * Y(1:restart_it);
 
-    resvec(iter) = presn;
+    resvec(iter+1) = presn;
     if (norm (x - x_old, inf) <= eps)
       flag = 3;  # Stagnation: no change between iterations
       break;
@@ -191,8 +191,7 @@ function [x, flag, relres, it, resvec] = gmres (A, b, restart, rtol, maxit, M1, 
       flag = 0;  # Converged to solution within tolerance
     endif
 
-    resvec = resvec(1:iter-1);
-    it = [ceil(iter / restart), rem(iter, restart)];
+    it = [floor(iter/restart), restart_it-1];
   endif
 
 endfunction

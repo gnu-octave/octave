@@ -107,6 +107,28 @@ file_editor_tab::event_accepted (octave_event *e)
     {
       // File was run successfully.
     }
+
+  if (octave_add_breakpoint_event *abe
+      = dynamic_cast<octave_add_breakpoint_event*> (e))
+    {
+      // TODO: Check file.
+      _edit_area->markerAdd (abe->get_line (), breakpoint);
+    }
+
+  if (octave_remove_breakpoint_event *rbe
+      = dynamic_cast<octave_remove_breakpoint_event*> (e))
+    {
+      // TODO: Check file.
+      _edit_area->markerDelete (rbe->get_line (), breakpoint);
+    }
+
+  if (octave_remove_all_breakpoints_event *rabe
+      = dynamic_cast<octave_remove_all_breakpoints_event*> (e))
+    {
+      Q_UNUSED (rabe);
+      _edit_area->markerDeleteAll (breakpoint);
+    }
+
   delete e;
 }
 
@@ -168,11 +190,49 @@ file_editor_tab::handle_margin_clicked(int margin, int line, Qt::KeyboardModifie
       else
         {
           if (mask && (1 << breakpoint))
-            _edit_area->markerDelete(line,breakpoint);
+            {
+              request_remove_breakpoint (line);
+            }
           else
-            _edit_area->markerAdd(line,breakpoint);
+            {
+              request_add_breakpoint (line);
+            }
         }
     }
+}
+
+void
+file_editor_tab::request_add_breakpoint (int line)
+{
+  QFileInfo file_info (_file_name);
+  QString path = file_info.absolutePath ();
+  QString function_name = file_info.fileName ();
+
+  // We have to cut off the suffix, because octave appends it.
+  function_name.chop (file_info.suffix ().length () + 1);
+
+  octave_link::instance ()->post_event
+      (new octave_add_breakpoint_event (*this,
+                                        path.toStdString (),
+                                        function_name.toStdString (),
+                                        line));
+}
+
+void
+file_editor_tab::request_remove_breakpoint (int line)
+{
+  QFileInfo file_info (_file_name);
+  QString path = file_info.absolutePath ();
+  QString function_name = file_info.fileName ();
+
+  // We have to cut off the suffix, because octave appends it.
+  function_name.chop (file_info.suffix ().length () + 1);
+
+  octave_link::instance ()->post_event
+      (new octave_remove_breakpoint_event (*this,
+                                           path.toStdString (),
+                                           function_name.toStdString (),
+                                           line));
 }
 
 void
@@ -332,11 +392,11 @@ void
 file_editor_tab::toggle_breakpoint ()
 {
   int line, cur;
-  _edit_area->getCursorPosition (&line,&cur);
+  _edit_area->getCursorPosition (&line, &cur);
   if ( _edit_area->markersAtLine (line) && (1 << breakpoint) )
-    _edit_area->markerDelete (line, breakpoint);
+    request_remove_breakpoint (line);
   else
-    _edit_area->markerAdd (line, breakpoint);
+    request_add_breakpoint (line);
 }
 
 void

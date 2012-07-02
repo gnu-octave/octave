@@ -250,6 +250,123 @@ class octave_clear_history_event : public octave_event
     }
 };
 
+class octave_add_breakpoint_event : public octave_event
+{
+  public:
+    octave_add_breakpoint_event (octave_event_observer& o,
+                                 std::string path,
+                                 std::string function_name,
+                                 int line)
+      : octave_event (o)
+    {
+      _path = path;
+      _function_name = function_name;
+      _line = line;
+    }
+
+    bool perform ()
+    {
+      bp_table::intmap intmap;
+      intmap[0] = _line;
+
+      // TODO: Check success.
+      std::string previous_directory = octave_env::get_current_directory ();
+      octave_env::chdir (_path);
+      bp_table::add_breakpoint (_function_name, intmap);
+      octave_env::chdir (previous_directory);
+      return true;
+    }
+
+    std::string get_path ()
+    {
+      return _path;
+    }
+
+    std::string get_function_name ()
+    {
+      return _function_name;
+    }
+
+    int get_line ()
+    {
+      return _line;
+    }
+
+  private:
+    std::string _path;
+    std::string _function_name;
+    int _line;
+};
+
+class octave_remove_breakpoint_event : public octave_event
+{
+  public:
+    octave_remove_breakpoint_event (octave_event_observer& o,
+                                    std::string path,
+                                    std::string function_name,
+                                    int line)
+      : octave_event (o)
+    {
+      _path = path;
+      _function_name = function_name;
+      _line = line;
+    }
+
+    bool perform ()
+    {
+      bp_table::intmap intmap;
+      intmap[0] = _line;
+
+      // TODO: Check success.
+      std::string previous_directory = octave_env::get_current_directory ();
+      octave_env::chdir (_path);
+      bp_table::remove_breakpoint (_function_name, intmap);
+      octave_env::chdir (previous_directory);
+      return true;
+    }
+
+    std::string get_path ()
+    {
+      return _path;
+    }
+
+    std::string get_function_name ()
+    {
+      return _function_name;
+    }
+
+    int get_line ()
+    {
+      return _line;
+    }
+
+  private:
+    std::string _path;
+    std::string _function_name;
+    int _line;
+};
+
+class octave_remove_all_breakpoints_event : public octave_event
+{
+  public:
+    octave_remove_all_breakpoints_event (octave_event_observer& o,
+                                         std::string file)
+      : octave_event (o)
+    {
+      _file = file;
+    }
+
+    bool perform ()
+    {
+      // TODO: Check success.
+      bp_table::remove_all_breakpoints_in_file (_file, true);
+      return true;
+    }
+
+  private:
+    std::string _file;
+};
+
 class octave_debug_step_into_event : public octave_event
 {
   public:

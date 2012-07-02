@@ -285,6 +285,7 @@ void TerminalModel::updateTerminalSize()
     if ( minLines > 0 && minColumns > 0 )
     {
         _emulation->setImageSize( minLines , minColumns );
+        _kpty->setWinSize (minLines, minColumns);
         //_shellProcess->setWindowSize( minLines , minColumns );
     }
 }

@@ -230,7 +230,7 @@ file_editor::request_remove_breakpoint ()
 {
   file_editor_tab *activeFileEditorTab = active_editor_tab ();
   if (activeFileEditorTab)
-    activeFileEditorTab->remove_breakpoint ();
+    activeFileEditorTab->remove_all_breakpoints ();
 }
 
 void

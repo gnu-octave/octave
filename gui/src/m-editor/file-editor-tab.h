@@ -46,7 +46,7 @@ public slots:
   void toggle_bookmark ();
   void next_bookmark ();
   void previous_bookmark ();
-  void remove_breakpoint ();
+  void remove_all_breakpoints ();
   void toggle_breakpoint ();
   void next_breakpoint ();
   void previous_breakpoint ();

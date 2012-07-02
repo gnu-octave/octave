@@ -383,9 +383,19 @@ file_editor_tab::previous_bookmark ()
 }
 
 void
-file_editor_tab::remove_breakpoint ()
+file_editor_tab::remove_all_breakpoints ()
 {
-    _edit_area->markerDeleteAll (breakpoint);
+  QFileInfo file_info (_file_name);
+  QString path = file_info.absolutePath ();
+  QString function_name = file_info.fileName ();
+
+  // We have to cut off the suffix, because octave appends it.
+  function_name.chop (file_info.suffix ().length () + 1);
+
+  octave_link::instance ()->post_event
+      (new octave_remove_all_breakpoints_event (*this,
+                                                path.toStdString (),
+                                                function_name.toStdString ()));
 }
 
 void

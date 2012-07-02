@@ -68,8 +68,8 @@ function yi = ppval (pp, xi)
   ndv = length (dimvec);
 
   ## Offsets.
-  dx = (xi - x(idx));
-  dx = repmat (dx, [prod(d), 1]);
+  dx = (xi - x(idx))(:);
+  dx = repmat (dx, [1, prod(d)])';
   dx = reshape (dx, dimvec);
   dx = shiftdim (dx, ndv - 1);
 
@@ -119,4 +119,11 @@ endfunction
 %!assert (ppval (pp2, xi), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
 %!assert (ppval (pp2, xi'), [1.1 1.3 1.9 1.1;1.1 1.3 1.9 1.1], abserr)
 %!assert (size (ppval (pp2, [xi;xi])), [2 2 4])
-
+%!test
+%! breaks = [0, 1, 2, 3];
+%! coefs = rand (6, 4);
+%! pp = mkpp (breaks, coefs, 2);
+%! ret = zeros (2, 4, 2);
+%! ret(:,:,1) = ppval (pp, breaks');
+%! ret(:,:,2) = ppval (pp, breaks');
+%! assert (ppval (pp, [breaks',breaks']), ret)

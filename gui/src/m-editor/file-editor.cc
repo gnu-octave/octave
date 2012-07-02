@@ -373,7 +373,7 @@ file_editor::construct ()
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
-        tr("&Run File"), _tool_bar);
+        tr("Save File And Run"), _tool_bar);
 
   // some actions are disabled from the beginning
   _copy_action->setEnabled(false);

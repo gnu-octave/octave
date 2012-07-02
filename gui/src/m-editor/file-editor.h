@@ -35,10 +35,11 @@
 
 const char UNNAMED_FILE[]     = "<unnamed>";
 const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";
-enum MARKER
+enum editor_markers
   {
-    MARKER_BOOKMARK,
-    MARKER_BREAKPOINT
+    bookmark,
+    breakpoint,
+    debugger_position
   };
 
 class file_editor : public file_editor_interface
@@ -73,6 +74,12 @@ public slots:
   void request_next_bookmark ();
   void request_previous_bookmark ();
   void request_remove_bookmark ();
+
+  void request_toggle_breakpoint ();
+  void request_next_breakpoint ();
+  void request_previous_breakpoint ();
+  void request_remove_breakpoint ();
+
   void request_comment_selected_text ();
   void request_uncomment_selected_text ();
 
@@ -93,7 +100,7 @@ private:
   QAction*          _copy_action;
   QAction*          _cut_action;
   QTabWidget *      _tab_widget;
-  int               _marker_bookmark;
+  int               _marker_breakpoint;
   lexer_octave_gui *_lexer;
   QsciAPIs *        _lexer_api;
 };

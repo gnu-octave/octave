@@ -202,6 +202,38 @@ file_editor::request_remove_bookmark ()
 }
 
 void
+file_editor::request_toggle_breakpoint ()
+{
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->toggle_breakpoint ();
+}
+
+void
+file_editor::request_next_breakpoint ()
+{
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->next_breakpoint ();
+}
+
+void
+file_editor::request_previous_breakpoint ()
+{
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->previous_breakpoint ();
+}
+
+void
+file_editor::request_remove_breakpoint ()
+{
+  file_editor_tab *activeFileEditorTab = active_editor_tab ();
+  if (activeFileEditorTab)
+    activeFileEditorTab->remove_breakpoint ();
+}
+
+void
 file_editor::request_comment_selected_text ()
 {
   file_editor_tab *activeFileEditorTab = active_editor_tab ();
@@ -319,6 +351,12 @@ file_editor::construct ()
   QAction *previous_bookmark_action   = new QAction (tr ("Pre&vious Bookmark"),_tool_bar);
   QAction *toggle_bookmark_action     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
   QAction *remove_bookmark_action     = new QAction (tr ("&Remove All Bookmarks"),_tool_bar);
+
+  QAction *next_breakpoint_action       = new QAction (tr ("&Next breakpoint"),_tool_bar);
+  QAction *previous_breakpoint_action   = new QAction (tr ("Pre&vious breakpoint"),_tool_bar);
+  QAction *toggle_breakpoint_action     = new QAction (tr ("Toggle &breakpoint"),_tool_bar);
+  QAction *remove_breakpoint_action     = new QAction (tr ("&Remove All breakpoints"),_tool_bar);
+
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
@@ -403,6 +441,12 @@ file_editor::construct ()
   _menu_bar->addMenu (editMenu);
 
   _debug_menu = new QMenu (tr ("&Debug"), _menu_bar);
+  _debug_menu->addAction (toggle_breakpoint_action);
+  _debug_menu->addAction (next_breakpoint_action);
+  _debug_menu->addAction (previous_breakpoint_action);
+  _debug_menu->addAction (remove_breakpoint_action);
+  _debug_menu->addSeparator ();
+  // The other debug actions will be added by the main window.
   _menu_bar->addMenu (_debug_menu);
 
   QMenu *runMenu = new QMenu (tr ("&Run"), _menu_bar);
@@ -431,6 +475,10 @@ file_editor::construct ()
   connect (next_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
   connect (previous_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));
   connect (remove_bookmark_action,    SIGNAL (triggered ()), this, SLOT (request_remove_bookmark ()));
+  connect (toggle_breakpoint_action,    SIGNAL (triggered ()), this, SLOT (request_toggle_breakpoint ()));
+  connect (next_breakpoint_action,      SIGNAL (triggered ()), this, SLOT (request_next_breakpoint ()));
+  connect (previous_breakpoint_action,      SIGNAL (triggered ()), this, SLOT (request_previous_breakpoint ()));
+  connect (remove_breakpoint_action,    SIGNAL (triggered ()), this, SLOT (request_remove_breakpoint ()));
   connect (comment_selection_action,   SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
   connect (uncomment_selection_action, SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
   connect (_tab_widget, SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));

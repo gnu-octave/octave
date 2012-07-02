@@ -46,11 +46,16 @@ public slots:
   void toggle_bookmark ();
   void next_bookmark ();
   void previous_bookmark ();
+  void remove_breakpoint ();
+  void toggle_breakpoint ();
+  void next_breakpoint ();
+  void previous_breakpoint ();
   void cut ();
   void copy ();
   void paste ();
   void undo ();
   void redo ();
+  void set_debugger_position (int line);
 
   void set_modified (bool modified = true);
 

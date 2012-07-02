@@ -30,10 +30,14 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   _edit_area = new QsciScintilla (this);
   _edit_area->setLexer (fileEditor->lexer ());
 
-  // markers
+  // symbols
   _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
   _edit_area->setMarginSensitivity (1, true);
-  _edit_area->markerDefine (QsciScintilla::RightTriangle, MARKER_BOOKMARK);
+  _edit_area->markerDefine (QsciScintilla::RightTriangle, bookmark);
+  _edit_area->markerDefine (QImage (":/actions/icons/redled.png"), breakpoint);
+  _edit_area->markerDefine (QImage (":/actions/icons/arrow_right.png"),
+                            debugger_position);
+
   connect (_edit_area, SIGNAL (marginClicked (int, int, Qt::KeyboardModifiers)),
            this, SLOT (handle_margin_clicked (int, int, Qt::KeyboardModifiers)));
 
@@ -47,8 +51,8 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
       _edit_area->setMarginsFont( marginFont );
       QFontMetrics metrics(marginFont);
       _edit_area->setMarginType (2, QsciScintilla::TextMargin);
-      _edit_area->setMarginWidth(2, metrics.width("99999"));
-      _edit_area->setMarginLineNumbers(2, true);
+      _edit_area->setMarginWidth(2, metrics.width("9999"));
+      _edit_area->setMarginLineNumbers (2, true);
     }
 
   // code folding
@@ -150,13 +154,24 @@ void
 file_editor_tab::handle_margin_clicked(int margin, int line, Qt::KeyboardModifiers state)
 {
   Q_UNUSED (state);
-  if (margin == 1)  // marker margin
+  if (margin == 1)
     {
       unsigned int mask = _edit_area->markersAtLine (line);
-      if (mask && (1 << MARKER_BOOKMARK))
-        _edit_area->markerDelete(line,MARKER_BOOKMARK);
+
+      if (state & Qt::ControlModifier)
+        {
+          if (mask && (1 << bookmark))
+            _edit_area->markerDelete(line,bookmark);
+          else
+            _edit_area->markerAdd(line,bookmark);
+        }
       else
-        _edit_area->markerAdd(line,MARKER_BOOKMARK);
+        {
+          if (mask && (1 << breakpoint))
+            _edit_area->markerDelete(line,breakpoint);
+          else
+            _edit_area->markerAdd(line,breakpoint);
+        }
     }
 }
 
@@ -271,40 +286,79 @@ file_editor_tab::check_file_modified (QString msg, int cancelButton)
 void
 file_editor_tab::remove_bookmark ()
 {
-  _edit_area->markerDeleteAll(MARKER_BOOKMARK);
+  _edit_area->markerDeleteAll (bookmark);
 }
 
 void
 file_editor_tab::toggle_bookmark ()
 {
-  int line,cur;
-  _edit_area->getCursorPosition(&line,&cur);
-  if ( _edit_area->markersAtLine (line) && (1 << MARKER_BOOKMARK) )
-    _edit_area->markerDelete(line,MARKER_BOOKMARK);
+  int line, cur;
+  _edit_area->getCursorPosition (&line,&cur);
+  if ( _edit_area->markersAtLine (line) && (1 << bookmark) )
+    _edit_area->markerDelete (line, bookmark);
   else
-    _edit_area->markerAdd(line,MARKER_BOOKMARK);
+    _edit_area->markerAdd (line, bookmark);
 }
 
 void
-file_editor_tab::next_bookmark ()
+file_editor_tab::next_bookmark()
 {
-  int line,cur,nextline;
-  _edit_area->getCursorPosition(&line,&cur);
-  if ( _edit_area->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
-    line++; // we have a bookmark here, so start search from next line
-  nextline = _edit_area->markerFindNext(line,(1 << MARKER_BOOKMARK));
-  _edit_area->setCursorPosition(nextline,0);
+  int line, cur, nextline;
+  _edit_area->getCursorPosition (&line, &cur);
+  if ( _edit_area->markersAtLine (line) && (1 << bookmark) )
+    line++; // we have a breakpoint here, so start search from next line
+  nextline = _edit_area->markerFindNext (line, (1 << bookmark));
+  _edit_area->setCursorPosition (nextline, 0);
 }
 
 void
 file_editor_tab::previous_bookmark ()
 {
-  int line,cur,prevline;
-  _edit_area->getCursorPosition(&line,&cur);
-  if ( _edit_area->markersAtLine(line) && (1 << MARKER_BOOKMARK) )
-    line--; // we have a bookmark here, so start search from prev line
-  prevline = _edit_area->markerFindPrevious(line,(1 << MARKER_BOOKMARK));
-  _edit_area->setCursorPosition(prevline,0);
+  int line, cur, prevline;
+  _edit_area->getCursorPosition (&line, &cur);
+  if ( _edit_area->markersAtLine (line) && (1 << bookmark) )
+    line--; // we have a breakpoint here, so start search from prev line
+  prevline = _edit_area->markerFindPrevious (line, (1 << bookmark));
+  _edit_area->setCursorPosition (prevline, 0);
+}
+
+void
+file_editor_tab::remove_breakpoint ()
+{
+    _edit_area->markerDeleteAll (breakpoint);
+}
+
+void
+file_editor_tab::toggle_breakpoint ()
+{
+  int line, cur;
+  _edit_area->getCursorPosition (&line,&cur);
+  if ( _edit_area->markersAtLine (line) && (1 << breakpoint) )
+    _edit_area->markerDelete (line, breakpoint);
+  else
+    _edit_area->markerAdd (line, breakpoint);
+}
+
+void
+file_editor_tab::next_breakpoint ()
+{
+  int line, cur, nextline;
+  _edit_area->getCursorPosition (&line, &cur);
+  if ( _edit_area->markersAtLine (line) && (1 << breakpoint) )
+    line++; // we have a breakpoint here, so start search from next line
+  nextline = _edit_area->markerFindNext (line, (1 << breakpoint));
+  _edit_area->setCursorPosition (nextline, 0);
+}
+
+void
+file_editor_tab::previous_breakpoint ()
+{
+  int line, cur, prevline;
+  _edit_area->getCursorPosition (&line, &cur);
+  if ( _edit_area->markersAtLine (line) && (1 << breakpoint) )
+    line--; // we have a breakpoint here, so start search from prev line
+  prevline = _edit_area->markerFindPrevious (line, (1 << breakpoint));
+  _edit_area->setCursorPosition (prevline, 0);
 }
 
 void
@@ -335,6 +389,16 @@ void
 file_editor_tab::redo ()
 {
   _edit_area->redo ();
+}
+
+void
+file_editor_tab::set_debugger_position (int line)
+{
+  _edit_area->markerDeleteAll (debugger_position);
+  if (line > 0)
+    {
+      _edit_area->markerAdd (line, debugger_position);
+    }
 }
 
 void

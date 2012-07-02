@@ -64,6 +64,18 @@ file_editor::debug_menu ()
 }
 
 void
+file_editor::handle_entered_debug_mode ()
+{
+  _run_action->setEnabled (false);
+}
+
+void
+file_editor::handle_quit_debug_mode ()
+{
+  _run_action->setEnabled (true);
+}
+
+void
 file_editor::request_new_file ()
 {
   file_editor_tab *fileEditorTab = new file_editor_tab (this);
@@ -360,35 +372,14 @@ file_editor::construct ()
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
-  QAction *run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
+  _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
         tr("&Run File"), _tool_bar);
 
   // some actions are disabled from the beginning
   _copy_action->setEnabled(false);
   _cut_action->setEnabled(false);
-
-  // short cuts
-  // TODO: These shortcuts are ambiguous and lead to bugs.
-//  new_action->setShortcut                       (QKeySequence::New);
-//  new_action->setShortcutContext                (Qt::WindowShortcut);
-//  open_action->setShortcut                      (QKeySequence::Open);
-//  open_action->setShortcutContext               (Qt::WindowShortcut);
-//  save_action->setShortcut                      (QKeySequence::Save);
-//  save_action->setShortcutContext               (Qt::WindowShortcut);
-//  save_as_action->setShortcut                   (QKeySequence::SaveAs);
-//  save_as_action->setShortcutContext            (Qt::WindowShortcut);
-//  undo_action->setShortcut                      (QKeySequence::Undo);
-//  undo_action->setShortcutContext               (Qt::WindowShortcut);
-//  redo_action->setShortcut                      (QKeySequence::Redo);
-//  redo_action->setShortcutContext               (Qt::WindowShortcut);
-//  _copy_action->setShortcut                     (QKeySequence::Copy);
-//  _copy_action->setShortcutContext              (Qt::WindowShortcut);
-//  _cut_action->setShortcut                      (QKeySequence::Cut);
-//  _cut_action->setShortcutContext               (Qt::WindowShortcut);
-//  paste_action->setShortcut                     (QKeySequence::Paste);
-//  paste_action->setShortcutContext              (Qt::WindowShortcut);
-  run_action->setShortcut                       (Qt::ControlModifier+ Qt::Key_R);
-  run_action->setShortcutContext                (Qt::WindowShortcut);
+  _run_action->setShortcut                      (Qt::ControlModifier+ Qt::Key_R);
+  _run_action->setShortcutContext               (Qt::WindowShortcut);
   next_bookmark_action->setShortcut             (Qt::Key_F2);
   next_bookmark_action->setShortcutContext      (Qt::WindowShortcut);
   previous_bookmark_action->setShortcut         (Qt::SHIFT + Qt::Key_F2);
@@ -412,7 +403,7 @@ file_editor::construct ()
   _tool_bar->addAction (_cut_action);
   _tool_bar->addAction (paste_action);
   _tool_bar->addSeparator ();
-  _tool_bar->addAction (run_action);
+  _tool_bar->addAction (_run_action);
 
   // menu bar
   QMenu *fileMenu = new QMenu (tr ("&File"), _menu_bar);
@@ -449,9 +440,9 @@ file_editor::construct ()
   // The other debug actions will be added by the main window.
   _menu_bar->addMenu (_debug_menu);
 
-  QMenu *runMenu = new QMenu (tr ("&Run"), _menu_bar);
-  runMenu->addAction (run_action);
-  _menu_bar->addMenu (runMenu);
+  QMenu *_run_menu = new QMenu (tr ("&Run"), _menu_bar);
+  _run_menu->addAction (_run_action);
+  _menu_bar->addMenu (_run_menu);
 
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (_menu_bar);
@@ -470,7 +461,7 @@ file_editor::construct ()
   connect (paste_action,             SIGNAL (triggered ()), this, SLOT (request_paste ()));
   connect (save_action,              SIGNAL (triggered ()), this, SLOT (request_save_file ()));
   connect (save_as_action,            SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
-  connect (run_action,               SIGNAL (triggered ()), this, SLOT (request_run_file ()));
+  connect (_run_action,               SIGNAL (triggered ()), this, SLOT (request_run_file ()));
   connect (toggle_bookmark_action,    SIGNAL (triggered ()), this, SLOT (request_toggle_bookmark ()));
   connect (next_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
   connect (previous_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));

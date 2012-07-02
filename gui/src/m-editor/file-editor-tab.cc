@@ -632,7 +632,16 @@ file_editor_tab::run_file ()
   if (_edit_area->isModified ())
     save_file(_file_name);
 
-  _file_editor->terminal ()->sendText (QString ("run \'%1\'\n").arg (_file_name));
+  QFileInfo file_info (_file_name);
+  QString path = file_info.absolutePath ();
+  QString current_path = QString::fromStdString
+      (octave_link::instance ()->get_last_working_directory ());
+  QString function_name = file_info.fileName ();
+
+  // We have to cut off the suffix, because octave appends it.
+  function_name.chop (file_info.suffix ().length () + 1);
+  _file_editor->terminal ()->sendText (QString ("cd \'%1\'\n%2\ncd \'%3\'\n\n")
+    .arg(path).arg (function_name).arg (current_path));
   // TODO: Sending a run event crashes for long scripts. Find out why.
   //  octave_link::instance ()
   //      ->post_event (new octave_run_file_event (*this, _file_name.toStdString ()));

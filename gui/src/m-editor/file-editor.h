@@ -57,6 +57,9 @@ public:
 
   QMenu *           debug_menu();
 
+  void handle_entered_debug_mode ();
+  void handle_quit_debug_mode ();
+
 public slots:
   void request_new_file ();
   void request_open_file ();
@@ -97,8 +100,9 @@ private:
   QMenuBar *        _menu_bar;
   QToolBar *        _tool_bar;
   QMenu *           _debug_menu;
-  QAction*          _copy_action;
-  QAction*          _cut_action;
+  QAction *         _copy_action;
+  QAction *         _cut_action;
+  QAction *         _run_action;
   QTabWidget *      _tab_widget;
   int               _marker_breakpoint;
   lexer_octave_gui *_lexer;

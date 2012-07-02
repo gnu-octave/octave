@@ -300,6 +300,7 @@ main_window::handle_entered_debug_mode ()
   _debug_step_over->setEnabled (true);
   _debug_step_out->setEnabled (true);
   _debug_quit->setEnabled (true);
+  _file_editor->handle_entered_debug_mode ();
 }
 
 void
@@ -311,6 +312,7 @@ main_window::handle_quit_debug_mode ()
   _debug_step_over->setEnabled (false);
   _debug_step_out->setEnabled (false);
   _debug_quit->setEnabled (false);
+  _file_editor->handle_quit_debug_mode ();
 }
 
 void

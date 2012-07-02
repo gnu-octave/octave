@@ -267,7 +267,7 @@ class octave_add_breakpoint_event : public octave_event
     bool perform ()
     {
       bp_table::intmap intmap;
-      intmap[0] = _line;
+      intmap[0] = _line + 1;
 
       std::string previous_directory = octave_env::get_current_directory ();
       octave_env::chdir (_path);

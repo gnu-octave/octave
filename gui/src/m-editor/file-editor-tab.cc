@@ -215,7 +215,7 @@ file_editor_tab::request_add_breakpoint (int line)
       (new octave_add_breakpoint_event (*this,
                                         path.toStdString (),
                                         function_name.toStdString (),
-                                        line + 1));
+                                        line));
 }
 
 void
@@ -232,7 +232,7 @@ file_editor_tab::request_remove_breakpoint (int line)
       (new octave_remove_breakpoint_event (*this,
                                            path.toStdString (),
                                            function_name.toStdString (),
-                                           line + 1));
+                                           line));
 }
 
 void

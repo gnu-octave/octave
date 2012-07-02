@@ -83,9 +83,12 @@ main_window::handle_save_workspace_request ()
   QString selectedFile =
       QFileDialog::getSaveFileName (this, tr ("Save Workspace"),
                                     resource_manager::instance ()->get_home_path ());
-  octave_link::instance ()
-      ->post_event (new octave_save_workspace_event (*this,
-        selectedFile.toStdString()));
+  if (!selectedFile.isEmpty ())
+    {
+      octave_link::instance ()
+          ->post_event (new octave_save_workspace_event (*this,
+          selectedFile.toStdString()));
+    }
 }
 
 void

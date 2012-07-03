@@ -586,7 +586,7 @@ width 0.6pt \tabskip=0pt\cr
 @item @tab a >= b @tab ge (a, b) @tab Greater than or equal to operator @tab
 @item @tab a == b @tab eq (a, b) @tab Equal to operator @tab
 @item @tab a != b @tab ne (a, b) @tab Not equal to operator @tab
-@item @tab a \& b @tab and (a, b) @tab Logical and operator @tab
+@item @tab a & b @tab and (a, b) @tab Logical and operator @tab
 @item @tab a | b @tab or (a, b) @tab Logical or operator @tab
 @item @tab ! b @tab not (a) @tab Logical not operator @tab
 @item @tab a' @tab ctranspose (a) @tab Complex conjugate transpose operator @tab

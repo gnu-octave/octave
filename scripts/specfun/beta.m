@@ -31,6 +31,7 @@
 ## @end example
 ##
 ## @end ifnottex
+## @seealso{betaln, betainc}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

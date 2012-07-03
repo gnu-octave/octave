@@ -615,7 +615,7 @@ log1p (const FloatComplex& x)
 {
   FloatComplex retval;
 
-  float r = x.real (), i = x.imag();
+  float r = x.real (), i = x.imag ();
 
   if (fabs (r) < 0.5 && fabs (i) < 0.5)
     {
@@ -2158,6 +2158,28 @@ gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
    d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
 }
 
+static void
+gripe_betaincinv_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2, octave_idx_type r3,
+                                octave_idx_type c3)
+{
+  (*current_liboctave_error_handler)
+   ("betaincinv: nonconformant arguments (x is %dx%d, a is %dx%d, b is %dx%d)",
+     r1, c1, r2, c2, r3, c3);
+}
+
+static void
+gripe_betaincinv_nonconformant (const dim_vector& d1, const dim_vector& d2,
+                                const dim_vector& d3)
+{
+  std::string d1_str = d1.str ();
+  std::string d2_str = d2.str ();
+  std::string d3_str = d3.str ();
+
+  (*current_liboctave_error_handler)
+  ("betaincinv: nonconformant arguments (x is %s, a is %s, b is %s)",
+   d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
+}
+
 double
 betainc (double x, double a, double b)
 {
@@ -2166,93 +2188,42 @@ betainc (double x, double a, double b)
   return retval;
 }
 
-Matrix
-betainc (double x, double a, const Matrix& b)
-{
-  octave_idx_type nr = b.rows ();
-  octave_idx_type nc = b.cols ();
-
-  Matrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = betainc (x, a, b(i,j));
-
-  return retval;
-}
-
-Matrix
-betainc (double x, const Matrix& a, double b)
-{
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  Matrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = betainc (x, a(i,j), b);
-
-  return retval;
-}
-
-Matrix
-betainc (double x, const Matrix& a, const Matrix& b)
-{
-  Matrix retval;
-
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (a_nr == b_nr && a_nc == b_nc)
-    {
-      retval.resize (a_nr, a_nc);
-
-      for (octave_idx_type j = 0; j < a_nc; j++)
-        for (octave_idx_type i = 0; i < a_nr; i++)
-          retval(i,j) = betainc (x, a(i,j), b(i,j));
-    }
-  else
-    gripe_betainc_nonconformant (1, 1, a_nr, a_nc, b_nr, b_nc);
-
-  return retval;
-}
-
-NDArray
-betainc (double x, double a, const NDArray& b)
+Array<double>
+betainc (double x, double a, const Array<double>& b)
 {
   dim_vector dv = b.dims ();
   octave_idx_type nel = dv.numel ();
 
-  NDArray retval (dv);
+  Array<double> retval (dv);
+
+  double *pretval = retval.fortran_vec ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = betainc (x, a, b(i));
+    *pretval++ = betainc (x, a, b(i));
 
   return retval;
 }
 
-NDArray
-betainc (double x, const NDArray& a, double b)
+Array<double>
+betainc (double x, const Array<double>& a, double b)
 {
   dim_vector dv = a.dims ();
   octave_idx_type nel = dv.numel ();
 
-  NDArray retval (dv);
+  Array<double> retval (dv);
+
+  double *pretval = retval.fortran_vec ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = betainc (x, a(i), b);
+    *pretval++ = betainc (x, a(i), b);
 
   return retval;
 }
 
-NDArray
-betainc (double x, const NDArray& a, const NDArray& b)
+Array<double>
+betainc (double x, const Array<double>& a, const Array<double>& b)
 {
-  NDArray retval;
+  Array<double> retval;
   dim_vector dv = a.dims ();
 
   if (dv == b.dims ())
@@ -2261,8 +2232,10 @@ betainc (double x, const NDArray& a, const NDArray& b)
 
       retval.resize (dv);
 
+      double *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x, a(i), b(i));
+        *pretval++ = betainc (x, a(i), b(i));
     }
   else
     gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
@@ -2270,118 +2243,26 @@ betainc (double x, const NDArray& a, const NDArray& b)
   return retval;
 }
 
-
-Matrix
-betainc (const Matrix& x, double a, double b)
-{
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  Matrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = betainc (x(i,j), a, b);
-
-  return retval;
-}
-
-Matrix
-betainc (const Matrix& x, double a, const Matrix& b)
-{
-  Matrix retval;
-
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (nr == b_nr && nc == b_nc)
-    {
-      retval.resize (nr, nc);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = betainc (x(i,j), a, b(i,j));
-    }
-  else
-    gripe_betainc_nonconformant (nr, nc, 1, 1, b_nr, b_nc);
-
-  return retval;
-}
-
-Matrix
-betainc (const Matrix& x, const Matrix& a, double b)
-{
-  Matrix retval;
-
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
-
-  if (nr == a_nr && nc == a_nc)
-    {
-      retval.resize (nr, nc);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = betainc (x(i,j), a(i,j), b);
-    }
-  else
-    gripe_betainc_nonconformant (nr, nc, a_nr, a_nc, 1, 1);
-
-  return retval;
-}
-
-Matrix
-betainc (const Matrix& x, const Matrix& a, const Matrix& b)
-{
-  Matrix retval;
-
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (nr == a_nr && nr == b_nr && nc == a_nc && nc == b_nc)
-    {
-      retval.resize (nr, nc);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = betainc (x(i,j), a(i,j), b(i,j));
-    }
-  else
-    gripe_betainc_nonconformant (nr, nc, a_nr, a_nc, b_nr, b_nc);
-
-  return retval;
-}
-
-NDArray
-betainc (const NDArray& x, double a, double b)
+Array<double>
+betainc (const Array<double>& x, double a, double b)
 {
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
 
-  NDArray retval (dv);
+  Array<double> retval (dv);
+
+  double *pretval = retval.fortran_vec ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = betainc (x(i), a, b);
+    *pretval++ = betainc (x(i), a, b);
 
   return retval;
 }
 
-NDArray
-betainc (const NDArray& x, double a, const NDArray& b)
+Array<double>
+betainc (const Array<double>& x, double a, const Array<double>& b)
 {
-  NDArray retval;
+  Array<double> retval;
   dim_vector dv = x.dims ();
 
   if (dv == b.dims ())
@@ -2390,8 +2271,10 @@ betainc (const NDArray& x, double a, const NDArray& b)
 
       retval.resize (dv);
 
+      double *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x(i), a, b(i));
+        *pretval++ = betainc (x(i), a, b(i));
     }
   else
     gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
@@ -2399,10 +2282,10 @@ betainc (const NDArray& x, double a, const NDArray& b)
   return retval;
 }
 
-NDArray
-betainc (const NDArray& x, const NDArray& a, double b)
+Array<double>
+betainc (const Array<double>& x, const Array<double>& a, double b)
 {
-  NDArray retval;
+  Array<double> retval;
   dim_vector dv = x.dims ();
 
   if (dv == a.dims ())
@@ -2411,8 +2294,10 @@ betainc (const NDArray& x, const NDArray& a, double b)
 
       retval.resize (dv);
 
+      double *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x(i), a(i), b);
+        *pretval++ = betainc (x(i), a(i), b);
     }
   else
     gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
@@ -2420,10 +2305,10 @@ betainc (const NDArray& x, const NDArray& a, double b)
   return retval;
 }
 
-NDArray
-betainc (const NDArray& x, const NDArray& a, const NDArray& b)
+Array<double>
+betainc (const Array<double>& x, const Array<double>& a, const Array<double>& b)
 {
-  NDArray retval;
+  Array<double> retval;
   dim_vector dv = x.dims ();
 
   if (dv == a.dims () && dv == b.dims ())
@@ -2432,8 +2317,10 @@ betainc (const NDArray& x, const NDArray& a, const NDArray& b)
 
       retval.resize (dv);
 
+      double *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x(i), a(i), b(i));
+        *pretval++ = betainc (x(i), a(i), b(i));
     }
   else
     gripe_betainc_nonconformant (dv, a.dims (), b.dims ());
@@ -2449,93 +2336,42 @@ betainc (float x, float a, float b)
   return retval;
 }
 
-FloatMatrix
-betainc (float x, float a, const FloatMatrix& b)
-{
-  octave_idx_type nr = b.rows ();
-  octave_idx_type nc = b.cols ();
-
-  FloatMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = betainc (x, a, b(i,j));
-
-  return retval;
-}
-
-FloatMatrix
-betainc (float x, const FloatMatrix& a, float b)
-{
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  FloatMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = betainc (x, a(i,j), b);
-
-  return retval;
-}
-
-FloatMatrix
-betainc (float x, const FloatMatrix& a, const FloatMatrix& b)
-{
-  FloatMatrix retval;
-
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (a_nr == b_nr && a_nc == b_nc)
-    {
-      retval.resize (a_nr, a_nc);
-
-      for (octave_idx_type j = 0; j < a_nc; j++)
-        for (octave_idx_type i = 0; i < a_nr; i++)
-          retval(i,j) = betainc (x, a(i,j), b(i,j));
-    }
-  else
-    gripe_betainc_nonconformant (1, 1, a_nr, a_nc, b_nr, b_nc);
-
-  return retval;
-}
-
-FloatNDArray
-betainc (float x, float a, const FloatNDArray& b)
+Array<float>
+betainc (float x, float a, const Array<float>& b)
 {
   dim_vector dv = b.dims ();
   octave_idx_type nel = dv.numel ();
 
-  FloatNDArray retval (dv);
+  Array<float> retval (dv);
+
+  float *pretval = retval.fortran_vec ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = betainc (x, a, b(i));
+    *pretval++ = betainc (x, a, b(i));
 
   return retval;
 }
 
-FloatNDArray
-betainc (float x, const FloatNDArray& a, float b)
+Array<float>
+betainc (float x, const Array<float>& a, float b)
 {
   dim_vector dv = a.dims ();
   octave_idx_type nel = dv.numel ();
 
-  FloatNDArray retval (dv);
+  Array<float> retval (dv);
+
+  float *pretval = retval.fortran_vec ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = betainc (x, a(i), b);
+    *pretval++ = betainc (x, a(i), b);
 
   return retval;
 }
 
-FloatNDArray
-betainc (float x, const FloatNDArray& a, const FloatNDArray& b)
+Array<float>
+betainc (float x, const Array<float>& a, const Array<float>& b)
 {
-  FloatNDArray retval;
+  Array<float> retval;
   dim_vector dv = a.dims ();
 
   if (dv == b.dims ())
@@ -2544,8 +2380,10 @@ betainc (float x, const FloatNDArray& a, const FloatNDArray& b)
 
       retval.resize (dv);
 
+      float *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x, a(i), b(i));
+        *pretval++ = betainc (x, a(i), b(i));
     }
   else
     gripe_betainc_nonconformant (dim_vector (0, 0), dv, b.dims ());
@@ -2553,118 +2391,26 @@ betainc (float x, const FloatNDArray& a, const FloatNDArray& b)
   return retval;
 }
 
-
-FloatMatrix
-betainc (const FloatMatrix& x, float a, float b)
-{
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  FloatMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = betainc (x(i,j), a, b);
-
-  return retval;
-}
-
-FloatMatrix
-betainc (const FloatMatrix& x, float a, const FloatMatrix& b)
-{
-  FloatMatrix retval;
-
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (nr == b_nr && nc == b_nc)
-    {
-      retval.resize (nr, nc);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = betainc (x(i,j), a, b(i,j));
-    }
-  else
-    gripe_betainc_nonconformant (nr, nc, 1, 1, b_nr, b_nc);
-
-  return retval;
-}
-
-FloatMatrix
-betainc (const FloatMatrix& x, const FloatMatrix& a, float b)
-{
-  FloatMatrix retval;
-
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
-
-  if (nr == a_nr && nc == a_nc)
-    {
-      retval.resize (nr, nc);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = betainc (x(i,j), a(i,j), b);
-    }
-  else
-    gripe_betainc_nonconformant (nr, nc, a_nr, a_nc, 1, 1);
-
-  return retval;
-}
-
-FloatMatrix
-betainc (const FloatMatrix& x, const FloatMatrix& a, const FloatMatrix& b)
-{
-  FloatMatrix retval;
-
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.cols ();
-
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
-
-  octave_idx_type b_nr = b.rows ();
-  octave_idx_type b_nc = b.cols ();
-
-  if (nr == a_nr && nr == b_nr && nc == a_nc && nc == b_nc)
-    {
-      retval.resize (nr, nc);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = 0; i < nr; i++)
-          retval(i,j) = betainc (x(i,j), a(i,j), b(i,j));
-    }
-  else
-    gripe_betainc_nonconformant (nr, nc, a_nr, a_nc, b_nr, b_nc);
-
-  return retval;
-}
-
-FloatNDArray
-betainc (const FloatNDArray& x, float a, float b)
+Array<float>
+betainc (const Array<float>& x, float a, float b)
 {
   dim_vector dv = x.dims ();
   octave_idx_type nel = dv.numel ();
 
-  FloatNDArray retval (dv);
+  Array<float> retval (dv);
+
+  float *pretval = retval.fortran_vec ();
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = betainc (x(i), a, b);
+    *pretval++ = betainc (x(i), a, b);
 
   return retval;
 }
 
-FloatNDArray
-betainc (const FloatNDArray& x, float a, const FloatNDArray& b)
+Array<float>
+betainc (const Array<float>& x, float a, const Array<float>& b)
 {
-  FloatNDArray retval;
+  Array<float> retval;
   dim_vector dv = x.dims ();
 
   if (dv == b.dims ())
@@ -2673,8 +2419,10 @@ betainc (const FloatNDArray& x, float a, const FloatNDArray& b)
 
       retval.resize (dv);
 
+      float *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x(i), a, b(i));
+        *pretval++ = betainc (x(i), a, b(i));
     }
   else
     gripe_betainc_nonconformant (dv, dim_vector (0, 0), b.dims ());
@@ -2682,10 +2430,10 @@ betainc (const FloatNDArray& x, float a, const FloatNDArray& b)
   return retval;
 }
 
-FloatNDArray
-betainc (const FloatNDArray& x, const FloatNDArray& a, float b)
+Array<float>
+betainc (const Array<float>& x, const Array<float>& a, float b)
 {
-  FloatNDArray retval;
+  Array<float> retval;
   dim_vector dv = x.dims ();
 
   if (dv == a.dims ())
@@ -2694,8 +2442,10 @@ betainc (const FloatNDArray& x, const FloatNDArray& a, float b)
 
       retval.resize (dv);
 
+      float *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x(i), a(i), b);
+        *pretval++ = betainc (x(i), a(i), b);
     }
   else
     gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0, 0));
@@ -2703,10 +2453,10 @@ betainc (const FloatNDArray& x, const FloatNDArray& a, float b)
   return retval;
 }
 
-FloatNDArray
-betainc (const FloatNDArray& x, const FloatNDArray& a, const FloatNDArray& b)
+Array<float>
+betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b)
 {
-  FloatNDArray retval;
+  Array<float> retval;
   dim_vector dv = x.dims ();
 
   if (dv == a.dims () && dv == b.dims ())
@@ -2715,8 +2465,10 @@ betainc (const FloatNDArray& x, const FloatNDArray& a, const FloatNDArray& b)
 
       retval.resize (dv);
 
+      float *pretval = retval.fortran_vec ();
+
       for (octave_idx_type i = 0; i < nel; i++)
-        retval (i) = betainc (x(i), a(i), b(i));
+        *pretval++ = betainc (x(i), a(i), b(i));
     }
   else
     gripe_betainc_nonconformant (dv, a.dims (), b.dims ());
@@ -3128,7 +2880,7 @@ gammainc (const FloatNDArray& x, const FloatNDArray& a)
 
       (*current_liboctave_error_handler)
         ("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
-         x_str.c_str (), a_str. c_str ());
+         x_str.c_str (), a_str.c_str ());
     }
 
  done:
@@ -3393,4 +3145,469 @@ double erfcx (double x)
 float erfcx (float x)
 {
   return erfcx_impl (x);
+}
+
+//
+//  Incomplete Beta function ratio
+//
+//  Algorithm based on the one by John Burkardt.
+//  See http://people.sc.fsu.edu/~jburkardt/cpp_src/asa109/asa109.html
+//
+//  The original code is distributed under the GNU LGPL v3 license.
+//
+//  Reference:
+//
+//    KL Majumder, GP Bhattacharjee,
+//    Algorithm AS 63:
+//    The incomplete Beta Integral,
+//    Applied Statistics,
+//    Volume 22, Number 3, 1973, pages 409-411.
+//
+double
+betain (double x, double p, double q, double beta, bool& err)
+{
+  double acu = 0.1E-14, ai, cx;
+  bool indx;
+  int ns;
+  double pp, psq, qq, rx, temp, term, value, xx;
+
+  value = x;
+  err = false;
+
+  //  Check the input arguments.
+
+  if ((p <= 0.0 || q <= 0.0) || (x < 0.0 || 1.0 < x))
+    {
+      err = true;
+      return value;
+    }
+
+  //  Special cases.
+
+  if (x == 0.0 || x == 1.0)
+    {
+      return value;
+    }
+
+  //  Change tail if necessary and determine S.
+
+  psq = p + q;
+  cx = 1.0 - x;
+
+  if (p < psq * x)
+    {
+      xx = cx;
+      cx = x;
+      pp = q;
+      qq = p;
+      indx = true;
+    }
+  else
+    {
+      xx = x;
+      pp = p;
+      qq = q;
+      indx = false;
+    }
+
+  term = 1.0;
+  ai = 1.0;
+  value = 1.0;
+  ns = (int) (qq + cx * psq);
+
+  //  Use the Soper reduction formula.
+
+  rx = xx / cx;
+  temp = qq - ai;
+  if (ns == 0)
+    {
+      rx = xx;
+    }
+
+  for ( ; ; )
+    {
+      term = term * temp * rx / (pp + ai);
+      value = value + term;
+      temp = fabs (term);
+
+      if (temp <= acu && temp <= acu * value)
+        {
+          value = value * exp (pp * log (xx)
+          + (qq - 1.0) * log (cx) - beta) / pp;
+
+          if (indx)
+            {
+              value = 1.0 - value;
+            }
+          break;
+        }
+
+      ai = ai + 1.0;
+      ns = ns - 1;
+
+      if (0 <= ns)
+        {
+          temp = qq - ai;
+          if (ns == 0)
+            {
+              rx = xx;
+            }
+        }
+      else
+        {
+          temp = psq;
+          psq = psq + 1.0;
+        }
+    }
+
+  return value;
+}
+
+//
+//  Inverse of the incomplete Beta function
+//
+//  Algorithm based on the one by John Burkardt.
+//  See http://people.sc.fsu.edu/~jburkardt/cpp_src/asa109/asa109.html
+//
+//  The original code is distributed under the GNU LGPL v3 license.
+//
+//  Reference:
+//
+//    GW Cran, KJ Martin, GE Thomas,
+//    Remark AS R19 and Algorithm AS 109:
+//    A Remark on Algorithms AS 63: The Incomplete Beta Integral
+//    and AS 64: Inverse of the Incomplete Beta Integeral,
+//    Applied Statistics,
+//    Volume 26, Number 1, 1977, pages 111-114.
+//
+double
+betaincinv (double y, double p, double q) {
+  double a, acu, adj, fpu, g, h;
+  int iex;
+  bool indx;
+  double pp, prev, qq, r, s, sae = -37.0, sq, t, tx, value, w, xin, ycur, yprev;
+
+  double beta = lgamma (p) + lgamma (q) - lgamma (p + q);
+  bool err = false;
+  fpu = pow (10.0, sae);
+  value = y;
+
+  //  Test for admissibility of parameters.
+
+  if (p <= 0.0 || q <= 0.0)
+    {
+      (*current_liboctave_error_handler)
+        ("betaincinv: wrong parameters");
+    }
+
+  if (y < 0.0 || 1.0 < y)
+    {
+      (*current_liboctave_error_handler)
+        ("betaincinv: wrong parameter Y");
+    }
+
+  if (y == 0.0 || y == 1.0)
+    {
+      return value;
+    }
+
+  //  Change tail if necessary.
+
+  if (0.5 < y)
+    {
+      a = 1.0 - y;
+      pp = q;
+      qq = p;
+      indx = true;
+    }
+  else
+    {
+      a = y;
+      pp = p;
+      qq = q;
+      indx = false;
+    }
+
+  //  Calculate the initial approximation.
+
+  r = sqrt (- log (a * a));
+
+  ycur = r - (2.30753 + 0.27061 * r) / (1.0 + (0.99229 + 0.04481 * r) * r);
+
+  if (1.0 < pp && 1.0 < qq)
+    {
+      r = (ycur * ycur - 3.0) / 6.0;
+      s = 1.0 / (pp + pp - 1.0);
+      t = 1.0 / (qq + qq - 1.0);
+      h = 2.0 / (s + t);
+      w = ycur * sqrt (h + r) / h - (t - s) * (r + 5.0 / 6.0 - 2.0 / (3.0 * h));
+      value = pp / (pp + qq * exp (w + w));
+    }
+  else
+    {
+      r = qq + qq;
+      t = 1.0 / (9.0 * qq);
+      t = r * pow (1.0 - t + ycur * sqrt (t), 3);
+
+      if (t <= 0.0)
+        {
+          value = 1.0 - exp ((log ((1.0 - a) * qq) + beta) / qq);
+        }
+      else
+        {
+          t = (4.0 * pp + r - 2.0) / t;
+
+          if (t <= 1.0)
+            {
+              value = exp ((log (a * pp) + beta) / pp);
+            }
+          else
+            {
+              value = 1.0 - 2.0 / (t + 1.0);
+            }
+        }
+    }
+
+  //  Solve for X by a modified Newton-Raphson method,
+  //  using the function BETAIN.
+
+  r = 1.0 - pp;
+  t = 1.0 - qq;
+  yprev = 0.0;
+  sq = 1.0;
+  prev = 1.0;
+
+  if (value < 0.0001)
+    {
+      value = 0.0001;
+    }
+
+  if (0.9999 < value)
+    {
+      value = 0.9999;
+    }
+
+  iex = std::max (- 5.0 / pp / pp - 1.0 / pow (a, 0.2) - 13.0, sae);
+
+  acu = pow (10.0, iex);
+
+  for ( ; ; )
+    {
+      ycur = betain (value, pp, qq, beta, err);
+
+      if (err)
+        {
+          return value;
+        }
+
+      xin = value;
+      ycur = (ycur - a) * exp (beta + r * log (xin) + t * log (1.0 - xin));
+
+      if (ycur * yprev <= 0.0)
+        {
+          prev = std::max (sq, fpu);
+        }
+
+      g = 1.0;
+
+      for ( ; ; )
+        {
+          for ( ; ; )
+            {
+              adj = g * ycur;
+              sq = adj * adj;
+
+              if (sq < prev)
+                {
+                  tx = value - adj;
+
+                  if (0.0 <= tx && tx <= 1.0)
+                    {
+                      break;
+                    }
+                }
+              g = g / 3.0;
+            }
+
+          if (prev <= acu)
+            {
+              if (indx)
+                {
+                  value = 1.0 - value;
+                }
+              return value;
+            }
+
+          if (ycur * ycur <= acu)
+            {
+              if (indx)
+                {
+                  value = 1.0 - value;
+                }
+              return value;
+            }
+
+          if (tx != 0.0 && tx != 1.0)
+            {
+              break;
+            }
+
+          g = g / 3.0;
+        }
+
+      if (tx == value)
+        {
+          break;
+        }
+
+      value = tx;
+      yprev = ycur;
+    }
+
+  if (indx)
+    {
+      value = 1.0 - value;
+    }
+
+  return value;
+}
+
+Array<double>
+betaincinv (double x, double a, const Array<double>& b)
+{
+  dim_vector dv = b.dims ();
+  octave_idx_type nel = dv.numel ();
+
+  Array<double> retval (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betaincinv (x, a, b(i));
+
+  return retval;
+}
+
+Array<double>
+betaincinv (double x, const Array<double>& a, double b)
+{
+  dim_vector dv = a.dims ();
+  octave_idx_type nel = dv.numel ();
+
+  Array<double> retval (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betaincinv (x, a(i), b);
+
+  return retval;
+}
+
+Array<double>
+betaincinv (double x, const Array<double>& a, const Array<double>& b)
+{
+  Array<double> retval;
+  dim_vector dv = a.dims ();
+
+  if (dv == b.dims ())
+    {
+      octave_idx_type nel = dv.numel ();
+
+      retval.resize (dv);
+
+      double *pretval = retval.fortran_vec ();
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        *pretval++ = betaincinv (x, a(i), b(i));
+    }
+  else
+    gripe_betaincinv_nonconformant (dim_vector (0, 0), dv, b.dims ());
+
+  return retval;
+}
+
+Array<double>
+betaincinv (const Array<double>& x, double a, double b)
+{
+  dim_vector dv = x.dims ();
+  octave_idx_type nel = dv.numel ();
+
+  Array<double> retval (dv);
+
+  double *pretval = retval.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    *pretval++ = betaincinv (x(i), a, b);
+
+  return retval;
+}
+
+Array<double>
+betaincinv (const Array<double>& x, double a, const Array<double>& b)
+{
+  Array<double> retval;
+  dim_vector dv = x.dims ();
+
+  if (dv == b.dims ())
+    {
+      octave_idx_type nel = dv.numel ();
+
+      retval.resize (dv);
+
+      double *pretval = retval.fortran_vec ();
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        *pretval++ = betaincinv (x(i), a, b(i));
+    }
+  else
+    gripe_betaincinv_nonconformant (dv, dim_vector (0, 0), b.dims ());
+
+  return retval;
+}
+
+Array<double>
+betaincinv (const Array<double>& x, const Array<double>& a, double b)
+{
+  Array<double> retval;
+  dim_vector dv = x.dims ();
+
+  if (dv == a.dims ())
+    {
+      octave_idx_type nel = dv.numel ();
+
+      retval.resize (dv);
+
+      double *pretval = retval.fortran_vec ();
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        *pretval++ = betaincinv (x(i), a(i), b);
+    }
+  else
+    gripe_betaincinv_nonconformant (dv, a.dims (), dim_vector (0, 0));
+
+  return retval;
+}
+
+Array<double>
+betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b)
+{
+  Array<double> retval;
+  dim_vector dv = x.dims ();
+
+  if (dv == a.dims () && dv == b.dims ())
+    {
+      octave_idx_type nel = dv.numel ();
+
+      retval.resize (dv);
+
+      double *pretval = retval.fortran_vec ();
+
+      for (octave_idx_type i = 0; i < nel; i++)
+        *pretval++ = betaincinv (x(i), a(i), b(i));
+    }
+  else
+    gripe_betaincinv_nonconformant (dv, a.dims (), b.dims ());
+
+  return retval;
 }

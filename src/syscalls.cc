@@ -1594,8 +1594,10 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
 
 DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{cname}, @var{status}, @var{msg}]} canonicalize_file_name (@var{name})\n\
-Return the canonical name of file @var{name}.\n\
+@deftypefn {Built-in Function} {[@var{cname}, @var{status}, @var{msg}] =} canonicalize_file_name (@var{fname})\n\
+Return the canonical name of file @var{fname}.  If the file does not exist\n\
+the empty string (\"\") is returned.\n\
+@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename}\n\
 @end deftypefn")
 {
   octave_value_list retval;

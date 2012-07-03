@@ -32,6 +32,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "utils.h"
 
+// FIXME: These functions do not need to be dynamically loaded.  They should
+//        be placed elsewhere in the Octave code hierarchy.
+
 DEFUN_DLD (betainc, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} betainc (@var{x}, @var{a}, @var{b})\n\
@@ -94,7 +97,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -103,7 +106,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  FloatNDArray a = a_arg.float_array_value ();
+                  Array<float> a = a_arg.float_array_value ();
 
                   if (! error_state)
                     {
@@ -116,7 +119,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -126,7 +129,7 @@ compatible dimensions.\n\
             }
           else
             {
-              FloatNDArray x = x_arg.float_array_value ();
+              Array<float> x = x_arg.float_array_value ();
 
               if (a_arg.is_scalar_type ())
                 {
@@ -143,7 +146,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -152,7 +155,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  FloatNDArray a = a_arg.float_array_value ();
+                  Array<float> a = a_arg.float_array_value ();
 
                   if (! error_state)
                     {
@@ -165,7 +168,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          FloatNDArray b = b_arg.float_array_value ();
+                          Array<float> b = b_arg.float_array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -195,7 +198,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -204,7 +207,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  NDArray a = a_arg.array_value ();
+                  Array<double> a = a_arg.array_value ();
 
                   if (! error_state)
                     {
@@ -217,7 +220,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -227,7 +230,7 @@ compatible dimensions.\n\
             }
           else
             {
-              NDArray x = x_arg.array_value ();
+              Array<double> x = x_arg.array_value ();
 
               if (a_arg.is_scalar_type ())
                 {
@@ -244,7 +247,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -253,7 +256,7 @@ compatible dimensions.\n\
                 }
               else
                 {
-                  NDArray a = a_arg.array_value ();
+                  Array<double> a = a_arg.array_value ();
 
                   if (! error_state)
                     {
@@ -266,7 +269,7 @@ compatible dimensions.\n\
                         }
                       else
                         {
-                          NDArray b = b_arg.array_value ();
+                          Array<double> b = b_arg.array_value ();
 
                           if (! error_state)
                             retval = betainc (x, a, b);
@@ -283,7 +286,7 @@ compatible dimensions.\n\
 }
 
 /*
-%% test/octave.test/arith/betainc-1.m
+## Double precision
 %!test
 %! a = [1, 1.5, 2, 3];
 %! b = [4, 3, 2, 1];
@@ -295,7 +298,7 @@ compatible dimensions.\n\
 %! assert (v1, v2, sqrt (eps));
 %! assert (v3, v4, sqrt (eps));
 
-%% Single precision
+## Single precision
 %!test
 %! a = single ([1, 1.5, 2, 3]);
 %! b = single ([4, 3, 2, 1]);
@@ -307,7 +310,7 @@ compatible dimensions.\n\
 %! assert (v1, v2, sqrt (eps ("single")));
 %! assert (v3, v4, sqrt (eps ("single")));
 
-%% Mixed double/single precision
+## Mixed double/single precision
 %!test
 %! a = single ([1, 1.5, 2, 3]);
 %! b = [4, 3, 2, 1];
@@ -316,15 +319,172 @@ compatible dimensions.\n\
 %! x = [.2, .4, .6, .8];
 %! v3 = betainc (x, a, b);
 %! v4 = 1-betainc (1.-x, b, a);
-%! assert (v1, v2, sqrt (eps ('single')));
-%! assert (v3, v4, sqrt (eps ('single')));
+%! assert (v1, v2, sqrt (eps ("single")));
+%! assert (v3, v4, sqrt (eps ("single")));
 
-%% test/octave.test/arith/betainc-2.m
 %!error betainc ()
-
-%% test/octave.test/arith/betainc-3.m
-%!error betainc> betainc (1)
-
-%% test/octave.test/arith/betainc-4.m
-%!error betainc> betainc (1,2)
+%!error betainc (1)
+%!error betainc (1,2)
+%!error betainc (1,2,3,4)
 */
+
+DEFUN_DLD (betaincinv, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} betaincinv (@var{y}, @var{a}, @var{b})\n\
+Compute the inverse of the incomplete Beta function, i.e., @var{x} such that\n\
+\n\
+@example\n\
+@var{y} == betainc (@var{x}, @var{a}, @var{b}) \n\
+@end example\n\
+@seealso{betainc, beta, betaln}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 3)
+    {
+      octave_value x_arg = args(0);
+      octave_value a_arg = args(1);
+      octave_value b_arg = args(2);
+
+      if (x_arg.is_scalar_type ())
+        {
+          double x = x_arg.double_value ();
+
+          if (a_arg.is_scalar_type ())
+            {
+              double a = a_arg.double_value ();
+
+              if (! error_state)
+                {
+                  if (b_arg.is_scalar_type ())
+                    {
+                      double b = b_arg.double_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                }
+            }
+          else
+            {
+              Array<double> a = a_arg.array_value ();
+
+              if (! error_state)
+                {
+                  if (b_arg.is_scalar_type ())
+                    {
+                      double b = b_arg.double_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                }
+            }
+        }
+      else
+        {
+          Array<double> x = x_arg.array_value ();
+
+          if (a_arg.is_scalar_type ())
+            {
+              double a = a_arg.double_value ();
+
+              if (! error_state)
+                {
+                  if (b_arg.is_scalar_type ())
+                    {
+                      double b = b_arg.double_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                }
+            }
+          else
+            {
+              Array<double> a = a_arg.array_value ();
+
+              if (! error_state)
+                {
+                  if (b_arg.is_scalar_type ())
+                    {
+                      double b = b_arg.double_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                  else
+                    {
+                      Array<double> b = b_arg.array_value ();
+
+                      if (! error_state)
+                        retval = betaincinv (x, a, b);
+                    }
+                }
+            }
+        }
+
+      // FIXME: It would be better to have an algorithm for betaincinv which accepted
+      //        float inputs and returned float outputs.  As it is, we do extra work
+      //        to calculate betaincinv to double precision and then throw that precision
+      //        away.
+      if (x_arg.is_single_type () || a_arg.is_single_type () ||
+          b_arg.is_single_type ())
+        {
+          retval = Array<float> (retval.array_value ());
+        }
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!assert (betaincinv ([0.875 0.6875], [1 2], 3), [0.5 0.5], sqrt (eps))
+%!assert (betaincinv (0.5, 3, 3), 0.5, sqrt (eps))
+%!assert (betaincinv (0.34375, 4, 3), 0.5, sqrt (eps))
+%!assert (betaincinv (0.2265625, 5, 3), 0.5, sqrt (eps))
+%!assert (betaincinv (0.14453125, 6, 3), 0.5, sqrt (eps))
+%!assert (betaincinv (0.08984375, 7, 3), 0.5, sqrt (eps))
+%!assert (betaincinv (0.0546875, 8, 3), 0.5, sqrt (eps))
+%!assert (betaincinv (0.03271484375, 9, 3), 0.5, sqrt (eps))
+%!assert (betaincinv (0.019287109375, 10, 3), 0.5, sqrt (eps))
+
+## Test class single as well
+%!assert (betaincinv ([0.875 0.6875], [1 2], single (3)), [0.5 0.5], sqrt (eps ("single")))
+%!assert (betaincinv (0.5, 3, single (3)), 0.5, sqrt (eps ("single")))
+%!assert (betaincinv (0.34375, 4, single (3)), 0.5, sqrt (eps ("single")))
+
+## Extreme values
+%!assert (betaincinv (0, 42, 42), 0, sqrt (eps))
+%!assert (betaincinv (1, 42, 42), 1, sqrt (eps))
+
+%!error betaincinv ()
+%!error betaincinv (1, 2)
+*/
+

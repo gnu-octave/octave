@@ -68,8 +68,8 @@ function yi = ppval (pp, xi)
   ndv = length (dimvec);
 
   ## Offsets.
-  dx = (xi - x(idx))(:);
-  dx = repmat (dx, [1, prod(d)])';
+  dx = (xi - x(idx))(:)';
+  dx = repmat (dx, [prod(d), 1]);
   dx = reshape (dx, dimvec);
   dx = shiftdim (dx, ndv - 1);
 

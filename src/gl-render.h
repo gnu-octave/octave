@@ -90,6 +90,7 @@ protected:
                              const graphics_object& go);
 
   virtual void init_gl_context (bool enhanced, const Matrix& backgroundColor);
+  virtual void setup_opengl_transformation (const axes::properties& props);
 
   virtual void set_color (const Matrix& c);
   virtual void set_polygon_offset (bool on, double offset = 0.0);
@@ -167,8 +168,6 @@ private:
 
   unsigned int make_marker_list (const std::string& m, double size,
                                  bool filled) const;
-
-  void setup_opengl_transformation (const axes::properties& props);
 
   void draw_axes_planes (const axes::properties& props);
   void draw_axes_boxes (const axes::properties& props);

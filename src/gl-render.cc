@@ -552,6 +552,9 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
 
   const base_properties& props = go.get_properties ();
 
+  if (! toolkit)
+    toolkit = props.get_toolkit ();
+
   if (go.isa ("figure"))
     draw_figure (dynamic_cast<const figure::properties&> (props));
   else if (go.isa ("axes"))
@@ -587,8 +590,6 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
 void
 opengl_renderer::draw_figure (const figure::properties& props)
 {
-  toolkit = props.get_toolkit ();
-
   // Initialize OpenGL context
 
   init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
@@ -605,8 +606,6 @@ opengl_renderer::draw_uipanel (const uipanel::properties& props,
   graphics_object fig = go.get_ancestor ("figure");
   const figure::properties& figProps =
     dynamic_cast<const figure::properties&> (fig.get_properties ());
-
-  toolkit = figProps.get_toolkit ();
 
   // Initialize OpenGL context 
 

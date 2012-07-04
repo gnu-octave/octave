@@ -1514,7 +1514,7 @@ class mxArray_sparse : public mxArray_matlab
 {
 public:
 
-  mxArray_sparse (mxClassID id_arg, int m, int n, int nzmax_arg,
+  mxArray_sparse (mxClassID id_arg, mwSize m, mwSize n, mwSize nzmax_arg,
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg),
       pr (calloc (nzmax, get_element_size ())),

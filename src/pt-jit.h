@@ -320,28 +320,21 @@ public:
   {
     overload (void) : function (0), can_error (false), result (0) {}
 
-    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0) :
-      function (f), can_error (e), result (r), arguments (1)
-    {
-      arguments[0] = arg0;
+#define ASSIGN_ARG(i) arguments[i] = arg ## i;
+#define OVERLOAD_CTOR(N)                                                \
+    overload (llvm::Function *f, bool e, jit_type *ret,                 \
+              OCT_MAKE_DECL_LIST (jit_type *, arg, N))                  \
+      : function (f), can_error (e), result (ret), arguments (N)        \
+    {                                                                   \
+      OCT_ITERATE_MACRO (ASSIGN_ARG, N);                                \
     }
 
-    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
-              jit_type *arg1) : function (f), can_error (e),
-                                result (r), arguments (2)
-    {
-      arguments[0] = arg0;
-      arguments[1] = arg1;
-    }
+    OVERLOAD_CTOR (1)
+    OVERLOAD_CTOR (2)
+    OVERLOAD_CTOR (3)
 
-    overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
-              jit_type *arg1, jit_type *arg2) : function (f), can_error (e),
-                                                result (r), arguments (3)
-    {
-      arguments[0] = arg0;
-      arguments[1] = arg1;
-      arguments[2] = arg2;
-    }
+#undef ASSIGN_ARG
+#undef OVERLOAD_CTOR
 
     overload (llvm::Function *f, bool e, jit_type *r,
               const std::vector<jit_type *>& aarguments)
@@ -359,25 +352,19 @@ public:
     add_overload (func, func.arguments);
   }
 
-  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0)
-  {
-    overload ol (f, e, r, arg0);
-    add_overload (ol);
+#define ADD_OVERLOAD(N)                                                 \
+  void add_overload (llvm::Function *f, bool e, jit_type *ret,          \
+                     OCT_MAKE_DECL_LIST (jit_type *, arg, N))           \
+  {                                                                     \
+    overload ol (f, e, ret, OCT_MAKE_ARG_LIST (arg, N));                \
+    add_overload (ol);                                                  \
   }
 
-  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
-                     jit_type *arg1)
-  {
-    overload ol (f, e, r, arg0, arg1);
-    add_overload (ol);
-  }
+  ADD_OVERLOAD (1);
+  ADD_OVERLOAD (2);
+  ADD_OVERLOAD (3);
 
-  void add_overload (llvm::Function *f, bool e, jit_type *r, jit_type *arg0,
-                     jit_type *arg1, jit_type *arg2)
-  {
-    overload ol (f, e, r, arg0, arg1, arg2);
-    add_overload (ol);
-  }
+#undef ADD_OVERLOAD
 
   void add_overload (llvm::Function *f, bool e, jit_type *r,
                      const std::vector<jit_type *>& args)
@@ -620,71 +607,35 @@ private:
 
   void add_binary_fcmp (jit_type *ty, int op, int llvm_op);
 
+
   llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret)
   {
     std::vector<llvm::Type *> args;
     return create_function (name, ret, args);
   }
 
-  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
-                                   llvm::Type *arg0)
-  {
-    std::vector<llvm::Type *> args (1, arg0);
-    return create_function (name, ret, args);
+#define ASSIGN_ARG(i) args[i] = arg ## i;
+#define CREATE_FUNCTIONT(TYPE, N)                                       \
+  llvm::Function *create_function (const llvm::Twine& name, TYPE *ret,  \
+                                   OCT_MAKE_DECL_LIST (TYPE *, arg, N)) \
+  {                                                                     \
+    std::vector<TYPE *> args (N);                                       \
+    OCT_ITERATE_MACRO (ASSIGN_ARG, N);                                  \
+    return create_function (name, ret, args);                           \
   }
 
-  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
-                                   jit_type *arg0)
-  {
-    return create_function (name, ret->to_llvm (), arg0->to_llvm ());
-  }
+#define CREATE_FUNCTION(N)                      \
+  CREATE_FUNCTIONT(llvm::Type, N)               \
+  CREATE_FUNCTIONT(jit_type, N)
 
-  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
-                                   llvm::Type *arg0, llvm::Type *arg1)
-  {
-    std::vector<llvm::Type *> args (2);
-    args[0] = arg0;
-    args[1] = arg1;
-    return create_function (name, ret, args);
-  }
+  CREATE_FUNCTION(1)
+  CREATE_FUNCTION(2)
+  CREATE_FUNCTION(3)
+  CREATE_FUNCTION(4)
 
-  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
-                                   jit_type *arg0, jit_type *arg1)
-  {
-    return create_function (name, ret->to_llvm (), arg0->to_llvm (),
-                            arg1->to_llvm ());
-  }
-
-  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
-                                   llvm::Type *arg0, llvm::Type *arg1,
-                                   llvm::Type *arg2)
-  {
-    std::vector<llvm::Type *> args (3);
-    args[0] = arg0;
-    args[1] = arg1;
-    args[2] = arg2;
-    return create_function (name, ret, args);
-  }
-
-  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
-                                   jit_type *arg0, jit_type *arg1,
-                                   jit_type *arg2)
-  {
-    return create_function (name, ret->to_llvm (), arg0->to_llvm (),
-                            arg1->to_llvm (), arg2->to_llvm ());
-  }
-
-  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
-                                   llvm::Type *arg0, llvm::Type *arg1,
-                                   llvm::Type *arg2, llvm::Type *arg3)
-  {
-    std::vector<llvm::Type *> args (4);
-    args[0] = arg0;
-    args[1] = arg1;
-    args[2] = arg2;
-    args[3] = arg3;
-    return create_function (name, ret, args);
-  }
+#undef ASSIGN_ARG
+#undef CREATE_FUNCTIONT
+#undef CREATE_FUNCTION
 
   llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
                                    const std::vector<jit_type *>& args);
@@ -958,47 +909,27 @@ public:
   jit_instruction (void) : mid (next_id ()), mparent (0)
   {}
 
-  jit_instruction (size_t nargs)
-    : already_infered (nargs, reinterpret_cast<jit_type *>(0)),
-      mid (next_id ()), mparent (0)
+  jit_instruction (size_t nargs) : mid (next_id ()), mparent (0)
   {
+    already_infered.reserve (nargs);
     marguments.reserve (nargs);
   }
 
-  jit_instruction (jit_value *arg0)
-    : already_infered (1, reinterpret_cast<jit_type *>(0)), marguments (1),
-      mid (next_id ()), mparent (0)
-  {
-    stash_argument (0, arg0);
+#define STASH_ARG(i) stash_argument (i, arg ## i);
+#define JIT_INSTRUCTION_CTOR(N)                                         \
+  jit_instruction (OCT_MAKE_DECL_LIST (jit_value *, arg, N))            \
+  : already_infered (N), marguments (N), mid (next_id ()), mparent (0)  \
+  {                                                                     \
+    OCT_ITERATE_MACRO (STASH_ARG, N);                                   \
   }
 
-  jit_instruction (jit_value *arg0, jit_value *arg1)
-    : already_infered (2, reinterpret_cast<jit_type *>(0)), marguments (2),
-      mid (next_id ()), mparent (0)
-  {
-    stash_argument (0, arg0);
-    stash_argument (1, arg1);
-  }
+  JIT_INSTRUCTION_CTOR(1)
+  JIT_INSTRUCTION_CTOR(2)
+  JIT_INSTRUCTION_CTOR(3)
+  JIT_INSTRUCTION_CTOR(4)
 
-  jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2)
-    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (3),
-      mid (next_id ()), mparent (0)
-  {
-    stash_argument (0, arg0);
-    stash_argument (1, arg1);
-    stash_argument (2, arg2);
-  }
-
-  jit_instruction (jit_value *arg0, jit_value *arg1, jit_value *arg2,
-                   jit_value *arg3)
-    : already_infered (3, reinterpret_cast<jit_type *>(0)), marguments (4),
-      mid (next_id ()), mparent (0)
-  {
-    stash_argument (0, arg0);
-    stash_argument (1, arg1);
-    stash_argument (2, arg2);
-    stash_argument (3, arg3);
-  }
+#undef STASH_ARG
+#undef JIT_INSTRUCTION_CTOR
 
   static void reset_ids (void)
   {
@@ -1684,43 +1615,26 @@ class
 jit_terminator : public jit_instruction
 {
 public:
-  jit_terminator (size_t asuccessor_count, jit_value *arg0)
-    : jit_instruction (arg0), malive (asuccessor_count, false),
-      mbranch_llvm (asuccessor_count, 0) {}
+#define JIT_TERMINATOR_CONST(N)                                         \
+  jit_terminator (size_t asuccessor_count,                              \
+                  OCT_MAKE_DECL_LIST (jit_value *, arg, N))             \
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)),                     \
+      malive (asuccessor_count, false) {}
 
-  jit_terminator (size_t asuccessor_count, jit_value *arg0, jit_value *arg1)
-    : jit_instruction (arg0, arg1), malive (asuccessor_count, false),
-      mbranch_llvm (asuccessor_count, 0) {}
+  JIT_TERMINATOR_CONST (1)
+  JIT_TERMINATOR_CONST (2)
+  JIT_TERMINATOR_CONST (3)
 
-  jit_terminator (size_t asuccessor_count, jit_value *arg0, jit_value *arg1,
-                  jit_value *arg2)
-    : jit_instruction (arg0, arg1, arg2), malive (asuccessor_count, false),
-      mbranch_llvm (asuccessor_count, 0) {}
+#undef JIT_TERMINATOR_CONST
 
   jit_block *successor (size_t idx = 0) const
   {
     return static_cast<jit_block *> (argument (idx));
   }
 
-  // the llvm block between our parent and the given successor
-  llvm::BasicBlock *branch_llvm (size_t idx = 0) const
-  {
-    return mbranch_llvm[idx] ? mbranch_llvm[idx] : parent ()->to_llvm ();
-  }
-
-  llvm::BasicBlock *branch_llvm (int idx) const
-  {
-    return branch_llvm (static_cast<size_t> (idx));
-  }
-
-  llvm::BasicBlock *branch_llvm (const jit_block *asuccessor) const
-  {
-    return branch_llvm (successor_index (asuccessor));
-  }
-
   llvm::BasicBlock *successor_llvm (size_t idx = 0) const
   {
-    return mbranch_llvm[idx] ? mbranch_llvm[idx] : successor (idx)->to_llvm ();
+    return successor (idx)->to_llvm ();
   }
 
   size_t successor_index (const jit_block *asuccessor) const;
@@ -1754,7 +1668,6 @@ protected:
   virtual bool check_alive (size_t) const { return true; }
 private:
   std::vector<bool> malive;
-  std::vector<llvm::BasicBlock *> mbranch_llvm;
 };
 
 class
@@ -1810,29 +1723,21 @@ class
 jit_call : public jit_instruction
 {
 public:
-  jit_call (const jit_function& afunction,
-            jit_value *arg0) : jit_instruction (arg0), mfunction (afunction)
-  {}
+#define JIT_CALL_CONST(N)                                               \
+  jit_call (const jit_function& afunction,                              \
+            OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), mfunction (afunction) {} \
+                                                                        \
+  jit_call (const jit_function& (*afunction) (void),                    \
+            OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), mfunction (afunction ()) {}
 
-  jit_call (const jit_function& (*afunction) (void),
-            jit_value *arg0) : jit_instruction (arg0),
-                               mfunction (afunction ()) {}
+  JIT_CALL_CONST (1)
+  JIT_CALL_CONST (2)
+  JIT_CALL_CONST (3)
+  JIT_CALL_CONST (4)
 
-  jit_call (const jit_function& afunction,
-            jit_value *arg0, jit_value *arg1) : jit_instruction (arg0, arg1),
-                                                mfunction (afunction) {}
-
-  jit_call (const jit_function& (*afunction) (void),
-            jit_value *arg0, jit_value *arg1) : jit_instruction (arg0, arg1),
-                                                mfunction (afunction ()) {}
-
-  jit_call (const jit_function& (*afunction) (void),
-            jit_value *arg0, jit_value *arg1, jit_value *arg2)
-    : jit_instruction (arg0, arg1, arg2), mfunction (afunction ()) {}
-
-  jit_call (const jit_function& (*afunction) (void),
-            jit_value *arg0, jit_value *arg1, jit_value *arg2, jit_value *arg3)
-    : jit_instruction (arg0, arg1, arg2, arg3), mfunction (afunction ()) {}
+#undef JIT_CALL_CONST
 
 
   const jit_function& function (void) const { return mfunction; }
@@ -2126,62 +2031,38 @@ public:
     return ret;
   }
 
-  template <typename T, typename ARG0>
-  T *create (const ARG0& arg0)
-  {
-    T *ret = new T(arg0);
-    track_value (ret);
-    return ret;
+#define DECL_ARG(n) const ARG ## n& arg ## n
+#define JIT_CREATE(N)                                           \
+  template <typename T, OCT_MAKE_DECL_LIST (typename, ARG, N)>  \
+  T *create (OCT_MAKE_LIST (DECL_ARG, N))                       \
+  {                                                             \
+    T *ret = new T (OCT_MAKE_ARG_LIST (arg, N));                \
+    track_value (ret);                                          \
+    return ret;                                                 \
   }
 
-  template <typename T, typename ARG0, typename ARG1>
-  T *create (const ARG0& arg0, const ARG1& arg1)
-  {
-    T *ret = new T(arg0, arg1);
-    track_value (ret);
-    return ret;
+  JIT_CREATE (1)
+  JIT_CREATE (2)
+  JIT_CREATE (3)
+  JIT_CREATE (4)
+
+#undef JIT_CREATE
+
+#define JIT_CREATE_CHECKED(N)                                           \
+  template <OCT_MAKE_DECL_LIST (typename, ARG, N)>                      \
+  jit_call *create_checked (OCT_MAKE_LIST (DECL_ARG, N))                \
+  {                                                                     \
+    jit_call *ret = create<jit_call> (OCT_MAKE_ARG_LIST (arg, N));      \
+    return create_checked_impl (ret);                                   \
   }
 
-  template <typename T, typename ARG0, typename ARG1, typename ARG2>
-  T *create (const ARG0& arg0, const ARG1& arg1, const ARG2& arg2)
-  {
-    T *ret = new T(arg0, arg1, arg2);
-    track_value (ret);
-    return ret;
-  }
+  JIT_CREATE_CHECKED (1)
+  JIT_CREATE_CHECKED (2)
+  JIT_CREATE_CHECKED (3)
+  JIT_CREATE_CHECKED (4)
 
-  template <typename T, typename ARG0, typename ARG1, typename ARG2,
-            typename ARG3>
-  T *create (const ARG0& arg0, const ARG1& arg1, const ARG2& arg2,
-             const ARG3& arg3)
-  {
-    T *ret = new T(arg0, arg1, arg2, arg3);
-    track_value (ret);
-    return ret;
-  }
-
-  template <typename ARG0, typename ARG1>
-  jit_call *create_checked (const ARG0& arg0, const ARG1& arg1)
-  {
-    jit_call *ret = create<jit_call> (arg0, arg1);
-    return create_checked_impl (ret);
-  }
-
-  template <typename ARG0, typename ARG1, typename ARG2>
-  jit_call *create_checked (const ARG0& arg0, const ARG1& arg1,
-                            const ARG2& arg2)
-  {
-    jit_call *ret = create<jit_call> (arg0, arg1, arg2);
-    return create_checked_impl (ret);
-  }
-
-  template <typename ARG0, typename ARG1, typename ARG2, typename ARG3>
-  jit_call *create_checked (const ARG0& arg0, const ARG1& arg1,
-                            const ARG2& arg2, const ARG3& arg3)
-  {
-    jit_call *ret = create<jit_call> (arg0, arg1, arg2, arg3);
-    return create_checked_impl (ret);
-  }
+#undef JIT_CREATE_CHECKED
+#undef DECL_ARG
 
   typedef std::list<jit_block *> block_list;
   typedef block_list::iterator block_iterator;

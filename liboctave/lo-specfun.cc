@@ -1986,7 +1986,7 @@ airy (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& 
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = airy (z(i), deriv, scaled, ierr(i));
+    retval(i) = airy (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
@@ -2001,7 +2001,7 @@ biry (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& 
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = biry (z(i), deriv, scaled, ierr(i));
+    retval(i) = biry (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
@@ -2116,7 +2116,7 @@ airy (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_ty
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = airy (z(i), deriv, scaled, ierr(i));
+    retval(i) = airy (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
@@ -2131,7 +2131,7 @@ biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_ty
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = biry (z(i), deriv, scaled, ierr(i));
+    retval(i) = biry (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }

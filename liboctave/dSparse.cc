@@ -2783,7 +2783,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                     }
 
                   for (octave_idx_type i = 0; i < nc; i++)
-                    retval (i, j) = work[i];
+                    retval(i, j) = work[i];
                 }
 
               if (calc_cond)
@@ -3349,7 +3349,7 @@ SparseMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                     }
 
                   for (octave_idx_type i = 0; i < nc; i++)
-                    retval (i, j) = cwork[i];
+                    retval(i, j) = cwork[i];
                 }
 
               if (calc_cond)
@@ -5176,7 +5176,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                         }
 
                       for (octave_idx_type i = 0; i < b_nr; i++)
-                        retval (i, j) = Complex (Bx[i], Bz[i]);
+                        retval(i, j) = Complex (Bx[i], Bz[i]);
                     }
                 }
             }
@@ -5310,7 +5310,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
                                  F77_CHAR_ARG_LEN (1)));
 
                       for (octave_idx_type i = 0; i < nr; i++)
-                        retval (i, j) = Complex (Bx[i], Bz[i]);
+                        retval(i, j) = Complex (Bx[i], Bz[i]);
                     }
                 }
             }
@@ -6487,7 +6487,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                     }
 
                   for (octave_idx_type i = 0; i < b_nr; i++)
-                    retval (i, j) = Complex (Xx[i], Xz[i]);
+                    retval(i, j) = Complex (Xx[i], Xz[i]);
                 }
 
               UMFPACK_DNAME (report_info) (control, info);

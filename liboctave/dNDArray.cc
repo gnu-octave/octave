@@ -286,7 +286,7 @@ NDArray::fourier (int dim) const
           F77_FUNC (zfftf, ZFFTF) (npts, tmp, pwsave);
 
           for (octave_idx_type i = 0; i < npts; i++)
-            retval ((i + k*npts)*stride + j*dist) = tmp[i];
+            retval((i + k*npts)*stride + j*dist) = tmp[i];
         }
     }
 
@@ -333,7 +333,7 @@ NDArray::ifourier (int dim) const
           F77_FUNC (zfftb, ZFFTB) (npts, tmp, pwsave);
 
           for (octave_idx_type i = 0; i < npts; i++)
-            retval ((i + k*npts)*stride + j*dist) = tmp[i] /
+            retval((i + k*npts)*stride + j*dist) = tmp[i] /
               static_cast<double> (npts);
         }
     }
@@ -374,12 +374,12 @@ NDArray::fourier2d (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (zfftf, ZFFTF) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l];
+                retval((l + k*npts)*stride + j*dist) = prow[l];
             }
         }
 
@@ -422,12 +422,12 @@ NDArray::ifourier2d (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l] /
+                retval((l + k*npts)*stride + j*dist) = prow[l] /
                   static_cast<double> (npts);
             }
         }
@@ -470,12 +470,12 @@ NDArray::fourierNd (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (zfftf, ZFFTF) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l];
+                retval((l + k*npts)*stride + j*dist) = prow[l];
             }
         }
 
@@ -517,12 +517,12 @@ NDArray::ifourierNd (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l] /
+                retval((l + k*npts)*stride + j*dist) = prow[l] /
                   static_cast<double> (npts);
             }
         }

@@ -2603,7 +2603,7 @@ Sparse<T>::array_value () const
     {
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         for (octave_idx_type i = cidx(j), iu = cidx(j+1); i < iu; i++)
-          retval (ridx(i), j) = data (i);
+          retval(ridx(i), j) = data (i);
     }
 
   return retval;

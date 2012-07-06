@@ -51,8 +51,8 @@ function retval = list_primes (n)
   endif
 
   retval = zeros (1, n);
-  retval (1) = 2;
-  retval (2) = 3;
+  retval(1) = 2;
+  retval(2) = 3;
 
   n = n - 2;
   i = 3;
@@ -75,7 +75,7 @@ function retval = list_primes (n)
     endwhile
 
     if (is_prime)
-      retval (i++) = p;
+      retval(i++) = p;
       n--;
     endif
     p = p + 2;

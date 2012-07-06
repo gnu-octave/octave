@@ -58,7 +58,7 @@ function retval = sinetone (freq, rate, sec, ampl)
   retval = zeros (ns, n);
 
   for k = 1:n
-    retval (:, k) = ampl(k) * sin (2 * pi * (1:ns) / rate * freq(k))';
+    retval(:, k) = ampl(k) * sin (2 * pi * (1:ns) / rate * freq(k))';
   endfor
 
 endfunction

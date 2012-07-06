@@ -226,7 +226,7 @@ information.\n\
                 SparseLU fact (m, Qinit, thres, false, true);
 
                 if (nargout < 2)
-                  retval (0) = fact.Y ();
+                  retval(0) = fact.Y ();
                 else
                   {
                     PermMatrix P = fact.Pr_mat ();
@@ -246,7 +246,7 @@ information.\n\
                 SparseLU fact (m, Qinit, thres, false, true);
 
                 if (vecout)
-                  retval (2) = fact.Pr_vec ();
+                  retval(2) = fact.Pr_vec ();
                 else
                   retval(2) = fact.Pr_mat ();
 
@@ -296,7 +296,7 @@ information.\n\
                 SparseComplexLU fact (m, Qinit, thres, false, true);
 
                 if (nargout < 2)
-                  retval (0) = fact.Y ();
+                  retval(0) = fact.Y ();
                 else
                   {
                     PermMatrix P = fact.Pr_mat ();
@@ -316,7 +316,7 @@ information.\n\
                 SparseComplexLU fact (m, Qinit, thres, false, true);
 
                 if (vecout)
-                  retval (2) = fact.Pr_vec ();
+                  retval(2) = fact.Pr_vec ();
                 else
                   retval(2) = fact.Pr_mat ();
 

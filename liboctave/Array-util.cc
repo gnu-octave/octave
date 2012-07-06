@@ -236,7 +236,7 @@ conv_to_int_array (const Array<idx_vector>& a)
   Array<octave_idx_type> retval (a.dims ());
 
   for (octave_idx_type i = 0; i < a.length (); i++)
-    retval (i) = a(i).elem (0);
+    retval(i) = a(i).elem (0);
 
   return retval;
 }
@@ -247,7 +247,7 @@ conv_to_array (const idx_vector *tmp, const octave_idx_type len)
   Array<idx_vector> retval (dim_vector (len, 1));
 
   for (octave_idx_type i = 0; i < len; i++)
-      retval (i) = tmp[i];
+      retval(i) = tmp[i];
 
   return retval;
 }

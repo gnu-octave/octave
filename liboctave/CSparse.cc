@@ -1639,7 +1639,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
                     }
 
                   for (octave_idx_type i = 0; i < nc; i++)
-                    retval (perm[i], j) = work[i];
+                    retval(perm[i], j) = work[i];
                 }
 
               if (calc_cond)
@@ -2162,7 +2162,7 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
                     }
 
                   for (octave_idx_type i = 0; i < nc; i++)
-                    retval (perm[i], j) = work[i];
+                    retval(perm[i], j) = work[i];
                 }
 
               if (calc_cond)
@@ -2695,7 +2695,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
                     }
 
                   for (octave_idx_type i = 0; i < nc; i++)
-                    retval (i, j) = work[i];
+                    retval(i, j) = work[i];
                 }
 
               if (calc_cond)
@@ -3259,7 +3259,7 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
                     }
 
                   for (octave_idx_type i = 0; i < nc; i++)
-                    retval (i, j) = work[i];
+                    retval(i, j) = work[i];
                 }
 
               if (calc_cond)

@@ -613,7 +613,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
             }
 
           if (nargout < 2)
-            retval (0) = eig_val;
+            retval(0) = eig_val;
           else
             {
               retval(2) = double (info);
@@ -646,7 +646,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
             }
 
           if (nargout < 2)
-            retval (0) = eig_val;
+            retval(0) = eig_val;
           else
             {
               retval(2) = double (info);
@@ -694,7 +694,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
                 }
 
               if (nargout < 2)
-                retval (0) = eig_val;
+                retval(0) = eig_val;
               else
                 {
                   retval(2) = double (info);
@@ -740,7 +740,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
                 }
 
               if (nargout < 2)
-                retval (0) = eig_val;
+                retval(0) = eig_val;
               else
                 {
                   retval(2) = double (info);

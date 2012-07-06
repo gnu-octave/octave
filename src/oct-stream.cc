@@ -2138,7 +2138,7 @@ octave_base_stream::oscanf (const std::string& fmt, const std::string& who)
               else
                 {
                   if (tmp.is_defined ())
-                    retval (num_values++) = tmp;
+                    retval(num_values++) = tmp;
 
                   if (! ok ())
                     break;

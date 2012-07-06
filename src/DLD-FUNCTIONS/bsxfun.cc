@@ -630,7 +630,7 @@ dimensionality as the other array.\n\
 
 #define BSXEND(T) \
                   (have_ ## T) \
-                    retval (0) = result_ ## T;
+                    retval(0) = result_ ## T;
 
                   if BSXEND(NDArray)
                   else if BSXEND(ComplexNDArray)

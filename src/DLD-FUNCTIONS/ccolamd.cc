@@ -304,7 +304,7 @@ colamd, symamd, and other related orderings.\n\
       for (octave_idx_type i = 0; i < n_col; i++)
         out_perm(i) = p [i] + 1;
 
-      retval (0) = out_perm;
+      retval(0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
@@ -536,7 +536,7 @@ colamd, symamd, and other related orderings.\n\
       for (octave_idx_type i = 0; i < n_col; i++)
         out_perm(i) = perm [i] + 1;
 
-      retval (0) = out_perm;
+      retval(0) = out_perm;
 
       // Return the stats vector
       if (nargout == 2)

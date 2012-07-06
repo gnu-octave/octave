@@ -315,13 +315,15 @@ k=0                 k=0\n\
 @noindent\n\
 where\n\
 @ifnottex\n\
- N=length(a)-1 and M=length(b)-1.\n\
+N=length(a)-1 and M=length(b)-1.\n\
 @end ifnottex\n\
 @tex\n\
- $a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
+$a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
 @end tex\n\
-over the first non-singleton dimension of @var{x} or over @var{dim} if\n\
-supplied.  An equivalent form of this equation is:\n\
+The result is calculated over the first non-singleton dimension of @var{x}\n\
+or over @var{dim} if supplied.\n\
+\n\
+An equivalent form of the equation is:\n\
 @tex\n\
 $$\n\
 y_n = -\\sum_{k=1}^N c_{k+1} y_{n-k} + \\sum_{k=0}^M d_{k+1} x_{n-k}, \\qquad\n\

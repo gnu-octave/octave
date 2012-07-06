@@ -449,8 +449,8 @@ $x = 0$, $f = e = 0$.\n\
               // FIXME -- should E be an int value?
               FloatMatrix e;
               map_2_xlog2 (x, f, e);
-              retval (1) = e;
-              retval (0) = f;
+              retval(1) = e;
+              retval(0) = f;
             }
           else if (args(0).is_complex_type ())
             {
@@ -459,8 +459,8 @@ $x = 0$, $f = e = 0$.\n\
               // FIXME -- should E be an int value?
               FloatNDArray e;
               map_2_xlog2 (x, f, e);
-              retval (1) = e;
-              retval (0) = f;
+              retval(1) = e;
+              retval(0) = f;
             }
         }
       else if (args(0).is_real_type ())
@@ -470,8 +470,8 @@ $x = 0$, $f = e = 0$.\n\
           // FIXME -- should E be an int value?
           Matrix e;
           map_2_xlog2 (x, f, e);
-          retval (1) = e;
-          retval (0) = f;
+          retval(1) = e;
+          retval(0) = f;
         }
       else if (args(0).is_complex_type ())
         {
@@ -480,8 +480,8 @@ $x = 0$, $f = e = 0$.\n\
           // FIXME -- should E be an int value?
           NDArray e;
           map_2_xlog2 (x, f, e);
-          retval (1) = e;
-          retval (0) = f;
+          retval(1) = e;
+          retval(0) = f;
         }
       else
         gripe_wrong_type_arg ("log2", args(0));
@@ -1268,7 +1268,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
   int nargin = args.length ();
 
   if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).diag();
+    retval = args(0).diag ();
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
       octave_idx_type k = args(1).int_value ();
@@ -1276,7 +1276,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
       if (error_state)
         error ("diag: invalid argument K");
       else
-        retval = args(0).diag(k);
+        retval = args(0).diag (k);
     }
   else if (nargin == 3)
     {
@@ -1303,40 +1303,40 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
 
 /*
 
-%!assert(full (diag ([1; 2; 3])), [1, 0, 0; 0, 2, 0; 0, 0, 3])
-%!assert(diag ([1; 2; 3], 1), [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0])
-%!assert(diag ([1; 2; 3], 2), [0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0])
-%!assert(diag ([1; 2; 3],-1), [0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0])
-%!assert(diag ([1; 2; 3],-2), [0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0])
+%!assert (full (diag ([1; 2; 3])), [1, 0, 0; 0, 2, 0; 0, 0, 3])
+%!assert (diag ([1; 2; 3], 1), [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0])
+%!assert (diag ([1; 2; 3], 2), [0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0])
+%!assert (diag ([1; 2; 3],-1), [0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0])
+%!assert (diag ([1; 2; 3],-2), [0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0])
 
-%!assert(diag ([1, 0, 0; 0, 2, 0; 0, 0, 3]), [1; 2; 3])
-%!assert(diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3])
-%!assert(diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3])
-%!assert(diag (ones(1, 0), 2), zeros (2))
-%!assert(diag (1:3, 4, 2), [1, 0; 0, 2; 0, 0; 0, 0])
+%!assert (diag ([1, 0, 0; 0, 2, 0; 0, 0, 3]), [1; 2; 3])
+%!assert (diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3])
+%!assert (diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3])
+%!assert (diag (ones (1, 0), 2), zeros (2))
+%!assert (diag (1:3, 4, 2), [1, 0; 0, 2; 0, 0; 0, 0])
 
-%!assert(full (diag (single([1; 2; 3]))), single([1, 0, 0; 0, 2, 0; 0, 0, 3]))
-%!assert(diag (single([1; 2; 3]), 1), single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]))
-%!assert(diag (single([1; 2; 3]), 2), single([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]))
-%!assert(diag (single([1; 2; 3]),-1), single([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]))
-%!assert(diag (single([1; 2; 3]),-2), single([0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0]))
+%!assert (full (diag (single ([1; 2; 3]))), single ([1, 0, 0; 0, 2, 0; 0, 0, 3]))
+%!assert (diag (single ([1; 2; 3]), 1), single ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]))
+%!assert (diag (single ([1; 2; 3]), 2), single ([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]))
+%!assert (diag (single ([1; 2; 3]),-1), single ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]))
+%!assert (diag (single ([1; 2; 3]),-2), single ([0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0]))
 
-%!assert(diag (single([1, 0, 0; 0, 2, 0; 0, 0, 3])), single([1; 2; 3]))
-%!assert(diag (single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), single([1; 2; 3]))
-%!assert(diag (single([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), single([1; 2; 3]))
+%!assert (diag (single ([1, 0, 0; 0, 2, 0; 0, 0, 3])), single ([1; 2; 3]))
+%!assert (diag (single ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), single ([1; 2; 3]))
+%!assert (diag (single ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), single ([1; 2; 3]))
 
-%!assert(diag (int8([1; 2; 3])), int8([1, 0, 0; 0, 2, 0; 0, 0, 3]))
-%!assert(diag (int8([1; 2; 3]), 1), int8([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]))
-%!assert(diag (int8([1; 2; 3]), 2), int8([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]))
-%!assert(diag (int8([1; 2; 3]),-1), int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]))
-%!assert(diag (int8([1; 2; 3]),-2), int8([0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0]))
+%!assert (diag (int8 ([1; 2; 3])), int8 ([1, 0, 0; 0, 2, 0; 0, 0, 3]))
+%!assert (diag (int8 ([1; 2; 3]), 1), int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]))
+%!assert (diag (int8 ([1; 2; 3]), 2), int8 ([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]))
+%!assert (diag (int8 ([1; 2; 3]),-1), int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]))
+%!assert (diag (int8 ([1; 2; 3]),-2), int8 ([0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0]))
 
-%!assert(diag (int8([1, 0, 0; 0, 2, 0; 0, 0, 3])), int8([1; 2; 3]))
-%!assert(diag (int8([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8([1; 2; 3]))
-%!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]))
+%!assert (diag (int8 ([1, 0, 0; 0, 2, 0; 0, 0, 3])), int8 ([1; 2; 3]))
+%!assert (diag (int8 ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8 ([1; 2; 3]))
+%!assert (diag (int8 ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8 ([1; 2; 3]))
 
 ## Test non-square size
-%!assert(diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
+%!assert (diag ([1,2,3], 6, 3), [1 0 0; 0 2 0; 0 0 3; 0 0 0; 0 0 0; 0 0 0])
 %!assert (diag (1, 2, 3), [1,0,0; 0,0,0]);
 %!assert (diag ({1}, 2, 3), {1,[],[]; [],[],[]});
 %!assert (diag ({1,2}, 3, 4), {1,[],[],[]; [],2,[],[]; [],[],[],[]});
@@ -2166,7 +2166,7 @@ cat (4, ones (2, 2), zeros (2, 2))\n\
 
 /*
 %!function ret = __testcat (t1, t2, tr, cmplx)
-%!  assert (cat (1, cast ([], t1), cast([], t2)), cast ([], tr));
+%!  assert (cat (1, cast ([], t1), cast ([], t2)), cast ([], tr));
 %! 
 %!  assert (cat (1, cast (1, t1), cast (2, t2)), cast ([1; 2], tr));
 %!  assert (cat (1, cast (1, t1), cast ([2; 3], t2)), cast ([1; 2; 3], tr));
@@ -2609,7 +2609,7 @@ but in general they will give the same result.\n\
 {
   octave_value retval;
 
-  if (args.length() == 1)
+  if (args.length () == 1)
     retval = args(0).nzmax ();
   else
     print_usage ();
@@ -3090,7 +3090,7 @@ complex ([1, 2], [3, 4])\n\
                 {
                   SparseComplexMatrix result;
                   if (re_val.nnz () == 0)
-                    result = Complex(0, 1) * SparseComplexMatrix (im_val);
+                    result = Complex (0, 1) * SparseComplexMatrix (im_val);
                   else
                     {
                       result = SparseComplexMatrix (im_val.dims (), re_val (0));
@@ -3116,7 +3116,7 @@ complex ([1, 2], [3, 4])\n\
                     result = SparseComplexMatrix (re_val);
                   else
                     {
-                      result = SparseComplexMatrix (re_val.rows(), re_val.cols(), Complex(0, im_val (0)));
+                      result = SparseComplexMatrix (re_val.rows (), re_val.cols (), Complex (0, im_val (0)));
                       octave_idx_type nr = re_val.rows ();
                       octave_idx_type nc = re_val.cols ();
 
@@ -3136,8 +3136,8 @@ complex ([1, 2], [3, 4])\n\
                 {
                   if (re_val.dims () == im_val.dims ())
                     {
-                      SparseComplexMatrix result = SparseComplexMatrix(re_val)
-                        + Complex(0, 1) * SparseComplexMatrix (im_val);
+                      SparseComplexMatrix result = SparseComplexMatrix (re_val)
+                        + Complex (0, 1) * SparseComplexMatrix (im_val);
                       retval = octave_value (new octave_sparse_complex_matrix (result));
                     }
                   else
@@ -4087,7 +4087,7 @@ $2.2204\\times10^{-16}$ for double precision and $1.1921\\times10^{-7}$\n\
 for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
-@code{eps(1.0)}.\n\
+@code{eps (1.0)}.\n\
 Given a single argument @var{x}, return the distance between @var{x} and\n\
 the next largest value.\n\
 When called with more than one argument the first two arguments are taken as\n\
@@ -4108,7 +4108,7 @@ either \"double\" or \"single\".\n\
 
           if (! error_state)
             {
-              val  = ::fabsf(val);
+              val = ::fabsf (val);
               if (xisnan (val) || xisinf (val))
                 retval = fill_matrix (octave_value ("single"),
                                       lo_ieee_nan_value (),
@@ -4133,7 +4133,7 @@ either \"double\" or \"single\".\n\
 
           if (! error_state)
             {
-              val  = ::fabs(val);
+              val = ::fabs (val);
               if (xisnan (val) || xisinf (val))
                 retval = fill_matrix (octave_value_list (),
                                       lo_ieee_nan_value (),
@@ -4241,7 +4241,7 @@ $1.7977\\times10^{308}$ for double precision and $3.4028\\times10^{38}$\n\
 for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
-@code{realmax(\"double\")}.\n\
+@code{realmax (\"double\")}.\n\
 When called with a single argument, return a square matrix with the dimension\n\
 specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
@@ -4274,7 +4274,7 @@ $2.2251\\times10^{-308}$ for double precision and $1.1755\\times10^{-38}$\n\
 for single precision.\n\
 \n\
 When called with no arguments, return a scalar with the value\n\
-@code{realmin(\"double\")}.\n\
+@code{realmin (\"double\")}.\n\
 When called with a single argument, return a square matrix with the dimension\n\
 specified.  When called with more than one scalar argument the first two\n\
 arguments are taken as the number of rows and columns and any further\n\
@@ -5838,9 +5838,9 @@ CPU time used is nonzero.\n\
 
 #endif
 
-  retval (2) = sys;
-  retval (1) = usr;
-  retval (0) = sys + usr;
+  retval(2) = sys;
+  retval(1) = usr;
+  retval(0) = sys + usr;
 
   return retval;
 }
@@ -5993,8 +5993,8 @@ ordered lists.\n\
 
       Array<octave_idx_type> sidx;
 
-      retval (0) = arg.sort (sidx, dim, smode);
-      retval (1) = idx_vector (sidx, dv(dim)); // No checking, the extent is known.
+      retval(0) = arg.sort (sidx, dim, smode);
+      retval(1) = idx_vector (sidx, dv(dim)); // No checking, the extent is known.
     }
   else
     retval(0) = arg.sort (dim, smode);

@@ -17,6 +17,8 @@
 
 #include "resource-manager.h"
 #include <QFile>
+#include <QDir>
+
 #include <QNetworkProxy>
 
 resource_manager resource_manager::_singleton;
@@ -50,10 +52,12 @@ resource_manager::reload_settings ()
 {
   QDesktopServices desktopServices;
   _home_path = desktopServices.storageLocation (QDesktopServices::HomeLocation);
-  QString settings_file = _home_path + "/.config/octave-gui/settings";
+  QString settings_path = _home_path + "/.config/octave-gui/";
+  QString settings_file = settings_path + "settings";
 
   if (!QFile::exists (settings_file))
    {
+     QDir("/").mkpath (settings_path);
      QFile::copy ("../default-settings", settings_file);
      _first_run = true;
    }

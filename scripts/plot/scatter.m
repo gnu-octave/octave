@@ -93,7 +93,7 @@ endfunction
 %! x = randn (100, 1);
 %! y = randn (100, 1);
 %! c = x .* y;
-%! scatter (x, y, 20, c, "filled");
+%! scatter (x, y, 20, c, 'filled');
 %! title ('Scatter with colors');
 
 %!demo

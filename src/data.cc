@@ -5774,8 +5774,8 @@ See tic.\n\
 /*
 %!shared id
 %! id = tic ();
-%!assert (isa (id, "uint64"));
-%!assert (isa (toc (id), "double"));
+%!assert (isa (id, "uint64"))
+%!assert (isa (toc (id), "double"))
 */
 
 DEFUN (cputime, args, ,

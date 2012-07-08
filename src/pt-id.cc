@@ -114,7 +114,7 @@ tree_identifier::rvalue1 (int nargout)
 octave_lvalue
 tree_identifier::lvalue (void)
 {
-  return octave_lvalue (&(xsym().varref ()));
+  return octave_lvalue (&(xsym ().varref ()));
 }
 
 tree_identifier *

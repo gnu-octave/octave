@@ -5,7 +5,7 @@ function [ s ] = Pork( geek, gurk )
   else
     s.gurk = 0;
     if nargin == 0
-      s0 = Spork();
+      s0 = Spork ();
     elseif nargin==1
       s0 = Spork(geek);
     else

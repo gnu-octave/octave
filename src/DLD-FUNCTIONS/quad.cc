@@ -150,7 +150,7 @@ quad_float_user_function (float x)
 #define QUAD_ABORT() \
   do \
     { \
-      if (fcn_name.length()) \
+      if (fcn_name.length ()) \
         clear_function (fcn_name); \
       return retval; \
     } \
@@ -463,7 +463,7 @@ variable by routines @code{dblquad} and @code{triplequad}.\n\
           retval(0) = val;
         }
 
-      if (fcn_name.length())
+      if (fcn_name.length ())
         clear_function (fcn_name);
     }
   else

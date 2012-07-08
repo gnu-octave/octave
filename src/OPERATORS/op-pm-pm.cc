@@ -37,7 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 DEFUNOP (transpose, perm_matrix)
 {
   CAST_UNOP_ARG (const octave_perm_matrix&);
-  return octave_value (v.perm_matrix_value().transpose ());
+  return octave_value (v.perm_matrix_value ().transpose ());
 }
 
 DEFBINOP_OP (mul, perm_matrix, perm_matrix, *)

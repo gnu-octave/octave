@@ -64,7 +64,7 @@ function h = trisurf (tri, x, y, z, varargin)
     endif
 
     if (! ishold ())
-      set (gca(), "view", [-37.5, 30],
+      set (gca (), "view", [-37.5, 30],
            "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
   endif

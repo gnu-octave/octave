@@ -10,7 +10,7 @@ main (void)
   argv(0) = "embedded";
   argv(1) = "-q";
 
-  octave_main (2, argv.c_str_vec(), 1);
+  octave_main (2, argv.c_str_vec (), 1);
 
   octave_idx_type n = 2;
   octave_value_list in;

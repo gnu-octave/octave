@@ -743,12 +743,12 @@ SparseComplexMatrix::dinverse (MatrixType &mattyp, octave_idx_type& info,
           typ == MatrixType::Permuted_Diagonal)
         {
           if (typ == MatrixType::Permuted_Diagonal)
-            retval = transpose();
+            retval = transpose ();
           else
             retval = *this;
 
           // Force make_unique to be called
-          Complex *v = retval.data();
+          Complex *v = retval.data ();
 
           if (calccond)
             {
@@ -929,7 +929,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
               OCTAVE_LOCAL_BUFFER (Complex, work, nr);
               OCTAVE_LOCAL_BUFFER (octave_idx_type, rperm, nr);
 
-              octave_idx_type *perm = mattyp.triangular_perm();
+              octave_idx_type *perm = mattyp.triangular_perm ();
               if (typ == MatrixType::Permuted_Upper)
                 {
                   for (octave_idx_type i = 0; i < nr; i++)
@@ -1049,7 +1049,7 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
   return retval;
 
  inverse_singular:
-  return SparseComplexMatrix();
+  return SparseComplexMatrix ();
 }
 
 SparseComplexMatrix
@@ -1065,26 +1065,26 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
   if (typ == MatrixType::Diagonal || typ == MatrixType::Permuted_Diagonal)
     ret = dinverse (mattype, info, rcond, true, calc_cond);
   else if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
-    ret = tinverse (mattype, info, rcond, true, calc_cond).transpose();
+    ret = tinverse (mattype, info, rcond, true, calc_cond).transpose ();
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
     {
-      MatrixType newtype = mattype.transpose();
-      ret = transpose().tinverse (newtype, info, rcond, true, calc_cond);
+      MatrixType newtype = mattype.transpose ();
+      ret = transpose ().tinverse (newtype, info, rcond, true, calc_cond);
     }
   else
     {
-      if (mattype.is_hermitian())
+      if (mattype.is_hermitian ())
         {
           MatrixType tmp_typ (MatrixType::Upper);
           SparseComplexCHOL fact (*this, info, false);
-          rcond = fact.rcond();
+          rcond = fact.rcond ();
           if (info == 0)
             {
               double rcond2;
-              SparseMatrix Q = fact.Q();
-              SparseComplexMatrix InvL = fact.L().transpose().
+              SparseMatrix Q = fact.Q ();
+              SparseComplexMatrix InvL = fact.L ().transpose ().
                 tinverse(tmp_typ, info, rcond2, true, false);
-              ret = Q * InvL.hermitian() * InvL * Q.transpose();
+              ret = Q * InvL.hermitian () * InvL * Q.transpose ();
             }
           else
             {
@@ -1094,22 +1094,22 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
             }
         }
 
-      if (!mattype.is_hermitian())
+      if (!mattype.is_hermitian ())
         {
-          octave_idx_type n = rows();
+          octave_idx_type n = rows ();
           ColumnVector Qinit(n);
           for (octave_idx_type i = 0; i < n; i++)
             Qinit(i) = i;
 
           MatrixType tmp_typ (MatrixType::Upper);
           SparseComplexLU fact (*this, Qinit, Matrix (), false, false);
-          rcond = fact.rcond();
+          rcond = fact.rcond ();
           double rcond2;
-          SparseComplexMatrix InvL = fact.L().transpose().
+          SparseComplexMatrix InvL = fact.L ().transpose ().
             tinverse(tmp_typ, info, rcond2, true, false);
-          SparseComplexMatrix InvU = fact.U().
-            tinverse(tmp_typ, info, rcond2, true, false).transpose();
-          ret = fact.Pc().transpose() * InvU * InvL * fact.Pr();
+          SparseComplexMatrix InvU = fact.U ().
+            tinverse(tmp_typ, info, rcond2, true, false).transpose ();
+          ret = fact.Pc ().transpose () * InvU * InvL * fact.Pr ();
         }
     }
 
@@ -1279,13 +1279,13 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
       if (typ == MatrixType::Diagonal ||
           typ == MatrixType::Permuted_Diagonal)
         {
-          retval.resize (nc, b.cols(), Complex(0.,0.));
+          retval.resize (nc, b.cols (), Complex(0.,0.));
           if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
                 for (octave_idx_type i = 0; i < nm; i++)
                   retval(i,j) = b(i,j) / data (i);
           else
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
               for (octave_idx_type k = 0; k < nc; k++)
                 for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
                   retval(k,j) = b(ridx(i),j) / data (i);
@@ -1347,7 +1347,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
           retval.xcidx(0) = 0;
           octave_idx_type ii = 0;
           if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
               {
                 for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
                   {
@@ -1359,7 +1359,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
                 retval.xcidx(j+1) = ii;
               }
           else
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
               {
                 for (octave_idx_type l = 0; l < nc; l++)
                   for (octave_idx_type i = cidx(l); i < cidx(l+1); i++)
@@ -1431,13 +1431,13 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
       if (typ == MatrixType::Diagonal ||
           typ == MatrixType::Permuted_Diagonal)
         {
-          retval.resize (nc, b.cols(), Complex(0.,0.));
+          retval.resize (nc, b.cols (), Complex(0.,0.));
           if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
               for (octave_idx_type i = 0; i < nm; i++)
                 retval(i,j) = b(i,j) / data (i);
           else
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
               for (octave_idx_type k = 0; k < nc; k++)
                 for (octave_idx_type i = cidx(k); i < cidx(k+1); i++)
                   retval(k,j) = b(ridx(i),j) / data (i);
@@ -1499,7 +1499,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           retval.xcidx(0) = 0;
           octave_idx_type ii = 0;
           if (typ == MatrixType::Diagonal)
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
               {
                 for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
                   {
@@ -1511,7 +1511,7 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
                 retval.xcidx(j+1) = ii;
               }
           else
-            for (octave_idx_type j = 0; j < b.cols(); j++)
+            for (octave_idx_type j = 0; j < b.cols (); j++)
               {
                 for (octave_idx_type l = 0; l < nc; l++)
                   for (octave_idx_type i = cidx(l); i < cidx(l+1); i++)
@@ -3796,12 +3796,12 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   }
             }
 
-          octave_idx_type b_nc = b.cols();
+          octave_idx_type b_nc = b.cols ();
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
           F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result,
-                                   b.rows(), err));
+                                   b.rows (), err));
 
           if (err != 0)
             {
@@ -3853,12 +3853,12 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
                   }
             }
 
-          octave_idx_type b_nc = b.cols();
+          octave_idx_type b_nc = b.cols ();
           retval = ComplexMatrix (b);
           Complex *result = retval.fortran_vec ();
 
           F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result,
-                                   b.rows(), err));
+                                   b.rows (), err));
 
           if (err != 0)
             {
@@ -4095,7 +4095,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
             }
 
           octave_idx_type b_nr = b.rows ();
-          octave_idx_type b_nc = b.cols();
+          octave_idx_type b_nc = b.cols ();
           rcond = 1.;
 
           retval = ComplexMatrix (b);
@@ -4152,8 +4152,8 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
                   }
             }
 
-          octave_idx_type b_nr = b.rows();
-          octave_idx_type b_nc = b.cols();
+          octave_idx_type b_nr = b.rows ();
+          octave_idx_type b_nc = b.cols ();
           rcond = 1.;
 
           retval = ComplexMatrix (b);
@@ -4393,7 +4393,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
           // Calculate the norm of the matrix, for later use.
           double anorm;
           if (calc_cond)
-            anorm = m_band.abs().sum().row(0).max();
+            anorm = m_band.abs ().sum ().row(0).max ();
 
           char job = 'L';
           F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -4457,7 +4457,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   F77_XFCN (zpbtrs, ZPBTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
                              nr, n_lower, b_nc, tmp_data,
-                             ldm, result, b.rows(), err
+                             ldm, result, b.rows (), err
                              F77_CHAR_ARG_LEN (1)));
 
                   if (err != 0)
@@ -4579,7 +4579,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
                   F77_XFCN (zgbtrs, ZGBTRS,
                             (F77_CONST_CHAR_ARG2 (&job, 1),
                              nr, n_lower, n_upper, b_nc, tmp_data,
-                             ldm, pipvt, result, b.rows(), err
+                             ldm, pipvt, result, b.rows (), err
                              F77_CHAR_ARG_LEN (1)));
                 }
             }
@@ -4642,7 +4642,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
           // Calculate the norm of the matrix, for later use.
           double anorm;
           if (calc_cond)
-            anorm = m_band.abs().sum().row(0).max();
+            anorm = m_band.abs ().sum ().row(0).max ();
 
           char job = 'L';
           F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -4960,7 +4960,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
           // Calculate the norm of the matrix, for later use.
           double anorm;
           if (calc_cond)
-            anorm = m_band.abs().sum().row(0).max();
+            anorm = m_band.abs ().sum ().row(0).max ();
 
           char job = 'L';
           F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -5206,7 +5206,7 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           // Calculate the norm of the matrix, for later use.
           double anorm;
           if (calc_cond)
-            anorm = m_band.abs().sum().row(0).max();
+            anorm = m_band.abs ().sum ().row(0).max ();
 
           char job = 'L';
           F77_XFCN (zpbtrf, ZPBTRF, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -5655,9 +5655,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx();
-          A->i = ridx();
-          A->nzmax = nnz();
+          A->p = cidx ();
+          A->i = ridx ();
+          A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
@@ -5673,21 +5673,21 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
           if (nr < 1)
             A->x = &dummy;
           else
-            A->x = data();
+            A->x = data ();
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
-          B->nrow = b.rows();
-          B->ncol = b.cols();
+          B->nrow = b.rows ();
+          B->ncol = b.cols ();
           B->d = B->nrow;
           B->nzmax = B->nrow * B->ncol;
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_REAL;
-          if (nc < 1 || b.cols() < 1)
+          if (nc < 1 || b.cols () < 1)
             B->x = &dummy;
           else
             // We won't alter it, honest :-)
-            B->x = const_cast<double *>(b.fortran_vec());
+            B->x = const_cast<double *>(b.fortran_vec ());
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -5731,11 +5731,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
               X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-              retval.resize (b.rows (), b.cols());
-              for (octave_idx_type j = 0; j < b.cols(); j++)
+              retval.resize (b.rows (), b.cols ());
+              for (octave_idx_type j = 0; j < b.cols (); j++)
                 {
-                  octave_idx_type jr = j * b.rows();
-                  for (octave_idx_type i = 0; i < b.rows(); i++)
+                  octave_idx_type jr = j * b.rows ();
+                  for (octave_idx_type i = 0; i < b.rows (); i++)
                     retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
                 }
 
@@ -5898,9 +5898,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx();
-          A->i = ridx();
-          A->nzmax = nnz();
+          A->p = cidx ();
+          A->i = ridx ();
+          A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
@@ -5916,15 +5916,15 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           if (nr < 1)
             A->x = &dummy;
           else
-            A->x = data();
+            A->x = data ();
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
-          B->nrow = b.rows();
-          B->ncol = b.cols();
-          B->p = b.cidx();
-          B->i = b.ridx();
-          B->nzmax = b.nnz();
+          B->nrow = b.rows ();
+          B->ncol = b.cols ();
+          B->p = b.cidx ();
+          B->i = b.ridx ();
+          B->nzmax = b.nnz ();
           B->packed = true;
           B->sorted = true;
           B->nz = 0;
@@ -5937,10 +5937,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
           B->stype = 0;
           B->xtype = CHOLMOD_REAL;
 
-          if (b.rows() < 1 || b.cols() < 1)
+          if (b.rows () < 1 || b.cols () < 1)
             B->x = &dummy;
           else
-            B->x = b.data();
+            B->x = b.data ();
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -6189,9 +6189,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx();
-          A->i = ridx();
-          A->nzmax = nnz();
+          A->p = cidx ();
+          A->i = ridx ();
+          A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
@@ -6207,21 +6207,21 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           if (nr < 1)
             A->x = &dummy;
           else
-            A->x = data();
+            A->x = data ();
 
           cholmod_dense Bstore;
           cholmod_dense *B = &Bstore;
-          B->nrow = b.rows();
-          B->ncol = b.cols();
+          B->nrow = b.rows ();
+          B->ncol = b.cols ();
           B->d = B->nrow;
           B->nzmax = B->nrow * B->ncol;
           B->dtype = CHOLMOD_DOUBLE;
           B->xtype = CHOLMOD_COMPLEX;
-          if (nc < 1 || b.cols() < 1)
+          if (nc < 1 || b.cols () < 1)
             B->x = &dummy;
           else
             // We won't alter it, honest :-)
-            B->x = const_cast<Complex *>(b.fortran_vec());
+            B->x = const_cast<Complex *>(b.fortran_vec ());
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -6265,11 +6265,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
               X = CHOLMOD_NAME(solve) (CHOLMOD_A, L, B, cm);
               END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-              retval.resize (b.rows (), b.cols());
-              for (octave_idx_type j = 0; j < b.cols(); j++)
+              retval.resize (b.rows (), b.cols ());
+              for (octave_idx_type j = 0; j < b.cols (); j++)
                 {
-                  octave_idx_type jr = j * b.rows();
-                  for (octave_idx_type i = 0; i < b.rows(); i++)
+                  octave_idx_type jr = j * b.rows ();
+                  for (octave_idx_type i = 0; i < b.rows (); i++)
                     retval.xelem(i,j) = static_cast<Complex *>(X->x)[jr + i];
                 }
 
@@ -6411,9 +6411,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           A->nrow = nr;
           A->ncol = nc;
 
-          A->p = cidx();
-          A->i = ridx();
-          A->nzmax = nnz();
+          A->p = cidx ();
+          A->i = ridx ();
+          A->nzmax = nnz ();
           A->packed = true;
           A->sorted = true;
           A->nz = 0;
@@ -6429,15 +6429,15 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           if (nr < 1)
             A->x = &dummy;
           else
-            A->x = data();
+            A->x = data ();
 
           cholmod_sparse Bstore;
           cholmod_sparse *B = &Bstore;
-          B->nrow = b.rows();
-          B->ncol = b.cols();
-          B->p = b.cidx();
-          B->i = b.ridx();
-          B->nzmax = b.nnz();
+          B->nrow = b.rows ();
+          B->ncol = b.cols ();
+          B->p = b.cidx ();
+          B->i = b.ridx ();
+          B->nzmax = b.nnz ();
           B->packed = true;
           B->sorted = true;
           B->nz = 0;
@@ -6450,10 +6450,10 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
           B->stype = 0;
           B->xtype = CHOLMOD_COMPLEX;
 
-          if (b.rows() < 1 || b.cols() < 1)
+          if (b.rows () < 1 || b.cols () < 1)
             B->x = &dummy;
           else
-            B->x = b.data();
+            B->x = b.data ();
 
           cholmod_factor *L;
           BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -7348,8 +7348,8 @@ SparseComplexMatrix::cumsum (int dim) const
 SparseComplexMatrix
 SparseComplexMatrix::prod (int dim) const
 {
-  if ((rows() == 1 && dim == -1) || dim == 1)
-    return transpose (). prod (0). transpose();
+  if ((rows () == 1 && dim == -1) || dim == 1)
+    return transpose (). prod (0). transpose ();
   else
     {
       SPARSE_REDUCTION_OP (SparseComplexMatrix, Complex, *=,
@@ -7386,7 +7386,7 @@ SparseMatrix SparseComplexMatrix::abs (void) const
   octave_idx_type nz = nnz ();
   octave_idx_type nc = cols ();
 
-  SparseMatrix retval (rows(), nc, nz);
+  SparseMatrix retval (rows (), nc, nz);
 
   for (octave_idx_type i = 0; i < nc + 1; i++)
     retval.cidx (i) = cidx (i);
@@ -7665,7 +7665,7 @@ min (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 {
   SparseComplexMatrix r;
 
-  if ((a.rows() == b.rows()) && (a.cols() == b.cols()))
+  if ((a.rows () == b.rows ()) && (a.cols () == b.cols ()))
     {
       octave_idx_type a_nr = a.rows ();
       octave_idx_type a_nc = a.cols ();
@@ -7785,7 +7785,7 @@ max (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
 {
   SparseComplexMatrix r;
 
-  if ((a.rows() == b.rows()) && (a.cols() == b.cols()))
+  if ((a.rows () == b.rows ()) && (a.cols () == b.cols ()))
     {
       octave_idx_type a_nr = a.rows ();
       octave_idx_type a_nc = a.cols ();

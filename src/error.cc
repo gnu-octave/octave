@@ -838,7 +838,7 @@ location of the error.  Typically @var{err} is returned from\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length();
+  int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();
@@ -852,7 +852,7 @@ location of the error.  Typically @var{err} is returned from\n\
             {
               std::string msg = err.contents("message").string_value ();
               std::string id = err.contents("identifier").string_value ();
-              int len = msg.length();
+              int len = msg.length ();
 
               std::string file;
               std::string nm;
@@ -992,7 +992,7 @@ maybe_extract_message_id (const std::string& caller,
           if (arg1.find_first_of ("% \f\n\r\t\v") == std::string::npos
               && arg1.find (':') != std::string::npos
               && arg1[0] != ':'
-              && arg1[arg1.length()-1] != ':')
+              && arg1[arg1.length ()-1] != ':')
             {
               if (nargin > 1)
                 {
@@ -1557,7 +1557,7 @@ set to their default values.\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length();
+  int nargin = args.length ();
 
   unwind_protect frame;
 
@@ -1575,12 +1575,12 @@ set to their default values.\n\
 
       if (nargin == 1)
         {
-          if (args(0).is_string())
+          if (args(0).is_string ())
             {
               if (args(0).string_value () == "reset")
                 {
-                  Vlast_error_message = std::string();
-                  Vlast_error_id = std::string();
+                  Vlast_error_message = std::string ();
+                  Vlast_error_id = std::string ();
 
                   Vlast_error_stack = initialize_last_error_stack ();
                 }

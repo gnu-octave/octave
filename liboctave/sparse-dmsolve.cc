@@ -73,7 +73,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
     {
       OCTAVE_LOCAL_BUFFER (T, X, rend - rst);
       octave_sort<octave_idx_type> sort;
-      octave_idx_type *ri = B.xridx();
+      octave_idx_type *ri = B.xridx ();
       nz = 0;
       for (octave_idx_type j = cst ; j < cend ; j++)
         {
@@ -158,11 +158,11 @@ static void
 dmsolve_insert (MArray<T> &a, const MArray<T> &b, const octave_idx_type *Q,
                octave_idx_type r, octave_idx_type c)
 {
-  T *ax = a.fortran_vec();
-  const T *bx = b.fortran_vec();
-  octave_idx_type anr = a.rows();
-  octave_idx_type nr = b.rows();
-  octave_idx_type nc = b.cols();
+  T *ax = a.fortran_vec ();
+  const T *bx = b.fortran_vec ();
+  octave_idx_type anr = a.rows ();
+  octave_idx_type nr = b.rows ();
+  octave_idx_type nc = b.cols ();
   for (octave_idx_type j = 0; j < nc; j++)
     {
       octave_idx_type aoff = (c + j) * anr;
@@ -214,7 +214,7 @@ dmsolve_insert (MSparse<T> &a, const MSparse<T> &b, const octave_idx_type *Q,
   octave_sort<octave_idx_type> sort;
   MSparse<T> tmp (a);
   a = MSparse<T> (nr, nc, nel);
-  octave_idx_type *ri = a.xridx();
+  octave_idx_type *ri = a.xridx ();
 
   for (octave_idx_type i = 0; i < tmp.cidx(c); i++)
     {
@@ -278,9 +278,9 @@ dmsolve_permute (MArray<RT> &a, const MArray<T>& b, const octave_idx_type *p)
 {
   octave_idx_type b_nr = b.rows ();
   octave_idx_type b_nc = b.cols ();
-  const T *Bx = b.fortran_vec();
+  const T *Bx = b.fortran_vec ();
   a.resize (dim_vector (b_nr, b_nc));
-  RT *Btx = a.fortran_vec();
+  RT *Btx = a.fortran_vec ();
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       octave_idx_type off = j * b_nr;
@@ -316,7 +316,7 @@ dmsolve_permute (MSparse<RT> &a, const MSparse<T>& b, const octave_idx_type *p)
   octave_idx_type nz = 0;
   a = MSparse<RT> (b_nr, b_nc, b_nz);
   octave_sort<octave_idx_type> sort;
-  octave_idx_type *ri = a.xridx();
+  octave_idx_type *ri = a.xridx ();
   OCTAVE_LOCAL_BUFFER (RT, X, b_nr);
   a.xcidx(0) = 0;
   for (octave_idx_type j = 0; j < b_nc; j++)
@@ -411,7 +411,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
         {
           ST m = dmsolve_extract (a, pinv, q, dm->rr [2], nr, dm->cc [3], nc,
                                   nnz_remaining, true);
-          nnz_remaining -= m.nnz();
+          nnz_remaining -= m.nnz ();
           RT mtmp =
             qrsolve (m, dmsolve_extract (btmp, 0, 0, dm->rr[2], b_nr, 0,
                                          b_nc), info);
@@ -420,7 +420,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
             {
               m = dmsolve_extract (a, pinv, q, 0, dm->rr [2],
                                    dm->cc [3], nc, nnz_remaining, true);
-              nnz_remaining -= m.nnz();
+              nnz_remaining -= m.nnz ();
               RT ctmp = dmsolve_extract (btmp, 0, 0, 0,
                                          dm->rr[2], 0, b_nc);
               btmp.insert (ctmp - m * mtmp, 0, 0);
@@ -433,7 +433,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
         {
           ST m = dmsolve_extract (a, pinv, q, dm->rr [1], dm->rr [2],
                                   dm->cc [2], dm->cc [3], nnz_remaining, false);
-          nnz_remaining -= m.nnz();
+          nnz_remaining -= m.nnz ();
           RT btmp2 = dmsolve_extract (btmp, 0, 0, dm->rr [1], dm->rr [2],
                                       0, b_nc);
           double rcond = 0.0;
@@ -451,7 +451,7 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
             {
               m = dmsolve_extract (a, pinv, q, 0, dm->rr [1], dm->cc [2],
                                    dm->cc [3], nnz_remaining, true);
-              nnz_remaining -= m.nnz();
+              nnz_remaining -= m.nnz ();
               RT ctmp = dmsolve_extract (btmp, 0, 0, 0,
                                          dm->rr[1], 0, b_nc);
               btmp.insert (ctmp - m * mtmp, 0, 0);

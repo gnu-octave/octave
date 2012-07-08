@@ -168,7 +168,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   int typx = 0;
   int method;
 
-  clock_t t_start = clock();
+  clock_t t_start = clock ();
 
 #if 0
 #ifdef GLPK_PRE_4_14
@@ -488,7 +488,7 @@ Undocumented internal function.\n\
 
   //-- 1nd Input. A column array containing the objective function
   //--            coefficients.
-  volatile int mrowsc = args(0).rows();
+  volatile int mrowsc = args(0).rows ();
 
   Matrix C (args(0).matrix_value ());
 

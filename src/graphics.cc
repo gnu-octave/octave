@@ -1037,7 +1037,7 @@ color_values::str2rgb (std::string str)
 {
   double tmp_rgb[3] = {0, 0, 0};
   bool retval = true;
-  unsigned int len = str.length();
+  unsigned int len = str.length ();
 
   std::transform (str.begin (), str.end (), str.begin (), tolower);
 
@@ -1271,7 +1271,7 @@ array_property::is_equal (const octave_value& v) const
                 } \
             }
 
-          if (data.is_double_type() || data.is_bool_type ())
+          if (data.is_double_type () || data.is_bool_type ())
             CHECK_ARRAY_EQUAL (double, , NDArray)
           else if (data.is_single_type ())
             CHECK_ARRAY_EQUAL (float, float_, FloatNDArray)
@@ -1428,7 +1428,7 @@ callback_property::validate (const octave_value& v) const
     // complete validation will be done at execution-time
     return true;
   else if (v.is_cell () && v.length () > 0
-           && (v.rows() == 1 || v.columns () == 1)
+           && (v.rows () == 1 || v.columns () == 1)
            && v.cell_value ()(0).is_function_handle ())
     return true;
   else if (v.is_empty ())
@@ -5629,7 +5629,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
               bool ignore_vertical = false;
               if (only_text_height)
                 {
-                  double text_rotation = text_props.get_rotation();
+                  double text_rotation = text_props.get_rotation ();
                   if (text_rotation == 0. || text_rotation == 180.)
                       ignore_horizontal = true;
                   else if (text_rotation == 90. || text_rotation == 270.)
@@ -5677,9 +5677,9 @@ axes::properties::update_units (const caseless_str& old_units)
   graphics_object obj = gh_manager::get_object (get_parent ());
   Matrix parent_bb = obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
   caseless_str new_units = get_units ();
-  position.set (octave_value (convert_position (get_position().matrix_value(), old_units, new_units, parent_bb)), false);
-  outerposition.set (octave_value (convert_position (get_outerposition().matrix_value(), old_units, new_units, parent_bb)), false);
-  tightinset.set (octave_value (convert_position (get_tightinset().matrix_value(), old_units, new_units, parent_bb)), false);
+  position.set (octave_value (convert_position (get_position ().matrix_value (), old_units, new_units, parent_bb)), false);
+  outerposition.set (octave_value (convert_position (get_outerposition ().matrix_value (), old_units, new_units, parent_bb)), false);
+  tightinset.set (octave_value (convert_position (get_tightinset ().matrix_value (), old_units, new_units, parent_bb)), false);
 }
 
 void
@@ -6168,7 +6168,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
           hmax = std::max (hmax, ext(1));
 #else
           //FIXME: find a better approximation
-          int len = ticklabels(i).length();
+          int len = ticklabels(i).length ();
           wmax = std::max (wmax, 0.5*fontsize*len);
           hmax = fontsize;
 #endif
@@ -6286,7 +6286,7 @@ axes::update_axis_limits (const std::string& axis_type,
   double val;
 
 #define FIX_LIMITS \
-  if (limits.numel() == 4) \
+  if (limits.numel () == 4) \
     { \
       val = limits(0); \
       if (! (xisinf (val) || xisnan (val))) \
@@ -6841,7 +6841,7 @@ axes::properties::rotate_view (double delta_el, double delta_az)
   v (0) = fmod(v(0) - delta_az + 720,360);
 
   set_view(v);
-  update_transform();
+  update_transform ();
 }
 
 void
@@ -6997,7 +6997,7 @@ text::properties::update_text_extent (void)
   renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
                            halign, valign, get_rotation ());
   /* The bbox is relative to the text's position.
-     We'll leave it that way, because get_position() does not return
+     We'll leave it that way, because get_position () does not return
      valid results when the text is first constructed.
      Conversion to proper coordinates is performed in get_extent. */
   set_extent (bbox);
@@ -7077,7 +7077,7 @@ image::properties::get_color_data (void) const
 octave_value
 patch::properties::get_color_data (void) const
 {
-  octave_value fvc = get_facevertexcdata();
+  octave_value fvc = get_facevertexcdata ();
   if (fvc.is_undefined () || fvc.is_empty ())
     return Matrix ();
   else
@@ -7257,7 +7257,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
       update_type = 'a';
     }
 
-  if (limits.numel() == 4)
+  if (limits.numel () == 4)
     {
       val = limits(0);
       if (! (xisinf (val) || xisnan (val)))
@@ -7480,7 +7480,7 @@ uicontrol::properties::update_units (void)
 void
 uicontrol::properties::set_style (const octave_value& st)
 {
-  if (get___object__ ().is_empty())
+  if (get___object__ ().is_empty ())
     style = st;
   else
     error ("set: cannot change the style of a uicontrol object after creation.");
@@ -8515,7 +8515,7 @@ values or lists respectively.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      if (args(0).is_empty())
+      if (args(0).is_empty ())
         {
           retval = Matrix ();
           return retval;
@@ -8918,7 +8918,7 @@ calc_dimensions (const graphics_object& go)
   if ((go.isa ("line") || go.isa ("patch")) && ! go.get("zdata").is_empty ())
     nd = 3;
 
-  Matrix kids = go.get_properties().get_children ();
+  Matrix kids = go.get_properties ().get_children ();
 
   for (octave_idx_type i = 0; i < kids.length (); i++)
     {
@@ -8928,7 +8928,7 @@ calc_dimensions (const graphics_object& go)
         {
           const graphics_object& kid = gh_manager::get_object(hnd);
 
-          if (kid.valid_object())
+          if (kid.valid_object ())
             nd = calc_dimensions (kid);
 
           if (nd == 3)
@@ -9857,7 +9857,7 @@ get_property_from_handle (double handle, const std::string& property,
   if (obj)
     retval = obj.get (caseless_str (property));
   else
-    error ("%s: invalid handle (= %g)", func.c_str(), handle);
+    error ("%s: invalid handle (= %g)", func.c_str (), handle);
 
   return retval;
 }
@@ -9879,7 +9879,7 @@ set_property_in_handle (double handle, const std::string& property,
         ret = true;
     }
   else
-    error ("%s: invalid handle (= %g)", func.c_str(), handle);
+    error ("%s: invalid handle (= %g)", func.c_str (), handle);
 
   return ret;
 }

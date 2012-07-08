@@ -60,7 +60,7 @@ DEFUNOP (transpose, sparse_complex_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_complex_matrix&);
   return octave_value
-    (v.sparse_complex_matrix_value().transpose (),
+    (v.sparse_complex_matrix_value ().transpose (),
      v.matrix_type ().transpose ());
 }
 
@@ -68,7 +68,7 @@ DEFUNOP (hermitian, sparse_complex_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_complex_matrix&);
   return octave_value
-    (v.sparse_complex_matrix_value().hermitian (),
+    (v.sparse_complex_matrix_value ().hermitian (),
      v.matrix_type ().transpose ());
 }
 
@@ -100,7 +100,7 @@ DEFBINOP (div, sparse_complex_matrix, sparse_complex_matrix)
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
                    const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       Complex d = v2.complex_value ();
 
@@ -131,7 +131,7 @@ DEFBINOP (ldiv, sparse_complex_matrix, sparse_complex_matrix)
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&,
                    const octave_sparse_complex_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     {
       Complex d = v1.complex_value ();
 

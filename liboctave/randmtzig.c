@@ -277,7 +277,7 @@ oct_init_by_entropy (void)
     if (n < MT_N)
       entropy[n++] = time(NULL); /* Current time in seconds */
     if (n < MT_N)
-      entropy[n++] = clock();    /* CPU time used (usec) */
+      entropy[n++] = clock ();    /* CPU time used (usec) */
 #ifdef HAVE_GETTIMEOFDAY
     if (n < MT_N)
       {
@@ -320,7 +320,7 @@ next_state (void)
   /* if (initf==0) init_by_int(5489UL); */
   /* Or better yet, a random seed! */
   if (initf == 0)
-    oct_init_by_entropy();
+    oct_init_by_entropy ();
 
   left = MT_N;
   next = state;
@@ -341,7 +341,7 @@ randmt (void)
   register uint32_t y;
 
   if (--left == 0)
-    next_state();
+    next_state ();
   y = *next++;
 
   /* Tempering */
@@ -359,8 +359,8 @@ randmt (void)
 static uint64_t
 randi53 (void)
 {
-  const uint32_t lo = randi32();
-  const uint32_t hi = randi32()&0x1FFFFF;
+  const uint32_t lo = randi32 ();
+  const uint32_t hi = randi32 ()&0x1FFFFF;
 #if HAVE_X86_32
   uint64_t u;
   uint32_t *p = (uint32_t *)&u;
@@ -375,8 +375,8 @@ randi53 (void)
 static uint64_t
 randi54 (void)
 {
-  const uint32_t lo = randi32();
-  const uint32_t hi = randi32()&0x3FFFFF;
+  const uint32_t lo = randi32 ();
+  const uint32_t hi = randi32 ()&0x3FFFFF;
 #if HAVE_X86_32
   uint64_t u;
   uint32_t *p = (uint32_t *)&u;
@@ -392,7 +392,7 @@ randi54 (void)
 static float
 randu32 (void)
 {
-  return ((float)randi32() + 0.5) * (1.0/4294967296.0);
+  return ((float)randi32 () + 0.5) * (1.0/4294967296.0);
   /* divided by 2^32 */
 }
 
@@ -400,8 +400,8 @@ randu32 (void)
 static double
 randu53 (void)
 {
-  const uint32_t a=randi32()>>5;
-  const uint32_t b=randi32()>>6;
+  const uint32_t a=randi32 ()>>5;
+  const uint32_t b=randi32 ()>>6;
   return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
 }
 
@@ -564,7 +564,7 @@ double
 oct_randn (void)
 {
   if (initt)
-    create_ziggurat_tables();
+    create_ziggurat_tables ();
 
   while (1)
     {
@@ -583,9 +583,9 @@ oct_randn (void)
       register uint32_t lo, hi;
       int64_t rabs;
       uint32_t *p = (uint32_t *)&rabs;
-      lo = randi32();
+      lo = randi32 ();
       idx = lo&0xFF;
-      hi = randi32();
+      hi = randi32 ();
       si = hi&UMASK;
       p[0] = lo;
       p[1] = hi&0x1FFFFF;
@@ -629,7 +629,7 @@ double
 oct_rande (void)
 {
   if (initt)
-    create_ziggurat_tables();
+    create_ziggurat_tables ();
 
   while (1)
     {
@@ -755,12 +755,12 @@ float
 oct_float_randn (void)
 {
   if (inittf)
-    create_ziggurat_float_tables();
+    create_ziggurat_float_tables ();
 
   while (1)
     {
       /* 32-bit mantissa */
-      const uint32_t r = randi32();
+      const uint32_t r = randi32 ();
       const uint32_t rabs = r&LMASK;
       const int idx = (int)(r&0xFF);
       const float x = ((int32_t)r) * fwi[idx];
@@ -796,7 +796,7 @@ float
 oct_float_rande (void)
 {
   if (inittf)
-    create_ziggurat_float_tables();
+    create_ziggurat_float_tables ();
 
   while (1)
     {
@@ -825,7 +825,7 @@ oct_fill_randu (octave_idx_type n, double *p)
 {
   octave_idx_type i;
   for (i = 0; i < n; i++)
-    p[i] = oct_randu();
+    p[i] = oct_randu ();
 }
 
 void
@@ -833,7 +833,7 @@ oct_fill_randn (octave_idx_type n, double *p)
 {
   octave_idx_type i;
   for (i = 0; i < n; i++)
-    p[i] = oct_randn();
+    p[i] = oct_randn ();
 }
 
 void
@@ -841,7 +841,7 @@ oct_fill_rande (octave_idx_type n, double *p)
 {
   octave_idx_type i;
   for (i = 0; i < n; i++)
-    p[i] = oct_rande();
+    p[i] = oct_rande ();
 }
 
 void
@@ -849,7 +849,7 @@ oct_fill_float_randu (octave_idx_type n, float *p)
 {
   octave_idx_type i;
   for (i = 0; i < n; i++)
-    p[i] = oct_float_randu();
+    p[i] = oct_float_randu ();
 }
 
 void
@@ -857,7 +857,7 @@ oct_fill_float_randn (octave_idx_type n, float *p)
 {
   octave_idx_type i;
   for (i = 0; i < n; i++)
-    p[i] = oct_float_randn();
+    p[i] = oct_float_randn ();
 }
 
 void
@@ -865,5 +865,5 @@ oct_fill_float_rande (octave_idx_type n, float *p)
 {
   octave_idx_type i;
   for (i = 0; i < n; i++)
-    p[i] = oct_float_rande();
+    p[i] = oct_float_rande ();
 }

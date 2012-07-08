@@ -397,7 +397,7 @@ public:
     mwSize n = 1;
 
     // Force dims and ndims to be cached.
-    get_dimensions();
+    get_dimensions ();
 
     for (mwIndex i = ndims - 1; i > 0; i--)
       n *= dims[i];
@@ -3463,7 +3463,7 @@ mexGet (double handle, const char *property)
   mxArray *m = 0;
   octave_value ret = get_property_from_handle (handle, property, "mexGet");
 
-  if (!error_state && ret.is_defined())
+  if (!error_state && ret.is_defined ())
     m = ret.as_mxArray ();
   return m;
 }

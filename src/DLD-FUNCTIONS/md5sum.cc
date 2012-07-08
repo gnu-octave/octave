@@ -49,14 +49,14 @@ string @var{str}.\n\
   int nargin = args.length ();
 
   if (nargin != 1 && nargin != 2)
-    print_usage();
+    print_usage ();
   else
     {
       bool have_str = false;
-      std::string str = args(0).string_value();
+      std::string str = args(0).string_value ();
 
       if (nargin == 2)
-        have_str = args(1).bool_value();
+        have_str = args(1).bool_value ();
 
       if (!error_state)
         {

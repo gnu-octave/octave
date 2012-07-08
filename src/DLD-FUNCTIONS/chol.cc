@@ -204,16 +204,16 @@ sparse matrices.\n\
                       if (vecout)
                         retval(2) = fact.perm ();
                       else
-                        retval(2) = fact.Q();
+                        retval(2) = fact.Q ();
                     }
 
                   if (nargout > 1 || info == 0)
                     {
-                      retval(1) = fact.P();
+                      retval(1) = fact.P ();
                       if (LLt)
-                        retval(0) = fact.L();
+                        retval(0) = fact.L ();
                       else
-                        retval(0) = fact.R();
+                        retval(0) = fact.R ();
                     }
                   else
                     error ("chol: input matrix must be positive definite");
@@ -233,16 +233,16 @@ sparse matrices.\n\
                       if (vecout)
                         retval(2) = fact.perm ();
                       else
-                        retval(2) = fact.Q();
+                        retval(2) = fact.Q ();
                     }
 
                   if (nargout > 1 || info == 0)
                     {
-                      retval(1) = fact.P();
+                      retval(1) = fact.P ();
                       if (LLt)
-                        retval(0) = fact.L();
+                        retval(0) = fact.L ();
                       else
-                        retval(0) = fact.R();
+                        retval(0) = fact.R ();
                     }
                   else
                     error ("chol: input matrix must be positive definite");

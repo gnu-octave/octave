@@ -174,7 +174,7 @@ function varargout = isosurface(varargin)
                     "FaceColor", "g", "EdgeColor", "k");
       endif
       if (! ishold ())
-        set (gca(), "view", [-37.5, 30],
+        set (gca (), "view", [-37.5, 30],
              "xgrid", "on", "ygrid", "on", "zgrid", "on");
       endif
     case 1

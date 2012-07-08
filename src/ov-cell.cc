@@ -944,7 +944,7 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
     return false;
 
   // Use negative value for ndims
-  int32_t di = - d.length();
+  int32_t di = - d.length ();
   os.write (reinterpret_cast<char *> (&di), 4);
   for (int i = 0; i < d.length (); i++)
     {

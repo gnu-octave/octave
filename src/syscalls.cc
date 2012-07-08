@@ -291,7 +291,7 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 1 && nargin <= 3)
     {
-      std::string exec_file = args(0).string_value();
+      std::string exec_file = args(0).string_value ();
 
       if (! error_state)
         {
@@ -324,7 +324,7 @@ exit status, it will linger until Octave exits.\n\
 
           if (! error_state)
             {
-              bool sync_mode = (nargin == 3 ? args(2).bool_value() : false);
+              bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
 
               if (! error_state)
                 {

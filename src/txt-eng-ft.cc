@@ -240,7 +240,7 @@ ft_manager* ft_manager::instance = 0;
 ft_render::ft_render (void)
     : text_processor (), face (0), bbox (1, 4, 0.0),
       xoffset (0), yoffset (0), multiline_halign (0),
-      multiline_align_xoffsets(), mode (MODE_BBOX),
+      multiline_align_xoffsets (), mode (MODE_BBOX),
       red (0), green (0), blue (0)
 {
 }
@@ -314,7 +314,7 @@ ft_render::visit (text_element_string& e)
       FT_UInt glyph_index, previous = 0;
 
       if (mode == MODE_BBOX)
-        multiline_align_xoffsets.clear();
+        multiline_align_xoffsets.clear ();
       else if (mode == MODE_RENDER)
         xoffset += multiline_align_xoffsets[line_index];
 
@@ -376,8 +376,8 @@ ft_render::visit (text_element_string& e)
                         for (int c = 0; c < bitmap.width; c++)
                           {
                             unsigned char pix = bitmap.buffer[r*bitmap.width+c];
-                            if (x0+c < 0 || x0+c >= pixels.dim2()
-                                || y0-r < 0 || y0-r >= pixels.dim3())
+                            if (x0+c < 0 || x0+c >= pixels.dim2 ()
+                                || y0-r < 0 || y0-r >= pixels.dim3 ())
                               {
                                 //::error ("out-of-bound indexing!!");
                               }
@@ -467,7 +467,7 @@ ft_render::visit (text_element_string& e)
           /* Push last the width associated with the last line */
           multiline_align_xoffsets.push_back(box_line_width);
 
-          for (unsigned int i = 0; i < multiline_align_xoffsets.size(); i++)
+          for (unsigned int i = 0; i < multiline_align_xoffsets.size (); i++)
             {
             /* Center align */
             if (multiline_halign == 1)
@@ -529,7 +529,7 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
 
               Array<idx_vector> idx (dim_vector (3, 1));
               idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
+              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
               idx(2) = idx_vector (':');
               pixels = uint8NDArray (pixels.index (idx));
             }
@@ -538,8 +538,8 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
             {
               Array<idx_vector> idx (dim_vector (3, 1));
               idx(0) = idx_vector (':');
-              idx(1) = idx_vector (pixels.dim2()-1, -1, -1);
-              idx(2)=  idx_vector (pixels.dim3()-1, -1, -1);
+              idx(1) = idx_vector (pixels.dim2 ()-1, -1, -1);
+              idx(2)=  idx_vector (pixels.dim3 ()-1, -1, -1);
               pixels = uint8NDArray (pixels.index (idx));
             }
           break;
@@ -554,7 +554,7 @@ ft_render::render (text_element* elt, Matrix& box, int rotation)
               Array<idx_vector> idx (dim_vector (3, 1));
               idx(0) = idx_vector (':');
               idx(1) = idx_vector (':');
-              idx(2) = idx_vector (pixels.dim3()-1, -1, -1);
+              idx(2) = idx_vector (pixels.dim3 ()-1, -1, -1);
               pixels = uint8NDArray (pixels.index (idx));
             }
           break;

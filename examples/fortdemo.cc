@@ -12,7 +12,7 @@ extern "C"
 DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
 {
   octave_value_list retval;
-  int nargin = args.length();
+  int nargin = args.length ();
   if (nargin != 1)
     print_usage ();
   else

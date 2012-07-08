@@ -236,7 +236,7 @@ public:
 
 public:
 
-  opengl_tesselator (void) : glu_tess (0), fill() { init (); }
+  opengl_tesselator (void) : glu_tess (0), fill () { init (); }
 
   virtual ~opengl_tesselator (void)
     { if (glu_tess) gluDeleteTess (glu_tess); }
@@ -641,7 +641,7 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
 
   // Clear background
 
-  if (c.length() >= 3)
+  if (c.length () >= 3)
     {
       glClearColor (c(0), c(1), c(2), 1);
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -2897,7 +2897,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glVertex2d (-sz/2, sz/2);
       glVertex2d (sz/2, sz/2);
       glVertex2d (sz/2, -sz/2);
-      glEnd();
+      glEnd ();
       break;
     case 'o':
       {
@@ -2915,7 +2915,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glVertex2d (sz/2, 0);
       glVertex2d (0, sz/2);
       glVertex2d (-sz/2, 0);
-      glEnd();
+      glEnd ();
       break;
     case 'v':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));

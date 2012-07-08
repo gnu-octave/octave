@@ -231,7 +231,7 @@ octregexp (const octave_value_list &args, int nargout,
 
       if (sz == 1)
         {
-          string_vector named_tokens = rx_lst.begin()->named_tokens ();
+          string_vector named_tokens = rx_lst.begin ()->named_tokens ();
 
           for (int j = 0; j < named_pats.length (); j++)
             nmap.assign (named_pats(j), named_tokens(j));
@@ -1311,9 +1311,9 @@ This option is present for compatibility but is ignored.\n\
           for (octave_idx_type i = 0; i < dv0.numel (); i++)
             {
               new_args(0) = str(i);
-              if (pat.numel() == 1)
+              if (pat.numel () == 1)
                 new_args(1) = pat(0);
-              if (rep.numel() == 1)
+              if (rep.numel () == 1)
                 new_args(2) = rep(0);
 
               for (octave_idx_type j = 0; j < dv1.numel (); j++)

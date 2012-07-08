@@ -23,6 +23,6 @@
 ## @end deftypefn
 
 function archdir = getarchdir (desc)
-  archdir = fullfile (desc.archprefix, getarch());
+  archdir = fullfile (desc.archprefix, getarch ());
 endfunction
 

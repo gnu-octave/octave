@@ -270,8 +270,8 @@ colamd, symamd, and other related orderings.\n\
 
       if (nargin > 2)
         {
-          NDArray in_cmember = args(2).array_value();
-          octave_idx_type cslen = in_cmember.length();
+          NDArray in_cmember = args(2).array_value ();
+          octave_idx_type cslen = in_cmember.length ();
           OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
           for (octave_idx_type i = 0; i < cslen; i++)
             // convert cmember from 1-based to 0-based
@@ -502,8 +502,8 @@ colamd, symamd, and other related orderings.\n\
 
       if (nargin > 2)
         {
-          NDArray in_cmember = args(2).array_value();
-          octave_idx_type cslen = in_cmember.length();
+          NDArray in_cmember = args(2).array_value ();
+          octave_idx_type cslen = in_cmember.length ();
           OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
           for (octave_idx_type i = 0; i < cslen; i++)
             // convert cmember from 1-based to 0-based

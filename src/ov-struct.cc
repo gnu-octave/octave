@@ -154,7 +154,7 @@ octave_struct::subsref (const std::string& type,
 
     case '.':
       {
-        if (map.numel() > 0)
+        if (map.numel () > 0)
           {
             const Cell t = dotref (idx.front ());
 
@@ -220,7 +220,7 @@ octave_struct::subsref (const std::string& type,
 
     case '.':
       {
-        if (map.numel() > 0)
+        if (map.numel () > 0)
           {
             const Cell t = dotref (idx.front (), auto_add);
 
@@ -481,7 +481,7 @@ octave_struct::subsasgn (const std::string& type,
               }
             else
               {
-                if (t_rhs.is_map() || t_rhs.is_object ())
+                if (t_rhs.is_map () || t_rhs.is_object ())
                   {
                     octave_map rhs_map = t_rhs.map_value ();
 
@@ -502,9 +502,9 @@ octave_struct::subsasgn (const std::string& type,
                   }
                 else
                   {
-                    if (t_rhs.is_null_value())
+                    if (t_rhs.is_null_value ())
                       {
-                        map.delete_elements (idx.front());
+                        map.delete_elements (idx.front ());
 
                         if (! error_state)
                           {
@@ -823,7 +823,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
     return false;
 
   // Use negative value for ndims
-  int32_t di = - d.length();
+  int32_t di = - d.length ();
   os.write (reinterpret_cast<char *> (&di), 4);
   for (int i = 0; i < d.length (); i++)
     {
@@ -1079,7 +1079,7 @@ octave_struct::fast_elem_insert (octave_idx_type n,
       // itself.
       const octave_scalar_map *sm_ptr;
       void *here = reinterpret_cast<void *>(&sm_ptr);
-      return (x.get_rep().fast_elem_insert_self (here, btyp_struct)
+      return (x.get_rep ().fast_elem_insert_self (here, btyp_struct)
               && map.fast_elem_insert (n, *sm_ptr));
     }
 

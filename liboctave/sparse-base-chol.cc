@@ -129,9 +129,9 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   ac->nrow = a_nr;
   ac->ncol = a_nc;
 
-  ac->p = a.cidx();
-  ac->i = a.ridx();
-  ac->nzmax = a.nnz();
+  ac->p = a.cidx ();
+  ac->i = a.ridx ();
+  ac->nzmax = a.nnz ();
   ac->packed = true;
   ac->sorted = true;
   ac->nz = 0;
@@ -151,7 +151,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   if (a_nr < 1)
     ac->x = &dummy;
   else
-    ac->x = a.data();
+    ac->x = a.data ();
 
   // use natural ordering if no q output parameter
   if (natural)
@@ -224,7 +224,7 @@ chol_type
 sparse_base_chol<chol_type, chol_elt, p_type>::L (void) const
 {
 #ifdef HAVE_CHOLMOD
-  cholmod_sparse *m = rep->L();
+  cholmod_sparse *m = rep->L ();
   octave_idx_type nc = m->ncol;
   octave_idx_type nnz = m->nzmax;
   chol_type ret (m->nrow, nc, nnz);
@@ -237,7 +237,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::L (void) const
     }
   return ret;
 #else
-  return chol_type();
+  return chol_type ();
 #endif
 }
 
@@ -260,7 +260,7 @@ sparse_base_chol_rep::Q (void) const
 
   return p;
 #else
-  return p_type();
+  return p_type ();
 #endif
 }
 
@@ -270,19 +270,19 @@ sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
 {
   chol_type retval;
 #ifdef HAVE_CHOLMOD
-  cholmod_sparse *m = rep->L();
+  cholmod_sparse *m = rep->L ();
   octave_idx_type n = m->ncol;
-  ColumnVector perms = rep->perm();
+  ColumnVector perms = rep->perm ();
   chol_type ret;
   double rcond2;
   octave_idx_type info;
   MatrixType mattype (MatrixType::Upper);
-  chol_type linv = L().hermitian().inverse(mattype, info, rcond2, 1, 0);
+  chol_type linv = L ().hermitian ().inverse(mattype, info, rcond2, 1, 0);
 
-  if (perms.length() == n)
+  if (perms.length () == n)
     {
-      p_type Qc = Q();
-      retval = Qc * linv * linv.hermitian() * Qc.transpose();
+      p_type Qc = Q ();
+      retval = Qc * linv * linv.hermitian () * Qc.transpose ();
     }
   else
     retval = linv * linv.hermitian ();

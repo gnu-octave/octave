@@ -124,7 +124,7 @@ Undocumented internal function.\n\
       boolT ismalloc = false;
 
       // Qhull flags argument is not const char*
-      OCTAVE_LOCAL_BUFFER (char, flags, 9 + options.length());
+      OCTAVE_LOCAL_BUFFER (char, flags, 9 + options.length ());
 
       sprintf (flags, "qhull d %s", options.c_str ());
 

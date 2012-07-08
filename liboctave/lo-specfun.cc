@@ -460,7 +460,7 @@ expm1(const Complex& x)
 
   if (std:: abs (x) < 1)
     {
-      double im = x.imag();
+      double im = x.imag ();
       double u = expm1 (x.real ());
       double v = sin (im/2);
       v = -2*v*v;
@@ -515,7 +515,7 @@ expm1(const FloatComplex& x)
 
   if (std:: abs (x) < 1)
     {
-      float im = x.imag();
+      float im = x.imag ();
       float u = expm1 (x.real ());
       float v = sin (im/2);
       v = -2*v*v;
@@ -556,7 +556,7 @@ log1p (const Complex& x)
 {
   Complex retval;
 
-  double r = x.real (), i = x.imag();
+  double r = x.real (), i = x.imag ();
 
   if (fabs (r) < 0.5 && fabs (i) < 0.5)
     {
@@ -873,7 +873,7 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
           if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
-              tmp2 *= exp(-z - std::abs(z.real()));
+              tmp2 *= exp(-z - std::abs(z.real ()));
             }
 
           tmp += tmp2;
@@ -1483,7 +1483,7 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
           if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
-              tmp2 *= exp(-z - std::abs(z.real()));
+              tmp2 *= exp(-z - std::abs(z.real ()));
             }
 
           tmp += tmp2;

@@ -48,7 +48,7 @@ Return true if @var{x} is a sparse matrix.\n\
 @seealso{ismatrix}\n\
 @end deftypefn")
 {
-   if (args.length() != 1)
+   if (args.length () != 1)
      {
        print_usage ();
        return octave_value ();

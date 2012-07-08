@@ -41,7 +41,7 @@ from sys import stdin
 
 t = "#if defined (%s)\n    { \"%s\", %s, },\n#endif\n"
 errstr = ""
-for k in errorcode.keys():
+for k in errorcode.keys ():
     errstr += t % tuple(3*[errorcode[k]])
 
 for l in stdin:

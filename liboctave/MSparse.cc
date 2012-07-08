@@ -417,7 +417,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
       else
         {
           r = MSparse<T> (b);
-          octave_idx_type b_nnz = b.nnz();
+          octave_idx_type b_nnz = b.nnz ();
 
           for (octave_idx_type i = 0 ; i < b_nnz ; i++)
             {
@@ -434,7 +434,7 @@ product (const MSparse<T>& a, const MSparse<T>& b)
       else
         {
           r = MSparse<T> (a);
-          octave_idx_type a_nnz = a.nnz();
+          octave_idx_type a_nnz = a.nnz ();
 
           for (octave_idx_type i = 0 ; i < a_nnz ; i++)
             {
@@ -512,10 +512,10 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
   if (a_nr == 1 && a_nc == 1)
     {
       T val = a.elem (0,0);
-      T fill = val / T();
-      if (fill == T())
+      T fill = val / T ();
+      if (fill == T ())
         {
-          octave_idx_type b_nnz = b.nnz();
+          octave_idx_type b_nnz = b.nnz ();
           r = MSparse<T> (b);
           for (octave_idx_type i = 0 ; i < b_nnz ; i++)
             r.data (i) = val / r.data(i);
@@ -540,10 +540,10 @@ quotient (const MSparse<T>& a, const MSparse<T>& b)
   else if (b_nr == 1 && b_nc == 1)
     {
       T val = b.elem (0,0);
-      T fill = T() / val;
-      if (fill == T())
+      T fill = T () / val;
+      if (fill == T ())
         {
-          octave_idx_type a_nnz = a.nnz();
+          octave_idx_type a_nnz = a.nnz ();
           r = MSparse<T> (a);
           for (octave_idx_type i = 0 ; i < a_nnz ; i++)
             r.data (i) = r.data(i) / val;

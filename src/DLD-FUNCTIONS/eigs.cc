@@ -346,7 +346,7 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
   if (call_depth > 1)
     {
       error ("eigs: invalid recursive call");
-      if (fcn_name.length())
+      if (fcn_name.length ())
         clear_function (fcn_name);
       return retval;
     }
@@ -393,11 +393,11 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
         {
           if (args(0).is_sparse_type ())
             {
-              ascm = (args(0).sparse_complex_matrix_value());
+              ascm = (args(0).sparse_complex_matrix_value ());
               a_is_sparse = true;
             }
           else
-            acm = (args(0).complex_matrix_value());
+            acm = (args(0).complex_matrix_value ());
           a_is_complex = true;
           symmetric = false; // ARPACK doesn't special case complex symmetric
           sym_tested = true;
@@ -406,12 +406,12 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
         {
           if (args(0).is_sparse_type ())
             {
-              asmm = (args(0).sparse_matrix_value());
+              asmm = (args(0).sparse_matrix_value ());
               a_is_sparse = true;
             }
           else
             {
-              amm = (args(0).matrix_value());
+              amm = (args(0).matrix_value ());
             }
         }
 
@@ -547,9 +547,9 @@ K. Maschhoff, D. Sorensen, and C. Yang.  For more information see\n\
   if (!sym_tested && !have_a_fun)
     {
       if (a_is_sparse)
-        symmetric = asmm.is_symmetric();
+        symmetric = asmm.is_symmetric ();
       else
-        symmetric = amm.is_symmetric();
+        symmetric = amm.is_symmetric ();
     }
 
   if (have_b)

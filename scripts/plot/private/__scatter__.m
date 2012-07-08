@@ -111,7 +111,7 @@ function hg = __scatter__ (varargin)
   endwhile
 
   if (isempty (c))
-    c = __next_line_color__();
+    c = __next_line_color__ ();
   endif
 
   hg = hggroup ();

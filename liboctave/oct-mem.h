@@ -92,7 +92,7 @@ inline bool helper_is_zero_mem (const std::complex<T>& value)
 
 template <class T>
 inline bool helper_is_zero_mem (const octave_int<T>& value)
-{ return value.value () == T(); }
+{ return value.value () == T (); }
 
 #define DEFINE_POD_FILL(T) \
 inline void fill_or_memset (size_t n, const T& value, T *dest) \

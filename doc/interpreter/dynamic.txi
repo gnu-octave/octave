@@ -1279,7 +1279,7 @@ from Octave as
 
 @example
 @group
-firstmexdemo()
+firstmexdemo ()
 @result{} 1.2346
 @end group
 @end example
@@ -1324,10 +1324,10 @@ Then as can be seen by
 
 @example
 @group
-myfunc()
+myfunc ()
 @result{} You called function: myfunc
     This is the principal function
-myfunc2()
+myfunc2 ()
 @result{} You called function: myfunc2
 @end group
 @end example

@@ -118,7 +118,7 @@ FloatNDArray::ifourier (int dim) const
 FloatComplexNDArray
 FloatNDArray::fourier2d (void) const
 {
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
   if (dv.length () < 2)
     return FloatComplexNDArray ();
 
@@ -126,7 +126,7 @@ FloatNDArray::fourier2d (void) const
   const float *in = fortran_vec ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
-  octave_idx_type howmany = numel() / dv(0) / dv(1);
+  octave_idx_type howmany = numel () / dv(0) / dv(1);
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
@@ -138,14 +138,14 @@ FloatNDArray::fourier2d (void) const
 FloatComplexNDArray
 FloatNDArray::ifourier2d (void) const
 {
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
   if (dv.length () < 2)
     return FloatComplexNDArray ();
 
   dim_vector dv2(dv(0), dv(1));
   FloatComplexNDArray retval (*this);
   FloatComplex *out = retval.fortran_vec ();
-  octave_idx_type howmany = numel() / dv(0) / dv(1);
+  octave_idx_type howmany = numel () / dv(0) / dv(1);
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
@@ -304,7 +304,7 @@ FloatNDArray::ifourier (int dim) const
 FloatComplexNDArray
 FloatNDArray::fourier2d (void) const
 {
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
   dim_vector dv2 (dv(0), dv(1));
   int rank = 2;
   FloatComplexNDArray retval (*this);
@@ -352,7 +352,7 @@ FloatNDArray::fourier2d (void) const
 FloatComplexNDArray
 FloatNDArray::ifourier2d (void) const
 {
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
   dim_vector dv2 (dv(0), dv(1));
   int rank = 2;
   FloatComplexNDArray retval (*this);

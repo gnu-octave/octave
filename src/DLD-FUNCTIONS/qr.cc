@@ -200,7 +200,7 @@ x = @var{R} \\ @var{C}\n\
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > (args(0).is_sparse_type() ? 3 : 2))
+  if (nargin < 1 || nargin > (args(0).is_sparse_type () ? 3 : 2))
     {
       print_usage ();
       return retval;
@@ -250,7 +250,7 @@ x = @var{R} \\ @var{C}\n\
                     {
                       retval(1) = q.R (economy);
                       retval(0) = q.C (args(have_b).complex_matrix_value ());
-                      if (arg.rows() < arg.columns())
+                      if (arg.rows () < arg.columns ())
                         warning ("qr: non minimum norm solution for under-determined problem");
                     }
                   else if (nargout > 1)
@@ -271,7 +271,7 @@ x = @var{R} \\ @var{C}\n\
                     {
                       retval(1) = q.R (economy);
                       retval(0) = q.C (args(have_b).matrix_value ());
-                      if (args(0).rows() < args(0).columns())
+                      if (args(0).rows () < args(0).columns ())
                         warning ("qr: non minimum norm solution for under-determined problem");
                     }
                   else if (nargout > 1)

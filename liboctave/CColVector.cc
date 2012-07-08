@@ -515,7 +515,7 @@ operator << (std::ostream& os, const ComplexColumnVector& a)
 std::istream&
 operator >> (std::istream& is, ComplexColumnVector& a)
 {
-  octave_idx_type len = a.length();
+  octave_idx_type len = a.length ();
 
   if (len > 0)
     {

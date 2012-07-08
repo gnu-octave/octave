@@ -5932,7 +5932,7 @@ ordered lists.\n\
     {
       if (args(1).is_string ())
         {
-          std::string mode = args(1).string_value();
+          std::string mode = args(1).string_value ();
           if (mode == "ascend")
             smode = ASCENDING;
           else if (mode == "descend")
@@ -5960,7 +5960,7 @@ ordered lists.\n\
           error ("sort: MODE must be a string");
           return retval;
         }
-      std::string mode = args(2).string_value();
+      std::string mode = args(2).string_value ();
       if (mode == "ascend")
         smode = ASCENDING;
       else if (mode == "descend")
@@ -6202,7 +6202,7 @@ Undocumented internal function.\n\
 
   if (nargin > 1)
     {
-      std::string mode = args(1).string_value();
+      std::string mode = args(1).string_value ();
       if (mode == "ascend")
         smode = ASCENDING;
       else if (mode == "descend")
@@ -6461,7 +6461,7 @@ do_accumarray_sum (const idx_vector& idx, const NDT& vals,
   else if (idx.extent (n) > n)
     error ("accumarray: index out of range");
 
-  NDT retval (dim_vector (n, 1), T());
+  NDT retval (dim_vector (n, 1), T ());
 
   if (vals.numel () == 1)
     retval.idx_add (idx, vals (0));
@@ -6654,7 +6654,7 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
 
   rdv(dim) = n;
 
-  NDT retval (rdv, T());
+  NDT retval (rdv, T ());
 
   if (idx.length () != vals_dim(dim))
     error ("accumdim: dimension mismatch");

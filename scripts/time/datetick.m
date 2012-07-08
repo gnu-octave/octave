@@ -135,7 +135,7 @@ function __datetick__ (varargin)
   else
     ## Need to do our own axis tick position calculation as
     ## year, etc, don't fallback on nice datenum values.
-    objs = findall (gca());
+    objs = findall (gca ());
     xmax = NaN;
     xmin = NaN;
     for i = 1 : length (objs)
@@ -244,16 +244,16 @@ function __datetick__ (varargin)
 
   if (keepticks)
     if (keeplimits)
-      set (gca(), strcat (ax, "ticklabel"), sticks);
+      set (gca (), strcat (ax, "ticklabel"), sticks);
     else
-      set (gca(), strcat (ax, "ticklabel"), sticks, strcat (ax, "lim"),
+      set (gca (), strcat (ax, "ticklabel"), sticks, strcat (ax, "lim"),
       [min(ticks), max(ticks)]);
     endif
   else
     if (keeplimits)
-      set (gca(), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks);
+      set (gca (), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks);
     else
-      set (gca(), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks,
+      set (gca (), strcat (ax, "tick"), ticks, strcat (ax, "ticklabel"), sticks,
       strcat (ax, "lim"), [min(ticks), max(ticks)]);
     endif
   endif

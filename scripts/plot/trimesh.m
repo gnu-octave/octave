@@ -41,10 +41,10 @@ function h = trimesh (tri, x, y, z, varargin)
   else
     newplot ();
     handle = patch ("Vertices", [x(:), y(:), z(:)], "Faces", tri,
-                    "FaceColor", "none", "EdgeColor", __next_line_color__(),
+                    "FaceColor", "none", "EdgeColor", __next_line_color__ (),
                     varargin{:});
     if (! ishold ())
-      set (gca(), "view", [-37.5, 30],
+      set (gca (), "view", [-37.5, 30],
            "xgrid", "on", "ygrid", "on", "zgrid", "on");
     endif
     if (nargout > 0)

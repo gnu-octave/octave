@@ -157,7 +157,7 @@ chol2inv_internal (const Matrix& r)
       octave_idx_type info = 0;
 
       Matrix tmp = r;
-      double *v = tmp.fortran_vec();
+      double *v = tmp.fortran_vec ();
 
       if (info == 0)
         {

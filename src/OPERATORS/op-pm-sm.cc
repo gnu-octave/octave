@@ -82,13 +82,13 @@ DEFBINOP (mul_pm_sm, perm_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_perm_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       double d = v2.scalar_value ();
 
       return octave_value (v1.sparse_matrix_value () * d);
     }
-  else if (v1.rows() == 1 && v1.columns() == 1)
+  else if (v1.rows () == 1 && v1.columns () == 1)
     return octave_value (v2.sparse_matrix_value ());
   else
     return v1.perm_matrix_value  () * v2.sparse_matrix_value ();
@@ -107,13 +107,13 @@ DEFBINOP (mul_sm_pm, sparse_matrix, perm_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_perm_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     {
       double d = v1.scalar_value ();
 
       return octave_value (d * v2.sparse_matrix_value ());
     }
-  else if (v2.rows() == 1 && v2.columns() == 1)
+  else if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_matrix_value ());
   else
     return v1.sparse_matrix_value  () * v2.perm_matrix_value ();

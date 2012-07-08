@@ -252,7 +252,7 @@ template <class T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 {
-  dim_vector x_dims = x.dims();
+  dim_vector x_dims = x.dims ();
 
   if (dim < 0)
     {
@@ -403,7 +403,7 @@ H(z) = ---------------------\n\
 
   if (nargin == 5)
     {
-      dim = args(4).nint_value() - 1;
+      dim = args(4).nint_value () - 1;
       if (dim < 0 || dim >= x_dims.length ())
         {
           error ("filter: DIM must be a valid dimension");

@@ -429,7 +429,7 @@ SUCH DAMAGE.\
                      "DEFUN_DLD(", name, ",args,nargout,\"\\\n",
                      name, "\\n\\\n\")\n{\n",
                      "  octave_value_list retval;\n",
-                     "  int nargin = args.length();\n\n",
+                     "  int nargin = args.length ();\n\n",
                      code, "\n  return retval;\n}\n");
 
       text = cstrcat (comment, body);

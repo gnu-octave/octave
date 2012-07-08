@@ -143,29 +143,29 @@ factorization as determined by @var{typ}.\n\
 
   if (args(0).is_real_type ())
     {
-      const SparseMatrix a = args(0).sparse_matrix_value();
-      A->nrow = a.rows();
-      A->ncol = a.cols();
-      A->p = a.cidx();
-      A->i = a.ridx();
-      A->nzmax = a.nnz();
+      const SparseMatrix a = args(0).sparse_matrix_value ();
+      A->nrow = a.rows ();
+      A->ncol = a.cols ();
+      A->p = a.cidx ();
+      A->i = a.ridx ();
+      A->nzmax = a.nnz ();
       A->xtype = CHOLMOD_REAL;
 
-      if (a.rows() > 0 && a.cols() > 0)
-        A->x = a.data();
+      if (a.rows () > 0 && a.cols () > 0)
+        A->x = a.data ();
     }
   else if (args(0).is_complex_type ())
     {
-      const SparseComplexMatrix a = args(0).sparse_complex_matrix_value();
-      A->nrow = a.rows();
-      A->ncol = a.cols();
-      A->p = a.cidx();
-      A->i = a.ridx();
-      A->nzmax = a.nnz();
+      const SparseComplexMatrix a = args(0).sparse_complex_matrix_value ();
+      A->nrow = a.rows ();
+      A->ncol = a.cols ();
+      A->p = a.cidx ();
+      A->i = a.ridx ();
+      A->nzmax = a.nnz ();
       A->xtype = CHOLMOD_COMPLEX;
 
-      if (a.rows() > 0 && a.cols() > 0)
-        A->x = a.data();
+      if (a.rows () > 0 && a.cols () > 0)
+        A->x = a.data ();
     }
   else
     gripe_wrong_type_arg ("symbfact", args(0));
@@ -176,8 +176,8 @@ factorization as determined by @var{typ}.\n\
   if (nargin > 1)
     {
       char ch;
-      std::string str = args(1).string_value();
-      ch = tolower (str.c_str()[0]);
+      std::string str = args(1).string_value ();
+      ch = tolower (str.c_str ()[0]);
       if (ch == 'r')
         A->stype = 0;
       else if (ch == 'c')

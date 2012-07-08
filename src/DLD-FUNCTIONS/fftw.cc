@@ -115,7 +115,7 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
 {
   octave_value retval;
 
-  int nargin = args.length();
+  int nargin = args.length ();
 
   if (nargin < 1 || nargin > 2)
     {
@@ -196,9 +196,9 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
                     {
                       char *str = fftw_export_wisdom_to_string ();
 
-                      if (arg1.length() < 1)
+                      if (arg1.length () < 1)
                         fftw_forget_wisdom ();
-                      else if (! fftw_import_wisdom_from_string (arg1.c_str()))
+                      else if (! fftw_import_wisdom_from_string (arg1.c_str ()))
                         error ("could not import supplied WISDOM");
 
                       if (!error_state)
@@ -210,9 +210,9 @@ they will not be efficient and the point of calculating the wisdom is lost.\n\
                     {
                       char *str = fftwf_export_wisdom_to_string ();
 
-                      if (arg1.length() < 1)
+                      if (arg1.length () < 1)
                         fftwf_forget_wisdom ();
-                      else if (! fftwf_import_wisdom_from_string (arg1.c_str()))
+                      else if (! fftwf_import_wisdom_from_string (arg1.c_str ()))
                         error ("could not import supplied WISDOM");
 
                       if (!error_state)

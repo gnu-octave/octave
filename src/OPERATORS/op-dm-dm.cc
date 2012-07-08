@@ -43,7 +43,7 @@ DEFUNOP_OP (uminus, diag_matrix, -)
 DEFUNOP (transpose, diag_matrix)
 {
   CAST_UNOP_ARG (const octave_diag_matrix&);
-  return octave_value (v.diag_matrix_value().transpose ());
+  return octave_value (v.diag_matrix_value ().transpose ());
 }
 
 // matrix by matrix ops.

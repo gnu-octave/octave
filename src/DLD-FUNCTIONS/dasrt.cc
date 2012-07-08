@@ -385,9 +385,9 @@ parameters for @code{dasrt}.\n\
   if (f_arg.is_cell ())
     {
       Cell c = f_arg.cell_value ();
-      if (c.length() == 1)
+      if (c.length () == 1)
         f_arg = c(0);
-      else if (c.length() == 2)
+      else if (c.length () == 2)
         {
           if (c(0).is_function_handle () || c(0).is_inline_function ())
             dasrt_f = c(0).function_value ();
@@ -416,7 +416,7 @@ parameters for @code{dasrt}.\n\
 
                   if (!dasrt_j)
                     {
-                      if (fcn_name.length())
+                      if (fcn_name.length ())
                         clear_function (fcn_name);
                       dasrt_f = 0;
                     }
@@ -427,7 +427,7 @@ parameters for @code{dasrt}.\n\
         DASRT_ABORT1 ("incorrect number of elements in cell array");
     }
 
-  if (!dasrt_f && ! f_arg.is_cell())
+  if (!dasrt_f && ! f_arg.is_cell ())
     {
       if (f_arg.is_function_handle () || f_arg.is_inline_function ())
         dasrt_f = f_arg.function_value ();
@@ -487,9 +487,9 @@ parameters for @code{dasrt}.\n\
 
   argp++;
 
-  if (args(1).is_function_handle() || args(1).is_inline_function())
+  if (args(1).is_function_handle () || args(1).is_inline_function ())
     {
-      dasrt_cf = args(1).function_value();
+      dasrt_cf = args(1).function_value ();
 
       if (! dasrt_cf)
         DASRT_ABORT1 ("expecting function name as argument 2");
@@ -557,9 +557,9 @@ parameters for @code{dasrt}.\n\
   else
     output = dae.integrate (out_times);
 
-  if (fcn_name.length())
+  if (fcn_name.length ())
     clear_function (fcn_name);
-  if (jac_name.length())
+  if (jac_name.length ())
     clear_function (jac_name);
 
   if (! error_state)

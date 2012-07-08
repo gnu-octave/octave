@@ -44,7 +44,7 @@ DEFUNOP (transpose, char_matrix_str)
       return octave_value ();
     }
   else
-    return octave_value (v.char_matrix_value().transpose (),
+    return octave_value (v.char_matrix_value ().transpose (),
                          a.is_sq_string () ? '\'' : '"');
 }
 

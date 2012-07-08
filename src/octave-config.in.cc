@@ -167,7 +167,7 @@ initialize (void)
   vars["OCTFILEDIR"] =substitute_prefix (%OCTAVE_OCTFILEDIR%, PREFIX, OCTAVE_HOME);
   vars["OCTINCLUDEDIR"] =substitute_prefix (%OCTAVE_OCTINCLUDEDIR%, PREFIX, OCTAVE_HOME);
   vars["OCTLIBDIR"] =substitute_prefix (%OCTAVE_OCTLIBDIR%, PREFIX, OCTAVE_HOME);
-  vars["PREFIX"] = (OCTAVE_HOME.empty() ? PREFIX : OCTAVE_HOME);
+  vars["PREFIX"] = (OCTAVE_HOME.empty () ? PREFIX : OCTAVE_HOME);
   vars["STARTUPFILEDIR"] =substitute_prefix (%OCTAVE_STARTUPFILEDIR%, PREFIX, OCTAVE_HOME);
   vars["VERSION"] = %OCTAVE_VERSION%;
 }

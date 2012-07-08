@@ -226,14 +226,14 @@ template <class SM, class M>
 static M
 ltsolve (const SM& L, const ColumnVector& Q, const M& m)
 {
-  octave_idx_type n = L.cols();
-  octave_idx_type b_nc = m.cols();
+  octave_idx_type n = L.cols ();
+  octave_idx_type b_nc = m.cols ();
   octave_idx_type err = 0;
   double rcond;
   MatrixType ltyp (MatrixType::Lower);
   M tmp = L.solve (ltyp, m, err, rcond, 0);
   M retval;
-  const double* qv = Q.fortran_vec();
+  const double* qv = Q.fortran_vec ();
 
   if (!err)
     {
@@ -253,14 +253,14 @@ template <class SM, class M>
 static M
 utsolve (const SM& U, const ColumnVector& Q, const M& m)
 {
-  octave_idx_type n = U.cols();
-  octave_idx_type b_nc = m.cols();
+  octave_idx_type n = U.cols ();
+  octave_idx_type b_nc = m.cols ();
   octave_idx_type err = 0;
   double rcond;
   MatrixType utyp (MatrixType::Upper);
 
   M retval (n, b_nc);
-  const double* qv = Q.fortran_vec();
+  const double* qv = Q.fortran_vec ();
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       for (octave_idx_type i = 0; i < n; i++)
@@ -347,14 +347,14 @@ make_cholb (Matrix& b, Matrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
   CHOL fact (b, info);
-  octave_idx_type n = b.cols();
+  octave_idx_type n = b.cols ();
 
   if (info != 0)
     return false;
   else
     {
       bt = fact.chol_matrix ();
-      b =  bt.transpose();
+      b =  bt.transpose ();
       permB = ColumnVector(n);
       for (octave_idx_type i = 0; i < n; i++)
         permB(i) = i;
@@ -368,13 +368,13 @@ make_cholb (SparseMatrix& b, SparseMatrix& bt, ColumnVector& permB)
   octave_idx_type info;
   SparseCHOL fact (b, info, false);
 
-  if (fact.P() != 0)
+  if (fact.P () != 0)
     return false;
   else
     {
-      b = fact.L();
-      bt = b.transpose();
-      permB = fact.perm() - 1.0;
+      b = fact.L ();
+      bt = b.transpose ();
+      permB = fact.perm () - 1.0;
       return true;
     }
 }
@@ -384,14 +384,14 @@ make_cholb (ComplexMatrix& b, ComplexMatrix& bt, ColumnVector& permB)
 {
   octave_idx_type info;
   ComplexCHOL fact (b, info);
-  octave_idx_type n = b.cols();
+  octave_idx_type n = b.cols ();
 
   if (info != 0)
     return false;
   else
     {
       bt = fact.chol_matrix ();
-      b =  bt.hermitian();
+      b =  bt.hermitian ();
       permB = ColumnVector(n);
       for (octave_idx_type i = 0; i < n; i++)
         permB(i) = i;
@@ -406,13 +406,13 @@ make_cholb (SparseComplexMatrix& b, SparseComplexMatrix& bt,
   octave_idx_type info;
   SparseComplexCHOL fact (b, info, false);
 
-  if (fact.P() != 0)
+  if (fact.P () != 0)
     return false;
   else
     {
-      b = fact.L();
-      bt = b.hermitian();
-      permB = fact.perm() - 1.0;
+      b = fact.L ();
+      bt = b.hermitian ();
+      permB = fact.perm () - 1.0;
       return true;
     }
 }
@@ -424,7 +424,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
                 octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
-  octave_idx_type n = m.rows();
+  octave_idx_type n = m.rows ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
   SparseMatrix AminusSigmaB (m);
@@ -433,7 +433,7 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
     {
       if (cholB)
         {
-          if (permB.length())
+          if (permB.length ())
             {
               SparseMatrix tmp(n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -446,11 +446,11 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
               tmp.xcidx(n) = n;
 
               AminusSigmaB = AminusSigmaB - sigma * tmp *
-                b.transpose() * b * tmp.transpose();
+                b.transpose () * b * tmp.transpose ();
             }
           else
             AminusSigmaB = AminusSigmaB - sigma *
-              b.transpose() * b;
+              b.transpose () * b;
         }
       else
         AminusSigmaB = AminusSigmaB - sigma * b;
@@ -522,7 +522,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
                 octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
-  octave_idx_type n = m.cols();
+  octave_idx_type n = m.cols ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
   Matrix AminusSigmaB (m);
@@ -531,16 +531,16 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
     {
       if (cholB)
         {
-          Matrix tmp = sigma * b.transpose() * b;
-          const double *pB = permB.fortran_vec();
-          double *p = AminusSigmaB.fortran_vec();
+          Matrix tmp = sigma * b.transpose () * b;
+          const double *pB = permB.fortran_vec ();
+          double *p = AminusSigmaB.fortran_vec ();
 
-          if (permB.length())
+          if (permB.length ())
             {
               for (octave_idx_type j = 0;
-                   j < b.cols(); j++)
+                   j < b.cols (); j++)
                 for (octave_idx_type i = 0;
-                     i < b.rows(); i++)
+                     i < b.rows (); i++)
                   *p++ -=  tmp.xelem (static_cast<octave_idx_type>(pB[i]),
                                       static_cast<octave_idx_type>(pB[j]));
             }
@@ -552,7 +552,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
     }
   else
     {
-      double *p = AminusSigmaB.fortran_vec();
+      double *p = AminusSigmaB.fortran_vec ();
 
       for (octave_idx_type i = 0; i < n; i++)
         p[i*(n+1)] -= sigma;
@@ -560,7 +560,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
 
   LU fact (AminusSigmaB);
 
-  L = fact.P().transpose() * fact.L ();
+  L = fact.P ().transpose () * fact.L ();
   U = fact.U ();
   for (octave_idx_type j = 0; j < n; j++)
     P[j] = Q[j] = j;
@@ -599,7 +599,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
                 octave_idx_type *P, octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
-  octave_idx_type n = m.rows();
+  octave_idx_type n = m.rows ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
   SparseComplexMatrix AminusSigmaB (m);
@@ -608,7 +608,7 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
     {
       if (cholB)
         {
-          if (permB.length())
+          if (permB.length ())
             {
               SparseMatrix tmp(n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -620,11 +620,11 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
                 }
               tmp.xcidx(n) = n;
 
-              AminusSigmaB = AminusSigmaB - tmp * b.hermitian() * b *
-                tmp.transpose() * sigma;
+              AminusSigmaB = AminusSigmaB - tmp * b.hermitian () * b *
+                tmp.transpose () * sigma;
             }
           else
-            AminusSigmaB = AminusSigmaB - sigma * b.hermitian() * b;
+            AminusSigmaB = AminusSigmaB - sigma * b.hermitian () * b;
         }
       else
         AminusSigmaB = AminusSigmaB - sigma * b;
@@ -696,7 +696,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
                 octave_idx_type *Q)
 {
   bool have_b = ! b.is_empty ();
-  octave_idx_type n = m.cols();
+  octave_idx_type n = m.cols ();
 
   // Caclulate LU decomposition of 'A - sigma * B'
   ComplexMatrix AminusSigmaB (m);
@@ -705,16 +705,16 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
     {
       if (cholB)
         {
-          ComplexMatrix tmp = sigma * b.hermitian() * b;
-          const double *pB = permB.fortran_vec();
-          Complex *p = AminusSigmaB.fortran_vec();
+          ComplexMatrix tmp = sigma * b.hermitian () * b;
+          const double *pB = permB.fortran_vec ();
+          Complex *p = AminusSigmaB.fortran_vec ();
 
-          if (permB.length())
+          if (permB.length ())
             {
               for (octave_idx_type j = 0;
-                   j < b.cols(); j++)
+                   j < b.cols (); j++)
                 for (octave_idx_type i = 0;
-                     i < b.rows(); i++)
+                     i < b.rows (); i++)
                   *p++ -=  tmp.xelem (static_cast<octave_idx_type>(pB[i]),
                                       static_cast<octave_idx_type>(pB[j]));
             }
@@ -726,7 +726,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
     }
   else
     {
-      Complex *p = AminusSigmaB.fortran_vec();
+      Complex *p = AminusSigmaB.fortran_vec ();
 
       for (octave_idx_type i = 0; i < n; i++)
         p[i*(n+1)] -= sigma;
@@ -734,7 +734,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
 
   ComplexLU fact (AminusSigmaB);
 
-  L = fact.P().transpose() * fact.L ();
+  L = fact.P ().transpose () * fact.L ();
   U = fact.U ();
   for (octave_idx_type j = 0; j < n; j++)
     P[j] = Q[j] = j;
@@ -779,27 +779,27 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   M b(_b);
   octave_idx_type n = m.cols ();
   octave_idx_type mode = 1;
-  bool have_b = ! b.is_empty();
+  bool have_b = ! b.is_empty ();
   bool note3 = false;
   char bmat = 'I';
   double sigma = 0.;
   M bt;
 
-  if (m.rows() != m.cols())
+  if (m.rows () != m.cols ())
     {
       (*current_liboctave_error_handler) ("eigs: A must be square");
       return -1;
     }
-  if (have_b && (m.rows() != b.rows() || m.rows() != b.cols()))
+  if (have_b && (m.rows () != b.rows () || m.rows () != b.cols ()))
     {
       (*current_liboctave_error_handler)
         ("eigs: B must be square and the same size as A");
       return -1;
     }
 
-  if (resid.is_empty())
+  if (resid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       resid = ColumnVector (octave_rand::vector(n));
       octave_rand::distribution(rand_dist);
@@ -838,10 +838,10 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.length() != 0)
+  if (have_b && cholB && permB.length () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length() != n)
+      if (permB.length () != n)
         {
           (*current_liboctave_error_handler)
             ("eigs: permB vector invalid");
@@ -888,8 +888,8 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
       if (cholB)
         {
           bt = b;
-          b = b.transpose();
-          if (permB.length() == 0)
+          b = b.transpose ();
+          if (permB.length () == 0)
             {
               permB = ColumnVector(n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -939,7 +939,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
     {
       F77_FUNC (dsaupd, DSAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -1100,15 +1100,15 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   M b(_b);
   octave_idx_type n = m.cols ();
   octave_idx_type mode = 3;
-  bool have_b = ! b.is_empty();
+  bool have_b = ! b.is_empty ();
   std::string typ = "LM";
 
-  if (m.rows() != m.cols())
+  if (m.rows () != m.cols ())
     {
       (*current_liboctave_error_handler) ("eigs: A must be square");
       return -1;
     }
-  if (have_b && (m.rows() != b.rows() || m.rows() != b.cols()))
+  if (have_b && (m.rows () != b.rows () || m.rows () != b.cols ()))
     {
       (*current_liboctave_error_handler)
         ("eigs: B must be square and the same size as A");
@@ -1121,9 +1121,9 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   //                                _b, permB, resid, os, tol, rvec, cholB,
   //                                disp, maxit);
 
-  if (resid.is_empty())
+  if (resid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       resid = ColumnVector (octave_rand::vector(n));
       octave_rand::distribution(rand_dist);
@@ -1162,10 +1162,10 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
       return -1;
     }
 
-  if (have_b && cholB && permB.length() != 0)
+  if (have_b && cholB && permB.length () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length() != n)
+      if (permB.length () != n)
         {
           (*current_liboctave_error_handler) ("eigs: permB vector invalid");
           return -1;
@@ -1215,8 +1215,8 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   int iter = 0;
   M L, U;
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows() : m.rows()));
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols() : m.cols()));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
   if (! LuAminusSigmaB(m, b, cholB, permB, sigma, L, U, P, Q))
     return -1;
@@ -1232,7 +1232,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
     {
       F77_FUNC (dsaupd, DSAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -1430,9 +1430,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
   octave_idx_type mode = 1;
   int err = 0;
 
-  if (resid.is_empty())
+  if (resid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       resid = ColumnVector (octave_rand::vector(n));
       octave_rand::distribution(rand_dist);
@@ -1533,7 +1533,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
     {
       F77_FUNC (dsaupd, DSAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -1692,28 +1692,28 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   M b(_b);
   octave_idx_type n = m.cols ();
   octave_idx_type mode = 1;
-  bool have_b = ! b.is_empty();
+  bool have_b = ! b.is_empty ();
   bool note3 = false;
   char bmat = 'I';
   double sigmar = 0.;
   double sigmai = 0.;
   M bt;
 
-  if (m.rows() != m.cols())
+  if (m.rows () != m.cols ())
     {
       (*current_liboctave_error_handler) ("eigs: A must be square");
       return -1;
     }
-  if (have_b && (m.rows() != b.rows() || m.rows() != b.cols()))
+  if (have_b && (m.rows () != b.rows () || m.rows () != b.cols ()))
     {
       (*current_liboctave_error_handler)
         ("eigs: B must be square and the same size as A");
       return -1;
     }
 
-  if (resid.is_empty())
+  if (resid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       resid = ColumnVector (octave_rand::vector(n));
       octave_rand::distribution(rand_dist);
@@ -1752,10 +1752,10 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.length() != 0)
+  if (have_b && cholB && permB.length () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length() != n)
+      if (permB.length () != n)
         {
           (*current_liboctave_error_handler)
             ("eigs: permB vector invalid");
@@ -1802,8 +1802,8 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
       if (cholB)
         {
           bt = b;
-          b = b.transpose();
-          if (permB.length() == 0)
+          b = b.transpose ();
+          if (permB.length () == 0)
             {
               permB = ColumnVector(n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -1853,7 +1853,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     {
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -2062,16 +2062,16 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   M b(_b);
   octave_idx_type n = m.cols ();
   octave_idx_type mode = 3;
-  bool have_b = ! b.is_empty();
+  bool have_b = ! b.is_empty ();
   std::string typ = "LM";
   double sigmai = 0.;
 
-  if (m.rows() != m.cols())
+  if (m.rows () != m.cols ())
     {
       (*current_liboctave_error_handler) ("eigs: A must be square");
       return -1;
     }
-  if (have_b && (m.rows() != b.rows() || m.rows() != b.cols()))
+  if (have_b && (m.rows () != b.rows () || m.rows () != b.cols ()))
     {
       (*current_liboctave_error_handler)
         ("eigs: B must be square and the same size as A");
@@ -2084,9 +2084,9 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   //                                   _b, permB, resid, os, tol, rvec, cholB,
   //                                   disp, maxit);
 
-  if (resid.is_empty())
+  if (resid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       resid = ColumnVector (octave_rand::vector(n));
       octave_rand::distribution(rand_dist);
@@ -2125,10 +2125,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
       return -1;
     }
 
-  if (have_b && cholB && permB.length() != 0)
+  if (have_b && cholB && permB.length () != 0)
     {
       // Check that we really have a permutation vector
-      if (permB.length() != n)
+      if (permB.length () != n)
         {
           (*current_liboctave_error_handler) ("eigs: permB vector invalid");
           return -1;
@@ -2178,8 +2178,8 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   int iter = 0;
   M L, U;
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows() : m.rows()));
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols() : m.cols()));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
   if (! LuAminusSigmaB(m, b, cholB, permB, sigmar, L, U, P, Q))
     return -1;
@@ -2195,7 +2195,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     {
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -2447,9 +2447,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   octave_idx_type mode = 1;
   int err = 0;
 
-  if (resid.is_empty())
+  if (resid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       resid = ColumnVector (octave_rand::vector(n));
       octave_rand::distribution(rand_dist);
@@ -2551,7 +2551,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
     {
       F77_FUNC (dnaupd, DNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -2757,27 +2757,27 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   M b(_b);
   octave_idx_type n = m.cols ();
   octave_idx_type mode = 1;
-  bool have_b = ! b.is_empty();
+  bool have_b = ! b.is_empty ();
   bool note3 = false;
   char bmat = 'I';
   Complex sigma = 0.;
   M bt;
 
-  if (m.rows() != m.cols())
+  if (m.rows () != m.cols ())
     {
       (*current_liboctave_error_handler) ("eigs: A must be square");
       return -1;
     }
-  if (have_b && (m.rows() != b.rows() || m.rows() != b.cols()))
+  if (have_b && (m.rows () != b.rows () || m.rows () != b.cols ()))
     {
       (*current_liboctave_error_handler)
         ("eigs: B must be square and the same size as A");
       return -1;
     }
 
-  if (cresid.is_empty())
+  if (cresid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       Array<double> rr (octave_rand::vector(n));
       Array<double> ri (octave_rand::vector(n));
@@ -2820,10 +2820,10 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       return -1;
     }
 
-  if (have_b && cholB && permB.length() != 0)
+  if (have_b && cholB && permB.length () != 0)
     {
       // Check the we really have a permutation vector
-      if (permB.length() != n)
+      if (permB.length () != n)
         {
           (*current_liboctave_error_handler)
             ("eigs: permB vector invalid");
@@ -2870,8 +2870,8 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
       if (cholB)
         {
           bt = b;
-          b = b.hermitian();
-          if (permB.length() == 0)
+          b = b.hermitian ();
+          if (permB.length () == 0)
             {
               permB = ColumnVector(n);
               for (octave_idx_type i = 0; i < n; i++)
@@ -2922,7 +2922,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
     {
       F77_FUNC (znaupd, ZNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, rwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -3079,15 +3079,15 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   M b(_b);
   octave_idx_type n = m.cols ();
   octave_idx_type mode = 3;
-  bool have_b = ! b.is_empty();
+  bool have_b = ! b.is_empty ();
   std::string typ = "LM";
 
-  if (m.rows() != m.cols())
+  if (m.rows () != m.cols ())
     {
       (*current_liboctave_error_handler) ("eigs: A must be square");
       return -1;
     }
-  if (have_b && (m.rows() != b.rows() || m.rows() != b.cols()))
+  if (have_b && (m.rows () != b.rows () || m.rows () != b.cols ()))
     {
       (*current_liboctave_error_handler)
         ("eigs: B must be square and the same size as A");
@@ -3100,9 +3100,9 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   //                                      eig_val, _b, permB, cresid, os, tol,
   //                                      rvec, cholB, disp, maxit);
 
-  if (cresid.is_empty())
+  if (cresid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       Array<double> rr (octave_rand::vector(n));
       Array<double> ri (octave_rand::vector(n));
@@ -3145,10 +3145,10 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
       return -1;
     }
 
-  if (have_b && cholB && permB.length() != 0)
+  if (have_b && cholB && permB.length () != 0)
     {
       // Check that we really have a permutation vector
-      if (permB.length() != n)
+      if (permB.length () != n)
         {
           (*current_liboctave_error_handler) ("eigs: permB vector invalid");
           return -1;
@@ -3198,8 +3198,8 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   int iter = 0;
   M L, U;
 
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows() : m.rows()));
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols() : m.cols()));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
   if (! LuAminusSigmaB(m, b, cholB, permB, sigma, L, U, P, Q))
     return -1;
@@ -3216,7 +3216,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
     {
       F77_FUNC (znaupd, ZNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, rwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));
@@ -3417,9 +3417,9 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   octave_idx_type mode = 1;
   int err = 0;
 
-  if (cresid.is_empty())
+  if (cresid.is_empty ())
     {
-      std::string rand_dist = octave_rand::distribution();
+      std::string rand_dist = octave_rand::distribution ();
       octave_rand::distribution("uniform");
       Array<double> rr (octave_rand::vector(n));
       Array<double> ri (octave_rand::vector(n));
@@ -3525,7 +3525,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
     {
       F77_FUNC (znaupd, ZNAUPD)
         (ido, F77_CONST_CHAR_ARG2 (&bmat, 1), n,
-         F77_CONST_CHAR_ARG2 ((typ.c_str()), 2),
+         F77_CONST_CHAR_ARG2 ((typ.c_str ()), 2),
          k, tol, presid, p, v, n, iparam,
          ipntr, workd, workl, lwork, rwork, info
          F77_CHAR_ARG_LEN(1) F77_CHAR_ARG_LEN(2));

@@ -32,7 +32,7 @@ function ret = what (d)
     d = pwd ();
   elseif (isempty (strfind (d, filesep ())))
     ## Find the appropriate directory on the path.
-    p = strtrim (strsplit (path (), pathsep()));
+    p = strtrim (strsplit (path (), pathsep ()));
     d = p{find (cellfun (@(x) ! isempty (strfind (x, d)), p))(end)};
   else
     [status, msg, msgid] = fileattrib (d);
@@ -91,7 +91,7 @@ function __display_filenames__ (msg, p, f)
     printf ("%s %s:\n\n", msg, p);
 
     maxlen = max (cellfun ("length", f));
-    ncols = max (1, floor (terminal_size()(2) / (maxlen + 3)));
+    ncols = max (1, floor (terminal_size ()(2) / (maxlen + 3)));
     fmt = "";
     for i = 1: ncols
       fmt = sprintf ("%s   %%-%ds", fmt, maxlen);

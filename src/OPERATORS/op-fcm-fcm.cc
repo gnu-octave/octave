@@ -51,7 +51,7 @@ DEFUNOP (transpose, float_complex_matrix)
       return octave_value ();
     }
   else
-    return octave_value (v.float_complex_matrix_value().transpose ());
+    return octave_value (v.float_complex_matrix_value ().transpose ());
 }
 
 DEFUNOP (hermitian, float_complex_matrix)
@@ -64,7 +64,7 @@ DEFUNOP (hermitian, float_complex_matrix)
       return octave_value ();
     }
   else
-    return octave_value (v.float_complex_matrix_value().hermitian ());
+    return octave_value (v.float_complex_matrix_value ().hermitian ());
 }
 
 DEFNCUNOP_METHOD (incr, float_complex_matrix, increment)

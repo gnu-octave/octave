@@ -58,7 +58,7 @@ Erlang(a,n)
 chisq(df) for df>0
   r = 2*randg(df/2)
 t(df) for 0<df<inf (use randn if df is infinite)
-  r = randn() / sqrt(2*randg(df/2)/df)
+  r = randn () / sqrt(2*randg(df/2)/df)
 F(n1,n2) for 0<n1, 0<n2
   r1 = 2*randg(n1/2)/n1 or 1 if n1 is infinite
   r2 = 2*randg(n2/2)/n2 or 1 if n2 is infinite

@@ -82,7 +82,7 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
   octave_idx_type nra = a.rows (), nrb = b.rows (), dla = a.diag_length ();
   octave_idx_type nca = a.cols (), ncb = b.cols ();
 
-  MArray<T> c (dim_vector (nra*nrb, nca*ncb), T());
+  MArray<T> c (dim_vector (nra*nrb, nca*ncb), T ());
 
   for (octave_idx_type ja = 0; ja < dla; ja++)
     for (octave_idx_type jb = 0; jb < ncb; jb++)

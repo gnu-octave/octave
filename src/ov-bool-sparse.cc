@@ -209,7 +209,7 @@ bool
 octave_sparse_bool_matrix::save_binary (std::ostream& os, bool&)
 {
   dim_vector d = this->dims ();
-  if (d.length() < 1)
+  if (d.length () < 1)
     return false;
 
   // Ensure that additional memory is deallocated
@@ -440,7 +440,7 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
 
   H5Sclose (space_hid);
 
-  hdims[0] = m.cols() + 1;
+  hdims[0] = m.cols () + 1;
   hdims[1] = 1;
 
   space_hid = H5Screate_simple (2, hdims, 0);

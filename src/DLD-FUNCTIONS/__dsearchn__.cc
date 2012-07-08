@@ -40,7 +40,7 @@ DEFUN_DLD (__dsearchn__, args, ,
 Undocumented internal function.\n\
 @end deftypefn")
 {
-  int nargin = args.length();
+  int nargin = args.length ();
   octave_value_list retval;
 
   if (nargin != 2)
@@ -49,18 +49,18 @@ Undocumented internal function.\n\
       return retval;
     }
 
-  Matrix x = args(0).matrix_value().transpose ();
-  Matrix xi = args(1).matrix_value().transpose ();
+  Matrix x = args(0).matrix_value ().transpose ();
+  Matrix xi = args(1).matrix_value ().transpose ();
 
   if (! error_state)
     {
-      if (x.rows() != xi.rows() || x.columns() < 1)
+      if (x.rows () != xi.rows () || x.columns () < 1)
         error ("__dsearch__: number of rows of X and XI must match");
       else
         {
-          octave_idx_type n = x.rows();
-          octave_idx_type nx = x.columns();
-          octave_idx_type nxi = xi.columns();
+          octave_idx_type n = x.rows ();
+          octave_idx_type nx = x.columns ();
+          octave_idx_type nxi = xi.columns ();
 
           ColumnVector idx (nxi);
           double *pidx = idx.fortran_vec ();

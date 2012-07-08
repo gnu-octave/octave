@@ -37,7 +37,7 @@ function retval = __plt__ (caller, h, varargin)
     properties = {};
 
     hlegend = [];
-    fkids = get (gcf(), "children");
+    fkids = get (gcf (), "children");
     for i = 1 : numel(fkids)
       if (ishandle (fkids (i)) && strcmp (get (fkids (i), "type"), "axes")
           && (strcmp (get (fkids (i), "tag"), "legend")))
@@ -132,7 +132,7 @@ function retval = __plt__ (caller, h, varargin)
     endwhile
 
     if (setlgnd)
-      legend (gca(), hlgnd, tlgnd);
+      legend (gca (), hlgnd, tlgnd);
     endif
   else
     error ("__plt__: invalid number of arguments");

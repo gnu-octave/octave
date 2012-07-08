@@ -3287,7 +3287,7 @@ betaincinv (double y, double p, double q) {
   bool indx;
   double pp, prev, qq, r, s, sae = -37.0, sq, t, tx, value, w, xin, ycur, yprev;
 
-  double beta = lgamma (p) + lgamma (q) - lgamma (p + q);
+  double beta = xlgamma (p) + xlgamma (q) - xlgamma (p + q);
   bool err = false;
   fpu = pow (10.0, sae);
   value = y;

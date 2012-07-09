@@ -181,7 +181,6 @@ top level directory of any given name.  This directory will in the
 following be referred to as @code{package} and may contain the
 following files:
 
-@noindent
 @table @code
 @item package/COPYING
 This is a required file containing the license of the package.  No
@@ -260,7 +259,6 @@ package.
 Besides the above mentioned files, a package can also contain on or
 more of the following directories:
 
-@noindent
 @table @code
 @item package/inst
 An optional directory containing any files that are directly installed
@@ -305,7 +303,6 @@ The @file{DESCRIPTION} file contains various information about the
 package, such as its name, author, and version.  This file has a very
 simple format
 
-@noindent
 @itemize
 @item
 Lines starting with @samp{#} are comments.
@@ -340,7 +337,6 @@ License: GPL version 3 or later
 
 The package manager currently recognizes the following keywords
 
-@noindent
 @table @code
 @item Name
 Name of the package.
@@ -441,7 +437,6 @@ name will be used instead.
 The optional @file{INDEX} file provides a categorical view of the
 functions in the package.  This file has a very simple format
 
-@noindent
 @itemize
 @item Lines beginning with @samp{#} are comments.
 

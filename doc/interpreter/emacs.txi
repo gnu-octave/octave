@@ -329,6 +329,7 @@ is called.
 @end table
 
 If Font Lock mode is enabled, Octave mode will display
+
 @itemize @bullet
 @item
 strings in @code{font-lock-string-face}
@@ -436,6 +437,7 @@ Kill the inferior Octave process and its buffer
 
 The effect of the commands which send code to the Octave process can be
 customized by the following variables.
+
 @table @code
 @item octave-send-echo-input
 Non-@code{nil} means echo input sent to the inferior Octave process.

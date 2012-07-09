@@ -168,7 +168,7 @@
 ##
 ## @end table
 ##
-# @seealso{textscan, textread, load, dlmread, fscanf}
+## @seealso{textscan, textread, load, dlmread, fscanf}
 ## @end deftypefn
 
 function varargout = strread (str, format = "%f", varargin)

@@ -191,6 +191,7 @@ ifelse / merge
 
 @item
 Repetition
+
 @itemize
 @item
 repmat
@@ -201,6 +202,7 @@ repelems
 
 @item
 Vectorized arithmetic
+
 @itemize
 @item
 sum
@@ -232,6 +234,7 @@ cummin
 
 @item
 Shape of higher dimensional arrays
+
 @itemize
 @item
 reshape
@@ -342,8 +345,8 @@ broadcast into matrices of size @code{[3 3]} before ordinary matrix
 subtraction takes place.
 
 A special case of broadcasting that may be familiar is when all
-dimensions of the array being broadcast are 1, i.e. the array is a
-scalar. Thus for example, operations like @code{x - 42} and @code{max
+dimensions of the array being broadcast are 1, i.e., the array is a
+scalar.  Thus for example, operations like @code{x - 42} and @code{max
 (x, 2)} are basic examples of broadcasting.
 
 For a higher-dimensional example, suppose @code{img} is an RGB image of

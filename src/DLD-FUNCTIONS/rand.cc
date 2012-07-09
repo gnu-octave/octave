@@ -448,7 +448,7 @@ The state or seed of the generator can be reset to a new random value\n\
 using the \"reset\" keyword.\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 @seealso{randn, rande, randg, randp}\n\
 @end deftypefn")
 {
@@ -556,7 +556,7 @@ By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to a normal distribution.\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -626,7 +626,7 @@ By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to an exponential distribution.\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -772,7 +772,7 @@ r = r / sum (r)\n\
 @end table\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 @seealso{rand, randn, rande, randp}\n\
 @end deftypefn")
 {
@@ -994,7 +994,7 @@ D 50 p1284, 1994.\n\
 @end table\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 @seealso{rand, randn, rande, randg}\n\
 @end deftypefn")
 {
@@ -1105,7 +1105,7 @@ If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
 replacement from @code{1:@var{n}}.  The complexity is O(@var{n}) in\n\
 memory and O(@var{m}) in time, unless @var{m} < @var{n}/5, in which case\n\
 O(@var{m}) memory is used as well.  The randomization is performed using\n\
-rand(). All permutations are equally likely.\n\
+rand().  All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {

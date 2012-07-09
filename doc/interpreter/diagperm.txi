@@ -511,6 +511,7 @@ computation involving assumed zeros is performed symbolically, not numerically.
 This behavior not only facilitates the most straightforward and efficient
 implementation of algorithms, but also preserves certain useful invariants,
 like:
+
 @itemize
 @item scalar * diagonal matrix is a diagonal matrix
 

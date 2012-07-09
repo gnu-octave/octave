@@ -5648,7 +5648,7 @@ static double tic_toc_timestamp = -1.0;
 DEFUN (tic, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn  {Built-in Function} {} tic ()\n\
-@deftypefnx  {Built-in Function} {@var{id} =} tic ()\n\
+@deftypefnx {Built-in Function} {@var{id} =} tic ()\n\
 @deftypefnx {Built-in Function} {} toc ()\n\
 @deftypefnx {Built-in Function} {} toc (@var{id})\n\
 @deftypefnx {Built-in Function} {@var{val} =} toc (@dots{})\n\
@@ -5715,9 +5715,9 @@ doing nothing at all.\n\
 
 DEFUN (toc, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} toc ()\n\
+@deftypefn  {Built-in Function} {} toc ()\n\
 @deftypefnx {Built-in Function} {} toc (@var{id})\n\
-@deftypefnx {Built-in Function} {@var{val} = } toc (@dots{})\n\
+@deftypefnx {Built-in Function} {@var{val} =} toc (@dots{})\n\
 See tic.\n\
 @end deftypefn")
 {

@@ -448,6 +448,8 @@ public:
   static llvm::Type *get_index_llvm (void)
   { return instance->index->to_llvm (); }
 
+  static jit_type *get_complex (void) { return instance->complex; }
+
   static jit_type *type_of (const octave_value& ov)
   {
     return instance->do_type_of (ov);
@@ -687,6 +689,7 @@ private:
   jit_type *string;
   jit_type *boolean;
   jit_type *index;
+  jit_type *complex;
   std::map<std::string, jit_type *> builtins;
 
   std::vector<jit_operation> binary_ops;
@@ -728,6 +731,7 @@ private:
 #define JIT_VISIT_IR_CONST                      \
   JIT_METH(const_bool);                         \
   JIT_METH(const_scalar);                       \
+  JIT_METH(const_complex);                      \
   JIT_METH(const_index);                        \
   JIT_METH(const_string);                       \
   JIT_METH(const_range)
@@ -756,6 +760,7 @@ class jit_const;
 
 typedef jit_const<bool, jit_typeinfo::get_bool> jit_const_bool;
 typedef jit_const<double, jit_typeinfo::get_scalar> jit_const_scalar;
+typedef jit_const<Complex, jit_typeinfo::get_complex> jit_const_complex;
 typedef jit_const<octave_idx_type, jit_typeinfo::get_index> jit_const_index;
 
 typedef jit_const<std::string, jit_typeinfo::get_string, const std::string&,

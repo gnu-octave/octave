@@ -63,17 +63,9 @@ public:
   // accessing it through sym so that this function may remain const.
   std::string name (void) const { return sym.name (); }
 
-<<<<<<< local
   bool is_defined (void) { return sym->is_defined (); }
-=======
-  bool is_defined (void) { return xsym ().is_defined (); }
->>>>>>> other
 
-<<<<<<< local
   virtual bool is_variable (void) { return sym->is_variable (); }
-=======
-  virtual bool is_variable (void) { return xsym ().is_variable (); }
->>>>>>> other
 
   virtual bool is_black_hole (void) { return false; }
 
@@ -95,30 +87,14 @@ public:
   octave_value
   do_lookup (const octave_value_list& args = octave_value_list ())
   {
-<<<<<<< local
     return sym->find (args);
-=======
-    return xsym ().find (args);
->>>>>>> other
   }
 
-<<<<<<< local
   void mark_global (void) { sym->mark_global (); }
-=======
-  void mark_global (void) { xsym ().mark_global (); }
->>>>>>> other
 
-<<<<<<< local
   void mark_as_static (void) { sym->init_persistent (); }
-=======
-  void mark_as_static (void) { xsym ().init_persistent (); }
->>>>>>> other
 
-<<<<<<< local
   void mark_as_formal_parameter (void) { sym->mark_formal (); }
-=======
-  void mark_as_formal_parameter (void) { xsym ().mark_formal (); }
->>>>>>> other
 
   // We really need to know whether this symbol referst to a variable
   // or a function, but we may not know that yet.

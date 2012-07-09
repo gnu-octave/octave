@@ -46,7 +46,7 @@ DEFUNOP (transpose, cell)
       return octave_value ();
     }
   else
-    return octave_value (Cell (v.cell_value().transpose ()));
+    return octave_value (Cell (v.cell_value ().transpose ()));
 }
 
 DEFCATOP_FN (c_c, cell, cell, concat)

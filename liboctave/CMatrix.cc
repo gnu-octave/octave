@@ -1089,7 +1089,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       // Calculate the norm of the matrix, for later use.
       double anorm;
       if (calc_cond)
-        anorm  = retval.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+        anorm  = retval.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
 
       F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -1127,7 +1127,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
         }
 
       if (info != 0)
-        mattype.mark_as_rectangular();
+        mattype.mark_as_rectangular ();
     }
 
   return retval;
@@ -1153,7 +1153,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
           if (info == 0)
             {
               if (calc_cond)
-                rcon = chol.rcond();
+                rcon = chol.rcond ();
               else
                 rcon = 1.0;
               ret = chol.inverse ();
@@ -1793,8 +1793,8 @@ ComplexMatrix::rcond (MatrixType &mattype) const
             {
               octave_idx_type info = 0;
               char job = 'L';
-              anorm = atmp.abs().sum().
-                row(static_cast<octave_idx_type>(0)).max();
+              anorm = atmp.abs ().sum ().
+                row(static_cast<octave_idx_type>(0)).max ();
 
               F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
@@ -1833,8 +1833,8 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
               if(anorm < 0.)
-                anorm = atmp.abs().sum().
-                  row(static_cast<octave_idx_type>(0)).max();
+                anorm = atmp.abs ().sum ().
+                  row(static_cast<octave_idx_type>(0)).max ();
 
               Array<Complex> z (dim_vector (2 * nc, 1));
               Complex *pz = z.fortran_vec ();
@@ -2100,7 +2100,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           char job = 'L';
           ComplexMatrix atmp = *this;
           Complex *tmp_data = atmp.fortran_vec ();
-          anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+          anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
@@ -2156,7 +2156,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
                   F77_XFCN (zpotrs, ZPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, b_nc, tmp_data, nr,
-                                             result, b.rows(), info
+                                             result, b.rows (), info
                                              F77_CHAR_ARG_LEN (1)));
                 }
               else
@@ -2184,7 +2184,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           // Calculate the norm of the matrix, for later use.
           if (anorm < 0.)
-            anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+            anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -2242,7 +2242,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
                   char job = 'N';
                   F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, b_nc, tmp_data, nr,
-                                             pipvt, result, b.rows(), info
+                                             pipvt, result, b.rows (), info
                                              F77_CHAR_ARG_LEN (1)));
                 }
               else

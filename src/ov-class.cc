@@ -521,7 +521,7 @@ octave_class::subsref (const std::string& type,
 
         case '.':
           {
-            if (map.numel() > 0)
+            if (map.numel () > 0)
               {
                 Cell t = dotref (idx.front ());
 
@@ -705,7 +705,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
           if (tmp.length () > 1)
             error ("expecting single return value from @%s/subsasgn",
-                   class_name().c_str ());
+                   class_name ().c_str ());
 
           else
             retval = tmp(0);
@@ -914,7 +914,7 @@ octave_class::subsasgn_common (const octave_value& obj,
                   {
                     if (t_rhs.is_empty ())
                       {
-                        map.delete_elements (idx.front());
+                        map.delete_elements (idx.front ());
 
                         if (! error_state)
                           {
@@ -999,7 +999,7 @@ octave_class::index_vector (void) const
 
       if (!error_state && tmp.length () >= 1)
         {
-          if (tmp(0).is_object())
+          if (tmp(0).is_object ())
             error ("subsindex function must return a valid index vector");
           else
             // Index vector returned by subsindex is zero based
@@ -1012,7 +1012,7 @@ octave_class::index_vector (void) const
     }
   else
     error ("no subsindex method defined for class %s",
-           class_name().c_str ());
+           class_name ().c_str ());
 
   return retval;
 }
@@ -1136,7 +1136,7 @@ octave_class::all_strings (bool pad) const
         }
     }
   else
-    error ("no char method defined for class %s", class_name().c_str ());
+    error ("no char method defined for class %s", class_name ().c_str ());
 
   return retval;
 }
@@ -1274,10 +1274,10 @@ octave_class::reconstruct_parents (void)
     {
       std::string  key = map.key (p);
       Cell         val = map.contents (p);
-      if ( val(0).is_object() )
+      if ( val(0).is_object () )
         {
           dbgstr = "blork";
-          if( key == val(0).class_name() )
+          if( key == val(0).class_name () )
             {
               might_have_inheritance = true;
               dbgstr = "cork";
@@ -1444,7 +1444,7 @@ octave_class::load_ascii (std::istream& is)
 bool
 octave_class::save_binary (std::ostream& os, bool& save_as_floats)
 {
-  int32_t classname_len = class_name().length ();
+  int32_t classname_len = class_name ().length ();
 
   os.write (reinterpret_cast<char *> (&classname_len), 4);
   os << class_name ();
@@ -1462,7 +1462,7 @@ octave_class::save_binary (std::ostream& os, bool& save_as_floats)
   else
     m = map_value ();
 
-  int32_t len = m.nfields();
+  int32_t len = m.nfields ();
   os.write (reinterpret_cast<char *> (&len), 4);
 
   octave_map::iterator i = m.begin ();
@@ -2189,7 +2189,7 @@ This function may only be called from a class constructor.\n\
 
   if (fcn && fcn->is_class_constructor ())
     {
-      for (int i = 0; i < args.length(); i++)
+      for (int i = 0; i < args.length (); i++)
         {
           std::string class_name = args(i).string_value ();
 
@@ -2241,7 +2241,7 @@ This function may only be called from a class constructor.\n\
 
   if (fcn && fcn->is_class_constructor ())
     {
-      for (int i = 0; i < args.length(); i++)
+      for (int i = 0; i < args.length (); i++)
         {
           std::string class_name = args(i).string_value ();
 

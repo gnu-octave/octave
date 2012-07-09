@@ -43,13 +43,13 @@ DEFUNOP_OP (uminus, float_complex_diag_matrix, -)
 DEFUNOP (transpose, float_complex_diag_matrix)
 {
   CAST_UNOP_ARG (const octave_float_complex_diag_matrix&);
-  return octave_value (v.float_complex_diag_matrix_value().transpose ());
+  return octave_value (v.float_complex_diag_matrix_value ().transpose ());
 }
 
 DEFUNOP (hermitian, float_complex_diag_matrix)
 {
   CAST_UNOP_ARG (const octave_float_complex_diag_matrix&);
-  return octave_value (v.float_complex_diag_matrix_value().hermitian ());
+  return octave_value (v.float_complex_diag_matrix_value ().hermitian ());
 }
 
 // matrix by matrix ops.

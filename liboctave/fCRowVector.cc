@@ -411,7 +411,7 @@ operator << (std::ostream& os, const FloatComplexRowVector& a)
 std::istream&
 operator >> (std::istream& is, FloatComplexRowVector& a)
 {
-  octave_idx_type len = a.length();
+  octave_idx_type len = a.length ();
 
   if (len > 0)
     {

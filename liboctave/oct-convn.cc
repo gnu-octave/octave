@@ -125,7 +125,7 @@ convolve (const MArray<T>& a, const MArray<R>& b,
                              static_cast<octave_idx_type> (0));
     }
 
-  MArray<T> c (cdims, T());
+  MArray<T> c (cdims, T ());
 
   convolve_nd<T, R> (a.fortran_vec (), adims, adims.cumulative (),
                      b.fortran_vec (), bdims, bdims.cumulative (),

@@ -107,7 +107,7 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
   size_t *idx;
   static char buf[FILENAME_MAX];
   static pid_t oldpid = (pid_t) 0;
-  pid_t pid = getpid();
+  pid_t pid = getpid ();
   register size_t len, plen, dlen;
 
   if (dir_search)

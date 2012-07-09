@@ -79,7 +79,7 @@ oct_md5_file (const std::string file)
     }
   else
     (*current_liboctave_error_handler) ("unable to open file `%s' for reading",
-                                        file.c_str());
+                                        file.c_str ());
 
   return retval;
 }

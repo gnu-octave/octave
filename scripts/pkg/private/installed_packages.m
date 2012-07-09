@@ -57,7 +57,7 @@ function [out1, out2] = installed_packages (local_list, global_list)
   endif
 
   ## Now check if the package is loaded.
-  tmppath = strrep (path(), "\\", "/");
+  tmppath = strrep (path (), "\\", "/");
   for i = 1:length (installed_pkgs_lst)
     if (strfind (tmppath, strrep (installed_pkgs_lst{i}.dir, '\', '/')))
       installed_pkgs_lst{i}.loaded = true;
@@ -111,7 +111,7 @@ function [out1, out2] = installed_packages (local_list, global_list)
                               length (installed_pkgs_lst{i}.version));
     names{i} = installed_pkgs_lst{i}.name;
   endfor
-  max_dir_length = terminal_size()(2) - max_name_length - ...
+  max_dir_length = terminal_size ()(2) - max_name_length - ...
                                              max_version_length - 7;
   if (max_dir_length < 20)
      max_dir_length = Inf;
@@ -138,7 +138,7 @@ function [out1, out2] = installed_packages (local_list, global_list)
     cur_dir = installed_pkgs_lst{idx(i)}.dir;
     if (length (cur_dir) > max_dir_length)
       first_char = length (cur_dir) - max_dir_length + 4;
-      first_filesep = strfind (cur_dir(first_char:end), filesep());
+      first_filesep = strfind (cur_dir(first_char:end), filesep ());
       if (! isempty (first_filesep))
         cur_dir = cstrcat ("...",
                           cur_dir((first_char + first_filesep(1) - 1):end));

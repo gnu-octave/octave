@@ -66,7 +66,7 @@ DEFUNOP (transpose, bool_matrix)
       return octave_value ();
     }
   else
-    return octave_value (v.bool_matrix_value().transpose ());
+    return octave_value (v.bool_matrix_value ().transpose ());
 }
 
 // bool matrix by bool matrix ops.

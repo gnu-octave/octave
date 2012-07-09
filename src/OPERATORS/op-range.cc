@@ -47,7 +47,7 @@ DEFUNOP (not, range)
 {
   CAST_UNOP_ARG (const octave_range&);
 
-  return octave_value (! v.matrix_value());
+  return octave_value (! v.matrix_value ());
 }
 
 DEFUNOP_OP (uplus, range, /* no-op */)
@@ -57,7 +57,7 @@ DEFUNOP (transpose, range)
 {
   CAST_UNOP_ARG (const octave_range&);
 
-  return octave_value (v.matrix_value().transpose ());
+  return octave_value (v.matrix_value ().transpose ());
 }
 
 DEFBINOP_OP (addrs, range, scalar, +)

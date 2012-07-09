@@ -840,7 +840,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
       || val.type_id () == octave_lazy_index::static_type_id ())
     val = val.full_value ();
 
-  std::string t = val.type_name();
+  std::string t = val.type_name ();
 #if HAVE_HDF5_18
   data_id = H5Gcreate (loc_id, name.c_str (), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 #else

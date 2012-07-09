@@ -89,9 +89,9 @@ Returns all arguments in reverse order.")
 
   for (int i = 0; i < nargin; i++)
     {
-      octave_value tmp = args (i);
+      octave_value tmp = args(i);
       tmp.print (octave_stdout);
-      retval (nargin-i-1) = tmp;
+      retval(nargin-i-1) = tmp;
     }
 
   return retval;

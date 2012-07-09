@@ -188,7 +188,7 @@ public:
       init (user, passwd, std::cin, octave_stdout);
 
       std::string url = "ftp://" + _host;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
 
       // Setup the link, with no transfer
       if (!error_state)
@@ -220,7 +220,7 @@ public:
           setopt (CURLOPT_POSTFIELDS, query_string.c_str ());
         }
       else
-        setopt (CURLOPT_URL, url.c_str());
+        setopt (CURLOPT_URL, url.c_str ());
 
       if (!error_state)
         retval = perform (false);
@@ -296,7 +296,7 @@ public:
     {
       struct curl_slist *slist = 0;
       std::string cmd = "cwd " + path;
-      slist = curl_slist_append (slist, cmd.c_str());
+      slist = curl_slist_append (slist, cmd.c_str ());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
         perform ();
@@ -308,7 +308,7 @@ public:
     {
       struct curl_slist *slist = 0;
       std::string cmd = "dele " + file;
-      slist = curl_slist_append (slist, cmd.c_str());
+      slist = curl_slist_append (slist, cmd.c_str ());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
         perform ();
@@ -320,7 +320,7 @@ public:
     {
       struct curl_slist *slist = 0;
       std::string cmd = "rmd " + path;
-      slist = curl_slist_append (slist, cmd.c_str());
+      slist = curl_slist_append (slist, cmd.c_str ());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
         perform ();
@@ -333,7 +333,7 @@ public:
       bool retval = false;
       struct curl_slist *slist = 0;
       std::string cmd = "mkd " + path;
-      slist = curl_slist_append (slist, cmd.c_str());
+      slist = curl_slist_append (slist, cmd.c_str ());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
         retval = perform (curlerror);
@@ -346,9 +346,9 @@ public:
     {
       struct curl_slist *slist = 0;
       std::string cmd = "rnfr " + oldname;
-      slist = curl_slist_append (slist, cmd.c_str());
+      slist = curl_slist_append (slist, cmd.c_str ());
       cmd = "rnto " + newname;
-      slist = curl_slist_append (slist, cmd.c_str());
+      slist = curl_slist_append (slist, cmd.c_str ());
       setopt (CURLOPT_POSTQUOTE, slist);
       if (! error_state)
         perform ();
@@ -359,7 +359,7 @@ public:
   void put (const std::string& file, std::istream& is) const
     {
       std::string url = "ftp://" + rep->host + "/" + file;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
       setopt (CURLOPT_UPLOAD, 1);
       setopt (CURLOPT_NOBODY, 0);
       set_istream (is);
@@ -369,13 +369,13 @@ public:
       setopt (CURLOPT_NOBODY, 1);
       setopt (CURLOPT_UPLOAD, 0);
       url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
     }
 
   void get (const std::string& file, std::ostream& os) const
     {
       std::string url = "ftp://" + rep->host + "/" + file;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
       setopt (CURLOPT_NOBODY, 0);
       set_ostream (os);
       if (! error_state)
@@ -383,19 +383,19 @@ public:
       set_ostream (octave_stdout);
       setopt (CURLOPT_NOBODY, 1);
       url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
     }
 
   void dir (void) const
     {
       std::string url = "ftp://" + rep->host + "/";
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
       setopt (CURLOPT_NOBODY, 0);
       if (! error_state)
         perform ();
       setopt (CURLOPT_NOBODY, 1);
       url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
     }
 
   string_vector list (void) const
@@ -403,7 +403,7 @@ public:
       std::ostringstream buf;
       std::string url = "ftp://" + rep->host + "/";
       setopt (CURLOPT_WRITEDATA, static_cast<void*> (&buf));
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
       setopt (CURLOPT_DIRLISTONLY, 1);
       setopt (CURLOPT_NOBODY, 0);
       if (! error_state)
@@ -412,7 +412,7 @@ public:
       url = "ftp://" + rep->host;
       setopt (CURLOPT_WRITEDATA, static_cast<void*> (&octave_stdout));
       setopt (CURLOPT_DIRLISTONLY, 0);
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
 
       // Count number of directory entries
       std::string str = buf.str ();
@@ -443,10 +443,10 @@ public:
   void get_fileinfo (const std::string& filename, double& filesize,
                      time_t& filetime, bool& fileisdir) const
     {
-      std::string path = pwd();
+      std::string path = pwd ();
 
       std::string url = "ftp://" + rep->host + "/" + path + "/" + filename;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
       setopt (CURLOPT_FILETIME, 1);
       setopt (CURLOPT_HEADERFUNCTION, throw_away);
       setopt (CURLOPT_WRITEFUNCTION, throw_away);
@@ -480,7 +480,7 @@ public:
       setopt (CURLOPT_HEADERFUNCTION, 0);
       setopt (CURLOPT_FILETIME, 0);
       url = "ftp://" + rep->host;
-      setopt (CURLOPT_URL, url.c_str());
+      setopt (CURLOPT_URL, url.c_str ());
 
       // The MDTM command seems to reset the path to the root with the
       // servers I tested with, so cd again into the correct path. Make
@@ -503,7 +503,7 @@ public:
       if (! error_state)
         {
           perform ();
-          retval = buf.str();
+          retval = buf.str ();
 
           // Can I assume that the path is alway in "" on the last line
           size_t pos2 = retval.rfind ('"');
@@ -536,9 +536,9 @@ private:
           std::string text = param(i+1).string_value ();
 
           // Encode strings.
-          char *enc_name = curl_easy_escape (rep->handle(), name.c_str (),
+          char *enc_name = curl_easy_escape (rep->handle (), name.c_str (),
                                              name.length ());
-          char *enc_text = curl_easy_escape (rep->handle(), text.c_str (),
+          char *enc_text = curl_easy_escape (rep->handle (), text.c_str (),
                                              text.length ());
 
           query << enc_name << "=" << enc_text;
@@ -546,7 +546,7 @@ private:
           curl_free (enc_name);
           curl_free (enc_text);
 
-          if (i < param.numel()-1)
+          if (i < param.numel ()-1)
             query << "&";
         }
 
@@ -615,7 +615,7 @@ public:
     {
       // Remove the elements of the map explicitly as they should
       // be deleted before the call to curl_global_cleanup
-      map.erase (begin(), end());
+      map.erase (begin (), end ());
 
       curl_global_cleanup ();
     }
@@ -741,7 +741,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
       return retval;
     }
 
-  std::string url = args(0).string_value();
+  std::string url = args(0).string_value ();
 
   if (error_state)
     {
@@ -750,7 +750,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
     }
 
   // name to store the file if download is succesful
-  std::string filename = args(1).string_value();
+  std::string filename = args(1).string_value ();
 
   if (error_state)
     {
@@ -763,7 +763,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   if (nargin == 4)
     {
-      method = args(2).string_value();
+      method = args(2).string_value ();
 
       if (error_state)
         {
@@ -777,7 +777,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
           return retval;
         }
 
-      param = args(3).cell_value();
+      param = args(3).cell_value ();
 
       if (error_state)
         {
@@ -799,7 +799,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 
   file_stat fs (filename);
 
-  std::ofstream ofile (filename.c_str(), std::ios::out | std::ios::binary);
+  std::ofstream ofile (filename.c_str (), std::ios::out | std::ios::binary);
 
   if (! ofile.is_open ())
     {
@@ -901,7 +901,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
       return retval;
     }
 
-  std::string url = args(0).string_value();
+  std::string url = args(0).string_value ();
 
   if (error_state)
     {
@@ -914,7 +914,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 
   if (nargin == 3)
     {
-      method = args(1).string_value();
+      method = args(1).string_value ();
 
       if (error_state)
         {
@@ -928,7 +928,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
           return retval;
         }
 
-      param = args(2).cell_value();
+      param = args(2).cell_value ();
 
       if (error_state)
         {
@@ -1268,7 +1268,7 @@ DEFUN_DLD (__ftp_mode__, args, ,
           const curl_handle curl = handles.contents (handle);
 
           if (curl.is_valid ())
-            retval = (curl.is_ascii() ? "ascii" : "binary");
+            retval = (curl.is_ascii () ? "ascii" : "binary");
           else
             error ("__ftp_binary__: invalid ftp handle");
         }
@@ -1422,7 +1422,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
 
   if (! curl.mkdir (dir, false))
     warning ("__ftp_mput__: can not create the remote directory ""%s""",
-             (base.length() == 0 ? dir : base +
+             (base.length () == 0 ? dir : base +
               file_ops::dir_sep_str () + dir).c_str ());
 
   curl.cwd (dir);
@@ -1433,7 +1433,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
 
       frame.add_fcn (reset_path, curl);
 
-      std::string realdir = base.length() == 0 ? dir : base +
+      std::string realdir = base.length () == 0 ? dir : base +
                          file_ops::dir_sep_str () + dir;
 
       dir_entry dirlist (realdir);
@@ -1469,7 +1469,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
               else
                 {
                   // FIXME Does ascii mode need to be flagged here?
-                  std::ifstream ifile (realfile.c_str(), std::ios::in |
+                  std::ifstream ifile (realfile.c_str (), std::ios::in |
                                        std::ios::binary);
 
                   if (! ifile.is_open ())
@@ -1492,7 +1492,7 @@ mput_directory (const curl_handle& curl, const std::string& base,
         }
       else
         error ("__ftp_mput__: can not read the directory ""%s""",
-               realdir.c_str());
+               realdir.c_str ());
     }
 
   return retval;
@@ -1547,7 +1547,7 @@ Undocumented internal function\n\
                   else
                     {
                       // FIXME Does ascii mode need to be flagged here?
-                      std::ifstream ifile (file.c_str(), std::ios::in |
+                      std::ifstream ifile (file.c_str (), std::ios::in |
                                            std::ios::binary);
 
                       if (! ifile.is_open ())
@@ -1593,7 +1593,7 @@ getallfiles (const curl_handle& curl, const std::string& dir,
 
       if (status < 0)
         error ("__ftp_mget__: can't create directory %s%s%s. %s",
-               target.c_str(), sep.c_str(), dir.c_str(), msg.c_str());
+               target.c_str (), sep.c_str (), dir.c_str (), msg.c_str ());
     }
 
   if (! error_state)
@@ -1621,7 +1621,7 @@ getallfiles (const curl_handle& curl, const std::string& dir,
               else
                 {
                   std::string realfile = target + dir + sep + sv(i);
-                  std::ofstream ofile (realfile.c_str(),
+                  std::ofstream ofile (realfile.c_str (),
                                        std::ios::out |
                                        std::ios::binary);
 
@@ -1699,7 +1699,7 @@ Undocumented internal function\n\
                         getallfiles (curl, sv(i), target);
                       else
                         {
-                          std::ofstream ofile ((target + sv(i)).c_str(),
+                          std::ofstream ofile ((target + sv(i)).c_str (),
                                                std::ios::out |
                                                std::ios::binary);
 

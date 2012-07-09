@@ -143,7 +143,7 @@ ColumnVector::stack (const ColumnVector& a) const
 RowVector
 ColumnVector::transpose (void) const
 {
-  return MArray<double>::transpose();
+  return MArray<double>::transpose ();
 }
 
 ColumnVector
@@ -308,7 +308,7 @@ operator << (std::ostream& os, const ColumnVector& a)
 std::istream&
 operator >> (std::istream& is, ColumnVector& a)
 {
-  octave_idx_type len = a.length();
+  octave_idx_type len = a.length ();
 
   if (len > 0)
     {

@@ -146,7 +146,7 @@ RowVector::append (const RowVector& a) const
 ColumnVector
 RowVector::transpose (void) const
 {
-  return MArray<double>::transpose();
+  return MArray<double>::transpose ();
 }
 
 RowVector
@@ -271,7 +271,7 @@ operator << (std::ostream& os, const RowVector& a)
 std::istream&
 operator >> (std::istream& is, RowVector& a)
 {
-  octave_idx_type len = a.length();
+  octave_idx_type len = a.length ();
 
   if (len > 0)
     {

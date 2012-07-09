@@ -52,12 +52,12 @@ chol2inv (const SparseComplexMatrix& r)
       if (typ == MatrixType::Upper)
         {
           rinv = r.inverse(mattype, info, rcond, true, false);
-          retval = rinv.transpose() * rinv;
+          retval = rinv.transpose () * rinv;
         }
       else if (typ == MatrixType::Lower)
         {
-          rinv = r.transpose().inverse(mattype, info, rcond, true, false);
-          retval = rinv.transpose() * rinv;
+          rinv = r.transpose ().inverse(mattype, info, rcond, true, false);
+          retval = rinv.transpose () * rinv;
         }
       else
         (*current_liboctave_error_handler)

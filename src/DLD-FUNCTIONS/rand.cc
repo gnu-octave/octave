@@ -70,7 +70,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
   octave_rand::distribution (distribution);
 
-  if (nargin > 0 && args(nargin-1).is_string())
+  if (nargin > 0 && args(nargin-1).is_string ())
     {
       std::string s_arg = args(nargin-1).string_value ();
 
@@ -90,7 +90,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           error ("%s: expecting at least one argument", fcn);
           goto done;
         }
-      else if (args(0).is_string())
+      else if (args(0).is_string ())
         additional_arg = false;
       else
         {
@@ -261,7 +261,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                       octave_rand::seed (d);
                   }
                 else if (args(idx+1).is_string ()
-                         && args(idx+1).string_value() == "reset")
+                         && args(idx+1).string_value () == "reset")
                   octave_rand::reset ();
                 else
                   error ("%s: seed must be a real scalar", fcn);
@@ -269,7 +269,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             else if (ts == "state" || ts == "twister")
               {
                 if (args(idx+1).is_string ()
-                    && args(idx+1).string_value() == "reset")
+                    && args(idx+1).string_value () == "reset")
                   octave_rand::reset (fcn);
                 else
                   {
@@ -317,11 +317,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
     {
       if (additional_arg)
         {
-          if (a.length() == 1)
+          if (a.length () == 1)
             return octave_rand::float_nd_array (dims, a(0));
           else
             {
-              if (a.dims() != dims)
+              if (a.dims () != dims)
                 {
                   error ("%s: mismatch in argument size", fcn);
                   return retval;
@@ -341,11 +341,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
     {
       if (additional_arg)
         {
-          if (a.length() == 1)
+          if (a.length () == 1)
             return octave_rand::nd_array (dims, a(0));
           else
             {
-              if (a.dims() != dims)
+              if (a.dims () != dims)
                 {
                   error ("%s: mismatch in argument size", fcn);
                   return retval;

@@ -1559,8 +1559,8 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
     }
   else
     {
-      string_vector a_keys = a.keys().sort ();
-      string_vector b_keys = b.keys().sort ();
+      string_vector a_keys = a.keys ().sort ();
+      string_vector b_keys = b.keys ().sort ();
 
       octave_idx_type a_len = a_keys.length ();
       octave_idx_type b_len = b_keys.length ();
@@ -1585,7 +1585,7 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
 Octave_map&
 Octave_map::maybe_delete_elements (const octave_value_list& idx)
 {
-  string_vector t_keys = keys();
+  string_vector t_keys = keys ();
   octave_idx_type len = t_keys.length ();
 
   if (len > 0)
@@ -1601,7 +1601,7 @@ Octave_map::maybe_delete_elements (const octave_value_list& idx)
         }
 
       if (!error_state)
-        dimensions = contents(t_keys[0]).dims();
+        dimensions = contents(t_keys[0]).dims ();
     }
 
   return *this;

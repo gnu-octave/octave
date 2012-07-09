@@ -111,7 +111,7 @@ lu_type
 base_lu <lu_type> :: Y (void) const
 {
   if (! packed ())
-    (*current_liboctave_error_handler) ("lu: Y() not implemented for unpacked form");
+    (*current_liboctave_error_handler) ("lu: Y () not implemented for unpacked form");
   return a_fact;
 }
 
@@ -128,7 +128,7 @@ base_lu <lu_type> :: getp (void) const
       for (octave_idx_type i = 0; i < a_nr; i++)
         pvt.xelem (i) = i;
 
-      for (octave_idx_type i = 0; i < ipvt.length(); i++)
+      for (octave_idx_type i = 0; i < ipvt.length (); i++)
         {
           octave_idx_type k = ipvt.xelem (i);
 

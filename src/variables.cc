@@ -1519,7 +1519,7 @@ public:
             // Push parameter into list ...
             idx += text.length ();
             param.text=text;
-            param.line.assign (text.length(), ' ');
+            param.line.assign (text.length (), ' ');
             params.push_back (param);
           }
       }
@@ -1976,7 +1976,7 @@ then unlock the current function.\n\
 {
   octave_value_list retval;
 
-  if (args.length() == 1)
+  if (args.length () == 1)
     {
       std::string name = args(0).string_value ();
 
@@ -2012,7 +2012,7 @@ named then return true if the current function is locked.\n\
 {
   octave_value retval;
 
-  if (args.length() == 1)
+  if (args.length () == 1)
     {
       std::string name = args(0).string_value ();
 

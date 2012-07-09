@@ -62,6 +62,7 @@ betainc (x, a, b) = -----------   | t^(a-1) (1-t)^(b-1) dt.\n\
 If @var{x} has more than one component, both @var{a} and @var{b} must be\n\
 scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of\n\
 compatible dimensions.\n\
+@seealso{betaincinv, beta, betaln}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -448,10 +449,10 @@ Compute the inverse of the incomplete Beta function, i.e., @var{x} such that\n\
             }
         }
 
-      // FIXME: It would be better to have an algorithm for betaincinv which accepted
-      //        float inputs and returned float outputs.  As it is, we do extra work
-      //        to calculate betaincinv to double precision and then throw that precision
-      //        away.
+      // FIXME: It would be better to have an algorithm for betaincinv which
+      // accepted float inputs and returned float outputs.  As it is, we do
+      // extra work to calculate betaincinv to double precision and then throw
+      // that precision away.
       if (x_arg.is_single_type () || a_arg.is_single_type () ||
           b_arg.is_single_type ())
         {

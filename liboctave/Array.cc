@@ -2688,7 +2688,7 @@ void Array<T>::instantiation_guard ()
 {
   // This guards against accidental implicit instantiations.
   // Array<T> instances should always be explicit and use INSTANTIATE_ARRAY.
-  T::__xXxXx__();
+  T::__xXxXx__ ();
 }
 
 #define INSTANTIATE_ARRAY(T, API) \

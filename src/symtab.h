@@ -2402,7 +2402,7 @@ private:
       {
         symbol_record& sr = p->second;
         octave_value& val = sr.varref ();
-        if (val.is_object())
+        if (val.is_object ())
           p->second.clear (my_scope);
       }
   }

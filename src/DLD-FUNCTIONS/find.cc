@@ -89,9 +89,9 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
 
-  octave_idx_type nc = v.cols();
-  octave_idx_type nr = v.rows();
-  octave_idx_type nz = v.nnz();
+  octave_idx_type nc = v.cols ();
+  octave_idx_type nr = v.rows ();
+  octave_idx_type nz = v.nnz ();
 
   // Search in the default range.
   octave_idx_type start_nc = -1;
@@ -231,7 +231,7 @@ find_nonzero_elem_idx (const PermMatrix& v, int nargout,
   // There are far fewer special cases to handle for a PermMatrix.
   octave_value_list retval ((nargout == 0 ? 1 : nargout), Matrix ());
 
-  octave_idx_type nc = v.cols();
+  octave_idx_type nc = v.cols ();
   octave_idx_type start_nc, count;
 
   // Determine the range to search.

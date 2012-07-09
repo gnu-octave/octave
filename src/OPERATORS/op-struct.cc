@@ -44,7 +44,7 @@ DEFUNOP (transpose, struct)
       return octave_value ();
     }
   else
-    return octave_value (v.map_value().transpose ());
+    return octave_value (v.map_value ().transpose ());
 }
 
 DEFUNOP (scalar_transpose, scalar_struct)

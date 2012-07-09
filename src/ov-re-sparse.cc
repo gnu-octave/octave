@@ -261,7 +261,7 @@ bool
 octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
 {
   dim_vector d = this->dims ();
-  if (d.length() < 1)
+  if (d.length () < 1)
     return false;
 
   // Ensure that additional memory is deallocated
@@ -319,7 +319,7 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
-   write_doubles (os, matrix.data(), st, nz);
+   write_doubles (os, matrix.data (), st, nz);
 
   return true;
 }
@@ -506,7 +506,7 @@ octave_sparse_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   H5Sclose (space_hid);
 
-  hdims[0] = m.cols() + 1;
+  hdims[0] = m.cols () + 1;
   hdims[1] = 1;
 
   space_hid = H5Screate_simple (2, hdims, 0);
@@ -857,13 +857,13 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name)
 mxArray *
 octave_sparse_matrix::as_mxArray (void) const
 {
-  mwSize nz = nzmax();
-  mwSize nr = rows();
-  mwSize nc = columns();
+  mwSize nz = nzmax ();
+  mwSize nr = rows ();
+  mwSize nc = columns ();
   mxArray *retval = new mxArray (mxDOUBLE_CLASS, nr, nc, nz, mxREAL);
   double *pr = static_cast<double *> (retval->get_data ());
-  mwIndex *ir = retval->get_ir();
-  mwIndex *jc = retval->get_jc();
+  mwIndex *ir = retval->get_ir ();
+  mwIndex *jc = retval->get_jc ();
 
   for (mwIndex i = 0; i < nz; i++)
     {

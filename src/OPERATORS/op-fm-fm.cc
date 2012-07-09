@@ -51,7 +51,7 @@ DEFUNOP (transpose, float_matrix)
       return octave_value ();
     }
   else
-    return octave_value (v.float_matrix_value().transpose ());
+    return octave_value (v.float_matrix_value ().transpose ());
 }
 
 DEFNCUNOP_METHOD (incr, float_matrix, increment)

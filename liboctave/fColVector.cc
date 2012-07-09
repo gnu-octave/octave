@@ -142,7 +142,7 @@ FloatColumnVector::stack (const FloatColumnVector& a) const
 FloatRowVector
 FloatColumnVector::transpose (void) const
 {
-  return MArray<float>::transpose();
+  return MArray<float>::transpose ();
 }
 
 FloatColumnVector
@@ -307,7 +307,7 @@ operator << (std::ostream& os, const FloatColumnVector& a)
 std::istream&
 operator >> (std::istream& is, FloatColumnVector& a)
 {
-  octave_idx_type len = a.length();
+  octave_idx_type len = a.length ();
 
   if (len > 0)
     {

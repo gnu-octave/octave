@@ -101,7 +101,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
         if (exist (tgz, "file"))
           packdir = fullfile (tmpdir, dirlist{3});
         else
-          packdir = fullfile (pwd(), dirlist{3});
+          packdir = fullfile (pwd (), dirlist{3});
         endif
         packdirs{end+1} = packdir;
 

@@ -165,7 +165,7 @@ gnu_history::do_histcontrol (void) const
 
   if (history_control & HC_IGNDUPS)
     {
-      if (retval.length() > 0)
+      if (retval.length () > 0)
         retval.append (":");
 
       retval.append ("ignoredups");
@@ -173,7 +173,7 @@ gnu_history::do_histcontrol (void) const
 
   if (history_control & HC_ERASEDUPS)
     {
-      if (retval.length() > 0)
+      if (retval.length () > 0)
         retval.append (":");
 
       retval.append ("erasedups");

@@ -74,7 +74,7 @@ public:
   DiagMatrix& fill (const ColumnVector& a, octave_idx_type beg);
   DiagMatrix& fill (const RowVector& a, octave_idx_type beg);
 
-  DiagMatrix transpose (void) const { return MDiagArray2<double>::transpose(); }
+  DiagMatrix transpose (void) const { return MDiagArray2<double>::transpose (); }
   DiagMatrix abs (void) const;
 
   friend OCTAVE_API DiagMatrix real (const ComplexDiagMatrix& a);

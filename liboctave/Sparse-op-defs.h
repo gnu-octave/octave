@@ -519,7 +519,7 @@ along with Octave; see the file COPYING.  If not, see
         else \
           { \
             r = R (m2); \
-            octave_idx_type m2_nnz = m2.nnz(); \
+            octave_idx_type m2_nnz = m2.nnz (); \
             \
             for (octave_idx_type i = 0 ; i < m2_nnz ; i++) \
               { \
@@ -536,7 +536,7 @@ along with Octave; see the file COPYING.  If not, see
         else \
           { \
             r = R (m1); \
-            octave_idx_type m1_nnz = m1.nnz(); \
+            octave_idx_type m1_nnz = m1.nnz (); \
             \
             for (octave_idx_type i = 0 ; i < m1_nnz ; i++) \
               { \
@@ -612,9 +612,9 @@ along with Octave; see the file COPYING.  If not, see
  \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-        if ((m1.elem (0,0) OP Complex()) == Complex()) \
+        if ((m1.elem (0,0) OP Complex ()) == Complex ()) \
           { \
-            octave_idx_type m2_nnz = m2.nnz(); \
+            octave_idx_type m2_nnz = m2.nnz (); \
             r = R (m2); \
             for (octave_idx_type i = 0 ; i < m2_nnz ; i++) \
               r.data (i) = m1.elem(0,0) OP r.data(i); \
@@ -638,9 +638,9 @@ along with Octave; see the file COPYING.  If not, see
       } \
     else if (m2_nr == 1 && m2_nc == 1) \
       { \
-        if ((Complex() OP m1.elem (0,0)) == Complex()) \
+        if ((Complex () OP m1.elem (0,0)) == Complex ()) \
           { \
-            octave_idx_type m1_nnz = m1.nnz(); \
+            octave_idx_type m1_nnz = m1.nnz (); \
             r = R (m1); \
             for (octave_idx_type i = 0 ; i < m1_nnz ; i++) \
               r.data (i) = r.data(i) OP m2.elem(0,0); \
@@ -648,7 +648,7 @@ along with Octave; see the file COPYING.  If not, see
           } \
         else \
           { \
-            r = R (m1_nr, m1_nc, Complex() OP m2.elem(0,0)); \
+            r = R (m1_nr, m1_nc, Complex () OP m2.elem(0,0)); \
             for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
               { \
                 octave_quit (); \
@@ -1830,8 +1830,8 @@ along with Octave; see the file COPYING.  If not, see
                         INIT_VAL, MT_RESULT)
 
 #define SPARSE_ALL_OP(DIM) \
-  if ((rows() == 1 && dim == -1) || dim == 1) \
-    return transpose (). all (0). transpose(); \
+  if ((rows () == 1 && dim == -1) || dim == 1) \
+    return transpose (). all (0). transpose (); \
   else \
     { \
       SPARSE_ANY_ALL_OP (DIM, (cidx(j+1) - cidx(j) < nr ? false : true), \
@@ -1850,7 +1850,7 @@ along with Octave; see the file COPYING.  If not, see
   if (nr == 1 && nc == 1) \
    { \
      RET_EL_TYPE s = m.elem(0,0); \
-     octave_idx_type nz = a.nnz(); \
+     octave_idx_type nz = a.nnz (); \
      RET_TYPE r (a_nr, a_nc, nz); \
      \
      for (octave_idx_type i = 0; i < nz; i++) \
@@ -1871,7 +1871,7 @@ along with Octave; see the file COPYING.  If not, see
   else if (a_nr == 1 && a_nc == 1) \
    { \
      RET_EL_TYPE s = a.elem(0,0); \
-     octave_idx_type nz = m.nnz(); \
+     octave_idx_type nz = m.nnz (); \
      RET_TYPE r (nr, nc, nz); \
      \
      for (octave_idx_type i = 0; i < nz; i++) \
@@ -1946,7 +1946,7 @@ along with Octave; see the file COPYING.  If not, see
           octave_idx_type n_per_col = (a_nc > 43000 ? 43000 : \
                                         (a_nc * a_nc) / 43000); \
           octave_idx_type ii = 0; \
-          octave_idx_type *ri = retval.xridx(); \
+          octave_idx_type *ri = retval.xridx (); \
           octave_sort<octave_idx_type> sort; \
           \
           for (octave_idx_type i = 0; i < a_nc ; i++) \

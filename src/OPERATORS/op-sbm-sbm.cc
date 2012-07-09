@@ -55,7 +55,7 @@ DEFUNOP (uminus, sparse_bool_matrix)
 DEFUNOP (transpose, sparse_bool_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_bool_matrix&);
-  return octave_value (v.sparse_bool_matrix_value().transpose ());
+  return octave_value (v.sparse_bool_matrix_value ().transpose ());
 }
 
 // sparse bool matrix by sparse bool matrix ops.

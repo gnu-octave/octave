@@ -691,7 +691,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
   octave_idx_type n = a.rows ();
   octave_idx_type nb = b.rows ();
 
-  if (n != a.cols () || nb != b.cols())
+  if (n != a.cols () || nb != b.cols ())
     {
       (*current_liboctave_error_handler) ("EIG requires square matrix");
       return -1;

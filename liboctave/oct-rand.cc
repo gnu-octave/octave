@@ -513,7 +513,7 @@ octave_rand::do_vector (octave_idx_type n, double a)
     {
       retval.clear (n, 1);
 
-      fill (retval.capacity(), retval.fortran_vec(), a);
+      fill (retval.capacity (), retval.fortran_vec (), a);
     }
   else if (n < 0)
     (*current_liboctave_error_handler) ("rand: invalid negative argument");
@@ -530,7 +530,7 @@ octave_rand::do_float_vector (octave_idx_type n, float a)
     {
       retval.clear (n, 1);
 
-      fill (retval.capacity(), retval.fortran_vec(), a);
+      fill (retval.capacity (), retval.fortran_vec (), a);
     }
   else if (n < 0)
     (*current_liboctave_error_handler) ("rand: invalid negative argument");
@@ -547,7 +547,7 @@ octave_rand::do_nd_array (const dim_vector& dims, double a)
     {
       retval.clear (dims);
 
-      fill (retval.capacity(), retval.fortran_vec(), a);
+      fill (retval.capacity (), retval.fortran_vec (), a);
     }
 
   return retval;
@@ -562,7 +562,7 @@ octave_rand::do_float_nd_array (const dim_vector& dims, float a)
     {
       retval.clear (dims);
 
-      fill (retval.capacity(), retval.fortran_vec(), a);
+      fill (retval.capacity (), retval.fortran_vec (), a);
     }
 
   return retval;
@@ -580,11 +580,11 @@ octave_rand::initialize_ranlib_generators (void)
   int stored_distribution = current_distribution;
   F77_FUNC (setcgn, SETCGN) (uniform_dist);
 
-  int hour = tm.hour() + 1;
-  int minute = tm.min() + 1;
-  int second = tm.sec() + 1;
+  int hour = tm.hour () + 1;
+  int minute = tm.min () + 1;
+  int second = tm.sec () + 1;
 
-  int32_t s0 = tm.mday() * hour * minute * second;
+  int32_t s0 = tm.mday () * hour * minute * second;
   int32_t s1 = hour * minute * second;
 
   s0 = force_to_fit_range (s0, 1, 2147483563);

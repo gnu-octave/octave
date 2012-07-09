@@ -917,7 +917,7 @@ being removed from memory, as the following example shows:
 
 @example
 @group
-function count_calls()
+function count_calls ()
   persistent calls = 0;
   printf ("'count_calls' has been called %d times\n",
           ++calls);

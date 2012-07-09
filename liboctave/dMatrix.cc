@@ -763,7 +763,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond)
-        anorm = retval.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+        anorm = retval.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
 
       F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -802,7 +802,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
         }
 
       if (info != 0)
-        mattype.mark_as_rectangular();
+        mattype.mark_as_rectangular ();
     }
 
   return retval;
@@ -1461,8 +1461,8 @@ Matrix::rcond (MatrixType &mattype) const
             {
               octave_idx_type info = 0;
               char job = 'L';
-              anorm = atmp.abs().sum().
-                row(static_cast<octave_idx_type>(0)).max();
+              anorm = atmp.abs ().sum ().
+                row(static_cast<octave_idx_type>(0)).max ();
 
               F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
@@ -1499,8 +1499,8 @@ Matrix::rcond (MatrixType &mattype) const
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
               if(anorm < 0.)
-                anorm = atmp.abs().sum().
-                  row(static_cast<octave_idx_type>(0)).max();
+                anorm = atmp.abs ().sum ().
+                  row(static_cast<octave_idx_type>(0)).max ();
 
               Array<double> z (dim_vector (4 * nc, 1));
               double *pz = z.fortran_vec ();
@@ -1762,7 +1762,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
           char job = 'L';
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
-          anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+          anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
@@ -1818,7 +1818,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
                   F77_XFCN (dpotrs, DPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, b_nc, tmp_data, nr,
-                                             result, b.rows(), info
+                                             result, b.rows (), info
                                              F77_CHAR_ARG_LEN (1)));
                 }
               else
@@ -1839,7 +1839,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
           if(anorm < 0.)
-            anorm = atmp.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+            anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
 
           Array<double> z (dim_vector (4 * nc, 1));
           double *pz = z.fortran_vec ();
@@ -1902,7 +1902,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
                   char job = 'N';
                   F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
                                              nr, b_nc, tmp_data, nr,
-                                             pipvt, result, b.rows(), info
+                                             pipvt, result, b.rows (), info
                                              F77_CHAR_ARG_LEN (1)));
                 }
               else

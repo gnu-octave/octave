@@ -236,7 +236,7 @@ public:
 
 public:
 
-  opengl_tesselator (void) : glu_tess (0), fill() { init (); }
+  opengl_tesselator (void) : glu_tess (0), fill () { init (); }
 
   virtual ~opengl_tesselator (void)
     { if (glu_tess) gluDeleteTess (glu_tess); }
@@ -552,6 +552,9 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
 
   const base_properties& props = go.get_properties ();
 
+  if (! toolkit)
+    toolkit = props.get_toolkit ();
+
   if (go.isa ("figure"))
     draw_figure (dynamic_cast<const figure::properties&> (props));
   else if (go.isa ("axes"))
@@ -587,8 +590,6 @@ opengl_renderer::draw (const graphics_object& go, bool toplevel)
 void
 opengl_renderer::draw_figure (const figure::properties& props)
 {
-  toolkit = props.get_toolkit ();
-
   // Initialize OpenGL context
 
   init_gl_context (props.is___enhanced__ (), props.get_color_rgb ());
@@ -605,8 +606,6 @@ opengl_renderer::draw_uipanel (const uipanel::properties& props,
   graphics_object fig = go.get_ancestor ("figure");
   const figure::properties& figProps =
     dynamic_cast<const figure::properties&> (fig.get_properties ());
-
-  toolkit = figProps.get_toolkit ();
 
   // Initialize OpenGL context 
 
@@ -642,7 +641,7 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
 
   // Clear background
 
-  if (c.length() >= 3)
+  if (c.length () >= 3)
     {
       glClearColor (c(0), c(1), c(2), 1);
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -2898,7 +2897,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glVertex2d (-sz/2, sz/2);
       glVertex2d (sz/2, sz/2);
       glVertex2d (sz/2, -sz/2);
-      glEnd();
+      glEnd ();
       break;
     case 'o':
       {
@@ -2916,7 +2915,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glVertex2d (sz/2, 0);
       glVertex2d (0, sz/2);
       glVertex2d (-sz/2, 0);
-      glEnd();
+      glEnd ();
       break;
     case 'v':
       glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));

@@ -437,11 +437,11 @@ bool
 octave_complex_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
   dim_vector d = dims ();
-  if (d.length() < 1)
+  if (d.length () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length();
+  int32_t tmp = - d.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i = 0; i < d.length (); i++)
     {

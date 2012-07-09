@@ -70,14 +70,14 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
   if (arg.is_real_type ())
     {
       m = arg.sparse_matrix_value ();
-      csm.nzmax = m.nnz();
+      csm.nzmax = m.nnz ();
       csm.p = m.xcidx ();
       csm.i = m.xridx ();
     }
   else
     {
       cm = arg.sparse_complex_matrix_value ();
-      csm.nzmax = cm.nnz();
+      csm.nzmax = cm.nnz ();
       csm.p = cm.xcidx ();
       csm.i = cm.xridx ();
     }
@@ -153,7 +153,7 @@ Block Triangular Form of a Sparse Matrix}. ACM Trans. Math. Software,\n\
 @seealso{colamd, ccolamd}\n\
 @end deftypefn")
 {
-  int nargin = args.length();
+  int nargin = args.length ();
   octave_value_list retval;
 
   if (nargin != 1)
@@ -201,7 +201,7 @@ numerical rank of the matrix @var{S} is bounded by\n\
 @seealso{dmperm}\n\
 @end deftypefn")
 {
-  int nargin = args.length();
+  int nargin = args.length ();
   octave_value_list retval;
 
   if (nargin != 1)

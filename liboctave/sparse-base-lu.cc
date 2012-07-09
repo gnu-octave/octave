@@ -35,7 +35,7 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const
   octave_idx_type nc = Ufact.rows ();
   octave_idx_type rcmin = (nr > nc ? nr : nc);
 
-  lu_type Yout (nr, nc, Lfact.nnz() + Ufact.nnz());
+  lu_type Yout (nr, nc, Lfact.nnz () + Ufact.nnz ());
   octave_idx_type ii = 0;
   Yout.xcidx(0) = 0;
 

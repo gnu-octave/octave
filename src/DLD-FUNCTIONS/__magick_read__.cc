@@ -428,14 +428,14 @@ function.  Instead use @code{imread}.\n\
   bool all_frames = false;
 
   if (args.length () == 2 && args(1).is_real_type ())
-    frameidx = args(1).int_vector_value();
+    frameidx = args(1).int_vector_value ();
   else if (args.length () == 3 && args(1).is_string ()
-           && args(1).string_value() == "frames")
+           && args(1).string_value () == "frames")
     {
-      if (args(2).is_string () && args(2).string_value() == "all")
+      if (args(2).is_string () && args(2).string_value () == "all")
         all_frames = true;
       else if (args(2).is_real_type ())
-        frameidx = args(2).int_vector_value();
+        frameidx = args(2).int_vector_value ();
     }
   else
     {
@@ -901,7 +901,7 @@ function.  Instead use @code{imwrite}.\n\
                 if (args(3).is_real_type ())
                   write_image (filename, fmt, args(2), args(3));
                 else
-                  write_image (filename, fmt, args(2), octave_value(), args(3));
+                  write_image (filename, fmt, args(2), octave_value (), args(3));
               else
                 write_image (filename, fmt, args(2));
             }

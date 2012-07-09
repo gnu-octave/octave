@@ -51,7 +51,7 @@ DEFBINOP (div, matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       Complex d = v2.complex_value ();
 

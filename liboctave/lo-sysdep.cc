@@ -73,7 +73,7 @@ octave_chdir (const std::string& path_arg)
   std::string path = file_ops::tilde_expand (path_arg);
 
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
-  if (path.length() == 2 && path[1] == ':')
+  if (path.length () == 2 && path[1] == ':')
     path += "\\";
 #endif
 
@@ -90,7 +90,7 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
   PROCESS_INFORMATION pi;
   STARTUPINFO si;
   std::string command = "\"" + cmd + "\"";
-  HANDLE hProcess = GetCurrentProcess(), childRead, childWrite, parentRead, parentWrite;
+  HANDLE hProcess = GetCurrentProcess (), childRead, childWrite, parentRead, parentWrite;
   DWORD pipeMode;
 
   ZeroMemory (&pi, sizeof (pi));
@@ -121,7 +121,7 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
   si.hStdOutput = childWrite;
 
   // Ignore first arg as it is the command
-  for (int k=1; k<args.length(); k++)
+  for (int k=1; k<args.length (); k++)
     command += " \"" + args[k] + "\"";
   OCTAVE_LOCAL_BUFFER (char, c_command, command.length () + 1);
   strcpy (c_command, command.c_str ());

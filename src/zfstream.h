@@ -53,11 +53,11 @@ class gzfilebuf : public std::streambuf
 {
 public:
   //  Default constructor.
-  gzfilebuf();
+  gzfilebuf ();
 
   //  Destructor.
   virtual
-  ~gzfilebuf();
+  ~gzfilebuf ();
 
   /**
    *  @brief  Set compression level and strategy on the fly.
@@ -79,7 +79,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open() const { return (file != 0); }
+  is_open () const { return (file != 0); }
 
   /**
    *  @brief  Open gzipped file.
@@ -106,7 +106,7 @@ public:
    *  @return  @c this on success, NULL on failure.
   */
   gzfilebuf*
-  close();
+  close ();
 
 protected:
   /**
@@ -125,7 +125,7 @@ protected:
    *  These characters can be read without accessing the gzipped file.
   */
   virtual std::streamsize
-  showmanyc();
+  showmanyc ();
 
   /**
    *  @brief  Fill get area from gzipped file.
@@ -135,7 +135,7 @@ protected:
    *  buffer. Always buffered.
   */
   virtual int_type
-  underflow();
+  underflow ();
 
   /**
    *  @brief  Write put area to gzipped file.
@@ -147,7 +147,7 @@ protected:
    *  character at a time.
   */
   virtual int_type
-  overflow(int_type c = traits_type::eof());
+  overflow(int_type c = traits_type::eof ());
 
   /**
    *  @brief  Installs external stream buffer.
@@ -168,7 +168,7 @@ protected:
    *  This calls underflow(EOF) to do the job.
   */
   virtual int
-  sync();
+  sync ();
 
   /**
    *  @brief  Alters the stream positions.
@@ -190,7 +190,7 @@ protected:
           std::ios_base::in|std::ios_base::out);
 
   virtual int_type
-  pbackfail (int_type c = traits_type::eof());
+  pbackfail (int_type c = traits_type::eof ());
 
 //
 // Some future enhancements
@@ -215,7 +215,7 @@ private:
    *  reset to their original state.
   */
   void
-  enable_buffer();
+  enable_buffer ();
 
   /**
    *  @brief  Destroy internal buffer.
@@ -225,7 +225,7 @@ private:
    *  case, it will also reset the buffer pointers.
   */
   void
-  disable_buffer();
+  disable_buffer ();
 
   /**
    *  Underlying file pointer.
@@ -282,7 +282,7 @@ class gzifstream : public std::istream
 {
 public:
   //  Default constructor
-  gzifstream();
+  gzifstream ();
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
@@ -306,7 +306,7 @@ public:
    *  Obtain underlying stream buffer.
   */
   gzfilebuf*
-  rdbuf() const
+  rdbuf () const
   { return const_cast<gzfilebuf*>(&sb); }
 
   /**
@@ -314,7 +314,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open() { return sb.is_open(); }
+  is_open () { return sb.is_open (); }
 
   /**
    *  @brief  Open gzipped file.
@@ -350,7 +350,7 @@ public:
    *  Stream will be in state fail() if close failed.
   */
   void
-  close();
+  close ();
 
 private:
   /**
@@ -371,7 +371,7 @@ class gzofstream : public std::ostream
 {
 public:
   //  Default constructor
-  gzofstream();
+  gzofstream ();
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
@@ -395,7 +395,7 @@ public:
    *  Obtain underlying stream buffer.
   */
   gzfilebuf*
-  rdbuf() const
+  rdbuf () const
   { return const_cast<gzfilebuf*>(&sb); }
 
   /**
@@ -403,7 +403,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open() { return sb.is_open(); }
+  is_open () { return sb.is_open (); }
 
   /**
    *  @brief  Open gzipped file.
@@ -439,7 +439,7 @@ public:
    *  Stream will be in state fail() if close failed.
   */
   void
-  close();
+  close ();
 
 private:
   /**
@@ -486,7 +486,7 @@ template<typename T1, typename T2>
 inline gzofstream&
 setcompression(gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
 {
-  (gzs.rdbuf())->setcompression(l, s);
+  (gzs.rdbuf ())->setcompression(l, s);
   return gzs;
 }
 

@@ -738,7 +738,7 @@ public:
           // related windows.  Otherwise, the class is just "FLTK"
           xclass ("Octave");
           show ();
-          if (fp.get_currentaxes ().ok())
+          if (fp.get_currentaxes ().ok ())
             show_canvas ();
           else
             hide_canvas ();
@@ -880,7 +880,7 @@ public:
         else
           hide_menubar ();
 
-        mark_modified();
+        mark_modified ();
       }
   }
 

@@ -46,7 +46,7 @@ DEFUNOP_OP (uminus, sparse_matrix, -)
 DEFUNOP (transpose, sparse_matrix)
 {
   CAST_UNOP_ARG (const octave_sparse_matrix&);
-  return octave_value (v.sparse_matrix_value().transpose (),
+  return octave_value (v.sparse_matrix_value ().transpose (),
                        v.matrix_type ().transpose ());
 }
 
@@ -72,7 +72,7 @@ DEFBINOP (div, sparse_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       double d = v2.scalar_value ();
 
@@ -102,7 +102,7 @@ DEFBINOP (ldiv, sparse_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_sparse_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     {
       double d = v1.double_value ();
 

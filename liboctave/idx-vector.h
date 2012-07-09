@@ -604,7 +604,7 @@ public:
     { return orig_dimensions () (1); }
 
   int orig_empty (void) const
-    { return (! is_colon () && orig_dimensions().any_zero ()); }
+    { return (! is_colon () && orig_dimensions ().any_zero ()); }
 
   // i/o
 

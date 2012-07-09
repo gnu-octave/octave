@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 template <class T>
 Sparse<T>::Sparse (const PermMatrix& a)
   : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
-         dimensions (dim_vector (a.rows (), a.cols()))
+         dimensions (dim_vector (a.rows (), a.cols ()))
 {
   octave_idx_type n = a.rows ();
   for (octave_idx_type i = 0; i <= n; i++)
@@ -149,7 +149,7 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
         {
           octave_idx_type u = c[j];
           for (i = i; i < u; i++)
-            if (d[i] != T())
+            if (d[i] != T ())
               {
                 d[k] = d[i];
                 r[k++] = r[i];
@@ -231,7 +231,7 @@ template <class T>
 Sparse<T>::Sparse (const dim_vector& dv)
   : rep (0), dimensions (dv)
 {
-  if (dv.length() != 2)
+  if (dv.length () != 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const dim_vector&): dimension mismatch");
   else
@@ -254,7 +254,7 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
       ("Sparse::Sparse (const Sparse&, const dim_vector&): dimension mismatch");
   else
     {
-      dim_vector old_dims = a.dims();
+      dim_vector old_dims = a.dims ();
       octave_idx_type new_nzmx = a.nnz ();
       octave_idx_type new_nr = dv (0);
       octave_idx_type new_nc = dv (1);
@@ -334,7 +334,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     {
       // This is completely specialized, because the sorts can be simplified.
       T a0 = a(0);
-      if (a0 == T())
+      if (a0 == T ())
         {
           // Do nothing, it's an empty matrix.
         }
@@ -815,7 +815,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
       (*current_liboctave_warning_handler)
         ("reshape: sparse reshape to N-d array smashes dims");
 
-      for (octave_idx_type i = 2; i < dims2.length(); i++)
+      for (octave_idx_type i = 2; i < dims2.length (); i++)
         dims2(1) *= dims2(i);
 
       dims2.resize (2);
@@ -1618,7 +1618,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
 
       // If nr == 1 then the vector indexing will return a column vector!!
       if (nr == 1)
-        retval.transpose();
+        retval.transpose ();
     }
   else if (idx_i.is_scalar ())
     {
@@ -1866,7 +1866,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   octave_idx_type iidx = idx(i);
                   octave_idx_type li = lblookup (ri, nz, iidx);
                   if (li != nz && ri[li] == iidx)
-                    xdata(li) = T();
+                    xdata(li) = T ();
                 }
 
               maybe_compress (true);
@@ -2589,7 +2589,7 @@ template <class T>
 Array<T>
 Sparse<T>::array_value () const
 {
-  NoAlias< Array<T> > retval (dims (), T());
+  NoAlias< Array<T> > retval (dims (), T ());
   if (rows () == 1)
     {
       octave_idx_type i = 0;
@@ -2603,7 +2603,7 @@ Sparse<T>::array_value () const
     {
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         for (octave_idx_type i = cidx(j), iu = cidx(j+1); i < iu; i++)
-          retval (ridx(i), j) = data (i);
+          retval(ridx(i), j) = data (i);
     }
 
   return retval;

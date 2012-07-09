@@ -49,7 +49,7 @@ SM octinternal_do_mul_colpm_sm (const octave_idx_type *pcol, const SM& a)
           sidx[ii++]=i;
           r.xridx (i) = pcol[a.ridx (i)];
         }
-      sort.sort (r.xridx() + r.xcidx(j), sidx, r.xcidx(j+1) - r.xcidx(j));
+      sort.sort (r.xridx () + r.xcidx(j), sidx, r.xcidx(j+1) - r.xcidx(j));
       for (octave_idx_type i = r.xcidx(j), ii = 0; i < r.xcidx(j+1); i++)
         r.xdata(i) = a.data (sidx[ii++]);
     }

@@ -184,10 +184,10 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     {
       if (nargin == 3)
         {
-          std::string class_name = args(2).string_value();
+          std::string class_name = args(2).string_value ();
           boolNDArray result (f_args.dims ());
           for (octave_idx_type count = 0; count < k; count++)
-            result(count) = (f_args.elem(count).class_name() == class_name);
+            result(count) = (f_args.elem(count).class_name () == class_name);
 
           retval(0) = result;
         }
@@ -209,7 +209,7 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
       size_t compare_len = std::max (arg.length (), static_cast<size_t> (2));
 
       if (arg.compare ("uniformoutput", compare_len))
-        uniform_output = args(nargin-1).bool_value();
+        uniform_output = args(nargin-1).bool_value ();
       else if (arg.compare ("errorhandler", compare_len))
         {
           if (args(nargin-1).is_function_handle ()
@@ -239,7 +239,7 @@ get_mapper_fun_options (const octave_value_list& args, int& nargin,
       else
         {
           error ("cellfun: unrecognized parameter %s",
-                 arg.c_str());
+                 arg.c_str ());
           break;
         }
 
@@ -1839,7 +1839,7 @@ num2cell ([1,2;3,4],1)\n\
 @seealso{mat2cell}\n\
 @end deftypefn")
 {
-  int nargin =  args.length();
+  int nargin =  args.length ();
   octave_value retval;
 
   if (nargin < 1 || nargin > 2)
@@ -2177,7 +2177,7 @@ mat2cell (reshape (1:16,4,4), [3,1], [3,1])\n\
 @seealso{num2cell, cell2mat}\n\
 @end deftypefn")
 {
-  int nargin = args.length();
+  int nargin = args.length ();
   octave_value retval;
 
   if (nargin < 2)

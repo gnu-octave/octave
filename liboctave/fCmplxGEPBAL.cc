@@ -69,7 +69,7 @@ FloatComplexGEPBALANCE::init (const FloatComplexMatrix& a, const FloatComplexMat
       return -1;
     }
 
-  if (a.dims() != b.dims ())
+  if (a.dims () != b.dims ())
     {
       gripe_nonconformant ("FloatComplexGEPBALANCE", n, n, b.rows(), b.cols());
       return -1;

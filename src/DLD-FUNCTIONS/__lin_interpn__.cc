@@ -195,7 +195,7 @@ lin_interpn (int n, M *X, const M V, M *Y)
   for (int i = 0; i < n; i++)
     {
       y[i] = Y[i].data ();
-      size[i] =  V.dims()(i);
+      size[i] =  V.dims ()(i);
     }
 
   OCTAVE_LOCAL_BUFFER (const T *, x, n);
@@ -286,7 +286,7 @@ Undocumented internal function.\n\
   // dimension of the problem
   int n = (nargin-1)/2;
 
-  if (args(n).is_single_type())
+  if (args(n).is_single_type ())
     {
       OCTAVE_LOCAL_BUFFER (FloatNDArray, X, n);
       OCTAVE_LOCAL_BUFFER (FloatNDArray, Y, n);

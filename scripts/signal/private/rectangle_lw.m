@@ -34,6 +34,6 @@ function retval = rectangle_lw (n, b)
   retval = zeros (n, 1);
   t = floor (1 / b);
 
-  retval (1:t, 1) = ones (t, 1);
+  retval(1:t, 1) = ones (t, 1);
 
 endfunction

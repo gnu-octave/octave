@@ -40,7 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 MatrixType::MatrixType (void)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden()),
+    sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0),
     lower_band (0), dense (false), full (false), nperm (0), perm (0) { }
 
@@ -140,8 +140,8 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
           std::complex<T> d = a.elem (j,j);
           upper = upper && (d != zero);
           lower = lower && (d != zero);
-          hermitian = hermitian && (d.real() > zero && d.imag() == zero);
-          diag[j] = d.real();
+          hermitian = hermitian && (d.real () > zero && d.imag () == zero);
+          diag[j] = d.real ();
         }
 
       for (octave_idx_type j = 0;
@@ -220,7 +220,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
     (*current_liboctave_warning_handler)
       ("Calculating Sparse Matrix Type");
 
-  sp_bandden = octave_sparse_params::get_bandden();
+  sp_bandden = octave_sparse_params::get_bandden ();
   bool maybe_hermitian = false;
   typ = MatrixType::Full;
 
@@ -541,7 +541,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
     (*current_liboctave_warning_handler)
       ("Calculating Sparse Matrix Type");
 
-  sp_bandden = octave_sparse_params::get_bandden();
+  sp_bandden = octave_sparse_params::get_bandden ();
   bool maybe_hermitian = false;
   typ = MatrixType::Full;
 
@@ -804,8 +804,8 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
                   if (a.ridx(i) == j)
                     {
                       Complex d = a.data(i);
-                      is_herm = d.real() > 0. && d.imag() == 0.;
-                      diag(j) = d.real();
+                      is_herm = d.real () > 0. && d.imag () == 0.;
+                      diag(j) = d.real ();
                       break;
                     }
                 }
@@ -850,7 +850,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
 }
 MatrixType::MatrixType (const matrix_type t, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden()),
+    sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
@@ -867,7 +867,7 @@ MatrixType::MatrixType (const matrix_type t, bool _full)
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
                         const octave_idx_type *p, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden()),
+    sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
@@ -887,7 +887,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
                         const octave_idx_type kl, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_bandden()),
+    sp_bandden (octave_sparse_params::get_bandden ()),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
@@ -944,7 +944,7 @@ int
 MatrixType::type (bool quiet)
 {
   if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden()))
+      sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (!quiet &&
           octave_sparse_params::get_key ("spumoni") != 0.)
@@ -968,7 +968,7 @@ int
 MatrixType::type (const SparseMatrix &a)
 {
   if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden()))
+      sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
         (*current_liboctave_warning_handler)
@@ -1001,7 +1001,7 @@ int
 MatrixType::type (const SparseComplexMatrix &a)
 {
   if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == octave_sparse_params::get_bandden()))
+      sp_bandden == octave_sparse_params::get_bandden ()))
     {
       if (octave_sparse_params::get_key ("spumoni") != 0.)
         (*current_liboctave_warning_handler)

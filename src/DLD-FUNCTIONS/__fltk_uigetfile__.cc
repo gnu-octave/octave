@@ -58,15 +58,15 @@ Undocumented internal function.\n\
 
   octave_value_list retval (3, octave_value (0));
 
-  std::string file_filter = args(0).string_value();
-  std::string title = args(1).string_value();
-  std::string default_name = args(2).string_value();
-  Matrix pos = args(3).matrix_value();
+  std::string file_filter = args(0).string_value ();
+  std::string title = args(1).string_value ();
+  std::string default_name = args(2).string_value ();
+  Matrix pos = args(3).matrix_value ();
 
   int multi_type = Fl_File_Chooser::SINGLE;
   std::string flabel = "Filename:";
 
-  std::string multi = args(4).string_value();
+  std::string multi = args(4).string_value ();
   if (multi == "on")
     multi_type = Fl_File_Chooser::MULTI;
   else if (multi == "dir")
@@ -92,7 +92,7 @@ Undocumented internal function.\n\
   while (fc.shown ())
     Fl::wait ();
 
-  if (fc.value())
+  if (fc.value ())
     {
       int file_count = fc.count ();
       std::string fname;

@@ -327,7 +327,7 @@ function retval = plot3 (varargin)
   endif
 
   if (!isempty (hlgnd))
-    legend (gca(), hlgnd, tlgnd);
+    legend (gca (), hlgnd, tlgnd);
   endif
 
   set (gca (), "view", [-37.5, 30]);

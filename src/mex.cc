@@ -397,7 +397,7 @@ public:
     mwSize n = 1;
 
     // Force dims and ndims to be cached.
-    get_dimensions();
+    get_dimensions ();
 
     for (mwIndex i = ndims - 1; i > 0; i--)
       n *= dims[i];
@@ -1514,7 +1514,7 @@ class mxArray_sparse : public mxArray_matlab
 {
 public:
 
-  mxArray_sparse (mxClassID id_arg, int m, int n, int nzmax_arg,
+  mxArray_sparse (mxClassID id_arg, mwSize m, mwSize n, mwSize nzmax_arg,
                   mxComplexity flag = mxREAL)
     : mxArray_matlab (id_arg, m, n), nzmax (nzmax_arg),
       pr (calloc (nzmax, get_element_size ())),
@@ -3463,7 +3463,7 @@ mexGet (double handle, const char *property)
   mxArray *m = 0;
   octave_value ret = get_property_from_handle (handle, property, "mexGet");
 
-  if (!error_state && ret.is_defined())
+  if (!error_state && ret.is_defined ())
     m = ret.as_mxArray ();
   return m;
 }

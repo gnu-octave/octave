@@ -190,7 +190,7 @@ The author of the code itself is Timothy A. Davis\n\
                     for (octave_idx_type i = 0; i < n_col; i++)
                       Pout.xelem (i) = P[i] + 1;
 
-                    retval (0) = Pout;
+                    retval(0) = Pout;
                   }
                 }
             }

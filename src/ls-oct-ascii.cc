@@ -323,7 +323,7 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
   if (mark_as_global)
     os << "# type: global " << val.type_name () << "\n";
   else
-    os << "# type: " << val.type_name() << "\n";
+    os << "# type: " << val.type_name () << "\n";
 
   if (! precision)
     precision = Vsave_precision;

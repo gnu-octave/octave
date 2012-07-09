@@ -633,7 +633,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
         return octave_value (); \
       } \
     else \
-      return octave_value (v.TYPE ## _array_value().transpose ()); \
+      return octave_value (v.TYPE ## _array_value ().transpose ()); \
   } \
  \
   DEFNCUNOP_METHOD (m_incr, TYPE ## _matrix, increment) \

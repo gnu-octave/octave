@@ -796,7 +796,7 @@ So that
 
 @example
 @group
-octave:6> f=FIRfilter();
+octave:6> f=FIRfilter ();
 octave:7> f.polynomial = polynomial([1 2 3]);
 f.polynomial = 1 + 2 * X + 3 * X ^ 2
 @end group

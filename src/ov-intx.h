@@ -145,7 +145,7 @@ public:
       Matrix retval;
       dim_vector dv = dims ();
       if (dv.length () > 2)
-        error ("invalid conversion of %s to Matrix", type_name().c_str ());
+        error ("invalid conversion of %s to Matrix", type_name ().c_str ());
       else
         {
           retval = Matrix (dv(0), dv(1));
@@ -163,7 +163,7 @@ public:
       FloatMatrix retval;
       dim_vector dv = dims ();
       if (dv.length () > 2)
-        error ("invalid conversion of %s to FloatMatrix", type_name().c_str ());
+        error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
       else
         {
           retval = FloatMatrix (dv(0), dv(1));
@@ -179,9 +179,9 @@ public:
   complex_matrix_value (bool = false) const
     {
       ComplexMatrix retval;
-      dim_vector dv = dims();
+      dim_vector dv = dims ();
       if (dv.length () > 2)
-        error ("invalid conversion of %s to Matrix", type_name().c_str ());
+        error ("invalid conversion of %s to Matrix", type_name ().c_str ());
       else
         {
           retval = ComplexMatrix (dv(0), dv(1));
@@ -197,9 +197,9 @@ public:
   float_complex_matrix_value (bool = false) const
     {
       FloatComplexMatrix retval;
-      dim_vector dv = dims();
+      dim_vector dv = dims ();
       if (dv.length () > 2)
-        error ("invalid conversion of %s to FloatMatrix", type_name().c_str ());
+        error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
       else
         {
           retval = FloatComplexMatrix (dv(0), dv(1));
@@ -289,12 +289,12 @@ public:
   // Use matrix_ref here to clear index cache.
   void increment (void)
    {
-     matrix_ref() += OCTAVE_INT_T (1);
+     matrix_ref () += OCTAVE_INT_T (1);
    }
 
   void decrement (void)
    {
-     matrix_ref() -= OCTAVE_INT_T (1);
+     matrix_ref () -= OCTAVE_INT_T (1);
    }
 
   void changesign (void)
@@ -479,14 +479,14 @@ public:
       if (fill)
         {
           intNDArray<OCTAVE_INT_T> retval (dv, 0);
-          if (dv.numel())
+          if (dv.numel ())
             retval(0) = scalar;
           return retval;
         }
       else
         {
           intNDArray<OCTAVE_INT_T> retval (dv);
-          if (dv.numel())
+          if (dv.numel ())
             retval(0) = scalar;
           return retval;
         }

@@ -194,8 +194,8 @@ public:
   octave_value (float d);
   octave_value (const Array<octave_value>& a, bool is_cs_list = false);
   octave_value (const Cell& c, bool is_cs_list = false);
-  octave_value (const Matrix& m, const MatrixType& t = MatrixType());
-  octave_value (const FloatMatrix& m, const MatrixType& t = MatrixType());
+  octave_value (const Matrix& m, const MatrixType& t = MatrixType ());
+  octave_value (const FloatMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const NDArray& nda);
   octave_value (const FloatNDArray& nda);
   octave_value (const Array<double>& m);
@@ -208,8 +208,8 @@ public:
   octave_value (const FloatColumnVector& v);
   octave_value (const Complex& C);
   octave_value (const FloatComplex& C);
-  octave_value (const ComplexMatrix& m, const MatrixType& t = MatrixType());
-  octave_value (const FloatComplexMatrix& m, const MatrixType& t = MatrixType());
+  octave_value (const ComplexMatrix& m, const MatrixType& t = MatrixType ());
+  octave_value (const FloatComplexMatrix& m, const MatrixType& t = MatrixType ());
   octave_value (const ComplexNDArray& cnda);
   octave_value (const FloatComplexNDArray& cnda);
   octave_value (const Array<Complex>& m);
@@ -222,7 +222,7 @@ public:
   octave_value (const FloatComplexColumnVector& v);
   octave_value (const PermMatrix& p);
   octave_value (bool b);
-  octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType());
+  octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType ());
   octave_value (const boolNDArray& bnda);
   octave_value (const Array<bool>& bnda);
   octave_value (char c, char type = '\'');
@@ -458,7 +458,7 @@ public:
 
   int ndims (void) const { return rep->ndims (); }
 
-  bool all_zero_dims (void) const { return dims().all_zero (); }
+  bool all_zero_dims (void) const { return dims ().all_zero (); }
 
   octave_idx_type numel (void) const
     { return rep->numel (); }

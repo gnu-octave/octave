@@ -526,14 +526,14 @@ void
 load_path::do_clear (std::set<std::string>& new_elts)
 {
   bool warn_default_path_clobbered = false;
-  for (dir_info_list_iterator i = dir_info_list.begin();
-       i != dir_info_list.end();
+  for (dir_info_list_iterator i = dir_info_list.begin ();
+       i != dir_info_list.end ();
        /* conditionally advance iterator in loop body */)
     {
       //Don't remove it if it's gonna be added again, but remove it from
       //list of items to add, to avoid duplicates later on
       std::set<std::string>::iterator j = new_elts.find(i->dir_name);
-      if (j != new_elts.end())
+      if (j != new_elts.end ())
         {
           new_elts.erase(j);
           i++;
@@ -595,7 +595,7 @@ void
 load_path::do_set (const std::string& p, bool warn, bool is_init)
 {
   std::list<std::string> elts_l = split_path (p);
-  std::set<std::string> elts(elts_l.begin(), elts_l.end());
+  std::set<std::string> elts(elts_l.begin (), elts_l.end ());
 
   // Temporarily disable add hook.
 

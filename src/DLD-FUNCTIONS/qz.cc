@@ -1196,7 +1196,7 @@ compatibility with @sc{matlab}.\n\
         if (complex_case)
           {
 #ifdef DEBUG
-            std::cout << "qz: retval (1) = cbb = " << std::endl;
+            std::cout << "qz: retval(1) = cbb = " << std::endl;
             octave_print_internal (std::cout, cbb, 0);
             std::cout << std::endl << "qz: retval(0) = caa = " <<std::endl;
             octave_print_internal (std::cout, caa, 0);
@@ -1208,7 +1208,7 @@ compatibility with @sc{matlab}.\n\
       else
         {
 #ifdef DEBUG
-          std::cout << "qz: retval (1) = bb = " << std::endl;
+          std::cout << "qz: retval(1) = bb = " << std::endl;
           octave_print_internal (std::cout, bb, 0);
           std::cout << std::endl << "qz: retval(0) = aa = " <<std::endl;
           octave_print_internal (std::cout, aa, 0);

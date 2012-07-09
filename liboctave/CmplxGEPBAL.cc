@@ -70,7 +70,7 @@ ComplexGEPBALANCE::init (const ComplexMatrix& a, const ComplexMatrix& b,
       return -1;
     }
 
-  if (a.dims() != b.dims ())
+  if (a.dims () != b.dims ())
     {
       gripe_nonconformant ("ComplexGEPBALANCE", n, n, b.rows(), b.cols());
       return -1;

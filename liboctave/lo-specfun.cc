@@ -460,7 +460,7 @@ expm1(const Complex& x)
 
   if (std:: abs (x) < 1)
     {
-      double im = x.imag();
+      double im = x.imag ();
       double u = expm1 (x.real ());
       double v = sin (im/2);
       v = -2*v*v;
@@ -515,7 +515,7 @@ expm1(const FloatComplex& x)
 
   if (std:: abs (x) < 1)
     {
-      float im = x.imag();
+      float im = x.imag ();
       float u = expm1 (x.real ());
       float v = sin (im/2);
       v = -2*v*v;
@@ -556,7 +556,7 @@ log1p (const Complex& x)
 {
   Complex retval;
 
-  double r = x.real (), i = x.imag();
+  double r = x.real (), i = x.imag ();
 
   if (fabs (r) < 0.5 && fabs (i) < 0.5)
     {
@@ -873,7 +873,7 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
           if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
-              tmp2 *= exp(-z - std::abs(z.real()));
+              tmp2 *= exp(-z - std::abs(z.real ()));
             }
 
           tmp += tmp2;
@@ -1483,7 +1483,7 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
           if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
-              tmp2 *= exp(-z - std::abs(z.real()));
+              tmp2 *= exp(-z - std::abs(z.real ()));
             }
 
           tmp += tmp2;
@@ -1986,7 +1986,7 @@ airy (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& 
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = airy (z(i), deriv, scaled, ierr(i));
+    retval(i) = airy (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
@@ -2001,7 +2001,7 @@ biry (const ComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& 
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = biry (z(i), deriv, scaled, ierr(i));
+    retval(i) = biry (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
@@ -2116,7 +2116,7 @@ airy (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_ty
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = airy (z(i), deriv, scaled, ierr(i));
+    retval(i) = airy (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
@@ -2131,7 +2131,7 @@ biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_ty
   ierr.resize (dv);
 
   for (octave_idx_type i = 0; i < nel; i++)
-    retval (i) = biry (z(i), deriv, scaled, ierr(i));
+    retval(i) = biry (z(i), deriv, scaled, ierr(i));
 
   return retval;
 }
@@ -3287,7 +3287,7 @@ betaincinv (double y, double p, double q) {
   bool indx;
   double pp, prev, qq, r, s, sae = -37.0, sq, t, tx, value, w, xin, ycur, yprev;
 
-  double beta = lgamma (p) + lgamma (q) - lgamma (p + q);
+  double beta = xlgamma (p) + xlgamma (q) - xlgamma (p + q);
   bool err = false;
   fpu = pow (10.0, sae);
   value = y;

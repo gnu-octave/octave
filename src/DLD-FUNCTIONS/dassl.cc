@@ -298,9 +298,9 @@ parameters for @code{dassl}.\n\
       if (f_arg.is_cell ())
         {
           Cell c = f_arg.cell_value ();
-          if (c.length() == 1)
+          if (c.length () == 1)
             f_arg = c(0);
-          else if (c.length() == 2)
+          else if (c.length () == 2)
             {
               if (c(0).is_function_handle () || c(0).is_inline_function ())
                 dassl_fcn = c(0).function_value ();
@@ -329,7 +329,7 @@ parameters for @code{dassl}.\n\
 
                         if (!dassl_jac)
                           {
-                            if (fcn_name.length())
+                            if (fcn_name.length ())
                               clear_function (fcn_name);
                             dassl_fcn = 0;
                           }
@@ -340,7 +340,7 @@ parameters for @code{dassl}.\n\
             DASSL_ABORT1 ("incorrect number of elements in cell array");
         }
 
-      if (!dassl_fcn && ! f_arg.is_cell())
+      if (!dassl_fcn && ! f_arg.is_cell ())
         {
           if (f_arg.is_function_handle () || f_arg.is_inline_function ())
             dassl_fcn = f_arg.function_value ();
@@ -386,7 +386,7 @@ parameters for @code{dassl}.\n\
 
                             if (!dassl_jac)
                               {
-                                if (fcn_name.length())
+                                if (fcn_name.length ())
                                   clear_function (fcn_name);
                                 dassl_fcn = 0;
                               }
@@ -448,9 +448,9 @@ parameters for @code{dassl}.\n\
       else
         output = dae.integrate (out_times, deriv_output);
 
-      if (fcn_name.length())
+      if (fcn_name.length ())
         clear_function (fcn_name);
-      if (jac_name.length())
+      if (jac_name.length ())
         clear_function (jac_name);
 
       if (! error_state)

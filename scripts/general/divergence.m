@@ -69,7 +69,7 @@ function retval = divergence (varargin)
     dy = varargin{2}(:,1,1)(:);
     dz = varargin{3}(1,1,:)(:);
   else
-    print_usage();
+    print_usage ();
   endif
 
   if ((nargin == 4) || (nargin == 2))

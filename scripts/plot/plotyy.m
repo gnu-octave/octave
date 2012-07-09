@@ -284,7 +284,7 @@ endfunction
 
 function deleteplotyy (h, d, ax2, t2)
   if (ishandle (ax2) && strcmp (get (ax2, "type"), "axes")
-      && (isempty (gcbf()) || strcmp (get (gcbf(), "beingdeleted"),"off"))
+      && (isempty (gcbf ()) || strcmp (get (gcbf (), "beingdeleted"),"off"))
       && strcmp (get (ax2, "beingdeleted"), "off"))
     set (t2, "deletefcn", []);
     delete (ax2);

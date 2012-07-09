@@ -41,7 +41,7 @@ DEFBINOP (mul_dm_sm, diag_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -72,7 +72,7 @@ DEFBINOP (add_dm_sm, diag_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -88,7 +88,7 @@ DEFBINOP (sub_dm_sm, diag_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -106,7 +106,7 @@ DEFBINOP (mul_sm_dm, sparse_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_diag_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -129,7 +129,7 @@ DEFBINOP (div_sm_dm, sparse_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       double d = v2.scalar_value ();
 
@@ -149,7 +149,7 @@ DEFBINOP (add_sm_dm, sparse_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_diag_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -165,7 +165,7 @@ DEFBINOP (sub_sm_dm, sparse_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_diag_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {

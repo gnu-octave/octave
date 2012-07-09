@@ -223,13 +223,13 @@ factorization as determined by @var{typ}.\n\
 
       if (cm->status < CHOLMOD_OK)
         {
-          error("matrix corrupted");
+          error ("matrix corrupted");
           goto symbfact_error;
         }
 
       if (CHOLMOD_NAME(postorder) (Parent, n, 0, Post, cm) != n)
         {
-          error("postorder failed");
+          error ("postorder failed");
           goto symbfact_error;
         }
 
@@ -238,7 +238,7 @@ factorization as determined by @var{typ}.\n\
 
       if (cm->status < CHOLMOD_OK)
         {
-          error("matrix corrupted");
+          error ("matrix corrupted");
           goto symbfact_error;
         }
 
@@ -289,7 +289,7 @@ factorization as determined by @var{typ}.\n\
           /* create a copy of the column pointers */
           octave_idx_type *W = First;
           for (octave_idx_type j = 0 ; j < n ; j++)
-            W [j] = L.xcidx(j);
+            W[j] = L.xcidx (j);
 
           // get workspace for computing one row of L
           cholmod_sparse *R = cholmod_allocate_sparse (n, 1, n, false, true,

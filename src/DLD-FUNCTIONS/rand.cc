@@ -691,7 +691,7 @@ DEFUN_DLD (randg, args, ,
 @deftypefnx {Loadable Function} {} randg (\"seed\", \"reset\")\n\
 @deftypefnx {Loadable Function} {} randg (@dots{}, \"single\")\n\
 @deftypefnx {Loadable Function} {} randg (@dots{}, \"double\")\n\
-Return a matrix with @code{gamma(@var{a},1)} distributed random elements.\n\
+Return a matrix with @code{gamma (@var{a},1)} distributed random elements.\n\
 The arguments are handled the same as the arguments for @code{rand},\n\
 except for the argument @var{a}.\n\
 \n\

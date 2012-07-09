@@ -280,7 +280,7 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! t = 2*pi*(0:1:N-1)/N;
 %! s = cos (n*t);
 %!
-%! S = zeros (size(t));
+%! S = zeros (size (t));
 %! S(n+1) = N/2;
 %! S(N-n+1) = N/2;
 %!

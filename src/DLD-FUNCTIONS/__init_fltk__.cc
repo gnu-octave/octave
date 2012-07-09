@@ -257,7 +257,7 @@ static double wheel_zoom_speed = 0.05;
 // Parameter controlling the GUI mode.
 static enum { pan_zoom, rotate_zoom, none } gui_mode;
 
-void script_cb(Fl_Widget*, void* data)
+void script_cb (Fl_Widget*, void* data)
   {
     static_cast<uimenu::properties*> (data)->execute_callback ();
   }
@@ -269,7 +269,7 @@ public:
   fltk_uimenu (int xx, int yy, int ww, int hh)
     {
       menubar = new
-        Fl_Menu_Bar(xx, yy, ww, hh);
+        Fl_Menu_Bar (xx, yy, ww, hh);
     }
 
   int items_to_show (void)
@@ -685,7 +685,7 @@ public:
       uimenu->hide ();
 
       bottom = new Fl_Box (0, hh - status_h, ww, status_h);
-      bottom->box(FL_FLAT_BOX);
+      bottom->box (FL_FLAT_BOX);
 
       ndim = calc_dimensions (gh_manager::get_object (fp.get___myhandle__ ()));
 
@@ -1924,8 +1924,8 @@ public:
         if (id == uimenu::properties::ID_LABEL)
           uimenu_set_fltk_label (go);
 
-        graphics_object fig = go.get_ancestor("figure");
-        figure_manager::uimenu_update(fig.get_handle (), go.get_handle (), id);
+        graphics_object fig = go.get_ancestor ("figure");
+        figure_manager::uimenu_update (fig.get_handle (), go.get_handle (), id);
       }
   }
 

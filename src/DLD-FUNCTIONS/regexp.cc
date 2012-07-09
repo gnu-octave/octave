@@ -508,7 +508,7 @@ octcellregexp (const octave_value_list &args, int nargout,
       Cell cellpat = args(1).cell_value ();
 
       for (int j = 0; j < nargout; j++)
-        newretval[j].resize(cellpat.dims ());
+        newretval[j].resize (cellpat.dims ());
 
       for (octave_idx_type i = 0; i < cellpat.numel (); i++)
         {

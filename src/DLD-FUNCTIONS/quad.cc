@@ -192,7 +192,7 @@ accuracy of the result.  The first element of the vector is the desired\n\
 absolute tolerance, and the second element is the desired relative\n\
 tolerance.  To choose a relative test only, set the absolute\n\
 tolerance to zero.  To choose an absolute test only, set the relative\n\
-tolerance to zero.  Both tolerances default to @code{sqrt(eps)} or\n\
+tolerance to zero.  Both tolerances default to @code{sqrt (eps)} or\n\
 approximately @math{1.5e^{-8}}.\n\
 \n\
 The optional argument @var{sing} is a vector of values at which the\n\

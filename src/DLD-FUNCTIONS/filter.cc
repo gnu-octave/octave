@@ -716,9 +716,9 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&, int
 %! y = filter (b, [1], x);
 %! assert (y, y0);
 
-%!assert (filter (1, ones(10,1)/10, []), [])
-%!assert (filter (1, ones(10,1)/10, zeros(0,10)), zeros(0,10))
-%!assert (filter (1, ones(10,1)/10, single (1:5)), repmat (single (10), 1, 5))
+%!assert (filter (1, ones (10,1) / 10, []), [])
+%!assert (filter (1, ones (10,1) / 10, zeros (0,10)), zeros (0,10))
+%!assert (filter (1, ones (10,1) / 10, single (1:5)), repmat (single (10), 1, 5))
 
 %% Test using initial conditions
 %!assert (filter ([1, 1, 1], [1, 1], [1 2], [1, 1]), [2 2])

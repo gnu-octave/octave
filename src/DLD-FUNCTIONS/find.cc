@@ -111,9 +111,9 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       for (octave_idx_type j = 0; j < nc; j++)
         {
           OCTAVE_QUIT;
-          if (v.cidx(j) == 0 && v.cidx(j+1) != 0)
+          if (v.cidx (j) == 0 && v.cidx (j+1) != 0)
             start_nc = j;
-          if (v.cidx(j+1) >= n_to_find)
+          if (v.cidx (j+1) >= n_to_find)
             {
               end_nc = j + 1;
               break;
@@ -125,9 +125,9 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       for (octave_idx_type j = nc; j > 0; j--)
         {
           OCTAVE_QUIT;
-          if (v.cidx(j) == nz && v.cidx(j-1) != nz)
+          if (v.cidx (j) == nz && v.cidx (j-1) != nz)
             end_nc = j;
-          if (nz - v.cidx(j-1) >= n_to_find)
+          if (nz - v.cidx (j-1) >= n_to_find)
             {
               start_nc = j - 1;
               break;
@@ -135,8 +135,8 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
         }
     }
 
-  count = (n_to_find > v.cidx(end_nc) - v.cidx(start_nc) ?
-           v.cidx(end_nc) - v.cidx(start_nc) : n_to_find);
+  count = (n_to_find > v.cidx (end_nc) - v.cidx (start_nc) ?
+           v.cidx (end_nc) - v.cidx (start_nc) : n_to_find);
 
   // If the original argument was a row vector, force a row vector of
   // the overall indices to be returned.  But see below for scalar
@@ -168,14 +168,14 @@ find_nonzero_elem_idx (const Sparse<T>& v, int nargout,
       // there are elements to be found using the count that we want
       // to find.
       for (octave_idx_type j = start_nc, cx = 0; j < end_nc; j++)
-        for (octave_idx_type i = v.cidx(j); i < v.cidx(j+1); i++ )
+        for (octave_idx_type i = v.cidx (j); i < v.cidx (j+1); i++ )
           {
             OCTAVE_QUIT;
             if (direction < 0 && i < nz - count)
               continue;
-            i_idx(cx) = static_cast<double> (v.ridx(i) + 1);
+            i_idx(cx) = static_cast<double> (v.ridx (i) + 1);
             j_idx(cx) = static_cast<double> (j + 1);
-            idx(cx) = j * nr + v.ridx(i) + 1;
+            idx(cx) = j * nr + v.ridx (i) + 1;
             val(cx) = v.data(i);
             cx++;
             if (cx == count)

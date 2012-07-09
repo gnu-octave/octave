@@ -171,7 +171,7 @@ $$ x(t_0) = x_0 $$\n\
 @example\n\
 @group\n\
 dx\n\
--- = f(x, t)\n\
+-- = f (x, t)\n\
 dt\n\
 @end group\n\
 @end example\n\
@@ -322,7 +322,7 @@ parameters for @code{lsode}.\n\
                     {
                         jac_name = unique_symbol_name ("__lsode_jac__");
                         jname = "function jac = ";
-                        jname.append(jac_name);
+                        jname.append (jac_name);
                         jname.append (" (x, t) jac = ");
                         lsode_jac = extract_function
                           (c(1), "lsode", jac_name, jname, "; endfunction");
@@ -378,7 +378,7 @@ parameters for @code{lsode}.\n\
                           {
                             jac_name = unique_symbol_name ("__lsode_jac__");
                             jname = "function jac = ";
-                            jname.append(jac_name);
+                            jname.append (jac_name);
                             jname.append (" (x, t) jac = ");
                             lsode_jac = extract_function
                               (tmp(1), "lsode", jac_name, jname,

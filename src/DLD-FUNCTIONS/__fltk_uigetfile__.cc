@@ -109,7 +109,7 @@ Undocumented internal function.\n\
         }
       else
         {
-          Cell file_cell = Cell(file_count, 1);
+          Cell file_cell = Cell (file_count, 1);
           for (octave_idx_type n = 1; n <= file_count; n++)
             {
               fname = fc.value (n);

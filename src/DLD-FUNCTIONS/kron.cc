@@ -88,7 +88,7 @@ kron (const MDiagArray2<R>& a, const MArray<T>& b)
     for (octave_idx_type jb = 0; jb < ncb; jb++)
       {
         octave_quit ();
-        mx_inline_mul (nrb, &c.xelem(ja*nrb, ja*ncb + jb), a.dgelem (ja), b.data () + nrb*jb);
+        mx_inline_mul (nrb, &c.xelem (ja*nrb, ja*ncb + jb), a.dgelem (ja), b.data () + nrb*jb);
       }
 
   return c;
@@ -110,7 +110,7 @@ kron (const MSparse<T>& A, const MSparse<T>& B)
         octave_quit ();
         for (octave_idx_type Ai = A.cidx (Aj); Ai < A.cidx (Aj+1); Ai++)
           {
-            octave_idx_type Ci = A.ridx(Ai) * B.rows ();
+            octave_idx_type Ci = A.ridx (Ai) * B.rows ();
             const T v = A.data (Ai);
 
             for (octave_idx_type Bi = B.cidx (Bj); Bi < B.cidx (Bj+1); Bi++)

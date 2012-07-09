@@ -154,7 +154,7 @@ Given the string argument \"vector\", @code{luinc} returns the values of\n\
 
                   if (thresh.nelem () == 1)
                     {
-                      thresh.resize(1,2);
+                      thresh.resize (1,2);
                       thresh(1) = thresh(0);
                     }
                   else if (thresh.nelem () != 2)

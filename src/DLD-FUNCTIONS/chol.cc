@@ -372,11 +372,11 @@ sparse matrices.\n\
 
 /*
 %!assert (chol ([2, 1; 1, 1]), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)], sqrt (eps))
-%!assert (chol (single([2, 1; 1, 1])), single([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
+%!assert (chol (single ([2, 1; 1, 1])), single ([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps ("single")))
 
+%!error chol ()
 %!error <matrix must be positive definite> chol ([1, 2; 3, 4])
 %!error <requires square matrix> chol ([1, 2; 3, 4; 5, 6])
-%!error chol ()
 %!error <unexpected second or third input> chol (1, 2)
 */
 
@@ -989,7 +989,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!                -0.13825 ;
 %!                 0.45266 ]);
 %!
-%! R = chol(single(A));
+%! R = chol (single (A));
 %!
 %! j = 3;  p = [1:j-1, j+1:5];
 %! R1 = cholinsert (R, j, u2);
@@ -1183,7 +1183,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 
 /*
 %!test
-%! R = chol(A);
+%! R = chol (A);
 %!
 %! j = 3;  p = [1:j-1,j+1:4];
 %! R1 = choldelete (R, j);
@@ -1210,10 +1210,10 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where\n\
 %! assert (norm (R1'*R1 - single (A(p,p)), Inf) < 1e1*eps ("single"));
 
 %!test
-%! R = chol(single(Ac));
+%! R = chol (single (Ac));
 %!
 %! j = 3;  p = [1:j-1,j+1:4];
-%! R1 = choldelete(R,j);
+%! R1 = choldelete (R,j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), single (0));
 %! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1*eps ("single"));
@@ -1335,8 +1335,8 @@ triangular, return the Cholesky@tie{}factorization of\n\
 %! j = 1;  i = 3;  p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
-%! assert (norm(triu(R1)-R1, Inf), 0);
-%! assert (norm(R1'*R1 - A(p,p), Inf) < 1e1*eps);
+%! assert (norm (triu (R1) - R1, Inf), 0);
+%! assert (norm (R1'*R1 - A(p,p), Inf) < 1e1*eps);
 
 %!test
 %! R = chol (Ac);

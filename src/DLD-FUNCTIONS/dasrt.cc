@@ -409,7 +409,7 @@ parameters for @code{dasrt}.\n\
                 {
                   jac_name = unique_symbol_name ("__dasrt_jac__");
                   jname = "function jac = ";
-                  jname.append(jac_name);
+                  jname.append (jac_name);
                   jname.append (" (x, xdot, t, cj) jac = ");
                   dasrt_j = extract_function
                     (c(1), "dasrt", jac_name, jname, "; endfunction");
@@ -461,7 +461,7 @@ parameters for @code{dasrt}.\n\
                       {
                         jac_name = unique_symbol_name ("__dasrt_jac__");
                         jname = "function jac = ";
-                        jname.append(jac_name);
+                        jname.append (jac_name);
                         jname.append (" (x, xdot, t, cj) jac = ");
                         dasrt_j = extract_function
                           (tmp(1), "dasrt", jac_name, jname, "; endfunction");

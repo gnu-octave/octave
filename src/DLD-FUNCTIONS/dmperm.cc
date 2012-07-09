@@ -48,7 +48,7 @@ put_int (octave_idx_type *p, octave_idx_type n)
 {
   RowVector ret (n);
   for (octave_idx_type i = 0; i < n; i++)
-    ret.xelem(i) = p[i] + 1;
+    ret.xelem (i) = p[i] + 1;
   return ret;
 }
 

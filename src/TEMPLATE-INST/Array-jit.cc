@@ -31,8 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "pt-jit.h"
 
-NO_INSTANTIATE_ARRAY_SORT (jit_function::overload);
+NO_INSTANTIATE_ARRAY_SORT (jit_operation::overload);
 
-INSTANTIATE_ARRAY (jit_function::overload, OCTINTERP_API);
+INSTANTIATE_ARRAY (jit_operation::overload, OCTINTERP_API);
 
 #endif

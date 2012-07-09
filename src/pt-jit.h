@@ -48,9 +48,9 @@ along with Octave; see the file COPYING.  If not, see
 // at the start of a simple for loop.
 //
 // The octave low level IR is a linear IR, it works by converting everything to
-// calls to jit_functions. This turns expressions like c = a + b into
+// calls to jit_operations. This turns expressions like c = a + b into
 // c = call binary+ (a, b)
-// The jit_functions contain information about overloads for different types.
+// The jit_operations contain information about overloads for different types.
 // For, example, if we know a and b are scalars, then c must also be a scalar.
 //
 // Support for function calls is in progress. Currently, calls to sin with a
@@ -312,7 +312,7 @@ std::ostream& jit_print (std::ostream& os, jit_type *atype);
 // Keeps track of overloads for a builtin function. Used for both type inference
 // and code generation.
 class
-jit_function
+jit_operation
 {
 public:
   struct
@@ -453,74 +453,74 @@ public:
     return instance->do_type_of (ov);
   }
 
-  static const jit_function& binary_op (int op)
+  static const jit_operation& binary_op (int op)
   {
     return instance->do_binary_op (op);
   }
 
-  static const jit_function& grab (void) { return instance->grab_fn; }
+  static const jit_operation& grab (void) { return instance->grab_fn; }
 
-  static const jit_function::overload& get_grab (jit_type *type)
+  static const jit_operation::overload& get_grab (jit_type *type)
   {
     return instance->grab_fn.get_overload (type);
   }
 
-  static const jit_function& release (void)
+  static const jit_operation& release (void)
   {
     return instance->release_fn;
   }
 
-  static const jit_function::overload& get_release (jit_type *type)
+  static const jit_operation::overload& get_release (jit_type *type)
   {
     return instance->release_fn.get_overload (type);
   }
 
-  static const jit_function& print_value (void)
+  static const jit_operation& print_value (void)
   {
     return instance->print_fn;
   }
 
-  static const jit_function& for_init (void)
+  static const jit_operation& for_init (void)
   {
     return instance->for_init_fn;
   }
 
-  static const jit_function& for_check (void)
+  static const jit_operation& for_check (void)
   {
     return instance->for_check_fn;
   }
 
-  static const jit_function& for_index (void)
+  static const jit_operation& for_index (void)
   {
     return instance->for_index_fn;
   }
 
-  static const jit_function& make_range (void)
+  static const jit_operation& make_range (void)
   {
     return instance->make_range_fn;
   }
 
-  static const jit_function& paren_subsref (void)
+  static const jit_operation& paren_subsref (void)
   {
     return instance->paren_subsref_fn;
   }
 
-  static const jit_function& paren_subsasgn (void)
+  static const jit_operation& paren_subsasgn (void)
   {
     return instance->paren_subsasgn_fn;
   }
 
-  static const jit_function& logically_true (void)
+  static const jit_operation& logically_true (void)
   {
     return instance->logically_true_fn;
   }
 
-  static const jit_function& cast (jit_type *result)
+  static const jit_operation& cast (jit_type *result)
   {
     return instance->do_cast (result);
   }
 
-  static const jit_function::overload& cast (jit_type *to, jit_type *from)
+  static const jit_operation::overload& cast (jit_type *to, jit_type *from)
   {
     return instance->do_cast (to, from);
   }
@@ -572,15 +572,15 @@ private:
 
   jit_type *do_type_of (const octave_value &ov) const;
 
-  const jit_function& do_binary_op (int op) const
+  const jit_operation& do_binary_op (int op) const
   {
     assert (static_cast<size_t>(op) < binary_ops.size ());
     return binary_ops[op];
   }
 
-  const jit_function& do_cast (jit_type *to)
+  const jit_operation& do_cast (jit_type *to)
   {
-    static jit_function null_function;
+    static jit_operation null_function;
     if (! to)
       return null_function;
 
@@ -590,7 +590,7 @@ private:
     return casts[id];
   }
 
-  const jit_function::overload& do_cast (jit_type *to, jit_type *from)
+  const jit_operation::overload& do_cast (jit_type *to, jit_type *from)
   {
     return do_cast (to).get_overload (from);
   }
@@ -689,20 +689,20 @@ private:
   jit_type *index;
   std::map<std::string, jit_type *> builtins;
 
-  std::vector<jit_function> binary_ops;
-  jit_function grab_fn;
-  jit_function release_fn;
-  jit_function print_fn;
-  jit_function for_init_fn;
-  jit_function for_check_fn;
-  jit_function for_index_fn;
-  jit_function logically_true_fn;
-  jit_function make_range_fn;
-  jit_function paren_subsref_fn;
-  jit_function paren_subsasgn_fn;
+  std::vector<jit_operation> binary_ops;
+  jit_operation grab_fn;
+  jit_operation release_fn;
+  jit_operation print_fn;
+  jit_operation for_init_fn;
+  jit_operation for_check_fn;
+  jit_operation for_index_fn;
+  jit_operation logically_true_fn;
+  jit_operation make_range_fn;
+  jit_operation paren_subsref_fn;
+  jit_operation paren_subsasgn_fn;
 
   // type id -> cast function TO that type
-  std::vector<jit_function> casts;
+  std::vector<jit_operation> casts;
 
   // type id -> identity function
   std::vector<llvm::Function *> identities;
@@ -1724,11 +1724,11 @@ jit_call : public jit_instruction
 {
 public:
 #define JIT_CALL_CONST(N)                                               \
-  jit_call (const jit_function& afunction,                              \
+  jit_call (const jit_operation& afunction,                              \
             OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
     : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), mfunction (afunction) {} \
                                                                         \
-  jit_call (const jit_function& (*afunction) (void),                    \
+  jit_call (const jit_operation& (*afunction) (void),                    \
             OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
     : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), mfunction (afunction ()) {}
 
@@ -1740,14 +1740,14 @@ public:
 #undef JIT_CALL_CONST
 
 
-  const jit_function& function (void) const { return mfunction; }
+  const jit_operation& function (void) const { return mfunction; }
 
   bool can_error (void) const
   {
     return overload ().can_error;
   }
 
-  const jit_function::overload& overload (void) const
+  const jit_operation::overload& overload (void) const
   {
     return mfunction.get_overload (argument_types ());
   }
@@ -1778,7 +1778,7 @@ public:
 
   JIT_VALUE_ACCEPT;
 private:
-  const jit_function& mfunction;
+  const jit_operation& mfunction;
 };
 
 // FIXME: This is just ugly...
@@ -1826,7 +1826,7 @@ public:
     return dest ()->name ();
   }
 
-  const jit_function::overload& overload (void) const
+  const jit_operation::overload& overload (void) const
   {
     return jit_typeinfo::cast (type (), jit_typeinfo::get_any ());
   }
@@ -1854,7 +1854,7 @@ public:
     return dest->name ();
   }
 
-  const jit_function::overload& overload (void) const
+  const jit_operation::overload& overload (void) const
   {
     return jit_typeinfo::cast (jit_typeinfo::get_any (), result_type ());
   }
@@ -2249,13 +2249,13 @@ private:
       jvalue.accept (*this);
     }
 
-    llvm::Value *create_call (const jit_function::overload& ol, jit_value *arg0)
+    llvm::Value *create_call (const jit_operation::overload& ol, jit_value *arg0)
     {
       std::vector<jit_value *> args (1, arg0);
       return create_call (ol, args);
     }
 
-    llvm::Value *create_call (const jit_function::overload& ol, jit_value *arg0,
+    llvm::Value *create_call (const jit_operation::overload& ol, jit_value *arg0,
                               jit_value *arg1)
     {
       std::vector<jit_value *> args (2);
@@ -2265,10 +2265,10 @@ private:
       return create_call (ol, args);
     }
 
-    llvm::Value *create_call (const jit_function::overload& ol,
+    llvm::Value *create_call (const jit_operation::overload& ol,
                               const std::vector<jit_value *>& jargs);
 
-    llvm::Value *create_call (const jit_function::overload& ol,
+    llvm::Value *create_call (const jit_operation::overload& ol,
                               const std::vector<jit_use>& uses);
   private:
     jit_convert &jthis;

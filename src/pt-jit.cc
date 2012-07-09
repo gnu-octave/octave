@@ -388,9 +388,9 @@ jit_type::to_llvm_arg (void) const
   return llvm_type ? llvm_type->getPointerTo () : 0;
 }
 
-// -------------------- jit_function --------------------
+// -------------------- jit_operation --------------------
 void
-jit_function::add_overload (const overload& func,
+jit_operation::add_overload (const overload& func,
                             const std::vector<jit_type*>& args)
 {
   if (args.size () >= overloads.size ())
@@ -420,8 +420,8 @@ jit_function::add_overload (const overload& func,
   over(idx) = func;
 }
 
-const jit_function::overload&
-jit_function::get_overload (const std::vector<jit_type*>& types) const
+const jit_operation::overload&
+jit_operation::get_overload (const std::vector<jit_type*>& types) const
 {
   // FIXME: We should search for the next best overload on failure
   static overload null_overload;
@@ -443,7 +443,7 @@ jit_function::get_overload (const std::vector<jit_type*>& types) const
 }
 
 Array<octave_idx_type>
-jit_function::to_idx (const std::vector<jit_type*>& types) const
+jit_operation::to_idx (const std::vector<jit_type*>& types) const
 {
   octave_idx_type numel = types.size ();
   if (numel == 1)
@@ -640,7 +640,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
                                            ++fn->arg_begin ());
     builder.CreateRet (ret);
 
-    jit_function::overload ol (fn, true, scalar, scalar, scalar);
+    jit_operation::overload ol (fn, true, scalar, scalar, scalar);
     binary_ops[octave_value::op_div].add_overload (ol);
     binary_ops[octave_value::op_el_div].add_overload (ol);
   }
@@ -657,7 +657,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
                                             fn->arg_begin ());
     builder.CreateRet (ret);
 
-    jit_function::overload ol (fn, true, scalar, scalar, scalar);
+    jit_operation::overload ol (fn, true, scalar, scalar, scalar);
     binary_ops[octave_value::op_ldiv].add_overload (ol);
     binary_ops[octave_value::op_el_ldiv].add_overload (ol);
   }
@@ -1045,7 +1045,7 @@ jit_typeinfo::add_print (jit_type *ty, void *call)
                                         ty->to_llvm ());
   engine->addGlobalMapping (fn, call);
 
-  jit_function::overload ol (fn, false, 0, string, ty);
+  jit_operation::overload ol (fn, false, 0, string, ty);
   print_fn.add_overload (ol);
 }
 
@@ -1068,7 +1068,7 @@ jit_typeinfo::add_binary_op (jit_type *ty, int op, int llvm_op)
   builder.CreateRet (ret);
   llvm::verifyFunction (*fn);
 
-  jit_function::overload ol(fn, false, ty, ty, ty);
+  jit_operation::overload ol(fn, false, ty, ty, ty);
   binary_ops[op].add_overload (ol);
 }
 
@@ -1090,7 +1090,7 @@ jit_typeinfo::add_binary_icmp (jit_type *ty, int op, int llvm_op)
   builder.CreateRet (ret);
   llvm::verifyFunction (*fn);
 
-  jit_function::overload ol (fn, false, boolean, ty, ty);
+  jit_operation::overload ol (fn, false, boolean, ty, ty);
   binary_ops[op].add_overload (ol);
 }
 
@@ -1112,7 +1112,7 @@ jit_typeinfo::add_binary_fcmp (jit_type *ty, int op, int llvm_op)
   builder.CreateRet (ret);
   llvm::verifyFunction (*fn);
 
-  jit_function::overload ol (fn, false, boolean, ty, ty);
+  jit_operation::overload ol (fn, false, boolean, ty, ty);
   binary_ops[op].add_overload (ol);
 }
 
@@ -1998,7 +1998,7 @@ jit_convert::visit_binary_expression (tree_binary_expression& be)
       tree_expression *rhs = be.rhs ();
       jit_value *rhsv = visit (rhs);
 
-      const jit_function& fn = jit_typeinfo::binary_op (be.op_type ());
+      const jit_operation& fn = jit_typeinfo::binary_op (be.op_type ());
       result = create_checked (fn, lhsv, rhsv);
     }
 }
@@ -2126,7 +2126,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   finish_breaks (check_block, continues);
 
   block = check_block;
-  const jit_function& add_fn = jit_typeinfo::binary_op (octave_value::op_add);
+  const jit_operation& add_fn = jit_typeinfo::binary_op (octave_value::op_add);
   jit_value *one = create<jit_const_index> (1);
   jit_call *iter_inc = create<jit_call> (add_fn, iterator, one);
   block->append (iter_inc);
@@ -2407,7 +2407,7 @@ jit_convert::visit_statement (tree_statement& stmt)
         {
           // FIXME: ugly hack, we need to come up with a way to pass
           // nargout to visit_identifier
-          const jit_function& fn = jit_typeinfo::print_value ();
+          const jit_operation& fn = jit_typeinfo::print_value ();
           jit_const_string *name = create<jit_const_string> (expr->name ());
           block->append (create<jit_call> (fn, name, expr_result));
         }
@@ -2576,7 +2576,7 @@ jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
 
   if (print)
     {
-      const jit_function& print_fn = jit_typeinfo::print_value ();
+      const jit_operation& print_fn = jit_typeinfo::print_value ();
       jit_const_string *name = create<jit_const_string> (lhs);
       block->append (create<jit_call> (print_fn, name, var));
     }
@@ -2898,7 +2898,7 @@ void
 jit_convert::simplify_phi (jit_phi& phi)
 {
   jit_block& pblock = *phi.parent ();
-  const jit_function& cast_fn = jit_typeinfo::cast (phi.type ());
+  const jit_operation& cast_fn = jit_typeinfo::cast (phi.type ());
   jit_variable *dest = phi.dest ();
   for (size_t i = 0; i < phi.argument_count (); ++i)
     {
@@ -3150,7 +3150,7 @@ jit_convert::convert_llvm::visit (jit_assign& assign)
   jit_value *new_value = assign.src ();
   if (isa<jit_assign_base> (new_value))
     {
-      const jit_function::overload& ol
+      const jit_operation::overload& ol
         = jit_typeinfo::get_grab (new_value->type ());
       if (ol.function)
         assign.stash_llvm (create_call (ol, new_value));
@@ -3159,7 +3159,7 @@ jit_convert::convert_llvm::visit (jit_assign& assign)
   jit_value *overwrite = assign.overwrite ();
   if (isa<jit_assign_base> (overwrite))
     {
-      const jit_function::overload& ol
+      const jit_operation::overload& ol
         = jit_typeinfo::get_release (overwrite->type ());
       if (ol.function)
         create_call (ol, overwrite);
@@ -3171,7 +3171,7 @@ jit_convert::convert_llvm::visit (jit_argument&)
 {}
 
 llvm::Value *
-jit_convert::convert_llvm::create_call (const jit_function::overload& ol,
+jit_convert::convert_llvm::create_call (const jit_operation::overload& ol,
                                         const std::vector<jit_value *>& jargs)
 {
   llvm::IRBuilder<> alloca_inserter (prelude, prelude->begin ());
@@ -3221,7 +3221,7 @@ jit_convert::convert_llvm::create_call (const jit_function::overload& ol,
 }
 
 llvm::Value *
-jit_convert::convert_llvm::create_call (const jit_function::overload& ol,
+jit_convert::convert_llvm::create_call (const jit_operation::overload& ol,
                                         const std::vector<jit_use>& uses)
 {
   std::vector<jit_value *> values (uses.size ());

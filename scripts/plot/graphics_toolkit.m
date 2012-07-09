@@ -27,7 +27,7 @@
 ## already loaded, it is initialized by calling the function
 ## @code{__init_@var{name}__}.
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
-## Sets the graphics toolkit for the figues with handles @var{hlist} to
+## Sets the graphics toolkit for the figures with handles @var{hlist} to
 ## @var{name}.
 ## @seealso{available_graphics_toolkits}
 ## @end deftypefn

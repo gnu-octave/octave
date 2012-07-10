@@ -1188,6 +1188,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   casts[complex->type_id ()].add_overload (fn, false, complex, complex);
 
   // -------------------- builtin functions --------------------
+  add_builtin ("#unknown_function");
+  unknown_function = builtins["#unknown_function"];
+
   add_builtin ("sin");
   register_intrinsic ("sin", llvm::Intrinsic::sin, scalar, scalar);
   register_generic ("sin", matrix, matrix);
@@ -1494,7 +1497,8 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
       // have octave_value fully support the needed functionality
       octave_builtin *builtin
         = dynamic_cast<octave_builtin *> (ov.internal_rep ());
-      return builtin ? builtin->to_jit () : 0;
+      return builtin && builtin->to_jit () ? builtin->to_jit ()
+        : unknown_function;
     }
 
   if (ov.is_range ())

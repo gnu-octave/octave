@@ -697,6 +697,7 @@ private:
   jit_type *boolean;
   jit_type *index;
   jit_type *complex;
+  jit_type *unknown_function;
   std::map<std::string, jit_type *> builtins;
 
   llvm::StructType *complex_ret;

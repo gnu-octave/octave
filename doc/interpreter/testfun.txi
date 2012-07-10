@@ -72,7 +72,7 @@ produces a correct value.  A real test might look something like
 %! get = kron (@var{b}, @var{a});
 %! if (any (size (expect) != size (get)))
 %!   error ("wrong size: expected %d,%d but got %d,%d",
-%!          size(expect), size(get));
+%!          size (expect), size (get));
 %! elseif (any (any (expect != get)))
 %!   error ("didn't get what was expected.");
 %! endif

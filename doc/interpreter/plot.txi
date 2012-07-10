@@ -811,11 +811,11 @@ A complete example showing the capabilities of the extended text is
 @example
 @group
 x = 0:0.01:3;
-plot(x,erf(x));
+plot (x, erf (x));
 hold on;
-plot(x,x,"r");
-axis([0, 3, 0, 1]);
-text(0.65, 0.6175, strcat('\leftarrow x = @{2/\surd\pi',
+plot (x,x,"r");
+axis ([0, 3, 0, 1]);
+text (0.65, 0.6175, strcat ('\leftarrow x = @{2/\surd\pi',
 ' @{\fontsize@{16@}\int_@{\fontsize@{8@}0@}^@{\fontsize@{8@}x@}@}',
 ' e^@{-t^2@} dt@} = 0.6175'))
 @end group
@@ -2610,7 +2610,7 @@ with an object either at the objects creation or later with the
 @code{set} function.  For example,
 
 @example
-plot (x, "DeleteFcn", @@(s, e) disp("Window Deleted"))
+plot (x, "DeleteFcn", @@(s, e) disp ("Window Deleted"))
 @end example
 
 @noindent

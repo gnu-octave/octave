@@ -63,7 +63,7 @@ the function @code{f} is called without any input arguments.
 @group
 function f (arg1)
   if (nargin == 0)
-    error("not enough input arguments");
+    error ("not enough input arguments");
   endif
 endfunction
 @end group

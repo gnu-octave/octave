@@ -772,7 +772,7 @@ using @code{addpath} and @code{rmpath}.  As an example, the following
 code adds @samp{~/Octave} to the load path.
 
 @example
-addpath("~/Octave")
+addpath ("~/Octave")
 @end example
 
 @noindent
@@ -1400,7 +1400,7 @@ body using the @code{inline} function.  The following code defines the
 function @math{f(x) = x^2 + 2}.
 
 @example
-f = inline("x^2 + 2");
+f = inline ("x^2 + 2");
 @end example
 
 @noindent
@@ -1430,7 +1430,7 @@ my_command hello world
 is equivalent to 
 
 @example
-my_command("hello", "world")
+my_command ("hello", "world")
 @end example
 
 @noindent

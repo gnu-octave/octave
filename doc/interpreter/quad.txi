@@ -338,7 +338,7 @@ $$
 @ifnottex
 the sum over @code{i=1:n} and @code{j=1:n} of @code{q(i)*q(j)*f(r(i),r(j))},
 @end ifnottex
-where @math{q} and @math{r} is as returned by @code{colloc(n)}.  The
+where @math{q} and @math{r} is as returned by @code{colloc (n)}.  The
 generalization to more than two variables is straight forward.  The
 following code computes the studied integral using @math{n=8} points.
 

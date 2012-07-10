@@ -40,7 +40,7 @@ pretty much the same way.  As an example, assume that @code{x} and
 @code{y} contains two sets, then
 
 @example
-union(x, y)
+union (x, y)
 @end example
 
 @noindent

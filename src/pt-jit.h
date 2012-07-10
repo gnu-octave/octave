@@ -77,6 +77,7 @@ namespace llvm
   class BasicBlock;
   class LLVMContext;
   class Type;
+  class StructType;
   class Twine;
   class GlobalVariable;
   class TerminatorInst;
@@ -673,6 +674,12 @@ private:
 
   octave_builtin *find_builtin (const std::string& name);
 
+  llvm::Function *wrap_complex (llvm::Function *wrap);
+
+  llvm::Value *pack_complex (llvm::Value *cplx);
+
+  llvm::Value *unpack_complex (llvm::Value *result);
+
   static jit_typeinfo *instance;
 
   llvm::Module *module;
@@ -691,6 +698,8 @@ private:
   jit_type *index;
   jit_type *complex;
   std::map<std::string, jit_type *> builtins;
+
+  llvm::StructType *complex_ret;
 
   std::vector<jit_operation> binary_ops;
   jit_operation grab_fn;

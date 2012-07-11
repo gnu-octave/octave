@@ -176,6 +176,7 @@ octave_jit_cast_any_matrix (jit_matrix *m)
   octave_value ret (*m->array);
   octave_base_value *rep = ret.internal_rep ();
   rep->grab ();
+  delete m->array;
 
   return rep;
 }
@@ -185,6 +186,7 @@ octave_jit_cast_matrix_any (jit_matrix *ret, octave_base_value *obv)
 {
   NDArray m = obv->array_value ();
   *ret = m;
+  obv->release ();
 }
 
 extern "C" double
@@ -3636,10 +3638,11 @@ jit_info::execute (void) const
     {
       if (arguments[i].second)
         {
-          octave_value current = symbol_table::varval (arguments[i].first);
+          octave_value &current = symbol_table::varref (arguments[i].first);
           octave_base_value *obv = current.internal_rep ();
           obv->grab ();
           real_arguments[i] = obv;
+          current = octave_value ();
         }
     }
 

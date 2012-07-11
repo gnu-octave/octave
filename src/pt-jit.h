@@ -226,7 +226,6 @@ jit_array
 {
   jit_array (T& from) : array (new T (from))
   {
-    grab_dimensions ();
     update ();
   }
 
@@ -242,11 +241,6 @@ jit_array
   {
     array = aarray;
     update ();
-  }
-
-  void grab_dimensions (void)
-  {
-    ++(dimensions[-2]);
   }
 
   operator T () const

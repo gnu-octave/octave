@@ -668,11 +668,23 @@ private:
 
   octave_builtin *find_builtin (const std::string& name);
 
+  llvm::Function *mirror_binary (llvm::Function *fn);
+
   llvm::Function *wrap_complex (llvm::Function *wrap);
 
   llvm::Value *pack_complex (llvm::Value *cplx);
 
   llvm::Value *unpack_complex (llvm::Value *result);
+
+  llvm::Value *complex_real (llvm::Value *cx);
+
+  llvm::Value *complex_real (llvm::Value *cx, llvm::Value *real);
+
+  llvm::Value *complex_imag (llvm::Value *cx);
+
+  llvm::Value *complex_imag (llvm::Value *cx, llvm::Value *imag);
+
+  llvm::Value *complex_new (llvm::Value *real, llvm::Value *imag);
 
   static jit_typeinfo *instance;
 

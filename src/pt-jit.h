@@ -1373,7 +1373,7 @@ private:
 
   void create_dom_tree (size_t avisit_count);
 
-  jit_block *idom_intersect (jit_block *b);
+  static jit_block *idom_intersect (jit_block *i, jit_block *j);
 
   size_t mvisit_count;
   size_t mid;

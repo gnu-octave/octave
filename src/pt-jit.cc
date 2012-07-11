@@ -2042,7 +2042,7 @@ jit_block::update_idom (size_t avisit_count)
       jit_block *pred = use->user_parent ();
       jit_block *pidom = pred->idom;
       if (pidom)
-        new_idom = pidom->idom_intersect (new_idom);
+        new_idom = idom_intersect (pidom, new_idom);
     }
 
   if (idom != new_idom)
@@ -2109,21 +2109,18 @@ jit_block::create_dom_tree (size_t avisit_count)
 }
 
 jit_block *
-jit_block::idom_intersect (jit_block *b)
+jit_block::idom_intersect (jit_block *i, jit_block *j)
 {
-  jit_block *i = this;
-  jit_block *j = b;
-
-  while (i != j)
+  while (i && j && i != j)
     {
-      while (i->id () > j->id ())
+      while (i && i->id () > j->id ())
         i = i->idom;
 
-      while (j->id () > i->id ())
+      while (i && j && j->id () > i->id ())
         j = j->idom;
     }
 
-  return i;
+  return i ? i : j;
 }
 
 // -------------------- jit_phi_incomming --------------------
@@ -2509,6 +2506,7 @@ jit_convert::visit_simple_for_command (tree_simple_for_command& cmd)
   prot.protect_var (continues);
   prot.protect_var (breaking);
   breaks.clear ();
+  continues.clear ();
 
   // we need a variable for our iterator, because it is used in multiple blocks
   std::stringstream ss;
@@ -2902,9 +2900,45 @@ jit_convert::visit_unwind_protect_command (tree_unwind_protect_command&)
 }
 
 void
-jit_convert::visit_while_command (tree_while_command&)
+jit_convert::visit_while_command (tree_while_command& wc)
 {
-  fail ();
+  assert (! breaking);
+  unwind_protect prot;
+  prot.protect_var (breaks);
+  prot.protect_var (continues);
+  prot.protect_var (breaking);
+  breaks.clear ();
+  continues.clear ();
+
+  jit_block *cond_check = create<jit_block> ("while_cond_check");
+  block->append (create<jit_branch> (cond_check));
+  append (cond_check);
+  block = cond_check;
+
+  tree_expression *expr = wc.condition ();
+  assert (expr && "While expression can not be null");
+  jit_value *check = visit (expr);
+  check = create_checked (&jit_typeinfo::logically_true, check);
+
+  jit_block *body = create<jit_block> ("while_body");
+  append (body);
+
+  jit_block *tail = create<jit_block> ("while_tail");
+  block->append (create<jit_cond_branch> (check, body, tail));
+  block = body;
+
+  tree_statement_list *loop_body = wc.body ();
+  if (loop_body)
+    loop_body->accept (*this);
+
+  finish_breaks (tail, breaks);
+  finish_breaks (cond_check, continues);
+
+  if (! breaking)
+    block->append (create<jit_branch> (cond_check));
+
+  append (tail);
+  block = tail;
 }
 
 void

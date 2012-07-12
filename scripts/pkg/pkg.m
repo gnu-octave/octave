@@ -441,7 +441,7 @@ function [local_packages, global_packages] = pkg (varargin)
           catch
             [status, msg, msgid] = mkdir (archprefix);
             if (status == 0)
-              error("cannot create prefix %s: %s", prefix, msg);
+              error("cannot create archprefix %s: %s", archprefix, msg);
             endif
             warning ("creating the directory %s\n", archprefix);
             archprefix = absolute_pathname (archprefix);

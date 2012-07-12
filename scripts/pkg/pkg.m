@@ -421,6 +421,13 @@ function [local_packages, global_packages] = pkg (varargin)
         global_packages = archprefix;
       elseif (length (files) >= 1 && nargout <= 2 && ischar (files{1}))
         prefix = files{1};
+        try
+          prefix = absolute_pathname (prefix);
+        catch
+          mkdir (prefix);
+          warning ("creating the directory %s\n", prefix);
+          prefix = absolute_pathname (prefix);
+        end_try_catch
         prefix = absolute_pathname (prefix);
         local_packages = prefix;
         user_prefix = true;

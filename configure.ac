@@ -735,6 +735,7 @@ AS_IF([test "x$enable_jit_debug" = "xyes"], [
   AC_DEFINE(OCTAVE_JIT_DEBUG, 1, [Define for jit debug printing])
 ])
 
+LLVM_CXXFLAGS=
 LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
@@ -744,7 +745,8 @@ if  test -n "$LLVM_CONFIG"; then
   LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
   LLVM_LIBS=`$LLVM_CONFIG --libs`
   dnl Use -isystem so we don't get warnings from llvm headers
-  LLVM_CXXFLAGS="-isystem `$LLVM_CONFIG --includedir`"
+  LLVM_CPPFLAGS="-isystem `$LLVM_CONFIG --includedir`"
+  LLVM_CXXFLAGS=
 fi
 
 save_CPPFLAGS="$CPPFLAGS"
@@ -756,7 +758,7 @@ dnl We define some extra flags that llvm requires in order to include headers.
 dnl Idealy we should get these from llvm-config, but llvm-config isn't very
 dnl helpful.
 dnl
-CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $CPPFLAGS"
+CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
 CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
 LIBS="$LLVM_LIBS $LIBS"
 LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
@@ -770,7 +772,7 @@ AC_LANG_PUSH(C++)
         [
          AC_MSG_RESULT([yes])
          warn_llvm=
-         XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS"
+         XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"
         ],
         [AC_MSG_RESULT([no])
     ])
@@ -784,12 +786,14 @@ LDFLAGS="$save_LDFLAGS"
 if test -z "$warn_llvm"; then
   AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available])
 else
+  LLVM_CXXFLAGS=
   LLVM_CPPFLAGS=
   LLVM_LDFLAGS=
   LLVM_LIBS=
   AC_MSG_WARN([$warn_llvm])
 fi
 
+AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_CPPFLAGS)
 AC_SUBST(LLVM_LDFLAGS)
 AC_SUBST(LLVM_LIBS)

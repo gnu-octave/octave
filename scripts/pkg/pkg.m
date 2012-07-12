@@ -424,7 +424,10 @@ function [local_packages, global_packages] = pkg (varargin)
         try
           prefix = absolute_pathname (prefix);
         catch
-          mkdir (prefix);
+          [status, msg, msgid] = mkdir (prefix);
+          if (status == 0)
+            error("cannot create prefix %s: %s", prefix, msg);
+          endif
           warning ("creating the directory %s\n", prefix);
           prefix = absolute_pathname (prefix);
         end_try_catch
@@ -436,7 +439,10 @@ function [local_packages, global_packages] = pkg (varargin)
           try
             archprefix = absolute_pathname (archprefix);
           catch
-            mkdir (archprefix);
+            [status, msg, msgid] = mkdir (archprefix);
+            if (status == 0)
+              error("cannot create prefix %s: %s", prefix, msg);
+            endif
             warning ("creating the directory %s\n", archprefix);
             archprefix = absolute_pathname (archprefix);
           end_try_catch

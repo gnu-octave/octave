@@ -44,27 +44,35 @@ like built-in functions.
 * Organization of Functions::   
 @end menu
 
-@node  Introduction to Function and Script Files
-@section  Introduction to Function and Script Files
+@node Introduction to Function and Script Files
+@section Introduction to Function and Script Files
 
-There are six different things covered in this section.
+There are seven different things covered in this section.
 @enumerate
 @item
 Typing in a function at the command prompt.
+
 @item
-Storing a group of commands in a file - called a script file.
+Storing a group of commands in a file --- called a script file.
+
 @item
-Storing a function in a file - called a function file.
+Storing a function in a file---called a function file.
+
 @item
-Sub-functions in function files.
+Subfunctions in function files.
+
 @item
 Multiple functions in one script file.
+
 @item
 Private functions.
+
+@item
+Nested functions.
 @end enumerate
 
 Both function files and script files end with an extension of .m, for
-@sc{Matlab} compatibility. If you want more than one independent
+@sc{matlab} compatibility.  If you want more than one independent
 functions in a file, it must be a script file (@pxref{Script Files}),
 and to use these functions you must execute the script file before you
 can use the functions that are in the script file.
@@ -743,6 +751,7 @@ ignore the time stamps for all function files.  Passing
 * Manipulating the Load Path::
 * Subfunctions::
 * Private Functions::
+* Nested Functions::
 * Overloading and Autoloading::
 * Function Locking::
 * Function Precedence::
@@ -763,7 +772,7 @@ using @code{addpath} and @code{rmpath}.  As an example, the following
 code adds @samp{~/Octave} to the load path.
 
 @example
-addpath("~/Octave")
+addpath ("~/Octave")
 @end example
 
 @noindent
@@ -850,6 +859,157 @@ Then if the path to @code{func1} is @code{<directory>/func1.m}, and if
 @code{func2} is found in the directory @code{<directory>/private/func2.m}, 
 then @code{func2} is only available for use of the functions, like 
 @code{func1}, that are found in @code{<directory>}.
+
+@node Nested Functions
+@subsection Nested Functions
+
+Nested functions are similar to subfunctions in that only the main function is
+visible outside the file.  However, they also allow for child functions to
+access the local variables in their parent function.  This shared access mimics
+using a global variable to share information --- but a global variable which is
+not visible to the rest of Octave.  As a programming strategy, sharing data
+this way can create code which is difficult to maintain.  It is recommended to
+use subfunctions in place of nested functions when possible.
+
+As a simple example, consider a parent function @code{foo}, that calls a nested
+child function @code{bar}, with a shared variable @var{x}.
+
+@example
+@group
+function y = foo ()
+  x = 10;
+  bar ();
+  y = x;
+
+  function bar ()
+    x = 20;
+  endfunction
+endfunction
+
+foo ()
+ @result{} 20
+@end group
+@end example
+
+@noindent
+Notice that there is no special syntax for sharing @var{x}.  This can lead to
+problems with accidental variable sharing between a parent function and its
+child.  While normally variables are inherited, child function parameters and
+return values are local to the child function.
+
+Now consider the function @code{foobar} that uses variables @var{x} and
+@var{y}.  @code{foobar} calls a nested function @code{foo} which takes
+@var{x} as a parameter and returns @var{y}.  @code{foo} then calls @code{bat}
+which does some computation.
+
+@example
+@group
+function z = foobar ()
+  x = 0;
+  y = 0;
+  z = foo (5);
+  z += x + y;
+
+  function y = foo (x)
+    y = x + bat ();
+
+    function z = bat ()
+      z = x;
+    endfunction
+  endfunction
+endfunction
+
+foobar ()
+    @result{} 10
+@end group
+@end example
+
+@noindent
+It is important to note that the @var{x} and @var{y} in @code{foobar} remain
+zero, as in @code{foo} they are a return value and parameter respectively.  The
+@var{x} in @code{bat} refers to the @var{x} in @code{foo}.
+
+Variable inheritance leads to a problem for @code{eval} and scripts.  If a
+new variable is created in a parent function, it is not clear what should happen
+in nested child functions.  For example, consider a parent function @code{foo}
+with a nested child function @code{bar}:
+
+@example
+@group
+function y = foo (to_eval)
+  bar ();
+  eval (to_eval);
+
+  function bar ()
+    eval ("x = 100;");
+    eval ("y = x;");
+  endfunction
+endfunction
+
+foo ("x = 5;")
+    @result{} error: can not add variable "x" to a static workspace
+
+foo ("y = 10;")
+    @result{} 10
+
+foo ("")
+    @result{} 100
+@end group
+@end example
+
+@noindent
+The parent function @code{foo} is unable to create a new variable
+@var{x}, but the child function @code{bar} was successful.  Furthermore, even
+in an @code{eval} statement @var{y} in @code{bar} is the same @var{y} as in its
+parent function @code{foo}.  The use of @code{eval} in conjunction with nested
+functions is best avoided.
+
+As with subfunctions, only the first nested function in a file may be called
+from the outside.  Inside a function the rules are more complicated.  In
+general a nested function may call:
+
+@enumerate 0
+@item
+Globally visible functions
+
+@item
+Any function that the nested function's parent can call
+
+@item
+Sibling functions (functions that have the same parents)
+
+@item
+Direct children
+
+@end enumerate
+
+As a complex example consider a parent function @code{ex_top} with two
+child functions, @code{ex_a} and @code{ex_b}.  In addition, @code{ex_a} has two
+more child functions, @code{ex_aa} and @code{ex_ab}.  For example:
+
+@example
+function ex_top ()
+  ## Can call: ex_top, ex_a, and ex_b
+  ## Can NOT call: ex_aa and ex_ab
+
+  function ex_a ()
+    ## Call call everything
+
+    function ex_aa ()
+      ## Can call everything
+    endfunction
+
+    function ex_ab ()
+      ## Can call everything
+    endfunction
+  endfunction
+
+  function ex_b ()
+    ## Can call: ex_top, ex_a, and ex_b
+    ## Can NOT call: ex_aa and ex_ab
+  endfunction
+endfunction
+@end example
 
 @node Overloading and Autoloading
 @subsection Overloading and Autoloading
@@ -1240,7 +1400,7 @@ body using the @code{inline} function.  The following code defines the
 function @math{f(x) = x^2 + 2}.
 
 @example
-f = inline("x^2 + 2");
+f = inline ("x^2 + 2");
 @end example
 
 @noindent
@@ -1270,7 +1430,7 @@ my_command hello world
 is equivalent to 
 
 @example
-my_command("hello", "world")
+my_command ("hello", "world")
 @end example
 
 @noindent

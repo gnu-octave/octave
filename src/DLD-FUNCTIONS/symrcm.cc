@@ -182,7 +182,7 @@ H_remove_min (CMK_Node *H, octave_idx_type& h, int reorg/*=1*/)
   CMK_Node r = H[0];
   H[0] = H[--h];
   if (reorg)
-    H_heapify_min(H, 0, h);
+    H_heapify_min (H, 0, h);
   return r;
 }
 
@@ -601,7 +601,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
                       w.id = r2;
                       w.deg = D[r2];
                       w.dist = v.dist+1;
-                      H_insert(S, s, w);
+                      H_insert (S, s, w);
                       visit[r2] = true;
                     }
                 }
@@ -613,7 +613,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
                       w.id = r1;
                       w.deg = D[r1];
                       w.dist = v.dist+1;
-                      H_insert(S, s, w);
+                      H_insert (S, s, w);
                       visit[r1] = true;
                     }
                 }
@@ -628,7 +628,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
                           w.id = r1;
                           w.deg = D[r1];
                           w.dist = v.dist+1;
-                          H_insert(S, s, w);
+                          H_insert (S, s, w);
                           visit[r1] = true;
                         }
                       j1++;
@@ -642,7 +642,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
                           w.id = r2;
                           w.deg = D[r2];
                           w.dist = v.dist+1;
-                          H_insert(S, s, w);
+                          H_insert (S, s, w);
                           visit[r2] = true;
                         }
                       j2++;
@@ -656,7 +656,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
               OCTAVE_QUIT;
 
               // locate a neighbor of i with minimal degree in O(log(N))
-              v = H_remove_min(S, s, 1);
+              v = H_remove_min (S, s, 1);
 
               // entered the BFS a new level?
               if (v.dist > level)
@@ -700,9 +700,9 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   s = N / 2 - 1;
   for (octave_idx_type i = 0, j = N - 1; i <= s; i++, j--)
     {
-      double tmp = P.elem(i);
-      P.elem(i) = P.elem(j);
-      P.elem(j) = tmp;
+      double tmp = P.elem (i);
+      P.elem (i) = P.elem (j);
+      P.elem (j) = tmp;
     }
 
   // increment all indices, since Octave is not C

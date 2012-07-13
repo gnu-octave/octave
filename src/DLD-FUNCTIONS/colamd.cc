@@ -226,7 +226,7 @@ than that of @code{@var{S}' * @var{S}}.\n\
 @var{knobs} is an optional one- to three-element input vector.  If @var{S} is\n\
 m-by-n, then rows with more than @code{max(16,@var{knobs}(1)*sqrt(n))}\n\
 entries are ignored.  Columns with more than\n\
-@code{max(16,@var{knobs}(2)*sqrt(min(m,n)))} entries are removed prior to\n\
+@code{max (16,@var{knobs}(2)*sqrt(min(m,n)))} entries are removed prior to\n\
 ordering, and ordered last in the output permutation @var{p}.  Only\n\
 completely dense rows or columns are removed if @code{@var{knobs}(1)} and\n\
 @code{@var{knobs}(2)} are < 0, respectively.  If @code{@var{knobs}(3)} is\n\
@@ -314,8 +314,8 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
               if (knobs [COLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(1): " << User_knobs (0)
-                              << ", rows with > max(16,"
-                              << knobs [COLAMD_DENSE_ROW] << "*sqrt(size(A,2)))"
+                              << ", rows with > max (16,"
+                              << knobs [COLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(1): " << User_knobs (0)
@@ -323,8 +323,8 @@ Ng, Oak Ridge National Laboratory.  (see\n\
 
               if (knobs [COLAMD_DENSE_COL] >= 0)
                 octave_stdout << "knobs(2): " << User_knobs (1)
-                              << ", cols with > max(16,"
-                              << knobs [COLAMD_DENSE_COL] << "*sqrt(size(A)))"
+                              << ", cols with > max (16,"
+                              << knobs [COLAMD_DENSE_COL] << "*sqrt (size(A)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(2): " << User_knobs (1)
@@ -415,7 +415,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = p [colbeg [i]] + 1;
+        out_perm(i) = p[colbeg [i]] + 1;
 
       retval(0) = out_perm;
 
@@ -464,7 +464,7 @@ to be symmetric; only the strictly lower triangular part is referenced.\n\
 \n\
 @var{knobs} is an optional one- to two-element input vector.  If @var{S} is\n\
 n-by-n, then rows and columns with more than\n\
-@code{max(16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,\n\
+@code{max (16,@var{knobs}(1)*sqrt(n))} entries are removed prior to ordering,\n\
 and ordered last in the output permutation @var{p}.  No rows/columns are\n\
 removed if @code{@var{knobs}(1) < 0}.  If @code{@var{knobs} (2)} is nonzero,\n\
 @code{stats} and @var{knobs} are printed.  The default is @code{@var{knobs}\n\
@@ -608,7 +608,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = perm [post [i]] + 1;
+        out_perm(i) = perm[post [i]] + 1;
 
       retval(0) = out_perm;
 

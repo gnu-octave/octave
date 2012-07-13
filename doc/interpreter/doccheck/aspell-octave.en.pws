@@ -140,6 +140,7 @@ colamd
 collectoutput
 colorbar
 colormap
+colormaps
 ColorOrder
 colperm
 Comint
@@ -339,6 +340,7 @@ gesdd
 gesvd
 gfortan
 Ghostscript
+Ghostscript's
 gif
 GIF
 glibc
@@ -359,6 +361,7 @@ GPLK
 gplot
 grabdemo
 GradObj
+GraphicsAlphaBits
 GraphicsMagick
 Graymap
 grayscale
@@ -864,6 +867,7 @@ stringanchors
 strncmp
 strncmpi
 strread
+strread's
 struct
 structs
 subarrays
@@ -920,6 +924,7 @@ terminal's
 tex
 texinfo
 Texinfo
+TextAlphaBits
 textscan
 th
 ths
@@ -986,6 +991,7 @@ univariate
 unnormalized
 unpadded
 unpivoted
+unregister
 unshare
 unsymmetric
 untabified

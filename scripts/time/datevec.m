@@ -31,7 +31,7 @@
 ## @var{f} is the format string used to interpret date strings
 ## (see @code{datestr}).  If @var{date} is a string, but no format is
 ## specified, then a relatively slow search is performed through various
-## formats.  It is always preferable to specifiy the format string @var{f}
+## formats.  It is always preferable to specify the format string @var{f}
 ## if it is known.  Formats which do not specify a particular time component
 ## will have the value set to zero.  Formats which do not specify a date will
 ## default to January 1st of the current year.

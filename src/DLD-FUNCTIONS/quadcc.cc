@@ -1493,7 +1493,7 @@ which uses the element-by-element `dot' form for all operators.\n\
 \n\
 @var{a} and @var{b} are the lower and upper limits of integration.  Either\n\
 or both limits may be infinite.  @code{quadcc} handles an inifinite limit\n\
-by substituting the variable of integration with @code{x=tan(pi/2*u)}.\n\
+by substituting the variable of integration with @code{x = tan (pi/2*u)}.\n\
 \n\
 The optional argument @var{tol} defines the relative tolerance used to stop\n\
 the integration procedure.  The default value is @math{1e^{-6}}.\n\

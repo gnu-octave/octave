@@ -179,7 +179,7 @@ information.\n\
                 error ("lu: can not define pivoting threshold THRES for full matrices");
               else if (tmp.nelem () == 1)
                 {
-                  thres.resize(1,2);
+                  thres.resize (1,2);
                   thres(0) = tmp(0);
                   thres(1) = tmp(0);
                 }

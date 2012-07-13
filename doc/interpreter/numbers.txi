@@ -570,7 +570,7 @@ result of @math{10 - 20} when using unsigned integers is zero.
 When doing integer division Octave will round the result to the nearest
 integer.  This is different from most programming languages, where the
 result is often floored to the nearest integer.  So, the result of
-@code{int32(5) ./ int32(8)} is @code{1}.
+@code{int32 (5) ./ int32 (8)} is @code{1}.
 
 @DOCSTRING(idivide)
 

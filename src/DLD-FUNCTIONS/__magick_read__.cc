@@ -403,9 +403,9 @@ maybe_initialize_magick (void)
 
 DEFUN_DLD (__magick_read__, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Function File} {@var{m} =} __magick_read__(@var{fname}, @var{index})\n\
-@deftypefnx {Function File} {[@var{m}, @var{colormap}] =} __magick_read__(@var{fname}, @var{index})\n\
-@deftypefnx {Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__(@var{fname}, @var{index})\n\
+@deftypefn  {Function File} {@var{m} =} __magick_read__ (@var{fname}, @var{index})\n\
+@deftypefnx {Function File} {[@var{m}, @var{colormap}] =} __magick_read__ (@var{fname}, @var{index})\n\
+@deftypefnx {Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__ (@var{fname}, @var{index})\n\
 Read images with ImageMagick++.  In general you should not be using this\n\
 function.  Instead use @code{imread}.\n\
 @seealso{imread}\n\
@@ -604,7 +604,7 @@ encode_bool_image (std::vector<Magick::Image>& imvec, const octave_value& img)
 
   for (unsigned int ii = 0; ii < nframes; ii++)
     {
-      Magick::Image im(Magick::Geometry (columns, rows), "black");
+      Magick::Image im (Magick::Geometry (columns, rows), "black");
       im.classType (Magick::DirectClass);
       im.depth (1);
 
@@ -871,8 +871,8 @@ write_image (const std::string& filename, const std::string& fmt,
 
 DEFUN_DLD (__magick_write__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img})\n\
-@deftypefnx {Function File} {} __magick_write__(@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
+@deftypefn  {Function File} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img})\n\
+@deftypefnx {Function File} {} __magick_write__ (@var{fname}, @var{fmt}, @var{img}, @var{map})\n\
 Write images with ImageMagick++.  In general you should not be using this\n\
 function.  Instead use @code{imwrite}.\n\
 @seealso{imread}\n\
@@ -1007,7 +1007,7 @@ magick_to_octave_value (const Magick::ImageType magick)
 
 DEFUN_DLD (__magick_finfo__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __magick_finfo__(@var{fname})\n\
+@deftypefn {Loadable Function} {} __magick_finfo__ (@var{fname})\n\
 Read image information with GraphicsMagick++.  In general you should\n\
 not be using this function.  Instead use @code{imfinfo}.\n\
 @seealso{imfinfo, imread}\n\

@@ -286,7 +286,7 @@ Riccati equations in control (see @code{are} and @code{dare}).\n\
 %! assert (u' * a * u, s, sqrt (eps ("single")));
 
 %!test
-%! fail("schur ([1, 2; 3, 4], 2)", "warning");
+%! fail ("schur ([1, 2; 3, 4], 2)", "warning");
 
 %!error schur ()
 %!error <argument must be a square matrix> schur ([1, 2, 3; 4, 5, 6])

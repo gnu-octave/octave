@@ -26,8 +26,8 @@
 ## Read data from a text file or string.
 ##
 ## The string @var{str} or file associated with @var{fid} is read from and
-## parsed according to @var{format}. The function behaves like @code{strread}
-## except it can also read from file instead of a string. See the documentation
+## parsed according to @var{format}.  The function behaves like @code{strread}
+## except it can also read from file instead of a string.  See the documentation
 ## of @code{strread} for details.
 ##
 ## In addition to the options supported by @code{strread}, this function

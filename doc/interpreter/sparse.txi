@@ -106,7 +106,7 @@ C is.
 @example
 @group
   for (j = 0; j < nc; j++)
-    for (i = cidx (j); i < cidx(j+1); i++)
+    for (i = cidx(j); i < cidx(j+1); i++)
        printf ("non-zero element (%i,%i) is %d\n", 
            ridx(i), j, data(i));
 @end group
@@ -212,7 +212,7 @@ definition of the diagonals of the matrix and create the sparse matrix
 that corresponds to this.  For example,
 
 @example
-s = diag (sparse(randn(1,n)), -1);
+s = diag (sparse (randn (1,n)), -1);
 @end example
 
 @noindent
@@ -348,8 +348,8 @@ to use of the div or ldiv operators.  For example,
 
 @example
 @group
-a = tril (sprandn(1024, 1024, 0.02), -1) ...
-    + speye(1024); 
+a = tril (sprandn (1024, 1024, 0.02), -1) ...
+    + speye (1024); 
 matrix_type (a);
 ans = Lower
 @end group
@@ -363,7 +363,7 @@ the type of a matrix to be a particular type.  For example:
 @example
 @group
 a = matrix_type (tril (sprandn (1024, ...
-   1024, 0.02), -1) + speye(1024), 'Lower');
+   1024, 0.02), -1) + speye (1024), "Lower");
 @end group
 @end example
 
@@ -398,10 +398,10 @@ As a trivial example of the use of @dfn{gplot} consider the example,
 
 @example
 @group
-A = sparse([2,6,1,3,2,4,3,5,4,6,1,5],
+A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
     [1,1,2,2,3,3,4,4,5,5,6,6],1,6,6);
 xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
-gplot(A,xy)
+gplot (A,xy)
 @end group
 @end example
 
@@ -422,8 +422,8 @@ The dependencies between the nodes of a Cholesky@tie{}factorization can be
 calculated in linear time without explicitly needing to calculate the
 Cholesky@tie{}factorization by the @code{etree} command.  This command
 returns the elimination tree of the matrix and can be displayed
-graphically by the command @code{treeplot(etree(A))} if @code{A} is
-symmetric or @code{treeplot(etree(A+A'))} otherwise.
+graphically by the command @code{treeplot (etree (A))} if @code{A} is
+symmetric or @code{treeplot (etree (A+A'))} otherwise.
 
 @DOCSTRING(spy)
 
@@ -519,7 +519,7 @@ make it a full matrix, and so the example,
 
 @example
 @group
-speye(3) + 0
+speye (3) + 0
 @result{}   1  0  0
   0  1  0
   0  0  1
@@ -541,7 +541,7 @@ matrices exist, in general this does not cause any problems.  However,
 one area where it does cause a problem is where a sparse matrix is
 promoted to a full matrix, where subsequent operations would resparsify
 the matrix.  Such cases are rare, but can be artificially created, for
-example @code{(fliplr(speye(3)) + speye(3)) - speye(3)} gives a full
+example @code{(fliplr (speye (3)) + speye (3)) - speye (3)} gives a full
 matrix when it should give a sparse one.  In general, where such cases 
 occur, they impose only a small memory penalty.
 
@@ -551,7 +551,7 @@ sparse matrices will cause a problem.  That is in the handling of the
 depending on the type of its input arguments.  So 
 
 @example
- a = diag (sparse([1,2,3]), -1);
+ a = diag (sparse ([1,2,3]), -1);
 @end example
 
 @noindent
@@ -655,7 +655,7 @@ positive definite matrix.
 The standard Cholesky@tie{}factorization of this matrix can be
 obtained by the same command that would be used for a full
 matrix.  This can be visualized with the command 
-@code{r = chol(A); spy(r);}.
+@code{r = chol (A); spy (r);}.
 @xref{fig:simplechol}.
 The original matrix had 
 @ifinfo
@@ -682,8 +682,8 @@ in working with other sparse matrices.
 
 The appropriate sparsity preserving permutation of the original
 matrix is given by @dfn{symamd} and the factorization using this
-reordering can be visualized using the command @code{q = symamd(A);
-r = chol(A(q,q)); spy(r)}.  This gives 
+reordering can be visualized using the command @code{q = symamd (A);
+r = chol (A(q,q)); spy (r)}.  This gives 
 @ifinfo
 @ifnothtml
 29
@@ -697,7 +697,7 @@ non-zero terms which is a significant improvement.
 The Cholesky@tie{}factorization itself can be used to determine the
 appropriate sparsity preserving reordering of the matrix during the
 factorization, In that case this might be obtained with three return
-arguments as r@code{[r, p, q] = chol(A); spy(r)}.
+arguments as @code{[r, p, q] = chol (A); spy (r)}.
 
 @float Figure,fig:simplechol
 @center @image{spchol,4in}
@@ -712,7 +712,7 @@ arguments as r@code{[r, p, q] = chol(A); spy(r)}.
 In the case of an asymmetric matrix, the appropriate sparsity
 preserving permutation is @dfn{colamd} and the factorization using
 this reordering can be visualized using the command
-@code{q = colamd(A); [l, u, p] = lu(A(:,q)); spy(l+u)}.
+@code{q = colamd (A); [l, u, p] = lu (A(:,q)); spy (l+u)}.
 
 Finally, Octave implicitly reorders the matrix when using the div (/)
 and ldiv (\) operators, and so no the user does not need to explicitly
@@ -948,23 +948,23 @@ isolated.
 
 @example
 @group
-   node_y= [1;1.2;1.5;1.8;2]*ones(1,11);
-   node_x= ones(5,1)*[1,1.05,1.1,1.2, ...
+   node_y = [1;1.2;1.5;1.8;2]*ones(1,11);
+   node_x = ones(5,1)*[1,1.05,1.1,1.2, ...
              1.3,1.5,1.7,1.8,1.9,1.95,2];
-   nodes= [node_x(:), node_y(:)];
+   nodes = [node_x(:), node_y(:)];
 
-   [h,w]= size(node_x);
-   elems= [];
-   for idx= 1:w-1
-     widx= (idx-1)*h;
-     elems= [elems; ...
+   [h,w] = size (node_x);
+   elems = [];
+   for idx = 1:w-1
+     widx = (idx-1)*h;
+     elems = [elems; ...
        widx+[(1:h-1);(2:h);h+(1:h-1)]'; ...
        widx+[(2:h);h+(2:h);h+(1:h-1)]' ]; 
    endfor
 
-   E= size(elems,1); # No. of simplices
-   N= size(nodes,1); # No. of vertices
-   D= size(elems,2); # dimensions+1
+   E = size (elems,1); # No. of simplices
+   N = size (nodes,1); # No. of vertices
+   D = size (elems,2); # dimensions+1
 @end group
 @end example
 
@@ -1001,32 +1001,32 @@ between simplices and vertices, the global connectivity matrix @code{S} is
 calculated.
 
 @example
-  # Element conductivity
-  conductivity= [1*ones(1,16), ...
+  ## Element conductivity
+  conductivity = [1*ones(1,16), ...
          2*ones(1,48), 1*ones(1,16)];
 
-  # Connectivity matrix
+  ## Connectivity matrix
   C = sparse ((1:D*E), reshape (elems', ...
          D*E, 1), 1, D*E, N);
 
-  # Calculate system matrix
+  ## Calculate system matrix
   Siidx = floor ([0:D*E-1]'/D) * D * ...
          ones(1,D) + ones(D*E,1)*(1:D) ;
-  Sjidx = [1:D*E]'*ones(1,D);
-  Sdata = zeros(D*E,D);
-  dfact = factorial(D-1);
-  for j=1:E
-     a = inv([ones(D,1), ... 
+  Sjidx = [1:D*E]'*ones (1,D);
+  Sdata = zeros (D*E,D);
+  dfact = factorial (D-1);
+  for j = 1:E
+     a = inv ([ones(D,1), ... 
          nodes(elems(j,:), :)]);
      const = conductivity(j) * 2 / ...
-         dfact / abs(det(a));
+         dfact / abs (det (a));
      Sdata(D*(j-1)+(1:D),:) = const * ...
          a(2:D,:)' * a(2:D,:);
   endfor
-  # Element-wise system matrix
-  SE= sparse(Siidx,Sjidx,Sdata);
-  # Global system matrix
-  S= C'* SE *C;
+  ## Element-wise system matrix
+  SE = sparse(Siidx,Sjidx,Sdata);
+  ## Global system matrix
+  S = C'* SE *C;
 @end example
 
 The system matrix acts like the conductivity 
@@ -1047,23 +1047,23 @@ Based on the Dirichlet and Neumann boundary conditions, we are able to
 solve for the voltages at each vertex @code{V}. 
 
 @example
-  # Dirichlet boundary conditions
-  D_nodes=[1:5, 51:55]; 
-  D_value=[10*ones(1,5), 20*ones(1,5)]; 
+  ## Dirichlet boundary conditions
+  D_nodes = [1:5, 51:55]; 
+  D_value = [10*ones(1,5), 20*ones(1,5)]; 
 
-  V= zeros(N,1);
+  V = zeros (N,1);
   V(D_nodes) = D_value;
   idx = 1:N; # vertices without Dirichlet 
              # boundary condns
   idx(D_nodes) = [];
 
-  # Neumann boundary conditions.  Note that
-  # N_value must be normalized by the
-  # boundary length and element conductivity
-  N_nodes=[];
-  N_value=[];
+  ## Neumann boundary conditions.  Note that
+  ## N_value must be normalized by the
+  ## boundary length and element conductivity
+  N_nodes = [];
+  N_value = [];
 
-  Q = zeros(N,1);
+  Q = zeros (N,1);
   Q(N_nodes) = N_value;
 
   V(idx) = S(idx,idx) \ ( Q(idx) - ...
@@ -1082,8 +1082,8 @@ value in the z-axis for each simplex vertex.
   xelems = reshape (nodes(elemx, 1), 4, E);
   yelems = reshape (nodes(elemx, 2), 4, E);
   velems = reshape (V(elemx), 4, E);
-  plot3 (xelems,yelems,velems,'k'); 
-  print ('grid.eps');
+  plot3 (xelems,yelems,velems,"k"); 
+  print "grid.eps";
 @end group
 @end example
 

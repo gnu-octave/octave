@@ -116,42 +116,42 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
     {
       boolNDArray result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
-        result(count) = f_args.elem(count).is_empty ();
+        result(count) = f_args.elem (count).is_empty ();
       retval(0) = result;
     }
   else if (name == "islogical")
     {
       boolNDArray result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
-        result(count) = f_args.elem(count).is_bool_type ();
+        result(count) = f_args.elem (count).is_bool_type ();
       retval(0) = result;
     }
   else if (name == "isreal")
     {
       boolNDArray result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
-        result(count) = f_args.elem(count).is_real_type ();
+        result(count) = f_args.elem (count).is_real_type ();
       retval(0) = result;
     }
   else if (name == "length")
     {
       NDArray result (f_args.dims ());
       for (octave_idx_type  count= 0; count < k; count++)
-        result(count) = static_cast<double> (f_args.elem(count).length ());
+        result(count) = static_cast<double> (f_args.elem (count).length ());
       retval(0) = result;
     }
   else if (name == "ndims")
     {
       NDArray result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
-        result(count) = static_cast<double> (f_args.elem(count).ndims ());
+        result(count) = static_cast<double> (f_args.elem (count).ndims ());
       retval(0) = result;
     }
   else if (name == "prodofsize" || name == "numel")
     {
       NDArray result (f_args.dims ());
       for (octave_idx_type count = 0; count < k; count++)
-        result(count) = static_cast<double> (f_args.elem(count).numel ());
+        result(count) = static_cast<double> (f_args.elem (count).numel ());
       retval(0) = result;
     }
   else if (name == "size")
@@ -168,7 +168,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
               NDArray result (f_args.dims ());
               for (octave_idx_type count = 0; count < k; count++)
                 {
-                  dim_vector dv = f_args.elem(count).dims ();
+                  dim_vector dv = f_args.elem (count).dims ();
                   if (d < dv.length ())
                     result(count) = static_cast<double> (dv(d));
                   else
@@ -187,7 +187,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
           std::string class_name = args(2).string_value ();
           boolNDArray result (f_args.dims ());
           for (octave_idx_type count = 0; count < k; count++)
-            result(count) = (f_args.elem(count).class_name () == class_name);
+            result(count) = (f_args.elem (count).class_name () == class_name);
 
           retval(0) = result;
         }
@@ -317,7 +317,7 @@ function [a, b] = twoouts (x)\n\
   a = x;\n\
   b = x*x;\n\
 endfunction\n\
-[aa, bb] = cellfun(@@twoouts, @{1, 2, 3@})\n\
+[aa, bb] = cellfun (@@twoouts, @{1, 2, 3@})\n\
      @result{}\n\
         aa =\n\
            1 2 3\n\
@@ -375,7 +375,7 @@ interpreter is not involved in the internal loop.  For example:\n\
 @example\n\
 @group\n\
 a = @{@dots{}@}\n\
-v = cellfun (@@(x) det(x), a); # compute determinants\n\
+v = cellfun (@@(x) det (x), a); # compute determinants\n\
 v = cellfun (@@det, a); # faster\n\
 @end group\n\
 @end example\n\
@@ -767,7 +767,7 @@ v = cellfun (@@det, a); # faster\n\
 %! A = cellfun (@islogical, {true, 0.1, false, i*2});
 %! assert (A, [true, false, true, false]);
 %!test
-%! A = cellfun (@(x) islogical(x), {true, 0.1, false, i*2});
+%! A = cellfun (@(x) islogical (x), {true, 0.1, false, i*2});
 %! assert (A, [true, false, true, false]);
 
 %% First input argument can be the special string "isreal",
@@ -864,7 +864,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert (isequal (B, {true, true; [], true}));
 %! assert (isequal (C, {10, 11; [], 12}));
 %!test
-%! A = cellfun (@(x,y) cell2str(x,y), {1.1, 4}, {3.1, 6}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, \
 %!              "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -873,7 +873,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = cellfun (@(x,y) cell2str(x,y), {1.1, 4}, {3.1, 6}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {1.1, 4}, {3.1, 6}, \
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -892,7 +892,7 @@ v = cellfun (@@det, a); # faster\n\
 %! A = cellfun (@(x,y) x:y, {"a", "d"}, {"c", "f"}, "UniformOutput", false);
 %! assert (A, {"abc", "def"});
 %!test
-%! A = cellfun (@(x,y) cell2str(x,y), {"a", "d"}, {"c", "f"}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, \
 %!              "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -900,7 +900,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = cellfun (@(x,y) cell2str(x,y), {"a", "d"}, {"c", "f"}, \
+%! A = cellfun (@(x,y) cell2str (x,y), {"a", "d"}, {"c", "f"}, \
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -926,7 +926,7 @@ v = cellfun (@@det, a); # faster\n\
 %!              "UniformOutput", false);
 %! assert (A, {true, false});
 %!test
-%! A = cellfun (@(x,y) mat2str(x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
+%! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
 %!              "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -934,7 +934,7 @@ v = cellfun (@@det, a); # faster\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = cellfun (@(x,y) mat2str(x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
+%! A = cellfun (@(x,y) mat2str (x,y), {{1.1}, {4.2}}, {{3.1}, {2}}, \
 %!              "UniformOutput", true, "ErrorHandler", @__cellfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -1489,7 +1489,7 @@ arrayfun (@@str2num, [1234],\n\
 %! A = arrayfun (@isequal, [false, true], [true, true]);
 %! assert (A, [false, true]);
 %!test
-%! A = arrayfun (@(x,y) isequal(x,y), [false, true], [true, true]);
+%! A = arrayfun (@(x,y) isequal (x,y), [false, true], [true, true]);
 %! assert (A, [false, true]);
 
 %% Number of input and output arguments may be greater than one
@@ -1561,7 +1561,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert (isequal (B, {true, true; [], true}));
 %! assert (isequal (C, {10, 11; [], 12}));
 %!test
-%! A = arrayfun (@(x,y) array2str(x,y), {1.1, 4}, {3.1, 6}, \
+%! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, \
 %!               "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -1570,7 +1570,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test %% Overwriting setting of "UniformOutput" true
-%! A = arrayfun (@(x,y) array2str(x,y), {1.1, 4}, {3.1, 6}, \
+%! A = arrayfun (@(x,y) array2str (x,y), {1.1, 4}, {3.1, 6}, \
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "message") && isfield (A(1), "index");
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
@@ -1590,7 +1590,7 @@ arrayfun (@@str2num, [1234],\n\
 %! A = arrayfun (@(x,y) x:y, ["a", "d"], ["c", "f"], "UniformOutput", false);
 %! assert (A, {"abc", "def"});
 %!test
-%! A = arrayfun (@(x,y) cell2str(x,y), ["a", "d"], ["c", "f"], \
+%! A = arrayfun (@(x,y) cell2str (x,y), ["a", "d"], ["c", "f"], \
 %!               "ErrorHandler", @__arrayfunerror);
 %! B = isfield (A(1), "identifier") && isfield (A(1), "message") && isfield (A(1), "index");
 %! assert (B, true);
@@ -1642,7 +1642,7 @@ arrayfun (@@str2num, [1234],\n\
 %! assert ([(isempty (A(1).message)), (isempty (A(2).message))], [false, false]);
 %! assert ([A(1).index, A(2).index], [1, 2]);
 %!test
-%! A = arrayfun (@(x,y) num2str(x,y), {1.1, 4.2}, {3.1, 2}, \
+%! A = arrayfun (@(x,y) num2str (x,y), {1.1, 4.2}, {3.1, 2}, \
 %!               "UniformOutput", true, "ErrorHandler", @__arrayfunerror);
 %! assert ([(isfield (A(1), "identifier")), (isfield (A(2), "identifier"))], [true, true]);
 %! assert ([(isfield (A(1), "message")), (isfield (A(2), "message"))], [true, true]);
@@ -1790,7 +1790,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
 
               idx(0) = double (i+1);
 
-              retval.xelem(i) = array.single_subsref ("(", idx);
+              retval.xelem (i) = array.single_subsref ("(", idx);
 
               if (error_state)
                 break;

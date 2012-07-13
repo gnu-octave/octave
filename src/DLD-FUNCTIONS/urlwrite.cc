@@ -420,7 +420,7 @@ public:
       size_t pos = 0;
       while (true)
         {
-          pos = str.find_first_of('\n', pos);
+          pos = str.find_first_of ('\n', pos);
           if (pos == std::string::npos)
             break;
           pos++;
@@ -430,7 +430,7 @@ public:
       pos = 0;
       for (octave_idx_type i = 0; i < n; i++)
         {
-          size_t newpos = str.find_first_of('\n', pos);
+          size_t newpos = str.find_first_of ('\n', pos);
           if (newpos == std::string::npos)
             break;
 
@@ -467,11 +467,11 @@ public:
             {
               fileisdir = false;
               time_t ft;
-              curl_easy_getinfo(rep->handle (), CURLINFO_FILETIME, &ft);
+              curl_easy_getinfo (rep->handle (), CURLINFO_FILETIME, &ft);
               filetime = ft;
               double fs;
-              curl_easy_getinfo(rep->handle (),
-                                CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
+              curl_easy_getinfo (rep->handle (),
+                                 CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
               filesize = fs;
             }
         }
@@ -508,7 +508,7 @@ public:
           // Can I assume that the path is alway in "" on the last line
           size_t pos2 = retval.rfind ('"');
           size_t pos1 = retval.rfind ('"', pos2 - 1);
-          retval = retval.substr(pos1 + 1, pos2 - pos1 - 1);
+          retval = retval.substr (pos1 + 1, pos2 - pos1 - 1);
         }
       setopt (CURLOPT_HEADERFUNCTION, 0);
       setopt (CURLOPT_WRITEHEADER, 0);
@@ -608,7 +608,7 @@ public:
 
   curl_handles (void) : map ()
    {
-     curl_global_init(CURL_GLOBAL_DEFAULT);
+     curl_global_init (CURL_GLOBAL_DEFAULT);
    }
 
   ~curl_handles (void)

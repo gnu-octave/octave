@@ -233,9 +233,9 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
       for (octave_idx_type j = 1; j < nd; j++)
         {
           if (dva (j) == 1)
-            idx (j) = octave_value (1);
+            idx(j) = octave_value (1);
           else
-            idx (j) = octave_value ((i % dvc(j)) + 1);
+            idx(j) = octave_value ((i % dvc(j)) + 1);
 
           i = i / dvc (j);
         }
@@ -785,8 +785,8 @@ dimensionality as the other array.\n\
 %! y = rand (3,1) * 10-5;
 %!
 %! for i=1:length (funs)
-%!   for j = 1:length(float_types)
-%!     for k = 1:length(int_types)
+%!   for j = 1:length (float_types)
+%!     for k = 1:length (int_types)
 %!
 %!       fun = funs{i};
 %!       f_type = float_types{j};

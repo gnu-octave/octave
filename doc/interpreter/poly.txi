@@ -54,8 +54,8 @@ at the point @var{x} very easily, as the following example shows:
 
 @example
 @group
-N = length(c)-1;
-val = dot( x.^(N:-1:0), c );
+N = length (c) - 1;
+val = dot (x.^(N:-1:0), c);
 @end group
 @end example
 
@@ -114,8 +114,8 @@ compute the definite integral of @math{p(x) = x^2 + 1} from 0 to 3.
 @example
 @group
 c = [1, 0, 1];
-integral = polyint(c);
-area = polyval(integral, 3) - polyval(integral, 0)
+integral = polyint (c);
+area = polyval (integral, 3) - polyval (integral, 0)
 @result{} 12
 @end group
 @end example
@@ -149,7 +149,7 @@ data.
 
 The number of @var{breaks} (or knots) used to construct the piecewise
 polynomial is a significant factor in suppressing the noise present in
-the input data, @var{x} and @var{y}. This is demostrated by the example
+the input data, @var{x} and @var{y}.  This is demonstrated by the example
 below.
 
 @example
@@ -179,18 +179,17 @@ The result of which can be seen in @ref{fig:splinefit1}.
 @float Figure,fig:splinefit1
 @center @image{splinefit1,4in}
 @caption{Comparison of a fitting a piecewise polynomial with 41 breaks to one
-with 11 breaks. The fit with the large number of breaks exhibits a fast ripple
+with 11 breaks.  The fit with the large number of breaks exhibits a fast ripple
 that is not present in the underlying function.}
 @end float
 @end ifnotinfo
 
-The piece-wise polynomial fit, provided by @code{splinefit}, has
-continuous derivatives up to the @var{order}-1. For example, a cubic fit
-has continuous first and second derivatives.   This is demonstrated by
+The piecewise polynomial fit, provided by @code{splinefit}, has
+continuous derivatives up to the @var{order}-1.  For example, a cubic fit
+has continuous first and second derivatives.  This is demonstrated by
 the code
 
 @example
-@group
 ## Data (200 points)
 x = 2 * pi * rand (1, 200);
 y = sin (x) + sin (2 * x) + 0.1 * randn (size (x));
@@ -215,7 +214,6 @@ plot (x, y, ".", xx, [y1; y2; y3; y4; y5])
 axis tight
 ylim auto
 legend (@{"data", "order 0", "order 1", "order 2", "order 3", "order 4"@})
-@end group
 @end example
 
 @ifnotinfo
@@ -225,7 +223,7 @@ The result of which can be seen in @ref{fig:splinefit2}.
 @float Figure,fig:splinefit2
 @center @image{splinefit2,4in}
 @caption{Comparison of a piecewise constant, linear, quadratic, cubic, and
-quartic polynomials with 8 breaks to noisy data. The higher order solutions
+quartic polynomials with 8 breaks to noisy data.  The higher order solutions
 more accurately represent the underlying function, but come with the
 expense of computational complexity.}
 @end float
@@ -266,12 +264,11 @@ function with, and without, periodic boundary conditions.}
 @end float
 @end ifnotinfo
 
-More complex constraints may be added as well. For example, the code below
-illustrates a periodic fit with values that have been clamped at the end points,
-and a second periodic fit which is hinged at the end points.
+More complex constraints may be added as well.  For example, the code below
+illustrates a periodic fit with values that have been clamped at the endpoints,
+and a second periodic fit which is hinged at the endpoints.
 
 @example
-@group
 ## Data (200 points)
 x = 2 * pi * rand (1, 200);
 y = sin (2 * x) + 0.1 * randn (size (x));
@@ -293,7 +290,6 @@ plot (x, y, ".", xx, [y1; y2])
 axis tight
 ylim auto
 legend (@{"data", "clamped", "hinged periodic"@})
-@end group
 @end example
 
 @ifnotinfo
@@ -303,7 +299,7 @@ The result of which can be seen in @ref{fig:splinefit4}.
 @float Figure,fig:splinefit4
 @center @image{splinefit4,4in}
 @caption{Comparison of two periodic piecewise cubic fits to a noisy periodic
-signal. One fit has its end points clamped and the second has its end points
+signal.  One fit has its endpoints clamped and the second has its endpoints
 hinged.}
 @end float
 @end ifnotinfo
@@ -314,7 +310,6 @@ three different fits are provided.  Two with differing levels of outlier
 suppression and a third illustrating the non-robust solution.
 
 @example
-@group
 ## Data
 x = linspace (0, 2*pi, 200);
 y = sin (x) + sin (2 * x) + 0.05 * randn (size (x));
@@ -339,7 +334,6 @@ legend (@{"data with outliers","robust, beta = 0.25", ...
          "robust, beta = 0.75", "no robust fitting"@})
 axis tight
 ylim auto
-@end group
 @end example
 
 @ifnotinfo
@@ -348,7 +342,7 @@ The result of which can be seen in @ref{fig:splinefit6}.
 
 @float Figure,fig:splinefit6
 @center @image{splinefit6,4in}
-@caption{Comparison of two different levels of robust fitting (@var{beta} = 0.25 and 0.75) to noisy data combined with outlying data. A conventional fit, without
+@caption{Comparison of two different levels of robust fitting (@var{beta} = 0.25 and 0.75) to noisy data combined with outlying data.  A conventional fit, without
 robust fitting (@var{beta} = 0) is also included.}
 @end float
 @end ifnotinfo
@@ -367,10 +361,10 @@ x = [-2, -1, 1, 2];
 p = [ 0,  1, 0;
       1, -2, 1;
       0, -1, 1 ];
-pp = mkpp(x, p);
-xi = linspace(-2, 2, 50);
-yi = ppval(pp, xi);
-plot(xi, yi);
+pp = mkpp (x, p);
+xi = linspace (-2, 2, 50);
+yi = ppval (pp, xi);
+plot (xi, yi);
 @end group
 @end example
 

@@ -402,5 +402,5 @@ risk of using @code{eval} on unknown data.\n\
 %!assert (str2double ("-i*NaN - Inf"), complex (-Inf, -NaN))
 %!assert (str2double ({"abc", "4i"}), [NaN + 0i, 4i])
 %!assert (str2double ({2, "4i"}), [NaN + 0i, 4i])
-%!assert (str2double (zeros(3,1,2)), NaN (3,1,2))
+%!assert (str2double (zeros (3,1,2)), NaN (3,1,2))
 */

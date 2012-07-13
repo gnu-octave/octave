@@ -388,21 +388,21 @@ Compute Bessel or Hankel functions of various kinds:\n\
 @table @code\n\
 @item besselj\n\
 Bessel functions of the first kind.  If the argument @var{opt} is supplied,\n\
-the result is multiplied by @code{exp(-abs(imag(@var{x})))}.\n\
+the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
 \n\
 @item bessely\n\
 Bessel functions of the second kind.  If the argument @var{opt} is supplied,\n\
-the result is multiplied by @code{exp(-abs(imag(@var{x})))}.\n\
+the result is multiplied by @code{exp (-abs (imag (@var{x})))}.\n\
 \n\
 @item besseli\n\
 \n\
 Modified Bessel functions of the first kind.  If the argument @var{opt} is\n\
-supplied, the result is multiplied by @code{exp(-abs(real(@var{x})))}.\n\
+supplied, the result is multiplied by @code{exp (-abs (real (@var{x})))}.\n\
 \n\
 @item besselk\n\
 \n\
 Modified Bessel functions of the second kind.  If the argument @var{opt} is\n\
-supplied, the result is multiplied by @code{exp(@var{x})}.\n\
+supplied, the result is multiplied by @code{exp (@var{x})}.\n\
 \n\
 @item besselh\n\
 Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}\n\
@@ -533,8 +533,8 @@ derivatives.\n\
 ---  --------   ---------------------------------------\n\
  0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
  1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\
- 2   Bi (Z)     exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
- 3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
+ 2   Bi (Z)     exp (-abs (real ((2/3) * Z * sqrt (Z))))\n\
+ 3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z * sqrt (Z))))\n\
 @end group\n\
 @end example\n\
 \n\
@@ -1073,8 +1073,8 @@ Table 9.8 - I and K for integer orders 0, 1, 2.
 %!         [ 0.0897803119   0.0875062222   0.081029690    0.2785448768   0.2854254970   0.30708743   ]];
 %!
 %! tbl = [besseli(n,z1,1), besselk(n,z1,1)];
-%! tbl(:,3) = tbl(:,3) .* (exp(z1).*z1.^(-2));
-%! tbl(:,6) = tbl(:,6) .* (exp(-z1).*z1.^(2));
+%! tbl(:,3) = tbl(:,3) .* (exp (z1) .* z1.^(-2));
+%! tbl(:,6) = tbl(:,6) .* (exp (-z1) .* z1.^(2));
 %! tbl = [tbl;[besseli(n,z2,1),besselk(n,z2,1)]];
 %!
 %! assert (tbl, rtbl, -2e-8);
@@ -1111,7 +1111,7 @@ Table 9.9 - I and K for orders 3-9.
 %! I = besseli (n,z,1);
 %! K = besselk (n,z,1);
 %!
-%! assert (abs (I(1,:)), zeros (1, columns(I)));
+%! assert (abs (I(1,:)), zeros (1, columns (I)));
 %! assert (I(2:end,:), It(2:end,:), -5e-5);
 %! assert (Kt(1,:), K(1,:));
 %! assert (K(2:end,:), Kt(2:end,:), -5e-5);
@@ -1154,7 +1154,7 @@ integer orders are appropriately related.
 %! assert (besselj (n,1), besselj (-n,1), 1e-8);
 %! assert (-besselj (n+1,1), besselj (-n-1,1), 1e-8);
 
-besseli(n,z) = besseli(-n,z);
+besseli (n,z) = besseli (-n,z);
 
 %!test
 %! n = (0:2:20);
@@ -1179,22 +1179,22 @@ Compare against excerpts of Table 10.1, Abramowitz and Stegun.
 %!       [   -4.6218e-02     -1.3123e-01    -6.2736e-03 ];
 %!       [    8.3907e-02      6.2793e-02    -6.5069e-02 ]];
 %!
-%! j = sqrt((pi/2)./z).*besselj(n+1/2,z);
-%! y = sqrt((pi/2)./z).*bessely(n+1/2,z);
-%! assert(jt, j, -5e-5);
-%! assert(yt, y, -5e-5);
+%! j = sqrt ((pi/2)./z) .* besselj (n+1/2,z);
+%! y = sqrt ((pi/2)./z) .* bessely (n+1/2,z);
+%! assert (jt, j, -5e-5);
+%! assert (yt, y, -5e-5);
 
 Table 10.2 - j and y for orders 3-8.
 Compare against excerpts of Table 10.2, Abramowitzh and Stegun.
 
  Important note: In A&S, y_4(0.1) = -1.0507e+7, but Octave returns
- y_4(0.1) = -1.0508e+07 (-10507503.75). If I compute the same term using
+ y_4(0.1) = -1.0508e+07 (-10507503.75).  If I compute the same term using
  a series, the difference is in the eighth significant digit so I left
  the Octave results in place.
 
 %!test
 %! n = (3:8);
-%! z = (0:2.5:10).';  z(1)=0.1;
+%! z = (0:2.5:10).';  z(1) = 0.1;
 %!
 %! jt = [[ 9.5185e-06  1.0577e-07  9.6163e-10  7.3975e-12  4.9319e-14  2.9012e-16];
 %!       [ 1.0392e-01  3.0911e-02  7.3576e-03  1.4630e-03  2.5009e-04  3.7516e-05];

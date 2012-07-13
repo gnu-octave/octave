@@ -100,8 +100,8 @@ A more efficient set of output points might be
 
 @example
 @group
-t = [0, logspace (-1, log10(303), 150), \
-        logspace (log10(304), log10(500), 150)];
+t = [0, logspace(-1, log10(303), 150), \
+        logspace(log10(304), log10(500), 150)];
 @end group
 @end example
 

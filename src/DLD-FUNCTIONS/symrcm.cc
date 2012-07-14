@@ -135,9 +135,7 @@ H_heapify_min (CMK_Node *A, octave_idx_type i, octave_idx_type size)
 
       if (smallest != j)
         {
-          CMK_Node tmp = A[j];
-          A[j] = A[smallest];
-          A[smallest] = tmp;
+          std::swap (A[j], A[smallest]);
           j = smallest;
         }
       else
@@ -161,9 +159,7 @@ H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
       octave_idx_type p = PARENT(i);
       if (H[i].deg < H[p].deg)
         {
-          CMK_Node tmp = H[i];
-          H[i] = H[p];
-          H[p] = tmp;
+          std::swap (H[i], H[p]);
 
           i = p;
         }
@@ -699,11 +695,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   // compute the reverse-ordering
   s = N / 2 - 1;
   for (octave_idx_type i = 0, j = N - 1; i <= s; i++, j--)
-    {
-      double tmp = P.elem (i);
-      P.elem (i) = P.elem (j);
-      P.elem (j) = tmp;
-    }
+    std::swap (P.elem (i), P.elem (j));
 
   // increment all indices, since Octave is not C
   return octave_value (P+1);

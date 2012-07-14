@@ -749,7 +749,7 @@ save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
 int
 load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d)
 {
-  if (!hdf5_check_attr(loc_id, "OCTAVE_EMPTY_MATRIX"))
+  if (! hdf5_check_attr (loc_id, "OCTAVE_EMPTY_MATRIX"))
     return 0;
 
   hsize_t hdims, maxdims;

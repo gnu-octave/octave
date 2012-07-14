@@ -117,7 +117,7 @@ INSTANTIATE_MX_DIV_CONFORM (SparseMatrix, ComplexDiagMatrix);
 INSTANTIATE_MX_DIV_CONFORM (SparseComplexMatrix, DiagMatrix);
 INSTANTIATE_MX_DIV_CONFORM (SparseComplexMatrix, ComplexDiagMatrix);
 
-// Right division functions.  X / Y = X * inv(Y) = (inv (Y') * X')'
+// Right division functions.  X / Y = X * inv (Y) = (inv (Y') * X')'
 //
 //                  Y / X:   m   cm   sm  scm
 //                   +--   +---+----+----+----+
@@ -384,10 +384,10 @@ x_el_div (double a, const SparseMatrix& b)
 
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+    for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
       {
         octave_quit ();
-        result.elem (b.ridx(i), j) = a / b.data (i);
+        result.elem (b.ridx (i), j) = a / b.data (i);
       }
 
   return result;
@@ -399,13 +399,13 @@ x_el_div (double a, const SparseComplexMatrix& b)
   octave_idx_type nr = b.rows ();
   octave_idx_type nc = b.cols ();
 
-  ComplexMatrix  result (nr, nc, Complex(octave_NaN, octave_NaN));
+  ComplexMatrix  result (nr, nc, Complex (octave_NaN, octave_NaN));
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+    for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
       {
         octave_quit ();
-        result.elem (b.ridx(i), j) = a / b.data (i);
+        result.elem (b.ridx (i), j) = a / b.data (i);
       }
 
   return result;
@@ -420,10 +420,10 @@ x_el_div (const Complex a, const SparseMatrix& b)
   ComplexMatrix result (nr, nc, (a / 0.0));
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+    for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
       {
         octave_quit ();
-        result.elem (b.ridx(i), j) = a / b.data (i);
+        result.elem (b.ridx (i), j) = a / b.data (i);
       }
 
   return result;
@@ -438,16 +438,16 @@ x_el_div (const Complex a, const SparseComplexMatrix& b)
   ComplexMatrix result (nr, nc, (a / 0.0));
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+    for (octave_idx_type i = b.cidx (j); i < b.cidx (j+1); i++)
       {
         octave_quit ();
-        result.elem (b.ridx(i), j) = a / b.data (i);
+        result.elem (b.ridx (i), j) = a / b.data (i);
       }
 
   return result;
 }
 
-// Left division functions.  X \ Y = inv(X) * Y
+// Left division functions.  X \ Y = inv (X) * Y
 //
 //               Y  \  X :   sm  scm  dm  dcm
 //                   +--   +---+----+

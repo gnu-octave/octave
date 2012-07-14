@@ -1834,7 +1834,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
           for (int j = 0; j < n_args; j++)
             {
               // Can't fast return here to skip empty matrices as something
-              // like cat(1,[],single([])) must return an empty matrix of
+              // like cat (1,[],single ([])) must return an empty matrix of
               // the right type.
               tmp = do_cat_op (tmp, args (j), ra_idx);
 
@@ -2340,7 +2340,7 @@ DEFUN (permute, args, ,
 @deftypefn {Built-in Function} {} permute (@var{A}, @var{perm})\n\
 Return the generalized transpose for an N-D array object @var{A}.\n\
 The permutation vector @var{perm} must contain the elements\n\
-@code{1:ndims(A)} (in any order, but each element must appear only once).\n\
+@code{1:ndims (A)} (in any order, but each element must appear only once).\n\
 @seealso{ipermute}\n\
 @end deftypefn")
 {
@@ -3100,10 +3100,10 @@ complex ([1, 2], [3, 4])\n\
                       for (octave_idx_type j = 0; j < nc; j++)
                         {
                           octave_idx_type off = j * nr;
-                          for (octave_idx_type i = im_val.cidx(j);
-                               i < im_val.cidx(j + 1); i++)
-                            result.data (im_val.ridx(i) + off) =
-                              result.data (im_val.ridx(i) + off) +
+                          for (octave_idx_type i = im_val.cidx (j);
+                               i < im_val.cidx (j + 1); i++)
+                            result.data (im_val.ridx (i) + off) =
+                              result.data (im_val.ridx (i) + off) +
                               Complex (0, im_val.data (i));
                         }
                     }
@@ -3123,10 +3123,10 @@ complex ([1, 2], [3, 4])\n\
                       for (octave_idx_type j = 0; j < nc; j++)
                         {
                           octave_idx_type off = j * nr;
-                          for (octave_idx_type i = re_val.cidx(j);
-                               i < re_val.cidx(j + 1); i++)
-                            result.data (re_val.ridx(i) + off) =
-                              result.data (re_val.ridx(i) + off) +
+                          for (octave_idx_type i = re_val.cidx (j);
+                               i < re_val.cidx (j + 1); i++)
+                            result.data (re_val.ridx (i) + off) =
+                              result.data (re_val.ridx (i) + off) +
                               re_val.data (i);
                         }
                     }

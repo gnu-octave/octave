@@ -2751,7 +2751,7 @@ decode_subscripts (const char* name, const octave_value& arg,
                 type_string[k] = '.';
               else
                 {
-                  error("%s: invalid indexing type `%s'", name, item.c_str ());
+                  error ("%s: invalid indexing type `%s'", name, item.c_str ());
                   return;
                 }
             }
@@ -2810,7 +2810,7 @@ a matrix\n\
 \n\
 @example\n\
 @group\n\
-val = magic(3)\n\
+val = magic (3)\n\
     @result{} val = [ 8   1   6\n\
                3   5   7\n\
                4   9   2 ]\n\
@@ -2957,7 +2957,7 @@ and @samp{subs}, return @var{rhs}.\n\
 %! assert ({ subsref(c, idx1) }, {13});
 %! assert ({ subsref(c, idx2p) }, {7 9 17 19});
 %! assert ({ subsref(c, idx3p) }, num2cell ([1:5, 21:25]));
-%! assert (subsref(c, idx4), c);
+%! assert (subsref (c, idx4), c);
 %! c = subsasgn (c, idx1, 0);
 %! c = subsasgn (c, idx2, 0);
 %! c = subsasgn (c, idx3, 0);

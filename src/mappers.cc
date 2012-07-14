@@ -1177,13 +1177,13 @@ isinf ([13, Inf, NA, NaN])\n\
 %!assert (isinf (Inf))
 %!assert (!isinf (NaN))
 %!assert (!isinf (NA))
-%!assert (isinf (rand(1,10)), false (1,10))
+%!assert (isinf (rand (1,10)), false (1,10))
 %!assert (isinf ([NaN -Inf -1 0 1 Inf NA]), [false, true, false, false, false, true, false])
 
 %!assert (isinf (single (Inf)))
 %!assert (!isinf (single (NaN)))
 %!assert (!isinf (single (NA)))
-%!assert (isinf (single (rand(1,10))), false (1,10))
+%!assert (isinf (single (rand (1,10))), false (1,10))
 %!assert (isinf (single ([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false])
 
 %!error isinf ()
@@ -1276,13 +1276,13 @@ isna ([13, Inf, NA, NaN])\n\
 %!assert (!isna (Inf))
 %!assert (!isna (NaN))
 %!assert (isna (NA))
-%!assert (isna (rand(1,10)), false (1,10))
+%!assert (isna (rand (1,10)), false (1,10))
 %!assert (isna ([NaN -Inf -1 0 1 Inf NA]), [false, false, false, false, false, false, true])
 
 %!assert (!isna (single (Inf)))
 %!assert (!isna (single (NaN)))
 %!assert (isna (single (NA)))
-%!assert (isna (single (rand(1,10))), false (1,10))
+%!assert (isna (single (rand (1,10))), false (1,10))
 %!assert (isna (single ([NaN -Inf -1 0 1 Inf NA])), [false, false, false, false, false, false, true])
 
 %!error isna ()
@@ -1318,13 +1318,13 @@ isnan ([13, Inf, NA, NaN])\n\
 %!assert (!isnan (Inf))
 %!assert (isnan (NaN))
 %!assert (isnan (NA))
-%!assert (isnan (rand(1,10)), false (1,10))
+%!assert (isnan (rand (1,10)), false (1,10))
 %!assert (isnan ([NaN -Inf -1 0 1 Inf NA]), [true, false, false, false, false, false, true])
 
 %!assert (!isnan (single (Inf)))
 %!assert (isnan (single (NaN)))
 %!assert (isnan (single (NA)))
-%!assert (isnan (single (rand(1,10))), false (1,10))
+%!assert (isnan (single (rand (1,10))), false (1,10))
 %!assert (isnan (single ([NaN -Inf -1 0 1 Inf NA])), [true, false, false, false, false, false, true])
 
 %!error isnan ()

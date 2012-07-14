@@ -416,7 +416,7 @@ public:
 protected:
   void begin (GLenum type)
     {
-      //printf("patch_tesselator::begin (%d)\n", type);
+      //printf ("patch_tesselator::begin (%d)\n", type);
       first = true;
 
       if (color_mode == 2 || light_mode == 2)
@@ -432,7 +432,7 @@ protected:
 
   void end (void)
     {
-      //printf("patch_tesselator::end\n");
+      //printf ("patch_tesselator::end\n");
       glEnd ();
       renderer->set_polygon_offset (false);
     }
@@ -441,7 +441,7 @@ protected:
     {
       vertex_data::vertex_data_rep *v
           = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
-      //printf("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
+      //printf ("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
 
       // FIXME: why did I need to keep the first vertex of the face
       // in JHandles? I think it's related to the fact that the
@@ -481,7 +481,7 @@ protected:
   void combine (GLdouble xyz[3], void *data[4], GLfloat w[4],
                 void **out_data)
     {
-      //printf("patch_tesselator::combine\n");
+      //printf ("patch_tesselator::combine\n");
 
       vertex_data::vertex_data_rep *v[4];
       int vmax = 4;
@@ -508,14 +508,14 @@ protected:
           cc.resize (1, 3, 0.0);
           for (int ic = 0; ic < 3; ic++)
             for (int iv = 0; iv < vmax; iv++)
-              cc(ic) += (w[iv] * v[iv]->color(ic));
+              cc(ic) += (w[iv] * v[iv]->color (ic));
         }
 
       if (v[0]->normal.numel () > 0)
         {
           for (int in = 0; in < 3; in++)
             for (int iv = 0; iv < vmax; iv++)
-              nn(in) += (w[iv] * v[iv]->normal(in));
+              nn(in) += (w[iv] * v[iv]->normal (in));
         }
 
       for (int iv = 0; iv < vmax; iv++)
@@ -807,7 +807,7 @@ opengl_renderer::setup_opengl_transformation (const axes::properties& props)
 
   glMatrixMode (GL_MODELVIEW);
   glLoadIdentity ();
-  glScaled(1, 1, -1);
+  glScaled (1, 1, -1);
   glMultMatrixd (x_mat1.data ());
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity ();
@@ -1016,14 +1016,14 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTick,
                             zpTick, zpTickN, 0., 0.,
-                            signum(zpTick-zpTickN)*fz*xticklen,
+                            signum (zpTick-zpTickN)*fz*xticklen,
                             0, mirror);
         }
       else
         {
           render_tickmarks (xticks, x_min, x_max, ypTick, ypTickN,
                             zpTick, zpTick, 0.,
-                            signum(ypTick-ypTickN)*fy*xticklen,
+                            signum (ypTick-ypTickN)*fy*xticklen,
                             0., 0, mirror);
         }
 
@@ -1035,11 +1035,11 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
 
           if (tick_along_z)
             render_ticktexts (xticks, xticklabels, x_min, x_max, ypTick,
-                              zpTick+signum(zpTick-zpTickN)*fz*xtickoffset,
+                              zpTick+signum (zpTick-zpTickN)*fz*xtickoffset,
                               0, halign, valign, wmax, hmax);
           else
             render_ticktexts (xticks, xticklabels, x_min, x_max,
-                              ypTick+signum(ypTick-ypTickN)*fy*xtickoffset,
+                              ypTick+signum (ypTick-ypTickN)*fy*xtickoffset,
                               zpTick, 0, halign, valign, wmax, hmax);
         }
 
@@ -1055,12 +1055,12 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
           if (tick_along_z)
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTick,
                               zpTick, zpTickN, 0., 0.,
-                              signum(zpTick-zpTickN)*fz*xticklen/2,
+                              signum (zpTick-zpTickN)*fz*xticklen/2,
                               0, mirror);
           else
             render_tickmarks (xmticks, x_min, x_max, ypTick, ypTickN,
                               zpTick, zpTick, 0.,
-                              signum(ypTick-ypTickN)*fy*xticklen/2,
+                              signum (ypTick-ypTickN)*fy*xticklen/2,
                               0., 0, mirror);
         }
 
@@ -1123,12 +1123,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       if (tick_along_z)
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTick,
                           zpTick, zpTickN, 0., 0.,
-                          signum(zpTick-zpTickN)*fz*yticklen,
+                          signum (zpTick-zpTickN)*fz*yticklen,
                           1, mirror);
       else
         render_tickmarks (yticks, y_min, y_max, xpTick, xpTickN,
                           zpTick, zpTick,
-                          signum(xPlaneN-xPlane)*fx*yticklen,
+                          signum (xPlaneN-xPlane)*fx*yticklen,
                           0., 0., 1, mirror);
 
       // tick texts
@@ -1140,11 +1140,11 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
 
           if (tick_along_z)
             render_ticktexts (yticks, yticklabels, y_min, y_max, xpTick,
-                              zpTick+signum(zpTick-zpTickN)*fz*ytickoffset,
+                              zpTick+signum (zpTick-zpTickN)*fz*ytickoffset,
                               1, halign, valign, wmax, hmax);
           else
             render_ticktexts (yticks, yticklabels, y_min, y_max,
-                              xpTick+signum(xpTick-xpTickN)*fx*ytickoffset,
+                              xpTick+signum (xpTick-xpTickN)*fx*ytickoffset,
                               zpTick, 1, halign, valign, wmax, hmax);
         }
 
@@ -1160,12 +1160,12 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
           if (tick_along_z)
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTick,
                               zpTick, zpTickN, 0., 0.,
-                              signum(zpTick-zpTickN)*fz*yticklen/2,
+                              signum (zpTick-zpTickN)*fz*yticklen/2,
                               1, mirror);
           else
             render_tickmarks (ymticks, y_min, y_max, xpTick, xpTickN,
                               zpTick, zpTick,
-                              signum(xpTick-xpTickN)*fx*yticklen/2,
+                              signum (xpTick-xpTickN)*fx*yticklen/2,
                               0., 0., 1, mirror);
         }
 
@@ -1220,12 +1220,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
           if (xisinf (fy))
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlane, yPlane,
-                              signum(xPlaneN-xPlane)*fx*zticklen,
+                              signum (xPlaneN-xPlane)*fx*zticklen,
                               0., 0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
                               yPlane, yPlane, 0.,
-                              signum(yPlane-yPlaneN)*fy*zticklen,
+                              signum (yPlane-yPlaneN)*fy*zticklen,
                               0., 2, false);
         }
       else
@@ -1233,12 +1233,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
           if (xisinf (fx))
             render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
                               yPlaneN, yPlane, 0.,
-                              signum(yPlaneN-yPlane)*fy*zticklen,
+                              signum (yPlaneN-yPlane)*fy*zticklen,
                               0., 2, mirror);
           else
             render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
                               yPlaneN, yPlane,
-                              signum(xPlane-xPlaneN)*fx*zticklen,
+                              signum (xPlane-xPlaneN)*fx*zticklen,
                               0., 0., 2, false);
         }
 
@@ -1252,22 +1252,22 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
             {
               if (xisinf (fy))
                 render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                  xPlaneN+signum(xPlaneN-xPlane)*fx*ztickoffset,
+                                  xPlaneN+signum (xPlaneN-xPlane)*fx*ztickoffset,
                                   yPlane, 2, halign, valign, wmax, hmax);
               else
                 render_ticktexts (zticks, zticklabels, z_min, z_max, xPlaneN,
-                                  yPlane+signum(yPlane-yPlaneN)*fy*ztickoffset,
+                                  yPlane+signum (yPlane-yPlaneN)*fy*ztickoffset,
                                   2, halign, valign, wmax, hmax);
             }
           else
             {
               if (xisinf (fx))
                 render_ticktexts (zticks, zticklabels, z_min, z_max, xPlane,
-                                  yPlaneN+signum(yPlaneN-yPlane)*fy*ztickoffset,
+                                  yPlaneN+signum (yPlaneN-yPlane)*fy*ztickoffset,
                                   2, halign, valign, wmax, hmax);
               else
                 render_ticktexts (zticks, zticklabels, z_min, z_max,
-                                  xPlane+signum(xPlane-xPlaneN)*fx*ztickoffset,
+                                  xPlane+signum (xPlane-xPlaneN)*fx*ztickoffset,
                                   yPlaneN, 2, halign, valign, wmax, hmax);
             }
         }
@@ -1285,12 +1285,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
               if (xisinf (fy))
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlane,
                                   yPlane, yPlane,
-                                  signum(xPlaneN-xPlane)*fx*zticklen/2,
+                                  signum (xPlaneN-xPlane)*fx*zticklen/2,
                                   0., 0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlaneN, xPlaneN,
                                   yPlane, yPlane, 0.,
-                                  signum(yPlane-yPlaneN)*fy*zticklen/2,
+                                  signum (yPlane-yPlaneN)*fy*zticklen/2,
                                   0., 2, false);
             }
           else
@@ -1298,12 +1298,12 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
               if (xisinf (fx))
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlane, 0.,
-                                  signum(yPlaneN-yPlane)*fy*zticklen/2,
+                                  signum (yPlaneN-yPlane)*fy*zticklen/2,
                                   0., 2, mirror);
               else
                 render_tickmarks (zmticks, z_min, z_max, xPlane, xPlane,
                                   yPlaneN, yPlaneN,
-                                  signum(xPlane-xPlaneN)*fx*zticklen/2,
+                                  signum (xPlane-xPlaneN)*fx*zticklen/2,
                                   0., 0., 2, false);
             }
         }
@@ -2104,16 +2104,16 @@ opengl_renderer::draw_patch (const patch::properties &props)
   bool has_facecolor = false;
   bool has_facealpha = false;
 
-  int fc_mode = ((props.facecolor_is("none")
+  int fc_mode = ((props.facecolor_is ("none")
                   || props.facecolor_is_rgb ()) ? 0 :
-                 (props.facecolor_is("flat") ? 1 : 2));
+                 (props.facecolor_is ("flat") ? 1 : 2));
   int fl_mode = (props.facelighting_is ("none") ? 0 :
                  (props.facelighting_is ("flat") ? 1 : 2));
   int fa_mode = (props.facealpha_is_double () ? 0 :
                  (props.facealpha_is ("flat") ? 1 : 2));
-  int ec_mode = ((props.edgecolor_is("none")
+  int ec_mode = ((props.edgecolor_is ("none")
                   || props.edgecolor_is_rgb ()) ? 0 :
-                 (props.edgecolor_is("flat") ? 1 : 2));
+                 (props.edgecolor_is ("flat") ? 1 : 2));
   int el_mode = (props.edgelighting_is ("none") ? 0 :
                  (props.edgelighting_is ("flat") ? 1 : 2));
   int ea_mode = (props.edgealpha_is_double () ? 0 :
@@ -2469,7 +2469,7 @@ opengl_renderer::draw_text (const text::properties& props)
   glEnable (GL_BLEND);
   glEnable (GL_ALPHA_TEST);
   glRasterPos3d (pos(0), pos(1), pos.numel () > 2 ? pos(2) : 0.0);
-  glBitmap(0, 0, 0, 0, bbox(0), bbox(1), 0);
+  glBitmap (0, 0, 0, 0, bbox(0), bbox(1), 0);
   glDrawPixels (bbox(2), bbox(3),
                 GL_RGBA, GL_UNSIGNED_BYTE, props.get_pixels ().data ());
   glDisable (GL_ALPHA_TEST);
@@ -2553,7 +2553,7 @@ opengl_renderer::draw_image (const image::properties& props)
   else // clip to viewport
     {
       GLfloat vp[4];
-      glGetFloatv(GL_VIEWPORT, vp);
+      glGetFloatv (GL_VIEWPORT, vp);
       // FIXME -- actually add the code to do it!
 
     }
@@ -2862,7 +2862,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glEnd ();
       break;
     case 'x':
-      glBegin(GL_LINES);
+      glBegin (GL_LINES);
       glVertex2f (-sz/2, -sz/2);
       glVertex2f (sz/2, sz/2);
       glVertex2f (-sz/2, sz/2);
@@ -2887,7 +2887,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
         glBegin (GL_POLYGON);
         for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-          glVertex2d (sz*cos(ang)/3, sz*sin(ang)/3);
+          glVertex2d (sz*cos (ang)/3, sz*sin (ang)/3);
         glEnd ();
       }
       break;
@@ -2905,7 +2905,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
         glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
         for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-          glVertex2d (sz*cos(ang)/2, sz*sin(ang)/2);
+          glVertex2d (sz*cos (ang)/2, sz*sin (ang)/2);
         glEnd ();
       }
       break;
@@ -2949,14 +2949,14 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       {
         double ang;
         double r;
-        double dr = 1.0 - sin(M_PI/10)/sin(3*M_PI/10)*1.02;
+        double dr = 1.0 - sin (M_PI/10)/sin (3*M_PI/10)*1.02;
 
         glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
         for (int i = 0; i < 2*5; i++)
           {
             ang = (-0.5 + double(i+1)/5) * M_PI;
-            r = 1.0 - (dr * fmod(double(i+1), 2.0));
-            glVertex2d (sz*r*cos(ang)/2, sz*r*sin(ang)/2);
+            r = 1.0 - (dr * fmod (double(i+1), 2.0));
+            glVertex2d (sz*r*cos (ang)/2, sz*r*sin (ang)/2);
           }
         glEnd ();
       }
@@ -2965,14 +2965,14 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       {
         double ang;
         double r;
-        double dr = 1.0 - 0.5/sin(M_PI/3)*1.02;
+        double dr = 1.0 - 0.5/sin (M_PI/3)*1.02;
 
         glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
         for (int i = 0; i < 2*6; i++)
           {
             ang = (0.5 + double(i+1)/6.0) * M_PI;
-            r = 1.0 - (dr * fmod(double(i+1), 2.0));
-            glVertex2d (sz*r*cos(ang)/2, sz*r*sin(ang)/2);
+            r = 1.0 - (dr * fmod (double(i+1), 2.0));
+            glVertex2d (sz*r*cos (ang)/2, sz*r*sin (ang)/2);
           }
         glEnd ();
       }

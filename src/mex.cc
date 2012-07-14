@@ -1576,12 +1576,12 @@ protected:
 
           for (mwIndex i = 0; i < nzmax; i++)
             {
-              val.xdata(i) = ppr[i];
-              val.xridx(i) = ir[i];
+              val.xdata (i) = ppr[i];
+              val.xridx (i) = ir[i];
             }
 
           for (mwIndex i = 0; i < get_n () + 1; i++)
-            val.xcidx(i) = jc[i];
+            val.xcidx (i) = jc[i];
 
           retval = val;
         }
@@ -1603,12 +1603,12 @@ protected:
 
               for (mwIndex i = 0; i < nzmax; i++)
                 {
-                  val.xdata(i) = Complex (ppr[i], ppi[i]);
-                  val.xridx(i) = ir[i];
+                  val.xdata (i) = Complex (ppr[i], ppi[i]);
+                  val.xridx (i) = ir[i];
                 }
 
               for (mwIndex i = 0; i < get_n () + 1; i++)
-                val.xcidx(i) = jc[i];
+                val.xcidx (i) = jc[i];
 
               retval = val;
             }
@@ -1621,12 +1621,12 @@ protected:
 
               for (mwIndex i = 0; i < nzmax; i++)
                 {
-                  val.xdata(i) = ppr[i];
-                  val.xridx(i) = ir[i];
+                  val.xdata (i) = ppr[i];
+                  val.xridx (i) = ir[i];
                 }
 
               for (mwIndex i = 0; i < get_n () + 1; i++)
-                val.xcidx(i) = jc[i];
+                val.xcidx (i) = jc[i];
 
               retval = val;
             }

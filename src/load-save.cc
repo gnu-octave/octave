@@ -649,7 +649,7 @@ Force Octave to assume the file is in Octave's text format.\n\
   std::string orig_fname = "";
 
   // Function called with Matlab-style ["filename", options] syntax
-  if (argc > 1 && ! argv[1].empty () && argv[1].at(0) != '-')
+  if (argc > 1 && ! argv[1].empty () && argv[1].at (0) != '-')
     {
       orig_fname = argv[1];
       i++;
@@ -1001,7 +1001,7 @@ save_fields (std::ostream& os, const octave_scalar_map& m,
     {
       std::string empty_str;
 
-      if (pat.match(m.key (p)))
+      if (pat.match (m.key (p)))
         {
           do_save (os, m.contents (p), m.key (p), empty_str,
                    0, fmt, save_as_floats);

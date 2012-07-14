@@ -108,10 +108,10 @@ public:
   oprocstream (void) : std::ostream (0), procstreambase () { }
 
   oprocstream (const std::string& name, int mode = std::ios::out)
-    : std::ostream (0), procstreambase(name, mode) { }
+    : std::ostream (0), procstreambase (name, mode) { }
 
   oprocstream (const char *name, int mode = std::ios::out)
-    : std::ostream (0), procstreambase(name, mode) { }
+    : std::ostream (0), procstreambase (name, mode) { }
 
   ~oprocstream (void) { }
 

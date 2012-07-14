@@ -333,7 +333,7 @@ ft_render::visit (text_element_string& e)
                 case MODE_RENDER:
                   if (str[i] == '\n')
                     {
-                    glyph_index = FT_Get_Char_Index(face, ' ');
+                    glyph_index = FT_Get_Char_Index (face, ' ');
                     if (!glyph_index || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
                       {
                         gripe_missing_glyph (' ');
@@ -397,7 +397,7 @@ ft_render::visit (text_element_string& e)
                 case MODE_BBOX:
                   if (str[i] == '\n')
                     {
-                      glyph_index = FT_Get_Char_Index(face, ' ');
+                      glyph_index = FT_Get_Char_Index (face, ' ');
                       if (! glyph_index
                           || FT_Load_Glyph (face, glyph_index, FT_LOAD_DEFAULT))
                       {
@@ -405,7 +405,7 @@ ft_render::visit (text_element_string& e)
                       }
                     else
                       {
-                        multiline_align_xoffsets.push_back(box_line_width);
+                        multiline_align_xoffsets.push_back (box_line_width);
                         // Reset the pixel width for this newline, so we don't
                         // allocate a bounding box larger than the horizontal
                         // width of the multi-line
@@ -465,7 +465,7 @@ ft_render::visit (text_element_string& e)
       if (mode == MODE_BBOX)
         {
           /* Push last the width associated with the last line */
-          multiline_align_xoffsets.push_back(box_line_width);
+          multiline_align_xoffsets.push_back (box_line_width);
 
           for (unsigned int i = 0; i < multiline_align_xoffsets.size (); i++)
             {

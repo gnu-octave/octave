@@ -142,7 +142,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
                         = parent.parent_class_name_list ();
 
                       for (octave_idx_type i = 0; i < p_nel; i++)
-                        c(i) = octave_value (pmap.index(i), pcnm, plist);
+                        c(i) = octave_value (pmap.index (i), pcnm, plist);
 
                       map.assign (pcnm, c);
                     }
@@ -187,7 +187,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
                         = parent.parent_class_name_list ();
 
                       for (octave_idx_type i = 0; i < p_nel; i++)
-                        c(i) = octave_value (pmap.index(i), pcnm, plist);
+                        c(i) = octave_value (pmap.index (i), pcnm, plist);
 
                       map.assign (pcnm, c);
                     }

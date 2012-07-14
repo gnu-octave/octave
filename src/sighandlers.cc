@@ -252,7 +252,7 @@ sigchld_handler (int /* sig */)
 
   octave_signals_caught[SIGCHLD] = true;
 }
-#endif /* defined(SIGCHLD) */
+#endif /* defined (SIGCHLD) */
 
 #ifdef SIGFPE
 #if defined (__alpha__)
@@ -268,8 +268,8 @@ sigfpe_handler (int /* sig */)
       octave_interrupt_state++;
     }
 }
-#endif /* defined(__alpha__) */
-#endif /* defined(SIGFPE) */
+#endif /* defined (__alpha__) */
+#endif /* defined (SIGFPE) */
 
 #if defined (SIGHUP) || defined (SIGTERM)
 static void
@@ -401,7 +401,7 @@ sigpipe_handler (int /* sig */)
   if (pipe_handler_error_count++ > 100 && octave_interrupt_state >= 0)
     octave_interrupt_state++;
 }
-#endif /* defined(SIGPIPE) */
+#endif /* defined (SIGPIPE) */
 
 #ifdef USE_W32_SIGINT
 static BOOL CALLBACK
@@ -409,7 +409,7 @@ w32_sigint_handler (DWORD sig)
 {
   const char *sig_name;
 
-  switch(sig)
+  switch (sig)
     {
       case CTRL_BREAK_EVENT:
         sig_name = "Ctrl-Break";
@@ -431,7 +431,7 @@ w32_sigint_handler (DWORD sig)
         break;
     }
 
-  switch(sig)
+  switch (sig)
     {
       case CTRL_BREAK_EVENT:
       case CTRL_C_EVENT:
@@ -447,7 +447,7 @@ w32_sigint_handler (DWORD sig)
         // We should do the following:
         //    clean_up_and_exit (0);
         // We can't because we aren't running in the normal Octave thread.
-        user_abort(sig_name, sig);
+        user_abort (sig_name, sig);
         break;
     }
 

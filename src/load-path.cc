@@ -532,19 +532,19 @@ load_path::do_clear (std::set<std::string>& new_elts)
     {
       //Don't remove it if it's gonna be added again, but remove it from
       //list of items to add, to avoid duplicates later on
-      std::set<std::string>::iterator j = new_elts.find(i->dir_name);
+      std::set<std::string>::iterator j = new_elts.find (i->dir_name);
       if (j != new_elts.end ())
         {
-          new_elts.erase(j);
+          new_elts.erase (j);
           i++;
         }
       else
         {
           //Warn if removing a default directory and not immediately adding
           //it back again
-          if(i->is_init)
+          if (i->is_init)
             warn_default_path_clobbered = true;
-          i = dir_info_list.erase(i);
+          i = dir_info_list.erase (i);
         }
     }
 

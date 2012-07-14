@@ -667,7 +667,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   else
     {
       // Why did mathworks decide to not have dims for a workspace!!!
-      dims.resize(2);
+      dims.resize (2);
       dims(0) = 1;
       dims(1) = 1;
     }
@@ -864,10 +864,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // and so can ignore the seperator field of m0. I think the
         // sentinel field is also save to ignore.
         Octave_map m0 = tc2.map_value ();
-        Octave_map m1 = m0.contents("function_handle")(0).map_value ();
-        std::string ftype = m1.contents("type")(0).string_value ();
-        std::string fname = m1.contents("function")(0).string_value ();
-        std::string fpath = m1.contents("file")(0).string_value ();
+        Octave_map m1 = m0.contents ("function_handle")(0).map_value ();
+        std::string ftype = m1.contents ("type")(0).string_value ();
+        std::string fname = m1.contents ("function")(0).string_value ();
+        std::string fpath = m1.contents ("file")(0).string_value ();
 
         if (ftype == "simple" || ftype == "scopedfunction")
           {
@@ -877,10 +877,10 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             else
               {
                 std::string mroot =
-                  m0.contents("matlabroot")(0).string_value ();
+                  m0.contents ("matlabroot")(0).string_value ();
 
                 if ((fpath.length () >= mroot.length ()) &&
-                    fpath.substr(0, mroot.length ()) == mroot &&
+                    fpath.substr (0, mroot.length ()) == mroot &&
                     OCTAVE_EXEC_PREFIX != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
@@ -979,12 +979,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           }
         else if (ftype == "anonymous")
           {
-            Octave_map m2 = m1.contents("workspace")(0).map_value ();
-            uint32NDArray MCOS = m2.contents("MCOS")(0).uint32_array_value ();
+            Octave_map m2 = m1.contents ("workspace")(0).map_value ();
+            uint32NDArray MCOS = m2.contents ("MCOS")(0).uint32_array_value ();
             octave_idx_type off = static_cast<octave_idx_type>(MCOS(4).double_value ());
             m2 = subsys_ov.map_value ();
-            m2 = m2.contents("MCOS")(0).map_value ();
-            tc2 = m2.contents("MCOS")(0).cell_value ()(1 + off).cell_value ()(1);
+            m2 = m2.contents ("MCOS")(0).map_value ();
+            tc2 = m2.contents ("MCOS")(0).cell_value ()(1 + off).cell_value ()(1);
             m2 = tc2.map_value ();
 
             unwind_protect_safe frame;
@@ -1007,8 +1007,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 for (Octave_map::iterator p0 = m2.begin () ;
                      p0 != m2.end (); p0++)
                   {
-                    std::string key = m2.key(p0);
-                    octave_value val = m2.contents(p0)(0);
+                    std::string key = m2.key (p0);
+                    octave_value val = m2.contents (p0)(0);
 
                     symbol_table::varref (key, local_scope, 0) = val;
                   }
@@ -1219,8 +1219,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 // inline is not an object in Octave but rather an
                 // overload of a function handle. Special case.
                 tc =
-                  new octave_fcn_inline (m.contents("expr")(0).string_value (),
-                                         m.contents("args")(0).string_value ());
+                  new octave_fcn_inline (m.contents ("expr")(0).string_value (),
+                                         m.contents ("args")(0).string_value ());
               }
             else
               {
@@ -1277,7 +1277,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             boolNDArray out (dims);
 
             for (octave_idx_type i = 0; i < nel; i++)
-              out (i) = in(i).bool_value ();
+              out(i) = in(i).bool_value ();
 
             tc = out;
           }

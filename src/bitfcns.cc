@@ -72,8 +72,8 @@ namespace std
 
 template <typename OP, typename T>
 octave_value
-bitopxx(const OP& op, const std::string& fname,
-        const Array<T>& x, const Array<T>& y)
+bitopxx (const OP& op, const std::string& fname,
+         const Array<T>& x, const Array<T>& y)
 {
   int nelx = x.numel ();
   int nely = y.numel ();
@@ -98,9 +98,9 @@ bitopxx(const OP& op, const std::string& fname,
       for (int i = 0; i < nelx; i++)
         if (is_scalar_op)
           for (int k = 0; k < nely; k++)
-            result(i+k) = op(x(i), y(k));
+            result(i+k) = op (x(i), y(k));
         else
-          result(i) = op(x(i), y(i));
+          result(i) = op (x(i), y(i));
 
       retval = result;
     }
@@ -117,7 +117,7 @@ bitopxx(const OP& op, const std::string& fname,
 // information about which integer types we need to instantiate.
 template<typename T>
 octave_value
-bitopx(const std::string& fname, const Array<T>& x, const Array<T>& y)
+bitopx (const std::string& fname, const Array<T>& x, const Array<T>& y)
 {
   if (fname == "bitand")
     return bitopxx (std::bit_and<T>(), fname, x, y);
@@ -129,7 +129,7 @@ bitopx(const std::string& fname, const Array<T>& x, const Array<T>& y)
 }
 
 octave_value
-bitop(const std::string& fname, const octave_value_list& args)
+bitop (const std::string& fname, const octave_value_list& args)
 {
   octave_value retval;
 

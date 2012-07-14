@@ -74,16 +74,16 @@ gzfilebuf::~gzfilebuf ()
 
 // Set compression level and strategy
 int
-gzfilebuf::setcompression(int comp_level,
-                          int comp_strategy)
+gzfilebuf::setcompression (int comp_level,
+                           int comp_strategy)
 {
-  return gzsetparams(file, comp_level, comp_strategy);
+  return gzsetparams (file, comp_level, comp_strategy);
 }
 
 // Open gzipped file
 gzfilebuf*
-gzfilebuf::open(const char *name,
-                std::ios_base::openmode mode)
+gzfilebuf::open (const char *name,
+                 std::ios_base::openmode mode)
 {
   // Fail if file already open
   if (this->is_open ())
@@ -94,11 +94,11 @@ gzfilebuf::open(const char *name,
 
   // Build mode string for gzopen and check it [27.8.1.3.2]
   char char_mode[6] = "\0\0\0\0\0";
-  if (!this->open_mode(mode, char_mode))
+  if (! this->open_mode (mode, char_mode))
     return 0;
 
   // Attempt to open file
-  if ((file = gzopen(name, char_mode)) == 0)
+  if ((file = gzopen (name, char_mode)) == 0)
     return 0;
 
   // On success, allocate internal buffer and set flags
@@ -110,8 +110,8 @@ gzfilebuf::open(const char *name,
 
 // Attach to gzipped file
 gzfilebuf*
-gzfilebuf::attach(int fd,
-                  std::ios_base::openmode mode)
+gzfilebuf::attach (int fd,
+                   std::ios_base::openmode mode)
 {
   // Fail if file already open
   if (this->is_open ())
@@ -122,11 +122,11 @@ gzfilebuf::attach(int fd,
 
   // Build mode string for gzdopen and check it [27.8.1.3.2]
   char char_mode[6] = "\0\0\0\0\0";
-  if (!this->open_mode(mode, char_mode))
+  if (! this->open_mode (mode, char_mode))
     return 0;
 
   // Attempt to attach to file
-  if ((file = gzdopen(fd, char_mode)) == 0)
+  if ((file = gzdopen (fd, char_mode)) == 0)
     return 0;
 
   // On success, allocate internal buffer and set flags
@@ -141,14 +141,14 @@ gzfilebuf*
 gzfilebuf::close ()
 {
   // Fail immediately if no file is open
-  if (!this->is_open ())
+  if (! this->is_open ())
     return 0;
   // Assume success
   gzfilebuf* retval = this;
   // Attempt to sync and close gzipped file
   if (this->sync () == -1)
     retval = 0;
-  if (gzclose(file) < 0)
+  if (gzclose (file) < 0)
     retval = 0;
   // File is now gone anyway (postcondition [27.8.1.3.8])
   file = 0;
@@ -162,8 +162,8 @@ gzfilebuf::close ()
 
 // Convert int open mode to mode string
 bool
-gzfilebuf::open_mode(std::ios_base::openmode mode,
-                     char* c_mode) const
+gzfilebuf::open_mode (std::ios_base::openmode mode,
+                      char* c_mode) const
 {
   // FIXME -- do we need testb?
   // bool testb = mode & std::ios_base::binary;
@@ -178,13 +178,13 @@ gzfilebuf::open_mode(std::ios_base::openmode mode,
   // excessive though - keeping it at the default level
   // To change back, just append "9" to the next three mode strings
   if (!testi && testo && !testt && !testa)
-    strcpy(c_mode, "w");
+    strcpy (c_mode, "w");
   if (!testi && testo && !testt && testa)
-    strcpy(c_mode, "a");
+    strcpy (c_mode, "a");
   if (!testi && testo && testt && !testa)
-    strcpy(c_mode, "w");
+    strcpy (c_mode, "w");
   if (testi && !testo && !testt && !testa)
-    strcpy(c_mode, "r");
+    strcpy (c_mode, "r");
   // No read/write mode yet
 //  if (testi && testo && !testt && !testa)
 //    strcpy(c_mode, "r+");
@@ -192,10 +192,10 @@ gzfilebuf::open_mode(std::ios_base::openmode mode,
 //    strcpy(c_mode, "w+");
 
   // Mode string should be empty for invalid combination of flags
-  if (strlen(c_mode) == 0)
+  if (strlen (c_mode) == 0)
     return false;
 
-  strcat(c_mode, "b");
+  strcat (c_mode, "b");
 
   return true;
 }
@@ -205,11 +205,11 @@ std::streamsize
 gzfilebuf::showmanyc ()
 {
   // Calls to underflow will fail if file not opened for reading
-  if (!this->is_open () || !(io_mode & std::ios_base::in))
+  if (! this->is_open () || !(io_mode & std::ios_base::in))
     return -1;
   // Make sure get area is in use
   if (this->gptr () && (this->gptr () < this->egptr ()))
-    return std::streamsize(this->egptr () - this->gptr ());
+    return std::streamsize (this->egptr () - this->gptr ());
   else
     return 0;
 }
@@ -231,21 +231,21 @@ gzfilebuf::pbackfail (gzfilebuf::int_type c)
 
       // Attempt to fill internal buffer from gzipped file
       // (buffer must be guaranteed to exist...)
-      int bytes_read = gzread(file, buffer, buffer_size);
+      int bytes_read = gzread (file, buffer, buffer_size);
       // Indicates error or EOF
       if (bytes_read <= 0)
         {
           // Reset get area
-          this->setg(buffer, buffer, buffer);
+          this->setg (buffer, buffer, buffer);
           return traits_type::eof ();
         }
 
       // Make all bytes read from file available as get area
-      this->setg(buffer, buffer, buffer + bytes_read);
+      this->setg (buffer, buffer, buffer + bytes_read);
 
       // If next character in get area differs from putback character
       // flag a failure
-      gzfilebuf::int_type ret = traits_type::to_int_type(*(this->gptr ()));
+      gzfilebuf::int_type ret = traits_type::to_int_type (*(this->gptr ()));
       if (ret != c)
         return traits_type::eof ();
       else
@@ -263,10 +263,10 @@ gzfilebuf::underflow ()
   // (this shouldn't normally happen, as underflow is only supposed
   // to be called when gptr >= egptr, but it serves as error check)
   if (this->gptr () && (this->gptr () < this->egptr ()))
-    return traits_type::to_int_type(*(this->gptr ()));
+    return traits_type::to_int_type (*(this->gptr ()));
 
   // If the file hasn't been opened for reading, produce error
-  if (!this->is_open () || !(io_mode & std::ios_base::in))
+  if (! this->is_open () || !(io_mode & std::ios_base::in))
     return traits_type::eof ();
 
   // Copy the final characters to the front of the buffer
@@ -282,25 +282,25 @@ gzfilebuf::underflow ()
 
   // Attempt to fill internal buffer from gzipped file
   // (buffer must be guaranteed to exist...)
-  int bytes_read = gzread(file, buffer + stash, buffer_size - stash);
+  int bytes_read = gzread (file, buffer + stash, buffer_size - stash);
 
   // Indicates error or EOF
   if (bytes_read <= 0)
   {
     // Reset get area
-    this->setg(buffer, buffer, buffer);
+    this->setg (buffer, buffer, buffer);
     return traits_type::eof ();
   }
   // Make all bytes read from file plus the stash available as get area
-  this->setg(buffer, buffer + stash, buffer + bytes_read + stash);
+  this->setg (buffer, buffer + stash, buffer + bytes_read + stash);
 
   // Return next character in get area
-  return traits_type::to_int_type(*(this->gptr ()));
+  return traits_type::to_int_type (*(this->gptr ()));
 }
 
 // Write put area to gzipped file
 gzfilebuf::int_type
-gzfilebuf::overflow(int_type c)
+gzfilebuf::overflow (int_type c)
 {
   // Determine whether put area is in use
   if (this->pbase ())
@@ -309,10 +309,10 @@ gzfilebuf::overflow(int_type c)
     if (this->pptr () > this->epptr () || this->pptr () < this->pbase ())
       return traits_type::eof ();
     // Add extra character to buffer if not EOF
-    if (!traits_type::eq_int_type(c, traits_type::eof ()))
+    if (! traits_type::eq_int_type (c, traits_type::eof ()))
     {
-      *(this->pptr()) = traits_type::to_char_type(c);
-      this->pbump(1);
+      *(this->pptr ()) = traits_type::to_char_type (c);
+      this->pbump (1);
     }
     // Number of characters to write to file
     int bytes_to_write = this->pptr () - this->pbase ();
@@ -320,40 +320,40 @@ gzfilebuf::overflow(int_type c)
     if (bytes_to_write > 0)
     {
       // If the file hasn't been opened for writing, produce error
-      if (!this->is_open () || !(io_mode & std::ios_base::out))
+      if (! this->is_open () || !(io_mode & std::ios_base::out))
         return traits_type::eof ();
       // If gzipped file won't accept all bytes written to it, fail
-      if (gzwrite(file, this->pbase (), bytes_to_write) != bytes_to_write)
+      if (gzwrite (file, this->pbase (), bytes_to_write) != bytes_to_write)
         return traits_type::eof ();
       // Reset next pointer to point to pbase on success
-      this->pbump(-bytes_to_write);
+      this->pbump (-bytes_to_write);
     }
   }
   // Write extra character to file if not EOF
-  else if (!traits_type::eq_int_type(c, traits_type::eof ()))
+  else if (! traits_type::eq_int_type (c, traits_type::eof ()))
   {
     // If the file hasn't been opened for writing, produce error
-    if (!this->is_open () || !(io_mode & std::ios_base::out))
+    if (! this->is_open () || !(io_mode & std::ios_base::out))
       return traits_type::eof ();
     // Impromptu char buffer (allows "unbuffered" output)
-    char_type last_char = traits_type::to_char_type(c);
+    char_type last_char = traits_type::to_char_type (c);
     // If gzipped file won't accept this character, fail
-    if (gzwrite(file, &last_char, 1) != 1)
+    if (gzwrite (file, &last_char, 1) != 1)
       return traits_type::eof ();
   }
 
   // If you got here, you have succeeded (even if c was EOF)
   // The return value should therefore be non-EOF
-  if (traits_type::eq_int_type(c, traits_type::eof ()))
-    return traits_type::not_eof(c);
+  if (traits_type::eq_int_type (c, traits_type::eof ()))
+    return traits_type::not_eof (c);
   else
     return c;
 }
 
 // Assign new buffer
 std::streambuf*
-gzfilebuf::setbuf(char_type* p,
-                  std::streamsize n)
+gzfilebuf::setbuf (char_type* p,
+                   std::streamsize n)
 {
   // First make sure stuff is sync'ed, for safety
   if (this->sync () == -1)
@@ -387,7 +387,7 @@ gzfilebuf::setbuf(char_type* p,
 int
 gzfilebuf::sync ()
 {
-  return traits_type::eq_int_type(this->overflow (), traits_type::eof ()) ? -1 : 0;
+  return traits_type::eq_int_type (this->overflow (), traits_type::eof ()) ? -1 : 0;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -405,29 +405,29 @@ gzfilebuf::enable_buffer ()
       // Allocate internal buffer
       buffer = new char_type[buffer_size];
       // Get area starts empty and will be expanded by underflow as need arises
-      this->setg(buffer, buffer, buffer);
+      this->setg (buffer, buffer, buffer);
       // Setup entire internal buffer as put area.
       // The one-past-end pointer actually points to the last element of the buffer,
       // so that overflow(c) can safely add the extra character c to the sequence.
       // These pointers remain in place for the duration of the buffer
-      this->setp(buffer, buffer + buffer_size - 1);
+      this->setp (buffer, buffer + buffer_size - 1);
     }
     else
     {
       // Even in "unbuffered" case, (small?) get buffer is still required
       buffer_size = SMALLBUFSIZE;
       buffer = new char_type[buffer_size];
-      this->setg(buffer, buffer, buffer);
+      this->setg (buffer, buffer, buffer);
       // "Unbuffered" means no put buffer
-      this->setp(0, 0);
+      this->setp (0, 0);
     }
   }
   else
   {
     // If buffer already allocated, reset buffer pointers just to make sure no
     // stale chars are lying around
-    this->setg(buffer, buffer, buffer);
-    this->setp(buffer, buffer + buffer_size - 1);
+    this->setg (buffer, buffer, buffer);
+    this->setp (buffer, buffer + buffer_size - 1);
   }
 }
 
@@ -439,21 +439,21 @@ gzfilebuf::disable_buffer ()
   if (own_buffer && buffer)
   {
     // Preserve unbuffered status by zeroing size
-    if (!this->pbase ())
+    if (! this->pbase ())
       buffer_size = 0;
     delete[] buffer;
     buffer = 0;
-    this->setg(0, 0, 0);
-    this->setp(0, 0);
+    this->setg (0, 0, 0);
+    this->setp (0, 0);
   }
   else
   {
     // Reset buffer pointers to initial state if external buffer exists
-    this->setg(buffer, buffer, buffer);
+    this->setg (buffer, buffer, buffer);
     if (buffer)
-      this->setp(buffer, buffer + buffer_size - 1);
+      this->setp (buffer, buffer + buffer_size - 1);
     else
-      this->setp(0, 0);
+      this->setp (0, 0);
   }
 }
 
@@ -461,7 +461,7 @@ gzfilebuf::disable_buffer ()
 
 // Seek functions
 gzfilebuf::pos_type
-gzfilebuf::seekoff(off_type off, std::ios_base::seekdir way,
+gzfilebuf::seekoff (off_type off, std::ios_base::seekdir way,
                    std::ios_base::openmode)
 {
   pos_type ret = pos_type (off_type (-1));
@@ -493,7 +493,7 @@ gzfilebuf::seekoff(off_type off, std::ios_base::seekdir way,
 }
 
 gzfilebuf::pos_type
-gzfilebuf::seekpos(pos_type sp, std::ios_base::openmode)
+gzfilebuf::seekpos (pos_type sp, std::ios_base::openmode)
 {
   pos_type ret = pos_type (off_type (-1));
 
@@ -516,45 +516,45 @@ gzfilebuf::seekpos(pos_type sp, std::ios_base::openmode)
 
 // Default constructor initializes stream buffer
 gzifstream::gzifstream ()
-: std::istream(0), sb ()
-{ this->init(&sb); }
+: std::istream (0), sb ()
+{ this->init (&sb); }
 
 // Initialize stream buffer and open file
-gzifstream::gzifstream(const char* name,
-                       std::ios_base::openmode mode)
-: std::istream(0), sb ()
+gzifstream::gzifstream (const char* name,
+                        std::ios_base::openmode mode)
+: std::istream (0), sb ()
 {
-  this->init(&sb);
-  this->open(name, mode);
+  this->init (&sb);
+  this->open (name, mode);
 }
 
 // Initialize stream buffer and attach to file
-gzifstream::gzifstream(int fd,
-                       std::ios_base::openmode mode)
-: std::istream(0), sb ()
+gzifstream::gzifstream (int fd,
+                        std::ios_base::openmode mode)
+: std::istream (0), sb ()
 {
-  this->init(&sb);
-  this->attach(fd, mode);
+  this->init (&sb);
+  this->attach (fd, mode);
 }
 
 // Open file and go into fail() state if unsuccessful
 void
-gzifstream::open(const char* name,
-                 std::ios_base::openmode mode)
+gzifstream::open (const char* name,
+                  std::ios_base::openmode mode)
 {
-  if (!sb.open(name, mode | std::ios_base::in))
-    this->setstate(std::ios_base::failbit);
+  if (! sb.open (name, mode | std::ios_base::in))
+    this->setstate (std::ios_base::failbit);
   else
     this->clear ();
 }
 
 // Attach to file and go into fail() state if unsuccessful
 void
-gzifstream::attach(int fd,
-                   std::ios_base::openmode mode)
+gzifstream::attach (int fd,
+                    std::ios_base::openmode mode)
 {
-  if (!sb.attach(fd, mode | std::ios_base::in))
-    this->setstate(std::ios_base::failbit);
+  if (! sb.attach (fd, mode | std::ios_base::in))
+    this->setstate (std::ios_base::failbit);
   else
     this->clear ();
 }
@@ -563,53 +563,53 @@ gzifstream::attach(int fd,
 void
 gzifstream::close ()
 {
-  if (!sb.close ())
-    this->setstate(std::ios_base::failbit);
+  if (! sb.close ())
+    this->setstate (std::ios_base::failbit);
 }
 
 /*****************************************************************************/
 
 // Default constructor initializes stream buffer
 gzofstream::gzofstream ()
-: std::ostream(0), sb ()
-{ this->init(&sb); }
+: std::ostream (0), sb ()
+{ this->init (&sb); }
 
 // Initialize stream buffer and open file
-gzofstream::gzofstream(const char* name,
-                       std::ios_base::openmode mode)
-: std::ostream(0), sb ()
+gzofstream::gzofstream (const char* name,
+                        std::ios_base::openmode mode)
+: std::ostream (0), sb ()
 {
-  this->init(&sb);
-  this->open(name, mode);
+  this->init (&sb);
+  this->open (name, mode);
 }
 
 // Initialize stream buffer and attach to file
-gzofstream::gzofstream(int fd,
-                       std::ios_base::openmode mode)
-: std::ostream(0), sb ()
+gzofstream::gzofstream (int fd,
+                        std::ios_base::openmode mode)
+: std::ostream (0), sb ()
 {
-  this->init(&sb);
-  this->attach(fd, mode);
+  this->init (&sb);
+  this->attach (fd, mode);
 }
 
 // Open file and go into fail() state if unsuccessful
 void
-gzofstream::open(const char* name,
-                 std::ios_base::openmode mode)
+gzofstream::open (const char* name,
+                  std::ios_base::openmode mode)
 {
-  if (!sb.open(name, mode | std::ios_base::out))
-    this->setstate(std::ios_base::failbit);
+  if (! sb.open (name, mode | std::ios_base::out))
+    this->setstate (std::ios_base::failbit);
   else
     this->clear ();
 }
 
 // Attach to file and go into fail() state if unsuccessful
 void
-gzofstream::attach(int fd,
-                   std::ios_base::openmode mode)
+gzofstream::attach (int fd,
+                    std::ios_base::openmode mode)
 {
-  if (!sb.attach(fd, mode | std::ios_base::out))
-    this->setstate(std::ios_base::failbit);
+  if (! sb.attach (fd, mode | std::ios_base::out))
+    this->setstate (std::ios_base::failbit);
   else
     this->clear ();
 }
@@ -618,8 +618,8 @@ gzofstream::attach(int fd,
 void
 gzofstream::close ()
 {
-  if (!sb.close ())
-    this->setstate(std::ios_base::failbit);
+  if (! sb.close ())
+    this->setstate (std::ios_base::failbit);
 }
 
 #endif // HAVE_ZLIB

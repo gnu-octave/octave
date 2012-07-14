@@ -252,7 +252,7 @@ octave_char_matrix_str::cellstr_value (void) const
       octave_idx_type nr = chm.rows ();
       retval.clear (nr, 1);
       for (octave_idx_type i = 0; i < nr; i++)
-        retval.xelem(i) = chm.row_as_string (i);
+        retval.xelem (i) = chm.row_as_string (i);
     }
   else
     error ("cellstr: cannot convert multidimensional arrays");
@@ -615,7 +615,7 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize(dv);
+    matrix.resize (dv);
   if (empty)
     return (empty > 0);
 

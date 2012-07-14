@@ -465,7 +465,7 @@ public:
           if (found)
             {
               for (int j = i; j < l.length () - 1; j++)
-                l(j) = l (j + 1);
+                l(j) = l(j + 1);
 
               l.resize (l.length () - 1);
             }

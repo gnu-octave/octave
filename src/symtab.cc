@@ -1201,7 +1201,7 @@ symbol_table::find_function (const std::string& name,
           std::string fcn_scope = name.substr (0, pos);
           scope_id stored_scope = xcurrent_scope;
           xcurrent_scope = xtop_scope;
-          octave_value parent = find_function (name.substr(0, pos),
+          octave_value parent = find_function (name.substr (0, pos),
                                                octave_value_list (), false);
 
           if (parent.is_defined ())

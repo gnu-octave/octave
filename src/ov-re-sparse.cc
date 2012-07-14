@@ -160,8 +160,8 @@ octave_sparse_matrix::char_array_value (bool) const
   octave_idx_type nr = matrix.rows ();
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
-      retval(matrix.ridx(i) + nr * j) = static_cast<char>(matrix.data (i));
+    for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
+      retval(matrix.ridx (i) + nr * j) = static_cast<char>(matrix.data (i));
 
   return retval;
 }
@@ -216,8 +216,8 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
       bool warned = false;
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = matrix.cidx(j);
-             i < matrix.cidx(j+1); i++)
+        for (octave_idx_type i = matrix.cidx (j);
+             i < matrix.cidx (j+1); i++)
           {
             octave_quit ();
 
@@ -246,7 +246,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
                         }
                     }
 
-                  chm (matrix.ridx(i) + j * nr) =
+                  chm (matrix.ridx (i) + j * nr) =
                     static_cast<char> (ival);
                 }
           }
@@ -308,14 +308,14 @@ octave_sparse_matrix::save_binary (std::ostream& os, bool&save_as_floats)
    for (int i = 0; i < nc+1; i++)
      {
        octave_quit ();
-       itmp = matrix.cidx(i);
+       itmp = matrix.cidx (i);
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
    for (int i = 0; i < nz; i++)
      {
        octave_quit ();
-       itmp = matrix.ridx(i);
+       itmp = matrix.ridx (i);
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
@@ -367,7 +367,7 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
         return false;
       if (swap)
         swap_bytes<4> (&tmp);
-      m.xcidx(i) = tmp;
+      m.xcidx (i) = tmp;
     }
 
   for (int i = 0; i < nz; i++)
@@ -377,7 +377,7 @@ octave_sparse_matrix::load_binary (std::istream& is, bool swap,
         return false;
       if (swap)
         swap_bytes<4> (&tmp);
-      m.xridx(i) = tmp;
+      m.xridx (i) = tmp;
     }
 
   if (! is.read (reinterpret_cast<char *> (&ctmp), 1))
@@ -637,7 +637,7 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize(dv);
+    matrix.resize (dv);
   if (empty)
     return (empty > 0);
 
@@ -867,12 +867,12 @@ octave_sparse_matrix::as_mxArray (void) const
 
   for (mwIndex i = 0; i < nz; i++)
     {
-      pr[i] = matrix.data(i);
-      ir[i] = matrix.ridx(i);
+      pr[i] = matrix.data (i);
+      ir[i] = matrix.ridx (i);
     }
 
   for (mwIndex i = 0; i < nc + 1; i++)
-    jc[i] = matrix.cidx(i);
+    jc[i] = matrix.cidx (i);
 
   return retval;
 }

@@ -1336,7 +1336,7 @@ public:
     param_names(pos_t) = "Type";
 
     for (size_t i = 0; i < param_string.length (); i++)
-      param_length(i) = param_names(i) . length ();
+      param_length(i) = param_names(i).length ();
 
     // The attribute column needs size 5.
     param_length(pos_a) = 5;

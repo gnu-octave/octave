@@ -89,8 +89,8 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_matrix::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info(default_numeric_demotion_function,
-                                           octave_float_matrix::static_type_id ());
+  return octave_base_value::type_conv_info (default_numeric_demotion_function,
+                                            octave_float_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -747,7 +747,7 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize(dv);
+    matrix.resize (dv);
   if (empty)
       return (empty > 0);
 

@@ -381,7 +381,7 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    this->matrix.resize(dv);
+    this->matrix.resize (dv);
   if (empty)
       return (empty > 0);
 

@@ -1636,8 +1636,8 @@ Return a struct containing information about the function handle\n\
                     {
                       m.setfield ("type", "subfunction");
                       Cell parentage (dim_vector (1, 2));
-                      parentage.elem(0) = fh_nm;
-                      parentage.elem(1) = fcn->parent_fcn_name ();
+                      parentage.elem (0) = fh_nm;
+                      parentage.elem (1) = fcn->parent_fcn_name ();
                       m.setfield ("parentage", octave_value (parentage));
                     }
                   else if (fcn->is_private_function ())

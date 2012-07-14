@@ -157,7 +157,7 @@ octave_value_list::splice (octave_idx_type offset, octave_idx_type rep_length,
     retval(k++) = elem (i);
 
   for (octave_idx_type i = 0; i < lst_len; i++)
-    retval(k++) = lst(i);
+    retval(k++) = lst (i);
 
   for (octave_idx_type i = offset + rep_length; i < len; i++)
     retval(k++) = elem (i);

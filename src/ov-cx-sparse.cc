@@ -188,8 +188,8 @@ octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
       octave_idx_type nr = matrix.rows ();
 
       for (octave_idx_type j = 0; j < nc; j++)
-        for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
-          retval(matrix.ridx(i) + nr * j) =
+        for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
+          retval(matrix.ridx (i) + nr * j) =
             static_cast<char>(std::real (matrix.data (i)));
     }
 
@@ -275,14 +275,14 @@ octave_sparse_complex_matrix::save_binary (std::ostream& os,
    for (int i = 0; i < nc+1; i++)
      {
        octave_quit ();
-       itmp = matrix.cidx(i);
+       itmp = matrix.cidx (i);
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
    for (int i = 0; i < nz; i++)
      {
        octave_quit ();
-       itmp = matrix.ridx(i);
+       itmp = matrix.ridx (i);
        os.write (reinterpret_cast<char *> (&itmp), 4);
      }
 
@@ -334,7 +334,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
         return false;
       if (swap)
         swap_bytes<4> (&tmp);
-      m.cidx(i) = tmp;
+      m.cidx (i) = tmp;
     }
 
   for (int i = 0; i < nz; i++)
@@ -344,7 +344,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
         return false;
       if (swap)
         swap_bytes<4> (&tmp);
-      m.ridx(i) = tmp;
+      m.ridx (i) = tmp;
     }
 
   if (! is.read (reinterpret_cast<char *> (&ctmp), 1))
@@ -622,7 +622,7 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize(dv);
+    matrix.resize (dv);
   if (empty)
     return (empty > 0);
 
@@ -862,14 +862,14 @@ octave_sparse_complex_matrix::as_mxArray (void) const
 
   for (mwIndex i = 0; i < nz; i++)
     {
-      Complex val = matrix.data(i);
+      Complex val = matrix.data (i);
       pr[i] = std::real (val);
       pi[i] = std::imag (val);
-      ir[i] = matrix.ridx(i);
+      ir[i] = matrix.ridx (i);
     }
 
   for (mwIndex i = 0; i < columns () + 1; i++)
-    jc[i] = matrix.cidx(i);
+    jc[i] = matrix.cidx (i);
 
   return retval;
 }

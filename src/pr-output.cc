@@ -303,8 +303,8 @@ operator << (std::ostream& os, const pr_engineering_float& pef)
   else
     os << std::setw (0) << "e+";
 
-  os << std::setw (pef.f.ex - 2) << std::setfill('0') << ex
-     << std::setfill(' ');
+  os << std::setw (pef.f.ex - 2) << std::setfill ('0') << ex
+     << std::setfill (' ');
 
   os.flags (oflags);
 
@@ -360,7 +360,7 @@ rational_approx (double val, int len)
     {
       std::ostringstream buf;
       buf.flags (std::ios::fixed);
-      buf << std::setprecision (0) << xround(val);
+      buf << std::setprecision (0) << xround (val);
       s = buf.str ();
     }
   else
@@ -2004,8 +2004,8 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 }
 
 template <typename NDA_T, typename ELT_T, typename MAT_T>
-void print_nd_array(std::ostream& os, const NDA_T& nda,
-                    bool pr_as_read_syntax)
+void print_nd_array (std::ostream& os, const NDA_T& nda,
+                     bool pr_as_read_syntax)
 {
 
   if (nda.is_empty ())
@@ -3554,7 +3554,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 %! foo.char = repmat ("- Hello World -", [3, 20]);
 %! foo.cell = {foo.real, foo.complex, foo.char};
 %! fields = fieldnames (foo);
-%! for f = 1:numel(fields)
+%! for f = 1:numel (fields)
 %!   format loose;
 %!   loose = disp (foo.(fields{f}));
 %!   format compact;

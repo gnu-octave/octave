@@ -370,13 +370,13 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
           // at all the nonzero values and display them with the same
           // formatting rules that apply to columns of a matrix.
 
-          for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
+          for (octave_idx_type i = matrix.cidx (j); i < matrix.cidx (j+1); i++)
             {
               os << "\n";
-              os << "  (" << matrix.ridx(i)+1 <<
+              os << "  (" << matrix.ridx (i)+1 <<
                 ", "  << j+1 << ") -> ";
 
-              octave_print_internal (os, matrix.data(i), pr_as_read_syntax);
+              octave_print_internal (os, matrix.data (i), pr_as_read_syntax);
             }
         }
     }

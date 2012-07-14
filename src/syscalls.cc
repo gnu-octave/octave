@@ -403,9 +403,9 @@ exit status, it will linger until Octave exits.\n\
 %! until (done)
 %! fclose (out);
 %! if (isunix ())
-%!   assert(str, {"these\n","strings\n","some\n","are\n"});
+%!   assert (str, {"these\n","strings\n","some\n","are\n"});
 %! else
-%!   assert(str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
+%!   assert (str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
 %! endif
 */
 

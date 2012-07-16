@@ -198,18 +198,18 @@ public:
 
   chol_type L (void) const;
 
-  chol_type R (void) const { return L().hermitian (); }
+  chol_type R (void) const { return L ().hermitian (); }
 
-  octave_idx_type P (void) const { return rep->P(); }
+  octave_idx_type P (void) const { return rep->P (); }
 
-  ColumnVector perm (void) const { return rep->perm(); }
+  ColumnVector perm (void) const { return rep->perm (); }
 
-  p_type Q (void) const { return rep->Q(); }
+  p_type Q (void) const { return rep->Q (); }
 
   bool is_positive_definite (void) const
-    { return rep->is_positive_definite(); }
+    { return rep->is_positive_definite (); }
 
-  double rcond (void) const { return rep->rcond(); }
+  double rcond (void) const { return rep->rcond (); }
 
   chol_type inverse (void) const;
 };

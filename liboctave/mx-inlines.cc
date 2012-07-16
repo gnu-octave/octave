@@ -62,7 +62,7 @@ DEFMXUNOPEQ (mx_inline_uminus2, -)
 #define DEFMXUNBOOLOP(F, OP) \
 template <class X> \
 inline void F (size_t n, bool *r, const X *x) throw () \
-{ const X zero = X(); for (size_t i = 0; i < n; i++) r[i] = x[i] OP zero; }
+{ const X zero = X (); for (size_t i = 0; i < n; i++) r[i] = x[i] OP zero; }
 
 DEFMXUNBOOLOP (mx_inline_iszero, ==)
 DEFMXUNBOOLOP (mx_inline_notzero, !=)

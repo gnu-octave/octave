@@ -5,7 +5,7 @@ function [ s ] = Dork( gick, gack )
   else
     s.gack = 0;
     if nargin == 0
-      s0 = Snork();
+      s0 = Snork ();
     elseif nargin==1
       s0 = Snork(gick);
     else

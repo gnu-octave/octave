@@ -67,7 +67,7 @@ On exit, @var{y} is a unit vector such that:\n\
 {
   octave_value_list retval;
 
-  int nargin = args.length();
+  int nargin = args.length ();
 
   if (nargin != 2 || nargout > 2)
   {

@@ -103,7 +103,7 @@ then column @var{j} is in constraint set @var{c} (@var{c} must be in the\n\
 range 1 to\n\
 n).  In the output permutation @var{p}, all columns in set 1 appear\n\
 first, followed by all columns in set 2, and so on.  @code{@var{cmember} =\n\
-ones(1,n)} if not present or empty.\n\
+ones (1,n)} if not present or empty.\n\
 @code{ccolamd (@var{S}, [], 1 : n)} returns @code{1 : n}\n\
 \n\
 @code{@var{p} = ccolamd (@var{S})} is about the same as\n\
@@ -181,14 +181,14 @@ colamd, symamd, and other related orderings.\n\
                             <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE
                             << ":\nknobs(1): " << User_knobs (0) << ", order for ";
               if ( knobs [CCOLAMD_LU] != 0)
-                octave_stdout << "lu(A)\n";
+                octave_stdout << "lu (A)\n";
               else
-                octave_stdout << "chol(A'*A)\n";
+                octave_stdout << "chol (A'*A)\n";
 
               if (knobs [CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(2): " << User_knobs (1)
-                              << ", rows with > max(16,"
-                              << knobs [CCOLAMD_DENSE_ROW] << "*sqrt(size(A,2)))"
+                              << ", rows with > max (16,"
+                              << knobs [CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(2): " << User_knobs (1)
@@ -196,8 +196,8 @@ colamd, symamd, and other related orderings.\n\
 
               if (knobs [CCOLAMD_DENSE_COL] >= 0)
                 octave_stdout << "knobs(3): " << User_knobs (2)
-                              << ", cols with > max(16,"
-                              << knobs [CCOLAMD_DENSE_COL] << "*sqrt(size(A)))"
+                              << ", cols with > max (16,"
+                              << knobs [CCOLAMD_DENSE_COL] << "*sqrt (size(A)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(3): " << User_knobs (2)
@@ -270,8 +270,8 @@ colamd, symamd, and other related orderings.\n\
 
       if (nargin > 2)
         {
-          NDArray in_cmember = args(2).array_value();
-          octave_idx_type cslen = in_cmember.length();
+          NDArray in_cmember = args(2).array_value ();
+          octave_idx_type cslen = in_cmember.length ();
           OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
           for (octave_idx_type i = 0; i < cslen; i++)
             // convert cmember from 1-based to 0-based
@@ -302,9 +302,9 @@ colamd, symamd, and other related orderings.\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = p [i] + 1;
+        out_perm(i) = p[i] + 1;
 
-      retval (0) = out_perm;
+      retval(0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
@@ -372,11 +372,11 @@ If nonzero, statistics and knobs are printed.\n\
 on the ordering.  If @code{@var{cmember}(j) = @var{S}}, then row/column j is\n\
 in constraint set @var{c} (@var{c} must be in the range 1 to n).  In the\n\
 output permutation @var{p}, rows/columns in set 1 appear first, followed\n\
-by all rows/columns in set 2, and so on.  @code{@var{cmember} = ones(1,n)}\n\
-if not present or empty.  @code{csymamd(@var{S},[],1:n)} returns @code{1:n}.\n\
+by all rows/columns in set 2, and so on.  @code{@var{cmember} = ones (1,n)}\n\
+if not present or empty.  @code{csymamd (@var{S},[],1:n)} returns @code{1:n}.\n\
 \n\
-@code{@var{p} = csymamd(@var{S})} is about the same as @code{@var{p} =\n\
-symamd(@var{S})}.  @var{knobs} and its default values differ.\n\
+@code{@var{p} = csymamd (@var{S})} is about the same as @code{@var{p} =\n\
+symamd (@var{S})}.  @var{knobs} and its default values differ.\n\
 \n\
 @code{@var{stats}(4:7)} provide information if CCOLAMD was able to\n\
 continue.  The matrix is OK if @code{@var{stats}(4)} is zero, or 1 if\n\
@@ -433,8 +433,8 @@ colamd, symamd, and other related orderings.\n\
 
               if (knobs [CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(1): " << User_knobs (0)
-                              << ", rows/cols with > max(16,"
-                              << knobs [CCOLAMD_DENSE_ROW] << "*sqrt(size(A,2)))"
+                              << ", rows/cols with > max (16,"
+                              << knobs [CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(1): " << User_knobs (0)
@@ -502,8 +502,8 @@ colamd, symamd, and other related orderings.\n\
 
       if (nargin > 2)
         {
-          NDArray in_cmember = args(2).array_value();
-          octave_idx_type cslen = in_cmember.length();
+          NDArray in_cmember = args(2).array_value ();
+          octave_idx_type cslen = in_cmember.length ();
           OCTAVE_LOCAL_BUFFER (octave_idx_type, cmember, cslen);
           for (octave_idx_type i = 0; i < cslen; i++)
             // convert cmember from 1-based to 0-based
@@ -534,9 +534,9 @@ colamd, symamd, and other related orderings.\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = perm [i] + 1;
+        out_perm(i) = perm[i] + 1;
 
-      retval (0) = out_perm;
+      retval(0) = out_perm;
 
       // Return the stats vector
       if (nargout == 2)

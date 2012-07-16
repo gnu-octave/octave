@@ -17,17 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{name} =} graphics_toolkit ()
-## Returns the default graphics toolkit. The default graphics toolkit value
+## @deftypefn {Function File} {@var{name} =} graphics_toolkit ()
+## Return the default graphics toolkit.  The default graphics toolkit value
 ## is assigned to new figures.
 ## @deftypefnx {Function File} {@var{name} =} graphics_toolkit (@var{hlist})
-## Returns the graphics toolkits for the figures with handles @var{hlist}.
+## Return the graphics toolkits for the figures with handles @var{hlist}.
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{name})
-## Sets the default graphics toolkit to @var{name}.  If the toolkit is not
+## Set the default graphics toolkit to @var{name}.  If the toolkit is not
 ## already loaded, it is initialized by calling the function
 ## @code{__init_@var{name}__}.
 ## @deftypefnx {Function File} {} graphics_toolkit (@var{hlist}, @var{name})
-## Sets the graphics toolkit for the figues with handles @var{hlist} to
+## Set the graphics toolkit for the figures with handles @var{hlist} to
 ## @var{name}.
 ## @seealso{available_graphics_toolkits}
 ## @end deftypefn

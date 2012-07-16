@@ -1539,9 +1539,9 @@ help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
 @end example\n\
 \n\
 @noindent\n\
-returns the help string associated with the sub-function @code{mysubfunc}\n\
+returns the help string associated with the subfunction @code{mysubfunc}\n\
 of the function @code{myfunc}.  Another use of @code{filemarker} is when\n\
-debugging it allows easier placement of breakpoints within sub-functions.\n\
+debugging it allows easier placement of breakpoints within subfunctions.\n\
 For example,\n\
 \n\
 @example\n\

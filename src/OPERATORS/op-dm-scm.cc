@@ -43,7 +43,7 @@ DEFBINOP (mul_dm_scm, diag_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -66,7 +66,7 @@ DEFBINOP (mul_cdm_sm, complex_diag_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -89,7 +89,7 @@ DEFBINOP (mul_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -142,7 +142,7 @@ DEFBINOP (add_dm_scm, diag_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -158,7 +158,7 @@ DEFBINOP (add_cdm_sm, complex_diag_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -174,7 +174,7 @@ DEFBINOP (add_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -190,7 +190,7 @@ DEFBINOP (sub_dm_scm, diag_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_diag_matrix&, const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -206,7 +206,7 @@ DEFBINOP (sub_cdm_sm, complex_diag_matrix, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -222,7 +222,7 @@ DEFBINOP (sub_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_diag_matrix&, const octave_sparse_complex_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -240,7 +240,7 @@ DEFBINOP (mul_scm_dm, sparse_complex_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_diag_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -263,7 +263,7 @@ DEFBINOP (mul_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_complex_diag_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -286,7 +286,7 @@ DEFBINOP (mul_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_complex_diag_matrix&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -294,7 +294,7 @@ DEFBINOP (mul_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 
       return octave_value (d * v2.complex_diag_matrix_value ());
     }
-  else if (v2.rows() == 1 && v2.columns() == 1)
+  else if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, don't bother with further dispatching.
     {
       std::complex<double> d = v2.complex_value ();
@@ -316,7 +316,7 @@ DEFBINOP (div_scm_dm, sparse_complex_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       double d = v2.scalar_value ();
 
@@ -336,7 +336,7 @@ DEFBINOP (div_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_complex_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       std::complex<double> d = v2.complex_value ();
 
@@ -356,7 +356,7 @@ DEFBINOP (div_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_complex_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       std::complex<double> d = v2.complex_value ();
 
@@ -376,7 +376,7 @@ DEFBINOP (add_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_complex_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -392,7 +392,7 @@ DEFBINOP (add_scm_dm, sparse_complex_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -408,7 +408,7 @@ DEFBINOP (add_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_complex_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -424,7 +424,7 @@ DEFBINOP (sub_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_complex_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -440,7 +440,7 @@ DEFBINOP (sub_scm_dm, sparse_complex_matrix, diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {
@@ -456,7 +456,7 @@ DEFBINOP (sub_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, const octave_complex_diag_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
     // a sparse matrix.
     {

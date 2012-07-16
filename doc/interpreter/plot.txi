@@ -811,11 +811,11 @@ A complete example showing the capabilities of the extended text is
 @example
 @group
 x = 0:0.01:3;
-plot(x,erf(x));
+plot (x, erf (x));
 hold on;
-plot(x,x,"r");
-axis([0, 3, 0, 1]);
-text(0.65, 0.6175, strcat('\leftarrow x = @{2/\surd\pi',
+plot (x,x,"r");
+axis ([0, 3, 0, 1]);
+text (0.65, 0.6175, strcat ('\leftarrow x = @{2/\surd\pi',
 ' @{\fontsize@{16@}\int_@{\fontsize@{8@}0@}^@{\fontsize@{8@}x@}@}',
 ' e^@{-t^2@} dt@} = 0.6175'))
 @end group
@@ -844,7 +844,7 @@ print -dpsc
 @end example
 
 @noindent
-prints the current figure to a color PostScript printer. And,
+prints the current figure to a color PostScript printer.  And,
 
 @example
 print -deps foo.eps
@@ -1180,6 +1180,7 @@ hierarchy.
 @cindex root figure properties
 
 The @code{root figure} properties are:
+
 @table @code
 @item __modified__  
 --- Values: "on," "off"
@@ -1252,6 +1253,7 @@ The @code{root figure} properties are:
 @cindex figure properties
 
 The @code{figure} properties are:
+
 @table @code
 @item __graphics_toolkit__  
 --- The graphics toolkit currently in use.
@@ -1335,6 +1337,7 @@ callback functions get called when a key is pressed/released
 respectively.  The functions are called with two input arguments.  The
 first argument holds the handle of the calling figure.  The second
 argument holds the event structure which has the following members:
+
 @table @code
 @item Character
 The ASCII value of the key
@@ -1356,6 +1359,7 @@ the key.  Possible values are @code{"shift"}, @code{"alt"}, and
 
 @item nextplot
 May be one of
+
 @table @code
 @item "new"
 
@@ -1451,6 +1455,7 @@ holds the current coordinates of the cursor.
 @cindex axes properties
 
 The @code{axes} properties are:
+
 @table @code
 @item __modified__
 
@@ -1580,6 +1585,7 @@ Octave.
 
 @item nextplot
 May be one of
+
 @table @code
 @item "new"
 
@@ -1796,6 +1802,7 @@ Either @code{"manual"} or @code{"auto"}.
 @cindex line properties
 
 The @code{line} properties are:
+
 @table @code
 @item __modified__
 
@@ -1907,6 +1914,7 @@ The data to be plotted.
 @cindex text properties
 
 The @code{text} properties are:
+
 @table @code
 @item __modified__
 
@@ -2024,6 +2032,7 @@ May be @code{"normalized"} or @code{"graph"}.
 @cindex image properties
 
 The @code{image} properties are:
+
 @table @code
 @item __modified__
 
@@ -2100,6 +2109,7 @@ the image.
 @cindex patch properties
 
 The @code{patch} properties are:
+
 @table @code
 @item __modified__
 
@@ -2248,6 +2258,7 @@ Data defining the patch object.
 @cindex surface properties
 
 The @code{surface} properties are:
+
 @table @code
 @item __modified__
 
@@ -2523,6 +2534,7 @@ Line styles are specified by the following properties:
 @table @code
 @item linestyle
 May be one of
+
 @table @code
 @item "-"
 Solid line.  [default]
@@ -2551,6 +2563,7 @@ of 2 is twice as wide as the default, etc.
 @cindex marker styles, graphics
 
 Marker styles are specified by the following properties:
+
 @table @code
 @item marker
 A character indicating a plot marker to be place at each data point, or
@@ -2597,7 +2610,7 @@ with an object either at the objects creation or later with the
 @code{set} function.  For example,
 
 @example
-plot (x, "DeleteFcn", @@(s, e) disp("Window Deleted"))
+plot (x, "DeleteFcn", @@(s, e) disp ("Window Deleted"))
 @end example
 
 @noindent

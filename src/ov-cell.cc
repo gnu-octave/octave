@@ -944,7 +944,7 @@ octave_cell::save_binary (std::ostream& os, bool& save_as_floats)
     return false;
 
   // Use negative value for ndims
-  int32_t di = - d.length();
+  int32_t di = - d.length ();
   os.write (reinterpret_cast<char *> (&di), 4);
   for (int i = 0; i < d.length (); i++)
     {
@@ -1155,7 +1155,7 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize(dv);
+    matrix.resize (dv);
   if (empty)
     return (empty > 0);
 

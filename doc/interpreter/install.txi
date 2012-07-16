@@ -74,7 +74,7 @@ yourself.
 @subsection Obtaining the Dependencies Automatically
 
 On some systems you can obtain many of Octave's build dependencies
-automatically. The commands for doing this vary by system. Similarly,
+automatically.  The commands for doing this vary by system.  Similarly,
 the names of pre-compiled packages vary by system and do not always
 match exactly the names listed in @ref{Build Tools} and @ref{External
 Packages}.
@@ -182,8 +182,10 @@ Basic Linear Algebra Subroutine library
 (@url{http://www.netlib.org/blas}).  Accelerated BLAS libraries such as
 ATLAS (@url{http://math-atlas.sourceforge.net}) are recommeded for
 better performance.
+
 @item LAPACK
 Linear Algebra Package (@url{http://www.netlib.org/lapack}).
+
 @item PCRE
 The Perl Compatible Regular Expression library (http://www.pcre.org).
 @end table
@@ -249,7 +251,7 @@ Library for manipulating portable data files
 @code{load} and @code{save} commands to read and write HDF data files.
 
 @item OpenGL
-API for portable 2D and 3D graphics (@url{http://www.opengl.org}).  An
+API for portable 2-D and 3-D graphics (@url{http://www.opengl.org}).  An
 OpenGL implementation is required to provide Octave's OpenGL-based
 graphics functions.  Octave's OpenGL-based graphics functions usually
 outperform the gnuplot-based graphics functions because plot data can be
@@ -277,7 +279,7 @@ solution of linear equations for sparse systems.
 @item zlib
 Data compression library (@url{http://zlib.net}).  The zlib library is
 required for Octave's @code{load} and @code{save} commands to handle
-compressed data, including @sc{Matlab} v5 MAT files.
+compressed data, including @sc{matlab} v5 MAT files.
 @end table
 
 @node Running Configure and Make

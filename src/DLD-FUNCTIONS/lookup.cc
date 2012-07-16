@@ -70,7 +70,7 @@ stri_comp_lt (const std::string& a, const std::string& b)
 {
   return std::lexicographical_compare (a.begin (), a.end (),
                                        b.begin (), b.end (),
-                                       icmp_char_lt());
+                                       icmp_char_lt ());
 }
 
 // case-insensitive descending comparator
@@ -79,7 +79,7 @@ stri_comp_gt (const std::string& a, const std::string& b)
 {
   return std::lexicographical_compare (a.begin (), a.end (),
                                        b.begin (), b.end (),
-                                       icmp_char_gt());
+                                       icmp_char_gt ());
 }
 #endif
 

@@ -233,9 +233,9 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
       for (octave_idx_type j = 1; j < nd; j++)
         {
           if (dva (j) == 1)
-            idx (j) = octave_value (1);
+            idx(j) = octave_value (1);
           else
-            idx (j) = octave_value ((i % dvc(j)) + 1);
+            idx(j) = octave_value ((i % dvc(j)) + 1);
 
           i = i / dvc (j);
         }
@@ -442,7 +442,7 @@ dimensionality as the other array.\n\
                   octave_value_list idxB;
                   octave_value C;
                   octave_value_list inputs;
-                  Array<int> ra_idx (dim_vector (dvc.length(), 1), 0);
+                  Array<int> ra_idx (dim_vector (dvc.length (), 1), 0);
 
 
                   for (octave_idx_type i = 0; i < ncount; i++)
@@ -549,7 +549,7 @@ dimensionality as the other array.\n\
                                       result_ComplexNDArray =
                                         ComplexNDArray (result_FloatNDArray);
                                       result_ComplexNDArray.insert
-                                        (tmp(0).complex_array_value(), ra_idx);
+                                        (tmp(0).complex_array_value (), ra_idx);
                                       have_FloatComplexNDArray = false;
                                       have_ComplexNDArray = true;
                                     }
@@ -558,20 +558,20 @@ dimensionality as the other array.\n\
                                       result_NDArray =
                                         NDArray (result_FloatNDArray);
                                       result_NDArray.insert
-                                        (tmp(0).array_value(), ra_idx);
+                                        (tmp(0).array_value (), ra_idx);
                                       have_FloatNDArray = false;
                                       have_NDArray = true;
                                     }
                                 }
                               else if (tmp(0).is_real_type ())
                                 result_FloatNDArray.insert
-                                  (tmp(0).float_array_value(), ra_idx);
+                                  (tmp(0).float_array_value (), ra_idx);
                               else
                                 {
                                   result_FloatComplexNDArray =
                                     FloatComplexNDArray (result_FloatNDArray);
                                   result_FloatComplexNDArray.insert
-                                    (tmp(0).float_complex_array_value(), ra_idx);
+                                    (tmp(0).float_complex_array_value (), ra_idx);
                                   have_FloatNDArray = false;
                                   have_FloatComplexNDArray = true;
                                 }
@@ -585,14 +585,14 @@ dimensionality as the other array.\n\
                                   C = do_cat_op (C, tmp(0), ra_idx);
                                 }
                               else if (tmp(0).is_real_type ())
-                                result_NDArray.insert (tmp(0).array_value(),
+                                result_NDArray.insert (tmp(0).array_value (),
                                                        ra_idx);
                               else
                                 {
                                   result_ComplexNDArray =
                                     ComplexNDArray (result_NDArray);
                                   result_ComplexNDArray.insert
-                                    (tmp(0).complex_array_value(), ra_idx);
+                                    (tmp(0).complex_array_value (), ra_idx);
                                   have_NDArray = false;
                                   have_ComplexNDArray = true;
                                 }
@@ -630,7 +630,7 @@ dimensionality as the other array.\n\
 
 #define BSXEND(T) \
                   (have_ ## T) \
-                    retval (0) = result_ ## T;
+                    retval(0) = result_ ## T;
 
                   if BSXEND(NDArray)
                   else if BSXEND(ComplexNDArray)
@@ -785,8 +785,8 @@ dimensionality as the other array.\n\
 %! y = rand (3,1) * 10-5;
 %!
 %! for i=1:length (funs)
-%!   for j = 1:length(float_types)
-%!     for k = 1:length(int_types)
+%!   for j = 1:length (float_types)
+%!     for k = 1:length (int_types)
 %!
 %!       fun = funs{i};
 %!       f_type = float_types{j};

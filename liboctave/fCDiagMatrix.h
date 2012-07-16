@@ -90,7 +90,7 @@ public:
   FloatComplexDiagMatrix& fill (const FloatComplexRowVector& a, octave_idx_type beg);
 
   FloatComplexDiagMatrix hermitian (void) const { return MDiagArray2<FloatComplex>::hermitian (std::conj); }
-  FloatComplexDiagMatrix transpose (void) const { return MDiagArray2<FloatComplex>::transpose(); }
+  FloatComplexDiagMatrix transpose (void) const { return MDiagArray2<FloatComplex>::transpose (); }
   FloatDiagMatrix abs (void) const;
 
   friend OCTAVE_API FloatComplexDiagMatrix conj (const FloatComplexDiagMatrix& a);

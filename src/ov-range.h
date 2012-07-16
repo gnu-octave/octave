@@ -118,10 +118,10 @@ public:
   size_t byte_size (void) const { return 3 * sizeof (double); }
 
   octave_value reshape (const dim_vector& new_dims) const
-    { return NDArray (array_value().reshape (new_dims)); }
+    { return NDArray (array_value ().reshape (new_dims)); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
-    { return NDArray (array_value().permute (vec, inv)); }
+    { return NDArray (array_value ().permute (vec, inv)); }
 
   octave_value squeeze (void) const { return range; }
 

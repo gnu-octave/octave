@@ -47,7 +47,7 @@ DEFBINOP (div, scalar, sparse_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_matrix&);
 
-  if (v2.rows() == 1 && v2.columns() == 1)
+  if (v2.rows () == 1 && v2.columns () == 1)
     {
       double d = v2.scalar_value ();
 

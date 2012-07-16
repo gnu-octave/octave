@@ -104,14 +104,14 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   // problem dimension
   octave_idx_type nn = args(0).rows ();
 
-  if (nn != args(0).columns())
+  if (nn != args(0).columns ())
     {
       gripe_square_matrix_required ("balance");
       return retval;
     }
 
   bool isfloat = args(0).is_single_type () ||
-    (! AEPcase && args(1).is_single_type());
+    (! AEPcase && args(1).is_single_type ());
 
   bool complex_case = (args(0).is_complex_type () ||
                        (! AEPcase && args(1).is_complex_type ()));

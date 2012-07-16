@@ -560,11 +560,11 @@ using the @code{for} statement.  For example consider
 
 @example
 @group
-disp("Loop over a matrix")
+disp ("Loop over a matrix")
 for i = [1,3;2,4]
   i
 endfor
-disp("Loop over a cell array")
+disp ("Loop over a cell array")
 for i = @{1,"two";"three",4@}
   i
 endfor
@@ -580,7 +580,7 @@ multi-dimensional arrays.  For example:
 
 @example
 @group
-a = [1,3;2,4]; c = cat(3, a, 2*a);
+a = [1,3;2,4]; c = cat (3, a, 2*a);
 for i = c
   i
 endfor
@@ -589,8 +589,8 @@ endfor
 
 @noindent
 In the above case, the multi-dimensional matrix @var{c} is reshaped to a
-two-dimensional matrix as @code{reshape (c, rows(c),
-prod(size(c)(2:end)))} and then the same behavior as a loop over a two
+two-dimensional matrix as @code{reshape (c, rows (c),
+prod (size (c)(2:end)))} and then the same behavior as a loop over a two
 dimensional matrix is produced.
 
 Although it is possible to rewrite all @code{for} loops as @code{while}

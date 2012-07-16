@@ -278,7 +278,7 @@ public:
   {
     return anonymous_function
       ? (cname.empty ()
-         ? (! dispatch_class().empty ())
+         ? (! dispatch_class ().empty ())
          : cname == dispatch_class ())
       : false;
   }

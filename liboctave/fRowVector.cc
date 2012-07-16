@@ -146,7 +146,7 @@ FloatRowVector::append (const FloatRowVector& a) const
 FloatColumnVector
 FloatRowVector::transpose (void) const
 {
-  return MArray<float>::transpose();
+  return MArray<float>::transpose ();
 }
 
 FloatRowVector
@@ -271,7 +271,7 @@ operator << (std::ostream& os, const FloatRowVector& a)
 std::istream&
 operator >> (std::istream& is, FloatRowVector& a)
 {
-  octave_idx_type len = a.length();
+  octave_idx_type len = a.length ();
 
   if (len > 0)
     {

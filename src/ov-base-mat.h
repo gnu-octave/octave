@@ -53,7 +53,7 @@ public:
 
   octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
     : octave_base_value (), matrix (m),
-      typ (t.is_known () ? new MatrixType(t) : 0), idx_cache ()
+      typ (t.is_known () ? new MatrixType (t) : 0), idx_cache ()
   {
     if (matrix.ndims () == 0)
       matrix.resize (dim_vector (0, 0));

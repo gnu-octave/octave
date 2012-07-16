@@ -57,7 +57,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
   double tmp = octave_sparse_params::get_key ("spumoni");
   if (!xisnan (tmp))
     Control (UMFPACK_PRL) = tmp;
-  if (piv_thres.nelem() == 2)
+  if (piv_thres.nelem () == 2)
     {
       tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
       if (!xisnan (tmp))
@@ -223,12 +223,12 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
                   UMFPACK_ZNAME (report_matrix) (nr, n_inner,
                                             Lfact.cidx (), Lfact.ridx (),
-                                            reinterpret_cast<double *> (Lfact.data()),
+                                            reinterpret_cast<double *> (Lfact.data ()),
                                             0, 1, control);
 
                   UMFPACK_ZNAME (report_matrix) (n_inner, nc,
                                             Ufact.cidx (), Ufact.ridx (),
-                                            reinterpret_cast<double *> (Ufact.data()),
+                                            reinterpret_cast<double *> (Ufact.data ()),
                                             0, 1, control);
                   UMFPACK_ZNAME (report_perm) (nr, p, control);
                   UMFPACK_ZNAME (report_perm) (nc, q, control);
@@ -266,7 +266,7 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
       double tmp = octave_sparse_params::get_key ("spumoni");
       if (!xisnan (tmp))
         Control (UMFPACK_PRL) = tmp;
-      if (piv_thres.nelem() == 2)
+      if (piv_thres.nelem () == 2)
         {
           tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
           if (!xisnan (tmp))
@@ -452,13 +452,13 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
                       UMFPACK_ZNAME (report_matrix) (nr, n_inner,
                                                 Lfact.cidx (),
                                                 Lfact.ridx (),
-                                                reinterpret_cast<double *> (Lfact.data()),
+                                                reinterpret_cast<double *> (Lfact.data ()),
                                                 0, 1, control);
 
                       UMFPACK_ZNAME (report_matrix) (n_inner, nc,
                                                 Ufact.cidx (),
                                                 Ufact.ridx (),
-                                                reinterpret_cast<double *> (Ufact.data()),
+                                                reinterpret_cast<double *> (Ufact.data ()),
                                                 0, 1, control);
                       UMFPACK_ZNAME (report_perm) (nr, p, control);
                       UMFPACK_ZNAME (report_perm) (nc, q, control);

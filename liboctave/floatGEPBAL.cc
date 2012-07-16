@@ -70,7 +70,7 @@ FloatGEPBALANCE::init (const FloatMatrix& a, const FloatMatrix& b,
       return -1;
     }
 
-  if (a.dims() != b.dims ())
+  if (a.dims () != b.dims ())
     {
       gripe_nonconformant ("FloatGEPBALANCE", n, n, b.rows(), b.cols());
       return -1;

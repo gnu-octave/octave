@@ -136,7 +136,7 @@ public:
   octave_value reshape (const dim_vector& new_dims) const
     {
       octave_class retval = octave_class (*this);
-      retval.map = retval.map_value().reshape (new_dims);
+      retval.map = retval.map_value ().reshape (new_dims);
       return octave_value (new octave_class (retval));
     }
 

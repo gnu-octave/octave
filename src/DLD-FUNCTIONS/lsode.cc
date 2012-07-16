@@ -171,7 +171,7 @@ $$ x(t_0) = x_0 $$\n\
 @example\n\
 @group\n\
 dx\n\
--- = f(x, t)\n\
+-- = f (x, t)\n\
 dt\n\
 @end group\n\
 @end example\n\
@@ -298,9 +298,9 @@ parameters for @code{lsode}.\n\
       if (f_arg.is_cell ())
         {
           Cell c = f_arg.cell_value ();
-          if (c.length() == 1)
+          if (c.length () == 1)
             f_arg = c(0);
-          else if (c.length() == 2)
+          else if (c.length () == 2)
             {
               if (c(0).is_function_handle () || c(0).is_inline_function ())
                 lsode_fcn = c(0).function_value ();
@@ -322,14 +322,14 @@ parameters for @code{lsode}.\n\
                     {
                         jac_name = unique_symbol_name ("__lsode_jac__");
                         jname = "function jac = ";
-                        jname.append(jac_name);
+                        jname.append (jac_name);
                         jname.append (" (x, t) jac = ");
                         lsode_jac = extract_function
                           (c(1), "lsode", jac_name, jname, "; endfunction");
 
                       if (!lsode_jac)
                         {
-                          if (fcn_name.length())
+                          if (fcn_name.length ())
                             clear_function (fcn_name);
                           lsode_fcn = 0;
                         }
@@ -340,7 +340,7 @@ parameters for @code{lsode}.\n\
             LSODE_ABORT1 ("incorrect number of elements in cell array");
         }
 
-      if (!lsode_fcn && ! f_arg.is_cell())
+      if (!lsode_fcn && ! f_arg.is_cell ())
         {
           if (f_arg.is_function_handle () || f_arg.is_inline_function ())
             lsode_fcn = f_arg.function_value ();
@@ -378,7 +378,7 @@ parameters for @code{lsode}.\n\
                           {
                             jac_name = unique_symbol_name ("__lsode_jac__");
                             jname = "function jac = ";
-                            jname.append(jac_name);
+                            jname.append (jac_name);
                             jname.append (" (x, t) jac = ");
                             lsode_jac = extract_function
                               (tmp(1), "lsode", jac_name, jname,
@@ -386,7 +386,7 @@ parameters for @code{lsode}.\n\
 
                             if (!lsode_jac)
                               {
-                                if (fcn_name.length())
+                                if (fcn_name.length ())
                                   clear_function (fcn_name);
                                 lsode_fcn = 0;
                               }
@@ -444,9 +444,9 @@ parameters for @code{lsode}.\n\
       else
         output = ode.integrate (out_times);
 
-      if (fcn_name.length())
+      if (fcn_name.length ())
         clear_function (fcn_name);
-      if (jac_name.length())
+      if (jac_name.length ())
         clear_function (jac_name);
 
       if (! error_state)

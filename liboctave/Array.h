@@ -327,13 +327,13 @@ public:
   T& xelem (octave_idx_type n) { return slice_data [n]; }
   crefT xelem (octave_idx_type n) const { return slice_data [n]; }
 
-  T& xelem (octave_idx_type i, octave_idx_type j) { return xelem (dim1()*j+i); }
-  crefT xelem (octave_idx_type i, octave_idx_type j) const { return xelem (dim1()*j+i); }
+  T& xelem (octave_idx_type i, octave_idx_type j) { return xelem (dim1 ()*j+i); }
+  crefT xelem (octave_idx_type i, octave_idx_type j) const { return xelem (dim1 ()*j+i); }
 
   T& xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k)
-    { return xelem (i, dim2()*k+j); }
+    { return xelem (i, dim2 ()*k+j); }
   crefT xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const
-    { return xelem (i, dim2()*k+j); }
+    { return xelem (i, dim2 ()*k+j); }
 
   T& xelem (const Array<octave_idx_type>& ra_idx)
     { return xelem (compute_index_unchecked (ra_idx)); }
@@ -356,9 +356,9 @@ public:
       return xelem (n);
     }
 
-  T& elem (octave_idx_type i, octave_idx_type j) { return elem (dim1()*j+i); }
+  T& elem (octave_idx_type i, octave_idx_type j) { return elem (dim1 ()*j+i); }
 
-  T& elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return elem (i, dim2()*k+j); }
+  T& elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return elem (i, dim2 ()*k+j); }
 
   T& elem (const Array<octave_idx_type>& ra_idx)
     { return Array<T>::elem (compute_index_unchecked (ra_idx)); }

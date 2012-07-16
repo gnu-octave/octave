@@ -265,7 +265,7 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
   R yzero = R ();
 
   U fz = fcn (xzero, yzero);
-  if (fz == U())
+  if (fz == U ())
     {
       // Sparsity-preserving function. Do it efficiently.
       octave_idx_type nr = xs.rows (), nc = xs.cols ();

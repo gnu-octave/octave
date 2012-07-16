@@ -298,7 +298,7 @@ class scaler
 public:
   scaler (void) : rep (new base_scaler ()) { }
 
-  scaler (const scaler& s) : rep (s.rep->clone()) { }
+  scaler (const scaler& s) : rep (s.rep->clone ()) { }
 
   scaler (const std::string& s)
     : rep (s == "log"
@@ -464,8 +464,8 @@ public:
             }
           if (found)
             {
-              for (int j = i; j < l.length() - 1; j++)
-                l(j) = l (j + 1);
+              for (int j = i; j < l.length () - 1; j++)
+                l(j) = l(j + 1);
 
               l.resize (l.length () - 1);
             }
@@ -4413,9 +4413,9 @@ public:
       array_property cdata u , Matrix ()
       radio_property cdatamapping al , "{scaled}|direct"
       // hidden properties for limit computation
-      row_vector_property xlim hlr , Matrix()
-      row_vector_property ylim hlr , Matrix()
-      row_vector_property clim hlr , Matrix()
+      row_vector_property xlim hlr , Matrix ()
+      row_vector_property ylim hlr , Matrix ()
+      row_vector_property clim hlr , Matrix ()
       bool_property xliminclude hl , "on"
       bool_property yliminclude hl , "on"
       bool_property climinclude hlg , "on"
@@ -4810,11 +4810,11 @@ public:
 
     BEGIN_PROPERTIES (hggroup)
       // hidden properties for limit computation
-      row_vector_property xlim hr , Matrix()
-      row_vector_property ylim hr , Matrix()
-      row_vector_property zlim hr , Matrix()
-      row_vector_property clim hr , Matrix()
-      row_vector_property alim hr , Matrix()
+      row_vector_property xlim hr , Matrix ()
+      row_vector_property ylim hr , Matrix ()
+      row_vector_property zlim hr , Matrix ()
+      row_vector_property clim hr , Matrix ()
+      row_vector_property alim hr , Matrix ()
       bool_property xliminclude h , "on"
       bool_property yliminclude h , "on"
       bool_property zliminclude h , "on"
@@ -4882,7 +4882,7 @@ public:
     BEGIN_PROPERTIES (uimenu)
       any_property __object__ , Matrix ()
       string_property accelerator , ""
-      callback_property callback , Matrix()
+      callback_property callback , Matrix ()
       bool_property checked , "off"
       bool_property enable , "on"
       color_property foregroundcolor , color_values (0, 0, 0)
@@ -4930,7 +4930,7 @@ public:
 
     BEGIN_PROPERTIES (uicontextmenu)
       any_property __object__ , Matrix ()
-      callback_property callback , Matrix()
+      callback_property callback , Matrix ()
       array_property position , Matrix (1, 2, 0.0)
     END_PROPERTIES
 
@@ -5223,7 +5223,7 @@ public:
     BEGIN_PROPERTIES (uipushtool)
       any_property __object__ , Matrix ()
       array_property cdata , Matrix ()
-      callback_property clickedcallback , Matrix()
+      callback_property clickedcallback , Matrix ()
       bool_property enable , "on"
       bool_property separator , "off"
       string_property tooltipstring , ""
@@ -5273,10 +5273,10 @@ public:
     BEGIN_PROPERTIES (uitoggletool)
       any_property __object__ , Matrix ()
       array_property cdata , Matrix ()
-      callback_property clickedcallback , Matrix()
+      callback_property clickedcallback , Matrix ()
       bool_property enable , "on"
-      callback_property offcallback , Matrix()
-      callback_property oncallback , Matrix()
+      callback_property offcallback , Matrix ()
+      callback_property oncallback , Matrix ()
       bool_property separator , "off"
       bool_property state , "off"
       string_property tooltipstring , ""

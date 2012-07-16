@@ -89,14 +89,14 @@ octave_bool::resize (const dim_vector& dv, bool fill) const
   if (fill)
     {
       boolNDArray retval (dv, false);
-      if (dv.numel())
+      if (dv.numel ())
         retval(0) = scalar;
       return retval;
     }
   else
     {
       boolNDArray retval (dv);
-      if (dv.numel())
+      if (dv.numel ())
         retval(0) = scalar;
       return retval;
     }

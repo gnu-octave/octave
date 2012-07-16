@@ -53,11 +53,11 @@ class gzfilebuf : public std::streambuf
 {
 public:
   //  Default constructor.
-  gzfilebuf();
+  gzfilebuf ();
 
   //  Destructor.
   virtual
-  ~gzfilebuf();
+  ~gzfilebuf ();
 
   /**
    *  @brief  Set compression level and strategy on the fly.
@@ -71,15 +71,15 @@ public:
    *  setcompressionlevel(level).
   */
   int
-  setcompression(int comp_level,
-                 int comp_strategy = Z_DEFAULT_STRATEGY);
+  setcompression (int comp_level,
+                  int comp_strategy = Z_DEFAULT_STRATEGY);
 
   /**
    *  @brief  Check if file is open.
    *  @return  True if file is open.
   */
   bool
-  is_open() const { return (file != 0); }
+  is_open () const { return (file != 0); }
 
   /**
    *  @brief  Open gzipped file.
@@ -88,8 +88,8 @@ public:
    *  @return  @c this on success, NULL on failure.
   */
   gzfilebuf*
-  open(const char* name,
-       std::ios_base::openmode mode);
+  open (const char* name,
+        std::ios_base::openmode mode);
 
   /**
    *  @brief  Attach to already open gzipped file.
@@ -98,15 +98,15 @@ public:
    *  @return  @c this on success, NULL on failure.
   */
   gzfilebuf*
-  attach(int fd,
-         std::ios_base::openmode mode);
+  attach (int fd,
+          std::ios_base::openmode mode);
 
   /**
    *  @brief  Close gzipped file.
    *  @return  @c this on success, NULL on failure.
   */
   gzfilebuf*
-  close();
+  close ();
 
 protected:
   /**
@@ -114,8 +114,8 @@ protected:
    *  @return  True if valid mode flag combination.
   */
   bool
-  open_mode(std::ios_base::openmode mode,
-            char* c_mode) const;
+  open_mode (std::ios_base::openmode mode,
+             char* c_mode) const;
 
   /**
    *  @brief  Number of characters available in stream buffer.
@@ -125,7 +125,7 @@ protected:
    *  These characters can be read without accessing the gzipped file.
   */
   virtual std::streamsize
-  showmanyc();
+  showmanyc ();
 
   /**
    *  @brief  Fill get area from gzipped file.
@@ -135,7 +135,7 @@ protected:
    *  buffer. Always buffered.
   */
   virtual int_type
-  underflow();
+  underflow ();
 
   /**
    *  @brief  Write put area to gzipped file.
@@ -147,7 +147,7 @@ protected:
    *  character at a time.
   */
   virtual int_type
-  overflow(int_type c = traits_type::eof());
+  overflow (int_type c = traits_type::eof ());
 
   /**
    *  @brief  Installs external stream buffer.
@@ -158,8 +158,8 @@ protected:
    *  Call setbuf(0,0) to enable unbuffered output.
   */
   virtual std::streambuf*
-  setbuf(char_type* p,
-         std::streamsize n);
+  setbuf (char_type* p,
+          std::streamsize n);
 
   /**
    *  @brief  Flush stream buffer to file.
@@ -168,7 +168,7 @@ protected:
    *  This calls underflow(EOF) to do the job.
   */
   virtual int
-  sync();
+  sync ();
 
   /**
    *  @brief  Alters the stream positions.
@@ -176,9 +176,9 @@ protected:
    *  Each derived class provides its own appropriate behavior.
    */
   virtual pos_type
-  seekoff(off_type off, std::ios_base::seekdir way,
-          std::ios_base::openmode mode =
-          std::ios_base::in|std::ios_base::out);
+  seekoff (off_type off, std::ios_base::seekdir way,
+           std::ios_base::openmode mode =
+           std::ios_base::in|std::ios_base::out);
 
   /**
    *  @brief  Alters the stream positions.
@@ -186,11 +186,11 @@ protected:
    *  Each derived class provides its own appropriate behavior.
    */
   virtual pos_type
-  seekpos(pos_type sp, std::ios_base::openmode mode =
-          std::ios_base::in|std::ios_base::out);
+  seekpos (pos_type sp, std::ios_base::openmode mode =
+           std::ios_base::in|std::ios_base::out);
 
   virtual int_type
-  pbackfail (int_type c = traits_type::eof());
+  pbackfail (int_type c = traits_type::eof ());
 
 //
 // Some future enhancements
@@ -215,7 +215,7 @@ private:
    *  reset to their original state.
   */
   void
-  enable_buffer();
+  enable_buffer ();
 
   /**
    *  @brief  Destroy internal buffer.
@@ -225,7 +225,7 @@ private:
    *  case, it will also reset the buffer pointers.
   */
   void
-  disable_buffer();
+  disable_buffer ();
 
   /**
    *  Underlying file pointer.
@@ -282,7 +282,7 @@ class gzifstream : public std::istream
 {
 public:
   //  Default constructor
-  gzifstream();
+  gzifstream ();
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
@@ -290,8 +290,8 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::in).
   */
   explicit
-  gzifstream(const char* name,
-             std::ios_base::openmode mode = std::ios_base::in);
+  gzifstream (const char* name,
+              std::ios_base::openmode mode = std::ios_base::in);
 
   /**
    *  @brief  Construct stream on already open gzipped file.
@@ -299,14 +299,14 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::in).
   */
   explicit
-  gzifstream(int fd,
-             std::ios_base::openmode mode = std::ios_base::in);
+  gzifstream (int fd,
+              std::ios_base::openmode mode = std::ios_base::in);
 
   /**
    *  Obtain underlying stream buffer.
   */
   gzfilebuf*
-  rdbuf() const
+  rdbuf () const
   { return const_cast<gzfilebuf*>(&sb); }
 
   /**
@@ -314,7 +314,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open() { return sb.is_open(); }
+  is_open () { return sb.is_open (); }
 
   /**
    *  @brief  Open gzipped file.
@@ -329,8 +329,8 @@ public:
    *  convenience.
   */
   void
-  open(const char* name,
-       std::ios_base::openmode mode = std::ios_base::in);
+  open (const char* name,
+        std::ios_base::openmode mode = std::ios_base::in);
 
   /**
    *  @brief  Attach to already open gzipped file.
@@ -341,8 +341,8 @@ public:
    *  in state fail().
   */
   void
-  attach(int fd,
-         std::ios_base::openmode mode = std::ios_base::in);
+  attach (int fd,
+          std::ios_base::openmode mode = std::ios_base::in);
 
   /**
    *  @brief  Close gzipped file.
@@ -350,7 +350,7 @@ public:
    *  Stream will be in state fail() if close failed.
   */
   void
-  close();
+  close ();
 
 private:
   /**
@@ -371,7 +371,7 @@ class gzofstream : public std::ostream
 {
 public:
   //  Default constructor
-  gzofstream();
+  gzofstream ();
 
   /**
    *  @brief  Construct stream on gzipped file to be opened.
@@ -379,8 +379,8 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::out).
   */
   explicit
-  gzofstream(const char* name,
-             std::ios_base::openmode mode = std::ios_base::out);
+  gzofstream (const char* name,
+              std::ios_base::openmode mode = std::ios_base::out);
 
   /**
    *  @brief  Construct stream on already open gzipped file.
@@ -388,14 +388,14 @@ public:
    *  @param  mode  Open mode flags (forced to contain ios::out).
   */
   explicit
-  gzofstream(int fd,
-             std::ios_base::openmode mode = std::ios_base::out);
+  gzofstream (int fd,
+              std::ios_base::openmode mode = std::ios_base::out);
 
   /**
    *  Obtain underlying stream buffer.
   */
   gzfilebuf*
-  rdbuf() const
+  rdbuf () const
   { return const_cast<gzfilebuf*>(&sb); }
 
   /**
@@ -403,7 +403,7 @@ public:
    *  @return  True if file is open.
   */
   bool
-  is_open() { return sb.is_open(); }
+  is_open () { return sb.is_open (); }
 
   /**
    *  @brief  Open gzipped file.
@@ -418,8 +418,8 @@ public:
    *  convenience.
   */
   void
-  open(const char* name,
-       std::ios_base::openmode mode = std::ios_base::out);
+  open (const char* name,
+        std::ios_base::openmode mode = std::ios_base::out);
 
   /**
    *  @brief  Attach to already open gzipped file.
@@ -430,8 +430,8 @@ public:
    *  in state fail().
   */
   void
-  attach(int fd,
-         std::ios_base::openmode mode = std::ios_base::out);
+  attach (int fd,
+          std::ios_base::openmode mode = std::ios_base::out);
 
   /**
    *  @brief  Close gzipped file.
@@ -439,7 +439,7 @@ public:
    *  Stream will be in state fail() if close failed.
   */
   void
-  close();
+  close ();
 
 private:
   /**
@@ -467,9 +467,9 @@ template<typename T1, typename T2>
                  const gzomanip2<Ta,Tb>&);
 
     // Constructor
-    gzomanip2(gzofstream& (*f)(gzofstream&, T1, T2),
-              T1 v1,
-              T2 v2);
+    gzomanip2 (gzofstream& (*f)(gzofstream&, T1, T2),
+               T1 v1,
+               T2 v2);
   private:
     // Underlying manipulator function
     gzofstream&
@@ -484,18 +484,18 @@ template<typename T1, typename T2>
 
 // Manipulator function thunks through to stream buffer
 inline gzofstream&
-setcompression(gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
+setcompression (gzofstream &gzs, int l, int s = Z_DEFAULT_STRATEGY)
 {
-  (gzs.rdbuf())->setcompression(l, s);
+  (gzs.rdbuf ())->setcompression (l, s);
   return gzs;
 }
 
 // Manipulator constructor stores arguments
 template<typename T1, typename T2>
   inline
-  gzomanip2<T1,T2>::gzomanip2(gzofstream &(*f)(gzofstream &, T1, T2),
-                              T1 v1,
-                              T2 v2)
+  gzomanip2<T1,T2>::gzomanip2 (gzofstream &(*f)(gzofstream &, T1, T2),
+                               T1 v1,
+                               T2 v2)
   : func(f), val1(v1), val2(v2)
   { }
 
@@ -507,7 +507,7 @@ template<typename T1, typename T2>
 
 // Insert this onto stream to simplify setting of compression level
 inline gzomanip2<int,int>
-setcompression(int l, int s = Z_DEFAULT_STRATEGY)
+setcompression (int l, int s = Z_DEFAULT_STRATEGY)
 { return gzomanip2<int,int>(&setcompression, l, s); }
 
 #endif // HAVE_ZLIB

@@ -858,11 +858,13 @@ This is just the opposite of the corresponding C library function.\n\
 
 DEFUN (list_in_columns, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width})\n\
+@deftypefn {Built-in Function} {} list_in_columns (@var{arg}, @var{width}, @var{prefix})\n\
 Return a string containing the elements of @var{arg} listed in\n\
-columns with an overall maximum width of @var{width}.  The argument\n\
-@var{arg} must be a cell array of character strings or a character array.\n\
-If @var{width} is not specified, the width of the terminal screen is used.\n\
+columns with an overall maximum width of @var{width} and optional\n\
+prefix @var{prefix}.  The argument @var{arg} must be a cell array\n\
+of character strings or a character array.  If @var{width} is not\n\
+specified or is an empty matrix, or less than or equal to zero,\n\
+the width of the terminal screen is used.\n\
 Newline characters are used to break the lines in the output string.\n\
 For example:\n\
 @c Set example in small font to prevent overfull line\n\
@@ -893,34 +895,59 @@ whos ans\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin < 1 || nargin > 3)
     {
-      string_vector s = args(0).all_strings ();
+      print_usage ();
+      return retval;
+    }
 
-      if (! error_state)
+  string_vector s = args(0).all_strings ();
+
+  if (error_state)
+    {
+      error ("list_in_columns: expecting cellstr or char array");
+      return retval;
+    }
+
+  int width = -1;
+
+  if (nargin > 1 && ! args(1).is_empty ())
+    {
+      width = args(1).int_value ();
+
+      if (error_state)
         {
-          std::ostringstream buf;
+          error ("list_in_columns: WIDTH must be an integer");
+          return retval;
+        }
+    }
+                
+  std::string prefix;
 
-          if (nargin == 1)
-            // Let list_in_columns query terminal width.
-            s.list_in_columns (buf);
-          else
+  if (nargin > 2)
+    {
+      if (args(2).is_string ())
+        {
+          prefix = args(2).string_value ();
+
+          if (error_state)
             {
-              int width = args(1).int_value ();
-
-              if (! error_state)
-                s.list_in_columns (buf, width);
-              else
-                error ("list_in_columns: WIDTH must be an integer");
+              error ("list_in_columns: PREFIX must be a character string");
+              return retval;
             }
-
-          retval = buf.str ();
         }
       else
-        error ("list_in_columns: expecting cellstr or char array");
+        {
+          error ("list_in_columns: PREFIX must be a character string");
+          return retval;
+        }
     }
-  else
-    print_usage ();
+
+  std::ostringstream buf;
+
+  s.list_in_columns (buf, width, prefix);
+
+  retval = buf.str ();
 
   return retval;
 }
@@ -934,8 +961,13 @@ whos ans\n\
 %! input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
 %! result = "abc     mnop  \ndef     qrs   \nghijkl  tuv   \n";
 %! assert (list_in_columns (input, 20), result);
+%!test
+%! input  = ["abc"; "def"; "ghijkl"; "mnop"; "qrs"; "tuv"];
+%! result = "  abc     mnop  \n  def     qrs   \n  ghijkl  tuv   \n";
+%! assert (list_in_columns (input, 20, "  "), result);
 
 %!error list_in_columns ()
 %!error list_in_columns (["abc", "def"], 20, 2)
+%!error list_in_columns (["abc", "def"], 20, "  ", 3)
 %!error <invalid conversion from string to real scalar> list_in_columns (["abc", "def"], "a")
 */

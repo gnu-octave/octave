@@ -291,7 +291,7 @@ exit status, it will linger until Octave exits.\n\
 
   if (nargin >= 1 && nargin <= 3)
     {
-      std::string exec_file = args(0).string_value();
+      std::string exec_file = args(0).string_value ();
 
       if (! error_state)
         {
@@ -324,7 +324,7 @@ exit status, it will linger until Octave exits.\n\
 
           if (! error_state)
             {
-              bool sync_mode = (nargin == 3 ? args(2).bool_value() : false);
+              bool sync_mode = (nargin == 3 ? args(2).bool_value () : false);
 
               if (! error_state)
                 {
@@ -403,9 +403,9 @@ exit status, it will linger until Octave exits.\n\
 %! until (done)
 %! fclose (out);
 %! if (isunix ())
-%!   assert(str, {"these\n","strings\n","some\n","are\n"});
+%!   assert (str, {"these\n","strings\n","some\n","are\n"});
 %! else
-%!   assert(str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
+%!   assert (str, {"these\r\n","strings\r\n","some\r\n","are\r\n"});
 %! endif
 */
 
@@ -1594,8 +1594,10 @@ child process was resumed by delivery of @code{SIGCONT}.\n\
 
 DEFUNX ("canonicalize_file_name", Fcanonicalize_file_name, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{cname}, @var{status}, @var{msg}]} canonicalize_file_name (@var{name})\n\
-Return the canonical name of file @var{name}.\n\
+@deftypefn {Built-in Function} {[@var{cname}, @var{status}, @var{msg}] =} canonicalize_file_name (@var{fname})\n\
+Return the canonical name of file @var{fname}.  If the file does not exist\n\
+the empty string (\"\") is returned.\n\
+@seealso{make_absolute_filename, is_absolute_filename, is_rooted_relative_filename}\n\
 @end deftypefn")
 {
   octave_value_list retval;

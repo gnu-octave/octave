@@ -459,11 +459,11 @@ octave_float_matrix::save_binary (std::ostream& os, bool&)
 {
 
   dim_vector d = dims ();
-  if (d.length() < 1)
+  if (d.length () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length();
+  int32_t tmp = - d.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i = 0; i < d.length (); i++)
     {
@@ -624,7 +624,7 @@ octave_float_matrix::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize(dv);
+    matrix.resize (dv);
   if (empty)
       return (empty > 0);
 
@@ -860,8 +860,8 @@ Convert @var{x} to single precision type.\n\
 }
 
 /*
-%!assert (class (single(1)), "single")
-%!assert (class (single(1 + i)), "single")
+%!assert (class (single (1)), "single")
+%!assert (class (single (1 + i)), "single")
 %!assert (class (single (int8 (1))), "single")
 %!assert (class (single (uint8 (1))), "single")
 %!assert (class (single (int16 (1))), "single")

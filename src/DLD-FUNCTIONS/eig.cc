@@ -93,7 +93,7 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
       else if (arg_is_empty > 0)
         return octave_value_list (2, Matrix ());
 
-      if (!(arg_b.is_single_type() || arg_b.is_double_type ()))
+      if (!(arg_b.is_single_type () || arg_b.is_double_type ()))
         {
           gripe_wrong_type_arg ("eig", arg_b);
           return retval;

@@ -297,13 +297,13 @@ private:
     // constructor for any other purpose.
     dir_info (void)
       : dir_name (), abs_dir_name (), is_relative (false),
-        is_init(false), dir_mtime (), dir_time_last_checked (),
+        is_init (false), dir_mtime (), dir_time_last_checked (),
         all_files (), fcn_files (), private_file_map (), method_file_map ()
       { }
 
     dir_info (const std::string& d)
       : dir_name (d), abs_dir_name (), is_relative (false),
-        is_init(false), dir_mtime (), dir_time_last_checked (),
+        is_init (false), dir_mtime (), dir_time_last_checked (),
         all_files (), fcn_files (), private_file_map (), method_file_map ()
     {
       initialize ();

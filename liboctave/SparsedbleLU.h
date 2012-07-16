@@ -36,11 +36,11 @@ public:
   SparseLU (void)
     : sparse_base_lu <SparseMatrix, double, SparseMatrix, double> () { }
 
-  SparseLU (const SparseMatrix& a, const Matrix& piv_thres = Matrix(),
+  SparseLU (const SparseMatrix& a, const Matrix& piv_thres = Matrix (),
             bool scale = false);
 
   SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
-            const Matrix& piv_thres = Matrix(), bool scale = false,
+            const Matrix& piv_thres = Matrix (), bool scale = false,
             bool FixedQ = false, double droptol = -1.,
             bool milu = false, bool udiag = false);
 

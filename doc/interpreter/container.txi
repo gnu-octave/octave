@@ -308,7 +308,7 @@ left-hand side of an assignment:
 
 @example
 @group
-[x.a] = deal("new string1", "new string2");
+[x.a] = deal ("new string1", "new string2");
  x(1).a
      @result{} ans = new string1
  x(2).a
@@ -322,7 +322,7 @@ Just as for numerical arrays, it is possible to use vectors as indices
 @example
 @group
 x(3:4) = x(1:2);
-[x([1,3]).a] = deal("other string1", "other string2");
+[x([1,3]).a] = deal ("other string1", "other string2");
 x.a
      @result{}
         ans = other string1
@@ -337,7 +337,7 @@ the example above
 
 @example
 @group
-size(x)
+size (x)
      @result{} ans =
 
           1   4
@@ -605,10 +605,10 @@ function.  For example:
 
 @example
 @group
-iscell(c)
+iscell (c)
      @result{} ans = 1
 
-iscell(3)
+iscell (3)
      @result{} ans = 0
 
 @end group
@@ -631,7 +631,7 @@ a 2-by-2 cell array containing empty matrices
 
 @example
 @group
-c = cell(2,2)
+c = cell (2,2)
      @result{} c =
          
          @{
@@ -652,9 +652,9 @@ of the first one is displayed
 
 @example
 @group
-c1 = cell(3, 4, 5);
-c2 = cell( [3, 4, 5] );
-size(c1)
+c1 = cell (3, 4, 5);
+c2 = cell ( [3, 4, 5] );
+size (c1)
      @result{} ans =
          3   4   5
 @end group
@@ -766,7 +766,7 @@ example can be swapped back like this:
 
 @example
 @group
-[c@{[1,2], :@}] = deal(c@{[2, 1], :@})
+[c@{[1,2], :@}] = deal (c@{[2, 1], :@})
      @result{} = 
         @{
           [1,1] =  1

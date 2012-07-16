@@ -168,7 +168,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   int typx = 0;
   int method;
 
-  clock_t t_start = clock();
+  clock_t t_start = clock ();
 
 #if 0
 #ifdef GLPK_PRE_4_14
@@ -282,7 +282,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     }
 
   //-- scale the problem data (if required)
-  //-- if (scale && (!presol || method == 1)) lpx_scale_prob(lp);
+  //-- if (scale && (!presol || method == 1)) lpx_scale_prob (lp);
   //-- LPX_K_SCALE=IParam[1]  LPX_K_PRESOL=IParam[16]
   if (lpxIntParam[1] && (! lpxIntParam[16] || lpsolver != 1))
     lpx_scale_prob (lp);
@@ -291,7 +291,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
   if (lpsolver == 1 && ! lpxIntParam[16])
     lpx_adv_basis (lp);
 
-  for(int i = 0; i < NIntP; i++)
+  for (int i = 0; i < NIntP; i++)
     lpx_set_int_parm (lp, IParam[i], lpxIntParam[i]);
 
   for (int i = 0; i < NRealP; i++)
@@ -313,12 +313,12 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
             errnum = lpx_integer (lp);
           }
         else
-          errnum = lpx_simplex(lp);
+          errnum = lpx_simplex (lp);
       }
      break;
 
     case 'T':
-      errnum = lpx_interior(lp);
+      errnum = lpx_interior (lp);
       break;
 
     default:
@@ -488,7 +488,7 @@ Undocumented internal function.\n\
 
   //-- 1nd Input. A column array containing the objective function
   //--            coefficients.
-  volatile int mrowsc = args(0).rows();
+  volatile int mrowsc = args(0).rows ();
 
   Matrix C (args(0).matrix_value ());
 
@@ -531,10 +531,10 @@ Undocumented internal function.\n\
         }
 
       for (octave_idx_type j = 0; j < Anc; j++)
-        for (octave_idx_type i = A.cidx(j); i < A.cidx(j+1); i++)
+        for (octave_idx_type i = A.cidx (j); i < A.cidx (j+1); i++)
           {
             nz++;
-            rn(nz) = A.ridx(i) + 1;
+            rn(nz) = A.ridx (i) + 1;
             cn(nz) = j + 1;
             a(nz) = A.data(i);
           }

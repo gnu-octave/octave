@@ -258,7 +258,7 @@ Consider the following example which creates a 10-element row vector
 $a_i = \sqrt{i}$.
 @end tex
 @ifnottex
-a(i) = sqrt(i).
+a(i) = sqrt (i).
 @end ifnottex
 
 @example
@@ -772,8 +772,8 @@ iff
 
 @example
 @group
-  abs(@var{z1}) < abs(@var{z2}) 
-  || (abs(@var{z1}) == abs(@var{z2}) && arg(@var{z1}) < arg(@var{z2}))
+  abs (@var{z1}) < abs (@var{z2}) 
+  || (abs (@var{z1}) == abs (@var{z2}) && arg (@var{z1}) < arg (@var{z2}))
 @end group
 @end example
 

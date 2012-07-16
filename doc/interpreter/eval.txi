@@ -127,8 +127,8 @@ With @code{evalin}, you could write @code{save} as follows:
 @group
 function save (file, name1, name2)
   f = open_save_file (file);
-  save_var(f, name1, evalin ("caller", name1));
-  save_var(f, name2, evalin ("caller", name2));
+  save_var (f, name1, evalin ("caller", name1));
+  save_var (f, name2, evalin ("caller", name2));
 endfunction
 @end group
 @end example

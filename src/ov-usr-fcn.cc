@@ -188,7 +188,7 @@ octave_user_function::octave_user_function
     system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     subfunction (false), inline_function (false),
-    anonymous_function (false), nested_function(false),
+    anonymous_function (false), nested_function (false),
     class_constructor (false), class_method (false),
     parent_scope (-1), local_scope (sid),
     curr_unwind_protect_frame (0)
@@ -871,7 +871,7 @@ the argument has been ignored during the function call through the use of\n\
 the tilde (~) special output argument.  Functions can use @code{isargout} to\n\
 avoid performing unnecessary calculations for outputs which are unwanted.\n\
 \n\
-If @var{k} is outside the range @code{1:max(nargout)}, the function returns\n\
+If @var{k} is outside the range @code{1:max (nargout)}, the function returns\n\
 false.  @var{k} can also be an array, in which case the function works\n\
 element-by-element and a logical array is returned.  At the top level,\n\
 @code{isargout} returns an error.\n\

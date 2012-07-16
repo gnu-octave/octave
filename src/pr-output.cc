@@ -303,8 +303,8 @@ operator << (std::ostream& os, const pr_engineering_float& pef)
   else
     os << std::setw (0) << "e+";
 
-  os << std::setw (pef.f.ex - 2) << std::setfill('0') << ex
-     << std::setfill(' ');
+  os << std::setw (pef.f.ex - 2) << std::setfill ('0') << ex
+     << std::setfill (' ');
 
   os.flags (oflags);
 
@@ -360,7 +360,7 @@ rational_approx (double val, int len)
     {
       std::ostringstream buf;
       buf.flags (std::ios::fixed);
-      buf << std::setprecision (0) << xround(val);
+      buf << std::setprecision (0) << xround (val);
       s = buf.str ();
     }
   else
@@ -375,7 +375,7 @@ rational_approx (double val, int len)
       std::ostringstream buf2;
       buf2.flags (std::ios::fixed);
       buf2 << std::setprecision (0) << static_cast<int>(n);
-      s = buf2.str();
+      s = buf2.str ();
 
       while (1)
         {
@@ -407,15 +407,15 @@ rational_approx (double val, int len)
           if (n < 0 && d < 0)
             {
               // Double negative, string can be two characters longer..
-              if (buf.str().length() > static_cast<unsigned int>(len + 2) &&
+              if (buf.str ().length () > static_cast<unsigned int>(len + 2) &&
                   m > 1)
                 break;
             }
-          else if (buf.str().length() > static_cast<unsigned int>(len) &&
+          else if (buf.str ().length () > static_cast<unsigned int>(len) &&
                    m > 1)
             break;
 
-          s = buf.str();
+          s = buf.str ();
         }
 
       if (lastd < 0.)
@@ -427,7 +427,7 @@ rational_approx (double val, int len)
           buf.flags (std::ios::fixed);
           buf << std::setprecision (0) << static_cast<int>(lastn)
                << "/" << static_cast<int>(lastd);
-          s = buf.str();
+          s = buf.str ();
         }
     }
 
@@ -460,7 +460,7 @@ operator << (std::ostream& os, const pr_rational_float& prf)
     os.flags (static_cast<std::ios::fmtflags>
               (prf.f.fmt | prf.f.up | prf.f.sp));
 
-  if (fw > 0 && s.length() > static_cast<unsigned int>(fw))
+  if (fw > 0 && s.length () > static_cast<unsigned int>(fw))
     os << "*";
   else
     os << s;
@@ -2004,8 +2004,8 @@ octave_print_internal (std::ostream& os, const DiagMatrix& m,
 }
 
 template <typename NDA_T, typename ELT_T, typename MAT_T>
-void print_nd_array(std::ostream& os, const NDA_T& nda,
-                    bool pr_as_read_syntax)
+void print_nd_array (std::ostream& os, const NDA_T& nda,
+                     bool pr_as_read_syntax)
 {
 
   if (nda.is_empty ())
@@ -2964,8 +2964,8 @@ template <class T>
 /* static */ inline void
 pr_int (std::ostream& os, const T& d, int fw = 0)
 {
-  size_t sz = d.byte_size();
-  const unsigned char * tmpi = d.iptr();
+  size_t sz = d.byte_size ();
+  const unsigned char * tmpi = d.iptr ();
 
   // Unless explicitly asked for, always print in big-endian
   // format for hex and bit formats.
@@ -3554,7 +3554,7 @@ Note that the output from @code{fdisp} always ends with a newline.\n\
 %! foo.char = repmat ("- Hello World -", [3, 20]);
 %! foo.cell = {foo.real, foo.complex, foo.char};
 %! fields = fieldnames (foo);
-%! for f = 1:numel(fields)
+%! for f = 1:numel (fields)
 %!   format loose;
 %!   loose = disp (foo.(fields{f}));
 %!   format compact;

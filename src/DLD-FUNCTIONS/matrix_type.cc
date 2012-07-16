@@ -129,7 +129,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
           autocomp = false;
         }
 
-      if (args(0).is_scalar_type())
+      if (args(0).is_scalar_type ())
         {
           if (nargin == 1)
             retval = octave_value ("Diagonal");
@@ -198,7 +198,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                 retval = octave_value ("Positive Definite");
               else if (typ == MatrixType::Rectangular)
                 {
-                  if (args(0).rows() == args(0).columns())
+                  if (args(0).rows () == args(0).columns ())
                     retval = octave_value ("Singular");
                   else
                     retval = octave_value ("Rectangular");
@@ -270,7 +270,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                   else if (str_typ == "unknown")
                     mattyp.invalidate_type ();
                   else
-                    error ("matrix_type: Unknown matrix type %s", str_typ.c_str());
+                    error ("matrix_type: Unknown matrix type %s", str_typ.c_str ());
 
                   if (! error_state)
                     {
@@ -394,7 +394,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                 retval = octave_value ("Positive Definite");
               else if (typ == MatrixType::Rectangular)
                 {
-                  if (args(0).rows() == args(0).columns())
+                  if (args(0).rows () == args(0).columns ())
                     retval = octave_value ("Singular");
                   else
                     retval = octave_value ("Rectangular");
@@ -436,7 +436,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                   else if (str_typ == "unknown")
                     mattyp.invalidate_type ();
                   else
-                    error ("matrix_type: Unknown matrix type %s", str_typ.c_str());
+                    error ("matrix_type: Unknown matrix type %s", str_typ.c_str ());
 
                   if (! error_state)
                     {
@@ -477,7 +477,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                           // Set the matrix type
                           if (args(0).is_single_type ())
                             {
-                              if (args(0).is_complex_type())
+                              if (args(0).is_complex_type ())
                                 retval = octave_value
                                   (args(0).float_complex_matrix_value (),
                                    mattyp);
@@ -488,7 +488,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,\n\
                             }
                           else
                             {
-                              if (args(0).is_complex_type())
+                              if (args(0).is_complex_type ())
                                 retval = octave_value
                                   (args(0).complex_matrix_value (),
                                    mattyp);

@@ -70,7 +70,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 
   octave_rand::distribution (distribution);
 
-  if (nargin > 0 && args(nargin-1).is_string())
+  if (nargin > 0 && args(nargin-1).is_string ())
     {
       std::string s_arg = args(nargin-1).string_value ();
 
@@ -90,7 +90,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
           error ("%s: expecting at least one argument", fcn);
           goto done;
         }
-      else if (args(0).is_string())
+      else if (args(0).is_string ())
         additional_arg = false;
       else
         {
@@ -261,7 +261,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
                       octave_rand::seed (d);
                   }
                 else if (args(idx+1).is_string ()
-                         && args(idx+1).string_value() == "reset")
+                         && args(idx+1).string_value () == "reset")
                   octave_rand::reset ();
                 else
                   error ("%s: seed must be a real scalar", fcn);
@@ -269,7 +269,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
             else if (ts == "state" || ts == "twister")
               {
                 if (args(idx+1).is_string ()
-                    && args(idx+1).string_value() == "reset")
+                    && args(idx+1).string_value () == "reset")
                   octave_rand::reset (fcn);
                 else
                   {
@@ -317,11 +317,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
     {
       if (additional_arg)
         {
-          if (a.length() == 1)
+          if (a.length () == 1)
             return octave_rand::float_nd_array (dims, a(0));
           else
             {
-              if (a.dims() != dims)
+              if (a.dims () != dims)
                 {
                   error ("%s: mismatch in argument size", fcn);
                   return retval;
@@ -341,11 +341,11 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
     {
       if (additional_arg)
         {
-          if (a.length() == 1)
+          if (a.length () == 1)
             return octave_rand::nd_array (dims, a(0));
           else
             {
-              if (a.dims() != dims)
+              if (a.dims () != dims)
                 {
                   error ("%s: mismatch in argument size", fcn);
                   return retval;
@@ -448,7 +448,7 @@ The state or seed of the generator can be reset to a new random value\n\
 using the \"reset\" keyword.\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 @seealso{randn, rande, randg, randp}\n\
 @end deftypefn")
 {
@@ -556,7 +556,7 @@ By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to a normal distribution.\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -626,7 +626,7 @@ By default, @code{randn} uses the Marsaglia and Tsang ``Ziggurat technique''\n\
 to transform from a uniform to an exponential distribution.\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 \n\
 Reference: G. Marsaglia and W.W. Tsang,\n\
 @cite{Ziggurat Method for Generating Random Variables},\n\
@@ -691,7 +691,7 @@ DEFUN_DLD (randg, args, ,
 @deftypefnx {Loadable Function} {} randg (\"seed\", \"reset\")\n\
 @deftypefnx {Loadable Function} {} randg (@dots{}, \"single\")\n\
 @deftypefnx {Loadable Function} {} randg (@dots{}, \"double\")\n\
-Return a matrix with @code{gamma(@var{a},1)} distributed random elements.\n\
+Return a matrix with @code{gamma (@var{a},1)} distributed random elements.\n\
 The arguments are handled the same as the arguments for @code{rand},\n\
 except for the argument @var{a}.\n\
 \n\
@@ -772,7 +772,7 @@ r = r / sum (r)\n\
 @end table\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 @seealso{rand, randn, rande, randp}\n\
 @end deftypefn")
 {
@@ -994,7 +994,7 @@ D 50 p1284, 1994.\n\
 @end table\n\
 \n\
 The class of the value returned can be controlled by a trailing \"double\"\n\
-or \"single\" argument. These are the only valid classes.\n\
+or \"single\" argument.  These are the only valid classes.\n\
 @seealso{rand, randn, rande, randg}\n\
 @end deftypefn")
 {
@@ -1105,7 +1105,7 @@ If @var{m} is supplied, return @var{m} unique entries, sampled without\n\
 replacement from @code{1:@var{n}}.  The complexity is O(@var{n}) in\n\
 memory and O(@var{m}) in time, unless @var{m} < @var{n}/5, in which case\n\
 O(@var{m}) memory is used as well.  The randomization is performed using\n\
-rand(). All permutations are equally likely.\n\
+rand().  All permutations are equally likely.\n\
 @seealso{perms}\n\
 @end deftypefn")
 {

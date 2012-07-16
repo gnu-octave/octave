@@ -250,7 +250,7 @@ elem_xpow (double a, const SparseMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = std::pow (atmp, b(i,j));
+              result(i, j) = std::pow (atmp, b(i,j));
             }
         }
 
@@ -265,7 +265,7 @@ elem_xpow (double a, const SparseMatrix& b)
           for (octave_idx_type i = 0; i < nr; i++)
             {
               octave_quit ();
-              result (i, j) = std::pow (a, b(i,j));
+              result(i, j) = std::pow (a, b(i,j));
             }
         }
 
@@ -290,7 +290,7 @@ elem_xpow (double a, const SparseComplexMatrix& b)
       for (octave_idx_type i = 0; i < nr; i++)
         {
           octave_quit ();
-          result (i, j) = std::pow (atmp, b(i,j));
+          result(i, j) = std::pow (atmp, b(i,j));
         }
     }
 
@@ -323,13 +323,13 @@ elem_xpow (const SparseMatrix& a, double b)
           Complex btmp (b);
 
           for (octave_idx_type j = 0; j < nc; j++)
-            for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+            for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
               {
                 octave_quit ();
 
                 Complex atmp (a.data (i));
 
-                result (a.ridx(i), j) = std::pow (atmp, btmp);
+                result(a.ridx (i), j) = std::pow (atmp, btmp);
               }
 
           retval = octave_value (result);
@@ -339,10 +339,10 @@ elem_xpow (const SparseMatrix& a, double b)
           Matrix result (nr, nc, (std::pow (0.0, b)));
 
           for (octave_idx_type j = 0; j < nc; j++)
-            for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+            for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
               {
                 octave_quit ();
-                result (a.ridx(i), j) = std::pow (a.data (i), b);
+                result(a.ridx (i), j) = std::pow (a.data (i), b);
               }
 
           retval = octave_value (result);
@@ -407,11 +407,11 @@ elem_xpow (const SparseMatrix& a, const SparseMatrix& b)
 
   int convert_to_complex = 0;
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+    for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
       {
         if (a.data(i) < 0.0)
           {
-            double btmp = b (a.ridx(i), j);
+            double btmp = b (a.ridx (i), j);
             if (static_cast<int> (btmp) != btmp)
               {
                 convert_to_complex = 1;
@@ -429,15 +429,15 @@ done:
 
   if (convert_to_complex)
     {
-      SparseComplexMatrix complex_result (nr, nc, Complex(1.0, 0.0));
+      SparseComplexMatrix complex_result (nr, nc, Complex (1.0, 0.0));
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+          for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
             {
               octave_quit ();
-              complex_result.xelem(a.ridx(i), j) =
-                std::pow (Complex(a.data(i)), Complex(b(a.ridx(i), j)));
+              complex_result.xelem (a.ridx (i), j) =
+                std::pow (Complex (a.data (i)), Complex (b(a.ridx (i), j)));
             }
         }
       complex_result.maybe_compress (true);
@@ -449,11 +449,11 @@ done:
 
       for (octave_idx_type j = 0; j < nc; j++)
         {
-          for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+          for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
             {
               octave_quit ();
-              result.xelem(a.ridx(i), j) = std::pow (a.data(i),
-                                                     b (a.ridx(i), j));
+              result.xelem (a.ridx (i), j) = std::pow (a.data (i),
+                                                       b(a.ridx (i), j));
             }
         }
       result.maybe_compress (true);
@@ -507,13 +507,13 @@ elem_xpow (const SparseMatrix& a, const SparseComplexMatrix& b)
       return octave_value ();
     }
 
-  SparseComplexMatrix result (nr, nc, Complex(1.0, 0.0));
+  SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+      for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
           octave_quit ();
-          result.xelem(a.ridx(i), j) = std::pow (a.data(i), b (a.ridx(i), j));
+          result.xelem (a.ridx(i), j) = std::pow (a.data (i), b(a.ridx (i), j));
         }
     }
 
@@ -581,20 +581,20 @@ elem_xpow (const SparseComplexMatrix& a, double b)
       if (xisint (b))
         {
           for (octave_idx_type j = 0; j < nc; j++)
-            for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+            for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
               {
                 octave_quit ();
-                result (a.ridx(i), j) =
+                result (a.ridx (i), j) =
                   std::pow (a.data (i), static_cast<int> (b));
               }
         }
       else
         {
           for (octave_idx_type j = 0; j < nc; j++)
-            for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+            for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
               {
                 octave_quit ();
-                result (a.ridx(i), j) = std::pow (a.data (i), b);
+                result (a.ridx (i), j) = std::pow (a.data (i), b);
               }
         }
 
@@ -647,20 +647,20 @@ elem_xpow (const SparseComplexMatrix& a, const SparseMatrix& b)
       return octave_value ();
     }
 
-  SparseComplexMatrix result (nr, nc, Complex(1.0, 0.0));
+  SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+      for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
           octave_quit ();
-          double btmp = b (a.ridx(i), j);
+          double btmp = b(a.ridx (i), j);
           Complex tmp;
 
           if (xisint (btmp))
-            result.xelem(a.ridx(i), j) = std::pow (a.data (i),
+            result.xelem (a.ridx (i), j) = std::pow (a.data (i),
                                               static_cast<int> (btmp));
           else
-            result.xelem(a.ridx(i), j) = std::pow (a.data (i), btmp);
+            result.xelem (a.ridx (i), j) = std::pow (a.data (i), btmp);
         }
     }
 
@@ -715,13 +715,13 @@ elem_xpow (const SparseComplexMatrix& a, const SparseComplexMatrix& b)
       return octave_value ();
     }
 
-  SparseComplexMatrix result (nr, nc, Complex(1.0, 0.0));
+  SparseComplexMatrix result (nr, nc, Complex (1.0, 0.0));
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+      for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
         {
           octave_quit ();
-          result.xelem(a.ridx(i), j) = std::pow (a.data (i), b (a.ridx(i), j));
+          result.xelem (a.ridx (i), j) = std::pow (a.data (i), b(a.ridx (i), j));
         }
     }
   result.maybe_compress (true);

@@ -67,8 +67,8 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_scalar::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info(default_numeric_demotion_function,
-                                           octave_float_scalar::static_type_id ());
+  return octave_base_value::type_conv_info (default_numeric_demotion_function,
+                                            octave_float_scalar::static_type_id ());
 }
 
 octave_value

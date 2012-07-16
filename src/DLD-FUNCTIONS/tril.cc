@@ -69,7 +69,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_idx_type ii = std::min (std::max (zero, j - k), nr);
-          std::fill (rvec, rvec + ii, T());
+          std::fill (rvec, rvec + ii, T ());
           std::copy (avec + ii, avec + nr, rvec + ii);
           avec += nr;
           rvec += nr;
@@ -111,7 +111,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
         {
           octave_idx_type ii = std::min (std::max (zero, j + 1 - k), nr);
           std::copy (avec, avec + ii, rvec);
-          std::fill (rvec + ii, rvec + nr, T());
+          std::fill (rvec + ii, rvec + nr, T ());
           avec += nr;
           rvec += nr;
         }
@@ -134,11 +134,11 @@ do_tril (const Sparse<T>& a, octave_idx_type k, bool pack)
     }
 
   Sparse<T> m = a;
-  octave_idx_type nc = m.cols();
+  octave_idx_type nc = m.cols ();
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
-      if (m.ridx(i) < j-k)
+    for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
+      if (m.ridx (i) < j-k)
         m.data(i) = 0.;
 
   m.maybe_compress (true);
@@ -156,11 +156,11 @@ do_triu (const Sparse<T>& a, octave_idx_type k, bool pack)
     }
 
   Sparse<T> m = a;
-  octave_idx_type nc = m.cols();
+  octave_idx_type nc = m.cols ();
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
-      if (m.ridx(i) > j-k)
+    for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
+      if (m.ridx (i) > j-k)
         m.data(i) = 0.;
 
   m.maybe_compress (true);
@@ -290,8 +290,8 @@ do_trilu (const std::string& name,
                 idx_tmp.push_back (ov_idx);
                 ov_idx(1) = static_cast<double> (nc);
                 tmp = tmp.resize (dim_vector (0,0));
-                tmp = tmp.subsasgn("(",idx_tmp, arg.do_index_op (ov_idx));
-                tmp = tmp.resize(dims);
+                tmp = tmp.subsasgn ("(",idx_tmp, arg.do_index_op (ov_idx));
+                tmp = tmp.resize (dims);
 
                 if (lower)
                   {
@@ -305,7 +305,7 @@ do_trilu (const std::string& name,
                         std::list<octave_value_list> idx;
                         idx.push_back (ov_idx);
 
-                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op(ov_idx));
+                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
 
                         if (error_state)
                           return retval;
@@ -323,7 +323,7 @@ do_trilu (const std::string& name,
                         std::list<octave_value_list> idx;
                         idx.push_back (ov_idx);
 
-                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op(ov_idx));
+                        tmp = tmp.subsasgn ("(", idx, arg.do_index_op (ov_idx));
 
                         if (error_state)
                           return retval;

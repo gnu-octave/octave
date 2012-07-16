@@ -105,6 +105,7 @@ plot_FCN_FILES = \
   plot/gcbf.m \
   plot/gcbo.m \
   plot/gcf.m \
+  plot/gco.m \
   plot/ginput.m \
   plot/graphics_toolkit.m \
   plot/grid.m \

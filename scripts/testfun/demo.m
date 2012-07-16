@@ -128,7 +128,7 @@ function demo (name, n)
       embed_func = regexp (block, '^\s*function ', 'once', 'lineanchors');
       if (isempty (embed_func))
         ## Use an environment without variables
-        eval (cstrcat ("function __demo__()\n", block, "\nendfunction"));
+        eval (cstrcat ("function __demo__ ()\n", block, "\nendfunction"));
         ## Display the code that will be executed before executing it
         printf ("%s example %d:%s\n\n", name, doidx(i), block);
         __demo__;

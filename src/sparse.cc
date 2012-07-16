@@ -48,7 +48,7 @@ Return true if @var{x} is a sparse matrix.\n\
 @seealso{ismatrix}\n\
 @end deftypefn")
 {
-   if (args.length() != 1)
+   if (args.length () != 1)
      {
        print_usage ();
        return octave_value ();
@@ -94,7 +94,7 @@ s = sparse (i, j, s, m, n, \"sum\")\n\
 Given the option \"unique\". if more than two values are specified for the\n\
 same @var{i}, @var{j} indices, the last specified value will be used.\n\
 \n\
-@code{sparse(@var{m}, @var{n})} is equivalent to\n\
+@code{sparse (@var{m}, @var{n})} is equivalent to\n\
 @code{sparse ([], [], [], @var{m}, @var{n}, 0)}\n\
 \n\
 If any of @var{sv}, @var{i} or @var{j} are scalars, they are expanded\n\
@@ -227,9 +227,9 @@ the simple forms\n\
 @b{and} that the following conditions are met:\n\
 \n\
 @itemize\n\
-@item the assignment does not decrease nnz(@var{S}).\n\
+@item the assignment does not decrease nnz (@var{S}).\n\
 \n\
-@item after the assignment, nnz(@var{S}) does not exceed @var{nz}.\n\
+@item after the assignment, nnz (@var{S}) does not exceed @var{nz}.\n\
 \n\
 @item no index is out of bounds.\n\
 @end itemize\n\

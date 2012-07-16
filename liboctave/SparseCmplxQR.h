@@ -87,7 +87,7 @@ private:
 
 public:
   SparseComplexQR (void) :
-    rep (new SparseComplexQR_rep (SparseComplexMatrix(), 0)) { }
+    rep (new SparseComplexQR_rep (SparseComplexMatrix (), 0)) { }
 
   SparseComplexQR (const SparseComplexMatrix& a, int order = 0) :
     rep (new SparseComplexQR_rep (a, order)) { }
@@ -113,20 +113,20 @@ public:
       return *this;
     }
 
-  bool ok (void) const { return rep->ok(); }
+  bool ok (void) const { return rep->ok (); }
 
-  SparseComplexMatrix V (void) const { return rep->V(); }
+  SparseComplexMatrix V (void) const { return rep->V (); }
 
-  ColumnVector Pinv (void) const { return rep->P(); }
+  ColumnVector Pinv (void) const { return rep->P (); }
 
-  ColumnVector P (void) const { return rep->P(); }
+  ColumnVector P (void) const { return rep->P (); }
 
   SparseComplexMatrix R (const bool econ = false) const
     { return rep->R(econ); }
 
   ComplexMatrix C (const ComplexMatrix &b) const { return rep->C(b); }
 
-  ComplexMatrix Q (void) const { return rep->Q(); }
+  ComplexMatrix Q (void) const { return rep->Q (); }
 
   friend ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
                                 octave_idx_type &info);

@@ -356,7 +356,7 @@ file_ops::concat (const std::string& dir, const std::string& file)
 {
   return dir.empty ()
     ? file
-    : (is_dir_sep (dir[dir.length()-1])
+    : (is_dir_sep (dir[dir.length ()-1])
        ? dir + file
        : dir + dir_sep_char () + file);
 }

@@ -342,7 +342,7 @@ clear (octave_shlib& oct_file)
     {
       warning_with_id ("Octave:reload-forces-clear",
                        "reloading %s clears the following functions:",
-                       oct_file.file_name().c_str ());
+                       oct_file.file_name ().c_str ());
 
       octave_shlib_list::remove (oct_file, do_clear_function);
     }

@@ -8,7 +8,7 @@ mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 
   if (nrhs < 2 || nrhs > 3)
     mexErrMsgTxt ("incorrect number of arguments");
-  if (!mxIsDouble(prhs[0]))
+  if (!mxIsDouble (prhs[0]))
     mexErrMsgTxt ("handle expected to be a double scalar");
   if (!mxIsChar (prhs[1]))
     mexErrMsgTxt ("expected property to be a string");

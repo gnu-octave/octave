@@ -157,7 +157,7 @@ chol2inv_internal (const FloatMatrix& r)
       octave_idx_type info = 0;
 
       FloatMatrix tmp = r;
-      float *v = tmp.fortran_vec();
+      float *v = tmp.fortran_vec ();
 
       if (info == 0)
         {

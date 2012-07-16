@@ -667,7 +667,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   else
     {
       // Why did mathworks decide to not have dims for a workspace!!!
-      dims.resize(2);
+      dims.resize (2);
       dims(0) = 1;
       dims(1) = 1;
     }
@@ -863,24 +863,24 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         // Octave can handle both "/" and "\" as a directry seperator
         // and so can ignore the seperator field of m0. I think the
         // sentinel field is also save to ignore.
-        Octave_map m0 = tc2.map_value();
-        Octave_map m1 = m0.contents("function_handle")(0).map_value();
-        std::string ftype = m1.contents("type")(0).string_value();
-        std::string fname = m1.contents("function")(0).string_value();
-        std::string fpath = m1.contents("file")(0).string_value();
+        Octave_map m0 = tc2.map_value ();
+        Octave_map m1 = m0.contents ("function_handle")(0).map_value ();
+        std::string ftype = m1.contents ("type")(0).string_value ();
+        std::string fname = m1.contents ("function")(0).string_value ();
+        std::string fpath = m1.contents ("file")(0).string_value ();
 
         if (ftype == "simple" || ftype == "scopedfunction")
           {
-            if (fpath.length() == 0)
+            if (fpath.length () == 0)
               // We have a builtin function
               tc = make_fcn_handle (fname);
             else
               {
                 std::string mroot =
-                  m0.contents("matlabroot")(0).string_value();
+                  m0.contents ("matlabroot")(0).string_value ();
 
                 if ((fpath.length () >= mroot.length ()) &&
-                    fpath.substr(0, mroot.length()) == mroot &&
+                    fpath.substr (0, mroot.length ()) == mroot &&
                     OCTAVE_EXEC_PREFIX != mroot)
                   {
                     // If fpath starts with matlabroot, and matlabroot
@@ -942,7 +942,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                         else
                           {
                             warning ("load: can't find the file %s",
-                                     fpath.c_str());
+                                     fpath.c_str ());
                             goto skip_ahead;
                           }
                       }
@@ -966,7 +966,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     else
                       {
                         warning ("load: can't find the file %s",
-                                 fpath.c_str());
+                                 fpath.c_str ());
                         goto skip_ahead;
                       }
                   }
@@ -979,13 +979,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
           }
         else if (ftype == "anonymous")
           {
-            Octave_map m2 = m1.contents("workspace")(0).map_value();
-            uint32NDArray MCOS = m2.contents("MCOS")(0).uint32_array_value();
+            Octave_map m2 = m1.contents ("workspace")(0).map_value ();
+            uint32NDArray MCOS = m2.contents ("MCOS")(0).uint32_array_value ();
             octave_idx_type off = static_cast<octave_idx_type>(MCOS(4).double_value ());
-            m2 = subsys_ov.map_value();
-            m2 = m2.contents("MCOS")(0).map_value();
-            tc2 = m2.contents("MCOS")(0).cell_value()(1 + off).cell_value()(1);
-            m2 = tc2.map_value();
+            m2 = subsys_ov.map_value ();
+            m2 = m2.contents ("MCOS")(0).map_value ();
+            tc2 = m2.contents ("MCOS")(0).cell_value ()(1 + off).cell_value ()(1);
+            m2 = tc2.map_value ();
 
             unwind_protect_safe frame;
 
@@ -1000,15 +1000,15 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             octave_call_stack::push (local_scope, 0);
             frame.add_fcn (octave_call_stack::pop);
 
-            if (m2.nfields() > 0)
+            if (m2.nfields () > 0)
               {
                 octave_value tmp;
 
-                for (Octave_map::iterator p0 = m2.begin() ;
-                     p0 != m2.end(); p0++)
+                for (Octave_map::iterator p0 = m2.begin () ;
+                     p0 != m2.end (); p0++)
                   {
-                    std::string key = m2.key(p0);
-                    octave_value val = m2.contents(p0)(0);
+                    std::string key = m2.key (p0);
+                    octave_value val = m2.contents (p0)(0);
 
                     symbol_table::varref (key, local_scope, 0) = val;
                   }
@@ -1219,8 +1219,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                 // inline is not an object in Octave but rather an
                 // overload of a function handle. Special case.
                 tc =
-                  new octave_fcn_inline (m.contents("expr")(0).string_value(),
-                                         m.contents("args")(0).string_value());
+                  new octave_fcn_inline (m.contents ("expr")(0).string_value (),
+                                         m.contents ("args")(0).string_value ());
               }
             else
               {
@@ -1236,7 +1236,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
                     tc = cls;
                     if (load_path::find_method (classname, "loadobj") !=
-                        std::string())
+                        std::string ())
                       {
                         octave_value_list tmp = feval ("loadobj", tc, 1);
 
@@ -1277,7 +1277,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
             boolNDArray out (dims);
 
             for (octave_idx_type i = 0; i < nel; i++)
-              out (i) = in(i).bool_value ();
+              out(i) = in(i).bool_value ();
 
             tc = out;
           }
@@ -1563,7 +1563,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
 
       if (tc.is_uint8_type ())
         {
-          const uint8NDArray itmp = tc.uint8_array_value();
+          const uint8NDArray itmp = tc.uint8_array_value ();
           octave_idx_type ilen = itmp.numel ();
 
           // Why should I have to initialize outbuf as just overwrite
@@ -2620,11 +2620,11 @@ save_mat5_binary_element (std::ostream& os,
           write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
         }
     }
-  else if (tc.is_map () || tc.is_inline_function() || tc.is_object ())
+  else if (tc.is_map () || tc.is_inline_function () || tc.is_object ())
     {
       if (tc.is_inline_function () || tc.is_object ())
         {
-          std::string classname = tc.is_object() ? tc.class_name () : "inline";
+          std::string classname = tc.is_object () ? tc.class_name () : "inline";
           size_t namelen = classname.length ();
 
           if (namelen > max_namelen)
@@ -2642,7 +2642,7 @@ save_mat5_binary_element (std::ostream& os,
       Octave_map m;
 
       if (tc.is_object () &&
-          load_path::find_method (tc.class_name (), "saveobj") != std::string())
+          load_path::find_method (tc.class_name (), "saveobj") != std::string ())
         {
           octave_value_list tmp = feval ("saveobj", tc, 1);
           if (! error_state)

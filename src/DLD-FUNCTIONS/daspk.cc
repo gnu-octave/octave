@@ -297,9 +297,9 @@ parameters for @code{daspk}.\n\
       if (f_arg.is_cell ())
         {
           Cell c = f_arg.cell_value ();
-          if (c.length() == 1)
+          if (c.length () == 1)
             f_arg = c(0);
-          else if (c.length() == 2)
+          else if (c.length () == 2)
             {
               if (c(0).is_function_handle () || c(0).is_inline_function ())
                 daspk_fcn = c(0).function_value ();
@@ -321,14 +321,14 @@ parameters for @code{daspk}.\n\
                     {
                       jac_name = unique_symbol_name ("__daspk_jac__");
                       jname = "function jac = ";
-                      jname.append(jac_name);
+                      jname.append (jac_name);
                       jname.append (" (x, xdot, t, cj) jac = ");
                       daspk_jac = extract_function
                         (c(1), "daspk", jac_name, jname, "; endfunction");
 
                       if (!daspk_jac)
                         {
-                          if (fcn_name.length())
+                          if (fcn_name.length ())
                             clear_function (fcn_name);
                           daspk_fcn = 0;
                         }
@@ -339,7 +339,7 @@ parameters for @code{daspk}.\n\
             DASPK_ABORT1 ("incorrect number of elements in cell array");
         }
 
-      if (!daspk_fcn && ! f_arg.is_cell())
+      if (!daspk_fcn && ! f_arg.is_cell ())
         {
           if (f_arg.is_function_handle () || f_arg.is_inline_function ())
             daspk_fcn = f_arg.function_value ();
@@ -377,7 +377,7 @@ parameters for @code{daspk}.\n\
                           {
                             jac_name = unique_symbol_name ("__daspk_jac__");
                             jname = "function jac = ";
-                            jname.append(jac_name);
+                            jname.append (jac_name);
                             jname.append (" (x, xdot, t, cj) jac = ");
                             daspk_jac = extract_function
                               (tmp(1), "daspk", jac_name, jname,
@@ -385,7 +385,7 @@ parameters for @code{daspk}.\n\
 
                             if (!daspk_jac)
                               {
-                                if (fcn_name.length())
+                                if (fcn_name.length ())
                                   clear_function (fcn_name);
                                 daspk_fcn = 0;
                               }
@@ -446,9 +446,9 @@ parameters for @code{daspk}.\n\
       else
         output = dae.integrate (out_times, deriv_output);
 
-      if (fcn_name.length())
+      if (fcn_name.length ())
         clear_function (fcn_name);
-      if (jac_name.length())
+      if (jac_name.length ())
         clear_function (jac_name);
 
       if (! error_state)

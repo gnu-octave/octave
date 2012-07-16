@@ -454,7 +454,7 @@ Indexing other things than variables is possible, as in:
 @group
 octave:1> [3 1 4 1 5 9](3)
 ans = 4
-octave:2> cos([0 pi pi/4 7])(3)
+octave:2> cos ([0 pi pi/4 7])(3)
 ans = 0.70711
 @end group
 @end example
@@ -871,7 +871,7 @@ Octave has limited support for nested functions. That is
 @example
 @group
 function y = foo (x)
-  y = bar(x)
+  y = bar (x)
   function y = bar (x)
     y = @dots{};
   end
@@ -884,7 +884,7 @@ is equivalent to
 @example
 @group
 function y = foo (x)
-   y = bar(x)
+   y = bar (x)
 end
 function y = bar (x)
    y = @dots{};
@@ -1065,7 +1065,7 @@ command:
 
 @example
 @group
-  do_braindead_shortcircuit_evaluation(1)
+  do_braindead_shortcircuit_evaluation (1)
 @end group
 @end example
 
@@ -1102,7 +1102,7 @@ considered true, every element of the object must be nonzero or
 logically true).
 
 Finally, note the inconsistence of thinking of the condition of an if
-statement as being equivalent to @code{all(X(:))} when @var{X} is a
+statement as being equivalent to @code{all (X(:))} when @var{X} is a
 matrix.  This is true for all cases EXCEPT empty matrices:
 
 @example
@@ -1147,7 +1147,7 @@ is equivalent to
 @example
 @group
 function x = mldivide (A, b)
-  [Q, R, E] = qr(A);
+  [Q, R, E] = qr (A);
   x = [A \ b, E(:, 1:m) * (R(:, 1:m) \ (Q' * b))]
 end
 @end group
@@ -1161,14 +1161,14 @@ other ways.
 A numerical question arises: how big can the null space component
 become, relative to the minimum-norm solution? Can it be nicely bounded,
 or can it be arbitrarily big? Consider this example:
-
+OctaveFAQ.texi
 @example
 @group
 m = 10;
 n = 10000;
-A = ones(m, n) + 1e-6 * randn(m,n);
-b = ones(m, 1) + 1e-6 * randn(m,1);
-norm(A \ b)
+A = ones (m, n) + 1e-6 * randn (m,n);
+b = ones (m, 1) + 1e-6 * randn (m,1);
+norm (A \ b)
 @end group
 @end example
 
@@ -1180,14 +1180,14 @@ results are 50-times larger. For another issue, try this code:
 @group
 m = 5;
 n = 100;
-j = floor(m * rand(1, n)) + 1;
-b = ones(m, 1);
-A = zeros(m, n);
-A(sub2ind(size(A),j,1:n)) = 1;
+j = floor (m * rand (1, n)) + 1;
+b = ones (m, 1);
+A = zeros (m, n);
+A(sub2ind (size (A),j,1:n)) = 1;
 x = A \ b;
-[dummy,p] = sort(rand(1,n));
-y = A(:,p)\b;
-norm(x(p)-y)
+[dummy,p] = sort (rand (1,n));
+y = A(:,p) \ b;
+norm (x(p)-y)
 @end group
 @end example
 
@@ -1282,10 +1282,10 @@ second case the variable "a" is reset correctly.  Therefore @sc{Matlab}
 gives no safe way of temporarily changing global variables.
 
 @item
-Indexing can be applied to all objects in Octave and not just
+Indexing can be applied to all objects in Octave and not just a
 variable. Therefore @code{sin(x)(1:10);} for example is perfectly valid
 in Octave but not @sc{Matlab}. To do the same in @sc{Matlab} you must do
-@code{y = sin(x); y = y([1:10]);}
+@code{y = sin (x); y = y([1:10]);}
 
 @item
 Octave has the operators "++", "--", "-=", "+=", "*=", etc.  As

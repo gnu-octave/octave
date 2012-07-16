@@ -281,7 +281,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       elseif (__rundemo && __isdemo)
         try
           ## process the code in an environment without variables
-          eval (sprintf ("function __test__()\n%s\nendfunction", __code));
+          eval (sprintf ("function __test__ ()\n%s\nendfunction", __code));
           __test__;
           input ("Press <enter> to continue: ", "s");
         catch

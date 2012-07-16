@@ -2877,7 +2877,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
           fcn->stash_parent_fcn_name (curr_fcn_file_name);
 
           if (current_function_depth > 1)
-            fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size()-2]);
+            fcn->stash_parent_fcn_scope (function_scopes[function_scopes.size ()-2]);
           else
             fcn->stash_parent_fcn_scope (primary_fcn_scope);
         }
@@ -2958,7 +2958,7 @@ finish_function (tree_parameter_list *ret_list,
           if (endfunction_found && function_scopes.size () > 1)
             {
               symbol_table::scope_id pscope
-                = function_scopes[function_scopes.size()-2];
+                = function_scopes[function_scopes.size ()-2];
 
               symbol_table::install_nestfunction (nm, octave_value (fcn),
                                                   pscope);
@@ -3204,7 +3204,7 @@ maybe_warn_missing_semi (tree_statement_list *t)
 {
   if (current_function_depth > 0)
     {
-      tree_statement *tmp = t->back();
+      tree_statement *tmp = t->back ();
 
       if (tmp->is_expression ())
         warning_with_id
@@ -3608,7 +3608,7 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
           if (status != 0)
             error ("parse error while reading %s file %s",
-                   file_type.c_str(), ff.c_str ());
+                   file_type.c_str (), ff.c_str ());
         }
       else
         {
@@ -3692,7 +3692,7 @@ lookup_autoload (const std::string& nm)
 string_vector
 autoloaded_functions (void)
 {
-  string_vector names (autoload_map.size());
+  string_vector names (autoload_map.size ());
 
   octave_idx_type i = 0;
   typedef std::map<std::string, std::string>::const_iterator am_iter;

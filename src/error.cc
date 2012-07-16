@@ -838,7 +838,7 @@ location of the error.  Typically @var{err} is returned from\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length();
+  int nargin = args.length ();
 
   if (nargin != 1)
     print_usage ();
@@ -850,9 +850,9 @@ location of the error.  Typically @var{err} is returned from\n\
         {
           if (err.contains ("message") && err.contains ("identifier"))
             {
-              std::string msg = err.contents("message").string_value ();
-              std::string id = err.contents("identifier").string_value ();
-              int len = msg.length();
+              std::string msg = err.contents ("message").string_value ();
+              std::string id = err.contents ("identifier").string_value ();
+              int len = msg.length ();
 
               std::string file;
               std::string nm;
@@ -863,21 +863,21 @@ location of the error.  Typically @var{err} is returned from\n\
 
               if (err.contains ("stack"))
                 {
-                  err_stack = err.contents("stack").map_value ();
+                  err_stack = err.contents ("stack").map_value ();
 
                   if (err_stack.numel () > 0)
                     {
                       if (err_stack.contains ("file"))
-                        file = err_stack.contents("file")(0).string_value ();
+                        file = err_stack.contents ("file")(0).string_value ();
 
                       if (err_stack.contains ("name"))
-                        nm = err_stack.contents("name")(0).string_value ();
+                        nm = err_stack.contents ("name")(0).string_value ();
 
                       if (err_stack.contains ("line"))
-                        l = err_stack.contents("line")(0).nint_value ();
+                        l = err_stack.contents ("line")(0).nint_value ();
 
                       if (err_stack.contains ("column"))
-                        c = err_stack.contents("column")(0).nint_value ();
+                        c = err_stack.contents ("column")(0).nint_value ();
                     }
                 }
 
@@ -992,7 +992,7 @@ maybe_extract_message_id (const std::string& caller,
           if (arg1.find_first_of ("% \f\n\r\t\v") == std::string::npos
               && arg1.find (':') != std::string::npos
               && arg1[0] != ':'
-              && arg1[arg1.length()-1] != ':')
+              && arg1[arg1.length ()-1] != ':')
             {
               if (nargin > 1)
                 {
@@ -1557,7 +1557,7 @@ set to their default values.\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length();
+  int nargin = args.length ();
 
   unwind_protect frame;
 
@@ -1575,17 +1575,17 @@ set to their default values.\n\
 
       if (nargin == 1)
         {
-          if (args(0).is_string())
+          if (args(0).is_string ())
             {
               if (args(0).string_value () == "reset")
                 {
-                  Vlast_error_message = std::string();
-                  Vlast_error_id = std::string();
+                  Vlast_error_message = std::string ();
+                  Vlast_error_id = std::string ();
 
                   Vlast_error_stack = initialize_last_error_stack ();
                 }
               else
-                error("lasterror: unrecognized string argument");
+                error ("lasterror: unrecognized string argument");
             }
           else if (args(0).is_map ())
             {
@@ -1600,47 +1600,47 @@ set to their default values.\n\
               if (! error_state && new_err.contains ("message"))
                 {
                   const std::string tmp =
-                    new_err.getfield("message").string_value ();
+                    new_err.getfield ("message").string_value ();
                   new_error_message = tmp;
                 }
 
               if (! error_state && new_err.contains ("identifier"))
                 {
                   const std::string tmp =
-                    new_err.getfield("identifier").string_value ();
+                    new_err.getfield ("identifier").string_value ();
                   new_error_id = tmp;
                 }
 
               if (! error_state && new_err.contains ("stack"))
                 {
                   octave_scalar_map new_err_stack =
-                    new_err.getfield("stack").scalar_map_value ();
+                    new_err.getfield ("stack").scalar_map_value ();
 
                   if (! error_state && new_err_stack.contains ("file"))
                     {
                       const std::string tmp =
-                        new_err_stack.getfield("file").string_value ();
+                        new_err_stack.getfield ("file").string_value ();
                       new_error_file = tmp;
                     }
 
                   if (! error_state && new_err_stack.contains ("name"))
                     {
                       const std::string tmp =
-                        new_err_stack.getfield("name").string_value ();
+                        new_err_stack.getfield ("name").string_value ();
                       new_error_name = tmp;
                     }
 
                   if (! error_state && new_err_stack.contains ("line"))
                     {
                       const int tmp =
-                        new_err_stack.getfield("line").nint_value ();
+                        new_err_stack.getfield ("line").nint_value ();
                       new_error_line = tmp;
                     }
 
                   if (! error_state && new_err_stack.contains ("column"))
                     {
                       const int tmp =
-                        new_err_stack.getfield("column").nint_value ();
+                        new_err_stack.getfield ("column").nint_value ();
                       new_error_column = tmp;
                     }
                 }

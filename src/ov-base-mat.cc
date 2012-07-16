@@ -475,7 +475,7 @@ octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
       // Set up the pointer to the proper place.
       void *here = reinterpret_cast<void *> (&matrix(n));
       // Ask x to store there if it can.
-      return x.get_rep().fast_elem_insert_self (here, btyp);
+      return x.get_rep ().fast_elem_insert_self (here, btyp);
     }
   else
     return false;

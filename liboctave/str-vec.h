@@ -111,7 +111,9 @@ public:
 
   static void delete_c_str_vec (const char * const*);
 
-  std::ostream& list_in_columns (std::ostream&, int width = 0) const;
+  std::ostream&
+  list_in_columns (std::ostream&, int width = 0,
+                   const std::string& prefix = std::string ()) const;
 };
 
 #endif

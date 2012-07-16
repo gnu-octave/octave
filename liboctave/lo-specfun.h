@@ -520,42 +520,24 @@ extern OCTAVE_API FloatComplexNDArray
 biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_type>& ierr);
 
 extern OCTAVE_API double betainc (double x, double a, double b);
-extern OCTAVE_API Matrix betainc (double x, double a, const Matrix& b);
-extern OCTAVE_API Matrix betainc (double x, const Matrix& a, double b);
-extern OCTAVE_API Matrix betainc (double x, const Matrix& a, const Matrix& b);
-
-extern OCTAVE_API NDArray betainc (double x, double a, const NDArray& b);
-extern OCTAVE_API NDArray betainc (double x, const NDArray& a, double b);
-extern OCTAVE_API NDArray betainc (double x, const NDArray& a, const NDArray& b);
-
-extern OCTAVE_API Matrix betainc (const Matrix& x, double a, double b);
-extern OCTAVE_API Matrix betainc (const Matrix& x, double a, const Matrix& b);
-extern OCTAVE_API Matrix betainc (const Matrix& x, const Matrix& a, double b);
-extern OCTAVE_API Matrix betainc (const Matrix& x, const Matrix& a, const Matrix& b);
-
-extern OCTAVE_API NDArray betainc (const NDArray& x, double a, double b);
-extern OCTAVE_API NDArray betainc (const NDArray& x, double a, const NDArray& b);
-extern OCTAVE_API NDArray betainc (const NDArray& x, const NDArray& a, double b);
-extern OCTAVE_API NDArray betainc (const NDArray& x, const NDArray& a, const NDArray& b);
+extern OCTAVE_API Array<double> betainc (double x, double a, const Array<double>& b);
+extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a, double b);
+extern OCTAVE_API Array<double> betainc (double x, const Array<double>& a, const Array<double>& b);
+extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a, double b);
+extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a, double b);
+extern OCTAVE_API Array<double> betainc (const Array<double>& x, double a, const Array<double>& b);
+extern OCTAVE_API Array<double> betainc (const Array<double>& x, const Array<double>& a, double b);
+extern OCTAVE_API Array<double> betainc (const Array<double>& x, const Array<double>& a, const Array<double>& b);
 
 extern OCTAVE_API float betainc (float x, float a, float b);
-extern OCTAVE_API FloatMatrix betainc (float x, float a, const FloatMatrix& b);
-extern OCTAVE_API FloatMatrix betainc (float x, const FloatMatrix& a, float b);
-extern OCTAVE_API FloatMatrix betainc (float x, const FloatMatrix& a, const FloatMatrix& b);
-
-extern OCTAVE_API FloatNDArray betainc (float x, float a, const FloatNDArray& b);
-extern OCTAVE_API FloatNDArray betainc (float x, const FloatNDArray& a, float b);
-extern OCTAVE_API FloatNDArray betainc (float x, const FloatNDArray& a, const FloatNDArray& b);
-
-extern OCTAVE_API FloatMatrix betainc (const FloatMatrix& x, float a, float b);
-extern OCTAVE_API FloatMatrix betainc (const FloatMatrix& x, float a, const FloatMatrix& b);
-extern OCTAVE_API FloatMatrix betainc (const FloatMatrix& x, const FloatMatrix& a, float b);
-extern OCTAVE_API FloatMatrix betainc (const FloatMatrix& x, const FloatMatrix& a, const FloatMatrix& b);
-
-extern OCTAVE_API FloatNDArray betainc (const FloatNDArray& x, float a, float b);
-extern OCTAVE_API FloatNDArray betainc (const FloatNDArray& x, float a, const FloatNDArray& b);
-extern OCTAVE_API FloatNDArray betainc (const FloatNDArray& x, const FloatNDArray& a, float b);
-extern OCTAVE_API FloatNDArray betainc (const FloatNDArray& x, const FloatNDArray& a, const FloatNDArray& b);
+extern OCTAVE_API Array<float> betainc (float x, float a, const Array<float>& b);
+extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a, float b);
+extern OCTAVE_API Array<float> betainc (float x, const Array<float>& a, const Array<float>& b);
+extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a, float b);
+extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a, float b);
+extern OCTAVE_API Array<float> betainc (const Array<float>& x, float a, const Array<float>& b);
+extern OCTAVE_API Array<float> betainc (const Array<float>& x, const Array<float>& a, float b);
+extern OCTAVE_API Array<float> betainc (const Array<float>& x, const Array<float>& a, const Array<float>& b);
 
 extern OCTAVE_API double gammainc (double x, double a, bool& err);
 extern OCTAVE_API Matrix gammainc (double x, const Matrix& a);
@@ -598,5 +580,15 @@ extern OCTAVE_API float erfcinv (float x);
 
 extern OCTAVE_API double erfcx (double x);
 extern OCTAVE_API float erfcx (float x);
+
+extern OCTAVE_API double betaincinv (double x, double a, double b);
+extern OCTAVE_API Array<double> betaincinv (double x, double a, const Array<double>& b);
+extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a, double b);
+extern OCTAVE_API Array<double> betaincinv (double x, const Array<double>& a, const Array<double>& b);
+extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, double b);
+extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, double b);
+extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, double a, const Array<double>& b);
+extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, double b);
+extern OCTAVE_API Array<double> betaincinv (const Array<double>& x, const Array<double>& a, const Array<double>& b);
 
 #endif

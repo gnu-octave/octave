@@ -401,14 +401,14 @@ octave_fcn_handle::load_ascii (std::istream& is)
 
   std::streampos pos = is.tellg ();
   std::string octaveroot = extract_keyword (is, "octaveroot", true);
-  if (octaveroot.length() == 0)
+  if (octaveroot.length () == 0)
     {
       is.seekg (pos);
       is.clear ();
     }
   pos = is.tellg ();
   std::string fpath = extract_keyword (is, "path", true);
-  if (fpath.length() == 0)
+  if (fpath.length () == 0)
     {
       is.seekg (pos);
       is.clear ();
@@ -533,7 +533,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       else
         nmbuf << nm;
 
-      std::string buf_str = nmbuf.str();
+      std::string buf_str = nmbuf.str ();
       int32_t tmp = buf_str.length ();
       os.write (reinterpret_cast<char *> (&tmp), 4);
       os.write (buf_str.c_str (), buf_str.length ());
@@ -598,11 +598,11 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 
   size_t anl = anonymous.length ();
 
-  if (nm.length() >= anl && nm.substr (0, anl) == anonymous)
+  if (nm.length () >= anl && nm.substr (0, anl) == anonymous)
     {
       octave_idx_type len = 0;
 
-      if (nm.length() > anl)
+      if (nm.length () > anl)
         {
           std::istringstream nm_is (nm.substr (anl));
           nm_is >> len;
@@ -1636,8 +1636,8 @@ Return a struct containing information about the function handle\n\
                     {
                       m.setfield ("type", "subfunction");
                       Cell parentage (dim_vector (1, 2));
-                      parentage.elem(0) = fh_nm;
-                      parentage.elem(1) = fcn->parent_fcn_name ();
+                      parentage.elem (0) = fh_nm;
+                      parentage.elem (1) = fcn->parent_fcn_name ();
                       m.setfield ("parentage", octave_value (parentage));
                     }
                   else if (fcn->is_private_function ())

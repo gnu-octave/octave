@@ -73,7 +73,7 @@ DEFBINOP (ldiv, sparse_matrix, scalar)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_scalar&);
 
-  if (v1.rows() == 1 && v1.columns() == 1)
+  if (v1.rows () == 1 && v1.columns () == 1)
     {
       double d = v1.scalar_value ();
 

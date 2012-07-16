@@ -1141,9 +1141,9 @@ symbol_table::install_nestfunction (const std::string& name,
   install_subfunction (name, fcn, parent_scope);
 
   // Stash the nest_parent for resolving variables after parsing is done.
-  octave_function *fv = fcn.function_value();
+  octave_function *fv = fcn.function_value ();
 
-  symbol_table *fcn_table_loc = get_instance (fv->scope());
+  symbol_table *fcn_table_loc = get_instance (fv->scope ());
 
   symbol_table *parent_table = get_instance (parent_scope);
 
@@ -1201,7 +1201,7 @@ symbol_table::find_function (const std::string& name,
           std::string fcn_scope = name.substr (0, pos);
           scope_id stored_scope = xcurrent_scope;
           xcurrent_scope = xtop_scope;
-          octave_value parent = find_function (name.substr(0, pos),
+          octave_value parent = find_function (name.substr (0, pos),
                                                octave_value_list (), false);
 
           if (parent.is_defined ())
@@ -1491,7 +1491,7 @@ symbol_table::do_update_nest (void)
             ours.set_curr_fcn (curr_fcn);
         }
     }
-  else if (nest_children.size())
+  else if (nest_children.size ())
     for (table_iterator ti = table.begin (); ti != table.end (); ++ti)
       ti->second.set_curr_fcn (curr_fcn);
 

@@ -76,8 +76,8 @@ template <typename FP>
 static std::complex<FP>
 simple_gcd (const std::complex<FP>& a, const std::complex<FP>& b)
 {
-  if (! xisinteger (a.real ()) || ! xisinteger(a.imag ())
-      || ! xisinteger (b.real ()) || ! xisinteger(b.imag ()))
+  if (! xisinteger (a.real ()) || ! xisinteger (a.imag ())
+      || ! xisinteger (b.real ()) || ! xisinteger (b.imag ()))
     (*current_liboctave_error_handler)
       ("gcd: all complex parts must be integers");
 
@@ -156,8 +156,8 @@ static std::complex<FP>
 extended_gcd (const std::complex<FP>& a, const std::complex<FP>& b,
               std::complex<FP>& x, std::complex<FP>& y)
 {
-  if (! xisinteger (a.real ()) || ! xisinteger(a.imag ())
-      || ! xisinteger (b.real ()) || ! xisinteger(b.imag ()))
+  if (! xisinteger (a.real ()) || ! xisinteger (a.imag ())
+      || ! xisinteger (b.real ()) || ! xisinteger (b.imag ()))
     (*current_liboctave_error_handler)
       ("gcd: all complex parts must be integers");
 

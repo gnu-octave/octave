@@ -119,7 +119,7 @@ FloatComplexNDArray::ifourier (int dim) const
 FloatComplexNDArray
 FloatComplexNDArray::fourier2d (void) const
 {
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
   if (dv.length () < 2)
     return FloatComplexNDArray ();
 
@@ -127,7 +127,7 @@ FloatComplexNDArray::fourier2d (void) const
   const FloatComplex *in = fortran_vec ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
-  octave_idx_type howmany = numel() / dv(0) / dv(1);
+  octave_idx_type howmany = numel () / dv(0) / dv(1);
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
@@ -139,7 +139,7 @@ FloatComplexNDArray::fourier2d (void) const
 FloatComplexNDArray
 FloatComplexNDArray::ifourier2d (void) const
 {
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
   if (dv.length () < 2)
     return FloatComplexNDArray ();
 
@@ -147,7 +147,7 @@ FloatComplexNDArray::ifourier2d (void) const
   const FloatComplex *in = fortran_vec ();
   FloatComplexNDArray retval (dv);
   FloatComplex *out = retval.fortran_vec ();
-  octave_idx_type howmany = numel() / dv(0) / dv(1);
+  octave_idx_type howmany = numel () / dv(0) / dv(1);
   octave_idx_type dist = dv(0) * dv(1);
 
   for (octave_idx_type i=0; i < howmany; i++)
@@ -242,7 +242,7 @@ FloatComplexNDArray::fourier (int dim) const
           F77_FUNC (cfftf, CFFTF) (npts, tmp, pwsave);
 
           for (octave_idx_type i = 0; i < npts; i++)
-            retval ((i + k*npts)*stride + j*dist) = tmp[i];
+            retval((i + k*npts)*stride + j*dist) = tmp[i];
         }
     }
 
@@ -289,7 +289,7 @@ FloatComplexNDArray::ifourier (int dim) const
           F77_FUNC (cfftb, CFFTB) (npts, tmp, pwsave);
 
           for (octave_idx_type i = 0; i < npts; i++)
-            retval ((i + k*npts)*stride + j*dist) = tmp[i] /
+            retval((i + k*npts)*stride + j*dist) = tmp[i] /
               static_cast<float> (npts);
         }
     }
@@ -330,12 +330,12 @@ FloatComplexNDArray::fourier2d (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l];
+                retval((l + k*npts)*stride + j*dist) = prow[l];
             }
         }
 
@@ -348,7 +348,7 @@ FloatComplexNDArray::fourier2d (void) const
 FloatComplexNDArray
 FloatComplexNDArray::ifourier2d (void) const
 {
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
   dim_vector dv2 (dv(0), dv(1));
   int rank = 2;
   FloatComplexNDArray retval (*this);
@@ -378,12 +378,12 @@ FloatComplexNDArray::ifourier2d (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l] /
+                retval((l + k*npts)*stride + j*dist) = prow[l] /
                   static_cast<float> (npts);
             }
         }
@@ -426,12 +426,12 @@ FloatComplexNDArray::fourierNd (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l];
+                retval((l + k*npts)*stride + j*dist) = prow[l];
             }
         }
 
@@ -473,12 +473,12 @@ FloatComplexNDArray::ifourierNd (void) const
               octave_quit ();
 
               for (octave_idx_type l = 0; l < npts; l++)
-                prow[l] = retval ((l + k*npts)*stride + j*dist);
+                prow[l] = retval((l + k*npts)*stride + j*dist);
 
               F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
               for (octave_idx_type l = 0; l < npts; l++)
-                retval ((l + k*npts)*stride + j*dist) = prow[l] /
+                retval((l + k*npts)*stride + j*dist) = prow[l] /
                   static_cast<float> (npts);
             }
         }

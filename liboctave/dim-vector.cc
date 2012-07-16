@@ -45,7 +45,7 @@ dim_vector::chop_all_singletons (void)
   make_unique ();
 
   int j = 0;
-  int l = ndims();
+  int l = ndims ();
 
   for (int i = 0; i < l; i++)
     {

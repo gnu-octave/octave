@@ -23,8 +23,32 @@
 ## horizontally.  If the arguments are cells strings,  @code{strcat}
 ## returns a cell string with the individual cells concatenated.
 ## For numerical input, each element is converted to the
-## corresponding ASCII character.  Trailing white space is eliminated.
+## corresponding ASCII character.  Trailing white space for each of
+## the inputs (@var{s1}, @var{S2}, @dots{}) is eliminated before they
+## are concatenated.
+##
 ## For example:
+##
+## @example
+## @group
+## strcat ("|", " leading space is preserved", "|")
+##     @result{} | leading space is perserved|
+## @end group
+## @end example
+##
+## @example
+## @group
+## strcat ("|", "trailing space is eliminated ", "|")
+##     @result{} |trailing space is eliminated|
+## @end group
+## @end example
+##
+## @example
+## @group
+## strcat ("homogeneous space |", "  ", "| is also eliminated")
+##     @result{} homogeneous space || is also eliminated
+## @end group
+## @end example
 ##
 ## @example
 ## @group

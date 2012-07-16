@@ -41,7 +41,7 @@ DEFUNOP (transpose, char_matrix)
 {
   CAST_UNOP_ARG (const octave_char_matrix&);
 
-  return octave_value (v.matrix_value().transpose ());
+  return octave_value (v.matrix_value ().transpose ());
 }
 
 DEFNDCATOP_FN (chm_chm, char_matrix, char_matrix, char_array, char_array,

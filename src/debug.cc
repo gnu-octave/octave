@@ -209,7 +209,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
       // Problem because parse_dbfunction_params() can only pass out a
       // single function
     }
-  else if (args(0).is_string())
+  else if (args(0).is_string ())
     {
       symbol_name = args(0).string_value ();
       if (error_state)
@@ -223,7 +223,7 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
     {
       if (args(i).is_string ())
         {
-          int line = atoi (args(i).string_value().c_str ());
+          int line = atoi (args(i).string_value ().c_str ());
           if (error_state)
             break;
           lines[list_idx++] = line;

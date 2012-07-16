@@ -90,7 +90,7 @@ public:
   ComplexDiagMatrix& fill (const ComplexRowVector& a, octave_idx_type beg);
 
   ComplexDiagMatrix hermitian (void) const { return MDiagArray2<Complex>::hermitian (std::conj); }
-  ComplexDiagMatrix transpose (void) const { return MDiagArray2<Complex>::transpose(); }
+  ComplexDiagMatrix transpose (void) const { return MDiagArray2<Complex>::transpose (); }
   DiagMatrix abs (void) const;
 
   friend OCTAVE_API ComplexDiagMatrix conj (const ComplexDiagMatrix& a);

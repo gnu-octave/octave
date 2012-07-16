@@ -26,7 +26,7 @@ global topbuilddir;
 currdir = canonicalize_file_name (".");
 
 if (nargin == 1)
-  xdir = argv(){1};
+  xdir = argv (){1};
 else
   xdir = ".";
 endif

@@ -88,7 +88,7 @@ void
 octave_comment_buffer::do_append (const std::string& s,
                                   octave_comment_elt::comment_type t)
 {
-  comment_list->append(s, t);
+  comment_list->append (s, t);
 }
 
 octave_comment_list *

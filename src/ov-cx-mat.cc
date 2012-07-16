@@ -73,8 +73,8 @@ default_numeric_demotion_function (const octave_base_value& a)
 octave_base_value::type_conv_info
 octave_complex_matrix::numeric_demotion_function (void) const
 {
-  return octave_base_value::type_conv_info(default_numeric_demotion_function,
-                                           octave_float_complex_matrix::static_type_id ());
+  return octave_base_value::type_conv_info (default_numeric_demotion_function,
+                                            octave_float_complex_matrix::static_type_id ());
 }
 
 octave_base_value *
@@ -437,11 +437,11 @@ bool
 octave_complex_matrix::save_binary (std::ostream& os, bool& save_as_floats)
 {
   dim_vector d = dims ();
-  if (d.length() < 1)
+  if (d.length () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length();
+  int32_t tmp = - d.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i = 0; i < d.length (); i++)
     {
@@ -644,7 +644,7 @@ octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    matrix.resize(dv);
+    matrix.resize (dv);
   if (empty)
       return (empty > 0);
 

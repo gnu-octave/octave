@@ -194,7 +194,7 @@ void defun_isargout (int nargout, int nout, bool *isargout)
     for (int i = 0; i < nout; i++)
       isargout[i] = true;
 
-  for (int i = std::max(nargout, 1); i < nout; i++)
+  for (int i = std::max (nargout, 1); i < nout; i++)
     isargout[i] = false;
 }
 

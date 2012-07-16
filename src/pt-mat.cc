@@ -1110,7 +1110,7 @@ tree_matrix::rvalue1 (int)
                     }
                 }
 
-              ctmp = (*(tmp.begin() -> begin()));
+              ctmp = (*(tmp.begin () -> begin ()));
 
             found_non_empty:
 

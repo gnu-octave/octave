@@ -196,7 +196,7 @@ function h = __errplot__ (fstr, p, varargin)
   ## Process legend key
   if (! isempty (fmt.key))    
     hlegend = [];
-    fkids = get (gcf(), "children");
+    fkids = get (gcf (), "children");
     for i = 1 : numel (fkids)
       if (ishandle (fkids(i)) && strcmp (get (fkids(i), "type"), "axes")
           && (strcmp (get (fkids(i), "tag"), "legend")))
@@ -218,7 +218,7 @@ function h = __errplot__ (fstr, p, varargin)
     hlgnd(end+1) = hg;
     tlgnd(end+1) = fmt.key;
 
-    legend (gca(), hlgnd, tlgnd);
+    legend (gca (), hlgnd, tlgnd);
   endif
 
 endfunction

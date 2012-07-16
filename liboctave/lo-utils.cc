@@ -195,10 +195,14 @@ octave_fgetl (FILE *f, bool& eof)
   return retval;
 }
 
-static inline double
-read_inf_nan_na (std::istream& is, char c0, char sign = '+')
+// Note that the caller is responsible for repositioning the stream on
+// failure.
+
+template <typename T>
+T
+read_inf_nan_na (std::istream& is, char c0)
 {
-  double d = 0.0;
+  T val = 0.0;
 
   switch (c0)
     {
@@ -209,21 +213,12 @@ read_inf_nan_na (std::istream& is, char c0, char sign = '+')
           {
             char c2 = is.get ();
             if (c2 == 'f' || c2 == 'F')
-              d = sign == '-' ? -octave_Inf : octave_Inf;
+              val = std::numeric_limits<T>::infinity ();
             else
-              {
-                is.putback (c2);
-                is.putback (c1);
-                is.putback (c0);
-                is.setstate (std::ios::failbit);
-              }
+              is.setstate (std::ios::failbit);
           }
         else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
+          is.setstate (std::ios::failbit);
       }
       break;
 
@@ -234,19 +229,12 @@ read_inf_nan_na (std::istream& is, char c0, char sign = '+')
           {
             char c2 = is.get ();
             if (c2 == 'n' || c2 == 'N')
-              d = octave_NaN;
+              val = std::numeric_limits<T>::quiet_NaN ();
             else
-              {
-                is.putback (c2);
-                d = octave_NA;
-              }
+              val = octave_numeric_limits<T>::NA ();
           }
         else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
+          is.setstate (std::ios::failbit);
       }
       break;
 
@@ -254,74 +242,80 @@ read_inf_nan_na (std::istream& is, char c0, char sign = '+')
       abort ();
     }
 
-  return d;
+  return val;
 }
 
 // Read a double value.  Discard any sign on NaN and NA.
 
-template <>
+template <typename T>
 double
-octave_read_value (std::istream& is)
+octave_read_fp_value (std::istream& is)
 {
-  double d = 0.0;
+  T val = 0.0;
+
+  // FIXME -- resetting stream position is likely to fail unless we are
+  // reading from a file.
+  std::ios::streampos pos = is.tellg ();
 
   char c1 = ' ';
 
   while (isspace (c1))
     c1 = is.get ();
 
+  bool neg = false;
+
   switch (c1)
     {
     case '-':
-      {
-        char c2 = 0;
-        c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_inf_nan_na (is, c2, c1);
-        else
-          {
-            is.putback (c2);
-            is.putback (c1);
-            is >> d;
-          }
-      }
-      break;
+      neg = true;
+      // fall through...
 
     case '+':
       {
         char c2 = 0;
         c2 = is.get ();
         if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_inf_nan_na (is, c2, c1);
+          val = read_inf_nan_na<T> (is, c2);
         else
           {
             is.putback (c2);
-            is.putback (c1);
-            is >> d;
+            is >> val;
           }
+
+        if (neg && ! is.fail ())
+          val = -val;
       }
       break;
 
     case 'i': case 'I':
     case 'n': case 'N':
-      d = read_inf_nan_na (is, c1);
+      val = read_inf_nan_na<T> (is, c1);
       break;
 
     default:
       is.putback (c1);
-      is >> d;
+      is >> val;
+      break;
     }
 
-  return d;
+  std::ios::iostate status = is.rdstate ();
+  if (status & std::ios::failbit)
+    {
+      is.clear ();
+      is.seekg (pos);
+      is.setstate (status);
+    }
+
+  return val;
 }
 
-template <>
-Complex
-octave_read_value (std::istream& is)
+template <typename T>
+std::complex<T>
+octave_read_cx_fp_value (std::istream& is)
 {
-  double re = 0.0, im = 0.0;
+  T re = 0.0, im = 0.0;
 
-  Complex cx = 0.0;
+  std::complex<T> cx = 0.0;
 
   char ch = ' ';
 
@@ -330,16 +324,16 @@ octave_read_value (std::istream& is)
 
   if (ch == '(')
     {
-      re = octave_read_value<double> (is);
+      re = octave_read_value<T> (is);
       ch = is.get ();
 
       if (ch == ',')
         {
-          im = octave_read_value<double> (is);
+          im = octave_read_value<T> (is);
           ch = is.get ();
 
           if (ch == ')')
-            cx = Complex (re, im);
+            cx = std::complex<T> (re, im);
           else
             is.setstate (std::ios::failbit);
         }
@@ -355,170 +349,26 @@ octave_read_value (std::istream& is)
     }
 
   return cx;
-
 }
 
-static inline float
-read_float_inf_nan_na (std::istream& is, char c0, char sign = '+')
+template <> OCTAVE_API double octave_read_value (std::istream& is)
 {
-  float d = 0.0;
-
-  switch (c0)
-    {
-    case 'i': case 'I':
-      {
-        char c1 = is.get ();
-        if (c1 == 'n' || c1 == 'N')
-          {
-            char c2 = is.get ();
-            if (c2 == 'f' || c2 == 'F')
-              d = sign == '-' ? -octave_Float_Inf : octave_Float_Inf;
-            else
-              {
-                is.putback (c2);
-                is.putback (c1);
-                is.putback (c0);
-                is.setstate (std::ios::failbit);
-              }
-          }
-        else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
-      }
-      break;
-
-    case 'n': case 'N':
-      {
-        char c1 = is.get ();
-        if (c1 == 'a' || c1 == 'A')
-          {
-            char c2 = is.get ();
-            if (c2 == 'n' || c2 == 'N')
-              d = octave_Float_NaN;
-            else
-              {
-                is.putback (c2);
-                d = octave_Float_NA;
-              }
-          }
-        else
-          {
-            is.putback (c1);
-            is.putback (c0);
-            is.setstate (std::ios::failbit);
-          }
-      }
-      break;
-
-    default:
-      abort ();
-    }
-
-  return d;
+  return octave_read_fp_value<double> (is);
 }
 
-// Read a float value.  Discard any sign on NaN and NA.
-
-template <>
-float
-octave_read_value (std::istream& is)
+template <> OCTAVE_API Complex octave_read_value (std::istream& is)
 {
-  float d = 0.0;
-
-  char c1 = ' ';
-
-  while (isspace (c1))
-    c1 = is.get ();
-
-  switch (c1)
-    {
-    case '-':
-      {
-        char c2 = 0;
-        c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_float_inf_nan_na (is, c2, c1);
-        else
-          {
-            is.putback (c2);
-            is.putback (c1);
-            is >> d;
-          }
-      }
-      break;
-
-    case '+':
-      {
-        char c2 = 0;
-        c2 = is.get ();
-        if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
-          d = read_float_inf_nan_na (is, c2, c1);
-        else
-          {
-            is.putback (c2);
-            is.putback (c1);
-            is >> d;
-          }
-      }
-      break;
-
-    case 'i': case 'I':
-    case 'n': case 'N':
-      d = read_float_inf_nan_na (is, c1);
-      break;
-
-    default:
-      is.putback (c1);
-      is >> d;
-    }
-
-  return d;
+  return octave_read_cx_fp_value<double> (is);
 }
 
-template <>
-FloatComplex
-octave_read_value (std::istream& is)
+template <> OCTAVE_API float octave_read_value (std::istream& is)
 {
-  float re = 0.0, im = 0.0;
+  return octave_read_fp_value<float> (is);
+}
 
-  FloatComplex cx = 0.0;
-
-  char ch = ' ';
-
-  while (isspace (ch))
-    ch = is.get ();
-
-  if (ch == '(')
-    {
-      re = octave_read_value<float> (is);
-      ch = is.get ();
-
-      if (ch == ',')
-        {
-          im = octave_read_value<float> (is);
-          ch = is.get ();
-
-          if (ch == ')')
-            cx = FloatComplex (re, im);
-          else
-            is.setstate (std::ios::failbit);
-        }
-      else if (ch == ')')
-        cx = re;
-      else
-        is.setstate (std::ios::failbit);
-    }
-  else
-    {
-      is.putback (ch);
-      cx = octave_read_value<float> (is);
-    }
-
-  return cx;
-
+template <> OCTAVE_API FloatComplex octave_read_value (std::istream& is)
+{
+  return octave_read_cx_fp_value<float> (is);
 }
 
 void

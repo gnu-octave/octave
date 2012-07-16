@@ -189,7 +189,7 @@ file_stat::update_internal (bool force)
       // Remove trailing slash.
       if (file_ops::is_dir_sep (full_file_name[full_file_name.length () - 1])
           && full_file_name.length () != 1
-          && ! (full_file_name.length() == 3 && full_file_name[1] == ':'))
+          && ! (full_file_name.length () == 3 && full_file_name[1] == ':'))
         full_file_name.resize (full_file_name.length () - 1);
 #endif
 

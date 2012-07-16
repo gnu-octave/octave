@@ -239,11 +239,11 @@ bool
 octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
 {
   dim_vector d = this->dims ();
-  if (d.length() < 1)
+  if (d.length () < 1)
     return false;
 
   // Use negative value for ndims to differentiate with old format!!
-  int32_t tmp = - d.length();
+  int32_t tmp = - d.length ();
   os.write (reinterpret_cast<char *> (&tmp), 4);
   for (int i=0; i < d.length (); i++)
     {
@@ -251,7 +251,7 @@ octave_base_int_matrix<T>::save_binary (std::ostream& os, bool&)
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
-  os.write (reinterpret_cast<const char *> (this->matrix.data()), this->byte_size());
+  os.write (reinterpret_cast<const char *> (this->matrix.data ()), this->byte_size ());
 
   return true;
 }
@@ -303,7 +303,7 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
   if (swap)
     {
       int nel = dv.numel ();
-      int bytes = nel / m.byte_size();
+      int bytes = nel / m.byte_size ();
       for (int i = 0; i < nel; i++)
         switch (bytes)
           {
@@ -364,7 +364,7 @@ octave_base_int_matrix<T>::save_hdf5 (hid_t loc_id, const char *name, bool)
     }
 
   retval = H5Dwrite (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
-                     H5P_DEFAULT, this->matrix.data()) >= 0;
+                     H5P_DEFAULT, this->matrix.data ()) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
@@ -381,7 +381,7 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
-    this->matrix.resize(dv);
+    this->matrix.resize (dv);
   if (empty)
       return (empty > 0);
 
@@ -422,7 +422,7 @@ octave_base_int_matrix<T>::load_hdf5 (hid_t loc_id, const char *name)
 
   T m (dv);
   if (H5Dread (data_hid, save_type_hid, H5S_ALL, H5S_ALL,
-               H5P_DEFAULT, m.fortran_vec()) >= 0)
+               H5P_DEFAULT, m.fortran_vec ()) >= 0)
     {
       retval = true;
       this->matrix = m;
@@ -501,7 +501,7 @@ template <class T>
 bool
 octave_base_int_scalar<T>::save_binary (std::ostream& os, bool&)
 {
-  os.write (reinterpret_cast<char *> (&(this->scalar)), this->byte_size());
+  os.write (reinterpret_cast<char *> (&(this->scalar)), this->byte_size ());
   return true;
 }
 
@@ -511,11 +511,11 @@ octave_base_int_scalar<T>::load_binary (std::istream& is, bool swap,
                                         oct_mach_info::float_format)
 {
   T tmp;
-  if (! is.read (reinterpret_cast<char *> (&tmp), this->byte_size()))
+  if (! is.read (reinterpret_cast<char *> (&tmp), this->byte_size ()))
     return false;
 
   if (swap)
-    switch (this->byte_size())
+    switch (this->byte_size ())
       {
       case 8:
         swap_bytes<8> (&tmp);

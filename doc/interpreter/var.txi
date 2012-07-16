@@ -272,21 +272,21 @@ endfor
 
 clear
 for i = 1:2
-  count_calls();
+  count_calls ();
 endfor
 @print{} 'count_calls' has been called 3 times
 @print{} 'count_calls' has been called 4 times
 
 clear all
 for i = 1:2
-  count_calls();
+  count_calls ();
 endfor
 @print{} 'count_calls' has been called 1 times
 @print{} 'count_calls' has been called 2 times
 
 clear count_calls
 for i = 1:2
-  count_calls();
+  count_calls ();
 endfor
 @print{} 'count_calls' has been called 1 times
 @print{} 'count_calls' has been called 2 times

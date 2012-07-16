@@ -152,7 +152,7 @@ octave_fields::fieldnames (void) const
   string_vector retval(n);
 
   for (iterator p = begin (); p != end (); p++)
-    retval.xelem(p->second) = p->first;
+    retval.xelem (p->second) = p->first;
 
   return retval;
 }
@@ -197,7 +197,7 @@ octave_scalar_map::orderfields (Array<octave_idx_type>& perm) const
 
   octave_idx_type nf = nfields ();
   for (octave_idx_type i = 0; i < nf; i++)
-    retval.xvals[i] = xvals[perm.xelem(i)];
+    retval.xvals[i] = xvals[perm.xelem (i)];
 
   return retval;
 }
@@ -215,7 +215,7 @@ octave_scalar_map::orderfields (const octave_scalar_map& other,
         {
           octave_idx_type nf = nfields ();
           for (octave_idx_type i = 0; i < nf; i++)
-            retval.xvals[i] = xvals[perm.xelem(i)];
+            retval.xvals[i] = xvals[perm.xelem (i)];
         }
       else
         error ("orderfields: structs must have same fields up to order");
@@ -247,7 +247,7 @@ octave_map::octave_map (const octave_scalar_map& m)
   for (octave_idx_type i = 0; i < nf; i++)
     {
       xvals.push_back (Cell (dimensions));
-      xvals[i].xelem(0) = m.xvals[i];
+      xvals[i].xelem (0) = m.xvals[i];
     }
 }
 
@@ -308,7 +308,7 @@ octave_map::orderfields (Array<octave_idx_type>& perm) const
 
   octave_idx_type nf = nfields ();
   for (octave_idx_type i = 0; i < nf; i++)
-    retval.xvals[i] = xvals[perm.xelem(i)];
+    retval.xvals[i] = xvals[perm.xelem (i)];
 
   return retval;
 }
@@ -326,7 +326,7 @@ octave_map::orderfields (const octave_map& other,
         {
           octave_idx_type nf = nfields ();
           for (octave_idx_type i = 0; i < nf; i++)
-            retval.xvals[i] = xvals[perm.xelem(i)];
+            retval.xvals[i] = xvals[perm.xelem (i)];
         }
       else
         error ("orderfields: structs must have same fields up to order");
@@ -591,7 +591,7 @@ octave_map::do_cat (int dim, octave_idx_type n, const octave_scalar_map *map_lis
       retval.xvals.push_back (Cell (rd));
       assert (retval.xvals[j].numel () == n);
       for (octave_idx_type i = 0; i < n; i++)
-        retval.xvals[j].xelem(i) = map_list[i].xvals[j];
+        retval.xvals[j].xelem (i) = map_list[i].xvals[j];
     }
 }
 
@@ -1278,7 +1278,7 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
               break;
             }
 
-          contents(pa).insert (rb.contents(pb), ra_idx);
+          contents(pa).insert (rb.contents (pb), ra_idx);
         }
     }
   else
@@ -1559,8 +1559,8 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
     }
   else
     {
-      string_vector a_keys = a.keys().sort ();
-      string_vector b_keys = b.keys().sort ();
+      string_vector a_keys = a.keys ().sort ();
+      string_vector b_keys = b.keys ().sort ();
 
       octave_idx_type a_len = a_keys.length ();
       octave_idx_type b_len = b_keys.length ();
@@ -1585,7 +1585,7 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
 Octave_map&
 Octave_map::maybe_delete_elements (const octave_value_list& idx)
 {
-  string_vector t_keys = keys();
+  string_vector t_keys = keys ();
   octave_idx_type len = t_keys.length ();
 
   if (len > 0)
@@ -1601,7 +1601,7 @@ Octave_map::maybe_delete_elements (const octave_value_list& idx)
         }
 
       if (!error_state)
-        dimensions = contents(t_keys[0]).dims();
+        dimensions = contents(t_keys[0]).dims ();
     }
 
   return *this;

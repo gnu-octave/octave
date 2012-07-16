@@ -55,7 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 template <class T>
 Sparse<T>::Sparse (const PermMatrix& a)
   : rep (new typename Sparse<T>::SparseRep (a.rows (), a.cols (), a.rows ())),
-         dimensions (dim_vector (a.rows (), a.cols()))
+         dimensions (dim_vector (a.rows (), a.cols ()))
 {
   octave_idx_type n = a.rows ();
   for (octave_idx_type i = 0; i <= n; i++)
@@ -149,7 +149,7 @@ Sparse<T>::SparseRep::maybe_compress (bool remove_zeros)
         {
           octave_idx_type u = c[j];
           for (i = i; i < u; i++)
-            if (d[i] != T())
+            if (d[i] != T ())
               {
                 d[k] = d[i];
                 r[k++] = r[i];
@@ -231,7 +231,7 @@ template <class T>
 Sparse<T>::Sparse (const dim_vector& dv)
   : rep (0), dimensions (dv)
 {
-  if (dv.length() != 2)
+  if (dv.length () != 2)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const dim_vector&): dimension mismatch");
   else
@@ -254,7 +254,7 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
       ("Sparse::Sparse (const Sparse&, const dim_vector&): dimension mismatch");
   else
     {
-      dim_vector old_dims = a.dims();
+      dim_vector old_dims = a.dims ();
       octave_idx_type new_nzmx = a.nnz ();
       octave_idx_type new_nr = dv (0);
       octave_idx_type new_nc = dv (1);
@@ -334,7 +334,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
     {
       // This is completely specialized, because the sorts can be simplified.
       T a0 = a(0);
-      if (a0 == T())
+      if (a0 == T ())
         {
           // Do nothing, it's an empty matrix.
         }
@@ -815,7 +815,7 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
       (*current_liboctave_warning_handler)
         ("reshape: sparse reshape to N-d array smashes dims");
 
-      for (octave_idx_type i = 2; i < dims2.length(); i++)
+      for (octave_idx_type i = 2; i < dims2.length (); i++)
         dims2(1) *= dims2(i);
 
       dims2.resize (2);
@@ -1240,15 +1240,31 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
         gripe_del_index_out_of_range (false, idx_j.extent (nc), nc);
       else if (idx_j.is_cont_range (nc, lb, ub))
         {
-          const Sparse<T> tmp = *this;
-          octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub), new_nz = nz - (ubi - lbi);
-          *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
-          copy_or_memcpy (lbi, tmp.data (), data ());
-          copy_or_memcpy (lbi, tmp.ridx (), ridx ());
-          copy_or_memcpy (nz - ubi, tmp.data () + ubi, xdata () + lbi);
-          copy_or_memcpy (nz - ubi, tmp.ridx () + ubi, xridx () + lbi);
-          copy_or_memcpy (lb, tmp.cidx () + 1, cidx () + 1);
-          mx_inline_sub (nc - ub, xcidx () + 1, tmp.cidx () + ub + 1, ubi - lbi);
+          if (lb == 0 && ub == nc)
+            {
+              // Delete all rows and columns.
+              *this = Sparse<T> (nr, 0);
+            }
+          else if (nz == 0)
+            {
+              // No elements to preserve; adjust dimensions.
+              *this = Sparse<T> (nr, nc - (ub - lb));
+            }
+          else
+            {
+              const Sparse<T> tmp = *this;
+              octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub),
+                new_nz = nz - (ubi - lbi);
+
+              *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
+              copy_or_memcpy (lbi, tmp.data (), data ());
+              copy_or_memcpy (lbi, tmp.ridx (), ridx ());
+              copy_or_memcpy (nz - ubi, tmp.data () + ubi, xdata () + lbi);
+              copy_or_memcpy (nz - ubi, tmp.ridx () + ubi, xridx () + lbi);
+              copy_or_memcpy (lb, tmp.cidx () + 1, cidx () + 1);
+              mx_inline_sub (nc - ub, xcidx () + lb + 1,
+                             tmp.cidx () + ub + 1, ubi - lbi);
+            }
         }
       else
         *this = index (idx_i, idx_j.complement (nc));
@@ -1261,24 +1277,40 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
         gripe_del_index_out_of_range (false, idx_i.extent (nr), nr);
       else if (idx_i.is_cont_range (nr, lb, ub))
         {
-          // This is more memory-efficient than the approach below.
-          const Sparse<T> tmpl = index (idx_vector (0, lb), idx_j);
-          const Sparse<T> tmpu = index (idx_vector (ub, nr), idx_j);
-          *this = Sparse<T> (nr - (ub - lb), nc, tmpl.nnz () + tmpu.nnz ());
-          for (octave_idx_type j = 0, k = 0; j < nc; j++)
+          if (lb == 0 && ub == nr)
             {
-              for (octave_idx_type i = tmpl.cidx(j); i < tmpl.cidx(j+1); i++)
+              // Delete all rows and columns.
+              *this = Sparse<T> (0, nc);
+            }
+          else if (nz == 0)
+            {
+              // No elements to preserve; adjust dimensions.
+              *this = Sparse<T> (nr - (ub - lb), nc);
+            }
+          else
+            {
+              // This is more memory-efficient than the approach below.
+              const Sparse<T> tmpl = index (idx_vector (0, lb), idx_j);
+              const Sparse<T> tmpu = index (idx_vector (ub, nr), idx_j);
+              *this = Sparse<T> (nr - (ub - lb), nc,
+                                 tmpl.nnz () + tmpu.nnz ());
+              for (octave_idx_type j = 0, k = 0; j < nc; j++)
                 {
-                  xdata(k) = tmpl.data(i);
-                  xridx(k++) = tmpl.ridx(i);
-                }
-              for (octave_idx_type i = tmpu.cidx(j); i < tmpu.cidx(j+1); i++)
-                {
-                  xdata(k) = tmpu.data(i);
-                  xridx(k++) = tmpu.ridx(i) + lb;
-                }
+                  for (octave_idx_type i = tmpl.cidx(j); i < tmpl.cidx(j+1);
+                       i++)
+                    {
+                      xdata(k) = tmpl.data(i);
+                      xridx(k++) = tmpl.ridx(i);
+                    }
+                  for (octave_idx_type i = tmpu.cidx(j); i < tmpu.cidx(j+1);
+                       i++)
+                    {
+                      xdata(k) = tmpu.data(i);
+                      xridx(k++) = tmpu.ridx(i) + lb;
+                    }
 
-              xcidx(j+1) = k;
+                  xcidx(j+1) = k;
+                }
             }
         }
       else
@@ -1583,6 +1615,10 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
     {
       // It's actually vector indexing. The 1D index is specialized for that.
       retval = index (idx_i);
+
+      // If nr == 1 then the vector indexing will return a column vector!!
+      if (nr == 1)
+        retval.transpose ();
     }
   else if (idx_i.is_scalar ())
     {
@@ -1830,7 +1866,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   octave_idx_type iidx = idx(i);
                   octave_idx_type li = lblookup (ri, nz, iidx);
                   if (li != nz && ri[li] == iidx)
-                    xdata(li) = T();
+                    xdata(li) = T ();
                 }
 
               maybe_compress (true);
@@ -2553,7 +2589,7 @@ template <class T>
 Array<T>
 Sparse<T>::array_value () const
 {
-  NoAlias< Array<T> > retval (dims (), T());
+  NoAlias< Array<T> > retval (dims (), T ());
   if (rows () == 1)
     {
       octave_idx_type i = 0;
@@ -2567,7 +2603,7 @@ Sparse<T>::array_value () const
     {
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         for (octave_idx_type i = cidx(j), iu = cidx(j+1); i < iu; i++)
-          retval (ridx(i), j) = data (i);
+          retval(ridx(i), j) = data (i);
     }
 
   return retval;
@@ -2735,6 +2771,18 @@ Sparse<T>::array_value () const
 bug #35570:
 
 %!assert (speye (3,1)(3:-1:1), sparse ([0; 0; 1]))
+
+## Test removing columns (bug #36656)
+
+%!test
+%! s = sparse (magic (5));
+%! s(:,2:4) = [];
+%! assert (s, sparse (magic (5)(:, [1,5])));
+
+%!test
+%! s = sparse([], [], [], 1, 1);
+%! s(1,:) = [];
+%! assert (s, sparse ([], [], [], 0, 1));
 
 */
 

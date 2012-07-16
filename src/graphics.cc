@@ -1037,27 +1037,27 @@ color_values::str2rgb (std::string str)
 {
   double tmp_rgb[3] = {0, 0, 0};
   bool retval = true;
-  unsigned int len = str.length();
+  unsigned int len = str.length ();
 
   std::transform (str.begin (), str.end (), str.begin (), tolower);
 
-  if (str.compare(0, len, "blue", 0, len) == 0)
+  if (str.compare (0, len, "blue", 0, len) == 0)
     tmp_rgb[2] = 1;
-  else if (str.compare(0, len, "black", 0, len) == 0
-           || str.compare(0, len, "k", 0, len) == 0)
+  else if (str.compare (0, len, "black", 0, len) == 0
+           || str.compare (0, len, "k", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 0;
-  else if (str.compare(0, len, "red", 0, len) == 0)
+  else if (str.compare (0, len, "red", 0, len) == 0)
     tmp_rgb[0] = 1;
-  else if (str.compare(0, len, "green", 0, len) == 0)
+  else if (str.compare (0, len, "green", 0, len) == 0)
     tmp_rgb[1] = 1;
-  else if (str.compare(0, len, "yellow", 0, len) == 0)
+  else if (str.compare (0, len, "yellow", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = 1;
-  else if (str.compare(0, len, "magenta", 0, len) == 0)
+  else if (str.compare (0, len, "magenta", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[2] = 1;
-  else if (str.compare(0, len, "cyan", 0, len) == 0)
+  else if (str.compare (0, len, "cyan", 0, len) == 0)
     tmp_rgb[1] = tmp_rgb[2] = 1;
-  else if (str.compare(0, len, "white", 0, len) == 0
-           || str.compare(0, len, "w", 0, len) == 0)
+  else if (str.compare (0, len, "white", 0, len) == 0
+           || str.compare (0, len, "w", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
   else
     retval = false;
@@ -1123,7 +1123,7 @@ color_property::do_set (const octave_value& val)
 
       if (m.numel () == 3)
         {
-          color_values col (m (0), m (1), m(2));
+          color_values col (m(0), m(1), m(2));
           if (! error_state)
             {
               if (current_type != color_t || col != color_val)
@@ -1271,7 +1271,7 @@ array_property::is_equal (const octave_value& v) const
                 } \
             }
 
-          if (data.is_double_type() || data.is_bool_type ())
+          if (data.is_double_type () || data.is_bool_type ())
             CHECK_ARRAY_EQUAL (double, , NDArray)
           else if (data.is_single_type ())
             CHECK_ARRAY_EQUAL (float, float_, FloatNDArray)
@@ -1428,7 +1428,7 @@ callback_property::validate (const octave_value& v) const
     // complete validation will be done at execution-time
     return true;
   else if (v.is_cell () && v.length () > 0
-           && (v.rows() == 1 || v.columns () == 1)
+           && (v.rows () == 1 || v.columns () == 1)
            && v.cell_value ()(0).is_function_handle ())
     return true;
   else if (v.is_empty ())
@@ -1983,7 +1983,7 @@ graphics_object::set (const Array<std::string>& names,
 {
   if (names.numel () != values.columns ())
     {
-      error("set: number of names must match number of value columns (%d != %d)",
+      error ("set: number of names must match number of value columns (%d != %d)",
             names.numel (), values.columns ());
     }
 
@@ -3963,20 +3963,20 @@ axes::properties::sync_positions (void)
                  {
                    axes::properties& props =
                      dynamic_cast<axes::properties&> (go.get_properties ());
-                   if (props.autopos_tag_is("subplot"))
+                   if (props.autopos_tag_is ("subplot"))
                      {
                        Matrix outpos = go.get ("outerposition").matrix_value ();
-                       bool l_align=(std::abs (outpos(0)-ref_outbox(0)) < 1e-15);
-                       bool b_align=(std::abs (outpos(1)-ref_outbox(1)) < 1e-15);
-                       bool r_align=(std::abs (outpos(0)+outpos(2)-ref_outbox(2)) < 1e-15);
-                       bool t_align=(std::abs (outpos(1)+outpos(3)-ref_outbox(3)) < 1e-15);
+                       bool l_align = (std::abs (outpos(0)-ref_outbox(0)) < 1e-15);
+                       bool b_align = (std::abs (outpos(1)-ref_outbox(1)) < 1e-15);
+                       bool r_align = (std::abs (outpos(0)+outpos(2)-ref_outbox(2)) < 1e-15);
+                       bool t_align = (std::abs (outpos(1)+outpos(3)-ref_outbox(3)) < 1e-15);
                        if (l_align || b_align || r_align || t_align)
                          {
-                           aligned.push_back(kids(i));
-                           l_aligned.push_back(l_align);
-                           b_aligned.push_back(b_align);
-                           r_aligned.push_back(r_align);
-                           t_aligned.push_back(t_align);
+                           aligned.push_back (kids(i));
+                           l_aligned.push_back (l_align);
+                           b_aligned.push_back (b_align);
+                           r_aligned.push_back (r_align);
+                           t_aligned.push_back (t_align);
                            // FIXME: the temporarily deleted tags should be
                            //        protected from interrupts
                            props.set_autopos_tag ("none");
@@ -3985,7 +3985,7 @@ axes::properties::sync_positions (void)
                  }
              }
            // Determine a minimum box which aligns the subplots
-           Matrix ref_box(1, 4, 0.);
+           Matrix ref_box (1, 4, 0.);
            ref_box(2) = 1.;
            ref_box(3) = 1.;
            for (size_t i = 0; i < aligned.size (); i++)
@@ -4284,7 +4284,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
-  color = "none";
+  color = color_values ("white");
   xcolor = color_values ("black");
   ycolor = color_values ("black");
   zcolor = color_values ("black");
@@ -4540,7 +4540,7 @@ translate (ColumnVector& v, double x, double y, double z)
 inline void
 normalize (ColumnVector& v)
 {
-  double fact = 1.0/sqrt(v(0)*v(0)+v(1)*v(1)+v(2)*v(2));
+  double fact = 1.0 / sqrt (v(0)*v(0)+v(1)*v(1)+v(2)*v(2));
   scale (v, fact, fact, fact);
 }
 
@@ -4579,7 +4579,7 @@ unit_cube (void)
       0,1,1,1,
       1,1,1,1};
   Matrix m (4, 8);
-  memcpy (m.fortran_vec (), data, sizeof(double)*32);
+  memcpy (m.fortran_vec (), data, sizeof (double)*32);
   return m;
 }
 
@@ -4587,7 +4587,7 @@ inline ColumnVector
 cam2xform (const Array<double>& m)
 {
   ColumnVector retval (4, 1.0);
-  memcpy (retval.fortran_vec (), m.fortran_vec (), sizeof(double)*3);
+  memcpy (retval.fortran_vec (), m.fortran_vec (), sizeof (double)*3);
   return retval;
 }
 
@@ -4618,7 +4618,7 @@ axes::properties::update_camera (void)
                   && cameratargetmode_is ("auto")
                   && cameraupvectormode_is ("auto")
                   && cameraviewanglemode_is ("auto"));
-  bool dowarp = (autocam && dataaspectratiomode_is("auto")
+  bool dowarp = (autocam && dataaspectratiomode_is ("auto")
                  && plotboxaspectratiomode_is ("auto"));
 
   ColumnVector c_eye (xform_vector ());
@@ -4640,17 +4640,17 @@ axes::properties::update_camera (void)
     {
       Matrix tview = get_view ().matrix_value ();
       double az = tview(0), el = tview(1);
-      double d = 5*sqrt(pb(0)*pb(0)+pb(1)*pb(1)+pb(2)*pb(2));
+      double d = 5 * sqrt (pb(0)*pb(0)+pb(1)*pb(1)+pb(2)*pb(2));
 
       if (el == 90 || el == -90)
-        c_eye(2) = d*signum(el);
+        c_eye(2) = d*signum (el);
       else
         {
           az *= M_PI/180.0;
           el *= M_PI/180.0;
-          c_eye(0) = d*cos(el)*sin(az);
-          c_eye(1) = -d*cos(el)*cos(az);
-          c_eye(2) = d*sin(el);
+          c_eye(0) = d * cos (el) * sin (az);
+          c_eye(1) = -d* cos (el) * cos (az);
+          c_eye(2) = d * sin (el);
         }
       c_eye(0) = c_eye(0)*(xlimits(1)-xlimits(0))/(xd*pb(0))+c_center(0);
       c_eye(1) = c_eye(1)*(ylimits(1)-ylimits(0))/(yd*pb(1))+c_center(1);
@@ -4669,9 +4669,9 @@ axes::properties::update_camera (void)
       if (el == 90 || el == -90)
         {
           c_upv(0) =
-            -signum(el)*sin(az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
+            -signum (el) *sin (az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
           c_upv(1) =
-            signum(el)*cos(az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
+            signum (el) * cos (az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
         }
       else
         c_upv(2) = 1;
@@ -4708,7 +4708,7 @@ axes::properties::update_camera (void)
 
   if (std::abs (dot (f, UP)) > 1e-15)
     {
-      double fa = 1/sqrt(1-f(2)*f(2));
+      double fa = 1 / sqrt(1-f(2)*f(2));
       scale (UP, fa, fa, fa);
     }
 
@@ -4866,7 +4866,7 @@ axes::properties::update_axes_layout (void)
     xPlane = (dir(2) < 0 ? x_min : x_max);
 
   xPlaneN = (xPlane == x_min ? x_max : x_min);
-  fx = (x_max-x_min)/sqrt(dir(0)*dir(0)+dir(1)*dir(1));
+  fx = (x_max-x_min) / sqrt (dir(0)*dir(0)+dir(1)*dir(1));
 
   p1 = xform.transform ((x_min+x_max)/2, y_min, (z_min+z_max)/2, false);
   p2 = xform.transform ((x_min+x_max)/2, y_max, (z_min+z_max)/2, false);
@@ -4894,11 +4894,11 @@ axes::properties::update_axes_layout (void)
     yPlane = (dir(2) < 0 ? y_min : y_max);
 
   yPlaneN = (yPlane == y_min ? y_max : y_min);
-  fy = (y_max-y_min)/sqrt(dir(0)*dir(0)+dir(1)*dir(1));
+  fy = (y_max-y_min) / sqrt (dir(0)*dir(0)+dir(1)*dir(1));
 
-  p1 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_min, false);
-  p2 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_max, false);
-  dir(0) = xround(p2(0)-p1(0));
+  p1 = xform.transform ((x_min+x_max)/2, (y_min+y_max)/2, z_min, false);
+  p2 = xform.transform ((x_min+x_max)/2, (y_min+y_max)/2, z_max, false);
+  dir(0) = xround (p2(0)-p1(0));
   dir(1) = xround (p2(1)-p1(1));
   dir(2) = (p2(2)-p1(2));
   if (dir(0) == 0 && dir(1) == 0)
@@ -4922,7 +4922,7 @@ axes::properties::update_axes_layout (void)
     zPlane = (dir(2) < 0 ? z_min : z_max);
 
   zPlaneN = (zPlane == z_min ? z_max : z_min);
-  fz = (z_max-z_min)/sqrt(dir(0)*dir(0)+dir(1)*dir(1));
+  fz = (z_max-z_min) / sqrt (dir(0)*dir(0)+dir(1)*dir(1));
 
   unwind_protect frame;
   frame.protect_var (updating_axes_layout);
@@ -4972,7 +4972,7 @@ axes::properties::update_axes_layout (void)
   }
 
   Matrix viewmat = get_view ().matrix_value ();
-  nearhoriz = std::abs(viewmat(1)) <= 5;
+  nearhoriz = std::abs (viewmat(1)) <= 5;
 
   update_ticklength ();
 }
@@ -5079,9 +5079,9 @@ axes::properties::update_xlabel_position (void)
 
       bool tick_along_z = nearhoriz || xisinf (fy);
       if (tick_along_z)
-        p(2) += (signum(zpTick-zpTickN)*fz*xtickoffset);
+        p(2) += (signum (zpTick-zpTickN)*fz*xtickoffset);
       else
-        p(1) += (signum(ypTick-ypTickN)*fy*xtickoffset);
+        p(1) += (signum (ypTick-ypTickN)*fy*xtickoffset);
 
       p = xform.transform (p(0), p(1), p(2), false);
 
@@ -5170,9 +5170,9 @@ axes::properties::update_ylabel_position (void)
 
       bool tick_along_z = nearhoriz || xisinf (fx);
       if (tick_along_z)
-        p(2) += (signum(zpTick-zpTickN)*fz*ytickoffset);
+        p(2) += (signum (zpTick-zpTickN)*fz*ytickoffset);
       else
-        p(0) += (signum(xpTick-xpTickN)*fx*ytickoffset);
+        p(0) += (signum (xpTick-xpTickN)*fx*ytickoffset);
 
       p = xform.transform (p(0), p(1), p(2), false);
 
@@ -5264,18 +5264,18 @@ axes::properties::update_zlabel_position (void)
           p = graphics_xform::xform_vector (xPlaneN, yPlane,
                                             (zpTickN+zpTick)/2);
           if (xisinf (fy))
-            p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
+            p(0) += (signum (xPlaneN-xPlane)*fx*ztickoffset);
           else
-            p(1) += (signum(yPlane-yPlaneN)*fy*ztickoffset);
+            p(1) += (signum (yPlane-yPlaneN)*fy*ztickoffset);
         }
       else
         {
           p = graphics_xform::xform_vector (xPlane, yPlaneN,
                                             (zpTickN+zpTick)/2);
           if (xisinf (fx))
-            p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
+            p(1) += (signum (yPlaneN-yPlane)*fy*ztickoffset);
           else
-            p(0) += (signum(xPlane-xPlaneN)*fx*ztickoffset);
+            p(0) += (signum (xPlane-xPlaneN)*fx*ztickoffset);
         }
 
       p = xform.transform (p(0), p(1), p(2), false);
@@ -5359,7 +5359,7 @@ axes::properties::update_title_position (void)
 
       p = xform.untransform (p(0), p(1), p(2), true);
 
-      title_props.set_position (p.extract_n(0, 3).transpose ());
+      title_props.set_position (p.extract_n (0, 3).transpose ());
       title_props.set_positionmode ("auto");
     }
 }
@@ -5629,7 +5629,7 @@ axes::properties::get_extent (bool with_text, bool only_text_height) const
               bool ignore_vertical = false;
               if (only_text_height)
                 {
-                  double text_rotation = text_props.get_rotation();
+                  double text_rotation = text_props.get_rotation ();
                   if (text_rotation == 0. || text_rotation == 180.)
                       ignore_horizontal = true;
                   else if (text_rotation == 90. || text_rotation == 270.)
@@ -5677,9 +5677,9 @@ axes::properties::update_units (const caseless_str& old_units)
   graphics_object obj = gh_manager::get_object (get_parent ());
   Matrix parent_bb = obj.get_properties ().get_boundingbox (true).extract_n (0, 2, 1, 2);
   caseless_str new_units = get_units ();
-  position.set (octave_value (convert_position (get_position().matrix_value(), old_units, new_units, parent_bb)), false);
-  outerposition.set (octave_value (convert_position (get_outerposition().matrix_value(), old_units, new_units, parent_bb)), false);
-  tightinset.set (octave_value (convert_position (get_tightinset().matrix_value(), old_units, new_units, parent_bb)), false);
+  position.set (octave_value (convert_position (get_position ().matrix_value (), old_units, new_units, parent_bb)), false);
+  outerposition.set (octave_value (convert_position (get_outerposition ().matrix_value (), old_units, new_units, parent_bb)), false);
+  tightinset.set (octave_value (convert_position (get_tightinset ().matrix_value (), old_units, new_units, parent_bb)), false);
 }
 
 void
@@ -5715,7 +5715,7 @@ axes::properties::get_fontsize_points (double box_pix_height) const
   double parent_height = box_pix_height;
 
   if (fontunits_is ("normalized") && parent_height <= 0)
-    parent_height = get_boundingbox (true).elem(3);
+    parent_height = get_boundingbox (true).elem (3);
 
   return convert_font_size (fs, get_fontunits (), "points", parent_height);
 }
@@ -6168,7 +6168,7 @@ axes::properties::get_ticklabel_extents (const Matrix& ticks,
           hmax = std::max (hmax, ext(1));
 #else
           //FIXME: find a better approximation
-          int len = ticklabels(i).length();
+          int len = ticklabels(i).length ();
           wmax = std::max (wmax, 0.5*fontsize*len);
           hmax = fontsize;
 #endif
@@ -6286,7 +6286,7 @@ axes::update_axis_limits (const std::string& axis_type,
   double val;
 
 #define FIX_LIMITS \
-  if (limits.numel() == 4) \
+  if (limits.numel () == 4) \
     { \
       val = limits(0); \
       if (! (xisinf (val) || xisnan (val))) \
@@ -6303,7 +6303,7 @@ axes::update_axis_limits (const std::string& axis_type,
     } \
   else \
     { \
-      limits.resize(4, 1); \
+      limits.resize (4, 1); \
       limits(0) = min_val; \
       limits(1) = max_val; \
       limits(2) = min_pos; \
@@ -6831,17 +6831,17 @@ axes::properties::rotate_view (double delta_el, double delta_az)
 {
   Matrix v = get_view ().matrix_value ();
 
-  v (1) += delta_el;
+  v(1) += delta_el;
 
   if(v(1) > 90)
     v(1) = 90;
   if(v(1) < -90)
     v(1) = -90;
 
-  v (0) = fmod(v(0) - delta_az + 720,360);
+  v(0) = fmod (v(0) - delta_az + 720,360);
 
-  set_view(v);
-  update_transform();
+  set_view (v);
+  update_transform ();
 }
 
 void
@@ -6997,7 +6997,7 @@ text::properties::update_text_extent (void)
   renderer.text_to_pixels (sv.join ("\n"), pixels, bbox,
                            halign, valign, get_rotation ());
   /* The bbox is relative to the text's position.
-     We'll leave it that way, because get_position() does not return
+     We'll leave it that way, because get_position () does not return
      valid results when the text is first constructed.
      Conversion to proper coordinates is performed in get_extent. */
   set_extent (bbox);
@@ -7057,7 +7057,7 @@ text::properties::get_fontsize_points (double box_pix_height) const
       graphics_object go (gh_manager::get_object (get___myhandle__ ()));
       graphics_object ax (go.get_ancestor ("axes"));
 
-      parent_height = ax.get_properties ().get_boundingbox (true).elem(3);
+      parent_height = ax.get_properties ().get_boundingbox (true).elem (3);
     }
 
   return convert_font_size (fs, get_fontunits (), "points", parent_height);
@@ -7077,7 +7077,7 @@ image::properties::get_color_data (void) const
 octave_value
 patch::properties::get_color_data (void) const
 {
-  octave_value fvc = get_facevertexcdata();
+  octave_value fvc = get_facevertexcdata ();
   if (fvc.is_undefined () || fvc.is_empty ())
     return Matrix ();
   else
@@ -7257,7 +7257,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
       update_type = 'a';
     }
 
-  if (limits.numel() == 4)
+  if (limits.numel () == 4)
     {
       val = limits(0);
       if (! (xisinf (val) || xisnan (val)))
@@ -7274,7 +7274,7 @@ hggroup::update_axis_limits (const std::string& axis_type,
     }
   else
     {
-      limits.resize(4,1);
+      limits.resize (4,1);
       limits(0) = min_val;
       limits(1) = max_val;
       limits(2) = min_pos;
@@ -7480,7 +7480,7 @@ uicontrol::properties::update_units (void)
 void
 uicontrol::properties::set_style (const octave_value& st)
 {
-  if (get___object__ ().is_empty())
+  if (get___object__ ().is_empty ())
     style = st;
   else
     error ("set: cannot change the style of a uicontrol object after creation.");
@@ -7543,7 +7543,7 @@ uicontrol::properties::get_fontsize_points (double box_pix_height) const
   double parent_height = box_pix_height;
 
   if (fontunits_is ("normalized") && parent_height <= 0)
-    parent_height = get_boundingbox (false).elem(3);
+    parent_height = get_boundingbox (false).elem (3);
 
   return convert_font_size (fs, get_fontunits (), "points", parent_height);
 }
@@ -7679,7 +7679,7 @@ uipanel::properties::get_fontsize_points (double box_pix_height) const
   double parent_height = box_pix_height;
 
   if (fontunits_is ("normalized") && parent_height <= 0)
-    parent_height = get_boundingbox (false).elem(3);
+    parent_height = get_boundingbox (false).elem (3);
 
   return convert_font_size (fs, get_fontunits (), "points", parent_height);
 }
@@ -8428,7 +8428,7 @@ the dimensions of @var{pv}.\n\
                         }
                       else
                         {
-                          error("set: number of graphics handles must match number of value rows (%d != %d)",
+                          error ("set: number of graphics handles must match number of value rows (%d != %d)",
                                 hcv.length (), args(2).cell_value ().rows ());
                           break;
 
@@ -8515,7 +8515,7 @@ values or lists respectively.\n\
 
   if (nargin == 1 || nargin == 2)
     {
-      if (args(0).is_empty())
+      if (args(0).is_empty ())
         {
           retval = Matrix ();
           return retval;
@@ -8918,7 +8918,7 @@ calc_dimensions (const graphics_object& go)
   if ((go.isa ("line") || go.isa ("patch")) && ! go.get("zdata").is_empty ())
     nd = 3;
 
-  Matrix kids = go.get_properties().get_children ();
+  Matrix kids = go.get_properties ().get_children ();
 
   for (octave_idx_type i = 0; i < kids.length (); i++)
     {
@@ -8926,9 +8926,9 @@ calc_dimensions (const graphics_object& go)
 
       if (hnd.ok ())
         {
-          const graphics_object& kid = gh_manager::get_object(hnd);
+          const graphics_object& kid = gh_manager::get_object (hnd);
 
-          if (kid.valid_object())
+          if (kid.valid_object ())
             nd = calc_dimensions (kid);
 
           if (nd == 3)
@@ -9857,7 +9857,7 @@ get_property_from_handle (double handle, const std::string& property,
   if (obj)
     retval = obj.get (caseless_str (property));
   else
-    error ("%s: invalid handle (= %g)", func.c_str(), handle);
+    error ("%s: invalid handle (= %g)", func.c_str (), handle);
 
   return retval;
 }
@@ -9879,7 +9879,7 @@ set_property_in_handle (double handle, const std::string& property,
         ret = true;
     }
   else
-    error ("%s: invalid handle (= %g)", func.c_str(), handle);
+    error ("%s: invalid handle (= %g)", func.c_str (), handle);
 
   return ret;
 }
@@ -9947,11 +9947,11 @@ do_cleanup_waitfor_listener (const octave_value& listener,
 }
 
 static void
-cleanup_waitfor_postset_listener(const octave_value& listener)
+cleanup_waitfor_postset_listener (const octave_value& listener)
 { do_cleanup_waitfor_listener (listener, POSTSET); }
 
 static void
-cleanup_waitfor_predelete_listener(const octave_value& listener)
+cleanup_waitfor_predelete_listener (const octave_value& listener)
 { do_cleanup_waitfor_listener (listener, PREDELETE); }
 
 static octave_value_list

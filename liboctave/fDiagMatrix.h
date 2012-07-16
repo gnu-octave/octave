@@ -74,7 +74,7 @@ public:
   FloatDiagMatrix& fill (const FloatColumnVector& a, octave_idx_type beg);
   FloatDiagMatrix& fill (const FloatRowVector& a, octave_idx_type beg);
 
-  FloatDiagMatrix transpose (void) const { return MDiagArray2<float>::transpose(); }
+  FloatDiagMatrix transpose (void) const { return MDiagArray2<float>::transpose (); }
   FloatDiagMatrix abs (void) const;
 
   friend OCTAVE_API FloatDiagMatrix real (const FloatComplexDiagMatrix& a);

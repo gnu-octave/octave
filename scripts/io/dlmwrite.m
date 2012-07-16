@@ -146,7 +146,7 @@ function dlmwrite (file, M, varargin)
       elseif (i == 3)
         c = varargin{i};
       else
-        print_usage();
+        print_usage ();
       endif
     endif
   endwhile

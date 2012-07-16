@@ -962,7 +962,7 @@ command shell that is started to run the command.\n\
               PROCESS_INFORMATION pi;
               ZeroMemory (&si, sizeof (si));
               ZeroMemory (&pi, sizeof (pi));
-              OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length()+1);
+              OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length ()+1);
               strcpy (xcmd_str, cmd_str.c_str ());
 
               if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))

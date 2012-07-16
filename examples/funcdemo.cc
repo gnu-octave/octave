@@ -3,7 +3,7 @@
 
 DEFUN_DLD (funcdemo, args, nargout, "Function Demo")
 {
-  int nargin = args.length();
+  int nargin = args.length ();
   octave_value_list retval;
 
   if (nargin < 2)

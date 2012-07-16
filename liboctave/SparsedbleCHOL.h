@@ -55,7 +55,7 @@ public:
       return *this;
     }
 
-  SparseMatrix chol_matrix (void) const { return R(); }
+  SparseMatrix chol_matrix (void) const { return R (); }
 
   SparseMatrix L (void) const
   { return sparse_base_chol<SparseMatrix, double, SparseMatrix>:: L (); }

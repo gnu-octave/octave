@@ -255,6 +255,8 @@ cos (pi/2)
 
 @DOCSTRING(betainc)
 
+@DOCSTRING(betaincinv)
+
 @DOCSTRING(betaln)
 
 @DOCSTRING(bincoeff)

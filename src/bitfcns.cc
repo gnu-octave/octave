@@ -72,8 +72,8 @@ namespace std
 
 template <typename OP, typename T>
 octave_value
-bitopxx(const OP& op, const std::string& fname,
-        const Array<T>& x, const Array<T>& y)
+bitopxx (const OP& op, const std::string& fname,
+         const Array<T>& x, const Array<T>& y)
 {
   int nelx = x.numel ();
   int nely = y.numel ();
@@ -98,15 +98,15 @@ bitopxx(const OP& op, const std::string& fname,
       for (int i = 0; i < nelx; i++)
         if (is_scalar_op)
           for (int k = 0; k < nely; k++)
-            result(i+k) = op(x(i), y(k));
+            result(i+k) = op (x(i), y(k));
         else
-          result(i) = op(x(i), y(i));
+          result(i) = op (x(i), y(i));
 
       retval = result;
     }
   else
     error ("%s: size of X and Y must match, or one operand must be a scalar",
-           fname.c_str());
+           fname.c_str ());
 
   return retval;
 }
@@ -117,7 +117,7 @@ bitopxx(const OP& op, const std::string& fname,
 // information about which integer types we need to instantiate.
 template<typename T>
 octave_value
-bitopx(const std::string& fname, const Array<T>& x, const Array<T>& y)
+bitopx (const std::string& fname, const Array<T>& x, const Array<T>& y)
 {
   if (fname == "bitand")
     return bitopxx (std::bit_and<T>(), fname, x, y);
@@ -129,7 +129,7 @@ bitopx(const std::string& fname, const Array<T>& x, const Array<T>& y)
 }
 
 octave_value
-bitop(const std::string& fname, const octave_value_list& args)
+bitop (const std::string& fname, const octave_value_list& args)
 {
   octave_value retval;
 
@@ -156,7 +156,7 @@ bitop(const std::string& fname, const octave_value_list& args)
               uint64NDArray x (args(0).array_value ());
               uint64NDArray y (args(1).array_value ());
               if (! error_state)
-                retval = bitopx (fname, x, y).array_value();
+                retval = bitopx (fname, x, y).array_value ();
             }
           else
             {
@@ -230,7 +230,7 @@ bitop(const std::string& fname, const octave_value_list& args)
                     retval = bitopx (fname, x, y);
                 }
               else
-                error ("%s: invalid operand type", fname.c_str());
+                error ("%s: invalid operand type", fname.c_str ());
             }
         }
       else if (args(0).class_name () == args(1).class_name ())
@@ -300,10 +300,10 @@ bitop(const std::string& fname, const octave_value_list& args)
                 retval = bitopx (fname, x, y);
             }
           else
-            error ("%s: invalid operand type", fname.c_str());
+            error ("%s: invalid operand type", fname.c_str ());
         }
       else
-        error ("%s: must have matching operand types", fname.c_str());
+        error ("%s: must have matching operand types", fname.c_str ());
     }
   else
     print_usage ();
@@ -715,7 +715,7 @@ The default for @var{type} is @code{uint32}.\n\
   if (cname == "uint8")
     retval = octave_uint8 (std::numeric_limits<uint8_t>::min ());
   else if (cname == "uint16")
-    retval = octave_uint16 (std::numeric_limits<uint16_t>::min());
+    retval = octave_uint16 (std::numeric_limits<uint16_t>::min ());
   else if (cname == "uint32")
     retval = octave_uint32 (std::numeric_limits<uint32_t>::min ());
   else if (cname == "uint64")

@@ -57,7 +57,7 @@
 function ri = randi (bounds, varargin)
 
   if (nargin < 1)
-    print_usage();
+    print_usage ();
   endif
 
   if (! (isnumeric (bounds) && isreal (bounds)))

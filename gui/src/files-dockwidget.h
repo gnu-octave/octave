@@ -33,10 +33,15 @@
 #include <QDockWidget>
 #include <QLineEdit>
 
+/**
+  \class files_dock_widget
+  \brief Dock widget to display files in the current directory.
+  */
 class files_dock_widget : public QDockWidget
 {
   Q_OBJECT
 public:
+  /** Constructs a new files_dock_widget. */
   files_dock_widget (QWidget *parent = 0);
 
 public slots:
@@ -45,16 +50,26 @@ public slots:
 
   /** Slot for handling the up-directory button in the toolbar. */
   void do_up_directory ();
+
+  /** Sets the current directory being displayed. */
   void set_current_directory (QString currentDirectory);
+
+  /** Accepts user input a the line edit for the current directory. */
   void handle_directory_entered ();
+
   void display_directory (QString directory);
 
-  /** Tells the widget to notice settings that are probably new. */
+  /** Tells the widget to react on changed settings. */
   void notice_settings ();
+
+  /** Slot to steer changing visibility from outside. */
   void handle_visibility_changed (bool visible);
 
 signals:
+  /** Emitted, whenever the user requested to open a file. */
   void open_file (QString fileName);
+
+  /** Emitted, whenever the currently displayed directory changed. */
   void displayed_directory_changed (QString directory);
 
   /** Custom signal that tells if a user has clicke away that dock widget. */

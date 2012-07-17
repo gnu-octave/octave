@@ -27,8 +27,8 @@
 ##
 ## @example
 ## @group
-## [@var{x}, @var{y}] = meshgrid (1:size (@var{z}, 1),
-##                    1:size (@var{z}, 2));
+## [@var{x}, @var{y}] = meshgrid (1:rows (@var{z}),
+##                    1:columns (@var{z}));
 ## @end group
 ## @end example
 ##

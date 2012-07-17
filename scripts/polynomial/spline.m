@@ -100,7 +100,7 @@ function ret = spline (x, y, xi)
   endfor
 
   complete = false;
-  if (size (a, 1) == n + 2)
+  if (rows (a) == n + 2)
     complete = true;
     dfs = a(1,:);
     dfe = a(end,:);

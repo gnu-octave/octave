@@ -364,7 +364,7 @@ function print (varargin)
             props(end).value = {get(h(n), color_props{c})};
             if (isnumeric (rgb))
               ## convert RGB color to RGB gray scale
-              xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
+              xfer = repmat ([0.30, 0.59, 0.11], rows (rgb), 1);
               ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
               set (h(n), color_props{c}, ggg);
             endif

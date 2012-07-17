@@ -116,7 +116,7 @@ function [n,d] = rat (x,tol)
     d = reshape (d, size (x));
   else
     n = "";
-    nsteps = size (steps, 2);
+    nsteps = columns (steps);
     for i = 1: nsz
       s = [int2str(y(i))," "];
       j = 1;

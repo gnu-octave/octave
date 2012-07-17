@@ -160,7 +160,7 @@ function [nn, xx] = hist (y, varargin)
       nn = freq;
       xx = x;
     endif
-  elseif (size (freq, 2) != 1)
+  elseif (columns (freq) != 1)
     bar (x, freq, 0.8, varargin{iarg:end});
   else
     bar (x, freq, 1.0, varargin{iarg:end});

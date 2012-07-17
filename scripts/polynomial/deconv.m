@@ -68,7 +68,7 @@ function [b, r] = deconv (y, a)
     r = y - conv (a, b);
   else
     ## Respect the orientation of Y"
-    if (size (y, 1) <= size (y, 2))
+    if (rows (y) <= columns (y))
       r = [(zeros (1, lc - ly)), y] - conv (a, b);
     else
       r = [(zeros (lc - ly, 1)); y] - conv (a, b);

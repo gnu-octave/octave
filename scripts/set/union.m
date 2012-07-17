@@ -65,7 +65,7 @@ function [y, ia, ib] = union (a, b, varargin)
   if (nargin == 2)
     y = [a(:); b(:)];
     na = numel (a); nb = numel (b);
-    if (size (a, 1) == 1 || size (b, 1) == 1)
+    if (rows (a) == 1 || rows (b) == 1)
       y = y.';
     endif
   else

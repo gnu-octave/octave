@@ -241,7 +241,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
   endif
 
   if (nargin < 4 || isempty (maxit))
-    maxit = min (size (b, 1), 20);
+    maxit = min (rows (b), 20);
   endif
 
   maxit += 2;

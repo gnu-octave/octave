@@ -37,7 +37,7 @@
 
 function yi = interp1q (x, y, xi)
   x = x(:);
-  nx = size (x, 1);
+  nx = rows (x);
   szy = size (y);
   y = y(:,:);
   [ny, nc] = size (y);

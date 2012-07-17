@@ -31,9 +31,9 @@ function [idx, p] = tsearchn (x, t, xi)
     print_usage ();
   endif
 
-  nt = size (t, 1);
+  nt = rows (t);
   [m, n] = size (x);
-  mi = size (xi, 1);
+  mi = rows (xi);
   idx = NaN (mi, 1);
   p = NaN (mi, n + 1);
 

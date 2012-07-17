@@ -57,7 +57,7 @@ function h = text (varargin)
     ny = numel (y);
     nz = numel (z);
     if (ischar (label) || isnumeric (label))
-      nt = size (label, 1);
+      nt = rows (label);
       if (nx > 1 && nt == 1)
         ## Mutiple text objects with same string
         label = repmat ({label}, [nx, 1]);

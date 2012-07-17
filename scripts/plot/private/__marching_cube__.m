@@ -169,13 +169,13 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
     if (calc_cols)
       pp(id__, 1:5, jj) = [vertex_interp(iso, xx(id1), yy(id1), zz(id1), ...
         xx(id2), yy(id2), zz(id2), c(id1), c(id2), colors(id1), colors(id2)), ...
-        (1:size (id_, 1))' + ix_offset ];
+        (1:rows (id_))' + ix_offset ];
     else
       pp(id__, 1:4, jj) = [vertex_interp(iso, xx(id1), yy(id1), zz(id1), ...
         xx(id2), yy(id2), zz(id2), c(id1), c(id2)), ...
-        (1:size (id_, 1))' + ix_offset ];
+        (1:rows (id_))' + ix_offset ];
     endif
-    ix_offset += size (id_, 1);
+    ix_offset += rows (id_);
   endfor
 
   ## phase III: calculate the triangulation from the point list
@@ -183,7 +183,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   tri = tri_table(cc(id)+1, :);
   for jj=1:3:15
     id_ = find (tri(:, jj)>0);
-    p = [id_, lindex*ones(size (id_, 1), 1),tri(id_, jj:jj+2)];
+    p = [id_, lindex*ones(rows (id_), 1),tri(id_, jj:jj+2)];
     if (!isempty (p))
       p1 = sub2ind (size (pp), p(:,1), p(:,2), p(:,3));
       p2 = sub2ind (size (pp), p(:,1), p(:,2), p(:,4));

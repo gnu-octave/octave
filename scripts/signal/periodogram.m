@@ -108,7 +108,7 @@ function [pxx, f] = periodogram (x, varargin)
   if (!  isempty (window))
     if (all (size (x) == size (window)))
       x .*= window;
-    elseif (size (x, 1) == size (window, 1) && size (window, 2) == 1)
+    elseif (rows (x) == rows (window) && columns (window) == 1)
       x .*= window (:,ones (1,c));
     endif;
   endif

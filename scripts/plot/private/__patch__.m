@@ -97,7 +97,7 @@ function [h, failed] = __patch__ (p, varargin)
         if (isnumeric (c))
           if (isvector (c) && numel (c) == numel (x))
             c = c(:);
-          elseif (size (c, 1) != numel (x) && size (c, 2) == numel (x))
+          elseif (rows (c) != numel (x) && columns (c) == numel (x))
             c = c.';
           endif
         endif
@@ -111,7 +111,7 @@ function [h, failed] = __patch__ (p, varargin)
 
       if (isnumeric (c))
 
-        if (ndims (c) == 3 && size (c, 2) == 1)
+        if (ndims (c) == 3 && columns (c) == 1)
           c = permute (c, [1, 3, 2]);
         endif
 
@@ -136,14 +136,14 @@ function [h, failed] = __patch__ (p, varargin)
           args{10} = [];
         elseif (ndims (c) == 3 && size (c, 3) == 3)
           ## CDATA is specified as RGB data
-          if ((size (c, 1) == 1 && size (c, 2) == 1) ...
-              || (size (c, 1) == 1 && size (c, 2) == columns (x)))
+          if ((rows (c) == 1 && columns (c) == 1) ...
+              || (rows (c) == 1 && columns (c) == columns (x)))
             ## Single patch color or per-face color
             args{7} = "facecolor";
             args{8} = "flat";
             args{9} = "cdata";
             args{10} = c;
-          elseif (size (c, 1) == rows (x) && size (c, 2) == columns (x))
+          elseif (rows (c) == rows (x) && columns (c) == columns (x))
             ## Per-vertex color
             args{7} = "facecolor";
             args{8} = "interp";
@@ -252,7 +252,7 @@ function args = setdata (args)
     args = {"facecolor", fc, args{:}};
   endif
 
-  nc = size (faces, 1);
+  nc = rows (faces);
   idx = faces .';
   t1 = isnan (idx);
   for i = find (any (t1))
@@ -276,7 +276,7 @@ function args = setdata (args)
                reshape (fvc(idx, 3), size (idx)));
     elseif (isempty (fvc))
       c = [];
-    else ## if (size (fvc, 2) == 1)
+    else ## if (columnns (fvc) == 1)
       c = permute (fvc(faces), [2, 1]);
     endif
   endif
@@ -336,7 +336,7 @@ function args = setvertexdata (args)
   faces = faces';
 
   if (ndims (c) == 3)
-    fvc = reshape (c, size (c, 1) * size (c, 2), size (c, 3));
+    fvc = reshape (c, rows (c) * columns (c), size (c, 3));
   else
     fvc = c(:);
   endif

@@ -80,7 +80,7 @@ function [thout, rout] = rose (varargin)
   x1 = xx(1:end-1) + diff (xx, 1) / 2;
   x1 = [x1 ; x1; x1; x1](:);
   th = [0; 0; x1; 2*pi ; 2*pi];
-  r = zeros (4 * size (nn, 1), size (nn, 2));
+  r = zeros (4 * rows (nn), columns (nn));
   r(2:4:end, :) = nn;
   r(3:4:end, :) = nn;
 

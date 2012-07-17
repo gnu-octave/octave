@@ -87,7 +87,7 @@ function varargout = matrix_gradient (m, varargin)
   transposed = false;
   if (isvector (m))
     ## make a row vector.
-    transposed = (size (m, 2) == 1);
+    transposed = (columns (m) == 1);
     m = m(:).';
   endif
 

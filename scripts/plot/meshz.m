@@ -69,9 +69,9 @@ function retval = meshz (varargin)
   endif
 
   zref = min (z(isfinite (z)));
-  z = [zref .* ones(1, size(z, 2) + 2);
-       zref .* ones(size(z, 1), 1), z, zref .* ones(size(z, 1), 1);
-       zref.* ones(1, size(z, 2) + 2)];
+  z = [zref .* ones(1, columns(z) + 2);
+       zref .* ones(rows(z), 1), z, zref .* ones(rows(z), 1);
+       zref.* ones(1, columns(z) + 2)];
 
   oldh = gca ();
   unwind_protect

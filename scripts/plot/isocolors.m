@@ -134,7 +134,7 @@ function varargout = isocolors (varargin)
     otherwise
       print_usage ();
   endswitch
-  if (ismatrix (vp) && size (vp,2) == 3)
+  if (ismatrix (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
   elseif ( ishandle (vp) )
@@ -144,7 +144,7 @@ function varargout = isocolors (varargin)
     error ("isocolors: last argument is not a vertex list or patch handle");
   endif
   if (calc_rgb)
-    new_col = zeros (size (v, 1), 3);
+    new_col = zeros (rows (v), 3);
     new_col(:,1) = __interp_cube__ (x, y, z, R, v, "values" );
     new_col(:,2) = __interp_cube__ (x, y, z, G, v, "values" );
     new_col(:,3) = __interp_cube__ (x, y, z, B, v, "values" );

@@ -82,7 +82,7 @@ function [c, i] = setdiff (a, b, varargin)
         i(idx(dups)) = [];
       endif
       ## Reshape if necessary.
-      if (size (c, 1) != 1 && size (b, 1) == 1)
+      if (rows (c) != 1 && rows (b) == 1)
         c = c.';
       endif
     endif

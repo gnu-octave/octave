@@ -495,13 +495,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
             img_xdata = img_xdata(2:-1:1);
             img_data = img_data(:,end:-1:1,:);
           elseif (img_xdata(1) == img_xdata(2))
-            img_xdata = img_xdata(1) + [0, size(img_data,2)-1];
+            img_xdata = img_xdata(1) + [0, columns(img_data)-1];
           endif
           if (img_ydata(2) < img_ydata(1))
             img_ydata = img_ydata(2:-1:1);
             img_data = img_data(end:-1:1,:,:);
           elseif (img_ydata(1) == img_ydata(2))
-            img_ydata = img_ydata(1) + [0, size(img_data,1)-1];
+            img_ydata = img_ydata(1) + [0, rows(img_data)-1];
           endif
 
           [y_dim, x_dim] = size (img_data(:,:,1));
@@ -680,14 +680,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                      || strncmp (obj.facecolor, "interp", 6))
                      && isfield (obj, "cdata"))
                    if (ndims (obj.cdata) == 2
-                       && (size (obj.cdata, 2) == nc
-                           && (size (obj.cdata, 1) == 1
-                               || size (obj.cdata, 1) == 3)))
+                       && (columns (obj.cdata) == nc
+                           && (rows (obj.cdata) == 1
+                               || rows (obj.cdata) == 3)))
                      ccol = cdat (:, i);
                    elseif (ndims (obj.cdata) == 2
-                       && (size (obj.cdata, 1) == nc
-                           && (size (obj.cdata, 2) == 1
-                               || size (obj.cdata, 2) == 3)))
+                       && (rows (obj.cdata) == nc
+                           && (columns (obj.cdata) == 1
+                               || columns (obj.cdata) == 3)))
                      ccol = cdat (i, :);
                    elseif (ndims (obj.cdata) == 3)
                      ccol = permute (cdat (:, i, :), [1, 3, 2]);
@@ -704,10 +704,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                        if (cdatadirect)
                          r = round (ccol);
                        else
-                         r = 1 + round ((size (cmap, 1) - 1)
+                         r = 1 + round ((rows (cmap) - 1)
                                         * (ccol - clim(1))/(clim(2) - clim(1)));
                        endif
-                       r = max (1, min (r, size (cmap, 1)));
+                       r = max (1, min (r, rows (cmap)));
                        color = cmap(r, :);
                      endif
                    elseif (strncmp (obj.facecolor, "interp", 6))
@@ -728,10 +728,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                        if (cdatadirect)
                          r = round (ccol);
                        else
-                         r = 1 + round ((size (cmap, 1) - 1)
+                         r = 1 + round ((rows (cmap) - 1)
                                         * (ccol - clim(1))/(clim(2) - clim(1)));
                        endif
-                       r = max (1, min (r, size (cmap, 1)));
+                       r = max (1, min (r, rows (cmap)));
                        color = cmap(r(1),:);
                      endif
                    endif
@@ -812,14 +812,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
                     || strncmp (ec, "interp", 6))
                    && isfield (obj, "cdata"))
                  if (ndims (obj.cdata) == 2
-                     && (size (obj.cdata, 2) == nc
-                         && (size (obj.cdata, 1) == 1
-                             || size (obj.cdata, 1) == 3)))
+                     && (columns (obj.cdata) == nc
+                         && (rows (obj.cdata) == 1
+                             || rows (obj.cdata) == 3)))
                    ccol = cdat (:, i);
                  elseif (ndims (obj.cdata) == 2
-                         && (size (obj.cdata, 1) == nc
-                             && (size (obj.cdata, 2) == 1
-                                 || size (obj.cdata, 2) == 3)))
+                         && (rows (obj.cdata) == nc
+                             && (columns (obj.cdata) == 1
+                                 || columns (obj.cdata) == 3)))
                    ccol = cdat (i, :);
                  elseif (ndims (obj.cdata) == 3)
                    ccol = permute (cdat (:, i, :), [1, 3, 2]);
@@ -1315,7 +1315,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
           endif
 
           if (ischar (obj.string))
-            num_lines = size (obj.string, 1);
+            num_lines = rows (obj.string);
           else
             num_lines = numel (obj.string);
           endif
@@ -1730,9 +1730,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono,
 endfunction
 
 function x = flip (x)
-  if (size (x, 1) == 1)
+  if (rows (x) == 1)
     x = fliplr (x);
-  elseif (size (x, 2) == 1 || ischar (x))
+  elseif (columns (x) == 1 || ischar (x))
     x = flipud (x);
   else
     x = flipud (fliplr (x));
@@ -2206,7 +2206,7 @@ function ticklabel = ticklabel_to_cell (ticklabel)
     ticklabel = num2str (ticklabel(:), 5);
   endif
   if (ischar (ticklabel))
-    if (size (ticklabel, 1) == 1 && any (ticklabel == "|"))
+    if (rows (ticklabel) == 1 && any (ticklabel == "|"))
       ticklabel = strsplit (ticklabel, "|");
     else
       ticklabel = cellstr (ticklabel);
@@ -2276,7 +2276,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld)
 
   ## The text object maybe multiline, and may be of any class
   str = getfield (obj, fld);
-  if (ischar (str) && size (str, 1) > 1)
+  if (ischar (str) && rows (str) > 1)
     str = cellstr (str);
   elseif (isnumeric (str))
     str = cellstr (num2str (str(:)));

@@ -45,12 +45,12 @@ function varargout = __bar__ (vertical, func, varargin)
     if (isvector (y))
       y = y(:);
     endif
-    if (size (x, 1) != size (y, 1))
+    if (rows (x) != rows (y))
       y = varargin{1};
       if (isvector (y))
         y = y(:);
       endif
-      x = [1:size(y,1)]';
+      x = [1:rows(y)]';
       idx = 2;
     else
       if (! isvector (x))
@@ -63,7 +63,7 @@ function varargout = __bar__ (vertical, func, varargin)
     if (isvector (y))
       y = y(:);
     endif
-    x = [1:size(y,1)]';
+    x = [1:rows(y)]';
     idx = 2;
   endif
 
@@ -105,8 +105,8 @@ function varargout = __bar__ (vertical, func, varargin)
     endif
   endwhile
 
-  xlen = size (x, 1);
-  ylen = size (y, 1);
+  xlen = rows (x);
+  ylen = rows (y);
 
   if (xlen != ylen)
     error ("%s: length of x and y must be equal", func);
@@ -115,7 +115,7 @@ function varargout = __bar__ (vertical, func, varargin)
     error ("%s: x vector values must be in ascending order", func);
   endif
 
-  ycols = size (y, 2);
+  ycols = columns (y);
   if (numel (x) > 1)
     cutoff = min (diff (double (x))) / 2;
   else

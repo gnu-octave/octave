@@ -79,7 +79,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
         c([idx, idx+1]) = [];
         i([idx, idx+1]) = [];
       endif
-      if (size (a, 1) == 1 || size (b, 1) == 1)
+      if (rows (a) == 1 || rows (b) == 1)
         c = c.';
       endif
     endif

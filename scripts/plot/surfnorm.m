@@ -62,7 +62,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
 
   if (nargin == 1)
     z = varargin{1};
-    [x, y] = meshgrid (1:size(z,1), 1:size(z,2));
+    [x, y] = meshgrid (1:rows (z), 1:columns (z));
     ioff = 2;
   else
     x = varargin{1};
@@ -96,9 +96,9 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
   v.z = zz(1:end-1,2:end) - zz(2:end,1:end-1);
 
   c = cross ([u.x(:), u.y(:), u.z(:)], [v.x(:), v.y(:), v.z(:)]);
-  w.x = reshape (c(:,1), size(u.x));
-  w.y = reshape (c(:,2), size(u.y));
-  w.z = reshape (c(:,3), size(u.z));
+  w.x = reshape (c(:,1), size (u.x));
+  w.y = reshape (c(:,2), size (u.y));
+  w.z = reshape (c(:,3), size (u.z));
 
   ## Create normal vectors as mesh vectices from normals at mesh centers
   nx = (w.x(1:end-1,1:end-1) + w.x(1:end-1,2:end) +

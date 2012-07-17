@@ -60,6 +60,6 @@
 ## @end deftypefn
 
 function idx = subsindex (a)
-  error ("subsindex: not defined for class \"%s\"", class(a));
+  error ("subsindex: not defined for class \"%s\"", class (a));
 endfunction
 

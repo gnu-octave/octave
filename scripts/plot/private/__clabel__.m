@@ -25,10 +25,10 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
   ## FIXME
   ## Assume that the plot size is 4 by 3 inches.
   lims = axis ();
-  xspacing = 72 * 4 / abs(lims(1) - lims(2));
-  yspacing = 72 * 3 / abs(lims(3) - lims(4));
+  xspacing = 72 * 4 / abs (lims(1) - lims(2));
+  yspacing = 72 * 3 / abs (lims(3) - lims(4));
 
-  if (isscalar (hparent) && ishandle(hparent)
+  if (isscalar (hparent) && ishandle (hparent)
       && strcmp (get (hparent, "type"), "hggroup"))
     x = get (hparent, "xdata");
     xmin = min (x(:));
@@ -67,14 +67,14 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
     p = c(:, i1+1:i1+clen) .* repmat ([xspacing; yspacing], 1, clen);
     d = sqrt (sumsq (diff (p, 1, 2)));
     cumd = cumsum (d);
-    td = sum(d);
+    td = sum (d);
     ntag = ceil (td / label_spacing);
 
     if (all (c(:,i1+1) == c(:,i1+clen)))
       Spacing = td / ntag;
       pos = Spacing / 2 + [0:ntag-1] * Spacing;
     else
-      pos = zeros(1, ntag);
+      pos = zeros (1, ntag);
       pos(1) = (td - label_spacing * (ntag - 1)) ./ 2;
       pos(2:ntag) = pos(1) + [1:ntag-1] * label_spacing;
     endif
@@ -87,7 +87,7 @@ function h = __clabel__ (c, v, hparent, label_spacing, z, varargin)
       while (j1 < clen && cumd(j1) < tagpos)
         j1++;
       endwhile
-      tpos = sum(c(:,i1+j1-1:i1+j1), 2) ./ 2;
+      tpos = sum (c(:,i1+j1-1:i1+j1), 2) ./ 2;
 
       if (tpos(1) != xmin &&  tpos(1) != xmax
           && tpos(2) != ymin &&  tpos(2) != ymax)

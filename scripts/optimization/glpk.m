@@ -500,7 +500,7 @@ function [xopt, fmin, status, extra] = glpk (c, A, b, lb, ub, ctype, vartype, se
     error ("glpk: A cannot be an empty matrix");
     return;
   endif
-  [nc, nxa] = size(A);
+  [nc, nxa] = size (A);
   if (! isreal (A) || nxa != nx)
     error ("glpk: A must be a real valued %d by %d matrix", nc, nx);
     return;

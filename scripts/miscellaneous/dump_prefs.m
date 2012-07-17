@@ -82,7 +82,7 @@ function dump_prefs (file)
               "struct_levels_to_print";
               "suppress_verbose_help_message"];
 
-  for i = 1:rows(sym_list)
+  for i = 1:rows (sym_list)
     sym = deblank (sym_list(i,:));
     try
       val = feval (sym);

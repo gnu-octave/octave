@@ -74,7 +74,7 @@ function whitebg (varargin)
     if (isroot)
       fac = get (0, "factory");
       fields = fieldnames (fac);
-      fieldindex = intersect (find (!cellfun ("isempty", regexp(fields, 'color'))), union (find (!cellfun ("isempty", regexp(fields, 'factoryaxes.*'))), find (!cellfun ("isempty", regexp(fields, 'factoryfigure.*')))));
+      fieldindex = intersect (find (!cellfun ("isempty", regexp (fields, 'color'))), union (find (!cellfun ("isempty", regexp (fields, 'factoryaxes.*'))), find (!cellfun ("isempty", regexp (fields, 'factoryfigure.*')))));
 
       ## Check whether the factory value has been replaced
       for nf = 1 : numel (fieldindex);
@@ -95,21 +95,21 @@ function whitebg (varargin)
     while (numel (handles))
       children = [];
       for n = 1 : numel (handles)
-        children = union (children, get(handles(n), "children"));
+        children = union (children, get (handles(n), "children"));
       endfor
       handles = children;
       h = union (h, children);
     endwhile
 
-    for nh = 1 : numel(h)
+    for nh = 1 : numel (h)
       p = get (h (nh));
       fields = fieldnames (p);
-      fieldindex = find (!cellfun ("isempty", regexp(fields, 'color')));
+      fieldindex = find (!cellfun ("isempty", regexp (fields, 'color')));
       if (numel (fieldindex))
         for nf = 1 : numel (fieldindex);
           field = fields {fieldindex (nf)};
           c = subsref (p, struct ("type", ".", "subs", field));
-          if (! ischar(c) && columns(c) == 3)
+          if (! ischar (c) && columns (c) == 3)
             set (h (nh), field, 1 - c);
           endif
         endfor
@@ -121,7 +121,7 @@ function whitebg (varargin)
         def = get (h (nh), "default");
         fields = fieldnames (def);
         if (! isempty (fields))
-          fieldindex = find (!cellfun ("isempty", regexp(fields, 'color')));
+          fieldindex = find (!cellfun ("isempty", regexp (fields, 'color')));
           for nf = 1 : numel (fieldindex)
             defaultfield = fields {fieldindex (nf)};
             defaultvalue = 1 - subsref (def, struct ("type", ".", "subs", defaultfield));

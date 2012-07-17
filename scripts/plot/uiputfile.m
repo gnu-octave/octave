@@ -30,21 +30,21 @@
 ## extracted and used as filter.
 ## In addition the path is selected as current path and the filename is selected
 ## as default file.
-## Example: uiputfile("myfun.m");
+## Example: uiputfile ("myfun.m");
 ##
 ## @item "*.ext"
 ## A single file extension.
-## Example: uiputfile("*.ext");
+## Example: uiputfile ("*.ext");
 ##
 ## @item @{"*.ext","My Description"@}
 ## A 2-column cell array containing the file extension in the 1st column and
 ## a brief description in the 2nd column.
-## Example: uiputfile(@{"*.ext","My Description";"*.xyz","XYZ-Format"@});
+## Example: uiputfile (@{"*.ext","My Description";"*.xyz","XYZ-Format"@});
 ## @end table
 ##
 ## The filter string can also contain a semicolon separated list of filter
 ## extensions.
-## Example: uiputfile(@{"*.gif;*.png;*.jpg", "Supported Picture Formats"@});
+## Example: uiputfile (@{"*.gif;*.png;*.jpg", "Supported Picture Formats"@});
 ##
 ## @var{dialog_name} can be used to customize the dialog title.
 ## If @var{default_file} is given it is preselected in the GUI dialog.
@@ -72,14 +72,14 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     print_usage ();
   endif
 
-  defaultvals = {cell(0, 2),     # File Filter
+  defaultvals = {cell (0, 2),    # File Filter
                  "Save File",    # Dialog Title
                  "",             # Default file name
                  [240, 120],     # Dialog Position (pixel x/y)
                  "create",
                  pwd};           # Default directory
 
-  outargs = cell(6, 1);
+  outargs = cell (6, 1);
   for i = 1 : 6
     outargs{i} = defaultvals{i};
   endfor

@@ -123,10 +123,10 @@ function hlist = __pie__ (caller, varargin)
       sc = i * ones (size (sz));
 
       hlist = [hlist;
-        patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], zeros (1, ln + 1), i);
-        surface(sx, sy, sz, sc);
-        patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], zlvl * ones (1, ln + 1), i);
-        text(xt, yt, zlvl, labels{i})];
+        patch (xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], zeros (1, ln + 1), i);
+        surface (sx, sy, sz, sc);
+        patch (xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], zlvl * ones (1, ln + 1), i);
+        text (xt, yt, zlvl, labels{i})];
 
     elseif (strncmp (caller, "pie", 3))
       if (xt > 0)
@@ -136,14 +136,14 @@ function hlist = __pie__ (caller, varargin)
       endif
 
       hlist = [hlist; patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], i);
-               text(xt, yt, labels{i}, "horizontalalignment", align)];
+               text (xt, yt, labels{i}, "horizontalalignment", align)];
 
     else
       error ("__pie__: unknown caller `%s'", caller);
     endif
   endfor
 
-  addlistener(gca, "view", {@update_text_pos, hlist});
+  addlistener (gca, "view", {@update_text_pos, hlist});
 
   if (strncmp (caller, "pie3", 4))
     axis ([-1.25, 1.25, -1.25, 1.25, -0.05, 0.4], "equal", "off");

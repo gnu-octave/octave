@@ -98,5 +98,5 @@ endfunction
 %! a = [3, 1, 4, 1, 5];  b = [1, 2, 3, 4];
 %! [y, ia, ib] = setxor (a, b.');
 %! assert (y, [2, 5]);
-%! assert (y, sort([a(ia), b(ib)]));
+%! assert (y, sort ([a(ia), b(ib)]));
 

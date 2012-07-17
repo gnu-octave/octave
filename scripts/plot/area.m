@@ -80,9 +80,9 @@ function h = area (varargin)
       y = y(:);
     endif
     if (isempty (x))
-      x = repmat ([1:size(y, 1)]', 1, size (y, 2));
+      x = repmat ([1:size(y, 1)]', 1, columns (y));
     elseif (isvector (x))
-      x = repmat (x(:),  1, size (y, 2));
+      x = repmat (x(:),  1, columns (y));
     endif
 
     oldax = gca ();

@@ -134,8 +134,8 @@ endfunction
 %! x = [0.25 0.5 0.75];
 %! y = x;
 %! for t = 0:30:359;
-%!   for nh = 1:numel(ha)
-%!     for nv = 1:numel(va)
+%!   for nh = 1:numel (ha)
+%!     for nv = 1:numel (va)
 %!       text (x(nh), y(nv), 'Hello World', ...
 %!             'rotation', t, ...
 %!             'horizontalalignment', ha{nh}, ...

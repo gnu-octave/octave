@@ -275,7 +275,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
 
   while (resvec (iter-1,1) > tol * resvec (1,1) && iter < maxit)
     if (exist_m1)
-      if(isnumeric (m1))
+      if (isnumeric (m1))
         y = m1 \ r;
       else
         y = feval (m1, r, varargin{:});
@@ -316,8 +316,8 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, m1, m2
     if (nargout > 5 && iter > 2)
       T(iter-1:iter, iter-1:iter) = T(iter-1:iter, iter-1:iter) + ...
           [1 sqrt(beta); sqrt(beta) beta]./oldalpha;
-      ## EVS = eig(T(2:iter-1,2:iter-1));
-      ## fprintf(stderr,"PCG condest: %g (iteration: %d)\n", max(EVS)/min(EVS),iter);
+      ## EVS = eig (T(2:iter-1,2:iter-1));
+      ## fprintf (stderr,"PCG condest: %g (iteration: %d)\n", max (EVS)/min (EVS),iter);
     endif
     resvec (iter,1) = norm (r);
     iter++;

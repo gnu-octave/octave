@@ -95,7 +95,7 @@
 
 ## Author: Martin Helm <martin@mhelm.de>
 
-function varargout = isonormals(varargin)
+function varargout = isonormals (varargin)
   na = nargin;
   negate = false;
   if (ischar (varargin{nargin}))

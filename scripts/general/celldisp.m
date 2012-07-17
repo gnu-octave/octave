@@ -71,10 +71,10 @@ function s = indices (dv, i)
   if (sum (dv != 1) > 1)
     c = cell (size (dv));
     [c{:}] = ind2sub (dv, i);
-    s = sprintf("%i,", c{:});
+    s = sprintf ("%i,", c{:});
     s(end) = [];
   else
-    s = sprintf("%i", i);
+    s = sprintf ("%i", i);
   endif
 endfunction
 

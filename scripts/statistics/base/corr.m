@@ -101,7 +101,7 @@ endfunction
 %! assert (corr ([x, y]), single ([1 -1; -1 1]), 5*eps);
 
 %!assert (corr (5), 1)
-%!assert (corr (single(5)), single(1))
+%!assert (corr (single (5)), single (1))
 
 %% Test input validation
 %!error corr ()

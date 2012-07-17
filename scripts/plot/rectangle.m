@@ -72,7 +72,7 @@ function hg = __rectangle__ (hax, varargin)
 
   while (iarg < length (varargin))
     arg = varargin{iarg};
-    if (ischar(arg))
+    if (ischar (arg))
       if (strcmpi (arg, "position"))
         pos = varargin{iarg+1};
         varargin(iarg:iarg+1) = [];

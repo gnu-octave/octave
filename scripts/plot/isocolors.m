@@ -98,7 +98,7 @@
 
 ## Author: Martin Helm <martin@mhelm.de>
 
-function varargout = isocolors(varargin)
+function varargout = isocolors (varargin)
   calc_rgb = false;
   switch (nargin)
     case 2

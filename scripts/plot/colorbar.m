@@ -63,7 +63,7 @@ function h = colorbar (varargin)
   i = 1;
   while (i <= nargin)
     arg = varargin {i++};
-    if (ischar(arg))
+    if (ischar (arg))
       if (strcmpi (arg, "peer"))
         if (i > nargin)
           error ("colorbar: missing axes handle after \"peer\"");

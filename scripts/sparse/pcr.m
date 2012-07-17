@@ -252,7 +252,7 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, m, x0, varargi
     x += lambda*p;
     r -= lambda*q;
 
-    if (isnumeric(A))           # is A a matrix?
+    if (isnumeric (A))          # is A a matrix?
       t = A*s;
     else                        # then A should be a function!
       t = feval (A, s, varargin{:});

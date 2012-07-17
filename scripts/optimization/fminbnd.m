@@ -88,7 +88,7 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
   nfev = 0;
   sqrteps = eps (class (xmin + xmax));
 
-  c = 0.5*(3-sqrt(5));
+  c = 0.5*(3 - sqrt (5));
   a = xmin; b = xmax;
   v = a + c*(b-a);
   w = x = v;
@@ -98,9 +98,9 @@ function [x, fval, info, output] = fminbnd (fun, xmin, xmax, options = struct ()
 
   while (niter < maxiter && nfev < maxfev)
     xm = 0.5*(a+b);
-    ## FIXME: the golden section search can actually get closer than sqrt(eps)...
-    ## sometimes. Sometimes not, it depends on the function. This is the strategy
-    ## from the Netlib code. Something yet smarter would be good.
+    ## FIXME: the golden section search can actually get closer than sqrt(eps)
+    ## sometimes.  Sometimes not, it depends on the function.  This is the
+    ## strategy from the Netlib code.  Something yet smarter would be good.
     tol = 2 * sqrteps * abs (x) + tolx / 3;
     if (abs (x - xm) <= (2*tol - 0.5*(b-a)))
       info = 1;

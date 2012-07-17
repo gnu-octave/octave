@@ -79,10 +79,10 @@ function [c, hg] = __contour__ (varargin)
     endif
   endwhile
 
-  if (length(varargin) < 5)
+  if (length (varargin) < 5)
     z1 = varargin{3};
-    x1 = 1 : columns(z1);
-    y1 = 1 : rows(z1);
+    x1 = 1 : columns (z1);
+    y1 = 1 : rows (z1);
   else
     x1 = varargin{3};
     y1 = varargin{4};
@@ -100,7 +100,7 @@ function [c, hg] = __contour__ (varargin)
   endif
 
   if (isscalar (vn))
-    lvl = linspace (min (z1(!isinf(z1))), max (z1(!isinf(z1))),
+    lvl = linspace (min (z1(!isinf (z1))), max (z1(!isinf (z1))),
                     vn + 2)(1:end-1);
   else
     lvl = vn;
@@ -111,13 +111,13 @@ function [c, hg] = __contour__ (varargin)
       [x1, y1] = meshgrid (x1, y1);
     endif
     [nr, nc] = size (z1);
-    x0 = prepad(x1, nc+1, 2 * x1(1, 1) - x1(1, 2), 2);
-    x0 = postpad(x0, nc+2, 2 * x1(1, nc) - x1(1, nc - 1), 2);
+    x0 = prepad (x1, nc+1, 2 * x1(1, 1) - x1(1, 2), 2);
+    x0 = postpad (x0, nc+2, 2 * x1(1, nc) - x1(1, nc - 1), 2);
     x0 = [x0(1, :); x0; x0(1, :)];
-    y0 = prepad(y1, nr+1, 2 * y1(1, 1) - y1(2, 1), 1);
-    y0 = postpad(y0, nr+2, 2 * y1(nr, 1) - y1(nr - 1, 1));
+    y0 = prepad (y1, nr+1, 2 * y1(1, 1) - y1(2, 1), 1);
+    y0 = postpad (y0, nr+2, 2 * y1(nr, 1) - y1(nr - 1, 1));
     y0 = [y0(:, 1), y0, y0(:, 1)];
-    z0 = -Inf(nr+2, nc+2);
+    z0 = -Inf (nr+2, nc+2);
     z0(2:nr+1, 2:nc+1) = z1;
     [c, lev] = contourc (x0, y0, z0, lvl);
   else
@@ -211,7 +211,7 @@ function [c, hg] = __contour__ (varargin)
 
   add_patch_children (hg);
 
-  axis("tight");
+  axis ("tight");
 
   if (!isempty (opts))
     set (hg, opts{:});
@@ -258,7 +258,7 @@ function add_patch_children (hg)
       lvl_idx = find (abs (cont_lev - lev(k)) < lvl_eps);
       len = numel (lvl_idx);
       if (len > 1)
-        ## mark = logical(zeros(size(lvl_idx)));
+        ## mark = logical (zeros (size (lvl_idx)));
         mark = false (size (lvl_idx));
         a = 1;
         while (a < len)
@@ -283,7 +283,7 @@ function add_patch_children (hg)
           ma_idx = lvl_idx(mark);
           if (k > 1)
             ## Find color of level below.
-            tmp = find(abs(cont_lev - lev(k - 1)) < lvl_eps);
+            tmp = find (abs (cont_lev - lev(k - 1)) < lvl_eps);
             lvl_bel_idx = tmp(1);
             ## Set color of patches found.
             cont_lev(ma_idx) = cont_lev(lvl_bel_idx);
@@ -319,7 +319,7 @@ function add_patch_children (hg)
       else
         ## Special case unclosed contours
       endif
-      if (isnan(cont_lev(idx)))
+      if (isnan (cont_lev (idx)))
         fc = get (ca, "color");
         if (strcmp (fc, "none"))
           fc = get (ancestor (ca, "figure"), "color");
@@ -458,13 +458,13 @@ function update_data (h, d)
         [X, Y] = meshgrid (X, Y);
       endif
       [nr, nc] = size (Z);
-      X0 = prepad(X, nc+1, 2 * X(1, 1) - X(1, 2), 2);
-      X0 = postpad(X0, nc+2, 2 * X(1, nc) - X(1, nc - 1), 2);
+      X0 = prepad (X, nc+1, 2 * X(1, 1) - X(1, 2), 2);
+      X0 = postpad (X0, nc+2, 2 * X(1, nc) - X(1, nc - 1), 2);
       X0 = [X0(1, :); X0; X0(1, :)];
-      Y0 = prepad(Y, nr+1, 2 * Y(1, 1) - Y(2, 1), 1);
-      Y0 = postpad(Y0, nr+2, 2 * Y(nr, 1) - Y(nr - 1, 1));
+      Y0 = prepad (Y, nr+1, 2 * Y(1, 1) - Y(2, 1), 1);
+      Y0 = postpad (Y0, nr+2, 2 * Y(nr, 1) - Y(nr - 1, 1));
       Y0 = [Y0(:, 1), Y0, Y0(:, 1)];
-      Z0 = -Inf(nr+2, nc+2);
+      Z0 = -Inf (nr+2, nc+2);
       Z0(2:nr+1, 2:nc+1) = Z;
       [c, lev] = contourc (X0, Y0, Z0, lvl);
     else
@@ -480,7 +480,7 @@ function update_data (h, d)
     else
       set (h, "levellist", lev);
       z = get (h, "zdata");
-      lvlstep = (max(z(:)) - min(z(:))) / 10;
+      lvlstep = (max (z(:)) - min (z(:))) / 10;
       set (h, "levelstep", lvlstep);
     endif
 

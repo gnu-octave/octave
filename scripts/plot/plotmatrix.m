@@ -145,7 +145,7 @@ function [h, ax, p, pax, need_usage] = __plotmatrix__ (bigax, varargin)
     returm;
   endif
 
-  if (rows(X) != rows(Y))
+  if (rows (X) != rows (Y))
     error ("plotmatrix: dimension mismatch in the arguments");
   endif
 

@@ -111,7 +111,7 @@ function copy_files (desc, packdir, global_install)
 
   ## Is there an INDEX file to copy or should we generate one?
   index_file = fullfile (packdir, "INDEX");
-  if (exist(index_file, "file"))
+  if (exist (index_file, "file"))
     packinfo_copy_file ("INDEX", "required", packdir, packinfo, desc, octfiledir);
   else
     try

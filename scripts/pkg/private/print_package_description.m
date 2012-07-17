@@ -31,10 +31,10 @@ function print_package_description (pkg_name, pkg_ver, pkg_idx_struct,
   printf ("Status:\n\t%s\n", status);
   if (verbose)
     printf ("---\nProvides:\n");
-    for i = 1:length(pkg_idx_struct)
+    for i = 1:length (pkg_idx_struct)
       if (! isempty (pkg_idx_struct{i}.functions))
         printf ("%s\n", pkg_idx_struct{i}.category);
-        for j = 1:length(pkg_idx_struct{i}.functions)
+        for j = 1:length (pkg_idx_struct{i}.functions)
           printf ("\t%s\n", pkg_idx_struct{i}.functions{j});
         endfor
       endif

@@ -39,7 +39,7 @@ function S = __sprand_impl__ (varargin)
     return;
   endif
 
-  [m, n, d, funname, randfun] = deal(varargin{:});
+  [m, n, d, funname, randfun] = deal (varargin{:});
 
   if (!(isscalar (m) && m == fix (m) && m > 0))
     error ("%s: M must be an integer greater than 0", funname);

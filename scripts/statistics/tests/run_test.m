@@ -46,13 +46,13 @@ function [pval, chisq] = run_test (x)
   b = [1/6; 5/24; 11/120; 19/720; 29/5040; 1/840];
 
   n = rows (x);
-  r = run_count (x, 6) - n * b * ones (1, columns(x));
+  r = run_count (x, 6) - n * b * ones (1, columns (x));
 
   chisq = diag (r' * A * r)' / n;
   pval  = chi2cdf (chisq, 6);
 
   if (nargout == 0)
-    printf("pval: %g\n", pval);
+    printf ("pval: %g\n", pval);
   endif
 
 endfunction

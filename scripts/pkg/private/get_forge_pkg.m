@@ -46,7 +46,7 @@ function [ver, url] = get_forge_pkg (name)
     ## Good. Let's grep for the version.
     pat = "<tdclass=""package_table"">PackageVersion:</td><td>([\\d.]*)</td>";
     t = regexp (html, pat, "tokens");
-    if (isempty (t) || isempty(t{1}))
+    if (isempty (t) || isempty (t{1}))
       error ("get_forge_pkg: could not read version number from package's page");
     else
       ver = t{1}{1};

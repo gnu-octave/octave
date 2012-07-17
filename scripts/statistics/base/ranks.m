@@ -54,7 +54,7 @@ function y = ranks (x, dim)
   endif
 
   if (sz(dim) == 1)
-    y = ones(sz);
+    y = ones (sz);
   else
     ## The algorithm works only on dim = 1, so permute if necesary.
     if (dim != 1)
@@ -73,7 +73,7 @@ function y = ranks (x, dim)
       runs = setdiff (eq_el, eq_el+1);
       len = diff (find (diff ([Inf; eq_el; -Inf]) != 1)) + 1;
       [eq_el, y] = sort (xi);
-      for i = 1 : length(runs)
+      for i = 1 : length (runs)
         y (xi (runs (i) + [0:(len(i)-1)]) + floor (runs (i) ./ sz(1))
            * sz(1)) = eq_el(runs(i)) + (len(i) - 1) / 2;
       endfor

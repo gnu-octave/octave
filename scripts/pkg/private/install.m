@@ -51,7 +51,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   try
     ## Warn about non existent files.
     for i = 1:length (files)
-      if (isempty (glob(files{i})))
+      if (isempty (glob (files{i})))
         warning ("file %s does not exist", files{i});
       endif
     endfor
@@ -115,7 +115,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
         ## Verify that package name corresponds with filename.
         [dummy, nm] = fileparts (tgz);
         if ((length (nm) >= length (desc.name))
-            && ! strcmp (desc.name, nm(1:length(desc.name))))
+            && ! strcmp (desc.name, nm(1:length (desc.name))))
           error ("package name '%s' doesn't correspond to its filename '%s'",
                  desc.name, nm);
         endif
@@ -153,15 +153,15 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
     error_text = "";
     for i = 1:length (descriptions)
       desc = descriptions{i};
-      idx2 = setdiff (1:length(descriptions), i);
+      idx2 = setdiff (1:length (descriptions), i);
       if (global_install)
         ## Global installation is not allowed to have dependencies on locally
         ## installed packages.
-        idx1 = setdiff (1:length(global_packages), packages_to_uninstall);
+        idx1 = setdiff (1:length (global_packages), packages_to_uninstall);
         pseudo_installed_packages = {global_packages{idx1}, ...
                                      descriptions{idx2}};
       else
-        idx1 = setdiff (1:length(local_packages), packages_to_uninstall);
+        idx1 = setdiff (1:length (local_packages), packages_to_uninstall);
         pseudo_installed_packages = {local_packages{idx1}, ...
                                      global_packages{:}, ...
                                      descriptions{idx2}};
@@ -281,12 +281,12 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   ## Add the packages to the package list.
   try
     if (global_install)
-      idx = setdiff (1:length(global_packages), packages_to_uninstall);
+      idx = setdiff (1:length (global_packages), packages_to_uninstall);
       global_packages = save_order ({global_packages{idx}, descriptions{:}});
       save (global_list, "global_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     else
-      idx = setdiff (1:length(local_packages), packages_to_uninstall);
+      idx = setdiff (1:length (local_packages), packages_to_uninstall);
       local_packages = save_order ({local_packages{idx}, descriptions{:}});
       save (local_list, "local_packages");
       installed_pkgs_lst = {local_packages{:}, global_packages{:}};

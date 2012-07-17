@@ -42,7 +42,7 @@ function H = hurst (x)
 
   s = std (x);
   w = cumsum (x - mean (x));
-  RS = (max(w) - min(w)) ./ s;
+  RS = (max (w) - min (w)) ./ s;
   H = log (RS) / log (xr);
 
 endfunction

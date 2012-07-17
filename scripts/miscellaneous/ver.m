@@ -94,7 +94,7 @@ function varargout = ver (package = "")
   else
     if (! isempty (package))
       n = [];
-      for r = 1:numel(ret)
+      for r = 1:numel (ret)
         if (strcmpi (ret(r).Name, package))
           n = r;
           break;

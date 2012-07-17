@@ -150,7 +150,7 @@ function varargout = textread (filename, format = "%f", varargin)
     str = fscanf (fid, "%c", eoi_pos);
   else
     fseek (fid, st_pos, "bof");
-    str = fread(fid, "char=>char").';
+    str = fread (fid, "char=>char").';
   endif
   fclose (fid);
  

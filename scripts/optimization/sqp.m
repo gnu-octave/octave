@@ -122,7 +122,7 @@
 ## iterations.  The default value is 100.
 ##
 ## The eighth argument @var{tol} specifies the tolerance for the
-## stopping criteria.  The default value is @code{sqrt(eps)}.
+## stopping criteria.  The default value is @code{sqrt (eps)}.
 ##
 ## The value returned in @var{info} may be one of the following:
 ##

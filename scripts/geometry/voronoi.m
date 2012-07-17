@@ -37,7 +37,7 @@
 ##
 ## If a single output argument is requested then the Voronoi diagram will be
 ## plotted and a graphics handle @var{h} to the plot is returned.
-## [@var{vx}, @var{vy}] = voronoi(@dots{}) returns the Voronoi vertices
+## [@var{vx}, @var{vy}] = voronoi (@dots{}) returns the Voronoi vertices
 ## instead of plotting the diagram.
 ##
 ## @example
@@ -146,7 +146,7 @@ function [vx, vy] = voronoi (varargin)
                       edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
 
   ## Eliminate the edges of the diagram representing the box
-  poutside = (1 : rows(p)) ...
+  poutside = (1 : rows (p)) ...
       (p (:, 1) < xmin - xdelta | p (:, 1) > xmax + xdelta | ...
        p (:, 2) < ymin - ydelta | p (:, 2) > ymax + ydelta);
   edgeoutside = ismember (edges (1, :), poutside) & ...
@@ -180,8 +180,8 @@ endfunction
 %! phi = linspace (-pi, 3/4*pi, 8);
 %! [x,y] = pol2cart (phi, 1);
 %! [vx,vy] = voronoi (x,y);
-%! assert(vx(2,:), zeros (1, columns (vx)), eps);
-%! assert(vy(2,:), zeros (1, columns (vy)), eps);
+%! assert (vx(2,:), zeros (1, columns (vx)), eps);
+%! assert (vy(2,:), zeros (1, columns (vy)), eps);
 
 %% FIXME: Need input validation tests
 

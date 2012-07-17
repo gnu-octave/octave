@@ -62,7 +62,7 @@ endfunction
 
 %!test
 %! s.a = 1;
-%! assert(! issymmetric (s));
+%! assert (! issymmetric (s));
 
 %!error issymmetric ([1, 2; 2, 1], 0, 0)
 %!error issymmetric ()

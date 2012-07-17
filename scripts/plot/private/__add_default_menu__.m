@@ -98,12 +98,12 @@ function autoscale_cb (h, e)
 endfunction
 
 function guimode_cb (h, e)
-  lbl = get(h, "label");
-  if (strncmp(lbl, "Pan+Zoom", 8))
-    gui_mode("2D");
-  elseif (strncmp(lbl, "Rotate+Zoom", 11))
-    gui_mode("3D");
-  elseif (strncmp(lbl, "None", 4))
-    gui_mode("None");
+  lbl = get (h, "label");
+  if (strncmp (lbl, "Pan+Zoom", 8))
+    gui_mode ("2D");
+  elseif (strncmp (lbl, "Rotate+Zoom", 11))
+    gui_mode ("3D");
+  elseif (strncmp (lbl, "None", 4))
+    gui_mode ("None");
   endif
 endfunction

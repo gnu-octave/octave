@@ -72,7 +72,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
 
     ## If f1 has more than 1 element f2 must be a directory
     isdir = (exist (f2, "dir") != 0);
-    if (length(f1) > 1 && ! isdir)
+    if (length (f1) > 1 && ! isdir)
       error ("movefile: when moving multiple files, second argument must be a directory");
     endif
 
@@ -84,12 +84,12 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     p1 = sprintf ("\"%s\" ", f1{:});
     p2 = tilde_expand (f2);
 
-    if (isdir && length(p1) > max_cmd_line)
-      l2 = length(p2) + length (cmd) + 6;
-      while (! isempty(f1))
+    if (isdir && length (p1) > max_cmd_line)
+      l2 = length (p2) + length (cmd) + 6;
+      while (! isempty (f1))
         p1 = sprintf ("\"%s\" ", f1{1});
         f1(1) = [];
-        while (!isempty (f1) && (length(p1) + length(f1{1}) + l2 <
+        while (!isempty (f1) && (length (p1) + length (f1{1}) + l2 <
                                  max_cmd_line))
           p1 = sprintf ("%s\"%s\" ", p1, f1{1});
           f1(1) = [];

@@ -145,7 +145,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
     kids = ca;
     kids (strcmp (get (ca, "tag"), "legend")) = [];
     if (isscalar (kids))
-      kids = get(kids, "children")(:);
+      kids = get (kids, "children")(:);
     else
       kids = flipud ([get(kids, "children"){:}](:));
     endif
@@ -215,7 +215,7 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
 
   hlegend = [];
   fkids = get (fig, "children");
-  for i = 1 : numel(fkids)
+  for i = 1 : numel (fkids)
     if (ishandle (fkids (i)) && strcmp (get (fkids (i), "type"), "axes")
         && (strcmp (get (fkids (i), "tag"), "legend")))
       udata = get (fkids (i), "userdata");
@@ -498,8 +498,8 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
       ## FIXME hlegend should inherit properties from "ca"
       curaxes = get (fig, "currentaxes");
       unwind_protect
-        ud = ancestor(hplots, "axes");
-        if (!isscalar(ud))
+        ud = ancestor (hplots, "axes");
+        if (!isscalar (ud))
           ud = unique ([ud{:}]);
         endif
         if (isempty (hlegend))
@@ -707,13 +707,13 @@ function [hlegend2, hobjects2, hplot2, text_strings2] = legend (varargin)
               hobjects = [hobjects, l1];
             endif
 
-            addlistener(hplots(k), "color", {@updateline, hlegend, linelength});
-            addlistener(hplots(k), "linestyle", {@updateline, hlegend, linelength});
-            addlistener(hplots(k), "marker", {@updateline, hlegend, linelength});
-            addlistener(hplots(k), "markeredgecolor", {@updateline, hlegend, linelength});
-            addlistener(hplots(k), "markerfacecolor", {@updateline, hlegend, linelength});
-            addlistener(hplots(k), "markersize", {@updateline, hlegend, linelength});
-            addlistener(hplots(k), "displayname", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "color", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "linestyle", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "marker", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "markeredgecolor", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "markerfacecolor", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "markersize", {@updateline, hlegend, linelength});
+            addlistener (hplots(k), "displayname", {@updateline, hlegend, linelength});
           case "patch"
             facecolor = get (hplots(k), "facecolor");
             edgecolor = get (hplots(k), "edgecolor");
@@ -959,7 +959,7 @@ function updateline (h, d, hlegend, linelength)
       ypos1 = get (ll,"ydata");
       xpos1 = get (ll,"xdata");
       ypos2 = ypos1(1);
-      xpos2 = sum(xpos1) / 2;
+      xpos2 = sum (xpos1) / 2;
       delete (ll);
       if (! isempty (lm))
         delete (lm);

@@ -112,7 +112,7 @@ endfunction
 %! [m2, f2, c2] = mode (full (a));
 %! assert (m, sparse (m2));
 %! assert (f, sparse (f2));
-%! c_exp(1:length(a)) = { sparse (0) };
+%! c_exp(1:length (a)) = { sparse (0) };
 %! assert (c ,c_exp);
 %! assert (c2,c_exp );
 

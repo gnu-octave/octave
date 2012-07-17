@@ -72,7 +72,7 @@
 ## @item editor
 ## This is the editor to use to modify the functions.  By default it uses
 ## Octave's @env{EDITOR} built-in function, which comes from
-## @code{getenv("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
+## @code{getenv ("EDITOR")} and defaults to @code{emacs}.  Use @code{%s}
 ## In place of the function name.  For example,
 ##
 ## @table @samp
@@ -179,7 +179,7 @@ function ret = edit (file, state)
       if (strcmp (state, "sync") || strcmp (state, "async"))
         FUNCTION.MODE = state;
       else
-        error('edit: expected "edit MODE sync|async"');
+        error ('edit: expected "edit MODE sync|async"');
       endif
     case "EDITINPLACE"
       if (ischar (state))
@@ -193,7 +193,7 @@ function ret = edit (file, state)
       endif
       FUNCTION.EDITINPLACE = state;
     case "GET"
-      if (isfield (FUNCTION, toupper(state)))
+      if (isfield (FUNCTION, toupper (state)))
         ret = FUNCTION.(toupper (state));
       else
         ret = FUNCTION;
@@ -260,7 +260,7 @@ function ret = edit (file, state)
   ## If the file includes a path, it may be an overloaded function.
   if (! strcmp (file, "@") && index (file, filesep))
     ## No "@" at the beginning of the file, add to the list.
-    numfiles = numel(filelist);
+    numfiles = numel (filelist);
     for n = 1:numfiles
       filelist{n+numfiles} = cat (2, "@", filelist{n});
     endfor
@@ -268,7 +268,7 @@ function ret = edit (file, state)
 
   ## Search the entire path for the 1st instance of a file in the list.
   fileandpath = "";
-  for n = 1:numel(filelist)
+  for n = 1:numel (filelist)
     filetoedit = file_in_path (path, filelist{n});
     if (! isempty (filetoedit))
       ## The path is explicitly included.
@@ -324,7 +324,7 @@ function ret = edit (file, state)
 
   ## Guess the email name if it was not given.
   if (isempty (FUNCTION.EMAIL))
-    host = getenv("HOSTNAME");
+    host = getenv ("HOSTNAME");
     if (isempty (host) && ispc ())
       host = getenv ("COMPUTERNAME");
     endif
@@ -443,11 +443,11 @@ SUCH DAMAGE.\
       endif
       if (isempty (head))
         comment = cstrcat ("## ", name, "\n\n",
-                          "## ", strrep (tail, "\n", "\n## "), "\n\n");
+                           "## ", strrep (tail, "\n", "\n## "), "\n\n");
       else
-        comment = cstrcat ("## ", strrep(head,"\n","\n## "), "\n\n", ...
-                          "## ", name, "\n\n", ...
-                          "## ", strrep (tail, "\n", "\n## "), "\n\n");
+        comment = cstrcat ("## ", strrep (head,"\n","\n## "), "\n\n", ...
+                           "## ", name, "\n\n", ...
+                           "## ", strrep (tail, "\n", "\n## "), "\n\n");
       endif
       text = cstrcat (comment, body);
   endswitch

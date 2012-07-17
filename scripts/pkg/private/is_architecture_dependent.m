@@ -36,7 +36,7 @@ function dep = is_architecture_dependent (nm)
     endif
     pos = strfind (nm, ext);
     if (pos)
-      if (! isglob && (length(nm) - pos(end) != length(ext) - 1))
+      if (! isglob && (length (nm) - pos(end) != length (ext) - 1))
         continue;
       endif
       dep = true;

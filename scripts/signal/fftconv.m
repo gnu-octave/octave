@@ -67,8 +67,8 @@ endfunction
 
 %% FIXME: Borrow tests from conv.m.  May need a tolerance on the assert comparison
 %!test
-%!  x = ones(3,1);
-%!  y = ones(1,3);
+%!  x = ones (3,1);
+%!  y = ones (1,3);
 %!  b = 2;
 %!  c = 3;
 %!  assert (fftconv (x, x), [1; 2; 3; 2; 1], 5*eps);

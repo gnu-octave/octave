@@ -60,7 +60,7 @@ function [q, d] = polyder (p, a)
 
         ## remove common factors from numerator and denominator
         x = polygcd (q, d);
-        if (length(x) != 1)
+        if (length (x) != 1)
           q = deconv (q, x);
           d = deconv (d, x);
         endif

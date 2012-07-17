@@ -44,8 +44,8 @@ function [idx, p] = tsearchn (x, t, xi)
     b = cart2bary (x (t (i, :), :), xi(ni,:));
 
     ## Our points xi are in the current triangle if
-    ## (all(b >= 0) && all (b <= 1)). However as we impose that
-    ## sum(b,2) == 1 we only need to test all(b>=0). Note need to add
+    ## (all (b >= 0) && all (b <= 1)). However as we impose that
+    ## sum (b,2) == 1 we only need to test all(b>=0). Note need to add
     ## a small margin for rounding errors
     intri = all (b >= -1e-12, 2);
     idx(ni(intri)) = i;
@@ -69,17 +69,17 @@ function Beta = cart2bary (T, P)
   ##
   ## and therefore we can write the above as
   ##
-  ## P - T(end, :) = Beta(1:end-1) * (T(1:end-1,:) - ones(N,1) * T(end,:))
+  ## P - T(end, :) = Beta(1:end-1) * (T(1:end-1,:) - ones (N,1) * T(end,:))
   ##
   ## and then we can solve for Beta as
   ##
-  ## Beta(1:end-1) = (P - T(end,:)) / (T(1:end-1,:) - ones(N,1) * T(end,:))
-  ## Beta(end) = sum(Beta)
+  ## Beta(1:end-1) = (P - T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:))
+  ## Beta(end) = sum (Beta)
   ##
   ## Note below is generalize for multiple values of P, one per row.
   [M, N] = size (P);
-  Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones(N,1) * T(end,:));
-  Beta (:,end+1) = 1 - sum(Beta, 2);
+  Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:));
+  Beta (:,end+1) = 1 - sum (Beta, 2);
 endfunction
 
 

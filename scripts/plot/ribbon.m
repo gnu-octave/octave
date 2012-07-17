@@ -23,7 +23,7 @@
 ## Plot a ribbon plot for the columns of @var{y} vs.  @var{x}.  The
 ## optional parameter @var{width} specifies the width of a single ribbon
 ## (default is 0.75).  If @var{x} is omitted, a vector containing the
-## row numbers is assumed (1:rows(Y)).
+## row numbers is assumed (1:rows (Y)).
 ##
 ## The optional return value @var{h} is a vector of graphics handles to
 ## the surface objects representing each ribbon.

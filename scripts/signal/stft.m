@@ -55,7 +55,7 @@
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Description: Short-Time Fourier Transform
 
-function [y, c] = stft(x, win_size, inc, num_coef, win_type)
+function [y, c] = stft (x, win_size, inc, num_coef, win_type)
 
   ## Default values of unspecified arguments.
   if (nargin < 5)

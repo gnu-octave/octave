@@ -564,7 +564,7 @@ function varargout = strread (str, format = "%f", varargin)
       while (ii <= num_words_per_line)
 
         ## Check if fmt_words(ii) contains a literal or fixed-width
-        if ((idf(ii) || idg(ii)) && (rows(words) < num_words_per_line))
+        if ((idf(ii) || idg(ii)) && (rows (words) < num_words_per_line))
           if (idf(ii))
             s = strfind (words(icol, 1), fmt_words{ii});
             if (isempty (s{:}))
@@ -583,11 +583,11 @@ function varargout = strread (str, format = "%f", varargin)
             if (! idg(ii) && ! isempty (s) && s(1) == 1)
               ## Leading literal.  Assign literal to icol, paste rest in icol + 1
               ## Apply only to those cells that do have something beyond literal
-              jptr = find (cellfun("length", words(icol+1, jptr), ...
-                            "UniformOutput", false) > e(1));
+              jptr = find (cellfun ("length", words(icol+1, jptr), ...
+                                    "UniformOutput", false) > e(1));
               words(icol+1, :) = {""};
               words(icol+1, jptr) = cellfun ...
-                (@(x) substr(x, e(1)+1, length(x)-e(1)), words(icol, jptr), ...
+                (@(x) substr (x, e(1)+1, length (x) - e(1)), words(icol, jptr), ...
                 "UniformOutput", false);
               words(icol, jptr) = fmt_words{ii};
               fwptr = [fwptr(1:ii) (++fwptr(ii+1:end))];
@@ -617,14 +617,14 @@ function varargout = strread (str, format = "%f", varargin)
                 wrds(1:2:2*numel (words(icol, jptr))) = ...
                      strrep (words(icol, jptr), fmt_words{ii}, ...
                      [char(255) char(254)]);
-                wrds(2:2:2*numel (words(icol, jptr))-1) = char(255);
-                wrds = strsplit ([wrds{:}], char(255));
+                wrds(2:2:2*numel (words(icol, jptr))-1) = char (255);
+                wrds = strsplit ([wrds{:}], char (255));
                 words(icol, jptr) = ...
-                  wrds(find (cellfun ("isempty", strfind (wrds, char(254)))));
-                wrds(find (cellfun ("isempty", strfind (wrds, char(254))))) ...
-                   = char(255);
+                  wrds(find (cellfun ("isempty", strfind (wrds, char (254)))));
+                wrds(find (cellfun ("isempty", strfind (wrds, char (254))))) ...
+                   = char (255);
                 words(icol+1, jptr) = strsplit (strrep ([wrds{2:end}], ...
-                   char(254), fmt_words{ii}), char(255));
+                   char (254), fmt_words{ii}), char (255));
                 ## Former trailing literal may now be leading for next specifier
                 --ii;
                 fwptr = [fwptr(1:ii) (++fwptr(ii+1:end))];
@@ -762,7 +762,7 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
     ## to avoid it being included in consecutive delim series
     enchr = ' ';
     ## However watch out if eol_char is also in delimiters
-    if (index (sep, eol_char)); enchr = char(255); endif
+    if (index (sep, eol_char)); enchr = char (255); endif
     text = strrep (text, eol_char, [enchr eol_char enchr]);
   else
     mult_dlms_s1 = false;
@@ -770,7 +770,7 @@ function out = split_by (text, sep, mult_dlms_s1, eol_char)
 
   ## Split text string along delimiters
   out = strsplit (text, sep, mult_dlms_s1);
-  if (index (sep, eol_char)); out = strrep (out, char(255), ''); endif
+  if (index (sep, eol_char)); out = strrep (out, char (255), ''); endif
   ## In case of trailing delimiter, strip stray last empty word
   if (!isempty (out) && any (sep == text(end)))
     out(end) = [];

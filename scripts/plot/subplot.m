@@ -313,7 +313,7 @@ function pos = subplot_position (rows, cols, index, position_property)
   x0 = xi .* (width + margins.column) + margins.left;
   y0 = yi .* (height + margins.row) + margins.bottom;
 
-  if (numel(x0) > 1)
+  if (numel (x0) > 1)
     ## subplot (row, col, m:n)
     x1 = max (x0(:)) + width;
     y1 = max (y0(:)) + height;
@@ -338,14 +338,14 @@ endfunction
 %!   xlabel (sprintf ('xlabel #%d', n));
 %!   ylabel (sprintf ('ylabel #%d', n));
 %!   title (sprintf ('title #%d', n));
-%!   text (0.5, 0.5, sprintf('subplot(%d,%d,%d)', r, c, n), fmt{:});
+%!   text (0.5, 0.5, sprintf ('subplot(%d,%d,%d)', r, c, n), fmt{:});
 %!   axis ([0 1 0 1]);
 %! end
 %! subplot (r, c, 1:3);
 %! xlabel (sprintf ('xlabel #%d:%d', 1, 3));
 %! ylabel (sprintf ('ylabel #%d:%d', 1, 3));
 %! title (sprintf ('title #%d:%d', 1, 3));
-%! text (0.5, 0.5, sprintf('subplot(%d,%d,%d:%d)', r, c, 1, 3), fmt{:});
+%! text (0.5, 0.5, sprintf ('subplot(%d,%d,%d:%d)', r, c, 1, 3), fmt{:});
 %! axis ([0 1 0 1]);
 
 %!demo

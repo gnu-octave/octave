@@ -108,7 +108,7 @@ function ret = spline (x, y, xi)
   endif
 
   if (! issorted (x))
-    [x, idx] = sort(x);
+    [x, idx] = sort (x);
     a = a(idx,:);
   endif
 
@@ -135,8 +135,8 @@ function ret = spline (x, y, xi)
       g(2:n-1,:) = (a(3:n,:) - a(2:n-1,:)) ./ h(2:n-1) - ...
                    (a(2:n-1,:) - a(1:n-2,:)) ./ h(1:n-2);
       g(n,:) = dfe - (a(n,:) - a(n-1,:)) / h(n-1);
-      c = spdiags([[h/6;0],[h(1)/3;(h(1:n-2)+h(2:n-1))/3;h(n-1)/3],[0;h/6]],...
-                  [-1,0,1],n,n) \ (g / 2);
+      c = spdiags ([[h/6;0],[h(1)/3;(h(1:n-2)+h(2:n-1))/3;h(n-1)/3],[0;h/6]],...
+                   [-1,0,1],n,n) \ (g / 2);
       b(1:n-1,:) = diff (a) ./ h(1:n-1, idx) ...
         - h(1:n-1,idx) / 3 .* (c(2:n,:) + 2 * c(1:n-1,:));
       d = diff (c) ./ (3 * h(1:n-1, idx));

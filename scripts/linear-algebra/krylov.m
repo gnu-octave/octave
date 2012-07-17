@@ -34,7 +34,7 @@
 ## meaningless.
 ##
 ## If @var{V} is a vector and @var{k} is greater than
-## @code{length(A)-1}, then @var{h} contains the Hessenberg matrix such
+## @code{length (A) - 1}, then @var{h} contains the Hessenberg matrix such
 ## that @code{a*u == u*h}.
 ##
 ## The value of @var{nu} is the dimension of the span of the Krylov
@@ -71,7 +71,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
     pflg = 0;
   endif
 
-  if(nargin < 4)
+  if (nargin < 4)
     ## Default tolerance parameter.
     eps1 = defeps;
   endif
@@ -115,14 +115,14 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
   iter = 0;
   alpha = [];
   nh = 0;
-  while (length(alpha) < na) && (columns(V) > 0) && (iter < k)
+  while (length (alpha) < na) && (columns (V) > 0) && (iter < k)
     iter++;
 
     ## Get orthogonal basis of V.
     jj = 1;
     while (jj <= columns (V) && length (alpha) < na)
       ## Index of next Householder reflection.
-      nu = length(alpha)+1;
+      nu = length (alpha)+1;
 
       short_pv = pivot_vec(nu:na);
       q = V(:,jj);

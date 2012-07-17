@@ -40,7 +40,7 @@
 ## @item win: weight data with window, x.*win is used for further computation,
 ## if window is empty, a rectangular window is used.
 ##
-## @item nfft: number of frequency bins, default max(256, 2.^ceil(log2(length(x)))).
+## @item nfft: number of frequency bins, default max (256, 2.^ceil (log2 (length (x)))).
 ##
 ## @item Fs: sampling rate, default 1.
 ##

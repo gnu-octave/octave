@@ -76,7 +76,7 @@ function [x, n] = factor (q)
   ## Determine muliplicity.
   if (nargout > 1)
     idx = find ([0, x] != [x, 0]);
-    x = x(idx(1:length(idx)-1));
+    x = x(idx(1:length (idx)-1));
     n = diff (idx);
   endif
 

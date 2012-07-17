@@ -205,7 +205,7 @@ function [T, p, col] = __marching_cube__ (xx, yy, zz, c, iso, colors)
   endfor
 endfunction
 
-function p = vertex_interp(isolevel,p1x, p1y, p1z,...
+function p = vertex_interp (isolevel,p1x, p1y, p1z,...
   p2x, p2y, p2z,valp1,valp2, col1, col2)
 
   if (nargin == 9)

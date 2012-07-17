@@ -151,7 +151,7 @@ function retval = surfl (varargin)
 
     ## Normalize vn.
     vn = vn ./ repmat (sqrt (sumsq (vn, 3)), [1, 1, 3]);
-    [nr, nc] = size(get(htmp, "zdata"));
+    [nr, nc] = size (get (htmp, "zdata"));
 
     ## Ambient, diffuse, and specular term.
     cdata = (r(1) * ones (nr, nc)

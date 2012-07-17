@@ -145,7 +145,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     fprintf (__fid, "# success (in which case no error will be reported).\n");
     fflush (__fid);
     if (__close_fid)
-      fclose(__fid);
+      fclose (__fid);
     endif
     return;
   else
@@ -184,7 +184,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       endif
     endif
     if (__close_fid)
-      fclose(__fid);
+      fclose (__fid);
     endif
     return;
   endif
@@ -204,12 +204,12 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       endif
     endif
     if (__close_fid)
-      fclose(__fid);
+      fclose (__fid);
     endif
     return;
   else
     ## Add a dummy comment block to the end for ease of indexing.
-    if (__body (length(__body)) == "\n")
+    if (__body (length (__body)) == "\n")
       __body = sprintf ("\n%s#", __body);
     else
       __body = sprintf ("\n%s\n#", __body);
@@ -233,7 +233,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   __shared = " ";
   __shared_r = " ";
   __clear = "";
-  for __i = 1:length(__blockidx)-1
+  for __i = 1:length (__blockidx)-1
 
     ## Extract the block.
     __block = __body(__blockidx(__i):__blockidx(__i+1)-2);
@@ -251,7 +251,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       __code = "";
     else
       __type = __block(1:__idx(1)-1);
-      __code = __block(__idx(1):length(__block));
+      __code = __block(__idx(1):length (__block));
     endif
 
     ## Assume the block will succeed.
@@ -270,11 +270,11 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       __istest = 0;
 
       if (__grabdemo && __isdemo)
-        if (isempty(__demo_code))
+        if (isempty (__demo_code))
           __demo_code = __code;
           __demo_idx = [1, length(__demo_code)+1];
         else
-          __demo_code = cstrcat(__demo_code, __code);
+          __demo_code = cstrcat (__demo_code, __code);
           __demo_idx = [__demo_idx, length(__demo_code)+1];
         endif
 
@@ -306,7 +306,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __code = "";
       else
         __vars = __code (1:__idx(1)-1);
-        __code = __code (__idx(1):length(__code));
+        __code = __code (__idx(1):length (__code));
       endif
 
       ## Strip comments off the variables.
@@ -354,7 +354,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
         __name = __block(__name_position(1):__name_position(2));
         __code = __block;
         try
-          eval(__code); ## Define the function
+          eval (__code); ## Define the function
           __clear = sprintf ("%sclear %s;\n", __clear, __name);
         catch
           __success = 0;
@@ -382,7 +382,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
 ### ERROR/WARNING
 
-    elseif (strcmp (__type, "error") || strcmp(__type, "warning"))
+    elseif (strcmp (__type, "error") || strcmp (__type, "warning"))
       __istest = 1;
       __warning = strcmp (__type, "warning");
       [__pattern, __id, __code] = getpattern (__code);
@@ -547,7 +547,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
           __ret1 = __ret2 = 0;
         endif
         if (__close_fid)
-          fclose(__fid);
+          fclose (__fid);
         endif
         return;
       endif
@@ -644,7 +644,7 @@ endfunction
 ## Strip leading blanks from string.
 function str = trimleft (str)
   idx = find (isspace (str));
-  leading = find (idx == 1:length(idx));
+  leading = find (idx == 1:length (idx));
   if (! isempty (leading))
     str = str(leading(end)+1:end);
   endif
@@ -666,7 +666,7 @@ function body = __extract_test_code (nm)
       ln = fgetl (fid);
       if (length (ln) >= 2 && strcmp (ln(1:2), "%!"))
         body = [body, "\n"];
-        if (length(ln) > 2)
+        if (length (ln) > 2)
           body = cstrcat (body, ln(3:end));
         endif
       endif
@@ -683,29 +683,29 @@ endfunction
 ### Disable this test to avoid spurious skipped test for "make check"
 % !testif HAVE_FOOBAR
 % ! ## missing feature. Fail if this test is run
-% ! error("Failed missing feature test");
+% ! error ("Failed missing feature test");
 
 ### Test for a known failure
-%!xtest error("This test is known to fail")
+%!xtest error ("This test is known to fail")
 
 ### example from toeplitz
 %!shared msg1,msg2
 %! msg1="C must be a vector";
 %! msg2="C and R must be vectors";
-%!fail ('toeplitz([])', msg1);
-%!fail ('toeplitz([1,2;3,4])', msg1);
-%!fail ('toeplitz([1,2],[])', msg2);
-%!fail ('toeplitz([1,2],[1,2;3,4])', msg2);
+%!fail ('toeplitz ([])', msg1);
+%!fail ('toeplitz ([1,2;3,4])', msg1);
+%!fail ('toeplitz ([1,2],[])', msg2);
+%!fail ('toeplitz ([1,2],[1,2;3,4])', msg2);
 %!fail ('toeplitz ([1,2;3,4],[1,2])', msg2);
 % !fail ('toeplitz','usage: toeplitz'); # usage doesn't generate an error
-% !fail ('toeplitz(1, 2, 3)', 'usage: toeplitz');
+% !fail ('toeplitz (1, 2, 3)', 'usage: toeplitz');
 %!test  assert (toeplitz ([1,2,3], [1,4]), [1,4; 2,1; 3,2]);
 %!demo  toeplitz ([1,2,3,4],[1,5,6])
 
 ### example from kron
 %!#error kron  # FIXME suppress these until we can handle output
 %!#error kron(1,2,3)
-%!test assert (isempty (kron ([], rand(3, 4))))
+%!test assert (isempty (kron ([], rand (3, 4))))
 %!test assert (isempty (kron (rand (3, 4), [])))
 %!test assert (isempty (kron ([], [])))
 %!shared A, B
@@ -729,16 +729,16 @@ endfunction
 ### an extended demo from specgram
 %!#demo
 %! ## Speech spectrogram
-%! [x, Fs] = auload(file_in_loadpath("sample.wav")); # audio file
-%! step = fix(5*Fs/1000);     # one spectral slice every 5 ms
-%! window = fix(40*Fs/1000);  # 40 ms data window
-%! fftn = 2^nextpow2(window); # next highest power of 2
-%! [S, f, t] = specgram(x, fftn, Fs, window, window-step);
-%! S = abs(S(2:fftn*4000/Fs,:)); # magnitude in range 0<f<=4000 Hz.
-%! S = S/max(max(S));         # normalize magnitude so that max is 0 dB.
-%! S = max(S, 10^(-40/10));   # clip below -40 dB.
-%! S = min(S, 10^(-3/10));    # clip above -3 dB.
-%! imagesc(flipud(20*log10(S)), 1);
+%! [x, Fs] = auload (file_in_loadpath ("sample.wav")); # audio file
+%! step = fix (5*Fs/1000);     # one spectral slice every 5 ms
+%! window = fix (40*Fs/1000);  # 40 ms data window
+%! fftn = 2^nextpow2 (window); # next highest power of 2
+%! [S, f, t] = specgram (x, fftn, Fs, window, window-step);
+%! S = abs (S (2:fftn*4000/Fs,:)); # magnitude in range 0<f<=4000 Hz.
+%! S = S/max(max(S));          # normalize magnitude so that max is 0 dB.
+%! S = max (S, 10^(-40/10));   # clip below -40 dB.
+%! S = min (S, 10^(-3/10));    # clip above -3 dB.
+%! imagesc (flipud (20*log10 (S)), 1);
 %! % you should now see a spectrogram in the image window
 
 
@@ -746,62 +746,62 @@ endfunction
 
 %!## usage and error testing
 % !fail ('test','usage.*test')           # no args, generates usage()
-% !fail ('test(1,2,3,4)','usage.*test')  # too many args, generates usage()
-%!fail ('test("test", "bogus")','unknown flag')      # incorrect args
+% !fail ('test (1,2,3,4)','usage.*test') # too many args, generates usage()
+%!fail ('test ("test", "bogus")','unknown flag')  # incorrect args
 %!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
 
 %!error test                     # no args, generates usage()
-%!error test(1,2,3,4)            # too many args, generates usage()
-%!error <unknown flag> test("test", 'bogus');  # incorrect args, generates error()
+%!error test (1,2,3,4)           # too many args, generates usage()
+%!error <unknown flag> test ("test", 'bogus'); # incorrect args, generates error()
 %!error <garbage' undefined> garbage           # usage on nonexistent function should be
 
-%!error test("test", 'bogus');           # test without pattern
+%!error test ("test", 'bogus');  # test without pattern
 
 %!test
 %! lastwarn();            # clear last warning just in case
 
-%!warning <warning message> warning('warning message');
+%!warning <warning message> warning ('warning message');
 
 %!## test of shared variables
 %!shared a                # create a shared variable
 %!test   a=3;             # assign to a shared variable
-%!test   assert(a,3)      # variable should equal 3
+%!test   assert (a,3)     # variable should equal 3
 %!shared b,c              # replace shared variables
-%!test assert (!exist("a"));   # a no longer exists
-%!test assert (isempty(b));    # variables start off empty
+%!test assert (!exist ("a"));  # a no longer exists
+%!test assert (isempty (b));   # variables start off empty
 %!shared a,b,c            # recreate a shared variable
-%!test assert (isempty(a));    # value is empty even if it had a previous value
+%!test assert (isempty (a));   # value is empty even if it had a previous value
 %!test a=1; b=2; c=3;   # give values to all variables
 %!test assert ([a,b,c],[1,2,3]); # test all of them together
 %!test c=6;             # update a value
-%!test assert([a, b, c],[1, 2, 6]); # show that the update sticks
-%!shared                    # clear all shared variables
-%!test assert(!exist("a"))  # show that they are cleared
-%!shared a,b,c              # support for initializer shorthand
+%!test assert ([a, b, c],[1, 2, 6]); # show that the update sticks
+%!shared                     # clear all shared variables
+%!test assert (!exist ("a")) # show that they are cleared
+%!shared a,b,c               # support for initializer shorthand
 %! a=1; b=2; c=4;
 
-%!function x = __test_a(y)
+%!function x = __test_a (y)
 %! x = 2*y;
 %!endfunction
-%!assert(__test_a(2),4);       # Test a test function
+%!assert (__test_a (2),4);       # Test a test function
 
 %!function __test_a (y)
 %! x = 2*y;
 %!endfunction
 %!test
-%! __test_a(2);                # Test a test function with no return value
+%! __test_a (2);                # Test a test function with no return value
 
 %!function [x,z] = __test_a (y)
 %! x = 2*y;
 %! z = 3*y;
 %!endfunction
 %!test                   # Test a test function with multiple returns
-%! [x,z] = __test_a(3);
-%! assert(x,6);
-%! assert(z,9);
+%! [x,z] = __test_a (3);
+%! assert (x,6);
+%! assert (z,9);
 
 %!## test of assert block
-%!assert (isempty([]))      # support for test assert shorthand
+%!assert (isempty ([]))      # support for test assert shorthand
 
 %!## demo blocks
 %!demo                   # multiline demo block

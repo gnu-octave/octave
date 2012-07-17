@@ -34,18 +34,18 @@ function jumps = ppjumps (pp)
   endif
 
   ## Extract info.
-  [x, P, n, k, d] = unmkpp(pp);
+  [x, P, n, k, d] = unmkpp (pp);
   nd = length (d) + 1;
 
   ## Offsets.
-  dx = diff(x(1:n));
+  dx = diff (x(1:n));
   dx = repmat (dx, [prod(d), 1]);
   dx = reshape (dx, [d, n-1]);
   dx = shiftdim (dx, nd - 1);
 
   ## Use Horner scheme.
   if (k>1)
-    llim = shiftdim (reshape (P(1:(n-1) * prod(d), 1), [d, n-1]), nd - 1);
+    llim = shiftdim (reshape (P(1:(n-1) * prod (d), 1), [d, n-1]), nd - 1);
   endif
 
   for i = 2 : k;

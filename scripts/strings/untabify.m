@@ -82,10 +82,10 @@ function s = replace_tabs (t, tw)
     nr = rows (t);
     sc = cell (nr, 1);
     for j = 1:nr
-      n = 1:numel(t(j,:));
+      n = 1:numel (t(j,:));
       m = find (t(j,:) == "\t");
       t(j,m) = " ";
-      for i = 1:numel(m)
+      for i = 1:numel (m)
         k = tw * ceil (n(m(i)) / tw);
         dn = k - n(m(i));
         n(m(i):end) += dn;

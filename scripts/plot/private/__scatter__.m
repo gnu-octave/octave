@@ -32,13 +32,13 @@ function hg = __scatter__ (varargin)
 
   if (nd == 3)
     z = varargin{6}(:);
-    idx = isnan(x) | isnan (y) | isnan (z);
+    idx = isnan (x) | isnan (y) | isnan (z);
     x (idx) = [];
     y (idx) = [];
     z (idx) = [];
     istart = 7;
   else
-    idx = isnan(x) | isnan (y);
+    idx = isnan (x) | isnan (y);
     x (idx) = [];
     y (idx) = [];
     z = zeros (length (x), 0);
@@ -140,7 +140,7 @@ function hg = __scatter__ (varargin)
     ## For small number of points, we'll construct an object for each point.
 
     if (numel (s) == 1)
-      s = repmat (s, numel(x), 1);
+      s = repmat (s, numel (x), 1);
     endif
 
     if (one_explicit_color)
@@ -222,11 +222,11 @@ function hg = __scatter__ (varargin)
   if (! ischar (c) && rows (c) > 1)
     ax = get (hg, "parent");
     clim = get (ax, "clim");
-    if (min(c(:)) < clim(1))
-      clim(1) = min(c(:));
+    if (min (c(:)) < clim(1))
+      clim(1) = min (c(:));
       set (ax, "clim", clim);
     endif
-    if (max(c(:)) > clim(2))
+    if (max (c(:)) > clim(2))
       set (ax, "clim", [clim(1), max(c(:))]);
     endif
   endif
@@ -259,7 +259,7 @@ function hg = __scatter__ (varargin)
 
 endfunction
 
-function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
+function h = render_size_color (hg, vert, s, c, marker, filled, isflat)
   if (isscalar (s))
     x = vert(:,1);
     y = vert(:,2);
@@ -273,7 +273,7 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
     if (ischar (c) || ! isflat || gnuplot_hack)
       if (filled)
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
-                          "faces", 1:numel(x), "vertices", vert,
+                          "faces", 1:numel (x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
                           "markeredgecolor", "none",
@@ -281,7 +281,7 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
                           "markersize", s, "linestyle", "none");
       else
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
-                          "faces", 1:numel(x), "vertices", vert,
+                          "faces", 1:numel (x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker,
                           "markeredgecolor", c(1,:),
@@ -291,7 +291,7 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
     else
       if (filled)
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
-                          "faces", 1:numel(x), "vertices", vert,
+                          "faces", 1:numel (x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "none",
@@ -300,7 +300,7 @@ function h = render_size_color(hg, vert, s, c, marker, filled, isflat)
                           "linestyle", "none");
       else
         h = __go_patch__ (hg, "xdata", x, "ydata", y, "zdata", z,
-                          "faces", 1:numel(x), "vertices", vert,
+                          "faces", 1:numel (x), "vertices", vert,
                           "facecolor", "none", "edgecolor", "none",
                           "marker", marker, "markersize", s,
                           "markeredgecolor", "flat",
@@ -362,14 +362,14 @@ function update_data (h, d)
     if (isempty (z1))
       for i = 1 : length (hlist)
         set (hlist(i), "vertices", [x1(i), y1(i)], "cdata",
-             reshape(c1(i,:),[1, size(c1)(2:end)]),
+             reshape (c1(i,:),[1, size(c1)(2:end)]),
              "facevertexcdata", c1(i,:),
              "markersize", size1(i));
       endfor
     else
       for i = 1 : length (hlist)
         set (hlist(i), "vertices", [x1(i), y1(i), z1(i)], "cdata",
-             reshape(c1(i,:),[1, size(c1)(2:end)]),
+             reshape (c1(i,:),[1, size(c1)(2:end)]),
              "facevertexcdata", c1(i,:),
              "markersize", size1(i));
       endfor

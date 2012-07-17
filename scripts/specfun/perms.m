@@ -24,7 +24,7 @@
 ## result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}
 ## is the length of @var{v}.
 ##
-## As an example, @code{perms([1, 2, 3])} returns the matrix
+## As an example, @code{perms ([1, 2, 3])} returns the matrix
 ##
 ## @example
 ## @group

@@ -44,7 +44,7 @@ function map = pink (n)
   endif
 
   if (n == 1)
-    map = sqrt([1/3, 1/3, 1/3]);
+    map = sqrt ([1/3, 1/3, 1/3]);
   elseif (n > 1)
     x = linspace (0, 1, n)';
     r = (x < 3/8) .* (14/9 * x) ...

@@ -228,15 +228,15 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
       if (! isempty (lb) && ! isempty (ub))
         rtol = sqrt (eps);
         for i = 1:n
-          if (abs(lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
+          if (abs (lb (i) - ub(i)) < rtol*(1 + max (abs (lb(i) + ub(i)))))
             ## These are actually an equality constraint
-            tmprow = zeros(1,n);
+            tmprow = zeros (1,n);
             tmprow(i) = 1;
             A = [A;tmprow];
             b = [b; 0.5*(lb(i) + ub(i))];
             n_eq = n_eq + 1;
           else
-            tmprow = zeros(1,n);
+            tmprow = zeros (1,n);
             tmprow(i) = 1;
             Ain = [Ain; tmprow; -tmprow];
             bin = [bin; lb(i); -ub(i)];

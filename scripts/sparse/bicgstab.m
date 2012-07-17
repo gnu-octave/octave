@@ -138,7 +138,7 @@ function [x, flag, relres, iter, resvec] = bicgstab (A, b, tol, maxit,
     rr = res;
 
     ## Vector of the residual norms for each iteration.
-    resvec = norm(res) / norm_b;
+    resvec = norm (res) / norm_b;
 
     ## Default behaviour we don't reach tolerance tol within maxit iterations.
     flag = 1;

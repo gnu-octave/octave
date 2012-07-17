@@ -43,7 +43,7 @@ function comet3 (varargin)
     print_usage ();
   elseif (nargin == 1)
     z = varargin{1};
-    x = y = 1:numel(z);
+    x = y = 1:numel (z);
     p = 0.1;
   elseif (nargin == 3)
     x = varargin{1};

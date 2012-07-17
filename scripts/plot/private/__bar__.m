@@ -89,7 +89,7 @@ function varargout = __bar__ (vertical, func, varargin)
           continue;
         endif
       endif
-      if (isscalar(varargin{idx}))
+      if (isscalar (varargin{idx}))
         width = varargin{idx++};
       elseif (idx == nargin - 2)
         newargs = [newargs,varargin(idx++)];
@@ -117,7 +117,7 @@ function varargout = __bar__ (vertical, func, varargin)
 
   ycols = size (y, 2);
   if (numel (x) > 1)
-    cutoff = min (diff (double(x))) / 2;
+    cutoff = min (diff (double (x))) / 2;
   else
     cutoff = 1;
   endif
@@ -139,7 +139,7 @@ function varargout = __bar__ (vertical, func, varargin)
     y0 = zeros (size (y)) + bv;
     y1 = y;
   else
-    y1 = cumsum(y,2);
+    y1 = cumsum (y,2);
     y0 = [zeros(ylen,1)+bv, y1(:,1:end-1)];
   endif
 
@@ -196,10 +196,10 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat",
-                  "cdata", lev, "parent", hg);
+        h = patch (xb(:,:,i), yb(:,:,i), "FaceColor", "flat",
+                   "cdata", lev, "parent", hg);
       else
-        h = patch(xb(:,:,i), yb(:,:,i), "parent", hg);
+        h = patch (xb(:,:,i), yb(:,:,i), "parent", hg);
       endif
     else
       if (! have_color_spec)
@@ -208,10 +208,10 @@ function tmp = bars (ax, vertical, x, y, xb, yb, width, group, have_color_spec, 
         else
           lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
         endif
-        h = patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat",
-                  "cdata", lev, "parent", hg);
+        h = patch (yb(:,:,i), xb(:,:,i), "FaceColor", "flat",
+                   "cdata", lev, "parent", hg);
       else
-        h = patch(yb(:,:,i), xb(:,:,i), "parent", hg);
+        h = patch (yb(:,:,i), xb(:,:,i), "parent", hg);
       endif
     endif
 
@@ -403,7 +403,7 @@ function update_group (h, d)
     unwind_protect
       recursion = true;
       hlist = get (h, "bargroup");
-      barwidth = get(h, "barwidth");
+      barwidth = get (h, "barwidth");
       barlayout = get (h, "barlayout");
       horizontal = get (h, "horizontal");
 

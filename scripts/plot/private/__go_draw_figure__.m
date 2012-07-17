@@ -158,12 +158,12 @@ function __go_draw_figure__ (h, plot_stream, enhanced, mono)
                   ## to __go_draw_axes__
                   hlegend = [];
                   fkids = get (h, "children");
-                  for j = 1 : numel(fkids)
+                  for j = 1 : numel (fkids)
                     if (ishandle (fkids (j))
                         && strcmp (get (fkids (j), "type"), "axes")
                         && (strcmp (get (fkids (j), "tag"), "legend")))
                       udata = get (fkids (j), "userdata");
-                      if (isscalar(udata.handle)
+                      if (isscalar (udata.handle)
                           && ! isempty (intersect (udata.handle, kids (i))))
                         hlegend = get (fkids (j));
                         break;

@@ -323,13 +323,13 @@ function [__order, __test_n, __tnew, __torig] = speed (__f1, __init, __max_n = 1
     endif
     v = polyval (p, log (__test_n(tailidx)));
 
-    loglog (__test_n(tailidx), exp(v)*1000, sprintf ("b;%s;", order));
+    loglog (__test_n(tailidx), exp (v) * 1000, sprintf ("b;%s;", order));
     title ({"Time Complexity", __f1});
     xlabel ("test length");
 
     ## Get base time to 1 digit of accuracy.
     dt = exp (p(2));
-    dt = floor (dt/10^floor(log10(dt)))*10^floor(log10(dt));
+    dt = floor (dt/10^floor (log10 (dt)))*10^floor (log10 (dt));
     if (log10 (dt) >= -0.5)
       time = sprintf ("%g s", dt);
     elseif (log10 (dt) >= -3.5)
@@ -379,7 +379,7 @@ endfunction
 %! eval (fstr_build);
 %!
 %! disp ("Preallocated vector test.\nThis takes a little while...");
-%! speed("build (n)", "", 1000, "build_orig (n)");
+%! speed ("build (n)", "", 1000, "build_orig (n)");
 %! clear -f build build_orig
 %! disp ("-----------------------");
 %! disp ("Note how much faster it is to pre-allocate a vector.");
@@ -408,7 +408,7 @@ endfunction
 %! eval (fstr_build);
 %!
 %! disp ("Vectorized test.\nThis takes a little while...");
-%! speed("build (n)", "", 1000, "build_orig (n)");
+%! speed ("build (n)", "", 1000, "build_orig (n)");
 %! clear -f build build_orig
 %! disp ("-----------------------");
 %! disp ("This time, the for loop is done away with entirely.");

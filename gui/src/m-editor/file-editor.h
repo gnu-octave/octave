@@ -28,10 +28,6 @@
 #include <QStatusBar>
 #include <QCloseEvent>
 #include <QTabWidget>
-#include <Qsci/qsciapis.h>
-// Not available in the Debian repos yet!
-// #include <Qsci/qscilexeroctave.h>
-#include "lexer-octave-gui.h"
 
 const char UNNAMED_FILE[]     = "<unnamed>";
 const char SAVE_FILE_FILTER[] = "Octave Files (*.m);;All Files (*.*)";
@@ -51,7 +47,6 @@ public:
   ~file_editor ();
   void loadFile (QString fileName);
 
-  lexer_octave_gui *lexer ();
   QTerminal *       terminal ();
   main_window *     get_main_window ();
 
@@ -105,8 +100,6 @@ private:
   QAction *         _run_action;
   QTabWidget *      _tab_widget;
   int               _marker_breakpoint;
-  lexer_octave_gui *_lexer;
-  QsciAPIs *        _lexer_api;
 };
 
 #endif // FILEEDITORMDISUBWINDOW_H

@@ -39,12 +39,6 @@ file_editor::~file_editor ()
 {
 }
 
-lexer_octave_gui *
-file_editor::lexer ()
-{
-  return _lexer;
-}
-
 QTerminal *
 file_editor::terminal ()
 {
@@ -475,36 +469,6 @@ file_editor::construct ()
   connect (_tab_widget, SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
   connect (_tab_widget, SIGNAL (currentChanged(int)), this, SLOT (active_tab_changed (int)));
 
-  // this has to be done only once, not for each editor
-  _lexer = new lexer_octave_gui ();
-
-  // Editor font (default or from settings)
-  _lexer->setDefaultFont (QFont (
-                             settings->value ("editor/fontName","Courier").toString (),
-                             settings->value ("editor/fontSize",10).toInt ()));
-
-  // TODO: Autoindent not working as it should
-  _lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
-                               QsciScintilla::AiOpening  ||
-                               QsciScintilla::AiClosing);
-
-  // The API info that is used for auto completion
-  // TODO: Where to store a file with API info (raw or prepared?)?
-  // TODO: Also provide infos on octave-forge functions?
-  // TODO: Also provide infos on function parameters?
-  // By now, use the keywords-list from syntax highlighting
-  _lexer_api = new QsciAPIs (_lexer);
-
-  QString keyword;
-  QStringList keywordList;
-  keyword = _lexer->keywords (1);  // get whole string with all keywords
-  keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
-  int i;
-  for (i = 0; i < keywordList.size (); i++)
-    {
-      _lexer_api->add (keywordList.at (i));  // add single strings to the API
-    }
-  _lexer_api->prepare ();           // prepare API info ... this make take some time
   resize (500, 400);
   setWindowIcon (QIcon::fromTheme ("accessories-text-editor", style->standardIcon (QStyle::SP_FileIcon)));
   setWindowTitle ("Octave Editor");

@@ -23,6 +23,11 @@
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
 
+#include <Qsci/qsciapis.h>
+// Not available in the Debian repos yet!
+// #include <Qsci/qscilexeroctave.h>
+#include "lexer-octave-gui.h"
+#include <Qsci/qscilexercpp.h>
 #include "octave-event-observer.h"
 
 class file_editor;
@@ -79,6 +84,7 @@ protected:
   void set_file_name (QString fileName);
 
 private:
+  void update_lexer ();
   void request_add_breakpoint (int line);
   void request_remove_breakpoint (int line);
 

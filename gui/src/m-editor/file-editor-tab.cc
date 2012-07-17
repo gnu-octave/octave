@@ -18,6 +18,8 @@
 #include "file-editor-tab.h"
 #include "file-editor.h"
 #include "octave-link.h"
+
+#include "resource-manager.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
 
@@ -28,7 +30,6 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   _file_editor = fileEditor;
   _file_name = "";
   _edit_area = new QsciScintilla (this);
-  _edit_area->setLexer (fileEditor->lexer ());
 
   // symbols
   _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
@@ -169,6 +170,7 @@ void
 file_editor_tab::set_file_name (QString fileName)
 {
   _file_name = fileName;
+  update_lexer ();
   update_tracked_file ();
 }
 
@@ -199,6 +201,55 @@ file_editor_tab::handle_margin_clicked(int margin, int line, Qt::KeyboardModifie
             }
         }
     }
+}
+
+void
+file_editor_tab::update_lexer ()
+{
+  QsciLexer *lexer =  _edit_area->lexer ();
+  delete lexer;
+
+  if (_file_name.endsWith (".m") || _file_name.endsWith (".M"))
+    {
+      lexer = new lexer_octave_gui ();
+
+      // The API info that is used for auto completion
+      // TODO: Where to store a file with API info (raw or prepared?)?
+      // TODO: Also provide infos on octave-forge functions?
+      // TODO: Also provide infos on function parameters?
+      // By now, use the keywords-list from syntax highlighting
+
+      QsciAPIs *lexer_api = new QsciAPIs (lexer);
+
+      QString keyword;
+      QStringList keywordList;
+      keyword = lexer->keywords (1);  // get whole string with all keywords
+      keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
+      int i;
+      for (i = 0; i < keywordList.size (); i++)
+        {
+          lexer_api->add (keywordList.at (i));  // add single strings to the API
+        }
+      lexer_api->prepare ();           // prepare API info ... this make take some time
+    }
+  else if (_file_name.endsWith (".c") || _file_name.endsWith (".cc") || _file_name.endsWith (".cpp"))
+    {
+      lexer = new QsciLexerCPP ();
+    }
+
+  QSettings *settings = resource_manager::instance ()->get_settings ();
+
+  // Editor font (default or from settings)
+  lexer->setDefaultFont (QFont (
+                             settings->value ("editor/fontName","Courier").toString (),
+                             settings->value ("editor/fontSize",10).toInt ()));
+
+  // TODO: Autoindent not working as it should
+  lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
+                               QsciScintilla::AiOpening  ||
+                               QsciScintilla::AiClosing);
+
+  _edit_area->setLexer (lexer);
 }
 
 void

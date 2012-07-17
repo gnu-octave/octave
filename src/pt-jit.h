@@ -35,7 +35,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Array.h"
 #include "Range.h"
 #include "pt-walk.h"
-#include "symtab.h"
 
 // -------------------- Current status --------------------
 // Simple binary operations (+-*/) on octave_scalar's (doubles) are optimized.

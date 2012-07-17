@@ -60,6 +60,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "ov-complex.h"
 #include "pt-all.h"
+#include "symtab.h"
 
 static llvm::IRBuilder<> builder (llvm::getGlobalContext ());
 

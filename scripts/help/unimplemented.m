@@ -143,7 +143,6 @@ function list = missing_functions ()
   "condeig",
   "coneplot",
   "contourslice",
-  "copyobj",
   "createClassFromWsdl",
   "createSoapMessage",
   "customverctrl",

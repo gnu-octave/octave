@@ -80,6 +80,7 @@ plot_FCN_FILES = \
   plot/contour3.m \
   plot/contourc.m \
   plot/contourf.m \
+  plot/copyobj.m \
   plot/cylinder.m \
   plot/daspect.m \
   plot/diffuse.m \
@@ -112,6 +113,7 @@ plot_FCN_FILES = \
   plot/gtext.m \
   plot/guidata.m \
   plot/guihandles.m \
+  plot/hdl2struct.m \
   plot/hggroup.m \
   plot/hidden.m \
   plot/hist.m \
@@ -172,6 +174,7 @@ plot_FCN_FILES = \
   plot/stairs.m \
   plot/stem.m \
   plot/stem3.m \
+  plot/struct2hdl.m \
   plot/subplot.m \
   plot/surf.m \
   plot/surface.m \

@@ -63,12 +63,21 @@ void
 main_window::new_file ()
 {
   _file_editor->request_new_file ();
+  focus_editor ();
 }
 
 void
 main_window::open_file ()
 {
   _file_editor->request_open_file ();
+  focus_editor ();
+}
+
+void
+main_window::open_file (QString file_name)
+{
+  _file_editor->request_open_file (file_name);
+  focus_editor ();
 }
 
 void
@@ -217,9 +226,7 @@ main_window::set_current_working_directory (QString directory)
 void
 main_window::current_working_directory_up ()
 {
-  octave_link::instance ()
-      ->post_event (new octave_change_directory_event (*this, ".."));
-
+  set_current_working_directory ("..");
 }
 
 void
@@ -724,7 +731,7 @@ main_window::construct ()
   connect (this,                        SIGNAL (settings_changed ()),
            this,                        SLOT   (notice_settings ()));
   connect (_files_dock_widget,          SIGNAL (open_file (QString)),
-           _file_editor,                SLOT   (request_open_file (QString)));
+           this,                        SLOT   (open_file (QString)));
   connect (_files_dock_widget,          SIGNAL (displayed_directory_changed(QString)),
            this,                        SLOT   (set_current_working_directory(QString)));
   connect (_history_dock_widget,        SIGNAL (information (QString)),

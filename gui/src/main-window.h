@@ -80,6 +80,7 @@ public slots:
   void handle_command_double_clicked (QString command);
   void new_file ();
   void open_file ();
+  void open_file (QString file_name);
   void open_bug_tracker_page ();
   void open_agora_page ();
   void open_octave_forge_page ();

@@ -96,6 +96,7 @@ octave_link::process_events ()
   _next_performance_information.process_events_start = clock ();
   _event_queue_mutex->lock ();
   _next_performance_information.event_queue_size = _event_queue.size ();
+
   while (_event_queue.size () > 0)
     {
       octave_event * e = _event_queue.front ();

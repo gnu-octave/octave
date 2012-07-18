@@ -188,7 +188,7 @@ void TerminalView::fontChange(const QFont&)
   _fontAscent = fm.ascent();
 
   emit changedFontMetricSignal( _fontHeight, _fontWidth );
-  parentWidget()->setFixedWidth(_fontWidth * 80 + _leftMargin);
+  //parentWidget()->setFixedWidth(_fontWidth * 80 + _leftMargin);
   propagateSize();
   update();
 }

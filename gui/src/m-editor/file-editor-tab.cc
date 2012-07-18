@@ -725,7 +725,7 @@ file_editor_tab::run_file ()
 
   // We have to cut off the suffix, because octave appends it.
   function_name.chop (file_info.suffix ().length () + 1);
-  _file_editor->terminal ()->sendText (QString ("cd \'%1\'\n%2\ncd \'%3\'\n\n")
+  _file_editor->terminal ()->sendText (QString ("cd \'%1\'\n%2\n")
     .arg(path).arg (function_name).arg (current_path));
   // TODO: Sending a run event crashes for long scripts. Find out why.
   //  octave_link::instance ()

@@ -19,6 +19,17 @@
 #include "file-editor.h"
 #include "octave-link.h"
 
+
+#include <Qsci/qsciapis.h>
+// Not available in the Debian repos yet!
+// #include <Qsci/qscilexeroctave.h>
+#include "lexer-octave-gui.h"
+#include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerbash.h>
+#include <Qsci/qscilexerperl.h>
+#include <Qsci/qscilexerbatch.h>
+#include <Qsci/qscilexerdiff.h>
+
 #include "resource-manager.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
@@ -235,6 +246,22 @@ file_editor_tab::update_lexer ()
   else if (_file_name.endsWith (".c") || _file_name.endsWith (".cc") || _file_name.endsWith (".cpp"))
     {
       lexer = new QsciLexerCPP ();
+    }
+  else if (_file_name.endsWith (".sh"))
+    {
+      lexer = new QsciLexerBash ();
+    }
+  else if (_file_name.endsWith (".pl"))
+    {
+      lexer = new QsciLexerPerl ();
+    }
+  else if (_file_name.endsWith (".bat"))
+    {
+      lexer = new QsciLexerBatch ();
+    }
+  else if (_file_name.endsWith (".diff"))
+    {
+      lexer = new QsciLexerDiff ();
     }
 
   QSettings *settings = resource_manager::instance ()->get_settings ();

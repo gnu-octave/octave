@@ -22,12 +22,6 @@
 #include <QWidget>
 #include <QCloseEvent>
 #include <QFileSystemWatcher>
-
-#include <Qsci/qsciapis.h>
-// Not available in the Debian repos yet!
-// #include <Qsci/qscilexeroctave.h>
-#include "lexer-octave-gui.h"
-#include <Qsci/qscilexercpp.h>
 #include "octave-event-observer.h"
 
 class file_editor;

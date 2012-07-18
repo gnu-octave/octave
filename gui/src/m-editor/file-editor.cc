@@ -320,7 +320,6 @@ void
 file_editor::construct ()
 {
   QWidget *widget = new QWidget (this);
-  QSettings *settings = resource_manager::instance ()->get_settings ();
   QStyle *style = QApplication::style ();
 
   _menu_bar = new QMenuBar (widget);

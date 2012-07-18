@@ -44,6 +44,7 @@ protected:
 protected slots:
   void collapse_requested (QModelIndex index);
   void expand_requested (QModelIndex index);
+  void item_double_clicked (QModelIndex index);
 
 private:
   QTreeView *_workspace_tree_view;

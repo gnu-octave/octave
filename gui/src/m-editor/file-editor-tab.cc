@@ -29,7 +29,6 @@
 #include <Qsci/qscilexerperl.h>
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexerdiff.h>
-
 #include "resource-manager.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
@@ -243,13 +242,17 @@ file_editor_tab::update_lexer ()
         }
       lexer_api->prepare ();           // prepare API info ... this make take some time
     }
-  else if (_file_name.endsWith (".c") || _file_name.endsWith (".cc") || _file_name.endsWith (".cpp"))
+  else if (_file_name.endsWith (".c")
+        || _file_name.endsWith (".cc")
+        || _file_name.endsWith (".cpp")
+        || _file_name.endsWith (".cxx")
+        || _file_name.endsWith (".c++")
+        || _file_name.endsWith (".h")
+        || _file_name.endsWith (".hh")
+        || _file_name.endsWith (".hpp")
+        || _file_name.endsWith (".h++"))
     {
       lexer = new QsciLexerCPP ();
-    }
-  else if (_file_name.endsWith (".sh"))
-    {
-      lexer = new QsciLexerBash ();
     }
   else if (_file_name.endsWith (".pl"))
     {
@@ -262,6 +265,10 @@ file_editor_tab::update_lexer ()
   else if (_file_name.endsWith (".diff"))
     {
       lexer = new QsciLexerDiff ();
+    }
+  else // Default to bash lexer.
+    {
+      lexer = new QsciLexerBash ();
     }
 
   QSettings *settings = resource_manager::instance ()->get_settings ();

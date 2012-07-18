@@ -26,22 +26,35 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   setObjectName ("WorkspaceView");
   setWindowTitle (tr ("Workspace"));
 
+  // Create a new workspace model.
   _workspace_model = new workspace_model ();
 
-  _workspace_tree_view = new QTreeView (this);
-  _workspace_tree_view->setHeaderHidden (false);
-  _workspace_tree_view->setAlternatingRowColors (true);
-  //_workspace_tree_view->setAnimated (true);
-  _workspace_tree_view->setModel (_workspace_model);
-  _workspace_tree_view->setTextElideMode (Qt::ElideRight);
-  _workspace_tree_view->setWordWrap (false);
+  _workspace_tree_view = new QTreeView (this);            // Create a new tree view.
+  _workspace_tree_view->setHeaderHidden (false);          // Do not show header columns.
+  _workspace_tree_view->setAlternatingRowColors (true);   // Activate alternating row colors.
+  _workspace_tree_view->setAnimated (false);              // Deactivate animations because of strange glitches.
+  _workspace_tree_view->setTextElideMode (Qt::ElideRight);// Elide text to the right side of the cells.
+  _workspace_tree_view->setWordWrap (false);              // No wordwrapping in cells.
+  _workspace_tree_view->setModel (_workspace_model);      // Assign model.
 
+  // Set an empty widget, so we can assign a layout to it.
   setWidget (new QWidget (this));
+
+  // Create a new layout and add widgets to it.
   QVBoxLayout *layout = new QVBoxLayout ();
   layout->addWidget (_workspace_tree_view);
   layout->setMargin (2);
+
+  // Set the empty widget to have our layout.
   widget ()->setLayout (layout);
 
+  // Initialize collapse/expand state of the workspace subcategories.
+  _explicit_collapse.local      = false;
+  _explicit_collapse.global     = false;
+  _explicit_collapse.persistent = false;
+  _explicit_collapse.hidden     = false;
+
+  // Connect signals and slots.
   connect (this, SIGNAL (visibilityChanged (bool)),
            this, SLOT(handle_visibility_changed (bool)));
 
@@ -53,10 +66,9 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   connect (_workspace_tree_view, SIGNAL (expanded (QModelIndex)),
            this, SLOT (expand_requested (QModelIndex)));
 
-  _explicit_collapse.local = false;
-  _explicit_collapse.global = false;
-  _explicit_collapse.persistent = false;
-  _explicit_collapse.hidden = false;
+  connect (_workspace_tree_view, SIGNAL (doubleClicked (QModelIndex)),
+           this, SLOT (item_double_clicked (QModelIndex)));
+
 }
 
 void
@@ -169,6 +181,13 @@ workspace_view::expand_requested (QModelIndex index)
     _explicit_collapse.persistent = false;
   if (item_data[0] == "Hidden")
     _explicit_collapse.hidden = false;
+}
+
+void
+workspace_view::item_double_clicked (QModelIndex index)
+{
+  Q_UNUSED (index);
+  // TODO: Implement opening a dialog that allows the user to change a variable in the workspace.
 }
 
 void

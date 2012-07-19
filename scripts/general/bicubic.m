@@ -38,7 +38,7 @@ function zi = bicubic (x, y, z, xi, yi, extrapval, spline_alpha)
     print_usage ();
   endif
 
-  if (nargin == 7 && isscalar(spline_alpha))
+  if (nargin == 7 && isscalar (spline_alpha))
     a = spline_alpha;
   else
     a = 0.5;
@@ -240,8 +240,8 @@ endfunction
 %! x = linspace (1, -1, 30);
 %! [xx2, yy2] = meshgrid (x);
 %! z1 = interp2 (xx, yy, z, xx2, yy2, "cubic");
-%! z2 = interp2 (fliplr(xx), flipud(yy), fliplr(flipud(z)),
-%!               fliplr(xx2), flipud(yy2), "cubic");
+%! z2 = interp2 (fliplr (xx), flipud (yy), fliplr (flipud(z)),
+%!               fliplr (xx2), flipud (yy2), "cubic");
 %! z2 = fliplr (flipud (z2));
 %! assert (z1, z2, 100 * eps ())
 

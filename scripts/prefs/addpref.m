@@ -45,7 +45,7 @@ function addpref (group, pref, val)
         endif
       elseif (iscellstr (pref))
         if (size_equal (pref, val))
-          for i = 1:numel(pref)
+          for i = 1:numel (pref)
             if (isfield (group, pref{i}))
               error ("preference %s already exists in group %s",
                      pref{i}, group);

@@ -224,7 +224,7 @@ endfunction
 %! x = gmres (@(x) A*x, b, dim, 1e-10, 1e6, @(x) diag (diag (A)) \ x, [], []);
 %! assert (x, A\b, 1e-9*norm (x, Inf));
 %!test
-%! x = gmres (@(x) A*x, b, dim, 1e-10, 1e6, @(x) x./diag(A), [], []);
+%! x = gmres (@(x) A*x, b, dim, 1e-10, 1e6, @(x) x ./ diag (A), [], []);
 %! assert (x, A\b, 1e-7*norm (x, Inf));
 
 

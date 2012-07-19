@@ -252,7 +252,7 @@ function [r, p, k, e] = residue (b, a, varargin)
 
   A = zeros (border+1, border+1);
   B = prepad (reshape (b, [numel(b), 1]), border+1, 0);
-  for ip = 1:numel(p)
+  for ip = 1:numel (p)
     ri = zeros (size (p));
     ri(ip) = 1;
     A(:,ip) = prepad (rresidue (ri, p, [], toler), border+1, 0).';
@@ -286,14 +286,14 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
   endif
 
   if (numel (e))
-    indx = 1:numel(p);
+    indx = 1:numel (p);
   else
     [e, indx] = mpoles (p, toler, 0);
     p = p (indx);
     r = r (indx);
   endif
 
-  indx = 1:numel(p);
+  indx = 1:numel (p);
 
   for n = indx
     pn = [1, -p(n)];

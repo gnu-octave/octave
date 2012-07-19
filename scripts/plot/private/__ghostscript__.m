@@ -49,12 +49,12 @@ function [gs_cmd, cleanup_cmd] = __ghostscript__ (varargin);
   n = find (cellfun ("isclass", args, "struct"));
   if (! isempty (n))
     f = fieldnames (args{n});
-    for m = 1:numel(f)
+    for m = 1:numel (f)
       opts.(f{m}) = args{n}.(f{m});
     endfor
     args(n) = [];
   endif
-  for n = 1:2:numel(args)
+  for n = 1:2:numel (args)
     opts.(args{n}) = args{n+1};
   endfor
 

@@ -104,7 +104,7 @@ function h = slice (varargin)
     x = varargin{1};
     y = varargin{2};
     z = varargin{3};
-    if (all ([isvector(x), isvector(y), isvector(z)]))
+    if (isvector (x) && isvector (y) && isvector (z)]))
       [x, y, z] = meshgrid (x, y, z);
     elseif (ndims (x) == 3 && size_equal (x, y, z))
       ## Do nothing.
@@ -120,7 +120,7 @@ function h = slice (varargin)
 
   if (any ([isvector(sx), isvector(sy), isvector(sz)]))
     have_sval = true;
-  elseif (ndims(sx) == 2 && size_equal (sx, sy, sz))
+  elseif (ndims (sx) == 2 && size_equal (sx, sy, sz))
     have_sval = false;
   else
     error ("slice: dimensional mismatch for (XI, YI, ZI) or (SX, SY, SZ)");
@@ -135,10 +135,10 @@ function h = slice (varargin)
 
   if (have_sval)
     ns = length (sx) + length (sy) + length (sz);
-    hs = zeros(ns,1);
+    hs = zeros (ns,1);
     [ny, nx, nz] = size (v);
-    if (length(sz) > 0)
-      for i = 1:length(sz)
+    if (length (sz) > 0)
+      for i = 1:length (sz)
         [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)),
                                  squeeze (y(:,1,1)), sz(i));
         vz = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
@@ -147,7 +147,7 @@ function h = slice (varargin)
     endif
 
     if (length (sy) > 0)
-      for i = length(sy):-1:1
+      for i = length (sy):-1:1
         [xi, yi, zi] = meshgrid (squeeze (x(1,:,1)), sy(i), squeeze (z(1,1,:)));
         vy = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
         tmp(sidx++) = surface (squeeze (xi),
@@ -157,7 +157,7 @@ function h = slice (varargin)
     endif
 
     if (length (sx) > 0)
-      for i = length(sx):-1:1
+      for i = length (sx):-1:1
         [xi, yi, zi] = meshgrid (sx(i), squeeze (y(:,1,1)), squeeze (z(1,1,:)));
         vx = squeeze (interp3 (x, y, z, v, xi, yi, zi, method));
         tmp(sidx++) = surface (squeeze (sx(i) * ones (size (zi))),

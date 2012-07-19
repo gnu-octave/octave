@@ -35,7 +35,7 @@ function [X, map] = gray2ind (I, n = 64)
   if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-  C = class(I);
+  C = class (I);
   if (! ismatrix (I) || ndims (I) != 2)
     error ("gray2ind: first input argument must be a gray scale image");
   endif

@@ -151,7 +151,7 @@ function opts = __gnuplot_print__ (opts)
 
   opts.pipeline = pipeline;
 
-  for n = 1:numel(pipeline)
+  for n = 1:numel (pipeline)
     if (opts.debug)
       fprintf ("gnuplot-pipeline: '%s'\n", pipeline{n});
     endif
@@ -170,12 +170,12 @@ endfunction
 function eps_drawnow (opts, epsfile, gp_opts)
   [h, fontsize] = get_figure_text_objs (opts);
   unwind_protect
-    for n = 1:numel(h)
+    for n = 1:numel (h)
       set (h(n), "fontsize", 2 * fontsize{n});
     endfor
     local_drawnow (sprintf ("postscript eps %s", gp_opts), epsfile, opts);
   unwind_protect_cleanup
-    for n = 1:numel(h)
+    for n = 1:numel (h)
       set (h(n), "fontsize", fontsize{n});
     endfor
   end_unwind_protect
@@ -196,7 +196,7 @@ function local_drawnow (term, file, opts)
 endfunction
 
 function f = font_spec (opts, varargin)
-  for n = 1:2:numel(varargin)
+  for n = 1:2:numel (varargin)
     opts.(varargin{n}) = varargin{n+1};
   endfor
   f = "";

@@ -260,7 +260,7 @@ function [x, fval, info, output, grad, hess] = fminunc (fcn, x0, options = struc
       endif
 
       ## Update delta.
-      if (ratio < min(max(0.1, 0.8*lastratio), 0.9))
+      if (ratio < min (max (0.1, 0.8*lastratio), 0.9))
         delta *= decfac;
         decfac ^= 1.4142;
         if (delta <= 1e1*macheps*xn)

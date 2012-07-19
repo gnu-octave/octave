@@ -23,8 +23,8 @@
 ##
 ## @example
 ## @group
-## (I - beta*housv*housv')x =  norm(x)*e(j) if x(j) < 0,
-## (I - beta*housv*housv')x = -norm(x)*e(j) if x(j) >= 0
+## (I - beta*housv*housv')x =  norm (x)*e(j) if x(j) < 0,
+## (I - beta*housv*housv')x = -norm (x)*e(j) if x(j) >= 0
 ## @end group
 ## @end example
 ##
@@ -66,7 +66,7 @@ function [housv, beta, zer] = housh (x, j, z)
   ## Check for valid inputs.
   if (! isvector (x) && ! isscalar (x))
     error ("housh: first input must be a vector");
-  elseif (! isscalar(j))
+  elseif (! isscalar (j))
     error ("housh: second argment must be an integer scalar");
   else
     housv = x;

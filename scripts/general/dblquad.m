@@ -67,7 +67,7 @@ function q = dblquad (f, xa, xb, ya, yb, tol = 1e-6, quadf = @quadcc, varargin)
 endfunction
 
 function q = __dblquad_inner__ (y, f, xa, xb, tol, quadf, varargin)
-  q = zeros (size(y));
+  q = zeros (size (y));
   for i = 1 : length (y)
     q(i) = feval (quadf, @(x) f(x, y(i), varargin{:}), xa, xb, tol);
   endfor

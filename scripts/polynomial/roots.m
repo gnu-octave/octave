@@ -81,7 +81,7 @@ function r = roots (v)
 
   if (nargin != 1 || min (size (v)) > 1)
     print_usage ();
-  elseif (any (isnan(v) | isinf(v)))
+  elseif (any (isnan (v) | isinf (v)))
     error ("roots: inputs must not contain Inf or NaN");
   endif
 

@@ -37,7 +37,7 @@ function res = isprop (h, prop)
   endif
 
   res = false (size (h));
-  for n = 1:numel(res)
+  for n = 1:numel (res)
     res(n) = true;
     try
       v = get (h(n), prop);

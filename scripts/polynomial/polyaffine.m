@@ -73,7 +73,7 @@ endfunction
 %! f = [1/5 4/5 -7/5 -2];
 %! g = polyaffine (f, [1, 1.2]);
 %! x = linspace (-4,4,100);
-%! plot (x,polyval(f, x), x,polyval(g, x));
+%! plot (x,polyval (f, x), x,polyval (g, x));
 %! legend ("original", "affine");
 %! axis ([-4 4 -3 5]);
 %! grid on;

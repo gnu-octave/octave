@@ -124,9 +124,9 @@ endfunction
 %! assert (x, polyval (p,x), eps);
 %! x = x(:);
 %! assert (x, polyval (p,x), eps);
-%! x = reshape(x, [2, 5]);
+%! x = reshape (x, [2, 5]);
 %! assert (x, polyval (p,x), eps);
-%! x = reshape(x, [5, 2]);
+%! x = reshape (x, [5, 2]);
 %! assert (x, polyval (p,x), eps);
 %! x = reshape (x, [1, 1, 5, 2]);
 %! assert (x, polyval (p,x), eps);

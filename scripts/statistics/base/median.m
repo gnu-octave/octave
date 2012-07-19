@@ -117,7 +117,7 @@ endfunction
 %!error median (1, 2, 3)
 %!error median ({1:5})
 %!error median (['A'; 'B'])
-%!error median (1, ones(2,2))
+%!error median (1, ones (2,2))
 %!error median (1, 1.5)
 %!error median (1, 0)
 

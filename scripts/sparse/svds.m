@@ -85,7 +85,7 @@
 ## @end example
 ##
 ## @code{svds} is best for finding only a few singular values from a large
-## sparse matrix.  Otherwise, @code{svd (full(@var{A}))} will likely be more
+## sparse matrix.  Otherwise, @code{svd (full (@var{A}))} will likely be more
 ## efficient.
 ## @end deftypefn
 ## @seealso{svd, eigs}
@@ -98,7 +98,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     print_usage ();
   endif
 
-  if (ndims(A) > 2)
+  if (ndims (A) > 2)
     error ("svds: A must be a 2D matrix");
   endif
 
@@ -194,7 +194,7 @@ function [u, s, v, flag] = svds (A, k, sigma, opts)
     ## norm since if we don't we might end up with too many singular
     ## values.
     tol = norma * opts.tol;
-    ind = find(s > tol);
+    ind = find (s > tol);
     if (length (ind) < k)
       ## Too few eigenvalues returned.  Add in any zero eigenvalues of B,
       ## including the nominally negative ones.
@@ -248,7 +248,7 @@ endfunction
 %! A = sparse ([3:n,1:n,1:(n-2)],[1:(n-2),1:n,3:n],[ones(1,n-2),0.4*n*ones(1,n),ones(1,n-2)]);
 %! [u,s,v] = svd (full (A));
 %! s = diag (s);
-%! [~, idx] = sort (abs(s));
+%! [~, idx] = sort (abs (s));
 %! s = s(idx);
 %! u = u(:, idx);
 %! v = v(:, idx);
@@ -272,7 +272,7 @@ endfunction
 %! assert (s2, s(k:-1:1), 1e-10);
 %!
 %!testif HAVE_ARPACK, HAVE_UMFPACK
-%! idx = floor(n/2);
+%! idx = floor (n/2);
 %! % Don't put sigma right on a singular value or there are convergence issues
 %! sigma = 0.99*s(idx) + 0.01*s(idx+1);
 %! [u2,s2,v2,flag] = svds (A,k,sigma,opts);

@@ -332,7 +332,7 @@ endfunction
 %!test
 %! str = "13, 72, NA, str1, 25\r\n// Middle line\r\n36, na, 05, str3, 6";
 %! a = textscan (str, "%d %n %f %s %n", "delimiter", ",","treatAsEmpty", {"NA", "na"},"commentStyle", "//");
-%! assert (a{1}, int32([13; 36]));
+%! assert (a{1}, int32 ([13; 36]));
 %! assert (a{2}, [72; NaN]);
 %! assert (a{3}, [NaN; 5]);
 %! assert (a{4}, {"str1"; "str3"});
@@ -345,9 +345,9 @@ endfunction
 %! str = [str "Km:25 = hhhZ\r\n"];
 %! fmt = "Km:%d = hhh%1sjjj miles%dhour";
 %! a = textscan (str, fmt, "delimiter", " ");
-%! assert (a{1}', int32([10 15 2 25]));
+%! assert (a{1}', int32 ([10 15 2 25]));
 %! assert (a{2}', {'B' 'J' 'R' 'Z'});
-%! assert (a{3}', int32([16 241 3 0]));
+%! assert (a{3}', int32 ([16 241 3 0]));
 
 %% Test with default endofline parameter
 %!test
@@ -357,7 +357,7 @@ endfunction
 %% Test with endofline parameter set to "" (empty) - newline should be in word
 %!test
 %! c = textscan ("L1\nL2", "%s", "endofline", "");
-%! assert (int8(c{:}{:}), int8([ 76,  49,  10,  76,  50 ]));
+%! assert (int8 (c{:}{:}), int8 ([ 76,  49,  10,  76,  50 ]));
 
 %!test
 %! # No delimiters at all besides EOL.  Skip fields, even empty fields
@@ -372,8 +372,8 @@ endfunction
 %! str = sprintf ("%g miles/hr = %g (%g) kilometers (meters)/hr\n", b);
 %! fmt = "%f miles%s %s %f (%f) kilometers %*s";
 %! c = textscan (str, fmt, "collectoutput", 1);
-%! assert (size(c{3}), [10, 2]);
-%! assert (size(c{2}), [10, 2]);
+%! assert (size (c{3}), [10, 2]);
+%! assert (size (c{2}), [10, 2]);
 
 %!test
 %% CollectOutput test with uneven column length files
@@ -383,9 +383,9 @@ endfunction
 %! str = [str "110 miles/hr"];
 %! fmt = "%f miles%s %s %f (%f) kilometers %*s";
 %! c = textscan (str, fmt, "collectoutput", 1);
-%! assert (size(c{1}), [11, 1]);
-%! assert (size(c{3}), [11, 2]);
-%! assert (size(c{2}), [11, 2]);
+%! assert (size (c{1}), [11, 1]);
+%! assert (size (c{3}), [11, 2]);
+%! assert (size (c{2}), [11, 2]);
 %! assert (c{3}(end), NaN);
 %! assert (c{2}{11, 1}, "/hr");
 %! assert (isempty (c{2}{11, 2}), true);
@@ -400,5 +400,5 @@ endfunction
 
 %! Test incomplete first data line
 %! R = textscan (['Empty1' char(10)], 'Empty%d %f');
-%! assert (R{1}, int32(1));
-%! assert (isempty(R{2}), true);
+%! assert (R{1}, int32 (1));
+%! assert (isempty (R{2}), true);

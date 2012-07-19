@@ -74,9 +74,9 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     endif
     fstr = formula (fun);
     if (isplot)
-      xarg = argnames(fun){1};
+      xarg = (argnames (fun)){1};
       if (nargs == 2)
-        yarg = argnames(fun){2};
+        yarg = (argnames (fun)){2};
       else
         yarg = "";
       endif
@@ -87,8 +87,8 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       xarg = "";
       yarg = "";
     else
-      xarg = argnames(fun){1};
-      yarg = argnames(fun){2};
+      xarg = (argnames (fun)){1};
+      yarg = (argnames (fun)){2};
     endif
   elseif (strcmp (typeinfo (fun), "inline function"))
     if (isplot && length (argnames (fun)) == 2)
@@ -99,9 +99,9 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
     fun = vectorize (fun);
     fstr = formula (fun);
     if (isplot)
-      xarg = argnames(fun){1};
+      xarg = (argnames (fun)){1};
       if (nargs == 2)
-        yarg = argnames(fun){2};
+        yarg = (argnames (fun)){2};
       else
         yarg = "";
       endif
@@ -112,8 +112,8 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
       xarg = "";
       yarg = "";
     else
-      xarg = argnames(fun)(1);
-      yarg = argnames(fun)(2);
+      xarg = (argnames (fun))(1);
+      yarg = (argnames (fun))(2);
     endif
   elseif (isa (fun, "function_handle"))
     fstr = func2str (fun);
@@ -392,10 +392,10 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
           yrange = [XX(1), XX(end)];
         endif
 
-        idx = 2 : length(Z);
+        idx = 2 : length (Z);
         idx = find (((Z(idx) > yrange(2) / 2) & (Z(idx-1) < yrange(1) / 2)) |
                  ((Z(idx) < yrange(1) / 2) & (Z(idx-1) > yrange (2) / 2)));
-        if (any(idx))
+        if (any (idx))
           Z(idx) = NaN;
         endif
       else
@@ -441,5 +441,5 @@ endfunction
 
 function x = __eliminate_sing__ (x)
   x (isinf (x)) = NaN;
-  x (abs (del2 (x)) > 0.2 * (max(x(:)) - min(x(:)))) = NaN;
+  x (abs (del2 (x)) > 0.2 * (max (x(:)) - min (x(:)))) = NaN;
 endfunction

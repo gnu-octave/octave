@@ -95,7 +95,7 @@
 
 ## Author: Martin Helm <martin@mhelm.de>
 
-function varargout = isonormals(varargin)
+function varargout = isonormals (varargin)
   na = nargin;
   negate = false;
   if (ischar (varargin{nargin}))
@@ -122,7 +122,7 @@ function varargout = isonormals(varargin)
     otherwise
       print_usage ();
   endswitch
-  if (ismatrix (vp) && size (vp,2) == 3)
+  if (ismatrix (vp) && columns (vp) == 3)
     pa = [];
     v = vp;
   elseif (ishandle (vp))

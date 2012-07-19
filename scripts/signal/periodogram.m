@@ -40,7 +40,7 @@
 ## @item win: weight data with window, x.*win is used for further computation,
 ## if window is empty, a rectangular window is used.
 ##
-## @item nfft: number of frequency bins, default max(256, 2.^ceil(log2(length(x)))).
+## @item nfft: number of frequency bins, default max (256, 2.^ceil (log2 (length (x)))).
 ##
 ## @item Fs: sampling rate, default 1.
 ##
@@ -108,7 +108,7 @@ function [pxx, f] = periodogram (x, varargin)
   if (!  isempty (window))
     if (all (size (x) == size (window)))
       x .*= window;
-    elseif (size (x, 1) == size (window, 1) && size (window, 2) == 1)
+    elseif (rows (x) == rows (window) && columns (window) == 1)
       x .*= window (:,ones (1,c));
     endif;
   endif

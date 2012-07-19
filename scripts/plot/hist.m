@@ -93,7 +93,7 @@ function [nn, xx] = hist (y, varargin)
   if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
     x = [0.5:n]'/n;
-    x = x * (max_val - min_val) + ones(size(x)) * min_val;
+    x = x * (max_val - min_val) + ones (size (x)) * min_val;
   else
     ## nargin is either 2 or 3
     x = varargin{iarg++};
@@ -160,7 +160,7 @@ function [nn, xx] = hist (y, varargin)
       nn = freq;
       xx = x;
     endif
-  elseif (size (freq, 2) != 1)
+  elseif (columns (freq) != 1)
     bar (x, freq, 0.8, varargin{iarg:end});
   else
     bar (x, freq, 1.0, varargin{iarg:end});

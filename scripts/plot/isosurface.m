@@ -118,7 +118,7 @@
 
 ## Author: Martin Helm <martin@mhelm.de>
 
-function varargout = isosurface(varargin)
+function varargout = isosurface (varargin)
 
   if (nargin < 2 || nargin > 8 || nargout > 3)
     print_usage ();

@@ -144,15 +144,15 @@ endfunction
 %! assert (isscalar (c));
 %! assert (c, 2.5);
 
-%!assert(cov (5), 0)
-%!assert(cov (single(5)), single(0))
+%!assert (cov (5), 0)
+%!assert (cov (single (5)), single (0))
 
 %!test
 %! x = [1:5];
 %! c = cov (x, 0);
-%! assert(c, 2.5);
+%! assert (c, 2.5);
 %! c = cov (x, 1);
-%! assert(c, 2);
+%! assert (c, 2);
 
 %% Test input validation
 %!error cov ()

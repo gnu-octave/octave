@@ -48,7 +48,7 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
   if (! (isvector (x) && isvector (y)))
-    error("z_test_2: both X and Y must be vectors");
+    error ("z_test_2: both X and Y must be vectors");
   elseif (! (isscalar (v_x) && (v_x > 0)
              && isscalar (v_y) && (v_y > 0)))
     error ("z_test_2: both V_X and V_Y must be positive scalars");
@@ -79,9 +79,9 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
 
   if (nargout == 0)
     s = cstrcat ("Two-sample Z-test of mean(x) == mean(y) against ",
-                "mean(x) %s mean(y),\n",
-                "with known var(x) == %g and var(y) == %g:\n",
-                "  pval = %g\n");
+                 "mean(x) %s mean(y),\n",
+                 "with known var(x) == %g and var(y) == %g:\n",
+                 "  pval = %g\n");
     printf (s, alt, v_x, v_y, pval);
   endif
 

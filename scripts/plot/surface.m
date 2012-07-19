@@ -145,7 +145,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   elseif (firststring == 1)
     x = 1:3;
     y = (x).';
-    c = z = eye(3);
+    c = z = eye (3);
   else
     bad_usage = true;
   endif
@@ -175,8 +175,8 @@ endfunction
 %!   assert (findobj (hf, "type", "surface"), h);
 %!   assert (get (h, "xdata"), 1:3, eps);
 %!   assert (get (h, "ydata"), (1:3)', eps);
-%!   assert (get (h, "zdata"), eye(3));
-%!   assert (get (h, "cdata"), eye(3));
+%!   assert (get (h, "zdata"), eye (3));
+%!   assert (get (h, "cdata"), eye (3));
 %!   assert (get (h, "type"), "surface");
 %!   assert (get (h, "linestyle"), get (0, "defaultsurfacelinestyle"));
 %!   assert (get (h, "linewidth"), get (0, "defaultsurfacelinewidth"), eps);

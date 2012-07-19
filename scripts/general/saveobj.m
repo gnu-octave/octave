@@ -40,5 +40,5 @@
 ## @end deftypefn
 
 function b = saveobj (a)
-  error ("saveobj: not defined for class \"%s\"", class(a));
+  error ('saveobj: not defined for class "%s"', class (a));
 endfunction

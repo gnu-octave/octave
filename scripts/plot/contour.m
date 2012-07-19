@@ -83,7 +83,7 @@ endfunction
 %! [theta, r] = meshgrid (linspace (0,2*pi,64), linspace (0,1,64));
 %! [X, Y] = pol2cart (theta, r);
 %! Z = sin (2*theta) .* (1-r);
-%! contour (X, Y, abs(Z), 10);
+%! contour (X, Y, abs (Z), 10);
 
 %!demo
 %! clf;

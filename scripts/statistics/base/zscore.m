@@ -52,8 +52,8 @@ function [z, mu, sigma] = zscore (x, opt, dim)
   if (nargin < 2)
     opt = 0;
   else
-    if (opt != 0 && opt != 1 || ! isscalar(opt))
-      error("zscore: OPT must be empty, 0, or 1");
+    if (opt != 0 && opt != 1 || ! isscalar (opt))
+      error ("zscore: OPT must be empty, 0, or 1");
     endif
   endif
 

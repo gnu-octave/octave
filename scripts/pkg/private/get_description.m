@@ -35,7 +35,7 @@ function desc = get_description (filename)
   while (line != -1)
     if (line(1) == "#")
       ## Comments, do nothing.
-    elseif (isspace(line(1)))
+    elseif (isspace (line(1)))
       ## Continuation lines
       if (exist ("keyword", "var") && isfield (desc, keyword))
         desc.(keyword) = cstrcat (desc.(keyword), " ", deblank (line));

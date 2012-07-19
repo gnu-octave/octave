@@ -44,9 +44,9 @@
 ## @end deftypefn
 
 ## FIXME: subsort returned pairs by imaginary magnitude
-## FIXME: Why doesn't exp(2i*pi*[0:4]'/5) produce exact conjugates. Does
-## FIXME:    it in Matlab?  The reason is that complex pairs are supposed
-## FIXME:    to be exact conjugates, and not rely on a tolerance test.
+## FIXME: Why doesn't exp (2i*pi*[0:4]'/5) produce exact conjugates.  Does
+## FIXME: it in Matlab?  The reason is that complex pairs are supposed
+## FIXME: to be exact conjugates, and not rely on a tolerance test.
 
 ## 2006-05-12 David Bateman - Modified for NDArrays
 
@@ -82,7 +82,7 @@ function y = cplxpair (z, tol, dim)
       dim = 1;
     endif
   else
-    dim = floor(dim);
+    dim = floor (dim);
     if (dim < 1 || dim > nd)
       error ("cplxpair: invalid dimension along which to sort");
     endif
@@ -105,7 +105,7 @@ function y = cplxpair (z, tol, dim)
   if (isa (z, "single"))
     cls = "single";
   endif
-  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin(cls)) < tol);
+  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin (cls)) < tol);
   q = sparse (idxi, idxj, 1, n, m);
   nr = sum (q, 1);
   [q, idx] = sort (q, 1);

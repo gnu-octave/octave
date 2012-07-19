@@ -31,7 +31,7 @@ function retval = triangle_sw (n, b)
     print_usage ();
   endif
 
-  retval = zeros(n,1);
+  retval = zeros (n,1);
   retval(1) = 1 / b;
 
   l = (2:n)' - 1;

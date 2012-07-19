@@ -38,7 +38,7 @@ function retval = __plt__ (caller, h, varargin)
 
     hlegend = [];
     fkids = get (gcf (), "children");
-    for i = 1 : numel(fkids)
+    for i = 1 : numel (fkids)
       if (ishandle (fkids (i)) && strcmp (get (fkids (i), "type"), "axes")
           && (strcmp (get (fkids (i), "tag"), "legend")))
         udata = get (fkids (i), "userdata");

@@ -156,7 +156,7 @@ function [h, xs, ys] = __stairs__ (doplot, varargin)
     h = [];
     unwind_protect
       hold_state = get (gca (), "nextplot");
-      for i = 1 : size(y, 2)
+      for i = 1 : columns (y)
         hg = hggroup ();
         h = [h; hg];
         args = __add_datasource__ ("stairs", hg, {"x", "y"}, varargin{:});

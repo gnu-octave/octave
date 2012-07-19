@@ -47,7 +47,7 @@ function retval = semilogy (varargin)
     newplot ();
 
     set (h, "yscale", "log");
-    if (any( strcmp (get (gca, "nextplot"), {"new", "replace"})))
+    if (any (strcmp (get (gca, "nextplot"), {"new", "replace"})))
       set (h, "yminortick", "on");
     endif
 

@@ -80,9 +80,9 @@ function h = area (varargin)
       y = y(:);
     endif
     if (isempty (x))
-      x = repmat ([1:size(y, 1)]', 1, size (y, 2));
+      x = repmat ([1:rows(y)]', 1, columns (y));
     elseif (isvector (x))
-      x = repmat (x(:),  1, size (y, 2));
+      x = repmat (x(:),  1, columns (y));
     endif
 
     oldax = gca ();
@@ -107,7 +107,7 @@ function retval = __area__ (ax, x, y, bv, varargin)
   y0 = bv * ones (1, rows (y));
   y0 = zeros (1, rows (y));
   retval = [];
-  for i = 1: size (y, 2);
+  for i = 1: columns (y);
     hg = hggroup ();
     retval = [retval; hg];
     args = __add_datasource__ ("area", hg, {"x", "y"}, varargin{:});

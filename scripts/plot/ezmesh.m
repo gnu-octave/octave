@@ -58,9 +58,9 @@
 ##
 ## @example
 ## @group
-## fx = @@(s,t) cos (s) .* cos(t);
-## fy = @@(s,t) sin (s) .* cos(t);
-## fz = @@(s,t) sin(t);
+## fx = @@(s,t) cos (s) .* cos (t);
+## fy = @@(s,t) sin (s) .* cos (t);
+## fz = @@(s,t) sin (t);
 ## ezmesh (fx, fy, fz, [-pi, pi, -pi/2, pi/2], 20);
 ## @end group
 ## @end example
@@ -92,8 +92,8 @@ endfunction
 %!demo
 %! clf;
 %! colormap ('default');
-%! fx = @(s,t) cos (s) .* cos(t);
-%! fy = @(s,t) sin (s) .* cos(t);
+%! fx = @(s,t) cos (s) .* cos (t);
+%! fy = @(s,t) sin (s) .* cos (t);
 %! fz = @(s,t) sin (t);
 %! ezmesh (fx, fy, fz, [-pi,pi,-pi/2,pi/2], 20);
 

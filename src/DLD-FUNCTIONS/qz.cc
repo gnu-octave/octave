@@ -534,7 +534,7 @@ compatibility with @sc{matlab}.\n\
   ComplexMatrix CQ(nn,nn), CZ(nn,nn), CVR(nn,nn), CVL(nn,nn);
   octave_idx_type ilo, ihi, info;
   char compq = (nargout >= 3 ? 'V' : 'N');
-  char compz = (nargout >= 4 ? 'V' : 'N');
+  char compz = ((nargout >= 4 || nargin == 3)? 'V' : 'N');
 
   // Initialize Q, Z to identity if we need either of them.
   if (compq == 'V' || compz == 'V')
@@ -1182,7 +1182,12 @@ compatibility with @sc{matlab}.\n\
 
     case 3:
       if (nargin == 3)
-        retval(2) = CZ;
+        {
+          if (complex_case)
+            retval(2) = CZ;
+          else
+            retval(2) = ZZ;
+        }
       else
         {
           if (complex_case)
@@ -1264,5 +1269,10 @@ compatibility with @sc{matlab}.\n\
 %! assert (q * a * z, aa, norm (aa) * 1e-14);
 %! assert (q * b * z, bb, norm (bb) * 1e-14);
 
-## FIXME: Still need a test for third form of calling qz
+%!test
+%! A = [0, 0, -1, 0; 1, 0, 0, 0; -1, 0, -2, -1; 0, -1, 1, 0];
+%! B = [0, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1];
+%! [AA, BB, Q, Z1] = qz (A, B);
+%! [AA, BB, Z2] = qz (A, B, '-');
+%! assert (Z1, Z2);
 */

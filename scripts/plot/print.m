@@ -333,7 +333,7 @@ function print (varargin)
     if (opts.force_solid != 0)
       h = findall (opts.figure, "-property", "linestyle");
       m = numel (props);
-      for n = 1:numel(h)
+      for n = 1:numel (h)
         props(m+n).h = h(n);
         props(m+n).name = "linestyle";
         props(m+n).value = {get(h(n), "linestyle")};
@@ -349,12 +349,12 @@ function print (varargin)
     if (opts.use_color < 0
         && ! strcmp (get (opts.figure, "__graphics_toolkit__"), "gnuplot"))
       color_props = {"color", "facecolor", "edgecolor", "colormap"};
-      for c = 1:numel(color_props)
+      for c = 1:numel (color_props)
         h = findall (opts.figure, "-property", color_props{c});
         hnone = findall (opts.figure, color_props{c}, "none");
         h = setdiff (h, hnone);
         m = numel (props);
-        for n = 1:numel(h)
+        for n = 1:numel (h)
           if (ishandle (h(n)))
             ## Need to verify objects exist since callbacks may delete objects
             ## as the colors for others are modified.
@@ -364,7 +364,7 @@ function print (varargin)
             props(end).value = {get(h(n), color_props{c})};
             if (isnumeric (rgb))
               ## convert RGB color to RGB gray scale
-              xfer = repmat ([0.30, 0.59, 0.11], size (rgb, 1), 1);
+              xfer = repmat ([0.30, 0.59, 0.11], rows (rgb), 1);
               ggg = repmat (sum (xfer .* rgb, 2), 1, 3);
               set (h(n), color_props{c}, ggg);
             endif
@@ -376,7 +376,7 @@ function print (varargin)
     if (! isempty (opts.font) || ! isempty (opts.fontsize))
       h = findall (opts.figure, "-property", "fontname");
       m = numel (props);
-      for n = 1:numel(h)
+      for n = 1:numel (h)
         if (ishandle (h(n)))
           if (! isempty (opts.font))
             props(end+1).h = h(n);
@@ -393,7 +393,7 @@ function print (varargin)
         endif
       endfor
       if (! isempty (opts.font))
-        set (h(ishandle(h)), "fontname", opts.font);
+        set (h(ishandle (h)), "fontname", opts.font);
       endif
       if (! isempty (opts.fontsize))
         if (ischar (opts.fontsize))
@@ -405,7 +405,7 @@ function print (varargin)
           ## This is done to work around the bbox being whole numbers.
           fontsize = fontsize * opts.scalefontsize;
         endif
-        set (h(ishandle(h)), "fontsize", fontsize);
+        set (h(ishandle (h)), "fontsize", fontsize);
       endif
     endif
 
@@ -420,7 +420,7 @@ function print (varargin)
   unwind_protect_cleanup
     ## restore modified properties
     if (isstruct (props))
-      for n = numel(props):-1:1
+      for n = numel (props):-1:1
         if (ishandle (props(n).h))
           set (props(n).h, props(n).name, props(n).value{1});
         endif
@@ -428,7 +428,7 @@ function print (varargin)
     endif
 
     ## Unlink temporary files
-    for n = 1:numel(opts.unlink)
+    for n = 1:numel (opts.unlink)
       [status, output] = unlink (opts.unlink{n});
       if (status != 0)
         warning ("print.m: %s, '%s'", output, opts.unlink{n});

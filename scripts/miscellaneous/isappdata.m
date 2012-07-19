@@ -30,7 +30,7 @@ function res = isappdata (h, name)
     error ("isappdata: invalid input");
   endif
 
-  for nh = 1:numel(h)
+  for nh = 1:numel (h)
     data = get (h(nh));
     if (isfield (data, "__appdata__") && isfield (data.__appdata__, name))
       res(nh) = true;

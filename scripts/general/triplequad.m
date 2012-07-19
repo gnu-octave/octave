@@ -69,7 +69,7 @@ function q = triplequad (f, xa, xb, ya, yb, za, zb, tol = 1e-6, quadf = @quadcc,
 endfunction
 
 function q = __triplequad_inner__ (y, z, f, xa, xb, tol, quadf, varargin)
-  q = zeros (size(y));
+  q = zeros (size (y));
   for i = 1 : length (y)
     q(i) = feval (quadf, @(x) f (x, y(i), z, varargin{:}), xa, xb, tol);
   endfor

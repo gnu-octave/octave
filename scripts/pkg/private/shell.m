@@ -27,8 +27,8 @@ function [status, output] = shell (cmd)
 
   cmd = strrep (cmd, "\\", "/");
   if (ispc () && ! isunix ())
-    if (isempty(have_sh))
-      if (system("sh.exe -c \"exit\""))
+    if (isempty (have_sh))
+      if (system ("sh.exe -c \"exit\""))
         have_sh = false;
       else
         have_sh = true;

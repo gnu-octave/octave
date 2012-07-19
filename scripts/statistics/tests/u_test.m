@@ -66,7 +66,7 @@ function [pval, z] = u_test (x, y, alt)
   endif
 
   if (! ischar (alt))
-    error("u_test: ALT must be a string");
+    error ("u_test: ALT must be a string");
   endif
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))
     pval = 2 * min (cdf, 1 - cdf);

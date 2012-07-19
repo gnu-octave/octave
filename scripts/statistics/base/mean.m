@@ -143,7 +143,7 @@ endfunction
 %!error mean (1, 2, 3, 4)
 %!error mean ({1:5})
 %!error mean (1, 2, 3)
-%!error mean (1, ones(2,2))
+%!error mean (1, ones (2,2))
 %!error mean (1, 1.5)
 %!error mean (1, 0)
 %!error mean (1, 3)

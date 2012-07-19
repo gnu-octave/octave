@@ -28,7 +28,7 @@
 ## a uniform distribution on [2,4], use
 ##
 ## @example
-## kolmogorov_smirnov_test(x, "unif", 2, 4)
+## kolmogorov_smirnov_test (x, "unif", 2, 4)
 ## @end example
 ##
 ## @noindent

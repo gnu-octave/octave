@@ -70,12 +70,12 @@ function varargout = gradient (m, varargin)
     print_usage ();
   endif
 
-  nargout_with_ans = max(1,nargout);
+  nargout_with_ans = max (1,nargout);
   if (ismatrix (m))
     [varargout{1:nargout_with_ans}] = matrix_gradient (m, varargin{:});
   elseif (isa (m, "function_handle"))
     [varargout{1:nargout_with_ans}] = handle_gradient (m, varargin{:});
-  elseif (ischar(m))
+  elseif (ischar (m))
     [varargout{1:nargout_with_ans}] = handle_gradient (str2func (m), varargin{:});
   else
     error ("gradient: first input must be an array or a function");
@@ -87,13 +87,13 @@ function varargout = matrix_gradient (m, varargin)
   transposed = false;
   if (isvector (m))
     ## make a row vector.
-    transposed = (size (m, 2) == 1);
+    transposed = (columns (m) == 1);
     m = m(:).';
   endif
 
   nd = ndims (m);
   sz = size (m);
-  if (length(sz) > 1)
+  if (length (sz) > 1)
     tmp = sz(1); sz(1) = sz(2); sz(2) = tmp;
   endif
 
@@ -281,7 +281,7 @@ endfunction
 %! assert (all (dY(:) == 0));
 %! assert (all (dZ(:) == 0));
 %! assert (all (dU(:) == 5));
-%! assert (size_equal(dX, dY, dZ, dU, X, Y, Z, U));
+%! assert (size_equal (dX, dY, dZ, dU, X, Y, Z, U));
 %! [dX,dY,dZ,dU] = gradient (U, 5.0);
 %! assert (all (dU(:) == 1));
 %! [dX,dY,dZ,dU] = gradient (U, 1.0, 2.0, 3.0, 2.5);

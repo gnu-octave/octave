@@ -141,7 +141,7 @@ function yi = interp1 (x, y, varargin)
   if (isempty (xi) && firstnumeric && ! ispp)
     xi = y;
     y = x;
-    x = 1:numel(y);
+    x = 1:numel (y);
   endif
 
   ## reshape matrices for convenience
@@ -204,7 +204,7 @@ function yi = interp1 (x, y, varargin)
     if (ispp)
       yi = pp;
     else
-      yi = ppval(pp, reshape (xi, szx));
+      yi = ppval (pp, reshape (xi, szx));
     endif
   case "linear"
     dy = diff (y);
@@ -225,7 +225,7 @@ function yi = interp1 (x, y, varargin)
     if (ispp)
       yi = pp;
     else
-      yi = ppval(pp, reshape (xi, szx));
+      yi = ppval (pp, reshape (xi, szx));
     endif
 
   case "*linear"
@@ -237,7 +237,7 @@ function yi = interp1 (x, y, varargin)
     if (ispp)
       yi = pp;
     else
-      yi = ppval(pp, reshape (xi, szx));
+      yi = ppval (pp, reshape (xi, szx));
     endif
 
   case {"pchip", "*pchip", "cubic", "*cubic"}
@@ -258,7 +258,7 @@ function yi = interp1 (x, y, varargin)
     endif
   case {"spline", "*spline"}
     if (nx == 2 || starmethod)
-      x = linspace(x(1), x(nx), ny);
+      x = linspace (x(1), x(nx), ny);
     endif
 
     if (ispp)

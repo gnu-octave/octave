@@ -23,7 +23,7 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function [Vxyz, idx, frac] = __interp_cube__(x, y, z, val, v, req = "values" )
+function [Vxyz, idx, frac] = __interp_cube__ (x, y, z, val, v, req = "values" )
   if (ismatrix (x) && ndims (x) == 3 && ismatrix (y) && ndims (y) == 3 ...
        && ismatrix (z) && ndims (z) == 3 && size_equal (x, y, z, val))
     x = squeeze (x(1,:,1))(:);
@@ -34,12 +34,12 @@ function [Vxyz, idx, frac] = __interp_cube__(x, y, z, val, v, req = "values" )
     y = y(:);
     z = z(:);
   else
-    error("__interp_cube__: X, Y, Z have wrong dimensions");
+    error ("__interp_cube__: X, Y, Z have wrong dimensions");
   endif
   if (size (val) != [length(x), length(y), length(z)])
     error ("__interp_cube__: VAL has wrong dimensions");
   endif
-  if (size (v, 2) != 3)
+  if (columns (v) != 3)
     error ( "v has to be N*3 matrix");
   endif
   if (!ischar (req))
@@ -101,7 +101,7 @@ function [Vxyz, idx, frac] = __interp_cube__(x, y, z, val, v, req = "values" )
   endswitch
 endfunction
 
-function [Vxyz, idx, frac] = interp_cube_trilin(x, y, z, val, v)
+function [Vxyz, idx, frac] = interp_cube_trilin (x, y, z, val, v)
   [idx, frac] = cube_idx (x(:), y(:), z(:), v);
   sval = size (val);
   i000 = sub2ind (sval, idx(:, 1), idx(:, 2), idx(:, 3));
@@ -126,7 +126,7 @@ function [Vxyz, idx, frac] = interp_cube_trilin(x, y, z, val, v)
     val( i111 ) .* Bx .* By .* Bz;
 endfunction
 
-function [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad(x, y, z, val, v)
+function [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad (x, y, z, val, v)
   [idx, frac] = cube_idx (x(:), y(:), z(:), v);
   sval = size (val);
   i000 = sub2ind (sval, idx(:, 1), idx(:, 2), idx(:, 3));
@@ -169,7 +169,7 @@ function [Dx, Dy, Dz, idx, frac] = interp_cube_trilin_grad(x, y, z, val, v)
     val( i111 ) .* Bx .* By;
 endfunction
 
-function [idx, frac] = cube_idx(x, y, z, v)
+function [idx, frac] = cube_idx (x, y, z, v)
   idx = zeros (size (v));
   frac = zeros (size (v));
   idx(:, 2) = lookup (x(2:end-1), v(:, 1)) + 1;

@@ -196,7 +196,7 @@ function retval = legendre (n, x, normalization)
   ## http://en.wikipedia.org/wiki/Associated_Legendre_function
 
   overflow = false;
-  retval = zeros([n+1, size(x)]);
+  retval = zeros ([n+1, size(x)]);
   for m = 1:n
     lpm1 = scale;
     lpm2 = (2*m-1) .* x .* scale;
@@ -222,7 +222,7 @@ function retval = legendre (n, x, normalization)
       ## normalization == "sch" or normalization == "norm"
       scale = scale / sqrt ((n-m+1)*(n+m))*(2*m-1);
     endif
-    scale = scale .* sqrt(1-x.^2);
+    scale = scale .* sqrt (1-x.^2);
   endfor
 
   retval(n+1,:) = scale(:);

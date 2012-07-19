@@ -56,7 +56,7 @@
 ## @group
 ## a = [1:3; 5:7; 4:6];
 ## s = [0:2; 1:3; 2:4; 3:5; 4:6];
-## [tf, s_idx] = ismember(a, s, "rows")
+## [tf, s_idx] = ismember (a, s, "rows")
 ##      @result{} tf = logical ([1; 0; 1])
 ##      @result{} s_idx = [2; 0; 5];
 ## @end group
@@ -185,12 +185,12 @@ endfunction
 %! assert (a_idx, []);
 
 %!test
-%! [result, a_idx] = ismember([1 2 3 4 5], [3]);
+%! [result, a_idx] = ismember ([1 2 3 4 5], [3]);
 %! assert (result, logical ([0 0 1 0 0]))
 %! assert (a_idx , [0 0 1 0 0]);
 
 %!test
-%! [result, a_idx] = ismember([1 6], [1 2 3 4 5 1 6 1]);
+%! [result, a_idx] = ismember ([1 6], [1 2 3 4 5 1 6 1]);
 %! assert (result, [true true]);
 %! assert (a_idx(2), 7);
 

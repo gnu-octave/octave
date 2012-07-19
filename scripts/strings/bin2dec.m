@@ -60,10 +60,10 @@ function d = bin2dec (s)
 endfunction
 
 
-%!assert(bin2dec ("0000"), 0)
-%!assert(bin2dec ("1110"), 14)
-%!assert(bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1)
-%!assert(bin2dec ({"1110", "1111"}), [14; 15])
+%!assert (bin2dec ("0000"), 0)
+%!assert (bin2dec ("1110"), 14)
+%!assert (bin2dec ("11111111111111111111111111111111111111111111111111111"), 2^53-1)
+%!assert (bin2dec ({"1110", "1111"}), [14; 15])
 %!assert (bin2dec ("1 0 1"), 5)
 %!assert (bin2dec (char ("1 0 1", "   1111")), [5; 15])
 

@@ -37,7 +37,7 @@ function y = spfun (f, S)
   if (isa (f, "function_handle") || isa (f, "inline function"))
     y = sparse (i, j, f(v), m, n);
   else
-    y = sparse(i, j, feval (f, v), m, n);
+    y = sparse (i, j, feval (f, v), m, n);
   endif
 
 endfunction

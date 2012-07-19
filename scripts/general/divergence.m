@@ -81,8 +81,8 @@ function retval = divergence (varargin)
       error ("divergence: size of dx and dy must match the respective dimension of X and Y");
     endif
 
-    retval = gradient(varargin{fidx}, dx, dy);
-    retval += gradient(varargin{fidx + 1}.', dy, dx).';
+    retval = gradient (varargin{fidx}, dx, dy);
+    retval += gradient (varargin{fidx + 1}.', dy, dx).';
 
   elseif ((nargin == 6) || (nargin == 3))
     if (!size_equal (varargin{fidx},varargin{fidx + 1},varargin{fidx + 2}))

@@ -24,7 +24,7 @@
 ## result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}
 ## is the length of @var{v}.
 ##
-## As an example, @code{perms([1, 2, 3])} returns the matrix
+## As an example, @code{perms ([1, 2, 3])} returns the matrix
 ##
 ## @example
 ## @group
@@ -52,7 +52,7 @@ function A = perms (v)
     for j = 2:n
       B = A;
       A = zeros (prod (2:j), n, class (v));
-      k = size (B, 1);
+      k = rows (B);
       idx = 1:k;
       for i = j:-1:1
         A(idx,1:i-1) = B(:,1:i-1);

@@ -77,7 +77,7 @@ function arg_st = __print_parse_opts__ (varargin)
     varargin(1) = [];
   endif
 
-  for i = 1:numel(varargin)
+  for i = 1:numel (varargin)
     arg = strtrim (varargin{i});
     if (ischar (arg))
       if (strcmp (arg, "-color"))
@@ -569,7 +569,7 @@ function [papersize, paperposition] = gs_papersize (hfig, paperorientation)
   ##         Papersize is tall when portrait,and wide when landscape.
   if ((papersize(1) > papersize(2) && strcmpi (paperorientation, "portrait"))
       || (papersize(1) < papersize(2) && strcmpi (paperorientation, "landscape")))
-    papersize = papersize ([2,1]);
+    papersize = papersize([2,1]);
     paperposition = paperposition([2,1,4,3]);
   endif
 

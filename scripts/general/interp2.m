@@ -377,7 +377,7 @@ function ZI = interp2 (varargin)
         AX_2 = bc ((XI - K - 2));
 
         ## Perform interpolation
-        sz = size(Z);
+        sz = size (Z);
         ZI = AY_2 .* AX_2 .* Z (sym_sub2ind (sz, L+2, K+2)) ...
            + AY_2 .* AX_1 .* Z (sym_sub2ind (sz, L+2, K+1)) ...
            + AY_2 .* AX0  .* Z (sym_sub2ind (sz, L+2, K))   ...
@@ -420,9 +420,9 @@ function b = isgriddata (X)
 endfunction
 
 ## Compute the bicubic interpolation coefficients
-function o = bc(x)
-  x = abs(x);
-  o = zeros(size(x));
+function o = bc (x)
+  x = abs (x);
+  o = zeros (size (x));
   idx1 = (x < 1);
   idx2 = !idx1 & (x < 2);
   o(idx1) = 1 - 2.*x(idx1).^2 + x(idx1).^3;
@@ -430,7 +430,7 @@ function o = bc(x)
 endfunction
 
 ## This version of sub2ind behaves as if the data was symmetrically padded
-function ind = sym_sub2ind(sz, Y, X)
+function ind = sym_sub2ind (sz, Y, X)
   Y (Y < 1) = 1 - Y (Y < 1);
   while (any (Y (:) > 2 * sz (1)))
     Y (Y > 2 * sz (1)) = round (Y (Y > 2 * sz (1)) / 2);
@@ -441,7 +441,7 @@ function ind = sym_sub2ind(sz, Y, X)
     X (X > 2 * sz (2)) = round (X (X > 2 * sz (2)) / 2);
   endwhile
   X (X > sz (2)) = 1 + 2 * sz (2) - X (X > sz (2));
-  ind = sub2ind(sz, Y, X);
+  ind = sub2ind (sz, Y, X);
 endfunction
 
 

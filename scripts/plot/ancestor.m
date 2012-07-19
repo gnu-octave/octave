@@ -49,7 +49,7 @@ function p = ancestor (h, type, toplevel)
         endif
       endif
       h = num2cell (h);
-      for nh = 1:numel(h)
+      for nh = 1:numel (h)
         while (true)
           if (isempty (h{nh}) || ! ishandle (h{nh}))
             break;

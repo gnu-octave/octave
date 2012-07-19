@@ -76,7 +76,7 @@ function y = polyout (c, x)
     tmp = " ";
   endif
 
-  if(nargout == 0)
+  if (nargout == 0)
     disp (tmp);
   else
     y = tmp;

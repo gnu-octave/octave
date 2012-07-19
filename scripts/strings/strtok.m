@@ -75,7 +75,7 @@ function [tok, rem] = strtok (str, delim)
       ## Index the str into a mask of valid values.  Faster for large N.
       f = false (256, 1);
       ## This is slower than it could be because of the +1 issue.
-      f(uint8(delim)+1) = true;
+      f(uint8 (delim)+1) = true;
       ## Default goes via double -- unnecessarily long.
       si = uint32 (str);
       ## in-place is faster than str+1
@@ -146,7 +146,7 @@ endfunction
 %!   endif
 %!   printf ("<%s>", s(1));
 %! endwhile
-%! printf("\n");
+%! printf ("\n");
 %! % ----------------------------------------------------
 %! % Demonstrates processing of an entire string split on
 %! % a variety of delimiters.  Tokens and delimiters are

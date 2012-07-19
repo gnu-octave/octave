@@ -49,7 +49,7 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   l = line;
-%!   assert(get (allchild (hf),"type"),{"axes"; "uimenu"; "uimenu"; "uimenu"});
+%!   assert (get (allchild (hf),"type"),{"axes"; "uimenu"; "uimenu"; "uimenu"});
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   graphics_toolkit (toolkit);

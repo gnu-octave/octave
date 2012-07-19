@@ -65,13 +65,13 @@ function [code_r, idx_r] = example (name, n)
     if (n > 0)
       doidx = n;
     else
-      doidx = 1:length(idx)-1;
+      doidx = 1:length (idx) - 1;
     endif
     if (isempty (idx))
       warning ("no example available for %s", name);
       return;
-    elseif (n >= length(idx))
-      warning ("only %d examples available for %s", length(idx)-1, name);
+    elseif (n >= length (idx))
+      warning ("only %d examples available for %s", length (idx) - 1, name);
       return;
     endif
 

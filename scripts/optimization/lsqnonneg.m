@@ -39,7 +39,7 @@
 ## @itemize @bullet
 ## @item resnorm
 ##
-## The squared 2-norm of the residual: norm(@var{c}*@var{x}-@var{d})^2
+## The squared 2-norm of the residual: norm (@var{c}*@var{x}-@var{d})^2
 ##
 ## @item residual
 ##

@@ -198,8 +198,8 @@ function vi = interpn (varargin)
         q(:) = i;
         idx {i} = q;
       endfor
-      vi = vi (cellfun (@(x) sub2ind (size(vi), x{:}), idx));
-      vi = reshape (vi, size(y{1}));
+      vi = vi (cellfun (@(x) sub2ind (size (vi), x{:}), idx));
+      vi = reshape (vi, size (y{1}));
     endif
   elseif (strcmp (method, "cubic"))
     error ("interpn: cubic interpolation not yet implemented");

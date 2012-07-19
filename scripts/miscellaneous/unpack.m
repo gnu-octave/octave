@@ -39,7 +39,7 @@ function filelist = unpack (file, dir = ".", filetype = "")
   endif
 
   if (! ischar (file) && ! iscellstr (file))
-    error ("unpack: invalid input file class, %s", class(file));
+    error ("unpack: invalid input file class, %s", class (file));
   endif
 
   ## character arrays of more than one string must be treated as cell strings
@@ -224,7 +224,7 @@ function files = __parse_zip__ (output)
   ## Skip first line which is Archive header
   output(1) = [];
   for i = 1:length (output)
-    files{i} = output{i}(14:length(output{i}));
+    files{i} = output{i}(14:length (output{i}));
   endfor
 endfunction
 
@@ -246,7 +246,7 @@ function files = __parse_gzip__ (output)
                "Unable to parse line (gzip missing colon):\n%s", output{i});
     else
       midcolon = colons(ceil (length (colons)/2));
-      thisstr = output{i}(midcolon+2:length(output{i}));
+      thisstr = output{i}(midcolon+2:length (output{i}));
       idx = index (thisstr, "with") + 5;
       if (isempty (idx))
         warning ("unpack:parsing",

@@ -41,7 +41,7 @@ function retval = __axes_limits__ (fcn, varargin)
         set (h, fcnmode, arg);
       endif
     else
-      if (!isnumeric (arg) && any (size(arg(:)) != [2, 1]))
+      if (!isnumeric (arg) && any (size (arg(:)) != [2, 1]))
         error ("%s: argument must be a 2 element vector", fcn);
       else
         if (arg(1) >= arg(2))

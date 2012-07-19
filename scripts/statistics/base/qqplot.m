@@ -58,7 +58,7 @@ function [q, s] = qqplot (x, dist, varargin)
     print_usage ();
   endif
 
-  if (!(isnumeric (x) && isvector(x)))
+  if (!(isnumeric (x) && isvector (x)))
     error ("qqplot: X must be a numeric vector");
   endif
 

@@ -62,11 +62,11 @@ function x = synthesis (y, c)
   z = z(st:st+inc-1, :);
   w_coeff = w_coeff(st:st+inc-1);
 
-  nc = columns(z);
+  nc = columns (z);
   for i = 1:nc
     z(:, i) = z(:, i) ./ w_coeff;
   endfor
 
-  x = reshape(z, inc * nc, 1);
+  x = reshape (z, inc * nc, 1);
 
 endfunction

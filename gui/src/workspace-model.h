@@ -37,7 +37,7 @@ public:
 
   tree_item(QVariant data = QVariant(), tree_item *parent = 0) {
     QList<QVariant> variantList;
-    variantList << data << QVariant() << QVariant();
+    variantList << data << QVariant () << QVariant () << QVariant ();
     _parent_item = parent;
     _item_data = variantList;
   }

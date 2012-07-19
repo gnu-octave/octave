@@ -24,7 +24,7 @@ workspace_model::workspace_model(QObject *parent)
   : QAbstractItemModel(parent), octave_event_observer ()
 {
   QList<QVariant> rootData;
-  rootData << tr ("Name") << tr ("Type") << tr ("Value");
+  rootData << tr ("Name") << tr ("Type") << tr("Dimension") << tr ("Value");
   _rootItem = new tree_item(rootData);
 
   insert_top_level_item(0, new tree_item ("Local"));
@@ -82,7 +82,8 @@ workspace_model::event_accepted (octave_event *e)
 
           child->set_data (0, s._symbol);
           child->set_data (1, s._type);
-          child->set_data (2, s._value);
+          child->set_data (2, s._dimension);
+          child->set_data (3, s._value);
 
           switch (s._scope)
             {

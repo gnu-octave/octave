@@ -21,6 +21,8 @@
 #include <QString>
 #include <QHash>
 
+#include <sstream>
+
 // Octave includes
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
@@ -79,13 +81,14 @@ typedef struct symbol_information
   QString _symbol;
   QString _type;
   QString _value;
+  QString _dimension;
   Scope   _scope;
 
   /** Hashes the symbol information for quickly comparing it. */
   int
   hash () const
   {
-    return qHash (_symbol) + qHash (_type) + qHash (_value) + (int)_scope;
+    return qHash (_symbol) + qHash (_type) + qHash (_value) + qHash (_dimension) + (int)_scope;
   }
 
   /** Compares two symbol information objects. */
@@ -97,7 +100,8 @@ typedef struct symbol_information
         return _symbol == other._symbol
             && _type   == other._type
             && _value  == other._value
-            && _scope  == other._scope;
+            && _scope  == other._scope
+            && _dimension == other._dimension;
       }
   }
 
@@ -117,37 +121,27 @@ typedef struct symbol_information
     _symbol = QString (symbol_record.name ().c_str ());
     _type   = QString (symbol_record.varval ().type_name ().c_str ());
     octave_value ov = symbol_record.varval ();
+    std::stringstream buffer;
+    ov.print (buffer, true);
+    _value  = QString::fromStdString (buffer.str ());
+    _value.replace("\n", " ");
 
-    // For every type, convert to a human readable string.
-    if (ov.is_sq_string ())
-      _value = QString ("\'%1\'").arg (ov.string_value ().c_str ());
-    else if (ov.is_dq_string ())
-      _value = QString ("\"%1\"").arg (ov.string_value ().c_str ());
-    else if (ov.is_real_scalar () && ! ov.is_bool_type ())
-      _value = QString ("%1").arg (ov.scalar_value ());
-    else if (ov.is_complex_scalar ())
-      _value = QString ("%1 + %2i").arg (ov.scalar_value ())
-                                   .arg (ov.complex_value ().imag ());
+    if (ov.is_string ())
+      _dimension = QString ("%1").arg (ov.string_value ().length ());
     else if (ov.is_range ())
-      _value =  QString ("%1 : %2 : %3").arg (ov.range_value ().base ())
-                                        .arg (ov.range_value ().inc ())
-                                        .arg (ov.range_value ().limit ());
-    else if (ov.is_matrix_type ())
-      _value = QString ("%1x%2").arg (ov.rows ())
-                                .arg (ov.columns ());
-    else if (ov.is_cell ())
-      _value = QString ("%1x%2").arg (ov.rows ())
-                                .arg (ov.columns ());
-    else if (ov.is_bool_type ())
-      _value = ov.bool_value () ? QString ("true") : QString ("false");
+      _dimension =  QString ("%1 : %2 : %3").arg (ov.range_value ().base ())
+                                            .arg (ov.range_value ().inc ())
+                                            .arg (ov.range_value ().limit ());
+    else if (ov.is_matrix_type () || ov.is_cell ())
+      _dimension = QString ("%1x%2").arg (ov.rows ())
+                                    .arg (ov.columns ());
     else if (ov.is_function_handle ())
-      _value = QString ("FIXME: function handle found"); // See code for func2str for a possible solution
+      _dimension = QString ("func handle"); // See code for func2str for a possible solution
     else if (ov.is_inline_function ())
-      _value = QString ("FIXME: inline function found"); // See code for formula for a possible solution
+      _dimension = QString ("inline func"); // See code for formula for a possible solution
     else
-      _value = QString ("<Type not recognized>");
+      _dimension = "1";
 
-    _value.replace("\n", "\\n");
     return true;
   }
 } symbol_information;

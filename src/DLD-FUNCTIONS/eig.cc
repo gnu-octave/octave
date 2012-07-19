@@ -39,12 +39,12 @@ DEFUN_DLD (eig, args, nargout,
 @deftypefnx {Loadable Function} {@var{lambda} =} eig (@var{A}, @var{B})\n\
 @deftypefnx {Loadable Function} {[@var{V}, @var{lambda}] =} eig (@var{A})\n\
 @deftypefnx {Loadable Function} {[@var{V}, @var{lambda}] =} eig (@var{A}, @var{B})\n\
-Compute the eigenvalues and eigenvectors of a matrix.\n\
+Compute the eigenvalues (and optionally the eigenvectors) of a matrix\n\
+or a pair of matrices\n\
 \n\
-Eigenvalues are computed in a several step process which begins with a\n\
-Hessenberg decomposition, followed by a Schur@tie{}decomposition, from which\n\
-the eigenvalues are apparent.  The eigenvectors, when desired, are computed\n\
-by further manipulations of the Schur@tie{}decomposition.\n\
+The algorithm used depends on whether there are one or two input\n\
+matrices, if they are real or complex and if they are symmetric\n\
+(Hermitian if complex) or nonsymmetric.\n\
 \n\
 The eigenvalues returned by @code{eig} are not ordered.\n\
 @seealso{eigs, svd}\n\

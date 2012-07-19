@@ -65,14 +65,20 @@ function [ z, varargout ] = polyeig (varargin)
     z = eig (C, D);
   else
     [ z, v ] = eig (C, D);
-    varargout{1} = diag (v);
+    varargout{1} = v;
+    % return n-element eigenvectors normalized so
+    % that the infinity-norm = 1
+    z = z(1:n,:);
+    % max() takes the abs if complex:
+    t = max(z);
+    z /= diag(t);
   endif
 
 endfunction
 
-## sanity test
 %!test
-%! C0 = [8, 0; 0, 0]; C1 = [1, 0; 0, 0];
-%! z = polyeig (C0, C1);
+%! C0 = [8, 0; 0, 4]; C1 = [1, 0; 0, 1];
+%! [v,z] = polyeig (C0, C1);
 %! assert (isequal (z(1), -8), true);
-
+%! d = C0*v + C1*v*z
+%! assert (isequal (norm(d), 0.0), true);

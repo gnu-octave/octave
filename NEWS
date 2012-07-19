@@ -78,6 +78,9 @@ Summary of important user-visible changes for version 3.8:
       colorcube   rgbplot
       erfcinv     shrinkfaces
       findfigs    splinefit
+
+ ** The default name of the Octave crash dump file is now called
+    octave-workspace instead of octave-core.
       
  ** Deprecated functions.
 

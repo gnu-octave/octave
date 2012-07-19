@@ -239,7 +239,7 @@ Formatted data from can be read from, or written to, text files as well.
 
 If Octave for some reason exits unexpectedly it will by default save the
 variables available in the workspace to a file in the current directory.
-By default this file is named @samp{octave-core} and can be loaded
+By default this file is named @samp{octave-workspace} and can be loaded
 into memory with the @code{load} command.  While the default behavior
 most often is reasonable it can be changed through the following
 functions.

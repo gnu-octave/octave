@@ -1798,7 +1798,11 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
                   // way we look for old.dir_name in sys_path to avoid
                   // partial matches?
 
-                  if (sys_path.find (old.dir_name) != std::string::npos
+                  // Don't warn about Contents.m files since we expect
+                  // more than one to exist in the load path.
+
+                  if (fname != "Contents.m"
+                      && sys_path.find (old.dir_name) != std::string::npos
                       && in_path_list (sys_path, old.dir_name))
                     {
                       std::string fcn_path = file_ops::concat (dir_name, fname);

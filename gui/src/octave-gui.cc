@@ -25,6 +25,32 @@
 int
 main (int argc, char *argv[])
 {
+  /* dissociate from the controlling terminal, if any */
+
+  pid_t pid = fork ();
+  if (pid < 0)
+    {
+      //fprintf (stderr, "fork failed\n");
+      return 1;
+    }
+  else if (pid == 0)
+    {
+      /* child */
+      //fprintf (stderr, "in child, calling setsid ()\n");
+
+      if (setsid () < 0)
+        {
+          //fprintf (stderr, "setsid error\n");
+          return 1;
+        }
+    }
+  else
+    {
+      /* parent */
+      //fprintf (stderr, "in parent, exiting\n");
+      exit (0);
+    }
+
   QApplication application (argc, argv);
   while (true)
     {

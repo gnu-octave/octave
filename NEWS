@@ -74,10 +74,10 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      betaincinv  lines         tetramesh
-      colorcube   rgbplot
-      erfcinv     shrinkfaces
-      findfigs    splinefit
+      betaincinv  lines         splinefit
+      colorcube   polyeig       tetramesh
+      erfcinv     rgbplot
+      findfigs    shrinkfaces
       
  ** Deprecated functions.
 

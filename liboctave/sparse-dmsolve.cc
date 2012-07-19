@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "MatrixType.h"
 #include "oct-sort.h"
 #include "oct-locbuf.h"
+#include "oct-inttypes.h"
 
 template <class T>
 static MSparse<T>
@@ -42,9 +43,17 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
                 octave_idx_type cend, octave_idx_type maxnz = -1,
                 bool lazy = false)
 {
-  octave_idx_type nz = (rend - rst) * (cend - cst);
+  octave_idx_type nr = rend - rst, nc = cend - cst;
   maxnz = (maxnz < 0 ? A.nnz () : maxnz);
-  MSparse<T> B (rend - rst, cend - cst, (nz < maxnz ? nz : maxnz));
+  octave_idx_type nz;
+
+  // Cast to uint64 to handle overflow in this multiplication
+  if (octave_uint64 (nr)*octave_uint64 (nc) < octave_uint64 (maxnz))
+    nz = nr*nz;
+  else
+    nz = maxnz;
+
+  MSparse<T> B (nr, nc, (nz < maxnz ? nz : maxnz));
   // Some sparse functions can support lazy indexing (where elements
   // in the row are in no particular order), even though octave in
   // general can't. For those functions that can using it is a big

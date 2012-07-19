@@ -36,7 +36,7 @@ function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
       if (handle_deps)
         deps = installed_pkgs_lst{i}.depends;
         if ((length (deps) > 1)
-            || (length (deps) == 1 && ! strcmp(deps{1}.package, "octave")))
+            || (length (deps) == 1 && ! strcmp (deps{1}.package, "octave")))
           tmplidx = [];
           for k = 1 : length (deps)
             for j = 1 : length (installed_pkgs_lst)

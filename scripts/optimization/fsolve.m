@@ -327,7 +327,7 @@ function [x, fvec, info, output, fjac] = fsolve (fcn, x0, options = struct ())
       endif
 
       ## Update delta.
-      if (ratio < min(max(0.1, 0.8*lastratio), 0.9))
+      if (ratio < min (max (0.1, 0.8*lastratio), 0.9))
         nsuc = 0;
         nfail ++;
         delta *= decfac;
@@ -446,7 +446,7 @@ function [fx, jx] = guarded_eval (fun, x, complexeqn)
 
   if (! complexeqn && ! (isreal (fx) && isreal (jx)))
     error ("fsolve:notreal", "fsolve: non-real value encountered");
-  elseif (complexeqn && ! (isnumeric (fx) && isnumeric(jx)))
+  elseif (complexeqn && ! (isnumeric (fx) && isnumeric (jx)))
     error ("fsolve:notnum", "fsolve: non-numeric value encountered");
   elseif (any (isnan (fx(:))))
     error ("fsolve:isnan", "fsolve: NaN value encountered");

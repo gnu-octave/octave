@@ -37,7 +37,7 @@
 
 function yi = interp1q (x, y, xi)
   x = x(:);
-  nx = size (x, 1);
+  nx = rows (x);
   szy = size (y);
   y = y(:,:);
   [ny, nc] = size (y);
@@ -59,7 +59,7 @@ endfunction
 
 
 %!shared xp, yp, xi, yi
-%! xp = [0:2:10].';   yp = sin(2*pi*xp/5);
+%! xp = [0:2:10].';   yp = sin (2*pi*xp/5);
 %! xi = [-1; 0; 2.2; 4; 6.6; 10; 11];
 %! yi = interp1 (xp,yp,xi);
 %!assert (interp1q (xp,yp, [min(xp)-1; max(xp)+1]), [NA; NA]);

@@ -80,7 +80,7 @@ function fplot (fn, limits, n, fmt)
     error ("fplot: first input argument must be a function handle, inline function or string");
   endif
 
-  if (floor(n) != n)
+  if (floor (n) != n)
     tol = n;
     x0 = linspace (limits(1), limits(2), 5)';
     y0 = feval (fn, x0);

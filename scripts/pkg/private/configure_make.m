@@ -58,7 +58,7 @@ function configure_make (desc, packdir, verbose)
         rmdir (desc.dir, "s");
         error ("the configure script returned the following error: %s", output);
       elseif (verbose)
-        printf("%s", output);
+        printf ("%s", output);
       endif
 
     endif
@@ -70,7 +70,7 @@ function configure_make (desc, packdir, verbose)
         rmdir (desc.dir, "s");
         error ("'make' returned the following error: %s", output);
       elseif (verbose)
-        printf("%s", output);
+        printf ("%s", output);
       endif
     endif
 

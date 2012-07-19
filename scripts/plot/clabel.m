@@ -67,7 +67,7 @@ function retval = clabel (c, varargin)
     hparent = gca ();
   else
     arg = varargin{1};
-    if (isscalar (arg) && ishandle(arg)
+    if (isscalar (arg) && ishandle (arg)
         && strcmp (get (arg, "type"), "hggroup"))
       obj = get (arg);
       if (! isfield (obj, "contourmatrix"))
@@ -81,7 +81,7 @@ function retval = clabel (c, varargin)
     endif
   endif
 
-  if (length(varargin) > 0 && isnumeric (varargin{1}))
+  if (length (varargin) > 0 && isnumeric (varargin{1}))
     v = varargin{1}(:);
     varargin(1) = [];
   else

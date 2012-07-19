@@ -162,7 +162,7 @@ function [q, err] = quadgk (f, a, b, varargin)
               abstol = varargin{idx++};
             elseif (strcmpi (str, "waypoints"))
               waypoints = varargin{idx++} (:);
-              if (isreal(waypoints))
+              if (isreal (waypoints))
                 waypoints (waypoints < a | waypoints > b) = [];
               endif
             elseif (strcmpi (str, "maxintervalcount"))
@@ -190,13 +190,13 @@ function [q, err] = quadgk (f, a, b, varargin)
     ## Use variable subsitution to weaken endpoint singularities and to
     ## perform integration with endpoints at infinity. No transform for
     ## contour integrals
-    if (iscomplex (a) || iscomplex (b) || iscomplex(waypoints))
+    if (iscomplex (a) || iscomplex (b) || iscomplex (waypoints))
       ## contour integral, no transform
       subs = [a; waypoints; b];
       h = sum (abs (diff (subs)));
       h0 = h;
       trans = @(t) t;
-    elseif (isinf (a) && isinf(b))
+    elseif (isinf (a) && isinf (b))
       ## Standard Infinite to finite integral transformation.
       ##   \int_{-\infinity_^\infinity f(x) dx = \int_-1^1 f (g(t)) g'(t) dt
       ## where
@@ -205,7 +205,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       ## waypoint transform is then
       ##   t =  (2 * g(t)) ./ (1 + sqrt(1 + 4 * g(t) .^ 2))
       if (!isempty (waypoints))
-        trans = @(x) (2 * x) ./ (1 + sqrt(1 + 4 * x .^ 2));
+        trans = @(x) (2 * x) ./ (1 + sqrt (1 + 4 * x .^ 2));
         subs = [-1; trans(waypoints); 1];
       else
         subs = linspace (-1, 1, 11)';
@@ -240,7 +240,7 @@ function [q, err] = quadgk (f, a, b, varargin)
       h0 = b - a;
       trans = @(t) b - (t ./ (1 + t)).^2;
       f = @(s) - 2 * s .* f (b -  (s ./ (1 + s)) .^ 2) ./ ((1 + s) .^ 3);
-    elseif (isinf(b))
+    elseif (isinf (b))
       ## Formula defined in Shampine paper as two separate steps. One to
       ## weaken singularity at finite end, then a second to transform to
       ## a finite interval. The singularity weakening transform is
@@ -281,7 +281,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         trans = @__quadgk_finite_waypoint__;
         subs = [-1; trans(waypoints, a, b); 1];
       else
-        subs = linspace(-1, 1, 11)';
+        subs = linspace (-1, 1, 11)';
       endif
       h = 2;
       h0 = b - a;
@@ -343,7 +343,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         endif
 
         ## Accept the subintervals that meet the convergence criteria
-        idx = find (abs (q_errs) < tol .* abs(diff (subs, [], 2)) ./ h);
+        idx = find (abs (q_errs) < tol .* abs (diff (subs, [], 2)) ./ h);
         if (first)
           q = sum (q_subs (idx));
           err = sum (q_errs(idx));
@@ -362,7 +362,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         endif
 
         if (trace)
-          disp([rows(subs), err, q0]);
+          disp ([rows(subs), err, q0]);
         endif
 
         ## Split remaining subintervals in two
@@ -382,7 +382,7 @@ function [q, err] = quadgk (f, a, b, varargin)
         [q_subs, q_errs] = __quadgk_eval__ (f, subs);
       endwhile
 
-      if (err > max (abstol, reltol * abs(q)))
+      if (err > max (abstol, reltol * abs (q)))
         warning ("quadgk: Error tolerance not met. Estimated error %g", err);
       endif
     unwind_protect_cleanup
@@ -425,7 +425,7 @@ function [q, err] = __quadgk_eval__ (f, subs)
   halfwidth = diff (subs, [], 2) ./ 2;
   center = sum (subs, 2) ./ 2;;
   x = bsxfun (@plus, halfwidth * abscissa, center);
-  y = reshape (f (x(:)), size(x));
+  y = reshape (f (x(:)), size (x));
 
   ## This is faster than using bsxfun as the * operator can use a
   ## single BLAS call, rather than rows(sub) calls to the @times
@@ -436,7 +436,7 @@ endfunction
 
 function t = __quadgk_finite_waypoint__ (x, a, b)
   c = (-4 .* x + 2.* (b + a)) ./ (b - a);
-  k = ((sqrt(c .^ 2 - 4) + c) ./ 2) .^ (1/3);
+  k = ((sqrt (c .^ 2 - 4) + c) ./ 2) .^ (1/3);
   t = real ((sqrt(3) .* 1i * (1 - k .^ 2) - (1 + k .^ 2)) ./ 2 ./ k);
 endfunction
 

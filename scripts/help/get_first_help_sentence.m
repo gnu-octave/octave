@@ -105,11 +105,11 @@ function [text, status] = first_sentence_texinfo (help_text, max_len)
   if (! isempty (def_idx))
     endl_idx = find (help_text == "\n");
     for k = 1:length (def_idx)
-      endl = endl_idx (find (endl_idx > def_idx(k), 1));
+      endl = endl_idx(find (endl_idx > def_idx(k), 1));
       if (isempty (endl))
-        keep (def_idx(k) : end) = false;
+        keep(def_idx(k):end) = false;
       else
-        keep (def_idx(k) : endl) = false;
+        keep(def_idx(k):endl) = false;
       endif
     endfor
 

@@ -58,12 +58,12 @@ function bb = __tight_eps_bbox__ (opts, eps_file_name)
     looking_for_bbox = true;
     while (looking_for_bbox)
       current_line = fgetl (fid);
-      if (strncmpi (current_line, box_string, numel(box_string)))
+      if (strncmpi (current_line, box_string, numel (box_string)))
         line_length = numel (current_line);
         num_spaces = line_length - numel (tight_bbox_line);
         if (numel (current_line) >= numel (tight_bbox_line))
           new_line = tight_bbox_line;
-          new_line(end+1:numel(current_line)) = " ";
+          new_line(end+1:numel (current_line)) = " ";
           bbox_replaced = true;
           ## Back up to the beginning of the line (include EOL characters).
           if (ispc ())
@@ -113,12 +113,12 @@ endfunction
 function bbox_line = get_bbox (lines)
   box_string = "%%BoundingBox:";
   pattern = strcat (box_string, "[^%]*");
-  pattern = pattern(1:find(double(pattern)>32, 1, "last"));
+  pattern = pattern(1:find (double (pattern) > 32, 1, "last"));
   bbox_line = regexp (lines, pattern, "match");
   if (iscell (bbox_line))
     bbox_line = bbox_line{1};
   endif
   ## Remove the EOL characters.
-  bbox_line(double(bbox_line)<32) = "";
+  bbox_line(double (bbox_line) < 32) = "";
 endfunction
 

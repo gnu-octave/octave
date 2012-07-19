@@ -131,7 +131,7 @@ function q = quantile (x, p = [], dim = 1, method = 5)
   endif
 
   ## Set the permutation vector.
-  perm = 1:ndims(x);
+  perm = 1:ndims (x);
   perm(1) = dim;
   perm(dim) = 1;
 

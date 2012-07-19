@@ -65,7 +65,7 @@
 ## Also, because demo evaluates within a function context, you cannot
 ## define new functions inside a demo.  If you must have function blocks,
 ## rather than just anonymous functions or inline functions, you will have to
-## use @code{eval(example("function",n))} to see them.  Because eval only
+## use @code{eval (example ("function",n))} to see them.  Because eval only
 ## evaluates one line, or one statement if the statement crosses
 ## multiple lines, you must wrap your demo in "if 1 <demo stuff> endif"
 ## with the 'if' on the same line as 'demo'.  For example:
@@ -112,7 +112,7 @@ function demo (name, n)
   if (n > 0)
     doidx = n;
   else
-    doidx = 1:length(idx)-1;
+    doidx = 1:(length (idx) - 1);
   endif
   for i = 1:length (doidx)
     ## Pause between demos

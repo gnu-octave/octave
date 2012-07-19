@@ -74,20 +74,20 @@ function h = pareto (varargin)
       endif
     endif
   else
-    y = cellfun ("int2str", num2cell (1 : numel(x)),
+    y = cellfun ("int2str", num2cell (1 : numel (x)),
                  "uniformoutput", false);
   endif
 
   [x, idx] = sort (x, "descend");
   y = y (idx);
   cdf = cumsum (x);
-  maxcdf = max(cdf);
+  maxcdf = max (cdf);
   cdf = cdf ./ maxcdf;
   cdf95 = cdf - 0.95;
-  idx95 = find(sign(cdf95(1:end-1)) != sign(cdf95(2:end)))(1);
+  idx95 = find (sign (cdf95(1:end-1)) != sign (cdf95(2:end)))(1);
 
   [ax, hbar, hline] = plotyy (1 : idx95, x (1 : idx95),
-                              1 : length(cdf), 100 .* cdf,
+                              1 : length (cdf), 100 .* cdf,
                               @bar, @plot);
 
   axis (ax(1), [1 - 0.6, idx95 + 0.6, 0, maxcdf]);

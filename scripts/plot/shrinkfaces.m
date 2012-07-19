@@ -104,26 +104,26 @@ function [nf, nv] = shrinkfaces (varargin)
     error ("shrinkfaces: scale factor must be a positive scalar")
   endif
 
-  n = size (vertices, 2);
+  n = columns (vertices);
   if (n < 2 || n > 3)
     error ("shrinkfaces: only 2D and 3D patches are supported")
   endif
 
-  m = size (faces, 2);
+  m = columns (faces);
   if (m < 3)
     error ("shrinkfaces: faces must consist of at least 3 vertices")
   endif
 
   v = vertices(faces'(:), :);
-  if (isempty (colors) || size (colors, 1) == size (faces, 1))
+  if (isempty (colors) || rows (colors) == rows (faces))
     c = colors;
-  elseif (size (colors, 1) == size (vertices, 1))
+  elseif (rows (colors) == rows (vertices))
     c = colors(faces'(:), :);
   else
     ## Discard inconsistent color data.
     c = [];
   endif
-  sv = size (v, 1);
+  sv = rows (v);
   ## we have to deal with a probably very large number of vertices, so
   ## use sparse we use as midpoint (1/m, ..., 1/m) in generalized
   ## barycentric coordinates.

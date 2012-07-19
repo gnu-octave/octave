@@ -147,7 +147,7 @@ function h = __stem__ (have_z, varargin)
       if (! isempty (args))
         set (hg, args{:});
       endif
-      if (i == 1 && !isempty(h_baseline))
+      if (i == 1 && ! isempty (h_baseline))
         set (h_baseline, "parent", get (hg, "parent"));
       endif
     endfor
@@ -296,7 +296,7 @@ function [x, y, z, dofill, lc, ls, mc, ms, newargs] = check_stem_arg (have_z, va
           error ("stem: X and Y must be matrices");
         endif
       endif
-    endif # if ischar(varargin{2})
+    endif # if ischar (varargin{2})
     if (! have_z)
       ## varargin{3} must be char.
       ## Check for "fill.
@@ -436,7 +436,7 @@ function [lc, ls, mc, ms] = stem_line_spec (caller, str)
   [lc, ls, mc, ms] = set_default_values ();
   ## Parse the line specifier string.
   cur_props = __pltopt__ ("stem", str, false);
-  for i = 1:length(cur_props)
+  for i = 1:length (cur_props)
     if (isfield (cur_props(i), "color") && ! isempty (cur_props(i).color)); # means line color
       mc = lc = cur_props(i).color;
     elseif (isfield (cur_props(i), "linestyle"))
@@ -508,7 +508,7 @@ function move_baseline (h, d)
   endif
 
   kids = get (h, "children");
-  yt = get(h, "ydata")(:)';
+  yt = get (h, "ydata")(:)';
   ny = length (yt);
   yt = [b0 * ones(1, ny); yt; NaN(1, ny)](:);
   set (kids(2), "ydata", yt);
@@ -532,7 +532,7 @@ function update_data (h, d)
 
   if (!isempty (z) && size_equal (x, y, z))
     error ("stem3: inconsistent size of x, y and z");
-  elseif (numel(x) != numel (y))
+  elseif (numel (x) != numel (y))
     error ("stem: inconsistent size of x and y");
   else
     bl = get (h, "basevalue");

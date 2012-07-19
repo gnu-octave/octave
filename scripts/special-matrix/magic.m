@@ -26,7 +26,7 @@
 ## Note: @var{n} must be greater than 2 for the magic square to exist.
 ## @end deftypefn
 
-function A = magic(n)
+function A = magic (n)
 
   if (nargin != 1)
     print_usage ();

@@ -43,7 +43,7 @@ function setpref (group, pref, val)
         prefs.(group).(pref) = val;
       elseif (iscellstr (pref))
         if (size_equal (pref, val))
-          for i = 1:numel(pref)
+          for i = 1:numel (pref)
             prefs.(group).(pref{i}) = val;
           endfor
         else

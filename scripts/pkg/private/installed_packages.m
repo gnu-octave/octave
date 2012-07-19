@@ -52,7 +52,7 @@ function [out1, out2] = installed_packages (local_list, global_list)
       endif
     endfor
   endfor
-  if (! isempty(dup))
+  if (! isempty (dup))
     installed_pkgs_lst(dup) = [];
   endif
 
@@ -121,9 +121,9 @@ function [out1, out2] = installed_packages (local_list, global_list)
   h2 = postpad (h2, max_version_length, " ");;
 
   ## Print a header.
-  header = sprintf("%s | %s | %s\n", h1, h2, h3);
+  header = sprintf ("%s | %s | %s\n", h1, h2, h3);
   printf (header);
-  tmp = sprintf (repmat ("-", 1, length(header)-1));
+  tmp = sprintf (repmat ("-", 1, length (header) - 1));
   tmp(length(h1)+2) = "+";
   tmp(length(h1)+length(h2)+5) = "+";
   printf ("%s\n", tmp);

@@ -60,8 +60,8 @@ function y = rotdim (x, n, plane)
     print_usage ();
   endif
 
-  if (nargin > 1 && ! isempty(n))
-    if (!isscalar (n) || !isreal(n) || fix (n) != n)
+  if (nargin > 1 && ! isempty (n))
+    if (!isscalar (n) || !isreal (n) || fix (n) != n)
       error ("rotdim: N must be a scalar integer");
     endif
   else

@@ -81,7 +81,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     error ("uigetfile: number of input arguments must be less than eight");
   endif
 
-  defaultvals = {cell(0, 2),         # File Filter
+  defaultvals = {cell (0, 2),        # File Filter
                  "Open File",        # Dialog Title
                  "",                 # Default file name
                  [240, 120],         # Dialog Position (pixel x/y)
@@ -165,7 +165,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
       prop = varargin{i};
       val = varargin{i + 1};
       if (strncmp (tolower (prop), "position", 8))
-        if (ismatrix (val) && length(val) == 2)
+        if (ismatrix (val) && length (val) == 2)
           outargs{4} = val;
         else
           error ("uigetfile: expecting 2-element vector for position argument");

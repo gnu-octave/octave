@@ -56,8 +56,8 @@
 function [Ax, H1, H2] = plotyy (varargin)
 
   ## Don't use __plt_get_axis_arg__ here as ax is a two vector for plotyy
-  if (nargin > 1 && length (varargin{1}) == 2 && ishandle(varargin{1}(1))
-      && ishandle(varargin{1}(2))
+  if (nargin > 1 && length (varargin{1}) == 2 && ishandle (varargin{1}(1))
+      && ishandle (varargin{1}(2))
       && all (floor (varargin{1}) != varargin{1}))
     obj1 = get (varargin{1}(1));
     obj2 = get (varargin{1}(2));
@@ -111,7 +111,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     [ax, h1, h2] = __plotyy__ (ax, varargin{:});
   unwind_protect_cleanup
     ## Only change back to the old axis if we didn't delete it
-    if (ishandle(oldh) && strcmp (get (oldh, "type"), "axes"))
+    if (ishandle (oldh) && strcmp (get (oldh, "type"), "axes"))
       axes (oldh);
     endif
   end_unwind_protect
@@ -138,7 +138,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   xlim = [min([x1(:); x2(:)]), max([x1(:); x2(:)])];
 
-  if (ishandle(ax(1)) && strcmp (get (ax(1), "type"), "axes"))
+  if (ishandle (ax(1)) && strcmp (get (ax(1), "type"), "axes"))
     axes (ax(1));
   else
     ax(1) = axes ();
@@ -153,7 +153,7 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   cf = gcf ();
   set (cf, "nextplot", "add");
 
-  if (ishandle(ax(2)) && strcmp (get (ax(2), "type"), "axes"))
+  if (ishandle (ax(2)) && strcmp (get (ax(2), "type"), "axes"))
     axes (ax(2));
   else
     ax(2) = axes ();

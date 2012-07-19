@@ -43,7 +43,7 @@ function h = axes (varargin)
   else
     ## arg is axes handle.
     tmp = varargin{1};
-    if (length(tmp) == 1 && ishandle (tmp)
+    if (length (tmp) == 1 && ishandle (tmp)
         && strcmp (get (tmp, "type"), "axes"))
       if (__is_handle_visible__ (tmp))
         parent = ancestor (tmp, "figure");

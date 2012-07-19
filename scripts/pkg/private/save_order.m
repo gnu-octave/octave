@@ -24,10 +24,10 @@
 
 function newdesc = save_order (desc)
   newdesc = {};
-  for i = 1 : length(desc)
+  for i = 1 : length (desc)
     deps = desc{i}.depends;
     if (isempty (deps)
-        || (length (deps) == 1 && strcmp(deps{1}.package, "octave")))
+        || (length (deps) == 1 && strcmp (deps{1}.package, "octave")))
       newdesc {end + 1} = desc{i};
     else
       tmpdesc = {};

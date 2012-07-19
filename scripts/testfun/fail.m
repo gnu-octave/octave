@@ -44,7 +44,7 @@
 ## The angle brackets are not part of the output.
 ##
 ## Called with three arguments, the behavior is similar to
-## @code{fail(@var{code}, @var{pattern})}, but produces an error if no
+## @code{fail (@var{code}, @var{pattern})}, but produces an error if no
 ## warning is given during code execution or if the code fails.
 ## @seealso{assert}
 ## @end deftypefn
@@ -70,7 +70,7 @@ function ret = fail (code, pattern, warning_pattern)
     pattern = ".";
   endif
 
-  ## allow assert(fail())
+  ## allow assert (fail ())
   if (nargout)
     ret = 1;
   endif
@@ -83,9 +83,9 @@ function ret = fail (code, pattern, warning_pattern)
     state = warning ("query", "quiet");
     warning ("on", "quiet");
     try
-      ## printf("lastwarn before %s: %s\n",code,lastwarn);
+      ## printf ("lastwarn before %s: %s\n",code,lastwarn);
       evalin ("caller", sprintf ("%s;", code));
-      ## printf("lastwarn after %s: %s\n",code,lastwarn);
+      ## printf ("lastwarn after %s: %s\n",code,lastwarn);
       ## Retrieve new warnings.
       err = lastwarn ();
       warning (state.state, "quiet");
@@ -131,15 +131,15 @@ endfunction
 
 
 %!fail ("[1,2]*[2,3]", "nonconformant")
-%!fail ("fail('[1,2]*[2;3]', 'nonconformant')", "expected error <nonconformant> but got none")
-%!fail ("fail('[1,2]*[2,3]','usage:')", "expected error <usage:>\nbut got.*nonconformant")
-%!fail ("warning('test warning')", "warning", "test warning");
+%!fail ("fail ('[1,2]*[2;3]', 'nonconformant')", "expected error <nonconformant> but got none")
+%!fail ("fail ('[1,2]*[2,3]', 'usage:')", "expected error <usage:>\nbut got.*nonconformant")
+%!fail ("warning ('test warning')", "warning", "test warning");
 
-##% !fail ("warning('next test')",'warning','next test');  ## only allowed one warning test?!?
+##% !fail ("warning ('next test')",'warning','next test');  ## only allowed one warning test?!?
 
 %% Test that fail() itself will generate an error
 %!error fail ("1")
 %!error <undefined> fail ("a*[2;3]", "nonconformant")
 %!error <expected error>  fail ("a*[2,3]", "usage:")
-%!error <warning failure> fail ("warning('warning failure')", "warning", "success")
+%!error <warning failure> fail ("warning ('warning failure')", "warning", "success")
 

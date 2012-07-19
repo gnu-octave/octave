@@ -71,7 +71,7 @@ function h = __errplot__ (fstr, p, varargin)
           (__line__ (hg, "linestyle", "-", "marker", "none",
                    "color", fmt.color))];
 
-    switch (numel(varargin))
+    switch (numel (varargin))
       case 2
         ydata = varargin{1}(:,i);
         xdata = 1:numel (ydata);
@@ -232,7 +232,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     xhi = xdata + dx;
   else
     n = xdata > 0;
-    rx = exp(0.01 * (max (log(xdata(n))) - min (log(xdata(n)))));
+    rx = exp (0.01 * (max (log (xdata(n))) - min (log (xdata(n)))));
     xlo = xdata/rx;
     xhi = xdata*rx;
   endif
@@ -242,7 +242,7 @@ function [xdata, ydata] = errorbar_data (xdata, ydata, ldata, udata,
     yhi = ydata + dy;
   else
     n = ydata > 0;
-    ry = exp(0.01 * (max (log(ydata(n))) - min (log(ydata(n)))));
+    ry = exp (0.01 * (max (log (ydata(n))) - min (log (ydata(n)))));
     ylo = ydata/ry;
     yhi = ydata*ry;
   endif

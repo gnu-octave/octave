@@ -180,7 +180,7 @@ function dlmwrite (file, M, varargin)
     endif
     if (iscomplex (M))
       M = M.';
-      b = zeros (2*rows(M), columns (M));
+      b = zeros (2*rows (M), columns (M));
       b(1: 2 : end, :) = real (M);
       b(2: 2 : end, :) = imag (M);
       fprintf (fid, template, b);

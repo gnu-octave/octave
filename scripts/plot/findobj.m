@@ -146,7 +146,7 @@ function h = findobj (varargin)
           na = na + 1;
           pvalue{np} = args{na};
           na = na + 1;
-          if (na <= numel(args))
+          if (na <= numel (args))
             if (ischar (args{na}))
               if (strcmpi (args{na}, "-and"))
                 logicaloperator{np} = "and";
@@ -192,7 +192,7 @@ function h = findobj (varargin)
   while (numel (handles) && ! (idepth >= depth))
     children = [];
     for n = 1 : numel (handles)
-      children = union (children, get(handles(n), "children"));
+      children = union (children, get (handles(n), "children"));
     endfor
     handles = children;
     h = union (h, children);
@@ -201,7 +201,7 @@ function h = findobj (varargin)
 
   keepers = ones (size (h));
   if (numpairs > 0)
-    for nh = 1 : numel(h)
+    for nh = 1 : numel (h)
       p = get (h (nh));
       for np = 1 : numpairs
         fields = fieldnames (p);

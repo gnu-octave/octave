@@ -65,7 +65,7 @@ endfunction
 
 %!demo
 %! clf ();
-%! x = logspace(0,1,11);
+%! x = logspace (0,1,11);
 %! z = x'*x;
 %! mesh (x, x, z, z.^2);
 %! xlabel xlabel
@@ -74,7 +74,7 @@ endfunction
 
 %!demo
 %! clf ();
-%! x = logspace(0,1,11);
+%! x = logspace (0,1,11);
 %! z = x'*x;
 %! mesh (x, x, z, z.^2);
 %! set (gca, "zscale", "log")

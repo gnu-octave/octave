@@ -1379,7 +1379,7 @@ You can also use ANSI escape sequences if your terminal supports them.\n\
 This can be useful for coloring the prompt.  For example,\n\
 \n\
 @example\n\
-PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\]\")\n\
+PS1 (\"\\\\[\\\\033[01;31m\\\\]\\\\s:\\\\#> \\\\[\\\\033[0m\\\\]\")\n\
 @end example\n\
 \n\
 @noindent\n\

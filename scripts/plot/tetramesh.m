@@ -70,7 +70,7 @@ function h = tetramesh (varargin)
   colmap = colormap ();
   
   if (length (reg) < 3)
-    size_colmap = size (colmap, 1);
+    size_colmap = rows (colmap);
     C = mod ((1:size_T)' - 1, size_colmap) + 1;
     if (size_T < size_colmap && size_T > 1) 
       ## expand to the available range of colors

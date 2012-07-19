@@ -57,8 +57,8 @@ function retval = int2str (n)
     return;
   endif
 
-  n = round (real(n));
-  sz = size(n);
+  n = round (real (n));
+  sz = size (n);
   nd = ndims (n);
   nc = columns (n);
   if (nc > 1)

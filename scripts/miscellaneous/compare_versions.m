@@ -66,8 +66,8 @@
 ## Note that version "1.1-test2" will compare as greater than
 ## "1.1-test10".  Also, since the numeric part is compared first, "a"
 ## compares less than "1a" because the second string starts with a
-## numeric part even though @code{double("a")} is greater than
-## @code{double("1").}
+## numeric part even though @code{double ("a")} is greater than
+## @code{double ("1").}
 ## @end deftypefn
 
 ## Author: Bill Denney <denney@seas.upenn.edu>
@@ -89,7 +89,7 @@ function out = compare_versions (v1, v2, operator)
   if (! ischar (operator))
     error ("compare_versions: OPERATOR must be a character string");
   elseif (numel (operator) > 2)
-    error("compare_versions: OPERATOR must be 1 or 2 characters long");
+    error ("compare_versions: OPERATOR must be 1 or 2 characters long");
   endif
 
   ## trim off any character data that is not part of a normal version
@@ -99,14 +99,14 @@ function out = compare_versions (v1, v2, operator)
   v1firstchar = find (! ismember (v1, numbers), 1);
   v2firstchar = find (! ismember (v2, numbers), 1);
   if (! isempty (v1firstchar))
-    v1c = v1(v1firstchar:length(v1));
+    v1c = v1(v1firstchar:length (v1));
     v1nochar = v1(1:v1firstchar-1);
   else
     v1c = "";
     v1nochar = v1;
   endif
   if (! isempty (v2firstchar))
-    v2c = v2(v2firstchar:length(v2));
+    v2c = v2(v2firstchar:length (v2));
     v2nochar = v2(1:v2firstchar-1);
   else
     v2c = "";
@@ -115,7 +115,7 @@ function out = compare_versions (v1, v2, operator)
 
   v1n = str2num (char (strsplit (v1nochar, ".")));
   v2n = str2num (char (strsplit (v2nochar, ".")));
-  if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty(v2c)))
+  if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty (v2c)))
     error ("compare_versions: given version strings are not valid: %s %s",
            v1, v2);
   endif

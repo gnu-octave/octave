@@ -32,7 +32,7 @@
 
 function s = speye (m, n)
   if (nargin == 1)
-    if (isvector (m) && length(m) == 2)
+    if (isvector (m) && length (m) == 2)
       n = m(2);
       m = m(1);
     elseif (isscalar (m))

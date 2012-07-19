@@ -31,7 +31,7 @@
 ##
 ## If @var{x}, @var{y} and @var{z} are undefined they are assumed to be
 ## @code{(1:@var{m}, 1:@var{n}, 1:@var{p})} where @code{[@var{m}, @var{n}] =
-## size(@var{u})} and @code{@var{p} = max (size (@var{w}))}.
+## size (@var{u})} and @code{@var{p} = max (size (@var{w}))}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
 ##  the arrows of the field relative to the mesh spacing.  A value of 0

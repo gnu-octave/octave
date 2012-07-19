@@ -31,7 +31,7 @@
 ##
 ## If @var{x} and @var{y} are undefined they are assumed to be
 ## @code{(1:@var{m}, 1:@var{n})} where @code{[@var{m}, @var{n}] =
-## size(@var{u})}.
+## size (@var{u})}.
 ##
 ## The variable @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 0

@@ -54,7 +54,7 @@ function tetr = delaunay3 (x, y, z, options)
   endif
 
   if (! (isvector (x) && isvector (y) && isvector (z)
-         && length (x) == length (y) && length(x) == length (z)))
+         && length (x) == length (y) && length (x) == length (z)))
     error ("delaunay: X, Y, and Z must be the same size");
   elseif (nargin == 4 && ! (ischar (options) || iscellstr (options)))
     error ("delaunay3: OPTIONS must be a string or cell array of strings");

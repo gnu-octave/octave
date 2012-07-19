@@ -55,7 +55,7 @@ function shading (varargin)
 
   obj = [h1(:); h2(:)];
 
-  for n = 1:numel(obj)
+  for n = 1:numel (obj)
     h = obj(n);
     if (strcmpi (mode, "flat"))
       set (h, "facecolor", "flat");

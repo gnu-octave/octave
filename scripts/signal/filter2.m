@@ -52,7 +52,7 @@ function y = filter2 (b, x, shape)
     shape = "same";
   endif
 
-  [nr, nc] = size(b);
+  [nr, nc] = size (b);
   y = conv2 (x, b(nr:-1:1, nc:-1:1), shape);
 endfunction
 

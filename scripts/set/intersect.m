@@ -75,7 +75,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
       ib = jb(ic(ii+1) - len_a);        ## b(ib) == c
     endif
 
-    if (nargin == 2 && (size (b, 1) == 1 || size (a, 1) == 1))
+    if (nargin == 2 && (rows (b) == 1 || rows (a) == 1))
       c = c.';
     endif
   endif

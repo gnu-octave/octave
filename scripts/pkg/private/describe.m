@@ -45,7 +45,7 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
     if (describe_all)
       name_pos = i;
     else
-      name_pos = find(strcmp (curr_name, pkgnames));
+      name_pos = find (strcmp (curr_name, pkgnames));
     endif
 
     if (! isempty (name_pos))

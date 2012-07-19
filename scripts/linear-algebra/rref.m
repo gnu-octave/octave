@@ -62,20 +62,20 @@ function [A, k] = rref (A, tol)
     if (m <= tol)
       ## Skip column c, making sure the approximately zero terms are
       ## actually zero.
-      A (r:rows, c) = zeros (rows-r+1, 1);
+      A(r:rows, c) = zeros (rows-r+1, 1);
     else
       ## keep track of bound variables
       used (1, c) = 1;
 
       ## Swap current row and pivot row
-      A ([pivot, r], c:cols) = A ([r, pivot], c:cols);
+      A([pivot, r], c:cols) = A([r, pivot], c:cols);
 
       ## Normalize pivot row
-      A (r, c:cols) = A (r, c:cols) / A (r, c);
+      A(r, c:cols) = A(r, c:cols) / A(r, c);
 
       ## Eliminate the current column
       ridx = [1:r-1, r+1:rows];
-      A (ridx, c:cols) = A (ridx, c:cols) - A (ridx, c) * A(r, c:cols);
+      A(ridx, c:cols) = A(ridx, c:cols) - A(ridx, c) * A(r, c:cols);
 
       ## Check if done
       if (r++ == rows)

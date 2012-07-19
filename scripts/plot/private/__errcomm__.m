@@ -34,7 +34,7 @@ function retval = __errcomm__ (caller, p, varargin)
   nargs = length (varargin);
   retval = [];
   k = 1;
-  data = cell(6,1);
+  data = cell (6,1);
   while (k <= nargs)
     a = varargin{k++};
     if (isvector (a))

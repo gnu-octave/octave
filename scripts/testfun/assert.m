@@ -43,10 +43,10 @@
 ## Produce an error if observed is not the same as expected but equality
 ## comparison for numeric data uses a tolerance @var{tol}.
 ## If @var{tol} is positive then it is an absolute tolerance which will produce
-## an error if @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
+## an error if @code{abs (@var{observed} - @var{expected}) > abs (@var{tol})}.
 ## If @var{tol} is negative then it is a relative tolerance which will produce
-## an error if @code{abs(@var{observed} - @var{expected}) >
-## abs(@var{tol} * @var{expected})}.  If @var{expected} is zero @var{tol} will
+## an error if @code{abs (@var{observed} - @var{expected}) >
+## abs (@var{tol} * @var{expected})}.  If @var{expected} is zero @var{tol} will
 ## always be interpreted as an absolute tolerance.
 ## @end table
 ## @seealso{test, fail, error}
@@ -249,9 +249,9 @@ endfunction
 %!assert (isempty ([]))
 %!assert (1)
 %!error assert (0)
-%!assert (ones(3,1))
-%!assert (ones(1,3))
-%!assert (ones(3,4))
+%!assert (ones (3,1))
+%!assert (ones (1,3))
+%!assert (ones (3,4))
 %!error assert ([1,0,1])
 %!error assert ([1;1;0])
 %!error assert ([1,0;1,1])

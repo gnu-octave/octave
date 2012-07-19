@@ -54,9 +54,9 @@ function [in, on] = inpolygon (x, y, xv, yv)
   npol = length (xv);
   do_boundary = (nargout >= 2);
 
-  in = zeros (size(x), "logical");
+  in = zeros (size (x), "logical");
   if (do_boundary)
-    on = zeros (size(x), "logical");
+    on = zeros (size (x), "logical");
   endif
 
   j = npol;

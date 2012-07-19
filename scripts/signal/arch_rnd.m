@@ -71,7 +71,7 @@ function y = arch_rnd (a, b, t)
     b  = [b, 0];
     lb = lb + 1;
   endif
-  m  = max([la, lb]);
+  m  = max ([la, lb]);
 
   e  = zeros (t, 1);
   h  = zeros (t, 1);

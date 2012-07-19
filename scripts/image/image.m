@@ -135,12 +135,12 @@ function h = __img__ (x, y, img, varargin)
   if (xdata(2) < xdata(1))
     xdata = xdata(2:-1:1);
   elseif (xdata(2) == xdata(1))
-    xdata = xdata(1) + [0, size(img,2)-1];
+    xdata = xdata(1) + [0, columns(img)-1];
   endif
   if (ydata(2) < ydata(1))
     ydata = ydata(2:-1:1);
   elseif (ydata(2) == ydata(1))
-    ydata = ydata(1) + [0, size(img,1)-1];
+    ydata = ydata(1) + [0, rows(img)-1];
   endif
   xlim = xdata + [-px(1), px(1)];
   ylim = ydata + [-px(2), px(2)];

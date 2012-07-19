@@ -29,7 +29,7 @@ function rmappdata (h, varargin)
     error ("rmappdata: invalid input");
   endif
 
-  for nh = 1:numel(h)
+  for nh = 1:numel (h)
     appdata = get (h(nh), "__appdata__");
     appdata = rmfield (appdata, varargin);
     set (h(nh), "__appdata__", appdata);

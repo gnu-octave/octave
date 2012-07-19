@@ -143,8 +143,8 @@ endfunction
 %!assert (all (strcmp (strcat ({"a", "bb"}, "ccc"), {"accc", "bbccc"})))
 %!assert (all (strcmp (strcat ("a", {"bb", "ccc"}), {"abb", "accc"})))
 
-%!assert (strcat (1, 2), strcat (char(1), char(2)))
-%!assert (strcat ("", 2), strcat ([], char(2)))
+%!assert (strcat (1, 2), strcat (char (1), char (2)))
+%!assert (strcat ("", 2), strcat ([], char (2)))
 
 %!error strcat ()
 

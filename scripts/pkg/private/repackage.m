@@ -26,7 +26,7 @@ function repackage (builddir, buildlist)
   packages = installed_packages (buildlist, buildlist);
 
   wd = pwd ();
-  for i = 1 : length(packages)
+  for i = 1 : length (packages)
     pack = packages{i};
     unwind_protect
       cd (builddir);

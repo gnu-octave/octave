@@ -328,7 +328,7 @@ function lims = __get_tight_lims__ (ca, ax)
       n = cellfun (@isempty, data);
       data(n) = cellfun (@(x) x(x<0), tmp(n), "uniformoutput", false);
     endif
-    data = cellfun (@(x) x(isfinite(x)), data, "uniformoutput", false);
+    data = cellfun (@(x) x(isfinite (x)), data, "uniformoutput", false);
     data = data(! cellfun ("isempty", data));
     if (! isempty (data))
       lims_min = min (cellfun (@(x) min (x(:)), data(:)));

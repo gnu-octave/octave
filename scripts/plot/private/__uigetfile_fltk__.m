@@ -25,7 +25,7 @@
 
 function [retval, retpath, retindex] = __uigetfile_fltk__ (filters, title, defval, position, multiselect, defdir)
 
-  if (exist("__fltk_uigetfile__") != 3)
+  if (exist ("__fltk_uigetfile__") != 3)
     error ("uigetfile: fltk graphics toolkit required");
   endif
 

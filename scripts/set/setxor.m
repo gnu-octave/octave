@@ -79,7 +79,7 @@ function [c, ia, ib] = setxor (a, b, varargin)
         c([idx, idx+1]) = [];
         i([idx, idx+1]) = [];
       endif
-      if (size (a, 1) == 1 || size (b, 1) == 1)
+      if (rows (a) == 1 || rows (b) == 1)
         c = c.';
       endif
     endif
@@ -98,5 +98,5 @@ endfunction
 %! a = [3, 1, 4, 1, 5];  b = [1, 2, 3, 4];
 %! [y, ia, ib] = setxor (a, b.');
 %! assert (y, [2, 5]);
-%! assert (y, sort([a(ia), b(ib)]));
+%! assert (y, sort ([a(ia), b(ib)]));
 

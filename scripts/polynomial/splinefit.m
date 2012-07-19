@@ -39,7 +39,7 @@
 ##
 ## The optional property @var{periodic} is a logical value which specifies
 ## whether a periodic boundary condition is applied to the spline.  The
-## length of the period is @code{max(@var{breaks})-min(@var{breaks})}.
+## length of the period is @code{max (@var{breaks}) - min (@var{breaks})}.
 ## The default value is @code{false}.
 ##
 ## The optional property @var{robust} is a logical value which specifies
@@ -182,7 +182,7 @@ function pp = splinefit (x, y, breaks, varargin)
     props = struct ();
   endif
   fields = fieldnames (props);
-  for f = 1:numel(fields)
+  for f = 1:numel (fields)
     if (! any (strcmp (fields{f},
                        {"periodic", "robust", "beta", "order", "constraints"})))
       error ("splinefit:invalidproperty",

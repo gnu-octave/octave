@@ -41,7 +41,7 @@
 ## mat2str ([ -1/3 +i/7; 1/3 -i/7 ], [4 2])
 ##      @result{} "[-0.3333+0i 0+0.14i;0.3333+0i -0-0.14i]"
 ##
-## mat2str (int16([1 -1]), "class")
+## mat2str (int16 ([1 -1]), "class")
 ##      @result{} "int16([1 -1])"
 ##
 ## mat2str (logical (eye (2)))
@@ -143,5 +143,5 @@ endfunction
 %!error mat2str ()
 %!error mat2str (1,2,3,4)
 %!error mat2str (["Hello"])
-%!error <X must be two dimensional> mat2str (ones(3,3,2))
+%!error <X must be two dimensional> mat2str (ones (3,3,2))
 

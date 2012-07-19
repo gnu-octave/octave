@@ -41,7 +41,7 @@ function [a, v] = yulewalker (c)
   endif
 
   cp = c(2 : p+1);
-  CP = zeros(p, p);
+  CP = zeros (p, p);
 
   for i = 1:p
     for j = 1:p

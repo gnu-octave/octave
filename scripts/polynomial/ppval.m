@@ -56,7 +56,7 @@ function yi = ppval (pp, xi)
   P = reshape (P, [n, k, d]);
   Pidx = P(idx(:), :);#2d matrix size x: coefs*prod(d) y: prod(sxi)
 
-  if (isvector(xi))
+  if (isvector (xi))
     Pidx = reshape (Pidx, [xn, k, d]);
     Pidx = shiftdim (Pidx, 1);
     dimvec = [d, xn];
@@ -92,7 +92,7 @@ function yi = ppval (pp, xi)
   if (isvector (xi) && (d == 1))
     yi = reshape (yi, sxi);
   elseif (isfield (pp, "orient") && strcmp (pp.orient, "first"))
-    yi = shiftdim(yi, nd);
+    yi = shiftdim (yi, nd);
   endif
 
   ##

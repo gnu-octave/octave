@@ -104,7 +104,7 @@ function [s, iters] = logm (A, opt_iters = 100)
   s = 2^k * u * s * u';
 
   ## Remove small complex values (O(eps)) which may have entered calculation
-  if (real_eig && isreal(A))
+  if (real_eig && isreal (A))
     s = real (s);
   endif
 

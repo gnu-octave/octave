@@ -178,9 +178,9 @@ endfunction
 %!testif HAVE_QHULL
 %! [xx,yy] = meshgrid (linspace (-1,1,32));
 %! x = xx(:);
-%! x = x + 10*(2*round (rand (size(x))) - 1) * eps;
+%! x = x + 10*(2*round (rand (size (x))) - 1) * eps;
 %! y = yy(:);
-%! y = y + 10*(2*round (rand (size(y))) - 1) * eps;
+%! y = y + 10*(2*round (rand (size (y))) - 1) * eps;
 %! z = sin (2*(x.^2 + y.^2));
 %! zz = griddata (x,y,z,xx,yy,"linear");
 %! zz2 = sin (2*(xx.^2 + yy.^2));

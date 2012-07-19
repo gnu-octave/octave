@@ -47,7 +47,7 @@ function ppi = ppint (pp, c)
   ppi = mkpp (x, pi, d);
 
   tmp = -cumsum (ppjumps (ppi), length (d) + 1);
-  ppi.coefs(prod(d)+1:end, k) = tmp(:);
+  ppi.coefs(prod (d)+1 : end, k) = tmp(:);
 
 endfunction
 

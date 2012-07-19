@@ -126,8 +126,8 @@ function [vx, vy] = voronoi (varargin)
 
   xbox = [xmin - scale * xdelta; xmin - scale * xdelta; ...
           xmax + scale * xdelta; xmax + scale * xdelta];
-  ybox = [xmin - scale * xdelta; xmax + scale * xdelta; ...
-          xmax + scale * xdelta; xmin - scale * xdelta];
+  ybox = [ymin - scale * ydelta; ymax + scale * ydelta; ...
+          ymax + scale * ydelta; ymin - scale * ydelta];
 
   [p, c, infi] = __voronoi__ ("voronoi",
                               [[x(:) ; xbox(:)], [y(:); ybox(:)]],

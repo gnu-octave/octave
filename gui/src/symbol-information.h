@@ -121,9 +121,37 @@ typedef struct symbol_information
     _symbol = QString (symbol_record.name ().c_str ());
     _type   = QString (symbol_record.varval ().type_name ().c_str ());
     octave_value ov = symbol_record.varval ();
-    std::stringstream buffer;
-    ov.print (buffer, true);
-    _value  = QString::fromStdString (buffer.str ());
+
+    // In case we have really large matrices or strings, cut them down for performance reasons.
+    QString short_value_string;
+    bool use_short_value_string = false;
+    if (ov.is_matrix_type () || ov.is_cell ())
+      {
+        if (ov.rows () * ov.columns () > 10)
+          {
+            use_short_value_string = true;
+            short_value_string = QString ("%1x%2 items").arg (ov.rows ()).arg (ov.columns ());
+          }
+      }
+    else if (ov.is_string ())
+      {
+        if (ov.string_value ().length () > 40)
+          {
+            use_short_value_string = true;
+            short_value_string = QString::fromStdString (ov.string_value ().substr (0, 40));
+          }
+      }
+
+    if (use_short_value_string)
+      {
+        _value = short_value_string;
+      }
+    else
+      {
+        std::stringstream buffer;
+        ov.print (buffer, true);
+        _value  = QString::fromStdString (buffer.str ());
+      }
     _value.replace("\n", " ");
 
     if (ov.is_string ())

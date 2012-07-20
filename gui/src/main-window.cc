@@ -131,7 +131,7 @@ main_window::handle_clear_history_request()
 void
 main_window::handle_command_double_clicked (QString command)
 {
-  _terminal->sendText(command);
+  _terminal->sendText (command);
   _terminal->setFocus ();
 }
 

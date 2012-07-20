@@ -286,7 +286,7 @@ dnl the flag.
 dnl
 dnl OCTAVE_CC_FLAG
 AC_DEFUN([OCTAVE_CC_FLAG], [
-  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  ac_safe=`echo "$1" | sed 'y% ./+-:=%___p___%'`
   AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
   AC_CACHE_VAL(octave_cv_cc_flag_$ac_safe, [
     AC_LANG_PUSH(C)

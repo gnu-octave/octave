@@ -737,30 +737,34 @@ LLVM_CPPFLAGS=
 LLVM_LDFLAGS=
 LLVM_LIBS=
 
-dnl llvm-config is messed up
-if  test -n "$LLVM_CONFIG"; then
+if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
+  # We use -isystem if avaiable because we do not want to see warnings in llvm
+  LLVM_INCLUDE_FLAG=-I
+  OCTAVE_CC_FLAG(-isystem ., [
+    LLVM_INCLUDE_FLAG=-isystem
+    AC_MSG_NOTICE([using -isystem for llvm headers])])
+
   LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
   LLVM_LIBS=`$LLVM_CONFIG --libs`
   dnl Use -isystem so we don't get warnings from llvm headers
-  LLVM_CPPFLAGS="-isystem `$LLVM_CONFIG --includedir`"
+  LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
   LLVM_CXXFLAGS=
-fi
 
-save_CPPFLAGS="$CPPFLAGS"
-save_CXXFLAGS="$CXXFLAGS"
-save_LIBS="$LIBS"
-save_LDFLAGS="$LDFLAGS"
-dnl
-dnl We define some extra flags that llvm requires in order to include headers.
-dnl Idealy we should get these from llvm-config, but llvm-config isn't very
-dnl helpful.
-dnl
-CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
-CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
-LIBS="$LLVM_LIBS $LIBS"
-LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+  save_CPPFLAGS="$CPPFLAGS"
+  save_CXXFLAGS="$CXXFLAGS"
+  save_LIBS="$LIBS"
+  save_LDFLAGS="$LDFLAGS"
 
-if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
+  dnl
+  dnl We define some extra flags that llvm requires in order to include headers.
+  dnl Idealy we should get these from llvm-config, but llvm-config isn't very
+  dnl helpful.
+  dnl
+  CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
+  CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
+  LIBS="$LLVM_LIBS $LIBS"
+  LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+
   AC_LANG_PUSH(C++)
     AC_CHECK_HEADER([llvm/LLVMContext.h], [
       AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])

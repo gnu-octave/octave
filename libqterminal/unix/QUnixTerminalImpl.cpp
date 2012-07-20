@@ -33,6 +33,7 @@ QUnixTerminalImpl::QUnixTerminalImpl(QWidget *parent)
 void QUnixTerminalImpl::initialize()
 {
     m_terminalView = new TerminalView(this);
+    m_terminalView->setKeyboardCursorShape(TerminalView::UnderlineCursor);
     m_terminalView->setBellMode(TerminalView::NotifyBell);
     m_terminalView->setTerminalSizeHint(true);
     m_terminalView->setContextMenuPolicy(Qt::CustomContextMenu);

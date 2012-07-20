@@ -187,6 +187,12 @@ replace it.
 
 @DOCSTRING(whitebg)
 
+The following functions can be used to manipulate colormaps.
+
+@DOCSTRING(cmunique)
+
+@DOCSTRING(cmpermute)
+
 @node Plotting on top of Images
 @section Plotting on top of Images
 

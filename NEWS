@@ -74,10 +74,10 @@ Summary of important user-visible changes for version 3.8:
 
  ** Other new functions added in 3.8.0:
 
-      betaincinv  lines         tetramesh
-      colorcube   rgbplot
-      erfcinv     shrinkfaces
-      findfigs    splinefit
+      betaincinv  fminsearch   splinefit
+      colorcube   lines        tetramesh
+      erfcinv     rgbplot     
+      findfigs    shrinkfaces 
 
  ** The default name of the Octave crash dump file is now called
     octave-workspace instead of octave-core.

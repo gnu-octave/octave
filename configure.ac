@@ -724,9 +724,6 @@ dnl
 warn_llvm="LLVM library fails tests. JIT compilation will be disabled."
 
 AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
-if test "x$ac_cv_env_LLVM_CONFIG_set" != "xset"; then
-   AC_PATH_TOOL([LLVM_CONFIG], [llvm-config])
-fi
 
 AC_ARG_ENABLE([jit-debug],
   AS_HELP_STRING([--enable-jit-debug], [Enable debug printing of jit IRs]))
@@ -763,21 +760,26 @@ CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
 LIBS="$LLVM_LIBS $LIBS"
 LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
 
-AC_LANG_PUSH(C++)
-  AC_CHECK_HEADER([llvm/LLVMContext.h], [
-    AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
-      AC_COMPILE_IFELSE(
-        [AC_LANG_PROGRAM([[#include <llvm/LLVMContext.h>]],
-                         [[llvm::LLVMContext& ctx = llvm::getGlobalContext ();]])],
-        [
-         AC_MSG_RESULT([yes])
-         warn_llvm=
-         XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"
-        ],
-        [AC_MSG_RESULT([no])
+if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
+  AC_LANG_PUSH(C++)
+    AC_CHECK_HEADER([llvm/LLVMContext.h], [
+      AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[#include <llvm/LLVMContext.h>]],
+                           [[llvm::LLVMContext& ctx = llvm::getGlobalContext ();]])],
+          [
+           AC_MSG_RESULT([yes])
+           warn_llvm=
+           XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"
+          ],
+          [AC_MSG_RESULT([no])
+      ])
     ])
-  ])
-AC_LANG_POP(C++)
+  AC_LANG_POP(C++)
+else
+  warn_llvm="LLVM_CONFIG not set. JIT compilation will be disabled."
+fi
+
 CPPFLAGS="$save_CPPFLAGS"
 CXXFLAGS="$save_CXXFLAGS"
 LIBS="$save_LIBS"
@@ -790,7 +792,7 @@ else
   LLVM_CPPFLAGS=
   LLVM_LDFLAGS=
   LLVM_LIBS=
-  AC_MSG_WARN([$warn_llvm])
+  OCTAVE_CONFIGURE_WARNING([warn_llvm])
 fi
 
 AC_SUBST(LLVM_CXXFLAGS)

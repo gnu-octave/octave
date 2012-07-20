@@ -39,6 +39,12 @@ template <class T>
 class
 MArray : public Array<T>
 {
+protected:
+
+  // For jit support
+  MArray (T *sdata, octave_idx_type slen, octave_idx_type *adims, void *arep)
+    : Array<T> (sdata, slen, adims, arep) { }
+
 public:
 
   MArray (void) : Array<T> () {}

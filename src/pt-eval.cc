@@ -44,6 +44,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "symtab.h"
 #include "unwind-prot.h"
 
+#if HAVE_LLVM
+//FIXME: This should be part of tree_evaluator
+#include "pt-jit.h"
+static tree_jit jiter;
+#endif
+
 static tree_evaluator std_evaluator;
 
 tree_evaluator *current_evaluator = &std_evaluator;
@@ -289,6 +295,11 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
 
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
+
+#if HAVE_LLVM
+  if (jiter.execute (cmd))
+    return;
+#endif
 
   // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();

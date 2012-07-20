@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-bp.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"
+#include "pt-jit.h"
 #include "pt-jump.h"
 #include "pt-loop.h"
 #include "pt-stmt.h"
@@ -97,6 +98,7 @@ tree_simple_for_command::~tree_simple_for_command (void)
   delete list;
   delete lead_comm;
   delete trail_comm;
+  delete compiled;
 }
 
 tree_command *

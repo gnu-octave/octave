@@ -756,6 +756,21 @@ public:
   virtual bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
+  // Grab the reference count. For use by jit.
+  void
+  grab (void)
+  {
+    ++count;
+  }
+
+  // Release the reference count. For use by jit.
+  void
+  release (void)
+  {
+    if (--count == 0)
+      delete this;
+  }
+
 protected:
 
   // This should only be called for derived types.

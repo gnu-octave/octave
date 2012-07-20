@@ -36,6 +36,8 @@ class tree_walker;
 #include "pt-cmd.h"
 #include "symtab.h"
 
+class jit_info;
+
 // While.
 
 class
@@ -146,7 +148,7 @@ public:
 
   tree_simple_for_command (int l = -1, int c = -1)
     : tree_command (l, c), parallel (false), lhs (0), expr (0),
-      maxproc (0), list (0), lead_comm (0), trail_comm (0) { }
+      maxproc (0), list (0), lead_comm (0), trail_comm (0), compiled (0) { }
 
   tree_simple_for_command (bool parallel_arg, tree_expression *le,
                            tree_expression *re,
@@ -157,7 +159,7 @@ public:
                            int l = -1, int c = -1)
     : tree_command (l, c), parallel (parallel_arg), lhs (le),
       expr (re), maxproc (maxproc_arg), list (lst),
-      lead_comm (lc), trail_comm (tc) { }
+      lead_comm (lc), trail_comm (tc), compiled (0) { }
 
   ~tree_simple_for_command (void);
 
@@ -180,8 +182,18 @@ public:
 
   void accept (tree_walker& tw);
 
-private:
+  // some functions use by tree_jit
+  jit_info *get_info (void) const
+  {
+    return compiled;
+  }
 
+  void stash_info (jit_info *jinfo)
+  {
+    compiled = jinfo;
+  }
+
+private:
   // TRUE means operate in parallel (subject to the value of the
   // maxproc expression).
   bool parallel;
@@ -204,6 +216,9 @@ private:
 
   // Comment preceding ENDFOR token.
   octave_comment_list *trail_comm;
+
+  // compiled version of the loop
+  jit_info *compiled;
 
   // No copying!
 

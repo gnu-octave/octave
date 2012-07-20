@@ -220,6 +220,7 @@ PT_INCLUDES = \
   pt-fcn-handle.h \
   pt-id.h \
   pt-idx.h \
+  pt-jit.h \
   pt-jump.h \
   pt-loop.h \
   pt-mat.h \
@@ -392,6 +393,7 @@ PT_SRC = \
   pt-fcn-handle.cc \
   pt-id.cc \
   pt-idx.cc \
+  pt-jit.cc \
   pt-jump.cc \
   pt-loop.cc \
   pt-mat.cc \

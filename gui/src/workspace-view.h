@@ -29,6 +29,7 @@ class workspace_view : public QDockWidget
   Q_OBJECT
 public:
   workspace_view (QWidget * parent = 0);
+  ~workspace_view ();
 
 public slots:
   void handle_visibility_changed (bool visible);

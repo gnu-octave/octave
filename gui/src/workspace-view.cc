@@ -16,6 +16,7 @@
  */
 
 #include "workspace-view.h"
+#include "resource-manager.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -49,10 +50,10 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   widget ()->setLayout (layout);
 
   // Initialize collapse/expand state of the workspace subcategories.
-  _explicit_collapse.local      = false;
-  _explicit_collapse.global     = false;
-  _explicit_collapse.persistent = false;
-  _explicit_collapse.hidden     = false;
+  _explicit_collapse.local      = resource_manager::instance ()->get_settings ()->value ("workspaceview/local_collapsed", false).toBool ();
+  _explicit_collapse.global     = resource_manager::instance ()->get_settings ()->value ("workspaceview/global_collapsed", false).toBool ();;
+  _explicit_collapse.persistent = resource_manager::instance ()->get_settings ()->value ("workspaceview/persistent_collapsed", false).toBool ();;
+  _explicit_collapse.hidden     = resource_manager::instance ()->get_settings ()->value ("workspaceview/hidden_collapsed", false).toBool ();;
 
   // Connect signals and slots.
   connect (this, SIGNAL (visibilityChanged (bool)),
@@ -69,6 +70,14 @@ workspace_view::workspace_view (QWidget * parent) : QDockWidget
   connect (_workspace_tree_view, SIGNAL (doubleClicked (QModelIndex)),
            this, SLOT (item_double_clicked (QModelIndex)));
 
+}
+
+workspace_view::~workspace_view ()
+{
+  resource_manager::instance ()->get_settings ()->setValue("workspaceview/local_collapsed", _explicit_collapse.local);
+  resource_manager::instance ()->get_settings ()->setValue("workspaceview/global_collapsed", _explicit_collapse.global);
+  resource_manager::instance ()->get_settings ()->setValue("workspaceview/persistent_collapsed", _explicit_collapse.persistent);
+  resource_manager::instance ()->get_settings ()->setValue("workspaceview/hidden_collapsed", _explicit_collapse.hidden);
 }
 
 void

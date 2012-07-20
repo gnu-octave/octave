@@ -93,15 +93,15 @@ shows the image given in the first input argument.
 @node Representing Images
 @section Representing Images
 
-In general Octave supports four different kinds of images, gray-scale
-images, RGB images, binary images, and indexed images.  A gray-scale
+In general Octave supports four different kinds of images, grayscale
+images, RGB images, binary images, and indexed images.  A grayscale
 image is represented with an M-by-N matrix in which each
 element corresponds to the intensity of a pixel.  An RGB image is
 represented with an M-by-N-by-3 array where each
 3-vector corresponds to the red, green, and blue intensities of each
 pixel.
 
-The actual meaning of the value of a pixel in a gray-scale or RGB
+The actual meaning of the value of a pixel in a grayscale or RGB
 image depends on the class of the matrix.  If the matrix is of class
 @code{double} pixel intensities are between 0 and 1, if it is of class
 @code{uint8} intensities are between 0 and 255, and if it is of class

@@ -34,7 +34,7 @@
 ## In the worst case the new map could have as many rows as the number of
 ## pixels in the original image.
 ##
-## When the input is a greyscale image @var{I}, the output colormap will
+## When the input is a grayscale image @var{I}, the output colormap will
 ## contain one entry for every unique intensity value in the original image.
 ## In the worst case the new map could have as many rows as the number of
 ## pixels in the original image.

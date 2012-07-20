@@ -26,16 +26,34 @@
 ##
 ## Valid parameters are:
 ##
-## @itemize @bullet
+## @table @asis
 ## @item AutoScaling
 ##
 ## @item ComplexEqn
+##
+## @item Display
+## Request verbose display of results from optimizations.  Values are:
+##
+## @table @asis
+## @item "off" [default]
+## No display.
+##
+## @item "iter"
+## Display intermediate results for every loop iteration.
+##
+## @item "final"
+## Display the result of the final loop iteration.
+##
+## @item "notify"
+## Display the result of the final loop iteration if the function has
+## failed to converge.
+## @end table
 ##
 ## @item FinDiffType
 ##
 ## @item FunValCheck
 ## When enabled, display an error if the objective function returns an invalid
-## value (a complex value, NaN, or Inf).  Must be set to "on" or "off"
+## value (a complex number, NaN, or Inf).  Must be set to "on" or "off"
 ## [default].  Note: the functions @code{fzero} and @code{fminbnd} correctly
 ## handle Inf values and only complex values or NaN will cause an error in this
 ## case. 
@@ -77,7 +95,7 @@
 ## @item TypicalX
 ##
 ## @item Updating
-## @end itemize
+## @end table
 ## @end deftypefn
 
 function retval = optimset (varargin)

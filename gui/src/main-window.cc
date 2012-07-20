@@ -386,8 +386,6 @@ main_window::show_about_octave ()
       "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTABILITY or"
       "FITNESS FOR A PARTICULAR PURPOSE.  For details, type `warranty'.\n"
       "\n"
-      "Octave was configured for \"x86_64-pc-linux-gnu\".\n"
-      "\n"
       "Additional information about Octave is available at http://www.octave.org.\n"
       "\n"
       "Please contribute if you find this software useful."

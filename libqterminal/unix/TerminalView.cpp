@@ -2422,34 +2422,6 @@ void TerminalView::enableBell()
   _allowBell = true;
 }
 
-void TerminalView::bell(const QString&)
-{
-  if (_bellMode==NoBell) return;
-
-  //limit the rate at which bells can occur
-  //...mainly for sound effects where rapid bells in sequence
-  //produce a horrible noise
-  if ( _allowBell )
-    {
-      _allowBell = false;
-      QTimer::singleShot(500,this,SLOT(enableBell()));
-
-      if (_bellMode==SystemBeepBell)
-        {
-          //        KNotification::beep();
-        }
-      else if (_bellMode==NotifyBell)
-        {
-          //        KNotification::event("BellVisible", message,QPixmap(),this);
-        }
-      else if (_bellMode==VisualBell)
-        {
-          swapColorTable();
-          QTimer::singleShot(200,this,SLOT(swapColorTable()));
-        }
-    }
-}
-
 void TerminalView::swapColorTable()
 {
   ColorEntry color = _colorTable[1];

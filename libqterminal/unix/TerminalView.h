@@ -442,26 +442,12 @@ public slots:
     /** See setUsesMouse() */
     bool usesMouse() const;
 
-    /**
-     * Shows a notification that a bell event has occurred in the terminal.
-     * TODO: More documentation here
-     */
-    void bell(const QString& message);
-
 signals:
 
     /**
      * Emitted when the user presses a key whilst the terminal widget has focus.
      */
     void keyPressedSignal(QKeyEvent *e);
-
-    /**
-     * Emitted when the user presses the suspend or resume flow control key combinations
-     *
-     * @param suspend true if the user pressed Ctrl+S (the suspend output key combination) or
-     * false if the user pressed Ctrl+Q (the resume output key combination)
-     */
-    void flowControlKeyPressed(bool suspend);
 
     /**
      * A mouse event occurred.

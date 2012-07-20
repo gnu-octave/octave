@@ -43,10 +43,6 @@
 #include <QtGui/QKeyEvent>
 #include <QtCore/QByteRef>
 
-// KDE
-//#include <kdebug.h>
-//#include <klocale.h>
-
 // Konsole
 #include "unix/KeyboardTranslator.h"
 #include "unix/Screen.h"
@@ -1262,5 +1258,4 @@ void Vt102Emulation::ReportErrorToken()
 #endif
 }
 
-//#include "moc_Vt102Emulation.cpp"
 

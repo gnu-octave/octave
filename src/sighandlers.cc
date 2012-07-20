@@ -147,12 +147,12 @@ octave_signal_handler (void)
 #endif
 
             case SIGFPE:
-              std::cerr << "warning: floating point exception -- trying to return to prompt" << std::endl;
+              std::cerr << "warning: floating point exception" << std::endl;
               break;
 
 #ifdef SIGPIPE
             case SIGPIPE:
-              std::cerr << "warning: broken pipe -- some output may be lost" << std::endl;
+              std::cerr << "warning: broken pipe" << std::endl;
               break;
 #endif
             }

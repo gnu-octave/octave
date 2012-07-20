@@ -63,7 +63,6 @@
 
 // static
 bool TerminalView::_antialiasText = true;
-bool TerminalView::HAVE_TRANSPARENCY = false;
 
 /* ------------------------------------------------------------------------- */
 /*                                                                           */
@@ -246,7 +245,6 @@ TerminalView::TerminalView(QWidget *parent)
   ,_resizing(false)
   ,_terminalSizeHint(false)
   ,_terminalSizeStartup(true)
-  ,_bidiEnabled(false)
   ,_actSel(0)
   ,_wordSelectionMode(false)
   ,_lineSelectionMode(false)
@@ -500,26 +498,7 @@ QColor TerminalView::keyboardCursorColor() const
   return _cursorColor;
 }
 
-void TerminalView::setOpacity(qreal opacity)
-{
-  QColor color(_blendColor);
-  color.setAlphaF(opacity);
-
-  // enable automatic background filling to prevent the display
-  // flickering if there is no transparency
-  if ( color.alpha() == 255 )
-    {
-      setAutoFillBackground(true);
-    }
-  else
-    {
-      setAutoFillBackground(false);
-    }
-
-  _blendColor = color.rgba();
-}
-
-void TerminalView::drawBackground(QPainter& painter, const QRect& rect, const QColor& backgroundColor, bool useOpacitySetting )
+void TerminalView::drawBackground(QPainter& painter, const QRect& rect, const QColor& backgroundColor)
 {
   // the area of the widget showing the contents of the terminal display is drawn
   // using the background color from the color scheme set with setColorTable()
@@ -532,23 +511,11 @@ void TerminalView::drawBackground(QPainter& painter, const QRect& rect, const QC
   QRect scrollBarArea = _scrollBar->isVisible() ?
         rect.intersected(_scrollBar->geometry()) :
         QRect();
+
   QRegion contentsRegion = QRegion(rect).subtracted(scrollBarArea);
   QRect contentsRect = contentsRegion.boundingRect();
 
-  if ( HAVE_TRANSPARENCY && qAlpha(_blendColor) < 0xff && useOpacitySetting )
-    {
-      QColor color(backgroundColor);
-      color.setAlpha(qAlpha(_blendColor));
-
-      painter.save();
-      painter.setCompositionMode(QPainter::CompositionMode_Source);
-      painter.fillRect(contentsRect, color);
-      painter.restore();
-    }
-  else {
-      painter.fillRect(contentsRect, backgroundColor);
-    }
-
+  painter.fillRect(contentsRect, backgroundColor);
   painter.fillRect(scrollBarArea,_scrollBar->palette().background());
 }
 
@@ -665,7 +632,7 @@ void TerminalView::drawTextFragment(QPainter& painter ,
 
   // draw background if different from the display's background color
   if ( backgroundColor != palette().background().color() )
-    drawBackground(painter,rect,backgroundColor, false /* do not use transparency */);
+    drawBackground(painter,rect,backgroundColor);
 
   // draw cursor shape if the current character is the cursor
   // this may alter the foreground and background colors
@@ -1074,14 +1041,13 @@ void TerminalView::paintEvent( QPaintEvent* pe )
 
   foreach (QRect rect, (pe->region() & contentsRect()).rects())
     {
-      drawBackground(paint,rect,palette().background().color(),	true /* use opacity setting */);
+      drawBackground(paint,rect,palette().background().color());
       drawContents(paint, rect);
     }
   //    drawBackground(paint,contentsRect(),palette().background().color(),	true /* use opacity setting */);
   //    drawContents(paint, contentsRect());
-  //drawInputMethodPreeditString(paint,preeditRect());
-  //paintFilters(paint);
-
+  drawInputMethodPreeditString(paint,preeditRect());
+  paintFilters(paint);
   paint.end();
 }
 
@@ -1118,7 +1084,7 @@ void TerminalView::drawInputMethodPreeditString(QPainter& painter , const QRect&
   const QColor foreground = _colorTable[DEFAULT_FORE_COLOR].color;
   const Character* style = &_image[loc(cursorPos.x(),cursorPos.y())];
 
-  drawBackground(painter,rect,background,true);
+  drawBackground(painter,rect,background);
   drawCursor(painter,rect,foreground,background,invertColors);
   drawCharacters(painter,rect,_inputMethodData.preeditString,style,invertColors);
 

@@ -84,8 +84,6 @@ public:
      */
     uint randomSeed() const;
 
-    /** Sets the opacity of the terminal display. */
-    void setOpacity(qreal opacity);
 
     /**
      * This enum describes the location where the scroll bar is positioned in the display widget.
@@ -377,9 +375,6 @@ public:
      */
     void setTerminalSizeStartup(bool on) { _terminalSizeStartup=on; }
 
-    void setBidiEnabled(bool set) { _bidiEnabled=set; }
-    bool isBidiEnabled() { return _bidiEnabled; }
-
     /**
      * Sets the terminal screen section which is displayed in this widget.
      * When updateImage() is called, the display fetches the latest character image from the
@@ -391,8 +386,6 @@ public:
     void setScreenWindow( ScreenWindow* window );
     /** Returns the terminal screen section which is displayed in this widget.  See setScreenWindow() */
     ScreenWindow* screenWindow() const;
-
-    static bool HAVE_TRANSPARENCY;
 
 public slots:
 
@@ -568,8 +561,7 @@ private:
     // if useOpacitySetting is true then the color's alpha value will be set to
     // the display's transparency (set with setOpacity()), otherwise the background
     // will be drawn fully opaque
-    void drawBackground(QPainter& painter, const QRect& rect, const QColor& color,
-                  bool useOpacitySetting);
+    void drawBackground(QPainter& painter, const QRect& rect, const QColor& color);
     // draws the cursor character
     void drawCursor(QPainter& painter, const QRect& rect , const QColor& foregroundColor,
                                        const QColor& backgroundColor , bool& invertColors);
@@ -662,7 +654,6 @@ private:
     bool _resizing;
     bool _terminalSizeHint;
     bool _terminalSizeStartup;
-    bool _bidiEnabled;
     bool _mouseMarks;
 
     QPoint  _iPntSel; // initial selection point
@@ -742,12 +733,6 @@ private:
    static const int DEFAULT_TOP_MARGIN = 2;
 
     bool _readonly;
-
-public:
-    static void setTransparencyEnabled(bool enable)
-    {
-        HAVE_TRANSPARENCY = enable;
-    }
 };
 
 #endif // TERMINALVIEW_H

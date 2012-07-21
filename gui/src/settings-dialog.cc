@@ -44,6 +44,23 @@ QDialog (parent), ui (new Ui::settings_dialog)
   ui->useAlternatingRowColors->setChecked (settings->value ("useAlternatingRowColors").toBool());
   ui->useProxyServer->setChecked (settings->value ("useProxyServer").toBool ());
   ui->proxyHostName->setText (settings->value ("proxyHostName").toString ());
+  ui->terminal_cursorBlinking->setChecked (settings->value ("terminal/cursorBlinking").toBool ());
+
+  QString cursorType = settings->value ("terminal/cursorType").toString ();
+
+  QStringList items;
+  items << QString("0") << QString("1") << QString("2");
+  ui->terminal_cursorType->addItems(items);
+  ui->terminal_cursorType->setItemText (0, "IBeam Cursor");
+  ui->terminal_cursorType->setItemText (1, "Block Cursor");
+  ui->terminal_cursorType->setItemText (2, "Underline Cursor");
+
+  if (cursorType == "ibeam")
+    ui->terminal_cursorType->setCurrentIndex (0);
+  else if (cursorType == "block")
+    ui->terminal_cursorType->setCurrentIndex (1);
+  else if (cursorType == "underline")
+    ui->terminal_cursorType->setCurrentIndex (2);
 
   int currentIndex = 0;
   QString proxyTypeString = settings->value ("proxyType").toString ();
@@ -83,5 +100,16 @@ settings_dialog::~settings_dialog ()
   settings->setValue ("proxyPort", ui->proxyPort->text ());
   settings->setValue ("proxyUserName", ui->proxyUserName->text ());
   settings->setValue ("proxyPassword", ui->proxyPassword->text ());
+  settings->setValue ("terminal/cursorBlinking", ui->terminal_cursorBlinking->isChecked ());
+
+  QString cursorType;
+  switch (ui->terminal_cursorType->currentIndex ())
+    {
+    case 0: cursorType = "ibeam"; break;
+    case 1: cursorType = "block"; break;
+    case 2: cursorType = "underline";  break;
+    }
+  settings->setValue ("terminal/cursorType", cursorType);
+  settings->sync ();
   delete ui;
 }

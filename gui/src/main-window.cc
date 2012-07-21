@@ -160,8 +160,6 @@ main_window::process_settings_dialog_request ()
   settingsDialog->exec ();
   delete settingsDialog;
   emit settings_changed ();
-  resource_manager::instance ()->update_network_settings ();
-  notice_settings();
 }
 
 void
@@ -169,10 +167,22 @@ main_window::notice_settings ()
 {
   // Set terminal font:
   QSettings *settings = resource_manager::instance ()->get_settings ();
+
   QFont font = QFont();
   font.setFamily(settings->value("terminal/fontName").toString());
   font.setPointSize(settings->value("terminal/fontSize").toInt ());
   _terminal->setTerminalFont(font);
+
+  QString cursorType = settings->value ("terminal/cursorType").toString ();
+  bool cursorBlinking = settings->value ("terminal/cursorBlinking").toBool ();
+  if (cursorType == "ibeam")
+    _terminal->setCursorType(QTerminalInterface::IBeamCursor, cursorBlinking);
+  else if (cursorType == "block")
+    _terminal->setCursorType(QTerminalInterface::BlockCursor, cursorBlinking);
+  else if (cursorType == "underline")
+    _terminal->setCursorType(QTerminalInterface::UnderlineCursor, cursorBlinking);
+
+  resource_manager::instance ()->update_network_settings ();
 }
 
 void

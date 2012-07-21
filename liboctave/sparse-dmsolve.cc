@@ -49,7 +49,7 @@ dmsolve_extract (const MSparse<T> &A, const octave_idx_type *Pinv,
 
   // Cast to uint64 to handle overflow in this multiplication
   if (octave_uint64 (nr)*octave_uint64 (nc) < octave_uint64 (maxnz))
-    nz = nr*nz;
+    nz = nr*nc;
   else
     nz = maxnz;
 

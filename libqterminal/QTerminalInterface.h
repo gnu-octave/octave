@@ -49,6 +49,18 @@ public:
     virtual void setSize(int h, int v) = 0;
     virtual void sendText(const QString& text) = 0;
 
+    enum CursorType {
+      UnderlineCursor,
+      BlockCursor,
+      IBeamCursor
+    };
+
+    virtual void setCursorType(CursorType type, bool blinking) {
+        // Provide empty default impl in order to avoid conflicts with the win impl.
+        Q_UNUSED(type);
+        Q_UNUSED(blinking);
+    }
+
 public slots:
     virtual void copyClipboard() = 0;
     virtual void pasteClipboard() = 0;

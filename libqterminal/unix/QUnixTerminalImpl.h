@@ -38,6 +38,8 @@ public:
     void setSize(int h, int v);
     void sendText(const QString& text);
 
+    void setCursorType(CursorType type, bool blinking);
+
 public slots:
     void copyClipboard();
     void pasteClipboard();

@@ -118,6 +118,16 @@ void QUnixTerminalImpl::sendText(const QString& text)
     m_terminalModel->sendText(text);
 }
 
+void QUnixTerminalImpl::setCursorType(CursorType type, bool blinking)
+{
+    switch(type) {
+        case UnderlineCursor: m_terminalView->setKeyboardCursorShape(TerminalView::UnderlineCursor);
+        case BlockCursor: m_terminalView->setKeyboardCursorShape(TerminalView::BlockCursor);
+        case IBeamCursor: m_terminalView->setKeyboardCursorShape(TerminalView::IBeamCursor);
+    }
+    m_terminalView->setBlinkingCursor(blinking);
+}
+
 void QUnixTerminalImpl::focusInEvent(QFocusEvent *focusEvent)
 {
     Q_UNUSED(focusEvent);

@@ -1,7 +1,6 @@
 FCN_FILE_DIRS += pkg
 
 pkg_PRIVATE_FCN_FILES = \
-  pkg/private/absolute_pathname.m \
   pkg/private/build.m \
   pkg/private/configure_make.m \
   pkg/private/copy_files.m \

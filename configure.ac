@@ -721,6 +721,11 @@ dnl
 dnl llvm is odd and has its own pkg-config like script. We should probably check
 dnl for existance and 
 dnl
+save_CPPFLAGS="$CPPFLAGS"
+save_CXXFLAGS="$CXXFLAGS"
+save_LIBS="$LIBS"
+save_LDFLAGS="$LDFLAGS"
+
 warn_llvm="LLVM library fails tests. JIT compilation will be disabled."
 
 AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
@@ -750,11 +755,6 @@ if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
   LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
   LLVM_CXXFLAGS=
 
-  save_CPPFLAGS="$CPPFLAGS"
-  save_CXXFLAGS="$CXXFLAGS"
-  save_LIBS="$LIBS"
-  save_LDFLAGS="$LDFLAGS"
-
   dnl
   dnl We define some extra flags that llvm requires in order to include headers.
   dnl Idealy we should get these from llvm-config, but llvm-config isn't very
@@ -780,14 +780,10 @@ if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
       ])
     ])
   AC_LANG_POP(C++)
+  
 else
   warn_llvm="LLVM_CONFIG not set. JIT compilation will be disabled."
 fi
-
-CPPFLAGS="$save_CPPFLAGS"
-CXXFLAGS="$save_CXXFLAGS"
-LIBS="$save_LIBS"
-LDFLAGS="$save_LDFLAGS"
 
 if test -z "$warn_llvm"; then
   AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available])
@@ -803,6 +799,11 @@ AC_SUBST(LLVM_CXXFLAGS)
 AC_SUBST(LLVM_CPPFLAGS)
 AC_SUBST(LLVM_LDFLAGS)
 AC_SUBST(LLVM_LIBS)
+
+CPPFLAGS="$save_CPPFLAGS"
+CXXFLAGS="$save_CXXFLAGS"
+LIBS="$save_LIBS"
+LDFLAGS="$save_LDFLAGS"
 
 ### Check for HDF5 library.
 

@@ -40,15 +40,21 @@ octave_builtin : public octave_function
 {
 public:
 
-  octave_builtin (void) : octave_function (), f (0), jtype (0) { }
+  octave_builtin (void) : octave_function (), f (0), file (), jtype (0) { }
 
   typedef octave_value_list (*fcn) (const octave_value_list&, int);
 
   octave_builtin (fcn ff, const std::string& nm = std::string (),
                   const std::string& ds = std::string ())
-    : octave_function (nm, ds), f (ff), jtype (0) { }
+    : octave_function (nm, ds), f (ff), file (), jtype (0) { }
+
+  octave_builtin (fcn ff, const std::string& nm, const std::string& fnm,
+                  const std::string& ds)
+    : octave_function (nm, ds), f (ff), file (fnm), jtype (0) { }
 
   ~octave_builtin (void) { }
+
+  std::string fcn_file_name (void) const { return file; }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -88,6 +94,9 @@ protected:
 
   // A pointer to the actual function.
   fcn f;
+
+  // The name of the file where this function was defined.
+  std::string file;
 
   // A pointer to the jit type that represents the function.
   jit_type *jtype;

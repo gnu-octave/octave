@@ -54,7 +54,7 @@ public:
 
   ~octave_builtin (void) { }
 
-  std::string fcn_file_name (void) const { return file; }
+  std::string src_file_name (void) const { return file; }
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)

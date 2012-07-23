@@ -313,11 +313,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
     }
   else
     {
-      size_t fpath_len = fpath.length ();
-
-      if ((fpath_len > 4 && fpath.substr (fpath_len-4) == ".oct")
-          || (fpath_len > 4 && fpath.substr (fpath_len-4) == ".mex")
-          || (fpath_len > 2 && fpath.substr (fpath_len-4) == ".m"))
+      if (fpath.length () > 0)
         {
           size_t xpos = fpath.find_last_of (file_ops::dir_sep_chars ());
 
@@ -330,6 +326,11 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
               octave_value tmp (xfcn);
 
               fcn = octave_value (new octave_fcn_handle (tmp, nm));
+            }
+          else
+            {
+              error ("function handle points to non-existent function");
+              success = false;
             }
         }
       else
@@ -383,10 +384,9 @@ octave_fcn_handle::save_ascii (std::ostream& os)
     {
       octave_function *f = function_value ();
       std::string fnm = f ? f->fcn_file_name () : std::string ();
-      bool is_builtin = f && f->is_builtin_function ();
 
       os << "# octaveroot: " << OCTAVE_EXEC_PREFIX << "\n";
-      if (! (is_builtin || fnm.empty ()))
+      if (! fnm.empty ())
         os << "# path: " << fnm << "\n";
       os << nm << "\n";
     }

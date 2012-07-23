@@ -1118,7 +1118,10 @@ do_which (const std::string& name, std::string& type)
                   if (fcn->is_user_function ())
                     type = "command-line function";
                   else
-                    type = "built-in function";
+                    {
+                      file = fcn->src_file_name ();
+                      type = "built-in function";
+                    }
                 }
               else
                 type = val.is_user_script ()

@@ -61,6 +61,8 @@ public:
 
   virtual std::string fcn_file_name (void) const { return std::string (); }
 
+  virtual std::string src_file_name (void) const { return std::string (); }
+
   // The name to show in the profiler (also used as map-key).
   virtual std::string profiler_name (void) const { return name (); }
 

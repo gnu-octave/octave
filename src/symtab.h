@@ -768,20 +768,14 @@ public:
           }
       }
 
-      void clear_cmdline_function (void)
-      {
-        if (! cmdline_function.islocked ())
-          cmdline_function = octave_value ();
-      }
-
       void clear_autoload_function (void)
       {
         if (! autoload_function.islocked ())
           autoload_function = octave_value ();
       }
 
-      // FIXME -- should this also clear the cmdline and other "user
-      // defined" functions?
+      // We also clear command line functions here, as these are both
+      // "user defined"
       void clear_user_function (void)
       {
         if (! function_on_path.islocked ())
@@ -790,6 +784,9 @@ public:
 
             function_on_path = octave_value ();
           }
+
+        if (! cmdline_function.islocked ())
+          cmdline_function = octave_value ();
       }
 
       void clear_mex_function (void)
@@ -804,7 +801,6 @@ public:
         clear_unlocked (private_functions);
         clear_unlocked (class_constructors);
         clear_unlocked (class_methods);
-        clear_cmdline_function ();
         clear_autoload_function ();
         clear_user_function ();
       }

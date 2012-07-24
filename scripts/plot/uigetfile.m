@@ -81,7 +81,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
     error ("uigetfile: number of input arguments must be less than eight");
   endif
 
-  defaultvals = {cell (0, 2),        # File Filter
+  defaultvals = {cell(0, 2),         # File Filter
                  "Open File",        # Dialog Title
                  "",                 # Default file name
                  [240, 120],         # Dialog Position (pixel x/y)

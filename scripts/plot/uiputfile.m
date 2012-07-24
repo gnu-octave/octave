@@ -72,7 +72,7 @@ function [retfile, retpath, retindex] = uiputfile (varargin)
     print_usage ();
   endif
 
-  defaultvals = {cell (0, 2),    # File Filter
+  defaultvals = {cell(0, 2),     # File Filter
                  "Save File",    # Dialog Title
                  "",             # Default file name
                  [240, 120],     # Dialog Position (pixel x/y)

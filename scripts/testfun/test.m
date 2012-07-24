@@ -334,10 +334,6 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
                          __signal_fail);
       end_try_catch
 
-      ## Clear shared function definitions.
-      eval (__clear, "");
-      __clear = "";
-
       ## Initialization code will be evaluated below.
 
 ### FUNCTION
@@ -555,6 +551,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
     __tests += __istest;
     __successes += __success * __istest;
   endfor
+  ## Clear any test functions created
   eval (__clear, "");
 
   if (nargout == 0)

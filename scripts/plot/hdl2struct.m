@@ -26,7 +26,8 @@
 ## Author: pdiribarne <pdiribarne@new-host.home>
 ## Created: 2012-03-04
 
-function hgS = hdl2struct (h)
+function s = hdl2struct (h)
+
   if (nargin != 1 || !ishandle (h))
     print_usage ();
   endif
@@ -38,11 +39,11 @@ function hgS = hdl2struct (h)
 
   ## main object
   main = get (h);
-  hgS.handle = h;
-  hgS.type =  main.type;
-  hgS.properties  = getprops (h);
-  hgS.children = [];
-  hgS.special = [];
+  s.handle = h;
+  s.type =  main.type;
+  s.properties  = getprops (h);
+  s.children = [];
+  s.special = [];
 
   ## sweep all children but legends, colorbars, uimenu and hggroup children
   ## in reverse order
@@ -52,11 +53,11 @@ function hgS = hdl2struct (h)
   ui = findobj (h, "-depth", 1, "type", "uimenu");
   nkids = length (kids);
   ii = 0;
-  while nkids
-    if (! any (kids (nkids) == lg) && !any (kids (nkids) == cb)
-          && ! any (kids (nkids) == ui) && !strcmpi (main.type, "hggroup"))
+  while (nkids)
+    if (! any (kids (nkids) == lg) && ! any (kids (nkids) == cb)
+          && ! any (kids (nkids) == ui) && ! strcmp (main.type, "hggroup"))
       ii++;
-      hgS.children(ii) = hdl2struct(kids(nkids));
+      s.children(ii) = hdl2struct (kids(nkids));
     endif
     nkids--;
   endwhile
@@ -64,31 +65,31 @@ function hgS = hdl2struct (h)
   ## add non "children" children objects (title, xlabel, ...) and
   ## hggroup children and tag theim in "special"
   special = [];
-  if (strcmpi (main.type, "hggroup"))
+  if (strcmp (main.type, "hggroup"))
     special = main.children;
   endif
   special = [special getspecial(h)];
   nsp = length (special);
-  while nsp
+  while (nsp)
     ii++;
-    hgS.children(ii) = hdl2struct (special(nsp));
-    hgS.special(nsp) = ii;
+    s.children(ii) = hdl2struct (special(nsp));
+    s.special(nsp) = ii;
     nsp--;
   endwhile
 
   ## look for legends and colorbars among "main"'s brothers and add them
   ## to the children list
-  if (strcmpi (main.type, "axes"))
+  if (strcmp (main.type, "axes"))
     par = main.parent;
     lg = findobj (par, "-depth", 1, "tag", "legend");
     if !isempty (lg)
       idx = arrayfun (@(x) get(x).userdata.handle(end) == h, lg);
-      lg = lg(find(idx));
+      lg = lg(find (idx));
     endif
     nlg = length (lg);
-    if nlg == 1
+    if (nlg == 1)
       ii++;
-      hgS.children(ii) = hdl2struct (lg);
+      s.children(ii) = hdl2struct (lg);
     elseif (nlg > 1)
       error ("hdl2struct: more than one legend found")
     endif
@@ -96,13 +97,13 @@ function hgS = hdl2struct (h)
     cb = findobj (par, "-depth", 1, "tag", "colorbar");
     if (! isempty (cb))
       idx = arrayfun (@(x) get(x).axes == h, cb);
-      cb = cb(find(idx));
+      cb = cb(find (idx));
     endif
 
     ncb = length (cb);
     if (ncb == 1)
       ii++;
-      hgS.children(ii) = hdl2struct(cb);
+      s.children(ii) = hdl2struct (cb);
     elseif (nlg > 1)
       error ("hdl2struct: more than one colorbar found")
     endif
@@ -162,5 +163,8 @@ function prpstr = getprops (h)
       prpstr.(hidden{ii}) = get (h, hidden{ii});
     endif
   endfor
+
 endfunction
 
+
+## FIXME: need validation tests

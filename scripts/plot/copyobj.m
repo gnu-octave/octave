@@ -27,39 +27,77 @@
 ## Author: pdiribarne <pdiribarne@new-host.home>
 ## Created: 2012-04-01
 
-function hout = copyobj (hin, hpar = 0)
+function hnew = copyobj (horig, hparent = 0)
 
   partypes = {"root", "figure", "axes", "hggroup"};
   othertypes = {"line", "patch", "surface", "image", "text"};
   alltypes = [partypes othertypes];
 
-  if (! ishandle (hin) || nargin > 2)
+  if (! ishandle (horig) || nargin > 2)
     print_usage ();
-  elseif (! ishandle (hpar))
-    hpar = figure (floor (hpar));
-  elseif (! any (strcmpi (get (hpar).type, partypes)))
+  elseif (! ishandle (hparent))
+    hparent = figure (fix (hparent));
+  elseif (! any (strcmpi (get (hparent).type, partypes)))
     print_usage ();
   endif
 
   ## compatibility of input handles
-  kididx = find (strcmp (alltypes, get (hin).type));
-  paridx = find (strcmp (alltypes, get (hpar).type));
+  kididx = find (strcmp (alltypes, get (horig).type));
+  paridx = find (strcmp (alltypes, get (hparent).type));
 
   if (kididx <= paridx)
     error ("copyobj: %s object can't be children to %s.",
-           alltypes{kididx}, alltypes{paridx})
-  elseif nargin == 1
-    str = hdl2struct (hin);
-    hout = struct2hdl (str);
+           alltypes{kididx}, alltypes{paridx});
+  elseif (nargin == 1)
+    str = hdl2struct (horig);
+    hnew = struct2hdl (str);
   else
-    str = hdl2struct (hin);
-    hout = struct2hdl (str, hpar);
+    str = hdl2struct (horig);
+    hnew = struct2hdl (str, hparent);
   endif
+
 endfunction
+
+
+%!demo
+%! hdl = figure (1234);
+%! clf;
+%! hold on;
+%! x = 1:10;
+%! y = x.^2;
+%! dy = 2 * (.2 * x);
+%! y2 = (x - 3).^2;
+%! hg = errorbar (x, y, dy,'#~');
+%! set (hg, 'marker', '^', 'markerfacecolor', rand (1,3));
+%! plot (x, y2, 'ok-');
+%! legend ('errorbar', 'line');
+%! hnew = copyobj (hdl);
+
+%!demo
+%! ## FIXME: This demo fails occasionally for an obscure reason.
+%! ## It appears that there is something wrong with Octave code for patches.
+%! hdl = figure (1234);
+%! clf;
+%! subplot (2,2,1);
+%! hold on;
+%! contourf (rand (10, 10));
+%! colorbar;
+%! subplot (2,2,2);
+%! quiver (rand (10, 10), rand (10, 10));
+%! subplot (2,2,3);
+%! colormap (jet (64));
+%! hold on;
+%! sombrero;
+%! colorbar ('peer', gca, 'NorthOutside');
+%! subplot (2,2,4);
+%! imagesc (rand (30, 30));
+%! text (15, 15, 'Rotated text', ...
+%!      'HorizontAlalignment', 'Center', 'Rotation', 30);
+%! hnew = copyobj (hdl);
 
 %!test
 %! h1 = figure ();
-%! set (h1, "visible", "off")
+%! set (h1, "visible", "off");
 %! x = 0:0.1:2*pi;
 %! y1 = sin (x);
 %! y2 = exp (x - 1);
@@ -79,49 +117,14 @@ endfunction
 %! png1 = strcat (tmpnam (), ".png");
 %! png2 = strcat (tmpnam (), ".png");
 %! unwind_protect
-%!   print (h1, png1)
+%!   print (h1, png1);
 %!   [img1, map1, alpha1] = imread (png1);
-%!   print (h2, png2)
+%!   print (h2, png2);
 %!   [img2, map2, alpha2] = imread (png2);
 %! unwind_protect_cleanup
 %!   unlink (png1);
 %!   unlink (png2);
 %! end_unwind_protect
-%! assert (img1, img2)
-%! assert (map1, map2)
-%! assert (alpha1, alpha2)
-
-%!demo
-%! hdl = figure (1234);
-%! clf ()
-%! hold on
-%! x = 1:10;
-%! y = x.^2;
-%! dy = 2 * (.2 * x);
-%! y2 = (x - 3).^2;
-%! hg = errorbar (x, y, dy,'#~');
-%! set (hg, 'marker', '^', 'markerfacecolor', rand(1,3))
-%! plot (x, y2, 'ok-')
-%! legend ('errorbar', 'line')
-%! hout = copyobj (1234);
-
-%!demo
-%! hdl = figure (1234);
-%! clf ()
-%! subplot (2, 2, 1);
-%! hold on
-%! [C, H] = contourf (rand(10, 10));
-%! colorbar
-%! subplot (2, 2, 2);
-%! hold on
-%! quiver (rand(10, 10), rand(10, 10))
-%! subplot (2, 2, 3);
-%! colormap (jet (64))
-%! sombrero;
-%! colorbar('peer', gca, 'NorthOutside')
-%! subplot (2, 2, 4);
-%! imagesc (rand (30, 30));
-%! text (15, 15, 'Rotated text', ...
-%!      'HorizontAlalignment', 'Center', 'Rotation', 30);
-%! hout = copyobj (1234);
-
+%! assert (img1, img2);
+%! assert (map1, map2);
+%! assert (alpha1, alpha2);

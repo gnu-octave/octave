@@ -369,6 +369,7 @@
 ## @item 185 (@w{@code{LPX_UNDEF}})
 ## Solution status is undefined.
 ## @end table
+##
 ## Interior Point Method:
 ##
 ## @table @asis
@@ -378,6 +379,7 @@
 ## @item 151 (@w{@code{LPX_T_OPT}})
 ## The interior point method is optimal.
 ## @end table
+##
 ## Mixed Integer Method:
 ##
 ## @table @asis
@@ -393,6 +395,7 @@
 ## @item 173 (@w{@code{LPX_I_NOFEAS}})
 ## No integer feasible solution.
 ## @end table
+##
 ## @noindent
 ## If an error occurs, @var{status} will contain one of the following
 ## codes:

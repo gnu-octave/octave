@@ -109,6 +109,7 @@
 ## @item "nolabel"
 ## Turn tic labels off for all axes.
 ## @end table
+##
 ## Note, if there are no tic marks for an axis, there can be no labels.
 ##
 ## @noindent

@@ -15,12 +15,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn   {Function File} {@var{hnew} =} copyobj (@var{horig})
-## @deftypefnx  {Function File} {@var{hnew} =} copyobj (@var{horig}, @var{hparent})
-## Constructs a copy of the object associated with handle @var{horig}
-## and returns a handle, @var{hnew}, to the new object.
-## If a parent handle @var{hparent} (root, figure, axes or hggroup) is specified,
-## the copied object will be created as a child to @var{hparent}.
+## @deftypefn  {Function File} {@var{hnew} =} copyobj (@var{horig})
+## @deftypefnx {Function File} {@var{hnew} =} copyobj (@var{horig}, @var{hparent})
+## Construct a copy of the object associated with handle @var{horig}
+## and return a handle @var{hnew} to the new object.
+## If a parent handle @var{hparent} (root, figure, axes, or hggroup) is
+## specified, the copied object will be created as a child to @var{hparent}.
 ## @seealso{findobj, get, set, struct2hdl, hdl2struct}
 ## @end deftypefn
 

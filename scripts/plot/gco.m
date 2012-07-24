@@ -20,8 +20,8 @@
 ## @deftypefn  {Function File} {@var{h} =} gco ()
 ## @deftypefnx {Function File} {@var{h} =} gco (@var{fig})
 ## Return a handle to the current object of the current figure, or a handle
-## to the current object of the figure with handle @var{fig}. The current
-## object of a figure is the object that was last clicked on. It is stored
+## to the current object of the figure with handle @var{fig}.  The current
+## object of a figure is the object that was last clicked on.  It is stored
 ## in the CurrentObject property of the target figure.
 ##
 ## If the last mouse click didn't occur on any child object of the figure,
@@ -31,7 +31,7 @@
 ## empty matrix.
 ##
 ## Note that the value returned by this function is not necessarily the same
-## as the one returned by gcbo during callback execution. An executing
+## as the one returned by gcbo during callback execution.  An executing
 ## callback can be interrupted by another callback and the current object
 ## can be modified.
 ##

@@ -18,7 +18,7 @@
 ## @deftypefn  {Function File} {@var{h} =} struct2hdl (@var{s})
 ## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p})
 ## @deftypefnx {Function File} {@var{h} =} struct2hdl (@var{s}, @var{p}, @var{hilev})
-## Constructs an object from the structure @var{s}. The structure must
+## Construct an object from the structure @var{s}.  The structure must
 ## contain the fields "handle", "type", "children", "properties", and
 ## "special".  If the handle of an existing figure or axes is specified,
 ## @var{p}, the new object will be created as a child to that object.
@@ -27,8 +27,8 @@
 ## the root figure.
 ##
 ## A third boolean argument @var{hilev} can be passed to specify wether
-## the function should try to preserve listeners/calbacks e.g for
-## legends or hggroups. Default is false.
+## the function should try to preserve listeners/calbacks e.g., for
+## legends or hggroups.  Default is false.
 ## @seealso{findobj, get, hdl2struct, set}
 ## @end deftypefn
 

@@ -15,8 +15,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{s} =} hdl2struct (@var{h})
-## Returns a structure, @var{s}, whose fields describe the properties
+## @deftypefn {Function File} {@var{s} =} hdl2struct (@var{h})
+## Return a structure, @var{s}, whose fields describe the properties
 ## of the object, and its children, associated with the handle, @var{h}.
 ## The fields of the structure, @var{s}, are "type", "handle", "properties",
 ## "children" and "special".

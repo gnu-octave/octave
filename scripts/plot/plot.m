@@ -205,5 +205,20 @@ function retval = plot (varargin)
 endfunction
 
 
-%% FIXME: Need demo or test for function
+%!demo
+%! x = 1:5;  y = 1:5;
+%! plot (x,y,'g');
+%! title ('plot of green line at 45 degrees');
+
+%!demo
+%! x = 1:5;  y = 1:5;
+%! plot (x,y,'g*');
+%! title ('plot of green stars along a line at 45 degrees');
+
+%!demo
+%! x1 = 1:5;  y1 = 1:5;
+%! x2 = 5:9; y2 = 5:-1:1;
+%! plot (x1,y1,'bo-', x2,y2,'rs-');
+%! axis ('tight');
+%! title ('plot of blue circles ascending and red squares descending with connecting lines drawn'); 
 

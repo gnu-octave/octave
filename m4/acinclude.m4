@@ -628,15 +628,12 @@ if test "$cross_compiling" = yes; then
 else
   AC_CHECK_PROGS(GNUPLOT, [$gp_names])
   if test -z "$GNUPLOT"; then
-    warn_gnuplot=yes
-
     GNUPLOT="$gp_default"
-    warn_gnuplot = "
+    warn_gnuplot="
 
 gnuplot not found. It isn't necessary to have gnuplot installed, but
 without native graphics or gnuplot you won't be able to use any of
 Octave's plotting commands.
-
 "
     OCTAVE_CONFIGURE_WARNING([warn_gnuplot])
   fi

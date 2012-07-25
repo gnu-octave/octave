@@ -83,6 +83,9 @@ namespace llvm
   class PHINode;
 }
 
+// llvm doesn't provide this, and it's really useful for debugging
+std::ostream& operator<< (std::ostream& os, const llvm::Value& v);
+
 class octave_base_value;
 class octave_builtin;
 class octave_value;
@@ -260,6 +263,26 @@ typedef jit_array<NDArray, double> jit_matrix;
 
 std::ostream& operator<< (std::ostream& os, const jit_matrix& mat);
 
+class jit_type;
+class jit_value;
+
+// calling convention
+namespace
+jit_convention
+{
+  enum
+  type
+  {
+    // internal to jit
+    internal,
+
+    // an external C call
+    external,
+
+    length
+  };
+}
+
 // Used to keep track of estimated (infered) types during JIT. This is a
 // hierarchical type system which includes both concrete and abstract types.
 //
@@ -270,11 +293,10 @@ class
 jit_type
 {
 public:
+  typedef llvm::Value *(*convert_fn) (llvm::Value *);
+
   jit_type (const std::string& aname, jit_type *aparent, llvm::Type *allvm_type,
-            int aid) :
-    mname (aname), mparent (aparent), llvm_type (allvm_type), mid (aid),
-    mdepth (aparent ? aparent->mdepth + 1 : 0)
-  {}
+            int aid);
 
   // a user readable type name
   const std::string& name (void) const { return mname; }
@@ -292,16 +314,142 @@ public:
   llvm::Type *to_llvm_arg (void) const;
 
   size_t depth (void) const { return mdepth; }
+
+  bool sret (jit_convention::type cc) const { return msret[cc]; }
+
+  void mark_sret (jit_convention::type cc = jit_convention::external)
+  { msret[cc] = true; }
+
+  bool pointer_arg (jit_convention::type cc) const { return mpointer_arg[cc]; }
+
+  void mark_pointer_arg (jit_convention::type cc = jit_convention::external)
+  { mpointer_arg[cc] = true; }
+
+  convert_fn pack (jit_convention::type cc) { return mpack[cc]; }
+
+  void set_pack (jit_convention::type cc, convert_fn fn) { mpack[cc] = fn; }
+
+  convert_fn unpack (jit_convention::type cc) { return munpack[cc]; }
+
+  void set_unpack (jit_convention::type cc, convert_fn fn)
+  { munpack[cc] = fn; }
+
+  llvm::Type *packed_type (jit_convention::type cc)
+  { return mpacked_type[cc]; }
+
+  void set_packed_type (jit_convention::type cc, llvm::Type *ty)
+  { mpacked_type[cc] = ty; }
 private:
   std::string mname;
   jit_type *mparent;
   llvm::Type *llvm_type;
   int mid;
   size_t mdepth;
+
+  bool msret[jit_convention::length];
+  bool mpointer_arg[jit_convention::length];
+
+  convert_fn mpack[jit_convention::length];
+  convert_fn munpack[jit_convention::length];
+
+  llvm::Type *mpacked_type[jit_convention::length];
 };
 
 // seperate print function to allow easy printing if type is null
 std::ostream& jit_print (std::ostream& os, jit_type *atype);
+
+#define ASSIGN_ARG(i) the_args[i] = arg ## i;
+#define JIT_EXPAND(ret, fname, type, isconst, N)                        \
+  ret fname (JIT_PARAM_ARGS OCT_MAKE_DECL_LIST (type, arg, N)) isconst  \
+  {                                                                     \
+    std::vector<type> the_args (N);                                     \
+    OCT_ITERATE_MACRO (ASSIGN_ARG, N);                                  \
+    return fname (JIT_PARAMS the_args);                                 \
+  }
+
+// provides a mechanism for calling
+class
+jit_function
+{
+  friend std::ostream& operator<< (std::ostream& os, const jit_function& fn);
+public:
+  jit_function ();
+
+  jit_function (llvm::Module *amodule, jit_convention::type acall_conv,
+                const llvm::Twine& aname, jit_type *aresult,
+                const std::vector<jit_type *>& aargs);
+
+  jit_function (const jit_function& fn, jit_type *aresult,
+                const std::vector<jit_type *>& aargs);
+
+  jit_function (const jit_function& fn);
+
+  bool valid (void) const { return llvm_function; }
+
+  std::string name (void) const;
+
+  llvm::BasicBlock *new_block (const std::string& aname = "body",
+                               llvm::BasicBlock *insert_before = 0);
+
+  llvm::Value *call (const std::vector<jit_value *>& in_args) const;
+
+  llvm::Value *call (const std::vector<llvm::Value *>& in_args) const;
+
+#define JIT_PARAM_ARGS
+#define JIT_PARAMS
+#define JIT_CALL(N) JIT_EXPAND (llvm::Value *, call, llvm::Value *, const, N)
+
+  JIT_CALL (0);
+  JIT_CALL (1);
+  JIT_CALL (2);
+  JIT_CALL (3);
+  JIT_CALL (4);
+  JIT_CALL (5);
+
+#undef JIT_CALL
+
+#define JIT_CALL(N) JIT_EXPAND (llvm::Value *, call, jit_value *, const, N)
+
+  JIT_CALL (1);
+  JIT_CALL (2);
+
+#undef JIT_CALL
+#undef JIT_PARAMS
+#undef JIT_PARAM_ARGS
+
+  llvm::Value *argument (size_t idx) const;
+
+  void do_return (llvm::Value *rval = 0);
+
+  llvm::Function *to_llvm (void) const { return llvm_function; }
+
+  // If true, then the return value is passed as a pointer in the first argument
+  bool sret (void) const { return mresult && mresult->sret (call_conv); }
+
+  bool can_error (void) const { return mcan_error; }
+
+  void mark_can_error (void) { mcan_error = true; }
+
+  jit_type *result (void) const { return mresult; }
+
+  jit_type *argument_type (size_t idx) const
+  {
+    assert (idx < args.size ());
+    return args[idx];
+  }
+
+  const std::vector<jit_type *>& arguments (void) const { return args; }
+private:
+  llvm::Module *module;
+  llvm::Function *llvm_function;
+  jit_type *mresult;
+  std::vector<jit_type *> args;
+  jit_convention::type call_conv;
+  bool mcan_error;
+};
+
+std::ostream& operator<< (std::ostream& os, const jit_function& fn);
+
 
 // Keeps track of overloads for a builtin function. Used for both type inference
 // and code generation.
@@ -309,95 +457,34 @@ class
 jit_operation
 {
 public:
-  struct
-  overload
+  void add_overload (const jit_function& func)
   {
-    overload (void) : function (0), can_error (false), result (0) {}
-
-#define ASSIGN_ARG(i) arguments[i] = arg ## i;
-#define OVERLOAD_CTOR(N)                                                \
-    overload (llvm::Function *f, bool e, jit_type *ret,                 \
-              OCT_MAKE_DECL_LIST (jit_type *, arg, N))                  \
-      : function (f), can_error (e), result (ret), arguments (N)        \
-    {                                                                   \
-      OCT_ITERATE_MACRO (ASSIGN_ARG, N);                                \
-    }
-
-    OVERLOAD_CTOR (1)
-    OVERLOAD_CTOR (2)
-    OVERLOAD_CTOR (3)
-
-#undef ASSIGN_ARG
-#undef OVERLOAD_CTOR
-
-    overload (llvm::Function *f, bool e, jit_type *r,
-              const std::vector<jit_type *>& aarguments)
-      : function (f), can_error (e), result (r), arguments (aarguments)
-    {}
-
-    llvm::Function *function;
-    bool can_error;
-    jit_type *result;
-    std::vector<jit_type*> arguments;
-  };
-
-  void add_overload (const overload& func)
-  {
-    add_overload (func, func.arguments);
+    add_overload (func, func.arguments ());
   }
 
-#define ADD_OVERLOAD(N)                                                 \
-  void add_overload (llvm::Function *f, bool e, jit_type *ret,          \
-                     OCT_MAKE_DECL_LIST (jit_type *, arg, N))           \
-  {                                                                     \
-    overload ol (f, e, ret, OCT_MAKE_ARG_LIST (arg, N));                \
-    add_overload (ol);                                                  \
-  }
-
-  ADD_OVERLOAD (1);
-  ADD_OVERLOAD (2);
-  ADD_OVERLOAD (3);
-
-#undef ADD_OVERLOAD
-
-  void add_overload (llvm::Function *f, bool e, jit_type *r,
-                     const std::vector<jit_type *>& args)
-  {
-    overload ol (f, e, r, args);
-    add_overload (ol);
-  }
-
-  void add_overload (const overload& func,
+  void add_overload (const jit_function& func,
                      const std::vector<jit_type*>& args);
 
-  const overload& get_overload (const std::vector<jit_type *>& types) const;
+  const jit_function& overload (const std::vector<jit_type *>& types) const;
 
-  const overload& get_overload (jit_type *arg0) const
+  jit_type *result (const std::vector<jit_type *>& types) const
   {
-    std::vector<jit_type *> types (1);
-    types[0] = arg0;
-    return get_overload (types);
+    const jit_function& temp = overload (types);
+    return temp.result ();
   }
 
-  const overload& get_overload (jit_type *arg0, jit_type *arg1) const
-  {
-    std::vector<jit_type *> types (2);
-    types[0] = arg0;
-    types[1] = arg1;
-    return get_overload (types);
-  }
+#define JIT_PARAMS
+#define JIT_PARAM_ARGS
+#define JIT_OVERLOAD(N)                                              \
+  JIT_EXPAND (const jit_function&, overload, jit_type *, const, N)   \
+  JIT_EXPAND (jit_type *, result, jit_type *, const, N)
 
-  jit_type *get_result (const std::vector<jit_type *>& types) const
-  {
-    const overload& temp = get_overload (types);
-    return temp.result;
-  }
+  JIT_OVERLOAD (1);
+  JIT_OVERLOAD (2);
+  JIT_OVERLOAD (3);
 
-  jit_type *get_result (jit_type *arg0, jit_type *arg1) const
-  {
-    const overload& temp = get_overload (arg0, arg1);
-    return temp.result;
-  }
+#undef JIT_PARAMS
+#undef JIT_PARAM_ARGS
 
   const std::string& name (void) const { return mname; }
 
@@ -405,7 +492,7 @@ public:
 private:
   Array<octave_idx_type> to_idx (const std::vector<jit_type*>& types) const;
 
-  std::vector<Array<overload> > overloads;
+  std::vector<Array<jit_function> > overloads;
 
   std::string mname;
 };
@@ -456,9 +543,9 @@ public:
 
   static const jit_operation& grab (void) { return instance->grab_fn; }
 
-  static const jit_operation::overload& get_grab (jit_type *type)
+  static const jit_function& get_grab (jit_type *type)
   {
-    return instance->grab_fn.get_overload (type);
+    return instance->grab_fn.overload (type);
   }
 
   static const jit_operation& release (void)
@@ -466,9 +553,9 @@ public:
     return instance->release_fn;
   }
 
-  static const jit_operation::overload& get_release (jit_type *type)
+  static const jit_function& get_release (jit_type *type)
   {
-    return instance->release_fn.get_overload (type);
+    return instance->release_fn.overload (type);
   }
 
   static const jit_operation& print_value (void)
@@ -516,7 +603,7 @@ public:
     return instance->do_cast (result);
   }
 
-  static const jit_operation::overload& cast (jit_type *to, jit_type *from)
+  static const jit_function& cast (jit_type *to, jit_type *from)
   {
     return instance->do_cast (to, from);
   }
@@ -586,16 +673,16 @@ private:
     return casts[id];
   }
 
-  const jit_operation::overload& do_cast (jit_type *to, jit_type *from)
+  const jit_function& do_cast (jit_type *to, jit_type *from)
   {
-    return do_cast (to).get_overload (from);
+    return do_cast (to).overload (from);
   }
 
   jit_type *new_type (const std::string& name, jit_type *parent,
                       llvm::Type *llvm_type);
 
 
-  void add_print (jit_type *ty, void *call);
+  void add_print (jit_type *ty);
 
   void add_binary_op (jit_type *ty, int op, int llvm_op);
 
@@ -603,43 +690,27 @@ private:
 
   void add_binary_fcmp (jit_type *ty, int op, int llvm_op);
 
+  jit_function create_function (jit_convention::type cc,
+                                const llvm::Twine& name, jit_type *ret,
+                                const std::vector<jit_type *>& args
+                                = std::vector<jit_type *> ());
 
-  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret)
-  {
-    std::vector<llvm::Type *> args;
-    return create_function (name, ret, args);
-  }
+#define JIT_PARAM_ARGS jit_convention::type cc, const llvm::Twine& name, \
+    jit_type *ret,
+#define JIT_PARAMS cc, name, ret,
+#define CREATE_FUNCTION(N) JIT_EXPAND(jit_function, create_function,    \
+                                      jit_type *, /* empty */, N)
 
-#define ASSIGN_ARG(i) args[i] = arg ## i;
-#define CREATE_FUNCTIONT(TYPE, N)                                       \
-  llvm::Function *create_function (const llvm::Twine& name, TYPE *ret,  \
-                                   OCT_MAKE_DECL_LIST (TYPE *, arg, N)) \
-  {                                                                     \
-    std::vector<TYPE *> args (N);                                       \
-    OCT_ITERATE_MACRO (ASSIGN_ARG, N);                                  \
-    return create_function (name, ret, args);                           \
-  }
+  CREATE_FUNCTION(1);
+  CREATE_FUNCTION(2);
+  CREATE_FUNCTION(3);
+  CREATE_FUNCTION(4);
 
-#define CREATE_FUNCTION(N)                      \
-  CREATE_FUNCTIONT(llvm::Type, N)               \
-  CREATE_FUNCTIONT(jit_type, N)
-
-  CREATE_FUNCTION(1)
-  CREATE_FUNCTION(2)
-  CREATE_FUNCTION(3)
-  CREATE_FUNCTION(4)
-
-#undef ASSIGN_ARG
-#undef CREATE_FUNCTIONT
+#undef JIT_PARAM_ARGS
+#undef JIT_PARAMS
 #undef CREATE_FUNCTION
 
-  llvm::Function *create_function (const llvm::Twine& name, jit_type *ret,
-                                   const std::vector<jit_type *>& args);
-
-  llvm::Function *create_function (const llvm::Twine& name, llvm::Type *ret,
-                                   const std::vector<llvm::Type *>& args);
-
-  llvm::Function *create_identity (jit_type *type);
+  jit_function create_identity (jit_type *type);
 
   llvm::Value *do_insert_error_check (void);
 
@@ -667,13 +738,13 @@ private:
 
   octave_builtin *find_builtin (const std::string& name);
 
-  llvm::Function *mirror_binary (llvm::Function *fn);
+  jit_function mirror_binary (const jit_function& fn);
 
   llvm::Function *wrap_complex (llvm::Function *wrap);
 
-  llvm::Value *pack_complex (llvm::Value *cplx);
+  static llvm::Value *pack_complex (llvm::Value *cplx);
 
-  llvm::Value *unpack_complex (llvm::Value *result);
+  static llvm::Value *unpack_complex (llvm::Value *result);
 
   llvm::Value *complex_real (llvm::Value *cx);
 
@@ -684,6 +755,10 @@ private:
   llvm::Value *complex_imag (llvm::Value *cx, llvm::Value *imag);
 
   llvm::Value *complex_new (llvm::Value *real, llvm::Value *imag);
+
+  void create_int (size_t nbits);
+
+  jit_type *intN (size_t nbits) const;
 
   static jit_typeinfo *instance;
 
@@ -703,6 +778,7 @@ private:
   jit_type *index;
   jit_type *complex;
   jit_type *unknown_function;
+  std::map<size_t, jit_type *> ints;
   std::map<std::string, jit_type *> builtins;
 
   llvm::StructType *complex_ret;
@@ -723,7 +799,7 @@ private:
   std::vector<jit_operation> casts;
 
   // type id -> identity function
-  std::vector<llvm::Function *> identities;
+  std::vector<jit_function> identities;
 };
 
 // The low level octave jit ir
@@ -1744,13 +1820,14 @@ jit_call : public jit_instruction
 {
 public:
 #define JIT_CALL_CONST(N)                                               \
-  jit_call (const jit_operation& afunction,                              \
+  jit_call (const jit_operation& aoperation,                            \
             OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), mfunction (afunction) {} \
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), moperation (aoperation) {} \
                                                                         \
-  jit_call (const jit_operation& (*afunction) (void),                    \
+  jit_call (const jit_operation& (*aoperation) (void),                  \
             OCT_MAKE_DECL_LIST (jit_value *, arg, N))                   \
-    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), mfunction (afunction ()) {}
+    : jit_instruction (OCT_MAKE_ARG_LIST (arg, N)), moperation (aoperation ()) \
+  {}
 
   JIT_CALL_CONST (1)
   JIT_CALL_CONST (2)
@@ -1760,21 +1837,21 @@ public:
 #undef JIT_CALL_CONST
 
 
-  const jit_operation& function (void) const { return mfunction; }
+  const jit_operation& operation (void) const { return moperation; }
 
   bool can_error (void) const
   {
-    return overload ().can_error;
+    return overload ().can_error ();
   }
 
-  const jit_operation::overload& overload (void) const
+  const jit_function& overload (void) const
   {
-    return mfunction.get_overload (argument_types ());
+    return moperation.overload (argument_types ());
   }
 
   virtual bool needs_release (void) const
   {
-    return type () && jit_typeinfo::get_release (type ()).function;
+    return type () && jit_typeinfo::get_release (type ()).valid ();
   }
 
   virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
@@ -1783,7 +1860,7 @@ public:
 
     if (use_count ())
       short_print (os) << " = ";
-    os << "call " << mfunction.name () << " (";
+    os << "call " << moperation.name () << " (";
 
     for (size_t i = 0; i < argument_count (); ++i)
       {
@@ -1798,7 +1875,7 @@ public:
 
   JIT_VALUE_ACCEPT;
 private:
-  const jit_operation& mfunction;
+  const jit_operation& moperation;
 };
 
 // FIXME: This is just ugly...
@@ -1846,7 +1923,7 @@ public:
     return dest ()->name ();
   }
 
-  const jit_operation::overload& overload (void) const
+  const jit_function& overload (void) const
   {
     return jit_typeinfo::cast (type (), jit_typeinfo::get_any ());
   }
@@ -1874,7 +1951,7 @@ public:
     return dest->name ();
   }
 
-  const jit_operation::overload& overload (void) const
+  const jit_function& overload (void) const
   {
     return jit_typeinfo::cast (jit_typeinfo::get_any (), result_type ());
   }
@@ -2268,28 +2345,6 @@ private:
     {
       jvalue.accept (*this);
     }
-
-    llvm::Value *create_call (const jit_operation::overload& ol, jit_value *arg0)
-    {
-      std::vector<jit_value *> args (1, arg0);
-      return create_call (ol, args);
-    }
-
-    llvm::Value *create_call (const jit_operation::overload& ol, jit_value *arg0,
-                              jit_value *arg1)
-    {
-      std::vector<jit_value *> args (2);
-      args[0] = arg0;
-      args[1] = arg1;
-
-      return create_call (ol, args);
-    }
-
-    llvm::Value *create_call (const jit_operation::overload& ol,
-                              const std::vector<jit_value *>& jargs);
-
-    llvm::Value *create_call (const jit_operation::overload& ol,
-                              const std::vector<jit_use>& uses);
   private:
     jit_convert &jthis;
     llvm::Function *function;
@@ -2353,6 +2408,8 @@ private:
 #undef JIT_VISIT_IR_CLASSES
 #undef JIT_VISIT_IR_CONST
 #undef JIT_VALUE_ACCEPT
+#undef ASSIGN_ARG
+#undef JIT_EXPAND
 
 #endif
 #endif

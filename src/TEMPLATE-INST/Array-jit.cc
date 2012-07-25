@@ -33,8 +33,8 @@ extern template class OCTAVE_API Array<octave_idx_type>;
 
 #include "pt-jit.h"
 
-NO_INSTANTIATE_ARRAY_SORT (jit_operation::overload);
+NO_INSTANTIATE_ARRAY_SORT (jit_function);
 
-INSTANTIATE_ARRAY (jit_operation::overload, OCTINTERP_API);
+INSTANTIATE_ARRAY (jit_function, OCTINTERP_API);
 
 #endif

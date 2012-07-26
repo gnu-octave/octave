@@ -138,6 +138,25 @@ octave_jit_cast_matrix_any (jit_matrix *ret, octave_base_value *obv)
   obv->release ();
 }
 
+extern "C" octave_base_value *
+octave_jit_cast_any_range (jit_range *rng)
+{
+  Range temp (*rng);
+  octave_value ret (temp);
+  octave_base_value *rep = ret.internal_rep ();
+  rep->grab ();
+
+  return rep;
+}
+extern "C" void
+octave_jit_cast_range_any (jit_range *ret, octave_base_value *obv)
+{
+
+  jit_range r (obv->range_value ());
+  *ret = r;
+  obv->release ();
+}
+
 extern "C" double
 octave_jit_cast_scalar_any (octave_base_value *obv)
 {
@@ -210,8 +229,8 @@ octave_jit_gindex_range (int nd, int dim, octave_idx_type iext,
 }
 
 extern "C" void
-octave_jit_paren_subsasgn_impl (jit_matrix *mat, octave_idx_type index,
-                                double value)
+octave_jit_paren_subsasgn_impl (jit_matrix *ret, jit_matrix *mat,
+                                octave_idx_type index, double value)
 {
   NDArray *array = mat->array;
   if (array->nelem () < index)
@@ -221,6 +240,7 @@ octave_jit_paren_subsasgn_impl (jit_matrix *mat, octave_idx_type index,
   data[index - 1] = value;
 
   mat->update ();
+  *ret = *mat;
 }
 
 extern "C" void
@@ -1291,7 +1311,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   jit_function resize_paren_subsasgn
     = create_function (jit_convention::external,
-                       "octave_jit_paren_subsasgn_impl", matrix, index, scalar);
+                       "octave_jit_paren_subsasgn_impl", matrix, matrix, index,
+                       scalar);
   resize_paren_subsasgn.add_mapping (engine, &octave_jit_paren_subsasgn_impl);
   fn = create_function (jit_convention::internal, "octave_jit_paren_subsasgn",
                         matrix, matrix, scalar, scalar);
@@ -1336,8 +1357,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
     // resize on out of bounds access
     builder.SetInsertPoint (bounds_error);
-    llvm::Value *resize_result = resize_paren_subsasgn.call (builder, int_idx,
-                                                             value);
+    llvm::Value *resize_result = resize_paren_subsasgn.call (builder, mat,
+                                                             int_idx, value);
     builder.CreateBr (done);
 
     builder.SetInsertPoint (success);
@@ -1369,6 +1390,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   casts[scalar->type_id ()].stash_name ("(scalar)");
   casts[complex->type_id ()].stash_name ("(complex)");
   casts[matrix->type_id ()].stash_name ("(matrix)");
+  casts[any->type_id ()].stash_name ("(range)");
 
   // cast any <- matrix
   fn = create_function (jit_convention::external, "octave_jit_cast_any_matrix",
@@ -1381,6 +1403,18 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
                         matrix, any);
   fn.add_mapping (engine, &octave_jit_cast_matrix_any);
   casts[matrix->type_id ()].add_overload (fn);
+
+  // cast any <- range
+  fn = create_function (jit_convention::external, "octave_jit_cast_any_range",
+                        any, range);
+  fn.add_mapping (engine, &octave_jit_cast_any_range);
+  casts[any->type_id ()].add_overload (fn);
+
+  // cast range <- any
+  fn = create_function (jit_convention::external, "octave_jit_cast_range_any",
+                        range, any);
+  fn.add_mapping (engine, &octave_jit_cast_range_any);
+  casts[range->type_id ()].add_overload (fn);
 
   // cast any <- scalar
   fn = create_function (jit_convention::external, "octave_jit_cast_any_scalar",

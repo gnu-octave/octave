@@ -126,7 +126,7 @@ running time.\n\
           std::string str = args(0).string_value ();
           int len = str.length ();
           for (int i = 0; i < len; i++)
-            str [i] = tolower (str [i]);
+            str[i] = tolower (str[i]);
 
           if (str == "defaults")
             octave_sparse_params::defaults ();

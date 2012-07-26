@@ -68,7 +68,7 @@ octave_jit_print_any (const char *name, octave_base_value *obv)
 }
 
 extern "C" void
-octave_jit_print_double (const char *name, double value)
+octave_jit_print_scalar (const char *name, double value)
 {
   // FIXME: We should avoid allocating a new octave_scalar each time
   octave_value ov (value);
@@ -614,6 +614,13 @@ jit_function::do_return (llvm::IRBuilderD& builder, llvm::Value *rval)
   llvm::verifyFunction (*llvm_function);
 }
 
+void
+jit_function::do_add_mapping (llvm::ExecutionEngine *engine, void *fn)
+{
+  assert (valid ());
+  engine->addGlobalMapping (llvm_function, fn);
+}
+
 std::ostream&
 operator<< (std::ostream& os, const jit_function& fn)
 {
@@ -796,6 +803,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_function any_binary = create_function (jit_convention::external,
                                              "octave_jit_binary_any_any",
                                              any, binary_op_type, any, any);
+  any_binary.add_mapping (engine, &octave_jit_binary_any_any);
   any_binary.mark_can_error ();
   binary_ops.resize (octave_value::num_binary_ops);
   for (size_t i = 0; i < octave_value::num_binary_ops; ++i)
@@ -827,23 +835,27 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // grab any
   fn = create_function (jit_convention::external, "octave_jit_grab_any", any,
                         any);
+  fn.add_mapping (engine, &octave_jit_grab_any);
   grab_fn.add_overload (fn);
   grab_fn.stash_name ("grab");
 
   // grab matrix
   fn = create_function (jit_convention::external, "octave_jit_grab_matrix",
                         matrix, matrix);
+  fn.add_mapping (engine, &octave_jit_grab_matrix);
   grab_fn.add_overload (fn);
 
   // release any
   fn = create_function (jit_convention::external, "octave_jit_release_any", 0,
                         any);
+  fn.add_mapping (engine, &octave_jit_release_any);
   release_fn.add_overload (fn);
   release_fn.stash_name ("release");
 
   // release matrix
   fn = create_function (jit_convention::external, "octave_jit_release_matrix",
                         0, matrix);
+  fn.add_mapping (engine, &octave_jit_release_matrix);
   release_fn.add_overload (fn);
 
   // release scalar
@@ -874,6 +886,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   jit_function gripe_div0 = create_function (jit_convention::external,
                                              "gripe_divide_by_zero", 0);
+  gripe_div0.add_mapping (engine, &gripe_divide_by_zero);
   gripe_div0.mark_can_error ();
 
   // divide is annoying because it might error
@@ -914,6 +927,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn = create_function (jit_convention::external,
                         "octave_jit_pow_scalar_scalar", complex, scalar,
                         scalar);
+  fn.add_mapping (engine, &octave_jit_pow_scalar_scalar);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
@@ -975,6 +989,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_function complex_div = create_function (jit_convention::external,
                                               "octave_jit_complex_div",
                                               complex, complex, complex);
+  complex_div.add_mapping (engine, &octave_jit_complex_div);
   complex_div.mark_can_error ();
   binary_ops[octave_value::op_div].add_overload (fn);
   binary_ops[octave_value::op_ldiv].add_overload (fn);
@@ -986,6 +1001,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn = create_function (jit_convention::external,
                         "octave_jit_pow_complex_complex", complex, complex,
                         complex);
+  fn.add_mapping (engine, &octave_jit_pow_complex_complex);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
@@ -1051,12 +1067,14 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn = create_function (jit_convention::external,
                         "octave_jit_pow_scalar_complex", complex, scalar,
                         complex);
+  fn.add_mapping (engine, &octave_jit_pow_scalar_complex);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
   fn = create_function (jit_convention::external,
                         "octave_jit_pow_complex_scalar", complex, complex,
                         scalar);
+  fn.add_mapping (engine, &octave_jit_pow_complex_scalar);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
 
@@ -1069,8 +1087,8 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   // now for printing functions
   print_fn.stash_name ("print");
-  add_print (any);
-  add_print (scalar);
+  add_print (any, reinterpret_cast<void *> (&octave_jit_print_any));
+  add_print (scalar, reinterpret_cast<void *> (&octave_jit_print_scalar));
 
   // initialize for loop
   for_init_fn.stash_name ("for_init");
@@ -1127,6 +1145,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_function gripe_nantl
     = create_function (jit_convention::external,
                        "octave_jit_gripe_nan_to_logical_conversion", 0);
+  gripe_nantl.add_mapping (engine, &octave_jit_gripe_nan_to_logical_conversion);
   gripe_nantl.mark_can_error ();
 
   fn = create_function (jit_convention::internal,
@@ -1164,6 +1183,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_function compute_nelem
     = create_function (jit_convention::external, "octave_jit_compute_nelem",
                        index, scalar, scalar, scalar);
+  compute_nelem.add_mapping (engine, &octave_jit_compute_nelem);
 
   fn = create_function (jit_convention::internal, "octave_jit_make_range",
                         range, scalar, scalar, scalar);
@@ -1193,10 +1213,12 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_function ginvalid_index
     = create_function (jit_convention::external, "octave_jit_ginvalid_index",
                        0);
+  ginvalid_index.add_mapping (engine, &octave_jit_ginvalid_index);
   jit_function gindex_range = create_function (jit_convention::external,
                                                "octave_jit_gindex_range",
                                                0, jit_int, jit_int, index,
                                                index);
+  gindex_range.add_mapping (engine, &octave_jit_gindex_range);
 
   fn = create_function (jit_convention::internal, "()subsref", scalar, matrix,
                         scalar);
@@ -1270,6 +1292,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   jit_function resize_paren_subsasgn
     = create_function (jit_convention::external,
                        "octave_jit_paren_subsasgn_impl", matrix, index, scalar);
+  resize_paren_subsasgn.add_mapping (engine, &octave_jit_paren_subsasgn_impl);
   fn = create_function (jit_convention::internal, "octave_jit_paren_subsasgn",
                         matrix, matrix, scalar, scalar);
   fn.mark_can_error ();
@@ -1338,6 +1361,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn = create_function (jit_convention::external,
                         "octave_jit_paren_subsasgn_matrix_range", matrix,
                         matrix, range, scalar);
+  fn.add_mapping (engine, &octave_jit_paren_subsasgn_matrix_range);
   fn.mark_can_error ();
   paren_subsasgn_fn.add_overload (fn);
 
@@ -1349,31 +1373,37 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   // cast any <- matrix
   fn = create_function (jit_convention::external, "octave_jit_cast_any_matrix",
                         any, matrix);
+  fn.add_mapping (engine, &octave_jit_cast_any_matrix);
   casts[any->type_id ()].add_overload (fn);
 
   // cast matrix <- any
   fn = create_function (jit_convention::external, "octave_jit_cast_matrix_any",
                         matrix, any);
+  fn.add_mapping (engine, &octave_jit_cast_matrix_any);
   casts[matrix->type_id ()].add_overload (fn);
 
   // cast any <- scalar
   fn = create_function (jit_convention::external, "octave_jit_cast_any_scalar",
                         any, scalar);
+  fn.add_mapping (engine, &octave_jit_cast_any_scalar);
   casts[any->type_id ()].add_overload (fn);
 
   // cast scalar <- any
   fn = create_function (jit_convention::external, "octave_jit_cast_scalar_any",
                         scalar, any);
+  fn.add_mapping (engine, &octave_jit_cast_scalar_any);
   casts[scalar->type_id ()].add_overload (fn);
 
   // cast any <- complex
   fn = create_function (jit_convention::external, "octave_jit_cast_any_complex",
                         any, complex);
+  fn.add_mapping (engine, &octave_jit_cast_any_complex);
   casts[any->type_id ()].add_overload (fn);
 
   // cast complex <- any
   fn = create_function (jit_convention::external, "octave_jit_cast_complex_any",
                         complex, any);
+  fn.add_mapping (engine, &octave_jit_cast_complex_any);
   casts[complex->type_id ()].add_overload (fn);
 
   // cast complex <- scalar
@@ -1445,12 +1475,13 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 }
 
 void
-jit_typeinfo::add_print (jit_type *ty)
+jit_typeinfo::add_print (jit_type *ty, void *fptr)
 {
   std::stringstream name;
   name << "octave_jit_print_" << ty->name ();
   jit_function fn = create_function (jit_convention::external, name.str (), 0,
                                      intN (8), ty);
+  fn.add_mapping (engine, fptr);
   print_fn.add_overload (fn);
 }
 
@@ -1546,9 +1577,9 @@ jit_typeinfo::create_identity (jit_type *type)
 }
 
 llvm::Value *
-jit_typeinfo::do_insert_error_check (llvm::IRBuilderD& builder)
+jit_typeinfo::do_insert_error_check (llvm::IRBuilderD& abuilder)
 {
-  return builder.CreateLoad (lerror_state);
+  return abuilder.CreateLoad (lerror_state);
 }
 
 void

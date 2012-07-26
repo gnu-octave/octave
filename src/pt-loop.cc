@@ -50,6 +50,9 @@ tree_while_command::~tree_while_command (void)
   delete list;
   delete lead_comm;
   delete trail_comm;
+#ifdef HAVE_LLVM
+  delete compiled;
+#endif
 }
 
 tree_command *
@@ -98,7 +101,9 @@ tree_simple_for_command::~tree_simple_for_command (void)
   delete list;
   delete lead_comm;
   delete trail_comm;
+#ifdef HAVE_LLVM
   delete compiled;
+#endif
 }
 
 tree_command *

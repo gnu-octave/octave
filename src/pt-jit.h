@@ -406,6 +406,8 @@ public:
 
   bool execute (tree_simple_for_command& cmd);
 
+  bool execute (tree_while_command& cmd);
+
   llvm::ExecutionEngine *get_engine (void) const { return engine; }
 
   llvm::Module *get_module (void) const { return module; }

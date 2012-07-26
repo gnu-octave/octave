@@ -1034,6 +1034,11 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   if (error_state)
     return;
 
+#if HAVE_LLVM
+  if (jiter.execute (cmd))
+    return;
+#endif
+
   unwind_protect frame;
 
   frame.protect_var (in_loop_command);

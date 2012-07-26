@@ -128,7 +128,7 @@ inline T *no_ctor_new (size_t n)
   // Some systems let us allocate > 2GB memory even though size_t, which is either
   // buggy or completely cuckoo, so let's check here to stay safe.
   safe_size_comp (n, sizeof (T));
-  return new T[n];
+  return new T [n];
 }
 template <class T>
 inline void no_ctor_delete (T *ptr)
@@ -137,7 +137,7 @@ inline void no_ctor_delete (T *ptr)
 #define DEFINE_POD_NEW_DELETE(T) \
 template <> \
 inline T *no_ctor_new<T > (size_t n) \
-{ return reinterpret_cast<T *> (new char[safe_size_comp (n, sizeof (T))]); } \
+{ return reinterpret_cast<T *> (new char [safe_size_comp (n, sizeof (T))]); } \
 template <> \
 inline void no_ctor_delete<T > (T *ptr) \
 { delete [] reinterpret_cast<char *> (ptr); }

@@ -66,7 +66,7 @@ private:
 
   static octave_idx_type *newrep (int ndims)
   {
-    octave_idx_type *r = new octave_idx_type[ndims + 2];
+    octave_idx_type *r = new octave_idx_type [ndims + 2];
 
     *r++ = 1;
     *r++ = ndims;
@@ -80,7 +80,7 @@ private:
   {
     int l = ndims ();
 
-    octave_idx_type *r = new octave_idx_type[l + 2];
+    octave_idx_type *r = new octave_idx_type [l + 2];
 
     *r++ = 1;
     *r++ = l;
@@ -100,7 +100,7 @@ private:
     if (n < 2)
       n = 2;
 
-    octave_idx_type *r = new octave_idx_type[n + 2];
+    octave_idx_type *r = new octave_idx_type [n + 2];
 
     *r++ = 1;
     *r++ = n;

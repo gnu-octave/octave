@@ -1969,7 +1969,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               if (dr[i] == 0.0 && di[i] == 0.0 && jj == 0)
                 jj++;
               else
-                d [i-jj] = Complex (dr[i], di[i]);
+                d[i-jj] = Complex (dr[i], di[i]);
             }
           if (jj == 0 && !rvec)
             for (octave_idx_type i = 0; i < k; i++)
@@ -2355,7 +2355,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               if (dr[i] == 0.0 && di[i] == 0.0 && jj == 0)
                 jj++;
               else
-                d [i-jj] = Complex (dr[i], di[i]);
+                d[i-jj] = Complex (dr[i], di[i]);
             }
           if (jj == 0 && !rvec)
             for (octave_idx_type i = 0; i < k; i++)
@@ -2667,7 +2667,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
               if (dr[i] == 0.0 && di[i] == 0.0 && jj == 0)
                 jj++;
               else
-                d [i-jj] = Complex (dr[i], di[i]);
+                d[i-jj] = Complex (dr[i], di[i]);
             }
           if (jj == 0 && !rvec)
             for (octave_idx_type i = 0; i < k; i++)

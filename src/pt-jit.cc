@@ -92,6 +92,10 @@ jit_convert::jit_convert (llvm::Module *module, tree &tee)
        iter != constants.end (); ++iter)
     append_users (*iter);
 
+  // the entry block terminator may be a regular branch statement
+  if (entry_block->terminator ())
+    push_worklist (entry_block->terminator ());
+
   // FIXME: Describe algorithm here
   while (worklist.size ())
     {
@@ -1475,6 +1479,23 @@ tree_jit::execute (tree_simple_for_command& cmd)
 }
 
 bool
+tree_jit::execute (tree_while_command& cmd)
+{
+  if (! initialize ())
+    return false;
+
+  jit_info *info = cmd.get_info ();
+  if (! info || ! info->match ())
+    {
+      delete info;
+      info = new jit_info (*this, cmd);
+      cmd.stash_info (info);
+    }
+
+  return info->execute ();
+}
+
+bool
 tree_jit::initialize (void)
 {
   if (engine)
@@ -1707,5 +1728,13 @@ Test some simple cases that compile.
 %!test
 %! test_set = gen_test (10000);
 %! assert (all (vectorized (test_set, 3) == loopy (test_set, 3)));
+
+%!test
+%! niter = 1001;
+%! i = 0;
+%! while (i < niter)
+%!   i = i + 1;
+%! endwhile
+%! assert (i == niter);
 
 */

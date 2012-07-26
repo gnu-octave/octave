@@ -71,7 +71,7 @@ SM octinternal_do_mul_pm_sm (const PermMatrix& p, const SM& a)
     {
       // Form the column permutation and then call the colpm_sm routine.
       const octave_idx_type *prow = p.pvec ().data ();
-      OCTAVE_LOCAL_BUFFER(octave_idx_type, pcol, nr);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, pcol, nr);
       for (octave_idx_type i = 0; i < nr; ++i)
         pcol[prow[i]] = i;
       return octinternal_do_mul_colpm_sm (pcol, a);

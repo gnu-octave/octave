@@ -649,7 +649,7 @@ public:
       int i = 0;
       for (; i < l-1 && ndv(i) == odv(i); i++) ld *= ndv(i);
       n = l - i;
-      cext = new octave_idx_type[3*n];
+      cext = new octave_idx_type [3*n];
       // Trick to avoid three allocations
       sext = cext + n;
       dext = sext + n;

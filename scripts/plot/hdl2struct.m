@@ -33,7 +33,7 @@ function s = hdl2struct (h)
   endif
 
   hiddenh = get (0, "showhiddenhandles");
-  if strcmp (hiddenh, "on")
+  if (strcmp (hiddenh, "on"))
     set (0, "showhiddenhandles", "off");
   endif
 
@@ -82,7 +82,7 @@ function s = hdl2struct (h)
   if (strcmp (main.type, "axes"))
     par = main.parent;
     lg = findobj (par, "-depth", 1, "tag", "legend");
-    if !isempty (lg)
+    if (! isempty (lg))
       idx = arrayfun (@(x) get(x).userdata.handle(end) == h, lg);
       lg = lg(find (idx));
     endif
@@ -150,7 +150,7 @@ function prpstr = getprops (h)
     prop = fields{nflds};
     val = obj.(fields{nflds});
     ii++;
-    if !any (strcmp (prop, forbid))
+    if (! any (strcmp (prop, forbid)))
       prpstr.(prop) = val;
     endif
     nflds--;

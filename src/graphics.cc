@@ -6833,9 +6833,9 @@ axes::properties::rotate_view (double delta_el, double delta_az)
 
   v(1) += delta_el;
 
-  if(v(1) > 90)
+  if (v(1) > 90)
     v(1) = 90;
-  if(v(1) < -90)
+  if (v(1) < -90)
     v(1) = -90;
 
   v(0) = fmod (v(0) - delta_az + 720,360);

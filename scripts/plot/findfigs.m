@@ -47,7 +47,7 @@ function findfigs ()
   screensize(3:4) -= margin;
 
   for i = 1:numel (figh)
-    if strcmp (get (figh(i), "visible"), "on")
+    if (strcmp (get (figh(i), "visible"), "on"))
 
       units = get (figh(i), "units");
       unwind_protect

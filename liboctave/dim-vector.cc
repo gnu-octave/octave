@@ -157,16 +157,16 @@ dim_vector::squeeze (void) const
             }
         }
       else
-        new_dims.resize(k);
+        new_dims.resize (k);
     }
 
   return new_dims;
 }
 
-// This is the rule for cat(). cat(dim, A, B) works if one
+// This is the rule for cat(). cat (dim, A, B) works if one
 // of the following holds, in this order:
 //
-// 1. size(A, k) == size(B, k) for all k != dim.
+// 1. size (A, k) == size (B, k) for all k != dim.
 // In this case, size (C, dim) = size (A, dim) + size (B, dim) and
 // other sizes remain intact.
 //
@@ -230,7 +230,7 @@ dim_vector::concat (const dim_vector& dvb, int dim)
 // horizontally (dim = 2) or vertically (dim = 1) if one of the
 // following holds, in this order:
 //
-// 1. cat(dim, A, B) works
+// 1. cat (dim, A, B) works
 //
 // 2. A, B are 2D and one of them is an empty vector, in which
 // case the result is the other one except if both of them

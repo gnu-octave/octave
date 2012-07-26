@@ -471,7 +471,7 @@ FloatComplexQR::update (const FloatComplexColumnVector& u, const FloatComplexCol
 
   if (u.length () == m && v.length () == n)
     {
-      init(q*r + FloatComplexMatrix (u) * FloatComplexMatrix (v).hermitian (), get_type ());
+      init (q*r + FloatComplexMatrix (u) * FloatComplexMatrix (v).hermitian (), get_type ());
     }
   else
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
@@ -487,7 +487,7 @@ FloatComplexQR::update (const FloatComplexMatrix& u, const FloatComplexMatrix& v
 
   if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
     {
-      init(q*r + u * v.hermitian (), get_type ());
+      init (q*r + u * v.hermitian (), get_type ());
     }
   else
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");

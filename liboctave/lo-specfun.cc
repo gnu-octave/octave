@@ -454,7 +454,7 @@ expm1 (double x)
 #endif
 
 Complex
-expm1(const Complex& x)
+expm1 (const Complex& x)
 {
   Complex retval;
 
@@ -509,7 +509,7 @@ expm1f (float x)
 #endif
 
 FloatComplex
-expm1(const FloatComplex& x)
+expm1 (const FloatComplex& x)
 {
   FloatComplex retval;
 
@@ -565,7 +565,7 @@ log1p (const Complex& x)
                         atan2 (1 + r, i));
     }
   else
-    retval = std::log (Complex(1) + x);
+    retval = std::log (Complex (1) + x);
 
   return retval;
 }
@@ -624,7 +624,7 @@ log1p (const FloatComplex& x)
                         atan2 (1 + r, i));
     }
   else
-    retval = std::log (FloatComplex(1) + x);
+    retval = std::log (FloatComplex (1) + x);
 
   return retval;
 }
@@ -873,7 +873,7 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
           if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
-              tmp2 *= exp(-z - std::abs(z.real ()));
+              tmp2 *= exp (-z - std::abs (z.real ()));
             }
 
           tmp += tmp2;
@@ -1483,7 +1483,7 @@ cbesi (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
           if (kode == 2)
             {
               // Compensate for different scaling factor of besk.
-              tmp2 *= exp(-z - std::abs(z.real ()));
+              tmp2 *= exp (-z - std::abs (z.real ()));
             }
 
           tmp += tmp2;
@@ -1893,7 +1893,7 @@ airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 
   if (! scaled)
     {
-      Complex expz = exp (- 2.0 / 3.0 * z * sqrt(z));
+      Complex expz = exp (- 2.0 / 3.0 * z * sqrt (z));
 
       double rexpz = real (expz);
       double iexpz = imag (expz);
@@ -2023,7 +2023,7 @@ airy (const FloatComplex& z, bool deriv, bool scaled, octave_idx_type& ierr)
 
   if (! scaled)
     {
-      FloatComplex expz = exp (- static_cast<float> (2.0 / 3.0) * z * sqrt(z));
+      FloatComplex expz = exp (- static_cast<float> (2.0 / 3.0) * z * sqrt (z));
 
       float rexpz = real (expz);
       float iexpz = imag (expz);
@@ -3130,7 +3130,7 @@ erfcx_impl (T x)
       if (x < 0)
         {
           double y2 = ceil (x / 16.0) * 16.0, del = (x-y2)*(x+y2);
-          result = 2*(std::exp(y2*y2) * std::exp(del)) - result;
+          result = 2*(std::exp (y2*y2) * std::exp (del)) - result;
         }
     }
 

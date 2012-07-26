@@ -466,7 +466,7 @@ QR::update (const ColumnVector& u, const ColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      init(q*r + Matrix (u) * Matrix (v).transpose (), get_type ());
+      init (q*r + Matrix (u) * Matrix (v).transpose (), get_type ());
     }
   else
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
@@ -482,7 +482,7 @@ QR::update (const Matrix& u, const Matrix& v)
 
   if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
     {
-      init(q*r + u * v.transpose (), get_type ());
+      init (q*r + u * v.transpose (), get_type ());
     }
   else
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");

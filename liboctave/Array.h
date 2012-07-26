@@ -332,8 +332,8 @@ public:
 
   // No checking, even for multiple references, ever.
 
-  T& xelem (octave_idx_type n) { return slice_data [n]; }
-  crefT xelem (octave_idx_type n) const { return slice_data [n]; }
+  T& xelem (octave_idx_type n) { return slice_data[n]; }
+  crefT xelem (octave_idx_type n) const { return slice_data[n]; }
 
   T& xelem (octave_idx_type i, octave_idx_type j) { return xelem (dim1 ()*j+i); }
   crefT xelem (octave_idx_type i, octave_idx_type j) const { return xelem (dim1 ()*j+i); }

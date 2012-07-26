@@ -413,7 +413,7 @@ OP (const M& m, const DM& dm) \
           octave_idx_type len = dm.length (); \
  \
           for (octave_idx_type i = 0; i < len; i++) \
-            r.elem(i, i) OPEQ dm.elem(i, i); \
+            r.elem (i, i) OPEQ dm.elem (i, i); \
         } \
     } \
  \
@@ -483,7 +483,7 @@ OP (const DM& dm, const M& m) \
           octave_idx_type len = dm.length (); \
  \
           for (octave_idx_type i = 0; i < len; i++) \
-            r.elem(i, i) OPEQ dm.elem(i, i); \
+            r.elem (i, i) OPEQ dm.elem (i, i); \
         } \
       else \
         r.resize (m_nr, m_nc); \

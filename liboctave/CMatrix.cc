@@ -1079,7 +1079,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
                                  z.fortran_vec (), lwork, info));
 
-      lwork = static_cast<octave_idx_type> (std::real(z(0)));
+      lwork = static_cast<octave_idx_type> (std::real (z(0)));
       lwork = (lwork <  2 *nc ? 2*nc : lwork);
       z.resize (dim_vector (lwork, 1));
       Complex *pz = z.fortran_vec ();
@@ -1089,7 +1089,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       // Calculate the norm of the matrix, for later use.
       double anorm;
       if (calc_cond)
-        anorm  = retval.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
       F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -1163,7 +1163,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
         }
 
       if (!mattype.is_hermitian ())
-        ret = finverse(mattype, info, rcon, force, calc_cond);
+        ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
         ret = ComplexMatrix (rows (), columns (), Complex (octave_Inf, 0.));
@@ -1832,7 +1832,7 @@ ComplexMatrix::rcond (MatrixType &mattype) const
               Array<octave_idx_type> ipvt (dim_vector (nr, 1));
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-              if(anorm < 0.)
+              if (anorm < 0.)
                 anorm = atmp.abs ().sum ().
                   row(static_cast<octave_idx_type>(0)).max ();
 
@@ -2100,7 +2100,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
           char job = 'L';
           ComplexMatrix atmp = *this;
           Complex *tmp_data = atmp.fortran_vec ();
-          anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+          anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
@@ -2184,7 +2184,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
           // Calculate the norm of the matrix, for later use.
           if (anorm < 0.)
-            anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -2410,7 +2410,7 @@ ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b,
 
   ComplexMatrix tmp (b);
   tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
-  return tmp.column(static_cast<octave_idx_type> (0));
+  return tmp.column (static_cast<octave_idx_type> (0));
 }
 
 ComplexMatrix

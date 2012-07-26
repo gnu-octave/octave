@@ -311,7 +311,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
         OCTAVE_LOCAL_BUFFER (octave_idx_type, qinit, nc);
 
         for (octave_idx_type i = 0; i < nc; i++)
-          qinit [i] = static_cast<octave_idx_type> (Qinit (i));
+          qinit[i] = static_cast<octave_idx_type> (Qinit (i));
 
         status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax,
                                        qinit, &Symbolic, control, info);

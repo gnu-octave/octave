@@ -113,8 +113,8 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 
   for (octave_idx_type i = 0; i < nn; i++)
     {
-      tmp_deriv.elem (i) = deriv [i];
-      tmp_state.elem (i) = state [i];
+      tmp_deriv.elem (i) = deriv[i];
+      tmp_state.elem (i) = state[i];
     }
 
   Matrix tmp_pd = (*user_jsub) (tmp_state, tmp_deriv, time, cj);

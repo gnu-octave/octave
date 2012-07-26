@@ -66,12 +66,12 @@ Sparse<T>::Sparse (const PermMatrix& a)
   if (a.is_row_perm ())
     {
       for (octave_idx_type i = 0; i < n; i++)
-        ridx (pv (i)) = i;
+        ridx (pv(i)) = i;
     }
   else
     {
       for (octave_idx_type i = 0; i < n; i++)
-        ridx (i) = pv (i);
+        ridx (i) = pv(i);
     }
 
   for (octave_idx_type i = 0; i < n; i++)
@@ -176,13 +176,13 @@ Sparse<T>::SparseRep::change_length (octave_idx_type nz)
       // Reallocate.
       octave_idx_type min_nzmx = std::min (nz, nzmx);
 
-      octave_idx_type * new_ridx = new octave_idx_type [nz];
+      octave_idx_type * new_ridx = new octave_idx_type[nz];
       copy_or_memcpy (min_nzmx, r, new_ridx);
 
       delete [] r;
       r = new_ridx;
 
-      T * new_data = new T [nz];
+      T * new_data = new T[nz];
       copy_or_memcpy (min_nzmx, d, new_data);
 
       delete [] d;
@@ -223,7 +223,7 @@ Sparse<T>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
     {
       rep = new typename Sparse<T>::SparseRep (nr, nc, 0);
       for (octave_idx_type j = 0; j < nc+1; j++)
-        xcidx(j) = 0;
+        xcidx (j) = 0;
     }
 }
 
@@ -264,21 +264,21 @@ Sparse<T>::Sparse (const Sparse<T>& a, const dim_vector& dv)
       rep = new typename Sparse<T>::SparseRep (new_nr, new_nc, new_nzmx);
 
       octave_idx_type kk = 0;
-      xcidx(0) = 0;
+      xcidx (0) = 0;
       for (octave_idx_type i = 0; i < old_nc; i++)
-        for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++)
+        for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++)
           {
-            octave_idx_type tmp = i * old_nr + a.ridx(j);
+            octave_idx_type tmp = i * old_nr + a.ridx (j);
             octave_idx_type ii = tmp % new_nr;
             octave_idx_type jj = (tmp - ii) / new_nr;
             for (octave_idx_type k = kk; k < jj; k++)
-              xcidx(k+1) = j;
+              xcidx (k+1) = j;
             kk = jj;
-            xdata(j) = a.data(j);
-            xridx(j) = ii;
+            xdata (j) = a.data (j);
+            xridx (j) = ii;
           }
       for (octave_idx_type k = kk; k < new_nc; k++)
-        xcidx(k+1) = new_nzmx;
+        xcidx (k+1) = new_nzmx;
     }
 }
 
@@ -323,11 +323,11 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
       if (n == 1 && a(0) != T ())
         {
           change_capacity (nzm > 1 ? nzm : 1);
-          xcidx(0) = 0;
-          xridx(0) = r(0);
-          xdata(0) = a(0);
+          xcidx (0) = 0;
+          xridx (0) = r(0);
+          xdata (0) = a(0);
           for (octave_idx_type j = 0; j < nc; j++)
-            xcidx(j+1) = j >= c(0);
+            xcidx (j+1) = j >= c(0);
         }
     }
   else if (a_scalar)
@@ -419,7 +419,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
               sidx[ci[cd[i]+1]++] = rd[i];
 
           // Subsorts. We don't need a stable sort, all values are equal.
-          xcidx(0) = 0;
+          xcidx (0) = 0;
           for (octave_idx_type j = 0; j < nc; j++)
             {
               std::sort (sidx + ci[j], sidx + ci[j+1]);
@@ -435,7 +435,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                     }
                 }
               // Set column pointer.
-              xcidx(j+1) = xcidx(j) + nzj;
+              xcidx (j+1) = xcidx (j) + nzj;
             }
 
           change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
@@ -495,8 +495,8 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
         new_nz += rd[i-1] != rd[i];
       // Allocate result.
       change_capacity (nzm > new_nz ? nzm : new_nz);
-      xcidx(0) = 0;
-      xcidx(1) = new_nz;
+      xcidx (0) = 0;
+      xcidx (1) = new_nz;
       octave_idx_type *rri = ridx ();
       T *rrd = data ();
 
@@ -566,7 +566,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
         }
 
       // Subsorts. We don't need a stable sort, the second index stabilizes it.
-      xcidx(0) = 0;
+      xcidx (0) = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
           std::sort (spairs + ci[j], spairs + ci[j+1]);
@@ -582,7 +582,7 @@ Sparse<T>::Sparse (const Array<T>& a, const idx_vector& r,
                 }
             }
           // Set column pointer.
-          xcidx(j+1) = xcidx(j) + nzj;
+          xcidx (j+1) = xcidx (j) + nzj;
         }
 
       change_capacity (nzm > xcidx (nc) ? nzm : xcidx (nc));
@@ -652,16 +652,16 @@ Sparse<T>::Sparse (const Array<T>& a)
       rep = new typename Sparse<T>::SparseRep (nr, nc, new_nzmx);
 
       octave_idx_type ii = 0;
-      xcidx(0) = 0;
+      xcidx (0) = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
           for (octave_idx_type i = 0; i < nr; i++)
             if (a.elem (i,j) != T ())
               {
-                xdata(ii) = a.elem (i,j);
-                xridx(ii++) = i;
+                xdata (ii) = a.elem (i,j);
+                xridx (ii++) = i;
               }
-          xcidx(j+1) = ii;
+          xcidx (j+1) = ii;
         }
     }
 }
@@ -833,21 +833,21 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
           retval = Sparse<T> (new_nr, new_nc, new_nnz);
 
           octave_idx_type kk = 0;
-          retval.xcidx(0) = 0;
+          retval.xcidx (0) = 0;
           for (octave_idx_type i = 0; i < old_nc; i++)
-            for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
+            for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)
               {
-                octave_idx_type tmp = i * old_nr + ridx(j);
+                octave_idx_type tmp = i * old_nr + ridx (j);
                 octave_idx_type ii = tmp % new_nr;
                 octave_idx_type jj = (tmp - ii) / new_nr;
                 for (octave_idx_type k = kk; k < jj; k++)
-                  retval.xcidx(k+1) = j;
+                  retval.xcidx (k+1) = j;
                 kk = jj;
-                retval.xdata(j) = data(j);
-                retval.xridx(j) = ii;
+                retval.xdata (j) = data (j);
+                retval.xridx (j) = ii;
               }
           for (octave_idx_type k = kk; k < new_nc; k++)
-            retval.xcidx(k+1) = new_nnz;
+            retval.xcidx (k+1) = new_nnz;
         }
       else
         {
@@ -949,14 +949,14 @@ Sparse<T>::resize (octave_idx_type r, octave_idx_type c)
       octave_idx_type i = 0, k = 0;
       for (octave_idx_type j = 1; j <= rep->ncols; j++)
         {
-          octave_idx_type u = xcidx(j);
+          octave_idx_type u = xcidx (j);
           for (i = i; i < u; i++)
-            if (xridx(i) < r)
+            if (xridx (i) < r)
               {
-                xdata(k) = xdata(i);
-                xridx(k++) = xridx(i);
+                xdata (k) = xdata (i);
+                xridx (k++) = xridx (i);
               }
-          xcidx(j) = k;
+          xcidx (j) = k;
         }
     }
 
@@ -994,69 +994,69 @@ Sparse<T>::insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
     }
 
   // First count the number of elements in the final array
-  octave_idx_type nel = cidx(c) + a.nnz ();
+  octave_idx_type nel = cidx (c) + a.nnz ();
 
   if (c + a_cols < nc)
-    nel += cidx(nc) - cidx(c + a_cols);
+    nel += cidx (nc) - cidx (c + a_cols);
 
   for (octave_idx_type i = c; i < c + a_cols; i++)
-    for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
-      if (ridx(j) < r || ridx(j) >= r + a_rows)
+    for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)
+      if (ridx (j) < r || ridx (j) >= r + a_rows)
         nel++;
 
   Sparse<T> tmp (*this);
   --rep->count;
   rep = new typename Sparse<T>::SparseRep (nr, nc, nel);
 
-  for (octave_idx_type i = 0; i < tmp.cidx(c); i++)
+  for (octave_idx_type i = 0; i < tmp.cidx (c); i++)
     {
-      data(i) = tmp.data(i);
-      ridx(i) = tmp.ridx(i);
+      data (i) = tmp.data (i);
+      ridx (i) = tmp.ridx (i);
     }
   for (octave_idx_type i = 0; i < c + 1; i++)
-    cidx(i) = tmp.cidx(i);
+    cidx (i) = tmp.cidx (i);
 
-  octave_idx_type ii = cidx(c);
+  octave_idx_type ii = cidx (c);
 
   for (octave_idx_type i = c; i < c + a_cols; i++)
     {
       octave_quit ();
 
-      for (octave_idx_type j = tmp.cidx(i); j < tmp.cidx(i+1); j++)
-        if (tmp.ridx(j) < r)
+      for (octave_idx_type j = tmp.cidx (i); j < tmp.cidx (i+1); j++)
+        if (tmp.ridx (j) < r)
           {
-            data(ii) = tmp.data(j);
-            ridx(ii++) = tmp.ridx(j);
+            data (ii) = tmp.data (j);
+            ridx (ii++) = tmp.ridx (j);
           }
 
       octave_quit ();
 
-      for (octave_idx_type j = a.cidx(i-c); j < a.cidx(i-c+1); j++)
+      for (octave_idx_type j = a.cidx (i-c); j < a.cidx (i-c+1); j++)
         {
-          data(ii) = a.data(j);
-          ridx(ii++) = r + a.ridx(j);
+          data (ii) = a.data (j);
+          ridx (ii++) = r + a.ridx (j);
         }
 
       octave_quit ();
 
-      for (octave_idx_type j = tmp.cidx(i); j < tmp.cidx(i+1); j++)
-        if (tmp.ridx(j) >= r + a_rows)
+      for (octave_idx_type j = tmp.cidx (i); j < tmp.cidx (i+1); j++)
+        if (tmp.ridx (j) >= r + a_rows)
           {
-            data(ii) = tmp.data(j);
-            ridx(ii++) = tmp.ridx(j);
+            data (ii) = tmp.data (j);
+            ridx (ii++) = tmp.ridx (j);
           }
 
-      cidx(i+1) = ii;
+      cidx (i+1) = ii;
     }
 
   for (octave_idx_type i = c + a_cols; i < nc; i++)
     {
-      for (octave_idx_type j = tmp.cidx(i); j < tmp.cidx(i+1); j++)
+      for (octave_idx_type j = tmp.cidx (i); j < tmp.cidx (i+1); j++)
         {
-          data(ii) = tmp.data(j);
-          ridx(ii++) = tmp.ridx(j);
+          data (ii) = tmp.data (j);
+          ridx (ii++) = tmp.ridx (j);
         }
-      cidx(i+1) = ii;
+      cidx (i+1) = ii;
     }
 
   return *this;
@@ -1100,7 +1100,7 @@ Sparse<T>::transpose (void) const
   // retval.xcidx[1:nr] holds row entry *start* offsets for rows 0:(nr-1)
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type k = cidx(j); k < cidx(j+1); k++)
+    for (octave_idx_type k = cidx (j); k < cidx (j+1); k++)
       {
         octave_idx_type q = retval.xcidx (ridx (k) + 1)++;
         retval.xridx (q) = j;
@@ -1170,7 +1170,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           copy_or_memcpy (li, tmp.ridx (), xridx ());
           copy_or_memcpy (nz - ui, tmp.data () + ui, xdata () + li);
           mx_inline_sub (nz - ui, xridx () + li, tmp.ridx () + ui, ub - lb);
-          xcidx(1) = nz_new;
+          xcidx (1) = nz_new;
         }
       else
         {
@@ -1181,11 +1181,11 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           octave_idx_type sl = sidx.length (nel), nz_new = 0, j = 0;
           for (octave_idx_type i = 0; i < nz; i++)
             {
-              octave_idx_type r = tmp.ridx(i);
+              octave_idx_type r = tmp.ridx (i);
               for (;j < sl && sj[j] < r; j++) ;
               if (j == sl || sj[j] > r)
                 {
-                  data_new[nz_new] = tmp.data(i);
+                  data_new[nz_new] = tmp.data (i);
                   ridx_new[nz_new++] = r - j;
                 }
             }
@@ -1193,7 +1193,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
           *this = Sparse<T> (nr - sl, 1, nz_new);
           copy_or_memcpy (nz_new, ridx_new, ridx ());
           copy_or_memcpy (nz_new, data_new, xdata ());
-          xcidx(1) = nz_new;
+          xcidx (1) = nz_new;
         }
     }
   else if (nr == 1)
@@ -1203,7 +1203,7 @@ Sparse<T>::delete_elements (const idx_vector& idx)
       if (idx.is_cont_range (nc, lb, ub))
         {
           const Sparse<T> tmp = *this;
-          octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub), new_nz = nz - (ubi - lbi);
+          octave_idx_type lbi = tmp.cidx (lb), ubi = tmp.cidx (ub), new_nz = nz - (ubi - lbi);
           *this = Sparse<T> (1, nc - (ub - lb), new_nz);
           copy_or_memcpy (lbi, tmp.data (), data ());
           copy_or_memcpy (nz - ubi, tmp.data () + ubi, xdata () + lbi);
@@ -1253,7 +1253,7 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
           else
             {
               const Sparse<T> tmp = *this;
-              octave_idx_type lbi = tmp.cidx(lb), ubi = tmp.cidx(ub),
+              octave_idx_type lbi = tmp.cidx (lb), ubi = tmp.cidx (ub),
                 new_nz = nz - (ubi - lbi);
 
               *this = Sparse<T> (nr, nc - (ub - lb), new_nz);
@@ -1296,20 +1296,20 @@ Sparse<T>::delete_elements (const idx_vector& idx_i, const idx_vector& idx_j)
                                  tmpl.nnz () + tmpu.nnz ());
               for (octave_idx_type j = 0, k = 0; j < nc; j++)
                 {
-                  for (octave_idx_type i = tmpl.cidx(j); i < tmpl.cidx(j+1);
+                  for (octave_idx_type i = tmpl.cidx (j); i < tmpl.cidx (j+1);
                        i++)
                     {
-                      xdata(k) = tmpl.data(i);
-                      xridx(k++) = tmpl.ridx(i);
+                      xdata (k) = tmpl.data (i);
+                      xridx (k++) = tmpl.ridx (i);
                     }
-                  for (octave_idx_type i = tmpu.cidx(j); i < tmpu.cidx(j+1);
+                  for (octave_idx_type i = tmpu.cidx (j); i < tmpu.cidx (j+1);
                        i++)
                     {
-                      xdata(k) = tmpu.data(i);
-                      xridx(k++) = tmpu.ridx(i) + lb;
+                      xdata (k) = tmpu.data (i);
+                      xridx (k++) = tmpu.ridx (i) + lb;
                     }
 
-                  xcidx(j+1) = k;
+                  xcidx (j+1) = k;
                 }
             }
         }
@@ -1373,15 +1373,15 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
 
           for (octave_idx_type i = 0; i < nc; i++)
             {
-              for (octave_idx_type j = cidx(i); j < cidx(i+1); j++)
+              for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)
                 {
-                  retval.xdata(j) = data(j);
-                  retval.xridx(j) = ridx(j) + i * nr;
+                  retval.xdata (j) = data (j);
+                  retval.xridx (j) = ridx (j) + i * nr;
                 }
             }
 
-          retval.xcidx(0) = 0;
-          retval.xcidx(1) = nz;
+          retval.xcidx (0) = 0;
+          retval.xcidx (1) = nz;
         }
     }
   else if (idx.extent (nel) > nel)
@@ -1404,7 +1404,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
       // then want to make a dense matrix with sparse
       // representation. Ok, we'll do it, but you deserve what
       // you get!!
-      retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data(0) : T ());
+      retval = Sparse<T> (idx_dims(0), idx_dims(1), nz ? data (0) : T ());
     }
   else if (nc == 1)
     {
@@ -1415,8 +1415,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
         {
           // Scalar index - just a binary lookup.
           octave_idx_type i = lblookup (ridx (), nz, idx(0));
-          if (i < nz && ridx(i) == idx(0))
-            retval = Sparse (1, 1, data(i));
+          if (i < nz && ridx (i) == idx(0))
+            retval = Sparse (1, 1, data (i));
           else
             retval = Sparse (1, 1);
         }
@@ -1431,7 +1431,7 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
           retval = Sparse<T> (ub - lb, 1, nz_new);
           copy_or_memcpy (nz_new, data () + li, retval.data ());
           mx_inline_sub (nz_new, retval.xridx (), ridx () + li, lb);
-          retval.xcidx(1) = nz_new;
+          retval.xcidx (1) = nz_new;
         }
       else if (idx.is_permutation (nel) && idx.is_vector ())
         {
@@ -1477,15 +1477,15 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
               for (octave_idx_type i = 0; i < new_nr; i++)
                 {
                   octave_idx_type l = lidx(i, j);
-                  if (l < nz && ridx(l) == idxa(i, j))
+                  if (l < nz && ridx (l) == idxa(i, j))
                     nzj++;
                   else
                     lidx(i, j) = nz;
                 }
-              retval.xcidx(j+1) = retval.xcidx(j) + nzj;
+              retval.xcidx (j+1) = retval.xcidx (j) + nzj;
             }
 
-          retval.change_capacity (retval.xcidx(new_nc));
+          retval.change_capacity (retval.xcidx (new_nc));
 
           // Copy data and set row indices.
           octave_idx_type k = 0;
@@ -1495,8 +1495,8 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
                 octave_idx_type l = lidx(i, j);
                 if (l < nz)
                   {
-                    retval.data(k) = data(l);
-                    retval.xridx(k++) = i;
+                    retval.data (k) = data (l);
+                    retval.xridx (k++) = i;
                   }
               }
         }
@@ -1505,11 +1505,11 @@ Sparse<T>::index (const idx_vector& idx, bool resize_ok) const
     {
       octave_idx_type lb, ub;
       if (idx.is_scalar ())
-        retval = Sparse<T> (1, 1, elem(0, idx(0)));
+        retval = Sparse<T> (1, 1, elem (0, idx(0)));
       else if (idx.is_cont_range (nel, lb, ub))
         {
           // Special-case a contiguous range.
-          octave_idx_type lbi = cidx(lb), ubi = cidx(ub), new_nz = ubi - lbi;
+          octave_idx_type lbi = cidx (lb), ubi = cidx (ub), new_nz = ubi - lbi;
           retval = Sparse<T> (1, ub - lb, new_nz);
           copy_or_memcpy (new_nz, data () + lbi, retval.data ());
           fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
@@ -1583,7 +1583,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       else if (idx_j.is_cont_range (nc, lb, ub))
         {
           // Special-case a contiguous range.
-          octave_idx_type lbi = cidx(lb), ubi = cidx(ub), new_nz = ubi - lbi;
+          octave_idx_type lbi = cidx (lb), ubi = cidx (ub), new_nz = ubi - lbi;
           retval = Sparse<T> (nr, ub - lb, new_nz);
           copy_or_memcpy (new_nz, data () + lbi, retval.data ());
           copy_or_memcpy (new_nz, ridx () + lbi, retval.ridx ());
@@ -1596,7 +1596,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_idx_type jj = idx_j(j);
-              retval.xcidx(j+1) = retval.xcidx(j) + (cidx(jj+1) - cidx(jj));
+              retval.xcidx (j+1) = retval.xcidx (j) + (cidx (jj+1) - cidx (jj));
             }
 
           retval.change_capacity (retval.xcidx (m));
@@ -1604,8 +1604,8 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           // Copy data & indices.
           for (octave_idx_type j = 0; j < m; j++)
             {
-              octave_idx_type ljj = cidx(idx_j(j));
-              octave_idx_type lj = retval.xcidx(j), nzj = retval.xcidx(j+1) - lj;
+              octave_idx_type ljj = cidx (idx_j(j));
+              octave_idx_type lj = retval.xcidx (j), nzj = retval.xcidx (j+1) - lj;
               copy_or_memcpy (nzj, data () + ljj, retval.data () + lj);
               copy_or_memcpy (nzj, ridx () + ljj, retval.ridx () + lj);
             }
@@ -1628,28 +1628,28 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       for (octave_idx_type j = 0; j < m; j++)
         {
           octave_quit ();
-          octave_idx_type jj = idx_j(j), lj = cidx(jj), nzj = cidx(jj+1) - cidx(jj);
+          octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
           // Scalar index - just a binary lookup.
           octave_idx_type i = lblookup (ridx () + lj, nzj, ii);
-          if (i < nzj && ridx(i+lj) == ii)
+          if (i < nzj && ridx (i+lj) == ii)
             {
               ij[j] = i + lj;
-              retval.xcidx(j+1) = retval.xcidx(j) + 1;
+              retval.xcidx (j+1) = retval.xcidx (j) + 1;
             }
           else
-            retval.xcidx(j+1) = retval.xcidx(j);
+            retval.xcidx (j+1) = retval.xcidx (j);
         }
 
-      retval.change_capacity (retval.xcidx(m));
+      retval.change_capacity (retval.xcidx (m));
 
       // Copy data, adjust row indices.
       for (octave_idx_type j = 0; j < m; j++)
         {
-          octave_idx_type i = retval.xcidx(j);
-          if (retval.xcidx(j+1) > i)
+          octave_idx_type i = retval.xcidx (j);
+          if (retval.xcidx (j+1) > i)
             {
-              retval.xridx(i) = 0;
-              retval.xdata(i) = data(ij[j]);
+              retval.xridx (i) = 0;
+              retval.xdata (i) = data (ij[j]);
             }
         }
     }
@@ -1661,15 +1661,15 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       for (octave_idx_type j = 0; j < m; j++)
         {
           octave_quit ();
-          octave_idx_type jj = idx_j(j), lj = cidx(jj), nzj = cidx(jj+1) - cidx(jj);
+          octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
           octave_idx_type lij, uij;
           // Lookup indices.
           li[j] = lij = lblookup (ridx () + lj, nzj, lb) + lj;
           ui[j] = uij = lblookup (ridx () + lj, nzj, ub) + lj;
-          retval.xcidx(j+1) = retval.xcidx(j) + ui[j] - li[j];
+          retval.xcidx (j+1) = retval.xcidx (j) + ui[j] - li[j];
         }
 
-      retval.change_capacity (retval.xcidx(m));
+      retval.change_capacity (retval.xcidx (m));
 
       // Copy data, adjust row indices.
       for (octave_idx_type j = 0, k = 0; j < m; j++)
@@ -1677,8 +1677,8 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           octave_quit ();
           for (octave_idx_type i = li[j]; i < ui[j]; i++)
             {
-              retval.xdata(k) = data(i);
-              retval.xridx(k++) = ridx(i) - lb;
+              retval.xdata (k) = data (i);
+              retval.xridx (k++) = ridx (i) - lb;
             }
         }
     }
@@ -1690,7 +1690,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
       for (octave_idx_type j = 0; j < m; j++)
         {
           octave_idx_type jj = idx_j(j);
-          retval.xcidx(j+1) = retval.xcidx(j) + (cidx(jj+1) - cidx(jj));
+          retval.xcidx (j+1) = retval.xcidx (j) + (cidx (jj+1) - cidx (jj));
         }
 
       retval.change_capacity (retval.xcidx (m));
@@ -1703,12 +1703,12 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_quit ();
-              octave_idx_type jj = idx_j(j), lj = cidx(jj), nzj = cidx(jj+1) - cidx(jj);
-              octave_idx_type li = retval.xcidx(j), uj = lj + nzj - 1;
+              octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
+              octave_idx_type li = retval.xcidx (j), uj = lj + nzj - 1;
               for (octave_idx_type i = 0; i < nzj; i++)
                 {
-                  retval.xdata(li + i) = data(uj - i); // Copy in reverse order.
-                  retval.xridx(li + i) = nr - 1 - ridx(uj - i); // Ditto with transform.
+                  retval.xdata (li + i) = data (uj - i); // Copy in reverse order.
+                  retval.xridx (li + i) = nr - 1 - ridx (uj - i); // Ditto with transform.
                 }
             }
         }
@@ -1725,11 +1725,11 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
           for (octave_idx_type j = 0; j < m; j++)
             {
               octave_quit ();
-              octave_idx_type jj = idx_j(j), lj = cidx(jj), nzj = cidx(jj+1) - cidx(jj);
-              octave_idx_type li = retval.xcidx(j);
+              octave_idx_type jj = idx_j(j), lj = cidx (jj), nzj = cidx (jj+1) - cidx (jj);
+              octave_idx_type li = retval.xcidx (j);
               // Scatter the column, transform indices.
               for (octave_idx_type i = 0; i < nzj; i++)
-                scb[rri[li + i] = iinv[ridx(lj + i)]] = data(lj + i);
+                scb[rri[li + i] = iinv[ridx (lj + i)]] = data (lj + i);
 
               octave_quit ();
 
@@ -1738,7 +1738,7 @@ Sparse<T>::index (const idx_vector& idx_i, const idx_vector& idx_j, bool resize_
 
               // Gather.
               for (octave_idx_type i = 0; i < nzj; i++)
-                retval.xdata(li + i) = scb[rri[li + i]];
+                retval.xdata (li + i) = scb[rri[li + i]];
             }
         }
 
@@ -1846,7 +1846,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   copy_or_memcpy (nz - ui, tmp.ridx () + ui, ridx () + li + rnz);
                 }
 
-              cidx(1) = new_nz;
+              cidx (1) = new_nz;
             }
           else if (idx.is_range () && idx.increment () == -1)
             {
@@ -1866,7 +1866,7 @@ Sparse<T>::assign (const idx_vector& idx, const Sparse<T>& rhs)
                   octave_idx_type iidx = idx(i);
                   octave_idx_type li = lblookup (ri, nz, iidx);
                   if (li != nz && ri[li] == iidx)
-                    xdata(li) = T ();
+                    xdata (li) = T ();
                 }
 
               maybe_compress (true);
@@ -1985,7 +1985,7 @@ Sparse<T>::assign (const idx_vector& idx_i,
           else if (idx_j.is_cont_range (nc, lb, ub))
             {
               // Special-case a contiguous range.
-              octave_idx_type li = cidx(lb), ui = cidx(ub);
+              octave_idx_type li = cidx (lb), ui = cidx (ub);
               octave_idx_type rnz = rhs.nnz (), new_nz = nz - (ui - li) + rnz;
 
               if (new_nz >= nz && new_nz <= capacity ())
@@ -2051,36 +2051,36 @@ Sparse<T>::assign (const idx_vector& idx_i,
 
               // Assemble column lengths.
               for (octave_idx_type i = 0; i < nc; i++)
-                xcidx(i+1) = tmp.cidx(i+1) - tmp.cidx(i);
+                xcidx (i+1) = tmp.cidx (i+1) - tmp.cidx (i);
 
               for (octave_idx_type i = 0; i < m; i++)
                 {
                   octave_idx_type j =idx_j(i);
                   jsav[j] = i;
-                  xcidx(j+1) = rhs.cidx(i+1) - rhs.cidx(i);
+                  xcidx (j+1) = rhs.cidx (i+1) - rhs.cidx (i);
                 }
 
               // Make cumulative.
               for (octave_idx_type i = 0; i < nc; i++)
-                xcidx(i+1) += xcidx(i);
+                xcidx (i+1) += xcidx (i);
 
               change_capacity (nnz ());
 
               // Merge columns.
               for (octave_idx_type i = 0; i < nc; i++)
                 {
-                  octave_idx_type l = xcidx(i), u = xcidx(i+1), j = jsav[i];
+                  octave_idx_type l = xcidx (i), u = xcidx (i+1), j = jsav[i];
                   if (j >= 0)
                     {
                       // from rhs
-                      octave_idx_type k = rhs.cidx(j);
+                      octave_idx_type k = rhs.cidx (j);
                       copy_or_memcpy (u - l, rhs.data () + k, xdata () + l);
                       copy_or_memcpy (u - l, rhs.ridx () + k, xridx () + l);
                     }
                   else
                     {
                       // original
-                      octave_idx_type k = tmp.cidx(i);
+                      octave_idx_type k = tmp.cidx (i);
                       copy_or_memcpy (u - l, tmp.data () + k, xdata () + l);
                       copy_or_memcpy (u - l, tmp.ridx () + k, xridx () + l);
                     }
@@ -2183,26 +2183,26 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      octave_idx_type ns = mcidx [j + 1] - mcidx [j];
+      octave_idx_type ns = mcidx[j + 1] - mcidx[j];
       lsort.sort (v, ns);
 
       octave_idx_type i;
       if (mode == ASCENDING)
         {
           for (i = 0; i < ns; i++)
-            if (sparse_ascending_compare<T> (static_cast<T> (0), v [i]))
+            if (sparse_ascending_compare<T> (static_cast<T> (0), v[i]))
               break;
         }
       else
         {
           for (i = 0; i < ns; i++)
-            if (sparse_descending_compare<T> (static_cast<T> (0), v [i]))
+            if (sparse_descending_compare<T> (static_cast<T> (0), v[i]))
               break;
         }
       for (octave_idx_type k = 0; k < i; k++)
-        mridx [k] = k;
+        mridx[k] = k;
       for (octave_idx_type k = i; k < ns; k++)
-        mridx [k] = k - ns + nr;
+        mridx[k] = k - ns + nr;
 
       v += ns;
       mridx += ns;
@@ -2255,7 +2255,7 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 
   for (octave_idx_type j = 0; j < nc; j++)
     {
-      octave_idx_type ns = mcidx [j + 1] - mcidx [j];
+      octave_idx_type ns = mcidx[j + 1] - mcidx[j];
       octave_idx_type offset = j * nr;
 
       if (ns == 0)
@@ -2296,14 +2296,14 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 
           for (octave_idx_type k = 0; k < i; k++)
             {
-              sidx (k + offset) = vi [k];
-              mridx [k] = k;
+              sidx (k + offset) = vi[k];
+              mridx[k] = k;
             }
 
           for (octave_idx_type k = i; k < ns; k++)
             {
-              sidx (k - ns + nr + offset) = vi [k];
-              mridx [k] = k - ns + nr;
+              sidx (k - ns + nr + offset) = vi[k];
+              mridx[k] = k - ns + nr;
             }
 
           v += ns;
@@ -2437,12 +2437,12 @@ Sparse<T>::diag (octave_idx_type k) const
 
               for (octave_idx_type j = 0; j < nnc; j++)
                 {
-                  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+                  for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
                     {
                       d.xdata (i) = data (i);
                       d.xridx (i) = j + roff;
                     }
-                  d.xcidx (j + coff + 1) = cidx(j+1);
+                  d.xcidx (j + coff + 1) = cidx (j+1);
                 }
 
               for (octave_idx_type i = nnc + coff + 1; i < n + 1; i++)
@@ -2459,7 +2459,7 @@ Sparse<T>::diag (octave_idx_type k) const
           if (nnz () > 0)
             {
               octave_idx_type ii = 0;
-              octave_idx_type ir = ridx(0);
+              octave_idx_type ir = ridx (0);
 
               for (octave_idx_type i = 0; i < coff+1; i++)
                 d.xcidx (i) = 0;
@@ -2545,17 +2545,17 @@ Sparse<T>::cat (int dim, octave_idx_type n, const Sparse<T> *sparse_list)
                 if (spi.is_empty ())
                   continue;
 
-                octave_idx_type kl = spi.cidx(j), ku = spi.cidx(j+1);
+                octave_idx_type kl = spi.cidx (j), ku = spi.cidx (j+1);
                 for (octave_idx_type k = kl; k < ku; k++, l++)
                   {
-                    retval.xridx(l) = spi.ridx(k) + rcum;
-                    retval.xdata(l) = spi.data(k);
+                    retval.xridx (l) = spi.ridx (k) + rcum;
+                    retval.xdata (l) = spi.data (k);
                   }
 
                 rcum += spi.rows ();
               }
 
-            retval.xcidx(j+1) = l;
+            retval.xcidx (j+1) = l;
           }
 
         break;
@@ -2595,15 +2595,15 @@ Sparse<T>::array_value () const
       octave_idx_type i = 0;
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
         {
-          if (cidx(j+1) > i)
+          if (cidx (j+1) > i)
             retval(j) = data (i++);
         }
     }
   else
     {
       for (octave_idx_type j = 0, nc = cols (); j < nc; j++)
-        for (octave_idx_type i = cidx(j), iu = cidx(j+1); i < iu; i++)
-          retval(ridx(i), j) = data (i);
+        for (octave_idx_type i = cidx (j), iu = cidx (j+1); i < iu; i++)
+          retval(ridx (i), j) = data (i);
     }
 
   return retval;
@@ -2643,12 +2643,12 @@ Sparse<T>::array_value () const
 %!  x = ones (size);
 %!  s = set_slice (sparse (x), dim, slice);
 %!  f = set_slice (x, dim, slice);
-%!  assert (nnz(s), nnz(f));
-%!  assert (full(s), f);
-%!  s = set_slice2 (sparse(x), dim, slice);
+%!  assert (nnz (s), nnz (f));
+%!  assert (full (s), f);
+%!  s = set_slice2 (sparse (x), dim, slice);
 %!  f = set_slice2 (x, dim, slice);
-%!  assert (nnz(s), nnz(f));
-%!  assert (full(s), f);
+%!  assert (nnz (s), nnz (f));
+%!  assert (full (s), f);
 %!endfunction
 
 #### 1d indexing
@@ -2780,7 +2780,7 @@ bug #35570:
 %! assert (s, sparse (magic (5)(:, [1,5])));
 
 %!test
-%! s = sparse([], [], [], 1, 1);
+%! s = sparse ([], [], [], 1, 1);
 %! s(1,:) = [];
 %! assert (s, sparse ([], [], [], 0, 1));
 

@@ -79,7 +79,7 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
   else
     {
       for (octave_idx_type i = 0; i < neq; i++)
-        deriv [i] = tmp_deriv.elem (i);
+        deriv[i] = tmp_deriv.elem (i);
     }
 
   END_INTERRUPT_WITH_EXCEPTIONS;

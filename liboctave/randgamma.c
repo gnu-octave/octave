@@ -25,8 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 
 /*
 
-double randg(a)
-void fill_randg(a,n,x)
+double randg (a)
+void fill_randg (a,n,x)
 
 Generate a series of standard gamma distributions.
 
@@ -99,9 +99,9 @@ void
 oct_fill_randg (double a, octave_idx_type n, double *r)
 {
   octave_idx_type i;
-  /* If a < 1, start by generating gamma(1+a) */
+  /* If a < 1, start by generating gamma (1+a) */
   const double d =  (a < 1. ? 1.+a : a) - 1./3.;
-  const double c = 1./sqrt(9.*d);
+  const double c = 1./sqrt (9.*d);
 
   /* Handle invalid cases */
   if (a <= 0 || INFINITE(a))
@@ -122,7 +122,7 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
         goto restart; /* rare, so don't bother moving up */
       u = RUNI;
       xsq = x*x;
-      if (u >= 1.-0.0331*xsq*xsq && log(u) >= 0.5*xsq + d*(1-v+log(v)))
+      if (u >= 1.-0.0331*xsq*xsq && log (u) >= 0.5*xsq + d*(1-v+log (v)))
         goto restart;
       r[i] = d*v;
     }
@@ -130,7 +130,7 @@ oct_fill_randg (double a, octave_idx_type n, double *r)
     { /* Use gamma(a) = gamma(1+a)*U^(1/a) */
       /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
       for (i = 0; i < n; i++)
-        r[i] *= exp(-REXP/a);
+        r[i] *= exp (-REXP/a);
     }
 }
 
@@ -138,7 +138,7 @@ double
 oct_randg (double a)
 {
   double ret;
-  oct_fill_randg(a,1,&ret);
+  oct_fill_randg (a,1,&ret);
   return ret;
 }
 
@@ -157,7 +157,7 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
   octave_idx_type i;
   /* If a < 1, start by generating gamma(1+a) */
   const float d =  (a < 1. ? 1.+a : a) - 1./3.;
-  const float c = 1./sqrt(9.*d);
+  const float c = 1./sqrt (9.*d);
 
   /* Handle invalid cases */
   if (a <= 0 || INFINITE(a))
@@ -178,7 +178,7 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
         goto frestart; /* rare, so don't bother moving up */
       u = RUNI;
       xsq = x*x;
-      if (u >= 1.-0.0331*xsq*xsq && log(u) >= 0.5*xsq + d*(1-v+log(v)))
+      if (u >= 1.-0.0331*xsq*xsq && log (u) >= 0.5*xsq + d*(1-v+log (v)))
         goto frestart;
       r[i] = d*v;
     }
@@ -186,7 +186,7 @@ oct_fill_float_randg (float a, octave_idx_type n, float *r)
     { /* Use gamma(a) = gamma(1+a)*U^(1/a) */
       /* Given REXP = -log(U) then U^(1/a) = exp(-REXP/a) */
       for (i = 0; i < n; i++)
-        r[i] *= exp(-REXP/a);
+        r[i] *= exp (-REXP/a);
     }
 }
 
@@ -194,6 +194,6 @@ float
 oct_float_randg (float a)
 {
   float ret;
-  oct_fill_float_randg(a,1,&ret);
+  oct_fill_float_randg (a,1,&ret);
   return ret;
 }

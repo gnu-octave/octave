@@ -483,12 +483,12 @@ inline bool xis_false (const FloatComplex& x) { return x == 0.0f; }
 #define OP_RED_SUMSQ(ac, el) ac += el*el
 #define OP_RED_SUMSQC(ac, el) ac += cabsq (el)
 
-inline void op_dble_sum(double& ac, float el)
+inline void op_dble_sum (double& ac, float el)
 { ac += el; }
-inline void op_dble_sum(Complex& ac, const FloatComplex& el)
+inline void op_dble_sum (Complex& ac, const FloatComplex& el)
 { ac += el; } // FIXME: guaranteed?
 template <class T>
-inline void op_dble_sum(double& ac, const octave_int<T>& el)
+inline void op_dble_sum (double& ac, const octave_int<T>& el)
 { ac += el.double_value (); }
 
 // The following two implement a simple short-circuiting.
@@ -1177,7 +1177,7 @@ do_mx_red_op (const Array<T>& src, int dim,
 {
   octave_idx_type l, n, u;
   dim_vector dims = src.dims ();
-  // M*b inconsistency: sum([]) = 0 etc.
+  // M*b inconsistency: sum ([]) = 0 etc.
   if (dims.length () == 2 && dims(0) == 0 && dims(1) == 0)
     dims (1) = 1;
 

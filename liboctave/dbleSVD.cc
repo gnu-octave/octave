@@ -135,7 +135,7 @@ SVD::init (const Matrix& a, SVD::type svd_type, SVD::driver svd_driver)
   double *u = left_sm.fortran_vec ();
 
   sigma.resize (nrow_s, ncol_s);
-  double *s_vec  = sigma.fortran_vec ();
+  double *s_vec = sigma.fortran_vec ();
 
   if (! (jobv == 'N' || jobv == 'O'))
     right_sm.resize (nrow_vt, n);

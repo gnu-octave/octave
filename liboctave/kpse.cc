@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
    myself; if you do, I'd be grateful for any changes. --kb@mail.tug.org */
 
 /* If we have either DOS or OS2, we are DOSISH.  */
-#if defined (DOS) || defined (OS2) || defined (WIN32) || defined(__MSDOS__)
+#if defined (DOS) || defined (OS2) || defined (WIN32) || defined (__MSDOS__)
 #define DOSISH
 #endif
 
@@ -44,11 +44,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 extern "C" {
-#if defined(__MINGW32__)
+#if defined (__MINGW32__)
 #include <windows.h>
 #include <fcntl.h>
 #include <dirent.h>
-#elif defined(WIN32)
+#elif defined (WIN32)
 #ifndef _MSC_VER
 #define __STDC__ 1
 #include "win32lib.h"
@@ -76,7 +76,7 @@ extern "C" {
 /* If you want to find subdirectories in a directory with non-Unix
    semantics (specifically, if a directory with no subdirectories does
    not have exactly two links), define this.  */
-#if defined(__DJGPP__) || ! defined (DOSISH)
+#if defined (__DJGPP__) || ! defined (DOSISH)
 /* Surprise!  DJGPP returns st_nlink exactly like on Unix.  */
 #define ST_NLINK_TRICK
 #endif /* either not DOSISH or __DJGPP__ */
@@ -99,7 +99,7 @@ extern "C" {
 #define DIR_SEP '/'
 #define DIR_SEP_STRING "/"
 #define IS_DEVICE_SEP(ch) ((ch) == ':')
-#define NAME_BEGINS_WITH_DEVICE(name) ((name.length()>0) && IS_DEVICE_SEP((name)[1]))
+#define NAME_BEGINS_WITH_DEVICE(name) ((name.length ()>0) && IS_DEVICE_SEP((name)[1]))
 /* On DOS, it's good to allow both \ and / between directories.  */
 #define IS_DIR_SEP(ch) ((ch) == '/' || (ch) == '\\')
 #else

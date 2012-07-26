@@ -723,7 +723,7 @@ convert_packcomplex_1d (T *out, size_t nr, size_t nc,
 
   for (size_t i = 0; i < nr; i++)
     for (size_t j = nc/2+1; j < nc; j++)
-      out[j*stride + i*dist] = conj(out[(nc - j)*stride + i*dist]);
+      out[j*stride + i*dist] = conj (out[(nc - j)*stride + i*dist]);
 
   octave_quit ();
 }
@@ -758,10 +758,10 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
     {
       for (size_t j = 1; j < nr; j++)
         for (size_t k = nc/2+1; k < nc; k++)
-          out[k + (j + i*nr)*nc] = conj(out[nc - k + ((i+1)*nr - j)*nc]);
+          out[k + (j + i*nr)*nc] = conj (out[nc - k + ((i+1)*nr - j)*nc]);
 
       for (size_t j = nc/2+1; j < nc; j++)
-        out[j + i*nr*nc] = conj(out[(i*nr+1)*nc - j]);
+        out[j + i*nr*nc] = conj (out[(i*nr+1)*nc - j]);
     }
 
   octave_quit ();
@@ -782,7 +782,7 @@ convert_packcomplex_Nd (T *out, const dim_vector &dv)
             for (size_t l = nc/2+1; l < nc; l++)
               {
                 T tmp = out[i+ j + k + l];
-                out[i + j + k + l] =  out[i + jj + k + l];
+                out[i + j + k + l] = out[i + jj + k + l];
                 out[i + jj + k + l] = tmp;
               }
       jstart = jmax;

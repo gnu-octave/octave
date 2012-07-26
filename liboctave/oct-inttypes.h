@@ -825,7 +825,7 @@ public:
 
   static int nbits (void) { return std::numeric_limits<T>::digits; }
 
-  static int byte_size (void) { return sizeof(T); }
+  static int byte_size (void) { return sizeof (T); }
 
   static const char *type_name ();
 

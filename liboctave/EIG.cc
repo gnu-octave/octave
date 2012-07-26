@@ -230,8 +230,8 @@ EIG::init (const Matrix& a, bool calc_ev)
                   return -1;
                 }
 
-              lambda.elem(j) = Complex (wr.elem(j), wi.elem(j));
-              lambda.elem(j+1) = Complex (wr.elem(j+1), wi.elem(j+1));
+              lambda.elem (j) = Complex (wr.elem (j), wi.elem (j));
+              lambda.elem (j+1) = Complex (wr.elem (j+1), wi.elem (j+1));
 
               for (octave_idx_type i = 0; i < nvr; i++)
                 {
@@ -581,10 +581,10 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_ev)
                   return -1;
                 }
 
-              lambda.elem(j) = Complex (ar.elem(j) / beta.elem (j),
-                                        ai.elem(j) / beta.elem (j));
-              lambda.elem(j+1) = Complex (ar.elem(j+1) / beta.elem (j+1),
-                                          ai.elem(j+1) / beta.elem (j+1));
+              lambda.elem (j) = Complex (ar.elem (j) / beta.elem (j),
+                                         ai.elem (j) / beta.elem (j));
+              lambda.elem (j+1) = Complex (ar.elem (j+1) / beta.elem (j+1),
+                                           ai.elem (j+1) / beta.elem (j+1));
 
               for (octave_idx_type i = 0; i < nvr; i++)
                 {
@@ -780,7 +780,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_ev)
       lambda.resize (n);
 
       for (octave_idx_type j = 0; j < n; j++)
-        lambda.elem (j) = alpha.elem (j) / beta.elem(j);
+        lambda.elem (j) = alpha.elem (j) / beta.elem (j);
 
       v = vtmp;
     }

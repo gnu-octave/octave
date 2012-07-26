@@ -135,7 +135,7 @@ FloatSVD::init (const FloatMatrix& a, SVD::type svd_type, SVD::driver svd_driver
   float *u = left_sm.fortran_vec ();
 
   sigma.resize (nrow_s, ncol_s);
-  float *s_vec  = sigma.fortran_vec ();
+  float *s_vec = sigma.fortran_vec ();
 
   if (! (jobv == 'N' || jobv == 'O'))
     right_sm.resize (nrow_vt, n);

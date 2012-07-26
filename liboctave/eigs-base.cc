@@ -241,8 +241,8 @@ ltsolve (const SM& L, const ColumnVector& Q, const M& m)
       for (octave_idx_type j = 0; j < b_nc; j++)
         {
           for (octave_idx_type i = 0; i < n; i++)
-            retval.elem(static_cast<octave_idx_type>(qv[i]), j)  =
-              tmp.elem(i,j);
+            retval.elem (static_cast<octave_idx_type>(qv[i]), j) =
+              tmp.elem (i,j);
         }
     }
 
@@ -264,7 +264,7 @@ utsolve (const SM& U, const ColumnVector& Q, const M& m)
   for (octave_idx_type j = 0; j < b_nc; j++)
     {
       for (octave_idx_type i = 0; i < n; i++)
-        retval.elem(i,j) = m.elem(static_cast<octave_idx_type>(qv[i]), j);
+        retval.elem (i,j) = m.elem (static_cast<octave_idx_type>(qv[i]), j);
     }
   return U.solve (utyp, retval, err, rcond, 0);
 }
@@ -278,8 +278,8 @@ vector_product (const SparseMatrix& m, const double* x, double* y)
     y[j] = 0.;
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
-      y[m.ridx(i)] += m.data(i) * x[j];
+    for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
+      y[m.ridx (i)] += m.data (i) * x[j];
 
   return true;
 }
@@ -315,8 +315,8 @@ vector_product (const SparseComplexMatrix& m, const Complex* x,
     y[j] = 0.;
 
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
-      y[m.ridx(i)] += m.data(i) * x[j];
+    for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++)
+      y[m.ridx (i)] += m.data (i) * x[j];
 
   return true;
 }
@@ -354,8 +354,8 @@ make_cholb (Matrix& b, Matrix& bt, ColumnVector& permB)
   else
     {
       bt = fact.chol_matrix ();
-      b =  bt.transpose ();
-      permB = ColumnVector(n);
+      b = bt.transpose ();
+      permB = ColumnVector (n);
       for (octave_idx_type i = 0; i < n; i++)
         permB(i) = i;
       return true;
@@ -391,8 +391,8 @@ make_cholb (ComplexMatrix& b, ComplexMatrix& bt, ColumnVector& permB)
   else
     {
       bt = fact.chol_matrix ();
-      b =  bt.hermitian ();
-      permB = ColumnVector(n);
+      b = bt.hermitian ();
+      permB = ColumnVector (n);
       for (octave_idx_type i = 0; i < n; i++)
         permB(i) = i;
       return true;
@@ -438,12 +438,12 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
               SparseMatrix tmp(n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
                 {
-                  tmp.xcidx(i) = i;
-                  tmp.xridx(i) =
+                  tmp.xcidx (i) = i;
+                  tmp.xridx (i) =
                     static_cast<octave_idx_type>(permB(i));
-                  tmp.xdata(i) = 1;
+                  tmp.xdata (i) = 1;
                 }
-              tmp.xcidx(n) = n;
+              tmp.xcidx (n) = n;
 
               AminusSigmaB = AminusSigmaB - sigma * tmp *
                 b.transpose () * b * tmp.transpose ();
@@ -459,13 +459,13 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
     {
       SparseMatrix sigmat (n, n, n);
 
-          // Create sigma * speye(n,n)
+          // Create sigma * speye (n,n)
           sigmat.xcidx (0) = 0;
           for (octave_idx_type i = 0; i < n; i++)
             {
-              sigmat.xdata(i) = sigma;
-              sigmat.xridx(i) = i;
-              sigmat.xcidx(i+1) = i + 1;
+              sigmat.xdata (i) = sigma;
+              sigmat.xridx (i) = i;
+              sigmat.xcidx (i+1) = i + 1;
             }
 
           AminusSigmaB = AminusSigmaB - sigmat;
@@ -490,9 +490,9 @@ LuAminusSigmaB (const SparseMatrix &m, const SparseMatrix &b,
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = 0.;
-      if (U.xcidx(j+1) > U.xcidx(j) &&
-          U.xridx (U.xcidx(j+1)-1) == j)
-        d = std::abs (U.xdata (U.xcidx(j+1)-1));
+      if (U.xcidx (j+1) > U.xcidx (j) &&
+          U.xridx (U.xcidx (j+1)-1) == j)
+        d = std::abs (U.xdata (U.xcidx (j+1)-1));
 
       if (xisnan (minU) || d < minU)
         minU = d;
@@ -541,8 +541,8 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
                    j < b.cols (); j++)
                 for (octave_idx_type i = 0;
                      i < b.rows (); i++)
-                  *p++ -=  tmp.xelem (static_cast<octave_idx_type>(pB[i]),
-                                      static_cast<octave_idx_type>(pB[j]));
+                  *p++ -= tmp.xelem (static_cast<octave_idx_type>(pB[i]),
+                                     static_cast<octave_idx_type>(pB[j]));
             }
           else
             AminusSigmaB = AminusSigmaB - tmp;
@@ -570,7 +570,7 @@ LuAminusSigmaB (const Matrix &m, const Matrix &b,
   double maxU = octave_NaN;
   for (octave_idx_type j = 0; j < n; j++)
     {
-      double d = std::abs (U.xelem(j,j));
+      double d = std::abs (U.xelem (j,j));
       if (xisnan (minU) || d < minU)
         minU = d;
 
@@ -613,12 +613,12 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
               SparseMatrix tmp(n,n,n);
               for (octave_idx_type i = 0; i < n; i++)
                 {
-                  tmp.xcidx(i) = i;
-                  tmp.xridx(i) =
+                  tmp.xcidx (i) = i;
+                  tmp.xridx (i) =
                     static_cast<octave_idx_type>(permB(i));
-                  tmp.xdata(i) = 1;
+                  tmp.xdata (i) = 1;
                 }
-              tmp.xcidx(n) = n;
+              tmp.xcidx (n) = n;
 
               AminusSigmaB = AminusSigmaB - tmp * b.hermitian () * b *
                 tmp.transpose () * sigma;
@@ -633,13 +633,13 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
     {
       SparseComplexMatrix sigmat (n, n, n);
 
-      // Create sigma * speye(n,n)
+      // Create sigma * speye (n,n)
       sigmat.xcidx (0) = 0;
       for (octave_idx_type i = 0; i < n; i++)
         {
-          sigmat.xdata(i) = sigma;
-          sigmat.xridx(i) = i;
-          sigmat.xcidx(i+1) = i + 1;
+          sigmat.xdata (i) = sigma;
+          sigmat.xridx (i) = i;
+          sigmat.xcidx (i+1) = i + 1;
         }
 
       AminusSigmaB = AminusSigmaB - sigmat;
@@ -664,9 +664,9 @@ LuAminusSigmaB (const SparseComplexMatrix &m, const SparseComplexMatrix &b,
   for (octave_idx_type j = 0; j < n; j++)
     {
       double d = 0.;
-      if (U.xcidx(j+1) > U.xcidx(j) &&
-          U.xridx (U.xcidx(j+1)-1) == j)
-        d = std::abs (U.xdata (U.xcidx(j+1)-1));
+      if (U.xcidx (j+1) > U.xcidx (j) &&
+          U.xridx (U.xcidx (j+1)-1) == j)
+        d = std::abs (U.xdata (U.xcidx (j+1)-1));
 
       if (xisnan (minU) || d < minU)
         minU = d;
@@ -715,8 +715,8 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
                    j < b.cols (); j++)
                 for (octave_idx_type i = 0;
                      i < b.rows (); i++)
-                  *p++ -=  tmp.xelem (static_cast<octave_idx_type>(pB[i]),
-                                      static_cast<octave_idx_type>(pB[j]));
+                  *p++ -= tmp.xelem (static_cast<octave_idx_type>(pB[i]),
+                                     static_cast<octave_idx_type>(pB[j]));
             }
           else
             AminusSigmaB = AminusSigmaB - tmp;
@@ -744,7 +744,7 @@ LuAminusSigmaB (const ComplexMatrix &m, const ComplexMatrix &b,
   double maxU = octave_NaN;
   for (octave_idx_type j = 0; j < n; j++)
     {
-      double d = std::abs (U.xelem(j,j));
+      double d = std::abs (U.xelem (j,j));
       if (xisnan (minU) || d < minU)
         minU = d;
 
@@ -800,9 +800,9 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   if (resid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      resid = ColumnVector (octave_rand::vector(n));
-      octave_rand::distribution(rand_dist);
+      octave_rand::distribution ("uniform");
+      resid = ColumnVector (octave_rand::vector (n));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -827,7 +827,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1-1).\n"
-         "      Use 'eig(full(A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -891,14 +891,14 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
           b = b.transpose ();
           if (permB.length () == 0)
             {
-              permB = ColumnVector(n);
+              permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
                 permB(i) = i;
             }
         }
       else
         {
-          if (! make_cholb(b, bt, permB))
+          if (! make_cholb (b, bt, permB))
             {
               (*current_liboctave_error_handler)
                 ("eigs: The matrix B is not positive definite");
@@ -951,7 +951,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -979,7 +979,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
               for (octave_idx_type i = 0; i < n; i++)
                 mtmp(i,0) = workd[i + iptr(0) - 1];
 
-              mtmp = utsolve(bt, permB, m * ltsolve(b, permB, mtmp));
+              mtmp = utsolve (bt, permB, m * ltsolve (b, permB, mtmp));
 
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
@@ -1073,7 +1073,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
                 }
 
               if (note3)
-                eig_vec = ltsolve(b, permB, eig_vec);
+                eig_vec = ltsolve (b, permB, eig_vec);
             }
         }
       else
@@ -1124,9 +1124,9 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   if (resid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      resid = ColumnVector (octave_rand::vector(n));
-      octave_rand::distribution(rand_dist);
+      octave_rand::distribution ("uniform");
+      resid = ColumnVector (octave_rand::vector (n));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -1140,7 +1140,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1-1).\n"
-             "      Use 'eig(full(A))' instead");
+             "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -1218,7 +1218,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
-  if (! LuAminusSigmaB(m, b, cholB, permB, sigma, L, U, P, Q))
+  if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q))
     return -1;
 
   octave_idx_type lwork = p * (p + 8);
@@ -1244,7 +1244,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -1433,9 +1433,9 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
   if (resid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      resid = ColumnVector (octave_rand::vector(n));
-      octave_rand::distribution(rand_dist);
+      octave_rand::distribution ("uniform");
+      resid = ColumnVector (octave_rand::vector (n));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -1460,7 +1460,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig(full(A))' instead");
+             "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -1545,7 +1545,7 @@ EigsRealSymmetricFunc (EigsFunc fun, octave_idx_type n,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -1714,9 +1714,9 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   if (resid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      resid = ColumnVector (octave_rand::vector(n));
-      octave_rand::distribution(rand_dist);
+      octave_rand::distribution ("uniform");
+      resid = ColumnVector (octave_rand::vector (n));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -1741,7 +1741,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-         "      Use 'eig(full(A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -1805,14 +1805,14 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
           b = b.transpose ();
           if (permB.length () == 0)
             {
-              permB = ColumnVector(n);
+              permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
                 permB(i) = i;
             }
         }
       else
         {
-          if (! make_cholb(b, bt, permB))
+          if (! make_cholb (b, bt, permB))
             {
               (*current_liboctave_error_handler)
                 ("eigs: The matrix B is not positive definite");
@@ -1893,7 +1893,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               for (octave_idx_type i = 0; i < n; i++)
                 mtmp(i,0) = workd[i + iptr(0) - 1];
 
-              mtmp = utsolve(bt, permB, m * ltsolve(b, permB, mtmp));
+              mtmp = utsolve (bt, permB, m * ltsolve (b, permB, mtmp));
 
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
@@ -1982,7 +1982,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
               d[i] = d[k - i - 1];
               d[k - i - 1] = dtmp;
             }
-          eig_val.resize(k);
+          eig_val.resize (k);
 
           if (rvec)
             {
@@ -2012,11 +2012,11 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                 {
                   octave_idx_type off1 = i * n;
                   octave_idx_type off2 = (i+1) * n;
-                  if (std::imag(eig_val(i)) == 0)
+                  if (std::imag (eig_val(i)) == 0)
                     {
                       for (octave_idx_type j = 0; j < n; j++)
                         eig_vec(j,i) =
-                          Complex(z[j+off1],0.);
+                          Complex (z[j+off1],0.);
                       i++;
                     }
                   else
@@ -2024,17 +2024,17 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
                       for (octave_idx_type j = 0; j < n; j++)
                         {
                           eig_vec(j,i) =
-                            Complex(z[j+off1],z[j+off2]);
+                            Complex (z[j+off1],z[j+off2]);
                           if (i < k - 1)
                             eig_vec(j,i+1) =
-                              Complex(z[j+off1],-z[j+off2]);
+                              Complex (z[j+off1],-z[j+off2]);
                         }
                       i+=2;
                     }
                 }
 
               if (note3)
-                eig_vec = ltsolve(M (b), permB, eig_vec);
+                eig_vec = ltsolve (M(b), permB, eig_vec);
             }
         }
       else
@@ -2087,9 +2087,9 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   if (resid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      resid = ColumnVector (octave_rand::vector(n));
-      octave_rand::distribution(rand_dist);
+      octave_rand::distribution ("uniform");
+      resid = ColumnVector (octave_rand::vector (n));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -2114,7 +2114,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig(full(A))' instead");
+             "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -2181,7 +2181,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
-  if (! LuAminusSigmaB(m, b, cholB, permB, sigmar, L, U, P, Q))
+  if (! LuAminusSigmaB (m, b, cholB, permB, sigmar, L, U, P, Q))
     return -1;
 
   octave_idx_type lwork = 3 * p * (p + 2);
@@ -2207,7 +2207,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -2368,7 +2368,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
               d[i] = d[k - i - 1];
               d[k - i - 1] = dtmp;
             }
-          eig_val.resize(k);
+          eig_val.resize (k);
 
           if (rvec)
             {
@@ -2398,11 +2398,11 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                 {
                   octave_idx_type off1 = i * n;
                   octave_idx_type off2 = (i+1) * n;
-                  if (std::imag(eig_val(i)) == 0)
+                  if (std::imag (eig_val(i)) == 0)
                     {
                       for (octave_idx_type j = 0; j < n; j++)
                         eig_vec(j,i) =
-                          Complex(z[j+off1],0.);
+                          Complex (z[j+off1],0.);
                       i++;
                     }
                   else
@@ -2410,10 +2410,10 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
                       for (octave_idx_type j = 0; j < n; j++)
                         {
                           eig_vec(j,i) =
-                            Complex(z[j+off1],z[j+off2]);
+                            Complex (z[j+off1],z[j+off2]);
                           if (i < k - 1)
                             eig_vec(j,i+1) =
-                              Complex(z[j+off1],-z[j+off2]);
+                              Complex (z[j+off1],-z[j+off2]);
                         }
                       i+=2;
                     }
@@ -2450,9 +2450,9 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
   if (resid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      resid = ColumnVector (octave_rand::vector(n));
-      octave_rand::distribution(rand_dist);
+      octave_rand::distribution ("uniform");
+      resid = ColumnVector (octave_rand::vector (n));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -2477,7 +2477,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig(full(A))' instead");
+             "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -2680,7 +2680,7 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
               d[i] = d[k - i - 1];
               d[k - i - 1] = dtmp;
             }
-          eig_val.resize(k);
+          eig_val.resize (k);
 
           if (rvec)
             {
@@ -2710,11 +2710,11 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                 {
                   octave_idx_type off1 = i * n;
                   octave_idx_type off2 = (i+1) * n;
-                  if (std::imag(eig_val(i)) == 0)
+                  if (std::imag (eig_val(i)) == 0)
                     {
                       for (octave_idx_type j = 0; j < n; j++)
                         eig_vec(j,i) =
-                          Complex(z[j+off1],0.);
+                          Complex (z[j+off1],0.);
                       i++;
                     }
                   else
@@ -2722,10 +2722,10 @@ EigsRealNonSymmetricFunc (EigsFunc fun, octave_idx_type n,
                       for (octave_idx_type j = 0; j < n; j++)
                         {
                           eig_vec(j,i) =
-                            Complex(z[j+off1],z[j+off2]);
+                            Complex (z[j+off1],z[j+off2]);
                           if (i < k - 1)
                             eig_vec(j,i+1) =
-                              Complex(z[j+off1],-z[j+off2]);
+                              Complex (z[j+off1],-z[j+off2]);
                         }
                       i+=2;
                     }
@@ -2778,13 +2778,13 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   if (cresid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      Array<double> rr (octave_rand::vector(n));
-      Array<double> ri (octave_rand::vector(n));
+      octave_rand::distribution ("uniform");
+      Array<double> rr (octave_rand::vector (n));
+      Array<double> ri (octave_rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (octave_idx_type i = 0; i < n; i++)
-        cresid(i) = Complex(rr(i),ri(i));
-      octave_rand::distribution(rand_dist);
+        cresid(i) = Complex (rr(i),ri(i));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -2809,7 +2809,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-         "      Use 'eig(full(A))' instead");
+         "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -2873,14 +2873,14 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
           b = b.hermitian ();
           if (permB.length () == 0)
             {
-              permB = ColumnVector(n);
+              permB = ColumnVector (n);
               for (octave_idx_type i = 0; i < n; i++)
                 permB(i) = i;
             }
         }
       else
         {
-          if (! make_cholb(b, bt, permB))
+          if (! make_cholb (b, bt, permB))
             {
               (*current_liboctave_error_handler)
                 ("eigs: The matrix B is not positive definite");
@@ -2934,7 +2934,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
           return -1;
         }
 
-      if (disp > 0 && !xisnan(workl[iptr(5)-1]))
+      if (disp > 0 && !xisnan (workl[iptr (5)-1]))
         {
           if (iter++)
             {
@@ -2961,7 +2961,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
               ComplexMatrix mtmp (n,1);
               for (octave_idx_type i = 0; i < n; i++)
                 mtmp(i,0) = workd[i + iptr(0) - 1];
-              mtmp = utsolve(bt, permB, m * ltsolve(b, permB, mtmp));
+              mtmp = utsolve (bt, permB, m * ltsolve (b, permB, mtmp));
               for (octave_idx_type i = 0; i < n; i++)
                 workd[i+iptr(1)-1] = mtmp(i,0);
 
@@ -3026,7 +3026,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
           d[i] = d[k - i - 1];
           d[k - i - 1] = ctmp;
         }
-      eig_val.resize(k);
+      eig_val.resize (k);
 
       if (rvec)
         {
@@ -3051,7 +3051,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
             }
 
           if (note3)
-            eig_vec = ltsolve(b, permB, eig_vec);
+            eig_vec = ltsolve (b, permB, eig_vec);
         }
     }
   else
@@ -3103,13 +3103,13 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   if (cresid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      Array<double> rr (octave_rand::vector(n));
-      Array<double> ri (octave_rand::vector(n));
+      octave_rand::distribution ("uniform");
+      Array<double> rr (octave_rand::vector (n));
+      Array<double> ri (octave_rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (octave_idx_type i = 0; i < n; i++)
-        cresid(i) = Complex(rr(i),ri(i));
-      octave_rand::distribution(rand_dist);
+        cresid(i) = Complex (rr(i),ri(i));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -3134,7 +3134,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig(full(A))' instead");
+             "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -3201,7 +3201,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   OCTAVE_LOCAL_BUFFER (octave_idx_type, P, (have_b ? b.rows () : m.rows ()));
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Q, (have_b ? b.cols () : m.cols ()));
 
-  if (! LuAminusSigmaB(m, b, cholB, permB, sigma, L, U, P, Q))
+  if (! LuAminusSigmaB (m, b, cholB, permB, sigma, L, U, P, Q))
     return -1;
 
   octave_idx_type lwork = p * (3 * p + 5);
@@ -3366,7 +3366,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
           d[i] = d[k - i - 1];
           d[k - i - 1] = ctmp;
         }
-      eig_val.resize(k);
+      eig_val.resize (k);
 
       if (rvec)
         {
@@ -3412,7 +3412,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
                              int disp, int maxit)
 {
   std::string typ (_typ);
-  bool have_sigma = (std::abs(sigma) ? true : false);
+  bool have_sigma = (std::abs (sigma) ? true : false);
   char bmat = 'I';
   octave_idx_type mode = 1;
   int err = 0;
@@ -3420,13 +3420,13 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
   if (cresid.is_empty ())
     {
       std::string rand_dist = octave_rand::distribution ();
-      octave_rand::distribution("uniform");
-      Array<double> rr (octave_rand::vector(n));
-      Array<double> ri (octave_rand::vector(n));
+      octave_rand::distribution ("uniform");
+      Array<double> rr (octave_rand::vector (n));
+      Array<double> ri (octave_rand::vector (n));
       cresid = ComplexColumnVector (n);
       for (octave_idx_type i = 0; i < n; i++)
-        cresid(i) = Complex(rr(i),ri(i));
-      octave_rand::distribution(rand_dist);
+        cresid(i) = Complex (rr(i),ri(i));
+      octave_rand::distribution (rand_dist);
     }
 
   if (n < 3)
@@ -3451,7 +3451,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
     {
       (*current_liboctave_error_handler)
         ("eigs: Invalid number of eigenvalues to extract (must be 0 < k < n-1).\n"
-             "      Use 'eig(full(A))' instead");
+             "      Use 'eig (full (A))' instead");
       return -1;
     }
 
@@ -3630,7 +3630,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fun, octave_idx_type n,
           d[i] = d[k - i - 1];
           d[k - i - 1] = ctmp;
         }
-      eig_val.resize(k);
+      eig_val.resize (k);
 
       if (rvec)
         {

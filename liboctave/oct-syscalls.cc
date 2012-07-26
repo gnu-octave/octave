@@ -358,7 +358,7 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
 
               (*current_liboctave_error_handler)(child_msg.c_str ());
 
-              exit(0);
+              exit (0);
             }
           else
             {
@@ -372,8 +372,8 @@ octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
               else
 #endif
                 {
-                  fildes[0] = child_stdin [1];
-                  fildes[1] = child_stdout [0];
+                  fildes[0] = child_stdin[1];
+                  fildes[1] = child_stdout[0];
                   return pid;
                 }
             }

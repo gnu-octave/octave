@@ -72,7 +72,7 @@ protected:
     octave_refcount<int> count;
 
     SparseRep (void)
-      : d (0), r (0), c (new octave_idx_type [1]), nzmx (0), nrows (0),
+      : d (0), r (0), c (new octave_idx_type[1]), nzmx (0), nrows (0),
       ncols (0), count (1)
       {
         c[0] = 0;
@@ -87,7 +87,7 @@ protected:
       }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz = 0)
-      : d (new T [nz]), r (new octave_idx_type [nz]),
+      : d (new T[nz]), r (new octave_idx_type[nz]),
       c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
       ncols (nc), count (1)
       {
@@ -111,7 +111,7 @@ protected:
 
     octave_idx_type length (void) const { return nzmx; }
 
-    octave_idx_type nnz (void) const { return c [ncols]; }
+    octave_idx_type nnz (void) const { return c[ncols]; }
 
     T& elem (octave_idx_type _r, octave_idx_type _c);
 
@@ -268,7 +268,7 @@ public:
   octave_idx_type get_col_index (octave_idx_type k)
   {
     octave_idx_type ret = 0;
-    while (cidx(ret+1) < k)
+    while (cidx (ret+1) < k)
       ret++;
     return ret;
   }
@@ -599,11 +599,11 @@ public:
         result = Sparse<U> (nr, nc, f_zero);
 
         for (octave_idx_type j = 0; j < nc; j++)
-          for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
+          for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
             {
               octave_quit ();
               /* Use data instead of elem for better performance.  */
-              result.data (ridx (i) + j * nr) = fcn (data(i));
+              result.data (ridx (i) + j * nr) = fcn (data (i));
             }
 
         result.maybe_compress (true);
@@ -620,7 +620,7 @@ public:
 
         for (octave_idx_type j = 0; j < nc; j++)
           {
-            for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
+            for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
               {
                 U val = fcn (data (i));
                 if (val != 0.0)
@@ -709,7 +709,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
           else if (jtmp > jold)
             {
               for (octave_idx_type j = jold; j < jtmp; j++)
-                a.cidx(j+1) = ii;
+                a.cidx (j+1) = ii;
             }
           else if (itmp < iold)
             {
@@ -734,7 +734,7 @@ read_sparse_matrix (std::istream& is, Sparse<T>& a,
         }
 
       for (octave_idx_type j = jold; j < nc; j++)
-        a.cidx(j+1) = ii;
+        a.cidx (j+1) = ii;
     }
 
  done:

@@ -83,8 +83,8 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
 
   for (octave_idx_type i = 0; i < nn; i++)
     {
-      tmp_deriv.elem (i) = deriv [i];
-      tmp_state.elem (i) = state [i];
+      tmp_deriv.elem (i) = deriv[i];
+      tmp_state.elem (i) = state[i];
     }
 
   tmp_delta = user_fun (tmp_state, tmp_deriv, time, ires);
@@ -96,7 +96,7 @@ ddaspk_f (const double& time, const double *state, const double *deriv,
       else
         {
           for (octave_idx_type i = 0; i < nn; i++)
-            delta [i] = tmp_delta.elem (i);
+            delta[i] = tmp_delta.elem (i);
         }
     }
 
@@ -137,8 +137,8 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
 
   for (octave_idx_type i = 0; i < nn; i++)
     {
-      tmp_deriv.elem (i) = deriv [i];
-      tmp_state.elem (i) = state [i];
+      tmp_deriv.elem (i) = deriv[i];
+      tmp_state.elem (i) = state[i];
     }
 
   Matrix tmp_pd = user_jac (tmp_state, tmp_deriv, time, cj);

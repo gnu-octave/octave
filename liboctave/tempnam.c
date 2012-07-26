@@ -43,16 +43,16 @@ tempnam (const char *dir, const char *pfx)
 {
   size_t len;
   register char *s;
-  register char *t = __stdio_gen_tempname(dir, pfx, 1, &len, (FILE **) NULL);
+  register char *t = __stdio_gen_tempname (dir, pfx, 1, &len, (FILE **) NULL);
 
   if (t == NULL)
     return NULL;
 
-  s = (char *) malloc(len);
+  s = (char *) malloc (len);
   if (s == NULL)
     return NULL;
 
-  (void) memcpy(s, t, len);
+  (void) memcpy (s, t, len);
   return s;
 }
 

@@ -296,11 +296,6 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   if (debug_mode)
     do_breakpoint (cmd.is_breakpoint ());
 
-#if HAVE_LLVM
-  if (jiter.execute (cmd))
-    return;
-#endif
-
   // FIXME -- need to handle PARFOR loops here using cmd.in_parallel ()
   // and cmd.maxproc_expr ();
 
@@ -313,6 +308,11 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
   tree_expression *expr = cmd.control_expr ();
 
   octave_value rhs = expr->rvalue1 ();
+
+#if HAVE_LLVM
+  if (jiter.execute (cmd, rhs))
+    return;
+#endif
 
   if (error_state || rhs.is_undefined ())
     return;

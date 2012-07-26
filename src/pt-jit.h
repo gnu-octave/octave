@@ -64,7 +64,7 @@ public:
   typedef std::pair<jit_type *, std::string> type_bound;
   typedef std::vector<type_bound> type_bound_vector;
 
-  jit_convert (llvm::Module *module, tree &tee);
+  jit_convert (llvm::Module *module, tree &tee, jit_type *for_bounds = 0);
 
   ~jit_convert (void);
 
@@ -245,6 +245,7 @@ private:
   std::list<jit_value *> all_values;
 
   size_t iterator_count;
+  size_t for_bounds_count;
   size_t short_count;
 
   typedef std::map<std::string, jit_variable *> vmap_t;
@@ -268,7 +269,30 @@ private:
     return ret;
   }
 
+  // get an existing vairable. If the variable does not exist, it will not be
+  // created
+  jit_variable *find_variable (const std::string& vname) const;
+
+  // get a variable, create it if it does not exist. The type will default to
+  // the variable's current type in the symbol table.
   jit_variable *get_variable (const std::string& vname);
+
+  // create a variable of the given name and given type. Will also insert an
+  // extract statement
+  jit_variable *create_variable (const std::string& vname, jit_type *type);
+
+  // The name of the next for loop iterator. If inc is false, then the iterator
+  // counter will not be incremented.
+  std::string next_iterator (bool inc = true)
+  { return next_name ("#iter", iterator_count, inc); }
+
+  std::string next_for_bounds (bool inc = true)
+  { return next_name ("#for_bounds", for_bounds_count, inc); }
+
+  std::string next_shortcircut_result (bool inc = true)
+  { return next_name ("#shortcircut_result", short_count, inc); }
+
+  std::string next_name (const char *prefix, size_t& count, bool inc);
 
   std::pair<jit_value *, jit_value *> resolve (tree_index_expression& exp);
 
@@ -404,7 +428,7 @@ public:
 
   ~tree_jit (void);
 
-  bool execute (tree_simple_for_command& cmd);
+  bool execute (tree_simple_for_command& cmd, const octave_value& bounds);
 
   bool execute (tree_while_command& cmd);
 
@@ -415,6 +439,8 @@ public:
   void optimize (llvm::Function *fn);
  private:
   bool initialize (void);
+
+  size_t trip_count (const octave_value& bounds) const;
 
   // FIXME: Temorary hack to test
   typedef std::map<tree *, jit_info *> compiled_map;
@@ -428,17 +454,26 @@ class
 jit_info
 {
 public:
+  // we use a pointer here so we don't have to include ov.h
+  typedef std::map<std::string, const octave_value *> vmap;
+
   jit_info (tree_jit& tjit, tree& tee);
+
+  jit_info (tree_jit& tjit, tree& tee, const octave_value& for_bounds);
 
   ~jit_info (void);
 
-  bool execute (void) const;
+  bool execute (const vmap& extra_vars = vmap ()) const;
 
-  bool match (void) const;
+  bool match (const vmap& extra_vars = vmap ()) const;
 private:
   typedef jit_convert::type_bound type_bound;
   typedef jit_convert::type_bound_vector type_bound_vector;
   typedef void (*jited_function)(octave_base_value**);
+
+  void initialize (tree_jit& tjit, jit_convert& conv);
+
+  octave_value find (const vmap& extra_vars, const std::string& vname) const;
 
   llvm::ExecutionEngine *engine;
   jited_function function;

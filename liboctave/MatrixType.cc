@@ -74,7 +74,7 @@ matrix_real_probe (const MArray<T>& a)
       bool hermitian = true;
 
       // do the checks for lower/upper/hermitian all in one pass.
-      OCTAVE_LOCAL_BUFFER(T, diag, ncols);
+      OCTAVE_LOCAL_BUFFER (T, diag, ncols);
 
       for (octave_idx_type j = 0;
            j < ncols && upper; j++)
@@ -132,7 +132,7 @@ matrix_complex_probe (const MArray<std::complex<T> >& a)
       bool hermitian = true;
 
       // do the checks for lower/upper/hermitian all in one pass.
-      OCTAVE_LOCAL_BUFFER(T, diag, ncols);
+      OCTAVE_LOCAL_BUFFER (T, diag, ncols);
 
       for (octave_idx_type j = 0;
            j < ncols && upper; j++)

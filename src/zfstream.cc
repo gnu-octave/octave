@@ -403,7 +403,7 @@ gzfilebuf::enable_buffer ()
     if (buffer_size > 0)
     {
       // Allocate internal buffer
-      buffer = new char_type[buffer_size];
+      buffer = new char_type [buffer_size];
       // Get area starts empty and will be expanded by underflow as need arises
       this->setg (buffer, buffer, buffer);
       // Setup entire internal buffer as put area.
@@ -416,7 +416,7 @@ gzfilebuf::enable_buffer ()
     {
       // Even in "unbuffered" case, (small?) get buffer is still required
       buffer_size = SMALLBUFSIZE;
-      buffer = new char_type[buffer_size];
+      buffer = new char_type [buffer_size];
       this->setg (buffer, buffer, buffer);
       // "Unbuffered" means no put buffer
       this->setp (0, 0);

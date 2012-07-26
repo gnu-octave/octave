@@ -121,7 +121,7 @@ ddasrt_j (const double& time, const double *state, const double *deriv,
 
   for (octave_idx_type j = 0; j < nn; j++)
     for (octave_idx_type i = 0; i < nn; i++)
-      pd [nn * j + i] = tmp_pd.elem (i, j);
+      pd[nn * j + i] = tmp_pd.elem (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
 

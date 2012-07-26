@@ -325,7 +325,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
 {
   if (len != 0)
     {
-      octave_idx_type *d = new octave_idx_type[len];
+      octave_idx_type *d = new octave_idx_type [len];
       for (octave_idx_type i = 0; i < len; i++)
         d[i] = convert_index (nda.xelem (i), err, ext);
       data = d;
@@ -385,7 +385,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (bool b)
 {
   if (len != 0)
     {
-      octave_idx_type *d = new octave_idx_type[1];
+      octave_idx_type *d = new octave_idx_type [1];
       d[0] = 0;
       data = d;
       ext = 1;
@@ -407,7 +407,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<bool>& bnda,
 
   if (len != 0)
     {
-      octave_idx_type *d = new octave_idx_type[len];
+      octave_idx_type *d = new octave_idx_type [len];
 
       octave_idx_type ntot = bnda.length ();
 
@@ -435,7 +435,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
 
   if (len != 0)
     {
-      octave_idx_type *d = new octave_idx_type[len];
+      octave_idx_type *d = new octave_idx_type [len];
 
       octave_idx_type nnz = bnda.nnz ();
 
@@ -489,7 +489,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
   if (ext > len*xlog2 (1.0 + len))
     {
       // Use standard sort via octave_sort.
-      octave_idx_type *new_data = new octave_idx_type[len];
+      octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
 
       std::copy (data, data + len, new_data);
@@ -524,7 +524,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
       else
         new_rep->orig_dims = dim_vector (new_len, 1);
 
-      octave_idx_type *new_data = new octave_idx_type[new_len];
+      octave_idx_type *new_data = new octave_idx_type [new_len];
       new_rep->data = new_data;
 
       for (octave_idx_type i = 0, j = 0; i < ext; i++)
@@ -538,7 +538,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
       for (octave_idx_type i = 0; i < len; i++)
         cnt[data[i]]++;
 
-      octave_idx_type *new_data = new octave_idx_type[len];
+      octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
 
       for (octave_idx_type i = 0, j = 0; i < ext; i++)
@@ -566,7 +566,7 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
       for (octave_idx_type i = 0; i < len; i++)
         idx_data[i] = i;
 
-      octave_idx_type *new_data = new octave_idx_type[len];
+      octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
       std::copy (data, data + len, new_data);
 
@@ -585,7 +585,7 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
       idx.clear (orig_dims);
       octave_idx_type *idx_data = idx.fortran_vec ();
 
-      octave_idx_type *new_data = new octave_idx_type[len];
+      octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
 
       for (octave_idx_type i = 0, k = 0; i < ext; i++)
@@ -654,7 +654,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (bool b)
 {
   if (len != 0)
     {
-      bool *d = new bool[1];
+      bool *d = new bool [1];
       d[0] = true;
       data = d;
       ext = 1;
@@ -1210,7 +1210,7 @@ idx_vector::unmask (void) const
       idx_mask_rep * r = dynamic_cast<idx_mask_rep *> (rep);
       const bool *data = r->get_data ();
       octave_idx_type ext = r->extent (0), len = r->length (0);
-      octave_idx_type *idata = new octave_idx_type[len];
+      octave_idx_type *idata = new octave_idx_type [len];
 
       for (octave_idx_type i = 0, j = 0; i < ext; i++)
         if (data[i])

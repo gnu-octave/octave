@@ -542,7 +542,7 @@ octave_sort<T>::MergeState::getmem (octave_idx_type need)
    */
   delete [] a;
   delete [] ia; // Must do this or fool possible next getmemi.
-  a = new T[need];
+  a = new T [need];
   alloced = need;
 
 }
@@ -561,8 +561,8 @@ octave_sort<T>::MergeState::getmemi (octave_idx_type need)
   delete [] a;
   delete [] ia;
 
-  a = new T[need];
-  ia = new octave_idx_type[need];
+  a = new T [need];
+  ia = new octave_idx_type [need];
   alloced = need;
 }
 

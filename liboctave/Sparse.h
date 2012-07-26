@@ -72,7 +72,7 @@ protected:
     octave_refcount<int> count;
 
     SparseRep (void)
-      : d (0), r (0), c (new octave_idx_type[1]), nzmx (0), nrows (0),
+      : d (0), r (0), c (new octave_idx_type [1]), nzmx (0), nrows (0),
       ncols (0), count (1)
       {
         c[0] = 0;
@@ -87,7 +87,7 @@ protected:
       }
 
     SparseRep (octave_idx_type nr, octave_idx_type nc, octave_idx_type nz = 0)
-      : d (new T[nz]), r (new octave_idx_type[nz]),
+      : d (new T [nz]), r (new octave_idx_type [nz]),
       c (new octave_idx_type [nc+1]), nzmx (nz), nrows (nr),
       ncols (nc), count (1)
       {

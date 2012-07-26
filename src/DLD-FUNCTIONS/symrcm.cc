@@ -405,7 +405,7 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
     for (octave_idx_type k = cidx[j]; k < cidx[j + 1]; k++)
       {
         OCTAVE_QUIT;
-        octave_idx_type q = w [ridx[k]]++;
+        octave_idx_type q = w[ridx[k]]++;
         ridx2[q] = j;
       }
 }

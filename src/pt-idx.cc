@@ -532,7 +532,7 @@ tree_index_expression::lvalue (void)
                                  && (tmp.is_matrix_type () || tmp.is_string ()
                                      || tmp.is_cell ()));
 
-                if (i > 0 && type [i-1] == '(')
+                if (i > 0 && type[i-1] == '(')
                   {
                     octave_value_list pidx = idx.back ();
 

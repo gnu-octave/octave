@@ -51,7 +51,7 @@ MatrixType::MatrixType (const MatrixType &a)
 {
   if (nperm != 0)
     {
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = a.perm[i];
     }
@@ -255,12 +255,12 @@ MatrixType::MatrixType (const SparseMatrix &a)
           for (octave_idx_type j = i; j < nm; j++)
             {
               if ((a.cidx (j+1) > a.cidx (j) + 1)  ||
-                  ((a.cidx (j+1) == a.cidx (j) + 1) && found [a.ridx (j)]))
+                  ((a.cidx (j+1) == a.cidx (j) + 1) && found[a.ridx (j)]))
                 {
                   tmp_typ = MatrixType::Full;
                   break;
                 }
-              found [a.ridx (j)] = true;
+              found[a.ridx (j)] = true;
             }
         }
       typ = tmp_typ;
@@ -348,7 +348,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
           bool found = false;
 
           nperm = ncols;
-          perm = new octave_idx_type[ncols];
+          perm = new octave_idx_type [ncols];
 
           for (octave_idx_type i = 0; i < ncols; i++)
             perm[i] = -1;
@@ -387,7 +387,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
             {
               nperm = nrows;
               delete [] perm;
-              perm = new octave_idx_type[nrows];
+              perm = new octave_idx_type [nrows];
               OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nrows);
 
               for (octave_idx_type i = 0; i < nrows; i++)
@@ -398,7 +398,7 @@ MatrixType::MatrixType (const SparseMatrix &a)
 
               for (octave_idx_type j = 0; j < ncols; j++)
                 for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-                    perm [a.ridx (i)] = j;
+                    perm[a.ridx (i)] = j;
 
               found = true;
               for (octave_idx_type i = 0; i < nm; i++)
@@ -576,12 +576,12 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
           for (octave_idx_type j = i; j < nm; j++)
             {
               if ((a.cidx (j+1) > a.cidx (j) + 1)  ||
-                  ((a.cidx (j+1) == a.cidx (j) + 1) && found [a.ridx (j)]))
+                  ((a.cidx (j+1) == a.cidx (j) + 1) && found[a.ridx (j)]))
                 {
                   tmp_typ = MatrixType::Full;
                   break;
                 }
-              found [a.ridx (j)] = true;
+              found[a.ridx (j)] = true;
             }
         }
       typ = tmp_typ;
@@ -669,7 +669,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
           bool found = false;
 
           nperm = ncols;
-          perm = new octave_idx_type[ncols];
+          perm = new octave_idx_type [ncols];
 
           for (octave_idx_type i = 0; i < ncols; i++)
             perm[i] = -1;
@@ -708,7 +708,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
             {
               nperm = nrows;
               delete [] perm;
-              perm = new octave_idx_type[nrows];
+              perm = new octave_idx_type [nrows];
               OCTAVE_LOCAL_BUFFER (octave_idx_type, tmp, nrows);
 
               for (octave_idx_type i = 0; i < nrows; i++)
@@ -719,7 +719,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
 
               for (octave_idx_type j = 0; j < ncols; j++)
                 for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
-                    perm [a.ridx (i)] = j;
+                    perm[a.ridx (i)] = j;
 
               found = true;
               for (octave_idx_type i = 0; i < nm; i++)
@@ -876,7 +876,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
     {
       typ = t;
       nperm = np;
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = p[i];
     }
@@ -989,7 +989,7 @@ MatrixType::type (const SparseMatrix &a)
 
   if (nperm != 0)
     {
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = tmp_typ.perm[i];
     }
@@ -1022,7 +1022,7 @@ MatrixType::type (const SparseComplexMatrix &a)
 
   if (nperm != 0)
     {
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = tmp_typ.perm[i];
     }
@@ -1049,7 +1049,7 @@ MatrixType::type (const Matrix &a)
 
   if (nperm != 0)
     {
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = tmp_typ.perm[i];
     }
@@ -1076,7 +1076,7 @@ MatrixType::type (const ComplexMatrix &a)
 
   if (nperm != 0)
     {
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = tmp_typ.perm[i];
     }
@@ -1103,7 +1103,7 @@ MatrixType::type (const FloatMatrix &a)
 
   if (nperm != 0)
     {
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = tmp_typ.perm[i];
     }
@@ -1130,7 +1130,7 @@ MatrixType::type (const FloatComplexMatrix &a)
 
   if (nperm != 0)
     {
-      perm = new octave_idx_type[nperm];
+      perm = new octave_idx_type [nperm];
       for (octave_idx_type i = 0; i < nperm; i++)
         perm[i] = tmp_typ.perm[i];
     }
@@ -1225,7 +1225,7 @@ void
 MatrixType::mark_as_permuted (const octave_idx_type np, const octave_idx_type *p)
 {
   nperm = np;
-  perm = new octave_idx_type[nperm];
+  perm = new octave_idx_type [nperm];
   for (octave_idx_type i = 0; i < nperm; i++)
     perm[i] = p[i];
 

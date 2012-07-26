@@ -57,7 +57,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::drop_zeros
   for (k = 0; k < ncol; k++)
     {
       p = Sp[k];
-      pend = Sp [k+1];
+      pend = Sp[k+1];
       Sp[k] = pdest;
       for (; p < pend; p++)
         {

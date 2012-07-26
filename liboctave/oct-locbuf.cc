@@ -74,11 +74,11 @@ octave_chunk_buffer::octave_chunk_buffer (size_t size) : cnk (0), dat (0)
         {
           // Use new [] to get std::bad_alloc if out of memory.
 
-          dat = new char[size];
+          dat = new char [size];
           return;
         }
 
-      dat = new char[chunk_size];
+      dat = new char [chunk_size];
       chunk = top = dat;
       left = chunk_size;
     }

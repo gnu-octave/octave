@@ -270,7 +270,7 @@ factorization as determined by @var{typ}.\n\
           // count the total number of entries in L
           octave_idx_type lnz = 0 ;
           for (octave_idx_type j = 0 ; j < n ; j++)
-            lnz += ColCount [j] ;
+            lnz += ColCount[j];
 
 
           // allocate the output matrix L (pattern-only)
@@ -281,7 +281,7 @@ factorization as determined by @var{typ}.\n\
           for (octave_idx_type j = 0 ; j < n ; j++)
             {
               L.xcidx(j) = lnz;
-              lnz += ColCount [j];
+              lnz += ColCount[j];
             }
           L.xcidx(n) = lnz;
 
@@ -302,11 +302,11 @@ factorization as determined by @var{typ}.\n\
             {
               // get the kth row of L and store in the columns of L
               CHOLMOD_NAME (row_subtree) (A1, A2, k, Parent, R, cm) ;
-              for (octave_idx_type p = 0 ; p < Rp [1] ; p++)
-                L.xridx (W [Ri [p]]++) = k ;
+              for (octave_idx_type p = 0 ; p < Rp[1] ; p++)
+                L.xridx (W[Ri[p]]++) = k ;
 
               // add the diagonal entry
-              L.xridx (W [k]++) = k ;
+              L.xridx (W[k]++) = k ;
             }
 
           // free workspace

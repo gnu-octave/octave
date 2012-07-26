@@ -1936,7 +1936,7 @@ save_mat5_array_length (const double* val, octave_idx_type nel,
           bool too_large_for_float = false;
           for (octave_idx_type i = 0; i < nel; i++)
             {
-              double tmp = val [i];
+              double tmp = val[i];
 
               if (! (xisnan (tmp) || xisinf (tmp))
                   && fabs (tmp) > FLT_MAX)

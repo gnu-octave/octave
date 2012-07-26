@@ -32,7 +32,7 @@ void *
 octave_allocator::alloc (size_t size)
 {
   if (size != item_size)
-    return ::new char[size];
+    return ::new char [size];
 
   if (! head)
     {

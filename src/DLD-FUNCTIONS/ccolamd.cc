@@ -164,15 +164,15 @@ colamd, symamd, and other related orderings.\n\
           int nel_User_knobs = User_knobs.length ();
 
           if (nel_User_knobs > 0)
-            knobs [CCOLAMD_LU] = (User_knobs (0) != 0);
+            knobs[CCOLAMD_LU] = (User_knobs(0) != 0);
           if (nel_User_knobs > 1)
-            knobs [CCOLAMD_DENSE_ROW]  = User_knobs (1);
+            knobs[CCOLAMD_DENSE_ROW] = User_knobs(1);
           if (nel_User_knobs > 2)
-            knobs [CCOLAMD_DENSE_COL]  = User_knobs (2);
+            knobs[CCOLAMD_DENSE_COL] = User_knobs(2);
           if (nel_User_knobs > 3)
-            knobs [CCOLAMD_AGGRESSIVE] = (User_knobs (3) != 0);
+            knobs[CCOLAMD_AGGRESSIVE] = (User_knobs(3) != 0);
           if (nel_User_knobs > 4)
-            spumoni = (User_knobs (4) != 0);
+            spumoni = (User_knobs(4) != 0);
 
           // print knob settings if spumoni is set
           if (spumoni)
@@ -180,30 +180,30 @@ colamd, symamd, and other related orderings.\n\
               octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << "."
                             <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE
                             << ":\nknobs(1): " << User_knobs (0) << ", order for ";
-              if ( knobs [CCOLAMD_LU] != 0)
+              if (knobs[CCOLAMD_LU] != 0)
                 octave_stdout << "lu (A)\n";
               else
                 octave_stdout << "chol (A'*A)\n";
 
-              if (knobs [CCOLAMD_DENSE_ROW] >= 0)
+              if (knobs[CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(2): " << User_knobs (1)
                               << ", rows with > max (16,"
-                              << knobs [CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                              << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(2): " << User_knobs (1)
                               << ", no dense rows removed\n";
 
-              if (knobs [CCOLAMD_DENSE_COL] >= 0)
+              if (knobs[CCOLAMD_DENSE_COL] >= 0)
                 octave_stdout << "knobs(3): " << User_knobs (2)
                               << ", cols with > max (16,"
-                              << knobs [CCOLAMD_DENSE_COL] << "*sqrt (size(A)))"
+                              << knobs[CCOLAMD_DENSE_COL] << "*sqrt (size(A)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(3): " << User_knobs (2)
                               << ", no dense columns removed\n";
 
-              if (knobs [CCOLAMD_AGGRESSIVE] != 0)
+              if (knobs[CCOLAMD_AGGRESSIVE] != 0)
                 octave_stdout << "knobs(4): " << User_knobs(3)
                               << ", aggressive absorption: yes";
               else
@@ -259,12 +259,12 @@ colamd, symamd, and other related orderings.\n\
       // Allocate workspace for ccolamd
       OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
       for (octave_idx_type i = 0; i < n_col+1; i++)
-        p[i] = cidx [i];
+        p[i] = cidx[i];
 
       octave_idx_type Alen = CCOLAMD_NAME (_recommended) (nnz, n_row, n_col);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
       for (octave_idx_type i = 0; i < nnz; i++)
-        A[i] = ridx [i];
+        A[i] = ridx[i];
 
       OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, CCOLAMD_STATS);
 
@@ -315,7 +315,7 @@ colamd, symamd, and other related orderings.\n\
         {
           NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
           for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-            out_stats (i) = stats [i] ;
+            out_stats(i) = stats[i] ;
           retval(1) = out_stats;
 
           // fix stats (5) and (6), for 1-based information on
@@ -419,11 +419,11 @@ colamd, symamd, and other related orderings.\n\
           int nel_User_knobs = User_knobs.length ();
 
           if (nel_User_knobs > 0)
-            knobs [CCOLAMD_DENSE_ROW] = User_knobs (0);
+            knobs[CCOLAMD_DENSE_ROW] = User_knobs(0);
           if (nel_User_knobs > 0)
-            knobs [CCOLAMD_AGGRESSIVE] = User_knobs (1);
+            knobs[CCOLAMD_AGGRESSIVE] = User_knobs(1);
           if (nel_User_knobs > 1)
-            spumoni = static_cast<int> (User_knobs (2));
+            spumoni = static_cast<int> (User_knobs(2));
 
           // print knob settings if spumoni is set
           if (spumoni)
@@ -431,16 +431,16 @@ colamd, symamd, and other related orderings.\n\
               octave_stdout << "\ncsymamd version " << CCOLAMD_MAIN_VERSION << "."
                             <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE << "\n";
 
-              if (knobs [CCOLAMD_DENSE_ROW] >= 0)
+              if (knobs[CCOLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(1): " << User_knobs (0)
                               << ", rows/cols with > max (16,"
-                              << knobs [CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                              << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(1): " << User_knobs (0)
                               << ", no dense rows/cols removed\n";
 
-              if (knobs [CCOLAMD_AGGRESSIVE] != 0)
+              if (knobs[CCOLAMD_AGGRESSIVE] != 0)
                 octave_stdout << "knobs(2): " << User_knobs(1)
                               << ", aggressive absorption: yes";
               else
@@ -543,7 +543,7 @@ colamd, symamd, and other related orderings.\n\
         {
           NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
           for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-            out_stats (i) = stats [i] ;
+            out_stats(i) = stats[i] ;
           retval(1) = out_stats;
 
           // fix stats (5) and (6), for 1-based information on
@@ -562,7 +562,7 @@ colamd, symamd, and other related orderings.\n\
         {
           NDArray out_stats (dim_vector (1, CCOLAMD_STATS));
           for (octave_idx_type i = 0 ; i < CCOLAMD_STATS ; i++)
-            out_stats (i) = stats [i] ;
+            out_stats(i) = stats[i] ;
           retval(1) = out_stats;
 
           // fix stats (5) and (6), for 1-based information on

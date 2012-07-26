@@ -1559,7 +1559,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
             error ("whos: -file argument must be followed by a file name");
           else
             {
-              std::string nm = argv [i + 1];
+              std::string nm = argv[i + 1];
 
               unwind_protect frame;
 

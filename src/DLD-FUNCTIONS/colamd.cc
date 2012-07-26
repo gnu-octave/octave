@@ -63,28 +63,28 @@ symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
   if (P)
     // If P is present then compute Pinv, the inverse of P
     for (octave_idx_type k = 0 ; k < n ; k++)
-      Pinv [P [k]] = k ;
+      Pinv[P[k]] = k ;
 
   for (octave_idx_type k = 0 ; k < n ; k++)
     {
       // L(k,:) pattern: all nodes reachable in etree from nz in A(0:k-1,k)
-      Parent [k] = n ;                // parent of k is not yet known
-      Flag [k] = k ;                  // mark node k as visited
-      octave_idx_type kk = (P) ? (P [k]) : (k) ;  // kth original, or permuted, column
-      octave_idx_type p2 = cidx [kk+1] ;
-      for (octave_idx_type p = cidx [kk] ; p < p2 ; p++)
+      Parent[k] = n ;                // parent of k is not yet known
+      Flag[k] = k ;                  // mark node k as visited
+      octave_idx_type kk = (P) ? (P[k]) : (k) ;  // kth original, or permuted, column
+      octave_idx_type p2 = cidx[kk+1] ;
+      for (octave_idx_type p = cidx[kk] ; p < p2 ; p++)
         {
           // A (i,k) is nonzero (original or permuted A)
-          octave_idx_type i = (Pinv) ? (Pinv [ridx [p]]) : (ridx [p]) ;
+          octave_idx_type i = (Pinv) ? (Pinv[ridx[p]]) : (ridx[p]) ;
           if (i < k)
             {
               // follow path from i to root of etree, stop at flagged node
-              for ( ; Flag [i] != k ; i = Parent [i])
+              for ( ; Flag[i] != k ; i = Parent[i])
                 {
                   // find parent of i if not yet determined
-                  if (Parent [i] == n)
-                    Parent [i] = k ;
-                  Flag [i] = k ;        // mark i as visited
+                  if (Parent[i] == n)
+                    Parent[i] = k ;
+                  Flag[i] = k ;        // mark i as visited
                 }
             }
         }
@@ -299,11 +299,11 @@ Ng, Oak Ridge National Laboratory.  (see\n\
           int nel_User_knobs = User_knobs.length ();
 
           if (nel_User_knobs > 0)
-            knobs [COLAMD_DENSE_ROW] = User_knobs (0);
+            knobs[COLAMD_DENSE_ROW] = User_knobs(0);
           if (nel_User_knobs > 1)
-            knobs [COLAMD_DENSE_COL] = User_knobs (1) ;
+            knobs[COLAMD_DENSE_COL] = User_knobs(1) ;
           if (nel_User_knobs > 2)
-            spumoni = static_cast<int> (User_knobs (2));
+            spumoni = static_cast<int> (User_knobs(2));
 
           // print knob settings if spumoni is set
           if (spumoni)
@@ -312,19 +312,19 @@ Ng, Oak Ridge National Laboratory.  (see\n\
               octave_stdout << "\ncolamd version " << COLAMD_MAIN_VERSION << "."
                             <<  COLAMD_SUB_VERSION << ", " << COLAMD_DATE << ":\n";
 
-              if (knobs [COLAMD_DENSE_ROW] >= 0)
+              if (knobs[COLAMD_DENSE_ROW] >= 0)
                 octave_stdout << "knobs(1): " << User_knobs (0)
                               << ", rows with > max (16,"
-                              << knobs [COLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
+                              << knobs[COLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(1): " << User_knobs (0)
                               << ", only completely dense rows removed\n";
 
-              if (knobs [COLAMD_DENSE_COL] >= 0)
+              if (knobs[COLAMD_DENSE_COL] >= 0)
                 octave_stdout << "knobs(2): " << User_knobs (1)
                               << ", cols with > max (16,"
-                              << knobs [COLAMD_DENSE_COL] << "*sqrt (size(A)))"
+                              << knobs[COLAMD_DENSE_COL] << "*sqrt (size(A)))"
                               << " entries removed\n";
               else
                 octave_stdout << "knobs(2): " << User_knobs (1)
@@ -380,12 +380,12 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // Allocate workspace for colamd
       OCTAVE_LOCAL_BUFFER (octave_idx_type, p, n_col+1);
       for (octave_idx_type i = 0; i < n_col+1; i++)
-        p[i] = cidx [i];
+        p[i] = cidx[i];
 
       octave_idx_type Alen = COLAMD_NAME (_recommended) (nnz, n_row, n_col);
       OCTAVE_LOCAL_BUFFER (octave_idx_type, A, Alen);
       for (octave_idx_type i = 0; i < nnz; i++)
-        A[i] = ridx [i];
+        A[i] = ridx[i];
 
       // Order the columns (destroys A)
       OCTAVE_LOCAL_BUFFER (octave_idx_type, stats, COLAMD_STATS);
@@ -415,7 +415,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = p[colbeg [i]] + 1;
+        out_perm(i) = p[colbeg[i]] + 1;
 
       retval(0) = out_perm;
 
@@ -428,7 +428,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
         {
           NDArray out_stats (dim_vector (1, COLAMD_STATS));
           for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
-            out_stats (i) = stats [i] ;
+            out_stats(i) = stats[i] ;
           retval(1) = out_stats;
 
           // fix stats (5) and (6), for 1-based information on
@@ -534,7 +534,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
           int nel_User_knobs = User_knobs.length ();
 
           if (nel_User_knobs > 0)
-            knobs [COLAMD_DENSE_ROW] = User_knobs (COLAMD_DENSE_ROW);
+            knobs[COLAMD_DENSE_ROW] = User_knobs(COLAMD_DENSE_ROW);
           if (nel_User_knobs > 1)
             spumoni = static_cast<int> (User_knobs (1));
         }
@@ -542,7 +542,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // print knob settings if spumoni is set
       if (spumoni > 0)
         octave_stdout << "symamd: dense row/col fraction: "
-                      << knobs [COLAMD_DENSE_ROW] << std::endl;
+                      << knobs[COLAMD_DENSE_ROW] << std::endl;
 
       octave_idx_type n_row, n_col;
       octave_idx_type *ridx, *cidx;
@@ -608,7 +608,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
-        out_perm(i) = perm[post [i]] + 1;
+        out_perm(i) = perm[post[i]] + 1;
 
       retval(0) = out_perm;
 
@@ -621,7 +621,7 @@ Ng, Oak Ridge National Laboratory.  (see\n\
         {
           NDArray out_stats (dim_vector (1, COLAMD_STATS));
           for (octave_idx_type i = 0 ; i < COLAMD_STATS ; i++)
-            out_stats (i) = stats [i] ;
+            out_stats(i) = stats[i] ;
           retval(1) = out_stats;
 
           // fix stats (5) and (6), for 1-based information on

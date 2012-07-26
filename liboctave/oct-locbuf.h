@@ -38,7 +38,7 @@ public:
     : data (0)
     {
       if (size)
-        data = new T[size];
+        data = new T [size];
     }
   ~octave_local_buffer (void) { delete [] data; }
   operator T *() const { return data; }

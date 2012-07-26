@@ -179,28 +179,28 @@ colamd, symamd, and other related orderings.\n\
             {
               octave_stdout << "\nccolamd version " << CCOLAMD_MAIN_VERSION << "."
                             <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE
-                            << ":\nknobs(1): " << User_knobs (0) << ", order for ";
+                            << ":\nknobs(1): " << User_knobs(0) << ", order for ";
               if (knobs[CCOLAMD_LU] != 0)
                 octave_stdout << "lu (A)\n";
               else
                 octave_stdout << "chol (A'*A)\n";
 
               if (knobs[CCOLAMD_DENSE_ROW] >= 0)
-                octave_stdout << "knobs(2): " << User_knobs (1)
+                octave_stdout << "knobs(2): " << User_knobs(1)
                               << ", rows with > max (16,"
                               << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
-                octave_stdout << "knobs(2): " << User_knobs (1)
+                octave_stdout << "knobs(2): " << User_knobs(1)
                               << ", no dense rows removed\n";
 
               if (knobs[CCOLAMD_DENSE_COL] >= 0)
-                octave_stdout << "knobs(3): " << User_knobs (2)
+                octave_stdout << "knobs(3): " << User_knobs(2)
                               << ", cols with > max (16,"
                               << knobs[CCOLAMD_DENSE_COL] << "*sqrt (size(A)))"
                               << " entries removed\n";
               else
-                octave_stdout << "knobs(3): " << User_knobs (2)
+                octave_stdout << "knobs(3): " << User_knobs(2)
                               << ", no dense columns removed\n";
 
               if (knobs[CCOLAMD_AGGRESSIVE] != 0)
@@ -210,7 +210,7 @@ colamd, symamd, and other related orderings.\n\
                 octave_stdout << "knobs(4): " << User_knobs(3)
                               << ", aggressive absorption: no";
 
-              octave_stdout << "knobs(5): " << User_knobs (4)
+              octave_stdout << "knobs(5): " << User_knobs(4)
                             << ", statistics and knobs printed\n";
             }
         }
@@ -432,12 +432,12 @@ colamd, symamd, and other related orderings.\n\
                             <<  CCOLAMD_SUB_VERSION << ", " << CCOLAMD_DATE << "\n";
 
               if (knobs[CCOLAMD_DENSE_ROW] >= 0)
-                octave_stdout << "knobs(1): " << User_knobs (0)
+                octave_stdout << "knobs(1): " << User_knobs(0)
                               << ", rows/cols with > max (16,"
                               << knobs[CCOLAMD_DENSE_ROW] << "*sqrt (size(A,2)))"
                               << " entries removed\n";
               else
-                octave_stdout << "knobs(1): " << User_knobs (0)
+                octave_stdout << "knobs(1): " << User_knobs(0)
                               << ", no dense rows/cols removed\n";
 
               if (knobs[CCOLAMD_AGGRESSIVE] != 0)
@@ -448,7 +448,7 @@ colamd, symamd, and other related orderings.\n\
                               << ", aggressive absorption: no";
 
 
-              octave_stdout << "knobs(3): " << User_knobs (2)
+              octave_stdout << "knobs(3): " << User_knobs(2)
                             << ", statistics and knobs printed\n";
             }
         }

@@ -5910,6 +5910,7 @@ lowercase 'a') of the strings is used.\n\
 \n\
 The algorithm used in @code{sort} is optimized for the sorting of partially\n\
 ordered lists.\n\
+@seealso{sortrows}\n\
 @end deftypefn")
 {
   octave_value_list retval;

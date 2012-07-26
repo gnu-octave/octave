@@ -220,7 +220,6 @@ PT_INCLUDES = \
   pt-fcn-handle.h \
   pt-id.h \
   pt-idx.h \
-  pt-jit.h \
   pt-jump.h \
   pt-loop.h \
   pt-mat.h \
@@ -231,6 +230,12 @@ PT_INCLUDES = \
   pt-unop.h \
   pt-walk.h \
   pt.h
+
+JIT_INCLUDES = \
+  jit-util.h \
+  jit-typeinfo.h \
+  jit-ir.h \
+  pt-jit.h
 
 octinclude_HEADERS = \
   Cell.h \
@@ -310,7 +315,8 @@ octinclude_HEADERS = \
   zfstream.h \
   $(OV_INCLUDES) \
   $(OV_SPARSE_INCLUDES) \
-  $(PT_INCLUDES)
+  $(PT_INCLUDES) \
+  $(JIT_INCLUDES)
 
 nodist_octinclude_HEADERS = \
   defaults.h \
@@ -393,7 +399,6 @@ PT_SRC = \
   pt-fcn-handle.cc \
   pt-id.cc \
   pt-idx.cc \
-  pt-jit.cc \
   pt-jump.cc \
   pt-loop.cc \
   pt-mat.cc \
@@ -403,6 +408,12 @@ PT_SRC = \
   pt-stmt.cc \
   pt-unop.cc \
   pt.cc
+
+JIT_SRC = \
+  jit-util.cc \
+  jit-typeinfo.cc \
+  jit-ir.cc \
+  pt-jit.cc
 
 DIST_SRC = \
   Cell.cc \
@@ -476,7 +487,8 @@ DIST_SRC = \
   xpow.cc \
   zfstream.cc \
   $(OV_SRC) \
-  $(PT_SRC)
+  $(PT_SRC) \
+  $(JIT_SRC)
 
 include DLD-FUNCTIONS/module.mk
 

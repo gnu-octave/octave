@@ -231,6 +231,12 @@ public:
 
   jit_function (const jit_function& fn);
 
+  template <typename T>
+  void add_mapping (llvm::ExecutionEngine *engine, T fn)
+  {
+    do_add_mapping (engine, reinterpret_cast<void *> (fn));
+  }
+
   bool valid (void) const { return llvm_function; }
 
   std::string name (void) const;
@@ -289,6 +295,8 @@ public:
 
   const std::vector<jit_type *>& arguments (void) const { return args; }
 private:
+  void do_add_mapping (llvm::ExecutionEngine *engine, void *fn);
+
   llvm::Module *module;
   llvm::Function *llvm_function;
   jit_type *mresult;
@@ -533,7 +541,7 @@ private:
                       llvm::Type *llvm_type);
 
 
-  void add_print (jit_type *ty);
+  void add_print (jit_type *ty, void *fptr);
 
   void add_binary_op (jit_type *ty, int op, int llvm_op);
 

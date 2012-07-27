@@ -218,6 +218,7 @@ PT_INCLUDES = \
   pt-except.h \
   pt-exp.h \
   pt-fcn-handle.h \
+  pt-funcall.h \
   pt-id.h \
   pt-idx.h \
   pt-jump.h \
@@ -397,6 +398,7 @@ PT_SRC = \
   pt-except.cc \
   pt-exp.cc \
   pt-fcn-handle.cc \
+  pt-funcall.cc \
   pt-id.cc \
   pt-idx.cc \
   pt-jump.cc \

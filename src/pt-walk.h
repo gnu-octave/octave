@@ -52,6 +52,7 @@ class tree_multi_assignment;
 class tree_no_op_command;
 class tree_constant;
 class tree_fcn_handle;
+class tree_funcall;
 class tree_parameter_list;
 class tree_postfix_expression;
 class tree_prefix_expression;
@@ -156,6 +157,9 @@ public:
 
   virtual void
   visit_fcn_handle (tree_fcn_handle&) = 0;
+
+  virtual void
+  visit_funcall (tree_funcall&) = 0;
 
   virtual void
   visit_parameter_list (tree_parameter_list&) = 0;

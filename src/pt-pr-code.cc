@@ -749,6 +749,18 @@ tree_print_code::visit_fcn_handle (tree_fcn_handle& fh)
 }
 
 void
+tree_print_code::visit_funcall (tree_funcall& fc)
+{
+  indent ();
+
+  print_parens (fc, "(");
+
+  fc.print_raw (os, true, print_original_text);
+
+  print_parens (fc, ")");
+}
+
+void
 tree_print_code::visit_parameter_list (tree_parameter_list& lst)
 {
   tree_parameter_list::iterator p = lst.begin ();

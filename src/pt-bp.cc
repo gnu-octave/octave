@@ -299,6 +299,12 @@ tree_breakpoint::visit_fcn_handle (tree_fcn_handle&)
 }
 
 void
+tree_breakpoint::visit_funcall (tree_funcall&)
+{
+  panic_impossible ();
+}
+
+void
 tree_breakpoint::visit_parameter_list (tree_parameter_list&)
 {
   panic_impossible ();

@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 
 %x SCRIPT_FILE_BEGIN
 %x FUNCTION_FILE_BEGIN
+%x CLASSDEF_FILE_BEGIN
 
 %{
 
@@ -371,6 +372,14 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     BEGIN (INITIAL);
     xunput (yytext[0], yytext);
     COUNT_TOK_AND_RETURN (FUNCTION_FILE);
+  }
+
+<CLASSDEF_FILE_BEGIN>. {
+    LEXER_DEBUG ("<CLASSDEF_FILE_BEGIN>.");
+
+    BEGIN (INITIAL);
+    xunput (yytext[0], yytext);
+    COUNT_TOK_AND_RETURN (CLASSDEF_FILE);
   }
 
 %{
@@ -756,7 +765,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
         lexer_flags.looking_for_object_index = true;
 
-        COUNT_TOK_AND_RETURN (SUPERCLASSREF);
+        COUNT_TOK_AND_RETURN (id_tok);
       }
   }
 
@@ -774,7 +783,7 @@ NUMBER  (({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       {
         lexer_flags.looking_for_object_index = true;
 
-        COUNT_TOK_AND_RETURN (METAQUERY);
+        COUNT_TOK_AND_RETURN (id_tok);
       }
   }
 
@@ -3152,37 +3161,40 @@ looks_like_command_arg (void)
 static int
 handle_superclass_identifier (void)
 {
-  eat_continuation ();
+  int c = yytext[yyleng-1];
+
+  std::string meth = strip_trailing_whitespace (yytext);
+
+  int cont_is_spc = eat_continuation ();
+
+  int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
+
+  size_t pos = meth.find ("@");
+  std::string cls = meth.substr (pos + 1);
+  meth = meth.substr (0, pos);
 
   std::string pkg;
-  std::string meth = strip_trailing_whitespace (yytext);
-  size_t pos = meth.find ("@");
-  std::string cls = meth.substr (pos).substr (1);
-  meth = meth.substr (0, pos - 1);
-
   pos = cls.find (".");
   if (pos != std::string::npos)
     {
-      pkg = cls.substr (pos).substr (1);
-      cls = cls.substr (0, pos - 1);
+      pkg = cls.substr (0, pos);
+      cls = cls.substr (pos + 1);
     }
 
   int kw_token = (is_keyword_token (meth) || is_keyword_token (cls)
                   || is_keyword_token (pkg));
   if (kw_token)
     {
-      error ("method, class and package names may not be keywords");
+      error ("method, class, and package names may not be keywords");
       return LEXICAL_ERROR;
     }
 
-  yylval.tok_val
-    = new token (meth.empty () ? 0 : &(symbol_table::insert (meth)),
-                 cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                 input_line_number, current_input_column);
+  yylval.tok_val = new token (meth, pkg, cls, input_line_number,
+                              current_input_column);
   token_stack.push (yylval.tok_val);
 
-  lexer_flags.convert_spaces_to_comma = true;
+  do_comma_insert_check ();
+  maybe_unput_comma (spc_gobbled);
   current_input_column += yyleng;
 
   return SUPERCLASSREF;
@@ -3191,33 +3203,35 @@ handle_superclass_identifier (void)
 static int
 handle_meta_identifier (void)
 {
-  eat_continuation ();
+  int c = yytext[yyleng-1];
+
+  std::string cls = strip_trailing_whitespace (yytext).substr (1);
+
+  int cont_is_spc = eat_continuation ();
+
+  int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
 
   std::string pkg;
-  std::string cls = strip_trailing_whitespace (yytext).substr (1);
   size_t pos = cls.find (".");
-
   if (pos != std::string::npos)
     {
-      pkg = cls.substr (pos).substr (1);
-      cls = cls.substr (0, pos - 1);
+      pkg = cls.substr (0, pos);
+      cls = cls.substr (pos + 1);
     }
 
   int kw_token = is_keyword_token (cls) || is_keyword_token (pkg);
   if (kw_token)
     {
-       error ("class and package names may not be keywords");
+      error ("class and package names may not be keywords");
       return LEXICAL_ERROR;
     }
 
-  yylval.tok_val
-    = new token (cls.empty () ? 0 : &(symbol_table::insert (cls)),
-                 pkg.empty () ? 0 : &(symbol_table::insert (pkg)),
-                 input_line_number, current_input_column);
-
+  yylval.tok_val = new token (pkg, cls, input_line_number,
+                              current_input_column);
   token_stack.push (yylval.tok_val);
 
-  lexer_flags.convert_spaces_to_comma = true;
+  do_comma_insert_check ();
+  maybe_unput_comma (spc_gobbled);
   current_input_column += yyleng;
 
   return METAQUERY;
@@ -3422,6 +3436,8 @@ lexical_feedback::init (void)
   // Not initially defining a class with classdef.
   maybe_classdef_get_set_method = false;
   parsing_classdef = false;
+  parsing_classdef_get_method = false;
+  parsing_classdef_set_method = false;
 
   // Not initiallly looking at a function handle.
   looking_at_function_handle = 0;
@@ -3548,6 +3564,12 @@ void
 prep_lexer_for_function_file (void)
 {
   BEGIN (FUNCTION_FILE_BEGIN);
+}
+
+void
+prep_lexer_for_classdef_file (void)
+{
+  BEGIN (CLASSDEF_FILE_BEGIN);
 }
 
 static void
@@ -3722,6 +3744,7 @@ display_token (int tok)
     case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
     case SCRIPT_FILE: std::cerr << "SCRIPT_FILE\n"; break;
     case FUNCTION_FILE: std::cerr << "FUNCTION_FILE\n"; break;
+    case CLASSDEF_FILE: std::cerr << "CLASSDEF_FILE\n"; break;
     case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
     case METAQUERY: std::cerr << "METAQUERY\n"; break;
     case GET: std::cerr << "GET\n"; break;
@@ -3769,6 +3792,10 @@ display_state (void)
 
     case FUNCTION_FILE_BEGIN:
       std::cerr << "FUNCTION_FILE_BEGIN" << std::endl;
+      break;
+
+    case CLASSDEF_FILE_BEGIN:
+      std::cerr << "CLASSDEF_FILE_BEGIN" << std::endl;
       break;
 
     default:

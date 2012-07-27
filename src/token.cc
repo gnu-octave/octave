@@ -72,32 +72,43 @@ token::token (symbol_table::symbol_record *s, int l, int c)
   sr = s;
 }
 
-token::token (symbol_table::symbol_record *cls,
-              symbol_table::symbol_record *pkg, int l, int c)
+token::token (const std::string& pkg, const std::string& cls, int l, int c)
 {
   line_num = l;
   column_num = c;
-  type_tag = meta_rec_token;
-  mc.cr = cls;
-  mc.pr = pkg;
+  type_tag = meta_name_token;
+  mc.package_nm = new std::string (pkg);
+  mc.class_nm = new std::string (cls);
 }
 
-token::token (symbol_table::symbol_record *mth,
-              symbol_table::symbol_record *cls,
-              symbol_table::symbol_record *pkg, int l, int c)
+token::token (const std::string& mth, const std::string& pkg,
+              const std::string& cls, int l, int c)
 {
   line_num = l;
   column_num = c;
-  type_tag = scls_rec_token;
-  sc.mr = mth;
-  sc.cr = cls;
-  sc.pr = pkg;
+  type_tag = scls_name_token;
+  sc.method_nm = new std::string (mth);
+  sc.package_nm = new std::string (pkg);
+  sc.class_nm = new std::string (cls);
 }
 
 token::~token (void)
 {
   if (type_tag == string_token)
     delete str;
+
+  if (type_tag == scls_name_token)
+    {
+      delete sc.method_nm;
+      delete sc.package_nm;
+      delete sc.class_nm;
+    }
+
+  if (type_tag == meta_name_token)
+    {
+      delete mc.package_nm;
+      delete mc.class_nm;
+    }
 }
 
 std::string
@@ -128,39 +139,39 @@ token::sym_rec (void)
   return sr;
 }
 
-symbol_table::symbol_record *
-token::method_rec (void)
+std::string
+token::superclass_method_name (void)
 {
-  assert (type_tag == scls_rec_token);
-  return sc.mr;
+  assert (type_tag == scls_name_token);
+  return *sc.method_nm;
 }
 
-symbol_table::symbol_record *
-token::class_rec (void)
+std::string
+token::superclass_package_name (void)
 {
-  assert (type_tag == scls_rec_token);
-  return sc.cr;
+  assert (type_tag == scls_name_token);
+  return *sc.package_nm;
 }
 
-symbol_table::symbol_record *
-token::package_rec (void)
+std::string
+token::superclass_class_name (void)
 {
-  assert (type_tag == scls_rec_token);
-  return sc.pr;
+  assert (type_tag == scls_name_token);
+  return *sc.class_nm;
 }
 
-symbol_table::symbol_record *
-token::meta_class_rec (void)
+std::string
+token::meta_package_name (void)
 {
-  assert (type_tag == meta_rec_token);
-  return mc.cr;
+  assert (type_tag == meta_name_token);
+  return *mc.package_nm;
 }
 
-symbol_table::symbol_record *
-token::meta_package_rec (void)
+std::string
+token::meta_class_name (void)
 {
-  assert (type_tag == meta_rec_token);
-  return mc.pr;
+  assert (type_tag == meta_name_token);
+  return *mc.class_nm;
 }
 
 std::string

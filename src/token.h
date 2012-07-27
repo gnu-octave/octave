@@ -37,8 +37,8 @@ public:
       double_token,
       ettype_token,
       sym_rec_token,
-      scls_rec_token,
-      meta_rec_token
+      scls_name_token,
+      meta_name_token
     };
 
   enum end_tok_type
@@ -65,11 +65,10 @@ public:
          int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
   token (symbol_table::symbol_record *s, int l = -1, int c = -1);
-  token (symbol_table::symbol_record *cls,
-         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
-  token (symbol_table::symbol_record *mth,
-         symbol_table::symbol_record *cls,
-         symbol_table::symbol_record *pkg, int l = -1, int c = -1);
+  token (const std::string& pkg, const std::string& cls,
+         int l = -1, int c = -1);
+  token (const std::string& mth, const std::string& pkg,
+         const std::string& cls, int l = -1, int c = -1);
 
   ~token (void);
 
@@ -81,12 +80,12 @@ public:
   end_tok_type ettype (void);
   symbol_table::symbol_record *sym_rec (void);
 
-  symbol_table::symbol_record *method_rec (void);
-  symbol_table::symbol_record *class_rec (void);
-  symbol_table::symbol_record *package_rec (void);
+  std::string superclass_method_name (void);
+  std::string superclass_package_name (void);
+  std::string superclass_class_name (void);
 
-  symbol_table::symbol_record *meta_class_rec (void);
-  symbol_table::symbol_record *meta_package_rec (void);
+  std::string meta_package_name (void);
+  std::string meta_class_name (void);
 
   std::string text_rep (void);
 
@@ -109,14 +108,14 @@ private:
       symbol_table::symbol_record *sr;
       struct
         {
-          symbol_table::symbol_record *mr;
-          symbol_table::symbol_record *cr;
-          symbol_table::symbol_record *pr;
+          std::string *method_nm;
+          std::string *package_nm;
+          std::string *class_nm;
         } sc;
       struct
         {
-          symbol_table::symbol_record *cr;
-          symbol_table::symbol_record *pr;
+          std::string *package_nm;
+          std::string *class_nm;
         } mc;
     };
   std::string orig_text;

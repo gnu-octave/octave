@@ -211,6 +211,7 @@ PT_INCLUDES = \
   pt-cbinop.h \
   pt-cell.h \
   pt-check.h \
+  pt-classdef.h \
   pt-cmd.h \
   pt-colon.h \
   pt-const.h \
@@ -393,6 +394,7 @@ PT_SRC = \
   pt-cell.cc \
   pt-check.cc \
   pt-cmd.cc \
+  pt-classdef.cc \
   pt-colon.cc \
   pt-const.cc \
   pt-decl.cc \

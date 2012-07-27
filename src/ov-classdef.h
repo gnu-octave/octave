@@ -35,6 +35,8 @@ class cdef_property;
 class cdef_method;
 class cdef_package;
 
+class tree_classdef;
+
 class
 cdef_object_rep
 {
@@ -335,6 +337,8 @@ public:
 
   void delete_object (cdef_object obj)
     { get_rep ()->delete_object (obj); }
+
+  static cdef_class make_meta_class (const tree_classdef* t);
 
 private:
   cdef_class_rep* get_rep (void)

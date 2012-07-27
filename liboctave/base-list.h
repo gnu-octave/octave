@@ -87,8 +87,6 @@ public:
   // For backward compatibility.
   void append (const elt_type& s) { lst.push_back (s); }
 
-protected:
-
   octave_base_list (void) : lst () { }
 
   octave_base_list (const std::list<elt_type>& l) : lst (l) { }

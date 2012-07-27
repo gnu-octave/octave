@@ -52,6 +52,7 @@ extern bool is_keyword (const std::string& s);
 
 extern void prep_lexer_for_script_file (void);
 extern void prep_lexer_for_function_file (void);
+extern void prep_lexer_for_classdef_file (void);
 
 // For communication between the lexer and parser.
 
@@ -72,7 +73,8 @@ public:
       looking_for_object_index (false), do_comma_insert (false),
       looking_at_indirect_ref (false), parsed_function_name (),
       parsing_class_method (false), maybe_classdef_get_set_method (false),
-      parsing_classdef (false), quote_is_transpose (false),
+      parsing_classdef (false), parsing_classdef_get_method (false),
+      parsing_classdef_set_method (false), quote_is_transpose (false),
       pending_local_variables ()
 
     {
@@ -156,6 +158,12 @@ public:
 
   // TRUE means we are parsing a classdef file
   bool parsing_classdef;
+
+  // TRUE means we are parsing a classdef get.method.
+  bool parsing_classdef_get_method;
+
+  // TRUE means we are parsing a classdef set.method.
+  bool parsing_classdef_set_method;
 
   // Return transpose or start a string?
   bool quote_is_transpose;

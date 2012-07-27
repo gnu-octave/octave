@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-binop.h"
 #include "pt-cbinop.h"
 #include "pt-check.h"
+#include "pt-classdef.h"
 #include "pt-cmd.h"
 #include "pt-colon.h"
 #include "pt-const.h"

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
+#include "pt-classdef.h"
 
 static std::map<std::string, cdef_class> all_classes;
 static std::map<std::string, cdef_package> all_packages;
@@ -956,6 +957,14 @@ cdef_class::cdef_class_rep::delete_object (cdef_object obj)
     }
 }
 
+cdef_class
+cdef_class::make_meta_class (const tree_classdef* t)
+{
+  cdef_class retval;
+
+  return retval;
+}
+
 octave_value
 cdef_property::cdef_property_rep::get_value (const cdef_object& obj)
 {
@@ -1370,25 +1379,6 @@ install_classdef (void)
   package_meta.install_class (meta_dynproperty, "dynproperty");
 }
 
-DEFUN (__meta_get_class__, args, , "")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      std::string cname = args(0).string_value ();
-
-      if (! error_state)
-	retval = to_ov (lookup_class (cname));
-      else
-	error ("invalid class name, expected a string value");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
 DEFUN (__meta_get_package__, args, , "")
 {
   octave_value retval;
@@ -1401,6 +1391,55 @@ DEFUN (__meta_get_package__, args, , "")
 	retval = to_ov (lookup_package (cname));
       else
 	error ("invalid package name, expected a string value");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (__superclass_reference__, args, /* nargout */,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __superclass_reference__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  std::cerr << "__superclass_reference__ ("
+            << args(0).string_value () << ", "
+            << args(1).string_value () << ", "
+            << args(2).string_value () << ")"
+            << std::endl;
+
+  return retval;
+}
+
+DEFUN (__meta_class_query__, args, /* nargout */,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __meta_class_query__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  std::cerr << "__meta_class_query__ ("
+            << args(0).string_value () << ", "
+            << args(1).string_value () << ")"
+            << std::endl;
+
+  if (args.length () == 2)
+    {
+      std::string pkg = args(0).string_value ();
+      std::string cls = args(1).string_value ();
+
+      if (! pkg.empty ())
+        cls = pkg + "." + cls;
+
+      if (! error_state)
+	retval = to_ov (lookup_class (cls));
+      else
+	error ("invalid class name, expected a string value");
     }
   else
     print_usage ();

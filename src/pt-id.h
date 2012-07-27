@@ -32,6 +32,7 @@ class octave_function;
 
 class tree_walker;
 
+#include "oct-lvalue.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
 #include "symtab.h"

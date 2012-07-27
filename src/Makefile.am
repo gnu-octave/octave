@@ -163,6 +163,7 @@ OV_INCLUDES = \
   ov-cell.h \
   ov-ch-mat.h \
   ov-class.h \
+  ov-classdef.h \
   ov-colon.h \
   ov-complex.h \
   ov-cs-list.h \
@@ -350,6 +351,7 @@ OV_SRC = \
   ov-cell.cc \
   ov-ch-mat.cc \
   ov-class.cc \
+  ov-classdef.cc \
   ov-colon.cc \
   ov-complex.cc \
   ov-cs-list.cc \

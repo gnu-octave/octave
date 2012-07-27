@@ -62,6 +62,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ops.h"
 #include "ov.h"
+#include "ov-classdef.h"
 #include "ov-range.h"
 #include "toplev.h"
 #include "parse.h"
@@ -681,6 +682,8 @@ octave_main (int argc, char **argv, int embedded)
   install_ops ();
 
   install_builtins ();
+
+  install_classdef ();
 
   bool forced_line_editing = false;
 

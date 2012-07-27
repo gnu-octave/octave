@@ -4314,7 +4314,7 @@ $\\sqrt{-1}$.\n\
 @code{sqrt (-1)}.\n\
 @end ifnottex\n\
 \n\
- I, and its equivalents i, J, and j, are functions so any of the names may\n\
+I, and its equivalents i, J, and j, are functions so any of the names may\n\
 be reused for other purposes (such as i for a counter variable).\n\
 \n\
 When called with no arguments, return a scalar with the value @math{i}.  When\n\
@@ -4324,6 +4324,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
+@seealso{log, exp, e, pi, i, j}\n\
 @end deftypefn")
 {
   return fill_matrix (args, Complex (0.0, 1.0), "I");

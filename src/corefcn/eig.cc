@@ -44,7 +44,7 @@ or a pair of matrices\n\
 \n\
 The algorithm used depends on whether there are one or two input\n\
 matrices, if they are real or complex and if they are symmetric\n\
-(Hermitian if complex) or nonsymmetric.\n\
+(Hermitian if complex) or non-symmetric.\n\
 \n\
 The eigenvalues returned by @code{eig} are not ordered.\n\
 @seealso{eigs, svd}\n\

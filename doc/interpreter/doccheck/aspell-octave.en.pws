@@ -450,6 +450,7 @@ isovalue
 isreal
 issparse
 isvector
+iter
 ith
 iy
 Jacobian
@@ -611,6 +612,7 @@ nbinrnd
 nd
 ndgrid
 ne
+Nelder
 neq
 Neudecker
 Neumann

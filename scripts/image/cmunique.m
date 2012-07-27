@@ -29,8 +29,8 @@
 ## eliminated.  The output image, @var{Y}, is the original input image with
 ## the indices adjusted to match the new, possibly smaller, colormap.
 ##
-## When the input is an RGB image (an MxNx3 array), the output colormap
-## will contain one entry for every unique color in the original image.  
+## When the input is an RGB image (an @nospell{MxNx3} array), the output
+## colormap will contain one entry for every unique color in the original image.
 ## In the worst case the new map could have as many rows as the number of
 ## pixels in the original image.
 ##

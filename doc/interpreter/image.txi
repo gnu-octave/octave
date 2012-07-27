@@ -60,7 +60,7 @@ In summary, most image processing code will follow the structure of this code
 @group
 I = imread ("my_input_image.img");
 J = process_my_image (I);
-imwrite ("my_output_image.img", J);
+imwrite (J, "my_output_image.img");
 @end group
 @end example
 

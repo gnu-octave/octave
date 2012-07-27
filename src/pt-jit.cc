@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <llvm/Analysis/CallGraph.h>
 #include <llvm/Analysis/Passes.h>
 #include <llvm/Analysis/Verifier.h>
+#include <llvm/LLVMContext.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h>
 #include <llvm/Module.h>

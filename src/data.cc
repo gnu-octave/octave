@@ -2607,7 +2607,7 @@ Note that Octave tends to crop unused memory at the first opportunity\n\
 for sparse objects.  There are some cases of user created sparse objects\n\
 where the value returned by @dfn{nzmax} will not be the same as @dfn{nnz},\n\
 but in general they will give the same result.\n\
-@seealso{sparse, spalloc, nnz}\n\
+@seealso{nnz, spalloc, sparse}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3950,7 +3950,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{isinf, nan}\n\
+@seealso{isinf, NaN}\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_inf_value (),
@@ -4009,7 +4009,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{isnan, inf}\n\
+@seealso{isnan, Inf}\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_nan_value (),
@@ -4314,7 +4314,7 @@ $\\sqrt{-1}$.\n\
 @code{sqrt (-1)}.\n\
 @end ifnottex\n\
 \n\
-I, and its equivalents i, J, and j, are functions so any of the names may\n\
+I, and its equivalents i, j, and J, are functions so any of the names may\n\
 be reused for other purposes (such as i for a counter variable).\n\
 \n\
 When called with no arguments, return a scalar with the value @math{i}.  When\n\
@@ -4324,7 +4324,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{log, exp, e, pi, i, j}\n\
+@seealso{e, pi, log, exp, i, j, J}\n\
 @end deftypefn")
 {
   return fill_matrix (args, Complex (0.0, 1.0), "I");
@@ -5479,7 +5479,7 @@ DEFUN (mpower, args, ,
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
 This function and @w{@xcode{x ^ y}} are equivalent.\n\
-@seealso{power, times, plus, minus}\n\
+@seealso{power, mtimes, plus, minus}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_pow, args);

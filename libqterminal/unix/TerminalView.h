@@ -608,8 +608,11 @@ private:
     QGridLayout* _gridLayout;
 
     bool _fixedFont; // has fixed pitch
-    int  _fontHeight;     // height
-    int  _fontWidth;     // width
+
+    double  _fontHeight;     // height
+    double  _fontWidth;     // width
+    //type double to decrease rounding errors
+
     int  _fontAscent;     // ascend
 
     int _leftMargin;    // offset

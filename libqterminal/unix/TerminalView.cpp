@@ -134,7 +134,7 @@ void TerminalView::setColorTable(const ColorEntry table[])
    QT's iso mapping leaves 0x00..0x7f without any changes. But the graphicals
    come in here as proper unicode characters.
 
-   We treat non-iso10646 fonts as VT100 extended and do the requiered mapping
+   We treat non-iso10646 fonts as VT100 extended and do the required mapping
    from unicode to 0x00..0x1f. The remaining translation is then left to the
    QCodec.
 */
@@ -166,7 +166,7 @@ void TerminalView::fontChange(const QFont&)
   // "Base character width on widest ASCII character. This prevents too wide
   //  characters in the presence of double wide (e.g. Japanese) characters."
   // Get the width from representative normal width characters
-  _fontWidth = qRound((double)fm.width(REPCHAR)/(double)strlen(REPCHAR));
+  _fontWidth = (double)fm.width(REPCHAR)/(double)strlen(REPCHAR);
 
   _fixedFont = true;
 
@@ -182,7 +182,7 @@ void TerminalView::fontChange(const QFont&)
 
 
   if (_fontWidth < 1)
-    _fontWidth=1;
+    _fontWidth = 1;
 
   _fontAscent = fm.ascent();
 
@@ -1191,10 +1191,10 @@ void TerminalView::drawContents(QPainter &paint, const QRect &rect)
   // int topLeftX = (_contentWidth - _usedColumns * _fontWidth) / 2;
   int topLeftX = 0;
 
-  int leftUpperX = qMin(_usedColumns-1, qMax(0,(rect.left()   - topLeftX - _leftMargin ) / _fontWidth));
-  int leftUpperY = qMin(_usedLines-1,  qMax(0, (rect.top()    - topLeftY - _topMargin  ) / _fontHeight));
-  int rightLowerX = qMin(_usedColumns-1, qMax(0, (rect.right()  - topLeftX - _leftMargin ) / _fontWidth));
-  int rightLowerY = qMin(_usedLines-1,  qMax(0, (rect.bottom() - topLeftY - _topMargin  ) / _fontHeight));
+  int leftUpperX = qMin(_usedColumns-1, qMax(0, qRound((rect.left()   - topLeftX - _leftMargin ) / _fontWidth)));
+  int leftUpperY = qMin(_usedLines-1,  qMax(0, qRound((rect.top()    - topLeftY - _topMargin  ) / _fontHeight)));
+  int rightLowerX = qMin(_usedColumns-1, qMax(0, qRound((rect.right()  - topLeftX - _leftMargin ) / _fontWidth)));
+  int rightLowerY = qMin(_usedLines-1,  qMax(0, qRound((rect.bottom() - topLeftY - _topMargin  ) / _fontHeight)));
 
   const int bufferSize = _usedColumns;
   QChar *disstrU = new QChar[bufferSize];
@@ -2473,11 +2473,11 @@ void TerminalView::calcGeometry()
   if (!_isFixedSize)
     {
       // ensure that display is always at least one column wide
-      _columns = qMax(1,_contentWidth / _fontWidth);
+      _columns = qMax(1,qRound(_contentWidth / _fontWidth));
       _usedColumns = qMin(_usedColumns,_columns);
 
       // ensure that display is always at least one line high
-      _lines = qMax(1,_contentHeight / _fontHeight);
+      _lines = qMax(1, qRound(_contentHeight / _fontHeight));
       _usedLines = qMin(_usedLines,_lines);
     }
 }

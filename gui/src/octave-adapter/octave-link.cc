@@ -38,7 +38,6 @@ octave_link octave_link::_singleton;
 octave_link::octave_link ()
 {
   _event_queue_mutex = new octave_mutex ();
-  _performance_information_mutex = new octave_mutex ();
   _last_working_directory = "";
   _debugging_mode_active = false;
 }
@@ -66,7 +65,6 @@ octave_link::register_event_listener (octave_event_listener *oel)
 void
 octave_link::generate_events ()
 {
-  _next_performance_information.generate_events_start = clock ();
   std::string current_working_directory = octave_env::get_current_directory ();
   if (current_working_directory != _last_working_directory)
     {
@@ -87,15 +85,12 @@ octave_link::generate_events ()
             _octave_event_listener->quit_debug_mode ();
         }
     }
-  _next_performance_information.generate_events_stop = clock ();
 }
 
 void
 octave_link::process_events ()
 {
-  _next_performance_information.process_events_start = clock ();
   _event_queue_mutex->lock ();
-  _next_performance_information.event_queue_size = _event_queue.size ();
 
   while (_event_queue.size () > 0)
     {
@@ -107,7 +102,6 @@ octave_link::process_events ()
         e->reject ();
     }
   _event_queue_mutex->unlock ();
-  _next_performance_information.process_events_stop = clock ();
 }
 
 void
@@ -149,19 +143,6 @@ octave_link::entered_readline_hook ()
 void
 octave_link::finished_readline_hook ()
 {
-  _performance_information_mutex->lock ();
-  _performance_information = _next_performance_information;
-  _performance_information_mutex->unlock ();
-}
-
-octave_link::performance_information
-octave_link::get_performance_information ()
-{
-  performance_information p;
-  _performance_information_mutex->lock ();
-  p = _performance_information;
-  _performance_information_mutex->unlock ();
-  return p;
 }
 
 std::string

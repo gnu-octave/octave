@@ -368,25 +368,6 @@ main_window::debug_quit ()
 }
 
 void
-main_window::update_performance_information ()
-{
-  octave_link::performance_information p
-      = octave_link::instance ()->get_performance_information ();
-
-  int generate_events_msec
-    = (p.generate_events_stop - p.generate_events_start) * 1000 / CLOCKS_PER_SEC;
-
-  int process_events_msec
-    = (p.process_events_stop - p.process_events_start) * 1000 / CLOCKS_PER_SEC;
-
-  _status_bar->showMessage
-      (QString ("CPU time of the GUI in octave thread - generating rx events: ~%1 ms - processing tx events: ~%2 ms (%3 events)")
-       .arg (generate_events_msec)
-       .arg (process_events_msec)
-       .arg (p.event_queue_size));
-}
-
-void
 main_window::show_about_octave ()
 {
   QString message =
@@ -803,11 +784,5 @@ main_window::construct ()
            SIGNAL (quit_debug_mode_signal ()),
            this,
            SLOT (handle_quit_debug_mode ()));
-
-  _update_performance_information_timer.setInterval (500);
-  _update_performance_information_timer.setSingleShot (false);
-  connect (&_update_performance_information_timer, SIGNAL (timeout ()),
-           this, SLOT (update_performance_information ()));
-  _update_performance_information_timer.start ();
 }
 

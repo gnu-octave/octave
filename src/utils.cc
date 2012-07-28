@@ -470,7 +470,7 @@ fcn_file_in_path (const std::string& name)
           if (fs.exists ())
             retval = name;
         }
-      else if (len > 2 && name [len - 2] == '.' && name [len - 1] == 'm')
+      else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
         retval = load_path::find_fcn_file (name.substr (0, len-2));
       else
         {
@@ -527,8 +527,8 @@ oct_file_in_path (const std::string& name)
           if (fs.exists ())
             retval = name;
         }
-      else if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'o'
-               && name [len - 2] == 'c' && name [len - 1] == 't')
+      else if (len > 4 && name[len - 4] == '.' && name[len - 3] == 'o'
+               && name[len - 2] == 'c' && name[len - 1] == 't')
         retval = load_path::find_oct_file (name.substr (0, len-4));
       else
         retval = load_path::find_oct_file (name);
@@ -556,8 +556,8 @@ mex_file_in_path (const std::string& name)
           if (fs.exists ())
             retval = name;
         }
-      else if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'm'
-               && name [len - 2] == 'e' && name [len - 1] == 'x')
+      else if (len > 4 && name[len - 4] == '.' && name[len - 3] == 'm'
+               && name[len - 2] == 'e' && name[len - 1] == 'x')
         retval = load_path::find_mex_file (name.substr (0, len-4));
       else
         retval = load_path::find_mex_file (name);

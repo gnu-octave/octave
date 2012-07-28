@@ -82,6 +82,11 @@ public:
       return static_cast<count_type const volatile&> (count);
     }
 
+  count_type *get (void)
+    {
+      return &count;
+    }
+
 private:
   count_type count;
 };

@@ -421,50 +421,46 @@ function [local_packages, global_packages] = pkg (varargin)
         global_packages = archprefix;
       elseif (length (files) >= 1 && nargout <= 2 && ischar (files{1}))
         prefix = files{1};
-        try
-          prefix = absolute_pathname (prefix);
-        catch
+        if (! exist (prefix, "dir"))
           [status, msg, msgid] = mkdir (prefix);
           if (status == 0)
             error("cannot create prefix %s: %s", prefix, msg);
           endif
           warning ("creating the directory %s\n", prefix);
-          prefix = absolute_pathname (prefix);
-        end_try_catch
-        prefix = absolute_pathname (prefix);
-        local_packages = prefix;
+        endif
+        local_packages = prefix = canonicalize_filename (prefix);
         user_prefix = true;
         if (length (files) >= 2 && ischar (files{2}))
           archprefix = files{2};
-          try
-            archprefix = absolute_pathname (archprefix);
-          catch
+          if (! exist (archprefix, "dir"))
             [status, msg, msgid] = mkdir (archprefix);
             if (status == 0)
               error("cannot create archprefix %s: %s", archprefix, msg);
             endif
             warning ("creating the directory %s\n", archprefix);
-            archprefix = absolute_pathname (archprefix);
-          end_try_catch
-          global_packages = archprefix;
+            global_packages = archprefix = canonicalize_file_name (archprefix);
+          endif
         endif
       else
         error ("you must specify a prefix directory, or request an output argument");
       endif
-
+      
     case "local_list"
       if (length (files) == 0 && nargout == 0)
         disp (local_list);
       elseif (length (files) == 0 && nargout == 1)
         local_packages = local_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
-        try
-          local_list = absolute_pathname (files{1});
-        catch
-          ## Force file to be created
-          fclose (fopen (files{1}, "wt"));
-          local_list = absolute_pathname (files{1});
-        end_try_catch
+        local_list = files{1};
+        if (! exist (local_list, "file"))          
+          try
+            ## Force file to be created
+            fclose (fopen (local_list, "wt"));
+          catch
+            error ("cannot create file %s", local_list);
+          end_try_catch
+        endif
+        local_list = canonicalize_file_name (local_list);
       else
         error ("you must specify a local_list file, or request an output argument");
       endif
@@ -475,13 +471,16 @@ function [local_packages, global_packages] = pkg (varargin)
       elseif (length (files) == 0 && nargout == 1)
         local_packages = global_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
-        try
-          global_list = absolute_pathname (files{1});
-        catch
-          ## Force file to be created
-          fclose (fopen (files{1}, "wt"));
-          global_list = absolute_pathname (files{1});
-        end_try_catch
+        global_list = files{1};
+        if (! exist (global_list, "file"))  
+          try
+            ## Force file to be created
+            fclose (fopen (files{1}, "wt"));
+          catch
+            error ("cannot create file %s", global_list);
+          end_try_catch
+        endif
+        global_list = canonicalize_file_name (global_list);
       else
         error ("you must specify a global_list file, or request an output argument");
       endif

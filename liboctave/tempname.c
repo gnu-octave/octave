@@ -112,14 +112,14 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
 
   if (dir_search)
     {
-      register const char *d = getenv("TMPDIR");
-      if (d != NULL && !diraccess(d))
+      register const char *d = getenv ("TMPDIR");
+      if (d != NULL && !diraccess (d))
         d = NULL;
-      if (d == NULL && dir != NULL && diraccess(dir))
+      if (d == NULL && dir != NULL && diraccess (dir))
         d = dir;
-      if (d == NULL && diraccess(tmpdir))
+      if (d == NULL && diraccess (tmpdir))
         d = tmpdir;
-      if (d == NULL && diraccess("/tmp"))
+      if (d == NULL && diraccess ("/tmp"))
         d = "/tmp";
       if (d == NULL)
         {
@@ -139,14 +139,14 @@ __stdio_gen_tempname (const char *dir, const char *pfx,
 
   if (pfx != NULL && *pfx != '\0')
     {
-      plen = strlen(pfx);
+      plen = strlen (pfx);
       if (plen > 5)
         plen = 5;
     }
   else
     plen = 0;
 
-  if (dir != tmpdir && !strcmp(dir, tmpdir))
+  if (dir != tmpdir && !strcmp (dir, tmpdir))
     dir = tmpdir;
   idx = &indices[(plen == 0 && dir == tmpdir) ? 1 : 0];
 

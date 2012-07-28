@@ -51,10 +51,10 @@ endfunction
 %!   mkdir (dirname);
 %!   entry = gzip (filename, dirname);
 %!   [path, basename, extension] = fileparts (filename);
-%!   if ! strcmp (entry, [dirname, filesep, basename, extension, ".gz"])
+%!   if (! strcmp (entry, [dirname, filesep, basename, extension, ".gz"]))
 %!     error ("gzipped file does not match expected name!");
 %!   endif
-%!   if ! exist (entry, "file")
+%!   if (! exist (entry, "file"))
 %!     error ("gzipped file cannot be found!");
 %!   endif
 %!   gunzip (entry);

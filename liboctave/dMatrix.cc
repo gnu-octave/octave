@@ -763,7 +763,7 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
       // Calculate the norm of the matrix, for later use.
       double anorm = 0;
       if (calc_cond)
-        anorm = retval.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
       F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -838,7 +838,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcon,
         }
 
       if (!mattype.is_hermitian ())
-        ret = finverse(mattype, info, rcon, force, calc_cond);
+        ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
         ret = Matrix (rows (), columns (), octave_Inf);
@@ -1498,7 +1498,7 @@ Matrix::rcond (MatrixType &mattype) const
               Array<octave_idx_type> ipvt (dim_vector (nr, 1));
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-              if(anorm < 0.)
+              if (anorm < 0.)
                 anorm = atmp.abs ().sum ().
                   row(static_cast<octave_idx_type>(0)).max ();
 
@@ -1762,7 +1762,7 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
           char job = 'L';
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
-          anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+          anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
@@ -1838,8 +1838,8 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
           Matrix atmp = *this;
           double *tmp_data = atmp.fortran_vec ();
-          if(anorm < 0.)
-            anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+          if (anorm < 0.)
+            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           Array<double> z (dim_vector (4 * nc, 1));
           double *pz = z.fortran_vec ();
@@ -2062,7 +2062,7 @@ Matrix::solve (MatrixType &typ, const ColumnVector& b, octave_idx_type& info,
 {
   Matrix tmp (b);
   tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
-  return tmp.column(static_cast<octave_idx_type> (0));
+  return tmp.column (static_cast<octave_idx_type> (0));
 }
 
 ComplexColumnVector
@@ -2094,7 +2094,7 @@ Matrix::solve (MatrixType &typ, const ComplexColumnVector& b,
                solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.solve(typ, b, info, rcon, sing_handler, transt);
+  return tmp.solve (typ, b, info, rcon, sing_handler, transt);
 }
 
 Matrix

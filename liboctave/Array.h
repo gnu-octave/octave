@@ -164,6 +164,14 @@ private:
       return &nr;
     }
 
+protected:
+
+  // For jit support
+  Array (T *sdata, octave_idx_type slen, octave_idx_type *adims, void *arep)
+    : dimensions (adims),
+      rep (reinterpret_cast<typename Array<T>::ArrayRep *> (arep)),
+      slice_data (sdata), slice_len (slen) {}
+
 public:
 
   // Empty ctor (0x0).
@@ -324,8 +332,8 @@ public:
 
   // No checking, even for multiple references, ever.
 
-  T& xelem (octave_idx_type n) { return slice_data [n]; }
-  crefT xelem (octave_idx_type n) const { return slice_data [n]; }
+  T& xelem (octave_idx_type n) { return slice_data[n]; }
+  crefT xelem (octave_idx_type n) const { return slice_data[n]; }
 
   T& xelem (octave_idx_type i, octave_idx_type j) { return xelem (dim1 ()*j+i); }
   crefT xelem (octave_idx_type i, octave_idx_type j) const { return xelem (dim1 ()*j+i); }
@@ -692,6 +700,16 @@ public:
   // by a shallow copy of dv. This is useful for maintaining several arrays with
   // supposedly equal dimensions (e.g. structs in the interpreter).
   bool optimize_dimensions (const dim_vector& dv);
+
+  // WARNING: Only call these functions from jit
+
+  int *jit_ref_count (void) { return rep->count.get (); }
+
+  T *jit_slice_data (void) const { return slice_data; }
+
+  octave_idx_type *jit_dimensions (void) const { return dimensions.to_jit (); }
+
+  void *jit_array_rep (void) const { return rep; }
 
 private:
 

@@ -24,6 +24,7 @@
 ## @deftypefnx {Function File} {[@var{x}, @var{fvec}, @var{info}, @var{output}, @var{grad}, @var{hess}] =} fminunc (@var{fcn}, @dots{})
 ## Solve an unconstrained optimization problem defined by the function
 ## @var{fcn}.
+##
 ## @var{fcn} should accepts a vector (array) defining the unknown variables,
 ## and return the objective function value, optionally with gradient.
 ## In other words, this function attempts to determine a vector @var{x} such
@@ -72,9 +73,12 @@
 ## (@var{output}), the output gradient (@var{grad}) and approximate Hessian
 ## (@var{hess}).
 ##
-## Note: If you only have a single nonlinear equation of one variable, using
-## @code{fminbnd} is usually a much better idea.
-## @seealso{fminbnd, optimset}
+## Notes: If you only have a single nonlinear equation of one variable then
+## using @code{fminbnd} is usually a much better idea.  The algorithm used is a
+## gradient search which depends on the objective function being differentiable.
+## If the function has discontinuities it may be better to use a derivative-free
+## algorithm such as @code{fminsearch}.
+## @seealso{fminbnd, fminsearch, optimset}
 ## @end deftypefn
 
 ## PKG_ADD: ## Discard result to avoid polluting workspace with ans at startup.

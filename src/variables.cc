@@ -548,6 +548,7 @@ Check only for files.\n\
 @item \"dir\"\n\
 Check only for directories.\n\
 @end table\n\
+\n\
 @seealso{file_in_loadpath}\n\
 @end deftypefn")
 {
@@ -1558,7 +1559,7 @@ do_who (int argc, const string_vector& argv, bool return_list,
             error ("whos: -file argument must be followed by a file name");
           else
             {
-              std::string nm = argv [i + 1];
+              std::string nm = argv[i + 1];
 
               unwind_protect frame;
 
@@ -2324,6 +2325,7 @@ Clears the class structure table and clears all objects.\n\
 The arguments are treated as regular expressions as any variables that\n\
 match will be cleared.\n\
 @end table\n\
+\n\
 With the exception of @code{exclusive}, all long options can be used\n\
 without the dash as well.\n\
 @end deftypefn")

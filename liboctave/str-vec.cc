@@ -54,7 +54,7 @@ string_vector::string_vector (const std::list<std::string>& lst)
   for (std::list<std::string>::const_iterator p = lst.begin ();
        p != lst.end ();
        p++)
-    elem(i++) = *p;
+    elem (i++) = *p;
 }
 
 string_vector::string_vector (const std::set<std::string>& lst)
@@ -69,7 +69,7 @@ string_vector::string_vector (const std::set<std::string>& lst)
   for (std::set<std::string>::const_iterator p = lst.begin ();
        p != lst.end ();
        p++)
-    elem(i++) = *p;
+    elem (i++) = *p;
 }
 
 // Create a string vector from a NULL terminated list of C strings.
@@ -125,9 +125,9 @@ string_vector::uniq (void)
       octave_idx_type k = 0;
 
       for (octave_idx_type i = 1; i < len; i++)
-        if (elem(i) != elem(k))
+        if (elem (i) != elem (k))
           if (++k != i)
-            elem(k) = elem(i);
+            elem (k) = elem (i);
 
       if (len != ++k)
         resize (k);
@@ -143,7 +143,7 @@ string_vector::append (const std::string& s)
 
   resize (len + 1);
 
-  elem(len) = s;
+  elem (len) = s;
 
   return *this;
 }
@@ -158,7 +158,7 @@ string_vector::append (const string_vector& sv)
   resize (new_len);
 
   for (octave_idx_type i = 0; i < sv_len; i++)
-    elem(len + i) = sv[i];
+    elem (len + i) = sv[i];
 
   return *this;
 }
@@ -175,9 +175,9 @@ string_vector::join (const std::string& sep) const
       octave_idx_type i;
 
       for (i = 0; i < len - 1; i++)
-        retval += elem(i) + sep;
+        retval += elem (i) + sep;
 
-      retval += elem(i);
+      retval += elem (i);
     }
 
   return retval;
@@ -190,10 +190,10 @@ string_vector::c_str_vec (void) const
 
   char **retval = new char * [len + 1];
 
-  retval [len] = 0;
+  retval[len] = 0;
 
   for (octave_idx_type i = 0; i < len; i++)
-    retval[i] = strsave (elem(i).c_str ());
+    retval[i] = strsave (elem (i).c_str ());
 
   return retval;
 }

@@ -286,7 +286,7 @@ dnl the flag.
 dnl
 dnl OCTAVE_CC_FLAG
 AC_DEFUN([OCTAVE_CC_FLAG], [
-  ac_safe=`echo "$1" | sed 'y%./+-:=%__p___%'`
+  ac_safe=`echo "$1" | sed 'y% ./+-:=%___p___%'`
   AC_MSG_CHECKING([whether ${CC-cc} accepts $1])
   AC_CACHE_VAL(octave_cv_cc_flag_$ac_safe, [
     AC_LANG_PUSH(C)
@@ -628,15 +628,12 @@ if test "$cross_compiling" = yes; then
 else
   AC_CHECK_PROGS(GNUPLOT, [$gp_names])
   if test -z "$GNUPLOT"; then
-    warn_gnuplot=yes
-
     GNUPLOT="$gp_default"
-    warn_gnuplot = "
+    warn_gnuplot="
 
 gnuplot not found. It isn't necessary to have gnuplot installed, but
 without native graphics or gnuplot you won't be able to use any of
 Octave's plotting commands.
-
 "
     OCTAVE_CONFIGURE_WARNING([warn_gnuplot])
   fi

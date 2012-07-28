@@ -20,14 +20,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{fval}, @var{info}, @var{output}] =} fminbnd (@var{fun}, @var{a}, @var{b}, @var{options})
-## Find a minimum point of a univariate function.  @var{fun} should be a
-## function
-## handle or name.  @var{a}, @var{b} specify a starting interval.  @var{options}
-## is a
-## structure specifying additional options.  Currently, @code{fminbnd}
-## recognizes these options: @code{"FunValCheck"}, @code{"OutputFcn"},
-## @code{"TolX"}, @code{"MaxIter"}, @code{"MaxFunEvals"}.
-## For description of these options, see @ref{doc-optimset,,optimset}.
+## Find a minimum point of a univariate function.
+## 
+## @var{fun} should be a function handle or name.  @var{a}, @var{b} specify a
+## starting interval.  @var{options} is a structure specifying additional
+## options.  Currently, @code{fminbnd} recognizes these options:
+## "FunValCheck", "OutputFcn", "TolX", "MaxIter", "MaxFunEvals".  For a
+## description of these options, see @ref{doc-optimset,,optimset}.
 ##
 ## On exit, the function returns @var{x}, the approximate minimum point
 ## and @var{fval}, the function value thereof.
@@ -43,7 +42,13 @@
 ## @item -1
 ## The algorithm has been terminated from user output function.
 ## @end itemize
-## @seealso{optimset, fzero, fminunc}
+##
+## Notes: The search for a minimum is restricted to be in the interval
+## bound by @var{a} and @var{b}.  If you only have an initial point
+## to begin searching from you will need to use an unconstrained
+## minimization algorithm such as @code{fminunc} or @code{fminsearch}.
+## @code{fminbnd} internally uses a Golden Section search strategy.
+## @seealso{fzero, fminunc, fminsearch, optimset}
 ## @end deftypefn
 
 ## This is patterned after opt/fmin.f from Netlib, which in turn is taken from

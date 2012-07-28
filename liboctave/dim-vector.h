@@ -66,7 +66,7 @@ private:
 
   static octave_idx_type *newrep (int ndims)
   {
-    octave_idx_type *r = new octave_idx_type[ndims + 2];
+    octave_idx_type *r = new octave_idx_type [ndims + 2];
 
     *r++ = 1;
     *r++ = ndims;
@@ -80,7 +80,7 @@ private:
   {
     int l = ndims ();
 
-    octave_idx_type *r = new octave_idx_type[l + 2];
+    octave_idx_type *r = new octave_idx_type [l + 2];
 
     *r++ = 1;
     *r++ = l;
@@ -100,7 +100,7 @@ private:
     if (n < 2)
       n = 2;
 
-    octave_idx_type *r = new octave_idx_type[n + 2];
+    octave_idx_type *r = new octave_idx_type [n + 2];
 
     *r++ = 1;
     *r++ = n;
@@ -212,6 +212,12 @@ public:
 
   void chop_all_singletons (void);
 
+  // WARNING: Only call by jit
+  octave_idx_type *to_jit (void) const
+  {
+    return rep;
+  }
+
 private:
 
   static octave_idx_type *nil_rep (void)
@@ -219,9 +225,6 @@ private:
       static dim_vector zv (0, 0);
       return zv.rep;
     }
-
-  explicit dim_vector (octave_idx_type *r)
-    : rep (r) { }
 
 public:
 
@@ -232,6 +235,10 @@ public:
 
   dim_vector (const dim_vector& dv) : rep (dv.rep)
   { OCTREFCOUNT_ATOMIC_INCREMENT (&(count())); }
+
+  // FIXME: Should be private, but required by array constructor for jit
+  explicit dim_vector (octave_idx_type *r)
+    : rep (r) { }
 
   static dim_vector alloc (int n)
   {

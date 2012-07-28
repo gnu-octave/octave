@@ -715,6 +715,96 @@ OCTAVE_CHECK_LIBRARY(z, ZLIB,
   [ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files.],
   [zlib.h], [gzclearerr])
 
+### Check for the llvm library
+dnl
+dnl
+dnl llvm is odd and has its own pkg-config like script. We should probably check
+dnl for existance and 
+dnl
+save_CPPFLAGS="$CPPFLAGS"
+save_CXXFLAGS="$CXXFLAGS"
+save_LIBS="$LIBS"
+save_LDFLAGS="$LDFLAGS"
+
+warn_llvm="LLVM library fails tests. JIT compilation will be disabled."
+
+AC_ARG_VAR(LLVM_CONFIG, [path to llvm-config utility])
+
+AC_ARG_ENABLE([jit-debug],
+  AS_HELP_STRING([--enable-jit-debug], [Enable debug printing of jit IRs]))
+
+AS_IF([test "x$enable_jit_debug" = "xyes"], [
+  AC_DEFINE(OCTAVE_JIT_DEBUG, 1, [Define for jit debug printing])
+])
+
+LLVM_CXXFLAGS=
+LLVM_CPPFLAGS=
+LLVM_LDFLAGS=
+LLVM_LIBS=
+
+if test "x$ac_cv_env_LLVM_CONFIG_set" = "xset"; then
+  # We use -isystem if avaiable because we do not want to see warnings in llvm
+  LLVM_INCLUDE_FLAG=-I
+  OCTAVE_CC_FLAG(-isystem ., [
+    LLVM_INCLUDE_FLAG=-isystem
+    AC_MSG_NOTICE([using -isystem for llvm headers])])
+
+  LLVM_LDFLAGS="-L`$LLVM_CONFIG --libdir`"
+  LLVM_LIBS=`$LLVM_CONFIG --libs`
+  dnl Use -isystem so we don't get warnings from llvm headers
+  LLVM_CPPFLAGS="$LLVM_INCLUDE_FLAG `$LLVM_CONFIG --includedir`"
+  LLVM_CXXFLAGS=
+
+  dnl
+  dnl We define some extra flags that llvm requires in order to include headers.
+  dnl Idealy we should get these from llvm-config, but llvm-config isn't very
+  dnl helpful.
+  dnl
+  CPPFLAGS="-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS $LLVM_CPPFLAGS $CPPFLAGS"
+  CXXFLAGS="$LLVM_CXXFLAGS $CXXFLAGS"
+  LIBS="$LLVM_LIBS $LIBS"
+  LDFLAGS="$LLVM_LDFLAGS $LDFLAGS"
+
+  AC_LANG_PUSH(C++)
+    AC_CHECK_HEADER([llvm/LLVMContext.h], [
+      AC_MSG_CHECKING([for llvm::getGlobalContext in llvm/LLVMContext.h])
+        AC_COMPILE_IFELSE(
+          [AC_LANG_PROGRAM([[#include <llvm/LLVMContext.h>]],
+                           [[llvm::LLVMContext& ctx = llvm::getGlobalContext ();]])],
+          [
+           AC_MSG_RESULT([yes])
+           warn_llvm=
+           XTRA_CXXFLAGS="$XTRA_CXXFLAGS $LLVM_CXXFLAGS $LLVM_CPPFLAGS"
+          ],
+          [AC_MSG_RESULT([no])
+      ])
+    ])
+  AC_LANG_POP(C++)
+  
+else
+  warn_llvm="LLVM_CONFIG not set. JIT compilation will be disabled."
+fi
+
+if test -z "$warn_llvm"; then
+  AC_DEFINE(HAVE_LLVM, 1, [Define if LLVM is available])
+else
+  LLVM_CXXFLAGS=
+  LLVM_CPPFLAGS=
+  LLVM_LDFLAGS=
+  LLVM_LIBS=
+  OCTAVE_CONFIGURE_WARNING([warn_llvm])
+fi
+
+AC_SUBST(LLVM_CXXFLAGS)
+AC_SUBST(LLVM_CPPFLAGS)
+AC_SUBST(LLVM_LDFLAGS)
+AC_SUBST(LLVM_LIBS)
+
+CPPFLAGS="$save_CPPFLAGS"
+CXXFLAGS="$save_CXXFLAGS"
+LIBS="$save_LIBS"
+LDFLAGS="$save_LDFLAGS"
+
 ### Check for HDF5 library.
 
 save_CPPFLAGS="$CPPFLAGS"
@@ -2748,17 +2838,20 @@ Octave is now configured for $canonical_host_type
   FFTW3F LDFLAGS:              $FFTW3F_LDFLAGS
   FFTW3F libraries:            $FFTW3F_LIBS
   fontconfig CFLAGS:           $FONTCONFIG_CFLAGS
-  fontconfig LIBS:             $FONTCONFIG_LIBS
-  FT2_CFLAGS:                  $FT2_CFLAGS
-  FT2_LIBS:                    $FT2_LIBS
+  fontconfig libraries:        $FONTCONFIG_LIBS
+  FreeType2 CFLAGS:            $FT2_CFLAGS
+  FreeType2 libraries:         $FT2_LIBS
   GLPK CPPFLAGS:               $GLPK_CPPFLAGS
   GLPK LDFLAGS:                $GLPK_LDFLAGS
   GLPK libraries:              $GLPK_LIBS
   graphics CFLAGS:             $GRAPHICS_CFLAGS
-  graphics LIBS:               $GRAPHICS_LIBS
+  graphics libraries:          $GRAPHICS_LIBS
   Magick++ CPPFLAGS:           $MAGICK_CPPFLAGS
   Magick++ LDFLAGS:            $MAGICK_LDFLAGS
   Magick++ libraries:          $MAGICK_LIBS
+  LLVM CPPFLAGS:               $LLVM_CPPFLAGS
+  LLVM LDFLAGS:                $LLVM_LDFLAGS
+  LLVM libraries:              $LLVM_LIBS
   HDF5 CPPFLAGS:               $HDF5_CPPFLAGS
   HDF5 LDFLAGS:                $HDF5_LDFLAGS
   HDF5 libraries:              $HDF5_LIBS

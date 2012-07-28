@@ -542,7 +542,7 @@ octave_sort<T>::MergeState::getmem (octave_idx_type need)
    */
   delete [] a;
   delete [] ia; // Must do this or fool possible next getmemi.
-  a = new T[need];
+  a = new T [need];
   alloced = need;
 
 }
@@ -561,8 +561,8 @@ octave_sort<T>::MergeState::getmemi (octave_idx_type need)
   delete [] a;
   delete [] ia;
 
-  a = new T[need];
-  ia = new octave_idx_type[need];
+  a = new T [need];
+  ia = new octave_idx_type [need];
   alloced = need;
 }
 
@@ -1184,7 +1184,7 @@ octave_sort<T>::merge_at (octave_idx_type i, T *data,
     return nb;
 
   /* Merge what remains of the runs, using a temp array with
-   * min(na, nb) elements.
+   * min (na, nb) elements.
    */
   if (na <= nb)
     return merge_lo (pa, na, pb, nb, comp);
@@ -1238,7 +1238,7 @@ octave_sort<T>::merge_at (octave_idx_type i, T *data, octave_idx_type *idx,
     return nb;
 
   /* Merge what remains of the runs, using a temp array with
-   * min(na, nb) elements.
+   * min (na, nb) elements.
    */
   if (na <= nb)
     return merge_lo (pa, ipa, na, pb, ipb, nb, comp);
@@ -1413,7 +1413,7 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
             goto fail;
           if (descending)
             std::reverse (data + lo, data + lo + n);
-          /* If short, extend to min(minrun, nremaining). */
+          /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
               const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
@@ -1475,7 +1475,7 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
               std::reverse (data + lo, data + lo + n);
               std::reverse (idx + lo, idx + lo + n);
             }
-          /* If short, extend to min(minrun, nremaining). */
+          /* If short, extend to min (minrun, nremaining). */
           if (n < minrun)
             {
               const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
@@ -1610,9 +1610,9 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
 
   while (! runs.empty ())
     {
-      octave_idx_type col  = runs.top ().col;
-      octave_idx_type ofs  = runs.top ().ofs;
-      octave_idx_type nel  = runs.top ().nel;
+      octave_idx_type col = runs.top ().col;
+      octave_idx_type ofs = runs.top ().ofs;
+      octave_idx_type nel = runs.top ().nel;
       runs.pop ();
       assert (nel > 1);
 

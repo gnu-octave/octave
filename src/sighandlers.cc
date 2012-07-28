@@ -63,7 +63,7 @@ bool can_interrupt = false;
 // TRUE means we should try to enter the debugger on SIGINT.
 static bool Vdebug_on_interrupt = false;
 
-// Allow users to avoid writing octave-core for SIGHUP (sent by
+// Allow users to avoid writing octave-workspace for SIGHUP (sent by
 // closing gnome-terminal, for example).  Note that this variable has
 // no effect if Vcrash_dumps_octave_core is FALSE.
 static bool Vsighup_dumps_octave_core = true;
@@ -147,12 +147,12 @@ octave_signal_handler (void)
 #endif
 
             case SIGFPE:
-              std::cerr << "warning: floating point exception -- trying to return to prompt" << std::endl;
+              std::cerr << "warning: floating point exception" << std::endl;
               break;
 
 #ifdef SIGPIPE
             case SIGPIPE:
-              std::cerr << "warning: broken pipe -- some output may be lost" << std::endl;
+              std::cerr << "warning: broken pipe" << std::endl;
               break;
 #endif
             }
@@ -1001,7 +1001,7 @@ DEFUN (sighup_dumps_octave_core, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sighup_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file \"octave-core\" if it receives\n\
+to save all current variables to the file \"octave-workspace\" if it receives\n\
 a hangup signal.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
@@ -1030,7 +1030,7 @@ DEFUN (sigterm_dumps_octave_core, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} sigterm_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file \"octave-core\" if it receives\n\
+to save all current variables to the file \"octave-workspace\" if it receives\n\
 a terminate signal.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\

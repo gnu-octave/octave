@@ -504,8 +504,8 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFUN (dbstop, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
-@deftypefnx {Loadable Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line}, @dots{})\n\
+@deftypefn  {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\")\n\
+@deftypefnx {Built-in Function} {@var{rline} =} dbstop (\"@var{func}\", @var{line}, @dots{})\n\
 Set a breakpoint in function @var{func}.\n\
 \n\
 Arguments are\n\
@@ -548,8 +548,8 @@ next executable line.\n\
 
 DEFUN (dbclear, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} dbclear (\"@var{func}\")\n\
-@deftypefnx {Loadable Function} {} dbclear (\"@var{func}\", @var{line}, @dots{})\n\
+@deftypefn  {Built-in Function} {} dbclear (\"@var{func}\")\n\
+@deftypefnx {Built-in Function} {} dbclear (\"@var{func}\", @var{line}, @dots{})\n\
 Delete a breakpoint in the function @var{func}.\n\
 \n\
 Arguments are\n\
@@ -585,9 +585,9 @@ If the requested line is not a breakpoint no action is performed.\n\
 
 DEFUN (dbstatus, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} dbstatus ()\n\
-@deftypefnx {Loadable Function} {@var{brk_list} =} dbstatus ()\n\
-@deftypefnx {Loadable Function} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
+@deftypefn  {Built-in Function} {} dbstatus ()\n\
+@deftypefnx {Built-in Function} {@var{brk_list} =} dbstatus ()\n\
+@deftypefnx {Built-in Function} {@var{brk_list} =} dbstatus (\"@var{func}\")\n\
 Report the location of active breakpoints.\n\
 \n\
 When called with no input or output arguments, print the list of\n\
@@ -701,7 +701,7 @@ A line number, or vector of line numbers, with a breakpoint.\n\
 
 DEFUN (dbwhere, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbwhere ()\n\
+@deftypefn {Built-in Function} {} dbwhere ()\n\
 In debugging mode, report the current file and line number where\n\
 execution is stopped.\n\
 @seealso{dbstatus, dbcont, dbstep, dbup}\n\
@@ -794,13 +794,13 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 
 DEFUN (dbtype, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} dbtype ()\n\
-@deftypefnx {Loadable Function} {} dbtype (\"startl:endl\")\n\
-@deftypefnx {Loadable Function} {} dbtype (\"startl:end\")\n\
-@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\")\n\
-@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\", \"startl\")\n\
-@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\", \"startl:endl\")\n\
-@deftypefnx {Loadable Function} {} dbtype (\"@var{func}\", \"startl:end\")\n\
+@deftypefn  {Built-in Function} {} dbtype ()\n\
+@deftypefnx {Built-in Function} {} dbtype (\"startl:endl\")\n\
+@deftypefnx {Built-in Function} {} dbtype (\"startl:end\")\n\
+@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\")\n\
+@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\", \"startl\")\n\
+@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\", \"startl:endl\")\n\
+@deftypefnx {Built-in Function} {} dbtype (\"@var{func}\", \"startl:end\")\n\
 When in debugging mode and called with no arguments, list the script file\n\
 being debugged with line numbers.  An optional range specification,\n\
 specified as a string, can be used to list only a portion of the file.\n\
@@ -1022,9 +1022,9 @@ show_octave_dbstack (void)
 
 DEFUN (dbstack, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} dbstack ()\n\
-@deftypefnx {Loadable Function} {} dbstack (@var{n})\n\
-@deftypefnx {Loadable Function} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
+@deftypefn  {Built-in Function} {} dbstack ()\n\
+@deftypefnx {Built-in Function} {} dbstack (@var{n})\n\
+@deftypefnx {Built-in Function} {[@var{stack}, @var{idx}] =} dbstack (@dots{})\n\
 Display or return current debugging function stack information.\n\
 With optional argument @var{n}, omit the @var{n} innermost stack frames.\n\
 \n\
@@ -1090,8 +1090,8 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 
 DEFUN (dbup, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} dbup\n\
-@deftypefnx {Loadable Function} {} dbup (@var{n})\n\
+@deftypefn  {Built-in Function} {} dbup\n\
+@deftypefnx {Built-in Function} {} dbup (@var{n})\n\
 In debugging mode, move up the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move up one frame.\n\
 @seealso{dbstack, dbdown}\n\
@@ -1106,8 +1106,8 @@ If @var{n} is omitted, move up one frame.\n\
 
 DEFUN (dbdown, args, ,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {} dbdown\n\
-@deftypefnx {Loadable Function} {} dbdown (@var{n})\n\
+@deftypefn  {Built-in Function} {} dbdown\n\
+@deftypefnx {Built-in Function} {} dbdown (@var{n})\n\
 In debugging mode, move down the execution stack @var{n} frames.\n\
 If @var{n} is omitted, move down one frame.\n\
 @seealso{dbstack, dbup}\n\
@@ -1252,7 +1252,7 @@ return to the Octave prompt.\n\
 
 DEFUN (isdebugmode, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} isdebugmode ()\n\
+@deftypefn {Built-in Function} {} isdebugmode ()\n\
 Return true if in debugging mode, otherwise false.\n\
 @seealso{dbwhere, dbstack, dbstatus}\n\
 @end deftypefn")

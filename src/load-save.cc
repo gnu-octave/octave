@@ -91,7 +91,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "zfstream.h"
 #endif
 
-// Write octave-core file if Octave crashes or is killed by a signal.
+// Write octave-workspace file if Octave crashes or is killed by a signal.
 static bool Vcrash_dumps_octave_core = true;
 
 // The maximum amount of memory (in kilobytes) that we will attempt to
@@ -99,7 +99,7 @@ static bool Vcrash_dumps_octave_core = true;
 static double Voctave_core_file_limit = -1.0;
 
 // The name of the Octave core file.
-static std::string Voctave_core_file_name = "octave-core";
+static std::string Voctave_core_file_name = "octave-workspace";
 
 // The default output format.  May be one of "binary", "text",
 // "mat-binary", or "hdf5".
@@ -1751,7 +1751,7 @@ DEFUN (crash_dumps_octave_core, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
 @deftypefnx {Built-in Function} {} crash_dumps_octave_core (@var{new_val}, \"local\")\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables to the file \"octave-core\" if it\n\
+to save all current variables to the file \"octave-workspace\" if it\n\
 crashes or receives a hangup, terminate or similar signal.\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
@@ -1812,7 +1812,7 @@ DEFUN (octave_core_file_name, args, nargout,
 @deftypefnx {Built-in Function} {} octave_core_file_name (@var{new_val}, \"local\")\n\
 Query or set the internal variable that specifies the name of the file\n\
 used for saving data from the top-level workspace if Octave aborts.\n\
-The default value is @code{\"octave-core\"}\n\
+The default value is @code{\"octave-workspace\"}\n\
 \n\
 When called from inside a function with the \"local\" option, the variable is\n\
 changed locally for the function and any subroutines it calls.  The original\n\

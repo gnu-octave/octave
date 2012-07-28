@@ -31,5 +31,5 @@ along with Octave; see the file COPYING.  If not, see
 #  ifdef __cplusplus
 extern "C"
 #  endif
-int F77_DUMMY_MAIN () { assert(0); return 1; }
+int F77_DUMMY_MAIN () { assert (0); return 1; }
 #endif

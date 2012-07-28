@@ -484,7 +484,7 @@ public:
       return symbol_record (rep->dup (new_scope));
     }
 
-    std::string name (void) const { return rep->name; }
+    const std::string& name (void) const { return rep->name; }
 
     octave_value
     find (const octave_value_list& args = octave_value_list ()) const;
@@ -579,6 +579,66 @@ public:
     symbol_record_rep *rep;
 
     symbol_record (symbol_record_rep *new_rep) : rep (new_rep) { }
+  };
+
+  // Always access a symbol from the current scope.
+  // Useful for scripts, as they may be executed in more than one scope.
+  class
+  symbol_reference
+  {
+  public:
+    symbol_reference (void) : scope (-1) {}
+
+    symbol_reference (symbol_record record,
+                       scope_id curr_scope = symbol_table::current_scope ())
+      : scope (curr_scope), sym (record)
+    {}
+
+    symbol_reference& operator = (const symbol_reference& ref)
+    {
+      scope = ref.scope;
+      sym = ref.sym;
+      return *this;
+    }
+
+    // The name is the same regardless of scope.
+    const std::string& name (void) const { return sym.name (); }
+
+    symbol_record *operator-> (void)
+    {
+      update ();
+      return &sym;
+    }
+
+    symbol_record *operator-> (void) const
+    {
+      update ();
+      return &sym;
+    }
+
+    // can be used to place symbol_reference in maps, we don't overload < as
+    // it doesn't make any sense for symbol_reference
+    struct comparator
+    {
+      bool operator ()(const symbol_reference& lhs,
+                       const symbol_reference& rhs) const
+      {
+        return lhs.name () < rhs.name ();
+      }
+    };
+  private:
+    void update (void) const
+    {
+      scope_id curr_scope = symbol_table::current_scope ();
+      if (scope != curr_scope || ! sym.is_valid ())
+        {
+          scope = curr_scope;
+          sym = symbol_table::insert (sym.name ());
+        }
+    }
+
+    mutable scope_id scope;
+    mutable symbol_record sym;
   };
 
   class
@@ -708,20 +768,14 @@ public:
           }
       }
 
-      void clear_cmdline_function (void)
-      {
-        if (! cmdline_function.islocked ())
-          cmdline_function = octave_value ();
-      }
-
       void clear_autoload_function (void)
       {
         if (! autoload_function.islocked ())
           autoload_function = octave_value ();
       }
 
-      // FIXME -- should this also clear the cmdline and other "user
-      // defined" functions?
+      // We also clear command line functions here, as these are both
+      // "user defined"
       void clear_user_function (void)
       {
         if (! function_on_path.islocked ())
@@ -730,6 +784,9 @@ public:
 
             function_on_path = octave_value ();
           }
+
+        if (! cmdline_function.islocked ())
+          cmdline_function = octave_value ();
       }
 
       void clear_mex_function (void)
@@ -744,7 +801,6 @@ public:
         clear_unlocked (private_functions);
         clear_unlocked (class_constructors);
         clear_unlocked (class_methods);
-        clear_cmdline_function ();
         clear_autoload_function ();
         clear_user_function ();
       }

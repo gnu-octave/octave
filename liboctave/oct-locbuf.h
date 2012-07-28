@@ -38,7 +38,7 @@ public:
     : data (0)
     {
       if (size)
-        data = new T[size];
+        data = new T [size];
     }
   ~octave_local_buffer (void) { delete [] data; }
   operator T *() const { return data; }
@@ -204,7 +204,7 @@ public:
 // about shadowed parameters.
 
 #define OCTAVE_LOCAL_BUFFER_INIT(T, buf, size, value) \
-  OCTAVE_LOCAL_BUFFER(T, buf, size); \
+  OCTAVE_LOCAL_BUFFER (T, buf, size); \
   for (size_t _buf_iter = 0, _buf_size = size; \
         _buf_iter < _buf_size; _buf_iter++) \
     buf[_buf_iter] = value

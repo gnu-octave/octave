@@ -38,7 +38,7 @@ function txt = unimplemented (fcn)
     txt = ["quad2d is not implemented.  Consider using dblquad."];
 
   case "gsvd"
-    txt = ["gsvd is not currently part of core Octave.  See the ",
+    txt = ["gsvd is not currently part of core Octave.  See the ",...
     "linear-algebra package at @url{http://octave.sf.net/linear-algebra/}."];
 
   case "linprog"

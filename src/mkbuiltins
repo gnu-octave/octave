@@ -57,19 +57,20 @@ cat << \EOF
 
 #endif
 
-#define XDEFUN_FILE_NAME(name)
+#define XDEFUN_FILE_NAME(name) \
+  std::string file = name;
 
 #define XDEFUN_INTERNAL(name, args_name, nargout_name, doc) \
   extern DECLARE_FUN (name, args_name, nargout_name); \
-  install_builtin_function (F ## name, #name, doc); \
+  install_builtin_function (F ## name, #name, file, doc); \
 
 #define XDEFCONSTFUN_INTERNAL(name, args_name, nargout_name, doc) \
   extern DECLARE_FUN (name, args_name, nargout_name); \
-  install_builtin_function (F ## name, #name, doc, false); \
+  install_builtin_function (F ## name, #name, file, doc, false); \
 
 #define XDEFUNX_INTERNAL(name, fname, args_name, nargout_name, doc) \
   extern DECLARE_FUNX (fname, args_name, nargout_name); \
-  install_builtin_function (fname, name, doc); \
+  install_builtin_function (fname, name, file, doc); \
 
 #define XDEFALIAS_INTERNAL(alias, name) \
   alias_builtin (#alias, #name);

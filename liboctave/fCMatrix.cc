@@ -1081,7 +1081,7 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       F77_XFCN (cgetri, CGETRI, (nc, tmp_data, nr, pipvt,
                                  z.fortran_vec (), lwork, info));
 
-      lwork = static_cast<octave_idx_type> (std::real(z(0)));
+      lwork = static_cast<octave_idx_type> (std::real (z(0)));
       lwork = (lwork <  2 *nc ? 2*nc : lwork);
       z.resize (dim_vector (lwork, 1));
       FloatComplex *pz = z.fortran_vec ();
@@ -1091,7 +1091,7 @@ FloatComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       // Calculate the norm of the matrix, for later use.
       float anorm;
       if (calc_cond)
-        anorm  = retval.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
       F77_XFCN (cgetrf, CGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -1165,7 +1165,7 @@ FloatComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
         }
 
       if (!mattype.is_hermitian ())
-        ret = finverse(mattype, info, rcon, force, calc_cond);
+        ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
         ret = FloatComplexMatrix (rows (), columns (), FloatComplex (octave_Float_Inf, 0.));
@@ -1828,7 +1828,7 @@ FloatComplexMatrix::rcond (MatrixType &mattype) const
               Array<octave_idx_type> ipvt (dim_vector (nr, 1));
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-              if(anorm < 0.)
+              if (anorm < 0.)
                 anorm = atmp.abs ().sum ().
                   row(static_cast<octave_idx_type>(0)).max ();
 
@@ -2096,7 +2096,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
           char job = 'L';
           FloatComplexMatrix atmp = *this;
           FloatComplex *tmp_data = atmp.fortran_vec ();
-          anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+          anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (cpotrf, CPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
@@ -2180,7 +2180,7 @@ FloatComplexMatrix::fsolve (MatrixType &mattype, const FloatComplexMatrix& b,
 
           // Calculate the norm of the matrix, for later use.
           if (anorm < 0.)
-            anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (cgetrf, CGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
@@ -2406,7 +2406,7 @@ FloatComplexMatrix::solve (MatrixType &typ, const FloatComplexColumnVector& b,
 
   FloatComplexMatrix tmp (b);
   tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
-  return tmp.column(static_cast<octave_idx_type> (0));
+  return tmp.column (static_cast<octave_idx_type> (0));
 }
 
 FloatComplexMatrix

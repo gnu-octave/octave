@@ -649,7 +649,7 @@ public:
       int i = 0;
       for (; i < l-1 && ndv(i) == odv(i); i++) ld *= ndv(i);
       n = l - i;
-      cext = new octave_idx_type[3*n];
+      cext = new octave_idx_type [3*n];
       // Trick to avoid three allocations
       sext = cext + n;
       dext = sext + n;
@@ -723,17 +723,17 @@ Array<T>::index (const idx_vector& i) const
 
       // FIXME -- this is for Matlab compatibility.  Matlab 2007 given
       //
-      //   b = ones(3,1)
+      //   b = ones (3,1)
       //
       // yields the following:
       //
-      //   b(zeros(0,0)) gives []
-      //   b(zeros(1,0)) gives zeros(0,1)
-      //   b(zeros(0,1)) gives zeros(0,1)
-      //   b(zeros(0,m)) gives zeros(0,m)
-      //   b(zeros(m,0)) gives zeros(m,0)
-      //   b(1:2) gives ones(2,1)
-      //   b(ones(2)) gives ones(2) etc.
+      //   b(zeros (0,0)) gives []
+      //   b(zeros (1,0)) gives zeros (0,1)
+      //   b(zeros (0,1)) gives zeros (0,1)
+      //   b(zeros (0,m)) gives zeros (0,m)
+      //   b(zeros (m,0)) gives zeros (m,0)
+      //   b(1:2) gives ones (2,1)
+      //   b(ones (2)) gives ones (2) etc.
       //
       // As you can see, the behaviour is weird, but the tests end up pretty
       // simple.  Nah, I don't want to suggest that this is ad hoc :)
@@ -2223,13 +2223,13 @@ Array<T>::find (octave_idx_type n, bool backward) const
     }
 
   // Fixup return dimensions, for Matlab compatibility.
-  // find(zeros(0,0)) -> zeros(0,0)
-  // find(zeros(1,0)) -> zeros(1,0)
-  // find(zeros(0,1)) -> zeros(0,1)
-  // find(zeros(0,X)) -> zeros(0,1)
-  // find(zeros(1,1)) -> zeros(0,0) !!!! WHY?
-  // find(zeros(0,1,0)) -> zeros(0,0)
-  // find(zeros(0,1,0,1)) -> zeros(0,0) etc
+  // find (zeros (0,0)) -> zeros (0,0)
+  // find (zeros (1,0)) -> zeros (1,0)
+  // find (zeros (0,1)) -> zeros (0,1)
+  // find (zeros (0,X)) -> zeros (0,1)
+  // find (zeros (1,1)) -> zeros (0,0) !!!! WHY?
+  // find (zeros (0,1,0)) -> zeros (0,0)
+  // find (zeros (0,1,0,1)) -> zeros (0,0) etc
 
   if ((numel () == 1 && retval.is_empty ())
       || (rows () == 0 && dims ().numel (1) == 0))
@@ -2741,7 +2741,7 @@ operator << (std::ostream& os, const Array<T>& a)
                   for (octave_idx_type k = 0; k < cols; k++)
                     {
                       ra_idx(1) = k;
-                      os << " " << a.elem(ra_idx);
+                      os << " " << a.elem (ra_idx);
                     }
                   os << "\n";
                 }
@@ -2753,7 +2753,7 @@ operator << (std::ostream& os, const Array<T>& a)
               for (octave_idx_type k = 0; k < rows; k++)
                 {
                   ra_idx(0) = k;
-                  os << " " << a.elem(ra_idx);
+                  os << " " << a.elem (ra_idx);
                 }
               break;
             }
@@ -2781,7 +2781,7 @@ operator << (std::ostream& os, const Array<T>& a)
                   for (octave_idx_type k = 0; k < cols; k++)
                     {
                       ra_idx(1) = k;
-                      os << " " << a.elem(ra_idx);
+                      os << " " << a.elem (ra_idx);
                     }
 
                   os << "\n";

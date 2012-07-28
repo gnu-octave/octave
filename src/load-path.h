@@ -39,7 +39,8 @@ load_path
 protected:
 
   load_path (void)
-    : dir_info_list (), fcn_map (), private_fcn_map (), method_map () { }
+    : dir_info_list (), fcn_map (), private_fcn_map (), method_map (),
+      init_dirs () { }
 
 public:
 
@@ -56,10 +57,7 @@ public:
   static void clear (void)
   {
     if (instance_ok ())
-      {
-        std::set<std::string> no_new_elts;
-        instance->do_clear (no_new_elts);
-      }
+      instance->do_clear ();
   }
 
   static void set (const std::string& p, bool warn = false)
@@ -297,13 +295,13 @@ private:
     // constructor for any other purpose.
     dir_info (void)
       : dir_name (), abs_dir_name (), is_relative (false),
-        is_init (false), dir_mtime (), dir_time_last_checked (),
+        dir_mtime (), dir_time_last_checked (),
         all_files (), fcn_files (), private_file_map (), method_file_map ()
       { }
 
     dir_info (const std::string& d)
       : dir_name (d), abs_dir_name (), is_relative (false),
-        is_init (false), dir_mtime (), dir_time_last_checked (),
+        dir_mtime (), dir_time_last_checked (),
         all_files (), fcn_files (), private_file_map (), method_file_map ()
     {
       initialize ();
@@ -312,7 +310,6 @@ private:
     dir_info (const dir_info& di)
       : dir_name (di.dir_name), abs_dir_name (di.abs_dir_name),
         is_relative (di.is_relative),
-        is_init (di.is_init),
         dir_mtime (di.dir_mtime),
         dir_time_last_checked (di.dir_time_last_checked),
         all_files (di.all_files), fcn_files (di.fcn_files),
@@ -328,7 +325,6 @@ private:
           dir_name = di.dir_name;
           abs_dir_name = di.abs_dir_name;
           is_relative = di.is_relative;
-          is_init = di.is_init;
           dir_mtime = di.dir_mtime;
           dir_time_last_checked = di.dir_time_last_checked;
           all_files = di.all_files;
@@ -345,7 +341,6 @@ private:
     std::string dir_name;
     std::string abs_dir_name;
     bool is_relative;
-    bool is_init; //Was this directory set by init? Warn when clearing it.
     octave_time dir_mtime;
     octave_time dir_time_last_checked;
     string_vector all_files;
@@ -447,6 +442,8 @@ private:
 
   mutable method_map_type method_map;
 
+  mutable std::set<std::string> init_dirs;
+
   static load_path *instance;
 
   static void cleanup_instance (void) { delete instance; instance = 0; }
@@ -477,16 +474,15 @@ private:
 
   void do_initialize (bool set_initial_path);
 
-  void do_clear (std::set<std::string>& new_elts);
+  void do_clear (void);
 
-  void do_set (const std::string& p, bool warn, bool is_init=false);
+  void do_set (const std::string& p, bool warn, bool is_init = false);
 
-  void do_append (const std::string& dir, bool warn, bool is_init=false);
+  void do_append (const std::string& dir, bool warn);
 
   void do_prepend (const std::string& dir, bool warn);
 
-  void do_add (const std::string& dir, bool at_end, bool warn,
-               bool is_init=false);
+  void do_add (const std::string& dir, bool at_end, bool warn);
 
   void remove_fcn_map (const std::string& dir, const string_vector& fcn_files);
 

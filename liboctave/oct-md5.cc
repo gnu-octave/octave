@@ -36,7 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 static std::string
 oct_md5_result_to_str (const unsigned char *buf)
 {
-  char tmp [33];
+  char tmp[33];
 
   sprintf (tmp,
            "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",

@@ -763,7 +763,7 @@ FloatMatrix::finverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
       // Calculate the norm of the matrix, for later use.
       float anorm = 0;
       if (calc_cond)
-        anorm = retval.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+        anorm = retval.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
       F77_XFCN (sgetrf, SGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
@@ -838,7 +838,7 @@ FloatMatrix::inverse (MatrixType &mattype, octave_idx_type& info, float& rcon,
         }
 
       if (!mattype.is_hermitian ())
-        ret = finverse(mattype, info, rcon, force, calc_cond);
+        ret = finverse (mattype, info, rcon, force, calc_cond);
 
       if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
         ret = FloatMatrix (rows (), columns (), octave_Float_Inf);
@@ -1462,7 +1462,7 @@ FloatMatrix::rcond (MatrixType &mattype) const
               octave_idx_type info = 0;
               char job = 'L';
               anorm = atmp.abs ().sum ().
-                row(static_cast<octave_idx_type>(0)).max ();
+                row (static_cast<octave_idx_type>(0)).max ();
 
               F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                          tmp_data, nr, info
@@ -1498,7 +1498,7 @@ FloatMatrix::rcond (MatrixType &mattype) const
               Array<octave_idx_type> ipvt (dim_vector (nr, 1));
               octave_idx_type *pipvt = ipvt.fortran_vec ();
 
-              if(anorm < 0.)
+              if (anorm < 0.)
                 anorm = atmp.abs ().sum ().
                   row(static_cast<octave_idx_type>(0)).max ();
 
@@ -1762,7 +1762,7 @@ FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b, octave_idx_type&
           char job = 'L';
           FloatMatrix atmp = *this;
           float *tmp_data = atmp.fortran_vec ();
-          anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+          anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr,
                                      tmp_data, nr, info
@@ -1838,8 +1838,8 @@ FloatMatrix::fsolve (MatrixType &mattype, const FloatMatrix& b, octave_idx_type&
 
           FloatMatrix atmp = *this;
           float *tmp_data = atmp.fortran_vec ();
-          if(anorm < 0.)
-            anorm = atmp.abs ().sum ().row(static_cast<octave_idx_type>(0)).max ();
+          if (anorm < 0.)
+            anorm = atmp.abs ().sum ().row (static_cast<octave_idx_type>(0)).max ();
 
           Array<float> z (dim_vector (4 * nc, 1));
           float *pz = z.fortran_vec ();
@@ -2062,7 +2062,7 @@ FloatMatrix::solve (MatrixType &typ, const FloatColumnVector& b, octave_idx_type
 {
   FloatMatrix tmp (b);
   tmp = solve (typ, tmp, info, rcon, sing_handler, true, transt);
-  return tmp.column(static_cast<octave_idx_type> (0));
+  return tmp.column (static_cast<octave_idx_type> (0));
 }
 
 FloatComplexColumnVector
@@ -2094,7 +2094,7 @@ FloatMatrix::solve (MatrixType &typ, const FloatComplexColumnVector& b,
                solve_singularity_handler sing_handler, blas_trans_type transt) const
 {
   FloatComplexMatrix tmp (*this);
-  return tmp.solve(typ, b, info, rcon, sing_handler, transt);
+  return tmp.solve (typ, b, info, rcon, sing_handler, transt);
 }
 
 FloatMatrix

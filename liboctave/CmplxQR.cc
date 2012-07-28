@@ -469,7 +469,7 @@ ComplexQR::update (const ComplexColumnVector& u, const ComplexColumnVector& v)
 
   if (u.length () == m && v.length () == n)
     {
-      init(q*r + ComplexMatrix (u) * ComplexMatrix (v).hermitian (), get_type ());
+      init (q*r + ComplexMatrix (u) * ComplexMatrix (v).hermitian (), get_type ());
     }
   else
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
@@ -485,7 +485,7 @@ ComplexQR::update (const ComplexMatrix& u, const ComplexMatrix& v)
 
   if (u.rows () == m && v.rows () == n && u.cols () == v.cols ())
     {
-      init(q*r + u * v.hermitian (), get_type ());
+      init (q*r + u * v.hermitian (), get_type ());
     }
   else
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");

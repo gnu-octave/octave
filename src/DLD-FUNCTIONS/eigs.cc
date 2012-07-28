@@ -258,6 +258,7 @@ The permutation vector of the Cholesky@tie{}factorization of @var{B} if\n\
 default is @code{1:@var{n}}.\n\
 \n\
 @end table\n\
+\n\
 It is also possible to represent @var{A} by a function denoted @var{af}.\n\
 @var{af} must be followed by a scalar argument @var{n} defining the length\n\
 of the vector argument accepted by @var{af}.  @var{af} can be\n\

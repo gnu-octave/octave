@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "bsxfun.h"
 
 // This source file implements a general binary maping function for
-// arrays. The syntax is binmap<type> (a, b, f, [name]). type denotes
+// arrays. The syntax is binmap<type> (a, b, f,[name]). type denotes
 // the expected return type of the operation. a, b, should be one of
 // the 6 combinations:
 //
@@ -223,7 +223,7 @@ binmap (const T& x, const Sparse<R>& ys, F fcn)
   for (octave_idx_type i = 0; i < nz; i++)
     {
       octave_quit ();
-      retval.xdata(i) = fcn (x, ys.data(i));
+      retval.xdata (i) = fcn (x, ys.data (i));
     }
 
   octave_quit ();
@@ -241,7 +241,7 @@ binmap (const Sparse<T>& xs, const R& y, F fcn)
   for (octave_idx_type i = 0; i < nz; i++)
     {
       octave_quit ();
-      retval.xdata(i) = fcn (xs.data(i), y);
+      retval.xdata (i) = fcn (xs.data (i), y);
     }
 
   octave_quit ();
@@ -276,49 +276,49 @@ binmap (const Sparse<T>& xs, const Sparse<R>& ys, F fcn, const char *name)
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
-          octave_idx_type ix = xs.cidx(j), iy = ys.cidx(j);
-          octave_idx_type ux = xs.cidx(j+1), uy = ys.cidx(j+1);
+          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
+          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
           while (ix != ux || iy != uy)
             {
-              octave_idx_type rx = xs.ridx(ix), ry = ys.ridx(ix);
+              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
               ix += rx <= ry;
               iy += ry <= rx;
               nz++;
             }
 
-          retval.xcidx(j+1) = nz;
+          retval.xcidx (j+1) = nz;
         }
 
       // Allocate space.
-      retval.change_capacity (retval.xcidx(nc));
+      retval.change_capacity (retval.xcidx (nc));
 
       // Fill.
       nz = 0;
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_quit ();
-          octave_idx_type ix = xs.cidx(j), iy = ys.cidx(j);
-          octave_idx_type ux = xs.cidx(j+1), uy = ys.cidx(j+1);
+          octave_idx_type ix = xs.cidx (j), iy = ys.cidx (j);
+          octave_idx_type ux = xs.cidx (j+1), uy = ys.cidx (j+1);
           while (ix != ux || iy != uy)
             {
-              octave_idx_type rx = xs.ridx(ix), ry = ys.ridx(ix);
+              octave_idx_type rx = xs.ridx (ix), ry = ys.ridx (ix);
               if (rx == ry)
                 {
-                  retval.xridx(nz) = rx;
-                  retval.xdata(nz) = fcn (xs.data(ix), ys.data(iy));
+                  retval.xridx (nz) = rx;
+                  retval.xdata (nz) = fcn (xs.data (ix), ys.data (iy));
                   ix++;
                   iy++;
                 }
               else if (rx < ry)
                 {
-                  retval.xridx(nz) = rx;
-                  retval.xdata(nz) = fcn (xs.data(ix), yzero);
+                  retval.xridx (nz) = rx;
+                  retval.xdata (nz) = fcn (xs.data (ix), yzero);
                   ix++;
                 }
               else if (ry < rx)
                 {
-                  retval.xridx(nz) = ry;
-                  retval.xdata(nz) = fcn (xzero, ys.data(iy));
+                  retval.xridx (nz) = ry;
+                  retval.xdata (nz) = fcn (xzero, ys.data (iy));
                   iy++;
                 }
 

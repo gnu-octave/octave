@@ -1713,3 +1713,32 @@ DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
   return retval;
 }
 #endif
+
+
+/*
+bug #34497: 'clear -f' does not work for command line functions
+
+This test relies on bar being a core function that is implemented in an m-file.
+If the first assert fails, this is no longer the case and the tests need to be
+updated to use some other function.
+
+%!assert (! strcmp (which ("bar"), ""));
+
+%!function x = bar ()
+%!  x = 5;
+%!endfunction
+%!test
+%! assert (bar == 5);
+%! assert (strcmp (which ("bar"), ""));
+%! clear -f bar;
+%! assert (! strcmp (which ("bar"), ""));
+
+%!function x = bar ()
+%!  x = 5;
+%!endfunction
+%!test
+%! assert (bar == 5);
+%! assert (strcmp (which ("bar"), ""));
+%! clear bar;
+%! assert (! strcmp (which ("bar"), ""));
+ */

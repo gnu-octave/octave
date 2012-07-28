@@ -104,7 +104,7 @@ function h = slice (varargin)
     x = varargin{1};
     y = varargin{2};
     z = varargin{3};
-    if (isvector (x) && isvector (y) && isvector (z)]))
+    if (isvector (x) && isvector (y) && isvector (z))
       [x, y, z] = meshgrid (x, y, z);
     elseif (ndims (x) == 3 && size_equal (x, y, z))
       ## Do nothing.

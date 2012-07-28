@@ -240,7 +240,7 @@ ComplexNDArray::fourier (int dim) const
           octave_quit ();
 
           for (octave_idx_type i = 0; i < npts; i++)
-            tmp[i] = elem((i + k*npts)*stride + j*dist);
+            tmp[i] = elem ((i + k*npts)*stride + j*dist);
 
           F77_FUNC (zfftf, ZFFTF) (npts, tmp, pwsave);
 
@@ -287,7 +287,7 @@ ComplexNDArray::ifourier (int dim) const
           octave_quit ();
 
           for (octave_idx_type i = 0; i < npts; i++)
-            tmp[i] = elem((i + k*npts)*stride + j*dist);
+            tmp[i] = elem ((i + k*npts)*stride + j*dist);
 
           F77_FUNC (zfftb, ZFFTB) (npts, tmp, pwsave);
 

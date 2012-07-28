@@ -51,12 +51,12 @@ chol2inv (const SparseMatrix& r)
 
       if (typ == MatrixType::Upper)
         {
-          rinv = r.inverse(mattype, info, rcond, true, false);
+          rinv = r.inverse (mattype, info, rcond, true, false);
           retval = rinv.transpose () * rinv;
         }
       else if (typ == MatrixType::Lower)
         {
-          rinv = r.transpose ().inverse(mattype, info, rcond, true, false);
+          rinv = r.transpose ().inverse (mattype, info, rcond, true, false);
           retval = rinv.transpose () * rinv;
         }
       else

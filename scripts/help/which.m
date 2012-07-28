@@ -59,8 +59,8 @@ endfunction
 %! str = which ("ls");
 %! assert (str(end-17:end), strcat ("miscellaneous", filesep (), "ls.m"));
 %!test
-%! str = which ("dot");
-%! assert (str(end-6:end), "dot.oct");
+%! str = which ("amd");
+%! assert (str(end-6:end), "amd.oct");
 
 %!assert (which ("_NO_SUCH_NAME_"), "")
 

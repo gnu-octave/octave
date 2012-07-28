@@ -55,11 +55,11 @@ SparseBoolMatrix::operator == (const SparseBoolMatrix& a) const
     return false;
 
   for (octave_idx_type i = 0; i < nc + 1; i++)
-    if (cidx(i) != a.cidx(i))
+    if (cidx (i) != a.cidx (i))
         return false;
 
   for (octave_idx_type i = 0; i < nz; i++)
-    if (data(i) != a.data(i) || ridx(i) != a.ridx(i))
+    if (data (i) != a.data (i) || ridx (i) != a.ridx (i))
       return false;
 
   return true;
@@ -113,12 +113,12 @@ SparseBoolMatrix::operator ! (void) const
     {
       for (octave_idx_type j = 0; j < nr; j++)
         {
-          if (jj < cidx(i+1) && ridx(jj) == j)
+          if (jj < cidx (i+1) && ridx (jj) == j)
             jj++;
           else
             {
-              r.data(ii) = true;
-              r.ridx(ii++) = j;
+              r.data (ii) = true;
+              r.ridx (ii++) = j;
             }
         }
       r.cidx (i+1) = ii;
@@ -150,10 +150,10 @@ SparseBoolMatrix::any (int dim) const
     {
       // Result is a row vector.
       retval = Sparse<bool> (1, nc);
-      retval.xcidx(0) = 0;
+      retval.xcidx (0) = 0;
       for (octave_idx_type i = 0; i < nc; i++)
-        retval.xcidx(i+1) = retval.xcidx(i) + (cidx(i+1) > cidx(i));
-      octave_idx_type new_nz = retval.xcidx(nc);
+        retval.xcidx (i+1) = retval.xcidx (i) + (cidx (i+1) > cidx (i));
+      octave_idx_type new_nz = retval.xcidx (nc);
       retval.change_capacity (new_nz);
       fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
       fill_or_memset (new_nz, true, retval.data ());
@@ -166,7 +166,7 @@ SparseBoolMatrix::any (int dim) const
           // We can use O(nr) memory.
           Array<bool> tmp (dim_vector (nr, 1), false);
           for (octave_idx_type i = 0; i < nz; i++)
-            tmp.xelem(ridx(i)) = true;
+            tmp.xelem (ridx (i)) = true;
           retval = tmp;
         }
       else
@@ -195,16 +195,16 @@ SparseBoolMatrix::sum (int dim) const
     {
       // Result is a row vector.
       retval = Sparse<double> (1, nc);
-      for(octave_idx_type i = 0; i < nc; i++)
-        retval.xcidx(i+1) = retval.xcidx(i) + (cidx(i+1) > cidx(i));
-      octave_idx_type new_nz = retval.xcidx(nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+        retval.xcidx (i+1) = retval.xcidx (i) + (cidx (i+1) > cidx (i));
+      octave_idx_type new_nz = retval.xcidx (nc);
       retval.change_capacity (new_nz);
       fill_or_memset (new_nz, static_cast<octave_idx_type> (0), retval.ridx ());
-      for(octave_idx_type i = 0, k = 0; i < nc; i++)
+      for (octave_idx_type i = 0, k = 0; i < nc; i++)
         {
-          octave_idx_type c = cidx(i+1) - cidx(i);
+          octave_idx_type c = cidx (i+1) - cidx (i);
           if (c > 0)
-            retval.xdata(k++) = c;
+            retval.xdata (k++) = c;
         }
     }
   else if (dim == 1)
@@ -215,7 +215,7 @@ SparseBoolMatrix::sum (int dim) const
           // We can use O(nr) memory.
           Array<double> tmp (dim_vector (nr, 1), 0);
           for (octave_idx_type i = 0; i < nz; i++)
-            tmp.xelem(ridx(i)) += 1.0;
+            tmp.xelem (ridx (i)) += 1.0;
           retval = tmp;
         }
       else
@@ -246,8 +246,8 @@ SparseBoolMatrix::matrix_value (void) const
 
   boolMatrix retval (nr, nc, false);
   for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
-      retval.elem (ridx(i), j) = data (i);
+    for (octave_idx_type i = cidx (j); i < cidx (j+1); i++)
+      retval.elem (ridx (i), j) = data (i);
 
   return retval;
 }
@@ -262,8 +262,8 @@ operator << (std::ostream& os, const SparseBoolMatrix& a)
    for (octave_idx_type j = 0; j < nc; j++)
      {
        octave_quit ();
-       for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
-         os << a.ridx(i) + 1 << " "  << j + 1 << " " << a.data(i) << "\n";
+       for (octave_idx_type i = a.cidx (j); i < a.cidx (j+1); i++)
+         os << a.ridx (i) + 1 << " "  << j + 1 << " " << a.data (i) << "\n";
      }
 
   return os;

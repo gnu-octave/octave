@@ -212,7 +212,7 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
               xn1 = xp1;
             }
 
-          double zc  = 1.0;
+          double zc = 1.0;
           double z = xn / xn1;
 
           if (i != 0)

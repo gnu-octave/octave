@@ -6,6 +6,7 @@ optimization_PRIVATE_FCN_FILES = \
 optimization_FCN_FILES = \
   optimization/__all_opts__.m \
   optimization/fminbnd.m \
+  optimization/fminsearch.m \
   optimization/fminunc.m \
   optimization/fsolve.m \
   optimization/fzero.m \

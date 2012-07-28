@@ -117,39 +117,39 @@ along with Octave; see the file COPYING.  If not, see
    All generators share the same state vector.
 
    === Mersenne Twister ===
-   void oct_init_by_int(uint32_t s)           32-bit initial state
-   void oct_init_by_array(uint32_t k[],int m) m*32-bit initial state
-   void oct_init_by_entropy(void)             random initial state
-   void oct_get_state(uint32_t save[MT_N+1])  saves state in array
-   void oct_set_state(uint32_t save[MT_N+1])  restores state from array
-   static uint32_t randmt(void)               returns 32-bit unsigned int
+   void oct_init_by_int (uint32_t s)           32-bit initial state
+   void oct_init_by_array (uint32_t k[],int m) m*32-bit initial state
+   void oct_init_by_entropy (void)             random initial state
+   void oct_get_state (uint32_t save[MT_N+1])  saves state in array
+   void oct_set_state (uint32_t save[MT_N+1])  restores state from array
+   static uint32_t randmt (void)               returns 32-bit unsigned int
 
    === inline generators ===
-   static uint32_t randi32(void)   returns 32-bit unsigned int
-   static uint64_t randi53(void)   returns 53-bit unsigned int
-   static uint64_t randi54(void)   returns 54-bit unsigned int
-   static float randu32(void)     returns 32-bit uniform in (0,1)
-   static double randu53(void)     returns 53-bit uniform in (0,1)
+   static uint32_t randi32 (void)   returns 32-bit unsigned int
+   static uint64_t randi53 (void)   returns 53-bit unsigned int
+   static uint64_t randi54 (void)   returns 54-bit unsigned int
+   static float randu32 (void)      returns 32-bit uniform in (0,1)
+   static double randu53 (void)     returns 53-bit uniform in (0,1)
 
-   double oct_randu(void)       returns M-bit uniform in (0,1)
-   double oct_randn(void)       returns M-bit standard normal
-   double oct_rande(void)       returns N-bit standard exponential
+   double oct_randu (void)       returns M-bit uniform in (0,1)
+   double oct_randn (void)       returns M-bit standard normal
+   double oct_rande (void)       returns N-bit standard exponential
 
-   float oct_float_randu(void)       returns M-bit uniform in (0,1)
-   float oct_float_randn(void)       returns M-bit standard normal
-   float oct_float_rande(void)       returns N-bit standard exponential
+   float oct_float_randu (void)       returns M-bit uniform in (0,1)
+   float oct_float_randn (void)       returns M-bit standard normal
+   float oct_float_rande (void)       returns N-bit standard exponential
 
    === Array generators ===
-   void oct_fill_randi32(octave_idx_type, uint32_t [])
-   void oct_fill_randi64(octave_idx_type, uint64_t [])
+   void oct_fill_randi32 (octave_idx_type, uint32_t [])
+   void oct_fill_randi64 (octave_idx_type, uint64_t [])
 
-   void oct_fill_randu(octave_idx_type, double [])
-   void oct_fill_randn(octave_idx_type, double [])
-   void oct_fill_rande(octave_idx_type, double [])
+   void oct_fill_randu (octave_idx_type, double [])
+   void oct_fill_randn (octave_idx_type, double [])
+   void oct_fill_rande (octave_idx_type, double [])
 
-   void oct_fill_float_randu(octave_idx_type, float [])
-   void oct_fill_float_randn(octave_idx_type, float [])
-   void oct_fill_float_rande(octave_idx_type, float [])
+   void oct_fill_float_randu (octave_idx_type, float [])
+   void oct_fill_float_randn (octave_idx_type, float [])
+   void oct_fill_float_rande (octave_idx_type, float [])
 */
 
 #if defined (HAVE_CONFIG_H)
@@ -166,9 +166,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-math.h"
 #include "randmtzig.h"
 
-/* FIXME may want to suppress X86 if sizeof(long)>4 */
-#if !defined(USE_X86_32)
-# if defined(i386) || defined(HAVE_X86_32)
+/* FIXME may want to suppress X86 if sizeof(long) > 4 */
+#if !defined (USE_X86_32)
+# if defined (i386) || defined (HAVE_X86_32)
 #  define USE_X86_32 1
 # else
 #  define USE_X86_32 0
@@ -260,34 +260,34 @@ oct_init_by_entropy (void)
     int n = 0;
 
     /* Look for entropy in /dev/urandom */
-    FILE* urandom =fopen("/dev/urandom", "rb");
+    FILE* urandom =fopen ("/dev/urandom", "rb");
     if (urandom)
       {
         while (n < MT_N)
           {
             unsigned char word[4];
-            if (fread(word, 4, 1, urandom) != 1)
+            if (fread (word, 4, 1, urandom) != 1)
               break;
             entropy[n++] = word[0]+(word[1]<<8)+(word[2]<<16)+(word[3]<<24);
           }
-        fclose(urandom);
+        fclose (urandom);
       }
 
     /* If there isn't enough entropy, gather some from various sources */
     if (n < MT_N)
-      entropy[n++] = time(NULL); /* Current time in seconds */
+      entropy[n++] = time (NULL); /* Current time in seconds */
     if (n < MT_N)
       entropy[n++] = clock ();    /* CPU time used (usec) */
 #ifdef HAVE_GETTIMEOFDAY
     if (n < MT_N)
       {
         struct timeval tv;
-        if (gettimeofday(&tv, NULL) != -1)
+        if (gettimeofday (&tv, NULL) != -1)
           entropy[n++] = tv.tv_usec;   /* Fractional part of current time */
       }
 #endif
     /* Send all the entropy into the initial state vector */
-    oct_init_by_array(entropy,n);
+    oct_init_by_array (entropy,n);
 }
 
 void
@@ -506,7 +506,7 @@ create_ziggurat_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt(-2. * log(NOR_SECTION_AREA / x1 + fi[i+1]));
+      x = sqrt (-2. * log (NOR_SECTION_AREA / x1 + fi[i+1]));
       ki[i+1] = (ZIGINT)(x / x1 * NMANTISSA);
       wi[i] = x / NMANTISSA;
       fi[i] = exp (-0.5 * x * x);
@@ -534,7 +534,7 @@ create_ziggurat_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-x) -> x = -ln(y)
        */
-      x = - log(EXP_SECTION_AREA / x1 + fe[i+1]);
+      x = - log (EXP_SECTION_AREA / x1 + fe[i+1]);
       ke[i+1] = (ZIGINT)(x / x1 * EMANTISSA);
       we[i] = x / EMANTISSA;
       fe[i] = exp (-x);
@@ -620,7 +620,7 @@ oct_randn (void)
           while ( yy+yy <= xx*xx);
           return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
         }
-      else if ((fi[idx-1] - fi[idx]) * RANDU + fi[idx] < exp(-0.5*x*x))
+      else if ((fi[idx-1] - fi[idx]) * RANDU + fi[idx] < exp (-0.5*x*x))
         return x;
     }
 }
@@ -645,9 +645,9 @@ oct_rande (void)
            * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
            */
-          return ZIGGURAT_EXP_R - log(RANDU);
+          return ZIGGURAT_EXP_R - log (RANDU);
         }
-      else if ((fe[idx-1] - fe[idx]) * RANDU + fe[idx] < exp(-x))
+      else if ((fe[idx-1] - fe[idx]) * RANDU + fe[idx] < exp (-x))
         return x;
     }
 }
@@ -697,7 +697,7 @@ create_ziggurat_float_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-0.5*x*x) -> x = sqrt(-2*ln(y))
        */
-      x = sqrt(-2. * log(NOR_SECTION_AREA / x1 + ffi[i+1]));
+      x = sqrt (-2. * log (NOR_SECTION_AREA / x1 + ffi[i+1]));
       fki[i+1] = (ZIGINT)(x / x1 * NMANTISSA);
       fwi[i] = x / NMANTISSA;
       ffi[i] = exp (-0.5 * x * x);
@@ -725,7 +725,7 @@ create_ziggurat_float_tables (void)
       /* New x is given by x = f^{-1}(v/x_{i+1} + f(x_{i+1})), thus
        * need inverse operator of y = exp(-x) -> x = -ln(y)
        */
-      x = - log(EXP_SECTION_AREA / x1 + ffe[i+1]);
+      x = - log (EXP_SECTION_AREA / x1 + ffe[i+1]);
       fke[i+1] = (ZIGINT)(x / x1 * EMANTISSA);
       fwe[i] = x / EMANTISSA;
       ffe[i] = exp (-x);
@@ -787,7 +787,7 @@ oct_float_randn (void)
           while ( yy+yy <= xx*xx);
           return (rabs&0x100 ? -ZIGGURAT_NOR_R-xx : ZIGGURAT_NOR_R+xx);
         }
-      else if ((ffi[idx-1] - ffi[idx]) * RANDU + ffi[idx] < exp(-0.5*x*x))
+      else if ((ffi[idx-1] - ffi[idx]) * RANDU + ffi[idx] < exp (-0.5*x*x))
         return x;
     }
 }
@@ -812,9 +812,9 @@ oct_float_rande (void)
            * For the exponential tail, the method of Marsaglia[5] provides:
            * x = r - ln(U);
            */
-          return ZIGGURAT_EXP_R - log(RANDU);
+          return ZIGGURAT_EXP_R - log (RANDU);
         }
-      else if ((ffe[idx-1] - ffe[idx]) * RANDU + ffe[idx] < exp(-x))
+      else if ((ffe[idx-1] - ffe[idx]) * RANDU + ffe[idx] < exp (-x))
         return x;
     }
 }

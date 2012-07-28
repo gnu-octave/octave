@@ -57,6 +57,7 @@
 ## True if the user (group; other users) has execute permission for
 ## @var{file}.
 ## @end table
+##
 ## If an attribute does not apply (i.e., archive on a Unix system) then
 ## the field is set to NaN.
 ##

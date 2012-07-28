@@ -108,7 +108,7 @@ DEFINE_OCTAVE_ALLOCATOR(idx_vector::idx_range_rep);
 idx_vector::idx_range_rep::idx_range_rep (octave_idx_type _start,
                                           octave_idx_type _limit,
                                           octave_idx_type _step)
-  : start(_start), len (_step ? std::max((_limit - _start) / _step, static_cast<octave_idx_type> (0)) : -1), step (_step)
+  : start(_start), len (_step ? std::max ((_limit - _start) / _step, static_cast<octave_idx_type> (0)) : -1), step (_step)
 {
   if (len < 0)
     {
@@ -325,7 +325,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Array<T>& nda)
 {
   if (len != 0)
     {
-      octave_idx_type *d = new octave_idx_type[len];
+      octave_idx_type *d = new octave_idx_type [len];
       for (octave_idx_type i = 0; i < len; i++)
         d[i] = convert_index (nda.xelem (i), err, ext);
       data = d;
@@ -489,7 +489,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
   if (ext > len*xlog2 (1.0 + len))
     {
       // Use standard sort via octave_sort.
-      octave_idx_type *new_data = new octave_idx_type[len];
+      octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
 
       std::copy (data, data + len, new_data);
@@ -524,7 +524,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
       else
         new_rep->orig_dims = dim_vector (new_len, 1);
 
-      octave_idx_type *new_data = new octave_idx_type[new_len];
+      octave_idx_type *new_data = new octave_idx_type [new_len];
       new_rep->data = new_data;
 
       for (octave_idx_type i = 0, j = 0; i < ext; i++)
@@ -538,7 +538,7 @@ idx_vector::idx_vector_rep::sort_uniq_clone (bool uniq)
       for (octave_idx_type i = 0; i < len; i++)
         cnt[data[i]]++;
 
-      octave_idx_type *new_data = new octave_idx_type[len];
+      octave_idx_type *new_data = new octave_idx_type [len];
       new_rep->data = new_data;
 
       for (octave_idx_type i = 0, j = 0; i < ext; i++)
@@ -1145,7 +1145,7 @@ idx_vector::is_permutation (octave_idx_type n) const
 
   if (is_colon_equiv (n))
     retval = true;
-  else if (length (n) == n && extent(n) == n)
+  else if (length(n) == n && extent(n) == n)
     {
       OCTAVE_LOCAL_BUFFER_INIT (bool, left, n, true);
 
@@ -1190,7 +1190,7 @@ idx_vector::inverse_permutation (octave_idx_type n) const
         const octave_idx_type *ri = r->get_data ();
         Array<octave_idx_type> idx (orig_dimensions ());
         for (octave_idx_type i = 0; i < n; i++)
-          idx.xelem(ri[i]) = i;
+          idx.xelem (ri[i]) = i;
         retval = new idx_vector_rep (idx, r->extent (0), DIRECT);
         break;
       }
@@ -1330,7 +1330,7 @@ INSTANTIATE_SCALAR_VECTOR_REP_CONST (octave_uint64)
 
 /*
 
-%!error id=Octave:index-out-of-bounds 1(find([1,1] != 0))
-%!assert ((1:3)(find([1,0,1] != 0)), [1,3])
+%!error id=Octave:index-out-of-bounds 1(find ([1,1] != 0))
+%!assert ((1:3)(find ([1,0,1] != 0)), [1,3])
 
 */

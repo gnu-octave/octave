@@ -496,7 +496,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
   while (0)
 
 // Have to use copy here to avoid writing over data accessed via
-// Matrix::data().
+// Matrix::data ().
 
 #define LS_DO_WRITE(TYPE, data, size, len, stream) \
   do \

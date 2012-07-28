@@ -80,10 +80,10 @@ check_version (const std::string& version, const std::string& fcn)
 
 void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-                          const std::string& doc,
+                          const std::string& file, const std::string& doc,
                           bool /* can_hide_function -- not yet implemented */)
 {
-  octave_value fcn (new octave_builtin (f, name, doc));
+  octave_value fcn (new octave_builtin (f, name, file, doc));
 
   symbol_table::install_built_in_function (name, fcn);
 }

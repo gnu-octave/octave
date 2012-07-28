@@ -214,6 +214,7 @@ DEFUN (atan2, args, ,
 Compute atan (@var{y} / @var{x}) for corresponding elements of @var{y}\n\
 and @var{x}.  Signal an error if @var{y} and @var{x} do not match in size\n\
 and orientation.\n\
+@seealso{tan, tand, tanh, atanh}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2370,6 +2371,7 @@ DEFUN (length, args, ,
 Return the \"length\" of the object @var{a}.  For matrix objects, the\n\
 length is the number of rows or columns, whichever is greater (this\n\
 odd definition is used for compatibility with @sc{matlab}).\n\
+@seealso{size}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2395,6 +2397,7 @@ ndims (ones (4, 1, 2, 1))\n\
     @result{} 3\n\
 @end group\n\
 @end example\n\
+@seealso{size}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2488,7 +2491,7 @@ size ([1, 2; 3, 4; 5, 6], 2)\n\
 \n\
 @noindent\n\
 returns the number of columns in the given matrix.\n\
-@seealso{numel}\n\
+@seealso{numel, ndims, length, rows, columns}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2551,7 +2554,7 @@ DEFUN (size_equal, args, ,
 Return true if the dimensions of all arguments agree.\n\
 Trailing singleton dimensions are ignored.\n\
 Called with a single or no argument, size_equal returns true.\n\
-@seealso{size, numel}\n\
+@seealso{size, numel, ndims}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2583,7 +2586,7 @@ DEFUN (nnz, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{scalar} =} nnz (@var{a})\n\
 Return the number of non zero elements in @var{a}.\n\
-@seealso{sparse}\n\
+@seealso{sparse, nzmax}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2604,7 +2607,7 @@ Note that Octave tends to crop unused memory at the first opportunity\n\
 for sparse objects.  There are some cases of user created sparse objects\n\
 where the value returned by @dfn{nzmax} will not be the same as @dfn{nnz},\n\
 but in general they will give the same result.\n\
-@seealso{sparse, spalloc}\n\
+@seealso{nnz, spalloc, sparse}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2882,7 +2885,7 @@ sum (x .* conj (x), dim)\n\
 \n\
 @noindent\n\
 but it uses less memory and avoids calling @code{conj} if @var{x} is real.\n\
-@seealso{sum}\n\
+@seealso{sum, prod}\n\
 @end deftypefn")
 {
   DATA_REDUCTION (sumsq);
@@ -2963,7 +2966,7 @@ DEFUN (iscomplex, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iscomplex (@var{x})\n\
 Return true if @var{x} is a complex-valued numeric object.\n\
-@seealso{isreal, isnumeric}\n\
+@seealso{isreal, isnumeric, islogical, ischar, isfloat, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3013,7 +3016,7 @@ complex ([1, 2], [3, 4])\n\
   @result{} [ 1 + 3i   2 + 4i ]\n\
 @end group\n\
 @end example\n\
-@seealso{real, imag, iscomplex}\n\
+@seealso{real, imag, iscomplex, abs, arg}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3292,7 +3295,7 @@ DEFUN (isreal, args, ,
 Return true if @var{x} is a non-complex matrix or scalar.\n\
 For compatibility with @sc{matlab}, this includes logical and character\n\
 matrices.\n\
-@seealso{iscomplex, isnumeric}\n\
+@seealso{iscomplex, isnumeric, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3310,7 +3313,7 @@ DEFUN (isempty, args, ,
 @deftypefn {Built-in Function} {} isempty (@var{a})\n\
 Return true if @var{a} is an empty matrix (any one of its dimensions is\n\
 zero).  Otherwise, return false.\n\
-@seealso{isnull}\n\
+@seealso{isnull, isa}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -3329,7 +3332,7 @@ DEFUN (isnumeric, args, ,
 Return true if @var{x} is a numeric object, i.e., an integer, real, or\n\
 complex array.  Logical and character arrays are not considered to be\n\
 numeric.\n\
-@seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct}\n\
+@seealso{isinteger, isfloat, isreal, iscomplex, islogical, ischar, iscell, isstruct, isa}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3365,7 +3368,7 @@ Return true if @var{a} is a numeric, logical, or character matrix.\n\
 Scalars (1x1 matrices) and vectors (@nospell{1xN} or @nospell{Nx1} matrices)\n\
 are subsets of the more general N-dimensional matrix and @code{ismatrix}\n\
 will return true for these objects as well.\n\
-@seealso{isscalar, isvector, iscell, isstruct, issparse}\n\
+@seealso{isscalar, isvector, iscell, isstruct, issparse, isa}\n\
 @end deftypefn")
 {
   octave_value retval = false;
@@ -3947,7 +3950,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{isinf}\n\
+@seealso{isinf, NaN}\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_inf_value (),
@@ -4006,7 +4009,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{isnan}\n\
+@seealso{isnan, Inf}\n\
 @end deftypefn")
 {
   return fill_matrix (args, lo_ieee_nan_value (),
@@ -4055,6 +4058,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
+@seealso{log, exp, pi, i, j}\n\
 @end deftypefn")
 {
 #if defined (M_E)
@@ -4095,6 +4099,7 @@ the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
+@seealso{realmax, realmin, intmax, bitmax}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -4210,6 +4215,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
+@seealso{e, i, j}\n\
 @end deftypefn")
 {
 #if defined (M_PI)
@@ -4248,7 +4254,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{realmin, intmax, bitmax}\n\
+@seealso{realmin, intmax, bitmax, eps}\n\
 @end deftypefn")
 {
   return fill_matrix (args, DBL_MAX, FLT_MAX, "realmax");
@@ -4281,7 +4287,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
-@seealso{realmax, intmin}\n\
+@seealso{realmax, intmin, eps}\n\
 @end deftypefn")
 {
   return fill_matrix (args, DBL_MIN, FLT_MIN, "realmin");
@@ -4307,7 +4313,8 @@ $\\sqrt{-1}$.\n\
 @ifnottex\n\
 @code{sqrt (-1)}.\n\
 @end ifnottex\n\
- I, and its equivalents i, J, and j, are functions so any of the names may\n\
+\n\
+I, and its equivalents i, j, and J, are functions so any of the names may\n\
 be reused for other purposes (such as i for a counter variable).\n\
 \n\
 When called with no arguments, return a scalar with the value @math{i}.  When\n\
@@ -4317,6 +4324,7 @@ arguments are taken as the number of rows and columns and any further\n\
 arguments specify additional matrix dimensions.\n\
 The optional argument @var{class} specifies the return type and may be\n\
 either \"double\" or \"single\".\n\
+@seealso{e, pi, log, exp, i, j, J}\n\
 @end deftypefn")
 {
   return fill_matrix (args, Complex (0.0, 1.0), "I");
@@ -4549,7 +4557,7 @@ val = zeros (n,m, \"uint8\")\n\
 Calling @code{eye} with no arguments is equivalent to calling it\n\
 with an argument of 1.  Any negative dimensions are treated as zero. \n\
 These odd definitions are for compatibility with @sc{matlab}.\n\
-@seealso{speye}\n\
+@seealso{speye, ones, zeros}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4679,6 +4687,7 @@ vectors, @code{linspace} returns a matrix.\n\
 \n\
 For compatibility with @sc{matlab}, return the second argument (@var{limit})\n\
 if fewer than two values are requested.\n\
+@seealso{logspace}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4786,7 +4795,7 @@ dimensions of the result are given by the elements of that vector.\n\
 An object can be resized to more dimensions than it has;\n\
 in such case the missing dimensions are assumed to be 1.\n\
 Resizing an object to fewer dimensions is not possible.\n\
-@seealso{reshape, postpad}\n\
+@seealso{reshape, postpad, prepad, cat}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4861,7 +4870,7 @@ in the new matrix (@code{prod ([@var{m} @var{n} @dots{}])}).\n\
 A single dimension of the return matrix may be left unspecified and Octave\n\
 will determine its size automatically.  An empty matrix ([]) is used to flag\n\
 the unspecified dimension.\n\
-@seealso{resize}\n\
+@seealso{resize, vec, postpad, cat, squeeze}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -4979,7 +4988,7 @@ one above the other.  Without @var{dim} this is equivalent to\n\
 @code{@var{x}(:)}.  If @var{dim} is supplied, the dimensions of @var{v}\n\
 are set to @var{dim} with all elements along the last dimension.\n\
 This is equivalent to @code{shiftdim (@var{x}(:), 1-@var{dim})}.\n\
-@seealso{vech}\n\
+@seealso{vech, resize, cat}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -5042,6 +5051,7 @@ DEFUN (squeeze, args, ,
 Remove singleton dimensions from @var{x} and return the result.\n\
 Note that for compatibility with @sc{matlab}, all objects have\n\
 a minimum of two dimensions and row vectors are left unchanged.\n\
+@seealso{reshape}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -5056,7 +5066,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 
 DEFUN (full, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
+@deftypefn {Built-in Function} {@var{FM} =} full (@var{SM})\n\
 Return a full storage matrix from a sparse, diagonal, permutation matrix\n\
 or a range.\n\
 @seealso{sparse}\n\
@@ -5281,6 +5291,7 @@ DEFUN (uplus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uplus (@var{x})\n\
 This function and @w{@xcode{+ x}} are equivalent.\n\
+@seealso{uminus, plus, minus}\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uplus, args);
@@ -5290,6 +5301,7 @@ DEFUN (uminus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} uminus (@var{x})\n\
 This function and @w{@xcode{- x}} are equivalent.\n\
+@seealso{uplus, minus}\n\
 @end deftypefn")
 {
   return unary_op_defun_body (octave_value::op_uminus, args);
@@ -5413,7 +5425,7 @@ cumulatively from left to right:\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
-@seealso{minus}\n\
+@seealso{minus, uplus}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_add,
@@ -5424,7 +5436,7 @@ DEFUN (minus, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
 This function and @w{@xcode{x - y}} are equivalent.\n\
-@seealso{plus}\n\
+@seealso{plus, uminus}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_sub, args);
@@ -5444,7 +5456,7 @@ cumulatively from left to right:\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
-@seealso{times}\n\
+@seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_mul,
@@ -5456,7 +5468,7 @@ DEFUN (mrdivide, args, ,
 @deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
 Return the matrix right division of @var{x} and @var{y}.\n\
 This function and @w{@xcode{x / y}} are equivalent.\n\
-@seealso{mldivide, rdivide}\n\
+@seealso{mldivide, rdivide, plus, minus}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_div, args);
@@ -5467,7 +5479,7 @@ DEFUN (mpower, args, ,
 @deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
 Return the matrix power operation of @var{x} raised to the @var{y} power.\n\
 This function and @w{@xcode{x ^ y}} are equivalent.\n\
-@seealso{power}\n\
+@seealso{power, mtimes, plus, minus}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_pow, args);
@@ -5478,7 +5490,7 @@ DEFUN (mldivide, args, ,
 @deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
 Return the matrix left division of @var{x} and @var{y}.\n\
 This function and @w{@xcode{x @xbackslashchar{} y}} are equivalent.\n\
-@seealso{mrdivide, ldivide}\n\
+@seealso{mrdivide, ldivide, rdivide}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_ldiv, args);
@@ -5488,6 +5500,7 @@ DEFUN (lt, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} lt (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x < y}}.\n\
+@seealso{le, eq, ge, gt, ne}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_lt, args);
@@ -5497,6 +5510,7 @@ DEFUN (le, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} le (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x <= y}}.\n\
+@seealso{eq, ge, gt, ne, lt}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_le, args);
@@ -5507,7 +5521,7 @@ DEFUN (eq, args, ,
 @deftypefn {Built-in Function} {} eq (@var{x}, @var{y})\n\
 Return true if the two inputs are equal.\n\
 This function is equivalent to @w{@code{x == y}}.\n\
-@seealso{ne, isequal}\n\
+@seealso{ne, isequal, le, ge, gt, ne, lt}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_eq, args);
@@ -5517,6 +5531,7 @@ DEFUN (ge, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ge (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x >= y}}.\n\
+@seealso{le, eq, gt, ne, lt}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_ge, args);
@@ -5526,6 +5541,7 @@ DEFUN (gt, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} gt (@var{x}, @var{y})\n\
 This function is equivalent to @w{@code{x > y}}.\n\
+@seealso{le, eq, ge, ne, lt}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_gt, args);
@@ -5536,7 +5552,7 @@ DEFUN (ne, args, ,
 @deftypefn {Built-in Function} {} ne (@var{x}, @var{y})\n\
 Return true if the two inputs are not equal.\n\
 This function is equivalent to @w{@code{x != y}}.\n\
-@seealso{eq, isequal}\n\
+@seealso{eq, isequal, le, ge, lt}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_ne, args);
@@ -5556,7 +5572,7 @@ cumulatively from left to right:\n\
 @end example\n\
 \n\
 At least one argument is required.\n\
-@seealso{mtimes}\n\
+@seealso{mtimes, rdivide}\n\
 @end deftypefn")
 {
   return binary_assoc_op_defun_body (octave_value::op_el_mul,
@@ -5568,7 +5584,7 @@ DEFUN (rdivide, args, ,
 @deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
 Return the element-by-element right division of @var{x} and @var{y}.\n\
 This function and @w{@xcode{x ./ y}} are equivalent.\n\
-@seealso{ldivide, mrdivide}\n\
+@seealso{ldivide, mrdivide, times, plus}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_el_div, args);
@@ -5595,7 +5611,7 @@ DEFUN (ldivide, args, ,
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
 Return the element-by-element left division of @var{x} and @var{y}.\n\
 This function and @w{@xcode{x .@xbackslashchar{} y}} are equivalent.\n\
-@seealso{rdivide, mldivide}\n\
+@seealso{rdivide, mldivide, times, plus}\n\
 @end deftypefn")
 {
   return binary_op_defun_body (octave_value::op_el_ldiv, args);
@@ -5686,6 +5702,7 @@ should use the @code{cputime} function instead.  The @code{tic} and\n\
 @code{toc} functions report the actual wall clock time that elapsed\n\
 between the calls.  This may include time spent processing other jobs or\n\
 doing nothing at all.\n\
+@seealso{toc, cputime}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -5718,7 +5735,7 @@ DEFUN (toc, args, nargout,
 @deftypefn  {Built-in Function} {} toc ()\n\
 @deftypefnx {Built-in Function} {} toc (@var{id})\n\
 @deftypefnx {Built-in Function} {@var{val} =} toc (@dots{})\n\
-See tic.\n\
+@seealso{tic, cputime}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -5790,6 +5807,7 @@ CPU time usage, @code{cputime} returns 0 for each of its output values.\n\
 Note that because Octave used some CPU time to start, it is reasonable\n\
 to check to see if @code{cputime} works by checking to see if the total\n\
 CPU time used is nonzero.\n\
+@seealso{tic, toc}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -5847,10 +5865,10 @@ CPU time used is nonzero.\n\
 
 DEFUN (sort, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
+@deftypefn  {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
+@deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
+@deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
+@deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
 Return a copy of @var{x} with the elements arranged in increasing\n\
 order.  For matrices, @code{sort} orders the elements within columns\n\
 \n\
@@ -5910,6 +5928,7 @@ lowercase 'a') of the strings is used.\n\
 \n\
 The algorithm used in @code{sort} is optimized for the sorting of partially\n\
 ordered lists.\n\
+@seealso{sortrows, issorted}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -6799,7 +6818,7 @@ result(! mask) = fval(! mask);\n\
 \n\
 @var{mask} can also be arbitrary numeric type, in which case\n\
 it is first converted to logical.\n\
-@seealso{logical}\n\
+@seealso{logical, diff}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -7027,6 +7046,7 @@ stated with the optional variable @var{dim}.  In this case the\n\
 @var{k}-th order differences are calculated along this dimension.\n\
 In the case where @var{k} exceeds @code{size (@var{x}, @var{dim})}\n\
 an empty matrix is returned.\n\
+@seealso{sort, merge}\n\
 @end deftypefn")
 {
   int nargin = args.length ();
@@ -7137,7 +7157,7 @@ for i = 1:columns (@var{r})\n\
 endfor\n\
 @end group\n\
 @end example\n\
-@seealso{repmat}\n\
+@seealso{repmat, cat}\n\
 @end deftypefn")
 {
   octave_value retval;

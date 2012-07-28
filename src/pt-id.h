@@ -46,12 +46,12 @@ tree_identifier : public tree_expression
 public:
 
   tree_identifier (int l = -1, int c = -1)
-    : tree_expression (l, c), sym (), scope (-1) { }
+    : tree_expression (l, c) { }
 
   tree_identifier (const symbol_table::symbol_record& s,
                    int l = -1, int c = -1,
                    symbol_table::scope_id sc = symbol_table::current_scope ())
-    : tree_expression (l, c), sym (s), scope (sc) { }
+    : tree_expression (l, c), sym (s, sc) { }
 
   ~tree_identifier (void) { }
 
@@ -63,9 +63,9 @@ public:
   // accessing it through sym so that this function may remain const.
   std::string name (void) const { return sym.name (); }
 
-  bool is_defined (void) { return xsym ().is_defined (); }
+  bool is_defined (void) { return sym->is_defined (); }
 
-  virtual bool is_variable (void) { return xsym ().is_variable (); }
+  virtual bool is_variable (void) { return sym->is_variable (); }
 
   virtual bool is_black_hole (void) { return false; }
 
@@ -87,14 +87,14 @@ public:
   octave_value
   do_lookup (const octave_value_list& args = octave_value_list ())
   {
-    return xsym ().find (args);
+    return sym->find (args);
   }
 
-  void mark_global (void) { xsym ().mark_global (); }
+  void mark_global (void) { sym->mark_global (); }
 
-  void mark_as_static (void) { xsym ().init_persistent (); }
+  void mark_as_static (void) { sym->init_persistent (); }
 
-  void mark_as_formal_parameter (void) { xsym ().mark_formal (); }
+  void mark_as_formal_parameter (void) { sym->mark_formal (); }
 
   // We really need to know whether this symbol referst to a variable
   // or a function, but we may not know that yet.
@@ -114,28 +114,14 @@ public:
 
   void accept (tree_walker& tw);
 
+  symbol_table::symbol_reference symbol (void) const
+  {
+    return sym;
+  }
 private:
 
   // The symbol record that this identifier references.
-  symbol_table::symbol_record sym;
-
-  symbol_table::scope_id scope;
-
-  // A script may be executed in multiple scopes.  If the last one was
-  // different from the one we are in now, update sym to be from the
-  // new scope.
-  symbol_table::symbol_record& xsym (void)
-  {
-    symbol_table::scope_id curr_scope = symbol_table::current_scope ();
-
-    if (scope != curr_scope || ! sym.is_valid ())
-      {
-        scope = curr_scope;
-        sym = symbol_table::insert (sym.name ());
-      }
-
-    return sym;
-  }
+  symbol_table::symbol_reference sym;
 
   // No copying!
 

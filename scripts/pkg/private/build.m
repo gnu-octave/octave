@@ -34,7 +34,10 @@ function build (files, handle_deps, autoload, verbose)
       error ("could not create installation directory: %s", msg);
     endif
   endif
-  builddir = absolute_pathname (builddir);
+  [builddir, status] = canonicalize_file_name (builddir);
+  if (! status)
+    error ("cannot find directory %s", builddir);
+  endif
   installdir = fullfile (builddir, "install");
   if (! exist (installdir, "dir"))
     [status, msg] = mkdir (installdir);

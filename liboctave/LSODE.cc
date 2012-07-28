@@ -79,7 +79,7 @@ lsode_f (const octave_idx_type& neq, const double& time, double *,
   else
     {
       for (octave_idx_type i = 0; i < neq; i++)
-        deriv [i] = tmp_deriv.elem (i);
+        deriv[i] = tmp_deriv.elem (i);
     }
 
   END_INTERRUPT_WITH_EXCEPTIONS;
@@ -103,7 +103,7 @@ lsode_j (const octave_idx_type& neq, const double& time, double *,
 
   for (octave_idx_type j = 0; j < neq; j++)
     for (octave_idx_type i = 0; i < neq; i++)
-      pd [nrowpd * j + i] = tmp_jac (i, j);
+      pd[nrowpd * j + i] = tmp_jac (i, j);
 
   END_INTERRUPT_WITH_EXCEPTIONS;
 

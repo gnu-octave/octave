@@ -25,6 +25,7 @@ AM_CPPFLAGS = \
   -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
+  -Icorefcn -I$(srcdir)/corefcn \
   -I. -I$(srcdir) \
   @CPPFLAGS@
 
@@ -44,7 +45,7 @@ mkoctfile_LDADD = ../libgnu/libgnu.la $(LIBS)
 
 octave_config_SOURCES =
 nodist_octave_config_SOURCES = octave-config.cc
-octave_config_LDADD = ../libgnu/libgnu.la $(LIBS)
+octave_config_LDADD = corefcn/libcorefcn.la ../libgnu/libgnu.la $(LIBS)
 
 BUILT_SOURCES_EXTRA = \
   mkoctfile.cc \
@@ -231,6 +232,12 @@ PT_INCLUDES = \
   pt-walk.h \
   pt.h
 
+JIT_INCLUDES = \
+  jit-util.h \
+  jit-typeinfo.h \
+  jit-ir.h \
+  pt-jit.h
+
 octinclude_HEADERS = \
   Cell.h \
   builtins.h \
@@ -309,7 +316,8 @@ octinclude_HEADERS = \
   zfstream.h \
   $(OV_INCLUDES) \
   $(OV_SPARSE_INCLUDES) \
-  $(PT_INCLUDES)
+  $(PT_INCLUDES) \
+  $(JIT_INCLUDES)
 
 nodist_octinclude_HEADERS = \
   defaults.h \
@@ -402,6 +410,16 @@ PT_SRC = \
   pt-unop.cc \
   pt.cc
 
+JIT_SRC = \
+  jit-util.cc \
+  jit-typeinfo.cc \
+  jit-ir.cc \
+  pt-jit.cc
+
+#noinst_LTLIBRARIES =
+#
+#include corefcn/module.mk
+#
 DIST_SRC = \
   Cell.cc \
   bitfcns.cc \
@@ -473,9 +491,14 @@ DIST_SRC = \
   xnorm.cc \
   xpow.cc \
   zfstream.cc \
+  $(corefcn_SRC) \
   $(OV_SRC) \
-  $(PT_SRC)
+  $(PT_SRC) \
+  $(JIT_SRC)
 
+noinst_LTLIBRARIES =
+
+include corefcn/module.mk
 include DLD-FUNCTIONS/module.mk
 
 $(srcdir)/DLD-FUNCTIONS/module.mk: $(srcdir)/DLD-FUNCTIONS/config-module.sh $(srcdir)/DLD-FUNCTIONS/config-module.awk $(srcdir)/DLD-FUNCTIONS/module-files
@@ -533,6 +556,9 @@ liboctinterp_la_LDFLAGS = \
   $(LIBOCTINTERP_LINK_OPTS)
 
 display.df display.lo: CPPFLAGS += $(X11_FLAGS)
+
+## FIXME: Does this rule need to be uncommented?
+#fft.df fft.lo fft2.df fft2.lo fftn.df fftn.lo: CPPFLAGS += $(FFTW_XCPPFLAGS)
 
 octave_SOURCES = main.c
 

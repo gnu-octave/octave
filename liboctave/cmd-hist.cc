@@ -535,7 +535,7 @@ void
 command_history::process_histcontrol (const std::string& control_arg)
 {
   if (instance_ok ())
-    instance->do_process_histcontrol(control_arg);
+    instance->do_process_histcontrol (control_arg);
 }
 
 std::string

@@ -25,7 +25,7 @@
 ## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} imshow (@dots{})
 ## Display the image @var{im}, where @var{im} can be a 2-dimensional
-## (gray-scale image) or a 3-dimensional (RGB image) matrix.
+## (grayscale image) or a 3-dimensional (RGB image) matrix.
 ##
 ## If @var{limits} is a 2-element vector @code{[@var{low}, @var{high}]},
 ## the image is shown using a display range between @var{low} and

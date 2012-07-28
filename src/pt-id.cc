@@ -65,7 +65,7 @@ tree_identifier::rvalue (int nargout)
   if (error_state)
     return retval;
 
-  octave_value val = xsym ().find ();
+  octave_value val = sym->find ();
 
   if (val.is_defined ())
     {
@@ -116,7 +116,7 @@ tree_identifier::rvalue1 (int nargout)
 octave_lvalue
 tree_identifier::lvalue (void)
 {
-  return octave_lvalue (&(xsym ().varref ()));
+  return octave_lvalue (&(sym->varref ()));
 }
 
 tree_identifier *

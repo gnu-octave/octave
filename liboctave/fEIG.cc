@@ -226,8 +226,8 @@ FloatEIG::init (const FloatMatrix& a, bool calc_ev)
                   return -1;
                 }
 
-              lambda.elem(j) = FloatComplex (wr.elem(j), wi.elem(j));
-              lambda.elem(j+1) = FloatComplex (wr.elem(j+1), wi.elem(j+1));
+              lambda.elem (j) = FloatComplex (wr.elem (j), wi.elem (j));
+              lambda.elem (j+1) = FloatComplex (wr.elem (j+1), wi.elem (j+1));
 
               for (octave_idx_type i = 0; i < nvr; i++)
                 {
@@ -576,10 +576,10 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_ev)
                   return -1;
                 }
 
-              lambda.elem(j) = FloatComplex (ar.elem(j) / beta.elem (j),
-                                             ai.elem(j) / beta.elem (j));
-              lambda.elem(j+1) = FloatComplex (ar.elem(j+1) / beta.elem (j+1),
-                                               ai.elem(j+1) / beta.elem (j+1));
+              lambda.elem (j) = FloatComplex (ar.elem (j) / beta.elem (j),
+                                              ai.elem (j) / beta.elem (j));
+              lambda.elem (j+1) = FloatComplex (ar.elem (j+1) / beta.elem (j+1),
+                                                ai.elem (j+1) / beta.elem (j+1));
 
               for (octave_idx_type i = 0; i < nvr; i++)
                 {
@@ -775,7 +775,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b, bool c
       lambda.resize (n);
 
       for (octave_idx_type j = 0; j < n; j++)
-        lambda.elem (j) = alpha.elem (j) / beta.elem(j);
+        lambda.elem (j) = alpha.elem (j) / beta.elem (j);
 
       v = vtmp;
     }

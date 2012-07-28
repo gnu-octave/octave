@@ -426,7 +426,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
 {
   int ial = ia.length (), rhdvl = rhdv.length ();
   dim_vector rdv = dim_vector::alloc (ial);
-  bool *scalar = new bool[ial], *colon = new bool[ial];
+  bool *scalar = new bool [ial], *colon = new bool [ial];
   // Mark scalars and colons, count non-scalar indices.
   int nonsc = 0;
   bool all_colons = true;
@@ -445,7 +445,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
   if (all_colons)
     {
       rdv = rhdv;
-      rdv.resize(ial, 1);
+      rdv.resize (ial, 1);
     }
   else if (nonsc == rhdvl)
     {
@@ -466,7 +466,7 @@ zero_dims_inquire (const Array<idx_vector>& ia, const dim_vector& rhdv)
         {
           if (scalar[i]) continue;
           if (colon[i])
-            rdv(i) =  (j < rhdv0l) ? rhdv0(j++) : 1;
+            rdv(i) = (j < rhdv0l) ? rhdv0(j++) : 1;
         }
     }
 

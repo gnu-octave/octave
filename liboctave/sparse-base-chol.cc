@@ -56,24 +56,24 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::drop_zeros
 
   for (k = 0; k < ncol; k++)
     {
-      p = Sp [k];
-      pend = Sp [k+1];
-      Sp [k] = pdest;
+      p = Sp[k];
+      pend = Sp[k+1];
+      Sp[k] = pdest;
       for (; p < pend; p++)
         {
-          sik = Sx [p];
+          sik = Sx[p];
           if (CHOLMOD_IS_NONZERO (sik))
             {
               if (p != pdest)
                 {
-                  Si [pdest] = Si [p];
-                  Sx [pdest] = sik;
+                  Si[pdest] = Si[p];
+                  Sx[pdest] = sik;
                 }
               pdest++;
             }
         }
     }
-  Sp [ncol] = pdest;
+  Sp[ncol] = pdest;
 }
 #endif
 
@@ -157,7 +157,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   if (natural)
     {
       cm->nmethods = 1 ;
-      cm->method [0].ordering = CHOLMOD_NATURAL ;
+      cm->method[0].ordering = CHOLMOD_NATURAL ;
       cm->postorder = false ;
     }
 
@@ -229,11 +229,11 @@ sparse_base_chol<chol_type, chol_elt, p_type>::L (void) const
   octave_idx_type nnz = m->nzmax;
   chol_type ret (m->nrow, nc, nnz);
   for (octave_idx_type j = 0; j < nc+1; j++)
-    ret.xcidx(j) = static_cast<octave_idx_type *>(m->p)[j];
+    ret.xcidx (j) = static_cast<octave_idx_type *>(m->p)[j];
   for (octave_idx_type i = 0; i < nnz; i++)
     {
-      ret.xridx(i) = static_cast<octave_idx_type *>(m->i)[i];
-      ret.xdata(i) = static_cast<chol_elt *>(m->x)[i];
+      ret.xridx (i) = static_cast<octave_idx_type *>(m->i)[i];
+      ret.xdata (i) = static_cast<chol_elt *>(m->x)[i];
     }
   return ret;
 #else
@@ -252,11 +252,11 @@ sparse_base_chol_rep::Q (void) const
 
   for (octave_idx_type i = 0; i < n; i++)
     {
-      p.xcidx(i) = i;
-      p.xridx(i) = static_cast<octave_idx_type>(perms(i));
-      p.xdata(i) = 1;
+      p.xcidx (i) = i;
+      p.xridx (i) = static_cast<octave_idx_type>(perms (i));
+      p.xdata (i) = 1;
     }
-  p.xcidx(n) = n;
+  p.xcidx (n) = n;
 
   return p;
 #else
@@ -277,7 +277,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::inverse (void) const
   double rcond2;
   octave_idx_type info;
   MatrixType mattype (MatrixType::Upper);
-  chol_type linv = L ().hermitian ().inverse(mattype, info, rcond2, 1, 0);
+  chol_type linv = L ().hermitian ().inverse (mattype, info, rcond2, 1, 0);
 
   if (perms.length () == n)
     {

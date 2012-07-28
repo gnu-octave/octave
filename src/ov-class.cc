@@ -1277,7 +1277,7 @@ octave_class::reconstruct_parents (void)
       if ( val(0).is_object () )
         {
           dbgstr = "blork";
-          if( key == val(0).class_name () )
+          if ( key == val(0).class_name () )
             {
               might_have_inheritance = true;
               dbgstr = "cork";

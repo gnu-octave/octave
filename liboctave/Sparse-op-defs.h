@@ -74,11 +74,11 @@ along with Octave; see the file COPYING.  If not, see
  \
     for (octave_idx_type i = 0; i < nz; i++) \
       { \
-        r.xdata(i) = m.data(i) OP s; \
-        r.xridx(i) = m.ridx(i); \
+        r.xdata (i) = m.data (i) OP s; \
+        r.xridx (i) = m.ridx (i); \
       } \
     for (octave_idx_type i = 0; i < nc + 1; i++) \
-      r.xcidx(i) = m.cidx(i); \
+      r.xcidx (i) = m.cidx (i); \
     \
     r.maybe_compress (true); \
     return r; \
@@ -114,7 +114,7 @@ along with Octave; see the file COPYING.  If not, see
       { \
         r = SparseBoolMatrix (nr, nc, true); \
         for (octave_idx_type j = 0; j < nc; j++) \
-          for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
+          for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
             if (! (MC (m.data (i)) OP SC (s))) \
               r.data (m.ridx (i) + j * nr) = false; \
         r.maybe_compress (true); \
@@ -126,7 +126,7 @@ along with Octave; see the file COPYING.  If not, see
         octave_idx_type nel = 0; \
         for (octave_idx_type j = 0; j < nc; j++) \
           { \
-            for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
+            for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
               if (MC (m.data (i)) OP SC (s)) \
                 { \
                   r.ridx (nel) = m.ridx (i); \
@@ -169,8 +169,8 @@ along with Octave; see the file COPYING.  If not, see
           { \
             r = SparseBoolMatrix (nr, nc, true); \
             for (octave_idx_type j = 0; j < nc; j++) \
-              for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
-                if (! ((m.data(i) != LHS_ZERO) OP (s != RHS_ZERO))) \
+              for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
+                if (! ((m.data (i) != LHS_ZERO) OP (s != RHS_ZERO))) \
                   r.data (m.ridx (i) + j * nr) = false; \
             r.maybe_compress (true); \
           } \
@@ -181,8 +181,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < nc; j++) \
               { \
-                for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
-                  if ((m.data(i) != LHS_ZERO) OP (s != RHS_ZERO)) \
+                for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
+                  if ((m.data (i) != LHS_ZERO) OP (s != RHS_ZERO)) \
                     { \
                       r.ridx (nel) = m.ridx (i); \
                       r.data (nel++) = true; \
@@ -243,11 +243,11 @@ along with Octave; see the file COPYING.  If not, see
  \
     for (octave_idx_type i = 0; i < nz; i++) \
       { \
-        r.xdata(i) = s OP m.data(i); \
-        r.xridx(i) = m.ridx(i); \
+        r.xdata (i) = s OP m.data (i); \
+        r.xridx (i) = m.ridx (i); \
       } \
     for (octave_idx_type i = 0; i < nc + 1; i++) \
-      r.xcidx(i) = m.cidx(i); \
+      r.xcidx (i) = m.cidx (i); \
  \
     r.maybe_compress(true); \
     return r; \
@@ -283,7 +283,7 @@ along with Octave; see the file COPYING.  If not, see
       { \
         r = SparseBoolMatrix (nr, nc, true); \
         for (octave_idx_type j = 0; j < nc; j++) \
-          for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
+          for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
             if (! (SC (s) OP MC (m.data (i)))) \
               r.data (m.ridx (i) + j * nr) = false; \
         r.maybe_compress (true); \
@@ -295,7 +295,7 @@ along with Octave; see the file COPYING.  If not, see
         octave_idx_type nel = 0; \
         for (octave_idx_type j = 0; j < nc; j++) \
           { \
-            for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
+            for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
               if (SC (s) OP MC (m.data (i))) \
                 { \
                   r.ridx (nel) = m.ridx (i); \
@@ -338,8 +338,8 @@ along with Octave; see the file COPYING.  If not, see
           { \
             r = SparseBoolMatrix (nr, nc, true); \
             for (octave_idx_type j = 0; j < nc; j++) \
-              for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
-                if (! ((s != LHS_ZERO) OP (m.data(i) != RHS_ZERO))) \
+              for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
+                if (! ((s != LHS_ZERO) OP (m.data (i) != RHS_ZERO))) \
                   r.data (m.ridx (i) + j * nr) = false; \
             r.maybe_compress (true); \
           } \
@@ -350,8 +350,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < nc; j++) \
               { \
-                for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++) \
-                  if ((s != LHS_ZERO) OP (m.data(i) != RHS_ZERO)) \
+                for (octave_idx_type i = m.cidx (j); i < m.cidx (j+1); i++) \
+                  if ((s != LHS_ZERO) OP (m.data (i) != RHS_ZERO)) \
                     { \
                       r.ridx (nel) = m.ridx (i); \
                       r.data (nel++) = true; \
@@ -398,20 +398,20 @@ along with Octave; see the file COPYING.  If not, see
  \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-        if (m1.elem(0,0) == 0.) \
+        if (m1.elem (0,0) == 0.) \
           r = OP R (m2); \
         else \
           { \
-            r = R (m2_nr, m2_nc, m1.data(0) OP 0.); \
+            r = R (m2_nr, m2_nc, m1.data (0) OP 0.); \
             \
             for (octave_idx_type j = 0 ; j < m2_nc ; j++) \
               { \
                 octave_quit (); \
                 octave_idx_type idxj = j * m2_nr; \
-                for (octave_idx_type i = m2.cidx(j) ; i < m2.cidx(j+1) ; i++) \
+                for (octave_idx_type i = m2.cidx (j) ; i < m2.cidx (j+1) ; i++) \
                   { \
                     octave_quit (); \
-                    r.data(idxj + m2.ridx(i)) = m1.data(0) OP m2.data(i); \
+                    r.data (idxj + m2.ridx (i)) = m1.data (0) OP m2.data (i); \
                   } \
               } \
             r.maybe_compress (); \
@@ -419,20 +419,20 @@ along with Octave; see the file COPYING.  If not, see
       } \
     else if (m2_nr == 1 && m2_nc == 1) \
       { \
-        if (m2.elem(0,0) == 0.) \
+        if (m2.elem (0,0) == 0.) \
           r = R (m1); \
         else \
           { \
-            r = R (m1_nr, m1_nc, 0. OP m2.data(0)); \
+            r = R (m1_nr, m1_nc, 0. OP m2.data (0)); \
             \
             for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
               { \
                 octave_quit (); \
                 octave_idx_type idxj = j * m1_nr; \
-                for (octave_idx_type i = m1.cidx(j) ; i < m1.cidx(j+1) ; i++) \
+                for (octave_idx_type i = m1.cidx (j) ; i < m1.cidx (j+1) ; i++) \
                   { \
                     octave_quit (); \
-                    r.data(idxj + m1.ridx(i)) = m1.data(i) OP m2.data(0); \
+                    r.data (idxj + m1.ridx (i)) = m1.data (i) OP m2.data (0); \
                   } \
               } \
             r.maybe_compress (); \
@@ -448,41 +448,41 @@ along with Octave; see the file COPYING.  If not, see
         r.cidx (0) = 0; \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            octave_idx_type  ja = m1.cidx(i); \
-            octave_idx_type  ja_max = m1.cidx(i+1); \
+            octave_idx_type  ja = m1.cidx (i); \
+            octave_idx_type  ja_max = m1.cidx (i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            octave_idx_type  jb = m2.cidx(i); \
-            octave_idx_type  jb_max = m2.cidx(i+1); \
+            octave_idx_type  jb = m2.cidx (i); \
+            octave_idx_type  jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
                 octave_quit (); \
                 if ((! jb_lt_max) || \
-                      (ja_lt_max && (m1.ridx(ja) < m2.ridx(jb)))) \
+                      (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb)))) \
                   { \
-                    r.ridx(jx) = m1.ridx(ja); \
-                    r.data(jx) = m1.data(ja) OP 0.; \
+                    r.ridx (jx) = m1.ridx (ja); \
+                    r.data (jx) = m1.data (ja) OP 0.; \
                     jx++; \
                     ja++; \
                     ja_lt_max= ja < ja_max; \
                   } \
                 else if (( !ja_lt_max ) || \
-                     (jb_lt_max && (m2.ridx(jb) < m1.ridx(ja)) ) ) \
+                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)) ) ) \
                   { \
-                    r.ridx(jx) = m2.ridx(jb); \
-                    r.data(jx) = 0. OP m2.data(jb); \
+                    r.ridx (jx) = m2.ridx (jb); \
+                    r.data (jx) = 0. OP m2.data (jb); \
                     jx++; \
                     jb++; \
                     jb_lt_max= jb < jb_max; \
                   } \
                 else \
                   { \
-                     if ((m1.data(ja) OP m2.data(jb)) != 0.) \
+                     if ((m1.data (ja) OP m2.data (jb)) != 0.) \
                        { \
-                          r.data(jx) = m1.data(ja) OP m2.data(jb); \
-                          r.ridx(jx) = m1.ridx(ja); \
+                          r.data (jx) = m1.data (ja) OP m2.data (jb); \
+                          r.ridx (jx) = m1.ridx (ja); \
                           jx++; \
                        } \
                      ja++; \
@@ -491,7 +491,7 @@ along with Octave; see the file COPYING.  If not, see
                      jb_lt_max= jb < jb_max; \
                   } \
               } \
-            r.cidx(i+1) = jx; \
+            r.cidx (i+1) = jx; \
           } \
         \
         r.maybe_compress (); \
@@ -514,7 +514,7 @@ along with Octave; see the file COPYING.  If not, see
  \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-        if (m1.elem(0,0) == 0.) \
+        if (m1.elem (0,0) == 0.) \
           r = R (m2_nr, m2_nc); \
         else \
           { \
@@ -524,14 +524,14 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type i = 0 ; i < m2_nnz ; i++) \
               { \
                 octave_quit (); \
-                r.data (i) = m1.data(0) OP r.data(i); \
+                r.data (i) = m1.data (0) OP r.data (i); \
               } \
             r.maybe_compress (); \
           } \
       } \
     else if (m2_nr == 1 && m2_nc == 1) \
       { \
-        if (m2.elem(0,0) == 0.) \
+        if (m2.elem (0,0) == 0.) \
           r = R (m1_nr, m1_nc); \
         else \
           { \
@@ -541,7 +541,7 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type i = 0 ; i < m1_nnz ; i++) \
               { \
                 octave_quit (); \
-                r.data (i) = r.data(i) OP m2.data(0); \
+                r.data (i) = r.data (i) OP m2.data (0); \
               } \
             r.maybe_compress (); \
           } \
@@ -556,40 +556,40 @@ along with Octave; see the file COPYING.  If not, see
         r.cidx (0) = 0; \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            octave_idx_type  ja = m1.cidx(i); \
-            octave_idx_type  ja_max = m1.cidx(i+1); \
+            octave_idx_type  ja = m1.cidx (i); \
+            octave_idx_type  ja_max = m1.cidx (i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            octave_idx_type  jb = m2.cidx(i); \
-            octave_idx_type  jb_max = m2.cidx(i+1); \
+            octave_idx_type  jb = m2.cidx (i); \
+            octave_idx_type  jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
                 octave_quit (); \
                 if ((! jb_lt_max) || \
-                      (ja_lt_max && (m1.ridx(ja) < m2.ridx(jb)))) \
+                      (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb)))) \
                   { \
                      ja++; ja_lt_max= ja < ja_max; \
                   } \
                 else if (( !ja_lt_max ) || \
-                     (jb_lt_max && (m2.ridx(jb) < m1.ridx(ja)) ) ) \
+                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)) ) ) \
                   { \
                      jb++; jb_lt_max= jb < jb_max; \
                   } \
                 else \
                   { \
-                     if ((m1.data(ja) OP m2.data(jb)) != 0.) \
+                     if ((m1.data (ja) OP m2.data (jb)) != 0.) \
                        { \
-                          r.data(jx) = m1.data(ja) OP m2.data(jb); \
-                          r.ridx(jx) = m1.ridx(ja); \
+                          r.data (jx) = m1.data (ja) OP m2.data (jb); \
+                          r.ridx (jx) = m1.ridx (ja); \
                           jx++; \
                        } \
                      ja++; ja_lt_max= ja < ja_max; \
                      jb++; jb_lt_max= jb < jb_max; \
                   } \
               } \
-            r.cidx(i+1) = jx; \
+            r.cidx (i+1) = jx; \
           } \
         \
         r.maybe_compress (); \
@@ -617,20 +617,20 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type m2_nnz = m2.nnz (); \
             r = R (m2); \
             for (octave_idx_type i = 0 ; i < m2_nnz ; i++) \
-              r.data (i) = m1.elem(0,0) OP r.data(i); \
+              r.data (i) = m1.elem (0,0) OP r.data (i); \
             r.maybe_compress (); \
           } \
         else \
           { \
-            r = R (m2_nr, m2_nc, m1.elem(0,0) OP Complex ()); \
+            r = R (m2_nr, m2_nc, m1.elem (0,0) OP Complex ()); \
             for (octave_idx_type j = 0 ; j < m2_nc ; j++) \
               { \
                 octave_quit (); \
                 octave_idx_type idxj = j * m2_nr; \
-                for (octave_idx_type i = m2.cidx(j) ; i < m2.cidx(j+1) ; i++) \
+                for (octave_idx_type i = m2.cidx (j) ; i < m2.cidx (j+1) ; i++) \
                   { \
                     octave_quit (); \
-                    r.data(idxj + m2.ridx(i)) = m1.elem(0,0) OP m2.data(i); \
+                    r.data (idxj + m2.ridx (i)) = m1.elem (0,0) OP m2.data (i); \
                   } \
               } \
             r.maybe_compress (); \
@@ -643,20 +643,20 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type m1_nnz = m1.nnz (); \
             r = R (m1); \
             for (octave_idx_type i = 0 ; i < m1_nnz ; i++) \
-              r.data (i) = r.data(i) OP m2.elem(0,0); \
+              r.data (i) = r.data (i) OP m2.elem (0,0); \
             r.maybe_compress (); \
           } \
         else \
           { \
-            r = R (m1_nr, m1_nc, Complex () OP m2.elem(0,0)); \
+            r = R (m1_nr, m1_nc, Complex () OP m2.elem (0,0)); \
             for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
               { \
                 octave_quit (); \
                 octave_idx_type idxj = j * m1_nr; \
-                for (octave_idx_type i = m1.cidx(j) ; i < m1.cidx(j+1) ; i++) \
+                for (octave_idx_type i = m1.cidx (j) ; i < m1.cidx (j+1) ; i++) \
                   { \
                     octave_quit (); \
-                    r.data(idxj + m1.ridx(i)) = m1.data(i) OP m2.elem(0,0); \
+                    r.data (idxj + m1.ridx (i)) = m1.data (i) OP m2.elem (0,0); \
                   } \
               } \
             r.maybe_compress (); \
@@ -672,36 +672,36 @@ along with Octave; see the file COPYING.  If not, see
         \
         for (octave_idx_type i = 0 ; i < m1_nc ; i++) \
           { \
-            octave_idx_type  ja = m1.cidx(i); \
-            octave_idx_type  ja_max = m1.cidx(i+1); \
+            octave_idx_type  ja = m1.cidx (i); \
+            octave_idx_type  ja_max = m1.cidx (i+1); \
             bool ja_lt_max= ja < ja_max; \
             \
-            octave_idx_type  jb = m2.cidx(i); \
-            octave_idx_type  jb_max = m2.cidx(i+1); \
+            octave_idx_type  jb = m2.cidx (i); \
+            octave_idx_type  jb_max = m2.cidx (i+1); \
             bool jb_lt_max = jb < jb_max; \
             \
             while (ja_lt_max || jb_lt_max ) \
               { \
                 octave_quit (); \
                 if ((! jb_lt_max) || \
-                      (ja_lt_max && (m1.ridx(ja) < m2.ridx(jb)))) \
+                      (ja_lt_max && (m1.ridx (ja) < m2.ridx (jb)))) \
                   { \
                     /* keep those kludges coming */ \
-                    r.elem(m1.ridx(ja),i) = m1.data(ja) OP Complex (); \
+                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP Complex (); \
                     ja++; \
                     ja_lt_max= ja < ja_max; \
                   } \
                 else if (( !ja_lt_max ) || \
-                     (jb_lt_max && (m2.ridx(jb) < m1.ridx(ja)) ) ) \
+                     (jb_lt_max && (m2.ridx (jb) < m1.ridx (ja)) ) ) \
                   { \
                     /* keep those kludges coming */ \
-                    r.elem(m2.ridx(jb),i) = Complex () OP m2.data(jb);  \
+                    r.elem (m2.ridx (jb),i) = Complex () OP m2.data (jb);  \
                     jb++; \
                     jb_lt_max= jb < jb_max; \
                   } \
                 else \
                   { \
-                    r.elem(m1.ridx(ja),i) = m1.data(ja) OP m2.data(jb); \
+                    r.elem (m1.ridx (ja),i) = m1.data (ja) OP m2.data (jb); \
                     ja++; \
                     ja_lt_max= ja < ja_max; \
                     jb++; \
@@ -755,12 +755,12 @@ along with Octave; see the file COPYING.  If not, see
     \
     if (m1_nr == 1 && m1_nc == 1) \
       { \
-    if (C1 (m1.elem(0,0)) OP C2 (Z2)) \
+    if (C1 (m1.elem (0,0)) OP C2 (Z2)) \
           { \
             r = SparseBoolMatrix (m2_nr, m2_nc, true); \
             for (octave_idx_type j = 0; j < m2_nc; j++) \
-              for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
-                if (! (C1 (m1.elem (0,0)) OP C2 (m2.data(i)))) \
+              for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
+                if (! (C1 (m1.elem (0,0)) OP C2 (m2.data (i)))) \
                   r.data (m2.ridx (i) + j * m2_nr) = false; \
             r.maybe_compress (true); \
           } \
@@ -771,8 +771,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m2_nc; j++) \
               { \
-                for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
-                  if (C1 (m1.elem (0,0)) OP C2 (m2.data(i))) \
+                for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
+                  if (C1 (m1.elem (0,0)) OP C2 (m2.data (i))) \
                     { \
                       r.ridx (nel) = m2.ridx (i); \
                       r.data (nel++) = true; \
@@ -788,8 +788,8 @@ along with Octave; see the file COPYING.  If not, see
           { \
             r = SparseBoolMatrix (m1_nr, m1_nc, true); \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
-              for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
-                if (! (C1 (m1.data (i)) OP C2 (m2.elem(0,0)))) \
+              for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
+                if (! (C1 (m1.data (i)) OP C2 (m2.elem (0,0)))) \
                   r.data (m1.ridx (i) + j * m1_nr) = false; \
             r.maybe_compress (true); \
           } \
@@ -800,8 +800,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               { \
-                for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
-                  if (C1 (m1.data (i)) OP C2 (m2.elem(0,0))) \
+                for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
+                  if (C1 (m1.data (i)) OP C2 (m2.elem (0,0))) \
                     { \
                       r.ridx (nel) = m1.ridx (i); \
                       r.data (nel++) = true; \
@@ -826,13 +826,13 @@ along with Octave; see the file COPYING.  If not, see
                      octave_idx_type e2 = m2.cidx (j+1); \
                      while (i1 < e1 || i2 < e2) \
                        { \
-                         if (i1 == e1 || (i2 < e2 && m1.ridx(i1) > m2.ridx(i2))) \
+                         if (i1 == e1 || (i2 < e2 && m1.ridx (i1) > m2.ridx (i2))) \
                            { \
                              if (! (C1 (Z1) OP C2 (m2.data (i2)))) \
                                r.data (m2.ridx (i2) + j * m1_nr) = false; \
                              i2++; \
                            } \
-                         else if (i2 == e2 || m1.ridx(i1) < m2.ridx(i2)) \
+                         else if (i2 == e2 || m1.ridx (i1) < m2.ridx (i2)) \
                            { \
                              if (! (C1 (m1.data (i1)) OP C2 (Z2))) \
                                r.data (m1.ridx (i1) + j * m1_nr) = false; \
@@ -862,7 +862,7 @@ along with Octave; see the file COPYING.  If not, see
                      octave_idx_type e2 = m2.cidx (j+1); \
                      while (i1 < e1 || i2 < e2) \
                        { \
-                         if (i1 == e1 || (i2 < e2 && m1.ridx(i1) > m2.ridx(i2))) \
+                         if (i1 == e1 || (i2 < e2 && m1.ridx (i1) > m2.ridx (i2))) \
                            { \
                              if (C1 (Z1) OP C2 (m2.data (i2))) \
                                { \
@@ -871,7 +871,7 @@ along with Octave; see the file COPYING.  If not, see
                                } \
                              i2++; \
                            } \
-                         else if (i2 == e2 || m1.ridx(i1) < m2.ridx(i2)) \
+                         else if (i2 == e2 || m1.ridx (i1) < m2.ridx (i2)) \
                            { \
                              if (C1 (m1.data (i1)) OP C2 (Z2)) \
                                { \
@@ -941,12 +941,12 @@ along with Octave; see the file COPYING.  If not, see
       { \
         if (m2_nr > 0 && m2_nc > 0) \
           { \
-            if ((m1.elem(0,0) != LHS_ZERO) OP RHS_ZERO) \
+            if ((m1.elem (0,0) != LHS_ZERO) OP RHS_ZERO) \
               { \
                 r = SparseBoolMatrix (m2_nr, m2_nc, true); \
                 for (octave_idx_type j = 0; j < m2_nc; j++) \
-                  for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
-                    if (! ((m1.elem(0,0) != LHS_ZERO) OP (m2.data(i) != RHS_ZERO))) \
+                  for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
+                    if (! ((m1.elem (0,0) != LHS_ZERO) OP (m2.data (i) != RHS_ZERO))) \
                       r.data (m2.ridx (i) + j * m2_nr) = false; \
                 r.maybe_compress (true); \
               } \
@@ -957,8 +957,8 @@ along with Octave; see the file COPYING.  If not, see
                 octave_idx_type nel = 0; \
                 for (octave_idx_type j = 0; j < m2_nc; j++) \
                   { \
-                    for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
-                      if ((m1.elem(0,0) != LHS_ZERO) OP (m2.data(i) != RHS_ZERO)) \
+                    for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
+                      if ((m1.elem (0,0) != LHS_ZERO) OP (m2.data (i) != RHS_ZERO)) \
                         { \
                           r.ridx (nel) = m2.ridx (i); \
                           r.data (nel++) = true; \
@@ -973,12 +973,12 @@ along with Octave; see the file COPYING.  If not, see
       { \
         if (m1_nr > 0 && m1_nc > 0) \
           { \
-            if (LHS_ZERO OP (m2.elem(0,0) != RHS_ZERO)) \
+            if (LHS_ZERO OP (m2.elem (0,0) != RHS_ZERO)) \
               { \
                 r = SparseBoolMatrix (m1_nr, m1_nc, true); \
                 for (octave_idx_type j = 0; j < m1_nc; j++) \
-                  for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
-                    if (! ((m1.data(i) != LHS_ZERO) OP (m2.elem(0,0) != RHS_ZERO))) \
+                  for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
+                    if (! ((m1.data (i) != LHS_ZERO) OP (m2.elem (0,0) != RHS_ZERO))) \
                       r.data (m1.ridx (i) + j * m1_nr) = false; \
                 r.maybe_compress (true); \
               } \
@@ -989,8 +989,8 @@ along with Octave; see the file COPYING.  If not, see
                 octave_idx_type nel = 0; \
                 for (octave_idx_type j = 0; j < m1_nc; j++) \
                   { \
-                    for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
-                      if ((m1.data(i) != LHS_ZERO) OP (m2.elem(0,0) != RHS_ZERO)) \
+                    for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
+                      if ((m1.data (i) != LHS_ZERO) OP (m2.elem (0,0) != RHS_ZERO)) \
                         { \
                           r.ridx (nel) = m1.ridx (i); \
                           r.data (nel++) = true; \
@@ -1016,7 +1016,7 @@ along with Octave; see the file COPYING.  If not, see
                 octave_idx_type e2 = m2.cidx (j+1); \
                 while (i1 < e1 || i2 < e2) \
                   { \
-                    if (i1 == e1 || (i2 < e2 && m1.ridx(i1) > m2.ridx(i2))) \
+                    if (i1 == e1 || (i2 < e2 && m1.ridx (i1) > m2.ridx (i2))) \
                       { \
                         if (LHS_ZERO OP m2.data (i2) != RHS_ZERO) \
                           { \
@@ -1025,7 +1025,7 @@ along with Octave; see the file COPYING.  If not, see
                           } \
                         i2++; \
                       } \
-                    else if (i2 == e2 || m1.ridx(i1) < m2.ridx(i2)) \
+                    else if (i2 == e2 || m1.ridx (i1) < m2.ridx (i2)) \
                       { \
                         if (m1.data (i1) != LHS_ZERO OP RHS_ZERO) \
                           { \
@@ -1036,7 +1036,7 @@ along with Octave; see the file COPYING.  If not, see
                       } \
                     else \
                       { \
-                        if (m1.data (i1) != LHS_ZERO OP m2.data(i2) != RHS_ZERO) \
+                        if (m1.data (i1) != LHS_ZERO OP m2.data (i2) != RHS_ZERO) \
                           { \
                             r.ridx (nel) = m1.ridx (i1); \
                             r.data (nel++) = true; \
@@ -1091,7 +1091,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
  \
     if (m2_nr == 1 && m2_nc == 1) \
-      r = R (m1 OP m2.elem(0,0)); \
+      r = R (m1 OP m2.elem (0,0)); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
@@ -1114,7 +1114,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
  \
     if (m2_nr == 1 && m2_nc == 1) \
-      r = R (m1 OP m2.elem(0,0)); \
+      r = R (m1 OP m2.elem (0,0)); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
@@ -1127,18 +1127,18 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type j = 0, k = 0; j < m2_nc; j++) \
               { \
                 octave_quit (); \
-                for (octave_idx_type i = m2.cidx(j); i < m2.cidx(j+1); i++) \
+                for (octave_idx_type i = m2.cidx (j); i < m2.cidx (j+1); i++) \
                   { \
-                    octave_idx_type mri = m2.ridx(i); \
-                    R::element_type x = m1(mri, j) OP m2.data(i); \
+                    octave_idx_type mri = m2.ridx (i); \
+                    R::element_type x = m1(mri, j) OP m2.data (i); \
                     if (x != 0.0) \
                       { \
-                        r.xdata(k) = x; \
-                        r.xridx(k) = m2.ridx(i); \
+                        r.xdata (k) = x; \
+                        r.xridx (k) = m2.ridx (i); \
                         k++; \
                       } \
                   } \
-                r.xcidx(j+1) = k; \
+                r.xcidx (j+1) = k; \
               } \
             r.maybe_compress (false); \
             return r; \
@@ -1182,7 +1182,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
     \
     if (m2_nr == 1 && m2_nc == 1) \
-      r = SparseBoolMatrix (F (m1, m2.elem(0,0))); \
+      r = SparseBoolMatrix (F (m1, m2.elem (0,0))); \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
         if (m1_nr != 0 || m1_nc != 0) \
@@ -1191,7 +1191,7 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
-                if (C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j))) \
+                if (C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j))) \
                   nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
@@ -1202,14 +1202,14 @@ along with Octave; see the file COPYING.  If not, see
               { \
                 for (octave_idx_type i = 0; i < m1_nr; i++) \
                   { \
-                    bool el = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
+                    bool el = C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j)); \
                     if (el) \
                       { \
-                        r.data(ii) = el; \
-                        r.ridx(ii++) = i; \
+                        r.data (ii) = el; \
+                        r.ridx (ii++) = i; \
                       } \
                   } \
-                r.cidx(j+1) = ii; \
+                r.cidx (j+1) = ii; \
               } \
           } \
       }       \
@@ -1250,7 +1250,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
     \
     if (m2_nr == 1 && m2_nc == 1) \
-      r = SparseBoolMatrix  (F (m1, m2.elem(0,0))); \
+      r = SparseBoolMatrix (F (m1, m2.elem (0,0))); \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
         if (m1_nr != 0 || m1_nc != 0) \
@@ -1259,8 +1259,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
-                if ((m1.elem(i, j) != LHS_ZERO) \
-                    OP (m2.elem(i, j) != RHS_ZERO)) \
+                if ((m1.elem (i, j) != LHS_ZERO) \
+                    OP (m2.elem (i, j) != RHS_ZERO)) \
                   nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
@@ -1271,15 +1271,15 @@ along with Octave; see the file COPYING.  If not, see
               { \
                 for (octave_idx_type i = 0; i < m1_nr; i++) \
                   { \
-                    bool el = (m1.elem(i, j) != LHS_ZERO) \
-                      OP (m2.elem(i, j) != RHS_ZERO);     \
+                    bool el = (m1.elem (i, j) != LHS_ZERO) \
+                      OP (m2.elem (i, j) != RHS_ZERO);     \
                     if (el) \
                       { \
-                        r.data(ii) = el; \
-                        r.ridx(ii++) = i; \
+                        r.data (ii) = el; \
+                        r.ridx (ii++) = i; \
                       } \
                   } \
-                r.cidx(j+1) = ii; \
+                r.cidx (j+1) = ii; \
               } \
           } \
       }       \
@@ -1324,7 +1324,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr == 1 && m1_nc == 1) \
-      r = R (m1.elem(0,0) OP m2); \
+      r = R (m1.elem (0,0) OP m2); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
@@ -1355,7 +1355,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
  \
     if (m1_nr == 1 && m1_nc == 1) \
-      r = R (m1.elem(0,0) OP m2); \
+      r = R (m1.elem (0,0) OP m2); \
     else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
@@ -1368,18 +1368,18 @@ along with Octave; see the file COPYING.  If not, see
             for (octave_idx_type j = 0, k = 0; j < m1_nc; j++) \
               { \
                 octave_quit (); \
-                for (octave_idx_type i = m1.cidx(j); i < m1.cidx(j+1); i++) \
+                for (octave_idx_type i = m1.cidx (j); i < m1.cidx (j+1); i++) \
                   { \
-                    octave_idx_type mri = m1.ridx(i); \
-                    R::element_type x = m1.data(i) OP m2(mri, j); \
+                    octave_idx_type mri = m1.ridx (i); \
+                    R::element_type x = m1.data (i) OP m2 (mri, j); \
                     if (x != 0.0) \
                       { \
-                        r.xdata(k) = x; \
-                        r.xridx(k) = m1.ridx(i); \
+                        r.xdata (k) = x; \
+                        r.xridx (k) = m1.ridx (i); \
                         k++; \
                       } \
                   } \
-                r.xcidx(j+1) = k; \
+                r.xcidx (j+1) = k; \
               } \
             r.maybe_compress (false); \
             return r; \
@@ -1422,7 +1422,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == 1 && m1_nc == 1) \
-      r = SparseBoolMatrix (F (m1.elem(0,0), m2)); \
+      r = SparseBoolMatrix (F (m1.elem (0,0), m2)); \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
         if (m1_nr != 0 || m1_nc != 0) \
@@ -1431,7 +1431,7 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
-                if (C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j))) \
+                if (C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j))) \
                   nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
@@ -1442,14 +1442,14 @@ along with Octave; see the file COPYING.  If not, see
               { \
                 for (octave_idx_type i = 0; i < m1_nr; i++) \
                   { \
-                    bool el = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
+                    bool el = C1 (m1.elem (i, j)) OP C2 (m2.elem (i, j)); \
                     if (el) \
                       { \
-                        r.data(ii) = el; \
-                        r.ridx(ii++) = i; \
+                        r.data (ii) = el; \
+                        r.ridx (ii++) = i; \
                       } \
                   } \
-                r.cidx(j+1) = ii; \
+                r.cidx (j+1) = ii; \
               } \
           } \
       }       \
@@ -1490,7 +1490,7 @@ along with Octave; see the file COPYING.  If not, see
     octave_idx_type m2_nc = m2.cols (); \
     \
     if (m1_nr == 1 && m1_nc == 1) \
-      r = SparseBoolMatrix (F (m1.elem(0,0), m2)); \
+      r = SparseBoolMatrix (F (m1.elem (0,0), m2)); \
     else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
         if (m1_nr != 0 || m1_nc != 0) \
@@ -1499,8 +1499,8 @@ along with Octave; see the file COPYING.  If not, see
             octave_idx_type nel = 0; \
             for (octave_idx_type j = 0; j < m1_nc; j++) \
               for (octave_idx_type i = 0; i < m1_nr; i++) \
-                if ((m1.elem(i, j) != LHS_ZERO) \
-                    OP (m2.elem(i, j) != RHS_ZERO)) \
+                if ((m1.elem (i, j) != LHS_ZERO) \
+                    OP (m2.elem (i, j) != RHS_ZERO)) \
                   nel++; \
             \
             r = SparseBoolMatrix (m1_nr, m1_nc, nel); \
@@ -1511,15 +1511,15 @@ along with Octave; see the file COPYING.  If not, see
               { \
                 for (octave_idx_type i = 0; i < m1_nr; i++) \
                   { \
-                    bool el = (m1.elem(i, j) != LHS_ZERO) \
-                      OP (m2.elem(i, j) != RHS_ZERO);     \
+                    bool el = (m1.elem (i, j) != LHS_ZERO) \
+                      OP (m2.elem (i, j) != RHS_ZERO);     \
                     if (el) \
                       { \
-                        r.data(ii) = el; \
-                        r.ridx(ii++) = i; \
+                        r.data (ii) = el; \
+                        r.ridx (ii++) = i; \
                       } \
                   } \
-                r.cidx(j+1) = ii; \
+                r.cidx (j+1) = ii; \
               } \
           } \
       }       \
@@ -1565,30 +1565,30 @@ along with Octave; see the file COPYING.  If not, see
               ELT_TYPE t = ELT_TYPE (); \
               for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
                 { \
-                  t += data(j); \
+                  t += data (j); \
                   if (t != ELT_TYPE ()) \
                     { \
-                      if (j == cidx(i+1) - 1) \
-                        nel += nr - ridx(j);  \
+                      if (j == cidx (i+1) - 1) \
+                        nel += nr - ridx (j);  \
                       else \
-                        nel += ridx(j+1) - ridx(j); \
+                        nel += ridx (j+1) - ridx (j); \
                     } \
                 } \
             } \
           retval = RET_TYPE (nr, nc, nel); \
-          retval.cidx(0) = 0; \
+          retval.cidx (0) = 0; \
           octave_idx_type ii = 0; \
           for (octave_idx_type i = 0; i < nc; i++) \
             { \
               ELT_TYPE t = ELT_TYPE (); \
               for (octave_idx_type j = cidx (i); j < cidx (i+1); j++)   \
                 { \
-                  t += data(j); \
+                  t += data (j); \
                   if (t != ELT_TYPE ()) \
                     { \
-                      if (j == cidx(i+1) - 1) \
+                      if (j == cidx (i+1) - 1) \
                         { \
-                          for (octave_idx_type k = ridx(j); k < nr; k++) \
+                          for (octave_idx_type k = ridx (j); k < nr; k++) \
                             { \
                                retval.data (ii) = t; \
                                retval.ridx (ii++) = k; \
@@ -1596,7 +1596,7 @@ along with Octave; see the file COPYING.  If not, see
                         } \
                       else \
                         { \
-                          for (octave_idx_type k = ridx(j); k < ridx(j+1); k++) \
+                          for (octave_idx_type k = ridx (j); k < ridx (j+1); k++) \
                             { \
                                retval.data (ii) = t; \
                                retval.ridx (ii++) = k; \
@@ -1604,7 +1604,7 @@ along with Octave; see the file COPYING.  If not, see
                         } \
                     } \
                 } \
-              retval.cidx(i+1) = ii; \
+              retval.cidx (i+1) = ii; \
             } \
         } \
     } \
@@ -1634,7 +1634,7 @@ along with Octave; see the file COPYING.  If not, see
               octave_idx_type jj = 0; \
               for (octave_idx_type j = cidx (i); j < cidx (i+1); j++) \
                 { \
-                  if (jj == ridx(j)) \
+                  if (jj == ridx (j)) \
                     { \
                       nel++; \
                       jj++; \
@@ -1644,7 +1644,7 @@ along with Octave; see the file COPYING.  If not, see
                 } \
             } \
           retval = RET_TYPE (nr, nc, nel); \
-          retval.cidx(0) = 0; \
+          retval.cidx (0) = 0; \
           octave_idx_type ii = 0; \
           for (octave_idx_type i = 0; i < nc; i++) \
             { \
@@ -1652,16 +1652,16 @@ along with Octave; see the file COPYING.  If not, see
               octave_idx_type jj = 0; \
               for (octave_idx_type j = cidx (i); j < cidx (i+1); j++) \
                 { \
-                  if (jj == ridx(j)) \
+                  if (jj == ridx (j)) \
                     { \
-                      t *= data(j); \
-                      retval.data(ii) = t; \
-                      retval.ridx(ii++) = jj++; \
+                      t *= data (j); \
+                      retval.data (ii) = t; \
+                      retval.ridx (ii++) = jj++; \
                     } \
                   else \
                     break; \
                 } \
-              retval.cidx(i+1) = ii; \
+              retval.cidx (i+1) = ii; \
             } \
         } \
     } \
@@ -1690,7 +1690,7 @@ along with Octave; see the file COPYING.  If not, see
             tmp[i] = INIT_VAL; \
           for (j = 0; j < nc; j++) \
             { \
-              for (octave_idx_type i = cidx(j); i < cidx(j + 1); i++) \
+              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++) \
                 { \
                   ROW_EXPR; \
                 } \
@@ -1700,14 +1700,14 @@ along with Octave; see the file COPYING.  If not, see
             if (tmp[i] != EL_TYPE ())  \
               nel++ ; \
           retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nel); \
-          retval.cidx(0) = 0; \
-          retval.cidx(1) = nel; \
+          retval.cidx (0) = 0; \
+          retval.cidx (1) = nel; \
           nel = 0; \
           for (octave_idx_type i = 0; i < nr; i++) \
             if (tmp[i] != EL_TYPE ())  \
               { \
-                retval.data(nel) = tmp[i]; \
-                retval.ridx(nel++) = i; \
+                retval.data (nel) = tmp[i]; \
+                retval.ridx (nel++) = i; \
               } \
         } \
       else \
@@ -1717,7 +1717,7 @@ along with Octave; see the file COPYING.  If not, see
           for (octave_idx_type j = 0; j < nc; j++) \
             { \
               tmp[j] = INIT_VAL; \
-              for (octave_idx_type i = cidx(j); i < cidx(j + 1); i++) \
+              for (octave_idx_type i = cidx (j); i < cidx (j + 1); i++) \
                 { \
                   COL_EXPR; \
                 } \
@@ -1727,17 +1727,17 @@ along with Octave; see the file COPYING.  If not, see
             if (tmp[i] != EL_TYPE ())  \
               nel++ ; \
           retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nel); \
-          retval.cidx(0) = 0; \
+          retval.cidx (0) = 0; \
           nel = 0; \
           for (octave_idx_type i = 0; i < nc; i++) \
             if (tmp[i] != EL_TYPE ())  \
               { \
-                retval.data(nel) = tmp[i]; \
-                retval.ridx(nel++) = 0; \
-                retval.cidx(i+1) = retval.cidx(i) + 1; \
+                retval.data (nel) = tmp[i]; \
+                retval.ridx (nel++) = 0; \
+                retval.cidx (i+1) = retval.cidx (i) + 1; \
               } \
             else \
-              retval.cidx(i+1) = retval.cidx(i); \
+              retval.cidx (i+1) = retval.cidx (i); \
         } \
     } \
   else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1))) \
@@ -1747,10 +1747,10 @@ along with Octave; see the file COPYING.  If not, see
           retval = RET_TYPE (static_cast<octave_idx_type> (1), \
                              static_cast<octave_idx_type> (1), \
                              static_cast<octave_idx_type> (1)); \
-          retval.cidx(0) = 0; \
-          retval.cidx(1) = 1; \
-          retval.ridx(0) = 0; \
-          retval.data(0) = MT_RESULT; \
+          retval.cidx (0) = 0; \
+          retval.cidx (1) = 1; \
+          retval.ridx (0) = 0; \
+          retval.data (0) = MT_RESULT; \
         } \
       else \
           retval = RET_TYPE (static_cast<octave_idx_type> (1), \
@@ -1779,12 +1779,12 @@ along with Octave; see the file COPYING.  If not, see
       if (MT_RESULT) \
         { \
           retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nr); \
-          retval.cidx(0) = 0; \
-          retval.cidx(1) = nr; \
+          retval.cidx (0) = 0; \
+          retval.cidx (1) = nr; \
           for (octave_idx_type i = 0; i < nr; i++) \
             { \
-              retval.ridx(i) = i; \
-              retval.data(i) = MT_RESULT; \
+              retval.ridx (i) = i; \
+              retval.data (i) = MT_RESULT; \
             } \
         } \
       else \
@@ -1797,7 +1797,7 @@ along with Octave; see the file COPYING.  If not, see
   return retval
 
 #define SPARSE_REDUCTION_OP_ROW_EXPR(OP) \
-  tmp[ridx(i)] OP data (i)
+  tmp[ridx (i)] OP data (i)
 
 #define SPARSE_REDUCTION_OP_COL_EXPR(OP) \
   tmp[j] OP data (i)
@@ -1814,7 +1814,7 @@ along with Octave; see the file COPYING.  If not, see
 // loop.
 #define SPARSE_ANY_ALL_OP_ROW_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \
-    tmp[ridx(i)] = TEST_TRUE_VAL; \
+    tmp[ridx (i)] = TEST_TRUE_VAL; \
 
 #define SPARSE_ANY_ALL_OP_COL_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \
@@ -1834,7 +1834,7 @@ along with Octave; see the file COPYING.  If not, see
     return transpose (). all (0). transpose (); \
   else \
     { \
-      SPARSE_ANY_ALL_OP (DIM, (cidx(j+1) - cidx(j) < nr ? false : true), \
+      SPARSE_ANY_ALL_OP (DIM, (cidx (j+1) - cidx (j) < nr ? false : true), \
                          true, ==, false); \
     }
 
@@ -1849,20 +1849,20 @@ along with Octave; see the file COPYING.  If not, see
   \
   if (nr == 1 && nc == 1) \
    { \
-     RET_EL_TYPE s = m.elem(0,0); \
+     RET_EL_TYPE s = m.elem (0,0); \
      octave_idx_type nz = a.nnz (); \
      RET_TYPE r (a_nr, a_nc, nz); \
      \
      for (octave_idx_type i = 0; i < nz; i++) \
        { \
          octave_quit (); \
-         r.data(i) = s * a.data(i); \
-         r.ridx(i) = a.ridx(i); \
+         r.data (i) = s * a.data (i); \
+         r.ridx (i) = a.ridx (i); \
        } \
      for (octave_idx_type i = 0; i < a_nc + 1; i++) \
        { \
          octave_quit (); \
-         r.cidx(i) = a.cidx(i); \
+         r.cidx (i) = a.cidx (i); \
        } \
      \
      r.maybe_compress (true); \
@@ -1870,20 +1870,20 @@ along with Octave; see the file COPYING.  If not, see
    } \
   else if (a_nr == 1 && a_nc == 1) \
    { \
-     RET_EL_TYPE s = a.elem(0,0); \
+     RET_EL_TYPE s = a.elem (0,0); \
      octave_idx_type nz = m.nnz (); \
      RET_TYPE r (nr, nc, nz); \
      \
      for (octave_idx_type i = 0; i < nz; i++) \
        { \
          octave_quit (); \
-         r.data(i) = m.data(i) * s; \
-         r.ridx(i) = m.ridx(i); \
+         r.data (i) = m.data (i) * s; \
+         r.ridx (i) = m.ridx (i); \
        } \
      for (octave_idx_type i = 0; i < nc + 1; i++) \
        { \
          octave_quit (); \
-         r.cidx(i) = m.cidx(i); \
+         r.cidx (i) = m.cidx (i); \
        } \
      \
      r.maybe_compress (true); \
@@ -1900,26 +1900,26 @@ along with Octave; see the file COPYING.  If not, see
       RET_TYPE retval (nr, a_nc, static_cast<octave_idx_type> (0)); \
       for (octave_idx_type i = 0; i < nr; i++) \
         w[i] = 0; \
-      retval.xcidx(0) = 0; \
+      retval.xcidx (0) = 0; \
       \
       octave_idx_type nel = 0; \
       \
       for (octave_idx_type i = 0; i < a_nc; i++) \
         { \
-          for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
+          for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++) \
             { \
-              octave_idx_type  col = a.ridx(j); \
-              for (octave_idx_type k = m.cidx(col) ; k < m.cidx(col+1); k++) \
+              octave_idx_type  col = a.ridx (j); \
+              for (octave_idx_type k = m.cidx (col) ; k < m.cidx (col+1); k++) \
                 { \
-                  if (w[m.ridx(k)] < i + 1) \
+                  if (w[m.ridx (k)] < i + 1) \
                     { \
-                      w[m.ridx(k)] = i + 1; \
+                      w[m.ridx (k)] = i + 1; \
                       nel++; \
                     } \
                   octave_quit (); \
                 } \
             } \
-          retval.xcidx(i+1) = nel; \
+          retval.xcidx (i+1) = nel; \
         } \
       \
       if (nel == 0) \
@@ -1951,57 +1951,57 @@ along with Octave; see the file COPYING.  If not, see
           \
           for (octave_idx_type i = 0; i < a_nc ; i++) \
             { \
-              if (retval.xcidx(i+1) - retval.xcidx(i) > n_per_col) \
+              if (retval.xcidx (i+1) - retval.xcidx (i) > n_per_col) \
                 { \
-                  for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
+                  for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++) \
                     { \
-                      octave_idx_type col = a.ridx(j); \
-                      EL_TYPE tmpval = a.data(j); \
-                      for (octave_idx_type k = m.cidx(col) ; \
-                           k < m.cidx(col+1); k++) \
+                      octave_idx_type col = a.ridx (j); \
+                      EL_TYPE tmpval = a.data (j); \
+                      for (octave_idx_type k = m.cidx (col) ; \
+                           k < m.cidx (col+1); k++) \
                         { \
                           octave_quit (); \
-                          octave_idx_type row = m.ridx(k); \
+                          octave_idx_type row = m.ridx (k); \
                           if (w[row] < i + 1) \
                             { \
                               w[row] = i + 1; \
-                              Xcol[row] = tmpval * m.data(k); \
+                              Xcol[row] = tmpval * m.data (k); \
                             } \
                           else \
-                            Xcol[row] += tmpval * m.data(k); \
+                            Xcol[row] += tmpval * m.data (k); \
                         } \
                     } \
                   for (octave_idx_type k = 0; k < nr; k++) \
                     if (w[k] == i + 1) \
                       { \
-                        retval.xdata(ii) = Xcol[k]; \
-                        retval.xridx(ii++) = k; \
+                        retval.xdata (ii) = Xcol[k]; \
+                        retval.xridx (ii++) = k; \
                       } \
                 } \
               else \
                 { \
-                  for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
+                  for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++) \
                     { \
-                      octave_idx_type col = a.ridx(j); \
-                      EL_TYPE tmpval = a.data(j); \
-                      for (octave_idx_type k = m.cidx(col) ; \
-                          k < m.cidx(col+1); k++) \
+                      octave_idx_type col = a.ridx (j); \
+                      EL_TYPE tmpval = a.data (j); \
+                      for (octave_idx_type k = m.cidx (col) ; \
+                          k < m.cidx (col+1); k++) \
                         { \
                           octave_quit (); \
-                          octave_idx_type row = m.ridx(k); \
+                          octave_idx_type row = m.ridx (k); \
                           if (w[row] < i + 1) \
                             { \
                               w[row] = i + 1; \
-                              retval.xridx(ii++) = row;\
-                              Xcol[row] = tmpval * m.data(k); \
+                              retval.xridx (ii++) = row;\
+                              Xcol[row] = tmpval * m.data (k); \
                             } \
                           else \
-                            Xcol[row] += tmpval * m.data(k); \
+                            Xcol[row] += tmpval * m.data (k); \
                         } \
                     } \
-                  sort.sort (ri + retval.xcidx(i), ii - retval.xcidx(i)); \
-                  for (octave_idx_type k = retval.xcidx(i); k < ii; k++) \
-                    retval.xdata(k) = Xcol[retval.xridx(k)]; \
+                  sort.sort (ri + retval.xcidx (i), ii - retval.xcidx (i)); \
+                  for (octave_idx_type k = retval.xcidx (i); k < ii; k++) \
+                    retval.xdata (k) = Xcol[retval.xridx (k)]; \
                 }  \
             } \
           retval.maybe_compress (true);\
@@ -2036,9 +2036,9 @@ along with Octave; see the file COPYING.  If not, see
             { \
               octave_quit (); \
               \
-              EL_TYPE tmpval = a.elem(j,i); \
-              for (octave_idx_type k = m.cidx(j) ; k < m.cidx(j+1); k++) \
-                retval.elem (m.ridx(k),i) += tmpval * m.data(k); \
+              EL_TYPE tmpval = a.elem (j,i); \
+              for (octave_idx_type k = m.cidx (j) ; k < m.cidx (j+1); k++) \
+                retval.elem (m.ridx (k),i) += tmpval * m.data (k); \
             } \
         } \
       return retval; \
@@ -2053,7 +2053,7 @@ along with Octave; see the file COPYING.  If not, see
   \
   if (nr == 1 && nc == 1) \
     { \
-      RET_TYPE retval = CONJ_OP (m.elem(0,0)) * a; \
+      RET_TYPE retval = CONJ_OP (m.elem (0,0)) * a; \
       return retval; \
     } \
   else if (nr != a_nr) \
@@ -2072,8 +2072,8 @@ along with Octave; see the file COPYING.  If not, see
               octave_quit (); \
               \
               EL_TYPE acc = ZERO; \
-              for (octave_idx_type k = m.cidx(j) ; k < m.cidx(j+1); k++) \
-                acc += a.elem (m.ridx(k),i) * CONJ_OP (m.data(k)); \
+              for (octave_idx_type k = m.cidx (j) ; k < m.cidx (j+1); k++) \
+                acc += a.elem (m.ridx (k),i) * CONJ_OP (m.data (k)); \
               retval.xelem (j,i) = acc; \
             } \
         } \
@@ -2104,13 +2104,13 @@ along with Octave; see the file COPYING.  If not, see
       for (octave_idx_type i = 0; i < a_nc ; i++) \
         { \
           octave_quit (); \
-          for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
+          for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++) \
             { \
-              octave_idx_type col = a.ridx(j); \
-              EL_TYPE tmpval = a.data(j); \
+              octave_idx_type col = a.ridx (j); \
+              EL_TYPE tmpval = a.data (j); \
               \
               for (octave_idx_type k = 0 ; k < nr; k++) \
-                retval.xelem (k,i) += tmpval * m.elem(k,col); \
+                retval.xelem (k,i) += tmpval * m.elem (k,col); \
             } \
         } \
       return retval; \
@@ -2125,7 +2125,7 @@ along with Octave; see the file COPYING.  If not, see
   \
   if (a_nr == 1 && a_nc == 1) \
     { \
-      RET_TYPE retval = m * CONJ_OP (a.elem(0,0)); \
+      RET_TYPE retval = m * CONJ_OP (a.elem (0,0)); \
       return retval; \
     } \
   else if (nc != a_nc) \
@@ -2140,12 +2140,12 @@ along with Octave; see the file COPYING.  If not, see
       for (octave_idx_type i = 0; i < a_nc ; i++) \
         { \
           octave_quit (); \
-          for (octave_idx_type j = a.cidx(i); j < a.cidx(i+1); j++) \
+          for (octave_idx_type j = a.cidx (i); j < a.cidx (i+1); j++) \
             { \
-              octave_idx_type col = a.ridx(j); \
-              EL_TYPE tmpval = CONJ_OP (a.data(j)); \
+              octave_idx_type col = a.ridx (j); \
+              EL_TYPE tmpval = CONJ_OP (a.data (j)); \
               for (octave_idx_type k = 0 ; k < nr; k++) \
-                retval.xelem (k,col) += tmpval * m.elem(k,i); \
+                retval.xelem (k,col) += tmpval * m.elem (k,i); \
             } \
         } \
       return retval; \

@@ -39,7 +39,7 @@ extern OCTINTERP_API void check_version (const std::string& version, const std::
 
 extern OCTINTERP_API void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-                          const std::string& doc,
+                          const std::string& file, const std::string& doc,
                           bool can_hide_function = true);
 
 extern OCTINTERP_API void

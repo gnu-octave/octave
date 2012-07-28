@@ -762,7 +762,7 @@ names (const map_type& lst)
   string_vector retval (lst.size ());
   int j = 0;
   for (map_iter iter = lst.begin (); iter != lst.end (); iter ++)
-    retval [j++] = iter->first;
+    retval[j++] = iter->first;
   return retval;
 }
 
@@ -954,7 +954,7 @@ do_get_help_text (const std::string& name, std::string& text,
 }
 
 DEFUN (get_help_text, args, , "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
+@deftypefn {Built-in Function} {[@var{text}, @var{format}] =} get_help_text (@var{name})\n\
 Return the raw help text of function @var{name}.\n\
 \n\
 The raw help text is returned in @var{text} and the format in @var{format}\n\
@@ -1023,7 +1023,7 @@ do_get_help_text_from_file (const std::string& fname, std::string& text,
 
 DEFUN (get_help_text_from_file, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
+@deftypefn {Built-in Function} {[@var{text}, @var{format}] =} get_help_text_from_file (@var{fname})\n\
 Return the raw help text from the file @var{fname}.\n\
 \n\
 The raw help text is returned in @var{text} and the format in @var{format}\n\
@@ -1118,7 +1118,10 @@ do_which (const std::string& name, std::string& type)
                   if (fcn->is_user_function ())
                     type = "command-line function";
                   else
-                    type = "built-in function";
+                    {
+                      file = fcn->src_file_name ();
+                      type = "built-in function";
+                    }
                 }
               else
                 type = val.is_user_script ()
@@ -1215,11 +1218,11 @@ file_is_in_dir (const std::string filename, const std::string dir)
     {
       const int dir_len = dir.size ();
       const int filename_len = filename.size ();
-      const int max_allowed_seps = file_ops::is_dir_sep (dir [dir_len-1]) ? 0 : 1;
+      const int max_allowed_seps = file_ops::is_dir_sep (dir[dir_len-1]) ? 0 : 1;
 
       int num_seps = 0;
       for (int i = dir_len; i < filename_len; i++)
-        if (file_ops::is_dir_sep (filename [i]))
+        if (file_ops::is_dir_sep (filename[i]))
           num_seps ++;
 
       return (num_seps <= max_allowed_seps);

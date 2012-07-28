@@ -5066,7 +5066,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 
 DEFUN (full, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{FM} =} full (@var{SM})\n\
+@deftypefn {Built-in Function} {@var{FM} =} full (@var{SM})\n\
 Return a full storage matrix from a sparse, diagonal, permutation matrix\n\
 or a range.\n\
 @seealso{sparse}\n\
@@ -5865,10 +5865,10 @@ CPU time used is nonzero.\n\
 
 DEFUN (sort, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn  {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
-@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
+@deftypefn  {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
+@deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
+@deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
+@deftypefnx {Built-in Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
 Return a copy of @var{x} with the elements arranged in increasing\n\
 order.  For matrices, @code{sort} orders the elements within columns\n\
 \n\

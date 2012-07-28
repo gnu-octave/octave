@@ -52,7 +52,7 @@ BEGIN {
   }
   print "else";
   print "";
-  print "noinst_LTLIBRARIES = $(DLD_FUNCTIONS_LIBS)";
+  print "noinst_LTLIBRARIES += $(DLD_FUNCTIONS_LIBS)";
   print "";
   print "endif";
 

@@ -250,6 +250,11 @@ Library for manipulating portable data files
 (@url{http://www.hdfgroup.org/HDF5}).  HDF5 is required for Octave's
 @code{load} and @code{save} commands to read and write HDF data files.
 
+@item LLVM
+Compiler framework, (@url{http://www.llvm.org}). LLVM is required for
+Octave's experimental just-in-time (JIT) compilation for speeding up the
+interpreter.
+
 @item OpenGL
 API for portable 2-D and 3-D graphics (@url{http://www.opengl.org}).  An
 OpenGL implementation is required to provide Octave's OpenGL-based

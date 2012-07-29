@@ -63,8 +63,14 @@ Q_OBJECT public:
   void event_reject (octave_event *e);
 
   QTerminal *get_terminal_view () { return _terminal; }
-  history_dock_widget *get_history_dock_widget () { return _history_dock_widget; }
-  files_dock_widget *get_files_dock_widget () { return _files_dock_widget; }
+  history_dock_widget *get_history_dock_widget ()
+  {
+    return _history_dock_widget;
+  }
+  files_dock_widget *get_files_dock_widget ()
+  {
+    return _files_dock_widget;
+  }
   bool is_closing () { return _closing; }
 
 signals:

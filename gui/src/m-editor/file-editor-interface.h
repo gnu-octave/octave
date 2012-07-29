@@ -36,7 +36,8 @@ class file_editor_interface : public QDockWidget
       _terminal = terminal;
       _main_window = mainWindow;
 
-      connect (this, SIGNAL (visibilityChanged (bool)), this, SLOT (handle_visibility_changed (bool)));
+      connect (this, SIGNAL (visibilityChanged (bool)), this,
+               SLOT (handle_visibility_changed (bool)));
     }
 
     virtual ~file_editor_interface () { }

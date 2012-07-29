@@ -180,7 +180,8 @@ main_window::notice_settings ()
   else if (cursorType == "block")
     _terminal->setCursorType(QTerminalInterface::BlockCursor, cursorBlinking);
   else if (cursorType == "underline")
-    _terminal->setCursorType(QTerminalInterface::UnderlineCursor, cursorBlinking);
+    _terminal->setCursorType(QTerminalInterface::UnderlineCursor,
+                             cursorBlinking);
 
   resource_manager::instance ()->update_network_settings ();
 }
@@ -500,7 +501,8 @@ main_window::construct ()
   file_menu->addSeparator ();
 
   QAction *preferences_action
-      = file_menu->addAction (QIcon(":/actions/icons/configure.png"), tr ("Preferences..."));
+      = file_menu->addAction (QIcon(":/actions/icons/configure.png"),
+                              tr ("Preferences..."));
   file_menu->addSeparator ();
   QAction *page_setup_action
       = file_menu->addAction (tr ("Page Setup..."));
@@ -559,7 +561,8 @@ main_window::construct ()
   find_action->setEnabled (false); // TODO: Make this work.
   QAction *find_files_action
       = edit_menu->addAction (tr ("Find Files..."));
-  find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_F);
+  find_files_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
+                                  + Qt::Key_F);
   find_files_action->setEnabled (false); // TODO: Make this work.
   edit_menu->addSeparator ();
 
@@ -609,43 +612,72 @@ main_window::construct ()
 
   // Window menu
   QMenu *   window_menu = menuBar ()->addMenu (tr ("&Window"));
-  QAction * show_command_window_action  = window_menu->addAction (tr ("Show Command Window"));
+  QAction * show_command_window_action
+    = window_menu->addAction (tr ("Show Command Window"));
   show_command_window_action->setCheckable (true);
-  show_command_window_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_0);
-  QAction * show_history_action         = window_menu->addAction (tr ("Show Command History"));
+  show_command_window_action->setShortcut (Qt::ControlModifier
+                                           + Qt::ShiftModifier + Qt::Key_0);
+
+  QAction * show_history_action
+    = window_menu->addAction (tr ("Show Command History"));
   show_history_action->setCheckable (true);
-  show_history_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_1);
-  QAction * show_file_browser_action    = window_menu->addAction (tr ("Show Current Directory"));
+  show_history_action->setShortcut (Qt::ControlModifier
+                                    + Qt::ShiftModifier + Qt::Key_1);
+  QAction * show_file_browser_action
+    = window_menu->addAction (tr ("Show Current Directory"));
   show_file_browser_action->setCheckable (true);
-  show_file_browser_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_2);
-  QAction * show_workspace_action       = window_menu->addAction (tr ("Show Workspace"));
+  show_file_browser_action->setShortcut (Qt::ControlModifier
+                                         + Qt::ShiftModifier + Qt::Key_2);
+
+  QAction * show_workspace_action
+    = window_menu->addAction (tr ("Show Workspace"));
   show_workspace_action->setCheckable (true);
-  show_workspace_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_3);
-  QAction * show_editor_action          = window_menu->addAction (tr ("Show Editor"));
+  show_workspace_action->setShortcut (Qt::ControlModifier
+                                      + Qt::ShiftModifier + Qt::Key_3);
+
+  QAction * show_editor_action = window_menu->addAction (tr ("Show Editor"));
   show_editor_action->setCheckable (true);
-  show_editor_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier + Qt::Key_4);
+  show_editor_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
+                                   + Qt::Key_4);
   window_menu->addSeparator ();
-  QAction * command_window_action  = window_menu->addAction (tr ("Command Window"));
+
+  QAction * command_window_action
+    = window_menu->addAction (tr ("Command Window"));
   command_window_action->setShortcut (Qt::ControlModifier + Qt::Key_0);
-  QAction * history_action         = window_menu->addAction (tr ("Command History"));
+
+  QAction * history_action
+    = window_menu->addAction (tr ("Command History"));
   history_action->setShortcut (Qt::ControlModifier + Qt::Key_1);
-  QAction * file_browser_action    = window_menu->addAction (tr ("Current Directory"));
+
+  QAction * file_browser_action
+    = window_menu->addAction (tr ("Current Directory"));
   file_browser_action->setShortcut (Qt::ControlModifier + Qt::Key_2);
-  QAction * workspace_action       = window_menu->addAction (tr ("Workspace"));
+
+  QAction * workspace_action
+    = window_menu->addAction (tr ("Workspace"));
   workspace_action->setShortcut (Qt::ControlModifier + Qt::Key_3);
-  QAction * editor_action          = window_menu->addAction (tr ("Editor"));
+
+  QAction * editor_action
+    = window_menu->addAction (tr ("Editor"));
   editor_action->setShortcut (Qt::ControlModifier + Qt::Key_4);
+
   window_menu->addSeparator ();
-  QAction * reset_windows_action        = window_menu->addAction (tr ("Reset Windows"));
+  QAction * reset_windows_action
+    = window_menu->addAction (tr ("Reset Windows"));
   reset_windows_action->setEnabled (false); // TODO: Make this work.
 
   // Help menu
   QMenu *   help_menu = menuBar ()->addMenu (tr ("&Help"));
-  QAction * report_bug_action           = help_menu->addAction (tr ("Report Bug"));
-  QAction * agora_action                = help_menu->addAction (tr ("Visit Agora"));
-  QAction * octave_forge_action         = help_menu->addAction (tr ("Visit Octave Forge"));
+  QAction * report_bug_action
+    = help_menu->addAction (tr ("Report Bug"));
+  QAction * agora_action
+    = help_menu->addAction (tr ("Visit Agora"));
+  QAction * octave_forge_action
+    = help_menu->addAction (tr ("Visit Octave Forge"));
   help_menu->addSeparator ();
-  QAction * about_octave_action         = help_menu->addAction (tr ("About Octave"));
+
+  QAction * about_octave_action
+    = help_menu->addAction (tr ("About Octave"));
 
   // Toolbars
   QToolBar *main_tool_bar = addToolBar ("Main");
@@ -665,13 +697,13 @@ main_window::construct ()
 
   connect (qApp,                        SIGNAL (aboutToQuit ()),
            this,                        SLOT   (prepare_for_quit ()));
-  connect (preferences_action,             SIGNAL (triggered ()),
+  connect (preferences_action,          SIGNAL (triggered ()),
            this,                        SLOT   (process_settings_dialog_request ()));
   connect (exit_action,                 SIGNAL (triggered ()),
            this,                        SLOT   (close ()));
-  connect (new_script_action,             SIGNAL (triggered ()),
+  connect (new_script_action,           SIGNAL (triggered ()),
            this,                        SLOT   (new_file ()));
-  connect (open_action,            SIGNAL (triggered ()),
+  connect (open_action,                 SIGNAL (triggered ()),
            this,                        SLOT   (open_file ()));
   connect (report_bug_action,           SIGNAL (triggered ()),
            this,                        SLOT   (open_bug_tracker_page ()));

@@ -29,8 +29,8 @@ class welcome_wizard : public QDialog
   Q_OBJECT
 
 public:
-  explicit welcome_wizard(QWidget *parent = 0);
-  ~welcome_wizard();
+  explicit welcome_wizard (QWidget *parent = 0);
+  ~welcome_wizard ();
 
 public slots:
   void next ();

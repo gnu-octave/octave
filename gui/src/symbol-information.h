@@ -88,7 +88,8 @@ typedef struct symbol_information
   int
   hash () const
   {
-    return qHash (_symbol) + qHash (_type) + qHash (_value) + qHash (_dimension) + (int)_scope;
+    return qHash (_symbol) + qHash (_type) + qHash (_value)
+      + qHash (_dimension) + (int)_scope;
   }
 
   /** Compares two symbol information objects. */
@@ -122,7 +123,8 @@ typedef struct symbol_information
     _type   = QString (symbol_record.varval ().type_name ().c_str ());
     octave_value ov = symbol_record.varval ();
 
-    // In case we have really large matrices or strings, cut them down for performance reasons.
+    // In case we have really large matrices or strings, cut them down
+    // for performance reasons.
     QString short_value_string;
     bool use_short_value_string = false;
     if (ov.is_matrix_type () || ov.is_cell ())
@@ -130,7 +132,8 @@ typedef struct symbol_information
         if (ov.rows () * ov.columns () > 10)
           {
             use_short_value_string = true;
-            short_value_string = QString ("%1x%2 items").arg (ov.rows ()).arg (ov.columns ());
+            short_value_string
+              = QString ("%1x%2 items").arg (ov.rows ()).arg (ov.columns ());
           }
       }
     else if (ov.is_string ())
@@ -138,7 +141,8 @@ typedef struct symbol_information
         if (ov.string_value ().length () > 40)
           {
             use_short_value_string = true;
-            short_value_string = QString::fromStdString (ov.string_value ().substr (0, 40));
+            short_value_string
+              = QString::fromStdString (ov.string_value ().substr (0, 40));
           }
       }
 
@@ -164,9 +168,11 @@ typedef struct symbol_information
       _dimension = QString ("%1x%2").arg (ov.rows ())
                                     .arg (ov.columns ());
     else if (ov.is_function_handle ())
-      _dimension = QString ("func handle"); // See code for func2str for a possible solution
+      // See code for func2str for a possible solution
+      _dimension = QString ("func handle");
     else if (ov.is_inline_function ())
-      _dimension = QString ("inline func"); // See code for formula for a possible solution
+      // See code for formula for a possible solution
+      _dimension = QString ("inline func");
     else
       _dimension = "1";
 

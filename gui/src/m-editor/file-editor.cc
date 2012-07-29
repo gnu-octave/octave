@@ -259,7 +259,8 @@ void
 file_editor::handle_file_name_changed (QString fileName)
 {
   QObject *senderObject = sender ();
-  file_editor_tab *fileEditorTab = dynamic_cast<file_editor_tab*> (senderObject);
+  file_editor_tab *fileEditorTab
+    = dynamic_cast<file_editor_tab*> (senderObject);
   if (fileEditorTab)
     {
       for(int i = 0; i < _tab_widget->count (); i++)
@@ -275,7 +276,8 @@ file_editor::handle_file_name_changed (QString fileName)
 void
 file_editor::handle_tab_close_request (int index)
 {
-  file_editor_tab *fileEditorTab = dynamic_cast <file_editor_tab*> (_tab_widget->widget (index));
+  file_editor_tab *fileEditorTab
+    = dynamic_cast <file_editor_tab*> (_tab_widget->widget (index));
   if (fileEditorTab)
     if (fileEditorTab->close ())
       {
@@ -337,8 +339,9 @@ file_editor::construct ()
   QAction *save_action = new QAction (QIcon(":/actions/icons/filesave.png"),
         tr("&Save File"), _tool_bar);
 
-  QAction *save_as_action = new QAction (QIcon(":/actions/icons/filesaveas.png"),
-        tr("Save File &As"), _tool_bar);
+  QAction *save_as_action
+    = new QAction (QIcon(":/actions/icons/filesaveas.png"),
+                   tr("Save File &As"), _tool_bar);
 
   QAction *undo_action = new QAction (QIcon(":/actions/icons/undo.png"),
         tr("&Undo"), _tool_bar);
@@ -346,8 +349,11 @@ file_editor::construct ()
   QAction *redo_action = new QAction (QIcon(":/actions/icons/redo.png"),
         tr("&Redo"), _tool_bar);
 
-  _copy_action = new QAction (QIcon::fromTheme ("edit-copy"), tr ("&Copy"), _tool_bar);
-  _cut_action  = new QAction (QIcon::fromTheme ("edit-cut"), tr ("Cu&t"), _tool_bar);
+  _copy_action = new QAction (QIcon::fromTheme ("edit-copy"),
+                              tr ("&Copy"), _tool_bar);
+
+  _cut_action  = new QAction (QIcon::fromTheme ("edit-cut"),
+                              tr ("Cu&t"), _tool_bar);
 
   QAction *paste_action
       = new QAction (QIcon (":/actions/icons/editpaste.png"),
@@ -445,31 +451,54 @@ file_editor::construct ()
   widget->setLayout (layout);
   setWidget (widget);
 
-  connect (new_action,               SIGNAL (triggered ()), this, SLOT (request_new_file ()));
-  connect (open_action,              SIGNAL (triggered ()), this, SLOT (request_open_file ()));
-  connect (undo_action,              SIGNAL (triggered ()), this, SLOT (request_undo ()));
-  connect (redo_action,              SIGNAL (triggered ()), this, SLOT (request_redo ()));
-  connect (_copy_action,            SIGNAL (triggered ()), this, SLOT (request_copy ()));
-  connect (_cut_action,             SIGNAL (triggered ()), this, SLOT (request_cut ()));
-  connect (paste_action,             SIGNAL (triggered ()), this, SLOT (request_paste ()));
-  connect (save_action,              SIGNAL (triggered ()), this, SLOT (request_save_file ()));
-  connect (save_as_action,            SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
-  connect (_run_action,               SIGNAL (triggered ()), this, SLOT (request_run_file ()));
-  connect (toggle_bookmark_action,    SIGNAL (triggered ()), this, SLOT (request_toggle_bookmark ()));
-  connect (next_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
-  connect (previous_bookmark_action,      SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));
-  connect (remove_bookmark_action,    SIGNAL (triggered ()), this, SLOT (request_remove_bookmark ()));
-  connect (toggle_breakpoint_action,    SIGNAL (triggered ()), this, SLOT (request_toggle_breakpoint ()));
-  connect (next_breakpoint_action,      SIGNAL (triggered ()), this, SLOT (request_next_breakpoint ()));
-  connect (previous_breakpoint_action,      SIGNAL (triggered ()), this, SLOT (request_previous_breakpoint ()));
-  connect (remove_breakpoint_action,    SIGNAL (triggered ()), this, SLOT (request_remove_breakpoint ()));
-  connect (comment_selection_action,   SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
-  connect (uncomment_selection_action, SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
-  connect (_tab_widget, SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
-  connect (_tab_widget, SIGNAL (currentChanged(int)), this, SLOT (active_tab_changed (int)));
+  connect (new_action,
+           SIGNAL (triggered ()), this, SLOT (request_new_file ()));
+  connect (open_action,              
+           SIGNAL (triggered ()), this, SLOT (request_open_file ()));
+  connect (undo_action,
+           SIGNAL (triggered ()), this, SLOT (request_undo ()));
+  connect (redo_action,
+           SIGNAL (triggered ()), this, SLOT (request_redo ()));
+  connect (_copy_action,
+           SIGNAL (triggered ()), this, SLOT (request_copy ()));
+  connect (_cut_action,
+           SIGNAL (triggered ()), this, SLOT (request_cut ()));
+  connect (paste_action,
+           SIGNAL (triggered ()), this, SLOT (request_paste ()));
+  connect (save_action,
+           SIGNAL (triggered ()), this, SLOT (request_save_file ()));
+  connect (save_as_action,
+           SIGNAL (triggered ()), this, SLOT (request_save_file_as ()));
+  connect (_run_action,
+           SIGNAL (triggered ()), this, SLOT (request_run_file ()));
+  connect (toggle_bookmark_action,
+           SIGNAL (triggered ()), this, SLOT (request_toggle_bookmark ()));
+  connect (next_bookmark_action,
+           SIGNAL (triggered ()), this, SLOT (request_next_bookmark ()));
+  connect (previous_bookmark_action,
+           SIGNAL (triggered ()), this, SLOT (request_previous_bookmark ()));
+  connect (remove_bookmark_action,
+           SIGNAL (triggered ()), this, SLOT (request_remove_bookmark ()));
+  connect (toggle_breakpoint_action,
+           SIGNAL (triggered ()), this, SLOT (request_toggle_breakpoint ()));
+  connect (next_breakpoint_action,
+           SIGNAL (triggered ()), this, SLOT (request_next_breakpoint ()));
+  connect (previous_breakpoint_action,
+           SIGNAL (triggered ()), this, SLOT (request_previous_breakpoint ()));
+  connect (remove_breakpoint_action,
+           SIGNAL (triggered ()), this, SLOT (request_remove_breakpoint ()));
+  connect (comment_selection_action,
+           SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
+  connect (uncomment_selection_action,
+           SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
+  connect (_tab_widget,
+           SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
+  connect (_tab_widget,
+           SIGNAL (currentChanged(int)), this, SLOT (active_tab_changed (int)));
 
   resize (500, 400);
-  setWindowIcon (QIcon::fromTheme ("accessories-text-editor", style->standardIcon (QStyle::SP_FileIcon)));
+  setWindowIcon (QIcon::fromTheme ("accessories-text-editor",
+                                   style->standardIcon (QStyle::SP_FileIcon)));
   setWindowTitle ("Octave Editor");
 }
 

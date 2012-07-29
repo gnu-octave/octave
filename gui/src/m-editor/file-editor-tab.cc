@@ -45,12 +45,15 @@ file_editor_tab::file_editor_tab(file_editor *fileEditor)
   _edit_area->setMarginType (1, QsciScintilla::SymbolMargin);
   _edit_area->setMarginSensitivity (1, true);
   _edit_area->markerDefine (QsciScintilla::RightTriangle, bookmark);
-  _edit_area->markerDefine (QPixmap (":/actions/icons/redled.png"), breakpoint);
+  _edit_area->markerDefine (QPixmap (":/actions/icons/redled.png"),
+                            breakpoint);
   _edit_area->markerDefine (QPixmap (":/actions/icons/arrow_right.png"),
                             debugger_position);
 
-  connect (_edit_area, SIGNAL (marginClicked (int, int, Qt::KeyboardModifiers)),
-           this, SLOT (handle_margin_clicked (int, int, Qt::KeyboardModifiers)));
+  connect (_edit_area, SIGNAL (marginClicked (int, int,
+                                              Qt::KeyboardModifiers)),
+           this, SLOT (handle_margin_clicked (int, int,
+                                              Qt::KeyboardModifiers)));
 
   // line numbers
   _edit_area->setMarginsForegroundColor(QColor(96,96,96));
@@ -164,8 +167,10 @@ file_editor_tab::closeEvent (QCloseEvent *event)
     }
   else
     {
-      // ignore close event if file is not saved and user cancels closing this window
-      if (check_file_modified ("Close File", QMessageBox::Cancel) == QMessageBox::Cancel)
+      // ignore close event if file is not saved and user cancels
+      // closing this window
+      if (check_file_modified ("Close File",
+                               QMessageBox::Cancel) == QMessageBox::Cancel)
         {
           event->ignore ();
         }
@@ -185,7 +190,8 @@ file_editor_tab::set_file_name (QString fileName)
 }
 
 void
-file_editor_tab::handle_margin_clicked(int margin, int line, Qt::KeyboardModifiers state)
+file_editor_tab::handle_margin_clicked(int margin, int line,
+                                       Qt::KeyboardModifiers state)
 {
   Q_UNUSED (state);
   if (margin == 1)
@@ -233,14 +239,20 @@ file_editor_tab::update_lexer ()
 
       QString keyword;
       QStringList keywordList;
-      keyword = lexer->keywords (1);  // get whole string with all keywords
-      keywordList = keyword.split (QRegExp ("\\s+"));  // split into single strings
+
+       // get whole string with all keywords
+      keyword = lexer->keywords (1);
+      // split into single strings
+      keywordList = keyword.split (QRegExp ("\\s+"));
+
       int i;
       for (i = 0; i < keywordList.size (); i++)
         {
-          lexer_api->add (keywordList.at (i));  // add single strings to the API
+           // add single strings to the API
+          lexer_api->add (keywordList.at (i));
         }
-      lexer_api->prepare ();           // prepare API info ... this make take some time
+      // prepare API info ... this make take some time
+      lexer_api->prepare ();
     }
   else if (_file_name.endsWith (".c")
         || _file_name.endsWith (".cc")
@@ -275,13 +287,15 @@ file_editor_tab::update_lexer ()
 
   // Editor font (default or from settings)
   lexer->setDefaultFont (QFont (
-                             settings->value ("editor/fontName","Courier").toString (),
-                             settings->value ("editor/fontSize",10).toInt ()));
+                                settings->value ("editor/fontName",
+                                                 "Courier").toString (),
+                                settings->value ("editor/fontSize",
+                                                 10).toInt ()));
 
   // TODO: Autoindent not working as it should
   lexer->setAutoIndentStyle (QsciScintilla::AiMaintain ||
-                               QsciScintilla::AiOpening  ||
-                               QsciScintilla::AiClosing);
+                             QsciScintilla::AiOpening  ||
+                             QsciScintilla::AiClosing);
 
   _edit_area->setLexer (lexer);
 }
@@ -408,16 +422,17 @@ file_editor_tab::check_file_modified (QString msg, int cancelButton)
                                        tr ("The file %1\n"
                                            "has been modified. Do you want to save the changes?").
                                        arg (_file_name),
-                                       QMessageBox::Save, QMessageBox::Discard, cancelButton );
+                                       QMessageBox::Save,
+                                       QMessageBox::Discard, cancelButton );
       if (decision == QMessageBox::Save)
         {
           save_file ();
           if (_edit_area->isModified ())
             {
               // If the user attempted to save the file, but it's still
-              // modified, then probably something went wrong, so return cancel
-              // for cancel this operation or try to save files as if cancel not
-              // possible
+              // modified, then probably something went wrong, so return
+              // cancel for cancel this operation or try to save files
+              // as if cancel not possible
               if ( cancelButton )
                 return (QMessageBox::Cancel);
               else
@@ -663,9 +678,13 @@ file_editor_tab::save_file (QString saveFileName)
   QApplication::setOverrideCursor (Qt::WaitCursor);
   out << _edit_area->text ();
   QApplication::restoreOverrideCursor ();
-  _file_name = saveFileName; // save file name for later use
-  update_window_title (false);      // set the window title to actual file name (not modified)
-  _edit_area->setModified (false); // files is save -> not modified
+
+  // save file name for later use
+  _file_name = saveFileName;
+  // set the window title to actual file name (not modified)
+  update_window_title (false);
+   // files is save -> not modified
+  _edit_area->setModified (false);
   file.close();
 
   if (!watched_files.isEmpty ())
@@ -738,7 +757,8 @@ file_editor_tab::file_has_changed (QString fileName)
   Q_UNUSED (fileName);
   if (QFile::exists (_file_name))
     {
-      // Prevent popping up multiple message boxes when the file has been changed multiple times.
+      // Prevent popping up multiple message boxes when the file has
+      // been changed multiple times.
       static bool alreadyAsking = false;
       if (!alreadyAsking)
         {
@@ -747,7 +767,8 @@ file_editor_tab::file_has_changed (QString fileName)
           int decision =
           QMessageBox::warning (this, tr ("Octave Editor"),
                                 tr ("It seems that \'%1\' has been modified by another application. Do you want to reload it?").
-                                arg (_file_name), QMessageBox::Yes, QMessageBox::No);
+                                arg (_file_name), QMessageBox::Yes,
+                                QMessageBox::No);
 
           if (decision == QMessageBox::Yes)
             {
@@ -762,7 +783,8 @@ file_editor_tab::file_has_changed (QString fileName)
       int decision =
       QMessageBox::warning (this, tr ("Octave Editor"),
                             tr ("It seems that \'%1\' has been deleted or renamed. Do you want to save it now?").
-                            arg (_file_name), QMessageBox::Save, QMessageBox::Close);
+                            arg (_file_name), QMessageBox::Save,
+                            QMessageBox::Close);
       if (decision == QMessageBox::Save)
         {
           if (!save_file_as ())

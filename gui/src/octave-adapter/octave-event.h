@@ -53,9 +53,10 @@ class octave_event
     virtual ~octave_event ()
     { }
 
-    /** Performs what is necessary to make this event happen.
-      * This code is thread-safe since it will be executed in the octave thread.
-      * However, you should take care to keep this code as short as possible. */
+    /** Performs what is necessary to make this event happen. This
+      * code is thread-safe since it will be executed in the octave
+      * thread. However, you should take care to keep this code as
+      * short as possible. */
     virtual bool perform () = 0;
 
     /**

@@ -33,7 +33,8 @@ public:
   octave_main_thread ();
 
 signals:
-  /** This signal will be emitted when the thread is about to actually run octave_main. */
+  /** This signal will be emitted when the thread is about to actually
+    * run octave_main. */
   void ready();
 
 protected:

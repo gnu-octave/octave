@@ -17,6 +17,7 @@
 
 #include "octave-main-thread.h"
 #include "octave-link.h"
+#include <string>
 
 octave_main_thread::octave_main_thread () : QThread ()
 {
@@ -25,9 +26,9 @@ octave_main_thread::octave_main_thread () : QThread ()
 void
 octave_main_thread::run ()
 {
-  setlocale(LC_ALL, "en_US.UTF-8");
+  setlocale (LC_ALL, "en_US.UTF-8");
   int argc = 1;
   const char *argv[] = { "octave" };
-  emit ready();
-  octave_main (argc, (char **) argv, 0);
+  emit ready ();
+  octave_main (argc, const_cast<char**>(argv), 0);
 }

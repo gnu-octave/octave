@@ -138,13 +138,13 @@ main_window::handle_command_double_clicked (QString command)
 void
 main_window::open_bug_tracker_page ()
 {
-  QDesktopServices::openUrl (QUrl ("http://savannah.gnu.org/bugs/?group=octave"));
+  QDesktopServices::openUrl (QUrl ("http://bugs.octave.org"));
 }
 
 void
 main_window::open_agora_page ()
 {
-  QDesktopServices::openUrl (QUrl ("http://agora.panocha.org.mx/"));
+  QDesktopServices::openUrl (QUrl ("http://agora.octave.org/"));
 }
 
 void

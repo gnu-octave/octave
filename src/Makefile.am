@@ -416,10 +416,6 @@ JIT_SRC = \
   jit-ir.cc \
   pt-jit.cc
 
-#noinst_LTLIBRARIES =
-#
-#include corefcn/module.mk
-#
 DIST_SRC = \
   Cell.cc \
   bitfcns.cc \

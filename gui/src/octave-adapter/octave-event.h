@@ -20,7 +20,7 @@
 
 #include <string>
 #include "octave-event-observer.h"
-#include "octave/config.h"
+#include "config.h"
 #include "symtab.h"
 #include "oct-env.h"
 #include "pt-eval.h"

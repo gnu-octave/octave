@@ -31,26 +31,30 @@ TRANSLATIONS        += languages/generic.ts \
 win32-msvc*: include(msvc.pri)
 
 LIBS                += -lreadline -lqscintilla2  \
-                       -L../qterminal/libqterminal/$$LIBDIR_SUFFIX -lqterminal \
-                        $$system(mkoctfile -p LIBS) \
-                        $$system(mkoctfile -p OCTAVE_LIBS)
+                       -L../qterminal/libqterminal/$$LIBDIR_SUFFIX -lqterminal -lm \
+                       -L../../libcruft/.libs -lcruft \
+                       -L../../liboctave/.libs -loctave \
+                       -L../../src/.libs -loctinterp
 
 mac {
     CONFIG -= app_bundle
 }
 
 # Includepaths and libraries to link against:
-INCLUDEPATH         += . octave-adapter m-editor ../qterminal/libqterminal /usr/include/qt4 \
-                       $$system(mkoctfile -p INCFLAGS)
-INCFLAGS            += $$system(mkoctfile -p INCFLAGS)
-mac {
-    INCFLAGS += -I/opt/local/include
-}
+INCLUDEPATH         += . \
+                       octave-adapter \
+                       m-editor \
+                       ../qterminal/libqterminal \
+                       /usr/include/qt4 \
+                       ../.. \
+                       ../../src \
+                       ../../liboctave \
+                       ../../libcruft/misc
 
-QMAKE_LIBDIR        += $$system(octave-config -p OCTLIBDIR)
-unix {
-    QMAKE_RPATHDIR += $$system(octave-config -p OCTLIBDIR)
-}
+#QMAKE_LIBDIR        += $$system(octave-config -p OCTLIBDIR)
+#unix {
+#    QMAKE_RPATHDIR += $$system(octave-config -p OCTLIBDIR)
+#}
 
 mac {
     LFLAGS += -L/opt/local/lib
@@ -69,7 +73,7 @@ win32-msvc* {
     QMAKE_CXXFLAGS += -wd4244
 }
 
-QMAKE_LFLAGS        += $$LFLAGS $$system(mkoctfile -p RLD_FLAG)
+QMAKE_LFLAGS        += $$LFLAGS
 QMAKE_CXXFLAGS      += $$INCFLAGS
 
 # Files associated with the project:

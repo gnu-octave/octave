@@ -44,6 +44,7 @@
 #include "history-dockwidget.h"
 #include "files-dockwidget.h"
 #include "terminal-dockwidget.h"
+#include "documentation-dockwidget.h"
 #include "octave-qt-event-listener.h"
 #include "octave-event-observer.h"
 
@@ -104,6 +105,7 @@ public slots:
   void focus_current_directory ();
   void focus_workspace ();
   void focus_editor ();
+  void focus_documentation ();
 
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();
@@ -137,6 +139,7 @@ private:
   history_dock_widget *     _history_dock_widget;
   files_dock_widget *       _files_dock_widget;
   terminal_dock_widget *    _terminal_dock_widget;
+  documentation_dock_widget*_documentation_dock_widget;
 
   // Toolbars.
   QStatusBar *              _status_bar;

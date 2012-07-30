@@ -44,6 +44,7 @@ mac {
 INCLUDEPATH         += . \
                        octave-adapter \
                        m-editor \
+                       qtinfo \
                        ../qterminal/libqterminal \
                        /usr/include/qt4 \
                        ../.. \
@@ -83,6 +84,8 @@ SOURCES +=\
     m-editor/lexer-octave-gui.cc \
     m-editor/file-editor.cc \
     m-editor/file-editor-tab.cc \
+    qtinfo/parser.cc \
+    qtinfo/webinfo.cc \
     main-window.cc \
     workspace-view.cc \
     history-dockwidget.cc \
@@ -93,7 +96,8 @@ SOURCES +=\
     welcome-wizard.cc \
     workspace-model.cc \
     terminal-dockwidget.cc \
-    octave-qt-event-listener.cc
+    octave-qt-event-listener.cc \
+    documentation-dockwidget.cc
 
 HEADERS += \
     octave-adapter/octave-link.h \
@@ -105,6 +109,8 @@ HEADERS += \
     m-editor/file-editor.h \
     m-editor/file-editor-interface.h \
     m-editor/file-editor-tab.h \
+    qtinfo/parser.h \
+    qtinfo/webinfo.h \
     symbol-information.h \
     main-window.h \
     workspace-view.h \
@@ -115,7 +121,8 @@ HEADERS += \
     welcome-wizard.h \
     workspace-model.h \
     terminal-dockwidget.h \
-    octave-qt-event-listener.h
+    octave-qt-event-listener.h \
+    documentation-dockwidget.h
 
 FORMS += \
     settings-dialog.ui \

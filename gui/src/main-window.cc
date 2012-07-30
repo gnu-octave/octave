@@ -310,6 +310,19 @@ main_window::focus_editor ()
 }
 
 void
+main_window::focus_documentation ()
+{
+  if (!_documentation_dock_widget->isVisible ())
+    {
+      _documentation_dock_widget->setVisible (true);
+    }
+
+  _documentation_dock_widget->setFocus ();
+  _documentation_dock_widget->activateWindow ();
+  _documentation_dock_widget->raise ();
+}
+
+void
 main_window::handle_entered_debug_mode ()
 {
   setWindowTitle ("Octave (Debugging)");
@@ -429,6 +442,8 @@ main_window::construct ()
   _history_dock_widget->setStatusTip (tr ("Browse and search the command history."));
   _files_dock_widget        = new files_dock_widget (this);
   _files_dock_widget->setStatusTip (tr ("Browse your files."));
+  _documentation_dock_widget= new documentation_dock_widget (this);
+  _documentation_dock_widget->setStatusTip (tr ("See the documentation for help."));
   _status_bar               = new QStatusBar (this);
 
   _current_directory_combo_box = new QComboBox (this);
@@ -639,6 +654,11 @@ main_window::construct ()
   show_editor_action->setCheckable (true);
   show_editor_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
                                    + Qt::Key_4);
+
+  QAction * show_documentation_action = window_menu->addAction (tr ("Show Documentation"));
+  show_documentation_action->setCheckable (true);
+  show_documentation_action->setShortcut (Qt::ControlModifier + Qt::ShiftModifier
+                                   + Qt::Key_5);
   window_menu->addSeparator ();
 
   QAction * command_window_action
@@ -660,6 +680,10 @@ main_window::construct ()
   QAction * editor_action
     = window_menu->addAction (tr ("Editor"));
   editor_action->setShortcut (Qt::ControlModifier + Qt::Key_4);
+
+  QAction * documentation_action
+    = window_menu->addAction (tr ("Documentation"));
+  documentation_action->setShortcut (Qt::ControlModifier + Qt::Key_5);
 
   window_menu->addSeparator ();
   QAction * reset_windows_action
@@ -733,6 +757,10 @@ main_window::construct ()
            _file_editor,                SLOT   (setVisible (bool)));
   connect (_file_editor,                SIGNAL (active_changed (bool)),
            show_editor_action,          SLOT   (setChecked (bool)));
+  connect (show_documentation_action,   SIGNAL (toggled (bool)),
+           _documentation_dock_widget,  SLOT   (setVisible (bool)));
+  connect (_documentation_dock_widget,  SIGNAL (active_changed (bool)),
+           show_documentation_action,   SLOT   (setChecked (bool)));
 
   connect (command_window_action,       SIGNAL (triggered ()),
            this,                        SLOT (focus_command_window ()));
@@ -744,6 +772,8 @@ main_window::construct ()
            this,                        SLOT (focus_current_directory ()));
   connect (editor_action,               SIGNAL (triggered ()),
            this,                        SLOT (focus_editor ()));
+  connect (documentation_action,        SIGNAL (triggered ()),
+           this,                        SLOT (focus_documentation ()));
 
   connect (reset_windows_action,        SIGNAL (triggered ()),
            this,                        SLOT   (reset_windows ()));
@@ -796,6 +826,7 @@ main_window::construct ()
   addDockWidget (Qt::RightDockWidgetArea, _files_dock_widget);
   addDockWidget (Qt::RightDockWidgetArea, _file_editor);
   addDockWidget (Qt::BottomDockWidgetArea, _terminal_dock_widget);
+  addDockWidget (Qt::RightDockWidgetArea, _documentation_dock_widget);
   setStatusBar (_status_bar);
   read_settings ();
 

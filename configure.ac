@@ -900,12 +900,17 @@ PKG_CHECK_EXISTS([$magick++], [
   AC_LANG_PUSH(C++)
     AC_CHECK_HEADER([Magick++.h], [
       AC_MSG_CHECKING([for Magick::ColorRGB in Magick++.h])
-      AC_TRY_LINK([#include <Magick++.h>], [Magick::ColorRGB c;], [
-        AC_MSG_RESULT(yes)
-        warn_magick=
-      ], [
-        AC_MSG_RESULT(no)
-      ])
+      AC_PREPROC_IFELSE(
+        [AC_LANG_SOURCE(
+          [[#include <Magick++.h>]],
+          [[Magick::ColorRGB c;]])
+        ], [
+          AC_MSG_RESULT(yes)
+          warn_magick=
+        ], [
+          AC_MSG_RESULT(no)
+        ]
+      )
     ])
   AC_LANG_POP(C++)
   CPPFLAGS="$save_CPPFLAGS"

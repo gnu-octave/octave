@@ -21,7 +21,7 @@
 SED=${SED:-'sed'}
 
 cat << \EOF
-// DO NOT EDIT!  Generated automatically by mkbuiltins.
+// DO NOT EDIT!  Generated automatically by mkops.
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -32,7 +32,7 @@ extern void install_base_type_conversions (void);
 EOF
 
 for file in "$@"; do
-  f=`echo $file | $SED 's,^\./,,; s%^OPERATORS/op-%%; s%\.cc%%; s%-%_%g'`
+  f=`echo $file | $SED 's,^\./,,; s%^operators/op-%%; s%\.cc%%; s%-%_%g'`
   echo "extern void install_${f}_ops (void);"
 done
 
@@ -46,7 +46,7 @@ install_ops (void)
 EOF
 
 for file in "$@"; do
-  f=`echo $file | $SED 's,^\./,,; s%^OPERATORS/op-%%; s%\.cc%%; s%-%_%g'`
+  f=`echo $file | $SED 's,^\./,,; s%^operators/op-%%; s%\.cc%%; s%-%_%g'`
   echo "  install_${f}_ops ();"
 done
 

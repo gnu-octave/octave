@@ -73,7 +73,8 @@ function retval = image (varargin)
   endif
 
   if (iscomplex (img))
-    error ("image: data can not be complex");
+    warning ("image: only showing real part of complex image");
+    img = real (img);
   endif
 
   oldax = gca ();

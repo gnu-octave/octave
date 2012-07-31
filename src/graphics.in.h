@@ -1413,7 +1413,7 @@ public:
   octave_value get (void) const { return data; }
 
   void add_constraint (const std::string& type)
-    { type_constraints.push_back (type); }
+    { type_constraints.insert (type); }
 
   void add_constraint (const dim_vector& dims)
     { size_constraints.push_back (dims); }
@@ -1486,7 +1486,7 @@ protected:
   double xmax;
   double xminp;
   double xmaxp;
-  std::list<std::string> type_constraints;
+  std::set<std::string> type_constraints;
   std::list<dim_vector> size_constraints;
 };
 
@@ -4432,6 +4432,7 @@ public:
         cdata.add_constraint ("uint8");
         cdata.add_constraint ("uint16");
         cdata.add_constraint ("int16");
+        cdata.add_constraint ("real");
         cdata.add_constraint (dim_vector (-1, -1));
         cdata.add_constraint (dim_vector (-1, -1, 3));
       }

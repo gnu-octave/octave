@@ -633,6 +633,8 @@ private:
 
   void gen_subsref (const jit_function& paren_scalar, size_t n);
 
+  void gen_subsasgn (const jit_function& paren_scalar, size_t n);
+
   static jit_typeinfo *instance;
 
   llvm::Module *module;

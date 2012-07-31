@@ -810,7 +810,8 @@ jit_convert::next_name (const char *prefix, size_t& count, bool inc)
 }
 
 jit_instruction *
-jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp)
+jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
+                      jit_value *extra_arg)
 {
   std::string type = exp.type_tags ();
   if (! (type.size () == 1 && type[0] == '('))
@@ -832,7 +833,8 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp)
 
   size_t narg = arg_list->size ();
   tree_argument_list::iterator iter = arg_list->begin ();
-  std::vector<jit_value *> call_args (narg + 1);
+  bool have_extra = extra_arg;
+  std::vector<jit_value *> call_args (narg + 1 + have_extra);
   call_args[0] = object;
 
   for (size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
@@ -843,6 +845,9 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp)
       end_context.push_back (jit_magic_end::context (object, idx, narg));
       call_args[idx + 1] = visit (*iter);
     }
+
+  if (extra_arg)
+    call_args[call_args.size () - 1] = extra_arg;
 
   return create_checked (fres, call_args);
 }
@@ -858,7 +863,8 @@ jit_convert::do_assign (tree_expression *exp, jit_value *rhs, bool artificial)
   else if (tree_index_expression *idx
            = dynamic_cast<tree_index_expression *> (exp))
     {
-      jit_value *new_object = resolve (jit_typeinfo::paren_subsasgn (), *idx);
+      jit_value *new_object = resolve (jit_typeinfo::paren_subsasgn (), *idx,
+                                       rhs);
       do_assign (idx->expression (), new_object, true);
 
       // FIXME: Will not work for values that must be release/grabed
@@ -1862,4 +1868,19 @@ Test some simple cases that compile.
 %!   i = i + 1;
 %! endwhile
 %! assert (result == sum (sum (m)));
+
+%!test
+%! ndim = 100;
+%! m = zeros (ndim);
+%! i = 1;
+%! while (i <= ndim)
+%!   for j = 1:ndim
+%!     m(i, j) = (j - 1) * ndim + i;
+%!   endfor
+%!   i = i + 1;
+%! endwhile
+%! m2 = zeros (ndim);
+%! m2(:) = 1:(ndim^2);
+%! assert (all (m == m2));
+
 */

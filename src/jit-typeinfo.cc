@@ -243,6 +243,15 @@ octave_jit_paren_subsasgn_impl (jit_matrix *ret, jit_matrix *mat,
   *ret = *mat;
 }
 
+static void
+make_indices (double *indices, octave_idx_type idx_count,
+              Array<idx_vector>& result)
+{
+  result.resize (dim_vector (1, idx_count));
+  for (octave_idx_type i = 0; i < idx_count; ++i)
+    result(i) = idx_vector (indices[i]);
+}
+
 extern "C" double
 octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
                          octave_idx_type idx_count)
@@ -250,9 +259,8 @@ octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
   // FIXME: Replace this with a more optimal version
   try
     {
-      Array<idx_vector> idx (dim_vector (1, idx_count));
-      for (octave_idx_type i = 0; i < idx_count; ++i)
-        idx(i) = idx_vector (indicies[i]);
+      Array<idx_vector> idx;
+      make_indices (indicies, idx_count, idx);
 
       Array<double> ret = mat->array->index (idx);
       return ret.xelem (0);
@@ -261,6 +269,28 @@ octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
     {
       gripe_library_execution_error ();
       return 0;
+    }
+}
+
+extern "C" void
+octave_jit_paren_scalar_subsasgn (jit_matrix *ret, jit_matrix *mat,
+                                  double *indices, octave_idx_type idx_count,
+                                  double value)
+{
+  // FIXME: Replace this with a more optimal version
+  try
+    {
+      Array<idx_vector> idx;
+      make_indices (indices, idx_count, idx);
+
+      Matrix temp (1, 1);
+      temp.xelem(0) = value;
+      mat->array->assign (idx, temp);
+      ret->update (mat->array);
+    }
+  catch (const octave_execution_exception&)
+    {
+      gripe_library_execution_error ();
     }
 }
 
@@ -1342,9 +1372,19 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   paren_scalar.add_mapping (engine, &octave_jit_paren_scalar);
   paren_scalar.mark_can_error ();
 
+  jit_function paren_scalar_subsasgn
+    = create_function (jit_convention::external,
+                       "octave_jit_paren_scalar_subsasgn", matrix, matrix,
+                       scalar_ptr, index, scalar);
+  paren_scalar_subsasgn.add_mapping (engine, &octave_jit_paren_scalar_subsasgn);
+  paren_scalar_subsasgn.mark_can_error ();
+
   // FIXME: Generate this on the fly
   for (size_t i = 2; i < 10; ++i)
-    gen_subsref (paren_scalar, i);
+    {
+      gen_subsref (paren_scalar, i);
+      gen_subsasgn (paren_scalar_subsasgn, i);
+    }
 
   // paren subsasgn
   paren_subsasgn_fn.stash_name ("()subsasgn");
@@ -1898,6 +1938,40 @@ jit_typeinfo::gen_subsref (const jit_function& paren_scalar, size_t n)
   llvm::Value *ret = paren_scalar.call (builder, mat, array, nelem);
   fn.do_return (builder, ret);
   paren_subsref_fn.add_overload (fn);
+}
+
+void
+jit_typeinfo::gen_subsasgn (const jit_function& paren_scalar, size_t n)
+{
+  std::stringstream name;
+  name << "jit_paren_subsasgn_matrix_scalar" << n;
+  std::vector<jit_type *> args (n + 2, scalar);
+  args[0] = matrix;
+  jit_function fn = create_function (jit_convention::internal, name.str (),
+                                     matrix, args);
+  fn.mark_can_error ();
+  llvm::BasicBlock *body = fn.new_block ();
+  builder.SetInsertPoint (body);
+
+  llvm::Type *scalar_t = scalar->to_llvm ();
+  llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
+  llvm::Value *array = llvm::UndefValue::get (array_t);
+  for (size_t i = 0; i < n; ++i)
+    {
+      llvm::Value *idx = fn.argument (builder, i + 1);
+      array = builder.CreateInsertValue (array, idx, i);
+    }
+
+  llvm::Value *array_mem = builder.CreateAlloca (array_t);
+  builder.CreateStore (array, array_mem);
+  array = builder.CreateBitCast (array_mem, scalar_t->getPointerTo ());
+
+  llvm::Value *nelem = llvm::ConstantInt::get (index->to_llvm (), n);
+  llvm::Value *mat = fn.argument (builder, 0);
+  llvm::Value *value = fn.argument (builder, n + 1);
+  llvm::Value *ret = paren_scalar.call (builder, mat, array, nelem, value);
+  fn.do_return (builder, ret);
+  paren_subsasgn_fn.add_overload (fn);
 }
 
 #endif

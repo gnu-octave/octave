@@ -297,7 +297,8 @@ private:
   std::string next_name (const char *prefix, size_t& count, bool inc);
 
   jit_instruction *resolve (const jit_operation& fres,
-                            tree_index_expression& exp);
+                            tree_index_expression& exp,
+                            jit_value *extra_arg = 0);
 
   jit_value *do_assign (tree_expression *exp, jit_value *rhs,
                         bool artificial = false);

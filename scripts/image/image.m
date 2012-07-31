@@ -72,6 +72,10 @@ function retval = image (varargin)
     firstnonnumeric = 4;
   endif
 
+  if (iscomplex (img))
+    error ("image: data can not be complex");
+  endif
+
   oldax = gca ();
   unwind_protect
     axes (ax);
@@ -241,3 +245,6 @@ endfunction
 %! hold off;
 %! title ("line, image, line, image, line");
 
+## Test input validation
+%!error <can not be complex> image (1+i)
+%!error <matrix is empty> image ([])

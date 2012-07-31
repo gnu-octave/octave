@@ -1074,6 +1074,10 @@ public:
 
 #undef JIT_CALL_CONST
 
+  jit_call (const jit_operation& aoperation,
+            const std::vector<jit_value *>& args)
+  : jit_instruction (args), moperation (aoperation)
+  {}
 
   const jit_operation& operation (void) const { return moperation; }
 
@@ -1151,9 +1155,23 @@ class
 jit_magic_end : public jit_instruction
 {
 public:
-  jit_magic_end (const std::vector<jit_value *>& context)
-    : jit_instruction (context)
-  {}
+  class
+  context
+  {
+  public:
+    context (void) : value (0), index (0), count (0)
+    {}
+
+    context (jit_value *avalue, size_t aindex, size_t acount)
+      : value (avalue), index (aindex), count (acount)
+    {}
+
+    jit_value *value;
+    size_t index;
+    size_t count;
+  };
+
+  jit_magic_end (const std::vector<context>& full_context);
 
   const jit_function& overload () const;
 

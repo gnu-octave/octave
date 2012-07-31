@@ -631,6 +631,8 @@ private:
 
   jit_type *intN (size_t nbits) const;
 
+  void gen_subsref (const jit_function& paren_scalar, size_t n);
+
   static jit_typeinfo *instance;
 
   llvm::Module *module;

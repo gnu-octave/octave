@@ -243,6 +243,27 @@ octave_jit_paren_subsasgn_impl (jit_matrix *ret, jit_matrix *mat,
   *ret = *mat;
 }
 
+extern "C" double
+octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
+                         octave_idx_type idx_count)
+{
+  // FIXME: Replace this with a more optimal version
+  try
+    {
+      Array<idx_vector> idx (dim_vector (1, idx_count));
+      for (octave_idx_type i = 0; i < idx_count; ++i)
+        idx(i) = idx_vector (indicies[i]);
+
+      Array<double> ret = mat->array->index (idx);
+      return ret.xelem (0);
+    }
+  catch (const octave_execution_exception&)
+    {
+      gripe_library_execution_error ();
+      return 0;
+    }
+}
+
 extern "C" void
 octave_jit_paren_subsasgn_matrix_range (jit_matrix *result, jit_matrix *mat,
                                         jit_range *index, double value)
@@ -789,6 +810,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   boolean = new_type ("bool", any, bool_t);
   index = new_type ("index", any, index_t);
 
+  // a fake type for interfacing with C++
+  jit_type *scalar_ptr = new_type ("scalar_ptr", 0, scalar_t->getPointerTo ());
+
   create_int (8);
   create_int (16);
   create_int (32);
@@ -1310,6 +1334,18 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   }
   paren_subsref_fn.add_overload (fn);
 
+  // generate () subsref for ND indexing of matricies with scalars
+  jit_function paren_scalar = create_function (jit_convention::external,
+                                               "octave_jit_paren_scalar",
+                                               scalar, matrix, scalar_ptr,
+                                               index);
+  paren_scalar.add_mapping (engine, &octave_jit_paren_scalar);
+  paren_scalar.mark_can_error ();
+
+  // FIXME: Generate this on the fly
+  for (size_t i = 2; i < 10; ++i)
+    gen_subsref (paren_scalar, i);
+
   // paren subsasgn
   paren_subsasgn_fn.stash_name ("()subsasgn");
 
@@ -1829,6 +1865,39 @@ jit_typeinfo::new_type (const std::string& name, jit_type *parent,
   jit_type *ret = new jit_type (name, parent, llvm_type, next_id++);
   id_to_type.push_back (ret);
   return ret;
+}
+
+void
+jit_typeinfo::gen_subsref (const jit_function& paren_scalar, size_t n)
+{
+  std::stringstream name;
+  name << "jit_paren_subsref_matrix_scalar" << n;
+  std::vector<jit_type *> args (n + 1, scalar);
+  args[0] = matrix;
+  jit_function fn = create_function (jit_convention::internal, name.str (),
+                                     scalar, args);
+  fn.mark_can_error ();
+  llvm::BasicBlock *body = fn.new_block ();
+  builder.SetInsertPoint (body);
+
+  llvm::Type *scalar_t = scalar->to_llvm ();
+  llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
+  llvm::Value *array = llvm::UndefValue::get (array_t);
+  for (size_t i = 0; i < n; ++i)
+    {
+      llvm::Value *idx = fn.argument (builder, i + 1);
+      array = builder.CreateInsertValue (array, idx, i);
+    }
+
+  llvm::Value *array_mem = builder.CreateAlloca (array_t);
+  builder.CreateStore (array, array_mem);
+  array = builder.CreateBitCast (array_mem, scalar_t->getPointerTo ());
+
+  llvm::Value *nelem = llvm::ConstantInt::get (index->to_llvm (), n);
+  llvm::Value *mat = fn.argument (builder, 0);
+  llvm::Value *ret = paren_scalar.call (builder, mat, array, nelem);
+  fn.do_return (builder, ret);
+  paren_subsref_fn.add_overload (fn);
 }
 
 #endif

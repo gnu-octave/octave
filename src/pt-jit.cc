@@ -412,7 +412,14 @@ jit_convert::visit_function_def (tree_function_def&)
 void
 jit_convert::visit_identifier (tree_identifier& ti)
 {
-  result = get_variable (ti.name ());
+  if (ti.has_magic_end ())
+    {
+      if (!end_context.size ())
+        throw jit_fail_exception ("Illegal end");
+      result = block->append (create<jit_magic_end> (end_context));
+    }
+  else
+    result = get_variable (ti.name ());
 }
 
 void
@@ -826,6 +833,12 @@ jit_convert::resolve (tree_index_expression& exp)
 
   tree_expression *tree_object = exp.expression ();
   jit_value *object = visit (tree_object);
+
+  end_context.push_back (object);
+
+  unwind_protect prot;
+  prot.add_method (&end_context, &std::vector<jit_value *>::pop_back);
+
   tree_expression *arg0 = arg_list->front ();
   jit_value *index = visit (arg0);
 
@@ -1479,6 +1492,14 @@ void
 jit_convert::convert_llvm::visit (jit_argument&)
 {}
 
+void
+jit_convert::convert_llvm::visit (jit_magic_end& me)
+{
+  const jit_function& ol = me.overload ();
+  llvm::Value *ret = ol.call (builder, me.resolve_context ());
+  me.stash_llvm (ret);
+}
+
 // -------------------- tree_jit --------------------
 
 tree_jit::tree_jit (void) : module (0), engine (0)
@@ -1822,5 +1843,14 @@ Test some simple cases that compile.
 %!   i = i + 1;
 %! endwhile
 %! assert (i == niter);
+
+%!test
+%! niter = 1001;
+%! result = 0;
+%! m = [5 10];
+%! for i=1:niter
+%!   result = result + m(end);
+%! endfor
+%! assert (result == m(end) * niter);
 
 */

@@ -1,7 +1,7 @@
 EXTRA_DIST += \
   corefcn/module.mk
 
-corefcn_SRC = \
+COREFCN_SRC = \
   corefcn/__contourc__.cc \
   corefcn/__dispatch__.cc \
   corefcn/__lin_interpn__.cc \
@@ -66,5 +66,5 @@ corefcn_SRC = \
 
 noinst_LTLIBRARIES += corefcn/libcorefcn.la
 
-corefcn_libcorefcn_la_SOURCES = $(corefcn_SRC)
+corefcn_libcorefcn_la_SOURCES = $(COREFCN_SRC)
 

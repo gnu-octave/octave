@@ -25,6 +25,8 @@ AM_CPPFLAGS = \
   -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
+  -Ioctave-value -I$(srcdir)/octave-value \
+  -Iparse-tree -I$(srcdir)/parse-tree \
   -Icorefcn -I$(srcdir)/corefcn \
   -I. -I$(srcdir) \
   @CPPFLAGS@
@@ -135,106 +137,6 @@ OPT_INC = \
   ../liboctave/LSODE-opts.h \
   ../liboctave/Quad-opts.h
 
-OV_INTTYPE_INC = \
-  ov-base-int.h \
-  ov-base-int.cc \
-  ov-int-traits.h \
-  ov-int16.h \
-  ov-int32.h \
-  ov-int64.h \
-  ov-int8.h \
-  ov-intx.h \
-  ov-uint16.h \
-  ov-uint32.h \
-  ov-uint64.h \
-  ov-uint8.h
-
-OV_INCLUDES = \
-  ov-base-diag.h \
-  ov-base-diag.cc \
-  ov-base-mat.h \
-  ov-base-mat.cc \
-  ov-base-scalar.h \
-  ov-base-scalar.cc \
-  ov-base.h \
-  ov-bool-mat.h \
-  ov-bool-mat.cc \
-  ov-bool.h \
-  ov-builtin.h \
-  ov-cell.h \
-  ov-ch-mat.h \
-  ov-class.h \
-  ov-classdef.h \
-  ov-colon.h \
-  ov-complex.h \
-  ov-cs-list.h \
-  ov-cx-diag.h \
-  ov-cx-mat.h \
-  ov-dld-fcn.h \
-  ov-fcn-handle.h \
-  ov-fcn-inline.h \
-  ov-fcn.h \
-  ov-float.h \
-  ov-flt-complex.h \
-  ov-flt-cx-diag.h \
-  ov-flt-cx-mat.h \
-  ov-flt-re-diag.h \
-  ov-flt-re-mat.h \
-  ov-lazy-idx.h \
-  ov-mex-fcn.h \
-  ov-null-mat.h \
-  ov-oncleanup.h \
-  ov-perm.h \
-  ov-range.h \
-  ov-re-diag.h \
-  ov-re-mat.h \
-  ov-scalar.h \
-  ov-str-mat.h \
-  ov-struct.h \
-  ov-type-conv.h \
-  ov-typeinfo.h \
-  ov-usr-fcn.h \
-  ov.h \
-  $(OV_INTTYPE_INC)
-
-OV_SPARSE_INCLUDES = \
-  ov-base-sparse.h \
-  ov-bool-sparse.h \
-  ov-cx-sparse.h \
-  ov-re-sparse.h
-
-PT_INCLUDES = \
-  pt-all.h \
-  pt-arg-list.h \
-  pt-assign.h \
-  pt-binop.h \
-  pt-bp.h \
-  pt-cbinop.h \
-  pt-cell.h \
-  pt-check.h \
-  pt-classdef.h \
-  pt-cmd.h \
-  pt-colon.h \
-  pt-const.h \
-  pt-decl.h \
-  pt-eval.h \
-  pt-except.h \
-  pt-exp.h \
-  pt-fcn-handle.h \
-  pt-funcall.h \
-  pt-id.h \
-  pt-idx.h \
-  pt-jump.h \
-  pt-loop.h \
-  pt-mat.h \
-  pt-misc.h \
-  pt-pr-code.h \
-  pt-select.h \
-  pt-stmt.h \
-  pt-unop.h \
-  pt-walk.h \
-  pt.h
-
 JIT_INCLUDES = \
   jit-util.h \
   jit-typeinfo.h \
@@ -329,103 +231,12 @@ nodist_octinclude_HEADERS = \
   mxarray.h \
   version.h
 
-OV_INTTYPE_SRC = \
-  ov-int16.cc \
-  ov-int32.cc \
-  ov-int64.cc \
-  ov-int8.cc \
-  ov-uint16.cc \
-  ov-uint32.cc \
-  ov-uint64.cc \
-  ov-uint8.cc
-
-OV_SPARSE_SRC = \
-  ov-base-sparse.cc \
-  ov-bool-sparse.cc \
-  ov-cx-sparse.cc \
-  ov-re-sparse.cc
-
-OV_SRC = \
-  ov-base.cc \
-  ov-bool-mat.cc \
-  ov-bool.cc \
-  ov-builtin.cc \
-  ov-cell.cc \
-  ov-ch-mat.cc \
-  ov-class.cc \
-  ov-classdef.cc \
-  ov-colon.cc \
-  ov-complex.cc \
-  ov-cs-list.cc \
-  ov-cx-diag.cc \
-  ov-cx-mat.cc \
-  ov-dld-fcn.cc \
-  ov-fcn-handle.cc \
-  ov-fcn-inline.cc \
-  ov-fcn.cc \
-  ov-float.cc \
-  ov-flt-complex.cc \
-  ov-flt-cx-diag.cc \
-  ov-flt-cx-mat.cc \
-  ov-flt-re-diag.cc \
-  ov-flt-re-mat.cc \
-  ov-lazy-idx.cc \
-  ov-mex-fcn.cc \
-  ov-null-mat.cc \
-  ov-oncleanup.cc \
-  ov-perm.cc \
-  ov-range.cc \
-  ov-re-diag.cc \
-  ov-re-mat.cc \
-  ov-scalar.cc \
-  ov-str-mat.cc \
-  ov-struct.cc \
-  ov-typeinfo.cc \
-  ov-usr-fcn.cc \
-  ov.cc \
-  $(OV_INTTYPE_SRC) \
-  $(OV_SPARSE_SRC)
-
-PT_SRC = \
-  pt-arg-list.cc \
-  pt-assign.cc \
-  pt-binop.cc \
-  pt-bp.cc \
-  pt-cbinop.cc \
-  pt-cell.cc \
-  pt-check.cc \
-  pt-cmd.cc \
-  pt-classdef.cc \
-  pt-colon.cc \
-  pt-const.cc \
-  pt-decl.cc \
-  pt-eval.cc \
-  pt-except.cc \
-  pt-exp.cc \
-  pt-fcn-handle.cc \
-  pt-funcall.cc \
-  pt-id.cc \
-  pt-idx.cc \
-  pt-jump.cc \
-  pt-loop.cc \
-  pt-mat.cc \
-  pt-misc.cc \
-  pt-pr-code.cc \
-  pt-select.cc \
-  pt-stmt.cc \
-  pt-unop.cc \
-  pt.cc
-
 JIT_SRC = \
   jit-util.cc \
   jit-typeinfo.cc \
   jit-ir.cc \
   pt-jit.cc
 
-#noinst_LTLIBRARIES =
-#
-#include corefcn/module.mk
-#
 DIST_SRC = \
   Cell.cc \
   bitfcns.cc \
@@ -497,21 +308,22 @@ DIST_SRC = \
   xnorm.cc \
   xpow.cc \
   zfstream.cc \
-  $(corefcn_SRC) \
-  $(OV_SRC) \
-  $(PT_SRC) \
+  $(COREFCN_SRC) \
+  $(OCTAVE_VALUE_SRC) \
+  $(PARSE_TREE_SRC) \
   $(JIT_SRC)
 
 noinst_LTLIBRARIES =
 
+include parse-tree/module.mk
+include octave-value/module.mk
+include operators/module.mk
+include template-inst/module.mk
 include corefcn/module.mk
 include DLD-FUNCTIONS/module.mk
 
 $(srcdir)/DLD-FUNCTIONS/module.mk: $(srcdir)/DLD-FUNCTIONS/config-module.sh $(srcdir)/DLD-FUNCTIONS/config-module.awk $(srcdir)/DLD-FUNCTIONS/module-files
 	$(srcdir)/DLD-FUNCTIONS/config-module.sh $(top_srcdir)
-
-include OPERATORS/module.mk
-include TEMPLATE-INST/module.mk
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
   OCT_FILES = $(DLD_FUNCTIONS_LIBS:.la=.oct)

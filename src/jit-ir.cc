@@ -598,4 +598,36 @@ jit_call::infer (void)
   return false;
 }
 
+// -------------------- jit_magic_end --------------------
+const jit_function&
+jit_magic_end::overload () const
+{
+  jit_value *ctx = resolve_context ();
+  if (ctx)
+    return jit_typeinfo::end (ctx->type ());
+
+  static jit_function null_ret;
+  return null_ret;
+}
+
+jit_value *
+jit_magic_end::resolve_context (void) const
+{
+  // FIXME: We need to have a way of marking functions so we can skip them here
+  return argument_count () ? argument (0) : 0;
+}
+
+bool
+jit_magic_end::infer (void)
+{
+  jit_type *new_type = overload ().result ();
+  if (new_type != type ())
+    {
+      stash_type (new_type);
+      return true;
+    }
+
+  return false;
+}
+
 #endif

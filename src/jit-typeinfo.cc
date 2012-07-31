@@ -522,8 +522,10 @@ llvm::Value *
 jit_function::call (llvm::IRBuilderD& builder,
                     const std::vector<jit_value *>& in_args) const
 {
-  assert (in_args.size () == args.size ());
+  if (! valid ())
+    throw jit_fail_exception ("Call not implemented");
 
+  assert (in_args.size () == args.size ());
   std::vector<llvm::Value *> llvm_args (args.size ());
   for (size_t i = 0; i < in_args.size (); ++i)
     llvm_args[i] = in_args[i]->to_llvm ();
@@ -535,7 +537,9 @@ llvm::Value *
 jit_function::call (llvm::IRBuilderD& builder,
                     const std::vector<llvm::Value *>& in_args) const
 {
-  assert (valid ());
+  if (! valid ())
+    throw jit_fail_exception ("Call not implemented");
+
   assert (in_args.size () == args.size ());
   llvm::Function *stacksave
     = llvm::Intrinsic::getDeclaration (module, llvm::Intrinsic::stacksave);
@@ -1342,8 +1346,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     builder.CreateBr (done);
 
     builder.SetInsertPoint (normal);
-    llvm::Value *len = builder.CreateExtractValue (mat,
-                                                   llvm::ArrayRef<unsigned> (2));
+    llvm::Value *len = builder.CreateExtractValue (mat, 2);
     cond0 = builder.CreateICmpSGT (int_idx, len);
 
     llvm::Value *rcount = builder.CreateExtractValue (mat, 0);
@@ -1385,6 +1388,18 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn.add_mapping (engine, &octave_jit_paren_subsasgn_matrix_range);
   fn.mark_can_error ();
   paren_subsasgn_fn.add_overload (fn);
+
+  end_fn.stash_name ("end");
+  fn = create_function (jit_convention::internal, "octave_jit_end_matrix",
+                        scalar, matrix);
+  body = fn.new_block ();
+  builder.SetInsertPoint (body);
+  {
+    llvm::Value *mat = fn.argument (builder, 0);
+    llvm::Value *ret = builder.CreateExtractValue (mat, 2);
+    fn.do_return (builder, builder.CreateSIToFP (ret, scalar_t));
+  }
+  end_fn.add_overload (fn);
 
   casts[any->type_id ()].stash_name ("(any)");
   casts[scalar->type_id ()].stash_name ("(scalar)");

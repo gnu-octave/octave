@@ -244,6 +244,8 @@ private:
 
   std::list<jit_value *> all_values;
 
+  std::vector<jit_value *> end_context;
+
   size_t iterator_count;
   size_t for_bounds_count;
   size_t short_count;

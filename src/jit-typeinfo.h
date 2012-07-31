@@ -471,6 +471,16 @@ public:
   {
     return instance->do_insert_error_check (bld);
   }
+
+  static const jit_operation& end (void)
+  {
+    return instance->end_fn;
+  }
+
+  static const jit_function& end (jit_type *ty)
+  {
+    return instance->end_fn.overload (ty);
+  }
 private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
 
@@ -655,6 +665,7 @@ private:
   jit_operation make_range_fn;
   jit_operation paren_subsref_fn;
   jit_operation paren_subsasgn_fn;
+  jit_operation end_fn;
 
   // type id -> cast function TO that type
   std::vector<jit_operation> casts;

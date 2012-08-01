@@ -10,6 +10,7 @@ COREFCN_SRC = \
   corefcn/balance.cc \
   corefcn/besselj.cc \
   corefcn/betainc.cc \
+  corefcn/bitfcns.cc \
   corefcn/bsxfun.cc \
   corefcn/cellfun.cc \
   corefcn/colloc.cc \
@@ -40,6 +41,7 @@ COREFCN_SRC = \
   corefcn/lsode.cc \
   corefcn/lu.cc \
   corefcn/luinc.cc \
+  corefcn/mappers.cc \
   corefcn/matrix_type.cc \
   corefcn/max.cc \
   corefcn/md5sum.cc \
@@ -53,13 +55,16 @@ COREFCN_SRC = \
   corefcn/rcond.cc \
   corefcn/regexp.cc \
   corefcn/schur.cc \
+  corefcn/sparse.cc \
   corefcn/spparms.cc \
   corefcn/sqrtm.cc \
   corefcn/str2double.cc \
   corefcn/strfind.cc \
+  corefcn/strfns.cc \
   corefcn/sub2ind.cc \
   corefcn/svd.cc \
   corefcn/syl.cc \
+  corefcn/syscalls.cc \
   corefcn/time.cc \
   corefcn/tril.cc \
   corefcn/typecast.cc

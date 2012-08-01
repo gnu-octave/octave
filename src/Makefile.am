@@ -238,7 +238,6 @@ JIT_SRC = \
 
 DIST_SRC = \
   Cell.cc \
-  bitfcns.cc \
   c-file-ptr-stream.cc \
   comment-list.cc \
   cutils.c \
@@ -268,7 +267,6 @@ DIST_SRC = \
   ls-oct-ascii.cc \
   ls-oct-binary.cc \
   ls-utils.cc \
-  mappers.cc \
   matherr.c \
   mex.cc \
   oct-fstrm.cc \
@@ -289,12 +287,9 @@ DIST_SRC = \
   profiler.cc \
   sighandlers.cc \
   siglist.c \
-  sparse.cc \
   sparse-xdiv.cc \
   sparse-xpow.cc \
-  strfns.cc \
   symtab.cc \
-  syscalls.cc \
   sysdep.cc \
   token.cc \
   toplev.cc \

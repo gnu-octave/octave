@@ -487,17 +487,18 @@ else
   BUILD_CXX='$(CXX)'
   BUILD_CXXFLAGS='$(CXXFLAGS)'
   BUILD_LDFLAGS='$(LDFLAGS)'
-  case "$canonical_host_type" in
-    sparc-sun-solaris2*)
-      if test "$GCC" != yes; then
-        ## FIXME: gendoc.cc is no longer used for building documentation.
-        ##        Can this test be eliminated? 
-        ## The Sun C++ compiler never seems to complete compiling
-        ## gendoc.cc unless we reduce the optimization level...
-        BUILD_CXXFLAGS="-g -O1"
-      fi
-    ;;
-  esac
+  ## 2012/07/31: Commented out special build requirements
+  ## for Sun compiler now that gendoc.cc is no longer part of build.
+  ##################################################################
+  #case "$canonical_host_type" in
+  #  sparc-sun-solaris2*)
+  #    if test "$GCC" != yes; then
+  #      ## The Sun C++ compiler never seems to complete compiling
+  #      ## gendoc.cc unless we reduce the optimization level...
+  #      ## BUILD_CXXFLAGS="-g -O1"
+  #    fi
+  #  ;;
+  #esac
   BUILD_EXEEXT='$(EXEEXT)'
 fi
 

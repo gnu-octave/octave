@@ -1883,4 +1883,25 @@ Test some simple cases that compile.
 %! m2(:) = 1:(ndim^2);
 %! assert (all (m == m2));
 
+%!test
+%! ndim = 2;
+%! m = zeros (ndim, ndim, ndim, ndim);
+%! result = 0;
+%! i0 = 1;
+%! while (i0 <= ndim)
+%!   for i1 = 1:ndim
+%!     for i2 = 1:ndim
+%!       for i3 = 1:ndim
+%!         m(i0, i1, i2, i3) = 1;
+%!         m(i0, i1, i2, i3, 1, 1, 1, 1, 1, 1) = 1;
+%!         result = result + m(i0, i1, i2, i3);
+%!       endfor
+%!     endfor
+%!   endfor
+%!   i0 = i0 + 1;
+%! endwhile
+%! expected = ones (ndim, ndim, ndim, ndim);
+%! assert (all (m == expected));
+%! assert (result == sum (expected (:)));
+
 */

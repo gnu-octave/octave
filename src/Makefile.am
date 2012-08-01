@@ -27,7 +27,6 @@ AM_CPPFLAGS = \
   -I../liboctave -I$(top_srcdir)/liboctave \
   -Ioctave-value -I$(srcdir)/octave-value \
   -Iparse-tree -I$(srcdir)/parse-tree \
-  -Icorefcn -I$(srcdir)/corefcn \
   -I. -I$(srcdir) \
   @CPPFLAGS@
 

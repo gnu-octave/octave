@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {} gtext (@{@var{s1}, @var{s2}, @dots{}@})
 ## @deftypefnx {Function File} {} gtext (@{@var{s1}; @var{s2}; @dots{}@})
 ## @deftypefnx {Function File} {} gtext (@dots{}, @var{prop}, @var{val})
-## @deftypefnx {Function File} {@var{h) =} gtext (@dots{})
+## @deftypefnx {Function File} {@var{h} =} gtext (@dots{})
 ## Place text on the current figure using the mouse.  The text is defined
 ## by the string @var{s}.  If @var{s} is a cell string organized as a row
 ## vector then each string of the cell array is written to a separate line.

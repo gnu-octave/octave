@@ -222,6 +222,7 @@ function pp = splinefit (x, y, breaks, varargin)
 endfunction
 
 %!shared xb, yb, x
+%! randn ("state", 13);
 %! xb = 0:2:10;
 %! yb = randn (size (xb));
 %! x = 0:0.1:10;

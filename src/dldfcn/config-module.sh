@@ -12,7 +12,7 @@ fi
 
 move_if_change="$top_srcdir/build-aux/move-if-change"
 
-dld_dir=$top_srcdir/src/DLD-FUNCTIONS
+dld_dir=$top_srcdir/src/dldfcn
 
 $AWK -f $dld_dir/config-module.awk < $dld_dir/module-files > $dld_dir/module.mk-t
 

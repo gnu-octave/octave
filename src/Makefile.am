@@ -314,14 +314,14 @@ include octave-value/module.mk
 include operators/module.mk
 include template-inst/module.mk
 include corefcn/module.mk
-include DLD-FUNCTIONS/module.mk
+include dldfcn/module.mk
 
-$(srcdir)/DLD-FUNCTIONS/module.mk: $(srcdir)/DLD-FUNCTIONS/config-module.sh $(srcdir)/DLD-FUNCTIONS/config-module.awk $(srcdir)/DLD-FUNCTIONS/module-files
-	$(srcdir)/DLD-FUNCTIONS/config-module.sh $(top_srcdir)
+$(srcdir)/dldfcn/module.mk: $(srcdir)/dldfcn/config-module.sh $(srcdir)/dldfcn/config-module.awk $(srcdir)/dldfcn/module-files
+	$(srcdir)/dldfcn/config-module.sh $(top_srcdir)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
-  OCT_FILES = $(DLD_FUNCTIONS_LIBS:.la=.oct)
-  OCT_STAMP_FILES = $(subst DLD-FUNCTIONS/,DLD-FUNCTIONS/$(am__leading_dot),$(DLD_FUNCTIONS_LIBS:.la=.oct-stamp))
+  OCT_FILES = $(DLDFCN_LIBS:.la=.oct)
+  OCT_STAMP_FILES = $(subst dldfcn/,dldfcn/$(am__leading_dot),$(DLDFCN_LIBS:.la=.oct-stamp))
   DLD_LIBOCTINTERP_LIBADD = liboctinterp.la
 else
   OCT_FILES =
@@ -387,17 +387,17 @@ octave_LDFLAGS = \
 ## Section for defining and creating DEF_FILES
 SRC_DEF_FILES := $(shell $(srcdir)/find-defun-files.sh "$(srcdir)" $(DIST_SRC))
 
-DLD_FUNCTIONS_DEF_FILES = $(DLD_FUNCTIONS_SRC:.cc=.df)
+DLDFCN_DEF_FILES = $(DLDFCN_SRC:.cc=.df)
 
 ## builtins.cc depends on $(DEF_FILES), so DEF_FILES should only include
 ## .df files that correspond to sources included in liboctave.
 if AMCOND_ENABLE_DYNAMIC_LINKING
   DEF_FILES = $(SRC_DEF_FILES)
 else
-  DEF_FILES = $(SRC_DEF_FILES) $(DLD_FUNCTIONS_DEF_FILES)
+  DEF_FILES = $(SRC_DEF_FILES) $(DLDFCN_DEF_FILES)
 endif
 
-ALL_DEF_FILES = $(SRC_DEF_FILES) $(DLD_FUNCTIONS_DEF_FILES)
+ALL_DEF_FILES = $(SRC_DEF_FILES) $(DLDFCN_DEF_FILES)
 
 $(SRC_DEF_FILES): mkdefs Makefile
 
@@ -483,10 +483,10 @@ $(OPT_INC) : %.h : %.in
 	$(MAKE) -C $(@D) $(@F)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
-DLD_FUNCTIONS_PKG_ADD_FILE = DLD-FUNCTIONS/PKG_ADD
+DLDFCN_PKG_ADD_FILE = dldfcn/PKG_ADD
 
-DLD-FUNCTIONS/PKG_ADD: $(DLD_FUNCTIONS_DEF_FILES) mk-pkg-add
-	$(srcdir)/mk-pkg-add $(DLD_FUNCTIONS_DEF_FILES) > $@-t
+dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) mk-pkg-add
+	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t
 	mv $@-t $@
 endif
 
@@ -510,9 +510,9 @@ if AMCOND_BUILD_DOCS
 	$(top_srcdir)/build-aux/move-if-change $@ DOCSTRINGS
 	touch $@
 
-all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE) .DOCSTRINGS
+all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE) .DOCSTRINGS
 else
-all-local: $(OCT_STAMP_FILES) $(DLD_FUNCTIONS_PKG_ADD_FILE)
+all-local: $(OCT_STAMP_FILES) $(DLDFCN_PKG_ADD_FILE)
 endif
 
 if AMCOND_BUILD_COMPILED_AUX_PROGRAMS
@@ -566,11 +566,11 @@ endif
 if AMCOND_ENABLE_DYNAMIC_LINKING
 install-oct:
 	$(top_srcdir)/build-aux/mkinstalldirs $(DESTDIR)$(octfiledir)
-	if [ -n "`cat $(DLD_FUNCTIONS_PKG_ADD_FILE)`" ]; then \
-	  $(INSTALL_DATA) $(DLD_FUNCTIONS_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
+	if [ -n "`cat $(DLDFCN_PKG_ADD_FILE)`" ]; then \
+	  $(INSTALL_DATA) $(DLDFCN_PKG_ADD_FILE) $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
 	cd $(DESTDIR)$(octlibdir) && \
-	for ltlib in $(DLD_FUNCTIONS_LIBS); do \
+	for ltlib in $(DLDFCN_LIBS); do \
 	  f=`echo $$ltlib | $(SED) 's,.*/,,'`; \
 	  dl=`$(SED) -n -e "s/dlname='\([^']*\)'/\1/p" < $$f`; \
 	  if [ -n "$$dl" ]; then \
@@ -595,7 +595,7 @@ endif
 
 CLEANFILES = \
   $(bin_SCRIPTS) \
-  $(DLD_FUNCTIONS_PKG_ADD_FILE) \
+  $(DLDFCN_PKG_ADD_FILE) \
   graphics-props.cc \
   oct-parse.output
 

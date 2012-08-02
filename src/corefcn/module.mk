@@ -1,6 +1,29 @@
 EXTRA_DIST += \
   corefcn/module.mk
 
+## Options functions for Fortran packages like LSODE, DASPK.
+## These are generated automagically by configure and Perl.
+OPT_HANDLERS = \
+  corefcn/DASPK-opts.cc \
+  corefcn/DASRT-opts.cc \
+  corefcn/DASSL-opts.cc \
+  corefcn/LSODE-opts.cc \
+  corefcn/Quad-opts.cc
+
+OPT_INC = \
+  $(top_builddir)/liboctave/DASPK-opts.h \
+  $(top_builddir)/liboctave/DASRT-opts.h \
+  $(top_builddir)/liboctave/DASSL-opts.h \
+  $(top_builddir)/liboctave/LSODE-opts.h \
+  $(top_builddir)/liboctave/Quad-opts.h
+
+$(OPT_HANDLERS): corefcn/%.cc : $(top_builddir)/liboctave/%.in
+	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
+	mv $@-t $@
+
+$(OPT_INC) : %.h : %.in
+	$(MAKE) -C $(top_builddir)/liboctave $(@F)
+
 COREFCN_SRC = \
   corefcn/__contourc__.cc \
   corefcn/__dispatch__.cc \

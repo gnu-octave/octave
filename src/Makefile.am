@@ -122,19 +122,19 @@ EXTRA_DIST = \
   version.in.h \
   $(BUILT_DISTFILES)
 
-OPT_HANDLERS = \
-  DASPK-opts.cc \
-  DASRT-opts.cc \
-  DASSL-opts.cc \
-  LSODE-opts.cc \
-  Quad-opts.cc
-
-OPT_INC = \
-  ../liboctave/DASPK-opts.h \
-  ../liboctave/DASRT-opts.h \
-  ../liboctave/DASSL-opts.h \
-  ../liboctave/LSODE-opts.h \
-  ../liboctave/Quad-opts.h
+#OPT_HANDLERS = \
+#  DASPK-opts.cc \
+#  DASRT-opts.cc \
+#  DASSL-opts.cc \
+#  LSODE-opts.cc \
+#  Quad-opts.cc
+#
+#OPT_INC = \
+#  ../liboctave/DASPK-opts.h \
+#  ../liboctave/DASRT-opts.h \
+#  ../liboctave/DASSL-opts.h \
+#  ../liboctave/LSODE-opts.h \
+#  ../liboctave/Quad-opts.h
 
 JIT_INCLUDES = \
   jit-util.h \
@@ -475,12 +475,12 @@ oct-errno.cc: oct-errno.in.cc Makefile
 	fi
 	mv $@-t $@
 
-$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/build-aux/mk-opts.pl
-	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
-	mv $@-t $@
-
-$(OPT_INC) : %.h : %.in
-	$(MAKE) -C $(@D) $(@F)
+#$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/build-aux/mk-opts.pl
+#	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
+#	mv $@-t $@
+#
+#$(OPT_INC) : %.h : %.in
+#	$(MAKE) -C $(@D) $(@F)
 
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = dldfcn/PKG_ADD

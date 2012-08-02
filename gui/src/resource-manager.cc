@@ -81,15 +81,6 @@ resource_manager::find_translator_file (QString language)
   return QString("../languages/%1.qm").arg(language);
 }
 
-QIcon
-resource_manager::get_icon (icon i)
-{
-  if (_icons.contains (i))
-    {
-      return _icons [i];
-    }
-  return QIcon ();
-}
 
 bool
 resource_manager::is_first_run ()
@@ -121,14 +112,6 @@ resource_manager::update_network_settings ()
   proxy.setUser (_settings->value ("proxyUserName").toString ());
   proxy.setPassword (_settings->value ("proxyPassword").toString ());
   QNetworkProxy::setApplicationProxy (proxy);
-}
-
-void
-resource_manager::load_icons ()
-{
-  _icons [resource_manager::octave] = QIcon ("../media/logo.png");
-  _icons [resource_manager::terminal] = QIcon ("../media/terminal.png");
-  _icons [resource_manager::documentation] = QIcon ("../media/help_index.png");
 }
 
 const char*

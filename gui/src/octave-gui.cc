@@ -71,7 +71,6 @@ main (int argc, char *argv[])
           application.installTranslator (&translator);
 
           resource_manager::instance ()->update_network_settings ();
-          resource_manager::instance ()->load_icons ();
 
           main_window w;
           w.show ();

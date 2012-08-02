@@ -26,12 +26,6 @@
 class resource_manager
 {
 public:
-  enum icon
-  {
-    octave,
-    terminal,
-    documentation
-  };
 
   ~resource_manager ();
 
@@ -47,8 +41,7 @@ public:
   void set_settings (QString file);
   QString find_translator_file (QString language);
   void update_network_settings ();
-  void load_icons ();
-  QIcon get_icon (icon i);
+
   bool is_first_run ();
   const char *octave_keywords ();
 
@@ -57,7 +50,6 @@ private:
 
   QSettings *_settings;
   QString _home_path;
-  QMap <icon, QIcon> _icons;
   static resource_manager _singleton;
   bool _first_run;
 };

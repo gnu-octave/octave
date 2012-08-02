@@ -22,5 +22,10 @@
         <file>icons/zoom-in.png</file>
         <file>icons/zoom-out.png</file>
         <file>icons/find.png</file>
+        <file>icons/chat.png</file>
+        <file>icons/help_index.png</file>
+        <file>icons/jabber_protocol.png</file>
+        <file>icons/logo.png</file>
+        <file>icons/terminal.png</file>
     </qresource>
 </RCC>

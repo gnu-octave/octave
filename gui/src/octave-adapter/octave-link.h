@@ -54,6 +54,7 @@
 #include "utils.h"
 #include "variables.h"
 #include "oct-mutex.h"
+#include "profiler.h"
 
 // Standard includes
 #include <iostream>

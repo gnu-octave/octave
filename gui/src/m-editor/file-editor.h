@@ -80,6 +80,7 @@ public slots:
 
   void request_comment_selected_text ();
   void request_uncomment_selected_text ();
+  void request_find ();
 
   void handle_file_name_changed (QString fileName);
   void handle_tab_close_request (int index);

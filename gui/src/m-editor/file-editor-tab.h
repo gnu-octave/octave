@@ -41,6 +41,7 @@ public slots:
   void handle_margin_clicked (int line, int margin, Qt::KeyboardModifiers state);
   void comment_selected_text ();
   void uncomment_selected_text ();
+  void find ();
   void remove_bookmark ();
   void toggle_bookmark ();
   void next_bookmark ();

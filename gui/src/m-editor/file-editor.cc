@@ -114,145 +114,153 @@ file_editor::request_open_file (QString fileName)
 void
 file_editor::request_undo ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->undo ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->undo ();
 }
 
 void
 file_editor::request_redo ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->redo ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->redo ();
 }
 
 void
 file_editor::request_copy ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->copy ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->copy ();
 }
 
 void
 file_editor::request_cut ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->cut ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->cut ();
 }
 
 void
 file_editor::request_paste ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->paste ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->paste ();
 }
 
 void
 file_editor::request_save_file ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->save_file ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->save_file ();
 }
 
 void
 file_editor::request_save_file_as ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->save_file_as ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->save_file_as ();
 }
 
 void
 file_editor::request_run_file ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->run_file ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->run_file ();
 }
 
 void
 file_editor::request_toggle_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->toggle_bookmark ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->toggle_bookmark ();
 }
 
 void
 file_editor::request_next_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->next_bookmark ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->next_bookmark ();
 }
 
 void
 file_editor::request_previous_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->previous_bookmark ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->previous_bookmark ();
 }
 
 void
 file_editor::request_remove_bookmark ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->remove_bookmark ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->remove_bookmark ();
 }
 
 void
 file_editor::request_toggle_breakpoint ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->toggle_breakpoint ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->toggle_breakpoint ();
 }
 
 void
 file_editor::request_next_breakpoint ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->next_breakpoint ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->next_breakpoint ();
 }
 
 void
 file_editor::request_previous_breakpoint ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->previous_breakpoint ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->previous_breakpoint ();
 }
 
 void
 file_editor::request_remove_breakpoint ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->remove_all_breakpoints ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->remove_all_breakpoints ();
 }
 
 void
 file_editor::request_comment_selected_text ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->comment_selected_text ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->comment_selected_text ();
 }
 
 void
 file_editor::request_uncomment_selected_text ()
 {
-  file_editor_tab *activeFileEditorTab = active_editor_tab ();
-  if (activeFileEditorTab)
-    activeFileEditorTab->uncomment_selected_text ();
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->uncomment_selected_text ();
+}
+
+void
+file_editor::request_find ()
+{
+  file_editor_tab *_active_file_editor_tab = active_editor_tab ();
+  if (_active_file_editor_tab)
+    _active_file_editor_tab->find ();
 }
 
 void
@@ -349,10 +357,10 @@ file_editor::construct ()
   QAction *redo_action = new QAction (QIcon(":/actions/icons/redo.png"),
         tr("&Redo"), _tool_bar);
 
-  _copy_action = new QAction (QIcon::fromTheme ("edit-copy"),
+  _copy_action = new QAction (QIcon(":/actions/icons/editcopy.png"),
                               tr ("&Copy"), _tool_bar);
 
-  _cut_action  = new QAction (QIcon::fromTheme ("edit-cut"),
+  _cut_action  = new QAction (QIcon(":/actions/icons/editcut.png"),
                               tr ("Cu&t"), _tool_bar);
 
   QAction *paste_action
@@ -370,6 +378,9 @@ file_editor::construct ()
 
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
+
+  QAction *find_action = new QAction (QIcon(":/actions/icons/find.png"),
+                                      tr ("&Find"), _tool_bar);
 
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
         tr("Save File And Run"), _tool_bar);
@@ -389,6 +400,8 @@ file_editor::construct ()
   comment_selection_action->setShortcutContext  (Qt::WindowShortcut);
   uncomment_selection_action->setShortcut       (Qt::ControlModifier + Qt::Key_8);
   uncomment_selection_action->setShortcutContext(Qt::WindowShortcut);
+  find_action->setShortcut                      (Qt::ControlModifier+Qt::Key_F);
+  find_action->setShortcutContext               (Qt::WindowShortcut);
 
   // toolbar
   _tool_bar->addAction (new_action);
@@ -400,8 +413,9 @@ file_editor::construct ()
   _tool_bar->addAction (redo_action);
   _tool_bar->addAction (_copy_action);
   _tool_bar->addAction (_cut_action);
-  _tool_bar->addAction (paste_action);
   _tool_bar->addSeparator ();
+  _tool_bar->addAction (paste_action);
+  _tool_bar->addAction (find_action);
   _tool_bar->addAction (_run_action);
 
   // menu bar
@@ -420,6 +434,8 @@ file_editor::construct ()
   editMenu->addAction (_copy_action);
   editMenu->addAction (_cut_action);
   editMenu->addAction (paste_action);
+  editMenu->addSeparator ();
+  editMenu->addAction (find_action);
   editMenu->addSeparator ();
   editMenu->addAction (comment_selection_action);
   editMenu->addAction (uncomment_selection_action);
@@ -491,6 +507,8 @@ file_editor::construct ()
            SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));
   connect (uncomment_selection_action,
            SIGNAL (triggered ()), this, SLOT (request_uncomment_selected_text ()));
+  connect (find_action,
+           SIGNAL (triggered ()), this, SLOT (request_find ()));
   connect (_tab_widget,
            SIGNAL (tabCloseRequested (int)), this, SLOT (handle_tab_close_request (int)));
   connect (_tab_widget,

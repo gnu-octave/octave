@@ -28,9 +28,11 @@ webinfo::webinfo (QWidget *parent)
   _font_web = font ();
 
   QVBoxLayout *layout = new QVBoxLayout ();
+  layout->setMargin (0);
   setLayout (layout);
 
   QHBoxLayout *hboxLayout = new QHBoxLayout ();
+  hboxLayout->setMargin (2);
   layout->addLayout (hboxLayout);
 
   _close_tab_button = new QPushButton (this);

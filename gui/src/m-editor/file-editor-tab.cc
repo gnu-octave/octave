@@ -17,6 +17,7 @@
 
 #include "file-editor-tab.h"
 #include "file-editor.h"
+#include "find-dialog.h"
 #include "octave-link.h"
 
 
@@ -375,7 +376,14 @@ file_editor_tab::do_comment_selected_text (bool comment)
 }
 
 void
-file_editor_tab::update_window_title(bool modified)
+file_editor_tab::find ()
+{
+  find_dialog dialog (_edit_area);
+  dialog.exec ();
+}
+
+void
+file_editor_tab::update_window_title (bool modified)
 {
   QString title(_file_name);
   if ( !_long_title )

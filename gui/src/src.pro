@@ -84,6 +84,7 @@ SOURCES +=\
     m-editor/lexer-octave-gui.cc \
     m-editor/file-editor.cc \
     m-editor/file-editor-tab.cc \
+    m-editor/find-dialog.cc \
     qtinfo/parser.cc \
     qtinfo/webinfo.cc \
     main-window.cc \
@@ -109,6 +110,7 @@ HEADERS += \
     m-editor/file-editor.h \
     m-editor/file-editor-interface.h \
     m-editor/file-editor-tab.h \
+    m-editor/find-dialog.h \
     qtinfo/parser.h \
     qtinfo/webinfo.h \
     symbol-information.h \

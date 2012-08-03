@@ -1162,7 +1162,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::BasicBlock *normal_block = fn.new_block ("normal");
 
     llvm::Value *zero = llvm::ConstantFP::get (scalar_t, 0);
-    llvm::Value *check = builder.CreateFCmpUEQ (zero, fn.argument (builder, 0));
+    llvm::Value *check = builder.CreateFCmpUEQ (zero, fn.argument (builder, 1));
     builder.CreateCondBr (check, warn_block, normal_block);
 
     builder.SetInsertPoint (warn_block);

@@ -1,4 +1,4 @@
-# Makefile for octave's src directory
+# Makefile for Octave's src directory
 #
 # Copyright (C) 1993-2012 John W. Eaton
 #
@@ -24,10 +24,12 @@ include $(top_srcdir)/build-aux/common.mk
 AM_CPPFLAGS = \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
-  -Iinterpfcn -I$(srcdir)/interpfcn \
-  -Icorefcn \
   -Ioctave-value -I$(srcdir)/octave-value \
   -Iparse-tree -I$(srcdir)/parse-tree \
+  -Ioperators -I$(srcdir)/operators \
+  -Iinterp-core -I$(srcdir)/interp-core \
+  -Iinterpfcn -I$(srcdir)/interpfcn \
+  -Icorefcn \
   -I. -I$(srcdir) \
   -I../libgnu -I$(top_srcdir)/libgnu \
   @CPPFLAGS@
@@ -66,33 +68,33 @@ endif
 ## $(DEF_FILES), and building those requires all the sources
 ## (except builtins.cc) to be available.
 BUILT_SOURCES = \
-  $(BUILT_SOURCES_EXTRA) \
+  interp-core/mxarray.h \
+  interp-core/oct-errno.cc \
   interpfcn/defaults.h \
-  interpfcn/graphics.h \
   interpfcn/graphics-props.cc \
+  interpfcn/graphics.h \
+  operators/ops.cc \
   parse-tree/lex.cc \
-  mxarray.h \
-  oct-conf.h \
-  oct-errno.cc \
-  oct-gperf.h \
+  parse-tree/oct-gperf.h \
   parse-tree/oct-parse.cc \
-  ops.cc \
+  oct-conf.h \
   version.h \
+  $(BUILT_SOURCES_EXTRA) \
   builtins.cc
 
 BUILT_DISTFILES = \
-  oct-gperf.h \
+  parse-tree/oct-gperf.h \
   parse-tree/oct-parse.h
 
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
 BUILT_NODISTFILES = \
+  interp-core/mxarray.h \
+  interp-core/oct-errno.cc \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
+  operators/ops.cc \
   oct-conf.h \
-  oct-errno.cc \
-  ops.cc \
-  mxarray.h \
   version.h \
   $(OPT_HANDLERS) \
   $(OPT_INC) \
@@ -101,13 +103,10 @@ BUILT_NODISTFILES = \
 
 EXTRA_DIST = \
   Makefile.in \
-  defaults.in.h \
   DOCSTRINGS \
   find-defun-files.sh \
   gendoc.pl \
   genprops.awk \
-  gl2ps.c \
-  graphics.in.h \
   mk-errno-list \
   mk-pkg-add \
   mkbuiltins \
@@ -115,136 +114,36 @@ EXTRA_DIST = \
   mkoctfile.in.cc \
   mkoctfile.in.sh \
   mkops \
-  mxarray.in.h \
   oct-conf.in.h \
-  oct-errno.in.cc \
   octave-config.in.cc \
   octave-config.in.sh \
-  octave.gperf \
   version.in.h \
   $(BUILT_DISTFILES)
 
-JIT_INCLUDES = \
-  jit-util.h \
-  jit-typeinfo.h \
-  jit-ir.h \
-  pt-jit.h
-
 octinclude_HEADERS = \
-  Cell.h \
-  builtins.h \
-  c-file-ptr-stream.h \
-  comment-list.h \
-  cutils.h \
-  defun-dld.h \
-  defun-int.h \
-  display.h \
-  dynamic-ld.h \
-  gl-render.h \
-  gl2ps.h \
-  gl2ps-renderer.h \
   interpfcn/graphics-props.cc \
-  gripes.h \
-  ls-ascii-helper.h \
-  ls-hdf5.h \
-  ls-mat-ascii.h \
-  ls-mat4.h \
-  ls-mat5.h \
-  ls-oct-binary.h \
-  ls-utils.h \
-  mex.h \
-  mexproto.h \
-  oct-errno.h \
-  oct-fstrm.h \
-  oct-gperf.h \
-  oct-hdf5.h \
-  oct-iostrm.h \
-  oct-lvalue.h \
-  oct-map.h \
-  oct-obj.h \
-  oct-prcstrm.h \
-  oct-procbuf.h \
-  oct-stdstrm.h \
-  oct-stream.h \
-  oct-strstrm.h \
-  oct.h \
+  parse-tree/oct-gperf.h \
+  builtins.h \
   octave.h \
-  ops.h \
-  procstream.h \
-  siglist.h \
-  sparse-xdiv.h \
-  sparse-xpow.h \
-  token.h \
-  txt-eng-ft.h \
-  txt-eng.h \
-  unwind-prot.h \
-  xdiv.h \
-  xnorm.h \
-  xpow.h \
-  zfstream.h \
   $(OV_INCLUDES) \
   $(OV_SPARSE_INCLUDES) \
   $(PT_INCLUDES) \
-  $(INTERPFCN_INCLUDES) \
-  $(JIT_INCLUDES)
+	$(OPERATOR_INCLUDES) \
+  $(INTERP_CORE_INCLUDES) \
+  $(INTERPFCN_INCLUDES)
 
 nodist_octinclude_HEADERS = \
+  interp-core/mxarray.h \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
   oct-conf.h \
-  mxarray.h \
   version.h
 
-JIT_SRC = \
-  jit-util.cc \
-  jit-typeinfo.cc \
-  jit-ir.cc \
-  pt-jit.cc
-
 DIST_SRC = \
-  Cell.cc \
-  c-file-ptr-stream.cc \
-  comment-list.cc \
-  cutils.c \
-  display.cc \
-  dynamic-ld.cc \
-  gl-render.cc \
-  gl2ps-renderer.cc \
-  gripes.cc \
-  ls-ascii-helper.cc \
-  ls-hdf5.cc \
-  ls-mat-ascii.cc \
-  ls-mat4.cc \
-  ls-mat5.cc \
-  ls-oct-binary.cc \
-  ls-utils.cc \
-  matherr.c \
-  mex.cc \
-  oct-fstrm.cc \
-  oct-iostrm.cc \
-  oct-lvalue.cc \
-  oct-map.cc \
-  oct-obj.cc \
-  oct-prcstrm.cc \
-  oct-procbuf.cc \
-  oct-stream.cc \
-  oct-strstrm.cc \
   octave.cc \
-  procstream.cc \
-  siglist.c \
-  sparse-xdiv.cc \
-  sparse-xpow.cc \
-  token.cc \
-  txt-eng-ft.cc \
-  unwind-prot.cc \
-  xdiv.cc \
-  xgl2ps.c \
-  xnorm.cc \
-  xpow.cc \
-  zfstream.cc \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
-  $(JIT_SRC) \
+  $(INTERP_CORE_SRC) \
   $(INTERPFCN_SRC) \
   $(COREFCN_SRC)
 
@@ -254,6 +153,7 @@ include parse-tree/module.mk
 include octave-value/module.mk
 include operators/module.mk
 include template-inst/module.mk
+include interp-core/module.mk
 include interpfcn/module.mk
 include corefcn/module.mk
 include dldfcn/module.mk
@@ -277,13 +177,13 @@ liboctinterp_la_SOURCES = \
   $(TEMPLATE_INST_SRC)
 
 nodist_liboctinterp_la_SOURCES = \
-  builtins.cc \
+  interp-core/mxarray.h \
+  interp-core/oct-errno.cc \
   interpfcn/defaults.h \
   interpfcn/graphics.h \
-  mxarray.h \
+  operators/ops.cc \
+  builtins.cc \
   oct-conf.h \
-  oct-errno.cc \
-  ops.cc \
   version.h \
   $(OPT_INC)
 
@@ -308,8 +208,6 @@ liboctinterp_la_LDFLAGS = \
   $(NO_UNDEFINED_LDFLAG) \
   -bindir $(bindir) \
   $(LIBOCTINTERP_LINK_OPTS)
-
-display.df display.lo: CPPFLAGS += $(X11_FLAGS)
 
 ## FIXME: Does this rule need to be uncommented?
 #fft.df fft.lo fft2.df fft2.lo fftn.df fftn.lo: CPPFLAGS += $(FFTW_XCPPFLAGS)
@@ -358,26 +256,11 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## Special rules:
 ## Mostly for sources which must be built before rest of compilation.
 
-## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
+## oct-conf.h must depend on Makefile.  Calling configure
 ## may change default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
 oct-conf.h: oct-conf.in.h Makefile
 	@$(do_subst_config_vals)
-
-## Don't use a pipeline to process gperf output since if gperf
-## is missing but sed is not, the exit status of the pipeline
-## will still be success and we will end up creating an empty
-## oct-gperf.h file.
-oct-gperf.h: octave.gperf
-	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
-	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
-	mv $@-t $@
-	rm -f $@-t1
-
-mxarray.h: mxarray.in.h Makefile
-	$(SED) < $< \
-	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
-	mv $@-t $@
 
 version.h: version.in.h Makefile
 	$(SED) < $< \
@@ -392,20 +275,6 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
 	mv $@-t $@
 
-ops.cc: $(OPERATORS_SRC) mkops
-	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
-	mv $@-t $@
-
-oct-errno.cc: oct-errno.in.cc Makefile
-	if test -n "$(PERL)"; then \
-	  $(srcdir)/mk-errno-list --perl "$(PERL)" < $< > $@-t; \
-	elif test -n "$(PYTHON)"; then \
-	  $(srcdir)/mk-errno-list --python "$(PYTHON)" < $< > $@-t; \
-	else \
-	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
-	fi
-	mv $@-t $@
-
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = dldfcn/PKG_ADD
 
@@ -413,12 +282,6 @@ dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t
 	mv $@-t $@
 endif
-
-__fltk_uigetfile__.lo __fltk_uigetfile__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
-
-__init_fltk__.lo __init_fltk__.o: \
-  AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
 
 if AMCOND_BUILD_DOCS
 .DOCSTRINGS: $(ALL_DEF_FILES) gendoc.pl

@@ -1,5 +1,6 @@
 EXTRA_DIST += \
-  parse-tree/module.mk
+  parse-tree/module.mk \
+  parse-tree/octave.gperf
 
 PARSER_INCLUDES = \
   parse-tree/lex.h \
@@ -44,6 +45,7 @@ PT_INCLUDES = \
   parse-tree/pt-unop.h \
   parse-tree/pt-walk.h \
   parse-tree/pt.h \
+  parse-tree/token.h \
 	$(PARSER_INCLUDES)
 
 PARSE_TREE_SRC = \
@@ -75,5 +77,18 @@ PARSE_TREE_SRC = \
   parse-tree/pt-stmt.cc \
   parse-tree/pt-unop.cc \
   parse-tree/pt.cc \
+  parse-tree/token.cc \
 	$(PARSER_SRC)
+
+## Special rules for sources which must be built before rest of compilation.
+
+## Don't use a pipeline to process gperf output since if gperf
+## is missing but sed is not, the exit status of the pipeline
+## will still be success and we will end up creating an empty
+## oct-gperf.h file.
+parse-tree/oct-gperf.h: parse-tree/octave.gperf
+	$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< > $@-t1
+	$(SED) 's,lookup\[,gperf_lookup[,' < $@-t1 > $@-t
+	mv $@-t $@
+	rm -f $@-t1
 

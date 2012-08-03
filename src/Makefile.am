@@ -25,6 +25,7 @@ AM_CPPFLAGS = \
   -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
+  -Icorefcn \
   -Ioctave-value -I$(srcdir)/octave-value \
   -Iparse-tree -I$(srcdir)/parse-tree \
   -I. -I$(srcdir) \

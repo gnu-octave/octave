@@ -72,6 +72,11 @@ function retval = image (varargin)
     firstnonnumeric = 4;
   endif
 
+  if (iscomplex (img))
+    warning ("image: only showing real part of complex image");
+    img = real (img);
+  endif
+
   oldax = gca ();
   unwind_protect
     axes (ax);
@@ -241,3 +246,6 @@ endfunction
 %! hold off;
 %! title ("line, image, line, image, line");
 
+## Test input validation
+%!error <can not be complex> image (1+i)
+%!error <matrix is empty> image ([])

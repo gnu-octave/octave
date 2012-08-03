@@ -1201,10 +1201,14 @@ array_property::validate (const octave_value& v)
   // check value type
   if (type_constraints.size () > 0)
     {
-      for (std::list<std::string>::const_iterator it = type_constraints.begin ();
-           ! xok && it != type_constraints.end (); ++it)
-        if ((*it) == v.class_name ())
-          xok = true;
+      if(type_constraints.find (v.class_name()) != type_constraints.end())
+        xok = true;
+
+      // check if complex is allowed (it's also of class "double", so
+      // checking that alone is not enough to ensure real type)
+      if (type_constraints.find ("real") != type_constraints.end ()
+          && v.is_complex_type ())
+        xok = false;
     }
   else
     xok = v.is_numeric_type ();

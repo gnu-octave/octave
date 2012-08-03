@@ -1,6 +1,18 @@
 EXTRA_DIST += \
   parse-tree/module.mk
 
+PARSER_INCLUDES = \
+  parse-tree/lex.h \
+  parse-tree/parse.h \
+  parse-tree/parse-private.h
+
+PARSER_SRC = \
+  parse-tree/lex.ll \
+  parse-tree/oct-parse.yy
+
+lex.lo lex.o oct-parse.lo oct-parse.o: \
+  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
+
 PT_INCLUDES = \
   parse-tree/pt-all.h \
   parse-tree/pt-arg-list.h \
@@ -31,7 +43,8 @@ PT_INCLUDES = \
   parse-tree/pt-stmt.h \
   parse-tree/pt-unop.h \
   parse-tree/pt-walk.h \
-  parse-tree/pt.h
+  parse-tree/pt.h \
+	$(PARSER_INCLUDES)
 
 PARSE_TREE_SRC = \
   parse-tree/pt-arg-list.cc \
@@ -61,5 +74,6 @@ PARSE_TREE_SRC = \
   parse-tree/pt-select.cc \
   parse-tree/pt-stmt.cc \
   parse-tree/pt-unop.cc \
-  parse-tree/pt.cc
+  parse-tree/pt.cc \
+	$(PARSER_SRC)
 

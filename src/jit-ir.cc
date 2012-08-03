@@ -599,6 +599,22 @@ jit_call::infer (void)
 }
 
 // -------------------- jit_magic_end --------------------
+jit_magic_end::jit_magic_end (const std::vector<context>& full_context)
+{
+  // for now we only support end in 1 dimensional indexing
+  resize_arguments (full_context.size ());
+
+  size_t i;
+  std::vector<context>::const_iterator iter;
+  for (iter = full_context.begin (), i = 0; iter != full_context.end (); ++iter,
+         ++i)
+    {
+      if (iter->count != 1)
+        throw jit_fail_exception ("end is only supported in linear contexts");
+      stash_argument (i, iter->value);
+    }
+}
+
 const jit_function&
 jit_magic_end::overload () const
 {

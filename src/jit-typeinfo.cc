@@ -243,6 +243,57 @@ octave_jit_paren_subsasgn_impl (jit_matrix *ret, jit_matrix *mat,
   *ret = *mat;
 }
 
+static void
+make_indices (double *indices, octave_idx_type idx_count,
+              Array<idx_vector>& result)
+{
+  result.resize (dim_vector (1, idx_count));
+  for (octave_idx_type i = 0; i < idx_count; ++i)
+    result(i) = idx_vector (indices[i]);
+}
+
+extern "C" double
+octave_jit_paren_scalar (jit_matrix *mat, double *indicies,
+                         octave_idx_type idx_count)
+{
+  // FIXME: Replace this with a more optimal version
+  try
+    {
+      Array<idx_vector> idx;
+      make_indices (indicies, idx_count, idx);
+
+      Array<double> ret = mat->array->index (idx);
+      return ret.xelem (0);
+    }
+  catch (const octave_execution_exception&)
+    {
+      gripe_library_execution_error ();
+      return 0;
+    }
+}
+
+extern "C" void
+octave_jit_paren_scalar_subsasgn (jit_matrix *ret, jit_matrix *mat,
+                                  double *indices, octave_idx_type idx_count,
+                                  double value)
+{
+  // FIXME: Replace this with a more optimal version
+  try
+    {
+      Array<idx_vector> idx;
+      make_indices (indices, idx_count, idx);
+
+      Matrix temp (1, 1);
+      temp.xelem(0) = value;
+      mat->array->assign (idx, temp);
+      ret->update (mat->array);
+    }
+  catch (const octave_execution_exception&)
+    {
+      gripe_library_execution_error ();
+    }
+}
+
 extern "C" void
 octave_jit_paren_subsasgn_matrix_range (jit_matrix *result, jit_matrix *mat,
                                         jit_range *index, double value)
@@ -657,6 +708,16 @@ operator<< (std::ostream& os, const jit_function& fn)
 }
 
 // -------------------- jit_operation --------------------
+jit_operation::~jit_operation (void)
+{
+  for (generated_map::iterator iter = generated.begin ();
+       iter != generated.end (); ++iter)
+    {
+      delete iter->first;
+      delete iter->second;
+    }
+}
+
 void
 jit_operation::add_overload (const jit_function& func,
                             const std::vector<jit_type*>& args)
@@ -691,23 +752,26 @@ jit_operation::add_overload (const jit_function& func,
 const jit_function&
 jit_operation::overload (const std::vector<jit_type*>& types) const
 {
-  // FIXME: We should search for the next best overload on failure
   static jit_function null_overload;
-  if (types.size () >= overloads.size ())
-    return null_overload;
-
   for (size_t i  =0; i < types.size (); ++i)
     if (! types[i])
       return null_overload;
+
+  if (types.size () >= overloads.size ())
+    return do_generate (types);
 
   const Array<jit_function>& over = overloads[types.size ()];
   dim_vector dv (over.dims ());
   Array<octave_idx_type> idx = to_idx (types);
   for (octave_idx_type i = 0; i < dv.length (); ++i)
     if (idx(i) >= dv(i))
-      return null_overload;
+      return do_generate (types);
 
-  return over(idx);
+  const jit_function& ret = over(idx);
+  if (! ret.valid ())
+    return do_generate (types);
+
+  return ret;
 }
 
 Array<octave_idx_type>
@@ -729,6 +793,175 @@ jit_operation::to_idx (const std::vector<jit_type*>& types) const
     }
 
   return idx;
+}
+
+const jit_function&
+jit_operation::do_generate (const signature_vec& types) const
+{
+  static jit_function null_overload;
+  generated_map::const_iterator find = generated.find (&types);
+  if (find != generated.end ())
+    {
+      if (find->second)
+        return *find->second;
+      else
+        return null_overload;
+    }
+
+  jit_function *ret = generate (types);
+  generated[new signature_vec (types)] = ret;
+  return ret ? *ret : null_overload;
+}
+
+jit_function *
+jit_operation::generate (const signature_vec& types) const
+{
+  return 0;
+}
+
+bool
+jit_operation::signature_cmp
+::operator() (const signature_vec *lhs, const signature_vec *rhs)
+{
+  const signature_vec& l = *lhs;
+  const signature_vec& r = *rhs;
+
+  if (l.size () < r.size ())
+    return true;
+  else if (l.size () > r.size ())
+    return false;
+
+  for (size_t i = 0; i < l.size (); ++i)
+    {
+      if (l[i]->type_id () < r[i]->type_id ())
+        return true;
+      else if (l[i]->type_id () > r[i]->type_id ())
+        return false;
+    }
+
+  return false;
+}
+
+// -------------------- jit_index_operation --------------------
+jit_function *
+jit_index_operation::generate (const signature_vec& types) const
+{
+  if (types.size () > 2 && types[0] == jit_typeinfo::get_matrix ())
+    {
+      // indexing a matrix with scalars
+      jit_type *scalar = jit_typeinfo::get_scalar ();
+      for (size_t i = 1; i < types.size (); ++i)
+        if (types[i] != scalar)
+          return 0;
+
+      return generate_matrix (types);
+    }
+
+  return 0;
+}
+
+llvm::Value *
+jit_index_operation::create_arg_array (llvm::IRBuilderD& builder,
+                                       const jit_function &fn, size_t start_idx,
+                                       size_t end_idx) const
+{
+  size_t n = end_idx - start_idx;
+  llvm::Type *scalar_t = jit_typeinfo::get_scalar_llvm ();
+  llvm::ArrayType *array_t = llvm::ArrayType::get (scalar_t, n);
+  llvm::Value *array = llvm::UndefValue::get (array_t);
+  for (size_t i = start_idx; i < end_idx; ++i)
+    {
+      llvm::Value *idx = fn.argument (builder, i);
+      array = builder.CreateInsertValue (array, idx, i - start_idx);
+    }
+
+  llvm::Value *array_mem = builder.CreateAlloca (array_t);
+  builder.CreateStore (array, array_mem);
+  return builder.CreateBitCast (array_mem, scalar_t->getPointerTo ());
+}
+
+// -------------------- jit_paren_subsref --------------------
+jit_function *
+jit_paren_subsref::generate_matrix (const signature_vec& types) const
+{
+  std::stringstream ss;
+  ss << "jit_paren_subsref_matrix_scalar" << (types.size () - 1);
+
+  jit_type *scalar = jit_typeinfo::get_scalar ();
+  jit_function *fn = new jit_function (module, jit_convention::internal,
+                                       ss.str (), scalar, types);
+  fn->mark_can_error ();
+  llvm::BasicBlock *body = fn->new_block ();
+  llvm::IRBuilder<> builder (body);
+
+  llvm::Value *array = create_arg_array (builder, *fn, 1, types.size ());
+  jit_type *index = jit_typeinfo::get_index ();
+  llvm::Value *nelem = llvm::ConstantInt::get (index->to_llvm (),
+                                               types.size () - 1);
+  llvm::Value *mat = fn->argument (builder, 0);
+  llvm::Value *ret = paren_scalar.call (builder, mat, array, nelem);
+  fn->do_return (builder, ret);
+  return fn;
+}
+
+void
+jit_paren_subsref::do_initialize (void)
+{
+  std::vector<jit_type *> types (3);
+  types[0] = jit_typeinfo::get_matrix ();
+  types[1] = jit_typeinfo::get_scalar_ptr ();
+  types[2] = jit_typeinfo::get_index ();
+
+  jit_type *scalar = jit_typeinfo::get_scalar ();
+  paren_scalar = jit_function (module, jit_convention::external,
+                               "octave_jit_paren_scalar", scalar, types);
+  paren_scalar.add_mapping (engine, &octave_jit_paren_scalar);
+  paren_scalar.mark_can_error ();
+}
+
+// -------------------- jit_paren_subsasgn --------------------
+jit_function *
+jit_paren_subsasgn::generate_matrix (const signature_vec& types) const
+{
+  std::stringstream ss;
+  ss << "jit_paren_subsasgn_matrix_scalar" << (types.size () - 2);
+
+  jit_type *matrix = jit_typeinfo::get_matrix ();
+  jit_function *fn = new jit_function (module, jit_convention::internal,
+                                       ss.str (), matrix, types);
+  fn->mark_can_error ();
+  llvm::BasicBlock *body = fn->new_block ();
+  llvm::IRBuilder<> builder (body);
+
+  llvm::Value *array = create_arg_array (builder, *fn, 1, types.size () - 1);
+  jit_type *index = jit_typeinfo::get_index ();
+  llvm::Value *nelem = llvm::ConstantInt::get (index->to_llvm (),
+                                               types.size () - 2);
+
+  llvm::Value *mat = fn->argument (builder, 0);
+  llvm::Value *value = fn->argument (builder, types.size () - 1);
+  llvm::Value *ret = paren_scalar.call (builder, mat, array, nelem, value);
+  fn->do_return (builder, ret);
+  return fn;
+}
+
+void
+jit_paren_subsasgn::do_initialize (void)
+{
+  if (paren_scalar.valid ())
+    return;
+
+  jit_type *matrix = jit_typeinfo::get_matrix ();
+  std::vector<jit_type *> types (4);
+  types[0] = matrix;
+  types[1] = jit_typeinfo::get_scalar_ptr ();
+  types[2] = jit_typeinfo::get_index ();
+  types[3] = jit_typeinfo::get_scalar ();
+
+  paren_scalar = jit_function (module, jit_convention::external,
+                               "octave_jit_paren_scalar", matrix, types);
+  paren_scalar.add_mapping (engine, &octave_jit_paren_scalar_subsasgn);
+  paren_scalar.mark_can_error ();
 }
 
 // -------------------- jit_typeinfo --------------------
@@ -784,6 +1017,7 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   matrix = new_type ("matrix", any, matrix_t);
   complex = new_type ("complex", any, complex_t);
   scalar = new_type ("scalar", complex, scalar_t);
+  scalar_ptr = new_type ("scalar_ptr", 0, scalar_t->getPointerTo ());
   range = new_type ("range", any, range_t);
   string = new_type ("string", any, string_t);
   boolean = new_type ("bool", any, bool_t);
@@ -812,6 +1046,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
 
   if (sizeof (void *) == 4)
     complex->mark_sret ();
+
+  paren_subsref_fn.initialize (module, engine);
+  paren_subsasgn_fn.initialize (module, engine);
 
   // bind global variables
   lerror_state = new llvm::GlobalVariable (*module, bool_t, false,

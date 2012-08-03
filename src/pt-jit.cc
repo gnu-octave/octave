@@ -518,11 +518,7 @@ jit_convert::visit_if_command_list (tree_if_command_list& lst)
 void
 jit_convert::visit_index_expression (tree_index_expression& exp)
 {
-  std::pair<jit_value *, jit_value *> res = resolve (exp);
-  jit_value *object = res.first;
-  jit_value *index = res.second;
-
-  result = create_checked (jit_typeinfo::paren_subsref, object, index);
+  result = resolve (jit_typeinfo::paren_subsref (), exp);
 }
 
 void
@@ -813,8 +809,9 @@ jit_convert::next_name (const char *prefix, size_t& count, bool inc)
   return ss.str ();
 }
 
-std::pair<jit_value *, jit_value *>
-jit_convert::resolve (tree_index_expression& exp)
+jit_instruction *
+jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
+                      jit_value *extra_arg)
 {
   std::string type = exp.type_tags ();
   if (! (type.size () == 1 && type[0] == '('))
@@ -828,21 +825,31 @@ jit_convert::resolve (tree_index_expression& exp)
   if (! arg_list)
     throw jit_fail_exception ("null argument list");
 
-  if (arg_list->size () != 1)
-    throw jit_fail_exception ("Bad number of arguments in arg_list");
+  if (arg_list->size () < 1)
+    throw jit_fail_exception ("Empty arg_list");
 
   tree_expression *tree_object = exp.expression ();
   jit_value *object = visit (tree_object);
 
-  end_context.push_back (object);
+  size_t narg = arg_list->size ();
+  tree_argument_list::iterator iter = arg_list->begin ();
+  bool have_extra = extra_arg;
+  std::vector<jit_value *> call_args (narg + 1 + have_extra);
+  call_args[0] = object;
 
-  unwind_protect prot;
-  prot.add_method (&end_context, &std::vector<jit_value *>::pop_back);
+  for (size_t idx = 0; iter != arg_list->end (); ++idx, ++iter)
+    {
+      unwind_protect prot;
+      prot.add_method (&end_context,
+                       &std::vector<jit_magic_end::context>::pop_back);
+      end_context.push_back (jit_magic_end::context (object, idx, narg));
+      call_args[idx + 1] = visit (*iter);
+    }
 
-  tree_expression *arg0 = arg_list->front ();
-  jit_value *index = visit (arg0);
+  if (extra_arg)
+    call_args[call_args.size () - 1] = extra_arg;
 
-  return std::make_pair (object, index);
+  return create_checked (fres, call_args);
 }
 
 jit_value *
@@ -856,14 +863,9 @@ jit_convert::do_assign (tree_expression *exp, jit_value *rhs, bool artificial)
   else if (tree_index_expression *idx
            = dynamic_cast<tree_index_expression *> (exp))
     {
-      std::pair<jit_value *, jit_value *> res = resolve (*idx);
-      jit_value *object = res.first;
-      jit_value *index = res.second;
-      jit_call *new_object = create<jit_call> (&jit_typeinfo::paren_subsasgn,
-                                               object, index, rhs);
-      block->append (new_object);
+      jit_value *new_object = resolve (jit_typeinfo::paren_subsasgn (), *idx,
+                                       rhs);
       do_assign (idx->expression (), new_object, true);
-      create_check (new_object);
 
       // FIXME: Will not work for values that must be release/grabed
       return rhs;
@@ -1852,5 +1854,54 @@ Test some simple cases that compile.
 %!   result = result + m(end);
 %! endfor
 %! assert (result == m(end) * niter);
+
+%!test
+%! ndim = 100;
+%! result = 0;
+%! m = zeros (ndim);
+%! m(:) = 1:ndim^2;
+%! i = 1;
+%! while (i <= ndim)
+%!   for j = 1:ndim
+%!     result = result + m(i, j);
+%!    endfor
+%!   i = i + 1;
+%! endwhile
+%! assert (result == sum (sum (m)));
+
+%!test
+%! ndim = 100;
+%! m = zeros (ndim);
+%! i = 1;
+%! while (i <= ndim)
+%!   for j = 1:ndim
+%!     m(i, j) = (j - 1) * ndim + i;
+%!   endfor
+%!   i = i + 1;
+%! endwhile
+%! m2 = zeros (ndim);
+%! m2(:) = 1:(ndim^2);
+%! assert (all (m == m2));
+
+%!test
+%! ndim = 2;
+%! m = zeros (ndim, ndim, ndim, ndim);
+%! result = 0;
+%! i0 = 1;
+%! while (i0 <= ndim)
+%!   for i1 = 1:ndim
+%!     for i2 = 1:ndim
+%!       for i3 = 1:ndim
+%!         m(i0, i1, i2, i3) = 1;
+%!         m(i0, i1, i2, i3, 1, 1, 1, 1, 1, 1) = 1;
+%!         result = result + m(i0, i1, i2, i3);
+%!       endfor
+%!     endfor
+%!   endfor
+%!   i0 = i0 + 1;
+%! endwhile
+%! expected = ones (ndim, ndim, ndim, ndim);
+%! assert (all (m == expected));
+%! assert (result == sum (expected (:)));
 
 */

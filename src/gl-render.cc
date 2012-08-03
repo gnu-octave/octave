@@ -2488,6 +2488,10 @@ opengl_renderer::draw_image (const image::properties& props)
   Matrix x = props.get_xdata ().matrix_value ();
   Matrix y = props.get_ydata ().matrix_value ();
 
+  // Someone wants us to draw an empty image? No way.
+  if (x.is_empty () || y.is_empty ())
+    return;
+
   if (w > 1 && x(1) == x(0))
     x(1) = x(1) + (w-1);
 

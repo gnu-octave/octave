@@ -30,9 +30,9 @@ echo "generating doc/interpreter/images.mk..."
 
 (cd doc/interpreter; ./config-images.sh)
 
-echo "generating src/DLD-FUNCTIONS/module.mk..."
+echo "generating src/dldfcn/module.mk..."
 
-(cd src/DLD-FUNCTIONS; ./config-module.sh)
+(cd src/dldfcn; ./config-module.sh)
 
 echo "bootstrapping..."
 

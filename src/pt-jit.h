@@ -244,7 +244,7 @@ private:
 
   std::list<jit_value *> all_values;
 
-  std::vector<jit_value *> end_context;
+  std::vector<jit_magic_end::context> end_context;
 
   size_t iterator_count;
   size_t for_bounds_count;
@@ -296,7 +296,9 @@ private:
 
   std::string next_name (const char *prefix, size_t& count, bool inc);
 
-  std::pair<jit_value *, jit_value *> resolve (tree_index_expression& exp);
+  jit_instruction *resolve (const jit_operation& fres,
+                            tree_index_expression& exp,
+                            jit_value *extra_arg = 0);
 
   jit_value *do_assign (tree_expression *exp, jit_value *rhs,
                         bool artificial = false);

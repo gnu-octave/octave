@@ -428,7 +428,7 @@ function [local_packages, global_packages] = pkg (varargin)
           endif
           warning ("creating the directory %s\n", prefix);
         endif
-        local_packages = prefix = canonicalize_filename (prefix);
+        local_packages = prefix = canonicalize_file_name (prefix);
         user_prefix = true;
         if (length (files) >= 2 && ischar (files{2}))
           archprefix = files{2};

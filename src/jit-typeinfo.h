@@ -314,17 +314,22 @@ class
 jit_operation
 {
 public:
+  // type signature vector
+  typedef std::vector<jit_type *> signature_vec;
+
+  virtual ~jit_operation (void);
+
   void add_overload (const jit_function& func)
   {
     add_overload (func, func.arguments ());
   }
 
   void add_overload (const jit_function& func,
-                     const std::vector<jit_type*>& args);
+                     const signature_vec& args);
 
-  const jit_function& overload (const std::vector<jit_type *>& types) const;
+  const jit_function& overload (const signature_vec& types) const;
 
-  jit_type *result (const std::vector<jit_type *>& types) const
+  jit_type *result (const signature_vec& types) const
   {
     const jit_function& temp = overload (types);
     return temp.result ();
@@ -346,12 +351,77 @@ public:
   const std::string& name (void) const { return mname; }
 
   void stash_name (const std::string& aname) { mname = aname; }
+protected:
+  virtual jit_function *generate (const signature_vec& types) const;
 private:
-  Array<octave_idx_type> to_idx (const std::vector<jit_type*>& types) const;
+  Array<octave_idx_type> to_idx (const signature_vec& types) const;
+
+  const jit_function& do_generate (const signature_vec& types) const;
+
+  struct signature_cmp
+  {
+    bool operator() (const signature_vec *lhs, const signature_vec *rhs);
+  };
+
+  typedef std::map<const signature_vec *, jit_function *, signature_cmp>
+  generated_map;
+
+  mutable generated_map generated;
 
   std::vector<Array<jit_function> > overloads;
 
   std::string mname;
+};
+
+class
+jit_index_operation : public jit_operation
+{
+public:
+  jit_index_operation (void) : module (0), engine (0) {}
+
+  void initialize (llvm::Module *amodule, llvm::ExecutionEngine *aengine)
+  {
+    module = amodule;
+    engine = aengine;
+    do_initialize ();
+  }
+protected:
+  virtual jit_function *generate (const signature_vec& types) const;
+
+  virtual jit_function *generate_matrix (const signature_vec& types) const = 0;
+
+  virtual void do_initialize (void) = 0;
+
+  // helper functions
+  // [start_idx, end_idx).
+  llvm::Value *create_arg_array (llvm::IRBuilderD& builder,
+                                 const jit_function &fn, size_t start_idx,
+                                 size_t end_idx) const;
+
+  llvm::Module *module;
+  llvm::ExecutionEngine *engine;
+};
+
+class
+jit_paren_subsref : public jit_index_operation
+{
+protected:
+  virtual jit_function *generate_matrix (const signature_vec& types) const;
+
+  virtual void do_initialize (void);
+private:
+  jit_function paren_scalar;
+};
+
+class
+jit_paren_subsasgn : public jit_index_operation
+{
+protected:
+  jit_function *generate_matrix (const signature_vec& types) const;
+
+  virtual void do_initialize (void);
+private:
+  jit_function paren_scalar;
 };
 
 // A singleton class which handles the construction of jit_types and
@@ -375,6 +445,8 @@ public:
 
   static llvm::Type *get_scalar_llvm (void)
   { return instance->scalar->to_llvm (); }
+
+  static jit_type *get_scalar_ptr (void) { return instance->scalar_ptr; }
 
   static jit_type *get_range (void) { return instance->range; }
 
@@ -643,6 +715,7 @@ private:
   jit_type *any;
   jit_type *matrix;
   jit_type *scalar;
+  jit_type *scalar_ptr; // a fake type for interfacing with C++
   jit_type *range;
   jit_type *string;
   jit_type *boolean;
@@ -663,8 +736,8 @@ private:
   jit_operation for_index_fn;
   jit_operation logically_true_fn;
   jit_operation make_range_fn;
-  jit_operation paren_subsref_fn;
-  jit_operation paren_subsasgn_fn;
+  jit_paren_subsref paren_subsref_fn;
+  jit_paren_subsasgn paren_subsasgn_fn;
   jit_operation end_fn;
 
   // type id -> cast function TO that type

@@ -85,7 +85,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <new>]],
 [[operator delete((void *)0, (void *)0);]])],
 octave_cv_placement_delete=yes, octave_cv_placement_delete=no)])
 if test $octave_cv_placement_delete = yes; then
-AC_DEFINE(HAVE_PLACEMENT_DELETE,1,[Define if C++ supports operator delete(void *, void *)])
+AC_DEFINE(HAVE_PLACEMENT_DELETE,1,[Define to 1 if C++ supports operator delete(void *, void *).])
 fi
 AC_LANG_POP(C++)
 ])
@@ -100,7 +100,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 [[void test(char *); int length(); char x[length()]; test(x);]])],
 octave_cv_dynamic_auto_arrays=yes, octave_cv_dynamic_auto_arrays=no)])
 if test $octave_cv_dynamic_auto_arrays = yes; then
-AC_DEFINE(HAVE_DYNAMIC_AUTO_ARRAYS,1,[Define if C++ supports dynamic auto arrays])
+AC_DEFINE(HAVE_DYNAMIC_AUTO_ARRAYS,1,[Define to 1 if C++ supports dynamic auto arrays.])
 fi
 AC_LANG_POP(C++)
 ])
@@ -120,7 +120,7 @@ int z2 = std::bit_or<int>() (x, y);
 int z3 = std::bit_xor<int>() (x, y);]])],
 octave_cv_cxx_bitwise_op_templates=yes, octave_cv_cxx_bitwise_op_templates=no)])
 if test $octave_cv_cxx_bitwise_op_templates = yes; then
-AC_DEFINE(HAVE_CXX_BITWISE_OP_TEMPLATES,1,[Define if C++ library has templated bitwise operators])
+AC_DEFINE(HAVE_CXX_BITWISE_OP_TEMPLATES,1,[Define to 1 if C++ library has templated bitwise operators.])
 fi
 AC_LANG_POP(C++)
 ])
@@ -137,7 +137,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <complex>]],
 [[std::complex<double> x; x.real (1.0); x.imag (2.0);]])],
 octave_cv_cxx_complex_setters=yes, octave_cv_cxx_complex_setters=no)])
 if test $octave_cv_cxx_complex_setters = yes; then
-AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS,1,[Define if C++ complex class has void real (T) and void imag (T) methods])
+AC_DEFINE(HAVE_CXX_COMPLEX_SETTERS,1,[Define to 1 if C++ complex class has void real (T) and void imag (T) methods.])
 fi
 AC_LANG_POP(C++)
 ])
@@ -153,7 +153,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <complex>]],
 [[std::complex<double> x; x.real () = 1.0; x.imag () = 1.0;]])],
 octave_cv_cxx_complex_reference_accessors=yes, octave_cv_cxx_complex_reference_accessors=no)])
 if test $octave_cv_cxx_complex_reference_accessors = yes; then
-AC_DEFINE(HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS,1,[Define if C++ complex class has T& real (void) and T& imag (void) methods])
+AC_DEFINE(HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS,1,[Define to 1 if C++ complex class has T& real (void) and T& imag (void) methods.])
 fi
 AC_LANG_POP(C++)
 ])
@@ -172,7 +172,7 @@ size_t depth = CGDisplayBitsPerPixel (display);
 ]])],
 octave_cv_carbon_cgdisplaybitsperpixel=yes, octave_cv_carbon_cgdisplaybitsperpixel=no)])
 if test $octave_cv_carbon_cgdisplaybitsperpixel = yes; then
-AC_DEFINE(HAVE_CARBON_CGDISPLAYBITSPERPIXEL,1,[Define if Carbon Framework has CGDisplayBitsPerPixel])
+AC_DEFINE(HAVE_CARBON_CGDISPLAYBITSPERPIXEL,1,[Define to 1 if Carbon Framework has CGDisplayBitsPerPixel.])
 fi
 AC_LANG_POP(C++)
 ])
@@ -275,7 +275,7 @@ EOB
   ])
   AC_MSG_RESULT([$octave_cv_cxx_new_friend_template_decl])
   if test $octave_cv_cxx_new_friend_template_decl = yes; then
-    AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL,1,[Define if your compiler supports `<>' stuff for template friends.])
+    AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL,1,[Define to 1 if your compiler supports `<>' stuff for template friends.])
   fi
 ])
 dnl
@@ -528,7 +528,7 @@ AC_DEFUN([OCTAVE_CHECK_LIBRARY], [
 	m4_ifblank([$8], [
 	  warn_$1=
 	  AC_DEFINE([HAVE_]m4_toupper([$1]), 1,
-            [Define if $2 is available.])
+            [Define to 1 if $2 is available.])
 	  [TEXINFO_]m4_toupper([$1])="@set [HAVE_]m4_toupper([$1])"], [$8])
       fi
       LIBS="$octave_check_library_save_LIBS"
@@ -761,7 +761,7 @@ AC_DEFUN([OCTAVE_CXX_ISO_COMPLIANT_LIBRARY], [
   ])
   AC_MSG_RESULT([$octave_cv_cxx_iso_compliant_library])
   if test $octave_cv_cxx_iso_compliant_library = yes; then
-    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1, [Define if your C++ runtime library is ISO compliant.])
+    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1, [Define to 1 if your C++ runtime library is ISO compliant.])
   fi
 ])
 dnl
@@ -783,7 +783,7 @@ AC_DEFUN([OCTAVE_ENABLE_READLINE], [
     LIBS="$TERM_LIBS"
     AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout, [
       READLINE_LIBS="-lreadline"
-      AC_DEFINE(USE_READLINE, 1, [Define to use the readline library.])
+      AC_DEFINE(USE_READLINE, 1, [Define to 1 to use the readline library.])
     ], [
       AC_MSG_WARN([I need GNU Readline 4.2 or later])
       AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
@@ -810,7 +810,7 @@ AC_DEFUN([OCTAVE_CXX_BROKEN_REINTERPRET_CAST], [
       octave_cv_cxx_broken_reinterpret_cast=no,
       octave_cv_cxx_broken_reinterpret_cast=yes)])
   if test $octave_cv_cxx_broken_reinterpret_cast = yes ; then
-    AC_DEFINE(CXX_BROKEN_REINTERPRET_CAST, 1, [Define if C++ reinterpret_cast fails for function pointers.])
+    AC_DEFINE(CXX_BROKEN_REINTERPRET_CAST, 1, [Define to 1 if C++ reinterpret_cast fails for function pointers.])
 fi
   AC_LANG_POP(C++)])
 dnl
@@ -938,7 +938,7 @@ else
   AC_MSG_RESULT([$octave_cv_ieee754_data_format])
 fi
 if test "$octave_cv_ieee754_data_format" = yes; then
-  AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1, [Define if your system uses IEEE 754 data format.])
+  AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1, [Define to 1 if your system uses IEEE 754 data format.])
 else
   ## If the format is unknown, then you will probably not have a
   ## useful system, so we will abort here.  Anyone wishing to
@@ -1001,7 +1001,7 @@ else
   AC_MSG_RESULT([$octave_cv_umfpack_seperate_split])
 fi
 if test "$octave_cv_umfpack_seperate_split" = yes; then
-  AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
+  AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define to 1 if the UMFPACK Complex solver allow matrix and RHS to be split independently.])
 fi
 ])
 dnl
@@ -1023,7 +1023,7 @@ AC_DEFUN([OCTAVE_HDF5_DLL], [
       CFLAGS="$save_CFLAGS"
       LIBS="$save_LIBS"])])
   if test "$octave_cv_hdf5_dll" = yes; then
-    AC_DEFINE(_HDF5USEDLL_, 1, [Define if using HDF5 dll (Win32)])
+    AC_DEFINE(_HDF5USEDLL_, 1, [Define to 1 if using HDF5 dll (Win32).])
   fi])
 dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
@@ -1038,11 +1038,11 @@ AC_DEFUN([OCTAVE_HDF5_HAS_ENFORCED_16_API], [
       octave_cv_hdf5_has_enforced_16_api=yes], [
       octave_cv_hdf5_has_enforced_16_api=no])])
   if test "$octave_cv_hdf5_has_enforced_16_api" != "yes"; then
-    AC_DEFINE(HAVE_HDF5_18, 1, [Define if >=HDF5-1.8 is available.])
+    AC_DEFINE(HAVE_HDF5_18, 1, [Define to 1 if >=HDF5-1.8 is available.])
   fi
 ])
 dnl
-dnl Check for the QHull version.
+dnl Check for the Qhull version.
 dnl
 AC_DEFUN([OCTAVE_CHECK_QHULL_VERSION],
   [AC_CACHE_CHECK([for qh_version in $QHULL_LIBS],
@@ -1081,11 +1081,11 @@ const char *tmp = qh_version;
 ]])], [octave_cv_lib_qhull_version=yes], [octave_cv_lib_qhull_version=no])])
   if test "$octave_cv_lib_qhull_version" = no; then
     AC_DEFINE(NEED_QHULL_VERSION, 1,
-      [Define if the QHull library needs a qh_version variable defined.])
+      [Define to 1 if the Qhull library needs a qh_version variable defined.])
   fi
 ])
 dnl
-dnl Check whether QHull works (does not crash)
+dnl Check whether Qhull works (does not crash)
 dnl
 AC_DEFUN([OCTAVE_CHECK_QHULL_OK],
   [AC_CACHE_CHECK([whether the qhull library works],
@@ -1291,10 +1291,10 @@ doit (void)
 dnl
 dnl Check for OpenGL.  If found, define OPENGL_LIBS
 dnl
-dnl FIXME -- the following tests should probably check for the
+dnl FIXME: The following tests should probably check for the
 dnl libraries separately.
 dnl
-dnl FIXME -- should we allow a way to specify a directory for OpenGL
+dnl FIXME: Should we allow a way to specify a directory for OpenGL
 dnl libraries and header files?
 dnl
 AC_DEFUN([OCTAVE_OPENGL], [
@@ -1307,7 +1307,7 @@ OCTAVE_HAVE_FRAMEWORK(OpenGL, [
   [have_framework_opengl="yes"], [have_framework_opengl="no"])
 
 if test $have_framework_opengl = "yes"; then
-  AC_DEFINE(HAVE_FRAMEWORK_OPENGL, 1, [Define if framework OPENGL is available.])
+  AC_DEFINE(HAVE_FRAMEWORK_OPENGL, 1, [Define to 1 if framework OPENGL is available.])
   OPENGL_LIBS="-Wl,-framework -Wl,OpenGL"
   AC_MSG_NOTICE([adding -Wl,-framework -Wl,OpenGL to OPENGL_LIBS])
   OCTAVE_GLUTESSCALLBACK_THREEDOTS
@@ -1382,7 +1382,7 @@ octave_cv_glutesscallback_threedots="yes", octave_cv_glutesscallback_threedots="
 AC_LANG_POP(C++)
 if test $octave_cv_glutesscallback_threedots = "yes"; then
   AC_DEFINE(HAVE_GLUTESSCALLBACK_THREEDOTS, 1, 
-    [Define if gluTessCallback is called with (...)])
+    [Define to 1 if gluTessCallback is called with (...).])
 fi
 ])
 dnl
@@ -1408,7 +1408,7 @@ int main(int argc, char* argv[])
 ]])],octave_cv_openmp=yes, octave_cv_openmmp=no, octave_cv_openmp=no)])
 AC_MSG_RESULT($octave_cv_openmp)
 if test "$octave_cv_openmp" = yes; then
-  AC_DEFINE(HAVE_OPENMP,1,[Define if compiler supports OpenMP])
+  AC_DEFINE(HAVE_OPENMP,1,[Define to 1 if compiler supports OpenMP.])
   CXXFLAGS="$CXXFLAGS $1"
 else
   CFLAGS="$XCFLAGS"
@@ -1627,7 +1627,7 @@ void take_func (double (*func) (double x));
 take_func(std::$1);
 ]])],
 [AC_MSG_RESULT([yes])
- AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1),1,[Define if <cmath> provides $1])],
+ AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1),1,[Define to 1 if <cmath> provides $1.])],
 [AC_MSG_RESULT([no])])
 AC_MSG_CHECKING([for std::$1 (float variant) in <cmath>])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
@@ -1640,13 +1640,13 @@ void take_func (float (*func) (float x));
 take_func(std::$1);
 ]])],
 [AC_MSG_RESULT([yes])
- AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1)F,1,[Define if <cmath> provides float variant of $1])],
+ AC_DEFINE(HAVE_CMATH_[]AS_TR_CPP($1)F,1,[Define to 1 if <cmath> provides float variant of $1.])],
 [AC_MSG_RESULT([no])])
 AC_LANG_POP(C++)
 ])
 
 dnl Check whether fast signed integer arithmetics using bit tricks
-dnl can be used in oct-inttypes.h. Defines HAVE_FAST_INT_OPS if
+dnl can be used in oct-inttypes.h.  Defines HAVE_FAST_INT_OPS if
 dnl the following conditions hold:
 dnl 1. Signed numbers are represented by twos complement
 dnl    (see <http://en.wikipedia.org/wiki/Two%27s_complement>)
@@ -1711,7 +1711,7 @@ if (do_test (static_cast<unsigned T> (0), static_cast<signed T> (0))) \
 AC_LANG_POP(C++)])
 if test $octave_cv_fast_int_ops = yes; then
   AC_DEFINE(HAVE_FAST_INT_OPS, 1,
-    [Define if signed integers use two's complement])
+    [Define to 1 if signed integers use two's complement.])
 fi
 ])
 dnl
@@ -1719,7 +1719,7 @@ dnl Check to see if the compiler and the linker can handle the flags
 dnl "-framework $1" for the given prologue $2 and the given body $3 of
 dnl a source file.  Arguments 2 and 3 optionally can also be empty.
 dnl Add options (lower case letters $1) "--with-framework-$1" and
-dnl "--without-framework-$1". If this test is successful then perform
+dnl "--without-framework-$1".  If this test is successful then perform
 dnl $4, otherwise do $5.
 dnl
 dnl OCTAVE_HAVE_FRAMEWORK

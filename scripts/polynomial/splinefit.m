@@ -221,19 +221,19 @@ function pp = splinefit (x, y, breaks, varargin)
   pp = __splinefit__ (x, y, breaks, args{:});
 endfunction
 
+
 %!shared xb, yb, x
 %! xb = 0:2:10;
-%! yb = randn (size (xb));
+%! yb = 2*rand (size (xb)) - 1;
 %! x = 0:0.1:10;
 
 %!test
 %! y = interp1 (xb, yb, x, "linear");
-%! assert (ppval (splinefit (x, y, xb, "order", 1), x), y, 10 * eps ());
+%! assert (ppval (splinefit (x, y, xb, "order", 1), x), y, 15 * eps ());
 %!test
 %! y = interp1 (xb, yb, x, "spline");
-%! assert (ppval (splinefit (x, y, xb, "order", 3), x), y, 10 * eps ());
+%! assert (ppval (splinefit (x, y, xb, "order", 3), x), y, 15 * eps ());
 %!test
 %! y = interp1 (xb, yb, x, "spline");
-%! assert (ppval (splinefit (x, y, xb), x), y, 10 * eps ());
-
+%! assert (ppval (splinefit (x, y, xb), x), y, 15 * eps ());
 

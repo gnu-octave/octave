@@ -46,7 +46,8 @@ along with Octave; see the file COPYING.  If not, see
   JIT_METH(variable);                           \
   JIT_METH(error_check);                        \
   JIT_METH(assign)                              \
-  JIT_METH(argument)
+  JIT_METH(argument)                            \
+  JIT_METH(magic_end)
 
 #define JIT_VISIT_IR_CONST                      \
   JIT_METH(const_bool);                         \
@@ -255,6 +256,14 @@ public:
 
 #undef STASH_ARG
 #undef JIT_INSTRUCTION_CTOR
+
+  jit_instruction (const std::vector<jit_value *>& aarguments)
+  : already_infered (aarguments.size ()), marguments (aarguments.size ()),
+    mid (next_id ()), mparent (0)
+  {
+    for (size_t i = 0; i < aarguments.size (); ++i)
+      stash_argument (i, aarguments[i]);
+  }
 
   static void reset_ids (void)
   {
@@ -1065,6 +1074,10 @@ public:
 
 #undef JIT_CALL_CONST
 
+  jit_call (const jit_operation& aoperation,
+            const std::vector<jit_value *>& args)
+  : jit_instruction (args), moperation (aoperation)
+  {}
 
   const jit_operation& operation (void) const { return moperation; }
 
@@ -1135,6 +1148,48 @@ protected:
   {
     return idx == 1 ? true : check_for ()->can_error ();
   }
+};
+
+// for now only handles the 1D case
+class
+jit_magic_end : public jit_instruction
+{
+public:
+  class
+  context
+  {
+  public:
+    context (void) : value (0), index (0), count (0)
+    {}
+
+    context (jit_value *avalue, size_t aindex, size_t acount)
+      : value (avalue), index (aindex), count (acount)
+    {}
+
+    jit_value *value;
+    size_t index;
+    size_t count;
+  };
+
+  jit_magic_end (const std::vector<context>& full_context);
+
+  const jit_function& overload () const;
+
+  jit_value *resolve_context (void) const;
+
+  virtual bool infer (void);
+
+  virtual std::ostream& short_print (std::ostream& os) const
+  {
+    return os << "magic_end";
+  }
+
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
+  {
+    return short_print (print_indent (os, indent));
+  }
+
+  JIT_VALUE_ACCEPT;
 };
 
 class

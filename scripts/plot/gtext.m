@@ -18,16 +18,24 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {} gtext (@var{s})
+## @deftypefnx {Function File} {} gtext (@{@var{s1}, @var{s2}, @dots{}@})
 ## @deftypefnx {Function File} {} gtext (@{@var{s1}; @var{s2}; @dots{}@})
 ## @deftypefnx {Function File} {} gtext (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {@var{h} =} gtext (@dots{})
 ## Place text on the current figure using the mouse.  The text is defined
-## by the string @var{s}.  If @var{s} is a cell array, each element of the cell
-## array is written to a separate line.  Additional arguments are passed to
-## the underlying text object as properties.
+## by the string @var{s}.  If @var{s} is a cell string organized as a row
+## vector then each string of the cell array is written to a separate line.
+## If @var{s} is organized as a column vector then one string element of the
+## cell array is placed for every mouse click.  Additional inputs besides a
+## string or cellstr are passed to the underlying text object as Property-value
+## pairs.
+##
+## The optional return value @var{h} is a graphics handle to the created
+## text object.
 ## @seealso{ginput, text}
 ## @end deftypefn
 
-function gtext (s, varargin)
+function h = gtext (s, varargin)
 
   if (nargin < 1)
     print_usage ();
@@ -37,9 +45,21 @@ function gtext (s, varargin)
     error ("gtext: S must be a string or cell array of strings");
   endif
 
+  htmp = -1;
   if (! isempty (s))
-    [x, y] = ginput (1);
-    text (x, y, s, varargin{:});
+    if (ischar (s) || isrow (s))
+      [x, y] = ginput (1);
+      htmp = text (x, y, s, varargin{:});
+    else
+      for i = 1:numel (s)
+        [x, y] = ginput (1);
+        htmp = text (x, y, s{i}, varargin{:});
+      endfor
+    endif
+  endif
+
+  if (nargout > 0)
+    h = htmp;
   endif
 
 endfunction

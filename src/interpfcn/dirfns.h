@@ -29,11 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-time.h"
 
-extern std::string polite_directory_format (const std::string&);
-extern std::string base_pathname (const std::string&);
-extern std::string make_absolute (const std::string&, const std::string&);
-extern std::string get_working_directory (const std::string&);
-
 // The time we last time we changed directories.
 extern octave_time Vlast_chdir_time;
 

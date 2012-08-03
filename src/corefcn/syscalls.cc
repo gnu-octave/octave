@@ -936,7 +936,7 @@ Number of blocks allocated for file.\n\
 @end table\n\
 \n\
 If the call is successful @var{err} is 0 and @var{msg} is an empty\n\
-string.  If the file does not exist, or some other error occurs, @var{s}\n\
+string.  If the file does not exist, or some other error occurs, @var{info}\n\
 is an empty matrix, @var{err} is @minus{}1, and @var{msg} contains the\n\
 corresponding system error message.\n\
 \n\
@@ -947,8 +947,8 @@ if you want information about the symbolic link itself.\n\
 For example:\n\
 \n\
 @example\n\
-[s, err, msg] = stat (\"/vmlinuz\")\n\
-  @result{} s =\n\
+[info, err, msg] = stat (\"/vmlinuz\")\n\
+  @result{} info =\n\
      @{\n\
        atime = 855399756\n\
        rdev = 0\n\

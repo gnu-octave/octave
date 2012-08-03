@@ -2137,15 +2137,6 @@ biry (const FloatComplexNDArray& z, bool deriv, bool scaled, Array<octave_idx_ty
 }
 
 static void
-gripe_betainc_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2, octave_idx_type r3,
-                             octave_idx_type c3)
-{
-  (*current_liboctave_error_handler)
-   ("betainc: nonconformant arguments (x is %dx%d, a is %dx%d, b is %dx%d)",
-     r1, c1, r2, c2, r3, c3);
-}
-
-static void
 gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
                              const dim_vector& d3)
 {
@@ -2156,15 +2147,6 @@ gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
   (*current_liboctave_error_handler)
   ("betainc: nonconformant arguments (x is %s, a is %s, b is %s)",
    d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
-}
-
-static void
-gripe_betaincinv_nonconformant (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2, octave_idx_type r3,
-                                octave_idx_type c3)
-{
-  (*current_liboctave_error_handler)
-   ("betaincinv: nonconformant arguments (x is %dx%d, a is %dx%d, b is %dx%d)",
-     r1, c1, r2, c2, r3, c3);
 }
 
 static void

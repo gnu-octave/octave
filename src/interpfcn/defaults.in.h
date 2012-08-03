@@ -1,4 +1,4 @@
-// defaults.h.in
+// DO NOT EDIT!  Generated automatically from defaults.in.h by configure
 /*
 
 Copyright (C) 1993-2012 John W. Eaton

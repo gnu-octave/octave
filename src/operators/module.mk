@@ -129,8 +129,16 @@ OPERATORS_SRC = \
   operators/op-ui64-ui64.cc \
   operators/op-ui8-ui8.cc
 
-octinclude_HEADERS += \
+## These look like included header files to Autotools build process
+OPERATOR_INCLUDES = \
   operators/op-dm-template.cc \
   operators/op-dms-template.cc \
   operators/op-int.h \
-  operators/op-pm-template.cc
+  operators/op-pm-template.cc \
+  operators/ops.h
+
+## Special rules for sources which must be built before rest of compilation.
+operators/ops.cc: $(OPERATORS_SRC) mkops
+	$(srcdir)/mkops $(OPERATORS_SRC) > $@-t
+	mv $@-t $@
+

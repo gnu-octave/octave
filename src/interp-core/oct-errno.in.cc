@@ -1,4 +1,4 @@
-// oct-errno.cc.in
+// DO NOT EDIT!  Generated automatically from oct-errno.in.cc by configure
 /*
 
 Copyright (C) 2005-2012 John W. Eaton

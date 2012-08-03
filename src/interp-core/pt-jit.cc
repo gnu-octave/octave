@@ -1904,4 +1904,27 @@ Test some simple cases that compile.
 %! assert (all (m == expected));
 %! assert (result == sum (expected (:)));
 
+%!function test_divide ()
+%! state = warning ("query", "Octave:divide-by-zero").state;
+%! unwind_protect
+%!   warning ("error", "Octave:divide-by-zero");
+%!   for i=1:1e5
+%!     a = 1;
+%!     a / 0;
+%!   endfor
+%! unwind_protect_cleanup
+%!   warning (state, "Octave:divide-by-zero");
+%! end_unwind_protect
+%!endfunction
+
+%!error <division by zero> test_divide ()
+
+%!test
+%! while 1
+%!   a = 0;
+%!   result = a / 1;
+%!   break;
+%! endwhile
+%! assert (result, 0);
+
 */

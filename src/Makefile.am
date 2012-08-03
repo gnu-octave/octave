@@ -22,13 +22,14 @@ include $(top_srcdir)/build-aux/common.mk
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I../libgnu -I$(top_srcdir)/libgnu \
   -I$(top_srcdir)/libcruft/misc \
   -I../liboctave -I$(top_srcdir)/liboctave \
+  -Iinterpfcn -I$(srcdir)/interpfcn \
   -Icorefcn \
   -Ioctave-value -I$(srcdir)/octave-value \
   -Iparse-tree -I$(srcdir)/parse-tree \
   -I. -I$(srcdir) \
+  -I../libgnu -I$(top_srcdir)/libgnu \
   @CPPFLAGS@
 
 AUTOMAKE_OPTIONS = subdir-objects
@@ -66,9 +67,9 @@ endif
 ## (except builtins.cc) to be available.
 BUILT_SOURCES = \
   $(BUILT_SOURCES_EXTRA) \
-  defaults.h \
-  graphics.h \
-  graphics-props.cc \
+  interpfcn/defaults.h \
+  interpfcn/graphics.h \
+  interpfcn/graphics-props.cc \
   parse-tree/lex.cc \
   mxarray.h \
   oct-conf.h \
@@ -81,13 +82,13 @@ BUILT_SOURCES = \
 
 BUILT_DISTFILES = \
   oct-gperf.h \
-  oct-parse.h
+  parse-tree/oct-parse.h
 
 ## Files that are created during build process and installed,
 ## BUT not distributed in tarball.
 BUILT_NODISTFILES = \
-  defaults.h \
-  graphics.h \
+  interpfcn/defaults.h \
+  interpfcn/graphics.h \
   oct-conf.h \
   oct-errno.cc \
   ops.cc \
@@ -135,31 +136,20 @@ octinclude_HEADERS = \
   c-file-ptr-stream.h \
   comment-list.h \
   cutils.h \
-  data.h \
-  debug.h \
   defun-dld.h \
   defun-int.h \
-  defun.h \
-  dirfns.h \
   display.h \
   dynamic-ld.h \
-  error.h \
-  file-io.h \
   gl-render.h \
   gl2ps.h \
   gl2ps-renderer.h \
-  graphics-props.cc \
+  interpfcn/graphics-props.cc \
   gripes.h \
-  help.h \
-  input.h \
-  load-path.h \
-  load-save.h \
   ls-ascii-helper.h \
   ls-hdf5.h \
   ls-mat-ascii.h \
   ls-mat4.h \
   ls-mat5.h \
-  ls-oct-ascii.h \
   ls-oct-binary.h \
   ls-utils.h \
   mex.h \
@@ -168,7 +158,6 @@ octinclude_HEADERS = \
   oct-fstrm.h \
   oct-gperf.h \
   oct-hdf5.h \
-  oct-hist.h \
   oct-iostrm.h \
   oct-lvalue.h \
   oct-map.h \
@@ -181,23 +170,14 @@ octinclude_HEADERS = \
   oct.h \
   octave.h \
   ops.h \
-  pager.h \
-  pr-output.h \
   procstream.h \
-  profiler.h \
-  sighandlers.h \
   siglist.h \
   sparse-xdiv.h \
   sparse-xpow.h \
-  symtab.h \
-  sysdep.h \
   token.h \
-  toplev.h \
   txt-eng-ft.h \
   txt-eng.h \
   unwind-prot.h \
-  utils.h \
-  variables.h \
   xdiv.h \
   xnorm.h \
   xpow.h \
@@ -205,11 +185,12 @@ octinclude_HEADERS = \
   $(OV_INCLUDES) \
   $(OV_SPARSE_INCLUDES) \
   $(PT_INCLUDES) \
+  $(INTERPFCN_INCLUDES) \
   $(JIT_INCLUDES)
 
 nodist_octinclude_HEADERS = \
-  defaults.h \
-  graphics.h \
+  interpfcn/defaults.h \
+  interpfcn/graphics.h \
   oct-conf.h \
   mxarray.h \
   version.h
@@ -225,35 +206,21 @@ DIST_SRC = \
   c-file-ptr-stream.cc \
   comment-list.cc \
   cutils.c \
-  data.cc \
-  debug.cc \
-  defaults.cc \
-  defun.cc \
-  dirfns.cc \
   display.cc \
   dynamic-ld.cc \
-  error.cc \
-  file-io.cc \
   gl-render.cc \
   gl2ps-renderer.cc \
-  graphics.cc \
   gripes.cc \
-  help.cc \
-  input.cc \
-  load-path.cc \
-  load-save.cc \
   ls-ascii-helper.cc \
   ls-hdf5.cc \
   ls-mat-ascii.cc \
   ls-mat4.cc \
   ls-mat5.cc \
-  ls-oct-ascii.cc \
   ls-oct-binary.cc \
   ls-utils.cc \
   matherr.c \
   mex.cc \
   oct-fstrm.cc \
-  oct-hist.cc \
   oct-iostrm.cc \
   oct-lvalue.cc \
   oct-map.cc \
@@ -263,31 +230,23 @@ DIST_SRC = \
   oct-stream.cc \
   oct-strstrm.cc \
   octave.cc \
-  pager.cc \
-  pr-output.cc \
   procstream.cc \
-  profiler.cc \
-  sighandlers.cc \
   siglist.c \
   sparse-xdiv.cc \
   sparse-xpow.cc \
-  symtab.cc \
-  sysdep.cc \
   token.cc \
-  toplev.cc \
   txt-eng-ft.cc \
   unwind-prot.cc \
-  utils.cc \
-  variables.cc \
   xdiv.cc \
   xgl2ps.c \
   xnorm.cc \
   xpow.cc \
   zfstream.cc \
-  $(COREFCN_SRC) \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
-  $(JIT_SRC)
+  $(JIT_SRC) \
+  $(INTERPFCN_SRC) \
+  $(COREFCN_SRC)
 
 noinst_LTLIBRARIES =
 
@@ -295,6 +254,7 @@ include parse-tree/module.mk
 include octave-value/module.mk
 include operators/module.mk
 include template-inst/module.mk
+include interpfcn/module.mk
 include corefcn/module.mk
 include dldfcn/module.mk
 
@@ -318,8 +278,8 @@ liboctinterp_la_SOURCES = \
 
 nodist_liboctinterp_la_SOURCES = \
   builtins.cc \
-  defaults.h \
-  graphics.h \
+  interpfcn/defaults.h \
+  interpfcn/graphics.h \
   mxarray.h \
   oct-conf.h \
   oct-errno.cc \
@@ -401,13 +361,6 @@ DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 ## defaults.h and oct-conf.h must depend on Makefile.  Calling configure
 ## may change default/config values.  However, calling configure will also
 ## regenerate the Makefiles from Makefile.am and trigger the rules below.
-defaults.h: defaults.in.h Makefile
-	@$(do_subst_default_vals)
-
-graphics.h: graphics.in.h genprops.awk Makefile
-	$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
-	mv $@-t $@
-
 oct-conf.h: oct-conf.in.h Makefile
 	@$(do_subst_config_vals)
 
@@ -437,10 +390,6 @@ version.h: version.in.h Makefile
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	$(srcdir)/mkbuiltins $(DEF_FILES) > $@-t
-	mv $@-t $@
-
-graphics-props.cc: graphics.in.h genprops.awk Makefile
-	$(AWK) -v emit_graphics_props=1 -f $(srcdir)/genprops.awk $< > $@-t
 	mv $@-t $@
 
 ops.cc: $(OPERATORS_SRC) mkops
@@ -568,8 +517,8 @@ endif
 CLEANFILES = \
   $(bin_SCRIPTS) \
   $(DLDFCN_PKG_ADD_FILE) \
-  graphics-props.cc \
-  oct-parse.output
+  interpfcn/graphics-props.cc \
+  parse-tree/oct-parse.output
 
 DISTCLEANFILES = \
   .DOCSTRINGS \

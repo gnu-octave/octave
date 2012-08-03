@@ -1,4 +1,4 @@
-// oct-conf.h.in
+// DO NOT EDIT!  Generated automatically from oct-conf.in.h by configure
 /*
 
 Copyright (C) 1996-2012 John W. Eaton

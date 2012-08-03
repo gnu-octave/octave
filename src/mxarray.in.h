@@ -1,3 +1,4 @@
+// DO NOT EDIT!  Generated automatically from mxarray.in.h by configure
 /*
 
 Copyright (C) 2001-2012 Paul Kienzle

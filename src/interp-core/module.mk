@@ -23,9 +23,6 @@ INTERP_CORE_INCLUDES = \
   interp-core/gl2ps-renderer.h \
   interp-core/gl2ps.h \
   interp-core/gripes.h \
-  interp-core/jit-ir.h \
-  interp-core/jit-typeinfo.h \
-  interp-core/jit-util.h \
   interp-core/ls-ascii-helper.h \
   interp-core/ls-hdf5.h \
   interp-core/ls-mat-ascii.h \
@@ -50,7 +47,6 @@ INTERP_CORE_INCLUDES = \
   interp-core/oct-strstrm.h \
   interp-core/oct.h \
   interp-core/procstream.h \
-  interp-core/pt-jit.h \
   interp-core/siglist.h \
   interp-core/sparse-xdiv.h \
   interp-core/sparse-xpow.h \
@@ -84,9 +80,6 @@ INTERP_CORE_SRC = \
   interp-core/gl-render.cc \
   interp-core/gl2ps-renderer.cc \
   interp-core/gripes.cc \
-  interp-core/jit-ir.cc \
-  interp-core/jit-typeinfo.cc \
-  interp-core/jit-util.cc \
   interp-core/ls-ascii-helper.cc \
   interp-core/ls-hdf5.cc \
   interp-core/ls-mat-ascii.cc \
@@ -105,7 +98,6 @@ INTERP_CORE_SRC = \
   interp-core/oct-stream.cc \
   interp-core/oct-strstrm.cc \
   interp-core/procstream.cc \
-  interp-core/pt-jit.cc \
   interp-core/sparse-xdiv.cc \
   interp-core/sparse-xpow.cc \
   interp-core/txt-eng-ft.cc \

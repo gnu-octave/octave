@@ -264,6 +264,7 @@ oct-conf.h: oct-conf.in.h Makefile
 
 version.h: version.in.h Makefile
 	$(SED) < $< \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
 	  -e "s|%OCTAVE_API_VERSION_NUMBER%|${OCTAVE_API_VERSION_NUMBER}|" \
 	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
 	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \

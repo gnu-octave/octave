@@ -1,4 +1,4 @@
-// DO NOT EDIT!  Generated automatically from mxarray.in.h by configure
+// %NO_EDIT_WARNING%
 /*
 
 Copyright (C) 2001-2012 Paul Kienzle

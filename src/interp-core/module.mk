@@ -125,6 +125,7 @@ interp-core/oct-errno.cc: interp-core/oct-errno.in.cc Makefile
 
 interp-core/mxarray.h: interp-core/mxarray.in.h Makefile
 	$(SED) < $< \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
 	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
 	mv $@-t $@
 

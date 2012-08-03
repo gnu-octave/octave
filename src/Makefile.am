@@ -68,12 +68,12 @@ BUILT_SOURCES = \
   defaults.h \
   graphics.h \
   graphics-props.cc \
-  lex.cc \
+  parse-tree/lex.cc \
   mxarray.h \
   oct-conf.h \
   oct-errno.cc \
   oct-gperf.h \
-  oct-parse.cc \
+  parse-tree/oct-parse.cc \
   ops.cc \
   version.h \
   builtins.cc
@@ -122,20 +122,6 @@ EXTRA_DIST = \
   version.in.h \
   $(BUILT_DISTFILES)
 
-#OPT_HANDLERS = \
-#  DASPK-opts.cc \
-#  DASRT-opts.cc \
-#  DASSL-opts.cc \
-#  LSODE-opts.cc \
-#  Quad-opts.cc
-#
-#OPT_INC = \
-#  ../liboctave/DASPK-opts.h \
-#  ../liboctave/DASRT-opts.h \
-#  ../liboctave/DASSL-opts.h \
-#  ../liboctave/LSODE-opts.h \
-#  ../liboctave/Quad-opts.h
-
 JIT_INCLUDES = \
   jit-util.h \
   jit-typeinfo.h \
@@ -165,7 +151,6 @@ octinclude_HEADERS = \
   gripes.h \
   help.h \
   input.h \
-  lex.h \
   load-path.h \
   load-save.h \
   ls-ascii-helper.h \
@@ -196,8 +181,6 @@ octinclude_HEADERS = \
   octave.h \
   ops.h \
   pager.h \
-  parse.h \
-  parse-private.h \
   pr-output.h \
   procstream.h \
   profiler.h \
@@ -256,7 +239,6 @@ DIST_SRC = \
   gripes.cc \
   help.cc \
   input.cc \
-  lex.ll \
   load-path.cc \
   load-save.cc \
   ls-ascii-helper.cc \
@@ -275,7 +257,6 @@ DIST_SRC = \
   oct-lvalue.cc \
   oct-map.cc \
   oct-obj.cc \
-  oct-parse.yy \
   oct-prcstrm.cc \
   oct-procbuf.cc \
   oct-stream.cc \
@@ -475,13 +456,6 @@ oct-errno.cc: oct-errno.in.cc Makefile
 	fi
 	mv $@-t $@
 
-#$(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/build-aux/mk-opts.pl
-#	$(PERL) $(top_srcdir)/build-aux/mk-opts.pl --opt-handler-fcns $< > $@-t
-#	mv $@-t $@
-#
-#$(OPT_INC) : %.h : %.in
-#	$(MAKE) -C $(@D) $(@F)
-
 if AMCOND_ENABLE_DYNAMIC_LINKING
 DLDFCN_PKG_ADD_FILE = dldfcn/PKG_ADD
 
@@ -489,9 +463,6 @@ dldfcn/PKG_ADD: $(DLDFCN_DEF_FILES) mk-pkg-add
 	$(srcdir)/mk-pkg-add $(DLDFCN_DEF_FILES) > $@-t
 	mv $@-t $@
 endif
-
-lex.lo lex.o oct-parse.lo oct-parse.o: \
-  AM_CXXFLAGS := $(filter-out -Wold-style-cast, $(AM_CXXFLAGS))
 
 __fltk_uigetfile__.lo __fltk_uigetfile__.o: \
   AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))

@@ -38,10 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <ctime>
 
 #include <string>
-extern "C"
-{
 #include <base64.h>
-}
 
 #include "lo-ieee.h"
 #include "lo-math.h"

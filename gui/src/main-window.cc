@@ -592,32 +592,37 @@ main_window::construct ()
 
   _debug_menu = menuBar ()->addMenu (tr ("De&bug"));
 
-  _debug_step_over = _debug_menu->addAction (tr ("Step"));
+  _debug_step_over = _debug_menu->addAction (QIcon (":/actions/icons/db_step.png"), tr ("Step"));
   _debug_step_over->setEnabled (false);
   _file_editor->debug_menu ()->addAction (_debug_step_over);
+  _file_editor->toolbar ()->addAction (_debug_step_over);
   _debug_step_over->setShortcut (Qt::Key_F10);
 
-  _debug_step_into = _debug_menu->addAction (tr ("Step in"));
+  _debug_step_into = _debug_menu->addAction (QIcon (":/actions/icons/db_step_in.png"), tr ("Step in"));
   _debug_step_into->setEnabled (false);
   _file_editor->debug_menu ()->addAction (_debug_step_into);
+  _file_editor->toolbar ()->addAction (_debug_step_into);
   _debug_step_into->setShortcut (Qt::Key_F11);
 
-  _debug_step_out = _debug_menu->addAction (tr ("Step out"));
+  _debug_step_out = _debug_menu->addAction (QIcon (":/actions/icons/db_step_out.png"), tr ("Step out"));
   _debug_step_out->setEnabled (false);
   _file_editor->debug_menu ()->addAction (_debug_step_out);
+  _file_editor->toolbar ()->addAction (_debug_step_out);
   _debug_step_out->setShortcut (Qt::ShiftModifier + Qt::Key_F11);
 
-  _debug_continue = _debug_menu->addAction (tr ("Continue"));
+  _debug_continue = _debug_menu->addAction (QIcon (":/actions/icons/db_cont.png"), tr ("Continue"));
   _debug_continue->setEnabled (false);
   _file_editor->debug_menu ()->addAction (_debug_continue);
+  _file_editor->toolbar ()->addAction (_debug_continue);
   _debug_continue->setShortcut (Qt::Key_F5);
 
   _debug_menu->addSeparator ();
   _file_editor->debug_menu ()->addSeparator ();
 
-  _debug_quit = _debug_menu->addAction (tr ("Exit Debug Mode"));
+  _debug_quit = _debug_menu->addAction (QIcon (":/actions/icons/db_stop.png"), tr ("Exit Debug Mode"));
   _debug_quit->setEnabled (false);
   _file_editor->debug_menu ()->addAction (_debug_quit);
+  _file_editor->toolbar ()->addAction (_debug_quit);
   _debug_quit->setShortcut (Qt::ShiftModifier + Qt::Key_F5);
 
   //QMenu *parallelMenu = menuBar ()->addMenu (tr ("&Parallel"));

@@ -27,5 +27,14 @@
         <file>icons/jabber_protocol.png</file>
         <file>icons/logo.png</file>
         <file>icons/terminal.png</file>
+        <file>icons/bp_toggle.png</file>
+        <file>icons/bp_rm_all.png</file>
+        <file>icons/bp_prev.png</file>
+        <file>icons/bp_next.png</file>
+        <file>icons/db_cont.png</file>
+        <file>icons/db_step.png</file>
+        <file>icons/db_step_in.png</file>
+        <file>icons/db_step_out.png</file>
+        <file>icons/db_stop.png</file>
     </qresource>
 </RCC>

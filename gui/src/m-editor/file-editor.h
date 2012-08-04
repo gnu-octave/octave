@@ -50,7 +50,8 @@ public:
   QTerminal *       terminal ();
   main_window *     get_main_window ();
 
-  QMenu *           debug_menu();
+  QMenu *           debug_menu ();
+  QToolBar *        toolbar ();
 
   void handle_entered_debug_mode ();
   void handle_quit_debug_mode ();

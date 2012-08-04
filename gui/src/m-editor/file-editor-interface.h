@@ -20,6 +20,7 @@
 
 #include <QDockWidget>
 #include <QMenu>
+#include <QToolBar>
 
 class QTerminal;
 class main_window;
@@ -43,6 +44,7 @@ class file_editor_interface : public QDockWidget
     virtual ~file_editor_interface () { }
 
     virtual QMenu *debug_menu () = 0;
+    virtual QToolBar *toolbar () = 0;
 
     virtual void handle_entered_debug_mode () = 0;
     virtual void handle_quit_debug_mode () = 0;

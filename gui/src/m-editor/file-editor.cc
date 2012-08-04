@@ -57,6 +57,12 @@ file_editor::debug_menu ()
   return _debug_menu;
 }
 
+QToolBar *
+file_editor::toolbar ()
+{
+  return _tool_bar;
+}
+
 void
 file_editor::handle_entered_debug_mode ()
 {
@@ -337,7 +343,6 @@ file_editor::construct ()
   _tab_widget = new QTabWidget (widget);
   _tab_widget->setTabsClosable (true);
 
-  // Theme icons with QStyle icons as fallback
   QAction *new_action = new QAction (QIcon(":/actions/icons/filenew.png"),
         tr("&New File"), _tool_bar);
 
@@ -371,10 +376,18 @@ file_editor::construct ()
   QAction *toggle_bookmark_action     = new QAction (tr ("Toggle &Bookmark"),_tool_bar);
   QAction *remove_bookmark_action     = new QAction (tr ("&Remove All Bookmarks"),_tool_bar);
 
-  QAction *next_breakpoint_action       = new QAction (tr ("&Next breakpoint"),_tool_bar);
-  QAction *previous_breakpoint_action   = new QAction (tr ("Pre&vious breakpoint"),_tool_bar);
-  QAction *toggle_breakpoint_action     = new QAction (tr ("Toggle &breakpoint"),_tool_bar);
-  QAction *remove_breakpoint_action     = new QAction (tr ("&Remove All breakpoints"),_tool_bar);
+  QAction *next_breakpoint_action
+      = new QAction (QIcon (":/actions/icons/bp_next.png"),
+                     tr ("&Next breakpoint"), _tool_bar);
+  QAction *previous_breakpoint_action
+      = new QAction (QIcon (":/actions/icons/bp_prev.png"),
+                     tr ("Pre&vious breakpoint"), _tool_bar);
+  QAction *toggle_breakpoint_action
+      = new QAction (QIcon (":/actions/icons/bp_toggle.png"),
+                     tr ("Toggle &breakpoint"), _tool_bar);
+  QAction *remove_all_breakpoints_action
+      = new QAction (QIcon (":/actions/icons/bp_rm_all.png"),
+                     tr ("&Remove All breakpoints"), _tool_bar);
 
   QAction *comment_selection_action   = new QAction (tr ("&Comment Selected Text"),_tool_bar);
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
@@ -413,10 +426,15 @@ file_editor::construct ()
   _tool_bar->addAction (redo_action);
   _tool_bar->addAction (_copy_action);
   _tool_bar->addAction (_cut_action);
-  _tool_bar->addSeparator ();
   _tool_bar->addAction (paste_action);
+  _tool_bar->addSeparator ();
   _tool_bar->addAction (find_action);
   _tool_bar->addAction (_run_action);
+  _tool_bar->addSeparator ();
+  _tool_bar->addAction (toggle_breakpoint_action);
+  _tool_bar->addAction (next_breakpoint_action);
+  _tool_bar->addAction (previous_breakpoint_action);
+  _tool_bar->addAction (remove_all_breakpoints_action);
 
   // menu bar
   QMenu *fileMenu = new QMenu (tr ("&File"), _menu_bar);
@@ -450,7 +468,7 @@ file_editor::construct ()
   _debug_menu->addAction (toggle_breakpoint_action);
   _debug_menu->addAction (next_breakpoint_action);
   _debug_menu->addAction (previous_breakpoint_action);
-  _debug_menu->addAction (remove_breakpoint_action);
+  _debug_menu->addAction (remove_all_breakpoints_action);
   _debug_menu->addSeparator ();
   // The other debug actions will be added by the main window.
   _menu_bar->addMenu (_debug_menu);
@@ -501,7 +519,7 @@ file_editor::construct ()
            SIGNAL (triggered ()), this, SLOT (request_next_breakpoint ()));
   connect (previous_breakpoint_action,
            SIGNAL (triggered ()), this, SLOT (request_previous_breakpoint ()));
-  connect (remove_breakpoint_action,
+  connect (remove_all_breakpoints_action,
            SIGNAL (triggered ()), this, SLOT (request_remove_breakpoint ()));
   connect (comment_selection_action,
            SIGNAL (triggered ()), this, SLOT (request_comment_selected_text ()));

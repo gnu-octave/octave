@@ -60,21 +60,29 @@ public:
 
 private slots:
   void search_next ();
+  void replace ();
+  void replace_all ();
 
 private:
-  QLabel            *_label;
+  QLabel            *_search_label;
   QLineEdit         *_search_line_edit;
+  QLabel            *_replace_label;
+  QLineEdit         *_replace_line_edit;
   QCheckBox         *_case_check_box;
   QCheckBox         *_from_start_check_box;
+  QCheckBox         *_wrap_check_box;
   QCheckBox         *_whole_words_check_box;
   QCheckBox         *_regex_check_box;
   QCheckBox         *_search_selection_check_box;
   QCheckBox         *_backward_check_box;
   QDialogButtonBox  *_button_box;
   QPushButton       *_find_next_button;
+  QPushButton       *_replace_button;
+  QPushButton       *_replace_all_button;
   QPushButton       *_more_button;
   QWidget           *_extension;
   QsciScintilla     *_edit_area;
+  bool               _find_result_available;
 };
 
 #endif // FIND_DIALOG_H

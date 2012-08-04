@@ -40,22 +40,30 @@
 ****************************************************************************/
 
 #include <QtGui>
+#include <QIcon>
 #include "find-dialog.h"
 
 find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *parent)
   : QDialog (parent)
 {
-  setWindowTitle ("Search file");
-  _label = new QLabel (tr ("Find &what:"));
+  setWindowTitle ("Find and Replace");
+  setWindowIcon (QIcon(":/actions/icons/logo.png"));
+
+  _search_label = new QLabel (tr ("Find &what:"));
   _search_line_edit = new QLineEdit;
-  _label->setBuddy (_search_line_edit);
+  _search_label->setBuddy (_search_line_edit);
+  _replace_label = new QLabel (tr ("Re&place with:"));
+  _replace_line_edit = new QLineEdit;
+  _replace_label->setBuddy (_replace_line_edit);
 
   _case_check_box = new QCheckBox (tr ("Match &case"));
   _from_start_check_box = new QCheckBox (tr ("Search from &start"));
-  _from_start_check_box->setChecked (true);
-
+  _wrap_check_box = new QCheckBox (tr ("&Wrap while searching"));
+  _wrap_check_box->setChecked(true);
   _find_next_button = new QPushButton (tr ("&Find Next"));
   _find_next_button->setDefault (true);
+  _replace_button = new QPushButton (tr ("&Replace"));
+  _replace_all_button = new QPushButton (tr ("Replace &All"));
 
   _more_button = new QPushButton (tr ("&More"));
   _more_button->setCheckable (true);
@@ -63,6 +71,8 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *parent)
 
   _button_box = new QDialogButtonBox (Qt::Vertical);
   _button_box->addButton (_find_next_button, QDialogButtonBox::ActionRole);
+  _button_box->addButton (_replace_button, QDialogButtonBox::ActionRole);
+  _button_box->addButton (_replace_all_button, QDialogButtonBox::ActionRole);
   _button_box->addButton (_more_button, QDialogButtonBox::ActionRole);
 
   _extension = new QWidget (this);
@@ -70,28 +80,39 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *parent)
   _regex_check_box = new QCheckBox (tr ("Regular E&xpressions"));
   _backward_check_box = new QCheckBox (tr ("Search &backward"));
   _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
+  _search_selection_check_box->setCheckable (false); // TODO: Not implemented.
+  _search_selection_check_box->setEnabled (false);
 
   _edit_area = edit_area;
-  connect (_find_next_button, SIGNAL (clicked ()), this, SLOT (search_next ()));
-  connect (_more_button, SIGNAL (toggled (bool)), _extension, SLOT (setVisible (bool)));
+  connect (_find_next_button,   SIGNAL (clicked ()),
+           this,                SLOT (search_next ()));
+  connect (_more_button,        SIGNAL (toggled (bool)),
+           _extension,          SLOT (setVisible (bool)));
+  connect (_replace_button,     SIGNAL (clicked ()),
+           this,                SLOT (replace ()));
+  connect (_replace_all_button, SIGNAL (clicked ()),
+           this,                SLOT (replace_all ()));
 
   QVBoxLayout *extension_layout = new QVBoxLayout ();
   extension_layout->setMargin (0);
   extension_layout->addWidget (_whole_words_check_box);
-  extension_layout->addWidget (_regex_check_box);
   extension_layout->addWidget (_backward_check_box);
   extension_layout->addWidget (_search_selection_check_box);
   _extension->setLayout (extension_layout);
 
-  QHBoxLayout *top_left_layout = new QHBoxLayout;
-  top_left_layout->addWidget (_label);
-  top_left_layout->addWidget (_search_line_edit);
+  QGridLayout *top_left_layout = new QGridLayout;
+  top_left_layout->addWidget (_search_label, 1, 1);
+  top_left_layout->addWidget (_search_line_edit, 1, 2);
+  top_left_layout->addWidget (_replace_label, 2, 1);
+  top_left_layout->addWidget (_replace_line_edit, 2, 2);
 
   QVBoxLayout *left_layout = new QVBoxLayout;
   left_layout->addLayout (top_left_layout);
+  left_layout->insertStretch (1, 5);
   left_layout->addWidget (_case_check_box);
   left_layout->addWidget (_from_start_check_box);
-  left_layout->addStretch (1);
+  left_layout->addWidget (_wrap_check_box);
+  left_layout->addWidget (_regex_check_box);
 
   QGridLayout *main_layout = new QGridLayout;
   main_layout->setSizeConstraint (QLayout::SetFixedSize);
@@ -99,6 +120,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *parent)
   main_layout->addWidget (_button_box, 0, 1);
   main_layout->addWidget (_extension, 1, 0, 1, 2);
   setLayout (main_layout);
+
   _extension->hide ();
 }
 
@@ -106,6 +128,8 @@ void
 find_dialog::search_next ()
 {
   int line = -1, col = -1;
+
+  _find_result_available = false;
   if (_from_start_check_box->isChecked ())
     {
       line = 1;
@@ -114,16 +138,58 @@ find_dialog::search_next ()
 
   if (_edit_area)
     {
-      _edit_area->findFirst (_search_line_edit->text (),
-                             _regex_check_box->isChecked (),
-                             _case_check_box->isChecked (),
-                             _whole_words_check_box->isChecked (),
-                             true,
-                             !_backward_check_box->isChecked (),
-                             line,
-                             col,
-                             true,
-                             true
-                             );
+      _find_result_available = _edit_area->findFirst (_search_line_edit->text (),
+                                      _regex_check_box->isChecked (),
+                                      _case_check_box->isChecked (),
+                                      _whole_words_check_box->isChecked (),
+                                      _wrap_check_box->isChecked (),
+                                      !_backward_check_box->isChecked (),
+                                      line,col,
+                                      true,
+                                      true
+                                      );
     }
+}
+
+
+void
+find_dialog::replace ()
+{
+  if (_edit_area)
+    {
+      _edit_area->replace (_replace_line_edit->text ());
+      _edit_area->findNext();
+    }
+}
+
+void
+find_dialog::replace_all ()
+{
+  int count = 0;
+
+  // check whether find & replace srings are different (avoid endless loop!)
+  int strDiff;
+  Qt::CaseSensitivity cs;
+  if (_case_check_box->isChecked())
+    {
+      cs = Qt::CaseSensitive;
+    }
+  else
+    {
+      cs = Qt::CaseInsensitive;
+    }
+  strDiff = QString::compare(_search_line_edit->text(),_replace_line_edit->text(),cs);
+
+  // replace all if strings are different
+  if (_edit_area && strDiff )
+    {
+      search_next ();  // find first occurence
+      while (_find_result_available)   // while search string is found
+        {
+          _edit_area->replace (_replace_line_edit->text ());   // replace
+          count++;                                             // inc counter
+          _find_result_available = _edit_area->findNext();                     // and find next
+        }
+    }
+  // TODO: Show number of replaced strings
 }

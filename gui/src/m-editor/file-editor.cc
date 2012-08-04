@@ -380,7 +380,7 @@ file_editor::construct ()
   QAction *uncomment_selection_action = new QAction (tr ("&Uncomment Selected Text"),_tool_bar);
 
   QAction *find_action = new QAction (QIcon(":/actions/icons/find.png"),
-                                      tr ("&Find"), _tool_bar);
+                                      tr ("&Find and Replace"), _tool_bar);
 
   _run_action = new QAction (QIcon(":/actions/icons/artsbuilderexecute.png"),
         tr("Save File And Run"), _tool_bar);

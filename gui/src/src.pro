@@ -49,6 +49,11 @@ INCLUDEPATH         += . \
                        /usr/include/qt4 \
                        ../.. \
                        ../../src \
+                       ../../src/interpfcn \
+                       ../../src/interp-core \
+                       ../../src/octave-value \
+                       ../../src/parse-tree \
+                       ../../src/operators \
                        ../../liboctave \
                        ../../libcruft/misc
 

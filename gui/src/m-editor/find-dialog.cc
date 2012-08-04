@@ -71,7 +71,7 @@ find_dialog::find_dialog (QsciScintilla* edit_area, QWidget *parent)
   _backward_check_box = new QCheckBox (tr ("Search &backward"));
   _search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
 
-  edit_area = edit_area;
+  _edit_area = edit_area;
   connect (_find_next_button, SIGNAL (clicked ()), this, SLOT (search_next ()));
   connect (_more_button, SIGNAL (toggled (bool)), _extension, SLOT (setVisible (bool)));
 

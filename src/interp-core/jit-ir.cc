@@ -599,38 +599,30 @@ jit_call::infer (void)
 }
 
 // -------------------- jit_magic_end --------------------
+jit_magic_end::context::context (jit_convert& convert, jit_value *avalue,
+                                 size_t aindex, size_t acount)
+  : value (avalue), index (convert.create<jit_const_index> (aindex)),
+    count (convert.create<jit_const_index> (acount))
+{}
+
 jit_magic_end::jit_magic_end (const std::vector<context>& full_context)
+  : contexts (full_context)
 {
-  // for now we only support end in 1 dimensional indexing
-  resize_arguments (full_context.size ());
+  resize_arguments (contexts.size ());
 
   size_t i;
   std::vector<context>::const_iterator iter;
-  for (iter = full_context.begin (), i = 0; iter != full_context.end (); ++iter,
-         ++i)
-    {
-      if (iter->count != 1)
-        throw jit_fail_exception ("end is only supported in linear contexts");
-      stash_argument (i, iter->value);
-    }
+  for (iter = contexts.begin (), i = 0; iter != contexts.end (); ++iter, ++i)
+    stash_argument (i, iter->value);
 }
 
-const jit_function&
-jit_magic_end::overload () const
-{
-  jit_value *ctx = resolve_context ();
-  if (ctx)
-    return jit_typeinfo::end (ctx->type ());
-
-  static jit_function null_ret;
-  return null_ret;
-}
-
-jit_value *
+jit_magic_end::context
 jit_magic_end::resolve_context (void) const
 {
   // FIXME: We need to have a way of marking functions so we can skip them here
-  return argument_count () ? argument (0) : 0;
+  context ret = contexts[0];
+  ret.value = argument (0);
+  return ret;
 }
 
 bool
@@ -644,6 +636,21 @@ jit_magic_end::infer (void)
     }
 
   return false;
+}
+
+std::ostream&
+jit_magic_end::print (std::ostream& os, size_t indent) const
+{
+  context ctx = resolve_context ();
+  short_print (print_indent (os, indent)) << " (" << *ctx.value << ", ";
+  return os << *ctx.index << ", " << *ctx.count << ")";
+}
+
+const jit_function&
+jit_magic_end::overload () const
+{
+  const context& ctx = resolve_context ();
+  return jit_typeinfo::end (ctx.value, ctx.index, ctx.count);
 }
 
 #endif

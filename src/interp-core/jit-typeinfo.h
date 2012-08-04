@@ -267,6 +267,7 @@ public:
 
   JIT_CALL (1);
   JIT_CALL (2);
+  JIT_CALL (3);
 
 #undef JIT_CALL
 #undef JIT_PARAMS
@@ -549,9 +550,10 @@ public:
     return instance->end_fn;
   }
 
-  static const jit_function& end (jit_type *ty)
+  static const jit_function& end (jit_value *value, jit_value *index,
+                                  jit_value *count)
   {
-    return instance->end_fn.overload (ty);
+    return instance->do_end (value, index, count);
   }
 private:
   jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e);
@@ -618,6 +620,9 @@ private:
   {
     return do_cast (to).overload (from);
   }
+
+  const jit_function& do_end (jit_value *value, jit_value *index,
+                              jit_value *count);
 
   jit_type *new_type (const std::string& name, jit_type *parent,
                       llvm::Type *llvm_type);
@@ -738,6 +743,7 @@ private:
   jit_operation make_range_fn;
   jit_paren_subsref paren_subsref_fn;
   jit_paren_subsasgn paren_subsasgn_fn;
+  jit_operation end1_fn;
   jit_operation end_fn;
 
   // type id -> cast function TO that type

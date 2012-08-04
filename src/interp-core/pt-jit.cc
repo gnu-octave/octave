@@ -842,7 +842,7 @@ jit_convert::resolve (const jit_operation& fres, tree_index_expression& exp,
       unwind_protect prot;
       prot.add_method (&end_context,
                        &std::vector<jit_magic_end::context>::pop_back);
-      end_context.push_back (jit_magic_end::context (object, idx, narg));
+      end_context.push_back (jit_magic_end::context (*this, object, idx, narg));
       call_args[idx + 1] = visit (*iter);
     }
 
@@ -1498,7 +1498,9 @@ void
 jit_convert::convert_llvm::visit (jit_magic_end& me)
 {
   const jit_function& ol = me.overload ();
-  llvm::Value *ret = ol.call (builder, me.resolve_context ());
+
+  jit_magic_end::context ctx = me.resolve_context ();
+  llvm::Value *ret = ol.call (builder, ctx.value, ctx.index, ctx.count);
   me.stash_llvm (ret);
 }
 
@@ -1926,5 +1928,16 @@ Test some simple cases that compile.
 %!   break;
 %! endwhile
 %! assert (result, 0);
+
+%!test
+%! m = zeros (2, 1001);
+%! for i=1:1001
+%!   m(end, i) = i;
+%!   m(end - 1, end - i + 1) = i;
+%! endfor
+%! m2 = zeros (2, 1001);
+%! m2(1, :) = fliplr (1:1001);
+%! m2(2, :) = 1:1001;
+%! assert (m, m2);
 
 */

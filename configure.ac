@@ -2134,6 +2134,7 @@ AC_SUBST(WARN_CXXFLAGS)
 
 AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
 AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
+AC_CHECK_PROGS(RCC, [rcc])
 AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
 
 AC_SUBST(MOC)
@@ -2154,6 +2155,14 @@ case "$canonical_host_type" in
     ;;
 esac
 AM_CONDITIONAL([WIN32_TERMINAL], [test x$win32_terminal = xyes])
+
+octave_gui=
+AC_ARG_ENABLE(gui,
+  [AS_HELP_STRING([--enable-gui], [build GUI (default is no)])],
+  [if test "$enableval" = yes; then
+     octave_gui=yes
+   fi], [])
+AM_CONDITIONAL([OCTAVE_GUI], [test x$octave_gui = xyes])
 
 ### Run configure in subdirectories.
 

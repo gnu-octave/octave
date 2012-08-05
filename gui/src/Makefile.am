@@ -11,6 +11,9 @@ $(foreach dir,. $(SRCDIRS),$(eval $(call MOC_template,$(dir))))
 ui_%.h: %.ui
 	@UIC@ -o $@ $<
 
+qrc_%.cpp: %.qrc
+	@RCC@ -o $@ $<
+
 bin_PROGRAMS = octave-gui
 
 octave_gui_MOC = \
@@ -37,6 +40,8 @@ octave_gui_UI = \
 		welcome-wizard.ui
 octave_gui_UI_H = $(patsubst %.ui,ui_%.h,$(octave_gui_UI))
 
+octave_gui_RC = qrc_resource.cpp
+
 octave_gui_SOURCES = \
 		     documentation-dockwidget.cc \
 		     files-dockwidget.cc \
@@ -57,8 +62,8 @@ octave_gui_SOURCES = \
 		     octave-adapter/octave-link.cc \
 		     octave-adapter/octave-main-thread.cc \
 		     qtinfo/parser.cc \
-		     qtinfo/webinfo.cc \
-		     $(octave_gui_MOC)
+		     qtinfo/webinfo.cc
+nodist_octave_gui_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
 octave_gui_CPPFLAGS = -I@QT_INCDIR@/QtCore \
 		      -I@QT_INCDIR@/QtGui \
@@ -108,7 +113,7 @@ noinst_HEADERS = \
 		 qtinfo/parser.h \
 		 qtinfo/webinfo.h
 
-CLEANFILES = $(octave_gui_MOC) $(octave_gui_UI_H)
+CLEANFILES = $(octave_gui_MOC) $(octave_gui_UI_H) $(octave_gui_RC)
 
 clean-local:
 	-if test "$(srcdir)" != "."; then \
@@ -117,7 +122,7 @@ clean-local:
 
 BUILT_SOURCES = $(octave_gui_UI_H)
 
-EXTRA_DIST = $(octave_gui_UI)
+EXTRA_DIST = $(octave_gui_UI) resource.qrc
 
 noinst_LTLIBRARIES = libqterminal.la
 
@@ -155,30 +160,30 @@ libqterminal_la_MOC = \
 		      ../qterminal/libqterminal/moc_QTerminal.cpp \
 		      ../qterminal/libqterminal/moc_QTerminalInterface.cpp
 
-libqterminal_la_SOURCES = $(libqterminal_la_MOC)
+nodist_libqterminal_la_SOURCES = $(libqterminal_la_MOC)
 
 if WIN32_TERMINAL
-libqterminal_la_SOURCES += \
-			   ../qterminal/libqterminal/win32/QTerminalColors.cpp \
-			   ../qterminal/libqterminal/win32/QTerminalImpl.cpp
+libqterminal_la_SOURCES = \
+			  ../qterminal/libqterminal/win32/QTerminalColors.cpp \
+			  ../qterminal/libqterminal/win32/QWinTerminalImpl.cpp
 libqterminal_la_MOC += ../qterminal/libqterminal/win32/moc_QWinTerminalImpl.cpp
 else
-libqterminal_la_SOURCES += \
-			   ../qterminal/libqterminal/unix/BlockArray.cpp \
-			   ../qterminal/libqterminal/unix/Emulation.cpp \
-			   ../qterminal/libqterminal/unix/Filter.cpp \
-			   ../qterminal/libqterminal/unix/History.cpp \
-			   ../qterminal/libqterminal/unix/KeyboardTranslator.cpp \
-			   ../qterminal/libqterminal/unix/konsole_wcwidth.cpp \
-			   ../qterminal/libqterminal/unix/kpty.cpp \
-			   ../qterminal/libqterminal/unix/QUnixTerminalImpl.cpp \
-			   ../qterminal/libqterminal/unix/Screen.cpp \
-			   ../qterminal/libqterminal/unix/ScreenWindow.cpp \
-			   ../qterminal/libqterminal/unix/TerminalCharacterDecoder.cpp \
-			   ../qterminal/libqterminal/unix/Vt102Emulation.cpp \
-			   ../qterminal/libqterminal/unix/SelfListener.cpp \
-			   ../qterminal/libqterminal/unix/TerminalModel.cpp \
-			   ../qterminal/libqterminal/unix/TerminalView.cpp
+libqterminal_la_SOURCES = \
+			  ../qterminal/libqterminal/unix/BlockArray.cpp \
+			  ../qterminal/libqterminal/unix/Emulation.cpp \
+			  ../qterminal/libqterminal/unix/Filter.cpp \
+			  ../qterminal/libqterminal/unix/History.cpp \
+			  ../qterminal/libqterminal/unix/KeyboardTranslator.cpp \
+			  ../qterminal/libqterminal/unix/konsole_wcwidth.cpp \
+			  ../qterminal/libqterminal/unix/kpty.cpp \
+			  ../qterminal/libqterminal/unix/QUnixTerminalImpl.cpp \
+			  ../qterminal/libqterminal/unix/Screen.cpp \
+			  ../qterminal/libqterminal/unix/ScreenWindow.cpp \
+			  ../qterminal/libqterminal/unix/TerminalCharacterDecoder.cpp \
+			  ../qterminal/libqterminal/unix/Vt102Emulation.cpp \
+			  ../qterminal/libqterminal/unix/SelfListener.cpp \
+			  ../qterminal/libqterminal/unix/TerminalModel.cpp \
+			  ../qterminal/libqterminal/unix/TerminalView.cpp
 libqterminal_la_MOC += \
 		       ../qterminal/libqterminal/unix/moc_Emulation.cpp \
 		       ../qterminal/libqterminal/unix/moc_Filter.cpp \

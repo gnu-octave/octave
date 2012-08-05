@@ -1,4 +1,4 @@
-// DO NOT EDIT!  Generated automatically from oct-conf.in.h by configure
+// %NO_EDIT_WARNING%
 /*
 
 Copyright (C) 1996-2012 John W. Eaton

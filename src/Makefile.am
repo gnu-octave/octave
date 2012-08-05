@@ -172,7 +172,7 @@ else
 endif
 
 liboctinterp_la_SOURCES = \
-  $(DIST_SRC) \
+  octave.cc \
   $(OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
 
@@ -192,6 +192,11 @@ liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 include link-deps.mk
 
 liboctinterp_la_LIBADD = \
+  octave-value/liboctave-value.la \
+  parse-tree/libparse-tree.la \
+  interp-core/libinterp-core.la \
+  interpfcn/libinterpfcn.la \
+  corefcn/libcorefcn.la \
   ../liboctave/liboctave.la \
   ../libcruft/libcruft.la \
   $(LIBOCTINTERP_LINK_DEPS)
@@ -264,6 +269,7 @@ oct-conf.h: oct-conf.in.h Makefile
 
 version.h: version.in.h Makefile
 	$(SED) < $< \
+	  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
 	  -e "s|%OCTAVE_API_VERSION_NUMBER%|${OCTAVE_API_VERSION_NUMBER}|" \
 	  -e "s|%OCTAVE_API_VERSION%|\"${OCTAVE_API_VERSION}\"|" \
 	  -e "s|%OCTAVE_COPYRIGHT%|\"${OCTAVE_COPYRIGHT}\"|" \

@@ -71,3 +71,7 @@ __fltk_uigetfile__.lo __fltk_uigetfile__.o: \
 
 __init_fltk__.lo __init_fltk__.o: \
   AM_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(AM_CXXFLAGS) $(GRAPHICS_CFLAGS))
+
+noinst_LTLIBRARIES += interpfcn/libinterpfcn.la
+
+interpfcn_libinterpfcn_la_SOURCES = $(INTERPFCN_SRC)

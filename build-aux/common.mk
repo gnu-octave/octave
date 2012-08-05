@@ -454,6 +454,7 @@ endef
 define do_subst_config_vals
 echo "making $@ from $<"
 $(SED) < $< \
+  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
   -e "s|%NO_OCT_FILE_STRIP%|${NO_OCT_FILE_STRIP}|" \
   -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
   -e "s|%OCTAVE_CONF_ALL_CFLAGS%|\"${ALL_CFLAGS}\"|" \
@@ -606,6 +607,7 @@ endef
 define do_subst_default_vals
 echo "making $@ from $<"
 $(SED) < $< > $@-t \
+  -e "s|%NO_EDIT_WARNING%|DO NOT EDIT!  Generated automatically from $(<F) by Make.|" \
   -e "s|%OCTAVE_ARCHLIBDIR%|\"${archlibdir}\"|" \
   -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
   -e "s|%OCTAVE_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \

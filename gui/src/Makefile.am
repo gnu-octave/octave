@@ -5,7 +5,7 @@ $(1)/moc_%.cpp: $(1)/%.h
 endef
 
 SRCDIRS = m-editor qtinfo octave-adapter \
-	  ../qterminal/libqterminal ../qterminal/libqterminal/unix ../qterminal/libqterminal/win32
+	  ../qterminal/libqterminal/unix ../qterminal/libqterminal/win32 ../qterminal/libqterminal ../qterminal
 $(foreach dir,. $(SRCDIRS),$(eval $(call MOC_template,$(dir))))
 
 ui_%.h: %.ui
@@ -112,7 +112,7 @@ CLEANFILES = $(octave_gui_MOC) $(octave_gui_UI_H)
 
 clean-local:
 	-if test "$(srcdir)" != "."; then \
-		for d in $(SRCDIRS); do rm -rf $$d; done \
+		for d in $(SRCDIRS); do test -d $$d && rmdir $$d; done \
 	 fi
 
 BUILT_SOURCES = $(octave_gui_UI_H)
@@ -189,3 +189,5 @@ libqterminal_la_MOC += \
 		       ../qterminal/libqterminal/unix/moc_TerminalView.cpp \
 		       ../qterminal/libqterminal/unix/moc_Vt102Emulation.cpp
 endif
+
+CLEANFILES += $(libqterminal_la_MOC)

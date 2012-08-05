@@ -1,12 +1,9 @@
-define MOC_template =
-$(1)/moc_%.cpp: $(1)/%.h
-	test -d $(1) || mkdir -p $(1)
-	@MOC@ -o$$@ $$(DEFS) $$(DEFAULT_INCLUDES) $$(INCLUDES) $$(AM_CPPFLAGS) $$(CPPFLAGS) $$(octave_gui_CPPFLAGS) $$<
-endef
-
 SRCDIRS = m-editor qtinfo octave-adapter \
 	  ../qterminal/libqterminal/unix ../qterminal/libqterminal/win32 ../qterminal/libqterminal ../qterminal
-$(foreach dir,. $(SRCDIRS),$(eval $(call MOC_template,$(dir))))
+
+moc_%.cpp: %.h
+	test -d $(@D) || mkdir -p $(@D)
+	@MOC@ -o$@ $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(octave_gui_CPPFLAGS) $<
 
 ui_%.h: %.ui
 	@UIC@ -o $@ $<
@@ -65,7 +62,8 @@ octave_gui_SOURCES = \
 		     qtinfo/webinfo.cc
 nodist_octave_gui_SOURCES = $(octave_gui_MOC) $(octave_gui_RC)
 
-octave_gui_CPPFLAGS = -I@QT_INCDIR@/QtCore \
+octave_gui_CPPFLAGS = -I@QT_INCDIR@ \
+                      -I@QT_INCDIR@/QtCore \
 		      -I@QT_INCDIR@/QtGui \
 		      -I@QT_INCDIR@/QtNetwork \
 		      -I$(srcdir)/../qterminal/libqterminal \
@@ -84,7 +82,10 @@ octave_gui_CPPFLAGS = -I@QT_INCDIR@/QtCore \
 		      -I$(srcdir)/../../src/parse-tree
 
 octave_gui_LDADD = libqterminal.la \
-		   ../../src/liboctinterp.la
+		   ../../src/liboctinterp.la \
+                   ../../liboctave/liboctave.la \
+                   ../../libcruft/libcruft.la
+
 octave_gui_LDFLAGS = -L@QT_LIBDIR@ -lQtCore -lQtGui -lQtNetwork -lqscintilla2
 
 noinst_HEADERS = \
@@ -152,6 +153,7 @@ noinst_HEADERS += ../qterminal/libqterminal/QTerminal.h \
 		  ../qterminal/libqterminal/unix/TerminalView.h
 
 libqterminal_la_CPPFLAGS = $(DEFS)  \
+			   -I@QT_INCDIR@ \
 			   -I@QT_INCDIR@/QtCore \
 			   -I@QT_INCDIR@/QtGui \
 			   -I$(srcdir)/../qterminal/libqterminal

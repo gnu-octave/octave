@@ -68,7 +68,7 @@ EXTRA_DIST = \
 include m4/module.mk
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = libgnu libcruft liboctave src scripts @DOCDIR@ examples test
+SUBDIRS = libgnu libcruft liboctave src @GUIDIR@ scripts @DOCDIR@ examples test
 
 if OCTAVE_GUI
 SUBDIRS += gui

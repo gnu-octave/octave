@@ -172,7 +172,7 @@ else
 endif
 
 liboctinterp_la_SOURCES = \
-  $(DIST_SRC) \
+  octave.cc \
   $(OPERATORS_SRC) \
   $(TEMPLATE_INST_SRC)
 
@@ -192,6 +192,11 @@ liboctinterp_la_CPPFLAGS = @OCTINTERP_DLL_DEFS@ $(AM_CPPFLAGS)
 include link-deps.mk
 
 liboctinterp_la_LIBADD = \
+  octave-value/liboctave-value.la \
+  parse-tree/libparse-tree.la \
+  interp-core/libinterp-core.la \
+  interpfcn/libinterpfcn.la \
+  corefcn/libcorefcn.la \
   ../liboctave/liboctave.la \
   ../libcruft/libcruft.la \
   $(LIBOCTINTERP_LINK_DEPS)

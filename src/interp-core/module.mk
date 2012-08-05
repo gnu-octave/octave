@@ -57,7 +57,7 @@ INTERP_CORE_INCLUDES = \
   interp-core/xnorm.h \
   interp-core/xpow.h \
   interp-core/zfstream.h \
-	$(JIT_INCLUDES)
+  $(JIT_INCLUDES)
 
 JIT_SRC = \
   interp-core/jit-util.cc \
@@ -107,7 +107,7 @@ INTERP_CORE_SRC = \
   interp-core/xpow.cc \
   interp-core/zfstream.cc \
   $(JIT_SRC) \
-	$(C_INTERP_CORE_SRC)
+  $(C_INTERP_CORE_SRC)
 
 ## FIXME: I don't believe this rule actually fires
 display.df display.lo: CPPFLAGS += $(X11_FLAGS)
@@ -129,3 +129,6 @@ interp-core/mxarray.h: interp-core/mxarray.in.h Makefile
 	  -e "s|%OCTAVE_IDX_TYPE%|${OCTAVE_IDX_TYPE}|" > $@-t
 	mv $@-t $@
 
+noinst_LTLIBRARIES += interp-core/libinterp-core.la
+
+interp_core_libinterp_core_la_SOURCES = $(INTERP_CORE_SRC)

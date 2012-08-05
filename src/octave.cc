@@ -81,6 +81,10 @@ F77_FUNC (xerbla, XERBLA) (F77_CONST_CHAR_ARG_DECL,
 
 extern void install_builtins (void);
 
+int octave_cmdline_argc;
+char **octave_cmdline_argv;
+int octave_embedded;
+
 // The command-line options.
 static string_vector octave_argv;
 
@@ -633,6 +637,18 @@ maximum_braindamage (void)
 int
 octave_main (int argc, char **argv, int embedded)
 {
+  octave_initialize_interpreter (argc, argv, embedded);
+
+  return octave_execute_interpreter ();
+}
+
+void
+octave_initialize_interpreter (int argc, char **argv, int embedded)
+{
+  octave_cmdline_argc = argc;
+  octave_cmdline_argv = argv;
+  octave_embedded = embedded;
+
   octave_env::set_program_name (argv[0]);
 
   octave_program_invocation_name = octave_env::get_program_invocation_name ();
@@ -862,9 +878,6 @@ octave_main (int argc, char **argv, int embedded)
   if (line_editing)
     initialize_command_input ();
 
-  if (! inhibit_startup_message)
-    std::cout << OCTAVE_STARTUP_MESSAGE "\n" << std::endl;
-
   if (traditional)
     maximum_braindamage ();
 
@@ -880,6 +893,13 @@ octave_main (int argc, char **argv, int embedded)
   load_path::initialize (set_initial_path);
 
   initialize_history (read_history_file);
+}
+
+int
+octave_execute_interpreter (void)
+{
+  if (! inhibit_startup_message)
+    std::cout << OCTAVE_STARTUP_MESSAGE "\n" << std::endl;
 
   execute_startup_files ();
 
@@ -892,7 +912,7 @@ octave_main (int argc, char **argv, int embedded)
 
   int last_arg_idx = optind;
 
-  int remaining_args = argc - last_arg_idx;
+  int remaining_args = octave_cmdline_argc - last_arg_idx;
 
   if (! code_to_eval.empty ())
     {
@@ -907,9 +927,9 @@ octave_main (int argc, char **argv, int embedded)
       // If we are running an executable script (#! /bin/octave) then
       // we should only see the args passed to the script.
 
-      intern_argv (remaining_args, argv+last_arg_idx);
+      intern_argv (remaining_args, octave_cmdline_argv+last_arg_idx);
 
-      execute_command_line_file (argv[last_arg_idx]);
+      execute_command_line_file (octave_cmdline_argv[last_arg_idx]);
 
       if (! persist)
         {
@@ -924,9 +944,9 @@ octave_main (int argc, char **argv, int embedded)
   command_editor::reset_current_command_number (1);
 
   // Now argv should have the full set of args.
-  intern_argv (argc, argv);
+  intern_argv (octave_cmdline_argc, octave_cmdline_argv);
 
-  if (! embedded)
+  if (! octave_embedded)
     switch_to_buffer (create_buffer (get_input_from_stdin ()));
 
   // Force input to be echoed if not really interactive, but the user
@@ -941,7 +961,7 @@ octave_main (int argc, char **argv, int embedded)
       bind_internal_variable ("echo_executing_commands", ECHO_CMD_LINE);
     }
 
-  if (embedded)
+  if (octave_embedded)
     {
       // FIXME -- do we need to do any cleanup here before
       // returning?  If we don't, what will happen to Octave functions

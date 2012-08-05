@@ -22,36 +22,43 @@
 #include "resource-manager.h"
 #include "main-window.h"
 
-int
-main (int argc, char *argv[])
-{
-  /* dissociate from the controlling terminal, if any */
+// Dissociate from the controlling terminal, if any.
 
+static void
+dissociate_terminal (void)
+{
+#if ! defined (Q_OS_WIN32) || defined (Q_OS_CYGWIN)
   pid_t pid = fork ();
+
   if (pid < 0)
     {
-      //fprintf (stderr, "fork failed\n");
-      return 1;
+      std::cerr << "fork failed!" << std::endl;;
+      exit (1);
     }
   else if (pid == 0)
     {
-      /* child */
-      //fprintf (stderr, "in child, calling setsid ()\n");
+      // Child.
 
       if (setsid () < 0)
         {
-          //fprintf (stderr, "setsid error\n");
-          return 1;
+          std::cerr << "setsid error" << std::endl;
+          exit (1);
         }
     }
   else
-    {
-      /* parent */
-      //fprintf (stderr, "in parent, exiting\n");
-      exit (0);
-    }
+    exit (0);
+#endif
+}
+
+int
+main (int argc, char *argv[])
+{
+  octave_initialize_interpreter (argc, argv, 0);
+
+  dissociate_terminal ();
 
   QApplication application (argc, argv);
+
   while (true)
     {
       if (resource_manager::instance ()->is_first_run ())

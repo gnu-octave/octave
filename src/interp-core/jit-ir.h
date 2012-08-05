@@ -1162,34 +1162,32 @@ public:
     context (void) : value (0), index (0), count (0)
     {}
 
-    context (jit_value *avalue, size_t aindex, size_t acount)
-      : value (avalue), index (aindex), count (acount)
-    {}
+    context (jit_convert& convert, jit_value *avalue, size_t aindex,
+             size_t acount);
 
     jit_value *value;
-    size_t index;
-    size_t count;
+    jit_const_index *index;
+    jit_const_index *count;
   };
 
   jit_magic_end (const std::vector<context>& full_context);
 
+  virtual bool infer (void);
+
   const jit_function& overload () const;
 
-  jit_value *resolve_context (void) const;
+  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const;
 
-  virtual bool infer (void);
+  context resolve_context (void) const;
 
   virtual std::ostream& short_print (std::ostream& os) const
   {
-    return os << "magic_end";
-  }
-
-  virtual std::ostream& print (std::ostream& os, size_t indent = 0) const
-  {
-    return short_print (print_indent (os, indent));
+    return os << "magic_end" << "#" << id ();
   }
 
   JIT_VALUE_ACCEPT;
+private:
+  std::vector<context> contexts;
 };
 
 class

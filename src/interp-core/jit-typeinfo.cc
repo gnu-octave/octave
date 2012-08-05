@@ -343,6 +343,29 @@ octave_jit_paren_subsasgn_matrix_range (jit_matrix *result, jit_matrix *mat,
   result->update (array);
 }
 
+extern "C" double
+octave_jit_end_matrix (jit_matrix *mat, octave_idx_type idx,
+                       octave_idx_type count)
+{
+  octave_idx_type ndim = mat->dimensions[-1];
+  if (ndim == count)
+    return mat->dimensions[idx];
+  else if (ndim > count)
+    {
+      if (idx == count - 1)
+        {
+          double ret = mat->dimensions[idx];
+          for (octave_idx_type i = idx + 1; i < ndim; ++i)
+            ret *= mat->dimensions[idx];
+          return ret;
+        }
+
+      return mat->dimensions[idx];
+    }
+  else // ndim < count
+    return idx < ndim ? mat->dimensions[idx] : 1;
+}
+
 extern "C" Complex
 octave_jit_complex_div (Complex lhs, Complex rhs)
 {
@@ -1626,9 +1649,9 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn.mark_can_error ();
   paren_subsasgn_fn.add_overload (fn);
 
-  end_fn.stash_name ("end");
-  fn = create_function (jit_convention::internal, "octave_jit_end_matrix",
-                        scalar, matrix);
+  end1_fn.stash_name ("end1");
+  fn = create_function (jit_convention::internal, "octave_jit_end1_matrix",
+                        scalar, matrix, index, index);
   body = fn.new_block ();
   builder.SetInsertPoint (body);
   {
@@ -1636,6 +1659,11 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
     llvm::Value *ret = builder.CreateExtractValue (mat, 2);
     fn.do_return (builder, builder.CreateSIToFP (ret, scalar_t));
   }
+  end1_fn.add_overload (fn);
+
+  end_fn.stash_name ("end");
+  fn = create_function (jit_convention::external, "octave_jit_end_matrix",
+                        scalar, matrix, index, index);
   end_fn.add_overload (fn);
 
   casts[any->type_id ()].stash_name ("(any)");
@@ -1758,6 +1786,25 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
       casts[btype->type_id ()].add_overload (jit_function (any_id, btype,
                                                            args));
     }
+}
+
+const jit_function&
+jit_typeinfo::do_end (jit_value *value, jit_value *idx, jit_value *count)
+{
+  jit_const_index *ccount = dynamic_cast<jit_const_index *> (count);
+  if (ccount && ccount->value () == 1)
+    return end1_fn.overload (value->type (), idx->type (), count->type ());
+
+  return end_fn.overload (value->type (), idx->type (), count->type ());
+}
+
+jit_type*
+jit_typeinfo::new_type (const std::string& name, jit_type *parent,
+                        llvm::Type *llvm_type)
+{
+  jit_type *ret = new jit_type (name, parent, llvm_type, next_id++);
+  id_to_type.push_back (ret);
+  return ret;
 }
 
 void
@@ -2057,15 +2104,6 @@ jit_typeinfo::do_type_of (const octave_value &ov) const
     return get_complex ();
 
   return get_any ();
-}
-
-jit_type*
-jit_typeinfo::new_type (const std::string& name, jit_type *parent,
-                        llvm::Type *llvm_type)
-{
-  jit_type *ret = new jit_type (name, parent, llvm_type, next_id++);
-  id_to_type.push_back (ret);
-  return ret;
 }
 
 #endif

@@ -246,6 +246,3 @@ endfunction
 %! hold off;
 %! title ("line, image, line, image, line");
 
-## Test input validation
-%!error <can not be complex> image (1+i)
-%!error <matrix is empty> image ([])

@@ -46,7 +46,7 @@ PT_INCLUDES = \
   parse-tree/pt-walk.h \
   parse-tree/pt.h \
   parse-tree/token.h \
-	$(PARSER_INCLUDES)
+  $(PARSER_INCLUDES)
 
 PARSE_TREE_SRC = \
   parse-tree/pt-arg-list.cc \
@@ -78,7 +78,7 @@ PARSE_TREE_SRC = \
   parse-tree/pt-unop.cc \
   parse-tree/pt.cc \
   parse-tree/token.cc \
-	$(PARSER_SRC)
+  $(PARSER_SRC)
 
 ## Special rules for sources which must be built before rest of compilation.
 
@@ -92,3 +92,6 @@ parse-tree/oct-gperf.h: parse-tree/octave.gperf
 	mv $@-t $@
 	rm -f $@-t1
 
+noinst_LTLIBRARIES += parse-tree/libparse-tree.la
+
+parse_tree_libparse_tree_la_SOURCES = $(PARSE_TREE_SRC)

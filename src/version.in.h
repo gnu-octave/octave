@@ -1,4 +1,4 @@
-// DO NOT EDIT!  Generated automatically from version.in.h by configure
+// %NO_EDIT_WARNING%
 /*
 
 Copyright (C) 1992-2012 John W. Eaton

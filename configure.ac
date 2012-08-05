@@ -2644,6 +2644,31 @@ fi
 AC_SUBST(WARN_CFLAGS)
 AC_SUBST(WARN_CXXFLAGS)
 
+### GUI/Qt related tests.
+
+AC_CHECK_PROGS(MOC, [moc moc-qt4 moc-qt5])
+AC_CHECK_PROGS(UIC, [uic uic-qt4 uic-qt5])
+AC_CHECK_PROGS(QMAKE, [qmake qmake-qt4 qmake-qt5])
+
+AC_SUBST(MOC)
+AC_SUBST(UIC)
+
+QT_INCDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_HEADERS://p'`
+QT_LIBDIR=`$QMAKE -query | sed -n -e 's/^QT_INSTALL_LIBS://p'`
+
+AC_SUBST(QT_INCDIR)
+AC_SUBST(QT_LIBDIR)
+  
+case "$canonical_host_type" in
+  *-*-mingw* | *-*-msdosmsvc*) win32_terminal=yes ;;
+  *)
+    win32_terminal=no
+    AC_CHECK_HEADERS([pty.h libutil.h util.h])
+    AC_SEARCH_LIBS([openpty], [util], [AC_DEFINE([HAVE_OPENPTY], [], [Define whether openpty exists])])
+    ;;
+esac
+AM_CONDITIONAL([WIN32_TERMINAL], [test x$win32_terminal = xyes])
+
 ### Run configure in subdirectories.
 
 export CC
@@ -2814,6 +2839,8 @@ AC_CONFIG_FILES([
   doc/liboctave/Makefile
   doc/refcard/Makefile
   examples/Makefile
+  gui/Makefile
+  gui/src/Makefile
   libcruft/Makefile
   libcruft/mkf77def
   libgnu/Makefile

@@ -22,8 +22,7 @@ include $(top_srcdir)/build-aux/common.mk
 
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
-  -I../libgnu -I$(top_srcdir)/libgnu \
-  @CPPFLAGS@
+  -I../libgnu -I$(top_srcdir)/libgnu
 
 AUTOMAKE_OPTIONS = subdir-objects
 

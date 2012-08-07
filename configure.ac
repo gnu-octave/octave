@@ -345,6 +345,7 @@ AX_PTHREAD
 ## They seem to be required for the OpenGL tests on Debian systems.
 LIBS="$PTHREAD_LIBS $LIBS"
 CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 
 ### When compiling math for x87, problems may arise in some code comparing
 ### floating-point intermediate results.

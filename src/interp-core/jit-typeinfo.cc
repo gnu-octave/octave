@@ -500,9 +500,9 @@ operator<< (std::ostream& os, const jit_matrix& mat)
 
 // -------------------- jit_type --------------------
 jit_type::jit_type (const std::string& aname, jit_type *aparent,
-                    llvm::Type *allvm_type, int aid) :
+                    llvm::Type *allvm_type, bool askip_paren, int aid) :
   mname (aname), mparent (aparent), llvm_type (allvm_type), mid (aid),
-  mdepth (aparent ? aparent->mdepth + 1 : 0)
+  mdepth (aparent ? aparent->mdepth + 1 : 0), mskip_paren (askip_paren)
 {
   std::memset (msret, 0, sizeof (msret));
   std::memset (mpointer_arg, 0, sizeof (mpointer_arg));
@@ -1800,9 +1800,9 @@ jit_typeinfo::do_end (jit_value *value, jit_value *idx, jit_value *count)
 
 jit_type*
 jit_typeinfo::new_type (const std::string& name, jit_type *parent,
-                        llvm::Type *llvm_type)
+                        llvm::Type *llvm_type, bool skip_paren)
 {
-  jit_type *ret = new jit_type (name, parent, llvm_type, next_id++);
+  jit_type *ret = new jit_type (name, parent, llvm_type, skip_paren, next_id++);
   id_to_type.push_back (ret);
   return ret;
 }
@@ -1918,7 +1918,7 @@ jit_typeinfo::do_insert_error_check (llvm::IRBuilderD& abuilder)
 void
 jit_typeinfo::add_builtin (const std::string& name)
 {
-  jit_type *btype = new_type (name, any, any->to_llvm ());
+  jit_type *btype = new_type (name, any, any->to_llvm (), true);
   builtins[name] = btype;
 
   octave_builtin *ov_builtin = find_builtin (name);

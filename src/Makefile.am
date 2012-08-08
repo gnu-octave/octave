@@ -20,6 +20,8 @@
 
 include $(top_srcdir)/build-aux/common.mk
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 ## Search local directories before those specified by the user.
 AM_CPPFLAGS = \
   -I$(top_srcdir)/libcruft/misc \
@@ -30,9 +32,7 @@ AM_CPPFLAGS = \
   -Iinterp-core -I$(srcdir)/interp-core \
   -Iinterpfcn -I$(srcdir)/interpfcn \
   -Icorefcn \
-  -I../libgnu -I$(top_srcdir)/libgnu
-
-AUTOMAKE_OPTIONS = subdir-objects
+  -I$(top_builddir)/libgnu -I$(top_srcdir)/libgnu
 
 octlib_LTLIBRARIES = liboctinterp.la
 
@@ -44,11 +44,14 @@ bin_PROGRAMS = \
 
 mkoctfile_SOURCES =
 nodist_mkoctfile_SOURCES = mkoctfile.cc
-mkoctfile_LDADD = ../libgnu/libgnu.la $(LIBS)
+mkoctfile_LDADD = $(top_builddir)/libgnu/libgnu.la $(LIBS)
 
 octave_config_SOURCES =
 nodist_octave_config_SOURCES = octave-config.cc
-octave_config_LDADD = corefcn/libcorefcn.la ../libgnu/libgnu.la $(LIBS)
+octave_config_LDADD = \
+  corefcn/libcorefcn.la \
+	$(top_builddir)/libgnu/libgnu.la \
+	$(LIBS)
 
 BUILT_SOURCES_EXTRA = \
   mkoctfile.cc \

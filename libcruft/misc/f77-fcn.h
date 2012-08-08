@@ -108,6 +108,11 @@ CRUFT_API extern int f77_exception_encountered;
 
 #define F77_RET_T int
 #define F77_RETURN(retval) return retval;
+#if defined (HAVE_ATTR_NORETURN)
+#define F77_NORETURN(retval)
+#else
+#define F77_NORETURN(retval) return retval;
+#endif
 
 /* FIXME -- these should work for SV1 or Y-MP systems but will
    need to be changed for others.  */
@@ -176,7 +181,8 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CHAR_ARG_LEN_USE(s, len) len
 
 #define F77_RET_T void
-#define F77_RETURN(retval)
+#define F77_RETURN(retval) return;
+#define F77_NORETURN(retval)
 
 #else
 
@@ -203,6 +209,11 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #define F77_RET_T int
 #define F77_RETURN(retval) return retval;
+#if defined (HAVE_ATTR_NORETURN)
+#define F77_NORETURN(retval)
+#else
+#define F77_NORETURN(retval) return retval;
+#endif
 
 #endif
 

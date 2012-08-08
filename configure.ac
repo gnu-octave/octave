@@ -2159,8 +2159,13 @@ AH_BOTTOM([
 
 #if defined (__GNUC__)
 #define GCC_ATTR_DEPRECATED __attribute__ ((__deprecated__))
+#define HAVE_ATTR_DEPRECATED
+
 #define GCC_ATTR_NORETURN __attribute__ ((__noreturn__))
+#define HAVE_ATTR_NORETURN
+
 #define GCC_ATTR_UNUSED __attribute__ ((__unused__))
+#define HAVE_ATTR_UNUSED
 #else
 #define GCC_ATTR_DEPRECATED
 #define GCC_ATTR_NORETURN

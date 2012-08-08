@@ -1880,6 +1880,9 @@ OCTAVE_FAST_INT_OPS
 ## Does the C compiler handle alloca() and const correctly?
 AC_FUNC_ALLOCA
 
+## Does the C compiler support Automake subdir-objects option?
+AM_PROG_CC_C_O 
+
 ### Checks for functions and variables.
 
 AC_CHECK_FUNCS(basename canonicalize_file_name \

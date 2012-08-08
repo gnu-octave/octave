@@ -30,7 +30,6 @@ AM_CPPFLAGS = \
   -Iinterp-core -I$(srcdir)/interp-core \
   -Iinterpfcn -I$(srcdir)/interpfcn \
   -Icorefcn \
-  -I$(srcdir) \
   -I../libgnu -I$(top_srcdir)/libgnu
 
 AUTOMAKE_OPTIONS = subdir-objects

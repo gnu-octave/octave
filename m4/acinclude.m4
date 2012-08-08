@@ -685,6 +685,19 @@ using Octave
   AC_SUBST(GHOSTSCRIPT)
 ])
 dnl
+dnl Find makeinfo required for reading documentation
+dnl
+dnl OCTAVE_PROG_MAKEINFO
+AC_DEFUN([OCTAVE_PROG_MAKEINFO],
+dnl use MKINFO, not MAKEINFO, for variable name because Automake automatically
+dnl defines a value for MAKEINFO even when it does not exist which will then
+dnl fool the 'test -z' line.
+  [AC_CHECK_PROG(MKINFO, makeinfo, makeinfo, [])
+   if test -z "$MKINFO"; then
+     AC_MSG_ERROR([makeinfo program required for reading documentation])
+   fi
+])
+dnl
 dnl Is texi2dvi installed?
 dnl
 dnl OCTAVE_PROG_TEXI2DVI

@@ -1771,27 +1771,10 @@ AC_CHECK_HEADERS(curses.h direct.h dlfcn.h floatingpoint.h grp.h \
 ## C++ headers
 
 AC_LANG_PUSH(C++)
+
 AC_CHECK_HEADERS(sstream)
-AC_CHECK_HEADERS([unordered_map], [], [
-  AC_CHECK_HEADERS([tr1/unordered_map])])
-AC_MSG_CHECKING([whether unordered_map requires tr1 namespace])
-unordered_map_requires_tr1_namespace=no
-if test "$ac_cv_header_unordered_map" = "yes"; then
-  ## Have <unordered_map>, but still have to check whether
-  ## tr1 namespace is required (like MSVC, for instance).
-  AC_COMPILE_IFELSE([
-    AC_LANG_PROGRAM([
-      #include <unordered_map>
-    ], [
-      std::unordered_map<int,int> m;
-    ])], [], [unordered_map_requires_tr1_namespace=yes])
-elif test "$ac_cv_header_tr1_unordered_map" = "yes"; then
-  unordered_map_requires_tr1_namespace=yes
-fi
-if test "$unordered_map_requires_tr1_namespace" = "yes"; then
-  AC_DEFINE(USE_UNORDERED_MAP_WITH_TR1, 1, [Define to 1 if unordered_map requires the use of tr1 namespace.])
-fi
-AC_MSG_RESULT([$unordered_map_requires_tr1_namespace])
+OCTAVE_UNORDERED_MAP_HEADERS
+
 AC_LANG_POP(C++)
 
 ## Find a termio header to include.
@@ -1838,10 +1821,8 @@ AC_CHECK_SIZEOF(long double)
 
 ### Check structures and existence of necessary members
 
-AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct stat.st_rdev, struct group.gr_passwd])
-#AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct stat.st_rdev])
-#AC_CHECK_MEMBERS(struct group.gr_passwd)
-#AC_CHECK_MEMBERS(struct group.gr_passwd)
+AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct stat.st_rdev])
+AC_CHECK_MEMBERS([struct group.gr_passwd])
 
 AC_STRUCT_TIMEZONE
 

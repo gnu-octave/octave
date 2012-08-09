@@ -724,6 +724,7 @@ private:
   jit_type *matrix;
   jit_type *scalar;
   jit_type *scalar_ptr; // a fake type for interfacing with C++
+  jit_type *any_ptr; // a fake type for interfacing with C++
   jit_type *range;
   jit_type *string;
   jit_type *boolean;
@@ -748,6 +749,8 @@ private:
   jit_paren_subsasgn paren_subsasgn_fn;
   jit_operation end1_fn;
   jit_operation end_fn;
+
+  jit_function any_call;
 
   // type id -> cast function TO that type
   std::vector<jit_operation> casts;

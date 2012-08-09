@@ -1940,4 +1940,12 @@ Test some simple cases that compile.
 %! m2(2, :) = 1:1001;
 %! assert (m, m2);
 
+%!test
+%! m = [1 2 3];
+%! for i=1:1001
+%!   m = sin (m);
+%!   break;
+%! endfor
+%! assert (m == sin ([1  2 3]));
+
 */

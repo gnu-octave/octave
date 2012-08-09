@@ -1995,6 +1995,7 @@ jit_typeinfo::register_generic (const std::string& name, jit_type *result,
   std::copy (args.begin (), args.end (), fn_args.begin () + 1);
   jit_function fn = create_function (jit_convention::internal, name, result,
                                      fn_args);
+  fn.mark_can_error ();
   llvm::BasicBlock *block = fn.new_block ();
   builder.SetInsertPoint (block);
   llvm::Type *any_t = any->to_llvm ();

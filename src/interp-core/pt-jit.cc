@@ -581,15 +581,33 @@ jit_convert::visit_parameter_list (tree_parameter_list&)
 }
 
 void
-jit_convert::visit_postfix_expression (tree_postfix_expression&)
+jit_convert::visit_postfix_expression (tree_postfix_expression& tpe)
 {
-  throw jit_fail_exception ();
+  octave_value::unary_op etype = tpe.op_type ();
+  tree_expression *operand = tpe.operand ();
+  jit_value *operandv = visit (operand);
+
+  const jit_operation& fn = jit_typeinfo::unary_op (etype);
+  result = create_checked (fn, operandv);
+
+  if (etype == octave_value::op_incr || etype == octave_value::op_decr)
+    {
+      jit_value *ret = create_checked (&jit_typeinfo::copy, operandv);
+      do_assign (operand, result);
+      result = ret;
+    }
 }
 
 void
-jit_convert::visit_prefix_expression (tree_prefix_expression&)
+jit_convert::visit_prefix_expression (tree_prefix_expression& tpe)
 {
-  throw jit_fail_exception ();
+  octave_value::unary_op etype = tpe.op_type ();
+  tree_expression *operand = tpe.operand ();
+  const jit_operation& fn = jit_typeinfo::unary_op (etype);
+  result = create_checked (fn, visit (operand));
+
+  if (etype == octave_value::op_incr || etype == octave_value::op_decr)
+    do_assign (operand, result);
 }
 
 void
@@ -607,12 +625,20 @@ jit_convert::visit_return_list (tree_return_list&)
 void
 jit_convert::visit_simple_assignment (tree_simple_assignment& tsa)
 {
-  if (tsa.op_type () != octave_value::op_asn_eq)
-    throw jit_fail_exception ("Unsupported assign");
-
-  // resolve rhs
   tree_expression *rhs = tsa.right_hand_side ();
   jit_value *rhsv = visit (rhs);
+  octave_value::assign_op op = tsa.op_type ();
+
+  if (op != octave_value::op_asn_eq)
+    {
+      // do the equivlent binary operation, then assign. This is always correct,
+      // but isn't always optimal.
+      tree_expression *lhs = tsa.left_hand_side ();
+      jit_value *lhsv = visit (lhs);
+      octave_value::binary_op bop = octave_value::assign_op_to_binary_op (op);
+      const jit_operation& fn = jit_typeinfo::binary_op (bop);
+      rhsv = create_checked (fn, lhsv, rhsv);
+    }
 
   result = do_assign (tsa.left_hand_side (), rhsv);
 }
@@ -897,12 +923,11 @@ jit_convert::do_assign (const std::string& lhs, jit_value *rhs,
 jit_value *
 jit_convert::visit (tree& tee)
 {
-  result = 0;
-  tee.accept (*this);
+  unwind_protect prot;
+  prot.protect_var (result);
 
-  jit_value *ret = result;
-  result = 0;
-  return ret;
+  tee.accept (*this);
+  return result;
 }
 
 void
@@ -1120,7 +1145,7 @@ jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
       if (instr->needs_release ())
         {
           jit_block *fu_block = instr->first_use_block ();
-          if (fu_block && fu_block != &ablock)
+          if (fu_block && fu_block != &ablock && instr->needs_release ())
             temp.insert (instr);
         }
 
@@ -1130,15 +1155,15 @@ jit_convert::release_temp (jit_block& ablock, std::set<jit_value *>& temp)
           for (size_t i = 0; i < instr->argument_count (); ++i)
             {
               jit_value *arg = instr->argument (i);
-              if (arg->needs_release ())
-                {
-                  jit_call *release = create<jit_call> (&jit_typeinfo::release,
-                                                        arg);
-                  release->infer ();
-                  ablock.insert_after (iter, release);
-                  ++iter;
-                  temp.erase (arg);
-                }
+              if (! arg->needs_release ())
+                continue;
+
+              jit_call *release = create<jit_call> (&jit_typeinfo::release,
+                                                    arg);
+              release->infer ();
+              ablock.insert_after (iter, release);
+              ++iter;
+              temp.erase (arg);
             }
         }
     }
@@ -1177,6 +1202,9 @@ jit_convert::release_dead_phi (jit_block& ablock)
           for (size_t i = 0; i < phi->argument_count (); ++i)
             {
               jit_value *arg = phi->argument (i);
+              if (! arg->needs_release ())
+                continue;
+
               jit_block *inc = phi->incomming (i);
               jit_block *split = inc->maybe_split (*this, ablock);
               jit_terminator *term = split->terminator ();
@@ -1486,7 +1514,8 @@ jit_convert::convert_llvm::visit (jit_assign& assign)
   if (isa<jit_assign_base> (overwrite))
     {
       const jit_function& ol = jit_typeinfo::get_release (overwrite->type ());
-      ol.call (builder, overwrite);
+      if (ol.valid ())
+        ol.call (builder, overwrite);
     }
 }
 
@@ -1947,5 +1976,27 @@ Test some simple cases that compile.
 %!   break;
 %! endfor
 %! assert (m == sin ([1  2 3]));
+
+%!test
+%! i = 0;
+%! while i < 10
+%!   i += 1;
+%! endwhile
+%! assert (i == 10);
+
+%!test
+%! i = 0;
+%! while i < 10
+%!   a = ++i;
+%! endwhile
+%! assert (i == 10);
+%! assert (a == 10);
+%!test
+%! i = 0;
+%! while i < 10
+%!   a = i++;
+%! endwhile
+%! assert (i == 10);
+%! assert (a == 9);
 
 */

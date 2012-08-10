@@ -1106,6 +1106,14 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
       binary_ops[i].stash_name ("binary" + op_name);
     }
 
+  unary_ops.resize (octave_value::num_unary_ops);
+  for (size_t i = 0; i < octave_value::num_unary_ops; ++i)
+    {
+      octave_value::unary_op op = static_cast<octave_value::unary_op> (i);
+      std::string op_name = octave_value::unary_op_as_string (op);
+      unary_ops[i].stash_name ("unary" + op_name);
+    }
+
   for (int op = 0; op < octave_value::num_binary_ops; ++op)
     {
       llvm::Twine fn_name ("octave_jit_binary_any_any_");
@@ -1151,20 +1159,11 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn.add_mapping (engine, &octave_jit_release_matrix);
   release_fn.add_overload (fn);
 
-  // release scalar
-  fn = create_identity (scalar);
-  release_fn.add_overload (fn);
-
-  // release complex
-  fn = create_identity (complex);
-  release_fn.add_overload (fn);
-
-  // release index
-  fn = create_identity (index);
-  release_fn.add_overload (fn);
+  // copy
+  copy_fn.stash_name ("copy");
+  copy_fn.add_overload (create_identity (scalar));
 
   // now for binary scalar operations
-  // FIXME: Finish all operations
   add_binary_op (scalar, octave_value::op_add, llvm::Instruction::FAdd);
   add_binary_op (scalar, octave_value::op_sub, llvm::Instruction::FSub);
   add_binary_op (scalar, octave_value::op_mul, llvm::Instruction::FMul);
@@ -1223,6 +1222,48 @@ jit_typeinfo::jit_typeinfo (llvm::Module *m, llvm::ExecutionEngine *e)
   fn.add_mapping (engine, &octave_jit_pow_scalar_scalar);
   binary_ops[octave_value::op_pow].add_overload (fn);
   binary_ops[octave_value::op_el_pow].add_overload (fn);
+
+  // now for unary scalar operations
+  // FIXME: Impelment not
+  fn = create_function (jit_convention::internal, "octave_jit_++", scalar,
+                        scalar);
+  body = fn.new_block ();
+  builder.SetInsertPoint (body);
+  {
+    llvm::Value *one = llvm::ConstantFP::get (scalar_t, 1);
+    llvm::Value *val = fn.argument (builder, 0);
+    val = builder.CreateFAdd (val, one);
+    fn.do_return (builder, val);
+  }
+  unary_ops[octave_value::op_incr].add_overload (fn);
+
+  fn = create_function (jit_convention::internal, "octave_jit_--", scalar,
+                        scalar);
+  body = fn.new_block ();
+  builder.SetInsertPoint (body);
+  {
+    llvm::Value *one = llvm::ConstantFP::get (scalar_t, 1);
+    llvm::Value *val = fn.argument (builder, 0);
+    val = builder.CreateFSub (val, one);
+    fn.do_return (builder, val);
+  }
+  unary_ops[octave_value::op_decr].add_overload (fn);
+
+  fn = create_function (jit_convention::internal, "octave_jit_uminus", scalar,
+                        scalar);
+  body = fn.new_block ();
+  builder.SetInsertPoint (body);
+  {
+    llvm::Value *mone = llvm::ConstantFP::get (scalar_t, -1);
+    llvm::Value *val = fn.argument (builder, 0);
+    val = builder.CreateFMul (val, mone);
+    fn.do_return (builder, val);
+  }
+
+  fn = create_identity (scalar);
+  unary_ops[octave_value::op_uplus].add_overload (fn);
+  unary_ops[octave_value::op_transpose].add_overload (fn);
+  unary_ops[octave_value::op_hermitian].add_overload (fn);
 
   // now for binary complex operations
   add_binary_op (complex, octave_value::op_add, llvm::Instruction::FAdd);

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "lo-ieee.h"
 #include "mx-base.h"
 
+#include "mxarray.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-base-mat.cc"

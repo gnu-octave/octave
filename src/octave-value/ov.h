@@ -34,7 +34,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "data-conv.h"
 #include "idx-vector.h"
 #include "mach-info.h"
-#include "mxarray.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
 #include "oct-time.h"
@@ -44,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sort.h"
 
 class Cell;
+class mxArray;
 class octave_map;
 class octave_scalar_map;
 class Octave_map;
@@ -144,6 +144,8 @@ public:
     num_assign_ops,
     unknown_assign_op
   };
+
+  static binary_op assign_op_to_binary_op (assign_op);
 
   static assign_op binary_op_to_assign_op (binary_op);
 

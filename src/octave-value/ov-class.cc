@@ -42,6 +42,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-oct-ascii.h"
 #include "ls-oct-binary.h"
 #include "ls-utils.h"
+#include "mxarray.h"
 #include "oct-lvalue.h"
 #include "ov-class.h"
 #include "ov-fcn.h"

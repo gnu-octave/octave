@@ -476,6 +476,11 @@ public:
     return instance->do_binary_op (op);
   }
 
+  static const jit_operation& unary_op (int op)
+  {
+    return instance->do_unary_op (op);
+  }
+
   static const jit_operation& grab (void) { return instance->grab_fn; }
 
   static const jit_function& get_grab (jit_type *type)
@@ -491,6 +496,11 @@ public:
   static const jit_function& get_release (jit_type *type)
   {
     return instance->release_fn.overload (type);
+  }
+
+  static const jit_operation& copy (void)
+  {
+    return instance->copy_fn;
   }
 
   static const jit_operation& print_value (void)
@@ -605,6 +615,12 @@ private:
   {
     assert (static_cast<size_t>(op) < binary_ops.size ());
     return binary_ops[op];
+  }
+
+  const jit_operation& do_unary_op (int op) const
+  {
+    assert (static_cast<size_t> (op) < unary_ops.size ());
+    return unary_ops[op];
   }
 
   const jit_operation& do_cast (jit_type *to)
@@ -737,8 +753,10 @@ private:
   llvm::StructType *complex_ret;
 
   std::vector<jit_operation> binary_ops;
+  std::vector<jit_operation> unary_ops;
   jit_operation grab_fn;
   jit_operation release_fn;
+  jit_operation copy_fn;
   jit_operation print_fn;
   jit_operation for_init_fn;
   jit_operation for_check_fn;

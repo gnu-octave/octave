@@ -483,6 +483,45 @@ octave_value::assign_op_as_string (assign_op op)
   return retval;
 }
 
+octave_value::binary_op
+octave_value::assign_op_to_binary_op (assign_op op)
+{
+  switch (op)
+    {
+    case op_add_eq:
+      return op_add;
+    case op_sub_eq:
+      return op_sub;
+    case op_mul_eq:
+      return op_mul;
+    case op_div_eq:
+      return op_div;
+    case op_ldiv_eq:
+      return op_ldiv;
+    case op_pow_eq:
+      return op_pow;
+    case op_lshift_eq:
+      return op_lshift;
+    case op_rshift_eq:
+      return op_rshift;
+    case op_el_mul_eq:
+      return op_el_mul;
+    case op_el_div_eq:
+      return op_el_div;
+    case op_el_ldiv_eq:
+      return op_el_ldiv;
+    case op_el_pow_eq:
+      return op_el_pow;
+    case op_el_and_eq:
+      return op_el_and;
+    case op_el_or_eq:
+      return op_el_or;
+    default:
+      return unknown_binary_op;
+    }
+
+}
+
 octave_value::assign_op
 octave_value::binary_op_to_assign_op (binary_op op)
 {

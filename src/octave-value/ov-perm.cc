@@ -25,7 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "byte-swap.h"
+#include "dim-vector.h"
 
+#include "mxarray.h"
 #include "ov-perm.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"

@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
+#include "dim-vector.h"
+
+#include "mxarray.h"
 #include "ov-base.h"
 #include "ov-scalar.h"
 #include "ov-bool.h"

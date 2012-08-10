@@ -550,16 +550,16 @@ if test -z "$F77"; then
   AC_MSG_ERROR([in order to build Octave, you must have a compatible Fortran compiler or wrapper script for f2c that functions as a Fortran compiler installed and in your path.  See the file INSTALL for more information.])
 fi
 
-OCTAVE_CHECK_FORTRAN_HAVE_ISNAN
+OCTAVE_CHECK_FUNC_FORTRAN_ISNAN
 F77_ISNAN_MACRO=
-if test "x$octave_cv_fortran_have_isnan" = xno; then
+if test "x$octave_cv_func_fortran_isnan" = xno; then
    AC_MSG_NOTICE([substituting ISNAN(X) with X.NE.X in Fortran sources])
    F77_ISNAN_MACRO="s|ISNAN(\(@<:@^)@:>@*\))|(\1.NE.\1)|"
 fi
 AC_SUBST(F77_ISNAN_MACRO)
 
-OCTAVE_CHECK_FORTRAN_INTEGER_SIZE
-if test "x$octave_cv_fortran_integer_size" = xno; then
+OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
+if test "x$octave_cv_sizeof_fortran_integer" = xno; then
   if $USE_64_BIT_IDX_T; then
     case "$F77" in
       *gfortran*)
@@ -577,17 +577,17 @@ if test "x$octave_cv_fortran_integer_size" = xno; then
                 AC_MSG_NOTICE([adding -fdefault-integer-8 to F77_INTEGER_8_FLAG])
                 F77_INTEGER_8_FLAG="-fdefault-integer-8"
                 ## Invalidate the cache and try again.
-                $as_unset octave_cv_fortran_integer_size
+                $as_unset octave_cv_sizeof_fortran_integer
               ;;
             esac
           ;;
         esac
       ;;
     esac
-    if test -z "$octave_cv_fortran_integer_size"; then
-      OCTAVE_CHECK_FORTRAN_INTEGER_SIZE
+    if test -z "$octave_cv_sizeof_fortran_integer"; then
+      OCTAVE_CHECK_SIZEOF_FORTRAN_INTEGER
     fi
-    if test "x$octave_cv_fortran_integer_size" = xno; then
+    if test "x$octave_cv_sizeof_fortran_integer" = xno; then
       AC_MSG_ERROR([in order to build Octave with 64-bit indexing support your Fortran compiler must have an option for setting the default integer size to 8 bytes.  See the file INSTALL for more information.])
     fi
   else
@@ -607,12 +607,12 @@ AC_SUBST(F77_FLOAT_STORE_FLAG)
 
 ### Check for the Qhull library
 
-OCTAVE_CHECK_LIBRARY(qhull, QHull,
+OCTAVE_CHECK_LIB(qhull, QHull,
   [Qhull library not found -- this will result in loss of functionality of some geometry functions.],
   [libqhull/libqhull.h qhull/libqhull.h libqhull.h qhull/qhull.h qhull.h], [qh_qhull], [], [],
   [warn_qhull=
    OCTAVE_CHECK_QHULL_VERSION
-   OCTAVE_CHECK_QHULL_OK([TEXINFO_QHULL="@set HAVE_QHULL"
+   OCTAVE_CHECK_LIB_QHULL_OK([TEXINFO_QHULL="@set HAVE_QHULL"
      AC_DEFINE(HAVE_QHULL, 1, [Define to 1 if Qhull is available.])], [
      warn_qhull="Qhull library found, but does not seem to work properly -- this will result in loss of functionality of some geometry functions.  Please try recompiling the library with -fno-strict-aliasing."])])
 
@@ -660,7 +660,7 @@ fi
 
 ### Check for ZLIB library.
 
-OCTAVE_CHECK_LIBRARY(z, ZLIB,
+OCTAVE_CHECK_LIB(z, ZLIB,
   [ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files.],
   [zlib.h], [gzclearerr])
 
@@ -759,28 +759,29 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
-OCTAVE_CHECK_LIBRARY(hdf5, HDF5,
+OCTAVE_CHECK_LIB(hdf5, HDF5,
   [HDF5 library not found.  Octave will not be able to save or load HDF5 data files.],
   [hdf5.h], [H5Gget_num_objs], [], [],
   [warn_hdf5=
-   OCTAVE_HDF5_HAS_ENFORCED_16_API
+   OCTAVE_CHECK_HDF5_HAS_VER_16_API
    TEXINFO_HDF5="@set HAVE_HDF5"
-   AC_DEFINE(HAVE_HDF5, 1, [Define to 1 if HDF5 is available and newer than version 1.6.])
+   AC_DEFINE(HAVE_HDF5, 1,
+     [Define to 1 if HDF5 is available and newer than version 1.6.])
    if test "$have_msvc" = "yes"; then
-     OCTAVE_HDF5_DLL
+     OCTAVE_CHECK_LIB_HDF5_DLL
    fi
-   ])
+  ])
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 
 ### Check for FFTW library.  Default to Fortran FFTPACK if it is not available.
 
 ## Check for FFTW header and library.
-OCTAVE_CHECK_LIBRARY(fftw3, FFTW3,
+OCTAVE_CHECK_LIB(fftw3, FFTW3,
   [FFTW3 library not found.  The slower FFTPACK library will be used instead.],
   [fftw3.h], [fftw_plan_dft_1d])
 
-OCTAVE_CHECK_LIBRARY(fftw3f, FFTW3F,
+OCTAVE_CHECK_LIB(fftw3f, FFTW3F,
   [FFTW3F library not found.  The slower FFTPACK library will be used instead.],
   [fftw3.h], [fftwf_plan_dft_1d])
 
@@ -797,7 +798,7 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
-OCTAVE_CHECK_LIBRARY(glpk, GLPK,
+OCTAVE_CHECK_LIB(glpk, GLPK,
   [GLPK library not found.  The glpk function for solving linear programs will be disabled.],
   [glpk/glpk.h glpk.h], [_glp_lpx_simplex])
 LIBS="$save_LIBS"
@@ -809,7 +810,7 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$Z_CPPFLAGS $CPPFLAGS"
 save_LIBS="$LIBS"
 LIBS="$Z_LDFLAGS $Z_LIBS $LIBS"
-OCTAVE_CHECK_LIBRARY(curl, cURL,
+OCTAVE_CHECK_LIB(curl, cURL,
   [cURL library not found.  The ftp objects, urlread and urlwrite functions will be disabled.],
   [curl/curl.h], [curl_easy_escape])
 LIBS="$save_LIBS"
@@ -924,7 +925,7 @@ AC_ARG_WITH([opengl],
 
 ## Check for OpenGL library
 if $check_opengl; then
-  OCTAVE_OPENGL
+  OCTAVE_CHECK_LIB_OPENGL
 fi
 
 GRAPHICS_LIBS=
@@ -1175,7 +1176,7 @@ fi
 ## Must supply proper LIBS, however.
 save_LIBS="$LIBS"
 LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
-OCTAVE_CHECK_LIBRARY(qrupdate, qrupdate,
+OCTAVE_CHECK_LIB(qrupdate, qrupdate,
   [qrupdate not found.  The QR & Cholesky updating functions will be slow.],
   [],
   [sqr1up],
@@ -1198,7 +1199,7 @@ LIBS="$save_LIBS"
 
 ### Check for AMD library
 
-OCTAVE_CHECK_LIBRARY(amd, AMD,
+OCTAVE_CHECK_LIB(amd, AMD,
   [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h],
   [amd_postorder],
@@ -1206,7 +1207,7 @@ OCTAVE_CHECK_LIBRARY(amd, AMD,
 
 ### Check for CAMD library
 
-OCTAVE_CHECK_LIBRARY(camd, CAMD,
+OCTAVE_CHECK_LIB(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/camd.h ufsparse/camd.h amd/camd.h camd.h],
   [camd_postorder],
@@ -1214,7 +1215,7 @@ OCTAVE_CHECK_LIBRARY(camd, CAMD,
 
 ### Check for COLAMD library
 
-OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
+OCTAVE_CHECK_LIB(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/colamd.h ufsparse/colamd.h amd/colamd.h colamd.h],
   [colamd],
@@ -1222,7 +1223,7 @@ OCTAVE_CHECK_LIBRARY(colamd, COLAMD,
 
 ### Check for CCOLAMD library
 
-OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
+OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/ccolamd.h ufsparse/ccolamd.h amd/ccolamd.h ccolamd.h],
   [ccolamd],
@@ -1233,7 +1234,7 @@ OCTAVE_CHECK_LIBRARY(ccolamd, CCOLAMD,
 
 save_LIBS="$LIBS"
 LIBS="$COLAMD_LDFLAGS $COLAMD_LIBS $AMD_LDFLAGS $AMD_LIBS $LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
-OCTAVE_CHECK_LIBRARY(cholmod, CHOLMOD,
+OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h],
   [cholmod_start],
@@ -1242,7 +1243,7 @@ LIBS="$save_LIBS"
 
 ### Check for CXSparse library
 
-OCTAVE_CHECK_LIBRARY(cxsparse, CXSparse,
+OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/cs.h ufsparse/cs.h amd/cs.h cs.h],
   [cs_di_sqr],
@@ -1254,7 +1255,7 @@ save_LIBS="$LIBS"
 save_CPPFLAGS="$CPPFLAGS"
 LIBS="$AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
 CPPFLAGS="$AMD_CPPFLAGS $CPPFLAGS"
-OCTAVE_CHECK_LIBRARY(umfpack, UMFPACK,
+OCTAVE_CHECK_LIB(umfpack, UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
   [umfpack_zi_get_determinant],
@@ -1267,7 +1268,7 @@ if test -z "$UMFPACK_LIBS"; then
   $as_unset ac_cv_lib_umfpack_umfpack_zi_get_determinant
   save_LIBS="$LIBS"
   LIBS="-lcblas $AMD_LDFLAGS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
-  OCTAVE_CHECK_LIBRARY(umfpack, UMFPACK,
+  OCTAVE_CHECK_LIB(umfpack, UMFPACK,
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
     [suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h],
     [umfpack_zi_get_determinant],
@@ -1281,7 +1282,7 @@ fi
 if test -n "$UMFPACK_LIBS"; then
   save_LIBS="$LIBS";
   LIBS="$UMFPACK_LIBS $AMD_LIBS $BLAS_LIBS $FLIBS $LIBS"
-  OCTAVE_UMFPACK_SEPERATE_SPLIT
+  OCTAVE_UMFPACK_SEPARATE_SPLIT
   LIBS="$save_LIBS"
 fi
 
@@ -1289,13 +1290,13 @@ fi
 
 save_LIBS="$LIBS"
 LIBS="$LAPACK_LIBS $BLAS_LIBS $FLIBS $LIBS"
-OCTAVE_CHECK_LIBRARY(arpack, ARPACK,
+OCTAVE_CHECK_LIB(arpack, ARPACK,
   [ARPACK not found.  The eigs function will be disabled.],
   [],
   [dseupd],
   [Fortran 77], [don't use the ARPACK library, disable eigs function],
   [warn_arpack=
-   OCTAVE_CHECK_ARPACK_OK([
+   OCTAVE_CHECK_LIB_ARPACK_OK([
      AC_DEFINE(HAVE_ARPACK, 1, [Define to 1 if ARPACK is available.])], [
      warn_arpack="ARPACK library found, but does not seem to work properly -- disabling eigs function"])])
 LIBS="$save_LIBS"
@@ -1835,10 +1836,10 @@ OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL
 OCTAVE_CXX_BROKEN_REINTERPRET_CAST
 
 ## Check if C++ compiler allows placement delete.
-OCTAVE_PLACEMENT_DELETE
+OCTAVE_CXX_PLACEMENT_DELETE
 
 ## Check if C++ compiler can auto allocate variable sized arrays.
-OCTAVE_DYNAMIC_AUTO_ARRAYS
+OCTAVE_CXX_DYNAMIC_AUTO_ARRAYS
 
 ## Check that C compiler and libraries support IEEE754 data format.
 OCTAVE_IEEE754_DATA_FORMAT
@@ -1903,9 +1904,9 @@ AC_LANG_POP(C++)
 
 ## Look in <cmath> for the IEEE functions isnan, isinf, isfinite that we need.
 
-OCTAVE_CMATH_FUNC(isnan)
-OCTAVE_CMATH_FUNC(isinf)
-OCTAVE_CMATH_FUNC(isfinite)
+OCTAVE_CHECK_FUNC_CMATH(isnan)
+OCTAVE_CHECK_FUNC_CMATH(isinf)
+OCTAVE_CHECK_FUNC_CMATH(isfinite)
 
 dnl Would like to get rid of this cruft, and just have
 dnl
